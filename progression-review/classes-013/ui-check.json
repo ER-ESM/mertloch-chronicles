@@ -1,0 +1,10 @@
+{
+  "classes": 3,
+  "specs": 9,
+  "talents": 90,
+  "uniqueSkillImages": 39,
+  "talentSkillsGranted": true,
+  "mobile": true,
+  "persistence": true,
+  "exceptions": []
+}

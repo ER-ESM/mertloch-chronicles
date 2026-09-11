@@ -1,9 +1,10 @@
+import {TALENTS,classSpecs} from './talents.js';
 import {buffSkill} from './progression.js';
 // Fictional Mertloch locals. Stable skill IDs keep controls and existing saves compatible.
 export const CLAN_MEMBERS=[
-  {id:'dieter',name:'Dosen-Dieter',role:'Tresenbrecher',age:38,color:'#e6ac6b',combo:'Pegel',bio:'Seit 38 Jahren Mertloch. Seit 2007 mit demselben Pfandbon unterwegs. Hält einen Bierdeckel für eine gültige Baugenehmigung.',passive:'Deckel drauf: Eine erfolgreiche Parade heilt zusätzlich 35 Leben.',rotation:'Pegel aufbauen → Pfandschuld markieren → Bierzelt-Abriss. Angekündigte Treffer parieren.'},
-  {id:'baerbel',name:'Bass-Bärbel',role:'Anlagenchefin',age:34,color:'#c59bdd',combo:'Takt',bio:'Hat die Dorfdisco in einem Bollerwagen untergebracht. Ihre Anlage hat mehr Vorstrafen als der gesamte Vorstand von Ruhe 22:01.',passive:'Im Takt: Ein weiterer Treffer nach 0,85–1,5 s erzeugt einen zusätzlichen Taktpunkt.',rotation:'Im Takt werfen → Soundcheck setzen → Bass-Fläche zünden. Abstand halten.'},
-  {id:'kevin',name:'Klo-Kevin',role:'Pfandingenieur',age:31,color:'#86c6b4',combo:'Druck',bio:'Baut aus Pfand, Kabelbindern und einem Pömpel Dinge, die laut TÜV nicht existieren dürften. „Hält schon“ waren seine ersten Worte.',passive:'Restdruck: Eine erfolgreiche Unterbrechung gibt einen Druckpunkt und verkürzt Restmüll-Rakete um 2 s.',rotation:'Auf Distanz Pfand werfen → Gegner festkleben → Rakete. Unterbrechen lädt Druck nach.'}
+  {id:'dieter',name:'Dosen-Dieter',role:'Tank · Tresenbrecher',age:38,color:'#e6ac6b',combo:'Pegel',bio:'Seit 38 Jahren Mertloch. Seit 2007 mit demselben Pfandbon unterwegs. Hält einen Bierdeckel für eine gültige Baugenehmigung.',passive:'Deckel drauf: Eine erfolgreiche Parade heilt zusätzlich 35 Leben.',rotation:'Pegel aufbauen → Pfandschuld markieren → Bierzelt-Abriss. Angekündigte Treffer parieren.'},
+  {id:'baerbel',name:'Bass-Bärbel',role:'Heilerin · Anlagenchefin',age:34,color:'#c59bdd',combo:'Takt',bio:'Hat die Dorfdisco in einem Bollerwagen untergebracht. Ihre Anlage hat mehr Vorstrafen als der gesamte Vorstand von Ruhe 22:01.',passive:'Nachsorge: Heilung ist dein Handwerk. Treffer im Takt erzeugen zusätzliche Punkte; Nachklang hält dich auf den Beinen.',rotation:'Nachklang erhalten → im Takt angreifen → Soundcheck → Bass. Deine Spezialisierung entscheidet, ob du durch Heilung, Schadensheilung oder Überladung gewinnst.'},
+  {id:'kevin',name:'Klo-Kevin',role:'Fernkämpfer · Pfandingenieur',age:31,color:'#86c6b4',combo:'Druck',bio:'Baut aus Pfand, Kabelbindern und einem Pömpel Dinge, die laut TÜV nicht existieren dürften. „Hält schon“ waren seine ersten Worte.',passive:'Restdruck: Eine erfolgreiche Unterbrechung gibt einen Druckpunkt und verkürzt Restmüll-Rakete um 2 s.',rotation:'Auf Distanz Pfand werfen → Gegner festkleben → Rakete. Unterbrechen lädt Druck nach.'}
 ];
 const BASE=[
   {id:'strike',key:'1',cd:.85,cost:0,range:55,damage:65,gain:14,color:'#ecdca3',bg:'#655d35',icon:'bottle'},
@@ -31,7 +32,7 @@ const KITS={
     {name:'Mikro aus!',range:190,cd:10,text:'35 Schaden. Unterbricht gelbe Zauber und macht das Ziel 4 s verwundbar. „Deine Meinung hat Sendepause.“'},
     {name:'Feedback-Schirm',window:.9,reflect:55,text:'0,9 s Parierfenster. Reflektiert 55 Schaden, gibt einen Taktpunkt und 20 Randale. Keine Heilung.'},
     {name:'Crowdsurfer',cd:6,steps:24,text:'Ein längerer Ausweichsprung mit 0,4 s Schutz. Landet ohne Publikum etwas unromantisch.'},
-    {name:'Backstage-Brezel',cd:24,heal:210,text:'210 Leben. Zwischen Kabelsalat und drei leeren Senftuben gefunden.'}
+    {name:'Stimmgabel fürs Gemüt',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Nachklang, Schutz oder eine offensive Zugabe.'}
   ],
   kevin:[
     {name:'Pfandgeschoss',range:195,damage:42,gain:16,icon:'bottle',text:'42 Fernkampfschaden, +1 Druck und 16 Randale. Eine Flasche mit erstaunlich überzeugender Flugbahn.'},
@@ -44,7 +45,19 @@ const KITS={
   ]
 };
 export function member(id){return CLAN_MEMBERS.find(m=>m.id===id)||CLAN_MEMBERS[0];}
-export function skillsFor(id){const kit=KITS[member(id).id];return [...BASE.map((s,i)=>({...s,...kit[i],offGcd:['dash','interrupt'].includes(s.id)})),buffSkill(member(id).id),{id:'throw',name:'Pfand auf die Zwölf',key:'3',cd:6,cost:18,range:235,damage:75,icon:'bottle',color:'#dbc083',bg:'#5b6036',text:'Ein gezielter Flaschenwurf auf ein einzelnes Ziel. 75 Grundschaden, 18 Randale. Ideal, um einen Gegner aus der Gruppe zu ziehen.'},{id:'ground',name:id==='baerbel'?'Bassbombe im Vorgarten':id==='kevin'?'Restmüll mit Zündschnur':'Böller unterm Biertisch',key:'7',cd:12,cost:35,ground:true,range:210,radius:70,damage:125,delay:1.1,icon:'burst',color:'#e6b769',bg:'#79633e',text:'Mit der Maus einen freien Bodenpunkt wählen. Nach 1,1 s: 125 Grundschaden im Umkreis von 9 m an bis zu 5 Zielen – auch neutralen. Rechtsklick oder Esc bricht das Zielen ab.'}];}
+const TALENT_SKILLS={
+ barricade:{name:'Absperrband',ground:true,range:170,radius:85,duration:8,cd:24,cost:25,text:'Platziere eine Zone: darin 30 % weniger Schaden. Bleib hinter deiner Absperrung, statt blind hinterherzulaufen.'},
+ slam:{name:'Tresensprung',ground:true,range:145,radius:60,damage:95,cd:16,cost:20,text:'Springe zum freien Zielpunkt, triff bis zu 5 Gegner und erhalte 1 Pegel. Hindernisse kannst du nicht überspringen.'},
+ keg:{name:'Katerfass',ground:true,range:160,radius:80,duration:10,cd:25,cost:25,text:'Platziere ein heilendes Fass: 24 Leben pro Sekunde, solange du darin stehst. Gegner in der Pfütze werden langsamer.'},
+ sanctuary:{name:'Sanitäts-Pogo',ground:true,range:190,radius:85,duration:10,cd:24,cost:25,text:'Heilzone für 28 Leben pro Sekunde. Du musst darin stehen bleiben; Bewegung und Heilung sinnvoll abwägen.'},
+ infusion:{name:'Feedback-Infusion',duration:8,cd:24,cost:15,text:'8 Sekunden lang heilen dich 35 % deines verursachten Schadens zusätzlich. Erst infundieren, dann eskalieren.'},
+ encore:{name:'Zugabe, ihr Säcke!',cd:25,cost:10,text:'Setzt die Abklingzeit von Bass bis zum Bauamt zurück und gibt sofort 3 Takt. Markierung vorbereiten, Zugabe zünden, Finisher setzen.'},
+ detonate:{name:'Kettenzündung',radius:210,cd:14,cost:25,text:'Sprengt bis zu 5 markierte Ziele in Sicht und Reichweite für je 110 Schaden. Verbraucht deren Markierungen. Erst verteilen, dann zünden.'},
+ magnet:{name:'Magnetpanzer',radius:120,cd:22,cost:25,text:'Gibt 140 Deckung, zieht bis zu 5 nahe Gegner an und hält sie kurz fest. Das zieht auch bislang neutrale Ziele in den Kampf.'},
+ snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling löst 75 Schaden und 3 Sekunden Festhalten aus. Du kannst währenddessen weiterkämpfen.'}
+};
+function talentSkills(id){return classSpecs(id).flatMap(spec=>TALENTS[spec].filter(t=>t.grants).map(t=>({id:t.grants,...TALENT_SKILLS[t.grants],talent:t.id,spec,icon:t.grants,offGcd:false,color:'#e6c585',bg:'#48644b'})));}
+export function skillsFor(id){const kit=KITS[member(id).id];return [...BASE.map((s,i)=>({...s,...kit[i],offGcd:['dash','interrupt'].includes(s.id)})),buffSkill(member(id).id),{id:'throw',name:id==='baerbel'?'Platte ins Gesicht':id==='kevin'?'Dosen-Drohne':'Pfand auf die Zwölf',key:'3',cd:6,cost:18,range:235,damage:75,icon:'bottle',color:'#dbc083',bg:'#5b6036',text:(id==='baerbel'?'Eine fliegende Schallplatte':id==='kevin'?'Eine ferngesteuerte Pfanddose':'Eine gezielt geworfene Mehrwegflasche')+' trifft ein einzelnes Ziel. 75 Grundschaden, 18 Randale. Ideal, um einen Gegner aus der Gruppe zu ziehen.'},{id:'ground',name:id==='baerbel'?'Bassbombe im Vorgarten':id==='kevin'?'Restmüll mit Zündschnur':'Böller unterm Biertisch',key:'7',cd:12,cost:35,ground:true,range:210,radius:70,damage:125,delay:1.1,icon:'burst',color:'#e6b769',bg:'#79633e',text:'Mit der Maus einen freien Bodenpunkt wählen. Nach 1,1 s: 125 Grundschaden im Umkreis von 9 m an bis zu 5 Zielen – auch neutralen. Rechtsklick oder Esc bricht das Zielen ab.'},...talentSkills(id)];}
 export const STORY={title:'Die letzte Kiste',giver:'Kisten-Ida',reward:'Goldener Dosenöffner',boss:'Horst Nüchternmann',faction:'Ruhe 22:01 e. V.'};
 export function dressStory(world){
   world.npc.name=STORY.giver;
@@ -56,5 +69,5 @@ export function dressStory(world){
     ['Tilo Tapedeck','Die Bollerbox des Grauens',l=>`Untersuche die Bollerbox bei ${l}. Irgendwer spielt seit vier Stunden denselben Refrain. Das ist keine Party, das ist Folter.`, 'Find den verdammten Repeat-Knopf, bevor ich das Ding heirate oder anzünde.'],
     ['Jonna Jägermeisterin','Pfand ist kein Ponyhof',l=>`Vertreibe zwei Pfandkeiler bei ${l}. Die Viecher kauen auf unseren Kästen. Das ist Sachbeschädigung mit Schnauze.`, 'Fass meine Leute nicht an. Und schon gar nicht deren Leergut.']
   ];
-  for(const [i,q] of world.quests.entries()){const [name,title,description,quote]=quests[i%quests.length];q.giver.name=name;q.title=title;q.description=description(q.location);q.quote=quote;if(q.type==='scout'){q.activity=i===1?'rhythm':'wires';q.description=i===1?'Bring die Bollerbox bei '+q.location+' in Takt. Drei präzise Bassimpulse im goldenen Zeitfenster – einfach nur Anschalten zählt nicht.':'Tilo hat die Anschlüsse bei '+q.location+' verwechselt. Merke dir die Kabelreihenfolge und stecke sie korrekt zurück. Drei Patzer: noch mal von vorn.';}}
+  for(const [i,q] of world.quests.entries()){const [name,title,description,quote]=quests[i%quests.length];q.giver.name=name;q.title=title;q.description=description(q.location);q.quote=quote;q.reward=q.type==='hunt'?220:180;if(q.type==='scout'){q.activity=i===1?'rhythm':'wires';q.description=i===1?'Bring die Bollerbox bei '+q.location+' in Takt. Drei präzise Bassimpulse im goldenen Zeitfenster – einfach nur Anschalten zählt nicht.':'Tilo hat die Anschlüsse bei '+q.location+' verwechselt. Merke dir die Kabelreihenfolge und stecke sie korrekt zurück. Drei Patzer: noch mal von vorn.';}}
 }

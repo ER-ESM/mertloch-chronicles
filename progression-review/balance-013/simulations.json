@@ -1,0 +1,149 @@
+{
+  "description": "30 seeded stationary melee combat runs per configuration; normal GCD, real enemy casts, no healing consumables, dodge or kiting. Skills are used when unlocked. This measures standing-pull punishment, not optimal play.",
+  "scenarios": [
+    {
+      "id": "start-one",
+      "count": 1,
+      "wins": 30,
+      "deaths": 0,
+      "meanFirstKill": 7.72,
+      "meanTime": 7.72,
+      "meanHealth": 511,
+      "example": {
+        "dead": false,
+        "kills": 1,
+        "time": 8.1,
+        "firstKill": 8.1,
+        "health": 511,
+        "maxHp": 608,
+        "enemyHp": 520,
+        "damage": 520
+      }
+    },
+    {
+      "id": "start-three",
+      "count": 3,
+      "wins": 0,
+      "deaths": 30,
+      "meanFirstKill": 7.72,
+      "meanTime": 14.15,
+      "meanHealth": 0,
+      "example": {
+        "dead": true,
+        "kills": 1,
+        "time": 14.15,
+        "firstKill": 8.1,
+        "health": 0,
+        "maxHp": 608,
+        "enemyHp": 520,
+        "damage": 918
+      }
+    },
+    {
+      "id": "start-ten",
+      "count": 10,
+      "wins": 0,
+      "deaths": 30,
+      "meanFirstKill": null,
+      "meanTime": 5.5,
+      "meanHealth": 0,
+      "example": {
+        "dead": true,
+        "kills": 0,
+        "time": 5.5,
+        "firstKill": null,
+        "health": 0,
+        "maxHp": 608,
+        "enemyHp": 520,
+        "damage": 355
+      }
+    },
+    {
+      "id": "trained-one",
+      "count": 1,
+      "training": 2100,
+      "level": 6,
+      "wins": 30,
+      "deaths": 0,
+      "meanFirstKill": 5.8,
+      "meanTime": 5.8,
+      "meanHealth": 811,
+      "example": {
+        "dead": false,
+        "kills": 1,
+        "time": 5.8,
+        "firstKill": 5.8,
+        "health": 811,
+        "maxHp": 833,
+        "enemyHp": 520,
+        "damage": 520
+      }
+    },
+    {
+      "id": "geared-one",
+      "count": 1,
+      "training": 2100,
+      "level": 6,
+      "gear": true,
+      "wins": 30,
+      "deaths": 0,
+      "meanFirstKill": 4.3,
+      "meanTime": 4.3,
+      "meanHealth": 1145,
+      "example": {
+        "dead": false,
+        "kills": 1,
+        "time": 4.3,
+        "firstKill": 4.3,
+        "health": 1145,
+        "maxHp": 1145,
+        "enemyHp": 520,
+        "damage": 520
+      }
+    },
+    {
+      "id": "geared-three",
+      "count": 3,
+      "training": 2100,
+      "level": 6,
+      "gear": true,
+      "wins": 30,
+      "deaths": 0,
+      "meanFirstKill": 4.3,
+      "meanTime": 14.25,
+      "meanHealth": 980,
+      "example": {
+        "dead": false,
+        "kills": 3,
+        "time": 14.5,
+        "firstKill": 4.3,
+        "health": 974,
+        "maxHp": 1145,
+        "enemyHp": 520,
+        "damage": 1560
+      }
+    },
+    {
+      "id": "geared-ten",
+      "count": 10,
+      "training": 2100,
+      "level": 6,
+      "gear": true,
+      "wins": 0,
+      "deaths": 30,
+      "meanFirstKill": 4.3,
+      "meanTime": 11.3,
+      "meanHealth": 0,
+      "example": {
+        "dead": true,
+        "kills": 2,
+        "time": 11.2,
+        "firstKill": 4.3,
+        "health": 0,
+        "maxHp": 1145,
+        "enemyHp": 520,
+        "damage": 1250
+      }
+    }
+  ]
+}

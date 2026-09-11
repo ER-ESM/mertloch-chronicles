@@ -1,0 +1,379 @@
+{
+  "assumptions": "Real combat and recovery; 16–24 s search/travel per single pull, 15% wardens, no gear or consumables. Mixed route adds a 180 XP side quest with 3 min travel/activity per 15 kills, at most six. Five seeds per class and route. Human navigation, looting, skill reading and mistakes can differ.",
+  "summary": [
+    {
+      "classId": "dieter",
+      "route": "single pulls",
+      "fourMinutes": 19.7,
+      "fiveMinutes": 28.9,
+      "deaths": 0
+    },
+    {
+      "classId": "dieter",
+      "route": "mixed quests",
+      "fourMinutes": 20.7,
+      "fiveMinutes": 30.6,
+      "deaths": 0
+    },
+    {
+      "classId": "baerbel",
+      "route": "single pulls",
+      "fourMinutes": 21.5,
+      "fiveMinutes": 31.5,
+      "deaths": 0
+    },
+    {
+      "classId": "baerbel",
+      "route": "mixed quests",
+      "fourMinutes": 22.1,
+      "fiveMinutes": 32.5,
+      "deaths": 0
+    },
+    {
+      "classId": "kevin",
+      "route": "single pulls",
+      "fourMinutes": 21.3,
+      "fiveMinutes": 31.2,
+      "deaths": 0
+    },
+    {
+      "classId": "kevin",
+      "route": "mixed quests",
+      "fourMinutes": 22,
+      "fiveMinutes": 32.4,
+      "deaths": 0
+    }
+  ],
+  "runs": [
+    {
+      "classId": "dieter",
+      "mixed": false,
+      "minutes": 28.36,
+      "fourMinutes": 19.26,
+      "kills": 64,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 6.88,
+      "travelRecoveryMinutes": 21.48
+    },
+    {
+      "classId": "dieter",
+      "mixed": false,
+      "minutes": 29.33,
+      "fourMinutes": 19.76,
+      "kills": 66,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 6.99,
+      "travelRecoveryMinutes": 22.34
+    },
+    {
+      "classId": "dieter",
+      "mixed": false,
+      "minutes": 28.87,
+      "fourMinutes": 19.61,
+      "kills": 65,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 7.18,
+      "travelRecoveryMinutes": 21.69
+    },
+    {
+      "classId": "dieter",
+      "mixed": false,
+      "minutes": 28.96,
+      "fourMinutes": 20.13,
+      "kills": 64,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 7.04,
+      "travelRecoveryMinutes": 21.92
+    },
+    {
+      "classId": "dieter",
+      "mixed": false,
+      "minutes": 28.84,
+      "fourMinutes": 19.52,
+      "kills": 66,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 6.86,
+      "travelRecoveryMinutes": 21.98
+    },
+    {
+      "classId": "dieter",
+      "mixed": true,
+      "minutes": 30.06,
+      "fourMinutes": 20.36,
+      "kills": 47,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 5.19,
+      "travelRecoveryMinutes": 24.87
+    },
+    {
+      "classId": "dieter",
+      "mixed": true,
+      "minutes": 30.94,
+      "fourMinutes": 20.98,
+      "kills": 49,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 5.27,
+      "travelRecoveryMinutes": 25.66
+    },
+    {
+      "classId": "dieter",
+      "mixed": true,
+      "minutes": 30.7,
+      "fourMinutes": 21.16,
+      "kills": 48,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 5.42,
+      "travelRecoveryMinutes": 25.29
+    },
+    {
+      "classId": "dieter",
+      "mixed": true,
+      "minutes": 30.74,
+      "fourMinutes": 20.4,
+      "kills": 48,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 5.22,
+      "travelRecoveryMinutes": 25.51
+    },
+    {
+      "classId": "dieter",
+      "mixed": true,
+      "minutes": 30.71,
+      "fourMinutes": 20.67,
+      "kills": 49,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 5.18,
+      "travelRecoveryMinutes": 25.52
+    },
+    {
+      "classId": "baerbel",
+      "mixed": false,
+      "minutes": 30.98,
+      "fourMinutes": 21.22,
+      "kills": 64,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.5,
+      "travelRecoveryMinutes": 21.48
+    },
+    {
+      "classId": "baerbel",
+      "mixed": false,
+      "minutes": 31.9,
+      "fourMinutes": 21.65,
+      "kills": 66,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.54,
+      "travelRecoveryMinutes": 22.36
+    },
+    {
+      "classId": "baerbel",
+      "mixed": false,
+      "minutes": 31.54,
+      "fourMinutes": 21.61,
+      "kills": 65,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.85,
+      "travelRecoveryMinutes": 21.69
+    },
+    {
+      "classId": "baerbel",
+      "mixed": false,
+      "minutes": 31.64,
+      "fourMinutes": 22.03,
+      "kills": 64,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.64,
+      "travelRecoveryMinutes": 22
+    },
+    {
+      "classId": "baerbel",
+      "mixed": false,
+      "minutes": 31.25,
+      "fourMinutes": 21.23,
+      "kills": 66,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.28,
+      "travelRecoveryMinutes": 21.98
+    },
+    {
+      "classId": "baerbel",
+      "mixed": true,
+      "minutes": 31.97,
+      "fourMinutes": 21.76,
+      "kills": 47,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 7.1,
+      "travelRecoveryMinutes": 24.87
+    },
+    {
+      "classId": "baerbel",
+      "mixed": true,
+      "minutes": 32.81,
+      "fourMinutes": 22.32,
+      "kills": 49,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 7.13,
+      "travelRecoveryMinutes": 25.68
+    },
+    {
+      "classId": "baerbel",
+      "mixed": true,
+      "minutes": 32.74,
+      "fourMinutes": 22.67,
+      "kills": 48,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 7.46,
+      "travelRecoveryMinutes": 25.29
+    },
+    {
+      "classId": "baerbel",
+      "mixed": true,
+      "minutes": 32.58,
+      "fourMinutes": 21.71,
+      "kills": 48,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 6.98,
+      "travelRecoveryMinutes": 25.6
+    },
+    {
+      "classId": "baerbel",
+      "mixed": true,
+      "minutes": 32.56,
+      "fourMinutes": 21.94,
+      "kills": 49,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 7.04,
+      "travelRecoveryMinutes": 25.52
+    },
+    {
+      "classId": "kevin",
+      "mixed": false,
+      "minutes": 30.77,
+      "fourMinutes": 21.09,
+      "kills": 64,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.17,
+      "travelRecoveryMinutes": 21.6
+    },
+    {
+      "classId": "kevin",
+      "mixed": false,
+      "minutes": 31.7,
+      "fourMinutes": 21.45,
+      "kills": 66,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.31,
+      "travelRecoveryMinutes": 22.39
+    },
+    {
+      "classId": "kevin",
+      "mixed": false,
+      "minutes": 31.19,
+      "fourMinutes": 21.22,
+      "kills": 65,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.45,
+      "travelRecoveryMinutes": 21.74
+    },
+    {
+      "classId": "kevin",
+      "mixed": false,
+      "minutes": 31.43,
+      "fourMinutes": 21.84,
+      "kills": 64,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.43,
+      "travelRecoveryMinutes": 22
+    },
+    {
+      "classId": "kevin",
+      "mixed": false,
+      "minutes": 31.04,
+      "fourMinutes": 21.02,
+      "kills": 66,
+      "quests": 0,
+      "deaths": 0,
+      "combatMinutes": 9.07,
+      "travelRecoveryMinutes": 21.98
+    },
+    {
+      "classId": "kevin",
+      "mixed": true,
+      "minutes": 31.82,
+      "fourMinutes": 21.69,
+      "kills": 47,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 6.84,
+      "travelRecoveryMinutes": 24.98
+    },
+    {
+      "classId": "kevin",
+      "mixed": true,
+      "minutes": 32.77,
+      "fourMinutes": 22.25,
+      "kills": 49,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 7.06,
+      "travelRecoveryMinutes": 25.71
+    },
+    {
+      "classId": "kevin",
+      "mixed": true,
+      "minutes": 32.47,
+      "fourMinutes": 22.39,
+      "kills": 48,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 7.13,
+      "travelRecoveryMinutes": 25.34
+    },
+    {
+      "classId": "kevin",
+      "mixed": true,
+      "minutes": 32.58,
+      "fourMinutes": 21.69,
+      "kills": 48,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 6.98,
+      "travelRecoveryMinutes": 25.6
+    },
+    {
+      "classId": "kevin",
+      "mixed": true,
+      "minutes": 32.33,
+      "fourMinutes": 21.82,
+      "kills": 49,
+      "quests": 3,
+      "deaths": 0,
+      "combatMinutes": 6.81,
+      "travelRecoveryMinutes": 25.52
+    }
+  ]
+}

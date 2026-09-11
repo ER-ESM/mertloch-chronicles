@@ -1,0 +1,28 @@
+{
+  "fixture": "Bärbel, level 11, all level skills, four rolled rare items. Live route and input, no runtime state writes.",
+  "scenarios": [
+    {
+      "camp": "main-wolf",
+      "kills": 2,
+      "damage": 785,
+      "health": 1140,
+      "grounded": true,
+      "glow": true,
+      "tabChecks": 4,
+      "dodge": true,
+      "interrupts": 0
+    },
+    {
+      "camp": "main-cultist",
+      "kills": 1,
+      "damage": 558,
+      "health": 1430,
+      "grounded": true,
+      "glow": true,
+      "tabChecks": 4,
+      "dodge": true,
+      "interrupts": 1
+    }
+  ],
+  "exceptions": []
+}

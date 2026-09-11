@@ -1,0 +1,20 @@
+{
+  "realWalking": true,
+  "activities": [
+    {
+      "activity": "rhythm",
+      "quest": "Der Bass muss durch",
+      "reward": "roll-weapon-bass-1-uncommon-945-quest-2",
+      "onlyOneGranted": true
+    },
+    {
+      "activity": "wires",
+      "quest": "Die Bollerbox des Grauens",
+      "reward": "roll-body-bass-2-uncommon-194-quest-5",
+      "onlyOneGranted": true
+    }
+  ],
+  "progress": 360,
+  "reload": true,
+  "exceptions": []
+}

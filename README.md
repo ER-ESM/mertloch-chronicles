@@ -21,7 +21,17 @@ GitHub Actions prüft Änderungen auf `main` mit `npm test`, baut mit `npm run b
 
 Im Repository unter **Settings → Pages → Source** ist **GitHub Actions** vorgesehen. Der Workflow kann über **Actions → Test and publish game → Run workflow** erneut ausgeführt werden. Ein eigener Server, API-Schlüssel oder kostenpflichtiger Hostingdienst ist für das Spiel nicht nötig. Kartenzuschreibungen bleiben im Kartenmenü sichtbar; Grafikquellen und Herkunft stehen in den jeweiligen `assets/`-Ordnern.
 
-## Neu in 0.12
+## Neu in 0.13
+
+- **Alle Werte helfen jeder Klasse.** Wumms, Taktgefühl und Bastelgrips tragen gemeinsam zum Kampf bei; Heilung, Schilde, Tempo und Regeneration setzen unterschiedliche Schwerpunkte. Ausrüstung hat Werteprofile ohne Klassenbindung.
+- **Drei eigene Spezialisierungen pro Figur, insgesamt 90 Talente.** Dieter beginnt als Tank, Bärbel als Heilerin, Kevin als Fernkämpfer. Deckung, Rausch, Nachheilung, Schadensheilung, Fallen, Magnetanziehung und neue Talentfähigkeiten verändern die Spielweise.
+- **39 unterschiedliche Skill-Icons** aus drei eigens erzeugten Comic-Atlanten. Jede Klasse hat zehn Stufenfähigkeiten und drei Fähigkeiten, die ausschließlich ihr jeweiliger Talentbaum freischaltet.
+- **Stufen statt separater Trainingsschwellen:** Die fünfte Kernfähigkeit kommt auf Stufe 6. Die Pacing-Simulation erreicht das in 29–33 Minuten; Laufwege, Ausrüstung, Questwahl und Spielweise verändern die tatsächliche Dauer.
+- Talentpunkte ab Stufe 2, einer pro Stufe bis maximal zehn. Eigene Builds und Aktionsleisten bleiben pro Figur gespeichert. Beim Update werden die alten gemeinsamen Talentbäume zurückgesetzt; Stufe, Gegenstände und Quests bleiben erhalten.
+
+[Klassen, Freischaltungen und Prüfergebnisse](CLASS-SYSTEM.md) · [Icon-Herkunft und Prompts](assets/clan-skills-013/PROMPTS.md)
+
+## Historisch: Neu in 0.12
 
 - **Clan-Werte und Ausrüstung:** Standfestigkeit, Wumms, Taktgefühl, Bastelgrips, Dicke Haut, Glückstreffer, Drehzahl und Handschrift. Werte verändern Leben, Schaden, Schutz, kritische Treffer, Abklingzeiten und die Wirkung von Markierung/Eskalation. Gegenstände rollen passend zu Stufe, Slot, Qualität und Spezialisierung; ihre Werte bleiben beim Speichern erhalten.
 - **Beute nach Gegnerart:** Keilerzähne, Federn und Dachskrallen bei Tieren, Ausrüstung und Pfand bei Menschen. Jeder Beutebestandteil hat eine eigene Wahrscheinlichkeit; ein besiegter Gegner kann leer ausgehen. Fünf seltene „Dorflegenden“ besitzen besondere Effekte.
@@ -73,25 +83,27 @@ Fünf Browser- und Sichtprüfungsrunden mit Vorher-/Nachherbildern: [VISUAL-REVI
 
 **Neu in 0.6:** kleinere Figuren, breitere und feinere Straßen, ausgestattete Questtreffpunkte und besetzte Außenlager. Automatische Meldungen bleiben am Rand. Die fünf zusätzlichen Spiel- und Verbesserungsrunden mit Screenshots und Bewertung stehen in [POLISH-ITERATIONS.md](POLISH-ITERATIONS.md).
 
-Du startest mit **[1] Grundangriff** und **[LEER] Ausweichen**. Weitere Fähigkeiten erscheinen nach und nach in der Aktionsleiste; ihre Erklärungen bleiben am unteren linken Spielrand stehen, bis du sie bestätigst. Bereits bestätigte Erklärungen sind mit **H** jederzeit nachlesbar. Neue Kniffe kosten keine EP: Maßgeblich ist die gesamte verdiente Clan-Erfahrung, unabhängig von Stufenaufstiegen.
+Du startest mit **[1] Grundangriff** und **[LEER] Ausweichen**. Neue Fähigkeiten erscheinen automatisch auf freien Aktionsplätzen. Ihre Erklärungen bleiben unten links, bis du sie bestätigst; **H** öffnet die Anleitung. Ausschlaggebend ist jetzt die Charakterstufe.
 
-| Verdiente Clan-EP | Neuer Kniff |
-|---|---|
-| 0 | Angriff und Ausweichen |
-| 40 | Klassenbuff [2] |
-| 60 | Flaschenwurf [3] |
-| 90 | Parade [4] |
-| 120 | Unterbrechung [Q], separater Platz |
-| 160 | Markierung [5] |
-| 230 | Eskalation [6] |
-| 280 | Boden-Flächenangriff [7] |
-| 400 | Heilung [8] |
+| Stufe | Dieter | Bärbel | Kevin |
+|---|---|---|---|
+| 1 | Angriff, Ausweichen | Angriff, Ausweichen | Angriff, Ausweichen |
+| 2 | Dosenmut | Heilung | Dosen-Drohne |
+| 3 | Pfandwurf | Heilsamer Refrain | Isolierband |
+| 4 | Parade, Unterbrechen | Unterbrechen | Unterbrechen |
+| 5 | Markierung | Markierung | Markierung |
+| 6 | Eskalation | Eskalation | Eskalation |
+| 7 | — | Parade | Parade |
+| 8 | Heilung | Plattenwurf | Heilung |
+| 9 | Bodenangriff | Bodenangriff | Bodenangriff |
 
-Die Buffs halten zehn Sekunden und haben 28 Sekunden Abklingzeit: **Dosenmut** verringert Dieters eingehenden Schaden um 25 %, **Auf elf drehen** erhöht Bärbels Schaden um 25 %, **Isolierband hält** absorbiert bei Kevin insgesamt 130 Schaden. Die Restdauer steht am Spielerfenster. Buffs lassen sich nicht durch einen Charakterwechsel stapeln.
+Ausweichen und Unterbrechen haben feste Sonderplätze. Alle anderen Tasten ergeben sich aus deiner frei belegbaren Leiste. Ein Talentbaum kann ab dem fünften verteilten Punkt eine zusätzliche aktive Fähigkeit lehren.
+
+Die zehnsekündigen Buffs: **Dosenmut** senkt Dieters Schaden um 25 %, **Heilsamer Refrain** heilt Bärbel über Zeit, **Isolierband hält** gibt Kevin einen skalierenden Schild. Deckung, Nachklang, Rausch und geladene Angriffe erscheinen kompakt am Spielerfenster.
 
 Der Poo-Tang-Clan ist in Mertloch geboren und geblieben. Beim Fest „Nie wieder Montag“ hat **Ruhe 22:01 e. V.** Grill, Anlage und die letzte Kiste beschlagnahmt. Kisten-Ida schickt euch gegen Grillplatz-Plünderer, Ruhewärter und **Horst Nüchternmann** im Hausordnungs-Panzer. Zur Belohnung gibt es den goldenen Dosenöffner. Auch die sechs Ortsaufträge handeln jetzt von Antikater-Minze, Bollerboxen und Pfandchaos.
 
-Über **C → Figur wechseln** wählst du am Starttreffpunkt eines von drei Clanmitgliedern. Alle haben eigene Grafiken und insgesamt zehn schrittweise gelernte Fähigkeiten; Erfahrung und Aufträge gehören dem gesamten Clan. Ein Wechsel setzt weder Lebenspunkte noch Abklingzeiten zurück.
+Über **C → Figur wechseln** wählst du am Starttreffpunkt eines von drei Clanmitgliedern. Alle haben eigene Grafiken, zehn Stufenfähigkeiten und drei exklusive Talentfähigkeiten; Erfahrung und Aufträge gehören dem gesamten Clan. Ein Wechsel setzt weder Lebenspunkte noch Abklingzeiten zurück.
 
 | Clanmitglied | Spielweise |
 |---|---|
