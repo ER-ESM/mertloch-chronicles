@@ -1,13 +1,12 @@
 import {rng,distance,inside,segmentDistance} from './world.js';
+import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE} from './content/index.js';
 
-export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:1.8,slotsPerCell:2});
-const ARCHETYPES={
-  badger:{name:'Pfanddachs',type:'wolf',skin:'badger',behavior:'neutral',hp:360,aggroRange:0,roamRadius:90,speed:66,respawn:[24,42]},
-  goose:{name:'Grillgut-Gans',type:'wolf',skin:'goose',behavior:'neutral',hp:300,aggroRange:0,roamRadius:95,speed:75,respawn:[25,45]},
-  boar:{name:'Pfandkeiler',type:'wolf',skin:'boar',behavior:'aggressive',hp:460,aggroRange:115,roamRadius:100,speed:71,respawn:[38,62]},
-  warden:{name:'Ruhewart auf Streife',type:'cultist',skin:'warden',behavior:'aggressive',hp:600,aggroRange:145,roamRadius:110,speed:51,respawn:[42,68]}
-};
-export function makeEnemy(spot,id,config={}){const type=config.type||'wolf',boss=type==='boss',hp=config.hp||(boss?3000:type==='cultist'?680:520);return {...spot,home:{x:spot.x,y:spot.y},id,type,skin:config.skin||(boss?'horst':type==='cultist'?'warden':'boar'),name:config.name||(boss?'Horst Nüchternmann':type==='cultist'?'Ruhewart mit Hausordnung':'Grillplatz-Plünderer'),hp,maxHp:hp,level:boss?4:type==='cultist'?3:2,behavior:config.behavior||'aggressive',aggroRange:config.aggroRange??(boss?105:100),roamRadius:config.roamRadius??(boss?35:65),speed:config.speed||(boss?46:type==='wolf'?71:48),respawn:config.respawn||(boss?[90,120]:[35,55]),leash:config.leash||380,ai:'roaming',aggro:false,attackTimer:1.8,cast:null,cycle:0,mark:0,dotDamage:12,dotTimer:0,slow:1,vulnerable:0,stun:0,dead:0,respawnAt:0,spawnCount:0,facing:1,moving:false,attack:0,spawnGrace:0,roamWait:1+(id%7)*.37,roamGoal:null,returnPath:[],returnTime:0,chasePath:[],pathTimer:0,...Object.fromEntries(Object.entries(config).filter(([,value])=>value!==undefined))};}
+export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2});
+export {ARCHETYPES,ELITES};
+/** Erzeugt einen Gegner. Ohne Archetyp gelten die Lagerwerte aus content/enemies.js (CAMP_ENEMIES) je Typ. */
+export function makeEnemy(spot,id,config={}){const type=config.type||'wolf',camp=CAMP_ENEMIES[type]||CAMP_ENEMIES.wolf,hp=config.hp||camp.hp;return {...spot,home:{x:spot.x,y:spot.y},id,type,skin:config.skin||camp.skin,name:config.name||camp.name,family:config.family||camp.family,hp,maxHp:hp,level:config.level||camp.level,behavior:config.behavior||'aggressive',aggroRange:config.aggroRange??(camp.aggroRange??100),roamRadius:config.roamRadius??(camp.roamRadius??65),speed:config.speed||camp.speed,respawn:config.respawn||camp.respawn,castSet:config.castSet||camp.castSet||type,damage:config.damage||1,elite:!!config.elite,leash:config.leash||380,ai:'roaming',aggro:false,attackTimer:1.8,cast:null,cycle:0,mark:0,dotDamage:12,dotTimer:0,slow:1,vulnerable:0,stun:0,dead:0,respawnAt:0,spawnCount:0,facing:1,moving:false,attack:0,spawnGrace:0,roamWait:1+(id%7)*.37,roamGoal:null,returnPath:[],returnTime:0,chasePath:[],pathTimer:0,...Object.fromEntries(Object.entries(config).filter(([,value])=>value!==undefined))};}
+/** Gewichtete Wahl aus einer Spawn-Tabelle; tier-1-Arten nur jenseits SPAWN_TABLES.tierDistance. */
+export function pickSpawn(rows,random,far){const pool=rows.filter(r=>far||r.tier===0),total=pool.reduce((n,r)=>n+r.weight,0);let x=random()*total;for(const r of pool){x-=r.weight;if(x<=0)return r.kind;}return pool.at(-1).kind;}
 export const walkClear=(w,a,b,r=7)=>w.walkClear?w.walkClear(a,b,r):w.lineClear(a,b);
 export function inSanctuary(w,p){return (w.quests||[]).some(q=>q.activity&&q.items.some(item=>distance(item,p)<55))||distance(p,w.spawn)<95||(w.hubs||[]).some(h=>distance(p,h)<105)||(w.camps||[]).some(c=>c.approach&&distance(p,c.approach)<85);}
 function nearPeople(w,p,pad){return (w.quests||[]).some(q=>distance(p,q.giver)<pad)||distance(p,w.npc)<pad;}
@@ -29,7 +28,8 @@ export class EncounterDirector{
       const p={x:Math.round(cx*C+24+random()*(C-48)),y:Math.round(cy*C+24+random()*(C-48))};if(!inhabitable(w,p)||(w.camps||[]).some(c=>distance(c,p)<120)||list.some(e=>distance(e,p)<105))continue;
       const anchor=anchorFor(w,p);if(!anchor)continue;
       const area=w.areas.find(a=>['farmland','meadow','grass','forest'].includes(a.tags.landuse)&&inside(p.x,p.y,a.points))||w.areaAt(p.x,p.y),field=area?.tags.landuse!=='residential';
-      const aggressive=field&&distance(p,w.spawn)>430&&random()>.52,kind=aggressive?(random()>.7?'warden':'boar'):(random()>.45?'badger':'goose'),def=ARCHETYPES[kind];
+      const S=SPAWN_TABLES,town=distance(p,w.spawn),far=town>S.tierDistance,aggressive=field&&town>S.aggressiveMinDistance&&random()>1-S.aggressiveChance;let kind=pickSpawn(aggressive?S.aggressive:S.neutral,random,far),def=ARCHETYPES[kind];
+      if(aggressive&&town>S.eliteDistance&&random()<S.eliteChance){kind='alphaBoar';def=ELITES.alphaBoar;}
       const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
       e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9))e.spawnPoints.push(dest);}
       if(distance(p,g.player)<ENCOUNTER_RULES.spawnDistance){e.hp=0;e.respawnAt=g.time;e.dead=0;e.ai='waiting';}else{e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.ai='appearing';}

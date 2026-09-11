@@ -21,6 +21,16 @@ GitHub Actions prüft Änderungen auf `main` mit `npm test`, baut mit `npm run b
 
 Im Repository unter **Settings → Pages → Source** ist **GitHub Actions** vorgesehen. Der Workflow kann über **Actions → Test and publish game → Run workflow** erneut ausgeführt werden. Ein eigener Server, API-Schlüssel oder kostenpflichtiger Hostingdienst ist für das Spiel nicht nötig. Kartenzuschreibungen bleiben im Kartenmenü sichtbar; Grafikquellen und Herkunft stehen in den jeweiligen `assets/`-Ordnern.
 
+## Inhaltsschicht `content/`
+
+Items, Beute, Gegner, Bosse, Fähigkeiten, Klassen, Talente, Quests, NPCs, Dialoge, Story und alle Balancing-Zahlen liegen seit dem Umbau als reine Daten in [`content/`](content/README.md). Die Engine liest sie über `content/index.js`; ein eigener Inhalts-Agent (`.claude/agents/inhalt-agent.md`) kann dort arbeiten, ohne Oberfläche oder Renderer anzufassen.
+
+- **Neu im Umland (ab 900 Welteinheiten vom Treffpunkt):** Leergut-Rabe, Pfandfuchs, Festzelt-Schnorrer und Ordnungsamt-Praktikant mit eigenen Angriffsmustern und Beute; selten der Elite-Keiler **Borsten-Bruno**. Der Dorfkern behält Dachs, Gans, Keiler und Ruhewart.
+- **Neue Gegenstände:** Currywurst und Kaltgetränk als Verpflegung, vier Materialien, drei seltene Ausrüstungsteile, fünf weitere Dorflegenden mit zwei neuen Effekten (Kill gibt Randale, doppelte Erholung).
+- **Zwölf Quest-Vorlagen** statt sechs, seedabhängig verteilt, mit eigenen Gesprächszeilen je Fortschritt. Bosse haben Phasen-Sprüche im Kampflog.
+- **Vorbereitet:** Story-Kapitel 2 (Gisela Gießkanne) und 3 (Der Pfandautomat 3000) mit Bossen, Zaubern, Dialogen und Belohnungen – warten auf Lager und Kapitelumschalter (siehe `content/BACKLOG.md`).
+- Prüfen: `npm run content:check`, Balance-Matrix `npm run content:balance` → [content/BALANCE-REPORT.md](content/BALANCE-REPORT.md), Grafik-Briefing `npm run content:art` → [content/ART-BRIEF.md](content/ART-BRIEF.md).
+
 ## Neu in 0.13
 
 - **Alle Werte helfen jeder Klasse.** Wumms, Taktgefühl und Bastelgrips tragen gemeinsam zum Kampf bei; Heilung, Schilde, Tempo und Regeneration setzen unterschiedliche Schwerpunkte. Ausrüstung hat Werteprofile ohne Klassenbindung.

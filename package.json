@@ -12,6 +12,9 @@
     "start": "node server.mjs",
     "build": "node scripts/build-site.mjs",
     "test": "node --test tests/*.test.mjs",
+    "content:check": "node scripts/content-check.mjs && node --test tests/content.test.mjs",
+    "content:balance": "node scripts/balance-report.mjs --json",
+    "content:art": "node scripts/art-brief.mjs",
     "world:import": "node scripts/import-world.mjs",
     "world:build": "node scripts/build-world.mjs",
     "world:validate": "node scripts/build-world.mjs --seeds 1,42,56753,73519,2026,987654"
