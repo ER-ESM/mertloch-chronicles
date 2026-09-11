@@ -1,0 +1,17 @@
+{
+  "fixture": "Bärbel, level 3, 900 training XP, four rolled rare items. Live route and input, no runtime state writes.",
+  "scenarios": [
+    {
+      "camp": "main-wolf",
+      "kills": 2,
+      "damage": 858,
+      "health": 696,
+      "grounded": true,
+      "glow": true,
+      "tabChecks": 4,
+      "dodge": true,
+      "interrupts": 0
+    }
+  ],
+  "exceptions": []
+}

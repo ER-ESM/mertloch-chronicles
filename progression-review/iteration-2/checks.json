@@ -1,0 +1,15 @@
+{
+  "numberedBar": true,
+  "separateOffGcd": true,
+  "iconBookTooltips": true,
+  "unboundHighlight": true,
+  "emptySlotThenSkill": true,
+  "nativeDragToBar": true,
+  "gcdAndDodge": true,
+  "threeTreesTenTalents": true,
+  "randomGearStats": true,
+  "mouseGroundPlacement": true,
+  "mobileDesktop": true,
+  "persistence": true,
+  "exceptions": []
+}

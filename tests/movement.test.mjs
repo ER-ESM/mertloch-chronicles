@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {stepPlayer,WALK_SPEED} from '../movement.js';
+const game=()=>({player:{x:0,y:0,inCombat:0},move(p,x,y){p.x+=x;p.y+=y;}});
+test('walking is slower, accelerates and brakes without framerate-dependent drift',()=>{const a=game(),b=game();for(let i=0;i<60;i++)stepPlayer(a,1,0,1/60);for(let i=0;i<30;i++)stepPlayer(b,1,0,1/30);assert.ok(a.player.x<122&&a.player.x>105);assert.ok(Math.abs(a.player.x-b.player.x)<2);const before=a.player.x;for(let i=0;i<30;i++)stepPlayer(a,0,0,1/60);assert.ok(a.player.x-before<6);assert.equal(a.player.vx,0);assert.ok(WALK_SPEED<145);});
+test('diagonal movement does not add speed and path steps cannot overshoot a destination',()=>{const a=game();for(let i=0;i<60;i++)stepPlayer(a,1,1,1/60);assert.ok(Math.hypot(a.player.x,a.player.y)<122);const b=game();b.moveTo={x:1,y:0};b.player.vx=122;stepPlayer(b,1,0,.05);assert.ok(b.player.x<=1);});

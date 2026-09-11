@@ -1,0 +1,14 @@
+node_modules/
+*.log
+/_site/
+/generated/
+/*.png
+/*.jpg
+/rpg-review/
+/visual-review/
+/popup-review/
+.env
+.env.*
+!.env.example
+*.pem
+*.key

@@ -1,0 +1,19 @@
+{
+  "name": "mertloch-chronicles",
+  "version": "0.12.0",
+  "private": true,
+  "type": "module",
+  "homepage": "https://er-esm.github.io/mertloch-chronicles/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ER-ESM/mertloch-chronicles.git"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node scripts/build-site.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "world:import": "node scripts/import-world.mjs",
+    "world:build": "node scripts/build-world.mjs",
+    "world:validate": "node scripts/build-world.mjs --seeds 1,42,56753,73519,2026,987654"
+  }
+}

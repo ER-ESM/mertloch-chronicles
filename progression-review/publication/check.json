@@ -1,0 +1,9 @@
+{
+  "url": "http://localhost:4174/mertloch-chronicles/",
+  "worldValid": true,
+  "keyboardMovement": true,
+  "mobileTouchMovement": true,
+  "talents": true,
+  "iconBook": true,
+  "exceptions": []
+}
