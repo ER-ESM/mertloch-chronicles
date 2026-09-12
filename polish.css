@@ -11,3 +11,11 @@
 .training-dock.has-lesson{border-left:3px solid #a4c495;background:linear-gradient(90deg,#3a4143,#30283f 70%)}.training-dock.has-lesson strong{color:#c7e3b6}.training-dock.has-lesson #lessonButton{border-color:#accb88;color:#dceabd}.training-dock.has-lesson .training-progress{display:none}.buff-chip{font-variant-numeric:tabular-nums}
 
 .hub-routes{border-top:1px solid #d9c18b30;margin-top:22px;padding-top:12px}.hub-routes h3{font:17px Georgia;color:#c5dfb4}.hub-routes button{margin:4px 5px 4px 0;padding:10px;font-size:10px}.region-label h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}.map-legend span:nth-child(4){color:#eed17d}.map-legend span:nth-child(5){color:#d99582}@media(max-width:760px){.region-label h2{max-width:140px}}
+.target-title{font-size:10px;line-height:1.35;color:#e9c98d;margin:3px 0 6px;overflow-wrap:anywhere}
+.elite-target #targetLevel{color:#ffdc8c;white-space:nowrap}
+.target-panel .unit-name{gap:8px;align-items:baseline}
+.target-panel #targetName{min-width:0;overflow-wrap:anywhere}
+.target-panel #targetLevel{display:block;flex-shrink:0}
+.touch-mode #targetLevel{font-size:7px}
+.touch-mode .target-title{font-size:9px;margin:2px 0 4px}
+.atlas-key .elite-key{display:inline-flex;align-items:center;gap:4px;color:#eecb78}
