@@ -33,3 +33,112 @@ Row3: 1 small round BADGER TALISMAN with black-white badger face on wood, NOT a 
 Row4: 1 green metal WATERING CAN with long spout, rose and handle; 2 mechanical ROBOT CLAW with articulated three fingers and tiny glowing light; 3 red handheld MEGAPHONE with cream bell and dark handle; 4 sleeveless armored VEST covered in circular beer coasters and tape; 5 dented circular silver COOKING POT LID with wooden knob, definitely not medieval shield.
 Row5: 1 AUTOATTACK skill for Dieter: green beer bottle striking with two gold circular repeat arrows around it; 2 AUTOATTACK skill for Baerbel: purple portable loudspeaker emitting sound waves with two gold circular repeat arrows; 3 AUTOATTACK skill for Kevin: blue wooden slingshot firing a bottlecap with two gold circular repeat arrows; 4 small BADGER CLAW trophy on leather cord; 5 brown BOOTS with a fox paw charm hanging from a lace.
 All 25 cells exact equal grid, no overlap between cells. The full atlas will be cropped by code, so precision of cell placement is essential. No text, numbers, typography, watermarks.
+## Talent atlases · 0.16 · built-in imagegen
+
+### talents/dieter.png
+
+```text
+Production game asset: a precisely aligned sprite atlas of THIRTY distinct illustrated talent icons for a bawdy German village comic pixel RPG. Canvas portrait. EXACTLY FIVE columns and SIX rows, equal cell rectangles, no outer margin and no gutters. Each cell has a centered SQUARE illustration occupying the central 80 percent of the shorter cell dimension, safe dark forest-green empty borders. Consistent polished chunky pixel-comic style, visible crisp pixel clusters, thick dark navy contours, warm cream highlights, worn wood/copper and colored magical accents. Highly legible separate silhouettes at 48px. Every motif unique. No lettering, numbers, labels, watermarks, grid lines or frames. Class dieter. Palette copper amber, russet, moss green. All motifs read left to right row by row, exactly one centered icon per cell:
+Row 1 column 1: beer cap striking shield
+Row 1 column 2: leather belt around big round belly
+Row 1 column 3: two crossed bottle cap shields
+Row 1 column 4: boot stuck behind striped barrier
+Row 1 column 5: yellow black barrier tape circle
+Row 2 column 1: reinforced denim service jacket
+Row 2 column 2: wooden pub door bursting outward
+Row 2 column 3: hand catching flying bottle cap
+Row 2 column 4: wide striped barricade posts
+Row 2 column 5: lone bouncer silhouette behind door
+Row 3 column 1: fist smashing wooden bar
+Row 3 column 2: tilted foaming beer mug
+Row 3 column 3: red fist with five rage sparks
+Row 3 column 4: running boot chasing bottle
+Row 3 column 5: boot leaping over pub counter
+Row 4 column 1: two fists with wind trails
+Row 4 column 2: beer tankard stunning stars
+Row 4 column 3: currywurst with green healing glow
+Row 4 column 4: spring board under heavy boot
+Row 4 column 5: broken clock over pub stool
+Row 5 column 1: copper return pipe dripping green tonic
+Row 5 column 2: brass tap with pressure gauge
+Row 5 column 3: overflowing mug filling bottle cap shield
+Row 5 column 4: steady hand pouring medicine
+Row 5 column 5: wooden healing barrel in green puddle
+Row 6 column 1: two full beer steins
+Row 6 column 2: tray offering foaming mugs
+Row 6 column 3: frosty bottle-cap shield and pocket watch
+Row 6 column 4: huge wooden barrel with metal bands
+Row 6 column 5: last drop falling from beer tap
+```
+
+### talents/baerbel.png
+
+```text
+Production game asset: a precisely aligned sprite atlas of THIRTY distinct illustrated talent icons for a bawdy German village comic pixel RPG. Canvas portrait. EXACTLY FIVE columns and SIX rows, equal cell rectangles, no outer margin and no gutters. Each cell has a centered SQUARE illustration occupying the central 80 percent of the shorter cell dimension, safe dark forest-green empty borders. Consistent polished chunky pixel-comic style, visible crisp pixel clusters, thick dark navy contours, warm cream highlights, worn wood/copper and colored magical accents. Highly legible separate silhouettes at 48px. Every motif unique. No lettering, numbers, labels, watermarks, grid lines or frames. Class baerbel. Palette plum purple, warm gold, healing mint. All motifs read left to right row by row, exactly one centered icon per cell:
+Row 1 column 1: purple music note with green echo rings
+Row 1 column 2: two hands cradling warm heart
+Row 1 column 3: overflowing medicine bottle and shield
+Row 1 column 4: lungs with rhythmic music notes
+Row 1 column 5: first aid kit on dancefloor
+Row 2 column 1: gold microphone with sound rays
+Row 2 column 2: red heart surrounded by encore arrows
+Row 2 column 3: padded headphones with green sound
+Row 2 column 4: large first aid tent and speaker
+Row 2 column 5: three friends linked by heart
+Row 3 column 1: two hearts linked by sharp waveform
+Row 3 column 2: metronome beside medicine bottle
+Row 3 column 3: three mouths singing spreading notes
+Row 3 column 4: stethoscope wrapped around clock
+Row 3 column 5: purple IV drip tube into loudspeaker
+Row 4 column 1: measuring spoon beside green shield
+Row 4 column 2: medical checklist with glowing stamp
+Row 4 column 3: broken waiting-room clock with bandage
+Row 4 column 4: two IV bottles connected together
+Row 4 column 5: crowd hit by purple bass wave
+Row 5 column 1: drumstick striking metronome beat
+Row 5 column 2: golden singing throat with notes
+Row 5 column 3: electric amplifier charging purple bolts
+Row 5 column 4: sneaker jumping across stage light
+Row 5 column 5: raised microphone with encore arrows
+Row 6 column 1: festival wristband around ticking clock
+Row 6 column 2: large bass drum with impact stars
+Row 6 column 3: antenna catching multiple musical notes
+Row 6 column 4: double microphone with encore sparks
+Row 6 column 5: shattered stopwatch beside loudspeaker
+```
+
+### talents/kevin.png
+
+```text
+Production game asset: a precisely aligned sprite atlas of THIRTY distinct illustrated talent icons for a bawdy German village comic pixel RPG. Canvas portrait. EXACTLY FIVE columns and SIX rows, equal cell rectangles, no outer margin and no gutters. Each cell has a centered SQUARE illustration occupying the central 80 percent of the shorter cell dimension, safe dark forest-green empty borders. Consistent polished chunky pixel-comic style, visible crisp pixel clusters, thick dark navy contours, warm cream highlights, worn wood/copper and colored magical accents. Highly legible separate silhouettes at 48px. Every motif unique. No lettering, numbers, labels, watermarks, grid lines or frames. Class kevin. Palette petrol teal, copper, orange sparks. All motifs read left to right row by row, exactly one centered icon per cell:
+Row 1 column 1: burning scrap trail behind tin rocket
+Row 1 column 2: open engineering manual with fuse
+Row 1 column 3: glue bottle spraying three targets
+Row 1 column 4: pliers joining sparking cable
+Row 1 column 5: chain of exploding tin cans
+Row 2 column 1: neatly coiled wire and connector
+Row 2 column 2: pressure valve venting green energy
+Row 2 column 3: two ceramic electrical fuses
+Row 2 column 4: long burning fuse wound in spiral
+Row 2 column 5: tin can domino chain exploding
+Row 3 column 1: spanner tightening steel nut on shield
+Row 3 column 2: riveted boiler with pressure gauge
+Row 3 column 3: steam release pressure valve
+Row 3 column 4: two thick riveted metal plates
+Row 3 column 5: horseshoe electromagnet pulling scrap
+Row 4 column 1: thick rubber gasket around shield
+Row 4 column 2: charging scrap plough
+Row 4 column 3: reinforced work glove holding pressure lever
+Row 4 column 4: large electromagnet wrapped copper coils
+Row 4 column 5: broken inspection stamp on metal plate
+Row 5 column 1: sneaker throwing tin can with motion arc
+Row 5 column 2: steady finger on launcher trigger
+Row 5 column 3: glue bottle on spring bear trap
+Row 5 column 4: running boot beside reload crank
+Row 5 column 5: rope snare loop around metal stake
+Row 6 column 1: long telescopic grabbing arm
+Row 6 column 2: coin purse tied to captured rope
+Row 6 column 3: boot stepping over stopwatch
+Row 6 column 4: steel cable trap with reset spring
+Row 6 column 5: two fading bootprints and backward tin rocket
+```

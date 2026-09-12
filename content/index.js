@@ -14,3 +14,6 @@ export * from './story.js';
 export {validateContent} from './schema.js';export * from './equipment.js';
 export * from './combat.js';
 export * from './item-icons.js';
+export * from './talent-layout.js';
+export * from './person-appearance.js';
+export * from './tutorial.js';

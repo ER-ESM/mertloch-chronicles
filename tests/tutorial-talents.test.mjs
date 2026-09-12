@@ -1,0 +1,33 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {Game} from '../engine.js';import {TUTORIAL,PERSON_APPEARANCE,CLASS_SPECS} from '../content/index.js';
+import {tutorialActive,tutorialConfirm,tutorialSignal,tickTutorial} from '../tutorial.js';
+import {TALENTS,learnTalent,unlearnTalent,talentState} from '../talents.js';import {talentIconCell} from '../talent-art.js';import {takeLoot} from '../rpg.js';import {conversationHeader} from '../dialogue-ui.js';
+const world=()=>({id:'hof',spawn:{x:500,y:500},npc:{x:500,y:480},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findPath:(a,b)=>[{...b}],findClear:(x,y)=>({x,y})});
+const nextTick=g=>tickTutorial(g,.05);
+test('Fresh guided start is linear, bounds movement and refuses quests until the hofprobe is finished',()=>{
+ const g=new Game(world(),{},{guidedStart:true});assert.ok(tutorialActive(g));assert.equal(g.acceptQuest(),false);assert.equal(tutorialConfirm(g),true);assert.equal(g.tutorial.step,1);
+ g.navigate({x:2000,y:2000});assert.equal(g.moveTo,null);Object.assign(g.player,{x:2000,y:2000});nextTick(g);assert.equal(g.player.x,500);
+ Object.assign(g.player,g.tutorial.course);nextTick(g);assert.equal(g.tutorial.step,2);const e=g.enemies.find(e=>e.tutorial);g.target=e;nextTick(g);assert.equal(g.tutorial.step,3);
+ for(let i=0;i<2;i++){g.damage(e,99999,'Kelle');g.damage(e,99999,'Autoangriff');}assert.ok(e.hp>0);nextTick(g);assert.equal(g.tutorial.step,4);assert.equal(g.stats.kills,0);
+ g.tutorial.clock=0;nextTick(g);assert.ok(e.cast);tutorialSignal(g,'dash');g.player.x=e.cast.x+100;e.cast.remaining=.01;nextTick(g);assert.equal(g.tutorial.step,5);assert.ok(g.rpg.loot.some(b=>b.id===TUTORIAL.loot.id));
+ Object.assign(g.player,g.tutorial.dummy);assert.ok(takeLoot(g,TUTORIAL.loot.id));nextTick(g);assert.equal(g.tutorial.step,6);assert.equal(tutorialConfirm(g),false);tutorialSignal(g,'inventory');assert.equal(g.tutorial.step,7);Object.assign(g.player,g.world.npc);assert.ok(tutorialConfirm(g));assert.equal(tutorialActive(g),false);assert.equal(g.quest.accepted,true);assert.equal(g.player.xp,TUTORIAL.rewardXp);assert.equal(tutorialConfirm(g),false);
+});
+test('Tutorial refuses out-of-order actions and lets failed dodges be retried without damage',()=>{
+ const g=new Game(world(),{},{guidedStart:true});tutorialSignal(g,'inventory');assert.equal(g.tutorial.step,0);g.tutorial.step=4;const saved=g.save(),loaded=new Game(world(),saved),e=loaded.enemies.find(e=>e.tutorial);loaded.tutorial.clock=0;const hp=loaded.player.hp;nextTick(loaded);e.cast.remaining=.01;nextTick(loaded);assert.equal(loaded.tutorial.step,4);assert.equal(loaded.player.hp,hp);
+});
+test('Legacy saves bypass tutorial, fresh progress resumes and claimed tutorial loot cannot duplicate',()=>{
+ assert.equal(tutorialActive(new Game(world(),{version:1,worldKey:'hof'},{guidedStart:true})),false);
+ const g=new Game(world(),{},{guidedStart:true});tutorialConfirm(g);const next=new Game(world(),JSON.parse(JSON.stringify(g.save())));assert.equal(next.tutorial.step,1);assert.ok(tutorialActive(next));
+ g.tutorial.step=5;g.tutorial.bagSpawned=true;const claimed=new Game(world(),g.save());assert.equal(claimed.rpg.loot.length,0);nextTick(claimed);assert.equal(claimed.tutorial.step,6);
+});
+test('Talent graphs branch, merge, enforce spend gates, preserve skill upgrade dependencies and use 90 unique icons',()=>{
+ const icons=[];for(const [spec,tree] of Object.entries(TALENTS)){assert.equal(tree.filter(t=>!t.parents.length).length,1);assert.ok(tree.some(t=>t.parents.length>=3));assert.ok(tree[8].parents.includes(tree[4].id));for(const t of tree){for(const p of t.parents)assert.ok(tree.find(a=>a.id===p).y<t.y);icons.push(talentIconCell(t.id).member+':'+talentIconCell(t.id).index);}}
+ assert.equal(new Set(icons).size,90);assert.equal(Object.keys(CLASS_SPECS).length,3);
+ const g=new Game(world(),{level:11});for(const i of [0,3,2])assert.ok(learnTalent(g,'dieter-wall-'+i));assert.ok(learnTalent(g,'dieter-wall-6'));assert.ok(learnTalent(g,'dieter-wall-4'));assert.equal(unlearnTalent(g,'dieter-wall-0'),false);assert.ok(unlearnTalent(g,'dieter-wall-4'));assert.equal(learnTalent(g,'dieter-wall-8'),false);
+ const ids=TALENTS['dieter-wall'].map(t=>t.id);assert.equal(talentState({spec:'dieter-wall',learned:ids.toReversed()}).learned.length,10);
+});
+test('Conversation portraits use the shared world identity map for every known NPC',()=>{for(const id of Object.keys(PERSON_APPEARANCE).filter(id=>!['dieter','baerbel','kevin'].includes(id))){const html=conversationHeader(id,id);assert.ok(html.includes('data-person-art="'+id+'"'));assert.ok(!html.includes('dialogue-atlas.png'));}});
+test('Tutorial practice chooses accessible plaza space clear of tree canopies and NPCs',async()=>{
+ const {World}=await import('../world.js'),{readFileSync}=await import('node:fs');const data=JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url)));
+ for(const seed of [1,56753]){const w=new World(data,{seed}),g=new Game(w,{},{guidedStart:true});for(const p of [g.tutorial.course,g.tutorial.dummy]){assert.ok(w.findPath(w.spawn,p).length);assert.ok(Math.hypot(p.x-w.plaza.x,p.y-w.plaza.y)<w.plaza.radius);assert.ok(!w.trees.some(t=>Math.abs(p.x-t.x)<60*t.size&&p.y<t.y+15&&p.y>t.y-125*t.size));assert.ok(Math.hypot(p.x-w.npc.x,p.y-w.npc.y)>=38);}assert.ok(Math.hypot(g.tutorial.course.x-g.tutorial.dummy.x,g.tutorial.course.y-g.tutorial.dummy.y)>30);}
+});

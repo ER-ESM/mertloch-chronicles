@@ -28,3 +28,8 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 - [ ] Mehr Quest-Vorlagen für Kapitel 2/3 (Praktikanten vertreiben, Dosenblech sammeln), sobald die Kapitel laufen.
 - [ ] Zweite Elite für die Außenbezirke (menschlich, z. B. „Oberpraktikant Olaf“).
 - [ ] Set-Boni für Dorflegenden (z. B. drei Ruhe-22:01-Teile).
+## Erledigt · Hofprobe und Talentbäume 0.16
+
+- [x] Geführter Start aus `TUTORIAL`, Engine-Schritte und Speicherung, kompakte Desktop-/Touch-Anleitung.
+- [x] Gerichtete Talentbäume aus `TALENT_GRAPH`, echte Voraussetzungen, einzelne Punkte zurücknehmen, 90 eigene Motive.
+- [x] Gemeinsame Personenidentität für Welt, Gespräche und Heldenporträt aus `PERSON_APPEARANCE`.

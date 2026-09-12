@@ -19,3 +19,4 @@
 .touch-mode #targetLevel{font-size:7px}
 .touch-mode .target-title{font-size:9px;margin:2px 0 4px}
 .atlas-key .elite-key{display:inline-flex;align-items:center;gap:4px;color:#eecb78}
+.conversation-portrait canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
