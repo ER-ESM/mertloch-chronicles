@@ -14,6 +14,7 @@ Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Age
 - [ ] **Sprites je `variant`** – Ladeliste `assets/content-art/<kind>/<id>.png`; Renderer soll `variant` vor `skin` prüfen.
 - [ ] **Händler** – Pfandmarken haben bisher keinen Zweck. Kioskkönig Kalle als Händler für Verpflegung; Pfandautomat nach Kapitel 3.
 - [ ] **Handwerk** – Material (Borste, Feder, Kronkorken, Dosenblech, Hopfen) in Verpflegung oder Talismane wandeln. Kevin als Werkbank am Clan-Treff.
+- [ ] **Aggressiver Keiler im Wohngebiet** – Sichtprüfung 2026-09-13 (docs/VISUELLE-BEWERTUNG-2026-09-13.md, vr-08): Pfandkeiler 82 m vom Treffpunkt zwischen Wohnhäusern.  in encounters.js: Prüfen, ob  bei Grasflächen innerhalb der Wohnpolygone falsch wahr wird.
 - [ ] **Neue aktive Fähigkeiten** – erst nach Icon-Lieferung (skill-art.js SKILL_ICON_ORDER).
 
 ## Braucht UI
