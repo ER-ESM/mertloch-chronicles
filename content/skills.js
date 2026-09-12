@@ -12,27 +12,27 @@ export const BASE_SKILLS=[
 ];
 export const KITS={
  dieter:[
-  {name:'Kronkorken-Kelle',text:'65 Schaden im Nahkampf. +1 Pegel und 14 Randale. „Das ist kein Streit. Das ist Leergutklärung.“'},
+  {name:'Kronkorken-Kelle',text:'300 % Autoschaden + 14 Schaden im Nahkampf. +1 Pegel und 14 Randale. „Das ist kein Streit. Das ist Leergutklärung.“'},
   {name:'Du schuldest mir Pfand!',text:'Markiert 10 s lang: 12 Schaden pro Sekunde. Dein Abriss trifft ein markiertes Ziel 60 % härter.'},
-  {name:'Bierzelt-Abriss',text:'Verbraucht 1–3 Pegel: 55 + 55 Schaden pro Punkt. Mit drei Punkten und Pfandschuld: 352 Schaden. Danach steht kein Tisch mehr gerade.'},
+  {name:'Bierzelt-Abriss',text:'Verbraucht 1–3 Pegel: 30 Schaden + (150 % + 320 % pro Pegel) Autoschaden. Mit Pfandschuld 60 % stärker. Danach steht kein Tisch mehr gerade.'},
   {name:'Halt die Fresse!',text:'35 Schaden. Unterbricht gelbe Zauber, betäubt 2 s und macht das Ziel 4 s verwundbar (+35 % Schaden). Außerhalb der globalen Abklingzeit.'},
   {name:'Deckel drauf!',text:'Pariert den nächsten Treffer innerhalb von 0,8 s. Reflektiert 75 Schaden, heilt 35 Leben und gibt +1 Pegel sowie 20 Randale.'},
   {name:'Ab durch die Hecke',text:'Ein beherzter Abgang. Weicht in Laufrichtung aus; ohne Eingabe vom Ziel weg. 0,4 s Schutz vor Treffern.'},
   {name:'Konterfrühstück',text:'240 Leben aus einer sehr verdächtigen Brezel. Im Spiel erstaunlich wirksam, kulinarisch ein Straftatbestand.'}
  ],
  baerbel:[
-  {name:'Boxenklatsche',cd:.95,range:155,damage:48,gain:10,icon:'speaker',text:'48 Fernkampfschaden, +1 Takt und 10 Randale. Triff nach 0,85–1,5 s erneut für einen zusätzlichen Taktpunkt.'},
+  {name:'Boxenklatsche',cd:.95,range:155,damage:48,gain:10,icon:'speaker',text:'200 % Autoschaden + 14 Fernkampfschaden, +1 Takt und 10 Randale. Triff nach 0,85–1,5 s erneut für einen zusätzlichen Taktpunkt.'},
   {name:'Soundcheck, Arschloch!',range:190,dot:10,text:'10 s Markierung, 10 Schaden pro Sekunde. Verstärkt deinen nächsten Bass-Einschlag um 60 %.'},
-  {name:'Bass bis zum Bauamt',range:175,base:40,perPoint:48,splash:95,text:'40 + 48 Schaden pro Takt, markiert +60 %. Gegner im Umkreis von 12 m erhalten 55 % des Einschlags – auch neutrale! Verbraucht alle Taktpunkte.'},
+  {name:'Bass bis zum Bauamt',range:175,base:40,perPoint:48,splash:95,text:'14 Schaden + (150 % + 280 % pro Takt) Autoschaden, markiert +60 %. Gegner im Umkreis von 12 m erhalten 55 % des Einschlags – auch neutrale! Verbraucht alle Taktpunkte.'},
   {name:'Mikro aus!',range:190,cd:10,text:'35 Schaden. Unterbricht gelbe Zauber und macht das Ziel 4 s verwundbar. „Deine Meinung hat Sendepause.“'},
   {name:'Feedback-Schirm',window:.9,reflect:55,text:'0,9 s Parierfenster. Reflektiert 55 Schaden, gibt einen Taktpunkt und 20 Randale. Keine Heilung.'},
   {name:'Crowdsurfer',cd:6,steps:24,text:'Ein längerer Ausweichsprung mit 0,4 s Schutz. Landet ohne Publikum etwas unromantisch.'},
-  {name:'Stimmgabel fürs Gemüt',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Nachklang, Schutz oder eine offensive Zugabe.'}
+  {name:'Heilklang fürs Gemüt',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Nachklang, Schutz oder eine offensive Zugabe.'}
  ],
  kevin:[
-  {name:'Pfandgeschoss',range:195,damage:42,gain:16,icon:'bottle',text:'42 Fernkampfschaden, +1 Druck und 16 Randale. Eine Flasche mit erstaunlich überzeugender Flugbahn.'},
+  {name:'Pfandgeschoss',range:195,damage:42,gain:16,icon:'bottle',text:'200 % Autoschaden + 8 Fernkampfschaden, +1 Druck und 16 Randale. Eine Flasche mit erstaunlich überzeugender Flugbahn.'},
   {name:'Kleb die Scheiße fest',range:210,dot:9,slow:.5,text:'10 s Markierung und 9 Schaden pro Sekunde. Halbiert das Bewegungstempo des Ziels, solange es markiert ist.'},
-  {name:'Restmüll-Rakete',range:205,base:60,perPoint:44,multiplier:1.8,knockback:28,text:'60 + 44 Schaden pro Druckpunkt, markiert +80 %. Verbraucht Druck und stößt das Ziel zurück. Funktioniert laut Bauplan überhaupt nicht.'},
+  {name:'Restmüll-Rakete',range:205,base:60,perPoint:44,multiplier:1.8,knockback:28,text:'34 Schaden + (150 % + 260 % pro Druckpunkt) Autoschaden, markiert +80 %. Verbraucht Druck und stößt das Ziel zurück. Funktioniert laut Bauplan überhaupt nicht.'},
   {name:'Sicherung raus!',range:210,text:'35 Schaden, Unterbrechung und 4 s Verwundbarkeit. Erfolgreich: +1 Druck, Restmüll-Rakete wird 2 s früher bereit.'},
   {name:'Pömpel-Panzer',window:1.1,reflect:60,text:'1,1 s Parierfenster. Reflektiert 60 Schaden, gibt +1 Druck und 20 Randale. Der Pömpel dichtet alles ab.'},
   {name:'Kabelbrand-Flucht',steps:20,text:'Aus dem Gefahrenbereich flitzen. 0,4 s Schutz. „Das hat vorhin noch nicht geraucht.“'},
@@ -50,7 +50,7 @@ export const BUFF_SKILLS={
 export const THROW_SKILL={id:'throw',key:'3',cd:6,cost:18,range:235,damage:75,icon:'bottle',color:'#dbc083',bg:'#5b6036',
  names:{dieter:'Pfand auf die Zwölf',baerbel:'Platte ins Gesicht',kevin:'Dosen-Drohne'},
  flavor:{dieter:'Eine gezielt geworfene Mehrwegflasche',baerbel:'Eine fliegende Schallplatte',kevin:'Eine ferngesteuerte Pfanddose'},
- text:' trifft ein einzelnes Ziel. 75 Grundschaden, 18 Randale. Ideal, um einen Gegner aus der Gruppe zu ziehen.'};
+ text:' trifft ein einzelnes Ziel. 300 % Autoschaden + 24 Schaden, 18 Randale. Ideal, um einen Gegner aus der Gruppe zu ziehen.'};
 export const GROUND_SKILL={id:'ground',key:'7',cd:12,cost:35,ground:true,range:210,radius:70,damage:125,delay:1.1,icon:'burst',color:'#e6b769',bg:'#79633e',
  names:{dieter:'Böller unterm Biertisch',baerbel:'Bassbombe im Vorgarten',kevin:'Restmüll mit Zündschnur'},
  text:'Mit der Maus einen freien Bodenpunkt wählen. Nach 1,1 s: 125 Grundschaden im Umkreis von 9 m an bis zu 5 Zielen – auch neutralen. Rechtsklick oder Esc bricht das Zielen ab.'};
@@ -67,5 +67,5 @@ export const TALENT_SKILLS={
  snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling löst 75 Schaden und 3 Sekunden Festhalten aus. Du kannst währenddessen weiterkämpfen.'}
 };
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
-export const LESSONS={strike:1,dash:1,buff:2,throw:3,parry:4,interrupt:4,mark:5,burst:6,heal:8,ground:9};
+export const LESSONS={auto:1,strike:1,dash:1,buff:2,throw:3,parry:4,interrupt:4,mark:5,burst:6,heal:8,ground:9};
 export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,buff:3,throw:8,parry:7},kevin:{...LESSONS,throw:2,buff:3,parry:7}};

@@ -3,8 +3,9 @@
 // level (Mindeststufe), stats {stamina,might,finesse,wit,armorRating,critRating,hasteRating,masteryRating},
 // weapon {type,hands,min,max}: Hände 0 = Fernkampf, 1 = Einhand, 2 = Zweihand; shield:true = Nebenhandschild.
 // heal/energy (Verpflegung), stack, value (Pfandmarken), unique, proc (Effekt-ID aus PROCS), description, look (Bildhinweis).
-import {EQUIPMENT_SLOTS} from './equipment.js';
-export const ICONS=['helmet','necklace','shoulders','bracers','gloves','belt','trousers','trinket','blade','maul','slingshot','bottle','water','coat','food','boots','ring','paper','cable','scrap','reinforced','shield','sound','speaker','burst','bag','book','map'];
+import {ITEM_ICON_OVERRIDES,DETAIL_ICONS} from './item-icons.js';
+import {EQUIPMENT_SLOTS,WEAPON_TYPES} from './equipment.js';
+export const ICONS=[...DETAIL_ICONS,'helmet','necklace','shoulders','bracers','gloves','belt','trousers','trinket','blade','maul','slingshot','bottle','water','coat','food','boots','ring','paper','cable','scrap','reinforced','shield','sound','speaker','burst','bag','book','map'];
 export const SLOTS={...EQUIPMENT_SLOTS,ring:'Ring',trinket:'Glücksbringer',charm:'Talisman'};
 export const RARITIES={common:'Gewöhnlich',uncommon:'Ungewöhnlich',rare:'Selten',epic:'Dorflegende'};
 /** Passive Effekte einzigartiger Gegenstände. Die Wirkung steht in engine.js / class-mechanics.js; hier nur Beschreibung und Zahlen. */
@@ -24,7 +25,7 @@ export const ITEM_CATALOG={
  dosenklinge:{look:'Entgratete silbergrüne Dosenklinge mit kurzem Ledergriff',name:'Entgratete Dosenklinge',slot:'weapon',weapon:{type:'blade',hands:1,min:12,max:22},rarity:'common',icon:'blade',value:3,description:'Einhand. Auch in der Nebenhand: trägt 50 % ihres Schadens zu Nahkampfkniffen bei.'},
  tresenhammer:{look:'Schwerer rechteckiger Tresenhammer mit Holzstiel und Messingbeschlägen',name:'Abmontierter Tresenhammer',slot:'weapon',weapon:{type:'maul',hands:2,min:21,max:30},rarity:'common',icon:'maul',value:4,description:'Zweihand. Beide Hände voll Abriss; für einen Schild ist kein Platz.'},
  flasche:{weapon:{type:'club',hands:1,min:14,max:20},name:'Bewährte Mehrwegflasche',slot:'weapon',rarity:'common',icon:'bottle',value:2,stats:{might:1},description:'Schon mit Opa auf dem Dorffest gewesen.'},
- kutte:{name:'Abgewetzte Clankutte',slot:'body',rarity:'common',icon:'coat',value:2,stats:{stamina:1,armorRating:4},description:'Riecht nach Heimat. Und Rauch.'},
+ kutte:{name:'Abgewetzte Clanjacke',slot:'body',rarity:'common',icon:'coat',value:2,stats:{stamina:1,armorRating:4},description:'Riecht nach Heimat. Und Rauch.'},
  // --- Verpflegung ---
  brezel:{name:'Notfallbrezel',kind:'consumable',rarity:'common',icon:'food',heal:160,stack:10,value:3,description:'160 Leben. Erst kauen, dann weiterpöbeln.'},
  wasser:{name:'Konterwasser',kind:'consumable',rarity:'common',icon:'water',energy:40,stack:10,value:3,description:'40 Randale. Verdächtig alkoholfrei.'},
@@ -61,3 +62,5 @@ export const ITEM_CATALOG={
  giesskanne:{weapon:{type:'maul',hands:2,min:37,max:53},name:'Giselas Gießkanne der Gerechtigkeit',slot:'weapon',rarity:'epic',icon:'water',level:6,stats:{might:20,wit:20,stamina:12,masteryRating:28},unique:true,proc:'hops',description:'Selten von Gisela. Außerhalb des Kampfes regenerierst du doppelt so schnell. Innen: Hopfen, kein Wasser.',look:'Grüne Blechgießkanne mit Vereinsaufkleber „Ruhe 22:01“'},
  automatenarm:{name:'Greifarm des Pfandautomaten',slot:'charm',rarity:'epic',icon:'reinforced',level:9,stats:{might:22,finesse:22,wit:22,stamina:14,critRating:30},unique:true,proc:'thirst',description:'Selten vom Pfandautomaten 3000. Jeder Kill gibt 20 Randale zurück. Nimmt weiterhin keine Dosen an.',look:'Verchromter Roboter-Greifarm mit blinkender LED'}
 };
+for(const [id,icon] of Object.entries(ITEM_ICON_OVERRIDES))ITEM_CATALOG[id].icon=icon;
+for(const item of Object.values(ITEM_CATALOG))if(item.weapon)item.weapon.speed??=WEAPON_TYPES[item.weapon.type].speed;

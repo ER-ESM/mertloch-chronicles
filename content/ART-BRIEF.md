@@ -6,24 +6,24 @@ Jede Zeile ist ein Bild. `fallback` zeigt, was das Spiel heute stattdessen zeich
 
 | Art | ID | Name | Format | Bildhinweis | Aktuell |
 |---|---|---|---|---|---|
-| item | `topfdeckel` | Omas unzerstörbarer Topfdeckel | 24×24 Icon | Runder verbeulter Topfdeckel mit Holzgriff, dicke Konturen und Honiglicht — *Ein Schild mit Suppengeschichte. Schaltet Schildparaden frei.* | Icon „shield“ |
+| item | `topfdeckel` | Omas unzerstörbarer Topfdeckel | 24×24 Icon | Runder verbeulter Topfdeckel mit Holzgriff, dicke Konturen und Honiglicht — *Ein Schild mit Suppengeschichte. Schaltet Schildparaden frei.* | Icon „potlid“ |
 | item | `pfandschleuder` | Kabelbinder-Pfandschleuder | 24×24 Icon | Astgabel aus Holz, Kabelbinder und gespannte Gummischlinge — *Grundausstattung für Fernkampf. Keine Munition nötig; das Leergut kommt von allein.* | Icon „slingshot“ |
 | item | `dosenklinge` | Entgratete Dosenklinge | 24×24 Icon | Entgratete silbergrüne Dosenklinge mit kurzem Ledergriff — *Einhand. Auch in der Nebenhand: trägt 50 % ihres Schadens zu Nahkampfkniffen bei.* | Icon „blade“ |
 | item | `tresenhammer` | Abmontierter Tresenhammer | 24×24 Icon | Schwerer rechteckiger Tresenhammer mit Holzstiel und Messingbeschlägen — *Zweihand. Beide Hände voll Abriss; für einen Schild ist kein Platz.* | Icon „maul“ |
-| item | `currywurst` | Oskars Currywurst | 24×24 Icon | Pappschale mit Currywurst, rote Soße, Holzpieker — *240 Leben und 20 Randale. Die Soße ist ein Familiengeheimnis und ein Verstoß gegen die Lebensmittelverordnung.* | Icon „food“ |
-| item | `kaltgetraenk` | Eiskaltes Kaltgetränk | 24×24 Icon | Beschlagene Dose ohne Marke, Kondenswasser, gelbes Etikett — *70 Randale. Auf dem Etikett steht nur „Ja“.* | Icon „water“ |
-| item | `fuchsschwanz` | Buschiger Fuchsschwanz | 24×24 Icon | Rostroter Fuchsschwanz mit weißer Spitze — *Der Fuchs hat ihn freiwillig abgegeben. Sagt der Fuchs.* | Icon „coat“ |
+| item | `currywurst` | Oskars Currywurst | 24×24 Icon | Pappschale mit Currywurst, rote Soße, Holzpieker — *240 Leben und 20 Randale. Die Soße ist ein Familiengeheimnis und ein Verstoß gegen die Lebensmittelverordnung.* | Icon „currywurst“ |
+| item | `kaltgetraenk` | Eiskaltes Kaltgetränk | 24×24 Icon | Beschlagene Dose ohne Marke, Kondenswasser, gelbes Etikett — *70 Randale. Auf dem Etikett steht nur „Ja“.* | Icon „can“ |
+| item | `fuchsschwanz` | Buschiger Fuchsschwanz | 24×24 Icon | Rostroter Fuchsschwanz mit weißer Spitze — *Der Fuchs hat ihn freiwillig abgegeben. Sagt der Fuchs.* | Icon „foxtail“ |
 | item | `flugblatt` | Flugblatt von Ruhe 22:01 | 24×24 Icon | Zerknittertes Flugblatt mit rotem Stempel — *„Lärm ist Gewalt.“ Rückseite: Grillrezept von Oskar, handschriftlich.* | Icon „paper“ |
-| item | `hopfen` | Wilder Eifelhopfen | 24×24 Icon | Grüne Hopfendolde mit Ranke — *Wächst nur dort, wo Gisela nicht hinkommt.* | Icon „scrap“ |
-| item | `dosenblech` | Verbeultes Dosenblech | 24×24 Icon | Zerknautschtes Aluminiumblech — *Vom Pfandautomaten ausgespuckt. Aus Prinzip.* | Icon „scrap“ |
-| item | `bierdeckelweste` | Bierdeckel-Panzerweste | 24×24 Icon | Weste aus lauter Bierdeckeln, Klebeband an den Nähten — *Dreihundert Deckel, doppelt geklebt. Dieter nennt es Baugenehmigung.* | Icon „coat“ |
+| item | `hopfen` | Wilder Eifelhopfen | 24×24 Icon | Grüne Hopfendolde mit Ranke — *Wächst nur dort, wo Gisela nicht hinkommt.* | Icon „hops“ |
+| item | `dosenblech` | Verbeultes Dosenblech | 24×24 Icon | Zerknautschtes Aluminiumblech — *Vom Pfandautomaten ausgespuckt. Aus Prinzip.* | Icon „metal“ |
+| item | `bierdeckelweste` | Bierdeckel-Panzerweste | 24×24 Icon | Weste aus lauter Bierdeckeln, Klebeband an den Nähten — *Dreihundert Deckel, doppelt geklebt. Dieter nennt es Baugenehmigung.* | Icon „vest“ |
 | item | `kabelbinderstiefel` | Kabelbinder-Stiefel | 24×24 Icon | Gummistiefel mit bunten Kabelbindern — *Kevin hat sie „gefixt“. Sie quietschen jetzt im Takt.* | Icon „boots“ |
-| item | `megafon` | Bärbels Notfall-Megafon | 24×24 Icon | Rotes Megafon mit Aufkleber „LAUT“ — *Reichweite bis zum Bauamt. Batterie hält für genau eine Zugabe.* | Icon „sound“ |
-| item | `fuchspfote` | Glückspfote des Pfandfuchses | 24×24 Icon | Rostrote Pfote als Anhänger an einem Stiefel — *Selten aus Pfandfüchsen: Ausweichen wird 15 % schneller bereit. Der Fuchs vermisst sie.* | Icon „boots“ |
-| item | `schnorrerbecher` | Der nie leere Schnorrerbecher | 24×24 Icon | Zerkratzter Plastikbecher mit Pfandaufkleber — *Selten aus Festzelt-Schnorrern: Jeder Kill gibt 20 Randale zurück. Irgendjemand zahlt immer.* | Icon „water“ |
-| item | `praktikantenausweis` | Laminierter Praktikantenausweis | 24×24 Icon | Laminierter Ausweis mit Passbild und Schnur — *Selten aus Ordnungsamt-Praktikanten: Markierte Ziele erleiden weitere 10 % Schaden. „Bin nur Praktikant.“* | Icon „paper“ |
-| item | `giesskanne` | Giselas Gießkanne der Gerechtigkeit | 24×24 Icon | Grüne Blechgießkanne mit Vereinsaufkleber „Ruhe 22:01“ — *Selten von Gisela. Außerhalb des Kampfes regenerierst du doppelt so schnell. Innen: Hopfen, kein Wasser.* | Icon „water“ |
-| item | `automatenarm` | Greifarm des Pfandautomaten | 24×24 Icon | Verchromter Roboter-Greifarm mit blinkender LED — *Selten vom Pfandautomaten 3000. Jeder Kill gibt 20 Randale zurück. Nimmt weiterhin keine Dosen an.* | Icon „reinforced“ |
+| item | `megafon` | Bärbels Notfall-Megafon | 24×24 Icon | Rotes Megafon mit Aufkleber „LAUT“ — *Reichweite bis zum Bauamt. Batterie hält für genau eine Zugabe.* | Icon „megaphone“ |
+| item | `fuchspfote` | Glückspfote des Pfandfuchses | 24×24 Icon | Rostrote Pfote als Anhänger an einem Stiefel — *Selten aus Pfandfüchsen: Ausweichen wird 15 % schneller bereit. Der Fuchs vermisst sie.* | Icon „foxboots“ |
+| item | `schnorrerbecher` | Der nie leere Schnorrerbecher | 24×24 Icon | Zerkratzter Plastikbecher mit Pfandaufkleber — *Selten aus Festzelt-Schnorrern: Jeder Kill gibt 20 Randale zurück. Irgendjemand zahlt immer.* | Icon „cup“ |
+| item | `praktikantenausweis` | Laminierter Praktikantenausweis | 24×24 Icon | Laminierter Ausweis mit Passbild und Schnur — *Selten aus Ordnungsamt-Praktikanten: Markierte Ziele erleiden weitere 10 % Schaden. „Bin nur Praktikant.“* | Icon „badge“ |
+| item | `giesskanne` | Giselas Gießkanne der Gerechtigkeit | 24×24 Icon | Grüne Blechgießkanne mit Vereinsaufkleber „Ruhe 22:01“ — *Selten von Gisela. Außerhalb des Kampfes regenerierst du doppelt so schnell. Innen: Hopfen, kein Wasser.* | Icon „wateringcan“ |
+| item | `automatenarm` | Greifarm des Pfandautomaten | 24×24 Icon | Verchromter Roboter-Greifarm mit blinkender LED — *Selten vom Pfandautomaten 3000. Jeder Kill gibt 20 Randale zurück. Nimmt weiterhin keine Dosen an.* | Icon „robotclaw“ |
 | enemy | `raven` | Leergut-Rabe | Sprite 4 Richtungen/2 Frames, Höhe 18–24 px | Schwarzer Rabe mit Kronkorken im Schnabel, frech, leicht zerzaust | Skin „goose“ |
 | enemy | `fox` | Pfandfuchs | Sprite 4 Richtungen/2 Frames, Höhe 18–24 px | Rostroter Fuchs mit Pfandbon im Maul, listiger Blick | Skin „badger“ |
 | enemy | `scrounger` | Festzelt-Schnorrer | Sprite 4 Richtungen/2 Frames, Höhe 26 px | Mann mit Bauchtasche, Bierbecher-Kette, Trainingsjacke, bettelnde Geste | Skin „warden“ |

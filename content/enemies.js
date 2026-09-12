@@ -36,7 +36,7 @@ export const BOSSES={
 // Angriffsmuster. cycle = Reihenfolge, casts = Definition. Namen zeigen dem Spieler die Antwort (Parade / ausweichen / Q unterbricht / Fläche verlassen).
 // ground: Fläche am Spielerstandort · radius: Trefferradius · interruptible: gelber Balken · total: Zauberzeit.
 export const CAST_SETS={
- wolf:{cycle:['bite','pounce','bite'],casts:{
+ wolf:{cycle:['pounce'],casts:{
   bite:{name:'Wadenbeißer · Parade',total:.85,damage:55,radius:46},
   pounce:{name:'Sprung · ausweichen',total:1.5,damage:105,radius:35,ground:true}}},
  cultist:{cycle:['bolt','circle'],casts:{

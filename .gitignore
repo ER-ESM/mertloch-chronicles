@@ -13,3 +13,4 @@ node_modules/
 *.pem
 *.key
 /portrait-review/
+/combat-review/

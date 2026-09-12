@@ -33,3 +33,9 @@ body.touch-mode .conversation-person{gap:12px;margin-bottom:10px;padding-bottom:
 body.touch-mode .conversation-portrait{flex-basis:72px;width:72px;height:72px}
 body.touch-mode .conversation-person strong{font-size:16px}
 body.touch-mode .conversation-person small{font-size:11px;margin-top:4px}
+
+.skill.auto-active{outline:2px solid #f8d573;outline-offset:1px;box-shadow:0 0 9px #bda34c,inset 0 0 6px #f2dd8a}
+#playerCast{position:absolute;left:50%;bottom:150px;transform:translateX(-50%);width:260px;height:22px;border:2px solid #b99b5d;background:#1c2b22;z-index:25;pointer-events:none;box-shadow:2px 2px #17251d}
+#playerCast[hidden]{display:none}#playerCast i{display:block;height:100%;background:#797846}#playerCast span{position:absolute;inset:0;text-align:center;line-height:18px;font-size:11px;color:#fff0bd;text-shadow:1px 1px #152417}
+.touch-mode #playerCast{bottom:246px;width:min(260px,80vw)}
+@media(max-height:500px){.touch-mode #playerCast{top:86px;bottom:auto;width:220px}}

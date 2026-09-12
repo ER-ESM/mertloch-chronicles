@@ -12,3 +12,5 @@ export * from './quests.js';
 export * from './dialogues.js';
 export * from './story.js';
 export {validateContent} from './schema.js';export * from './equipment.js';
+export * from './combat.js';
+export * from './item-icons.js';

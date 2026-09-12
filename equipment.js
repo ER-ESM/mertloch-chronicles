@@ -1,7 +1,7 @@
 import {EQUIPMENT_SLOTS,SLOT_ICONS,WEAPON_TYPES,WEAPON_REQUIREMENT_NAMES,BALANCE} from './content/index.js';
 export {EQUIPMENT_SLOTS,SLOT_ICONS,WEAPON_TYPES};
 // Slot rules are shared by saves, swaps, tooltips and combat. No UI dependency.
-export const weaponDefinition=(type='club',factor=1)=>{const t=WEAPON_TYPES[type]||WEAPON_TYPES.club;return {type:WEAPON_TYPES[type]?type:'club',hands:t.hands,min:Math.max(1,Math.round(t.min*factor)),max:Math.max(2,Math.round(t.max*factor))};};
+export const weaponDefinition=(type='club',factor=1)=>{const t=WEAPON_TYPES[type]||WEAPON_TYPES.club;return {type:WEAPON_TYPES[type]?type:'club',hands:t.hands,speed:t.speed,min:Math.max(1,Math.round(t.min*factor)),max:Math.max(2,Math.round(t.max*factor))};};
 export const itemSlotName=d=>d?.weapon?WEAPON_TYPES[d.weapon.type]?.name||'Waffe':d?.slot==='ring'?'Ring':d?.slot==='trinket'||d?.slot==='charm'?'Glücksbringer':d?.shield?'Schild · Nebenhand':EQUIPMENT_SLOTS[d?.slot]||'';
 export function compatibleSlots(d){if(!d?.slot)return [];if(d.weapon)return d.weapon.hands===0?['ranged']:d.weapon.hands===2?['weapon']:['weapon','offhand'];if(d.slot==='ring')return ['ring1','ring2'];if(d.slot==='trinket'||d.slot==='charm')return ['trinket1','trinket2'];return Object.hasOwn(EQUIPMENT_SLOTS,d.slot)?[d.slot]:[];}
 export function targetSlot(equipment,d,requested){const choices=compatibleSlots(d);if(requested)return choices.includes(requested)?requested:null;return choices.find(slot=>!equipment[slot])||choices[0]||null;}
@@ -23,3 +23,6 @@ export function weaponRequirement(g,s,registry){const main=validGear(g,registry,
 }
 export function weaponRange(g,registry,source='melee'){const d=validGear(g,registry,source==='ranged'?'ranged':'weapon');if(!d?.weapon)return {min:0,max:0};const off=source==='melee'?validGear(g,registry,'offhand'):null,mult=d.weapon.hands===1&&off?.weapon?.hands===1?BALANCE.weapons.offhandShare:0;return {min:d.weapon.min+(off?.weapon?.min||0)*mult,max:d.weapon.max+(off?.weapon?.max||0)*mult};}
 export function weaponSkillDamage(g,s,base,registry){if(!s.weaponSource)return base;const range=weaponRange(g,registry,s.weaponSource),rolled=range.min+Math.max(0,Math.min(1,g.random()))*(range.max-range.min);return base*rolled/BALANCE.weapons.referenceDamage;}
+
+/** Declarative skill damage. No model retains the old weapon-normalized formula. */
+export function skillDamage(g,s,base,registry,points=0){const m=s.damageModel;if(!m)return weaponSkillDamage(g,s,base,registry);const range=weaponRange(g,registry,s.weaponSource||'melee'),roll=range.min+g.random()*(range.max-range.min);return ((m.flat||0)+(m.flatPerPoint||0)*points+roll*((m.weapon||0)+(m.weaponPerPoint||0)*points))*(1+(m.bonusPct||0));}

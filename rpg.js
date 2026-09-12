@@ -6,7 +6,7 @@ import {BALANCE,ITEM_CATALOG,rating} from './content/index.js';
 export const BAG_SIZE=24;
 export const SLOT_KEYS=['1','2','3','4','5','6','7','8','9','0'];
 export const SPECIAL_KEYS={dash:' ',interrupt:'q'};
-export const DEFAULT_BAR=['strike','buff','throw','parry','mark','burst','ground','heal',null,null];
+export const DEFAULT_BAR=['auto','strike','buff','throw','parry','mark','burst','ground','heal',null];
 /** Laufzeitregister: Katalog aus content/items.js plus gewürfelte Gegenstände des Spielstands. */
 export const ITEMS=Object.fromEntries(Object.entries(ITEM_CATALOG).map(([id,d])=>[id,structuredClone(d)]));
 const integer=(n,max=1e9)=>Math.max(0,Math.min(max,Math.floor(Number(n)||0)));

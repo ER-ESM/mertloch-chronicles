@@ -1,4 +1,5 @@
-import {weaponSkillDamage} from './equipment.js';
+import {tickAuto,toggleAuto,enemyAuto,tickCasting,movingToCast} from './auto-combat.js';
+import {weaponSkillDamage,skillDamage} from './equipment.js';
 import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar} from './rpg.js';
 import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
@@ -9,11 +10,11 @@ import {VillageLife} from './village-life.js';
 import {distance,rng,SCALE} from './world.js';
 import {member,skillsFor,STORY} from './clan.js';
 import {EncounterDirector,makeEnemy,idleEnemy,beginReturn,tryRespawn,walkClear,moveAlong,inSanctuary} from './encounters.js';
-import {BALANCE,CAST_SETS,killXp,PROCS,SYSTEM_LINES,BOSS_LINES,BOSSES} from './content/index.js';
+import {BALANCE,CAST_SETS,killXp,PROCS,SYSTEM_LINES,BOSS_LINES,BOSSES,COMBAT_RULES,COMBAT_TEXT} from './content/index.js';
 export const SKILLS=skillsFor('dieter');
 export class Game {
   constructor(world,saved={}){
-    this.world=world;this.member=member(saved.classId);this.skills=skillsFor(this.member.id);this.lastStrike=-100;this.trainingXp=Math.max(0,Number(saved.trainingXp) || ((Number(saved.level)||1)*((Number(saved.level)||1)-1)*70+(Number(saved.xp)||0)));this.seenSkills=new Set(saved.seenSkills||['strike','dash']);this.buffs={};this.classState=freshClassState();this.fields=[];this.aiming=null;this.aimPoint=null;this.zones=[];this.life=new VillageLife(world);this.time=0;this.paused=false;this.keys=new Set();this.target=null;this.fx=[];this.texts=[];this.events=[];this.messages=[];this.cooldowns=Object.fromEntries(this.skills.map(s=>[s.id,0]));this.gcd=0;this.moveTo=null;this.path=[];this.dead=false;this.random=rng(9876);
+    this.world=world;this.member=member(saved.classId);this.skills=skillsFor(this.member.id);this.lastStrike=-100;this.trainingXp=Math.max(0,Number(saved.trainingXp) || ((Number(saved.level)||1)*((Number(saved.level)||1)-1)*70+(Number(saved.xp)||0)));this.seenSkills=new Set([...(saved.seenSkills||['strike','dash']),'auto']);this.autoAttack={enabled:false,timers:{}};this.casting=null;this.buffs={};this.classState=freshClassState();this.fields=[];this.aiming=null;this.aimPoint=null;this.zones=[];this.life=new VillageLife(world);this.time=0;this.paused=false;this.keys=new Set();this.target=null;this.fx=[];this.texts=[];this.events=[];this.messages=[];this.cooldowns=Object.fromEntries(this.skills.map(s=>[s.id,0]));this.gcd=0;this.moveTo=null;this.path=[];this.dead=false;this.random=rng(9876);
     const level=Number.isInteger(saved.level)?Math.max(1,Math.min(30,saved.level)):1;
     const baseHp=BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel;
     this.player={...world.spawn,classId:this.member.id,hp:baseHp,maxHp:baseHp,energy:100,runes:0,level,xp:Math.max(0,Number(saved.xp)||0),parry:0,invulnerable:0,facing:1,moving:false,attack:0,inCombat:0};
@@ -26,7 +27,7 @@ export class Game {
     this.log(SYSTEM_LINES.welcome);
   }
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
-  resetClassState(){this.touchMove=null;this.classState=freshClassState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
+  resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
   learnTalentSkill(id){if(id)unlockOnBar(this,[id]);}
   lootRandom(){let n=this.rpg.lootState|0;n^=n<<13;n^=n>>>17;n^=n<<5;this.rpg.lootState=n>>>0;return this.rpg.lootState/4294967296;}
   switchMember(id){if(this.dead||this.paused||this.player.inCombat>0||distance(this.player,this.world.spawn)>150){this.toast('Clanwechsel nur am sicheren Treffpunkt, außerhalb eines Kampfes.');return false;}if(member(id).id!==id)return false;this.member=member(id);this.rpg.talents=this.rpg.talentBuilds[id];this.player.classId=id;this.lastStrike=-100;this.resetClassState();this.refreshStats();this.target=null;this.emit('classChanged');this.emit('save');return true;}
@@ -37,12 +38,13 @@ export class Game {
   effect(type,x,y,data={}){this.fx.push({type,x,y,life:.5,max:.5,...data});}
   selectNext(reverse=false){const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
   selectAt(x,y){const e=this.enemies.filter(e=>e.hp>0&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
-  action(id,point=null){
+  action(id,point=null,completing=false){
     if(this.paused||this.dead)return false;
     const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.toast('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
+    if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
     const p=this.player,cs=combatStats(this),cost=skillCost(this,s,cs),context={runes:p.runes,interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(`${s.name} ist noch nicht bereit.`);return false;}
-    if(!s.offGcd&&this.gcd>0)return false;
-    if(p.energy<cost){this.toast('Nicht genug Randale. Dein Grundangriff [1] lädt sie wieder auf.');return false;}
+    if(!completing&&!s.offGcd&&this.gcd>0)return false;
+    if(p.energy<cost){this.toast(COMBAT_TEXT.needResources);return false;}
     let e=this.target;
     if(s.ground){if(!point){this.aiming=id;this.aimPoint={...p};this.toast('Boden wählen · Rechtsklick / Esc abbrechen.');return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
     if(s.range&&!s.ground){
@@ -51,21 +53,22 @@ export class Game {
       if(distance(p,e)>s.range+(cs.range||0)){this.toast(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m. Bewege dich näher zum Ziel.`);return false;}
       if(!this.world.lineClear(p,e)){this.toast('Ein Gebäude oder Hindernis versperrt die Sicht.');return false;}
     }
-    if(id==='burst'&&p.runes===0){this.toast('Du brauchst mindestens einen Punkt. Nutze deinen Grundangriff [1].');return false;}
+    if(id==='burst'&&p.runes===0){this.toast(COMBAT_TEXT.needPoints);return false;}
     if(id==='heal'&&p.hp>=p.maxHp&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast('Deine Gesundheit ist bereits vollständig.');return false;}
+    if(s.castTime&&!completing){if(movingToCast(this)){this.toast(COMBAT_TEXT.moving);return false;}this.casting={id,name:s.name,point:point?{...point}:null,targetId:s.range&&!s.ground?e.id:null,remaining:s.castTime,total:s.castTime};if(!s.offGcd)this.gcd=cs.gcd;this.aiming=null;this.aimPoint=null;return true;}
     this.cooldowns[id]=s.cd*(id==='dash'?(1-(cs.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste);p.energy-=cost;
-    if(!s.offGcd)this.gcd=cs.gcd;
-    if(s.range&&!s.ground){e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.attack=.25;}
+    if(!s.offGcd&&!completing)this.gcd=cs.gcd;
+    if(s.range&&!s.ground){this.autoAttack.enabled=true;e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.attack=.25;}
     if(s.talent){performTalent(this,s,point,cs);if(s.ground){this.aiming=null;this.aimPoint=null;}}
-    if(id==='strike'){const empowered=this.classState.empowered>0;if(empowered)this.classState.empowered--;this.damage(e,weaponSkillDamage(this,s,s.damage,ITEMS)*(empowered||this.classState.freeStrike?2:1),'Kelle');const beat=this.member.id==='baerbel'&&this.time-this.lastStrike>=.85&&this.time-this.lastStrike<=1.5;p.runes=Math.min(3,p.runes+(beat?2:1));this.lastStrike=this.time;context.beat=beat;if(beat)this.float(p.x,p.y-35,'IM TAKT!','#e6b6ed');p.energy=Math.min(100,p.energy+s.gain);this.effect(s.range>60?'projectile':'slash',e.x,e.y,{from:{x:p.x,y:p.y},classId:this.member.id,life:.3,max:.3});}
-    if(id==='throw'){this.damage(e,weaponSkillDamage(this,s,s.damage,ITEMS),'Pfandwurf');this.effect('projectile',e.x,e.y,{from:{x:p.x,y:p.y},life:.4,max:.4,classId:this.member.id});}
-    if(id==='ground'){this.aiming=null;this.aimPoint=null;this.zones.push({...point,remaining:s.delay,radius:s.radius,damage:s.damage});this.effect('rune',point.x,point.y,{life:s.delay,max:s.delay});}
+    if(id==='strike'){const empowered=this.classState.empowered>0;if(empowered)this.classState.empowered--;this.damage(e,skillDamage(this,s,s.damage,ITEMS)*(empowered||this.classState.freeStrike?2:1),'Kelle');const beat=this.member.id==='baerbel'&&this.time-this.lastStrike>=.85&&this.time-this.lastStrike<=1.5;p.runes=Math.min(3,p.runes+(beat?2:1));this.lastStrike=this.time;context.beat=beat;if(beat)this.float(p.x,p.y-35,'IM TAKT!','#e6b6ed');p.energy=Math.min(100,p.energy+s.gain);this.effect(s.range>60?'projectile':'slash',e.x,e.y,{from:{x:p.x,y:p.y},classId:this.member.id,life:.3,max:.3});}
+    if(id==='throw'){this.damage(e,skillDamage(this,s,s.damage,ITEMS),'Pfandwurf');this.effect('projectile',e.x,e.y,{from:{x:p.x,y:p.y},life:.4,max:.4,classId:this.member.id});}
+    if(id==='ground'){this.aiming=null;this.aimPoint=null;this.zones.push({...point,remaining:s.delay,radius:s.radius,damage:skillDamage(this,s,s.damage,ITEMS)});this.effect('rune',point.x,point.y,{life:s.delay,max:s.delay});}
     if(id==='mark'){e.mark=s.duration;e.dotTimer=1;e.dotDamage=s.dot;e.slow=s.slow||1;this.effect('rune',e.x,e.y,{life:.8,max:.8});this.float(e.x,e.y-23,'MARKIERT!','#9fdacb');this.log(s.name+' · 10 s für deine nächste Eskalation.');}
-    if(id==='burst'){const runes=p.runes,marked=e.mark>0;let n=weaponSkillDamage(this,s,s.base+runes*s.perPoint,ITEMS)*(marked?s.multiplier:1);if(this.relic)n*=1.12;if(this.rpg.talents.spec==='dieter-brawl'&&this.classState.rage>=5)n*=1.25;if(this.rpg.talents.spec==='kevin-iron')n*=.7;this.damage(e,Math.round(n),marked&&runes===3?'RESONANZ':'Entladung');if(s.splash)for(const other of this.enemies){if(other!==e&&other.hp>0&&other.ai!=='returning'&&other.spawnGrace<=0&&distance(e,other)<s.splash&&this.world.lineClear(e,other))this.damage(other,Math.round(n*.55)*(1+(cs.aoe||0)),'Bass');}if(s.knockback&&e.hp>0){const d=distance(p,e)||1;for(let i=0;i<7;i++)this.move(e,(e.x-p.x)/d*(s.knockback+(cs.hunterFinish?35:0))/7,(e.y-p.y)/d*(s.knockback+(cs.hunterFinish?35:0))/7);}p.runes=0;e.mark=0;e.slow=1;this.effect('burst',e.x,e.y,{life:.7,max:.7,strong:marked&&runes===3,radius:s.splash||45,classId:this.member.id});if(marked&&runes===3){this.toast('KOMPLETT ESKALIERT! Drei Punkte + Markierung.');this.emit('shake',{strength:4});}}
+    if(id==='burst'){const runes=p.runes,marked=e.mark>0;let n=skillDamage(this,s,s.base+runes*s.perPoint,ITEMS,runes)*(marked?s.multiplier:1);if(this.relic)n*=1.12;if(this.rpg.talents.spec==='dieter-brawl'&&this.classState.rage>=5)n*=1.25;if(this.rpg.talents.spec==='kevin-iron')n*=.7;this.damage(e,Math.round(n),marked&&runes===3?'RESONANZ':'Entladung');if(s.splash)for(const other of this.enemies){if(other!==e&&other.hp>0&&other.ai!=='returning'&&other.spawnGrace<=0&&distance(e,other)<s.splash&&this.world.lineClear(e,other))this.damage(other,Math.round(n*.55)*(1+(cs.aoe||0)),'Bass');}if(s.knockback&&e.hp>0){const d=distance(p,e)||1;for(let i=0;i<7;i++)this.move(e,(e.x-p.x)/d*(s.knockback+(cs.hunterFinish?35:0))/7,(e.y-p.y)/d*(s.knockback+(cs.hunterFinish?35:0))/7);}p.runes=0;e.mark=0;e.slow=1;this.effect('burst',e.x,e.y,{life:.7,max:.7,strong:marked&&runes===3,radius:s.splash||45,classId:this.member.id});if(marked&&runes===3){this.toast('KOMPLETT ESKALIERT! Drei Punkte + Markierung.');this.emit('shake',{strength:4});}}
     if(id==='interrupt'){
       if(e.cast&&e.cast.interruptible){e.cast=null;e.stun=2;e.attackTimer=3;e.vulnerable=4;this.stats.interrupts++;if(this.member.id==='kevin'){p.runes=Math.min(3,p.runes+1);this.cooldowns.burst=Math.max(0,this.cooldowns.burst-2);}p.energy=Math.min(100,p.energy+15+(cs.procs.includes('silence')?10:0));this.float(e.x,e.y-30,'UNTERBROCHEN','#9bdce4');this.log('Klare Ansage · unterbrochen! +35 % Schaden für 4 s.');}
       else this.toast('Kein unterbrechbarer Zauber aktiv. Achte auf gelbe Balken.');
-      this.damage(e,s.damage,'Ansage');this.effect('interrupt',e.x,e.y);
+      this.damage(e,skillDamage(this,s,s.damage,ITEMS),'Ansage');this.effect('interrupt',e.x,e.y);
     }
     if(id==='parry'){p.parry=s.window+(cs.parryWindow||0);p.parryCharges=cs.doubleParry?2:1;this.effect('shield',p.x,p.y,{life:.8,max:.8});}
     if(id==='dash'){
@@ -77,7 +80,7 @@ export class Game {
     if(id==='heal'){healPlayer(this,s.heal,cs,true);this.effect('heal',p.x,p.y,{life:1,max:1});}
     afterSkill(this,id,e,cs,context);this.emit('sound',{id});return true;
   }
-  damage(e,n,label){if(e.hp<=0||e.ai==='returning')return;e.aggro=true;e.ai='combat';this.player.inCombat=7;const cs=combatStats(this),critical=this.random()<cs.crit,mark=e.mark>0,bonus=(label==='Markierung'?(cs.markBonus||0)+cs.mastery:label==='RESONANZ'||label==='Entladung'?(cs.burstBonus||0)+cs.mastery:0)+(cs.execute&&e.hp/e.maxHp<.3?cs.execute:0)+(mark&&cs.procs.includes('verdict')?.1:0);const actual=Math.round(n*(1+cs.power+(['Kelle','Pfandwurf','Parade','Sprung','Deckelwelle'].includes(label)?cs.physicalPower:cs.technicalPower))*(1+bonus)*(critical?1.6+(cs.critDamage||0):1)*(e.vulnerable>0?1.35:1)*(this.buffs.remaining>0?this.buffs.power||1:1));const dealt=Math.min(e.hp,actual);e.hp=Math.max(0,e.hp-actual);this.stats.damage+=dealt;if(critical&&cs.procs.includes('rage'))this.player.energy=Math.min(100,this.player.energy+PROCS.rage.energy);if(cs.leech)this.player.hp=Math.min(this.player.maxHp,this.player.hp+Math.round(dealt*cs.leech));afterDamage(this,e,dealt,cs);e.attack=.15;this.float(e.x+(this.random()-.5)*14,e.y-27,String(actual)+(critical?'!':''),critical?'#ffdf78':label==='RESONANZ'?'#ecc3fc':'#fff0bf');if(e.hp<=0)this.kill(e);return dealt;}
+  damage(e,n,label){if(e.hp<=0||e.ai==='returning')return;e.aggro=true;e.ai='combat';this.player.inCombat=7;const cs=combatStats(this),critical=this.random()<cs.crit,mark=e.mark>0,bonus=(label==='Markierung'?(cs.markBonus||0)+cs.mastery:label==='RESONANZ'||label==='Entladung'?(cs.burstBonus||0)+cs.mastery:0)+(cs.execute&&e.hp/e.maxHp<.3?cs.execute:0)+(mark&&cs.procs.includes('verdict')?.1:0);const actual=Math.round(n*(1+cs.power+(['Autoangriff','Kelle','Pfandwurf','Parade','Sprung','Deckelwelle'].includes(label)?cs.physicalPower:cs.technicalPower))*(1+bonus)*(critical?1.6+(cs.critDamage||0):1)*(e.vulnerable>0?1.35:1)*(this.buffs.remaining>0?this.buffs.power||1:1));const dealt=Math.min(e.hp,actual);e.hp=Math.max(0,e.hp-actual);this.stats.damage+=dealt;if(critical&&cs.procs.includes('rage'))this.player.energy=Math.min(100,this.player.energy+PROCS.rage.energy);if(cs.leech)this.player.hp=Math.min(this.player.maxHp,this.player.hp+Math.round(dealt*cs.leech));afterDamage(this,e,dealt,cs);e.attack=.15;this.float(e.x+(this.random()-.5)*14,e.y-27,String(actual)+(critical?'!':''),critical?'#ffdf78':label==='RESONANZ'?'#ecc3fc':'#fff0bf');if(e.hp<=0)this.kill(e);return dealt;}
   kill(e){const wasMarked=e.mark>0,cs=combatStats(this);onKill(this,e,wasMarked,cs);if(cs.procs.includes('thirst'))this.player.energy=Math.min(100,this.player.energy+PROCS.thirst.energy);e.hp=0;e.aggro=false;e.cast=null;e.dead=(e.respawn?.[0]||35)+this.random()*((e.respawn?.[1]||55)-(e.respawn?.[0]||35));e.respawnAt=this.time+e.dead;e.ai='dead';e.mark=0;e.roamGoal=null;this.stats.kills++;createDrop(this,e);const xp=killXp(e);this.gainXp(xp);if(e.type==='boss'&&BOSS_LINES[e.bossId])this.log(e.name+': „'+BOSS_LINES[e.bossId].defeat+'“');this.float(e.x,e.y-40,'+'+xp+' EP','#bacd8b');this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · +'+xp+' EP.');
     const sq=this.sideQuests[e.questId],def=this.world.quests?.find(q=>q.id===e.questId);if(sq?.accepted&&!sq.claimed&&def){sq.progress=Math.min(def.required,sq.progress+1);if(sq.progress===def.required)this.toast(SYSTEM_LINES.questDone(def.giver.name));}
     if(this.quest.accepted&&!this.quest.claimed&&!e.ambient&&!e.questId){if(e.type==='wolf')this.quest.wolves=Math.min(3,this.quest.wolves+1);if(e.type==='cultist')this.quest.cultists=Math.min(2,this.quest.cultists+1);if(e.type==='boss')this.quest.boss=true;if(this.questReady())this.toast(SYSTEM_LINES.mainReady);}
@@ -97,14 +100,14 @@ export class Game {
   navigate(point){this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo)this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');}
   hitPlayer(e,n,avoidable=true){const p=this.player;if(p.invulnerable>0&&avoidable){this.stats.dodges++;this.float(p.x,p.y-25,'AUSGEWICHEN','#b8e0d3');return;}
     if(p.parry>0&&avoidable){p.parryCharges=Math.max(0,(p.parryCharges||1)-1);if(!p.parryCharges)p.parry=0;onParry(this,e,combatStats(this));p.runes=Math.min(3,p.runes+1);p.energy=Math.min(100,p.energy+20);this.stats.parries++;this.damage(e,this.skills.find(s=>s.id==='parry').reflect*(1+(combatStats(this).reflect||0)),'Parade');if(this.member.id==='dieter')p.hp=Math.min(p.maxHp,p.hp+35);this.float(p.x,p.y-25,'PARIERT','#f2da92');this.effect('interrupt',p.x,p.y);this.log('Perfekte Parade · +1 Punkt, +20 Randale.');return;}
-    const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs));p.hp=Math.max(0,p.hp-n);p.inCombat=7;this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;this.keys.clear();this.moveTo=null;this.emit('death');}
+    const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs));p.hp=Math.max(0,p.hp-n);p.inCombat=7;this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;this.autoAttack.enabled=false;this.casting=null;this.keys.clear();this.moveTo=null;this.emit('death');}
   }
   startCast(e){const p=this.player,set=CAST_SETS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length];
     e.cycle++;if(e.type==='boss'&&e.cycle===1&&BOSS_LINES[e.bossId])this.log(e.name+': „'+BOSS_LINES[e.bossId].engage+'“');
     const phases=BOSSES[e.bossId]?.phases||[];for(const ph of phases)if(ph.at<1&&e.hp/e.maxHp<=ph.at&&!(e.saidPhases||=new Set()).has(ph.at)){e.saidPhases.add(ph.at);this.log(e.name+': „'+ph.line+'“');}
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
-  resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=1.8;e.spawnGrace=2;}
+  resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
   respawn(){const p=this.player;Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});this.toast(SYSTEM_LINES.respawn);}
   tick(dt){if(this.paused||this.dead)return;dt=Math.min(dt,.05);this.time+=dt;tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});this.effect('burst',z.x,z.y,{life:.7,max:.7,radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
@@ -113,25 +116,25 @@ export class Game {
     const tickStats=combatStats(this);p.energy=Math.min(100,p.energy+dt*(BALANCE.player.energyRegen+(tickStats.energyRegen||0)));if(p.inCombat===0)p.hp=Math.min(p.maxHp,p.hp+dt*BALANCE.player.outOfCombatRegen*(tickStats.procs.includes('hops')?PROCS.hops.regen:1));
     let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
     if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;dx=dy=0;}}
-    stepPlayer(this,dx,dy,dt);
+    stepPlayer(this,dx,dy,dt);tickCasting(this,dt);tickAuto(this,dt);
     for(const e of this.enemies){
       e.attack=Math.max(0,e.attack-dt);e.moving=false;e.spawnGrace=Math.max(0,e.spawnGrace-dt);
       if(e.hp<=0){e.dead=Math.max(0,e.respawnAt-this.time);tryRespawn(this,e);continue;}
       if(e.mark>0){e.mark-=dt;e.dotTimer-=dt;if(e.dotTimer<=0){this.damage(e,e.dotDamage||12,'Markierung');e.dotTimer=1;}if(e.hp<=0)continue;}
       e.vulnerable=Math.max(0,e.vulnerable-dt);e.stun=Math.max(0,e.stun-dt);
       const d=distance(e,p);
-      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=1.3;if(!this.target||this.target.hp<=0)this.target=e;}
+      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;if(!this.target||this.target.hp<=0)this.target=e;}
       if(!e.aggro){idleEnemy(this,e,dt);continue;}
       if(distance(e,e.home)>e.leash||d>450||inSanctuary(this.world,p)){beginReturn(this,e);continue;}
       p.inCombat=7;e.facing=e.x<p.x?1:-1;
-      if(e.stun>0)continue;
-      if(e.cast){e.cast.remaining-=dt;if(e.cast.remaining<=0){const c=e.cast;e.cast=null;e.attackTimer=e.type==='boss'?1.6:1.8;let hit=false;if(c.ground){hit=Math.hypot((p.x-c.x)/c.radius,(p.y-c.y)/(c.radius*.75))<1;this.effect('impact',c.x,c.y,{radius:c.radius,life:.6,max:.6});if(!hit){this.stats.dodges++;this.float(p.x,p.y-24,'VERMIEDEN','#aed4bd');}}else if(c.interruptible)hit=d<230&&this.world.lineClear(e,p);else hit=d<c.radius;
+      if(e.stun>0){e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);continue;}
+      if(e.cast){e.cast.remaining-=dt;if(e.cast.remaining<=0){const c=e.cast;e.cast=null;e.attackTimer=COMBAT_RULES.specialInterval;let hit=false;if(c.ground){hit=Math.hypot((p.x-c.x)/c.radius,(p.y-c.y)/(c.radius*.75))<1;this.effect('impact',c.x,c.y,{radius:c.radius,life:.6,max:.6});if(!hit){this.stats.dodges++;this.float(p.x,p.y-24,'VERMIEDEN','#aed4bd');}}else if(c.interruptible)hit=d<230&&this.world.lineClear(e,p);else hit=d<c.radius;
           if(hit)this.hitPlayer(e,c.damage);e.attack=.3;if(this.dead)break;
         }continue;}
-      const reach=e.type==='wolf'?30:e.type==='boss'?53:110;
+      const reach=e.autoAttack.range*.8;
       if(d>reach){const speed=e.speed*(e.mark>0?e.slow:1)*(e.controlSlow>0?.5:1);e.pathTimer-=dt;if(walkClear(this.world,e,p,7)){const step=Math.min(speed*dt,d-reach+1);this.move(e,(p.x-e.x)/d*step,(p.y-e.y)/d*step);e.moving=true;e.chasePath=[];}else{if(e.pathTimer<=0){e.pathTimer=1.1;e.chasePath=this.world.findPath(e,p);}moveAlong(this,e,e.chasePath,speed,dt);}}
 
-      else{e.attackTimer-=dt;if(e.attackTimer<=0)this.startCast(e);}
+      e.attackTimer=Math.max(0,e.attackTimer-dt);enemyAuto(this,e,dt);if(this.dead)break;if(distance(e,p)<=reach&&e.attackTimer<=0&&this.world.lineClear(e,p))this.startCast(e);
     }
     this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
