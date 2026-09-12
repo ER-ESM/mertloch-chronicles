@@ -32,6 +32,7 @@ export const BALANCE=Object.freeze({
   quest:{gather:180,scout:180,hunt:220,escort:200,main:600},
   discovery:20
  },
+ weapons:{referenceDamage:17,offhandShare:.5,perLevel:.055,quality:{uncommon:1.1,rare:1.25},rollFloor:.93,rollSteps:15,shieldArmorShare:5,smallArmorShare:2},
  items:{
   budgetBase:6,budgetPerLevel:2,       // Wertebudget eines gewürfelten Gegenstands
   quality:{uncommon:1,rare:1.4,epic:1.8},

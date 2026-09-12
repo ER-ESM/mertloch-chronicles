@@ -1,7 +1,9 @@
+import {writePrecache} from './pwa-cache.mjs';
 import {readdir,cp,mkdir,rm,writeFile,lstat} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
+await writePrecache();
 const root=fileURLToPath(new URL('../',import.meta.url));
 const output=path.resolve(root,'_site');
 if(path.dirname(output)!==path.resolve(root)||path.basename(output)!=='_site')throw Error('Invalid site output directory');
@@ -9,7 +11,7 @@ const existing=await lstat(output).catch(e=>{if(e.code!=='ENOENT')throw e;return
 if(existing?.isSymbolicLink())throw Error('Site output must not be a symbolic link');
 await rm(output,{recursive:true,force:true});
 await mkdir(output,{recursive:true});
-const files=(await readdir(root,{withFileTypes:true})).filter(e=>e.isFile()&&/\.(html|css|js)$/.test(e.name));
+const files=(await readdir(root,{withFileTypes:true})).filter(e=>e.isFile()&&/\.(html|css|js|webmanifest)$/.test(e.name));
 for(const file of files)await cp(path.join(root,file.name),path.join(output,file.name));
 // Inhaltsschicht: nur die Module, keine Berichte.
 await mkdir(path.join(output,'content'));

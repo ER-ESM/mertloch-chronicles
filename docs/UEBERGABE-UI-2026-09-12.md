@@ -51,3 +51,10 @@ Alle Inhalte liegen als Daten in `content/` und kommen über `import {…} from 
 - `content/BALANCE-REPORT.md` – aktuelle Balance-Matrix
 - `content/ART-BRIEF.md` – 55 Grafikaufträge für die Bild-KI
 - `docs/PIPELINE.md` – Rollen, Ablauf, Branches
+## Ergänzung 0.14 · Mobile und Ausrüstung (integriert)
+
+- `game.rpg.version=4`, `equipment` enthält 16 Plätze. `EQUIPMENT_SLOTS` und `SLOT_ICONS` kommen aus `content/index.js` (Kompatibilitätsexport auch in `equipment.js`). Paarplätze: ring1/2 und trinket1/2. weapon bleibt der Haupthandschlüssel, body der Brustschlüssel.
+- `ITEMS[id].weapon={type,hands,min,max}`, `shield?:boolean`, `stats?` optional. Neue Daten stehen im gemeinsamen Katalog. `skill.requiresWeapon` nennt melee/ranged/shield/heavy; `weaponSource` bestimmt Nah-/Fernkampfschaden.
+- `equipItem(game,id,slot?)` wechselt atomar inklusive beider Hände; `equipmentPlan` liefert Platz und abgelegte Teile für Vergleiche. `skillStatus.weaponMissing` steuert den roten Ausrüstungshinweis. `rpgChanged` und `save` bleiben die Aktualisierungsereignisse.
+- Charakterfenster, Tooltips, gezielte Platzbuttons und Touch-Bedienung sind umgesetzt. `claimStarterWeapons` gibt die einmalige Clankiste am Treffpunkt; `recovery` bewahrt inkonsistente Altgegenstände bis zum Einpacken.
+- Mobile Steuerung, konfigurierbare rechte Skillbuttons, Kontextmenü und PWA sind integriert. Die PWA-Cacheliste enthält jetzt auch alle content-Module. Browserprüfungen: `scripts/equipment-review.mjs`, `scripts/mobile-review.mjs`, `scripts/mobile-combat.mjs`, `scripts/pwa-review.mjs`.

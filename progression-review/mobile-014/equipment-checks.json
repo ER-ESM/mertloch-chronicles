@@ -1,0 +1,14 @@
+{
+  "slots": 16,
+  "realUiSwaps": true,
+  "pairedRings": true,
+  "uniqueTrinkets": true,
+  "twoHanded": true,
+  "dualWield": true,
+  "blockedSkillIndicator": true,
+  "persisted": true,
+  "touchEquipAndUnequip": true,
+  "portraitAndLandscape": true,
+  "unpaused": true,
+  "exceptions": []
+}

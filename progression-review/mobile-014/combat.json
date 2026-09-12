@@ -1,0 +1,12 @@
+{
+  "fixture": "Kevin level 6, starter equipment; real map route and touch events, no runtime game mutation.",
+  "touchNavigation": true,
+  "touchTarget": true,
+  "touchSkills": true,
+  "inventoryOpen": true,
+  "kills": 1,
+  "damage": 600,
+  "health": 833,
+  "interrupts": 1,
+  "exceptions": []
+}

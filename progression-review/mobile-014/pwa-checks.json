@@ -1,0 +1,13 @@
+{
+  "url": "http://localhost:4174/mertloch-chronicles/",
+  "installabilityErrors": [],
+  "manifestErrors": [],
+  "cacheFiles": 109,
+  "offlineColdStart": true,
+  "offlineMovement": true,
+  "offlineSkillIcons": true,
+  "explicitUpdate": true,
+  "savePreserved": true,
+  "oldCacheCleaned": true,
+  "exceptions": []
+}

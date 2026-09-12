@@ -2,7 +2,7 @@
 
 **[Direkt im Browser spielen](https://er-esm.github.io/mertloch-chronicles/)** · [GitHub-Repository](https://github.com/ER-ESM/mertloch-chronicles)
 
-Auf PC und Handy ohne Installation spielbar. Fortschritt liegt im lokalen Browserspeicher des jeweiligen Geräts. Die Online-Adresse hat einen eigenen Spielstand; der bisherige localhost-Spielstand bleibt erhalten. Es gibt noch keine geräteübergreifende Synchronisierung oder Mehrspieler-Verbindung. Unterwegs auf dem Handy: Richtungskreuz oder Boden antippen, Gegner auswählen und die Aktionsicons benutzen.
+Auf PC und Handy ohne Installation spielbar. Fortschritt liegt im lokalen Browserspeicher des jeweiligen Geräts. Die Online-Adresse hat einen eigenen Spielstand; der bisherige localhost-Spielstand bleibt erhalten. Es gibt noch keine geräteübergreifende Synchronisierung oder Mehrspieler-Verbindung. Unterwegs auf dem Handy: Joystick links, große Skillbuttons rechts. Über „Menü“ erreichst du Karte, Inventar, Steuerung und App-Installation.
 
 Spielbarer Browser-Prototyp eines 2D-Pixel-Rollenspiels mit regelbasiert gestalteter Geografie und Tab-Target-Kampf. Der Start liegt bei **St. Gangolf in 56753 Mertloch**. Kein Paketdownload erforderlich; Node.js 20 oder neuer genügt.
 
@@ -30,6 +30,25 @@ Items, Beute, Gegner, Bosse, Fähigkeiten, Klassen, Talente, Quests, NPCs, Dialo
 - **Zwölf Quest-Vorlagen** statt sechs, seedabhängig verteilt, mit eigenen Gesprächszeilen je Fortschritt. Bosse haben Phasen-Sprüche im Kampflog.
 - **Vorbereitet:** Story-Kapitel 2 (Gisela Gießkanne) und 3 (Der Pfandautomat 3000) mit Bossen, Zaubern, Dialogen und Belohnungen – warten auf Lager und Kapitelumschalter (siehe `content/BACKLOG.md`).
 - Prüfen: `npm run content:check`, Balance-Matrix `npm run content:balance` → [content/BALANCE-REPORT.md](content/BALANCE-REPORT.md), Grafik-Briefing `npm run content:art` → [content/ART-BRIEF.md](content/ART-BRIEF.md).
+
+## Neu in 0.14 · Ausrüstung, Handy & App
+
+- **16 Ausrüstungsplätze:** Haupt-/Nebenhand, Fernkampf, Kopf, Hals, Schultern, Brust, Armschienen, Handschuhe, Gürtel, Beine, Schuhe, zwei Ringe und zwei Glücksbringer.
+- **Echte Waffenwahl:** zwei Einhandwaffen, eine Zweihandwaffe oder Einhand + Schild. Waffen haben zufällige Schadensspannen und gegebenenfalls Zusatzwerte; die Spannen verändern passende Skills. Nebenhandwaffen tragen 50 % ihres Schadens bei.
+- **Waffenvoraussetzungen:** Schildparaden verlangen einen Schild, Fernkampfangriffe eine Fernkampfwaffe, Tresensprung Zweihand oder zwei Einhandwaffen. Fehlende Ausrüstung wird am Skill und im Tooltip angezeigt.
+- **Gezielter Austausch:** Inventar → Gegenstand → Platz wählen, auch für beide Ringe/Glücksbringer. Zweihandwechsel vergleichen beide abgelegten Teile und sind bei vollem Rucksack verlustfrei abgesichert. Die einmalige Clankiste im Charakterfenster gibt am Treffpunkt kostenlose Testwaffen.
+
+[Ausrüstungsregeln, Migration und Prüfergebnisse](EQUIPMENT.md).
+
+
+- **Automatischer Touch-Modus** für Smartphones und Tablets, manuell umschaltbar unter Menü → Steuerung.
+- **Analoger Joystick links**, sechs große Skillbuttons rechts, zwei belegbare Seiten. Ausweichen, Unterbrechen, Zielwechsel und Interaktion haben eigene Knöpfe. Laufen und Skills funktionieren mit zwei Fingern gleichzeitig.
+- **Eigene Touchbelegung pro Figur**, unabhängig von der Desktop-Leiste. Platz wählen, Fähigkeit antippen; Größe ändern oder Belegung zurücksetzen. Lange auf einen Skillbutton drücken öffnet die Erklärung.
+- **Kompaktes Kontextmenü** statt dauerhaft sichtbarer Menüleisten, Minimap und Questkästen. Fenster lassen Bewegung und Kämpfe weiterlaufen; Hoch-/Querformat und Displayaussparungen werden berücksichtigt.
+- **Installierbare Web-App** mit eigenem Symbol und Start ohne Adressleiste. Menü → Als App. Auf iOS erfolgt die Installation über Safari → Teilen → Zum Home-Bildschirm; die Systemleiste kann sichtbar bleiben.
+- **Offline-Start nach vollständigem Laden** von Welt und Grafiken. Neue Versionen werden erst über „Update laden“ aktiviert, nachdem der Fortschritt gespeichert wurde.
+
+[Bedienung, Installation, Screenshots und Prüfbericht](MOBILE.md). Für die lokale PWA-Vorschau zuerst `npm run build` ausführen. Der Build erzeugt die Cache-Liste aus dem aktuellen Release. Bei der Entwicklung Service-Worker-Bypass in den Browser-Entwicklerwerkzeugen verwenden, um Änderungen direkt zu sehen.
 
 ## Neu in 0.13
 

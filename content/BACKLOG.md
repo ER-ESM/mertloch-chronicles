@@ -2,6 +2,10 @@
 
 Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Agent trägt hier ein, was er nicht selbst umsetzen darf; die Engine-Seite hakt ab.
 
+## Erledigt · 0.14
+
+- [x] Vollständige Ausrüstung: 16 Slots, Waffen-Schadensspannen, Nebenhand-/Zweihandwechsel, Schild- und Fernkampfvoraussetzungen, Speichermigration und Vergleichs-UI. Gemeinsame Daten in `content/equipment.js` und `content/items.js`, Dokumentation in `EQUIPMENT.md`.
+
 ## Braucht Engine
 
 - [ ] **Story-Kapitel 2 und 3 aktivieren** – `STORY_CHAPTERS[1..2]` sind fertig (Ziele, Boss, Dialoge, Belohnung). Nötig: Kapitelzustand in `engine.js` (`quest.chapter`), Lager für Gisela und den Pfandautomaten in `world-layout.js`, Anzeige in `app.js`/`questlog-ui.js`.

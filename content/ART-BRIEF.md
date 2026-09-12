@@ -6,6 +6,10 @@ Jede Zeile ist ein Bild. `fallback` zeigt, was das Spiel heute stattdessen zeich
 
 | Art | ID | Name | Format | Bildhinweis | Aktuell |
 |---|---|---|---|---|---|
+| item | `topfdeckel` | Omas unzerstörbarer Topfdeckel | 24×24 Icon | Runder verbeulter Topfdeckel mit Holzgriff, dicke Konturen und Honiglicht — *Ein Schild mit Suppengeschichte. Schaltet Schildparaden frei.* | Icon „shield“ |
+| item | `pfandschleuder` | Kabelbinder-Pfandschleuder | 24×24 Icon | Astgabel aus Holz, Kabelbinder und gespannte Gummischlinge — *Grundausstattung für Fernkampf. Keine Munition nötig; das Leergut kommt von allein.* | Icon „slingshot“ |
+| item | `dosenklinge` | Entgratete Dosenklinge | 24×24 Icon | Entgratete silbergrüne Dosenklinge mit kurzem Ledergriff — *Einhand. Auch in der Nebenhand: trägt 50 % ihres Schadens zu Nahkampfkniffen bei.* | Icon „blade“ |
+| item | `tresenhammer` | Abmontierter Tresenhammer | 24×24 Icon | Schwerer rechteckiger Tresenhammer mit Holzstiel und Messingbeschlägen — *Zweihand. Beide Hände voll Abriss; für einen Schild ist kein Platz.* | Icon „maul“ |
 | item | `currywurst` | Oskars Currywurst | 24×24 Icon | Pappschale mit Currywurst, rote Soße, Holzpieker — *240 Leben und 20 Randale. Die Soße ist ein Familiengeheimnis und ein Verstoß gegen die Lebensmittelverordnung.* | Icon „food“ |
 | item | `kaltgetraenk` | Eiskaltes Kaltgetränk | 24×24 Icon | Beschlagene Dose ohne Marke, Kondenswasser, gelbes Etikett — *70 Randale. Auf dem Etikett steht nur „Ja“.* | Icon „water“ |
 | item | `fuchsschwanz` | Buschiger Fuchsschwanz | 24×24 Icon | Rostroter Fuchsschwanz mit weißer Spitze — *Der Fuchs hat ihn freiwillig abgegeben. Sagt der Fuchs.* | Icon „coat“ |

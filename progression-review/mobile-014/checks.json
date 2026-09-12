@@ -1,0 +1,45 @@
+{
+  "layouts": [
+    {
+      "width": 390,
+      "height": 844,
+      "controlsInBounds": true,
+      "popupInBounds": true
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "controlsInBounds": true,
+      "popupInBounds": true
+    },
+    {
+      "width": 360,
+      "height": 740,
+      "controlsInBounds": true,
+      "popupInBounds": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "controlsInBounds": true,
+      "popupInBounds": true
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "controlsInBounds": true,
+      "popupInBounds": true
+    }
+  ],
+  "autoDetection": true,
+  "manualMode": true,
+  "independentSavedSkillLayout": true,
+  "groundPlacement": true,
+  "joystick": true,
+  "multitouchDodge": true,
+  "menusDoNotPause": true,
+  "longPressHelp": true,
+  "safeAreaPortrait": true,
+  "safeAreaLandscape": true,
+  "exceptions": []
+}

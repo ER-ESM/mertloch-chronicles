@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Mertloch Chronicles · Poo-Tang-Clan",
+  "short_name": "Poo-Tang",
+  "description": "Dein Clan, dein Dorf, dein Totalschaden. Comic-Pixel-RPG aus Mertloch.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#243c2b",
+  "theme_color": "#243c2b",
+  "icons": [
+    {"src": "assets/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "assets/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "assets/app/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
