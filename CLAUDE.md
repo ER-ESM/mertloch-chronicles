@@ -1,5 +1,7 @@
 # Mertloch Chronicles – Arbeitsregeln
 
+**Pipeline, Rollen, Branches und Übergabedateien: [docs/PIPELINE.md](docs/PIPELINE.md).** Agenten: `.claude/agents/inhalt-agent.md`, `engine-agent.md`, `ui-agent.md`. Aktuelle Übergabe an die UI: `docs/UEBERGABE-UI-2026-09-12.md`.
+
 Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm test` muss vor jedem Commit grün sein; GitHub Actions veröffentlicht `main` auf GitHub Pages.
 
 ## Modulgrenzen

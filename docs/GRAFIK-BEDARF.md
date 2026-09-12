@@ -1,0 +1,11 @@
+# Grafikbedarf der UI
+
+Für alles, was nicht aus `content/` kommt (UI-Icons, Rahmen, Fenster-Embleme, HUD-Elemente). Inhaltliche Bilder (Items, Gegner, Bosse, NPCs, Skills) stehen automatisch in `content/ART-BRIEF.md`.
+
+Format je Zeile: ID · Zweck · Größe · Bildhinweis · aktueller Fallback.
+
+| ID | Zweck | Größe | Bildhinweis | Fallback |
+|---|---|---|---|---|
+| `ui-elite-badge` | Elite-Kennzeichen im Zielfenster und auf der Karte | 16×16 | Goldener Bierdeckel mit Stern | Text „ELITE“ |
+| `ui-speech-bubble` | Sprechblase für Boss- und Bewohnersprüche | 9-Slice, 32×24 | Pergament-Sprechblase mit Pflaumentinte-Rand | Rechteck |
+| `ui-chapter-lock` | Ausgegraute Kapitel 2/3 im Auftragsbuch | 24×24 | Vorhängeschloss aus Kronkorken | Text „bald“ |
