@@ -1,3 +1,4 @@
+import {restorePosition,savedPosition} from './player-save.js';
 import {tickAuto,toggleAuto,enemyAuto,tickCasting,movingToCast} from './auto-combat.js';
 import {weaponSkillDamage,skillDamage} from './equipment.js';
 import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar} from './rpg.js';
@@ -17,7 +18,7 @@ export class Game {
     this.world=world;this.member=member(saved.classId);this.skills=skillsFor(this.member.id);this.lastStrike=-100;this.trainingXp=Math.max(0,Number(saved.trainingXp) || ((Number(saved.level)||1)*((Number(saved.level)||1)-1)*70+(Number(saved.xp)||0)));this.seenSkills=new Set([...(saved.seenSkills||['strike','dash']),'auto']);this.autoAttack={enabled:false,timers:{}};this.casting=null;this.buffs={};this.classState=freshClassState();this.fields=[];this.aiming=null;this.aimPoint=null;this.zones=[];this.life=new VillageLife(world);this.time=0;this.paused=false;this.keys=new Set();this.target=null;this.fx=[];this.texts=[];this.events=[];this.messages=[];this.cooldowns=Object.fromEntries(this.skills.map(s=>[s.id,0]));this.gcd=0;this.moveTo=null;this.path=[];this.dead=false;this.random=rng(9876);
     const level=Number.isInteger(saved.level)?Math.max(1,Math.min(30,saved.level)):1;
     const baseHp=BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel;
-    this.player={...world.spawn,classId:this.member.id,hp:baseHp,maxHp:baseHp,energy:100,runes:0,level,xp:Math.max(0,Number(saved.xp)||0),parry:0,invulnerable:0,facing:1,moving:false,attack:0,inCombat:0};
+    this.player={...restorePosition(world,saved),classId:this.member.id,hp:baseHp,maxHp:baseHp,energy:100,runes:0,level,xp:Math.max(0,Number(saved.xp)||0),parry:0,invulnerable:0,moving:false,attack:0,inCombat:0};
     this.quest={accepted:!!saved.quest?.accepted,wolves:Math.min(3,Math.max(0,Number(saved.quest?.wolves)||0)),cultists:Math.min(2,Math.max(0,Number(saved.quest?.cultists)||0)),boss:!!saved.quest?.boss,claimed:!!saved.quest?.claimed};this.relic=!!saved.relic;this.discovered=new Set(saved.discovered||[]);this.stats={damage:0,interrupts:0,parries:0,dodges:0,kills:0};this.enemies=[];
     const sameWorld=saved.worldKey===world.id;
     this.sideQuests=Object.fromEntries((world.quests||[]).map(q=>{const old=sameWorld?saved.sideQuests?.[q.id]:null;return[q.id,{accepted:!!old?.accepted,progress:Math.min(q.required,Math.max(0,Number(old?.progress)||0)),collected:Array.isArray(old?.collected)?old.collected.filter(id=>q.items.some(i=>i.id===id)):[],claimed:!!old?.claimed}];}));
@@ -139,5 +140,5 @@ export class Game {
     this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
   }
-  save(){return {version:1,progressionVersion:2,rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,relic:this.relic,discovered:[...this.discovered]};}
+  save(){return {version:1,progressionVersion:2,position:savedPosition(this),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,relic:this.relic,discovered:[...this.discovered]};}
 }
