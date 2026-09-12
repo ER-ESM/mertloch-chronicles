@@ -1,6 +1,6 @@
 // Seconds between attacks; ranges are world units (8 units = 1 metre).
 export const AUTO_ATTACK={id:'auto',name:'Autoangriff · Leergut läuft',text:'Ein-/ausschalten: Greift dein Ziel selbstständig im Waffentempo an. Nahkampf trifft auch in Bewegung. Fernkampf nutzt den Fernkampfplatz. Während du zauberst, pausieren die Schläge. Ein offensiver Kniff startet den Autoangriff ebenfalls; ein Ziel nur anzuwählen greift es nicht an.',cd:0,cost:0,offGcd:true,auto:true,icon:'auto',color:'#eac981',bg:'#425e37'};
-export const AUTO_KITS={dieter:{name:'Autoangriff · Flasche kreist',weaponSource:'melee',range:45},baerbel:{name:'Autoangriff · Dauerschall',weaponSource:'ranged',range:155},kevin:{name:'Autoangriff · Pfand im Takt',weaponSource:'ranged',range:195}};
+export const AUTO_KITS={dieter:{name:'Autoangriff · Flasche kreist',weaponSource:'melee',range:45},baerbel:{name:'Autoangriff · Dauersprühen',weaponSource:'ranged',range:155},kevin:{name:'Autoangriff · Pfand im Takt',weaponSource:'ranged',range:195}};
 export const ENEMY_AUTOS={
  boar:{name:'Hauer',min:32,max:44,speed:2.1,range:38},badger:{name:'Dachsbiss',min:22,max:32,speed:1.8,range:35},goose:{name:'Wadenkneifer',min:15,max:23,speed:1.35,range:34},raven:{name:'Schnabelhieb',min:13,max:20,speed:1.2,range:34},fox:{name:'Fuchsbiss',min:24,max:34,speed:1.6,range:36},
  warden:{name:'Aktenklammerwurf',min:26,max:38,speed:2.4,range:145,ranged:true},scrounger:{name:'Becherwurf',min:22,max:32,speed:2.2,range:130,ranged:true},inspector:{name:'Stempelwurf',min:30,max:42,speed:2.3,range:150,ranged:true},

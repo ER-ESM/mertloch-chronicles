@@ -17,3 +17,4 @@ export * from './item-icons.js';
 export * from './talent-layout.js';
 export * from './person-appearance.js';
 export * from './tutorial.js';
+export * from './aperol-art.js';

@@ -1,3 +1,4 @@
+import {loadAperolArt,aperolArt} from './aperol-art.js';
 // Sprite import and anchoring contract. Original source PNGs remain untouched.
 // Some atlas exporters bake their transparency preview into RGB. The importer
 // treats edge-connected neutral preview pixels as a colour key, never scenery.
@@ -5,7 +6,7 @@ export const maifeld={};
 const definitions={nature:{cols:3,rows:2,names:['oak','spruce','apple','rocks','supplies','tent']},buildings:{cols:3,rows:2,names:['cottage','tavern','thatch','church','barn','shop']},people:{cols:6,rows:2,names:['dieter','baerbel','kevin','ida','warden','horst','dieterWalk','baerbelWalk','kevinWalk','idaWalk','wardenWalk','horstWalk']},life:{cols:4,rows:3,names:['boar','badger','goose','chicken','cat','bench','cart','fountain','board','mara','lauti','elder']}};
 let pending;
 definitions.ground={cols:2,rows:2,raw:true,names:['groundGrass','groundPaving','groundDirt','groundMeadow']};
-export function loadMaifeldArt(){return pending||=Promise.all(Object.entries(definitions).map(([name,def])=>new Promise(resolve=>{const img=new Image();img.onload=()=>{importSheet(img,def);resolve();};img.onerror=()=>resolve();img.src=(name==='people'?'./assets/maifeld-rpg/':'./assets/maifeld-09/')+name+'.png';})));}
+export function loadMaifeldArt(){return pending||=Promise.all(Object.entries(definitions).map(([name,def])=>new Promise(resolve=>{const img=new Image();img.onload=()=>{importSheet(img,def);resolve();};img.onerror=()=>resolve();img.src=(name==='people'?'./assets/maifeld-rpg/':'./assets/maifeld-09/')+name+'.png';}))).then(async()=>{await loadAperolArt();maifeld.baerbel=aperolArt.hero[0];maifeld.baerbelWalk=aperolArt.hero[1];});}
 function importSheet(img,def){
  if(def.raw){def.names.forEach((name,i)=>{maifeld[name]={image:img,x:i%def.cols*img.width/def.cols,y:Math.floor(i/def.cols)*img.height/def.rows,w:img.width/def.cols,h:img.height/def.rows};});return;}
  const cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);

@@ -5,7 +5,7 @@
 // heal/energy (Verpflegung), stack, value (Pfandmarken), unique, proc (Effekt-ID aus PROCS), description, look (Bildhinweis).
 import {ITEM_ICON_OVERRIDES,DETAIL_ICONS} from './item-icons.js';
 import {EQUIPMENT_SLOTS,WEAPON_TYPES} from './equipment.js';
-export const ICONS=[...DETAIL_ICONS,'helmet','necklace','shoulders','bracers','gloves','belt','trousers','trinket','blade','maul','slingshot','bottle','water','coat','food','boots','ring','paper','cable','scrap','reinforced','shield','sound','speaker','burst','bag','book','map'];
+export const ICONS=[...DETAIL_ICONS,'anni-spray','helmet','necklace','shoulders','bracers','gloves','belt','trousers','trinket','blade','maul','slingshot','bottle','water','coat','food','boots','ring','paper','cable','scrap','reinforced','shield','sound','speaker','burst','bag','book','map'];
 export const SLOTS={...EQUIPMENT_SLOTS,ring:'Ring',trinket:'Glücksbringer',charm:'Talisman'};
 export const RARITIES={common:'Gewöhnlich',uncommon:'Ungewöhnlich',rare:'Selten',epic:'Dorflegende'};
 /** Passive Effekte einzigartiger Gegenstände. Die Wirkung steht in engine.js / class-mechanics.js; hier nur Beschreibung und Zahlen. */
@@ -49,7 +49,7 @@ export const ITEM_CATALOG={
  hausordnung:{name:'Horsts gelochte Hausordnung',slot:'trinket',rarity:'rare',icon:'paper',level:1,value:50,stats:{wit:12,stamina:8,masteryRating:22},description:'Endlich zu etwas gut. Ein Andenken an Horsts Niederlage.'},
  bierdeckelweste:{name:'Bierdeckel-Panzerweste',slot:'body',rarity:'rare',icon:'coat',level:5,value:44,stats:{stamina:14,might:6,armorRating:60},description:'Dreihundert Deckel, doppelt geklebt. Dieter nennt es Baugenehmigung.',look:'Weste aus lauter Bierdeckeln, Klebeband an den Nähten'},
  kabelbinderstiefel:{name:'Kabelbinder-Stiefel',slot:'feet',rarity:'rare',icon:'boots',level:4,value:38,stats:{finesse:9,wit:5,hasteRating:22,armorRating:20},description:'Kevin hat sie „gefixt“. Sie quietschen jetzt im Takt.',look:'Gummistiefel mit bunten Kabelbindern'},
- megafon:{weapon:{type:'speaker',hands:0,min:21,max:34},name:'Bärbels Notfall-Megafon',slot:'ranged',rarity:'rare',icon:'sound',level:6,value:52,stats:{finesse:11,wit:9,critRating:18,masteryRating:12},description:'Reichweite bis zum Bauamt. Batterie hält für genau eine Zugabe.',look:'Rotes Megafon mit Aufkleber „LAUT“'},
+ megafon:{weapon:{type:'speaker',hands:0,min:21,max:34},name:'Annis Hygiene-Hochdruckspray',slot:'ranged',rarity:'rare',icon:'sound',level:6,value:52,stats:{finesse:11,wit:9,critRating:18,masteryRating:12},description:'Entfernt Flecken, Freundschaften und Rückgaberechte. Nur noch drei Vorführungen bis zur goldenen Vertriebskrone.',look:'Grüne Pumpsprayflasche mit goldenem Provisionsanhänger'},
  // --- Dorflegenden (einzigartig, mit Effekt) ---
  keilerzahn:{name:'Hauers letzter Zahn',slot:'charm',rarity:'epic',icon:'ring',level:2,stats:{might:14,stamina:9,critRating:20},unique:true,proc:'rage',description:'Selten aus Pfandkeilern: Glückstreffer geben 4 Randale zurück.'},
  gansorden:{name:'Orden der unverschämten Gans',slot:'charm',rarity:'epic',icon:'paper',level:1,stats:{finesse:12,hasteRating:20},unique:true,proc:'fleet',description:'Selten aus Grillgut-Gänsen: Ausweichen wird 15 % schneller bereit.'},

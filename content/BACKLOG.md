@@ -33,3 +33,7 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 - [x] Geführter Start aus `TUTORIAL`, Engine-Schritte und Speicherung, kompakte Desktop-/Touch-Anleitung.
 - [x] Gerichtete Talentbäume aus `TALENT_GRAPH`, echte Voraussetzungen, einzelne Punkte zurücknehmen, 90 eigene Motive.
 - [x] Gemeinsame Personenidentität für Welt, Gespräche und Heldenporträt aus `PERSON_APPEARANCE`.
+## Erledigt · Aperol-Anni 0.17
+
+- [x] Bass-Bärbels sichtbare Identität, Fähigkeiten und 30 Talente durch Aperol-Anni / Landhaus-Lazarett / Putzpyramide / Filter-Furie ersetzt; Spielstand-IDs erhalten.
+- [x] Stand-/Laufgrafik, Personenbilder, 47 Skill-/Spec-/Talentmotive und Hygiene-Hochdruckspray integriert. Neue Motive im Offline-Cache; alte separate Bärbel-Atlanten werden nicht mehr vorab geladen.

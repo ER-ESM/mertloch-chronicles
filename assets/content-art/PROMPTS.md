@@ -142,3 +142,74 @@ Row 6 column 3: boot stepping over stopwatch
 Row 6 column 4: steel cable trap with reset spring
 Row 6 column 5: two fading bootprints and backward tin rocket
 ```
+## Aperol-Anni · 0.17 · built-in imagegen
+
+Replaces the displayed Bass-Bärbel identity while keeping legacy save IDs. Original generated PNGs: `aperol-anni/hero.png`, `aperol-anni/skills.png`, `aperol-anni/talents.png`. Hero and walk pose feed the same world/portrait renderer. Skill atlas cells 0–12 are skills, 13–15 specializations, 16 autoattack; talent cells 0–29 follow the three existing ten-node branches. Import uses measured transparent gutters, original PNGs remain unchanged.
+
+### hero
+
+```text
+Original comic pixel-art sprite sheet for a cozy German village RPG. TWO full-body sprites of exactly the same adult woman side by side in a strict 2 columns 1 row grid, true transparent background. Aperol-Anni, age 34, confident cheeky rural country-house influencer and homemaker: blonde wavy hair in loose high bun, gold hoop earrings, visible eyeliner and coral lipstick, orange floral blouse with rolled sleeves, cream gingham apron tied at waist, dark olive slim trousers, short brown ankle boots. Orange sunglasses perched on head. Small pink makeup brush in one hand, modest green cleaning spray bottle clipped to belt. NO headphones, NO music equipment, NO crates, NO props on ground, no text, no logos. First pose idle front three-quarter facing right; second same front three-quarter woman stepping with one foot forward and arm swinging. Exactly identical face clothing and proportions. Full body including both boots, equal heights, equal baselines, ample transparent padding. Friendly bold dark outlines, detailed readable deliberate pixel clusters, warm afternoon palette. Character should fit a hand-painted pixel medieval rural village while dressed as modern country house influencer. Not chibi; 5-heads tall, sturdy adult human proportions.
+```
+
+### skills
+
+```text
+Original premium comic pixel-art fantasy RPG inventory atlas. Chunky precise pixel clusters, dark ink outlines, warm earthy highlights, readable at 48 pixels. True transparent background. NO text, NO letters, NO labels, NO border frames, NO cast shadows outside motifs. Each object fully inside its own cell with 18% empty padding and large transparent gutters. Strict regular grid, visually separated cells. Match cozy hand-painted pixel RPG sprites but rendered in deliberate pixels. Distinct silhouettes, no duplicated icons. 5 columns by 4 rows, exactly 20 motifs, row-major order:
+Row 1 col 1: makeup brush striking with orange spark
+Row 1 col 2: orange spritz goblet with healing leaves
+Row 1 col 3: flying pink makeup compact
+Row 1 col 4: rubber glove holding transparent hygienic shield
+Row 1 col 5: magnifying glass inspecting green stain
+Row 2 col 1: white cooking mixer bursting with orange energy
+Row 2 col 2: exploding green cleaning foam puddle
+Row 2 col 3: steaming healing soup bowl with green plus
+Row 2 col 4: manicured hand slapping a mute speech bubble
+Row 2 col 5: leopard print ankle boot with retreating dust
+Row 3 col 1: gingham picnic table with healing cooking mixer
+Row 3 col 2: orange serum vial with gold coin and healing drop
+Row 3 col 3: smartphone with orange circular replay arrow
+Row 3 col 4: country cottage and gingham apron with healing heart
+Row 3 col 5: pyramid of cleaning spray bottles and gold coin
+Row 4 col 1: smartphone ring light and lipstick lightning
+Row 4 col 2: orange spray bottle circled by automatic attack arrows
+Row 4 col 3: orange slice with three ice cubes
+Row 4 col 4: lipstick next to tiny mirror
+Row 4 col 5: folded pink microfiber cloth
+```
+
+### talents
+
+```text
+Original premium comic pixel-art fantasy RPG inventory atlas. Chunky precise pixel clusters, dark ink outlines, warm earthy highlights, readable at 48 pixels. True transparent background. NO text, NO letters, NO labels, NO border frames, NO cast shadows outside motifs. Each object fully inside its own cell with 18% empty padding and large transparent gutters. Strict regular grid, visually separated cells. Match cozy hand-painted pixel RPG sprites but rendered in deliberate pixels. Distinct silhouettes, no duplicated icons. 5 columns by 6 rows, exactly 30 motifs, row-major order. This is a humorous country-house influencer, cosmetics, orange spritz, cooking mixer and cleaning MLM character. No music imagery.
+Row 1 col 1: steaming ceramic soup bowl
+Row 1 col 2: gingham apron with wooden spoon
+Row 1 col 3: orange drink poured into protective shield
+Row 1 col 4: orange spritz goblet and checklist
+Row 1 col 5: white kitchen cooking mixer with healing green picnic circle
+Row 2 col 1: two soup ladles and green plus
+Row 2 col 2: makeup brush with orange sparkle
+Row 2 col 3: pink cosmetic cream jar and shield
+Row 2 col 4: gingham healing picnic table under country cottage roof
+Row 2 col 5: three hands clinking orange spritz glasses
+Row 3 col 1: cleaning spray with gold coin flowing to green heart
+Row 3 col 2: rubber glove holding sparkling cleaning cloth
+Row 3 col 3: three cleaning bottles in a pyramid
+Row 3 col 4: doorbell beside green heart stopwatch
+Row 3 col 5: orange serum bottle with coin and green healing drop
+Row 4 col 1: measuring cap over cleaning bottle
+Row 4 col 2: loyalty stamp card and green heart
+Row 4 col 3: rubber glove stopping a complaint envelope
+Row 4 col 4: two stacked gold coins with green serum vial
+Row 4 col 5: pyramid of spray bottles linked by orange arrows
+Row 5 col 1: smartphone upload arrow and orange sparkle
+Row 5 col 2: golden makeup compact with camera lens
+Row 5 col 3: two makeup brushes beside glowing cream jar
+Row 5 col 4: ankle boot passing through smartphone story frame
+Row 5 col 5: smartphone with orange replay arrow and three stars
+Row 6 col 1: ring light with spinning orange lightning arrows
+Row 6 col 2: cooking mixer knob turned to lightning and stars
+Row 6 col 3: three smartphones showing the same stain warning
+Row 6 col 4: selfie hand with two orange replay arrows
+Row 6 col 5: orange cosmetic compact flying over farmland with camera flashes
+```

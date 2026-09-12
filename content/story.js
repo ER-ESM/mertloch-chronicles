@@ -4,7 +4,7 @@ import {BALANCE} from './balance.js';
 export const STORY={title:'Die letzte Kiste',giver:'Kisten-Ida',reward:'Goldener Dosenöffner',boss:'Horst Nüchternmann',faction:'Ruhe 22:01 e. V.'};
 export const LORE={
  setting:'Mertloch im Maifeld, 56753. Ein Dorf mit Kirche, Grillplatz, Pfandhof und mehr Vereinen als Einwohnern.',
- clan:'Der Poo-Tang-Clan: Dieter, Bärbel, Kevin und Anhang. Geboren, geblieben, nie leise gewesen.',
+ clan:'Der Poo-Tang-Clan: Dieter, Anni, Kevin und Anhang. Geboren, geblieben, nie leise gewesen.',
  antagonist:'Ruhe 22:01 e. V. – gegründet nach dem Fest „Nie wieder Montag“, als um 22:01 Uhr zum ersten Mal jemand die Polizei rief. Ziel: absolute Nachtruhe. Mittel: Hausordnungen, Petitionen, Praktikanten, ein Pfandautomat.',
  macguffin:'Die letzte Kiste. Nicht irgendeine Kiste: die Kiste vom ersten Fest 2007, seitdem jedes Jahr neu befüllt. Wer sie hat, hat die Party.'
 };

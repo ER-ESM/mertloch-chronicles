@@ -21,13 +21,13 @@ export const KITS={
   {name:'Konterfrühstück',text:'240 Leben aus einer sehr verdächtigen Brezel. Im Spiel erstaunlich wirksam, kulinarisch ein Straftatbestand.'}
  ],
  baerbel:[
-  {name:'Boxenklatsche',cd:.95,range:155,damage:48,gain:10,icon:'speaker',text:'200 % Autoschaden + 14 Fernkampfschaden, +1 Takt und 10 Randale. Triff nach 0,85–1,5 s erneut für einen zusätzlichen Taktpunkt.'},
-  {name:'Soundcheck, Arschloch!',range:190,dot:10,text:'10 s Markierung, 10 Schaden pro Sekunde. Verstärkt deinen nächsten Bass-Einschlag um 60 %.'},
-  {name:'Bass bis zum Bauamt',range:175,base:40,perPoint:48,splash:95,text:'14 Schaden + (150 % + 280 % pro Takt) Autoschaden, markiert +60 %. Gegner im Umkreis von 12 m erhalten 55 % des Einschlags – auch neutrale! Verbraucht alle Taktpunkte.'},
-  {name:'Mikro aus!',range:190,cd:10,text:'35 Schaden. Unterbricht gelbe Zauber und macht das Ziel 4 s verwundbar. „Deine Meinung hat Sendepause.“'},
-  {name:'Feedback-Schirm',window:.9,reflect:55,text:'0,9 s Parierfenster. Reflektiert 55 Schaden, gibt einen Taktpunkt und 20 Randale. Keine Heilung.'},
-  {name:'Crowdsurfer',cd:6,steps:24,text:'Ein längerer Ausweichsprung mit 0,4 s Schutz. Landet ohne Publikum etwas unromantisch.'},
-  {name:'Heilklang fürs Gemüt',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Nachklang, Schutz oder eine offensive Zugabe.'}
+  {name:'Pinsel-Piekser',cd:.95,range:155,damage:48,gain:10,icon:'speaker',text:'200 % Autoschaden + 14 Fernkampfschaden, +1 Glanz und 10 Randale. Triff nach 0,85–1,5 s erneut für einen zusätzlichen Glanzpunkt.'},
+  {name:'Fleckentest, Schätzchen!',range:190,dot:10,text:'10 s Markierung, 10 Schaden pro Sekunde. Verstärkt deinen nächsten Turbo-Einschlag um 60 %.'},
+  {name:'Thermomix-Turbostufe',range:175,base:40,perPoint:48,splash:95,text:'14 Schaden + (150 % + 280 % pro Glanz) Autoschaden, markiert +60 %. Gegner im Umkreis von 12 m erhalten 55 % des Einschlags – auch neutrale! Verbraucht alle Glanzpunkte.'},
+  {name:'Kommentarspalte zu!',range:190,cd:10,text:'35 Schaden. Unterbricht gelbe Zauber und macht das Ziel 4 s verwundbar. „Deine Meinung hat Sendepause.“'},
+  {name:'Hygiene-Handschuh',window:.9,reflect:55,text:'0,9 s Parierfenster. Reflektiert 55 Schaden, gibt einen Glanzpunkt und 20 Randale. Keine Heilung.'},
+  {name:'Raus aus meinem Reel',cd:6,steps:24,text:'Ein längerer Ausweichsprung mit 0,4 s Schutz. „Du stehst im Bild, verdammte Axt!“'},
+  {name:'Landhaus-Löffelkur',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Hauspflege, Schutz oder einen offensiven Frischekick.'}
  ],
  kevin:[
   {name:'Pfandgeschoss',range:195,damage:42,gain:16,icon:'bottle',text:'200 % Autoschaden + 8 Fernkampfschaden, +1 Druck und 16 Randale. Eine Flasche mit erstaunlich überzeugender Flugbahn.'},
@@ -43,25 +43,25 @@ export const KITS={
 export const BUFF_SKILLS={
  common:{id:'buff',cd:28,cost:15,duration:10,color:'#aed7aa',bg:'#426c60',icon:'shield'},
  dieter:{name:'Dosenmut',reduction:.25,text:'10 Sekunden weniger Schaden. Der Türsteher baut zusätzlich Deckung auf.'},
- baerbel:{name:'Heilsamer Refrain',hot:12,text:'10 Sekunden Nachklang: heilt jede Sekunde. Ein Refrain, der den Kater rausbrüllt.'},
+ baerbel:{name:'Aperol-Nachsorge',hot:12,text:'10 Sekunden Hauspflege: heilt jede Sekunde. Orange im Glas, Grün im Lebensbalken. Annis fragwürdiges Wellnessprogramm.'},
  kevin:{name:'Isolierband hält',shield:130,text:'Ein Schutzpolster absorbiert Schaden. Bastelgrips und Handschrift verstärken den Schild.'}
 };
 /** Gezielter Wurf und Bodenangriff, je Klasse benannt. */
 export const THROW_SKILL={id:'throw',key:'3',cd:6,cost:18,range:235,damage:75,icon:'bottle',color:'#dbc083',bg:'#5b6036',
- names:{dieter:'Pfand auf die Zwölf',baerbel:'Platte ins Gesicht',kevin:'Dosen-Drohne'},
- flavor:{dieter:'Eine gezielt geworfene Mehrwegflasche',baerbel:'Eine fliegende Schallplatte',kevin:'Eine ferngesteuerte Pfanddose'},
+ names:{dieter:'Pfand auf die Zwölf',baerbel:'Puderdose ins Gesicht',kevin:'Dosen-Drohne'},
+ flavor:{dieter:'Eine gezielt geworfene Mehrwegflasche',baerbel:'Eine fliegende Puderdose',kevin:'Eine ferngesteuerte Pfanddose'},
  text:' trifft ein einzelnes Ziel. 300 % Autoschaden + 24 Schaden, 18 Randale. Ideal, um einen Gegner aus der Gruppe zu ziehen.'};
 export const GROUND_SKILL={id:'ground',key:'7',cd:12,cost:35,ground:true,range:210,radius:70,damage:125,delay:1.1,icon:'burst',color:'#e6b769',bg:'#79633e',
- names:{dieter:'Böller unterm Biertisch',baerbel:'Bassbombe im Vorgarten',kevin:'Restmüll mit Zündschnur'},
+ names:{dieter:'Böller unterm Biertisch',baerbel:'Grundreinigung auf eigene Gefahr',kevin:'Restmüll mit Zündschnur'},
  text:'Mit der Maus einen freien Bodenpunkt wählen. Nach 1,1 s: 125 Grundschaden im Umkreis von 9 m an bis zu 5 Zielen – auch neutralen. Rechtsklick oder Esc bricht das Zielen ab.'};
 /** Aktive Talentfähigkeiten (Schlüssel = grants in talents.js). */
 export const TALENT_SKILLS={
  barricade:{name:'Absperrband',ground:true,range:170,radius:85,duration:8,cd:24,cost:25,text:'Platziere eine Zone: darin 30 % weniger Schaden. Bleib hinter deiner Absperrung, statt blind hinterherzulaufen.'},
  slam:{name:'Tresensprung',ground:true,range:145,radius:60,damage:95,cd:16,cost:20,text:'Springe zum freien Zielpunkt, triff bis zu 5 Gegner und erhalte 1 Pegel. Hindernisse kannst du nicht überspringen.'},
  keg:{name:'Katerfass',ground:true,range:160,radius:80,duration:10,cd:25,cost:25,text:'Platziere ein heilendes Fass: 24 Leben pro Sekunde, solange du darin stehst. Gegner in der Pfütze werden langsamer.'},
- sanctuary:{name:'Sanitäts-Pogo',ground:true,range:190,radius:85,duration:10,cd:24,cost:25,text:'Heilzone für 28 Leben pro Sekunde. Du musst darin stehen bleiben; Bewegung und Heilung sinnvoll abwägen.'},
- infusion:{name:'Feedback-Infusion',duration:8,cd:24,cost:15,text:'8 Sekunden lang heilen dich 35 % deines verursachten Schadens zusätzlich. Erst infundieren, dann eskalieren.'},
- encore:{name:'Zugabe, ihr Säcke!',cd:25,cost:10,text:'Setzt die Abklingzeit von Bass bis zum Bauamt zurück und gibt sofort 3 Takt. Markierung vorbereiten, Zugabe zünden, Finisher setzen.'},
+ sanctuary:{name:'Thermomix-Tafel',ground:true,range:190,radius:85,duration:10,cd:24,cost:25,text:'Heilzone für 28 Leben pro Sekunde. Du musst darin stehen bleiben; Bewegung und Heilung sinnvoll abwägen.'},
+ infusion:{name:'Provisionskur',duration:8,cd:24,cost:15,text:'8 Sekunden lang heilen dich 35 % deines verursachten Schadens zusätzlich. Dein Schmerz, meine Provision. Schön sauber abrechnen.'},
+ encore:{name:'Noch ein Reel, ihr Opfer!',cd:25,cost:10,text:'Setzt die Abklingzeit von Thermomix-Turbostufe zurück und gibt sofort 3 Glanz. Fleckentest vorbereiten, Reel neu starten, Turbostufe zünden.'},
  detonate:{name:'Kettenzündung',radius:210,cd:14,cost:25,text:'Sprengt bis zu 5 markierte Ziele in Sicht und Reichweite für je 110 Schaden. Verbraucht deren Markierungen. Erst verteilen, dann zünden.'},
  magnet:{name:'Magnetpanzer',radius:120,cd:22,cost:25,text:'Gibt 140 Deckung, zieht bis zu 5 nahe Gegner an und hält sie kurz fest. Das zieht auch bislang neutrale Ziele in den Kampf.'},
  snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling löst 75 Schaden und 3 Sekunden Festhalten aus. Du kannst währenddessen weiterkämpfen.'}
