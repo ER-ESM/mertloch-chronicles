@@ -19,3 +19,17 @@
 /* Compact armory: the same icon grammar for all sixteen equipment slots. */
 .armory-banner{display:flex;gap:12px;align-items:center;margin:8px 0 14px}.armory-banner .paper-doll{width:72px;flex-shrink:0}.armory-banner .paper-doll canvas{width:62px;height:78px}.armory-banner b{font-size:12px;color:#e7d59c}.armory-banner p{font-size:10px!important}.equipment-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 8px}.gear-cell{display:grid;gap:4px;justify-items:center;min-width:0}.gear-cell .item-slot{width:48px;height:48px}.gear-cell>small{font:9px 'Trebuchet MS',sans-serif;color:#bccc9e;text-align:center}.gear-cell.reserved .item-slot{border-style:dashed}.gear-cell.drag-over{background:#687747;outline:2px solid #e7c67c}.gear-inspection{display:grid;gap:5px;padding:10px 0;margin-top:12px;border-top:1px solid #73835566;font-size:11px}.gear-inspection small{color:#bfcba5}.gear-inspection button{justify-self:start;min-height:32px}.equip-choices{display:flex;flex-wrap:wrap;gap:6px}.equip-choices>button{flex:1;min-height:38px;white-space:nowrap}.weapon-summary{display:grid;grid-template-columns:1fr 1fr;gap:6px}.weapon-summary>div{display:grid;gap:5px;padding:8px;background:#1d3227}.weapon-summary small{font-size:9px;color:#b8c79e}.weapon-summary b{font:bold 17px monospace;color:#edd395}.starter-armory{display:grid;gap:6px;margin:10px 0}.starter-armory small{font-size:10px;color:#bfcba5}.touch-mode .equip-choices>button,.touch-mode .gear-inspection button,.touch-mode .starter-armory button{min-height:44px}.tooltip-compare b{display:block;margin-top:5px}
 .skill.weapon-missing{border-color:#b07869!important}.skill.weapon-missing:after{content:'!';position:absolute;right:1px;bottom:0;color:#ffe0ab;background:#753d30;padding:0 3px;font:bold 12px monospace;z-index:5;pointer-events:none}
+/* Dialogue portraits share the village palette and leave room for live play. */
+.conversation-person{display:flex;align-items:center;gap:14px;margin:0 0 14px;padding:0 0 12px;border-bottom:2px solid #645539}
+.conversation-portrait{position:relative;display:block;flex:0 0 96px;width:96px;height:96px;overflow:hidden;background:#202a25;outline:2px solid #b39456;outline-offset:2px;box-shadow:4px 4px 0 #151c18}
+.conversation-portrait img{position:absolute;display:block;max-width:none;image-rendering:pixelated}
+.conversation-portrait img[hidden]{display:none}
+.conversation-initial{display:grid;place-items:center;width:100%;height:100%;color:#e6c783;font-size:36px;font-weight:bold}
+.conversation-person>div{min-width:0}
+.conversation-person strong{display:block;color:#f2d38d;font-size:19px;line-height:1.2}
+.conversation-person small{display:block;color:#c8c4a7;font-size:12px;line-height:1.45;margin-top:7px}
+.conversation-quote{color:#e7d9b5}
+body.touch-mode .conversation-person{gap:12px;margin-bottom:10px;padding-bottom:10px}
+body.touch-mode .conversation-portrait{flex-basis:72px;width:72px;height:72px}
+body.touch-mode .conversation-person strong{font-size:16px}
+body.touch-mode .conversation-person small{font-size:11px;margin-top:4px}

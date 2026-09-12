@@ -58,3 +58,11 @@ Alle Inhalte liegen als Daten in `content/` und kommen über `import {…} from 
 - `equipItem(game,id,slot?)` wechselt atomar inklusive beider Hände; `equipmentPlan` liefert Platz und abgelegte Teile für Vergleiche. `skillStatus.weaponMissing` steuert den roten Ausrüstungshinweis. `rpgChanged` und `save` bleiben die Aktualisierungsereignisse.
 - Charakterfenster, Tooltips, gezielte Platzbuttons und Touch-Bedienung sind umgesetzt. `claimStarterWeapons` gibt die einmalige Clankiste am Treffpunkt; `recovery` bewahrt inkonsistente Altgegenstände bis zum Einpacken.
 - Mobile Steuerung, konfigurierbare rechte Skillbuttons, Kontextmenü und PWA sind integriert. Die PWA-Cacheliste enthält jetzt auch alle content-Module. Browserprüfungen: `scripts/equipment-review.mjs`, `scripts/mobile-review.mjs`, `scripts/mobile-combat.mjs`, `scripts/pwa-review.mjs`.
+
+## Gesprächsporträts · 2026-09-12
+
+- `conversationHeader(npcId, fallbackName?)` zeigt Namen, Rolle und einen festen Porträtausschnitt. Ida sowie alle zehn möglichen Nebenquestgeber haben eigene Bilder; Bernd ist grafisch vorbereitet.
+- Zuordnung in `content/portraits.js`, Export über `content/index.js`. Die Atlaszellen beziehen sich auf NPC-IDs, nicht Questpositionen oder Weltseeds. Unbekannte Figuren/fehlende Bilder behalten Namen und Initiale.
+- Hauptdialoge lesen `MAIN_DIALOGUE.ida`, Nebenaufträge verwenden `q.lines.progress/complete/claimed`. Die Belohnungsauswahl behält den Auftraggeber. Keine neue Engine-Mechanik oder Änderung an Spielständen.
+- Atlas: `assets/content-art/npcs/dialogue-atlas.png`, Herkunft und finaler Imagegen-Prompt in `assets/content-art/PROMPTS.md`. Die PWA nimmt diesen Asset-Ordner in den Offline-Cache auf.
+- Reproduzierbare Browserprüfung: `node scripts/portraits-check.mjs [URL] [Ausgabeordner]`, Desktop 2024×900, Touch 390×844 und 844×390, Gespräch/Annahme/persönliche Antworten/Belohnung und Bewegung bei offenem Gespräch. 135 automatisierte Tests grün.

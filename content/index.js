@@ -7,6 +7,7 @@ export * from './skills.js';
 export * from './classes.js';
 export * from './talents.js';
 export * from './npcs.js';
+export * from './portraits.js';
 export * from './quests.js';
 export * from './dialogues.js';
 export * from './story.js';

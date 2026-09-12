@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {browser,wait} from './browser-polish.mjs';
+const url=process.argv[2]||'http://localhost:4173/',dir=process.argv[3]||'portrait-review';mkdirSync(dir,{recursive:true});
+const b=await browser(),key='mertloch-chronicles-v2-56753-72-1';let backup;
+async function fixture(value){const {identifier}=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`localStorage.setItem(${JSON.stringify(key)},${JSON.stringify(JSON.stringify(value))});`});await b.goto(url);await wait(1000);await b.send('Page.removeScriptToEvaluateOnNewDocument',{identifier});}
+async function portrait(id){await wait(200);const p=await b.evaluate(`(()=>{const el=document.querySelector('[data-conversation-npc]'),img=el?.querySelector('img'),r=el?.getBoundingClientRect();return {id:el?.dataset.conversationNpc,loaded:!!img?.naturalWidth,hidden:img?.hidden,width:r?.width};})()`);assert.equal(p.id,id);assert.ok(p.loaded&&!p.hidden);return p;}
+try{
+ await b.send('Network.enable');await b.send('Network.setBypassServiceWorker',{bypass:true});await b.send('Network.setCacheDisabled',{cacheDisabled:true});await b.goto(url);await wait(1000);backup=await b.evaluate(`localStorage.getItem(${JSON.stringify(key)})`);
+ const fresh={version:1,worldKey:'v2-56753-72-1',quest:{}};await fixture(fresh);await b.resize(2024,900);await b.press('f');await portrait('ida');await b.screenshot(dir+'/desktop.png');await b.click('#acceptQuest');await b.press('f');await portrait('ida');assert.ok(await b.evaluate('document.querySelector(".popup-dialog").innerText.includes("Schadensbegrenzung")'));
+ // Talking does not pause the world or block movement.
+ const before=await b.state();await b.hold('s',450);const after=await b.state();assert.ok(after.time>before.time&&!after.paused);assert.ok(Math.hypot(after.player.x-before.player.x,after.player.y-before.player.y)>5);await b.press('Escape');await b.press('f');const side=await b.evaluate('document.querySelector("[data-conversation-npc]")?.dataset.conversationNpc');assert.ok(side&&side!=='ida','A nearby side-quest giver can be spoken to');await portrait(side);await b.screenshot(dir+'/side-quest.png');const q=(await b.state()).world.quests.find(q=>q.giver.npc===side);await b.click('[data-accept-side]');await b.press('f');await portrait(side);assert.ok(await b.evaluate(`document.querySelector('.popup-dialog').innerText.includes(${JSON.stringify(q.lines.progress)})`));
+ // Main quest reward fixture still uses normal interaction and reward buttons.
+ await fixture({...fresh,quest:{accepted:true,wolves:3,cultists:2,boss:true}});await b.press('f');await portrait('ida');await b.click('#claimQuest');await portrait('ida');assert.equal(await b.evaluate('document.querySelectorAll("[data-reward-choice]").length'),3);await b.screenshot(dir+'/reward.png');
+ await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
+ for(const [width,height,label] of [[390,844,'mobile'],[844,390,'landscape']]){await b.send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true});await wait(300);await portrait('ida');const rect=await b.evaluate('document.querySelector(".popup-dialog").getBoundingClientRect().toJSON()');assert.ok(rect.left>=0&&rect.right<=width+1&&rect.top>=0&&rect.bottom<=height);assert.ok(await b.evaluate('document.querySelector(".popup-dialog").scrollWidth<=document.querySelector(".popup-dialog").clientWidth'));await b.screenshot(dir+'/'+label+'.png');}
+ await b.click('[data-reward-choice]');assert.ok((await b.state()).quest.claimed);assert.equal(b.errors.length,0);writeFileSync(dir+'/checks.json',JSON.stringify({url,mainStates:true,sideNpc:side,personalResponses:true,rewardChoice:true,liveMovement:true,mobile:true,landscape:true,exceptions:b.errors},null,2));console.log('PASS portraits, personal dialogue, reward choice, live movement, desktop and both mobile orientations');
+}finally{
+ await b.send('Emulation.setTouchEmulationEnabled',{enabled:false});await b.resize(1440,1000);
+ if(backup!==undefined){const {identifier}=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:backup===null?`localStorage.removeItem(${JSON.stringify(key)});`:`localStorage.setItem(${JSON.stringify(key)},${JSON.stringify(backup)});`});await b.goto(url);await wait(800);await b.send('Page.removeScriptToEvaluateOnNewDocument',{identifier});}
+ await b.send('Network.setBypassServiceWorker',{bypass:false});await b.send('Network.setCacheDisabled',{cacheDisabled:false});b.close();
+}
