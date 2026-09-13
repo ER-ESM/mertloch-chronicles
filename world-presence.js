@@ -7,3 +7,11 @@ export class FootfallTrail{
  constructor(){this.points=[];this.lastStep=0;}
  draw(c,g){const p=g.player,step=Math.floor((p.walkDistance||0)/12);if(step!==this.lastStep&&p.moving){this.lastStep=step;this.points.push({x:p.x+(step%2?2:-2),y:p.y+1,time:g.time});}this.points=this.points.filter(f=>g.time-f.time<.45&&g.time>=f.time).slice(-8);c.save();for(const f of this.points){const age=(g.time-f.time)/.45;c.globalAlpha=(1-age)*.22;c.fillStyle=g.world.onRoad(f.x,f.y)?'#cfc4a1':'#a5bc79';c.fillRect(Math.round(f.x-age*2),Math.round(f.y-age*3),2+age*2,1);}c.restore();}
 }
+/** Fade only the canopy; the trunk and all following actors keep their opacity. */
+export function drawTreeOcclusion(c,tree,focus,draw){
+ const s=tree.size,covered=focus.some(p=>Math.abs(p.x-tree.x)<55*s&&p.y<tree.y+9&&p.y>tree.y-116*s);
+ if(!covered){draw();return;}
+ const left=tree.x-150*s,top=tree.y-200*s,width=300*s,cut=tree.y-18*s;
+ c.save();c.beginPath();c.rect(left,top,width,cut-top);c.clip();c.globalAlpha=.28;draw();c.restore();
+ c.save();c.beginPath();c.rect(left,cut,width,80*s);c.clip();c.globalAlpha=1;draw();c.restore();
+}

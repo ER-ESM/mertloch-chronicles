@@ -46,22 +46,24 @@ Reihenfolge nach Wirkung pro Aufwand. Jede Zeile hat eine Prüfregel; erledigt i
 
 ### A · Fehler (heute sichtbar falsch)
 
-- [ ] **A1 Werte einmal** (`rpg-ui.js` Charakter): acht Zeilen, Wertung und Prozent zusammen („Glückstreffer 0 · 5 %“). Prüfung: kein Attributname zweimal.
-- [ ] **A2 Abgeschnittene Texte:** Skillbuch-Fußzeile, Charakter-Kopf mobil, Knopf „Ausweichen“ mobil (Symbol statt Wort). Prüfung: bei 900 px Höhe und 390 px Breite nichts beschnitten.
-- [ ] **A3 Halbtransparenter Bewohner** am Brunnen (vr2-07): Kronen-Transparenz greift auf Personen. Prüfung: Bewohner deckend, nur Kronen durchsichtig.
-- [ ] **A4 Kartenbeschriftung** „Kirchvorplatz“ mit Kontur oder Plakette wie „Clan-Treff“. Prüfung: lesbar auf Pflaster und Gras.
-- [ ] **A5 Verdeckter Text unten links** (vr2-01): entfernen oder über die Grafik legen.
-- [ ] **A6 Hofprobe-Kasten mobil** über dem Kirchenbanner: unter das Spielerfenster andocken oder einklappbar.
+- [x] **A1 Werte einmal** (`rpg-ui.js` Charakter): acht Zeilen, Wertung und Prozent zusammen („Glückstreffer 0 · 5 %“). Prüfung: kein Attributname zweimal.
+- [x] **A2 Abgeschnittene Texte:** Skillbuch-Fußzeile, Charakter-Kopf mobil, Knopf „Ausweichen“ mobil (Symbol statt Wort). Prüfung: bei 900 px Höhe und 390 px Breite nichts beschnitten.
+- [x] **A3 Halbtransparenter Bewohner** am Brunnen (vr2-07): Kronen-Transparenz greift auf Personen. Prüfung: Bewohner deckend, nur Kronen durchsichtig.
+- [x] **A4 Kartenbeschriftung** „Kirchvorplatz“ mit Kontur oder Plakette wie „Clan-Treff“. Prüfung: lesbar auf Pflaster und Gras.
+- [x] **A5 Verdeckter Text unten links** (vr2-01): entfernen oder über die Grafik legen.
+- [x] **A6 Hofprobe-Kasten mobil** über dem Kirchenbanner: unter das Spielerfenster andocken oder einklappbar.
 
 ### B · Slop entfernen (Texte und Platzhalter)
 
-- [ ] **B1 Meta-Hinweise raus:** Skillbuch-Kopf („Überfahren …“), Talente („Wähle deinen Weg …“, Tooltip-Fuß „Rechtsklick oder auf Touch …“), Charakter („Icon wählen …“), Rucksack-Fußzeilen. Ein Ort für Bedienung: die Kampfhilfe. Prüfung: kein Fenster erklärt Maus oder Finger.
-- [ ] **B2 Füllsätze raus:** „Dein Kram. Dein Kampfstil.“, „16 Plätze · zwei Ringe · zwei Glücksbringer“, „Du kannst weiterlaufen und kämpfen“, „Waffenwechsel beendet eine laufende Parade“ (letzteres als Toast beim Wechsel, nicht als Dauertext).
-- [ ] **B3 Kampfhilfe neu schneiden:** drei Abschnitte mit je drei Stichzeilen (Bewegen & Ziel · Kämpfen · Fenster), Tastenliste als Tabelle, darunter die Skill-Karten. Quelle Rotation: `CLAN_MEMBERS[].rotation`. Prüfung: kein Absatz über vier Zeilen.
-- [ ] **B4 Unicode-Platzhalter:** ♫ ⚙ ⛶ unten rechts, ☷ Journal, ♜ Belohnung durch Sprites aus `ui-art.js` ersetzen (Auftrag steht in `docs/GRAFIK-BEDARF.md`).
-- [ ] **B5 Aktionsleiste Stufe 1:** leere Plätze nur mit Nummer; „+“ erst bei offenem Skillbuch.
-- [ ] **B6 Doppelte Kicker:** „Auftragsbuch · J“, „Poo-Tang-Clan“ über dem Namen streichen, wo der Fenstertitel es schon sagt.
-- [ ] **B7 Bande-Karten angleichen:** Annis Bio auf die Länge der anderen kürzen (Inhalt liefert in `content/classes.js`); Karten gleich hoch.
+- [x] **B1 Meta-Hinweise raus:** Skillbuch-Kopf („Überfahren …“), Talente („Wähle deinen Weg …“, Tooltip-Fuß „Rechtsklick oder auf Touch …“), Charakter („Icon wählen …“), Rucksack-Fußzeilen. Ein Ort für Bedienung: die Kampfhilfe. Prüfung: kein Fenster erklärt Maus oder Finger.
+- [x] **B2 Füllsätze raus:** „Dein Kram. Dein Kampfstil.“, „16 Plätze · zwei Ringe · zwei Glücksbringer“, „Du kannst weiterlaufen und kämpfen“, „Waffenwechsel beendet eine laufende Parade“ (letzteres als Toast beim Wechsel, nicht als Dauertext).
+- [x] **B3 Kampfhilfe neu schneiden:** drei Abschnitte mit je drei Stichzeilen (Bewegen & Ziel · Kämpfen · Fenster), Tastenliste als Tabelle, darunter die Skill-Karten. Quelle Rotation: `CLAN_MEMBERS[].rotation`. Prüfung: kein Absatz über vier Zeilen.
+- [x] **B4 Unicode-Platzhalter:** ♫ ⚙ ⛶ unten rechts, ☷ Journal, ♜ Belohnung durch Sprites aus `ui-art.js` ersetzen (Auftrag steht in `docs/GRAFIK-BEDARF.md`).
+- [x] **B5 Aktionsleiste Stufe 1:** leere Plätze nur mit Nummer; „+“ erst bei offenem Skillbuch.
+- [x] **B6 Doppelte Kicker:** „Auftragsbuch · J“, „Poo-Tang-Clan“ über dem Namen streichen, wo der Fenstertitel es schon sagt.
+- [x] **B7 Bande-Karten angleichen:** Annis Bio auf die Länge der anderen kürzen (Inhalt liefert in `content/classes.js`); Karten gleich hoch.
+
+Block A und B: in 0.18.1 abgeschlossen; aktueller Prüfbericht und Bildpaare in [UI-BLOCK-AB-2026-09-13.md](UI-BLOCK-AB-2026-09-13.md). C1 wurde zur Entscheidung vorgelegt und bleibt offen.
 
 ### C · Stilbruch Welt (mit Grafik-Rolle)
 

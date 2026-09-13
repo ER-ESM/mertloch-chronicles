@@ -1,3 +1,8 @@
-import assert from 'node:assert/strict';import {mkdirSync,writeFileSync} from 'node:fs';import {browser,wait} from './browser-polish.mjs';
-const round=process.argv[2]||'1',dir='visual-review/round-'+round;mkdirSync(dir,{recursive:true});const b=await browser();
-try{await b.goto();await wait(500);await b.screenshot(dir+'/village.png');const start=await b.state();await b.hold('s',1000);await wait(200);assert.ok(Math.hypot((await b.state()).player.x-start.player.x,(await b.state()).player.y-start.player.y)>15);await b.screenshot(dir+'/walking.png');await b.press('Tab');await b.screenshot(dir+'/target.png');await b.click('#clanButton');await b.screenshot(dir+'/clan.png');await b.click('#closeModal');await b.click('#mapButton');assert.equal((await b.state()).paused,true);await b.screenshot(dir+'/map.png');await b.resize(390,844);await wait(200);await b.screenshot(dir+'/mobile-map.png');assert.ok(await b.evaluate('document.documentElement.scrollWidth<=innerWidth'));await b.click('#closeModal');await b.screenshot(dir+'/mobile-game.png');assert.equal(b.errors.length,0);const report={round,movement:true,mapPause:true,mobileOverflow:false,exceptions:b.errors,time:new Date().toISOString()};writeFileSync(dir+'/checks.json',JSON.stringify(report,null,2));console.log(report);}finally{await b.resize(1440,1000);await b.goto();b.close();}
+import {spawnSync} from 'node:child_process';
+// Eleven menus and their pages, HUD, tutorial, dialogue, rewards, loot and minigames.
+const round=process.argv[2]||'ab-after',url=process.argv[3]||'http://localhost:4173/',dir='visual-review/round-'+round;
+for(const [script,args]of [
+ ['ui-polish-check.mjs',[url,dir,'pages']],
+ ['visual-hud-check.mjs',[dir,url]],
+ ['dialog-polish-check.mjs',[url,dir+'/dialogues']]
+]){const result=spawnSync(process.execPath,['scripts/'+script,...args],{stdio:'inherit',windowsHide:true});if(result.status!==0)process.exit(result.status||1);}

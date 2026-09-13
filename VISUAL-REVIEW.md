@@ -1,3 +1,28 @@
+# Aktuelle Sichtprüfung · 0.18.1 · 13.09.2026
+
+Block A und B aus der visuellen Bewertung sind abgeschlossen. [Aufgaben, Vorher-/Nachher-Bildpaare und Prüfberichte](docs/UI-BLOCK-AB-2026-09-13.md). Die Bewertung unten ist eine eigene Sichtprüfung des tatsächlichen Browsers, keine aus Testzahlen abgeleitete Grafiknote.
+
+| Bildschirm | Note / 5 | Aktueller Befund |
+|---|---:|---|
+| Dorfkern | 3 | Bewohner deckend, Kronentransparenz begrenzt, Straßenlabel lesbar; Stilentscheidung C1 offen. |
+| HUD | 4 | Leere Plätze ruhig, echte Symbole, Ausweichen ohne abgeschnittenes Wort. |
+| Gespräch | 5 | Personenbild, kurze Abschnitte, semantisches Belohnungsbild und klare Auswahl. |
+| Die Bande | 4 | Gleiche Kartenhöhen und kurze Bio; Figurenstil noch uneinheitlich. |
+| Charakter | 4 | Acht eindeutige Attributzeilen, kompakte Ausrüstung ohne Füllkopf. |
+| Skillbuch | 4 | Icons und Auswahlstatus ohne Bedienabsätze; Hilfe zentral erreichbar. |
+| Talente | 4 | Graph und Voraussetzungen lesbar; Bedienfuß entfernt, Icon-Stil C2 offen. |
+| Kampfhilfe | 4 | Drei kurze Themenblöcke, gerätespezifische Tabelle und Skillkarten. Tabelle bleibt beim Blättern korrekt. |
+| Rucksack | 4 | Klare Iconflächen, Suche und separate Gegenstandsdetails ohne Maus-Hinweisfuß. |
+| Auftragsbuch | 4 | Kein doppelter Kicker, lesbare Aufgaben und Seiten. |
+| Revierkarte | 5 | Orte, Ziele, Legende und Route weiterhin gut getrennt. |
+| Mobil | 4 | Ausklappbare Hofprobe unter Spieler/Ziel, freie Kampfbuttons, passende Hilfetexte. |
+
+**Gesamt: 4,1 / 5.** Die Vereinheitlichung der Weltgrafik bleibt von C1 abhängig.
+
+Validierung: 163 Spieltests; 175 Menüzustände in drei Bildschirmformaten; 52 gezielte Nachprüfungen; Dialog-/Loot-/Minispiel- und Kampfbedienungstests. Ausführliche Belege im verlinkten Bericht.
+
+---
+
 # Sichtprüfung und fünf Überarbeitungsrunden
 
 Stand: 11.09.2026 · Mertloch Chronicles 0.9.

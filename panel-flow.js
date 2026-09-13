@@ -13,6 +13,12 @@ export function paginateFlow(root,w,key,capacity){
  const limit=Math.max(44,capacity-52),parts=[];
  function split(el){
   root.replaceChildren(el);if(el.getBoundingClientRect().height<=limit||el.matches('button,canvas,input,select,svg')){parts.push(el);return;}
+  if(el.matches('table')){
+   const rows=[...el.querySelectorAll('tbody>tr')];let table,body;
+   const next=()=>{table=el.cloneNode(false);if(el.tHead)table.append(el.tHead.cloneNode(true));body=document.createElement('tbody');table.append(body);root.replaceChildren(table);};next();
+   for(const row of rows){body.append(row);if(table.offsetHeight>limit&&body.children.length>1){row.remove();parts.push(table);next();body.append(row);}}
+   if(body.children.length)parts.push(table);return;
+  }
   if(el.matches('p')&&el.textContent.length>160){const words=el.textContent.split(/\s+/);let p=el.cloneNode(false);root.replaceChildren(p);for(const word of words){const old=p.textContent;p.textContent+=(old?' ':'')+word;if(p.offsetHeight>limit&&old){p.textContent=old;parts.push(p);p=el.cloneNode(false);p.textContent=word;root.replaceChildren(p);}}parts.push(p);return;}
   if(el.children.length>1){const children=[...el.children];for(const child of children){const wrap=el.cloneNode(false);wrap.removeAttribute('id');wrap.append(child);root.replaceChildren(wrap);if(wrap.offsetHeight>limit&&child.children.length>1)split(child);else parts.push(wrap);}return;}
   parts.push(el);

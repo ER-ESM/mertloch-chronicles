@@ -1,4 +1,4 @@
-import {FootfallTrail,nearestSpeaker} from './world-presence.js';
+import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
 import {drawTutorial,drawTrainingDummy} from './tutorial-ui.js';
 import {drawWorldPerson} from './person-art.js';
 import {BossSpeech,drawBossSpeech} from './enemy-ui.js';
@@ -13,7 +13,7 @@ import {drawComicResident as drawResidentSprite} from './comic-actors.js';
 import {drawClanHero as drawHero,drawClanEnemy as drawComicEnemy,drawClanCamp} from './clan-art.js';
 import {createComicTree,drawComicProp} from './comic-nature.js';
 export {drawHero};
-function drawResident(c,a,time){c.save();c.translate(a.x,a.y);const s=a.kind==='villager'?.85:.8;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
+function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);const s=a.kind==='villager'?.85:.8;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
 import {drawBuilding,drawFurniture} from './architecture.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
 import {distance,SCALE} from './world.js';
@@ -51,7 +51,7 @@ export class Renderer {
     for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});sorted.sort((a,b)=>a.y-b.y);
     for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});sorted.sort((a,b)=>a.y-b.y);
     for(const item of sorted){const e=item.obj;c.save();if(item.type==='building'){const bounds=buildingVisualBounds(e);if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>u.x>bounds.minX&&u.x<bounds.maxX&&u.y<bounds.maxY&&u.y>bounds.minY))c.globalAlpha=.38;this.building(c,e);}
-      else if(item.type==='tree'){const s=e.size,focus=[p,...(g.target?.hp>0?[g.target]:[])];if(focus.some(unit=>Math.abs(unit.x-e.x)<55*s&&unit.y<e.y+9&&unit.y>e.y-116*s))c.globalAlpha=.28;if(drawAssetTree(c,e,time)){c.restore();continue;}const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];const sway=0;c.drawImage(sp,Math.round(e.x-44*s+sway),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));}
+      else if(item.type==='tree'){const s=e.size;drawTreeOcclusion(c,e,[p,...(g.target?.hp>0?[g.target]:[])],()=>{if(drawAssetTree(c,e,time))return;const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];c.drawImage(sp,Math.round(e.x-44*s),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));});}
       else if(item.type==='loot'){ellipse(c,'#23372355',e.x,e.y,8,3);drawItem(c,'bag',Math.round(e.x-10),Math.round(e.y-17),.8);if(distance(e,p)<65){label(c,'F · Beute',e.x,e.y-23,'#edce84',7);}else{rect(c,'#ead39c',e.x,e.y-21,1,3);}}
       else if(item.type==='estate'){drawEstateDetail(c,e,time);}
       else if(item.type==='hub'){drawHub(c,e,time);}

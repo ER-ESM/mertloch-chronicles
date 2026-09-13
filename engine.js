@@ -27,7 +27,7 @@ export class Game {
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
     world.camps.forEach(c=>{for(let i=0;i<c.count;i++){const spot=c.spawns?.[i]||world.findClear(c.x+(i-1)*42,c.y+Math.sin(i*3)*48,9);this.enemies.push(makeEnemy(spot,this.enemies.length+1,{type:c.type,campId:c.id,questId:c.questId,roamRadius:c.type==='wolf'&&!c.questId?24:40,aggroRange:c.type==='wolf'&&!c.questId?78:c.type==='boss'?105:120,spawnPoints:c.spawns||[spot],name:c.questId?(world.quests?.find(q=>q.id===c.questId)?.enemyName||'Pfandkeiler am Grillplatz'):undefined}));}});
     this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const build of Object.values(this.rpg.talentBuilds))build.learned=build.learned.slice(0,talentPoints(this));this.refreshStats();this.ecology=new EncounterDirector(this);
-    initTutorial(this,saved,options.guidedStart);this.log(SYSTEM_LINES.welcome);
+    initTutorial(this,saved,options.guidedStart);
   }
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
   resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}

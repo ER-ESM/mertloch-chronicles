@@ -7,7 +7,7 @@ export const CLAN_MEMBERS=[
   passives:{parryHeal:35,damageTaken:.9},
   look:'Breiter Kerl mit Schnauzer, Clankutte, Bierkasten-Tattoo am Unterarm, Kronkorken-Kelle'},
  {id:'baerbel',name:'Aperol-Anni',role:'Heilerin · Landhaus-Lady',age:34,color:'#edaa67',combo:'Glanz',
-  bio:'Seit 34 Jahren Mertloch. Hat den Thermomix geleast, die Landhausküche gefiltert und drei Freundinnen in ihre Putzpyramide gelabert. Zwischen Aperol, Schminktutorial und Hygiene-Vorführung rettet sie den Clan. „Das ist kein Schneeballsystem, Schatz. Das ist meine Downline.“',
+  bio:'Landhausküche auf Pump, Aperol im Glas, Thermomix im Dauerlauf. Rettet den Clan mit Schminke und Hygiene – und wirbt dich dabei für ihre Putzpyramide an.',
   passive:'Hauspflege: Heilung ist dein Handwerk. Pinsel-Treffer im richtigen Abstand geben extra Glanz; Hauspflege heilt über Zeit. Erst eincremen, dann auf die Fresse.',
   rotation:'Hauspflege erhalten → Glanz aufbauen → Fleckentest → Thermomix-Turbostufe. Spezialisiere dich auf Landhaus-Heilung, Putzprovision durch Schaden oder Instagram-Eskalation.',
   passives:{beatWindow:[.85,1.5],beatRunes:2},
