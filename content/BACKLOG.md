@@ -25,6 +25,7 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 
 ## Inhaltlich offen
 
+- [ ] **Landjungs-Themen ausbauen** – Zukunftsideen in [IDEEN-LANDJUNGS.md](IDEEN-LANDJUNGS.md): Schrauberhof (Racing/Tuning), Kalles Kiosk (Sport- und Dorfwetten), LAN-Scheune (Gaming/Nerds), Prompt & Partner (Vibe-Coding-/KI-Slop-Parodie). Mit NPCs, Dialogen, Questketten, Items, Skillvarianten und Platzierungsregeln; noch nicht implementiert. Als Einstieg LAN-Scheune mit vorhandenen Figuren und Kabelspiel prüfen.
 - [ ] Elite-Titel (`title`) im Zielfenster anzeigen (heute „ELITE ·“ nur bei Bossen).
 - [ ] Mehr Quest-Vorlagen für Kapitel 2/3 (Praktikanten vertreiben, Dosenblech sammeln), sobald die Kapitel laufen.
 - [ ] Zweite Elite für die Außenbezirke (menschlich, z. B. „Oberpraktikant Olaf“).
