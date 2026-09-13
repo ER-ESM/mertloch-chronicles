@@ -13,3 +13,4 @@
 /* Override the page header's global nav height inside game windows. */
 .compact-panel .panel-tabs,.compact-panel .quest-tabs{height:auto;flex:none}.compact-panel .grid-pager{height:34px;min-height:34px;flex:none}.touch-mode .compact-panel .grid-pager{height:44px;min-height:44px}
 .touch-mode .compact-panel .quest-entry h3{font-size:14px;line-height:18px}.compact-panel .quest-pages>.flow-page:empty{display:none}
+.compact-panel .quest-pages .eyebrow,.compact-panel .quest-pages small{display:block}
