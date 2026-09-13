@@ -1,3 +1,4 @@
+import {FootfallTrail,nearestSpeaker} from './world-presence.js';
 import {drawTutorial,drawTrainingDummy} from './tutorial-ui.js';
 import {drawWorldPerson} from './person-art.js';
 import {BossSpeech,drawBossSpeech} from './enemy-ui.js';
@@ -22,7 +23,7 @@ const ellipse=(c,color,x,y,rx,ry)=>{c.fillStyle=color;c.beginPath();c.ellipse(Ma
 let labelBoxes=[];
 function label(c,text,x,y,color='#ead9a7',size=8){c.save();c.font=`${size}px Georgia`;const width=c.measureText(text).width,b={x:x-width/2-2,y:y-size-2,w:width+4,h:size+5};if(size<11&&labelBoxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)){c.restore();return;}labelBoxes.push(b);c.textAlign='center';c.strokeStyle='#293b44e8';c.lineWidth=1.5;c.lineJoin='round';c.strokeText(text,Math.round(x),Math.round(y));c.fillStyle=color;c.fillText(text,Math.round(x),Math.round(y));c.restore();}
 export class Renderer {
-  constructor(canvas,world,game){this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.world=world;this.game=game;this.camera={...game.player};this.chunks=new Map();this.treeSprites=Array.from({length:10},(_,i)=>createComicTree(i%5,i>4));this.shake=0;this.bossSpeech=new BossSpeech();this.zoom=2;this.frame=0;this.resize();}
+  constructor(canvas,world,game){this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.world=world;this.game=game;this.camera={...game.player};this.footfalls=new FootfallTrail();this.chunks=new Map();this.treeSprites=Array.from({length:10},(_,i)=>createComicTree(i%5,i>4));this.shake=0;this.bossSpeech=new BossSpeech();this.zoom=2;this.frame=0;this.resize();}
   resize(){const r=this.canvas.getBoundingClientRect();this.zoom=document.body.classList.contains('touch-mode')?(r.width<600?1.35:r.height<500?1.5:1.75):r.width<600?1.6:2;this.viewWidth=Math.ceil(r.width/this.zoom);this.viewHeight=Math.ceil(r.height/this.zoom);this.canvas.width=this.viewWidth*DETAIL;this.canvas.height=this.viewHeight*DETAIL;this.ctx.imageSmoothingEnabled=false;}
   screenToWorld(x,y){const r=this.canvas.getBoundingClientRect();return{x:(x-r.left)/r.width*this.viewWidth+this.camera.x-this.viewWidth/2,y:(y-r.top)/r.height*this.viewHeight+this.camera.y-this.viewHeight/2};}
   groundChunk(gx,gy){const key=gx+','+gy;if(this.chunks.has(key))return this.chunks.get(key);const cv=createTerrainChunk(this.world,gx,gy);this.chunks.set(key,cv);if(this.chunks.size>40)this.chunks.delete(this.chunks.keys().next().value);return cv;}
@@ -38,7 +39,7 @@ export class Renderer {
     // Hand-placed fantasy dressing is kept separate from the geographic base.
     for(const camp of w.camps){if(!visible(camp,50)||camp.type==='wolf')continue;const x=camp.x+19,y=camp.y+19;ellipse(c,'#28382266',x,y+2,13,5);for(let i=0;i<7;i++){const a=i/7*Math.PI*2;rect(c,'#969578',x+Math.cos(a)*9-2,y+Math.sin(a)*4-1,4,3);}rect(c,'#514835',x-5,y-3,11,3);if(!drawAssetFire(c,x,y,time)){rect(c,'#e6ad61',x-4,y-11,8,11);rect(c,'#f4d48b',x-2,y-7,4,7);}c.globalAlpha=.12;ellipse(c,'#efc06e',x,y,22,13);c.globalAlpha=1;for(let i=0;i<3;i++){c.globalAlpha=.13;rect(c,'#f3deb5',x+Math.sin(time+i)*4,y-14-(time*7+i*9)%26,3,2);}c.globalAlpha=1;}
     for(const b of w.barriers){if(b.maxX<ox||b.minX>ox+W||b.maxY<oy||b.minY>oy+H)continue;c.beginPath();b.points.forEach((q,i)=>i?c.lineTo(q.x,q.y-3):c.moveTo(q.x,q.y-3));c.strokeStyle='#46583b';c.lineWidth=5;c.stroke();c.strokeStyle='#859562';c.lineWidth=2;c.stroke();}
-    this.shrine(c);drawTutorial(c,g,time);
+    this.shrine(c);drawTutorial(c,g,time);this.footfalls.draw(c,g);
     for(const e of g.enemies){if(e.hp>0||!visible(e,20)||e.ai==='waiting')continue;ellipse(c,'#293b4430',e.x,e.y,12,3);rect(c,'#a58d7a',e.x-5,e.y-3,10,4);}
     if(g.showAggro&&g.target?.hp>0&&g.target.behavior==='aggressive'&&g.target.ai!=='returning'){c.save();c.setLineDash([4,5]);c.strokeStyle='#e69b88b0';c.lineWidth=1;c.beginPath();c.arc(g.target.x,g.target.y,g.target.aggroRange,0,Math.PI*2);c.stroke();c.restore();}
     for(const z of [...(g.zones||[]),...(g.fields||[]),...(g.aiming&&g.aimPoint?[{...g.aimPoint,radius:g.skills.find(s=>s.id===g.aiming).radius,preview:true}]:[])]){const valid=!w.blocked(z.x,z.y,3)&&w.lineClear(p,z)&&(!z.preview||distance(p,z)<=g.skills.find(s=>s.id===g.aiming).range+(combatStats(g).range||0));c.save();ellipse(c,valid?(z.kind==='burn'?'#d47b333f':z.kind==='barricade'?'#6ca9d43a':z.kind==='snare'?'#ccaa563d':'#8bdaa32b'):'#d35a4833',z.x,z.y,z.radius,z.radius);c.strokeStyle=valid?'#bce6a0':'#ed8b69';c.setLineDash([4,3]);c.lineWidth=1.5;c.beginPath();c.arc(z.x,z.y,z.radius,0,Math.PI*2);c.stroke();c.restore();}
@@ -50,7 +51,7 @@ export class Renderer {
     for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});sorted.sort((a,b)=>a.y-b.y);
     for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});sorted.sort((a,b)=>a.y-b.y);
     for(const item of sorted){const e=item.obj;c.save();if(item.type==='building'){const bounds=buildingVisualBounds(e);if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>u.x>bounds.minX&&u.x<bounds.maxX&&u.y<bounds.maxY&&u.y>bounds.minY))c.globalAlpha=.38;this.building(c,e);}
-      else if(item.type==='tree'){const s=e.size,focus=[p,...(g.target?.hp>0?[g.target]:[])];if(focus.some(unit=>Math.abs(unit.x-e.x)<40*s&&unit.y<e.y+9&&unit.y>e.y-100*s))c.globalAlpha=.28;if(drawAssetTree(c,e,time)){c.restore();continue;}const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];const sway=0;c.drawImage(sp,Math.round(e.x-44*s+sway),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));}
+      else if(item.type==='tree'){const s=e.size,focus=[p,...(g.target?.hp>0?[g.target]:[])];if(focus.some(unit=>Math.abs(unit.x-e.x)<55*s&&unit.y<e.y+9&&unit.y>e.y-116*s))c.globalAlpha=.28;if(drawAssetTree(c,e,time)){c.restore();continue;}const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];const sway=0;c.drawImage(sp,Math.round(e.x-44*s+sway),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));}
       else if(item.type==='loot'){ellipse(c,'#23372355',e.x,e.y,8,3);drawItem(c,'bag',Math.round(e.x-10),Math.round(e.y-17),.8);if(distance(e,p)<65){label(c,'F · Beute',e.x,e.y-23,'#edce84',7);}else{rect(c,'#ead39c',e.x,e.y-21,1,3);}}
       else if(item.type==='estate'){drawEstateDetail(c,e,time);}
       else if(item.type==='hub'){drawHub(c,e,time);}
@@ -58,9 +59,9 @@ export class Renderer {
       else if(item.type==='clanCamp'){drawClanCamp(c,w,time);}
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
-      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,p,false,.8);}
-      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,.85);if(distance(e,p)<90)label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.claimed?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
-      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,.85,{facing:-1});if(distance(n,p)<80)label(c,n.name,n.x,n.y-32,'#d8c89a',7);label(c,s.claimed?'✦':s.progress>=e.required?'?':s.accepted?'◇':'!',n.x,n.y-42,'#f1d183',13);}
+      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,p,false,w.rules.heroHeight/33);}
+      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,.85);if(nearestSpeaker(g,e))label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.claimed?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
+      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,.85,{facing:-1});if(nearestSpeaker(g,n))label(c,n.name,n.x,n.y-32,'#d8c89a',7);label(c,s.claimed?'✦':s.progress>=e.required?'?':s.accepted?'◇':'!',n.x,n.y-42,'#f1d183',13);}
       else if(e.tutorial){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
     for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const y=e.y-(e.tutorial?58:e.type==='boss'?92:e.type==='cultist'?40:32);if(e===g.target||e.aggro||distance(e,p)<160){if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))label(c,e.name,e.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);rect(c,'#233b2c',e.x-19,y+4,38,4);rect(c,e.behavior==='neutral'&&!e.aggro?'#d9b86e':'#bb7279',e.x-18,y+5,36*e.hp/e.maxHp,2);}
@@ -68,7 +69,7 @@ export class Renderer {
       if(e.cast){const yy=y+11;rect(c,'#282b23',e.x-23,yy,46,4);rect(c,e.cast.interruptible?'#dbb967':'#d99071',e.x-22,yy+1,44*(1-e.cast.remaining/e.cast.total),2);}
     }
     for(const b of w.landmarks){if(!b.church&&visible(b,30)){label(c,b.tags.name,b.x,b.maxY+20,'#ebdfb8',b.church?10:7);}}
-    const nearby=w.nearestRoad(p.x,p.y);if(nearby.road&&nearby.distance<50){const r=nearby.road;const mid=r.points[Math.floor(r.points.length/2)];if(visible(mid,0))label(c,r.tags.name,mid.x,mid.y+12,'#5a6145',7);}
+    const nearby=w.nearestRoad(p.x,p.y);if(nearby.road&&nearby.distance<50){const r=nearby.road;const mid=r.points[Math.floor(r.points.length/2)];if(visible(mid,0))label(c,r.tags.name,mid.x,mid.y+12,'#ece0b6',7);}
     if(g.moveTo){const t=g.moveTo;c.strokeStyle='#f1db98';c.lineWidth=1;c.beginPath();c.ellipse(t.x,t.y,5,3,0,0,Math.PI*2);c.stroke();}
     const destination=g.destination();if(destination&&distance(p,destination.point)>145){const d=destination.point,dx=d.x-p.x,dy=d.y-p.y,n=Math.hypot(dx,dy),radius=Math.min(W*.32,H*.26),x=p.x+dx/n*radius,y=p.y+dy/n*radius;c.save();c.translate(x,y);c.rotate(Math.atan2(dy,dx));poly(c,[{x:7,y:0},{x:-4,y:-4},{x:-1,y:0},{x:-4,y:4}]);c.fillStyle='#f2d998';c.fill();c.restore();label(c,Math.round(n/SCALE)+' m',x,y+15,'#f4ddb0',8);}
     for(const f of g.fx)this.drawEffect(c,f,time);

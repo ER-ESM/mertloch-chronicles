@@ -1,3 +1,4 @@
+import {spaceQuestGivers} from './world-presence.js';
 import {dressSites,placeQuestObjects} from './site-dressing.js';
 import {refineDressing,placementReason} from './world-dressing.js';
 import {prepareDetails} from './world-details.js';
@@ -54,7 +55,7 @@ export class World {
     // Unserviceable dense lots become gardens instead of decorative dead ends.
     this.buildings=this.buildings.filter(b=>b.church||b.accessible);this.landmarks=this.landmarks.filter(b=>this.buildings.includes(b));this.grid.clear();this.buildings.forEach(b=>this.addGrid(b));
     const access=this.closestRoad(this.spawn.x,this.spawn.y);this.roads.push({id:'church-square',tags:{highway:'footway',name:'Kirchvorplatz'},points:[this.spawn,access.point],width:38,entrance:true,...bounds([this.spawn,access.point]),x:this.spawn.x,y:this.spawn.y});
-    this.indexRoads();this.buildNavigation();this.generateEncounters(random);this.generateQuests(random);placeQuestObjects(this);setCampApproaches(this);this.dressWorld(random);refineDressing(this);
+    this.indexRoads();this.buildNavigation();this.generateEncounters(random);this.generateQuests(random);placeQuestObjects(this);setCampApproaches(this);this.dressWorld(random);refineDressing(this);spaceQuestGivers(this);
     this.report={version:2,dressing:this.dressingReport,seed:this.seed,sourceBuildings:raw.length,buildings:this.buildings.length,omittedBuildings:raw.length-this.buildings.length,relocatedBuildings:this.buildings.filter(b=>distance(b,b.sourceCenter)>1).length,accessibleDoors:this.buildings.filter(b=>b.accessible).length,roadNodes:this.nodes.length,connectedRoadNodes:this.connected.size,trees:this.trees.length,quests:this.quests.length,failures:[],rules:this.rules};
     dressSites(this);this.validate();dressStory(this);this.details=prepareDetails(this).filter(p=>!placementReason(this,p,p.kind===2?'bench':'rock'));
   }

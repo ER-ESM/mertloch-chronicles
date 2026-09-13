@@ -1,6 +1,6 @@
 # Balance-Bericht
 
-Automatisch erzeugt von `node scripts/balance-report.mjs` · 2026-09-12 · stehender Kampf, 3 Seeds je Zelle, fünf repräsentative Ausrüstungsteile der Stufe einschließlich Fernkampfplatz (ab Stufe 6 selten), keine vollständige Bestückung aller 16 Plätze, alle Talente der Spezialisierung Seed % 3.
+Automatisch erzeugt von `node scripts/balance-report.mjs` · 2026-09-13 · stehender Kampf, 3 Seeds je Zelle, fünf repräsentative Ausrüstungsteile der Stufe einschließlich Fernkampfplatz (ab Stufe 6 selten), keine vollständige Bestückung aller 16 Plätze, alle Talente der Spezialisierung Seed % 3.
 
 Lesart: **Zeit bis zum Kill / verlorenes Leben**. ☠ = stirbt in allen Läufen, ⚠ = stirbt manchmal, ⏳ = über 25 s auf gleicher Stufe (zäh), · = unter 2,5 s drei Stufen darüber (trivial). EP je Stufe: 140 × Stufe (Stufe 6 = 2100 EP gesamt).
 

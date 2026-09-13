@@ -74,3 +74,6 @@ Die Version 0.4 verwendet für alle generierten Varianten den eigenen Comic-Pixe
 ## Quellen
 
 Geografische Grundlage: [© OpenStreetMap-Mitwirkende, ODbL](https://www.openstreetmap.org/copyright). Die Originaldatei und die reduzierte Spielquelle bleiben in `data/`. Alle Pixelgebäude und Dekorationen werden aus eigenem Zeichencode erzeugt; keine Google-Maps-Bildauswertung und keine übernommenen Spielgrafiken.
+## Figurenplatzierung (0.18)
+
+`world-presence.js` ergänzt die gemeinsame World-Pipeline nach der Umgebungsdekoration: Questgeber halten 48 Welteinheiten Abstand, meiden Baumkronen, Startplatz und Brunnen und benötigen einen berechneten Laufweg. Die Suche verwendet konzentrische, vom Weltseed deterministisch gedrehte Kandidatenringe. `world.dressingReport.people` protokolliert verschobene und beibehaltene Plätze. Prüfung für sechs Weltvarianten: `node scripts/world-presence-check.mjs`; Details zu den fünf visuellen Prüfrunden in [POLISH-018-REVIEW](docs/POLISH-018-REVIEW.md).
