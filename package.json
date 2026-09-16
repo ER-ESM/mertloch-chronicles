@@ -1,6 +1,6 @@
 {
   "name": "mertloch-chronicles",
-  "version": "0.18.4",
+  "version": "0.18.5",
   "private": true,
   "type": "module",
   "homepage": "https://er-esm.github.io/mertloch-chronicles/",
@@ -19,9 +19,10 @@
     "world:build": "node scripts/build-world.mjs",
     "world:validate": "node scripts/build-world.mjs --seeds 1,42,56753,73519,2026,987654",
     "sprites:build": "node tools/sprite-pipeline/build.mjs",
-    "sprites:check": "node --test tests/sprite-pipeline.test.mjs tests/maifeld-prototype.test.mjs tests/maifeld-walk.test.mjs",
+    "sprites:check": "node --test tests/sprite-pipeline.test.mjs tests/maifeld-prototype.test.mjs tests/maifeld-walk.test.mjs tests/maifeld-boar-rig.test.mjs",
     "sprites:brief": "node tools/sprite-pipeline/brief.mjs",
-    "sprites:detail": "node tools/sprite-pipeline/build-detail.mjs && node tools/sprite-pipeline/build-walk.mjs",
-    "sprites:walk": "node tools/sprite-pipeline/build-walk.mjs"
+    "sprites:detail": "node tools/sprite-pipeline/build-detail.mjs && node tools/sprite-pipeline/build-walk.mjs && node tools/sprite-pipeline/build-boar-rig.mjs",
+    "sprites:walk": "node tools/sprite-pipeline/build-walk.mjs",
+    "sprites:boar": "node tools/sprite-pipeline/build-boar-rig.mjs"
   }
 }
