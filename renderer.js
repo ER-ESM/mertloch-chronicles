@@ -2,7 +2,8 @@ import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.j
 import {drawTutorial,drawTrainingDummy} from './tutorial-ui.js';
 import {drawWorldPerson} from './person-art.js';
 import {BossSpeech,drawBossSpeech} from './enemy-ui.js';
-import {combatStats} from './rpg.js';
+import {equipmentAppearance} from './equipment-appearance.js';
+import {combatStats,ITEMS} from './rpg.js';
 import {drawItem} from './item-art.js';
 import {drawAtlas} from './cartography.js';
 import {drawAssetTree,drawAssetProp,drawAssetEffect,drawAssetFire} from './asset-art.js';
@@ -59,12 +60,12 @@ export class Renderer {
       else if(item.type==='clanCamp'){drawClanCamp(c,w,time);}
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
-      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,p,false,w.rules.heroHeight/33);}
+      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,{...p,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,w.rules.heroHeight/33);}
       else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,.85);if(nearestSpeaker(g,e))label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.claimed?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
       else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,.85,{facing:-1});if(nearestSpeaker(g,n))label(c,n.name,n.x,n.y-32,'#d8c89a',7);label(c,s.claimed?'✦':s.progress>=e.required?'?':s.accepted?'◇':'!',n.x,n.y-42,'#f1d183',13);}
       else if(e.tutorial){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
-    for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const y=e.y-(e.tutorial?58:e.type==='boss'?92:e.type==='cultist'?40:32);if(e===g.target||e.aggro||distance(e,p)<160){if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))label(c,e.name,e.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);rect(c,'#233b2c',e.x-19,y+4,38,4);rect(c,e.behavior==='neutral'&&!e.aggro?'#d9b86e':'#bb7279',e.x-18,y+5,36*e.hp/e.maxHp,2);}
+    for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const y=e.y-(e.tutorial?58:e.type==='boss'?(e.variant==='automat'?56:41):e.type==='cultist'?36:e.elite?37:29);if(e===g.target||e.aggro||distance(e,p)<160){if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))label(c,e.name,e.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);rect(c,'#233b2c',e.x-19,y+4,38,4);rect(c,e.behavior==='neutral'&&!e.aggro?'#d9b86e':'#bb7279',e.x-18,y+5,36*e.hp/e.maxHp,2);}
       if(e.spawnGrace>0&&distance(e,p)<100)label(c,'Taucht auf …',e.x,y-9,'#d6c5de',7);if(e.ai==='returning')label(c,'Zieht ab',e.x,y-9,'#b3c5dc',7);if(e.mark>0){label(c,'!',e.x,y-10,'#bce3d6',11);}
       if(e.cast){const yy=y+11;rect(c,'#282b23',e.x-23,yy,46,4);rect(c,e.cast.interruptible?'#dbb967':'#d99071',e.x-22,yy+1,44*(1-e.cast.remaining/e.cast.total),2);}
     }

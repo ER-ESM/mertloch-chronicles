@@ -1,3 +1,16 @@
+# Maifeld-Detailpixel · Art Direction 0.19
+
+Seit 16.09.2026 ist **Maifeld-Detailpixel** der verbindliche Stil des Hauptspiels. Aktueller Vertrag: [Live-Optik und Ausrüstung](docs/LIVE-OPTIK-ARBEITSPLAN-2026-09-16.md). Die folgenden Abschnitte dokumentieren die früheren Grafikstände; bei Widersprüchen gilt dieser Vertrag.
+
+- `live-art.js`: gemeinsame Figuren für Welt, Gespräch und Charakteransicht. Drei Helden, 26 weitere Identitäten und sieben Tierarten.
+- Helden: 52 native Pixel Körperhöhe, 26 Welteinheiten, vier Ansichten und acht distanzabhängige Laufphasen. Ausrüstung folgt registrierten Griff-, Rumpf-, Kopf- und Fußpunkten.
+- `art-style.js`: 40 Ankerfarben aus `tools/sprite-pipeline/config.mjs`; Umgebung mit abgeleiteten Zwischenfarben. Warmes Licht von links oben, dunkle Schieferkontur, keine geglätteten UI-Icons.
+- Originale bleiben erhalten. Neue Rastergrafik wird über den eingebauten Bilddienst erzeugt, anschließend deterministisch segmentiert, registriert, auf die Palette gebracht und gepackt. `npm run sprites:live` und `npm run sprites:check` sind verbindlich.
+- Gear muss in Tasche, Ausrüstungsplatz, Porträt und Welt dasselbe Objekt zeigen. Keine fest eingebackenen Waffen an den Helden. Zweihand entfernt die sichtbare Nebenhand; die aktive Fähigkeit entscheidet über die Fernkampfwaffe.
+- Tiere behalten beim Laufen einen unveränderten Rumpf; nur Beine bewegen sich. Kein Wackeln der Tannen. Kartenkollisionen und Hauszugänge bleiben vom visuellen Import unabhängig.
+
+---
+
 # Maifeld-Märchen · Art Direction 0.8
 
 Comicartige Pixelgrafik mit regionalen Motiven: Tinte, Honiglicht, Apfelwiesen, Schiefer und Fachwerk. Die Welt soll auch in einer kleinen Ansicht erkennbare Formen besitzen. Detail entsteht durch Material, Konstruktion und kleine Geschichten am Objekt.

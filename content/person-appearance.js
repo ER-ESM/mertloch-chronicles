@@ -1,2 +1,2 @@
 // Both world rendering and UI portraits resolve through this single identity map.
-export const PERSON_APPEARANCE={dieter:'dieter',baerbel:'baerbel',kevin:'kevin',ida:'ida',mara:'mara',leander:'lauti',oskar:'elder',fenja:'mara',tilo:'lauti',jonna:'mara',hedwig:'elder',konrad:'lauti',fiete:'elder',elke:'mara',buergermeister:'warden',horst:'horst',gisela:'horst'};
+export const PERSON_APPEARANCE={dieter:'dieter',baerbel:'baerbel',kevin:'kevin',ida:'ida',mara:'mara',leander:'leander',oskar:'oskar',fenja:'fenja',tilo:'tilo',jonna:'jonna',hedwig:'hedwig',konrad:'konrad',fiete:'fiete',elke:'elke',buergermeister:'buergermeister',horst:'horst',gisela:'gisela'};

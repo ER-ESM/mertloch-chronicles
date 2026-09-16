@@ -2,7 +2,7 @@
 // Aufruf: node scripts/art-brief.mjs → content/ART-BRIEF.md und generated/art-brief.json
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {ITEM_CATALOG,ARCHETYPES,ELITES,BOSSES,NPCS,CLAN_MEMBERS,TALENT_SKILLS,SPECS} from '../content/index.js';
-const style='Comic-Pixelstil „Maifeld-Märchen“ (siehe ART-DIRECTION.md): Pflaumentinte-Konturen, Honiglicht, Korallrot, Flussjade, Schieferblau; klare Schattenflächen, keine Texturrauschen; Figuren ca. 26 px hoch, Icons 24 px bzw. 48 px, transparenter Hintergrund.';
+const style='Maifeld-Detailpixel (ART-DIRECTION.md 0.19): warme 40-Farben-Ankerpalette, dunkle Schieferkonturen, Licht links oben, klare Pixelcluster, echte Transparenz. Helden 52 native Pixel/26 Welteinheiten, vier Richtungen, freie Hände für Ausrüstungs-Layer. Vorlagen in assets/maifeld-live/sources; Pipeline tools/sprite-pipeline/build-live.mjs.';
 const entries=[];
 for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.look)entries.push({kind:'item',id,name:d.name,size:'24×24 Icon',fallback:'Icon „'+d.icon+'“',prompt:d.look,flavor:d.description});
 for(const [id,d] of Object.entries({...ARCHETYPES,...ELITES}))if(d.look)entries.push({kind:'enemy',id,name:d.name,size:'Sprite 4 Richtungen/2 Frames, Höhe '+(d.type==='cultist'?'26':'18–24')+' px',fallback:'Skin „'+d.skin+'“',prompt:d.look});

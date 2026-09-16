@@ -13,7 +13,7 @@ export function boarPose(rig,direction,distance=0,moving=true,action=null){
  // Explicit one-shot lunge/recoil. Walking itself never changes the body image or its angle.
  const pulse=action?Math.sin(Math.PI*Math.max(0,Math.min(1,action.progress))):0;
  const bodyX=action?.kind==='attack'?pulse*2*east:action?.kind==='hit'?-pulse*east:action?.kind==='cast'?pulse*.6*east:0;
- return{body:{...view.parts.body,x:bodyX,y:0},legs:['farRear','farFront','nearRear','nearFront'].map(name=>{
+ return{body:{...view.parts.body,x:bodyX,y:0},legs:['farRear','farFront','nearRear','nearFront'].filter(name=>view.parts[name]).map(name=>{
   const p=view.parts[name],foot=moving?boarFoot(phase+p.phase):{x:0,lift:0};
   // Keep roots attached; transform each whole leg towards its continuous hoof position.
   const weight=typeof moving==='number'?moving:1,dx=foot.x*east*weight,dy=p.rect.h-foot.lift*weight;

@@ -1,3 +1,4 @@
+import {styleIcon} from './art-style.js';
 import {loadAperolArt,paintAperolIcon} from './aperol-art.js';
 import {loadDetailArt,drawDetailIcon} from './detail-art.js';
 import {CLASS_SPECS} from './talents.js';
@@ -6,6 +7,7 @@ const sheets=new Map();let pending;
 export function skillIconKey(member,id){if(id==='auto')return member+':auto';const index=SKILL_ICON_ORDER[member]?.indexOf(id);return index>=0?member+':'+index:null;}
 export function loadSkillArt(){loadDetailArt();return pending||=Promise.all(Object.keys(SKILL_ICON_ORDER).map(id=>id==='baerbel'?loadAperolArt():new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{sheets.set(id,img);resolve();};img.onerror=()=>reject(Error('Skill-Grafik fehlt: '+id));img.src='./assets/clan-skills-013/'+id+'.png';})));}
 function paintCell(canvas,member,index){if(member==='baerbel'){paintAperolIcon(canvas,'skills',index);return;}const c=canvas.getContext('2d'),image=sheets.get(member);c.clearRect(0,0,canvas.width,canvas.height);if(!image){c.fillStyle='#263d2b';c.fillRect(0,0,canvas.width,canvas.height);c.fillStyle='#e5c98c';c.font='bold 12px monospace';c.fillText(member[0].toUpperCase()+index,4,20);return;}const size=image.width/4;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(image,(index%4)*size+3,Math.floor(index/4)*size+3,size-6,size-6,0,0,canvas.width,canvas.height);}
-export function paintSkillIcon(canvas,id,member='dieter'){if(id==='auto'){if(member==='baerbel'){paintAperolIcon(canvas,'skills',16);return;}drawDetailIcon(canvas.getContext('2d'),'auto-'+member,0,0,canvas.width);return;}const index=SKILL_ICON_ORDER[member]?.indexOf(id);if(index>=0)paintCell(canvas,member,index);}
+function paintSkillRaw(canvas,id,member='dieter'){if(id==='auto'){if(member==='baerbel'){paintAperolIcon(canvas,'skills',16);return;}drawDetailIcon(canvas.getContext('2d'),'auto-'+member,0,0,canvas.width);return;}const index=SKILL_ICON_ORDER[member]?.indexOf(id);if(index>=0)paintCell(canvas,member,index);}
 export function paintSpecIcon(canvas,id){const member=Object.keys(CLASS_SPECS).find(c=>CLASS_SPECS[c].includes(id));if(member)paintCell(canvas,member,13+CLASS_SPECS[member].indexOf(id));}
 export function paintSpecIcons(root){root.querySelectorAll('[data-spec-art]').forEach(c=>paintSpecIcon(c,c.dataset.specArt));}
+export function paintSkillIcon(canvas,id,member='dieter'){paintSkillRaw(canvas,id,member);styleIcon(canvas);}

@@ -1,0 +1,285 @@
+{
+  "generator": "built-in image_gen",
+  "jobs": [
+    {
+      "id": "anni-poses",
+      "reference": "assets/maifeld-prototype/sources/anni.png",
+      "hero": "Anni",
+      "remove": "makeup brushes from her hands and the spray bottle at her hip",
+      "prompt": "Use case: precise-object-edit. Edit this sprite atlas for modular equipment. Remove ONLY makeup brushes from her hands and the spray bottle at her hip from EVERY sprite. Keep the Anni character's exact identity, clothing, hand locations, poses, walking legs, facing, proportions, pixel style and all 32 sprite placements. Hands are now empty relaxed gripping fists ready to accept separate equipped weapon layers. Do not introduce any replacement tool. Do not redraw the movement or change any pose. Preserve 8 columns and 4 rows, whole figures with ample transparent gutters. Keep the exact warm detailed comic pixel art and upper-left lighting. Genuine transparent PNG, no text, no shadows, no background."
+    },
+    {
+      "id": "anni-walk",
+      "reference": "assets/maifeld-prototype/sources/anni-walk-v1.png",
+      "hero": "Anni",
+      "remove": "makeup brushes from her hands and the spray bottle at her hip",
+      "prompt": "Use case: precise-object-edit. Edit this sprite atlas for modular equipment. Remove ONLY makeup brushes from her hands and the spray bottle at her hip from EVERY sprite. Keep the Anni character's exact identity, clothing, hand locations, poses, walking legs, facing, proportions, pixel style and all 32 sprite placements. Hands are now empty relaxed gripping fists ready to accept separate equipped weapon layers. Do not introduce any replacement tool. Do not redraw the movement or change any pose. Preserve 8 columns and 4 rows, whole figures with ample transparent gutters. Keep the exact warm detailed comic pixel art and upper-left lighting. Genuine transparent PNG, no text, no shadows, no background."
+    },
+    {
+      "id": "dieter-poses",
+      "reference": "assets/maifeld-prototype/sources/dieter-v2.png",
+      "hero": "Dieter",
+      "remove": "metal ladles and all held items",
+      "prompt": "Use case: precise-object-edit. Edit this sprite atlas for modular equipment. Remove ONLY metal ladles and all held items from EVERY sprite. Keep the Dieter character's exact identity, clothing, hand locations, poses, walking legs, facing, proportions, pixel style and all 32 sprite placements. Hands are now empty relaxed gripping fists ready to accept separate equipped weapon layers. Do not introduce any replacement tool. Do not redraw the movement or change any pose. Preserve 8 columns and 4 rows, whole figures with ample transparent gutters. Keep the exact warm detailed comic pixel art and upper-left lighting. Genuine transparent PNG, no text, no shadows, no background."
+    },
+    {
+      "id": "dieter-walk",
+      "reference": "assets/maifeld-prototype/sources/dieter-walk-v2.png",
+      "hero": "Dieter",
+      "remove": "metal ladles and all held items",
+      "prompt": "Use case: precise-object-edit. Edit this sprite atlas for modular equipment. Remove ONLY metal ladles and all held items from EVERY sprite. Keep the Dieter character's exact identity, clothing, hand locations, poses, walking legs, facing, proportions, pixel style and all 32 sprite placements. Hands are now empty relaxed gripping fists ready to accept separate equipped weapon layers. Do not introduce any replacement tool. Do not redraw the movement or change any pose. Preserve 8 columns and 4 rows, whole figures with ample transparent gutters. Keep the exact warm detailed comic pixel art and upper-left lighting. Genuine transparent PNG, no text, no shadows, no background."
+    },
+    {
+      "id": "kevin-poses",
+      "references": [
+        "assets/maifeld-prototype/sources/dieter-v2.png",
+        "assets/maifeld-rpg/people.png"
+      ],
+      "prompt": "Actual game sprite atlas on genuine transparent alpha. Exactly8 columns4rows, 32full-body sprites separated by generous gutters. Same fixed figure size and baseline. Rows: front-right SE, front-left SW, back-right NE, back-left NW. Reference1 supplies Maifeld detailed comic pixel style, lighting, proportions. Reference2 supplies ONLY Kevin identity: the slim bespectacled young man in green baseball cap, cream shirt, worn denim blue bib overalls and brown work boots. Brown hair, round black glasses, light chin stubble, friendly slightly nerdy face. Draw ONLY Kevin in all32cells. EMPTY HANDS, no plunger, no weapons, no pouches, no attached tools. Fingers in relaxed grip for later equipment. Precise warm pixel clusters, dark muted outlines, upper-left light. No text, background, shadows or grid. 2048x1024 landscape. Columns show exactly these states: 1stand, 2left step, 3passing legs, 4right step, 5raising empty MAIN hand to prepare a swing, 6extending SAME hand forward in a strike, 7holding same hand at chest casting, 8brief recoil. Keep the main hand on the SAME anatomical arm; do not swap arms to show an action. Backviews truly show cap rear and overall straps."
+    },
+    {
+      "id": "kevin-walk",
+      "references": [
+        "assets/maifeld-prototype/sources/dieter-walk-v2.png",
+        "assets/maifeld-rpg/people.png"
+      ],
+      "prompt": "Actual game sprite atlas on genuine transparent alpha. Exactly8 columns4rows, 32full-body sprites separated by generous gutters. Same fixed figure size and baseline. Rows: front-right SE, front-left SW, back-right NE, back-left NW. Reference1 supplies Maifeld detailed comic pixel style, lighting, proportions. Reference2 supplies ONLY Kevin identity: the slim bespectacled young man in green baseball cap, cream shirt, worn denim blue bib overalls and brown work boots. Brown hair, round black glasses, light chin stubble, friendly slightly nerdy face. Draw ONLY Kevin in all32cells. EMPTY HANDS, no plunger, no weapons, no pouches, no attached tools. Fingers in relaxed grip for later equipment. Precise warm pixel clusters, dark muted outlines, upper-left light. No text, background, shadows or grid. 2048x1024 landscape. All columns are EIGHT WALKING PHASES, 1left contact feet apart,2down,3passing feet together one knee bent lifted,4up,5opposite right contact feet apart,6down,7opposite passing feet together,8up. Visibly WIDE/narrow/TOGETHER/narrow/WIDE/narrow/TOGETHER/narrow leg silhouettes. Keep torso/head dimensions and direction identical. Calm shoulders and hand positions; gentle free arm swing. Front and back matching same character."
+    },
+    {
+      "id": "equipment",
+      "parts": [
+        "bottle",
+        "club",
+        "blade",
+        "maul",
+        "slingshot",
+        "sprayer",
+        "potlid",
+        "shield",
+        "stamp",
+        "wateringcan",
+        "whistle",
+        "helmet",
+        "helmetBack",
+        "cap",
+        "capBack",
+        "jacket",
+        "jacketBack",
+        "raincoat",
+        "raincoatBack",
+        "vest",
+        "vestBack",
+        "pauldron",
+        "glove",
+        "bracer",
+        "belt",
+        "boot",
+        "trouser",
+        "chain",
+        "ring",
+        "tusk",
+        "medal",
+        "badge",
+        "cup",
+        "badgercharm",
+        "robotclaw",
+        "leatherboot",
+        "furboot",
+        "shoulderpad",
+        "pendant",
+        "pouch"
+      ],
+      "reference": "assets/maifeld-live/sources/dieter-poses.png",
+      "prompt": "Use case: stylized-concept. Actual modular EQUIPMENT SPRITES, transparent PNG. Reference provides only Maifeld detailed comic pixel art style and warm upper-left lighting. No people, no hands or skin, no mannequins, no icon backgrounds, no labels. Exactly EIGHT columns and FIVE rows,40 separate objects in equal cells, wide transparent gutters. Every cell contains exactly ONE part. Wearable garments are shaped as fitted 3D game clothing, not flat UI icons; whole items, no crop. Objects shown at front-right three-quarter angle unless specified rear. Strict row-major order:\n1.1 green reusable beer bottle upright\n1.2 wooden club reinforced with metal bottlecaps upright\n1.3 short silver-green tin-can blade leather grip blade upright\n1.4 large rectangular wooden mallet brass bands handle downward\n1.5 wooden Y slingshot rubber band upright\n1.6 teal cleaning spray bottle trigger pointing right\n1.7 round dented silver cooking pot lid wooden center knob\n1.8 round wooden festival shield brass rim\n2.1 oversized wooden rubber stamp handle upright\n2.2 green watering can spout right\n2.3 silver referee whistle with short cord\n2.4 steel festival helmet front three-quarter right\n2.5 same steel helmet rear three-quarter right\n2.6 ochre baseball cap front three-quarter right\n2.7 same ochre cap rear three-quarter right\n2.8 sleeveless dark teal denim clan jacket front three-quarter right open neck without skin\n3.1 same denim clan jacket rear three-quarter right\n3.2 sleeveless mustard raincoat torso front three-quarter right\n3.3 same raincoat torso rear three-quarter right\n3.4 brown beer-coaster armored vest front three-quarter right\n3.5 same beer-coaster vest rear three-quarter right\n3.6 single brass-banded brown shoulder guard\n3.7 single brown leather gripping glove without skin\n3.8 single leather wrist cuff\n4.1 brown belt with brass beer-tap buckle curved to fit waist\n4.2 single brown work boot pointing right\n4.3 single denim trouser leg for animation layer without boot\n4.4 brass bottle-cap necklace chain closed loop\n4.5 gold ring\n4.6 boar tusk on leather thong\n4.7 goose-shaped brass medal\n4.8 laminated ID badge on lanyard\n5.1 metal beer cup\n5.2 small badger-face pendant\n5.3 small brass mechanical robot claw pendant\n5.4 single dark leather lace-up boot right\n5.5 single fox-fur trimmed boot right\n5.6 single teal padded shoulder guard\n5.7 green glass charm pendant\n5.8 small brown belt pouch\nCrisp warm comic pixel clusters, dark muted outlines, same color palette as reference, no photorealism. Real alpha background, no shadows or grids. 2048x1280 landscape. High legibility at tiny game sprite size."
+    },
+    {
+      "id": "npcs-a",
+      "people": [
+        [
+          "ida",
+          "middle-aged sturdy woman, blonde loose bun, rust-red dress, cream botanical apron, keys on belt, wooden bottle crate held under arm"
+        ],
+        [
+          "mara",
+          "young woman, auburn hair and green bandana, moss green blouse, small mortar, tired kind eyes"
+        ],
+        [
+          "leander",
+          "slim young man, shaggy black hair, large headphones, dark teal hoodie, coiled audio cable around neck, small speaker bag"
+        ],
+        [
+          "oskar",
+          "heavyset older man with moustache, gray hair, charcoal apron with scorch marks over cream shirt, grilling tongs"
+        ],
+        [
+          "fenja",
+          "young woman, brown braid, flower crown, blue blouse, brass cocktail shaker, small bottle basket on back"
+        ],
+        [
+          "tilo",
+          "man with curly brown hair, orange tracksuit jacket, blue trousers, retro cassette player on belt"
+        ],
+        [
+          "jonna",
+          "stern middle-aged woman, dark ponytail, brown hunter vest and green trousers, receipt notepad"
+        ],
+        [
+          "hedwig",
+          "elderly smiling woman, gray braided bun with green hop wreath, ochre brewer apron and burgundy skirt"
+        ],
+        [
+          "konrad",
+          "thin elderly man, black coat and flat black cap, collection pouch of bottlecaps"
+        ],
+        [
+          "fiete",
+          "bearded broad firefighter, navy shirt, dark trousers with yellow reflective stripes, helmet under one arm"
+        ],
+        [
+          "elke",
+          "woman with short red hair, blue overalls, toolbelt, colorful lightbulb garland around neck"
+        ],
+        [
+          "horst",
+          "balding angry middle-aged man, brown side hair, cream shirt red tie, armor of laminated rules sheets, dark trousers, oversized rubber stamp and binder shield"
+        ],
+        [
+          "gisela",
+          "stern elderly woman, gray curls, straw sunhat, green garden apron, large green watering can"
+        ],
+        [
+          "buergermeister",
+          "overweight nervous gray-haired mayor, navy suit, brass office chain, phone at ear"
+        ],
+        [
+          "warden",
+          "stern gray-moustached male village inspector, charcoal uniform green tie, dark cap, clipboard"
+        ],
+        [
+          "scrounger",
+          "scruffy young man, blue tracksuit, brown waist bag, chain of empty cups, empty cup in hand"
+        ]
+      ],
+      "cols": 8,
+      "rows": 4,
+      "reference": "assets/maifeld-live/sources/dieter-poses.png",
+      "prompt": "Use case: stylized-concept. Transparent PNG pixel-game character atlas in the EXACT detailed warm Maifeld comic pixel style of the reference. Reference is style/proportions only. 8 columns and 4 rows, 32 full-body sprites total, equal cells, generous clear gutters. Every character appears in TWO ADJACENT CELLS: first front-right three-quarter view, second back-right three-quarter view of SAME person in same neutral standing pose, identical clothes/body height. Each character is unique, don't reuse the reference man's face. No text, labels, grid or scenery. Pixel clusters, muted dark outlines, upper-left light, no shadows. Subjects in row-major PAIRS:\nPair1 (row1 columns1-2): middle-aged sturdy woman, blonde loose bun, rust-red dress, cream botanical apron, keys on belt, wooden bottle crate held under arm\nPair2 (row1 columns3-4): young woman, auburn hair and green bandana, moss green blouse, small mortar, tired kind eyes\nPair3 (row1 columns5-6): slim young man, shaggy black hair, large headphones, dark teal hoodie, coiled audio cable around neck, small speaker bag\nPair4 (row1 columns7-8): heavyset older man with moustache, gray hair, charcoal apron with scorch marks over cream shirt, grilling tongs\nPair5 (row2 columns1-2): young woman, brown braid, flower crown, blue blouse, brass cocktail shaker, small bottle basket on back\nPair6 (row2 columns3-4): man with curly brown hair, orange tracksuit jacket, blue trousers, retro cassette player on belt\nPair7 (row2 columns5-6): stern middle-aged woman, dark ponytail, brown hunter vest and green trousers, receipt notepad\nPair8 (row2 columns7-8): elderly smiling woman, gray braided bun with green hop wreath, ochre brewer apron and burgundy skirt\nPair9 (row3 columns1-2): thin elderly man, black coat and flat black cap, collection pouch of bottlecaps\nPair10 (row3 columns3-4): bearded broad firefighter, navy shirt, dark trousers with yellow reflective stripes, helmet under one arm\nPair11 (row3 columns5-6): woman with short red hair, blue overalls, toolbelt, colorful lightbulb garland around neck\nPair12 (row3 columns7-8): balding angry middle-aged man, brown side hair, cream shirt red tie, armor of laminated rules sheets, dark trousers, oversized rubber stamp and binder shield\nPair13 (row4 columns1-2): stern elderly woman, gray curls, straw sunhat, green garden apron, large green watering can\nPair14 (row4 columns3-4): overweight nervous gray-haired mayor, navy suit, brass office chain, phone at ear\nPair15 (row4 columns5-6): stern gray-moustached male village inspector, charcoal uniform green tie, dark cap, clipboard\nPair16 (row4 columns7-8): scruffy young man, blue tracksuit, brown waist bag, chain of empty cups, empty cup in hand\nEnsure props are attached to hands/body, not on the ground. Everyone wears appropriate trousers/skirt and shoes. Same scale for all adults, consistent eye height, complete uncropped feet. Genuine alpha transparency. Landscape1536x1024."
+    },
+    {
+      "id": "npcs-b",
+      "people": [
+        [
+          "inspector",
+          "young nervous man, orange reflective safety vest, comically oversized dark service cap, clipboard"
+        ],
+        [
+          "villager0",
+          "elderly village grandfather, gray moustache, brown flat cap and knitted ochre cardigan, cane"
+        ],
+        [
+          "villager1",
+          "female postwoman, short auburn hair, navy cap and blue jacket, brown mailbag"
+        ],
+        [
+          "villager2",
+          "broad friendly male baker, flour-dusted white shirt and apron, cream baker cap, pretzel basket"
+        ],
+        [
+          "villager3",
+          "teenage schoolgirl, dark ponytail, teal jacket orange scarf, jeans, burgundy backpack"
+        ],
+        [
+          "villager4",
+          "old farmer, green hat, checked cream shirt, brown overalls, muddy boots"
+        ],
+        [
+          "villager5",
+          "middle-aged priest, short gray hair, black clerical coat and white collar, brown shoes"
+        ],
+        [
+          "villager6",
+          "stocky kiosk owner, balding dark hair, red polo and green vest, blue jeans, coffee mug"
+        ],
+        [
+          "villager7",
+          "middle-aged female neighbor, curly red hair, mustard coat, green skirt, purple shopping bag"
+        ]
+      ],
+      "cols": 6,
+      "rows": 3,
+      "reference": "assets/maifeld-live/sources/dieter-poses.png",
+      "prompt": "Use case: stylized-concept. Transparent PNG pixel-game character atlas in the EXACT detailed warm Maifeld comic pixel style of the reference. Reference is style/proportions only. 6 columns and 3 rows, 18 full-body sprites total, equal cells, generous clear gutters. Every character appears in TWO ADJACENT CELLS: first front-right three-quarter view, second back-right three-quarter view of SAME person in same neutral standing pose, identical clothes/body height. Each character is unique, don't reuse the reference man's face. No text, labels, grid or scenery. Pixel clusters, muted dark outlines, upper-left light, no shadows. Subjects in row-major PAIRS:\nPair1 (row1 columns1-2): young nervous man, orange reflective safety vest, comically oversized dark service cap, clipboard\nPair2 (row1 columns3-4): elderly village grandfather, gray moustache, brown flat cap and knitted ochre cardigan, cane\nPair3 (row1 columns5-6): female postwoman, short auburn hair, navy cap and blue jacket, brown mailbag\nPair4 (row2 columns1-2): broad friendly male baker, flour-dusted white shirt and apron, cream baker cap, pretzel basket\nPair5 (row2 columns3-4): teenage schoolgirl, dark ponytail, teal jacket orange scarf, jeans, burgundy backpack\nPair6 (row2 columns5-6): old farmer, green hat, checked cream shirt, brown overalls, muddy boots\nPair7 (row3 columns1-2): middle-aged priest, short gray hair, black clerical coat and white collar, brown shoes\nPair8 (row3 columns3-4): stocky kiosk owner, balding dark hair, red polo and green vest, blue jeans, coffee mug\nPair9 (row3 columns5-6): middle-aged female neighbor, curly red hair, mustard coat, green skirt, purple shopping bag\nEnsure props are attached to hands/body, not on the ground. Everyone wears appropriate trousers/skirt and shoes. Same scale for all adults, consistent eye height, complete uncropped feet. Genuine alpha transparency. Landscape1536x1024."
+    },
+    {
+      "id": "kevin-walk-v2",
+      "reference": "assets/maifeld-live/sources/kevin-walk.png",
+      "prompt": "Edit this game sprite atlas ONLY to increase transparent spacing. Preserve all32 individual Kevin poses exactly, same clothes, face, glasses, cap, limbs, walking sequence, all4directions. Keep8columns and4rows. Scale every whole sprite down uniformly to 80% of its current size WITHIN ITS CELL and center it, leaving clear transparent gutters on all four sides, especially between rows. No pixel of one sprite may touch another sprite. Do not omit or duplicate any figure. Genuine transparent PNG, no text/background/grid. Maintain the current overall canvas aspect ratio."
+    },
+    {
+      "id": "badger",
+      "legs": 4,
+      "look": "a stocky gray European BADGER with clear black-and-white striped face, gray fur, short dark tail and black paws, small green bottlecap trinket on a collar",
+      "body": "round low body and head and short tail",
+      "feet": "short stocky badger leg with small dark paw",
+      "reference": "assets/maifeld-prototype/sources/keiler-rig-v1.png",
+      "prompt": "Use case: stylized-concept. Create a transparent PNG paper-puppet style animation assembly kit for a stocky gray European BADGER with clear black-and-white striped face, gray fur, short dark tail and black paws, small green bottlecap trinket on a collar. The reference supplies Maifeld detailed comic pixel STYLE and PART LAYOUT only, do NOT draw a boar. Exactly5 columns and4rows. Each row contains one set of independent game sprite parts at identical scale, no whole assembled animal. Column1:round low body and head and short tail, NO legs attached, clean furry/feathery underside for layering. Column2:one near front leg. Column3:one near rear leg. Column4:one far front leg. Column5:one far rear leg. Each leg is a short stocky badger leg with small dark paw, drawn straight upright with rounded attachment top, ready to pivot underneath the body. Far legs slightly darker. Row1 front-right SE, row2 front-left SW, row3 back-right NE, row4 back-left NW. Match perspective and proportions between body and legs, short anatomically appropriate legs. Body exactly same scale in each row. Warm pixel clusters, muted dark outlines, upper-left lighting. This is a harmless sprite rig kit, no anatomy diagram. No text, no labels, no grid, no shadows, no background. Genuine transparent alpha. Wide clear gutters around every part. Landscape1536x1024."
+    },
+    {
+      "id": "fox",
+      "legs": 4,
+      "look": "a slender rust-red FOX with cream chest, pointed ears, long bushy white-tipped tail, black paws, holding a small blank beige receipt in its mouth",
+      "body": "fox body, head and bushy tail together; tail curls close behind body, not stretched far out",
+      "feet": "slender rust-red fox leg with black lower leg and paw",
+      "reference": "assets/maifeld-prototype/sources/keiler-rig-v1.png",
+      "prompt": "Use case: stylized-concept. Create a transparent PNG paper-puppet style animation assembly kit for a slender rust-red FOX with cream chest, pointed ears, long bushy white-tipped tail, black paws, holding a small blank beige receipt in its mouth. The reference supplies Maifeld detailed comic pixel STYLE and PART LAYOUT only, do NOT draw a boar. Exactly5 columns and4rows. Each row contains one set of independent game sprite parts at identical scale, no whole assembled animal. Column1:fox body, head and bushy tail together; tail curls close behind body, not stretched far out, NO legs attached, clean furry/feathery underside for layering. Column2:one near front leg. Column3:one near rear leg. Column4:one far front leg. Column5:one far rear leg. Each leg is a slender rust-red fox leg with black lower leg and paw, drawn straight upright with rounded attachment top, ready to pivot underneath the body. Far legs slightly darker. Row1 front-right SE, row2 front-left SW, row3 back-right NE, row4 back-left NW. Match perspective and proportions between body and legs, short anatomically appropriate legs. Body exactly same scale in each row. Warm pixel clusters, muted dark outlines, upper-left lighting. This is a harmless sprite rig kit, no anatomy diagram. No text, no labels, no grid, no shadows, no background. Genuine transparent alpha. Wide clear gutters around every part. Landscape1536x1024."
+    },
+    {
+      "id": "cat",
+      "legs": 4,
+      "look": "a friendly ginger tabby CAT, cream muzzle, amber eyes, darker striped fur, curved tail kept close to its body",
+      "body": "cat body, head and curved tail together",
+      "feet": "small ginger striped cat leg and paw",
+      "reference": "assets/maifeld-prototype/sources/keiler-rig-v1.png",
+      "prompt": "Use case: stylized-concept. Create a transparent PNG paper-puppet style animation assembly kit for a friendly ginger tabby CAT, cream muzzle, amber eyes, darker striped fur, curved tail kept close to its body. The reference supplies Maifeld detailed comic pixel STYLE and PART LAYOUT only, do NOT draw a boar. Exactly5 columns and4rows. Each row contains one set of independent game sprite parts at identical scale, no whole assembled animal. Column1:cat body, head and curved tail together, NO legs attached, clean furry/feathery underside for layering. Column2:one near front leg. Column3:one near rear leg. Column4:one far front leg. Column5:one far rear leg. Each leg is a small ginger striped cat leg and paw, drawn straight upright with rounded attachment top, ready to pivot underneath the body. Far legs slightly darker. Row1 front-right SE, row2 front-left SW, row3 back-right NE, row4 back-left NW. Match perspective and proportions between body and legs, short anatomically appropriate legs. Body exactly same scale in each row. Warm pixel clusters, muted dark outlines, upper-left lighting. This is a harmless sprite rig kit, no anatomy diagram. No text, no labels, no grid, no shadows, no background. Genuine transparent alpha. Wide clear gutters around every part. Landscape1536x1024."
+    },
+    {
+      "id": "goose",
+      "legs": 2,
+      "look": "a white farm GOOSE, cream feather highlights, orange beak and orange webbed feet, long curved neck, mischievous expression",
+      "body": "entire goose body with wings folded, neck, head, beak and tail, no feet",
+      "feet": "thin orange goose leg and webbed foot",
+      "reference": "assets/maifeld-prototype/sources/keiler-rig-v1.png",
+      "prompt": "Use case: stylized-concept. Create a transparent PNG paper-puppet style animation assembly kit for a white farm GOOSE, cream feather highlights, orange beak and orange webbed feet, long curved neck, mischievous expression. The reference supplies Maifeld detailed comic pixel STYLE and PART LAYOUT only, do NOT draw a boar. Exactly3 columns and4rows. Each row contains one set of independent game sprite parts at identical scale, no whole assembled animal. Column1:entire goose body with wings folded, neck, head, beak and tail, no feet, NO legs attached, clean furry/feathery underside for layering. Column2:one near leg. Column3:one far leg. Each leg is a thin orange goose leg and webbed foot, drawn straight upright with rounded attachment top, ready to pivot underneath the body. Far legs slightly darker. Row1 front-right SE, row2 front-left SW, row3 back-right NE, row4 back-left NW. Match perspective and proportions between body and legs, short anatomically appropriate legs. Body exactly same scale in each row. Warm pixel clusters, muted dark outlines, upper-left lighting. This is a harmless sprite rig kit, no anatomy diagram. No text, no labels, no grid, no shadows, no background. Genuine transparent alpha. Wide clear gutters around every part. Landscape1536x1024."
+    },
+    {
+      "id": "raven",
+      "legs": 2,
+      "look": "a shiny black RAVEN with blue-gray feather highlights, small brass bottlecap in its beak, alert gold eye, dark bird feet",
+      "body": "entire raven body, folded wings, head, beak and tail, no feet",
+      "feet": "slender dark raven leg and clawed foot",
+      "reference": "assets/maifeld-prototype/sources/keiler-rig-v1.png",
+      "prompt": "Use case: stylized-concept. Create a transparent PNG paper-puppet style animation assembly kit for a shiny black RAVEN with blue-gray feather highlights, small brass bottlecap in its beak, alert gold eye, dark bird feet. The reference supplies Maifeld detailed comic pixel STYLE and PART LAYOUT only, do NOT draw a boar. Exactly3 columns and4rows. Each row contains one set of independent game sprite parts at identical scale, no whole assembled animal. Column1:entire raven body, folded wings, head, beak and tail, no feet, NO legs attached, clean furry/feathery underside for layering. Column2:one near leg. Column3:one far leg. Each leg is a slender dark raven leg and clawed foot, drawn straight upright with rounded attachment top, ready to pivot underneath the body. Far legs slightly darker. Row1 front-right SE, row2 front-left SW, row3 back-right NE, row4 back-left NW. Match perspective and proportions between body and legs, short anatomically appropriate legs. Body exactly same scale in each row. Warm pixel clusters, muted dark outlines, upper-left lighting. This is a harmless sprite rig kit, no anatomy diagram. No text, no labels, no grid, no shadows, no background. Genuine transparent alpha. Wide clear gutters around every part. Landscape1536x1024."
+    },
+    {
+      "id": "chicken",
+      "legs": 2,
+      "look": "a cream barnyard CHICKEN with red comb, golden beak, warm chestnut wings, orange bird feet",
+      "body": "entire chicken body, folded wings, head with red comb, beak and tail, no feet",
+      "feet": "thin orange chicken leg and clawed foot",
+      "reference": "assets/maifeld-prototype/sources/keiler-rig-v1.png",
+      "prompt": "Use case: stylized-concept. Create a transparent PNG paper-puppet style animation assembly kit for a cream barnyard CHICKEN with red comb, golden beak, warm chestnut wings, orange bird feet. The reference supplies Maifeld detailed comic pixel STYLE and PART LAYOUT only, do NOT draw a boar. Exactly3 columns and4rows. Each row contains one set of independent game sprite parts at identical scale, no whole assembled animal. Column1:entire chicken body, folded wings, head with red comb, beak and tail, no feet, NO legs attached, clean furry/feathery underside for layering. Column2:one near leg. Column3:one far leg. Each leg is a thin orange chicken leg and clawed foot, drawn straight upright with rounded attachment top, ready to pivot underneath the body. Far legs slightly darker. Row1 front-right SE, row2 front-left SW, row3 back-right NE, row4 back-left NW. Match perspective and proportions between body and legs, short anatomically appropriate legs. Body exactly same scale in each row. Warm pixel clusters, muted dark outlines, upper-left lighting. This is a harmless sprite rig kit, no anatomy diagram. No text, no labels, no grid, no shadows, no background. Genuine transparent alpha. Wide clear gutters around every part. Landscape1536x1024."
+    },
+    {
+      "id": "automat",
+      "cols": 2,
+      "rows": 1,
+      "people": [
+        [
+          "automat",
+          "Pfandautomat 3000"
+        ]
+      ],
+      "prompt": "Create a transparent PNG sprite sheet in the same detailed comic pixel Maifeld style as reference. Exactly TWO isolated full-body views of ONE humorous rural German bottle-return machine boss on caterpillar tracks, articulated metal grabbing arm, red angry digital face display, dangling cables, dark green and warm ivory worn metal panels, orange warning lights, bottle insertion opening. Left sprite three-quarter FRONT RIGHT southeast; right sprite three-quarter BACK RIGHT northeast. Same object, same scale and anatomy. Large chunky pixel clusters, warm muted palette, dark blue charcoal outlines, upper-left light. Feet/track bases aligned. Machine only, no people, no lettering, no background, no ground or shadows, authentic transparent alpha, broad gutters. Landscape 1536x1024."
+    }
+  ]
+}

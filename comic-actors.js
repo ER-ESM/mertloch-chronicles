@@ -1,3 +1,4 @@
+import {drawLiveAnimal} from './live-art.js';
 import {drawTinyPerson} from './pixel-people.js';
 import {drawMaifeld,maifeld} from './maifeld-art.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,spark} from './pixel-style.js';
@@ -28,11 +29,11 @@ export function drawComicHero(c,x,y,time,p,npc=false,scale=1){
   c.restore();
 }
 
-export function drawComicResident(c,a,time){
+export function drawComicResident(c,a,time){if(a.kind!=='villager'&&drawLiveAnimal(c,a,time))return;
  if(a.kind!=='villager'&&maifeld[a.kind]){c.save();c.translate(Math.round(a.x),Math.round(a.y));c.scale(a.facing||1,1);drawMaifeld(c,a.kind,0,a.moving?Math.round(Math.sin(time*10+a.id)*.5):0,a.kind==='cat'?13:11);c.restore();return;}
-  c.save();c.translate(Math.round(a.x*2)/2,Math.round(a.y*2)/2);c.scale(a.facing||1,1);const walk=a.moving?Math.sin(time*9+a.id):0;
+  c.save();c.translate(Math.round(a.x*2)/2,Math.round(a.y*2)/2);c.scale(a.kind==='villager'&&a.direction?(a.direction.endsWith('w')?-1:1):a.facing||1,1);const walk=a.moving?Math.sin(time*9+a.id):0;
   oval(c,'#352b4538',0,2,a.kind==='villager'?8:6,2.5);
-  if(a.kind==='villager'){drawTinyPerson(c,0,0,time,{classId:'resident',variant:a.variant,facing:1,moving:a.moving},false,1);
+  if(a.kind==='villager'){drawTinyPerson(c,0,0,time,{classId:'resident',variant:a.variant,facing:1,direction:(a.direction||'se').replace('w','e'),moving:a.moving,walkDistance:a.walkDistance},false,1);
   }else if(a.kind==='chicken'){
     for(const x of [-2,2]){const step=x<0?walk:-walk;line(c,'#956b66',[[x,-1],[x,3+step],[x+2,3+step]],.75);}
     shape(c,a.variant===1?'#cd986f':'#ffe6b1',[[-6,-3],[-7,-9],[-4,-8],[-1,-9],[4,-8],[5,-11],[8,-12],[10,-10],[9,-5],[7,-1],[0,1]],P.ink,.75);

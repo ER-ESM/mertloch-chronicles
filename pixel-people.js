@@ -1,3 +1,4 @@
+import {drawLivePerson} from './live-art.js';
 import {maifeld,drawMaifeld} from './maifeld-art.js';
 // Native pixel sprites. Integer scanlines avoid vector antialiasing and give skin,
 // cloth and leather the same small, deliberate colour clusters as Tiny Swords.
@@ -33,7 +34,7 @@ function paint(id,variant,frame,attack){const cv=document.createElement('canvas'
  if(ida||resident&&v%2){r('#b5a27b',38,50,14,17);r('#dfc99a',39,51,2,14);r('#8b866b',39,59,10,1);r('#b59365',42,60,5,4);}
  return cv;
 }
-export function drawTinyPerson(c,x,y,time,p,npc=false,scale=1){const id=npc?'ida':p.classId||'dieter',variant=p.variant||0,frame=p.moving?Math.floor((p.walkDistance??time*70)/9)%4:0,attack=p.attack>0?1:0,key=[id,variant,frame,attack].join(':');
+export function drawTinyPerson(c,x,y,time,p,npc=false,scale=1){if(drawLivePerson(c,npc?'ida':p.classId||'dieter',x,y,time,p,scale))return;const id=npc?'ida':p.classId||'dieter',variant=p.variant||0,frame=p.moving?Math.floor((p.walkDistance??time*70)/9)%4:0,attack=p.attack>0?1:0,key=[id,variant,frame,attack].join(':');
  const who=id==='resident'?['lauti','mara','elder'][variant%3]:id;
  if(maifeld[who]){c.save();c.translate(Math.round(x),Math.round(y));c.scale(p.facing||1,1);const h=Math.round(33*scale),bob=p.moving&&frame%2?1:0;c.fillStyle='#27351d40';c.beginPath();c.ellipse(0,1,h*.22,h*.07,0,0,7);c.fill();drawMaifeld(c,who+(p.moving&&frame%2&&maifeld[who+'Walk']?'Walk':''),attack?2:0,-bob,h);if(p.parry>0){c.strokeStyle='#ead099';c.lineWidth=1;c.beginPath();c.arc(1,-h*.45,h*.65,-1.3,1.1);c.stroke();}c.restore();return;}
  let cv=cache.get(key);if(!cv){cv=paint(id,variant,frame,attack);cache.set(key,cv);}c.save();c.translate(Math.round(x*2)/2,Math.round(y*2)/2);c.scale((p.facing||1)*scale,scale);c.fillStyle='#233d4038';c.beginPath();c.ellipse(0,2,10,3,0,0,7);c.fill();c.imageSmoothingEnabled=false;c.drawImage(cv,-22,-42,48,52);if(p.parry>0){c.strokeStyle='#dec38a';c.lineWidth=1;c.beginPath();c.arc(2,-17,19,-1.3,1.1);c.stroke();}c.restore();}
