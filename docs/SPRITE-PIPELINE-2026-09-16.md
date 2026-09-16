@@ -1,6 +1,6 @@
 # Drei echte Sprite-Prototypen und Produktionspipeline
 
-Stand: 16.09.2026. C1/Stilentscheidung bleibt beim Nutzer. Die Kandidaten ersetzen noch keine Produktionsfiguren.
+Stand: 16.09.2026. **Der Nutzer hat Maifeld-Detailpixel gewählt.** C1 ist damit entschieden. Die ursprünglichen drei Kandidaten bleiben als Vergleich erhalten; der ausgearbeitete [Maifeld-Prototyp](MAIFELD-PROTOTYP-2026-09-16.md) zeigt den nächsten Stand. Die Prototypen ersetzen noch keine Produktionsfiguren.
 
 ## Direkt ausprobieren
 

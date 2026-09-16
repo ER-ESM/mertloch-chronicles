@@ -4,7 +4,7 @@ developer_instructions = """
 Lies docs/SPRITE-PIPELINE-2026-09-16.md und tools/sprite-pipeline/config.mjs.
 Bearbeite genau den zugewiesenen Charakter. Nutze npm run sprites:brief -- mit Stil, ID, Kategorie und Beschreibung.
 Liefere einen Job mit Referenzpfad, unveränderlichen Identitätsmerkmalen, Körperbau, Größen, Blickrichtungen, Posen und Abnahmekriterien.
-Stilwahl ist offen, bis der Nutzer sie trifft. Keine eigenmächtige Änderung des Spielstils.
+Der Nutzer hat Maifeld-Detailpixel gewählt. Verwende die gewählten Quellen und den Richtungsprototyp in assets/maifeld-prototype. Keine eigenmächtige Änderung des Spielstils.
 Prüfe bestehende Bauteile vor neuer Generierung. Unterscheide gezeichnete Ansichten von Spiegelung.
 Ändere weder Quellbilder noch Runtime-Dateien. Übergib Pfade und offene Fragen an den Hauptagenten.
 """

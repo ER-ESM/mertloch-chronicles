@@ -8,7 +8,7 @@ Spielbarer Browser-Prototyp eines 2D-Pixel-Rollenspiels mit regelbasiert gestalt
 
 ## Figurenwerkstatt: drei echte Sprite-Stile
 
-[Prototypen im Browser vergleichen](https://er-esm.github.io/mertloch-chronicles/sprite-lab.html): Dorfcomic, Maifeld-Detailpixel und Krawall-Karikatur. 96 animierte Posen, Bewegung auf der Mertloch-Karte und 36 kombinierbare Bauteile mit PNG-/JSON-Export. [Pipeline, Subagent-Definitionen und Ausbauplan](docs/SPRITE-PIPELINE-2026-09-16.md). Die Stilwahl ist offen; die Werkstatt verändert keinen Spielstand.
+[Prototypen im Browser vergleichen](https://er-esm.github.io/mertloch-chronicles/sprite-lab.html): Dorfcomic, Maifeld-Detailpixel und Krawall-Karikatur. 96 animierte Posen, Bewegung auf der Mertloch-Karte und 36 kombinierbare Bauteile mit PNG-/JSON-Export. [Pipeline, Subagent-Definitionen und Ausbauplan](docs/SPRITE-PIPELINE-2026-09-16.md). Gewählt ist **Maifeld-Detailpixel**. [Den ausgearbeiteten Prototyp spielen](https://er-esm.github.io/mertloch-chronicles/maifeld-prototype.html): vier gezeichnete Blickrichtungen, Anni und Dieter, aggressive/neutrale Keiler sowie Oskars Hofprobe mit Belohnungswahl. Beide Werkstätten verändern keinen Hauptspielstand.
 
 ## Starten
 

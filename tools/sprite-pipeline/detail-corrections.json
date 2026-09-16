@@ -1,0 +1,12 @@
+[
+  {
+    "id": "dieter-v2",
+    "reference": "assets/maifeld-prototype/sources/dieter.png",
+    "prompt": "Edit the provided transparent 8-column 4-row sprite atlas, preserving its canvas size, exact cell positions, all 32 poses, character scale, pixel rendering, palette, clothing and background transparency. Targeted correction ONLY: Dosen-Dieter must visibly hold the same metal ladle in EVERY cell, firmly connected to his anatomical right hand. It currently disappears in several walking frames (especially column 3 in every row, and row 4 column 2). Correct these missing ladles and any empty weapon hand in walking frames. Keep the torso, feet, face, directions and all other details unchanged. Right-facing/front row 1, left-facing/front row 2, right-facing/back row 3, left-facing/back row 4. Do not change direction or hide the implement. No additional props or effects; no text; genuine alpha."
+  },
+  {
+    "id": "keiler-v2",
+    "reference": "assets/maifeld-prototype/sources/keiler.png",
+    "prompt": "Edit the provided transparent 8-column 4-row wild boar sprite atlas. Preserve exact canvas dimensions, cell positions, character scale, style, all clothing-free animal anatomy, lighting, palette, transparency, and every other sprite. One targeted correction: the HIT RECOIL sprites in LAST COLUMN (column 8) must face the SAME DIRECTION as their row. Row 1 column 8: front three-quarter RIGHT. Row 2 column 8: front three-quarter LEFT (currently wrong, faces right). Row 3 column 8: back three-quarter RIGHT, rump and back visible, NOT a frontal face. Row 4 column 8: back three-quarter LEFT, rump and back visible. Recoil by leaning back slightly while staying oriented correctly, all feet and tusks in frame. Do not rotate towards viewer during recoil. Leave columns 1-7 unchanged. No text or added effects; genuine alpha."
+  }
+]
