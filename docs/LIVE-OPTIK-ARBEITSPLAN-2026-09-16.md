@@ -20,7 +20,7 @@ Aktiver Auftrag: den gewählten Detailpixel-Stil im Hauptspiel veröffentlichen,
 
 ## Status
 
-Implementiert für Version 0.19.0. 188 automatisierte Tests bestanden; Site-Build erfolgreich. Veröffentlichung und abschließende Prüfung der öffentlichen URL folgen.
+Implementiert für Version 0.19.0. 188 automatisierte Tests bestanden; Site-Build erfolgreich. Veröffentlicht: Commit `ebc210d`, GitHub-Pages-Lauf [35083901812](https://github.com/ER-ESM/mertloch-chronicles/actions/runs/35083901812) erfolgreich. Die öffentliche URL lädt alle drei Helden, 26 weitere Figuren und sieben Tierarten ohne JavaScript- oder HTTP-Grafikfehler. Auf der öffentlichen Seite wurde die Kutte über das Charaktermenü abgelegt (veränderte Vorschaupixel), aus dem Inventar wieder angelegt und nach Reload bestätigt. Auch öffentlich wurde ein frischer 390×844-Touchbrowser geprüft: automatische Mobilsteuerung aktiv, drehbare Figur sichtbar, Fenster vollständig im Viewport, Spiel nicht pausiert, keine JavaScript-Fehler.
 
 ### Durchgeführte Bild- und Spielrunden
 
@@ -51,7 +51,7 @@ Technischer Import: [build-live.mjs](../tools/sprite-pipeline/build-live.mjs), [
 
 Spieltest-Fixture: `node scripts/live-art-fixture.mjs`; ausschließlich in einem neuen isolierten Browserkontext laden. Bildkontaktbogen: [live-art-gallery.playwright.js](../scripts/live-art-gallery.playwright.js), ausgeführt über den Playwright-Browserdienst. Dieser verwendet dieselben Renderfunktionen wie das Spiel. Screenshots liegen lokal unter `visual-review/live-*`; ausgewählte Abnahmebilder werden unten verlinkt.
 
-„Nichts mehr zu meckern“ ist subjektiv. Die Abnahme prüft fehlende/alte aktive Figuren, sichtbare Ausrüstungswechsel, falsche Itemmotive, schwebende Griffe, verdeckte Gesichter, zitternde Tierkörper und abgeschnittene Menüs. Einzelne neue Kleidungsdesigns oder aufwendigere eigenständige NPC-Kampfclips sind damit nicht automatisch erstellt.
+„Nichts mehr zu meckern“ ist subjektiv. Die Abnahme prüft fehlende/alte aktive Figuren, sichtbare Ausrüstungswechsel, falsche Itemmotive, schwebende Griffe, verdeckte Gesichter, zitternde Tierkörper und abgeschnittene Menüs. Zufällig erzeugte Items teilen die passende grafische Ausrüstungsfamilie. Eigene vollständig gezeichnete Kampfclips für jeden Dorfbewohner sind kein Bestandteil dieses Umbaus.
 ### Abnahmebilder
 
 [Hauptspiel und angelegte Ausrüstung](images/live-optik/desktop.png) · [Mobile Drehansicht](images/live-optik/mobile.png) · [Laufphasen mit Ausrüstung](images/live-optik/walk-gear.png)
