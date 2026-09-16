@@ -1,0 +1,2 @@
+import {readFileSync} from 'node:fs';import {decodePng,bounds,gridCell} from './png.mjs';import {segment} from './segment.mjs';
+for(const name of ['dorfcomic','detailpixel','krawall']){const im=decodePng(readFileSync('assets/sprite-lab/sources/'+name+'.png'));try{const cells=segment(im,8,4);console.log(JSON.stringify({name,width:im.width,height:im.height,cells}));}catch(e){console.log(name+': '+e.message);}}

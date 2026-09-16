@@ -1,0 +1,3172 @@
+{
+  "version": 1,
+  "status": "style-prototypes",
+  "frameSize": 96,
+  "pivot": {
+    "x": 48,
+    "y": 80
+  },
+  "actors": [
+    "Aperol-Anni",
+    "Dosen-Dieter",
+    "Grill-Oskar",
+    "Keiler"
+  ],
+  "poses": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "clips": {
+    "idle": {
+      "frames": [
+        0,
+        7,
+        0
+      ],
+      "fps": 2
+    },
+    "walk": {
+      "frames": [
+        1,
+        2,
+        3,
+        2
+      ],
+      "fps": 7
+    },
+    "attack": {
+      "frames": [
+        4,
+        5,
+        5,
+        0
+      ],
+      "fps": 6
+    },
+    "hit": {
+      "frames": [
+        6,
+        6,
+        0
+      ],
+      "fps": 5
+    },
+    "rest": {
+      "frames": [
+        7
+      ],
+      "fps": 1
+    }
+  },
+  "styles": [
+    {
+      "id": "dorfcomic",
+      "name": "Dorfcomic",
+      "bodyHeight": 28,
+      "boarHeight": 21,
+      "palette": [
+        "242333",
+        "413440",
+        "67463e",
+        "926044",
+        "b67b50",
+        "dda071",
+        "f4c698",
+        "ffe6bb",
+        "f8f0d5",
+        "c8c5af",
+        "898c83",
+        "526d76",
+        "334d59",
+        "243841",
+        "354b36",
+        "55704a",
+        "849451",
+        "bac475",
+        "953d32",
+        "ce5d31",
+        "ec8b36",
+        "f3b84b",
+        "95653e",
+        "634b37"
+      ],
+      "parts": {
+        "head": 10,
+        "torso": 11,
+        "legs": 10,
+        "neckX": 0.47,
+        "waistY": 0.84
+      },
+      "atlas": "dorfcomic.png",
+      "partsAtlas": "dorfcomic-parts.png",
+      "sourceHash": "269801b20831830abe4a7cda93e2fea3f87c7cc727019a6aee416321c0151863",
+      "partsSourceHash": "0db31bdb47aaa1db8ba277fb70e2b0e7bc20bb70de99184cfe74f2f07aa32dc5",
+      "atlasHash": "e3206431f35dc6ec109d5b2aeb580871c893e120cccff2f1049852fa42179bfb",
+      "partsHash": "90d2922f435812fe66db0e88884cb1aa5a22e821797f97635d339e89af872b33",
+      "frames": [
+        {
+          "actor": "Aperol-Anni",
+          "pose": "idle",
+          "source": {
+            "x": 63,
+            "y": 23,
+            "w": 108,
+            "h": 199,
+            "count": 12800,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 41,
+            "y": 52,
+            "w": 15,
+            "h": 28,
+            "count": 249
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-a",
+          "source": {
+            "x": 273,
+            "y": 25,
+            "w": 122,
+            "h": 198,
+            "count": 13134,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 40,
+            "y": 52,
+            "w": 17,
+            "h": 28,
+            "count": 260
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-pass",
+          "source": {
+            "x": 499,
+            "y": 23,
+            "w": 97,
+            "h": 200,
+            "count": 11760,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 42,
+            "y": 52,
+            "w": 14,
+            "h": 28,
+            "count": 230
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-b",
+          "source": {
+            "x": 715,
+            "y": 23,
+            "w": 124,
+            "h": 200,
+            "count": 13257,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 41,
+            "y": 52,
+            "w": 17,
+            "h": 28,
+            "count": 259
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "anticipation",
+          "source": {
+            "x": 931,
+            "y": 34,
+            "w": 135,
+            "h": 189,
+            "count": 13595,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 36,
+            "y": 54,
+            "w": 19,
+            "h": 26,
+            "count": 265
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "impact",
+          "source": {
+            "x": 1154,
+            "y": 29,
+            "w": 158,
+            "h": 194,
+            "count": 13863,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 40,
+            "y": 53,
+            "w": 22,
+            "h": 27,
+            "count": 271
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "hit",
+          "source": {
+            "x": 1375,
+            "y": 34,
+            "w": 143,
+            "h": 189,
+            "count": 14164,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 35,
+            "y": 53,
+            "w": 20,
+            "h": 27,
+            "count": 282
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "rest",
+          "source": {
+            "x": 1625,
+            "y": 27,
+            "w": 80,
+            "h": 196,
+            "count": 11826,
+            "pieces": 1
+          },
+          "scale": 0.1407035175879397,
+          "bounds": {
+            "x": 42,
+            "y": 52,
+            "w": 11,
+            "h": 28,
+            "count": 231
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "idle",
+          "source": {
+            "x": 42,
+            "y": 247,
+            "w": 166,
+            "h": 203,
+            "count": 18475,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 39,
+            "y": 52,
+            "w": 23,
+            "h": 28,
+            "count": 345
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-a",
+          "source": {
+            "x": 264,
+            "y": 252,
+            "w": 164,
+            "h": 198,
+            "count": 16722,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 40,
+            "y": 53,
+            "w": 23,
+            "h": 27,
+            "count": 314
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-pass",
+          "source": {
+            "x": 482,
+            "y": 246,
+            "w": 132,
+            "h": 204,
+            "count": 16831,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 39,
+            "y": 52,
+            "w": 18,
+            "h": 28,
+            "count": 317
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-b",
+          "source": {
+            "x": 704,
+            "y": 249,
+            "w": 164,
+            "h": 201,
+            "count": 17207,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 39,
+            "y": 52,
+            "w": 23,
+            "h": 28,
+            "count": 325
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "anticipation",
+          "source": {
+            "x": 908,
+            "y": 247,
+            "w": 180,
+            "h": 204,
+            "count": 20049,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 34,
+            "y": 53,
+            "w": 25,
+            "h": 27,
+            "count": 377
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "impact",
+          "source": {
+            "x": 1145,
+            "y": 258,
+            "w": 179,
+            "h": 193,
+            "count": 17262,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 39,
+            "y": 53,
+            "w": 25,
+            "h": 27,
+            "count": 329
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "hit",
+          "source": {
+            "x": 1386,
+            "y": 260,
+            "w": 145,
+            "h": 191,
+            "count": 17731,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 36,
+            "y": 55,
+            "w": 20,
+            "h": 25,
+            "count": 326
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "rest",
+          "source": {
+            "x": 1604,
+            "y": 253,
+            "w": 125,
+            "h": 198,
+            "count": 16791,
+            "pieces": 1
+          },
+          "scale": 0.13793103448275862,
+          "bounds": {
+            "x": 39,
+            "y": 53,
+            "w": 17,
+            "h": 27,
+            "count": 310
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "idle",
+          "source": {
+            "x": 42,
+            "y": 467,
+            "w": 165,
+            "h": 213,
+            "count": 19475,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 39,
+            "y": 52,
+            "w": 22,
+            "h": 28,
+            "count": 335
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-a",
+          "source": {
+            "x": 266,
+            "y": 470,
+            "w": 165,
+            "h": 210,
+            "count": 18179,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 40,
+            "y": 53,
+            "w": 22,
+            "h": 27,
+            "count": 318
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-pass",
+          "source": {
+            "x": 482,
+            "y": 466,
+            "w": 132,
+            "h": 214,
+            "count": 18016,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 40,
+            "y": 52,
+            "w": 17,
+            "h": 28,
+            "count": 308
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-b",
+          "source": {
+            "x": 702,
+            "y": 469,
+            "w": 169,
+            "h": 210,
+            "count": 18830,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 41,
+            "y": 53,
+            "w": 21,
+            "h": 27,
+            "count": 327
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "anticipation",
+          "source": {
+            "x": 912,
+            "y": 478,
+            "w": 179,
+            "h": 204,
+            "count": 20608,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 36,
+            "y": 53,
+            "w": 24,
+            "h": 27,
+            "count": 356
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "impact",
+          "source": {
+            "x": 1148,
+            "y": 482,
+            "w": 182,
+            "h": 200,
+            "count": 17476,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 40,
+            "y": 54,
+            "w": 24,
+            "h": 26,
+            "count": 297
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "hit",
+          "source": {
+            "x": 1388,
+            "y": 483,
+            "w": 138,
+            "h": 199,
+            "count": 18836,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 37,
+            "y": 55,
+            "w": 18,
+            "h": 25,
+            "count": 318
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "rest",
+          "source": {
+            "x": 1611,
+            "y": 481,
+            "w": 116,
+            "h": 201,
+            "count": 16366,
+            "pieces": 1
+          },
+          "scale": 0.13145539906103287,
+          "bounds": {
+            "x": 40,
+            "y": 54,
+            "w": 15,
+            "h": 26,
+            "count": 275
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "idle",
+          "source": {
+            "x": 22,
+            "y": 709,
+            "w": 183,
+            "h": 135,
+            "count": 14923,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 35,
+            "y": 59,
+            "w": 28,
+            "h": 21,
+            "count": 360
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-a",
+          "source": {
+            "x": 241,
+            "y": 708,
+            "w": 190,
+            "h": 137,
+            "count": 15452,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 38,
+            "y": 59,
+            "w": 29,
+            "h": 21,
+            "count": 372
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-pass",
+          "source": {
+            "x": 465,
+            "y": 708,
+            "w": 186,
+            "h": 137,
+            "count": 15335,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 37,
+            "y": 59,
+            "w": 29,
+            "h": 21,
+            "count": 367
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-b",
+          "source": {
+            "x": 686,
+            "y": 708,
+            "w": 185,
+            "h": 137,
+            "count": 15399,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 36,
+            "y": 59,
+            "w": 29,
+            "h": 21,
+            "count": 375
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "anticipation",
+          "source": {
+            "x": 905,
+            "y": 719,
+            "w": 190,
+            "h": 126,
+            "count": 14718,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 32,
+            "y": 60,
+            "w": 30,
+            "h": 20,
+            "count": 357
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "impact",
+          "source": {
+            "x": 1127,
+            "y": 709,
+            "w": 229,
+            "h": 138,
+            "count": 18773,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 33,
+            "y": 59,
+            "w": 36,
+            "h": 21,
+            "count": 456
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "hit",
+          "source": {
+            "x": 1371,
+            "y": 711,
+            "w": 174,
+            "h": 136,
+            "count": 14349,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 37,
+            "y": 59,
+            "w": 27,
+            "h": 21,
+            "count": 346
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "rest",
+          "source": {
+            "x": 1581,
+            "y": 714,
+            "w": 171,
+            "h": 135,
+            "count": 15030,
+            "pieces": 1
+          },
+          "scale": 0.15555555555555556,
+          "bounds": {
+            "x": 31,
+            "y": 59,
+            "w": 27,
+            "h": 21,
+            "count": 363
+          }
+        }
+      ],
+      "modules": [
+        {
+          "id": "head-0",
+          "kind": "head",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 9,
+            "h": 10
+          },
+          "source": {
+            "x": 76,
+            "y": 102,
+            "w": 212,
+            "h": 242,
+            "count": 39303,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 5,
+            "y": 9
+          }
+        },
+        {
+          "id": "head-1",
+          "kind": "head",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 0,
+            "w": 10,
+            "h": 10
+          },
+          "source": {
+            "x": 433,
+            "y": 128,
+            "w": 217,
+            "h": 218,
+            "count": 37184,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 5,
+            "y": 9
+          }
+        },
+        {
+          "id": "head-2",
+          "kind": "head",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 0,
+            "w": 8,
+            "h": 10
+          },
+          "source": {
+            "x": 780,
+            "y": 81,
+            "w": 220,
+            "h": 265,
+            "count": 42933,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 4,
+            "y": 9
+          }
+        },
+        {
+          "id": "head-3",
+          "kind": "head",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 0,
+            "w": 11,
+            "h": 10
+          },
+          "source": {
+            "x": 1129,
+            "y": 124,
+            "w": 245,
+            "h": 222,
+            "count": 37986,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 6,
+            "y": 9
+          }
+        },
+        {
+          "id": "torso-0",
+          "kind": "torso",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 96,
+            "w": 14,
+            "h": 11
+          },
+          "source": {
+            "x": 32,
+            "y": 429,
+            "w": 318,
+            "h": 258,
+            "count": 61325,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 7,
+              "y": 1
+            },
+            "waist": {
+              "x": 7,
+              "y": 9
+            }
+          }
+        },
+        {
+          "id": "torso-1",
+          "kind": "torso",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 96,
+            "w": 13,
+            "h": 11
+          },
+          "source": {
+            "x": 393,
+            "y": 429,
+            "w": 315,
+            "h": 258,
+            "count": 63480,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 6,
+              "y": 1
+            },
+            "waist": {
+              "x": 7,
+              "y": 9
+            }
+          }
+        },
+        {
+          "id": "torso-2",
+          "kind": "torso",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 96,
+            "w": 12,
+            "h": 11
+          },
+          "source": {
+            "x": 775,
+            "y": 438,
+            "w": 261,
+            "h": 245,
+            "count": 50159,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 6,
+              "y": 1
+            },
+            "waist": {
+              "x": 6,
+              "y": 9
+            }
+          }
+        },
+        {
+          "id": "torso-3",
+          "kind": "torso",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 96,
+            "w": 12,
+            "h": 11
+          },
+          "source": {
+            "x": 1139,
+            "y": 438,
+            "w": 269,
+            "h": 245,
+            "count": 50346,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 6,
+              "y": 1
+            },
+            "waist": {
+              "x": 6,
+              "y": 9
+            }
+          }
+        },
+        {
+          "id": "legs-0",
+          "kind": "legs",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 192,
+            "w": 11,
+            "h": 10
+          },
+          "source": {
+            "x": 47,
+            "y": 763,
+            "w": 271,
+            "h": 249,
+            "count": 48388,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 6,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-1",
+          "kind": "legs",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 192,
+            "w": 11,
+            "h": 10
+          },
+          "source": {
+            "x": 411,
+            "y": 763,
+            "w": 278,
+            "h": 249,
+            "count": 48723,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 6,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-2",
+          "kind": "legs",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 192,
+            "w": 10,
+            "h": 10
+          },
+          "source": {
+            "x": 793,
+            "y": 765,
+            "w": 235,
+            "h": 247,
+            "count": 36511,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 5,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-3",
+          "kind": "legs",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 192,
+            "w": 10,
+            "h": 10
+          },
+          "source": {
+            "x": 1162,
+            "y": 764,
+            "w": 246,
+            "h": 248,
+            "count": 37723,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 5,
+            "y": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "detailpixel",
+      "name": "Maifeld-Detailpixel",
+      "bodyHeight": 52,
+      "boarHeight": 37,
+      "palette": [
+        "242333",
+        "413440",
+        "67463e",
+        "926044",
+        "b67b50",
+        "dda071",
+        "f4c698",
+        "ffe6bb",
+        "f8f0d5",
+        "c8c5af",
+        "898c83",
+        "526d76",
+        "334d59",
+        "243841",
+        "354b36",
+        "55704a",
+        "849451",
+        "bac475",
+        "953d32",
+        "ce5d31",
+        "ec8b36",
+        "f3b84b",
+        "95653e",
+        "634b37",
+        "171f29",
+        "364047",
+        "786259",
+        "9f806d",
+        "d49779",
+        "edb495",
+        "fff2d6",
+        "d9d7c2",
+        "aaab98",
+        "719090",
+        "456476",
+        "768a67",
+        "a6ac80",
+        "b74724",
+        "e57438",
+        "ffd274"
+      ],
+      "parts": {
+        "head": 17,
+        "torso": 20,
+        "legs": 20,
+        "neckX": 0.46,
+        "waistY": 0.83
+      },
+      "atlas": "detailpixel.png",
+      "partsAtlas": "detailpixel-parts.png",
+      "sourceHash": "56606553687a1066de1fa91efb111a96cfcdf3bab8aacbc6222b2d16b8aaf8cf",
+      "partsSourceHash": "82d2d1b635afa1a186990f9b473840a3c5a2c9a339b0bfa346ab4d3a592517ee",
+      "atlasHash": "1cbc40572858c72af51006c2a21a457b13c39b00272c44f5c06162bd8051122b",
+      "partsHash": "c6f07c975a920a37289d704d01bb88005e83a027cfb1671dbec43d12028ceab9",
+      "frames": [
+        {
+          "actor": "Aperol-Anni",
+          "pose": "idle",
+          "source": {
+            "x": 62,
+            "y": 9,
+            "w": 114,
+            "h": 212,
+            "count": 13830,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 36,
+            "y": 28,
+            "w": 28,
+            "h": 52,
+            "count": 832
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-a",
+          "source": {
+            "x": 282,
+            "y": 7,
+            "w": 118,
+            "h": 213,
+            "count": 13810,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 34,
+            "y": 28,
+            "w": 29,
+            "h": 52,
+            "count": 835
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-pass",
+          "source": {
+            "x": 506,
+            "y": 8,
+            "w": 115,
+            "h": 212,
+            "count": 13728,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 35,
+            "y": 28,
+            "w": 28,
+            "h": 52,
+            "count": 828
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-b",
+          "source": {
+            "x": 720,
+            "y": 9,
+            "w": 130,
+            "h": 211,
+            "count": 13867,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 32,
+            "y": 28,
+            "w": 32,
+            "h": 52,
+            "count": 839
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "anticipation",
+          "source": {
+            "x": 912,
+            "y": 12,
+            "w": 166,
+            "h": 209,
+            "count": 15501,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 21,
+            "y": 29,
+            "w": 40,
+            "h": 51,
+            "count": 936
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "impact",
+          "source": {
+            "x": 1160,
+            "y": 8,
+            "w": 165,
+            "h": 212,
+            "count": 14453,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 34,
+            "y": 28,
+            "w": 40,
+            "h": 52,
+            "count": 868
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "hit",
+          "source": {
+            "x": 1396,
+            "y": 12,
+            "w": 120,
+            "h": 208,
+            "count": 14705,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 31,
+            "y": 29,
+            "w": 29,
+            "h": 51,
+            "count": 881
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "rest",
+          "source": {
+            "x": 1617,
+            "y": 12,
+            "w": 114,
+            "h": 208,
+            "count": 13173,
+            "pieces": 1
+          },
+          "scale": 0.24528301886792453,
+          "bounds": {
+            "x": 37,
+            "y": 29,
+            "w": 28,
+            "h": 51,
+            "count": 791
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "idle",
+          "source": {
+            "x": 37,
+            "y": 234,
+            "w": 167,
+            "h": 208,
+            "count": 18626,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 30,
+            "y": 29,
+            "w": 42,
+            "h": 51,
+            "count": 1168
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-a",
+          "source": {
+            "x": 262,
+            "y": 234,
+            "w": 160,
+            "h": 208,
+            "count": 18177,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 29,
+            "y": 28,
+            "w": 40,
+            "h": 52,
+            "count": 1132
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-pass",
+          "source": {
+            "x": 485,
+            "y": 234,
+            "w": 138,
+            "h": 207,
+            "count": 17429,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 30,
+            "y": 29,
+            "w": 35,
+            "h": 51,
+            "count": 1088
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-b",
+          "source": {
+            "x": 707,
+            "y": 234,
+            "w": 174,
+            "h": 207,
+            "count": 18391,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 44,
+            "h": 52,
+            "count": 1154
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "anticipation",
+          "source": {
+            "x": 913,
+            "y": 232,
+            "w": 191,
+            "h": 210,
+            "count": 19661,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 19,
+            "y": 27,
+            "w": 48,
+            "h": 53,
+            "count": 1231
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "impact",
+          "source": {
+            "x": 1156,
+            "y": 238,
+            "w": 202,
+            "h": 204,
+            "count": 17348,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 32,
+            "y": 30,
+            "w": 51,
+            "h": 50,
+            "count": 1083
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "hit",
+          "source": {
+            "x": 1395,
+            "y": 235,
+            "w": 143,
+            "h": 207,
+            "count": 18079,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 27,
+            "y": 28,
+            "w": 36,
+            "h": 52,
+            "count": 1130
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "rest",
+          "source": {
+            "x": 1607,
+            "y": 245,
+            "w": 148,
+            "h": 197,
+            "count": 17064,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 33,
+            "y": 31,
+            "w": 37,
+            "h": 49,
+            "count": 1068
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "idle",
+          "source": {
+            "x": 34,
+            "y": 454,
+            "w": 171,
+            "h": 225,
+            "count": 21871,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 32,
+            "y": 28,
+            "w": 40,
+            "h": 52,
+            "count": 1165
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-a",
+          "source": {
+            "x": 258,
+            "y": 457,
+            "w": 173,
+            "h": 221,
+            "count": 21885,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 32,
+            "y": 29,
+            "w": 40,
+            "h": 51,
+            "count": 1161
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-pass",
+          "source": {
+            "x": 484,
+            "y": 457,
+            "w": 145,
+            "h": 221,
+            "count": 20547,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 31,
+            "y": 29,
+            "w": 34,
+            "h": 51,
+            "count": 1094
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-b",
+          "source": {
+            "x": 701,
+            "y": 457,
+            "w": 178,
+            "h": 221,
+            "count": 21887,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 30,
+            "y": 29,
+            "w": 41,
+            "h": 51,
+            "count": 1161
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "anticipation",
+          "source": {
+            "x": 903,
+            "y": 454,
+            "w": 199,
+            "h": 225,
+            "count": 23073,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 19,
+            "y": 28,
+            "w": 46,
+            "h": 52,
+            "count": 1228
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "impact",
+          "source": {
+            "x": 1146,
+            "y": 465,
+            "w": 216,
+            "h": 214,
+            "count": 20367,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 31,
+            "y": 31,
+            "w": 50,
+            "h": 49,
+            "count": 1076
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "hit",
+          "source": {
+            "x": 1386,
+            "y": 460,
+            "w": 152,
+            "h": 219,
+            "count": 20078,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 29,
+            "y": 29,
+            "w": 34,
+            "h": 51,
+            "count": 1070
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "rest",
+          "source": {
+            "x": 1596,
+            "y": 479,
+            "w": 163,
+            "h": 200,
+            "count": 19207,
+            "pieces": 1
+          },
+          "scale": 0.2311111111111111,
+          "bounds": {
+            "x": 33,
+            "y": 34,
+            "w": 38,
+            "h": 46,
+            "count": 1022
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "idle",
+          "source": {
+            "x": 8,
+            "y": 712,
+            "w": 204,
+            "h": 148,
+            "count": 17975,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 24,
+            "y": 44,
+            "w": 51,
+            "h": 36,
+            "count": 1123
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-a",
+          "source": {
+            "x": 227,
+            "y": 713,
+            "w": 211,
+            "h": 147,
+            "count": 18708,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 22,
+            "y": 43,
+            "w": 53,
+            "h": 37,
+            "count": 1174
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-pass",
+          "source": {
+            "x": 449,
+            "y": 713,
+            "w": 210,
+            "h": 147,
+            "count": 18731,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 27,
+            "y": 43,
+            "w": 53,
+            "h": 37,
+            "count": 1168
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-b",
+          "source": {
+            "x": 672,
+            "y": 712,
+            "w": 210,
+            "h": 148,
+            "count": 18303,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 21,
+            "y": 43,
+            "w": 53,
+            "h": 37,
+            "count": 1142
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "anticipation",
+          "source": {
+            "x": 890,
+            "y": 724,
+            "w": 214,
+            "h": 136,
+            "count": 17953,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 18,
+            "y": 46,
+            "w": 54,
+            "h": 34,
+            "count": 1123
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "impact",
+          "source": {
+            "x": 1111,
+            "y": 720,
+            "w": 245,
+            "h": 139,
+            "count": 19035,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 20,
+            "y": 45,
+            "w": 61,
+            "h": 35,
+            "count": 1194
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "hit",
+          "source": {
+            "x": 1363,
+            "y": 702,
+            "w": 183,
+            "h": 157,
+            "count": 18257,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 28,
+            "y": 42,
+            "w": 46,
+            "h": 38,
+            "count": 1133
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "rest",
+          "source": {
+            "x": 1561,
+            "y": 723,
+            "w": 203,
+            "h": 136,
+            "count": 17874,
+            "pieces": 1
+          },
+          "scale": 0.25,
+          "bounds": {
+            "x": 16,
+            "y": 47,
+            "w": 51,
+            "h": 33,
+            "count": 1118
+          }
+        }
+      ],
+      "modules": [
+        {
+          "id": "head-0",
+          "kind": "head",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "h": 17
+          },
+          "source": {
+            "x": 102,
+            "y": 92,
+            "w": 180,
+            "h": 198,
+            "count": 27768,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 8,
+            "y": 16
+          }
+        },
+        {
+          "id": "head-1",
+          "kind": "head",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 0,
+            "w": 17,
+            "h": 17
+          },
+          "source": {
+            "x": 458,
+            "y": 108,
+            "w": 185,
+            "h": 183,
+            "count": 26486,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 9,
+            "y": 16
+          }
+        },
+        {
+          "id": "head-2",
+          "kind": "head",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 0,
+            "w": 17,
+            "h": 17
+          },
+          "source": {
+            "x": 797,
+            "y": 63,
+            "w": 224,
+            "h": 227,
+            "count": 35887,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 9,
+            "y": 16
+          }
+        },
+        {
+          "id": "head-3",
+          "kind": "head",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 0,
+            "w": 21,
+            "h": 17
+          },
+          "source": {
+            "x": 1138,
+            "y": 94,
+            "w": 240,
+            "h": 197,
+            "count": 31738,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 11,
+            "y": 16
+          }
+        },
+        {
+          "id": "torso-0",
+          "kind": "torso",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 96,
+            "w": 25,
+            "h": 20
+          },
+          "source": {
+            "x": 53,
+            "y": 407,
+            "w": 315,
+            "h": 255,
+            "count": 56182,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 12,
+              "y": 1
+            },
+            "waist": {
+              "x": 13,
+              "y": 17
+            }
+          }
+        },
+        {
+          "id": "torso-1",
+          "kind": "torso",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 96,
+            "w": 25,
+            "h": 20
+          },
+          "source": {
+            "x": 416,
+            "y": 404,
+            "w": 315,
+            "h": 257,
+            "count": 63057,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 12,
+              "y": 1
+            },
+            "waist": {
+              "x": 13,
+              "y": 17
+            }
+          }
+        },
+        {
+          "id": "torso-2",
+          "kind": "torso",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 96,
+            "w": 20,
+            "h": 20
+          },
+          "source": {
+            "x": 792,
+            "y": 408,
+            "w": 251,
+            "h": 253,
+            "count": 40718,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 9,
+              "y": 1
+            },
+            "waist": {
+              "x": 10,
+              "y": 17
+            }
+          }
+        },
+        {
+          "id": "torso-3",
+          "kind": "torso",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 96,
+            "w": 21,
+            "h": 20
+          },
+          "source": {
+            "x": 1142,
+            "y": 408,
+            "w": 262,
+            "h": 253,
+            "count": 43718,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 10,
+              "y": 1
+            },
+            "waist": {
+              "x": 11,
+              "y": 17
+            }
+          }
+        },
+        {
+          "id": "legs-0",
+          "kind": "legs",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 192,
+            "w": 22,
+            "h": 20
+          },
+          "source": {
+            "x": 76,
+            "y": 757,
+            "w": 282,
+            "h": 258,
+            "count": 45024,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 11,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-1",
+          "kind": "legs",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 192,
+            "w": 22,
+            "h": 20
+          },
+          "source": {
+            "x": 437,
+            "y": 756,
+            "w": 284,
+            "h": 259,
+            "count": 45270,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 11,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-2",
+          "kind": "legs",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 192,
+            "w": 19,
+            "h": 20
+          },
+          "source": {
+            "x": 815,
+            "y": 756,
+            "w": 244,
+            "h": 259,
+            "count": 37187,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 10,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-3",
+          "kind": "legs",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 192,
+            "w": 19,
+            "h": 20
+          },
+          "source": {
+            "x": 1168,
+            "y": 757,
+            "w": 245,
+            "h": 257,
+            "count": 35828,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 10,
+            "y": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "krawall",
+      "name": "Krawall-Karikatur",
+      "bodyHeight": 40,
+      "boarHeight": 27,
+      "palette": [
+        "242333",
+        "413440",
+        "67463e",
+        "926044",
+        "b67b50",
+        "dda071",
+        "f4c698",
+        "ffe6bb",
+        "f8f0d5",
+        "c8c5af",
+        "898c83",
+        "526d76",
+        "334d59",
+        "243841",
+        "354b36",
+        "55704a",
+        "849451",
+        "bac475",
+        "953d32",
+        "ce5d31",
+        "ec8b36",
+        "f3b84b",
+        "95653e",
+        "634b37",
+        "201b2d",
+        "713332",
+        "fa7b24",
+        "ffd060"
+      ],
+      "parts": {
+        "head": 17,
+        "torso": 15,
+        "legs": 14,
+        "neckX": 0.48,
+        "waistY": 0.9
+      },
+      "atlas": "krawall.png",
+      "partsAtlas": "krawall-parts.png",
+      "sourceHash": "f796ed9d0ac45ee928b51ee1250908e3ec6c4cb4d96b233ae303986b94e8946c",
+      "partsSourceHash": "544dc5c6637b70f3a382e4dd82078fbca9ab7fc551a86948c0905e3d7af50806",
+      "atlasHash": "6cc996e9bf14835cc0c691f03bb93730e418070c5fc1ec0c82b38948816ef251",
+      "partsHash": "e40d9c8e88d53f548b93876a003a3660fde88749c4881fb3e22dbc41b81cfbce",
+      "frames": [
+        {
+          "actor": "Aperol-Anni",
+          "pose": "idle",
+          "source": {
+            "x": 61,
+            "y": 16,
+            "w": 123,
+            "h": 220,
+            "count": 16874,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 39,
+            "y": 41,
+            "w": 21,
+            "h": 39,
+            "count": 553
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-a",
+          "source": {
+            "x": 277,
+            "y": 17,
+            "w": 135,
+            "h": 218,
+            "count": 17188,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 37,
+            "y": 40,
+            "w": 25,
+            "h": 40,
+            "count": 572
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-pass",
+          "source": {
+            "x": 500,
+            "y": 16,
+            "w": 127,
+            "h": 220,
+            "count": 16998,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 38,
+            "y": 40,
+            "w": 23,
+            "h": 40,
+            "count": 555
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "walk-b",
+          "source": {
+            "x": 709,
+            "y": 17,
+            "w": 131,
+            "h": 219,
+            "count": 17269,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 36,
+            "y": 40,
+            "w": 24,
+            "h": 40,
+            "count": 570
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "anticipation",
+          "source": {
+            "x": 915,
+            "y": 21,
+            "w": 149,
+            "h": 215,
+            "count": 18325,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 30,
+            "y": 41,
+            "w": 27,
+            "h": 39,
+            "count": 602
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "impact",
+          "source": {
+            "x": 1150,
+            "y": 23,
+            "w": 175,
+            "h": 213,
+            "count": 16910,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 36,
+            "y": 41,
+            "w": 32,
+            "h": 39,
+            "count": 559
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "hit",
+          "source": {
+            "x": 1381,
+            "y": 23,
+            "w": 140,
+            "h": 213,
+            "count": 17329,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 34,
+            "y": 41,
+            "w": 25,
+            "h": 39,
+            "count": 574
+          }
+        },
+        {
+          "actor": "Aperol-Anni",
+          "pose": "rest",
+          "source": {
+            "x": 1614,
+            "y": 20,
+            "w": 125,
+            "h": 216,
+            "count": 16452,
+            "pieces": 1
+          },
+          "scale": 0.18181818181818182,
+          "bounds": {
+            "x": 39,
+            "y": 41,
+            "w": 23,
+            "h": 39,
+            "count": 539
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "idle",
+          "source": {
+            "x": 24,
+            "y": 256,
+            "w": 189,
+            "h": 210,
+            "count": 23893,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 32,
+            "y": 40,
+            "w": 36,
+            "h": 40,
+            "count": 860
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-a",
+          "source": {
+            "x": 238,
+            "y": 258,
+            "w": 203,
+            "h": 208,
+            "count": 23561,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 30,
+            "y": 40,
+            "w": 39,
+            "h": 40,
+            "count": 858
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-pass",
+          "source": {
+            "x": 479,
+            "y": 258,
+            "w": 171,
+            "h": 208,
+            "count": 21705,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 33,
+            "y": 40,
+            "w": 33,
+            "h": 40,
+            "count": 792
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "walk-b",
+          "source": {
+            "x": 678,
+            "y": 259,
+            "w": 198,
+            "h": 207,
+            "count": 22592,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 31,
+            "y": 41,
+            "w": 38,
+            "h": 39,
+            "count": 810
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "anticipation",
+          "source": {
+            "x": 904,
+            "y": 258,
+            "w": 202,
+            "h": 208,
+            "count": 25001,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 29,
+            "y": 40,
+            "w": 38,
+            "h": 40,
+            "count": 900
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "impact",
+          "source": {
+            "x": 1125,
+            "y": 266,
+            "w": 230,
+            "h": 200,
+            "count": 22844,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 44,
+            "h": 38,
+            "count": 822
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "hit",
+          "source": {
+            "x": 1380,
+            "y": 267,
+            "w": 169,
+            "h": 199,
+            "count": 20786,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 30,
+            "y": 42,
+            "w": 32,
+            "h": 38,
+            "count": 758
+          }
+        },
+        {
+          "actor": "Dosen-Dieter",
+          "pose": "rest",
+          "source": {
+            "x": 1592,
+            "y": 268,
+            "w": 174,
+            "h": 198,
+            "count": 22080,
+            "pieces": 1
+          },
+          "scale": 0.19047619047619047,
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 33,
+            "h": 38,
+            "count": 803
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "idle",
+          "source": {
+            "x": 21,
+            "y": 481,
+            "w": 193,
+            "h": 216,
+            "count": 25003,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 32,
+            "y": 40,
+            "w": 36,
+            "h": 40,
+            "count": 853
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-a",
+          "source": {
+            "x": 251,
+            "y": 482,
+            "w": 193,
+            "h": 215,
+            "count": 23784,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 32,
+            "y": 40,
+            "w": 36,
+            "h": 40,
+            "count": 817
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-pass",
+          "source": {
+            "x": 483,
+            "y": 482,
+            "w": 173,
+            "h": 215,
+            "count": 22170,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 34,
+            "y": 40,
+            "w": 32,
+            "h": 40,
+            "count": 755
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "walk-b",
+          "source": {
+            "x": 684,
+            "y": 482,
+            "w": 189,
+            "h": 215,
+            "count": 23359,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 32,
+            "y": 40,
+            "w": 35,
+            "h": 40,
+            "count": 799
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "anticipation",
+          "source": {
+            "x": 899,
+            "y": 482,
+            "w": 199,
+            "h": 215,
+            "count": 25384,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 28,
+            "y": 40,
+            "w": 37,
+            "h": 40,
+            "count": 869
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "impact",
+          "source": {
+            "x": 1125,
+            "y": 483,
+            "w": 227,
+            "h": 214,
+            "count": 23646,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 33,
+            "y": 40,
+            "w": 42,
+            "h": 40,
+            "count": 818
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "hit",
+          "source": {
+            "x": 1375,
+            "y": 483,
+            "w": 171,
+            "h": 213,
+            "count": 22416,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 30,
+            "y": 41,
+            "w": 32,
+            "h": 39,
+            "count": 763
+          }
+        },
+        {
+          "actor": "Grill-Oskar",
+          "pose": "rest",
+          "source": {
+            "x": 1591,
+            "y": 492,
+            "w": 148,
+            "h": 205,
+            "count": 21742,
+            "pieces": 1
+          },
+          "scale": 0.18518518518518517,
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 27,
+            "h": 38,
+            "count": 734
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "idle",
+          "source": {
+            "x": 17,
+            "y": 716,
+            "w": 192,
+            "h": 142,
+            "count": 17866,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 31,
+            "y": 53,
+            "w": 37,
+            "h": 27,
+            "count": 646
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-a",
+          "source": {
+            "x": 239,
+            "y": 717,
+            "w": 197,
+            "h": 141,
+            "count": 18527,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 33,
+            "y": 53,
+            "w": 37,
+            "h": 27,
+            "count": 666
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-pass",
+          "source": {
+            "x": 460,
+            "y": 716,
+            "w": 190,
+            "h": 140,
+            "count": 17438,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 31,
+            "y": 54,
+            "w": 36,
+            "h": 26,
+            "count": 623
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "walk-b",
+          "source": {
+            "x": 675,
+            "y": 717,
+            "w": 197,
+            "h": 141,
+            "count": 18337,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 32,
+            "y": 53,
+            "w": 37,
+            "h": 27,
+            "count": 664
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "anticipation",
+          "source": {
+            "x": 898,
+            "y": 716,
+            "w": 184,
+            "h": 143,
+            "count": 17804,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 31,
+            "y": 53,
+            "w": 35,
+            "h": 27,
+            "count": 643
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "impact",
+          "source": {
+            "x": 1107,
+            "y": 716,
+            "w": 222,
+            "h": 141,
+            "count": 19902,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 33,
+            "y": 53,
+            "w": 42,
+            "h": 27,
+            "count": 713
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "hit",
+          "source": {
+            "x": 1341,
+            "y": 708,
+            "w": 199,
+            "h": 150,
+            "count": 18485,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 33,
+            "y": 51,
+            "w": 38,
+            "h": 29,
+            "count": 670
+          }
+        },
+        {
+          "actor": "Keiler",
+          "pose": "rest",
+          "source": {
+            "x": 1567,
+            "y": 722,
+            "w": 189,
+            "h": 137,
+            "count": 17290,
+            "pieces": 1
+          },
+          "scale": 0.19014084507042253,
+          "bounds": {
+            "x": 28,
+            "y": 54,
+            "w": 36,
+            "h": 26,
+            "count": 624
+          }
+        }
+      ],
+      "modules": [
+        {
+          "id": "head-0",
+          "kind": "head",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 15,
+            "h": 17
+          },
+          "source": {
+            "x": 98,
+            "y": 103,
+            "w": 241,
+            "h": 266,
+            "count": 45461,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 8,
+            "y": 16
+          }
+        },
+        {
+          "id": "head-1",
+          "kind": "head",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 0,
+            "w": 17,
+            "h": 17
+          },
+          "source": {
+            "x": 435,
+            "y": 126,
+            "w": 243,
+            "h": 243,
+            "count": 42029,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 9,
+            "y": 16
+          }
+        },
+        {
+          "id": "head-2",
+          "kind": "head",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 0,
+            "w": 16,
+            "h": 17
+          },
+          "source": {
+            "x": 757,
+            "y": 97,
+            "w": 259,
+            "h": 272,
+            "count": 47054,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 8,
+            "y": 16
+          }
+        },
+        {
+          "id": "head-3",
+          "kind": "head",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 0,
+            "w": 19,
+            "h": 17
+          },
+          "source": {
+            "x": 1095,
+            "y": 123,
+            "w": 272,
+            "h": 246,
+            "count": 48130,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 10,
+            "y": 16
+          }
+        },
+        {
+          "id": "torso-0",
+          "kind": "torso",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 96,
+            "w": 19,
+            "h": 15
+          },
+          "source": {
+            "x": 45,
+            "y": 438,
+            "w": 324,
+            "h": 253,
+            "count": 63357,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 9,
+              "y": 1
+            },
+            "waist": {
+              "x": 10,
+              "y": 14
+            }
+          }
+        },
+        {
+          "id": "torso-1",
+          "kind": "torso",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 96,
+            "w": 19,
+            "h": 15
+          },
+          "source": {
+            "x": 399,
+            "y": 438,
+            "w": 326,
+            "h": 253,
+            "count": 65055,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 9,
+              "y": 1
+            },
+            "waist": {
+              "x": 10,
+              "y": 14
+            }
+          }
+        },
+        {
+          "id": "torso-2",
+          "kind": "torso",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 96,
+            "w": 16,
+            "h": 15
+          },
+          "source": {
+            "x": 776,
+            "y": 438,
+            "w": 262,
+            "h": 246,
+            "count": 48619,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 8,
+              "y": 1
+            },
+            "waist": {
+              "x": 8,
+              "y": 14
+            }
+          }
+        },
+        {
+          "id": "torso-3",
+          "kind": "torso",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 96,
+            "w": 18,
+            "h": 15
+          },
+          "source": {
+            "x": 1115,
+            "y": 438,
+            "w": 288,
+            "h": 246,
+            "count": 53374,
+            "pieces": 1
+          },
+          "socket": {
+            "neck": {
+              "x": 9,
+              "y": 1
+            },
+            "waist": {
+              "x": 9,
+              "y": 14
+            }
+          }
+        },
+        {
+          "id": "legs-0",
+          "kind": "legs",
+          "variant": 0,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 0,
+            "y": 192,
+            "w": 16,
+            "h": 14
+          },
+          "source": {
+            "x": 80,
+            "y": 751,
+            "w": 266,
+            "h": 238,
+            "count": 44443,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 8,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-1",
+          "kind": "legs",
+          "variant": 1,
+          "rig": "stocky",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 96,
+            "y": 192,
+            "w": 16,
+            "h": 14
+          },
+          "source": {
+            "x": 432,
+            "y": 751,
+            "w": 271,
+            "h": 238,
+            "count": 46001,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 8,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-2",
+          "kind": "legs",
+          "variant": 2,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 192,
+            "y": 192,
+            "w": 13,
+            "h": 14
+          },
+          "source": {
+            "x": 808,
+            "y": 748,
+            "w": 216,
+            "h": 241,
+            "count": 33679,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 7,
+            "y": 1
+          }
+        },
+        {
+          "id": "legs-3",
+          "kind": "legs",
+          "variant": 3,
+          "rig": "slim",
+          "direction": "se",
+          "state": "idle",
+          "rect": {
+            "x": 288,
+            "y": 192,
+            "w": 13,
+            "h": 14
+          },
+          "source": {
+            "x": 1154,
+            "y": 747,
+            "w": 220,
+            "h": 242,
+            "count": 34613,
+            "pieces": 1
+          },
+          "socket": {
+            "x": 7,
+            "y": 1
+          }
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "drawnDirections": 1,
+    "mirroredDirections": 1,
+    "posesPerActor": 8,
+    "modularStates": [
+      "idle"
+    ]
+  }
+}

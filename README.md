@@ -6,6 +6,10 @@ Auf PC und Handy ohne Installation spielbar. Fortschritt liegt im lokalen Browse
 
 Spielbarer Browser-Prototyp eines 2D-Pixel-Rollenspiels mit regelbasiert gestalteter Geografie und Tab-Target-Kampf. Der Start liegt bei **St. Gangolf in 56753 Mertloch**. Kein Paketdownload erforderlich; Node.js 20 oder neuer genügt.
 
+## Figurenwerkstatt: drei echte Sprite-Stile
+
+[Prototypen im Browser vergleichen](https://er-esm.github.io/mertloch-chronicles/sprite-lab.html): Dorfcomic, Maifeld-Detailpixel und Krawall-Karikatur. 96 animierte Posen, Bewegung auf der Mertloch-Karte und 36 kombinierbare Bauteile mit PNG-/JSON-Export. [Pipeline, Subagent-Definitionen und Ausbauplan](docs/SPRITE-PIPELINE-2026-09-16.md). Die Stilwahl ist offen; die Werkstatt verändert keinen Spielstand.
+
 ## Starten
 
 ```powershell
