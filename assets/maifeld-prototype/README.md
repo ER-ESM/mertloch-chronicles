@@ -5,3 +5,6 @@ Original character sprite sheets generated on 2026-09-16 with built-in image gen
 `sources/anni.png`, `sources/dieter-v2.png`, `sources/keiler-v2.png` are the active immutable source files. Dieter/Keiler v1 remain as provenance. Prompts and corrections are in `tools/sprite-pipeline/detail-*.json`. `npm run sprites:detail` recreates `runtime/` with fixed palette, hard alpha, nearest-neighbor sampling and stable anchors. Catalog contains source and output SHA-256 hashes.
 
 See `docs/MAIFELD-PROTOTYP-2026-09-16.md` for the tested slice and remaining production coverage. Existing environmental graphics retain their original attributions.
+## Walk animation iteration
+
+Dedicated 8-phase walk cycles in four directions add 96 runtime frames. Active sources: `sources/anni-walk-v1.png`, `sources/dieter-walk-v2.png`, `sources/keiler-walk-v1.png`; the first Dieter walk atlas remains for provenance. Original and successful retry/correction prompts: `tools/sprite-pipeline/walk-prompts.json`. Built-in image generation produced the art; `build-walk.mjs` handles palette, scale, alpha and body registration against the idle atlas. `npm run sprites:walk` rebuilds the walk atlases; `sprites:detail` rebuilds both sets. `runtime/walk-catalog.json` records source, idle-reference and output hashes. See `docs/MAIFELD-LAUFANIMATION-2026-09-16.md` for review and remaining limitations.

@@ -1,0 +1,2169 @@
+{
+  "version": 1,
+  "frameSize": 96,
+  "pivot": {
+    "x": 48,
+    "y": 80
+  },
+  "directions": [
+    "se",
+    "sw",
+    "ne",
+    "nw"
+  ],
+  "framesPerCycle": 8,
+  "registration": "head/trunk centroid; fixed actor scale; grounded baseline",
+  "actors": [
+    {
+      "id": "anni",
+      "height": 52,
+      "scale": 0.24528301886792453,
+      "stride": 36,
+      "atlas": "anni-walk.png",
+      "source": "anni-walk-v1.png",
+      "sourceHash": "863544c69713e8e0fc4bdeb1440e851b139aac211d25dca4a1a57d8c6f898bcb",
+      "idleAtlasHash": "32d0313e503ae91c446c050cdf84859e19af0d55ea014bc88d6f8df50b4d08fe",
+      "atlasHash": "c3d44e53dc719ac0dcec7a8637592e2cd8bdba5e17242ca04010c060bdf1aad6",
+      "frames": [
+        {
+          "source": {
+            "x": 43,
+            "y": 8,
+            "w": 145,
+            "h": 212,
+            "count": 17032,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 32,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1029
+          },
+          "bodyAnchor": {
+            "x": 48.53622279410814,
+            "y": 80
+          },
+          "hash": "9472a0813d1486722b272b240280aec56e741abef7858aadd669ded8a7d607b9"
+        },
+        {
+          "source": {
+            "x": 272,
+            "y": 8,
+            "w": 138,
+            "h": 212,
+            "count": 16436,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 33,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 993
+          },
+          "bodyAnchor": {
+            "x": 48.970435958529194,
+            "y": 80
+          },
+          "hash": "53f4de633917bbea19a259e09d9fb4232a51ac0fdc770a9b714e3534e9c96266"
+        },
+        {
+          "source": {
+            "x": 503,
+            "y": 8,
+            "w": 128,
+            "h": 212,
+            "count": 16229,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 35,
+            "y": 28,
+            "w": 31,
+            "h": 52,
+            "count": 977
+          },
+          "bodyAnchor": {
+            "x": 48.53989199829062,
+            "y": 80
+          },
+          "hash": "60aac2a1f844393d627c24184042210b938b0f4a4d331782d4d5c877f73a63b2"
+        },
+        {
+          "source": {
+            "x": 715,
+            "y": 8,
+            "w": 141,
+            "h": 211,
+            "count": 16728,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 34,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 1012
+          },
+          "bodyAnchor": {
+            "x": 49.243578319321216,
+            "y": 80
+          },
+          "hash": "8ab35ea601213cbd2a52afdd96aa635518875bfb1bccb6de764d84c8dfca53dd"
+        },
+        {
+          "source": {
+            "x": 938,
+            "y": 7,
+            "w": 139,
+            "h": 214,
+            "count": 16813,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 33,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 1015
+          },
+          "bodyAnchor": {
+            "x": 48.65260012253522,
+            "y": 80
+          },
+          "hash": "7de1dae2136d6e3cf61ecd3efe320b1533eec6948dc74d4f07c8c4fb65674c1c"
+        },
+        {
+          "source": {
+            "x": 1159,
+            "y": 8,
+            "w": 139,
+            "h": 211,
+            "count": 16544,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 33,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 999
+          },
+          "bodyAnchor": {
+            "x": 48.65961287670003,
+            "y": 80
+          },
+          "hash": "a3d79cc2d21a6b10954f26c675b7eb13a6b94ce789b4102549bd544e2b0fceb6"
+        },
+        {
+          "source": {
+            "x": 1386,
+            "y": 7,
+            "w": 135,
+            "h": 214,
+            "count": 15566,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 34,
+            "y": 28,
+            "w": 33,
+            "h": 52,
+            "count": 928
+          },
+          "bodyAnchor": {
+            "x": 48.59571307828075,
+            "y": 80
+          },
+          "hash": "f8c103a65216826e0508ec2413cda85eaa509be77deb7a7deb12146a8cf3b2a6"
+        },
+        {
+          "source": {
+            "x": 1600,
+            "y": 8,
+            "w": 142,
+            "h": 211,
+            "count": 16546,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 33,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1004
+          },
+          "bodyAnchor": {
+            "x": 49.44579317063168,
+            "y": 80
+          },
+          "hash": "812be10e3fdfb09358682a141731acf301d8341a2b975da1f196274c18554883"
+        },
+        {
+          "source": {
+            "x": 38,
+            "y": 229,
+            "w": 144,
+            "h": 213,
+            "count": 17027,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1015
+          },
+          "bodyAnchor": {
+            "x": 46.53319496855346,
+            "y": 80
+          },
+          "hash": "98934a5c958a36b82802bd50d4b4808c60ec992cd0106388d49ee1279dfa429c"
+        },
+        {
+          "source": {
+            "x": 261,
+            "y": 230,
+            "w": 135,
+            "h": 212,
+            "count": 16391,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 33,
+            "h": 52,
+            "count": 985
+          },
+          "bodyAnchor": {
+            "x": 46.65164713937918,
+            "y": 80
+          },
+          "hash": "4b4ff9e529ddf931c7ffdbf38a118216f606084dbcd3b499821132d4a9f9d652"
+        },
+        {
+          "source": {
+            "x": 482,
+            "y": 230,
+            "w": 136,
+            "h": 212,
+            "count": 16650,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 33,
+            "h": 52,
+            "count": 996
+          },
+          "bodyAnchor": {
+            "x": 46.98359310910581,
+            "y": 80
+          },
+          "hash": "bb08d20b7d4f3669128aa55300c50b4f4a4ba15b100a6df4fd28d8ffb037d8c0"
+        },
+        {
+          "source": {
+            "x": 702,
+            "y": 229,
+            "w": 143,
+            "h": 212,
+            "count": 16981,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1020
+          },
+          "bodyAnchor": {
+            "x": 46.78015009707771,
+            "y": 80
+          },
+          "hash": "7cd3e3f4ce2ee6df13d0444eaf3028e3a6214beb97009798aef8463195f1ffa0"
+        },
+        {
+          "source": {
+            "x": 925,
+            "y": 229,
+            "w": 137,
+            "h": 213,
+            "count": 16737,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 1004
+          },
+          "bodyAnchor": {
+            "x": 47.089594471084624,
+            "y": 80
+          },
+          "hash": "d90a79843eb6630de583b82070a96fc7ed8f6bda3dcb163e1ccb44d95b8a0479"
+        },
+        {
+          "source": {
+            "x": 1148,
+            "y": 230,
+            "w": 134,
+            "h": 209,
+            "count": 16495,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 29,
+            "w": 33,
+            "h": 51,
+            "count": 982
+          },
+          "bodyAnchor": {
+            "x": 46.847905100708275,
+            "y": 80
+          },
+          "hash": "83247fb19a1cbdebda12cc08e518dc3c490582a40acbe3a4091d1ee4bc0d6e02"
+        },
+        {
+          "source": {
+            "x": 1371,
+            "y": 229,
+            "w": 135,
+            "h": 213,
+            "count": 15677,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 33,
+            "h": 52,
+            "count": 939
+          },
+          "bodyAnchor": {
+            "x": 46.7704517169999,
+            "y": 80
+          },
+          "hash": "964db8fc6e7ce61b0dc0044f5123379dd075464111d1cd660f084276fd927f01"
+        },
+        {
+          "source": {
+            "x": 1592,
+            "y": 230,
+            "w": 141,
+            "h": 212,
+            "count": 16862,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1011
+          },
+          "bodyAnchor": {
+            "x": 46.97195342175725,
+            "y": 80
+          },
+          "hash": "86adb4a5250aababe55d72ef9f6928f96a079d9f084c64ec2673bc0a214336b5"
+        },
+        {
+          "source": {
+            "x": 46,
+            "y": 450,
+            "w": 142,
+            "h": 211,
+            "count": 16807,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1021
+          },
+          "bodyAnchor": {
+            "x": 46.75014293882219,
+            "y": 80
+          },
+          "hash": "b8c2c55ffe9facf0d7d9812819fa5fd550dbfffa22ce5f0eb516745e4a34a9c8"
+        },
+        {
+          "source": {
+            "x": 271,
+            "y": 450,
+            "w": 139,
+            "h": 211,
+            "count": 16471,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 32,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 998
+          },
+          "bodyAnchor": {
+            "x": 47.044294995537285,
+            "y": 80
+          },
+          "hash": "af2ef6a953add2d105715a2629f07280149248e387068ef2dd02df5cfaa0ed41"
+        },
+        {
+          "source": {
+            "x": 484,
+            "y": 450,
+            "w": 144,
+            "h": 212,
+            "count": 16502,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 993
+          },
+          "bodyAnchor": {
+            "x": 46.906966238203125,
+            "y": 80
+          },
+          "hash": "f1fc45cd1dcb68f5db152c3560539de025e7f388e8e6bc11a0776dac5d7eb6c9"
+        },
+        {
+          "source": {
+            "x": 712,
+            "y": 450,
+            "w": 152,
+            "h": 211,
+            "count": 16834,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 28,
+            "w": 37,
+            "h": 52,
+            "count": 1015
+          },
+          "bodyAnchor": {
+            "x": 46.76707155675967,
+            "y": 80
+          },
+          "hash": "2e5b1c5dc9b6134ac9d29b34d47c04f1609997e32df0b344ca7292b79cca178c"
+        },
+        {
+          "source": {
+            "x": 930,
+            "y": 450,
+            "w": 148,
+            "h": 211,
+            "count": 17031,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 28,
+            "w": 36,
+            "h": 52,
+            "count": 1029
+          },
+          "bodyAnchor": {
+            "x": 46.7861079259182,
+            "y": 80
+          },
+          "hash": "caec598546f118e8d01b6a51bb172a21a5b334632d28cc28bad93753f74539a5"
+        },
+        {
+          "source": {
+            "x": 1153,
+            "y": 450,
+            "w": 150,
+            "h": 211,
+            "count": 17016,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 28,
+            "w": 37,
+            "h": 52,
+            "count": 1025
+          },
+          "bodyAnchor": {
+            "x": 47.401257861635195,
+            "y": 80
+          },
+          "hash": "f090435b8d5066ab3cfb03a3eeb5ff0ed12f472bea8b018ed713f921e0243eec"
+        },
+        {
+          "source": {
+            "x": 1380,
+            "y": 450,
+            "w": 141,
+            "h": 211,
+            "count": 15836,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 32,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 957
+          },
+          "bodyAnchor": {
+            "x": 47.2463050020792,
+            "y": 80
+          },
+          "hash": "c48b13da9524fa8c07b5db710916c3c8d2d090e40b6ab26352997b78f4adfa76"
+        },
+        {
+          "source": {
+            "x": 1596,
+            "y": 450,
+            "w": 147,
+            "h": 211,
+            "count": 17097,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 28,
+            "w": 36,
+            "h": 52,
+            "count": 1037
+          },
+          "bodyAnchor": {
+            "x": 46.95393700514203,
+            "y": 80
+          },
+          "hash": "f0a0fd4979fe9fa06170793f4147f54d2e63a860a9d365f35dfafbbb5bc396c4"
+        },
+        {
+          "source": {
+            "x": 37,
+            "y": 666,
+            "w": 138,
+            "h": 213,
+            "count": 17111,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 29,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 1025
+          },
+          "bodyAnchor": {
+            "x": 48.585594899629534,
+            "y": 80
+          },
+          "hash": "3276fe6538ed356f0c3b14cf411514fad921ee87d58e7aa0510a18cc2e419fbb"
+        },
+        {
+          "source": {
+            "x": 260,
+            "y": 667,
+            "w": 136,
+            "h": 213,
+            "count": 16475,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 28,
+            "w": 33,
+            "h": 52,
+            "count": 985
+          },
+          "bodyAnchor": {
+            "x": 48.90249681307607,
+            "y": 80
+          },
+          "hash": "b7e9ecd904c6df3b7522edb621afa8734eb3926de2c8e463ca71f167c3201805"
+        },
+        {
+          "source": {
+            "x": 480,
+            "y": 668,
+            "w": 144,
+            "h": 212,
+            "count": 17103,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 29,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1029
+          },
+          "bodyAnchor": {
+            "x": 49.36500402146541,
+            "y": 80
+          },
+          "hash": "b89dc0556bc54e6cb84c0a83fedb9ee923d434ed9ff4e36d0f9e7ef6bd6d50b5"
+        },
+        {
+          "source": {
+            "x": 702,
+            "y": 668,
+            "w": 144,
+            "h": 212,
+            "count": 17430,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 1045
+          },
+          "bodyAnchor": {
+            "x": 49.39259771705292,
+            "y": 80
+          },
+          "hash": "0beed1671b8f43503274ed5d812eed13fa9e2e70c747ae696c46854328daf822"
+        },
+        {
+          "source": {
+            "x": 923,
+            "y": 667,
+            "w": 140,
+            "h": 212,
+            "count": 17316,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 29,
+            "y": 28,
+            "w": 34,
+            "h": 52,
+            "count": 1044
+          },
+          "bodyAnchor": {
+            "x": 48.67689845989733,
+            "y": 80
+          },
+          "hash": "3fc35fc03e6da8dbb68464d23c6a19a543d4c7924057d282b205d3a86323bc84"
+        },
+        {
+          "source": {
+            "x": 1147,
+            "y": 668,
+            "w": 142,
+            "h": 212,
+            "count": 16879,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 29,
+            "y": 28,
+            "w": 35,
+            "h": 52,
+            "count": 1020
+          },
+          "bodyAnchor": {
+            "x": 49.03653504232678,
+            "y": 80
+          },
+          "hash": "59134009620d7c6a2b79259561cffb4ccdab08a647955a6889fc5211e2fc52a4"
+        },
+        {
+          "source": {
+            "x": 1367,
+            "y": 668,
+            "w": 148,
+            "h": 212,
+            "count": 16945,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 28,
+            "w": 36,
+            "h": 52,
+            "count": 1014
+          },
+          "bodyAnchor": {
+            "x": 49.10937281928927,
+            "y": 80
+          },
+          "hash": "181964308a538f2104a92dad54986e6ddfea311668999f493d63d93dfda09b61"
+        },
+        {
+          "source": {
+            "x": 1590,
+            "y": 667,
+            "w": 138,
+            "h": 212,
+            "count": 17180,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 28,
+            "w": 33,
+            "h": 52,
+            "count": 1032
+          },
+          "bodyAnchor": {
+            "x": 49.318851402702975,
+            "y": 80
+          },
+          "hash": "721f73713fd1f2155136d95ea4f04d55500a49cce633dd9c4a5c34cd264c9f7e"
+        }
+      ]
+    },
+    {
+      "id": "dieter",
+      "height": 52,
+      "scale": 0.24880382775119617,
+      "stride": 36,
+      "atlas": "dieter-walk.png",
+      "source": "dieter-walk-v2.png",
+      "sourceHash": "542f41b930a8dd7d413fe04d5ade65ae97d88a937565efd0d5c1c2d23fa6394c",
+      "idleAtlasHash": "b10ef557eb5541afcd5f64f87eeb0d679e5287496f5b327c0826aec93dd37141",
+      "atlasHash": "2f1d24c23e4014a1fc0687b4904d9f93026933049c0741f33d88ef18b77b5c0a",
+      "frames": [
+        {
+          "source": {
+            "x": 23,
+            "y": 28,
+            "w": 187,
+            "h": 217,
+            "count": 21908,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 26,
+            "w": 46,
+            "h": 54,
+            "count": 1361
+          },
+          "bodyAnchor": {
+            "x": 47.93317345699167,
+            "y": 80
+          },
+          "hash": "723258aac47f914602aaa6bdc9c993606dd5f33b5efaf4567520730eea9a44ce"
+        },
+        {
+          "source": {
+            "x": 247,
+            "y": 29,
+            "w": 183,
+            "h": 213,
+            "count": 21142,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 27,
+            "w": 46,
+            "h": 53,
+            "count": 1319
+          },
+          "bodyAnchor": {
+            "x": 47.622889243062545,
+            "y": 80
+          },
+          "hash": "b7554fcf0e42fe8554193af410edb5f27d3e4d15deefa9c65b26f5fdbc299854"
+        },
+        {
+          "source": {
+            "x": 484,
+            "y": 31,
+            "w": 160,
+            "h": 209,
+            "count": 18093,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 32,
+            "y": 28,
+            "w": 40,
+            "h": 52,
+            "count": 1127
+          },
+          "bodyAnchor": {
+            "x": 48.47141134849892,
+            "y": 80
+          },
+          "hash": "42f0e407c98513783356b47518c1c2b8235b5c1143870ffe35b10e2266a1f5d3"
+        },
+        {
+          "source": {
+            "x": 689,
+            "y": 31,
+            "w": 181,
+            "h": 211,
+            "count": 20091,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 28,
+            "w": 45,
+            "h": 52,
+            "count": 1252
+          },
+          "bodyAnchor": {
+            "x": 48.0777235728803,
+            "y": 80
+          },
+          "hash": "e3f5d1eb37c270e71a143f29aa632d38ae30f6b4aec5a7da4c19c7cc833c1560"
+        },
+        {
+          "source": {
+            "x": 915,
+            "y": 30,
+            "w": 183,
+            "h": 213,
+            "count": 21375,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 27,
+            "w": 46,
+            "h": 53,
+            "count": 1339
+          },
+          "bodyAnchor": {
+            "x": 48.06995302488238,
+            "y": 80
+          },
+          "hash": "72561ae9a0609cdda356a398674477f61ee0d52e49457d83b5ad557f2a0373ad"
+        },
+        {
+          "source": {
+            "x": 1141,
+            "y": 30,
+            "w": 175,
+            "h": 212,
+            "count": 20364,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 27,
+            "w": 44,
+            "h": 53,
+            "count": 1271
+          },
+          "bodyAnchor": {
+            "x": 48.05460154742451,
+            "y": 80
+          },
+          "hash": "3222bdc59848453e99032c31689750cb8403f7d3bdc79c5d8b2251baff1eb305"
+        },
+        {
+          "source": {
+            "x": 1376,
+            "y": 30,
+            "w": 162,
+            "h": 210,
+            "count": 18112,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 28,
+            "w": 40,
+            "h": 52,
+            "count": 1123
+          },
+          "bodyAnchor": {
+            "x": 48.05328059478698,
+            "y": 80
+          },
+          "hash": "5048c8d3ccd8c84e1edbb8ba39920c54527ae9adde3deadc169d80d26e99fa3b"
+        },
+        {
+          "source": {
+            "x": 1579,
+            "y": 30,
+            "w": 181,
+            "h": 212,
+            "count": 20817,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 27,
+            "w": 45,
+            "h": 53,
+            "count": 1301
+          },
+          "bodyAnchor": {
+            "x": 47.673909774436105,
+            "y": 80
+          },
+          "hash": "67090bc86690e4981e91d5a2f298b285fdffc719378135857aa99bf0d95f7d4a"
+        },
+        {
+          "source": {
+            "x": 15,
+            "y": 254,
+            "w": 188,
+            "h": 215,
+            "count": 21542,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 24,
+            "y": 28,
+            "w": 47,
+            "h": 52,
+            "count": 1342
+          },
+          "bodyAnchor": {
+            "x": 48.56415173922786,
+            "y": 80
+          },
+          "hash": "b6554d8eda161b732a05565b56b498f0fb42e369bdb1c63607e3d75f267ad0b4"
+        },
+        {
+          "source": {
+            "x": 242,
+            "y": 254,
+            "w": 185,
+            "h": 214,
+            "count": 21253,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 25,
+            "y": 28,
+            "w": 46,
+            "h": 52,
+            "count": 1325
+          },
+          "bodyAnchor": {
+            "x": 48.66304209722166,
+            "y": 80
+          },
+          "hash": "0d322ce2506e506ecb180406d6d5677744544b68e133a7a22138ff511e08777f"
+        },
+        {
+          "source": {
+            "x": 466,
+            "y": 255,
+            "w": 166,
+            "h": 211,
+            "count": 18844,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 26,
+            "y": 28,
+            "w": 41,
+            "h": 52,
+            "count": 1162
+          },
+          "bodyAnchor": {
+            "x": 49.319446549964994,
+            "y": 80
+          },
+          "hash": "39dbb2500d86e42f11f67f30d27f3cf844e55575c349850470c393e5ecb18377"
+        },
+        {
+          "source": {
+            "x": 681,
+            "y": 254,
+            "w": 190,
+            "h": 214,
+            "count": 20742,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 24,
+            "y": 27,
+            "w": 47,
+            "h": 53,
+            "count": 1288
+          },
+          "bodyAnchor": {
+            "x": 49.1336921047818,
+            "y": 80
+          },
+          "hash": "1678881863a24d746ff751c45e851d76b26b49c75c6d511367b9ff8d35fa76fc"
+        },
+        {
+          "source": {
+            "x": 907,
+            "y": 254,
+            "w": 185,
+            "h": 214,
+            "count": 21568,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 25,
+            "y": 28,
+            "w": 46,
+            "h": 52,
+            "count": 1343
+          },
+          "bodyAnchor": {
+            "x": 48.889631446129314,
+            "y": 80
+          },
+          "hash": "e0b67b542abf6952f42d801d7f1a1b5590fe504e7bcb1ea6fda83b3fe0eafcdb"
+        },
+        {
+          "source": {
+            "x": 1132,
+            "y": 255,
+            "w": 181,
+            "h": 213,
+            "count": 20762,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 26,
+            "y": 27,
+            "w": 45,
+            "h": 53,
+            "count": 1288
+          },
+          "bodyAnchor": {
+            "x": 49.3023059660414,
+            "y": 80
+          },
+          "hash": "06e0459bdc57f3e83c76b63c73132de88847946be06d5aeda0a7d38b8d85e15f"
+        },
+        {
+          "source": {
+            "x": 1354,
+            "y": 255,
+            "w": 164,
+            "h": 211,
+            "count": 18611,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 26,
+            "y": 28,
+            "w": 41,
+            "h": 52,
+            "count": 1153
+          },
+          "bodyAnchor": {
+            "x": 49.07950420722652,
+            "y": 80
+          },
+          "hash": "4da539f8069aafdba40fecc9988c2ffdc2ba40cbac4795b7372e625ea2d939af"
+        },
+        {
+          "source": {
+            "x": 1572,
+            "y": 255,
+            "w": 186,
+            "h": 213,
+            "count": 20970,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 24,
+            "y": 27,
+            "w": 46,
+            "h": 53,
+            "count": 1306
+          },
+          "bodyAnchor": {
+            "x": 48.50520795641775,
+            "y": 80
+          },
+          "hash": "24899c54e8cf53b7848d5028cce8ec517771554c346ed308e58b44f79cfef806"
+        },
+        {
+          "source": {
+            "x": 24,
+            "y": 481,
+            "w": 190,
+            "h": 201,
+            "count": 20861,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 31,
+            "w": 47,
+            "h": 49,
+            "count": 1298
+          },
+          "bodyAnchor": {
+            "x": 47.9036557336764,
+            "y": 80
+          },
+          "hash": "f483680c199c82244db751997f49f4adfaf89f4bc0e7923678f0e88e813006fd"
+        },
+        {
+          "source": {
+            "x": 248,
+            "y": 482,
+            "w": 191,
+            "h": 199,
+            "count": 20338,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 30,
+            "w": 48,
+            "h": 50,
+            "count": 1273
+          },
+          "bodyAnchor": {
+            "x": 47.81905063099974,
+            "y": 80
+          },
+          "hash": "3bfa32945e82dbcea5e46ec707c8b0caa43ad3110c1076b9ee2868703d5236c2"
+        },
+        {
+          "source": {
+            "x": 483,
+            "y": 482,
+            "w": 170,
+            "h": 196,
+            "count": 18117,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 32,
+            "w": 42,
+            "h": 48,
+            "count": 1128
+          },
+          "bodyAnchor": {
+            "x": 48.10551655263903,
+            "y": 80
+          },
+          "hash": "d5c09811255c957b83452e47968ccd6329e2b4f8cf24fa6d0ba6fdaff0fb7843"
+        },
+        {
+          "source": {
+            "x": 695,
+            "y": 482,
+            "w": 185,
+            "h": 199,
+            "count": 19976,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 30,
+            "w": 46,
+            "h": 50,
+            "count": 1242
+          },
+          "bodyAnchor": {
+            "x": 47.924626291839026,
+            "y": 80
+          },
+          "hash": "4810febd4112f58cbfa2ccbda56740ccc7476a94801971b0bd906dee1453f892"
+        },
+        {
+          "source": {
+            "x": 916,
+            "y": 482,
+            "w": 190,
+            "h": 200,
+            "count": 20842,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 27,
+            "y": 30,
+            "w": 47,
+            "h": 50,
+            "count": 1300
+          },
+          "bodyAnchor": {
+            "x": 47.73093681114117,
+            "y": 80
+          },
+          "hash": "247f6842f074a5be83e58ccd65627897e454a71c4f6bccfee6be1d3e93928004"
+        },
+        {
+          "source": {
+            "x": 1143,
+            "y": 482,
+            "w": 184,
+            "h": 199,
+            "count": 19795,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 30,
+            "w": 46,
+            "h": 50,
+            "count": 1236
+          },
+          "bodyAnchor": {
+            "x": 47.69707748424497,
+            "y": 80
+          },
+          "hash": "72b0060d2e145e61b35b255c013cd96f96d46d6ccf56d400c8d1d19f2f30c37e"
+        },
+        {
+          "source": {
+            "x": 1374,
+            "y": 483,
+            "w": 169,
+            "h": 194,
+            "count": 17993,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 32,
+            "w": 42,
+            "h": 48,
+            "count": 1122
+          },
+          "bodyAnchor": {
+            "x": 48.35791717944331,
+            "y": 80
+          },
+          "hash": "f5dbc1b8a4b825534e34ff6e3a8a31e4709b558a3001f83f0398da9cbb8f4f5e"
+        },
+        {
+          "source": {
+            "x": 1581,
+            "y": 483,
+            "w": 186,
+            "h": 198,
+            "count": 20207,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 31,
+            "w": 46,
+            "h": 49,
+            "count": 1257
+          },
+          "bodyAnchor": {
+            "x": 48.27176602277895,
+            "y": 80
+          },
+          "hash": "938ae454556f8c9219f24d0f8cd5432cdc957a2f21c7d1771dace8b739bfdc3d"
+        },
+        {
+          "source": {
+            "x": 18,
+            "y": 691,
+            "w": 185,
+            "h": 193,
+            "count": 19523,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 23,
+            "y": 32,
+            "w": 46,
+            "h": 48,
+            "count": 1219
+          },
+          "bodyAnchor": {
+            "x": 46.8320690862411,
+            "y": 80
+          },
+          "hash": "55eabe1ebc126eea0d06a2087f624be86a6ab5b38ef46b43f2213c7a10a4b041"
+        },
+        {
+          "source": {
+            "x": 235,
+            "y": 691,
+            "w": 191,
+            "h": 192,
+            "count": 19461,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 22,
+            "y": 32,
+            "w": 48,
+            "h": 48,
+            "count": 1213
+          },
+          "bodyAnchor": {
+            "x": 46.837635407475936,
+            "y": 80
+          },
+          "hash": "f643cc4d704f0476bf328b3bcdc96916aa69fd9d5be2917d2e777e34fabc238f"
+        },
+        {
+          "source": {
+            "x": 462,
+            "y": 690,
+            "w": 167,
+            "h": 190,
+            "count": 16678,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 23,
+            "y": 33,
+            "w": 42,
+            "h": 47,
+            "count": 1039
+          },
+          "bodyAnchor": {
+            "x": 46.700235970813196,
+            "y": 80
+          },
+          "hash": "ee6bc61b7cb14cb9f03e306523063fada85c79b0823c5cb0181b3fc86963c3e7"
+        },
+        {
+          "source": {
+            "x": 675,
+            "y": 691,
+            "w": 190,
+            "h": 192,
+            "count": 18881,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 21,
+            "y": 32,
+            "w": 47,
+            "h": 48,
+            "count": 1181
+          },
+          "bodyAnchor": {
+            "x": 46.60594134922725,
+            "y": 80
+          },
+          "hash": "3091b5aabc44191beba0a35a5d32624c7c7b88c89b411a0a6fabbf790e1691bb"
+        },
+        {
+          "source": {
+            "x": 903,
+            "y": 691,
+            "w": 188,
+            "h": 192,
+            "count": 19521,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 22,
+            "y": 32,
+            "w": 47,
+            "h": 48,
+            "count": 1225
+          },
+          "bodyAnchor": {
+            "x": 46.705501126553756,
+            "y": 80
+          },
+          "hash": "fba970c51f9cfcaca74da3cfce73d17533a0dae0f4f7605fda2ddbf235a389a2"
+        },
+        {
+          "source": {
+            "x": 1127,
+            "y": 691,
+            "w": 181,
+            "h": 192,
+            "count": 18822,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 23,
+            "y": 32,
+            "w": 45,
+            "h": 48,
+            "count": 1179
+          },
+          "bodyAnchor": {
+            "x": 46.99739343056821,
+            "y": 80
+          },
+          "hash": "3ab601b430be59fb2522a0c31d8b5c6dfd3d62644e43155a2992f4da01838e7a"
+        },
+        {
+          "source": {
+            "x": 1351,
+            "y": 690,
+            "w": 166,
+            "h": 190,
+            "count": 16401,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 24,
+            "y": 33,
+            "w": 41,
+            "h": 47,
+            "count": 1014
+          },
+          "bodyAnchor": {
+            "x": 47.114504710538,
+            "y": 80
+          },
+          "hash": "3ed5ca2c9e733cd33bb94d6d97079b4f955cee0a5e8fcea53e51c0751e59b60d"
+        },
+        {
+          "source": {
+            "x": 1565,
+            "y": 691,
+            "w": 190,
+            "h": 193,
+            "count": 19387,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 22,
+            "y": 32,
+            "w": 47,
+            "h": 48,
+            "count": 1210
+          },
+          "bodyAnchor": {
+            "x": 46.78692763059364,
+            "y": 80
+          },
+          "hash": "7e160f01de4bf42c8a1b5327aa45882158e6f03bdd47adb2b6fdb3e98ff76c99"
+        }
+      ]
+    },
+    {
+      "id": "keiler",
+      "height": 37,
+      "scale": 0.23717948717948717,
+      "stride": 24,
+      "atlas": "keiler-walk.png",
+      "source": "keiler-walk-v1.png",
+      "sourceHash": "aaae9f513f4e01704df96b348420df0c4cb52ffa2d02fbf6e8683f461b4c6f3c",
+      "idleAtlasHash": "e0a5d29f39e0498f529a3e35e44d8660b9dfe29742ddbad15284480a81981bb7",
+      "atlasHash": "8270149f2893b9f9791656b6bf9f7eff69fed8f9af958e2337cecf1f5fb48d44",
+      "frames": [
+        {
+          "source": {
+            "x": 15,
+            "y": 79,
+            "w": 202,
+            "h": 156,
+            "count": 19876,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 44,
+            "w": 48,
+            "h": 36,
+            "count": 1110
+          },
+          "bodyAnchor": {
+            "x": 51.1075085628657,
+            "y": 80
+          },
+          "hash": "4d95abbfa6f9a0c37a8f5ce3728b317f7a20d43ef955f81195380e4b8ea2227f"
+        },
+        {
+          "source": {
+            "x": 227,
+            "y": 81,
+            "w": 205,
+            "h": 154,
+            "count": 20043,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 43,
+            "w": 49,
+            "h": 37,
+            "count": 1132
+          },
+          "bodyAnchor": {
+            "x": 51.39357526622268,
+            "y": 80
+          },
+          "hash": "4ae835262a93c22d30970fe52746e29b0d7cfb322130cb505f60ac74e91e8057"
+        },
+        {
+          "source": {
+            "x": 449,
+            "y": 80,
+            "w": 199,
+            "h": 155,
+            "count": 19639,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 43,
+            "w": 47,
+            "h": 37,
+            "count": 1091
+          },
+          "bodyAnchor": {
+            "x": 50.88266946978513,
+            "y": 80
+          },
+          "hash": "e4a732726029bfdd1782cb3501e0acc75ae70b7a21754ce0b8e65ea6635be73d"
+        },
+        {
+          "source": {
+            "x": 671,
+            "y": 80,
+            "w": 206,
+            "h": 155,
+            "count": 20779,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 29,
+            "y": 43,
+            "w": 48,
+            "h": 37,
+            "count": 1163
+          },
+          "bodyAnchor": {
+            "x": 51.392473776223774,
+            "y": 80
+          },
+          "hash": "01784b8ef1ba8268108447e92d670e344d2c1d7c1cc34f43bdb0a2d8597ca97f"
+        },
+        {
+          "source": {
+            "x": 896,
+            "y": 79,
+            "w": 202,
+            "h": 156,
+            "count": 20059,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 43,
+            "w": 48,
+            "h": 37,
+            "count": 1123
+          },
+          "bodyAnchor": {
+            "x": 50.88520326633535,
+            "y": 80
+          },
+          "hash": "4637800ea5f74d939c7c199016f5452f78f4a86618641d2ce726896c5987a2d6"
+        },
+        {
+          "source": {
+            "x": 1115,
+            "y": 82,
+            "w": 218,
+            "h": 158,
+            "count": 22006,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 26,
+            "y": 43,
+            "w": 52,
+            "h": 37,
+            "count": 1238
+          },
+          "bodyAnchor": {
+            "x": 50.79832295641693,
+            "y": 80
+          },
+          "hash": "e2eda93d92637eeadd80fb53026010ef3c2c4c0a7976cf26e299fc39ab77f198"
+        },
+        {
+          "source": {
+            "x": 1343,
+            "y": 88,
+            "w": 209,
+            "h": 149,
+            "count": 20568,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 45,
+            "w": 50,
+            "h": 35,
+            "count": 1153
+          },
+          "bodyAnchor": {
+            "x": 51.49146550610767,
+            "y": 80
+          },
+          "hash": "2ece93477ff28d8703fe0b886f5a98bc709b6ae8f9209a4b7f7cbd5865d27490"
+        },
+        {
+          "source": {
+            "x": 1567,
+            "y": 82,
+            "w": 193,
+            "h": 153,
+            "count": 18987,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 28,
+            "y": 44,
+            "w": 46,
+            "h": 36,
+            "count": 1066
+          },
+          "bodyAnchor": {
+            "x": 50.776429117864296,
+            "y": 80
+          },
+          "hash": "4edbb0773874c0fa1ec1e2ab7e047a354e451a667891dc29c13a88afacaebda5"
+        },
+        {
+          "source": {
+            "x": 17,
+            "y": 285,
+            "w": 210,
+            "h": 158,
+            "count": 20952,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 19,
+            "y": 43,
+            "w": 50,
+            "h": 37,
+            "count": 1177
+          },
+          "bodyAnchor": {
+            "x": 44.95008367635002,
+            "y": 80
+          },
+          "hash": "a401eeed8fa4dcf448b24b8e5fdc8f66a406d2a8d1dc08cc1a658c052c6dfa52"
+        },
+        {
+          "source": {
+            "x": 240,
+            "y": 288,
+            "w": 204,
+            "h": 155,
+            "count": 20376,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 20,
+            "y": 43,
+            "w": 48,
+            "h": 37,
+            "count": 1142
+          },
+          "bodyAnchor": {
+            "x": 45.12892130857648,
+            "y": 80
+          },
+          "hash": "18395504f06a6e4d255f9dc4b5c5c53fbbdb0d148ff15658a74dbf00329272a7"
+        },
+        {
+          "source": {
+            "x": 456,
+            "y": 287,
+            "w": 205,
+            "h": 156,
+            "count": 20417,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 20,
+            "y": 43,
+            "w": 49,
+            "h": 37,
+            "count": 1150
+          },
+          "bodyAnchor": {
+            "x": 45.09402931660111,
+            "y": 80
+          },
+          "hash": "4206065e3f9ad922613faecdb1af1ad2aa3f4f3fb805b9b6065aac2d02fc520c"
+        },
+        {
+          "source": {
+            "x": 675,
+            "y": 285,
+            "w": 211,
+            "h": 158,
+            "count": 20883,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 19,
+            "y": 43,
+            "w": 50,
+            "h": 37,
+            "count": 1166
+          },
+          "bodyAnchor": {
+            "x": 44.71869987636169,
+            "y": 80
+          },
+          "hash": "1d308808a3b769fa61ea57aa0d3e571a795c85df673c6596b3c2484e177a0fc6"
+        },
+        {
+          "source": {
+            "x": 902,
+            "y": 288,
+            "w": 206,
+            "h": 155,
+            "count": 20418,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 20,
+            "y": 43,
+            "w": 49,
+            "h": 37,
+            "count": 1152
+          },
+          "bodyAnchor": {
+            "x": 44.96430579470781,
+            "y": 80
+          },
+          "hash": "f3ac14a7a23b1e218b3a5b94b9c00a1cca8fc5bc664a8a081da885780acabf9b"
+        },
+        {
+          "source": {
+            "x": 1122,
+            "y": 295,
+            "w": 210,
+            "h": 151,
+            "count": 20641,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 19,
+            "y": 44,
+            "w": 50,
+            "h": 36,
+            "count": 1161
+          },
+          "bodyAnchor": {
+            "x": 45.21254621003757,
+            "y": 80
+          },
+          "hash": "27bfb1b7dbf883b4ad71ec445ac5de732e8c3e74e42261eb1a3840e346322ab8"
+        },
+        {
+          "source": {
+            "x": 1348,
+            "y": 297,
+            "w": 210,
+            "h": 149,
+            "count": 20790,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 19,
+            "y": 45,
+            "w": 50,
+            "h": 35,
+            "count": 1162
+          },
+          "bodyAnchor": {
+            "x": 45.36995471985682,
+            "y": 80
+          },
+          "hash": "7f1bac5bcd9849b8f229f39d2a201a7d6065ac0b3a8b9876c32ae1965e3b6c5d"
+        },
+        {
+          "source": {
+            "x": 1574,
+            "y": 292,
+            "w": 193,
+            "h": 154,
+            "count": 19179,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 22,
+            "y": 43,
+            "w": 46,
+            "h": 37,
+            "count": 1091
+          },
+          "bodyAnchor": {
+            "x": 45.47857064852555,
+            "y": 80
+          },
+          "hash": "6e23388bb5931088950c9fbdd1601a3bf745aae1d67176f8691cd9743cfd6a81"
+        },
+        {
+          "source": {
+            "x": 23,
+            "y": 492,
+            "w": 191,
+            "h": 163,
+            "count": 19383,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 33,
+            "y": 41,
+            "w": 45,
+            "h": 39,
+            "count": 1090
+          },
+          "bodyAnchor": {
+            "x": 56.41185822967305,
+            "y": 80
+          },
+          "hash": "3dca0e6edbd3e5b65de2590a99ef9dcef668d802ccb697d6805802d5ed17dc77"
+        },
+        {
+          "source": {
+            "x": 236,
+            "y": 492,
+            "w": 197,
+            "h": 160,
+            "count": 19212,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 42,
+            "w": 47,
+            "h": 38,
+            "count": 1078
+          },
+          "bodyAnchor": {
+            "x": 55.589060040544666,
+            "y": 80
+          },
+          "hash": "9c2c48eca826081481f5fa0c2ffaaa229ed3012ff9440b8c97ebabcb9f63c155"
+        },
+        {
+          "source": {
+            "x": 456,
+            "y": 491,
+            "w": 197,
+            "h": 161,
+            "count": 19553,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 42,
+            "w": 47,
+            "h": 38,
+            "count": 1108
+          },
+          "bodyAnchor": {
+            "x": 55.74169767308523,
+            "y": 80
+          },
+          "hash": "75b27dce563df1acc93557fb98e4a6769ba4f63751ed3435b1df563115d5f0f5"
+        },
+        {
+          "source": {
+            "x": 679,
+            "y": 492,
+            "w": 198,
+            "h": 163,
+            "count": 19990,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 31,
+            "y": 41,
+            "w": 47,
+            "h": 39,
+            "count": 1129
+          },
+          "bodyAnchor": {
+            "x": 55.63441976303511,
+            "y": 80
+          },
+          "hash": "87ecf5bfff24e2f0a50342404c47db565ed8719015ad17539f1db48372a050a3"
+        },
+        {
+          "source": {
+            "x": 898,
+            "y": 492,
+            "w": 200,
+            "h": 164,
+            "count": 19990,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 32,
+            "y": 41,
+            "w": 47,
+            "h": 39,
+            "count": 1124
+          },
+          "bodyAnchor": {
+            "x": 56.46303372200318,
+            "y": 80
+          },
+          "hash": "9141a28d4682d1e0bc525a217689def03a1a5d60e0c7d93ce957587099d0d367"
+        },
+        {
+          "source": {
+            "x": 1115,
+            "y": 499,
+            "w": 217,
+            "h": 156,
+            "count": 22006,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 43,
+            "w": 51,
+            "h": 37,
+            "count": 1238
+          },
+          "bodyAnchor": {
+            "x": 55.62276678124137,
+            "y": 80
+          },
+          "hash": "b308fc544f71436a679e537606c5e5ab0991fddaca4ff18e4514e2f97894afdf"
+        },
+        {
+          "source": {
+            "x": 1344,
+            "y": 510,
+            "w": 205,
+            "h": 149,
+            "count": 19834,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 32,
+            "y": 45,
+            "w": 49,
+            "h": 35,
+            "count": 1114
+          },
+          "bodyAnchor": {
+            "x": 55.62362856940844,
+            "y": 80
+          },
+          "hash": "53149a74b4c5f0acb997fddb99cfca89cfe66350eb2d60d6338ba9d035ea46f9"
+        },
+        {
+          "source": {
+            "x": 1566,
+            "y": 492,
+            "w": 197,
+            "h": 164,
+            "count": 20055,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 30,
+            "y": 41,
+            "w": 47,
+            "h": 39,
+            "count": 1135
+          },
+          "bodyAnchor": {
+            "x": 55.51895958964553,
+            "y": 80
+          },
+          "hash": "d0fb0481b341de247c88c96809476f69b3bb342d5887ddaf7c4c32b70e2abe33"
+        },
+        {
+          "source": {
+            "x": 19,
+            "y": 698,
+            "w": 194,
+            "h": 159,
+            "count": 19354,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 19,
+            "y": 42,
+            "w": 46,
+            "h": 38,
+            "count": 1086
+          },
+          "bodyAnchor": {
+            "x": 41.00981734534601,
+            "y": 80
+          },
+          "hash": "afdabf0e67167f48412791293d833d7f3b255e08db508b80effe0e332cf32109"
+        },
+        {
+          "source": {
+            "x": 234,
+            "y": 700,
+            "w": 199,
+            "h": 156,
+            "count": 18654,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 18,
+            "y": 44,
+            "w": 47,
+            "h": 36,
+            "count": 1054
+          },
+          "bodyAnchor": {
+            "x": 40.719370607309806,
+            "y": 80
+          },
+          "hash": "6c87ef7aa65b31f8b40913af22673946b5b65acc1bbd908154b8e64da0bb80aa"
+        },
+        {
+          "source": {
+            "x": 454,
+            "y": 700,
+            "w": 201,
+            "h": 153,
+            "count": 19119,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 18,
+            "y": 44,
+            "w": 48,
+            "h": 36,
+            "count": 1080
+          },
+          "bodyAnchor": {
+            "x": 40.970341095370905,
+            "y": 80
+          },
+          "hash": "e075871221f3f401634987dc009f8de3568368d7306f8389c8b0c9e7b41adc9f"
+        },
+        {
+          "source": {
+            "x": 675,
+            "y": 701,
+            "w": 201,
+            "h": 156,
+            "count": 19902,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 18,
+            "y": 43,
+            "w": 48,
+            "h": 37,
+            "count": 1117
+          },
+          "bodyAnchor": {
+            "x": 41.07555942593585,
+            "y": 80
+          },
+          "hash": "037a40d2cafd48eead0a96833bad9f52234277b7bfe47c6b0306fb95de2eba35"
+        },
+        {
+          "source": {
+            "x": 901,
+            "y": 700,
+            "w": 196,
+            "h": 157,
+            "count": 19974,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 18,
+            "y": 43,
+            "w": 46,
+            "h": 37,
+            "count": 1117
+          },
+          "bodyAnchor": {
+            "x": 41.063736998132185,
+            "y": 80
+          },
+          "hash": "ea9d32a43e52125f23dd6c28849ff0f401b14c87483aadd8c499b37588b882e9"
+        },
+        {
+          "source": {
+            "x": 1113,
+            "y": 706,
+            "w": 217,
+            "h": 150,
+            "count": 21319,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 15,
+            "y": 44,
+            "w": 51,
+            "h": 36,
+            "count": 1194
+          },
+          "bodyAnchor": {
+            "x": 40.78788362941275,
+            "y": 80
+          },
+          "hash": "faa0861adce0c2b621011e18cc245c89bd649b842f8f60102fd79ebf4a862a46"
+        },
+        {
+          "source": {
+            "x": 1347,
+            "y": 713,
+            "w": 209,
+            "h": 149,
+            "count": 20554,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 16,
+            "y": 45,
+            "w": 50,
+            "h": 35,
+            "count": 1152
+          },
+          "bodyAnchor": {
+            "x": 40.8435282317934,
+            "y": 80
+          },
+          "hash": "5c7bf6c0a741b5abab7daa34770d92e7c14211e962651379583a88e2d2689d5f"
+        },
+        {
+          "source": {
+            "x": 1574,
+            "y": 699,
+            "w": 188,
+            "h": 161,
+            "count": 18903,
+            "pieces": 1
+          },
+          "bounds": {
+            "x": 20,
+            "y": 42,
+            "w": 45,
+            "h": 38,
+            "count": 1069
+          },
+          "bodyAnchor": {
+            "x": 40.683552163276985,
+            "y": 80
+          },
+          "hash": "f16ac09b968c266c50dbb2586715163a0adcb32f26cfbc2a83cd92f1ebe4eeca"
+        }
+      ]
+    }
+  ]
+}
