@@ -32,7 +32,7 @@ export const BALANCE=Object.freeze({
   quest:{gather:180,scout:180,hunt:220,escort:200,main:600},
   discovery:20
  },
- weapons:{referenceDamage:17,offhandShare:.5,perLevel:.055,quality:{uncommon:1.1,rare:1.25},rollFloor:.93,rollSteps:15,shieldArmorShare:5,smallArmorShare:2},
+ weapons:{referenceDamage:17,offhandShare:.5,perLevel:.055,quality:{uncommon:1.1,rare:1.25,epic:1.4},rollFloor:.93,rollSteps:15,shieldArmorShare:5,smallArmorShare:2},
  items:{
   budgetBase:6,budgetPerLevel:2,       // Wertebudget eines gewürfelten Gegenstands
   quality:{uncommon:1,rare:1.4,epic:1.8},
@@ -43,6 +43,7 @@ export const BALANCE=Object.freeze({
  },
  enemies:{
   hpPerLevel:.12,damagePerLevel:.08,   // Skalierung je Stufe über der Grundstufe des Archetyps
+  playerLead:2,                       // Umland-Gegner wachsen mit (Spielerstufe − playerLead); der Spieler behält zwei Stufen Vorsprung
   eliteHp:2.2,eliteDamage:1.3,
   spawnGrace:1.8
  },
