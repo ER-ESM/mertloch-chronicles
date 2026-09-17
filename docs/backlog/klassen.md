@@ -31,6 +31,12 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 - [ ] **Begriffs-IDs, die Loot bereits benutzt** (eingetragen 2026-09-17, Quelle `LOOT_TERMS` in `content/item-info.js`). Aus der abgestimmten Liste: `randale`, `deckung`, `glueckstreffer`, `eskalation`, `stamina`, `might`, `finesse`, `wit`, `armorRating`, `critRating`, `hasteRating`, `masteryRating`, `verpflegung`, `proc`, `abklingzeit`. **Zusätzlich gebraucht und darum hier angemeldet:** `leben` (Lebenspunkte, `BALANCE.player.baseHp`/`hpPerStamina`), `autoangriff`, `waffenschaden` (Spanne min–max je Treffer, Schlagfolge aus `WEAPON_TYPES[type].speed`), `ausweichen`, `unterbrechen`, `parade` (Schildparade, setzt `shield:true` in der Nebenhand voraus), `markierung`, `pfandmarken` (Währung, `value`/`price`), `dorflegende` (einzigartig, genau eine Beutetabelle, `uniqueChance ≤ 20 %`). Solange `content/glossary.js` fehlt, prüft `tests/content-loot.test.mjs` die Begriffe über einen `try/catch`-Import und schlägt nicht fehl; nach dem Anlegen wird die Prüfung automatisch scharf.
 - [x] `info` für alle BASE_SKILLS/KITS, BUFF_SKILLS, THROW/GROUND, TALENT_SKILLS, TALENT_ROWS (alle 90), CLAN_MEMBERS.passive(s), PROCS aus content/procs.js. Zahlen aus den Definitionen ableiten (keine Doppelpflege: Helfer `describe(id)` der aus cd/cost/damage/effects den `numbers`-Block baut), Prüfung in checks/klassen.js: jedes Element hat info, jeder terms-Eintrag existiert, jeder link existiert.
 
+
+### Abnahme Welle D (Live 2026-09-17)
+
+- [ ] **Keine Zahlen im Handtext**: `info.effect`/`why` dürfen keine Zahlen enthalten, die `numbers` bereits ableitet (Befund: Kronkorken-Kelle sagt „300 % Autoschaden“, abgeleitet sind 200 % nach Gameplays Faktor-Änderung). Alle 158 `effect`-Texte bereinigen (Zahl raus oder als Platzhalter `{autoschaden}` aus numbers füllen); Prüfung in checks/klassen.js: Ziffern im effect nur, wenn sie in numbers vorkommen.
+- [ ] Gleiches für Loot (`item-info.js`) und Gameplay (`CAST_INFO`, `BUILDING_EFFECT_INFO`): Bitte in deren Backlogs (eingetragen).
+
 ## Erledigt
 
 - [x] **Klassenabstand Runde B** (2026-09-17). Bericht vorher 20 Auffälligkeiten, nachher 8; alle ⚠ weg.

@@ -36,6 +36,11 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
   Begriffs-IDs dafür aus `content/glossary.js`: `verpflegung`, `abklingzeit`, `randale`, `leben`, `deckung`, `ausweichen`, `pfandmarken`, `glueckstreffer`. Loot hat die Blöcke für Gegenstände, Procs und Verpflegung geliefert (`content/item-info.js`); die Gebäude bleiben bei Gameplay, weil `buildings.js` Gameplay gehört. Zwei Stellen hängen dabei an Loot-Daten und sollten verlinkt werden: `foodHeal`/`consumableCd` auf die fünf Kioskwaren, `gearChance`/`coinDrop` auf `content/drops.js`.
 
 
+
+### Abnahme Welle D
+
+- [ ] Keine abgeleiteten Zahlen im Handtext (CAST_INFO, BUILDING_EFFECT_INFO); Prüfung in checks/gameplay.js.
+
 ## Erledigt
 
 - [x] **Welle D: Beschreibungs-Standard in den Gameplay-Daten** (2026-09-17). Nichts wird doppelt gepflegt – jede Zahl wird aus der Definition abgeleitet:

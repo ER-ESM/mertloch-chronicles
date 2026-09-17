@@ -70,6 +70,14 @@ Glossar-`long`-Texte ein), Nachschlagewerk im Reiter „Kniffe“ mit Sprungziel
 Aktionsleiste (Drag, Platz-Kontext, Touch-Platzwahl), Beute-Log aus dem Ereignis `loot` und ein Auto-Loot-Schalter im
 Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server und Browser selbst, Bilder in `welle-d-review/`).
 
+
+### Abnahme Welle D
+
+- [ ] Touch: Autoangriff abschaltbar (Story-Fund: kein Esc auf dem Handy) – langer Druck auf Platz 1 oder Schalter am Chip `#autoState`.
+- [ ] Clan-Schule-Starthinweis „[1] schaltet Autoangriff um“ aus app.js:128 nach `content/panel-ui.js` holen (Story hat den Wortlaut geliefert).
+- [ ] Tooltip-Verweise: Scrollen im Fenster schließt den Tooltip; Lücke Kachel→Tooltip 12 px – Tooltip als Klick-Pin (Klick auf Kachel hält den Tooltip offen) oder Verweise als Buch-Sprung ohne Tooltip.
+- [ ] Beschriftungen aus `DESCRIBE_UI` nach `content/panel-ui.js` (Story) – Bedarf dort eintragen.
+
 ## Erledigt
 
 - [x] **Sprites je `variant`** (Grafik/Welt): Ladeliste jetzt `assets/content-art/handoff-catalog.json` statt fester Pfade; `content-art.js` löst die Aliase auf, `live-art.js` wertet `variant` (über `livePersonId`) vor `skin` aus und `clan-art.js` prüft den gelieferten Bogen vor dem alten Rig. Ohne Bild bleibt der bisherige Fallback (2026-09-17).

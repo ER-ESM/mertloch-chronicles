@@ -34,6 +34,12 @@ Nachrangig und **nicht** Teil von Akt 1: Gisela Gießkanne und Pfandautomat 3000
 
 - [ ] **`content/schema.js` für die neuen Proc-Bausteine öffnen** (gemeinsame Datei, deshalb hier): Die Effektliste in der Proc-Prüfung lässt nur `free|reset|empower|energy|points|shield|haste` zu; die Laufzeit kann jetzt zusätzlich `heal` (Zahl) und `cdReduce` (`{skill,seconds}`). Außerdem sollte die Prüfung bei `trigger:'skillHit'` ein `skill` (bekannter Kniff) und ein ganzzahliges `every` ≥ 2 verlangen. Formen: docs/UEBERGABE-UI-2026-09-17.md §6.7. Klassendesign wartet darauf, siehe docs/backlog/klassen.md.
 
+
+### Abnahme Welle D
+
+- [ ] Acht alte Prüfskripte (`popup-ui-check`, `rpg-ui-check`, `combat-icons-check`, `ui-polish-check`, `popup-edge-check`, `progression-ui-check`, `class-ui-check`, `visual-hud-check`) sind seit dem Stil-C-Umbau rot – entscheiden: nachziehen (UI) oder löschen; bis dahin aus der Pflichtliste nehmen.
+- [ ] Entscheidung E-25 vorschlagen: „Handtexte enthalten keine abgeleiteten Zahlen“ (Doppelpflege-Verbot) als Standard in ROLLEN.md.
+
 ## Erledigt
 
 - [x] Rollenmodell mit Dateibesitz, Tuning-Schicht, Rollen-Prüfungen und Backlogs eingeführt (2026-09-17, E-19).

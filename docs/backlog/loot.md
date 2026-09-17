@@ -18,6 +18,12 @@ Inbox der Rolle Gegenstände & Loot (docs/ROLLEN.md).
 - [x] `info` für PROCS (items.js), alle Dorflegenden, Verpflegung, Basisbau-Effekte (BUILDING_EFFECTS gehören Gameplay → Bedarf dort), Ausrüstungswertungen (`stats` → numbers mit Umrechnung aus BALANCE, Terms aus glossary).
 - [x] Verpflegung: Feld `usable:true` und `slotIcon`; Regel: benutzbare Gegenstände dürfen in die Aktionsleiste (Engine setzt um). Prüfung in checks/loot.js.
 
+
+### Abnahme Welle D
+
+- [ ] Keine abgeleiteten Zahlen im Handtext `effect`/`why` (Regel siehe docs/backlog/klassen.md); Prüfung in checks/loot.js.
+- [ ] Materialien ohne Kampfwirkung bekommen einen kurzen `info.effect` („Baumaterial für …“, links auf Rezepte/Gebäude), damit der Shift-Block nie leer ist.
+
 ## Erledigt
 
 - [x] **Welle D: `info` für Gegenstände und Procs, Verpflegung benutzbar** (2026-09-17). Neue Datei `content/item-info.js` (Export in `content/index.js`): `ITEM_INFO` und `PROC_INFO` tragen von Hand nur `effect`/`why`/`links`/`terms`, die `numbers` leitet `describeItem(id)` / `describeProc(id)` aus `items.js` ab (stats, weapon, heal, energy, stack, price, level, proc) und rechnet Wertungen über `BALANCE.ratings` um (`ratingShare`, abnehmender Ertrag `r/(r+k)`, Rüstung zusätzlich über die Stufe). Keine Doppelpflege: Wer eine Zahl ändert, ändert sie weiter in `items.js`/`tuning.js`, der Block zieht nach. Abgedeckt: alle sieben `PROCS`, alle 16 Dorflegenden, die fünf Verpflegungen, die sechs Startteile und die zehn festen Ausrüstungsstücke (37 Gegenstände). Material bleibt bewusst ohne `info` – es hat keine Kampfwirkung. Jeder Gegenstand mit Proc verlinkt seinen Proc, jede Dorflegende trägt den Begriff `dorflegende`. Zusätzlich hängt `item-info.js` den fertigen Block als `d.info` an den Katalog, damit die UI ihn ohne Helferaufruf findet.
