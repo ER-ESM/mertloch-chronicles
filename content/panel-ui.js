@@ -4,19 +4,19 @@ export const PANEL_UI={
  questDetails:'Auftrag lesen',equip:'Anlegen',compare:'Vergleich',story:'Geschichte',slots:'Plätze',options:'Optionen',map:'Karte',places:'Orte',destination:'Ziel',legend:'Legende',reset:'Neustart',backup:'Sicherung',
  upperTalents:'Obere Talente',lowerTalents:'Untere Talente',upperTree:'Wurzel & Äste',lowerTree:'Äste & Abschluss',pending:'gewählt',
  inspection:'Gegenstand',detail:'Details',movement:'Steuerung',combat:'Kampf',world:'Dorf',figure:'Figur',
- book:'Clanbuch',bookTabs:'Clanbuch-Reiter',tabFigure:'Figur',tabBag:'Rucksack',tabSkills:'Kniffe',tabQuests:'Aufträge',tabMap:'Karte',tabHelp:'Hilfe',talents:'Talente',band:'Bande',settings:'Einstellungen',
+ book:'Clanbuch',bookTabs:'Clanbuch-Reiter',tabFigure:'Figur',tabBag:'Rucksack',tabSkills:'Kniffe',tabQuests:'Aufträge',tabBase:'Bude',tabMemories:'Erinnerungen',tabMap:'Karte',tabHelp:'Hilfe',talents:'Talente',band:'Bande',settings:'Einstellungen',
  settingsIntro:'Steuerung, App, Ton und Vollbild. Ganz unten der Admin-Neustart mit Sicherung.'
 };
 export const PLAY_HELP={
  desktop:[
   ['Bewegen & Ziel',['WASD läuft, Rechtsklick plant den Weg.','Tab wählt nahe Gegner; Shift + Tab geht zurück.','F spricht, plündert und bedient Auftragsziele.']],
   ['Kämpfen',['1–0 nutzt deine Kniffe; Autoangriffe folgen dem Waffentempo.','Zum Zaubern stehen bleiben; normale Kniffe teilen eine Abklingzeit.','LEER weicht aus, Q unterbricht – beide unabhängig von der Leiste.']],
-  ['Clanbuch',['Ein Buch, sechs Reiter: Figur, Rucksack, Kniffe, Aufträge, Karte, Hilfe.','C I K J M H öffnen den Reiter; dieselbe Taste oder Esc schließt.','Menüs halten den Kampf nicht an.']]
+  ['Clanbuch',['Ein Buch, sieben Reiter: Figur, Rucksack, Kniffe, Aufträge, Bude, Karte, Hilfe.','C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt.','Menüs halten den Kampf nicht an.']]
  ],
  touch:[
   ['Bewegen & Ziel',['Links mit dem Joystick laufen.','Ziel wählt einen nahen Gegner.','Aktion spricht, plündert und bedient Auftragsziele.']],
   ['Kämpfen',['Rechts liegen deine Kniffe; 1 / 2 wechselt die Seite.','Zum Zaubern stehen bleiben; Autoangriffe treffen auch beim Laufen.','Stiefel weicht aus, Hand unterbricht – eigene Sonderknöpfe.']],
-  ['Clanbuch',['Menü öffnet das Clanbuch; oben die sechs Reiter.','× schließt; der Kampf läuft weiter.','Hilfe → Steuerung: Platz wählen, dann einen gelernten Kniff zuweisen.']]
+  ['Clanbuch',['Menü öffnet das Clanbuch; oben die sieben Reiter; unter „Bude“ Basisbau und Erinnerungen.','× schließt; der Kampf läuft weiter.','Hilfe → Steuerung: Platz wählen, dann einen gelernten Kniff zuweisen.']]
  ],
  desktopKeys:[
   ['WASD / Rechtsklick','Laufen / Laufweg'],['Tab / Shift + Tab','Nächstes / voriges nahes Ziel'],['F / Shift + F','Interagieren / Beutel ganz leeren'],
