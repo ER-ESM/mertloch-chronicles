@@ -12,7 +12,7 @@
     "start": "node server.mjs",
     "build": "node scripts/build-site.mjs",
     "test": "node --test tests/*.test.mjs",
-    "content:check": "node scripts/content-check.mjs && node --test tests/content.test.mjs",
+    "content:check": "node scripts/content-check.mjs && node --test tests/content*.test.mjs",
     "content:balance": "node scripts/balance-report.mjs --json",
     "content:art": "node scripts/art-brief.mjs",
     "world:import": "node scripts/import-world.mjs",

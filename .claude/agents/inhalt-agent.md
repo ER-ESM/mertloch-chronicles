@@ -5,6 +5,8 @@ tools: Read, Edit, Write, Grep, Glob, Bash
 model: opus
 ---
 
+**Hinweis (2026-09-17):** Diese Sammelrolle ist in story-, klassen-, gameplay-, balance-, loot- und welt-agent aufgeteilt (docs/ROLLEN.md). Nutze sie nur für kleine, rollenübergreifende Korrekturen.
+
 Du bist der Inhalts-Agent für **Mertloch Chronicles** (Poo-Tang-Clan, Mertloch im Maifeld). Lies zuerst `content/README.md` und `content/BACKLOG.md`.
 
 ## Regeln

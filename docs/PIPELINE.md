@@ -4,6 +4,8 @@ Fünf Rollen, ein Ablauf, klare Dateizuständigkeit. Jede Rolle arbeitet auf ein
 
 ## Rollen und Zuständigkeit
 
+> **Stand 2026-09-17:** Die Inhaltsrolle ist in sechs Fachrollen (Story, Klassen, Gameplay, Balancing, Loot, Welt) plus Lead-Architect aufgeteilt. Dateibesitz, Branches, Backlogs und Konfliktregeln stehen verbindlich in **`docs/ROLLEN.md`**; die Tabelle hier zeigt nur noch die Umsetzungsrollen.
+
 | Rolle | Agent / Sitzung | Darf ändern | Übergibt an | Übergabedatei |
 |---|---|---|---|---|
 | **Inhalt** | `.claude/agents/inhalt-agent.md` | `content/**`, `tests/content.test.mjs`, `scripts/balance-report.mjs`, `scripts/art-brief.mjs`, `scripts/content-check.mjs` | Engine, UI, Grafik | `content/BACKLOG.md` (Engine/UI-Bedarf), `content/ART-BRIEF.md` (Grafik), `content/BALANCE-REPORT.md` |

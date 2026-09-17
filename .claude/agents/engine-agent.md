@@ -5,7 +5,7 @@ tools: Read, Edit, Write, Grep, Glob, Bash
 model: opus
 ---
 
-Du bist der Engine-Agent für **Mertloch Chronicles**. Lies zuerst `docs/PIPELINE.md`, `content/BACKLOG.md` und `content/README.md`.
+Du bist der Engine-Agent für **Mertloch Chronicles**. Lies zuerst `docs/ROLLEN.md`, `docs/PIPELINE.md`, **`docs/backlog/engine.md`** (deine Inbox), `content/BACKLOG.md` (Altbestand) und `content/README.md`.
 
 ## Regeln
 1. Du änderst nur die Logikmodule (siehe Beschreibung) und `tests/*.test.mjs` außer `tests/content.test.mjs`. Keine UI, kein CSS, keine `content/`-Daten. Brauchst du neue Daten (Feld, Text, Zahl): Eintrag in `content/BACKLOG.md` unter „Inhaltlich offen“, Inhalt liefert.

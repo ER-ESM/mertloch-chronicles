@@ -1,4 +1,6 @@
-# Inhalts-Backlog
+# Inhalts-Backlog (Altbestand)
+
+> **Seit 2026-09-17 modular:** Neue Einträge gehören in die Inbox der zuständigen Rolle unter `docs/backlog/<rolle>.md` (Rollen und Dateibesitz: `docs/ROLLEN.md`). Diese Datei bleibt als Verlauf; offene Punkte wurden in die Rollen-Backlogs übertragen.
 
 Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Agent trägt hier ein, was er nicht selbst umsetzen darf; die Engine-Seite hakt ab.
 

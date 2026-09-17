@@ -15,6 +15,7 @@ import {MAIN_DIALOGUE,BOSS_LINES,ENEMY_BARKS,HUB_TALK} from './dialogues.js';
 import {STORY_CHAPTERS,ACTS} from './story.js';
 import {MEMORY_FRAGMENTS,MEMORY_TRIGGERS} from './memories.js';
 import {BUILDINGS,BUILDING_EFFECTS} from './buildings.js';
+import {runRoleChecks} from './checks/index.js';
 const STATS=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating'];
 const ID=/^[a-z][a-z0-9-]*$/;
 export function validateContent(){const problems=[];const bad=(where,msg)=>problems.push(where+': '+msg);const num=(where,obj,keys,min=0)=>{for(const k of keys)if(obj[k]!==undefined&&!(typeof obj[k]==='number'&&Number.isFinite(obj[k])&&obj[k]>=min))bad(where,'Feld '+k+' muss eine Zahl ≥ '+min+' sein');};
@@ -59,5 +60,7 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
  for(const [id,a] of Object.entries(ENEMY_AUTOS)){num('auto '+id,a,['min','max','speed','range'],.01);if(a.min>a.max)bad('auto '+id,'min größer als max');}
  for(const [cls,models] of Object.entries(SKILL_DAMAGE))for(const [id,m] of Object.entries(models))num('damage '+cls+'/'+id,m,['flat','weapon','weaponPerPoint','flatPerPoint','bonusPct']);
  for(const [cls,skills] of Object.entries(CAST_TIMES))for(const [id,time] of Object.entries(skills))if(!(time>0&&Number.isFinite(time)))bad('cast '+cls+'/'+id,'Zauberzeit muss positiv sein');
+ // Rollen-Prüfungen (content/checks/<rolle>.js) – jede Rolle pflegt ihre eigene Datei.
+ runRoleChecks(bad);
  return problems;
 }

@@ -119,3 +119,7 @@ export const SPAWN_TABLES={
  groupSize:{chance:.65,max:3}  // Umland: 65 % der aggressiven Reviere haben 1–2 Kumpel
 };
 export const familyOf=e=>e.family||(e.type==='boss'?'horst':e.skin==='goose'?'goose':e.skin==='badger'?'badger':e.type==='cultist'?'warden':'boar');
+// Balancing-Korrekturen (content/tuning.js) liegen über den Definitionen; Gameplay ändert hier Struktur, Balancing dort Zahlen.
+import {TUNING,applyTuning} from './tuning.js';
+for(const reg of [ARCHETYPES,ELITES,CAMP_ENEMIES,BOSSES])applyTuning(reg,TUNING.enemies);
+for(const [setId,casts] of Object.entries(TUNING.casts))if(CAST_SETS[setId])applyTuning(CAST_SETS[setId].casts,casts);

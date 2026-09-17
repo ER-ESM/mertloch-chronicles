@@ -70,3 +70,6 @@ export const TALENT_SKILLS={
 // Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
 export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:5,throw:6,heal:7,ground:9};
 export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,mark:3,burst:4,interrupt:4,parry:7},kevin:{...LESSONS,mark:2,burst:3,interrupt:4,parry:4}};
+// Balancing-Korrekturen (content/tuning.js): Klassen definieren Kits, Balancing korrigiert Zahlen je klasse/skill-ID.
+import {TUNING,applyTuning} from './tuning.js';
+for(const [cls,patch] of Object.entries(TUNING.skills)){const kit=KITS[cls];if(!kit)continue;const byId=Object.fromEntries(kit.map((s,i)=>[BASE_SKILLS[i].id,s]));applyTuning(byId,patch);}

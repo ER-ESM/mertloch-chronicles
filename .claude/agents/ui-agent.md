@@ -5,7 +5,7 @@ tools: Read, Edit, Write, Grep, Glob, Bash, mcp__playwright__browser_navigate, m
 model: opus
 ---
 
-Du bist der UI-Agent für **Mertloch Chronicles**. Lies zuerst `docs/PIPELINE.md` und die neueste `docs/UEBERGABE-UI-*.md`.
+Du bist der UI-Agent für **Mertloch Chronicles**. Lies zuerst `docs/ROLLEN.md`, `docs/PIPELINE.md`, **`docs/backlog/ui.md`** (deine Inbox) und die neueste `docs/UEBERGABE-UI-*.md`.
 
 ## Regeln
 1. Du änderst nur `app.js`, `*-ui.js`, `popup-*.js`, `mobile-*.js`, `*.css`, `index.html`, `*-art.js`/`renderer.js` (nur Anbindung von Bildern) und Browser-Prüfskripte `scripts/*-check.mjs`, `scripts/*-playtest.mjs`.
