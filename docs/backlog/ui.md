@@ -49,11 +49,11 @@ Offen / abhängig von anderen Rollen:
 
 ### Aus Engine Runde B (2026-09-17, docs/UEBERGABE-UI-2026-09-17.md §6)
 
-- [ ] **Esc muss `game.stopAuto()` rufen** (P2): Taste 1 schaltet den Autoangriff nicht mehr aus. Ohne diesen Aufruf gibt es keinen Weg mehr, ihn abzuwählen. Reihenfolge im Esc-Zweig von `app.js`: Zauber, Zielhilfe, dann `game.stopAuto()`, dann Fenster.
-- [ ] **Ereignis `attacked {enemyId,damage,first}`** (P1): großer Hinweis „Du wirst angegriffen“; die Figur findet sich über `enemyId` in `game.enemies`.
-- [ ] **Aktionstaste über `game.interaction()`** (P3/P5): Rangfolge aus der Engine übernehmen, statt in `worldInteraction()` nur nach Entfernung zu sortieren; Beschriftungen weiter aus content.
-- [ ] **Wegmarke anklickbar → `game.navigateDestination()`** (P6): ein Laufbefehl zum Auftragsziel statt zwölf Klicks an den Bildschirmrand.
-- [ ] **Zählstand der Proc-Regeln**: `procCount(game,id)` für Auslöser mit `every` (z. B. „2/3 Kellen“) auf dem Proc-Chip anzeigen.
+- [x] **Esc muss `game.stopAuto()` rufen** (P2): Taste 1 schaltet den Autoangriff nicht mehr aus. Ohne diesen Aufruf gibt es keinen Weg mehr, ihn abzuwählen. Reihenfolge im Esc-Zweig von `app.js`: Zauber, Zielhilfe, dann `game.stopAuto()`, dann Fenster.
+- [x] **Ereignis `attacked {enemyId,damage,first}`** (P1): großer Hinweis „Du wirst angegriffen“; die Figur findet sich über `enemyId` in `game.enemies`.
+- [x] **Aktionstaste über `game.interaction()`** (P3/P5): Rangfolge aus der Engine übernehmen, statt in `worldInteraction()` nur nach Entfernung zu sortieren; Beschriftungen weiter aus content.
+- [x] **Wegmarke anklickbar → `game.navigateDestination()`** (P6): ein Laufbefehl zum Auftragsziel statt zwölf Klicks an den Bildschirmrand.
+- [ ] **Zählstand der Proc-Regeln** (offen, nicht Teil der UI-Runde B2): `procCount(game,id)` für Auslöser mit `every` (z. B. „2/3 Kellen“) auf dem Proc-Chip anzeigen.
 
 ## Erledigt
 
@@ -68,3 +68,11 @@ Offen / abhängig von anderen Rollen:
 - [x] Minimale Anbindung direkt umgesetzt (Nutzerauftrag): `chapter-ui.js`, `app.js`, `popup-windows.js`, `akt1.css`, neuer Katalog `memory-art.js`; PWA-Cache um die zehn Runtime-PNGs ergänzt.
 - Belege und Fortsetzungsregeln: `docs/ERINNERUNGSBILDER-2026-09-17.md`, `assets/content-art/memories/README.md`. Nach Übernahme einmal `git pull`.
 - Zusätzlich im Offline-Browsertest gefunden und behoben: `scripts/pwa-cache.mjs` nahm `content/checks/` nicht mit. Die rekursive Modulliste ermöglicht wieder den Offline-Neustart; zehn Bilddateien im Cache und Stempel-Bild nach Offline-Reload geprüft.
+
+### UI Runde B2 (2026-09-17, Branch ui-akt1-b)
+
+Gebunden: Esc ruft ohne offenes Fenster `game.stopAuto()` (Chip `#autoState` folgt, Taste 1 / Aktion `auto` schaltet nur ein);
+`worldInteraction()` in `app.js` übernimmt die ganze Rangfolge aus `game.interaction()` (F und die Touch-Aktion, Beschriftungen
+weiter aus dem Spielzustand); der HUD-Questkasten samt Wegmarkenzeile ist ein Laufbefehl über `game.navigateDestination()`,
+auf Mobil der neue Knopf `#touchWaypoint` in der oberen Zeile. Prüfpunkte in `scripts/akt1b-check.mjs` (5b/5c/5d + mobil).
+Hilfetext dafür fehlt in `PLAY_HELP` — Bedarf steht in docs/backlog/story.md.

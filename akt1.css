@@ -104,3 +104,8 @@
 .clan-confirm{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 6px;padding:11px 13px;background:#23352b;border:1px solid #a88f5355}
 .clan-confirm strong{font:15px Georgia;color:#eed7a2}
 @media(max-width:760px){.attack-warning{font-size:17px;padding:9px 15px;top:12%}.auto-state{font-size:9px;padding:3px 8px}.clan-confirm{flex-wrap:wrap}}
+
+/* Der Questkasten ist der Knopf zur goldenen Wegmarke (P6). */
+.quest-panel.has-waypoint{cursor:pointer}
+.quest-panel.has-waypoint:hover{border-color:#d9bd83aa}
+.quest-panel.has-waypoint:hover .quest-task.waypoint{opacity:1}

@@ -156,6 +156,62 @@ try{
  assert.ok(floats>0,'Trefferzahlen liegen als Fließtext am Gegner');
  checks.push('P1/P2: Autoangriff-Zustand steht sichtbar an der Leiste, der Angriffshinweis erscheint groß, Trefferzahlen stehen am Gegner');
 
+ // 5b · Esc wählt den Autoangriff ab (P2) – Taste 1 schaltet nur noch ein.
+ await clearOverlays();
+ await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace);
+  Object.assign(g.player,{x:e.x+20,y:e.y+20});g.target=e;g.dead=false;g.autoAttack.enabled=false;return true;})()`);
+ await b.press('1');await wait(400);
+ assert.equal((await state()).autoAttack.enabled,true,'Taste 1 schaltet den Autoangriff ein (startAuto)');
+ assert.equal(await text('#autoState'),COMBAT_TEXT.autoOn,'Chip zeigt „Autoangriff an“');
+ await b.press('Escape');await wait(400);
+ assert.equal((await state()).autoAttack.enabled,false,'Esc ruft game.stopAuto() und schaltet den Autoangriff aus');
+ assert.deepEqual(await windows(),[],'Esc hat dabei kein Fenster geöffnet');
+ assert.equal(await text('#autoState'),COMBAT_TEXT.autoOff,'Chip #autoState steht wieder auf „aus“');
+ assert.ok(await b.evaluate(`document.querySelector('#autoState').classList.contains('is-off')`));
+ await screenshot('esc-autoangriff-aus');
+ checks.push('P2: Taste 1 schaltet den Autoangriff ein, Esc ohne offenes Fenster ruft game.stopAuto() – der Chip #autoState folgt');
+
+ // 5c · Aktionstaste über game.interaction(): das Auftragsziel schlägt den Mentor daneben (P3/P5)
+ await clearOverlays();
+ const rank=await b.evaluate(`(()=>{const g=window.game,npc=g.world.npc,m=(g.world.mentors||[])[0];if(!m)return null;
+  g.tutorial.completed=true;g.dead=false;g.player.inCombat=0;g.target=null;g.moveTo=null;g.path=[];
+  Object.assign(g.player,{x:npc.x,y:npc.y+8});
+  m.x=g.player.x+6;m.y=g.player.y+6;                         // Mentor steht näher als Ida
+  const it=g.interaction();return {npc:npc.name,mentor:m.name,kind:it&&it.kind,priority:it&&it.priority};})()`);
+ assert.ok(rank,'Ein Mentor für die Rangfolge vorhanden');
+ assert.equal(rank.kind,'npc','game.interaction() nennt das Auftragsziel, nicht den näheren Mentor');
+ await wait(350);
+ const label=await text('#interact');
+ assert.ok(label.includes(rank.npc),'Die Aktionstaste beschriftet das Auftragsziel ('+rank.npc+')');
+ assert.ok(!label.includes(rank.mentor),'Der Mentor daneben steht nicht auf der Aktionstaste');
+ await b.press('f');await wait(500);
+ assert.deepEqual(await windows(),['dialog'],'F öffnet genau ein Gespräch');
+ assert.ok(await exists('#acceptQuest'),'F trifft Ida (Auftragsgespräch), nicht den Mentor');
+ await screenshot('aktionstaste-auftragsziel');
+ await clearOverlays();
+ checks.push('P3/P5: Die Aktionstaste folgt game.interaction() – Ida gewinnt gegen den näher stehenden Mentor');
+
+ // 5d · Ein Klick auf den HUD-Questkasten läuft zur goldenen Wegmarke (P6)
+ const far=await b.evaluate(`(()=>{const g=window.game,d=g.destination();if(!d)return null;
+  const dist=(a,c)=>Math.hypot(a.x-c.x,a.y-c.y);
+  const spots=[g.world.spawn,...(g.world.hubs||[]),...g.world.camps.map(c=>c.approach||c)].filter(Boolean);
+  const spot=spots.find(p=>dist(p,d.point)>300&&g.world.findPath(p,d.point).length);
+  if(!spot)return null;Object.assign(g.player,{x:spot.x,y:spot.y});
+  g.moveTo=null;g.path=[];g.routeGoal=null;g.dead=false;g.player.inCombat=0;g.touchMove=null;
+  return {label:d.label,distance:Math.round(dist(g.player,d.point))};})()`);
+ assert.ok(far,'Ein weit entfernter Standort mit erreichbarer Wegmarke gefunden');
+ await wait(350);
+ assert.ok((await text('#questTasks')).includes(far.label),'Die Wegmarke steht mit ihrem Ziel im HUD');
+ assert.ok(await b.evaluate(`document.querySelector('.quest-panel').classList.contains('has-waypoint')`),'Der Questkasten ist als Wegmarken-Knopf markiert');
+ await b.click('.quest-panel');await wait(400);
+ const route=await b.evaluate(`(()=>{const g=window.game;return g.routeGoal?{run:Math.round(Math.hypot(g.routeGoal.x-g.player.x,g.routeGoal.y-g.player.y)),step:!!g.moveTo}:null;})()`);
+ assert.ok(route,'Der Klick auf den Questkasten setzt einen Laufweg (game.navigateDestination())');
+ assert.ok(route.step,'Der erste Wegpunkt steht');
+ assert.ok(route.run>50,'Der Laufweg geht über mehr als 50 Einheiten (hier '+route.run+')');
+ assert.deepEqual(await windows(),[],'Der Klick auf den Questkasten öffnet kein Fenster');
+ await screenshot('questkasten-laufweg');
+ checks.push('P6: Ein Klick auf den HUD-Questkasten läuft über game.navigateDestination() zur goldenen Wegmarke ('+far.label+', '+route.run+' Einheiten)');
+
  // 6 · Sprechblase auf Ereignis `bark` (ohne Textparsen)
  await clearOverlays();
  const bark=await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0);if(!e)return null;
@@ -264,7 +320,16 @@ try{
  assert.ok(await b.evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),'Keine Querscrollleiste auf 400 px');
  await screenshot('mobil-figur');
  await clearOverlays();
- checks.push('Mobil 400 px: „Figur“ mit Abschnitten bleibt im Fenster, kein Querscrollen');
+ // Wegmarke auch auf dem Handy: ein Tipp auf den Knopf in der oberen Zeile läuft los.
+ await wait(400);
+ assert.ok(await exists('#touchWaypoint'),'Mobil gibt es den Wegmarken-Knopf');
+ if(!await b.evaluate(`document.querySelector('#touchWaypoint').hidden`)){
+  await b.evaluate(`(()=>{const g=window.game;g.moveTo=null;g.path=[];g.routeGoal=null;g.touchMove=null;})()`);
+  await b.click('#touchWaypoint');await wait(400);
+  assert.ok(await b.evaluate(`!!window.game.routeGoal`),'Der Wegmarken-Knopf setzt auch mobil einen Laufweg');
+ }
+ await screenshot('mobil-wegmarke');
+ checks.push('Mobil 400 px: „Figur“ mit Abschnitten bleibt im Fenster, kein Querscrollen; Wegmarken-Knopf läuft zur goldenen Wegmarke');
 
  assert.deepEqual(b.errors.map(e=>e.text),[],'Konsole ohne Fehler');
  writeFileSync(dir+'/checks.json',JSON.stringify({url,checks,screenshots:shot},null,2));
