@@ -11,6 +11,7 @@ Format je Zeile: ID · Zweck · Größe · Bildhinweis · aktueller Fallback.
 | `ui-chapter-lock` | Ausgegraute Kapitel 2/3 im Auftragsbuch | 24×24 | Vorhängeschloss aus Kronkorken | Text „bald“ |
 | `ui-menu`, `ui-sound`, `ui-fullscreen` | HUD-Knöpfe rechts unten, heute Unicode ☷ ♫ ⛶ | 20×20 | Holzknopf mit Bierdeckel-Motiv: Liste / Note / Rahmen | Unicode-Zeichen |
 | `ui-reward` | Belohnungskasten im Dialog, heute ♜ | 24×24 | Goldener Dosenöffner | Unicode ♜ |
+| `ui-tab-figur`, `ui-tab-rucksack`, `ui-tab-kniffe`, `ui-tab-auftraege`, `ui-tab-karte`, `ui-tab-hilfe` | Reiterleiste des Clanbuchs (docs/MENUE-BEWERTUNG-2026-09-17.md) | 24×24 | Porträtrahmen / Rucksack / Kronkorken-Kelle / Aushang / Karte / Fragezeichen auf Bierdeckel | Buchstaben K C J M N |
 ## Ausrüstung 0.14
 
 Die neuen Plätze verwenden eigene Pixel-Fallbacks in `item-art.js`: helmet, necklace, shoulders, bracers, gloves, belt, trousers, trinket, blade, maul und slingshot. Sie sind bereits in Rucksack, Charakter und Tooltips angebunden. Für spätere gezeichnete Varianten gilt dieselbe Clan-Palette und ein transparenter 24/48-Pixel-Export; die vier festen neuen Waffen-/Schild-IDs stehen mit `look` im generierten ART-BRIEF. Das App-Symbol ist ein eigenes SVG mit daraus gerenderten 192-/512-Pixel-PNGs in `assets/app/`.
