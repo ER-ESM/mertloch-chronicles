@@ -12,12 +12,12 @@ export const BASE_SKILLS=[
 ];
 export const KITS={
  dieter:[
-  {name:'Kronkorken-Kelle',text:'300 % Autoschaden + 14 Schaden im Nahkampf. +1 Pegel und 14 Randale. „Das ist kein Streit. Das ist Leergutklärung.“ Deine Standardtaste: drück sie immer, wenn nichts anderes bereit ist.'},
+  {name:'Kronkorken-Kelle',cd:1.5,text:'300 % Autoschaden + 14 Schaden im Nahkampf – aber nur alle 1,5 s. Eine schwere Kelle statt Gehämmer: +1 Pegel und 14 Randale. „Das ist kein Streit. Das ist Leergutklärung.“ Drück sie, sobald sie bereit ist; dazwischen arbeitet dein Autoangriff.'},
   {name:'Du schuldest mir Pfand!',text:'Markiert 10 s lang: 12 Schaden pro Sekunde. Dein Abriss trifft ein markiertes Ziel 60 % härter. Drück sie als Erstes auf jeden neuen Gegner.'},
   {name:'Bierzelt-Abriss',text:'Verbraucht 1–3 Pegel: 30 Schaden + (150 % + 320 % pro Pegel) Autoschaden. Mit Pfandschuld 60 % stärker. Danach steht kein Tisch mehr gerade. Zünde ihn bei 3 Pegel auf ein markiertes Ziel.'},
   {name:'Halt die Fresse!',text:'35 Schaden. Unterbricht gelbe Zauber, betäubt 2 s und macht das Ziel 4 s verwundbar (+35 % Schaden). Außerhalb der globalen Abklingzeit. Drück ihn, sobald ein gelber Zauberbalken auftaucht.'},
   {name:'Deckel drauf!',text:'Pariert den nächsten Treffer innerhalb von 0,8 s. Reflektiert 75 Schaden, heilt 35 Leben und gibt +1 Pegel sowie 20 Randale. Drück ihn kurz vor dem angekündigten schweren Schlag, nicht danach.'},
-  {name:'Ab durch die Hecke',text:'Ein beherzter Abgang. Weicht in Laufrichtung aus; ohne Eingabe vom Ziel weg. 0,4 s Schutz vor Treffern. Drück es raus aus roten Flächen und weg vom Rudel.'},
+  {name:'Ab durch die Hecke',cd:5,steps:16,text:'Ein beherzter Abgang – kurz und nur alle 5 s. Dieter weicht nicht aus, Dieter steht. Weicht in Laufrichtung aus, ohne Eingabe vom Ziel weg, 0,4 s Schutz vor Treffern. Drück es raus aus roten Flächen und weg vom Rudel.'},
   {name:'Konterfrühstück',text:'240 Leben aus einer sehr verdächtigen Brezel. Im Spiel erstaunlich wirksam, kulinarisch ein Straftatbestand. Drück es unter der Hälfte Leben — vorher verschenkst du den Rest.'}
  ],
  baerbel:[
@@ -30,12 +30,12 @@ export const KITS={
   {name:'Landhaus-Löffelkur',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Hauspflege, Schutz oder einen offensiven Frischekick. Drück sie früh: die Hauspflege wirkt nur, solange du noch stehst.'}
  ],
  kevin:[
-  {name:'Pfandgeschoss',range:195,damage:42,gain:16,icon:'bottle',text:'200 % Autoschaden + 8 Fernkampfschaden, +1 Druck und 16 Randale. Eine Flasche mit erstaunlich überzeugender Flugbahn. Deine Standardtaste aus sicherer Entfernung. Drück ihn, wenn nichts anderes bereit ist.'},
+  {name:'Pfandgeschoss',range:210,damage:42,gain:18,icon:'bottle',text:'200 % Autoschaden + 8 Fernkampfschaden auf 26 m – die größte Wurfweite im Clan. +1 Druck und 18 Randale. Eine Flasche mit erstaunlich überzeugender Flugbahn. Deine Standardtaste aus sicherer Entfernung. Drück ihn, wenn nichts anderes bereit ist.'},
   {name:'Kleb die Scheiße fest',range:210,dot:9,slow:.5,text:'10 s Markierung und 9 Schaden pro Sekunde. Halbiert das Bewegungstempo des Ziels, solange es markiert ist. Drück ihn zuerst — er bremst den Anlauf und markiert.'},
   {name:'Restmüll-Rakete',range:205,base:60,perPoint:44,multiplier:1.8,knockback:28,text:'34 Schaden + (150 % + 260 % pro Druckpunkt) Autoschaden, markiert +80 %. Verbraucht Druck und stößt das Ziel zurück. Funktioniert laut Bauplan überhaupt nicht. Zünde sie bei 3 Druck auf ein geklebtes Ziel, das dir zu nah kommt.'},
   {name:'Sicherung raus!',range:210,text:'35 Schaden, Unterbrechung und 4 s Verwundbarkeit. Erfolgreich: +1 Druck, Restmüll-Rakete wird 2 s früher bereit. Drück sie, sobald ein gelber Zauberbalken auftaucht.'},
   {name:'Pömpel-Panzer',window:1.1,reflect:60,text:'1,1 s Parierfenster. Reflektiert 60 Schaden, gibt +1 Druck und 20 Randale. Der Pömpel dichtet alles ab. Drück ihn kurz vor dem angekündigten Schlag im Nahkampf.'},
-  {name:'Kabelbrand-Flucht',steps:20,text:'Aus dem Gefahrenbereich flitzen. 0,4 s Schutz. „Das hat vorhin noch nicht geraucht.“ Drück sie, wenn jemand in Nahkampfreichweite kommt oder der Boden raucht.'},
+  {name:'Kabelbrand-Flucht',cd:3,steps:22,text:'Aus dem Gefahrenbereich flitzen – alle 3 s, öfter als bei allen anderen. 0,4 s Schutz. „Das hat vorhin noch nicht geraucht.“ Drück sie, wenn jemand in Nahkampfreichweite kommt oder der Boden raucht.'},
   {name:'Notfall-Laugengebäck',heal:225,text:'225 Leben. Die Serviette ist gleichzeitig Garantieschein und Brandschutzkonzept. Drück es unter der Hälfte Leben, am besten hinter Deckung.'}
  ]
 };
@@ -69,7 +69,10 @@ export const TALENT_SKILLS={
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
 // Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
 export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:5,throw:6,heal:7,ground:9};
-export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,mark:3,burst:4,interrupt:4,parry:7},kevin:{...LESSONS,mark:2,burst:3,interrupt:4,parry:4}};
+// Kevin bekommt den Wurf auf Stufe 2 statt 6. Er ist der Fernkämpfer, und die Spielart Schrottkoloss macht seinen
+// Grundangriff zum Nahkampf (class-mechanics.js). Ohne Wurf hatte er bis Stufe 6 keine Antwort auf Gegner, die aus
+// der Distanz auf ihn halten – genau daher kamen die ⚠-Tode gegen Ruhewart, Schnorrer und Ordnungsamt-Praktikant.
+export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,mark:3,burst:4,interrupt:4,parry:7},kevin:{...LESSONS,mark:2,throw:2,burst:3,interrupt:4,parry:4}};
 // Balancing-Korrekturen (content/tuning.js): Klassen definieren Kits, Balancing korrigiert Zahlen je klasse/skill-ID.
 import {TUNING,applyTuning} from './tuning.js';
 for(const [cls,patch] of Object.entries(TUNING.skills)){const kit=KITS[cls];if(!kit)continue;const byId=Object.fromEntries(kit.map((s,i)=>[BASE_SKILLS[i].id,s]));applyTuning(byId,patch);}

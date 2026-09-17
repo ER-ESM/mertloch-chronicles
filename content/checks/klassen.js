@@ -19,6 +19,20 @@ export function check(bad){
    if(!WHEN.some(w=>(s.text||'').includes(w)))bad('kit '+m.id+'/'+BASE_SKILLS[i].id,'Text sagt nicht, wann man den Kniff drückt');}
   if(!WHEN.some(w=>(BUFF_SKILLS[m.id]?.text||'').includes(w)))bad('buff '+m.id,'Text sagt nicht, wann man den Kniff drückt');
  }
+ // P13: Auf Stufe 1 gibt es nur Autoangriff, Grundangriff und Ausweichen. Die drei Klamotten müssen sich schon dort
+ // messbar unterscheiden – nicht nur im Namen der Ressource. Verglichen werden die Werte, die auf Stufe 1 wirken.
+ const startValues=id=>{const kit=KITS[id]||[],at=sid=>({...BASE_SKILLS.find(s=>s.id===sid),...kit[BASE_SKILLS.findIndex(s=>s.id===sid)]});
+  const strike=at('strike'),dash=at('dash');return {strikeCd:strike.cd,strikeRange:strike.range,strikeGain:strike.gain,dashCd:dash.cd,dashSteps:dash.steps};};
+ const start=Object.fromEntries(CLAN_MEMBERS.map(m=>[m.id,startValues(m.id)]));
+ for(const [i,a] of CLAN_MEMBERS.entries())for(const b of CLAN_MEMBERS.slice(i+1)){
+  const differs=Object.keys(start[a.id]).filter(k=>start[a.id][k]!==start[b.id][k]).length;
+  if(differs<3)bad('stufe1 '+a.id+'/'+b.id,'Startkniffe unterscheiden sich in nur '+differs+' von 5 Werten (P13: mindestens 3)');
+ }
+ // Der Kurztext auf der Klamottenkarte muss den Unterschied nennen, nicht nur die Spezialität ab Stufe 5.
+ for(const m of CLAN_MEMBERS){const p=m.passives||{};
+  for(const [key,value] of Object.entries(start[m.id]))if(p[key]!==undefined&&p[key]!==value)bad('passives '+m.id,key+' sagt '+p[key]+', das Kit '+value);
+  if(!/\d/.test(m.passive||''))bad('passive '+m.id,'Kurztext nennt keine Zahl – der Unterschied bleibt unsichtbar');
+ }
  // Talente sind Regeln: kein Talent besteht nur aus Werten ohne Auslöser.
  for(const [spec,rows] of Object.entries(TALENT_ROWS))for(const [i,t] of rows.entries()){
   const keys=Object.keys(t.effects||{});
