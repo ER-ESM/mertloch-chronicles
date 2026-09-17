@@ -77,3 +77,10 @@ Zeichenhöhe und eine Fallback-Farbe; gezeichnet wird in der UI (docs/backlog/ui
 
 Jede Stufe eines Basisbau-Gebäudes ist dieselbe Art in wachsender Größe (`0.6 → 1.0` der Tabellengröße); der Stufenname
 kommt aus `content/buildings.js`. Für gezeichnete Varianten gilt die Clan-Palette aus ART-DIRECTION.md.
+
+### Anbindung der Kulissen (UI 0.20, Runde B)
+
+Gezeichnet wird in `world-prop-ui.js`. Liegt im Katalog (`assets/content-art/handoff-catalog.json`) ein Bild unter der
+ID **`prop-<kind>`** (z. B. `prop-schrotthaufen`, `prop-bus`, `prop-bude-tresen`), nimmt die UI es automatisch:
+Fußpunkt ist `pivot`, die Größe skaliert auf die Zeichenhöhe der Art. Ohne Bild bleibt der Ersatzkörper in der
+Fallback-Farbe aus `PROP_KINDS`. Für die Bude gilt dieselbe ID je Stufe – Stufe 0 ist `prop-bude-truemmer`.

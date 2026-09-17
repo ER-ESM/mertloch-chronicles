@@ -2,7 +2,7 @@
 // Aufruf: node scripts/akt1-check.mjs [url] [ordner]   (Chrome mit --remote-debugging-port=9222, Server: npm start)
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
-import {STORY,STORY_CHAPTERS,MAIN_DIALOGUE,TUTORIAL,BUILDINGS,MEMORY_FRAGMENTS,LORE,chapterDialogue} from '../content/index.js';
+import {STORY,STORY_CHAPTERS,MAIN_DIALOGUE,TUTORIAL,BUILDINGS,MEMORY_FRAGMENTS,LORE,PANEL_UI,chapterDialogue} from '../content/index.js';
 import {browser,wait} from './browser-polish.mjs';
 const url=process.argv[2]||'http://localhost:4183/',dir=process.argv[3]||'akt1-review';
 mkdirSync(dir,{recursive:true});
@@ -40,6 +40,22 @@ const stock=cost=>b.evaluate(`(async()=>{const {addItem}=await import(new URL('r
  for(const [item,n] of Object.entries(${JSON.stringify(cost)}))for(let i=0;i<n;i++)addItem(g.rpg,item);
  g.emit('rpgChanged');return true;})()`);
 /** Offene Erinnerungs-Einblendung bestätigen und den Titel zurückgeben. */
+/** Alle Overlays schließen. Seit Runde B wartet die Erinnerungs-Warteschlange auf ein leeres Fenster und
+ *  schiebt sich nach, sobald eines schließt – vor jedem [F] also erst wirklich aufräumen. */
+async function clearAll(){for(let i=0;i<8;i++){
+ if(await exists('[data-memory-next]')){await b.click('[data-memory-next]');await wait(250);continue;}
+ if(!await exists('.game-popup'))return;
+ await b.press('Escape');await wait(220);}}
+/** Ida ansprechen. Seit Runde B schließt [F] ein offenes Overlay (z. B. eine nachrückende Erinnerung),
+ *  darum erst aufräumen und notfalls ein zweites Mal drücken. */
+async function openIda(){
+ for(let i=0;i<4;i++){
+  await clearAll();await toIda();await wait(220);
+  await b.press('f');await wait(340);
+  if(await exists('.popup-dialog'))return;
+ }
+ throw Error('Ida öffnet kein Gespräch');
+}
 async function clearMemory(){
  if(!await exists('.popup-memory'))return null;
  const title=await b.evaluate('document.querySelector(".popup-memory h2").textContent');
@@ -54,13 +70,13 @@ try{
 
  // 1 · Hofprobe
  assert.ok((await state()).tutorial&&!(await state()).tutorial.completed,'Frischer Start beginnt mit der Hofprobe');
- await b.press('f');await wait(300);
+ if(!await exists('.popup-dialog')){await b.press('f');await wait(300);}
  assert.ok((await text('.popup-dialog')).includes(TUTORIAL.title),'Hofprobe-Fenster zeigt den Tutorialtitel');
  await screenshot('hofprobe');checks.push('Hofprobe startet aus dem frischen Spielstand');
 
  // 2 · Hofprobe abschließen, Erinnerungsfetzen „Der Stempel“
  await b.evaluate('(()=>{const g=window.game;g.tutorial.step=7;Object.assign(g.player,{x:g.world.npc.x,y:g.world.npc.y+6});})()');
- await b.press('Escape');await wait(150);await b.press('f');await wait(250);await b.click('[data-tutorial-next]');await wait(600);
+ await b.press('Escape');await wait(200);if(!await exists('.popup-dialog')){await b.press('f');await wait(300);}await b.click('[data-tutorial-next]');await wait(600);
  assert.ok(!(await state()).tutorial.completed===false,'Hofprobe ist bestanden');
  assert.ok(await exists('.popup-memory'),'Erinnerungsfetzen blendet sich nach der Hofprobe ein');
  await screenshot('erinnerung-stempel');
@@ -68,7 +84,7 @@ try{
  checks.push('Erinnerungs-Einblendung (Sepia, eine Schaltfläche) erscheint und lässt sich bestätigen');
 
  // 3 · Ida-Angebot Kapitel 1 mit dem neuen Text
- await b.evaluate('window.game.quest.accepted=false');await toIda();await wait(200);await b.press('f');await wait(300);
+ await b.evaluate('window.game.quest.accepted=false');await openIda();
  const intro=await text('.popup-dialog');
  for(const word of ['Unterhose','Socke','Stempel'])assert.ok(intro.includes(word),'Ida-Intro enthält „'+word+'“');
  assert.ok(intro.includes(MAIN_DIALOGUE.ida.intro.title));
@@ -85,7 +101,7 @@ try{
 
  // 5 · Kapitel 1 erfüllen und die Belohnung abholen
  assert.ok((await finishChapter()).ready,'Kapitel 1 ist abgabebereit');
- await toIda();await wait(200);await b.press('f');await wait(300);
+ await openIda();
  const rewardText=await text('.popup-dialog');
  for(const word of ['Alibi','Busticket'])assert.ok(rewardText.includes(word),'Belohnungsgespräch nennt „'+word+'“');
  await screenshot('belohnung-kapitel1');
@@ -99,7 +115,7 @@ try{
  await clearMemory();
 
  // 6 · Kapitel 2: Ida „Wiederaufbau“
- await toIda();await wait(200);await b.press('f');await wait(300);
+ await openIda();
  const offer2=await text('.popup-dialog');
  assert.ok(offer2.includes(chapterDialogue(2).title),'Ida spricht den Kapitel-2-Text');
  assert.equal(await text('#questTitle'),chapter(2).title);
@@ -115,7 +131,7 @@ try{
 
  // 8 · Kapitel 2 erfüllen und abholen – erst danach steht der Basisbau frei
  let done2=await finishChapter();assert.ok(done2.ready,'Kapitel 2 abgabebereit ('+done2.progress.join(' · ')+')');
- await toIda();await wait(200);await b.press('f');await wait(300);
+ await openIda();
  assert.ok((await text('.popup-dialog')).includes('Kasten'),'Kapitel-2-Belohnung erzählt vom winkenden Kasten');
  await b.click('#claimQuest');await wait(350);await b.click('[data-reward-choice]');await wait(700);
  assert.equal((await state()).quest.chapterClaimed,2);
@@ -154,12 +170,13 @@ try{
 
  // 10 · Erinnerungsliste im selben Reiter
  assert.ok((await text('.memory-panel')).includes(MEMORY_FRAGMENTS[0].title),'Gesehener Fetzen steht in der Liste');
- assert.ok((await text('.memory-panel')).includes('…'),'Ungesehene Fetzen bleiben verdeckt');
+ assert.ok((await text('.memory-panel')).includes(PANEL_UI.memoryHidden||'Noch nicht erinnert'),'Ungesehene Fetzen bleiben verdeckt und tragen Text (P10)');
  await screenshot('erinnerungsliste');
  await b.press('Escape');await wait(200);
  checks.push('Reiter „Bude“ führt die Erinnerungen in Erzählreihenfolge, ungesehene verdeckt');
 
  // 11 · Mentor ansprechen
+ await clearAll();
  const mentor=await b.evaluate('(()=>{const g=window.game,m=g.world.mentors[0];Object.assign(g.player,{x:m.x,y:m.y+8});g.moveTo=null;return m;})()');
  await wait(250);await b.press('f');await wait(350);
  const talk=await text('.popup-dialog');
@@ -171,20 +188,23 @@ try{
 
  // 12 · Kapitel 3 und 4 durchspielen bis zum Aktschluss
  for(const id of [3,4]){
-  if(!(await state()).quest.accepted){await toIda();await wait(200);await b.press('f');await wait(300);await b.click('#acceptQuest');await wait(300);}
+  if(!(await state()).quest.accepted){await openIda();await b.click('#acceptQuest');await wait(300);}
   const done=await finishChapter();assert.ok(done.ready,'Kapitel '+id+' abgabebereit ('+done.progress.join(' · ')+')');
-  await toIda();await wait(200);await b.press('f');await wait(300);
+  await openIda();
   const reward=await text('.popup-dialog');
   if(id===4)assert.ok(reward.includes('Bastian'),'Aktschluss nennt Bastian');
-  await b.click('#claimQuest');await wait(350);await b.click('[data-reward-choice]');await wait(700);
-  await clearMemory();
+  assert.ok(await exists('#claimQuest'),'Kapitel '+id+' Abgabe-Knopf · offen: '+JSON.stringify(await b.evaluate(`[...document.querySelectorAll('.game-popup')].map(e=>e.dataset.window)`))+' · '+(await text('.popup-dialog')).slice(0,160));
+  await b.click('#claimQuest');await wait(350);
+  assert.ok(await exists('[data-reward-choice]'),'Kapitel '+id+' Belohnungsauswahl · '+(await text('.popup-dialog')).slice(0,160));
+  await b.click('[data-reward-choice]');await wait(700);
+  await clearAll();
   if(id===4)await screenshot('aktschluss');
  }
  const after=await state();
  assert.equal(after.quest.actDone,true,'Akt 1 ist abgeschlossen');
  assert.equal(after.quest.chapterClaimed,4);
  assert.equal(after.destination,null,'Nach dem Aktschluss gibt es keine Wegmarke mehr');
- await toIda();await wait(200);await b.press('f');await wait(300);
+ await openIda();
  assert.ok((await text('.popup-dialog')).includes(MAIN_DIALOGUE.ida.bus.claimed.title),'Ida zeigt nach dem Aktschluss ida.bus.claimed');
  await screenshot('ida-aktschluss');
  await b.press('Escape');await wait(200);

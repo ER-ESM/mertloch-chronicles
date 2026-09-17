@@ -87,3 +87,20 @@
 .skill.proc-empower::before{background-image:url(./assets/content-art/ui/ui-proc-empower.png)}
 .buff-chip .momentum-mark{image-rendering:pixelated;width:20px;height:20px;vertical-align:-5px}
 .chapter-entry .chapter-lock{image-rendering:pixelated;width:24px;height:24px;vertical-align:-5px;margin-right:5px}
+
+/* Runde B · Kampfleiste, Angriffshinweis, Abschnitte statt Unterseiten, Klamottenwahl */
+.auto-state{align-self:center;margin-bottom:6px;padding:4px 12px;border:1px solid #a9a07766;border-radius:3px;font:bold 11px/1.3 'Trebuchet MS',sans-serif;letter-spacing:.4px;background:#29404199;color:#cbc7ab}
+.auto-state.is-on{background:#3d5a36e8;border-color:#c9e08a;color:#eef7cd;box-shadow:0 0 8px #86a65a66}
+.auto-state.is-off{background:#4a3630e8;border-color:#d8a184;color:#f4d9c6}
+.attack-warning{position:absolute;left:50%;top:16%;transform:translateX(-50%);z-index:35;pointer-events:none;padding:12px 26px;border:2px solid #f0a184;border-radius:4px;background:#48221ff0;color:#ffe4cf;font:bold 26px/1.15 'Trebuchet MS',sans-serif;letter-spacing:.5px;text-align:center;text-shadow:0 2px 0 #2a120f;box-shadow:0 0 0 2px #2a120f,0 6px 18px #1b0c0a99;max-width:min(84vw,640px)}
+.attack-warning.hidden{display:none}
+.attack-warning.pulse{animation:attack-warn .5s ease-out 2}
+@keyframes attack-warn{0%{transform:translateX(-50%) scale(1.14)}60%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(1)}}
+.panel-section{margin:0 0 20px;padding-top:12px;border-top:1px solid #a88f5344}
+.panel-section:first-of-type{border-top:0;padding-top:0}
+.panel-section-title{margin:0 0 12px;font:bold 12px/1.3 'Trebuchet MS',sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#d6bc83}
+.clan-card.selected{outline:2px solid #e8cb8a;outline-offset:2px}
+.clan-card.worn h3::after{content:' ·';color:#b9cf98}
+.clan-confirm{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 6px;padding:11px 13px;background:#23352b;border:1px solid #a88f5355}
+.clan-confirm strong{font:15px Georgia;color:#eed7a2}
+@media(max-width:760px){.attack-warning{font-size:17px;padding:9px 15px;top:12%}.auto-state{font-size:9px;padding:3px 8px}.clan-confirm{flex-wrap:wrap}}

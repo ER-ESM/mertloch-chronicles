@@ -99,5 +99,10 @@ test('Die Klamottenwahl spricht von Klamotten, nicht vom Übernehmen',()=>{
  assert.ok(html.includes(TUTORIAL.clan));
  assert.ok(html.includes(LORE.hero.slice(0,40)));
  assert.ok(!html.includes('übernehmen'));
- for(const m of CLAN_MEMBERS)if(m.id!==g.member.id)assert.ok(html.includes(m.name+'s Klamotten anziehen'),m.name);
+ // Playtest P7: drei sichtbare Karten zum Aussuchen, danach genau ein Knopf zum Bestätigen.
+ for(const m of CLAN_MEMBERS)assert.ok(html.includes('data-member-pick="'+m.id+'"'),m.name);
+ assert.equal((html.match(/data-member="/g)||[]).length,1);
+ for(const m of CLAN_MEMBERS)if(m.id!==g.member.id){const picked=clanMenu(g,m.id);
+  assert.ok(picked.includes(m.name+'s Klamotten anziehen'),m.name);
+  assert.ok(picked.includes('data-member="'+m.id+'"'),m.name);}
 });

@@ -11,6 +11,7 @@ import {drawItem} from './item-art.js';
 import {drawAtlas} from './cartography.js';
 import {drawAssetTree,drawAssetProp,drawAssetEffect,drawAssetFire} from './asset-art.js';
 import {drawHub,drawOccupiedCamp,drawEstateDetail} from './world-details.js';
+import {drawProp,campProps,baseProps,propBaseline} from './world-prop-ui.js';
 import {createTerrainChunk,DETAIL} from './terrain.js';
 import {fountain,wildlife} from './atmosphere.js';
 import {drawComicResident as drawResidentSprite} from './comic-actors.js';
@@ -58,7 +59,7 @@ export class Renderer {
     // Telegraphs live on the ground, underneath units and foliage.
     for(const e of g.enemies){if(!e.cast||!e.cast.ground)continue;const a=e.cast;const progress=1-a.remaining/a.total;c.save();ellipse(c,'#b6503c30',a.x,a.y,a.radius,a.radius*.75);c.strokeStyle='#f1a175';c.lineWidth=1.5;c.setLineDash([4,3]);c.beginPath();c.ellipse(a.x,a.y,a.radius,a.radius*.75,0,0,Math.PI*2);c.stroke();c.setLineDash([]);ellipse(c,'#d7764655',a.x,a.y,a.radius*progress,a.radius*.75*progress);c.restore();}
     if(g.target&&g.target.hp>0){const e=g.target;const rad=e.type==='boss'?30:18;c.strokeStyle=e.behavior==='neutral'&&!e.aggro?'#eed180':'#ef9c88';c.lineWidth=1.5;c.beginPath();c.ellipse(e.x,e.y+1,rad,rad*.4,0,0,Math.PI*2);c.stroke();c.fillStyle='#eed39a';poly(c,[{x:e.x-3,y:e.y+rad*.4+5},{x:e.x+3,y:e.y+rad*.4+5},{x:e.x,y:e.y+rad*.4+2}]);c.fill();}
-    const sorted=[{type:'clanCamp',obj:w,y:w.church.maxY+42}];for(const d of w.details||[])if(visible(d,30))sorted.push({type:'estate',obj:d,y:d.y});for(const hub of w.hubs||[])if(visible(hub,120))sorted.push({type:'hub',obj:hub,y:hub.y-10});for(const camp of w.camps)if(visible(camp,160))sorted.push({type:'occupiedCamp',obj:camp,y:camp.y-35});for(const a of g.life.actors)if(visible(a,45))sorted.push({type:'resident',obj:a,y:a.y});for(const prop of w.props)if(visible(prop,50)&&['bench','cart','lantern'].includes(prop.type))sorted.push({type:'furniture',obj:prop,y:prop.y});for(const b of w.buildings)if(b.maxX>ox-40&&b.minX<ox+W+40&&b.maxY>oy-60&&b.minY<oy+H+380)sorted.push({type:'building',obj:b,y:b.maxY});for(const t of w.trees)if(visible(t))sorted.push({type:'tree',obj:t,y:t.y});
+    const sorted=[{type:'clanCamp',obj:w,y:w.church.maxY+42}];for(const d of w.details||[])if(visible(d,30))sorted.push({type:'estate',obj:d,y:d.y});for(const hub of w.hubs||[])if(visible(hub,120))sorted.push({type:'hub',obj:hub,y:hub.y-10});for(const camp of w.camps)if(visible(camp,160))sorted.push({type:'occupiedCamp',obj:camp,y:camp.y-35});for(const a of g.life.actors)if(visible(a,45))sorted.push({type:'resident',obj:a,y:a.y});for(const prop of w.props)if(visible(prop,50)&&['bench','cart','lantern'].includes(prop.type))sorted.push({type:'furniture',obj:prop,y:prop.y});for(const b of w.buildings)if(b.maxX>ox-40&&b.minX<ox+W+40&&b.maxY>oy-60&&b.minY<oy+H+380)sorted.push({type:'building',obj:b,y:b.maxY});for(const t of w.trees)if(visible(t))sorted.push({type:'tree',obj:t,y:t.y});for(const prop of campProps(w))if(visible(prop,60))sorted.push({type:'prop',obj:prop,y:propBaseline(prop)});for(const prop of baseProps(w,g.buildings))if(visible(prop,60))sorted.push({type:'prop',obj:prop,y:propBaseline(prop)});
     for(const bag of g.rpg.loot)if(visible(bag,25))sorted.push({type:'loot',obj:bag,y:bag.y});
     for(const m of w.mentors||[])if(visible(m)&&(!g.tutorial||g.tutorial.completed))sorted.push({type:'mentor',obj:m,y:m.y});
     for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});sorted.sort((a,b)=>a.y-b.y);
@@ -66,6 +67,7 @@ export class Renderer {
     for(const item of sorted){const e=item.obj;c.save();if(this.actorRenderer?.(c,item,time)){c.restore();continue;}if(item.type==='building'){const bounds=buildingVisualBounds(e);if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>u.x>bounds.minX&&u.x<bounds.maxX&&u.y<bounds.maxY&&u.y>bounds.minY))c.globalAlpha=.38;this.building(c,e);}
       else if(item.type==='tree'){const s=e.size;drawTreeOcclusion(c,e,[p,...(g.target?.hp>0?[g.target]:[])],()=>{if(drawAssetTree(c,e,time))return;const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];c.drawImage(sp,Math.round(e.x-44*s),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));});}
       else if(item.type==='loot'){ellipse(c,'#23372355',e.x,e.y,8,3);drawItem(c,'bag',Math.round(e.x-10),Math.round(e.y-17),.8);if(distance(e,p)<65){label(c,'F · Beute',e.x,e.y-23,'#edce84',7);}else{rect(c,'#ead39c',e.x,e.y-21,1,3);}}
+      else if(item.type==='prop'){drawProp(c,e);}
       else if(item.type==='estate'){drawEstateDetail(c,e,time);}
       else if(item.type==='hub'){drawHub(c,e,time);}
       else if(item.type==='occupiedCamp'){drawOccupiedCamp(c,e,time,!g.enemies.some(m=>m.campId===e.id&&m.hp>0));}
@@ -89,12 +91,12 @@ export class Renderer {
     if(g.moveTo){const t=g.moveTo;c.strokeStyle='#f1db98';c.lineWidth=1;c.beginPath();c.ellipse(t.x,t.y,5,3,0,0,Math.PI*2);c.stroke();}
     const destination=g.destination();if(destination&&distance(p,destination.point)>145){const d=destination.point,dx=d.x-p.x,dy=d.y-p.y,n=Math.hypot(dx,dy),radius=Math.min(W*.32,H*.26),x=p.x+dx/n*radius,y=p.y+dy/n*radius;c.save();c.translate(x,y);c.rotate(Math.atan2(dy,dx));poly(c,[{x:7,y:0},{x:-4,y:-4},{x:-1,y:0},{x:-4,y:4}]);c.fillStyle='#f2d998';c.fill();c.restore();label(c,Math.round(n/SCALE)+' m',x,y+15,'#f4ddb0',8);}
     for(const f of g.fx)this.drawEffect(c,f,time);
-    for(const t of g.texts){c.globalAlpha=Math.min(1,t.life*2);label(c,t.text,t.x,t.y-(1-t.life/t.max)*25,t.color,t.text.length>5?8:12);}c.globalAlpha=1;
+    for(const t of g.texts){c.globalAlpha=Math.min(1,t.life*2);label(c,t.text,t.x,t.y-(1-t.life/t.max)*25,t.color,t.text.length>5?8:/^[0-9]+!?$/.test(t.text)?15:12);}c.globalAlpha=1;
     wildlife(c,w,time,visible);
     // Slow drifting pollen and fireflies catch the late afternoon light.
     for(let i=0;i<28;i++){const x=ox+((i*103.3+time*3)%W),y=oy+((i*71.7+Math.sin(time*.4+i)*9)%H);c.globalAlpha=.2+(Math.sin(time*1.8+i)+1)*.14;rect(c,'#eee5a9',x,y,1,1);}c.globalAlpha=1;c.restore();
     const light=c.createLinearGradient(0,0,W,H);light.addColorStop(0,'#fff1cf08');light.addColorStop(.55,'#faf3ab00');light.addColorStop(1,'#48345212');c.fillStyle=light;c.fillRect(0,0,W,H);
-    const bounds=this.canvas.getBoundingClientRect(),obstacles=bubbles.length?[...document.querySelectorAll('.hud,.region-label,.action-area,.game-popup,.touch-topline,#touchMenu,#touchContext,#touchStick,#touchActions,#touchUtility,#buffStrip,#touchCancelAim,#tutorialGuide')].map(el=>el.getBoundingClientRect()).filter(b=>b.width&&b.height).map(b=>({x:(b.left-bounds.left)/this.zoom,y:(b.top-bounds.top)/this.zoom,w:b.width/this.zoom,h:b.height/this.zoom})):[];
+    const bounds=this.canvas.getBoundingClientRect(),obstacles=bubbles.length?[...document.querySelectorAll('.hud,.region-label,.action-area,.game-popup,.attack-warning:not(.hidden),.touch-topline,#touchMenu,#touchContext,#touchStick,#touchActions,#touchUtility,#buffStrip,#touchCancelAim,#tutorialGuide')].map(el=>el.getBoundingClientRect()).filter(b=>b.width&&b.height).map(b=>({x:(b.left-bounds.left)/this.zoom,y:(b.top-bounds.top)/this.zoom,w:b.width/this.zoom,h:b.height/this.zoom})):[];
     obstacles.push({x:p.x-ox-12,y:p.y-oy-30,w:24,h:34});
     this.speechLayout=drawBossSpeech(c,bubbles,{ox,oy,width:W,height:H,zoom:this.zoom,obstacles});
   }

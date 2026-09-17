@@ -4,7 +4,7 @@ import {NPCS,NPC_PORTRAITS,SIDE_QUESTS} from '../content/index.js';
 import {conversationHeader,rewardConversationHeader,sideQuestDialogue} from '../dialogue-ui.js';
 import {ACT_CHAPTERS} from '../engine.js';
 import {chapterState,idaDialogue,mentorDialogue,memoryOverlay} from '../chapter-ui.js';
-import {MEMORY_FRAGMENTS,HUB_TALK,NPCS as PEOPLE} from '../content/index.js';
+import {MEMORY_FRAGMENTS,HUB_TALK,NPCS as PEOPLE,chapterDialogue} from '../content/index.js';
 /** Minimaler Spielstand für die reinen Textfunktionen: nur die Felder, die der Ida-Dialog liest. */
 const fakeGame=(quest,ready=false)=>({quest:{chapter:1,accepted:false,chapterClaimed:0,actDone:false,...quest},chapter:()=>ACT_CHAPTERS.find(c=>c.id===(quest.chapter||1)),questReady:()=>ready});
 
@@ -21,7 +21,10 @@ test('Ida behält ihre Identität in jedem Zustand jedes Akt-1-Kapitels',()=>{
   assert.match(offer,/id="acceptQuest"/,'Kapitel '+c.id);assert.match(reward,/id="claimQuest"/,'Kapitel '+c.id);
   // Jedes Kapitel bringt eigene Zeilen mit; Kapitel 1 erbt ongoing/reward/claimed vom gemeinsamen Ida-Eintrag.
   for(const state of ['ongoing','reward','claimed'])assert.ok(chapterState(c.id,state),'Kapitel '+c.id+' · '+state);
-  assert.ok(offer.includes(c.summary.slice(0,24)),'Kapitelzusammenfassung fehlt in Kapitel '+c.id);
+  // Playtest P12: Wo Ida eigene Zeilen spricht, steht die Kapitelzusammenfassung nicht noch einmal darunter.
+  const spoken=chapterDialogue(c.id)?.lines||[];
+  if(spoken.length)assert.ok(!offer.includes('chapter-summary'),'Kapitel '+c.id+': Zusammenfassung doppelt sich mit den Zeilen');
+  else assert.ok(offer.includes(c.summary.slice(0,24)),'Kapitelzusammenfassung fehlt in Kapitel '+c.id);
   assert.ok(ongoing.includes(chapterState(c.id,'ongoing').title));
   assert.ok(claimed.includes(chapterState(c.id,'claimed').title));
  }

@@ -6,8 +6,10 @@ import {SPECS} from './talents.js';
 import {ITEMS,BAG_SIZE,equipmentStats,combatStats,actionBar,SLOT_KEYS,keyFor} from './rpg.js';
 import {available,LESSONS} from './progression.js';
 import {hasContentAsset} from './content-art.js';
+import {RARITIES} from './content/index.js';
 export const slots=EQUIPMENT_SLOTS;
-const rarity={common:'Bewährt',uncommon:'Ungewöhnlich',rare:'Rarität',epic:'Dorflegende'};
+// Güte-Namen kommen aus content/items.js, damit „Dorflegende“ (epic) überall gleich heißt.
+const rarity=RARITIES;
 // Gelieferte Einzelbilder gewinnen über die Ausrüstungsfamilie: die Datei heißt wie die Gegenstands-ID.
 const itemArt=id=>{if(hasContentAsset(id))return id;const item=ITEMS[id];if(!item?.slot)return item?.icon||id;const slot={ring:'ring1',trinket:'trinket1',charm:'trinket1'}[item.slot]||item.slot;return equipmentAppearance({[slot]:id},ITEMS)[0]?.asset||item.icon;};
 export const itemIcon=id=>`<canvas width="48" height="48" data-item-art="${itemArt(id)}" aria-hidden="true"></canvas>`;

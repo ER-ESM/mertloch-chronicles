@@ -12,11 +12,24 @@ export function updateTargetIdentity(root,e){
  root.querySelector('#targetPanel').classList.toggle('elite-target',isElite(e));
 }
 
-/** UI-only observation: never consumes messages or writes enemy/save state. */
+/** Sprechblasen. Bevorzugt das Ereignis `bark` der Engine (Gegner, Boss, Phase, Bewohner) – ohne Textparsen.
+ *  Solange kein bark kommt, bleibt die alte Beobachtung der Bosszeilen als Rückfall aktiv. */
 export class BossSpeech {
- constructor(){this.game=null;this.seen=new WeakSet();this.bubbles=new Map();this.observed=new Map();}
+ constructor(){this.game=null;this.seen=new WeakSet();this.bubbles=new Map();this.observed=new Map();this.barks=[];this.usesBarks=false;}
+ /** Ereignis `bark`: Zeile roh übernehmen, Figur später über die Id wiederfinden. */
+ bark(ev,game){if(!ev?.text)return;this.usesBarks=true;
+  const until=(game?.time??this.game?.time??0)+3;
+  this.barks=this.barks.filter(b=>b.id!==ev.enemyId||b.kind!==ev.kind);
+  this.barks.push({id:ev.enemyId,name:ev.name,text:ev.text,kind:ev.kind,x:ev.x,y:ev.y,until});}
+ /** Figur zum Spruch: erst Gegner, dann Dorfbewohner; sonst die Position aus dem Ereignis. */
+ barkAnchor(game,bark){
+  return game.enemies?.find(e=>e.id===bark.id&&e.hp>0)||game.life?.actors?.find(a=>a.id===bark.id)||{id:bark.id,x:bark.x,y:bark.y};}
+ activeBarks(game){
+  this.barks=this.barks.filter(b=>game.time<b.until);
+  return this.barks.map(b=>({enemy:this.barkAnchor(game,b),text:b.text,until:b.until}));}
  update(game){
-  if(this.game!==game){this.game=game;this.seen=new WeakSet();this.bubbles.clear();this.observed.clear();}
+  if(this.game!==game){this.game=game;this.seen=new WeakSet();this.bubbles.clear();this.observed.clear();this.barks=[];}
+  if(this.usesBarks)return this.activeBarks(game);
   const bosses=game.enemies.filter(e=>e.type==='boss'),fresh=new Map();
   for(const message of game.messages||[]){
    if(this.seen.has(message))continue;this.seen.add(message);

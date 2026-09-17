@@ -6,14 +6,15 @@ import {distance} from './world.js';
 import {countItem,ITEMS} from './rpg.js';
 import {contentPath} from './content-art.js';
 import {memoryArtFor} from './memory-art.js';
-import {ACTS,STORY,STORY_CHAPTERS,MAIN_DIALOGUE,chapterDialogue,MEMORY_FRAGMENTS,SYSTEM_LINES,LORE,BUILDINGS,BUILDING_EFFECTS,buildingsUnlocked,NPCS,FACTIONS} from './content/index.js';
+import {PANEL_UI,ACTS,STORY,STORY_CHAPTERS,MAIN_DIALOGUE,chapterDialogue,MEMORY_FRAGMENTS,SYSTEM_LINES,LORE,BUILDINGS,BUILDING_EFFECTS,buildingsUnlocked,NPCS,FACTIONS} from './content/index.js';
 
 /** Akt des laufenden Kapitels. */
 export const actOf=chapter=>ACTS.find(a=>a.chapters.includes(chapter))||ACTS[0];
 /** Kapitel eines Akts ohne Reservekapitel späterer Akte. */
 export const actChapterList=act=>STORY_CHAPTERS.filter(c=>!c.reserve&&act.chapters.includes(c.id));
 /** Beschriftung der Erinnerungen aus der vorhandenen Systemzeile ableiten statt sie hier zu erfinden. */
-export const MEMORY_LABEL=SYSTEM_LINES.memory('').replace(/[:\s]+$/,'');
+export const MEMORY_HIDDEN=PANEL_UI.memoryHidden||'Noch nicht erinnert.';
+export const MEMORY_LABEL=PANEL_UI.tabMemories||SYSTEM_LINES.memory('').replace(/[:\s]+$/,'');
 
 /** Ein Gesprächszustand eines Kapitels. Kapitel 1 trägt ongoing/reward/claimed neben dem Angebot,
  *  Kapitel 2–4 unter ihrem eigenen Schlüssel – ein Zugriff, keine Sonderfälle. */
@@ -27,7 +28,7 @@ const eyebrow=d=>d.eyebrow?`<span class="eyebrow">${esc(d.eyebrow)}</span>`:'';
 
 /** Angebot eines Kapitels (annehmen / ablehnen). */
 export function offerDialogue(game,chapter=game.chapter()){const d=chapterDialogue(chapter.id)||{};
- return `${conversationHeader('ida')}${eyebrow(d)}<h2>${esc(d.title||chapter.title)}</h2>${lines(d)}<p class="chapter-summary">${esc(chapter.summary||'')}</p>${rewardBox(chapter)}<div class="dialog-actions"><button class="gold-button" id="acceptQuest">${esc(d.accept||'')}</button><button class="outline-button" data-close>${esc(d.decline||'')}</button></div>`;}
+ return `${conversationHeader('ida')}${eyebrow(d)}<h2>${esc(d.title||chapter.title)}</h2>${lines(d)}${d.lines&&d.lines.length?'':`<p class="chapter-summary">${esc(chapter.summary||'')}</p>`}${rewardBox(chapter)}<div class="dialog-actions"><button class="gold-button" id="acceptQuest">${esc(d.accept||'')}</button><button class="outline-button" data-close>${esc(d.decline||'')}</button></div>`;}
 /** Abgabe eines Kapitels: Belohnung abholen. */
 export function rewardDialogue(game,chapter=game.chapter()){const d=chapterState(chapter.id,'reward')||{};
  return `${conversationHeader('ida')}${eyebrow(d)}<h2>${esc(d.title||chapter.title)}</h2>${lines(d)}${rewardBox(chapter)}<div class="dialog-actions"><button class="gold-button" id="claimQuest">${esc(d.claim||'')}</button></div>`;}
@@ -67,7 +68,7 @@ export function memoriesPanel(game){
  const seen=game.memories?.seen||[],order=[...MEMORY_FRAGMENTS].sort((a,b)=>a.order-b.order);
  return `<section class="memory-panel"><header class="rpg-heading"><h2>${esc(MEMORY_LABEL)}</h2><p>${seen.length} / ${order.length}</p></header><div class="memory-list">`+
   order.map(m=>{const known=seen.includes(m.id);
-   return `<article class="memory-entry ${known?'known':'unknown'}"><h3>${known?esc(m.title):'…'}</h3>${known?`${memoryPicture(m,{lazy:true})}<p>${esc(m.text)}</p><p class="memory-clue">${esc(m.clue)}</p>`:'<p>…</p>'}</article>`;}).join('')+
+   return `<article class="memory-entry ${known?'known':'unknown'}"><h3>${known?esc(m.title):esc(MEMORY_HIDDEN)}</h3>${known?`${memoryPicture(m,{lazy:true})}<p>${esc(m.text)}</p><p class="memory-clue">${esc(m.clue)}</p>`:''}</article>`;}).join('')+
   '</div></section>';}
 
 const FLAT_EFFECTS=new Set(['consumableCd','energyOnKill']);
@@ -78,8 +79,8 @@ export function baseEffectList(game){
  if(!effects.length)return '';
  return `<ul class="base-effects">${effects.map(([key,value])=>`<li><b>${esc(effectValue(key,value))}</b> ${esc(BUILDING_EFFECTS[key]||key)}</li>`).join('')}</ul>`;}
 
-/** Gebaut wird nur am Treffpunkt – dieselbe Regel wie der Klamottenwechsel. */
-export const canBuild=game=>!game.dead&&game.player.inCombat<=0&&distance(game.player,game.world.spawn)<150;
+/** Gebaut wird nur am Treffpunkt – die Regel liegt in der Engine (`game.atHub()`), hier nur der Rückfall. */
+export const canBuild=game=>!game.dead&&(game.atHub?game.atHub():game.player.inCombat<=0&&distance(game.player,game.world.spawn)<150);
 
 function stageCost(game,stage){
  return Object.entries(stage.cost).map(([item,need])=>{const have=countItem(game.rpg,item);
@@ -94,7 +95,7 @@ export function basePanel(game){
   const b=BUILDINGS[id],level=game.buildings[id]||0,current=level?b.stages[level-1]:null,next=game.nextBuildStage(id),ready=next&&enoughMaterial(game,next);
   return `<article class="build-card" data-building="${esc(id)}"><header><canvas width="48" height="48" data-ui-icon="${esc(b.icon)}" aria-hidden="true"></canvas><div><h3>${esc(b.name)}</h3><small>${esc(NPCS[b.owner]?.name||b.owner)}</small></div></header>`+
    `<p class="build-stage">${current?esc('Stufe '+level+' · '+current.name):'Trümmer'}</p><p>${esc(b.text)}</p>`+
-   (next?`<div class="build-next"><b>${esc('Stufe '+next.stage+' · '+next.name)}</b><ul class="build-cost">${stageCost(game,next)}</ul><p class="build-effect">${esc(next.text)}</p><button class="gold-button" data-build="${esc(id)}" ${ready&&here?'':'disabled'}>Ausbauen</button>${ready&&!here?'<small class="requirements-failed">Ausgebaut wird nur an der Bude beim Treffpunkt.</small>':''}</div>`
+   (next?`<div class="build-next"><b>${esc('Stufe '+next.stage+' · '+next.name)}</b><ul class="build-cost">${stageCost(game,next)}</ul><p class="build-effect">${esc(next.text)}</p><button class="gold-button" data-build="${esc(id)}" ${ready&&here?'':'disabled'}>Ausbauen</button>${here?'':'<small class="requirements-failed">Ausgebaut wird nur an der Bude beim Treffpunkt.</small>'}</div>`
     :`<p class="build-done">${level>=b.stages.length?'Endausbau erreicht.':'Dafür fehlt noch ein Kapitel.'}</p>`)+
    '</article>';}).join('');
  return `<section class="base-build"><header class="rpg-heading"><h2>${esc(FACTIONS.clan.name)}</h2><p>${esc(FACTIONS.clan.motto)}</p></header>${baseEffectList(game)}<div class="build-grid">${cards}</div></section>`;}

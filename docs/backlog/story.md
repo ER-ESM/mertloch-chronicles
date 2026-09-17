@@ -17,6 +17,8 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 ### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
 
 - [ ] **P10** Text für verdeckte Erinnerung („Noch nicht erinnert.“) in `panel-ui.js`; Überschrift „Erinnerungen“.
+- [ ] **`PANEL_UI.memoryHidden`** (UI Runde B, 2026-09-17): Der Reiter „Bude“ zeigt verdeckte Fetzen jetzt als Text. Solange der Schlüssel fehlt, steht dort der Rückfall „Noch nicht erinnert.“ aus `chapter-ui.js`. Die Überschrift kommt bereits aus `PANEL_UI.tabMemories`.
+- [ ] **`COMBAT_TEXT.underAttack`** (UI Runde B, 2026-09-17): Der große Hinweis auf das Ereignis `attacked` braucht eine Zeile in `content/combat.js` (heute Rückfall „Du wirst angegriffen“, dahinter der Gegnername). Kurz und im Ton des Clans.
 - [ ] **P14** Kurz-Glossar in der Hilfe (Randale, Pegel/Glanz/Druck → Eskalation, Kniffe, Klamotten, Pfandmarken) in `PLAY_HELP`.
 - [ ] **P12** Ida Kapitel 1: Absatz 4 wiederholt die Summary – Summary bleibt im Auftragsbuch, Dialog ohne Doppelung (UI setzt um, Text prüfen).
 
