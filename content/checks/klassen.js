@@ -3,6 +3,7 @@ import {CLAN_MEMBERS} from '../classes.js';
 import {KITS,BASE_SKILLS,CLASS_LESSONS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS} from '../skills.js';
 import {CLASS_SPECS,TALENT_ROWS,isProcEffect} from '../talents.js';
 import {PROC_RULES} from '../procs.js';
+import {GLOSSARY,hasTerm,describe,describableIds,element,DESCRIBE_KINDS} from '../glossary.js';
 // Effektschlüssel ohne Auslöser: reine Werte. Ein Talent darf nicht nur daraus bestehen (Talente sind Regeln, docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
 const VALUE_ONLY=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating','range','shieldBonus','healBonus'];
 // Kniff-Texte sagen, wann man sie drückt.
@@ -44,4 +45,28 @@ export function check(bad){
  // Weitere Kniffe: Wurf, Boden und Talentfähigkeiten nennen ebenfalls den Einsatzmoment.
  for(const [id,s] of [['throw',THROW_SKILL],['ground',GROUND_SKILL],...Object.entries(TALENT_SKILLS)])
   if(!WHEN.some(w=>(s.text||'').includes(w)))bad('kniff '+id,'Text sagt nicht, wann man ihn drückt');
+ checkDescriptions(bad);
+}
+// Welle D · Beschreibungs-Standard: jedes kampfrelevante Element trägt info{effect,why,links,terms} und ein Icon,
+// jeder Begriff steht im Glossar, jeder Verweis zeigt auf eine echte ID, kein effect wiederholt sich oder den Namen.
+export function checkDescriptions(bad){
+ const seen=new Map();
+ for(const {kind,id} of describableIds()){
+  const w=kind+' '+id,d=describe(kind,id);
+  if(!d){bad(w,'describe() liefert nichts');continue;}
+  if(!d.effect)bad(w,'info.effect fehlt');
+  if(!d.why)bad(w,'info.why fehlt');
+  if(!d.icon)bad(w,'kein Icon');
+  if(!d.numbers.length)bad(w,'kein abgeleiteter numbers-Block');
+  if(d.effect&&d.name&&d.effect.includes(d.name))bad(w,'effect wiederholt den Namen wörtlich');
+  if(d.effect){const other=seen.get(d.effect);if(other)bad(w,'gleicher effect wie '+other);else seen.set(d.effect,w);}
+  for(const t of d.terms)if(!hasTerm(t))bad(w,'terms: kein Glossareintrag "'+t+'"');
+  for(const l of d.links){const [lk,...rest]=String(l).split(':');
+   if(!DESCRIBE_KINDS.includes(lk)||!element(lk,rest.join(':')))bad(w,'links: unbekannte ID "'+l+'"');}
+ }
+ for(const [id,g] of Object.entries(GLOSSARY)){const w='glossar '+id;
+  if(!/^[A-Za-z0-9-]+$/.test(id))bad(w,'ID nur a-zA-Z0-9-');
+  if(!g.name||!g.short||!g.long)bad(w,'name/short/long fehlt');
+  if(g.long&&g.long.length<60)bad(w,'long erklärt die Mechanik nicht');
+  if(g.short&&g.short.length>160)bad(w,'short ist kein einzelner Satz');}
 }

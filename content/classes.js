@@ -24,3 +24,13 @@ export const CLAN_MEMBERS=[
   look:'Dünner Typ mit Werkzeuggürtel, Schutzbrille auf der Stirn, Pömpel am Rücken, Dosen-Drohne'}
 ];
 export const CLASS_IDS=CLAN_MEMBERS.map(m=>m.id);
+
+// --- Beschreibungen (Welle D · Beschreibungs-Standard, docs/backlog/klassen.md) ---------------
+// passiveInfo:{effect,why,links,terms} zum Kurztext `passive`. Den numbers-Block baut describe('passive',id)
+// aus `passives` (content/glossary.js) – deshalb steht hier keine einzige Zahl.
+export const PASSIVE_INFO={
+ dieter:{effect:'Schwere Hand: der langsamste, aber härteste Grundangriff im Clan, dauerhaft weniger eingehender Schaden, ein kurzes seltenes Ausweichen und zusätzliche Heilung auf jede geglückte Parade.',why:'Legt die Spielart fest, bevor du ein einziges Talent lernst: Dieter hält seinen Platz, statt auszuweichen, und heilt sich, indem er richtig pariert.',links:['skill:dieter/strike','skill:dieter/parry','skill:dieter/dash'],terms:['grundangriff','parade','ausweichen','heilung','klamotten']},
+ baerbel:{effect:'Takt statt Tempo: im Rhythmusfenster getroffen gibt der Grundangriff zwei Aufbaupunkte statt einem; dafür lernt Anni ihre Heilung als Einzige schon auf Stufe 2.',why:'Ihr ganzer Aufbau hängt am Timing – wer hämmert, spielt Anni mit halber Geschwindigkeit.',links:['skill:baerbel/strike','skill:baerbel/heal'],terms:['takt','glanz','grundangriff','heilung','klamotten']},
+ kevin:{effect:'Abstand halten: die größte Grundangriffs-Reichweite und der höchste Randale-Ertrag im Clan, das häufigste Ausweichen – und ein Aufbaupunkt plus kürzere Finisher-Abklingzeit auf jede geglückte Unterbrechung.',why:'Kevin gewinnt über Entfernung und Reaktion: jeder Meter Abstand ist ein Wurf mehr, jeder gelbe Balken ein Punkt mehr.',links:['skill:kevin/strike','skill:kevin/dash','skill:kevin/interrupt'],terms:['reichweite','randale','ausweichen','unterbrechen','druck','klamotten']}
+};
+for(const m of CLAN_MEMBERS)m.passiveInfo=PASSIVE_INFO[m.id];

@@ -57,3 +57,57 @@ test('die drei Klamotten unterscheiden sich schon auf Stufe 1 (P13)',()=>{
  assert.equal(Math.max(...CLAN_MEMBERS.map(m=>values[m.id].strikeRange)),values.kevin.strikeRange,'Kevin trifft am weitesten');
  assert.equal(Math.min(...CLAN_MEMBERS.map(m=>values[m.id].dashCd)),values.kevin.dashCd,'Kevin weicht am häufigsten aus');
 });
+
+// --- Welle D · Erweiterte Beschreibungen ------------------------------------------------------
+import {GLOSSARY,describe as describeElement,describableIds,element,DESCRIBE_KINDS,hasTerm,termsOf,BALANCE} from '../content/index.js';
+
+test('jedes kampfrelevante Element hat info mit effect und why, ein Icon und einen abgeleiteten numbers-Block',()=>{
+ const all=describableIds();
+ assert.ok(all.length>=150,'nur '+all.length+' beschreibbare Elemente');
+ for(const {kind,id} of all){
+  const d=describeElement(kind,id),w=kind+' '+id;
+  assert.ok(d,w+': describe() liefert nichts');
+  assert.ok(d.effect&&d.effect.length>20,w+': effect fehlt oder ist zu dünn');
+  assert.ok(d.why&&d.why.length>20,w+': why fehlt oder ist zu dünn');
+  assert.ok(d.icon&&(d.icon.set==='skills'||d.icon.set==='talents'||d.icon.set==='icons'||d.icon.set==='clan'),w+': kein Icon');
+  assert.ok(d.numbers.length>0,w+': numbers-Block leer');
+  for(const row of d.numbers)assert.ok(row.label&&row.value!==undefined&&row.source,w+': unvollständige Zahlenzeile');
+ }
+});
+
+test('kein effect wiederholt den Namen und keine zwei Elemente haben denselben effect',()=>{
+ const seen=new Map();
+ for(const {kind,id} of describableIds()){
+  const d=describeElement(kind,id),w=kind+' '+id;
+  assert.ok(!d.effect.includes(d.name),w+': effect wiederholt den Namen wörtlich');
+  assert.ok(!seen.has(d.effect),w+': gleicher effect wie '+seen.get(d.effect));
+  seen.set(d.effect,w);
+ }
+});
+
+test('jeder terms-Eintrag steht im Glossar, jeder links-Eintrag ist eine echte ID',()=>{
+ for(const {kind,id} of describableIds()){
+  const d=describeElement(kind,id),w=kind+' '+id;
+  for(const t of d.terms)assert.ok(hasTerm(t),w+': kein Glossareintrag "'+t+'"');
+  for(const l of d.links){
+   const [lk,...rest]=l.split(':');
+   assert.ok(DESCRIBE_KINDS.includes(lk),w+': unbekannte Art in "'+l+'"');
+   assert.ok(element(lk,rest.join(':')),w+': toter Verweis "'+l+'"');
+  }
+ }
+});
+
+test('das Glossar erklärt jeden Begriff kurz und lang, mit Zahlen aus BALANCE',()=>{
+ for(const [id,g] of Object.entries(GLOSSARY)){
+  assert.match(id,/^[A-Za-z0-9-]+$/,id+': ID nur a-zA-Z0-9-');
+  assert.ok(g.name&&g.short&&g.long,id+': name/short/long fehlt');
+  assert.ok(g.long.length>=60,id+': long erklärt die Mechanik nicht');
+  assert.ok(g.short.length<=160,id+': short ist kein einzelner Satz');
+ }
+ // Kein Doppelpflege-Risiko: die Zahlen im Glossar stammen aus BALANCE, nicht aus dem Text.
+ assert.ok(GLOSSARY.gcd.long.includes(String(BALANCE.player.gcdBase).replace('.',',')),'gcd nennt den BALANCE-Grundwert nicht');
+ assert.ok(GLOSSARY.schwung.long.includes(String(BALANCE.momentum.restRegen)),'schwung nennt die BALANCE-Regeneration nicht');
+ // Die Shift-Ansicht liefert zu jedem Begriff eines Elements die lange Erklärung.
+ const shift=termsOf('skill','dieter/strike');
+ assert.ok(shift.length>=3&&shift.every(t=>t.long),'termsOf() liefert keine langen Erklärungen');
+});

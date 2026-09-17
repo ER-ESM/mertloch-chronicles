@@ -1,7 +1,7 @@
 // Grafik-Briefing für die Bild-KI: alle Inhalte, die ein eigenes Bild brauchen, mit Stilvorgabe und Bildhinweis.
 // Aufruf: node scripts/art-brief.mjs → content/ART-BRIEF.md und generated/art-brief.json
 import {mkdirSync,writeFileSync} from 'node:fs';
-import {ITEM_CATALOG,ARCHETYPES,ELITES,BOSSES,NPCS,CLAN_MEMBERS,TALENT_SKILLS,SPECS} from '../content/index.js';
+import {ITEM_CATALOG,ARCHETYPES,ELITES,BOSSES,NPCS,CLAN_MEMBERS,TALENT_SKILLS,SPECS,PROC_RULES} from '../content/index.js';
 const style='Maifeld-Detailpixel (ART-DIRECTION.md 0.19): warme 40-Farben-Ankerpalette, dunkle Schieferkonturen, Licht links oben, klare Pixelcluster, echte Transparenz. Helden 52 native Pixel/26 Welteinheiten, vier Richtungen, freie Hände für Ausrüstungs-Layer. Vorlagen in assets/maifeld-live/sources; Pipeline tools/sprite-pipeline/build-live.mjs.';
 const entries=[];
 for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.look)entries.push({kind:'item',id,name:d.name,size:'24×24 Icon',fallback:'Icon „'+d.icon+'“',prompt:d.look,flavor:d.description});
@@ -10,6 +10,8 @@ for(const [id,d] of Object.entries(BOSSES))entries.push({kind:'boss',id,name:d.n
 for(const [id,d] of Object.entries(NPCS))if(d.look&&!d.look.startsWith('siehe'))entries.push({kind:'npc',id,name:d.name,size:'Porträt 48×48 + Sprite 26 px',fallback:'Dorfbewohner-Variante',prompt:d.look,flavor:d.role});
 for(const m of CLAN_MEMBERS)entries.push({kind:'class',id:m.id,name:m.name,size:'Porträt 48×48 (vorhanden), Ausrüstungs-Varianten',fallback:'assets/maifeld-rpg',prompt:m.look,flavor:m.role});
 for(const [id,d] of Object.entries(TALENT_SKILLS))entries.push({kind:'skill',id,name:d.name,size:'48×48 Skill-Icon (vorhanden in assets/clan-skills-013)',fallback:'vorhanden',prompt:d.text});
+// Proc-Regeln brauchen im Talentbuch ein eigenes Icon; bis dahin leiht sich jede Regel eines aus dem ICONS-Vokabular.
+for(const [id,r] of Object.entries(PROC_RULES))if(r.look)entries.push({kind:'proc',id,name:r.name||id,size:'24×24 Icon',fallback:'Icon „'+r.icon+'“',prompt:r.look,flavor:r.info?.effect||r.text});
 for(const [id,d] of Object.entries(SPECS))entries.push({kind:'spec',id,name:d.name,size:'32×32 Emblem',fallback:'Icon „'+d.icon+'“',prompt:d.role+' · '+d.text});
 const md=['# Grafik-Briefing','',style,'','Jede Zeile ist ein Bild. `fallback` zeigt, was das Spiel heute stattdessen zeichnet; solange kein Asset vorliegt, läuft das Spiel damit.','','| Art | ID | Name | Format | Bildhinweis | Aktuell |','|---|---|---|---|---|---|',...entries.map(e=>`| ${e.kind} | \`${e.id}\` | ${e.name} | ${e.size} | ${e.prompt}${e.flavor?' — *'+e.flavor+'*':''} | ${e.fallback} |`),'','Ablage neuer Dateien: `assets/content-art/<kind>/<id>.png`. Der Renderer bindet sie über `variant`/`icon` an, sobald eine Ladeliste existiert (offen, siehe content/README.md).'];
 mkdirSync('generated',{recursive:true});writeFileSync('content/ART-BRIEF.md',md.join('\n')+'\n');writeFileSync('generated/art-brief.json',JSON.stringify({style,entries},null,1));

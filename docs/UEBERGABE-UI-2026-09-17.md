@@ -240,6 +240,112 @@ Die Laufzeit kennt jetzt zwei weitere Auslöser und zwei weitere Wirkungen. **Di
 Für das HUD: `procCount(game, procId)` aus `procs.js` liefert den Zählstand eines `every`-Auslösers
 (z. B. „2/3 Kellen“). Der Stand steht in `game.procState.counts` und wird nicht gespeichert.
 
+## 7. Beschreibungen · Welle D (2026-09-17, Branch `klassen`)
+
+Nutzerauftrag: **alles Kampfrelevante ist im Talentbuch als Icon auffindbar und präzise nachlesbar** – was es
+bewirkt, um wie viel, warum, und wie es zusammenhängt. Nichts doppelt, keine technischen Details ausgelassen.
+Mit gedrückter Shift-Taste werden zusätzlich alle Fachbegriffe erklärt.
+
+### 7.1 Datenform
+
+Jedes kampfrelevante Element trägt an seiner Definition einen Block `info`:
+
+```js
+info:{
+ effect:'…',            // was genau passiert, mechanisch und ohne Zahlen (die stehen in numbers)
+ why:'…',               // wozu es im Kampffluss dient
+ links:['<kind>:<id>'], // zusammenhängende Elemente, siehe describableIds()
+ terms:['glossar-id']   // Fachbegriffe, die dieses Element verwendet
+}
+```
+
+Gepflegt wird **nur** dieser Block. Der Zahlenblock `numbers` wird nie von Hand geschrieben.
+
+Wo die Blöcke liegen: `content/skills.js` (Kits je Klasse, `BUFF_SKILLS`, `THROW_SKILL.info[cls]`,
+`GROUND_SKILL.info[cls]`, `TALENT_SKILLS`), `content/talents.js` (`TALENT_INFO`, alle 90 Talente),
+`content/procs.js` (`PROC_INFO`, alle 26 Regeln), `content/classes.js` (`PASSIVE_INFO`, die drei Klamotten).
+
+### 7.2 Glossar
+
+`content/glossary.js` exportiert `GLOSSARY = {id:{name,short,long}}` (63 Einträge, darunter alle von Gameplay, Welt und Loot angemeldeten IDs – die vier Wertungen heißen wie die Effektschlüssel: `armorRating`, `critRating`, `hasteRating`, `masteryRating`):
+
+* `name` – der Begriff, wie er im Spiel heißt (Randale, Pegel, Deckung, Handschrift …),
+* `short` – ein Satz für die Kurzanzeige,
+* `long` – die Mechanik mit Zahlen. **Alle Zahlen darin werden aus `BALANCE` und den Definitionen berechnet**,
+  nicht abgeschrieben – eine Balance-Änderung ändert den Text mit.
+
+Hilfsfunktionen: `hasTerm(id)`, `GLOSSARY_IDS`, `termsOf(kind,id)` (Shift-Block eines Elements),
+`nice(v)`, `pc(anteil)`, `metres(welteinheiten)`.
+
+### 7.3 `describe(kind,id)` · Vertrag
+
+```js
+import {describe,describableIds} from './content/index.js';
+
+describe(kind, id) → {kind, id, name, icon, text, effect, why, links, terms, numbers} | null
+```
+
+`kind` ist einer aus `DESCRIBE_KINDS`, `id` wie folgt:
+
+| kind | id | Beispiel |
+|---|---|---|
+| `skill` | `<klasse>/<kniff-id>` | `dieter/burst` |
+| `buff` | `<klasse>` | `kevin` |
+| `throw` / `ground` | `<klasse>` | `baerbel` |
+| `talentSkill` | Schlüssel aus `TALENT_SKILLS` | `detonate` |
+| `talent` | `<spec>-<index>` | `kevin-hunt-5` |
+| `passive` | `<klasse>` | `dieter` |
+| `proc` | Schlüssel aus `PROC_RULES` | `tresenkante` |
+
+`describableIds()` liefert alle 158 Paare `{kind,id}` – die vollständige Liste für das Talentbuch und für die
+Prüfungen. `element(kind,id)` gibt die Rohdefinition, falls die UI mehr braucht.
+
+**`numbers`** ist immer abgeleitet, Form `[{label, value, unit, source}]`:
+
+* `value` ist bereits gerundet und mit deutschem Dezimalkomma formatiert (String), `unit` kann leer sein,
+* `source` nennt die Datei, aus der die Zahl stammt (`content/skills.js`, `content/combat.js`,
+  `content/talents.js`, `content/procs.js`, `content/classes.js`, `content/balance.js`, `class-mechanics.js`),
+* Kniffe: Abklingzeit, Kosten, Reichweite/Radius in Metern, Schadensmodell aus `SKILL_DAMAGE`, Wirkzeit aus
+  `CAST_TIMES`, Lernstufe aus `CLASS_LESSONS`,
+* Talente: jede `effects`-Zeile als Klartextzeile; enthält das Talent `proc:<id>`, kommen Auslöser, Chance,
+  Zeitfenster und Wirkungen der Regel dazu; `grants` wird als „Schaltet frei“ gezeigt,
+* Procs: Auslöser, Chance, Zeitfenster, jede Wirkung, und welcher Kniff auf der Leiste leuchtet,
+* Passive: die Werte aus `CLAN_MEMBERS.passives`.
+
+Reichweiten sind in **Metern** (8 Welteinheiten = 1 m), die Rohzahl steht bei Bedarf in `element()`.
+
+### 7.4 Icons
+
+`describe().icon` sagt nur, **wo** das Bild liegt – gezeichnet wird weiter mit den vorhandenen Malern:
+
+| `icon.set` | Felder | Maler |
+|---|---|---|
+| `skills` | `member`, `skill`, `fallback` | `paintSkillIcon(canvas, icon.skill, icon.member)` (`skill-art.js`) |
+| `talents` | `member`, `cell`, `spec`, `index` | `paintTalentIcon(canvas, id)` (`talent-art.js`); `cell` = `specIndex*10+index` |
+| `icons` | `key` | Vokabular `ICONS` aus `content/items.js` (Procs) |
+| `clan` | `member`, `fallback` | Klassenporträt (`clan-art.js`) |
+
+Die Reihenfolge in `SKILL_ICON_ORDER` bleibt allein in `skill-art.js` – die Inhaltsschicht liest sie nicht,
+damit es keine zweite Wahrheit gibt. Für Procs gibt es noch keine eigenen Bilder: jede Regel leiht sich ein
+Icon aus `ICONS` und trägt ihren Bildwunsch in `look`; die 26 Aufträge stehen in `content/ART-BRIEF.md`.
+
+### 7.5 Shift-Regel (UI)
+
+* **Ohne Shift** zeigt der Tooltip `name`, `icon`, `effect` und die `numbers`-Tabelle.
+* **Mit gedrückter Shift-Taste** kommen dazu: `why`, die `links` als anklickbare Sprünge (Beschriftung =
+  `describe()` des Ziels, `name`), und zu jedem Eintrag aus `terms` der Glossareintrag mit `name` und `long`.
+  `termsOf(kind,id)` liefert diese Liste fertig.
+* Shift-Zustand live auswerten (`keydown`/`keyup` auf `Shift`), damit der Block ohne Neuaufbau erscheint; auf
+  Touch stattdessen ein „Mehr dazu“-Knopf im Tooltip.
+* `text` bleibt der bisherige Fließtext (derb, sagt wann man drückt) und darf weiter oben im Tooltip stehen –
+  `effect` ersetzt ihn nicht, es ist die präzise Kurzform darunter.
+
+### 7.6 Prüfungen
+
+`content/checks/klassen.js → checkDescriptions()` und `tests/content-klassen.test.mjs` sichern ab: jedes
+Element hat `effect` und `why`, ein Icon und einen nichtleeren `numbers`-Block; jeder `terms`-Eintrag steht im
+Glossar; jeder `links`-Eintrag ist eine auflösbare ID; kein `effect` wiederholt den eigenen Namen wörtlich und
+keine zwei Elemente teilen sich denselben `effect`. Läuft über `npm run content:check` und `npm test`.
 ## 8. Engine → UI · Welle D (2026-09-17, Branch `engine`)
 
 Neu: benutzbare Gegenstände auf der Aktionsleiste, Auto-Loot mit einem Beute-Ereignis fürs Log und eine
