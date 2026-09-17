@@ -98,6 +98,50 @@ Geografische Grundlage: [© OpenStreetMap-Mitwirkende, ODbL](https://www.openstr
 
 Gezeichnet wird beides von der UI (docs/backlog/ui.md), Bildhinweise in docs/GRAFIK-BEDARF.md.
 
+## Mentorenplätze am Treffpunkt (0.21)
+
+`world-layout.js` liefert mit `mentorSpots(w)` die Plätze von Dosen-Dieter, Aperol-Anni und Klo-Kevin am Treffpunkt —
+Welt-Seite des Playtest-Befunds **P3** (docs/PLAYTEST-2026-09-17-AKT1.md): die Mentoren standen so dicht an
+Wachtmeisterin Ida, dass die Taste F den Falschen erwischte. Regeln (`MENTOR_RULES`, Welteinheiten):
+
+- **≥ 60 zu Ida** (`idaGap`) — damit liegt jeder Mentor außerhalb ihres F-Radius von 50 (`engine.js`).
+  Gewünscht sind **95** (`idaWish`): ab diesem Abstand überschneiden sich Idas F-Radius (50) und der
+  Mentorenradius (42) gar nicht mehr. Erst wenn dort nichts frei ist, wird bis auf die Mindestwerte gelockert.
+- **≥ 40 untereinander** (`mentorGap`, gewünscht 52), **≥ 34** zur Heilquelle, Abstand zum Budengelände.
+- Begehbar (Radius 9), neben der Fahrbahn (`roadMargin` 6, Hauptweg bleibt frei), vom Treffpunkt aus frei erreichbar.
+- Reihenfolge = Reihenfolge der Clanmitglieder in `content/npcs.js` (`MENTOR_ORDER`); IDs sind Speicherschlüssel.
+- Rein geometrisch gesucht (Ringe 95 → 62, Winkelfächer um die von Ida abgewandte Richtung), **ohne Zufall**:
+  gleicher Weltausschnitt, gleiche Plätze. Prüfseed 56753: Dieter 9441/8671, Anni 9434/8729, Kevin 9394/8771 —
+  127/133/127 Einheiten von Ida, 58/110/58 untereinander.
+
+Die Funktion liefert nur `{id,x,y}`. Figur, Name und Rolle setzt die Engine (`clan.js`, `placeMentors`; die Umstellung
+auf `mentorSpots` steht in docs/backlog/engine.md).
+
+## Kalles Kiosk (0.21)
+
+`world-props.js` setzt mit `placeKiosk(w)` den ersten benannten **Ort** in den Dorfkern: `world.places.kiosk`
+(`{id,name,title,text,x,y,w,h,minX…maxY,junction,facing,approach,props}`). Regeln aus
+content/IDEEN-LANDJUNGS.md §Platzierung — „Kreuzung mit Vorplatz für Kiosk“:
+
+- `roadJunctions(w)` sammelt Dorfkreuzungen: ein Wegpunkt einer Straße, der auf einer **anderen** Straße liegt
+  (Toleranz 14, 30er-Raster dedupliziert, Hauszugänge und schmale Pfade zählen nicht). Sortiert nach Zahl der
+  beteiligten Straßen, dann Nähe zum Treffpunkt — deterministisch, ohne Zufallsstrom.
+- Kandidaten müssen im Dorfkern liegen (`inSettlement`), 220–2600 Einheiten vom Treffpunkt entfernt sein und den
+  Kirchvorplatz frei lassen. Um jede Kreuzung wird ein Vorplatz von **86 × 64** Einheiten in fünf Abständen
+  (70–126) und 24 Winkeln gesucht.
+- Abgelehnt wird jede Lage auf Wegen, Gebäuden, Haustüren, Wasser, an Treffpunkten, am Budengelände, an Lagern oder
+  Questorten und über einem begehbaren Wegenetz-Knoten (Hauptwege bleiben frei). Bewuchs auf dem Vorplatz wird gerodet.
+- `approach` liegt 30 Einheiten vor der Tresenseite, ist begehbar, hängt am Wegenetz und hat freie Sicht zur Kreuzung;
+  die Route steht unter „Kalles Kiosk“ in der Wegprüfung (`world.report.routes`).
+- Kulissen (`places.kiosk.props`): `kiosk` (Bude mit Tresenfenster, **einziger Kollisionskörper**), `stehtisch`,
+  `wett-tafel` — Tresen zur Kreuzung, Stehtisch und Tafel davor.
+- Prüfseed 56753: Vorplatz 8557/9350 an der Kreuzung 8620/9241 (2 Straßen), Anlaufpunkt 8557/9288, 1031 Einheiten vom
+  Treffpunkt; Kiosk 8557/9362, Stehtisch 8579/9334, Wett-Tafel 8535/9334. Alle sechs Prüfseeds liefern dasselbe Bild.
+
+`world.places` steht im Export und in `reserved()` (Bewuchs und Dekoration meiden den Vorplatz). **Kioskkönig Kalle
+selbst ist kein Weltobjekt** — NPC und Laden liegen bei Story und Engine (docs/backlog/story.md, docs/backlog/engine.md),
+gezeichnet wird von der UI (docs/backlog/ui.md).
+
 ## Wohngebiet (0.20)
 
 Der Mertloch-Ausschnitt enthält kein `landuse=residential`-Polygon. `world-layout.js` leitet das Wohngebiet deshalb aus

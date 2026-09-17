@@ -43,9 +43,10 @@ Sprechblase (9-Slice), Übungspuppe, alle Helden-, Auftraggeber-, Bewohner-, Geg
 | `warden` | Ruhewärter (Feldgegner, `skin:'warden'`) | 96×96, 4 Richtungen × 4 Spalten | wie Schnorrer/Praktikant | alte Rigfigur |
 | `badger`, `goose`, `boar` | Dachs, Gans, Pfandkeiler als Richtungsbögen wie Rabe und Fuchs | 96×96 | wie `raven`/`fox` | Rig-Animation aus `maifeld-live` |
 | Porträt `pit` | Zelle 15 des Dialogatlas (`content/portraits.js`) | Atlaszelle | siehe `docs/backlog/ui.md` | Anfangsbuchstabe |
+| Kalles Kiosk | Kioskbude mit Tresenfenster, Stehtisch, Wett-Tafel | siehe Tabelle unten | Ort liefert die Welt (`world.places.kiosk` mit `props`), Anlaufpunkt `approach`; Kalle selbst ist noch kein NPC | gezeichnete Ersatzobjekte |
 | Kapitel-Kulissen | Sperrmüllplatz, Kegelbahn-Trümmer, Bus im Feld, Bude mit Ausbaustufen | siehe Abschnitt „Kapitel-Kulissen“ unten | Arten, Maße und Farben in der Tabelle unten; Objekte liefert die Welt (`world.camps[].props`, `world.base`) | gezeichnete Ersatzobjekte |
 
-## Kapitel-Kulissen (Welt 0.20, `world-prop-kinds.js`)
+## Kapitel-Kulissen und Orte (Welt 0.20/0.21, `world-prop-kinds.js`)
 
 Die Welt setzt an jedem Kapitel-Lager feste Kulissen-Objekte und legt das Gelände der Bude an (`world.camps[].props`,
 `world.base.stageProps`). Jedes Objekt hat `kind`, Mittelpunkt `x`/`y`, Grundfläche `w`×`h` in Welteinheiten, eine
@@ -63,6 +64,9 @@ Zeichenhöhe und eine Fallback-Farbe; gezeichnet wird in der UI (docs/backlog/ui
 | `bus` | 4 · Bus im Feld | 104×30 | 44 | Reisebus quer im Acker, Girlanden und Schärpe an den Spiegeln, Tank leer, Tür offen | `#d8c04e` |
 | `bierkasten` | 4 · Bus im Feld | 14×11 | 12 | Leerer Kasten, Flaschen quer, einer als Hocker umgedreht | `#9c5c39` |
 | `bierbong` | 4 · Bus im Feld | 12×12 | 16 | Trichter mit Schlauch an einem Stock, Edding-Beschriftung | `#5f8f6a` |
+| `kiosk` | Dorfkern · Kalles Kiosk | 52×34 | 40 | Holzbude mit aufgeklapptem Tresenfenster, Wellblechdach, Eiswerbung, Zeitungsständer, Pfandkisten an der Seite | Fläche `#9d5f4a` |
+| `stehtisch` | Dorfkern · Kalles Kiosk | 16×16 | 20 | Runder Stehtisch, abgeblätterter Lack, zwei leere Flaschen und ein voller Aschenbecher | `#b9a27f` |
+| `wett-tafel` | Dorfkern · Kalles Kiosk | 26×9 | 26 | Kreidetafel auf zwei Beinen, Kreisliga-Quoten, eine Zeile durchgestrichen, Kreide an der Kante | `#3f4a3d` |
 | `bude-truemmer` | Bude · Stufe 0 | 34×22 | 12 | Bretterhaufen, halbes Dach, umgekippter Grill, Absperrband | `#6f6558` |
 | `bude-tresen` | Bude · Dieter | 54×20 | 20 | Europaletten-Tresen, Bierdeckel als Fliesen, Kronkorken-Leiste, später Zapfhahn | `#a97c4c` |
 | `bude-grill` | Bude · Oskar | 32×22 | 24 | Halbe Öltonne auf Beinen, Rost aus Einkaufswagen, Rauchfahne | `#6d6a66` |

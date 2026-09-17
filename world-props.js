@@ -9,6 +9,7 @@ import {placementReason,nearWater,DRESSING_RULES} from './world-dressing.js';
 const DOOR_CLEARANCE=DRESSING_RULES.doorClearance;
 import {BUILDINGS,BUILDING_IDS} from './content/buildings.js';
 import {PROP_KINDS,CHAPTER_PROPS,PROP_RULES} from './world-prop-kinds.js';
+import {inSettlement} from './world-layout.js';
 
 export {PROP_KINDS,PROP_KIND_IDS,CHAPTER_PROPS,PROP_RULES} from './world-prop-kinds.js';
 const halfDiag=k=>Math.hypot(k.w,k.h)/2;
@@ -118,4 +119,74 @@ export function placeBase(w){
   base.stageProps=stagePropsFor(base);w.base=base;return base;
  }
  throw new Error('Kein freier, erreichbarer Bauplatz für die Bude hinter St. Gangolf gefunden. Abgelehnt: '+JSON.stringify(tally));
+}
+
+/** Kreuzungen im Dorf: ein Wegpunkt einer Straße, der auf einer **anderen** Straße liegt. Hauszugänge (`entrance`)
+ * zählen nicht mit, schmale Trampelpfade ebenso wenig (`minRoadWidth`). Ergebnis ist rasterdedupliziert und
+ * deterministisch sortiert: erst echte Mehrfachkreuzungen, dann Nähe zum Treffpunkt. */
+export function roadJunctions(w){
+ const K=PROP_RULES.kiosk,segments=[];
+ for(const road of w.roads){
+  if(road.entrance||road.width<K.minRoadWidth)continue;
+  for(let i=1;i<road.points.length;i++)segments.push({road,a:road.points[i-1],b:road.points[i]});
+ }
+ const near=p=>distance(p,w.spawn)<=K.maxDistance+K.junctionGrid;
+ const found=new Map();
+ for(const s of segments)for(const p of [s.a,s.b]){
+  if(!near(p))continue;
+  const others=segments.filter(o=>o.road!==s.road&&segmentDistance(p.x,p.y,o.a,o.b)<K.junctionTolerance);
+  if(!others.length)continue;
+  const key=Math.round(p.x/K.junctionGrid)+','+Math.round(p.y/K.junctionGrid);
+  const entry=found.get(key)||{x:Math.round(p.x),y:Math.round(p.y),roads:new Set()};
+  entry.roads.add(s.road.id);for(const o of others)entry.roads.add(o.road.id);
+  found.set(key,entry);
+ }
+ return [...found.values()].map(j=>({x:j.x,y:j.y,roads:j.roads.size}))
+  .sort((a,b)=>b.roads-a.roads||distance(a,w.spawn)-distance(b,w.spawn)||a.x-b.x||a.y-b.y);
+}
+const kioskFacing=(from,to)=>{const dx=to.x-from.x,dy=to.y-from.y;return Math.abs(dx)>=Math.abs(dy)?{x:Math.sign(dx)||1,y:0}:{x:0,y:Math.sign(dy)||1};};
+/** Die drei Kulissen des Vorplatzes: Bude mit Tresenfenster hinten, Stehtisch und Wett-Tafel vorn zur Kreuzung. */
+function kioskProps(center,front){
+ const P=PROP_RULES.kiosk.props,side={x:-front.y,y:front.x},out=[];
+ const at=(kind,along,across)=>{const def=PROP_KINDS[kind];
+  out.push({id:'kiosk-prop-'+out.length,kind,name:def.name,x:Math.round(center.x+front.x*along+side.x*across),
+   y:Math.round(center.y+front.y*along+side.y*across),w:def.w,h:def.h,height:def.height,blocking:def.blocking});};
+ at('kiosk',-P.counter,0);at('stehtisch',P.front,P.side);at('wett-tafel',P.front,-P.side);
+ return out;
+}
+/** Kalles Kiosk als Ort im Dorfkern: Vorplatz an einer Dorfkreuzung, Tresenfenster zur Kreuzung, Stehtisch und
+ * Wett-Tafel daneben. Regeln aus content/IDEEN-LANDJUNGS.md §Platzierung: begehbare Anbindung, genug Stellfläche,
+ * Abstand zu Türen, Treffpunkten und Bäumen, Hauptwege bleiben frei. Der Kiosk ist ein Ort, kein NPC — Kalle selbst
+ * gehört Story und Engine (docs/backlog/story.md, docs/backlog/engine.md). */
+export function placeKiosk(w){
+ const K=PROP_RULES.kiosk,tally={},no=r=>{tally[r]=(tally[r]||0)+1;},junctions=roadJunctions(w)
+  .filter(j=>distance(j,w.spawn)>=K.minDistance&&distance(j,w.spawn)<=K.maxDistance&&inSettlement(w,j)&&distance(j,w.plaza)>w.plaza.radius+K.plazaGap);
+ for(const junction of junctions)for(const d of K.distances)for(let i=0;i<K.angles;i++){
+  const angle=(i%2?1:-1)*Math.ceil(i/2)*(Math.PI*2/K.angles);
+  const p={x:Math.round(junction.x+Math.cos(angle)*d),y:Math.round(junction.y+Math.sin(angle)*d),w:K.w,h:K.h};
+  if(!plotFree(w,p,PROP_RULES.roadMargin)){no('belegt');continue;}
+  if(distance(p,w.plaza)<w.plaza.radius+halfDiag(p)||distance(p,w.spawn)<K.minDistance*.7){no('kirchvorplatz');continue;}
+  if((w.hubs||[]).some(h=>distance(p,h)<(h.reserve||120)+K.hubGap)){no('treffpunkt');continue;}
+  if(w.base&&distance(p,w.base)<halfDiag(p)+halfDiag(w.base)+K.baseGap){no('bude');continue;}
+  if(w.camps.some(c=>distance(c,p)<(c.reserve||150)+halfDiag(p))){no('lager');continue;}
+  if(w.quests.some(q=>distance(q.giver,p)<K.questGap+halfDiag(p)||distance(q.target,p)<K.questGap+halfDiag(p))){no('quest');continue;}
+  if(!nodeFree(w,p,PROP_RULES.nodeMargin.loose)){no('wegenetz');continue;}
+  const front=kioskFacing(p,junction);
+  const approach={x:Math.round(p.x+front.x*(front.x?K.w/2+K.approach:0)),y:Math.round(p.y+front.y*(front.y?K.h/2+K.approach:0))};
+  if(w.blocked(approach.x,approach.y,9)||!w.walkClear(approach,junction,9)||!w.accessNode(approach)){no('anlaufpunkt');continue;}
+  const props=kioskProps(p,front);
+  if(props.some(q=>!plotFree(w,q,PROP_RULES.roadMargin)||distance(q,approach)<PROP_RULES.propGap+halfDiag(q))){no('kulisse');continue;}
+  const clearedTrees=clearPlot(w,p);
+  const colliders=props.filter(q=>q.blocking).map(q=>addCollider(w,q));
+  if(w.blocked(approach.x,approach.y,9)||!w.accessNode(approach)){for(const c of colliders)removeCollider(w,c);no('anlaufpunkt');continue;}
+  const place={id:'kiosk',kind:'kiosk',name:'Kalles Kiosk',title:'Kalles Kiosk · „Quote gut, Ende schlecht“',
+   text:'Tresenfenster an der Dorfkreuzung, Stehtisch für zwei Meinungen und eine Wett-Tafel mit Kreide. Kalle hält Bargeld für die einzige ehrliche Währung.',
+   x:p.x,y:p.y,w:K.w,h:K.h,minX:p.x-K.w/2,maxX:p.x+K.w/2,minY:p.y-K.h/2,maxY:p.y+K.h/2,
+   junction:{x:junction.x,y:junction.y,roads:junction.roads},facing:front,
+   approach,distanceToSpawn:Math.round(distance(p,w.spawn)),clearedTrees,props};
+  w.places={...(w.places||{}),kiosk:place};
+  if(w.dressingReport)w.dressingReport.kiosk={junctions:junctions.length,rejected:tally,props:props.length};
+  return place;
+ }
+ throw new Error('Kein freier Vorplatz für Kalles Kiosk an einer Dorfkreuzung gefunden ('+junctions.length+' Kreuzungen). Abgelehnt: '+JSON.stringify(tally));
 }

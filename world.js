@@ -4,7 +4,7 @@ import {refineDressing,placementReason} from './world-dressing.js';
 import {prepareDetails} from './world-details.js';
 import {WORLD_RULES,resolveRules} from './world-rules.js';
 import {wildernessSite,makeHubs,setCampApproaches,chapterCamps,settlementMask} from './world-layout.js';
-import {placeCampProps,placeBase} from './world-props.js';
+import {placeCampProps,placeBase,placeKiosk} from './world-props.js';
 import {dressStory} from './clan.js';
 export const SCALE=WORLD_RULES.pixelsPerMeter;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -20,7 +20,7 @@ export class World {
   constructor(data,options={}) {
     this.data=data;this.rules=resolveRules(options);this.seed=this.rules.seed;this.id=`v2-${this.seed}-${this.rules.roads.street}-${this.rules.vegetation.density}`;this.bbox=data.bbox;
     this.width=(this.bbox.east-this.bbox.west)*111320*Math.cos(50.27*Math.PI/180)*SCALE;this.height=(this.bbox.north-this.bbox.south)*111320*SCALE;
-    this.roads=[];this.buildings=[];this.areas=[];this.water=[];this.barriers=[];this.landmarks=[];this.trees=[];this.props=[];this.gardens=[];this.quests=[];this.camps=[];this.grid=new Map();this.roadGrid=new Map();this.nodes=[];
+    this.roads=[];this.buildings=[];this.areas=[];this.water=[];this.barriers=[];this.landmarks=[];this.trees=[];this.props=[];this.gardens=[];this.quests=[];this.camps=[];this.places={};this.grid=new Map();this.roadGrid=new Map();this.nodes=[];
     const raw=[];
     for(const f of data.elements){if(!f.geometry)continue;const points=f.geometry.map(p=>this.project(p.lat,p.lon)),b=bounds(points),t=f.tags;
       if(b.maxX<0||b.minX>this.width||b.maxY<0||b.minY>this.height)continue;
@@ -56,7 +56,7 @@ export class World {
     // Unserviceable dense lots become gardens instead of decorative dead ends.
     this.buildings=this.buildings.filter(b=>b.church||b.accessible);this.landmarks=this.landmarks.filter(b=>this.buildings.includes(b));this.grid.clear();this.buildings.forEach(b=>this.addGrid(b));
     const access=this.closestRoad(this.spawn.x,this.spawn.y);this.roads.push({id:'church-square',tags:{highway:'footway',name:'Kirchvorplatz'},points:[this.spawn,access.point],width:38,entrance:true,...bounds([this.spawn,access.point]),x:this.spawn.x,y:this.spawn.y});
-    this.indexRoads();this.buildNavigation();this.generateEncounters(random);this.generateQuests(random);this.generateChapterCamps();placeQuestObjects(this);setCampApproaches(this);this.dressWorld(random);refineDressing(this);spaceQuestGivers(this);placeBase(this);placeCampProps(this);
+    this.indexRoads();this.buildNavigation();this.generateEncounters(random);this.generateQuests(random);this.generateChapterCamps();placeQuestObjects(this);setCampApproaches(this);this.dressWorld(random);refineDressing(this);spaceQuestGivers(this);placeBase(this);placeKiosk(this);placeCampProps(this);
     this.report={version:2,dressing:this.dressingReport,seed:this.seed,sourceBuildings:raw.length,buildings:this.buildings.length,omittedBuildings:raw.length-this.buildings.length,relocatedBuildings:this.buildings.filter(b=>distance(b,b.sourceCenter)>1).length,accessibleDoors:this.buildings.filter(b=>b.accessible).length,roadNodes:this.nodes.length,connectedRoadNodes:this.connected.size,trees:this.trees.length,quests:this.quests.length,failures:[],rules:this.rules};
     dressSites(this);this.validate();dressStory(this);this.details=prepareDetails(this).filter(p=>!placementReason(this,p,p.kind===2?'bench':'rock'));
   }
@@ -102,7 +102,7 @@ export class World {
   }
   /** Lager der Akt-1-Kapitel 2–4. Sie stehen immer in der Welt; bevölkert werden sie erst, wenn das Kapitel läuft (engine.js). */
   generateChapterCamps(){const used=[{...this.spawn,reserve:210},...this.camps,...(this.hubs||[]),...this.quests.flatMap(q=>[{...q.giver,reserve:90},{...q.target,reserve:90}])];this.camps.push(...chapterCamps(this,used));}
-  reserved(x,y,pad=0){const p={x,y};return (this.hubs||[]).some(h=>distance(p,h)<110+pad)||distance(p,this.plaza)<this.plaza.radius+pad||this.camps.some(c=>distance(c,p)<(c.type==='boss'?165:135)+pad)||this.quests.some(q=>distance(q.giver,p)<50+pad||distance(q.target,p)<75+pad||q.items.some(item=>distance(item,p)<25+pad));}
+  reserved(x,y,pad=0){const p={x,y};return Object.values(this.places||{}).some(o=>p.x>o.minX-pad&&p.x<o.maxX+pad&&p.y>o.minY-pad&&p.y<o.maxY+pad)||(this.hubs||[]).some(h=>distance(p,h)<110+pad)||distance(p,this.plaza)<this.plaza.radius+pad||this.camps.some(c=>distance(c,p)<(c.type==='boss'?165:135)+pad)||this.quests.some(q=>distance(q.giver,p)<50+pad||distance(q.target,p)<75+pad||q.items.some(item=>distance(item,p)<25+pad));}
   dressWorld(random){const density=this.rules.vegetation.density,treeGrid=new Set();const addTree=(x,y)=>{x=Math.round(x);y=Math.round(y);const key=Math.floor(x/30)+','+Math.floor(y/30);if(treeGrid.has(key)||this.blocked(x,y,26)||this.onRoad(x,y,this.rules.vegetation.roadBuffer)||this.reserved(x,y,15))return;const t={x:Math.round(x),y:Math.round(y),type:random()>.17?'tree':'pine',variant:Math.floor(random()*5),size:.85+random()*.5,seed:this.trees.length};this.trees.push(t);treeGrid.add(key);};
     for(let i=0;i<18000*density;i++){const x=random()*this.width,y=random()*this.height,area=this.areaAt(x,y);const forest=area&&(area.tags.landuse==='forest'||area.tags.natural==='wood'),farm=area?.tags.landuse==='farmland';if(random()>(forest?.95:farm?.025:.22))continue;addTree(x,y);}
     for(const b of this.buildings){for(let i=0;i<5*density;i++){const x=b.x+(random()-.5)*(b.w+170),y=b.y+(random()-.5)*(b.h+180);addTree(x,y);}if(!b.church){const g={x:b.minX+14,y:b.maxY+24,w:34,h:18,type:'garden',variant:b.id%4};if(!this.onRoad(g.x,g.y,18)&&!this.blocked(g.x,g.y,19)&&!this.reserved(g.x,g.y))this.gardens.push(g);}}
@@ -119,10 +119,10 @@ export class World {
       for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const x=current.x+dx,y=current.y+dy,n={x:start.x+x*step,y:start.y+y*step},g=current.g+Math.hypot(dx,dy)*step,k=key(x,y);if(g>=(best.get(k)??Infinity)||!this.walkClear(p,n,9))continue;best.set(k,g);heap.push({x,y,g,f:g+distance(n,goal),parent:current});}}
     return [];
   }
-  validate(){const targets=[...(this.hubs||[]).map(h=>({...h,label:h.id+' hub'})),...(this.base?[{...this.base.approach,label:'Bude'}]:[]),...this.camps.filter(c=>c.approach).map(c=>({...c.approach,label:c.id+' approach'})),{label:'Ida',...this.npc},{label:'Heilquelle',...this.shrine},...this.camps.flatMap(c=>c.spawns.map(p=>({...p,label:c.id}))),...this.quests.flatMap(q=>[{...q.giver,label:q.id+' giver'},...q.items.map(p=>({...p,label:p.id})),{...q.target,label:q.id+' target'}])];this.report.routes=[];
+  validate(){const targets=[...(this.hubs||[]).map(h=>({...h,label:h.id+' hub'})),...(this.base?[{...this.base.approach,label:'Bude'}]:[]),...Object.values(this.places||{}).map(o=>({...o.approach,label:o.name})),...this.camps.filter(c=>c.approach).map(c=>({...c.approach,label:c.id+' approach'})),{label:'Ida',...this.npc},{label:'Heilquelle',...this.shrine},...this.camps.flatMap(c=>c.spawns.map(p=>({...p,label:c.id}))),...this.quests.flatMap(q=>[{...q.giver,label:q.id+' giver'},...q.items.map(p=>({...p,label:p.id})),{...q.target,label:q.id+' target'}])];this.report.routes=[];
     for(const t of targets){const path=this.findPath(this.spawn,t);let prev=this.spawn,length=0;const valid=path.length>0&&path.every(p=>{const ok=this.walkClear(prev,p,9);length+=distance(prev,p);prev=p;return ok;});if(!valid||this.blocked(t.x,t.y,9))this.report.failures.push('Nicht erreichbar: '+t.label);this.report.routes.push({label:t.label,reachable:valid,length:Math.round(length),waypoints:path.length});}
     this.report.doorRoutes=[];for(const b of this.buildings){const path=this.findPath(this.spawn,b.door);let prev=this.spawn;const valid=path.length>0&&path.every(p=>{const ok=this.walkClear(prev,p,9);prev=p;return ok;});this.report.doorRoutes.push({id:b.id,reachable:valid});if(!valid||this.blocked(b.door.x,b.door.y,9))this.report.failures.push('Hauseingang nicht erreichbar: '+b.id);}
     this.report.accessibleDoors=this.report.doorRoutes.filter(r=>r.reachable).length;this.report.valid=this.report.failures.length===0;if(!this.report.valid)throw new Error(this.report.failures.join('\n'));return this.report;
   }
-  export(){return {format:'mertloch-world-v2',seed:this.seed,rules:this.rules,bbox:this.bbox,source:{url:this.data.url,license:this.data.license,attribution:this.data.attribution},width:this.width,height:this.height,spawn:this.spawn,plaza:this.plaza,hubs:this.hubs,mentors:this.mentors,details:this.details,npc:this.npc,shrine:this.shrine,buildings:this.buildings,roads:this.roads,areas:this.areas,water:this.water,trees:this.trees,props:this.props,gardens:this.gardens,camps:this.camps,base:this.base,settlement:{cell:settlementMask(this).cell,radius:settlementMask(this).radius,minBuildings:settlementMask(this).minBuildings,cells:[...settlementMask(this).cells]},quests:this.quests,report:this.report};}
+  export(){return {format:'mertloch-world-v2',seed:this.seed,rules:this.rules,bbox:this.bbox,source:{url:this.data.url,license:this.data.license,attribution:this.data.attribution},width:this.width,height:this.height,spawn:this.spawn,plaza:this.plaza,hubs:this.hubs,mentors:this.mentors,details:this.details,npc:this.npc,shrine:this.shrine,buildings:this.buildings,roads:this.roads,areas:this.areas,water:this.water,trees:this.trees,props:this.props,gardens:this.gardens,camps:this.camps,base:this.base,places:this.places,settlement:{cell:settlementMask(this).cell,radius:settlementMask(this).radius,minBuildings:settlementMask(this).minBuildings,cells:[...settlementMask(this).cells]},quests:this.quests,report:this.report};}
 }

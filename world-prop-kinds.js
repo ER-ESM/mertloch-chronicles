@@ -15,6 +15,10 @@ export const PROP_KINDS=Object.freeze({
  bus:{name:'Bus mit Girlanden',w:104,h:30,height:44,blocking:true,color:'#d8c04e'},
  bierkasten:{name:'Leerer Bierkasten',w:14,h:11,height:12,blocking:false,color:'#9c5c39'},
  bierbong:{name:'Bierbong-Trichter',w:12,h:12,height:16,blocking:false,color:'#5f8f6a'},
+ // Dorfkern · Kalles Kiosk an der Kreuzung (world.places.kiosk)
+ kiosk:{name:'Kalles Kiosk',w:52,h:34,height:40,blocking:true,color:'#9d5f4a'},
+ stehtisch:{name:'Stehtisch vorm Kiosk',w:16,h:16,height:20,blocking:false,color:'#b9a27f'},
+ 'wett-tafel':{name:'Wett-Tafel · Quote gut, Ende schlecht',w:26,h:9,height:26,blocking:false,color:'#3f4a3d'},
  // Bude: Trümmer und die sechs Basisbau-Gebäude (Maße gelten für die höchste Stufe, siehe stageProps)
  'bude-truemmer':{name:'Trümmer der Bude',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
  'bude-tresen':{name:'Der Tresen',w:54,h:20,height:20,blocking:false,color:'#a97c4c'},
@@ -39,5 +43,8 @@ export const PROP_RULES=Object.freeze({
  spawnMargin:20,gatherMargin:16,questMargin:44,propGap:10,
  nodeMargin:{blocking:18,loose:8}, // Abstand zum begehbaren Wegenetz
  ring:{min:52,max:142,tries:150},
+ kiosk:{w:86,h:64,minDistance:220,maxDistance:2600,plazaGap:40,hubGap:40,baseGap:30,questGap:60,
+  junctionTolerance:14,junctionGrid:30,minRoadWidth:42,distances:Object.freeze([70,84,98,112,126]),angles:24,approach:30,
+  props:Object.freeze({counter:12,front:16,side:22})},
  base:{w:156,h:110,minDistance:150,maxDistance:700,step:14,angles:36,slotX:50,slotY:30,approach:32,rubble:.55}
 });

@@ -24,6 +24,9 @@ export function check(bad){
   for(const kind of [...set.boss,...set.mob])if(!PROP_KINDS[kind])bad('chapter '+c.id,'unbekannte Kulissen-Art '+kind);
   if(!set.boss.some(kind=>PROP_KINDS[kind].w>=50))bad('chapter '+c.id,'Bosslager ohne große Signatur-Kulisse');
  }
+ // Kalles Kiosk als Ort im Dorfkern: Bude mit Tresenfenster, Stehtisch und Wett-Tafel.
+ for(const kind of ['kiosk','stehtisch','wett-tafel'])if(!PROP_KINDS[kind])bad('kiosk','ohne Kulisse '+kind);
+ if(PROP_KINDS.kiosk&&!PROP_KINDS.kiosk.blocking)bad('kiosk','die Kiosk-Bude ist kein Kollisionskörper');
  // Die Bude zeigt jedes Basisbau-Gebäude: je Gebäude eine eigene Kulissen-Art.
  for(const id of BUILDING_IDS)if(!PROP_KINDS['bude-'+id])bad('base '+id,'ohne Kulisse bude-'+id);
  if(!PROP_KINDS['bude-truemmer'])bad('base','ohne Trümmer-Kulisse für Stufe 0');

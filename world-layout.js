@@ -1,5 +1,5 @@
 import {distance,inside,rng} from './world.js';
-import {STORY,STORY_CHAPTERS,ARCHETYPES,BOSSES} from './content/index.js';
+import {STORY,STORY_CHAPTERS,ARCHETYPES,BOSSES,NPCS} from './content/index.js';
 /** Wohngebiet = Wohnpolygone aus OSM **oder** tatsächlich bebautes Gebiet. Der Mertloch-Ausschnitt enthält kein einziges
  * `landuse=residential`-Polygon (Befund vr-08, docs/backlog/welt.md), deshalb zählt die Bebauungsdichte: ein Punkt liegt im
  * Wohngebiet, wenn mindestens `minBuildings` Häuser innerhalb von `radius` stehen. Die Maske wird einmal je Welt aufgebaut. */
@@ -82,3 +82,49 @@ export function chapterCamps(w,used=[]){
  return camps;
 }
 export function setCampApproaches(w){for(const c of w.camps){const points=w.candidates(200,7000).filter(n=>distance(n,c)>290&&distance(n,c)<410);points.sort((a,b)=>distance(a,w.spawn)-distance(b,w.spawn));const p=points[0]||w.nodes[c.node];c.approach={x:p.x,y:p.y};c.title||=c.questId?'Besetzter Pfandplatz':c.type==='wolf'?'Geplünderter Grillplatz':c.type==='cultist'?'Beschlagnahmte Bollerboxen':'Horsts Ruhezone';}}
+
+/** Mentorenplätze am Treffpunkt. Welt-Seite des Playtest-Befunds P3: Dieter, Anni und Kevin standen so dicht an
+ * Wachtmeisterin Ida, dass die Taste F den Falschen erwischte. Regeln (Welteinheiten): mindestens `idaGap` zu Ida —
+ * damit liegt jeder Mentor außerhalb ihres F-Radius (50) —, `mentorGap` untereinander, Abstand zur Heilquelle,
+ * begehbar, neben der Fahrbahn (Hauptweg bleibt frei) und vom Treffpunkt aus frei erreichbar. Gewünscht (`idaWish`)
+ * ist der Abstand, ab dem sich Idas F-Radius (50) und der Mentorenradius (42) gar nicht mehr überschneiden; erst wenn
+ * dort kein Platz frei ist, wird bis auf die Mindestwerte gelockert. Rein geometrisch, kein Zufall: gleicher Seed,
+ * gleiche Plätze. Figur, Name und Rolle setzt die Engine (clan.js). */
+export const MENTOR_RULES=Object.freeze({
+ idaGap:60,idaWish:95,mentorGap:40,mentorWish:52,shrineGap:34,clearance:9,roadMargin:6,
+ rings:Object.freeze([95,88,80,72,66,62]),spread:.62,sweep:1.15,angleStep:Math.PI/36,baseMargin:14
+});
+/** Reihenfolge der Mentoren = Reihenfolge der Clanmitglieder in content/npcs.js. IDs sind Speicherschlüssel. */
+export const MENTOR_ORDER=Object.freeze(Object.keys(NPCS).filter(id=>NPCS[id].member));
+/** Liefert je Mentor `{id,x,y}` in stabiler Reihenfolge. */
+export function mentorSpots(w){
+ const R=MENTOR_RULES,out=[],away=Math.atan2(w.spawn.y-w.npc.y,w.spawn.x-w.npc.x);
+ const fits=(p,gapIda,gapMentor,keepRoadFree)=>{
+  if(w.blocked(p.x,p.y,R.clearance))return false;
+  if(distance(p,w.npc)<gapIda)return false;
+  if(w.shrine&&distance(p,w.shrine)<R.shrineGap)return false;
+  if(out.some(o=>distance(o,p)<gapMentor))return false;
+  if(keepRoadFree&&w.onRoad(p.x,p.y,R.roadMargin))return false;
+  const b=w.base,m=R.baseMargin;
+  if(b&&p.x>b.minX-m&&p.x<b.maxX+m&&p.y>b.minY-m&&p.y<b.maxY+m)return false;
+  return w.walkClear(w.spawn,p,R.clearance);
+ };
+ const steps=Math.round(R.sweep/R.angleStep);
+ for(const [i,id] of MENTOR_ORDER.entries()){
+  const heading=away+(i-(MENTOR_ORDER.length-1)/2)*R.spread;let spot=null;
+  for(const [gapIda,gapMentor,keepRoadFree] of [[R.idaWish,R.mentorWish,true],[R.idaWish,R.mentorGap,true],[R.idaGap,R.mentorGap,true],[R.idaGap,R.mentorGap,false]]){
+   for(const ring of R.rings){
+    for(let k=0;k<=steps&&!spot;k++)for(const side of k?[1,-1]:[0]){
+     const angle=heading+side*k*R.angleStep;
+     const p={x:Math.round(w.spawn.x+Math.cos(angle)*ring),y:Math.round(w.spawn.y+Math.sin(angle)*ring)};
+     if(fits(p,gapIda,gapMentor,keepRoadFree)){spot=p;break;}
+    }
+    if(spot)break;
+   }
+   if(spot)break;
+  }
+  if(!spot)throw new Error('Kein freier Mentorenplatz am Treffpunkt für '+id+'.');
+  out.push({id,x:spot.x,y:spot.y});
+ }
+ return out;
+}
