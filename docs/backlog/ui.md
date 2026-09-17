@@ -60,10 +60,15 @@ Offen / abhängig von anderen Rollen:
 
 ### Welle D (Nutzerauftrag 2026-09-17)
 
-- [ ] **Talentbuch/Kniffe als Nachschlagewerk**: jedes kampfrelevante Element mit Icon (Kniffe, Talente, Passive, Stärkungen, Procs) im Reiter „Kniffe“ auffindbar; Tooltip zeigt `info.effect` + `numbers` (aus `game.describe`), **Shift gedrückt** blendet `why`, `links` (klickbar → springt zum Element) und Glossar-`long` zu allen `terms` ein; laufende Stärkungen im HUD mit demselben Tooltip.
-- [ ] **Leiste**: Verpflegung per Drag/Tipp in Leistenplätze ziehen, Stapelzahl am Platz, Abklingzeit sichtbar; Touch ebenso.
-- [ ] **Beute-Log**: jedes `loot`-Ereignis als Logzeile mit Icon und Seltenheitsfarbe; Hover über die Zeile zeigt den Gegenstands-Tooltip (Shift-Details ebenfalls); Log scrollbar, letzte 50.
-- [ ] **Service Worker**: neue Version atomar aktivieren (skipWaiting + „Neu laden“-Hinweis), damit nach einem Deploy nie alte und neue Module gemischt laden (Befund 2026-09-17: gecachte enemies.js ohne ELITE_TABLE).
+- [x] **Talentbuch/Kniffe als Nachschlagewerk**: jedes kampfrelevante Element mit Icon (Kniffe, Talente, Passive, Stärkungen, Procs) im Reiter „Kniffe“ auffindbar; Tooltip zeigt `info.effect` + `numbers` (aus `game.describe`), **Shift gedrückt** blendet `why`, `links` (klickbar → springt zum Element) und Glossar-`long` zu allen `terms` ein; laufende Stärkungen im HUD mit demselben Tooltip.
+- [x] **Leiste**: Verpflegung per Drag/Tipp in Leistenplätze ziehen, Stapelzahl am Platz, Abklingzeit sichtbar; Touch ebenso.
+- [x] **Beute-Log**: jedes `loot`-Ereignis als Logzeile mit Icon und Seltenheitsfarbe; Hover über die Zeile zeigt den Gegenstands-Tooltip (Shift-Details ebenfalls); Log scrollbar, letzte 50.
+- [x] **Service Worker**: neue Version atomar aktivieren (skipWaiting + „Neu laden“-Hinweis), damit nach einem Deploy nie alte und neue Module gemischt laden (Befund 2026-09-17: gecachte enemies.js ohne ELITE_TABLE).
+
+Umgesetzt 2026-09-17: `describe-ui.js` (ein Tooltip-Baustein für alle acht Arten, Shift blendet `why`, `links` und die
+Glossar-`long`-Texte ein), Nachschlagewerk im Reiter „Kniffe“ mit Sprungzielen `#kniff-<kind>-<id>`, Verpflegung auf der
+Aktionsleiste (Drag, Platz-Kontext, Touch-Platzwahl), Beute-Log aus dem Ereignis `loot` und ein Auto-Loot-Schalter im
+Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server und Browser selbst, Bilder in `welle-d-review/`).
 
 ## Erledigt
 

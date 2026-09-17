@@ -32,6 +32,11 @@ Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Age
 - [ ] **Neue aktive Fähigkeiten** – erst nach Icon-Lieferung (skill-art.js SKILL_ICON_ORDER).
 
 ## Braucht UI
+- **UI-Beschriftungen des Tooltip-Bausteins** (`describe-ui.js` → `DESCRIBE_UI`): die Spaltennamen der Laufzeitzeilen
+  (Schaden, Glückstreffer, Heilung, Stapel, Restzeit, Bereit in, Zählstand, Stufe, Erwarteter Schaden, Grundwert) und die
+  Abschnittsnamen des Nachschlagewerks (Eigenart, Regeln, Laufende Stärkungen) stehen heute in der UI. Sie gehören nach
+  `content/panel-ui.js`, damit es nur eine Wortwahl gibt. Angemeldet 2026-09-17 (Welle D).
+
 
 Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfenster, Boss-Sprechblasen, Ida-Dialoge aus MAIN_DIALOGUE, Proc-Zeile im Tooltip, Dorfbewohner-Sprüche, Grafik-Anbindung).
 

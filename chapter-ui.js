@@ -93,7 +93,7 @@ export function basePanel(game){
  if(!ids.length)return `<section class="base-build"><header class="rpg-heading"><h2>${esc(FACTIONS.clan.name)}</h2></header><p class="base-locked">${esc(LORE.destruction)}</p></section>`;
  const cards=ids.map(id=>{
   const b=BUILDINGS[id],level=game.buildings[id]||0,current=level?b.stages[level-1]:null,next=game.nextBuildStage(id),ready=next&&enoughMaterial(game,next);
-  return `<article class="build-card" data-building="${esc(id)}"><header><canvas width="48" height="48" data-ui-icon="${esc(b.icon)}" aria-hidden="true"></canvas><div><h3>${esc(b.name)}</h3><small>${esc(NPCS[b.owner]?.name||b.owner)}</small></div></header>`+
+  return `<article class="build-card" data-building="${esc(id)}"><header tabindex="0" data-describe="building:${esc(id)}"><canvas width="48" height="48" data-ui-icon="${esc(b.icon)}" aria-hidden="true"></canvas><div><h3>${esc(b.name)}</h3><small>${esc(NPCS[b.owner]?.name||b.owner)}</small></div></header>`+
    `<p class="build-stage">${current?esc('Stufe '+level+' · '+current.name):'Trümmer'}</p><p>${esc(b.text)}</p>`+
    (next?`<div class="build-next"><b>${esc('Stufe '+next.stage+' · '+next.name)}</b><ul class="build-cost">${stageCost(game,next)}</ul><p class="build-effect">${esc(next.text)}</p><button class="gold-button" data-build="${esc(id)}" ${ready&&here?'':'disabled'}>Ausbauen</button>${here?'':'<small class="requirements-failed">Ausgebaut wird nur an der Bude beim Treffpunkt.</small>'}</div>`
     :`<p class="build-done">${level>=b.stages.length?'Endausbau erreicht.':'Dafür fehlt noch ein Kapitel.'}</p>`)+
