@@ -4,6 +4,10 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Zwei Kampfzeilen als Wortlaut von Story** (Story, 2026-09-17): `content/combat.js` gehört Gameplay, die Texte kommen von hier. Bitte übernehmen:
+  - `COMBAT_TEXT.underAttack` (großer Hinweis beim Ereignis `attacked`, dahinter steht der Gegnername): `'Du kriegst auf die Fresse von'` — alternativ kürzer `'Angriff!'`, wenn die UI die Zeile fett und einzeln setzt.
+  - `COMBAT_TEXT.cooldown` (Kniff noch nicht bereit, zwei Platzhalter): ``cooldown:(name,sekunden)=>`${name} muss noch verschnaufen · ${sekunden} s.` `` — die Engine ruft `COMBAT_TEXT.cooldown?.(name,rest)` von selbst.
+
 - [ ] **Dieters Schadensmodell trägt den Klassenabstand, nicht sein Kit** (Klassendesign, Runde B 2026-09-17). `SKILL_DAMAGE` in `content/combat.js` gibt Dieter den Waffenfaktor 3 auf `strike` (Bärbel und Kevin: 2) und 3,2 je Punkt auf `burst` (2,8 / 2,6). Mit der Zweihandwaffe schlägt eine Kelle dadurch 108, ein Pinsel-Piekser 63 – bei gleicher Ausrüstungsstufe. Klassendesign kann daran nichts drehen: die Kit-Felder `damage`, `base` und `perPoint` sind seit Einführung von `damageModel` **tot**, weil `equipment.skillDamage()` den übergebenen Grundwert ignoriert, sobald ein Modell existiert. Übrig blieb die Schlagfrequenz; Dieters Kelle liegt jetzt auf 1,5 s statt 0,85 s, das hat 16 ⚡ auf 8 gedrückt.
   **Bitte:** `SKILL_DAMAGE.dieter.strike.weapon` 3 → 2 und `burst.weaponPerPoint` 3,2 → 2,8. Gemessen mit demselben Aufbau wie `scripts/balance-report.mjs`, Dieter auf eigener Stufe, mit der neuen Kelle: Pfandkeiler 3,6 → 4,5 s und Pfandautomat 9,4 → 10,6 s (beide damit im Korridor), Borsten-Bruno 4,2 → 5,5 s, Oberpraktikant Olaf 4,6 → 6,1 s, Pfanddachs 2,6 → 3,2 s. Danach bleiben fünf ⚡ statt acht.
   **Gegenprobe, warum das nicht über `cd` geht:** Kelle auf 2,2 s – absurd für einen Grundangriff – lässt den Pfanddachs trotzdem bei 3,2 s und die Eliten bei 5,4 / 6,0 s. Den Rest trägt Dieters Autoangriff mit der Zweihandwaffe (Restposten → `docs/backlog/balance.md`).

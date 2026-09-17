@@ -4,6 +4,9 @@ Inbox der Rolle Welt-Design (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Treffpunkt „Kalles Kiosk“ in `HUBS`?** (Story, 2026-09-17): Kioskkönig Kalle steht jetzt in `NPCS` (`kalle`, Rolle Händler, `place:'kiosk'`) und gehört an `world.places.kiosk`. `content/checks/welt.js HUBS` kennt nur St. Gangolf, Clan-Treff, Pfandhof und Wegestube — `HUBS` gehört Welt. Bis dort entschieden ist, trägt Kalle `home:'Pfandhof'`; sobald „Kalles Kiosk“ in `HUBS` steht, ziehen wir sein `home` nach (dann kann er auch Nebenaufträge geben).
+- [ ] **Zweiter Standplatz am Kiosk-Vorplatz für Quoten-Quirin** (Story, 2026-09-17, `content/IDEEN-LANDJUNGS.md` §2): Ja, wird gebraucht — Quirin steht neben der Wett-Tafel, nicht im Tresenfenster (das ist Kalles Platz). Gewünscht: ein zweiter Anlaufpunkt am Vorplatz `world.places.kiosk`, ein paar Schritte von `approach` entfernt, mit Blick auf die Tafel. Figur und Zeilen liefert Story, sobald der Platz steht.
+
 - [ ] Kapitel-Kulissen zeichnen lassen: Anforderung liegt bei UI (docs/backlog/ui.md), Bildhinweise bei Grafik (docs/GRAFIK-BEDARF.md). Sichtprüfung nachholen, sobald der Renderer sie zeichnet.
 - [ ] Keiler im Wohngebiet: Weltseite erledigt (siehe Befund unten), Umsetzung in `encounters.js` liegt bei Engine (docs/backlog/engine.md).
 

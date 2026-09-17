@@ -25,6 +25,7 @@ export const NPCS={
  // --- Gegenseite (Altbestand) ---
  horst:{name:'Horst Nüchternmann',role:'Vorstand für Hausordnung · Ruhe 22:01 e. V.',faction:'ruhe',look:'siehe enemies.js BOSSES.horst'},
  gisela:{name:'Gisela Gießkanne',role:'Erste Vorsitzende · Ruhe 22:01 e. V.',faction:'ruhe',look:'siehe enemies.js BOSSES.gisela'},
+ kalle:{name:'Kioskkönig Kalle',role:'Kiosk · Händler · Wettannahme an der Kreuzung',home:'Pfandhof',place:'kiosk',faction:'neutral',look:'Breiter Mann Ende 50 im Tresenfenster der Bude, Kittel über Trikot, Kugelschreiber hinterm Ohr, Wechselgeld in der Schürzentasche, hinter ihm die Wett-Tafel mit Kreidespruch'},
  buergermeister:{name:'Bürgermeister Bernd Beschluss',role:'Will nur seine Ruhe. Und wiedergewählt werden.',faction:'neutral',look:'Mann im Anzug mit Amtskette, Schweißperlen, Handy am Ohr'}
 };
 export const FACTIONS={

@@ -88,6 +88,13 @@ export const HUB_TALK={
   3:['„Die Kegelbahn in Kalt hat Kabel für drei Anlagen. Die haben nur eine. Das ist Verschwendung. Wir helfen.“','„Klaus hat Bleikegel. Ich hab’s nachgemessen. Mit dem Pömpel. Wissenschaft.“'],
   4:['„Ein Bus. Tank leer. Zwölf Sitze. Ich seh da ein Clanmobil. Ida sieht ein Beweismittel. Wir einigen uns auf Clanmobil mit Beweisen drin.“','„Dein Handy ist Bastians Handy. Bastians Handy hat 400 Fotos von Samstag. Ich hab sie sortiert. Nach Promille.“'],
   done:['„Du bist jetzt Clan. Ich hab dir einen Chip in den Dosenöffner gebaut. Frag nicht. Er piept, wenn die Kiste in der Nähe ist. Hoffentlich.“']},
+ kalle:{greet:'„Bargeld. Kein Pfand ohne Bon, kein Bon ohne Dose, keine Dose ohne Bargeld. Ist ganz einfach.“',
+  1:['„Der Automat da drüben nimmt nichts an. Ich schon. Ich nehm sogar dich, wenn du Kleingeld hast.“','„Auf der Tafel steht seit Samstag ‚Quote gut, Ende schlecht‘. Das war keine Wette. Das war eine Beobachtung.“','„Das Radio läuft nur Kreisliga. Wenn du was anderes willst, kauf dir ein eigenes Radio. Kost’ bei mir zwölf Euro.“'],
+  2:['„Der Bus hat mir die Kühltruhe leergesoffen. Die Kühltruhe. Nicht das Regal. Die Kühltruhe.“','„Baumaterial? Hab ich nicht. Hab Bockwurst. Ist auch tragend, wenn man sie lange genug liegen lässt.“','„Quote gut, Ende schlecht. Steht auf der Tafel, gilt auch für deine Bude.“'],
+  3:['„Kalt setzt auf sich selbst. Das ist keine Wette, das ist Notwehr.“','„Ich nehm Wetten auf alles außer Kegeln. Kegeln ist manipuliert. Frag Dieter, der weint dann.“','„Kreisliga im Radio, Bier in der Truhe, Bargeld in der Kasse. Mehr Kiosk geht nicht.“'],
+  4:['„Zwölf Mann in weißen Shirts, alle mit Karte zahlen wollen. Bei mir. Am Kiosk. Ich hab gelacht, bis einer geweint hat.“','„Einer hat meinen Trichter mitgenommen. Wenn du ihn findest: Er gehört mir, und der Typ gehört dir.“','„Wettannahme zu. Gegen den Bus setzt keiner mehr.“'],
+  done:['„Du bist jetzt Clan. Heißt bei mir: gleicher Preis, aber du darfst drinnen stehen, wenn’s regnet.“'],
+  tooExpensive:['„Zu teuer? Dann sammel Pfand wie alle anderen. Der Tresen ist kein Sozialamt.“']},
  ida:{greet:'„Rede nicht. Bau.“',done:['„Samstag. Koblenz. Die Kiste. Bis dahin: Bude ausbauen, Umland aufräumen, Erinnerungen sammeln.“']}
 };
 /** Sprüche der Bosse: Kampfbeginn, Phasen, Niederlage. Phasen stehen in enemies.js BOSSES.*.phases.*/
@@ -117,7 +124,8 @@ export const SYSTEM_LINES={
  respawn:'Du erwachst bei St. Gangolf. Wieder. Diesmal wenigstens mit Hose.',
  levelUp:level=>'Stufe '+level+'! Neue Kniffe im Skillbuch, ein weiterer Talentpunkt.',
  memory:title=>'Erinnerungsfetzen: '+title,
- building:(name,stage)=>name+' ausgebaut · Stufe '+stage+'.'
+ building:(name,stage)=>name+' ausgebaut · Stufe '+stage+'.',
+ buildPlace:name=>`Gebaut wird an der Bude, nicht im Feld. ${name} wartet am Treffpunkt – und nicht mitten im Kampf.`
 };
 export function dialogue(npcId,state='greet'){const npc=MAIN_DIALOGUE[npcId];if(!npc)return null;return npc[state]||npc.greet||null;}
 export const chapterDialogue=chapter=>MAIN_DIALOGUE.ida[STORY_CHAPTERS[chapter-1]?.dialogue]||null;
