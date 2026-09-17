@@ -39,6 +39,19 @@ Menschen können alle neuen Ausrüstungskategorien fallen lassen. Tiere behalten
 
 RPG-Speicherversion 4 migriert den alten Glücksbringer zu Ring I oder Glücksbringer I. Die Ruhepfeife ist jetzt eine Fernkampfwaffe, Horsts Stempel ein Zweihänder. Fehlende neue Startplätze werden bei der Migration einmalig ergänzt; danach bleiben bewusst geleerte Plätze leer. Aus inkonsistenten Altzuständen zurückgewonnene Teile werden bei vollem Rucksack separat gesichert und lassen sich im Inventar einpacken. Questfortschritt, Stufen und vorhandene Gegenstände bleiben erhalten.
 
+## Set-Boni · Konzept (Daten erst nach Freigabe)
+
+Dorflegenden stehen heute für sich. Drei von ihnen tragen dasselbe Wappen – den Ordnungsdienst **Ruhe 22:01**: die Trillerpfeife der Ruhestörung (`ruhepfeife`, Fernkampf), der laminierte Praktikantenausweis (`praktikantenausweis`, Talisman) und Olafs Dienstmütze (`dienstmuetze`, Kopf). Wer alle drei zusammenträgt, hat sich die Uniform des Feindes angezogen – das gehört belohnt.
+
+| Teile getragen | Bonus (Entwurf) | Warum |
+| --- | --- | --- |
+| 2 von 3 | Unterbrechen sperrt 10 % länger | beide vorhandenen Procs des Satzes drehen sich ums Unterbrechen |
+| 3 von 3 | Unterbrechen macht das Ziel 4 s lang 10 % verwundbar (»Vermerkt.«) | genau die Wirkung, die Olafs Mütze allein nicht bekommt (Engine-Backlog) |
+
+Absicht: kein vierter Wertesatz, sondern **eine Regel**, die man im Kampf merkt. Der Satz kostet drei Plätze in drei verschiedenen Kategorien (Fernkampf, Kopf, Talisman) und bindet damit echte Beute; kein Teil ist vor Stufe 2 erreichbar, alle drei realistisch erst ab Stufe 4. Set-Boni fügen **keine Primärwerte** hinzu – sonst hebeln sie das Wertebudget aus `content/balance.js` aus.
+
+Offen, bevor Daten entstehen: **Gameplay** entscheidet, ob Set-Boni ins Spiel gehören (`docs/backlog/gameplay.md`); **Engine** braucht eine Satz-Zählung beim Anlegen und die Verwundbarkeits-Wirkung (`docs/backlog/engine.md`). Erst danach entsteht `SETS` in `content/items.js` mit einer Prüfung in `content/checks/loot.js`: jedes Teil existiert, kein Teil steht in zwei Sätzen, ein Satz hat mindestens drei Teile, kein Bonus vergibt Primärwerte.
+
 ## Prüfung
 
 - `tests/equipment.test.mjs`: alle Slots, Schadensgrenzen, Waffenbindung, zwei Ringplätze, Einzigartigkeit, Transaktionen bei vollem Rucksack, alte Spielstände und einmalige Clankiste.

@@ -5,6 +5,7 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 ## Offen
 
 - [ ] Beutefamilie `oberpraktikant` für Olaf einpflegen, sobald Loot die Tabelle angelegt hat (heute erbt er `inspector`; `ENEMY_AUTOS.oberpraktikant` liegt bereit).
+- [ ] `ELITES.oberpraktikant.family` von `inspector` auf `oberpraktikant` umstellen – die Beutetabelle steht jetzt in `content/drops.js` (Material `kabelbinder`, Dorflegende `dienstmuetze`, `FOOD_DROPS.oberpraktikant`).
 - [ ] Händler/Handwerk als Daten (`content/shop.js`: `SHOP_STOCK`, `SELL_RATE`, `RECIPES`, `benchStage()`) – **erst nach Freigabe** des Konzepts `docs/GAMEPLAY-HAENDLER-HANDWERK.md`, dann Prüfung in `checks/gameplay.js` und Test.
 - [ ] Restliche 72 Talente als Regeln mit Auslöser, gemeinsam mit Klassendesign (docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
 - [ ] Bau-Ortsregel als Engine-Regel beauftragt (docs/backlog/engine.md); Basisbau-Effekt `respawnHp` ist als Deckung umgesetzt.

@@ -6,6 +6,8 @@ Inbox des Lead-Architect (`docs/ROLLEN.md`): Entscheidungen, Zirkel, Dateispaltu
 
 - [ ] Playtest-Lauf Akt 1 auf dem Live-Stand mit `neuling-agent`, `kenner-agent`, `pruefer-agent` beauftragen (Runde A, `docs/ROADMAP.md`); Befunde in Runde C auf die Rollen-Backlogs verteilen.
 - [ ] Nach jedem Fast-Forward aus Runde A prüfen: `npm test`, `npm run content:check`, Übergabedateien gelesen, Backlogs abgehakt, keine Rolle wartet ohne Eintrag auf eine andere.
+- [ ] `content/schema.js` verlangt von jedem `kind:'consumable'` ein `heal` oder `energy`. Das Pfandbon-Bündel (dreifache Marken für 60 s) ist Verbrauch ohne Heilung; es trägt deshalb ersatzweise `energy:20`. Bitte entscheiden: Regel auf „heal, energy **oder** eigene Wirkung (`effect`)“ erweitern – dann nimmt Loot die 20 Randale wieder heraus. Betrifft: `content/schema.js`, `content/items.js` (`pfandbon`).
+- [ ] `content/recipes.js` liegt bei Loot (Auftrag Runde B), `content/shop.js` bei Gameplay (Konzept `docs/GAMEPLAY-HAENDLER-HANDWERK.md` §6 sah beides bei Gameplay). Bitte Dateibesitz in `docs/ROLLEN.md` nachziehen oder die Rezepte umhängen, bevor Gameplay den Laden baut.
 - [ ] Entscheidung zu E-21 (Basisbau-Kosten) fällen, sobald Balance die Sammelzeit gegen den Materialfluss gemessen hat.
 - [ ] Entscheidung zu „Feldgegner ab Stufe 10 trivial“ (Skalierung in der Engine vs. `tuning.js` vs. bewusst lassen) — steht unter „Offen“ in `docs/ENTSCHEIDUNGEN.md`.
 - [ ] `content/index.js` und `content/schema.js` nach den parallelen Fachrollen-Pushes auf Konflikte und fehlende Exporte prüfen.

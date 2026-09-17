@@ -2,6 +2,7 @@
 export * from './balance.js';
 export * from './items.js';
 export * from './drops.js';
+export * from './recipes.js';
 export * from './enemies.js';
 export * from './skills.js';
 export * from './classes.js';

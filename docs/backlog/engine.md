@@ -2,6 +2,12 @@
 
 Inbox der Engine-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel, Grund, Abnahme, betroffene IDs/Dateien. Die Rolle hakt ab, löscht nicht.
 
+## Aus Gegenstände & Loot
+
+- [ ] **Proc-Wirkung `vulnerable` (Unterbrechen macht verwundbar)** — Gameplay wünscht für Olafs Dienstmütze „Unterbrechen macht das Ziel 4 s lang 10 % verwundbar“ (docs/backlog/loot.md). `PROCS` in `content/items.js` kennt nur free/reset/empower/energy/points/shield/haste-artige Felder; die Mütze trägt deshalb vorerst `silence` (Unterbrechen lädt 10 Randale). Abnahme: `PROCS.vermerk={text:'Unterbrechen macht das Ziel 4 s lang 10 % verwundbar.',vulnerable:.1,duration:4}` wirkt beim Unterbrechen wie die Markierung (`e.mark`), HUD zeigt die Sekunden; danach stellt Loot `dienstmuetze.proc` um. Betrifft: `engine.js` (Unterbrechen), `content/items.js` (`PROCS`), `content/schema.js` (Feldliste).
+- [ ] **Werkbank und Kiosk lesen die Loot-Daten** — `content/recipes.js` (`RECIPES`, `BENCH_STAGES`) und das Feld `price` an der Verpflegung in `content/items.js` liegen bereit (Konzept `docs/GAMEPLAY-HAENDLER-HANDWERK.md`, Freigabe offen). Abnahme: `craft(id)` prüft Werkstattstufe und Inventar, zieht `input`/`coins` ab und legt `output.count` Stück ins Inventar; `buy(id)` zieht `price` von `rpg.coins` ab; `sell(item)` zahlt `Math.max(1,Math.floor(value/2))` nur für `kind:'material'`.
+- [ ] **Satz-Zählung für Set-Boni** (nur wenn Gameplay den Satz freigibt, Konzept in `EQUIPMENT.md`) — Anzahl getragener Teile eines Satzes beim Anlegen zählen und die Satzregel wie einen Proc führen. Betrifft: `rpg.js` (Ausrüstung), `engine.js`.
+
 ## Aus Klassendesign
 
 Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). Diese Auslöser/Wirkungen fehlen der Laufzeit (`procs.js`); die betroffenen Talente stehen bis dahin auf der besten heute möglichen Regel.
