@@ -1,0 +1,13 @@
+{
+  "id": "anni-walk",
+  "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. Anni has empty hands, both arms swing naturally. Preserve blonde bun, orange floral blouse, gingham apron, olive trousers and ankle boots.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/anni-poses.png"
+  ],
+  "output": "assets/content-art/sources/2026-09-17/anni-walk.png",
+  "originalFile": "exec-05b69b3c-343a-4535-a281-bd64480e3331.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "d3c79862cb292be0d27e75f45329b6cfd16ffae855955a6ee16f999295171a71"
+}

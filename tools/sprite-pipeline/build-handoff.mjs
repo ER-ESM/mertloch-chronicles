@@ -16,7 +16,7 @@ export function buildHandoff(){
  const jobs=JSON.parse(readFileSync(new URL('handoff-jobs.json',import.meta.url))),files=new Map(),catalog={version:1,style:'Maifeld-Detailpixel',humanNativePixelsPerWorldUnit:2,frameSize:96,pivot:{x:48,y:80},directions:['se','sw','ne','nw'],assets:{},missing:[]};
  for(const j of jobs){
   if(j.kind==='items'&&refined.catalog.icons[j.id]){const a=refined.catalog.icons[j.id],bytes=refined.files.get(a.path),path='assets/content-art/items/'+j.id+'.png';files.set(path,bytes);catalog.assets[j.id]={kind:'items',path,width:24,height:24,padding:2,source:a.source,sourceHash:refined.catalog.sources.find(s=>s.path===a.source).hash,hash:hash(bytes),revision:'readability-v2',sourceCell:a.cell};continue;}
-  const source='assets/content-art/sources/2026-09-17/'+j.id+'.png',file=new URL(source,root);
+  const source='assets/content-art/sources/2026-09-17/'+(j.sourceId||j.id)+'.png',file=new URL(source,root);
   if(!existsSync(file)){catalog.missing.push(j.id);continue;}
   const raw=readFileSync(file),im=decodePng(raw);let out,frames;
   if(j.motifs){
@@ -31,12 +31,15 @@ export function buildHandoff(){
    catalog.patches??={};catalog.patches[j.member]={path,width:240,height:288,cell:48,indices:j.motifs.map(m=>m.index),hash:hash(bytes),note:'Sparse overlay only: preserve the other 24 existing talent cells.'};continue;
   }
   if(j.width&&j.height){
-   const box=bounds(im),pad=j.padding??2,scale=j.nativeHeight?j.nativeHeight/box.h:Math.min((j.width-pad*2)/box.w,(j.height-pad*2)/box.h);out=surface(j.width,j.height);
+   const box=j.portraitCrop?(()=>{const b=segment(im,4,4)[0];return{x:b.x,y:b.y,w:b.w,h:Math.round(b.h*.48)};})():bounds(im),pad=j.padding??2,scale=j.nativeHeight?j.nativeHeight/box.h:Math.min((j.width-pad*2)/box.w,(j.height-pad*2)/box.h);out=surface(j.width,j.height);
    if(j.nineSlice){
     // A nine-slice panel is resizable: register the full panel to its target rectangle.
     const sample=surface(j.width-4,j.height-4);
     for(let y=0;y<sample.height;y++)for(let x=0;x<sample.width;x++){const sx=box.x+Math.min(box.w-1,Math.floor((x+.5)*box.w/sample.width)),sy=box.y+Math.min(box.h-1,Math.floor((y+.5)*box.h/sample.height));sample.data.set(im.data.subarray((sy*im.width+sx)*4,(sy*im.width+sx)*4+4),(y*sample.width+x)*4);}
     blit(sample,out,{x:0,y:0,w:sample.width,h:sample.height},{x:2,y:2},1,palette);
+   }else if(j.worldProp){
+    const scale=Math.min((j.width-pad*2)/box.w,(j.height-pad*2)/box.h);
+    blit(im,out,box,{x:Math.floor((j.width-Math.round(box.w*scale))/2),y:j.height-pad-Math.round(box.h*scale)},scale,palette);
    }else blit(im,out,box,{x:Math.floor((j.width-Math.round(box.w*scale))/2),y:j.kind==='props'?80-Math.round(box.h*scale):Math.floor((j.height-Math.round(box.h*scale))/2)},scale,palette);
   }else{
    const cells=j.segmentation==='grid'?Array.from({length:j.cols*j.rows},(_,i)=>bounds(im,gridCell(im,i%j.cols,Math.floor(i/j.cols),j.cols,j.rows))):segment(im,j.cols,j.rows),median=[...cells.map(b=>b.h)].sort((a,b)=>a-b)[Math.floor(cells.length/2)],scale=j.nativeHeight/median;
@@ -52,10 +55,21 @@ export function buildHandoff(){
    }
   }
   const path='assets/content-art/'+j.kind+'/'+j.id+'.png',bytes=encodePng(out);files.set(path,bytes);
-  catalog.assets[j.id]={kind:j.kind,path,width:out.width,height:out.height,padding:j.padding??2,...(j.nativeHeight&&!frames?{nativeHeight:j.nativeHeight,worldHeight:j.worldHeight,pivot:{x:48,y:80}}:{}),source,sourceHash:hash(raw),hash:hash(bytes),...(frames?{frames,frameSize:j.frameSize??96,pivot:j.pivot??{x:48,y:80},nativeHeight:j.nativeHeight,worldHeight:j.worldHeight,columns:j.columns}:{}),...(j.nineSlice?{nineSlice:j.nineSlice}:{})};
+  catalog.assets[j.id]={kind:j.kind,path,width:out.width,height:out.height,padding:j.padding??2,...(j.nativeHeight&&!frames?{nativeHeight:j.nativeHeight,worldHeight:j.worldHeight,pivot:{x:48,y:80}}:{}),source,sourceHash:hash(raw),hash:hash(bytes),...(frames?{frames,frameSize:j.frameSize??96,pivot:j.pivot??{x:48,y:80},nativeHeight:j.nativeHeight,worldHeight:j.worldHeight,columns:j.columns}:{}),...(j.nineSlice?{nineSlice:j.nineSlice}:{}),...(j.worldProp?{worldProp:j.worldProp,pivot:{x:j.width/2,y:j.height-(j.padding??4)}}:{})};
  }
- catalog.aliases={'hero-dieter':'dieter-poses','hero-kevin':'kevin-poses',dieter:'dieter-poses',kevin:'kevin-poses'};
+ catalog.aliases={'hero-anni':'anni-poses',anni:'anni-poses',baerbel:'anni-poses','hero-dieter':'dieter-poses','hero-kevin':'kevin-poses',dieter:'dieter-poses',kevin:'kevin-poses'};
  for(const[id,a]of Object.entries(catalog.assets)){if(['enemies','bosses','npcs'].includes(a.kind))catalog.aliases[(a.kind==='enemies'?'enemy-':a.kind==='bosses'?'boss-':'npc-')+id]=id;if(/^villager\d$/.test(id))catalog.aliases[id.replace('villager','villager-')]=id;}
+ // Extend the original 4x3 portrait sheet without moving or repainting any existing portrait.
+ if(files.has('assets/content-art/portraits/portrait-pit.png')){
+  const original=decodePng(readFileSync(new URL('assets/content-art/sources/2026-09-17/dialogue-atlas-before-gap.png',root))),cell=original.width/4;
+  const atlas=surface(original.width,cell*5);
+  blit(original,atlas,{x:0,y:0,w:original.width,h:original.height},{x:0,y:0});
+  const portrait=decodePng(files.get('assets/content-art/portraits/portrait-pit.png')),scale=Math.floor(cell/48),offset=Math.floor((cell-48*scale)/2);
+  for(let y=cell*3;y<cell*4;y++)for(let x=cell*3;x<cell*4;x++)atlas.data.set([36,56,65,255],(y*atlas.width+x)*4);
+  blit(portrait,atlas,{x:0,y:0,w:48,h:48},{x:cell*3+offset,y:cell*3+offset},scale);
+  const path='assets/content-art/npcs/dialogue-atlas.png',bytes=encodePng(atlas);files.set(path,bytes);
+  catalog.portraitPatch={path,columns:4,rows:5,cells:{pit:15},hash:hash(bytes),source:'assets/content-art/sources/2026-09-17/dialogue-atlas-before-gap.png'};
+ }
  files.set('assets/content-art/handoff-catalog.json',Buffer.from(JSON.stringify(catalog,null,2)+'\n'));return files;
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){

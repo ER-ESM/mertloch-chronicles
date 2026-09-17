@@ -1,0 +1,13 @@
+{
+  "id": "warden",
+  "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Reference is pixel style only, do NOT draw the woman. Exactly4 columns x4 rows,16 complete sprites. Columns idle, left foot forward, right foot forward, attacking with rulebook. A middle-aged male village noise warden: grumpy thin angular face, receding gray-brown hair under moss-green municipal cap, olive uniform jacket, beige trousers, brown shoes, thick cream house-rules booklet held in left arm and tiny whistle at neck. Comically self-important, adult five-head proportions, not police tactical gear. Book plain cover no text. Same calm shoulders and changing legs; back views show back of cap and jacket.",
+  "references": [
+    "assets/content-art/aperol-anni/hero.png"
+  ],
+  "output": "assets/content-art/sources/2026-09-17/warden.png",
+  "originalFile": "exec-05d6ec3d-73d9-4d51-8243-0190f217691b.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "6c27ed0792755edab3c56e512e5dfaa4379ee51d848dd5640b2bf82b9ebf491d"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "prop-haenger",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 46x26 world units and vertical drawing height 20. Subject: A small single-axle utility trailer with faded rusty reddish-brown sideboards, a wire-mesh cage full of scrap metal, tow bar, two wheels and crooked blank license plate. Entire trailer, detached from any vehicle.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-haenger.png",
+  "originalFile": "exec-e6ea57d9-3226-41c8-84d6-9969d9371bf1.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "70924d739c5c9a5d5120ab612d1973378811c13b501c8ace590ed1f4ab046ede"
+}

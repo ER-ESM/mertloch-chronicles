@@ -1,0 +1,11 @@
+{
+  "id": "prop-bierbank",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 44x12 world units and vertical drawing height 12. Subject: An overturned German beer-garden bench, long orange-brown wooden plank seat, folded green metal legs with one bent leg, dried beer ring on the board. Low horizontal silhouette.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bierbank.png",
+  "originalFile": "exec-2991018d-469e-454f-a844-8fc5a15bcc0b.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "f1bc6e4d37c4d77482e0546a24fc74206b19c0748e67f6c19b04f84f5509b491"
+}

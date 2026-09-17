@@ -1,0 +1,11 @@
+{
+  "id": "prop-bude-werkstatt",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 40x26 world units and vertical drawing height 26. Subject: A workbench assembled from a gutted horizontal old gray refrigerator on sturdy legs, orange-handled spanner, vice, cable ties, coiled wire and a small blank wooden sign. Compact single connected workstation, no text.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bude-werkstatt.png",
+  "originalFile": "exec-edf90f14-6817-4237-ab19-118bd4adc07b.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "903dc3170da76faf6f9c019135d5d61c49fa4c22618825a0fce79d88e0ac3a53"
+}

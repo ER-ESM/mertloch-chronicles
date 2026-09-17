@@ -1930,5 +1930,388 @@
     "originalFile": "exec-2edc55a5-6889-4ab5-a5f4-c852b042b767.png",
     "output": "assets/content-art/sources/2026-09-17/villager7.png",
     "sourceHash": "ece1d477812818b6a3372274c49205a7ce4e64c25504cdad19cad3411252ec89"
+  },
+  {
+    "id": "ui-tab-bude",
+    "prompt": "Use case: stylized-concept. One Maifeld-Detailpixel RPG menu icon, a rustic little timber party hut with a green beer crate in front. Deliberate 24x24 logical pixel design: chunky dark slate silhouette, honey-colored roof, cream window, moss-green crate; upper-left light, few large color areas. Like the existing warm comic pixel RPG tabs. Strong readability when tiny, NO fine texture, text, people, gradients or shadows. One centered icon, real transparent alpha background, safety margin all sides. Enlarge uniformly for output.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/ui-tab-bude.png",
+    "originalFile": "exec-d8e724a8-0fb7-4a3c-8575-b8b97576d81d.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "6cc5676b6536029f053869dac77e58359734fd9291f81bf98c13da578755e8fe"
+  },
+  {
+    "id": "anni-poses",
+    "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly EIGHT columns and FOUR rows, 32 complete sprites, ideally2048x1536. Columns: idle, left foot forward walk, passing step, right foot forward walk, attack wind-up, attack empty-hand thrust, hurt recoil, relaxed rest. Reference is exact Anni identity AND costume: blonde messy high bun, orange sunglasses on head, gold hoop earrings, orange floral blouse with rolled sleeves, cream gingham waist apron, olive fitted trousers and brown ankle boots. Adult female about five heads tall, NOT chibi. REMOVE all held objects, NO drink/glass/spray bottle, both hands empty for separate equipment. Sprayer at belt also removed. Preserve same blouse, apron and hairstyle in every pose and direction.",
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/anni-poses.png",
+    "originalFile": "exec-e5a1b291-d93c-4e3d-81d8-d27d878a16c9.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "590cfc8bbe30d72ad58e8b217a1b5affeb7d7da53474b1e67d0eeee748bb3e9b"
+  },
+  {
+    "id": "warden",
+    "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Reference is pixel style only, do NOT draw the woman. Exactly4 columns x4 rows,16 complete sprites. Columns idle, left foot forward, right foot forward, attacking with rulebook. A middle-aged male village noise warden: grumpy thin angular face, receding gray-brown hair under moss-green municipal cap, olive uniform jacket, beige trousers, brown shoes, thick cream house-rules booklet held in left arm and tiny whistle at neck. Comically self-important, adult five-head proportions, not police tactical gear. Book plain cover no text. Same calm shoulders and changing legs; back views show back of cap and jacket.",
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/warden.png",
+    "originalFile": "exec-05d6ec3d-73d9-4d51-8243-0190f217691b.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "6c27ed0792755edab3c56e512e5dfaa4379ee51d848dd5640b2bf82b9ebf491d"
+  },
+  {
+    "id": "badger",
+    "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly4 columns x4 rows,16 separated sprites. Natural quadruped European BADGER: stocky low gray body, unmistakable white head with two black longitudinal face stripes, little black ears, dark short legs and four paws, stubby tail. No clothing or equipment, no human. Columns idle, left-diagonal pair step, right-diagonal pair step, snapping attack. Torso and head calm and unchanged across walk poses, legs alternate underneath. Do not turn into raccoon or bear. Slightly elevated 3/4 game view matching an RPG.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/badger.png",
+    "originalFile": "exec-d3cfe8ba-b743-4d40-9348-88e9a11f1fc6.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "9e27fbc763efa2235a9ca7efa326731dc68baa96ce08560b676e04a60912d1bb"
+  },
+  {
+    "id": "goose",
+    "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly4 columns x4 rows,16 separated sprites. ONE feisty white domestic GOOSE with slightly dirty cream feathers, long curved neck, orange beak and two orange webbed feet. Clearly goose, not duck or swan. No clothing or props. Columns idle, left foot step, right foot step, forward biting attack with slightly open wings. Keep neck and body shape stable when walking, wings folded; natural step under fixed torso, no full-body wobble. Slightly elevated3/4 RPG camera.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/goose.png",
+    "originalFile": "exec-d91e04b8-e334-448d-a8ee-84b38aa50272.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "7a41522957625eddaa44ab9f763868044cfd166031a82b4fee46ed817f764e94"
+  },
+  {
+    "id": "boar",
+    "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly4 columns x4 rows,16 separated sprites. ONE Pfandkeiler, a stocky wild boar with shaggy dark brown bristles, charcoal legs, short upward ivory tusks, broad snout, small alert ears and tiny tail. Natural quadruped, four sturdy short legs, no clothing, props or coins. Columns idle, left-diagonal pair step, right-diagonal pair step, head-down tusk attack. Both walking poses preserve EXACTLY the same torso, head angle, ears, tusks and overall silhouette except changing leg articulation. No jitter, bobbing or morphing. Slightly elevated3/4 game view. Plain animal sprites only.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/boar.png",
+    "originalFile": "exec-761cccb6-b211-457d-a10a-3e53d7ea75cb.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "f03376af429624169965e6b8cfcd203d3f64b3386ce64925603efca000328319"
+  },
+  {
+    "id": "pit",
+    "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Reference is only pixel comic style; do NOT include the woman. Exactly4 columns x4 rows,16 full-body sprites. Polizeiobermeister Pit: visibly tired male police officer age55, gray side-part hair, gray moustache, bags under eyes, loose pale slate-blue uniform shirt open at collar, dark blue trousers, black belt and shoes, a metal thermos in one hand, a small plain cream notepad in the other. Relaxed middle-aged proportions, weary but kindly face, NOT tactical armor, no gun, no mask, no sunglasses. Columns idle, left-foot step, right-foot step, raising notepad to speak. No legible text. Match face, hair, uniform and thermos exactly across all directions. Front-right idle face large and clear enough to crop for dialogue portrait.",
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/pit.png",
+    "originalFile": "exec-39dd4680-1c3c-4dc3-90c5-a234315ffcb2.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "de97d0b3ad2b4430ccd3bb49c65f801a06649ad4cb09d6c9b376feb00ef6bae6"
+  },
+  {
+    "id": "anni-walk",
+    "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. Anni has empty hands, both arms swing naturally. Preserve blonde bun, orange floral blouse, gingham apron, olive trousers and ankle boots.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/anni-poses.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/anni-walk.png",
+    "originalFile": "exec-05b69b3c-343a-4535-a281-bd64480e3331.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "d3c79862cb292be0d27e75f45329b6cfd16ffae855955a6ee16f999295171a71"
+  },
+  {
+    "id": "prop-schrotthaufen",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 56x40 world units and vertical drawing height 34. Subject: A compact junk pile of rusty wheel rims, an old radiator, bicycle frames, topped by a washing machine drum. Entire heap, no separate scattered pieces.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-schrotthaufen.png",
+    "originalFile": "exec-52a5fcbb-a90d-4be6-b9bf-9e27e3213e0b.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "9175cc175e33e5d425703689f043a9ec3f0ecc31b5554634abbe7f7d513db66b"
+  },
+  {
+    "id": "prop-haenger",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 46x26 world units and vertical drawing height 20. Subject: A small single-axle utility trailer with faded rusty reddish-brown sideboards, a wire-mesh cage full of scrap metal, tow bar, two wheels and crooked blank license plate. Entire trailer, detached from any vehicle.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-haenger.png",
+    "originalFile": "exec-e6ea57d9-3226-41c8-84d6-9969d9371bf1.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "70924d739c5c9a5d5120ab612d1973378811c13b501c8ace590ed1f4ab046ede"
+  },
+  {
+    "id": "prop-kuehlschrank",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 16x13 world units and vertical drawing height 22. Subject: An old cream refrigerator missing its door, dark open interior shelves, faded generic stickers, rust at base, slightly leaning. No floating door.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-kuehlschrank.png",
+    "originalFile": "exec-c5a488f7-7d23-46b0-afaf-f322df691b57.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "08028eb5fab13377fa350f7adc9154bff3eb2d14afae14f96b7a7248e3d89d7d"
+  },
+  {
+    "id": "prop-kegelbahn",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 62x18 world units and vertical drawing height 11. Subject: Dismantled wooden skittle alley laid horizontally: two long honey-colored planks, a cable spool, a small blue ball-return trough and one upright wooden skittle. One coherent narrow low arrangement.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-kegelbahn.png",
+    "originalFile": "exec-6ca69395-f632-4ac5-b2cc-35e933bb4f3e.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "e7446fa9af92dbb1c4d2ee6e0e3a0b07d6714ebb9e918b08528ff84551a40e93"
+  },
+  {
+    "id": "prop-bierbank",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 44x12 world units and vertical drawing height 12. Subject: An overturned German beer-garden bench, long orange-brown wooden plank seat, folded green metal legs with one bent leg, dried beer ring on the board. Low horizontal silhouette.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bierbank.png",
+    "originalFile": "exec-2991018d-469e-454f-a844-8fc5a15bcc0b.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "f1bc6e4d37c4d77482e0546a24fc74206b19c0748e67f6c19b04f84f5509b491"
+  },
+  {
+    "id": "prop-kegelkugel",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 9x9 world units and vertical drawing height 9. Subject: One dark charcoal bowling ball with three finger holes, one cream highlight and a tiny tuft of grass partly covering its bottom. Simple round readable silhouette.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-kegelkugel.png",
+    "originalFile": "exec-c6d1a476-aafb-4565-83e3-9c2040421a04.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "38c523855344eb30afaf9712453109c1c879752ac474a2e5be08e26ddc45638f"
+  },
+  {
+    "id": "prop-bus",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 104x30 world units and vertical drawing height 44. Subject: A slightly battered mustard-yellow and cream SMALL COACH BUS seen from elevated front-right three-quarter side view, long horizontal body, about 6 passenger window sections, two visible wheels, front passenger door OPEN, pastel party bunting above windows and bachelor-party sash tied at a mirror. Empty fuel implied by abandonment; no fire or smoke. No passengers. Rural 1990s style. The doorway is roughly half the body height and wide enough for one adult. Entire bus visible, no road or landscape.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bus.png",
+    "originalFile": "exec-793235a1-f694-4c9c-997c-22ef2c4ec46c.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "1125e8979bcd34135d20524358cded72d57cbb9c8b3d4ae69dd4c999cb14ab88"
+  },
+  {
+    "id": "prop-bierkasten",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 14x11 world units and vertical drawing height 12. Subject: One empty dark green plastic beer crate with open bottle dividers and TWO brown bottles lying diagonally inside. One upright crate only, no labels.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bierkasten.png",
+    "originalFile": "exec-878e1fd4-1b28-4d92-b1f1-a9b05793c00c.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "4fe7628b5412fa362c24a7deaa74295ecd452389425a02d41cce1049eda0e7d9"
+  },
+  {
+    "id": "prop-bierbong",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 12x12 world units and vertical drawing height 16. Subject: A green beer-bong funnel with a long cream tube looping around a short wooden support stick. Entire funnel, tube and stick as one connected object. No text.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bierbong.png",
+    "originalFile": "exec-476894b3-1bd3-40a4-ae82-9661a979c474.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "1dbd73cbe43424cd2cc563433a0bcdd26d72b216131ba413469012087d12bfb3"
+  },
+  {
+    "id": "prop-kiosk",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 52x34 world units and vertical drawing height 40. Subject: A cozy rustic village kiosk, reddish timber siding, patched corrugated dark slate roof, large serving window with shutter raised as an awning, cream counter, small generic ice-cream pictogram sign, newspaper rack and a few green bottle crates at its side. The open serving window and counter are at adult chest height. Small walk-in hut about twice as high as its counter, not a tiny dollhouse. No people, no readable branding.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-kiosk.png",
+    "originalFile": "exec-43a1e093-7d60-4ec1-86a4-330a9c459f17.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "d244c52999bbcfe5304706f2536e2495143e901d2b5b0caeaa1bf909b25e7991"
+  },
+  {
+    "id": "prop-stehtisch",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 16x16 world units and vertical drawing height 20. Subject: One tall round standing pub table, worn cream painted circular top, green central metal pedestal with stable three-point foot, two empty brown beer bottles and a full small ashtray on tabletop. Entire table visible.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-stehtisch.png",
+    "originalFile": "exec-d602a9d2-c174-4f80-90eb-6f3e0abf1c08.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "93a63bf607cadb9aed95941ea2efda192186a668b82034a592e5066a89084a15"
+  },
+  {
+    "id": "prop-wett-tafel",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 26x9 world units and vertical drawing height 26. Subject: One freestanding rural football betting chalkboard on two rough timber legs, dark moss-green board with three neat rows of tiny white chalk tally marks, middle row crossed out, chalk resting on bottom ledge. Marks are abstract, NOT legible text or numbers. Entire easel visible.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-wett-tafel.png",
+    "originalFile": "exec-a54f287f-29de-43c4-b435-1e8d4a051a8a.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "7ae1fbcb8e33c718d94f5b009a11891ecbf81bdfd94f180cde8816caf75a3b16"
+  },
+  {
+    "id": "prop-bude-truemmer",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 34x22 world units and vertical drawing height 12. Subject: Rubble of a rural party hut: compact heap of splintered timber boards, a fragment of slate roof, an overturned small barbecue and a short red-white caution ribbon tangled across it. No whole building, no fire, no smoke.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-truemmer.png",
+    "originalFile": "exec-538a46c3-595c-4f58-8f95-409f1fa01b0f.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "476edef94762bb3237b9150d83e35ffa3bffa195f130a3f92ab4e35c0d1942cd"
+  },
+  {
+    "id": "prop-bude-tresen",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 54x20 world units and vertical drawing height 20. Subject: A handmade long front-facing bar counter built from Europallets, honey wood top tiled with round beer coasters, a bottlecap trim strip and ONE small brass beer tap. No beer bottles obscuring counter, no people.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-tresen.png",
+    "originalFile": "exec-92c73713-cd56-40d9-8408-f01839185789.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "bae75b6b09ccb303b3b57db49497494c6625f4d136225940c1bea8fed97896c8"
+  },
+  {
+    "id": "prop-bude-grill",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 32x22 world units and vertical drawing height 24. Subject: A makeshift barbecue built from half a dark rusty oil drum on four sturdy welded legs, repurposed shopping-cart wire rack, open lid, a few tiny glowing embers and ONE small solid pixel smoke curl attached close to grill. No dramatic fire.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-grill.png",
+    "originalFile": "exec-342dc9ad-f87a-49de-be3c-31ef4eeac873.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "8a41211f26e5d84d62f2994ccfe561041dd42dc193aed6aedf7baaec07752374"
+  },
+  {
+    "id": "prop-bude-werkstatt",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 40x26 world units and vertical drawing height 26. Subject: A workbench assembled from a gutted horizontal old gray refrigerator on sturdy legs, orange-handled spanner, vice, cable ties, coiled wire and a small blank wooden sign. Compact single connected workstation, no text.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-werkstatt.png",
+    "originalFile": "exec-edf90f14-6817-4237-ab19-118bd4adc07b.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "903dc3170da76faf6f9c019135d5d61c49fa4c22618825a0fce79d88e0ac3a53"
+  },
+  {
+    "id": "prop-bude-anlage",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 34x30 world units and vertical drawing height 30. Subject: A compact stack of homemade dark plum-black party loudspeakers on green beer crates, two obvious circular woofers and a small amber control panel, cables coiled close around base. No separate cables wandering outside silhouette.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-anlage.png",
+    "originalFile": "exec-3771a751-70fe-432a-a331-0bbf1a8e8203.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "dfa1c22bcc80a538fa4fb9df03e90afb088678a823b5782d5989ec57b7008de5"
+  },
+  {
+    "id": "prop-bude-landhausecke",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 46x28 world units and vertical drawing height 22. Subject: A cozy pallet sofa with cream and muted coral gingham cushions, a tiny attached side table holding two orange aperitif glasses, short warm string lights on a timber rail behind, a small circular phone ring-light on a stand next to sofa. One compact arrangement, no people.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-landhausecke.png",
+    "originalFile": "exec-b6ee6df9-ac79-4d2a-b860-dd57fe18fa04.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "9f7cf64dca8222d50a83423595395993ad568621c6fab667497a3b9440034cec"
+  },
+  {
+    "id": "prop-bude-pfandlager",
+    "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 44x26 world units and vertical drawing height 28. Subject: A wooden pallet shelf tightly stacked with dark green and brown empty beer crates, one curled cream deposit-receipt paper roll and a clipboard hooked on the side. Entire shelf and feet visible, no text.",
+    "references": [],
+    "output": "assets/content-art/sources/2026-09-17/prop-bude-pfandlager.png",
+    "originalFile": "exec-99b62ea9-e878-48e5-863a-4d97868829a9.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "57d156fe5c975e555628fb10c038270df63ac43a4707fdf9c81e7dd046bfa97c"
+  },
+  {
+    "id": "badger-walk",
+    "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. IMPORTANT: columns 1 and5 have clearly opposite feet forward. Columns3 and7 are passing poses with feet close together beneath the body. Columns2,4,6,8 intermediate lifted/bent limb poses. Do not repeat an extended walking pose in every column. One badger, FOUR paws, very stable rigid torso and head; movement confined to leg articulation. Near foreleg clearly swings forward then back.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/badger.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/badger-walk.png",
+    "originalFile": "exec-38ff38e6-dd2a-45f7-b076-0e13ae4b54d9.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "5648ce6b1d0b7b002e502b3b3c44f91418f3810be77850c10967dcf883ef94a5"
+  },
+  {
+    "id": "goose-walk",
+    "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. IMPORTANT: columns 1 and5 have clearly opposite feet forward. Columns3 and7 are passing poses with feet close together beneath the body. Columns2,4,6,8 intermediate lifted/bent limb poses. Do not repeat an extended walking pose in every column. One goose, TWO webbed feet, folded wings, completely stable neck.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/goose.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/goose-walk.png",
+    "originalFile": "exec-ad4ab658-f3b9-4618-9c13-81b6fdab82d9.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "6736fd51ee5bea13558419f5febb5ebc663b73b23261ff255623ca9dcc163533"
+  },
+  {
+    "id": "boar-walk",
+    "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. IMPORTANT: columns 1 and5 have clearly opposite feet forward. Columns3 and7 are passing poses with feet close together beneath the body. Columns2,4,6,8 intermediate lifted/bent limb poses. Do not repeat an extended walking pose in every column. One boar, FOUR paws, very stable rigid torso and head; movement confined to leg articulation. Near foreleg clearly swings forward then back.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/boar.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/boar-walk.png",
+    "originalFile": "exec-ed222bdc-28aa-4c01-831d-e3060e71824f.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "ed3ef3dc6985e912795041bff3b6d36534200ca1fc5c2eba0e1770605cbc7351"
+  },
+  {
+    "id": "warden-walk",
+    "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. IMPORTANT: columns 1 and5 have clearly opposite feet forward. Columns3 and7 are passing poses with feet close together beneath the body. Columns2,4,6,8 intermediate lifted/bent limb poses. Do not repeat an extended walking pose in every column. Keep rulebook held close, free arm swings.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/warden.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/warden-walk.png",
+    "originalFile": "exec-fc3a979e-0f30-4a4b-9539-e75d544f7842.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "7e58b0395b35f7d557f1541fe18dc46613d915903e4a6997c3b1e61354c86260"
+  },
+  {
+    "id": "anni-walk-v2",
+    "prompt": "Use case: identity-preserve. EDIT this walk atlas. Preserve the exact woman, orange floral blouse, white gingham apron, olive trousers, brown boots, blonde bun, 8 columns and4 rows, transparent background, palette, all four view directions. Fix ONLY the walking poses: every row currently repeats a wide stride. Columns3 and7 MUST have both feet together directly under the hips, one knee bent as the free leg passes the planted leg. Columns1 and5 MUST be opposite contact poses: in1 near leg forward and far leg back, in5 near leg BACK and far leg FORWARD. Columns2 and6 are down poses with slightly bent supporting knee; columns4 and8 free knee lifted with toes just clearing ground. Distinct opposite arm swings. Keep head and torso completely stable in size and height, feet plant on same ground line. Preserve entire bodies with space between columns. No text, floor, shadow, clothing morph or new objects. This is a walk-animation correction, not eight copies of the same stride.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/anni-walk.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/anni-walk-v2.png",
+    "originalFile": "exec-061d4971-2ec2-4311-9bc2-baab56be268d.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "58d14f13ffc39a3a66f2fac1427fe84c513812206f92adecbd2ae6da983a00b2"
+  },
+  {
+    "id": "anni-walk-v3",
+    "prompt": "Use case: identity-preserve. EDIT this walk atlas. Preserve the exact woman, orange floral blouse, white gingham apron, olive trousers, brown boots, blonde bun, 8 columns and4 rows, transparent background, palette, all four view directions. Fix ONLY the walking poses: every row currently repeats a wide stride. Columns3 and7 MUST have both feet together directly under the hips, one knee bent as the free leg passes the planted leg. Columns1 and5 MUST be opposite contact poses: in1 near leg forward and far leg back, in5 near leg BACK and far leg FORWARD. Columns2 and6 are down poses with slightly bent supporting knee; columns4 and8 free knee lifted with toes just clearing ground. Distinct opposite arm swings. Keep head and torso completely stable in size and height, feet plant on same ground line. Preserve entire bodies with space between columns. No text, floor, shadow, clothing morph or new objects. This is a walk-animation correction, not eight copies of the same stride.\nCRITICAL LAYOUT FIX: each complete figure must be distinctly separated from ALL neighboring figures by at least 40 pixels transparent gutter. Shrink every figure to 70 percent cell height; 8 columns by4 rows, ALL32 WHOLE FIGURES, ample empty margin at TOP BOTTOM LEFT RIGHT. Preserve exact32 poses from reference. No body or feet can touch any image edge or other figure. Clean transparent background. NO red or colored outlining, no background fringe.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/anni-walk-v2.png"
+    ],
+    "output": "assets/content-art/sources/2026-09-17/anni-walk-v3.png",
+    "originalFile": "exec-ace677ec-1ce6-4388-97a5-63249891af35.png",
+    "tool": "built-in imagegen",
+    "model": "Not exposed by built-in tool",
+    "date": "2026-09-17",
+    "sourceHash": "7ac611e37cabcbcafdec7b09400c40411eb982d6a0531b63dfbc86c685a949c8"
   }
 ]

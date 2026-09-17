@@ -1,0 +1,11 @@
+{
+  "id": "prop-bude-tresen",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 54x20 world units and vertical drawing height 20. Subject: A handmade long front-facing bar counter built from Europallets, honey wood top tiled with round beer coasters, a bottlecap trim strip and ONE small brass beer tap. No beer bottles obscuring counter, no people.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bude-tresen.png",
+  "originalFile": "exec-92c73713-cd56-40d9-8408-f01839185789.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "bae75b6b09ccb303b3b57db49497494c6625f4d136225940c1bea8fed97896c8"
+}

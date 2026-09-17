@@ -1,0 +1,11 @@
+{
+  "id": "prop-kiosk",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 52x34 world units and vertical drawing height 40. Subject: A cozy rustic village kiosk, reddish timber siding, patched corrugated dark slate roof, large serving window with shutter raised as an awning, cream counter, small generic ice-cream pictogram sign, newspaper rack and a few green bottle crates at its side. The open serving window and counter are at adult chest height. Small walk-in hut about twice as high as its counter, not a tiny dollhouse. No people, no readable branding.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-kiosk.png",
+  "originalFile": "exec-43a1e093-7d60-4ec1-86a4-330a9c459f17.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "d244c52999bbcfe5304706f2536e2495143e901d2b5b0caeaa1bf909b25e7991"
+}

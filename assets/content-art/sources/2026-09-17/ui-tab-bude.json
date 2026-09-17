@@ -1,0 +1,11 @@
+{
+  "id": "ui-tab-bude",
+  "prompt": "Use case: stylized-concept. One Maifeld-Detailpixel RPG menu icon, a rustic little timber party hut with a green beer crate in front. Deliberate 24x24 logical pixel design: chunky dark slate silhouette, honey-colored roof, cream window, moss-green crate; upper-left light, few large color areas. Like the existing warm comic pixel RPG tabs. Strong readability when tiny, NO fine texture, text, people, gradients or shadows. One centered icon, real transparent alpha background, safety margin all sides. Enlarge uniformly for output.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/ui-tab-bude.png",
+  "originalFile": "exec-d8e724a8-0fb7-4a3c-8575-b8b97576d81d.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "6cc5676b6536029f053869dac77e58359734fd9291f81bf98c13da578755e8fe"
+}

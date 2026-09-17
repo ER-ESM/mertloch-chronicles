@@ -1,0 +1,13 @@
+{
+  "id": "boar-walk",
+  "prompt": "Use case: identity-preserve. Input reference defines the SAME character, identity, costume and four viewing directions. Produce a genuine eight-frame WALK animation atlas: 8 columns x 4 rows, 32 full figures, even cells, spacious transparent gutters, output 2048x1536 if possible. Maifeld detailed comic pixel style, hard square clusters, upper-left warm light, dark slate outlines. True transparent alpha. No text, grid lines, labels, floor, shadows or extra props. Rows SE front-right, SW front-left, NE rear-right, NW rear-left. Columns in time order: left contact, left down, left passing, left up, right contact, right down, right passing, right up. The legs MUST alternate clearly, feet lift and plant naturally; opposite arm swing for humans, coordinated four-paw sequence for quadrupeds. Stable head and torso, at most ONE logical pixel bob; no shaking body, stretching, scale drift or changing clothes. Same uniform body size and reference ground plane in all cells. Natural walk, not running or bouncing. IMPORTANT: columns 1 and5 have clearly opposite feet forward. Columns3 and7 are passing poses with feet close together beneath the body. Columns2,4,6,8 intermediate lifted/bent limb poses. Do not repeat an extended walking pose in every column. One boar, FOUR paws, very stable rigid torso and head; movement confined to leg articulation. Near foreleg clearly swings forward then back.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/boar.png"
+  ],
+  "output": "assets/content-art/sources/2026-09-17/boar-walk.png",
+  "originalFile": "exec-ed222bdc-28aa-4c01-831d-e3060e71824f.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "ed3ef3dc6985e912795041bff3b6d36534200ca1fc5c2eba0e1770605cbc7351"
+}

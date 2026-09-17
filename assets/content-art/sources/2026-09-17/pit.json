@@ -1,0 +1,13 @@
+{
+  "id": "pit",
+  "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Reference is only pixel comic style; do NOT include the woman. Exactly4 columns x4 rows,16 full-body sprites. Polizeiobermeister Pit: visibly tired male police officer age55, gray side-part hair, gray moustache, bags under eyes, loose pale slate-blue uniform shirt open at collar, dark blue trousers, black belt and shoes, a metal thermos in one hand, a small plain cream notepad in the other. Relaxed middle-aged proportions, weary but kindly face, NOT tactical armor, no gun, no mask, no sunglasses. Columns idle, left-foot step, right-foot step, raising notepad to speak. No legible text. Match face, hair, uniform and thermos exactly across all directions. Front-right idle face large and clear enough to crop for dialogue portrait.",
+  "references": [
+    "assets/content-art/aperol-anni/hero.png"
+  ],
+  "output": "assets/content-art/sources/2026-09-17/pit.png",
+  "originalFile": "exec-39dd4680-1c3c-4dc3-90c5-a234315ffcb2.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "de97d0b3ad2b4430ccd3bb49c65f801a06649ad4cb09d6c9b376feb00ef6bae6"
+}

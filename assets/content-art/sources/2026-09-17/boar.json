@@ -1,0 +1,11 @@
+{
+  "id": "boar",
+  "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly4 columns x4 rows,16 separated sprites. ONE Pfandkeiler, a stocky wild boar with shaggy dark brown bristles, charcoal legs, short upward ivory tusks, broad snout, small alert ears and tiny tail. Natural quadruped, four sturdy short legs, no clothing, props or coins. Columns idle, left-diagonal pair step, right-diagonal pair step, head-down tusk attack. Both walking poses preserve EXACTLY the same torso, head angle, ears, tusks and overall silhouette except changing leg articulation. No jitter, bobbing or morphing. Slightly elevated3/4 game view. Plain animal sprites only.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/boar.png",
+  "originalFile": "exec-761cccb6-b211-457d-a10a-3e53d7ea75cb.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "f03376af429624169965e6b8cfcd203d3f64b3386ce64925603efca000328319"
+}

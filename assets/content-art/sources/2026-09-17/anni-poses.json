@@ -1,0 +1,13 @@
+{
+  "id": "anni-poses",
+  "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly EIGHT columns and FOUR rows, 32 complete sprites, ideally2048x1536. Columns: idle, left foot forward walk, passing step, right foot forward walk, attack wind-up, attack empty-hand thrust, hurt recoil, relaxed rest. Reference is exact Anni identity AND costume: blonde messy high bun, orange sunglasses on head, gold hoop earrings, orange floral blouse with rolled sleeves, cream gingham waist apron, olive fitted trousers and brown ankle boots. Adult female about five heads tall, NOT chibi. REMOVE all held objects, NO drink/glass/spray bottle, both hands empty for separate equipment. Sprayer at belt also removed. Preserve same blouse, apron and hairstyle in every pose and direction.",
+  "references": [
+    "assets/content-art/aperol-anni/hero.png"
+  ],
+  "output": "assets/content-art/sources/2026-09-17/anni-poses.png",
+  "originalFile": "exec-e5a1b291-d93c-4e3d-81d8-d27d878a16c9.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "590cfc8bbe30d72ad58e8b217a1b5affeb7d7da53474b1e67d0eeee748bb3e9b"
+}

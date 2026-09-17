@@ -1,0 +1,11 @@
+{
+  "id": "prop-bude-truemmer",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 34x22 world units and vertical drawing height 12. Subject: Rubble of a rural party hut: compact heap of splintered timber boards, a fragment of slate roof, an overturned small barbecue and a short red-white caution ribbon tangled across it. No whole building, no fire, no smoke.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bude-truemmer.png",
+  "originalFile": "exec-538a46c3-595c-4f58-8f95-409f1fa01b0f.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "476edef94762bb3237b9150d83e35ffa3bffa195f130a3f92ab4e35c0d1942cd"
+}

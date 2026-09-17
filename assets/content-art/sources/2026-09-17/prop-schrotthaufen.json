@@ -1,0 +1,11 @@
+{
+  "id": "prop-schrotthaufen",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 56x40 world units and vertical drawing height 34. Subject: A compact junk pile of rusty wheel rims, an old radiator, bicycle frames, topped by a washing machine drum. Entire heap, no separate scattered pieces.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-schrotthaufen.png",
+  "originalFile": "exec-52a5fcbb-a90d-4be6-b9bf-9e27e3213e0b.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "9175cc175e33e5d425703689f043a9ec3f0ecc31b5554634abbe7f7d513db66b"
+}

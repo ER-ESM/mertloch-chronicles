@@ -28,13 +28,13 @@ Menü, Ton, Vollbild und Journal sind über `ui-art.js` angebunden. Die Dialogbe
 | 16 | `kurt` | Kegelbruder Kurt | Vereinspolo „Alle Neune Kalt“, Bauchansatz, Kegel unterm Arm, Besen statt Kugel – der Versöhnliche aus Kalt |
 | 17 | `timo` | Trauzeuge Timo | Schärpe, Bierbong, drei Tage wach, Sonnenbrand, unerschütterlich gut gelaunt |
 
-Bis die Zellen 12–17 gezeichnet sind, malt die Gesprächs-UI Porträts über `PERSON_APPEARANCE`; Pit, Kurt und Timo zeigen ihren Anfangsbuchstaben. Kein Blocker, nur eine Lücke.
+Pits Zelle 15 und sein eigenes Dialogporträt sind nachgeliefert. Andere noch unbelegte Zellen verwenden weiterhin die vorhandenen Figuren-Fallbacks; Kurt und Timo zeigen ihren Anfangsbuchstaben.
 
-## Offen nach der Anbindung der Lieferung 2026-09-17
+## Nachgeliefert und angebunden · 2026-09-17
 
 Angebunden sind die sechs gelieferten Reiter, sieben HUD-Symbole, Schwungzustände, Proc-Rahmen/-Marker,
 Sprechblase (9-Slice), Übungspuppe, alle Helden-, Auftraggeber-, Bewohner-, Gegner- und Bossbögen,
-18 Gegenstandsbilder und die 18 neuen Proc-Talente. Nicht aus dieser Lieferung abgedeckt und weiter offen:
+18 Gegenstandsbilder und die 18 neuen Proc-Talente. Die nachfolgend ursprünglich gemeldeten Lücken sind durch die [Grafik-Nachlieferung](GRAFIK-NACHLIEFERUNG-2026-09-17.md) geschlossen. Die Fallback-Spalte dokumentiert den Zustand vor der Nachlieferung:
 
 | ID | Zweck | Größe | Bildhinweis | Fallback heute |
 |---|---|---|---|---|
@@ -51,7 +51,7 @@ Sprechblase (9-Slice), Übungspuppe, alle Helden-, Auftraggeber-, Bewohner-, Geg
 Die Welt setzt an jedem Kapitel-Lager feste Kulissen-Objekte und legt das Gelände der Bude an (`world.camps[].props`,
 `world.base.stageProps`). Jedes Objekt hat `kind`, Mittelpunkt `x`/`y`, Grundfläche `w`×`h` in Welteinheiten, eine
 Zeichenhöhe und eine Fallback-Farbe; gezeichnet wird in der UI (docs/backlog/ui.md). Maßstab: ein Erwachsener ist
-26 Einheiten hoch (docs/MASSSTAB-2026-09-17.md). Nur `bus` und `schrotthaufen` sind echte Hindernisse.
+26 Einheiten hoch (docs/MASSSTAB-2026-09-17.md). `bus`, `schrotthaufen` und `kiosk` sind echte Hindernisse.
 
 | ID | Kapitel / Ort | Grundfläche | Höhe | Bildhinweis | Fallback |
 |---|---|---|---|---|---|

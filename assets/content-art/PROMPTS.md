@@ -227,3 +227,7 @@ Die vollständigen tatsächlich verwendeten Prompts, Datum, Referenzen und Herku
 ## Erinnerungsbilder · 2026-09-17
 
 Zehn große Pixelillustrationen (davon ein zweiteiliger Comic), im Spiel beim Freischalten und im Clanbuch eingebunden. Originale, tatsächliche Imagegen-Prompts und Exportregeln: [memories/README.md](memories/README.md), [Prompts](memories/generation.json). Quelle: vorhandene Texte aus `content/memories.js`; keine Änderung ihrer Freischaltungen.
+
+## Nachlieferung der gemeldeten Lücken
+
+Bude-Reiter, Anni, vier Gegner mit separaten Laufbögen, Pit und alle 19 Kulissen-Arten sind einschließlich Renderer-Anbindung nachgeliefert. Details, Herkunft, Prüfungen und Grenzen: [Grafik-Nachlieferung](../../docs/GRAFIK-NACHLIEFERUNG-2026-09-17.md).

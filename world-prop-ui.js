@@ -12,6 +12,12 @@ export const propKind=kind=>PROP_KINDS[kind]||{name:kind,w:16,h:12,height:14,col
 /** Sortierhöhe: die Bildschwelle liegt am vorderen Rand der Grundfläche (y + h/2). */
 export const propBaseline=p=>p.y+(p.h??propKind(p.kind).h)/2;
 
+/** Runtime sprites include the visible ground depth; anchor their bottom at the footprint edge. */
+export function propDrawRect(p){
+ const d=propKind(p.kind),w=p.w??d.w,scale=w/d.w,height=(d.height+d.h/2)*scale;
+ return{x:p.x-w/2,y:propBaseline(p)-height,w,h:height,depth:propBaseline(p)};
+}
+
 const shade=(color,f)=>{
  const n=parseInt(color.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;
  const mix=v=>Math.max(0,Math.min(255,Math.round(v*f)));
@@ -26,6 +32,11 @@ export function drawProp(c,prop){
  // Bodenschatten liegt immer auf der Grundfläche – auch unter einem gelieferten Bild.
  c.fillStyle='#2438294d';c.beginPath();c.ellipse(x,prop.y,w/2,d/2,0,0,Math.PI*2);c.fill();
  const art=contentAsset(propAssetId(prop.kind));
+ if(art?.meta.worldProp){
+  const m=art.meta,pad=m.padding??4,r=propDrawRect(prop);
+  c.drawImage(art.image,pad,pad,m.width-pad*2,m.height-pad*2,Math.round(r.x*2)/2,Math.round(r.y*2)/2,r.w,r.h);
+  c.restore();return;
+ }
  if(art){
   const m=art.meta,k=height/(m.worldHeight||m.nativeHeight||m.height||height);
   c.translate(Math.round(x*2)/2,Math.round(base*2)/2);c.scale(k,k);

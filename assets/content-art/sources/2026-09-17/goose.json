@@ -1,0 +1,11 @@
+{
+  "id": "goose",
+  "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly4 columns x4 rows,16 separated sprites. ONE feisty white domestic GOOSE with slightly dirty cream feathers, long curved neck, orange beak and two orange webbed feet. Clearly goose, not duck or swan. No clothing or props. Columns idle, left foot step, right foot step, forward biting attack with slightly open wings. Keep neck and body shape stable when walking, wings folded; natural step under fixed torso, no full-body wobble. Slightly elevated3/4 RPG camera.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/goose.png",
+  "originalFile": "exec-d91e04b8-e334-448d-a8ee-84b38aa50272.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "7a41522957625eddaa44ab9f763868044cfd166031a82b4fee46ed817f764e94"
+}

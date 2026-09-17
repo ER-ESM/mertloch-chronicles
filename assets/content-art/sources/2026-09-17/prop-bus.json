@@ -1,0 +1,11 @@
+{
+  "id": "prop-bus",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 104x30 world units and vertical drawing height 44. Subject: A slightly battered mustard-yellow and cream SMALL COACH BUS seen from elevated front-right three-quarter side view, long horizontal body, about 6 passenger window sections, two visible wheels, front passenger door OPEN, pastel party bunting above windows and bachelor-party sash tied at a mirror. Empty fuel implied by abandonment; no fire or smoke. No passengers. Rural 1990s style. The doorway is roughly half the body height and wide enough for one adult. Entire bus visible, no road or landscape.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bus.png",
+  "originalFile": "exec-793235a1-f694-4c9c-997c-22ef2c4ec46c.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "1125e8979bcd34135d20524358cded72d57cbb9c8b3d4ae69dd4c999cb14ab88"
+}

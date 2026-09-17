@@ -1,0 +1,11 @@
+{
+  "id": "prop-bude-pfandlager",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 44x26 world units and vertical drawing height 28. Subject: A wooden pallet shelf tightly stacked with dark green and brown empty beer crates, one curled cream deposit-receipt paper roll and a clipboard hooked on the side. Entire shelf and feet visible, no text.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bude-pfandlager.png",
+  "originalFile": "exec-99b62ea9-e878-48e5-863a-4d97868829a9.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "57d156fe5c975e555628fb10c038270df63ac43a4707fdf9c81e7dd046bfa97c"
+}

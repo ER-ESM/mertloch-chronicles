@@ -1,0 +1,11 @@
+{
+  "id": "badger",
+  "prompt": "Use case: stylized-concept. Production sprite atlas for the rural German comic MMORPG Mertloch Chronicles. Maifeld-Detailpixel style: crisp deliberately placed square pixel clusters, dark slate outlines, upper-left warm amber light, muted olive, terracotta, cream, no soft shading or anti-aliased edges. Every subject fully contained in its separate cell, generous transparent gutters. GENUINELY TRANSPARENT alpha background, no ground shadows, no floor, no grid lines, captions, numbers, labels or watermark. Same identity, costume, anatomy, volume and scale throughout, no shape morphing. Four rows are four different fixed directions: row 1 SE front-right, row 2 SW front-left, row 3 NE rear-right, row 4 NW rear-left. Back rows show the BACK of the head and body, not a turned frontal face. Exactly4 columns x4 rows,16 separated sprites. Natural quadruped European BADGER: stocky low gray body, unmistakable white head with two black longitudinal face stripes, little black ears, dark short legs and four paws, stubby tail. No clothing or equipment, no human. Columns idle, left-diagonal pair step, right-diagonal pair step, snapping attack. Torso and head calm and unchanged across walk poses, legs alternate underneath. Do not turn into raccoon or bear. Slightly elevated 3/4 game view matching an RPG.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/badger.png",
+  "originalFile": "exec-d3cfe8ba-b743-4d40-9348-88e9a11f1fc6.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "9e27fbc763efa2235a9ca7efa326731dc68baa96ce08560b676e04a60912d1bb"
+}

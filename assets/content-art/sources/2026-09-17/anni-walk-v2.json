@@ -1,0 +1,13 @@
+{
+  "id": "anni-walk-v2",
+  "prompt": "Use case: identity-preserve. EDIT this walk atlas. Preserve the exact woman, orange floral blouse, white gingham apron, olive trousers, brown boots, blonde bun, 8 columns and4 rows, transparent background, palette, all four view directions. Fix ONLY the walking poses: every row currently repeats a wide stride. Columns3 and7 MUST have both feet together directly under the hips, one knee bent as the free leg passes the planted leg. Columns1 and5 MUST be opposite contact poses: in1 near leg forward and far leg back, in5 near leg BACK and far leg FORWARD. Columns2 and6 are down poses with slightly bent supporting knee; columns4 and8 free knee lifted with toes just clearing ground. Distinct opposite arm swings. Keep head and torso completely stable in size and height, feet plant on same ground line. Preserve entire bodies with space between columns. No text, floor, shadow, clothing morph or new objects. This is a walk-animation correction, not eight copies of the same stride.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/anni-walk.png"
+  ],
+  "output": "assets/content-art/sources/2026-09-17/anni-walk-v2.png",
+  "originalFile": "exec-061d4971-2ec2-4311-9bc2-baab56be268d.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "58d14f13ffc39a3a66f2fac1427fe84c513812206f92adecbd2ae6da983a00b2"
+}

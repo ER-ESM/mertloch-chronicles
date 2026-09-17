@@ -1,0 +1,11 @@
+{
+  "id": "prop-stehtisch",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 16x16 world units and vertical drawing height 20. Subject: One tall round standing pub table, worn cream painted circular top, green central metal pedestal with stable three-point foot, two empty brown beer bottles and a full small ashtray on tabletop. Entire table visible.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-stehtisch.png",
+  "originalFile": "exec-d602a9d2-c174-4f80-90eb-6f3e0abf1c08.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "93a63bf607cadb9aed95941ea2efda192186a668b82034a592e5066a89084a15"
+}

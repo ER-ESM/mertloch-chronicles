@@ -29,7 +29,7 @@ const DEFAULT_STRIDE=48;
 export function contentActor(id){
  const poses=contentAsset(id);
  if(!poses||!poses.meta.columns||!poses.meta.frames)return null;
- const walk=poses.id.endsWith('-poses')?contentAsset(poses.id.replace(/-poses$/,'-walk')):null;
+ const walk=contentAsset(poses.id.endsWith('-poses')?poses.id.replace(/-poses$/,'-walk'):poses.id+'-walk');
  const m=poses.meta,frameSize=m.frameSize??contentArt.catalog.frameSize,pivot=m.pivot??contentArt.catalog.pivot;
  return {id:poses.id,poses,walk,frameSize,pivot,columns:m.columns,rows:contentArt.catalog.directions.length,
   nativeHeight:m.nativeHeight||frameSize,worldHeight:m.worldHeight||frameSize/2,

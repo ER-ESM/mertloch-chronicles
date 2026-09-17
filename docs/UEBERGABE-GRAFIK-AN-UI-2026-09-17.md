@@ -106,3 +106,7 @@ Die Grafikrolle hat die Galerie einschließlich mobiler Ansicht geprüft. Eine B
 In den Sichtprüfungen korrigiert: schwache HUD-Kontraste, falscher Öffner, verlorene Requisiten bei zwei Bewohnern, Raben-Erstfassung, uneinheitliche Bierdeckel-Ausrichtung, Fremdfragmente an Talent-Zuschnitten und zu kleine Boss-Referenzhöhen. Verworfene Originale bleiben mit Versionssuffix dokumentiert.
 
 Es wurden keine neuen Gebäude oder Geländekacheln geliefert (C1 bleibt offen), keine vorhandenen Skillbilder ersetzt und keine unveränderten Talente neu gestaltet.
+
+## Nachlieferung der gemeldeten Lücken
+
+Bude-Reiter, Anni, vier Gegner mit separaten Laufbögen, Pit und alle 19 Kulissen-Arten sind einschließlich Renderer-Anbindung nachgeliefert. Details, Herkunft, Prüfungen und Grenzen: [Grafik-Nachlieferung](GRAFIK-NACHLIEFERUNG-2026-09-17.md).

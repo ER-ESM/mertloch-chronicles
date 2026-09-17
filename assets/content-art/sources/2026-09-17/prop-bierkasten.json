@@ -1,0 +1,11 @@
+{
+  "id": "prop-bierkasten",
+  "prompt": "Use case: stylized-concept. A SINGLE production environment sprite for Maifeld-Detailpixel, a humorous rural German 2D RPG. Elevated three-quarter view from southeast, see front and right side and a little top; camera consistent with top-down RPG, no perspective horizon. Crisp visible square pixel clusters, dark slate outline #242333, warm amber light from upper left, earthy honey wood, olive greens, muted rusty coral, cream highlights. Cohesive restricted palette; no smooth painterly gradients, blur, excessive tiny noise, text, watermark, frame or grid. Genuine transparent alpha background. Isolated entire prop centered with generous transparent margin, NO ground plane, cast shadow, scene, people, animals or grass except any tiny attached tuft explicitly requested. Clear silhouette and a few readable material details appropriate to about 2 native pixels per world unit. Reference adult is 26 world units tall, but do NOT draw the adult. Only this one object.  The object footprint is 14x11 world units and vertical drawing height 12. Subject: One empty dark green plastic beer crate with open bottle dividers and TWO brown bottles lying diagonally inside. One upright crate only, no labels.",
+  "references": [],
+  "output": "assets/content-art/sources/2026-09-17/prop-bierkasten.png",
+  "originalFile": "exec-878e1fd4-1b28-4d92-b1f1-a9b05793c00c.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "4fe7628b5412fa362c24a7deaa74295ecd452389425a02d41cce1049eda0e7d9"
+}
