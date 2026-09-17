@@ -41,9 +41,9 @@ Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). D
 
 ### Welle D (Nutzerauftrag 2026-09-17)
 
-- [ ] **Benutzbare Gegenstände in der Aktionsleiste**: Leistenplätze nehmen Verpflegung (`usable`) auf; Aktion benutzt den Gegenstand ohne Menü, zählt den Stapel herunter, respektiert `consumableCd`; Speicher der Belegung; Test.
-- [ ] **Auto-Loot**: Beute wird beim Kill/Öffnen automatisch eingesammelt (Rucksack voll → `rpg.recovery` + Hinweis); Event `loot {items:[{id,count,rarity}],coins,source}` für das Log; Einstellung `autoLoot` (Standard an); Test.
-- [ ] **Beschreibungs-API**: `game.describe(kind,id)` liefert `info` aus content plus Laufzeitwerte (tatsächlicher Schaden mit Ausrüstung, tatsächliche Abklingzeit mit Haste, Restdauer laufender Stärkungen), damit Tooltips exakte Zahlen zeigen; Test.
+- [x] **Benutzbare Gegenstände in der Aktionsleiste**: Leistenplätze nehmen Verpflegung (`usable`) auf; Aktion benutzt den Gegenstand ohne Menü, zählt den Stapel herunter, respektiert `consumableCd`; Speicher der Belegung; Test. **Erledigt Welle D, 2026-09-17** (Leisteneintrag `item:<id>`, `barSlots()`, `game.action(slot)`, Ereignis `barChanged`; Kniffe haben Vorrang, leerer Stapel bleibt reserviert; tests/engine-welle-d.test.mjs, Übergabe §8.1).
+- [x] **Auto-Loot**: Beute wird beim Kill/Öffnen automatisch eingesammelt (Rucksack voll → `rpg.recovery` + Hinweis); Event `loot {items:[{id,count,rarity}],coins,source}` für das Log; Einstellung `autoLoot` (Standard an); Test. **Erledigt Welle D, 2026-09-17** (`game.settings.autoLoot`, `autoLootBag`, `game.openLoot(id)`; `loot` kommt auch bei manuellem Einsammeln; tests/engine-welle-d.test.mjs, Übergabe §8.2). Offen beim Inhalt: `SYSTEM_LINES.lootFull` (docs/backlog/story.md).
+- [x] **Beschreibungs-API**: `game.describe(kind,id)` liefert `info` aus content plus Laufzeitwerte (tatsächlicher Schaden mit Ausrüstung, tatsächliche Abklingzeit mit Haste, Restdauer laufender Stärkungen), damit Tooltips exakte Zahlen zeigen; Test. **Erledigt Welle D, 2026-09-17** (neue Datei `describe.js`, acht Arten, `game.activeBuffs()`; nutzt `describe()/describeItem()/describeStage()` aus `content/index.js`, sobald es sie gibt, sonst Rückfall auf die Rohfelder; tests/engine-welle-d.test.mjs, Übergabe §8.3).
 
 ## Erledigt
 

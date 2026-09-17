@@ -6,7 +6,8 @@ import {tickAuto,startAuto,stopAuto,enemyAuto,tickCasting,movingToCast} from './
 import {arenaHit,tickArena,freshArenaStats} from './arena.js';
 import {freshProcState,fireProcs,procFree,consumeProc,tickProcs} from './procs.js';
 import {weaponSkillDamage,skillDamage} from './equipment.js';
-import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar,addItem,countItem,hasMaterials,consumeMaterials,nearestLoot} from './rpg.js';
+import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar,addItem,countItem,hasMaterials,consumeMaterials,nearestLoot,actionBar,barSlots,barItemId,useItem,autoLootBag,placeUsables} from './rpg.js';
+import {describeEntry,activeBuffs,skillCooldown} from './describe.js';
 import {registerRoll,QUALITIES} from './itemization.js';
 import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
@@ -49,6 +50,8 @@ export class Game {
     const baseHp=BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel;
     this.player={...restorePosition(world,saved),classId:this.member.id,hp:baseHp,maxHp:baseHp,energy:100,runes:0,level,xp:Math.max(0,Number(saved.xp)||0),parry:0,invulnerable:0,moving:false,attack:0,inCombat:0};
     this.quest=restoreQuest(saved.quest||{},saved.worldKey===world.id);
+    // Spieleinstellungen. Auto-Loot ist der Standard; die UI schaltet ihn über setSetting('autoLoot', …) ab.
+    this.settings={autoLoot:saved.settings?.autoLoot!==false};
     this.memories={seen:Array.isArray(saved.memories?.seen)?saved.memories.seen.filter(id=>typeof id==='string'):[]};
     this.buildings=Object.fromEntries(BUILDING_IDS.map(id=>[id,clampInt(saved.buildings?.[id],0,BUILDINGS[id].stages.length,0)]).filter(([,stage])=>stage>0));
     this.mentorTalks=saved.mentorTalks&&typeof saved.mentorTalks==='object'?Object.fromEntries(Object.entries(saved.mentorTalks).map(([id,n])=>[id,clampInt(n,0,1e6,0)])):{};
@@ -57,7 +60,7 @@ export class Game {
     this.sideQuests=Object.fromEntries((world.quests||[]).map(q=>{const old=sameWorld?saved.sideQuests?.[q.id]:null;return[q.id,{accepted:!!old?.accepted,progress:Math.min(q.required,Math.max(0,Number(old?.progress)||0)),collected:Array.isArray(old?.collected)?old.collected.filter(id=>q.items.some(i=>i.id===id)):[],claimed:!!old?.claimed}];}));
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
     this.campSerial=0;this.populateCamps();
-    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const build of Object.values(this.rpg.talentBuilds))build.learned=build.learned.slice(0,talentPoints(this));this.refreshStats();this.ecology=new EncounterDirector(this);
+    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const build of Object.values(this.rpg.talentBuilds))build.learned=build.learned.slice(0,talentPoints(this));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
     initTutorial(this,saved,options.guidedStart);
   }
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
@@ -92,6 +95,9 @@ export class Game {
   selectAt(x,y){const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false){
     if(this.paused||this.dead)return false;
+    // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
+    if(Number.isInteger(id))id=actionBar(this)[id]??null;
+    const barItem=barItemId(id);if(barItem)return useItem(this,barItem);
     const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.toast('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
     if(id==='auto')return startAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
     const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCost(this,s,cs),context={runes:p.runes,interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,this.cooldowns[id].toFixed(1))||`${s.name} ist noch nicht bereit · ${this.cooldowns[id].toFixed(1)} s.`);return false;}
@@ -109,7 +115,7 @@ export class Game {
     if(id==='heal'&&p.hp>=p.maxHp&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast('Deine Gesundheit ist bereits vollständig.');return false;}
     if(s.castTime&&!completing){if(movingToCast(this)){this.toast(COMBAT_TEXT.moving);return false;}this.casting={id,name:s.name,point:point?{...point}:null,targetId:s.range&&!s.ground?e.id:null,remaining:s.castTime,total:s.castTime};if(!s.offGcd)this.gcd=cs.gcd;this.aiming=null;this.aimPoint=null;return true;}
     const base=this.baseEffects();
-    this.cooldowns[id]=s.cd*(id==='dash'?(1-(cs.dashCd||0))*(1-(base.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste);p.energy-=cost;consumeProc(this,'glow',id);consumeProc(this,'free',id);const pm=consumeProc(this,'empower',id)?2:1;
+    this.cooldowns[id]=skillCooldown(this,s,cs);p.energy-=cost;consumeProc(this,'glow',id);consumeProc(this,'free',id);const pm=consumeProc(this,'empower',id)?2:1;
     if(!s.offGcd&&!completing)this.gcd=cs.gcd;
     if(s.range&&!s.ground){this.autoAttack.enabled=true;e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.direction=walkFacing(e.x-p.x,e.y-p.y,p.direction||'se');p.attack=.25;p.attackSource=s.weaponSource||'melee';}
     if(s.talent){performTalent(this,s,point,cs);if(s.ground){this.aiming=null;this.aimPoint=null;}}
@@ -270,6 +276,19 @@ export class Game {
   }
   /** Autoangriff abwählen (Esc der UI). Taste 1 schaltet nie mehr aus – siehe auto-combat.startAuto. */
   stopAuto(){return stopAuto(this);}
+  /** Spieleinstellung setzen (heute nur `autoLoot`). Meldet `settingsChanged` und speichert. */
+  setSetting(key,value){if(!Object.hasOwn(this.settings,key))return false;this.settings[key]=!!value;this.emit('settingsChanged',{key,value:this.settings[key]});this.emit('save');return true;}
+  /** Beutel öffnen: bei Auto-Loot wandert alles sofort in den Rucksack, sonst bekommt die UI den Beutel fürs Fenster. */
+  openLoot(id){const bag=this.rpg.loot.find(b=>b.id===id);if(!bag||this.dead)return null;
+   if(distance(this.player,bag)>COMBAT_RULES.lootRange){this.toast('Der Beutel ist zu weit weg. Geh näher heran.');return null;}
+   if(!this.settings.autoLoot)return bag;
+   autoLootBag(this,bag);return null;}
+  /** Beschreibung eines Elements: content-Info plus Laufzeitwerte (Schaden, Abklingzeit, Restdauer, Stapel). */
+  describe(kind,id){return describeEntry(this,kind,id);}
+  /** Laufende Stärkungen und Proc-Fenster mit Restzeit; `describe` nennt Art und Id für game.describe(). */
+  activeBuffs(){return activeBuffs(this);}
+  /** Leistenplätze für die UI: Kniff, Gegenstand (Stapel, Bereitschaft) oder leer. */
+  bar(){return barSlots(this);}
   /** Mentor in Gesprächsreichweite (Dieter, Anni, Kevin an der Bude). */
   mentorInteraction(){if(tutorialActive(this)||this.questFocus())return null;return (this.world.mentors||[]).filter(m=>distance(this.player,m)<MENTOR_RANGE).sort((a,b)=>distance(this.player,a)-distance(this.player,b))[0]||null;}
   /** Spricht einen Mentor an: liefert und meldet dessen Zeile für das laufende Kapitel. */
@@ -390,5 +409,5 @@ export class Game {
     this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(!tutorialActive(this)&&distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
   }
-  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,relic:this.relic,discovered:[...this.discovered]};}
+  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,relic:this.relic,discovered:[...this.discovered]};}
 }

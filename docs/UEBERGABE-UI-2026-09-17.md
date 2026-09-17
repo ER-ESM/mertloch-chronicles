@@ -239,3 +239,87 @@ Die Laufzeit kennt jetzt zwei weitere Auslöser und zwei weitere Wirkungen. **Di
 
 Für das HUD: `procCount(game, procId)` aus `procs.js` liefert den Zählstand eines `every`-Auslösers
 (z. B. „2/3 Kellen“). Der Stand steht in `game.procState.counts` und wird nicht gespeichert.
+
+## 8. Engine → UI · Welle D (2026-09-17, Branch `engine`)
+
+Neu: benutzbare Gegenstände auf der Aktionsleiste, Auto-Loot mit einem Beute-Ereignis fürs Log und eine
+Beschreibungs-API für Tooltips. Texte kommen weiterhin ausschließlich aus `content/` – die Engine liefert nur IDs,
+Zahlen und Zustände. Die Shift-Regel des Beschreibungs-Standards (Shift blendet `why`, `links` und die `long`-Texte
+der `terms` ein) bleibt Sache der UI; die Engine liefert die Felder, blendet aber nichts aus.
+
+### 8.1 Verpflegung auf der Aktionsleiste
+
+Ein Leistenplatz hält jetzt entweder einen Kniff (Id wie bisher) oder einen benutzbaren Gegenstand als
+`'item:<itemId>'`. Beide Formen sind Speicherschlüssel in `rpg.actionBars[classId]` – alte Spielstände laden unverändert.
+
+| Name | Typ | Inhalt |
+|---|---|---|
+| `barItemEntry(id)` / `barItemId(entry)` | Export `rpg.js` | Leisteneintrag aus einer Gegenstands-Id bauen bzw. zurücklesen (`null`, wenn es ein Kniff ist) |
+| `usableItem(id)` | Export `rpg.js` | benutzbar? `usable:true` aus `content/items.js`, Rückfall `kind==='consumable'` |
+| `bindSkill(game, entry, index)` | wie bisher | nimmt zusätzlich `'item:<id>'`; `null` räumt den Platz |
+| `game.bar()` / `barSlots(game)` | `[{index,key,entry,kind,id,name,icon,available,cooldown,ready,count,empty}]` | **das, was die Leiste zeichnen soll.** `kind` ∈ `skill \| item \| empty`; bei `item` sind `count` (Stapel im Rucksack), `empty` (Stapel leer → ausgrauen, Platz bleibt reserviert) und `cooldown` (gemeinsame Verpflegungs-Abklingzeit) gesetzt |
+| `game.action(slot)` | bool | nimmt eine Kniff-Id, einen `'item:<id>'`-Eintrag **oder die Platznummer 0–9**. Bei einem Gegenstand wird er sofort benutzt – kein Menü, kein Rucksackfenster. Der Stapel zählt herunter, `consumableCd` (`BALANCE.player.consumableCooldown` minus Basisbau-`consumableCd`) gilt wie im Rucksack |
+| Ereignis `barChanged` | – | jede Änderung der Belegung (Binden, neue Kniffe, verdrängter Gegenstand) und der Moment, in dem ein Leistenstapel leer wird → Leiste neu zeichnen |
+
+Regeln:
+
+- **Kniffe haben Vorrang.** Neu gelernte Kniffe nehmen zuerst freie Plätze; ist keiner frei, weicht der letzte
+  Gegenstand. Verpflegung belegt beim Start die *hinteren* freien Plätze (Tasten 9/0), damit die Kniffreihenfolge steht.
+- **Einmalig.** Ein Gegenstand wandert nur einmal von allein auf die Leiste (`rpg.barSeen`). Wer ihn abräumt,
+  bekommt ihn nicht ungefragt zurück.
+- **Leerer Stapel = reservierter Platz.** Beim Laden wird die Belegung gegen den Rucksack geprüft, der Platz bleibt
+  aber bestehen; `barSlots()` meldet `empty:true`, die UI graut ihn aus. Ein Klick meldet einen Toast statt zu wirken.
+
+### 8.2 Auto-Loot und das Ereignis `loot`
+
+- `game.settings.autoLoot` (Standard `true`, wird gespeichert). Umschalten über `game.setSetting('autoLoot', false)`
+  → Ereignis `settingsChanged {key,value}`. Die Einstellung gehört in das Einstellungen-Fenster.
+- **An:** Beute wird beim Kill sofort eingesammelt, es bleibt kein Beutel liegen. Passt etwas nicht in den Rucksack,
+  geht es nach `rpg.recovery` („Ausrüstung zurückholen“) plus Hinweis-Toast – **nichts geht verloren**.
+- **Aus:** alles wie bisher (Beutel in `rpg.loot`, Beutefenster, `takeLoot`).
+- `game.openLoot(id)` → bei Auto-Loot räumt es den Beutel selbst ab und gibt `null`; sonst liefert es den Beutel
+  fürs Beutefenster. **Die UI soll das Beutefenster nur noch öffnen, wenn `openLoot()` einen Beutel zurückgibt.**
+
+| Feld des Ereignisses `loot` | Typ | Inhalt |
+|---|---|---|
+| `items` | `[{id,count,rarity,rolled}]` | was wirklich im Rucksack gelandet ist; `rarity` für die Farbe, `rolled:true` bei gewürfelten Fundstücken |
+| `coins` | Zahl | Pfandmarken aus diesem Beutel |
+| `source` | `{name,kind}` | Quelle: `kind` ∈ `enemy \| boss \| chest \| bag`, `name` der Gegnername |
+
+Das Ereignis kommt **in jedem Fall** – automatisch wie von Hand – und ist die Quelle für die Beutezeile im Log.
+`ITEMS[id].name` und die Farbe zieht die UI wie gewohnt aus dem Register.
+
+Offener Inhaltsbedarf: eine `SYSTEM_LINES`-Zeile für „Rucksack voll, Rest liegt unter Ausrüstung zurückholen“
+(`SYSTEM_LINES.lootFull(anzahl)`); bis dahin nutzt die Engine einen Rückfalltext im gleichen Wortlaut.
+Bedarf steht in `docs/backlog/story.md`.
+
+### 8.3 Beschreibungs-API `game.describe(kind, id)`
+
+Rückgabe `{icon, name, info:{effect, numbers, why, links, terms}, live:{…}}` oder `null` bei unbekannter Art/Id.
+`kind` ∈ `skill | talent | passive | buff | proc | item | building | cast`.
+
+- `info` kommt aus `content/`: aus dem Feld `info` des Elements oder – sobald es sie gibt – aus den Helfern
+  `describe()`, `describeItem()`, `describeStage()` aus `content/index.js`. Fehlen beide, baut die Engine den
+  Rückfall aus den Rohfeldern (`text`/`description`/`passive` plus abgeleitete `numbers`). **Die Form ist immer
+  gleich:** `effect` (String), `numbers` (`[{label,value,unit,source}]`), `why` (String), `links`/`terms` (Id-Listen).
+- `live` sind die Laufzeitwerte mit Ausrüstung, Talenten, Procs und Basisbau:
+
+| kind | `live` (Auszug) |
+|---|---|
+| `skill` | `damage:{min,max,critMin,critMax}` (tatsächlicher Schaden mit Waffe und Wertungen), `heal`, `cooldown` (mit Tempo) gegen `baseCooldown`, `remaining`, `ready`, `cost` gegen `baseCost`, `range`, `castTime`, `gcd`, `crit`, `available`, `level`, `onBar` |
+| `talent` | `learned`, `open` (Voraussetzungen erfüllt und Punkt frei), `pointsLeft`, `tier`, `grants`, `effects` |
+| `passive` | `classId`, `active`, `values` (die Zahlen aus `CLAN_MEMBERS.passives`) |
+| `buff` | `active`, `remaining` (Restdauer), `shield`, `stacks` (`momentum`), `value` (`guard`, `hot`) |
+| `proc` | `armed` (Regel gelernt), `trigger`, `every`/`count` (Zählstand „2/3 Kellen“), `active`/`remaining` (laufendes Fenster), `chance`, `window`, `effect` |
+| `item` | `count` (aktueller Stapel), `rarity`, `equipped`, `usable`, `heal`/`energy` **mit Grill-Bonus**, `cooldown`/`remaining`/`ready`, `onBar`, `rolled` |
+| `building` | `stage`, `maxStage`, `effect` (aktueller Basisbau-Effekt dieses Gebäudes), `current`, `next:{stage,name,cost,have,affordable,text}`, `atHub` |
+| `cast` | `interruptible`, `ground`, `radius`, `total`, `raw`, `expected` (Schaden nach deiner Rüstung), `casting`, `remaining` |
+
+`game.activeBuffs()` → Liste der laufenden Stärkungen und Proc-Fenster:
+`[{kind:'buff'|'proc', id, name, remaining, stacks?, value?, shield?, mode?, count?, describe:{kind,id}}]`.
+`remaining` ist die Restzeit in Sekunden (`null`, wenn es keine gibt, z. B. Deckung); `describe` ist genau das Paar,
+das die UI an `game.describe()` weiterreicht. Enthalten sind: Klassen-Stärkung, Schwung, Deckung, Hauspflege,
+Tempo-Procs sowie offene Proc-Fenster (`gratis`, `×2`, `bereit`) und laufende Zähl-Procs.
+
+Neue Engine-Datei: `describe.js` (Beschreibungs-API, `skillCooldown()` und `skillDamageRange()` als eine Wahrheit –
+`Game.action` rechnet die Abklingzeit jetzt mit demselben Helfer).

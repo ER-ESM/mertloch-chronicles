@@ -11,6 +11,8 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 - [ ] **Zwei Werkbank-Zeilen für Kevin** (Rest aus dem Händler-/Handwerk-Konzept `docs/GAMEPLAY-HAENDLER-HANDWERK.md`, noch nicht freigegeben): z. B. „Gib her. Wird schon halten.“ — kommt, sobald die Werkbank wirklich bedienbar ist.
 - [ ] **Oberpraktikant Olaf** (`content/enemies.js`, Elite der Außenbezirke, menschlich): `ENEMY_BARKS` gelten heute nur für Archetypen – wenn Sprüche auch für Eliten kommen sollen, ist Olaf der erste Kandidat („Das ist hier keine Fläche für so etwas.“ / „Ich mache einen Vermerk.“ / „Mein Anleiter kommt gleich.“). Kein Kapitelbezug nötig, er gehört der freien Welt.
 
+- [ ] **`SYSTEM_LINES.lootFull(anzahl)`** (Engine, Welle D 2026-09-17): Auto-Loot sammelt Beute beim Kill automatisch ein; passt etwas nicht mehr in den Rucksack, wandert es nach `rpg.recovery` („Ausrüstung zurückholen“). Gebraucht wird eine Zeile im Wortlaut „Rucksack voll · <n> Fundstücke warten unter Ausrüstung zurückholen.“ – Ton wie `SYSTEM_LINES.buildPlace`. Bis dahin nutzt `rpg.js` einen Rückfalltext im gleichen Wortlaut. Betrifft: `content/dialogues.js` (`SYSTEM_LINES`).
+
 ### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
 
 - [ ] **P12** Ida Kapitel 1: Absatz 4 wiederholt die Summary – Summary bleibt im Auftragsbuch, Dialog ohne Doppelung (UI setzt um, Text prüfen).
