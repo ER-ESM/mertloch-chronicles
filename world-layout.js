@@ -1,6 +1,20 @@
 import {distance,inside,rng} from './world.js';
 import {STORY,STORY_CHAPTERS,ARCHETYPES,BOSSES} from './content/index.js';
-export function residential(w,p){return w.areas.some(a=>a.tags.landuse==='residential'&&inside(p.x,p.y,a.points));}
+/** Wohngebiet = Wohnpolygone aus OSM **oder** tatsächlich bebautes Gebiet. Der Mertloch-Ausschnitt enthält kein einziges
+ * `landuse=residential`-Polygon (Befund vr-08, docs/backlog/welt.md), deshalb zählt die Bebauungsdichte: ein Punkt liegt im
+ * Wohngebiet, wenn mindestens `minBuildings` Häuser innerhalb von `radius` stehen. Die Maske wird einmal je Welt aufgebaut. */
+export const SETTLEMENT_RULES=Object.freeze({cell:40,radius:250,minBuildings:3});
+export function settlementMask(w){
+ if(w.settlement)return w.settlement;
+ const C=SETTLEMENT_RULES.cell,R=SETTLEMENT_RULES.radius,span=Math.ceil(R/C),counts=new Map();
+ for(const b of w.buildings){const cx=Math.floor(b.x/C),cy=Math.floor(b.y/C);
+  for(let x=cx-span;x<=cx+span;x++)for(let y=cy-span;y<=cy+span;y++){
+   if(Math.hypot((x+.5)*C-b.x,(y+.5)*C-b.y)>R)continue;const k=x+','+y;counts.set(k,(counts.get(k)||0)+1);}}
+ const cells=new Set();for(const [k,n] of counts)if(n>=SETTLEMENT_RULES.minBuildings)cells.add(k);
+ w.settlement={cell:C,radius:R,minBuildings:SETTLEMENT_RULES.minBuildings,cells};return w.settlement;
+}
+export function inSettlement(w,p){const m=settlementMask(w);return m.cells.has(Math.floor(p.x/m.cell)+','+Math.floor(p.y/m.cell));}
+export function residential(w,p){return w.areas.some(a=>a.tags.landuse==='residential'&&inside(p.x,p.y,a.points))||inSettlement(w,p);}
 export function wildernessSite(w,random,min,max,used,radius=95){
  const nodes=w.candidates(min,max);
  for(let i=0;i<12000;i++){

@@ -43,4 +43,33 @@ Sprechblase (9-Slice), Übungspuppe, alle Helden-, Auftraggeber-, Bewohner-, Geg
 | `warden` | Ruhewärter (Feldgegner, `skin:'warden'`) | 96×96, 4 Richtungen × 4 Spalten | wie Schnorrer/Praktikant | alte Rigfigur |
 | `badger`, `goose`, `boar` | Dachs, Gans, Pfandkeiler als Richtungsbögen wie Rabe und Fuchs | 96×96 | wie `raven`/`fox` | Rig-Animation aus `maifeld-live` |
 | Porträt `pit` | Zelle 15 des Dialogatlas (`content/portraits.js`) | Atlaszelle | siehe `docs/backlog/ui.md` | Anfangsbuchstabe |
-| Kapitel-Kulissen | Sperrmüllplatz, Kegelbahn-Trümmer, Bus im Feld, Bude mit Ausbaustufen | — | siehe `docs/backlog/ui.md` | gezeichnete Ersatzobjekte |
+| Kapitel-Kulissen | Sperrmüllplatz, Kegelbahn-Trümmer, Bus im Feld, Bude mit Ausbaustufen | siehe Abschnitt „Kapitel-Kulissen“ unten | Arten, Maße und Farben in der Tabelle unten; Objekte liefert die Welt (`world.camps[].props`, `world.base`) | gezeichnete Ersatzobjekte |
+
+## Kapitel-Kulissen (Welt 0.20, `world-prop-kinds.js`)
+
+Die Welt setzt an jedem Kapitel-Lager feste Kulissen-Objekte und legt das Gelände der Bude an (`world.camps[].props`,
+`world.base.stageProps`). Jedes Objekt hat `kind`, Mittelpunkt `x`/`y`, Grundfläche `w`×`h` in Welteinheiten, eine
+Zeichenhöhe und eine Fallback-Farbe; gezeichnet wird in der UI (docs/backlog/ui.md). Maßstab: ein Erwachsener ist
+26 Einheiten hoch (docs/MASSSTAB-2026-09-17.md). Nur `bus` und `schrotthaufen` sind echte Hindernisse.
+
+| ID | Kapitel / Ort | Grundfläche | Höhe | Bildhinweis | Fallback |
+|---|---|---|---|---|---|
+| `schrotthaufen` | 2 · Sperrmüllplatz | 56×40 | 34 | Berg aus Felgen, Heizkörpern, Fahrradrahmen, oben eine Waschmaschinentrommel | Fläche `#7d7a72` |
+| `haenger` | 2 · Sperrmüllplatz | 46×26 | 20 | Einachser mit Bordwand, Nummernschild schief, Gitter-Aufsatz voll Schrott | `#8c5a44` |
+| `kuehlschrank` | 2 · Sperrmüllplatz | 16×13 | 22 | Alter Kühlschrank ohne Tür, Aufkleber, Rost am Fuß, liegt halb schräg | `#d7d2c2` |
+| `kegelbahn` | 3 · Festplatz | 62×18 | 11 | Zerlegte Bahn: zwei Bohlen, Kabelrolle, Kugelrücklauf, ein Kegel steht noch | `#c8a469` |
+| `bierbank` | 3 · Festplatz | 44×12 | 12 | Umgestürzte Bierzeltgarnitur, ein Bein geknickt, Bierring auf dem Brett | `#b88a4f` |
+| `kegelkugel` | 3 · Festplatz | 9×9 | 9 | Schwarze Kugel mit drei Löchern, im Gras eingesunken | `#3b3540` |
+| `bus` | 4 · Bus im Feld | 104×30 | 44 | Reisebus quer im Acker, Girlanden und Schärpe an den Spiegeln, Tank leer, Tür offen | `#d8c04e` |
+| `bierkasten` | 4 · Bus im Feld | 14×11 | 12 | Leerer Kasten, Flaschen quer, einer als Hocker umgedreht | `#9c5c39` |
+| `bierbong` | 4 · Bus im Feld | 12×12 | 16 | Trichter mit Schlauch an einem Stock, Edding-Beschriftung | `#5f8f6a` |
+| `bude-truemmer` | Bude · Stufe 0 | 34×22 | 12 | Bretterhaufen, halbes Dach, umgekippter Grill, Absperrband | `#6f6558` |
+| `bude-tresen` | Bude · Dieter | 54×20 | 20 | Europaletten-Tresen, Bierdeckel als Fliesen, Kronkorken-Leiste, später Zapfhahn | `#a97c4c` |
+| `bude-grill` | Bude · Oskar | 32×22 | 24 | Halbe Öltonne auf Beinen, Rost aus Einkaufswagen, Rauchfahne | `#6d6a66` |
+| `bude-werkstatt` | Bude · Kevin | 40×26 | 26 | Ausgeschlachteter Kühlschrank als Werkbank, Kabelbinder, Schild „HÄLT SCHON“ | `#8a9298` |
+| `bude-anlage` | Bude · Leander | 34×30 | 30 | Turm aus Bollerboxen auf Bierkästen, Kabelsalat, später Subwoofer-Wand | `#4d4757` |
+| `bude-landhausecke` | Bude · Anni | 46×28 | 22 | Palettensofa mit karierten Kissen, Lichterkette, Aperol-Bar, Ringlicht | `#c9a8b4` |
+| `bude-pfandlager` | Bude · Ida | 44×26 | 28 | Palettenregal voller Bierkästen, Pfandbon-Rolle, Klemmbrett | `#7f9a6d` |
+
+Jede Stufe eines Basisbau-Gebäudes ist dieselbe Art in wachsender Größe (`0.6 → 1.0` der Tabellengröße); der Stufenname
+kommt aus `content/buildings.js`. Für gezeichnete Varianten gilt die Clan-Palette aus ART-DIRECTION.md.

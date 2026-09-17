@@ -77,3 +77,31 @@ Geografische Grundlage: [© OpenStreetMap-Mitwirkende, ODbL](https://www.openstr
 ## Figurenplatzierung (0.18)
 
 `world-presence.js` ergänzt die gemeinsame World-Pipeline nach der Umgebungsdekoration: Questgeber halten 48 Welteinheiten Abstand, meiden Baumkronen, Startplatz und Brunnen und benötigen einen berechneten Laufweg. Die Suche verwendet konzentrische, vom Weltseed deterministisch gedrehte Kandidatenringe. `world.dressingReport.people` protokolliert verschobene und beibehaltene Plätze. Prüfung für sechs Weltvarianten: `node scripts/world-presence-check.mjs`; Details zu den fünf visuellen Prüfrunden in [POLISH-018-REVIEW](docs/POLISH-018-REVIEW.md).
+
+## Kulissen und Bude (0.20)
+
+`world-props.js` setzt nach der Umgebungsdekoration zwei Dinge in die Welt; `world-prop-kinds.js` hält die Stammdaten
+(`PROP_KINDS`: Name, Grundfläche, Zeichenhöhe, Fallback-Farbe; `CHAPTER_PROPS`: Kulisse je Kapitel; `PROP_RULES`).
+
+1. **Kapitel-Kulissen.** Jedes Kapitel-Lager bekommt `props` — Sperrmüllplatz (Schrotthaufen, Hänger, Kühlschränke),
+   Festplatz (Kegelbahn-Trümmer, Bierbänke, Kugeln), Bus im Feld (Bus mit Girlanden, leere Kästen, Bierbong). Die große
+   Signatur-Kulisse steht am Bosslager, die Kleinteile auch am Mob-Lager. Platziert wird auf einem Ring um die Lagermitte,
+   deterministisch aus `seed ^ 0x9B17`. Abgelehnt wird jede Lage auf Wegen, Gebäuden, Bäumen, Wasser, Haustüren, am
+   Anlaufpunkt, im Korridor Anlaufpunkt → Lagermitte, auf Spawns, Sammelpunkten, Questorten, an Treffpunkten, auf anderen
+   Kulissen oder über einem begehbaren Wegenetz-Knoten. Nur Bus und Schrotthaufen sind echte Kollisionskörper; nach dem
+   Setzen werden Anlaufpunkt, Spawns und Sammelpunkte erneut auf Begehbarkeit und Anschluss geprüft und die Kulisse sonst
+   zurückgebaut. `dressingReport.campProps` nennt gesetzte, ausgelassene, blockierende und zurückgebaute Objekte.
+2. **Die Bude.** `world.base` ist das Gelände des Basisbaus hinter St. Gangolf: 156 × 110 Einheiten, frei von Häusern,
+   Türen, Wasser und Wegen, Bewuchs auf dem Bauplatz wird gerodet, Anlaufpunkt am Wegenetz. `base.stageProps` trägt je
+   Gebäude aus `content/buildings.js` einen festen Bauplatz und je Stufe eine wachsende Kulisse; Stufe 0 sind die Trümmer.
+   Die Route „Bude“ steht in der Wegprüfung, `world.base` im Export.
+
+Gezeichnet wird beides von der UI (docs/backlog/ui.md), Bildhinweise in docs/GRAFIK-BEDARF.md.
+
+## Wohngebiet (0.20)
+
+Der Mertloch-Ausschnitt enthält kein `landuse=residential`-Polygon. `world-layout.js` leitet das Wohngebiet deshalb aus
+der tatsächlichen Bebauung ab: `settlementMask(w)` zählt Häuser je 40-Einheiten-Zelle im Umkreis von 250 Einheiten; ab
+drei Häusern gilt die Zelle als bebaut (`SETTLEMENT_RULES`). `inSettlement(w,p)` fragt die Maske, `residential(w,p)`
+prüft Wohnpolygon **oder** Maske. Außenlager, Kulissen und Bosse bleiben dadurch außerhalb des bebauten Gebiets; die
+Maske steht als `world.settlement` auch im Export, damit Laufzeitregeln (z. B. Spawns in `encounters.js`) sie nutzen können.
