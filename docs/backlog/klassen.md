@@ -21,6 +21,13 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 
 - [ ] **Die vier neuen Proc-Bausteine sind in der Laufzeit da** – jetzt fehlen die Regeln und die Auslöserliste: `PROC_TRIGGERS` in `content/procs.js` um `'skillHit'` und `'markedHit'` ergänzen, dann die Talente aus dem Engine-Backlog auf ihre eigentliche Regel heben: `proc:deckelwirtschaft` auf `{trigger:'skillHit',skill:'strike',every:3}`, `dieter-brew-0` und `baerbel-feedback-0` auf `markedHit` (Wirkung `heal`), die sechs Sekunden-Talente (`dieter-brawl-3`, `dieter-brew-7`, `baerbel-feedback-3`, `kevin-fuse-7`, `kevin-hunt-3`, `kevin-hunt-7`) von `reset` auf `cdReduce`. Formen stehen in docs/UEBERGABE-UI-2026-09-17.md §6.7. Die Prüfung in `content/schema.js` muss dafür `heal`/`cdReduce` zulassen – Bedarf liegt beim Lead.
 
+
+### Welle D · Erweiterte Beschreibungen (Nutzerauftrag)
+
+- [ ] Beschreibungs-Standard (Nutzerauftrag 2026-09-17, E-24 vorgeschlagen): Jedes kampfrelevante Element (Kniff, Talent, Passiv, Stärkung/temporärer Buff, Proc, Dorflegende, Verpflegung, Basisbau-Effekt) trägt `info:{effect, numbers:[{label,value,unit,source}], why, links:[ids], terms:[glossar-ids]}` – `effect` präzise auf das Notwendige, nichts doppelt, keine technischen Details auslassen; `numbers` zeigt genau, was um wie viel steigt (Wert + Einheit + Quelle, z. B. „+12 % Eskalationsschaden“); `why` sagt, wozu es im Kampffluss dient; `links` verweist auf zusammenhängende IDs; `terms` auf Einträge in `content/glossary.js` (`GLOSSARY={id:{name,short,long}}`, Besitzer Klassendesign). Jedes Element hat ein Icon (vorhandene `icon`/Atlas-Zellen; fehlende in ART-BRIEF). UI: Tooltip zeigt `effect`+`numbers`; Shift gedrückt blendet `why`, `links` und die `long`-Erklärung aller `terms` ein.
+- [ ] `content/glossary.js` anlegen (Randale, Pegel/Glanz/Druck, Eskalation, Schwung, Deckung, Parade, Unterbrechen, Fläche, Markierung, GCD, Wertungen stamina/might/finesse/wit/armor/crit/haste/mastery mit Umrechnung, Autoangriff, Proc, Kettenzug …) mit `short` (ein Satz) und `long` (Mechanik mit Zahlen aus BALANCE).
+- [ ] `info` für alle BASE_SKILLS/KITS, BUFF_SKILLS, THROW/GROUND, TALENT_SKILLS, TALENT_ROWS (alle 90), CLAN_MEMBERS.passive(s), PROCS aus content/procs.js. Zahlen aus den Definitionen ableiten (keine Doppelpflege: Helfer `describe(id)` der aus cd/cost/damage/effects den `numbers`-Block baut), Prüfung in checks/klassen.js: jedes Element hat info, jeder terms-Eintrag existiert, jeder link existiert.
+
 ## Erledigt
 
 - [x] **Klassenabstand Runde B** (2026-09-17). Bericht vorher 20 Auffälligkeiten, nachher 8; alle ⚠ weg.

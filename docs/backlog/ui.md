@@ -55,6 +55,14 @@ Offen / abhängig von anderen Rollen:
 - [x] **Wegmarke anklickbar → `game.navigateDestination()`** (P6): ein Laufbefehl zum Auftragsziel statt zwölf Klicks an den Bildschirmrand.
 - [ ] **Zählstand der Proc-Regeln** (offen, nicht Teil der UI-Runde B2): `procCount(game,id)` für Auslöser mit `every` (z. B. „2/3 Kellen“) auf dem Proc-Chip anzeigen.
 
+
+### Welle D (Nutzerauftrag 2026-09-17)
+
+- [ ] **Talentbuch/Kniffe als Nachschlagewerk**: jedes kampfrelevante Element mit Icon (Kniffe, Talente, Passive, Stärkungen, Procs) im Reiter „Kniffe“ auffindbar; Tooltip zeigt `info.effect` + `numbers` (aus `game.describe`), **Shift gedrückt** blendet `why`, `links` (klickbar → springt zum Element) und Glossar-`long` zu allen `terms` ein; laufende Stärkungen im HUD mit demselben Tooltip.
+- [ ] **Leiste**: Verpflegung per Drag/Tipp in Leistenplätze ziehen, Stapelzahl am Platz, Abklingzeit sichtbar; Touch ebenso.
+- [ ] **Beute-Log**: jedes `loot`-Ereignis als Logzeile mit Icon und Seltenheitsfarbe; Hover über die Zeile zeigt den Gegenstands-Tooltip (Shift-Details ebenfalls); Log scrollbar, letzte 50.
+- [ ] **Service Worker**: neue Version atomar aktivieren (skipWaiting + „Neu laden“-Hinweis), damit nach einem Deploy nie alte und neue Module gemischt laden (Befund 2026-09-17: gecachte enemies.js ohne ELITE_TABLE).
+
 ## Erledigt
 
 - [x] **Sprites je `variant`** (Grafik/Welt): Ladeliste jetzt `assets/content-art/handoff-catalog.json` statt fester Pfade; `content-art.js` löst die Aliase auf, `live-art.js` wertet `variant` (über `livePersonId`) vor `skin` aus und `clan-art.js` prüft den gelieferten Bogen vor dem alten Rig. Ohne Bild bleibt der bisherige Fallback (2026-09-17).

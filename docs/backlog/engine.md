@@ -38,6 +38,13 @@ Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). D
 - [x] **P6 Laufweg**: Rechtsklick-Laufweg bis zum Klickpunkt (heute ~10 m je Klick); Prüfung mit 127 m Strecke in einem Klick. **Erledigt Runde B, 2026-09-17** (Laufbefehl überlebt hängende Schritte, `repath()`, `navigateDestination()`; Test über 127 m).
 - [x] **P8 Hofprobe**: kein Schritt erledigt sich ohne Eingabe (Schritt 3 übersprungen, „Auto 1/2“ vorab erfüllt, „Autoangriff aus.“ ohne Eingabe, „Nochmal:“ beim ersten Versuch); Cooldown-Meldung mit Restzeit. **Erledigt Runde B, 2026-09-17** (Tick-Sperre je Schritt, Zähler starten bei null, erster Ausweichversuch ohne Nochmal-Hinweis, Abklingzeit mit Restzeit).
 
+
+### Welle D (Nutzerauftrag 2026-09-17)
+
+- [ ] **Benutzbare Gegenstände in der Aktionsleiste**: Leistenplätze nehmen Verpflegung (`usable`) auf; Aktion benutzt den Gegenstand ohne Menü, zählt den Stapel herunter, respektiert `consumableCd`; Speicher der Belegung; Test.
+- [ ] **Auto-Loot**: Beute wird beim Kill/Öffnen automatisch eingesammelt (Rucksack voll → `rpg.recovery` + Hinweis); Event `loot {items:[{id,count,rarity}],coins,source}` für das Log; Einstellung `autoLoot` (Standard an); Test.
+- [ ] **Beschreibungs-API**: `game.describe(kind,id)` liefert `info` aus content plus Laufzeitwerte (tatsächlicher Schaden mit Ausrüstung, tatsächliche Abklingzeit mit Haste, Restdauer laufender Stärkungen), damit Tooltips exakte Zahlen zeigen; Test.
+
 ## Erledigt
 
 - [x] **Feldgegner skalieren mit der Spielerstufe** (Balancing, Bericht 0.20): ab Stufe 10 fallen Dachs, Gans, Rabe, Fuchs in unter 2,5 s. Vorschlag: `encounters.buildCell` nutzt `enemyScale(playerLevel-2, def.level)` für hp/damage im Umland; Dorfkern bleibt fest. Runde A, 2026-09-17, tests/engine-rules.test.mjs.

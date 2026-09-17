@@ -9,6 +9,11 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 - [ ] Restliche 72 Talente als Regeln mit Auslöser, gemeinsam mit Klassendesign (docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
 - [ ] Bau-Ortsregel als Engine-Regel beauftragt (docs/backlog/engine.md); Basisbau-Effekt `respawnHp` ist als Deckung umgesetzt.
 
+
+### Welle D (Nutzerauftrag)
+
+- [ ] `info` für BUILDING_EFFECTS/BUILDINGS-Stufen und Boss-/Gegner-Zauber (`CAST_SETS` casts: effect/numbers/terms), nach dem Standard in docs/backlog/klassen.md.
+
 ## Erledigt
 
 - [x] **Dieters Waffenfaktor auf Klassenmaß** (2026-09-17): `SKILL_DAMAGE.dieter.strike.weapon` 3 → 2 und `burst.weaponPerPoint` 3,2 → 2,8 in `content/combat.js`. Beleg `npm run content:balance`: Pfandkeiler auf eigener Stufe 3,6 → 4,5 s (Flagge weg), Pfandautomat 9,4 → 10,6 s (Flagge weg), Borsten-Bruno 4,2 → 5,5 s, Oberpraktikant Olaf 4,6 → 6,1 s, Pfanddachs 2,6 → 3,2 s. Auffälligkeiten 8 → 6; Bärbel und Kevin unverändert (Zelle für Zelle gleich). Folge: die feste Zahl im Resonanz-Test (`tests/game.test.mjs`, Dieters `burst`) von 349,92 auf 316,9 nachgezogen.
