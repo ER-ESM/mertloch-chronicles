@@ -1,9 +1,54 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+import {tickCasting} from '../auto-combat.js';
 import {Game} from '../engine.js';import {World} from '../world.js';import {makeEnemy} from '../encounters.js';import {combatStats} from '../rpg.js';import {learnTalent,changeSpec,TALENTS} from '../talents.js';import {fireProcs,procFree,procEmpowered,procGlow} from '../procs.js';import {skillStatus} from '../combat-ui.js';import {BALANCE,PROC_RULES,CLASS_LESSONS,CAST_TIMES,SPAWN_TABLES} from '../content/index.js';
 const arena=()=>({id:'flow-test',seed:1,spawn:{x:-5000,y:-5000},npc:{x:-5000,y:-5000},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 const game=(save={level:6},classId='dieter')=>{const g=new Game(arena(),{...save,classId});g.random=()=>.5;g.player.x=g.player.y=0;g.player.hp=g.player.maxHp;return g;};
 const build=(g,spec)=>{g.player.x=g.world.spawn.x;g.player.y=g.world.spawn.y;assert.ok(changeSpec(g,spec),'spec '+spec);for(const t of TALENTS[spec])assert.ok(learnTalent(g,t.id),t.id);g.player.x=g.player.y=0;};
 const enemy=(g,x=30,hp=10000)=>{const e=makeEnemy({x,y:0},g.enemies.length+1,{hp,aggro:true,ai:'combat',attackTimer:100});g.enemies.push(e);g.target=e;return e;};
+const cast=(g,id,point)=>{assert.ok(g.action(id,point));if(g.casting)tickCasting(g,g.casting.total);};
+
+test('finishers spend their original points but retain points earned by a lethal hit for every class',()=>{
+ for(const classId of ['dieter','baerbel','kevin']){
+  const g=game({level:11},classId),e=enemy(g,30,1);g.player.runes=3;
+  cast(g,'burst');assert.equal(e.hp,0,classId);
+  assert.equal(g.player.runes,BALANCE.momentum.pointsOnKill,classId+' keeps the kill reward');
+  const survivor=enemy(g);g.gcd=0;g.cooldowns.burst=0;
+  cast(g,'burst');assert.ok(survivor.hp>0);
+  assert.equal(g.player.runes,0,classId+' spends points without a kill');
+ }
+});
+
+test('finisher splash kills accumulate points up to the cap and preserve kill talent rewards',()=>{
+ const g=game({level:11},'baerbel');for(let i=0;i<4;i++)enemy(g,30+i,1);g.player.runes=3;
+ cast(g,'burst');assert.ok(g.enemies.every(e=>e.hp===0));assert.equal(g.player.runes,3);
+ const h=game({level:11},'kevin');build(h,'kevin-hunt');enemy(h,30,1);h.player.runes=3;
+ cast(h,'burst');assert.equal(h.player.runes,BALANCE.momentum.pointsOnKill+PROC_RULES.beutefieber.effect.points);
+});
+
+test('reset procs highlight their declared skills until the window expires',()=>{
+ for(const [id,classId] of [['tresenkante','dieter'],['kurzschluss','kevin'],['zugabe-rhythmus','baerbel'],['beutefieber','kevin']]){
+  const g=game({level:11},classId),rule=PROC_RULES[id];enemy(g);g.random=()=>.1;g.cooldowns[rule.effect.reset]=20;
+  assert.equal(fireProcs(g,rule.trigger,{['proc:'+id]:1}),1);
+  assert.equal(g.cooldowns[rule.effect.reset],0);assert.ok(procGlow(g,rule.glow),id);
+  assert.ok(skillStatus(g,rule.glow).ideal,id+' highlights a usable skill');
+  g.time=rule.window+.01;g.tick(.05);assert.equal(procGlow(g,rule.glow),false,id+' expires');
+ }
+});
+
+test('reset proc glow survives rejected actions and is consumed only by a successful use',()=>{
+ const g=game({level:11});g.random=()=>.1;fireProcs(g,'crit',{'proc:tresenkante':1});
+ g.paused=true;assert.equal(g.action('parry'),false);assert.ok(procGlow(g,'parry'));
+ g.paused=false;assert.ok(g.action('dash'));assert.ok(procGlow(g,'parry'),'another skill does not consume it');
+ assert.ok(g.action('parry'));assert.equal(procGlow(g,'parry'),false);
+});
+
+test('a ground reset keeps glowing while aiming and stops after placement',()=>{
+ const g=game({level:11},'kevin');g.random=()=>.1;fireProcs(g,'crit',{'proc:kurzschluss':1});
+ assert.equal(g.action('ground'),false);assert.ok(procGlow(g,'ground'));
+ assert.equal(g.action('ground',{x:9999,y:0}),false);assert.ok(procGlow(g,'ground'));
+ assert.ok(g.action('ground',{x:30,y:0}));assert.ok(procGlow(g,'ground'),'starting a cast does not consume it');
+ tickCasting(g,g.casting.total);assert.equal(procGlow(g,'ground'),false);
+});
 test('the core rotation is complete on level 4 for every figure: build, mark, finisher, answer',()=>{for(const id of ['dieter','baerbel','kevin']){const L=CLASS_LESSONS[id];assert.equal(L.strike,1);assert.ok(L.mark<=3,id+' mark');assert.ok(L.burst<=4,id+' burst');assert.ok(L.interrupt<=4,id+' interrupt');assert.ok(L.parry<=7);}assert.equal(CAST_TIMES.baerbel.mark,undefined,'mark casts while moving');assert.equal(CAST_TIMES.kevin.mark,undefined);});
 test('a kill gives momentum: energy, a point, mark reset, haste stacks that expire',()=>{const g=game();const e=enemy(g,30,10);g.player.energy=20;g.player.runes=0;g.cooldowns.mark=5;const haste=combatStats(g).haste;g.damage(e,999,'Kelle');assert.equal(g.momentum.stacks,1);assert.ok(g.player.energy>=45);assert.equal(g.player.runes,1);assert.equal(g.cooldowns.mark,0);assert.ok(combatStats(g).haste>haste+BALANCE.momentum.hastePerStack-.001);for(let i=0;i<3;i++)g.damage(enemy(g,30,10),999,'Kelle');assert.equal(g.momentum.stacks,BALANCE.momentum.maxStacks);for(let i=0;i<200;i++)g.tick(.05);assert.equal(g.momentum.stacks,0);assert.ok(Math.abs(combatStats(g).haste-haste)<.001);});
 test('energy regenerates faster in combat',()=>{const g=game();g.player.inCombat=7;g.player.energy=0;g.tick(.05);assert.ok(g.player.energy>=BALANCE.momentum.combatEnergyRegen*.05-.01);});
