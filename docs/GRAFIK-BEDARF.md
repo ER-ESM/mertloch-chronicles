@@ -29,3 +29,18 @@ Menü, Ton, Vollbild und Journal sind über `ui-art.js` angebunden. Die Dialogbe
 | 17 | `timo` | Trauzeuge Timo | Schärpe, Bierbong, drei Tage wach, Sonnenbrand, unerschütterlich gut gelaunt |
 
 Bis die Zellen 12–17 gezeichnet sind, malt die Gesprächs-UI Porträts über `PERSON_APPEARANCE`; Pit, Kurt und Timo zeigen ihren Anfangsbuchstaben. Kein Blocker, nur eine Lücke.
+
+## Offen nach der Anbindung der Lieferung 2026-09-17
+
+Angebunden sind die sechs gelieferten Reiter, sieben HUD-Symbole, Schwungzustände, Proc-Rahmen/-Marker,
+Sprechblase (9-Slice), Übungspuppe, alle Helden-, Auftraggeber-, Bewohner-, Gegner- und Bossbögen,
+18 Gegenstandsbilder und die 18 neuen Proc-Talente. Nicht aus dieser Lieferung abgedeckt und weiter offen:
+
+| ID | Zweck | Größe | Bildhinweis | Fallback heute |
+|---|---|---|---|---|
+| `ui-tab-bude` | Siebter Reiter „Bude“ des Clanbuchs — die Lieferung enthält nur sechs Reiter | 24×24 | Bretterbude mit Bierkasten davor, gleiche Machart wie die sechs anderen Reiter | altes `reinforced`-Sprite |
+| `anni-poses`, `anni-walk` | Aperol-Anni als dritte Spielfigur; Dieter und Kevin haben neue Bögen, Anni steht weiter auf dem alten `maifeld-live`-Bogen | 96×96, 4 Richtungen | wie Dieter/Kevin, Maßstab 52 nativ | `assets/maifeld-live/runtime/anni-*.png` |
+| `warden` | Ruhewärter (Feldgegner, `skin:'warden'`) | 96×96, 4 Richtungen × 4 Spalten | wie Schnorrer/Praktikant | alte Rigfigur |
+| `badger`, `goose`, `boar` | Dachs, Gans, Pfandkeiler als Richtungsbögen wie Rabe und Fuchs | 96×96 | wie `raven`/`fox` | Rig-Animation aus `maifeld-live` |
+| Porträt `pit` | Zelle 15 des Dialogatlas (`content/portraits.js`) | Atlaszelle | siehe `docs/backlog/ui.md` | Anfangsbuchstabe |
+| Kapitel-Kulissen | Sperrmüllplatz, Kegelbahn-Trümmer, Bus im Feld, Bude mit Ausbaustufen | — | siehe `docs/backlog/ui.md` | gezeichnete Ersatzobjekte |

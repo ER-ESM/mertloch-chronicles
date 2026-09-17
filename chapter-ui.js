@@ -4,6 +4,7 @@ import {conversationHeader} from './dialogue-ui.js';
 import {escapeQuest as esc} from './quest-status-ui.js';
 import {distance} from './world.js';
 import {countItem,ITEMS} from './rpg.js';
+import {contentPath} from './content-art.js';
 import {ACTS,STORY,STORY_CHAPTERS,MAIN_DIALOGUE,chapterDialogue,MEMORY_FRAGMENTS,SYSTEM_LINES,LORE,BUILDINGS,BUILDING_EFFECTS,buildingsUnlocked,NPCS,FACTIONS} from './content/index.js';
 
 /** Akt des laufenden Kapitels. */
@@ -93,7 +94,9 @@ export function chaptersPanel(game){
  const act=actOf(game.quest.chapter),chapters=actChapterList(act);
  return `<section class="chapter-log"><header class="rpg-heading"><h2>${esc(act.title)}</h2><p>${esc(act.subtitle)}</p></header><div class="chapter-list">`+
   chapters.map(c=>{const claimed=game.quest.chapterClaimed>=c.id,reached=c.id<=game.quest.chapter;
-   return `<article class="chapter-entry ${claimed?'done':c.id===game.quest.chapter?'active':'later'}"><h3>${esc(c.title)}</h3><small class="chapter-status">${esc(chapterStatus(game,c))}</small>`+
+   // Noch nicht erreichte Kapitel tragen das gelieferte Schloss vor dem Titel; die Beschriftung bleibt.
+   const lock=!reached&&contentPath('ui-chapter-lock')?`<img class="chapter-lock" src="${contentPath('ui-chapter-lock')}" width="24" height="24" alt="Noch gesperrt">`:'';
+   return `<article class="chapter-entry ${claimed?'done':c.id===game.quest.chapter?'active':'later'}"><h3>${lock}${esc(c.title)}</h3><small class="chapter-status">${esc(chapterStatus(game,c))}</small>`+
     (reached?`<p>${esc(c.summary)}</p>`:'')+
     (claimed&&c.clue?`<p class="chapter-clue"><b>Was wir wissen:</b> ${esc(c.clue)}</p>`:'')+
     (claimed&&c.unlocks?.length?`<ul class="chapter-unlocks">${c.unlocks.map(u=>`<li>${esc(u)}</li>`).join('')}</ul>`:'')+

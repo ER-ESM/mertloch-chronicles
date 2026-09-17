@@ -1,4 +1,5 @@
 import {drawBoar} from './maifeld-boar-rig.js';
+import {contentActor,contentFrame,hasContentActor,contentActorHeight} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 export {equipmentAppearance};
 export const liveArt={ready:false,catalog:null,images:{},animals:{}};
@@ -16,6 +17,10 @@ export function loadLiveArt(){return pending||=(async()=>{
 })();}
 const aliases={baerbel:'anni',lauti:'leander',elder:'villager0'};
 export const livePersonId=(id,variant=0)=>id==='resident'?'villager'+variant%8:aliases[id]||id;
+const DIRECTIONS=['se','sw','ne','nw'];
+/** Welthöhe des gelieferten Bogens dieser Figur; 0, wenn für sie nichts geliefert wurde. */
+export const liveActorHeight=(id,variant)=>contentActorHeight(livePersonId(id,variant));
+export const hasLiveContent=(id,variant)=>hasContentActor(livePersonId(id,variant));
 const directionOf=p=>p.direction||((p.facing||1)>0?'se':'sw');
 
 function gearPart(c,id,x,y,w,h,west=false,angle=0,half=null){
@@ -49,8 +54,31 @@ function gear(c,items,s,west,back,behind,p){
  if(off)gearPart(c,off.asset,s.off.x,s.off.y,off.hands===1?8:15,off.hands===1?17:16,west);
 }
 
+/**
+ * Gelieferter Bogen aus assets/content-art: 2 native Pixel = 1 Welteinheit, Fußpunkt am Asset.
+ * `magnify` vergrößert nur für UI-Porträts; in der Welt gilt die Welthöhe des Assets.
+ */
+function drawContentPerson(c,id,x,y,p,magnify){
+ const actor=contentActor(id);if(!actor)return false;
+ const direction=directionOf(p),west=direction.endsWith('w'),back=direction.startsWith('n');
+ const row=Math.max(0,DIRECTIONS.indexOf(direction));
+ const sel=contentFrame(actor,row,p),f=sel.frame,size=sel.size;
+ const k=actor.worldHeight/actor.nativeHeight*magnify,height=actor.worldHeight*magnify;
+ c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
+ c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();
+ c.scale(k,k);c.translate(-actor.pivot.x,-actor.pivot.y);
+ const items=f.sockets?p.visualEquipment||[]:[];
+ if(items.length)gear(c,items,f.sockets,west,back,true,p);
+ c.drawImage(sel.image,f.x,f.y,size,size,0,0,size,size);
+ if(items.length)gear(c,items,f.sockets,west,back,false,p);
+ if(p.parry>0){c.strokeStyle='#f3b84b';c.lineWidth=2/k;c.beginPath();c.arc(actor.pivot.x,actor.pivot.y-26,25,-1.3,1.1);c.stroke();}
+ c.restore();return true;
+}
+
 export function drawLivePerson(c,id,x,y,time=0,p={},scale=1){
- if(!liveArt.ready)return false;id=livePersonId(id,p.variant);const cat=liveArt.catalog,h=cat.heroes[id],n=cat.people[id];if(!h&&!n)return false;
+ id=livePersonId(id,p.variant);
+ if(drawContentPerson(c,id,x,y,p,p.artMagnify??scale/(26/33)))return true;
+ if(!liveArt.ready)return false;const cat=liveArt.catalog,h=cat.heroes[id],n=cat.people[id];if(!h&&!n)return false;
  const direction=directionOf(p),west=direction.endsWith('w'),back=direction.startsWith('n'),height=33*scale,k=height/52;
  c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
  c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();c.scale(k,k);c.translate(-48,-80);

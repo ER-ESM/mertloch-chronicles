@@ -66,3 +66,10 @@
  .build-cost{gap:.25rem .45rem}
  .base-effects li,.build-card p,.memory-entry p,.chapter-entry p{font-size:.8rem}
 }
+
+/* Grafiklieferung 2026-09-17: Proc-Rahmen (48 × 48, 9-Slice 12) und Proc-Marker (12 × 12) an der Aktionsleiste. */
+.skill.proc-ready::before{content:'';position:absolute;inset:-3px;pointer-events:none;z-index:6;border:6px solid transparent;border-image:url(./assets/content-art/ui/ui-proc-frame.png) 12 / 6px stretch;background-repeat:no-repeat;background-position:right -2px top -2px;background-size:12px 12px;image-rendering:pixelated}
+.skill.proc-free::before{background-image:url(./assets/content-art/ui/ui-proc-free.png)}
+.skill.proc-empower::before{background-image:url(./assets/content-art/ui/ui-proc-empower.png)}
+.buff-chip .momentum-mark{image-rendering:pixelated;width:20px;height:20px;vertical-align:-5px}
+.chapter-entry .chapter-lock{image-rendering:pixelated;width:24px;height:24px;vertical-align:-5px;margin-right:5px}

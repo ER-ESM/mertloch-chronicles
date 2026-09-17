@@ -1,4 +1,5 @@
 import {BOSSES,BOSS_LINES} from './content/index.js';
+import {drawNineSlice} from './content-art.js';
 
 export const isElite=e=>!!(e?.elite||e?.type==='boss');
 const bossDefinition=e=>e.type==='boss'?(BOSSES[e.bossId]||BOSSES[e.family]):undefined;
@@ -62,7 +63,9 @@ export function drawBossSpeech(c,bubbles,{ox,oy,width,height,zoom,obstacles=[]})
   const candidates=xs.flatMap(x=>ys.map(y=>({x:Math.round(Math.max(pad,Math.min(width-w-pad,x))),y:Math.round(Math.max(pad,Math.min(height-h-pad,y))),w,h})));
   const box=candidates.filter(b=>!blocked.some(o=>overlaps(b,o))).sort((a,b)=>Math.hypot(a.x-desired.x,a.y-desired.y)-Math.hypot(b.x-desired.x,b.y-desired.y))[0];
   if(!box)continue;const {x,y}=box;boxes.push({...box,enemyId:e.id});
-  c.fillStyle='#263442';c.fillRect(x-2/zoom,y-2/zoom,w+4/zoom,h+4/zoom);c.fillStyle='#f6dfac';c.fillRect(x,y,w,h);
+  // Gelieferte Sprechblase als 9-Slice (32 × 24, left 6 / right 5 / top 5 / bottom 7); ohne Bild der alte Kasten.
+  if(!drawNineSlice(c,'ui-speech-bubble',Math.round(x)-6,Math.round(y)-5,Math.round(w)+11,Math.round(h)+12)){
+   c.fillStyle='#263442';c.fillRect(x-2/zoom,y-2/zoom,w+4/zoom,h+4/zoom);c.fillStyle='#f6dfac';c.fillRect(x,y,w,h);}
   const tip=Math.max(x+pad,Math.min(x+w-pad,anchor.x)),below=y>anchor.y-60,edge=below?y:y+h,sign=below?-1:1;c.fillStyle='#263442';c.beginPath();c.moveTo(tip-5/zoom,edge);c.lineTo(tip,edge+sign*7/zoom);c.lineTo(tip+5/zoom,edge);c.fill();
   c.fillStyle='#f6dfac';c.beginPath();c.moveTo(tip-3/zoom,edge-sign/zoom);c.lineTo(tip,edge+sign*4/zoom);c.lineTo(tip+3/zoom,edge-sign/zoom);c.fill();
   c.fillStyle='#303642';lines.forEach((t,i)=>c.fillText(t,x+pad,y+pad+i*lineHeight,maxWidth));
