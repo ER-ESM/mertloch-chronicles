@@ -4,6 +4,7 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Systemzeile für die Bau-Ortsregel** (Engine, Runde A): `game.build()` baut jetzt nur am Treffpunkt und außerhalb des Kampfes. Gewünscht: `SYSTEM_LINES.buildPlace(gebaeudeName)` in `content/dialogues.js`. Solange sie fehlt, meldet die Engine einen Rückfall im Wortlaut der Clanwechsel-Zeile („… nur am sicheren Treffpunkt, außerhalb eines Kampfes.“).
 - [ ] Akt 2 erst nach Auftrag: Haken sind Bastian, die Kiste, die Hochzeit in Koblenz; Gisela/Automat bleiben Reserve.
 - [ ] Nach dem nächsten Playtest prüfen, ob die gestrafften Ida-Belohnungen noch alle Pointen tragen (Kapitel 4 ist der Prüfstein).
 - [ ] Sprechblasen der Dorfbewohner: Sobald die UI `VILLAGERS.says` zeigt, Zeilen je Kapitel staffeln statt gleichmäßig mischen (heute fünf Zeilen je Bewohner, Akt-1-Bezug).

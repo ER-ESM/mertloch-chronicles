@@ -109,3 +109,44 @@ Kapitel 2–4 haben je ein `gather`-Ziel. Fortschritt = eingesammelte Punkte **o
 - `app.js:103` zeigt `q.claimed` als „alles fertig“ → auf `game.chapterProgress()` umstellen.
 - `app.js:133` ruft `showReward('main')` → `game.rewardKey()` benutzen.
 - `renderer.js:65` markiert Ida mit `✦`, sobald Kapitel 1 abgeholt ist → `game.quest.actDone` statt `quest.claimed`.
+
+## 5. Engine → UI · Runde A (2026-09-17, Branch `engine`)
+
+Neu: Sprüche als Ereignis, Bau nur am Treffpunkt, echte epische Belohnungen, mit dem Spieler wachsende Feldgegner, Beinteil aus Kapitel 1.
+
+### 5.1 Ereignis `bark` (Sprechblasen ohne Textparsen)
+
+| Feld | Typ | Inhalt |
+|---|---|---|
+| `enemyId` | Zahl | `enemy.id` bzw. Bewohner-Id aus `game.life.actors`; bei Bedarf zum Wiederfinden der Figur |
+| `name` | String | Name der sprechenden Figur (Gegnername bzw. `VILLAGERS[].name`) |
+| `text` | String | die Zeile, roh aus `content/` – nie selbst zusammenbauen |
+| `kind` | `'enemy' \| 'boss' \| 'phase' \| 'villager'` | woher die Zeile kommt |
+| `x`, `y` | Zahl | Weltposition der Figur im Moment des Spruchs (Ankerpunkt der Blase) |
+
+Wann gesendet:
+
+- `kind:'enemy'` – menschlicher Feldgegner (`ENEMY_BARKS[archetype]`) beim **ersten** Spezialangriff eines Auftritts; die Zeile wechselt je Gegner und je Wiederbelebung. Tiere schweigen.
+- `kind:'boss'` – Bosszeile `BOSS_LINES[bossId].engage` beim ersten Spezialangriff und `.defeat` beim Tod.
+- `kind:'phase'` – Phasenzeile aus `BOSSES[bossId].phases`, je Schwelle genau einmal.
+- `kind:'villager'` – Dorfbewohner: `village-life.js` öffnet wie bisher die Blase (`actor.bubble`), die Engine wählt daraus die Zeile aus `VILLAGERS[variant].says` (reihum) und meldet sie. Kein Eintrag im Kampflog.
+
+Gegner- und Bosszeilen stehen **zusätzlich** weiter im Kampflog (`game.messages`) – wer die Blase zeichnet, kann das Log unverändert lassen. `enemy-ui.js` kann seine eigene Beobachtung von `hp`/`cycle`/`phases` jetzt durch dieses Ereignis ersetzen.
+
+### 5.2 Bau nur am Treffpunkt
+
+- Neu `game.atHub()` → `true`, wenn der Spieler höchstens `HUB_RADIUS` (150 Einheiten, exportiert aus `engine.js`) von `world.spawn` entfernt und nicht im Kampf ist. Dieselbe Regel wie beim Clanwechsel; `claimStarterWeapons` nutzt sie ebenfalls.
+- `game.build(id)` bricht außerhalb mit `false` ab und meldet einen Toast. Die UI kann die Schaltfläche „Ausbauen“ weiterhin anzeigen, sollte sie aber über `game.atHub()` ausgrauen – die Regel liegt jetzt in der Engine, nicht mehr nur in der UI (ersetzt §4.4, letzter Punkt).
+- Toast-Text: `SYSTEM_LINES.buildPlace(name)`, solange es die Zeile nicht gibt, ein Rückfall im Wortlaut der Clanwechsel-Zeile. Bedarf steht in `docs/backlog/story.md`.
+
+### 5.3 Epische Belohnungen
+
+`rolledDefinition`/`registerRoll` kennen jede Güte aus `BALANCE.items.quality` (heute `uncommon`, `rare`, `epic`). Kapitel 4 (`reward.gear:'epic'`) würfelt damit echte epische Teile: `rarity:'epic'`, Budget × `BALANCE.items.quality.epic`, Gegenstandsstufe + `BALANCE.items.itemLevel.epic`. Alte Spielstände laden epische Fundstücke korrekt nach. Für die UI: `rarity-epic` muss in der Belohnungsauswahl, im Rucksack und im Tooltip die epische Farbe ziehen (`rpg-ui.js` kennt den Namen „Dorflegende“ schon).
+
+### 5.4 Feldgegner wachsen mit
+
+`encounters.buildCell` skaliert Leben und Schaden von Feldgegnern jenseits `SPAWN_TABLES.tierDistance` mit `enemyScale(Spielerstufe − 2, Artstufe)` (neu exportiert: `scaledStats(def, playerLevel, far)`). Der Dorfkern bleibt auf den Werten aus `content/enemies.js`. Die Werte werden beim Bau einer Zelle festgelegt, nicht laufend nachgezogen. Für die UI ändert sich nichts an den Feldern – nur die angezeigten `hp`/`maxHp` sind im Umland höher. Beispiel Stufe 10: Dachs 2,65 s → 4,87 s, Rabe 1,91 s → 3,52 s.
+
+### 5.5 Start ohne Hose
+
+Der Beinschutz-Slot bleibt beim Start leer (unverändert). Neu: `claimQuest()` legt bei Kapitel 1 zusätzlich zur gewählten Belohnung ein gewürfeltes Beinteil (`slot:'legs'`, einfachste Güte, Spielerstufe) in den Rucksack; ist kein Platz frei, landet es in `rpg.recovery` und kommt über „Ausrüstung zurückholen“ nach. Alte Spielstände mit bereits abgeholtem Kapitel 1 bekommen nichts nachgereicht. Die UI sollte nach dem Kapitel-1-Dialog auf den Rucksack hinweisen („Endlich eine Hose“).

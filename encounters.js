@@ -1,5 +1,5 @@
 import {rng,distance,inside,segmentDistance} from './world.js';
-import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES} from './content/index.js';
+import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES,enemyScale} from './content/index.js';
 
 export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2});
 export {ARCHETYPES,ELITES};
@@ -7,6 +7,14 @@ export {ARCHETYPES,ELITES};
 export function makeEnemy(spot,id,config={}){const type=config.type||'wolf',camp=CAMP_ENEMIES[type]||CAMP_ENEMIES.wolf,hp=config.hp||camp.hp;return {...spot,home:{x:spot.x,y:spot.y},id,type,skin:config.skin||camp.skin,name:config.name||camp.name,family:config.family||camp.family,hp,maxHp:hp,level:config.level||camp.level,behavior:config.behavior||'aggressive',aggroRange:config.aggroRange??(camp.aggroRange??100),roamRadius:config.roamRadius??(camp.roamRadius??65),speed:config.speed||camp.speed,respawn:config.respawn||camp.respawn,castSet:config.castSet||camp.castSet||type,damage:config.damage||1,elite:!!config.elite,leash:config.leash||380,ai:'roaming',aggro:false,attackTimer:COMBAT_RULES.firstSpecial,autoAttack:ENEMY_AUTOS[config.family||camp.family]||ENEMY_AUTOS.boar,autoTimer:0,cast:null,cycle:0,mark:0,dotDamage:12,dotTimer:0,slow:1,vulnerable:0,stun:0,dead:0,respawnAt:0,spawnCount:0,facing:1,moving:false,attack:0,spawnGrace:0,roamWait:1+(id%7)*.37,roamGoal:null,returnPath:[],returnTime:0,chasePath:[],pathTimer:0,...Object.fromEntries(Object.entries(config).filter(([,value])=>value!==undefined))};}
 /** Gewichtete Wahl aus einer Spawn-Tabelle; tier-1-Arten nur jenseits SPAWN_TABLES.tierDistance. */
 export function pickSpawn(rows,random,far){const pool=rows.filter(r=>far||r.tier===0),total=pool.reduce((n,r)=>n+r.weight,0);let x=random()*total;for(const r of pool){x-=r.weight;if(x<=0)return r.kind;}return pool.at(-1).kind;}
+/** Feldgegner im Umland wachsen mit dem Spieler mit: Grundlage ist die Stufe des Spielers abzüglich des Vorsprungs
+ * aus BALANCE.enemies.playerLead, verglichen mit der Stufe der Art. Der Dorfkern (bis SPAWN_TABLES.tierDistance)
+ * bleibt auf den Werten aus content/enemies.js, damit der Anfang unverändert bleibt. */
+export function scaledStats(def,playerLevel,far){
+  if(!far)return {};
+  const lead=BALANCE.enemies.playerLead??2,{hp,damage}=enemyScale(Math.max(1,(playerLevel|0)-lead),def.level||1);
+  return {hp:Math.round((def.hp||1)*hp),damage:(def.damage||1)*damage};
+}
 export const walkClear=(w,a,b,r=7)=>w.walkClear?w.walkClear(a,b,r):w.lineClear(a,b);
 export function inSanctuary(w,p){return (w.quests||[]).some(q=>q.activity&&q.items.some(item=>distance(item,p)<55))||distance(p,w.spawn)<95||(w.hubs||[]).some(h=>distance(p,h)<105)||(w.camps||[]).some(c=>c.approach&&distance(p,c.approach)<85);}
 function nearPeople(w,p,pad){return (w.quests||[]).some(q=>distance(p,q.giver)<pad)||distance(p,w.npc)<pad;}
@@ -30,12 +38,12 @@ export class EncounterDirector{
       const area=w.areas.find(a=>['farmland','meadow','grass','forest'].includes(a.tags.landuse)&&inside(p.x,p.y,a.points))||w.areaAt(p.x,p.y),field=area?.tags.landuse!=='residential';
       const S=SPAWN_TABLES,town=distance(p,w.spawn),far=town>S.tierDistance,aggressive=field&&town>S.aggressiveMinDistance&&random()>1-S.aggressiveChance;let kind=pickSpawn(aggressive?S.aggressive:S.neutral,random,far),def=ARCHETYPES[kind];
       if(aggressive&&town>S.eliteDistance&&random()<S.eliteChance){kind='alphaBoar';def=ELITES.alphaBoar;}
-      const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
+      const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,...scaledStats(def,g.player.level,far),campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
       e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9))e.spawnPoints.push(dest);}
       if(distance(p,g.player)<ENCOUNTER_RULES.spawnDistance){e.hp=0;e.respawnAt=g.time;e.dead=0;e.ai='waiting';}else{e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.ai='appearing';}
       list.push(e);
       // Gruppen: im Umland ziehen aggressive Arten zu zweit oder zu dritt herum (Kettenzug statt Laufwege).
-      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
+      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,far),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
     }list.push(...companions);this.cells.set(key,list);return list;
   }
   tick(dt){if(!this.enabled)return;const g=this.game,w=this.world,C=ENCOUNTER_RULES.cellSize,cx=Math.floor(g.player.x/C),cy=Math.floor(g.player.y/C),key=cx+','+cy;this.clock-=dt;

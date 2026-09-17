@@ -7,6 +7,7 @@ import {arenaHit,tickArena,freshArenaStats} from './arena.js';
 import {freshProcState,fireProcs,procFree,consumeProc,tickProcs} from './procs.js';
 import {weaponSkillDamage,skillDamage} from './equipment.js';
 import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar,addItem,countItem,hasMaterials,consumeMaterials} from './rpg.js';
+import {registerRoll,QUALITIES} from './itemization.js';
 import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
 import {available,xpToNext} from './progression.js';
@@ -16,12 +17,15 @@ import {VillageLife} from './village-life.js';
 import {distance,rng,SCALE} from './world.js';
 import {member,skillsFor,STORY} from './clan.js';
 import {EncounterDirector,makeEnemy,idleEnemy,beginReturn,tryRespawn,walkClear,moveAlong,inSanctuary,ARCHETYPES} from './encounters.js';
-import {BALANCE,CAST_SETS,killXp,PROCS,SYSTEM_LINES,BOSS_LINES,BOSSES,COMBAT_RULES,COMBAT_TEXT,STORY_CHAPTERS,triggeredMemories,BUILDINGS,BUILDING_IDS,nextStage,buildingEffects,hubLine} from './content/index.js';
+import {BALANCE,CAST_SETS,killXp,PROCS,SYSTEM_LINES,BOSS_LINES,BOSSES,ENEMY_BARKS,VILLAGERS,COMBAT_RULES,COMBAT_TEXT,STORY_CHAPTERS,triggeredMemories,BUILDINGS,BUILDING_IDS,nextStage,buildingEffects,hubLine} from './content/index.js';
 export const SKILLS=skillsFor('dieter');
 /** Kapitel des laufenden Akts (Reserve-Kapitel späterer Akte bleiben aus). */
 export const ACT_CHAPTERS=STORY_CHAPTERS.filter(c=>!c.reserve&&c.act===STORY.act);
 export const FIRST_CHAPTER=ACT_CHAPTERS[0].id,LAST_CHAPTER=ACT_CHAPTERS.at(-1).id;
 export const chapterAt=n=>ACT_CHAPTERS.find(c=>c.id===n)||ACT_CHAPTERS[0];
+/** Treffpunkt-Regel: Clanwechsel und Basisbau gehen nur im Umkreis von HUB_RADIUS um world.spawn und außerhalb des Kampfes. */
+export const HUB_RADIUS=150;
+const hubRule=what=>what+' nur am sicheren Treffpunkt, außerhalb eines Kampfes.';
 const clampInt=(n,min,max,fallback=min)=>Number.isFinite(Number(n))?Math.max(min,Math.min(max,Math.floor(Number(n)))):fallback;
 /** Nötige Anzahl eines Kapitelziels. Boss-Ziele sind erledigt oder nicht. */
 const objectiveNeed=o=>o.kind==='boss'?1:Math.max(1,o.count|0);
@@ -58,10 +62,28 @@ export class Game {
   resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
   learnTalentSkill(id){if(id)unlockOnBar(this,[id]);}
   lootRandom(){let n=this.rpg.lootState|0;n^=n<<13;n^=n>>>17;n^=n<<5;this.rpg.lootState=n>>>0;return this.rpg.lootState/4294967296;}
-  switchMember(id){if(this.dead||this.paused||this.player.inCombat>0||distance(this.player,this.world.spawn)>150){this.toast('Clanwechsel nur am sicheren Treffpunkt, außerhalb eines Kampfes.');return false;}if(member(id).id!==id)return false;this.member=member(id);this.rpg.talents=this.rpg.talentBuilds[id];this.player.classId=id;this.lastStrike=-100;this.resetClassState();this.refreshStats();this.target=null;this.emit('classChanged');this.emit('save');return true;}
+  switchMember(id){if(this.dead||this.paused||!this.atHub()){this.toast(hubRule('Clanwechsel'));return false;}if(member(id).id!==id)return false;this.member=member(id);this.rpg.talents=this.rpg.talentBuilds[id];this.player.classId=id;this.lastStrike=-100;this.resetClassState();this.refreshStats();this.target=null;this.emit('classChanged');this.emit('save');return true;}
   log(text){this.messages.push({text,time:this.time});this.messages=this.messages.slice(-5);}
   toast(text){this.events.push({type:'toast',text});}
   emit(type,data={}){this.events.push({type,...data});}
+  /** Am Treffpunkt und nicht im Kampf? Gilt für Clanwechsel und Basisbau. */
+  atHub(){return this.player.inCombat<=0&&distance(this.player,this.world.spawn)<=HUB_RADIUS;}
+  /** Spruch einer Figur: steht im Kampflog und geht als Ereignis `bark` an die UI (Sprechblase). */
+  bark(source,text,kind){if(!text)return null;if(kind!=='villager')this.log(source.name+': „'+text+'“');this.emit('bark',{enemyId:source.id??null,name:source.name,text,kind,x:source.x,y:source.y});return text;}
+  /** Sprechblasen der Dorfbewohner: village-life.js öffnet die Blase, die Zeile kommt aus content/npcs.js. */
+  villagerBarks(){
+    const state=this.barkState||(this.barkState=new Map());
+    for(const a of this.life?.actors||[]){
+      if(a.kind!=='villager')continue;
+      const seen=state.get(a.id)||{open:false,count:0};
+      if(a.bubble>0&&!seen.open){
+        const villager=VILLAGERS.find(v=>v.variant===a.variant)||VILLAGERS[0];
+        this.bark({id:a.id,name:villager.name,x:a.x,y:a.y},villager.says[seen.count%villager.says.length],'villager');
+        seen.count++;
+      }
+      seen.open=a.bubble>0;state.set(a.id,seen);
+    }
+  }
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,life:.5,max:.5,...data});}
   selectNext(reverse=false){const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
@@ -111,8 +133,8 @@ export class Game {
   }
   damage(e,n,label){if(e.tutorial)return tutorialDamage(this,e,n,label);if(tutorialActive(this)&&!e.arena)return 0;if(e.hp<=0||e.ai==='returning')return;e.aggro=true;e.ai='combat';this.player.inCombat=7;const cs=combatStats(this),critical=this.random()<cs.crit,mark=e.mark>0,bonus=(label==='Markierung'?(cs.markBonus||0)+cs.mastery:label==='RESONANZ'||label==='Entladung'?(cs.burstBonus||0)+cs.mastery:0)+(cs.execute&&e.hp/e.maxHp<.3?cs.execute:0)+(mark&&cs.procs.includes('verdict')?.1:0);const actual=Math.round(n*(1+cs.power+(['Autoangriff','Kelle','Pfandwurf','Parade','Sprung','Deckelwelle'].includes(label)?cs.physicalPower:cs.technicalPower))*(1+bonus)*(critical?1.6+(cs.critDamage||0):1)*(e.vulnerable>0?1.35:1)*(this.buffs.remaining>0?this.buffs.power||1:1));const dealt=Math.min(e.hp,actual);if(e.arena)arenaHit(this,e,dealt);if(critical)fireProcs(this,'crit',cs);if(label==='Autoangriff')fireProcs(this,'autoHit',cs);if(label==='Markierung')fireProcs(this,'markTick',cs);e.hp=Math.max(0,e.hp-actual);this.stats.damage+=dealt;if(critical&&cs.procs.includes('rage'))this.player.energy=Math.min(100,this.player.energy+PROCS.rage.energy);if(cs.leech)this.player.hp=Math.min(this.player.maxHp,this.player.hp+Math.round(dealt*cs.leech));afterDamage(this,e,dealt,cs);e.hurt=.15;this.float(e.x+(this.random()-.5)*14,e.y-27,String(actual)+(critical?'!':''),critical?'#ffdf78':label==='RESONANZ'?'#ecc3fc':'#fff0bf');if(e.hp<=0)this.kill(e);return dealt;}
   kill(e){const wasMarked=e.mark>0,cs=combatStats(this);onKill(this,e,wasMarked,cs);this.gainMomentum(cs);if(cs.procs.includes('thirst'))this.player.energy=Math.min(100,this.player.energy+PROCS.thirst.energy);e.hp=0;e.aggro=false;e.cast=null;e.dead=(e.respawn?.[0]||35)+this.random()*((e.respawn?.[1]||55)-(e.respawn?.[0]||35));e.respawnAt=this.time+e.dead;e.ai='dead';e.mark=0;e.roamGoal=null;this.stats.kills++;
-    if(e.arena){(this.arenaStats||(this.arenaStats=freshArenaStats())).kills++;e.respawnAt=Infinity;this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · Arena, keine EP.');if(e.type==='boss'&&BOSS_LINES[e.bossId])this.log(e.name+': „'+BOSS_LINES[e.bossId].defeat+'“');return;}
-    createDrop(this,e);const xp=killXp(e);this.gainXp(xp);if(e.type==='boss'&&BOSS_LINES[e.bossId])this.log(e.name+': „'+BOSS_LINES[e.bossId].defeat+'“');this.float(e.x,e.y-40,'+'+xp+' EP','#bacd8b');this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · +'+xp+' EP.');
+    if(e.arena){(this.arenaStats||(this.arenaStats=freshArenaStats())).kills++;e.respawnAt=Infinity;this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · Arena, keine EP.');if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');return;}
+    createDrop(this,e);const xp=killXp(e);this.gainXp(xp);if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');this.float(e.x,e.y-40,'+'+xp+' EP','#bacd8b');this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · +'+xp+' EP.');
     const sq=this.sideQuests[e.questId],def=this.world.quests?.find(q=>q.id===e.questId);if(sq?.accepted&&!sq.claimed&&def){sq.progress=Math.min(def.required,sq.progress+1);if(sq.progress===def.required)this.toast(SYSTEM_LINES.questDone(def.giver.name));}
     if(this.quest.accepted&&!e.ambient&&!e.questId&&this.quest.chapterClaimed<this.quest.chapter){
       const chapter=this.quest.chapter;let progressed=false;
@@ -208,9 +230,10 @@ export class Game {
   baseEffects(){return buildingEffects(this.buildings);}
   /** Nächste baubare Stufe eines Gebäudes (oder null, wenn Kapitel fehlt oder Endausbau erreicht). */
   nextBuildStage(id){return nextStage(id,this.buildings[id]||0,this.quest.chapterClaimed);}
-  /** Baut die nächste Stufe: prüft Kapitel, zieht Material aus dem Rucksack ab, meldet Fetzen-Ereignis. */
+  /** Baut die nächste Stufe: prüft Ort (Treffpunkt, kein Kampf), Kapitel und Material, meldet Fetzen-Ereignis. */
   build(id){
     if(this.paused||this.dead||!BUILDINGS[id])return false;
+    if(!this.atHub()){this.toast(SYSTEM_LINES.buildPlace?.(BUILDINGS[id].name)||hubRule('Ausbau'));return false;}
     const stage=this.nextBuildStage(id);
     if(!stage){this.toast(BUILDINGS[id].name+': dafür fehlt noch ein Kapitel.');return false;}
     if(!hasMaterials(this.rpg,stage.cost)){this.toast('Material fehlt: '+Object.entries(stage.cost).map(([item,n])=>ITEMS[item].name+' '+countItem(this.rpg,item)+'/'+n).join(' · '));return false;}
@@ -241,6 +264,8 @@ export class Game {
     if(!chooseReward(this,this.rewardKey(),choice,reward.gear))return false;
     this.quest.chapterClaimed=chapter.id;this.quest.claimed=this.quest.chapterClaimed>=FIRST_CHAPTER;this.relic=true;
     this.rpg.coins+=reward.coins||0;this.gainXp(reward.xp||0);
+    // Ohne Hose gestartet: die erste Kapitelbelohnung legt zusätzlich ein gewürfeltes Beinteil in den Rucksack.
+    if(chapter.id===FIRST_CHAPTER){const legs=registerRoll(this.rpg,ITEMS,{slot:'legs',spec:'tresen',level:this.player.level,quality:QUALITIES[0],roll:(this.world.seed||0)%1000,family:'quest'});if(addItem(this.rpg,legs))this.rpg.recovery.push(legs);}
     this.memoryEvent({kind:'chapterClaimed',chapter:chapter.id});
     if(chapter.id>=LAST_CHAPTER)this.quest.actDone=true;
     else{this.quest.chapter=chapter.id+1;this.quest.accepted=false;this.populateCamps();}
@@ -275,8 +300,10 @@ export class Game {
     const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs)*(this.baseEffects().damageTaken??1));p.hp=Math.max(0,p.hp-n);p.inCombat=7;if(p.hp>0&&p.hp/p.maxHp<.35)fireProcs(this,'lowHealth',cs);if(e.arena)(this.arenaStats||(this.arenaStats=freshArenaStats())).taken+=n;this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;this.autoAttack.enabled=false;this.casting=null;this.keys.clear();this.moveTo=null;this.memoryEvent({kind:'firstDeath'});this.emit('death');}
   }
   startCast(e){const p=this.player,set=CAST_SETS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length];
-    e.cycle++;if(e.type==='boss'&&e.cycle===1&&BOSS_LINES[e.bossId])this.log(e.name+': „'+BOSS_LINES[e.bossId].engage+'“');
-    const phases=BOSSES[e.bossId]?.phases||[];for(const ph of phases)if(ph.at<1&&e.hp/e.maxHp<=ph.at&&!(e.saidPhases||=new Set()).has(ph.at)){e.saidPhases.add(ph.at);this.log(e.name+': „'+ph.line+'“');}
+    e.cycle++;if(e.type==='boss'&&e.cycle===1&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].engage,'boss');
+    const phases=BOSSES[e.bossId]?.phases||[];for(const ph of phases)if(ph.at<1&&e.hp/e.maxHp<=ph.at&&!(e.saidPhases||=new Set()).has(ph.at)){e.saidPhases.add(ph.at);this.bark(e,ph.line,'phase');}
+    // Menschliche Feldgegner rufen beim ersten Spezialangriff eines Kampfes; die Zeile wechselt je Auftritt.
+    const barks=ENEMY_BARKS[e.archetype];if(barks?.length&&e.cycle===1)this.bark(e,barks[((e.id|0)+(e.spawnCount|0))%barks.length],'enemy');
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
@@ -284,7 +311,7 @@ export class Game {
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
   tick(dt){if(this.paused||this.dead)return;dt=Math.min(dt,.05);this.time+=dt;
-    if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});this.effect('burst',z.x,z.y,{life:.7,max:.7,radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);if(!tutorialActive(this))this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
+    if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});this.effect('burst',z.x,z.y,{life:.7,max:.7,radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this))this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
     for(const key of ['parry','invulnerable','attack','inCombat'])p[key]=Math.max(0,p[key]-dt);
