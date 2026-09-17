@@ -30,8 +30,8 @@ import {loadWorldArt} from './asset-art.js';
 import {available,lessonPanel,xpToNext} from './progression.js';
 import {CLAN_MEMBERS,STORY} from './clan.js';
 import {clanMenu,guide} from './clan-ui.js';
-import {idaDialogue,mentorDialogue,memoryOverlay,memoriesPanel,basePanel,chapterState,canBuild,rewardLine} from './chapter-ui.js';
-import {ACTS,STORY_CHAPTERS,BOSS_LINES,FACTIONS} from './content/index.js';
+import {idaDialogue,mentorDialogue,memoryOverlay,memoryArtPanel,memoriesPanel,basePanel,chapterState,canBuild,rewardLine} from './chapter-ui.js';
+import {ACTS,STORY_CHAPTERS,BOSS_LINES,FACTIONS,memoryFor} from './content/index.js';
 import {World,distance,SCALE} from './world.js';
 import {Game} from './engine.js';
 import {loadLiveArt,equipmentAppearance} from './live-art.js';
@@ -157,6 +157,7 @@ async function init(){
 $('#adminButton').onclick=()=>game&&showAdmin();
 modal.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;if(d.questFilter){questFilter=d.questFilter;showJournal();}if('trackMain' in d){game.trackedQuest=null;save();showJournal();}if('mainGiver' in d)showMap({id:'main-npc',title:world.npc.name,point:world.npc,detail:STORY.title+' · Kapitel '+game.quest.chapter});
  if(d.build){if(!canBuild(game)){toast('Ausgebaut wird nur an der Bude beim Treffpunkt.');return;}if(game.build(d.build))events();else events();}
+ if(d.memoryArt&&game.memories.seen.includes(d.memoryArt)){const fragment=memoryFor(d.memoryArt);if(fragment)openModal(memoryArtPanel(fragment),false,'memoryart');}
  if('memoryNext' in d)closeModal('memory');});
 modal.addEventListener('click',e=>{const shellAction=e.target.closest('[data-shell]')?.dataset.shell;if(shellAction){if(e.target.closest('.popup-menu'))popups.close('menu');showPanel(shellAction==='character'?'person':shellAction);}const setting=e.target.closest('[data-settings]')?.dataset.settings;if(setting==='touchmenu')mobile?.context();else if(setting)$('#'+setting+'Button').click();const arenaEl=e.target.closest('[data-arena-spawn],[data-arena-clear],[data-arena-level],[data-arena-heal]');if(arenaEl)arenaAction(arenaEl);if(e.target.closest('[data-admin-reset]'))adminReset();if(e.target.closest('[data-admin-restore]'))adminReset(true);});
 $('#lessonButton').onclick=()=>{const lesson=lessonPanel(game);if(lesson.unread){game.seenSkills.add(lesson.unread.id);save();updateUI();$('#world').focus();}};$('#trainingHelp').onclick=()=>game&&showBook();

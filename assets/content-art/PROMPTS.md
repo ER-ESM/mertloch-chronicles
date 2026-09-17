@@ -223,3 +223,7 @@ Die vollständigen tatsächlich verwendeten Prompts, Datum, Referenzen und Herku
 ## Fünf Grafik-Iterationen · 2026-09-17
 
 18 vereinfachte Gegenstände und eine modulare Bewohnerbibliothek wurden mit eingebautem Imagegen erzeugt. Die tatsächlichen Prompts, Referenzen, Originaldateien und SHA-256 stehen in [refinement/generation.json](refinement/generation.json); finale Aufträge in [refinement-jobs.json](../../tools/sprite-pipeline/refinement-jobs.json). Acht Originale einschließlich zwei Körper-Erstfassungen sind unter `refinement/sources/` erhalten. Modellversion vom Werkzeug nicht ausgewiesen. Export über `build-refinement.mjs`, Komposition und Umfärbung über semantische Masken/registrierte Teile; kein weiteres Bildmodell für die 432 Kombinationen. Der [Reviewbericht](../../docs/GRAFIK-REVIEW-5-RUNDEN-2026-09-17.md) nennt Abnahme und Grenzen.
+
+## Erinnerungsbilder · 2026-09-17
+
+Zehn große Pixelillustrationen (davon ein zweiteiliger Comic), im Spiel beim Freischalten und im Clanbuch eingebunden. Originale, tatsächliche Imagegen-Prompts und Exportregeln: [memories/README.md](memories/README.md), [Prompts](memories/generation.json). Quelle: vorhandene Texte aus `content/memories.js`; keine Änderung ihrer Freischaltungen.

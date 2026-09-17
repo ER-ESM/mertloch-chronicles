@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "palette": "Maifeld-Detailpixel / 40 base + 8 illustration blues",
+  "sampling": "nearest-neighbour 2:1; no blur; opaque",
+  "entries": [
+    {
+      "id": "stempel",
+      "title": "Der Stempel",
+      "file": "stempel.png",
+      "source": "sources/stempel.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 134161,
+      "sha256": "8a2518aa78a36ce14e9cbb50b0e185be64838eabe8541d42efc45eaf4d1ecdb1",
+      "sourceSha256": "217d95f9bfbd7390d732aec79dcce084641c5dee466efb95c4d3e6dc3fc7a1a7"
+    },
+    {
+      "id": "kasten-feuerzeug",
+      "title": "Halt mal mein Bier",
+      "file": "kasten-feuerzeug.png",
+      "source": "sources/kasten-feuerzeug.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 133508,
+      "sha256": "4faa365f2f0a226ae85f6d1cda2372e9b9a7e804f799669f36bc4bf70805a467",
+      "sourceSha256": "e4169518b23df37529129104c3e5e8dbe850249bcbc0f74feb1aab5accccd673"
+    },
+    {
+      "id": "pizzeria",
+      "title": "22:01",
+      "file": "pizzeria.png",
+      "source": "sources/pizzeria.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 124405,
+      "sha256": "3230be8355f9ee02ffa77636fd5cba40d617e5a925b1b74fddc7ec3b611500ba",
+      "sourceSha256": "a7bd8f139b1f1ebbe7d68cf248cb32ecc7a480b563dcb7d67bde629def02218f"
+    },
+    {
+      "id": "kastenturm",
+      "title": "Statik",
+      "file": "kastenturm.png",
+      "source": "sources/kastenturm-v2.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 133191,
+      "sha256": "85e89ae1296a9619a60f9e3c385da3b04a20547b899b3dda05b44d405e275262",
+      "sourceSha256": "32eb3b7b785b8a8e5dea627626f1d1ff3316c4299c87a15b80c9057ab358c466"
+    },
+    {
+      "id": "shirt-zu-klein",
+      "title": "Größe S",
+      "file": "shirt-zu-klein.png",
+      "source": "sources/shirt-zu-klein.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 139006,
+      "sha256": "2ef0cac4c38af6bfd73f9982c3c0ee31935f41dda2d0f394dd22ef8cbc0dafb1",
+      "sourceSha256": "b6e2c82df0a58894a788d93db4955616436189f15683999b18e1831627bfdb4d"
+    },
+    {
+      "id": "naturtalent",
+      "title": "Naturtalent",
+      "file": "naturtalent.png",
+      "source": "sources/naturtalent.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 150791,
+      "sha256": "adca71aa10666ee213d60c499101b66440a969807c4958efa64e7271aae5e146",
+      "sourceSha256": "2af29d9bf26293de3663f34633a6bd027a3f1ba08862805cf5c73b94a6894084"
+    },
+    {
+      "id": "neues-spiel",
+      "title": "Neues Spiel!",
+      "file": "neues-spiel.png",
+      "source": "sources/neues-spiel.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 134423,
+      "sha256": "f043d048202d18a45e9f7bff2fe60a8105769a8e263d75a5150485b1977e6857",
+      "sourceSha256": "e49516234805066af30c782063ca5e18624e126143ca995cb917508e6665a298"
+    },
+    {
+      "id": "wurst-ins-gesicht",
+      "title": "Wurst Case",
+      "file": "wurst-ins-gesicht.png",
+      "source": "sources/wurst-ins-gesicht.png",
+      "width": 768,
+      "height": 512,
+      "panels": 2,
+      "bytes": 132976,
+      "sha256": "af102c3e8edb684defed7f1748425522b3ee37c4bc21243e1f11963af1ae0f65",
+      "sourceSha256": "2b85c680cf90db7145ba9a54cb1e3529bd0a41b87b70f0cda8fa9438d20f1064"
+    },
+    {
+      "id": "der-bus",
+      "title": "Der falsche Bus",
+      "file": "der-bus.png",
+      "source": "sources/der-bus.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 157204,
+      "sha256": "72e1c965cbc3a7b203ed5ad7c7c96e33b2b6c2a4e5cd434592c2b793e659343e",
+      "sourceSha256": "79df48641fc4a16c22ea93f14cae09d63712039261764a0da4cce8c36d8a0c1c"
+    },
+    {
+      "id": "die-kiste",
+      "title": "Die Kiste",
+      "file": "die-kiste.png",
+      "source": "sources/die-kiste.png",
+      "width": 768,
+      "height": 512,
+      "panels": 1,
+      "bytes": 164403,
+      "sha256": "70260fb86ce4dcb5375e796a3fabc78891095e68f0784b2b167acf1b995229c6",
+      "sourceSha256": "7ac7ee0c2aa2466470a82c76c92ccca054966df7588f1045d997fe084c12e965"
+    }
+  ]
+}

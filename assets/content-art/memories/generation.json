@@ -1,0 +1,138 @@
+{
+  "tool": "Built-in image_gen",
+  "model": "Not exposed by built-in tool",
+  "records": [
+    {
+      "id": "stempel",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the red-haired woman unless the specific scene asks for her.\nScene: night-time entrance to a ramshackle rural clan party hut, colorful bunting and bottle crates behind. First-person close view of the anonymous guest's bare forearm stretched across a battered wooden check-in table. One host hand is pressing a wooden rubber admission stamp onto that forearm, next to an open vivid BLUE ink pad. A visible fresh blue circular impression alongside the stamp makes the action clear. Background adult party guests laughing, one warmly lit open door. Do not draw cigarette or fire. No legible lettering needed: the blue stamp is an abstract clan seal.",
+      "referenceImages": [
+        "assets/content-art/aperol-anni/hero.png"
+      ],
+      "original": "exec-d8af66b5-2714-4bcc-a18b-85435b034929.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/stempel.png"
+    },
+    {
+      "id": "kasten-feuerzeug",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the red-haired woman unless the specific scene asks for her.\nScene: first-person drunken flashback outside the rural party hut after dark. A heavy green crate of brown beer bottles is balanced against the viewer's torso in the lower foreground, one hand supports the crate and the other holds a small cheap cigarette lighter with a tiny flame. A friend's hand at the side offers a cold opened beer can with condensation. Warm string lights overhead, adults laughing beside a table. The crate and tiny lighter are the central memorable objects. No large fire or destruction, no cigarette, no printed labels.",
+      "referenceImages": [
+        "assets/content-art/aperol-anni/hero.png"
+      ],
+      "original": "exec-4b8edb6d-114d-47bf-bf8d-8fa97ee2fa1a.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/kasten-feuerzeug.png"
+    },
+    {
+      "id": "pizzeria",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition.\nScene: 22:01 in a messy rural party clubhouse. First-person view holding a clearly WIRED LANDLINE telephone receiver to the ear just outside the frame, curled cord visibly attached to its old tabletop base, next to a wall clock at 22:01. Laughing adult beer-party guests behind the counter; a stern middle-aged man with a thick ring binder at the edge is the only person not laughing, writing a note. Comic clash between the delighted crowd and the serious observer. No pizza food or restaurant: the telephone joke is spoken by the game text, this is a party hut. No text or speech bubbles.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-ea29dc4f-bfc6-4e8d-b4cc-0ff184940795.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/pizzeria.png"
+    },
+    {
+      "id": "kastenturm",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition.\nScene: absurd rural night party stunt on a village street, seven green beer crates stacked in one precariously tall tower on the roof of a small moving battered hatchback car. The top two crates are beginning to tip, a few bottles just lifting loose. Warm-lit slate-roof houses, party guests reacting from the roadside. Kevin, a slim young brown-haired rural mechanic in a dark cap and ochre work clothes, leans from the passenger window grinning and pointing upward confidently. Car wheels turning, a comic instability pose, NOT motion blur. Composition must show full car, rooftop and all seven crates with enough surrounding environment. No protagonist face, no crash injuries.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-5ba34471-1999-43d3-a031-227cda9e6281.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/kastenturm.png"
+    },
+    {
+      "id": "shirt-zu-klein",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition.\nScene: in the party clubhouse a comically too-small WHITE T-shirt is being stretched over the head and shoulders of the anonymous newcomer, viewed from behind, their face completely covered by the shirt and their arms stuck up awkwardly. The back of the shirt bears the only text in the picture: GAME OVER, exactly spelled in simple dark pixel capitals. Around them a dozen adult men in white party T-shirts cheer with bottles. Rural shabby timber walls, snack plates, bunting, warm lamps, friendly absurdity. No nudity, no face of protagonist.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-24e14304-e5f0-455f-8479-b0f797957299.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/shirt-zu-klein.png"
+    },
+    {
+      "id": "naturtalent",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition. Rural setting is the Maifeld in Rhineland-Palatinate, contemporary casual people in hoodies, T-shirts and work clothes; avoid Bavarian alpine costumes, lederhosen, dirndls and feathered hats. Absolutely no decorative lettering or labels except any exact words explicitly requested in the scene.\nScene: a rural German beer festival tent with yellow string lights and sawdust covering the ground. First-person viewpoint just after effortlessly turning out of someone's shoulder grab: viewer's open hand and forearm in foreground, an adult fellow with a diagonal party sash sprawled on his BACK on the sawdust laughing with one knee up, entirely uninjured. Several adult men at beer tables cheer and laugh, overturned empty stein, timber trestle benches. Funny accidental wrestling talent, playful movement readable, not a fist striking anyone, no injury, no gore. No visible protagonist face.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-66af5750-1a3a-4df4-b9ab-bf0f69507ad1.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/naturtalent.png"
+    },
+    {
+      "id": "neues-spiel",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition. Rural setting is the Maifeld in Rhineland-Palatinate, contemporary casual people in hoodies, T-shirts and work clothes; avoid Bavarian alpine costumes, lederhosen, dirndls and feathered hats. Absolutely no decorative lettering or labels except any exact words explicitly requested in the scene.\nScene: inside an old-fashioned German bowling alley at night, blue bowling balls and wooden skittle pins. An adult party man wearing a diagonal sash lies belly-down rolling HIMSELF feet-first along one lane, while in the foreground a first-person hand has just thrown a wooden skittle pin through a SIDE WINDOW from inside; the pin is still partly crossing the now broken window and glass sparkles in chunky pixels. Through that window a parked decorated minibus and its baffled driver are visible. Adult revelers react with exaggerated comic surprise. Keep lanes, rolling man, blue balls and window pin visually distinct. No injuries or blood, no text.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-daf2ae74-987a-4f20-9221-1bf3f1554889.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/neues-spiel.png"
+    },
+    {
+      "id": "wurst-ins-gesicht",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition. Rural setting is the Maifeld in Rhineland-Palatinate, contemporary casual people in hoodies, T-shirts and work clothes; avoid Bavarian alpine costumes, lederhosen, dirndls and feathered hats. Absolutely no decorative lettering or labels except any exact words explicitly requested in the scene.\nScene: two-panel PIXEL COMIC, two equally sized side-by-side panels with a narrow dark slate gutter and NO words, captions or speech bubbles. LEFT panel: crowded rural party hut barbecue, anonymous first-person hand playfully squashing a cooked bratwurst against an adult friend's cheek, barbecue grill behind, a man in work overalls loudly gesturing in the background. RIGHT panel: low first-person viewpoint looking upward as a heavy wooden bar counter tips down toward the viewer, while a broad stocky middle-aged bearded man in a black sleeveless vest desperately catches its edge with both hands. Suspenseful slapstick freeze before impact, no injuries or blood. Match the two panels' room and palette; no visible protagonist face.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-5cce6a55-1276-47b0-8bac-c62095accad9.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/wurst-ins-gesicht.png"
+    },
+    {
+      "id": "der-bus",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition. Rural setting is the Maifeld in Rhineland-Palatinate, contemporary casual people in hoodies, T-shirts and work clothes; avoid Bavarian alpine costumes, lederhosen, dirndls and feathered hats. Absolutely no decorative lettering or labels except any exact words explicitly requested in the scene.\nScene: rainy night outside Koblenz main railway station. First-person view just before boarding an old minibus decorated with party bunting and garlands. Warm light spills from its open side door onto wet paving and reflected pixels, rain drawn as sharp thin pixel streaks. A grinning adult bachelor-party man with a diagonal sash leans out of the door inviting the viewer aboard with an open hand. Train station facade behind and a single clean sign with exact text KOBLENZ HBF. Inside: partygoers with white shirts, a few bottles, garlands. Melancholy blue rainy surroundings versus amber chaotic bus interior. No visible protagonist face. No modern branded bus logos.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-4d09eec7-f56e-4c4a-a023-fd58f09377c7.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/der-bus.png"
+    },
+    {
+      "id": "die-kiste",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition. Rural setting is the Maifeld in Rhineland-Palatinate, contemporary casual people in hoodies, T-shirts and work clothes; avoid Bavarian alpine costumes, lederhosen, dirndls and feathered hats. Absolutely no decorative lettering or labels except any exact words explicitly requested in the scene.\nScene: at the rural party clubhouse near dawn after an absurd catastrophe. The hut's wooden wall and counter have partly collapsed, debris, bunting and bottles everywhere but absolutely NO FIRE or smoke. First-person view of two hands offering a heavy CLOSED wooden crate to an adult groom-to-be in a white party shirt and a cheap folded GOLD PAPER CROWN. He is visibly moved, tears at his cheeks and a fragile grateful smile, reaching carefully for the crate. Funny but unexpectedly sincere mood, pale blue morning sky contrasting warm leftover lantern. The crate's contents are a crucial mystery: show a SOLID CLOSED lid with no gap, glow, item or clue revealing inside. No visible protagonist face, no text.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/stempel.png"
+      ],
+      "original": "exec-4e80a7c6-7470-43af-9a13-a7787a449086.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/die-kiste.png"
+    },
+    {
+      "id": "kastenturm-v2",
+      "prompt": "Use case: illustration-story. Asset: finished large landscape illustration for one unlocked memory in the German rural comedy pixel MMORPG Mertloch Chronicles, not a mockup. Output 1536 x 1024, single full-bleed scene. Style: Maifeld Detailpixel, sophisticated hand-placed-looking pixel clusters on a consistent approximately 768x512 logical grid, sharp stepped edges, dark slate outlines, chunky expressive comic faces, lovingly detailed rural German party environments, upper-left warm light, ochre gold, moss green, muted terracotta, aubergine and blue slate shadows, limited cohesive palette. No smooth painting, no photorealism, no blur or depth-of-field, no gradients, no film grain, no UI, captions, borders or speech bubbles, no watermark. Keep comedic visual storytelling readable at 480px display width with a large foreground story prop. This is an adult beer-party flashback, silly and messy but no gore. The amnesiac protagonist has no established identity: use their first-person viewpoint or hide their face; never invent their definitive appearance. Reference image is ONLY the established warm chunky pixel style, NOT the subject: do not insert the blonde woman in orange floral clothing: she is NOT in this particular scene. Do not copy the reference composition. Rural setting is the Maifeld in Rhineland-Palatinate, contemporary casual people in hoodies, T-shirts and work clothes; avoid Bavarian alpine costumes, lederhosen, dirndls and feathered hats. Absolutely no decorative lettering or labels except any exact words explicitly requested in the scene.\nEDIT the referenced kastenturm scene only: preserve pixel-comic style, car, Kevin, village, lighting and composition. Replace the existing FIVE-crate tower with exactly SEVEN separately countable green beer crates in one column above the roof, from bottom to top numbered conceptually 1,2,3,4,5,6,7 but NO printed numbers. Make each crate somewhat shorter so all seven fit entirely within the existing image height, leave a little sky above. Top two tilt precariously. Remove ALL text, advertising, logos and decorative writing from crates, car, grille and background banners/signs: use plain green crates, blank brown wooden boards, abstract cloth flags, plain circular grille emblem. Remove license plate numbers, use neutral unlettered plate. Keep the colorful chaotic party atmosphere and clear seven-crate story beat. No captions. This is an edit target, not merely a reference.",
+      "referenceImages": [
+        "assets/content-art/memories/sources/kastenturm.png"
+      ],
+      "original": "exec-b532fab7-3f13-4aeb-bbf7-07b404c8dfae.png",
+      "tool": "built-in image_gen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "output": "assets/content-art/memories/sources/kastenturm-v2.png"
+    }
+  ]
+}

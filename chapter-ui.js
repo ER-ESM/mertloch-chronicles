@@ -5,6 +5,7 @@ import {escapeQuest as esc} from './quest-status-ui.js';
 import {distance} from './world.js';
 import {countItem,ITEMS} from './rpg.js';
 import {contentPath} from './content-art.js';
+import {memoryArtFor} from './memory-art.js';
 import {ACTS,STORY,STORY_CHAPTERS,MAIN_DIALOGUE,chapterDialogue,MEMORY_FRAGMENTS,SYSTEM_LINES,LORE,BUILDINGS,BUILDING_EFFECTS,buildingsUnlocked,NPCS,FACTIONS} from './content/index.js';
 
 /** Akt des laufenden Kapitels. */
@@ -47,16 +48,26 @@ export function idaDialogue(game){
 export function mentorDialogue(talk){
  return `${conversationHeader(talk.npc,talk.name)}<h2>${esc(talk.name)}</h2><p class="conversation-quote">${esc(talk.line||'')}</p><button class="gold-button" data-close>Weiterziehen</button>`;}
 
-/** Einblendung eines Erinnerungsfetzens (Sepia, eine Schaltfläche, pausiert nichts). */
+/** Illustrationen bleiben farbecht; Titel und Erzählung kommen weiter aus der Story. */
+export function memoryPicture(fragment,{large=false,lazy=false}={}){
+ const art=memoryArtFor(fragment.id);if(!art)return '';
+ const img=`<img src="${art.src}" width="${art.width}" height="${art.height}" alt="${esc(art.alt)}" decoding="async" loading="${lazy?'lazy':'eager'}">`;
+ return large?`<figure class="memory-picture memory-picture-large">${img}</figure>`:
+  `<button type="button" class="memory-picture memory-picture-button" data-memory-art="${esc(fragment.id)}" aria-label="${esc(fragment.title)} – Bild vergrößern">${img}<span>Bild vergrößern</span></button>`;
+}
+export function memoryArtPanel(fragment){
+ return `<article class="memory-flash memory-gallery"><span class="eyebrow">${esc(MEMORY_LABEL)}</span><h2>${esc(fragment.title)}</h2><label class="memory-zoom"><input type="checkbox" data-memory-zoom> Pixelansicht · zum Verschieben wischen</label><div class="memory-image-viewport" tabindex="0" role="region" aria-label="Illustration zu ${esc(fragment.title)}">${memoryPicture(fragment,{large:true})}</div><p>${esc(fragment.text)}</p></article>`;
+}
+/** Einblendung eines Erinnerungsfetzens, pausiert nichts. */
 export function memoryOverlay(fragment){
- return `<article class="memory-flash"><span class="eyebrow">${esc(MEMORY_LABEL)}</span><h2>${esc(fragment.title)}</h2><p>${esc(fragment.text)}</p><div class="dialog-actions"><button class="gold-button" data-memory-next>Weiter</button></div></article>`;}
+ return `<article class="memory-flash"><span class="eyebrow">${esc(MEMORY_LABEL)}</span><h2>${esc(fragment.title)}</h2>${memoryPicture(fragment)}<p>${esc(fragment.text)}</p><div class="dialog-actions"><button class="gold-button" data-memory-next>Weiter</button></div></article>`;}
 
 /** Reiterinhalt „Erinnerungen“: alle Fetzen in ihrer Erzählreihenfolge, ungesehene verdeckt. */
 export function memoriesPanel(game){
  const seen=game.memories?.seen||[],order=[...MEMORY_FRAGMENTS].sort((a,b)=>a.order-b.order);
  return `<section class="memory-panel"><header class="rpg-heading"><h2>${esc(MEMORY_LABEL)}</h2><p>${seen.length} / ${order.length}</p></header><div class="memory-list">`+
   order.map(m=>{const known=seen.includes(m.id);
-   return `<article class="memory-entry ${known?'known':'unknown'}"><h3>${known?esc(m.title):'…'}</h3>${known?`<p>${esc(m.text)}</p><p class="memory-clue">${esc(m.clue)}</p>`:'<p>…</p>'}</article>`;}).join('')+
+   return `<article class="memory-entry ${known?'known':'unknown'}"><h3>${known?esc(m.title):'…'}</h3>${known?`${memoryPicture(m,{lazy:true})}<p>${esc(m.text)}</p><p class="memory-clue">${esc(m.clue)}</p>`:'<p>…</p>'}</article>`;}).join('')+
   '</div></section>';}
 
 const FLAT_EFFECTS=new Set(['consumableCd','energyOnKill']);
