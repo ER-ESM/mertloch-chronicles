@@ -9,7 +9,8 @@ export function paginateFlow(root,w,key,capacity){
  if(!root||!root.getBoundingClientRect().width)return;
  let f=flows.get(root);if(!f){f={nodes:[...root.children],page:w.flowPages?.[key]||0};flows.set(root,f);}else f.nodes.forEach(n=>n.hidden=false);
  root.replaceChildren(...f.nodes);root.classList.add('flow-root');
- if(root.scrollHeight<=capacity){f.page=0;return;}
+ // Clanbuch: Inhalt scrollt, es gibt keine Seiten mehr. Die Aufteilung unten bleibt für spätere Sonderfälle erhalten.
+ if(root.scrollHeight<=capacity||true){f.page=0;return;}
  const limit=Math.max(44,capacity-52),parts=[];
  function split(el){
   root.replaceChildren(el);if(el.getBoundingClientRect().height<=limit||el.matches('button,canvas,input,select,svg')){parts.push(el);return;}
