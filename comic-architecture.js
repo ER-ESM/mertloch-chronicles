@@ -1,3 +1,4 @@
+import {WORLD_SCALE} from './world-scale.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,sprig,blossom,spark} from './pixel-style.js';
 import {drawMaifeld} from './maifeld-art.js';
 
@@ -83,9 +84,9 @@ export function drawBuilding(c,b,time){
 }
 
 export function drawFurniture(c,p,time){const x=p.x,y=p.y;
- if(p.type==='lantern'){line(c,'#594d35',[[x,y],[x,y-38],[x+9,y-38]],2);if(drawMaifeld(c,'lantern',x+9,y-15,24))return;}
- if(p.type==='bench'&&drawMaifeld(c,'bench',x,y+4,25))return;
- if(p.type==='cart'&&drawMaifeld(c,'cart',x,y+4,35))return;
+ if(p.type==='lantern'){line(c,'#594d35',[[x,y],[x,y-38],[x+9,y-38]],2);if(drawMaifeld(c,'lantern',x+9,y-22,WORLD_SCALE.lantern))return;}
+ if(p.type==='bench'&&drawMaifeld(c,'bench',x,y+3,WORLD_SCALE.bench))return;
+ if(p.type==='cart'&&drawMaifeld(c,'cart',x,y+3,WORLD_SCALE.cart))return;
   oval(c,'#30495135',x+3,y+4,p.type==='lantern'?8:23,4);
   if(p.type==='bench'){for(const dx of [-17,15]){framed(c,'#687a83',x+dx,y-3,3,12,P.ink,1);line(c,P.ink,[[x+dx,y-4],[x+dx-2,y-16]],2);}for(const dy of [-20,-13,-4]){framed(c,'#c28e65',x-21,y+dy,42,5,P.ink,1);r(c,P.cream,x-20,y+dy,39,.5);line(c,'#875966',[[x-15,y+dy+3],[x+4,y+dy+2],[x+13,y+dy+3]],.5);for(const dx of [-17,16])r(c,'#e7bc85',x+dx,y+dy+2,1,1);}}
   if(p.type==='cart'){for(const dx of [-16,17]){oval(c,P.ink,x+dx,y+3,5,8);oval(c,'#a5aeb0',x+dx,y+3,3.5,6);oval(c,P.ink,x+dx,y+3,1.5,2);line(c,P.ink,[[x+dx,y-2],[x+dx,y+8]],1);}framed(c,'#b67d65',x-20,y-17,41,19,P.ink,1.5);for(let i=0;i<5;i++){r(c,'#e5b581',x-18+i*8,y-14,5,13);r(c,'#825864',x-18+i*8,y-14,.5,12);}r(c,P.cream,x-21,y-18,44,2);for(let i=0;i<9;i++){const xx=x-15+(i%5)*7,yy=y-23+Math.floor(i/5)*4;oval(c,P.ink,xx,yy,4,3.5);oval(c,i%3===0?'#e58e70':'#90b867',xx,yy,3,2.5);r(c,'#fff0ab',xx-1,yy-1,1,1);}line(c,P.ink,[[x+21,y-4],[x+36,y+1]],4);line(c,'#c99873',[[x+21,y-4],[x+36,y+1]],2);}

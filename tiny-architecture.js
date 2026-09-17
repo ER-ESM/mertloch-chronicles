@@ -1,10 +1,12 @@
+import {buildingSkin,buildingSpriteLayout} from './world-scale.js';
+import {normalizeArt} from './art-style.js';
 import {artImages} from './asset-art.js';
-import {maifeld,drawMaifeld} from './maifeld-art.js';
+import {maifeld} from './maifeld-art.js';
 import {drawBuilding as fallback,drawFurniture} from './comic-architecture.js';
 export {drawFurniture};
 // Geographic footprint and human-sized entry are fixed; only the skin changes.
 export function facadeLayout(b){const x=Math.round(b.minX),y=Math.round(b.maxY),w=Math.round(b.w),h=b.wallHeight;return{x,y,w,h,doorX:b.door.x,roofTop:y-h-b.h-b.roofHeight,roofHeight:b.h+b.roofHeight+9};}
-export function buildingVisualBounds(b){const name=b.church||b.style==='chapel'?'church':['cottage','tavern','thatch','barn','shop'][Math.abs(b.id)%5],a=maifeld[name],width=Math.round(b.w+24);return a?{minX:b.door.x-width/2,maxX:b.door.x+width/2,minY:b.maxY+3-width*a.h/a.w,maxY:b.maxY+3}:{minX:b.minX,maxX:b.maxX,minY:b.minY-b.wallHeight-b.roofHeight,maxY:b.maxY};}
+export function buildingVisualBounds(b){const a=maifeld[buildingSkin(b)];return a?buildingSpriteLayout(b,a).bounds:{minX:b.minX,maxX:b.maxX,minY:b.minY-b.wallHeight-b.roofHeight,maxY:b.maxY};}
 const cache=new Map();
 const roofs=new Map();
 function roofTexture(material){if(roofs.has(material))return roofs.get(material);const cv=document.createElement('canvas');cv.width=113;cv.height=104;const c=cv.getContext('2d');c.drawImage(artImages.house,8,24,113,104,0,0,113,104);if(material!=='thatch'){const im=c.getImageData(0,0,113,104),ramps=material==='slate'?[[35,54,65],[52,79,93],[75,111,121],[113,151,152],[170,192,177]]:[[54,53,55],[91,67,59],[133,90,64],[174,128,79],[217,171,108]],d=im.data;for(let i=0;i<d.length;i+=4){if(!d[i+3])continue;const n=(d[i]*.25+d[i+1]*.6+d[i+2]*.15)/255*4,index=Math.min(3,Math.floor(n)),t=n-index;for(let j=0;j<3;j++)d[i+j]=ramps[index][j]*(1-t)+ramps[index+1][j]*t;}c.putImageData(im,0,0);}roofs.set(material,cv);return cv;}
@@ -27,6 +29,10 @@ function make(b){const l=facadeLayout(b),pad=46,top=l.roofTop-(b.church?180:32),
  if(b.church)churchTower(c,x+w*.17,y-7);
  return{cv,x:x-pad,y:top};}
 export function drawBuilding(c,b,time){
- const name=b.church?'church':b.style==='chapel'?'church':['cottage','tavern','thatch','barn','shop'][Math.abs(b.id)%5],a=maifeld[name];
- if(a){const width=Math.round(b.w+24),height=Math.round(width*a.h/a.w);drawMaifeld(c,name,b.door.x,b.maxY+3,height,width);return;}
+ const name=buildingSkin(b),a=maifeld[name];
+ if(a){const l=buildingSpriteLayout(b,a),width=l.world[3]-l.world[0],key=['registered',name,width,b.door.x-b.minX].join(':');let sprite=cache.get(key);
+  if(!sprite){const cv=document.createElement('canvas');cv.width=Math.ceil(width*2);cv.height=Math.ceil(l.height*2);const mc=cv.getContext('2d');mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
+   for(let i=0;i<3;i++){const left=Math.round((l.world[i]-l.world[0])*2),right=Math.round((l.world[i+1]-l.world[0])*2);mc.drawImage(a.image,l.source[i],a.y,l.source[i+1]-l.source[i],a.h,left,0,right-left,cv.height);}
+   normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>560)cache.delete(cache.keys().next().value);
+  }c.imageSmoothingEnabled=false;c.drawImage(sprite.cv,l.world[0],l.top,width,l.height);return;}
  if(!artImages.house){fallback(c,b,time);return;}const key=[b.id,b.minX,b.maxY,b.w,b.h,b.wallHeight,b.roofHeight,b.church,b.style].join(':');let s=cache.get(key);if(!s){s=make(b);cache.set(key,s);if(cache.size>560)cache.delete(cache.keys().next().value);}c.drawImage(s.cv,s.x,s.y);}

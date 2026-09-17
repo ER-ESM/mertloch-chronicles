@@ -3,6 +3,7 @@
 Seit 16.09.2026 ist **Maifeld-Detailpixel** der verbindliche Stil des Hauptspiels. Aktueller Vertrag: [Live-Optik und Ausrüstung](docs/LIVE-OPTIK-ARBEITSPLAN-2026-09-16.md). Die folgenden Abschnitte dokumentieren die früheren Grafikstände; bei Widersprüchen gilt dieser Vertrag.
 
 - `live-art.js`: gemeinsame Figuren für Welt, Gespräch und Charakteransicht. Drei Helden, 26 weitere Identitäten und sieben Tierarten.
+- Weltmaßstab: [Größenverhältnisse 0.19.1](docs/MASSSTAB-2026-09-17.md). `world-scale.js` registriert Türöffnungen, Figuren und freistehende Requisiten; die Kartenbreite darf keine Türen mehr schrumpfen lassen.
 - Helden: 52 native Pixel Körperhöhe, 26 Welteinheiten, vier Ansichten und acht distanzabhängige Laufphasen. Ausrüstung folgt registrierten Griff-, Rumpf-, Kopf- und Fußpunkten.
 - `art-style.js`: 40 Ankerfarben aus `tools/sprite-pipeline/config.mjs`; Umgebung mit abgeleiteten Zwischenfarben. Warmes Licht von links oben, dunkle Schieferkontur, keine geglätteten UI-Icons.
 - Originale bleiben erhalten. Neue Rastergrafik wird über den eingebauten Bilddienst erzeugt, anschließend deterministisch segmentiert, registriert, auf die Palette gebracht und gepackt. `npm run sprites:live` und `npm run sprites:check` sind verbindlich.

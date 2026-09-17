@@ -1,7 +1,8 @@
+import {WORLD_SCALE} from './world-scale.js';
 /** Shared by the game, browser world forge, and CLI validation tool. */
 export const WORLD_RULES = Object.freeze({
-  version:2, seed:56753, pixelsPerMeter:8, heroHeight:26, heroRadius:6,
-  house:{minWidth:84,maxWidth:170,minDepth:60,maxDepth:126,wallHeight:62,roofHeight:30,doorWidth:18,doorHeight:35,gap:18},
+  version:2, seed:56753, pixelsPerMeter:8, heroHeight:WORLD_SCALE.adult, heroRadius:6,
+  house:{minWidth:84,maxWidth:170,minDepth:60,maxDepth:126,wallHeight:62,roofHeight:30,doorWidth:18,doorHeight:WORLD_SCALE.door,gap:18},
   roads:{street:72,main:98,path:42,entrance:28,clearance:12},
   vegetation:{density:1,roadBuffer:17,doorBuffer:30,treeSpacing:30},
   navigation:{sampleStep:34,clearance:9,maxLocalNodes:9000},

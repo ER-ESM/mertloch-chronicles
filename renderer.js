@@ -1,3 +1,4 @@
+import {WORLD_SCALE} from './world-scale.js';
 import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
 import {drawTutorial,drawTrainingDummy} from './tutorial-ui.js';
 import {drawWorldPerson} from './person-art.js';
@@ -14,7 +15,7 @@ import {drawComicResident as drawResidentSprite} from './comic-actors.js';
 import {drawClanHero as drawHero,drawClanEnemy as drawComicEnemy,drawClanCamp} from './clan-art.js';
 import {createComicTree,drawComicProp} from './comic-nature.js';
 export {drawHero};
-function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);const s=a.kind==='villager'?.85:.8;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
+function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);const s=a.kind==='villager'?WORLD_SCALE.npc/33:1;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
 import {drawBuilding,drawFurniture} from './architecture.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
 import {distance,SCALE} from './world.js';
@@ -61,8 +62,8 @@ export class Renderer {
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
       else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,{...p,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,w.rules.heroHeight/33);}
-      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,.85);if(nearestSpeaker(g,e))label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.claimed?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
-      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,.85,{facing:-1});if(nearestSpeaker(g,n))label(c,n.name,n.x,n.y-32,'#d8c89a',7);label(c,s.claimed?'✦':s.progress>=e.required?'?':s.accepted?'◇':'!',n.x,n.y-42,'#f1d183',13);}
+      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,WORLD_SCALE.npc/33);if(nearestSpeaker(g,e))label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.claimed?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
+      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,WORLD_SCALE.npc/33,{facing:-1});if(nearestSpeaker(g,n))label(c,n.name,n.x,n.y-32,'#d8c89a',7);label(c,s.claimed?'✦':s.progress>=e.required?'?':s.accepted?'◇':'!',n.x,n.y-42,'#f1d183',13);}
       else if(e.tutorial){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
     for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const y=e.y-(e.tutorial?58:e.type==='boss'?(e.variant==='automat'?56:41):e.type==='cultist'?36:e.elite?37:29);if(e===g.target||e.aggro||distance(e,p)<160){if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))label(c,e.name,e.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);rect(c,'#233b2c',e.x-19,y+4,38,4);rect(c,e.behavior==='neutral'&&!e.aggro?'#d9b86e':'#bb7279',e.x-18,y+5,36*e.hp/e.maxHp,2);}
