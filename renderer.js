@@ -16,7 +16,7 @@ import {drawProp,campProps,baseProps,propBaseline} from './world-prop-ui.js';
 import {createTerrainChunk} from './terrain.js';
 import {fountain,wildlife} from './atmosphere.js';
 import {drawComicResident as drawResidentSprite} from './comic-actors.js';
-import {drawClanHero as drawHero,drawClanEnemy as drawComicEnemy,drawClanCamp} from './clan-art.js';
+import {drawClanHero as drawHero,drawClanEnemy as drawComicEnemy,drawClanCamp,clanSignBounds} from './clan-art.js';
 import {createComicTree,drawComicProp} from './comic-nature.js';
 export {drawHero};
 function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);const s=a.kind==='villager'?WORLD_SCALE.npc/33:1;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
@@ -36,7 +36,7 @@ export class Renderer {
   building(c,b){drawBuilding(c,b,this.game.time);}
   prop(c,p){if(!drawAssetProp(c,p))drawComicProp(c,p,this.game.time);}
   shrine(c){fountain(c,this.world.shrine,this.game.time);if(distance(this.game.player,this.world.shrine)<60)label(c,'Konterbrunnen',this.world.shrine.x,this.world.shrine.y-33,'#d3e1c4',7);}
-  draw(){labelBoxes=[];const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
+  draw(){const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
     const ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*2)/2,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*2)/2;c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
     for(let x=Math.floor(ox/512);x<=Math.floor((ox+W)/512);x++)for(let y=Math.floor(oy/512);y<=Math.floor((oy+H)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);

@@ -258,6 +258,15 @@ Regeln für dieses Dokument:
 
 ---
 
+## E-25 · Autoangriff auf Desktop und Touch
+**Datum:** 2026-09-17 · **Stand:** vom Nutzer bestätigt
+
+Zielwahl per Linksklick, Tab oder Touch allein startet keinen Angriff. Rechtsklick auf einen Gegner oder ein offensiver Kniff startet den Autoangriff; wiederholter Rechtsklick lässt ihn an. Taste 1 beziehungsweise der belegbare Angriffsbutton schaltet ihn an oder aus. Esc beendet ihn nach den bestehenden Prioritäten für Zauberabbruch und offene Fenster. Reichweite, Sichtlinie und Waffentempo bleiben maßgeblich; Zielverlust oder Tod beendet den Angriff. Mobile Geräte verwenden Ziel-Antippen und einen sichtbaren, zustandsmarkierten Angriffsbutton.
+
+Diese Entscheidung ersetzt den früheren P2-Wunsch „Taste 1 darf nie ausschalten“. Händler/Handwerk und der vollständige Akt-1-Playtest sind vorerst zurückgestellt.
+
+---
+
 ## Offen (noch nicht entschieden)
 
 | Frage | Optionen | Empfehlung | Seit |

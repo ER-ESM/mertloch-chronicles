@@ -256,7 +256,7 @@ const PROC_EFFECT_INFO={
  energy:{label:'Randale sofort'},points:{label:'Aufbaupunkte sofort'},shield:{label:'Deckung sofort',unit:'Punkte'},
  heal:{label:'Heilung sofort',unit:'Leben'},haste:{label:'Tempo im Fenster',unit:'%',scale:v=>v*100}
 };
-const TRIGGER_TEXT={crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Ausweichen',markTick:'Tick der Markierung',autoHit:'Treffer des Autoangriffs',heal:'Direkte Heilung',burst3:'Eskalation mit drei Punkten',lowHealth:'Unter 35 % Leben'};
+const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am markierten Ziel',beat:'Grundangriff im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick der Markierung',autoHit:'Treffer des Autoangriffs',heal:'Direkte Heilung',burst3:'Eskalation mit drei Punkten',lowHealth:'Unter 35 % Leben'};
 const skillName=id=>{const b=BASE_SKILLS.find(s=>s.id===id);return TALENT_SKILLS[id]?.name||(b?({strike:'Grundangriff',mark:'Markierung',burst:'Eskalation',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung'})[id]:null)||({throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'})[id]||id;};
 function effectNumbers(effects={},source=TL){
  const out=[];
@@ -270,8 +270,12 @@ function effectNumbers(effects={},source=TL){
 }
 function procNumbers(r){
  const out=[n('Auslöser',TRIGGER_TEXT[r.trigger]||r.trigger,'',PRC),n('Chance',r.chance*100,'%',PRC),n('Zeitfenster',r.window,'s',r.window===BALANCE.procs.defaultWindow?BL:PRC)];
+ if(r.skill)out.push(n('Kniff',skillName(r.skill),'',PRC));
+ if(r.zone)out.push(n('Eigene Fläche',({keg:'Fasskreis',sanctuary:'Heilkreis',barricade:'Barrikade',snare:'Falle',burn:'Brandfläche'})[r.zone]||r.zone,'',PRC));
  if(r.every>1)out.push(n('Zündet jedes',r.every,'. Mal',PRC));
  for(const [key,value] of Object.entries(r.effect||{})){
+  if(key==='cdReduce'){for(const c of [].concat(value))out.push(n(skillName(c.skill)+' früher bereit',c.seconds,'s',PRC));continue;}
+  if(key==='heal'&&typeof value==='object'){out.push(n('Heilung vom verursachten Schaden',value.damage*100,'%',PRC));continue;}
   const d=PROC_EFFECT_INFO[key];if(!d)continue;
   out.push(n(d.label,typeof value==='string'?skillName(value):(d.scale?d.scale(value):value),d.unit||'',PRC));
  }

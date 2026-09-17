@@ -41,7 +41,26 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
  for(const m of CLAN_MEMBERS){if(!CLASS_SPECS[m.id]?.length)bad('class '+m.id,'keine Spezialisierungen');if(!KITS[m.id])bad('class '+m.id,'kein Kit');if(!m.bio||!m.passive||!m.rotation)bad('class '+m.id,'Texte fehlen');}
  const granted=new Set();for(const [spec,rows] of Object.entries(TALENT_ROWS)){const w='talents '+spec;if(!SPECS[spec])bad(w,'Spezialisierung ohne Definition');if(rows.length!==10)bad(w,'genau zehn Talente nötig');if(!Object.values(CLASS_SPECS).flat().includes(spec))bad(w,'nicht in CLASS_SPECS');const actives=rows.filter(t=>t.grants);if(actives.length!==1)bad(w,'genau eine aktive Talentfähigkeit');if(actives[0]&&rows.indexOf(actives[0])!==4)bad(w,'aktive Fähigkeit gehört in Reihe drei (Index 4)');for(const [i,t] of rows.entries()){if(!t.name||!t.text)bad(w+'/'+i,'name/text fehlt');for(const [k,v] of Object.entries(t.effects||{})){if(isProcEffect(k)){if(!PROC_RULES[k.slice(5)])bad(w+'/'+i,'Proc unbekannt: '+k);}else if(!KNOWN_EFFECTS.includes(k))bad(w+'/'+i,'Effekt unbekannt: '+k);if(typeof v!=='number')bad(w+'/'+i,'Effektwert keine Zahl: '+k);}if(t.grants){if(!TALENT_SKILLS[t.grants])bad(w+'/'+i,'grants unbekannt: '+t.grants);if(granted.has(t.grants))bad(w+'/'+i,'Talentfähigkeit doppelt vergeben');granted.add(t.grants);}}}
  for(const spec of Object.keys(SPECS))if(!TALENT_ROWS[spec])bad('spec '+spec,'ohne Talentbaum');
- for(const [id,r] of Object.entries(PROC_RULES)){const w='proc '+id;if(!PROC_TRIGGERS.includes(r.trigger))bad(w,'trigger unbekannt: '+r.trigger);if(!(r.chance>0&&r.chance<=1))bad(w,'chance außerhalb 0–1');if(!(r.window>0))bad(w,'window fehlt');if(!r.effect||!Object.keys(r.effect).length)bad(w,'effect leer');for(const k of Object.keys(r.effect))if(!['free','reset','empower','energy','points','shield','haste'].includes(k))bad(w,'Effektart unbekannt: '+k);for(const k of ['free','reset','empower'])if(r.effect[k]&&!BASE_SKILLS.some(s=>s.id===r.effect[k])&&!['buff','throw','ground'].includes(r.effect[k]))bad(w,k+' zeigt auf unbekannten Kniff '+r.effect[k]);if(r.glow&&!Object.values(r.effect).includes(r.glow))bad(w,'glow zeigt nicht auf einen betroffenen Kniff');if(!r.text)bad(w,'text fehlt');}
+ const procSkills=new Set([...BASE_SKILLS.map(s=>s.id),...Object.keys(TALENT_SKILLS),'auto','buff','throw','ground']);
+ for(const [id,r] of Object.entries(PROC_RULES)){
+  const w='proc '+id,ef=r.effect||{},cd=[].concat(ef.cdReduce||[]);
+  if(!PROC_TRIGGERS.includes(r.trigger))bad(w,'trigger unbekannt: '+r.trigger);
+  if(!(Number.isFinite(r.chance)&&r.chance>0&&r.chance<=1))bad(w,'chance außerhalb 0–1');
+  if(!(Number.isFinite(r.window)&&r.window>0))bad(w,'window fehlt');
+  if(r.every!==undefined&&!(Number.isInteger(r.every)&&r.every>=2))bad(w,'every muss eine ganze Zahl ≥ 2 sein');
+  if(r.skill&&!procSkills.has(r.skill))bad(w,'skill unbekannt');
+  if(r.trigger==='skillHit'&&(!r.skill||!r.every))bad(w,'skillHit braucht skill und every');
+  if(r.zone&&!['keg','sanctuary','barricade','snare','burn'].includes(r.zone))bad(w,'zone unbekannt');
+  if(r.trigger==='inZone'&&!r.zone)bad(w,'inZone braucht zone');
+  if(!Object.keys(ef).length)bad(w,'effect leer');
+  for(const k of Object.keys(ef))if(!['free','reset','empower','energy','points','shield','haste','heal','cdReduce'].includes(k))bad(w,'Effektart unbekannt: '+k);
+  for(const k of ['free','reset','empower'])if(ef[k]&&!procSkills.has(ef[k]))bad(w,k+' zeigt auf unbekannten Kniff');
+  for(const k of ['energy','points','shield','haste'])if(ef[k]!==undefined&&!(Number.isFinite(ef[k])&&ef[k]>0))bad(w,k+' muss positiv sein');
+  if(ef.heal!==undefined&&!(typeof ef.heal==='number'?Number.isFinite(ef.heal)&&ef.heal>0:ef.heal&&Number.isFinite(ef.heal.damage)&&ef.heal.damage>0&&ef.heal.damage<=1))bad(w,'heal braucht Leben oder einen Schadensanteil > 0 bis 1');
+  if(ef.cdReduce&&(!cd.length||cd.some(c=>!procSkills.has(c?.skill)||!Number.isFinite(c?.seconds)||c.seconds<=0)))bad(w,'cdReduce braucht bekannte skill und positive seconds');
+  if(r.glow&&(!procSkills.has(r.glow)||![ef.free,ef.reset,ef.empower,...cd.map(c=>c?.skill)].includes(r.glow)))bad(w,'glow zeigt nicht auf einen betroffenen Kniff');
+  if(!r.text)bad(w,'text fehlt');
+ }
  for(const spec of Object.keys(TALENT_ROWS)){const procs=TALENT_ROWS[spec].filter(t=>Object.keys(t.effects||{}).some(isProcEffect)).length;if(procs<2)bad('talents '+spec,'mindestens zwei Talente mit Auslöser (Proc) je Baum, heute '+procs);}
  // Welt: NPCs, Quests, Dialoge, Story
  for(const [id,n] of Object.entries(NPCS))if(!n.name||!n.role)bad('npc '+id,'name/role fehlt');

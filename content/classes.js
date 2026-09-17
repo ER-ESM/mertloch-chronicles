@@ -1,8 +1,6 @@
 // Spielbare Figuren des Poo-Tang-Clans. IDs sind Speicherschlüssel und Grafikschlüssel (assets/clan-skills-013/<id>.png).
 // `passive` ist der Kurztext auf der Klamottenkarte (clan-ui.js) und muss sagen, was sich schon auf Stufe 1 anders anfühlt.
-// `passives` beschreibt dieselben Werte als Daten. Achtung: die Laufzeit liest sie heute NICHT – engine.js und
-// class-mechanics.js tragen dieselben Zahlen hart (Dieters ×0,9 und +35 Parade-Heilung, Annis Taktfenster, Kevins
-// Unterbrechungs-Bonus). Auseinanderlaufen ist damit möglich; Übernahme liegt in docs/backlog/engine.md.
+// `passives` ist die gemeinsame Quelle für Klassenbeschreibung und Laufzeitwerte.
 export const CLAN_MEMBERS=[
  {id:'dieter',name:'Dosen-Dieter',role:'Tank · Tresenbrecher',age:38,color:'#e6ac6b',combo:'Pegel',
   bio:'Seit 38 Jahren Mertloch. Seit 2007 mit demselben Pfandbon unterwegs. Hält einen Bierdeckel für eine gültige Baugenehmigung.',

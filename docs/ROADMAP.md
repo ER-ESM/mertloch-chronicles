@@ -6,6 +6,15 @@ Reihenfolge der Runden bis zum fertigen Akt 1. Besitzer: Lead-Architect. Grundla
 
 **Takt:** Eine Runde = ein Auftrag je Rolle, ein Branch, ein Bericht, ein Fast-Forward nach `main` (E-07). Eine Runde ist erst abgeschlossen, wenn alle ihre Abnahmekriterien belegt sind — Beleg heißt Testzahl, Bericht-Diff oder Screenshot, nicht Zusage.
 
+## Aktueller Nutzerauftrag · 2026-09-17
+
+- Erledigt: Autoangriff mit getrennter Zielwahl und Start/Stopp für Desktop und Touch (E-25).
+- Erledigt: Talent-/Proc-Integration einschließlich Klassendaten, Zählern, Heilung, Abklingzeitverkürzung, Takt- und Zonenregeln.
+- Erledigt: Baumtransparenz bis zum unteren Stamm.
+- Zurückgestellt auf Nutzerwunsch: Händler/Handwerk und ein neuer vollständiger Akt-1-Playtest.
+
+Details und Abnahme: [Kampf-Integration](COMBAT-INTEGRATION-2026-09-17.md). Die folgenden Rundenbeschreibungen dokumentieren den ursprünglichen Ablauf; sie sind keine aktuelle Laufanzeige.
+
 ---
 
 ## Runde A — Fachrollen parallel + Playtest Akt 1 · läuft (2026-09-17)

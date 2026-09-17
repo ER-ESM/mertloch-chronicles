@@ -1,4 +1,4 @@
-// Runde B (Playtest Akt 1): Autoangriff nur einschalten (P2), Angriffshinweis (P1), Auftragsziel vor Mentoren (P3/P5),
+// Runde B (Playtest Akt 1): Autoangriff umschalten (P2), Angriffshinweis (P1), Auftragsziel vor Mentoren (P3/P5),
 // Laufweg bis zum Klickpunkt (P6), Hofprobe ohne Selbstläufer (P8), Bebauungsmaske (vr-08), beide Eliten,
 // neue Proc-Auslöser und -Wirkungen.
 import test from 'node:test';
@@ -19,7 +19,7 @@ const arena=()=>({id:'runde-b',seed:3,spawn:{x:0,y:0},npc:{x:10,y:0,name:'Kisten
  findClear:(x,y)=>({x,y}),blocked:()=>false,lineClear:()=>true,walkClear:()=>true,findPath:(a,b)=>[{...b}]});
 const toasts=g=>g.events.filter(e=>e.type==='toast').map(e=>e.text);
 
-test('P2 · Taste 1 schaltet den Autoangriff nur ein; aus geht er über Esc und Zielverlust',()=>{
+test('P2 · Taste 1 schaltet um; Rechtsklick startet idempotent, Esc und Zielverlust stoppen',()=>{
  const g=new Game(arena(),{level:8,trainingXp:9000});
  const e=makeEnemy({x:25,y:0},1,{hp:9000,behavior:'neutral',roamWait:100,attackTimer:100});
  g.enemies=[e];g.target=e;
@@ -27,9 +27,11 @@ test('P2 · Taste 1 schaltet den Autoangriff nur ein; aus geht er über Esc und 
  assert.equal(g.autoAttack.enabled,true);
  assert.ok(toasts(g).includes(COMBAT_TEXT.autoOn));
  g.events.length=0;
- for(let i=0;i<5;i++)assert.equal(g.action('auto'),true,'wiederholtes Drücken bleibt ein Einschalten');
- assert.equal(g.autoAttack.enabled,true,'Taste 1 schaltet nie aus');
- assert.ok(!toasts(g).includes(COMBAT_TEXT.autoOff),'keine Ausschalt-Meldung ohne Abwahl');
+ assert.equal(g.action('auto'),true);assert.equal(g.autoAttack.enabled,false);
+ g.events.length=0;
+ for(let i=0;i<5;i++)assert.equal(g.startAttack(),true,'Rechtsklick bleibt ein Einschalten');
+ assert.equal(g.autoAttack.enabled,true);
+ assert.ok(!toasts(g).includes(COMBAT_TEXT.autoOff));
  // Esc der UI
  assert.equal(g.stopAuto(),true);
  assert.equal(g.autoAttack.enabled,false);

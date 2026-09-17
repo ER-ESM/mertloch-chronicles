@@ -184,6 +184,6 @@ export function activeBuffs(game){
  if(st.hasteUntil>t&&st.haste)out.push({kind:'buff',id:'proc-haste',name:'Tempo',remaining:round(st.hasteUntil-t,2),value:st.haste,describe:{kind:'buff',id:'proc-haste'}});
  const rules=CONTENT.PROC_RULES||{};
  for(const id of procIds(combatStats(game)))if(rules[id]?.every>1&&procCount(game,id)%rules[id].every)
-  out.push({kind:'proc',id,mode:'count',name:rules[id].glow?name(rules[id].glow):id,count:procCount(game,id)%rules[id].every,every:rules[id].every,remaining:null,describe:{kind:'proc',id}});
+  out.push({kind:'proc',id,mode:'count',name:rules[id].name||id,count:procCount(game,id)%rules[id].every,every:rules[id].every,remaining:null,describe:{kind:'proc',id}});
  return out;
 }
