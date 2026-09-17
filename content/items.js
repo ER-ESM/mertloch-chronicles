@@ -3,6 +3,8 @@
 // level (Mindeststufe), stats {stamina,might,finesse,wit,armorRating,critRating,hasteRating,masteryRating},
 // weapon {type,hands,min,max}: Hände 0 = Fernkampf, 1 = Einhand, 2 = Zweihand; shield:true = Nebenhandschild.
 // heal/energy (Verpflegung), stack, value (Pfandmarken), unique, proc (Effekt-ID aus PROCS), description, look (Bildhinweis).
+// usable:true = benutzbar und damit für die Aktionsleiste zugelassen (heute genau die Verpflegung; Engine/UI setzen es um).
+// Erweiterte Beschreibungen (info: effect/numbers/why/links/terms) stehen in content/item-info.js und hängen sich dort an.
 import {ITEM_ICON_OVERRIDES,DETAIL_ICONS} from './item-icons.js';
 import {EQUIPMENT_SLOTS,WEAPON_TYPES} from './equipment.js';
 export const ICONS=[...DETAIL_ICONS,'anni-spray','helmet','necklace','shoulders','bracers','gloves','belt','trousers','trinket','blade','maul','slingshot','bottle','water','coat','food','boots','ring','paper','cable','scrap','reinforced','shield','sound','speaker','burst','bag','book','map'];
@@ -27,11 +29,11 @@ export const ITEM_CATALOG={
  flasche:{weapon:{type:'club',hands:1,min:14,max:20},name:'Bewährte Mehrwegflasche',slot:'weapon',rarity:'common',icon:'bottle',value:2,stats:{might:1},description:'Schon mit Opa auf dem Dorffest gewesen.'},
  kutte:{name:'Abgewetzte Clanjacke',slot:'body',rarity:'common',icon:'coat',value:2,stats:{stamina:1,armorRating:4},description:'Riecht nach Heimat. Und Rauch.'},
  // --- Verpflegung ---
- brezel:{name:'Notfallbrezel',kind:'consumable',rarity:'common',icon:'food',heal:160,stack:10,value:3,price:12,description:'160 Leben. Erst kauen, dann weiterpöbeln.'},
- wasser:{name:'Konterwasser',kind:'consumable',rarity:'common',icon:'water',energy:40,stack:10,value:3,price:12,description:'40 Randale. Verdächtig alkoholfrei.'},
- currywurst:{name:'Oskars Currywurst',kind:'consumable',rarity:'uncommon',icon:'food',heal:240,energy:20,stack:5,value:6,price:40,level:3,description:'240 Leben und 20 Randale. Die Soße ist ein Familiengeheimnis und ein Verstoß gegen die Lebensmittelverordnung.',look:'Pappschale mit Currywurst, rote Soße, Holzpieker'},
- kaltgetraenk:{name:'Eiskaltes Kaltgetränk',kind:'consumable',rarity:'uncommon',icon:'water',energy:70,stack:5,value:5,price:28,level:2,description:'70 Randale. Auf dem Etikett steht nur „Ja“.',look:'Beschlagene Dose ohne Marke, Kondenswasser, gelbes Etikett'},
- pfandbon:{name:'Pfandbon-Bündel',kind:'consumable',rarity:'uncommon',icon:'paper',energy:20,stack:5,value:14,price:35,level:4,description:'20 Randale und 60 s lang dreifache Pfandmarken beim nächsten Kill. Kalle nimmt seine eigenen Bons zurück. Ungern.',look:'Bündel zerknitterter Pfandbons mit Gummiband, oberster Bon zeigt „3×“'},
+ brezel:{name:'Notfallbrezel',kind:'consumable',usable:true,rarity:'common',icon:'food',heal:160,stack:10,value:3,price:12,description:'160 Leben. Erst kauen, dann weiterpöbeln.'},
+ wasser:{name:'Konterwasser',kind:'consumable',usable:true,rarity:'common',icon:'water',energy:40,stack:10,value:3,price:12,description:'40 Randale. Verdächtig alkoholfrei.'},
+ currywurst:{name:'Oskars Currywurst',kind:'consumable',usable:true,rarity:'uncommon',icon:'food',heal:240,energy:20,stack:5,value:6,price:40,level:3,description:'240 Leben und 20 Randale. Die Soße ist ein Familiengeheimnis und ein Verstoß gegen die Lebensmittelverordnung.',look:'Pappschale mit Currywurst, rote Soße, Holzpieker'},
+ kaltgetraenk:{name:'Eiskaltes Kaltgetränk',kind:'consumable',usable:true,rarity:'uncommon',icon:'water',energy:70,stack:5,value:5,price:28,level:2,description:'70 Randale. Auf dem Etikett steht nur „Ja“.',look:'Beschlagene Dose ohne Marke, Kondenswasser, gelbes Etikett'},
+ pfandbon:{name:'Pfandbon-Bündel',kind:'consumable',usable:true,rarity:'uncommon',icon:'paper',energy:20,stack:5,value:14,price:35,level:4,description:'20 Randale und 60 s lang dreifache Pfandmarken beim nächsten Kill. Kalle nimmt seine eigenen Bons zurück. Ungern.',look:'Bündel zerknitterter Pfandbons mit Gummiband, oberster Bon zeigt „3×“'},
  // --- Material ---
  kronkorken:{name:'Verbogene Kronkorken',kind:'material',rarity:'common',icon:'scrap',stack:99,value:1,description:'Irgendwann wird Kevin daraus etwas bauen.'},
  kabel:{name:'Brauchbares Kabel',kind:'material',rarity:'common',icon:'cable',stack:99,value:2,description:'Passt garantiert irgendwo rein.'},

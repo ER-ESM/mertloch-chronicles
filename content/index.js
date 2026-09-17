@@ -1,6 +1,7 @@
 // Sammelausgang der Inhaltsschicht. Laufzeitmodule (rpg.js, clan.js, encounters.js, …) importieren von hier.
 export * from './balance.js';
 export * from './items.js';
+export * from './item-info.js';
 export * from './drops.js';
 export * from './recipes.js';
 export * from './enemies.js';

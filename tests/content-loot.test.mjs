@@ -56,3 +56,63 @@ test('kein totes Material: jedes Material wird gebraucht', () => {
  for(const c of STORY_CHAPTERS)for(const o of c.objectives||[])if(o.kind==='gather'&&o.item)used.add(o.item);
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.kind==='material'&&!d.retired)assert.ok(used.has(id),id+': totes Material');
 });
+
+// --- Welle D: Beschreibungs-Standard und benutzbare Gegenstände ---
+import {ITEM_INFO,PROC_INFO,PROCS,describeItem,describeProc,itemNumbers,ratingShare,LOOT_TERMS,BALANCE} from '../content/index.js';
+
+test('jede Ausrüstung und jede Verpflegung trägt einen info-Block, Material nicht', () => {
+ for(const [id,d] of Object.entries(ITEM_CATALOG)){
+  if(d.retired)continue;
+  if(d.kind==='material'){assert.equal(ITEM_INFO[id],undefined,id+': Material braucht keinen info-Block');continue;}
+  const info=describeItem(id);
+  assert.ok(info,id+': ohne info');
+  assert.ok(info.effect.length>=20&&info.why.length>=20,id+': effect/why zu knapp');
+  assert.notEqual(info.effect.trim(),d.description.trim(),id+': effect wiederholt die description');
+  assert.ok(info.numbers.length,id+': keine Zahlen');
+  assert.ok(info.terms.length,id+': keine Begriffe');
+  assert.deepEqual(info,d.info,id+': info am Gegenstand weicht von describeItem() ab');
+ }
+});
+
+test('die Zahlen im info-Block sind abgeleitet, nicht abgeschrieben', () => {
+ for(const [id,d] of Object.entries(ITEM_CATALOG)){
+  if(!ITEM_INFO[id])continue;
+  const by=Object.fromEntries(itemNumbers(id).map(n=>[n.label,n.value]));
+  if(d.heal)assert.equal(by['Leben sofort'],d.heal,id+': heal nicht übernommen');
+  if(d.energy)assert.equal(by['Randale sofort'],d.energy,id+': energy nicht übernommen');
+  if(d.weapon)assert.equal(by.Waffenschaden,d.weapon.min+'–'+d.weapon.max,id+': Waffenspanne nicht übernommen');
+  if(d.stats?.might)assert.equal(by.Wumms,d.stats.might,id+': Wumms nicht übernommen');
+  if(d.stats?.stamina)assert.equal(by['Leben daraus'],d.stats.stamina*BALANCE.player.hpPerStamina,id+': Leben aus Standfestigkeit falsch');
+  if(d.stats?.critRating)assert.equal(by['Glückstrefferchance daraus'],Math.round(ratingShare('critRating',d.stats.critRating,d.level||1)*1000)/10,id+': Wertungsumrechnung falsch');
+ }
+ // Die Umrechnung liest BALANCE und nichts anderes: doppelte Wertung ⇒ weniger als doppelter Ertrag.
+ const einfach=ratingShare('hasteRating',20),doppelt=ratingShare('hasteRating',40);
+ assert.ok(doppelt<einfach*2,'Wertungen müssen abnehmenden Ertrag zeigen');
+ assert.ok(ratingShare('armorRating',100,1)>ratingShare('armorRating',100,10),'Rüstung wirkt auf höherer Stufe schwächer');
+});
+
+test('jeder Proc erklärt sich mit Wirkung, Zahl und Zweck', () => {
+ for(const id of Object.keys(PROCS)){
+  const info=describeProc(id);
+  assert.ok(info,id+': Proc ohne info');
+  assert.ok(info.numbers.length,id+': Proc ohne Zahl');
+  assert.notEqual(info.effect.trim(),PROCS[id].text.trim(),id+': effect wiederholt den Kurztext');
+ }
+ // Gegenstände mit Proc verweisen darauf.
+ for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.proc)assert.ok(ITEM_INFO[id].links.includes(d.proc),id+': verlinkt seinen Proc nicht');
+});
+
+test('benutzbar ist genau die Verpflegung – sie darf in die Aktionsleiste', () => {
+ for(const [id,d] of Object.entries(ITEM_CATALOG)){
+  if(d.kind==='consumable')assert.equal(d.usable,true,id+': Verpflegung ohne usable:true');
+  else assert.notEqual(d.usable,true,id+': nur Verpflegung ist benutzbar');
+ }
+ assert.ok(Object.values(ITEM_CATALOG).filter(d=>d.usable).length>=5,'mindestens die fünf Kioskwaren sind benutzbar');
+});
+
+test('alle Begriffe stehen im Glossar, sobald es existiert', async () => {
+ let GLOSSARY=null;
+ try{({GLOSSARY}=await import('../content/glossary.js'));}catch{/* Klassendesign liefert glossary.js in Welle D nach */}
+ if(!GLOSSARY){assert.ok(LOOT_TERMS.length>0,'ohne Glossar wird nur geprüft, dass Loot Begriffe nennt');return;}
+ for(const term of LOOT_TERMS)assert.ok(GLOSSARY[term],'Begriff fehlt im Glossar: '+term);
+});

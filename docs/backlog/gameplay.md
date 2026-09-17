@@ -14,6 +14,25 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 
 - [ ] `info` für BUILDING_EFFECTS/BUILDINGS-Stufen und Boss-/Gegner-Zauber (`CAST_SETS` casts: effect/numbers/terms), nach dem Standard in docs/backlog/klassen.md.
 
+- [ ] **Bedarf von Loot (2026-09-17): Basisbau-Effekte brauchen ihren `info`-Block.** `BUILDING_EFFECTS` und die Stufen in `content/buildings.js` gehören Gameplay – die Stufentexte nennen die Zahlen heute nur als Prosa („Regeneration +25 %“), daraus kann die UI keine `numbers`-Zeile bauen. Muster steht fertig in `content/item-info.js` (`itemNumbers`, `procNumbers`): von Hand nur `effect`/`why`/`links`/`terms`, die Zahlen aus `stage.effect` ableiten. Umrechnungstabelle je Effektschlüssel (Vorschlag von Loot, deckt alle elf Schlüssel ab):
+
+  | Schlüssel | Beschriftung | Einheit | Umrechnung aus `stage.effect[k]` |
+  |---|---|---|---|
+  | `restRegen` | Regeneration außerhalb des Kampfes | % | `v*100` (additiv auf `BALANCE.player.outOfCombatRegen` = 16 Leben/s) |
+  | `foodHeal` | Wirkung der Verpflegung | % | `v*100` (auf `heal` und `energy` des Gegenstands) |
+  | `consumableCd` | Verpflegung früher bereit | s | `v` (abgezogen von `BALANCE.player.consumableCooldown` = 15 s) |
+  | `coinDrop` | Chance auf Pfandmarken | Prozentpunkte | `v*100` (additiv auf `DROP_TABLES[…].coinsChance`) |
+  | `gearChance` | Chance auf Ausrüstung | Prozentpunkte | `v*100` (additiv auf `DROP_TABLES[…].gearChance`) |
+  | `xpBonus` | Erfahrung aus Kills und Aufträgen | % | `v*100` |
+  | `damageTaken` | erlittener Schaden | % | `(1-v)*100`, Wortlaut „weniger“ (Faktor, multiplikativ) |
+  | `buffDuration` | Dauer der Klassen-Stärkung | % | `v*100` |
+  | `dashCd` | Ausweichen schneller bereit | % | `v*100` (dieselbe Größe wie der Proc `fleet`) |
+  | `energyOnKill` | Randale je Kill | Randale | `v` (flach, additiv auf `BALANCE.momentum.energyOnKill` = 25) |
+  | `respawnHp` | Deckung beim Erwachen bei St. Gangolf | % vom Maximalleben | `v*100` |
+
+  Begriffs-IDs dafür aus `content/glossary.js`: `verpflegung`, `abklingzeit`, `randale`, `leben`, `deckung`, `ausweichen`, `pfandmarken`, `glueckstreffer`. Loot hat die Blöcke für Gegenstände, Procs und Verpflegung geliefert (`content/item-info.js`); die Gebäude bleiben bei Gameplay, weil `buildings.js` Gameplay gehört. Zwei Stellen hängen dabei an Loot-Daten und sollten verlinkt werden: `foodHeal`/`consumableCd` auf die fünf Kioskwaren, `gearChance`/`coinDrop` auf `content/drops.js`.
+
+
 ## Erledigt
 
 - [x] **Dieters Waffenfaktor auf Klassenmaß** (2026-09-17): `SKILL_DAMAGE.dieter.strike.weapon` 3 → 2 und `burst.weaponPerPoint` 3,2 → 2,8 in `content/combat.js`. Beleg `npm run content:balance`: Pfandkeiler auf eigener Stufe 3,6 → 4,5 s (Flagge weg), Pfandautomat 9,4 → 10,6 s (Flagge weg), Borsten-Bruno 4,2 → 5,5 s, Oberpraktikant Olaf 4,6 → 6,1 s, Pfanddachs 2,6 → 3,2 s. Auffälligkeiten 8 → 6; Bärbel und Kevin unverändert (Zelle für Zelle gleich). Folge: die feste Zahl im Resonanz-Test (`tests/game.test.mjs`, Dieters `burst`) von 349,92 auf 316,9 nachgezogen.
