@@ -145,3 +145,98 @@ export const familyOf=e=>e.family||(e.type==='boss'?'horst':e.skin==='goose'?'go
 import {TUNING,applyTuning} from './tuning.js';
 for(const reg of [ARCHETYPES,ELITES,CAMP_ENEMIES,BOSSES])applyTuning(reg,TUNING.enemies);
 for(const [setId,casts] of Object.entries(TUNING.casts))if(CAST_SETS[setId])applyTuning(CAST_SETS[setId].casts,casts);
+
+// --- Beschreibungs-Standard (docs/backlog/klassen.md, Welle D) -----------------------------------------------------
+// Jeder Zauber erklärt sich in drei Teilen: was der Gegner tut (effect), die Zahlen aus der Definition (numbers:
+// Zauberzeit, Schaden, Radius – abgeleitet, nie zweitgepflegt) und welche Antwort warum passt (why). `terms` zeigt auf
+// content/glossary.js (Besitzer Klassendesign; zusätzliche Begriffe stehen in docs/backlog/klassen.md). Die Antwort
+// steht schon im Zaubernamen hinter dem „·“ – ANSWER_INFO übersetzt sie in Begriff und Grundregel, CAST_INFO trägt nur
+// den zauberspezifischen Rest. Dieser Block steht bewusst NACH applyTuning: die Zahlen sollen die getunten sein.
+/** Antwort eines Zaubers aus seinem Namen („Hauerhieb · Parade“ → „Parade“). */
+export const answerOf=cast=>String(cast?.name||'').split('·').pop().trim();
+/** Die vier Antworten und ihre Grundregel – gilt für jeden Zauber, der sie im Namen trägt. */
+export const ANSWER_INFO={
+ 'Parade':{term:'parade',rule:'Parade: kurzer Schlag aus der Nähe, während der Zauberzeit pariert – das halbiert den Treffer und bringt den Gegner aus dem Takt.'},
+ 'ausweichen':{term:'ausweichen',rule:'Ausweichen: der Einschlag liegt auf deinem Standort, ein Ausweichsprung vor dem Ende der Zauberzeit bringt dich heraus. Stehenbleiben heißt voller Schaden.'},
+ 'Q unterbricht':{term:'unterbrechen',rule:'Unterbrechen: gelber Balken, Q während der Zauberzeit bricht ihn ganz ab – kein Schaden, und der Gegner verliert den Zauber für seine Abklingzeit.'},
+ 'Fläche verlassen':{term:'flaeche',rule:'Fläche verlassen: der Boden färbt sich, bis zum Ende der Zauberzeit aus dem Radius herauslaufen – dann trifft nichts.'}
+};
+/** Geschriebener Teil je Zauber. Zahlen kommen aus CAST_SETS selbst (describeCast), damit nichts doppelt gepflegt wird. */
+export const CAST_INFO={
+ wolf:{
+  bite:{effect:'Das Tier schnappt nach deiner Wade, sobald es an dir klebt.',why:'Kurz und billig – hier lernst du die Parade, weil ein Fehler nichts kostet.'},
+  pounce:{effect:'Es geht in die Hocke und springt auf deinen Standort.',why:'Der Standardsprung aller Tiere: einmal zur Seite, und der ganze Schaden geht daneben.'}},
+ cultist:{
+  bolt:{effect:'Der Ruhewart zückt den Block und schreibt dich auf – am Ende trifft die Anzeige über die volle Entfernung.',why:'Sein größter Einzelschaden und der einzige Zauber, den du ganz verhindern kannst.'},
+  circle:{effect:'Er wirft eine Flasche vor deine Füße; die Scherben liegen im Radius.',why:'Zwei Sekunden Vorlauf sind viel – wer hier trifft, steht nur, weil er zaubert.',terms:['zauberzeit']}},
+ horst:{
+  quake:{effect:'Horst knallt den Ordner auf den Boden, die Druckwelle deckt fast den halben Platz ab.',why:'Größter Radius im Kampf: früh loslaufen, nicht erst am Rand.',terms:['phase']},
+  call:{effect:'Er telefoniert die Streife herbei – der Anruf trifft am Ende der Zauberzeit mit voller Wucht.',why:'Sein härtester Zauber; ohne Unterbrechen frisst er ein Drittel deines Lebens.'},
+  cleave:{effect:'Aktenordner von oben, kurz und aus der Nähe.',why:'Die günstige Gelegenheit: parieren, weiterschlagen, Randale halten.'},
+  circle:{effect:'Dieselben Scherben wie bei seinen Leuten, nur mitten im Bosskampf.',why:'Die Fläche liegt oft auf deinem Fernkampfplatz – Position neu wählen, statt hindurchzuschlagen.'}},
+ fox:{
+  nip:{effect:'Der Fuchs schnappt zu und zieht sich sofort wieder zurück.',why:'Zweimal hintereinander im Muster: parieren, sonst tickt der Schaden ständig mit.'},
+  feint:{effect:'Er täuscht einen Haken an und landet auf deinem Standort.',why:'Die Finte kommt nach zwei Bissen – wer den Rhythmus zählt, weicht rechtzeitig aus.'}},
+ scrounger:{
+  beg:{effect:'Er greift dir bettelnd in die Jacke und nimmt sich sein „Pfand“.',why:'Harmlos, wenn du pariert hast – aber er wiederholt es zweimal je Runde.'},
+  bottle:{effect:'Der Becher fliegt, sobald der Balken voll ist.',why:'Sein einziger Fernangriff mit Zauberzeit; unterbrochen bleibt er in Reichweite hilflos.'}},
+ inspector:{
+  note:{effect:'Der Praktikant tippt einen Aktenvermerk – zwei Sekunden Papierkram, dann der Treffer.',why:'Der lange Balken ist deine Unterbrechungsgelegenheit; er hat nur diese eine.'},
+  fine:{effect:'Verwarngeld aus der Nähe, mit Schwung aus dem Klemmbrett.',why:'Der Radius ist größer als beim Tierschlag – Parade statt Rückwärtslaufen.'},
+  cone:{effect:'Er stellt Absperrkegel um deinen Standort; alles dazwischen bekommt den Schlag.',why:'Sein Muster ist fest: Vermerk, Verwarngeld, Kegel – nach dem Verwarngeld gehörst du in Bewegung.'}},
+ oberpraktikant:{
+  klemmbrett:{effect:'Drei Klemmbretter auf einmal ins Gesicht, aus dem Stand.',why:'Öffnet jede Runde – hier hältst du die Parade bereit, bevor die teuren Zauber kommen.'},
+  vermerk:{effect:'Der Vermerk in dreifacher Ausfertigung: zweieinhalb Sekunden Balken, dann der härteste Treffer seines Musters.',why:'Elite ohne Unterbrechen ist ein Rechenfehler: unterbrichst du, fällt fast die Hälfte seines Schadens weg.',terms:['elite']},
+  absperrband:{effect:'Er zieht Absperrband quer über den Platz; der Streifen deckt einen weiten Radius ab.',why:'Größter Radius im Muster – Ausweichen reicht nicht, hier musst du wirklich heraus.'},
+  raeumung:{effect:'Die Räumungsverfügung schlägt eng auf deinen Standort ein.',why:'Kleiner Radius, kurze Zauberzeit: der einzige seiner vier, der mit einem Sprung erledigt ist.'}},
+ elite:{
+  bite:{effect:'Der Alphakeiler hakt die Hauer ein und reißt hoch.',why:'Kommt zweimal je Runde – ohne Parade hast du vor dem Sturmlauf schon verloren.',terms:['elite']},
+  charge:{effect:'Er nimmt Anlauf und rennt deinen Standort um.',why:'Härtester Zauber des Musters; ein Ausweichsprung zur Seite spart die ganze Zahl.'},
+  pounce:{effect:'Derselbe Sprung wie beim Feldkeiler, nur mit Elite-Gewicht.',why:'Zweiter Ausweichmoment kurz nach dem Sturmlauf – die Abklingzeit von Ausweichen muss dafür reichen.',terms:['abklingzeit']}},
+ gisela:{
+  sprinkler:{effect:'Der Rasensprenger dreht sich einmal durch und wässert fast den ganzen Garten.',why:'Größter Radius aller Bosse in Akt 1 – bei diesem Balken sofort in Bewegung.'},
+  petition:{effect:'Sie hält die Unterschriftenliste hoch und sammelt Unterschriften gegen dich.',why:'Fast drei Sekunden Balken: die längste und teuerste Unterbrechungsgelegenheit des Kampfes.'},
+  hedge:{effect:'Heckenschere aus der Nähe, mit weitem Ausholen.',why:'Ihre Nahkampfgelegenheit – parieren und in derselben Bewegung weiterschlagen.'},
+  compost:{effect:'Sie kippt den Komposthaufen auf deinen Platz; der Fleck bleibt liegen.',why:'Kleinerer Radius als der Sprenger, aber sie legt ihn gern dorthin, wo du gerade stehst.'}},
+ automat:{
+  scan:{effect:'Der Automat scannt dich drei Sekunden lang und bucht dich als nicht angenommen.',why:'Höchster Einzelschaden im Spiel – ohne Unterbrechen ist dieser Kampf nicht zu halten.'},
+  crusher:{effect:'Die Dosenpresse fährt aus und drückt zu.',why:'Kurz und aus der Nähe: parieren, statt aus der Reichweite zu laufen und dabei Schläge zu verlieren.'},
+  conveyor:{effect:'Das Förderband läuft an und zieht alles im weiten Radius mit.',why:'Radius 100 – hier hilft nur früh loslaufen, ein Ausweichsprung ist zu kurz.'},
+  reject:{effect:'Rotes Display, Greifarm, ein enger Stoß auf deinen Standort.',why:'Der schnellste seiner vier: Sprung zur Seite, sofort zurück in die Schlagreichweite.'}},
+ kegler:{
+  rempler:{effect:'Schulterrempler aus dem Stand, wie am Tresen in Kalt.',why:'Leichteste Parade des Kampfes und gleichzeitig der Taktgeber seines Musters.'},
+  kugel:{effect:'Er rollt die Kugel auf deinen Standort.',why:'Eng und schnell – ein Ausweichsprung reicht, das Vereinsheim bleibt sauber.'},
+  runde:{effect:'„Runde für alle“: er ruft den Verein, der Zuspruch trifft dich am Ende des Balkens.',why:'Sein einziger unterbrechbarer Zauber – die Gelegenheit kommt nur alle drei Aktionen.'}},
+ jga:{
+  sprint:{effect:'Er sprintet mit der Bierbong voraus auf deinen Standort.',why:'Eröffnet sein Muster: ausweichen, dann steht er ungedeckt vor dir.'},
+  spruch:{effect:'Trinkspruch mit erhobenem Arm, zwei Sekunden Pathos.',why:'Unterbrechen spart nicht nur Schaden, es nimmt ihm auch den Spruch – und das hört man.'},
+  pyramide:{effect:'Die Kotzpyramide kippt über deinen Platz; die Pfütze deckt den Radius ab.',why:'Bleibt liegen, solange die Fläche wirkt: heraus und von außen weiterschlagen.'}},
+ sigi:{
+  zange:{effect:'Die Greifzange schnappt weit ausholend zu.',why:'Sein Nahkampfschlag mit großem Trefferradius – Parade schlägt Rückwärtslaufen.'},
+  haenger:{effect:'Er setzt den Hänger rückwärts auf deinen Standort.',why:'170 Schaden in anderthalb Sekunden: der teuerste Ausweichmoment in Kapitel 2.'},
+  finderrecht:{effect:'„FINDERRECHT!“ – er brüllt die Rechtslage und untermauert sie am Ende des Balkens.',why:'Unterbrichst du ihn, verliert er seinen härtesten Zauber für die ganze Abklingzeit.'},
+  presse:{effect:'Die Schrottpresse fährt herunter und deckt fast den halben Schrottplatz ab.',why:'Radius 90 bei zweieinhalb Sekunden – rechtzeitig loslaufen, nicht ausweichen.'}},
+ klaus:{
+  pudel:{effect:'Er nimmt Anlauf und setzt trotzdem einen Pudel – der Schwung trifft dich.',why:'Regelmäßige Parade-Gelegenheit zwischen seinen beiden teuren Zaubern.'},
+  vollekugel:{effect:'Volle Kugel auf deine Bahn, direkt auf deinen Standort.',why:'180 Schaden in anderthalb Sekunden – der Sprung muss sitzen, sonst ist die Runde vorbei.'},
+  koenigspose:{effect:'Er stellt sich in die Kegelkönig-Pose und lädt fast drei Sekunden auf.',why:'Längster Balken des Kampfes: hier entscheidet dein Unterbrechen über Sieg oder Rücklauf.'},
+  abraeumer:{effect:'Der Abräumer fegt über die ganze Bahn.',why:'Radius 95 – zwei Schritte zu spät heißt voller Treffer, also beim Balkenstart schon laufen.'}},
+ timo:{
+  schaerpe:{effect:'Er schwingt die Trauzeugen-Schärpe wie eine Peitsche.',why:'Weiter Trefferradius, aber kurz: parieren und den Schlagrhythmus behalten.'},
+  busdach:{effect:'Vom Busdach springt er auf deinen Standort.',why:'190 Schaden, härtester Ausweichmoment in Akt 1 – der Sprung ist Pflicht, nicht Option.'},
+  trinkspruch:{effect:'Trinkspruch auf Bastian, fast drei Sekunden lang, dann der Einschlag.',why:'Ohne Unterbrechen sammelt er in jeder Phase 230 Schaden – mehr, als deine Verpflegung nachfüllt.',terms:['verpflegung']},
+  pyramide:{effect:'Kotzpyramide XXL: der Radius deckt den halben Busbahnhof ab.',why:'Größte Fläche des Kapitels; sie kommt direkt nach dem Trinkspruch, also Weg schon vorher planen.'}}
+};
+/** Vollständige Erklärung eines Zaubers: Antwort, geschriebener Teil und die Zahlen aus der Definition. */
+export function describeCast(setId,castId){
+ const c=CAST_SETS[setId]?.casts?.[castId];if(!c)return null;
+ const answer=answerOf(c);const a=ANSWER_INFO[answer];const base=CAST_INFO[setId]?.[castId]||{};
+ const src='CAST_SETS.'+setId+'.'+castId;
+ const numbers=[{label:'Zauberzeit',value:c.total,unit:'s',source:src+'.total'},
+  {label:'Schaden',value:c.damage,unit:'Punkte',source:src+'.damage'}];
+ if(c.radius)numbers.push({label:c.ground?'Flächenradius':'Trefferradius',value:c.radius,unit:'Einheiten (≈ '+(Math.round(c.radius/8*10)/10)+' m)',source:src+'.radius'});
+ const terms=[...new Set([a?.term,...(base.terms||[]),'zauberzeit',...(c.interruptible?['unterbrechen']:[]),...(c.ground?['flaeche']:[])].filter(Boolean))];
+ return {answer,effect:base.effect||'',numbers,why:[base.why,a?.rule].filter(Boolean).join(' '),links:[...(base.links||[])],terms};
+}
+// Erklärung einmal ableiten und am Zauber ablegen – die UI liest `cast.info`, ohne selbst zu rechnen.
+for(const [setId,set] of Object.entries(CAST_SETS))for(const castId of Object.keys(set.casts))set.casts[castId].info=describeCast(setId,castId);

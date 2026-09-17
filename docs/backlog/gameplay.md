@@ -12,7 +12,8 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 
 ### Welle D (Nutzerauftrag)
 
-- [ ] `info` für BUILDING_EFFECTS/BUILDINGS-Stufen und Boss-/Gegner-Zauber (`CAST_SETS` casts: effect/numbers/terms), nach dem Standard in docs/backlog/klassen.md.
+- [x] `info` für BUILDING_EFFECTS/BUILDINGS-Stufen und Boss-/Gegner-Zauber (`CAST_SETS` casts) – siehe „Erledigt“.
+- [ ] **UI-Bedarf aus Welle D** (an UI): Tooltip zeigt `info.effect` + `info.numbers` (jede Zahl `{label,value,unit,source}`), Shift blendet `info.why`, `info.links` und die Glossar-Langtexte der `info.terms` ein. Fertig vorhanden an: `BUILDINGS[].stages[].info`, `CAST_SETS[].casts[].info` (Gegner-Zauberleiste, Boss-Balken), `ENEMY_AUTOS[].info` (Gegnerfenster), `COMBAT_RULE_INFO` (Glossar/Hilfe). `chapter-ui.js` kann die Effektzeile der Bude weiterhin über `BUILDING_EFFECTS[key]` bauen – der Text kommt jetzt aus `BUILDING_EFFECT_INFO[key].label`, zusätzlich stehen dort `name`, `short`, `long` und `unit`.
 
 - [ ] **Bedarf von Loot (2026-09-17): Basisbau-Effekte brauchen ihren `info`-Block.** `BUILDING_EFFECTS` und die Stufen in `content/buildings.js` gehören Gameplay – die Stufentexte nennen die Zahlen heute nur als Prosa („Regeneration +25 %“), daraus kann die UI keine `numbers`-Zeile bauen. Muster steht fertig in `content/item-info.js` (`itemNumbers`, `procNumbers`): von Hand nur `effect`/`why`/`links`/`terms`, die Zahlen aus `stage.effect` ableiten. Umrechnungstabelle je Effektschlüssel (Vorschlag von Loot, deckt alle elf Schlüssel ab):
 
@@ -34,6 +35,12 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 
 
 ## Erledigt
+
+- [x] **Welle D: Beschreibungs-Standard in den Gameplay-Daten** (2026-09-17). Nichts wird doppelt gepflegt – jede Zahl wird aus der Definition abgeleitet:
+  - `content/buildings.js`: `BUILDING_EFFECT_INFO` erklärt alle elf Effekte mit `name`/`short`/`long`/`unit` plus `kind` (wie der Rohwert zur lesbaren Zahl wird: Anteil, Faktor, Sekunden, Prozentpunkte, flach). `BUILDING_EFFECTS` (die alte Textkarte für `chapter-ui.js`) wird daraus erzeugt. `effectNumber(key,value,quelle)` macht aus `damageTaken:.97` ein „−3 %“, aus `coinDrop:.1` ein „+10 Punkte Chance“. `describeStage(id,stufe)` baut `info:{effect,numbers,why,links,terms}`; alle 16 Ausbaustufen tragen es.
+  - `content/enemies.js`: `ANSWER_INFO` gibt jeder der vier Antworten ihre Grundregel, `CAST_INFO` den geschriebenen Teil je Zauber (48 Zauber in 15 Mustern), `describeCast(setId,castId)` ergänzt Zauberzeit, Schaden und Radius (mit Meterangabe) aus dem Zauber selbst. Der Block steht **nach** `applyTuning`, damit die Zahlen die getunten sind.
+  - `content/combat.js`: `AUTO_INFO` + `describeAuto(id)` erklären alle 13 Gegner-Autoangriffe inklusive errechnetem Schaden je Sekunde. `COMBAT_RULE_INFO` erklärt jede Kampfregel mit Zahl glossartauglich (`unarmed`, `specialInterval`, `firstSpecial`, `lootRange`, `autoRange`, `castTime`, `skillDamage`, `enemyAuto`) – `rules` nennt den abgedeckten Pfad in `COMBAT_RULES`.
+  - Prüfungen in `content/checks/gameplay.js` und Tests in `tests/content-gameplay.test.mjs`: jedes Element hat `effect`/`why`/`numbers`/`terms`, jede Zahl trägt Quelle, die Zahlen müssen mit der Definition übereinstimmen (Gegenprobe: Wert ändern → abgeleitete Zahl ändert sich), jeder Zauber nennt die Antwort aus seinem Namen in `terms`, jede Zahl in `COMBAT_RULES` ist von `COMBAT_RULE_INFO` abgedeckt. Begriffe werden als IDs geprüft; sobald `content/glossary.js` existiert, prüft der Test zusätzlich, dass jeder Begriff dort steht.
 
 - [x] **Dieters Waffenfaktor auf Klassenmaß** (2026-09-17): `SKILL_DAMAGE.dieter.strike.weapon` 3 → 2 und `burst.weaponPerPoint` 3,2 → 2,8 in `content/combat.js`. Beleg `npm run content:balance`: Pfandkeiler auf eigener Stufe 3,6 → 4,5 s (Flagge weg), Pfandautomat 9,4 → 10,6 s (Flagge weg), Borsten-Bruno 4,2 → 5,5 s, Oberpraktikant Olaf 4,6 → 6,1 s, Pfanddachs 2,6 → 3,2 s. Auffälligkeiten 8 → 6; Bärbel und Kevin unverändert (Zelle für Zelle gleich). Folge: die feste Zahl im Resonanz-Test (`tests/game.test.mjs`, Dieters `burst`) von 349,92 auf 316,9 nachgezogen.
 - [x] Beutefamilie `oberpraktikant` für Olaf eingepflegt – `ELITES.oberpraktikant.family` steht auf `oberpraktikant` (Tabelle in `content/drops.js`), `ENEMY_AUTOS.oberpraktikant` war schon da (2026-09-17).
