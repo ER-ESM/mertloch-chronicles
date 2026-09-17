@@ -55,3 +55,4 @@ Automatik prüft IDs, Quellen- und Exporthashes, harte Transparenz, Palette, Rä
 ## Abschließende Abnahme
 
 Nach Zusammenführung mit dem parallelen UI-Stand `58ac284`: 331 Tests erfolgreich, Produktionsbuild erfolgreich. Browser: alle 339 Assets geladen, alle drei Klassen bewegt, vier Ausrüstungsansichten geprüft, Touchmodus bei 390 × 844 und Pixeldichte 2 geprüft, keine Lade- oder JavaScriptfehler. Die separate neue UI-Bedarfsliste für zusätzliche Rahmen und Stofftexturen bleibt ein weiterer Gestaltungsauftrag; die hier bereits vorhandenen Sprites sind vollständig umgestellt.
+CI-Nachtrag: Der erste Pages-Lauf scheiterte am bestehenden Kapiteltest, nicht am Grafikexport. Mit Beute-Seed 65 und Auto-Loot war der Rucksack in Kapitel 4 vollständig belegt (24/24), sodass die Belohnung korrekt abgelehnt wurde. Die zwei reinen Kapitelablauftests schalten Auto-Loot jetzt explizit ab und verwenden diesen Seed; Spielregeln und Beutewahrscheinlichkeiten bleiben unverändert.

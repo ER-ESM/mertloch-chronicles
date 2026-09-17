@@ -28,7 +28,9 @@ function playChapter(g){
 }
 
 test('Akt 1 läuft von Kapitel 1 bis 4 durch; Reserve-Kapitel bleiben aus und danach ist der Akt abgeschlossen',()=>{
- const g=new Game(realWorld,{level:14,trainingXp:40000});
+ // Kapitelablauf unabhängig von zufälliger Auto-Beute prüfen: Seed 65 füllt sonst
+ // vor Kapitel 4 alle 24 Plätze und verhindert zu Recht die Belohnungsannahme.
+ const g=new Game(realWorld,{level:14,trainingXp:40000,settings:{autoLoot:false}});g.rpg.lootState=65;
  assert.deepEqual(ACT_CHAPTERS.map(c=>c.id),[1,2,3,4]);
  assert.equal(STORY_CHAPTERS.filter(c=>c.reserve).every(c=>!ACT_CHAPTERS.includes(c)),true);
  for(const chapter of ACT_CHAPTERS){
@@ -47,7 +49,7 @@ test('Akt 1 läuft von Kapitel 1 bis 4 durch; Reserve-Kapitel bleiben aus und da
 });
 
 test('jedes Kapitel hat sein Lager; bevölkert wird es erst, wenn das Kapitel läuft',()=>{
- const g=new Game(realWorld,{level:14,trainingXp:40000});
+ const g=new Game(realWorld,{level:14,trainingXp:40000,settings:{autoLoot:false}});g.rpg.lootState=65;
  const campsOf=chapter=>realWorld.camps.filter(c=>c.chapter===chapter);
  for(const chapter of ACT_CHAPTERS.filter(c=>c.id>FIRST_CHAPTER)){
   const camps=campsOf(chapter.id);
