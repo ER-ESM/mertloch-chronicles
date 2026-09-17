@@ -1,8 +1,8 @@
 // Tests der Rolle Gameplay: Eliten, Zaubermuster, Spawn-Regeln, Basisbau.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ARCHETYPES,ELITES,ELITE_TABLE,CAST_SETS,SPAWN_TABLES,pickElite} from '../content/enemies.js';
-import {ENEMY_AUTOS} from '../content/combat.js';
+import {ARCHETYPES,ELITES,ELITE_TABLE,CAST_SETS,SPAWN_TABLES,pickElite,CAMP_ENEMIES,BOSSES} from '../content/enemies.js';
+import {ENEMY_AUTOS,COMBAT_TEXT,SKILL_DAMAGE} from '../content/combat.js';
 import {DROP_TABLES} from '../content/drops.js';
 import {BUILDINGS,nextStage,buildingEffects} from '../content/buildings.js';
 
@@ -63,4 +63,27 @@ test('Basisbau: jede Stufe bringt Zuwachs und „Was du davon merkst“ steht im
   }
   const effects=buildingEffects(Object.fromEntries(Object.keys(BUILDINGS).map(id=>[id,9])));
   assert.ok(effects.restRegen>0&&effects.damageTaken<1,'Vollausbau muss spürbar sein');
+});
+
+test('Horst steht genau einmal in den Daten – Lagergegner und Boss sind dasselbe Objekt', ()=>{
+  assert.equal(CAMP_ENEMIES.boss, BOSSES.horst, 'CAMP_ENEMIES.boss und BOSSES.horst müssen dasselbe Objekt sein, sonst greift Tuning nur auf einer Kopie');
+  assert.equal(BOSSES.horst.id,'horst');
+  assert.equal(BOSSES.horst.hp,3000);
+  assert.equal(BOSSES.horst.castSet,'horst');
+  assert.ok(BOSSES.horst.phases.length>=3,'Horst braucht seine drei Phasenzeilen');
+  // Gegenprobe: eine Korrektur an einem Schlüssel wirkt auf beiden Wegen.
+  const before=CAMP_ENEMIES.boss.hp;CAMP_ENEMIES.boss.hp=1;assert.equal(BOSSES.horst.hp,1);CAMP_ENEMIES.boss.hp=before;
+});
+
+test('Kampfmeldungen: Angriffshinweis und Abklingzeit mit Restzeit stehen in den Daten', ()=>{
+  assert.ok(COMBAT_TEXT.underAttack?.trim(),'COMBAT_TEXT.underAttack fehlt (großer Hinweis auf das Ereignis attacked)');
+  assert.equal(typeof COMBAT_TEXT.cooldown,'function','COMBAT_TEXT.cooldown muss (name,sekunden) annehmen');
+  const line=COMBAT_TEXT.cooldown('Kellenschwung','2.4');
+  assert.ok(line.includes('Kellenschwung'),'Abklingzeit-Meldung nennt den Kniff nicht');
+  assert.ok(line.includes('2.4'),'Abklingzeit-Meldung nennt die Restzeit nicht');
+});
+
+test('Dieters Schadensmodell liegt auf demselben Waffenfaktor wie Bärbel und Kevin', ()=>{
+  assert.equal(SKILL_DAMAGE.dieter.strike.weapon,SKILL_DAMAGE.baerbel.strike.weapon,'Klassenabstand gehört in Kit und Waffe, nicht in den Waffenfaktor von strike');
+  assert.ok(SKILL_DAMAGE.dieter.burst.weaponPerPoint<=2.8,'Dieters burst darf je Punkt nicht über Bärbel liegen');
 });

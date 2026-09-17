@@ -8,11 +8,11 @@ export const ENEMY_AUTOS={
  horst:{name:'Ordnerkante',min:46,max:64,speed:2.6,range:58},elite:{name:'Alphahauer',min:40,max:54,speed:2.1,range:43},gisela:{name:'Kannenschlag',min:55,max:72,speed:2.7,range:60},automat:{name:'Greifarm',min:60,max:85,speed:2.9,range:65}
 };
 export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43};
-export const COMBAT_TEXT={needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',needPoints:'Du brauchst mindestens einen Punkt. Nutze deinen Aufbaukniff.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden'};
+export const COMBAT_TEXT={needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',needPoints:'Du brauchst mindestens einen Punkt. Nutze deinen Aufbaukniff.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
 // (flat + weapon × rolled auto damage + point bonuses) × (1 + bonusPct).
 // No damage model = legacy fixed values, so old content can migrate incrementally.
 export const SKILL_DAMAGE={
- dieter:{strike:{flat:14,weapon:3},burst:{flat:30,weapon:1.5,weaponPerPoint:3.2}},
+ dieter:{strike:{flat:14,weapon:2},burst:{flat:30,weapon:1.5,weaponPerPoint:2.8}},
  baerbel:{strike:{flat:14,weapon:2},burst:{flat:14,weapon:1.5,weaponPerPoint:2.8}},
  kevin:{strike:{flat:8,weapon:2},burst:{flat:34,weapon:1.5,weaponPerPoint:2.6}},
  shared:{throw:{flat:24,weapon:3},ground:{flat:125},interrupt:{flat:35},slam:{flat:44,weapon:3}}

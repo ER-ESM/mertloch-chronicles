@@ -18,21 +18,25 @@ export const ARCHETYPES={
 /** Seltene Elite: erscheint in weiten Feldern anstelle eines normalen Reviers. */
 export const ELITES={
  alphaBoar:{name:'Borsten-Bruno',type:'wolf',skin:'boar',variant:'alphaBoar',family:'elite',behavior:'aggressive',level:4,hp:1400,aggroRange:130,roamRadius:140,speed:74,respawn:[120,180],elite:true,castSet:'elite',leash:520,damage:1.3,look:'Riesiger Keiler mit Narbe über dem Auge, abgebrochener Hauer, Bierkasten-Aufkleber auf der Flanke',title:'Elite · Alphakeiler'},
- // Beutefamilie: bis Loot die Tabelle `oberpraktikant` anlegt (docs/backlog/loot.md), erbt Olaf `inspector`.
- oberpraktikant:{name:'Oberpraktikant Olaf',type:'cultist',skin:'warden',variant:'oberpraktikant',family:'inspector',behavior:'aggressive',level:4,hp:1480,aggroRange:155,roamRadius:130,speed:54,respawn:[120,180],elite:true,castSet:'oberpraktikant',leash:520,damage:1.22,look:'Schmaler junger Mann in gebügelter Warnweste mit aufgenähtem „i. A.“, drei Klemmbretter untereinander, Dienstmütze zwei Nummern zu groß, Kabelbinder am Gürtel wie Handschellen, Absperrband über der Schulter',title:'Elite · Oberpraktikant'}
+ oberpraktikant:{name:'Oberpraktikant Olaf',type:'cultist',skin:'warden',variant:'oberpraktikant',family:'oberpraktikant',behavior:'aggressive',level:4,hp:1480,aggroRange:155,roamRadius:130,speed:54,respawn:[120,180],elite:true,castSet:'oberpraktikant',leash:520,damage:1.22,look:'Schmaler junger Mann in gebügelter Warnweste mit aufgenähtem „i. A.“, drei Klemmbretter untereinander, Dienstmütze zwei Nummern zu groß, Kabelbinder am Gürtel wie Handschellen, Absperrband über der Schulter',title:'Elite · Oberpraktikant'}
 };
 /** Auswahl der Elite jenseits von SPAWN_TABLES.eliteDistance. Gewichte wie in den Spawn-Tabellen; Summe egal. */
 export const ELITE_TABLE=[{kind:'alphaBoar',weight:.6},{kind:'oberpraktikant',weight:.4}];
+/** Horst Nüchternmann – EIN Objekt für beide Register: `CAMP_ENEMIES.boss` (Lagerspawn über camp.type) und
+ *  `BOSSES.horst` (Kapitel 1). Früher war das eine Kopie über Spread; Tuning unter einem der beiden Schlüssel griff
+ *  dann nur auf der Kopie. Jetzt wirkt jede Korrektur aus tuning.js (`boss` oder `horst`) auf denselben Gegner. */
+const HORST={name:'Horst Nüchternmann',type:'boss',behavior:'aggressive',skin:'horst',family:'horst',hp:3000,level:4,speed:46,respawn:[90,120],aggroRange:105,roamRadius:35,castSet:'horst',
+ id:'horst',chapter:1,title:'Vorstand für Hausordnung · Ruhe 22:01 e. V.',look:'Beamter im Panzer aus laminierten Hausordnungen, Aktenordner als Schild, Stempel als Waffe',
+ phases:[{at:1,line:'Absatz 1: Ruhe. Absatz 2: siehe Absatz 1.'},{at:.5,line:'Ich habe das alles DOKUMENTIERT!'},{at:.15,line:'Ich … ich zeige mich selbst an.'}]};
 /** Lager- und Hauptquestgegner (world.camps). Schlüssel = camp.type. */
 export const CAMP_ENEMIES={
  wolf:{name:'Grillplatz-Plünderer',skin:'boar',family:'boar',hp:520,level:2,speed:71,respawn:[35,55]},
  cultist:{name:'Ruhewart mit Hausordnung',skin:'warden',family:'warden',hp:680,level:3,speed:48,respawn:[35,55]},
- boss:{name:'Horst Nüchternmann',type:'boss',behavior:'aggressive',skin:'horst',family:'horst',hp:3000,level:4,speed:46,respawn:[90,120],aggroRange:105,roamRadius:35,castSet:'horst'}
+ boss:HORST
 };
 /** Bosse der Geschichte. Kapitel 1 ist im Spiel; Kapitel 2 und 3 sind vollständig definiert und warten auf Lager in world-layout.js. */
 export const BOSSES={
- horst:{...CAMP_ENEMIES.boss,id:'horst',chapter:1,title:'Vorstand für Hausordnung · Ruhe 22:01 e. V.',look:'Beamter im Panzer aus laminierten Hausordnungen, Aktenordner als Schild, Stempel als Waffe',
-  phases:[{at:1,line:'Absatz 1: Ruhe. Absatz 2: siehe Absatz 1.'},{at:.5,line:'Ich habe das alles DOKUMENTIERT!'},{at:.15,line:'Ich … ich zeige mich selbst an.'}]},
+ horst:HORST,
  // --- Akt 1, Kapitel 2–4 ---
  sigi:{id:'sigi',chapter:2,name:'Sperrmüll-Sigi',type:'boss',skin:'horst',variant:'sigi',family:'sigi',behavior:'aggressive',level:5,hp:3600,speed:44,aggroRange:110,roamRadius:30,respawn:[120,150],castSet:'sigi',leash:420,
   title:'Schrottplatz-König · „Finderrecht ist Finderrecht“',look:'Massiger Mann in ölverschmierter Latzhose, Greifzange als Waffe, Kühlschranktür als Schild, kalte Zigarre im Mundwinkel, Hund aus Schrott daneben',

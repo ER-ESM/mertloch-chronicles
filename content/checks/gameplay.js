@@ -1,5 +1,6 @@
 // Prüfungen der Rolle Gameplay (enemies.js, combat.js, buildings.js, Spielsysteme).
-import {ARCHETYPES,ELITES,BOSSES,CAST_SETS,SPAWN_TABLES,ELITE_TABLE,pickElite} from '../enemies.js';
+import {ARCHETYPES,ELITES,BOSSES,CAMP_ENEMIES,CAST_SETS,SPAWN_TABLES,ELITE_TABLE,pickElite} from '../enemies.js';
+import {COMBAT_TEXT} from '../combat.js';
 import {BUILDINGS} from '../buildings.js';
 export function check(bad){
  // Jeder Gegner mit castSet nutzt mindestens zwei verschiedene Antworten (Parade/ausweichen/Q/Fläche) – sonst ist er eintönig.
@@ -14,6 +15,11 @@ export function check(bad){
  // Elite erscheint nie diesseits von eliteDistance.
  if(pickElite(SPAWN_TABLES.eliteDistance-1,()=>0))bad('pickElite','Elite diesseits von eliteDistance');
  if(!pickElite(SPAWN_TABLES.eliteDistance,()=>0))bad('pickElite','keine Elite jenseits von eliteDistance');
+ // Horst: Lagergegner und Boss sind EIN Objekt – sonst greift eine Korrektur aus tuning.js nur auf einer Kopie.
+ if(CAMP_ENEMIES.boss!==BOSSES.horst)bad('boss horst','CAMP_ENEMIES.boss und BOSSES.horst müssen dasselbe Objekt sein');
+ // Kampfmeldungen, die die Engine erwartet: großer Angriffshinweis und Abklingzeit mit Restzeit.
+ if(!COMBAT_TEXT.underAttack)bad('COMBAT_TEXT','underAttack fehlt');
+ if(typeof COMBAT_TEXT.cooldown!=='function'||!String(COMBAT_TEXT.cooldown('X','1.0')).includes('1.0'))bad('COMBAT_TEXT','cooldown(name,sekunden) fehlt oder nennt die Restzeit nicht');
  // Basisbau: jede Stufe bringt mehr als die vorige (mindestens ein Effekt wächst).
  for(const [id,b] of Object.entries(BUILDINGS))for(let i=1;i<b.stages.length;i++){const a=b.stages[i-1].effect,c=b.stages[i].effect;const grows=Object.entries(c).some(([k,v])=>k==='damageTaken'?v<(a[k]??1):v>(a[k]||0));if(!grows)bad('building '+id+'/'+(i+1),'Stufe bringt keinen Zuwachs');}
 }
