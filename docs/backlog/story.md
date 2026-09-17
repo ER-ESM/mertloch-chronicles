@@ -9,15 +9,18 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 - [ ] Sprechblasen der Dorfbewohner: Sobald die UI `VILLAGERS.says` zeigt, Zeilen je Kapitel staffeln statt gleichmäßig mischen (heute fünf Zeilen je Bewohner, Akt-1-Bezug).
 
 - [ ] **Zwei Werkbank-Zeilen für Kevin** (Rest aus dem Händler-/Handwerk-Konzept `docs/GAMEPLAY-HAENDLER-HANDWERK.md`, noch nicht freigegeben): z. B. „Gib her. Wird schon halten.“ — kommt, sobald die Werkbank wirklich bedienbar ist.
-- [ ] **Oberpraktikant Olaf** (`content/enemies.js`, Elite der Außenbezirke, menschlich): `ENEMY_BARKS` gelten heute nur für Archetypen – wenn Sprüche auch für Eliten kommen sollen, ist Olaf der erste Kandidat („Das ist hier keine Fläche für so etwas.“ / „Ich mache einen Vermerk.“ / „Mein Anleiter kommt gleich.“). Kein Kapitelbezug nötig, er gehört der freien Welt.
 
-- [ ] **`SYSTEM_LINES.lootFull(anzahl)`** (Engine, Welle D 2026-09-17): Auto-Loot sammelt Beute beim Kill automatisch ein; passt etwas nicht mehr in den Rucksack, wandert es nach `rpg.recovery` („Ausrüstung zurückholen“). Gebraucht wird eine Zeile im Wortlaut „Rucksack voll · <n> Fundstücke warten unter Ausrüstung zurückholen.“ – Ton wie `SYSTEM_LINES.buildPlace`. Bis dahin nutzt `rpg.js` einen Rückfalltext im gleichen Wortlaut. Betrifft: `content/dialogues.js` (`SYSTEM_LINES`).
 
 ### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
 
-- [ ] **P12** Ida Kapitel 1: Absatz 4 wiederholt die Summary – Summary bleibt im Auftragsbuch, Dialog ohne Doppelung (UI setzt um, Text prüfen).
 
 ## Erledigt
+
+- [x] **`SYSTEM_LINES.lootFull(n)`** im geforderten Wortlaut in `content/dialogues.js`; dazu `SYSTEM_LINES.autoLoot(name,count)` als kurzer Toast je Beute (Nutzung in `rpg.js`/Beutelog im Engine-Backlog vermerkt) (2026-09-17).
+- [x] **Autoangriff-Regel in allen eigenen Texten**: 1 schaltet ein, Esc schaltet aus — Hofprobe-Schritt `attack` (`content/tutorial.js`), `PLAY_HELP` Kämpfen + Tastenliste (`content/panel-ui.js`). Der feste Starthinweis in `app.js` und ein Aus-Weg auf Touch liegen im UI-Backlog (2026-09-17).
+- [x] **Hilfe-Abschnitt „Rucksack & Beute“** in `PLAY_HELP` für Desktop und Touch: Shift bzw. „Mehr dazu“ am Tooltip, Verpflegung aus dem Rucksack auf die Leiste ziehen, Auto-Loot ins Beutelog, voller Rucksack → „Ausrüstung zurückholen“ (2026-09-17).
+- [x] **`ENEMY_BARKS.oberpraktikant`** — vier Zeilen für Olaf (`content/dialogues.js`); die Schema-Prüfung lässt Sprüche für menschliche **Eliten** jetzt zu (`content/schema.js`) (2026-09-17).
+- [x] **P12** geprüft: Idas Kapitel-1-Zeilen bleiben, die Doppelung kam aus der UI — `chapter-ui.js` zeigt `chapter.summary` nur noch, wenn der Dialog keine `lines` hat. Kein Textwechsel nötig (2026-09-17).
 
 - [x] `PANEL_UI.memoryHidden` gesetzt („Noch nichts. Da ist nur Rauschen und ein pelziger Nachgeschmack.“); Überschrift `tabMemories` steht auf „Erinnerungen“ (P10, 2026-09-17).
 - [x] **P14** Kurz-Glossar „Wörter im Dorf“ in `PLAY_HELP` für Desktop und Touch: Randale, Pegel/Glanz/Druck, Kniffe, Klamotten, Pfandmarken — je ein Satz (2026-09-17).

@@ -54,3 +54,6 @@ Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). D
 - [x] **Dorfbewohner reden** (Story): `VILLAGERS.says` als Sprechblasentext. Runde A, 2026-09-17, tests/engine-rules.test.mjs.
 - [x] **Belohnungsgüte `epic`** (Loot): `rolledDefinition` kennt nur uncommon/rare; Kapitel 4 würfelt deshalb `rare`. Runde A, 2026-09-17, tests/engine-rules.test.mjs.
 - [x] Akt 1: Kapitelumschalter 1–4, Lager, Erinnerungsfetzen, Basisbau, Mentoren (2026-09-17, tests/story.test.mjs).
+
+- [ ] **`SYSTEM_LINES.autoLoot(name,count)` nutzen** (Story, 2026-09-17): Für den kurzen Toast je eingesammelter Beute liegt jetzt ein Wortlaut bereit (`content/dialogues.js`, „Eingesteckt: <Name> ×<n>.“). `rpg.autoLootBag` meldet heute nur den vollen Rucksack (`SYSTEM_LINES.lootFull(n)`, ebenfalls vorhanden — der Rückfalltext in `rpg.js` kann raus). Optional, wenn das Beutelog die Einzelmeldung nicht ohnehin trägt.
+- [ ] **Sprüche für Eliten auslösen** (Story, 2026-09-17): `ENEMY_BARKS.oberpraktikant` ist geschrieben (4 Zeilen). `engine.js:366` liest `ENEMY_BARKS[e.archetype]`, und `encounters.buildCell` setzt bei Eliten `archetype=kind` (`oberpraktikant`) — sollte also bereits greifen. Nur prüfen, ob Olaf im Feld wirklich redet (`e.cycle===1`); die Schema-Prüfung lässt Elite-Sprüche jetzt zu (`content/schema.js`).

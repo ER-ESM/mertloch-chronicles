@@ -112,7 +112,9 @@ export const ENEMY_BARKS={
  scrounger:['Haste mal ’nen Euro?','Nur ’n Schluck. Ehrlich.','Ich geb’s dir Freitag zurück.'],
  inspector:['Ich bin nur Praktikant!','Das muss ich meinem Chef melden.','Absperrkegel sind Amtsgeräte!'],
  kegler:['Alle Neune!','Das ist für 2011!','Gib die Kugel zurück!','Pudel? PUDEL?!'],
- jga:['GAME OVER!','Auf Bastian!','Wo ist der Bus?','Ist das noch Samstag?','Ich hab keine Hose mehr. Du auch nicht. Bruder!']
+ jga:['GAME OVER!','Auf Bastian!','Wo ist der Bus?','Ist das noch Samstag?','Ich hab keine Hose mehr. Du auch nicht. Bruder!'],
+ // Elite der Außenbezirke (ELITES.oberpraktikant). Die Engine wählt über e.archetype – bei Eliten ist das der Elite-Schlüssel.
+ oberpraktikant:['Das ist hier keine Fläche für so etwas.','Ich mache einen Vermerk. In dreifacher Ausfertigung.','Mein Anleiter kommt gleich. Dann reden wir anders.','Ich darf das. Steht hier. Hab ich selbst geschrieben.']
 };
 /** Kurze Systemmeldungen, die Inhalt tragen (Engine-Toasts). */
 export const SYSTEM_LINES={
@@ -125,7 +127,11 @@ export const SYSTEM_LINES={
  levelUp:level=>'Stufe '+level+'! Neue Kniffe im Skillbuch, ein weiterer Talentpunkt.',
  memory:title=>'Erinnerungsfetzen: '+title,
  building:(name,stage)=>name+' ausgebaut · Stufe '+stage+'.',
- buildPlace:name=>`Gebaut wird an der Bude, nicht im Feld. ${name} wartet am Treffpunkt – und nicht mitten im Kampf.`
+ buildPlace:name=>`Gebaut wird an der Bude, nicht im Feld. ${name} wartet am Treffpunkt – und nicht mitten im Kampf.`,
+ // Auto-Loot: lootFull meldet, was nicht mehr in den Rucksack passt (liegt dann unter „Ausrüstung zurückholen“);
+ // autoLoot ist der kurze Toast je eingesammelter Beute. Wortlaut von lootFull ist mit rpg.js abgestimmt.
+ lootFull:n=>`Rucksack voll · ${n} Fundstück${n===1?'':'e'} warten unter „Ausrüstung zurückholen“.`,
+ autoLoot:(name,count)=>`Eingesteckt: ${name}${count>1?' ×'+count:''}.`
 };
 export function dialogue(npcId,state='greet'){const npc=MAIN_DIALOGUE[npcId];if(!npc)return null;return npc[state]||npc.greet||null;}
 export const chapterDialogue=chapter=>MAIN_DIALOGUE.ida[STORY_CHAPTERS[chapter-1]?.dialogue]||null;
