@@ -1,3 +1,4 @@
+import {placementReason} from './world-dressing.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {box as r,shape,oval,line,framed,PALETTE as P} from './pixel-style.js';
 import {drawMaifeld,maifeld,fillMaifeldGround} from './maifeld-art.js';
@@ -30,7 +31,41 @@ export function drawOccupiedCamp(c,camp,time,clear){if(drawSiteProps(c,camp,time
 export function groundDetails(c,w,ox,oy,S){
  for(const camp of w.camps){if(camp.x<ox-160||camp.x>ox+S+160||camp.y<oy-140||camp.y>oy+S+140)continue;for(let i=0;i<55;i++){const a=i*2.399,radius=19+Math.sqrt(i/55)*103,x=camp.x+Math.cos(a)*radius,y=camp.y+Math.sin(a)*radius*.7;c.save();c.beginPath();c.ellipse(x,y,9+i%8,5+i%5,0,0,Math.PI*2);c.clip();fillMaifeldGround(c,'groundDirt',x-18,y-12,36,24,.18);c.restore();}}}
 
-export function prepareDetails(w){const details=[];for(const b of w.buildings){if(b.church)continue;for(const [i,x]of [b.minX-17,b.maxX+17].entries()){const y=b.maxY+11;if(w.blocked(x,y,11)||w.onRoad(x,y,14)||w.reserved(x,y,12))continue;details.push({x,y,kind:(b.id+i)%4,seed:b.id});}}return details;}
+export function estateFootprint(p){
+ const width=p.kind===2?30:p.kind===1?32:40,depth=p.kind===2?6:12;
+ return {minX:p.x-width/2,maxX:p.x+width/2,minY:p.y-depth+3,maxY:p.y+3};
+}
+export function estatePlacementReason(w,p){
+ const f=estateFootprint(p);
+ // Check the occupied ground, not merely the anchor of a wide bench or crate stack.
+ for(let x=f.minX;;x=Math.min(x+5,f.maxX)){
+  for(let y=f.minY;;y=Math.min(y+5,f.maxY)){
+   const reason=placementReason(w,{x,y},'flowers',{radius:2});if(reason)return reason;
+   if(y>=f.maxY)break;
+  }if(x>=f.maxX)break;
+ }
+ for(const other of [...w.props,...w.gardens]){
+  const r=other.type==='garden'?Math.hypot(other.w,other.h)/2:other.type==='flowers'?5:18;
+  if(other.x>f.minX-r&&other.x<f.maxX+r&&other.y>f.minY-r&&other.y<f.maxY+r)return'decor-overlap';
+ }
+ return null;
+}
+export function prepareDetails(w){
+ const details=[];
+ for(const b of w.buildings){
+  if(b.church)continue;
+  for(const [i,side]of [-1,1].entries()){
+   const kind=(b.id+i)%4;
+   for(const offset of [24,34,44]){
+    const p={x:(side<0?b.minX:b.maxX)+side*offset,y:b.maxY+12,kind,seed:b.id};
+    if(estatePlacementReason(w,p))continue;
+    const f=estateFootprint(p);
+    if(details.some(q=>{const o=estateFootprint(q);return f.minX<o.maxX+8&&f.maxX>o.minX-8&&f.minY<o.maxY+8&&f.maxY>o.minY-8;}))continue;
+    details.push(p);break;
+   }
+  }
+ }return details;
+}
 export function drawEstateDetail(c,p,time){const x=p.x,y=p.y;
  if((p.kind===0||p.kind===3)&&drawMaifeld(c,'supplies',x,y+3,WORLD_SCALE.supplies))return;
  if(p.kind===1&&drawMaifeld(c,'bench',x,y+3,WORLD_SCALE.bench))return;

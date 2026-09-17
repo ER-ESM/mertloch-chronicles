@@ -1,3 +1,4 @@
+import {moveWithCollisions} from './world-collision.js';
 import {walkFacing} from './maifeld-locomotion.js';
 import {APEROL_TEXT} from './content/index.js';
 import {initTutorial,savedTutorial,tutorialActive,tutorialConfirm,tutorialSignal,tutorialDamage,tutorialDestination,tutorialAllowsTravel,tickTutorial} from './tutorial.js';
@@ -337,7 +338,7 @@ export class Game {
     }
     return {point:this.world.npc,label:STORY.giver};
   }
-  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=this.world;if(!w.blocked(entity.x+dx,entity.y,5))entity.x+=dx;if(!w.blocked(entity.x,entity.y+dy,5))entity.y+=dy;const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
+  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
   navigate(point){if(!tutorialAllowsTravel(this,point))return false;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}

@@ -22,3 +22,11 @@ export function refineDressing(w){const rejected={},kept=[],grid=new Map(),rejec
  const gardenCount=w.gardens.length;w.gardens=w.gardens.filter(p=>!placementReason(w,p,'flowers',{radius:Math.hypot(p.w,p.h)/2}));rejected['garden-footprint']=gardenCount-w.gardens.length;
  const report={rules:DRESSING_RULES,seed:w.seed,candidates:w.props.length,accepted:kept.length,rejected};w.props=kept;w.dressingReport=report;return report;
 }
+/** Quest givers and named places can move after the first dressing pass. Validate the final layout. */
+export function finalizeDressing(w){
+ const rejected={};
+ const keep=(p,reason)=>{if(reason)rejected[reason]=(rejected[reason]||0)+1;return !reason;};
+ w.props=w.props.filter(p=>keep(p,placementReason(w,p,p.type,{hub:p.habitat==='hub'})));
+ w.gardens=w.gardens.filter(p=>keep(p,placementReason(w,p,'flowers',{radius:Math.hypot(p.w,p.h)/2})));
+ w.dressingReport.finalRejected=rejected;
+}

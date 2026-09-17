@@ -37,3 +37,8 @@ export function drawBuilding(c,b,time){
    normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>180)cache.delete(cache.keys().next().value);
   }c.imageSmoothingEnabled=false;c.drawImage(sprite.cv,l.world[0],l.top,width,l.height);return;}
  if(!artImages.house){fallback(c,b,time);return;}const key=[b.id,b.minX,b.maxY,b.w,b.h,b.wallHeight,b.roofHeight,b.church,b.style].join(':');let s=cache.get(key);if(!s){s=make(b);cache.set(key,s);if(cache.size>180)cache.delete(cache.keys().next().value);}c.drawImage(s.cv,s.x,s.y);}
+/** Only geometry drawn in front of the actor needs fading. Doorstep flowers are not a roof. */
+export function buildingOccludesActor(b,actor){
+ const bounds=buildingVisualBounds(b);
+ return actor.x>bounds.minX&&actor.x<bounds.maxX&&actor.y<Math.min(b.maxY,bounds.maxY)&&actor.y>bounds.minY;
+}

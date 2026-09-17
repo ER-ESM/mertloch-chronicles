@@ -149,3 +149,10 @@ der tatsächlichen Bebauung ab: `settlementMask(w)` zählt Häuser je 40-Einheit
 drei Häusern gilt die Zelle als bebaut (`SETTLEMENT_RULES`). `inSettlement(w,p)` fragt die Maske, `residential(w,p)`
 prüft Wohnpolygon **oder** Maske. Außenlager, Kulissen und Bosse bleiben dadurch außerhalb des bebauten Gebiets; die
 Maske steht als `world.settlement` auch im Export, damit Laufzeitregeln (z. B. Spawns in `encounters.js`) sie nutzen können.
+
+## Boden- und Umgebungsabnahme (2026-09-17)
+
+Fünf Iterationen, visuelle Belege und wiederholbarer Browserablauf:
+[Bericht Bodendesign und Umgebung](docs/BODEN-UMGEBUNG-2026-09-17.md).
+
+Bodenmaterialien werden getrennt und weltgebunden maskiert. Präzise Texturen behalten vierfache Auflösung bei unverändertem Weltmaßstab. Hausdekorationen prüfen ihre ganze Bodenfläche; `finalizeDressing` kontrolliert nach den letzten Questplatzierungen noch einmal reservierte Bereiche. `world-collision.js` behandelt runde Füße an rechteckigen Wänden und unterteilt große Bewegungen, damit ein freier Endpunkt nicht zum Durchlaufen von Häusern führt.

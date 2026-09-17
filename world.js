@@ -1,6 +1,7 @@
+import {circleIntersectsBox} from './world-collision.js';
 import {spaceQuestGivers} from './world-presence.js';
 import {dressSites,placeQuestObjects} from './site-dressing.js';
-import {refineDressing,placementReason} from './world-dressing.js';
+import {refineDressing,finalizeDressing} from './world-dressing.js';
 import {prepareDetails} from './world-details.js';
 import {WORLD_RULES,resolveRules} from './world-rules.js';
 import {wildernessSite,makeHubs,setCampApproaches,chapterCamps,settlementMask} from './world-layout.js';
@@ -58,7 +59,7 @@ export class World {
     const access=this.closestRoad(this.spawn.x,this.spawn.y);this.roads.push({id:'church-square',tags:{highway:'footway',name:'Kirchvorplatz'},points:[this.spawn,access.point],width:38,entrance:true,...bounds([this.spawn,access.point]),x:this.spawn.x,y:this.spawn.y});
     this.indexRoads();this.buildNavigation();this.generateEncounters(random);this.generateQuests(random);this.generateChapterCamps();placeQuestObjects(this);setCampApproaches(this);this.dressWorld(random);refineDressing(this);spaceQuestGivers(this);placeBase(this);placeKiosk(this);placeCampProps(this);
     this.report={version:2,dressing:this.dressingReport,seed:this.seed,sourceBuildings:raw.length,buildings:this.buildings.length,omittedBuildings:raw.length-this.buildings.length,relocatedBuildings:this.buildings.filter(b=>distance(b,b.sourceCenter)>1).length,accessibleDoors:this.buildings.filter(b=>b.accessible).length,roadNodes:this.nodes.length,connectedRoadNodes:this.connected.size,trees:this.trees.length,quests:this.quests.length,failures:[],rules:this.rules};
-    dressSites(this);this.validate();dressStory(this);this.details=prepareDetails(this).filter(p=>!placementReason(this,p,p.kind===2?'bench':'rock'));
+    dressSites(this);this.validate();dressStory(this);finalizeDressing(this);this.details=prepareDetails(this);
   }
   makeBuilding(source,x,y,w,h,style){const points=rectangle(x,y,w,h),church=style==='church';return {id:source.id,tags:source.tags,sourceCenter:{x:source.x,y:source.y},points,...bounds(points),x,y,w,h,church,style,wallHeight:church?92:style==='barn'?72:this.rules.house.wallHeight+(source.id%3)*8,roofHeight:church?44:this.rules.house.roofHeight,door:{x:x+w*.14,y:y+h/2+12},accessible:false};}
   lotFits(x,y,w,h){const b={minX:x-w/2,maxX:x+w/2,minY:y-h/2,maxY:y+h/2};if(b.minX<35||b.minY<35||b.maxX>this.width-35||b.maxY>this.height-35)return false;
@@ -71,7 +72,7 @@ export class World {
   unproject(x,y){return {lat:this.bbox.north-y/(111320*SCALE),lon:this.bbox.west+x/(111320*Math.cos(50.27*Math.PI/180)*SCALE)};}
   addGrid(o){for(let x=Math.floor(o.minX/100);x<=Math.floor(o.maxX/100);x++)for(let y=Math.floor(o.minY/100);y<=Math.floor(o.maxY/100);y++){const k=x+','+y;if(!this.grid.has(k))this.grid.set(k,[]);this.grid.get(k).push(o);}}
   nearby(x,y,r=8){const found=new Set();for(let gx=Math.floor((x-r)/100);gx<=Math.floor((x+r)/100);gx++)for(let gy=Math.floor((y-r)/100);gy<=Math.floor((y+r)/100);gy++)for(const b of this.grid.get(gx+','+gy)||[])found.add(b);return [...found];}
-  blocked(x,y,r=6){if(x<20||y<20||x>this.width-20||y>this.height-20)return true;for(const b of this.nearby(x,y,r)){if(b.radius){if(Math.hypot(x-b.x,y-b.y)<r+b.radius)return true;continue;}if(x>b.minX-r&&x<b.maxX+r&&y>b.minY-r&&y<b.maxY+r)return true;}return false;}
+  blocked(x,y,r=6){if(x<20||y<20||x>this.width-20||y>this.height-20)return true;for(const b of this.nearby(x,y,r)){if(b.radius){if(Math.hypot(x-b.x,y-b.y)<r+b.radius)return true;continue;}if(circleIntersectsBox(x,y,r,b))return true;}return false;}
   indexRoads(){this.roadGrid.clear();this.segments=[];for(const road of this.roads)for(let i=1;i<road.points.length;i++){const a=road.points[i-1],b=road.points[i];if(distance(a,b)<.1)continue;const s={a,b,road,...bounds([a,b])};this.segments.push(s);const pad=road.width/2+50;for(let x=Math.floor((s.minX-pad)/200);x<=Math.floor((s.maxX+pad)/200);x++)for(let y=Math.floor((s.minY-pad)/200);y<=Math.floor((s.maxY+pad)/200);y++){const key=x+','+y;if(!this.roadGrid.has(key))this.roadGrid.set(key,[]);this.roadGrid.get(key).push(s);}}}
   onRoad(x,y,pad=0){return (this.roadGrid.get(Math.floor(x/200)+','+Math.floor(y/200))||[]).some(s=>segmentDistance(x,y,s.a,s.b)<s.road.width/2+pad);}
   closestRoad(x,y,named=false){let best=null,point={x,y},d=Infinity;const local=this.roadGrid.get(Math.floor(x/200)+','+Math.floor(y/200));const pool=named?(local?.some(s=>s.road.tags.name)?local:this.segments):local?.length?local:this.segments;for(const s of pool){if(named&&!s.road.tags.name)continue;const p=nearestOnSegment(x,y,s.a,s.b),n=distance({x,y},p);if(n<d){best=s.road;point=p;d=n;}}return {road:best,point,distance:d};}

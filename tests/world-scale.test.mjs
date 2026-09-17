@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {World} from '../world.js';
 import {WORLD_SCALE,BUILDING_OPENINGS,buildingSkin,buildingSpriteLayout} from '../world-scale.js';
-import {buildingVisualBounds} from '../tiny-architecture.js';
+import {buildingVisualBounds,buildingOccludesActor} from '../tiny-architecture.js';
 import {maifeld} from '../maifeld-art.js';
 
 // Alpha crops of the shipped atlas; openings are measured within the original PNG.
@@ -38,4 +38,13 @@ test('all generated Mertloch doors retain their scale and their reachable approa
  for(const b of w.buildings){const l=buildingSpriteLayout(b,crops[buildingSkin(b)]);assert.ok(l.door.h>=35);assert.ok(l.world.every(Number.isFinite));assert.equal(w.blocked(b.door.x,b.door.y,9),false);}
  assert.ok(w.report.doorRoutes.every(r=>r.reachable));assert.equal(w.report.accessibleDoors,w.buildings.length);
  for(const site of [...w.hubs,...w.camps])for(const p of site.dressing)if(p.type!=='lantern')assert.equal(p.height,WORLD_SCALE[p.type]);
+});
+test('houses stay opaque at their doorstep and fade only behind the facade baseline',()=>{
+ Object.assign(maifeld,crops);
+ try{for(let id=0;id<6;id++){
+  const b=building(id,120),x=b.door.x,l=buildingSpriteLayout(b,crops[buildingSkin(b)]);
+  assert.equal(buildingOccludesActor(b,{x,y:b.maxY+5}),false);
+  assert.equal(buildingOccludesActor(b,{x,y:b.maxY-5}),true);
+  assert.equal(buildingOccludesActor(b,{x,y:l.top-1}),false);
+ }}finally{for(const name of Object.keys(crops))delete maifeld[name];}
 });
