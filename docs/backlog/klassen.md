@@ -4,6 +4,9 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Kellentext widerspricht dem Schadensmodell** (Playtest Kenner 2026-09-17, Hänger 5): `content/skills.js` Kronkorken-Kelle sagt „300 % Autoschaden + 14", `content/combat.js` SKILL_DAMAGE.strike ist `weapon:2` (= 200 %). Eine Zahl festlegen (mit Balancing), Text oder Modell angleichen; gleiche Prüfung für Wurf („300 % + 24"). Abnahme: Kniff-Tooltip nennt oben und in der Formel dieselbe Zahl.
+- [ ] **Talent-Tooltip-Wortlaut** (Playtest Kenner 2026-09-17, Hänger 3/4): `TALENT_UI.spent`/`parents` so formulieren, dass die Schwelle als Freischaltung lesbar ist („Freigeschaltet ab 3 Punkten im Baum"), und je Talent den betroffenen Kniff nennen (z. B. Feld `skill:'parry'`), damit die UI die Taste anzeigen kann. Bericht: `docs/PLAYTEST-2026-09-17-mmo-kenner.md`.
+
 - [ ] **Talentbaum-Layout nach MMO-Vorbild** (UI, 2026-09-17): `TALENT_UI.spent` auf ein kurzes Wort („Punkte“) kürzen und die x-Werte im `TALENT_GRAPH` auf 12–88 % spreizen, damit die Schwellenbänder im linken Rand (66 px) und die 60-px-Knoten mehr Luft haben. Abnahme: `visual-review/iter-2026-09-17/12-talente.png` ohne Kantenkreuzung über Knoten. Hintergrund: `docs/MMO-VORBILDER-2026-09-17.md` §1.
 
 - [ ] **Rest von Runde B: acht ⚡ bei Dieter auf eigener Stufe** (Pfanddachs 2,6 s, Leergut-Rabe 2,6 s, Grillgut-Gans 3,0 s, Pfandfuchs 3,3 s, Pfandkeiler 3,6 s, Borsten-Bruno 4,2 s, Oberpraktikant Olaf 4,6 s, Pfandautomat 9,4 s). Liegt nicht mehr im Kit: die Kit-Felder `damage`/`base`/`perPoint` sind seit `damageModel` tot, die Schlagfrequenz ist mit 1,5 s ausgereizt. Weiterer Weg über `SKILL_DAMAGE` (→ `docs/backlog/gameplay.md`, mit Messwerten) und über das Grundleben der Stufe-1-Tiere (→ `docs/backlog/balance.md`). Hier erst weiterdrehen, wenn eine der beiden Rollen entschieden hat.
