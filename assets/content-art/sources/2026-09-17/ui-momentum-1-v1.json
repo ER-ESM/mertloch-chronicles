@@ -1,0 +1,17 @@
+{
+  "id": "ui-momentum-1",
+  "kind": "ui",
+  "width": 20,
+  "height": 20,
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A single dark olive beer coaster with exactly 1 bold stacked GOLD UPWARD CHEVRONS. The chevrons are the unmistakable focal point, simple and thick, showing momentum tier 1. No digits, no lettering.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/ui-momentum-3.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-ba3d5b1b-2f09-4a74-ae02-345662276cdf.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-momentum-1-v1.png",
+  "sourceHash": "1ea3da258de31e67a10a8fb7d83d4a5aa045d15c1e699f44851f2d6731eede04",
+  "revision": "ui-momentum-1-v1"
+}

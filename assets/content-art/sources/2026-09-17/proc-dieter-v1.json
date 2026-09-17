@@ -1,0 +1,44 @@
+{
+  "id": "proc-dieter",
+  "kind": "talents",
+  "cols": 2,
+  "rows": 3,
+  "motifs": [
+    {
+      "id": "dieter-wall-1",
+      "index": 1
+    },
+    {
+      "id": "dieter-wall-5",
+      "index": 5
+    },
+    {
+      "id": "dieter-brawl-1",
+      "index": 11
+    },
+    {
+      "id": "dieter-brawl-5",
+      "index": 15
+    },
+    {
+      "id": "dieter-brew-1",
+      "index": 21
+    },
+    {
+      "id": "dieter-brew-5",
+      "index": 25
+    }
+  ],
+  "member": "dieter",
+  "prompt": "Use case: stylized-concept. Production pixel RPG icon ATLAS, exactly TWO columns and THREE rows, SIX distinct icons on genuinely transparent alpha. Warm Maifeld-Detailpixel village comic style, dark slate outlines, golden upper-left light, muted olive/copper/cream anchor palette, simple deliberate square pixel clusters readable at 48 pixels. Wide transparent gutters, each complete icon separately centered and same scale. No background plates, no environment, no writing, digits, brands or watermark. Row-major order: 1: beer coaster ricocheting from clenched fist; 2: wooden bar counter edge with amber sparks; 3: soup ladle with red angry lightning bolt; 4: two soup ladles above one another and a curved arrow; 5: beer tap dripping into glass; 6: fully open beer tap gushing foam. Six separate icons only.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/proc-dieter-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-ca470d2e-ef07-402a-b5b3-87120cd974d5.png",
+  "output": "assets/content-art/sources/2026-09-17/proc-dieter-v1.png",
+  "sourceHash": "a45f4ade24a692ba146ec1fddd898bcc8c3aebbed529590ce2a0e1ea448ccb1d",
+  "revision": "proc-dieter-v1"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "kevin-walk",
+  "kind": "heroes",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "walk-1",
+    "walk-2",
+    "walk-3",
+    "walk-4",
+    "walk-5",
+    "walk-6",
+    "walk-7",
+    "walk-8"
+  ],
+  "references": [
+    "assets/content-art/sources/2026-09-17/kevin-poses.png"
+  ],
+  "prompt": "Use case: identity-preserve. Production WALK CYCLE atlas. Reference is the exact character identity, costume, proportions and four directions to preserve. Create ONLY a smooth eight-frame walk cycle of this SAME person, empty hands, no new objects. Exactly 8 columns and 4 rows (32 complete figures), spacious transparent gutters, same scale and baseline. Row1 front-right southeast, row2 front-left southwest, row3 back-right northeast, row4 back-left northwest. Every row's columns in time order: left foot forward contact, left down recoil, left passing, left up, right foot forward contact, right down recoil, right passing, right up. True left/right leg alternation, opposite natural arm swing. Head and torso stay calm: at most 1 native pixel of vertical bob, no shape or clothing changes; never shake the whole body. Feet follow shallow arcs and plant on the same baseline. Preserve Maifeld-Detailpixel comic pixel clusters, warm upper-left light, dark slate contour and adult proportions. No text, labels, logos, floor or cast shadows. Genuine transparent PNG, ideally 2048x1536. Clothing and face exactly as reference; hands free for modular equipment.",
+  "originalFile": "exec-986551ec-d03c-4544-bed3-60fb5c8ebfe4.png",
+  "output": "assets/content-art/sources/2026-09-17/kevin-walk.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "fda77a098833df419948a102c2c1604db0189de4137f46a4492e81b046047992"
+}

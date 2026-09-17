@@ -213,3 +213,9 @@ Row 6 col 3: three smartphones showing the same stain warning
 Row 6 col 4: selfie hand with two orange replay arrows
 Row 6 col 5: orange cosmetic compact flying over farmland with camera flashes
 ```
+
+## Grafik-Übergabe · 2026-09-17
+
+Erzeugung mit dem eingebauten `imagegen`-Werkzeug. Die konkrete Modellversion wird vom Werkzeug nicht ausgewiesen; kein CLI/API-Fallback. Unveränderte Originale unter `sources/2026-09-17/`. Endformate über `node tools/sprite-pipeline/build-handoff.mjs`: harte Transparenz, 40-Farben-Ankerpalette, native Pixelgrößen und registrierte Fußpunkte.
+
+Die vollständigen tatsächlich verwendeten Prompts, Datum, Referenzen und Herkunft der Ausgaben stehen in [generation-2026-09-17.json](generation-2026-09-17.json). Die aktuellen finalen Prompts und Exportparameter je ID stehen in [handoff-jobs.json](../../tools/sprite-pipeline/handoff-jobs.json). Verworfene Erstfassungen von HUD-Symbolen, Bewohnern, Rabe und Proc-Talenten bleiben mit `-v1`-/`-v2`-Suffix erhalten; geliefert wird jeweils die korrigierte Fassung ohne Versionssuffix. Historische Exportgrößen in den Herkunftsdatensätzen sind keine Laufzeitvorgaben; verbindlich sind die finalen Parameter im Exportkatalog. Referenz für Figuren: `aperol-anni/hero.png`; bei Auftraggebern zusätzlich das jeweils ausdrücklich benannte Feld aus `npcs/dialogue-atlas.png`.

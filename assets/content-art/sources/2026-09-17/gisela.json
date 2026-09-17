@@ -1,0 +1,23 @@
+{
+  "id": "gisela",
+  "kind": "bosses",
+  "nativeHeight": 52,
+  "worldHeight": 29,
+  "animal": false,
+  "cols": 5,
+  "rows": 4,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-b",
+    "impact",
+    "phase"
+  ],
+  "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FIVE columns x FOUR rows,20 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack,5 dramatic boss phase pose. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Gisela Gießkanne: stern elderly village woman with gray curls, broad straw sunhat, dark green dress and gardening apron, heavy brown shoes, HUGE green metal watering can held firmly in hand, judgmental narrow eyes. Aggressive phase raises watering can in fury.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-5b27b43e-8ddf-48ed-be5c-7465d7c29a5e.png",
+  "output": "assets/content-art/sources/2026-09-17/gisela.png",
+  "sourceHash": "21ea1f10146139f7e65a74a38e980bfacf5214453a4205b9cef3724bf0092d12"
+}

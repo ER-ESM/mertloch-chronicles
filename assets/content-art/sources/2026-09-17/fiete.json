@@ -1,0 +1,30 @@
+{
+  "id": "fiete",
+  "kind": "npcs",
+  "name": "Feuerwehr-Fiete",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "references": [
+    "assets/content-art/aperol-anni/hero.png",
+    "assets/content-art/npcs/dialogue-atlas.png"
+  ],
+  "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 3, column 2, not other people. One figure only, Feuerwehr-Fiete: Broad friendly ginger-moustached firefighter wearing yellow helmet, navy fire brigade jacket and trousers with yellow reflective stripes, black work boots, small remote clipped to belt.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-3ec2fb90-009f-458a-af19-e37c083f5f14.png",
+  "output": "assets/content-art/sources/2026-09-17/fiete.png",
+  "sourceHash": "647f95f84013fcdffd9eef868929453896c9c560757b4f740a48118a1e1e64aa"
+}

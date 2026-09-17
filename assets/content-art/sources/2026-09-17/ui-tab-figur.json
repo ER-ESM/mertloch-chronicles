@@ -1,0 +1,13 @@
+{
+  "id": "ui-tab-figur",
+  "kind": "ui",
+  "width": 24,
+  "height": 24,
+  "prompt": "Use case: stylized-concept. Asset type: a single production pixel-art RPG menu icon, ui-tab-figur. Primary request: a little portrait frame containing a broad mustached villager wearing a dark slate denim clan vest over a cream shirt. Warm detailed German village comic style, Maifeld-Detailpixel: dark slate ink outline, amber light from upper left, olive shadows, honey cream highlights, coral skin. Deliberate clean square pixel clusters. Design on a 24 by 24 logical pixel grid, enlarge uniformly for output, no fine texture, no gradients, no smooth vector curves. Strong readable silhouette, centered with transparent safety margin of 2 logical pixels on all sides. A true transparent alpha background, no floor, no shadow, no card or colored square behind the frame. Only this one icon. No text, letters, numbers, labels, brands, logos, watermark.",
+  "originalFile": "exec-dac2f273-26df-42e5-9689-03f066c61ec8.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-tab-figur.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "f681472a4565b1d1e178b75b13be9638c2ec022dc9a95563231fa66b91e302c3"
+}

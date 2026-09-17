@@ -1,0 +1,16 @@
+{
+  "id": "ui-sound",
+  "kind": "ui",
+  "width": 20,
+  "height": 20,
+  "prompt": "Use case: precise-object-edit. Keep this as one production Maifeld-Detailpixel UI icon with the same purpose and transparent alpha. Make the functional sound symbol unmistakable: ONE LARGE VERY DARK SLATE eighth-note silhouette on the PALE CREAM coaster. Thick stem and filled note head. Remove tiny leaf decorations. Keep rustic wood border but no bright gold-on-cream symbol. Keep the entire icon within transparent padding. Bold deliberate square pixel clusters. No text, lettering, branding, watermarks, gradients, texture noise or shadows. Design for 20 native pixels.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/ui-sound-v1.png"
+  ],
+  "originalFile": "exec-f564fb7c-95a4-490c-8fe6-7355972d744e.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-sound.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "df9ce2a955c53cf3287f4e4df6e709d3763e7912cd31e026bde292db8969b28f"
+}

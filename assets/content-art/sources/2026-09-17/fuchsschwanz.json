@@ -1,0 +1,13 @@
+{
+  "id": "fuchsschwanz",
+  "kind": "items",
+  "width": 24,
+  "height": 24,
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A curved fluffy rust-red fox tail with a clear cream-white tip, isolated harmless non-graphic fantasy loot, no fox body or clothing. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-680bd403-2af5-4c0d-83a3-02a56b984c20.png",
+  "output": "assets/content-art/sources/2026-09-17/fuchsschwanz.png",
+  "sourceHash": "c5e5bd48f62f45ad826ea6e95db5bbb33cf92777e2f7d3544406fe3cec552ddf"
+}

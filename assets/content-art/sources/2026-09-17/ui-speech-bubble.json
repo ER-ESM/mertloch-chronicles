@@ -1,0 +1,19 @@
+{
+  "id": "ui-speech-bubble",
+  "kind": "ui",
+  "width": 32,
+  "height": 24,
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A blank wide rectangular parchment speech bubble, plum-slate thick pixel border, tiny stepped corners, completely empty uniform cream center. Small downward triangular tail at bottom LEFT corner confined to corner region. Front-on orthographic, perfectly straight uniform horizontal and vertical sides suitable for nine-slice tiling. 4:3 aspect ratio.",
+  "nineSlice": {
+    "left": 6,
+    "right": 5,
+    "top": 5,
+    "bottom": 7
+  },
+  "originalFile": "exec-19822700-d0e0-4806-bad5-3ef5eb478d51.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-speech-bubble.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "53cb28c5223fe16fb40b5baf8a33f727484678711f605cf94e4aa747098fc773"
+}

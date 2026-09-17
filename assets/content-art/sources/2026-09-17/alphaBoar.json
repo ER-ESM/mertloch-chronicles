@@ -1,0 +1,30 @@
+{
+  "id": "alphaBoar",
+  "kind": "enemies",
+  "nativeHeight": 48,
+  "worldHeight": 24,
+  "animal": true,
+  "cols": 4,
+  "rows": 4,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-b",
+    "impact"
+  ],
+  "references": [
+    "assets/content-art/aperol-anni/hero.png"
+  ],
+  "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Reference is style and warm upper-left lighting only, do not copy the referenced woman. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Borsten-Bruno: massive bristly dark brown wild boar with a visible healed pale scar crossing one eye and ONE broken ivory tusk. Four strong short legs. A small plain crate-shaped patch on flank, no text. Do not draw a normal unscarred boar.",
+  "frameSize": 128,
+  "pivot": {
+    "x": 64,
+    "y": 104
+  },
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-c1dd92c0-df86-45f8-86e9-c990c092b51f.png",
+  "output": "assets/content-art/sources/2026-09-17/alphaBoar.png",
+  "sourceHash": "8bc182414f340de7a90d17d49448b6efa63afe5a759dac94d38869f8a0f1bbb8"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "villager4",
+  "kind": "npcs",
+  "name": "Bauer Berthold",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "references": [
+    "assets/content-art/aperol-anni/hero.png"
+  ],
+  "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Bauer Berthold: Older rural farmer with gray stubble, moss green felt hat, cream checked shirt, brown work overalls, muddy brown boots. Critical prop continuity: Every single cell MUST show his pitchfork held securely in the same hand. In all walking columns 2,3,4 hold pitchfork vertically, tines just above head level and pole alongside body. Do NOT omit or swap hands on the pitchfork.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-85a20df9-8801-4ef0-8a11-dcac0d093c14.png",
+  "output": "assets/content-art/sources/2026-09-17/villager4-v2.png",
+  "sourceHash": "8f5cf835d2d7fbf7e51a3b2f6a958712f2b46c56516c12a21abdf8b7bfaf5510",
+  "revision": "villager4-v2"
+}

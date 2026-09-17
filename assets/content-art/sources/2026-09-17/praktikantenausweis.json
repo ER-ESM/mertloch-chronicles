@@ -1,0 +1,13 @@
+{
+  "id": "praktikantenausweis",
+  "kind": "items",
+  "width": 24,
+  "height": 24,
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Small laminated ID badge with a tiny generic illustrated face block and a lanyard clip, no readable text or numbers. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-a5a39d45-8bef-4c0b-b287-bf433b0bf6ad.png",
+  "output": "assets/content-art/sources/2026-09-17/praktikantenausweis.png",
+  "sourceHash": "585bf04a8068835c4404c3ee6295455b7c44b9892a9ea8683b551f32dc07b09b"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "villager4",
+  "kind": "npcs",
+  "name": "Bauer Berthold",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "references": [
+    "assets/content-art/sources/2026-09-17/villager4-v2.png"
+  ],
+  "prompt": "Use case: precise-object-edit. Edit the supplied production sprite atlas. Keep the exact 8 columns by 4 rows, 32 separate poses, same faces, hair, costume, style, scale, directions and alpha transparency. Change only missing prop continuity: In the SEVENTH column of EVERY row, add the same pitchfork securely held in the near hand. Currently that recoil pose lacks the pitchfork. Keep it vertical alongside the body, pole going down near the feet, tines above shoulder. All other cells retain their existing pitchfork. Never add text, background, shadows, extra people, extra columns or rows. Preserve all existing good poses; full figures and props contained within each cell with transparent gutters.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-aed72781-3d39-4608-80bc-847909b0b0ac.png",
+  "output": "assets/content-art/sources/2026-09-17/villager4.png",
+  "sourceHash": "68e5cdff9b82cbe6a1123924c1fadaf8761536e93790d676843d094c099afd03"
+}

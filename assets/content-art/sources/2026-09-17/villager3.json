@@ -1,0 +1,29 @@
+{
+  "id": "villager3",
+  "kind": "npcs",
+  "name": "Schülerin Sina",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "references": [
+    "assets/content-art/aperol-anni/hero.png"
+  ],
+  "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Schülerin Sina: Teenage schoolgirl with dark ponytail, teal jacket, orange scarf, blue jeans and practical shoes, burgundy backpack. Ordinary age-appropriate school clothes and natural proportions.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-947af659-01af-47a2-9a1c-83fc40c09f38.png",
+  "output": "assets/content-art/sources/2026-09-17/villager3.png",
+  "sourceHash": "ab1719c0c9384eecc0c25c69514695a30b9e7eae5f0785461ef42dd44a29a6ae"
+}

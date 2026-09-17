@@ -1,0 +1,30 @@
+{
+  "id": "oskar",
+  "kind": "npcs",
+  "name": "Grill-Oskar",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "references": [
+    "assets/content-art/aperol-anni/hero.png",
+    "assets/content-art/npcs/dialogue-atlas.png"
+  ],
+  "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 1, column 4, not other people. One figure only, Grill-Oskar: Very heavyset middle-aged man, receding brown hair, large brown moustache, soot on cheek, cream shirt, scorched brown grill apron, small grill tongs in hand, skeptical expression.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-f0aef333-bc39-4b8e-84df-e024f9f19923.png",
+  "output": "assets/content-art/sources/2026-09-17/oskar.png",
+  "sourceHash": "29695e99133211cbf0d1766283d47b8c4b6fb708bd318cdd4e35647c4db302b5"
+}

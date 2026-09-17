@@ -1,0 +1,16 @@
+{
+  "id": "ui-momentum-1",
+  "kind": "ui",
+  "width": 20,
+  "height": 20,
+  "prompt": "Use case: precise-object-edit. Input is an olive beer-coaster momentum icon. Keep the exact upright square coaster shape, same size, camera, colors, gold border, corners, pixel clusters and alpha. Change ONLY the center symbol to exactly 1 gold upward chevron, centered vertically and horizontally, thick and legible at 20x20 native pixels. Keep chevron width matching reference. No letters, numbers or background. Do not rotate or reshape the coaster.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/ui-momentum-3.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-3460fc71-1d25-4092-b11d-e0edf8a49ab1.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-momentum-1.png",
+  "sourceHash": "177e220ebbea950ea89c89b87a383e62b2a5794ef5bc96a4413ff77ea9dbc952"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "proc-kevin",
+  "kind": "talents",
+  "cols": 2,
+  "rows": 3,
+  "motifs": [
+    {
+      "id": "kevin-fuse-1",
+      "index": 1
+    },
+    {
+      "id": "kevin-fuse-5",
+      "index": 5
+    },
+    {
+      "id": "kevin-iron-1",
+      "index": 11
+    },
+    {
+      "id": "kevin-iron-5",
+      "index": 15
+    },
+    {
+      "id": "kevin-hunt-1",
+      "index": 21
+    },
+    {
+      "id": "kevin-hunt-5",
+      "index": 25
+    }
+  ],
+  "member": "kevin",
+  "prompt": "Use case: background-extraction. Edit this SIX-icon sheet, 2 columns by 3 rows. Remove ALL of the dark brown background and every soft gradient glow completely, replace with genuine transparent alpha. Preserve only the six crisp pixel-art objects and their hard-edged pixel sparks/arrows, exactly same positions, sizes, identities, colors and grid arrangement. Empty spaces between icons and around their silhouettes MUST be truly transparent. No black fill, no checkerboard baked in, no colored squares, no shadows or haze. Do not redraw or change icon motifs. Transparent PNG sprite atlas.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/proc-kevin-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-3d0fa3d5-23e6-4213-9a8b-904468678de4.png",
+  "output": "assets/content-art/sources/2026-09-17/proc-kevin.png",
+  "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "raven",
+  "kind": "enemies",
+  "nativeHeight": 36,
+  "worldHeight": 18,
+  "animal": true,
+  "cols": 4,
+  "rows": 4,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-b",
+    "impact"
+  ],
+  "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Leergut-Rabe: small cheeky black raven, slightly ruffled dark blue-black feathers, holding a GOLD BOTTLECAP in its beak. Two bird legs, folded wings while walking, no human body. ONLY the single raven bird repeated in the grid. Absolutely NO humans, woman, heroine, companion, or person. Bird body only in each cell.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-d1324cd2-3eaf-4cfa-994c-98b00bb8dd19.png",
+  "output": "assets/content-art/sources/2026-09-17/raven.png",
+  "sourceHash": "5e0104982650b438788168beab0a812f17cca48052dca41fac2ba001ef4ac25b"
+}

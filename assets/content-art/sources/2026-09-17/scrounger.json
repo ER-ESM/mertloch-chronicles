@@ -1,0 +1,22 @@
+{
+  "id": "scrounger",
+  "kind": "enemies",
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "animal": false,
+  "cols": 4,
+  "rows": 4,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-b",
+    "impact"
+  ],
+  "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Festzelt-Schnorrer: scruffy adult man with untidy brown hair and stubble, blue tracksuit jacket, dark trousers, brown waist bag, necklace made of several tiny plastic beer cups, begging palm and small scratched cup.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-b4b2ab04-611b-4fef-aa0f-8ff09cb8b5d0.png",
+  "output": "assets/content-art/sources/2026-09-17/scrounger.png",
+  "sourceHash": "96c325f7ad10ba1ac0f52d5db07c9bdc31b154ba47f98d5d5b84c7fa9042e712"
+}

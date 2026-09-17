@@ -1,0 +1,13 @@
+{
+  "id": "hopfen",
+  "kind": "items",
+  "width": 24,
+  "height": 24,
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Two fresh green hop cones with layered scales, leaf and curling vine. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-610655e8-98e6-4b89-99d7-af8ebb5a78e4.png",
+  "output": "assets/content-art/sources/2026-09-17/hopfen.png",
+  "sourceHash": "a882180bf1ff3164ab77273201f72740243e733aa47bca7b1c1dc9fa9c5bb63f"
+}

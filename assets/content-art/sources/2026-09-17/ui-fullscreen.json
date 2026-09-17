@@ -1,0 +1,16 @@
+{
+  "id": "ui-fullscreen",
+  "kind": "ui",
+  "width": 20,
+  "height": 20,
+  "prompt": "Use case: precise-object-edit. Keep this as one production Maifeld-Detailpixel UI icon with the same purpose and transparent alpha. Make the functional fullscreen symbol unmistakable: FOUR LARGE VERY DARK SLATE L-shaped corner brackets placed INSIDE the pale coaster, facing its empty center. The dark brackets should occupy most of the coaster. Keep the outer wood button and coaster simple, without tiny ornaments. The outer gold metal corners alone are NOT the fullscreen symbol. Keep the entire icon within transparent padding. Bold deliberate square pixel clusters. No text, lettering, branding, watermarks, gradients, texture noise or shadows. Design for 20 native pixels.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/ui-fullscreen-v1.png"
+  ],
+  "originalFile": "exec-61215b37-1ab5-45d1-8556-56bfebb2fe4d.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-fullscreen.png",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "date": "2026-09-17",
+  "sourceHash": "2cc5e5128017feef7ea071ebcfdd17110e340f716000b3745dd2dd55d3399461"
+}

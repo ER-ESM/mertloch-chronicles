@@ -12,7 +12,7 @@ const palette=styles.find(s=>s.id==='detailpixel').palette.map(h=>[0,2,4].map(k=
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const prompts=JSON.parse(readFileSync(new URL('./live-prompts.json',import.meta.url)));
 const median=a=>a.sort((a,b)=>a-b)[Math.floor(a.length/2)];
-function sockets(frame,b,row,index,walking,id){
+export function sockets(frame,b,row,index,walking,id){
  const east=row%2===0,back=row>1,at=(u,v)=>({x:b.x+b.w*u,y:b.y+b.h*v});
  const mainX=east?.86:.14,offX=1-mainX;
  let main=at(mainX,id==='anni'?.52:.61),off=at(offX,.67);

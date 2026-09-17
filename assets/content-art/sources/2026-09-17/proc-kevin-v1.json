@@ -1,0 +1,44 @@
+{
+  "id": "proc-kevin",
+  "kind": "talents",
+  "cols": 2,
+  "rows": 3,
+  "motifs": [
+    {
+      "id": "kevin-fuse-1",
+      "index": 1
+    },
+    {
+      "id": "kevin-fuse-5",
+      "index": 5
+    },
+    {
+      "id": "kevin-iron-1",
+      "index": 11
+    },
+    {
+      "id": "kevin-iron-5",
+      "index": 15
+    },
+    {
+      "id": "kevin-hunt-1",
+      "index": 21
+    },
+    {
+      "id": "kevin-hunt-5",
+      "index": 25
+    }
+  ],
+  "member": "kevin",
+  "prompt": "Use case: stylized-concept. Production pixel RPG icon ATLAS, exactly TWO columns and THREE rows, SIX distinct icons on genuinely transparent alpha. Warm Maifeld-Detailpixel village comic style, dark slate outlines, golden upper-left light, muted olive/copper/cream anchor palette, simple deliberate square pixel clusters readable at 48 pixels. Wide transparent gutters, each complete icon separately centered and same scale. No background plates, no environment, no writing, digits, brands or watermark. Row-major order: 1: short curved fuse with lit spark; 2: two exposed copper cables with lightning bridging ends; 3: metal plate with four large rivets; 4: pressure gauge needle in red sector, no numbers; 5: flying green bottle in crosshairs; 6: cream deposit receipt with a red heartbeat zigzag, no words. Six separate icons only.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/proc-kevin-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-c24b473b-990f-4c51-a3d1-72dd0533e6df.png",
+  "output": "assets/content-art/sources/2026-09-17/proc-kevin-v1.png",
+  "sourceHash": "3389e4ce798f00b6e96d5e53aebc0e1ecfe84330b0dd2fb1b6e4f6079a2c5911",
+  "revision": "proc-kevin-v1"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "proc-dieter",
+  "kind": "talents",
+  "cols": 2,
+  "rows": 3,
+  "motifs": [
+    {
+      "id": "dieter-wall-1",
+      "index": 1
+    },
+    {
+      "id": "dieter-wall-5",
+      "index": 5
+    },
+    {
+      "id": "dieter-brawl-1",
+      "index": 11
+    },
+    {
+      "id": "dieter-brawl-5",
+      "index": 15
+    },
+    {
+      "id": "dieter-brew-1",
+      "index": 21
+    },
+    {
+      "id": "dieter-brew-5",
+      "index": 25
+    }
+  ],
+  "member": "dieter",
+  "prompt": "Use case: background-extraction. Edit this SIX-icon sheet, 2 columns by 3 rows. Remove ALL of the dark brown background and every soft gradient glow completely, replace with genuine transparent alpha. Preserve only the six crisp pixel-art objects and their hard-edged pixel sparks/arrows, exactly same positions, sizes, identities, colors and grid arrangement. Empty spaces between icons and around their silhouettes MUST be truly transparent. No black fill, no checkerboard baked in, no colored squares, no shadows or haze. Do not redraw or change icon motifs. Transparent PNG sprite atlas.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/proc-dieter-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-f20d3713-5209-4b71-9a97-e020ae624555.png",
+  "output": "assets/content-art/sources/2026-09-17/proc-dieter.png",
+  "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20"
+}

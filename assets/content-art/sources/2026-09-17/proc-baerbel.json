@@ -1,0 +1,43 @@
+{
+  "id": "proc-baerbel",
+  "kind": "talents",
+  "cols": 2,
+  "rows": 3,
+  "motifs": [
+    {
+      "id": "baerbel-care-1",
+      "index": 1
+    },
+    {
+      "id": "baerbel-care-5",
+      "index": 5
+    },
+    {
+      "id": "baerbel-feedback-1",
+      "index": 11
+    },
+    {
+      "id": "baerbel-feedback-5",
+      "index": 15
+    },
+    {
+      "id": "baerbel-stage-1",
+      "index": 21
+    },
+    {
+      "id": "baerbel-stage-5",
+      "index": 25
+    }
+  ],
+  "member": "baerbel",
+  "prompt": "Use case: background-extraction. Edit this SIX-icon sheet, 2 columns by 3 rows. Remove ALL of the dark brown background and every soft gradient glow completely, replace with genuine transparent alpha. Preserve only the six crisp pixel-art objects and their hard-edged pixel sparks/arrows, exactly same positions, sizes, identities, colors and grid arrangement. Empty spaces between icons and around their silhouettes MUST be truly transparent. No black fill, no checkerboard baked in, no colored squares, no shadows or haze. Do not redraw or change icon motifs. Transparent PNG sprite atlas.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/proc-baerbel-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-f8ee3c4e-42fa-42be-82d2-dfa19368d089.png",
+  "output": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
+  "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776"
+}

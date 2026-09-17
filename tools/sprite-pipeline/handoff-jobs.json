@@ -1,0 +1,1168 @@
+[
+  {
+    "id": "ui-tab-figur",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production pixel-art RPG menu icon, ui-tab-figur. Primary request: a little portrait frame containing a broad mustached villager wearing a dark slate denim clan vest over a cream shirt. Warm detailed German village comic style, Maifeld-Detailpixel: dark slate ink outline, amber light from upper left, olive shadows, honey cream highlights, coral skin. Deliberate clean square pixel clusters. Design on a 24 by 24 logical pixel grid, enlarge uniformly for output, no fine texture, no gradients, no smooth vector curves. Strong readable silhouette, centered with transparent safety margin of 2 logical pixels on all sides. A true transparent alpha background, no floor, no shadow, no card or colored square behind the frame. Only this one icon. No text, letters, numbers, labels, brands, logos, watermark."
+  },
+  {
+    "id": "ui-tab-rucksack",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Weathered brown leather backpack with straps and a green returnable bottle tucked securely in side pocket."
+  },
+  {
+    "id": "ui-tab-kniffe",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Two crossed implements: a silver kitchen ladle containing a gold bottlecap, and an orange handled makeup brush with coral bristles. Both whole tools visible."
+  },
+  {
+    "id": "ui-tab-auftraege",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Small wooden notice board with one cream parchment pinned with a red thumbtack. Empty paper, absolutely no writing."
+  },
+  {
+    "id": "ui-tab-karte",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Folded parchment map with a single winding jade route and a round beer-coaster compass at its lower corner. No letters."
+  },
+  {
+    "id": "ui-tab-hilfe",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Round worn beer coaster with a large golden question-mark pictogram. The question mark is the sole functional symbol, no other writing."
+  },
+  {
+    "id": "ui-menu",
+    "kind": "ui",
+    "width": 20,
+    "height": 20,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Square rustic wood button with a round beer coaster and a simple three-horizontal-bars menu pictogram carved in gold."
+  },
+  {
+    "id": "ui-sound",
+    "kind": "ui",
+    "width": 20,
+    "height": 20,
+    "prompt": "Use case: precise-object-edit. Keep this as one production Maifeld-Detailpixel UI icon with the same purpose and transparent alpha. Make the functional sound symbol unmistakable: ONE LARGE VERY DARK SLATE eighth-note silhouette on the PALE CREAM coaster. Thick stem and filled note head. Remove tiny leaf decorations. Keep rustic wood border but no bright gold-on-cream symbol. Keep the entire icon within transparent padding. Bold deliberate square pixel clusters. No text, lettering, branding, watermarks, gradients, texture noise or shadows. Design for 20 native pixels.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/ui-sound-v1.png"
+    ]
+  },
+  {
+    "id": "ui-fullscreen",
+    "kind": "ui",
+    "width": 20,
+    "height": 20,
+    "prompt": "Use case: precise-object-edit. Keep this as one production Maifeld-Detailpixel UI icon with the same purpose and transparent alpha. Make the functional fullscreen symbol unmistakable: FOUR LARGE VERY DARK SLATE L-shaped corner brackets placed INSIDE the pale coaster, facing its empty center. The dark brackets should occupy most of the coaster. Keep the outer wood button and coaster simple, without tiny ornaments. The outer gold metal corners alone are NOT the fullscreen symbol. Keep the entire icon within transparent padding. Bold deliberate square pixel clusters. No text, lettering, branding, watermarks, gradients, texture noise or shadows. Design for 20 native pixels.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/ui-fullscreen-v1.png"
+    ]
+  },
+  {
+    "id": "ui-reward",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A single golden hand-cranked CAN OPENER: two short handles, toothed cutting wheel at the jaw and a small side crank. Clearly a tin-can opening kitchen tool, not a bottle opener. Bold simple silhouette readable at 24px."
+  },
+  {
+    "id": "ui-elite-badge",
+    "kind": "ui",
+    "width": 16,
+    "height": 16,
+    "prompt": "Use case: precise-object-edit. Keep this as one production Maifeld-Detailpixel UI icon with the same purpose and transparent alpha. Make this tiny badge unmistakable at SIXTEEN pixels: a single LARGE VERY DARK BROWN five-pointed star silhouette inside a flat bright gold beer coaster. Two gold shades only in rim, no internal star facets. Thick simple outline, no decorations. Keep the entire icon within transparent padding. Bold deliberate square pixel clusters. No text, lettering, branding, watermarks, gradients, texture noise or shadows. Design for 16 native pixels.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/ui-elite-badge-v1.png"
+    ]
+  },
+  {
+    "id": "ui-chapter-lock",
+    "kind": "ui",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A closed padlock made of a corrugated golden bottle cap with a silver U-shaped shackle and a dark keyhole."
+  },
+  {
+    "id": "ui-speech-bubble",
+    "kind": "ui",
+    "width": 32,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A blank wide rectangular parchment speech bubble, plum-slate thick pixel border, tiny stepped corners, completely empty uniform cream center. Small downward triangular tail at bottom LEFT corner confined to corner region. Front-on orthographic, perfectly straight uniform horizontal and vertical sides suitable for nine-slice tiling. 4:3 aspect ratio.",
+    "nineSlice": {
+      "left": 6,
+      "right": 5,
+      "top": 5,
+      "bottom": 7
+    }
+  },
+  {
+    "id": "dieter-poses",
+    "kind": "heroes",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production character sprite animation atlas for Maifeld-Detailpixel. Reference image 1 is STYLE AND ADULT BODY PROPORTIONS only: Aperol-Anni. Match her detailed comic pixel clusters, warm amber light from upper left, dark slate outlines, restrained warm palette. NOT chibi, not giant head, adult approximately FIVE head-heights tall, legs clearly long enough to walk. Entire body in each cell, true transparent alpha, no shadows or floors, no grid, no text, letters, logos or watermark. Exactly EIGHT columns and FOUR rows, 32 separate sprites with ample transparent gutters, uniform cells, ideally 2048x1536. One identical person throughout. Each row shows ONE fixed viewing direction: row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Column poses within every row: 1 relaxed standing, 2 walking left foot forward, 3 passing step with feet under hips, 4 walking right foot forward, 5 attack wind-up, 6 attack impact with forward empty hand, 7 recoil/hit, 8 resting stance. Head, trunk and feet at consistent size and registration throughout. Clothing and head identity do not morph. Back views show back of head and back of clothes, no face. Character: Dosen-Dieter: broad stocky adult man age 38 with strong shoulders and a modest beer belly, brown swept-back hair, thick brown moustache, expressive eyebrows; dark slate denim clan vest open over cream rolled-sleeve shirt, brown work trousers, leather boots; tiny generic bottle-crate tattoo on forearm, no writing. NO held ladle, NO bottle or crate, both hands empty for separate gear."
+  },
+  {
+    "id": "kevin-poses",
+    "kind": "heroes",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production character sprite animation atlas for Maifeld-Detailpixel. Reference image 1 is STYLE AND ADULT BODY PROPORTIONS only: Aperol-Anni. Match her detailed comic pixel clusters, warm amber light from upper left, dark slate outlines, restrained warm palette. NOT chibi, not giant head, adult approximately FIVE head-heights tall, legs clearly long enough to walk. Entire body in each cell, true transparent alpha, no shadows or floors, no grid, no text, letters, logos or watermark. Exactly EIGHT columns and FOUR rows, 32 separate sprites with ample transparent gutters, uniform cells, ideally 2048x1536. One identical person throughout. Each row shows ONE fixed viewing direction: row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Column poses within every row: 1 relaxed standing, 2 walking left foot forward, 3 passing step with feet under hips, 4 walking right foot forward, 5 attack wind-up, 6 attack impact with forward empty hand, 7 recoil/hit, 8 resting stance. Head, trunk and feet at consistent size and registration throughout. Clothing and head identity do not morph. Back views show back of head and back of clothes, no face. Character: Klo-Kevin: slim lanky adult man age 31, messy brown hair, safety goggles parked on forehead (no cap), cream rolled-sleeve shirt, muted teal work overalls, brown leather tool belt with small fixed pouches, scuffed work boots. Intelligent cheeky face. Both hands empty. NO held tools, no plunger, no drone in this base layer; those use separate gear layers."
+  },
+  {
+    "id": "dieter-walk",
+    "kind": "heroes",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "walk-1",
+      "walk-2",
+      "walk-3",
+      "walk-4",
+      "walk-5",
+      "walk-6",
+      "walk-7",
+      "walk-8"
+    ],
+    "references": [
+      "assets/content-art/sources/2026-09-17/dieter-poses.png"
+    ],
+    "prompt": "Use case: identity-preserve. Production WALK CYCLE atlas. Reference is the exact character identity, costume, proportions and four directions to preserve. Create ONLY a smooth eight-frame walk cycle of this SAME person, empty hands, no new objects. Exactly 8 columns and 4 rows (32 complete figures), spacious transparent gutters, same scale and baseline. Row1 front-right southeast, row2 front-left southwest, row3 back-right northeast, row4 back-left northwest. Every row's columns in time order: left foot forward contact, left down recoil, left passing, left up, right foot forward contact, right down recoil, right passing, right up. True left/right leg alternation, opposite natural arm swing. Head and torso stay calm: at most 1 native pixel of vertical bob, no shape or clothing changes; never shake the whole body. Feet follow shallow arcs and plant on the same baseline. Preserve Maifeld-Detailpixel comic pixel clusters, warm upper-left light, dark slate contour and adult proportions. No text, labels, logos, floor or cast shadows. Genuine transparent PNG, ideally 2048x1536. Clothing and face exactly as reference; hands free for modular equipment."
+  },
+  {
+    "id": "kevin-walk",
+    "kind": "heroes",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "walk-1",
+      "walk-2",
+      "walk-3",
+      "walk-4",
+      "walk-5",
+      "walk-6",
+      "walk-7",
+      "walk-8"
+    ],
+    "references": [
+      "assets/content-art/sources/2026-09-17/kevin-poses.png"
+    ],
+    "prompt": "Use case: identity-preserve. Production WALK CYCLE atlas. Reference is the exact character identity, costume, proportions and four directions to preserve. Create ONLY a smooth eight-frame walk cycle of this SAME person, empty hands, no new objects. Exactly 8 columns and 4 rows (32 complete figures), spacious transparent gutters, same scale and baseline. Row1 front-right southeast, row2 front-left southwest, row3 back-right northeast, row4 back-left northwest. Every row's columns in time order: left foot forward contact, left down recoil, left passing, left up, right foot forward contact, right down recoil, right passing, right up. True left/right leg alternation, opposite natural arm swing. Head and torso stay calm: at most 1 native pixel of vertical bob, no shape or clothing changes; never shake the whole body. Feet follow shallow arcs and plant on the same baseline. Preserve Maifeld-Detailpixel comic pixel clusters, warm upper-left light, dark slate contour and adult proportions. No text, labels, logos, floor or cast shadows. Genuine transparent PNG, ideally 2048x1536. Clothing and face exactly as reference; hands free for modular equipment."
+  },
+  {
+    "id": "ida",
+    "kind": "npcs",
+    "name": "Kisten-Ida",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 1, column 1, not other people. One figure only, Kisten-Ida: Resolute sturdy middle-aged woman, blonde messy bun, rust-red cardigan, cream apron with green hop decoration, keys on belt, cigarette behind ear, wooden bottle crate firmly tucked under arm."
+  },
+  {
+    "id": "mara",
+    "kind": "npcs",
+    "name": "Mara Katerkiller",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 1, column 2, not other people. One figure only, Mara Katerkiller: Young woman with messy black shoulder-length hair, green bandana, tired eyes and cheeky grin, dark sleeveless top, green stained fingers holding a small mortar close to chest, olive trousers."
+  },
+  {
+    "id": "leander",
+    "kind": "npcs",
+    "name": "Lauti-Leander",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 1, column 3, not other people. One figure only, Lauti-Leander: Slim young man with shaggy dark brown hair and sideburns, large black headphones, burgundy T-shirt with plain cream patch (no logo), audio cable around neck, dark trousers."
+  },
+  {
+    "id": "oskar",
+    "kind": "npcs",
+    "name": "Grill-Oskar",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 1, column 4, not other people. One figure only, Grill-Oskar: Very heavyset middle-aged man, receding brown hair, large brown moustache, soot on cheek, cream shirt, scorched brown grill apron, small grill tongs in hand, skeptical expression."
+  },
+  {
+    "id": "fenja",
+    "kind": "npcs",
+    "name": "Fenja Flaschenfee",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 2, column 1, not other people. One figure only, Fenja Flaschenfee: Cheerful young woman, auburn curled updo with little daisies, teal blouse, gold hoops, small silver cocktail shaker in hand, dark skirt and boots."
+  },
+  {
+    "id": "tilo",
+    "kind": "npcs",
+    "name": "Tilo Tapedeck",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 2, column 2, not other people. One figure only, Tilo Tapedeck: Man with sandy mullet and light stubble, blue track jacket with cream stripes, orange foam headphones, plain cassette on necklace, navy trousers and trainers, cocky smirk."
+  },
+  {
+    "id": "jonna",
+    "kind": "npcs",
+    "name": "Jonna Jägermeisterin",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 2, column 3, not other people. One figure only, Jonna Jägermeisterin: Stern woman with short dark side-swept hair, olive hunting vest over green shirt, gold hoop, small plain notepad and pencil, olive trousers and sturdy boots."
+  },
+  {
+    "id": "hedwig",
+    "kind": "npcs",
+    "name": "Hedwig Hopfenkranz",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 2, column 4, not other people. One figure only, Hedwig Hopfenkranz: Elderly rosy-cheeked smiling woman, curly silver hair under green hop wreath, dark green dress, cream brewing apron, gold hoops, small copper flask at belt."
+  },
+  {
+    "id": "konrad",
+    "kind": "npcs",
+    "name": "Küster Konrad",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 3, column 1, not other people. One figure only, Küster Konrad: Gaunt elderly man, receding gray-brown hair, long nose and round spectacles, black coat over white collared shirt and black tie, collection pouch containing a few bottlecaps."
+  },
+  {
+    "id": "fiete",
+    "kind": "npcs",
+    "name": "Feuerwehr-Fiete",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 3, column 2, not other people. One figure only, Feuerwehr-Fiete: Broad friendly ginger-moustached firefighter wearing yellow helmet, navy fire brigade jacket and trousers with yellow reflective stripes, black work boots, small remote clipped to belt."
+  },
+  {
+    "id": "elke",
+    "kind": "npcs",
+    "name": "Elektro-Elke",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 3, column 3, not other people. One figure only, Elektro-Elke: Sturdy woman with short spiky purple hair, safety goggles on head, gold hoops, gray T-shirt, blue work overalls, tool belt, colored festive bulbs draped around shoulders, confident grin."
+  },
+  {
+    "id": "buergermeister",
+    "kind": "npcs",
+    "name": "Bürgermeister Bernd",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png",
+      "assets/content-art/npcs/dialogue-atlas.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. Reference2 is the identity portrait atlas, 4 columns 3 rows: match ONLY the face/hair/costume of row 3, column 4, not other people. One figure only, Bürgermeister Bernd: Nervous middle-aged balding man, remaining brown hair, charcoal suit, white shirt, gold ceremonial mayor chain with a simple leaf motif, phone in hand, no writing."
+  },
+  {
+    "id": "villager0",
+    "kind": "npcs",
+    "name": "Opa Alwin",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Opa Alwin: Elderly village grandfather with gray moustache, brown flat cap, knitted ochre cardigan, brown trousers and shoes, walking cane."
+  },
+  {
+    "id": "villager1",
+    "kind": "npcs",
+    "name": "Postbotin Petra",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Postbotin Petra: Adult postwoman with short auburn hair, navy peaked cap, blue delivery jacket, dark trousers, brown leather mailbag secured across torso."
+  },
+  {
+    "id": "villager2",
+    "kind": "npcs",
+    "name": "Bäcker Bruno",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Bäcker Bruno: Broad friendly adult baker with brown moustache, flour-dusted white shirt, cream apron and baker cap, dark trousers, small pretzel basket held securely."
+  },
+  {
+    "id": "villager3",
+    "kind": "npcs",
+    "name": "Schülerin Sina",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Schülerin Sina: Teenage schoolgirl with dark ponytail, teal jacket, orange scarf, blue jeans and practical shoes, burgundy backpack. Ordinary age-appropriate school clothes and natural proportions."
+  },
+  {
+    "id": "villager4",
+    "kind": "npcs",
+    "name": "Bauer Berthold",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/sources/2026-09-17/villager4-v2.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Edit the supplied production sprite atlas. Keep the exact 8 columns by 4 rows, 32 separate poses, same faces, hair, costume, style, scale, directions and alpha transparency. Change only missing prop continuity: In the SEVENTH column of EVERY row, add the same pitchfork securely held in the near hand. Currently that recoil pose lacks the pitchfork. Keep it vertical alongside the body, pole going down near the feet, tines above shoulder. All other cells retain their existing pitchfork. Never add text, background, shadows, extra people, extra columns or rows. Preserve all existing good poses; full figures and props contained within each cell with transparent gutters."
+  },
+  {
+    "id": "villager5",
+    "kind": "npcs",
+    "name": "Pfarrer Paul",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Pfarrer Paul: Middle-aged priest with short gray hair, black clerical coat and white collar, black trousers, brown shoes, kind skeptical face."
+  },
+  {
+    "id": "villager6",
+    "kind": "npcs",
+    "name": "Kioskkönig Kalle",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. Production game character sprite sheet, NOT a portrait. Reference1 Aperol-Anni defines Maifeld-Detailpixel style and adult proportions: detailed comic pixel clusters, dark slate contours, amber upper-left light, warm muted palette, approximately five head-heights tall, NOT chibi. Create exactly 8 columns x4 rows,32 separate whole-body sprites with genuine transparent alpha, no floor, no cast shadows, no grid, ample empty gutters. Consistent scale and feet baseline in every cell. Row1 southeast front-right; row2 southwest front-left; row3 northeast rear-right; row4 northwest rear-left. Columns: idle, left-foot-forward walking contact, walking pass, right-foot-forward walking contact, anticipation gesture, forward action gesture, mild recoil, relaxed rest. Calm head and torso; articulated legs. Same person, same costume and attached props in all cells. Props held or attached securely, never sitting at feet; they move with the corresponding hand. No text, lettering, logos, brands or watermark. 2048x1536 landscape. One figure only, Kioskkönig Kalle: Stocky middle-aged kiosk owner with balding dark hair, red polo under green vest, blue jeans, brown shoes, small plain coffee mug."
+  },
+  {
+    "id": "villager7",
+    "kind": "npcs",
+    "name": "Nachbarin Nelli",
+    "cols": 8,
+    "rows": 4,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-pass",
+      "walk-b",
+      "anticipation",
+      "impact",
+      "hit",
+      "rest"
+    ],
+    "references": [
+      "assets/content-art/sources/2026-09-17/villager7-v2.png"
+    ],
+    "prompt": "Use case: precise-object-edit. Edit the supplied production sprite atlas. Keep the exact 8 columns by 4 rows, 32 separate poses, same faces, hair, costume, style, scale, directions and alpha transparency. Change only missing prop continuity: Add the same purple grocery bag, hanging from the same hand, wherever it is missing: especially SEVENTH column of EVERY row and SIXTH column in first row. Ensure every walking pose includes the bag as well; preserve valid occlusion in rear views. Never add text, background, shadows, extra people, extra columns or rows. Preserve all existing good poses; full figures and props contained within each cell with transparent gutters."
+  },
+  {
+    "id": "raven",
+    "kind": "enemies",
+    "nativeHeight": 36,
+    "worldHeight": 18,
+    "animal": true,
+    "cols": 4,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Leergut-Rabe: small cheeky black raven, slightly ruffled dark blue-black feathers, holding a GOLD BOTTLECAP in its beak. Two bird legs, folded wings while walking, no human body. ONLY the single raven bird repeated in the grid. Absolutely NO humans, woman, heroine, companion, or person. Bird body only in each cell."
+  },
+  {
+    "id": "fox",
+    "kind": "enemies",
+    "nativeHeight": 40,
+    "worldHeight": 20,
+    "animal": true,
+    "cols": 4,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Reference is style and warm upper-left lighting only, do not copy the referenced woman. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Pfandfuchs: slender rust-red fox, long bushy white-tipped tail, black paws, cream throat, pointed ears, cunning eyes; a short BLANK cream receipt held in its mouth. Four legs with distinct planted paws."
+  },
+  {
+    "id": "scrounger",
+    "kind": "enemies",
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "animal": false,
+    "cols": 4,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Festzelt-Schnorrer: scruffy adult man with untidy brown hair and stubble, blue tracksuit jacket, dark trousers, brown waist bag, necklace made of several tiny plastic beer cups, begging palm and small scratched cup."
+  },
+  {
+    "id": "inspector",
+    "kind": "enemies",
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "animal": false,
+    "cols": 4,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Ordnungsamt-Praktikant: nervous young adult man, oversized dark service cap, orange reflective safety vest over gray shirt, navy trousers, clipboard with BLANK sheet, too-serious expression."
+  },
+  {
+    "id": "alphaBoar",
+    "kind": "enemies",
+    "nativeHeight": 60,
+    "worldHeight": 30,
+    "animal": true,
+    "cols": 4,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact"
+    ],
+    "references": [
+      "assets/content-art/aperol-anni/hero.png"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Reference is style and warm upper-left lighting only, do not copy the referenced woman. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FOUR columns x FOUR rows,16 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Borsten-Bruno: massive bristly dark brown wild boar with a visible healed pale scar crossing one eye and ONE broken ivory tusk. Four strong short legs. A small plain crate-shaped patch on flank, no text. Do not draw a normal unscarred boar.",
+    "frameSize": 128,
+    "pivot": {
+      "x": 64,
+      "y": 104
+    }
+  },
+  {
+    "id": "gisela",
+    "kind": "bosses",
+    "nativeHeight": 104,
+    "worldHeight": 52,
+    "animal": false,
+    "cols": 5,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact",
+      "phase"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FIVE columns x FOUR rows,20 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack,5 dramatic boss phase pose. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Gisela Gießkanne: stern elderly village woman with gray curls, broad straw sunhat, dark green dress and gardening apron, heavy brown shoes, HUGE green metal watering can held firmly in hand, judgmental narrow eyes. Aggressive phase raises watering can in fury.",
+    "frameSize": 192,
+    "pivot": {
+      "x": 96,
+      "y": 160
+    }
+  },
+  {
+    "id": "automat",
+    "kind": "bosses",
+    "nativeHeight": 104,
+    "worldHeight": 52,
+    "animal": false,
+    "cols": 5,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact",
+      "phase"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FIVE columns x FOUR rows,20 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack,5 dramatic boss phase pose. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Der Pfandautomat 3000: a man-sized olive and cream reverse-vending MACHINE on two small caterpillar tracks, front circular bottle intake, chrome articulated claw arm, exposed fixed cables, dark red illuminated display with abstract red warning bars ONLY (absolutely no text or numbers). No human face or body, no robot legs. It moves on tracks. Attack: claw reaches forward. Phase: red warning lights flare, claw raised. Back views show rear machine panels.",
+    "frameSize": 192,
+    "pivot": {
+      "x": 96,
+      "y": 160
+    },
+    "rig": "machine"
+  },
+  {
+    "id": "currywurst",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Sliced currywurst sausage in a little cardboard tray with red curry sauce and one wooden pick. Food only, no plate or hands. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "kaltgetraenk",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Chilled yellow beverage can with silver pull tab and a few clear condensation droplets, plain unbranded label with NO writing. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "fuchsschwanz",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A curved fluffy rust-red fox tail with a clear cream-white tip, isolated harmless non-graphic fantasy loot, no fox body or clothing. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "flugblatt",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: One crumpled cream flyer with a folded corner and round dark red rubber-stamp blot, completely blank with NO letters or writing. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "hopfen",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Two fresh green hop cones with layered scales, leaf and curling vine. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "dosenblech",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Jagged crumpled aluminium can scrap, silver metal with a little muted green paint, recognizably crushed tin not a weapon. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "bierdeckelweste",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A sleeveless protective vest assembled from many round brown beer coasters and dark adhesive tape seams, no human body, cream neck opening. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "kabelbinderstiefel",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Pair of dark rubber work boots repaired with bright colored cable ties around shafts and soles. Clear boot shape and visible cable ties. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "megafon",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A green handheld trigger cleaning SPRAY BOTTLE with one gold commission medallion dangling from its neck. Absolutely NOT a megaphone or speaker. No writing or branding. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "fuchspfote",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A brown leather boot with a small rust-red fox paw lucky charm attached to its lace, as a harmless non-graphic game trophy. It is an equipable boot, NOT a severed realistic limb. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "schnorrerbecher",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A scratched translucent reusable plastic cup containing amber drink, blank cream deposit sticker, no letters. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "praktikantenausweis",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Small laminated ID badge with a tiny generic illustrated face block and a lanyard clip, no readable text or numbers. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "giesskanne",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Green metal watering can, long spout with sprinkler rose and curved handle, blank small sticker. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "automatenarm",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A chrome mechanical robot claw arm with three articulated gripper fingers and a single tiny red LED, a machinery component, no human hand. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border."
+  },
+  {
+    "id": "ui-momentum-1",
+    "kind": "ui",
+    "width": 20,
+    "height": 20,
+    "prompt": "Use case: precise-object-edit. Input is an olive beer-coaster momentum icon. Keep the exact upright square coaster shape, same size, camera, colors, gold border, corners, pixel clusters and alpha. Change ONLY the center symbol to exactly 1 gold upward chevron, centered vertically and horizontally, thick and legible at 20x20 native pixels. Keep chevron width matching reference. No letters, numbers or background. Do not rotate or reshape the coaster.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/ui-momentum-3.png"
+    ]
+  },
+  {
+    "id": "ui-momentum-2",
+    "kind": "ui",
+    "width": 20,
+    "height": 20,
+    "prompt": "Use case: precise-object-edit. Input is an olive beer-coaster momentum icon. Keep the exact upright square coaster shape, same size, camera, colors, gold border, corners, pixel clusters and alpha. Change ONLY the center symbol to exactly 2 gold upward chevrons, centered vertically and horizontally, thick and legible at 20x20 native pixels. Keep chevron width matching reference. No letters, numbers or background. Do not rotate or reshape the coaster.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/ui-momentum-3.png"
+    ]
+  },
+  {
+    "id": "ui-momentum-3",
+    "kind": "ui",
+    "width": 20,
+    "height": 20,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A single dark olive beer coaster with exactly 3 bold stacked GOLD UPWARD CHEVRONS. The chevrons are the unmistakable focal point, simple and thick, showing momentum tier 3. No digits, no lettering."
+  },
+  {
+    "id": "ui-proc-frame",
+    "kind": "ui",
+    "width": 48,
+    "height": 48,
+    "nineSlice": {
+      "left": 12,
+      "right": 12,
+      "top": 12,
+      "bottom": 12
+    },
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A hollow square golden RPG ability activation FRAME only. Completely transparent empty center, transparent outer padding. Crisp stepped amber and cream corner highlights, thick gold pixel edges. Exactly symmetric corner construction suitable for nine-slice scaling. Absolutely no object inside, no text, no soft glow."
+  },
+  {
+    "id": "ui-proc-free",
+    "kind": "ui",
+    "width": 12,
+    "height": 12,
+    "padding": 1,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: One simple gold return-deposit TOKEN with a bold dark circular center hole. Extremely simple icon readable at 12x12 pixels. No writing or numbers."
+  },
+  {
+    "id": "ui-proc-empower",
+    "kind": "ui",
+    "width": 12,
+    "height": 12,
+    "padding": 1,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: Two short crossed silver SOUP LADLES with gold handles, two clear round bowls at top. Extremely simple double-ladle symbol readable at 12x12 pixels. No writing or numbers."
+  },
+  {
+    "id": "ui-arena-dummy",
+    "kind": "props",
+    "width": 96,
+    "height": 96,
+    "nativeHeight": 52,
+    "worldHeight": 26,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: One complete village combat training dummy: stuffed straw sack with bold red round target patch, on a sturdy brown wooden beer crate base, two tied straw stick arms. No person, no environment, no labels. Full object with alpha background and ample margin. Match detailed adult comic sprites with warm slate outlines."
+  },
+  {
+    "id": "topfdeckel",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A dented round steel cooking pot LID with a large wooden knob, clearly a shield-like lid viewed three quarters."
+  },
+  {
+    "id": "pfandschleuder",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A simple Y-shaped wooden SLINGSHOT with black cable ties and a taut amber rubber band."
+  },
+  {
+    "id": "dosenklinge",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A short sharpened silver-green recycled TIN-CAN BLADE with a small brown leather handle."
+  },
+  {
+    "id": "tresenhammer",
+    "kind": "items",
+    "width": 24,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A heavy rectangular wood-and-brass bar-counter demolition HAMMER with a long wooden handle."
+  },
+  {
+    "id": "horst",
+    "kind": "bosses",
+    "nativeHeight": 104,
+    "worldHeight": 52,
+    "animal": false,
+    "cols": 5,
+    "rows": 4,
+    "columns": [
+      "idle",
+      "walk-a",
+      "walk-b",
+      "impact",
+      "phase"
+    ],
+    "prompt": "Use case: stylized-concept. One production sprite animation atlas in Maifeld-Detailpixel style. Upper-left warm sunlight, traditional German village comic style. Detailed comic pixel clusters, dark slate outlines, restrained amber/olive/cream palette. True transparent alpha, no floor, no shadows, no text, numbers, labels or watermark. Exactly FIVE columns x FOUR rows,20 complete separate sprites, generous transparent gutters, identical character and size across all cells. Row1 southeast front-right, row2 southwest front-left, row3 northeast rear-right, row4 northwest rear-left. Columns: 1 idle,2 walking left/near stride,3 walking right/far stride,4 attack,5 dramatic boss phase pose. Back rows face away from camera. Stable torso and head, articulate only relevant moving limbs; no shake or stretching. Horst Nüchternmann: stern middle-aged moustached municipal official in improvised armor made of laminated cream house-rule papers, dark slate clothes, a burgundy ring binder held as a shield and a large wooden rubber stamp in the other hand. Blank papers, NO letters. Stamp and binder stay in his hands in every pose. Phase: stamps furiously. Adult German village comic proportions, not a giant.",
+    "segmentation": "grid",
+    "frameSize": 192,
+    "pivot": {
+      "x": 96,
+      "y": 160
+    }
+  },
+  {
+    "id": "proc-dieter",
+    "kind": "talents",
+    "cols": 2,
+    "rows": 3,
+    "motifs": [
+      {
+        "id": "dieter-wall-1",
+        "index": 1
+      },
+      {
+        "id": "dieter-wall-5",
+        "index": 5
+      },
+      {
+        "id": "dieter-brawl-1",
+        "index": 11
+      },
+      {
+        "id": "dieter-brawl-5",
+        "index": 15
+      },
+      {
+        "id": "dieter-brew-1",
+        "index": 21
+      },
+      {
+        "id": "dieter-brew-5",
+        "index": 25
+      }
+    ],
+    "member": "dieter",
+    "prompt": "Use case: background-extraction. Edit this SIX-icon sheet, 2 columns by 3 rows. Remove ALL of the dark brown background and every soft gradient glow completely, replace with genuine transparent alpha. Preserve only the six crisp pixel-art objects and their hard-edged pixel sparks/arrows, exactly same positions, sizes, identities, colors and grid arrangement. Empty spaces between icons and around their silhouettes MUST be truly transparent. No black fill, no checkerboard baked in, no colored squares, no shadows or haze. Do not redraw or change icon motifs. Transparent PNG sprite atlas.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/proc-dieter-v1.png"
+    ],
+    "edges": {
+      "x": [
+        0,
+        512,
+        1024
+      ],
+      "y": [
+        0,
+        460,
+        915,
+        1536
+      ]
+    }
+  },
+  {
+    "id": "proc-baerbel",
+    "kind": "talents",
+    "cols": 2,
+    "rows": 3,
+    "motifs": [
+      {
+        "id": "baerbel-care-1",
+        "index": 1
+      },
+      {
+        "id": "baerbel-care-5",
+        "index": 5
+      },
+      {
+        "id": "baerbel-feedback-1",
+        "index": 11
+      },
+      {
+        "id": "baerbel-feedback-5",
+        "index": 15
+      },
+      {
+        "id": "baerbel-stage-1",
+        "index": 21
+      },
+      {
+        "id": "baerbel-stage-5",
+        "index": 25
+      }
+    ],
+    "member": "baerbel",
+    "prompt": "Use case: background-extraction. Edit this SIX-icon sheet, 2 columns by 3 rows. Remove ALL of the dark brown background and every soft gradient glow completely, replace with genuine transparent alpha. Preserve only the six crisp pixel-art objects and their hard-edged pixel sparks/arrows, exactly same positions, sizes, identities, colors and grid arrangement. Empty spaces between icons and around their silhouettes MUST be truly transparent. No black fill, no checkerboard baked in, no colored squares, no shadows or haze. Do not redraw or change icon motifs. Transparent PNG sprite atlas.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/proc-baerbel-v1.png"
+    ],
+    "edges": {
+      "x": [
+        0,
+        512,
+        1024
+      ],
+      "y": [
+        0,
+        500,
+        970,
+        1536
+      ]
+    }
+  },
+  {
+    "id": "proc-kevin",
+    "kind": "talents",
+    "cols": 2,
+    "rows": 3,
+    "motifs": [
+      {
+        "id": "kevin-fuse-1",
+        "index": 1
+      },
+      {
+        "id": "kevin-fuse-5",
+        "index": 5
+      },
+      {
+        "id": "kevin-iron-1",
+        "index": 11
+      },
+      {
+        "id": "kevin-iron-5",
+        "index": 15
+      },
+      {
+        "id": "kevin-hunt-1",
+        "index": 21
+      },
+      {
+        "id": "kevin-hunt-5",
+        "index": 25
+      }
+    ],
+    "member": "kevin",
+    "prompt": "Use case: background-extraction. Edit this SIX-icon sheet, 2 columns by 3 rows. Remove ALL of the dark brown background and every soft gradient glow completely, replace with genuine transparent alpha. Preserve only the six crisp pixel-art objects and their hard-edged pixel sparks/arrows, exactly same positions, sizes, identities, colors and grid arrangement. Empty spaces between icons and around their silhouettes MUST be truly transparent. No black fill, no checkerboard baked in, no colored squares, no shadows or haze. Do not redraw or change icon motifs. Transparent PNG sprite atlas.",
+    "references": [
+      "assets/content-art/sources/2026-09-17/proc-kevin-v1.png"
+    ],
+    "edges": {
+      "x": [
+        0,
+        512,
+        1024
+      ],
+      "y": [
+        0,
+        485,
+        965,
+        1536
+      ]
+    }
+  }
+]

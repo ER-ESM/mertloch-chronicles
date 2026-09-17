@@ -1,0 +1,13 @@
+{
+  "id": "fuchspfote",
+  "kind": "items",
+  "width": 24,
+  "height": 24,
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A brown leather boot with a small rust-red fox paw lucky charm attached to its lace, as a harmless non-graphic game trophy. It is an equipable boot, NOT a severed realistic limb. Emphasize the literal object silhouette; bold readable dark contours and large simple color masses at 24 native pixels. No background medallion or border.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-b893e7be-5229-4083-b0a1-7fe41be1a4a6.png",
+  "output": "assets/content-art/sources/2026-09-17/fuchspfote.png",
+  "sourceHash": "b989fab81f3586de012a2b3a05157105056ab4f93e61e0a79eb0caed14980474"
+}

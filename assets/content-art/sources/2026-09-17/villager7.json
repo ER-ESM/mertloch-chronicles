@@ -1,0 +1,29 @@
+{
+  "id": "villager7",
+  "kind": "npcs",
+  "name": "Nachbarin Nelli",
+  "cols": 8,
+  "rows": 4,
+  "nativeHeight": 52,
+  "worldHeight": 26,
+  "columns": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "references": [
+    "assets/content-art/sources/2026-09-17/villager7-v2.png"
+  ],
+  "prompt": "Use case: precise-object-edit. Edit the supplied production sprite atlas. Keep the exact 8 columns by 4 rows, 32 separate poses, same faces, hair, costume, style, scale, directions and alpha transparency. Change only missing prop continuity: Add the same purple grocery bag, hanging from the same hand, wherever it is missing: especially SEVENTH column of EVERY row and SIXTH column in first row. Ensure every walking pose includes the bag as well; preserve valid occlusion in rear views. Never add text, background, shadows, extra people, extra columns or rows. Preserve all existing good poses; full figures and props contained within each cell with transparent gutters.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-2edc55a5-6889-4ab5-a5f4-c852b042b767.png",
+  "output": "assets/content-art/sources/2026-09-17/villager7.png",
+  "sourceHash": "ece1d477812818b6a3372274c49205a7ce4e64c25504cdad19cad3411252ec89"
+}

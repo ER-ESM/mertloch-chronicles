@@ -1,0 +1,44 @@
+{
+  "id": "proc-baerbel",
+  "kind": "talents",
+  "cols": 2,
+  "rows": 3,
+  "motifs": [
+    {
+      "id": "baerbel-care-1",
+      "index": 1
+    },
+    {
+      "id": "baerbel-care-5",
+      "index": 5
+    },
+    {
+      "id": "baerbel-feedback-1",
+      "index": 11
+    },
+    {
+      "id": "baerbel-feedback-5",
+      "index": 15
+    },
+    {
+      "id": "baerbel-stage-1",
+      "index": 21
+    },
+    {
+      "id": "baerbel-stage-5",
+      "index": 25
+    }
+  ],
+  "member": "baerbel",
+  "prompt": "Use case: stylized-concept. Production pixel RPG icon ATLAS, exactly TWO columns and THREE rows, SIX distinct icons on genuinely transparent alpha. Warm Maifeld-Detailpixel village comic style, dark slate outlines, golden upper-left light, muted olive/copper/cream anchor palette, simple deliberate square pixel clusters readable at 48 pixels. Wide transparent gutters, each complete icon separately centered and same scale. No background plates, no environment, no writing, digits, brands or watermark. Row-major order: 1: makeup brush with bright sparkle star; 2: orange spritz glass with gold sparkles; 3: gold coin on green cleaning cloth; 4: green returnable bottle surrounded by circular return arrow; 5: a bright spark above a small stage spotlight; 6: three rhythmic vertical beats under an encore star, no musical letters. Six separate icons only.",
+  "references": [
+    "assets/content-art/sources/2026-09-17/proc-baerbel-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-c2705940-57bc-48fb-a969-64c9b7dd82fb.png",
+  "output": "assets/content-art/sources/2026-09-17/proc-baerbel-v1.png",
+  "sourceHash": "4b765c6f57de520ae0db0c9643252e08c5d94b24e454c83c8340a9896c4704bf",
+  "revision": "proc-baerbel-v1"
+}

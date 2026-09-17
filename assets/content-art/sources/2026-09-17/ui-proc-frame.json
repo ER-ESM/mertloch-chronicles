@@ -1,0 +1,19 @@
+{
+  "id": "ui-proc-frame",
+  "kind": "ui",
+  "width": 48,
+  "height": 48,
+  "nineSlice": {
+    "left": 12,
+    "right": 12,
+    "top": 12,
+    "bottom": 12
+  },
+  "prompt": "Use case: stylized-concept. Asset type: a single production menu/item icon for Maifeld-Detailpixel, a comic German village pixel RPG. Warm 40-color anchor palette, dark slate ink outline, honey light from upper left, muted moss green, ochre, copper and cream. Simple deliberate square pixel clusters, visually legible at 24x24 pixels. One icon centered alone with 10 percent transparent padding. True transparent PNG alpha, no background tile, no floor, no shadow. No gradients, texture noise, writing, letters, numbers, brand marks or watermark. Primary request: A hollow square golden RPG ability activation FRAME only. Completely transparent empty center, transparent outer padding. Crisp stepped amber and cream corner highlights, thick gold pixel edges. Exactly symmetric corner construction suitable for nine-slice scaling. Absolutely no object inside, no text, no soft glow.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed by the built-in tool",
+  "originalFile": "exec-b3a32772-9788-4600-b1b3-32f3e33e28f1.png",
+  "output": "assets/content-art/sources/2026-09-17/ui-proc-frame.png",
+  "sourceHash": "2df6d33cb9c2f9ac3a8685942cb68af574ecc17bb43720c2b3bbdae65dac3cc6"
+}
