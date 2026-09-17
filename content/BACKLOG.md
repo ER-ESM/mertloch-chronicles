@@ -8,6 +8,9 @@ Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Age
 
 ## Braucht Engine
 
+- [ ] **Schwung (Momentum), Proc-Rahmen, Gegnergruppen, Kettenzug** – docs/GAMEPLAY-KONZEPT-FLUSS.md Abschnitte 4, 5, 7. Reihenfolge und Prüfung dort.
+- [x] **Trainingsarena** – arena.js, Admin-Reiter „Trainingsarena“ (2026-09-17).
+
 - [ ] **Story-Kapitel 2 und 3 aktivieren** – `STORY_CHAPTERS[1..2]` sind fertig (Ziele, Boss, Dialoge, Belohnung). Nötig: Kapitelzustand in `engine.js` (`quest.chapter`), Lager für Gisela und den Pfandautomaten in `world-layout.js`, Anzeige in `app.js`/`questlog-ui.js`.
 - [ ] **Gegner-Sprüche im HUD** – `ENEMY_BARKS` und `BOSSES.*.phases` laufen heute ins Kampflog. Sprechblase über dem Gegner wäre besser sichtbar.
 - [ ] **Dorfbewohner reden** – `VILLAGERS.says` als Sprechblasentext in `village-life.js`/Renderer.
@@ -24,6 +27,9 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 - [ ] Engine-Event `bark` (Gegner-/Boss-Spruch) statt Kampflog-Zeile, damit die UI Sprechblasen ohne Textparsen zeichnen kann.
 
 ## Inhaltlich offen
+
+- [ ] **Lernreihenfolge Stufe 1–4** (Finisher auf Stufe 3, Antwort-Kniffe auf 4) und **Talente als Regeln mit Auslöser** – docs/GAMEPLAY-KONZEPT-FLUSS.md Abschnitte 3 und 6; Tests (class-system, Pacing) und README-Tabelle mitziehen.
+- [ ] **Zaubern in Bewegung** für Markierung und Wurf – CAST_TIMES in content/combat.js.
 
 - [ ] **Landjungs-Themen ausbauen** – Zukunftsideen in [IDEEN-LANDJUNGS.md](IDEEN-LANDJUNGS.md): Schrauberhof (Racing/Tuning), Kalles Kiosk (Sport- und Dorfwetten), LAN-Scheune (Gaming/Nerds), Prompt & Partner (Vibe-Coding-/KI-Slop-Parodie). Mit NPCs, Dialogen, Questketten, Items, Skillvarianten und Platzierungsregeln; noch nicht implementiert. Als Einstieg LAN-Scheune mit vorhandenen Figuren und Kabelspiel prüfen.
 - [ ] Elite-Titel (`title`) im Zielfenster anzeigen (heute „ELITE ·“ nur bei Bossen).

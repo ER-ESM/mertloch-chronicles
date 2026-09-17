@@ -22,7 +22,7 @@ export function decoratePanel(w){const b=w.body;resetPanelFlow(b);if(['dialog','
  if(w.id==='mobile'){const selection=b.querySelector('.touch-editor-pages+p');selection?.classList.add('touch-selection');tabs(w,[[UI.slots,'.touch-editor-pages,.touch-editor-footer'],[UI.skills,'.touch-selection,.touch-skill-picker'],[UI.options,'.touch-editor-intro,.touch-settings-row,#touchBindHelp']]);b.onclick=e=>{if(e.target.closest('[data-touch-edit-slot]'))w.activePage=1;};}
  if(w.id==='guide')tabs(w,[['Überblick','.help-movement'],[document.body.classList.contains('touch-mode')?'Bedienung':'Tasten','.help-controls'],[UI.skills,'.help-clan'],...(b.querySelector('.help-settings')?[[UI.settings,'.help-settings']]:[])]);
  if(w.id==='map'){tabs(w,[[UI.map,'.atlas-toolbar,.atlas-paper'],[UI.places,'#atlasPlaces'],[UI.destination,'#atlasSelection'],[UI.legend,'.atlas-intro,.atlas-key,.data-note']]);b.querySelector('.atlas-layout')?.remove();b.querySelector(':scope>h2')?.remove();b.querySelector(':scope>.eyebrow')?.remove();}
- if(w.id==='admin'){const backup=b.querySelector('.admin-restore');backup?.classList.add('admin-backup-page');for(const el of [...b.children])if(el!==backup)el.classList.add('admin-reset-page');tabs(w,[[UI.reset,'.admin-reset-page'],[UI.backup,'.admin-backup-page']]);}
+ if(w.id==='admin'){const backup=b.querySelector('.admin-restore'),arena=b.querySelector('.admin-arena');backup?.classList.add('admin-backup-page');for(const el of [...b.children])if(el!==backup&&el!==arena)el.classList.add('admin-reset-page');tabs(w,[...(arena?[['Trainingsarena','.admin-arena']]:[]),[UI.reset,'.admin-reset-page'],[UI.backup,'.admin-backup-page']]);}
  adaptPanel(w);
 }
 export function adaptPanel(w){
