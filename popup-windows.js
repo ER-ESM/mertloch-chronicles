@@ -7,8 +7,10 @@ inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:820,activ
 // Buchfenster wachsen mit dem Bildschirm (MMO-Vorbild: Charakter- und Talentfenster füllen ein Drittel bis die Hälfte), nie unter 520 px am Desktop.
 const widthFor=id=>{const base=widths[id]||440;if(!isBook(id)||innerWidth<700)return base;return Math.min(base,Math.max(520,Math.round(innerWidth*.44)));}
 ;
-export const BOOK_TABS=[['person',UI.tabFigure,'person','C'],['bag',UI.tabBag,'bag','I'],['book',UI.tabSkills,'book','K'],['quest',UI.tabQuests,'quest','J'],['base',UI.tabBase,'base','B'],['map',UI.tabMap,'map','M'],['guide',UI.tabHelp,'guide','H']];
-const TAB_OF={person:'person',talents:'person',clan:'person',bag:'bag',book:'book',quest:'quest',base:'base',map:'map',guide:'guide',menu:'guide',admin:'guide',mobile:'guide',install:'guide'};
+// Menü-Reduktion 2026-09-17 (E-24): vier Reiter plus Hilfe als Symbol. Kniffe und Talente sind Abschnitte der Figur,
+// Bude und Erinnerungen Abschnitte der Aufträge; K, N und B springen zum Abschnitt.
+export const BOOK_TABS=[['person',UI.tabFigure,'person','C'],['bag',UI.tabBag,'bag','I'],['quest',UI.tabQuests,'quest','J'],['map',UI.tabMap,'map','M'],['guide',UI.tabHelp,'guide','H']];
+export const TAB_OF={person:'person',talents:'person',clan:'person',book:'person',bag:'bag',quest:'quest',base:'quest',map:'map',guide:'guide',menu:'guide',admin:'guide',mobile:'guide',install:'guide'};
 const CHILD=new Set(['inspection','detail','touchhelp']);
 export const isBook=id=>TAB_OF[id]!==undefined;
 export class PopupWindows{
@@ -19,7 +21,7 @@ export class PopupWindows{
  /** Das offene Buchfenster (Reiter), falls eines offen ist. */
  book(){return [...this.windows.keys()].find(isBook)||null;}
  focus(id){const w=this.get(id);if(!w)return;w.z=++this.serial;w.el.style.zIndex=w.z;for(const p of this.windows.values())p.el.classList.toggle('is-front',p===w);}
- tabsHtml(active){return `<nav class="book-tabs" role="tablist" aria-label="${UI.bookTabs}">${BOOK_TABS.map(([id,label,icon,key])=>`<button type="button" role="tab" data-book-tab="${id}" aria-selected="${TAB_OF[active]===id}" title="${label} [${key}]"><canvas width="48" height="48" data-ui-icon="${icon}" aria-hidden="true"></canvas><span>${label}</span></button>`).join('')}</nav>`;}
+ tabsHtml(active){return `<nav class="book-tabs" role="tablist" aria-label="${UI.bookTabs}">${BOOK_TABS.map(([id,label,icon,key])=>`<button type="button" role="tab" class="${id==='guide'?'tab-help':''}" data-book-tab="${id}" aria-selected="${TAB_OF[active]===id}" title="${label} [${key}]"><canvas width="48" height="48" data-ui-icon="${icon}" aria-hidden="true"></canvas><span>${label}</span></button>`).join('')}</nav>`;}
  open(id,html){let w=this.get(id);if(w){const y=w.body.scrollTop;w.body.innerHTML=html;w.body.scrollTop=y;this.clamp(w);return w;}
   // EIN Fenster: Buchreiter, Gespräch, Beute, Erinnerung und Tod liegen nie gleichzeitig offen.
   // Nur die Anhänge (Gegenstand, Erklärung) dürfen neben ihrem Buchfenster stehen.

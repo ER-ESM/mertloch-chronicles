@@ -1,5 +1,5 @@
 // Mobile-Prüfung: startet ein eigenes Chrome (headless) mit Touch-Emulation, erzwingt den Touch-Modus und geht die
-// Handy-Klickpfade durch: HUD, alle sieben Clanbuch-Reiter, Gegenstand antippen, Ausrüstungsplatz antippen,
+// Handy-Klickpfade durch: HUD, alle Clanbuch-Reiter und Abschnitte, Gegenstand antippen, Ausrüstungsplatz antippen,
 // Talent antippen, Kniff lange drücken, Toast. Je Gerät (Hochkant 390×844, Quer 844×390, klein 360×740):
 //  - keine Seitenbreite über dem Viewport, kein Fenster außerhalb des Bildschirms,
 //  - kein Fenster über Joystick oder Kniff-Knöpfen,
@@ -75,14 +75,14 @@ try{
    ['figur-platz',()=>b.tap('.gear-cell [data-equipped]')],
    ['rucksack',async()=>{await b.evaluate(`document.querySelectorAll('.popup-inspection [data-window-close],.popup-detail [data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="bag"]').click()`);}],
    ['rucksack-item',()=>b.tap('.bag-grid [data-item]')],
-   ['kniffe',async()=>{await b.evaluate(`document.querySelectorAll('.popup-inspection [data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="book"]').click()`);}],
+   ['kniffe',async()=>{await b.evaluate(`document.querySelectorAll('.popup-inspection [data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="person"]').click()`);await wait(300);await b.evaluate(`document.querySelector('[data-section="Kniffe"]')?.scrollIntoView()`);}],
    ['kniff-tipp',()=>b.tap('.book-skill:not(.locked)')],
-   ['talente',async()=>{await b.evaluate(`document.querySelectorAll('.popup-touchhelp [data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="person"]').click()`);await wait(300);await b.evaluate(`document.querySelector('[data-section="Talente"]')?.scrollIntoView()`);}],
+   ['talente',async()=>{await b.evaluate(`document.querySelectorAll('.popup-touchhelp [data-window-close]').forEach(x=>x.click())`);await b.evaluate(`if(!document.querySelector('.popup-person'))document.querySelector('.game-menu-rail [data-panel="person"]').click()`);await wait(300);await b.evaluate(`document.querySelector('[data-section="Talente"]')?.scrollIntoView()`);}],
    ['talent-tipp',()=>b.tap('.branch-node.available,.branch-node.learned')],
    ['auftraege',async()=>{await b.evaluate(`document.querySelectorAll('.popup-touchhelp [data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="quest"]').click()`);}],
-   ['bude',()=>b.evaluate(`document.querySelector('[data-book-tab="base"]').click()`)],
+   ['bude',()=>b.evaluate(`document.querySelector('[data-section="Bude"]')?.scrollIntoView()`)],
    ['karte',()=>b.evaluate(`document.querySelector('.game-menu-rail [data-panel="map"]').click()`)],
-   ['hilfe',()=>b.evaluate(`document.querySelector('.game-menu-rail [data-panel="guide"]').click()`)],
+   ['hilfe',()=>b.evaluate(`document.querySelector('[data-book-tab="guide"]').click()`)],
    ['hilfe-bedienung',()=>b.evaluate(`[...document.querySelectorAll('.game-popup [role=tab]')].find(t=>/Bedienung/.test(t.textContent))?.click()`)],
    ['kniff-lang',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.longPress('#touchSkills .touch-skill');}],
    ['toast',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('#touchTarget').click()`);}]];

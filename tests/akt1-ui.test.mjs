@@ -7,18 +7,18 @@ import {Game,ACT_CHAPTERS} from '../engine.js';
 import {basePanel,memoriesPanel,chaptersPanel,baseEffectList,canBuild,rewardLine} from '../chapter-ui.js';
 import {questlogPanel} from '../questlog-ui.js';
 import {clanMenu} from '../clan-ui.js';
-import {BOOK_TABS} from '../popup-windows.js';
+import {BOOK_TABS,TAB_OF} from '../popup-windows.js';
 import {BUILDINGS,MEMORY_FRAGMENTS,LORE,TUTORIAL,CLAN_MEMBERS} from '../content/index.js';
 import {addItem,ITEMS} from '../rpg.js';
 
 const world=new World(JSON.parse(readFileSync('data/mertloch.json','utf8')));
 const fresh=()=>new Game(world,{});
 
-test('Das Clanbuch bleibt ein Fenster mit höchstens sieben Reitern und trägt die Bude',()=>{
- assert.ok(BOOK_TABS.length<=7,'höchstens sieben Reiter');
+test('Das Clanbuch bleibt ein Fenster mit höchstens fünf Reitern und trägt die Bude als Abschnitt der Aufträge (E-24)',()=>{
+ assert.ok(BOOK_TABS.length<=5,'höchstens fünf Reiter');
  assert.equal(new Set(BOOK_TABS.map(t=>t[0])).size,BOOK_TABS.length);
  assert.equal(new Set(BOOK_TABS.map(t=>t[3])).size,BOOK_TABS.length,'jede Taste kommt genau einmal vor');
- assert.ok(BOOK_TABS.some(t=>t[0]==='base'));
+ assert.equal(TAB_OF.base,'quest');assert.equal(TAB_OF.book,'person');
 });
 
 test('Reiter „Bude“ zeigt vor Kapitel 2 die Trümmer und danach nur freigeschaltete Gebäude',()=>{

@@ -132,8 +132,9 @@ body.touch-mode .conversation-person small{margin-top:4px}
  .game-popup .gear-cell{gap:2px}.game-popup .gear-cell .item-slot{width:52px;height:52px}.game-popup .gear-cell>small{font-size:8px;letter-spacing:.2px}
  .game-popup .armory-banner{display:none}
  .popup-person .popup-body{display:grid;grid-template-columns:minmax(0,1fr) 240px;column-gap:16px;align-content:start}.popup-person .panel-section{margin-top:0}.popup-person .panel-section[data-section="Werte"] .panel-section-title{margin-top:0}
- .popup-person .panel-section[data-section="Ausrüstung"]{grid-column:1}.popup-person .panel-section[data-section="Werte"]{grid-column:2;grid-row:1}
+ .popup-person .panel-section[data-section="Ausrüstung"]{grid-column:1;grid-row:2}.popup-person .panel-section[data-section="Werte"]{grid-column:2;grid-row:2}
  .popup-person .panel-section:not([data-section="Ausrüstung"]):not([data-section="Werte"]){grid-column:1/-1}
+ .popup-person .section-jump{grid-column:1/-1;grid-row:1}
  .popup-person .weapon-summary{grid-template-columns:1fr}.popup-person .character-stats{grid-template-columns:1fr 1fr}.popup-person .secondary-stats{grid-template-columns:1fr}
 }
 

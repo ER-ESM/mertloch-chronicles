@@ -4,6 +4,8 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Hilfetext „Ein Buch, sieben Reiter"** (UI, 2026-09-17, E-24): PLAY_HELP (Abschnitt Clanbuch) nennt sieben Reiter und die Tasten C I K J B M H. Neu: vier Reiter Figur/Rucksack/Aufträge/Karte plus Hilfe; K, N, B springen zu den Abschnitten Kniffe, Talente, Bude. Abnahme: Hilfe → Tasten zeigt die neue Zeile.
+
 - [ ] Akt 2 erst nach Auftrag: Haken sind Bastian, die Kiste, die Hochzeit in Koblenz; Gisela/Automat bleiben Reserve.
 - [ ] Nach dem nächsten Playtest prüfen, ob die gestrafften Ida-Belohnungen noch alle Pointen tragen (Kapitel 4 ist der Prüfstein).
 - [ ] Sprechblasen der Dorfbewohner: Sobald die UI `VILLAGERS.says` zeigt, Zeilen je Kapitel staffeln statt gleichmäßig mischen (heute fünf Zeilen je Bewohner, Akt-1-Bezug).

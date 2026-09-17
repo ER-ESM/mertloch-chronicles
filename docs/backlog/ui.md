@@ -92,6 +92,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
+- [x] **Menü-Reduktion E-24** (Nutzerauftrag 2026-09-17): 50 → 33 Navigationsziele; vier Reiter plus Hilfe, Abschnitte mit Sprungleiste, HUD-Leiste 4 Knöpfe, Weltknöpfe/Journal-Symbol raus, Unterreiter reduziert. Inventur und Belege: docs/MENUE-REDUKTION-2026-09-17.md, visual-review/menu-2026-09-17/.
+
 - [x] **Mobile Übersetzungsschicht + Mobile-Prüfung** (Nutzerauftrag 2026-09-17): `mobile-translate.js` übersetzt Fenster, Toasts und Clan-Schule in Touch-Begriffe (Tasten → Knöpfe, Tab → Ziel-Knopf, Rechtsklick → Antippen, <kbd> → Touch-Chip); `npm run mobile:check` prüft 3 Geräte × 16 Schritte headless (Layout, Überdeckung, Tipp-Ziele, Desktop-Begriffe). Doku `docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md`.
 
 - [x] **MMO-Vorbilder, zehn Iterationen** (Nutzerauftrag 2026-09-17, Branch `ui-mmo-2026-09-17`): Buchbreite wächst mit dem Bildschirm, Charakterbogen als Papierpuppe, Talentbaum mit Formen/Schwellenbändern, Kniff-Tooltip in zwei Kopfzeilen, Kniffe mit Namen, Zielfenster neben dem Spielerfenster, Buff-Restzeit, Punkte-Abzeichen. Recherche + Belege: `docs/MMO-VORBILDER-2026-09-17.md`, `visual-review/iter-2026-09-17/`.

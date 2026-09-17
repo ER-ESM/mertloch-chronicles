@@ -35,6 +35,7 @@ Regeln für dieses Dokument:
 | E-21 | Basisbau-Kosten bleiben bis zum Playtest | 2026-09-17 | gilt |
 | E-22 | Akt 1 perfektionieren, bevor Akt 2 beginnt | 2026-09-17 | gilt |
 | E-23 | Gisela und Pfandautomat bleiben Reserve | 2026-09-17 | gilt |
+| E-24 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | gilt, verfeinert E-13 |
 
 ---
 
@@ -244,6 +245,15 @@ Regeln für dieses Dokument:
 **Entscheidung.** Beide bleiben mit `reserve:true` in den Daten, sind aber nicht Teil von Akt 1 und tauchen im Spielfluss nicht auf. Löschen kommt wegen E-04 nicht in Frage. Verworfen: Bosse entfernen; Bosse in Akt 1 einbauen.
 
 **Konsequenzen.** Grafik-Aufträge für Gisela und Automat stehen hinter allen Akt-1-Motiven. Prüfungen und Balance-Berichte behandeln `reserve:true` als „nicht im Fluss“ und melden es nicht als Lücke.
+
+## E-24 · Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste
+**Datum:** 2026-09-17 · **Stand:** gilt, verfeinert E-13
+
+**Kontext.** Auftrag der Produktion: „Die Menüs sind viel zu viel." Inventur (`docs/MENUE-REDUKTION-2026-09-17.md`): sieben Reiter, sechs Leistenknöpfe, drei Weltknöpfe, ein Journal-Symbol, 14 Unterreiter und Chips, 14 Einträge im Touch-Kontextraster — 50 Navigationsziele, viele davon Doppelwege zum selben Inhalt.
+
+**Entscheidung.** Vier Reiter (Figur, Rucksack, Aufträge, Karte) plus Hilfe als Symbol-Reiter. Kniffe und Talente sind Abschnitte der Figur, Bude und Erinnerungen Abschnitte der Aufträge. Reiter mit drei und mehr Abschnitten bekommen eine klebende Sprungleiste, die hinführt und beim Scrollen mitläuft. K, N und B springen zum Abschnitt statt ein Fenster zu öffnen. Menüleiste im HUD nur noch die vier Reiter; Ton/Pause/Vollbild und Journal-Symbol nur über Hilfe → Einstellungen bzw. den Reiter. Unterreiter reduziert: Hilfe 3 statt 4, Karte 3 statt 4, Aufträge-Chips 3 statt 4, Kniffe ohne Unterreiter (Raster und Leiste in einer Ansicht). Verworfen: sieben Reiter behalten und nur Beschriftungen kürzen; ein Hamburger-Menü mit Liste.
+
+**Konsequenzen.** E-13 bleibt (ein Fenster, keine Seiten, kein Einklappen); die Reiterzahl ist jetzt vier plus Hilfe. Neue Inhalte werden Abschnitte eines bestehenden Reiters, nie neue Reiter. Hilfetexte, die „sieben Reiter" nennen, sind anzupassen (Story-Backlog).
 
 ---
 

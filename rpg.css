@@ -25,3 +25,6 @@ dialog{width:min(940px,94vw);max-width:940px;max-height:88dvh;padding:30px}dialo
 .game-menu-rail button[data-badge]:after,.book-tabs button[data-badge]:after{content:attr(data-badge);position:absolute;top:-6px;right:-5px;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border:1px solid #1f2d20;border-radius:9px;background:linear-gradient(#ffe08a,#d9a83f);color:#1f2416;font:bold 10px/14px monospace;text-align:center;box-shadow:0 0 0 1px #f7dc8f66,0 0 8px #ffd46a99;animation:talent-badge 1.2s ease-in-out infinite alternate;pointer-events:none}
 .book-tabs button{position:relative}
 @keyframes talent-badge{from{transform:scale(1)}to{transform:scale(1.12)}}
+
+/* Menü-Reduktion (E-24): Ton/Pause/Vollbild und das Auftragsbuch-Symbol nur noch über Hilfe → Einstellungen bzw. den Reiter. */
+body:not(.touch-mode) .world-controls,#journalButton{display:none!important}
