@@ -231,6 +231,10 @@ Regelwerk, Bedienung, Build-Ausgabe, Grenzen und Prüfverfahren: **[WORLD-GENERA
 
 `npm test` prüft zusätzlich zu Kampf, Kollisionen, Weltgenerierung und Quests alle drei Clanmechaniken, Aggro mit Sichtkontakt, neutrale Gegenwehr, Verfolgungsabbruch, Respawn-Abstände und Zellwechsel. Ein Test simuliert eine ganze Minute freies Umherlaufen und prüft dabei die Kollisionen aller Gegner. `npm run world:validate` erstellt sechs vollständige Welten samt Prüfberichten.
 
+## Mitwirkende
+
+- [Oliver Schiemann (@Checkov23)](https://github.com/Checkov23) — Code-Review, Fehlerbehebung der Heilung nach dem letzten Kill und Regressionstests.
+
 ## Daten und Quellen
 
 - [OpenStreetMap-Datenausschnitt](https://api.openstreetmap.org/api/0.6/map?bbox=7.293,50.262,7.321,50.280): Quelle für Grundrisse und geografische Tags.
