@@ -8,7 +8,8 @@ export function conversationHeader(id,fallbackName=''){
  const known=!!PERSON_APPEARANCE[id];
  return `<header class="conversation-person" data-conversation-npc="${escape(id||'')}"><span class="conversation-portrait"><span aria-hidden="true" class="conversation-initial">${escape(name[0])}</span>${known?`<canvas width="96" height="96" data-person-art="${escape(id)}" role="img" aria-label="Porträt von ${escape(name)}"></canvas>`:''}</span><div><strong>${escape(name)}</strong>${npc?.role?`<small>${escape(npc.role)}</small>`:''}</div></header>`;
 }
-export function rewardConversationHeader(game,id){const q=game.world.quests.find(q=>q.id===id);return conversationHeader(id==='main'?'ida':q?.giver.npc,q?.giver.name);}
+/** Kapitelbelohnungen tragen die Schlüssel 'main' bzw. 'main-2/3/4' – immer Idas Gespräch. */
+export function rewardConversationHeader(game,id){const main=id==='main'||String(id).startsWith('main-'),q=game.world.quests.find(q=>q.id===id);return conversationHeader(main?'ida':q?.giver.npc,q?.giver.name);}
 export function mountConversationPortraits(root){paintPersonPortraits(root);}
 export function sideQuestDialogue(q,s){
  const line=questResponse(q,s);

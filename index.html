@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="talent-ui.css">
   <link rel="stylesheet" href="tutorial-ui.css">
   <link rel="stylesheet" href="panel-pages.css">
+  <link rel="stylesheet" href="akt1.css">
 </head>
 <body>
 <header class="topbar">
@@ -31,7 +32,7 @@
   <div class="build"><a class="style-link" href="graphics-pack.html">GRAFIKWERKSTATT</a> <a href="world-forge.html">WELTSCHMIEDE ↗</a> <span>0.14</span></div>
 </header>
 <main>
-  <div class="chapter"><div><span class="eyebrow">POO-TANG-CLAN · MERTLOCH, SEIT IMMER</span><h1>Die letzte Kiste ist persönlich.</h1></div><div class="location"><span class="location-mark">⌖</span><div>56753 Mertloch<small>Maifeld · Deutschland</small></div></div></div>
+  <div class="chapter"><div><span class="eyebrow" id="storyKicker"></span><h1 id="storyHeadline"></h1></div><div class="location"><span class="location-mark">⌖</span><div>56753 Mertloch<small>Maifeld · Deutschland</small></div></div></div>
   <section class="game-shell" id="gameShell" aria-label="Spielwelt Mertloch">
     <canvas id="world" tabindex="0" aria-label="Begehbare Pixelwelt. WASD bewegen, Tab Ziel wählen, 1 bis 4 kämpfen."></canvas>
     <div class="vignette"></div>
@@ -41,11 +42,11 @@
     <div id="targetPanel" class="hud target-panel hidden"><div class="unit-name"><span id="targetName"></span><small id="targetLevel"></small></div><div id="targetTitle" class="target-title" hidden></div><div class="bar enemy-hp"><i id="targetBar"></i><span id="targetHp"></span></div><div class="target-detail"><span id="targetEffect"></span><span id="targetDistance"></span></div><div id="enemyCast" class="cast hidden"><i id="enemyCastBar"></i><span id="enemyCastText"></span></div></div>
     <div class="region-label"><span>MAIFELD</span><h2 id="zoneName">Mertloch</h2><div><i></i> <span id="zoneType">Dorf & Umland</span></div></div>
     <button class="minimap hud" id="miniButton" aria-label="Weltkarte öffnen"><span class="north">N</span><canvas id="minimap" width="288" height="288"></canvas><span class="map-caption">UMGEBUNG <kbd>M</kbd></span></button>
-    <aside class="quest-panel hud"><div class="panel-kicker">POO-TANG-CLAN <button id="journalButton" aria-label="Auftragsjournal öffnen" title="Auftragsjournal öffnen"><canvas width="48" height="48" data-ui-icon="quest" aria-hidden="true"></canvas></button></div><h3 id="questTitle">Die letzte Kiste</h3><div id="questTasks"></div><div class="quest-reward">BELOHNUNG <span>✧ 600 EP · Goldener Dosenöffner</span></div></aside>
+    <aside class="quest-panel hud"><div class="panel-kicker">POO-TANG-CLAN <button id="journalButton" aria-label="Auftragsjournal öffnen" title="Auftragsjournal öffnen"><canvas width="48" height="48" data-ui-icon="quest" aria-hidden="true"></canvas></button></div><h3 id="questTitle"></h3><div id="questTasks"></div><div class="quest-reward">BELOHNUNG <span id="questRewardText"></span></div></aside>
     <div class="world-controls"><button id="soundButton" title="Ton einschalten" aria-label="Ton einschalten"><canvas width="48" height="48" data-ui-icon="sound" aria-hidden="true"></canvas></button><button id="pauseButton" title="Spielmenü (P)" aria-label="Spielmenü"><canvas width="48" height="48" data-ui-icon="menu" aria-hidden="true"></canvas></button><button id="fullscreenButton" title="Vollbild" aria-label="Vollbild"><canvas width="48" height="48" data-ui-icon="fullscreen" aria-hidden="true"></canvas></button></div>
-    <div id="announcement" class="announcement"><small>DU BETRITTST</small><strong>Mertloch</strong><span>Gleiche Bande. Neuer Totalschaden.</span></div>
+    <div id="announcement" class="announcement"><small>DU BETRITTST</small><strong>Mertloch</strong><span id="announcementMotto"></span></div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <button id="interact" class="interact hidden"><kbd>F</kbd><span>Mit Kisten-Ida sprechen</span></button>
+    <button id="interact" class="interact hidden"><kbd>F</kbd><span></span></button>
     <div id="pauseOverlay" class="pause-overlay hidden"><span class="eyebrow">EIN MOMENT DER RUHE</span><h2>Die Welt wartet auf dich.</h2><button id="resumeButton" class="gold-button">Weiterspielen <kbd>P</kbd></button></div>
     <div class="combat-log" id="combatLog" aria-label="Letzte Kampfereignisse"></div>
     <div class="action-area"><div class="rotation-tip" id="rotationTip"><span>ᛉ</span> Pegel aufbauen. Pfand markieren. Komplett eskalieren.</div><div class="action-bar" id="actionBar"></div><div class="action-footer"><span><kbd>W A S D</kbd> Bewegen</span><span><kbd>TAB</kbd> Ziel wechseln</span><span><kbd>F</kbd> Interagieren</span><span><kbd>H</kbd> Kampfhilfe</span></div></div>

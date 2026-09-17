@@ -35,6 +35,16 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 
 - [ ] Engine-Event `bark` (Gegner-/Boss-Spruch) statt Kampflog-Zeile, damit die UI Sprechblasen ohne Textparsen zeichnen kann.
 
+### Aus dem UI-Umbau Akt 1 (2026-09-17)
+
+- [x] Hardcodes aus docs/UEBERGABE-UI-2026-09-17.md §1 ersetzt (app.js, clan-ui.js, questlog-ui.js, index.html); Kapitel-Dialoge, Belohnung, HUD, Questlog, Bude, Erinnerungen und Mentoren liegen jetzt in `chapter-ui.js`.
+- [ ] **`PANEL_UI` braucht zwei Reiterbeschriftungen**: `tabBase` („Bude“) und `tabMemories` („Erinnerungen“). Die UI setzt sie heute als Fensterbeschriftung in `popup-windows.js` (wie „Beute“, „Gespräch“), damit im UI-Code kein Inhaltstext steht. Dazu die Schaltflächenwörter „Ausbauen“, „Weiter“ (Erinnerungs-Einblendung), „Trümmer“, „Endausbau erreicht“, „Was wir wissen“ und die Kapitelstatus „offen / läuft / erledigt“.
+- [ ] **`PLAY_HELP` nennt „Ein Buch, sechs Reiter“** – es sind jetzt sieben (Figur, Rucksack, Kniffe, Aufträge, **Bude**, Karte, Hilfe). Auch `desktopKeys` kennt die neue Taste **B** noch nicht. Beides in `content/panel-ui.js` nachziehen.
+- [ ] **Kapitel 1 wird nie angeboten**: `tutorialConfirm` (Schritt 7) ruft `acceptQuest()` selbst auf, deshalb sieht ein Erstspieler `MAIN_DIALOGUE.ida.intro` (Angebot mit `accept`/`decline`) nie – direkt nach der Hofprobe steht die `ongoing`-Zeile. Entweder die Hofprobe endet ohne Annahme (Engine) oder Kapitel 1 bekommt keinen Angebotszustand (Inhalt). Die UI zeigt das Angebot heute nur, wenn `quest.accepted` falsch ist.
+- [ ] **Erinnerungsfetzen für den Stufenaufstieg** fehlt (`MEMORY_TRIGGERS.level` wird gemeldet, `MEMORY_FRAGMENTS` hat keinen Eintrag dazu).
+- [ ] **Bau an der Bude ist eine UI-Regel**: `game.build()` prüft keinen Ort, die UI sperrt „Ausbauen“ außerhalb von 150 px um den Treffpunkt (gleiche Regel wie der Klamottenwechsel). Wenn das verbindlich sein soll, gehört es in die Engine.
+- [ ] **Sammelpunkte und Mentoren brauchen Bilder**: der Renderer zeichnet Sammelpunkte heute als Materialkiste mit Item-Icon und Mentoren mit der Heldengrafik ihrer `classId`. Eigene Sprites → `content/ART-BRIEF.md`.
+
 ## Inhaltlich offen
 
 - [x] **Lernreihenfolge Stufe 1–4** und **18 Talente als Proc-Regeln** – umgesetzt 2026-09-17 (content/skills.js, content/talents.js, content/procs.js).

@@ -1,0 +1,68 @@
+/* Akt 1 „Filmriss“: Erinnerungsfetzen, Basisbau, Kapitelliste. Nur Gestaltung, keine Inhalte. */
+
+/* --- Erinnerungsfetzen: Sepia-Einblendung, eine Schaltfläche --- */
+.popup-memory{border-color:#7a6238;box-shadow:0 18px 46px #0d0a06a8}
+.popup-memory .popup-body{background:linear-gradient(180deg,#2a2317,#20190f)}
+.memory-flash{filter:sepia(.45);color:#e8d9b2}
+.memory-flash .eyebrow{color:#c19a5c;letter-spacing:.14em}
+.memory-flash h2{margin:.25rem 0 .55rem;color:#f0dcae;font-style:italic}
+.memory-flash p{line-height:1.55;color:#ddccaa}
+.memory-flash .dialog-actions{margin-top:.8rem}
+
+/* --- Reiter „Bude“ --- */
+.base-build .base-locked{color:#cbb98d;line-height:1.5;font-style:italic}
+.base-effects{margin:.4rem 0 .9rem;padding:0;list-style:none;display:grid;gap:.22rem;
+ border:1px solid #4d5b42;border-radius:.45rem;background:#1c2a1f8c;padding:.55rem .7rem}
+.base-effects li{font-size:.82rem;color:#cfd9bb}
+.base-effects b{color:#f0d38f;margin-right:.35rem}
+.build-grid{display:grid;gap:.6rem}
+.build-card{border:1px solid #4c5a41;border-radius:.5rem;background:#1b271d9e;padding:.6rem .7rem}
+.build-card>header{display:flex;align-items:center;gap:.55rem;margin-bottom:.35rem}
+.build-card>header canvas{width:34px;height:34px;image-rendering:pixelated}
+.build-card h3{margin:0;font-size:1rem;color:#f2e2b3}
+.build-card>header small{color:#a9b894}
+.build-card p{margin:.25rem 0;font-size:.84rem;line-height:1.45;color:#cdd7ba}
+.build-stage{color:#f0d38f!important;font-weight:600}
+.build-next{margin-top:.45rem;border-top:1px dashed #4c5a41;padding-top:.45rem}
+.build-next>b{color:#e8d4a2}
+.build-cost{margin:.35rem 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.3rem .7rem}
+.build-cost li{font-size:.8rem}
+.build-cost li.stat-gain{color:#a8d38b}
+.build-cost li.requirements-failed{color:#e39a86}
+.build-effect{color:#bfcda6!important;font-style:italic}
+.build-done{color:#9fae8b!important;font-style:italic}
+.build-next button[disabled]{opacity:.45;cursor:not-allowed}
+
+/* --- Erinnerungsliste im Clanbuch --- */
+.memory-panel{margin-top:1rem;border-top:1px solid #4c5a41;padding-top:.7rem}
+.memory-list{display:grid;gap:.5rem}
+.memory-entry{border-left:3px solid #6d5b34;padding:.35rem .6rem;background:#241f1580}
+.memory-entry h3{margin:0 0 .2rem;font-size:.95rem;color:#efdcae}
+.memory-entry p{margin:.2rem 0;font-size:.82rem;line-height:1.45;color:#d3c6a4}
+.memory-entry.unknown{opacity:.45;border-left-color:#4a4636}
+.memory-clue{color:#b6cbb0!important;font-style:italic}
+
+/* --- Kapitelliste (Reiter Aufträge) --- */
+.chapter-log{margin-top:1rem;border-top:1px solid #4c5a41;padding-top:.7rem}
+.chapter-list{display:grid;gap:.5rem}
+.chapter-entry{border:1px solid #445039;border-radius:.45rem;padding:.45rem .6rem;background:#1b271d80}
+.chapter-entry h3{margin:0;font-size:.95rem;color:#eedfb0}
+.chapter-entry p{margin:.25rem 0;font-size:.82rem;line-height:1.45;color:#ccd6b9}
+.chapter-status{display:inline-block;margin-bottom:.15rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#9fae8b}
+.chapter-entry.active{border-color:#b39a5c;background:#2a2a1a80}
+.chapter-entry.active .chapter-status{color:#f0d38f}
+.chapter-entry.done .chapter-status{color:#a8d38b}
+.chapter-entry.later{opacity:.6}
+.chapter-clue{color:#e2d09f!important}
+.chapter-unlocks{margin:.25rem 0 0;padding-left:1.1rem;font-size:.78rem;color:#b9c6a3}
+.chapter-summary{color:#c6d1b2;font-style:italic}
+
+/* --- HUD: Wegmarke im Auftragskasten --- */
+.quest-task.waypoint{opacity:.85}
+.quest-task.waypoint i{color:#f0d38f}
+
+@media (max-width:460px){
+ .build-card>header canvas{width:28px;height:28px}
+ .build-cost{gap:.25rem .45rem}
+ .base-effects li,.build-card p,.memory-entry p,.chapter-entry p{font-size:.8rem}
+}

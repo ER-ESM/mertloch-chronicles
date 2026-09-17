@@ -38,6 +38,14 @@ export class Renderer {
     for(let x=Math.floor(ox/512);x<=Math.floor((ox+W)/512);x++)for(let y=Math.floor(oy/512);y<=Math.floor((oy+H)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
     for(const prop of w.props)if(visible(prop,10)&&!['bench','cart','lantern'].includes(prop.type))this.prop(c,prop);
     for(const q of w.quests||[]){if(g.tutorial&&!g.tutorial.completed)continue;const status=g.sideQuests[q.id];for(const item of q.items){if(!visible(item,30)||status.collected.includes(item.id))continue;const x=item.x,y=item.y;if(item.type==='herb'){for(let i=0;i<5;i++){rect(c,'#3c7958',x-8+i*4,y-11+(i%2)*3,2,13);rect(c,'#a5d6a0',x-10+i*4,y-11+(i%2)*3,6,3);rect(c,'#ded3a1',x-8+i*4,y-14+(i%2)*3,2,3);}}else{rect(c,'#293b44',x-12,y-29,24,31);rect(c,'#655273',x-10,y-27,20,26);ellipse(c,'#293b44',x,y-10,8,8);ellipse(c,'#ad93b7',x,y-10,5,5);ellipse(c,'#4a8c9a',x,y-10,2,2);rect(c,'#e7c686',x-8,y-25,16,3);rect(c,'#78bda5',x-7,y-24,3,1);rect(c,'#293b44',x-8,y+2,3,3);rect(c,'#293b44',x+5,y+2,3,3);}if(status.accepted&&!status.claimed){label(c,'✧',x,y-31-Math.sin(time*2)*2,'#f0d38f',12);if(distance(item,p)<75)label(c,'F · '+(q.itemName||q.title),x,y+12,'#e7d8a7',7);}}}
+    // Sammelpunkte des laufenden Kapitels: Materialhaufen wie Questgegenstände, Beschriftung aus content/items.js.
+    for(const spot of g.gatherPoints?.()||[]){
+     if(!visible(spot,30))continue;const x=spot.x,y=spot.y;
+     rect(c,'#293b44',x-11,y-15,22,17);rect(c,'#8a7250',x-9,y-13,18,13);rect(c,'#b09468',x-9,y-13,18,4);rect(c,'#293b44',x-3,y-9,6,5);
+     drawItem(c,ITEMS[spot.item]?.icon||'scrap',Math.round(x-9),Math.round(y-30),.7);
+     label(c,'✧',x,y-33-Math.sin(time*2)*2,'#f0d38f',12);
+     if(distance(spot,p)<75)label(c,'F · '+(ITEMS[spot.item]?.name||''),x,y+13,'#e7d8a7',7);
+    }
     // Hand-placed fantasy dressing is kept separate from the geographic base.
     for(const camp of w.camps){if(!visible(camp,50)||camp.type==='wolf')continue;const x=camp.x+19,y=camp.y+19;ellipse(c,'#28382266',x,y+2,13,5);for(let i=0;i<7;i++){const a=i/7*Math.PI*2;rect(c,'#969578',x+Math.cos(a)*9-2,y+Math.sin(a)*4-1,4,3);}rect(c,'#514835',x-5,y-3,11,3);if(!drawAssetFire(c,x,y,time)){rect(c,'#e6ad61',x-4,y-11,8,11);rect(c,'#f4d48b',x-2,y-7,4,7);}c.globalAlpha=.12;ellipse(c,'#efc06e',x,y,22,13);c.globalAlpha=1;for(let i=0;i<3;i++){c.globalAlpha=.13;rect(c,'#f3deb5',x+Math.sin(time+i)*4,y-14-(time*7+i*9)%26,3,2);}c.globalAlpha=1;}
     for(const b of w.barriers){if(b.maxX<ox||b.minX>ox+W||b.maxY<oy||b.minY>oy+H)continue;c.beginPath();b.points.forEach((q,i)=>i?c.lineTo(q.x,q.y-3):c.moveTo(q.x,q.y-3));c.strokeStyle='#46583b';c.lineWidth=5;c.stroke();c.strokeStyle='#859562';c.lineWidth=2;c.stroke();}
@@ -50,6 +58,7 @@ export class Renderer {
     if(g.target&&g.target.hp>0){const e=g.target;const rad=e.type==='boss'?30:18;c.strokeStyle=e.behavior==='neutral'&&!e.aggro?'#eed180':'#ef9c88';c.lineWidth=1.5;c.beginPath();c.ellipse(e.x,e.y+1,rad,rad*.4,0,0,Math.PI*2);c.stroke();c.fillStyle='#eed39a';poly(c,[{x:e.x-3,y:e.y+rad*.4+5},{x:e.x+3,y:e.y+rad*.4+5},{x:e.x,y:e.y+rad*.4+2}]);c.fill();}
     const sorted=[{type:'clanCamp',obj:w,y:w.church.maxY+42}];for(const d of w.details||[])if(visible(d,30))sorted.push({type:'estate',obj:d,y:d.y});for(const hub of w.hubs||[])if(visible(hub,120))sorted.push({type:'hub',obj:hub,y:hub.y-10});for(const camp of w.camps)if(visible(camp,160))sorted.push({type:'occupiedCamp',obj:camp,y:camp.y-35});for(const a of g.life.actors)if(visible(a,45))sorted.push({type:'resident',obj:a,y:a.y});for(const prop of w.props)if(visible(prop,50)&&['bench','cart','lantern'].includes(prop.type))sorted.push({type:'furniture',obj:prop,y:prop.y});for(const b of w.buildings)if(b.maxX>ox-40&&b.minX<ox+W+40&&b.maxY>oy-60&&b.minY<oy+H+380)sorted.push({type:'building',obj:b,y:b.maxY});for(const t of w.trees)if(visible(t))sorted.push({type:'tree',obj:t,y:t.y});
     for(const bag of g.rpg.loot)if(visible(bag,25))sorted.push({type:'loot',obj:bag,y:bag.y});
+    for(const m of w.mentors||[])if(visible(m)&&(!g.tutorial||g.tutorial.completed))sorted.push({type:'mentor',obj:m,y:m.y});
     for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});sorted.sort((a,b)=>a.y-b.y);
     for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});sorted.sort((a,b)=>a.y-b.y);
     for(const item of sorted){const e=item.obj;c.save();if(this.actorRenderer?.(c,item,time)){c.restore();continue;}if(item.type==='building'){const bounds=buildingVisualBounds(e);if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>u.x>bounds.minX&&u.x<bounds.maxX&&u.y<bounds.maxY&&u.y>bounds.minY))c.globalAlpha=.38;this.building(c,e);}
@@ -62,7 +71,9 @@ export class Renderer {
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
       else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,{...p,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,w.rules.heroHeight/33);}
-      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,WORLD_SCALE.npc/33);if(nearestSpeaker(g,e))label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.claimed?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
+      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,WORLD_SCALE.npc/33);if(nearestSpeaker(g,e))label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);label(c,g.quest.actDone?'✦':g.questReady()?'?':'!',e.x,e.y-43,'#f2d685',13);}
+      // Mentoren an der Bude tragen dieselbe Figurengrafik wie der Held (classId aus clan.js).
+      else if(item.type==='mentor'){drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,WORLD_SCALE.npc/33);if(distance(e,p)<70)label(c,e.name,e.x,e.y-34,'#d8c89a',7);}
       else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,WORLD_SCALE.npc/33,{facing:-1});if(nearestSpeaker(g,n))label(c,n.name,n.x,n.y-32,'#d8c89a',7);label(c,s.claimed?'✦':s.progress>=e.required?'?':s.accepted?'◇':'!',n.x,n.y-42,'#f1d183',13);}
       else if(e.tutorial){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
