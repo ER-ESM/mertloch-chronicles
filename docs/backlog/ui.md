@@ -1,5 +1,14 @@
 # Backlog · ui
 
+## Basis-Runde 1–4 · 2026-09-17
+
+- [x] HUD-Ressourcenzeile und Desktop-Interaktionshinweis ohne Überschneidung.
+- [x] Clanbuch-Höhe und -Breite in kleinen Hoch-/Querformaten korrigiert; Schließen bleibt erreichbar.
+- [x] Touch-Kompatibilitätsklick nach Fensteröffnung abgefangen; Belegung, Langdruck und Abbruch im Browser geprüft.
+- [x] Laufende Zauber können über den sichtbaren Touch-Abbruchknopf beendet werden.
+
+Belege und offene Gerätegrenzen: `docs/BASIS-STABILISIERUNG-2026-09-17.md`.
+
 Inbox der UI-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel, Grund, Abnahme, betroffene IDs/Dateien. Die Rolle hakt ab, löscht nicht.
 
 ## Offen

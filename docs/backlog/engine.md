@@ -1,5 +1,15 @@
 # Backlog · engine
 
+## Basis-Runde 1–4 · 2026-09-17
+
+- [x] Mentorenplatzierung mit der Weltprüfung vereinheitlicht; Gespräche ohne Ida-Überlagerung erreichbar.
+- [x] Laufbefehle bei Pause/Tod/ungültigem Punkt abgefangen, Zauberabbruch und Joystick-Routenwechsel vereinheitlicht, blockierte Wege mit Rückmeldung.
+- [x] Zauberabschluss beim Zielwechsel und ungültige Mausziele abgesichert.
+- [x] Schrottkoloss-Reichweitenblocker behoben: Pfandgeschoss bleibt Fernkampf für Druck/Deckung; Nahkampf-Auto bleibt erhalten.
+- [x] Lesbare Save-Sicherung, Schutz unlesbarer/neuerer Saves, Update erst nach erfolgreichem Speichern; freie Aktionsplätze bleiben frei.
+
+Belege: `docs/BASIS-STABILISIERUNG-2026-09-17.md`, 363 Tests und Browserprüfung für Offline/Update/Wiederherstellung.
+
 Inbox der Engine-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel, Grund, Abnahme, betroffene IDs/Dateien. Die Rolle hakt ab, löscht nicht.
 
 ## Aus Gegenstände & Loot
@@ -13,7 +23,7 @@ Inbox der Engine-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Z
 Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). Nachtrag 2026-09-17: Die folgende Proc-Integration ist jetzt einschließlich Content, Schema, Beschreibungen und HUD-Zählern abgeschlossen; historische Runde-B-Notizen unten beschreiben den vorherigen Zwischenstand. Siehe `docs/COMBAT-INTEGRATION-2026-09-17.md`.
 
 - [x] **`CLAN_MEMBERS.passives` an die Laufzeit anbinden.** Erledigt 2026-09-17: Startwerte, Schadensminderung, Parade-Heilung, Taktfenster und Unterbrechungsboni kommen aus den Klassendaten; Mutationstests belegen die Anbindung.
-- [ ] **Schrottkoloss (`kevin-iron`) hat bis Stufe 2 keine Reichweite** (Runde B 2026-09-17). `class-mechanics.classSkills` setzt Kevins Grundangriff für diese Spielart auf `range:55` und den Autoangriff auf 45. Gegen die Fernkämpfer (Ruhewart, Schnorrer, Praktikant) kommt er damit nie in Reichweite: im Balance-Sweep 44–73 s Kampfzeit und Tod in jedem Lauf, weil nur die Markierung tickte. Klassendesign hat das umgangen, indem Kevin den Wurf jetzt auf Stufe 2 statt 6 lernt (`CLASS_LESSONS.kevin.throw:2`) – das behebt die ⚠, lässt die Spielart selbst aber wacklig. Abnahme: entweder baut Magnetpanzer/Anlauf die Lücke, oder die Spielart behält eine Fernkampf-Option für den Druckaufbau.
+- [x] **Schrottkoloss (`kevin-iron`) hat bis Stufe 2 keine Reichweite** (Runde B 2026-09-17). `class-mechanics.classSkills` setzt Kevins Grundangriff für diese Spielart auf `range:55` und den Autoangriff auf 45. Gegen die Fernkämpfer (Ruhewart, Schnorrer, Praktikant) kommt er damit nie in Reichweite: im Balance-Sweep 44–73 s Kampfzeit und Tod in jedem Lauf, weil nur die Markierung tickte. Klassendesign hat das umgangen, indem Kevin den Wurf jetzt auf Stufe 2 statt 6 lernt (`CLASS_LESSONS.kevin.throw:2`) – das behebt die ⚠, lässt die Spielart selbst aber wacklig. Abnahme: entweder baut Magnetpanzer/Anlauf die Lücke, oder die Spielart behält eine Fernkampf-Option für den Druckaufbau. **Erledigt Basis-Runde 2026-09-17:** Pfandgeschoss behält Fernkampf-Reichweite und Fernkampf-Waffenskalierung; Regressionstest auf Stufe 1.
 - [x] **Auslöser `skillHit:<id>` mit Zähler („jede dritte Kelle“)** — Konzept §6 nennt Deckelwirtschaft als „Jede dritte Kelle gibt Deckung“. Heute kennt `fireProcs` nur `autoHit` mit Zufall, deshalb steht `dieter-wall-0` auf `autoHit`, Chance 30 %. Abnahme: `{trigger:'skillHit',skill:'strike',every:3}` zündet deterministisch, HUD zählt mit. Betrifft: `proc:deckelwirtschaft`. **Erledigt Runde B, 2026-09-17** (procs.js: `{trigger:'skillHit',skill,every}`, Zählstand über `procCount`; Aufruf am Ende von `Game.action`). Content-Seite offen: `PROC_TRIGGERS` und die Effektliste in `content/schema.js` – Bedarf steht in docs/backlog/klassen.md und docs/backlog/lead.md.
 - [x] **Auslöser `markedHit` (Treffer an markiertem Ziel)** — `dieter-brew-0` (Rücklaufleitung) und `baerbel-feedback-0` (Provision vom Schmerz) bleiben Prozent-Effekte (`markedLeech`), weil kein Auslöser dafür existiert. Abnahme: Auslöser feuert in `Game.damage` bei `e.mark>0`, Fenster wie üblich. **Erledigt Runde B, 2026-09-17** (feuert in `Game.damage`, sobald `e.mark>0`; Fenster wie üblich).
 - [x] **Proc-Wirkung `heal` (Leben direkt)** — heute kennt `fireProcs` nur free/reset/empower/energy/points/shield/haste. Ohne `heal` lassen sich Rücklauf- und Provisionsregeln nicht als leuchtende Regel zeigen. Abnahme: `effect:{heal:40}` heilt über `healPlayer`, Schema-Liste in `content/schema.js` ergänzen. **Erledigt Runde B, 2026-09-17** (`effect:{heal:n}` über `healPlayer`); Schema-Liste bleibt beim Lead.

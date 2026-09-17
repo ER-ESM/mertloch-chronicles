@@ -78,7 +78,7 @@ export function unlockOnBar(game,ids){const bar=actionBar(game);let touched=fals
 export function placeUsables(game,ids){const bar=actionBar(game),seen=game.rpg.barSeen||(game.rpg.barSeen=[]);let touched=false;
  for(const id of ids){if(!usableItem(id)||seen.includes(id))continue;const entry=barItemEntry(id);
   if(bar.includes(entry)){noteBarItem(game,id);continue;}
-  const slot=bar.lastIndexOf(null);if(slot<0)continue;bar[slot]=entry;noteBarItem(game,id);touched=true;}
+  const slot=bar.lastIndexOf(null);if(slot<0){noteBarItem(game,id);continue;}bar[slot]=entry;noteBarItem(game,id);touched=true;}
  if(touched){game.emit('barChanged');game.emit('save');}
  return touched;}
 export function keyFor(game,id){if(SPECIAL_KEYS[id]!==undefined)return id==='dash'?'LEER':'Q';const i=actionBar(game).indexOf(id);return i<0?'Skillbuch':SLOT_KEYS[i]===' '?'LEER':SLOT_KEYS[i].toUpperCase();}

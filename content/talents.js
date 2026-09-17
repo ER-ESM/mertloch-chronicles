@@ -9,7 +9,7 @@ export const SPECS={
  'baerbel-feedback':{name:'Putzpyramide',classId:'baerbel',role:'Schadensheilung',icon:'sound',text:'Fleckentest verteilt deine Kundschaft. Schaden an markierten Zielen zahlt Heilprovision; Heilung beschleunigt die nächste Vorführung.'},
  'baerbel-stage':{name:'Filter-Furie',classId:'baerbel',role:'Fernkampf-Schaden',icon:'speaker',text:'Glanz für die Kamera sammeln. Schminkpflege lädt doppelte Pinsel-Treffer; ein neues Reel setzt die Turbostufe zurück.'},
  'kevin-fuse':{name:'Zündmeister',classId:'kevin',role:'Fernkampf-Schaden',icon:'burst',text:'Kleber verteilt Zündmarken. Flächen glühen nach; Kettenzündung sprengt mehrere markierte Ziele.'},
- 'kevin-iron':{name:'Schrottkoloss',classId:'kevin',role:'Tank',icon:'reinforced',text:'Der Werfer wird zur Nahkampf-Ramme. Druck erzeugt Panzerung; Magnetpanzer zieht Gegner an dich heran.'},
+ 'kevin-iron':{name:'Schrottkoloss',classId:'kevin',role:'Tank',icon:'reinforced',text:'Pfandgeschosse bauen auch auf Distanz Deckung auf. Autoangriffe treffen im Nahkampf; Druck erzeugt Panzerung und Magnetpanzer zieht Gegner heran.'},
  'kevin-hunt':{name:'Pfandjäger',classId:'kevin',role:'Fallen & Bewegung',icon:'boots',text:'Ausweichen lädt einen kostenlosen Wurf. Fallen halten Gegner fest, Distanz und Positionswechsel zahlen sich aus.'}
 };
 const node=(name,text,effects={},grants=null)=>({name,text,effects,grants});

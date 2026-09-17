@@ -93,7 +93,7 @@ export class Game {
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,life:.5,max:.5,...data});}
   selectNext(reverse=false){const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
-  selectAt(x,y){const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
+  selectAt(x,y){const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false){
     if(this.paused||this.dead)return false;
     // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
@@ -343,7 +343,7 @@ export class Game {
   move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
-  navigate(point){if(!tutorialAllowsTravel(this,point))return false;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
+  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
   /** Laufweg zur goldenen Wegmarke – ein Befehl statt vieler kurzer Klicks am Bildschirmrand (P6). */
   navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.point):false;}
   /** Neuberechnung des laufenden Laufbefehls, wenn der Schritt an einer Kante klemmt. */

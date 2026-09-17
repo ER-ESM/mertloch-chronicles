@@ -13,6 +13,6 @@ export function stepPlayer(game,dx,dy,dt){const p=game.player,requested=!!(dx||d
  if(!game.moveTo){game.routeStuck=0;game.routeRetried=false;return;}
  if(travelled>.05){game.routeStuck=0;game.routeRetried=false;return;}
  game.routeStuck=(game.routeStuck||0)+dt;
- if(game.routeStuck>=ROUTE_GIVEUP){game.routeStuck=0;game.moveTo=null;game.path=[];game.routeGoal=null;p.vx=p.vy=0;return;}
+ if(game.routeStuck>=ROUTE_GIVEUP){game.routeStuck=0;game.moveTo=null;game.path=[];game.routeGoal=null;p.vx=p.vy=0;game.toast?.('Der Weg ist blockiert. Wähle einen anderen Laufweg.');return;}
  if(game.routeStuck>=ROUTE_RETRY&&!game.routeRetried){game.routeRetried=true;p.vx=p.vy=0;game.repath?.();}
 }

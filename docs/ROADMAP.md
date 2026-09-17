@@ -11,6 +11,8 @@ Reihenfolge der Runden bis zum fertigen Akt 1. Besitzer: Lead-Architect. Grundla
 - Erledigt: Autoangriff mit getrennter Zielwahl und Start/Stopp für Desktop und Touch (E-25).
 - Erledigt: Talent-/Proc-Integration einschließlich Klassendaten, Zählern, Heilung, Abklingzeitverkürzung, Takt- und Zonenregeln.
 - Erledigt: Baumtransparenz bis zum unteren Stamm.
+- Erledigt: Basis-Runde 1–4 — HUD/Fenster und Touch-Eingaben, Laufbefehle und Mentoren, bestehende Kampfregeln sowie Speichern/Offline/Updates (E-26). Abnahme: [Basis-Stabilisierung](BASIS-STABILISIERUNG-2026-09-17.md).
+- Nächster offener Basis-Schritt: Performance messen und gezielt optimieren; physische Handyprüfung ergänzen. Noch kein neuer Content.
 - Zurückgestellt auf Nutzerwunsch: Händler/Handwerk und ein neuer vollständiger Akt-1-Playtest.
 
 Details und Abnahme: [Kampf-Integration](COMBAT-INTEGRATION-2026-09-17.md). Die folgenden Rundenbeschreibungen dokumentieren den ursprünglichen Ablauf; sie sind keine aktuelle Laufanzeige.

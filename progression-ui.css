@@ -8,3 +8,6 @@
 .buff-strip{flex-wrap:wrap;max-width:244px;gap:3px}.buff-chip{padding:3px 5px}
 .buff-strip:not(:empty)~.target-panel{top:230px}
 @media(max-width:760px){.buff-strip{max-width:202px}.buff-strip:not(:empty)~.target-panel{top:205px}}
+
+/* Interaction and special actions share one stack instead of overlapping fixed offsets. */
+.action-area>.interact{position:static;transform:none;max-width:100%;white-space:normal;margin-bottom:10px}

@@ -267,6 +267,13 @@ Diese Entscheidung ersetzt den früheren P2-Wunsch „Taste 1 darf nie ausschalt
 
 ---
 
+## E-26 · Erst die technische Basis stabilisieren
+**Datum:** 2026-09-17 · **Stand:** vom Nutzer beauftragt
+
+Vor weiterem Content werden vier Bereiche bearbeitet: Oberfläche und Touch-Bedienung, Bewegung und Interaktionen, bestehende Kampfregeln sowie Spielstand/Neuladen/Offline/Updates. Neue Inhalte und Händler/Handwerk bleiben zurückgestellt. Desktop und mobile Hoch-/Querformate gehören zur Prüfung; Browser-Touchemulation ersetzt keine physische Handyprüfung.
+
+Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vollständige Balance- oder Performance-Abnahme. Ergebnisse und verbleibende Grenzen stehen in `docs/BASIS-STABILISIERUNG-2026-09-17.md`.
+
 ## Offen (noch nicht entschieden)
 
 | Frage | Optionen | Empfehlung | Seit |
