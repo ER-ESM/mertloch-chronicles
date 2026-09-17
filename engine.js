@@ -122,7 +122,10 @@ export class Game {
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
     for(const key of ['parry','invulnerable','attack','inCombat'])p[key]=Math.max(0,p[key]-dt);
-    const tickStats=combatStats(this);p.energy=Math.min(100,p.energy+dt*((p.inCombat>0?BALANCE.momentum.combatEnergyRegen:BALANCE.player.energyRegen)+(tickStats.energyRegen||0)));if(p.inCombat===0)p.hp=Math.min(p.maxHp,p.hp+dt*(this.time<this.momentum.restUntil?BALANCE.momentum.restRegen:BALANCE.player.outOfCombatRegen)*(tickStats.procs.includes('hops')?PROCS.hops.regen:1));
+    const tickStats=combatStats(this);p.energy=Math.min(100,p.energy+dt*((p.inCombat>0?BALANCE.momentum.combatEnergyRegen:BALANCE.player.energyRegen)+(tickStats.energyRegen||0)));
+    // The combat timeout outlasts the kill bonus; rest can start once no opponent is fighting.
+    const resting=this.time<this.momentum.restUntil&&!this.enemies.some(e=>e.hp>0&&e.aggro&&e.ai!=='returning');
+    if(p.inCombat===0||resting)p.hp=Math.min(p.maxHp,p.hp+dt*(resting?BALANCE.momentum.restRegen:BALANCE.player.outOfCombatRegen)*(tickStats.procs.includes('hops')?PROCS.hops.regen:1));
     let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
     if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;dx=dy=0;}}
     stepPlayer(this,dx,dy,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);

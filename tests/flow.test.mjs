@@ -6,7 +6,37 @@ const build=(g,spec)=>{g.player.x=g.world.spawn.x;g.player.y=g.world.spawn.y;ass
 const enemy=(g,x=30,hp=10000)=>{const e=makeEnemy({x,y:0},g.enemies.length+1,{hp,aggro:true,ai:'combat',attackTimer:100});g.enemies.push(e);g.target=e;return e;};
 test('the core rotation is complete on level 4 for every figure: build, mark, finisher, answer',()=>{for(const id of ['dieter','baerbel','kevin']){const L=CLASS_LESSONS[id];assert.equal(L.strike,1);assert.ok(L.mark<=3,id+' mark');assert.ok(L.burst<=4,id+' burst');assert.ok(L.interrupt<=4,id+' interrupt');assert.ok(L.parry<=7);}assert.equal(CAST_TIMES.baerbel.mark,undefined,'mark casts while moving');assert.equal(CAST_TIMES.kevin.mark,undefined);});
 test('a kill gives momentum: energy, a point, mark reset, haste stacks that expire',()=>{const g=game();const e=enemy(g,30,10);g.player.energy=20;g.player.runes=0;g.cooldowns.mark=5;const haste=combatStats(g).haste;g.damage(e,999,'Kelle');assert.equal(g.momentum.stacks,1);assert.ok(g.player.energy>=45);assert.equal(g.player.runes,1);assert.equal(g.cooldowns.mark,0);assert.ok(combatStats(g).haste>haste+BALANCE.momentum.hastePerStack-.001);for(let i=0;i<3;i++)g.damage(enemy(g,30,10),999,'Kelle');assert.equal(g.momentum.stacks,BALANCE.momentum.maxStacks);for(let i=0;i<200;i++)g.tick(.05);assert.equal(g.momentum.stacks,0);assert.ok(Math.abs(combatStats(g).haste-haste)<.001);});
-test('no downtime: energy regenerates faster in combat and life refills fast right after a kill',()=>{const g=game();g.player.inCombat=7;g.player.energy=0;g.tick(.05);assert.ok(g.player.energy>=BALANCE.momentum.combatEnergyRegen*.05-.01);const e=enemy(g,30,10);g.damage(e,999,'Kelle');g.enemies=[];g.player.inCombat=0;g.player.hp=100;g.tick(.05);assert.ok(g.player.hp>=100+BALANCE.momentum.restRegen*.05-.5,'rest regen after kill');g.time+=10;g.tick(.05);const slow=g.player.hp;g.tick(.05);assert.ok(g.player.hp-slow<BALANCE.momentum.restRegen*.05);});
+test('energy regenerates faster in combat',()=>{const g=game();g.player.inCombat=7;g.player.energy=0;g.tick(.05);assert.ok(g.player.energy>=BALANCE.momentum.combatEnergyRegen*.05-.01);});
+
+test('the final kill heals during the combat timeout, then returns to normal regeneration',()=>{
+ const g=game(),e=enemy(g,30,10);g.player.hp=100;g.damage(e,999,'Kelle');
+ assert.ok(g.player.inCombat>BALANCE.momentum.restSeconds);
+ g.tick(.05);
+ assert.ok(g.player.inCombat>0,'the combat timeout remains intact');
+ assert.equal(g.player.hp,100+BALANCE.momentum.restRegen*.05);
+ while(g.time<BALANCE.momentum.restSeconds+.1)g.tick(.05);
+ const expired=g.player.hp;g.tick(.05);
+ assert.equal(g.player.hp,expired,'the kill bonus expires even while the combat timeout runs');
+ while(g.player.inCombat>0)g.tick(.05);
+ const rested=g.player.hp;g.tick(.05);
+ assert.ok(Math.abs(g.player.hp-rested-BALANCE.player.outOfCombatRegen*.05)<1e-6);
+});
+
+test('a kill cannot heal while another enemy is fighting; the final kill renews the window',()=>{
+ const g=game(),first=enemy(g,30,10),last=enemy(g,40,10);last.stun=100;
+ g.player.hp=100;g.damage(first,999,'Kelle');
+ for(let i=0;i<100;i++)g.tick(.05);
+ assert.equal(g.player.hp,100,'no rest healing during an ongoing fight');
+ g.damage(last,999,'Kelle');g.tick(.05);
+ assert.equal(g.player.hp,100+BALANCE.momentum.restRegen*.05);
+});
+
+test('post-kill rest does not overfill health or activate without a kill',()=>{
+ const g=game();g.player.hp=g.player.maxHp-1;g.damage(enemy(g,30,10),999,'Kelle');g.tick(.05);
+ assert.equal(g.player.hp,g.player.maxHp);
+ const fresh=game();fresh.player.hp=100;fresh.player.inCombat=7;fresh.tick(.05);
+ assert.equal(fresh.player.hp,100,'a combat timeout alone does not grant kill healing');
+});
 test('every rule in content has a talent; proc talents fire on their trigger and respect chance',()=>{const used=new Set(Object.values(TALENTS).flat().flatMap(t=>Object.keys(t.effects).filter(k=>k.startsWith('proc:')).map(k=>k.slice(5))));for(const id of Object.keys(PROC_RULES))assert.ok(used.has(id),'rule without talent: '+id);const g=game({level:11},'dieter');build(g,'dieter-brawl');const cs=combatStats(g);assert.ok(cs['proc:kellenwut']);g.random=()=>.9;assert.equal(fireProcs(g,'crit',cs),0,'35 % chance misses at 0.9');g.random=()=>.1;assert.equal(fireProcs(g,'crit',cs),1);assert.ok(procFree(g,'burst'));assert.ok(procGlow(g,'burst'));g.time+=7;g.tick(.05);assert.equal(procFree(g,'burst'),false,'window expires');});
 test('a free proc makes the skill cost nothing once; an empower proc doubles it once; both glow on the bar',()=>{const g=game({level:11},'dieter');build(g,'dieter-brawl');const e=enemy(g);g.player.runes=3;g.player.energy=100;const cs=combatStats(g);g.random=()=>.1;fireProcs(g,'crit',cs);assert.ok(skillStatus(g,'burst').ideal,'burst glows');g.gcd=0;g.cooldowns.burst=0;assert.ok(g.action('burst'));assert.equal(g.player.energy,100,'free burst');assert.equal(procFree(g,'burst'),false,'consumed');g.gcd=0;g.cooldowns.strike=0;g.random=()=>.5;g.player.runes=0;const before=e.hp;g.action('strike');const normal=before-e.hp;g.gcd=0;g.cooldowns.strike=0;fireProcs(g,'kill',combatStats(g));assert.ok(procEmpowered(g,'strike'));const mid=e.hp;g.action('strike');assert.ok(mid-e.hp>=normal*1.9,'empowered strike');assert.equal(procEmpowered(g,'strike'),false);});
 test('parry, interrupt, heal and dodge all reach the proc system',()=>{const g=game({level:11},'kevin');build(g,'kevin-iron');const e=enemy(g);g.player.parry=1;g.player.parryCharges=1;g.hitPlayer(e,50);assert.ok(procFree(g,'burst'),'Dampfdruck after parry');const h=game({level:11},'kevin');build(h,'kevin-hunt');const f=enemy(h);h.player.invulnerable=.3;h.hitPlayer(f,50);assert.ok(procEmpowered(h,'throw'),'Fangschuss after dodge');const a=game({level:11},'baerbel');build(a,'baerbel-feedback');const b=enemy(a,40);b.cast={interruptible:true,remaining:2,total:2};a.gcd=0;assert.ok(a.action('interrupt'));assert.ok(procFree(a,'burst'),'Mehrwegflasche after interrupt');const d=game({level:11},'dieter');build(d,'dieter-brew');d.player.hp=100;d.cooldowns.mark=4;d.gcd=0;assert.ok(d.action('heal'));assert.equal(d.cooldowns.mark,0,'Zapfhahn auf resets mark');assert.ok(procFree(d,'strike'));});
