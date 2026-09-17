@@ -22,6 +22,12 @@ Alle Motive laufen im Stil Maifeld-Detailpixel (E-10), Maßstab nach E-11. Bis z
 
 Nachrangig und **nicht** Teil von Akt 1: Gisela Gießkanne und Pfandautomat 3000 (Reserve, E-23).
 
+
+### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
+
+- [ ] **P16** Persona-Aufrufe brauchen Koordinaten der Hofproben-Objekte oder mehr Budget; Screenshots kommen nicht als Bild zurück.
+- [ ] Entscheidung: Taste 1 als Toggle abschaffen (E-24 vorschlagen); Hofprobe auf ≤ 12 Aktionen deckeln.
+
 ## Erledigt
 
 - [x] Rollenmodell mit Dateibesitz, Tuning-Schicht, Rollen-Prüfungen und Backlogs eingeführt (2026-09-17, E-19).

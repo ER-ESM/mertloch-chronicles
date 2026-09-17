@@ -8,6 +8,11 @@ Inbox der Rolle Welt-Design (docs/ROLLEN.md).
 - [ ] Kiosk als Ort im Dorfkern (Gameplay-Konzept `docs/GAMEPLAY-HAENDLER-HANDWERK.md`): Kioskkönig Kalle steht heute nur als Dorfbewohner herum; er soll eine Bude mit Tresenfenster bekommen, an der man stehen bleibt. Erst nach Freigabe des Händler-Konzepts.
 - [ ] Keiler im Wohngebiet: Weltseite erledigt (siehe Befund unten), Umsetzung in `encounters.js` liegt bei Engine (docs/backlog/engine.md).
 
+
+### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
+
+- [ ] **P3** Mentoren stehen zu nah an Ida: Abstand ≥ 60 Einheiten zwischen Ida und jedem Mentor, Mentoren untereinander ≥ 40, alle außerhalb des F-Radius von Ida.
+
 ## Erledigt
 
 - [x] **Kapitel-Lager sichtbar machen** (2026-09-17, 0.20): `world-props.js` setzt an jedem Kapitel-Lager Kulissen-Objekte, `world.camps[].props` = `{id,kind,x,y,w,h,blocking}`. Sperrmüllplatz (Schrotthaufen, Hänger, zwei Kühlschränke), Festplatz (Kegelbahn-Trümmer, zwei Bierbänke, zwei Kugeln), Bus im Feld (Bus mit Girlanden, zwei Kästen, Bierbong); die Mob-Lager tragen die Kleinteile desselben Kapitels. Arten als feste Liste `PROP_KINDS` in `world-prop-kinds.js` (Name, Grundfläche, Zeichenhöhe, Fallback-Farbe). Deterministisch aus `seed ^ 0x9B17`, kollisionsfrei zu Wegen, Gebäuden, Bäumen, Wasser, Haustüren, Anlaufpunkt, Spawns, Sammelpunkten und Questorten; kein Wegenetz-Knoten unter einer Kulisse. `blocking:true` nur für Bus und Schrotthaufen — die werden nach dem Setzen erneut auf Erreichbarkeit geprüft und sonst zurückgebaut (`dressingReport.campProps`). Sechs Prüf-Seeds: 19 Kulissen, 0 ausgelassen, 0 zurückgebaut.

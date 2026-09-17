@@ -15,6 +15,12 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 - [ ] Reihe-vier-Ausbauten (`zoneUpgrade`, `slamUpgrade`, `encoreUpgrade`, `infusionUpgrade`, `detonateUpgrade`, `magnetUpgrade`, `snareUpgrade`) sind heute Verbesserungen der eigenen Talentfähigkeit („hält länger“, „größerer Radius“). Sie nennen einen Auslöser (das Aufstellen), bleiben aber zahlenlastig — nach den Engine-Auslösern (`inZone`, `cdReduce`) erneut ansehen.
 - [ ] Prüfer-Befund 2026-09-17 „Solider Bierbauch / Dienstjacke sind reine Wert-Talente“: Diese Namen gibt es in `content/talents.js` nicht (grep über das ganze Repo leer). Vermutlich Live-Drift der veröffentlichten Seite gegenüber `main` — Herkunft mit Lead/UI klären, bevor etwas geändert wird.
 
+
+### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
+
+- [ ] **P13** Klamotten unterscheiden sich auf Stufe 1 nur im Namen der Ressource – sichtbarer Unterschied (Leben, Startkniff-Verhalten) im Rahmen der Passiven.
+- [ ] **Balance Runde A**: Dieter fällt auf eigener Stufe unter jeden Korridor (16×), Kevin stirbt auf Stufe 2–3 gegen Ruhewart/Schnorrer/Praktikant (4×) – Klassenabstand ist keine Gegner-Leben-Frage.
+
 ## Erledigt
 
 - [x] Restliche Talente auf Auslöser-Regeln gebracht (2026-09-17): acht neue Proc-Regeln in `content/procs.js`, sechs Sekunden-Talente auf sichtbares „sofort bereit“, sieben Wert-Texte auf „Wenn X, dann Y“ umformuliert; Engine-Bedarf in `docs/backlog/engine.md` („Aus Klassendesign“). Neue Invarianten in `content/checks/klassen.js` + `tests/content-klassen.test.mjs`: kein reines Wert-Talent, keine tote Proc-Regel, jeder Kniff-Text nennt den Einsatzmoment.
