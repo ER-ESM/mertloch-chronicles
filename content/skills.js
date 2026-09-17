@@ -67,5 +67,6 @@ export const TALENT_SKILLS={
  snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling löst 75 Schaden und 3 Sekunden Festhalten aus. Du kannst währenddessen weiterkämpfen.'}
 };
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
-export const LESSONS={auto:1,strike:1,dash:1,buff:2,throw:3,parry:4,interrupt:4,mark:5,burst:6,heal:8,ground:9};
-export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,buff:3,throw:8,parry:7},kevin:{...LESSONS,throw:2,buff:3,parry:7}};
+// Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
+export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:5,throw:6,heal:7,ground:9};
+export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,mark:3,burst:4,interrupt:4,parry:7},kevin:{...LESSONS,mark:2,burst:3,interrupt:4,parry:4}};

@@ -1,6 +1,6 @@
 # Grafik-Briefing
 
-Comic-Pixelstil „Maifeld-Märchen“ (siehe ART-DIRECTION.md): Pflaumentinte-Konturen, Honiglicht, Korallrot, Flussjade, Schieferblau; klare Schattenflächen, keine Texturrauschen; Figuren ca. 26 px hoch, Icons 24 px bzw. 48 px, transparenter Hintergrund.
+Maifeld-Detailpixel (ART-DIRECTION.md 0.19): warme 40-Farben-Ankerpalette, dunkle Schieferkonturen, Licht links oben, klare Pixelcluster, echte Transparenz. Helden 52 native Pixel/26 Welteinheiten, vier Richtungen, freie Hände für Ausrüstungs-Layer. Vorlagen in assets/maifeld-live/sources; Pipeline tools/sprite-pipeline/build-live.mjs.
 
 Jede Zeile ist ein Bild. `fallback` zeigt, was das Spiel heute stattdessen zeichnet; solange kein Asset vorliegt, läuft das Spiel damit.
 

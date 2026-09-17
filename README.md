@@ -35,6 +35,15 @@ Items, Beute, Gegner, Bosse, Fähigkeiten, Klassen, Talente, Quests, NPCs, Dialo
 - **Vorbereitet:** Story-Kapitel 2 (Gisela Gießkanne) und 3 (Der Pfandautomat 3000) mit Bossen, Zaubern, Dialogen und Belohnungen – warten auf Lager und Kapitelumschalter (siehe `content/BACKLOG.md`).
 - Prüfen: `npm run content:check`, Balance-Matrix `npm run content:balance` → [content/BALANCE-REPORT.md](content/BALANCE-REPORT.md), Grafik-Briefing `npm run content:art` → [content/ART-BRIEF.md](content/ART-BRIEF.md).
 
+## Neu in 0.20 · Fluss, Schwung, Procs, Clanbuch, Arena
+
+- **Grundrotation ab Stufe 4:** Aufbau (1), Markieren (2), Finisher (3), Parade/Unterbrechen (4). Buff, Wurf, Heilung und Boden kommen danach. Markierung und Wurf gehen jetzt in Bewegung.
+- **Schwung:** Jeder Kill gibt 25 Randale, einen Punkt und setzt die Markierung zurück; bis zu drei Stapel Tempo für 8 Sekunden. Randale regeneriert im Kampf doppelt so schnell, Leben füllt sich vier Sekunden nach dem letzten Kill schnell auf.
+- **Procs:** 18 Talente sind jetzt Regeln mit Auslöser (kritischer Treffer, Kill, Parade, Unterbrechen, Ausweichen, Markierungs-Tick, Autoangriff, Heilung, Finisher mit drei Punkten). Ein Proc leuchtet sechs Sekunden auf der Leiste und macht einen Kniff kostenlos, doppelt stark oder sofort bereit. Regeln in `content/procs.js`.
+- **Gegnergruppen und Kettenzug:** Im Umland laufen aggressive Arten zu zweit oder zu dritt; ein Kumpel in der Nähe greift nach zwei Sekunden mit ein.
+- **Clanbuch:** Ein Menüfenster mit sechs Reitern (C I K J M H), keine Seiten, kein Einklappen. Talente und Bande unter Figur, Einstellungen und Admin unter Hilfe.
+- **Trainingsarena** (Hilfe → Einstellungen → Admin): Gegner, Elite oder Boss aufstellen, Übungspuppe, Stufe für Tests, Schadensmessung. Konzept und Testprotokoll: [docs/GAMEPLAY-KONZEPT-FLUSS.md](docs/GAMEPLAY-KONZEPT-FLUSS.md).
+
 ## Neu in 0.14 · Ausrüstung, Handy & App
 
 - **16 Ausrüstungsplätze:** Haupt-/Nebenhand, Fernkampf, Kopf, Hals, Schultern, Brust, Armschienen, Handschuhe, Gürtel, Beine, Schuhe, zwei Ringe und zwei Glücksbringer.
@@ -118,17 +127,17 @@ Fünf Browser- und Sichtprüfungsrunden mit Vorher-/Nachherbildern: [VISUAL-REVI
 
 Du startest mit **[1] Grundangriff** und **[LEER] Ausweichen**. Neue Fähigkeiten erscheinen automatisch auf freien Aktionsplätzen. Ihre Erklärungen bleiben unten links, bis du sie bestätigst; **H** öffnet die Anleitung. Ausschlaggebend ist jetzt die Charakterstufe.
 
-| Stufe | Dieter | Bärbel | Kevin |
+| Stufe | Dieter | Aperol-Anni | Kevin |
 |---|---|---|---|
-| 1 | Angriff, Ausweichen | Angriff, Ausweichen | Angriff, Ausweichen |
-| 2 | Dosenmut | Heilung | Dosen-Drohne |
-| 3 | Pfandwurf | Heilsamer Refrain | Isolierband |
-| 4 | Parade, Unterbrechen | Unterbrechen | Unterbrechen |
-| 5 | Markierung | Markierung | Markierung |
-| 6 | Eskalation | Eskalation | Eskalation |
-| 7 | — | Parade | Parade |
-| 8 | Heilung | Plattenwurf | Heilung |
+| 1 | Kelle, Autoangriff, Ausweichen | Pinsel, Autoangriff, Ausweichen | Pfandgeschoss, Autoangriff, Ausweichen |
+| 2 | Pfandschuld (Markieren) | Hauspflege (Heilung) | Kleber (Markieren) |
+| 3 | Bierzelt-Abriss (Finisher) | Fleckentest (Markieren) | Restmüll-Rakete (Finisher) |
+| 4 | Parade, Unterbrechen | Turbostufe (Finisher), Unterbrechen | Unterbrechen, Parade |
+| 5 | Dosenmut | Buff | Isolierband |
+| 6 | Pfandwurf | Wurf | Dosen-Drohne |
+| 7 | Konterfrühstück | Parade | Heilung |
 | 9 | Bodenangriff | Bodenangriff | Bodenangriff |
+
 
 Ausweichen und Unterbrechen haben feste Sonderplätze. Alle anderen Tasten ergeben sich aus deiner frei belegbaren Leiste. Ein Talentbaum kann ab dem fünften verteilten Punkt eine zusätzliche aktive Fähigkeit lehren.
 

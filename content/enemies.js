@@ -78,6 +78,7 @@ export const SPAWN_TABLES={
  neutral:[{kind:'badger',weight:.55,tier:0},{kind:'goose',weight:.45,tier:0},{kind:'raven',weight:.3,tier:1}],
  tierDistance:900,      // ab dieser Entfernung zum Treffpunkt kommen tier-1-Arten dazu
  eliteDistance:1300,eliteChance:.05, // Chance je Revierplatz jenseits eliteDistance, dass eine Elite erscheint
- aggressiveMinDistance:430,aggressiveChance:.48
+ aggressiveMinDistance:430,aggressiveChance:.48,
+ groupSize:{chance:.65,max:3}  // Umland: 65 % der aggressiven Reviere haben 1–2 Kumpel
 };
 export const familyOf=e=>e.family||(e.type==='boss'?'horst':e.skin==='goose'?'goose':e.skin==='badger'?'badger':e.type==='cultist'?'warden':'boar');

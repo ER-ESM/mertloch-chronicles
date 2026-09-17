@@ -16,4 +16,5 @@ export const SKILL_DAMAGE={
  kevin:{strike:{flat:8,weapon:2},burst:{flat:34,weapon:1.5,weaponPerPoint:2.6}},
  shared:{throw:{flat:24,weapon:3},ground:{flat:125},interrupt:{flat:35},slam:{flat:44,weapon:3}}
 };
-export const CAST_TIMES={dieter:{ground:.8},baerbel:{mark:.65,burst:1.1,heal:1.25,ground:1,sanctuary:1},kevin:{mark:.65,burst:1.1,ground:1,detonate:.8}};
+// Markierung und Wurf gehen in Bewegung; nur Finisher, Heilung und Bodenzauber brauchen den Stand.
+export const CAST_TIMES={dieter:{ground:.8},baerbel:{burst:1.1,heal:1.25,ground:1,sanctuary:1},kevin:{burst:1.1,ground:1,detonate:.8}};

@@ -1,6 +1,6 @@
 # Mertloch Chronicles – Arbeitsregeln
 
-**Pipeline, Rollen, Branches und Übergabedateien: [docs/PIPELINE.md](docs/PIPELINE.md).** Agenten: `.claude/agents/inhalt-agent.md`, `engine-agent.md`, `ui-agent.md`. Aktuelle Übergabe an die UI: `docs/UEBERGABE-UI-2026-09-12.md`.
+**Pipeline, Rollen, Branches und Übergabedateien: [docs/PIPELINE.md](docs/PIPELINE.md).** Agenten: `.claude/agents/inhalt-agent.md`, `engine-agent.md`, `ui-agent.md`. Aktuelle Übergabe an die UI: `docs/UEBERGABE-UI-2026-09-12.md`. Visuelle Guideline: `docs/VISUELLE-BEWERTUNG-2026-09-13.md`. Menüstruktur (Clanbuch, umgesetzt): `docs/MENUE-BEWERTUNG-2026-09-17.md`. Gameplay Fluss/Rotation/Procs/Arena (umgesetzt 0.20): `docs/GAMEPLAY-KONZEPT-FLUSS.md`. Übergabe an die Bild-KI: `docs/UEBERGABE-GRAFIK-2026-09-17.md`, fehlende Sprites: `docs/FEHLENDE-SPRITES.md`.
 
 Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm test` muss vor jedem Commit grün sein; GitHub Actions veröffentlicht `main` auf GitHub Pages.
 

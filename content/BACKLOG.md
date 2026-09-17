@@ -8,7 +8,9 @@ Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Age
 
 ## Braucht Engine
 
-- [ ] **Schwung (Momentum), Proc-Rahmen, Gegnergruppen, Kettenzug** – docs/GAMEPLAY-KONZEPT-FLUSS.md Abschnitte 4, 5, 7. Reihenfolge und Prüfung dort.
+- [ ] **Feldgegner skalieren mit der Spielerstufe** – Balance-Bericht 0.20: ab Stufe 10 fallen Dachs, Gans, Rabe, Fuchs in unter 2,5 s. Vorschlag: encounters.buildCell nutzt enemyScale(playerLevel-2, def.level) für hp/damage im Umland; Dorfkern bleibt fest.
+
+- [x] **Schwung (Momentum), Proc-Rahmen, Gegnergruppen, Kettenzug** – umgesetzt 2026-09-17 (engine.js, procs.js, encounters.js), Tests in tests/flow.test.mjs.
 - [x] **Trainingsarena** – arena.js, Admin-Reiter „Trainingsarena“ (2026-09-17).
 
 - [ ] **Story-Kapitel 2 und 3 aktivieren** – `STORY_CHAPTERS[1..2]` sind fertig (Ziele, Boss, Dialoge, Belohnung). Nötig: Kapitelzustand in `engine.js` (`quest.chapter`), Lager für Gisela und den Pfandautomaten in `world-layout.js`, Anzeige in `app.js`/`questlog-ui.js`.
@@ -28,8 +30,10 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 
 ## Inhaltlich offen
 
-- [ ] **Lernreihenfolge Stufe 1–4** (Finisher auf Stufe 3, Antwort-Kniffe auf 4) und **Talente als Regeln mit Auslöser** – docs/GAMEPLAY-KONZEPT-FLUSS.md Abschnitte 3 und 6; Tests (class-system, Pacing) und README-Tabelle mitziehen.
-- [ ] **Zaubern in Bewegung** für Markierung und Wurf – CAST_TIMES in content/combat.js.
+- [x] **Lernreihenfolge Stufe 1–4** und **18 Talente als Proc-Regeln** – umgesetzt 2026-09-17 (content/skills.js, content/talents.js, content/procs.js).
+- [x] **Zaubern in Bewegung** für Markierung – umgesetzt 2026-09-17.
+- [ ] **Restliche 72 Talente** auf Auslöser-Regeln prüfen: alles, was nur einen Wert addiert oder Sekunden verkürzt, bekommt einen Proc oder eine sichtbare Regel.
+- [ ] **Hofprobe** an die neue Reihenfolge anpassen, falls Schritt-Texte Buff oder Wurf vor Stufe 5 nennen.
 
 - [ ] **Landjungs-Themen ausbauen** – Zukunftsideen in [IDEEN-LANDJUNGS.md](IDEEN-LANDJUNGS.md): Schrauberhof (Racing/Tuning), Kalles Kiosk (Sport- und Dorfwetten), LAN-Scheune (Gaming/Nerds), Prompt & Partner (Vibe-Coding-/KI-Slop-Parodie). Mit NPCs, Dialogen, Questketten, Items, Skillvarianten und Platzierungsregeln; noch nicht implementiert. Als Einstieg LAN-Scheune mit vorhandenen Figuren und Kabelspiel prüfen.
 - [ ] Elite-Titel (`title`) im Zielfenster anzeigen (heute „ELITE ·“ nur bei Bossen).

@@ -103,7 +103,21 @@ Testprotokoll je Änderung an Rotation oder Talenten:
 3. Stufe 10 mit Talenten, 5 × Ruhewart → Procs müssen mindestens dreimal ausgelöst haben.
 4. Boss auf seiner Stufe → 45–60 s, mindestens zwei Phasen erlebt.
 
-## 9 · Umsetzung in Reihenfolge
+## 9 · Umsetzung in Reihenfolge · Stand 2026-09-17: alle sieben Schritte umgesetzt (0.20)
+
+| Schritt | Umgesetzt in |
+|---|---|
+| 1 Lernreihenfolge | `content/skills.js` LESSONS/CLASS_LESSONS, README-Tabelle |
+| 2 Schwung | `engine.js` gainMomentum/tick, `content/balance.js` momentum, HUD-Chip |
+| 3 Proc-Rahmen | `content/procs.js` (18 Regeln), `procs.js` (Laufzeit), Leuchten in `combat-ui.js`, Schema prüft Regeln |
+| 4 Talente | 18 reine Prozent-Talente durch Proc-Regeln ersetzt (IDs unverändert) |
+| 5 Gruppen + Kettenzug | `encounters.js` (companions), `engine.js` (joinAt), `SPAWN_TABLES.groupSize` |
+| 6 Zaubern in Bewegung | `content/combat.js` CAST_TIMES ohne mark |
+| 7 HUD | Schwung- und Proc-Chips am Spielerfenster, Leuchtrahmen über skillStatus |
+
+Tests: `tests/flow.test.mjs` (7 Tests), `tests/arena.test.mjs`. Offen: eigene Sprites für Schwung-Pfeile und Proc-Rahmen (siehe `docs/FEHLENDE-SPRITES.md`).
+
+### Ursprüngliche Reihenfolge
 
 | Schritt | Rolle | Datei | Prüfung |
 |---|---|---|---|

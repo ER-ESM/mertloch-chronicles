@@ -23,7 +23,7 @@ function anchorFor(w,p){const near=w.accessNode(p);if(near)return near;const nod
 /** Finite, deterministic habitat cells; inactive records retain health and respawn deadlines. */
 export class EncounterDirector{
   constructor(game){this.game=game;this.world=game.world;this.cells=new Map();this.queue=[];this.key='';this.clock=0;this.enabled=!!this.world.nodes?.length;}
-  buildCell(cx,cy){const w=this.world,g=this.game,C=ENCOUNTER_RULES.cellSize,key=cx+','+cy;if(this.cells.has(key))return this.cells.get(key);const random=rng(w.seed^Math.imul(cx+101,73856093)^Math.imul(cy+101,19349663)),list=[];
+  buildCell(cx,cy){const w=this.world,g=this.game,C=ENCOUNTER_RULES.cellSize,key=cx+','+cy;if(this.cells.has(key))return this.cells.get(key);const random=rng(w.seed^Math.imul(cx+101,73856093)^Math.imul(cy+101,19349663)),list=[],companions=[];
     for(let attempt=0;attempt<24&&list.length<ENCOUNTER_RULES.slotsPerCell;attempt++){
       const p={x:Math.round(cx*C+24+random()*(C-48)),y:Math.round(cy*C+24+random()*(C-48))};if(!inhabitable(w,p)||(w.camps||[]).some(c=>distance(c,p)<120)||list.some(e=>distance(e,p)<105))continue;
       const anchor=anchorFor(w,p);if(!anchor)continue;
@@ -34,7 +34,9 @@ export class EncounterDirector{
       e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9))e.spawnPoints.push(dest);}
       if(distance(p,g.player)<ENCOUNTER_RULES.spawnDistance){e.hp=0;e.respawnAt=g.time;e.dead=0;e.ai='waiting';}else{e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.ai='appearing';}
       list.push(e);
-    }this.cells.set(key,list);return list;
+      // Gruppen: im Umland ziehen aggressive Arten zu zweit oder zu dritt herum (Kettenzug statt Laufwege).
+      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
+    }list.push(...companions);this.cells.set(key,list);return list;
   }
   tick(dt){if(!this.enabled)return;const g=this.game,w=this.world,C=ENCOUNTER_RULES.cellSize,cx=Math.floor(g.player.x/C),cy=Math.floor(g.player.y/C),key=cx+','+cy;this.clock-=dt;
     if(key!==this.key||this.clock<=0){this.key=key;this.clock=.6;const cells=[];for(let y=cy-2;y<=cy+2;y++)for(let x=cx-2;x<=cx+2;x++){if(x<0||y<0||x*C>=w.width||y*C>=w.height)continue;cells.push({x,y,d:Math.hypot(x-cx,y-cy)});}cells.sort((a,b)=>a.d-b.d);const active=new Set(g.enemies.map(e=>e.id));this.queue=cells.filter(c=>!this.cells.has(c.x+','+c.y)||this.cells.get(c.x+','+c.y).some(e=>!active.has(e.id)));

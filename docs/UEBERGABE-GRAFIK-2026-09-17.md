@@ -11,6 +11,8 @@ Für: die KI, die Sprites, Icons und Porträts erzeugt. Von: Inhalt/UI. Alles, w
 
 ## Reihenfolge der Lieferung
 
+Die vollständige, priorisierte Liste aller fehlenden Sprites mit IDs und Formaten steht in `docs/FEHLENDE-SPRITES.md` (Stand 2026-09-17, inklusive Clanbuch-Reiter, Schwung- und Proc-Anzeige, Übungspuppe, 18 neue Talent-Motive).
+
 ### 1 · Clanbuch-Reiter (6 Icons, 24×24, sofort sichtbar)
 
 | ID | Motiv | Ersetzt heute |
@@ -58,5 +60,5 @@ Drei Bierdeckel-Pfeile (Schwung-Stapel), ein Leuchtrahmen für Proc-Kniffe (9-Sl
 ## Nicht liefern
 
 - Keine neuen Gebäude oder Karten-Kacheln, bis die Zeichensprache der Welt entschieden ist (`docs/VISUELLE-BEWERTUNG-2026-09-13.md`, Punkt C1).
-- Keine Icons für Talente (90 Motive vorhanden) und Skills (Atlanten vorhanden).
+- Keine Icons für Skills (Atlanten vorhanden) und für die 72 unveränderten Talente. Nur die 18 neuen Proc-Talente brauchen ein Motiv (`docs/FEHLENDE-SPRITES.md`, Abschnitt 6).
 - Keine Bilder mit Text, Logos, echten Marken oder realen Personen.
