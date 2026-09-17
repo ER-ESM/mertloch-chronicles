@@ -17,8 +17,12 @@ export const ARCHETYPES={
 };
 /** Seltene Elite: erscheint in weiten Feldern anstelle eines normalen Reviers. */
 export const ELITES={
- alphaBoar:{name:'Borsten-Bruno',type:'wolf',skin:'boar',variant:'alphaBoar',family:'elite',behavior:'aggressive',level:4,hp:1400,aggroRange:130,roamRadius:140,speed:74,respawn:[120,180],elite:true,castSet:'elite',leash:520,damage:1.3,look:'Riesiger Keiler mit Narbe über dem Auge, abgebrochener Hauer, Bierkasten-Aufkleber auf der Flanke',title:'Elite · Alphakeiler'}
+ alphaBoar:{name:'Borsten-Bruno',type:'wolf',skin:'boar',variant:'alphaBoar',family:'elite',behavior:'aggressive',level:4,hp:1400,aggroRange:130,roamRadius:140,speed:74,respawn:[120,180],elite:true,castSet:'elite',leash:520,damage:1.3,look:'Riesiger Keiler mit Narbe über dem Auge, abgebrochener Hauer, Bierkasten-Aufkleber auf der Flanke',title:'Elite · Alphakeiler'},
+ // Beutefamilie: bis Loot die Tabelle `oberpraktikant` anlegt (docs/backlog/loot.md), erbt Olaf `inspector`.
+ oberpraktikant:{name:'Oberpraktikant Olaf',type:'cultist',skin:'warden',variant:'oberpraktikant',family:'inspector',behavior:'aggressive',level:4,hp:1480,aggroRange:155,roamRadius:130,speed:54,respawn:[120,180],elite:true,castSet:'oberpraktikant',leash:520,damage:1.22,look:'Schmaler junger Mann in gebügelter Warnweste mit aufgenähtem „i. A.“, drei Klemmbretter untereinander, Dienstmütze zwei Nummern zu groß, Kabelbinder am Gürtel wie Handschellen, Absperrband über der Schulter',title:'Elite · Oberpraktikant'}
 };
+/** Auswahl der Elite jenseits von SPAWN_TABLES.eliteDistance. Gewichte wie in den Spawn-Tabellen; Summe egal. */
+export const ELITE_TABLE=[{kind:'alphaBoar',weight:.6},{kind:'oberpraktikant',weight:.4}];
 /** Lager- und Hauptquestgegner (world.camps). Schlüssel = camp.type. */
 export const CAMP_ENEMIES={
  wolf:{name:'Grillplatz-Plünderer',skin:'boar',family:'boar',hp:520,level:2,speed:71,respawn:[35,55]},
@@ -70,6 +74,11 @@ export const CAST_SETS={
   note:{name:'Aktenvermerk · Q unterbricht',total:2.2,damage:115,interruptible:true},
   fine:{name:'Verwarngeld · Parade',total:1.1,damage:80,radius:60},
   cone:{name:'Absperrkegel · Fläche verlassen',total:2.3,damage:140,radius:62,ground:true}}},
+ oberpraktikant:{cycle:['klemmbrett','vermerk','absperrband','raeumung'],casts:{
+  klemmbrett:{name:'Klemmbrett-Klatsche · Parade',total:1.1,damage:95,radius:66},
+  vermerk:{name:'Aktenvermerk in dreifacher Ausfertigung · Q unterbricht',total:2.5,damage:160,interruptible:true},
+  absperrband:{name:'Absperrband quer · Fläche verlassen',total:2.4,damage:145,radius:84,ground:true},
+  raeumung:{name:'Räumungsverfügung · ausweichen',total:1.5,damage:130,radius:42,ground:true}}},
  elite:{cycle:['bite','charge','bite','pounce'],casts:{
   bite:{name:'Hauerhieb · Parade',total:.9,damage:85,radius:50},
   charge:{name:'Sturmlauf · ausweichen',total:1.6,damage:150,radius:44,ground:true},
@@ -118,6 +127,15 @@ export const SPAWN_TABLES={
  aggressiveMinDistance:430,aggressiveChance:.48,
  groupSize:{chance:.65,max:3}  // Umland: 65 % der aggressiven Reviere haben 1–2 Kumpel
 };
+/** Elite-Auswahl für die Engine: unterhalb von eliteDistance nie eine Elite, darüber gewichtet aus ELITE_TABLE.
+ *  random() liefert 0..1. Rückgabe {kind,def} oder null. encounters.js wählt heute fest alphaBoar (docs/backlog/engine.md). */
+export function pickElite(townDistance,random=Math.random){
+ if(!(townDistance>=SPAWN_TABLES.eliteDistance))return null;
+ const rows=ELITE_TABLE.filter(r=>ELITES[r.kind]);if(!rows.length)return null;
+ const total=rows.reduce((n,r)=>n+r.weight,0);let roll=random()*total;
+ for(const r of rows){roll-=r.weight;if(roll<=0)return {kind:r.kind,def:ELITES[r.kind]};}
+ const last=rows[rows.length-1];return {kind:last.kind,def:ELITES[last.kind]};
+}
 export const familyOf=e=>e.family||(e.type==='boss'?'horst':e.skin==='goose'?'goose':e.skin==='badger'?'badger':e.type==='cultist'?'warden':'boar');
 // Balancing-Korrekturen (content/tuning.js) liegen über den Definitionen; Gameplay ändert hier Struktur, Balancing dort Zahlen.
 import {TUNING,applyTuning} from './tuning.js';

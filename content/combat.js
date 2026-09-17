@@ -4,6 +4,7 @@ export const AUTO_KITS={dieter:{name:'Autoangriff · Flasche kreist',weaponSourc
 export const ENEMY_AUTOS={
  boar:{name:'Hauer',min:32,max:44,speed:2.1,range:38},badger:{name:'Dachsbiss',min:22,max:32,speed:1.8,range:35},goose:{name:'Wadenkneifer',min:15,max:23,speed:1.35,range:34},raven:{name:'Schnabelhieb',min:13,max:20,speed:1.2,range:34},fox:{name:'Fuchsbiss',min:24,max:34,speed:1.6,range:36},
  warden:{name:'Aktenklammerwurf',min:26,max:38,speed:2.4,range:145,ranged:true},scrounger:{name:'Becherwurf',min:22,max:32,speed:2.2,range:130,ranged:true},inspector:{name:'Stempelwurf',min:30,max:42,speed:2.3,range:150,ranged:true},
+ oberpraktikant:{name:'Dienstmützen-Wurf',min:34,max:46,speed:2.3,range:150,ranged:true},
  horst:{name:'Ordnerkante',min:46,max:64,speed:2.6,range:58},elite:{name:'Alphahauer',min:40,max:54,speed:2.1,range:43},gisela:{name:'Kannenschlag',min:55,max:72,speed:2.7,range:60},automat:{name:'Greifarm',min:60,max:85,speed:2.9,range:65}
 };
 export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43};
