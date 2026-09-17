@@ -22,3 +22,6 @@ await mkdir(path.join(output,'data'));
 await cp(path.join(root,'data','mertloch.json'),path.join(output,'data','mertloch.json'));
 await writeFile(path.join(output,'.nojekyll'),'');
 console.log(`GitHub Pages site built in _site: ${files.length} application files, ${content.length} content modules, local graphics and Mertloch map.`);
+// Selbstprüfung: Die gebaute Inhaltsschicht muss aus _site heraus ladbar sein (2026-09-17: fehlender Unterordner content/checks/ ließ die Live-Seite im Ladebildschirm hängen).
+try{const built=await import(new URL('../_site/content/index.js',import.meta.url));if(built.validateContent().length)throw new Error('Inhaltsprüfung in _site nicht grün');}
+catch(err){console.error('Build-Selbstprüfung fehlgeschlagen: '+err.message);process.exit(1);}
