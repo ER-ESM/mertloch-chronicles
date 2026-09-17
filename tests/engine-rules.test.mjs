@@ -146,7 +146,7 @@ test('Umland-Tiere halten auf Spielerstufe 10 mindestens 2,5 Sekunden durch',()=
 });
 
 test('Start ohne Hose: der Beinschutz bleibt leer, Kapitel 1 legt ein gewürfeltes Beinteil in den Rucksack',()=>{
- const g=new Game(arena(),{level:9,trainingXp:5000});
+ const g=new Game(arena(),{level:9,trainingXp:5000});g.settings.autoLoot=false; // hier zählt nur die Kapitelbelohnung, nicht die Beute der Kills
  assert.equal(g.rpg.equipment.legs,null,'Startausrüstung ohne Hose');
  assert.equal(g.rpg.inventory.some(e=>ITEMS[e.id].slot==='legs'),false,'auch nicht im Rucksack');
  g.acceptQuest();
