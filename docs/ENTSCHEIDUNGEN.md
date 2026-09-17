@@ -1,27 +1,257 @@
 # Entscheidungen — Mertloch Chronicles
 
-Protokoll der Produktion. Jede Entscheidung, die Design, Schema, Rollen oder Ablauf ändert, steht hier mit Begründung und verworfener Alternative. Neueste zuerst. Was hier nicht steht, ist nicht entschieden.
+Protokoll der Produktion. Jede Festlegung, die Design, Inhalt, Schema, Rollen oder Ablauf betrifft, steht hier mit Nummer, Titel, Datum, Kontext, Entscheidung und Konsequenzen. **Was hier nicht steht, ist nicht entschieden.**
 
-| Datum | Entscheidung | Begründung | Verworfen |
+Regeln für dieses Dokument:
+
+- Nummern sind stabil und werden nie neu vergeben. Eine überholte Entscheidung wird nicht gelöscht, sondern bekommt `Stand: abgelöst durch E-nn`.
+- Neue Einträge hängen unten an (nächste freie Nummer), damit Verweise aus Backlogs und Commits gültig bleiben.
+- Besitzer: Lead-Architect. Andere Rollen tragen Entscheidungsbedarf in `docs/backlog/lead.md` ein.
+
+## Übersicht
+
+| Nr | Titel | Datum | Stand |
 |---|---|---|---|
-| 2026-09-17 | Mertloch folgt der studio-weiten Pipeline (`eresm-github-migration/docs/spielentwicklung/PIPELINE.md`): Rollen nur mit Artefakt und Gate, Playtest durch Personas ohne Spielwissen vor jedem Release, dieses Protokoll. `docs/PIPELINE.md` bleibt die Ausprägung. | Rollen ohne Artefakt erzeugen Overhead; wer das Spiel baut, findet keine Bedienhänger mehr. | Studio-Organigramm mit allen Rollen; generisches Framework auf Vorrat. |
-| 2026-09-17 | Gemeinsame Engine-Bausteine mit TicketTower erst, wenn TicketTower sie braucht und sie hier laufen (Inhaltsloader mit Schema-Prüfung, Spielstand-Migration, Ereignis-Bus, Debug-Leiste). Kampf, Talente, Weltkarte nie. | Engine ohne zweites Spiel ist eine Engine ohne Spiel. | Framework-Repo jetzt anlegen. |
-| 2026-09-17 | Menüs: ein Fenster „Clanbuch" mit sechs Reitern (Figur, Rucksack, Kniffe, Aufträge, Karte, Hilfe). Keine Seiten, kein Minimieren, kein Einklappen, nichts überlappt. | 19 Fenstertypen und drei Navigationsebenen übereinander; der Spieler verlor den Überblick (`MENUE-BEWERTUNG-2026-09-17.md`). | Fenster behalten und nur aufräumen; einklappbare Fenster. |
-| 2026-09-17 | Kampffluss nach `GAMEPLAY-KONZEPT-FLUSS.md`: Kill gibt Schwung, vier Tasten ab Stufe 4 (1·1·2·1·3 plus Antwort), Procs mit 6-Sekunden-Fenster, Talente sind Regeln statt Prozente, Gegner in Gruppen, keine Warteressource. Trainingsarena als Admin-Werkzeug. | Gemessene Pausen von 3 bis 8 Sekunden nach jedem Kill und 16 bis 24 Sekunden Laufweg; 60 von 90 Talenten waren reine Zahlen. | Rotation ab Stufe 6 belassen; Talente als Prozentwerte. |
-| 2026-09-17 | Weltmaßstab über registrierte, menschengroße Türöffnungen (`MASSSTAB-2026-09-17.md`). | Figuren und Häuser passten nicht zueinander. | Maßstab je Asset von Hand. |
-| 2026-09-16 | Verbindlicher Grafikstil des Hauptspiels: **Maifeld-Detailpixel** (vier Blickrichtungen, sichtbare Ausrüstung, sieben Tierarten). | Von drei Prototypen (Dorfcomic, Maifeld-Detailpixel, Krawall-Karikatur) der mit eigener Sprache und lesbarer Ausrüstung. | Dorfcomic; Krawall-Karikatur. |
-| 2026-09-13 | Heilerin heißt Aperol-Anni (vorher Bass-Bärbel). | Sprechname mit klarerer Figur und Getränk-Bezug wie Dosen-Dieter. | Bass-Bärbel. |
-| 2026-09-13 | Anti-Slop-Guideline mit zehn prüfbaren Regeln und Scorecard je Bildschirm (`VISUELLE-BEWERTUNG-2026-09-13.md`). Ziel je Bildschirm mindestens 4 von 5. | Bildschirme sahen generiert statt entschieden aus (Gesamt 3,0 in 0.13). | Optik nach Gefühl. |
-| 2026-09-12 | Pipeline mit festen Rollen Inhalt, Engine, UI, Grafik, Welt; je Rolle Branch und Worktree; Übergabe nur über Dateien; Merge nach `main` nur Fast-Forward nach grünem `npm test`. Reihenfolge Inhalt vor Engine vor UI vor Grafik. | Zwei Sitzungen und eine Bild-KI arbeiten parallel im selben Repo. | Zuruf; Merge-Commits. |
-| 2026-09-12 | Autoangriff im Waffentempo, Zauber mit Stehenbleiben, 16 Ausrüstungsplätze mit echter Waffenwahl, Touch-Modus mit Joystick und sechs Skillbuttons, installierbare Web-App. | Handy ist gleichberechtigte Plattform; Ausrüstung soll Spielweise ändern, nicht nur Zahlen. | Desktop-only; Ausrüstung als reine Werteliste. |
-| 2026-09-11 | Inhaltsschicht `content/` mit Schema und `content:check`; Engine liest nur über `content/index.js`; eigener Inhalts-Agent. IDs sind Speicherschlüssel und werden nie umbenannt oder gelöscht. | Inhalt soll im Hintergrund wachsen, während UI und Grafik parallel laufen; Spielstände dürfen nicht brechen. | Inhalte in den Engine-Modulen belassen. |
-| 2026-09-11 | Drei Clan-Archetypen (Tank, Heilerin, Fernkampf), universelle Werte Wumms, Taktgefühl, Bastelgrips für jede Klasse, drei Spezialisierungen je Figur. | Jeder Wert soll jeder Klasse helfen; keine toten Stats. | Klassengebundene Werte. |
-| 2026-09-11 | Veröffentlichung über GitHub Pages per Actions auf `main`; Spielstand im Browserspeicher; kein Server, kein Konto, kein Mehrspieler. | Ohne Installation und ohne Betriebskosten spielbar. | Eigener Server mit Konten. |
+| E-01 | Veröffentlichung über GitHub Pages, Spielstand im Browser | 2026-09-11 | gilt |
+| E-02 | Drei Clan-Archetypen, universelle Werte, drei Spezialisierungen | 2026-09-11 | gilt |
+| E-03 | Inhaltsschicht `content/` mit Schema und `content:check` | 2026-09-11 | gilt |
+| E-04 | IDs sind Speicherschlüssel | 2026-09-11 | gilt |
+| E-05 | Kampf- und Ausrüstungsmodell, Handy gleichberechtigt | 2026-09-12 | gilt |
+| E-06 | Rollen-Pipeline mit Branch und Worktree je Rolle | 2026-09-12 | erweitert durch E-19 |
+| E-07 | Merge nach `main` nur per Fast-Forward | 2026-09-12 | gilt |
+| E-08 | Anti-Slop-Guideline mit Scorecard je Bildschirm | 2026-09-13 | gilt |
+| E-09 | Heilerin heißt Aperol-Anni | 2026-09-13 | gilt |
+| E-10 | Grafikstil: Maifeld-Detailpixel | 2026-09-16 | gilt |
+| E-11 | Weltmaßstab über registrierte Türöffnungen | 2026-09-17 | gilt |
+| E-12 | Kampffluss nach `GAMEPLAY-KONZEPT-FLUSS.md` | 2026-09-17 | gilt |
+| E-13 | Clanbuch: ein Fenster mit Reitern, kein Einklappen | 2026-09-17 | gilt |
+| E-14 | Gemeinsame Engine-Bausteine mit TicketTower erst später | 2026-09-17 | gilt |
+| E-15 | Mertloch folgt der studio-weiten Pipeline | 2026-09-17 | gilt |
+| E-16 | Akt 1 „Filmriss“ ist die Story-Basis | 2026-09-17 | gilt |
+| E-17 | Held = Fremder mit geliehenen Klamotten | 2026-09-17 | gilt |
+| E-18 | Mitschuld des Clans bleibt | 2026-09-17 | gilt |
+| E-19 | Rollenmodell mit Dateibesitz und Tuning-Schicht | 2026-09-17 | gilt |
+| E-20 | Ton: derb, dörflich, kein Sie, keine echten Personen | 2026-09-17 | gilt |
+| E-21 | Basisbau-Kosten bleiben bis zum Playtest | 2026-09-17 | gilt |
+| E-22 | Akt 1 perfektionieren, bevor Akt 2 beginnt | 2026-09-17 | gilt |
+| E-23 | Gisela und Pfandautomat bleiben Reserve | 2026-09-17 | gilt |
+
+---
+
+## E-01 · Veröffentlichung über GitHub Pages, Spielstand im Browser
+**Datum:** 2026-09-11 · **Stand:** gilt
+
+**Kontext.** Das Spiel soll ohne Installation und ohne laufende Betriebskosten erreichbar sein.
+
+**Entscheidung.** Auslieferung über GitHub Pages per Actions auf `main`. Spielstand im Browserspeicher. Kein Server, kein Konto, kein Mehrspieler. Verworfen: eigener Server mit Konten.
+
+**Konsequenzen.** Jeder Push nach `main` ist eine Veröffentlichung — der Playtest gehört vor den Merge, nicht danach. Ein geräteübergreifender Spielstand ist nur als Export/Import-Datei denkbar (siehe „Offen“).
+
+## E-02 · Drei Clan-Archetypen, universelle Werte, drei Spezialisierungen
+**Datum:** 2026-09-11 · **Stand:** gilt
+
+**Kontext.** Klassengebundene Werte erzeugen tote Stats, die für die halbe Spielerschaft Müll sind.
+
+**Entscheidung.** Drei Archetypen (Tank, Heilerin, Fernkampf). Die Werte Wumms, Taktgefühl und Bastelgrips helfen jeder Klasse. Je Figur drei Spezialisierungen. Verworfen: klassengebundene Werte.
+
+**Konsequenzen.** Jeder Ausrüstungsgegenstand ist für jede Klasse lesbar; Loot muss nicht dreifach gewürfelt werden. Besitzer: Klassendesign (`content/classes.js`, `skills.js`, `talents.js`).
+
+## E-03 · Inhaltsschicht `content/` mit Schema und `content:check`
+**Datum:** 2026-09-11 · **Stand:** gilt
+
+**Kontext.** Inhalt soll im Hintergrund wachsen, während UI und Grafik parallel laufen.
+
+**Entscheidung.** Alle Inhalte liegen in `content/`; die Engine liest ausschließlich über `content/index.js`. Jede Registry hat eine Grundprüfung in `content/schema.js`, rollenspezifische Invarianten in `content/checks/<rolle>.js`. Verworfen: Inhalte in den Engine-Modulen belassen.
+
+**Konsequenzen.** Keine Strings und keine Magic Numbers in Engine oder UI. Neue Registries brauchen einen Export im Index und eine Prüfung — dafür ist der Lead-Architect zuständig.
+
+## E-04 · IDs sind Speicherschlüssel
+**Datum:** 2026-09-11 · **Stand:** gilt
+
+**Kontext.** Spielstände liegen im Browser des Spielers und lassen sich nicht nachträglich migrieren, wenn eine ID verschwindet.
+
+**Entscheidung.** IDs in `content/` werden nie umbenannt und nie gelöscht. Was aus dem Spiel fliegt, bekommt `retired:true` und bleibt in den Daten.
+
+**Konsequenzen.** Umbenennungen laufen immer über ein neues Feld (`name`, `title`), nie über die ID. Jede Rolle prüft das in ihrer `content/checks/<rolle>.js`. Ein ID-Wechsel ist ein Bruch und braucht eine eigene Entscheidung hier.
+
+## E-05 · Kampf- und Ausrüstungsmodell, Handy gleichberechtigt
+**Datum:** 2026-09-12 · **Stand:** gilt
+
+**Kontext.** Ausrüstung soll die Spielweise ändern, nicht nur Zahlen; das Handy ist keine Zweitplattform.
+
+**Entscheidung.** Autoangriff im Waffentempo, Zauber mit Stehenbleiben, 16 Ausrüstungsplätze mit echter Waffenwahl (Einhand/Zweihand/Nebenhand), Touch-Modus mit Joystick und sechs Skillbuttons, installierbare Web-App. Verworfen: Desktop-only; Ausrüstung als reine Werteliste.
+
+**Konsequenzen.** Jede UI-Runde wird auch mobil (390×844) geprüft. Waffenarten sind Loot-Pflichtfeld.
+
+## E-06 · Rollen-Pipeline mit Branch und Worktree je Rolle
+**Datum:** 2026-09-12 · **Stand:** erweitert durch E-19
+
+**Kontext.** Mehrere Sitzungen und eine Bild-KI arbeiten parallel im selben Repo.
+
+**Entscheidung.** Feste Rollen (damals Inhalt, Engine, UI, Grafik, Welt), je Rolle ein Branch und ein Worktree, Übergabe ausschließlich über Dateien. Reihenfolge Inhalt vor Engine vor UI vor Grafik. Verworfen: Zuruf-Absprachen; Merge-Commits.
+
+**Konsequenzen.** Was nicht in einer Übergabedatei steht, existiert nicht. Die Rollenaufteilung ist mit E-19 verfeinert worden; die Reihenfolge Inhalt → Engine → UI → Grafik gilt unverändert.
+
+## E-07 · Merge nach `main` nur per Fast-Forward
+**Datum:** 2026-09-12 · **Stand:** gilt
+
+**Kontext.** Merge-Commits aus parallelen Rollenbranches machen die Historie unlesbar und verdecken, wer welche Datei geändert hat.
+
+**Entscheidung.** Vor jeder Runde `git fetch && git rebase origin/main`. Nach `main` wird nur per Fast-Forward gepusht (`git push origin <branch>:main`), und nur nach grünem `npm test`. Wer beim Rebase in eine fremde Datei gerät, bricht ab und meldet es dem Lead. Kein `git stash` (geteilter Stack über alle Worktrees).
+
+**Konsequenzen.** Eine Runde = ein Auftrag, ein Branch, ein Bericht, ein Fast-Forward. Wer nicht Fast-Forward pushen kann, rebased erneut statt zu mergen.
+
+## E-08 · Anti-Slop-Guideline mit Scorecard je Bildschirm
+**Datum:** 2026-09-13 · **Stand:** gilt
+
+**Kontext.** Bildschirme sahen generiert statt entschieden aus (Gesamtwertung 3,0 in Version 0.13).
+
+**Entscheidung.** Zehn prüfbare Regeln und eine Scorecard je Bildschirm (`docs/VISUELLE-BEWERTUNG-2026-09-13.md`), Ziel mindestens 4 von 5 je Bildschirm. Verworfen: Optik nach Gefühl.
+
+**Konsequenzen.** UI- und Grafikrunden belegen ihre Wertung im Bericht.
+
+## E-09 · Heilerin heißt Aperol-Anni
+**Datum:** 2026-09-13 · **Stand:** gilt
+
+**Kontext.** „Bass-Bärbel“ war unscharf und kollidierte mit Leanders Anlage.
+
+**Entscheidung.** Die Heilerin heißt Aperol-Anni — Sprechname mit Getränkebezug wie Dosen-Dieter. Verworfen: Bass-Bärbel.
+
+**Konsequenzen.** Die ID bleibt nach E-04 unverändert; geändert wurde nur der Anzeigename.
+
+## E-10 · Grafikstil: Maifeld-Detailpixel
+**Datum:** 2026-09-16 · **Stand:** gilt
+
+**Kontext.** Drei Prototypen standen zur Wahl: Dorfcomic, Maifeld-Detailpixel, Krawall-Karikatur.
+
+**Entscheidung.** Verbindlich ist Maifeld-Detailpixel: warme 40-Farben-Ankerpalette, dunkle Schieferkonturen, Licht links oben, vier Blickrichtungen, sichtbare Ausrüstung. Verworfen: Dorfcomic; Krawall-Karikatur.
+
+**Konsequenzen.** Alle neuen Assets laufen über `tools/sprite-pipeline/build-live.mjs`; bis zur Lieferung zeichnet das Spiel den Fallback aus `content/ART-BRIEF.md`.
+
+## E-11 · Weltmaßstab über registrierte Türöffnungen
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Figuren und Häuser passten nicht zueinander.
+
+**Entscheidung.** Der Maßstab wird über registrierte, menschengroße Türöffnungen definiert (`docs/MASSSTAB-2026-09-17.md`). Verworfen: Maßstab je Asset von Hand.
+
+**Konsequenzen.** Held 52 native Pixel / 26 Welteinheiten. Neue Gebäude nennen ihre Türöffnung.
+
+## E-12 · Kampffluss nach `GAMEPLAY-KONZEPT-FLUSS.md`
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Gemessene Pausen von 3 bis 8 Sekunden nach jedem Kill, 16 bis 24 Sekunden Laufweg, 60 von 90 Talenten waren reine Zahlen.
+
+**Entscheidung.** Kill gibt Schwung; vier Tasten ab Stufe 4 (1·1·2·1·3 plus Antwort); Procs mit 6-Sekunden-Fenster; Talente sind Regeln statt Prozente; Gegner in Gruppen; keine Warteressource. Trainingsarena bleibt Admin-Werkzeug. Verworfen: Rotation erst ab Stufe 6; Talente als Prozentwerte.
+
+**Konsequenzen.** Offener Umbau: 72 Talente stehen noch als Zahlen da (Backlogs `klassen`, `gameplay`).
+
+## E-13 · Clanbuch: ein Fenster mit Reitern, kein Einklappen
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** 19 Fenstertypen und drei Navigationsebenen übereinander; der Spieler verlor den Überblick (`docs/MENUE-BEWERTUNG-2026-09-17.md`).
+
+**Entscheidung.** Genau ein Fenster „Clanbuch“ mit Reitern (Figur, Rucksack, Kniffe, Aufträge, Karte, Hilfe, Bude). Keine Seiten, kein Minimieren, kein Einklappen, nichts überlappt. Verworfen: Fenster behalten und nur aufräumen; einklappbare Fenster.
+
+**Konsequenzen.** Neue Inhaltsbereiche werden Reiter, nie neue Fenster. Jeder Wunsch nach einem zusätzlichen Fenster braucht eine Entscheidung hier.
+
+## E-14 · Gemeinsame Engine-Bausteine mit TicketTower erst später
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Der Wunsch nach einem gemeinsamen Framework kam auf, bevor ein zweites Spiel es tatsächlich braucht.
+
+**Entscheidung.** Gemeinsame Bausteine (Inhaltsloader mit Schema-Prüfung, Spielstand-Migration, Ereignis-Bus, Debug-Leiste) erst, wenn TicketTower sie braucht **und** sie hier laufen. Kampf, Talente und Weltkarte werden nie geteilt. Verworfen: Framework-Repo jetzt anlegen.
+
+**Konsequenzen.** Kein Vorrats-Abstrahieren in `engine.js`.
+
+## E-15 · Mertloch folgt der studio-weiten Pipeline
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** `eresm-github-migration/docs/spielentwicklung/PIPELINE.md` definiert Rollen nur mit Artefakt und Gate, Playtest durch Personas ohne Spielwissen, ein Entscheidungsprotokoll.
+
+**Entscheidung.** Mertloch ist eine Ausprägung dieser Pipeline; `docs/PIPELINE.md` bleibt die lokale Ausprägung, dieses Dokument das Protokoll. Verworfen: eigenes Studio-Organigramm; generisches Framework auf Vorrat.
+
+**Konsequenzen.** Vor jedem Release läuft ein Playtest durch Personas, die das Spiel nicht gebaut haben. Ein Playtest durch den, der gebaut hat, zählt nicht.
+
+## E-16 · Akt 1 „Filmriss“ ist die Story-Basis
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Die Story bestand aus lose gesammelten Kapiteln („Die letzte Kiste“) ohne durchgehenden Bogen; Inhalte, Gegner und Basisbau hingen nicht zusammen.
+
+**Entscheidung.** Verbindliche Grundlage ist `docs/AKT-1-FILMRISS.md`: Prämisse (Filmriss nach „Nie wieder Montag“, die Kiste ist weg), drei tragende Stränge (Wiederaufbau, Die Unbekannten, Der Filmriss), Prolog plus vier Kapitel, neun Erinnerungsfetzen, sechs Basisbau-Gebäude, fünf neue Gegner/Bosse. Verworfen: lose Kapitelsammlung ohne Bogen; sofortiger Einstieg in Akt 2.
+
+**Konsequenzen.** Alle Rollen leiten ihre Arbeit aus diesem Dokument ab. Story besitzt es; Änderungen am Bogen laufen über `docs/backlog/story.md` und werden hier vermerkt. Hardcodierte Reste von „Die letzte Kiste“ gehören aus UI und Engine entfernt.
+
+## E-17 · Held = Fremder mit geliehenen Klamotten
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Offen war, ob der Held ein Clanmitglied mit Gedächtnisverlust ist oder ein Fremder.
+
+**Entscheidung.** Der Held ist ein Fremder, den niemand im Dorf kennt. Die Klassenwahl ist die Klamottenwahl: Dieters Kutte, Annis Schürze oder Kevins Gürtel vom Haufen. Die drei bleiben als Mentoren an der Bude stehen; Wechsel am Treffpunkt heißt Klamotten tauschen. Verworfen: Held als verschollenes Clanmitglied; freie Klassenwahl ohne Fiktion.
+
+**Konsequenzen.** Klassenwechsel braucht keine Erklärung mehr außer dem Kleiderhaufen. Mentoren brauchen Sprechzeilen je Kapitel (`HUB_TALK`) und eigene Sprites (siehe Grafik-Prioritäten in `docs/backlog/lead.md`). Der Held startet ohne Hose — der Beinschutz-Slot bleibt leer, bis Kapitel 1 abgeholt ist.
+
+## E-18 · Mitschuld des Clans bleibt
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Es stand zur Debatte, den Clan zu entlasten und die Zerstörung allein den Auswärtigen zuzuschieben.
+
+**Entscheidung.** Die Mitschuld bleibt Teil der Pointe: Dieter hat den Tresen selbst umgetreten („war eh morsch“), Kevin hat die Anlage in Sigis Hänger „in Sicherheit gebracht“, Anni hat gefilmt statt geholfen — und der Held hat die Kiste freiwillig weggegeben. Verworfen: unschuldiger Clan mit äußerem Feindbild.
+
+**Konsequenzen.** Der Aktschluss ist keine Rache, sondern ein Geständnis. Kein Dialog darf den Clan reinwaschen; jede Belohnungszeile hält den Nachsatz, der die Behauptung kaputt macht.
+
+## E-19 · Rollenmodell mit Dateibesitz und Tuning-Schicht
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Die eine Inhaltsrolle war der Flaschenhals: Story, Klassen, Gameplay, Balancing, Loot und Welt kollidierten in denselben Dateien.
+
+**Entscheidung.** Sieben Fachrollen (Lead, Story, Klassen, Gameplay, Balancing, Loot, Welt) plus Engine, UI, Grafik und die Playtest-Personas. Eine Datei hat genau einen Besitzer (Tabelle in `docs/ROLLEN.md`). Zahlen gehören Balancing und laufen über `content/tuning.js` (Korrektur je ID mit `why`/`since`); Strukturen gehören der Fachrolle. Wer eine fremde Datei braucht, schreibt in `docs/backlog/<rolle>.md` des Besitzers. Brauchen zwei Rollen dieselbe Datei, spaltet der Lead sie. Verworfen: eine Inhaltsrolle für alles; Doppelbesitz mit Absprache.
+
+**Konsequenzen.** Jede Rolle hat Branch, Worktree, Prüfdatei und Backlog. Der Branch `content-backend` ist damit Altbestand und wird nicht weitergeführt. Rollen dürfen `content/index.js` nur um eine Export-Zeile ergänzen und nennen es im Commit.
+
+## E-20 · Ton: derb, dörflich, kein Sie, keine echten Personen
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Ohne festgeschriebenen Ton driften Texte zwischen Kindergeburtstag und Beleidigung; das Spiel karikiert reale Dorfmilieus.
+
+**Entscheidung.** Derb, dörflich, schnell. Aufs Korn genommen werden Rollen und Institutionen (Vereinsmeier, Ordnungsamt, Influencer-Landhaus, Kegelclubs, Schrottplatz, Dorfpolizei), nie reale Personen. Kein „Sie“, durchgehend Du. Saufen und Prügeln sind Alltag, nicht Pointe — die Pointe ist immer ein konkretes Dorfproblem. Regel für jede Zeile: erst die Behauptung, dann der Nachsatz, der sie kaputt macht. Verworfen: entschärfter Familienton; Gags auf Kosten erkennbarer realer Personen.
+
+**Konsequenzen.** Story prüft jede neue Zeile gegen diese Regel; Namen bleiben Sprechnamen (Kisten-Ida, Dosen-Dieter). Ein Text, der eine reale Person oder ein reales Unternehmen erkennbar macht, wird abgelehnt.
+
+## E-21 · Basisbau-Kosten bleiben bis zum Playtest
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Die Gesamtkosten des Basisbaus in Akt 1 liegen absichtlich über dem, was der Kapitelfluss an Material liefert. Das wirkt auf dem Papier zu teuer.
+
+**Entscheidung.** Die Kosten bleiben unverändert, bis ein Playtest sie widerlegt. Der Materialdruck ist der Anreiz, zwischen den Kapiteln ins Umland zu gehen. Verworfen: Kosten vorsorglich senken; Material in die Kapitelbelohnung legen.
+
+**Konsequenzen.** Balancing rührt `content/buildings.js` nicht an, sondern wartet den Playtest ab und korrigiert danach über `content/tuning.js` (`docs/backlog/balance.md`). Der Playtest muss ausdrücklich messen, wie lange der Spieler für Stufe 1 aller Gebäude sammelt.
+
+## E-22 · Akt 1 perfektionieren, bevor Akt 2 beginnt
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Akt 1 läuft inhaltlich vollständig, hat aber offene Enden bei Fluss, Menü, Grafik und Balance. Akt 2 (Bastian, Hochzeit in Koblenz) ist verlockend und würde die Baustellen verdoppeln.
+
+**Entscheidung.** Akt 1 wird fertig gemacht — Fluss, Clanbuch, Grafik, Balance, Playtest ohne offenen „bricht ab“ — bevor irgendein Inhalt für Akt 2 entsteht. Verworfen: Akt 2 parallel anschreiben; Breite vor Tiefe.
+
+**Konsequenzen.** Story schreibt keine Akt-2-Inhalte ohne ausdrücklichen Auftrag; die Haken bleiben Idas Schlussdialog und die Fetzen 7/8. Die Roadmap (`docs/ROADMAP.md`) stellt Akt 2 hinter die Runden A bis C.
+
+## E-23 · Gisela und Pfandautomat bleiben Reserve
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** Die Bosse Gisela Gießkanne und Pfandautomat 3000 stammen aus dem Altbestand (Kapitel 5/6) und gehören nicht zum Bogen von Akt 1.
+
+**Entscheidung.** Beide bleiben mit `reserve:true` in den Daten, sind aber nicht Teil von Akt 1 und tauchen im Spielfluss nicht auf. Löschen kommt wegen E-04 nicht in Frage. Verworfen: Bosse entfernen; Bosse in Akt 1 einbauen.
+
+**Konsequenzen.** Grafik-Aufträge für Gisela und Automat stehen hinter allen Akt-1-Motiven. Prüfungen und Balance-Berichte behandeln `reserve:true` als „nicht im Fluss“ und melden es nicht als Lücke.
+
+---
 
 ## Offen (noch nicht entschieden)
 
 | Frage | Optionen | Empfehlung | Seit |
 |---|---|---|---|
-| Kapitel 2 und 3 aktivieren (Lager, Kapitelumschalter) | jetzt; nach dem Fluss-Playtest | nach dem Playtest, damit der Fluss zuerst stimmt | 2026-09-11 |
-| Händler und Handwerk | ja; nein; später | später, erst wenn Beute ohne Händler langweilig wird (Playtest-Befund) | 2026-09-11 |
-| Geräteübergreifender Spielstand | nie; Export/Import-Datei; Konto | Export/Import-Datei, kein Konto | 2026-09-12 |
+| Händler und Handwerk (Zweck der Pfandmarken) | ja; nein; später | später — erst wenn ein Playtest Beute ohne Händler langweilig findet; Konzept kommt von Gameplay | 2026-09-11 |
+| Geräteübergreifender Spielstand | nie; Export/Import-Datei; Konto | Export/Import-Datei, kein Konto (E-01) | 2026-09-12 |
+| Feldgegner ab Stufe 10 trivial | Skalierung in der Engine; Anhebung über `tuning.js`; bewusst lassen | Skalierung in der Engine, Dorfkern fest (`docs/backlog/engine.md`) | 2026-09-17 |
+| Set-Boni für Dorflegenden | ja; nein | nach dem Playtest entscheiden, Konzept Loot + Gameplay | 2026-09-17 |

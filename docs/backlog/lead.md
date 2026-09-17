@@ -1,15 +1,31 @@
 # Backlog · lead
 
-Inbox des Lead-Architect (docs/ROLLEN.md): Entscheidungen, Zirkel, Dateispaltungen, Grafik-Koordination.
+Inbox des Lead-Architect (`docs/ROLLEN.md`): Entscheidungen, Zirkel, Dateispaltungen, Grafik-Koordination.
 
 ## Offen
 
-- [ ] `docs/ENTSCHEIDUNGEN.md` anlegen bzw. aus dem Hauptcheckout übernehmen (dort liegt ein nicht gepushter Stand mit Pitch, Entscheidungen, Playtest-Personas) und die Akt-1-Entscheidungen vom 2026-09-17 eintragen (Held = Fremder, Mitschuld bleibt, Basisbau-Kosten bleiben).
-- [ ] `docs/ROADMAP.md` anlegen: Akt 1 perfektionieren (Playtest → Befunde → Rollen), erst danach Akt 2.
-- [ ] Playtest-Lauf Akt 1 auf dem Live-Stand mit neuling-/kenner-/pruefer-agent beauftragen; Befunde auf die Rollen-Backlogs verteilen.
-- [ ] Grafik-Aufträge aus `content/ART-BRIEF.md` priorisieren: Mentoren-Sprites, Sammelpunkte, Pit, Akt-1-Bosse.
-- [ ] Branch `content-backend` nach Übernahme in `main` stilllegen; Rollen arbeiten auf ihren Branches.
+- [ ] Playtest-Lauf Akt 1 auf dem Live-Stand mit `neuling-agent`, `kenner-agent`, `pruefer-agent` beauftragen (Runde A, `docs/ROADMAP.md`); Befunde in Runde C auf die Rollen-Backlogs verteilen.
+- [ ] Nach jedem Fast-Forward aus Runde A prüfen: `npm test`, `npm run content:check`, Übergabedateien gelesen, Backlogs abgehakt, keine Rolle wartet ohne Eintrag auf eine andere.
+- [ ] Entscheidung zu E-21 (Basisbau-Kosten) fällen, sobald Balance die Sammelzeit gegen den Materialfluss gemessen hat.
+- [ ] Entscheidung zu „Feldgegner ab Stufe 10 trivial“ (Skalierung in der Engine vs. `tuning.js` vs. bewusst lassen) — steht unter „Offen“ in `docs/ENTSCHEIDUNGEN.md`.
+- [ ] `content/index.js` und `content/schema.js` nach den parallelen Fachrollen-Pushes auf Konflikte und fehlende Exporte prüfen.
+
+## Grafik-Prioritäten (aus `content/ART-BRIEF.md`, Reihenfolge verbindlich)
+
+Alle Motive laufen im Stil Maifeld-Detailpixel (E-10), Maßstab nach E-11. Bis zur Lieferung zeichnet das Spiel den Fallback aus dem Briefing — nichts darf ohne Bild kaputtgehen.
+
+1. **Mentoren-Sprites** — Dosen-Dieter, Aperol-Anni, Klo-Kevin an der Bude. Höchste Priorität: Die Klassenwahl ist die Klamottenwahl (E-17), die drei stehen dauerhaft im Bild und nutzen heute Ersatzgrafik.
+2. **Sammelpunkte** — Material im Umland (Palettenholz, Kronkorken, Dosenblech, Kabel, Borste, Feder, Dachsfell, GAME-OVER-Shirts). Trägt den Materialdruck des Basisbaus (E-21); ohne eigene Optik sieht der Spieler nicht, wofür er läuft.
+3. **Porträt Polizeiobermeister Pit** — `npc/pit`, Porträt 48×48 + Sprite 26 px. Einzelnes fehlendes Porträt der Akt-1-Besetzung; Anbindung steht in `docs/backlog/ui.md`.
+4. **Akt-1-Bosse** — `sigi`, `klaus`, `timo` (je Sprite ca. 52 px, Idle + Angriff). Nutzen heute alle den Skin „horst“ und sind dadurch nicht auseinanderzuhalten.
+5. **Kapitel-Kulissen** — Sperrmüllplatz, Kegelbahn-Trümmer, Bus im Feld, Bude mit Ausbaustufen. Setzt Objekte von Welt voraus (`docs/backlog/welt.md`) und Renderer-Anbindung durch UI (`docs/backlog/ui.md`) — deshalb zuletzt.
+
+Nachrangig und **nicht** Teil von Akt 1: Gisela Gießkanne und Pfandautomat 3000 (Reserve, E-23).
 
 ## Erledigt
 
-- [x] Rollenmodell mit Dateibesitz, Tuning-Schicht, Rollen-Prüfungen und Backlogs eingeführt (2026-09-17).
+- [x] Rollenmodell mit Dateibesitz, Tuning-Schicht, Rollen-Prüfungen und Backlogs eingeführt (2026-09-17, E-19).
+- [x] `docs/ENTSCHEIDUNGEN.md` angelegt: alle bekannten Festlegungen als nummerierte Einträge E-01 bis E-23 mit Kontext, Entscheidung, Konsequenzen; Akt-1-Entscheidungen vom 2026-09-17 eingetragen (E-16 bis E-23).
+- [x] `docs/ROADMAP.md` angelegt: Runden A (Fachrollen parallel + Playtest), B (Loot nach Gameplay, UI nach Engine/Welt), C (Playtest-Befunde verteilen), danach erst Akt 2 — je Runde mit Abnahmekriterien.
+- [x] Grafik-Aufträge aus `content/ART-BRIEF.md` priorisiert (Liste oben).
+- [x] Branch `content-backend` stillgelegt: Altbestand, in `main` übernommen, wird nicht weitergeführt; die Rollen arbeiten auf ihren Branches laut `docs/ROLLEN.md` (E-19).

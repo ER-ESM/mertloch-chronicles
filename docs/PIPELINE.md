@@ -60,14 +60,9 @@ Reihenfolge ist Pflicht: **Inhalt vor Engine vor UI vor Grafik.** Die UI baut ni
 
 ## Branches und Worktrees
 
-| Rolle | Branch | Worktree |
-|---|---|---|
-| Inhalt | `content-backend` | `D:\Dev\MertlochChronicles-content` |
-| Engine | `engine` | `D:\Dev\MertlochChronicles-engine` |
-| UI | `main` (Hauptcheckout) oder `ui` | `D:\Dev\MertlochChronicles` |
-| Grafik | `art` | `D:\Dev\MertlochChronicles-art` |
+**Verbindlich ist die Rollen-Tabelle in `docs/ROLLEN.md` §„Branches und Worktrees“** — dort steht je Rolle Branch und Worktree, dort wird sie gepflegt. Die frühere Tabelle an dieser Stelle war veraltet (Inhalt auf `content-backend`, UI auf `main`) und ist entfallen; der Branch `content-backend` ist stillgelegt (Altbestand, in `main` übernommen, `docs/ENTSCHEIDUNGEN.md` E-19).
 
-Anlegen: `git worktree add -b <branch> D:\Dev\MertlochChronicles-<rolle> origin/main`. Vor jeder Arbeit `git fetch` und auf `origin/main` rebasen. Nach `main` nur Fast-Forward (`git push origin <branch>:main`) nach grünem `npm test`. Nach dem Push prüft die Rolle den Pages-Deploy (`https://er-esm.github.io/mertloch-chronicles/`).
+Anlegen: `git worktree add -b <branch> D:\Dev\MertlochChronicles-<rolle> origin/main` (existiert der Branch schon: ohne `-b`). Vor jeder Runde `git fetch && git rebase origin/main`. Nach `main` nur Fast-Forward (`git push origin <branch>:main`) nach grünem `npm test` (E-07). Kein `git stash` — der Stash-Stack ist über alle Worktrees geteilt. Nach dem Push prüft die Rolle den Pages-Deploy (`https://er-esm.github.io/mertloch-chronicles/`).
 
 ## Übergabedateien
 
@@ -77,6 +72,8 @@ Anlegen: `git worktree add -b <branch> D:\Dev\MertlochChronicles-<rolle> origin/
 - `docs/GRAFIK-BEDARF.md` – UI → Grafik für alles, was nicht aus `content/` kommt.
 - `content/BALANCE-REPORT.md` – generiert; Nachweis jeder Balance-Änderung.
 - `docs/PLAYTEST-<Datum>-<persona>.md` – Playtest → Produktion. Bericht der Persona 1:1 übernommen; Freigabe-Zeile entscheidet über den Merge.
+- `docs/backlog/<rolle>.md` – **alle → eine Rolle.** Inbox je Rolle (`lead`, `story`, `klassen`, `gameplay`, `balance`, `loot`, `welt`, `engine`, `ui`). Wer etwas von einer anderen Rolle braucht, schreibt den Auftrag dorthin: Ziel, Grund, Abnahmekriterium, betroffene Dateien/IDs, Reihenfolge. Die besitzende Rolle hakt ab (`- [x]`) und verschiebt nach „Erledigt“; niemand löscht fremde Einträge. Fremde Dateien direkt anfassen ist nicht erlaubt (`docs/ROLLEN.md` §Konfliktregeln).
+- `docs/ROADMAP.md` – Lead → alle. Reihenfolge der Runden mit Abnahmekriterien; was in keiner Runde steht, ist nicht dran.
 - `docs/ENTSCHEIDUNGEN.md` – Produktion → alle. Jede Änderung an Design, Schema, Rollen oder Ablauf mit Begründung und verworfener Alternative.
 - `docs/PITCH.md` – Produktion → alle. Kernschleife, Zielgruppe, Erfolgskriterium des Slice, größte Unsicherheit.
 
