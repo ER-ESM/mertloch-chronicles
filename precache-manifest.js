@@ -654,6 +654,7 @@ self.PRECACHE={
     "memory-art.js",
     "mobile-controls.js",
     "mobile-layout.js",
+    "mobile-translate.js",
     "mobile.css",
     "movement.js",
     "panel-flow.js",

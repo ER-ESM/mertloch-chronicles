@@ -14,6 +14,8 @@ Inbox der UI-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel,
 ## Offen
 
 - [ ] **Verpflegung auf der Aktionsleiste anbinden** (Engine/Loot, Welle D, gefunden beim Rebase 2026-09-17): `game.actionBar` liefert die Einträge `item:wasser` und `item:brezel` auf den Plätzen 9 und 0, und `rpg.inventory` hält beide Gegenstände (Brezel ×3, Wasser ×2) — aber weder `app.js` noch `rpg-ui.js` werten das Präfix `item:` aus, darum stehen beide Plätze als `.skill.empty-slot` da. Betrifft schon `origin/main`, ist also kein Rückschritt aus dem Stil-C-Umbau. Die Gestaltung liegt bereit: `.skill` trägt Stil C, `data-use` und `data-consumable-timer` sind in `rpg-ui.js` vorgesehen. Abnahme: beide Plätze zeigen Symbol und Anzahl, Klick und Taste benutzen den Gegenstand, Abklingzeit läuft sichtbar.
+- [ ] **Aus der Mobile-Prüfung 2026-09-17** (docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md §4): Papierpuppen-Bogen auch quer auf dem Handy (Buchbreite 444 px < 640-px-Schwelle); Touch-Editor „Touchbuttons belegen“ mit Drag statt Tipp-Tipp; Gespräch/Beute/Tod in scripts/mobile-check.mjs ergänzen, sobald eine Fixture mit Gegner in Laufnähe liegt.
+
 - [ ] **Aus Playtest Kenner 2026-09-17** (`docs/PLAYTEST-2026-09-17-mmo-kenner.md`): (1) Clan-Schule-Hinweis „Neu gelernt" bleibt die ganze Sitzung stehen, auch über offenen Fenstern → nach erstem Kampf oder Timeout ausblenden; (2) Talentbaum wird nach jedem Punkt komplett neu gebaut, Tooltip verschwindet → nur Knoten-Klassen aktualisieren; (4) Kniff-Taste im Talent-Tooltip, sobald Klassendesign das Feld liefert; (6) Ausweichen auf [LEER] mit Symbol „↗" ohne Erklärung; (8) Tooltip je Wert in der Werte-Liste (Handschrift, Drehzahl, Glückstreffer).
 
 - [ ] **Grafikreview / klare Item-Icons** (Grafik, 2026-09-17): Die 18 Einzeldateien unter `assets/content-art/items/<ID>.png` sind durch lesbarere 24-px-Motive ersetzt, IDs bleiben gleich; Herkunft im `handoff-catalog.json`. Bei der Anbindung ganzzahlige Icongrößen verwenden, auch die CSS-Größe von Canvas prüfen. Vorher/Nachher und Downloads: `art-workshop.html`; Abnahme und Grenzen: `docs/GRAFIK-REVIEW-5-RUNDEN-2026-09-17.md`. Der neue modulare Bewohnerbaukasten ist ein Prototyp und ersetzt noch keine Helden-/Waffengrafik. Nur eingebundene Runtime-Dateien in den PWA-Cache aufnehmen, keine Generierungsquellen.
@@ -89,6 +91,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 - [ ] Beschriftungen aus `DESCRIBE_UI` nach `content/panel-ui.js` (Story) – Bedarf dort eintragen.
 
 ## Erledigt
+
+- [x] **Mobile Übersetzungsschicht + Mobile-Prüfung** (Nutzerauftrag 2026-09-17): `mobile-translate.js` übersetzt Fenster, Toasts und Clan-Schule in Touch-Begriffe (Tasten → Knöpfe, Tab → Ziel-Knopf, Rechtsklick → Antippen, <kbd> → Touch-Chip); `npm run mobile:check` prüft 3 Geräte × 16 Schritte headless (Layout, Überdeckung, Tipp-Ziele, Desktop-Begriffe). Doku `docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md`.
 
 - [x] **MMO-Vorbilder, zehn Iterationen** (Nutzerauftrag 2026-09-17, Branch `ui-mmo-2026-09-17`): Buchbreite wächst mit dem Bildschirm, Charakterbogen als Papierpuppe, Talentbaum mit Formen/Schwellenbändern, Kniff-Tooltip in zwei Kopfzeilen, Kniffe mit Namen, Zielfenster neben dem Spielerfenster, Buff-Restzeit, Punkte-Abzeichen. Recherche + Belege: `docs/MMO-VORBILDER-2026-09-17.md`, `visual-review/iter-2026-09-17/`.
 
