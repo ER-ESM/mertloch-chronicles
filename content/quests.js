@@ -77,7 +77,32 @@ export const SIDE_QUESTS=[
  {id:'sperrmuell-ida',npc:'ida',type:'hunt',enemyName:'Pfandkeiler am Sperrmüllplatz',title:'Finderrecht für Keiler',
   description:l=>`Zwei Pfandkeiler bei ${l} wühlen in Sigis Sperrmüll. Genauer: in unserem Sperrmüll, der bei Sigi liegt. Ida will die Bänke unangenagt zurück.`,
   quote:'Erst frisst Sigi unseren Kram, dann fressen Keiler Sigis Kram. Die Nahrungskette in diesem Dorf ist ein Witz.',
-  lines:{progress:'Ein Keiler weniger. Eine Bank mehr. Rechnen kann ich.',complete:'Bänke gesichert. Sigi hat zugeguckt. Sigi hat genickt. Sigi hat die Bänke behalten.',claimed:'Ich hab die Bänke nachts geholt. Mit Kevin. Frag nicht, mit wessen Hänger.'}}
+  lines:{progress:'Ein Keiler weniger. Eine Bank mehr. Rechnen kann ich.',complete:'Bänke gesichert. Sigi hat zugeguckt. Sigi hat genickt. Sigi hat die Bänke behalten.',claimed:'Ich hab die Bänke nachts geholt. Mit Kevin. Frag nicht, mit wessen Hänger.'}},
+ // --- Kapitel 3/4: Kegelbahn aufräumen, Bus entladen, Clan-Alltag. Pools bleiben gleich groß, Scout im Wechsel Rhythmus/Kabel. ---
+ {id:'kegelbahn-kurt',npc:'kurt',type:'gather',itemName:'Verirrte Kegel',title:'Alle Neune, alle weg',
+  description:l=>`Sammle drei verirrte Kegel bei ${l}. Seit der Nacht liegen die halbe Bahn übers Maifeld verteilt. Kurt kehrt auf, statt zu klagen. Das ist neu für Kalt.`,
+  quote:'Klaus sagt, wir reden nicht mehr mit euch. Klaus sagt viel. Klaus kehrt nichts.',
+  lines:{progress:'Der aus dem Bachlauf zählt auch. Der schwimmt.',complete:'Neun wären schön. Drei sind ehrlich. Nimm ein Bier, aber trink es drüben.',claimed:'Die Bahn steht wieder. Wenn ihr Rückspiel wollt: ohne Dieter. Und ohne Kugel.'}},
+ {id:'busladung-timo',npc:'timo',type:'gather',itemName:'Leergut aus dem Bus',title:'Bus entladen',
+  description:l=>`Hol drei Kästen Leergut aus dem Bus bei ${l}. Timo räumt aus. Zum ersten Mal seit Samstag räumt hier jemand was ein statt raus.`,
+  quote:'Der Bus fährt nicht, der Bus stinkt, und Berthold guckt schon nach Streichhölzern. Pack mit an.',
+  lines:{progress:'Unter der letzten Bank liegt noch was. Guck nicht hin, greif einfach.',complete:'Drei Kästen. Pfandwert: vierzehn Euro. Das ist mehr, als der Bus noch wert ist.',claimed:'Der Bus ist leer. Ich auch. Samstag heiratet Bastian, und dann red ich mit dir über die Kiste.'}},
+ {id:'zapfanlage-dieter',npc:'dieter',type:'scout',activity:'rhythm',title:'Der Tresen muss atmen',
+  description:l=>`Entlüfte Dieters Zapfanlage bei ${l}. Drei saubere Stöße im goldenen Fenster – wer zu früh zieht, kriegt Schaum, und Schaum ist kein Bier.`,
+  quote:'Die Anlage gluckst. Eine Anlage, die gluckst, hat Luft. Luft hab ich schon im Kopf, im Bier brauch ich keine.',
+  lines:{progress:'Im Takt, nicht im Panik. Denk an was Langsames. Denk an Horst.',complete:'Kein Schaum, kein Gluckern, keine Ausrede. Der Tresen atmet. Erstes Glas geht auf mich.',claimed:'Die Anlage läuft wie 2007. Nur der Tresen ist neuer. Und ich älter.'}},
+ {id:'funkgeraet-pit',npc:'pit',type:'scout',activity:'wires',title:'Amtsfunk im Bus',
+  description:l=>`Im Bus bei ${l} hängt Pits Funkgerät an den falschen Klemmen. Merke dir die Reihenfolge der Anschlüsse und steck sie richtig zurück.`,
+  quote:'Ich brauch den Funk. Nicht für den Dienst. Für den Wetterbericht und die Rundfunkmesse.',
+  lines:{progress:'Wenn es rauscht, war’s falsch. Wenn es knackt, war’s ich.',complete:'Funk läuft. Erste Meldung: ein Bus im Feld. Zweite Meldung: nicht meiner. Dritte: Feierabend.',claimed:'Ich hab über Funk durchgegeben, dass hier nichts ist. Über dich hab ich nichts gesagt. Wie immer.'}},
+ {id:'werkstatt-kevin',npc:'kevin',type:'hunt',enemyName:'Pfandkeiler an der Werkstatt',title:'Hält schon',
+  description:l=>`Zwei Pfandkeiler bei ${l} nagen an Kevins Kühlschrank-Werkstatt. Der Kühlschrank hält. Das Kabel darunter nicht.`,
+  quote:'Die Viecher lecken an meiner Erdung. Einer hat schon gezuckt. Ich mein den Keiler.',
+  lines:{progress:'Einer weg. Der andere hat jetzt eine Frisur.',complete:'Werkstatt steht, Strom fließt, Schild „HÄLT SCHON“ leuchtet wieder. Alles wie geplant. Es war nichts geplant.',claimed:'Ich hab einen Keilerzaun gebaut. Aus Kabel. Frag nicht, welchem.'}},
+ {id:'landhausecke-anni',npc:'baerbel',type:'hunt',enemyName:'Pfandkeiler in der Landhaus-Ecke',title:'Vorher-Nachher-Schwein',
+  description:l=>`Zwei Pfandkeiler bei ${l} wühlen Annis Landhaus-Ecke um. Sie hat drei Stunden dekoriert. Die Keiler haben drei Minuten gebraucht.`,
+  quote:'Das Arrangement war handgemacht. Das Schwein war handgemacht schneller. Geh da mal hin.',
+  lines:{progress:'Einer weg. Warte, ich film den anderen noch kurz.',complete:'Ecke gerettet, Palette gerichtet, Licht passt. Du bist im Bild. Du bist immer im Bild.',claimed:'Das Keilervideo hat achttausend Klicks. Mehr als der ganze Wiederaufbau. Ich hasse dieses Dorf.'}}
 ];
 export const questReward=t=>t.reward??BALANCE.xp.quest[t.type]??180;
 /** Deterministische Auswahl: je Typ eine Rotation der Vorlagen abhängig vom Welt-Seed, ohne Wiederholung innerhalb einer Welt. */

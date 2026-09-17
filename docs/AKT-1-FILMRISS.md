@@ -78,7 +78,7 @@ Ida: „Unterhose, eine Socke, unser Stempel auf dem Arm. Bevor ich dir irgendwa
 
 ## 5. Erinnerungsfetzen (memories.js)
 
-Neun Fetzen in Erzählreihenfolge, jeder an ein Ereignis gebunden. Die Engine zeigt jeden genau einmal (Speicher `memories.seen[]`), das Clanbuch listet die gesehenen mit `clue`.
+Zehn Fetzen in Erzählreihenfolge, jeder an ein Ereignis gebunden. Die Engine zeigt jeden genau einmal (Speicher `memories.seen[]`), das Clanbuch listet die gesehenen mit `clue`.
 
 | # | Titel | Auslöser | Was der Held erfährt |
 |---|---|---|---|
@@ -87,10 +87,13 @@ Neun Fetzen in Erzählreihenfolge, jeder an ein Ereignis gebunden. Die Engine ze
 | 2 | 22:01 | Kapitel 1 abgeholt | Er hat Horsts zweiten Anruf an der Bude angenommen („Pizzeria“) |
 | 3 | Statik | Tresen Stufe 1 | Bierkastenturm auf Kevins Autodach |
 | 4 | Größe S | Kapitel 2 abgeholt | Er hat Bastians Shirt bekommen, weil Bastian gekotzt hat |
-| 5 | Neues Spiel! | Klaus besiegt | Der Bus war zuerst in Kalt; die Kegelbahn war die Generalprobe |
-| 6 | Wurst Case | erster Tod | Der Tresen ist auf ihn gefallen, Dieter hat ihn halb gefangen |
-| 7 | Der falsche Bus | Kapitel 3 abgeholt | Koblenz Hbf, 19:40, „Fährt der nach Hause?“ – wo Zuhause ist, weiß er nicht (Akt 2) |
-| 8 | Die Kiste | Kapitel 4 abgeholt | Er hat Bastian die Kiste gegeben und es ernst gemeint. Was er gesagt hat, weiß nur Bastian |
+| 5 | Naturtalent | Stufe 5 erreicht | Er hat Samstag nicht nur mitgesoffen, er hat mitgeprügelt – und war gut darin |
+| 6 | Neues Spiel! | Klaus besiegt | Der Bus war zuerst in Kalt; die Kegelbahn war die Generalprobe |
+| 7 | Wurst Case | erster Tod | Der Tresen ist auf ihn gefallen, Dieter hat ihn halb gefangen |
+| 8 | Der falsche Bus | Kapitel 3 abgeholt | Koblenz Hbf, 19:40, „Fährt der nach Hause?“ – wo Zuhause ist, weiß er nicht (Akt 2) |
+| 9 | Die Kiste | Kapitel 4 abgeholt | Er hat Bastian die Kiste gegeben und es ernst gemeint. Was er gesagt hat, weiß nur Bastian |
+
+„Naturtalent“ ist ein reiner Ereignis-Fetzen: Er hängt an keinem Kapitel und steht deshalb in keinem `memories`-Block (Prüfung in `content/checks/story.js`). „Der falsche Bus“ löst beim Abholen von Kapitel 3 aus und steht jetzt auch in dessen `memories` – vorher hing er fälschlich unter Kapitel 4.
 
 ## 6. Basisbau (buildings.js)
 
@@ -122,6 +125,17 @@ Balance (content/BALANCE-REPORT.md): Bosse 8–18 s auf ihrer Stufe mit Ausrüst
 ## 8. Nebenquests Akt 1 (quests.js)
 
 Bierdeckel-Statik (Dieter, Paletten), Strom aus Quellen, die wir nicht nennen (Kevin, Kabelspiel), Vorher-Nachher (Anni, Sektgläser), Amtshilfe ohne Formular (Pit, Junggesellen), Finderrecht für Keiler (Ida, Keiler am Sperrmüllplatz). Rotieren mit den bestehenden Vorlagen je Welt-Seed.
+
+Nach Kapitel 3/4 kommen sechs weitere Vorlagen dazu, zwei je Typ, damit die Pools gleich groß bleiben (je acht) und Scout im Wechsel Rhythmus/Kabel steht:
+
+| ID | Typ | Questgeber | Worum es geht |
+|---|---|---|---|
+| `kegelbahn-kurt` | gather | Kegelbruder Kurt (neu, `home` Wegestube) | Verirrte Kegel einsammeln; Kalt kehrt auf, während Klaus schmollt |
+| `busladung-timo` | gather | Trauzeuge Timo (`home` Pfandhof) | Leergut aus dem Bus holen, bevor Berthold ihn anzündet |
+| `zapfanlage-dieter` | scout · rhythm | Dosen-Dieter | Zapfanlage im Takt entlüften; Schaum ist kein Bier |
+| `funkgeraet-pit` | scout · wires | Polizeiobermeister Pit | Amtsfunk im Bus richtig klemmen (Wetterbericht, nicht Dienst) |
+| `werkstatt-kevin` | hunt | Klo-Kevin | Pfandkeiler lecken an der Erdung der Kühlschrank-Werkstatt |
+| `landhausecke-anni` | hunt | Aperol-Anni | Pfandkeiler wühlen die Landhaus-Ecke um; Content bleibt Content |
 
 ## 9. Was Akt 2 NICHT vorwegnimmt
 

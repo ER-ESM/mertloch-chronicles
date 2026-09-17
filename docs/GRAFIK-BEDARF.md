@@ -18,3 +18,14 @@ Die neuen Plätze verwenden eigene Pixel-Fallbacks in `item-art.js`: helmet, nec
 ## Erledigt · UI 0.18.1
 
 Menü, Ton, Vollbild und Journal sind über `ui-art.js` angebunden. Die Dialogbelohnung nutzt nun einen nativen goldenen Dosenöffner (`reward`, 24-Pixel-Raster); die Touchkonfiguration das vorhandene Menü-Sprite. Die früheren Unicode-Fallbacks dieser Bedienelemente sind ersetzt. C1 bleibt als separate Entscheidung offen.
+
+## Dialog-Atlas 4×5 (Story, 2026-09-17)
+
+`content/portraits.js` ist von vier auf fünf Zeilen gewachsen: Zwei neue Gesprächsfiguren aus Akt 1 haben Nebenquests bekommen und brauchen darum eine eigene Zelle im `assets/content-art/npcs/dialogue-atlas.png`.
+
+| Zelle | ID | Figur | Bildhinweis |
+|---|---|---|---|
+| 16 | `kurt` | Kegelbruder Kurt | Vereinspolo „Alle Neune Kalt“, Bauchansatz, Kegel unterm Arm, Besen statt Kugel – der Versöhnliche aus Kalt |
+| 17 | `timo` | Trauzeuge Timo | Schärpe, Bierbong, drei Tage wach, Sonnenbrand, unerschütterlich gut gelaunt |
+
+Bis die Zellen 12–17 gezeichnet sind, malt die Gesprächs-UI Porträts über `PERSON_APPEARANCE`; Pit, Kurt und Timo zeigen ihren Anfangsbuchstaben. Kein Blocker, nur eine Lücke.
