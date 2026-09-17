@@ -7,6 +7,9 @@ const W=BALANCE.procs.defaultWindow;
 export const PROC_TRIGGERS=['crit','kill','parry','interrupt','dodge','markTick','autoHit','heal','burst3','lowHealth'];
 export const PROC_RULES={
  // --- Dieter ---
+ 'deckelwirtschaft':{trigger:'autoHit',chance:.3,window:W,effect:{shield:25,energy:10},text:'Autoangriffe haben 30 %, 25 Deckung und 10 Randale zu geben.'},
+ 'hinterher':{trigger:'dodge',chance:1,window:W,effect:{reset:'throw'},glow:'throw',text:'Ein Ausweichen macht den Wurf sofort wieder bereit.'},
+ 'gut-gekuehlt':{trigger:'parry',chance:.5,window:W,effect:{reset:'heal'},glow:'heal',text:'Eine Parade hat 50 %, das Konterfrühstück sofort bereitzumachen.'},
  'deckel-reflex':{trigger:'parry',chance:1,window:W,effect:{free:'mark'},glow:'mark',text:'Eine Parade macht die nächste Pfandschuld kostenlos.'},
  'tresenkante':{trigger:'crit',chance:.35,window:W,effect:{shield:40,reset:'parry'},glow:'parry',text:'Ein kritischer Treffer gibt 40 Deckung und macht Deckel drauf sofort bereit.'},
  'kellenwut':{trigger:'crit',chance:.35,window:W,effect:{free:'burst'},glow:'burst',text:'Ein kritischer Treffer macht den nächsten Abriss kostenlos.'},
@@ -14,6 +17,7 @@ export const PROC_RULES={
  'nachfuellen':{trigger:'markTick',chance:.25,window:W,effect:{points:1},text:'Jeder Tick der Pfandschuld hat 25 %, einen Pegel zu geben.'},
  'zapfhahn-auf':{trigger:'heal',chance:1,window:W,effect:{reset:'mark',free:'strike'},glow:'strike',text:'Heilung setzt die Pfandschuld zurück und macht die nächste Kelle kostenlos.'},
  // --- Anni ---
+ 'kurzer-hausbesuch':{trigger:'heal',chance:1,window:W,effect:{reset:'mark'},glow:'mark',text:'Jede Heilung macht den Fleckentest sofort wieder bereit.'},
  'frisch-gewischt':{trigger:'heal',chance:.5,window:W,effect:{empower:'strike'},glow:'strike',text:'Jede zweite Heilung lädt einen doppelten Pinsel-Piekser.'},
  'landfrauen-glanz':{trigger:'crit',chance:1,window:W,effect:{energy:15,points:1},text:'Kritische Treffer geben 15 Randale und einen Glanzpunkt.'},
  'putzprovision':{trigger:'markTick',chance:.3,window:W,effect:{energy:10,shield:20},text:'Fleckentest-Ticks haben 30 %, 10 Randale und 20 Deckung zu geben.'},
@@ -21,6 +25,10 @@ export const PROC_RULES={
  'buehnenfunke':{trigger:'crit',chance:.35,window:W,effect:{free:'throw'},glow:'throw',text:'Kritische Treffer haben 35 %, den nächsten Wurf kostenlos zu machen.'},
  'zugabe-rhythmus':{trigger:'burst3',chance:1,window:W,effect:{reset:'throw',energy:20},glow:'throw',text:'Eine Turbostufe mit drei Glanz setzt den Wurf zurück und gibt 20 Randale.'},
  // --- Kevin ---
+ 'frisch-verschraubt':{trigger:'burst3',chance:1,window:W,effect:{shield:40},text:'Eine Rakete mit drei Druckpunkten schweißt 40 Deckung auf.'},
+ 'doppelte-sicherung':{trigger:'heal',chance:1,window:W,effect:{free:'ground'},glow:'ground',text:'Nach einer Heilung ist der nächste Bodenangriff kostenlos.'},
+ 'nachladen-im-rennen':{trigger:'dodge',chance:1,window:W,effect:{reset:'throw',energy:12},glow:'throw',text:'Ein Ausweichen macht den Wurf sofort bereit und gibt 12 Randale.'},
+ 'schritt-voraus':{trigger:'interrupt',chance:1,window:W,effect:{reset:'dash'},glow:'dash',text:'Eine Unterbrechung macht Ausweichen sofort wieder bereit.'},
  'zuendfunke':{trigger:'markTick',chance:.25,window:W,effect:{points:1},text:'Kleber-Ticks haben 25 %, einen Druckpunkt zu geben.'},
  'kurzschluss':{trigger:'crit',chance:.35,window:W,effect:{reset:'ground'},glow:'ground',text:'Kritische Treffer haben 35 %, den Bodenangriff sofort bereitzumachen.'},
  'nietenpanzer':{trigger:'autoHit',chance:.3,window:W,effect:{shield:25},text:'Autoangriffe haben 30 %, 25 Deckung zu geben.'},

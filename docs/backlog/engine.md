@@ -2,6 +2,17 @@
 
 Inbox der Engine-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel, Grund, Abnahme, betroffene IDs/Dateien. Die Rolle hakt ab, löscht nicht.
 
+## Aus Klassendesign
+
+Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). Diese Auslöser/Wirkungen fehlen der Laufzeit (`procs.js`); die betroffenen Talente stehen bis dahin auf der besten heute möglichen Regel.
+
+- [ ] **Auslöser `skillHit:<id>` mit Zähler („jede dritte Kelle“)** — Konzept §6 nennt Deckelwirtschaft als „Jede dritte Kelle gibt Deckung“. Heute kennt `fireProcs` nur `autoHit` mit Zufall, deshalb steht `dieter-wall-0` auf `autoHit`, Chance 30 %. Abnahme: `{trigger:'skillHit',skill:'strike',every:3}` zündet deterministisch, HUD zählt mit. Betrifft: `proc:deckelwirtschaft`.
+- [ ] **Auslöser `markedHit` (Treffer an markiertem Ziel)** — `dieter-brew-0` (Rücklaufleitung) und `baerbel-feedback-0` (Provision vom Schmerz) bleiben Prozent-Effekte (`markedLeech`), weil kein Auslöser dafür existiert. Abnahme: Auslöser feuert in `Game.damage` bei `e.mark>0`, Fenster wie üblich.
+- [ ] **Proc-Wirkung `heal` (Leben direkt)** — heute kennt `fireProcs` nur free/reset/empower/energy/points/shield/haste. Ohne `heal` lassen sich Rücklauf- und Provisionsregeln nicht als leuchtende Regel zeigen. Abnahme: `effect:{heal:40}` heilt über `healPlayer`, Schema-Liste in `content/schema.js` ergänzen.
+- [ ] **Proc-Wirkung `cdReduce` (Sekunden statt Abklingzeit 0)** — sechs Sekunden-Talente („−3 s“) wurden auf vollen `reset` gehoben, weil es nichts dazwischen gibt: `dieter-brawl-3`, `dieter-brew-7`, `baerbel-feedback-3`, `kevin-fuse-7`, `kevin-hunt-3`, `kevin-hunt-7`. Abnahme: `effect:{cdReduce:{skill:'throw',seconds:3}}`, damit feinere Abstufungen ohne Balance-Sprung möglich sind.
+- [ ] **Auslöser `beat` (Treffer im Takt)** — `baerbel-stage-0` (Perfekter Upload) hängt an `context.beat` in `class-mechanics.js` und kann deshalb keine sichtbare Proc-Regel mit Leuchten sein. Abnahme: `fireProcs(g,'beat',cs)` beim Takttreffer.
+- [ ] **Auslöser `inZone` (Kniff in eigener Zone)** — `dieter-brew-9` (Letzter Ausschank) prüft die Fasszone direkt im Code (`zoneEnergy`). Abnahme: Auslöser feuert, wenn ein Kniff innerhalb einer eigenen Zone eingesetzt wird.
+
 ## Offen
 
 - [ ] **Feldgegner skalieren mit der Spielerstufe** (Balancing, Bericht 0.20): ab Stufe 10 fallen Dachs, Gans, Rabe, Fuchs in unter 2,5 s. Vorschlag: `encounters.buildCell` nutzt `enemyScale(playerLevel-2, def.level)` für hp/damage im Umland; Dorfkern bleibt fest.
