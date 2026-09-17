@@ -1,0 +1,52 @@
+[
+  {
+    "id": "review-items-v2",
+    "type": "icons",
+    "cols": 3,
+    "rows": 6,
+    "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. Exactly THREE columns and SIX rows, eighteen DIFFERENT inventory icons. Design each as if hand drawn at only 24x24 pixels, enlarged with exact square blocks, a solid near-black 1-pixel outline and 3-tone material clusters. Maximum 8 distinct colors per object. One bold recognizable silhouette per cell; discard texture and tiny flourishes. Each whole object fits centrally within its own regular cell, no touching edges. Keep icons about equal visual size. Read LEFT TO RIGHT then TOP TO BOTTOM: row1 currywurst sliced into THREE thick sausage pieces in a white paper tray with a red sauce stripe and ONE wooden fork; orange aluminum drink can with clear silver ring-pull; curved rust orange FOX TAIL with large cream tip. Row2 folded cream flyer with ONE large red wax dot and TWO dark horizontal pictogram strokes, no text; ONE green hop cone with TWO broad leaves; bent SILVER sheet metal offcut with a sharp folded edge, not a can. Row3 sleeveless brown leather armored vest with FOUR large orange beer-coaster plates and a clear neck hole; PAIR of black work boots with orange cable-tie ankle bands; lime green household trigger SPRAY BOTTLE with white nozzle and small gold tag. Row4 ONE brown leather boot with a tiny cream paw charm; tall amber reusable plastic beer cup with white rim; orange lanyard with cream ID CARD bearing ONE dark head silhouette. Row5 green garden watering can with long cream-tipped spout and open round handle; steel machine claw with THREE separated prongs and orange hinge; round silver POT LID with a central BLACK handle, simple reflective rim. Row6 orange wooden Y-shaped slingshot with clearly stretched dark elastic; serrated silver tin-scrap knife with orange wrapped handle angled lower-left to upper-right; squat brown wooden bar mallet with ORANGE handle. Do not add decorative circular backplates. No soft shading, no microtexture. Prioritize immediate recognition at 24 pixels."
+  },
+  {
+    "id": "body-stocky",
+    "type": "body",
+    "cols": 8,
+    "rows": 4,
+    "rig": "stocky",
+    "prompt": "Use case: precise-object-edit. Edit this existing 8-column,4-row headless body animation sheet. Preserve canvas, transparency, all eight columns, four directions, character anatomy and clothing colors. Fix ONLY the walking poses in COLUMNS TWO and FOUR in EVERY row. Currently these repeat the same step. Column TWO must show the NEAR leg stepping FORWARD, FAR leg stretched BACK, with opposite arm swing. Column FOUR must show the NEAR leg stretched BACK, FAR leg stepping FORWARD, with opposite arm swing. The feet must exchange which foot projects forward. Keep the same facing direction in a given row: do NOT mirror the torso to simulate the other stride. Keep waist, collar and torso position fixed, and foot sole baseline stable. Column THREE is the neutral passing pose and must remain. Preserve idle columns1/8 and combat columns5/6/7 exactly. Four distinct corrected walk-pair rows with real alternating legs. No heads or accessories, no labels, no shadows, real transparent background.",
+    "references": [
+      "assets/content-art/refinement/sources/body-stocky-v1.png"
+    ]
+  },
+  {
+    "id": "body-slim",
+    "type": "body",
+    "cols": 8,
+    "rows": 4,
+    "rig": "slim",
+    "prompt": "Use case: precise-object-edit. Edit this existing 8-column,4-row headless body animation sheet. Preserve canvas, transparency, all eight columns, four directions, character anatomy and clothing colors. Fix ONLY the walking poses in COLUMNS TWO and FOUR in EVERY row. Currently these repeat the same step. Column TWO must show the NEAR leg stepping FORWARD, FAR leg stretched BACK, with opposite arm swing. Column FOUR must show the NEAR leg stretched BACK, FAR leg stepping FORWARD, with opposite arm swing. The feet must exchange which foot projects forward. Keep the same facing direction in a given row: do NOT mirror the torso to simulate the other stride. Keep waist, collar and torso position fixed, and foot sole baseline stable. Column THREE is the neutral passing pose and must remain. Preserve idle columns1/8 and combat columns5/6/7 exactly. Four distinct corrected walk-pair rows with real alternating legs. No heads or accessories, no labels, no shadows, real transparent background.",
+    "references": [
+      "assets/content-art/refinement/sources/body-slim-v1.png"
+    ]
+  },
+  {
+    "id": "heads",
+    "type": "heads",
+    "cols": 4,
+    "rows": 4,
+    "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. A modular human HEAD library, exactly FOUR columns by FOUR rows, sixteen detached heads, NO neck below chin, NO torso, NO hats. Heads designed for 17 logical pixels height, large comic faces and clear noses matching detailed hand-drawn pixel villagers. Same warm tan complexion and light source, hair using dark brown/cream/copper blocks. Each COLUMN is one identity repeated in four directions. Column1 adult cheerful male with short dark hair and stubble, full round cheeks. Column2 adult woman with short copper bob, pointed nose, confident arched brow. Column3 older male with receding silver hair, broad white mustache and slightly protruding ears. Column4 adult woman with dark short cropped hair, rectangular black eyeglasses, angular face. Row1 southeast front-right (nose right), Row2 southwest front-left (nose left), Row3 northeast REAR-right showing BACK of head, Row4 northwest REAR-left showing BACK of head. Head angle consistent with a top-down three-quarter RPG. Consistent scale and chin baseline in all cells, wide transparent gutters. These are parts for putting on bodies, no portraits or background frames."
+  },
+  {
+    "id": "headwear",
+    "type": "headwear",
+    "cols": 4,
+    "rows": 2,
+    "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. A modular HAT overlay library, exactly FOUR columns by TWO rows, eight hats ONLY. No heads, faces, necks or bodies. Hat width about19 logical pixels. Each ROW is one hat repeated in four views. Row1 plain mustard-yellow curved-brim baseball cap with dark slate seam, no logo. Row2 cream woven straw farmer hat with broad oval brim and simple dark olive band, use large flat bands not microtexture. Columns: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Three-quarter overhead RPG perspective, top of hat visible, dark underside of brim, identical proportions within row. Match logical scale across views. Genuine alpha in the empty space under the crown and around brim. No extra objects."
+  },
+  {
+    "id": "future-props",
+    "type": "future",
+    "cols": 2,
+    "rows": 2,
+    "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. Exactly TWO columns by TWO rows, FOUR bold RPG inventory icons for future rural comedy quests. Design each at32 logical pixels, enlarged square blocks, strong 1-pixel dark slate contour and at most8 colors, generous empty alpha margin. Top left: steel socket RATCHET TOOL with a large circular head and orange handle, one recognizable object angled diagonally. Top right: closed slate-gray LAPTOP with one small amber generic pixel spark emblem, visible hinge, no brand or text. Bottom left: cream BETTING TICKET with three large red checkboxes and a small orange coin in front, no letters or numbers. Bottom right: reusable green CLEANING BUCKET with a single white cloth draped over rim and orange handle. A common chunky comic pixel family, no fine texture, no gradients, no glow. Distinct silhouettes clearly legible at32px."
+  }
+]

@@ -7,12 +7,15 @@ import {segment} from './segment.mjs';
 import {bodyAnchor} from './build-walk.mjs';
 import {sockets} from './build-live.mjs';
 import {styles} from './config.mjs';
+import {buildRefinement} from './build-refinement.mjs';
 const root=new URL('../../',import.meta.url);
 const palette=styles.find(s=>s.id==='detailpixel').palette.map(h=>[0,2,4].map(k=>parseInt(h.slice(k,k+2),16)));
 const hash=b=>createHash('sha256').update(b).digest('hex');
 export function buildHandoff(){
+ const refined=buildRefinement({onlyItems:true});
  const jobs=JSON.parse(readFileSync(new URL('handoff-jobs.json',import.meta.url))),files=new Map(),catalog={version:1,style:'Maifeld-Detailpixel',humanNativePixelsPerWorldUnit:2,frameSize:96,pivot:{x:48,y:80},directions:['se','sw','ne','nw'],assets:{},missing:[]};
  for(const j of jobs){
+  if(j.kind==='items'&&refined.catalog.icons[j.id]){const a=refined.catalog.icons[j.id],bytes=refined.files.get(a.path),path='assets/content-art/items/'+j.id+'.png';files.set(path,bytes);catalog.assets[j.id]={kind:'items',path,width:24,height:24,padding:2,source:a.source,sourceHash:refined.catalog.sources.find(s=>s.path===a.source).hash,hash:hash(bytes),revision:'readability-v2',sourceCell:a.cell};continue;}
   const source='assets/content-art/sources/2026-09-17/'+j.id+'.png',file=new URL(source,root);
   if(!existsSync(file)){catalog.missing.push(j.id);continue;}
   const raw=readFileSync(file),im=decodePng(raw);let out,frames;

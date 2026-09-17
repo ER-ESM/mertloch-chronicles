@@ -1,0 +1,12 @@
+{
+  "id": "heads",
+  "type": "heads",
+  "cols": 4,
+  "rows": 4,
+  "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. A modular human HEAD library, exactly FOUR columns by FOUR rows, sixteen detached heads, NO neck below chin, NO torso, NO hats. Heads designed for 17 logical pixels height, large comic faces and clear noses matching detailed hand-drawn pixel villagers. Same warm tan complexion and light source, hair using dark brown/cream/copper blocks. Each COLUMN is one identity repeated in four directions. Column1 adult cheerful male with short dark hair and stubble, full round cheeks. Column2 adult woman with short copper bob, pointed nose, confident arched brow. Column3 older male with receding silver hair, broad white mustache and slightly protruding ears. Column4 adult woman with dark short cropped hair, rectangular black eyeglasses, angular face. Row1 southeast front-right (nose right), Row2 southwest front-left (nose left), Row3 northeast REAR-right showing BACK of head, Row4 northwest REAR-left showing BACK of head. Head angle consistent with a top-down three-quarter RPG. Consistent scale and chin baseline in all cells, wide transparent gutters. These are parts for putting on bodies, no portraits or background frames.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed",
+  "originalFile": "exec-3bc905b4-ec74-4507-aaf1-c29ff26dcb4d.png",
+  "output": "assets/content-art/refinement/sources/heads.png"
+}

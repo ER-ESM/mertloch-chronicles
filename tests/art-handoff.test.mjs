@@ -10,6 +10,7 @@ const palette=new Set(styles.find(s=>s.id==='detailpixel').palette.map(x=>x.toLo
 
 test('all generated originals have recorded prompts, provenance and matching checksums',()=>{
  const records=JSON.parse(readFileSync(new URL('../assets/content-art/generation-2026-09-17.json',import.meta.url)));
+ const revised=JSON.parse(readFileSync(new URL('../assets/content-art/refinement/runtime/catalog.json',import.meta.url)));for(const s of revised.sources)records.push({...JSON.parse(readFileSync(new URL(s.path.replace('.png','.json'),root))),sourceHash:s.hash});
  assert.equal(new Set(records.map(r=>r.output)).size,records.length);
  for(const r of records){
   assert.ok(r.prompt.length>100,r.output);assert.equal(r.tool,'built-in imagegen');assert.ok(r.originalFile.endsWith('.png'));

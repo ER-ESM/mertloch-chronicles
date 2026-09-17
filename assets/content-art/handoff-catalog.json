@@ -47685,9 +47685,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/currywurst.png",
-      "sourceHash": "dda79de77ed67074f970288dc97c60070a972c3353d0dca32f34a8d4c60b1f30",
-      "hash": "50b5a80b68ba65e9febc86c9a829169d26206f57f4f59e90bd857d2fd3f40b1f"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "ec08f4ec37b56c99679b5fa1e2e9766aab2b6a9f0ec9c07be488a238088cdd1c",
+      "revision": "readability-v2",
+      "sourceCell": 0
     },
     "kaltgetraenk": {
       "kind": "items",
@@ -47695,9 +47697,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/kaltgetraenk.png",
-      "sourceHash": "54c83acacee50d58e967ae35bee39f1c55065e6345a9b25fecbd48342b8650d2",
-      "hash": "3a9f005975da4daaf5a1506f86c0fdc8cd4783d92700a6e7c723581987219b4f"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "1715cdd7ddc36ae6ea945e45ce4da05af6149010f5ca416f8551549a89b7a1d8",
+      "revision": "readability-v2",
+      "sourceCell": 1
     },
     "fuchsschwanz": {
       "kind": "items",
@@ -47705,9 +47709,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/fuchsschwanz.png",
-      "sourceHash": "c5e5bd48f62f45ad826ea6e95db5bbb33cf92777e2f7d3544406fe3cec552ddf",
-      "hash": "149f3bf36dfeb75daaf0865030e0d30f8c85332c94599171a82c11f27ef96325"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "8ce3ecbb0658e950c785d2362a7349c258e50c68175d6035f5726b526c9f7fff",
+      "revision": "readability-v2",
+      "sourceCell": 2
     },
     "flugblatt": {
       "kind": "items",
@@ -47715,9 +47721,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/flugblatt.png",
-      "sourceHash": "b39bbfd7dd11428de279e14498edde5503464e220527ef277b1b7e3fd791100d",
-      "hash": "a240f7011bbeaa364e500177747b9f63f84f91f5f8654045bc0f0637cbc1083b"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "de8353b643b63939d780c8e596a48490c545d0699b2429802a578b99d29a07e2",
+      "revision": "readability-v2",
+      "sourceCell": 3
     },
     "hopfen": {
       "kind": "items",
@@ -47725,9 +47733,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/hopfen.png",
-      "sourceHash": "a882180bf1ff3164ab77273201f72740243e733aa47bca7b1c1dc9fa9c5bb63f",
-      "hash": "577bbf845a15ddb628d14ab2f538d294f13f1a2d0be821146716c83f97dc7f7e"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "70010d4e56b80910c4b46110cf8e4445deece67350a4e311f72e66fabd294593",
+      "revision": "readability-v2",
+      "sourceCell": 4
     },
     "dosenblech": {
       "kind": "items",
@@ -47735,9 +47745,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/dosenblech.png",
-      "sourceHash": "0f12c0f133967799ba133213b63f6dc0cd1f293be9b705fba065f6241d150dd6",
-      "hash": "cea1626303170799dd686cc4d6b9d7e90b226028778369c1fade2a638f6deafb"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "758d9b1bad202d186a8f487ec8a018851841686573c46722412257524801a551",
+      "revision": "readability-v2",
+      "sourceCell": 5
     },
     "bierdeckelweste": {
       "kind": "items",
@@ -47745,9 +47757,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/bierdeckelweste.png",
-      "sourceHash": "a328a1f0be04f1a9cd080ba9a016e26d8848c43e6cda592bbc96745e593ed536",
-      "hash": "dfd1d824863e8a1d2cf1a3df028d0334884a75194a10f252478245c8ccf4d7f8"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "336f1d5b25e984ff565361f2ec3d4fb05aa44648637c76a27eee4eddf7fbb721",
+      "revision": "readability-v2",
+      "sourceCell": 6
     },
     "kabelbinderstiefel": {
       "kind": "items",
@@ -47755,9 +47769,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/kabelbinderstiefel.png",
-      "sourceHash": "262cae6e964e5b696b8f1fcfff753945109ae319dfa498d93f381f534fae9700",
-      "hash": "b836829a1357ad52673d235630b86f4584f2f739248b2983345e2edc7dc383e5"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "ceb3f61a8c8260ba6359a278ebd47eede9d1910dc6a105b7a75e4c3b6ec0c66a",
+      "revision": "readability-v2",
+      "sourceCell": 7
     },
     "megafon": {
       "kind": "items",
@@ -47765,9 +47781,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/megafon.png",
-      "sourceHash": "75b4e6f41e7638186610d5b641613f14a3847cbfab4892ba1ef277a5c6c5101d",
-      "hash": "115fafd90dc8ee1dbf6bd11841896f1cf03e1ad792b275e915f149fbc3dcc17d"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "3062a8eb869ad4b6fc0b0a43f11012f22f38242c36682ea6405cdc53cb11ad4f",
+      "revision": "readability-v2",
+      "sourceCell": 8
     },
     "fuchspfote": {
       "kind": "items",
@@ -47775,9 +47793,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/fuchspfote.png",
-      "sourceHash": "b989fab81f3586de012a2b3a05157105056ab4f93e61e0a79eb0caed14980474",
-      "hash": "0e0cc28712f12e190df0a88e3646e7301ea296008148b43ca6d29a93b2f3c71f"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "0b4ba14312373a72492a4722c0a333acce219d989a943b933243edd7c61f44f1",
+      "revision": "readability-v2",
+      "sourceCell": 9
     },
     "schnorrerbecher": {
       "kind": "items",
@@ -47785,9 +47805,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/schnorrerbecher.png",
-      "sourceHash": "47e7587d452bb842386498d44d64136e3bb3041ee02b979b65bce187d419e8d4",
-      "hash": "3693d92287aad44035e027939ac72b437f35e0bf7db306a1d70301780027e9e9"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "7c3450682f8fd87271ad6e59235e3e0bbdf39260a68bd87c2e4dc626a4dc9cf0",
+      "revision": "readability-v2",
+      "sourceCell": 10
     },
     "praktikantenausweis": {
       "kind": "items",
@@ -47795,9 +47817,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/praktikantenausweis.png",
-      "sourceHash": "585bf04a8068835c4404c3ee6295455b7c44b9892a9ea8683b551f32dc07b09b",
-      "hash": "35e025b1b7b51e95bfeb8c70db72f4e0f2b41767bec46ea88a14ee925d5c9450"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "b99b61312283e8d037fb24ecc5bba3dbb6523a38160d4c99061e4261d3bc95c4",
+      "revision": "readability-v2",
+      "sourceCell": 11
     },
     "giesskanne": {
       "kind": "items",
@@ -47805,9 +47829,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/giesskanne.png",
-      "sourceHash": "3c95c20bfb8cfaa28bd973a27a7c24ac340c8866465ef094c1dc1df41737f4dc",
-      "hash": "b95a13185264ecc5e2d6f84fadd7468945f44da19f7d15beed38f0331f4862cd"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "956d3ae1e1104637107b37b3c04eee01816023b304256ea24f163af3de7aac91",
+      "revision": "readability-v2",
+      "sourceCell": 12
     },
     "automatenarm": {
       "kind": "items",
@@ -47815,9 +47841,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/automatenarm.png",
-      "sourceHash": "4184ba211efe266096a3b004c2b93a9f8b8257622b37e8bc4a2d0798ca990b0d",
-      "hash": "c1417c04c206d4423b64ca22922a528c1b71b66b61902300f402dd70109fd237"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "3070d42c3fa4a929a60ff1b264ebbafab89ac19b68ab3eb29fc5dd29bf1f3881",
+      "revision": "readability-v2",
+      "sourceCell": 13
     },
     "ui-momentum-1": {
       "kind": "ui",
@@ -47907,9 +47935,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/topfdeckel.png",
-      "sourceHash": "eb1875b4b6e2fa6da14c5ed68960480c2d8905390146d423de94a53d297c1fe8",
-      "hash": "70504da7b327386bd48b817a02c96487da21257d14a0c479eb22c2e16faa362c"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "7f7057d592ddbbd837ab0e1fd4f97e01dab49dcae66a3bf682ee4c1793c98b49",
+      "revision": "readability-v2",
+      "sourceCell": 14
     },
     "pfandschleuder": {
       "kind": "items",
@@ -47917,9 +47947,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/pfandschleuder.png",
-      "sourceHash": "ecb3774e0bf0e01d6e6cdf1664e5968779228df478562598fab45c8ec70baa00",
-      "hash": "46c578550565393dd76694f3afc8d63dc8006007fec72226b32d5c95e7bef4b0"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "a8408790b5c3c0fbf7e402a6ee33668a62cb3795cbd9f56893dd56aa7f1a4efc",
+      "revision": "readability-v2",
+      "sourceCell": 15
     },
     "dosenklinge": {
       "kind": "items",
@@ -47927,9 +47959,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/dosenklinge.png",
-      "sourceHash": "c63613cb63d8247d3ded5138d525eeabc0bfc4f7fdc4aadca0a3963e773668c2",
-      "hash": "77858c8028ea6175e45d363e26543278eb2486d4a9e86c24936f99c5aa4c5c78"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "d8ba61c8e90288a648c8118675ff08f53a233be57f5c7f06b9ef56b11a0c1cd7",
+      "revision": "readability-v2",
+      "sourceCell": 16
     },
     "tresenhammer": {
       "kind": "items",
@@ -47937,9 +47971,11 @@
       "width": 24,
       "height": 24,
       "padding": 2,
-      "source": "assets/content-art/sources/2026-09-17/tresenhammer.png",
-      "sourceHash": "468f1877c45a5d8671996839ee76af3623bf0efc7400268b1bfe5da8dd6b75c2",
-      "hash": "91a9eeea037415d6be20f446bbc2965a9c4b19cd09be494e1b685ed4c279501f"
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
+      "hash": "8e7114ea40702beba8cd710756e2f06b578139dcbbcf3b28b00b414f9d859d59",
+      "revision": "readability-v2",
+      "sourceCell": 17
     },
     "horst": {
       "kind": "bosses",

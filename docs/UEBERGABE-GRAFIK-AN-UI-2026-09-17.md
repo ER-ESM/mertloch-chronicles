@@ -2,6 +2,10 @@
 
 Die Grafiklieferung zu `UEBERGABE-GRAFIK-2026-09-17.md` ist fertig. Einbezogen ist die ergänzte Liste `FEHLENDE-SPRITES.md` einschließlich Schwung, Übungspuppe, Horst, vier Waffen und 18 neuer Proc-Talente. Die Spielrenderer sind in diesem Grafikauftrag **nicht umgestellt**: Ihre Anbindung gehört laut `PIPELINE.md` zur UI-Rolle.
 
+Aktueller Stand nach UI-Anbindung: Die ursprüngliche Lieferung ist inzwischen im Renderer integriert. Die überarbeiteten Gegenstände werden über dieselben IDs/Pfade geladen; der zusätzliche Bewohnerbaukasten bleibt ein separater Prototyp.
+
+Nachtrag: Die 18 Gegenstände wurden nach eigenem Sichtreview unter denselben Pfaden durch klarere Motive ersetzt. Neuer [Review mit fünf Iterationen](GRAFIK-REVIEW-5-RUNDEN-2026-09-17.md), [Figurenwerkstatt](https://er-esm.github.io/mertloch-chronicles/art-workshop.html) und modulare Bewohner-Prototypen sind vorhanden. Der Katalog verweist für diese Icons auf die neuen Originale; die übrige Lieferung bleibt bestehen.
+
 ## Lieferung und Vorschau
 
 **88 Assets, 908 Animationsframes, dazu drei Talent-Overlay-Atlanten: insgesamt 91 fertige PNG-Dateien.** Alle Exporte verwenden harte Transparenz und dieselbe 40-Farben-Palette. Die unveränderten Imagegen-Originale bleiben zusätzlich erhalten.

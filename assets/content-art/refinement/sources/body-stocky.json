@@ -1,0 +1,16 @@
+{
+  "id": "body-stocky",
+  "type": "body",
+  "cols": 8,
+  "rows": 4,
+  "rig": "stocky",
+  "prompt": "Use case: precise-object-edit. Edit this existing 8-column,4-row headless body animation sheet. Preserve canvas, transparency, all eight columns, four directions, character anatomy and clothing colors. Fix ONLY the walking poses in COLUMNS TWO and FOUR in EVERY row. Currently these repeat the same step. Column TWO must show the NEAR leg stepping FORWARD, FAR leg stretched BACK, with opposite arm swing. Column FOUR must show the NEAR leg stretched BACK, FAR leg stepping FORWARD, with opposite arm swing. The feet must exchange which foot projects forward. Keep the same facing direction in a given row: do NOT mirror the torso to simulate the other stride. Keep waist, collar and torso position fixed, and foot sole baseline stable. Column THREE is the neutral passing pose and must remain. Preserve idle columns1/8 and combat columns5/6/7 exactly. Four distinct corrected walk-pair rows with real alternating legs. No heads or accessories, no labels, no shadows, real transparent background.",
+  "references": [
+    "assets/content-art/refinement/sources/body-stocky-v1.png"
+  ],
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed",
+  "originalFile": "exec-bf968048-0c74-4bc8-9d33-f8b6fa682f63.png",
+  "output": "assets/content-art/refinement/sources/body-stocky.png"
+}

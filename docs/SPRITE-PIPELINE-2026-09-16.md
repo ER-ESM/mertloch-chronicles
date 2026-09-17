@@ -1,5 +1,7 @@
 # Drei echte Sprite-Prototypen und Produktionspipeline
 
+Aktueller Ausbau: [fünf Grafik-Iterationen und animierbarer Baukasten](GRAFIK-REVIEW-5-RUNDEN-2026-09-17.md). Projekt-Skill: [.agents/skills/maifeld-sprites/SKILL.md](../.agents/skills/maifeld-sprites/SKILL.md).
+
 Stand: 16.09.2026. **Der Nutzer hat Maifeld-Detailpixel gewählt.** C1 ist damit entschieden. Die ursprünglichen drei Kandidaten bleiben als Vergleich erhalten; der ausgearbeitete [Maifeld-Prototyp](MAIFELD-PROTOTYP-2026-09-16.md) zeigt den nächsten Stand. Die Prototypen ersetzen noch keine Produktionsfiguren.
 
 ## Direkt ausprobieren

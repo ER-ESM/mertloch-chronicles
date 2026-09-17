@@ -1,0 +1,13 @@
+{
+  "id": "body-slim",
+  "type": "body",
+  "cols": 8,
+  "rows": 4,
+  "rig": "slim",
+  "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. Exactly EIGHT columns by FOUR rows: 32 poses of the SAME HEADLESS adult slim human body. From base of neck downward ONLY: no head, hair, hat, detached bodyparts, weapons or accessories. Lean androgynous adult build with narrow shoulders and long straight legs. Bare forearms and empty hands. Indigo-blue simple short sleeve shirt, muted olive-green trousers, dark brown work boots; warm tan skin at neck and hands. Keep sleeves and collar identical throughout, no vest or logos. Each figure is the same scale, about38 logical pixels tall from neck to boot sole, hand-drawn chunky clusters. Body stays upright with stable spine, walk changes limbs not body proportions. Rows: 1 southeast front-right, 2 southwest front-left, 3 northeast back-right, 4 northwest back-left. Columns: 1 neutral idle arms lowered; 2 walking left foot forward right arm forward; 3 passing stance feet close and one raised heel; 4 walking right foot forward left arm forward; 5 wind up right-hand punch with right fist near shoulder; 6 right-arm punch extended; 7 recoil with both arms lifted modestly; 8 relaxed idle arms lowered. Maintain neutral straight collar across poses for swappable heads. Generous equal cell spacing, all poses fully contained.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed",
+  "originalFile": "exec-a622d099-5ea1-4233-a198-72475ec3ab26.png",
+  "output": "assets/content-art/refinement/sources/body-slim.png"
+}

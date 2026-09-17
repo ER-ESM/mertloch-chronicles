@@ -1,0 +1,1934 @@
+{
+  "version": 1,
+  "status": "reviewed-prototype",
+  "style": "Maifeld-Detailpixel",
+  "frameSize": 96,
+  "pivot": {
+    "x": 48,
+    "y": 80
+  },
+  "humanHeight": 52,
+  "worldHeight": 26,
+  "directions": [
+    "se",
+    "sw",
+    "ne",
+    "nw"
+  ],
+  "poses": [
+    "idle",
+    "walk-a",
+    "walk-pass",
+    "walk-b",
+    "anticipation",
+    "impact",
+    "hit",
+    "rest"
+  ],
+  "bodies": {
+    "stocky": {
+      "path": "assets/content-art/refinement/runtime/body-stocky.png",
+      "maskPath": "assets/content-art/refinement/runtime/body-stocky-mask.png",
+      "scale": 0.2,
+      "frames": [
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 728
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 0
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 41,
+            "w": 28,
+            "h": 39,
+            "count": 694
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 1
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 20,
+            "h": 38,
+            "count": 594
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 2
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 27,
+            "h": 38,
+            "count": 697
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 3
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 30,
+            "h": 38,
+            "count": 739
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 4
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 42,
+            "w": 30,
+            "h": 38,
+            "count": 652
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 5
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 41,
+            "w": 28,
+            "h": 39,
+            "count": 725
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 6
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 728
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 7
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 727
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 8
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 31,
+            "h": 38,
+            "count": 717
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 9
+        },
+        {
+          "bounds": {
+            "x": 39,
+            "y": 42,
+            "w": 20,
+            "h": 38,
+            "count": 590
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 10
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 29,
+            "h": 38,
+            "count": 722
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 11
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 30,
+            "h": 38,
+            "count": 746
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 12
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 42,
+            "w": 30,
+            "h": 38,
+            "count": 655
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 13
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 42,
+            "w": 28,
+            "h": 38,
+            "count": 719
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 14
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 731
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 15
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 720
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 16
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 41,
+            "w": 29,
+            "h": 39,
+            "count": 687
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 17
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 22,
+            "h": 38,
+            "count": 616
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 18
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 42,
+            "w": 28,
+            "h": 38,
+            "count": 706
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 19
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 28,
+            "h": 38,
+            "count": 718
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 20
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 41,
+            "w": 31,
+            "h": 39,
+            "count": 697
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 21
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 41,
+            "w": 29,
+            "h": 39,
+            "count": 730
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 22
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 719
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 23
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 721
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 24
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 41,
+            "w": 28,
+            "h": 39,
+            "count": 696
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 25
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 41,
+            "w": 22,
+            "h": 39,
+            "count": 612
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 26
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 41,
+            "w": 28,
+            "h": 39,
+            "count": 709
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 27
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 41,
+            "w": 28,
+            "h": 39,
+            "count": 739
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 28
+        },
+        {
+          "bounds": {
+            "x": 31,
+            "y": 41,
+            "w": 31,
+            "h": 39,
+            "count": 695
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 29
+        },
+        {
+          "bounds": {
+            "x": 33,
+            "y": 41,
+            "w": 29,
+            "h": 39,
+            "count": 734
+          },
+          "neck": {
+            "x": 48,
+            "y": 44
+          },
+          "cell": 30
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 723
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 31
+        }
+      ],
+      "source": "assets/content-art/refinement/sources/body-stocky.png"
+    },
+    "slim": {
+      "path": "assets/content-art/refinement/runtime/body-slim.png",
+      "maskPath": "assets/content-art/refinement/runtime/body-slim-mask.png",
+      "scale": 0.1958762886597938,
+      "frames": [
+        {
+          "bounds": {
+            "x": 40,
+            "y": 42,
+            "w": 17,
+            "h": 38,
+            "count": 447
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 0
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 23,
+            "h": 38,
+            "count": 445
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 1
+        },
+        {
+          "bounds": {
+            "x": 41,
+            "y": 42,
+            "w": 14,
+            "h": 38,
+            "count": 370
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 2
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 23,
+            "h": 38,
+            "count": 452
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 3
+        },
+        {
+          "bounds": {
+            "x": 39,
+            "y": 42,
+            "w": 20,
+            "h": 38,
+            "count": 450
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 4
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 29,
+            "h": 38,
+            "count": 461
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 5
+        },
+        {
+          "bounds": {
+            "x": 39,
+            "y": 42,
+            "w": 21,
+            "h": 38,
+            "count": 445
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 6
+        },
+        {
+          "bounds": {
+            "x": 40,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 455
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 7
+        },
+        {
+          "bounds": {
+            "x": 39,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 450
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 8
+        },
+        {
+          "bounds": {
+            "x": 35,
+            "y": 42,
+            "w": 25,
+            "h": 38,
+            "count": 464
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 9
+        },
+        {
+          "bounds": {
+            "x": 40,
+            "y": 42,
+            "w": 15,
+            "h": 38,
+            "count": 378
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 10
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 24,
+            "h": 38,
+            "count": 453
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 11
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 20,
+            "h": 38,
+            "count": 455
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 12
+        },
+        {
+          "bounds": {
+            "x": 31,
+            "y": 42,
+            "w": 28,
+            "h": 38,
+            "count": 469
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 13
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 21,
+            "h": 38,
+            "count": 437
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 14
+        },
+        {
+          "bounds": {
+            "x": 38,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 459
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 15
+        },
+        {
+          "bounds": {
+            "x": 40,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 459
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 16
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 25,
+            "h": 38,
+            "count": 454
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 17
+        },
+        {
+          "bounds": {
+            "x": 40,
+            "y": 42,
+            "w": 16,
+            "h": 38,
+            "count": 390
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 18
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 23,
+            "h": 38,
+            "count": 454
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 19
+        },
+        {
+          "bounds": {
+            "x": 38,
+            "y": 42,
+            "w": 20,
+            "h": 38,
+            "count": 463
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 20
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 30,
+            "h": 38,
+            "count": 481
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 21
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 22,
+            "h": 38,
+            "count": 463
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 22
+        },
+        {
+          "bounds": {
+            "x": 39,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 466
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 23
+        },
+        {
+          "bounds": {
+            "x": 38,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 455
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 24
+        },
+        {
+          "bounds": {
+            "x": 34,
+            "y": 42,
+            "w": 26,
+            "h": 38,
+            "count": 483
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 25
+        },
+        {
+          "bounds": {
+            "x": 40,
+            "y": 43,
+            "w": 16,
+            "h": 37,
+            "count": 370
+          },
+          "neck": {
+            "x": 48,
+            "y": 46
+          },
+          "cell": 26
+        },
+        {
+          "bounds": {
+            "x": 36,
+            "y": 42,
+            "w": 25,
+            "h": 38,
+            "count": 467
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 27
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 20,
+            "h": 38,
+            "count": 463
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 28
+        },
+        {
+          "bounds": {
+            "x": 32,
+            "y": 42,
+            "w": 28,
+            "h": 38,
+            "count": 476
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 29
+        },
+        {
+          "bounds": {
+            "x": 37,
+            "y": 42,
+            "w": 22,
+            "h": 38,
+            "count": 457
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 30
+        },
+        {
+          "bounds": {
+            "x": 38,
+            "y": 42,
+            "w": 18,
+            "h": 38,
+            "count": 465
+          },
+          "neck": {
+            "x": 48,
+            "y": 45
+          },
+          "cell": 31
+        }
+      ],
+      "source": "assets/content-art/refinement/sources/body-slim.png"
+    }
+  },
+  "heads": {
+    "stubble": {
+      "frames": [
+        {
+          "rect": {
+            "x": 24,
+            "y": 8,
+            "w": 15,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 24,
+            "y": 72,
+            "w": 15,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 24,
+            "y": 136,
+            "w": 16,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 24,
+            "y": 200,
+            "w": 16,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        }
+      ],
+      "path": "assets/content-art/refinement/runtime/heads.png",
+      "source": "assets/content-art/refinement/sources/heads.png"
+    },
+    "copper": {
+      "frames": [
+        {
+          "rect": {
+            "x": 86,
+            "y": 8,
+            "w": 19,
+            "h": 17
+          },
+          "socket": {
+            "x": 10,
+            "y": 17
+          },
+          "crown": {
+            "x": 10,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 86,
+            "y": 72,
+            "w": 19,
+            "h": 17
+          },
+          "socket": {
+            "x": 10,
+            "y": 17
+          },
+          "crown": {
+            "x": 10,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 86,
+            "y": 136,
+            "w": 19,
+            "h": 17
+          },
+          "socket": {
+            "x": 10,
+            "y": 17
+          },
+          "crown": {
+            "x": 10,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 87,
+            "y": 200,
+            "w": 18,
+            "h": 17
+          },
+          "socket": {
+            "x": 9,
+            "y": 17
+          },
+          "crown": {
+            "x": 9,
+            "y": 6
+          }
+        }
+      ],
+      "path": "assets/content-art/refinement/runtime/heads.png",
+      "source": "assets/content-art/refinement/sources/heads.png"
+    },
+    "silver": {
+      "frames": [
+        {
+          "rect": {
+            "x": 152,
+            "y": 8,
+            "w": 16,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 151,
+            "y": 72,
+            "w": 17,
+            "h": 17
+          },
+          "socket": {
+            "x": 9,
+            "y": 17
+          },
+          "crown": {
+            "x": 9,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 151,
+            "y": 136,
+            "w": 18,
+            "h": 17
+          },
+          "socket": {
+            "x": 9,
+            "y": 17
+          },
+          "crown": {
+            "x": 9,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 151,
+            "y": 200,
+            "w": 18,
+            "h": 17
+          },
+          "socket": {
+            "x": 9,
+            "y": 17
+          },
+          "crown": {
+            "x": 9,
+            "y": 6
+          }
+        }
+      ],
+      "path": "assets/content-art/refinement/runtime/heads.png",
+      "source": "assets/content-art/refinement/sources/heads.png"
+    },
+    "glasses": {
+      "frames": [
+        {
+          "rect": {
+            "x": 216,
+            "y": 8,
+            "w": 16,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 216,
+            "y": 72,
+            "w": 16,
+            "h": 17
+          },
+          "socket": {
+            "x": 8,
+            "y": 17
+          },
+          "crown": {
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 215,
+            "y": 136,
+            "w": 17,
+            "h": 17
+          },
+          "socket": {
+            "x": 9,
+            "y": 17
+          },
+          "crown": {
+            "x": 9,
+            "y": 6
+          }
+        },
+        {
+          "rect": {
+            "x": 215,
+            "y": 200,
+            "w": 17,
+            "h": 17
+          },
+          "socket": {
+            "x": 9,
+            "y": 17
+          },
+          "crown": {
+            "x": 9,
+            "y": 6
+          }
+        }
+      ],
+      "path": "assets/content-art/refinement/runtime/heads.png",
+      "source": "assets/content-art/refinement/sources/heads.png"
+    }
+  },
+  "hats": {
+    "cap": {
+      "frames": [
+        {
+          "rect": {
+            "x": 24,
+            "y": 8,
+            "w": 16,
+            "h": 12
+          },
+          "socket": {
+            "x": 8,
+            "y": 8
+          }
+        },
+        {
+          "rect": {
+            "x": 88,
+            "y": 8,
+            "w": 16,
+            "h": 12
+          },
+          "socket": {
+            "x": 8,
+            "y": 8
+          }
+        },
+        {
+          "rect": {
+            "x": 152,
+            "y": 8,
+            "w": 16,
+            "h": 11
+          },
+          "socket": {
+            "x": 8,
+            "y": 8
+          }
+        },
+        {
+          "rect": {
+            "x": 216,
+            "y": 8,
+            "w": 16,
+            "h": 11
+          },
+          "socket": {
+            "x": 8,
+            "y": 8
+          }
+        }
+      ],
+      "path": "assets/content-art/refinement/runtime/headwear.png",
+      "source": "assets/content-art/refinement/sources/headwear.png"
+    },
+    "straw": {
+      "frames": [
+        {
+          "rect": {
+            "x": 21,
+            "y": 72,
+            "w": 22,
+            "h": 15
+          },
+          "socket": {
+            "x": 11,
+            "y": 11
+          }
+        },
+        {
+          "rect": {
+            "x": 85,
+            "y": 72,
+            "w": 22,
+            "h": 15
+          },
+          "socket": {
+            "x": 11,
+            "y": 11
+          }
+        },
+        {
+          "rect": {
+            "x": 149,
+            "y": 72,
+            "w": 22,
+            "h": 15
+          },
+          "socket": {
+            "x": 11,
+            "y": 11
+          }
+        },
+        {
+          "rect": {
+            "x": 213,
+            "y": 72,
+            "w": 22,
+            "h": 15
+          },
+          "socket": {
+            "x": 11,
+            "y": 11
+          }
+        }
+      ],
+      "path": "assets/content-art/refinement/runtime/headwear.png",
+      "source": "assets/content-art/refinement/sources/headwear.png"
+    }
+  },
+  "icons": {
+    "currywurst": {
+      "path": "assets/content-art/refinement/runtime/items/currywurst.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 0,
+      "sourceBounds": {
+        "x": 75,
+        "y": 47,
+        "w": 236,
+        "h": 206,
+        "count": 25012,
+        "pieces": 1
+      }
+    },
+    "kaltgetraenk": {
+      "path": "assets/content-art/refinement/runtime/items/kaltgetraenk.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 1,
+      "sourceBounds": {
+        "x": 457,
+        "y": 51,
+        "w": 111,
+        "h": 185,
+        "count": 18658,
+        "pieces": 1
+      }
+    },
+    "fuchsschwanz": {
+      "path": "assets/content-art/refinement/runtime/items/fuchsschwanz.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 2,
+      "sourceBounds": {
+        "x": 726,
+        "y": 44,
+        "w": 219,
+        "h": 201,
+        "count": 24629,
+        "pieces": 1
+      }
+    },
+    "flugblatt": {
+      "path": "assets/content-art/refinement/runtime/items/flugblatt.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 3,
+      "sourceBounds": {
+        "x": 87,
+        "y": 284,
+        "w": 204,
+        "h": 204,
+        "count": 30109,
+        "pieces": 1
+      }
+    },
+    "hopfen": {
+      "path": "assets/content-art/refinement/runtime/items/hopfen.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 4,
+      "sourceBounds": {
+        "x": 401,
+        "y": 284,
+        "w": 222,
+        "h": 205,
+        "count": 27778,
+        "pieces": 1
+      }
+    },
+    "dosenblech": {
+      "path": "assets/content-art/refinement/runtime/items/dosenblech.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 5,
+      "sourceBounds": {
+        "x": 726,
+        "y": 315,
+        "w": 218,
+        "h": 157,
+        "count": 19914,
+        "pieces": 1
+      }
+    },
+    "bierdeckelweste": {
+      "path": "assets/content-art/refinement/runtime/items/bierdeckelweste.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 6,
+      "sourceBounds": {
+        "x": 94,
+        "y": 521,
+        "w": 191,
+        "h": 207,
+        "count": 33781,
+        "pieces": 1
+      }
+    },
+    "kabelbinderstiefel": {
+      "path": "assets/content-art/refinement/runtime/items/kabelbinderstiefel.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 7,
+      "sourceBounds": {
+        "x": 400,
+        "y": 541,
+        "w": 224,
+        "h": 187,
+        "count": 31137,
+        "pieces": 1
+      }
+    },
+    "megafon": {
+      "path": "assets/content-art/refinement/runtime/items/megafon.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 8,
+      "sourceBounds": {
+        "x": 765,
+        "y": 516,
+        "w": 154,
+        "h": 218,
+        "count": 22044,
+        "pieces": 1
+      }
+    },
+    "fuchspfote": {
+      "path": "assets/content-art/refinement/runtime/items/fuchspfote.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 9,
+      "sourceBounds": {
+        "x": 86,
+        "y": 776,
+        "w": 192,
+        "h": 197,
+        "count": 25825,
+        "pieces": 1
+      }
+    },
+    "schnorrerbecher": {
+      "path": "assets/content-art/refinement/runtime/items/schnorrerbecher.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 10,
+      "sourceBounds": {
+        "x": 440,
+        "y": 766,
+        "w": 141,
+        "h": 207,
+        "count": 22543,
+        "pieces": 1
+      }
+    },
+    "praktikantenausweis": {
+      "path": "assets/content-art/refinement/runtime/items/praktikantenausweis.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 11,
+      "sourceBounds": {
+        "x": 757,
+        "y": 762,
+        "w": 163,
+        "h": 223,
+        "count": 20105,
+        "pieces": 1
+      }
+    },
+    "giesskanne": {
+      "path": "assets/content-art/refinement/runtime/items/giesskanne.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 12,
+      "sourceBounds": {
+        "x": 52,
+        "y": 1017,
+        "w": 263,
+        "h": 200,
+        "count": 29706,
+        "pieces": 1
+      }
+    },
+    "automatenarm": {
+      "path": "assets/content-art/refinement/runtime/items/automatenarm.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 13,
+      "sourceBounds": {
+        "x": 410,
+        "y": 1005,
+        "w": 204,
+        "h": 213,
+        "count": 18628,
+        "pieces": 1
+      }
+    },
+    "topfdeckel": {
+      "path": "assets/content-art/refinement/runtime/items/topfdeckel.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 14,
+      "sourceBounds": {
+        "x": 719,
+        "y": 1025,
+        "w": 239,
+        "h": 188,
+        "count": 35799,
+        "pieces": 1
+      }
+    },
+    "pfandschleuder": {
+      "path": "assets/content-art/refinement/runtime/items/pfandschleuder.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 15,
+      "sourceBounds": {
+        "x": 107,
+        "y": 1252,
+        "w": 200,
+        "h": 223,
+        "count": 21402,
+        "pieces": 1
+      }
+    },
+    "dosenklinge": {
+      "path": "assets/content-art/refinement/runtime/items/dosenklinge.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 16,
+      "sourceBounds": {
+        "x": 399,
+        "y": 1265,
+        "w": 232,
+        "h": 208,
+        "count": 17231,
+        "pieces": 1
+      }
+    },
+    "tresenhammer": {
+      "path": "assets/content-art/refinement/runtime/items/tresenhammer.png",
+      "width": 24,
+      "height": 24,
+      "source": "assets/content-art/refinement/sources/review-items-v2.png",
+      "cell": 17,
+      "sourceBounds": {
+        "x": 721,
+        "y": 1257,
+        "w": 236,
+        "h": 216,
+        "count": 23950,
+        "pieces": 1
+      }
+    }
+  },
+  "future": {
+    "ratsche": {
+      "path": "assets/content-art/refinement/runtime/future/ratsche.png",
+      "width": 32,
+      "height": 32,
+      "source": "assets/content-art/refinement/sources/future-props.png",
+      "cell": 0,
+      "sourceBounds": {
+        "x": 58,
+        "y": 84,
+        "w": 489,
+        "h": 537,
+        "count": 93380,
+        "pieces": 1
+      }
+    },
+    "slop-laptop": {
+      "path": "assets/content-art/refinement/runtime/future/slop-laptop.png",
+      "width": 32,
+      "height": 32,
+      "source": "assets/content-art/refinement/sources/future-props.png",
+      "cell": 1,
+      "sourceBounds": {
+        "x": 641,
+        "y": 162,
+        "w": 586,
+        "h": 430,
+        "count": 169718,
+        "pieces": 1
+      }
+    },
+    "wettschein": {
+      "path": "assets/content-art/refinement/runtime/future/wettschein.png",
+      "width": 32,
+      "height": 32,
+      "source": "assets/content-art/refinement/sources/future-props.png",
+      "cell": 2,
+      "sourceBounds": {
+        "x": 103,
+        "y": 696,
+        "w": 436,
+        "h": 473,
+        "count": 152565,
+        "pieces": 1
+      }
+    },
+    "putzeimer": {
+      "path": "assets/content-art/refinement/runtime/future/putzeimer.png",
+      "width": 32,
+      "height": 32,
+      "source": "assets/content-art/refinement/sources/future-props.png",
+      "cell": 3,
+      "sourceBounds": {
+        "x": 701,
+        "y": 687,
+        "w": 485,
+        "h": 479,
+        "count": 181545,
+        "pieces": 1
+      }
+    }
+  },
+  "sources": [
+    {
+      "id": "review-items-v2",
+      "path": "assets/content-art/refinement/sources/review-items-v2.png",
+      "hash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd"
+    },
+    {
+      "id": "body-stocky",
+      "path": "assets/content-art/refinement/sources/body-stocky.png",
+      "hash": "253637bda756e33775d407c6f952e68abb8fec2120d873fce934da1b86580f50"
+    },
+    {
+      "id": "body-slim",
+      "path": "assets/content-art/refinement/sources/body-slim.png",
+      "hash": "bc9dfd952db1e0c2333614b3ffb93df00a9756aa3d442b87773f292b36321228"
+    },
+    {
+      "id": "heads",
+      "path": "assets/content-art/refinement/sources/heads.png",
+      "hash": "9f7ba167ac0d75c56e9096df14959ad57d2199dd3bb36360668989149f78f412"
+    },
+    {
+      "id": "headwear",
+      "path": "assets/content-art/refinement/sources/headwear.png",
+      "hash": "c7186c2dba2e9209696349cd183f7161bc37e6ad25068104d0a8873bb155ca03"
+    },
+    {
+      "id": "future-props",
+      "path": "assets/content-art/refinement/sources/future-props.png",
+      "hash": "2d80bd062d3ca3adb0a8074909f43ec5915a6e3c50df3f99b8bcbde7d5270d9f"
+    }
+  ],
+  "missing": [],
+  "prototypes": [
+    {
+      "id": "tuning-timo",
+      "name": "Tuning-Timo",
+      "prop": "ratsche",
+      "recipe": {
+        "version": 1,
+        "rig": "stocky",
+        "head": "stubble",
+        "shirt": "rust",
+        "trousers": "charcoal",
+        "hat": "cap"
+      },
+      "path": "assets/content-art/refinement/runtime/future/tuning-timo.png",
+      "recipePath": "assets/content-art/refinement/runtime/future/tuning-timo.json"
+    },
+    {
+      "id": "gaming-gina",
+      "name": "Gaming-Gina",
+      "prop": "slop-laptop",
+      "recipe": {
+        "version": 1,
+        "rig": "slim",
+        "head": "glasses",
+        "shirt": "plum",
+        "trousers": "charcoal",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/future/gaming-gina.png",
+      "recipePath": "assets/content-art/refinement/runtime/future/gaming-gina.json"
+    },
+    {
+      "id": "wetten-willi",
+      "name": "Wetten-Willi",
+      "prop": "wettschein",
+      "recipe": {
+        "version": 1,
+        "rig": "stocky",
+        "head": "silver",
+        "shirt": "moss",
+        "trousers": "brown",
+        "hat": "straw"
+      },
+      "path": "assets/content-art/refinement/runtime/future/wetten-willi.png",
+      "recipePath": "assets/content-art/refinement/runtime/future/wetten-willi.json"
+    },
+    {
+      "id": "putz-petra",
+      "name": "Putz-Petra",
+      "prop": "putzeimer",
+      "recipe": {
+        "version": 1,
+        "rig": "slim",
+        "head": "copper",
+        "shirt": "cream",
+        "trousers": "olive",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/future/putz-petra.png",
+      "recipePath": "assets/content-art/refinement/runtime/future/putz-petra.json"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "resident-0",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 0,
+        "rig": "slim",
+        "head": "glasses",
+        "shirt": "cream",
+        "trousers": "charcoal",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-0.png"
+    },
+    {
+      "id": "resident-1",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 1,
+        "rig": "stocky",
+        "head": "glasses",
+        "shirt": "claret",
+        "trousers": "olive",
+        "hat": "cap"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-1.png"
+    },
+    {
+      "id": "resident-2",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 2,
+        "rig": "stocky",
+        "head": "glasses",
+        "shirt": "slate",
+        "trousers": "brown",
+        "hat": "straw"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-2.png"
+    },
+    {
+      "id": "resident-3",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 3,
+        "rig": "stocky",
+        "head": "copper",
+        "shirt": "rust",
+        "trousers": "olive",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-3.png"
+    },
+    {
+      "id": "resident-4",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 4,
+        "rig": "slim",
+        "head": "silver",
+        "shirt": "claret",
+        "trousers": "brown",
+        "hat": "cap"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-4.png"
+    },
+    {
+      "id": "resident-5",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 5,
+        "rig": "slim",
+        "head": "copper",
+        "shirt": "plum",
+        "trousers": "brown",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-5.png"
+    },
+    {
+      "id": "resident-6",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 6,
+        "rig": "slim",
+        "head": "silver",
+        "shirt": "plum",
+        "trousers": "olive",
+        "hat": "cap"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-6.png"
+    },
+    {
+      "id": "resident-7",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 7,
+        "rig": "stocky",
+        "head": "stubble",
+        "shirt": "slate",
+        "trousers": "olive",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-7.png"
+    },
+    {
+      "id": "resident-8",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 8,
+        "rig": "slim",
+        "head": "silver",
+        "shirt": "moss",
+        "trousers": "brown",
+        "hat": "cap"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-8.png"
+    },
+    {
+      "id": "resident-9",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 9,
+        "rig": "slim",
+        "head": "silver",
+        "shirt": "claret",
+        "trousers": "olive",
+        "hat": "none"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-9.png"
+    },
+    {
+      "id": "resident-10",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 10,
+        "rig": "slim",
+        "head": "copper",
+        "shirt": "cream",
+        "trousers": "olive",
+        "hat": "cap"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-10.png"
+    },
+    {
+      "id": "resident-11",
+      "recipe": {
+        "version": 1,
+        "seed": "Mertloch-Werkstatt",
+        "index": 11,
+        "rig": "slim",
+        "head": "glasses",
+        "shirt": "claret",
+        "trousers": "brown",
+        "hat": "straw"
+      },
+      "path": "assets/content-art/refinement/runtime/examples/resident-11.png"
+    }
+  ],
+  "generation": "assets/content-art/refinement/generation.json"
+}

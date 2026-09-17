@@ -1,0 +1,12 @@
+{
+  "id": "headwear",
+  "type": "headwear",
+  "cols": 4,
+  "rows": 2,
+  "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. A modular HAT overlay library, exactly FOUR columns by TWO rows, eight hats ONLY. No heads, faces, necks or bodies. Hat width about19 logical pixels. Each ROW is one hat repeated in four views. Row1 plain mustard-yellow curved-brim baseball cap with dark slate seam, no logo. Row2 cream woven straw farmer hat with broad oval brim and simple dark olive band, use large flat bands not microtexture. Columns: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Three-quarter overhead RPG perspective, top of hat visible, dark underside of brim, identical proportions within row. Match logical scale across views. Genuine alpha in the empty space under the crown and around brim. No extra objects.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed",
+  "originalFile": "exec-352d71d9-8a81-488f-8f9e-d0edac5e4dd4.png",
+  "output": "assets/content-art/refinement/sources/headwear.png"
+}

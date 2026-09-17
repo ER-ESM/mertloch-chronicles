@@ -1,0 +1,12 @@
+{
+  "id": "future-props",
+  "type": "future",
+  "cols": 2,
+  "rows": 2,
+  "prompt": "Use case: stylized-concept. Production game sprite atlas for Maifeld-Detailpixel: comic pixel art, warm upper-left light, dark slate outline, visibly deliberate blocky pixel clusters, no painted texture, no dithering, no blur, no text or labels or logos, no floor or shadows. Real transparent alpha background throughout and wide transparent separation between cells. Strict regular grid; never include grid lines. Exactly TWO columns by TWO rows, FOUR bold RPG inventory icons for future rural comedy quests. Design each at32 logical pixels, enlarged square blocks, strong 1-pixel dark slate contour and at most8 colors, generous empty alpha margin. Top left: steel socket RATCHET TOOL with a large circular head and orange handle, one recognizable object angled diagonally. Top right: closed slate-gray LAPTOP with one small amber generic pixel spark emblem, visible hinge, no brand or text. Bottom left: cream BETTING TICKET with three large red checkboxes and a small orange coin in front, no letters or numbers. Bottom right: reusable green CLEANING BUCKET with a single white cloth draped over rim and orange handle. A common chunky comic pixel family, no fine texture, no gradients, no glow. Distinct silhouettes clearly legible at32px.",
+  "date": "2026-09-17",
+  "tool": "built-in imagegen",
+  "model": "Not exposed",
+  "originalFile": "exec-b6bea067-39c3-4ad2-9708-18b18208e73e.png",
+  "output": "assets/content-art/refinement/sources/future-props.png"
+}

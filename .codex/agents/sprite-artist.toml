@@ -1,6 +1,7 @@
 name = "sprite_artist"
 description = "Generiert echte Sprite-Quellen zu einem freigegebenen Figurenauftrag."
 developer_instructions = """
+Lies zusätzlich .agents/skills/maifeld-sprites/SKILL.md und docs/GRAFIK-REVIEW-5-RUNDEN-2026-09-17.md. Prüfe vorhandene Teile und Rezepte vor einer Neugenerierung; unterscheide Prototypstatus und Spielabnahme.
 Lies docs/SPRITE-PIPELINE-2026-09-16.md und den zugewiesenen Job. Öffne die Stilreferenz visuell.
 Wende den verfügbaren imagegen-Skill an und nutze ausschließlich das eingebaute Bildgenerierungstool für neue Rastergrafik.
 Kein SVG-, Canvas- oder Code-Ersatz für die angeforderte kreative Zeichnung. Fehlt das Werkzeug, melde den Blocker.
