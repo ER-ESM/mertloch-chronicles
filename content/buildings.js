@@ -13,7 +13,7 @@ export const BUILDING_EFFECTS={
  buffDuration:'Dauer der Klassen-Stärkung (Anteil)',
  dashCd:'Abklingzeit von Ausweichen (Anteil weniger)',
  energyOnKill:'Randale je Kill (flach)',
- respawnHp:'Leben nach dem Erwachen bei St. Gangolf (Anteil vom Maximum)'
+ respawnHp:'Deckung (Schild) beim Erwachen bei St. Gangolf (Anteil vom maximalen Leben)'
 };
 export const BUILDINGS={
  tresen:{name:'Der Tresen',owner:'dieter',unlock:{chapter:2},icon:'maul',
@@ -21,8 +21,8 @@ export const BUILDINGS={
   look:'Tresen aus Europaletten, Bierdeckel als Fliesen, Kronkorken-Leiste, dahinter Dieter mit Kelle',
   stages:[
    {stage:1,name:'Bierdeckel-Tresen',cost:{palettenholz:6,kronkorken:10},effect:{restRegen:.25},text:'Sechs Paletten, ein Bierdeckel als Baugenehmigung. Schief, aber du kannst dich anlehnen. Regeneration außerhalb des Kampfes +25 %.'},
-   {stage:2,name:'Tresen mit Zapfhahn',cost:{palettenholz:10,kabel:4,dosenblech:6},unlock:{chapter:3},effect:{restRegen:.5,respawnHp:.25},text:'Kevin hat einen Zapfhahn angeschlossen. An was, sagt er nicht. Regeneration +50 %, nach dem Erwachen bei St. Gangolf +25 % Leben.'},
-   {stage:3,name:'Der Stammtisch',cost:{palettenholz:16,kronkorken:30,borste:8},unlock:{chapter:4},effect:{restRegen:.75,respawnHp:.5,buffDuration:.1},text:'Ein Tisch, an dem alle sitzen. Auch Sigi. Regeneration +75 %, Erwachen mit 50 % Leben, Stärkung 10 % länger.'}]},
+   {stage:2,name:'Tresen mit Zapfhahn',cost:{palettenholz:10,kabel:4,dosenblech:6},unlock:{chapter:3},effect:{restRegen:.5,respawnHp:.25},text:'Kevin hat einen Zapfhahn angeschlossen. An was, sagt er nicht. Regeneration +50 %, beim Erwachen bei St. Gangolf 25 % Deckung.'},
+   {stage:3,name:'Der Stammtisch',cost:{palettenholz:16,kronkorken:30,borste:8},unlock:{chapter:4},effect:{restRegen:.75,respawnHp:.5,buffDuration:.1},text:'Ein Tisch, an dem alle sitzen. Auch Sigi. Regeneration +75 %, Erwachen mit 50 % Deckung, Stärkung 10 % länger.'}]},
  grill:{name:'Oskars Grill',owner:'oskar',unlock:{chapter:2},icon:'food',
   text:'Der Grill lag auf der Seite, Oskar daneben. Beide stehen wieder. Verpflegung wird besser, je runder der Grill.',
   look:'Halbierte Öltonne auf Beinen, Rost aus Einkaufswagen, Oskar mit Zange und Schürze',

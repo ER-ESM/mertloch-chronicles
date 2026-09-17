@@ -98,7 +98,7 @@ Sechs Gebäude an der Bude, je ein Pate, zwei bis drei Stufen, Kosten in Materia
 
 | Gebäude | Pate | ab Kapitel | Stufen | Vorteil (Stufe 1 → letzte) |
 |---|---|---|---|---|
-| Der Tresen | Dieter | 2 | 3 | Regeneration +25 % → +75 %, Erwachen mit 50 % Leben, Stärkung 10 % länger |
+| Der Tresen | Dieter | 2 | 3 | Regeneration +25 % → +75 %, Erwachen mit 50 % Deckung, Stärkung 10 % länger |
 | Oskars Grill | Oskar | 2 | 3 | Verpflegung +15 % → +45 %, 5 s schneller bereit |
 | Kevins Werkstatt | Kevin | 2 | 3 | Ausrüstungschance +3 → +10 Punkte, Pfandmarken +20, 5 Randale je Kill |
 | Leanders Anlage | Leander | 3 | 3 | Stärkung 10 % → 30 % länger, Ausweichen 10 % schneller |
@@ -127,11 +127,11 @@ Bierdeckel-Statik (Dieter, Paletten), Strom aus Quellen, die wir nicht nennen (K
 
 Bastian, die Hochzeit in Koblenz, die Frage, wo der Held vor dem Bus war – alles nur als Haken in Idas Schlussdialog und Fetzen 7/8. Gisela und der Pfandautomat bleiben als Altbestand-Kapitel 5/6 in den Daten (Boss-Speicherschlüssel), sind aber mit `reserve:true` markiert und nicht Teil von Akt 1.
 
-## 10. Offene Entscheidungen (Nutzer)
+## 10. Entscheidungen (Nutzer, 2026-09-17)
 
-1. **Held = Fremder mit geliehenen Klamotten** (so gebaut) oder Held = eins der drei Clanmitglieder ohne Gedächtnis? Die Fremden-Variante passt zu „unbekanntes Dorf“ und macht die Aufnahme am Aktschluss zur Pointe; sie braucht aber Mentor-NPCs an der Bude (Engine).
-2. **Aktschluss-Härte:** Der Held hat die Kiste hergegeben, der Clan war mitschuldig. Falls das zu viel Schuld auf Clan-Seite ist: Dieters „eh morsch“ und Kevins Hänger-Nummer lassen sich streichen, ohne dass der Rest kippt.
-3. **Basisbau-Kosten:** bewusst Material-hungrig (Umland-Anreiz). Wenn die ersten Spieltests zeigen, dass niemand Stufe 3 erreicht, Kosten halbieren; die Effekte bleiben.
+1. **Held = Fremder mit geliehenen Klamotten.** Entschieden. Die drei Clanmitglieder stehen als Mentoren an der Bude; die Klassenwahl ist die Klamottenwahl.
+2. **Mitschuld des Clans bleibt.** Dieters „eh morsch“, Kevins Hänger-Nummer, Annis Filmen statt Helfen sind Teil der Pointe.
+3. **Basisbau-Kosten bleiben** Material-hungrig (Umland-Anreiz). Erst nach Spieltests nachjustieren.
 
 ## 11. Was jetzt läuft und was fehlt
 

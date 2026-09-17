@@ -47,7 +47,7 @@ export const STORY_CHAPTERS=[
  {id:4,act:1,title:'Der Bus nach nirgendwo',boss:'timo',dialogue:'bus',implemented:false,requires:3,
   summary:'Der Bus steht seit Sonntag im Feld am Ortsausgang: Tank leer, Fahrer weg, zwölf Junggesellen seit Samstag wach. Auf dem Dach: Trauzeuge Timo mit Schärpe, Bierbong und der festen Überzeugung, dass der Junggesellenabschied noch läuft. Polizeiobermeister Pit will keinen Papierkram und bittet um Amtshilfe. Der Clan will Antworten. Du willst dein Handy.',
   objectives:[{kind:'kill',family:'jga',count:6,label:'Junggesellen einsammeln, bevor Pit es tut'},{kind:'gather',item:'jga-shirt',count:4,label:'GAME-OVER-Shirts als Beweise sichern'},{kind:'boss',boss:'timo',label:'Trauzeuge Timo vom Busdach holen'}],
-  reward:{xp:1400,coins:60,relic:'Die Schärpe der Wahrheit',relicEffect:'Ausweichen wird 15 % schneller bereit',gear:'epic'},
+  reward:{xp:1400,coins:60,relic:'Die Schärpe der Wahrheit',relicEffect:'Ausweichen wird 15 % schneller bereit',gear:'rare'},
   clue:'Timo erkennt dich: „DU! Du bist in Koblenz eingestiegen, weil du dachtest, das wär der Nachtbus! Du hast Bastians Shirt gekriegt, weil er gekotzt hat!“ Die Unbekannten waren zwölf Junggesellen, ein sturzbetrunkener Clan und du. Die Kiste hat der Bräutigam. Bastian. Du hast sie ihm gegeben. Warum, weißt du nicht.',
   memories:['der-bus','die-kiste'],
   unlocks:['Aktschluss: Aufnahme in den Poo-Tang-Clan','Basisbau: Stufe 2 überall, Landhaus-Ecke und Pfandlager','Akt 2 (offen): Bastian, die Kiste, die Hochzeit in Koblenz']},

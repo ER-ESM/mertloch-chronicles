@@ -209,7 +209,7 @@ test('Dieter, Anni und Kevin stehen als Mentoren an der Bude und sprechen ihr Ka
 
 test('die Akt-1-Nebenquests kommen mit ihren eigenen Questgebern an ihre Orte',()=>{
  const act=SIDE_QUESTS.filter(t=>['dieter','baerbel','kevin','pit','ida'].includes(t.npc));
- assert.equal(act.length,5);
+ assert.equal(act.length,6);
  for(const t of act)assert.ok(NPCS[t.npc],`NPC ${t.npc} fehlt`);
  // In der echten Welt trägt jede Nebenquest den Namen ihres Questgebers und steht an einem Treffpunkt.
  for(const q of realWorld.quests){
