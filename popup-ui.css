@@ -2,7 +2,9 @@
 .popup-titlebar canvas.popup-emblem{width:20px;height:20px;image-rendering:pixelated;flex:none}
 .world-controls canvas{width:23px;height:23px;image-rendering:pixelated;pointer-events:none}.world-controls button{display:grid;place-items:center;padding:3px}.popup-body input[type=checkbox]{accent-color:#bd9b5e}
 #popupLayer{position:absolute;inset:0;z-index:40;pointer-events:none}
-.game-popup{position:absolute;pointer-events:auto;display:flex;flex-direction:column;max-height:calc(100dvh - 190px);isolation:isolate}
+.game-popup{position:absolute;pointer-events:auto;display:flex;flex-direction:column;max-height:calc(100dvh - 190px);
+
+isolation:isolate}
 .popup-titlebar{display:flex;gap:9px;align-items:center;flex:none;height:37px;padding:3px 5px 3px 11px;cursor:grab;touch-action:none;user-select:none}
 .popup-titlebar:active{cursor:grabbing}.popup-titlebar strong{flex:1}
 .popup-titlebar button{width:25px;height:25px;padding:0}
@@ -37,7 +39,7 @@ body.touch-mode .conversation-person small{margin-top:4px}
 .book-tabs{display:flex;flex:none;gap:3px;padding:5px 6px 0}
 .book-tabs button{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;padding:5px 2px 4px;cursor:pointer}
 .book-tabs button canvas{width:20px;height:20px;image-rendering:pixelated}
-.popup-book{min-height:min(520px,calc(100dvh - 200px))}
+.popup-book{min-height:min(520px,calc(100dvh - 200px));max-height:calc(100dvh - 165px)}
 .popup-body .person-talents,.popup-body .person-clan{margin-top:6px}
 .help-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
 .help-settings button,.help-settings a{padding:10px 8px;text-align:center;cursor:pointer}
@@ -112,3 +114,35 @@ body.touch-mode .conversation-person small{margin-top:4px}
 
 .update-hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:100001;display:flex;gap:9px;align-items:center;background:var(--green,#2c4030);border:2px solid var(--kraft-2,#c09b61);box-shadow:2px 3px 0 #1d3022cc;padding:7px 11px;font:11px 'Trebuchet MS',sans-serif;color:var(--cream,#ecdbac)}
 .update-hint button{min-height:30px;font-size:10px;padding:4px 9px}
+
+/* Iteration 2 (MMO-Vorbilder): Charakterbogen wie ein Papierpuppen-Bogen. Plätze links (Kopf bis Armschienen),
+   rechts (Handschuhe bis Glücksbringer), unten die Waffen; Werte daneben, sobald das Buch breit genug ist. */
+.game-popup .equipment-grid .gear-doll{display:none}
+.game-popup .equipment-grid .weapon-row{display:contents}
+@container (min-width:640px){
+ .game-popup .equipment-grid{grid-template-columns:64px minmax(150px,1fr) 64px 64px;grid-template-areas:"head doll hands ring1" "neck doll waist ring2" "shoulders doll legs trinket1" "body doll feet trinket2" "wrists doll . ." "weapon-row weapon-row weapon-row weapon-row";gap:6px 10px;align-items:start}
+ .game-popup .equipment-grid .gear-doll{display:grid;grid-area:doll;justify-items:center;align-content:start;gap:8px;padding:10px 6px;height:100%;box-sizing:border-box;background:radial-gradient(ellipse at 50% 35%,#74804b,#293d2c 72%);border:1px solid #758059;box-shadow:inset 0 0 0 2px #1d2f2455}
+ .game-popup .equipment-grid .gear-doll canvas{width:144px;height:180px;image-rendering:pixelated}
+ .game-popup .equipment-grid .gear-doll .armory-controls{display:grid;gap:5px;justify-items:center}
+ .game-popup .equipment-grid .gear-doll button{font-size:9px;padding:5px 8px}
+ .game-popup .gear-cell[data-equipment-slot=head]{grid-area:head}.game-popup .gear-cell[data-equipment-slot=neck]{grid-area:neck}.game-popup .gear-cell[data-equipment-slot=shoulders]{grid-area:shoulders}.game-popup .gear-cell[data-equipment-slot=body]{grid-area:body}.game-popup .gear-cell[data-equipment-slot=wrists]{grid-area:wrists}
+ .game-popup .gear-cell[data-equipment-slot=hands]{grid-area:hands}.game-popup .gear-cell[data-equipment-slot=waist]{grid-area:waist}.game-popup .gear-cell[data-equipment-slot=legs]{grid-area:legs}.game-popup .gear-cell[data-equipment-slot=feet]{grid-area:feet}
+ .game-popup .gear-cell[data-equipment-slot=ring1]{grid-area:ring1}.game-popup .gear-cell[data-equipment-slot=ring2]{grid-area:ring2}.game-popup .gear-cell[data-equipment-slot=trinket1]{grid-area:trinket1}.game-popup .gear-cell[data-equipment-slot=trinket2]{grid-area:trinket2}
+ .game-popup .equipment-grid .weapon-row{grid-area:weapon-row;display:flex;justify-content:center;gap:18px;padding-top:8px;border-top:1px solid #6f7d5555;margin-top:2px}
+ .game-popup .gear-cell{gap:2px}.game-popup .gear-cell .item-slot{width:52px;height:52px}.game-popup .gear-cell>small{font-size:8px;letter-spacing:.2px}
+ .game-popup .armory-banner{display:none}
+ .popup-person .popup-body{display:grid;grid-template-columns:minmax(0,1fr) 240px;column-gap:16px;align-content:start}.popup-person .panel-section{margin-top:0}.popup-person .panel-section[data-section="Werte"] .panel-section-title{margin-top:0}
+ .popup-person .panel-section[data-section="Ausrüstung"]{grid-column:1}.popup-person .panel-section[data-section="Werte"]{grid-column:2;grid-row:1}
+ .popup-person .panel-section:not([data-section="Ausrüstung"]):not([data-section="Werte"]){grid-column:1/-1}
+ .popup-person .weapon-summary{grid-template-columns:1fr}.popup-person .character-stats{grid-template-columns:1fr 1fr}.popup-person .secondary-stats{grid-template-columns:1fr}
+}
+
+/* Iteration 4 (MMO-Vorbilder): Tooltip-Kopf in zwei festen Zeilen. */
+.tooltip-meta{display:flex;justify-content:space-between;gap:12px;font:11px/1.4 'Trebuchet MS',sans-serif;color:#e6d6a6}
+.tooltip-heading+.tooltip-meta{margin-top:10px;padding-top:8px;border-top:1px solid #65714a}
+.tooltip-meta span:last-child{text-align:right;color:#cfd8b3}
+.tooltip-meta+.tooltip-meta{margin-top:2px}
+.tooltip-meta+p{margin-top:10px}
+.tooltip-gcd{color:#aebd9e;font-size:10px!important}
+
+.game-popup{container-type:inline-size}

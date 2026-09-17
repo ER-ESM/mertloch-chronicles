@@ -1,1 +1,25 @@
 .branch-intro{line-height:1.5!important}.branch-tree{position:relative;height:510px;min-width:250px;isolation:isolate;margin:16px 0}.talent-links{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.talent-links path{fill:none;stroke:#59685b;stroke-width:2;vector-effect:non-scaling-stroke}.talent-links .open-link{stroke:#b7b270;stroke-dasharray:4 3}.talent-links .linked{stroke:#f4ce79;stroke-width:3}.talent-gate{position:absolute;left:0;right:0;text-align:right;pointer-events:none}.talent-gate span{position:relative;top:-8px;padding:2px 5px}.branch-node{position:absolute;transform:translate(-50%,-50%);width:54px;height:54px;padding:3px;z-index:1;touch-action:manipulation}.branch-node canvas{width:100%;height:100%;image-rendering:pixelated}.branch-node.capstone{outline:2px solid #ad916b;outline-offset:3px}.branch-node:hover,.branch-node:focus-visible{outline:2px solid #fce6ae;outline-offset:4px}.branch-node small{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:1px 5px}.branch-node i{position:absolute;right:-7px;top:-9px}.touch-mode .branch-tree{height:465px}.touch-mode .branch-node{width:46px;height:46px}
+
+/* Iteration 3 (MMO-Vorbilder): Formen tragen Bedeutung wie im Dragonflight-Baum: Quadrat = passiv, Kreis = aktive Fähigkeit,
+   Abschluss mit Doppelrahmen. Schwellen sind Bänder mit Zähler im linken Rand, nie über einem Knoten. Zähler nur am gelernten Knoten. */
+.branch-tree{height:560px;padding-left:66px;box-sizing:border-box;margin:14px 0 18px}
+.branch-canvas{position:relative;height:100%}
+.talent-gate{left:0;right:0;border-top:1px dashed #84907455}
+.talent-gate span{position:absolute;left:8px;top:-14px;display:grid;justify-items:center;width:48px;padding:3px 2px;font-size:7px;line-height:1.15;letter-spacing:.2px;text-align:center;background:#223b30;border:1px solid #4b5f4d}
+.talent-gate span b{font:700 13px/1 monospace;color:#d3c694;margin-bottom:2px}
+.talent-gate.unlocked span{border-color:#bcb77b88;background:#2d4536}
+.talent-gate.unlocked span b{color:#f4ce79}
+.branch-node{width:60px;height:60px;border-radius:6px}
+.branch-node.passive-talent{border-radius:6px}
+.branch-node.active-talent{border-radius:50%}
+.branch-node.capstone{width:68px;height:68px;border-width:3px;outline:2px solid #ad916b;outline-offset:3px}
+.branch-node.capstone.learned{outline-color:#f4ce79;box-shadow:0 0 0 2px #97824e,0 0 18px #d9af4266}
+.branch-node.available{animation:talent-ready 1.4s ease-in-out infinite alternate}
+@keyframes talent-ready{from{box-shadow:0 0 0 2px #695c36,0 0 10px #d4b05030}to{box-shadow:0 0 0 2px #a48e52,0 0 20px #ffd46a80}}
+.branch-node small{bottom:-11px;font-size:9px}
+.talent-points{align-items:center;border:1px solid #4b5f4d}
+.talent-points b{font-size:13px}
+.talent-points.has-free{border-color:#e0bd68;background:#2f452f;box-shadow:inset 0 0 0 1px #e0bd6844}
+.talent-points.has-free b{color:#ffe08a;animation:talent-free 1.2s ease-in-out infinite alternate}
+@keyframes talent-free{from{text-shadow:0 0 0 #ffd46a00}to{text-shadow:0 0 8px #ffd46a}}
+.touch-mode .branch-tree{height:480px;padding-left:52px}.touch-mode .branch-node{width:48px;height:48px}.touch-mode .branch-node.capstone{width:54px;height:54px}.touch-mode .talent-gate span{width:40px;left:4px}

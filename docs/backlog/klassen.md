@@ -4,6 +4,8 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Talentbaum-Layout nach MMO-Vorbild** (UI, 2026-09-17): `TALENT_UI.spent` auf ein kurzes Wort („Punkte“) kürzen und die x-Werte im `TALENT_GRAPH` auf 12–88 % spreizen, damit die Schwellenbänder im linken Rand (66 px) und die 60-px-Knoten mehr Luft haben. Abnahme: `visual-review/iter-2026-09-17/12-talente.png` ohne Kantenkreuzung über Knoten. Hintergrund: `docs/MMO-VORBILDER-2026-09-17.md` §1.
+
 - [ ] **Rest von Runde B: acht ⚡ bei Dieter auf eigener Stufe** (Pfanddachs 2,6 s, Leergut-Rabe 2,6 s, Grillgut-Gans 3,0 s, Pfandfuchs 3,3 s, Pfandkeiler 3,6 s, Borsten-Bruno 4,2 s, Oberpraktikant Olaf 4,6 s, Pfandautomat 9,4 s). Liegt nicht mehr im Kit: die Kit-Felder `damage`/`base`/`perPoint` sind seit `damageModel` tot, die Schlagfrequenz ist mit 1,5 s ausgereizt. Weiterer Weg über `SKILL_DAMAGE` (→ `docs/backlog/gameplay.md`, mit Messwerten) und über das Grundleben der Stufe-1-Tiere (→ `docs/backlog/balance.md`). Hier erst weiterdrehen, wenn eine der beiden Rollen entschieden hat.
 - [ ] Restliche 72 Talente auf Auslöser-Regeln prüfen: alles, was nur einen Wert addiert oder Sekunden verkürzt, bekommt einen Proc oder eine sichtbare Regel (docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
 - [ ] Hofprobe-Texte gegen die Lernreihenfolge prüfen (Buff/Wurf vor Stufe 5 erwähnt?); Textänderungen bei Story anfordern.

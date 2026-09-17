@@ -8,3 +8,20 @@ html,body{width:100%;height:100%;overflow:hidden}body>header,.chapter,.world-foo
 dialog{width:min(940px,94vw);max-width:940px;max-height:88dvh;padding:30px}dialog h2{font:30px/1.25 Georgia;color:#f1dba4}.close-button{width:33px;height:33px;right:9px;top:9px}.menu-heading{text-align:center;padding:20px}.pause-menu-actions{display:grid;gap:9px;max-width:350px;margin:0 auto}.pause-menu-actions button{padding:13px}.menu-footnote{text-align:center;margin-top:26px!important}
 @media(max-width:1100px){.game-menu-rail{right:12px;bottom:110px;gap:3px}.game-menu-rail button{width:36px;height:41px}.world-controls{bottom:161px;right:12px}.in-world-lesson{max-width:225px}.quest-panel{width:194px}.combat-log{display:none}}
 @media(max-width:760px){.world-menu-brand{left:9px;top:9px;padding:5px 7px}.player-panel{left:9px;top:45px;width:202px;padding:7px}.portrait{width:33px;height:41px}.minimap{right:9px;top:9px;width:100px}.minimap canvas{width:88px;height:88px}.target-panel{left:9px;top:150px;width:202px}.buff-strip{left:9px;top:130px}.buff-strip:not(:empty)~.target-panel{top:152px}.region-label,.target-panel:not(.hidden)~.region-label{top:135px;right:9px;max-width:110px}.quest-panel{top:164px;right:9px;width:110px;padding:6px}.quest-panel h3,.quest-panel #questTasks{display:none}.action-area{bottom:28px;width:max-content;max-width:100%}.action-bar{gap:3px;padding:5px 5px 20px}.skill{width:38px;height:42px}.skill canvas{width:27px;height:27px}.rotation-tip{max-width:86vw;margin-bottom:6px}.game-menu-rail{bottom:115px;right:9px;gap:3px}.game-menu-rail button{width:34px;height:38px;padding:6px}.game-menu-rail svg{width:20px;height:20px}.world-controls{bottom:161px;right:9px;flex-direction:row}.world-controls button{width:25px;height:25px}.touch-pad{bottom:120px;left:10px;grid-template-columns:32px 32px 32px;grid-template-rows:32px 32px}.in-world-lesson{left:9px;bottom:202px;max-width:195px;padding:8px}.in-world-lesson .eyebrow,.in-world-lesson p{display:none}.in-world-lesson button{padding:4px 5px}.in-world-lesson #trainingHelp{display:none}.toast{bottom:272px;left:9px;max-width:190px}.interact{bottom:188px}.rpg-xp{height:15px}.rpg-xp span{line-height:14px}dialog{width:94vw;max-height:91dvh;padding:22px 16px}dialog h2{font-size:23px}}
+
+/* Iteration 6 (MMO-Vorbilder): Zielfenster rechts neben dem Spielerfenster, Stärkungen darunter; Zauberbalken bleibt unten Mitte. */
+@media(min-width:761px){
+ body:not(.touch-mode) .target-panel{top:65px;left:274px;width:244px}
+ body:not(.touch-mode) .buff-strip,body:not(.touch-mode) .buff-strip:not(:empty)~.target-panel{top:65px;left:274px}
+ body:not(.touch-mode) .buff-strip{top:163px;left:20px;max-width:498px;flex-wrap:wrap}
+ body:not(.touch-mode) .target-panel:not(.hidden)~.region-label{top:18px}
+ body:not(.touch-mode) .combat-log{bottom:180px}
+}
+/* Iteration 7: Stärkungs-Chips mit Restzeit-Balken. */
+.buff-chip{position:relative;overflow:hidden;padding-bottom:8px}
+.buff-chip>i.buff-timer{position:absolute;left:0;bottom:0;height:3px;background:linear-gradient(90deg,#d9b25a,#f4e0a0);box-shadow:0 0 4px #f4d68a88}
+/* Iteration 8: Abzeichen für unverteilte Talentpunkte an Menüleiste und Figur-Reiter. */
+.game-menu-rail button[data-badge],.book-tabs button[data-badge]{overflow:visible}
+.game-menu-rail button[data-badge]:after,.book-tabs button[data-badge]:after{content:attr(data-badge);position:absolute;top:-6px;right:-5px;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border:1px solid #1f2d20;border-radius:9px;background:linear-gradient(#ffe08a,#d9a83f);color:#1f2416;font:bold 10px/14px monospace;text-align:center;box-shadow:0 0 0 1px #f7dc8f66,0 0 8px #ffd46a99;animation:talent-badge 1.2s ease-in-out infinite alternate;pointer-events:none}
+.book-tabs button{position:relative}
+@keyframes talent-badge{from{transform:scale(1)}to{transform:scale(1.12)}}

@@ -11,3 +11,15 @@
 
 /* Interaction and special actions share one stack instead of overlapping fixed offsets. */
 .action-area>.interact{position:static;transform:none;max-width:100%;white-space:normal;margin-bottom:10px}
+/* Iteration 5 (MMO-Vorbilder): Zauberbuch-Kacheln mit Name und Herkunft, nicht nur Icon. */
+.icon-skillbook{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.game-popup .book-skill.icon-skill{aspect-ratio:auto;height:auto!important;min-height:0;grid-template-rows:auto auto auto;align-content:start;padding:8px 6px 7px;gap:3px}
+.game-popup .book-skill.icon-skill canvas{width:52px;height:52px}
+.book-skill-name{font:bold 10px/1.2 'Trebuchet MS',sans-serif;color:#efdcae;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.book-skill-origin{font:9px/1.2 monospace;color:#b3bf9c}
+.game-popup .book-skill.locked .book-skill-name{color:#b9b99a}
+.icon-skill kbd{bottom:auto;top:2px;right:3px}
+.icon-skill i{top:2px}
+@container (min-width:640px){.icon-skillbook{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:760px){.icon-skillbook{grid-template-columns:repeat(3,minmax(0,1fr))}.game-popup .book-skill.icon-skill canvas{width:40px;height:40px}.book-skill-name{font-size:9px}}
+
