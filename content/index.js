@@ -11,6 +11,8 @@ export * from './portraits.js';
 export * from './quests.js';
 export * from './dialogues.js';
 export * from './story.js';
+export * from './memories.js';
+export * from './buildings.js';
 export * from './procs.js';
 export {validateContent} from './schema.js';export * from './equipment.js';
 export * from './combat.js';

@@ -52,7 +52,28 @@ export const SIDE_QUESTS=[
  {id:'hopfengarten-hedwig',npc:'hedwig',type:'hunt',enemyName:'Pfandkeiler im Hopfengarten',title:'Keiler im Hopfengarten',
   description:l=>`Vertreibe zwei Pfandkeiler bei ${l}. Sie fressen Hedwigs Hopfen, und betrunkene Keiler sind schlimmer als nüchterne.`,
   quote:'Ein besoffener Keiler hat mir den Zaun umgelegt. Mit Anlauf.',
-  lines:{progress:'Der Zaun steht wieder. Halb.',complete:'Hopfen gerettet. Du kriegst das erste Glas. Auf eigene Gefahr.',claimed:'Das Bier heißt jetzt „Keilerkiller“. Du stehst auf dem Etikett.'}}
+  lines:{progress:'Der Zaun steht wieder. Halb.',complete:'Hopfen gerettet. Du kriegst das erste Glas. Auf eigene Gefahr.',claimed:'Das Bier heißt jetzt „Keilerkiller“. Du stehst auf dem Etikett.'}},
+ // --- Akt 1: Wiederaufbau, Zeugen, Junggesellen ---
+ {id:'paletten-dieter',npc:'dieter',type:'gather',itemName:'Trockene Palettenbretter',title:'Bierdeckel-Statik',
+  description:l=>`Sammle drei Palettenbretter bei ${l}. Dieter baut damit „tragende Struktur“. Der Bierdeckel mit dem Bauplan liegt schon im Bier.`,
+  quote:'Sechs Paletten sind ein Tresen. Drei sind ein Anfang. Eins ist ein Hocker, und auf Hockern trink ich nicht.',
+  lines:{progress:'Trocken? Nicht morsch? Gut. Morsch hatten wir schon. Sagt keinem.',complete:'Das ist Holz. Das ist Handwerk. Das ist ein Tresen, wenn ich fertig bin. Bier?',claimed:'Der Tresen steht. Ich hab ihn nicht umgetreten. Diesmal.'}},
+ {id:'strom-kevin',npc:'kevin',type:'scout',activity:'wires',title:'Strom aus Quellen, die wir nicht nennen',
+  description:l=>`Kevins Verlängerungskette bei ${l} ist falsch gesteckt. Merke dir die Reihenfolge der Anschlüsse und stecke sie richtig. Das gelbe Kabel ist die Erde. Glaubt Kevin.`,
+  quote:'Wenn es funkt, ist es falsch. Wenn es brennt, ist es Elke. Wenn es läuft, war ich’s.',
+  lines:{progress:'Nicht das gelbe. Oder doch. Probier’s einfach, ich steh weit genug weg.',complete:'Strom! Von nirgendwo! Die Werkstatt lebt. Das Warnschild „HÄLT SCHON“ leuchtet sogar.',claimed:'Elke hat den Zähler gesehen. Elke hat geschwiegen. Elke kriegt Bier bis Weihnachten.'}},
+ {id:'glaeser-anni',npc:'baerbel',type:'gather',itemName:'Unversehrte Sektgläser',title:'Vorher-Nachher',
+  description:l=>`Finde drei heile Sektgläser bei ${l}. Anni braucht sie fürs Nachher-Foto. Das Vorher-Foto bist du.`,
+  quote:'Wiederaufbau ist Content. Ich brauch Gläser, Licht und jemanden, der nicht in die Kamera guckt. Du.',
+  lines:{progress:'Heil? Kein Sprung? Ich seh den Sprung. Der Sprung ist Charakter. Weiter.',complete:'Drei Gläser, ein Ringlicht, ein Post. Vierhundert Likes. Zwölf davon aus Kalt. Die stalken uns.',claimed:'Das Foto hängt an der Bude. Laminiert. Du guckst in die Kamera. Ich hab’s dir gesagt.'}},
+ {id:'amtshilfe-pit',npc:'pit',type:'hunt',enemyName:'Junggeselle am Ortsausgang',title:'Amtshilfe ohne Formular',
+  description:l=>`Zwei Junggesellen bei ${l} bepöbeln den Feldrand. Pit will keinen Papierkram und bittet um Amtshilfe. Inoffiziell. Sehr inoffiziell.`,
+  quote:'Ich hab hier einen Notizblock. Da steht „Samstag“. Mehr schreib ich nicht. Mach du den Rest.',
+  lines:{progress:'Einer weniger. Ich hab nichts gesehen. Ich sitz auf der Motorhaube.',complete:'Feldrand ruhig. Block leer. Ich war nie hier. Danke für nichts, offiziell.',claimed:'Ich hab dich in den Bericht geschrieben. Als „Wind“. Wind ist keine Person. Wind macht keinen Ärger.'}},
+ {id:'sperrmuell-ida',npc:'ida',type:'hunt',enemyName:'Pfandkeiler am Sperrmüllplatz',title:'Finderrecht für Keiler',
+  description:l=>`Zwei Pfandkeiler bei ${l} wühlen in Sigis Sperrmüll. Genauer: in unserem Sperrmüll, der bei Sigi liegt. Ida will die Bänke unangenagt zurück.`,
+  quote:'Erst frisst Sigi unseren Kram, dann fressen Keiler Sigis Kram. Die Nahrungskette in diesem Dorf ist ein Witz.',
+  lines:{progress:'Ein Keiler weniger. Eine Bank mehr. Rechnen kann ich.',complete:'Bänke gesichert. Sigi hat zugeguckt. Sigi hat genickt. Sigi hat die Bänke behalten.',claimed:'Ich hab die Bänke nachts geholt. Mit Kevin. Frag nicht, mit wessen Hänger.'}}
 ];
 export const questReward=t=>t.reward??BALANCE.xp.quest[t.type]??180;
 /** Deterministische Auswahl: je Typ eine Rotation der Vorlagen abhängig vom Welt-Seed, ohne Wiederholung innerhalb einer Welt. */

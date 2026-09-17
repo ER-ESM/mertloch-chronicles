@@ -18,7 +18,9 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 | `npcs.js` | `NPCS`, `FACTIONS`, `VILLAGERS` | clan.js (dressStory) |
 | `quests.js` | `SIDE_QUESTS` (Vorlagen), `pickTemplates()` | clan.js (dressStory) |
 | `dialogues.js` | `MAIN_DIALOGUE` (Ida), `BOSS_LINES`, `ENEMY_BARKS`, `SYSTEM_LINES` | engine.js |
-| `story.js` | `STORY`, `LORE`, `STORY_CHAPTERS` | clan.js, dialogues.js |
+| `story.js` | `STORY`, `LORE`, `ACTS`, `STORY_CHAPTERS` (Akt 1 „Filmriss“ = Kapitel 1–4; docs/AKT-1-FILMRISS.md) | clan.js, dialogues.js |
+| `memories.js` | `MEMORY_FRAGMENTS` (Erinnerungsfetzen des Helden), `MEMORY_TRIGGERS`, `triggeredMemories()` | Engine (offen) |
+| `buildings.js` | `BUILDINGS` (Basisbau der Bude), `BUILDING_EFFECTS`, `nextStage()`, `buildingEffects()` | Engine (offen) |
 | `schema.js` | `validateContent()` – Schema- und Invariantenprüfung | tests/content.test.mjs |
 | `BALANCE-REPORT.md` | erzeugt von `scripts/balance-report.mjs` | Mensch, Agent |
 | `ART-BRIEF.md` | erzeugt von `scripts/art-brief.mjs` | Bild-KI |
@@ -42,7 +44,7 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 ## Was die Engine heute kann und was nicht
 
 - **Kann:** beliebig viele Archetypen, Elite (`elite:true`, `damage`-Faktor), Bosse mit Phasen-Sprüchen, eigene `CAST_SETS`, Beutefamilien, Verpflegung mit `heal`/`energy`, Uniques mit den Procs aus `PROCS`, Quest-Vorlagen je Typ mit eigenen Item-/Gegnernamen und Gesprächszeilen, gewichtete Spawn-Tabellen nach Entfernung.
-- **Kann noch nicht:** Story-Kapitel 2 und 3 (Daten fertig; brauchen Lager in `world-layout.js` und einen Kapitelumschalter in `engine.js`), Händler, Handwerk aus Material, neue *aktive* Fähigkeiten ohne Icon, Gegner-Sprüche im HUD (`ENEMY_BARKS` liegen bereit), Dorfbewohner-Sprechblasen mit Text (`VILLAGERS.says` liegt bereit), eigene Sprites je `variant`.
+- **Kann noch nicht:** Akt-1-Kapitel 2–4 (Daten fertig; brauchen Lager in `world-layout.js` und einen Kapitelumschalter in `engine.js`), Erinnerungsfetzen, Basisbau, Mentoren-NPCs an der Bude, Händler, Handwerk aus Material, neue *aktive* Fähigkeiten ohne Icon, Gegner-Sprüche im HUD (`ENEMY_BARKS` liegen bereit), Dorfbewohner-Sprechblasen mit Text (`VILLAGERS.says` liegt bereit), eigene Sprites je `variant`.
 
 ## Balancing-Korridor (Stand des ersten Berichts)
 

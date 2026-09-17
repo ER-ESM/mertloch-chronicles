@@ -10,7 +10,10 @@ export const ARCHETYPES={
  raven:{name:'Leergut-Rabe',type:'wolf',skin:'goose',variant:'raven',family:'raven',behavior:'neutral',level:1,hp:260,aggroRange:0,roamRadius:130,speed:84,respawn:[22,40],tier:1,look:'Schwarzer Rabe mit Kronkorken im Schnabel, frech, leicht zerzaust'},
  fox:{name:'Pfandfuchs',type:'wolf',skin:'badger',variant:'fox',family:'fox',behavior:'aggressive',level:2,hp:400,aggroRange:95,roamRadius:120,speed:80,respawn:[30,50],tier:1,castSet:'fox',look:'Rostroter Fuchs mit Pfandbon im Maul, listiger Blick'},
  scrounger:{name:'Festzelt-Schnorrer',type:'cultist',skin:'warden',variant:'scrounger',family:'scrounger',behavior:'aggressive',level:2,hp:520,aggroRange:125,roamRadius:100,speed:55,respawn:[36,58],tier:1,castSet:'scrounger',look:'Mann mit Bauchtasche, Bierbecher-Kette, Trainingsjacke, bettelnde Geste'},
- inspector:{name:'Ordnungsamt-Praktikant',type:'cultist',skin:'warden',variant:'inspector',family:'inspector',behavior:'aggressive',level:3,hp:700,aggroRange:150,roamRadius:100,speed:50,respawn:[45,70],tier:1,castSet:'inspector',look:'Junger Mann mit Warnweste, Klemmbrett, viel zu großer Dienstmütze'}
+ inspector:{name:'Ordnungsamt-Praktikant',type:'cultist',skin:'warden',variant:'inspector',family:'inspector',behavior:'aggressive',level:3,hp:700,aggroRange:150,roamRadius:100,speed:50,respawn:[45,70],tier:1,castSet:'inspector',look:'Junger Mann mit Warnweste, Klemmbrett, viel zu großer Dienstmütze'},
+ // --- Akt 1: Kapitel-Gegner (nur in Kapitel-Lagern, nicht in den freien Spawn-Tabellen; siehe BACKLOG „Kapitel 2–4 aktivieren“) ---
+ kegler:{name:'Kegelbruder aus Kalt',type:'cultist',skin:'warden',variant:'kegler',family:'kegler',behavior:'aggressive',level:3,hp:640,aggroRange:130,roamRadius:100,speed:54,respawn:[40,64],tier:1,castSet:'kegler',chapter:3,look:'Mann in Vereinspolo „Alle Neune Kalt“, Bauchansatz, Kegelkugel unter dem Arm, Trainingshose mit Bügelfalte'},
+ jga:{name:'Junggeselle im Game-Over-Shirt',type:'cultist',skin:'warden',variant:'jga',family:'jga',behavior:'aggressive',level:4,hp:720,aggroRange:140,roamRadius:110,speed:58,respawn:[40,66],tier:1,castSet:'jga',chapter:4,look:'Junger Mann im zu engen weißen T-Shirt „GAME OVER“, Sonnenbrille schief, Bierbong am Gürtel, Bauchtasche, seit Samstag wach'}
 };
 /** Seltene Elite: erscheint in weiten Feldern anstelle eines normalen Reviers. */
 export const ELITES={
@@ -26,10 +29,20 @@ export const CAMP_ENEMIES={
 export const BOSSES={
  horst:{...CAMP_ENEMIES.boss,id:'horst',chapter:1,title:'Vorstand für Hausordnung · Ruhe 22:01 e. V.',look:'Beamter im Panzer aus laminierten Hausordnungen, Aktenordner als Schild, Stempel als Waffe',
   phases:[{at:1,line:'Absatz 1: Ruhe. Absatz 2: siehe Absatz 1.'},{at:.5,line:'Ich habe das alles DOKUMENTIERT!'},{at:.15,line:'Ich … ich zeige mich selbst an.'}]},
- gisela:{id:'gisela',chapter:2,name:'Gisela Gießkanne',type:'boss',skin:'horst',variant:'gisela',family:'gisela',behavior:'aggressive',level:6,hp:4200,speed:44,aggroRange:110,roamRadius:30,respawn:[120,150],castSet:'gisela',leash:420,
+ // --- Akt 1, Kapitel 2–4 ---
+ sigi:{id:'sigi',chapter:2,name:'Sperrmüll-Sigi',type:'boss',skin:'horst',variant:'sigi',family:'sigi',behavior:'aggressive',level:5,hp:3600,speed:44,aggroRange:110,roamRadius:30,respawn:[120,150],castSet:'sigi',leash:420,
+  title:'Schrottplatz-König · „Finderrecht ist Finderrecht“',look:'Massiger Mann in ölverschmierter Latzhose, Greifzange als Waffe, Kühlschranktür als Schild, kalte Zigarre im Mundwinkel, Hund aus Schrott daneben',
+  phases:[{at:1,line:'Lag auf der Straße. Gehört mir. So ist das Gesetz. Mein Gesetz.'},{at:.5,line:'Den Tresen kriegt ihr nur mit Hänger. Und der Hänger gehört auch mir!'},{at:.2,line:'Okay. OKAY. Der Tresen war eh morsch. Sagt das nicht Dieter.'}]},
+ klaus:{id:'klaus',chapter:3,name:'Kegelkönig Klaus',type:'boss',skin:'horst',variant:'klaus',family:'klaus',behavior:'aggressive',level:6,hp:4200,speed:46,aggroRange:115,roamRadius:30,respawn:[120,150],castSet:'klaus',leash:420,
+  title:'Kegelkönig · Alle Neune Kalt e. V.',look:'Drahtiger Mann um die 50 in Vereinspolo, goldene Kegelkönig-Kette, in jeder Hand eine Kugel, Bierbauch trotz Drahtigkeit, Schnurrbart wie ein Lineal',
+  phases:[{at:1,line:'Dorfpokal 2011. Ihr habt die Kugel behalten. Heute hol ich sie mir. Und eure Bahn gleich mit.'},{at:.5,line:'Das ist kein Pudel! Das war ABSICHT!'},{at:.2,line:'Zwölf Mann. Weiße Shirts. Und einer in Unterhose. Das … das wart ihr gar nicht, oder?'}]},
+ timo:{id:'timo',chapter:4,name:'Trauzeuge Timo',type:'boss',skin:'horst',variant:'timo',family:'timo',behavior:'aggressive',level:7,hp:4800,speed:50,aggroRange:120,roamRadius:35,respawn:[130,160],castSet:'timo',leash:440,
+  title:'Trauzeuge · seit Samstag wach',look:'Junger Mann mit Schärpe „TRAUZEUGE“, GAME-OVER-Shirt, Bierbong wie ein Zepter, Sonnenbrille mit nur einem Glas, links Flipflop, rechts Sneaker, steht auf einem Busdach',
+  phases:[{at:1,line:'DER JGA IST ERST VORBEI, WENN BASTIAN HEIRATET! Wo ist Bastian?'},{at:.5,line:'Warte mal. Warte. Dich kenn ich. DU BIST DER NACHTBUS-TYP!'},{at:.2,line:'Du hast die Kiste getragen. Du hast sie ihm GEGEBEN. Und ich hab gefilmt. Wo ist mein Handy?'}]},
+ gisela:{id:'gisela',chapter:5,name:'Gisela Gießkanne',type:'boss',skin:'horst',variant:'gisela',family:'gisela',behavior:'aggressive',level:6,hp:4200,speed:44,aggroRange:110,roamRadius:30,respawn:[120,150],castSet:'gisela',leash:420,
   title:'Erste Vorsitzende · Ruhe 22:01 e. V.',look:'Ältere Dame mit Gartenschürze, Strohhut, riesiger Gießkanne, Blick wie ein Bußgeldbescheid',
   phases:[{at:1,line:'Das ist mein Beet. Das ist mein Dorf. Das ist meine Ruhe.'},{at:.5,line:'Ich habe den Bürgermeister auf Kurzwahl!'},{at:.2,line:'Kompost! Alles kommt auf den Kompost!'}]},
- automat:{id:'automat',chapter:3,name:'Der Pfandautomat 3000',type:'boss',skin:'horst',variant:'automat',family:'automat',behavior:'aggressive',level:9,hp:6000,speed:38,aggroRange:120,roamRadius:20,respawn:[150,200],castSet:'automat',leash:400,
+ automat:{id:'automat',chapter:6,name:'Der Pfandautomat 3000',type:'boss',skin:'horst',variant:'automat',family:'automat',behavior:'aggressive',level:9,hp:6000,speed:38,aggroRange:120,roamRadius:20,respawn:[150,200],castSet:'automat',leash:400,
   title:'Prototyp · Nimmt keine Dosen an',look:'Mannshoher Pfandautomat auf Raupenketten, Greifarm, rotes Display „NICHT ANGENOMMEN“, Kabel hängen heraus',
   phases:[{at:1,line:'BITTE FLASCHE EINFÜHREN. FLASCHE NICHT ERKANNT.'},{at:.5,line:'FEHLER 22:01. RUHESTÖRUNG ERKANNT.'},{at:.2,line:'BON WIRD GEDRUCKT … BON WIRD GEDRUCKT …'}]}
 };
@@ -70,7 +83,31 @@ export const CAST_SETS={
   scan:{name:'Barcode-Scan · Q unterbricht',total:3,damage:260,interruptible:true},
   crusher:{name:'Dosenpresse · Parade',total:1.3,damage:140,radius:72},
   conveyor:{name:'Förderband · Fläche verlassen',total:2.6,damage:200,radius:100,ground:true},
-  reject:{name:'NICHT ANGENOMMEN · ausweichen',total:1.4,damage:160,radius:40,ground:true}}}
+  reject:{name:'NICHT ANGENOMMEN · ausweichen',total:1.4,damage:160,radius:40,ground:true}}},
+ // --- Akt 1 ---
+ kegler:{cycle:['rempler','kugel','runde'],casts:{
+  rempler:{name:'Schulterrempler · Parade',total:1,damage:75,radius:52},
+  kugel:{name:'Alle Neune · ausweichen',total:1.6,damage:120,radius:40,ground:true},
+  runde:{name:'Runde für alle · Q unterbricht',total:2.2,damage:130,interruptible:true}}},
+ jga:{cycle:['sprint','spruch','pyramide'],casts:{
+  sprint:{name:'Bierbong-Sprint · ausweichen',total:1.4,damage:110,radius:38,ground:true},
+  spruch:{name:'Trinkspruch · Q unterbricht',total:2,damage:120,interruptible:true},
+  pyramide:{name:'Kotzpyramide · Fläche verlassen',total:2.3,damage:145,radius:60,ground:true}}},
+ sigi:{cycle:['zange','haenger','finderrecht','presse'],casts:{
+  zange:{name:'Greifzange · Parade',total:1.2,damage:100,radius:72},
+  haenger:{name:'Hänger rückwärts · ausweichen',total:1.6,damage:170,radius:46,ground:true},
+  finderrecht:{name:'FINDERRECHT! · Q unterbricht',total:2.6,damage:200,interruptible:true},
+  presse:{name:'Schrottpresse · Fläche verlassen',total:2.5,damage:175,radius:90,ground:true}}},
+ klaus:{cycle:['pudel','vollekugel','koenigspose','abraeumer'],casts:{
+  pudel:{name:'Pudel mit Anlauf · Parade',total:1.1,damage:110,radius:70},
+  vollekugel:{name:'Volle Kugel · ausweichen',total:1.5,damage:180,radius:42,ground:true},
+  koenigspose:{name:'Kegelkönig-Pose · Q unterbricht',total:2.8,damage:210,interruptible:true},
+  abraeumer:{name:'Abräumer · Fläche verlassen',total:2.4,damage:170,radius:95,ground:true}}},
+ timo:{cycle:['schaerpe','busdach','trinkspruch','pyramide'],casts:{
+  schaerpe:{name:'Schärpen-Schwinger · Parade',total:1.2,damage:120,radius:74},
+  busdach:{name:'Busdach-Sprung · ausweichen',total:1.5,damage:190,radius:44,ground:true},
+  trinkspruch:{name:'Trinkspruch auf Bastian · Q unterbricht',total:2.9,damage:230,interruptible:true},
+  pyramide:{name:'Kotzpyramide XXL · Fläche verlassen',total:2.6,damage:190,radius:100,ground:true}}}
 };
 /** Zusammensetzung der freien Feldpopulation. Gewichte je Distanzstufe; Summe egal, wird normiert. */
 export const SPAWN_TABLES={

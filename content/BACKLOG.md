@@ -13,7 +13,11 @@ Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Age
 - [x] **Schwung (Momentum), Proc-Rahmen, Gegnergruppen, Kettenzug** – umgesetzt 2026-09-17 (engine.js, procs.js, encounters.js), Tests in tests/flow.test.mjs.
 - [x] **Trainingsarena** – arena.js, Admin-Reiter „Trainingsarena“ (2026-09-17).
 
-- [ ] **Story-Kapitel 2 und 3 aktivieren** – `STORY_CHAPTERS[1..2]` sind fertig (Ziele, Boss, Dialoge, Belohnung). Nötig: Kapitelzustand in `engine.js` (`quest.chapter`), Lager für Gisela und den Pfandautomaten in `world-layout.js`, Anzeige in `app.js`/`questlog-ui.js`.
+- [ ] **Akt 1 „Filmriss“: Kapitel 2–4 aktivieren** (docs/AKT-1-FILMRISS.md) – `STORY_CHAPTERS[1..3]` sind fertig (Ziele, Boss, Dialoge mit ongoing/reward/claimed, Belohnung, Hinweis, Fetzen). Nötig: Kapitelzustand in `engine.js` (`quest.chapter`, Fortschritt je Ziel-Art `kill family` / `gather item` / `boss`), Lager in `world-layout.js`: Sperrmüllplatz am Ortsrand (Sigi + Paletten), Festplatz/Kegelbahn (Kegler + Kabel), Bus im Feld am Ortsausgang (Junggesellen + Shirts, Timo auf dem Dach). Archetypen `kegler`/`jga` nur in diesen Lagern, nicht in den freien Spawn-Tabellen. Kapitel 5/6 (Gisela, Automat) sind `reserve:true` und bleiben aus.
+- [ ] **Erinnerungsfetzen** – `MEMORY_FRAGMENTS` + `triggeredMemories(event, seen)`. Engine meldet Ereignisse `{kind, …}` laut `MEMORY_TRIGGERS` (tutorialDone, consumable{item}, chapterClaimed{chapter}, bossDefeat{boss}, firstDeath, buildingStage{building,stage}, level{level}); Speicher `memories.seen[]`; Event `memory` an die UI mit dem Fetzen.
+- [ ] **Basisbau** – `BUILDINGS`, `nextStage`, `buildingEffects`. Speicher `buildings{id:stufe}`; Bauen zieht Material aus dem Rucksack ab; Effekte (`BUILDING_EFFECTS`) in `combatStats`/Verpflegung/Beute/EP einrechnen (restRegen, foodHeal, consumableCd, coinDrop, gearChance, xpBonus, damageTaken, buffDuration, dashCd, energyOnKill, respawnHp). Sichtbar erst ab abgeholtem Kapitel 2. Optional: Bude-Grafik je Stufe (Welt).
+- [ ] **Mentoren als NPCs an der Bude** – Dieter, Anni, Kevin stehen als Figuren am Treffpunkt (`NPCS.*.member`), sprechen `hubLine(id, chapter, index, actDone)`. Der Held trägt „ihre Klamotten“ (= Klassenwahl); Klassenwechsel am Treffpunkt bleibt. Entscheidung Nutzer: Held als Fremder (gebaut) vs. Held = Clanmitglied ohne Gedächtnis (docs/AKT-1-FILMRISS.md §10).
+- [ ] **Start ohne Hose** – kosmetisch: bis zum Abschluss von Kapitel 1 hat der Held keinen Beinschutz-Slot bestückt (Horsts Beweismittelkiste liefert die Hose). Reine Item-/Layer-Frage; Startausrüstung sonst unverändert.
 - [ ] **Gegner-Sprüche im HUD** – `ENEMY_BARKS` und `BOSSES.*.phases` laufen heute ins Kampflog. Sprechblase über dem Gegner wäre besser sichtbar.
 - [ ] **Dorfbewohner reden** – `VILLAGERS.says` als Sprechblasentext in `village-life.js`/Renderer.
 - [ ] **Sprites je `variant`** – Ladeliste `assets/content-art/<kind>/<id>.png`; Renderer soll `variant` vor `skin` prüfen.
@@ -37,7 +41,8 @@ Siehe docs/UEBERGABE-UI-2026-09-12.md (Questdialog aus q.lines, Elite im Zielfen
 
 - [ ] **Landjungs-Themen ausbauen** – Zukunftsideen in [IDEEN-LANDJUNGS.md](IDEEN-LANDJUNGS.md): Schrauberhof (Racing/Tuning), Kalles Kiosk (Sport- und Dorfwetten), LAN-Scheune (Gaming/Nerds), Prompt & Partner (Vibe-Coding-/KI-Slop-Parodie). Mit NPCs, Dialogen, Questketten, Items, Skillvarianten und Platzierungsregeln; noch nicht implementiert. Als Einstieg LAN-Scheune mit vorhandenen Figuren und Kabelspiel prüfen.
 - [ ] Elite-Titel (`title`) im Zielfenster anzeigen (heute „ELITE ·“ nur bei Bossen).
-- [ ] Mehr Quest-Vorlagen für Kapitel 2/3 (Praktikanten vertreiben, Dosenblech sammeln), sobald die Kapitel laufen.
+- [ ] Mehr Quest-Vorlagen für Akt 1, Kapitel 3/4 (Kegelbahn aufräumen, Bus entladen), sobald die Kapitel laufen. Fünf Akt-1-Vorlagen sind drin (Dieter, Kevin, Anni, Pit, Ida).
+- [ ] Akt 1 perfektionieren, bevor Neues kommt: Spieltest der Dialoglänge (Ida-Belohnungen haben drei Absätze), Fetzen-Timing, Basisbau-Kosten (docs/AKT-1-FILMRISS.md §10).
 - [ ] Zweite Elite für die Außenbezirke (menschlich, z. B. „Oberpraktikant Olaf“).
 - [ ] Set-Boni für Dorflegenden (z. B. drei Ruhe-22:01-Teile).
 ## Erledigt · Hofprobe und Talentbäume 0.16
