@@ -37,3 +37,75 @@ Die Story heißt nicht mehr „Die letzte Kiste“; Kapitel 1 heißt „Der übl
 - `npm run content:check` grün (15 Tests, davon zwei neue für Akt-Struktur und Basisbau).
 - Klickpfad nach UI-Umbau: Hofprobe → Ida-Intro (neuer Text) → drei Ziele mit neuen Labels → Horst → Belohnungsdialog (Alibi, Busticket) → `claimed`-Zeile. Screenshot in `*-review/`.
 - Clanbuch bleibt EIN Fenster mit Reitern (docs/MENUE-BEWERTUNG-2026-09-17.md): „Erinnerungen“ und „Bude“ sind Reiter, keine neuen Fenster.
+
+## 4. Engine → UI (Stand 2026-09-17, Branch `content-backend`)
+
+Akt 1 läuft jetzt vollständig in der Engine: Kapitel 1–4 mit eigenen Lagern, Erinnerungsfetzen, Basisbau und Mentoren an der Bude. Alles Folgende ist neu am Spielzustand (`game.*`, `game.save()`) oder als Ereignis (`game.emit`). Texte kommen weiterhin ausschließlich aus `content/` – die Engine liefert nur IDs, Zahlen und Zustände.
+
+### 4.1 Kapitelzustand
+
+| Name | Typ | Wann gesetzt | Was die UI tun soll |
+|---|---|---|---|
+| `game.quest.chapter` | 1–4 | beim Laden; +1 nach jedem abgeholten Kapitel | Titel/Text aus `chapterAt(n)` bzw. `chapterDialogue(n)` holen statt `MAIN_DIALOGUE.ida.intro` fest zu verdrahten |
+| `game.quest.accepted` | bool | `acceptQuest()`; nach Kapitelwechsel wieder `false` | Angebot vs. Laufendes Gespräch |
+| `game.quest.chapterClaimed` | 0–4 | nach `claimQuest()` | schaltet Basisbau frei (`buildingsUnlocked(chapterClaimed)`), Kapitel-Liste im Clanbuch |
+| `game.quest.claimed` | bool | = `chapterClaimed >= 1` | **nur noch Kapitel 1** (alte Spielstände, altes HUD). Für „Kapitel erledigt?“ ab jetzt `chapterClaimed` benutzen |
+| `game.quest.actDone` | bool | nach Kapitel 4 | Aktschluss: Ida zeigt `MAIN_DIALOGUE.ida.bus.claimed`, `destination()` liefert `null`, keine neue Annahme mehr |
+| `game.quest.counts` | `{ "<kapitel>:<zielindex>": n }` | bei Kills/Sammelpunkten ab Kapitel 2 | nicht direkt lesen – `chapterProgress()` benutzen |
+| `game.quest.gathered` | `string[]` | eingesammelte Sammelpunkte (welt-gebunden) | Punkte in der Welt ausblenden, die schon abgeräumt sind |
+| `game.quest.wolves/cultists/boss` | Zahl/bool | unverändert – Speicherfelder von Kapitel 1 | nicht mehr direkt fürs HUD lesen |
+
+Neue Methoden:
+
+- `game.chapter()` → aktuelles `STORY_CHAPTERS`-Objekt (Titel, Summary, Ziele, Belohnung, Hinweis, Fetzen, unlocks).
+- `game.objectives()` → `objectives` des laufenden Kapitels.
+- `game.chapterProgress()` → `[{objective, done, need, complete}, …]` – genau das, was `#questTasks` braucht (Label aus `objective.label`, Zähler aus `done/need`).
+- `game.questReady()` → alle Ziele erfüllt und noch nicht abgeholt.
+- `game.rewardKey()` → `'main'` (Kapitel 1) bzw. `'main-2/3/4'`. **Pflicht:** `rewardPanel(game, game.rewardKey())` statt fest `'main'`, sonst passt die Auswahl ab Kapitel 2 nicht zu `claimQuest()`.
+- `game.destination()` → Wegmarke; `label` ist jetzt das Ziel-Label aus `content/story.js`, nicht mehr „Geplünderter Grillplatz“ o. Ä.
+- Ereignis `chapterChanged {chapter, claimed, actDone}` nach `claimQuest()` → Questlog/Clanbuch neu zeichnen, Kapitel-Belohnungsdialog schließen.
+
+### 4.2 Sammelpunkte (Ziel-Art `gather`)
+
+Kapitel 2–4 haben je ein `gather`-Ziel. Fortschritt = eingesammelte Punkte **oder** Bestand im Rucksack (was mehr ist) – wer das Material aus Beute hat, muss nicht sammeln, wer baut, verliert keinen Fortschritt.
+
+- `game.gatherPoints()` → offene Punkte `{id, x, y, item}` des laufenden Kapitels (zeichnen wie Questgegenstände).
+- `game.gatherInteraction()` → Punkt in Reichweite (36) für die Aktionstaste; Beschriftung z. B. `ITEMS[p.item].name + ' sammeln'`.
+- `game.collectGather(id)` → packt das Material ein, zählt das Ziel hoch, Toast aus `SYSTEM_LINES.gatherProgress`.
+
+### 4.3 Erinnerungsfetzen
+
+- Speicher `game.memories.seen: string[]` (IDs aus `MEMORY_FRAGMENTS`, Reihenfolge = Erlebnisreihenfolge).
+- Ereignis `memory {fragment}` – `fragment` ist der komplette Eintrag (`id, order, title, text, clue`). Jeder Fetzen kommt **genau einmal**.
+- Zusätzlich ein Toast `SYSTEM_LINES.memory(title)`.
+- UI: Einblendung mit `title` + `text` und einer Schaltfläche „Weiter“ (Sepia, pausiert nichts); Clanbuch-Reiter „Erinnerungen“ listet `MEMORY_FRAGMENTS` in `order`, gesehene mit `clue`, ungesehene verdeckt.
+- Ausgelöst wird heute: Hofprobe bestanden, erstes Kaltgetränk, Kapitelbelohnung 1–4, Boss besiegt, erster Tod, Tresen Stufe 1, Stufenaufstieg (dafür gibt es noch keinen Fetzen).
+
+### 4.4 Basisbau
+
+- Speicher `game.buildings: {id: stufe}` (nur gebaute Gebäude; 0 wird nicht gespeichert).
+- `game.nextBuildStage(id)` → nächste Stufe (`{stage, name, cost, effect, text}`) oder `null` (Endausbau oder Kapitel fehlt).
+- `game.build(id)` → prüft Kapitel und Material, zieht das Material aus dem Rucksack ab, Toast `SYSTEM_LINES.building(stufenname, stufe)`, Log mit dem Stufentext.
+- `game.baseEffects()` → Summe aller Vorteile (`buildingEffects`); taugt für eine Übersichtszeile „Was die Bude bringt“.
+- Ereignis `buildingsChanged {building, stage}` → Reiter „Bude“ neu zeichnen; `rpgChanged` kommt gleich mit (Material ist weg).
+- UI: Reiter „Bude“ im Clanbuch, je Gebäude Pate (`BUILDINGS[id].owner` → `NPCS`), Stufe, Kosten gegen `countItem(rpg, item)` gestellt, Vorteilstext; Schaltfläche „Ausbauen“ ruft `game.build(id)`. Sichtbar ab `buildingsUnlocked(game.quest.chapterClaimed)`.
+- Es gibt **keine** Ortsprüfung: gebaut werden darf überall. Wenn der Bau an die Bude gebunden sein soll, sagt das die UI (Schaltfläche nur am Treffpunkt) oder es kommt als neue Regel in die Engine.
+
+### 4.5 Mentoren an der Bude
+
+- `world.mentors` → `[{id, classId, name, role, type:'mentor', x, y}]` für Dieter, Anni (`baerbel`) und Kevin, am Treffpunkt platziert (Reihenfolge stabil aus `NPCS`).
+- `game.mentorInteraction()` → Mentor in Reichweite (42) für die Aktionstaste.
+- `game.talkToMentor(id)` → `{npc, name, line}`; die Zeile kommt aus `hubLine(id, chapter, index, actDone)` und wechselt bei jedem Ansprechen (Zähler `game.mentorTalks`).
+- Ereignis `mentorTalk {npc, name, line, chapter, actDone}` → Gesprächsfenster oder Sprechblase; Porträt über `classes.js`/`PERSON_APPEARANCE` (`classId` liegt am Mentor).
+- Der Renderer muss die drei Figuren noch zeichnen (heute zeichnet er nur `world.npc`); bis dahin sind sie unsichtbar, aber ansprechbar.
+
+### 4.6 Lager der Kapitel
+
+`world.camps` enthält jetzt zusätzlich je Kapitel 2–4 ein Mob-Lager (`chapter-<n>-mob`, Feld `archetype`) und ein Boss-Lager (`chapter-<n>-boss`, Felder `boss`, `gathers`). Beide tragen `chapter` und `title` (= Ziel-Label). Bevölkert werden sie erst, wenn das Kapitel läuft; Kapitel 5/6 (`reserve:true`) bekommen kein Lager. Für die Karte: `camp.title` benutzen, nicht raten.
+
+### 4.7 Was in der alten UI noch klemmt
+
+- `app.js:91` zeigt nach Kapitel 1 wieder `introDialogue()` (Kapitel-1-Text) an, weil `quest.accepted` zurückgesetzt wird → auf `chapterDialogue(game.quest.chapter)` umstellen.
+- `app.js:103` zeigt `q.claimed` als „alles fertig“ → auf `game.chapterProgress()` umstellen.
+- `app.js:133` ruft `showReward('main')` → `game.rewardKey()` benutzen.
+- `renderer.js:65` markiert Ida mit `✦`, sobald Kapitel 1 abgeholt ist → `game.quest.actDone` statt `quest.claimed`.
