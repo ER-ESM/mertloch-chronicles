@@ -1,5 +1,7 @@
 # Grafikbedarf der UI
 
+Aktualisierung 17.09.: Die hier gelisteten bestehenden Motive sind im Präzisionskatalog geliefert und angebunden. Aktuelle Auflösung, Abdeckung und Prüfungen: [Präzisionspixel](PRAEZISIONSPIXEL-2026-09-17.md). Historische Fallback- und Pixelangaben unten dienen der Zuordnung; neue Arbeit verwendet `assets/precision/runtime/catalog.json`.
+
 Für alles, was nicht aus `content/` kommt (UI-Icons, Rahmen, Fenster-Embleme, HUD-Elemente). Inhaltliche Bilder (Items, Gegner, Bosse, NPCs, Skills) stehen automatisch in `content/ART-BRIEF.md`.
 
 Format je Zeile: ID · Zweck · Größe · Bildhinweis · aktueller Fallback.

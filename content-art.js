@@ -1,9 +1,9 @@
 // Anbindung der Grafiklieferung vom 2026-09-17 (docs/UEBERGABE-GRAFIK-AN-UI-2026-09-17.md).
-// Verbindlich ist assets/content-art/handoff-catalog.json: `path`, `aliases`, je Asset
+// Verbindlich ist assets/precision/runtime/catalog.json: `path`, `aliases`, je Asset
 // `frameSize`/`pivot`/`columns` und pro Frame Ausschnitt und Sockets.
 // Diese Datei lädt und schlägt nach; gezeichnet wird in live-art.js, ui-art.js und talent-art.js.
 // Fehlt der Katalog oder ein Bild, liefert jede Funktion null/false — die alten Zeichenwege bleiben.
-const CATALOG='./assets/content-art/handoff-catalog.json';
+const CATALOG='./assets/precision/runtime/catalog.json';
 export const contentArt={ready:false,catalog:null,images:new Map()};
 let pending=null;
 const loadImage=src=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});
@@ -33,10 +33,10 @@ export function contentActor(id){
  const m=poses.meta,frameSize=m.frameSize??contentArt.catalog.frameSize,pivot=m.pivot??contentArt.catalog.pivot;
  return {id:poses.id,poses,walk,frameSize,pivot,columns:m.columns,rows:contentArt.catalog.directions.length,
   nativeHeight:m.nativeHeight||frameSize,worldHeight:m.worldHeight||frameSize/2,
-  stride:DEFAULT_STRIDE*((m.nativeHeight||52)/52)};
+  gearScale:m.gearScale||1,stride:DEFAULT_STRIDE*((m.worldHeight||26)/26)};
 }
 export const hasContentActor=id=>!!contentActor(id);
-/** Welthöhe des gelieferten Bogens (2 native Pixel = 1 Welteinheit) oder 0. */
+/** Welthöhe des gelieferten Bogens (4 native Pixel = 1 Welteinheit) oder 0. */
 export const contentActorHeight=id=>contentActor(id)?.worldHeight||0;
 
 /**

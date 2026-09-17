@@ -24,6 +24,7 @@
     "sprites:detail": "node tools/sprite-pipeline/build-detail.mjs && node tools/sprite-pipeline/build-walk.mjs && node tools/sprite-pipeline/build-boar-rig.mjs",
     "sprites:walk": "node tools/sprite-pipeline/build-walk.mjs",
     "sprites:boar": "node tools/sprite-pipeline/build-boar-rig.mjs",
-    "sprites:live": "node tools/sprite-pipeline/build-live.mjs"
+    "sprites:live": "node tools/sprite-pipeline/build-live.mjs",
+    "sprites:precision": "node tools/sprite-pipeline/build-precision.mjs"
   }
 }

@@ -1,3 +1,9 @@
+# Maifeld-Präzisionspixel · aktiver Grafikstandard
+
+Seit 17.09.2026 gilt auf ausdrücklichen Nutzerwunsch [Präzisionspixel](docs/PRAEZISIONSPIXEL-2026-09-17.md): 104 native Körperpixel bei 26 Welteinheiten, feinere Materialrampen, 48–64-px-Icons aus den Originalen. `assets/precision/runtime/catalog.json` ist die aktive Lieferung; `npm run sprites:precision` reproduziert sie. Die folgenden Fassungen sind historische Referenzen, ihre 52-px-Begrenzung gilt nicht mehr.
+
+---
+
 # Maifeld-Detailpixel · Art Direction 0.19
 
 Seit 16.09.2026 ist **Maifeld-Detailpixel** der verbindliche Stil des Hauptspiels. Aktueller Vertrag: [Live-Optik und Ausrüstung](docs/LIVE-OPTIK-ARBEITSPLAN-2026-09-16.md). Die folgenden Abschnitte dokumentieren die früheren Grafikstände; bei Widersprüchen gilt dieser Vertrag.

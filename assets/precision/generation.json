@@ -1,0 +1,497 @@
+{
+  "date": "2026-09-17",
+  "records": [
+    {
+      "id": "kegler",
+      "kind": "enemies",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: An adult male rural bowling club member with modest beer belly, teal club polo with a tiny bowling-pin emblem, navy creased track trousers, brown shoes, ONE black bowling ball tucked in the near arm. Belligerent ruddy face and short brown hair. Not a policeman.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-7488c430-0503-41d4-a6c7-b0417aa3f353.png",
+      "output": "assets/precision/sources/kegler-v1.png",
+      "sourceHash": "f6b8de4eada30f429df9ab9229def24db66a7ec717a188b6b1e5bfed92613675"
+    },
+    {
+      "id": "jga",
+      "kind": "enemies",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: A sleep-deprived young male bachelor-party guest in a tight white shirt with simple black broken-heart pictogram, crooked dark sunglasses, rust shorts, small belt bag, coiled beer-bong tube fixed to belt, orange sunburn. Natural walking, no huge held staff. Not a policeman.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-9cb65ae1-b51b-4c71-84de-c3c68f81b19d.png",
+      "output": "assets/precision/sources/jga.png",
+      "sourceHash": "16252c5be9ea16ac64867c4e43a2006b363a6a17e16dc45d7e6baf4720209a9d"
+    },
+    {
+      "id": "kurt",
+      "kind": "npcs",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: Kegelbruder Kurt: friendly middle-aged modestly potbellied man with thinning silver hair, teal bowling-club polo with small white bowling-pin emblem, dark pressed trousers, brown shoes, carries a broom upright and one wooden bowling pin tucked under other arm. A conciliatory village character. No readable text.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-ad778486-2daf-4a0c-9dfe-5d63aa3eac0c.png",
+      "output": "assets/precision/sources/kurt-v1.png",
+      "sourceHash": "3baeffb1eadc4b00c85df1ddf2a2f36fab586149e1d8946957aa1d0248bdd1c5"
+    },
+    {
+      "id": "kalle",
+      "kind": "npcs",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: Kioskkönig Kalle: broad male village kiosk owner late50s, thick brown-gray moustache, sparse gray hair, pale blue shopkeeper coat over burgundy football jersey, dark trousers, cream apron with change pocket, pencil behind ear. One coin pouch attached to apron, hands empty. Friendly skeptical face.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-484070cd-4977-4721-9f16-2d82a642bba3.png",
+      "output": "assets/precision/sources/kalle.png",
+      "sourceHash": "2edb2b2d6f4824fd5fb41b87c240e43be80a11f42440ed6fe1f4bb5bcea063cb"
+    },
+    {
+      "id": "sigi",
+      "kind": "bosses",
+      "worldHeight": 32,
+      "nativeHeight": 128,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 256,
+      "pivot": {
+        "x": 128,
+        "y": 216
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: Sperrmüll-Sigi: massive middle-aged scrap-yard man, dirty olive-gray denim overalls over cream shirt, bald on top with gray side hair, cold cigar in mouth, rust-orange grabber tool in right hand, scratched WHITE REFRIGERATOR DOOR held as shield on left arm. No animal companion in atlas. Consistent tool and shield in all4directions, readable hinges, handle and rusty edges. Boss imposing through bulk, not giant head.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-369da9f2-36e0-4a71-92b6-022a4eb21ea5.png",
+      "output": "assets/precision/sources/sigi.png",
+      "sourceHash": "0d01c33ce5f4726cac10f4e74a532b5089d78814dbd5936011d0ae55e5c0d45f"
+    },
+    {
+      "id": "klaus",
+      "kind": "bosses",
+      "worldHeight": 30,
+      "nativeHeight": 120,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 256,
+      "pivot": {
+        "x": 128,
+        "y": 216
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: Kegelkönig Klaus: wiry rural bowling king about50 with a small beer belly, severe straight horizontal brown moustache, receding slick hair, teal club polo, black trousers, gold bowling-pin medal chain, ONE BLACK BOWLING BALL in EACH hand. Two balls total, no extra hands. Adult angry expressive face. Preserve held balls in all poses.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-f3cf2a4f-fcdd-427d-b4bf-f269aa883a3e.png",
+      "output": "assets/precision/sources/klaus.png",
+      "sourceHash": "d92f4cd352c549e324af60fdc7276113a463d77f78822f148e319c7251755cd5"
+    },
+    {
+      "id": "timo",
+      "kind": "bosses",
+      "worldHeight": 30,
+      "nativeHeight": 120,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 256,
+      "pivot": {
+        "x": 128,
+        "y": 216
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: Trauzeuge Timo: exhausted but euphoric adult young man, messy sandy hair, crooked sunglasses with one missing lens, white party shirt bearing a generic broken-heart pictogram, bright amber diagonal best-man sash WITHOUT WORDS, rust shorts, left foot flipflop and rightfoot sneaker. Holds a green funnel beerbong as scepter, cream tubing loops close toarm. Draw ONLY character, no bus rooftop, no ground.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-b4be5397-36c3-4e9c-92ef-a1945246fe63.png",
+      "output": "assets/precision/sources/timo.png",
+      "sourceHash": "a4f04a3e2073cae4da144ef225b9791efeeb55be9b15ce62d4e58f7b72704174"
+    },
+    {
+      "id": "cat",
+      "kind": "enemies",
+      "worldHeight": 12,
+      "nativeHeight": 48,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": true,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: An orange tabby village cat with cream muzzle chest and paws, green eyes, long curved striped tail. Four paws, accurate feline anatomy, calm walking gait, same tabby markings in all views. No clothes, no collar, no held objects. Small animal relative to human reference, not human proportions.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-bdb13f76-d14a-4efc-859f-6054abe6fdf0.png",
+      "output": "assets/precision/sources/cat.png",
+      "sourceHash": "7865b2e1f40e566f8d268e265fe04a05c83b1699ba2800e519cde7c8c100f7ec"
+    },
+    {
+      "id": "chicken",
+      "kind": "enemies",
+      "worldHeight": 10,
+      "nativeHeight": 40,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": true,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production SPRITE ATLAS for Maifeld precise detailed comic pixel RPG, based on the attached reference only for consistent material colors, lighting and adult anatomy. Crisp fine pixel clusters, clear face and hands, economical deliberate detail, not coarse chunky pixel blocks, not painterly blur, not 3D. Warm amber upper-left light, dark slate contours, muted olive/coral/cream. Exactly EIGHT columns and FOUR rows: 32 COMPLETE separate sprites on genuinely transparent background. Every figure has generous empty gutter on ALL sides, at least 25% cell height, none touch image edges or neighboring figures. Consistent proportions and costume across all frames. Each row fixes one direction: southeast front-right, southwest front-left, northeast rear-right, northwest rear-left. Columns: relaxed idle, left-foot-forward walking contact, passing step feet under hips, right-foot-forward walking contact, attack windup, attack impact, hurt recoil, relaxed recovery. Strong leg alternation and calm torso. Rear views show backs, not faces. Entire subjects and all props visible. No cast shadow, no floor, no grid, no labels, no writing, no watermark. Render enough real details to retain expressive identities at104px adult body height. Subject: A plump russet-brown village HEN with cream neck feathers, distinct red comb and wattles, tiny sharp amber beak, two thin ochre legs and toes, fan tail and tuckedwings. Clear realistic chicken anatomy simplified into comic pixel clusters, not duck. No clothes or held objects. Calm alternating leg gait, no body shaking.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-b4a9e33b-a1e9-481a-9b6b-49573656f5a0.png",
+      "output": "assets/precision/sources/chicken-v1.png",
+      "sourceHash": "fa522ce94b873d230b2676be66083ca0ab2d0950c1a63a34072c4ace71f39495"
+    },
+    {
+      "id": "campfire",
+      "kind": "effects",
+      "cols": 4,
+      "rows": 2,
+      "references": [
+        "assets/content-art/sources/2026-09-17/dieter-poses.png"
+      ],
+      "prompt": "Production sprite atlas: exactly FOUR columns and TWO rows, eight animation frames of ONE SMALL CAMPFIRE for Maifeld detailed comic pixel RPG. Transparent background, no labels, no floor, no shadows. All eight frames same fixed logs and same bottom anchor. Narrow amber and cream flame tongues gently change outline from frame to frame, clear dark brown split logs beneath, tiny warm ember, no smoke. Fine deliberate crisp pixel clusters and dark slate contour like reference palette. NOT chunky large pixels, not painterly blur, no glow outside silhouette. Generous transparent gutters around each fire, identical scale in all cells. Reference for color style ONLY, do not depict people.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-46445aa8-986d-4a42-bdcc-c32062a184c2.png",
+      "output": "assets/precision/sources/campfire.png",
+      "sourceHash": "236170b9729c2d07e9bb1d9a3dd45a5643d1d37b063182556f08ff1dc12418a2"
+    },
+    {
+      "id": "kurt",
+      "kind": "npcs",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/precision/sources/kurt-v1.png"
+      ],
+      "prompt": "Edit this production sprite atlas, preserving exactly the 8 columns by 4 rows, each figure pose, costume, face, scale, position, direction and transparent background. Correct ALL brooms: each broom has ONE small rust-brown bristle head at its BOTTOM near the feet and ONE plain wooden handle going upward, with a small rounded wooden tip. REMOVE the second bristle head at the TOP of every broom and replace it with plain narrow wood handle. Each figure carries one normal broom with only one brush head. Keep other props, anatomy, drawing detail and style unchanged. No writing, no frame, no floor.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-d98b96d9-9c89-45bc-b6eb-b560d9d404e3.png",
+      "output": "assets/precision/sources/kurt-v2.png",
+      "sourceHash": "19952dda034312fb0d1b2da9a30810a540a086b92b6478571ff57f21e2bee257"
+    },
+    {
+      "id": "kegler",
+      "kind": "enemies",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/precision/sources/kegler-v1.png"
+      ],
+      "prompt": "Edit this exact 8 column 4 row sprite atlas. Preserve all poses, directions, spacing, identity, clothes, scale, style and transparent background. Fix a prop continuity error: the man owns EXACTLY ONE black bowling ball, never two. In columns 5 and 6 where he raises or strikes with a bowling ball, REMOVE the second bowling ball held at the waist/under the other arm; leave that other hand empty with a natural fist. In every single sprite there must be one ball maximum. Preserve the ball used in the raised attack hand. No other changes.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-1a5b0abf-3712-484c-829a-1c3d897953f1.png",
+      "output": "assets/precision/sources/kegler-v2.png",
+      "sourceHash": "0d590b64290b8405d688ae109cd29e18a4976137a472149cca1a4f5e30c26553"
+    },
+    {
+      "id": "chicken",
+      "kind": "enemies",
+      "worldHeight": 10,
+      "nativeHeight": 40,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": true,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/precision/sources/chicken-v1.png"
+      ],
+      "prompt": "Edit this hen sprite sheet: preserve its exact 8 columns by 4 rows, transparent background, eight poses per row, palette, pixel detail and consistent hen identity. Keep first two rows intact. REPLACE third and fourth rows with proper REAR three-quarter views of the SAME hen. Row 3 faces away up-right (northeast), row 4 faces away up-left (northwest). The tail fan and brown back face the viewer and partially obscure the neck. No cream breast visible from the rear, no frontal chest, no frontal face. Small side hint of beak permitted beyond head silhouette. Cream feathers only on back of neck. Two legs accurately alternating for walk columns. No added objects, no letters, no floor.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-ff7d35f2-a991-41fe-bcf4-acc6722a164a.png",
+      "output": "assets/precision/sources/chicken.png",
+      "sourceHash": "3ed1dd64c09de744239d1c7a7786dd7f4ab01310e7e88c9841d78aace3efa4ac"
+    },
+    {
+      "id": "kurt",
+      "kind": "npcs",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/precision/sources/kurt-v2.png"
+      ],
+      "prompt": "Repack this sprite sheet into an EXACT 8 COLUMN by 4 ROW atlas with generous TRANSPARENT GAPS. Keep all 32 poses, clothes, faces, props, orientations and sharp pixel detail. EVERY whole figure including extended hands and broom must fit in the INNER 60% width and 65% height of its cell, centered, feet at same cell bottom inset. At least 20% empty LEFT and RIGHT margin in EVERY cell. Figures must NEVER touch across cells. Scale ALL figures equally smaller to make room for attack poses. Every broom has only ONE bristle head at bottom, plain wooden handle at top. Transparent background, no grid lines, no writing.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-381c8bd0-521a-4192-8056-ced156090104.png",
+      "output": "assets/precision/sources/kurt.png",
+      "sourceHash": "9d2dc5c855bef0c7c6b885db811e2bb101f359cca2869095c1b38491f08cb6fe"
+    },
+    {
+      "id": "kegler",
+      "kind": "enemies",
+      "worldHeight": 26,
+      "nativeHeight": 104,
+      "cols": 8,
+      "rows": 4,
+      "frameSize": 192,
+      "pivot": {
+        "x": 96,
+        "y": 160
+      },
+      "animal": false,
+      "columns": [
+        "idle",
+        "walk-a",
+        "walk-pass",
+        "walk-b",
+        "anticipation",
+        "impact",
+        "hit",
+        "rest"
+      ],
+      "references": [
+        "assets/precision/sources/kegler-v2.png"
+      ],
+      "prompt": "Repack this sprite sheet into an EXACT 8 COLUMN by 4 ROW atlas with generous TRANSPARENT GAPS. Keep all 32 poses, clothes, faces, props, orientations and sharp pixel detail. EVERY whole figure including extended hands and ball must fit in the INNER 60% width and 65% height of its cell, centered, feet at same cell bottom inset. At least 20% empty LEFT and RIGHT margin in EVERY cell. Figures must NEVER touch across cells. Scale ALL figures equally smaller to make room for attack poses. Every figure has exactly ONE bowling ball, never two, other hand empty. Transparent background, no grid lines, no writing.",
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "date": "2026-09-17",
+      "originalFile": "exec-1750b96a-0611-41da-b8ee-713208e78a55.png",
+      "output": "assets/precision/sources/kegler.png",
+      "sourceHash": "3413f82c425dc6254f600e87c25530167981b0db07dc4eb7807059c6ca0b629f"
+    }
+  ]
+}

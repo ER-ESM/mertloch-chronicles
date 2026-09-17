@@ -1,3 +1,4 @@
+import {WORLD_ART_DENSITY as density} from './art-quality.js';
 import {buildingSkin,buildingSpriteLayout} from './world-scale.js';
 import {normalizeArt} from './art-style.js';
 import {artImages} from './asset-art.js';
@@ -31,8 +32,8 @@ function make(b){const l=facadeLayout(b),pad=46,top=l.roofTop-(b.church?180:32),
 export function drawBuilding(c,b,time){
  const name=buildingSkin(b),a=maifeld[name];
  if(a){const l=buildingSpriteLayout(b,a),width=l.world[3]-l.world[0],key=['registered',name,width,b.door.x-b.minX].join(':');let sprite=cache.get(key);
-  if(!sprite){const cv=document.createElement('canvas');cv.width=Math.ceil(width*2);cv.height=Math.ceil(l.height*2);const mc=cv.getContext('2d');mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
-   for(let i=0;i<3;i++){const left=Math.round((l.world[i]-l.world[0])*2),right=Math.round((l.world[i+1]-l.world[0])*2);mc.drawImage(a.image,l.source[i],a.y,l.source[i+1]-l.source[i],a.h,left,0,right-left,cv.height);}
-   normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>560)cache.delete(cache.keys().next().value);
+  if(!sprite){const cv=document.createElement('canvas');cv.width=Math.ceil(width*density);cv.height=Math.ceil(l.height*density);const mc=cv.getContext('2d');mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
+   for(let i=0;i<3;i++){const left=Math.round((l.world[i]-l.world[0])*density),right=Math.round((l.world[i+1]-l.world[0])*density);mc.drawImage(a.image,l.source[i],a.y,l.source[i+1]-l.source[i],a.h,left,0,right-left,cv.height);}
+   normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>180)cache.delete(cache.keys().next().value);
   }c.imageSmoothingEnabled=false;c.drawImage(sprite.cv,l.world[0],l.top,width,l.height);return;}
- if(!artImages.house){fallback(c,b,time);return;}const key=[b.id,b.minX,b.maxY,b.w,b.h,b.wallHeight,b.roofHeight,b.church,b.style].join(':');let s=cache.get(key);if(!s){s=make(b);cache.set(key,s);if(cache.size>560)cache.delete(cache.keys().next().value);}c.drawImage(s.cv,s.x,s.y);}
+ if(!artImages.house){fallback(c,b,time);return;}const key=[b.id,b.minX,b.maxY,b.w,b.h,b.wallHeight,b.roofHeight,b.church,b.style].join(':');let s=cache.get(key);if(!s){s=make(b);cache.set(key,s);if(cache.size>180)cache.delete(cache.keys().next().value);}c.drawImage(s.cv,s.x,s.y);}

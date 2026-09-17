@@ -1,5 +1,7 @@
 # Fehlende Sprites · Stand 2026-09-17
 
+Aktualisierung 17.09.: Die hier gelisteten bestehenden Motive sind im Präzisionskatalog geliefert und angebunden. Aktuelle Auflösung, Abdeckung und Prüfungen: [Präzisionspixel](PRAEZISIONSPIXEL-2026-09-17.md). Historische Fallback- und Pixelangaben unten dienen der Zuordnung; neue Arbeit verwendet `assets/precision/runtime/catalog.json`.
+
 Übergabe an die Bild-KI: alles, was das Spiel heute nur mit einem Fallback zeichnet. Reihenfolge = Priorität. Stil, Maßstab, Ablage und Abnahme stehen in `docs/UEBERGABE-GRAFIK-2026-09-17.md`; Bildhinweise (`look`) kommen aus `content/` und stehen ausführlich in `content/ART-BRIEF.md` (`npm run content:art`).
 
 Jede Zeile: **ID** · Motiv · Format · was das Spiel heute zeigt. Datei heißt wie die ID.

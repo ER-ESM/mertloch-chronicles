@@ -4,6 +4,8 @@
 
 Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm test` muss vor jedem Commit grün sein; GitHub Actions veröffentlicht `main` auf GitHub Pages.
 
+Aktiver Grafikstandard: [Präzisionspixel](docs/PRAEZISIONSPIXEL-2026-09-17.md), Laufzeitkatalog `assets/precision/runtime/catalog.json`. Alte kleine Exporte nur als Vergleich verwenden.
+
 ## Modulgrenzen
 
 | Bereich | Dateien | Wer arbeitet dort |

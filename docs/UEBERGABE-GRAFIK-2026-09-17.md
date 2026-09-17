@@ -1,5 +1,7 @@
 # Übergabe an die Bild-KI · 2026-09-17
 
+Aktualisierung 17.09.: Die hier gelisteten bestehenden Motive sind im Präzisionskatalog geliefert und angebunden. Aktuelle Auflösung, Abdeckung und Prüfungen: [Präzisionspixel](PRAEZISIONSPIXEL-2026-09-17.md). Historische Fallback- und Pixelangaben unten dienen der Zuordnung; neue Arbeit verwendet `assets/precision/runtime/catalog.json`.
+
 Für: die KI, die Sprites, Icons und Porträts erzeugt. Von: Inhalt/UI. Alles, was das Spiel heute zeichnet, läuft mit Fallbacks weiter; jede Lieferung ersetzt einen Fallback, ohne dass etwas kaputtgeht.
 
 ## Stil, verbindlich

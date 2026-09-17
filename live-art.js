@@ -1,5 +1,5 @@
 import {drawBoar} from './maifeld-boar-rig.js';
-import {contentActor,contentFrame,hasContentActor,contentActorHeight} from './content-art.js';
+import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 export {equipmentAppearance};
 export const liveArt={ready:false,catalog:null,images:{},animals:{}};
@@ -24,11 +24,11 @@ export const hasLiveContent=(id,variant)=>hasContentActor(livePersonId(id,varian
 const directionOf=p=>p.direction||((p.facing||1)>0?'se':'sw');
 
 function gearPart(c,id,x,y,w,h,west=false,angle=0,half=null){
- const r=liveArt.catalog.equipment[id];if(!r)return;
- c.save();c.translate(x,y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage(liveArt.images['equipment.png'],r.x+(half===1?r.w/2:0),r.y,half===null?r.w:r.w/2,r.h,-w/2,-h/2,w,h);c.restore();
+ const precise=contentAsset('equipment-parts'),r=precise?contentArt.catalog.equipment[id]:liveArt.catalog.equipment[id];if(!r)return;
+ c.save();c.translate(x,y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x+(half===1?r.w/2:0),r.y,half===null?r.w:r.w/2,r.h,-w/2,-h/2,w,h);c.restore();
 }
 function heldPart(c,id,at,w,h,west,angle=0){
- const r=liveArt.catalog.equipment[id];if(!r)return;c.save();c.translate(at.x,at.y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage(liveArt.images['equipment.png'],r.x,r.y,r.w,r.h,-w/2,-h*.78,w,h);c.restore();
+ const precise=contentAsset('equipment-parts'),r=precise?contentArt.catalog.equipment[id]:liveArt.catalog.equipment[id];if(!r)return;c.save();c.translate(at.x,at.y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x,r.y,r.w,r.h,-w/2,-h*.78,w,h);c.restore();
 }
 function gear(c,items,s,west,back,behind,p){
  const has=slot=>items.find(i=>i.slot===slot),body=has('body');
@@ -55,7 +55,7 @@ function gear(c,items,s,west,back,behind,p){
 }
 
 /**
- * Gelieferter Bogen aus assets/content-art: 2 native Pixel = 1 Welteinheit, Fußpunkt am Asset.
+ * Präzisionsbogen aus assets/precision/runtime: 4 native Pixel = 1 Welteinheit, Fußpunkt am Asset.
  * `magnify` vergrößert nur für UI-Porträts; in der Welt gilt die Welthöhe des Assets.
  */
 function drawContentPerson(c,id,x,y,p,magnify){
@@ -68,10 +68,10 @@ function drawContentPerson(c,id,x,y,p,magnify){
  c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();
  c.scale(k,k);c.translate(-actor.pivot.x,-actor.pivot.y);
  const items=f.sockets?p.visualEquipment||[]:[];
- if(items.length)gear(c,items,f.sockets,west,back,true,p);
+ if(items.length){c.save();c.scale(actor.gearScale,actor.gearScale);gear(c,items,f.sockets,west,back,true,p);c.restore();}
  c.drawImage(sel.image,f.x,f.y,size,size,0,0,size,size);
- if(items.length)gear(c,items,f.sockets,west,back,false,p);
- if(p.parry>0){c.strokeStyle='#f3b84b';c.lineWidth=2/k;c.beginPath();c.arc(actor.pivot.x,actor.pivot.y-26,25,-1.3,1.1);c.stroke();}
+ if(items.length){c.save();c.scale(actor.gearScale,actor.gearScale);gear(c,items,f.sockets,west,back,false,p);c.restore();}
+ if(p.parry>0){c.strokeStyle='#f3b84b';c.lineWidth=2/k;c.beginPath();c.arc(actor.pivot.x,actor.pivot.y-26*actor.gearScale,25*actor.gearScale,-1.3,1.1);c.stroke();}
  c.restore();return true;
 }
 
@@ -98,6 +98,7 @@ export function drawLivePerson(c,id,x,y,time=0,p={},scale=1){
 }
 
 export function drawLiveAnimal(c,e,time,height){
+ const key=e.variant||e.family||e.skin||e.kind;if(contentActor(key)&&drawContentPerson(c,key,e.x,e.y,e,1))return true;
  if(!liveArt.ready)return false;const id=e.variant&&liveArt.animals[e.variant]?e.variant:e.family&&liveArt.animals[e.family]?e.family:e.skin||e.kind;
  const a=liveArt.animals[id];if(!a)return false;
  const h=height??({boar:e.elite?27:20,badger:17,fox:18,cat:12,chicken:10,goose:17,raven:12}[id]||19);
@@ -106,6 +107,6 @@ export function drawLiveAnimal(c,e,time,height){
 }
 export function drawEquipmentIcon(c,id,x,y,size){
  const aliases={coat:'jacket',boots:'boot',necklace:'chain',shoulders:'pauldron',bracers:'bracer',gloves:'glove',trousers:'trouser',reinforced:'club','anni-spray':'sprayer',speaker:'sprayer',trinket:'pendant'};
- const asset=aliases[id]||id,r=liveArt.catalog?.equipment[asset];if(!liveArt.ready||!r)return false;
- const scale=(size-4)/Math.max(r.w,r.h),w=Math.round(r.w*scale),h=Math.round(r.h*scale);c.save();c.imageSmoothingEnabled=false;c.drawImage(liveArt.images['equipment.png'],r.x,r.y,r.w,r.h,Math.round(x+(size-w)/2),Math.round(y+(size-h)/2),w,h);c.restore();return true;
+ const asset=aliases[id]||id,precise=contentAsset('equipment-parts'),r=precise?contentArt.catalog.equipment[asset]:liveArt.catalog?.equipment[asset];if(!liveArt.ready||!r)return false;
+ const scale=(size-4)/Math.max(r.w,r.h),w=Math.round(r.w*scale),h=Math.round(r.h*scale);c.save();c.imageSmoothingEnabled=false;c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x,r.y,r.w,r.h,Math.round(x+(size-w)/2),Math.round(y+(size-h)/2),w,h);c.restore();return true;
 }
