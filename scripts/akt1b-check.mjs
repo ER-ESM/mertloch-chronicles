@@ -95,9 +95,13 @@ try{
  assert.equal(picks.length,CLAN_MEMBERS.length,'Drei Klamotten-Karten zur Auswahl');
  const before=(await state()).classId;
  const other=CLAN_MEMBERS.find(m=>m.id!==before);
- await b.click(`[data-member-pick="${other.id}"]`);await wait(450);
- assert.equal((await state()).classId,before,'Auswählen allein wechselt die Figur nicht (keine Rotation ohne Klick)');
- assert.ok((await text('.clan-confirm')).includes(other.name),'Bestätigungsleiste nennt die gewählte Figur');
+ // Stil C: Die Karte trägt ihre Primäraktion selbst; der getragene Zustand ist ein Stempel.
+ const worn=await b.evaluate(`[...document.querySelectorAll('.clan-card')].filter(c=>c.classList.contains('worn')).length`);
+ assert.equal(worn,1,'Genau eine Karte trägt den Stempel „gerade an“');
+ const wear=await b.evaluate(`[...document.querySelectorAll('[data-member-wear]')].map(e=>e.dataset.memberWear)`);
+ assert.equal(wear.length,CLAN_MEMBERS.length-1,'Jede nicht getragene Karte hat ihre eigene Primäraktion');
+ assert.ok(wear.includes(other.id),'Die Primäraktion nennt die Figur');
+ assert.ok((await text(`[data-member-wear="${other.id}"]`)).includes(other.name),'Der Knopf nennt die Figur beim Namen');
  await screenshot('klamottenwahl');
  checks.push('P7: Klamottenwahl zeigt drei Karten, wählt ohne zu wechseln und bestätigt mit einem Knopf; „Figur“ hat Abschnitte statt Unterseiten');
 

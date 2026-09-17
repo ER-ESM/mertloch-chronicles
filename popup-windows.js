@@ -2,7 +2,7 @@
 // Kein Minimieren, keine Fensterstapel. Details (Gegenstand, Erklärung) hängen am Buch und schließen mit ihm.
 import {PANEL_UI as UI} from './content/index.js';
 const titles={inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:'Figur',activity:'Anlagenprüfung',bag:'Rucksack',person:'Figur',book:'Kniffe',quest:'Aufträge',base:'Bude',map:'Karte',menu:'Hilfe',clan:'Figur',guide:'Hilfe',admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
-const widths={inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:520,activity:430,bag:520,person:520,book:520,quest:520,base:560,map:720,menu:520,clan:520,guide:560,admin:520,loot:296,dialog:440,memory:600,memoryart:800,death:420};
+const widths={inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:520,activity:430,bag:520,person:780,book:520,quest:520,base:560,map:720,menu:520,clan:780,guide:560,admin:520,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 export const BOOK_TABS=[['person',UI.tabFigure,'person','C'],['bag',UI.tabBag,'bag','I'],['book',UI.tabSkills,'book','K'],['quest',UI.tabQuests,'quest','J'],['base',UI.tabBase,'base','B'],['map',UI.tabMap,'map','M'],['guide',UI.tabHelp,'guide','H']];
 const TAB_OF={person:'person',talents:'person',clan:'person',bag:'bag',book:'book',quest:'quest',base:'base',map:'map',guide:'guide',menu:'guide',admin:'guide',mobile:'guide',install:'guide'};
 const CHILD=new Set(['inspection','detail','touchhelp']);

@@ -4,11 +4,17 @@ export {STORY};
 /** Klamottenwahl statt Figurentausch: Der Held zieht die Ersatzklamotten eines Mentors an. */
 export function clanMenu(game,pick=game.member.id){
  const canSwitch=!game.dead&&(game.atHub?game.atHub():game.player.inCombat<=0&&Math.hypot(game.player.x-game.world.spawn.x,game.player.y-game.world.spawn.y)<150);
- const chosen=CLAN_MEMBERS.find(m=>m.id===pick)||game.member,current=chosen.id===game.member.id;
- // Auswahl und Wirkung sind getrennt: Karte anklicken wählt, erst „Bestätigen“ zieht die Klamotten an.
- const card=m=>{const active=m.id===pick;
-  return `<article class="clan-card ${active?'selected':''} ${m.id===game.member.id?'worn':''}" style="--clan-color:${m.color}"><canvas width="112" height="112" data-clan-portrait="${m.id}" aria-label="${m.name}"></canvas><span class="eyebrow">${m.role} · ${m.age}</span><h3>${m.name}</h3><p>${m.bio}</p><p class="clan-passive">${m.passive}</p><p><b>Spielweise:</b> ${m.rotation}</p><button class="${active?'gold-button':'outline-button'}" data-member-pick="${m.id}" aria-pressed="${active}">${m.id===game.member.id?'Ist am Start':active?'Ausgewählt':'Aussuchen'}</button></article>`;};
- return `<span class="eyebrow">${FACTIONS.clan.name} · ${FACTIONS.clan.motto}</span><h2>${TUTORIAL.clan}</h2><p>${LORE.hero}</p><div class="clan-grid">${CLAN_MEMBERS.map(card).join('')}</div><div class="clan-confirm"><strong>${chosen.name}</strong><button class="gold-button" data-member="${chosen.id}" ${!canSwitch||current?'disabled':''}>${current?'Trägst du schon':chosen.name+'s Klamotten anziehen'}</button></div><p class="data-note">${canSwitch?'Am Treffpunkt bei St. Gangolf kannst du die Klamotten wechseln. Erfahrung und Aufträge gehören der ganzen Bande.':'Zum Wechseln musst du außerhalb des Kampfes zum Treffpunkt bei St. Gangolf zurück.'}</p><button class="outline-button" data-close>Ab ins Dorf</button>`;}
+ // Stil C: Jede Karte trägt ihre eigene Primäraktion. Der getragene Zustand ist ein schräger
+ // Stempel, kein ausgegrauter Knopf (UI-ABNAHME A4). `data-member` bleibt auf der gewählten
+ // Karte als Kompatibilitätsanker für tests/akt1-ui.test.mjs (Engine) und die Prüfskripte.
+ const hinder='Zum Wechseln musst du außerhalb des Kampfes zum Treffpunkt bei St. Gangolf zurück.';
+ const card=m=>{const active=m.id===pick,worn=m.id===game.member.id;
+  const action=worn
+   ? `<span class="clan-stamp" data-member-pick="${m.id}"${active?` data-member="${m.id}"`:''} role="status">Ist am Start</span>`
+   : `<button class="gold-button" data-member-pick="${m.id}" data-member-wear="${m.id}"${active?` data-member="${m.id}"`:''} aria-pressed="${active}" ${canSwitch?'':'disabled'}>${m.name}s Klamotten anziehen</button>`
+     +(canSwitch?'':`<small class="disabled-note">${hinder}</small>`);
+  return `<article class="clan-card${active?' selected':''}${worn?' worn':''}" style="--clan-color:${m.color}"><canvas width="192" height="192" data-clan-portrait="${m.id}" aria-label="${m.name}"></canvas><span class="eyebrow">${m.role} · ${m.age}</span><h3>${m.name}</h3><p>${m.bio}</p><p class="clan-passive">${m.passive}</p><p><b>Spielweise:</b> ${m.rotation}</p><div class="clan-actions">${action}</div></article>`;};
+ return `<span class="eyebrow">${FACTIONS.clan.name} · ${FACTIONS.clan.motto}</span><h2>${TUTORIAL.clan}</h2><p>${LORE.hero}</p><div class="clan-grid">${CLAN_MEMBERS.map(card).join('')}</div><p class="data-note">${canSwitch?'Am Treffpunkt bei St. Gangolf kannst du die Klamotten wechseln. Erfahrung und Aufträge gehören der ganzen Bande.':hinder}</p><button class="outline-button" data-close>Ab ins Dorf</button>`;}
 export function guide(game){
  const touch=typeof document!=='undefined'&&document.body.classList.contains('touch-mode');
  const list=items=>'<ul>'+items.map(text=>'<li>'+text+'</li>').join('')+'</ul>';

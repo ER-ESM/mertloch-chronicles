@@ -247,6 +247,17 @@ Regeln für dieses Dokument:
 
 ---
 
+## E-24 · UI-Stil „Bierdeckel" für die gesamte Oberfläche
+**Datum:** 2026-09-17 · **Stand:** gilt
+
+**Kontext.** „Figur aussuchen" war kaputt (Karten ungleich, Text abgeschnitten, Seitenscroll, drei Knopfbreiten), Ursache: `.clan-card` in fünf CSS-Dateien mit eigenen Farben und Rastern. Die Oberfläche wirkte insgesamt „gestochen scharf" wie eine Website, nicht wie die Pixelwelt. Drei Mockups in `docs/ui-stile-2026-09-17/index.html`: A Kneipentafel, B Fachwerk & Honigpapier, C Bierdeckel. Empfehlung der Produktion war B.
+
+**Entscheidung (E. Ruf).** **Stil C „Bierdeckel"** wird die durchgehende UI-Definition: Zeltstoff-Grund `#223A2F`/`#2E4A3B`, Karten aus Pappe `#D9B98A` mit Punktraster und hellem Innenrand `#EED9B5`, Stempel in Ziegelrose `#AD5260`, Gold `#ECB95C` nur für Primäraktion und Auswahl, Korallrot `#E18569` nur für Gefahr, Apfelgrün `#78A865` für Leben/OK. Display-Schrift Jersey 15 (Versalien für Titel, Namen, Reiter, Knöpfe), Lese-Schrift Nunito. Radius 0, Rahmen 2 px, harter Schatten 3 px, keine Verläufe, keine weichen Schatten. Verworfen: A (zu wenig Identität), B (heller Papierwechsel über der dunklen Welt).
+
+**Konsequenzen.** Eine Stildatei `bierdeckel.css` ist die einzige Quelle für Tokens und Bausteine; Themen-Überschreibungen (`hearth.css`, `maifeld.css`, `comic-theme.css`, Bausteinregeln in `clan.css`/`panel-pages.css`/`popup-ui.css`) werden abgebaut. Prüfung nach `docs/UI-ABNAHME.md` vor jedem Merge. Reihenfolge des Umbaus: Klamottenwahl → Clanbuch → HUD/Aktionsleiste → Gespräch/Beute → Einblendungen/Tutorial. Grafikbedarf, den CSS nicht sauber abbildet, geht mit Fallback als Übergabe an die Grafik-Rolle (`docs/UEBERGABE-UI-AN-GRAFIK-<Datum>.md`). Schriften werden lokal vendort (OFL), weil das Spiel offline läuft.
+
+---
+
 ## Offen (noch nicht entschieden)
 
 | Frage | Optionen | Empfehlung | Seit |

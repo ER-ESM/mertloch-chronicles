@@ -1,84 +1,57 @@
-/* Akt 1 „Filmriss“: Erinnerungsfetzen, Basisbau, Kapitelliste. Nur Gestaltung, keine Inhalte. */
 
-/* --- Erinnerungsfetzen: Farbige Illustrationen, eine Schaltfläche --- */
-.popup-memory{border-color:#7a6238;box-shadow:0 18px 46px #0d0a06a8}
-.popup-memory .popup-body{background:linear-gradient(180deg,#2a2317,#20190f)}
-.memory-flash{color:#e8d9b2}
-.memory-picture{display:block;margin:.6rem 0;width:100%;padding:0;border:2px solid #7a6238;background:#171f29;box-sizing:border-box}
+.memory-picture{display:block;margin:.6rem 0;width:100%;padding:0;box-sizing:border-box}
 .memory-picture img{display:block;width:100%;height:auto;image-rendering:pixelated}
-.game-popup .memory-picture-button{cursor:zoom-in;color:#efdcae;text-align:left;overflow:hidden}
-.game-popup .memory-picture-button:hover:not(:disabled){filter:none;border-color:#ffd274}
-.memory-picture-button>span{display:block;padding:5px 9px;font-size:11px;background:#29291f}
+.game-popup .memory-picture-button{cursor:zoom-in;text-align:left;overflow:hidden}
+.memory-picture-button>span{display:block;padding:5px 9px}
 .memory-image-viewport{overflow:auto;max-width:100%;max-height:55dvh;overscroll-behavior:contain;touch-action:pan-x pan-y;border:1px solid #7a6238}
 .memory-image-viewport:focus-visible{outline:2px solid #ffd274;outline-offset:2px}
 .memory-picture-large{border:0;margin:0}
 .memory-gallery:has([data-memory-zoom]:checked) .memory-picture-large{width:768px;max-width:none}
-.memory-zoom{display:flex;align-items:center;gap:6px;font-size:11px;color:#d3c6a4;margin:0 0 9px}
+.memory-zoom{display:flex;align-items:center;gap:6px;margin:0 0 9px}
 .memory-zoom input{width:18px;height:18px;flex:none}
-.popup-memoryart .popup-body{background:#20190f}
 @media (max-width:700px){.memory-picture-button>span{padding:8px 9px}.memory-image-viewport{max-height:40dvh}}
-
-.memory-flash .eyebrow{color:#c19a5c;letter-spacing:.14em}
-.memory-flash h2{margin:.25rem 0 .55rem;color:#f0dcae;font-style:italic}
-.memory-flash p{line-height:1.55;color:#ddccaa}
+.memory-flash h2{margin:.25rem 0 .55rem}
+.memory-flash p{line-height:1.55}
 .memory-flash .dialog-actions{margin-top:.8rem}
 
 /* --- Reiter „Bude“ --- */
-.base-build .base-locked{color:#cbb98d;line-height:1.5;font-style:italic}
-.base-effects{margin:.4rem 0 .9rem;padding:0;list-style:none;display:grid;gap:.22rem;
- border:1px solid #4d5b42;border-radius:.45rem;background:#1c2a1f8c;padding:.55rem .7rem}
-.base-effects li{font-size:.82rem;color:#cfd9bb}
-.base-effects b{color:#f0d38f;margin-right:.35rem}
+.base-build .base-locked{line-height:1.5}
+.base-effects{margin:.4rem 0 .9rem;padding:0;list-style:none;display:grid;gap:.22rem;padding:.55rem .7rem}
+.base-effects b{margin-right:.35rem}
 .build-grid{display:grid;gap:.6rem}
-.build-card{border:1px solid #4c5a41;border-radius:.5rem;background:#1b271d9e;padding:.6rem .7rem}
+.build-card{padding:.6rem .7rem}
 .build-card>header{display:flex;align-items:center;gap:.55rem;margin-bottom:.35rem}
 .build-card>header canvas{width:34px;height:34px;image-rendering:pixelated}
-.build-card h3{margin:0;font-size:1rem;color:#f2e2b3}
-.build-card>header small{color:#a9b894}
-.build-card p{margin:.25rem 0;font-size:.84rem;line-height:1.45;color:#cdd7ba}
-.build-stage{color:#f0d38f!important;font-weight:600}
-.build-next{margin-top:.45rem;border-top:1px dashed #4c5a41;padding-top:.45rem}
-.build-next>b{color:#e8d4a2}
+.build-card h3{margin:0}
+.build-card p{margin:.25rem 0;line-height:1.45}
+.build-next{margin-top:.45rem;padding-top:.45rem}
 .build-cost{margin:.35rem 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.3rem .7rem}
-.build-cost li{font-size:.8rem}
-.build-cost li.stat-gain{color:#a8d38b}
-.build-cost li.requirements-failed{color:#e39a86}
-.build-effect{color:#bfcda6!important;font-style:italic}
-.build-done{color:#9fae8b!important;font-style:italic}
-.build-next button[disabled]{opacity:.45;cursor:not-allowed}
+.build-next button[disabled]{cursor:not-allowed}
 
 /* --- Erinnerungsliste im Clanbuch --- */
-.memory-panel{margin-top:1rem;border-top:1px solid #4c5a41;padding-top:.7rem}
+.memory-panel{margin-top:1rem;padding-top:.7rem}
 .memory-list{display:grid;gap:.5rem}
-.memory-entry{border-left:3px solid #6d5b34;padding:.35rem .6rem;background:#241f1580}
-.memory-entry h3{margin:0 0 .2rem;font-size:.95rem;color:#efdcae}
-.memory-entry p{margin:.2rem 0;font-size:.82rem;line-height:1.45;color:#d3c6a4}
-.memory-entry.unknown{opacity:.45;border-left-color:#4a4636}
-.memory-clue{color:#b6cbb0!important;font-style:italic}
+.memory-entry{padding:.35rem .6rem}
+.memory-entry h3{margin:0 0 .2rem}
+.memory-entry p{margin:.2rem 0;line-height:1.45}
+.memory-entry.unknown{opacity:.45}
 
 /* --- Kapitelliste (Reiter Aufträge) --- */
-.chapter-log{margin-top:1rem;border-top:1px solid #4c5a41;padding-top:.7rem}
+.chapter-log{margin-top:1rem;padding-top:.7rem}
 .chapter-list{display:grid;gap:.5rem}
-.chapter-entry{border:1px solid #445039;border-radius:.45rem;padding:.45rem .6rem;background:#1b271d80}
-.chapter-entry h3{margin:0;font-size:.95rem;color:#eedfb0}
-.chapter-entry p{margin:.25rem 0;font-size:.82rem;line-height:1.45;color:#ccd6b9}
-.chapter-status{display:inline-block;margin-bottom:.15rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#9fae8b}
-.chapter-entry.active{border-color:#b39a5c;background:#2a2a1a80}
-.chapter-entry.active .chapter-status{color:#f0d38f}
-.chapter-entry.done .chapter-status{color:#a8d38b}
+.chapter-entry{padding:.45rem .6rem}
+.chapter-entry h3{margin:0}
+.chapter-entry p{margin:.25rem 0;line-height:1.45}
+.chapter-status{display:inline-block;margin-bottom:.15rem}
 .chapter-entry.later{opacity:.6}
-.chapter-clue{color:#e2d09f!important}
-.chapter-unlocks{margin:.25rem 0 0;padding-left:1.1rem;font-size:.78rem;color:#b9c6a3}
-.chapter-summary{color:#c6d1b2;font-style:italic}
+.chapter-unlocks{margin:.25rem 0 0;padding-left:1.1rem}
 
 /* --- HUD: Wegmarke im Auftragskasten --- */
 .quest-task.waypoint{opacity:.85}
-.quest-task.waypoint i{color:#f0d38f}
 
 @media (max-width:460px){
  .build-card>header canvas{width:28px;height:28px}
  .build-cost{gap:.25rem .45rem}
- .base-effects li,.build-card p,.memory-entry p,.chapter-entry p{font-size:.8rem}
 }
 
 /* Grafiklieferung 2026-09-17: Proc-Rahmen (48 × 48, 9-Slice 12) und Proc-Marker (12 × 12) an der Aktionsleiste. */
@@ -89,23 +62,16 @@
 .chapter-entry .chapter-lock{image-rendering:pixelated;width:24px;height:24px;vertical-align:-5px;margin-right:5px}
 
 /* Runde B · Kampfleiste, Angriffshinweis, Abschnitte statt Unterseiten, Klamottenwahl */
-.auto-state{align-self:center;margin-bottom:6px;padding:4px 12px;border:1px solid #a9a07766;border-radius:3px;font:bold 11px/1.3 'Trebuchet MS',sans-serif;letter-spacing:.4px;background:#29404199;color:#cbc7ab}
-.auto-state.is-on{background:#3d5a36e8;border-color:#c9e08a;color:#eef7cd;box-shadow:0 0 8px #86a65a66}
-.auto-state.is-off{background:#4a3630e8;border-color:#d8a184;color:#f4d9c6}
-.attack-warning{position:absolute;left:50%;top:16%;transform:translateX(-50%);z-index:35;pointer-events:none;padding:12px 26px;border:2px solid #f0a184;border-radius:4px;background:#48221ff0;color:#ffe4cf;font:bold 26px/1.15 'Trebuchet MS',sans-serif;letter-spacing:.5px;text-align:center;text-shadow:0 2px 0 #2a120f;box-shadow:0 0 0 2px #2a120f,0 6px 18px #1b0c0a99;max-width:min(84vw,640px)}
+.auto-state{align-self:center;margin-bottom:6px;padding:4px 12px}
+.attack-warning{position:absolute;left:50%;top:16%;transform:translateX(-50%);z-index:35;pointer-events:none;padding:12px 26px;text-align:center;max-width:min(84vw,640px)}
 .attack-warning.hidden{display:none}
 .attack-warning.pulse{animation:attack-warn .5s ease-out 2}
 @keyframes attack-warn{0%{transform:translateX(-50%) scale(1.14)}60%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(1)}}
-.panel-section{margin:0 0 20px;padding-top:12px;border-top:1px solid #a88f5344}
-.panel-section:first-of-type{border-top:0;padding-top:0}
+.panel-section{margin:0 0 20px;padding-top:12px}
+.panel-section:first-of-type{padding-top:0}
 .panel-section-title{margin:0 0 12px;font:bold 12px/1.3 'Trebuchet MS',sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#d6bc83}
-.clan-card.selected{outline:2px solid #e8cb8a;outline-offset:2px}
-.clan-card.worn h3::after{content:' ·';color:#b9cf98}
-.clan-confirm{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 6px;padding:11px 13px;background:#23352b;border:1px solid #a88f5355}
-.clan-confirm strong{font:15px Georgia;color:#eed7a2}
-@media(max-width:760px){.attack-warning{font-size:17px;padding:9px 15px;top:12%}.auto-state{font-size:9px;padding:3px 8px}.clan-confirm{flex-wrap:wrap}}
+@media(max-width:760px){.attack-warning{padding:9px 15px;top:12%}.auto-state{padding:3px 8px}}
 
 /* Der Questkasten ist der Knopf zur goldenen Wegmarke (P6). */
 .quest-panel.has-waypoint{cursor:pointer}
-.quest-panel.has-waypoint:hover{border-color:#d9bd83aa}
 .quest-panel.has-waypoint:hover .quest-task.waypoint{opacity:1}

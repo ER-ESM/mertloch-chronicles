@@ -1,0 +1,449 @@
+/* Bierdeckel — die Stil-Definition der Oberfläche (E-24, docs/ui-stile-2026-09-17/index.html §C).
+   EINZIGE Quelle für Farben, Rahmen, Schriften und Bausteine. Wird als LETZTES Stylesheet geladen.
+   Regeln: Radius 0 · Rahmen 2 px · harter Schatten 3 px · keine Verläufe über zwei Stufen ·
+   kein blur · kein !important außer [hidden] · Größen aus der Skala 11/13/16/20/28. */
+
+/* ------------------------------------------------------------------ Schriften
+   Lokal vendort (OFL), weil das Spiel offline läuft. Fallback-Stack bleibt lesbar. */
+@font-face{font-family:'Jersey 15';font-style:normal;font-weight:400;font-display:swap;
+ src:url(./assets/fonts/jersey15-latin.woff2) format('woff2');
+ unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Jersey 15';font-style:normal;font-weight:400;font-display:swap;
+ src:url(./assets/fonts/jersey15-latin-ext.woff2) format('woff2');
+ unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400 800;font-display:swap;
+ src:url(./assets/fonts/nunito-latin.woff2) format('woff2');
+ unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400 800;font-display:swap;
+ src:url(./assets/fonts/nunito-latin-ext.woff2) format('woff2');
+ unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+
+/* -------------------------------------------------------------------- Tokens */
+:root{
+ /* Flächen */
+ --green:#223A2F;          /* Zeltstoff, Fenstergrund */
+ --green-2:#2E4A3B;        /* Zeltstoff hell: Titelleiste, Reiterschiene, Balkenbett */
+ --green-3:#1A2C24;        /* Zeltstoff dunkel: Weltrand, Fußleisten */
+ --kraft:#D9B98A;          /* Pappe: Karten, Chips, Tooltips */
+ --kraft-2:#C9A46F;        /* Pappkante */
+ --kraft-3:#EED9B5;        /* heller Innenrand der Pappe */
+ --cream:#F4E8C4;          /* Text auf Zeltstoff */
+ --ink:#2B2A26;            /* Text auf Pappe */
+ --ink-2:#4E4A41;          /* Fließtext auf Pappe */
+ /* Signale */
+ --stamp:#AD5260;          /* Ziegelrose: Stempel, Auswahl, Rollen */
+ --coral:#E18569;          /* nur Gefahr und Schaden */
+ --gold:#ECB95C;           /* nur Primäraktion und Auswahl */
+ --ok:#78A865;             /* Apfelgrün: Leben, Erfolg */
+ /* Kanten */
+ --hard:3px 3px 0;         /* harter Schatten, keine Unschärfe */
+ --hard-ink:#0B1216;
+ --edge:2px;
+ /* Schriften */
+ --display:'Jersey 15','Trebuchet MS',Impact,system-ui,sans-serif;
+ --read:'Nunito','Segoe UI',system-ui,sans-serif;
+ /* Größenskala: 11 / 13 / 16 / 20 / 28 (36 nur für Fenster-Überschriften) */
+ --t-11:11px;--t-13:13px;--t-16:16px;--t-20:20px;--t-28:28px;
+ /* Altnamen aus style.css, damit Restregeln nicht ins Leere greifen. */
+ --paper:var(--cream);--muted:#93A899;--line:var(--kraft-2);--panel:var(--green);
+}
+
+/* ------------------------------------------------------------- Grundhaltung */
+body{font-family:var(--read);color:var(--cream);background:var(--green-3);}
+h1,h2,h3,h4{font-family:var(--display);font-weight:400;letter-spacing:.04em;text-transform:uppercase;}
+.eyebrow,.panel-kicker,.menu-heading .eyebrow,.rpg-heading .eyebrow{
+ font-family:var(--display);font-weight:400;letter-spacing:.08em;text-transform:uppercase;
+ overflow-wrap:anywhere;white-space:normal;}
+kbd{font-family:var(--display);font-weight:400;font-size:var(--t-13);letter-spacing:.04em;
+ border:var(--edge) solid var(--kraft-2);background:var(--green-2);color:var(--cream);padding:0 4px;box-shadow:none;}
+canvas,img,.pixel{image-rendering:pixelated;}
+*{border-radius:0;}
+[hidden]{display:none !important;}
+@media (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms;scroll-behavior:auto;}}
+
+/* ------------------------------------------------------------------- Knöpfe
+   Genau drei Arten: Primär (Gold), Sekundär (Rahmen), Gefahr (Koralle). */
+.gold-button,.outline-button,.admin-button,.clan-more,
+.popup-body button:not(:where(.item-slot,.icon-skill,.talent-node,.branch-node,.book-skill,.binding-slot,.popup-close,[data-book-tab],.memory-picture-button,[data-touch-edit-slot])),
+.quest-entry-actions button,.equipment-row button,.atlas-toolbar button,
+.pause-menu-actions button,.grid-pager button,.touch-editor-footer button,.wire-buttons button{
+ font-family:var(--display);font-weight:400;font-size:var(--t-16);line-height:1;letter-spacing:.05em;text-transform:uppercase;
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:40px;padding:0 14px;border:var(--edge) solid var(--kraft);background:transparent;color:var(--cream);
+ box-shadow:none;text-align:center;white-space:normal;cursor:pointer;transition:none;}
+/* Der Sekundärknopf nimmt die Farbe seines Grundes: hell auf Zeltstoff, dunkel auf Pappe. */
+.clan-card button:not(.gold-button),.guide-card button:not(.gold-button),.build-card button:not(.gold-button),
+.quest-entry button:not(.gold-button),.memory-entry button:not(.gold-button),.item-detail button:not(.gold-button),
+.reward-option button:not(.gold-button),.loot button:not(.gold-button){color:var(--ink);border-color:var(--ink);}
+.popup-body .gold-button,.gold-button{background:var(--gold);color:var(--ink);border-color:#8A6A2C;box-shadow:var(--hard) #5A3F27;}
+.popup-body .gold-button:hover,.gold-button:hover{background:var(--kraft-3);color:var(--ink);}
+.popup-body .admin-button,.admin-button,.admin-restore button{
+ background:var(--coral);color:#3A1A12;border-color:#8A3E2C;box-shadow:var(--hard) #5A3F27;}
+.outline-button:hover,.atlas-toolbar button:hover,.clan-more:hover,
+.hud button:hover,.pause-overlay button:hover,.world-controls button:hover,.action-area button:hover,
+.popup-body button:hover:not(.gold-button):not(.admin-button){background:#FFFFFF14;}
+.clan-card button:hover:not(.gold-button),.guide-card button:hover:not(.gold-button),
+.quest-entry button:hover:not(.gold-button){background:#00000018;}
+.popup-body button:disabled,button:disabled{background:var(--green-2);color:#93A899;border-color:#4A6353;box-shadow:none;cursor:not-allowed;}
+.clan-card button:disabled,.guide-card button:disabled,.quest-entry button:disabled,
+.build-card button:disabled,.memory-entry button:disabled{background:var(--kraft-2);color:#6B5C42;border-color:#B69B70;}
+.game-popup button:focus-visible,
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible,canvas:focus-visible,.clan-card:focus-visible{
+ outline:var(--edge) solid var(--gold);outline-offset:2px;}
+/* D1: Ein deaktivierter Knopf erklärt sich in der Zeile darunter. */
+.disabled-note{display:block;font-family:var(--read);font-size:var(--t-11);line-height:1.35;
+ color:var(--ink-2);text-transform:none;letter-spacing:0;margin-top:4px;}
+.hud .disabled-note,.action-area .disabled-note{color:var(--kraft);}
+
+/* ----------------------------------------------------------------- Abzeichen
+   Zustand „gewählt / trägt gerade" — schräger Stempel, nie ein grauer Knopf (A4). */
+.clan-stamp,.badge-stamp,.atlas-stamp{
+ display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;
+ font-family:var(--display);font-weight:400;font-size:var(--t-16);letter-spacing:.1em;text-transform:uppercase;
+ color:var(--stamp);background:transparent;border:3px double var(--stamp);transform:rotate(-2deg);}
+
+/* --------------------------------------------------------------------- Chips */
+.buff-chip,.rune-row>span,.quest-reward span,.talent-points,.build-cost li{
+ font-family:var(--display);font-weight:400;font-size:var(--t-16);letter-spacing:.04em;text-transform:uppercase;
+ background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);padding:2px 8px;box-shadow:none;}
+
+/* -------------------------------------------------------------------- Balken */
+.bar,.quest-meter,.rpg-xp,.xp-track,.training-progress,.cast{
+ background:var(--green-2);border:var(--edge) solid var(--kraft-2);box-shadow:none;overflow:hidden;}
+.bar i,.quest-meter i,.rpg-xp i,.xp-track i,.training-progress i{background:var(--ok);box-shadow:none;}
+.energy i{background:var(--gold);}
+.enemy-hp i,.cast i{background:var(--coral);}
+/* C5: Werte auf farbiger Fläche bekommen eine Kontur statt eines Schlagschattens. */
+.bar span,.rpg-xp span,.cast span{font-family:var(--display);font-weight:400;font-size:var(--t-13);
+ letter-spacing:.04em;color:var(--cream);
+ text-shadow:1px 1px 0 var(--hard-ink),-1px 1px 0 var(--hard-ink),1px -1px 0 var(--hard-ink),-1px -1px 0 var(--hard-ink);}
+
+/* ------------------------------------------------------------------ Tooltips */
+.skill-tooltip,.item-tooltip{
+ background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);
+ box-shadow:var(--hard) var(--hard-ink);font-family:var(--read);font-size:var(--t-13);backdrop-filter:none;}
+.skill-tooltip strong,.item-tooltip strong,.tooltip-heading strong{
+ font-family:var(--display);font-weight:400;font-size:var(--t-20);letter-spacing:.04em;text-transform:uppercase;color:var(--stamp);}
+.skill-tooltip small,.item-tooltip small,.skill-tooltip p,.item-tooltip p{color:var(--ink-2);}
+
+/* -------------------------------------------------------------------- Fenster */
+.game-popup{
+ background:var(--green);color:var(--cream);font-family:var(--read);
+ border:4px solid var(--kraft-2);box-shadow:inset 0 0 0 2px var(--green-2),var(--hard) var(--hard-ink);
+ backdrop-filter:none;}
+.popup-titlebar{
+ display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--green-2);color:var(--cream);
+ font-family:var(--display);font-weight:400;font-size:var(--t-20);letter-spacing:.04em;text-transform:uppercase;
+ border-bottom:var(--edge) solid var(--kraft-2);}
+.popup-titlebar strong{font-weight:400;flex:1;min-width:0;}
+.popup-titlebar canvas.popup-emblem{width:24px;height:24px;flex:0 0 auto;}
+.popup-titlebar button{min-height:32px;min-width:32px;padding:0 8px;font-family:var(--display);font-size:var(--t-16);
+ border:var(--edge) solid var(--kraft-2);background:transparent;color:var(--cream);}
+.popup-body{background:var(--green);color:var(--cream);font-family:var(--read);font-size:var(--t-13);}
+.popup-body h2{font-size:var(--t-28);color:var(--cream);}
+.popup-body h3{font-size:var(--t-20);}
+.popup-body>p,.popup-body .rpg-heading p,.popup-body .data-note{color:var(--kraft);font-family:var(--read);max-width:70ch;}
+
+/* --------------------------------------------------------------------- Reiter
+   Reiter bleiben Reiter (Menü-Zielbild): Clanbuch oben, Unterreiter im Inhalt. */
+.book-tabs,.panel-tabs,.quest-tabs,.spec-tabs{
+ display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px 0;background:var(--green-2);
+ border-bottom:var(--edge) solid var(--kraft-2);}
+.book-tabs button,.panel-tabs button,.quest-tabs button,.spec-tabs button{
+ display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 12px;
+ font-family:var(--display);font-weight:400;font-size:var(--t-16);line-height:1;letter-spacing:.04em;text-transform:uppercase;
+ background:var(--green);color:var(--kraft);border:var(--edge) solid var(--kraft-2);border-bottom:0;
+ box-shadow:none;cursor:pointer;}
+.book-tabs button:hover,.panel-tabs button:hover,.quest-tabs button:hover,.spec-tabs button:hover{background:var(--green-3);}
+.book-tabs button[aria-selected="true"],.panel-tabs button[aria-selected="true"],
+.quest-tabs button.selected,.spec-tabs button.selected{background:var(--kraft);color:var(--ink);transform:translateY(2px);}
+.book-tabs button canvas,.spec-tabs canvas{width:24px;height:24px;flex:0 0 auto;}
+
+/* ---------------------------------------------------------------------- Karte
+   Pappe mit Punktraster und hellem Innenrand. Zwei Flächenstufen je Fenster (B5). */
+.clan-card,.guide-card,.build-card,.quest-entry,.chapter-entry,.memory-entry,.book-skill,
+.reward-option,.item-detail,.compare-item,.conversation-quote,.loot,.hub-routes button{
+ background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);
+ background-image:radial-gradient(circle,#00000010 1px,#0000 1.5px);background-size:6px 6px;
+ box-shadow:inset 0 0 0 4px var(--kraft-3);font-family:var(--read);font-size:var(--t-13);}
+.clan-card.selected,.book-skill.selected,.reward-option.selected,.quest-entry.tracked,.chapter-entry.active{
+ border-color:var(--stamp);box-shadow:inset 0 0 0 4px var(--kraft-3),var(--hard) var(--hard-ink);}
+.clan-card h3,.guide-card h3,.build-card h3,.quest-entry h3,.chapter-entry h3,.memory-entry h3,
+.book-skill strong,.item-detail h3,.panel-section-title{
+ font-family:var(--display);font-weight:400;font-size:var(--t-20);line-height:1.1;letter-spacing:.04em;
+ text-transform:uppercase;color:var(--ink);}
+.clan-card p,.guide-card p,.guide-card li,.build-card p,.quest-entry p,.quest-entry li,
+.memory-entry p,.book-skill p,.item-detail p{color:var(--ink-2);font-family:var(--read);font-size:var(--t-13);}
+.clan-card .eyebrow,.quest-entry .eyebrow,.build-card>header small,.book-skill small{color:var(--stamp);font-size:var(--t-13);}
+/* Abschnitt im Reiter: nur eine Schildzeile auf Zeltstoff, keine dritte Fläche (B5). */
+.panel-section{background:transparent;border:0;box-shadow:none;margin:0 0 18px;}
+.panel-section-title{font-family:var(--display);font-weight:400;font-size:var(--t-20);letter-spacing:.06em;text-transform:uppercase;color:var(--cream);background:var(--green-2);margin:0 0 10px;padding:6px 10px;border:var(--edge) solid var(--kraft-2);}
+
+/* --------------------------------------------------------------- Klamottenwahl
+   Drei gleich hohe Bierdeckel. Sprite 2× (96 → 192), Aktionen auf einer Grundlinie (C2). */
+.clan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:14px;margin:16px 0;align-items:stretch;}
+.compact-panel .clan-grid{gap:14px;}
+.clan-card{display:grid;grid-template-rows:auto auto auto 1fr auto;gap:8px;padding:14px;min-width:0;}
+.clan-card canvas[data-clan-portrait]{
+ width:192px;height:192px;justify-self:center;margin:-16px 0 -28px;
+ image-rendering:pixelated;background:none;filter:none;}
+.clan-card .eyebrow{font-size:var(--t-13);letter-spacing:.06em;overflow-wrap:anywhere;white-space:normal;}
+.clan-card h3{margin:0;border-bottom:var(--edge) solid var(--kraft-2);padding-bottom:6px;}
+.clan-card>p{margin:0;line-height:1.45;}
+.clan-actions{display:grid;gap:8px;align-content:end;}
+.clan-actions>button,.clan-actions>.clan-stamp{width:100%;}
+.clan-actions .disabled-note{grid-column:1;}
+.clan-card.worn{border-color:var(--stamp);}
+/* Handy und Touch: eine Spalte, Zielgröße mindestens 44 px (C3/C6). */
+@media(max-width:760px){.clan-grid{grid-template-columns:1fr;}}
+.touch-mode .clan-grid{grid-template-columns:1fr;}
+.touch-mode .panel-tabs button,.touch-mode .book-tabs button,.touch-mode .grid-pager button,
+.touch-mode .clan-actions>button,.touch-mode .clan-actions>.clan-stamp,
+.touch-mode .popup-body button:not(:where(.item-slot,.icon-skill,.talent-node,.branch-node)){min-height:44px;}
+
+/* --------------------------------------------------------- Kacheln im Clanbuch
+   Rucksack, Ausrüstung, Kniffe, Belegung: Feld aus Zeltstoff mit Pappkante. */
+.item-slot,.binding-slot,.icon-skill,.book-skill,.equipment-row canvas,.paper-doll button,
+.touch-skill-picker button,.touch-slot-editor button{
+ background:var(--green-2);border:var(--edge) solid var(--kraft-2);box-shadow:none;color:var(--cream);}
+.item-slot.empty,.binding-slot:empty,.icon-skill.locked,.book-skill.locked{border-color:#4A6353;color:#93A899;}
+.item-slot.selected,.icon-skill.selected,.book-skill.selected,.binding-slot.drag-over,
+.touch-slot-editor button.selected{border-color:var(--gold);box-shadow:inset 0 0 0 2px var(--gold);}
+.item-slot span,.icon-skill kbd,.binding-slot kbd{font-family:var(--display);font-size:var(--t-13);color:var(--cream);}
+.rarity-uncommon,.uncommon{color:var(--ok);}
+.rarity-rare,.rare{color:#8FB4D6;}
+.rarity-epic{color:#B98FD6;}
+.paper-doll span,.equipment-row small,.gear-cell>small{color:var(--kraft);font-size:var(--t-11);}
+.character-stats>div,.secondary-stats>div,.item-stats>div{
+ background:var(--green-2);border:var(--edge) solid var(--kraft-2);padding:6px 8px;color:var(--cream);}
+.character-stats b,.secondary-stats b{font-family:var(--display);font-weight:400;font-size:var(--t-16);color:var(--gold);}
+
+/* Eingabefelder (Rucksack-Suche, Einstellungen) tragen dieselbe Kante. */
+input,select,textarea{
+ font-family:var(--read);font-size:var(--t-13);color:var(--cream);background:var(--green-2);
+ border:var(--edge) solid var(--kraft-2);padding:8px 10px;min-height:40px;}
+input::placeholder{color:#93A899;}
+input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);outline-offset:2px;}
+
+/* Hilfe-Tabelle und Aufzählungen */
+.help-keys th,.help-keys td{border-bottom:var(--edge) solid var(--kraft-2);padding:6px 8px;color:var(--cream);}
+.help-keys thead th{font-family:var(--display);font-weight:400;font-size:var(--t-16);
+ letter-spacing:.04em;text-transform:uppercase;color:var(--gold);background:var(--green-2);}
+.help-keys tbody th{font-family:var(--display);font-weight:400;color:var(--kraft);text-align:left;}
+
+/* Talentgraph: Knoten als Pappmarke, Verbindungen in Pappkante. */
+.branch-node,.talent-node{background:var(--green-2);border:var(--edge) solid var(--kraft-2);color:var(--cream);box-shadow:none;}
+.branch-node.available,.talent-node.available{border-color:var(--gold);}
+.branch-node.learned,.talent-node.learned{background:var(--kraft);border-color:var(--kraft-3);color:var(--ink);}
+.branch-node.locked,.talent-node.locked{border-color:#4A6353;color:#93A899;}
+.branch-node.capstone{border-color:var(--stamp);}
+.branch-node small,.talent-node small{font-family:var(--display);font-size:var(--t-11);letter-spacing:.04em;text-transform:uppercase;}
+.talent-links path{stroke:var(--kraft-2);}
+.talent-links .linked path,.talent-links .linked{stroke:var(--gold);}
+.talent-gate{border:var(--edge) solid var(--kraft-2);background:var(--green-2);color:var(--kraft);padding:6px 10px;}
+.talent-gate.unlocked{border-color:var(--ok);color:var(--cream);}
+
+/* Weltkarte im Clanbuch */
+.atlas-paper{background:var(--green);border:var(--edge) solid var(--kraft-2);}
+.atlas-place{background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);}
+.atlas-place[aria-pressed="true"]{border-color:var(--stamp);box-shadow:inset 0 0 0 2px var(--kraft-3);}
+.atlas-place b{font-family:var(--display);font-weight:400;font-size:var(--t-16);text-transform:uppercase;color:var(--ink);}
+.atlas-place small,.atlas-key label{color:var(--ink-2);}
+.atlas-sidebar>.eyebrow,.atlas-intro{color:var(--kraft);}
+
+/* ===================================================== HUD und Aktionsleiste
+   Dunkler Zeltstoff. Pappe nur für Tooltips und Chips (B5). */
+.game-shell{border:var(--edge) solid var(--kraft-2);background:var(--green-3);box-shadow:none;}
+.vignette{box-shadow:inset 0 0 90px #07181070;}
+.hud{background:var(--green);border:var(--edge) solid var(--kraft-2);box-shadow:var(--hard) var(--hard-ink);
+ color:var(--cream);backdrop-filter:none;}
+.unit-name{font-family:var(--display);font-weight:400;font-size:var(--t-16);letter-spacing:.04em;
+ text-transform:uppercase;color:var(--cream);}
+.unit-name small{font-family:var(--display);font-weight:400;font-size:var(--t-11);letter-spacing:.08em;color:var(--kraft);}
+.portrait{background:var(--green-2);border:var(--edge) solid var(--kraft-2);}
+.portrait>span{background:var(--green-2);border:var(--edge) solid var(--kraft-2);color:var(--gold);
+ font-family:var(--display);font-size:var(--t-13);}
+.rune-row small{font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--kraft);}
+.rune-row>span{background:transparent;border:0;color:var(--gold);font-size:var(--t-16);padding:0;}
+.target-panel .unit-name{color:var(--coral);}
+.target-detail{font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--kraft);}
+.target-title{font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--stamp);}
+.region-label{text-shadow:1px 1px 0 var(--hard-ink);}
+.region-label>span{font-family:var(--display);font-size:var(--t-13);letter-spacing:.14em;color:var(--kraft);}
+.region-label h2{font-family:var(--display);font-weight:400;font-size:var(--t-28);letter-spacing:.06em;color:var(--cream);}
+.region-label>div{font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;color:var(--kraft);}
+.region-label i{background:var(--ok);}
+.quest-panel h3{font-family:var(--display);font-weight:400;font-size:var(--t-20);letter-spacing:.04em;
+ text-transform:uppercase;color:var(--cream);}
+.quest-task{font-family:var(--read);font-size:var(--t-13);color:var(--cream);}
+.quest-task i{color:var(--gold);font-style:normal;}
+.quest-task.done{color:var(--ok);}
+.quest-task.done i{color:var(--ok);}
+.quest-reward{font-family:var(--display);font-size:var(--t-11);letter-spacing:.08em;text-transform:uppercase;
+ color:var(--kraft);border-top:var(--edge) solid var(--kraft-2);}
+.panel-kicker{font-size:var(--t-11);color:var(--kraft);}
+.minimap{background:var(--green);}
+.minimap canvas{filter:none;}
+.map-caption{font-family:var(--display);font-size:var(--t-11);letter-spacing:.08em;
+ text-transform:uppercase;color:var(--kraft);}
+.north{font-family:var(--display);font-size:var(--t-13);color:var(--cream);text-shadow:1px 1px 0 var(--hard-ink);}
+.combat-log{font-family:var(--read);font-size:var(--t-11);color:var(--cream);text-shadow:1px 1px 0 var(--hard-ink);}
+.combat-log>div:first-child{color:var(--gold);}
+
+/* Aktionsleiste und Skill-Kacheln */
+.action-bar{background:var(--green);border:var(--edge) solid var(--kraft-2);box-shadow:var(--hard) var(--hard-ink);}
+.rotation-tip,.auto-state{font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--kraft);text-shadow:1px 1px 0 var(--hard-ink);}
+.rotation-tip>span{color:var(--gold);}
+.auto-state.is-on{color:var(--ok);}
+.auto-state.is-off{color:var(--coral);}
+.action-footer{font-family:var(--display);font-size:var(--t-11);letter-spacing:.08em;
+ text-transform:uppercase;color:var(--kraft);text-shadow:1px 1px 0 var(--hard-ink);}
+.skill{background:var(--green-2);border:var(--edge) solid var(--kraft-2);box-shadow:none;}
+.skill:hover{border-color:var(--gold);transform:none;}
+.skill.ready{border-color:var(--gold);box-shadow:none;}
+.skill.locked,.skill.unusable canvas{opacity:.45;}
+.skill.empty-slot{border-color:#4A6353;}
+.skill .key{font-family:var(--display);font-size:var(--t-13);color:var(--cream);text-shadow:1px 1px 0 var(--hard-ink);}
+.skill .cost{font-family:var(--display);font-size:var(--t-11);color:var(--kraft);}
+.skill .cooldown{font-family:var(--display);font-size:var(--t-20);color:var(--cream);background:#0B1216BF;}
+.skill-name{font-family:var(--display);font-size:var(--t-11);letter-spacing:.04em;text-transform:uppercase;color:var(--kraft);}
+.xp-track{border:0;border-top:var(--edge) solid var(--kraft-2);}
+
+/* Weltrand: Topbar, Kapitelzeile, Fußleiste, Weltknöpfe */
+.topbar{background:var(--green-3);border-bottom:var(--edge) solid var(--kraft-2);}
+.brand{font-family:var(--display);font-weight:400;font-size:var(--t-20);letter-spacing:.08em;color:var(--cream);}
+.brand b{color:var(--gold);font-weight:400;}
+.brand small{font-family:var(--display);font-size:var(--t-11);letter-spacing:.2em;color:var(--kraft);}
+.sigil{color:var(--gold);border:var(--edge) solid var(--kraft-2);clip-path:none;}
+.nav{font-family:var(--display);font-weight:400;font-size:var(--t-16);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--kraft);}
+.nav.active{color:var(--cream);}
+.nav.active:after{background:var(--gold);}
+.build{font-family:var(--display);font-size:var(--t-11);letter-spacing:.08em;color:var(--kraft);}
+.build span{border:var(--edge) solid var(--kraft-2);color:var(--gold);}
+.build i,.world-footer i{background:var(--ok);box-shadow:none;}
+.chapter h1{font-family:var(--display);font-weight:400;font-size:var(--t-28);letter-spacing:.04em;color:var(--cream);}
+.chapter .eyebrow,.location small{color:var(--kraft);font-size:var(--t-11);}
+.location-mark{color:var(--gold);}
+.world-footer,.world-footer a{font-family:var(--display);font-size:var(--t-11);letter-spacing:.08em;color:var(--kraft);}
+.world-controls button{background:var(--green);border:var(--edge) solid var(--kraft-2);color:var(--cream);}
+.loading,.pause-overlay{background:#1A2C24F2;}
+.loading h2,.pause-overlay h2{font-family:var(--display);font-weight:400;font-size:var(--t-28);color:var(--cream);}
+.loading p{color:var(--kraft);}
+
+/* Einblendungen in der Welt */
+.announcement small{font-family:var(--display);font-size:var(--t-13);letter-spacing:.2em;color:var(--kraft);}
+.announcement strong{font-family:var(--display);font-weight:400;font-size:var(--t-28);letter-spacing:.08em;color:var(--cream);}
+.announcement>span{font-family:var(--read);font-size:var(--t-16);color:var(--kraft);}
+.toast{background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);
+ box-shadow:var(--hard) var(--hard-ink);font-family:var(--read);font-size:var(--t-13);}
+.attack-warning{background:var(--coral);color:#3A1A12;border:var(--edge) solid #8A3E2C;
+ font-family:var(--display);font-size:var(--t-20);letter-spacing:.06em;text-transform:uppercase;box-shadow:var(--hard) var(--hard-ink);}
+.interact{background:var(--green);border:var(--edge) solid var(--kraft-2);color:var(--cream);
+ font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;text-transform:uppercase;box-shadow:var(--hard) var(--hard-ink);}
+.interact kbd{color:var(--gold);}
+
+/* Clan-Schule: Lernkasten in der Welt und am Fuß der Seite */
+.in-world-lesson,.training-dock{
+ background:var(--green);border:var(--edge) solid var(--kraft-2);box-shadow:var(--hard) var(--hard-ink);color:var(--cream);}
+.in-world-lesson .eyebrow,.training-dock .eyebrow{color:var(--kraft);font-size:var(--t-11);}
+.in-world-lesson strong,.training-copy strong{font-family:var(--display);font-weight:400;font-size:var(--t-20);
+ letter-spacing:.04em;text-transform:uppercase;color:var(--cream);}
+.in-world-lesson p,.training-copy p{font-family:var(--read);font-size:var(--t-13);color:var(--kraft);}
+.training-progress{height:6px;}
+
+/* ============================== Gespräch, Beute, Tod, Belohnung, Erinnerung
+   Das Gespräch ist eine Pappkarte mit Porträt; die Welt bleibt Zeltstoff. */
+.conversation-person{
+ background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);
+ background-image:radial-gradient(circle,#00000010 1px,#0000 1.5px);background-size:6px 6px;
+ box-shadow:inset 0 0 0 4px var(--kraft-3);padding:12px;}
+.conversation-person strong{font-family:var(--display);font-weight:400;font-size:var(--t-20);
+ letter-spacing:.04em;text-transform:uppercase;color:var(--ink);}
+.conversation-person small{font-family:var(--read);font-size:var(--t-13);color:var(--ink-2);}
+.conversation-portrait{background:var(--green-2);border:var(--edge) solid var(--kraft-2);}
+.conversation-portrait img,.conversation-portrait canvas{image-rendering:pixelated;}
+.conversation-quote{font-family:var(--read);font-size:var(--t-13);color:var(--ink-2);padding:10px 12px;}
+.conversation-initial{font-family:var(--display);font-weight:400;font-size:var(--t-28);color:var(--kraft);}
+.popup-dialog .popup-body>h2{font-size:var(--t-28);color:var(--cream);}
+
+/* Beute */
+.loot{display:flex;gap:14px;align-items:center;padding:12px;}
+.loot strong{font-family:var(--display);font-weight:400;font-size:var(--t-20);
+ letter-spacing:.04em;text-transform:uppercase;color:var(--ink);}
+.loot small{font-family:var(--read);font-size:var(--t-11);color:var(--ink-2);}
+.loot>span{color:var(--stamp);font-family:var(--display);font-size:var(--t-28);}
+.loot-distance{font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;
+ text-transform:uppercase;color:var(--kraft);}
+.loot-icon-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.dialog-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+
+/* Tod, Kapitel-Belohnung, Auswahl */
+.popup-death .popup-body>h2{color:var(--coral);}
+.reward-options{display:grid;gap:10px;}
+.reward-option{padding:10px;display:flex;gap:10px;align-items:center;}
+.reward-option strong{font-family:var(--display);font-weight:400;font-size:var(--t-16);
+ letter-spacing:.04em;text-transform:uppercase;color:var(--ink);}
+.reward-option small{font-family:var(--read);font-size:var(--t-11);color:var(--ink-2);}
+.reward-option.selected{border-color:var(--stamp);}
+.chapter-status,.chapter-clue,.chapter-summary,.chapter-unlocks{color:var(--ink-2);font-size:var(--t-13);}
+.chapter-entry.later{opacity:.7;}
+
+/* Erinnerung: Sepia bleibt im Bild, der Rahmen ist Stil C. */
+.memory-flash{background:var(--green);border:4px solid var(--kraft-2);
+ box-shadow:inset 0 0 0 2px var(--green-2),var(--hard) var(--hard-ink);color:var(--cream);}
+.memory-flash h2{font-family:var(--display);font-weight:400;font-size:var(--t-28);color:var(--cream);}
+.memory-flash p{font-family:var(--read);font-size:var(--t-13);color:var(--kraft);}
+.memory-flash .eyebrow{color:var(--gold);}
+.memory-picture,.memory-picture-large,.memory-image-viewport{border:var(--edge) solid var(--kraft-2);background:var(--green-2);}
+.memory-entry.unknown{opacity:.7;}
+.memory-clue{color:var(--ink-2);font-size:var(--t-11);}
+
+/* ==================================== Tutorial, Kampfhilfe und Touch-Steuerung */
+#tutorialGuide{
+ background:var(--green);border:var(--edge) solid var(--kraft-2);box-shadow:var(--hard) var(--hard-ink);color:var(--cream);}
+#tutorialGuide strong{font-family:var(--display);font-weight:400;font-size:var(--t-20);
+ letter-spacing:.04em;text-transform:uppercase;color:var(--cream);}
+#tutorialGuide p{font-family:var(--read);font-size:var(--t-13);color:var(--kraft);}
+#tutorialGuide small,#tutorialGuide .eyebrow{font-family:var(--display);font-size:var(--t-11);
+ letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
+#tutorialGuide button{min-height:40px;}
+
+/* Touch: Zielgröße mindestens 44 px, keine Hover-Hinweise (C6). */
+.touch-pad button,#mobileControls button,#touchUtility button,#touchMenu,#touchPage,#touchContext,
+#touchCancelAim,#touchConfigure,#touchLesson,#touchInstallState,#touchUpdate,#touchPlace{
+ min-width:44px;min-height:44px;background:var(--green);border:var(--edge) solid var(--kraft-2);
+ color:var(--cream);font-family:var(--display);font-size:var(--t-16);letter-spacing:.04em;
+ text-transform:uppercase;box-shadow:var(--hard) var(--hard-ink);}
+.touch-pad button:active,#mobileControls button:active,#touchUtility button:active{background:var(--green-2);}
+#touchStick,.stick-ring{background:#223A2FCC;border:var(--edge) solid var(--kraft-2);}
+#touchThumb{background:var(--kraft);border:var(--edge) solid var(--kraft-3);}
+.stick-north{font-family:var(--display);font-size:var(--t-11);color:var(--kraft);}
+#touchActions .touch-skill,#touchActions .touch-special{
+ min-width:44px;min-height:44px;background:var(--green-2);border:var(--edge) solid var(--kraft-2);color:var(--cream);}
+#touchActions .touch-skill:active{border-color:var(--gold);}
+#touchActions .touch-empty{border-color:#4A6353;}
+#touchActions .cooldown{font-family:var(--display);font-size:var(--t-20);color:var(--cream);background:#0B1216BF;}
+.touch-topline,.touch-action-head,.touch-context-heading{
+ font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;text-transform:uppercase;color:var(--kraft);}
+.touch-menu-grid>button,.touch-skill-picker button,.touch-slot-editor button{min-height:44px;}
+.mobile-notice{background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);}
+
+/* C1: Reiter schrumpfen nicht unter ihre Beschriftung, sie brechen um. */
+.book-tabs button,.panel-tabs button,.quest-tabs button,.spec-tabs button{flex:0 0 auto;min-width:0;}
+@media(max-width:760px){
+ .book-tabs button,.panel-tabs button{padding:6px 8px;font-size:var(--t-13);}
+ .book-tabs button canvas{width:20px;height:20px;}
+}
+
+/* Wegmarke als Laufbefehl (aus main, UI Runde B2 / P6): der Questkasten ist der Knopf. */
+.quest-panel.has-waypoint:hover{border-color:var(--gold);}
+.quest-task.waypoint i{color:var(--gold);}
+#touchWaypoint{min-height:44px;background:var(--green);border:var(--edge) solid var(--kraft-2);
+ color:var(--cream);font-family:var(--display);font-size:var(--t-13);letter-spacing:.04em;
+ text-transform:uppercase;box-shadow:var(--hard) var(--hard-ink);}

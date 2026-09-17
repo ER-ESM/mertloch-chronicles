@@ -35,3 +35,7 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 - [x] Sechs weitere Nebenquest-Vorlagen für Kapitel 3/4 (Kegelbahn, Bus, Clan-Alltag); Pools je Typ acht, Scout im Wechsel Rhythmus/Kabel (2026-09-17).
 - [x] `VILLAGERS.says` je Bewohner um zwei Akt-1-Zeilen erweitert (Bus, Shirts, Sigi, Kegelclub) (2026-09-17).
 - [x] Ida-Belohnungsdialoge auf höchstens drei kurze Absätze gestrafft (2026-09-17).
+
+## Von UI · 2026-09-17 (Stil C „Bierdeckel")
+
+- [ ] **Wortlaut für den getragenen Zustand in der Klamottenwahl.** Die Karte der gerade getragenen Figur zeigt statt eines ausgegrauten Knopfes einen schrägen Stempel (UI-ABNAHME A4). Dort steht heute der vorhandene Text `Ist am Start`. Gewünscht ist ein kurzer Stempeltext je Geschlecht, z. B. „Trägt er gerade" / „Trägt sie gerade", als `PANEL_UI.wornStamp` (oder je Figur in `CLAN_MEMBERS`). Bis dahin bleibt `Ist am Start`.

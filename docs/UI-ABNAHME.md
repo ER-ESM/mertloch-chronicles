@@ -2,7 +2,7 @@
 
 Jedes UI-Element (Fenster, Reiter, Karte, Knopf, Leiste, Tooltip, Einblendung) wird vor dem Merge nach dieser Liste abgenommen. Ziel: weg vom gestochen scharfen Web-Look hin zu einer Oberfläche, die aus derselben Hand stammt wie die Spielwelt (Maifeld-Detailpixel, `ART-DIRECTION.md`). Die Stil-Definition steht in [ui-stile-2026-09-17/index.html](ui-stile-2026-09-17/index.html) (drei Mockups; der gewählte Stil wird hier eingetragen).
 
-**Gewählter Stil:** ☐ A Kneipentafel ☐ B Fachwerk & Honigpapier ☐ C Bierdeckel — Entscheidung in `ENTSCHEIDUNGEN.md`.
+**Gewählter Stil:** ☐ A Kneipentafel ☐ B Fachwerk & Honigpapier ☑ **C Bierdeckel** — Entscheidung E. Ruf 2026-09-17 (E-24 in `ENTSCHEIDUNGEN.md`). Stildatei: `bierdeckel.css` als einzige Quelle für Tokens und Bausteine.
 
 ## Anlass
 

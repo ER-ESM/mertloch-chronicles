@@ -2,7 +2,7 @@ import {styledSprite} from './art-style.js';
 import {drawEquipmentIcon} from './live-art.js';
 import {loadAperolArt,drawAperolIcon} from './aperol-art.js';
 import {loadDetailArt,drawDetailIcon} from './detail-art.js';
-import {drawContentIcon,contentAsset,loadContentArt} from './content-art.js';
+import {drawContentIcon,contentAsset,loadContentArt,contentActor,contentFrame} from './content-art.js';
 // Bildschirmsymbole der Lieferung 2026-09-17: Reiter des Clanbuchs und HUD.
 // Beschriftungen, Titel und Tastenhinweise bleiben unberührt; fehlt ein Bild, malt der alte Weg.
 const CONTENT_ICONS={base:'ui-tab-bude',person:'ui-tab-figur',bag:'ui-tab-rucksack',book:'ui-tab-kniffe',quest:'ui-tab-auftraege',map:'ui-tab-karte',guide:'ui-tab-hilfe',menu:'ui-menu',sound:'ui-sound',fullscreen:'ui-fullscreen',reward:'ui-reward',elite:'ui-elite-badge',lock:'ui-chapter-lock'};
@@ -20,3 +20,14 @@ export function drawUiSprite(c,id,x,y,size){const content=contentIcon(id);if(con
 export function paintUiIcon(canvas,id){const content=contentIcon(id);if(content&&contentAsset(content)){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);if(drawContentIcon(c,content,0,0,Math.min(canvas.width,canvas.height)))return true;}if(drawEquipmentIcon(canvas.getContext('2d'),id,0,0,canvas.width))return true;if(id==='reward'){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.save();c.scale(canvas.width/24,canvas.height/24);c.fillStyle='#23392e';c.fillRect(8,2,10,10);c.fillRect(10,10,6,12);c.fillStyle='#bb8d38';c.fillRect(9,3,8,8);c.fillRect(11,10,4,11);c.fillStyle='#f3d37c';c.fillRect(10,3,6,2);c.fillRect(11,11,2,9);c.fillStyle='#23392e';c.fillRect(11,6,4,3);c.fillStyle='#fff0b0';c.fillRect(9,4,2,2);c.fillRect(10,19,2,2);c.restore();return true;}if(id==='anni-spray'){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);return drawUiSprite(c,id,0,0,canvas.width);}if(drawDetailIcon(canvas.getContext('2d'),id,0,0,canvas.width))return true;if(id==='fullscreen'){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.save();c.scale(canvas.width/48,canvas.height/48);for(const [x,y,sx,sy] of [[8,8,1,1],[40,8,-1,1],[8,40,1,-1],[40,40,-1,-1]]){c.save();c.translate(x,y);c.scale(sx,sy);c.fillStyle='#182d22';c.fillRect(-2,-2,17,8);c.fillRect(-2,-2,8,17);c.fillStyle='#c9a762';c.fillRect(0,0,12,3);c.fillRect(0,0,3,12);c.restore();}c.restore();return true;}if(!sprites.has(id)&&!sprites.has(FALLBACK_ICONS[id]))return false;const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);return drawUiSprite(c,id,2,2,Math.min(canvas.width,canvas.height)-4);}
 export function paintUiControls(root=document){root.querySelectorAll('[data-ui-icon]').forEach(c=>paintUiIcon(c,c.dataset.uiIcon));}
 export const uiIconCount=()=>sprites.size;
+
+// Kartenbild der Klamottenwahl: Einzelbild "idle" nach Südosten aus dem gelieferten Bogen,
+// ganzzahlig auf das Doppelte vergrößert (96 → 192 px). Fehlt der Bogen (Anni), malt der alte Weg.
+export const HERO_PORTRAIT=192;
+export function paintHeroPortrait(canvas,id){
+ const actor=contentActor('hero-'+id)||contentActor(id);if(!actor)return false;
+ const {image,frame,size}=contentFrame(actor,0,{});if(!image||!frame)return false;
+ const c=canvas.getContext('2d'),scale=Math.max(1,Math.floor(canvas.width/size));
+ c.clearRect(0,0,canvas.width,canvas.height);c.save();c.imageSmoothingEnabled=false;
+ c.drawImage(image,frame.x,frame.y,size,size,0,0,size*scale,size*scale);c.restore();return true;
+}
