@@ -17,6 +17,10 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 - [x] **P13** Klamotten unterscheiden sich auf Stufe 1 nur im Namen der Ressource — Runde B, siehe „Erledigt“.
 - [x] **Balance Runde A**: Dieter 16× ⚡, Kevin 4× ⚠ — Runde B, siehe „Erledigt“.
 
+### Aus Engine Runde B (2026-09-17)
+
+- [ ] **Die vier neuen Proc-Bausteine sind in der Laufzeit da** – jetzt fehlen die Regeln und die Auslöserliste: `PROC_TRIGGERS` in `content/procs.js` um `'skillHit'` und `'markedHit'` ergänzen, dann die Talente aus dem Engine-Backlog auf ihre eigentliche Regel heben: `proc:deckelwirtschaft` auf `{trigger:'skillHit',skill:'strike',every:3}`, `dieter-brew-0` und `baerbel-feedback-0` auf `markedHit` (Wirkung `heal`), die sechs Sekunden-Talente (`dieter-brawl-3`, `dieter-brew-7`, `baerbel-feedback-3`, `kevin-fuse-7`, `kevin-hunt-3`, `kevin-hunt-7`) von `reset` auf `cdReduce`. Formen stehen in docs/UEBERGABE-UI-2026-09-17.md §6.7. Die Prüfung in `content/schema.js` muss dafür `heal`/`cdReduce` zulassen – Bedarf liegt beim Lead.
+
 ## Erledigt
 
 - [x] **Klassenabstand Runde B** (2026-09-17). Bericht vorher 20 Auffälligkeiten, nachher 8; alle ⚠ weg.

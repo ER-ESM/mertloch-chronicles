@@ -30,6 +30,10 @@ Nachrangig und **nicht** Teil von Akt 1: Gisela Gießkanne und Pfandautomat 3000
 - [ ] **P16** Persona-Aufrufe brauchen Koordinaten der Hofproben-Objekte oder mehr Budget; Screenshots kommen nicht als Bild zurück.
 - [ ] Entscheidung: Taste 1 als Toggle abschaffen (E-24 vorschlagen); Hofprobe auf ≤ 12 Aktionen deckeln.
 
+### Aus Engine Runde B (2026-09-17)
+
+- [ ] **`content/schema.js` für die neuen Proc-Bausteine öffnen** (gemeinsame Datei, deshalb hier): Die Effektliste in der Proc-Prüfung lässt nur `free|reset|empower|energy|points|shield|haste` zu; die Laufzeit kann jetzt zusätzlich `heal` (Zahl) und `cdReduce` (`{skill,seconds}`). Außerdem sollte die Prüfung bei `trigger:'skillHit'` ein `skill` (bekannter Kniff) und ein ganzzahliges `every` ≥ 2 verlangen. Formen: docs/UEBERGABE-UI-2026-09-17.md §6.7. Klassendesign wartet darauf, siehe docs/backlog/klassen.md.
+
 ## Erledigt
 
 - [x] Rollenmodell mit Dateibesitz, Tuning-Schicht, Rollen-Prüfungen und Backlogs eingeführt (2026-09-17, E-19).

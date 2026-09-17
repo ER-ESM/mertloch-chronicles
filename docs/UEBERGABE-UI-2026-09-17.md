@@ -150,3 +150,92 @@ Gegner- und Bosszeilen stehen **zusätzlich** weiter im Kampflog (`game.messages
 ### 5.5 Start ohne Hose
 
 Der Beinschutz-Slot bleibt beim Start leer (unverändert). Neu: `claimQuest()` legt bei Kapitel 1 zusätzlich zur gewählten Belohnung ein gewürfeltes Beinteil (`slot:'legs'`, einfachste Güte, Spielerstufe) in den Rucksack; ist kein Platz frei, landet es in `rpg.recovery` und kommt über „Ausrüstung zurückholen“ nach. Alte Spielstände mit bereits abgeholtem Kapitel 1 bekommen nichts nachgereicht. Die UI sollte nach dem Kapitel-1-Dialog auf den Rucksack hinweisen („Endlich eine Hose“).
+
+## 6. Engine → UI · Runde B (2026-09-17, Branch `engine`, Playtest Akt 1)
+
+Umgesetzt: P1, P2, P3/P5, P6, P8 aus `docs/PLAYTEST-2026-09-17-AKT1.md`, dazu vr-08, `pickElite()` und vier neue
+Proc-Bausteine. Texte kommen weiterhin ausschließlich aus `content/`.
+
+### 6.1 Autoangriff: einschalten statt umschalten (P2)
+
+`game.action('auto')` schaltet den Autoangriff nur noch **ein**. Läuft er schon, bleibt er an und meldet nichts.
+Aus geht er nur über drei Wege: `game.stopAuto()`, Zielverlust (still, in `tickAuto`) und Tod.
+
+| Name | Typ | Wann | Was die UI tun soll |
+|---|---|---|---|
+| `game.stopAuto()` | Methode → bool | Esc der UI | **Pflicht:** Esc soll `game.stopAuto()` aufrufen (nach Zauber- und Zielhilfe-Abbruch), sonst gibt es keinen Weg mehr, ihn abzuwählen. Rückgabe `true`, wenn wirklich etwas ausging. |
+| `startAuto(g)` / `stopAuto(g)` | Export `auto-combat.js` | – | `toggleAuto` bleibt als Altname, zeigt aber auf `startAuto`. |
+
+Die Leiste darf Taste 1 damit als „Angreifen“ beschriften statt als Ein/Aus-Schalter.
+
+### 6.2 Ereignis `attacked` (P1)
+
+| Feld | Typ | Inhalt |
+|---|---|---|
+| `enemyId` | Zahl | `enemy.id` des Angreifers |
+| `damage` | Zahl | Schaden dieses Treffers, nach Rüstung und Deckung |
+| `first` | `true` | immer `true` – gesendet wird nur der auslösende Treffer |
+
+Gesendet beim **ersten** Treffer eines Angreifers und wieder, sobald der Kampf neu beginnt (`player.inCombat`
+läuft auf 0, die Angreiferliste `game.attackers` leert sich). Dazu setzt die Engine das Ziel auf den Angreifer,
+wenn keines steht (`target`-Ereignis kommt mit). Die UI soll darauf den großen Hinweis „Du wirst angegriffen“
+zeigen – das ständige Beobachten von `player.hp` entfällt.
+
+### 6.3 Aktionstaste: Auftragsziel zuerst (P3/P5)
+
+| Name | Rückgabe | Inhalt |
+|---|---|---|
+| `game.questFocus()` | `{kind,point,priority,…}` oder `null` | Auftragsziel in Reichweite: `loot` (Beutel/Clankiste), `gather` (Sammelpunkt) oder `npc` (die Person, auf die die goldene Wegmarke zeigt) |
+| `game.interaction()` | `{kind,point,priority,…}` oder `null` | die **ganze** Rangfolge in einem Wert: `loot` (0), `gather` (1), `npc` als Auftragsziel (2), `mentor` (3), Nebenquest (4), `npc` sonst (5), `shrine` (6) |
+| `game.mentorInteraction()` | wie bisher | liefert jetzt `null`, solange ein Auftragsziel in Reichweite steht |
+
+`worldInteraction()` in `app.js` sortiert heute nur nach Entfernung – deshalb gewinnt Dosen-Dieter gegen
+Kisten-Ida. Empfehlung: Rangfolge aus `game.interaction()` übernehmen und nur noch die Beschriftungen selbst
+bauen (`ITEMS[…].name`, `NPCS`, `STORY`). Ohne Umbau greift wenigstens die Mentoren-Sperre.
+Neue Konstanten aus `engine.js`: `TALK_RANGE=50`, `MENTOR_RANGE=42`, `GATHER_RANGE=36`.
+
+### 6.4 Laufwege (P6)
+
+- Ein Laufbefehl gilt jetzt bis zum Klickpunkt. Bleibt ein Schritt an einer Kante hängen, wird der Weg nach
+  `ROUTE_RETRY` (0,3 s) neu berechnet (`game.repath()`) und erst nach `ROUTE_GIVEUP` (1,4 s) aufgegeben – vorher warf
+  schon der erste blockierte Schritt die Reststrecke weg. Beide Zahlen stehen in `movement.js`.
+- Neue Felder: `game.routeGoal` ({x,y} des Wunschorts, `null` wenn nichts läuft), `game.routeStuck` (Sekunden ohne
+  Fortschritt). `game.path` wird beim Aufgeben mit geleert – ein Restweg ohne `moveTo` kann nicht mehr vorkommen.
+- `game.navigate(point)` gibt jetzt `true`/`false` zurück.
+- **Neu `game.navigateDestination()`**: ein Befehl zur goldenen Wegmarke. Erstspieler klicken zwölfmal an den
+  Bildschirmrand, weil weiter entfernte Ziele gar nicht sichtbar sind – die UI sollte die Wegmarke im HUD (und den
+  Kartenpunkt) klickbar machen und darauf `game.navigateDestination()` legen.
+
+### 6.5 Hofprobe (P8)
+
+- Jeder Schritt hat eine Tick-Sperre: der Tick, in dem ein Schritt beginnt, kann ihn nicht sofort abschließen.
+  Zwei Schritte auf einmal (2/8 → 4/8) sind damit ausgeschlossen.
+- Die Zähler `tutorial.hits` / `tutorial.autos` starten bei jedem Schrittwechsel bei 0 – „Auto 1/2“ ist nie vorab erfüllt.
+- „Autoangriff aus.“ kommt nur noch bei echter Abwahl (siehe 6.1).
+- Der erste Ausweichversuch ist eine Vorführung: `TUTORIAL.retry` („Nochmal: …“) erscheint erst ab dem zweiten
+  Fehlversuch (`tutorial.tries`).
+- Abklingzeit-Meldung nennt die Restzeit. Sie nutzt `COMBAT_TEXT.cooldown(name, sekunden)`, sobald es die Zeile gibt;
+  bis dahin ein Rückfall im gleichen Wortlaut mit „· x,x s“. Bedarf steht in `docs/backlog/story.md`.
+
+### 6.6 Welt und Gegner
+
+- **vr-08**: `encounters.buildCell` entscheidet „Feld“ jetzt über `residential(w,p)` aus `world-layout.js`
+  (Wohnpolygone **und** Bebauungsmaske). Auch Begleiter und Ersatz-Spawnpunkte aggressiver Reviere dürfen nicht in
+  der Maske landen. Für die UI ändert sich nichts – im Ort laufen nur noch neutrale Arten.
+- **Eliten**: die Auswahl kommt aus `pickElite(town,random)` (`content/enemies.js`), damit erscheint auch
+  Oberpraktikant Olaf. `enemy.elite` und `enemy.archetype` wie gehabt.
+
+### 6.7 Neue Proc-Bausteine (Klassendesign)
+
+Die Laufzeit kennt jetzt zwei weitere Auslöser und zwei weitere Wirkungen. **Die Regeln selbst gehören
+`content/procs.js` (Klassendesign)** – bis dort Regeln damit gebaut sind, ändert sich im Spiel nichts.
+
+| Baustein | Form | Bedeutung |
+|---|---|---|
+| Auslöser `skillHit` | `{trigger:'skillHit',skill:'strike',every:3}` | feuert beim Einsatz genau dieses Kniffs; `every` zählt deterministisch mit („jede dritte Kelle“) |
+| Auslöser `markedHit` | `{trigger:'markedHit'}` | feuert in `Game.damage`, sobald das getroffene Ziel markiert ist |
+| Wirkung `heal` | `effect:{heal:40}` | Leben direkt über `healPlayer` (mit Heilwerten verrechnet) |
+| Wirkung `cdReduce` | `effect:{cdReduce:{skill:'throw',seconds:3}}` | verkürzt eine Abklingzeit um Sekunden, nie unter null |
+
+Für das HUD: `procCount(game, procId)` aus `procs.js` liefert den Zählstand eines `every`-Auslösers
+(z. B. „2/3 Kellen“). Der Stand steht in `game.procState.counts` und wird nicht gespeichert.

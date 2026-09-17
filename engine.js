@@ -2,11 +2,11 @@ import {walkFacing} from './maifeld-locomotion.js';
 import {APEROL_TEXT} from './content/index.js';
 import {initTutorial,savedTutorial,tutorialActive,tutorialConfirm,tutorialSignal,tutorialDamage,tutorialDestination,tutorialAllowsTravel,tickTutorial} from './tutorial.js';
 import {restorePosition,savedPosition} from './player-save.js';
-import {tickAuto,toggleAuto,enemyAuto,tickCasting,movingToCast} from './auto-combat.js';
+import {tickAuto,startAuto,stopAuto,enemyAuto,tickCasting,movingToCast} from './auto-combat.js';
 import {arenaHit,tickArena,freshArenaStats} from './arena.js';
 import {freshProcState,fireProcs,procFree,consumeProc,tickProcs} from './procs.js';
 import {weaponSkillDamage,skillDamage} from './equipment.js';
-import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar,addItem,countItem,hasMaterials,consumeMaterials} from './rpg.js';
+import {ITEMS,createRpg,equipmentStats,combatStats,chooseReward,savedRpg,refreshEquipment,createDrop,unlockOnBar,addItem,countItem,hasMaterials,consumeMaterials,nearestLoot} from './rpg.js';
 import {registerRoll,QUALITIES} from './itemization.js';
 import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
@@ -25,6 +25,8 @@ export const FIRST_CHAPTER=ACT_CHAPTERS[0].id,LAST_CHAPTER=ACT_CHAPTERS.at(-1).i
 export const chapterAt=n=>ACT_CHAPTERS.find(c=>c.id===n)||ACT_CHAPTERS[0];
 /** Treffpunkt-Regel: Clanwechsel und Basisbau gehen nur im Umkreis von HUB_RADIUS um world.spawn und außerhalb des Kampfes. */
 export const HUB_RADIUS=150;
+/** Gesprächsreichweite zu Ida und den Mentoren; die Aktionstaste der UI arbeitet mit denselben Zahlen. */
+export const TALK_RANGE=50,MENTOR_RANGE=42,GATHER_RANGE=36;
 const hubRule=what=>what+' nur am sicheren Treffpunkt, außerhalb eines Kampfes.';
 const clampInt=(n,min,max,fallback=min)=>Number.isFinite(Number(n))?Math.max(min,Math.min(max,Math.floor(Number(n)))):fallback;
 /** Nötige Anzahl eines Kapitelziels. Boss-Ziele sind erledigt oder nicht. */
@@ -91,8 +93,8 @@ export class Game {
   action(id,point=null,completing=false){
     if(this.paused||this.dead)return false;
     const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.toast('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
-    if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
-    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCost(this,s,cs),context={runes:p.runes,interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(`${s.name} ist noch nicht bereit.`);return false;}
+    if(id==='auto')return startAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
+    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCost(this,s,cs),context={runes:p.runes,interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,this.cooldowns[id].toFixed(1))||`${s.name} ist noch nicht bereit · ${this.cooldowns[id].toFixed(1)} s.`);return false;}
     if(!completing&&!s.offGcd&&this.gcd>0)return false;
     if(p.energy<cost){this.toast(COMBAT_TEXT.needResources);return false;}
     let e=this.target;
@@ -124,14 +126,14 @@ export class Game {
     if(id==='parry'){p.parry=s.window+(cs.parryWindow||0);p.parryCharges=cs.doubleParry?2:1;this.effect('shield',p.x,p.y,{life:.8,max:.8});}
     if(id==='dash'){
       let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
-      if(this.touchMove&&(this.touchMove.x||this.touchMove.y)){dx=this.touchMove.x;dy=this.touchMove.y;}if(!dx&&!dy){dx=e?p.x-e.x:p.facing;dy=e?p.y-e.y:0;}const n=Math.hypot(dx,dy)||1;dx/=n;dy/=n;p.invulnerable=.4;this.moveTo=null;
+      if(this.touchMove&&(this.touchMove.x||this.touchMove.y)){dx=this.touchMove.x;dy=this.touchMove.y;}if(!dx&&!dy){dx=e?p.x-e.x:p.facing;dy=e?p.y-e.y:0;}const n=Math.hypot(dx,dy)||1;dx/=n;dy/=n;p.invulnerable=.4;this.moveTo=null;this.path=[];this.routeGoal=null;
       for(let i=0;i<s.steps;i++){this.effect('trail',p.x,p.y,{life:.3,max:.3});this.move(p,dx*4,dy*4);}
     }
     if(id==='buff'){this.buffs={...s,remaining:s.duration*(1+(base.buffDuration||0)),shield:s.shield?Math.round(s.shield*(1+cs.shieldPower+(cs.shieldBonus||0)+cs.mastery*.4)):0};this.effect('heal',p.x,p.y,{life:.6,max:.6});this.log(s.name+' · '+s.duration+' s aktiv.');}
     if(id==='heal'){healPlayer(this,s.heal,cs,true);fireProcs(this,'heal',cs);this.effect('heal',p.x,p.y,{life:1,max:1});}
-    afterSkill(this,id,e,cs,context);tutorialSignal(this,id);this.emit('sound',{id});return true;
+    afterSkill(this,id,e,cs,context);fireProcs(this,'skillHit',cs,{skill:id});tutorialSignal(this,id);this.emit('sound',{id});return true;
   }
-  damage(e,n,label){if(e.tutorial)return tutorialDamage(this,e,n,label);if(tutorialActive(this)&&!e.arena)return 0;if(e.hp<=0||e.ai==='returning')return;e.aggro=true;e.ai='combat';this.player.inCombat=7;const cs=combatStats(this),critical=this.random()<cs.crit,mark=e.mark>0,bonus=(label==='Markierung'?(cs.markBonus||0)+cs.mastery:label==='RESONANZ'||label==='Entladung'?(cs.burstBonus||0)+cs.mastery:0)+(cs.execute&&e.hp/e.maxHp<.3?cs.execute:0)+(mark&&cs.procs.includes('verdict')?.1:0);const actual=Math.round(n*(1+cs.power+(['Autoangriff','Kelle','Pfandwurf','Parade','Sprung','Deckelwelle'].includes(label)?cs.physicalPower:cs.technicalPower))*(1+bonus)*(critical?1.6+(cs.critDamage||0):1)*(e.vulnerable>0?1.35:1)*(this.buffs.remaining>0?this.buffs.power||1:1));const dealt=Math.min(e.hp,actual);if(e.arena)arenaHit(this,e,dealt);if(critical)fireProcs(this,'crit',cs);if(label==='Autoangriff')fireProcs(this,'autoHit',cs);if(label==='Markierung')fireProcs(this,'markTick',cs);e.hp=Math.max(0,e.hp-actual);this.stats.damage+=dealt;if(critical&&cs.procs.includes('rage'))this.player.energy=Math.min(100,this.player.energy+PROCS.rage.energy);if(cs.leech)this.player.hp=Math.min(this.player.maxHp,this.player.hp+Math.round(dealt*cs.leech));afterDamage(this,e,dealt,cs);e.hurt=.15;this.float(e.x+(this.random()-.5)*14,e.y-27,String(actual)+(critical?'!':''),critical?'#ffdf78':label==='RESONANZ'?'#ecc3fc':'#fff0bf');if(e.hp<=0)this.kill(e);return dealt;}
+  damage(e,n,label){if(e.tutorial)return tutorialDamage(this,e,n,label);if(tutorialActive(this)&&!e.arena)return 0;if(e.hp<=0||e.ai==='returning')return;e.aggro=true;e.ai='combat';this.player.inCombat=7;const cs=combatStats(this),critical=this.random()<cs.crit,mark=e.mark>0,bonus=(label==='Markierung'?(cs.markBonus||0)+cs.mastery:label==='RESONANZ'||label==='Entladung'?(cs.burstBonus||0)+cs.mastery:0)+(cs.execute&&e.hp/e.maxHp<.3?cs.execute:0)+(mark&&cs.procs.includes('verdict')?.1:0);const actual=Math.round(n*(1+cs.power+(['Autoangriff','Kelle','Pfandwurf','Parade','Sprung','Deckelwelle'].includes(label)?cs.physicalPower:cs.technicalPower))*(1+bonus)*(critical?1.6+(cs.critDamage||0):1)*(e.vulnerable>0?1.35:1)*(this.buffs.remaining>0?this.buffs.power||1:1));const dealt=Math.min(e.hp,actual);if(e.arena)arenaHit(this,e,dealt);if(critical)fireProcs(this,'crit',cs);if(label==='Autoangriff')fireProcs(this,'autoHit',cs);if(label==='Markierung')fireProcs(this,'markTick',cs);if(mark)fireProcs(this,'markedHit',cs,{skill:label,enemy:e});e.hp=Math.max(0,e.hp-actual);this.stats.damage+=dealt;if(critical&&cs.procs.includes('rage'))this.player.energy=Math.min(100,this.player.energy+PROCS.rage.energy);if(cs.leech)this.player.hp=Math.min(this.player.maxHp,this.player.hp+Math.round(dealt*cs.leech));afterDamage(this,e,dealt,cs);e.hurt=.15;this.float(e.x+(this.random()-.5)*14,e.y-27,String(actual)+(critical?'!':''),critical?'#ffdf78':label==='RESONANZ'?'#ecc3fc':'#fff0bf');if(e.hp<=0)this.kill(e);return dealt;}
   kill(e){const wasMarked=e.mark>0,cs=combatStats(this);onKill(this,e,wasMarked,cs);this.gainMomentum(cs);if(cs.procs.includes('thirst'))this.player.energy=Math.min(100,this.player.energy+PROCS.thirst.energy);e.hp=0;e.aggro=false;e.cast=null;e.dead=(e.respawn?.[0]||35)+this.random()*((e.respawn?.[1]||55)-(e.respawn?.[0]||35));e.respawnAt=this.time+e.dead;e.ai='dead';e.mark=0;e.roamGoal=null;this.stats.kills++;
     if(e.arena){(this.arenaStats||(this.arenaStats=freshArenaStats())).kills++;e.respawnAt=Infinity;this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · Arena, keine EP.');if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');return;}
     createDrop(this,e);const xp=killXp(e);this.gainXp(xp);if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');this.float(e.x,e.y-40,'+'+xp+' EP','#bacd8b');this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · +'+xp+' EP.');
@@ -204,7 +206,7 @@ export class Game {
       .flatMap(c=>c.gathers).filter(g=>!this.quest.gathered.includes(g.id));
   }
   /** Sammelpunkt in Reichweite (für die Aktionstaste der UI). */
-  gatherInteraction(){if(tutorialActive(this)||!this.quest.accepted)return null;return this.gatherPoints().filter(g=>distance(this.player,g)<36).sort((a,b)=>distance(this.player,a)-distance(this.player,b))[0]||null;}
+  gatherInteraction(){if(tutorialActive(this)||!this.quest.accepted)return null;return this.gatherPoints().filter(g=>distance(this.player,g)<GATHER_RANGE).sort((a,b)=>distance(this.player,a)-distance(this.player,b))[0]||null;}
   /** Sammelpunkt einsammeln: Material wandert in den Rucksack, das Kapitelziel zählt hoch. */
   collectGather(id){
     const point=this.gatherPoints().find(g=>g.id===id);
@@ -245,8 +247,31 @@ export class Game {
     this.memoryEvent({kind:'buildingStage',building:id,stage:stage.stage});
     this.emit('save');return true;
   }
+  /** Auftragsziel in Reichweite der Aktionstaste (P3/P5): Beute des laufenden Auftrags, Sammelpunkt oder die
+   *  Person, auf die die goldene Wegmarke zeigt. Steht eines davon, hat es Vorrang vor Mentoren und Nebenquests. */
+  questFocus(){
+    const p=this.player,bag=nearestLoot(this);
+    if(bag)return {kind:'loot',point:{x:bag.x,y:bag.y},id:bag.id,priority:0};
+    const gather=this.gatherInteraction();
+    if(gather)return {kind:'gather',point:{x:gather.x,y:gather.y},id:gather.id,item:gather.item,priority:1};
+    const goal=this.destination(),npc=this.world.npc;
+    if(goal&&npc&&distance(goal.point,npc)<1&&distance(p,npc)<TALK_RANGE)return {kind:'npc',point:{x:npc.x,y:npc.y},id:npc.id??null,name:npc.name,label:goal.label,priority:2};
+    return null;
+  }
+  /** Rangfolge der Aktionstaste als ein Wert: Auftragsziel, dann Mentor, dann Nebenquest, dann Ida, dann Konterbrunnen.
+   *  Reine Zustandsbeschreibung (kind, point, priority, id) – die Beschriftungen baut die UI aus content/. */
+  interaction(){
+    const p=this.player,focus=this.questFocus();if(focus)return focus;
+    const mentor=this.mentorInteraction();if(mentor)return {kind:'mentor',point:{x:mentor.x,y:mentor.y},id:mentor.id,name:mentor.name,priority:3};
+    const side=this.questInteraction();if(side)return {...side,point:{x:side.point.x,y:side.point.y},priority:4};
+    if(this.world.npc&&distance(p,this.world.npc)<TALK_RANGE)return {kind:'npc',point:{x:this.world.npc.x,y:this.world.npc.y},name:this.world.npc.name,priority:5};
+    if(this.world.shrine&&distance(p,this.world.shrine)<GATHER_RANGE)return {kind:'shrine',point:{x:this.world.shrine.x,y:this.world.shrine.y},priority:6};
+    return null;
+  }
+  /** Autoangriff abwählen (Esc der UI). Taste 1 schaltet nie mehr aus – siehe auto-combat.startAuto. */
+  stopAuto(){return stopAuto(this);}
   /** Mentor in Gesprächsreichweite (Dieter, Anni, Kevin an der Bude). */
-  mentorInteraction(){if(tutorialActive(this))return null;return (this.world.mentors||[]).filter(m=>distance(this.player,m)<42).sort((a,b)=>distance(this.player,a)-distance(this.player,b))[0]||null;}
+  mentorInteraction(){if(tutorialActive(this)||this.questFocus())return null;return (this.world.mentors||[]).filter(m=>distance(this.player,m)<MENTOR_RANGE).sort((a,b)=>distance(this.player,a)-distance(this.player,b))[0]||null;}
   /** Spricht einen Mentor an: liefert und meldet dessen Zeile für das laufende Kapitel. */
   talkToMentor(id){
     const mentor=(this.world.mentors||[]).find(m=>m.id===id);
@@ -294,10 +319,26 @@ export class Game {
     return {point:this.world.npc,label:STORY.giver};
   }
   move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=this.world;if(!w.blocked(entity.x+dx,entity.y,5))entity.x+=dx;if(!w.blocked(entity.x,entity.y+dy,5))entity.y+=dy;const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
-  navigate(point){if(!tutorialAllowsTravel(this,point))return;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo)this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');}
-  hitPlayer(e,n,avoidable=true){const p=this.player;if(p.invulnerable>0&&avoidable){this.stats.dodges++;fireProcs(this,'dodge',combatStats(this));this.float(p.x,p.y-25,'AUSGEWICHEN','#b8e0d3');return;}
+  /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
+   *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
+  navigate(point){if(!tutorialAllowsTravel(this,point))return false;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
+  /** Laufweg zur goldenen Wegmarke – ein Befehl statt vieler kurzer Klicks am Bildschirmrand (P6). */
+  navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.point):false;}
+  /** Neuberechnung des laufenden Laufbefehls, wenn der Schritt an einer Kante klemmt. */
+  repath(){const goal=this.routeGoal;if(!goal)return false;this.path=this.world.findPath(this.player,goal);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.path=[];this.routeGoal=null;return false;}return true;}
+  /** Erster Treffer eines neuen Angreifers oder Wechsel inCombat 0→1 (P1): Ereignis `attacked` für den großen
+   *  Hinweis der UI, dazu die Zielwahl auf den Angreifer, solange kein Ziel steht. */
+  noteAttacker(e,damage,fresh){
+    const set=this.attackers||(this.attackers=new Set());
+    if(!fresh&&set.has(e.id))return false;
+    set.add(e.id);
+    if(!this.target?.hp){this.target=e;this.emit('target');}
+    this.emit('attacked',{enemyId:e.id,damage,first:true});
+    return true;
+  }
+  hitPlayer(e,n,avoidable=true){const p=this.player,fresh=p.inCombat<=0;if(p.invulnerable>0&&avoidable){this.stats.dodges++;fireProcs(this,'dodge',combatStats(this));this.float(p.x,p.y-25,'AUSGEWICHEN','#b8e0d3');return;}
     if(p.parry>0&&avoidable){p.parryCharges=Math.max(0,(p.parryCharges||1)-1);if(!p.parryCharges)p.parry=0;fireProcs(this,'parry',combatStats(this));onParry(this,e,combatStats(this));p.runes=Math.min(3,p.runes+1);p.energy=Math.min(100,p.energy+20);this.stats.parries++;this.damage(e,this.skills.find(s=>s.id==='parry').reflect*(1+(combatStats(this).reflect||0)),'Parade');if(this.member.id==='dieter')p.hp=Math.min(p.maxHp,p.hp+35);this.float(p.x,p.y-25,'PARIERT','#f2da92');this.effect('interrupt',p.x,p.y);this.log('Perfekte Parade · +1 Punkt, +20 Randale.');return;}
-    const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs)*(this.baseEffects().damageTaken??1));p.hp=Math.max(0,p.hp-n);p.inCombat=7;if(p.hp>0&&p.hp/p.maxHp<.35)fireProcs(this,'lowHealth',cs);if(e.arena)(this.arenaStats||(this.arenaStats=freshArenaStats())).taken+=n;this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;this.autoAttack.enabled=false;this.casting=null;this.keys.clear();this.moveTo=null;this.memoryEvent({kind:'firstDeath'});this.emit('death');}
+    const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs)*(this.baseEffects().damageTaken??1));p.hp=Math.max(0,p.hp-n);p.inCombat=7;if(p.hp>0&&p.hp/p.maxHp<.35)fireProcs(this,'lowHealth',cs);if(e.arena)(this.arenaStats||(this.arenaStats=freshArenaStats())).taken+=n;this.noteAttacker(e,n,fresh);this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;stopAuto(this,false);this.casting=null;this.keys.clear();this.moveTo=null;this.path=[];this.routeGoal=null;this.memoryEvent({kind:'firstDeath'});this.emit('death');}
   }
   startCast(e){const p=this.player,set=CAST_SETS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length];
     e.cycle++;if(e.type==='boss'&&e.cycle===1&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].engage,'boss');
@@ -307,7 +348,7 @@ export class Game {
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
-  respawn(){const p=this.player;Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});
+  respawn(){const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
   tick(dt){if(this.paused||this.dead)return;dt=Math.min(dt,.05);this.time+=dt;
@@ -315,12 +356,13 @@ export class Game {
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
     for(const key of ['parry','invulnerable','attack','inCombat'])p[key]=Math.max(0,p[key]-dt);
+    if(p.inCombat<=0&&this.attackers?.size)this.attackers.clear();
     const tickStats=combatStats(this);p.energy=Math.min(100,p.energy+dt*((p.inCombat>0?BALANCE.momentum.combatEnergyRegen:BALANCE.player.energyRegen)+(tickStats.energyRegen||0)));
     // The combat timeout outlasts the kill bonus; rest can start once no opponent is fighting.
     const resting=this.time<this.momentum.restUntil&&!this.enemies.some(e=>e.hp>0&&e.aggro&&e.ai!=='returning');
     if(p.inCombat===0||resting)p.hp=Math.min(p.maxHp,p.hp+dt*(resting?BALANCE.momentum.restRegen:BALANCE.player.outOfCombatRegen)*(tickStats.procs.includes('hops')?PROCS.hops.regen:1)*(1+(this.baseEffects().restRegen||0)));
     let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
-    if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;dx=dy=0;}}
+    if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];this.routeGoal=null;}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;if(!this.moveTo)this.routeGoal=null;dx=dy=0;}}
     stepPlayer(this,dx,dy,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);
     for(const e of this.enemies){
       if((tutorialActive(this)&&!e.arena)||e.tutorial)continue;

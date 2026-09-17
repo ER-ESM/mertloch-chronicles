@@ -27,6 +27,14 @@ Inbox der UI-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel,
 - [ ] **P15** Eigene Taste für Talente (N ist laut app.js schon belegt – prüfen und in Hilfe nennen).
 - [ ] **Neu aus Engine/Welt Runde A**: Sprechblasen auf Event `bark`, Ausgrauen „Ausbauen“ außerhalb `atHub()`, Güte epic in Belohnung/Rucksack/Tooltip, Kulissen `world.camps[].props` und Bude `world.base.stageProps` zeichnen (Fallback-Farben aus `PROP_KINDS`).
 
+### Aus Engine Runde B (2026-09-17, docs/UEBERGABE-UI-2026-09-17.md §6)
+
+- [ ] **Esc muss `game.stopAuto()` rufen** (P2): Taste 1 schaltet den Autoangriff nicht mehr aus. Ohne diesen Aufruf gibt es keinen Weg mehr, ihn abzuwählen. Reihenfolge im Esc-Zweig von `app.js`: Zauber, Zielhilfe, dann `game.stopAuto()`, dann Fenster.
+- [ ] **Ereignis `attacked {enemyId,damage,first}`** (P1): großer Hinweis „Du wirst angegriffen“; die Figur findet sich über `enemyId` in `game.enemies`.
+- [ ] **Aktionstaste über `game.interaction()`** (P3/P5): Rangfolge aus der Engine übernehmen, statt in `worldInteraction()` nur nach Entfernung zu sortieren; Beschriftungen weiter aus content.
+- [ ] **Wegmarke anklickbar → `game.navigateDestination()`** (P6): ein Laufbefehl zum Auftragsziel statt zwölf Klicks an den Bildschirmrand.
+- [ ] **Zählstand der Proc-Regeln**: `procCount(game,id)` für Auslöser mit `every` (z. B. „2/3 Kellen“) auf dem Proc-Chip anzeigen.
+
 ## Erledigt
 
 - [x] **Sprites je `variant`** (Grafik/Welt): Ladeliste jetzt `assets/content-art/handoff-catalog.json` statt fester Pfade; `content-art.js` löst die Aliase auf, `live-art.js` wertet `variant` (über `livePersonId`) vor `skin` aus und `clan-art.js` prüft den gelieferten Bogen vor dem alten Rig. Ohne Bild bleibt der bisherige Fallback (2026-09-17).

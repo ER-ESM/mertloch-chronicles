@@ -4,13 +4,16 @@ import {tutorialActive,tutorialConfirm,tutorialSignal,tickTutorial} from '../tut
 import {TALENTS,learnTalent,unlearnTalent,talentState} from '../talents.js';import {talentIconCell} from '../talent-art.js';import {takeLoot} from '../rpg.js';import {conversationHeader} from '../dialogue-ui.js';
 const world=()=>({id:'hof',spawn:{x:500,y:500},npc:{x:500,y:480},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findPath:(a,b)=>[{...b}],findClear:(x,y)=>({x,y})});
 const nextTick=g=>tickTutorial(g,.05);
+// P8: Der Tick, in dem ein Schritt beginnt, ist gesperrt – erst der folgende darf ihn abschließen.
+const settle=g=>{tickTutorial(g,.05);tickTutorial(g,.05);};
 test('Fresh guided start is linear, bounds movement and refuses quests until the hofprobe is finished',()=>{
  const g=new Game(world(),{},{guidedStart:true});assert.ok(tutorialActive(g));assert.equal(g.acceptQuest(),false);assert.equal(tutorialConfirm(g),true);assert.equal(g.tutorial.step,1);
  g.navigate({x:2000,y:2000});assert.equal(g.moveTo,null);Object.assign(g.player,{x:2000,y:2000});nextTick(g);assert.equal(g.player.x,500);
- Object.assign(g.player,g.tutorial.course);nextTick(g);assert.equal(g.tutorial.step,2);const e=g.enemies.find(e=>e.tutorial);g.target=e;nextTick(g);assert.equal(g.tutorial.step,3);
- for(let i=0;i<2;i++){g.damage(e,99999,'Kelle');g.damage(e,99999,'Autoangriff');}assert.ok(e.hp>0);nextTick(g);assert.equal(g.tutorial.step,4);assert.equal(g.stats.kills,0);
- g.tutorial.clock=0;nextTick(g);assert.ok(e.cast);tutorialSignal(g,'dash');g.player.x=e.cast.x+100;e.cast.remaining=.01;nextTick(g);assert.equal(g.tutorial.step,5);assert.ok(g.rpg.loot.some(b=>b.id===TUTORIAL.loot.id));
- Object.assign(g.player,g.tutorial.dummy);assert.ok(takeLoot(g,TUTORIAL.loot.id));nextTick(g);assert.equal(g.tutorial.step,6);assert.equal(tutorialConfirm(g),false);tutorialSignal(g,'inventory');assert.equal(g.tutorial.step,7);Object.assign(g.player,g.world.npc);assert.ok(tutorialConfirm(g));assert.equal(tutorialActive(g),false);assert.equal(g.quest.accepted,false);assert.equal(g.acceptQuest(),true);assert.equal(g.quest.accepted,true);assert.equal(g.player.xp,TUTORIAL.rewardXp);assert.equal(tutorialConfirm(g),false);
+ Object.assign(g.player,g.tutorial.course);settle(g);assert.equal(g.tutorial.step,2);const e=g.enemies.find(e=>e.tutorial);g.target=e;settle(g);assert.equal(g.tutorial.step,3);
+ assert.equal(g.tutorial.hits,0);assert.equal(g.tutorial.autos,0);
+ for(let i=0;i<2;i++){g.damage(e,99999,'Kelle');g.damage(e,99999,'Autoangriff');}assert.ok(e.hp>0);settle(g);assert.equal(g.tutorial.step,4);assert.equal(g.stats.kills,0);
+ g.tutorial.clock=0;nextTick(g);nextTick(g);assert.ok(e.cast);tutorialSignal(g,'dash');g.player.x=e.cast.x+100;e.cast.remaining=.01;nextTick(g);assert.equal(g.tutorial.step,5);assert.ok(g.rpg.loot.some(b=>b.id===TUTORIAL.loot.id));
+ Object.assign(g.player,g.tutorial.dummy);assert.ok(takeLoot(g,TUTORIAL.loot.id));settle(g);assert.equal(g.tutorial.step,6);assert.equal(tutorialConfirm(g),false);tutorialSignal(g,'inventory');assert.equal(g.tutorial.step,7);Object.assign(g.player,g.world.npc);assert.ok(tutorialConfirm(g));assert.equal(tutorialActive(g),false);assert.equal(g.quest.accepted,false);assert.equal(g.acceptQuest(),true);assert.equal(g.quest.accepted,true);assert.equal(g.player.xp,TUTORIAL.rewardXp);assert.equal(tutorialConfirm(g),false);
 });
 test('Tutorial refuses out-of-order actions and lets failed dodges be retried without damage',()=>{
  const g=new Game(world(),{},{guidedStart:true});tutorialSignal(g,'inventory');assert.equal(g.tutorial.step,0);g.tutorial.step=4;const saved=g.save(),loaded=new Game(world(),saved),e=loaded.enemies.find(e=>e.tutorial);loaded.tutorial.clock=0;const hp=loaded.player.hp;nextTick(loaded);e.cast.remaining=.01;nextTick(loaded);assert.equal(loaded.tutorial.step,4);assert.equal(loaded.player.hp,hp);

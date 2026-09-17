@@ -1,5 +1,6 @@
 import {rng,distance,inside,segmentDistance} from './world.js';
-import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES,enemyScale} from './content/index.js';
+import {residential} from './world-layout.js';
+import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES,enemyScale,pickElite} from './content/index.js';
 
 export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2});
 export {ARCHETYPES,ELITES};
@@ -35,15 +36,20 @@ export class EncounterDirector{
     for(let attempt=0;attempt<24&&list.length<ENCOUNTER_RULES.slotsPerCell;attempt++){
       const p={x:Math.round(cx*C+24+random()*(C-48)),y:Math.round(cy*C+24+random()*(C-48))};if(!inhabitable(w,p)||(w.camps||[]).some(c=>distance(c,p)<120)||list.some(e=>distance(e,p)<105))continue;
       const anchor=anchorFor(w,p);if(!anchor)continue;
-      const area=w.areas.find(a=>['farmland','meadow','grass','forest'].includes(a.tags.landuse)&&inside(p.x,p.y,a.points))||w.areaAt(p.x,p.y),field=area?.tags.landuse!=='residential';
+      // vr-08: Feld ist, was NICHT in der Bebauung liegt. residential() prüft alle Wohnpolygone und die
+      // Bebauungsmaske aus den Häusern (world-layout.js) – die alte Flächensuche hielt Lücken zwischen den
+      // Polygonen für Feld und ließ aggressive Reviere mitten im Ort entstehen.
+      const field=!residential(w,p);
       const S=SPAWN_TABLES,town=distance(p,w.spawn),far=town>S.tierDistance,aggressive=field&&town>S.aggressiveMinDistance&&random()>1-S.aggressiveChance;let kind=pickSpawn(aggressive?S.aggressive:S.neutral,random,far),def=ARCHETYPES[kind];
-      if(aggressive&&town>S.eliteDistance&&random()<S.eliteChance){kind='alphaBoar';def=ELITES.alphaBoar;}
+      // Elite-Auswahl gewichtet aus ELITE_TABLE (content/enemies.js): auch Oberpraktikant Olaf kann erscheinen.
+      const elite=aggressive?pickElite(town,random):null;
+      if(elite&&random()<S.eliteChance){kind=elite.kind;def=elite.def;}
       const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,...scaledStats(def,g.player.level,far),campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
-      e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9))e.spawnPoints.push(dest);}
+      e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9)&&(!aggressive||!residential(w,dest)))e.spawnPoints.push(dest);}
       if(distance(p,g.player)<ENCOUNTER_RULES.spawnDistance){e.hp=0;e.respawnAt=g.time;e.dead=0;e.ai='waiting';}else{e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.ai='appearing';}
       list.push(e);
       // Gruppen: im Umland ziehen aggressive Arten zu zweit oder zu dritt herum (Kettenzug statt Laufwege).
-      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,far),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
+      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9)||residential(w,dest))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,far),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
     }list.push(...companions);this.cells.set(key,list);return list;
   }
   tick(dt){if(!this.enabled)return;const g=this.game,w=this.world,C=ENCOUNTER_RULES.cellSize,cx=Math.floor(g.player.x/C),cy=Math.floor(g.player.y/C),key=cx+','+cy;this.clock-=dt;

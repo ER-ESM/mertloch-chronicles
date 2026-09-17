@@ -20,6 +20,10 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 - [ ] **P14** Kurz-Glossar in der Hilfe (Randale, Pegel/Glanz/Druck → Eskalation, Kniffe, Klamotten, Pfandmarken) in `PLAY_HELP`.
 - [ ] **P12** Ida Kapitel 1: Absatz 4 wiederholt die Summary – Summary bleibt im Auftragsbuch, Dialog ohne Doppelung (UI setzt um, Text prüfen).
 
+### Aus Engine Runde B (2026-09-17)
+
+- [ ] **Abklingzeit-Meldung mit Restzeit** (P8, Playtest Akt 1): `COMBAT_TEXT` in `content/combat.js` hat keine Zeile für „Kniff noch nicht bereit“. Die Engine meldet deshalb einen Rückfall im Wortlaut `<Kniffname> ist noch nicht bereit · 2.4 s.`. Gebraucht wird eine Zeile mit zwei Platzhaltern, z. B. `cooldown:(name,sekunden)=>…`; die Engine nutzt sie automatisch, sobald es sie gibt (`COMBAT_TEXT.cooldown?.(name,rest)`). Hinweis: `content/combat.js` gehört Gameplay – wenn nur der Wortlaut von Story kommt, bitte dorthin weiterreichen.
+
 ## Erledigt
 
 - [x] Akt 1 „Filmriss“ komplett (2026-09-17, docs/AKT-1-FILMRISS.md).
