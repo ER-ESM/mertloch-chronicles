@@ -42,6 +42,9 @@ Regeln für dieses Dokument:
 | E-28 | Runde, einfache Linien statt Radius 0 | 2026-09-18 | gilt, ändert E-24 |
 | E-29 | Jeder Kniff hat zu jeder Zeit einen Nutzen (frühe Eskalation) | 2026-09-18 | gilt |
 | E-30 | Sichtbare Ausrüstung über Pre-Render aus 3D | 2026-09-18 | gilt |
+| E-31 | Kampfstatistik für Schaden und Heilung | 2026-09-18 | gilt |
+| E-32 | Klassen-Kernmechaniken und Talentpfade | 2026-09-18 | gilt |
+| E-33 | Bearbeitbares HUD mit Buff- und Debuffleisten | 2026-09-18 | gilt |
 
 ---
 
@@ -355,3 +358,11 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 | Geräteübergreifender Spielstand | nie; Export/Import-Datei; Konto | Export/Import-Datei, kein Konto (E-01) | 2026-09-12 |
 | Feldgegner ab Stufe 10 trivial | Skalierung in der Engine; Anhebung über `tuning.js`; bewusst lassen | Skalierung in der Engine, Dorfkern fest (`docs/backlog/engine.md`) | 2026-09-17 |
 | Set-Boni für Dorflegenden | ja; nein | nach dem Playtest entscheiden, Konzept Loot + Gameplay | 2026-09-17 |
+
+## E-33 · Bearbeitbares HUD mit Buff- und Debuffleisten
+
+**Anlass.** Nutzerauftrag vom 18.09.2026: Oberfläche wie im Bearbeitungsmodus von WoW Retail anpassen, Buff- und Debuffleiste ergänzen; mobile Variante mitdenken.
+
+**Entscheidung.** Ein eigener, pausierender Bearbeitungsmodus verschiebt und skaliert vorhandene HUD-Elemente. Benannte Layouts enthalten getrennte Ansichten für Desktop, Hochkant und Querformat. Speichern ist ausdrücklich, Abbrechen stellt den Ausgangsstand wieder her. Eigene Buffs, eigene Debuffs und Ziel-Debuffs haben unabhängige Leisten mit tatsächlichen Laufzeiten und Stapeln. Verworfen: nur fest positionierte Effektchips; ein gemeinsames Pixel-Layout für PC und Handy.
+
+**Konsequenzen.** Keine Änderung an Kampfregeln oder Spielständen. Layoutpräferenzen liegen separat im Browser. Touchflächen werden im Editor nicht unter ihre Standardgröße skaliert; leere Leisten bleiben dort als Rahmen auffindbar. Umsetzung, Grenzen und Prüfungen: [HUD-Editor](HUD-EDITOR-2026-09-18.md).

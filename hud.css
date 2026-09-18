@@ -1,0 +1,37 @@
+/* Effects are distinct HUD frames, using the existing skill art. */
+.aura-bar{position:absolute;z-index:26;width:240px;max-width:calc(100% - 24px);font:12px/1.3 var(--read,sans-serif);color:#fff1d2;pointer-events:auto}
+.aura-bar[hidden]{display:none!important}
+.aura-bar h2{font:700 10px/1.3 var(--read,sans-serif);letter-spacing:.5px;text-transform:uppercase;margin:0 0 4px;color:#fff0c7;text-shadow:0 1px 3px #000,0 1px 5px #000}
+#buffStrip{left:20px;top:218px}#debuffStrip{left:20px;top:294px}#targetDebuffStrip{left:274px;top:218px}
+.aura-icons{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:2px 2px 4px;max-width:100%;overscroll-behavior:contain}
+.aura-icons button{position:relative;flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:2px!important;border:2px solid #8abd85!important;border-radius:3px!important;background:#16291f;overflow:hidden;touch-action:pan-x;transform:none!important;font:700 11px var(--read,sans-serif)}
+.aura-debuffs .aura-icons button{border-color:#fa7d70!important}.aura-targetDebuffs .aura-icons button{border-color:#e6b96b!important}
+.aura-icons canvas{width:36px;height:36px;display:block}.aura-sweep{position:absolute;inset:0;background:conic-gradient(#08110cb0 var(--aura-spent),transparent 0);pointer-events:none}
+.aura-time{position:absolute;left:0;right:0;bottom:0;background:#0d160eea;color:#fff6e5;text-align:center;font-size:10px;line-height:12px;font-variant-numeric:tabular-nums}
+.aura-stacks{position:absolute;right:0;top:0;color:#fff;background:#101910ed;line-height:13px;min-width:12px;text-align:center;font-size:11px}.aura-stacks:empty,.aura-time:empty{display:none}
+.aura-icons .aura-expiring{box-shadow:inset 0 0 0 1px #ffd779}.aura-icons button:focus-visible{outline:2px solid #fff4d6;outline-offset:1px}
+#auraTooltip{position:absolute;z-index:1500;box-sizing:border-box;width:280px;max-width:calc(100% - 16px);padding:12px;color:#fff0d1;background:#172a23;border:2px solid #c4a166;border-radius:5px;font:12px/1.45 var(--read,sans-serif);box-shadow:0 5px 18px #0009}
+#auraTooltip[hidden]{display:none}#auraTooltip strong{display:block;padding-right:35px}#auraTooltip p{margin:8px 0}#auraTooltip small{font-size:11px;color:#e5d6b9}#auraTooltip button{position:absolute;right:4px;top:4px;width:28px;height:28px;min-height:28px;background:#2b4135;color:#fff0d1;border:1px solid #b79d65;line-height:1;padding:0}
+.touch-mode #auraTooltip button{width:44px;height:44px;min-height:44px}.touch-mode #auraTooltip strong{padding-right:44px;min-height:36px}
+.touch-mode .aura-bar{max-width:calc(100% - 24px)}.touch-mode .aura-icons{flex-wrap:nowrap}.touch-mode .aura-bar h2{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Saved coordinates override native HUD anchors without changing game state or DOM ownership. */
+#gameShell [data-hud-custom]{position:absolute!important;left:var(--hud-x)!important;top:var(--hud-y)!important;right:auto!important;bottom:auto!important;transform:scale(var(--hud-scale))!important;transform-origin:0 0!important;margin:0!important}
+#hudEditor{position:absolute;inset:0;z-index:4000;isolation:isolate;color:#f7eed7;font:13px/1.4 var(--read,sans-serif);overscroll-behavior:contain}
+#hudEditor[hidden]{display:none!important}#hudEditor *{box-sizing:border-box}#hudEditor [hidden]{display:none!important}
+.hud-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#7dc7d122 1px,transparent 1px),linear-gradient(90deg,#7dc7d122 1px,transparent 1px);background-size:8px 8px}
+.hud-handles{position:absolute;inset:0;pointer-events:none}
+#hudEditor [data-hud-handle]{position:absolute;min-width:44px;min-height:44px;pointer-events:auto;touch-action:none;background:#397cac29;border:2px solid #86cbe9;border-radius:3px!important;padding:0;cursor:move;transform:none;box-shadow:0 0 0 1px #122d38}
+#hudEditor [data-hud-handle] span{position:absolute;left:0;top:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 11px/1.4 var(--read,sans-serif);padding:2px 5px;background:#123547f5;color:#eafaff;pointer-events:none}
+#hudEditor [data-hud-handle].selected{border-color:#ffd36c;background:#b48c1738;z-index:1}#hudEditor [data-hud-handle].selected span{background:#4e3d16;color:#fff3bc}
+.hud-toolbar{position:absolute;left:50%;top:16px;transform:translateX(-50%);width:430px;max-width:calc(100% - 24px);max-height:calc(100% - 32px);display:flex;flex-direction:column;background:#172a23f7;border:2px solid #c3a46c;box-shadow:0 8px 32px #0009;border-radius:6px;z-index:2;overflow:hidden}
+.hud-toolbar header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:#2b4436;cursor:move;touch-action:none;flex-shrink:0}.hud-toolbar header small{display:block;color:#dfd5b9;font-size:11px}
+#hudEditor button,#hudEditor select,#hudEditor input{font:inherit;color:#fff1d2;min-height:44px;touch-action:manipulation;border-radius:3px;background:#2b4135;border:1px solid #8e9273;padding:7px}
+#hudEditor button:hover,#hudEditor button:focus-visible{outline:2px solid #f4d490;outline-offset:-2px;transform:none}
+#hudEditor button:disabled{opacity:.45;cursor:default}.hud-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;min-height:0}
+.hud-form>label{display:grid;gap:3px;min-width:0}.hud-form select,.hud-form input{width:100%;min-width:0}.hud-form output{font-weight:bold}.hud-form [data-hud-scale]{padding:0;accent-color:#e4c578}
+.hud-pair{display:flex;gap:8px;grid-column:1/-1}.hud-pair>*{flex:1;min-width:0}.hud-pair label{display:flex;align-items:center;gap:4px;font-size:12px}.hud-pair input[type=checkbox]{width:44px;height:44px;min-width:44px;accent-color:#cead67}
+.hud-nudge{display:flex;gap:8px;align-self:end}.hud-nudge button{width:44px;flex:1}.hud-hint{grid-column:1/-1;color:#d9d2bb;font-size:12px;margin:4px 0}
+[data-hud-status]{font-size:12px;color:#ffe0a1;margin:0;padding:0 12px}[data-hud-status]:empty{display:none}.hud-toolbar footer{display:flex;gap:8px;padding:8px 12px;border-top:1px solid #6d7859;flex-shrink:0}.hud-toolbar footer button{flex:1}#hudEditor [data-hud-save]{background:#607643;color:#fff9e8}
+.touch-mode .hud-toolbar{left:calc(12px + var(--safe-left));right:calc(12px + var(--safe-right));top:auto;bottom:calc(12px + var(--safe-bottom));width:auto;max-width:none;max-height:calc(100% - 24px - var(--safe-top) - var(--safe-bottom));transform:none}
+.touch-mode .hud-form{max-height:45dvh}.touch-mode .hud-nudge{grid-column:1/-1}.touch-mode .hud-toolbar header{padding:6px 8px}.touch-mode .hud-toolbar footer{padding:8px}.touch-mode .hud-toolbar strong{font-size:13px}
+@media(max-width:370px){.touch-mode .hud-form{grid-template-columns:1fr}.touch-mode .hud-form>label{grid-column:1}.touch-mode .hud-toolbar header small{font-size:10px}}

@@ -33,6 +33,8 @@ jobs:
         run: npm run ui:check
       - name: Check damage and healing meter
         run: npm run meter:check
+      - name: Check HUD editing and buff/debuff bars
+        run: npm run hud:check
       - name: Check offline starts and update recovery
         run: node scripts/basis-pwa-check.mjs
       - name: Keep browser diagnostics on failure
@@ -43,6 +45,7 @@ jobs:
           path: |
             visual-review/ui-regression/
             visual-review/meter/
+            visual-review/hud/
             combat-review/basis-pwa/
       - uses: actions/upload-pages-artifact@v4
         with:
