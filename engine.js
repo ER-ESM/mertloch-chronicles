@@ -75,7 +75,11 @@ export class Game {
   /** Am Treffpunkt und nicht im Kampf? Gilt für Clanwechsel und Basisbau. */
   atHub(){return this.player.inCombat<=0&&distance(this.player,this.world.spawn)<=HUB_RADIUS;}
   /** Spruch einer Figur: steht im Kampflog und geht als Ereignis `bark` an die UI (Sprechblase). */
-  bark(source,text,kind){if(!text)return null;if(kind!=='villager')this.log(source.name+': „'+text+'“');this.emit('bark',{enemyId:source.id??null,name:source.name,text,kind,x:source.x,y:source.y});return text;}
+  bark(source,text,kind){if(!text)return null;
+   // Sprechblasen-Drossel (Nutzerbefund 2026-09-18: viele Blasen auf einmal): je Art höchstens eine Blase innerhalb der Sperrfrist;
+   // Boss-, Phasen- und Kapitelzeilen sind wichtig und nie gedrosselt. Dorfbewohner reden nicht, solange ein Gegner spricht.
+   const gap={villager:7,enemy:4}[kind];const last=this.barkClock||(this.barkClock={});if(gap!==undefined){const busy=Object.entries(last).some(([k,t])=>k!=='villager'&&this.time-t<3);if(this.time-(last[kind]??-Infinity)<gap||(kind==='villager'&&busy))return null;}last[kind]=this.time;
+   if(kind!=='villager')this.log(source.name+': „'+text+'“');this.emit('bark',{enemyId:source.id??null,name:source.name,text,kind,x:source.x,y:source.y});return text;}
   /** Sprechblasen der Dorfbewohner: village-life.js öffnet die Blase, die Zeile kommt aus content/npcs.js. */
   villagerBarks(){
     const state=this.barkState||(this.barkState=new Map());
