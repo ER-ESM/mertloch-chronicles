@@ -3,8 +3,10 @@
 // Talent antippen, Kniff lange drücken, Toast. Je Gerät (Hochkant 390×844, Quer 844×390, klein 360×740):
 //  - keine Seitenbreite über dem Viewport, kein Fenster außerhalb des Bildschirms,
 //  - kein Fenster über Joystick oder Kniff-Knöpfen,
-//  - Tipp-Ziele in Fenstern und Touch-HUD mindestens 40 px (Verstoß < 32 px ist ein Fehler),
+//  - Tipp-Ziele in Fenstern und Touch-HUD mindestens 44 px (M-01: 32–43 px ist ein Befund, < 32 px ein Fehler),
+//  - Abstand zwischen benachbarten Tipp-Zielen mindestens 8 px (M-02, Befund),
 //  - keine Desktop-Begriffe (Tab, WASD, Rechtsklick, Maus, [LEER], [F], [1]…) in sichtbaren Fenstern.
+// Zum Schluss Desktop-Gegenprobe 2024×900 ohne Touch-Modus (M-20: Mobile-Schicht ist dort ein Durchlauf).
 // Screenshots und Bericht: visual-review/mobile-check/<gerät>-<schritt>.png + REPORT.md
 //
 // Aufruf:  PORT=4181 node server.mjs   (zweites Fenster)
@@ -49,20 +51,30 @@ async function connect(){
 }
 
 /** Sichtbarkeits- und Layoutmessung im Browser; Ergebnis wird als JSON zurückgegeben. */
+/** Tipp-Ziele: alles, was in Fenstern und im Touch-HUD angetippt werden kann (M-01/M-02). */
+const TARGETS='.game-popup button, .game-popup [role=tab], .game-popup select, .game-popup a[href], .game-popup .item-slot, .game-popup .branch-node, .game-popup input:not([type=hidden]), #mobileControls button, #touchStick';
 const AUDIT=`(()=>{
+ const TARGETS=${JSON.stringify(TARGETS)};
  const vis=el=>{const r=el.getBoundingClientRect();const cs=getComputedStyle(el);return r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none'&&!el.closest('[hidden]');};
  const box=el=>{const r=el.getBoundingClientRect();return {x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)};};
  const overlap=(a,b)=>a&&b&&a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
  const stick=document.querySelector('#touchStick'),skills=document.querySelector('#touchSkills');
  const popups=[...document.querySelectorAll('.game-popup')].filter(vis).map(e=>({id:e.dataset.window,...box(e)}));
- const small=[...document.querySelectorAll('.game-popup button, #mobileControls button, .game-popup .item-slot, .branch-node')].filter(vis).map(e=>({sel:(e.className||e.tagName).toString().slice(0,40)+(e.dataset.window?'#'+e.dataset.window:''),text:(e.getAttribute('aria-label')||e.textContent||'').trim().slice(0,30),...box(e)})).filter(b=>Math.min(b.w,b.h)<40);
+ const stickies=[...document.querySelectorAll('.game-popup .popup-body *')].filter(e=>vis(e)&&getComputedStyle(e).position==='sticky').map(e=>({el:e,r:e.getBoundingClientRect()}));
+ const popupEls=[...document.querySelectorAll('.game-popup')].filter(vis);
+ const clip=t=>{const c=t.el.closest('.popup-body');if(!c)return t;const own=t.el.closest('.game-popup');const above=popupEls.slice(popupEls.indexOf(own)+1).some(p=>{const r=p.getBoundingClientRect();return r.left<t.x+t.w&&r.right>t.x&&r.top<t.y+t.h&&r.bottom>t.y;});if(above)return {...t,clipped:true};const b=c.getBoundingClientRect();let x=Math.max(t.x,b.left),y=Math.max(t.y,b.top),w=Math.min(t.x+t.w,b.right)-x,h=Math.min(t.y+t.h,b.bottom)-y;for(const st of stickies)if(!st.el.contains(t.el)&&st.r.bottom>y&&st.r.top<=y&&st.r.left<x+w&&st.r.right>x){h-=st.r.bottom-y;y=st.r.bottom;}return {...t,x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h),clipped:w<t.w-1||h<t.h-1};};
+ const onTop=t=>{const hit=document.elementFromPoint(t.x+t.w/2,t.y+t.h/2);return !!hit&&(t.el===hit||t.el.contains(hit));};
+ const label=e=>((e.getAttribute('aria-label')||e.textContent||'').trim().slice(0,30)||(e.id?'#'+e.id:'')||e.className.toString().slice(0,30));
+ const targets=[...document.querySelectorAll(TARGETS)].filter(e=>vis(e)&&!e.disabled&&!e.closest('[hidden]')).map(e=>({el:e,text:label(e),...box(e)})).map(clip).filter(t=>t.w>0&&t.h>0&&t.x+t.w>0&&t.y+t.h>0&&t.x<innerWidth&&t.y<innerHeight&&onTop(t));
+ const small=targets.filter(t=>!t.clipped&&Math.min(t.w,t.h)<44).map(({el,...t})=>t);
+ const gaps=[];for(let i=0;i<targets.length;i++)for(let j=i+1;j<targets.length;j++){const a=targets[i],b=targets[j];if(a.clipped||b.clipped||a.el.contains(b.el)||b.el.contains(a.el))continue;const dx=Math.max(0,b.x-(a.x+a.w),a.x-(b.x+b.w)),dy=Math.max(0,b.y-(a.y+a.h),a.y-(b.y+b.h));const gap=Math.max(dx,dy);if(gap<8)gaps.push({a:a.text,b:b.text,gap:Math.round(gap*10)/10});}
  const text=[...document.querySelectorAll('.game-popup .popup-body, #touchContext, #toast, .touch-topline')].filter(vis).map(e=>e.innerText).join('\\n');
  return {touch:document.body.classList.contains('touch-mode'),vw:innerWidth,vh:innerHeight,scrollW:document.documentElement.scrollWidth,popups,stick:stick&&vis(stick)?box(stick):null,skills:skills&&vis(skills)?box(skills):null,
   overlapStick:popups.filter(p=>overlap(p,stick&&box(stick))).map(p=>p.id),overlapSkills:popups.filter(p=>overlap(p,skills&&box(skills))).map(p=>p.id),
-  offscreen:popups.filter(p=>p.x<0||p.y<0||p.x+p.w>innerWidth+1||p.y+p.h>innerHeight+1).map(p=>p.id),small,text};
+  offscreen:popups.filter(p=>p.x<0||p.y<0||p.x+p.w>innerWidth+1||p.y+p.h>innerHeight+1).map(p=>p.id),targets:targets.length,small,gaps,text};
 })()`;
 
-const b0=await launch();const b=await connect();const report=[];let failures=0;
+const b0=await launch();const b=await connect();const report=[],audits=[];let failures=0;
 try{
  await b.device(390,844);await b.goto(url);
  await b.evaluate(`localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'touch',size:'normal',layouts:{}}));(async()=>{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);})()`);
@@ -88,7 +100,7 @@ try{
    ['toast',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('#touchTarget').click()`);}]];
   for(const [step,run] of steps){
    await run();await wait(650);
-   const a=await b.evaluate(AUDIT);await b.shot(name+'-'+step);
+   const a=await b.evaluate(AUDIT);await b.shot(name+'-'+step);audits.push({device:name,step,...a,text:undefined});
    const problems=[];
    if(!a.touch)problems.push('Touch-Modus nicht aktiv');
    if(a.scrollW>a.vw+1)problems.push('Seite breiter als Viewport: '+a.scrollW+' > '+a.vw);
@@ -97,15 +109,20 @@ try{
    if(a.overlapSkills.length)problems.push('Fenster über Kniff-Knöpfen: '+a.overlapSkills.join(','));
    const tiny=a.small.filter(s=>Math.min(s.w,s.h)<32);if(tiny.length)problems.push('Tipp-Ziele unter 32 px: '+tiny.map(s=>s.text||s.sel).slice(0,6).join(' | '));
    const m=a.text.match(DESKTOP_WORDS);if(m)problems.push('Desktop-Begriff sichtbar: „'+m[0]+'“');
-   const warn=a.small.filter(s=>Math.min(s.w,s.h)>=32).length;
-   report.push({device:name,step,problems,warn,popups:a.popups.map(p=>p.id+' '+p.w+'×'+p.h+'@'+p.x+','+p.y).join(' ')});
+   const warn=a.small.filter(s=>Math.min(s.w,s.h)>=32);
+   report.push({device:name,step,problems,warn:warn.length,warnList:warn.map(s=>s.text+' '+s.w+'×'+s.h).join(' | '),gaps:a.gaps.length,gapList:a.gaps.slice(0,4).map(g=>g.a+'↔'+g.b+' '+g.gap+'px').join(' | '),targets:a.targets,popups:a.popups.map(p=>p.id+' '+p.w+'×'+p.h+'@'+p.x+','+p.y).join(' ')});
    if(problems.length)failures++;
   }
  }
+ await b.send('Emulation.setTouchEmulationEnabled',{enabled:false});await b.send('Emulation.setDeviceMetricsOverride',{width:2024,height:900,deviceScaleFactor:1,mobile:false});
+ await b.evaluate(`localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'desktop',size:'normal',layouts:{}}))`);await b.goto(url);await wait(1500);
+ const d=await b.evaluate(`({touch:document.body.classList.contains('touch-mode'),controls:getComputedStyle(document.querySelector('#mobileControls')).display,rail:!!document.querySelector('.game-menu-rail')&&getComputedStyle(document.querySelector('.game-menu-rail')).display!=='none'})`);await b.shot('desktop-2024x900');
+ const dp=[];if(d.touch)dp.push('Touch-Modus am Desktop aktiv');if(d.controls!=='none')dp.push('Touch-HUD am Desktop sichtbar');if(!d.rail)dp.push('Menüleiste am Desktop fehlt');
+ report.push({device:'desktop',step:'2024x900',problems:dp,warn:0,warnList:'',gaps:0,gapList:'',targets:0,popups:''});if(dp.length)failures++;
 }finally{
- const lines=['# Mobile-Prüfung · '+new Date().toISOString().slice(0,10),'',`Adresse ${url} · Geräte ${DEVICES.map(d=>d[0]+' '+d[1]+'×'+d[2]).join(', ')} · ${failures} Schritte mit Fehlern von ${report.length}`,'','| Gerät | Schritt | Fenster | Tipp-Ziele 32–39 px | Probleme |','|---|---|---|---|---|',
-  ...report.map(r=>`| ${r.device} | ${r.step} | ${r.popups||'–'} | ${r.warn} | ${r.problems.join('; ')||'–'} |`),'',b.errors.length?'## Laufzeitfehler\n\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'):'Keine Laufzeitfehler.'];
- writeFileSync(join(dir,'REPORT.md'),lines.join('\n'));
+ const lines=['# Mobile-Prüfung · '+new Date().toISOString().slice(0,10),'',`Adresse ${url} · Geräte ${DEVICES.map(d=>d[0]+' '+d[1]+'×'+d[2]).join(', ')} · ${failures} Schritte mit Fehlern von ${report.length}`,'','| Gerät | Schritt | Fenster | Ziele | Befund 32–43 px | Abstand < 8 px | Probleme |','|---|---|---|---|---|---|---|',
+  ...report.map(r=>`| ${r.device} | ${r.step} | ${r.popups||'–'} | ${r.targets} | ${r.warn?r.warn+': '+r.warnList:'–'} | ${r.gaps?r.gaps+': '+r.gapList:'–'} | ${r.problems.join('; ')||'–'} |`),'',`Befunde gesamt: ${report.reduce((n,r)=>n+r.warn,0)} Tipp-Ziele unter 44 px, ${report.reduce((n,r)=>n+r.gaps,0)} Paare mit Abstand unter 8 px (M-01/M-02).`,'',b.errors.length?'## Laufzeitfehler\n\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'):'Keine Laufzeitfehler.'];
+ writeFileSync(join(dir,'REPORT.md'),lines.join('\n'));writeFileSync(join(dir,'audit.json'),JSON.stringify(audits,null,1));
  console.log(lines.join('\n'));
  b.close();b0.kill();
 }
