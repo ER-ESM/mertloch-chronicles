@@ -1,8 +1,8 @@
 // Local Chrome DevTools driver. No npm dependencies; uses Node's built-in WebSocket.
 import {writeFileSync} from 'node:fs';
 export const wait=ms=>new Promise(r=>setTimeout(r,ms));
-export async function browser(){
- const targets=await (await fetch('http://127.0.0.1:9222/json')).json();
+export async function browser({port=9222}={}){
+ const targets=await (await fetch('http://127.0.0.1:'+port+'/json')).json();
  const target=targets.find(t=>t.type==='page');if(!target)throw Error('No test browser page');
  const ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j;});
  let serial=0;const pending=new Map(),errors=[];

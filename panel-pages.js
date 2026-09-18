@@ -50,7 +50,7 @@ export function adaptPanel(w){
  const all=9999;
  pageGrid(b.querySelector('.bag-grid'),w,all,touch?4:6);
  pageGrid(b.querySelector('.icon-skillbook'),w,all,touch||innerWidth<700?3:4);
- pageGrid(b.querySelector('.equipment-grid'),w,all,4);
+ // The character sheet keeps its anatomical layout at every window width.
  pageGrid(b.querySelector('.secondary-stats'),w,all,2);
  pageGrid(b.querySelector('.clan-grid'),w,all,touch||innerWidth<760?1:3);
  pageGrid(b.querySelector('.quest-entries'),w,all,1);

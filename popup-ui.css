@@ -115,27 +115,48 @@ body.touch-mode .conversation-person small{margin-top:4px}
 .update-hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:100001;display:flex;gap:9px;align-items:center;background:var(--green,#2c4030);border:2px solid var(--kraft-2,#c09b61);box-shadow:2px 3px 0 #1d3022cc;padding:7px 11px;font:11px 'Trebuchet MS',sans-serif;color:var(--cream,#ecdbac)}
 .update-hint button{min-height:30px;font-size:10px;padding:4px 9px}
 
-/* Iteration 2 (MMO-Vorbilder): Charakterbogen wie ein Papierpuppen-Bogen. Plätze links (Kopf bis Armschienen),
-   rechts (Handschuhe bis Glücksbringer), unten die Waffen; Werte daneben, sobald das Buch breit genug ist. */
-.game-popup .equipment-grid .gear-doll{display:none}
-.game-popup .equipment-grid .weapon-row{display:contents}
-@container (min-width:640px){
- .game-popup .equipment-grid{grid-template-columns:64px minmax(150px,1fr) 64px 64px;grid-template-areas:"head doll hands ring1" "neck doll waist ring2" "shoulders doll legs trinket1" "body doll feet trinket2" "wrists doll . ." "weapon-row weapon-row weapon-row weapon-row";gap:6px 10px;align-items:start}
- .game-popup .equipment-grid .gear-doll{display:grid;grid-area:doll;justify-items:center;align-content:start;gap:8px;padding:10px 6px;height:100%;box-sizing:border-box;background:radial-gradient(ellipse at 50% 35%,#74804b,#293d2c 72%);border:1px solid #758059;box-shadow:inset 0 0 0 2px #1d2f2455}
- .game-popup .equipment-grid .gear-doll canvas{width:144px;height:180px;image-rendering:pixelated}
- .game-popup .equipment-grid .gear-doll .armory-controls{display:grid;gap:5px;justify-items:center}
- .game-popup .equipment-grid .gear-doll button{font-size:9px;padding:5px 8px}
- .game-popup .gear-cell[data-equipment-slot=head]{grid-area:head}.game-popup .gear-cell[data-equipment-slot=neck]{grid-area:neck}.game-popup .gear-cell[data-equipment-slot=shoulders]{grid-area:shoulders}.game-popup .gear-cell[data-equipment-slot=body]{grid-area:body}.game-popup .gear-cell[data-equipment-slot=wrists]{grid-area:wrists}
- .game-popup .gear-cell[data-equipment-slot=hands]{grid-area:hands}.game-popup .gear-cell[data-equipment-slot=waist]{grid-area:waist}.game-popup .gear-cell[data-equipment-slot=legs]{grid-area:legs}.game-popup .gear-cell[data-equipment-slot=feet]{grid-area:feet}
- .game-popup .gear-cell[data-equipment-slot=ring1]{grid-area:ring1}.game-popup .gear-cell[data-equipment-slot=ring2]{grid-area:ring2}.game-popup .gear-cell[data-equipment-slot=trinket1]{grid-area:trinket1}.game-popup .gear-cell[data-equipment-slot=trinket2]{grid-area:trinket2}
- .game-popup .equipment-grid .weapon-row{grid-area:weapon-row;display:flex;justify-content:center;gap:18px;padding-top:8px;border-top:1px solid #6f7d5555;margin-top:2px}
- .game-popup .gear-cell{gap:2px}.game-popup .gear-cell .item-slot{width:52px;height:52px}.game-popup .gear-cell>small{font-size:8px;letter-spacing:.2px}
- .game-popup .armory-banner{display:none}
- .popup-person .popup-body{display:grid;grid-template-columns:minmax(0,1fr) 240px;column-gap:16px;align-content:start}.popup-person .panel-section{margin-top:0}.popup-person .panel-section[data-section="Werte"] .panel-section-title{margin-top:0}
- .popup-person .panel-section[data-section="Ausrüstung"]{grid-column:1;grid-row:2}.popup-person .panel-section[data-section="Werte"]{grid-column:2;grid-row:2}
- .popup-person .panel-section:not([data-section="Ausrüstung"]):not([data-section="Werte"]){grid-column:1/-1}
- .popup-person .section-jump{grid-column:1/-1;grid-row:1}
- .popup-person .weapon-summary{grid-template-columns:1fr}.popup-person .character-stats{grid-template-columns:1fr 1fr}.popup-person .secondary-stats{grid-template-columns:1fr}
+/* Character sheet: a full-size figure with slots at body height, also on touch. */
+.popup-person .panel-section[data-section="Ausrüstung"]>.panel-section-title{display:none}
+.game-popup .equipment-grid{display:block;max-width:560px;margin:0 auto 14px;--gear-size:52px;--body-height:360px}
+.body-equipment{position:relative;max-width:500px;margin:0 auto;height:var(--body-height);isolation:isolate;background:radial-gradient(ellipse at 50% 45%,var(--green-2,#2E4A3B),transparent 65%)}
+.gear-guides{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none;stroke:var(--kraft-2,#C9A46F);stroke-width:1;opacity:.42}
+.gear-guides path{vector-effect:non-scaling-stroke}
+.game-popup .equipment-grid .gear-doll{position:absolute;inset:0;display:block;pointer-events:none;overflow:hidden}
+.game-popup .equipment-grid .gear-doll canvas{position:absolute;left:50%;top:0;transform:translateX(-50%);width:calc(var(--body-height) * .8);height:var(--body-height);max-width:none;image-rendering:pixelated}
+.game-popup .equipment-grid .gear-cell{gap:4px;min-width:0;justify-items:center}
+.game-popup .equipment-grid .item-slot{width:var(--gear-size);height:var(--gear-size);padding:4px}
+.game-popup .equipment-grid .item-slot canvas{width:100%;height:100%;max-width:44px;max-height:44px}
+.game-popup .equipment-grid .item-slot.empty{opacity:1;border-style:dashed}
+.game-popup .equipment-grid .item-slot.empty canvas{opacity:.55}
+.game-popup .equipment-grid .gear-cell>small{font:11px/1.15 var(--read,'Trebuchet MS',sans-serif);color:var(--kraft,#D9B98A);text-align:center;overflow-wrap:anywhere}
+.body-equipment>.gear-cell{position:absolute;left:0;top:var(--slot-y);width:72px;z-index:1}
+.body-equipment>[data-equipment-slot=head]{--slot-y:0%}
+.body-equipment>[data-equipment-slot=shoulders]{--slot-y:20%}
+.body-equipment>[data-equipment-slot=wrists]{--slot-y:40%}
+.body-equipment>[data-equipment-slot=waist]{--slot-y:60%}
+.body-equipment>[data-equipment-slot=feet]{--slot-y:80%}
+.body-equipment>.gear-cell:is([data-equipment-slot=neck],[data-equipment-slot=body],[data-equipment-slot=hands],[data-equipment-slot=legs]){left:auto;right:0}
+.body-equipment>[data-equipment-slot=neck]{--slot-y:10%}
+.body-equipment>[data-equipment-slot=body]{--slot-y:30%}
+.body-equipment>[data-equipment-slot=hands]{--slot-y:50%}
+.body-equipment>[data-equipment-slot=legs]{--slot-y:70%}
+.game-popup .equipment-grid .armory-controls{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:2px 0 14px}
+.game-popup .equipment-grid .armory-controls button{min-height:44px;font-size:11px;padding:7px 12px}
+.game-popup .equipment-grid .gear-footer{display:grid;grid-template-columns:4fr 3fr;gap:16px}
+.game-popup .equipment-grid :is(.accessory-row,.weapon-row){display:grid;gap:8px;justify-content:center;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--green-2,#2E4A3B)}
+.game-popup .equipment-grid .accessory-row{grid-template-columns:repeat(4,minmax(0,72px))}
+.game-popup .equipment-grid .weapon-row{grid-template-columns:repeat(3,minmax(0,88px))}
+.game-popup .equipment-grid h4{grid-column:1/-1;margin:0 0 3px;text-align:center;color:var(--kraft,#D9B98A);font:12px var(--read,'Trebuchet MS',sans-serif)}
+@container (min-width:600px){
+ .game-popup .equipment-grid{position:relative}
+ .game-popup .equipment-grid .armory-controls{position:absolute;right:0;bottom:100%;margin:0 0 8px}
+}
+@container (max-width:500px){
+ .game-popup .equipment-grid .gear-footer{grid-template-columns:1fr;gap:0}
+}
+@container (max-width:430px){
+ .game-popup .equipment-grid{--gear-size:44px;--body-height:310px}
+ .body-equipment>.gear-cell{width:64px}
 }
 
 /* Iteration 4 (MMO-Vorbilder): Tooltip-Kopf in zwei festen Zeilen. */
@@ -156,5 +177,4 @@ body.touch-mode .conversation-person small{margin-top:4px}
 .popup-person .weapon-summary b,.popup-person .character-stats b,.popup-person .secondary-stats b{font-size:12px!important;white-space:nowrap}
 .popup-person .starter-armory{margin:8px 0 0}
 .popup-person .starter-armory small{display:block}
-.popup-person .equipment-grid .gear-doll .armory-controls{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
 .popup-person .clan-hint{margin:0;color:#c9d2b4;font-size:11px}

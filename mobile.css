@@ -84,7 +84,6 @@
 .touch-mode .popup-body>*,.touch-mode .popup-body .panel-section>*{max-width:100%;box-sizing:border-box}
 .touch-mode .popup-body canvas,.touch-mode .popup-body img{max-width:100%;height:auto}
 .touch-mode .popup-body .spec-tabs{grid-template-columns:repeat(auto-fit,minmax(96px,1fr))}
-.touch-mode .popup-body .equipment-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 .touch-mode .popup-body .weapon-summary>div,.touch-mode .popup-body .character-stats>div,.touch-mode .popup-body .secondary-stats>div{min-width:0;flex:1 1 44%}
 .touch-mode .popup-body .wire-buttons{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .touch-mode .reward-option{background:var(--kraft,#D9B98A)!important;color:var(--ink,#2B2A26)!important;border-color:var(--kraft-2,#C9A46F)!important}
