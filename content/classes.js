@@ -12,7 +12,7 @@ export const CLAN_MEMBERS=[
   bio:'Landhausküche auf Pump, Aperol im Glas, Thermomix im Dauerlauf. Rettet den Clan mit Schminke und Hygiene – und wirbt dich dabei für ihre Putzpyramide an.',
   passive:'Takt statt Tempo: Triffst du 0,85–1,5 s nach dem letzten Pinsel-Piekser, gibt es 2 Glanz statt 1 – als Einzige im Clan baust du im Rhythmus doppelt auf. Dafür heilst du dich schon ab Stufe 2 selbst. Erst eincremen, dann auf die Fresse.',
   rotation:'Hauspflege erhalten → Glanz aufbauen → Fleckentest → Thermomix-Turbostufe. Spezialisiere dich auf Landhaus-Heilung, Putzprovision durch Schaden oder Instagram-Eskalation.',
-  passives:{strikeCd:.95,dashCd:6,beatWindow:[.85,1.5],beatRunes:2},
+  passives:{strikeCd:.95,dashCd:6,beatWindow:[1,1.9],beatRunes:2},
   look:'Blonde Frau mit Dutt, Sonnenbrille im Haar, orangefarbener Blumenbluse, karierter Landhausschürze, goldenen Creolen, Lippenstift und Schminkpinsel; Putzspray am Gürtel'},
  {id:'kevin',name:'Klo-Kevin',role:'Fernkämpfer · Pfandingenieur',age:31,color:'#86c6b4',combo:'Druck',
   bio:'Baut aus Pfand, Kabelbindern und einem Pömpel Dinge, die laut TÜV nicht existieren dürften. „Hält schon“ waren seine ersten Worte.',

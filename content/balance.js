@@ -10,7 +10,7 @@ export const BALANCE=Object.freeze({
   energyRegen:5,                       // Randale je Sekunde
   outOfCombatRegen:16,                 // Leben je Sekunde außerhalb des Kampfes
   consumableCooldown:15,               // gemeinsame Abklingzeit der Verpflegung
-  gcdBase:1.15,gcdMin:.75,
+  gcdBase:1.5,gcdMin:1,gcdQuick:1,           // E-32: 1,5 s Basis, 1,0 s Untergrenze; Varianten/Procs lösen nur 1,0 s aus
   guardCap:.38,                        // Deckung höchstens 38 % des Maximallebens
   vulnerableBonus:.35,critMultiplier:1.6
  },

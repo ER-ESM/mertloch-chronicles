@@ -1,3 +1,4 @@
+import {MECHANIC_EFFECTS} from './mechanics.js';
 // Spezialisierungen und Talentbäume. Talent-IDs entstehen aus <spec>-<index>; Reihenfolge nie ändern (Speicherschlüssel).
 // effects: Schlüssel, die combatStats()/class-mechanics.js auswerten. grants: aktive Talentfähigkeit (skills.js TALENT_SKILLS).
 export const CLASS_SPECS={dieter:['dieter-wall','dieter-brawl','dieter-brew'],baerbel:['baerbel-care','baerbel-feedback','baerbel-stage'],kevin:['kevin-fuse','kevin-iron','kevin-hunt']};
@@ -117,7 +118,7 @@ export const TALENT_ROWS={
 export const TALENT_ICON_FALLBACK=['shield','person','mark','boots','book','ring','burst','food','reinforced','sound'];
 /** Effektschlüssel, die die Engine tatsächlich auswertet. Neue Talente dürfen nur diese verwenden (Schema-Prüfung). */
 export const isProcEffect=k=>k.startsWith('proc:');
-export const KNOWN_EFFECTS=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating','range','guardOnStrike','doubleParry','parrySlow','shieldBonus','guardBurst','guardOnParry','zoneUpgrade','lastGuard','rageGain','rageBurst','dashThrow','burstStun','killHeal','slamUpgrade','killReset','markedLeech','overhealShield','healCombo','healBonus','burstHot','parryHealCd','zoneEnergy','hotHeal','healEmpower','parryHot','spreadMark','healMarkCd','markedKillHot','interruptHeal','infusionUpgrade','burstSpread','beatEnergy','dashFreeThrow','encoreUpgrade','killThrow','burnGround','interruptEnergy','markedKillEnergy','healGroundCd','detonateUpgrade','parryCombo','magnetUpgrade','dashCombo','markRoot','rootThrow','interruptDash','snareUpgrade','hunterFinish'];
+export const KNOWN_EFFECTS=[...MECHANIC_EFFECTS,'stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating','range','guardOnStrike','doubleParry','parrySlow','shieldBonus','guardBurst','guardOnParry','zoneUpgrade','lastGuard','rageGain','rageBurst','dashThrow','burstStun','killHeal','slamUpgrade','killReset','markedLeech','overhealShield','healCombo','healBonus','burstHot','parryHealCd','zoneEnergy','hotHeal','healEmpower','parryHot','spreadMark','healMarkCd','markedKillHot','interruptHeal','infusionUpgrade','burstSpread','beatEnergy','dashFreeThrow','encoreUpgrade','killThrow','burnGround','interruptEnergy','markedKillEnergy','healGroundCd','detonateUpgrade','parryCombo','magnetUpgrade','dashCombo','markRoot','rootThrow','interruptDash','snareUpgrade','hunterFinish'];
 
 // --- Beschreibungen (Welle D · Beschreibungs-Standard, docs/backlog/klassen.md) ---------------
 // info:{effect,why,links,terms} je Talent-ID <spec>-<index>. Zahlen kommen nicht hierher: describe('talent',id)

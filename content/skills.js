@@ -68,7 +68,7 @@ export const TALENT_SKILLS={
 };
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
 // Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
-export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:5,throw:6,heal:7,ground:9};
+export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:5,throw:6,heal:7,ground:3};
 // Kevin bekommt den Wurf auf Stufe 2 statt 6. Er ist der Fernkämpfer, und die Spielart Schrottkoloss macht seinen
 // Grundangriff zum Nahkampf (class-mechanics.js). Ohne Wurf hatte er bis Stufe 6 keine Antwort auf Gegner, die aus
 // der Distanz auf ihn halten – genau daher kamen die ⚠-Tode gegen Ruhewart, Schnorrer und Ordnungsamt-Praktikant.

@@ -8,11 +8,13 @@ import {TALENTS,SPECS,classSpecs,talentPoints} from './talents.js';
 import {AFFIXES} from './itemization.js';
 import {skillCost,markedEnemies,beforeSkill} from './class-mechanics.js';
 import {procGlow,procFree,procEmpowered} from './procs.js';
+import {mechVariant} from './spec-mechanics.js';
 const art=id=>'<canvas width="48" height="48" data-skill-art="'+id+'"></canvas>';
 const DEFENSIVE_SKILLS=new Set(['parry','dash','interrupt','heal','buff','infusion','sanctuary','keg','barricade']);
 /** Zustandswechsel eines Kniffs (wie Icon-Overlays im Vorbild): Name der Variante aus den Kampfregeln (Eskalation, RESONANZ) oder Proc-Zustand. */
 function skillVariant(g,id,st,e,usable){
  if(!usable)return null;
+ const mv=mechVariant(g,id);if(mv)return mv;
  if(id==='strike'){if(g.player.runes>=3&&!available(g,'burst')&&COMBAT_RULES.earlyEscalation)return {name:'Eskalation',tone:'burst'};if(st.empowered>0)return {name:'Verstärkt',tone:'gold'};if(st.freeStrike)return {name:'Gratis',tone:'free'};}
  if(id==='throw'&&st.freeThrow)return {name:'Gratis',tone:'free'};
  if(id==='burst'&&g.player.runes===3&&e?.mark>0)return {name:'RESONANZ',tone:'burst'};
