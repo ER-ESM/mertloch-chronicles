@@ -39,3 +39,5 @@ Die Darstellung verwendet keine Zufallszahlen der Kampfsimulation und verändert
 - Gegenüber dem ersten Review wurden doppelte Proc-Texte entfernt, Schildaufbau vom Einschlag getrennt, Heilung/Schild transparenter gemacht und CSS-Skalierung auf echte Canvas-Pixel korrigiert. Goldene Proc-Sterne werden nicht für normale Finisher verwendet.
 
 Der Trainingsplatz verwendet die echte `Game`-Simulation, bereitet aber ausdrücklich Stufe 30, gelernte Talente, verletztes Leben, drei Punkte und ein markiertes Übungsziel vor. Er speichert keinen Spielfortschritt. Die Proc-Abfolge wartet reale Abklingzeiten ab (Annis zweite Heilung nach etwa zehn Sekunden). Demoansicht 4× zeigt die Details; 2× entspricht der üblichen Desktop-Spielgröße. Starke Entladungen dürfen das Ziel kurzzeitig überdecken; Lebensbalken und Zahlen werden anschließend darüber gezeichnet.
+
+Abschlusspr?fung: 437 Tests nach Integration von Kampfstatistik und Scrolling Combat Text bestanden; zus?tzlich 108 Browser-Szenarien ohne Laufzeitfehler. Die VFX bleiben unabh?ngig davon aktiv, ob die schwebenden Kampftexte ein- oder ausgeschaltet sind.
