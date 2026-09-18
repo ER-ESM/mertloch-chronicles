@@ -1,6 +1,8 @@
 import {writePrecache} from './pwa-cache.mjs';
 import {readdir,cp,mkdir,rm,writeFile,lstat} from 'node:fs/promises';
 import path from 'node:path';
+import {execSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 
 await writePrecache();
@@ -21,6 +23,11 @@ await cp(path.join(root,'assets'),path.join(output,'assets'),{recursive:true});
 await mkdir(path.join(output,'data'));
 await cp(path.join(root,'data','mertloch.json'),path.join(output,'data','mertloch.json'));
 await writeFile(path.join(output,'.nojekyll'),'');
+// Buildnummer (build-info.js): Commit-Zahl des gebauten Stands, Kurz-Hash, Commit-Datum, package-Version. Ohne Git (z. B. Zip) bleibt der Arbeitsstand.
+{const git=cmd=>{try{return execSync('git '+cmd,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();}catch{return '';}};
+ const number=Number(git('rev-list --count HEAD'))||Number(process.env.GITHUB_RUN_NUMBER)||0,commit=git('rev-parse --short HEAD')||'dev',date=(git('log -1 --format=%cs')||new Date().toISOString().slice(0,10)),version=JSON.parse(readFileSync(path.join(root,'package.json'),'utf8')).version;
+ const src=readFileSync(path.join(root,'build-info.js'),'utf8').replace(/export const BUILD=\{[^}]*\};/,`export const BUILD=${JSON.stringify({number,commit,date,version})};`);
+ await writeFile(path.join(output,'build-info.js'),src);console.log(`Build #${number} · ${commit} · ${date} · v${version}`);}
 console.log(`GitHub Pages site built in _site: ${files.length} application files, ${content.length} content modules, local graphics and Mertloch map.`);
 // Selbstprüfung: Die gebaute Inhaltsschicht muss aus _site heraus ladbar sein (2026-09-17: fehlender Unterordner content/checks/ ließ die Live-Seite im Ladebildschirm hängen).
 try{const built=await import(new URL('../_site/content/index.js',import.meta.url));if(built.validateContent().length)throw new Error('Inhaltsprüfung in _site nicht grün');}

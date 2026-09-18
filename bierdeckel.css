@@ -527,3 +527,8 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .wire-sequence{background:var(--green-2);color:var(--cream);border:1px solid var(--kraft-2);border-radius:var(--r-s)!important;font-family:var(--display);font-size:var(--t-16)}
 .wire-buttons button{background:var(--green-2);border:var(--edge) solid var(--kraft-2);color:var(--cream)}
 .popup-activity .popup-body>.gold-button{width:100%;min-height:52px;font-size:var(--t-20)}
+
+/* Buildnummer (2026-09-18): kleiner Tag am HUD-Kopf, volle Zeile in Hilfe → Einstellungen. */
+.build-tag{margin-left:6px;padding:1px 7px;font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;color:var(--ink);background:var(--kraft);border-radius:var(--r-pill)!important}
+.build-line{margin:12px 0 0;font-family:var(--read);font-size:var(--t-11);color:var(--kraft);text-align:center;user-select:text;-webkit-user-select:text}
+.touch-mode .world-menu-brand .build-tag{display:none}
