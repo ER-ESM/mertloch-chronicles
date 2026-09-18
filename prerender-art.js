@@ -3,17 +3,32 @@
 // Aktiv nur mit Einstellung `prerender` (Hilfe → Einstellungen); ohne Katalog oder ohne Bogen liefert drawPrerenderPerson false,
 // dann zeichnen die bisherigen Wege (live-art.js) weiter. Keine Inhaltstexte, keine Zahlen außer Bildgeometrie.
 const CATALOG='./assets/prerender/runtime/catalog.json';
-export const prerenderArt={ready:false,catalog:null,images:new Map()};
-let pending=null;
+export const prerenderArt={enabled:false,ready:false,catalog:null,images:new Map()};
+let pending=null,needed=new Set(),generation=0;
+const imageRequests=new Map();
 const loadImage=src=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});
-export function loadPrerenderArt(){return pending||=(async()=>{
+async function catalog(){if(prerenderArt.catalog)return prerenderArt.catalog;return pending||=(async()=>{
  let catalog=null;try{const r=await fetch(CATALOG);if(r.ok)catalog=await r.json();}catch{}
- if(!catalog?.assets)return;
- prerenderArt.catalog=catalog;
- const entries=[...Object.entries(catalog.assets),...Object.entries(catalog.gear||{})];
- await Promise.all(entries.map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img)prerenderArt.images.set(id,img);}));
- prerenderArt.ready=true;
-})();}
+ if(catalog?.assets)prerenderArt.catalog=catalog;
+ return prerenderArt.catalog;
+})().finally(()=>{pending=null;});}
+/** Only the selected actor and equipped pieces; inactive actors never occupy image memory. */
+export async function loadPrerenderArt(classId,equipment=[]){
+ prerenderArt.ready=false;
+ const request=++generation,cat=await catalog();if(!cat||request!==generation)return false;
+ needed=new Set(['poses','walk'].flatMap(state=>[classId+'-'+state,...equipment.map(item=>classId+'-gear-'+item.asset+'-'+state)]));
+ for(const id of prerenderArt.images.keys())if(!needed.has(id))prerenderArt.images.delete(id);
+ const ids=[...needed];
+ await Promise.all(ids.map(async id=>{
+  if(prerenderArt.images.has(id))return;
+  const meta=cat.assets[id]||cat.gear?.[id];if(!meta)return;
+  if(!imageRequests.has(id))imageRequests.set(id,loadImage('./'+meta.path).finally(()=>imageRequests.delete(id)));
+  const img=await imageRequests.get(id);if(img&&needed.has(id))prerenderArt.images.set(id,img);
+ }));
+ if(request!==generation)return false;
+ prerenderArt.ready=ids.every(id=>prerenderArt.images.has(id));return prerenderArt.ready;
+}
+export function releasePrerenderArt(){generation++;needed=new Set();prerenderArt.enabled=false;prerenderArt.ready=false;prerenderArt.images.clear();}
 const DIRECTIONS=['se','sw','ne','nw'];
 export const hasPrerenderActor=id=>!!(prerenderArt.ready&&prerenderArt.catalog.assets[id+'-poses']&&prerenderArt.images.get(id+'-poses'));
 /** Spalte wie contentFrame in content-art.js: Laufen taktet über die Strecke, sonst Pose aus Zustand. */

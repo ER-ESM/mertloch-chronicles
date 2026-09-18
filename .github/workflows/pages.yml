@@ -27,6 +27,18 @@ jobs:
         run: npm test
       - name: Build static game
         run: npm run build
+      - name: Check Clanbook and mobile layouts
+        run: npm run ui:check
+      - name: Check offline starts and update recovery
+        run: node scripts/basis-pwa-check.mjs
+      - name: Keep browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-diagnostics
+          path: |
+            visual-review/ui-regression/
+            combat-review/basis-pwa/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site

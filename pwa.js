@@ -7,7 +7,11 @@ export function mountPwa(api){let prompt=null,registration=null,offline=false,fa
   // Gesperrter Spielstand (unlesbar oder aus neuerer Version): der gespeicherte Stand bleibt beim Neuladen erhalten, hier gibt es nichts zu sichern – Update ohne Rückfrage.
   const blocked=api.saveBlocked?.()===true;
   if(!saved&&!blocked&&!confirm('Der Spielstand konnte gerade nicht gespeichert werden. Trotzdem neu laden? Der zuletzt gespeicherte Stand bleibt erhalten.'))return false;
-  updating=true;let reloaded=false;const reload=()=>{if(!reloaded){reloaded=true;location.reload();}};navigator.serviceWorker.addEventListener('controllerchange',reload,{once:true});registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});setTimeout(reload,2500);return true;}
+  updating=true;let reloaded=false,timer;const service=navigator.serviceWorker;
+  const reload=()=>{if(reloaded)return;reloaded=true;clearTimeout(timer);service.removeEventListener('controllerchange',reload);location.reload();};
+  service.addEventListener('controllerchange',reload,{once:true});
+  try{registration.waiting.postMessage({type:'ACTIVATE_UPDATE'});}catch{service.removeEventListener('controllerchange',reload);updating=false;return false;}
+  if(!reloaded)timer=setTimeout(reload,2500);return true;}
  document.addEventListener('click',e=>{if(e.target.closest('[data-pwa-install]'))install();if(e.target.closest('[data-pwa-update]'))update();});
  if('serviceWorker'in navigator&&isSecureContext){navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(async r=>{registration=r;r.addEventListener('updatefound',()=>{const worker=r.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&!navigator.serviceWorker.controller)offline=true;if(worker.state==='installed'&&navigator.serviceWorker.controller)announce();if(worker.state==='redundant'&&!r.active)failed=true;});});await navigator.serviceWorker.ready;offline=true;announce();r.update().catch(()=>{});setInterval(()=>r.update().catch(()=>{}),15*60*1000);}).catch(()=>{failed=true;});}else failed=true;
  return{install,update,show:renderHelp,state:()=>({installed:installed(),offline,update:!!registration?.waiting,label:registration?.waiting?'Neue Version bereit. Beim Laden wird vorher gespeichert.':offline?'Offline bereit · Fortschritt auf diesem Gerät':failed?'Online-Modus · Offline-Speicherung nicht verfügbar':'Welt wird für Offline-Starts gespeichert …'})};

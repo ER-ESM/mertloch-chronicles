@@ -1,4 +1,5 @@
 export const PANEL_UI={
+ starterHint:'Tab wählt nur ein Ziel, [1] schaltet den Autoangriff ein/aus (auch per Touchbutton), [2] nutzt den ersten Kniff. Mit [LEER] weichst du aus. Sprich zuerst mit Ida [F]. Weitere Kniffe kommen nach und nach.',
  gearBody:'Körperausrüstung',gearAccessories:'Schmuck & Glücksbringer',gearWeapons:'Waffen',turnFigure:'Ansicht drehen',changeFigure:'Figur wechseln',equippedFigure:'Figur mit angelegter Ausrüstung',
  chooseReward:'Dieses Teil nehmen',rewardTouch:'1 von 3 Ausrüstungsteilen',lootTouch:'Beute in Reichweite.',lootHelp:'Einzelne Stapel oder alles nehmen. Bei vollem Rucksack bleibt der Rest liegen.',pages:'Seiten',previous:'Vorherige Seite',next:'Nächste Seite',sections:'Abschnitte durchblättern',previousSection:'Vorheriger Abschnitt',nextSection:'Nächster Abschnitt',
  equipment:'Ausrüstung',stats:'Werte',manage:'Verwalten',skills:'Kniffe',binding:'Belegung',help:'Bedienhilfe',clanDetails:'Persönlichkeit & Spielweise',talentHelp:'Talentbaum erklären und Punkte verwalten',

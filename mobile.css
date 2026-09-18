@@ -50,11 +50,7 @@
 @media(max-width:370px) and (orientation:portrait){.touch-mode[data-touch-hand=left] #touchStick{right:calc(12px + var(--safe-right))}.touch-mode[data-touch-hand=left] #touchUtility{right:calc(12px + var(--safe-right))}}
 
 /* M-07: Hofprobe-Kasten (tutorial-ui.css setzt feste 84/86 px) unter der Safe Area; Linkshand quer spiegelt ihn nach rechts, weil links dann die Kniffe stehen. Karten-Filter mindestens 45 px (panel-pages.css setzt 4 px Polster). */
-.touch-mode #tutorialGuide{left:calc(12px + var(--safe-left));top:calc(86px + var(--safe-top))}
-.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:calc(204px + var(--safe-top))}
-@media(orientation:landscape){.touch-mode #tutorialGuide{top:calc(84px + var(--safe-top))}.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:calc(122px + var(--safe-top))}.touch-mode[data-touch-hand=left] #tutorialGuide{left:auto;right:calc(12px + var(--safe-right))}}
 .touch-mode .popup-body.compact-panel .atlas-filters button,.touch-mode .popup-body.compact-panel .atlas-zoom button{min-height:45px}
-.touch-mode #tutorialGuide button[data-tutorial-help]{right:56px}
 
 /* Iteration 3 · M-04/M-10: Lampe je Kniff-Platz über dem Knopf (Proc ✦ oder Abklingzeit) statt darunter; im Kampf nur Häufiges/Dringendes:
    Ortszeile und leere Plätze ausgeblendet (Plätze bleiben als Raster stehen, kein Versatz), Konfigurieren nur über Einstellungen und Langdruck. */

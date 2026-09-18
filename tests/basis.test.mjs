@@ -9,7 +9,7 @@ import {tickCasting,tickAuto} from '../auto-combat.js';
 import {bindSkill} from '../rpg.js';
 import {changeSpec} from '../talents.js';
 import {readProgress,writeProgress,previousSaveKey} from '../save-store.js';
-import {mountPwa} from '../pwa.js';
+
 
 const arena=()=>({id:'basis',width:1000,height:1000,spawn:{x:100,y:100},npc:{x:100,y:80},quests:[],camps:[],landmarks:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 const storage=()=>{const entries=new Map();return{getItem:k=>entries.get(k)||null,setItem:(k,v)=>entries.set(k,v),entries};};
@@ -58,15 +58,4 @@ test('casts recheck range, sight and retreat without spending resources or coold
 });
 test('mouse selection skips returning and arriving targets just like cycling targets',()=>{
  const {g,e}=fight();for(const state of [{ai:'returning',spawnGrace:0},{ai:'idle',spawnGrace:2}]){Object.assign(e,state);g.target=null;assert.equal(g.selectAt(e.x,e.y-10),false);assert.equal(g.target,null);}
-});
-test('PWA update: ohne Speicherung Rückfrage, bei gesperrtem Stand direkt; aktiviert und lädt nur einmal',async()=>{
- const originals=new Map(),service=new EventTarget(),win=new EventTarget(),doc=new EventTarget();let saved=false,posts=0,reloads=0;const notices=[];
- const reg={waiting:{postMessage(){posts++;}},addEventListener(){},update:async()=>{}};service.register=async()=>reg;service.ready=Promise.resolve();
- const replacements={window:win,document:doc,navigator:{serviceWorker:service,userAgent:'test'},isSecureContext:true,matchMedia:()=>({matches:false}),location:{reload(){reloads++;}},setInterval:()=>0,setTimeout:()=>0,confirm:()=>confirmed};let confirmed=false;
- for(const [key,value] of Object.entries(replacements)){originals.set(key,Object.getOwnPropertyDescriptor(globalThis,key));Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});}
- try{
-  let blocked=false;const pwa=mountPwa({save:()=>saved,saveBlocked:()=>blocked,toast:s=>notices.push(s)});await new Promise(resolve=>setImmediate(resolve));assert.equal(pwa.state().update,true);
-  assert.equal(pwa.update(),false,'ohne Speicherung und ohne Zustimmung kein Update');assert.equal(posts,0);
-  saved=true;assert.equal(pwa.update(),true);assert.equal(pwa.update(),false);assert.equal(posts,1);service.dispatchEvent(new Event('controllerchange'));service.dispatchEvent(new Event('controllerchange'));assert.equal(reloads,1);
- }finally{for(const [key,descriptor] of originals){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}
 });

@@ -6,21 +6,34 @@ Reihenfolge der Runden bis zum fertigen Akt 1. Besitzer: Lead-Architect. Grundla
 
 **Takt:** Eine Runde = ein Auftrag je Rolle, ein Branch, ein Bericht, ein Fast-Forward nach `main` (E-07). Eine Runde ist erst abgeschlossen, wenn alle ihre Abnahmekriterien belegt sind — Beleg heißt Testzahl, Bericht-Diff oder Screenshot, nicht Zusage.
 
-## Aktueller Nutzerauftrag · 2026-09-17
+## Aktueller Stand · 2026-09-18
+
+Die jüngste Priorisierung ersetzt den begonnenen Grafikauftrag: **nur Punkte 1, 2, 5 und 6**, technische Basis vor weiterem Content. Die alten Runden A–C unten sind historische Planungen, keine laufenden Agentenaufträge.
+
+| Punkt | Stand | Beleg / nächster Schritt |
+|---|---|---|
+| 1 · Ladezeit und Performance | umgesetzt | Vorschau lädt nur gewählte Figur/Ausrüstung; optionaler Offline-Cache; reproduzierbare Messung in [Basis-Nachschliff](BASIS-NACHSCHLIFF-2026-09-18.md) |
+| 2 · Update-Regressionen | umgesetzt | Speicherfehler mit Abbruch/Zustimmung/Retry, geschützte Saves, Ersatz-Neustart und echte SW-Releases geprüft |
+| 3 · Grafikpipeline und passende Ausrüstung | **zurückgestellt** | eigene Passform-Abnahme bleibt ausgesetzt; parallel wurde 3524186 mit detaillierten Helden und neuer Sprite-Pipeline übernommen (docs/REDESIGN-PIPELINE-2026-09-18.md) |
+| 4 · Physische Mobilgeräte | **zurückgestellt** | Browseremulation deckt kleine Displays, Querformat und Safe Areas ab; echte iOS-/Android-Abnahme fehlt |
+| 5 · UI-Restarbeiten / Prüfskripte | umgesetzt | Tutorial-Knöpfe und CSS bereinigt; acht alte Prüfeinstiege auf das aktuelle Clanbuch umgestellt |
+| 6 · Roadmap / Backlogs | synchronisiert | belegte Altbefunde abgehakt, Teilaufgaben und aufgeschobene Arbeiten ausdrücklich offen gehalten |
+
+**Danach:** Nach erneuter Priorisierung zuerst die ausstehenden Basis-Abnahmen (3/4 und verbleibende UI-Befunde), anschließend Akt-1-Inhalte. Händler/Handwerk und ein vollständiger Akt-1-Playtest bleiben zurückgestellt; Akt 2 bleibt unbeauftragt.
 
 - Erledigt: Autoangriff mit getrennter Zielwahl und Start/Stopp für Desktop und Touch (E-25).
 - Erledigt: Talent-/Proc-Integration einschließlich Klassendaten, Zählern, Heilung, Abklingzeitverkürzung, Takt- und Zonenregeln.
 - Erledigt: Baumtransparenz bis zum unteren Stamm.
 - Erledigt: Basis-Runde 1–4 — HUD/Fenster und Touch-Eingaben, Laufbefehle und Mentoren, bestehende Kampfregeln sowie Speichern/Offline/Updates (E-26). Abnahme: [Basis-Stabilisierung](BASIS-STABILISIERUNG-2026-09-17.md).
 - Erledigt 2026-09-18: Restliche Bedienungsfehler (Tod, Fensterrotation/Safe Areas, Desktop-Kontrast) und widersprüchliche Kniffbeschreibungen; Talente zeigen betroffene Fähigkeiten, Hilfe entspricht den vier Reitern plus Hilfe. [Abnahme](BEDIENUNG-BESCHREIBUNGEN-2026-09-18.md).
-- Nächster offener Basis-Schritt: Performance messen und gezielt optimieren; physische Handyprüfung ergänzen. Noch kein neuer Content.
+- Erledigt 2026-09-18: Performance-Messung und bedarfsgeladene Vorschau, Update-Regressionen, Tutorial-Stil und aktuelle Clanbuch-Prüfungen. [Abnahme und Grenzen](BASIS-NACHSCHLIFF-2026-09-18.md). Noch kein neuer Content.
 - Zurückgestellt auf Nutzerwunsch: Händler/Handwerk und ein neuer vollständiger Akt-1-Playtest.
 
 Details und Abnahme: [Kampf-Integration](COMBAT-INTEGRATION-2026-09-17.md). Die folgenden Rundenbeschreibungen dokumentieren den ursprünglichen Ablauf; sie sind keine aktuelle Laufanzeige.
 
 ---
 
-## Runde A — Fachrollen parallel + Playtest Akt 1 · läuft (2026-09-17)
+## Historische Runde A — Fachrollen parallel + Playtest Akt 1 (2026-09-17)
 
 **Ziel.** Die sechs Fachrollen arbeiten gleichzeitig auf disjunkten Dateien an ihren offenen Backlog-Punkten, während drei Playtest-Personas den Live-Stand von Akt 1 durchspielen. Am Ende steht ein Bild davon, was Akt 1 heute wirklich taugt.
 
@@ -99,7 +112,7 @@ Vor dem ersten Akt-2-Auftrag: Pitch-Absatz in `docs/PITCH.md`, Entscheidung übe
 
 | Runde | Status | Seit |
 |---|---|---|
-| A — Fachrollen parallel + Playtest Akt 1 | läuft | 2026-09-17 |
-| B — Loot nach Gameplay, UI nach Engine/Welt | wartet auf A | – |
-| C — Playtest-Befunde verteilen | wartet auf A und B | – |
+| A — Fachrollen parallel + Playtest Akt 1 | Teile geliefert; Gesamt-Abnahme/Playtest zurückgestellt | 2026-09-18 |
+| B — Loot nach Gameplay, UI nach Engine/Welt | UI/Engine teilweise geliefert; Händler/Handwerk zurückgestellt | 2026-09-18 |
+| C — Playtest-Befunde verteilen | kein aktiver Auftrag; setzt erneuten Playtest voraus | 2026-09-18 |
 | Akt 2 | nicht beauftragt (E-22) | – |

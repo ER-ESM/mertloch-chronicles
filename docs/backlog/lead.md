@@ -4,15 +4,19 @@ Inbox des Lead-Architect (`docs/ROLLEN.md`): Entscheidungen, Zirkel, Dateispaltu
 
 ## Offen
 
+Aktueller Auftrag 2026-09-18: nur Basis-Punkte 1, 2, 5 und 6; siehe [Roadmap](../ROADMAP.md) und [Abnahme](../BASIS-NACHSCHLIFF-2026-09-18.md). Händler/Handwerk, erneuter Gesamt-Playtest, Grafikpassform und physische Geräteprüfung sind zurückgestellt. Wiederkehrende Prüfpflichten unten sind keine unerledigten Implementierungen.
+
 - [ ] Playtest-Lauf Akt 1 auf dem Live-Stand mit `neuling-agent`, `kenner-agent`, `pruefer-agent` beauftragen (Runde A, `docs/ROADMAP.md`); Befunde in Runde C auf die Rollen-Backlogs verteilen.
 - [ ] Nach jedem Fast-Forward aus Runde A prüfen: `npm test`, `npm run content:check`, Übergabedateien gelesen, Backlogs abgehakt, keine Rolle wartet ohne Eintrag auf eine andere.
 - [ ] `content/schema.js` verlangt von jedem `kind:'consumable'` ein `heal` oder `energy`. Das Pfandbon-Bündel (dreifache Marken für 60 s) ist Verbrauch ohne Heilung; es trägt deshalb ersatzweise `energy:20`. Bitte entscheiden: Regel auf „heal, energy **oder** eigene Wirkung (`effect`)“ erweitern – dann nimmt Loot die 20 Randale wieder heraus. Betrifft: `content/schema.js`, `content/items.js` (`pfandbon`).
 - [ ] `content/recipes.js` liegt bei Loot (Auftrag Runde B), `content/shop.js` bei Gameplay (Konzept `docs/GAMEPLAY-HAENDLER-HANDWERK.md` §6 sah beides bei Gameplay). Bitte Dateibesitz in `docs/ROLLEN.md` nachziehen oder die Rezepte umhängen, bevor Gameplay den Laden baut.
 - [ ] Entscheidung zu E-21 (Basisbau-Kosten) fällen, sobald Balance die Sammelzeit gegen den Materialfluss gemessen hat.
-- [ ] Entscheidung zu „Feldgegner ab Stufe 10 trivial“ (Skalierung in der Engine vs. `tuning.js` vs. bewusst lassen) — steht unter „Offen“ in `docs/ENTSCHEIDUNGEN.md`.
+- [x] Feldgegner-Skalierung ist entschieden und umgesetzt: encounters.js, tests/engine-rules.test.mjs; ENTSCHEIDUNGEN.md führt die Engine-Skalierung bei festem Dorfkern als entschieden.
 - [ ] `content/index.js` und `content/schema.js` nach den parallelen Fachrollen-Pushes auf Konflikte und fehlende Exporte prüfen.
 
-## Grafik-Prioritäten (aus `content/ART-BRIEF.md`, Reihenfolge verbindlich)
+## Historische Grafik-Prioritäten aus Runde A/B
+
+Stand 2026-09-18: Mentoren, Pit, eigene Bossbögen und Kapitel-Kulissen sind inzwischen geliefert (assets/precision/runtime/catalog.json, tests/art-precision.test.mjs, tests/art-gaps.test.mjs). Die folgende Liste beschreibt den damaligen Bedarf. Aktuell offen ist die körpergerechte Ausrüstung / E-30-Weiterentwicklung; auf Nutzerwunsch zurückgestellt.
 
 Alle Motive laufen im Stil Maifeld-Detailpixel (E-10), Maßstab nach E-11. Bis zur Lieferung zeichnet das Spiel den Fallback aus dem Briefing — nichts darf ohne Bild kaputtgehen.
 
@@ -28,17 +32,18 @@ Nachrangig und **nicht** Teil von Akt 1: Gisela Gießkanne und Pfandautomat 3000
 ### Aus dem Playtest Akt 1 (docs/PLAYTEST-2026-09-17-AKT1.md)
 
 - [ ] **P16** Persona-Aufrufe brauchen Koordinaten der Hofproben-Objekte oder mehr Budget; Screenshots kommen nicht als Bild zurück.
-- [ ] Entscheidung: Taste 1 als Toggle abschaffen (E-24 vorschlagen); Hofprobe auf ≤ 12 Aktionen deckeln.
+- [x] Autoangriff-Entscheidung durch E-25 ersetzt: Taste/Touchbutton schaltet ein und aus; Zielwahl startet nicht. E-24 bleibt die Stilentscheidung.
+- [ ] Hofprobe auf höchstens zwölf bewusste Aktionen prüfen; die acht Schritte allein belegen diese Grenze noch nicht (Teil des zurückgestellten Gesamt-Playtests).
 
 ### Aus Engine Runde B (2026-09-17)
 
-- [ ] **`content/schema.js` für die neuen Proc-Bausteine öffnen** (gemeinsame Datei, deshalb hier): Die Effektliste in der Proc-Prüfung lässt nur `free|reset|empower|energy|points|shield|haste` zu; die Laufzeit kann jetzt zusätzlich `heal` (Zahl) und `cdReduce` (`{skill,seconds}`). Außerdem sollte die Prüfung bei `trigger:'skillHit'` ein `skill` (bekannter Kniff) und ein ganzzahliges `every` ≥ 2 verlangen. Formen: docs/UEBERGABE-UI-2026-09-17.md §6.7. Klassendesign wartet darauf, siehe docs/backlog/klassen.md.
+- [x] **`content/schema.js` für die neuen Proc-Bausteine öffnen** — Stand: heal, cdReduce und skillHit/every werden bereits validiert; tests/combat-integration.test.mjs. Historischer Bedarf: (gemeinsame Datei, deshalb hier): Die Effektliste in der Proc-Prüfung lässt nur `free|reset|empower|energy|points|shield|haste` zu; die Laufzeit kann jetzt zusätzlich `heal` (Zahl) und `cdReduce` (`{skill,seconds}`). Außerdem sollte die Prüfung bei `trigger:'skillHit'` ein `skill` (bekannter Kniff) und ein ganzzahliges `every` ≥ 2 verlangen. Formen: docs/UEBERGABE-UI-2026-09-17.md §6.7. Klassendesign wartet darauf, siehe docs/backlog/klassen.md.
 
 
 ### Abnahme Welle D
 
-- [ ] Acht alte Prüfskripte (`popup-ui-check`, `rpg-ui-check`, `combat-icons-check`, `ui-polish-check`, `popup-edge-check`, `progression-ui-check`, `class-ui-check`, `visual-hud-check`) sind seit dem Stil-C-Umbau rot – entscheiden: nachziehen (UI) oder löschen; bis dahin aus der Pflichtliste nehmen.
-- [ ] Entscheidung E-25 vorschlagen: „Handtexte enthalten keine abgeleiteten Zahlen“ (Doppelpflege-Verbot) als Standard in ROLLEN.md.
+- [x] Acht alte Prüfeinstiege auf gemeinsame aktuelle Clanbuch-Suiten umgestellt (scripts/ui-regression-check.mjs): Einzel-Fenster/Reiter, Inventar, Klassen/Talente, Kampf und Layout. Jeder Lauf nutzt ein eigenes Browserprofil; Aufruf und Zuordnung im Basis-Nachschliff-Bericht.
+- [ ] Eigene neue Entscheidung vorschlagen (E-25 ist bereits Autoangriff): „Handtexte enthalten keine abgeleiteten Zahlen“ (Doppelpflege-Verbot) als Standard in ROLLEN.md.
 
 ## Erledigt
 

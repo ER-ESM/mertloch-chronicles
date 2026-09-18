@@ -1,5 +1,19 @@
 # Backlog · ui
 
+## Abgleich 2026-09-18
+
+Aktuelle Priorität und Belege: [Roadmap](../ROADMAP.md), [Basis-Nachschliff](../BASIS-NACHSCHLIFF-2026-09-18.md). Abgehakte historische Befunde bleiben als Herkunft erhalten; der jeweilige Stand-Nachtrag ersetzt die damalige Fehlerbeschreibung.
+
+- [x] Anatomische Itemslots samt Querformat-Vorschau: Commit 7e560bc, scripts/character-sheet-check.mjs.
+- [x] Gespräch, Beute und Tod in der Touch-Prüfung: scripts/mobile-check.mjs.
+- [ ] Touch-Belegungseditor per Drag: eigener Restpunkt; Tipp-Tipp funktioniert bereits.
+- [ ] Talent-Tooltip beim Punkteverteilen ohne kompletten Neuaufbau erhalten.
+- [x] Tooltip-Verweise über die Lücke zur Kachel erreichbar: 30ec4bc ergänzt die Ausblend-Verzögerung; Verlinkung seit 0f2b49e vorhanden.
+- [ ] Körpergerechte Ausrüstung / neue Grafikpipeline: auf Nutzerwunsch zurückgestellt.
+
+Beim Sammelpunkt „Playtest Kenner“ sind Timeout der Clan-Schule, Talent-Kniffverweise und Werte-Erklärungen vorhanden. Die verbleibende Tooltip-Stabilität ist oben separat offen. Beim Mobile-Sammelpunkt sind Figur im Querformat und die zusätzlichen Dialogprüfungen erledigt; Editor-Drag bleibt offen.
+
+
 ## Basis-Runde 1–4 · 2026-09-17
 
 - [x] HUD-Ressourcenzeile und Desktop-Interaktionshinweis ohne Überschneidung.
@@ -21,12 +35,12 @@ Nachtrag 2026-09-18: Die vier unten abgehakten Befunde sind im Basis-Nachschliff
 - [x] **Kontrast Stempel-Koralle und Zweittinte** (M-12, WCAG 1.4.3, auch Desktop): `--stamp:#AD5260` erreicht als Textfarbe auf Zeltstoff 2,4:1 (Kniff-/Gegenstands-/Talentnamen in Tooltips und Erklärungen) und auf Pappkarten 2,7:1 (`.clan-card .eyebrow`, `.clan-stamp`, `.quest-entry .eyebrow`); `--ink-2:#4E4A41` auf Pappkarten mit Textur 4,1:1; `.talent-points.has-free` Tinte auf Grün 1,4:1; `.memory-picture-button>span` Tinte auf Grün 1,5:1. mobile.css überschreibt das nur im Touch-Modus (`#F29AA6` / `#6E2531` / `#3A3732` / Creme). Messung: `npm run mobile:check` (Kontrastspalte) – am Desktop identische Regeln in bierdeckel.css nachziehen.
 - [x] **Nach dem Aufstehen kommt eine Erinnerung als zweites Fenster** (M-15, app.js `respawn` → `memoryEvent`): Tod → „Am Treffpunkt zusammenkratzen lassen“ → Erinnerungsfenster. Auf dem Handy sind das zwei Tipps bis zurück ins Spiel. Vorschlag: Erinnerung erst beim nächsten ruhigen Moment (kein Kampf, kein Fenster) oder als Hinweis in der Ortszeile. `npm run mobile:check` zeigt es als Hinweis im Schritt `tod-zurueck`.
 - [x] **popup-windows.js: `clamp()` beim Drehen** (M-17): quer → hochkant rechnet `left=(innerWidth-offsetWidth)/2` mit der noch querformatigen Breite; das Todesfenster (420 px) stand bei x = −13. mobile.css zentriert Touch-Fenster jetzt per `left/right + margin auto` (`!important`); sauber wäre ein Reflow nach `resize`/`orientationchange` vor dem Rechnen.
-- [ ] **tutorial-ui.css: Hofprobe-Kasten im Touch-Modus** (M-07, E-24): `.touch-mode #tutorialGuide` sitzt fest bei 84/86 px ohne `env(safe-area-inset-top)` (mobile.css überschreibt), die Knöpfe „?“ und „⌃“ erscheinen weiß/ungestylt statt im Bierdeckel-Stil (siehe `visual-review/mobile-check/quer-linkshand.png`), und der Hilfe-Knopf stand 1 px neben dem Einklapp-Knopf (mobile.css setzt 56 px).
+- [x] **tutorial-ui.css: Hofprobe-Kasten im Touch-Modus** (M-07, E-24): `.touch-mode #tutorialGuide` sitzt fest bei 84/86 px ohne `env(safe-area-inset-top)` (mobile.css überschreibt), die Knöpfe „?“ und „⌃“ erscheinen weiß/ungestylt statt im Bierdeckel-Stil (siehe `visual-review/mobile-check/quer-linkshand.png`), und der Hilfe-Knopf stand 1 px neben dem Einklapp-Knopf (mobile.css setzt 56 px). **Stand 2026-09-18:** Basis-Nachschliff: outline-button, 44 px, 8 px Abstand, gemeinsame Safe-Area-Regeln; ui-regression-check.mjs.
 
-- [ ] **Verpflegung auf der Aktionsleiste anbinden** (Engine/Loot, Welle D, gefunden beim Rebase 2026-09-17): `game.actionBar` liefert die Einträge `item:wasser` und `item:brezel` auf den Plätzen 9 und 0, und `rpg.inventory` hält beide Gegenstände (Brezel ×3, Wasser ×2) — aber weder `app.js` noch `rpg-ui.js` werten das Präfix `item:` aus, darum stehen beide Plätze als `.skill.empty-slot` da. Betrifft schon `origin/main`, ist also kein Rückschritt aus dem Stil-C-Umbau. Die Gestaltung liegt bereit: `.skill` trägt Stil C, `data-use` und `data-consumable-timer` sind in `rpg-ui.js` vorgesehen. Abnahme: beide Plätze zeigen Symbol und Anzahl, Klick und Taste benutzen den Gegenstand, Abklingzeit läuft sichtbar.
-- [ ] **Aus der Mobile-Prüfung 2026-09-17** (docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md §4): Papierpuppen-Bogen auch quer auf dem Handy (Buchbreite 444 px < 640-px-Schwelle); Touch-Editor „Touchbuttons belegen“ mit Drag statt Tipp-Tipp; Gespräch/Beute/Tod in scripts/mobile-check.mjs ergänzen, sobald eine Fixture mit Gegner in Laufnähe liegt.
+- [x] **Verpflegung auf der Aktionsleiste anbinden** (Engine/Loot, Welle D, gefunden beim Rebase 2026-09-17): `game.actionBar` liefert die Einträge `item:wasser` und `item:brezel` auf den Plätzen 9 und 0, und `rpg.inventory` hält beide Gegenstände (Brezel ×3, Wasser ×2) — aber weder `app.js` noch `rpg-ui.js` werten das Präfix `item:` aus, darum stehen beide Plätze als `.skill.empty-slot` da. Betrifft schon `origin/main`, ist also kein Rückschritt aus dem Stil-C-Umbau. Die Gestaltung liegt bereit: `.skill` trägt Stil C, `data-use` und `data-consumable-timer` sind in `rpg-ui.js` vorgesehen. Abnahme: beide Plätze zeigen Symbol und Anzahl, Klick und Taste benutzen den Gegenstand, Abklingzeit läuft sichtbar. **Stand 2026-09-18:** Bereits Welle D: barSlots/useItem, Stapel und Cooldown in app.js; tests/engine-welle-d.test.mjs.
+- [ ] **Teilweise erledigt — aus der Mobile-Prüfung 2026-09-17** (docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md §4): Papierpuppen-Bogen auch quer auf dem Handy (Buchbreite 444 px < 640-px-Schwelle); Touch-Editor „Touchbuttons belegen“ mit Drag statt Tipp-Tipp; Gespräch/Beute/Tod in scripts/mobile-check.mjs ergänzen, sobald eine Fixture mit Gegner in Laufnähe liegt.
 
-- [ ] **Aus Playtest Kenner 2026-09-17** (`docs/PLAYTEST-2026-09-17-mmo-kenner.md`): (1) Clan-Schule-Hinweis „Neu gelernt" bleibt die ganze Sitzung stehen, auch über offenen Fenstern → nach erstem Kampf oder Timeout ausblenden; (2) Talentbaum wird nach jedem Punkt komplett neu gebaut, Tooltip verschwindet → nur Knoten-Klassen aktualisieren; (4) Kniff-Taste im Talent-Tooltip, sobald Klassendesign das Feld liefert; (6) Ausweichen auf [LEER] mit Symbol „↗" ohne Erklärung; (8) Tooltip je Wert in der Werte-Liste (Handschrift, Drehzahl, Glückstreffer).
+- [ ] **Teilweise erledigt — aus Playtest Kenner 2026-09-17** (`docs/PLAYTEST-2026-09-17-mmo-kenner.md`): (1) Clan-Schule-Hinweis „Neu gelernt" bleibt die ganze Sitzung stehen, auch über offenen Fenstern → nach erstem Kampf oder Timeout ausblenden; (2) Talentbaum wird nach jedem Punkt komplett neu gebaut, Tooltip verschwindet → nur Knoten-Klassen aktualisieren; (4) Kniff-Taste im Talent-Tooltip, sobald Klassendesign das Feld liefert; (6) Ausweichen auf [LEER] mit Symbol „↗" ohne Erklärung; (8) Tooltip je Wert in der Werte-Liste (Handschrift, Drehzahl, Glückstreffer).
 
 - [ ] **Grafikreview / klare Item-Icons** (Grafik, 2026-09-17): Die 18 Einzeldateien unter `assets/content-art/items/<ID>.png` sind durch lesbarere 24-px-Motive ersetzt, IDs bleiben gleich; Herkunft im `handoff-catalog.json`. Bei der Anbindung ganzzahlige Icongrößen verwenden, auch die CSS-Größe von Canvas prüfen. Vorher/Nachher und Downloads: `art-workshop.html`; Abnahme und Grenzen: `docs/GRAFIK-REVIEW-5-RUNDEN-2026-09-17.md`. Der neue modulare Bewohnerbaukasten ist ein Prototyp und ersetzt noch keine Helden-/Waffengrafik. Nur eingebundene Runtime-Dateien in den PWA-Cache aufnehmen, keine Generierungsquellen.
 - [x] **Figur aussuchen nach UI-Abnahme neu bauen** (Produktion, 2026-09-17; erledigt 2026-09-17 auf Branch ui-stil-c mit Stil C, Abnahme in docs/UI-ABNAHME-2026-09-17-stil-c.md): Karten ungleich hoch, Texte abgeschnitten, Seitenscroll, drei Knopfbreiten, Auswahl als ausgegrauter Knopf. `.clan-card` in fünf CSS-Dateien definiert → eine Stildatei nach dem gewählten Stil aus `docs/ui-stile-2026-09-17/index.html`; Prüfliste `docs/UI-ABNAHME.md` (A1, A4, B1, C1, C2, C3 heute nicht bestanden). Abnahme: Screenshots 2024×900 und 390×844, Tabelle in `visual-review/<Datum>/ABNAHME.md`.
@@ -34,8 +48,8 @@ Nachtrag 2026-09-18: Die vier unten abgehakten Befunde sind im Basis-Nachschliff
 
 
 - [x] **Sprechblasen** für Gegner-/Boss-Sprüche und Dorfbewohner, sobald die Engine das Event `bark` liefert. (Die Blase selbst ist seit der Anbindung 2026-09-17 das gelieferte 9-Slice `ui-speech-bubble`; es fehlt nur der Auslöser.)
-- [ ] **Elite-Titel** (`title`) im Zielfenster anzeigen (heute „ELITE ·“ nur bei Bossen). Das Elite-Abzeichen in der Welt hängt seit 2026-09-17 an `ui-elite-badge`.
-- [ ] **Porträt für Pit** (Grafik liefert über ART-BRIEF; UI bindet an).
+- [x] **Elite-Titel** (`title`) im Zielfenster anzeigen (heute „ELITE ·“ nur bei Bossen). Das Elite-Abzeichen in der Welt hängt seit 2026-09-17 an `ui-elite-badge`. **Stand 2026-09-18:** enemy-ui.js targetIdentity; tests/handoff-ui.test.mjs.
+- [x] **Porträt für Pit** (Grafik liefert über ART-BRIEF; UI bindet an). **Stand 2026-09-18:** dialogue-ui.js und assets/content-art/npcs/dialogue-atlas.png; tests/art-gaps.test.mjs.
 - [x] **Kapitel-Kulissen zeichnen** (Welt liefert Objekte, 0.20): `world.camps[].props` = Liste `{id,kind,x,y,w,h,blocking}`, Mittelpunkt in Weltkoordinaten, Grundfläche in Welteinheiten. Arten, Zeichenhöhe und Fallback-Farbe stehen in `world-prop-kinds.js` (`PROP_KINDS`), Bildhinweise in docs/GRAFIK-BEDARF.md („Kapitel-Kulissen“). Kapitel 2 Sperrmüllplatz (`schrotthaufen`, `haenger`, `kuehlschrank`), Kapitel 3 Festplatz (`kegelbahn`, `bierbank`, `kegelkugel`), Kapitel 4 Bus im Feld (`bus`, `bierkasten`, `bierbong`); `camp.place` nennt den Ort. Zeichnen wie die Lager-Ausstattung in `world-details.js` (`drawOccupiedCamp`), Bildschwelle auf `y + h/2`, Höhe aus `PROP_KINDS[kind].height`. `blocking:true` (nur Bus und Schrotthaufen) ist bereits ein echter Kollisionskörper — nicht zusätzlich blockieren, aber die Figur davor/dahinter richtig verdecken. Abnahme: Screenshot je Kapitel-Lager.
 - [x] **Die Bude zeichnen** (Welt liefert das Gelände, 0.20): `world.base` = `{id:'bude',x,y,w,h,minX..maxY,approach,stageProps}`, ~156×110 Einheiten nahe St. Gangolf (Prüfseed 56753: 192 Einheiten von der Kirche). `stageProps[<Gebäude-ID aus content/buildings.js>] = {owner,slot,stages:[{stage,kind,name,x,y,w,h,height}]}`; `stage:0` sind die Trümmer, danach je Ausbaustufe dieselbe Art in wachsender Größe. Gezeichnet wird immer genau die erreichte Stufe (`game.buildings[id]`, 0 = Trümmer). Das Gelände selbst blockiert nicht; Anlaufpunkt `base.approach` ist begehbar und in der Weltprüfung enthalten (Route „Bude“). Abnahme: Bude mit allen sechs Bauplätzen auf Stufe 0 und auf Endstufe.
 - [ ] **Kalles Kiosk zeichnen** (Welt liefert den Ort, 0.21): `world.places.kiosk` = `{id:'kiosk',name,title,text,x,y,w,h,minX..maxY,junction,facing,approach,props}` — Vorplatz 86×64 Einheiten an einer Dorfkreuzung im Dorfkern. `props` ist die Liste `{id,kind,name,x,y,w,h,height,blocking}` mit `kiosk` (Bude mit Tresenfenster, `blocking:true` — schon echter Kollisionskörper, nicht zusätzlich blockieren), `stehtisch` und `wett-tafel`; `facing` zeigt zur Kreuzung, davor liegt `approach`. Arten, Zeichenhöhe und Fallback-Farbe in `world-prop-kinds.js` (`PROP_KINDS`), Bildhinweise in docs/GRAFIK-BEDARF.md. Zeichnen wie die Kapitel-Kulissen, Bildschwelle `y + h/2`. Der Ortsname (`title`) darf als Schild/Beschriftung auftauchen. Abnahme: Screenshot vom Vorplatz mit Bude, Stehtisch und Tafel (Prüfseed 56753: 8557/9350).
@@ -65,11 +79,11 @@ Rucksack, Belohnungsauswahl und Tooltip; Kulissen und Bude gezeichnet (`world-pr
 
 Offen / abhängig von anderen Rollen:
 
-- [ ] **Elite-Titel** (`title`) im Zielfenster auch ohne Boss anzeigen (unverändert offen).
-- [ ] **Porträt für Pit** (Grafik liefert über ART-BRIEF).
-- [ ] Bilder für die Kulissen: `content-art.js`-IDs `prop-<kind>` (z. B. `prop-schrotthaufen`, `prop-bude-tresen`).
+- [x] **Elite-Titel** (`title`) im Zielfenster auch ohne Boss anzeigen (unverändert offen). **Stand 2026-09-18:** enemy-ui.js targetIdentity; tests/handoff-ui.test.mjs.
+- [x] **Porträt für Pit** (Grafik liefert über ART-BRIEF). **Stand 2026-09-18:** dialogue-ui.js und assets/content-art/npcs/dialogue-atlas.png; tests/art-gaps.test.mjs.
+- [x] Bilder für die Kulissen: `content-art.js`-IDs `prop-<kind>` (z. B. `prop-schrotthaufen`, `prop-bude-tresen`). **Stand 2026-09-18:** world-prop-ui.js/content-art.js; tests/art-gaps.test.mjs.
       Ohne Bild zeichnet der Ersatzkörper in der Fallback-Farbe aus `PROP_KINDS`.
-- [ ] Texte aus `content/`: `PANEL_UI.memoryHidden` und `COMBAT_TEXT.underAttack` (in docs/backlog/story.md eingetragen).
+- [x] Texte aus `content/`: `PANEL_UI.memoryHidden` und `COMBAT_TEXT.underAttack` (in docs/backlog/story.md eingetragen). **Stand 2026-09-18:** PANEL_UI.memoryHidden und COMBAT_TEXT.underAttack sind vorhanden und angebunden.
 
 ### Aus Engine Runde B (2026-09-17, docs/UEBERGABE-UI-2026-09-17.md §6)
 
@@ -77,7 +91,7 @@ Offen / abhängig von anderen Rollen:
 - [x] **Ereignis `attacked {enemyId,damage,first}`** (P1): großer Hinweis „Du wirst angegriffen“; die Figur findet sich über `enemyId` in `game.enemies`.
 - [x] **Aktionstaste über `game.interaction()`** (P3/P5): Rangfolge aus der Engine übernehmen, statt in `worldInteraction()` nur nach Entfernung zu sortieren; Beschriftungen weiter aus content.
 - [x] **Wegmarke anklickbar → `game.navigateDestination()`** (P6): ein Laufbefehl zum Auftragsziel statt zwölf Klicks an den Bildschirmrand.
-- [ ] **Zählstand der Proc-Regeln** (offen, nicht Teil der UI-Runde B2): `procCount(game,id)` für Auslöser mit `every` (z. B. „2/3 Kellen“) auf dem Proc-Chip anzeigen.
+- [x] **Zählstand der Proc-Regeln** (offen, nicht Teil der UI-Runde B2): `procCount(game,id)` für Auslöser mit `every` (z. B. „2/3 Kellen“) auf dem Proc-Chip anzeigen. **Stand 2026-09-18:** describe.js activeBuffs liefert count/every; app.js rendert beide auf dem Chip.
 
 
 ### Welle D (Nutzerauftrag 2026-09-17)
@@ -95,9 +109,9 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ### Abnahme Welle D
 
-- [ ] Touch: Autoangriff abschaltbar (Story-Fund: kein Esc auf dem Handy) – langer Druck auf Platz 1 oder Schalter am Chip `#autoState`.
-- [ ] Clan-Schule-Starthinweis „[1] schaltet Autoangriff um“ aus app.js:128 nach `content/panel-ui.js` holen (Story hat den Wortlaut geliefert).
-- [ ] Tooltip-Verweise: Scrollen im Fenster schließt den Tooltip; Lücke Kachel→Tooltip 12 px – Tooltip als Klick-Pin (Klick auf Kachel hält den Tooltip offen) oder Verweise als Buch-Sprung ohne Tooltip.
+- [x] Touch: Autoangriff abschaltbar (Story-Fund: kein Esc auf dem Handy) – langer Druck auf Platz 1 oder Schalter am Chip `#autoState`. **Stand 2026-09-18:** E-25: erneuter Tipp schaltet aus; tests/auto-combat.test.mjs und mobile-check.mjs.
+- [x] Clan-Schule-Starthinweis „[1] schaltet Autoangriff um“ aus app.js:128 nach `content/panel-ui.js` holen (Story hat den Wortlaut geliefert). **Stand 2026-09-18:** PANEL_UI.starterHint ist jetzt die gemeinsame Textquelle.
+- [x] Tooltip-Verweise (30ec4bc: Ausblend-Verzögerung für den Übergang zur Karte): Scrollen im Fenster schließt den Tooltip; Lücke Kachel→Tooltip 12 px – Tooltip als Klick-Pin (Klick auf Kachel hält den Tooltip offen) oder Verweise als Buch-Sprung ohne Tooltip.
 - [ ] Beschriftungen aus `DESCRIBE_UI` nach `content/panel-ui.js` (Story) – Bedarf dort eintragen.
 
 ## Erledigt
@@ -143,5 +157,5 @@ weiter aus dem Spielzustand); der HUD-Questkasten samt Wegmarkenzeile ist ein La
 auf Mobil der neue Knopf `#touchWaypoint` in der oberen Zeile. Prüfpunkte in `scripts/akt1b-check.mjs` (5b/5c/5d + mobil).
 Hilfetext dafür fehlt in `PLAY_HELP` — Bedarf steht in docs/backlog/story.md.
 
-- [ ] **Starthinweis der Clan-Schule auf die neue Autoangriff-Regel** (Story, 2026-09-17): In `app.js:128` steht der Text fest im Code: „Tab wählt ein Ziel, [1] schaltet Autoangriff um, [2] nutzt den ersten Kniff …“. Seit `app.js:195` schaltet **1 nur ein, Esc aus**. Neuer Wortlaut: „Tab wählt ein Ziel, [1] schaltet den Autoangriff ein ([Esc] wieder aus), [2] nutzt den ersten Kniff. Mit [LEER] weichst du aus. Sprich zuerst mit Ida [F]. Weitere Kniffe kommen nach und nach.“ Besser wäre eine Zeile in `content/panel-ui.js` statt Text im Code — dann pflegt Story sie mit. Hilfe (`PLAY_HELP`) und Hofprobe (`content/tutorial.js`) sind bereits umgestellt.
-- [ ] **Touch: Autoangriff wieder ausschalten** (Story, 2026-09-17): Auf Touch gibt es kein Esc; `game.action('auto')` ruft nur `startAuto`. Damit lässt sich der Autoangriff auf dem Handy nie abschalten. Gebraucht wird ein Aus-Weg (langes Halten des Autoangriff-Knopfes oder ein zweiter Tipp, der `game.stopAuto()` ruft). Die Hilfe sagt auf Touch heute nur „schaltet nur ein“.
+- [x] **Starthinweis der Clan-Schule auf die neue Autoangriff-Regel** (Story, 2026-09-17): In `app.js:128` steht der Text fest im Code: „Tab wählt ein Ziel, [1] schaltet Autoangriff um, [2] nutzt den ersten Kniff …“. Seit `app.js:195` schaltet **1 nur ein, Esc aus**. Neuer Wortlaut: „Tab wählt ein Ziel, [1] schaltet den Autoangriff ein ([Esc] wieder aus), [2] nutzt den ersten Kniff. Mit [LEER] weichst du aus. Sprich zuerst mit Ida [F]. Weitere Kniffe kommen nach und nach.“ Besser wäre eine Zeile in `content/panel-ui.js` statt Text im Code — dann pflegt Story sie mit. Hilfe (`PLAY_HELP`) und Hofprobe (`content/tutorial.js`) sind bereits umgestellt. **Stand 2026-09-18:** Alte Nur-Einschalten-Forderung durch E-25 ersetzt; aktueller Toggle-Wortlaut in PANEL_UI.starterHint.
+- [x] **Touch: Autoangriff wieder ausschalten** (Story, 2026-09-17): Auf Touch gibt es kein Esc; `game.action('auto')` ruft nur `startAuto`. Damit lässt sich der Autoangriff auf dem Handy nie abschalten. Gebraucht wird ein Aus-Weg (langes Halten des Autoangriff-Knopfes oder ein zweiter Tipp, der `game.stopAuto()` ruft). Die Hilfe sagt auf Touch heute nur „schaltet nur ein“. **Stand 2026-09-18:** Durch E-25 umgesetzt: erneuter Tipp schaltet aus.

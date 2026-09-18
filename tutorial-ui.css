@@ -1,16 +1,20 @@
-#tutorialGuide{position:absolute;right:20px;top:188px;width:245px;z-index:6;padding:12px;border:2px solid #ac975e;background:#243d30f2;box-shadow:inset 0 0 0 2px #5f6147,0 3px #172a22;color:#e8dab5}#tutorialGuide strong{display:block;font-size:13px;margin:7px 0}#tutorialGuide p{font-size:11px;line-height:1.55;margin:6px 0}#tutorialGuide small{display:block;font-size:10px;line-height:1.5;color:#c3d8b2}#tutorialGuide button{margin-top:8px;padding:7px 10px}.in-tutorial #questPanel,.in-tutorial .quest-panel{display:none}.touch-mode #tutorialGuide{right:auto;left:12px;top:86px;width:calc(100% - 24px);padding:8px;pointer-events:none}.touch-mode #tutorialGuide strong{margin:3px 0}.touch-mode #tutorialGuide p{display:none}.touch-mode #tutorialGuide small{max-width:75%}.touch-mode #tutorialGuide button{position:absolute;right:7px;bottom:7px;max-width:80px;margin:0;pointer-events:auto}.touch-mode .in-tutorial .touch-topline{display:none}.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:204px}@media(orientation:landscape){.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:122px}.touch-mode #tutorialGuide{left:12px;top:84px;width:300px}.touch-mode #tutorialGuide small{max-width:72%}}
-/* Docked, collapsible guidance. The next task stays visible in one compact row. */
-#tutorialGuide{padding:10px 48px 10px 12px}
-#tutorialGuide [data-tutorial-collapse]{position:absolute;right:5px;top:5px;margin:0;width:32px;height:32px;font-size:20px}
-#tutorialGuide [data-tutorial-help]{position:static;margin-top:8px;width:32px;height:32px;font-size:16px}
-#tutorialGuide.collapsed{padding:7px 84px 7px 10px;min-height:48px}
+/* Tutorial geometry lives here; mobile.css deliberately has no competing overrides. */
+#tutorialGuide{position:absolute;right:20px;top:188px;width:245px;z-index:6;padding:10px 54px 10px 12px;border:2px solid #ac975e;background:#243d30f2;box-shadow:inset 0 0 0 2px #5f6147,0 3px #172a22;color:#e8dab5}
+#tutorialGuide strong{display:block;font-size:13px;margin:7px 0}
+#tutorialGuide p{font-size:11px;line-height:1.55;margin:6px 0}
+#tutorialGuide small{display:block;font-size:10px;line-height:1.5;color:#c3d8b2}
+#tutorialGuide button{width:44px;height:44px;min-width:44px;padding:4px;margin:0;font-size:18px}
+#tutorialGuide [data-tutorial-collapse]{position:absolute;right:4px;top:4px;font-size:20px}
+#tutorialGuide [data-tutorial-help]{margin-top:8px}
+#tutorialGuide.collapsed{padding:7px 108px 7px 10px;min-height:56px}
 #tutorialGuide.collapsed strong{margin:3px 0;font-size:11px}
-#tutorialGuide.collapsed [data-tutorial-help]{position:absolute;right:42px;top:5px;margin:0}
+#tutorialGuide.collapsed [data-tutorial-help]{position:absolute;right:56px;top:4px;margin:0}
 #tutorialGuide [hidden]{display:none!important}
-.touch-mode #tutorialGuide{top:calc(84px + var(--safe-top));left:12px;right:auto;width:calc(100% - 24px);padding:7px 96px 7px 10px;min-height:54px;pointer-events:auto}
-.touch-mode #tutorialGuide [data-tutorial-collapse],.touch-mode #tutorialGuide [data-tutorial-help]{position:absolute;top:4px;bottom:auto;right:4px;width:44px;height:44px;min-width:44px;margin:0;max-width:none}
-.touch-mode #tutorialGuide [data-tutorial-help]{right:49px}
-.touch-mode #tutorialGuide small{max-width:none;margin-top:7px}
-.touch-mode #tutorialGuide strong{line-height:15px}
-.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:calc(142px + var(--safe-top))}
-@media(orientation:landscape){.touch-mode #tutorialGuide{width:300px}.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:122px}}
+.in-tutorial #questPanel,.in-tutorial .quest-panel{display:none}
+.touch-mode #tutorialGuide{left:calc(12px + var(--safe-left));right:auto;top:calc(86px + var(--safe-top));width:calc(100% - 24px - var(--safe-left) - var(--safe-right));padding:7px 108px 7px 10px;min-height:56px}
+.touch-mode #tutorialGuide strong{margin:3px 0;line-height:15px}
+.touch-mode #tutorialGuide p{display:none}
+.touch-mode #tutorialGuide small{margin-top:7px}
+.touch-mode #tutorialGuide [data-tutorial-help]{position:absolute;right:56px;top:4px;margin:0}
+.touch-mode .in-tutorial .touch-topline{display:none}
+@media(orientation:landscape){.touch-mode #tutorialGuide{left:50%;right:auto;transform:translateX(-50%);width:300px;max-width:calc(100% - 24px - var(--safe-left) - var(--safe-right))}}
