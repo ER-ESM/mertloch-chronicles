@@ -101,4 +101,4 @@ Fünf Iterationen an der Mobile-Schicht (Mobile-Agent, Regelwerk `docs/MOBILE-GU
 | 2 | `fad6019` |
 | 3 | `93174f6` |
 | 4 | `4d4c980` |
-| 5 | (wird nach dem Push eingetragen) |
+| 5 | `a580e73` |
