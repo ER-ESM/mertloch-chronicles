@@ -21,6 +21,8 @@ Die jüngste Priorisierung ersetzt den begonnenen Grafikauftrag: **nur Punkte 1,
 
 **Danach:** Nach erneuter Priorisierung zuerst die ausstehenden Basis-Abnahmen (3/4 und verbleibende UI-Befunde), anschließend Akt-1-Inhalte. Händler/Handwerk und ein vollständiger Akt-1-Playtest bleiben zurückgestellt; Akt 2 bleibt unbeauftragt.
 
+**Zusätzlicher Nutzerauftrag, 2026-09-18:** Damage-/Heal-Meter mit Kampfsegmenten, DPS/HPS, Fähigkeitsdetails und Touchbedienung. Umsetzung und Messregeln: [Kampfstatistik](KAMPFSTATISTIK-2026-09-18.md). Kein neuer Story-Content.
+
 - Erledigt: Autoangriff mit getrennter Zielwahl und Start/Stopp für Desktop und Touch (E-25).
 - Erledigt: Talent-/Proc-Integration einschließlich Klassendaten, Zählern, Heilung, Abklingzeitverkürzung, Takt- und Zonenregeln.
 - Erledigt: Baumtransparenz bis zum unteren Stamm.

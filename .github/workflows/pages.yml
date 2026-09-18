@@ -29,6 +29,8 @@ jobs:
         run: npm run build
       - name: Check Clanbook and mobile layouts
         run: npm run ui:check
+      - name: Check damage and healing meter
+        run: npm run meter:check
       - name: Check offline starts and update recovery
         run: node scripts/basis-pwa-check.mjs
       - name: Keep browser diagnostics on failure
@@ -38,6 +40,7 @@ jobs:
           name: browser-diagnostics
           path: |
             visual-review/ui-regression/
+            visual-review/meter/
             combat-review/basis-pwa/
       - uses: actions/upload-pages-artifact@v4
         with:

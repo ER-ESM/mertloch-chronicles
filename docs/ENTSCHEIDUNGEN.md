@@ -321,6 +321,15 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 
 ---
 
+## E-31 · Kampfstatistik für Schaden und Heilung
+**Datum:** 2026-09-18 · **Stand:** umgesetzt auf Nutzerauftrag
+
+**Auftrag.** „Bau und implementiere ein damage und heal meter a la details (wow).“ Die Statistik zeigt tatsächliche Spielerwerte, DPS/HPS und Fähigkeitsanteile für laufende/vergangene Kämpfe und die Sitzung. Im Einzelspielermodus gibt es keine erfundenen Gruppenmitglieder; gewechselte Clanfiguren behalten getrennte Summen.
+
+**Umsetzung.** Ein einklappbares Messfenster ergänzt das Clanbuch und bleibt während Bewegung und Kampf nutzbar. Einstieg über V/HUD am Desktop und Figur → Werte bzw. Hilfe → Einstellungen auf beiden Gerätearten. Auf Touch bleibt der Bereich der Kampfsteuerung frei. Zehn abgeschlossene Kämpfe und unbegrenzte Sitzungssummen aus begrenzten Aggregaten; keine Erweiterung des Spielstandformats. Keine zusätzliche Zufallsziehung, Balanceänderung oder Heilung durch den Zähler. Überheilung/Überschaden getrennt, Schilde und Ruhe-Regeneration ausgeschlossen. Details: [Messregeln und Prüfung](KAMPFSTATISTIK-2026-09-18.md).
+
+---
+
 ## Offen (noch nicht entschieden)
 
 | Frage | Optionen | Empfehlung | Seit |

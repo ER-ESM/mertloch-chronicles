@@ -1,6 +1,6 @@
 // Proc-Laufzeit: wertet die Regeln aus content/procs.js aus. Talente aktivieren eine Regel über den Effektschlüssel `proc:<id>`.
 // Zeitfenster liegen in g.procState; die Leiste leuchtet über procGlow(), Kosten und Verstärkung werden beim Einsatz verbraucht.
-import {PROC_RULES} from './content/index.js';
+import {PROC_RULES,METER_TEXT,TALENT_ROWS} from './content/index.js';
 import {addGuard,healPlayer} from './class-mechanics.js';
 export const freshProcState=()=>({free:{},empower:{},glow:{},counts:{},haste:0,hasteUntil:0,fired:0});
 /** Zählstand eines Zählauslösers ("jede dritte Kelle") – für die Anzeige auf der Leiste. */
@@ -13,7 +13,7 @@ export function fireProcs(g,trigger,cs,info={}){const st=g.procState||(g.procSta
   if(r.skill&&r.skill!==info.skill)continue;if(r.zone&&!info.zones?.includes(r.zone))continue;
   if(r.every>1){const n=st.counts[id]=(st.counts[id]||0)+1;if(n%r.every)continue;}
   if(r.chance<1&&g.random()>=r.chance)continue;fired++;st.fired++;const until=g.time+r.window,ef=r.effect;
-  if(ef.free)st.free[ef.free]=until;if(ef.empower)st.empower[ef.empower]=until;if(ef.reset)g.cooldowns[ef.reset]=0;if(ef.energy)p.energy=Math.min(100,p.energy+ef.energy);if(ef.points)p.runes=Math.min(3,p.runes+ef.points);if(ef.shield)addGuard(g,ef.shield,cs);if(ef.heal)healPlayer(g,typeof ef.heal==='number'?ef.heal:(info.damage||0)*ef.heal.damage,cs);if(ef.cdReduce)for(const c of [].concat(ef.cdReduce))if(c?.skill in g.cooldowns)g.cooldowns[c.skill]=Math.max(0,g.cooldowns[c.skill]-(c.seconds||0));if(ef.haste){st.haste=Math.max(st.haste,ef.haste);st.hasteUntil=until;}
+  if(ef.free)st.free[ef.free]=until;if(ef.empower)st.empower[ef.empower]=until;if(ef.reset)g.cooldowns[ef.reset]=0;if(ef.energy)p.energy=Math.min(100,p.energy+ef.energy);if(ef.points)p.runes=Math.min(3,p.runes+ef.points);if(ef.shield)addGuard(g,ef.shield,cs);if(ef.heal)healPlayer(g,typeof ef.heal==='number'?ef.heal:(info.damage||0)*ef.heal.damage,cs,false,{id:'proc:'+id,name:Object.values(TALENT_ROWS).flat().find(t=>t.effects?.['proc:'+id])?.name||METER_TEXT.proc});if(ef.cdReduce)for(const c of [].concat(ef.cdReduce))if(c?.skill in g.cooldowns)g.cooldowns[c.skill]=Math.max(0,g.cooldowns[c.skill]-(c.seconds||0));if(ef.haste){st.haste=Math.max(st.haste,ef.haste);st.hasteUntil=until;}
   if(r.glow&&(!ef.cdReduce||g.cooldowns[r.glow]<=0))st.glow[r.glow]=until;
   const skill=r.glow&&g.skills.find(s=>s.id===r.glow);g.float(p.x,p.y-44,skill?skill.name.toUpperCase()+(ef.cdReduce&&g.cooldowns[r.glow]>0?' · '+g.cooldowns[r.glow].toFixed(1)+' s':' BEREIT'):'PROC','#ffd77a');g.log('Proc · '+r.text);g.emit('proc',{id});}
  return fired;}
