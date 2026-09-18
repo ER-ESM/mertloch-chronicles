@@ -328,6 +328,23 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 
 **Umsetzung.** Ein einklappbares Messfenster ergänzt das Clanbuch und bleibt während Bewegung und Kampf nutzbar. Einstieg über V/HUD am Desktop und Figur → Werte bzw. Hilfe → Einstellungen auf beiden Gerätearten. Auf Touch bleibt der Bereich der Kampfsteuerung frei. Zehn abgeschlossene Kämpfe und unbegrenzte Sitzungssummen aus begrenzten Aggregaten; keine Erweiterung des Spielstandformats. Keine zusätzliche Zufallsziehung, Balanceänderung oder Heilung durch den Zähler. Überheilung/Überschaden getrennt, Schilde und Ruhe-Regeneration ausgeschlossen. Details: [Messregeln und Prüfung](KAMPFSTATISTIK-2026-09-18.md).
 
+## E-32 · Klassen-Kernmechaniken, Talentbäume mit Pfaden (Faktor 3)
+**Datum:** 2026-09-18 · **Stand:** entschieden auf Nutzerauftrag, Umsetzung in Etappen
+
+**Auftrag.** „Aktuell sind alle gleich: 3 von irgendwas generieren, dann finishen." Brainstorm und Bewertung: [KLASSEN-BRAINSTORM-2026-09-18.md](KLASSEN-BRAINSTORM-2026-09-18.md). Visuals laufen parallel: [UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md](UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md).
+
+**Entschieden.**
+1. Die Grundschleife (Schwung → Eskalation) bleibt auf Stufe 1–4 für alle gleich. Ab der Spezialisierung (Stufe 5) hat jede der neun Specs eine **Kernmechanik**, die die Leistenplätze Markierung, Eskalation, Bodenkniff und Stärkung umdeutet (Namen/Texte je Spec in `content/mechanics.js`, Regeln in `class-mechanics.js`). Kein Paar teilt nach Stufe 5 die Grundlogik: Pegel-Uhr, Fässer, Schimmel-Ausbreitung, Randale-Zustand, Lunte+Kettenblitz, Aufbau-Automat, Bastler-Zufall mit Pity, Deckung als Waffe, Heilung wird Schaden.
+2. **Talentbäume:** 30 Talente je Spec = 10 Reihen × 3 Pfade. Je Reihe genau ein Talent (die anderen beiden sind ausgeschlossen). Punkte bleiben 1 je Stufe ab Stufe 2 (10 auf Stufe 11). **Pfadtreue:** 4 Talente desselben Pfades geben den Pfadbonus, 7 die Pfadkrone (passive Regeln je Pfad in `content/mechanics.js`). Reihe 10 ist der Schlussstein und ändert den Finisher. Regel für jedes Talent: ändert eine Regel, nie nur eine Zahl (Prüfung `content/checks/klassen.js`).
+3. Speicherschlüssel bleiben `<spec>-<index>`, jetzt 0–29 (Reihe = ⌊index/3⌋, Pfad = index mod 3). Alte Builds werden beim Laden zurückgesetzt, die Punkte sind frei.
+4. **GCD:** Basis 1,5 s, Untergrenze 1,0 s (Balancing, `content/balance.js`). Kniffe in einer Variante (Gratis, Verstärkt, Bereit, Eskalation, RESONANZ) und proc-ausgelöste Kniffe lösen nur einen kurzen GCD von 1,0 s aus.
+5. **Bodenkniff auf Stufe 3** für alle Klassen; ab Stufe 5 spec-spezifisch (Fass, Robbi, Nest, Sporenwolke, …).
+6. **Casts im Laufen** nur per Spec-Kit oder Talent (`mobile`-Flag am Kniff), nicht allgemein.
+7. **Pets in zwei Stufen:** zuerst stationäre Begleiter (Fass, Robbi, Gisela) auf einem gemeinsamen Baustein „platziertes Objekt mit Aura/Leben/Ablauf" (`g.fields`), laufende Begleiter mit Folge-KI später.
+8. Trinkspiel als Ansage/Antwort-Timing (Parade-Fenster mit Bonus) in der Filter-Furie, keine vierte Klasse.
+
+**Reihenfolge.** Engine-Bausteine + Talentgraph → Inhalte (30 je Spec, Beschreibungsstandard Welle D) → Talentbaum-UI + HUD → Playtest Kenner → Visuals einbinden, sobald Astra liefert.
+
 ---
 
 ## Offen (noch nicht entschieden)
