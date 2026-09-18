@@ -2,7 +2,9 @@ import {walkFacing} from './maifeld-locomotion.js';
 import {ITEMS,combatStats} from './rpg.js';
 import {WEAPON_TYPES,COMBAT_RULES,COMBAT_TEXT} from './content/index.js';
 import {distance} from './world.js';
-export const movingToCast=g=>g.player.moving||Math.hypot(g.player.vx||0,g.player.vy||0)>1||!!g.moveTo||!!(g.touchMove?.x||g.touchMove?.y)||['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].some(k=>g.keys.has(k));
+/** Nur echte Eingaben zählen als Laufen (Tasten, Klickziel, Touch-Stick). Restgeschwindigkeit nach dem Loslassen bremst den Zauber nicht mehr (Kampffluss-Befund 2026-09-18). */
+export const inputMoving=g=>!!g.moveTo||!!(g.touchMove?.x||g.touchMove?.y)||['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].some(k=>g.keys.has(k));
+export const movingToCast=g=>{if(inputMoving(g))return true;const p=g.player;if(p.moving||Math.hypot(p.vx||0,p.vy||0)>1){p.vx=p.vy=0;p.moving=false;}return false;};
 export function autoWeapons(g){const source=g.skills.find(s=>s.id==='auto')?.weaponSource||'melee',slots=source==='ranged'?['ranged']:['weapon','offhand'];const list=slots.flatMap(slot=>{const d=ITEMS[g.rpg.equipment[slot]],w=d?.weapon;if(!w||(d.level||1)>g.player.level||slot==='offhand'&&w.hands!==1)return [];return [{...w,slot,speed:w.speed||WEAPON_TYPES[w.type]?.speed||2,share:slot==='offhand'?.5:1}];});return list.length?list:[{...COMBAT_RULES.unarmed,slot:'weapon',share:1}];}
 /** Rechtsklick und offensive Kniffe starten den Angriff, ohne ihn versehentlich auszuschalten. */
 export function startAuto(g){if(!g.target?.hp)g.selectNext();if(!g.target||g.target.ai==='returning'||g.target.spawnGrace>0)return false;if(g.autoAttack.enabled)return true;g.autoAttack.enabled=true;g.toast(COMBAT_TEXT.autoOn);return true;}
