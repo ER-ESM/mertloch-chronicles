@@ -11,7 +11,9 @@ permissions:
 
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  # Finish the active main deployment; frequent pushes previously kept the live game stale.
+  # GitHub keeps only the latest pending run, while PR checks may still be superseded.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build:

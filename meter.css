@@ -1,43 +1,57 @@
-#meterToggle{position:absolute;left:230px;top:18px;z-index:16;min-height:44px;padding:8px 14px;background:#263b32;color:#f5e4bf;border:2px solid #c4a166;font:700 13px var(--read,sans-serif)}
-#combatMeter{position:absolute;z-index:30;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;background:#172a23;color:#f5e4bf;border:2px solid #ba995e;border-radius:8px;box-shadow:0 8px 26px #0008;font:13px/1.4 var(--read,sans-serif);text-align:left}
+#meterToggle{position:absolute;left:230px;top:18px;z-index:16;display:flex;align-items:center;gap:8px;min-height:36px;padding:6px 10px;background:#263b32;color:#f5e4bf;border:1px solid #c4a166;font:700 12px var(--read,sans-serif)}
+#meterToggle kbd{font:inherit;border:1px solid #9f9d79;padding:1px 4px;border-radius:3px}#meterToggle>span:first-child{font-size:19px}
+#combatMeter{position:absolute;z-index:30;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;background:#122019e8;color:#f5e4bf;border:1px solid #ba995e;border-radius:4px;box-shadow:0 3px 12px #0008;font:12px/1.35 var(--read,sans-serif);text-align:left}
 #combatMeter[hidden],#combatMeter [hidden]{display:none!important}
 #combatMeter *{box-sizing:border-box}
-#combatMeter button,#combatMeter select,#combatMeter summary{font:inherit;min-height:44px;touch-action:manipulation;cursor:pointer;color:#f5e4bf}
-#combatMeter button{border:1px solid #6d775e;background:#2b4135;padding:8px;border-radius:4px!important;transform:none}
+#combatMeter button,#combatMeter select,#combatMeter summary{font:inherit;min-height:26px;touch-action:manipulation;cursor:pointer;color:#f5e4bf}
+#combatMeter button{border:1px solid transparent;background:#293c31;padding:3px 7px;border-radius:2px!important;transform:none}
 #combatMeter button:hover,#combatMeter button:focus-visible{background:#3a5543;outline:2px solid #f5d790;outline-offset:-2px}
-#combatMeter .meter-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px;border-bottom:1px solid #ba995e;background:#243a2f;cursor:move;flex-shrink:0;touch-action:none}
-#combatMeter .meter-header strong{font-size:15px;overflow-wrap:anywhere}
-#combatMeter .meter-header button{width:44px;flex:0 0 44px;font-size:24px;line-height:1}
-#combatMeter .meter-scroll{min-height:0;overflow:auto;overscroll-behavior:contain;padding:10px;scrollbar-width:thin}
-#combatMeter .meter-modes{display:flex;flex-shrink:0;gap:8px;margin:8px 10px 0;background:#172a23}
+#combatMeter .meter-header{display:flex;align-items:center;gap:4px;padding:2px 4px 2px 8px;background:linear-gradient(#344a3b,#24362b);cursor:move;flex-shrink:0;touch-action:none}
+#combatMeter .meter-header strong{flex:1;min-width:0;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#combatMeter .meter-header button{width:26px;flex:0 0 26px;font-size:18px;line-height:1}
+#combatMeter .meter-modes{display:flex;flex-shrink:0;gap:2px;padding:2px 4px;background:#18281f}
 #combatMeter .meter-modes button{flex:1;min-width:0}
-#combatMeter button[aria-pressed=true]{background:#b65e35;color:#fff7e6;border-color:#f0ba76}
-#combatMeter[data-mode=healing] button[aria-pressed=true]{background:#357450;border-color:#a4db9d}
-#combatMeter .meter-segment-label{display:block;font-size:11px;color:#d2ccb4}
-#combatMeter select{display:block;width:100%;min-width:0;margin-top:4px;border:1px solid #6d775e;background:#182a22;padding:6px}
-#combatMeter .meter-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 0 8px;font-variant-numeric:tabular-nums}
-#combatMeter .meter-summary small{display:block;color:#cfccb5;font-size:10px}
-#combatMeter .meter-summary b{display:block;font-size:20px;color:#ffdb9f;overflow-wrap:anywhere}
-#combatMeter .meter-status{margin:0 0 8px;color:#d2ccb4;font-size:11px}
-#combatMeter h3{font:700 13px/1.4 var(--read,sans-serif);margin:8px 0;color:#f5e4bf;text-transform:none;letter-spacing:0}
-#combatMeter .meter-rows{display:grid;gap:8px}
-#combatMeter .meter-row{position:relative;isolation:isolate;overflow:hidden;width:100%;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;min-height:52px;font-variant-numeric:tabular-nums;background:#23392e}
-#combatMeter .meter-row i{position:absolute;inset:0 auto 0 0;background:#96502f;z-index:-1;opacity:.8}
-#combatMeter[data-mode=healing] .meter-row i{background:#347047}
-#combatMeter .meter-row-name{font-weight:700;overflow-wrap:anywhere}
-#combatMeter .meter-row small{grid-column:1/-1;color:#f4e4c9;font-size:11px}
-#combatMeter .meter-detail{border-top:1px solid #7b8064;margin-top:12px;padding-top:4px}
+#combatMeter button[aria-pressed=true]{background:#984522;color:#fff7e6;border-bottom-color:#f0ba76}
+#combatMeter[data-mode=healing] button[aria-pressed=true]{background:#2c6241;border-bottom-color:#a4db9d}
+#combatMeter .meter-toolbar{display:flex;gap:4px;flex-shrink:0;padding:2px 4px}
+#combatMeter .meter-toolbar button{flex:0 0 28px}
+#combatMeter select{display:block;width:100%;min-width:0;border:1px solid #647157;background:#182a22;padding:2px 5px}
+#combatMeter .meter-scroll{flex:1;min-height:40px;overflow:auto;overscroll-behavior:contain;padding:4px;scrollbar-width:thin}
+#combatMeter h3{font:700 11px/1.4 var(--read,sans-serif);margin:2px 0 6px;color:#f5e4bf;text-transform:none;letter-spacing:0}
+#combatMeter .meter-rows{display:grid;gap:3px}
+#combatMeter .meter-row{position:relative;isolation:isolate;overflow:hidden;width:100%;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;min-height:35px;font-variant-numeric:tabular-nums;background:#23392ec9}
+#combatMeter .meter-row i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#784121,#a25629);z-index:-1;opacity:.95}
+#combatMeter[data-mode=healing] .meter-row i{background:linear-gradient(90deg,#225638,#38804d)}
+#combatMeter .meter-row-name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 2px #000}
+#combatMeter .meter-row b{text-shadow:0 1px 2px #000}
+#combatMeter .meter-row small{grid-column:1/-1;text-align:right;color:#fff1d7;font-size:10px}
+#combatMeter .meter-summary{display:flex;justify-content:space-between;gap:8px;padding:5px 18px 3px 6px;flex-shrink:0;font-size:10px;font-variant-numeric:tabular-nums;border-top:1px solid #637152;background:#172a23}
+#combatMeter .meter-summary b{color:#ffdb9f}
+#combatMeter .meter-status{flex-shrink:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin:0;padding:2px 18px 4px 6px;color:#d2ccb4;font-size:10px;background:#172a23}
+#combatMeter .meter-detail{border-top:1px solid #7b8064;margin-top:8px;padding:6px 3px 3px}
 #combatMeter dl{margin:0;display:grid;gap:4px}
 #combatMeter dl>div{display:flex;justify-content:space-between;gap:8px}
 #combatMeter dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
-#combatMeter .meter-empty{font-size:12px;color:#d2ccb4}
-#combatMeter .meter-info{margin-top:8px;font-size:12px;color:#d2ccb4}
-#combatMeter summary{padding:12px 0}
+#combatMeter .meter-empty{margin:12px 6px;font-size:12px;color:#d2ccb4}
+#combatMeter .meter-options{padding:4px}
+#combatMeter .meter-info{font-size:12px;color:#d2ccb4}
+#combatMeter summary{padding:6px 0}
 #combatMeter .meter-reset{width:100%;margin-top:8px}
 #combatMeter .meter-confirm{display:grid;gap:8px;margin-top:8px}
-.touch-mode #meterToggle{display:none}
-.touch-mode #combatMeter{z-index:1003}
-.touch-mode #combatMeter .meter-header{cursor:default}
-.touch-mode #combatMeter .meter-summary b{font-size:18px}
+#combatMeter .meter-resize{position:absolute;right:0;bottom:0;width:18px;min-height:18px;height:18px;padding:0;font-size:13px;color:#d2b879;background:transparent;cursor:nwse-resize;touch-action:none}
+.touch-mode #meterToggle{left:auto;right:calc(26px + var(--safe-right));top:calc(74px + var(--safe-top));z-index:1001;width:54px;min-height:44px;justify-content:center;padding:4px}
+.touch-mode #meterToggle>span:first-child{font-size:26px}.touch-mode #meterToggle .meter-toggle-label,.touch-mode #meterToggle kbd{display:none}
+.touch-mode #meterToggle.meter-is-open,.touch-mode:has(.game-popup) #meterToggle{visibility:hidden}
+.touch-mode #combatMeter{z-index:1003;background:#172a23}
+.touch-mode #combatMeter button,.touch-mode #combatMeter select,.touch-mode #combatMeter summary{min-height:44px}
+.touch-mode #combatMeter .meter-header{cursor:default;gap:8px;padding:4px 8px}
+.touch-mode #combatMeter .meter-header button{width:44px;flex-basis:44px}
+.touch-mode #combatMeter .meter-modes{gap:8px;padding:4px 8px}
+.touch-mode #combatMeter .meter-toolbar{gap:8px;padding:4px 8px}
+.touch-mode #combatMeter .meter-toolbar button{flex-basis:44px}
+.touch-mode #combatMeter .meter-scroll{padding:4px 8px;min-height:44px}
+.touch-mode #combatMeter .meter-rows{gap:8px}
+.touch-mode #combatMeter .meter-row{min-height:44px}.touch-mode #combatMeter .meter-row-name{white-space:normal}
+.touch-mode #combatMeter .meter-summary{padding:6px 8px;flex-wrap:wrap}
+.touch-mode #combatMeter .meter-resize{display:none}
 .touch-mode:has(#combatMeter:not([hidden])) #touchMenu{visibility:hidden}
-@media(max-width:800px) and (orientation:landscape){.touch-mode #combatMeter .meter-summary{grid-template-columns:1fr 1fr}.touch-mode #combatMeter .meter-summary>div:last-child{grid-column:1/-1;display:flex;align-items:center;gap:8px}.touch-mode #combatMeter .meter-header strong{font-size:12px}.touch-mode #combatMeter .meter-row{grid-template-columns:1fr}.touch-mode #combatMeter .meter-row small{grid-column:1}}
