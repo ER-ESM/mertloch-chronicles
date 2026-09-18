@@ -116,6 +116,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
+- [x] **Gegenstands-Tooltips entschlackt** (Nutzerbefund 2026-09-18): nur Name/Güte/Platz, Werte, Waffenhinweis, Stufe, Vergleich; Zitat nur bei einzigartigen und epischen Teilen; kein „Ohne Zusatzwerte", keine Fußzeile Ausrüstung/Verpflegung/Material, kein Effektsatz, der die Werte wiederholt (Shift-Details bleiben).
+
 - [x] **Tooltip bleibt beim Hinübergehen** (Nutzerbefund 2026-09-18): Verlassen des Icons blendet erst nach 320 ms aus, wenn der Zeiger nicht im Tooltip oder auf dem Icon ist; Esc schließt. Aggro/Leine siehe Backlogs gameplay/engine.
 
 - [x] **Verweise in Tooltips** (Nutzerauftrag 2026-09-18): Namen von Kniffen, Talenten, Eigenart, Stärkungen und Glossarbegriffen werden in allen Tooltips und Erklärfenstern zu farbigen Verweisen (Gold Kniff, Rose Talent, Grün Proc, Creme Begriff); Klick zeigt die Erklärung des Genannten an derselben Stelle mit „zurück", auf Touch als eigenes Fenster. describe-ui.js linkText/linkReferences/refCard, Test tests/ref-links.test.mjs, Belege visual-review/reflinks-2026-09-18/.
