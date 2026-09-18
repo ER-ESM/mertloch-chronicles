@@ -8,6 +8,7 @@ import {redesignArt,redesignPose,redesignFrame,redesignGear,drawRedesignPerson,v
 import {equipmentAppearance} from '../equipment-appearance.js';
 import {ITEM_CATALOG} from '../content/items.js';
 import {Game} from '../engine.js';
+import {legGarmentSegments} from '../live-art.js';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url)),catalog=JSON.parse(read('assets/redesign/runtime/catalog.json'));
 test('complete production matrix has every authored action, direction and modular gear view',()=>{
  assert.equal(catalog.complete,true);assert.equal(Object.keys(catalog.assets).length,15);
@@ -46,6 +47,24 @@ test('theme gear respects inventory families and two-hand restrictions',()=>{
  const items=equipmentAppearance({weapon:'tresenhammer',offhand:'topfdeckel'},ITEM_CATALOG);assert.equal(items.some(i=>i.slot==='offhand'),false);assert.equal(items[0].hands,2);
  assert.equal(redesignGear('dieter',items[0]),'beerhammer');assert.equal(redesignGear('anni',{asset:'shield'}),'citrusshield');assert.equal(redesignGear('kevin',{asset:'slingshot'}),'pfandsling');assert.equal(redesignGear('dieter',{asset:'bottle'}),null);
  for(const hero of ['dieter','anni','kevin']){assert.equal(redesignFrame(hero,{visualEquipment:items,attack:.25}).key,hero+'-heavy');assert.equal(redesignFrame(hero,{visualEquipment:items,moving:true}).key,hero+'-heavywalk');assert.equal(redesignFrame(hero,{visualEquipment:items,usingRanged:true,attack:.25}).key,hero+'-specials');assert.equal(redesignFrame(hero,{visualEquipment:items,usingRanged:true,parry:.3}).key,hero+'-heavy');}
+});
+test('equipped trousers bend at the knee and keep continuous texture across both bones',()=>{
+ const leg={hip:{x:0,y:0},knee:{x:6,y:8},ankle:{x:0,y:16}},parts=legGarmentSegments(leg);
+ assert.equal(parts.length,2);assert.ok(parts[0].angle<0&&parts[1].angle>0,'opposite segment angles follow the bent knee');
+ const endpoint=(p,sign)=>({x:p.x-sign*Math.sin(p.angle)*(p.h-1)/2,y:p.y+sign*Math.cos(p.angle)*(p.h-1)/2});
+ for(const [part,sign]of [[parts[0],1],[parts[1],-1]]){const p=endpoint(part,sign);assert.ok(Math.hypot(p.x-leg.knee.x,p.y-leg.knee.y)<1e-8,'both garment segments meet the actual knee');}
+ assert.equal(parts[0].slice[0],0);assert.equal(parts[0].slice[1],parts[1].slice[0]);assert.equal(parts[1].slice[1],1);
+ assert.deepEqual(legGarmentSegments({hip:leg.hip,knee:leg.hip,ankle:leg.ankle}),[]);
+});
+test('painted fingers cannot overwrite equipped gloves and hand jewelry',()=>{
+ redesignArt.catalog=catalog;redesignArt.ready=true;redesignArt.images=new Map(Object.keys(catalog.assets).map(k=>[k,{id:k}]));
+ const events=[],ctx=Object.fromEntries(['save','restore','translate','rotate','scale','beginPath','ellipse','fill','arc','clip'].map(k=>[k,()=>{}]));ctx.drawImage=()=>events.push('pixels');
+ const equipment=[{slot:'weapon',asset:'maul',hands:2},{slot:'legs',asset:'trouser'},{slot:'hands',asset:'glove'},{slot:'ring1',asset:'ring'}];
+ drawRedesignPerson(ctx,'dieter',0,0,{artPose:'walk-2',direction:'se',visualEquipment:equipment},1,(_c,items,s)=>{
+  assert.equal(s.legs,catalog.assets['dieter-heavywalk'].frames[2].joints);events.push(items.map(i=>i.slot));
+ });
+ assert.deepEqual(events.at(-1),['hands','ring1']);const clothing=events.findIndex(e=>Array.isArray(e)&&e.includes('legs'));
+ assert.ok(events.slice(clothing+1,-1).includes('pixels'),'weapon and finger restoration happen between clothing and gloves');
 });
 test('partial catalogs and a failed native image never activate a mixed delivery',async()=>{
  assert.ok(validRedesignCatalog(catalog));const partial=structuredClone(catalog);delete partial.assets['kevin-heavy'];assert.equal(validRedesignCatalog(partial),false);

@@ -1,6 +1,7 @@
 import {ITEM_CATALOG} from './content/items.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 import {equipmentPlan} from './equipment.js';
+import {rolledDefinition} from './itemization.js';
 
 export const DEMO_HEROES = [
  {id:'dieter',name:'Dosen-Dieter',role:'Der hält das aus.',color:'#d9b77e'},
@@ -19,15 +20,21 @@ export const DEMO_PRESETS = [
  {id:'kevin-blade',hero:'kevin',name:'Dosen-Duell',note:'Dosenklinge & Topfdeckel',equipment:{body:'kutte',feet:'festivalstiefel',ring1:'pfandring',weapon:'dosenklinge',offhand:'topfdeckel'}},
  {id:'kevin-stamp',hero:'kevin',name:'Letzte Mahnung',note:'Horststempel & Schnorrerbecher',equipment:{body:'regenjacke',head:'dienstmuetze',feet:'fuchspfote',trinket1:'schnorrerbecher',weapon:'horststempel'}}
 ];
-export function resolveDemoEquipment(equipment){
+export function resolveDemoEquipment(equipment,registry=ITEM_CATALOG){
  let next={};
  for(const [slot,id] of Object.entries(equipment)){
   if(!id)continue;
-  const plan=equipmentPlan(next,ITEM_CATALOG,id,slot);
+  const plan=equipmentPlan(next,registry,id,slot);
   if(plan.error)throw Error(`${slot}: ${id}: ${plan.error}`);
   next=plan.next;
  }
- return {equipment:next,visualEquipment:equipmentAppearance(next,ITEM_CATALOG)};
+ return {equipment:next,visualEquipment:equipmentAppearance(next,registry)};
+}
+/** Real generated-item definitions, isolated from the game's item registry and saves. */
+export function demoArmor(hero){
+ const registry={},equipment={},spec={dieter:'tresen',anni:'bass',baerbel:'bass',kevin:'pfand'}[hero]||'tresen';
+ for(const slot of ['legs','hands','wrists']){const id='demo-'+slot;registry[id]=rolledDefinition({slot,spec,level:6,quality:'rare',roll:125});equipment[slot]=id;}
+ return resolveDemoEquipment(equipment,registry).visualEquipment;
 }
 export function demoPose(action,time=0,distance=0){
  if(action==='walk')return {moving:true,walkDistance:distance};

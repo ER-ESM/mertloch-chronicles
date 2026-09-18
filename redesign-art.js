@@ -93,8 +93,11 @@ export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  const q=sel.resolution||1;c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);
  garment(c,sel,find('body'));
  if(s.back)drawStowed();
- if(drawClothing)drawClothing(c,items.filter(i=>!['body','weapon','offhand','ranged'].includes(i.slot)),s,p);
+ const clothingSockets={...s,legs:f.joints},handSlots=['hands','wrists','ring1','ring2'];
+ if(drawClothing)drawClothing(c,items.filter(i=>!['body','weapon','offhand','ranged',...handSlots].includes(i.slot)),clothingSockets,p);
  if(!down){drawMain();if(!s.back)drawOff();if(main)glove(c,sel,s.main);if(off&&!s.back||main?.hands===2&&!p.usingRanged)glove(c,sel,s.off);}
+ // Equipped gloves and rings must remain above the restored painted fingers.
+ if(drawClothing)drawClothing(c,items.filter(i=>handSlots.includes(i.slot)),clothingSockets,p);
  if(p.parry>0&&!down){c.strokeStyle='#f3b84b';c.lineWidth=1.2/k;c.lineCap='round';c.beginPath();c.arc(96,110,50,s.west?2: -1.3,s.west?4.5:1.1);c.stroke();}
  c.restore();return true;
 }

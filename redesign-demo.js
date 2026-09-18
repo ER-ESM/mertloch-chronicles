@@ -1,12 +1,13 @@
 import {loadRedesignArt,redesignArt,drawRedesignPerson,redesignFrame,redesignPose} from './redesign-art.js';
 import {loadContentArt} from './content-art.js';
 import {loadLiveArt,drawLivePerson} from './live-art.js';
-import {DEMO_PRESETS,resolveDemoEquipment} from './prerender-demo-presets.js';
+import {DEMO_PRESETS,resolveDemoEquipment,demoArmor} from './prerender-demo-presets.js';
 import {loadWorldArt} from './asset-art.js';
 import {drawMaifeld,fillMaifeldGround} from './maifeld-art.js';
 import {drawBuilding} from './architecture.js';
 const $=s=>document.querySelector(s),directions=['se','sw','ne','nw'],titles=['SÜDOST','SÜDWEST','NORDOST','NORDWEST'];
-export const state={hero:'dieter',action:'walk',outfit:'theme',phase:0,playing:true,sockets:false};
+export const state={hero:'dieter',action:'walk',outfit:'theme',phase:0,playing:true,sockets:false,armor:false};
+const armor=Object.fromEntries(['dieter','anni','kevin'].map(hero=>[hero,demoArmor(hero)]));
 for(const p of DEMO_PRESETS)$('#outfit').add(new Option(p.name,p.id));
 const canvases=directions.map((d,i)=>{const f=document.createElement('figure');f.innerHTML=`<canvas width="320" height="360" aria-label="${titles[i]}"></canvas><figcaption>${titles[i]}</figcaption>`;$('#turnaround').append(f);return f.querySelector('canvas');});
 const themes={dieter:{weapon:'dosenbrecher',offhand:'topfdeckel',ranged:'pfandschleuder'},anni:{weapon:'dosenbrecher',offhand:'topfdeckel',ranged:'megafon'},kevin:{weapon:'dosenklinge',offhand:'topfdeckel',ranged:'pfandschleuder'}};
@@ -20,12 +21,13 @@ function ground(){
 function player(hero=state.hero){
  const action=state.action,phase=Math.floor(state.phase)%8,pose=action==='walk'?'walk-'+phase:action==='attack'?['anticipation','anticipation','impact','impact','recovery','recovery','idle','idle'][phase]:action==='ranged'?(phase<4?'ranged-aim':'ranged-release'):action;
  const preset=DEMO_PRESETS.find(p=>p.id===state.outfit),equipment=state.outfit==='bare'?{}:preset?.equipment||themes[hero];
- return {artPose:pose,direction:'se',parry:action==='parry'?.3:0,usingRanged:action==='ranged'||(state.outfit==='theme'&&hero!=='dieter'&&action!=='attack')||!!preset?.ranged,visualEquipment:resolveDemoEquipment(equipment).visualEquipment};
+ return {artPose:pose,direction:'se',parry:action==='parry'?.3:0,usingRanged:action==='ranged'||(state.outfit==='theme'&&hero!=='dieter'&&action!=='attack')||!!preset?.ranged,visualEquipment:[...resolveDemoEquipment(equipment).visualEquipment,...(state.armor?armor[hero]:[])]};
 }
 function actor(c,hero,x,y,p,magnify){return drawLivePerson(c,hero,x,y,0,{...p,artMagnify:magnify});}
 export function draw(){
  if(!redesignArt.ready)return;const p=player();
  for(const key of ['hero','action','outfit'])$('#'+key).value=state[key];$('#pause').textContent=state.playing?'Pause':'Abspielen';
+ $('#armor').checked=state.armor;
  canvases.forEach((cv,i)=>{const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);const q={...p,direction:directions[i]};actor(c,state.hero,160,302,q,9);
   if(state.sockets){const f=redesignFrame(state.hero,q).frame;c.fillStyle='#f5cf67';for(const at of [f.sockets.main,f.sockets.off]){c.beginPath();c.arc(160+(at.x-96)*2.25,302+(at.y-160)*2.25,4,0,7);c.fill();}}
  });
@@ -39,6 +41,7 @@ $('#pause').onclick=()=>{state.playing=!state.playing;$('#pause').textContent=st
 $('#step').onclick=()=>{state.playing=false;state.phase=(Math.floor(state.phase)+1)%8;$('#pause').textContent='Abspielen';draw();};
 $('#frame').oninput=e=>{state.playing=false;state.phase=+e.target.value;$('#pause').textContent='Abspielen';draw();};
 $('#sockets').onchange=e=>{state.sockets=e.target.checked;draw();};
+$('#armor').onchange=e=>{state.armor=e.target.checked;draw();};
 $('#export').onclick=()=>{const cv=document.createElement('canvas');cv.width=1280;cv.height=360;const c=cv.getContext('2d');canvases.forEach((v,i)=>c.drawImage(v,i*320,0));const a=document.createElement('a');a.href=cv.toDataURL();a.download=state.hero+'-'+state.action+'.png';a.click();};
 await Promise.all([loadRedesignArt(),loadContentArt(),loadLiveArt(),loadWorldArt()]);villageGround=ground();
 const labels=['Fasshammer','Hopfenschild','Aperol-Sprüher','Zitrusschild','Pfandschleuder','Dorfblech'];

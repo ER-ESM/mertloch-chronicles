@@ -25,9 +25,16 @@ export const liveActorHeight=(id,variant)=>contentActorHeight(livePersonId(id,va
 export const hasLiveContent=(id,variant)=>hasContentActor(livePersonId(id,variant));
 const directionOf=p=>p.direction||((p.facing||1)>0?'se':'sw');
 
-function gearPart(c,id,x,y,w,h,west=false,angle=0,half=null){
+function gearPart(c,id,x,y,w,h,west=false,angle=0,half=null,slice=[0,1]){
  const precise=contentAsset('equipment-parts'),r=precise?contentArt.catalog.equipment[id]:liveArt.catalog.equipment[id];if(!r)return;
- c.save();c.translate(x,y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x+(half===1?r.w/2:0),r.y,half===null?r.w:r.w/2,r.h,-w/2,-h/2,w,h);c.restore();
+ c.save();c.translate(x,y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x+(half===1?r.w/2:0),r.y+r.h*slice[0],half===null?r.w:r.w/2,r.h*(slice[1]-slice[0]),-w/2,-h/2,w,h);c.restore();
+}
+/** Split the existing trouser leg at the animated knee; retain one continuous texture. */
+export function legGarmentSegments({hip,knee,ankle}){
+ const upper=Math.hypot(knee.x-hip.x,knee.y-hip.y),lower=Math.hypot(ankle.x-knee.x,ankle.y-knee.y);
+ if(upper<.01||lower<.01)return [];
+ const fraction=upper/(upper+lower),collar=Math.min(3,lower*.3),end={x:ankle.x+(knee.x-ankle.x)*collar/lower,y:ankle.y+(knee.y-ankle.y)*collar/lower};
+ return [[hip,knee,[0,fraction]],[knee,end,[fraction,1]]].map(([a,b,slice])=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2,h:Math.hypot(b.x-a.x,b.y-a.y)+1,angle:-Math.atan2(b.x-a.x,b.y-a.y),slice}));
 }
 function heldPart(c,id,at,w,h,west,angle=0){
  const precise=contentAsset('equipment-parts'),r=precise?contentArt.catalog.equipment[id]:liveArt.catalog.equipment[id];if(!r)return;c.save();c.translate(at.x,at.y);c.rotate(angle);if(west)c.scale(-1,1);c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x,r.y,r.w,r.h,-w/2,-h*.78,w,h);c.restore();
@@ -37,7 +44,10 @@ function gear(c,items,s,west,back,behind,p){
  if(behind){const ranged=has('ranged');if(ranged&&!p.usingRanged)gearPart(c,ranged.asset,s.torso.x+(west?13:-13),s.torso.y+3,8,15,west,-.18);if(p.usingRanged){const weapon=has('weapon'),off=has('offhand');if(weapon)gearPart(c,weapon.asset,s.torso.x+(west?-11:11),s.waist.y,5,14,west,.25);if(off)gearPart(c,off.asset,s.torso.x+(west?9:-9),s.torso.y+5,10,12,west);}return;}
  for(const item of items){const a=item.asset,slot=item.slot;
   if(slot==='ranged'||slot==='weapon'||slot==='offhand')continue;
-  if(slot==='legs')for(const [i,f] of s.feet.entries()){const hip={x:s.waist.x+(i?4:-4),y:s.waist.y};const length=Math.max(8,f.y-hip.y-3);gearPart(c,a,(hip.x+f.x)/2,(hip.y+f.y-3)/2,7,length,west,-Math.atan2(f.x-hip.x,length),i);}
+  if(slot==='legs'){
+   if(s.legs)for(const [i,leg]of s.legs.entries())for(const part of legGarmentSegments(leg))gearPart(c,a,part.x,part.y,7,part.h,west,part.angle,i,part.slice);
+   else for(const [i,f] of s.feet.entries()){const hip={x:s.waist.x+(i?4:-4),y:s.waist.y};const length=Math.max(8,f.y-hip.y-3);gearPart(c,a,(hip.x+f.x)/2,(hip.y+f.y-3)/2,7,length,west,-Math.atan2(f.x-hip.x,length),i);}
+  }
   if(slot==='feet')for(const f of s.feet)gearPart(c,a,f.x,f.y-2.5,9,8,west,f.angle||0);
  }
  if(body)gearPart(c,body.asset+(back?'Back':''),s.torso.x,s.torso.y+3,s.torso.w+2,s.torso.h,west);
@@ -80,7 +90,7 @@ function drawContentPerson(c,id,x,y,p,magnify){
 export function drawLivePerson(c,id,x,y,time=0,p={},scale=1){
  id=livePersonId(id,p.variant);
  if(drawRedesignPerson(c,id,x,y,p,p.artMagnify??scale/(26/33),(ctx,items,s,state)=>{
-  const half=at=>({...at,x:at.x/2,y:at.y/2}),ss={...s,main:half(s.main),off:half(s.off),head:half(s.head),torso:{...half(s.torso),w:s.torso.w/2,h:s.torso.h/2},waist:half(s.waist),shoulders:s.shoulders.map(half),feet:s.feet.map(half)};
+  const half=at=>({...at,x:at.x/2,y:at.y/2}),ss={...s,main:half(s.main),off:half(s.off),head:half(s.head),torso:{...half(s.torso),w:s.torso.w/2,h:s.torso.h/2},waist:half(s.waist),shoulders:s.shoulders.map(half),feet:s.feet.map(half),legs:s.legs?.map(j=>({hip:half(j.hip),knee:half(j.knee),ankle:half(j.ankle)}))};
   ctx.save();ctx.scale(2,2);gear(ctx,items,ss,s.west,s.back,false,state);ctx.restore();
  }))return true;
  if(prerenderArt.enabled&&drawPrerenderPerson(c,id,x,y,p,p.artMagnify??scale/(26/33)))return true;

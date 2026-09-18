@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {DEMO_HEROES,DEMO_PRESETS,resolveDemoEquipment,demoPose} from '../prerender-demo-presets.js';
+import {DEMO_HEROES,DEMO_PRESETS,resolveDemoEquipment,demoPose,demoArmor} from '../prerender-demo-presets.js';
 import {ITEM_CATALOG} from '../content/items.js';
 import {compatibleSlots} from '../equipment.js';
 const catalog=JSON.parse(readFileSync(new URL('../assets/prerender/runtime/catalog.json',import.meta.url)));
@@ -36,4 +36,9 @@ test('walking is distance-driven and combat preview exercises both attack frames
  assert.deepEqual(demoPose('walk',8,30),{moving:true,walkDistance:30});
  assert.ok(demoPose('attack',0).attack>.165);assert.ok(demoPose('attack',.5).attack<.165);
  assert.deepEqual(demoPose('idle'),{});assert.deepEqual(demoPose('hit'),{hurt:1});assert.deepEqual(demoPose('rest'),{resting:true});
+});
+test('optional demo armor uses generated inventory families without modifying the shared catalog',()=>{
+ const keys=Object.keys(ITEM_CATALOG);
+ for(const hero of DEMO_HEROES){const armor=demoArmor(hero.id);assert.deepEqual(armor.map(i=>i.slot),['legs','hands','wrists']);assert.deepEqual(armor.map(i=>i.asset),['trouser','glove','bracer']);assert.ok(armor.every(i=>i.rarity==='rare'));}
+ assert.deepEqual(Object.keys(ITEM_CATALOG),keys);
 });
