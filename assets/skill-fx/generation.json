@@ -1,0 +1,40 @@
+{
+  "tool": "image_gen.imagegen",
+  "date": "2026-09-18",
+  "jobs": [
+    {
+      "file": "themes-v1",
+      "prompt": "Create a production game VFX sprite sheet on TRUE TRANSPARENT background, 1536 x 768 if possible. Exactly 6 equal columns by 3 equal rows, each cell 256 square, no labels, no text, no borders, no background, no shadows on a floor, NO CHARACTERS or weapons. High-quality intricately shaded warm comic pixel-art matching an isometric German village action RPG, crisp deliberate pixels, amber/copper highlights, dark outlines only inside the effects, substantial saturated colored material rather than white glow. Each row is ONE six-frame explosion animation, read left-to-right: frame1 tight ignition, frame2 rising concentrated burst, frame3 energetic maximum expansion, frame4 fragmented expansion, frame5 scattered shrinking fragments, frame6 sparse dissipating residue. Center anchor identical within every cell, all effects fully inside cells with at least 24 pixel transparent gutters. Do NOT normalize all frames to the same size: start small, reach a large peak, dissolve. Material shape must genuinely change across frames.\nROW1: BEER / BREWMASTER impact. Dense amber beer erupting with creamy ivory foam curls, hop-green flecks and spinning bronze crown caps. Main silhouette a powerful radial liquid splash, warm gold center, thick curling foam.\nROW2: CITRUS / APEROL CLEANING impact. Vivid orange tangential liquid cyclone, curving white foam ribbons, tiny recognizable orange wedges and mint-green droplets, bright luminous orange center. Different silhouette from row1: fast spiral swash that bursts into droplets.\nROW3: ELECTRIC SCRAP / DEPOSIT BOTTLE impact. Branched cyan electric discharge splitting a compact copper core with a few steel shards and emerald glass splinters. Jagged starburst silhouette, cyan-white inner lightning, petrol blue edges, final blue sparks.\nVery readable as separate effects at 96px per cell. Six distinct correctly ordered animation keyframes for each of three motifs. Strictly 18 isolated effects. Preserve real alpha transparency.",
+      "original": "exec-125715af-8c8c-453b-9adb-b7d2e245be51.png",
+      "active": false,
+      "originalPath": "C:/Users/Administrator/.codex/generated_images/01a0b478-a01a-77f2-ac73-423a1ca3c850/exec-125715af-8c8c-453b-9adb-b7d2e245be51.png",
+      "sha256": "c26b189a7f41e01383a06ecc15150c683d5871b541130f38bfbcc7e1d573b31e"
+    },
+    {
+      "file": "utility-v1",
+      "prompt": "Create a production combat VFX animation sprite sheet on TRUE TRANSPARENT background, 1536 x 1024 if possible. Exactly SIX equal columns and FOUR equal rows, cells square 256px. No text, no numbers, no grid lines, no background, no characters, no complete scene. Intricately shaded comic pixel-art matching a detailed warm isometric fantasy village action RPG, crisp clusters rather than smooth airbrush. All sprites centered on the same anchor in each cell, plenty of transparent gutters (24px minimum). Each row has six DISTINCT sequential frames: compact appearance, opening, strongest luminous shape, separation, fragmented afterglow, sparse fading remnants. This must be animation, NOT six copies.\nROW1: HEALING. Emerald and fresh mint green upward spiral of small leaves and glistening liquid drops, creamy gold inner sparks. The center remains open so a hero can be seen inside. Three rising curls unfold and dissolve, gentle but richly visible, no medical cross or text.\nROW2: SHIELD BLOCK. A curved translucent steel-blue / turquoise glass shield segment catches a hit. Bright bronze rim and hexagonal fragments: it forms, takes a concentrated bright impact, fractures into luminous shards, then dissipates. Open center, directional crescent rather than an opaque wall.\nROW3: PROC ACTIVATION. A violet and gold four-point radiating star surrounded by small brass sparks. An elegant sharp flare appears, opens, peaks, then separates into four flying glints and fades. Clear gold/violet identity. No symbol or written lettering in center.\nROW4: ENEMY FIRE / GROUND EXPLOSION. Dense brick-red and orange flame bloom with golden inner tongues and a few warm charcoal fragments; ignition, swelling flame, jagged fiery crown, breaking flame curls, drifting ember fragments, sparse remnants. NO opaque gray smoke blanket. This is the dangerous hostile effect, distinct from green healing and cyan shielding.\nSix sequential evolving keyframes in every row. Exactly 24 isolated effects. All colored pixels surrounded by real alpha, no black or white plate. Readable at 96px per cell.",
+      "original": "exec-fc380335-20ee-4f4e-bd2b-7adc0cfe0e09.png",
+      "active": false,
+      "originalPath": "C:/Users/Administrator/.codex/generated_images/01a0b478-a01a-77f2-ac73-423a1ca3c850/exec-fc380335-20ee-4f4e-bd2b-7adc0cfe0e09.png",
+      "sha256": "a5c03f49801403ee595e42d10a627e2e26da49f82938d7fe07c09fe0dd66cfe1"
+    },
+    {
+      "file": "themes-v2",
+      "prompt": "Repair this exact game effects sprite sheet technically, preserving the detailed beer, orange/citrus and electric scrap art and six distinct animation keyframes in each row. 6 columns x 3 rows. Every effect MUST fit INSIDE its own cell with at least 12 percent of cell width transparent empty margin on every side. The large third frame in every row is currently too big and spills into neighboring cells and outside top/bottom image: reduce its size and reconstruct the missing cropped tip. Separate the rows and columns with clear transparent gutters. Keep smaller onset and sparse end frames smaller than peak frames; anchor each at cell center. True transparent background, actual alpha, no colored backdrop, no glows bridging cells. No text, labels, grid, borders. Exactly eighteen isolated animation effects in the same ordering and palette.",
+      "original": "exec-528e5a1f-62ad-4c2c-b7ee-47fa6fcf6d54.png",
+      "active": true,
+      "reference": "themes-v1.png",
+      "originalPath": "C:/Users/Administrator/.codex/generated_images/01a0b478-a01a-77f2-ac73-423a1ca3c850/exec-528e5a1f-62ad-4c2c-b7ee-47fa6fcf6d54.png",
+      "sha256": "94cc9a22104c27a0daf0f5042f6127ccc8d02514788079bd9f96fec1faa98f7d"
+    },
+    {
+      "file": "utility-v2",
+      "prompt": "Edit this exact 6-column by 4-row effects animation sprite sheet: REMOVE ALL of the flat colored background and broad colored atmospheric haze between and behind sprites and output REAL transparent alpha. The foreground leaf/healing curls, blue shield pieces, violet-gold proc stars, red flame tongues, isolated glowing sparks are the only opaque pixels. Preserve their original positions, shapes, color, and six-keyframe progression. Do not replace the background with a checkerboard or a black/green field. No diffuse glow plates. Use crisp colored pixel-art edges around each foreground element and fully transparent interiors between leaves, sparks, shield shards and tongues of fire. Each cell has 10 percent clear transparent gutters; shrink any frame that violates gutters. No text, no labels. Exactly 6 columns by 4 rows.",
+      "original": "exec-24860d31-8d4f-4e11-ad7c-37f9924ee513.png",
+      "active": true,
+      "reference": "utility-v1.png",
+      "originalPath": "C:/Users/Administrator/.codex/generated_images/01a0b478-a01a-77f2-ac73-423a1ca3c850/exec-24860d31-8d4f-4e11-ad7c-37f9924ee513.png",
+      "sha256": "2d104f1e1ca02fb7243e0c8b4bb6ca59535520a530bddeaa47bfdc3654f7fbe0"
+    }
+  ]
+}

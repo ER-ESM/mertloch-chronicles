@@ -21,7 +21,7 @@ await cp(path.join(root,'content'),path.join(output,'content'),{recursive:true,f
 const content=(await readdir(path.join(root,'content'),{recursive:true})).filter(n=>n.endsWith('.js'));
 await cp(path.join(root,'assets'),path.join(output,'assets'),{recursive:true,filter:src=>{
  const relative=path.relative(path.join(root,'assets'),src).replaceAll('\\','/');
- return !/^(redesign|theme-demo)\/(sources|review)(\/|$)/.test(relative)&&!/^redesign\/generation\.json$/.test(relative);
+ return !/^(redesign|theme-demo|skill-fx)\/(sources|review)(\/|$)/.test(relative)&&!/^(redesign|skill-fx)\/generation\.json$/.test(relative);
 }});
 await mkdir(path.join(output,'data'));
 await cp(path.join(root,'data','mertloch.json'),path.join(output,'data','mertloch.json'));
