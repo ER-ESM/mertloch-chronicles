@@ -9,7 +9,7 @@
 #combatMeter .meter-header strong{font-size:15px;overflow-wrap:anywhere}
 #combatMeter .meter-header button{width:44px;flex:0 0 44px;font-size:24px;line-height:1}
 #combatMeter .meter-scroll{min-height:0;overflow:auto;overscroll-behavior:contain;padding:10px;scrollbar-width:thin}
-#combatMeter .meter-modes{display:flex;gap:8px;margin-bottom:8px;position:sticky;top:0;z-index:2;background:#172a23;padding:4px 0}
+#combatMeter .meter-modes{display:flex;flex-shrink:0;gap:8px;margin:8px 10px 0;background:#172a23}
 #combatMeter .meter-modes button{flex:1;min-width:0}
 #combatMeter button[aria-pressed=true]{background:#b65e35;color:#fff7e6;border-color:#f0ba76}
 #combatMeter[data-mode=healing] button[aria-pressed=true]{background:#357450;border-color:#a4db9d}

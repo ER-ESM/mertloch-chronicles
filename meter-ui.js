@@ -9,7 +9,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  const toggle=document.createElement('button');toggle.id='meterToggle';toggle.type='button';toggle.setAttribute('aria-controls','combatMeter');toggle.setAttribute('aria-expanded','false');toggle.textContent=T.title;
  const panel=document.createElement('aside');panel.id='combatMeter';panel.hidden=true;panel.setAttribute('aria-label',T.title);
  panel.innerHTML=`<header class="meter-header"><strong>${T.title}</strong><button type="button" data-meter-close aria-label="${T.close}">×</button></header>
- <div class="meter-scroll"><div class="meter-modes" role="group" aria-label="${T.title}"><button type="button" data-meter-mode="damage">${T.damage}</button><button type="button" data-meter-mode="healing">${T.healing}</button></div>
+ <div class="meter-modes" role="group" aria-label="${T.title}"><button type="button" data-meter-mode="damage">${T.damage}</button><button type="button" data-meter-mode="healing">${T.healing}</button></div><div class="meter-scroll">
  <label class="meter-segment-label">${T.fight}<select id="meterSegment" aria-label="${T.fight}"></select></label>
  <div class="meter-summary"><div><small data-meter-rate-label></small><b data-meter-rate>0</b></div><div><small>${T.total}</small><b data-meter-total>0</b></div><div><small>${T.seconds}</small><b data-meter-time>0 s</b></div></div>
  <p class="meter-status"></p><button type="button" data-meter-back hidden>← ${T.actors}</button><h3 class="meter-list-title">${T.actors}</h3><div class="meter-rows"></div><p class="meter-empty"></p>
