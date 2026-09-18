@@ -194,7 +194,7 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
 
  return '<div class="describe-card"'+(shift?' data-shift="on"':'')+'>'+
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
-  (text?'<p class="describe-flavor">'+esc(text)+'</p>':'')+
+  (text&&text!==effect?'<p class="describe-flavor">'+esc(text)+'</p>':'')+
   (effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
   numberHtml+
   (details?'<div class="describe-details"'+(shift?'':' hidden')+'>'+details+'</div>':'')+

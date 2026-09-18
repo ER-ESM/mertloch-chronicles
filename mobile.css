@@ -89,3 +89,24 @@
 /* Iteration 5 · M-17: Fenster hochkant ebenfalls per left/right + margin auto zentrieren. popup-windows.js rechnet `left` aus einer
    Breite, die beim Drehen quer → hochkant noch vom Querformat stammt (Todesfenster stand bei x = −13). So bleibt die Lage vom JS unabhängig. */
 @media(orientation:portrait){.touch-mode .game-popup{left:calc(12px + var(--safe-left))!important;right:calc(12px + var(--safe-right));margin-left:auto;margin-right:auto}}
+
+/* Langdruck-Fenster (2026-09-18): Details-Umschalter als volle Zeile, Beschreibungskarte nie breiter als das Fenster. */
+.touch-mode .popup-detail .detail-toggle{display:block;width:100%;margin-top:10px;min-height:44px}
+.touch-mode .popup-detail .describe-card,.touch-mode .popup-detail .tooltip-heading{max-width:100%}
+/* Belohnungswahl mobil (2026-09-18): eine Zeile je Teil, Icon links, Name rechts, 56 px hoch. */
+.touch-mode .reward-options{grid-template-columns:1fr!important;gap:8px}
+.touch-mode .reward-option{display:grid!important;grid-template-columns:48px 1fr;column-gap:10px;justify-items:start!important;align-items:center;text-align:left;min-height:56px;padding:8px 10px!important}
+.touch-mode .reward-option canvas{grid-row:span 2;width:44px!important;height:44px!important}
+.touch-mode .reward-option strong{font-size:13px}
+.touch-mode .reward-option small{font-size:11px}
+/* Alles skaliert im Fenster (M-14): nichts breiter als das Fenster, Raster brechen um. */
+.touch-mode .popup-body{overflow-x:hidden}
+.touch-mode .popup-body>*,.touch-mode .popup-body .panel-section>*{max-width:100%;box-sizing:border-box}
+.touch-mode .popup-body canvas,.touch-mode .popup-body img{max-width:100%;height:auto}
+.touch-mode .popup-body .spec-tabs{grid-template-columns:repeat(auto-fit,minmax(96px,1fr))}
+.touch-mode .popup-body .equipment-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.touch-mode .popup-body .weapon-summary>div,.touch-mode .popup-body .character-stats>div,.touch-mode .popup-body .secondary-stats>div{min-width:0;flex:1 1 44%}
+.touch-mode .popup-body .wire-buttons{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.touch-mode .reward-option{background:var(--kraft,#D9B98A)!important;color:var(--ink,#2B2A26)!important;border-color:var(--kraft-2,#C9A46F)!important}
+.touch-mode .reward-option strong{color:var(--ink,#2B2A26)}
+.touch-mode .reward-option small{color:var(--ink-2,#4E4A41)}

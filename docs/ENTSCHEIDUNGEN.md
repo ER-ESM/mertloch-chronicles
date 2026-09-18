@@ -40,6 +40,7 @@ Regeln für dieses Dokument:
 | E-26 | Erst die technische Basis stabilisieren | 2026-09-17 | gilt |
 | E-27 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | gilt, verfeinert E-13 |
 | E-28 | Runde, einfache Linien statt Radius 0 | 2026-09-18 | gilt, ändert E-24 |
+| E-29 | Jeder Kniff hat zu jeder Zeit einen Nutzen (frühe Eskalation) | 2026-09-18 | gilt |
 
 ---
 
@@ -296,6 +297,17 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 **Entscheidung.** Bierdeckel-Palette und Schriften bleiben (E-24), die Kanten nicht: Fenster und HUD-Kästen 12 px Radius, Knöpfe/Plätze/Kacheln 8 px, Chips/Balken/Stempel als Pille, Talent-Knoten rund (aktiv) bzw. 10 px (passiv), Touch-Knöpfe rund. Schatten weiter hart, aber nur nach unten (0 3 px). Keine Verläufe, keine weichen Schatten. Verworfen: Radius 0 behalten; Verläufe/Glanz.
 
 **Konsequenzen.** Eine Regelgruppe am Ende von `bierdeckel.css` („Rundung E-28") ersetzt die Zeile `*{border-radius:0}`; neue Elemente nehmen `--r`, `--r-s`, `--r-pill`. Die Abnahmeliste `docs/UI-ABNAHME.md` gilt mit dieser Änderung.
+
+## E-29 · Jeder Kniff hat zu jeder Zeit einen Nutzen
+**Datum:** 2026-09-18 · **Stand:** gilt
+
+**Kontext.** Auftrag der Produktion: „Jeder Skill soll zu jeder Zeit einen Nutzen haben, keine leeren Skills, die etwas erzeugen, das man nie oder noch nicht benutzen kann." Auf Stufe 1–2 baut die Kelle Pegel auf, der Finisher kommt erst Stufe 3: drei volle Rauten ohne Verbraucher (Playtest-Auswertung Nr. 3).
+
+**Entscheidung.** Solange der Finisher nicht gelernt ist, entlädt die Kelle bei drei Pegeln von selbst („Frühe Eskalation", `COMBAT_RULES.earlyEscalation`, +60 % Kellenschaden, Pegel auf null, Schwebetext ESKALATION). Der Randale-Balken erscheint erst, wenn ein gelernter Kniff Randale kostet; der Pegel-Hinweis nennt die Regel. Verworfen: Finisher auf Stufe 1 vorziehen (Lernkurve E-12); Pegel erst ab Stufe 3 anzeigen (verschleiert den Aufbau).
+
+**Konsequenzen.** Regel liegt bei Gameplay (`content/combat.js`, mit `COMBAT_RULE_INFO`-Erklärung), Zahl bei Balancing. Neue Kniffe, die etwas erzeugen, brauchen ab dem Tag ihres Erlernens einen Verbraucher oder eine Automatik.
+
+---
 
 ## Offen (noch nicht entschieden)
 

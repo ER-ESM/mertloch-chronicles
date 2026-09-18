@@ -506,3 +506,12 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 @keyframes attack-pulse{from{transform:scale(1)}50%{transform:scale(1.04)}to{transform:scale(1)}}
 #combatState{padding:1px 7px;border-radius:var(--r-pill)!important;background:var(--green-2);border:1px solid var(--kraft-2)}
 .player-panel.in-combat #combatState{background:var(--stamp);border-color:#7A3644}
+
+/* Fix 2026-09-18: Takt-Spiel (Sirene) und Kabel-Spiel sichtbar. */
+.rhythm-track{background:#0B1216;border:var(--edge) solid var(--kraft-2);border-radius:var(--r-pill)!important;overflow:visible}
+.rhythm-zone{background:var(--gold);opacity:.85;border-radius:0!important}
+.rhythm-track b{background:var(--cream);box-shadow:0 0 0 2px #0B1216,0 0 8px #FFE08A;border-radius:2px!important;top:-5px;height:50px}
+.activity-score{font-family:var(--display);font-size:var(--t-16);letter-spacing:.04em;color:var(--cream);background:var(--green-2);border:1px solid var(--kraft-2);border-radius:var(--r-s)!important}
+.wire-sequence{background:var(--green-2);color:var(--cream);border:1px solid var(--kraft-2);border-radius:var(--r-s)!important;font-family:var(--display);font-size:var(--t-16)}
+.wire-buttons button{background:var(--green-2);border:var(--edge) solid var(--kraft-2);color:var(--cream)}
+.popup-activity .popup-body>.gold-button{width:100%;min-height:52px;font-size:var(--t-20)}

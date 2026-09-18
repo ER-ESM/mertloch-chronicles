@@ -22,7 +22,7 @@ export class PopupWindows{
  book(){return [...this.windows.keys()].find(isBook)||null;}
  focus(id){const w=this.get(id);if(!w)return;w.z=++this.serial;w.el.style.zIndex=w.z;for(const p of this.windows.values())p.el.classList.toggle('is-front',p===w);}
  tabsHtml(active){return `<nav class="book-tabs" role="tablist" aria-label="${UI.bookTabs}">${BOOK_TABS.map(([id,label,icon,key])=>`<button type="button" role="tab" class="${id==='guide'?'tab-help':''}" data-book-tab="${id}" aria-selected="${TAB_OF[active]===id}" title="${label} [${key}]"><canvas width="48" height="48" data-ui-icon="${icon}" aria-hidden="true"></canvas><span>${label}</span></button>`).join('')}</nav>`;}
- open(id,html){let w=this.get(id);if(w){const y=w.body.scrollTop;w.body.innerHTML=html;w.body.scrollTop=y;this.clamp(w);return w;}
+ open(id,html){let w=this.get(id);if(w){const y=w.body.scrollTop;w.body.innerHTML=html;w.body.scrollTop=y;this.clamp(w);this.focus(id);return w;}
   // EIN Fenster: Buchreiter, Gespräch, Beute, Erinnerung und Tod liegen nie gleichzeitig offen.
   // Nur die Anhänge (Gegenstand, Erklärung) dürfen neben ihrem Buchfenster stehen.
   if(!CHILD.has(id))for(const other of [...this.windows.keys()])if(other!==id)this.close(other);

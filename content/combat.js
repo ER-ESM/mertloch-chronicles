@@ -7,8 +7,10 @@ export const ENEMY_AUTOS={
  oberpraktikant:{name:'Dienstmützen-Wurf',min:34,max:46,speed:2.3,range:150,ranged:true},
  horst:{name:'Ordnerkante',min:46,max:64,speed:2.6,range:58},elite:{name:'Alphahauer',min:40,max:54,speed:2.1,range:43},gisela:{name:'Kannenschlag',min:55,max:72,speed:2.7,range:60},automat:{name:'Greifarm',min:60,max:85,speed:2.9,range:65}
 };
-export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43};
-export const COMBAT_TEXT={needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',needPoints:'Du brauchst mindestens einen Punkt. Nutze deinen Aufbaukniff.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
+export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43,
+ // Frühe Eskalation (E-29): solange der Finisher nicht gelernt ist, entlädt die Kelle bei vollen Pegeln von selbst – Faktor auf den Kellenschaden.
+ earlyEscalation:{factor:1.6}};
+export const COMBAT_TEXT={earlyEscalation:'ESKALATION!',earlyEscalationHint:'3 Pegel: Kelle eskaliert',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',needPoints:'Du brauchst mindestens einen Punkt. Nutze deinen Aufbaukniff.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
 // (flat + weapon × rolled auto damage + point bonuses) × (1 + bonusPct).
 // No damage model = legacy fixed values, so old content can migrate incrementally.
 export const SKILL_DAMAGE={
@@ -53,7 +55,11 @@ export function describeAuto(id){
 for(const id of Object.keys(ENEMY_AUTOS))ENEMY_AUTOS[id].info=describeAuto(id);
 /** Jede Kampfregel mit einer Zahl als Glossareintrag: name/short/long plus die Zahlen und ihre Quelle.
  *  `rules` nennt die abgedeckten Pfade in COMBAT_RULES – die Prüfung in checks/gameplay.js verlangt Vollständigkeit. */
-export const COMBAT_RULE_INFO={
+export const COMBAT_RULE_INFO={ earlyEscalation:{name:'Frühe Eskalation',rules:['earlyEscalation.factor'],terms:['eskalation','autoangriff'],
+  short:'Solange du keinen Finisher hast, entlädt die Kelle bei drei Pegeln von selbst: 60 % Extraschaden.',
+  long:'Die ersten Stufen bauen Pegel auf, ohne dass es einen Verbraucher gibt. Damit der Aufbaukniff trotzdem von Anfang an etwas bringt, eskaliert die Kelle bei vollen Pegeln automatisch: sie schlägt mit dem Faktor zu, die Pegel fallen auf null. Sobald der Finisher gelernt ist, entscheidest du selbst, wann du entlädst – die Automatik fällt weg.',
+  numbers:[{label:'Extraschaden der Kelle bei drei Pegeln',value:Math.round((COMBAT_RULES.earlyEscalation.factor-1)*100),unit:'%',source:'COMBAT_RULES.earlyEscalation.factor'}]},
+
  unarmed:{name:'Ohne Waffe',rules:['unarmed.min','unarmed.max','unarmed.speed'],terms:['autoangriff'],
   short:'Ohne Waffe in der Hand schlägst du für 3–5 Punkte alle 2 Sekunden zu.',
   long:'Der unbewaffnete Schlag ist bewusst lächerlich: er hält den Autoangriff am Leben, damit Ressourcen weiter tropfen, taugt aber zu nichts. Jede Waffe ist besser, auch eine kaputte. Kniffe mit Waffenanteil (SKILL_DAMAGE.weapon) rechnen ebenfalls mit diesem Wert, solange die Hand leer ist.',
