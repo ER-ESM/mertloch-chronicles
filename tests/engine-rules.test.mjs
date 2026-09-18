@@ -56,8 +56,8 @@ test('Dorfbewohner sprechen als `bark` mit kind:villager, jede Blase genau einma
  assert.ok(villager.says.includes(said[0].text));
  g.events.length=0;g.villagerBarks();
  assert.equal(barks(g).length,0,'dieselbe Blase spricht nicht zweimal');
- actor.bubble=0;g.villagerBarks();actor.bubble=3;g.events.length=0;g.villagerBarks();
- assert.equal(barks(g).length,1,'die nächste Blase spricht wieder');
+ actor.bubble=0;g.villagerBarks();actor.bubble=3;g.events.length=0;g.time+=8;g.villagerBarks();
+ assert.equal(barks(g).length,1,'die nächste Blase spricht wieder (nach der 7-s-Sperrfrist der Drossel)');
  assert.equal(g.messages.length,0,'Dorfgeplauder verstopft das Kampflog nicht');
 });
 
