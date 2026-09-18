@@ -40,9 +40,28 @@ Fünf Iterationen an der Mobile-Schicht (Mobile-Agent, Regelwerk `docs/MOBILE-GU
 
 **Offen (Backlog ui.md, Abschnitt Mobile-Iterationen):** popup-windows.js sollte quer die seitlichen Safe Areas selbst berücksichtigen (M-07/M-11, heute per CSS-Bahn überbrückt); tutorial-ui.css Hofprobe-Kasten ohne Safe Area und Knöpfe „?“/„⌃“ ohne Bierdeckel-Stil im Touch-Modus (M-07/E-24).
 
+## Iteration 3 · HUD-Minimalismus und Rückmeldung (M-04, M-10, M-11)
+
+**Geprüfte Regeln:** M-04 (Rückmeldung nie unter dem Finger), M-10 (im HUD nur Häufiges/Dringendes), M-11 (Fenster nie über Joystick/Kniffen, auch im Kampf, hochkant und quer).
+
+**Befund vorher** (Skript um Kampf erweitert: Hilfe → Einstellungen → Admin → Stufe 6 → Gegner aufstellen, dann HUD, Figur-Fenster, Toast, Kniff-Einsatz, Arena räumen): **69 Schritte mit Fehlern von 70.** Kampf war bisher nie geprüft. Konfigurieren-Knopf dauerhaft im HUD (selten, nicht dringend); im Kampf Ortszeile und vier leere „+“-Plätze sichtbar; Proc-Leuchten und Abklingzahlen lagen **im** Knopf, also unter dem Finger; kein CSS für `touch-combat` (M-11 galt nur über die allgemeine Fensterhöhe). Toast lag nie über dem HUD (0 Befunde).
+
+**Änderungen:**
+
+- `mobile-controls.js`: jeder Kniff-Platz und Sonderknopf bekommt eine **Lampe** (`.touch-lamp`) über dem Knopf, die Proc (✦/✦✦) oder Abklingzeit des Knopfes spiegelt – sichtbar, während der Daumen auf dem Knopf liegt (M-04); „1 / 2“ nur, wenn Seite 2 belegt ist (M-10).
+- `mobile.css`: Konfigurieren-Knopf aus dem HUD (weiter über Einstellungen → „Steuerung & Touchbuttons“ und Langdruck → „Touchbuttons belegen“); im Kampf Ortszeile aus und leere Plätze unsichtbar (Raster bleibt stehen, kein Versatz); Lampen-Stil; quer füllen Kind-Fenster die Bahn wie das Elternfenster (Schließen-Knöpfe deckungsgleich); klein (≤ 370 px) fünf Reiter gleich breit in einer Zeile (10 px Beschriftung).
+- `scripts/mobile-check.mjs`: Schritte `arena`, `kampf-hud`, `kampf-figur`, `kampf-toast`, `kampf-kniff`, `arena-raeumen`; Prüfungen: `touch-combat` aktiv, Ortszeile/leere Plätze/Konfigurieren nicht sichtbar, Toast nie über Joystick/Kniffen/Ziel-Aktion, Lampe spiegelt Knopfzustand und liegt über dem Knopf; `tap()` rollt das Ziel erst in den sichtbaren Bereich.
+
+**Messwerte nachher:** 70 Schritte, 0 Fehler, 0 Ziele unter 44 px, 0 Paare unter 8 px; Lampe nach Kniff-Einsatz auf allen drei Geräten (z. B. „4.4“ über Markierung, „2.6“ über Stiefel). `npm test` 369/369.
+
+**Belege:** `visual-review/mobile-check/hoch-kampf-figur.png`, `quer-kampf-figur.png` (Fenster im Kampf über dem HUD, hochkant und quer), `hoch-kampf-kniff.png`, `quer-kampf-kniff.png` (Lampen), `klein-figur.png` (Reiter).
+
+**Offen:** –
+
 ## Commits
 
 | Iteration | Commit |
 |---|---|
 | 1 | `5abd1f6` |
-| 2 | (wird nach dem Push eingetragen) |
+| 2 | `fad6019` |
+| 3 | (wird nach dem Push eingetragen) |

@@ -62,3 +62,16 @@
 @media(orientation:landscape){.touch-mode #tutorialGuide{top:calc(84px + var(--safe-top))}.touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:calc(122px + var(--safe-top))}.touch-mode[data-touch-hand=left] #tutorialGuide{left:auto;right:calc(12px + var(--safe-right))}}
 .touch-mode .popup-body.compact-panel .atlas-filters button,.touch-mode .popup-body.compact-panel .atlas-zoom button{min-height:45px}
 .touch-mode #tutorialGuide button[data-tutorial-help]{right:56px}
+
+/* Iteration 3 · M-04/M-10: Lampe je Kniff-Platz über dem Knopf (Proc ✦ oder Abklingzeit) statt darunter; im Kampf nur Häufiges/Dringendes:
+   Ortszeile und leere Plätze ausgeblendet (Plätze bleiben als Raster stehen, kein Versatz), Konfigurieren nur über Einstellungen und Langdruck. */
+#touchActions .touch-slot{position:relative}#touchSkills .touch-slot{width:var(--touch-size);height:var(--touch-size)}
+#touchActions .touch-lamp{position:absolute;left:50%;bottom:calc(100% - 2px);transform:translateX(-50%);min-width:22px;height:18px;padding:0 5px;border-radius:9px;background:#f3d388;color:#243623;font:bold 11px/18px 'Trebuchet MS',sans-serif;text-align:center;white-space:nowrap;pointer-events:none;z-index:6;box-shadow:0 1px 0 #1c3426}
+#touchActions .touch-lamp.proc{background:#ffe08a;animation:touch-lamp .75s ease-in-out infinite alternate}
+@keyframes touch-lamp{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.15)}}
+#touchConfigure{display:none}.touch-action-head{gap:0}
+.touch-combat .touch-topline{display:none}.touch-combat #touchSkills .touch-empty{visibility:hidden}
+/* Quer: Kind-Fenster (Gegenstand, Details, Kniff erklärt) füllen die Bahn wie das Elternfenster, damit die Schließen-Knöpfe deckungsgleich liegen (M-02). */
+@media(orientation:landscape){.touch-mode .game-popup.popup-inspection,.touch-mode .game-popup.popup-detail,.touch-mode .game-popup.popup-touchhelp{width:auto!important}}
+/* Klein (≤ 370 px): fünf Reiter in einer Zeile trotz 8 px Abstand – Beschriftung 11 px (M-12: ≥ 10 px), kein Umbruch. */
+@media(max-width:370px){.touch-mode .game-popup .book-tabs{gap:8px;flex-wrap:nowrap}.touch-mode .game-popup .book-tabs button{flex:1 1 0;width:0;padding:6px 2px;font-size:10px;letter-spacing:0;min-width:44px}}
