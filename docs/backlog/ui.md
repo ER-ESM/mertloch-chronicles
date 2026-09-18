@@ -102,6 +102,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
+- [x] **Verweise in Tooltips** (Nutzerauftrag 2026-09-18): Namen von Kniffen, Talenten, Eigenart, Stärkungen und Glossarbegriffen werden in allen Tooltips und Erklärfenstern zu farbigen Verweisen (Gold Kniff, Rose Talent, Grün Proc, Creme Begriff); Klick zeigt die Erklärung des Genannten an derselben Stelle mit „zurück", auf Touch als eigenes Fenster. describe-ui.js linkText/linkReferences/refCard, Test tests/ref-links.test.mjs, Belege visual-review/reflinks-2026-09-18/.
+
 - [x] **Pre-Render-Pipeline E-30** (2026-09-18): tools/prerender (Kasten-Rig, Posen, Render-Seite, Build, Demo), Laufzeit prerender-art.js hinter Einstellung „3D-Vorrender (Vorschau)", Katalog assets/prerender/runtime. Übergabe der Modellanforderungen: docs/UEBERGABE-3D-ASTRA-2026-09-18.md.
 
 - [x] **Charakterplätze am Körper** (Nutzerauftrag 2026-09-18): große drehbare Figur mit neun Körperplätzen, separate Schmuck- und Waffengruppen; alle 16 Plätze auf Desktop und Touch bedienbar. Browserprüfung in fünf Bildschirmgrößen, einschließlich An-/Ablegen per Maus und Touch sowie aller Figurenansichten. Doku `docs/CHARAKTERFENSTER-2026-09-18.md`, Prüfskript `scripts/character-sheet-check.mjs`.

@@ -292,3 +292,55 @@ export function filterKniffe(root,query){
  for(const tile of root.querySelectorAll('.kniff-tile[data-kniff-name]'))tile.hidden=!!q&&!tile.dataset.kniffName.includes(q);
  for(const s of root.querySelectorAll('.kniff-section'))s.hidden=!!q&&![...s.querySelectorAll('.kniff-tile')].some(t=>!t.hidden);
 }
+
+// ---------------------------------------------------------------- Verweise im Text (2026-09-18)
+// Jeder Name eines Kniffs, Talents, Procs, einer Eigenart, Stärkung oder eines Glossarbegriffs wird im Tooltip-Text zum
+// farbigen Verweis (.ref-link), der die Erklärung des Genannten öffnet. Reine Textfunktionen sind in Node testbar.
+const REF_KINDS=['skill','talentSkill','throw','ground','buff','talent','proc','passive'];
+const REF_CLASS={skill:'ref-skill',talentSkill:'ref-skill',throw:'ref-skill',ground:'ref-skill',buff:'ref-buff',talent:'ref-talent',proc:'ref-proc',passive:'ref-passive',term:'ref-term'};
+let refCache=null;
+/** Namensindex der aktuellen Figur: [{name,key,kind}] längste Namen zuerst. Kniffe fremder Klassen bleiben draußen. */
+export function referenceIndex(game){
+ const cls=game?.member?.id||MEMBER_IDS[0];
+ if(refCache?.cls===cls)return refCache.list;
+ const seen=new Map();
+ for(const e of describableIds()){
+  if(!REF_KINDS.includes(e.kind))continue;
+  const id=String(e.id);
+  if((e.kind==='skill'||e.kind==='buff'||e.kind==='passive'||e.kind==='throw'||e.kind==='ground')&&id.includes('/')&&!id.startsWith(cls+'/'))continue;
+  if((e.kind==='buff'||e.kind==='passive'||e.kind==='throw'||e.kind==='ground')&&!id.includes('/')&&MEMBER_IDS.includes(id)&&id!==cls)continue;
+  const name=contentDescribe(e.kind,e.id)?.name;if(!name||name.length<3||seen.has(name))continue;
+  seen.set(name,{name,key:e.kind+':'+id,kind:e.kind});
+ }
+ for(const [id,g] of Object.entries(GLOSSARY)){if(g?.name&&g.name.length>=3&&!seen.has(g.name))seen.set(g.name,{name:g.name,key:'term:'+id,kind:'term'});}
+ const list=[...seen.values()].sort((a,b)=>b.name.length-a.name.length);
+ refCache={cls,list};return list;
+}
+const escRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+/** Reiner Text → HTML mit Verweisen. selfKey: der beschriebene Eintrag selbst wird nicht verlinkt. */
+export function linkText(text,index,selfKey=null){
+ if(!text||!index.length)return esc(text||'');
+ const parts=index.filter(r=>r.key!==selfKey);
+ const re=new RegExp('(^|[^\\p{L}\\p{N}])('+parts.map(r=>escRe(r.name)).join('|')+')(?![\\p{L}\\p{N}])','gu');
+ const byName=new Map(parts.map(r=>[r.name,r]));
+ let out='',last=0,m;
+ while((m=re.exec(text))){const r=byName.get(m[2]);const start=m.index+m[1].length;out+=esc(text.slice(last,start))+'<span class="ref-link '+REF_CLASS[r.kind]+'" role="link" tabindex="0" data-ref="'+esc(r.key)+'">'+esc(m[2])+'</span>';last=start+m[2].length;}
+ return out+esc(text.slice(last));
+}
+/** DOM: Textknoten unter root verlinken; Überschriften, Knöpfe, Tasten und schon gesetzte Verweise bleiben. */
+export function linkReferences(root,game,selfKey=null){
+ if(!root||typeof document==='undefined')return root;
+ const index=referenceIndex(game);if(!index.length)return root;
+ const skip='strong,button,kbd,dt,h2,h3,h4,.tooltip-heading,.describe-head,.ref-link,.book-skill-name,.talent-build-chip,input,select,textarea,.section-jump,.book-tabs,.panel-tabs';
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];
+ for(let n=walker.nextNode();n;n=walker.nextNode()){if(n.nodeValue.trim().length>2&&!n.parentElement.closest(skip))nodes.push(n);}
+ for(const n of nodes){const html=linkText(n.nodeValue,index,selfKey);if(html===esc(n.nodeValue))continue;const span=document.createElement('span');span.innerHTML=html;n.replaceWith(...span.childNodes);}
+ return root;
+}
+/** Karte zu einem Verweis: Glossarbegriff oder Beschreibungskarte mit Details. */
+export function refCard(game,key,{touch=false}={}){
+ const [kind,...rest]=String(key).split(':'),id=rest.join(':');
+ if(kind==='term'){const g=GLOSSARY[id];if(!g)return '';return '<div class="describe-card ref-term-card"><header class="describe-head"><div><strong>'+esc(g.name)+'</strong><small>'+esc(PANEL_UI.glossary||'Begriff')+'</small></div></header><p class="describe-effect">'+esc(g.short||'')+'</p>'+(g.long?'<p class="describe-why">'+esc(g.long)+'</p>':'')+'</div>';}
+ return describeCard(game,kind,id,{shift:true,touch});
+}
+export const refTitle=key=>{const [kind,...rest]=String(key).split(':'),id=rest.join(':');return kind==='term'?(GLOSSARY[id]?.name||''):(contentDescribe(kind,id)?.name||'');};

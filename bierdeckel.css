@@ -532,3 +532,13 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .build-tag{margin-left:6px;padding:1px 7px;font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;color:var(--ink);background:var(--kraft);border-radius:var(--r-pill)!important}
 .build-line{margin:12px 0 0;font-family:var(--read);font-size:var(--t-11);color:var(--kraft);text-align:center;user-select:text;-webkit-user-select:text}
 .touch-mode .world-menu-brand .build-tag{display:none}
+
+/* Verweise in Tooltips (2026-09-18): farbig je Art, Klick öffnet die Erklärung des Genannten. */
+.ref-link{cursor:pointer;font-weight:700;text-decoration:underline dotted;text-underline-offset:2px;border-radius:3px;padding:0 1px}
+.ref-link:hover,.ref-link:focus-visible{background:#ffffff14;outline:none;text-decoration-style:solid}
+.ref-skill{color:#ECB95C}.ref-talent{color:#F29AA6}.ref-proc{color:#9ED07F}.ref-passive{color:#D9B98A}.ref-buff{color:#A6D6CF}.ref-term{color:#F4E8C4;font-weight:600}
+.item-tooltip .ref-skill{color:#8A6A2C}.item-tooltip .ref-talent{color:#AD5260}.item-tooltip .ref-proc{color:#456476}.item-tooltip .ref-passive{color:#634b37}.item-tooltip .ref-buff{color:#2E6B63}.item-tooltip .ref-term{color:#2B2A26}
+.item-tooltip.is-describe .ref-skill,.game-popup .ref-skill{color:#ECB95C}
+.ref-back{margin-top:8px;padding-top:6px;border-top:1px solid #65714a}
+.ref-back button{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer;min-height:0!important}
+.ref-legend{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0;font-size:10px}

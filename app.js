@@ -20,7 +20,7 @@ import {paintSkillIcon,loadSkillArt,paintSpecIcons} from './skill-art.js';
 import {questlogPanel} from './questlog-ui.js';
 import {itemTooltip,inventoryPanel,characterPanel,skillbookPanel,lootPanel,kniffeBook} from './rpg-ui.js';
 import {paintItem} from './item-art.js';
-import {paintDescribeIcons,kniffAnchor,describeCard} from './describe-ui.js';
+import {paintDescribeIcons,kniffAnchor,describeCard,linkReferences} from './describe-ui.js';
 import {ITEMS,actionBar,SLOT_KEYS,SPECIAL_KEYS,bindSkill,combatStats,keyFor,nearestLoot,takeLoot,equipmentStats,barItemEntry,usableItem} from './rpg.js';
 import {mountShell,gameMenu} from './rpg-shell.js';
 import {adminPanel,arenaPanel,readBackup,resetProgress,restoreProgress} from './admin.js';
@@ -102,7 +102,7 @@ function toast(text){text=translator.text(text);$('#toast').textContent=text;$('
 function save(){if(saveBlocked)return false;try{writeProgress(localStorage,'mertloch-chronicles-'+world.id,game.save());saveWarning=false;return true;}catch{if(!saveWarning){saveWarning=true;toast('Speichern fehlgeschlagen. Fortschritt bleibt vorerst in dieser Sitzung; bitte nicht neu laden.');}return false;}}
 function getSaved(){const legacy=world.seed===56753&&world.rules.roads.street===72&&world.rules.vegetation.density===1?['mertloch-chronicles-v2-56753-56-1','mertloch-chronicles-v1']:['mertloch-chronicles-v1'];let loaded;try{loaded=readProgress(localStorage,'mertloch-chronicles-'+world.id,legacy);}catch{loaded={save:{},notice:'Speicherung ist im Browser gesperrt. Fortschritt gilt für diese Sitzung.'};}saveBlocked=!!loaded.blocked;saveNotice=loaded.notice||'';if(loaded.save.worldKey==='v2-56753-56-1'&&legacy.length>1)loaded.save.worldKey=world.id;return loaded.save;}
 function syncPause(){if(!game)return;game.paused=document.hidden;$('#pauseOverlay').classList.add('hidden');$('#pauseButton').setAttribute('aria-label','Spielmenü');if(game.paused){game.touchMove=null;mobile?.stop();game.keys.clear();game.player.vx=game.player.vy=0;game.player.moving=false;}}
-function openModal(html,isMap=false,id='dialog'){const panel=popups.open(id,html);if(id==='inspection')panel.inspectedItem=null;decoratePanel(panel);translator.node(panel.body);panel.el.classList.toggle('atlas-dialog',isMap);paintUiControls(panel.el);paintSpecIcons(panel.el);paintTalentIcons(panel.el);mountConversationPortraits(panel.el);return panel;}
+function openModal(html,isMap=false,id='dialog'){const panel=popups.open(id,html);if(id==='inspection')panel.inspectedItem=null;decoratePanel(panel);if(['guide','detail','touchhelp','inspection'].includes(id))linkReferences(panel.body,game);translator.node(panel.body);panel.el.classList.toggle('atlas-dialog',isMap);paintUiControls(panel.el);paintSpecIcons(panel.el);paintTalentIcons(panel.el);mountConversationPortraits(panel.el);return panel;}
 function closeModal(id=popups.top()){popups.close(id);$('#world').focus({preventScroll:true});}
 function showGuide(tab){const w=openModal(guide(game)+'<div class="guide-kniffe">'+kniffeBook(game)+'</div>'+settingsPanel(),false,'guide');paintRpg();selectTab(w,tab);}
 document.addEventListener('open-combat-help',showGuide);
