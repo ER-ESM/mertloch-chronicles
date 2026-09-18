@@ -58,10 +58,29 @@ Fünf Iterationen an der Mobile-Schicht (Mobile-Agent, Regelwerk `docs/MOBILE-GU
 
 **Offen:** –
 
+## Iteration 4 · Text, Kontrast, Übersetzung (M-12, M-13)
+
+**Geprüfte Regeln:** M-12 (Lesetext ≥ 12 px, Beschriftungen ≥ 10 px, Kontrast ≥ 4,5:1 bzw. 3:1 für große Schrift), M-13 (keine Desktop-Begriffe auf Touch).
+
+**Befund vorher** (Skript misst jetzt jede sichtbare Textstelle in Fenstern, HUD, Hofprobe und Toast: Schriftgröße und WCAG-Kontrast gegen den zusammengesetzten Untergrund – Hintergrundfarben mit Alpha, erster Verlaufston, Text über Bildern ausgenommen; Desktop-Begriffsliste um Shift, Taste, Tasten, Esc, Klick, Linksklick, LEER erweitert): **41 Schritte mit Fehlern** durch Text unter 10 px (Menü-Beschriftung 9 px, Kniff-Namen 9 px, Stufen 9 px, Kniff-Auswahl 6 px), nach Korrektur der Messung **31 Schritte** mit Kontrastfehlern: Stempel-Koralle `#AD5260` auf Zeltstoff 2,4:1 (Kniff-, Gegenstands-, Talentnamen) und auf Pappkarten 2,7:1 (Bande, Aufträge), Zweittinte `#4E4A41` auf Pappkarten 4,1:1, Talentpunkte-Zeile Tinte auf Grün 1,4:1, „Bild vergrößern“ Tinte auf Grün 1,5:1. Lesetext unter 12 px: 0. Desktop-Begriffe in sichtbaren Fenstern: 0 (die Übersetzungsschicht deckte den geprüften Pfad bereits ab).
+
+**Änderungen:**
+
+- `mobile-translate.js`: 27 neue Wendungen aus Hilfe → Bedienung, Glossar und Tooltips (Shift + Tab, Shift über Tooltip, „Shift: Details“, C I K J B M H, LEER/Q, 1–0, Kniff ziehen / Rechtsklick auf Feld, doppelklicken, rechtsklicken, Klick/klicke, „Taste 3“ → Touch-Bezeichner des Kniffs, Tastendruck, gehämmerte Tasten, Esc schaltet ihn aus, Esc beendet den Angriff); `Tab →` erkannt. 12 neue Zusicherungen in `tests/mobile-translate.test.mjs` (7 Tests grün).
+- `mobile.css`: kein Text unter 10 px im Touch-Modus (Menü 10, Kniff-Namen/Stufen/Beschriftungen/Zahlenzeilen 10, App-Status 12, Hofprobe-Knopf 11/44 px); Kontrast: helle Koralle `#F29AA6` (5,8:1) auf dunklem Grund, dunkle Koralle `#6E2531` (5,0:1) auf Pappkarten inkl. Clan-Stempel, Zweittinte `#3A3732` (5,6:1), Talentpunkte-Zeile mit freien Punkten in Creme, „Bild vergrößern“ in Creme.
+- `scripts/mobile-check.mjs`: Text- und Kontrastmessung (Fehler < 10 px und < 4,5:1; Befund Lesetext < 12 px als eigene Spalte), erweiterte Desktop-Begriffsliste.
+
+**Messwerte nachher:** 70 Schritte, 0 Fehler; 0 Texte unter 10 px, 0 Lesetexte unter 12 px, 0 Kontrastverstöße (niedrigster gemessener Wert 4,5:1 überschritten), 0 Desktop-Begriffe. `npm test` 370/370.
+
+**Belege:** `visual-review/mobile-check/hoch-kniff-tipp.png` (helle Koralle), `quer-bude.png`, `hoch-talente.png`.
+
+**Offen:** Glossar- und Hilfetexte in `content/` bleiben Desktop-Texte (Schicht übersetzt beim Anzeigen, M-13 erfüllt); Kontrast der Stempel-Koralle am Desktop (2,4:1) ist nicht Sache der Mobile-Schicht – im Backlog ui.md vermerkt.
+
 ## Commits
 
 | Iteration | Commit |
 |---|---|
 | 1 | `5abd1f6` |
 | 2 | `fad6019` |
-| 3 | (wird nach dem Push eingetragen) |
+| 3 | `93174f6` |
+| 4 | (wird nach dem Push eingetragen) |

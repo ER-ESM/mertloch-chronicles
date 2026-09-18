@@ -12,10 +12,38 @@ export const TOUCH_PAGE_SIZE=6;
 const TAB_LETTERS=new Set(['C','K','I','J','B','M','H','N','P']);
 /** Reihenfolge ist Pflicht: längere/spezifischere Wendungen zuerst, damit „Rechtsklick“ nicht erst zu „Klick“ wird. */
 const PHRASES=[
+ // Hilfe → Bedienung und Glossar (content/panel-ui.js, content/glossary.js): ganze Sätze zuerst
+ [/Tab wählt nahe Gegner; Shift \+ Tab geht zurück\./g,TOUCH_TERMS.target+'-Knopf wählt nahe Gegner.'],
+ [/Klick auf den Auftragskasten/g,'Tipp auf die Wegmarke'],
+ [/Rechtsklick auf einen Gegner startet, Linksklick und Tab wählen nur aus\./g,'Antippen wählt einen Gegner nur aus; der Angriffsknopf startet.'],
+ [/ ?Esc beendet den Angriff nach offenen Fenstern\./g,' Der Angriffsknopf schaltet ihn wieder aus.'],
+ [/1–0 nutzt deine Kniffe/g,'Die Kniff-Knöpfe nutzen deine Kniffe'],
+ [/LEER weicht aus, Q unterbricht/g,TOUCH_TERMS.dash+' weicht aus, '+TOUCH_TERMS.interrupt+' unterbricht'],
+ [/C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt\./g,'Der '+TOUCH_TERMS.menu+'-Knopf öffnet das Clanbuch; × schließt.'],
+ [/Shift über einem Tooltip zeigt die Details/g,'Antippen zeigt die Details'],
+ [/Shift über einem Tooltip/g,'Antippen'],
+ [/Shift: Details/g,'Antippen: Details'],
+ [/Tab \/ Shift \+ Tab/g,TOUCH_TERMS.target+'-Knopf'],
+ [/F \/ Shift \+ F/g,TOUCH_TERMS.interact+'-Knopf'],
+ [/WASD \/ Rechtsklick/g,TOUCH_TERMS.stick+' / Antippen'],
+ [/1–0 \/ LEER \/ Q/g,'Kniff-Knöpfe / '+TOUCH_TERMS.dash+' / '+TOUCH_TERMS.interrupt],
+ [/Kniff ziehen \/ Rechtsklick auf Feld/g,'Platz antippen, dann Kniff / „Platz leeren“'],
+ [/Item doppelklicken/g,'Item antippen'],
+ [/doppelklicken/g,'doppelt antippen'],
+ [/Talent rechtsklicken/g,'Talent antippen'],
+ [/rechtsklicken/g,'antippen'],
+ [/Esc schaltet ihn aus/g,'der Angriffsknopf schaltet ihn aus'],
+ [/Erste Taste auf/g,'Erster Knopf auf'],
+ [/die Taste zu drücken/g,'den Knopf zu drücken'],
+ [/\bTastendruck\b/g,'Knopfdruck'],
+ [/gehämmerte Tasten/g,'gehämmerte Knöpfe'],
+ [/\bKlick\b/g,'Tipp'],
+ [/\bklicke\b/g,'tippe'],
  [/Maus über das Icon halten/g,'Icon '+TOUCH_TERMS.hold],
  [/Mit der Maus einen freien Bodenpunkt wählen/g,'Einen freien Bodenpunkt antippen'],
  [/Boden wählen · Rechtsklick \/ Esc abbrechen\./g,'Boden antippen · mit „'+TOUCH_TERMS.cancelAim+'“ beenden.'],
  [/Rechtsklick oder Esc bricht das Zielen ab\./g,'„'+TOUCH_TERMS.cancelAim+'“ beendet das Zielen.'],
+ [/Rechtsklick oder Esc/g,'„'+TOUCH_TERMS.cancelAim+'“'],
  [/Rechtsklick setzt einen Laufweg/g,'Antippen setzt einen Laufweg'],
  [/Rechtsklick oder auf Touch/g,'Antippen'],
  [/Rechtsklick/g,'Antippen'],
@@ -28,7 +56,7 @@ const PHRASES=[
  [/\bWASD\b/g,TOUCH_TERMS.stick],
  [/\bW A S D\b/g,TOUCH_TERMS.stick],
  [/\bTab-Taste\b/g,TOUCH_TERMS.target+'-Knopf'],
- [/\bTab\b(?= wählt| oder| wechselt| bevorzugt| markiert)/g,TOUCH_TERMS.target+'-Knopf'],
+ [/\bTab\b(?= wählt| oder| wechselt| bevorzugt| markiert| →)/g,TOUCH_TERMS.target+'-Knopf'],
  [/\bEsc\b/g,'×'],
  [/Dein Grundangriff /g,'Dein Angriffsknopf '],
  [/Skillbuch/g,TOUCH_TERMS.book]
@@ -64,6 +92,7 @@ export function translateKeyToken(token,ctx={}){
 export function translateText(text,ctx={}){
  if(typeof text!=='string'||!text)return text;
  let out=text.replace(KEY_TOKEN,(m,key)=>{const label=translateKeyToken(key,ctx);return label?'['+label+']':m;});
+ out=out.replace(/\bTaste ([0-9])\b/g,(m,key)=>translateKeyToken(key,ctx)||TOUCH_TERMS.button+' '+key);
  for(const [re,to] of PHRASES)out=out.replace(re,to);
  return out;
 }

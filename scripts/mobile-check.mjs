@@ -9,7 +9,8 @@
 //    Plätze im Kampf ausgeblendet (M-10), Toast nie über dem HUD, Lampe (Proc/Abklingzeit) über dem Knopf statt darunter (M-04),
 //  - Tipp-Ziele in Fenstern und Touch-HUD mindestens 44 px (M-01: 32–43 px ist ein Befund, < 32 px ein Fehler),
 //  - Abstand zwischen benachbarten Tipp-Zielen mindestens 8 px (M-02, Befund),
-//  - keine Desktop-Begriffe (Tab, WASD, Rechtsklick, Maus, [LEER], [F], [1]…) in sichtbaren Fenstern.
+//  - keine Desktop-Begriffe (Tab, WASD, Rechtsklick, Maus, Shift, Taste, Esc, Klick, [LEER], [F], [1]…) in sichtbaren Fenstern,
+//  - Text: unter 10 px Fehler, Lesetext (p/li/td) unter 12 px Befund; Kontrast Text/Untergrund unter 4,5:1 (3:1 groß) Fehler (M-12).
 // Zum Schluss Desktop-Gegenprobe 2024×900 ohne Touch-Modus (M-20: Mobile-Schicht ist dort ein Durchlauf).
 // Screenshots und Bericht: visual-review/mobile-check/<gerät>-<schritt>.png + REPORT.md
 //
@@ -31,7 +32,7 @@ const DEVICES=[['hoch',390,844],['quer',844,390],['klein',360,740]];
 /** Simulierte Safe Areas (iPhone-Werte): hochkant oben 47 / unten 34, quer links 47 / rechts 47 / unten 21 (M-07). */
 const SAFE=(w,h)=>w>h?{top:0,bottom:21,left:47,right:47}:{top:47,bottom:34,left:0,right:0};
 const CORNER=24;
-const DESKTOP_WORDS=/\[(LEER|Q|F|E|[0-9])\]|\bTab\b(?= wählt| oder)|\bWASD\b|Rechtsklick|\bMaus\b|Mausrad/;
+const DESKTOP_WORDS=/\[(LEER|Q|F|E|[0-9])\]|\bTab\b(?= wählt| oder| →| \/)|\bWASD\b|Rechtsklick|Linksklick|rechtsklicken|doppelklicken|\bMaus\b|Mausrad|\bShift\b|\bTaste\b|\bTasten\b|Tastendruck|\bEsc\b|\bKlick\b|\bLEER\b/;
 
 async function launch(){
  if(!chrome)throw Error('Kein Chrome gefunden; CHROME=<pfad> setzen.');
@@ -89,8 +90,18 @@ const AUDIT=`(()=>{
  const inCorner=(t,l,tp,r,bt)=>(t.x<l+CORNER||t.x+t.w>r-CORNER)&&(t.y<tp+CORNER||t.y+t.h>bt-CORNER);
  const corners=targets.filter(t=>!t.clipped&&(inCorner(t,0,0,innerWidth,innerHeight)||inCorner(t,S.left,S.top,innerWidth-S.right,innerHeight-S.bottom))).map(t=>t.text);
  const unsafe=targets.filter(t=>!t.clipped&&(t.y<S.top||t.y+t.h>innerHeight-S.bottom||t.x<S.left||t.x+t.w>innerWidth-S.right)).map(t=>t.text+' '+t.x+','+t.y+' '+t.w+'×'+t.h);
+ const lum=([r,g,b])=>{const f=c=>{c/=255;return c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4);};return .2126*f(r)+.7152*f(g)+.0722*f(b);};
+ const rgba=s=>{const m=s&&s.match(/rgba?\\(([^)]+)\\)/);if(!m)return null;const p=m[1].split(',').map(Number);return {c:p.slice(0,3),a:p.length>3?p[3]:1};};
+ const blend=(fg,bg,a)=>fg.map((v,i)=>Math.round(v*a+bg[i]*(1-a)));
+ const bgOf=el=>{let e=el,acc=null;const push=c=>{if(!c||c.a<=0)return false;if(acc===null){acc={c:c.c,a:c.a};return c.a>=.95;}acc={c:blend(acc.c,c.c,acc.a),a:acc.a+c.a*(1-acc.a)};return acc.a>=.95;};
+  while(e&&e!==document.documentElement){const cs=getComputedStyle(e);const img=cs.backgroundImage;if(img&&img!=='none'){if(/gradient\\(/.test(img)){const first=img.match(/rgba?\\([^)]+\\)/);if(first&&push(rgba(first[0])))return acc.c;}else return null;}if(push(rgba(cs.backgroundColor)))return acc.c;e=e.parentElement;}return acc?blend(acc.c,[37,54,43],acc.a):[37,54,43];};
+ const ratio=(a,b)=>{const l1=lum(a),l2=lum(b);return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05);};
+ const READ=new Set(['P','LI','TD','DD','DT','BLOCKQUOTE']);
+ const textEls=[...document.querySelectorAll('.game-popup .popup-body *, .game-popup .popup-titlebar *, #mobileControls *, #tutorialGuide *, #toast')].filter(e=>vis(e)&&!e.closest('[disabled],.locked,.unusable,[aria-disabled=true],canvas,svg')&&[...e.childNodes].some(n=>n.nodeType===3&&n.nodeValue.trim()));
+ const textSmall=[],textTiny=[],contrast=[];
+ for(const e of textEls){const cs=getComputedStyle(e);const fs=parseFloat(cs.fontSize),read=READ.has(e.tagName)||(e.tagName==='SPAN'&&READ.has(e.parentElement.tagName));const t=(e.textContent||'').trim().slice(0,24);if(fs<10)textTiny.push(t+' '+fs+'px');else if(read&&fs<12)textSmall.push(t+' '+fs+'px');if(parseFloat(cs.opacity)<.5)continue;const fg=rgba(cs.color);if(!fg)continue;const eb=e.getBoundingClientRect();if(document.elementsFromPoint(eb.x+eb.width/2,eb.y+eb.height/2).some(u=>(u.tagName==='IMG'||u.tagName==='CANVAS')&&!e.contains(u)))continue;const bg=bgOf(e);if(!bg)continue;const fgc=fg.a<1?blend(fg.c,bg,fg.a):fg.c;const need=fs>=24||(fs>=18.66&&parseInt(cs.fontWeight)>=700)?3:4.5;const r=ratio(fgc,bg);if(r<need)contrast.push(t+' '+r.toFixed(1)+':1 '+cs.color+' auf rgb('+bg.join(',')+')');}
  const hud=[stick,skills,utility].filter(e=>e&&vis(e)).map(box);
- return {toast,toastOverHud:!!toast&&hud.some(h=>overlap(toast,h)),lamps,combat,toplineShown,emptyShown,configureShown,touch:document.body.classList.contains('touch-mode'),vw:innerWidth,vh:innerHeight,scrollW:document.documentElement.scrollWidth,popups,corners,unsafe,safe:S,hand:document.body.dataset.touchHand,stick:stick&&vis(stick)?box(stick):null,skills:skills&&vis(skills)?box(skills):null,
+ return {textSmall,textTiny,contrast,textCount:textEls.length,toast,toastOverHud:!!toast&&hud.some(h=>overlap(toast,h)),lamps,combat,toplineShown,emptyShown,configureShown,touch:document.body.classList.contains('touch-mode'),vw:innerWidth,vh:innerHeight,scrollW:document.documentElement.scrollWidth,popups,corners,unsafe,safe:S,hand:document.body.dataset.touchHand,stick:stick&&vis(stick)?box(stick):null,skills:skills&&vis(skills)?box(skills):null,
   overlapStick:popups.filter(p=>overlap(p,stick&&box(stick))).map(p=>p.id),overlapSkills:popups.filter(p=>overlap(p,skills&&box(skills))).map(p=>p.id),
   offscreen:popups.filter(p=>p.x<0||p.y<0||p.x+p.w>innerWidth+1||p.y+p.h>innerHeight+1).map(p=>p.id),targets:targets.length,small,gaps,text};
 })()`;
@@ -138,6 +149,8 @@ try{
    if(a.corners.length)problems.push('Tipp-Ziel in Bildschirmecke (< '+CORNER+' px): '+a.corners.slice(0,4).join(' | '));
    if(a.unsafe.length)problems.push('Tipp-Ziel in Safe Area: '+a.unsafe.slice(0,4).join(' | '));
    if(a.toastOverHud)problems.push('Toast über Joystick/Kniffen/Ziel-Aktion (M-04)');
+   if(a.textTiny.length)problems.push('Text unter 10 px (M-12): '+a.textTiny.slice(0,4).join(' | '));
+   if(a.contrast.length)problems.push('Kontrast unter 4,5:1 (M-12): '+a.contrast.slice(0,3).join(' | '));
    if(step.startsWith('kampf')){if(!a.combat)problems.push('Kampf nicht aktiv (touch-combat fehlt)');if(a.toplineShown)problems.push('Ortszeile im Kampf sichtbar (M-10)');if(a.emptyShown)problems.push('Leere Kniff-Plätze im Kampf sichtbar (M-10): '+a.emptyShown);}
    if(a.configureShown)problems.push('Konfigurieren-Knopf im HUD (M-10)');
    {const wrong=a.lamps.filter(l=>l.text!==l.expect);if(wrong.length)problems.push('Lampe spiegelt Knopf nicht (M-04): '+wrong.map(l=>l.skill+' „'+l.text+'“≠„'+l.expect+'“').slice(0,3).join(' | '));if(a.lamps.some(l=>!l.aboveButton))problems.push('Lampe liegt im Knopf statt darüber (M-04)');if(step==='kampf-kniff'&&!a.lamps.some(l=>l.text))problems.push('Keine Lampe nach Kniff-Einsatz (M-04): kein Knopf mit Abklingzeit oder Proc');}
@@ -145,7 +158,7 @@ try{
    const tiny=a.small.filter(s=>Math.min(s.w,s.h)<32);if(tiny.length)problems.push('Tipp-Ziele unter 32 px: '+tiny.map(s=>s.text||s.sel).slice(0,6).join(' | '));
    const m=a.text.match(DESKTOP_WORDS);if(m)problems.push('Desktop-Begriff sichtbar: „'+m[0]+'“');
    const warn=a.small.filter(s=>Math.min(s.w,s.h)>=32);
-   report.push({device:name,step,problems,warn:warn.length,warnList:warn.map(s=>s.text+' '+s.w+'×'+s.h).join(' | '),gaps:a.gaps.length,gapList:a.gaps.slice(0,4).map(g=>g.a+'↔'+g.b+' '+g.gap+'px').join(' | '),targets:a.targets,popups:a.popups.map(p=>p.id+' '+p.w+'×'+p.h+'@'+p.x+','+p.y).join(' ')});
+   report.push({device:name,step,problems,textSmall:a.textSmall.length,textSmallList:a.textSmall.slice(0,3).join(' | '),warn:warn.length,warnList:warn.map(s=>s.text+' '+s.w+'×'+s.h).join(' | '),gaps:a.gaps.length,gapList:a.gaps.slice(0,4).map(g=>g.a+'↔'+g.b+' '+g.gap+'px').join(' | '),targets:a.targets,popups:a.popups.map(p=>p.id+' '+p.w+'×'+p.h+'@'+p.x+','+p.y).join(' ')});
    if(problems.length)failures++;
   }
   await b.evaluate(`document.body.dataset.touchHand='right'`);
@@ -156,8 +169,8 @@ try{
  const dp=[];if(d.touch)dp.push('Touch-Modus am Desktop aktiv');if(d.controls!=='none')dp.push('Touch-HUD am Desktop sichtbar');if(!d.rail)dp.push('Menüleiste am Desktop fehlt');
  report.push({device:'desktop',step:'2024x900',problems:dp,warn:0,warnList:'',gaps:0,gapList:'',targets:0,popups:''});if(dp.length)failures++;
 }finally{
- const lines=['# Mobile-Prüfung · '+new Date().toISOString().slice(0,10),'',`Adresse ${url} · Geräte ${DEVICES.map(d=>d[0]+' '+d[1]+'×'+d[2]).join(', ')} · ${failures} Schritte mit Fehlern von ${report.length}`,'','| Gerät | Schritt | Fenster | Ziele | Befund 32–43 px | Abstand < 8 px | Probleme |','|---|---|---|---|---|---|---|',
-  ...report.map(r=>`| ${r.device} | ${r.step} | ${r.popups||'–'} | ${r.targets} | ${r.warn?r.warn+': '+r.warnList:'–'} | ${r.gaps?r.gaps+': '+r.gapList:'–'} | ${r.problems.join('; ')||'–'} |`),'',`Befunde gesamt: ${report.reduce((n,r)=>n+r.warn,0)} Tipp-Ziele unter 44 px, ${report.reduce((n,r)=>n+r.gaps,0)} Paare mit Abstand unter 8 px (M-01/M-02).`,'',b.errors.length?'## Laufzeitfehler\n\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'):'Keine Laufzeitfehler.'];
+ const lines=['# Mobile-Prüfung · '+new Date().toISOString().slice(0,10),'',`Adresse ${url} · Geräte ${DEVICES.map(d=>d[0]+' '+d[1]+'×'+d[2]).join(', ')} · ${failures} Schritte mit Fehlern von ${report.length}`,'','| Gerät | Schritt | Fenster | Ziele | Befund 32–43 px | Abstand < 8 px | Lesetext < 12 px | Probleme |','|---|---|---|---|---|---|---|---|',
+  ...report.map(r=>`| ${r.device} | ${r.step} | ${r.popups||'–'} | ${r.targets} | ${r.warn?r.warn+': '+r.warnList:'–'} | ${r.gaps?r.gaps+': '+r.gapList:'–'} | ${r.textSmall?r.textSmall+': '+r.textSmallList:'–'} | ${r.problems.join('; ')||'–'} |`),'',`Befunde gesamt: ${report.reduce((n,r)=>n+r.warn,0)} Tipp-Ziele unter 44 px, ${report.reduce((n,r)=>n+r.gaps,0)} Paare mit Abstand unter 8 px (M-01/M-02), ${report.reduce((n,r)=>n+(r.textSmall||0),0)} Lesetexte unter 12 px (M-12).`,'',b.errors.length?'## Laufzeitfehler\n\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'):'Keine Laufzeitfehler.'];
  writeFileSync(join(dir,'REPORT.md'),lines.join('\n'));writeFileSync(join(dir,'audit.json'),JSON.stringify(audits,null,1));
  console.log(lines.join('\n'));
  b.close();b0.kill();

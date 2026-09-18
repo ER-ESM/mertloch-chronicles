@@ -30,6 +30,21 @@ test('translateText: Maus- und Tastaturwendungen',()=>{
  assert.equal(translateText('Tabelle und Stabilität bleiben.',ctx),'Tabelle und Stabilität bleiben.');
 });
 
+test('translateText: Hilfe-, Glossar- und Tooltip-Wendungen (Iteration 4)',()=>{
+ assert.equal(translateText('Tab wählt nahe Gegner; Shift + Tab geht zurück.',ctx),'Ziel-Knopf wählt nahe Gegner.');
+ assert.equal(translateText('Der Angriffsbutton schaltet ein/aus; Rechtsklick auf einen Gegner startet, Linksklick und Tab wählen nur aus. Esc beendet den Angriff nach offenen Fenstern.',ctx),'Der Angriffsbutton schaltet ein/aus; Antippen wählt einen Gegner nur aus; der Angriffsknopf startet. Der Angriffsknopf schaltet ihn wieder aus.');
+ assert.equal(translateText('LEER weicht aus, Q unterbricht – beide unabhängig von der Leiste.',ctx),'Stiefel weicht aus, Hand unterbricht – beide unabhängig von der Leiste.');
+ assert.equal(translateText('C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt.',ctx),'Der Menü-Knopf öffnet das Clanbuch; × schließt.');
+ assert.equal(translateText('Shift über einem Tooltip zeigt die Details: warum das Ding taugt.',ctx),'Antippen zeigt die Details: warum das Ding taugt.');
+ assert.equal(translateText('Shift: Details',ctx),'Antippen: Details');
+ assert.equal(translateText('Der Finisher auf Taste 3: verbraucht alle Aufbaupunkte.',ctx),'Der Finisher auf Knopf 3: verbraucht alle Aufbaupunkte.');
+ assert.equal(translateText('Taste 9 tut nichts',ctx),'Knopf 9 tut nichts');
+ assert.equal(translateText('Erste Taste auf jedem neuen Gegner; ganz ohne zusätzlichen Tastendruck. Gehämmerte Tasten bringen nichts.',ctx),'Erster Knopf auf jedem neuen Gegner; ganz ohne zusätzlichen Knopfdruck. Gehämmerte Tasten bringen nichts.');
+ assert.equal(translateText('Talent rechtsklicken · Item doppelklicken · Klick auf den Auftragskasten',ctx),'Talent antippen · Item antippen · Tipp auf die Wegmarke');
+ assert.equal(translateText('Tab → Ziel wählen · [1] angreifen',ctx),'Ziel-Knopf → Ziel wählen · [Knopf 1] angreifen');
+ assert.equal(translateText('Einmal einschalten, dann läuft er; Esc schaltet ihn aus.',ctx),'Einmal einschalten, dann läuft er; der Angriffsknopf schaltet ihn aus.');
+});
+
 test('translateKeyToken deckt kbd-Inhalte ab',()=>{
  assert.equal(translateKeyToken('LEER',ctx),'Stiefel');
  assert.equal(translateKeyToken('Tab',ctx),'Ziel');
