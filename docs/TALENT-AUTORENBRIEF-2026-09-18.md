@@ -75,6 +75,8 @@ Grundwert in `content/mechanics.js`):
 | `robbiDamage` (n), `robbiGuard` (1), `overloadDamage` (n), `overloadStun` (s) | Robbi und Überlast | Schrottkoloss |
 | `gambleOver` (Anteil), `gamblePity` (negativ = früher), `gambleMisfireMult` (Anteil), `jackpotDuration` (s), `jackpotStreak` (negativ = früher) | Bastler-Glück | Pfandjäger |
 | `hausverbotDuration` (s), `waveRadius` (Einheiten) | Hausverbot / Rausschmiss | Türsteher |
+| `mobileMark`, `mobileGround` (1) | Markierung / Bodenkniff im Laufen | alle |
+| `overloadRadius`, `chainRadius` (Einheiten), `overSplashShare` (Anteil), `tapDamage` (n), `fieldHeal` (n) | Überlast-Kreis, Blitzweite, Überzündungs-Splash, Bock-Explosion, Nest-Heilung | Kevin, Zapfmeister, Lazarett |
 | `aoe`, `critDamage`, `reflect`, `parryWindow`, `lastStand`, `execute`, `markBonus`, `burstBonus`, `energyRegen` | allgemeine Regeln (Flächenschaden, Glückstreffer-Schaden, Parade-Rückwurf, Paradefenster, Schadensminderung unter 35 %, Schaden gegen Ziele unter 30 %, Markierungs-/Eskalationsschaden, Randale je s) – nur zusammen mit einer Bedingung im Text oder einem Auslöser | alle |
 
 Dazu alle bisherigen Schlüssel (`guardOnStrike`, `doubleParry`, `spreadMark`, `healCombo`, … siehe `KNOWN_EFFECTS`).
@@ -91,9 +93,9 @@ allein stehen.
 ```
 
 Auslöser: `crit`, `kill`, `parry`, `interrupt`, `dodge`, `dash`, `markTick`, `autoHit`, `heal`, `burst3`, `lowHealth`,
-`skillHit` (+`skill`), `markedHit`, `beat`, `inZone` (+`zone`, `skill`), optional `every:n`. Wirkungen: `free`, `reset`,
+`skillHit` (+`skill`), `markedHit`, `beat`, `inZone` (+`zone`, `skill`; Zonen: keg, sanctuary, barricade, snare, burn, fass, robbi, nest, spores), `overcharge`, `misfire`, `jackpotStart`, `reactionStart`, optional `every:n`. Wirkungen: `free`, `reset`,
 `empower` (Kniff-ID), `energy`, `points`, `shield`, `heal` (Zahl oder `{damage:Anteil}`), `haste` (Anteil),
-`cdReduce:{skill,seconds}`. `icon` aus `content/items.js ICONS`. Jede Regel muss von genau einem Talent genannt werden.
+`cdReduce:{skill,seconds}`, `supply:n` (Vorratsgläser), `clean:s` (Großreinemachen starten). `icon` aus `content/items.js ICONS`. Jede Regel muss von genau einem Talent genannt werden.
 
 ## Qualitätsregeln
 

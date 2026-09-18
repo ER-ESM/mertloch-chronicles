@@ -4,7 +4,7 @@
 import {SPEC_MECHANICS,MECHANIC_UI} from './content/index.js';
 import {distance} from './world.js';
 import {applyMark,healPlayer,addGuard,markedEnemies} from './class-mechanics.js';
-import {procGlow} from './procs.js';
+import {procGlow,fireProcs} from './procs.js';
 import {combatStats} from './rpg.js';
 
 export const mechanic=g=>SPEC_MECHANICS[g.rpg?.talents?.spec]||null;
@@ -66,8 +66,8 @@ export function burstMultiplier(g,e,cs,context={}){
  if(m.stack&&s.stack>0){f*=1+num(cs,'stackBonus',m.stack.bonusPerStack)*s.stack;if(cs.stackWave)for(const o of nb(g,e,80,e))g.damage(o,Math.round(20*s.stack),'Abriss');context.stack=s.stack;s.stack=0;s.stackUntil=0;}
  if(m.state&&s.state>0){f*=1+num(cs,'stateDamage',m.state.damage)-1;context.extra=Math.round(p.energy*m.state.finisherPerEnergy);s.state=0;p.energy=0;note(g,'AUSGEWRUNGEN','#ecc3fc','burst');}
  if(m.kind==='guard'&&!cs.guardBurst&&g.classState.guard>0){const others=nb(g,p,num(cs,'waveRadius',m.waveRadius),e);if(others.length){const spend=Math.min(m.burstGuard,g.classState.guard);g.classState.guard-=spend;for(const o of others)g.damage(o,spend,'Rausschmiss');}}
- if(m.kind==='fields'){const fields=mechFields(g,m);if(fields.length){for(const z of fields){const tap=m.tap[z.sort];if(z.sort==='bock')for(const o of nb(g,z,tap.radius))g.damage(o,num(cs,'fuseDamage',tap.damage),'Fassanstich');if(z.sort==='weizen'&&distance(p,z)<=z.radius+20)healPlayer(g,tap.heal,cs,false,'fassanstich');if(z.sort==='pils'){s.tapHaste=tap.duration;}g.effect?.('burst',z.x,z.y,{life:.6,max:.6,radius:z.radius});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);note(g,'FASSANSTICH','#ffe08a','burst');}}
- if(m.kind==='turret'){for(const z of mechFields(g,m)){for(const o of nb(g,z,m.overload.radius)){g.damage(o,num(cs,'overloadDamage',m.overload.damage),'Überlast');if(cs.overloadStun)o.stun=Math.max(o.stun,cs.overloadStun);}g.effect?.('burst',z.x,z.y,{life:.7,max:.7,radius:m.overload.radius,strong:true});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);}
+ if(m.kind==='fields'){const fields=mechFields(g,m);if(fields.length){for(const z of fields){const tap=m.tap[z.sort];if(z.sort==='bock')for(const o of nb(g,z,tap.radius))g.damage(o,num(cs,'tapDamage',tap.damage),'Fassanstich');if(z.sort==='weizen'&&distance(p,z)<=z.radius+20)healPlayer(g,tap.heal,cs,false,'fassanstich');if(z.sort==='pils'){s.tapHaste=tap.duration;}g.effect?.('burst',z.x,z.y,{life:.6,max:.6,radius:z.radius});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);note(g,'FASSANSTICH','#ffe08a','burst');}}
+ if(m.kind==='turret'){for(const z of mechFields(g,m)){for(const o of nb(g,z,num(cs,'overloadRadius',m.overload.radius))){g.damage(o,num(cs,'overloadDamage',m.overload.damage),'Überlast');if(cs.overloadStun)o.stun=Math.max(o.stun,cs.overloadStun);}g.effect?.('burst',z.x,z.y,{life:.7,max:.7,radius:m.overload.radius,strong:true});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);}
  if(m.dot){const targets=markedEnemies(g,num(cs,'dotRadius',m.dot.explode.radius));if(targets.length>=1){for(const t of targets){g.damage(t,(t.dotDamage||12)*num(cs,'dotExplodeTicks',m.dot.explode.perTick),'Durchputzen');if(cs.dotHeal)healPlayer(g,(t.dotDamage||12),cs,false,'durchputzen');t.mark=0;t.slow=1;g.effect?.('burst',t.x,t.y,{life:.5,max:.5,radius:30});}if(targets.length>=3)note(g,'DURCHGEPUTZT','#a7e88d','burst');}}
  if(m.supply&&s.supply>=num(cs,'supplyMax',m.supply.max)){s.supply=0;s.clean=num(cs,'cleanDuration',m.supply.cleanDuration);note(g,'GROSSREINEMACHEN','#ffe08a','burst');}
  return f;
@@ -78,13 +78,13 @@ export function afterBurst(g,e,cs,dealt,context={}){
  if(context.extra>0&&e?.hp>0)g.damage(e,context.extra,'Auswringen');
  if(m.chain){const reacting=s.reaction>0,jumps=reacting?m.reaction.jumps:num(cs,'chainJumps',m.chain.jumps),falloff=Math.max(0,num(cs,'chainFalloff',m.chain.falloff));let from=e,n=dealt;const hit=new Set([e]);
   if(e?.mark>0)fuseExplode(g,e,cs);
-  for(let i=0;i<jumps;i++){const next=nb(g,from,m.chain.radius).find(o=>!hit.has(o));if(!next)break;n=Math.round(n*(1-falloff));hit.add(next);g.effect?.('chain',next.x,next.y,{from:{x:from.x,y:from.y-10},life:.35,max:.35});g.damage(next,n,'Kurzschluss');if(next.mark>0)fuseExplode(g,next,cs);from=next;}
+  for(let i=0;i<jumps;i++){const next=nb(g,from,num(cs,'chainRadius',m.chain.radius)).find(o=>!hit.has(o));if(!next)break;n=Math.round(n*(1-falloff));hit.add(next);g.effect?.('chain',next.x,next.y,{from:{x:from.x,y:from.y-10},life:.35,max:.35});g.damage(next,n,'Kurzschluss');if(next.mark>0)fuseExplode(g,next,cs);from=next;}
   if(reacting)s.reaction=0;}
 }
 function fuseExplode(g,e,cs){const m=mechanic(g);if(!m?.fuse)return;const s=M(g),ex=m.fuse.explode;e.mark=0;e.slow=1;for(const o of nb(g,e,ex.radius))g.damage(o,num(cs,'fuseDamage',ex.damage),'Lunte');g.effect?.('burst',e.x,e.y,{life:.5,max:.5,radius:ex.radius});
  if(cs.fuseSpread){const t=nb(g,e,90,e).find(o=>!(o.mark>0));if(t)applyMark(g,t,cs,false);}
  const window=num(cs,'reactionWindow',m.reaction.window);s.heat=s.heat.filter(t=>g.time-t<window);s.heat.push(g.time);
- if(s.heat.length>=m.reaction.count&&s.reaction<=0){s.reaction=num(cs,'reactionDuration',m.reaction.duration);s.heat=[];g.cooldowns.burst=0;note(g,'KETTENREAKTION','#9bdce4','burst');}}
+ if(s.heat.length>=m.reaction.count&&s.reaction<=0){s.reaction=num(cs,'reactionDuration',m.reaction.duration);s.heat=[];g.cooldowns.burst=0;note(g,'KETTENREAKTION','#9bdce4','burst');fireProcs(g,'reactionStart',cs);}}
 /** Markierung läuft ab: Lunte zündet. */
 export function onMarkExpire(g,e){const m=mechanic(g);if(m?.fuse&&e.hp>0){e.mark=.01;fuseExplode(g,e,combatStats(g));}}
 /** Kill: Schimmel springt weiter. */
@@ -104,9 +104,9 @@ export function damageMultiplier(g,e,label,cs){
  if(m.state&&s.state>0)f*=num(cs,'stateDamage',m.state.damage);
  if(m.gamble&&!s.rolling){const skill={Kelle:'strike',Pfandwurf:'throw'}[label];if(skill&&m.gamble.skills.includes(skill)){const r=g.random();let out='normal';
   if(s.jackpot>0||s.miss>=num(cs,'gamblePity',m.gamble.pity))out='over';else if(r<m.gamble.misfire)out='miss';else if(r>1-num(cs,'gambleOver',m.gamble.overcharge))out='over';
-  if(out==='miss'){s.miss++;s.over=0;f*=num(cs,'gambleMisfireMult',m.gamble.misfireMult);note(g,'FEHLZÜNDUNG','#c9c2b4',skill);}
-  else if(out==='over'){s.miss=0;if(s.jackpot<=0){s.over++;if(s.over>=num(cs,'jackpotStreak',m.gamble.jackpot.streak)){s.over=0;s.jackpot=num(cs,'jackpotDuration',m.gamble.jackpot.duration);note(g,'JACKPOT','#ffe08a',skill);}}f*=m.gamble.overMult;note(g,'ÜBERZÜNDUNG','#ffd77a',skill);
-   if(e&&m.gamble.overSplash){s.rolling=true;try{for(const o of nb(g,e,m.gamble.overSplash.radius,e).slice(0,3))g.damage(o,Math.round(20*m.gamble.overSplash.share*f),'Überzündung');}finally{s.rolling=false;}}}
+  if(out==='miss'){s.miss++;s.over=0;f*=num(cs,'gambleMisfireMult',m.gamble.misfireMult);note(g,'FEHLZÜNDUNG','#c9c2b4',skill);fireProcs(g,'misfire',cs,{skill});}
+  else if(out==='over'){s.miss=0;if(s.jackpot<=0){s.over++;if(s.over>=num(cs,'jackpotStreak',m.gamble.jackpot.streak)){s.over=0;s.jackpot=num(cs,'jackpotDuration',m.gamble.jackpot.duration);note(g,'JACKPOT','#ffe08a',skill);fireProcs(g,'jackpotStart',cs);}}f*=m.gamble.overMult;note(g,'ÜBERZÜNDUNG','#ffd77a',skill);fireProcs(g,'overcharge',cs,{skill});
+   if(e&&m.gamble.overSplash){s.rolling=true;try{for(const o of nb(g,e,m.gamble.overSplash.radius,e).slice(0,3))g.damage(o,Math.round(20*num(cs,'overSplashShare',m.gamble.overSplash.share)*f),'Überzündung');}finally{s.rolling=false;}}}
   else s.over=0;s.last=out;}}
  return f;
 }

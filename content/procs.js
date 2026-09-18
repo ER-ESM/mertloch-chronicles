@@ -8,7 +8,7 @@
 import {PROC_RULES_DIETER} from './procs/dieter.js';
 import {PROC_RULES_BAERBEL} from './procs/baerbel.js';
 import {PROC_RULES_KEVIN} from './procs/kevin.js';
-export const PROC_TRIGGERS=['crit','kill','parry','interrupt','dodge','dash','markTick','autoHit','heal','burst3','lowHealth','skillHit','markedHit','beat','inZone'];
+export const PROC_TRIGGERS=['crit','kill','parry','interrupt','dodge','dash','markTick','autoHit','heal','burst3','lowHealth','skillHit','markedHit','beat','inZone','overcharge','misfire','jackpotStart','reactionStart'];
 export const PROC_RULES={...PROC_RULES_DIETER,...PROC_RULES_BAERBEL,...PROC_RULES_KEVIN};
 /** Proc-IDs müssen über alle Klassen eindeutig sein (Schema-Prüfung meldet Doppelte). */
 export const PROC_DUPLICATES=(()=>{const seen=new Map(),out=[];for(const [cls,rules] of [['dieter',PROC_RULES_DIETER],['baerbel',PROC_RULES_BAERBEL],['kevin',PROC_RULES_KEVIN]])for(const id of Object.keys(rules)){if(seen.has(id))out.push(id+' ('+seen.get(id)+' und '+cls+')');seen.set(id,cls);}return out;})();
