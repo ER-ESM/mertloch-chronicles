@@ -13,6 +13,11 @@ Inbox der UI-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel,
 
 ## Offen
 
+### Mobile-Iterationen 2026-09-18 (Mobile-Agent, docs/MOBILE-ITERATIONEN-2026-09-18.md)
+
+- [ ] **popup-windows.js: Touch-Clamp quer mit Safe Areas** (M-07/M-11): `clamp()` zentriert Fenster auf `innerWidth/2` und rechnet `innerWidth-400`; mit seitlichen Safe Areas (iPhone quer 47 px) liegt das Fenster über dem Joystick. Heute überbrückt mobile.css das mit einer festen Bahn (left/right + margin auto, `!important`). Sauber wäre: Breite und Mitte aus `env(safe-area-inset-left/right)` bzw. den HUD-Rechtecken (`#touchStick`, `#touchActions`) ableiten. Abnahme: `npm run mobile:check` bleibt grün, nachdem die Bahn-Regel in mobile.css entfernt ist.
+- [ ] **tutorial-ui.css: Hofprobe-Kasten im Touch-Modus** (M-07, E-24): `.touch-mode #tutorialGuide` sitzt fest bei 84/86 px ohne `env(safe-area-inset-top)` (mobile.css überschreibt), die Knöpfe „?“ und „⌃“ erscheinen weiß/ungestylt statt im Bierdeckel-Stil (siehe `visual-review/mobile-check/quer-linkshand.png`), und der Hilfe-Knopf stand 1 px neben dem Einklapp-Knopf (mobile.css setzt 56 px).
+
 - [ ] **Verpflegung auf der Aktionsleiste anbinden** (Engine/Loot, Welle D, gefunden beim Rebase 2026-09-17): `game.actionBar` liefert die Einträge `item:wasser` und `item:brezel` auf den Plätzen 9 und 0, und `rpg.inventory` hält beide Gegenstände (Brezel ×3, Wasser ×2) — aber weder `app.js` noch `rpg-ui.js` werten das Präfix `item:` aus, darum stehen beide Plätze als `.skill.empty-slot` da. Betrifft schon `origin/main`, ist also kein Rückschritt aus dem Stil-C-Umbau. Die Gestaltung liegt bereit: `.skill` trägt Stil C, `data-use` und `data-consumable-timer` sind in `rpg-ui.js` vorgesehen. Abnahme: beide Plätze zeigen Symbol und Anzahl, Klick und Taste benutzen den Gegenstand, Abklingzeit läuft sichtbar.
 - [ ] **Aus der Mobile-Prüfung 2026-09-17** (docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md §4): Papierpuppen-Bogen auch quer auf dem Handy (Buchbreite 444 px < 640-px-Schwelle); Touch-Editor „Touchbuttons belegen“ mit Drag statt Tipp-Tipp; Gespräch/Beute/Tod in scripts/mobile-check.mjs ergänzen, sobald eine Fixture mit Gegner in Laufnähe liegt.
 

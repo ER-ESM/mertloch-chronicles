@@ -17,12 +17,32 @@ Fünf Iterationen an der Mobile-Schicht (Mobile-Agent, Regelwerk `docs/MOBILE-GU
 
 **Belege:** `visual-review/mobile-check/hoch-hud.png`, `quer-figur.png`, `hoch-rucksack.png`, `hoch-talente.png`, `desktop-2024x900.png`.
 
-**Commit:** siehe Abschnitt „Commits“ am Ende.
+**Commit:** `5abd1f6`.
 
 **Offen:** –
+
+## Iteration 2 · Daumenzonen, Safe Areas, Querformat (M-05 … M-09)
+
+**Geprüfte Regeln:** M-05 (häufig unten), M-06 (gefährlich hinter Bestätigung), M-07 (Safe Areas, Ecken), M-08 (spiegelbar), M-09 (beide Orientierungen), M-11 (Fenster nie über Joystick).
+
+**Befund vorher** (Skript erweitert: Safe Areas simuliert mit iPhone-Werten hochkant 47/34, quer 47/47/21; Ecken-Prüfung 24 px am Viewport **und** am Safe-Rechteck; Linkshand-Schritt): **16 Schritte mit Fehlern von 52.** Quer mit seitlichen Safe Areas lag jedes Fenster über dem Joystick (popup-windows.js zentriert auf die Bildschirmmitte, Joystick rückt um 47 px nach innen); Linkshand gab es nicht (3 Fehler); `@media(max-width:370px)` und `(max-height:420px)` setzten Joystick, Ziel/Aktion und Abbruch ohne `env(safe-area-inset-*)`; Menü-Knopf 12 px von der rechten Kante (Ecke bei Geräten ohne obere Safe Area); Hofprobe-Kasten (tutorial-ui.css) fest bei 84/86 px ohne Safe Area, seine zwei Knöpfe 1 px auseinander; Karten-Filter 43 px unter Safe Areas.
+
+**Änderungen:**
+
+- `mobile-layout.js`: Einstellung `hand` (right/left) mit Validierung (Test in `tests/mobile.test.mjs`).
+- `mobile-controls.js`: `data-touch-hand` am Body, Auswahl „Hand“ im Touch-Editor, `state().hand`; **„Standardbelegung“ verlangt einen zweiten Tipp** („Wirklich? Nochmal tippen“, 4 s) – M-06.
+- `mobile.css`: Safe Areas in allen Media-Regeln; Menü-Knopf und Kontextraster 26 px von rechts (Ecke frei); Kniffe quer 28 px vom unteren Rand; **Fenster quer in der freien Bahn zwischen Joystick und Kniffen zentriert** (left/right/max-width + margin auto, schlägt das Inline-`left` aus popup-windows.js) – M-11; Linkshand-Block spiegelt Joystick, Kniffe, Ziel/Aktion, Abbruch, Toast und quer den Hofprobe-Kasten; Hofprobe-Kasten unter der Safe Area, Hilfe-Knopf 8 px vom Einklapp-Knopf; Karten-Filter/Zoom 45 px.
+- `scripts/mobile-check.mjs`: Safe-Area-Simulation je Gerät, Prüfungen „Tipp-Ziel in Safe Area“ und „Tipp-Ziel in Bildschirmecke“ (Fehler), Schritt `linkshand` (Joystick rechts der Kniffe), Hofprobe-Knöpfe als Tipp-Ziele, Größenprüfung auf dem ungeschnittenen Rechteck.
+
+**Messwerte nachher:** 52 Schritte, 0 Fehler, 0 Ziele unter 44 px, 0 Paare unter 8 px, 0 Ziele in Ecke/Safe Area, Linkshand auf allen drei Geräten korrekt. `npm test` 369/369.
+
+**Belege:** `visual-review/mobile-check/quer-rucksack-item.png` (Fenster in der Bahn), `quer-linkshand.png`, `hoch-linkshand.png`, `hoch-hud.png`.
+
+**Offen (Backlog ui.md, Abschnitt Mobile-Iterationen):** popup-windows.js sollte quer die seitlichen Safe Areas selbst berücksichtigen (M-07/M-11, heute per CSS-Bahn überbrückt); tutorial-ui.css Hofprobe-Kasten ohne Safe Area und Knöpfe „?“/„⌃“ ohne Bierdeckel-Stil im Touch-Modus (M-07/E-24).
 
 ## Commits
 
 | Iteration | Commit |
 |---|---|
-| 1 | (wird nach dem Push eingetragen) |
+| 1 | `5abd1f6` |
+| 2 | (wird nach dem Push eingetragen) |

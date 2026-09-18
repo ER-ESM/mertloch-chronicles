@@ -3,6 +3,8 @@
 // Talent antippen, Kniff lange drücken, Toast. Je Gerät (Hochkant 390×844, Quer 844×390, klein 360×740):
 //  - keine Seitenbreite über dem Viewport, kein Fenster außerhalb des Bildschirms,
 //  - kein Fenster über Joystick oder Kniff-Knöpfen,
+//  - Safe Areas simuliert (iPhone-Werte): kein Tipp-Ziel in einer Safe Area, keines in einer 24-px-Bildschirmecke (M-07),
+//  - Linkshand-Schritt: Joystick rechts, Kniffe links (M-08),
 //  - Tipp-Ziele in Fenstern und Touch-HUD mindestens 44 px (M-01: 32–43 px ist ein Befund, < 32 px ein Fehler),
 //  - Abstand zwischen benachbarten Tipp-Zielen mindestens 8 px (M-02, Befund),
 //  - keine Desktop-Begriffe (Tab, WASD, Rechtsklick, Maus, [LEER], [F], [1]…) in sichtbaren Fenstern.
@@ -24,6 +26,9 @@ const port=Number(process.env.CDP_PORT||9344);
 mkdirSync(dir,{recursive:true});
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const DEVICES=[['hoch',390,844],['quer',844,390],['klein',360,740]];
+/** Simulierte Safe Areas (iPhone-Werte): hochkant oben 47 / unten 34, quer links 47 / rechts 47 / unten 21 (M-07). */
+const SAFE=(w,h)=>w>h?{top:0,bottom:21,left:47,right:47}:{top:47,bottom:34,left:0,right:0};
+const CORNER=24;
 const DESKTOP_WORDS=/\[(LEER|Q|F|E|[0-9])\]|\bTab\b(?= wählt| oder)|\bWASD\b|Rechtsklick|\bMaus\b|Mausrad/;
 
 async function launch(){
@@ -52,9 +57,9 @@ async function connect(){
 
 /** Sichtbarkeits- und Layoutmessung im Browser; Ergebnis wird als JSON zurückgegeben. */
 /** Tipp-Ziele: alles, was in Fenstern und im Touch-HUD angetippt werden kann (M-01/M-02). */
-const TARGETS='.game-popup button, .game-popup [role=tab], .game-popup select, .game-popup a[href], .game-popup .item-slot, .game-popup .branch-node, .game-popup input:not([type=hidden]), #mobileControls button, #touchStick';
+const TARGETS='.game-popup button, .game-popup [role=tab], .game-popup select, .game-popup a[href], .game-popup .item-slot, .game-popup .branch-node, .game-popup input:not([type=hidden]), #mobileControls button, #touchStick, #tutorialGuide button';
 const AUDIT=`(()=>{
- const TARGETS=${JSON.stringify(TARGETS)};
+ const TARGETS=${JSON.stringify(TARGETS)};const CORNER=${CORNER};
  const vis=el=>{const r=el.getBoundingClientRect();const cs=getComputedStyle(el);return r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none'&&!el.closest('[hidden]');};
  const box=el=>{const r=el.getBoundingClientRect();return {x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height)};};
  const overlap=(a,b)=>a&&b&&a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
@@ -62,14 +67,18 @@ const AUDIT=`(()=>{
  const popups=[...document.querySelectorAll('.game-popup')].filter(vis).map(e=>({id:e.dataset.window,...box(e)}));
  const stickies=[...document.querySelectorAll('.game-popup .popup-body *')].filter(e=>vis(e)&&getComputedStyle(e).position==='sticky').map(e=>({el:e,r:e.getBoundingClientRect()}));
  const popupEls=[...document.querySelectorAll('.game-popup')].filter(vis);
- const clip=t=>{const c=t.el.closest('.popup-body');if(!c)return t;const own=t.el.closest('.game-popup');const above=popupEls.slice(popupEls.indexOf(own)+1).some(p=>{const r=p.getBoundingClientRect();return r.left<t.x+t.w&&r.right>t.x&&r.top<t.y+t.h&&r.bottom>t.y;});if(above)return {...t,clipped:true};const b=c.getBoundingClientRect();let x=Math.max(t.x,b.left),y=Math.max(t.y,b.top),w=Math.min(t.x+t.w,b.right)-x,h=Math.min(t.y+t.h,b.bottom)-y;for(const st of stickies)if(!st.el.contains(t.el)&&st.r.bottom>y&&st.r.top<=y&&st.r.left<x+w&&st.r.right>x){h-=st.r.bottom-y;y=st.r.bottom;}return {...t,x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h),clipped:w<t.w-1||h<t.h-1};};
+ const clip=t=>{const c=t.el.closest('.popup-body');if(!c)return t;const own=t.el.closest('.game-popup');const above=popupEls.slice(popupEls.indexOf(own)+1).some(p=>{const r=p.getBoundingClientRect();return r.left<t.x+t.w&&r.right>t.x&&r.top<t.y+t.h&&r.bottom>t.y;});if(above)return {...t,clipped:true};const b=c.getBoundingClientRect();let x=Math.max(t.x,b.left),y=Math.max(t.y,b.top),w=Math.min(t.x+t.w,b.right)-x,h=Math.min(t.y+t.h,b.bottom)-y;for(const st of stickies)if(!st.el.contains(t.el)&&st.r.bottom>y&&st.r.top<=y&&st.r.left<x+w&&st.r.right>x){h-=st.r.bottom-y;y=st.r.bottom;}return {...t,ow:t.w,oh:t.h,x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h),clipped:w<t.w-1||h<t.h-1};};
  const onTop=t=>{const hit=document.elementFromPoint(t.x+t.w/2,t.y+t.h/2);return !!hit&&(t.el===hit||t.el.contains(hit));};
  const label=e=>((e.getAttribute('aria-label')||e.textContent||'').trim().slice(0,30)||(e.id?'#'+e.id:'')||e.className.toString().slice(0,30));
  const targets=[...document.querySelectorAll(TARGETS)].filter(e=>vis(e)&&!e.disabled&&!e.closest('[hidden]')).map(e=>({el:e,text:label(e),...box(e)})).map(clip).filter(t=>t.w>0&&t.h>0&&t.x+t.w>0&&t.y+t.h>0&&t.x<innerWidth&&t.y<innerHeight&&onTop(t));
- const small=targets.filter(t=>!t.clipped&&Math.min(t.w,t.h)<44).map(({el,...t})=>t);
+ const small=targets.filter(t=>!t.clipped&&Math.min(t.ow??t.w,t.oh??t.h)<44).map(({el,...t})=>({...t,w:t.ow??t.w,h:t.oh??t.h}));
  const gaps=[];for(let i=0;i<targets.length;i++)for(let j=i+1;j<targets.length;j++){const a=targets[i],b=targets[j];if(a.clipped||b.clipped||a.el.contains(b.el)||b.el.contains(a.el))continue;const dx=Math.max(0,b.x-(a.x+a.w),a.x-(b.x+b.w)),dy=Math.max(0,b.y-(a.y+a.h),a.y-(b.y+b.h));const gap=Math.max(dx,dy);if(gap<8)gaps.push({a:a.text,b:b.text,gap:Math.round(gap*10)/10});}
  const text=[...document.querySelectorAll('.game-popup .popup-body, #touchContext, #toast, .touch-topline')].filter(vis).map(e=>e.innerText).join('\\n');
- return {touch:document.body.classList.contains('touch-mode'),vw:innerWidth,vh:innerHeight,scrollW:document.documentElement.scrollWidth,popups,stick:stick&&vis(stick)?box(stick):null,skills:skills&&vis(skills)?box(skills):null,
+ const safe=['top','bottom','left','right'].map(k=>[k,parseFloat(getComputedStyle(document.body).getPropertyValue('--safe-'+k))||0]);const S=Object.fromEntries(safe);
+ const inCorner=(t,l,tp,r,bt)=>(t.x<l+CORNER||t.x+t.w>r-CORNER)&&(t.y<tp+CORNER||t.y+t.h>bt-CORNER);
+ const corners=targets.filter(t=>!t.clipped&&(inCorner(t,0,0,innerWidth,innerHeight)||inCorner(t,S.left,S.top,innerWidth-S.right,innerHeight-S.bottom))).map(t=>t.text);
+ const unsafe=targets.filter(t=>!t.clipped&&(t.y<S.top||t.y+t.h>innerHeight-S.bottom||t.x<S.left||t.x+t.w>innerWidth-S.right)).map(t=>t.text+' '+t.x+','+t.y+' '+t.w+'×'+t.h);
+ return {touch:document.body.classList.contains('touch-mode'),vw:innerWidth,vh:innerHeight,scrollW:document.documentElement.scrollWidth,popups,corners,unsafe,safe:S,hand:document.body.dataset.touchHand,stick:stick&&vis(stick)?box(stick):null,skills:skills&&vis(skills)?box(skills):null,
   overlapStick:popups.filter(p=>overlap(p,stick&&box(stick))).map(p=>p.id),overlapSkills:popups.filter(p=>overlap(p,skills&&box(skills))).map(p=>p.id),
   offscreen:popups.filter(p=>p.x<0||p.y<0||p.x+p.w>innerWidth+1||p.y+p.h>innerHeight+1).map(p=>p.id),targets:targets.length,small,gaps,text};
 })()`;
@@ -80,7 +89,7 @@ try{
  await b.evaluate(`localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'touch',size:'normal',layouts:{}}));(async()=>{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);})()`);
  await b.goto(url);await wait(1500);
  for(const [name,w,h] of DEVICES){
-  await b.device(w,h);await wait(700);
+  await b.device(w,h);await b.evaluate(`(s=>{for(const k in s)document.body.style.setProperty('--safe-'+k,s[k]+'px');})(${JSON.stringify(SAFE(w,h))})`);await wait(700);
   await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await wait(300);
   const steps=[['hud',async()=>{}],
    ['figur',()=>b.evaluate(`document.querySelector('.game-menu-rail [data-panel="person"]').click()`)],
@@ -97,7 +106,8 @@ try{
    ['hilfe',()=>b.evaluate(`document.querySelector('[data-book-tab="guide"]').click()`)],
    ['hilfe-bedienung',()=>b.evaluate(`[...document.querySelectorAll('.game-popup [role=tab]')].find(t=>/Bedienung/.test(t.textContent))?.click()`)],
    ['kniff-lang',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.longPress('#touchSkills .touch-skill');}],
-   ['toast',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('#touchTarget').click()`);}]];
+   ['toast',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.evaluate(`document.querySelector('#touchTarget').click()`);}],
+   ['linkshand',()=>b.evaluate(`document.body.dataset.touchHand='left'`)]];
   for(const [step,run] of steps){
    await run();await wait(650);
    const a=await b.evaluate(AUDIT);await b.shot(name+'-'+step);audits.push({device:name,step,...a,text:undefined});
@@ -107,12 +117,16 @@ try{
    if(a.offscreen.length)problems.push('Fenster außerhalb: '+a.offscreen.join(','));
    if(a.overlapStick.length)problems.push('Fenster über Joystick: '+a.overlapStick.join(','));
    if(a.overlapSkills.length)problems.push('Fenster über Kniff-Knöpfen: '+a.overlapSkills.join(','));
+   if(a.corners.length)problems.push('Tipp-Ziel in Bildschirmecke (< '+CORNER+' px): '+a.corners.slice(0,4).join(' | '));
+   if(a.unsafe.length)problems.push('Tipp-Ziel in Safe Area: '+a.unsafe.slice(0,4).join(' | '));
+   if(step==='linkshand'){if(a.hand!=='left')problems.push('Linkshand nicht gesetzt');else if(!(a.stick&&a.skills&&a.stick.x>a.skills.x))problems.push('Linkshand: Joystick nicht rechts der Kniffe');}
    const tiny=a.small.filter(s=>Math.min(s.w,s.h)<32);if(tiny.length)problems.push('Tipp-Ziele unter 32 px: '+tiny.map(s=>s.text||s.sel).slice(0,6).join(' | '));
    const m=a.text.match(DESKTOP_WORDS);if(m)problems.push('Desktop-Begriff sichtbar: „'+m[0]+'“');
    const warn=a.small.filter(s=>Math.min(s.w,s.h)>=32);
    report.push({device:name,step,problems,warn:warn.length,warnList:warn.map(s=>s.text+' '+s.w+'×'+s.h).join(' | '),gaps:a.gaps.length,gapList:a.gaps.slice(0,4).map(g=>g.a+'↔'+g.b+' '+g.gap+'px').join(' | '),targets:a.targets,popups:a.popups.map(p=>p.id+' '+p.w+'×'+p.h+'@'+p.x+','+p.y).join(' ')});
    if(problems.length)failures++;
   }
+  await b.evaluate(`document.body.dataset.touchHand='right'`);
  }
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:false});await b.send('Emulation.setDeviceMetricsOverride',{width:2024,height:900,deviceScaleFactor:1,mobile:false});
  await b.evaluate(`localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'desktop',size:'normal',layouts:{}}))`);await b.goto(url);await wait(1500);
