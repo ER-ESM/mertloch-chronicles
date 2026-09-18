@@ -542,3 +542,6 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .ref-back{margin-top:8px;padding-top:6px;border-top:1px solid #65714a}
 .ref-back button{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer;min-height:0!important}
 .ref-legend{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0;font-size:10px}
+
+/* Leiste (Nutzerbefund 2026-09-18): Kniffe sehen immer aktiv aus; nur Abklingzeit und Gesperrt sind sichtbar. */
+.skill.unusable canvas,.action-area .skill.unusable canvas,#touchActions .touch-skill.unusable canvas{opacity:1!important;filter:none!important}

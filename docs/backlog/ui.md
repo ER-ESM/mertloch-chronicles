@@ -116,6 +116,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
+- [x] **Nutzerbefunde 2026-09-18 (2)**: Gegenstands-Tooltips ohne Hand-/Einzigartig-/Vergleichs-Allgemeinplätze; Tooltip für den Zeiger durchlässig, solange das Icon gehalten wird (Nachbarn bleiben erreichbar), greifbar nur in der Gnadenfrist; leere Reiter im Gegenstandsfenster (Vergleich/Geschichte bei Verpflegung) fallen weg; Linksklick auf leere Fläche hebt die Zielwahl auf und beendet den Autoangriff; Kniff-Icons in der Leiste nicht mehr gedimmt, wenn gerade nicht einsetzbar.
+
 - [x] **Gegenstands-Tooltips entschlackt** (Nutzerbefund 2026-09-18): nur Name/Güte/Platz, Werte, Waffenhinweis, Stufe, Vergleich; Zitat nur bei einzigartigen und epischen Teilen; kein „Ohne Zusatzwerte", keine Fußzeile Ausrüstung/Verpflegung/Material, kein Effektsatz, der die Werte wiederholt (Shift-Details bleiben).
 
 - [x] **Tooltip bleibt beim Hinübergehen** (Nutzerbefund 2026-09-18): Verlassen des Icons blendet erst nach 320 ms aus, wenn der Zeiger nicht im Tooltip oder auf dem Icon ist; Esc schließt. Aggro/Leine siehe Backlogs gameplay/engine.
