@@ -175,7 +175,7 @@ export class Game {
       for(let i=0;i<c.count;i++){
         const spot=c.spawns?.[i]||w.findClear(c.x+(i-1)*42,c.y+Math.sin(i*3)*48,9);
         this.enemies.push(makeEnemy(spot,++this.campSerial,{...def,type:c.type,campId:c.id,chapter:c.chapter,questId:c.questId,
-          roamRadius:c.type==='wolf'&&!c.questId?24:40,aggroRange:c.type==='wolf'&&!c.questId?78:c.type==='boss'?105:120,
+          roamRadius:c.type==='wolf'&&!c.questId?24:40,aggroRange:c.type==='wolf'&&!c.questId?78:c.type==='boss'?105:105,
           spawnPoints:c.spawns||[spot],name:c.questId?(w.quests?.find(q=>q.id===c.questId)?.enemyName||'Pfandkeiler am Grillplatz'):def.name}));
       }
     }
@@ -397,7 +397,7 @@ export class Game {
       if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;if(!this.target||this.target.hp<=0)this.target=e;}
       if(!e.aggro){if(!e.dummy)idleEnemy(this,e,dt);continue;}
       if(e.dummy){e.facing=e.x<p.x?1:-1;continue;}
-      if(!e.arena&&(distance(e,e.home)>e.leash||d>450||inSanctuary(this.world,p))){beginReturn(this,e);continue;}
+      if(!e.arena&&(distance(e,e.home)>e.leash||d>620||inSanctuary(this.world,p))){beginReturn(this,e);continue;}
       p.inCombat=7;e.facing=e.x<p.x?1:-1;e.direction=walkFacing(p.x-e.x,p.y-e.y,e.direction||'se');
       if(e.stun>0){e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);continue;}
       if(e.cast){e.cast.remaining-=dt;if(e.cast.remaining<=0){const c=e.cast;e.cast=null;e.attackTimer=COMBAT_RULES.specialInterval;let hit=false;if(c.ground){hit=Math.hypot((p.x-c.x)/c.radius,(p.y-c.y)/(c.radius*.75))<1;this.effect('impact',c.x,c.y,{radius:c.radius,life:.6,max:.6});if(!hit){this.stats.dodges++;this.float(p.x,p.y-24,'VERMIEDEN','#aed4bd');}}else if(c.interruptible)hit=d<230&&this.world.lineClear(e,p);else hit=d<c.radius;

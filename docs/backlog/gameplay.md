@@ -4,6 +4,8 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Aggro und Leine geprüft, Zahlen in tuning.js** (UI/Balancing 2026-09-18, Nutzerbefund): Feldgegner-Aggro von 14–19 m auf 11–14 m, Standard-Leine 47 m → 70 m ab Heimatpunkt, Abbruch bei Spielerabstand 78 m statt 56 m, Lager-Menschen 105. Gameplay bitte in die Definitionen einpflegen (Tuning-Zeilen löschen), wenn ein Playtest die Werte bestätigt. Test: tests/aggro-kiting.test.mjs.
+
 - [ ] **Tote Kit-Felder `damage`, `base`, `perPoint` in `content/skills.js`** (Nebenbefund Klassendesign, Runde B): seit `damageModel` ignoriert `equipment.skillDamage()` den übergebenen Grundwert, sobald ein Modell existiert – die drei Felder wirken nirgends mehr. Lebende Schadensschalter der Kits sind nur noch `multiplier`, `splash`, `knockback`. Entscheidung gemeinsam mit Klassendesign: entweder raus aus `skills.js` oder das Modell so umbauen, dass der Grundwert wieder trägt. Gameplay entscheidet mit, weil `SKILL_DAMAGE` hier liegt.
 - [ ] Händler/Handwerk als Daten (`content/shop.js`: `SHOP_STOCK`, `SELL_RATE`, `RECIPES`, `benchStage()`) – **erst nach Freigabe** des Konzepts `docs/GAMEPLAY-HAENDLER-HANDWERK.md`, dann Prüfung in `checks/gameplay.js` und Test.
 - [ ] Restliche 72 Talente als Regeln mit Auslöser, gemeinsam mit Klassendesign (docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
