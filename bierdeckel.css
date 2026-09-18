@@ -29,9 +29,11 @@
  --kraft-3:#EED9B5;        /* heller Innenrand der Pappe */
  --cream:#F4E8C4;          /* Text auf Zeltstoff */
  --ink:#2B2A26;            /* Text auf Pappe */
- --ink-2:#4E4A41;          /* Fließtext auf Pappe */
+ --ink-2:#3A3732;          /* Fließtext auf Pappe */
  /* Signale */
  --stamp:#AD5260;          /* Ziegelrose: Stempel, Auswahl, Rollen */
+ --stamp-light:#F29AA6;    /* Text auf dunklem Grund */
+ --stamp-ink:#6E2531;      /* Text auf Pappe, dunkler Stempelgrund */
  --coral:#E18569;          /* nur Gefahr und Schaden */
  --gold:#ECB95C;           /* nur Primäraktion und Auswahl */
  --ok:#78A865;             /* Apfelgrün: Leben, Erfolg */
@@ -506,6 +508,16 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 @keyframes attack-pulse{from{transform:scale(1)}50%{transform:scale(1.04)}to{transform:scale(1)}}
 #combatState{padding:1px 7px;border-radius:var(--r-pill)!important;background:var(--green-2);border:1px solid var(--kraft-2)}
 .player-panel.in-combat #combatState{background:var(--stamp);border-color:#7A3644}
+
+/* Lesbarer Stempeltext auf beiden Flächen, gemeinsam für Desktop und Touch. */
+.tooltip-heading strong,.target-title,.loot>span,.book-skill small{color:var(--stamp-light)}
+.skill-tooltip strong,.item-tooltip strong{color:var(--stamp-ink)}
+.skill-tooltip .tooltip-meta,.skill-tooltip .tooltip-meta span,.item-tooltip .tooltip-meta,.item-tooltip .tooltip-meta span{color:var(--ink-2)}
+.describe-numbers dt,.describe-numbers dd,.describe-numbers b{font-size:12px}
+.popup-body .describe-numbers dt,.popup-body .describe-numbers dd,.popup-body .describe-numbers b,.popup-body .describe-numbers i,.popup-body .describe-numbers small{color:var(--cream)}
+.clan-card .eyebrow,.quest-entry .eyebrow,.build-card>header small,.clan-stamp{color:var(--stamp-ink)}.clan-stamp{border-color:var(--stamp-ink)}
+.popup-body .talent-points.has-free,.popup-body .memory-picture-button>span{color:var(--cream)}
+.target-panel .target-title,body:not(.touch-mode) .attack-warning,.player-panel.in-combat #combatState{background:var(--stamp-ink);color:var(--cream)}
 
 /* Fix 2026-09-18: Takt-Spiel (Sirene) und Kabel-Spiel sichtbar. */
 .rhythm-track{background:#0B1216;border:var(--edge) solid var(--kraft-2);border-radius:var(--r-pill)!important;overflow:visible}

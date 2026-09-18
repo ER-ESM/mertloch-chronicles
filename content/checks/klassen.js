@@ -36,7 +36,10 @@ export function check(bad){
  }
  // Talente sind Regeln: kein Talent besteht nur aus Werten ohne Auslöser.
  for(const [spec,rows] of Object.entries(TALENT_ROWS))for(const [i,t] of rows.entries()){
-  const keys=Object.keys(t.effects||{});
+ const keys=Object.keys(t.effects||{});
+  const classId=spec.split('-')[0],skills=new Set(['auto','buff','throw','ground',...BASE_SKILLS.map(s=>s.id),...CLASS_SPECS[classId].flatMap(s=>TALENT_ROWS[s].map(t=>t.grants).filter(Boolean))]);
+  if(!Array.isArray(t.skills)||t.skills.some(id=>!skills.has(id))||new Set(t.skills).size!==t.skills.length)bad('talent '+spec+'-'+i,'ungültige oder fehlende Kniffbezüge');
+  if(t.grants&&!t.skills?.includes(t.grants))bad('talent '+spec+'-'+i,'erlernten Kniff als Bezug nennen');
   if(keys.length&&!t.grants&&keys.every(k=>VALUE_ONLY.includes(k)))bad('talent '+spec+'-'+i,'reines Wert-Talent ohne Auslöser');
  }
  // Keine toten Proc-Regeln: jede Regel hängt an mindestens einem Talent.
@@ -58,6 +61,7 @@ export function checkDescriptions(bad){
   if(!d.why)bad(w,'info.why fehlt');
   if(!d.icon)bad(w,'kein Icon');
   if(!d.numbers.length)bad(w,'kein abgeleiteter numbers-Block');
+  for(const field of ['effect','why'])if(/\d/.test(element(kind,id)?.info?.[field]||''))bad(w,'info.'+field+' enthält feste Zahlen; Zahlen aus den Regeln ableiten');
   if(d.effect&&d.name&&d.effect.includes(d.name))bad(w,'effect wiederholt den Namen wörtlich');
   if(d.effect){const other=seen.get(d.effect);if(other)bad(w,'gleicher effect wie '+other);else seen.set(d.effect,w);}
   for(const t of d.terms)if(!hasTerm(t))bad(w,'terms: kein Glossareintrag "'+t+'"');

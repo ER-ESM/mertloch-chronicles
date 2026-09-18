@@ -132,7 +132,7 @@ export const TALENT_INFO={
  'dieter-wall-6':{effect:'Der Finisher verbrennt angesammelte Deckung für eine zusätzliche Druckwelle im Umkreis.',why:'Wandelt überschüssiges Polster in Flächenschaden – der Tank hört auf, ein reiner Schadensschwamm zu sein.',links:['skill:dieter/burst','talent:dieter-wall-0'],terms:['deckung','eskalation','flaeche']},
  'dieter-wall-7':{effect:'Jede geglückte Parade legt zusätzlich Deckung auf.',why:'Der stetige Nachschub, aus dem die Druckwelle bezahlt wird.',links:['skill:dieter/parry','talent:dieter-wall-6'],terms:['parade','deckung']},
  'dieter-wall-8':{effect:'Die Schutzzone hält länger und bremst Gegner, die darin stehen.',why:'Aus dem kurzen Notfenster wird eine Stellung, die einen ganzen Kampf trägt.',links:['talentSkill:barricade','talent:dieter-wall-4'],terms:['flaeche','verlangsamung']},
- 'dieter-wall-9':{effect:'Unter 35 % Leben wirft jede geglückte Parade ein großes Polster ab.',why:'Die Notbremse des Baums: genau dann am stärksten, wenn der nächste Treffer tödlich wäre.',links:['skill:dieter/parry','talent:dieter-wall-7'],terms:['parade','deckung']},
+ 'dieter-wall-9':{effect:'Bei niedrigem Leben wirft jede geglückte Parade ein großes Polster ab.',why:'Die Notbremse des Baums: genau dann am stärksten, wenn der nächste Treffer tödlich wäre.',links:['skill:dieter/parry','talent:dieter-wall-7'],terms:['parade','deckung']},
  'dieter-brawl-0':{effect:'Kellen und kassierte Treffer laden doppelt so viel Rausch wie sonst.',why:'Bringt dich schneller auf den vollen Rausch – die Schwelle, ab der der Abriss härter schlägt.',links:['talent:dieter-brawl-2','skill:dieter/strike'],terms:['rausch','eskalation']},
  'dieter-brawl-1':{effect:'Glückstreffer machen den nächsten Finisher kostenlos.',why:'Bezahlt die Rotation quer: gesparte Randale fließen in zusätzliche Kellen.',links:['proc:kellenwut','skill:dieter/burst'],terms:['glueckstreffer','eskalation','randale','proc']},
  'dieter-brawl-2':{effect:'Bei vollem Rausch kostet der Finisher nichts und verbraucht dafür den Rausch.',why:'Zwingt dich, den Rausch bewusst auszugeben, statt ihn nur mitlaufen zu lassen.',links:['talent:dieter-brawl-0','skill:dieter/burst'],terms:['rausch','eskalation','randale']},
@@ -202,7 +202,7 @@ export const TALENT_INFO={
  'kevin-iron-6':{effect:'Der Finisher gibt angesammelte Deckung als Druckwelle im Umkreis ab.',why:'Überschüssiges Polster wird Schaden – der Koloss tankt nicht umsonst.',links:['skill:kevin/burst','talent:kevin-iron-1'],terms:['deckung','eskalation','flaeche']},
  'kevin-iron-7':{effect:'Jeder Kill heilt dich um einen festen Betrag.',why:'Im Nahkampf ohne zweite Heilquelle ist das der Puffer, der dich durch eine Gruppe trägt.',links:['skill:kevin/heal'],terms:['heilung','schwung']},
  'kevin-iron-8':{effect:'Der Anzieh-Knopf gibt mehr Deckung und hält Gegner länger fest.',why:'Macht das Heranziehen sicher: mehr Polster für den Moment, in dem plötzlich fünf Gegner bei dir stehen.',links:['talentSkill:magnet','talent:kevin-iron-4'],terms:['deckung','festhalten']},
- 'kevin-iron-9':{effect:'Unter 35 % Leben liefert jede geglückte Parade ein großes Polster.',why:'Das Abschlusstalent ist die Notbremse: der Koloss hält genau dann am längsten, wenn es knapp wird.',links:['skill:kevin/parry','talent:kevin-iron-2'],terms:['parade','deckung']},
+ 'kevin-iron-9':{effect:'Bei niedrigem Leben liefert jede geglückte Parade ein großes Polster.',why:'Das Abschlusstalent ist die Notbremse: der Koloss hält genau dann am längsten, wenn es knapp wird.',links:['skill:kevin/parry','talent:kevin-iron-2'],terms:['parade','deckung']},
  'kevin-hunt-0':{effect:'Ausweichen gibt zusätzlich zum kostenlosen Wurf einen Druckpunkt.',why:'Jeder Sprung ist ein Rotationsschritt – Kevin verliert beim Abstandhalten keinen Aufbau.',links:['skill:kevin/dash','throw:kevin'],terms:['ausweichen','druck','wurf']},
  'kevin-hunt-1':{effect:'Nach einem Ausweichen trifft der nächste Wurf doppelt.',why:'Belohnt das Zurückweichen mit Schaden, statt es nur zu überleben.',links:['proc:fangschuss','throw:kevin'],terms:['ausweichen','wurf','proc']},
  'kevin-hunt-2':{effect:'Die erste Markierung auf einem Ziel hält es zusätzlich kurz fest.',why:'Das Zeitfenster, in dem du Abstand aufbaust, bevor der Nahkämpfer überhaupt losläuft.',links:['skill:kevin/mark'],terms:['markierung','festhalten']},
@@ -215,3 +215,116 @@ export const TALENT_INFO={
  'kevin-hunt-9':{effect:'Der Finisher stößt weiter zurück, und jeder Kill setzt das Ausweichen zurück.',why:'Das Abschlusstalent zementiert die Spielart: Kevin steht nie zweimal an derselben Stelle.',links:['skill:kevin/burst','skill:kevin/dash'],terms:['eskalation','rueckstoss','ausweichen','schwung']}
 };
 for(const [spec,rows] of Object.entries(TALENT_ROWS))rows.forEach((t,i)=>{t.info=TALENT_INFO[spec+'-'+i];});
+
+// Concrete abilities involved in each rule (trigger and effect). Empty means a general passive.
+const TALENT_SKILL_REFS={
+ "dieter-wall": [
+  "strike",
+  "parry mark",
+  "parry",
+  "parry",
+  "barricade",
+  "parry",
+  "burst",
+  "parry",
+  "barricade",
+  "parry"
+ ],
+ "dieter-brawl": [
+  "strike burst",
+  "burst",
+  "burst",
+  "dash throw",
+  "slam",
+  "strike",
+  "burst",
+  "",
+  "slam strike",
+  "slam"
+ ],
+ "dieter-brew": [
+  "mark",
+  "mark",
+  "heal keg",
+  "heal",
+  "keg",
+  "heal mark strike",
+  "burst",
+  "parry heal",
+  "keg",
+  "strike keg"
+ ],
+ "baerbel-care": [
+  "heal",
+  "heal strike",
+  "heal sanctuary",
+  "heal",
+  "sanctuary",
+  "",
+  "heal strike",
+  "parry",
+  "sanctuary",
+  "burst"
+ ],
+ "baerbel-feedback": [
+  "mark",
+  "mark",
+  "mark",
+  "heal mark",
+  "infusion",
+  "interrupt burst",
+  "mark",
+  "interrupt heal",
+  "infusion heal",
+  "burst mark"
+ ],
+ "baerbel-stage": [
+  "strike",
+  "throw",
+  "heal strike",
+  "dash throw",
+  "encore burst",
+  "burst throw",
+  "burst",
+  "mark",
+  "encore strike",
+  "throw"
+ ],
+ "kevin-fuse": [
+  "ground",
+  "mark",
+  "mark",
+  "interrupt",
+  "detonate mark",
+  "ground",
+  "mark",
+  "heal ground",
+  "detonate",
+  "burst mark"
+ ],
+ "kevin-iron": [
+  "burst",
+  "auto",
+  "parry",
+  "parry",
+  "magnet",
+  "parry burst",
+  "burst",
+  "",
+  "magnet",
+  "parry"
+ ],
+ "kevin-hunt": [
+  "dash",
+  "dash throw",
+  "mark",
+  "dash throw",
+  "snare",
+  "dash",
+  "throw snare",
+  "interrupt dash",
+  "snare throw",
+  "dash"
+ ]
+};
+for(const [spec,rows] of Object.entries(TALENT_ROWS))rows.forEach((t,i)=>{t.skills=TALENT_SKILL_REFS[spec][i].split(' ').filter(Boolean);});

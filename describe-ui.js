@@ -1,3 +1,4 @@
+import {talentSkillsHtml} from './talent-ui.js';
 // Ein Tooltip-Baustein für alles Kampfrelevante (Welle D, docs/UEBERGABE-UI-2026-09-17.md §7/§8).
 // Regel: kein Inhaltstext und keine Spielzahl entsteht hier. Die Anzeige besteht aus
 //   content/glossary.js  describe(kind,id) → name, icon, text, effect, why, links, terms, numbers (Basiswerte)
@@ -174,7 +175,8 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
  const name=content?.name||entry?.name||'';
  const icon=content?.icon||entry?.icon||null;
  const effect=content?.effect||entry?.info?.effect||'';
- const text=content?.text||'';
+ // Talent-Kurztexte enthalten historische Zahlen; Regeln und Werte kommen aus effect/numbers.
+ const text=kind==='talent'?'':content?.text||'';
  const why=content?.why||entry?.info?.why||'';
  const links=content?.links?.length?content.links:(entry?.info?.links||[]);
  const numbers=mergeNumbers(content?.numbers?.length?content.numbers:(entry?.info?.numbers||[]),liveRows(liveKind,live));
@@ -196,7 +198,7 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
   (text&&text!==effect?'<p class="describe-flavor">'+esc(text)+'</p>':'')+
   (effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
-  numberHtml+
+  (kind==='talent'?talentSkillsHtml(game,id,touch):'')+numberHtml+
   (details?'<div class="describe-details"'+(shift?'':' hidden')+'>'+details+'</div>':'')+
   (details?'<footer class="describe-hint">'+(touch?'<button type="button" data-describe-more>'+esc(DESCRIBE_UI.detailsButton)+'</button>':esc(DESCRIBE_UI.shiftHint))+'</footer>':'')+
   '</div>';
@@ -206,7 +208,7 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
  * Nur der Shift-Block – für die gewachsenen Tooltips (Rucksack, Ausrüstung, Belohnung, Talentbaum),
  * die ihren Vergleich behalten und trotzdem `why`, `links` und das Glossar zeigen sollen.
  */
-export function describeExtras(game,kind,id,{shift=false,touch=false}={}){
+export function describeExtras(game,kind,id,{shift=false,touch=false,includeEffect=true}={}){
  const key=resolve(game,kind,id);
  const content=key.content?contentDescribe(key.content.kind,key.content.id):null;
  const entry=key.runtime&&typeof game?.describe==='function'?game.describe(key.runtime.kind,key.runtime.id):null;
@@ -222,7 +224,7 @@ export function describeExtras(game,kind,id,{shift=false,touch=false}={}){
  const termHtml=terms.length?'<dl class="describe-terms">'+terms.map(t=>'<div><dt>'+esc(t.name)+'</dt><dd>'+esc(t.long||t.short||'')+'</dd></div>').join('')+'</dl>':'';
  const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+linkHtml+termHtml;
  if(!details&&!effect)return '';
- return '<div class="describe-extras">'+(effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
+ return '<div class="describe-extras">'+(includeEffect&&effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
   (details?'<div class="describe-details"'+(shift?'':' hidden')+'>'+details+'</div>':'')+
   (details?'<footer class="describe-hint">'+(touch?'<button type="button" data-describe-more>'+esc(DESCRIBE_UI.detailsButton)+'</button>':esc(DESCRIBE_UI.shiftHint))+'</footer>':'')+'</div>';
 }

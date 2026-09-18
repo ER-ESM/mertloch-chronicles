@@ -1,8 +1,21 @@
 import {TALENTS,SPECS,classSpecs,talentPoints,talentPrerequisites} from './talents.js';
-import {TALENT_UI as UI} from './content/index.js';
+import {TALENT_UI as UI,describe as describeContent} from './content/index.js';
+import {keyFor,actionBar,SPECIAL_KEYS} from './rpg.js';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const art=id=>`<canvas width="64" height="64" data-talent-art="${id}"></canvas>`;
-export function talentTooltip(g,id){const t=Object.values(TALENTS).flat().find(t=>t.id===id);if(!t)return '';const known=g.rpg.talents.learned.includes(id);const spec=SPECS[g.rpg.talents.spec];return `<div class="tooltip-heading">${art(t.id)}<div><strong>${esc(t.name)}</strong><small>${t.grants?UI.active:t.tier===4?UI.capstone:t.tier===0?UI.root:'Passives Talent'} · ${esc(spec?.name||'')}</small></div></div><div class="tooltip-meta"><span>${known?UI.learned:UI.available}</span><span>${t.spent} ${UI.spent}</span></div><p class="talent-effect">${esc(t.text)}</p>${known?'':t.parents.length?'<p>'+UI.parents+': '+t.parents.map(id=>TALENTS[g.rpg.talents.spec].find(t=>t.id===id)?.name).map(esc).join(' / ')+'. '+t.spent+' '+UI.spent+'.</p>':''}`;}
+export function talentSkillsHtml(g,id,touch=false){
+ const t=Object.values(TALENTS).flat().find(t=>t.id===id);if(!t)return '';
+ const skills=t.skills.map(id=>g.skills.find(s=>s.id===id)).filter(Boolean);
+ if(!skills.length)return '<p class="talent-skills">'+esc(UI.generalPassive)+'</p>';
+ const bar=actionBar(g);
+ return '<p class="talent-skills"><b>'+esc(UI.affectedSkills)+':</b> '+skills.map(s=>'<span>'+esc(s.name)+(touch?'':bar.includes(s.id)||SPECIAL_KEYS[s.id]!==undefined?' <kbd>'+esc(keyFor(g,s.id))+'</kbd>':' ('+esc(UI.unbound)+')')+'</span>').join(' · ')+'</p>';
+}
+export function talentTooltip(g,id,touch=false){
+ const t=Object.values(TALENTS).flat().find(t=>t.id===id);if(!t)return '';
+ const known=g.rpg.talents.learned.includes(id),spec=SPECS[g.rpg.talents.spec],d=describeContent('talent',id);
+ const numbers='<dl class="describe-numbers">'+d.numbers.map(n=>'<div><dt>'+esc(n.label)+'</dt><dd><b>'+esc(n.value)+'</b> '+esc(n.unit)+'</dd></div>').join('')+'</dl>';
+ return '<div class="tooltip-heading">'+art(t.id)+'<div><strong>'+esc(t.name)+'</strong><small>'+(t.grants?UI.active:t.tier===4?UI.capstone:t.tier===0?UI.root:UI.passive)+' · '+esc(spec?.name||'')+'</small></div></div><div class="tooltip-meta"><span>'+(known?UI.learned:UI.available)+'</span><span>'+t.spent+' '+UI.spent+'</span></div><p class="talent-effect">'+esc(d.effect)+'</p>'+talentSkillsHtml(g,id,touch)+numbers+(known||!t.parents.length?'':'<p>'+UI.parents+': '+t.parents.map(id=>TALENTS[g.rpg.talents.spec].find(t=>t.id===id)?.name).map(esc).join(' / ')+'.</p>');
+}
 // Polish 7: Knoten werden auf 12–88 % gespreizt (Layout-Daten bleiben bei Klassendesign), damit 60-px-Knoten und Schwellenbänder Luft haben.
 const spreadX=x=>Math.round(12+(x-16)*(76/68));
 export function talentsPanel(g){const state=g.rpg.talents,tree=TALENTS[state.spec].map(t=>({...t,x:spreadX(t.x)})),points=talentPoints(g),learned=id=>state.learned.includes(id);
