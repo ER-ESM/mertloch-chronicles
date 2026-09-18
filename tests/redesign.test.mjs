@@ -1,0 +1,79 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {decodePng} from '../tools/sprite-pipeline/png.mjs';
+import {buildRedesign,COLUMNS,DIRECTIONS} from '../tools/redesign/build.mjs';
+import {redesignArt,redesignPose,redesignFrame,redesignGear,drawRedesignPerson,validRedesignCatalog} from '../redesign-art.js';
+import {equipmentAppearance} from '../equipment-appearance.js';
+import {ITEM_CATALOG} from '../content/items.js';
+import {Game} from '../engine.js';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url)),catalog=JSON.parse(read('assets/redesign/runtime/catalog.json'));
+test('complete production matrix has every authored action, direction and modular gear view',()=>{
+ assert.equal(catalog.complete,true);assert.equal(Object.keys(catalog.assets).length,15);
+ for(const hero of ['dieter','anni','kevin'])for(const state of Object.keys(COLUMNS)){
+  const a=catalog.assets[hero+'-'+state];assert.equal(a.frames.length,COLUMNS[state].length*4);
+  for(const direction of DIRECTIONS)for(const pose of COLUMNS[state])assert.equal(a.frames.filter(f=>f.direction===direction&&f.pose===pose).length,1);
+  assert.equal(createHash('sha256').update(read(a.source)).digest('hex'),a.sourceHash);
+  assert.ok(a.sourceScale>0);assert.equal(a.nativeHeight/a.worldHeight,4);
+  const im=decodePng(read(a.path));for(let i=3;i<im.data.length;i+=4)assert.ok(im.data[i]===0||im.data[i]===255);
+  for(const f of a.frames){assert.ok(f.bounds.x>=2&&f.bounds.y>=2&&f.bounds.x+f.bounds.w<=190&&f.bounds.y+f.bounds.h<=190);assert.ok(f.bounds.count>800);for(const key of ['main','off'])assert.ok(f.sockets[key].x>0&&f.sockets[key].x<192&&f.sockets[key].y>0&&f.sockets[key].y<192);}
+ }
+ assert.equal(Object.keys(catalog.gear).length,6);for(const views of Object.values(catalog.gear))assert.equal(views.length,4);
+});
+test('action priority remains correct while moving; walk is distance-driven and wraps',()=>{
+ const moving={moving:true,walkDistance:18};assert.equal(redesignPose(moving),'walk-3');
+ for(const [p,pose]of [[{dead:true},'dead'],[{hp:0},'dead'],[{dash:.1},'dash'],[{hurt:.1},'hit'],[{parry:.1},'parry'],[{casting:true},'cast'],[{casting:true,usingRanged:true},'ranged-aim'],[{attack:.24},'anticipation'],[{attack:.13},'impact'],[{attack:.02},'recovery'],[{attack:.02,usingRanged:true},'ranged-release']])assert.equal(redesignPose({...moving,...p}),pose);
+ assert.equal(redesignPose({resting:true}),'rest');assert.equal(redesignPose({resting:true,moving:true}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:48}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:-6}),'walk-7');
+});
+test('painted walk articulates both hips and knees with opposite support phases',()=>{
+ for(const hero of ['dieter','anni','kevin'])for(let row=0;row<4;row++){
+  const a=catalog.assets[hero+'-walk'];assert.equal(a.animation,'two-joint-painted-cutout');
+  const first=a.frames[row*8+2],opposite=a.frames[row*8+6];
+  assert.ok(first.joints[0].stridePhase*first.joints[1].stridePhase<0);assert.ok(first.joints[0].stridePhase*opposite.joints[0].stridePhase<0);
+  assert.ok(Math.abs(first.joints[0].ankle.x-opposite.joints[0].ankle.x)>10);
+  assert.ok(a.frames[row*8].joints[0].kneeAngle!==a.frames[row*8].joints[1].kneeAngle);
+  assert.equal(new Set(a.frames.slice(row*8,row*8+8).map(f=>f.hash)).size,8);
+ }
+});
+test('aliases select complete heroes; unloaded delivery and unrelated NPCs retain fallback',()=>{
+ redesignArt.ready=false;assert.equal(redesignFrame('dieter'),null);assert.equal(drawRedesignPerson({},'dieter',0,0),false);
+ redesignArt.catalog=catalog;redesignArt.ready=true;redesignArt.images=new Map(Object.keys(catalog.assets).map(k=>[k,{}]));
+ assert.equal(redesignFrame('baerbel',{direction:'nw',casting:true}).key,'anni-poses');assert.equal(redesignFrame('baerbel',{direction:'nw',casting:true}).frame.direction,'nw');assert.equal(redesignFrame('resident'),null);assert.equal(redesignFrame('dieter',{artPose:'unknown'}),null);
+ for(const hero of ['dieter','anni','kevin'])for(const direction of DIRECTIONS)for(const pose of Object.values(COLUMNS).flat())assert.equal(redesignFrame(hero,{direction,artPose:pose}).frame.pose,pose);
+});
+test('theme gear respects inventory families and two-hand restrictions',()=>{
+ const items=equipmentAppearance({weapon:'tresenhammer',offhand:'topfdeckel'},ITEM_CATALOG);assert.equal(items.some(i=>i.slot==='offhand'),false);assert.equal(items[0].hands,2);
+ assert.equal(redesignGear('dieter',items[0]),'beerhammer');assert.equal(redesignGear('anni',{asset:'shield'}),'citrusshield');assert.equal(redesignGear('kevin',{asset:'slingshot'}),'pfandsling');assert.equal(redesignGear('dieter',{asset:'bottle'}),null);
+ for(const hero of ['dieter','anni','kevin']){assert.equal(redesignFrame(hero,{visualEquipment:items,attack:.25}).key,hero+'-heavy');assert.equal(redesignFrame(hero,{visualEquipment:items,moving:true}).key,hero+'-heavywalk');assert.equal(redesignFrame(hero,{visualEquipment:items,usingRanged:true,attack:.25}).key,hero+'-specials');assert.equal(redesignFrame(hero,{visualEquipment:items,usingRanged:true,parry:.3}).key,hero+'-heavy');}
+});
+test('partial catalogs and a failed native image never activate a mixed delivery',async()=>{
+ assert.ok(validRedesignCatalog(catalog));const partial=structuredClone(catalog);delete partial.assets['kevin-heavy'];assert.equal(validRedesignCatalog(partial),false);
+ const prior={Image:globalThis.Image,fetch:globalThis.fetch};try{
+  globalThis.fetch=async()=>({ok:true,json:async()=>catalog});globalThis.Image=class{set src(v){queueMicrotask(()=>v.includes('anni-specials.png')?this.onerror():this.onload());}};
+  const failed=await import('../redesign-art.js?failed-native');await failed.loadRedesignArt();assert.equal(failed.redesignArt.ready,false);
+  let count=0;globalThis.Image=class{set src(v){count++;queueMicrotask(()=>this.onload());}};
+  const good=await import('../redesign-art.js?complete-native');await good.loadRedesignArt();assert.equal(good.redesignArt.ready,true);assert.equal(count,16);assert.equal(good.redesignArt.details.size,0,'detail atlases are not decoded on game startup');
+ }finally{globalThis.Image=prior.Image;globalThis.fetch=prior.fetch;}
+});
+test('real damage and dodge set bounded animation timers and respawn clears them',()=>{
+ const world={spawn:{x:0,y:0},npc:{x:0,y:0},camps:[],landmarks:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y})},g=new Game(world);
+ g.hitPlayer({damage:1,name:'Test'},20,false);assert.equal(redesignPose(g.player),'hit');g.tick(.05);assert.ok(g.player.hurt>0&&g.player.hurt<.16);
+ g.action('dash');assert.equal(redesignPose(g.player),'dash');for(let i=0;i<8;i++)g.tick(.05);assert.equal(g.player.dash,0);assert.equal(g.player.hurt,0);
+ g.hitPlayer({damage:1,name:'Test'},10000,false);assert.equal(redesignPose(g.player),'dead');g.respawn();assert.equal(redesignPose(g.player),'idle');
+ const caster=new Game(world,{level:5});assert.ok(caster.action('buff'));assert.equal(redesignPose(caster.player),'cast');for(let i=0;i<7;i++)caster.tick(.05);assert.equal(caster.player.castPose,0);
+});
+test('active sources have exact prompts and provenance; garment runs exclude the head area',()=>{
+ const generation=JSON.parse(read('assets/redesign/generation.json'));
+ for(const a of Object.values(catalog.assets)){
+  const provenance=generation.records.find(r=>r.source===a.source&&r.sha256===a.sourceHash);assert.ok(provenance);assert.equal(provenance.tool,'image_gen.imagegen');assert.ok(provenance.prompt.length>300);assert.ok(read(provenance.promptFile).length>300);
+  for(const f of a.frames)for(const [y,x,w]of f.clothRuns){assert.ok(x>=f.bounds.x&&x+w<=f.bounds.x+f.bounds.w);const min=f.pose==='anticipation'?.44:f.pose==='rest'?.46:a.hero==='anni'?.36:.29;assert.ok(y>=f.bounds.y+f.bounds.h*min);assert.ok(y<=f.bounds.y+f.bounds.h*.66);}
+ }
+});
+test('all new runtime files reproduce byte-for-byte from reviewed sources',()=>{
+ for(const [p,bytes] of buildRedesign().files)assert.deepEqual(bytes,read(p),p);
+});
+test('production boot loads redesign and cache includes runtime without sources',()=>{
+ assert.match(read('app.js').toString(),/Promise.all\(\[loadRedesignArt\(\)/);assert.match(read('live-art.js').toString(),/drawRedesignPerson/);
+ const cache=read('scripts/pwa-cache.mjs').toString();assert.ok(cache.includes('assets/redesign/runtime/'));assert.ok(!cache.includes('assets/redesign/sources/'));
+});

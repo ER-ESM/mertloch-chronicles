@@ -28,6 +28,8 @@
     "sprites:precision": "node tools/sprite-pipeline/build-precision.mjs",
     "mobile:check": "node scripts/mobile-check.mjs",
     "prerender:build": "node tools/prerender/build-prerender.mjs",
-    "prerender:demo": "node tools/prerender/demo-sheet.mjs"
+    "prerender:demo": "node tools/prerender/demo-sheet.mjs",
+    "redesign:build": "node tools/redesign/build.mjs",
+    "redesign:check": "node --test tests/redesign.test.mjs"
   }
 }

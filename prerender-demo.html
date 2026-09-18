@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="de">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>Helden auf dem Dorfplatz · Mertloch Chronicles</title>
+ <link rel="icon" href="data:,"><link rel="stylesheet" href="prerender-demo.css">
+</head>
+<body>
+ <header><a class="brand" href="index.html">MC <span>Mertloch Chronicles</span></a><a href="#varianten">Alle Ausrüstungssets ↓</a></header>
+ <main>
+  <div class="intro"><div><p class="eyebrow">AUS DER PRE-RENDER-PIPELINE · E-30</p><h1>Drei Helden. Ein Dorf.<br>Jede Menge Klamotten.</h1><p>Erkunde die neuen Figuren in Bewegung und stelle ihre Ausrüstung direkt zusammen.</p></div><span class="stamp">Interaktive Demo<br><strong>18.09.2026</strong></span></div>
+  <p class="notice"><a href="theme-demo.html"><strong>Neu: detaillierte Themen-Demo – Bier, Aperol und Pfand-Technik ansehen ↗</strong></a><br>Diese technische Modellvorschau verwendet weiterhin das Kasten-Rig.</p>
+  <div id="status" role="status">Helden, Ausrüstung und Dorf werden geladen …</div>
+  <section class="demo" aria-label="Interaktive Heldendemo">
+   <div class="stage-panel">
+    <div class="section-bar"><span><i></i> AUF DEM DORFPLATZ</span><span id="scale-label">Spielzoom 2×</span></div>
+    <div class="stage-wrap"><canvas id="scene" width="1536" height="960" tabindex="0" aria-label="Dorfplatz mit drei Helden. Klicken oder mit Pfeiltasten und WASD bewegen."></canvas><div class="scene-caption">Mertloch <span>Vor der Schänke</span></div></div>
+    <div class="scene-help">Klicke auf den Platz oder nutze WASD / Pfeiltasten. <span>Leertaste: Angriff</span></div>
+    <div class="controls">
+     <label>Bewegung<select id="action"><option value="walk">Laufen</option><option value="idle">Stehen</option><option value="attack">Angreifen</option><option value="hit">Treffer</option><option value="rest">Ausruhen</option></select></label>
+     <label>Blickrichtung<select id="direction"><option value="se">Südost ↘</option><option value="sw">Südwest ↙</option><option value="ne">Nordost ↗</option><option value="nw">Nordwest ↖</option></select></label>
+     <label>Ansicht<select id="zoom"><option value="2">Spielzoom 2×</option><option value="4">Detailzoom 4×</option></select></label>
+     <button id="pause" type="button" aria-pressed="false">Pause</button>
+    </div>
+   </div>
+   <aside>
+    <div class="hero-tabs" role="group" aria-label="Held auswählen"></div>
+    <p class="eyebrow" id="hero-role"></p><h2 id="hero-name"></h2>
+    <label class="full-label">Ausrüstungsset<select id="preset"></select></label>
+    <div class="portrait-row"><canvas id="portrait" width="192" height="192" aria-label="Ausgewählter Held mit aktueller Ausrüstung"></canvas><div><strong id="set-name"></strong><p id="set-note"></p><span class="tag">Gleiche Figur wie auf dem Platz</span></div></div>
+    <div class="mode-switch" role="group" aria-label="Aktive Waffe"><button data-mode="melee" type="button">Nahkampf</button><button data-mode="ranged" type="button">Fernkampf</button></div>
+    <details><summary>Ausrüstung selbst kombinieren</summary><div id="equipment-controls"></div></details>
+    <ul id="gear-list" aria-label="Angelegte Ausrüstung"></ul>
+    <button id="download-scene" class="export" type="button">Dorfansicht als PNG speichern ↗</button>
+   </aside>
+  </section>
+  <section class="directions-section" aria-label="Vier Ansichten"><div><p class="eyebrow">RUNDUM ANGESEHEN</p><h2>Dasselbe Set. Jede Richtung.</h2><p>Ausgewählte Ausrüstung und Pose aus vier Blickwinkeln.</p></div><div id="directions"></div></section>
+  <section id="varianten"><div class="gallery-heading"><div><p class="eyebrow">DIE AUSRÜSTUNG MACHT DEN UNTERSCHIED</p><h2>Neun Sets für den nächsten Ausflug.</h2><p>Alle Varianten folgen der gewählten Pose und Blickrichtung. Ein Klick übernimmt das Set auf den Dorfplatz.</p></div><button id="download-grid" type="button">Vergleich als PNG ↗</button></div><div id="gallery"></div></section>
+  <footer>Vorgerenderte Figuren · echte Gegenstände aus dem Spiel · dieselbe Ausrüstungsdarstellung in Welt und Vorschau. <a href="index.html">Zum Spiel ↗</a></footer>
+ </main>
+ <script type="module" src="prerender-demo.js"></script>
+</body></html>

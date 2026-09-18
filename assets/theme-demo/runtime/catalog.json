@@ -1,0 +1,358 @@
+{
+  "version": 1,
+  "source": "built-in imagegen",
+  "type": "authored-theme-turnarounds",
+  "directions": [
+    "se",
+    "sw",
+    "ne",
+    "nw"
+  ],
+  "frameSize": 192,
+  "pivot": {
+    "x": 96,
+    "y": 160
+  },
+  "nativeHeight": 104,
+  "worldHeight": 26,
+  "animated": false,
+  "modularGear": false,
+  "assets": {
+    "dieter-braumeister": {
+      "id": "dieter-braumeister",
+      "hero": "dieter",
+      "name": "Dosen-Dieter",
+      "theme": "Hopfen & Hämmer",
+      "subtitle": "Der Braumeister",
+      "color": "#d7aa60",
+      "description": "Kupfer, Eiche und ein guter Schluck Standfestigkeit.",
+      "gear": [
+        {
+          "name": "Schaumkrone",
+          "type": "Bierkrug-Hammer",
+          "detail": "Gehämmerter Stahl, Kupferbänder und ein kräftiger Eichenstiel."
+        },
+        {
+          "name": "Letzte Runde",
+          "type": "Fassschild",
+          "detail": "Genieteter Eisenreif, sichtbare Holzmaserung und ein massiver Messinghahn."
+        },
+        {
+          "name": "Tragbares Feierabendfass",
+          "type": "Rücken & Rüstung",
+          "detail": "Ledergurte, Hopfenranken und kupferne Schulterbeschläge."
+        }
+      ],
+      "path": "assets/theme-demo/runtime/dieter-braumeister.png",
+      "source": "assets/theme-demo/sources/dieter-braumeister.png",
+      "sourceHash": "12503a3c56e4a032772a82beb14f8d6edd8fc896fbb4c0f76360c4bcf880954c",
+      "hash": "8b6bacbe19cb2815bdcf446533bf9be0365355c3b9282f1e5d3248a277e9122e",
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "bounds": {
+            "x": 51,
+            "y": 56,
+            "w": 89,
+            "h": 104,
+            "count": 4975
+          },
+          "sourceBounds": {
+            "x": 89,
+            "y": 49,
+            "w": 473,
+            "h": 550,
+            "count": 140010
+          }
+        },
+        {
+          "x": 192,
+          "y": 0,
+          "bounds": {
+            "x": 54,
+            "y": 55,
+            "w": 85,
+            "h": 105,
+            "count": 4812
+          },
+          "sourceBounds": {
+            "x": 718,
+            "y": 49,
+            "w": 447,
+            "h": 553,
+            "count": 133151
+          }
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "bounds": {
+            "x": 53,
+            "y": 56,
+            "w": 85,
+            "h": 104,
+            "count": 4726
+          },
+          "sourceBounds": {
+            "x": 122,
+            "y": 663,
+            "w": 451,
+            "h": 552,
+            "count": 133042
+          }
+        },
+        {
+          "x": 576,
+          "y": 0,
+          "bounds": {
+            "x": 51,
+            "y": 55,
+            "w": 90,
+            "h": 105,
+            "count": 4823
+          },
+          "sourceBounds": {
+            "x": 723,
+            "y": 661,
+            "w": 478,
+            "h": 558,
+            "count": 134676
+          }
+        }
+      ],
+      "referenceHeight": 550,
+      "scale": 0.1890909090909091,
+      "detailPaths": [
+        "assets/theme-demo/runtime/dieter-braumeister-se.png",
+        "assets/theme-demo/runtime/dieter-braumeister-sw.png",
+        "assets/theme-demo/runtime/dieter-braumeister-ne.png",
+        "assets/theme-demo/runtime/dieter-braumeister-nw.png"
+      ]
+    },
+    "anni-aperol": {
+      "id": "anni-aperol",
+      "hero": "baerbel",
+      "name": "Aperol-Anni",
+      "theme": "Zitrus & Zauber",
+      "subtitle": "Die Aperol-Alchemistin",
+      "color": "#ee9e61",
+      "description": "Orangenlicht, feines Glas und Heilung mit Nachdruck.",
+      "gear": [
+        {
+          "name": "Sonnenstrahl",
+          "type": "Hochdruckspray",
+          "detail": "Polierte Kupferdüse, orangefarbenes Reservoir und eine grüne Druckleitung."
+        },
+        {
+          "name": "Zitruswache",
+          "type": "Heilerschild",
+          "detail": "Orangensegmente aus Glas in einem gehämmerten Kupferrahmen."
+        },
+        {
+          "name": "Goldene Stunde",
+          "type": "Kleidung & Tränke",
+          "detail": "Blumenstickerei, karierte Schürze, kleine Elixiere und Messingschnallen."
+        }
+      ],
+      "path": "assets/theme-demo/runtime/anni-aperol.png",
+      "source": "assets/theme-demo/sources/anni-aperol.png",
+      "sourceHash": "6572882bb812082a529ed37f0d8f121f66db8d2e37297863c9237347866a4ec2",
+      "hash": "7780b46ba35fdcb3bd3f101895ccc7cee2e015908f5f59c35db32a70f01172e6",
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "bounds": {
+            "x": 67,
+            "y": 56,
+            "w": 57,
+            "h": 104,
+            "count": 2972
+          },
+          "sourceBounds": {
+            "x": 176,
+            "y": 10,
+            "w": 340,
+            "h": 616,
+            "count": 104930
+          }
+        },
+        {
+          "x": 192,
+          "y": 0,
+          "bounds": {
+            "x": 67,
+            "y": 56,
+            "w": 59,
+            "h": 104,
+            "count": 3134
+          },
+          "sourceBounds": {
+            "x": 769,
+            "y": 10,
+            "w": 348,
+            "h": 617,
+            "count": 109739
+          }
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "bounds": {
+            "x": 68,
+            "y": 59,
+            "w": 56,
+            "h": 101,
+            "count": 2748
+          },
+          "sourceBounds": {
+            "x": 158,
+            "y": 638,
+            "w": 333,
+            "h": 597,
+            "count": 97042
+          }
+        },
+        {
+          "x": 576,
+          "y": 0,
+          "bounds": {
+            "x": 67,
+            "y": 59,
+            "w": 58,
+            "h": 101,
+            "count": 2922
+          },
+          "sourceBounds": {
+            "x": 763,
+            "y": 627,
+            "w": 341,
+            "h": 611,
+            "count": 101661
+          }
+        }
+      ],
+      "referenceHeight": 616,
+      "scale": 0.16883116883116883,
+      "detailPaths": [
+        "assets/theme-demo/runtime/anni-aperol-se.png",
+        "assets/theme-demo/runtime/anni-aperol-sw.png",
+        "assets/theme-demo/runtime/anni-aperol-ne.png",
+        "assets/theme-demo/runtime/anni-aperol-nw.png"
+      ]
+    },
+    "kevin-pfand": {
+      "id": "kevin-pfand",
+      "hero": "kevin",
+      "name": "Klo-Kevin",
+      "theme": "Pfand & Präzision",
+      "subtitle": "Der Pfand-Ingenieur",
+      "color": "#a8bc85",
+      "description": "Aus Leergut wird Ausrüstung. Aus Kabelbindern wird Kunst.",
+      "gear": [
+        {
+          "name": "Rückgaberecht",
+          "type": "Mechanische Pfandschleuder",
+          "detail": "Holzgabel, Messingbeschläge, doppelte Gummibänder und ein grünes Visier."
+        },
+        {
+          "name": "Drei gewinnt",
+          "type": "Flaschenträger",
+          "detail": "Grüne und bernsteinfarbene Mehrwegflaschen in einem Metall-Holz-Gestell."
+        },
+        {
+          "name": "Alles noch gut",
+          "type": "Werkzeug & Kleidung",
+          "detail": "Kronkorken-Panzerung, geflickter Denim, Karabiner und verstärkte Taschen."
+        }
+      ],
+      "path": "assets/theme-demo/runtime/kevin-pfand.png",
+      "source": "assets/theme-demo/sources/kevin-pfand.png",
+      "sourceHash": "3cea27c23508704498221355a7d686619f32dda7bcc775065d7ea10ef97e858d",
+      "hash": "a0601024cc4f5eb611b8fd264d0be5baf244262526a1a564a89475ec4aec9008",
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "bounds": {
+            "x": 71,
+            "y": 56,
+            "w": 50,
+            "h": 104,
+            "count": 2905
+          },
+          "sourceBounds": {
+            "x": 213,
+            "y": 11,
+            "w": 291,
+            "h": 606,
+            "count": 98571
+          }
+        },
+        {
+          "x": 192,
+          "y": 0,
+          "bounds": {
+            "x": 70,
+            "y": 57,
+            "w": 53,
+            "h": 103,
+            "count": 2949
+          },
+          "sourceBounds": {
+            "x": 789,
+            "y": 14,
+            "w": 307,
+            "h": 603,
+            "count": 100070
+          }
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "bounds": {
+            "x": 73,
+            "y": 58,
+            "w": 45,
+            "h": 102,
+            "count": 2717
+          },
+          "sourceBounds": {
+            "x": 220,
+            "y": 634,
+            "w": 265,
+            "h": 593,
+            "count": 93116
+          }
+        },
+        {
+          "x": 576,
+          "y": 0,
+          "bounds": {
+            "x": 69,
+            "y": 58,
+            "w": 53,
+            "h": 102,
+            "count": 2956
+          },
+          "sourceBounds": {
+            "x": 732,
+            "y": 637,
+            "w": 309,
+            "h": 593,
+            "count": 100068
+          }
+        }
+      ],
+      "referenceHeight": 606,
+      "scale": 0.1716171617161716,
+      "detailPaths": [
+        "assets/theme-demo/runtime/kevin-pfand-se.png",
+        "assets/theme-demo/runtime/kevin-pfand-sw.png",
+        "assets/theme-demo/runtime/kevin-pfand-ne.png",
+        "assets/theme-demo/runtime/kevin-pfand-nw.png"
+      ]
+    }
+  }
+}

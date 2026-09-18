@@ -102,3 +102,13 @@ Gehaltene Dinge: Griffpunkt im Ursprung, Klinge/Kopf entlang +Y (die Pipeline ne
 - Entscheidungen: E-02 (drei Archetypen), E-10 (Stil), E-11 (Maßstab über Türöffnungen, Held 26 Einheiten), E-17 (Klassenwahl = Klamottenwahl, Mentoren bleiben NPCs), E-30 (Pre-Render, in `docs/ENTSCHEIDUNGEN.md`).
 - Pipeline-Quellen: `tools/prerender/rig.js` (Rig, Knochen, Gear-Zuordnung), `poses.js`, `render.html` (Kamera, Palette, Kontur), `build-prerender.mjs`, Laufzeit `prerender-art.js`.
 - Ansprechpartner: Produktion E. Ruf, technische Anbindung UI-Rolle (Mertloch-Pipeline, `docs/ROLLEN.md`).
+
+## 5 · Konkrete Demos mit dem aktuellen Pipeline-Stand
+
+[Interaktive Dorfplatz-Demo](../prerender-demo.html): drei Helden, neun echte Ausrüstungssets, vier Richtungen, Lauf-/Kampfposen, frei wählbare Gegenstände und PNG-Export. Sie nutzt denselben Pre-Render-Figurenrenderer wie das Spiel. [Dokumentation, Vergleichsbilder und bekannte Grenzen](PRERENDER-DEMOS-2026-09-18.md). Die dargestellten Körper stammen weiterhin aus dem Kasten-Rig; die oben beauftragten 3D-Modelle stehen aus.
+
+Nach der Kritik an der Detailarmut des Kasten-Rigs entstand die [detaillierte Themen-Demo](../theme-demo.html) mit Bier/Braukunst, Aperol/Zitrus und Pfand-Technik. [Originale, Vergleichsbilder und Exportvertrag](THEMEN-DEMO-2026-09-18.md). Diese ausgearbeiteten Rasteransichten sind eine konkrete visuelle Vorgabe für die spätere Modellierung, noch keine austauschbaren 3D-Rigs.
+
+## 6 · Umsetzung des anschließend beauftragten Sprite-Redesigns
+
+Der Auftrag, den bestätigten Detail-Look für alle Richtungen und Bewegungen produktiv zu verwenden, ist im neuen Raster-/Gelenkpfad umgesetzt: [Bewegungsdemo](../redesign-demo.html), [Pipeline, Inventaranbindung und Prüfvertrag](REDESIGN-PIPELINE-2026-09-18.md). Der normale Spielrenderer lädt 384 Körperbilder einschließlich eigener Zweihandhaltungen und 24 neue Gear-Ansichten. Die oben beschriebenen GLB-Modelle werden damit nicht als geliefert ausgewiesen; sie gehören weiterhin zum gesonderten 3D-Modellierungsauftrag.

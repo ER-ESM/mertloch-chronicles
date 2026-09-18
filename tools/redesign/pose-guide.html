@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Redesign gait pose guide</title><link rel="icon" href="data:,"></head><body><canvas id="guide" width="1440" height="960"></canvas><script type="module">
+import * as THREE from '../prerender/vendor/three.module.min.js';
+import {buildHero} from '../prerender/rig.js';
+import {walkPose,poseLift} from '../prerender/poses.js';
+const renderer=new THREE.WebGLRenderer({antialias:false,alpha:true,preserveDrawingBuffer:true});renderer.setSize(192,192);renderer.setClearColor(0xffffff,0);
+const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xffffff,0x667766,2));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(-30,60,40);scene.add(light);
+const camera=new THREE.OrthographicCamera(-24,24,24,-24,.1,500),pitch=20*Math.PI/180;camera.position.set(0,13+Math.sin(pitch)*200,Math.cos(pitch)*200);camera.lookAt(0,13,0);
+window.makeGuide=id=>{
+ const h=buildHero(id);scene.add(h.root);
+ for(const side of ['L','R'])for(const limb of ['thigh','shin','foot','arm','forearm'])h.bones[limb+side].traverse(o=>{if(o.isMesh)o.material.color.set(side==='L'?0xe54d45:0x398bd1);});
+ const canvas=document.querySelector('#guide'),c=canvas.getContext('2d');c.fillStyle='#ffffff';c.fillRect(0,0,1440,960);c.imageSmoothingEnabled=false;
+ [40,-40,140,-140].forEach((yaw,row)=>{for(let column=0;column<8;column++){
+  const t=column/8;for(const b of Object.values(h.bones))b.rotation.set(0,0,0);for(const [key,r] of Object.entries(walkPose(t)))h.bones[key].rotation.set(r.x,r.y,r.z);h.bones.hips.position.y=h.body.legs+poseLift('walk',t);h.root.rotation.y=yaw*Math.PI/180;renderer.render(scene,camera);
+  c.drawImage(renderer.domElement,36,34,120,154,column*180,row*240+3,180,231);
+ }});scene.remove(h.root);return canvas.toDataURL('image/png');
+};window.makeGuide('dieter');window.guideReady=true;
+</script></body></html>

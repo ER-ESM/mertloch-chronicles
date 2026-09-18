@@ -2,6 +2,7 @@ import {drawBoar} from './maifeld-boar-rig.js';
 import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 import {prerenderArt,drawPrerenderPerson} from './prerender-art.js';
+import {drawRedesignPerson} from './redesign-art.js';
 export {equipmentAppearance};
 export const liveArt={ready:false,catalog:null,images:{},animals:{}};
 const base='./assets/maifeld-live/runtime/';
@@ -37,11 +38,11 @@ function gear(c,items,s,west,back,behind,p){
  for(const item of items){const a=item.asset,slot=item.slot;
   if(slot==='ranged'||slot==='weapon'||slot==='offhand')continue;
   if(slot==='legs')for(const [i,f] of s.feet.entries()){const hip={x:s.waist.x+(i?4:-4),y:s.waist.y};const length=Math.max(8,f.y-hip.y-3);gearPart(c,a,(hip.x+f.x)/2,(hip.y+f.y-3)/2,7,length,west,-Math.atan2(f.x-hip.x,length),i);}
-  if(slot==='feet')for(const f of s.feet)gearPart(c,a,f.x,f.y-2.5,9,8,west);
+  if(slot==='feet')for(const f of s.feet)gearPart(c,a,f.x,f.y-2.5,9,8,west,f.angle||0);
  }
  if(body)gearPart(c,body.asset+(back?'Back':''),s.torso.x,s.torso.y+3,s.torso.w+2,s.torso.h,west);
  for(const item of items){const a=item.asset,slot=item.slot;
-  if(slot==='head')gearPart(c,a+(back?'Back':''),s.head.x,s.head.y+3,21,13,west);
+  if(slot==='head')gearPart(c,a+(back?'Back':''),s.head.x,s.head.y+3,21,13,west,s.headAngle||0);
   if(slot==='shoulders')for(const at of s.shoulders)gearPart(c,a,at.x,at.y,8,6,west);
   if(slot==='neck')gearPart(c,a,s.torso.x,s.torso.y-4,8,6,west);
   if(slot==='waist')gearPart(c,a,s.waist.x,s.waist.y,18,5,west);
@@ -78,6 +79,10 @@ function drawContentPerson(c,id,x,y,p,magnify){
 
 export function drawLivePerson(c,id,x,y,time=0,p={},scale=1){
  id=livePersonId(id,p.variant);
+ if(drawRedesignPerson(c,id,x,y,p,p.artMagnify??scale/(26/33),(ctx,items,s,state)=>{
+  const half=at=>({...at,x:at.x/2,y:at.y/2}),ss={...s,main:half(s.main),off:half(s.off),head:half(s.head),torso:{...half(s.torso),w:s.torso.w/2,h:s.torso.h/2},waist:half(s.waist),shoulders:s.shoulders.map(half),feet:s.feet.map(half)};
+  ctx.save();ctx.scale(2,2);gear(ctx,items,ss,s.west,s.back,false,state);ctx.restore();
+ }))return true;
  if(prerenderArt.enabled&&drawPrerenderPerson(c,id,x,y,p,p.artMagnify??scale/(26/33)))return true;
  if(drawContentPerson(c,id,x,y,p,p.artMagnify??scale/(26/33)))return true;
  if(!liveArt.ready)return false;const cat=liveArt.catalog,h=cat.heroes[id],n=cat.people[id];if(!h&&!n)return false;

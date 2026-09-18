@@ -231,6 +231,10 @@ Regelwerk, Bedienung, Build-Ausgabe, Grenzen und Prüfverfahren: **[WORLD-GENERA
 
 `npm test` prüft zusätzlich zu Kampf, Kollisionen, Weltgenerierung und Quests alle drei Clanmechaniken, Aggro mit Sichtkontakt, neutrale Gegenwehr, Verfolgungsabbruch, Respawn-Abstände und Zellwechsel. Ein Test simuliert eine ganze Minute freies Umherlaufen und prüft dabei die Kollisionen aller Gegner. `npm run world:validate` erstellt sechs vollständige Welten samt Prüfberichten.
 
+## Sprite-Pipeline
+
+Die detaillierten Themenhelden laufen im normalen Spielrenderer. [Bewegungs- und Ausrüstungsdemo](redesign-demo.html), [Sprite-Pipeline und Prüfungen](docs/REDESIGN-PIPELINE-2026-09-18.md). Export: `npm run redesign:build`; gezielte Prüfung: `npm run redesign:check`.
+
 ## Mitwirkende
 
 - [Oliver Schiemann (@Checkov23)](https://github.com/Checkov23) — Code-Review, Fehlerbehebung der Heilung nach dem letzten Kill und Regressionstests.

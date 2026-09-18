@@ -65,7 +65,7 @@ export class Game {
     initTutorial(this,saved,options.guidedStart);
   }
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
-  resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.procState=freshProcState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
+  resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.procState=freshProcState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.hurt=0;this.player.dash=0;this.player.castPose=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
   learnTalentSkill(id){if(id)unlockOnBar(this,[id]);}
   lootRandom(){let n=this.rpg.lootState|0;n^=n<<13;n^=n>>>17;n^=n<<5;this.rpg.lootState=n>>>0;return this.rpg.lootState/4294967296;}
   switchMember(id){if(this.dead||this.paused||!this.atHub()){this.toast(hubRule('Clanwechsel'));return false;}if(member(id).id!==id)return false;this.member=member(id);this.rpg.talents=this.rpg.talentBuilds[id];this.player.classId=id;this.lastStrike=-100;this.resetClassState();this.refreshStats();this.target=null;this.emit('classChanged');this.emit('save');return true;}
@@ -118,6 +118,7 @@ export class Game {
     const base=this.baseEffects();
     this.cooldowns[id]=skillCooldown(this,s,cs);p.energy-=cost;consumeProc(this,'glow',id);consumeProc(this,'free',id);const pm=consumeProc(this,'empower',id)?2:1;
     if(!s.offGcd&&!completing)this.gcd=cs.gcd;
+    if(!['dash','parry'].includes(id)&&!(s.range&&!s.ground))p.castPose=.28;
     if(s.range&&!s.ground){this.autoAttack.enabled=true;e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.direction=walkFacing(e.x-p.x,e.y-p.y,p.direction||'se');p.attack=.25;p.attackSource=s.weaponSource||'melee';}
     if((s.ground&&s.damage||id==='detonate'||id==='snare')&&this.target?.hp>0)startAuto(this);
     if(s.talent){performTalent(this,s,point,cs);if(s.ground){this.aiming=null;this.aimPoint=null;}}
@@ -133,6 +134,7 @@ export class Game {
     }
     if(id==='parry'){p.parry=s.window+(cs.parryWindow||0);p.parryCharges=cs.doubleParry?2:1;this.effect('shield',p.x,p.y,{life:.8,max:.8});}
     if(id==='dash'){
+      p.dash=.22;
       let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
       if(this.touchMove&&(this.touchMove.x||this.touchMove.y)){dx=this.touchMove.x;dy=this.touchMove.y;}if(!dx&&!dy){dx=e?p.x-e.x:p.facing;dy=e?p.y-e.y:0;}const n=Math.hypot(dx,dy)||1;dx/=n;dy/=n;p.invulnerable=.4;this.moveTo=null;this.path=[];this.routeGoal=null;
       for(let i=0;i<s.steps;i++){this.effect('trail',p.x,p.y,{life:.3,max:.3});this.move(p,dx*4,dy*4);}
@@ -360,7 +362,7 @@ export class Game {
   }
   hitPlayer(e,n,avoidable=true){const p=this.player,fresh=p.inCombat<=0;if(p.invulnerable>0&&avoidable){this.stats.dodges++;fireProcs(this,'dodge',combatStats(this));this.float(p.x,p.y-25,'AUSGEWICHEN','#b8e0d3');return;}
     if(p.parry>0&&avoidable){p.parryCharges=Math.max(0,(p.parryCharges||1)-1);if(!p.parryCharges)p.parry=0;fireProcs(this,'parry',combatStats(this));onParry(this,e,combatStats(this));p.runes=Math.min(3,p.runes+1);p.energy=Math.min(100,p.energy+20);this.stats.parries++;this.damage(e,this.skills.find(s=>s.id==='parry').reflect*(1+(combatStats(this).reflect||0)),'Parade');p.hp=Math.min(p.maxHp,p.hp+(this.member.passives?.parryHeal||0));this.float(p.x,p.y-25,'PARIERT','#f2da92');this.effect('interrupt',p.x,p.y);this.log('Perfekte Parade · +1 Punkt, +20 Randale.');return;}
-    const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs)*(this.baseEffects().damageTaken??1));p.hp=Math.max(0,p.hp-n);p.inCombat=7;if(p.hp>0&&p.hp/p.maxHp<.35)fireProcs(this,'lowHealth',cs);if(e.arena)(this.arenaStats||(this.arenaStats=freshArenaStats())).taken+=n;this.noteAttacker(e,n,fresh);this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;stopAuto(this,false);this.casting=null;this.keys.clear();this.moveTo=null;this.path=[];this.routeGoal=null;this.memoryEvent({kind:'firstDeath'});this.emit('death');}
+    const cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}n=Math.round(modifyHit(this,n,cs)*(this.baseEffects().damageTaken??1));p.hp=Math.max(0,p.hp-n);if(n>0)p.hurt=.16;p.inCombat=7;if(p.hp>0&&p.hp/p.maxHp<.35)fireProcs(this,'lowHealth',cs);if(e.arena)(this.arenaStats||(this.arenaStats=freshArenaStats())).taken+=n;this.noteAttacker(e,n,fresh);this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;stopAuto(this,false);this.casting=null;this.keys.clear();this.moveTo=null;this.path=[];this.routeGoal=null;this.memoryEvent({kind:'firstDeath'});this.emit('death');}
   }
   startCast(e){const p=this.player,set=CAST_SETS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length];
     e.cycle++;if(e.type==='boss'&&e.cycle===1&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].engage,'boss');
@@ -370,14 +372,14 @@ export class Game {
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
-  respawn(){const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});
+  respawn(){const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
   tick(dt){if(this.paused||this.dead)return;dt=Math.min(dt,.05);this.time+=dt;
     if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});this.effect('burst',z.x,z.y,{life:.7,max:.7,radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this))this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
-    for(const key of ['parry','invulnerable','attack','inCombat'])p[key]=Math.max(0,p[key]-dt);
+    for(const key of ['parry','invulnerable','attack','inCombat','dash','hurt','castPose'])p[key]=Math.max(0,(p[key]||0)-dt);
     if(p.inCombat<=0&&this.attackers?.size)this.attackers.clear();
     const tickStats=combatStats(this);p.energy=Math.min(100,p.energy+dt*((p.inCombat>0?BALANCE.momentum.combatEnergyRegen:BALANCE.player.energyRegen)+(tickStats.energyRegen||0)));
     // The combat timeout outlasts the kill bonus; rest can start once no opponent is fighting.

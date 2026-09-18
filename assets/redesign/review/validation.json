@@ -1,0 +1,36 @@
+{
+    "date":  "2026-09-18",
+    "tests":  {
+                  "command":  "npm test",
+                  "passed":  396,
+                  "failed":  0
+              },
+    "build":  {
+                  "command":  "npm run build",
+                  "passed":  true
+              },
+    "catalogSha256":  "02754784e5fbfa9d9cebbe94d16f4a14a1515399c258dadd676ecf6a2306a69e",
+    "atlases":  15,
+    "frames":  384,
+    "gearViews":  24,
+    "browser":  "browser-result.json",
+    "production":  {
+                       "path":  "/_site/index.html",
+                       "nativeAtlasesLoaded":  15,
+                       "movementDirections":  [
+                                                  "se",
+                                                  "sw",
+                                                  "ne",
+                                                  "nw"
+                                              ],
+                       "offlineReload":  true,
+                       "serviceWorkerControlled":  true,
+                       "cache":  "mertloch-pwa-036df2e749a61cc5"
+                   },
+    "scope":  "Built production artifacts; GitHub Pages release is verified separately after a fast-forward push to main.",
+    "regressions":  {
+                        "command":  "node --test tests/redesign.test.mjs tests/live-art.test.mjs tests/game.test.mjs",
+                        "passed":  28,
+                        "failed":  0
+                    }
+}

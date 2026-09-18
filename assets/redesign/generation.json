@@ -1,0 +1,363 @@
+{
+  "date": "2026-09-18",
+  "note": "Raster generation is nondeterministic. Runtime export is deterministic; production walks use the painted two-joint cutout rig, not the rejected generated walk studies.",
+  "records": [
+    {
+      "id": "anni-contacts",
+      "source": "assets/redesign/sources/anni-contacts.png",
+      "sha256": "3d4d2e573d42d1cb08e4d20f577cd68e4f6c2fa552f39e680812bf0ead0d799d",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-contacts.prompt.txt",
+      "prompt": "Create a precise 2-column x4-row WALK CONTACT POSE study for the supplied detailed RPG hero. Exactly 8 full-body sprites, transparent alpha background. Same face, outfit, textures, empty hands and character size in every cell. Both columns face the SAME direction. Row1 front-right (SE), row2 front-left (SW), row3 back-right (NE), row4 back-left (NW). COLUMN A = LEFT FOOT FORWARD and RIGHT FOOT BACK; COLUMN B = RIGHT FOOT FORWARD and LEFT FOOT BACK. Full stride, BOTH legs straight/slightly bent, clearly split equally to either side of the hips. THIS IS A WALK CYCLE, so exchange the two ANATOMICAL legs between columns. The NEAR leg is in FRONT in column A and BEHIND in column B: do not merely copy the same leading leg. For SE row1: A near leg slants DOWN-RIGHT ahead; B near leg slants DOWN-LEFT behind, its heel lifted, while far leg slants DOWN-RIGHT ahead. For SW row2: A near leg slants DOWN-LEFT ahead; B near leg slants DOWN-RIGHT behind. Back views follow the same reversal with appropriate occlusion. Both feet must be widely apart in each frame. Opposite arm swing accompanying opposite foot. NO lifted knee hopping pose. Keep the torso upright. Perfectly consistent rich painterly pixel style, intricate clothing and gear details, warm light top-left, dark slate outlines. Full bodies centered and separated by generous gutters. No held gear. No words or ground.\n",
+      "references": [
+        "assets/redesign/sources/anni-walk.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-a77fdbe1-997b-4d01-ad94-e15a0f87c563.png",
+      "runtime": false
+    },
+    {
+      "id": "anni-poses",
+      "source": "assets/redesign/sources/anni-poses.png",
+      "sha256": "f91f86be227d7cd2c568769960a66f44d6f7d70326cace51200be6ad8d2d7600",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-poses.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Aperol-Anni CITRUS ALCHEMIST: exactly the reference female face, golden/copper hair high bun with orange sunglasses, hoop earrings, orange floral blouse, checked embroidered cream apron, brown leather utility belt, olive trousers, brown ankle boots, citrus potion bottles, copper reservoir backpack and green hose. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). Every character in one row keeps that exact direction. COLUMNS: 1 IDLE calm planted stance with empty fists at hips; 2 MELEE WINDUP right fist raised beside and above shoulder, left fist guarding chest; 3 MELEE IMPACT right arm extended forward/diagonally down at chest level, firm staggered stance; 4 RECOVERY lowered right arm returning to idle; 5 HIT RECOIL torso leaning back, knees bent, hands apart; 6 PARRY left fist extended at chest level holding an invisible shield, right fist near waist; 7 CAST both empty hands forward at chest height, focused expression, no spell effect; 8 REST seated on the floor with knees bent and hands on knees. These are distinct fully articulated poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\n",
+      "references": [
+        "assets/theme-demo/sources/anni-aperol.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-b3ab72c2-09af-4564-8255-bee600259006.png",
+      "runtime": true
+    },
+    {
+      "id": "anni-specials-v1",
+      "source": "assets/redesign/sources/anni-specials-v1.png",
+      "sha256": "b6e494e4b3f4248aab5fc6d09920b8491f039aba742763a7991737a4cd14cc07",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-specials.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Aperol-Anni CITRUS ALCHEMIST: exactly the reference female face, golden/copper hair high bun with orange sunglasses, hoop earrings, orange floral blouse, checked embroidered cream apron, brown leather utility belt, olive trousers, brown ankle boots, citrus potion bottles, copper reservoir backpack and green hose. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (2048x2048 requested). 4 columns and 4 rows = exactly 16 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS: 1 RANGED AIM crouched slightly with both EMPTY fists extended forward chest height to support a separate ranged weapon; 2 RANGED RELEASE dominant arm extended farther forward, other hand withdrawn slightly toward chest with mild recoil; 3 DASH running lunge forward, long clear stride, back knee bent, torso leaned forward, dynamic but same anatomy; 4 DEAD knocked out lying on side on ground, relaxed face, limbs naturally collapsed, backpack remains. All subjects full body, no gore or wounds. Keep same anatomical size as standing in every pose: dead sprite is naturally shorter and wider, do not enlarge it.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\n",
+      "references": [
+        "assets/theme-demo/sources/anni-aperol.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-0c518743-e61a-48d7-8d35-fb4a326b9c21.png",
+      "runtime": false
+    },
+    {
+      "id": "anni-specials",
+      "source": "assets/redesign/sources/anni-specials.png",
+      "sha256": "09681b4f0c3963cdeee4c434435e43563cf243b871741f69f5fad920d1e7108b",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-specials-fix.prompt.txt",
+      "prompt": "Make one surgical correction to this 4-column x4-row transparent character sprite atlas. ONLY change the character in ROW TWO COLUMN THREE (the dash/sprint pose). That character incorrectly faces RIGHT. Horizontally flip that ONE whole sprite within its own cell so she now dashes facing LEFT, matching the other characters in row two. Keep her face, hair, dress, details and running pose. Preserve every other 15 sprite completely, their positions, proportions, pixels, transparent alpha background and entire4x4 grid. No other changes.\n",
+      "references": [
+        "assets/redesign/sources/anni-specials-v1.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-7853feb3-fa56-49ad-ba20-1ff5e7ad3ecf.png",
+      "runtime": true
+    },
+    {
+      "id": "anni-walk-fixed",
+      "source": "assets/redesign/sources/anni-walk-fixed.png",
+      "sha256": "63f218c09ec721fd980ee4c37c0ae7544761d73469ce5cc306e216e7424f2640",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-walk-fix.prompt.txt",
+      "prompt": "Edit this game animation atlas. Preserve exactly the 8 columns x4 rows layout, all 32 identities, direction of each row, every head, torso, clothing, backpack, color, empty hands, scale and transparent alpha. Fix ONLY THE LEGS in the LAST FOUR COLUMNS (columns5,6,7,8) of EVERY ROW. Currently the character repeats the same leading leg: this is WRONG. In columns1-4 the NEAR leg leads. In columns5-8 the NEAR leg must TRAIL BEHIND the torso, stretching diagonally BACKWARD opposite the face direction, while the FAR leg steps FORWARD in the direction the face points. Specifically frame7 in each row must show the opposite diagonal leg silhouette and opposite leg occlusion from frame3. You must REARTICULATE THE JOINTS, not mirror the whole character! Column5 opposite passing pose;6 opposite down-contact;7 opposite full stride;8 opposite up-passing. The first4columns remain unchanged. Visibly show the back of the near boot with raised heel behind the character in frame7 and the far boot toe forward. No change at all to any upper body or style. Preserve the rich painterly pixel detail of leather, cloth and metal. No objects added, no labels, no background.\r\n",
+      "references": [
+        "assets/redesign/sources/anni-walk-guide-v2.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-f335d0dc-8600-4779-977c-9ccfcf01a876.png",
+      "runtime": false
+    },
+    {
+      "id": "anni-walk-guide-v2",
+      "source": "assets/redesign/sources/anni-walk-guide-v2.png",
+      "sha256": "2da7b07afa2c38e98b7c2ea1175c2b7de8a3a6f90fe3186ef0d8e4ab2ec246c0",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-walk.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Aperol-Anni CITRUS ALCHEMIST: exactly the reference female face, golden/copper hair high bun with orange sunglasses, hoop earrings, orange floral blouse, checked embroidered cream apron, brown leather utility belt, olive trousers, brown ankle boots, citrus potion bottles, copper reservoir backpack and green hose. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\nSECOND REFERENCE IS AN ANIMATION POSE GUIDE ONLY. Use its 8-column x 4-row skeleton poses to make a REAL ALTERNATING WALK CYCLE: columns 1/5 feet pass, columns 2/3/4 RIGHT leg leads while LEFT leg trails, columns 6/7/8 LEFT leg leads while RIGHT leg trails. Preserve the limb occlusion of each exact skeleton cell. Red limb is anatomical LEFT, blue limb RIGHT: these colors are ONLY pose annotations, replace them with approved costume colors! Use detailed drawn anatomy from FIRST reference, absolutely no block/voxel geometry from guide. 32 FULL BODY figures, exactly 8 columns 4 rows, alpha-transparent background. Row1 front-right, row2 front-left, row3 back-right, row4 back-left. No held objects. It is critical that frame3 and frame7 show opposite leading legs, not the same pose shifted. Consistent character size across cells. Preserve meticulous stitching, weathered copper, facial detail, clothing folds, tiny thematic props. No text.\r\n",
+      "references": [
+        "assets/theme-demo/sources/anni-aperol.png",
+        "assets/redesign/sources/anni-walk-guide.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-f157e5e2-6e13-4e15-8937-6eafaa6ad4c0.png",
+      "runtime": false
+    },
+    {
+      "id": "anni-walk-guide",
+      "source": "assets/redesign/sources/anni-walk-guide.png",
+      "sha256": "b854cba6182dc4a6a2d5574df4655ccbefe1d6361d3eae75bf5a13336099dcf3",
+      "tool": "Three.js local pose guide",
+      "script": "tools/redesign/pose-guide.html",
+      "runtime": false
+    },
+    {
+      "id": "anni-walk",
+      "source": "assets/redesign/sources/anni-walk.png",
+      "sha256": "2da7b07afa2c38e98b7c2ea1175c2b7de8a3a6f90fe3186ef0d8e4ab2ec246c0",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-walk.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Aperol-Anni CITRUS ALCHEMIST: exactly the reference female face, golden/copper hair high bun with orange sunglasses, hoop earrings, orange floral blouse, checked embroidered cream apron, brown leather utility belt, olive trousers, brown ankle boots, citrus potion bottles, copper reservoir backpack and green hose. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\nSECOND REFERENCE IS AN ANIMATION POSE GUIDE ONLY. Use its 8-column x 4-row skeleton poses to make a REAL ALTERNATING WALK CYCLE: columns 1/5 feet pass, columns 2/3/4 RIGHT leg leads while LEFT leg trails, columns 6/7/8 LEFT leg leads while RIGHT leg trails. Preserve the limb occlusion of each exact skeleton cell. Red limb is anatomical LEFT, blue limb RIGHT: these colors are ONLY pose annotations, replace them with approved costume colors! Use detailed drawn anatomy from FIRST reference, absolutely no block/voxel geometry from guide. 32 FULL BODY figures, exactly 8 columns 4 rows, alpha-transparent background. Row1 front-right, row2 front-left, row3 back-right, row4 back-left. No held objects. It is critical that frame3 and frame7 show opposite leading legs, not the same pose shifted. Consistent character size across cells. Preserve meticulous stitching, weathered copper, facial detail, clothing folds, tiny thematic props. No text.\r\n",
+      "references": [
+        "assets/theme-demo/sources/anni-aperol.png",
+        "assets/redesign/sources/anni-walk-guide.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-f157e5e2-6e13-4e15-8937-6eafaa6ad4c0.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-contacts",
+      "source": "assets/redesign/sources/dieter-contacts.png",
+      "sha256": "3fb620f8e60d2a61273b458ebb711942490b5ad703a2b141b406f81322f05f08",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-contacts.prompt.txt",
+      "prompt": "Create a precise 2-column x4-row WALK CONTACT POSE study for the supplied detailed RPG hero. Exactly 8 full-body sprites, transparent alpha background. Same face, outfit, textures, empty hands and character size in every cell. Both columns face the SAME direction. Row1 front-right (SE), row2 front-left (SW), row3 back-right (NE), row4 back-left (NW). COLUMN A = LEFT FOOT FORWARD and RIGHT FOOT BACK; COLUMN B = RIGHT FOOT FORWARD and LEFT FOOT BACK. Full stride, BOTH legs straight/slightly bent, clearly split equally to either side of the hips. THIS IS A WALK CYCLE, so exchange the two ANATOMICAL legs between columns. The NEAR leg is in FRONT in column A and BEHIND in column B: do not merely copy the same leading leg. For SE row1: A near leg slants DOWN-RIGHT ahead; B near leg slants DOWN-LEFT behind, its heel lifted, while far leg slants DOWN-RIGHT ahead. For SW row2: A near leg slants DOWN-LEFT ahead; B near leg slants DOWN-RIGHT behind. Back views follow the same reversal with appropriate occlusion. Both feet must be widely apart in each frame. Opposite arm swing accompanying opposite foot. NO lifted knee hopping pose. Keep the torso upright. Perfectly consistent rich painterly pixel style, intricate clothing and gear details, warm light top-left, dark slate outlines. Full bodies centered and separated by generous gutters. No held gear. No words or ground.\n",
+      "references": [
+        "assets/redesign/sources/dieter-walk.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-6abe392d-ff57-4bb4-8a8e-30a3a34a405c.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-poses-v1",
+      "source": "assets/redesign/sources/dieter-poses-v1.png",
+      "sha256": "87f8f1a1c3cae5b43d58a9a23138bf1e3619cb64424f249adb14348c04df3ee2",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-poses.prompt.txt",
+      "prompt": "Use case: identity-preserve. Create a production pixel RPG animation atlas based EXACTLY on the attached Dosen-Dieter BREWMASTER turnaround. This is an EDIT/animation extension of this approved character, NOT a redesign. Preserve the wonderfully detailed face, stout beer belly, beard, receding brown hair, copper shoulder armor, forest-green vest, ochre leather apron, cream rolled sleeves, patched denim, brown boots, buckles, hop details and keg backpack. CRITICAL: REMOVE both handheld items (hammer and barrel shield) from EVERY frame; both EMPTY HANDS must be clearly visible as closed gripping fists. No hand-held weapons or shields whatsoever; they will be modular separate layers. Keep worn gear clothing and back keg consistent. Preserve all rich tiny textures and pixel shading from reference, not blocky or simplified.\nDELIVER ONE LARGE LANDSCAPE TRANSPARENT PNG SPRITE ATLAS, target 3072 x 2048 pixels. EXACTLY 8 columns and 4 rows = 32 separate FULL BODY characters. Fixed camera orthographic slight 20-degree overhead. Consistent anatomy and character scale across ALL frames; upright standing character height about 350 source pixels, SAME anatomical scale in crouches. Wide empty transparent gutters between all characters, all silhouettes complete, no clipping no touching other cells. Genuine alpha transparency, no ground/shadows, no labels/numbers/lines.\nROWS ARE DIRECTIONS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter looking away toward screen RIGHT (NE), row 4 BACK three-quarter looking away toward screen LEFT (NW). No swapping directions within a row.\nCOLUMNS ARE EIGHT DISTINCT POSES in each row: 1 IDLE calm planted stance fists at hips; 2 MELEE WINDUP dominant right fist raised behind/above shoulder, left fist shielding chest; 3 MELEE IMPACT dominant right arm thrust forward/diagonally down in front of chest at chest height, firm planted stride; 4 RECOVERY right arm lowered and torso returning upright after swing; 5 HIT RECOIL chest leaning backward, knees flexed, hands recoiling apart; 6 PARRY left fist held outward at chest height for a shield, right fist beside waist; 7 CASTING both empty hands held forward near chest level, focused expression, no spell effect; 8 REST seated on ground with bent knees, torso upright, hands on knees. Draw real articulated limb changes, distinct hand placements, stable recognizable face. Depict reference quality rich detailed pixels on every frame, do not turn into 3D voxel shapes. No weapons, no shield, no text, no extra sprites. Readable silhouette, controlled warm cream highlights and dark slate contour.\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-4e5269a4-cd3a-44d4-8b60-235352b78fca.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-poses-v2",
+      "source": "assets/redesign/sources/dieter-poses-v2.png",
+      "sha256": "a621c37ee135a9123f41d53b2640d615b27abb3a589c5d9ad08137b9fd5ef2b1",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-poses-alpha.prompt.txt",
+      "prompt": "Use case: background-extraction. Edit this exact sprite atlas: REMOVE THE ENTIRE BROWN/OLIVE BACKGROUND AND FLOOR SHADOWS, replacing every background area with genuine PNG alpha-zero transparency. Preserve every one of the 32 pixel characters exactly, all pixel texture, faces, costumes, poses, dimensions and positions. Do not change the layout or repaint any character. The output MUST be RGBA with genuinely transparent background; NOT black, NOT white, NOT checkerboard, NOT brown. Keep all 8 columns and all 4 rows fully intact. Clean cutout boundaries, no brown glow, no shadow beneath shoes. Only remove the background.\n",
+      "references": [
+        "assets/redesign/sources/dieter-poses-v1.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-079bda60-94d4-4e24-9b2e-7a387f1af255.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-poses",
+      "source": "assets/redesign/sources/dieter-poses.png",
+      "sha256": "87f8f1a1c3cae5b43d58a9a23138bf1e3619cb64424f249adb14348c04df3ee2",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-poses.prompt.txt",
+      "prompt": "Use case: identity-preserve. Create a production pixel RPG animation atlas based EXACTLY on the attached Dosen-Dieter BREWMASTER turnaround. This is an EDIT/animation extension of this approved character, NOT a redesign. Preserve the wonderfully detailed face, stout beer belly, beard, receding brown hair, copper shoulder armor, forest-green vest, ochre leather apron, cream rolled sleeves, patched denim, brown boots, buckles, hop details and keg backpack. CRITICAL: REMOVE both handheld items (hammer and barrel shield) from EVERY frame; both EMPTY HANDS must be clearly visible as closed gripping fists. No hand-held weapons or shields whatsoever; they will be modular separate layers. Keep worn gear clothing and back keg consistent. Preserve all rich tiny textures and pixel shading from reference, not blocky or simplified.\nDELIVER ONE LARGE LANDSCAPE TRANSPARENT PNG SPRITE ATLAS, target 3072 x 2048 pixels. EXACTLY 8 columns and 4 rows = 32 separate FULL BODY characters. Fixed camera orthographic slight 20-degree overhead. Consistent anatomy and character scale across ALL frames; upright standing character height about 350 source pixels, SAME anatomical scale in crouches. Wide empty transparent gutters between all characters, all silhouettes complete, no clipping no touching other cells. Genuine alpha transparency, no ground/shadows, no labels/numbers/lines.\nROWS ARE DIRECTIONS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter looking away toward screen RIGHT (NE), row 4 BACK three-quarter looking away toward screen LEFT (NW). No swapping directions within a row.\nCOLUMNS ARE EIGHT DISTINCT POSES in each row: 1 IDLE calm planted stance fists at hips; 2 MELEE WINDUP dominant right fist raised behind/above shoulder, left fist shielding chest; 3 MELEE IMPACT dominant right arm thrust forward/diagonally down in front of chest at chest height, firm planted stride; 4 RECOVERY right arm lowered and torso returning upright after swing; 5 HIT RECOIL chest leaning backward, knees flexed, hands recoiling apart; 6 PARRY left fist held outward at chest height for a shield, right fist beside waist; 7 CASTING both empty hands held forward near chest level, focused expression, no spell effect; 8 REST seated on ground with bent knees, torso upright, hands on knees. Draw real articulated limb changes, distinct hand placements, stable recognizable face. Depict reference quality rich detailed pixels on every frame, do not turn into 3D voxel shapes. No weapons, no shield, no text, no extra sprites. Readable silhouette, controlled warm cream highlights and dark slate contour.\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-4e5269a4-cd3a-44d4-8b60-235352b78fca.png",
+      "runtime": true
+    },
+    {
+      "id": "dieter-specials",
+      "source": "assets/redesign/sources/dieter-specials.png",
+      "sha256": "e22a14c8f6280ab8bd49a98bc54fd663308b24c1c057736c8b8d0e765edb5396",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-specials.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Dosen-Dieter BREWMASTER: stout beer belly, expressive bearded face, receding brown hair, copper shoulder armor, forest-green vest, ochre leather apron, cream rolled sleeves, patched denim, brown boots, brass buckles, hop details and small keg backpack. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (2048x2048 requested). 4 columns and 4 rows = exactly 16 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS: 1 RANGED AIM crouched slightly with both EMPTY fists extended forward chest height to support a separate ranged weapon; 2 RANGED RELEASE dominant arm extended farther forward, other hand withdrawn slightly toward chest with mild recoil; 3 DASH running lunge forward, long clear stride, back knee bent, torso leaned forward, dynamic but same anatomy; 4 DEAD knocked out lying on side on ground, relaxed face, limbs naturally collapsed, backpack remains. All subjects full body, no gore or wounds. Keep same anatomical size as standing in every pose: dead sprite is naturally shorter and wider, do not enlarge it.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-b9dec758-6fab-4b76-b3d8-f0451056ef24.png",
+      "runtime": true
+    },
+    {
+      "id": "dieter-walk-fixed",
+      "source": "assets/redesign/sources/dieter-walk-fixed.png",
+      "sha256": "d42138198f5ae2ee172e9e163000984079bdad558eefc29ceb04278db5811a7a",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-walk-fix.prompt.txt",
+      "prompt": "Edit this game animation atlas. Preserve exactly the 8 columns x4 rows layout, all 32 identities, direction of each row, every head, torso, clothing, backpack, color, empty hands, scale and transparent alpha. Fix ONLY THE LEGS in the LAST FOUR COLUMNS (columns5,6,7,8) of EVERY ROW. Currently the character repeats the same leading leg: this is WRONG. In columns1-4 the NEAR leg leads. In columns5-8 the NEAR leg must TRAIL BEHIND the torso, stretching diagonally BACKWARD opposite the face direction, while the FAR leg steps FORWARD in the direction the face points. Specifically frame7 in each row must show the opposite diagonal leg silhouette and opposite leg occlusion from frame3. You must REARTICULATE THE JOINTS, not mirror the whole character! Column5 opposite passing pose;6 opposite down-contact;7 opposite full stride;8 opposite up-passing. The first4columns remain unchanged. Visibly show the back of the near boot with raised heel behind the character in frame7 and the far boot toe forward. No change at all to any upper body or style. Preserve the rich painterly pixel detail of leather, cloth and metal. No objects added, no labels, no background.\r\n",
+      "references": [
+        "assets/redesign/sources/dieter-walk-guide-v2.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-a473859e-d6c9-488c-9e35-ae08db59cea2.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-walk-guide-v2",
+      "source": "assets/redesign/sources/dieter-walk-guide-v2.png",
+      "sha256": "8139b7395d281933081f60c2cf2ea650b84030b0c150e31ef8b58b6f1285a3ca",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-walk.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Dosen-Dieter BREWMASTER: stout beer belly, expressive bearded face, receding brown hair, copper shoulder armor, forest-green vest, ochre leather apron, cream rolled sleeves, patched denim, brown boots, brass buckles, hop details and small keg backpack. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\nSECOND REFERENCE IS AN ANIMATION POSE GUIDE ONLY. Use its 8-column x 4-row skeleton poses to make a REAL ALTERNATING WALK CYCLE: columns 1/5 feet pass, columns 2/3/4 RIGHT leg leads while LEFT leg trails, columns 6/7/8 LEFT leg leads while RIGHT leg trails. Preserve the limb occlusion of each exact skeleton cell. Red limb is anatomical LEFT, blue limb RIGHT: these colors are ONLY pose annotations, replace them with approved costume colors! Use detailed drawn anatomy from FIRST reference, absolutely no block/voxel geometry from guide. 32 FULL BODY figures, exactly 8 columns 4 rows, alpha-transparent background. Row1 front-right, row2 front-left, row3 back-right, row4 back-left. No held objects. It is critical that frame3 and frame7 show opposite leading legs, not the same pose shifted. Consistent character size across cells. Preserve meticulous stitching, weathered copper, facial detail, clothing folds, tiny thematic props. No text.\r\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png",
+        "assets/redesign/sources/dieter-walk-guide.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-4a8b2f21-af96-4de6-b746-9fcb5ad5ee0f.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-walk-guide",
+      "source": "assets/redesign/sources/dieter-walk-guide.png",
+      "sha256": "045f2f190919222d4b1a842d0c5328dbe27d1009eabc2b5260aa46138aa40805",
+      "tool": "Three.js local pose guide",
+      "script": "tools/redesign/pose-guide.html",
+      "runtime": false
+    },
+    {
+      "id": "dieter-walk-v1",
+      "source": "assets/redesign/sources/dieter-walk-v1.png",
+      "sha256": "dbe7c37478233ccf8db3df7ff0e404192ce6152055355276c59f88afcb243fcb",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-walk-v1.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Dosen-Dieter BREWMASTER: stout beer belly, expressive bearded face, receding brown hair, copper shoulder armor, forest-green vest, ochre leather apron, cream rolled sleeves, patched denim, brown boots, brass buckles, hop details and small keg backpack. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-16e545f3-e2de-451f-ad93-73d8a3608548.png",
+      "runtime": false
+    },
+    {
+      "id": "dieter-walk",
+      "source": "assets/redesign/sources/dieter-walk.png",
+      "sha256": "8139b7395d281933081f60c2cf2ea650b84030b0c150e31ef8b58b6f1285a3ca",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-walk.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Dosen-Dieter BREWMASTER: stout beer belly, expressive bearded face, receding brown hair, copper shoulder armor, forest-green vest, ochre leather apron, cream rolled sleeves, patched denim, brown boots, brass buckles, hop details and small keg backpack. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\nSECOND REFERENCE IS AN ANIMATION POSE GUIDE ONLY. Use its 8-column x 4-row skeleton poses to make a REAL ALTERNATING WALK CYCLE: columns 1/5 feet pass, columns 2/3/4 RIGHT leg leads while LEFT leg trails, columns 6/7/8 LEFT leg leads while RIGHT leg trails. Preserve the limb occlusion of each exact skeleton cell. Red limb is anatomical LEFT, blue limb RIGHT: these colors are ONLY pose annotations, replace them with approved costume colors! Use detailed drawn anatomy from FIRST reference, absolutely no block/voxel geometry from guide. 32 FULL BODY figures, exactly 8 columns 4 rows, alpha-transparent background. Row1 front-right, row2 front-left, row3 back-right, row4 back-left. No held objects. It is critical that frame3 and frame7 show opposite leading legs, not the same pose shifted. Consistent character size across cells. Preserve meticulous stitching, weathered copper, facial detail, clothing folds, tiny thematic props. No text.\r\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png",
+        "assets/redesign/sources/dieter-walk-guide.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-4a8b2f21-af96-4de6-b746-9fcb5ad5ee0f.png",
+      "runtime": false
+    },
+    {
+      "id": "kevin-poses",
+      "source": "assets/redesign/sources/kevin-poses.png",
+      "sha256": "cd7ad425a1e55214b69d2ebd91bee3055a72f61829bb8cdc5e9b12b3724f40a3",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/kevin-poses.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Klo-Kevin PFAND ENGINEER: exactly the reference lanky young adult face, dark tousled hair under backwards green cap, moss hoodie, navy denim vest, bottlecap shoulder accents, brown cargo trousers, fingerless gloves, worn green-cream sneakers, tool belt, compact three-bottle recycling carrier on back. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). Every character in one row keeps that exact direction. COLUMNS: 1 IDLE calm planted stance with empty fists at hips; 2 MELEE WINDUP right fist raised beside and above shoulder, left fist guarding chest; 3 MELEE IMPACT right arm extended forward/diagonally down at chest level, firm staggered stance; 4 RECOVERY lowered right arm returning to idle; 5 HIT RECOIL torso leaning back, knees bent, hands apart; 6 PARRY left fist extended at chest level holding an invisible shield, right fist near waist; 7 CAST both empty hands forward at chest height, focused expression, no spell effect; 8 REST seated on the floor with knees bent and hands on knees. These are distinct fully articulated poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\n",
+      "references": [
+        "assets/theme-demo/sources/kevin-pfand.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-597cb271-c01b-4c90-aff8-350637cc9f8e.png",
+      "runtime": true
+    },
+    {
+      "id": "kevin-specials",
+      "source": "assets/redesign/sources/kevin-specials.png",
+      "sha256": "8b4051f60d6de9411212f10eb55f8b79c241cce22205687251824c9abeeeb16d",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/kevin-specials.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Klo-Kevin PFAND ENGINEER: exactly the reference lanky young adult face, dark tousled hair under backwards green cap, moss hoodie, navy denim vest, bottlecap shoulder accents, brown cargo trousers, fingerless gloves, worn green-cream sneakers, tool belt, compact three-bottle recycling carrier on back. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (2048x2048 requested). 4 columns and 4 rows = exactly 16 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS: 1 RANGED AIM crouched slightly with both EMPTY fists extended forward chest height to support a separate ranged weapon; 2 RANGED RELEASE dominant arm extended farther forward, other hand withdrawn slightly toward chest with mild recoil; 3 DASH running lunge forward, long clear stride, back knee bent, torso leaned forward, dynamic but same anatomy; 4 DEAD knocked out lying on side on ground, relaxed face, limbs naturally collapsed, backpack remains. All subjects full body, no gore or wounds. Keep same anatomical size as standing in every pose: dead sprite is naturally shorter and wider, do not enlarge it.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\n",
+      "references": [
+        "assets/theme-demo/sources/kevin-pfand.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-23dbf2fa-7a0b-4429-ba4d-c289c92152ef.png",
+      "runtime": true
+    },
+    {
+      "id": "kevin-walk-fixed",
+      "source": "assets/redesign/sources/kevin-walk-fixed.png",
+      "sha256": "321afc3a3fcef4f122115d47ca18f1a20c6eb94c89fc7a910acd62cd1af2b9de",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/kevin-walk-fix.prompt.txt",
+      "prompt": "Edit this game animation atlas. Preserve exactly the 8 columns x4 rows layout, all 32 identities, direction of each row, every head, torso, clothing, backpack, color, empty hands, scale and transparent alpha. Fix ONLY THE LEGS in the LAST FOUR COLUMNS (columns5,6,7,8) of EVERY ROW. Currently the character repeats the same leading leg: this is WRONG. In columns1-4 the NEAR leg leads. In columns5-8 the NEAR leg must TRAIL BEHIND the torso, stretching diagonally BACKWARD opposite the face direction, while the FAR leg steps FORWARD in the direction the face points. Specifically frame7 in each row must show the opposite diagonal leg silhouette and opposite leg occlusion from frame3. You must REARTICULATE THE JOINTS, not mirror the whole character! Column5 opposite passing pose;6 opposite down-contact;7 opposite full stride;8 opposite up-passing. The first4columns remain unchanged. Visibly show the back of the near boot with raised heel behind the character in frame7 and the far boot toe forward. No change at all to any upper body or style. Preserve the rich painterly pixel detail of leather, cloth and metal. No objects added, no labels, no background.\r\n",
+      "references": [
+        "assets/redesign/sources/kevin-walk-guide-v2.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-226a3baf-01e0-442d-ae37-b687bb5cb8a9.png",
+      "runtime": false
+    },
+    {
+      "id": "kevin-walk-guide-v2",
+      "source": "assets/redesign/sources/kevin-walk-guide-v2.png",
+      "sha256": "c4a43c18b639d43ace3b39ab572139a525e7c97c4a904075a5115da955bb76fb",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/kevin-walk.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Klo-Kevin PFAND ENGINEER: exactly the reference lanky young adult face, dark tousled hair under backwards green cap, moss hoodie, navy denim vest, bottlecap shoulder accents, brown cargo trousers, fingerless gloves, worn green-cream sneakers, tool belt, compact three-bottle recycling carrier on back. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\nSECOND REFERENCE IS AN ANIMATION POSE GUIDE ONLY. Use its 8-column x 4-row skeleton poses to make a REAL ALTERNATING WALK CYCLE: columns 1/5 feet pass, columns 2/3/4 RIGHT leg leads while LEFT leg trails, columns 6/7/8 LEFT leg leads while RIGHT leg trails. Preserve the limb occlusion of each exact skeleton cell. Red limb is anatomical LEFT, blue limb RIGHT: these colors are ONLY pose annotations, replace them with approved costume colors! Use detailed drawn anatomy from FIRST reference, absolutely no block/voxel geometry from guide. 32 FULL BODY figures, exactly 8 columns 4 rows, alpha-transparent background. Row1 front-right, row2 front-left, row3 back-right, row4 back-left. No held objects. It is critical that frame3 and frame7 show opposite leading legs, not the same pose shifted. Consistent character size across cells. Preserve meticulous stitching, weathered copper, facial detail, clothing folds, tiny thematic props. No text.\r\n",
+      "references": [
+        "assets/theme-demo/sources/kevin-pfand.png",
+        "assets/redesign/sources/kevin-walk-guide.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-60ab10df-f1b9-4d3c-9557-14cb8aeb69db.png",
+      "runtime": false
+    },
+    {
+      "id": "kevin-walk-guide",
+      "source": "assets/redesign/sources/kevin-walk-guide.png",
+      "sha256": "f52d9677e40f08af393c9ea48d20d1de0c6950032272ccd5ebc2ae8798eb1803",
+      "tool": "Three.js local pose guide",
+      "script": "tools/redesign/pose-guide.html",
+      "runtime": false
+    },
+    {
+      "id": "kevin-walk",
+      "source": "assets/redesign/sources/kevin-walk.png",
+      "sha256": "c4a43c18b639d43ace3b39ab572139a525e7c97c4a904075a5115da955bb76fb",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/kevin-walk.prompt.txt",
+      "prompt": "Use case: identity-preserve. Asset type: production quality detailed pixel RPG animation atlas. Extend the approved character from the provided reference, preserving EXACT face, costume, colors, proportions and meticulous material textures. CHARACTER: Klo-Kevin PFAND ENGINEER: exactly the reference lanky young adult face, dark tousled hair under backwards green cap, moss hoodie, navy denim vest, bottlecap shoulder accents, brown cargo trousers, fingerless gloves, worn green-cream sneakers, tool belt, compact three-bottle recycling carrier on back. IMPORTANT: no held weapons, no held shield, no held tools in ANY frame. REMOVE the reference's handheld items; both EMPTY gripping fists must be visible, ready for modular gear. Keep clothing, belt and backpack details. Do not change identity or simplify to voxel geometry.\nDeliver a large transparent PNG atlas (3072x2048 requested). 8 columns and 4 rows = exactly 32 characters. ROWS: row 1 FRONT three-quarter FACING SCREEN RIGHT (SE), row 2 FRONT three-quarter FACING SCREEN LEFT (SW), row 3 BACK three-quarter FACING SCREEN RIGHT (NE), row 4 BACK three-quarter FACING SCREEN LEFT (NW). COLUMNS are 8 consecutive frames of a smooth natural WALK CYCLE in place: 1 LEFT FOOT CONTACT heel forward and right foot trailing; 2 LEFT DOWN weight compresses onto front left leg; 3 LEFT PASS right foot lifts and swings past planted left foot; 4 LEFT UP right knee advanced raised preparing contact; 5 RIGHT FOOT CONTACT right heel forward and left foot trailing (opposite frame 1); 6 RIGHT DOWN weight compresses onto right leg; 7 RIGHT PASS left foot swings past right planted foot; 8 RIGHT UP left knee advanced preparing next left contact. Critical: visibly alternate forward and backward legs, knees bending naturally; hands swing opposite their respective legs. Eight DIFFERENT gait phases, not repeated standing poses. Stable torso identity and backpack, tiny vertical bounce, head level, body height consistent. No running, no combat poses.\nOrthographic camera with slight 20-degree overhead. Uniform character anatomical size within each atlas, generous transparent gutters. Full shoes, hair and hands fully inside each cell. Transparent alpha-zero background, no ground, no shadows, no colored backdrop, no labels, no numbers, no grid lines, no other assets. Detailed warm pixel art with cream highlights from upper left, dark slate contours, clear expressive faces, individually defined fingers, leather stitching, textile folds, weathered metallic details. Match the reference's visual richness in every single pose. Only sprite figures.\nSECOND REFERENCE IS AN ANIMATION POSE GUIDE ONLY. Use its 8-column x 4-row skeleton poses to make a REAL ALTERNATING WALK CYCLE: columns 1/5 feet pass, columns 2/3/4 RIGHT leg leads while LEFT leg trails, columns 6/7/8 LEFT leg leads while RIGHT leg trails. Preserve the limb occlusion of each exact skeleton cell. Red limb is anatomical LEFT, blue limb RIGHT: these colors are ONLY pose annotations, replace them with approved costume colors! Use detailed drawn anatomy from FIRST reference, absolutely no block/voxel geometry from guide. 32 FULL BODY figures, exactly 8 columns 4 rows, alpha-transparent background. Row1 front-right, row2 front-left, row3 back-right, row4 back-left. No held objects. It is critical that frame3 and frame7 show opposite leading legs, not the same pose shifted. Consistent character size across cells. Preserve meticulous stitching, weathered copper, facial detail, clothing folds, tiny thematic props. No text.\r\n",
+      "references": [
+        "assets/theme-demo/sources/kevin-pfand.png",
+        "assets/redesign/sources/kevin-walk-guide.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-60ab10df-f1b9-4d3c-9557-14cb8aeb69db.png",
+      "runtime": false
+    },
+    {
+      "id": "theme-gear",
+      "source": "assets/redesign/sources/theme-gear.png",
+      "sha256": "1812d95539238f670be2b344aae24502260741a73ff55357d57d5259282e1439",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/theme-gear.prompt.txt",
+      "prompt": "Use case: game-asset. Create premium detailed RPG pixel-art MODULAR EQUIPMENT atlas matching the copper/leather/wood craftsmanship in the three supplied Mertloch character references. ONLY isolated equipment, absolutely NO characters, hands or arms. Exactly 6 columns and 4 rows =24 complete objects, on true transparent alpha-zero background. Columns: 1 BRAUMEISTER HAMMER, foaming brass tankard head with reinforced copper bands on long wrapped oak handle; 2 BARREL SHIELD, round aged oak keg lid, copper riveted rim, hop ornament with small emerald; 3 APEROL SPRAYER, copper handheld pressure gun, glass orange-fluid vial, green grip, short brass nozzle; 4 CITRUS SHIELD, round translucent amber-orange glass shield with radial citrus segments, copper rim and rivets; 5 PFAND SLINGSHOT, Y-shaped metal-and-weathered-wood frame, green elastic bands, leather sling, bottlecap and tiny screws, long wrapped grip; 6 PFAND SHIELD, round salvaged green road-sign metal, riveted tin patches and colorful bottlecaps. Rows are distinct CAMERA VIEWS: row1 FRONT THREE-QUARTER SE facing screen right; row2 FRONT THREE-QUARTER SW screen left; row3 BACK THREE-QUARTER NE facing screen right, show shield rear wood struts and leather grip; row4 BACK THREE-QUARTER NW screen left. All weapon handles point down, tips up, no rotation except perspective. Every object self-contained in its cell, at least 30 pixels transparent gutter. Highest meticulous material detail, real worn woodgrain, leather seams, copper reflections, carved hop and citrus detail, warm upper-left light and dark slate outlines. No letters, no labels, no grid, no ground or shadow. Objects visually cohesive with first three references. Atlas requested 2048x1536, hard clean alpha edges.\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png",
+        "assets/theme-demo/sources/anni-aperol.png",
+        "assets/theme-demo/sources/kevin-pfand.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-a4519284-fcad-4e53-a6cb-e3ae99c19774.png",
+      "runtime": true
+    },
+    {
+      "id": "dieter-heavy",
+      "source": "assets/redesign/sources/dieter-heavy.png",
+      "sha256": "6b3414356db91ebd3711f46c2436040496ed460279dd9de8f4605371ed578d5e",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/dieter-heavy.prompt.txt",
+      "prompt": "Generate a detailed RPG character sprite atlas extending the approved reference, preserving EXACT character identity, face, proportions, costume materials and rich illustrative pixel art detail. CHARACTER: Dieter, stout bearded brewmaster, receding brown hair, forest-green vest, copper shoulder armor, cream sleeves, ochre leather apron, patched jeans, leather boots, hop decorations and keg backpack. This atlas is specifically TWO-HANDED HEAVY WEAPON BODY POSES. NO WEAPONS or shields drawn: both empty gripping fists must be drawn CLOSE TO EACH OTHER, as though holding the same invisible long hammer handle. Keep every costume, backpack, belt detail. Exactly 4columns x4rows =16 FULL-BODY figures. Rows: front-right SE, front-left SW, back-right NE, back-left NW. Every character in each row faces the specified direction. Columns: 1 TWO-HAND READY, both fists in front of abdomen, one fist above the other, only one fist width apart, elbows bent, stable stance; 2 TWO-HAND WINDUP, BOTH fists together ABOVE THE HEAD, both arms raised, torso turned slightly, feet planted; 3 TWO-HAND IMPACT, BOTH fists together extended FORWARD AND DOWN at waist height, BOTH arms extended, torso leaning into heavy blow, wide staggered feet; 4 TWO-HAND RECOVERY, both fists together at waist, knees flexed, turning back to ready. It is CRITICAL that BOTH HANDS participate in every pose: no idle fist at the side, no boxing pose. Constant anatomical scale across all 16 cells. Orthographic mild 20-degree overhead, transparent alpha-zero background, generous transparent gutters, no ground or shadows, no labels, no grid, no effects, no handheld objects. Detailed stitching, worn leather, copper highlights, facial expression, clear natural fingers. Upper-left warm light, dark slate contours. Full shoes and raised arms inside each cell. Requested 2048x2048.\n",
+      "references": [
+        "assets/theme-demo/sources/dieter-braumeister.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-e1cccb00-c0d3-497b-bb05-78289bcb22ba.png",
+      "runtime": true
+    },
+    {
+      "id": "anni-heavy",
+      "source": "assets/redesign/sources/anni-heavy.png",
+      "sha256": "12845235c423d8b69f7cae4d741cab71f4a30e954c66301f841efcd54f49d2ea",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/anni-heavy.prompt.txt",
+      "prompt": "Generate a detailed RPG character sprite atlas extending the approved reference, preserving EXACT character identity, face, proportions, costume materials and rich illustrative pixel art detail. CHARACTER: Anni, blonde copper hair high bun with orange sunglasses, orange floral blouse, checked cream embroidered apron, olive trousers, brown boots, copper reservoir backpack, green hose and orange potions. This atlas is specifically TWO-HANDED HEAVY WEAPON BODY POSES. NO WEAPONS or shields drawn: both empty gripping fists must be drawn CLOSE TO EACH OTHER, as though holding the same invisible long hammer handle. Keep every costume, backpack, belt detail. Exactly 4columns x4rows =16 FULL-BODY figures. Rows: front-right SE, front-left SW, back-right NE, back-left NW. Every character in each row faces the specified direction. Columns: 1 TWO-HAND READY, both fists in front of abdomen, one fist above the other, only one fist width apart, elbows bent, stable stance; 2 TWO-HAND WINDUP, BOTH fists together ABOVE THE HEAD, both arms raised, torso turned slightly, feet planted; 3 TWO-HAND IMPACT, BOTH fists together extended FORWARD AND DOWN at waist height, BOTH arms extended, torso leaning into heavy blow, wide staggered feet; 4 TWO-HAND RECOVERY, both fists together at waist, knees flexed, turning back to ready. It is CRITICAL that BOTH HANDS participate in every pose: no idle fist at the side, no boxing pose. Constant anatomical scale across all 16 cells. Orthographic mild 20-degree overhead, transparent alpha-zero background, generous transparent gutters, no ground or shadows, no labels, no grid, no effects, no handheld objects. Detailed stitching, worn leather, copper highlights, facial expression, clear natural fingers. Upper-left warm light, dark slate contours. Full shoes and raised arms inside each cell. Requested 2048x2048.\n",
+      "references": [
+        "assets/theme-demo/sources/anni-aperol.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-7e429244-5993-43cf-bfed-10f9d38580a9.png",
+      "runtime": true
+    },
+    {
+      "id": "kevin-heavy",
+      "source": "assets/redesign/sources/kevin-heavy.png",
+      "sha256": "100351244dfb7253eead9798e68619486b48804741f95b5950259784a9a26061",
+      "tool": "image_gen.imagegen",
+      "promptFile": "assets/redesign/sources/kevin-heavy.prompt.txt",
+      "prompt": "Generate a detailed RPG character sprite atlas extending the approved reference, preserving EXACT character identity, face, proportions, costume materials and rich illustrative pixel art detail. CHARACTER: Kevin, lanky young adult with backward green cap, messy brown hair, green hoodie under navy denim vest, bottlecap decorations, cargo trousers, green cream sneakers, fingerless gloves, bottle carrier backpack. This atlas is specifically TWO-HANDED HEAVY WEAPON BODY POSES. NO WEAPONS or shields drawn: both empty gripping fists must be drawn CLOSE TO EACH OTHER, as though holding the same invisible long hammer handle. Keep every costume, backpack, belt detail. Exactly 4columns x4rows =16 FULL-BODY figures. Rows: front-right SE, front-left SW, back-right NE, back-left NW. Every character in each row faces the specified direction. Columns: 1 TWO-HAND READY, both fists in front of abdomen, one fist above the other, only one fist width apart, elbows bent, stable stance; 2 TWO-HAND WINDUP, BOTH fists together ABOVE THE HEAD, both arms raised, torso turned slightly, feet planted; 3 TWO-HAND IMPACT, BOTH fists together extended FORWARD AND DOWN at waist height, BOTH arms extended, torso leaning into heavy blow, wide staggered feet; 4 TWO-HAND RECOVERY, both fists together at waist, knees flexed, turning back to ready. It is CRITICAL that BOTH HANDS participate in every pose: no idle fist at the side, no boxing pose. Constant anatomical scale across all 16 cells. Orthographic mild 20-degree overhead, transparent alpha-zero background, generous transparent gutters, no ground or shadows, no labels, no grid, no effects, no handheld objects. Detailed stitching, worn leather, copper highlights, facial expression, clear natural fingers. Upper-left warm light, dark slate contours. Full shoes and raised arms inside each cell. Requested 2048x2048.\n",
+      "references": [
+        "assets/theme-demo/sources/kevin-pfand.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-3d0ef42d-e2ab-414d-8df8-a4bb12ad1593.png",
+      "runtime": true
+    }
+  ]
+}

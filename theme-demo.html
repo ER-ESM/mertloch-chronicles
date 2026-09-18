@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hopfen, Zitrus & Pfand · Mertloch Chronicles</title><link rel="icon" href="data:,"><link rel="stylesheet" href="theme-demo.css"></head>
+<body>
+<header><a class="brand" href="index.html">M<span>MERTLOCH<br>CHRONICLES</span></a><nav aria-label="Seitennavigation"><a href="#handwerk">Das Handwerk</a><a href="#dorf">Im Dorf</a><a href="#vergleich">Pixelvergleich</a></nav><span class="edition">AUSRÜSTUNGS-EDITION 01</span></header>
+<main>
+ <section class="intro"><p class="eyebrow">DREI HELDEN. DREI GANZ EIGENE GESCHICHTEN.</p><h1>Feierabend ist<br><em>eine Rüstung.</em></h1><p class="lead">Gebrautes Kupfer. Gebündeltes Sonnenlicht. Gerettetes Leergut.<br>Unsere Helden, bis zur letzten Niete ausgerüstet.</p><div class="intro-meta"><span>03 Themen</span><span>12 ausgearbeitete Ansichten</span><span>Eine Heimat</span></div></section>
+ <p id="status" role="status">Die Ausrüstung wird angelegt …</p>
+ <section id="lineup" class="lineup" aria-label="Die drei Ausrüstungsthemen"></section>
+ <div class="collection-bar"><span>Wähle einen Helden, um seine Ausrüstung zu erkunden.</span><button id="export-lineup" type="button">Die Kollektion als PNG <span>↗</span></button></div>
+ <section id="handwerk" class="craft-section">
+  <div class="section-title"><div><p class="eyebrow">DAS STECKT DRIN</p><h2 id="detail-title">Handwerk mit Charakter.</h2></div><p id="detail-description"></p></div>
+  <div id="gear-details" class="gear-details"></div>
+ </section>
+ <section class="turnaround"><div class="section-title"><div><p class="eyebrow">VON JEDER SEITE EIN ORIGINAL</p><h2>Vorne Held. Hinten auch.</h2></div><label>Blickrichtung<select id="direction"><option value="0">Südost ↘</option><option value="1">Südwest ↙</option><option value="2">Nordost ↗</option><option value="3">Nordwest ↖</option></select></label></div><div id="views" class="views"></div></section>
+ <section id="dorf" class="village-section"><div class="section-title"><div><p class="eyebrow">ZURÜCK NACH MERTLOCH</p><h2>Passt nicht nur in die Vitrine.</h2></div><label>Ansicht<select id="world-zoom"><option value="2">Spielmaßstab · 2×</option><option value="4" selected>Detailansicht · 4×</option></select></label></div><div class="world-frame"><canvas id="world" width="2400" height="1000" aria-label="Drei detaillierte Themenhelden vor den Häusern von Mertloch"></canvas><div class="location">Am alten Dorfkrug<span>Hopfen, Zitrus & Pfand</span></div></div><div class="collection-bar"><span id="scale-note">Detailansicht · vier Bildpixel je Welteinheit</span><button id="export-world" type="button">Dorfansicht speichern ↗</button></div></section>
+ <section id="vergleich"><div class="section-title"><div><p class="eyebrow">DIE PIXEL MÜSSEN ES TRAGEN</p><h2>Gleiche Größe. Mehr Geschichte.</h2></div><p>Bisherige Pixelhelden und neue Themensets bei 104 nativen Pixeln Höhe. Ohne Vergrößerung der Figuren im Spiel.</p></div><div id="comparisons" class="comparisons"></div></section>
+ <section class="delivery"><div><p class="eyebrow">ZUM MITNEHMEN</p><h2>Ein Look, den man anfassen möchte.</h2><p>Alle drei Sets mit vier Ansichten und Exporten im Spielmaßstab.</p></div><div><button id="export-collection" type="button">Kollektion herunterladen ↗</button><a href="assets/theme-demo/runtime/catalog.json" download>Sprite-Katalog ↗</a></div></section>
+ <footer><p>Visuelle Themen-Demo · Ausrüstung ist in diesen Ansichten Teil des Figurenbilds. 3D-Rigs, einzeln wechselbare Gear-Ebenen und Laufanimationen sind noch nicht Bestandteil dieser Lieferung.</p><a href="prerender-demo.html">Technische Rig-Demo ↗</a></footer>
+</main><script type="module" src="theme-demo.js"></script>
+</body></html>

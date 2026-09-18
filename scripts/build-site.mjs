@@ -19,7 +19,10 @@ for(const file of files)await cp(path.join(root,file.name),path.join(output,file
 // Inhaltsschicht samt Unterordnern (content/checks/), nur JavaScript-Module.
 await cp(path.join(root,'content'),path.join(output,'content'),{recursive:true,filter:src=>lstat(src).then(st=>st.isDirectory()||src.endsWith('.js'))});
 const content=(await readdir(path.join(root,'content'),{recursive:true})).filter(n=>n.endsWith('.js'));
-await cp(path.join(root,'assets'),path.join(output,'assets'),{recursive:true});
+await cp(path.join(root,'assets'),path.join(output,'assets'),{recursive:true,filter:src=>{
+ const relative=path.relative(path.join(root,'assets'),src).replaceAll('\\','/');
+ return !/^(redesign|theme-demo)\/(sources|review)(\/|$)/.test(relative)&&!/^redesign\/generation\.json$/.test(relative);
+}});
 await mkdir(path.join(output,'data'));
 await cp(path.join(root,'data','mertloch.json'),path.join(output,'data','mertloch.json'));
 await writeFile(path.join(output,'.nojekyll'),'');

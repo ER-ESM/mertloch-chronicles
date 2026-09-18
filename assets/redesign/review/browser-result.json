@@ -1,0 +1,59 @@
+{
+  "stats": {
+    "checked": [
+      {
+        "preset": "dieter-start",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "dieter-tank",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "dieter-heavy",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "anni-spray",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "anni-garden",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "anni-order",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "kevin-range",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "kevin-blade",
+        "frames": 128,
+        "unique": 80
+      },
+      {
+        "preset": "kevin-stamp",
+        "frames": 128,
+        "unique": 80
+      }
+    ],
+    "ready": true,
+    "details": 3
+  },
+  "gameStats": {
+    "ready": true,
+    "pose": "idle"
+  },
+  "mobileOverflow": false,
+  "errors": []
+}
