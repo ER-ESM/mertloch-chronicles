@@ -32,7 +32,9 @@ export const TUNING={
  // Gegenstände: stats {…}, weapon {min,max}, heal, energy, value, level
  items:{},
  // Klassen-Kits: klasse/skill → cd, cost, damage, heal, window, duration …
- skills:{}
+ skills:{},
+ // Kernmechaniken (E-32, content/mechanics.js): spec → verschachtelte Zahlen, z. B. 'dieter-brawl':{stack:{decay:9},why,since}
+ mechanics:{}
 };
 /** Legt Zahlen aus `overrides[id]` flach über `target[id]`; verschachtelte Objekte (stats, weapon) werden gemischt. */
 export function applyTuning(target,overrides={}){for(const [id,patch] of Object.entries(overrides)){const t=target[id];if(!t)continue;const {why,since,...values}=patch;for(const [k,v] of Object.entries(values))t[k]=v&&typeof v==='object'&&!Array.isArray(v)?{...(t[k]||{}),...v}:v;}return target;}

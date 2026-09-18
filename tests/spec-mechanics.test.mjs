@@ -88,3 +88,8 @@ test('GCD: Basis 1,5 s, Varianten und Procs lösen nur den kurzen GCD aus; Boden
  g.classState.freeStrike=true;cast(g,'strike');assert.ok(g.gcd<=1.0001,'kurzer GCD bei Gratis-Kelle');
  const fresh=new Game(arena(),{classId:'kevin',level:3});assert.ok(fresh.skills.find(s=>s.id==='ground'));
 });
+
+test('Filter-Furie: eine Parade während eines angesagten Zaubers ist ein Prost und gibt Randale',()=>{
+ const g=game('baerbel','baerbel-stage'),e=enemy(g,40,0);e.cast={total:2,remaining:1,interruptible:true};g.player.energy=10;
+ cast(g,'parry');g.player.energy=10;g.hitPlayer(e,50);assert.equal(g.player.energy,60,'20 Parade + 30 Prost');
+});

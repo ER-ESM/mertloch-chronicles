@@ -66,6 +66,7 @@ Bis dahin: Fallback-Icons je Reihe (`TALENT_ICON_FALLBACK`) mit Pfadfarbe.
 | Fassanstich | Schaumfontäne 5 Frames |
 | Überlast | rot glühender Ring, dann Blechsplitter, 5 Frames |
 | Pegel-Ablauf „Kater" | kleine Wolke mit Sternen über dem Helden, 3 Frames |
+| „Prost!" | zwei anstoßende Gläser mit Spritzer über dem Helden (Filter-Furie: Parade während einer Gegner-Ansage), 3 Frames |
 
 ## 5 · HUD-Elemente (UI-Bogen, 2× Dichte)
 

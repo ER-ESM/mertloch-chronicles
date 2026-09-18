@@ -7,7 +7,7 @@ import {BALANCE,rating} from './balance.js';
 import {STAT_NAMES} from './equipment.js';
 import {BASE_SKILLS,KITS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,CLASS_LESSONS} from './skills.js';
 import {SKILL_DAMAGE,CAST_TIMES,COMBAT_RULES} from './combat.js';
-import {TALENT_ROWS,CLASS_SPECS} from './talents.js';
+import {TALENT_ROWS,CLASS_SPECS,TALENT_GLOSSARY,TALENT_CELLS} from './talents.js';
 import {PROC_RULES,PROC_TRIGGERS} from './procs.js';
 import {CLAN_MEMBERS} from './classes.js';
 
@@ -148,6 +148,7 @@ export const GLOSSARY={
  basisbau:{name:'Basisbau',short:'Ausbaustufen an der Bude, die dauerhaft Werte verbessern.',
   long:'Jede Stufe kostet Material und gibt einen Anteil obendrauf – Regeneration außerhalb des Kampfes, Wirkung der Verpflegung, Beuteausbeute. Die Anteile werden additiv gerechnet und wirken in jedem Kampf, ohne dass du etwas drücken musst.'}
 };
+Object.assign(GLOSSARY,TALENT_GLOSSARY);
 export const GLOSSARY_IDS=Object.keys(GLOSSARY);
 export const hasTerm=id=>Object.prototype.hasOwnProperty.call(GLOSSARY,id);
 
@@ -197,6 +198,7 @@ function skillNumbers(def,cls,id){
  return out;
 }
 /** Effektschlüssel eines Talents → Zahlenzeile. value:'fest' = Zahl steht in der Engine, nicht im Talent. */
+const MECH='content/mechanics.js';
 const EFFECT_INFO={
  stamina:{label:STAT_NAMES.stamina,unit:'Punkte'},might:{label:STAT_NAMES.might,unit:'Punkte'},finesse:{label:STAT_NAMES.finesse,unit:'Punkte'},wit:{label:STAT_NAMES.wit,unit:'Punkte'},
  armorRating:{label:STAT_NAMES.armorRating,unit:'Wertung'},critRating:{label:STAT_NAMES.critRating,unit:'Wertung'},hasteRating:{label:STAT_NAMES.hasteRating,unit:'Wertung'},masteryRating:{label:STAT_NAMES.masteryRating,unit:'Wertung'},
@@ -248,7 +250,17 @@ const EFFECT_INFO={
  rootThrow:{label:'Druck je Wurf auf festgehaltene Ziele',fixed:1,unit:'',source:CM},
  interruptDash:{label:'Ausweichen nach Unterbrechung',unit:'s kürzer'},
  snareUpgrade:{label:'Falle hält fest',fixed:4.5,unit:'s statt 3, setzt den Wurf zurück',source:CM},
- hunterFinish:{label:'Ausweichen nach einem Kill',fixed:0,unit:'s Abklingzeit, Rückstoß weiter',source:CM}
+ hunterFinish:{label:'Ausweichen nach einem Kill',fixed:0,unit:'s Abklingzeit, Rückstoß weiter',source:CM},
+ // --- E-32 Kernmechaniken (spec-mechanics.js, Zahlen aus content/mechanics.js) ---
+ stackDecay:{label:'Pegel-Uhr läuft länger',unit:'s'},hangoverShort:{label:'Kater halbiert',fixed:1.5,unit:'s statt 3',source:MECH},stackBonus:{label:'Mehr Abriss-Schaden je Pegelstrich',unit:'%',scale:v=>v*100},stackBurstAt:{label:'Voller Abriss so viele Striche früher',unit:''},stackSpread:{label:'Pegel geht als Angetrunken auf Gegner über',fixed:1,unit:'',source:MECH},stackWave:{label:'Abriss trifft Nachbarn je Pegelstrich',fixed:20,unit:'Schaden',source:MECH},waveRadius:{label:'Größerer Rausschmiss-Radius',unit:'Welteinheiten'},
+ fassPils:{label:'Anstich stellt Pils (Tempo)',fixed:1,unit:'',source:MECH},fassWeizen:{label:'Anstich stellt Weizen (Heilung)',fixed:1,unit:'',source:MECH},fassBock:{label:'Anstich stellt Bock (Schaden)',fixed:1,unit:'',source:MECH},fieldCount:{label:'Zusätzliche Fässer',unit:''},fieldDuration:{label:'Platziertes Objekt hält länger',unit:'s'},fieldRadius:{label:'Größerer Wirkkreis',unit:'Welteinheiten'},
+ supplyMax:{label:'Zusätzliche Vorratsgläser',unit:''},cleanDuration:{label:'Großreinemachen hält länger',unit:'s'},nestHonk:{label:'Gisela schnattert doppelt so lange nieder',fixed:3,unit:'s',source:MECH},cleanDamage:{label:'Mehr Schaden je Heilung im Großreinemachen',unit:'%',scale:v=>v*100},
+ dotSpread:{label:'Schimmel springt auf zusätzliche Nachbarn',unit:''},dotRadius:{label:'Schimmel springt weiter',unit:'Welteinheiten'},dotHeal:{label:'Durchputzen heilt je platzendem Schimmel',fixed:1,unit:'Tick',source:MECH},dotExplodeTicks:{label:'Durchputzen zusätzliche Ticks',unit:''},
+ stateDuration:{label:'Putzwut hält länger',unit:'s'},stateDrain:{label:'Randale-Verbrauch in der Putzwut',unit:'je s'},stateDamage:{label:'Mehr Schaden in der Putzwut',unit:'%',scale:v=>v*100},stateTrigger:{label:'Putzwut beginnt früher',unit:'Randale'},mobileHeal:{label:'Heilung im Laufen',fixed:1,unit:'',source:MECH},mobileStrike:{label:'Grundangriff im Laufen',fixed:1,unit:'',source:MECH},mobileThrow:{label:'Wurf im Laufen',fixed:1,unit:'',source:MECH},mobileBurst:{label:'Eskalation im Laufen',fixed:1,unit:'',source:MECH},stateMobileAll:{label:'Alle Kniffe im Laufen während der Putzwut',fixed:1,unit:'',source:MECH},
+ fuseDamage:{label:'Mehr Lunten-Schaden',unit:''},fuseSpread:{label:'Lunte springt beim Zünden weiter',fixed:1,unit:'Nachbar',source:MECH},chainJumps:{label:'Zusätzliche Blitzsprünge',unit:''},chainFalloff:{label:'Weniger Verlust je Sprung',unit:'%',scale:v=>v*100},reactionWindow:{label:'Längeres Fenster für die Kettenreaktion',unit:'s'},reactionDuration:{label:'Kettenreaktion hält länger',unit:'s'},
+ robbiDamage:{label:'Mehr Robbi-Schaden je Schuss',unit:''},robbiGuard:{label:'Deckung je Robbi-Schuss',fixed:4,unit:'Punkte',source:MECH},overloadDamage:{label:'Mehr Überlast-Schaden',unit:''},overloadStun:{label:'Überlast betäubt',unit:'s'},
+ gambleOver:{label:'Höhere Überzündungs-Chance',unit:'%',scale:v=>v*100},gamblePity:{label:'Garantierte Überzündung früher',unit:'Fehlzündungen'},gambleMisfireMult:{label:'Fehlzündung weniger schwach',unit:'%',scale:v=>v*100},jackpotDuration:{label:'Jackpot hält länger',unit:'s'},jackpotStreak:{label:'Jackpot früher',unit:'Überzündungen'},hausverbotDuration:{label:'Hausverbot hält länger',unit:'s'},mobileCast:{label:'Wirken im Laufen',fixed:1,unit:'',source:MECH},
+ aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Markierungs-Schaden',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Eskalations-Schaden',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''}
 };
 /** Wirkungen einer Proc-Regel → Zahlenzeilen. */
 const PROC_EFFECT_INFO={
@@ -271,7 +283,7 @@ function effectNumbers(effects={},source=TL){
 function procNumbers(r){
  const out=[n('Auslöser',TRIGGER_TEXT[r.trigger]||r.trigger,'',PRC),n('Chance',r.chance*100,'%',PRC),n('Zeitfenster',r.window,'s',r.window===BALANCE.procs.defaultWindow?BL:PRC)];
  if(r.skill)out.push(n('Kniff',skillName(r.skill),'',PRC));
- if(r.zone)out.push(n('Eigene Fläche',({keg:'Fasskreis',sanctuary:'Heilkreis',barricade:'Barrikade',snare:'Falle',burn:'Brandfläche'})[r.zone]||r.zone,'',PRC));
+ if(r.zone)out.push(n('Eigene Fläche',({keg:'Fasskreis',sanctuary:'Heilkreis',barricade:'Barrikade',snare:'Falle',burn:'Brandfläche',fass:'Fass',robbi:'Robbi',nest:'Nest',spores:'Sporenwolke'})[r.zone]||r.zone,'',PRC));
  if(r.every>1)out.push(n('Zündet jedes',r.every,'. Mal',PRC));
  for(const [key,value] of Object.entries(r.effect||{})){
   if(key==='cdReduce'){for(const c of [].concat(value))out.push(n(skillName(c.skill)+' früher bereit',c.seconds,'s',PRC));continue;}
@@ -286,7 +298,7 @@ function procNumbers(r){
 // --- describe(kind,id) -----------------------------------------------------------------------
 export const DESCRIBE_KINDS=['skill','buff','throw','ground','talentSkill','talent','passive','proc'];
 const memberOf=id=>CLAN_MEMBERS.find(m=>m.id===id)||null;
-export const talentCell=id=>{for(const [member,specs] of Object.entries(CLASS_SPECS))for(let s=0;s<specs.length;s++){const prefix=specs[s]+'-';if(id.startsWith(prefix)){const i=Number(id.slice(prefix.length));if(Number.isInteger(i)&&i>=0&&i<10)return {member,spec:specs[s],index:i,cell:s*10+i};}}return null;};
+export const talentCell=id=>{for(const [member,specs] of Object.entries(CLASS_SPECS))for(let s=0;s<specs.length;s++){const prefix=specs[s]+'-';if(id.startsWith(prefix)){const i=Number(id.slice(prefix.length));if(Number.isInteger(i)&&i>=0&&i<(TALENT_ROWS[specs[s]]?.length||0))return {member,spec:specs[s],index:i,cell:i<10?s*10+i:-1,row:TALENT_CELLS[specs[s]]?.[i]?.row??0,path:TALENT_CELLS[specs[s]]?.[i]?.path??0};}}return null;};
 /** Rohdefinition + Herkunft eines Elements. Kein Text, nur Struktur – describe() setzt daraus die Anzeige zusammen. */
 export function element(kind,id){
  if(kind==='skill'){const [cls,sid]=String(id).split('/');const i=BASE_SKILLS.findIndex(s=>s.id===sid);const kit=KITS[cls]?.[i];if(i<0||!kit)return null;

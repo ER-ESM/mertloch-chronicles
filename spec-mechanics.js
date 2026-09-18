@@ -46,7 +46,7 @@ export function quickGcd(g,id,e){
 /** Beschriftung/Ton der Leiste, solange die Bedingung der Mechanik erfüllt ist (combat-ui skillStatus). */
 export function mechVariant(g,id){
  const m=mechanic(g);if(!m?.variant?.[id])return null;const v=m.variant[id],s=M(g),cs=combatStats(g);
- const on={hausverbot:()=>s.hausverbot>0,stackFull:()=>s.stack>0&&s.stack>=Math.min(m.stack.max,cs.stackBurstAt||m.stack.max),fieldsUp:()=>mechFields(g,m).length>0,supplyFull:()=>s.supply>=num(cs,'supplyMax',m.supply.max),marked3:()=>markedEnemies(g,num(cs,'dotRadius',m.dot.explode.radius)).length>=3,state:()=>s.state>0,reaction:()=>s.reaction>0,jackpot:()=>s.jackpot>0}[v.when];
+ const on={hausverbot:()=>s.hausverbot>0,stackFull:()=>s.stack>0&&s.stack>=Math.max(1,m.stack.max-(cs.stackBurstAt||0)),fieldsUp:()=>mechFields(g,m).length>0,supplyFull:()=>s.supply>=num(cs,'supplyMax',m.supply.max),marked3:()=>markedEnemies(g,num(cs,'dotRadius',m.dot.explode.radius)).length>=3,state:()=>s.state>0,reaction:()=>s.reaction>0,jackpot:()=>s.jackpot>0}[v.when];
  return on?.()?{name:s.stack&&v.when==='stackFull'?'ABRISS ×'+s.stack:v.name,tone:v.tone||'gold'}:null;
 }
 /** Grundangriff traf: Pegelstrich, Schimmel-Übertragung. */
@@ -56,6 +56,8 @@ export function onStrikeMech(g,e,cs){
  if(m.dot&&e?.mark>0)spreadDot(g,e,num(cs,'dotSpread',m.dot.spreadOnStrike),cs);
 }
 function spreadDot(g,from,count,cs){const m=mechanic(g);if(!m?.dot||count<=0)return;const targets=nb(g,from,num(cs,'dotRadius',m.dot.radius),from).filter(e=>!(e.mark>0)).slice(0,count);for(const t of targets){applyMark(g,t,cs,false);g.effect?.('projectile',t.x,t.y,{from:{x:from.x,y:from.y},life:.3,max:.3,classId:g.member.id});}if(targets.length)note(g,MECHANIC_UI.schimmel||'SCHIMMEL SPRINGT','#a7e88d','mark');}
+/** Geglückte Parade: Ansage/Antwort – Parade während eines angesagten Zaubers gibt Randale (Filter-Furie). */
+export function onParryMech(g,e,cs){const m=mechanic(g);if(!m?.prost||!e?.cast)return;g.player.energy=Math.min(100,g.player.energy+m.prost.energy);note(g,'PROST!','#ecc3fc','parry');}
 /** Held kassiert einen Treffer: Pegelstrich (Kneipenschläger). */
 export function onHitTakenMech(g,n,cs){const m=mechanic(g);if(!m?.stack||n<=0)return;const s=M(g);s.stack=Math.min(m.stack.max,s.stack+m.stack.gainOnHit);s.stackUntil=g.time+num(cs,'stackDecay',m.stack.decay);}
 /** Eskalation vor dem Schaden: Faktor aus Pegel/Zustand, Nebenwirkungen (Fässer anstechen, Robbi überlasten, Schimmel platzen, Deckung als Welle). */
@@ -90,7 +92,7 @@ export function onKillMech(g,e,wasMarked,cs){const m=mechanic(g);if(m?.dot&&wasM
 /** Bodenkniff: platziertes Objekt statt Böller, wenn die Mechanik eines definiert. */
 export function onGroundMech(g,s,point,cs){
  const m=mechanic(g);if(!m?.field)return false;const f=m.field,z={...point,kind:f.kind,radius:num(cs,'fieldRadius',f.radius),remaining:num(cs,'fieldDuration',f.duration),tick:1,power:0,fire:0,hp:f.hp||0};
- if(f.kind==='fass'){z.sort=cs.fassSort||f.defaultSort;const max=num(cs,'fieldCount',f.max),mine=fieldsOf(g,'fass');while(mine.length>=max){const old=mine.shift();old.remaining=0;}}
+ if(f.kind==='fass'){z.sort=cs.fassBock?'bock':cs.fassPils?'pils':cs.fassWeizen?'weizen':f.defaultSort;const max=num(cs,'fieldCount',f.max),mine=fieldsOf(g,'fass');while(mine.length>=max){const old=mine.shift();old.remaining=0;}}
  else{for(const old of fieldsOf(g,f.kind))old.remaining=0;}
  g.fields=g.fields.filter(x=>x.remaining>0);g.fields.push(z);g.effect?.('rune',z.x,z.y,{life:.8,max:.8});
  return true;
@@ -131,16 +133,19 @@ export function tickMech(g,dt,cs){
 /** Anzeige-Chips für die Stärkungsleiste. */
 export function mechChips(g){
  const m=mechanic(g);if(!m)return [];const s=M(g),cs=combatStats(g),out=[],t=v=>Math.ceil(v)+' s';
- if(m.stack&&s.stack>0)out.push(MECHANIC_UI.pegel+' '+s.stack+'/'+m.stack.max+' · '+t(Math.max(0,s.stackUntil-g.time)));
- if(s.hangover>0)out.push(MECHANIC_UI.kater+' '+t(s.hangover));
- if(m.supply)out.push(MECHANIC_UI.vorrat+' '+s.supply+'/'+num(cs,'supplyMax',m.supply.max));
- if(s.clean>0)out.push('Großreinemachen '+t(s.clean));
- if(s.state>0)out.push(MECHANIC_UI.putzwut+' '+t(s.state));
- if(s.jackpot>0)out.push(MECHANIC_UI.jackpot+' '+t(s.jackpot));
- if(s.reaction>0)out.push(MECHANIC_UI.kettenreaktion+' '+t(s.reaction));
- if(s.hausverbot>0)out.push(MECHANIC_UI.hausverbot+' '+t(s.hausverbot));
- if(m.chain&&s.heat.length)out.push('Zündungen '+s.heat.length+'/'+m.reaction.count);
- for(const z of mechFields(g,m))out.push((z.kind==='fass'?MECHANIC_UI.fass+' '+z.sort:z.kind==='robbi'?MECHANIC_UI.robbi:z.kind==='nest'?MECHANIC_UI.nest:'Sporen')+' '+t(z.remaining));
+ const pips=(n,max,on='▮',off='▯')=>on.repeat(Math.max(0,Math.min(max,n)))+off.repeat(Math.max(0,max-n));
+ const bar=(v,max,len=5)=>{const k=Math.round(Math.max(0,Math.min(1,v/max))*len);return '▰'.repeat(k)+'▱'.repeat(len-k);};
+ if(m.stack&&s.stack>0)out.push(MECHANIC_UI.pegel+' '+pips(s.stack,m.stack.max)+' '+t(Math.max(0,s.stackUntil-g.time)));
+ if(s.hangover>0)out.push(MECHANIC_UI.kater+' '+bar(s.hangover,m.stack.hangover)+' '+t(s.hangover));
+ if(m.supply)out.push(MECHANIC_UI.vorrat+' '+pips(s.supply,num(cs,'supplyMax',m.supply.max),'●','○'));
+ if(s.clean>0)out.push('Großreinemachen '+bar(s.clean,num(cs,'cleanDuration',m.supply.cleanDuration))+' '+t(s.clean));
+ if(m.state)out.push(s.state>0?MECHANIC_UI.putzwut+' '+bar(s.state,num(cs,'stateDuration',m.state.duration))+' '+t(s.state):MECHANIC_UI.putzwut+' '+bar(g.player.energy,num(cs,'stateTrigger',m.state.trigger)));
+ if(s.jackpot>0)out.push(MECHANIC_UI.jackpot+' '+bar(s.jackpot,num(cs,'jackpotDuration',m.gamble.jackpot.duration))+' '+t(s.jackpot));
+ else if(m.gamble&&(s.miss>0||s.over>0))out.push(s.miss>0?'Fehlzündungen '+pips(s.miss,num(cs,'gamblePity',m.gamble.pity),'✖','·'):'Überzündungen '+pips(s.over,num(cs,'jackpotStreak',m.gamble.jackpot.streak),'★','☆'));
+ if(s.reaction>0)out.push(MECHANIC_UI.kettenreaktion+' '+bar(s.reaction,num(cs,'reactionDuration',m.reaction.duration))+' '+t(s.reaction));
+ else if(m.chain&&s.heat.length)out.push('Zündungen '+pips(s.heat.length,m.reaction.count,'●','○'));
+ if(s.hausverbot>0)out.push(MECHANIC_UI.hausverbot+' '+bar(s.hausverbot,num(cs,'hausverbotDuration',m.hausverbot.duration))+' '+t(s.hausverbot));
+ for(const z of mechFields(g,m))out.push((z.kind==='fass'?MECHANIC_UI.fass+' '+z.sort:z.kind==='robbi'?MECHANIC_UI.robbi:z.kind==='nest'?MECHANIC_UI.nest:'Sporen')+' '+bar(z.remaining,num(cs,'fieldDuration',m.field.duration))+' '+t(z.remaining));
  if(s.tapHaste>0)out.push('Laufzauber '+t(s.tapHaste));
  return out;
 }

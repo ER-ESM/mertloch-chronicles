@@ -1,3 +1,4 @@
+import {TUNING,applyTuning} from './tuning.js';
 // Kernmechaniken der neun Spezialisierungen (E-32). Daten der Rolle Klassendesign, Zahlen gehören Balancing (tuning.js
 // legt über `mechanics` Werte drüber). Laufzeit: spec-mechanics.js. Ab der Spezialisierung deuten diese Regeln die
 // Leistenplätze Markierung (2), Eskalation (3), Bodenkniff (7) und Stärkung (Z) um; `kit` überschreibt Name und Text
@@ -14,14 +15,14 @@ export const SPEC_MECHANICS={
   kit:{burst:{name:'Abriss',text:'Verbraucht Pegel und alle Pegelstriche: je Strich 12 % mehr Schaden. Zünde ihn, bevor der Pegel abläuft – läuft er ohne Abriss aus, kommt 3 s Kater.'},
    strike:{name:'Kronkorken-Kelle',text:'Eine schwere Kelle im Nahkampf: baut Pegel und einen Pegelstrich auf und frischt die Pegel-Uhr auf. Drück sie, sobald sie bereit ist; jeder kassierte Treffer gibt ebenfalls einen Strich.'}},
   variant:{burst:{when:'stackFull',name:'ABRISS ×10',tone:'burst'}},
-  paths:[{name:'Dauerpegel',bonus4:{stackDecay:3},bonus7:{hangoverShort:1}},{name:'Blitzabriss',bonus4:{stackBonus:.04},bonus7:{stackBurstAt:6}},{name:'Rundenkämpfer',bonus4:{stackSpread:1},bonus7:{stackWave:1}}]},
+  paths:[{name:'Dauerpegel',bonus4:{stackDecay:3},bonus7:{hangoverShort:1}},{name:'Blitzabriss',bonus4:{stackBonus:.04},bonus7:{stackBurstAt:4}},{name:'Rundenkämpfer',bonus4:{stackSpread:1},bonus7:{stackWave:1}}]},
  'dieter-brew':{kind:'fields',name:'Fässer',
   field:{kind:'fass',max:2,duration:20,radius:56,sorts:{pils:{haste:.15},weizen:{heal:12},bock:{damage:14}},defaultSort:'weizen'},
   tap:{bock:{damage:160,radius:80},weizen:{heal:120},pils:{haste:.3,duration:5}},
   kit:{ground:{name:'Anstich',text:'Stellt ein Fass auf den gewählten Boden (höchstens zwei). Im Umkreis wirkt die Sorte: Weizen heilt, Pils gibt Tempo, Bock verletzt Gegner. Stell es dort, wo du kämpfen willst, bevor die Gegner ankommen.'},
    burst:{name:'Fassanstich',text:'Verbraucht Pegel für einen schweren Treffer und sticht alle stehenden Fässer an: Bock explodiert, Weizen heilt voll, Pils gibt 5 s Laufzauber. Zünde ihn, wenn zwei Fässer stehen und die Gegner darin sind.'}},
   variant:{burst:{when:'fieldsUp',name:'FASSANSTICH',tone:'gold'}},
-  paths:[{name:'Pils',bonus4:{fassSort:'pils'},bonus7:{fieldCount:1}},{name:'Weizen',bonus4:{fassSort:'weizen'},bonus7:{fieldDuration:8}},{name:'Bock',bonus4:{fassSort:'bock'},bonus7:{fieldRadius:20}}]},
+  paths:[{name:'Pils',bonus4:{fassPils:1},bonus7:{fieldCount:1}},{name:'Weizen',bonus4:{fassWeizen:1},bonus7:{fieldDuration:8}},{name:'Bock',bonus4:{fassBock:1},bonus7:{fieldRadius:20}}]},
  'baerbel-care':{kind:'supply',name:'Vorrat',
   supply:{max:5,cleanDuration:10,cleanDamage:1},overhealShield:.5,
   field:{kind:'nest',duration:12,radius:70,heal:12,honk:{stun:1.5,radius:90}},
@@ -39,6 +40,8 @@ export const SPEC_MECHANICS={
   paths:[{name:'Sporen',bonus4:{dotSpread:1},bonus7:{dotRadius:40}},{name:'Provision',bonus4:{markedLeech:.05},bonus7:{dotHeal:1}},{name:'Downline',bonus4:{spreadMark:1},bonus7:{dotExplodeTicks:3}}]},
  'baerbel-stage':{kind:'state',name:'Putzwut',
   state:{trigger:100,duration:10,damage:1.25,drain:10,finisherPerEnergy:2,mobile:['strike','throw','burst']},
+  // Trinkspiel als Ansage/Antwort (E-32 Nr. 8): Parade, während der Gegner einen Zauber ansagt, = „Prost!“ mit Randale-Bonus
+  prost:{energy:30},
   kit:{burst:{name:'Auswringen',text:'Verbraucht Glanz für einen starken Einschlag. Bei 100 Randale beginnt 10 s Putzwut: alle Kniffe kostenlos, 25 % härter, im Laufen wirkbar. In der Putzwut beendet Auswringen den Zustand mit Bonusschaden aus der Rest-Randale. Zünde es kurz vor Ablauf der Putzwut.'},
    buff:{name:'Ringlicht',text:'Kurz mehr Schaden. Drück es, sobald die Randale über 80 liegt – die Putzwut kommt dann sicher.'}},
   variant:{burst:{when:'state',name:'AUSWRINGEN',tone:'burst'},strike:{when:'state',name:'PUTZWUT',tone:'gold'},throw:{when:'state',name:'PUTZWUT',tone:'gold'}},
@@ -62,6 +65,7 @@ export const SPEC_MECHANICS={
   variant:{throw:{when:'jackpot',name:'JACKPOT',tone:'gold'},strike:{when:'jackpot',name:'JACKPOT',tone:'gold'}},
   paths:[{name:'Glückssträhne',bonus4:{gambleOver:.1},bonus7:{gamblePity:-1}},{name:'Fangschuss',bonus4:{dashFreeThrow:1},bonus7:{gambleMisfireMult:.3}},{name:'Jackpot',bonus4:{jackpotDuration:4},bonus7:{jackpotStreak:-1}}]}
 };
+applyTuning(SPEC_MECHANICS,TUNING.mechanics);
 /** Effektschlüssel der Mechaniken (für Talente und Pfadboni; Prüfung: content/talents.js KNOWN_EFFECTS). */
-export const MECHANIC_EFFECTS=['stackDecay','hangoverShort','stackBonus','stackBurstAt','stackSpread','stackWave','waveRadius','fassSort','fieldCount','fieldDuration','fieldRadius','supplyMax','cleanDuration','nestHonk','cleanDamage','dotSpread','dotRadius','dotHeal','dotExplodeTicks','stateDuration','stateDrain','stateDamage','stateTrigger','mobileHeal','mobileStrike','mobileThrow','mobileBurst','stateMobileAll','fuseDamage','fuseSpread','chainJumps','chainFalloff','reactionWindow','reactionDuration','robbiDamage','robbiGuard','overloadDamage','overloadStun','gambleOver','gamblePity','gambleMisfireMult','jackpotDuration','jackpotStreak','hausverbotDuration','mobileCast'];
+export const MECHANIC_EFFECTS=['stackDecay','hangoverShort','stackBonus','stackBurstAt','stackSpread','stackWave','waveRadius','fassPils','fassWeizen','fassBock','fieldCount','fieldDuration','fieldRadius','supplyMax','cleanDuration','nestHonk','cleanDamage','dotSpread','dotRadius','dotHeal','dotExplodeTicks','stateDuration','stateDrain','stateDamage','stateTrigger','mobileHeal','mobileStrike','mobileThrow','mobileBurst','stateMobileAll','fuseDamage','fuseSpread','chainJumps','chainFalloff','reactionWindow','reactionDuration','robbiDamage','robbiGuard','overloadDamage','overloadStun','gambleOver','gamblePity','gambleMisfireMult','jackpotDuration','jackpotStreak','hausverbotDuration','mobileCast'];
 export const MECHANIC_UI={schimmel:'SCHIMMEL SPRINGT',pegel:'Pegel',kater:'Kater',vorrat:'Vorrat',putzwut:'Putzwut',jackpot:'Jackpot',kettenreaktion:'Kettenreaktion',hausverbot:'Hausverbot',fass:'Fass',robbi:'Robbi',nest:'Gisela',pfadbonus:'Pfadbonus',pfadkrone:'Pfadkrone'};

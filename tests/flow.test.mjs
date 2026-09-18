@@ -3,7 +3,7 @@ import {tickCasting} from '../auto-combat.js';
 import {Game} from '../engine.js';import {World} from '../world.js';import {makeEnemy} from '../encounters.js';import {combatStats} from '../rpg.js';import {learnTalent,changeSpec,TALENTS} from '../talents.js';import {fireProcs,procFree,procEmpowered,procGlow} from '../procs.js';import {skillStatus} from '../combat-ui.js';import {BALANCE,PROC_RULES,CLASS_LESSONS,CAST_TIMES,SPAWN_TABLES} from '../content/index.js';
 const arena=()=>({id:'flow-test',seed:1,spawn:{x:-5000,y:-5000},npc:{x:-5000,y:-5000},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 const game=(save={level:6},classId='dieter')=>{const g=new Game(arena(),{...save,classId});g.random=()=>.5;g.player.x=g.player.y=0;g.player.hp=g.player.maxHp;return g;};
-const build=(g,spec)=>{g.player.x=g.world.spawn.x;g.player.y=g.world.spawn.y;assert.ok(changeSpec(g,spec),'spec '+spec);for(const t of TALENTS[spec])assert.ok(learnTalent(g,t.id),t.id);g.player.x=g.player.y=0;};
+const build=(g,spec)=>{g.player.x=g.world.spawn.x;g.player.y=g.world.spawn.y;assert.ok(changeSpec(g,spec),'spec '+spec);for(const t of TALENTS[spec].slice(0,10))assert.ok(learnTalent(g,t.id),t.id);g.player.x=g.player.y=0;};
 const enemy=(g,x=30,hp=10000)=>{const e=makeEnemy({x,y:0},g.enemies.length+1,{hp,aggro:true,ai:'combat',attackTimer:100});g.enemies.push(e);g.target=e;return e;};
 const cast=(g,id,point)=>{assert.ok(g.action(id,point));if(g.casting)tickCasting(g,g.casting.total);};
 

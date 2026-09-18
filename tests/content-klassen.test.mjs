@@ -1,16 +1,16 @@
 // Prüfungen der Rolle Klassendesign: Talente sind Regeln mit Auslöser, Kniff-Texte nennen den Einsatzmoment.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {TALENT_ROWS,CLASS_SPECS,isProcEffect,PROC_RULES,PROC_TRIGGERS,KITS,BASE_SKILLS,CLAN_MEMBERS,CLASS_LESSONS} from '../content/index.js';
+import {TALENT_ROWS,TALENT_CELLS,CLASS_SPECS,isProcEffect,PROC_RULES,PROC_TRIGGERS,KITS,BASE_SKILLS,CLAN_MEMBERS,CLASS_LESSONS} from '../content/index.js';
 
-test('jeder Talentbaum hat zehn Talente, genau eine aktive Fähigkeit in Reihe drei und mindestens zwei Auslöser-Regeln',()=>{
+test('jeder Talentbaum hat dreißig Talente in zehn Reihen × drei Pfaden, mindestens eine aktive Fähigkeit und mindestens vier Auslöser-Regeln',()=>{
  for(const spec of Object.values(CLASS_SPECS).flat()){
   const rows=TALENT_ROWS[spec];
-  assert.equal(rows.length,10,spec);
-  const actives=rows.map((t,i)=>t.grants?i:-1).filter(i=>i>=0);
-  assert.deepEqual(actives,[4],spec+': aktive Fähigkeit nur auf Index 4');
+  assert.equal(rows.length,30,spec);
+  const cells=new Set(TALENT_CELLS[spec].map(c=>c.row+'/'+c.path));assert.equal(cells.size,30,spec+': jede Zelle genau einmal');
+  assert.ok(rows.some(t=>t.grants),spec+': keine aktive Talentfähigkeit');
   const procs=rows.filter(t=>Object.keys(t.effects||{}).some(isProcEffect)).length;
-  assert.ok(procs>=2,spec+': nur '+procs+' Proc-Talente');
+  assert.ok(procs>=4,spec+': nur '+procs+' Proc-Talente');
  }
 });
 

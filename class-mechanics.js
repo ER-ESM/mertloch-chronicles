@@ -6,7 +6,7 @@ import {ITEMS} from './rpg.js';
 import {weaponRequirement,skillDamage} from './equipment.js';
 import {skillsFor} from './clan.js';
 import {distance} from './world.js';
-import {applySpecKit,tickMech} from './spec-mechanics.js';
+import {applySpecKit,tickMech,onParryMech} from './spec-mechanics.js';
 
 export const freshClassState=()=>({guard:0,rage:0,empowered:0,freeThrow:false,freeStrike:false,infusion:0,hot:0,hotPower:0,hotTick:1});
 const spec=g=>g.rpg.talents.spec;
@@ -37,7 +37,7 @@ export function afterSkill(g,id,e,cs,context={}){const p=g.player,st=g.classStat
  if(id==='interrupt'&&context.interrupted){if(cs.interruptHeal)g.cooldowns.heal=0;if(cs.interruptEnergy)p.energy=Math.min(100,p.energy+cs.interruptEnergy);if(cs.interruptDash)g.cooldowns.dash=Math.max(0,g.cooldowns.dash-cs.interruptDash);}
 }
 export function afterDamage(g,e,dealt,cs){const s=spec(g),leech=(e.mark>0?(s==='baerbel-feedback'?.15:s==='dieter-brew'?.06:0)+(cs.markedLeech||0):0)+(g.classState.infusion>0?.35:0);if(leech)healPlayer(g,dealt*leech,cs);}
-export function onParry(g,e,cs){const p=g.player;if(cs.guardOnParry)addGuard(g,cs.guardOnParry,cs);if(cs.lastGuard&&p.hp/p.maxHp<.35)addGuard(g,80,cs);if(cs.parryCombo)p.runes=Math.min(3,p.runes+1);if(cs.parrySlow){e.controlSlow=3;}if(cs.parryHealCd)g.cooldowns.heal=Math.max(0,g.cooldowns.heal-cs.parryHealCd);if(cs.parryHot){g.classState.hot=6;g.classState.hotPower=10;}}
+export function onParry(g,e,cs){const p=g.player;onParryMech(g,e,cs);if(cs.guardOnParry)addGuard(g,cs.guardOnParry,cs);if(cs.lastGuard&&p.hp/p.maxHp<.35)addGuard(g,80,cs);if(cs.parryCombo)p.runes=Math.min(3,p.runes+1);if(cs.parrySlow){e.controlSlow=3;}if(cs.parryHealCd)g.cooldowns.heal=Math.max(0,g.cooldowns.heal-cs.parryHealCd);if(cs.parryHot){g.classState.hot=6;g.classState.hotPower=10;}}
 export function onKill(g,e,wasMarked,cs){if(cs.killHeal)healPlayer(g,cs.killHeal,cs,false,'killHeal');if(cs.killReset)g.cooldowns.slam=0;if(cs.killThrow)g.cooldowns.throw=0;if(cs.hunterFinish)g.cooldowns.dash=0;if(wasMarked&&cs.markedKillHot){g.classState.hot=6;g.classState.hotPower=12;}if(wasMarked&&cs.markedKillEnergy){g.player.energy=Math.min(100,g.player.energy+cs.markedKillEnergy);g.player.runes=Math.min(3,g.player.runes+1);}}
 export function modifyHit(g,n,cs){const p=g.player,st=g.classState,s=spec(g);if(s==='dieter-brawl'){n*=1.15;st.rage=Math.min(5,st.rage+1+(cs.rageGain||0));}n*=s==='kevin-iron'?.9:(g.member.passives?.damageTaken??1);if(g.fields.some(z=>z.kind==='barricade'&&distance(p,z)<z.radius))n*=.7;const shield=Math.min(st.guard,n);st.guard-=shield;return Math.max(0,n-shield);}
 export function tickClass(g,dt,cs){const p=g.player,st=g.classState;tickMech(g,dt,cs);st.infusion=Math.max(0,st.infusion-dt);if(st.hot>0){st.hot=Math.max(0,st.hot-dt);st.hotTick-=dt;if(st.hotTick<=0){st.hotTick=1;healPlayer(g,st.hotPower,cs,false,'hot');}}else st.hotTick=1;if(!p.inCombat)st.guard=Math.max(0,st.guard-dt*5);
