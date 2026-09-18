@@ -28,3 +28,7 @@ dialog{width:min(940px,94vw);max-width:940px;max-height:88dvh;padding:30px}dialo
 
 /* Menü-Reduktion (E-27): Ton/Pause/Vollbild und das Auftragsbuch-Symbol nur noch über Hilfe → Einstellungen bzw. den Reiter. */
 body:not(.touch-mode) .world-controls,#journalButton{display:none!important}
+
+/* Polish 2 (2026-09-18): Kampflog mittig über der Leiste, nie mehr im Clan-Schule-Kasten. */
+body:not(.touch-mode) .combat-log{left:50%;right:auto;bottom:178px;transform:translateX(-50%);width:460px;max-width:60vw;text-align:center;opacity:.9;line-height:1.5}
+body:not(.touch-mode) .combat-log>div{padding:1px 0}

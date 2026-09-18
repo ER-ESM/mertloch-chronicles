@@ -92,6 +92,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
+- [x] **Polish Kampf & Talentbäume, 10 Iterationen** (Nutzerauftrag 2026-09-18): Nachschlagewerk → Hilfe, Clan-Schule-Timeout, Kampflog mittig, Proc-Leuchten + Abklingzeit-Uhr + Autoangriff-Ring, Schadenszahlen nach Art, Zauberbalken/Elite-Stempel, Randale erst bei Kosten, Talentbaum gespreizt + Tooltip bleibt + Build-Chips + Reset-Rückfrage, Leiste lesbar, Angriffsbanner unter dem Ziel, Talent-Tooltip-Kopf. Doku docs/POLISH-KAMPF-TALENTE-2026-09-18.md. Erledigt damit: Kenner-Hänger 1, 2, 3 (teilweise), Auswertung Nr. 3 und 11 (Tooltip-Kopf), Elite-Titel im Zielfenster.
+
 - [x] **Runde Linien (E-28) und Figur kompakt** (Nutzerauftrag 2026-09-18): Rundungs-Regelgruppe am Ende von bierdeckel.css (Fenster 12 px, Knöpfe/Plätze 8 px, Chips/Balken Pille, Talente rund/10 px, Touch rund), Werte als Chip-Zeilen unter der Ausrüstung statt Seitenspalte, Bande nur am Treffpunkt sonst ein Satz, Buchbreite 700 px. Belege visual-review/rund-2026-09-18/.
 - [x] **Mobile-Agent + Mobile-Gaming-Guidelines** (Nutzerauftrag 2026-09-18): .claude/agents/mobile-agent.md, Regelwerk M-01…M-21 in docs/MOBILE-GUIDELINES-2026-09-18.md (Apple HIG, Google Play Level Up, WCAG 2.2, Material, Thumb-Zone, WANDR).
 

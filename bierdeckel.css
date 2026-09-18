@@ -467,3 +467,42 @@ button,.gold-button,.outline-button,.panel-tabs button,.quest-tabs button,.secti
 .panel-section-title{border-radius:var(--r-s)}
 /* Ein Reiter mit Sprungleiste braucht keine Kasten-Überschriften mehr: schlanke Zeile. */
 .popup-body:has(.section-jump) .panel-section-title{background:none;border:0;border-bottom:2px solid var(--kraft-2);padding:0 0 4px;margin:0 0 10px;font-size:var(--t-16);border-radius:0}
+
+/* ===== Polish 3 (2026-09-18): Procs leuchten sichtbar (E-12 „6 s Fenster"), Abklingzeit als Uhr. ===== */
+.skill.ready,.skill.proc-ready,#touchActions .touch-skill.ready,#touchActions .touch-skill.proc-ready{border-color:var(--gold)!important;animation:proc-glow .75s ease-in-out infinite alternate}
+@keyframes proc-glow{from{box-shadow:0 0 0 2px var(--gold),0 0 4px #ECB95C66}to{box-shadow:0 0 0 3px #FFE08A,0 0 16px #ECB95CCC}}
+.skill.proc-free:after,.skill.proc-empower:after{content:'✦';position:absolute;right:2px;top:-2px;z-index:6;font-size:14px;color:#FFE08A;text-shadow:0 1px 0 var(--hard-ink)}
+.skill.proc-empower:after{content:'✦✦';font-size:11px}
+.skill .cooldown:not(:empty){position:absolute;inset:0;display:grid;place-items:center;background:conic-gradient(#0B1216D9 var(--cd-angle,0deg),#0B121666 0);z-index:3}
+.skill.auto-active{outline:2px solid var(--ok);outline-offset:-2px;box-shadow:inset 0 0 0 2px #78A86555,0 0 8px #78A86588!important}
+.skill.auto-active:before{content:'';position:absolute;left:4px;bottom:4px;width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok);z-index:4;animation:auto-blink 1s infinite alternate}
+@keyframes auto-blink{from{opacity:.5}to{opacity:1}}
+.auto-state{font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;text-transform:uppercase;background:var(--green);border:var(--edge) solid var(--kraft-2);border-radius:var(--r-pill)!important;padding:3px 12px}
+
+/* Polish 5 (2026-09-18): Zauberbalken des Ziels – gelb + pulsierend, wenn unterbrechbar; Elite-Titel als Stempel. */
+.target-panel .cast{height:16px;margin-top:6px;border:1px solid var(--kraft-2);background:#0B121680}
+.target-panel .cast span{font-family:var(--display);font-size:var(--t-13);letter-spacing:.04em;text-transform:uppercase;color:var(--cream);text-shadow:1px 1px 0 var(--hard-ink)}
+.target-panel .cast.interruptible{border-color:var(--gold);animation:proc-glow .6s ease-in-out infinite alternate}
+.target-panel .cast.interruptible span:before{content:'⚡ '}
+.target-panel .target-title{display:inline-block;margin:2px 0 4px;padding:1px 8px;background:var(--stamp);color:var(--cream);font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;text-transform:uppercase;border-radius:var(--r-pill)!important}
+.target-panel.elite-target{border-color:var(--stamp)}
+
+/* Polish 6 (2026-09-18): Randale-Balken erst sichtbar, wenn ein Kniff Randale kostet; Pegel-Hinweis vor dem Finisher gedämpft. */
+.player-panel .energy.bar-hidden{display:none}
+#buffText.hint-next{opacity:.7}
+.rune-row>span{letter-spacing:.1em}
+
+/* Polish 8 (2026-09-18): Aktionsleiste – Tasten deutlich, leere Plätze zurückhaltend. */
+.action-area .skill .key{font-size:var(--t-16);padding:0 4px;background:#0B1216B0;border-radius:0 0 6px 0!important;top:0;left:0}
+.action-area .skill.empty-slot{opacity:.45}
+.action-area .skill.empty-slot .empty-mark{color:var(--kraft-2)}
+.action-area .skill.unusable canvas{filter:brightness(.55) saturate(.6)}
+.action-area .skill.locked{opacity:.3}
+.skill .bar-count{position:absolute;right:3px;bottom:2px;z-index:4;font-family:var(--display);font-size:var(--t-13);color:var(--cream);text-shadow:1px 1px 0 var(--hard-ink)}
+
+/* Polish 9 (2026-09-18): „Du wirst angegriffen" als Banner unter dem Zielfenster statt Riesentext in der Bildmitte. */
+body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-size:var(--t-16);padding:6px 14px;max-width:498px;background:var(--stamp);color:var(--cream);border:var(--edge) solid #7A3644}
+.attack-warning.pulse{animation:attack-pulse .5s ease-in-out 3}
+@keyframes attack-pulse{from{transform:scale(1)}50%{transform:scale(1.04)}to{transform:scale(1)}}
+#combatState{padding:1px 7px;border-radius:var(--r-pill)!important;background:var(--green-2);border:1px solid var(--kraft-2)}
+.player-panel.in-combat #combatState{background:var(--stamp);border-color:#7A3644}

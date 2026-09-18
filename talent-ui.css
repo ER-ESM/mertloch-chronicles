@@ -23,3 +23,12 @@
 .talent-points.has-free b{color:#ffe08a;animation:talent-free 1.2s ease-in-out infinite alternate}
 @keyframes talent-free{from{text-shadow:0 0 0 #ffd46a00}to{text-shadow:0 0 8px #ffd46a}}
 .touch-mode .branch-tree{height:480px;padding-left:52px}.touch-mode .branch-node{width:48px;height:48px}.touch-mode .branch-node.capstone{width:54px;height:54px}.touch-mode .talent-gate span{width:40px;left:4px}
+
+/* Polish 7: gelernte Talente als Chips unter dem Baum (dein Build auf einen Blick). */
+.talent-build{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.talent-build:empty{display:none}
+.talent-build-chip{display:flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;background:#2E4A3B;border:1px solid #C9A46F;color:#F4E8C4;font:bold 11px 'Trebuchet MS',sans-serif;border-radius:999px!important;min-height:0!important}
+.talent-build-chip canvas{width:22px;height:22px;image-rendering:pixelated;border-radius:50%}
+.branch-tree{height:600px}
+
+.talent-effect{font-weight:bold}
