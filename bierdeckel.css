@@ -545,3 +545,43 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 
 /* Leiste (Nutzerbefund 2026-09-18): Kniffe sehen immer aktiv aus; nur Abklingzeit und Gesperrt sind sichtbar. */
 .skill.unusable canvas,.action-area .skill.unusable canvas,#touchActions .touch-skill.unusable canvas{opacity:1!important;filter:none!important}
+
+/* Scrolling Combat Text (combat-text.js): drei Laufbereiche um den Helden, MSBT-artig */
+.game-shell{position:relative;}
+#sct{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;z-index:30;}
+.sct-area{position:absolute;display:flex;flex-direction:column-reverse;align-items:flex-start;gap:2px;width:150px;}
+.sct-in{right:46px;bottom:26px;align-items:flex-end;}
+.sct-out{left:46px;bottom:26px;}
+.sct-note{left:-110px;bottom:64px;width:220px;align-items:center;}
+.sct-row{display:flex;align-items:center;gap:5px;font-family:var(--display,'Trebuchet MS',sans-serif);font-size:17px;line-height:1;color:#fff0bf;white-space:nowrap;
+ text-shadow:0 0 2px var(--ink,#2B2A26),1px 1px 0 var(--ink,#2B2A26),-1px 1px 0 var(--ink,#2B2A26),1px -1px 0 var(--ink,#2B2A26),-1px -1px 0 var(--ink,#2B2A26);
+ animation:sct-rise 1.6s cubic-bezier(.2,.7,.3,1) forwards;transform:translateY(var(--sct-offset,0px));will-change:transform,opacity;}
+.sct-row canvas{width:18px;height:18px;image-rendering:pixelated;flex:none;filter:drop-shadow(0 1px 0 var(--ink,#2B2A26));}
+.sct-row b{font-weight:400;}
+.sct-row small{font-size:11px;opacity:.85;font-family:var(--read,system-ui,sans-serif);}
+.sct-in .sct-damage{color:#ff9d84;}
+.sct-heal{color:#a7e88d;}
+.sct-avoid{color:#c7e5ff;}
+.sct-out .sct-damage{color:#fff0bf;}
+.sct-xp{color:#bacd8b;}
+.sct-proc{color:#ffd77a;}
+.sct-momentum{color:#f4c06a;}
+.sct-crit{font-size:24px;animation:sct-crit 1.6s cubic-bezier(.2,.7,.3,1) forwards;}
+.sct-crit canvas{width:24px;height:24px;}
+@keyframes sct-rise{0%{opacity:0;transform:translateY(calc(var(--sct-offset,0px) + 10px));}12%{opacity:1;}70%{opacity:1;}100%{opacity:0;transform:translateY(calc(var(--sct-offset,0px) - 54px));}}
+@keyframes sct-crit{0%{opacity:0;transform:translateY(calc(var(--sct-offset,0px) + 10px)) scale(1.5);}12%{opacity:1;transform:translateY(var(--sct-offset,0px)) scale(1.15);}30%{transform:translateY(calc(var(--sct-offset,0px) - 10px)) scale(1);}70%{opacity:1;}100%{opacity:0;transform:translateY(calc(var(--sct-offset,0px) - 56px)) scale(1);}}
+.touch-mode .sct-row{font-size:14px;}
+.touch-mode .sct-crit{font-size:19px;}
+.touch-mode .sct-in{right:34px;bottom:20px;}
+.touch-mode .sct-out{left:34px;bottom:20px;}
+.touch-mode .sct-note{bottom:52px;}
+@media (prefers-reduced-motion:reduce){.sct-row{animation-duration:1s;}}
+
+/* Kniff-Varianten: Icon und Name wechseln, solange die Bedingung gilt (Eskalation, RESONANZ, Gratis, Verstärkt) */
+.skill.variant canvas,#touchActions .touch-skill.variant canvas{filter:saturate(1.6) brightness(1.18) drop-shadow(0 0 3px #FFE08A)!important;animation:variant-pop .35s ease-out}
+.skill.variant[data-variant-tone="burst"] canvas,#touchActions .touch-skill.variant[data-variant-tone="burst"] canvas{filter:saturate(1.8) brightness(1.2) hue-rotate(-18deg) drop-shadow(0 0 4px #ecc3fc)!important}
+.skill.variant[data-variant-tone="free"] canvas,#touchActions .touch-skill.variant[data-variant-tone="free"] canvas{filter:saturate(1.4) brightness(1.15) hue-rotate(50deg) drop-shadow(0 0 3px #a7e88d)!important}
+.skill.variant:before,#touchActions .touch-skill.variant:before{content:attr(data-variant);position:absolute;left:0;right:0;bottom:0;z-index:6;font-family:var(--display);font-size:var(--t-11,11px);line-height:1.15;text-align:center;color:#FFE08A;background:#0B1216CC;text-shadow:1px 1px 0 var(--hard-ink);letter-spacing:.02em;text-transform:uppercase;pointer-events:none}
+.skill.variant[data-variant-tone="burst"]:before{color:#ecc3fc}
+.skill.variant[data-variant-tone="free"]:before{color:#a7e88d}
+@keyframes variant-pop{0%{transform:scale(1.25)}100%{transform:scale(1)}}

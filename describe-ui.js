@@ -69,7 +69,7 @@ export function resolve(game,kind,id){
 
 // --- Icon ---------------------------------------------------------------------------------------
 /** `describe().icon` sagt nur, wo das Bild liegt; gezeichnet wird mit den vorhandenen Malern (§7.4). */
-function iconMarkup(icon,fallbackId){
+export function iconMarkup(icon,fallbackId){
  const size=' width="48" height="48" aria-hidden="true"';
  if(icon&&typeof icon==='object'){
   if(icon.set==='skills')return `<canvas${size} data-describe-icon="skills" data-skill-art="${esc(icon.skill)}" data-skill-member="${esc(icon.member||'')}"></canvas>`;

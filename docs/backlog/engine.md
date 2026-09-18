@@ -76,3 +76,7 @@ Stand 2026-09-18: Mentorenplätze sind über clan.js/mentorSpots angebunden und 
 ## Von UI · 2026-09-17 (Stil C „Bierdeckel")
 
 - [ ] **`tests/akt1-ui.test.mjs` bindet die Klamottenwahl an genau ein `data-member="…"`.** Die Karten tragen seit dem Stil-C-Umbau ihre Primäraktion selbst (`data-member-wear="<id>"`, ein Klick zieht an); die Bestätigungsleiste `.clan-confirm` ist entfallen. Damit `(html.match(/data-member="/g)).length === 1` weiter hält, trägt nur die **gewählte** Karte zusätzlich `data-member`. Das ist ein reiner Testanker ohne eigene Wirkung. Bitte die Zusicherung auf `data-member-wear` umstellen (drei Vorkommen, eines je Figur) — dann kann das Doppelattribut raus. `scripts/position-class-check.mjs` und `scripts/akt1b-check.mjs` sind bereits umgestellt.
+
+## Von UI · 2026-09-18 (additiv, Kampftext)
+
+- [x] `engine.js`: Einstellung `settings.sct` (Standard an) und Methode `sct(data)` – sendet Ereignis `combat` `{member,area:'in'|'out'|'note',kind:'damage'|'heal'|'avoid'|'xp'|'proc'|'momentum',value,crit,skill,text,iconKey,color}` und liefert `true`, wenn der Kampftext an ist (dann entfallen die Schwebetexte am Helden). Lebensraub und Parade-Heilung melden jetzt ihren tatsächlichen Wert. `procs.js`/`class-mechanics.js`: Proc-Zündung und `healPlayer` gehen denselben Weg. `renderer.js`: `this.viewOrigin={x,y}` je Bild (Kamera-Ursprung inkl. Shake). `combat-ui.js` `skillStatus`: `defensive` und `variant` (siehe docs/backlog/ui.md).

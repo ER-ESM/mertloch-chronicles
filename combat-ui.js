@@ -1,18 +1,33 @@
 import {autoWeapons} from './auto-combat.js';
 import {SCALE} from './world.js';
-import {COMBAT_TEXT,EQUIPMENT_SLOTS} from './content/index.js';
+import {COMBAT_TEXT,EQUIPMENT_SLOTS,COMBAT_RULES} from './content/index.js';
 import {weaponRequirement,weaponRange} from './equipment.js';
 import {actionBar,keyFor,combatStats,rewardOptions,ITEMS,SPECIAL_KEYS} from './rpg.js';
 import {available,skillLevel} from './progression.js';
 import {TALENTS,SPECS,classSpecs,talentPoints} from './talents.js';
 import {AFFIXES} from './itemization.js';
 import {skillCost,markedEnemies,beforeSkill} from './class-mechanics.js';
-import {procGlow,procFree} from './procs.js';
+import {procGlow,procFree,procEmpowered} from './procs.js';
 const art=id=>'<canvas width="48" height="48" data-skill-art="'+id+'"></canvas>';
+const DEFENSIVE_SKILLS=new Set(['parry','dash','interrupt','heal','buff','infusion','sanctuary','keg','barricade']);
+/** Zustandswechsel eines Kniffs (wie Icon-Overlays im Vorbild): Name der Variante aus den Kampfregeln (Eskalation, RESONANZ) oder Proc-Zustand. */
+function skillVariant(g,id,st,e,usable){
+ if(!usable)return null;
+ if(id==='strike'){if(g.player.runes>=3&&!available(g,'burst')&&COMBAT_RULES.earlyEscalation)return {name:'Eskalation',tone:'burst'};if(st.empowered>0)return {name:'Verstärkt',tone:'gold'};if(st.freeStrike)return {name:'Gratis',tone:'free'};}
+ if(id==='throw'&&st.freeThrow)return {name:'Gratis',tone:'free'};
+ if(id==='burst'&&g.player.runes===3&&e?.mark>0)return {name:'RESONANZ',tone:'burst'};
+ if(procFree(g,id))return {name:'Gratis',tone:'free'};
+ if(procEmpowered(g,id))return {name:'Verstärkt',tone:'gold'};
+ if(procGlow(g,id))return {name:'Bereit',tone:'gold'};
+ return null;
+}
 export function skillStatus(g,id){const s=g.skills.find(s=>s.id===id);if(!s)return {};if(s.auto)return {usable:!g.dead,active:g.autoAttack.enabled,ideal:false,cooldown:0,gcd:0,gcdTotal:1};const p=g.player,e=g.target,cs=combatStats(g),st=g.classState,near=g.enemies.filter(e=>e.hp>0&&e.aggro&&Math.hypot(e.x-p.x,e.y-p.y)<110).length;
  const ideal=(id==='strike'?st.empowered>0||st.freeStrike:id==='throw'?st.freeThrow:id==='burst'?p.runes===3&&e?.mark>0:id==='interrupt'?!!e?.cast?.interruptible:id==='parry'?!!e?.cast&&!e.cast.ground&&!e.cast.interruptible:id==='dash'?g.enemies.some(e=>e.cast?.ground&&Math.hypot((p.x-e.cast.x)/e.cast.radius,(p.y-e.cast.y)/(e.cast.radius*.75))<1):id==='buff'?p.inCombat>0&&!g.buffs.remaining:id==='heal'?p.hp/p.maxHp<.65:id==='ground'||id==='slam'||id==='magnet'?near>=2:id==='mark'?p.runes>=2&&e?.hp>0&&!(e.mark>0):id==='detonate'?markedEnemies(g,s.radius).length>=2:id==='encore'?p.runes===0&&g.cooldowns.burst>0:id==='infusion'?p.inCombat>0&&p.hp/p.maxHp<.8:id==='sanctuary'||id==='keg'?p.inCombat>0&&p.hp/p.maxHp<.75:id==='barricade'?near>=2:false)||procGlow(g,id);
  const targetValid=!s.range||s.ground||e?.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&Math.hypot(e.x-p.x,e.y-p.y)<=s.range+(cs.range||0)&&g.world.lineClear(p,e),usable=(!g.casting||s.offGcd)&&targetValid&&available(g,id)&&!g.dead&&!beforeSkill(g,s,cs)&&g.cooldowns[id]<=.01&&(s.offGcd||g.gcd<=.01)&&p.energy>=(procFree(g,id)?0:skillCost(g,s,cs))&&(id!=='burst'||p.runes>0)&&(id!=='heal'||p.hp<p.maxHp||cs.overhealShield||cs.healEmpower||g.rpg.talents.spec==='baerbel-stage');
- const requirement=weaponRequirement(g,s,ITEMS);return {weaponMissing:!!requirement&&!requirement.met,ideal:ideal&&usable,usable,cooldown:g.cooldowns[id]||0,gcd:s.offGcd?0:g.gcd,gcdTotal:cs.gcd};
+ const requirement=weaponRequirement(g,s,ITEMS);
+ // Leiste: nur offensive Kombos leuchten (Abwehr, Heilung, Stärkung bleiben ruhig); Variante = Kniff wechselt Name/Icon-Zustand, solange die Bedingung gilt
+ const defensive=DEFENSIVE_SKILLS.has(id),variant=skillVariant(g,id,st,e,usable);
+ return {weaponMissing:!!requirement&&!requirement.met,ideal:usable&&(procGlow(g,id)||(ideal&&!defensive)),defensive,variant,usable,cooldown:g.cooldowns[id]||0,gcd:s.offGcd?0:g.gcd,gcdTotal:cs.gcd};
 }
 export function skillTooltip(g,id,touch=false){const s=g.skills.find(s=>s.id===id);if(!s)return '';const cs=combatStats(g),requirement=weaponRequirement(g,s,ITEMS),range=s.weaponSource&&weaponRange(g,ITEMS,s.weaponSource),bound=actionBar(g).includes(id)||SPECIAL_KEYS[id]!==undefined,unlocked=available(g,id),origin=s.talent?'Talent: '+SPECS[s.spec].name:'Erlernt auf Stufe '+skillLevel(g,id);const cdSeconds=(s.cd*(id==='dash'?(1-(cs.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste)).toFixed(1),cost=skillCost(g,s,cs);
  // Iteration 4 (MMO-Vorbilder): Kopfzeilen wie im Vorbild – Kosten links, Reichweite rechts; Zauberzeit links, Abklingzeit rechts. Danach erst der Text.
