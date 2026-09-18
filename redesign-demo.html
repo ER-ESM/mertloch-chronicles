@@ -7,4 +7,11 @@
 <section class="section-title"><div><p class="eyebrow">AM DORFBRUNNEN</p><h2>Bereit für Mertloch.</h2></div><p>Die drei Helden gemeinsam. Waffen wechseln mit der Ausrüstung; die Animation folgt dem aktuellen Zustand.</p></section><div class="village"><canvas id="lineup" width="1200" height="380"></canvas></div>
 <section class="section-title"><div><p class="eyebrow">AUS NÄCHSTER NÄHE</p><h2>Gemacht fürs Abenteuer.</h2></div><p>Gebrauchsspuren im Kupfer, Hopfen am Holz und Pfand für den nächsten Schuss.</p></section><div id="gear-gallery" class="gear-gallery"></div>
 <details><summary>Animationsprüfung</summary><div class="controls"><label><input type="checkbox" id="sockets"> Handpositionen zeigen</label><label>Phase <input id="frame" type="range" min="0" max="7" value="0"></label><button id="export">Ansichten als PNG</button></div><p id="status" role="status">Grafiken werden geladen …</p><canvas id="native" width="768" height="192"></canvas></details>
-<footer><p>Mertloch Chronicles · Braumeister, Aperol und Pfandjäger</p><a href="index.html">Ab ins Dorf ↗</a></footer></main><script type="module" src="redesign-demo.js"></script></body></html>
+<footer><p>Mertloch Chronicles · Braumeister, Aperol und Pfandjäger</p><a href="index.html">Ab ins Dorf ↗</a></footer></main><script type="module">
+import('./redesign-demo-app.js').catch(error=>{
+ document.querySelector('.stage').textContent='Die Detailgrafiken konnten nicht geladen werden. Bitte lade die Seite erneut.';
+ document.querySelector('#status').textContent='Grafikvorschau nicht verfügbar';
+ document.querySelectorAll('button,select,input').forEach(control=>control.disabled=true);
+ console.error(error);
+});
+</script></body></html>
