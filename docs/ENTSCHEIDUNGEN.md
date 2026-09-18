@@ -35,7 +35,11 @@ Regeln für dieses Dokument:
 | E-21 | Basisbau-Kosten bleiben bis zum Playtest | 2026-09-17 | gilt |
 | E-22 | Akt 1 perfektionieren, bevor Akt 2 beginnt | 2026-09-17 | gilt |
 | E-23 | Gisela und Pfandautomat bleiben Reserve | 2026-09-17 | gilt |
-| E-24 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | gilt, verfeinert E-13 |
+| E-24 | UI-Stil „Bierdeckel" für die gesamte Oberfläche | 2026-09-17 | gilt, Kanten geändert durch E-28 |
+| E-25 | Autoangriff auf Desktop und Touch | 2026-09-17 | gilt |
+| E-26 | Erst die technische Basis stabilisieren | 2026-09-17 | gilt |
+| E-27 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | gilt, verfeinert E-13 |
+| E-28 | Runde, einfache Linien statt Radius 0 | 2026-09-18 | gilt, ändert E-24 |
 
 ---
 
@@ -246,17 +250,6 @@ Regeln für dieses Dokument:
 
 **Konsequenzen.** Grafik-Aufträge für Gisela und Automat stehen hinter allen Akt-1-Motiven. Prüfungen und Balance-Berichte behandeln `reserve:true` als „nicht im Fluss“ und melden es nicht als Lücke.
 
-## E-24 · Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste
-**Datum:** 2026-09-17 · **Stand:** gilt, verfeinert E-13
-
-**Kontext.** Auftrag der Produktion: „Die Menüs sind viel zu viel." Inventur (`docs/MENUE-REDUKTION-2026-09-17.md`): sieben Reiter, sechs Leistenknöpfe, drei Weltknöpfe, ein Journal-Symbol, 14 Unterreiter und Chips, 14 Einträge im Touch-Kontextraster — 50 Navigationsziele, viele davon Doppelwege zum selben Inhalt.
-
-**Entscheidung.** Vier Reiter (Figur, Rucksack, Aufträge, Karte) plus Hilfe als Symbol-Reiter. Kniffe und Talente sind Abschnitte der Figur, Bude und Erinnerungen Abschnitte der Aufträge. Reiter mit drei und mehr Abschnitten bekommen eine klebende Sprungleiste, die hinführt und beim Scrollen mitläuft. K, N und B springen zum Abschnitt statt ein Fenster zu öffnen. Menüleiste im HUD nur noch die vier Reiter; Ton/Pause/Vollbild und Journal-Symbol nur über Hilfe → Einstellungen bzw. den Reiter. Unterreiter reduziert: Hilfe 3 statt 4, Karte 3 statt 4, Aufträge-Chips 3 statt 4, Kniffe ohne Unterreiter (Raster und Leiste in einer Ansicht). Verworfen: sieben Reiter behalten und nur Beschriftungen kürzen; ein Hamburger-Menü mit Liste.
-
-**Konsequenzen.** E-13 bleibt (ein Fenster, keine Seiten, kein Einklappen); die Reiterzahl ist jetzt vier plus Hilfe. Neue Inhalte werden Abschnitte eines bestehenden Reiters, nie neue Reiter. Hilfetexte, die „sieben Reiter" nennen, sind anzupassen (Story-Backlog).
-
----
-
 ## E-24 · UI-Stil „Bierdeckel" für die gesamte Oberfläche
 **Datum:** 2026-09-17 · **Stand:** gilt
 
@@ -283,6 +276,26 @@ Diese Entscheidung ersetzt den früheren P2-Wunsch „Taste 1 darf nie ausschalt
 Vor weiterem Content werden vier Bereiche bearbeitet: Oberfläche und Touch-Bedienung, Bewegung und Interaktionen, bestehende Kampfregeln sowie Spielstand/Neuladen/Offline/Updates. Neue Inhalte und Händler/Handwerk bleiben zurückgestellt. Desktop und mobile Hoch-/Querformate gehören zur Prüfung; Browser-Touchemulation ersetzt keine physische Handyprüfung.
 
 Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vollständige Balance- oder Performance-Abnahme. Ergebnisse und verbleibende Grenzen stehen in `docs/BASIS-STABILISIERUNG-2026-09-17.md`.
+
+
+## E-27 · Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste
+**Datum:** 2026-09-17 · **Stand:** gilt, verfeinert E-13
+
+**Kontext.** Auftrag der Produktion: „Die Menüs sind viel zu viel." Inventur (`docs/MENUE-REDUKTION-2026-09-17.md`): sieben Reiter, sechs Leistenknöpfe, drei Weltknöpfe, ein Journal-Symbol, 14 Unterreiter und Chips, 14 Einträge im Touch-Kontextraster — 50 Navigationsziele, viele davon Doppelwege zum selben Inhalt.
+
+**Entscheidung.** Vier Reiter (Figur, Rucksack, Aufträge, Karte) plus Hilfe als Symbol-Reiter. Kniffe und Talente sind Abschnitte der Figur, Bude und Erinnerungen Abschnitte der Aufträge. Reiter mit drei und mehr Abschnitten bekommen eine klebende Sprungleiste, die hinführt und beim Scrollen mitläuft. K, N und B springen zum Abschnitt statt ein Fenster zu öffnen. Menüleiste im HUD nur noch die vier Reiter; Ton/Pause/Vollbild und Journal-Symbol nur über Hilfe → Einstellungen bzw. den Reiter. Unterreiter reduziert: Hilfe 3 statt 4, Karte 3 statt 4, Aufträge-Chips 3 statt 4, Kniffe ohne Unterreiter (Raster und Leiste in einer Ansicht). Verworfen: sieben Reiter behalten und nur Beschriftungen kürzen; ein Hamburger-Menü mit Liste.
+
+**Konsequenzen.** E-13 bleibt (ein Fenster, keine Seiten, kein Einklappen); die Reiterzahl ist jetzt vier plus Hilfe. Neue Inhalte werden Abschnitte eines bestehenden Reiters, nie neue Reiter. Hilfetexte, die „sieben Reiter" nennen, sind anzupassen (Story-Backlog).
+
+
+## E-28 · Runde, einfache Linien statt Radius 0
+**Datum:** 2026-09-18 · **Stand:** gilt, ändert E-24
+
+**Kontext.** Auftrag der Produktion: „Der Stil soll nicht so eckig sein, einfache runde Linien, die zum Spielstil passen." E-24 hatte Radius 0, Rahmen 2 px und harten Schatten 3 px festgelegt; im Spiel wirkte das gegen die weichen Pixelformen der Welt (Baumkronen, Hügel, Figuren) wie ein Formular.
+
+**Entscheidung.** Bierdeckel-Palette und Schriften bleiben (E-24), die Kanten nicht: Fenster und HUD-Kästen 12 px Radius, Knöpfe/Plätze/Kacheln 8 px, Chips/Balken/Stempel als Pille, Talent-Knoten rund (aktiv) bzw. 10 px (passiv), Touch-Knöpfe rund. Schatten weiter hart, aber nur nach unten (0 3 px). Keine Verläufe, keine weichen Schatten. Verworfen: Radius 0 behalten; Verläufe/Glanz.
+
+**Konsequenzen.** Eine Regelgruppe am Ende von `bierdeckel.css` („Rundung E-28") ersetzt die Zeile `*{border-radius:0}`; neue Elemente nehmen `--r`, `--r-s`, `--r-pill`. Die Abnahmeliste `docs/UI-ABNAHME.md` gilt mit dieser Änderung.
 
 ## Offen (noch nicht entschieden)
 

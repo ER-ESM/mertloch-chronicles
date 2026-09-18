@@ -92,7 +92,10 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
-- [x] **Menü-Reduktion E-24** (Nutzerauftrag 2026-09-17): 50 → 33 Navigationsziele; vier Reiter plus Hilfe, Abschnitte mit Sprungleiste, HUD-Leiste 4 Knöpfe, Weltknöpfe/Journal-Symbol raus, Unterreiter reduziert. Inventur und Belege: docs/MENUE-REDUKTION-2026-09-17.md, visual-review/menu-2026-09-17/.
+- [x] **Runde Linien (E-28) und Figur kompakt** (Nutzerauftrag 2026-09-18): Rundungs-Regelgruppe am Ende von bierdeckel.css (Fenster 12 px, Knöpfe/Plätze 8 px, Chips/Balken Pille, Talente rund/10 px, Touch rund), Werte als Chip-Zeilen unter der Ausrüstung statt Seitenspalte, Bande nur am Treffpunkt sonst ein Satz, Buchbreite 700 px. Belege visual-review/rund-2026-09-18/.
+- [x] **Mobile-Agent + Mobile-Gaming-Guidelines** (Nutzerauftrag 2026-09-18): .claude/agents/mobile-agent.md, Regelwerk M-01…M-21 in docs/MOBILE-GUIDELINES-2026-09-18.md (Apple HIG, Google Play Level Up, WCAG 2.2, Material, Thumb-Zone, WANDR).
+
+- [x] **Menü-Reduktion E-27** (Nutzerauftrag 2026-09-17): 50 → 33 Navigationsziele; vier Reiter plus Hilfe, Abschnitte mit Sprungleiste, HUD-Leiste 4 Knöpfe, Weltknöpfe/Journal-Symbol raus, Unterreiter reduziert. Inventur und Belege: docs/MENUE-REDUKTION-2026-09-17.md, visual-review/menu-2026-09-17/.
 
 - [x] **Mobile Übersetzungsschicht + Mobile-Prüfung** (Nutzerauftrag 2026-09-17): `mobile-translate.js` übersetzt Fenster, Toasts und Clan-Schule in Touch-Begriffe (Tasten → Knöpfe, Tab → Ziel-Knopf, Rechtsklick → Antippen, <kbd> → Touch-Chip); `npm run mobile:check` prüft 3 Geräte × 16 Schritte headless (Layout, Überdeckung, Tipp-Ziele, Desktop-Begriffe). Doku `docs/MOBILE-UEBERSETZUNGSSCHICHT-2026-09-17.md`.
 

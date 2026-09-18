@@ -14,7 +14,7 @@ import {addItem,ITEMS} from '../rpg.js';
 const world=new World(JSON.parse(readFileSync('data/mertloch.json','utf8')));
 const fresh=()=>new Game(world,{});
 
-test('Das Clanbuch bleibt ein Fenster mit höchstens fünf Reitern und trägt die Bude als Abschnitt der Aufträge (E-24)',()=>{
+test('Das Clanbuch bleibt ein Fenster mit höchstens fünf Reitern und trägt die Bude als Abschnitt der Aufträge (E-27)',()=>{
  assert.ok(BOOK_TABS.length<=5,'höchstens fünf Reiter');
  assert.equal(new Set(BOOK_TABS.map(t=>t[0])).size,BOOK_TABS.length);
  assert.equal(new Set(BOOK_TABS.map(t=>t[3])).size,BOOK_TABS.length,'jede Taste kommt genau einmal vor');

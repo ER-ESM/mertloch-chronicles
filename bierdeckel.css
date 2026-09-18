@@ -36,7 +36,7 @@
  --gold:#ECB95C;           /* nur Primäraktion und Auswahl */
  --ok:#78A865;             /* Apfelgrün: Leben, Erfolg */
  /* Kanten */
- --hard:3px 3px 0;         /* harter Schatten, keine Unschärfe */
+ --hard:0 3px 0;         /* harter Schatten, keine Unschärfe */
  --hard-ink:#0B1216;
  --edge:2px;
  /* Schriften */
@@ -57,7 +57,7 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:400;letter-spacing:.04em;text
 kbd{font-family:var(--display);font-weight:400;font-size:var(--t-13);letter-spacing:.04em;
  border:var(--edge) solid var(--kraft-2);background:var(--green-2);color:var(--cream);padding:0 4px;box-shadow:none;}
 canvas,img,.pixel{image-rendering:pixelated;}
-*{border-radius:0;}
+/* Radius: siehe „Rundung E-28" am Dateiende. */
 [hidden]{display:none !important;}
 @media (prefers-reduced-motion:reduce){
  *,*::before,*::after{animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms;scroll-behavior:auto;}}
@@ -447,3 +447,23 @@ input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);o
 #touchWaypoint{min-height:44px;background:var(--green);border:var(--edge) solid var(--kraft-2);
  color:var(--cream);font-family:var(--display);font-size:var(--t-13);letter-spacing:.04em;
  text-transform:uppercase;box-shadow:var(--hard) var(--hard-ink);}
+
+/* ===== Rundung E-28 (2026-09-18): einfache runde Linien, die zur Pixelwelt passen. Palette/Schrift bleiben E-24. ===== */
+:root{--r:12px;--r-s:8px;--r-pill:999px}
+.game-popup,.hud,.player-panel,.target-panel,.minimap,.quest-panel,.region-label,.action-bar,.in-world-lesson,.toast,.attack-warning,.item-tooltip,.skill-tooltip,#touchContext,.world-menu-brand,.update-hint{border-radius:var(--r)!important}
+.game-popup{border-width:3px}
+.popup-titlebar{border-radius:calc(var(--r) - 3px) calc(var(--r) - 3px) 0 0}
+button,.gold-button,.outline-button,.panel-tabs button,.quest-tabs button,.section-jump button,.atlas-toolbar button,.grid-pager button,.popup-titlebar button,.game-menu-rail button,.world-controls button,.interact,.clan-more,.book-help-button,.touch-editor-footer button,.touch-menu-grid>button,select,input[type=search]{border-radius:var(--r-s)!important}
+.book-tabs button{border-radius:var(--r-s) var(--r-s) 0 0!important}
+.skill,.item-slot,.gear-cell .item-slot,.binding-slot,.book-skill,.reward-option,.spec-tabs button,.clan-card,.guide-card,.quest-entry,.memory-entry,.build-card,.base-card,.character-stats>div,.secondary-stats>div,.weapon-summary>div,.paper-doll,.gear-doll,.talent-points,.touch-slot-editor button,.touch-skill-picker button{border-radius:var(--r-s)!important}
+#touchActions .touch-skill{border-radius:var(--r-s)!important}
+.buff-chip,.rune-row>span,.clan-stamp,.quest-reward span,kbd,.touch-kbd,.mobile-notice,.game-menu-rail button[data-badge]:after,.book-tabs button[data-badge]:after,.section-jump button[aria-current=true],.talent-gate span,.branch-node small{border-radius:var(--r-pill)!important}
+.bar,.bar i,.enemy-hp,.energy,.hp,.cast,.cast i,.rpg-xp,.rpg-xp i,.xp-track,.xp-track i,.training-progress,.training-progress i,.quest-meter,.quest-meter i,.health-track,.energy-track,.bar-track,.buff-timer{border-radius:var(--r-pill)!important}
+.branch-node,.branch-node.passive-talent,.talent-node{border-radius:10px!important}
+.branch-node.active-talent,.branch-node.capstone.active-talent{border-radius:50%!important}
+#touchStick,#touchThumb,.stick-ring,#touchUtility button,#touchActions .touch-special,#touchMenu{border-radius:50%!important}
+#touchMenu{border-radius:var(--r)!important}
+.section-jump{border-radius:0 0 var(--r-s) var(--r-s)}
+.panel-section-title{border-radius:var(--r-s)}
+/* Ein Reiter mit Sprungleiste braucht keine Kasten-Überschriften mehr: schlanke Zeile. */
+.popup-body:has(.section-jump) .panel-section-title{background:none;border:0;border-bottom:2px solid var(--kraft-2);padding:0 0 4px;margin:0 0 10px;font-size:var(--t-16);border-radius:0}

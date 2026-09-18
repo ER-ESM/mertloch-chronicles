@@ -1,4 +1,4 @@
-# Menü-Reduktion · 2026-09-17 (E-24)
+# Menü-Reduktion · 2026-09-17 (E-27)
 
 Auftrag der Produktion: „Die Menüs sind viel zu viel. Reduziere auf das Notwendigste oder baue eine intelligentere Navigation." Beides: weniger Ziele **und** eine Navigation, die innerhalb eines Reiters führt.
 

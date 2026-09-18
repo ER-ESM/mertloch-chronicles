@@ -26,5 +26,5 @@ dialog{width:min(940px,94vw);max-width:940px;max-height:88dvh;padding:30px}dialo
 .book-tabs button{position:relative}
 @keyframes talent-badge{from{transform:scale(1)}to{transform:scale(1.12)}}
 
-/* Menü-Reduktion (E-24): Ton/Pause/Vollbild und das Auftragsbuch-Symbol nur noch über Hilfe → Einstellungen bzw. den Reiter. */
+/* Menü-Reduktion (E-27): Ton/Pause/Vollbild und das Auftragsbuch-Symbol nur noch über Hilfe → Einstellungen bzw. den Reiter. */
 body:not(.touch-mode) .world-controls,#journalButton{display:none!important}

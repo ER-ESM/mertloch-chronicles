@@ -36,7 +36,7 @@ body:has(.popup-book:not(.minimized)) #actionBar .empty-mark{visibility:visible}
 body:not(.touch-mode) .compact-panel .armory-banner .paper-doll{width:100px;padding:4px}body:not(.touch-mode) .compact-panel .armory-banner .paper-doll canvas{width:92px;height:115px}.armory-controls{display:grid;gap:7px}
 .touch-mode .popup-person .armory-banner{display:flex;gap:14px;margin:8px 0}.touch-mode .popup-person .armory-banner .paper-doll{width:84px;padding:2px}.touch-mode .popup-person .armory-banner .paper-doll canvas{width:80px;height:100px}.touch-mode .popup-person .armory-controls button{min-height:44px;margin:0}.touch-mode .popup-person .armory-controls small{display:none}
 
-/* Sprungleiste (E-24): klebt oben im Reiter, führt zu den Abschnitten und läuft beim Scrollen mit. */
+/* Sprungleiste (E-27): klebt oben im Reiter, führt zu den Abschnitten und läuft beim Scrollen mit. */
 .section-jump{position:sticky;top:-14px;z-index:3;display:flex;gap:4px;margin:-14px -14px 10px;padding:8px 14px;background:linear-gradient(#2f4433f8,#293c2ff2);border-bottom:1px solid #7d7750;box-shadow:0 3px 8px #12241a66}
 .section-jump button{flex:1 1 0;min-width:0;min-height:32px;padding:5px 6px;border:1px solid #6f7a52;background:#2b4132;color:#cfd3b3;font:bold 10px/1.2 'Trebuchet MS',sans-serif;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .section-jump button[aria-current=true]{background:#776039;color:#fff0ba;border-color:#b9975c;box-shadow:inset 0 -3px #dbbd79}
