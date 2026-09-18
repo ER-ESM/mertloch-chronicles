@@ -1,0 +1,65 @@
+{
+  "tool": "image_gen.imagegen",
+  "date": "2026-09-18",
+  "jobs": [
+    {
+      "key": "barrels",
+      "prompt": "Detailed warm comic pixel art for Mertloch Chronicles, rural German village action RPG, crisp carefully shaded pixel clusters, warm copper/kraft-paper highlights, petrol shadows, top-left lighting, 20 degree overhead 3/4 isometric game view, true transparent RGBA background, no floor, no scene, no labels, no typography, no grid lines. Every object completely inside its cell, at least 12% empty transparent margins on all four sides. Same camera and fixed scale within each row, stable ground contact. Create one production sprite sheet, EXACTLY 4 columns by 3 rows, 1536x1152. Each row is one richly detailed placed beer barrel with four genuinely different states in the columns: 1 upright sealed and quiet, 2 tapped/working with small lively foam at spigot, 3 tapped/working second animation phase with changed foam and lever, 4 spent and tipped/broken. ROW1 PILS: light wooden staves, dark steel bands, green enamel tap, clear raised hop-cone medallion, ivory foam. ROW2 WEIZEN: honey golden wooden staves, brass bands and golden tap, clear embossed wheat-ear medallion, cream foam. ROW3 BOCK: dark chestnut barrel, thick copper bands, red enamel tap, recognizable embossed ram-horn medallion, amber foam; its spent state is ruptured barrel with a few connected broken staves and detached lid close to the ground. Exactly 12 separate sprites, objects not icons in frames. The first three barrel states in each row have EXACT same body geometry and same footpoint: only valve angle and small foam jet animate. Barrel body should occupy no more than 65% cell height. Fine woodgrain, rivets, band wear, tap silhouette should be beautiful but readable at 96 pixels tall. No colored rectangles behind sprites.",
+      "refs": [],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-4945bdcb-285f-4187-8345-16d9d9acb233.png",
+      "source": "assets/class-visuals/sources/barrels-v1.png",
+      "active": true,
+      "sha256": "dfe46a7ed43d9295c178eb9886b8e54087101b887649a731aa9289603c6f8181",
+      "references": []
+    },
+    {
+      "key": "companions",
+      "prompt": "Detailed warm comic pixel art for Mertloch Chronicles, rural German village action RPG, crisp carefully shaded pixel clusters, warm copper/kraft-paper highlights, petrol shadows, top-left lighting, 20 degree overhead 3/4 isometric game view, true transparent RGBA background, no floor, no scene, no labels, no typography, no grid lines. Every object completely inside its cell, at least 12% empty transparent margins on all four sides. Same camera and fixed scale within each row, stable ground contact. References are style inputs: image1 gives the copper mechanical claw language; image2 gives the established white goose identity. Create a NEW sprite sheet, EXACTLY 4 columns by 2 rows, 1536x768. ROW1 four states of the SAME stationary companion DOSEN-ROBBI: charming stout beer-can recycling automaton, two stable bolted feet, dented petrol-blue can torso with bronze straps and rivets, bright blue glass eye, small brass antenna lamp, a jointed copper grasping claw and short can-launcher arm. Col1 ready idle; col2 fires with cannon arm thrust forward, copper claw braced and small muzzle sparks; col3 overload, same robot with orange-red seams and raised shaking arms, warning lamp bright amber; col4 spent harmless collapsed scrap heap made of the SAME recognizable torso, detached bent antenna and folded limbs. No giant explosion painted over it. ROW2 four states of GISELA, SAME adult white goose with orange beak on SAME tightly woven straw nest: col1 sitting calm neck tucked; col2 idle neck raised slightly, eyelid change; col3 helpful honk, neck clearly extended, open beak, wing lifted; col4 end of honk, neck settles and wing folded. Nest shape and ground anchor never move. At most a couple gold feather sparkles for supportive honk, no magical body recoloring. Goose should match the reference species silhouette, not a chicken/duck. Both rows fixed object identity, scale, viewpoint and baseline, no mirroring between states. Exactly 8 isolated sprites. Leave generous transparent gutters.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/precision/runtime/items/gear-robotclaw.png",
+        "D:/Dev/MertlochChronicles-ui3/assets/precision/runtime/enemies/goose.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-cc9bb9c2-30f1-4668-9aa1-9334a69e103f.png",
+      "source": "assets/class-visuals/sources/companions-v1.png",
+      "active": true,
+      "sha256": "dcf3dfb0e954814dab96b8fcdf9b21ae8705b2ad1401abe21f151b38e92b3696",
+      "references": [
+        {
+          "path": "D:/Dev/MertlochChronicles-ui3/assets/precision/runtime/items/gear-robotclaw.png",
+          "sha256": "d283eb9d161122ee9f4d8f2addccb7669862fa5baec18afffa23b5f16684086f"
+        },
+        {
+          "path": "D:/Dev/MertlochChronicles-ui3/assets/precision/runtime/enemies/goose.png",
+          "sha256": "065240c598960de01efbac57241b92d13fb74fb1030d5f5c0b8a87a032d9dde8"
+        }
+      ]
+    },
+    {
+      "key": "mechanics-fx",
+      "prompt": "Detailed warm comic pixel art for Mertloch Chronicles, rural German village action RPG, crisp carefully shaded pixel clusters, warm copper/kraft-paper highlights, petrol shadows, top-left lighting, 20 degree overhead 3/4 isometric game view, true transparent RGBA background, no floor, no scene, no labels, no typography, no grid lines. Every object completely inside its cell, at least 12% empty transparent margins on all four sides. Same camera and fixed scale within each row, stable ground contact. The reference is the already accepted effect palette/material style, not a layout to preserve. Create a NEW production animation sheet, EXACTLY 4 equal columns by 6 equal rows, 1024x1536, square cells256. Each row is one FOUR-PHASE evolving VFX: small onset, strongest form, fragmenting form, sparse fading remnants. Same center anchor, never stretch all frames to same size. All effects fit within 72% of cell dimensions including sparks. ROW1 SCHIMMEL: toxic olive-green spore puff with violet curled tendrils and tiny cream mushroom-cap shapes, hollow center; no healing leaves, poisonous dotted blobs. ROW2 LUNTE: orange-lit loop of frayed fuse cable erupts into red-orange sparks, then cable strands and embers separate. ROW3 FASSANSTICH: amber beer vertical fountain with heavy ivory foam curls and bronze bottle caps, splash arcs then droplets. ROW4 UEBERLAST: red hot copper and steel can fragments blown outward around an open center, fiery red cracks, mechanical metal shards then few sparks; clearly mechanical not generic flame. ROW5 KATER: small slate-violet dizzy cloud with ochre little stars orbiting it, tired drooping silhouette, appears, puffs, thins, dissipates. ROW6 KETTENBLITZ: a HORIZONTAL electric cyan-white zigzag line with a small brass spark at both ends, exactly left-to-right from x20% to80%, centered vertically in cell; 4 differently jagged flickering frames with identical endpoints, no circular explosion. Exactly24 isolated transparent effects, no typography no background plates, no atmospheric haze between cells.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/skill-fx/runtime/effects.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-133980c0-dedf-4d18-ad4c-549404b8b05c.png",
+      "source": "assets/class-visuals/sources/mechanics-fx-v1.png",
+      "active": true,
+      "sha256": "930a4575058a79478c3bd2724fa8ed1a305004bf3369d7c55d9f16637a81becd",
+      "references": [
+        {
+          "path": "D:/Dev/MertlochChronicles-ui3/assets/skill-fx/runtime/effects.png",
+          "sha256": "643bda438b2dfe01b21f215107713d23d7e43f8a61238c1cb09d80496e4d01df"
+        }
+      ]
+    },
+    {
+      "key": "signatures",
+      "prompt": "Detailed warm comic pixel art for Mertloch Chronicles, rural German village action RPG, crisp carefully shaded pixel clusters, warm copper/kraft-paper highlights, petrol shadows, top-left lighting, 20 degree overhead 3/4 isometric game view, true transparent RGBA background, no floor, no scene, no labels, no typography, no grid lines. Every object completely inside its cell, at least 12% empty transparent margins on all four sides. Same camera and fixed scale within each row, stable ground contact. Create a sheet of TWELVE distinct skill symbol illustrations for ability icons, EXACTLY4 columns by3 rows, 1536x1152. Flat readable object arrangement, do not add enclosing icon frames. Each symbol has one strong silhouette and readable material contrast when reduced to64px. All12 independent separated transparent motifs. Row1 left-to-right: A copper-edged door being slammed outward by a shield (Rausschmiss); a heavy amber beer mug smashing with ivory foam and ten small bronze studs on its band (Abriss); a brass tap piercing a wooden keg with cream foam jet (Fassanstich); an open glass preserve jar with a mint-green healing leaf inside and a small blue shield leaning on it (Vorsorge). Row2: purple-green mold spores spreading from one cream mushroom cap to two smaller caps (Schimmel); two hands in orange cleaning gloves twisting a green wet cloth so orange droplets spray from it (Auswringen); cyan lightning connecting three separated copper terminals in a zigzag chain (Kurzschluss); a dented petrol-blue beer-can robot torso cracking with red-hot copper seams (Ueberlast). Row3: three DIFFERENT sparkling gold bottle caps arranged as a jackpot triple with bright central star (Jackpot); a calm white goose with orange beak sitting on a straw nest (Gisela); two thick beer mugs clinking, crossed timing tick motif behind (Trinkspiel counter window); a rolled frayed fuse cable with bright ember at one end and dark unburnt remainder (Lunte). Twelve original polished precise pixel symbols, no text or lettering. Avoid many tiny unrecognizable details, use large readable forms. Preserve consistent top-left light and warm brass highlights.",
+      "refs": [],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-d8b9ca49-2a9c-4aea-a247-5c602c7850e2.png",
+      "source": "assets/class-visuals/sources/signatures-v1.png",
+      "active": true,
+      "sha256": "0b9f7c8b2d32f5f9e528a5435312ff72f88f82b8681a3873b0ca07c84dba37dc",
+      "references": []
+    }
+  ]
+}
