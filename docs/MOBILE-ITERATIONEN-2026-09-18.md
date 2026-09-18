@@ -76,6 +76,23 @@ Fünf Iterationen an der Mobile-Schicht (Mobile-Agent, Regelwerk `docs/MOBILE-GU
 
 **Offen:** Glossar- und Hilfetexte in `content/` bleiben Desktop-Texte (Schicht übersetzt beim Anzeigen, M-13 erfüllt); Kontrast der Stempel-Koralle am Desktop (2,4:1) ist nicht Sache der Mobile-Schicht – im Backlog ui.md vermerkt.
 
+## Iteration 5 · Sitzung und Gerät (M-15, M-16, M-17, M-18)
+
+**Geprüfte Regeln:** M-15 (ein Tipp zurück ins Spiel), M-16 (Zustand aus dem Speicher), M-17 (Drehen ohne Zustandsverlust und ohne Touch-Versatz), M-18 (keine schwarzen Balken bei 21:9, 9:21, 16:10, 4:3).
+
+**Befund vorher** (Skript um 23 Schritte erweitert): Drehen mit offenem Fenster und im Kampf war nie geprüft; **Todesfenster stand nach Drehen quer → hochkant bei x = −13 (außerhalb, Knopf „Am Treffpunkt zusammenkratzen“ in der Safe Area)**, weil popup-windows.js `left` aus einer noch querformatigen Breite rechnet (M-17). Gespräch, Beute und Tod fehlten im Skript; Beute war ohne Fixture nicht erreichbar (Arena-Gegner geben keine Beute, im Tutorial ist kein anderer Gegner verwundbar). Nach dem Aufstehen folgt eine Erinnerung als zweites Fenster (M-15, siehe offen).
+
+**Änderungen:**
+
+- `mobile.css`: Fenster hochkant per `left/right + margin auto` zentriert (wie quer seit Iteration 2) – Lage unabhängig vom JS-`left`, überlebt jede Drehung.
+- `scripts/mobile-check.mjs`: je Gerät `drehen` (Figur-Fenster offen → Drehen → Fenster bleibt, im Viewport, nicht über HUD; Joystick im sicheren Bereich; Joystick-Probe: Berührung greift, Loslassen gibt frei; zurückdrehen), `unterbrechung` (blur/visibilitychange: kein neues Fenster, Joystick frei, ein Tipp wirkt), `gespraech` (Wegmarke → Aktion → Gesprächsfenster), `tod` (Arena Boss × 8, Todesfenster, Drehen im Tod), `tod-zurueck` (ein Tipp „Aufstehen“ → keine Fenster; Erinnerung als Hinweis). Sitzungsblock: Spielstand-Fixture (Hofprobe abgeschlossen, Auto-Loot aus, Beutel neben dem Spieler, Autosave der alten Seite unterbunden) → `beute` (Aktion zeigt „Beute“, Beutefenster) und `wiederkehr` (Neuladen: höchstens ein Fenster, ein Tipp zurück) auf hoch und quer; Formate 21:9, 9:21, 16:10, 4:3: Spielfläche füllt den Viewport (Bierdeckel-Rahmen 2 px toleriert), Joystick/Kniffe da, nichts in Ecken. Teil-Läufe über `MOBILE_PART=hoch|quer|klein|sitzung` (je unter 2 Minuten, Berichte `REPORT-<teil>.md`), CDP-Zeitschranke 40 s, Bildschirmfoto-Fehler blockieren den Lauf nicht mehr.
+
+**Messwerte nachher:** **93 Schritte, 0 Fehler** (3 Geräte × 29 + Sitzung 4 + Formate 4 + Desktop), Laufzeit 4 min 9 s; 0 Ziele < 44 px, 0 Paare < 8 px, 0 Texte < 10 px, 0 Kontrastverstöße. Einziger Hinweis: Erinnerung nach dem ersten Aufstehen (hoch). `npm test` 370/370.
+
+**Belege:** `visual-review/mobile-check/hoch-drehen-gedreht.png`, `hoch-tod.png`, `hoch-tod-gedreht.png`, `hoch-beute.png`, `quer-beute.png`, `format-21-9.png`, `format-9-21.png`, `format-16-10.png`, `format-4-3.png`.
+
+**Offen:** (1) M-15: nach dem Aufstehen öffnet app.js eine Erinnerung (`memory`) – zweiter Tipp nötig; Entscheidung UI/Story (Backlog ui.md). (2) M-17: popup-windows.js `clamp()` rechnet `left` beim Drehen aus der alten Breite – per CSS überbrückt, JS-Fix im Backlog ui.md. (3) Das Desktop-Bildschirmfoto 2024×900 läuft im headless Chrome nach dem Sitzungsblock in die 40-s-Zeitschranke (die Desktop-Prüfung selbst ist grün); Ursache offen.
+
 ## Commits
 
 | Iteration | Commit |
@@ -83,4 +100,5 @@ Fünf Iterationen an der Mobile-Schicht (Mobile-Agent, Regelwerk `docs/MOBILE-GU
 | 1 | `5abd1f6` |
 | 2 | `fad6019` |
 | 3 | `93174f6` |
-| 4 | (wird nach dem Push eingetragen) |
+| 4 | `4d4c980` |
+| 5 | (wird nach dem Push eingetragen) |

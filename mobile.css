@@ -86,3 +86,6 @@
 .touch-mode{--ink-2:#3A3732}
 .touch-mode .popup-body .talent-points.has-free{color:var(--cream,#F4E8C4)}
 .touch-mode .popup-body .memory-picture-button>span{color:var(--cream,#F4E8C4)}
+/* Iteration 5 · M-17: Fenster hochkant ebenfalls per left/right + margin auto zentrieren. popup-windows.js rechnet `left` aus einer
+   Breite, die beim Drehen quer → hochkant noch vom Querformat stammt (Todesfenster stand bei x = −13). So bleibt die Lage vom JS unabhängig. */
+@media(orientation:portrait){.touch-mode .game-popup{left:calc(12px + var(--safe-left))!important;right:calc(12px + var(--safe-right));margin-left:auto;margin-right:auto}}
