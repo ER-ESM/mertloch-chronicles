@@ -102,6 +102,8 @@ Einstellungsreiter. Prüfung: `node scripts/welle-d-check.mjs` (startet Server u
 
 ## Erledigt
 
+- [x] **Pre-Render-Pipeline E-30** (2026-09-18): tools/prerender (Kasten-Rig, Posen, Render-Seite, Build, Demo), Laufzeit prerender-art.js hinter Einstellung „3D-Vorrender (Vorschau)", Katalog assets/prerender/runtime. Übergabe der Modellanforderungen: docs/UEBERGABE-3D-ASTRA-2026-09-18.md.
+
 - [x] **Charakterplätze am Körper** (Nutzerauftrag 2026-09-18): große drehbare Figur mit neun Körperplätzen, separate Schmuck- und Waffengruppen; alle 16 Plätze auf Desktop und Touch bedienbar. Browserprüfung in fünf Bildschirmgrößen, einschließlich An-/Ablegen per Maus und Touch sowie aller Figurenansichten. Doku `docs/CHARAKTERFENSTER-2026-09-18.md`, Prüfskript `scripts/character-sheet-check.mjs`.
 
 - [x] **Nutzerbefunde 2026-09-18**: Sirenen-Spiel mobil sichtbar (Takt-Leiste und Score hatten im Bierdeckel keine Farben); Tooltip-Wechsel auf Touch (wiederverwendetes Fenster wird wieder nach vorn geholt); Langdruck öffnet jeden Tooltip als Fenster mit Umschalter „Details anzeigen/ausblenden"; Story-NPC (Ida) mit gerahmtem, pulsierendem Abzeichen, Nebenauftraggeber ohne Zeichen nach Abschluss; Belohnungswahl mobil als Zeilen mit lesbaren Farben; Fenster-Inhalte auf Touch nie breiter als das Fenster; Figur wechseln (Karte trug data-member-pick und -wear, Pick gewann); frühe Eskalation E-29. Belege visual-review/fix-2026-09-18/.

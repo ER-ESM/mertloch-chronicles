@@ -26,6 +26,8 @@
     "sprites:boar": "node tools/sprite-pipeline/build-boar-rig.mjs",
     "sprites:live": "node tools/sprite-pipeline/build-live.mjs",
     "sprites:precision": "node tools/sprite-pipeline/build-precision.mjs",
-    "mobile:check": "node scripts/mobile-check.mjs"
+    "mobile:check": "node scripts/mobile-check.mjs",
+    "prerender:build": "node tools/prerender/build-prerender.mjs",
+    "prerender:demo": "node tools/prerender/demo-sheet.mjs"
   }
 }

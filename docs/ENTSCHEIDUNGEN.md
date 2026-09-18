@@ -41,6 +41,7 @@ Regeln für dieses Dokument:
 | E-27 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | gilt, verfeinert E-13 |
 | E-28 | Runde, einfache Linien statt Radius 0 | 2026-09-18 | gilt, ändert E-24 |
 | E-29 | Jeder Kniff hat zu jeder Zeit einen Nutzen (frühe Eskalation) | 2026-09-18 | gilt |
+| E-30 | Sichtbare Ausrüstung über Pre-Render aus 3D | 2026-09-18 | gilt |
 
 ---
 
@@ -306,6 +307,17 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 **Entscheidung.** Solange der Finisher nicht gelernt ist, entlädt die Kelle bei drei Pegeln von selbst („Frühe Eskalation", `COMBAT_RULES.earlyEscalation`, +60 % Kellenschaden, Pegel auf null, Schwebetext ESKALATION). Der Randale-Balken erscheint erst, wenn ein gelernter Kniff Randale kostet; der Pegel-Hinweis nennt die Regel. Verworfen: Finisher auf Stufe 1 vorziehen (Lernkurve E-12); Pegel erst ab Stufe 3 anzeigen (verschleiert den Aufbau).
 
 **Konsequenzen.** Regel liegt bei Gameplay (`content/combat.js`, mit `COMBAT_RULE_INFO`-Erklärung), Zahl bei Balancing. Neue Kniffe, die etwas erzeugen, brauchen ab dem Tag ihres Erlernens einen Verbraucher oder eine Automatik.
+
+---
+
+## E-30 · Sichtbare Ausrüstung über Pre-Render aus 3D
+**Datum:** 2026-09-18 · **Stand:** gilt
+
+**Kontext.** Sichtbare Ausrüstung kostet als Sprite-Overlay 2 bis 20 Stunden je Look (bewegte Teile in vier Richtungen und zehn Bildern); der Schwellenwert von etwa dreißig Looks wird nach Aussage der Produktion schnell überschritten.
+
+**Entscheidung.** Helden und Ausrüstung entstehen als 3D-Modelle (Rig mit festen Knochennamen, Ausrüstung als Mesh je Knochen) und werden offline zu Pixel-Sprites gerendert (`tools/prerender`: vier Richtungen, acht Posen, Laufzyklus, 40-Farben-Palette, Kontur), Ausgabe im Präzisions-Katalogformat, Ausrüstung als eigene Ebenen mit eingebrannter Verdeckung. Das Spiel bleibt 2D-Canvas; kein Live-3D. Bis zur Abnahme echter Modelle läuft die Pipeline mit einem Kasten-Rig hinter dem Schalter „3D-Vorrender (Vorschau)". Verworfen: Live-3D im Spiel (Stilbruch E-10, Welt und Gegner müssten mit); Overlay-Weg für alle Slots.
+
+**Konsequenzen.** Modelle werden extern geliefert (`docs/UEBERGABE-3D-ASTRA-2026-09-18.md`). Asset-IDs der Ausrüstung bleiben Speicherschlüssel (E-04). Grafik besitzt `assets/prerender/models`, UI besitzt `tools/prerender` und `prerender-art.js`.
 
 ---
 

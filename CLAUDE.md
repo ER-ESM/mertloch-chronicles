@@ -2,6 +2,8 @@
 
 **Pipeline, Rollen, Branches und Übergabedateien: [docs/PIPELINE.md](docs/PIPELINE.md).** Agenten: `.claude/agents/inhalt-agent.md`, `engine-agent.md`, `ui-agent.md`, `mobile-agent.md` (Regelwerk `docs/MOBILE-GUIDELINES-2026-09-18.md`); Playtest-Personas `neuling-agent.md`, `kenner-agent.md`, `pruefer-agent.md` (nur Browser, vor jedem Merge, der Bedienung/Kampf/Menüs ändert; erster Lauf `docs/PLAYTEST-2026-09-17-AUSWERTUNG.md`). Was das Spiel ist: `docs/PITCH.md`. Entscheidungen mit Begründung: `docs/ENTSCHEIDUNGEN.md` — was dort nicht steht, ist nicht entschieden. Aktuelle Übergabe an die UI: `docs/UEBERGABE-UI-2026-09-12.md`. Visuelle Guideline: `docs/VISUELLE-BEWERTUNG-2026-09-13.md`. Menüstruktur (Clanbuch, umgesetzt): `docs/MENUE-BEWERTUNG-2026-09-17.md`. Gameplay Fluss/Rotation/Procs/Arena (umgesetzt 0.20): `docs/GAMEPLAY-KONZEPT-FLUSS.md`. Übergabe an die Bild-KI: `docs/UEBERGABE-GRAFIK-2026-09-17.md`, fehlende Sprites: `docs/FEHLENDE-SPRITES.md`.
 
+**Pre-Render (E-30):** `npm run prerender:build` rendert das 3D-Rig (`tools/prerender`) zu Pixel-Sprites nach `assets/prerender/runtime`; `npm run prerender:demo <held> <assets>` erzeugt ein Kontrollbild. Modellanforderungen: `docs/UEBERGABE-3D-ASTRA-2026-09-18.md`.
+
 **Buildnummer:** `build-info.js` (Arbeitsstand „dev"); `npm run build` stempelt Commit-Zahl, Kurz-Hash und Datum nach `_site/build-info.js`. Im Spiel: Tag am HUD-Kopf (#Nummer) und Hilfe → Einstellungen. Live-Nummer = `git rev-list --count origin/main`.
 
 Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm test` muss vor jedem Commit grün sein; GitHub Actions veröffentlicht `main` auf GitHub Pages.

@@ -7,6 +7,7 @@ export async function writePrecache(){const files=(await readdir(root)).filter(n
 files.push('assets/content-art/handoff-catalog.json');
 // Lokal vendorte Schriften (OFL): Jersey 15 und Nunito, damit die Oberfläche offline im Stil bleibt.
 for(const file of await readdir(new URL('assets/fonts/',root)))if(file.endsWith('.woff2'))files.push('assets/fonts/'+file);
+try{for(const file of await readdir(new URL('assets/prerender/runtime/',root),{recursive:true}))if(/\.(png|json)$/.test(file))files.push('assets/prerender/runtime/'+file.replaceAll('\\','/'));}catch{}
 for(const file of await readdir(new URL('assets/precision/runtime/',root),{recursive:true}))if(/\.(png|json)$/.test(file))files.push('assets/precision/runtime/'+file.replaceAll('\\','/'));
 for(const folder of ['maifeld-09','maifeld-rpg','maifeld-ui-011','clan-skills-013','app','content-art/memories','content-art/npcs','content-art/items','content-art/talents','content-art/talents/procs','content-art/aperol-anni','content-art/ui','content-art/heroes','content-art/enemies','content-art/bosses','content-art/props','content-art/portraits'])for(const file of await readdir(new URL('assets/'+folder+'/',root)))if(/\.(png|svg)$/.test(file)&&!(file==='baerbel.png'&&['clan-skills-013','content-art/talents'].includes(folder))&&!(folder==='content-art/talents/procs'&&file.startsWith('proc-')))files.push('assets/'+folder+'/'+file);
 for(const file of await readdir(new URL('assets/sprite-lab/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/sprite-lab/runtime/'+file);

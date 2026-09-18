@@ -1,6 +1,7 @@
 import {drawBoar} from './maifeld-boar-rig.js';
 import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
+import {prerenderArt,drawPrerenderPerson} from './prerender-art.js';
 export {equipmentAppearance};
 export const liveArt={ready:false,catalog:null,images:{},animals:{}};
 const base='./assets/maifeld-live/runtime/';
@@ -77,6 +78,7 @@ function drawContentPerson(c,id,x,y,p,magnify){
 
 export function drawLivePerson(c,id,x,y,time=0,p={},scale=1){
  id=livePersonId(id,p.variant);
+ if(prerenderArt.enabled&&drawPrerenderPerson(c,id,x,y,p,p.artMagnify??scale/(26/33)))return true;
  if(drawContentPerson(c,id,x,y,p,p.artMagnify??scale/(26/33)))return true;
  if(!liveArt.ready)return false;const cat=liveArt.catalog,h=cat.heroes[id],n=cat.people[id];if(!h&&!n)return false;
  const direction=directionOf(p),west=direction.endsWith('w'),back=direction.startsWith('n'),height=33*scale,k=height/52;
