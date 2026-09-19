@@ -38,7 +38,11 @@ export function mountAuraUI(root,getGame){
    const player=root.querySelector('.player-panel').getBoundingClientRect(),width=Math.max(44,Math.min(104,root.clientWidth-safe('right')-(player.right-r.left)-20));
    const topline=root.querySelector('.touch-topline')?.getBoundingClientRect(),auraTop=Math.max(126+safe('top'),topline?.height?topline.bottom-r.top+8:0);
    for(const [i,key] of ['buffs','debuffs'].entries()){bars[key].style.left=root.clientWidth-safe('right')-12-width+'px';bars[key].style.width=width+'px';bars[key].style.top=auraTop+i*64+'px';}
-   const target=root.querySelector('#targetPanel').getBoundingClientRect();bars.targetDebuffs.style.left=12+safe('left')+'px';bars.targetDebuffs.style.width='205px';bars.targetDebuffs.style.top=Math.max(198+safe('top'),target.bottom-r.top+8)+'px';
+   const target=root.querySelector('#targetPanel').getBoundingClientRect(),left=12+safe('left'),top=Math.max(198+safe('top'),target.bottom-r.top+8),bar=bars.targetDebuffs;
+   // A tall target panel can put this row beside the touch page selector on small phones.
+   let available=Math.min(205,root.clientWidth-left-12-safe('right'));
+   for(const sel of ['#touchStick','#touchActions','#touchUtility']){const c=root.querySelector(sel)?.getBoundingClientRect();if(c?.width&&c.top-r.top<top+bar.offsetHeight&&c.bottom-r.top>top&&c.left-r.left>left)available=Math.min(available,c.left-r.left-left-8);}
+   bar.style.left=left+'px';bar.style.width=Math.max(44,available)+'px';bar.style.top=top+'px';
   }
  }
  function update(force=false){
