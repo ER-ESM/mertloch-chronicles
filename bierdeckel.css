@@ -644,3 +644,8 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .party-hp{display:block;height:5px;margin-top:2px;border-radius:3px;background:#0b1216}.party-hp i{display:block;height:100%;border-radius:3px;background:#7fc77a}
 .online-people ul{list-style:none;margin:6px 0;padding:0;display:grid;gap:4px;max-height:50vh;overflow-y:auto}.online-people li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #a9956233}.online-people li .online-actions{margin:0}.online-people button{font-size:11px;padding:4px 8px}
 .chat-people{font-size:11px!important}.chat-line.scope-party b,.chat-channel[data-channel=party]{color:#a8e6b0}.chat-line.scope-whisper,.chat-line.scope-whisper b{color:#e6b3f0}
+/* Freundliches Ziel im Zielrahmen: NPC grün, Mitspieler blau (Farben wie die Leuchtrahmen in content/targeting.js). */
+.target-panel.friendly-target .unit-name{color:#86e08f}
+.target-panel.friendly-target .bar.enemy-hp i{background:#5fae68}
+.target-panel.friendly-target[data-disposition=player] .unit-name{color:#8cc8ff}
+.target-panel.friendly-target[data-disposition=player] .bar.enemy-hp i{background:#5a94c8}
