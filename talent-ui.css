@@ -58,3 +58,22 @@
 .path-cell.empty{display:block;width:56px;height:56px;margin:0 auto;border:1px dashed #4b5f4d;border-radius:10px;opacity:.4}
 .touch-mode .path-tree .branch-node{width:48px;height:48px}.touch-mode .path-tree .branch-node.capstone{width:54px;height:54px}.touch-mode .path-heads,.touch-mode .path-row{grid-template-columns:26px repeat(3,minmax(0,1fr));gap:4px}.touch-mode .path-head b{font-size:10px}.touch-mode .path-head span{display:none}
 .compact-panel .path-tree{margin:4px 0 8px}
+
+/* Kraft coasters and bottle-cap links keep the authored motifs readable at native size. */
+.path-tree{padding:12px 6px;background:repeating-linear-gradient(100deg,#c5a77708 0 2px,transparent 2px 7px),#1d362c;border:1px solid #8e7955;border-radius:20px}
+.path-tree .branch-node{width:72px;height:72px;padding:4px;border-radius:50%!important;background:radial-gradient(circle,#6f674c 55%,#bea374 58% 65%,#74613d 67% 72%,#223a2e 74%);border:2px solid #bda06b;overflow:visible}
+.path-tree .branch-node canvas{border-radius:50%;image-rendering:pixelated;position:relative;z-index:1}
+.path-row{min-height:90px;border:0;position:relative}
+.path-row .branch-node:before{content:'';position:absolute;width:8px;height:25px;left:calc(50% - 4px);bottom:100%;background:radial-gradient(circle,#233b2b 20%,#bda06b 25% 49%,transparent 55%) center/8px 8px repeat-y;z-index:-1}
+.path-row:first-of-type .branch-node:before{display:none}
+.path-tree .branch-node.learned{background:radial-gradient(circle,var(--path) 0 58%,#bda06b 60% 69%,#344e38 71%);box-shadow:0 0 0 2px #e5c981}
+.path-tree .branch-node.available{animation:coaster-ready 1.4s ease-in-out infinite alternate}
+.path-tree .branch-node.locked{border-style:dashed;filter:grayscale(.65)}
+.path-tree .branch-node.capstone{width:76px;height:76px}
+.path-head{border-radius:20px;background:linear-gradient(#3c5740,#243d30);min-height:90px}
+@keyframes coaster-ready{from{box-shadow:0 0 0 2px #e9c26e44}to{box-shadow:0 0 0 3px #e9c26e,0 0 13px #e9c26e66}}
+@media(prefers-reduced-motion:reduce){.path-tree .branch-node.available{animation:none}}
+.touch-mode .path-tree{overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain}
+.touch-mode .path-heads,.touch-mode .path-row{min-width:calc(3 * 230px + 28px);grid-template-columns:28px repeat(3,230px);gap:0}
+.touch-mode .path-head{scroll-snap-align:center;margin:0 12px}
+.touch-mode .path-tree .branch-node{width:72px;height:72px}.touch-mode .path-tree .branch-node.capstone{width:76px;height:76px}

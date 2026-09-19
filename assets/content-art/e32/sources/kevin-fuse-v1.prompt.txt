@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is kevin-fuse. In strict row-major order (left to right, top to bottom):
+1. Brennender Nachlauf: Der Einschlagpunkt des Bodenangriffs glüht nach und brennt weiter.
+2. Zündfunke: Ticks der Klebemarke können einen Druckpunkt abwerfen.
+3. Kleber für alle: Die Klebemarke überträgt sich auf bereits kämpfende Nachbarn.
+4. Schnellverkabelt: Jede geglückte Unterbrechung zahlt zusätzlich Randale aus.
+5. Kettenzündung: Schaltet den Knopf frei, der alle verteilten Marken gleichzeitig sprengt.
+6. Kurzschluss: Glückstreffer können den Bodenangriff sofort wieder bereit machen.
+7. Rücklaufdruck: Ein Kill auf einem markierten Ziel zahlt Randale und einen Druckpunkt.
+8. Doppelte Sicherung: Direkte Heilung verkürzt die verbleibende Bodenangriffs-Abklingzeit.
+9. Lange Zündschnur: Die Sprengung greift weiter und zahlt je getroffenem Ziel einen Druckpunkt.
+10. Kettenreaktion: Der Finisher erneuert die Marken aller beteiligten Nachbarn.
+11. Dicke Lunte: Die Explosion jeder Lunte fällt größer aus, egal ob abgebrannt oder gezündet.
+12. Funkenflug: Treffer auf ein Ziel mit Lunte können Randale zurückzahlen.
+13. Lunte springt: Eine explodierende Lunte klebt sich an den nächsten Nachbarn ohne Lunte.
+14. Sparflamme: Die Ticks der Lunte zählen mit; bei jedem vierten fließt Randale nach.
+15. Heißer Kleber: Die regelmäßigen Ticks der Lunte treffen härter, solange sie klebt.
+16. Ausgebrannt: Angeschlagene Ziele nehmen aus allen Quellen mehr Schaden.
+17. Alles auf die Lunte: Der Blitz des Finishers springt kürzer, die gezündeten Lunten explodieren dafür deutlich stärker.
+18. Blanker Draht: Der Blitz des Finishers springt auf ein zusätzliches Ziel.
+19. Kupferkern: Der Blitz verliert je Sprung weniger von seinem Schaden.
+20. Rückstrom: Ein voll geladener Finisher gibt einen Teil der Randale sofort zurück.
+21. Erdschluss: Ein voll geladener Finisher betäubt sein erstes Ziel kurz.
+22. Überbrückt: Der Erstschlag des Finishers trifft härter, und die Sprünge rechnen vom größeren Wert.
+23. Serienschaltung: Der Blitz erreicht deutlich mehr Ziele, verliert dafür je Sprung mehr Schaden.
+24. Nullwiderstand: Der Blitz gibt seinen Schaden ungeschmälert weiter und lässt sich aus der Bewegung zünden.
+25. Zündliste: Das Zeitfenster, in dem Zündungen für die Kettenreaktion gezählt werden, ist länger.
+26. Warmlaufen: Die Kettenreaktion bleibt länger aktiv.
+27. Funkenüberschlag: Treffer auf ein Ziel mit Lunte können den Finisher sofort wieder bereit machen.
+28. Zündleitung: Der Blitz erreicht ein Ziel mehr und die Zündungen bleiben länger gezählt.
+29. Nachzünder: Jeder Kill bringt den nächsten Finisher zeitlich näher.
+30. Glühender Draht: Sowohl das Zählfenster der Zündungen als auch die Reaktion selbst laufen länger.

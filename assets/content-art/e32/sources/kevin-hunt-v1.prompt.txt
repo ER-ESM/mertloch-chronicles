@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is kevin-hunt. In strict row-major order (left to right, top to bottom):
+1. Wurf aus der Bewegung: Ausweichen gibt zusätzlich zum kostenlosen Wurf einen Druckpunkt.
+2. Fangschuss: Nach einem Ausweichen trifft der nächste Wurf doppelt.
+3. Klebefalle: Die erste Markierung auf einem Ziel hält es zusätzlich kurz fest.
+4. Nachladen im Rennen: Ausweichen verkürzt die verbleibende Abklingzeit des Fernwurfs.
+5. Pfandseil: Schaltet eine Bodenfalle frei, die den ersten Eindringling festnagelt.
+6. Beutefieber: Ein Kill setzt das Ausweichen zurück und zahlt Randale und einen Druckpunkt.
+7. Fangprämie: Würfe auf festgehaltene Gegner geben einen Druckpunkt.
+8. Schritt voraus: Eine gelungene Unterbrechung verkürzt die verbleibende Ausweich-Abklingzeit.
+9. Stahlseil: Die Falle hält länger fest und setzt beim Auslösen den Wurf zurück.
+10. Nie am selben Fleck: Der Finisher stößt weiter zurück, und jeder Kill setzt das Ausweichen zurück.
+11. Gezinkte Dose: Der Würfel des Bastler-Glücks fällt öfter auf die Überzündung.
+12. Restwert: Eine Fehlzündung kostet deutlich weniger Schaden als sonst.
+13. Kurze Pechsträhne: Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher.
+14. Glücksgriff: Glückstreffer können nebenbei einen Druckpunkt abwerfen.
+15. Pfandgeschoss im Laufen: Der Grundangriff lässt sich aus der Bewegung werfen.
+16. Pfandbon: Schaden an markierten Zielen heilt dich anteilig.
+17. Automatenrhythmus: Die Grundangriffe zählen mit; jeder vierte gibt Randale zurück.
+18. Alles auf Rot: Der Finisher trifft härter und gewinnt bei einem Glückstreffer noch einmal deutlich dazu.
+19. Abgesprungen: Jedes Ausweichen legt dir ein Polster an.
+20. Nachschub: Jeder Kill setzt den Fernwurf zurück.
+21. Fangnetz: Ein voll geladener Finisher hält sein Ziel kurz still.
+22. Rückstoß: Die Fernwürfe zählen mit; jeder zweite setzt das Ausweichen zurück.
+23. Rakete im Rennen: Die Rakete verlangt keinen Stillstand mehr und fliegt auch aus dem Sprint.
+24. Zweite Serie: Die Serie an Überzündungen, die den Jackpot auslöst, ist kürzer.
+25. Pfandrückgabe: Treffer auf ein markiertes Ziel können Randale zurückgeben.
+26. Gewinnausschüttung: Jeder Kill zahlt dir einen festen Betrag Leben aus.
+27. Glücksbringer: Die Phase, in der jeder Wurf überzündet, dauert länger.
+28. Glücksrausch: Jeder Kill beschleunigt für kurze Zeit alle Kniffe.
+29. Restgewinn: Angeschlagene Ziele nehmen von jedem Wurf mehr Schaden.
+30. Gewinnrakete: Ein voll geladener Finisher zahlt Tempo und Randale aus.

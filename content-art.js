@@ -14,6 +14,8 @@ export function loadContentArt(){return pending||=(async()=>{
  if(!catalog?.assets)return;
  contentArt.catalog=catalog;
  await Promise.all(Object.entries(catalog.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img)contentArt.images.set(id,img);}));
+ // Registered biped cycles replace the short pose alternation for NPCs and human enemies.
+ try{const r=await fetch('./assets/content-art/locomotion/runtime/catalog.json');if(r.ok){const walking=await r.json();await Promise.all(Object.entries(walking.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img){contentArt.catalog.assets[id]=a;contentArt.images.set(id,img);}}));}}catch{}
  contentArt.ready=true;
 })();}
 
@@ -33,7 +35,7 @@ export function contentActor(id){
  const m=poses.meta,frameSize=m.frameSize??contentArt.catalog.frameSize,pivot=m.pivot??contentArt.catalog.pivot;
  return {id:poses.id,poses,walk,frameSize,pivot,columns:m.columns,rows:contentArt.catalog.directions.length,
   nativeHeight:m.nativeHeight||frameSize,worldHeight:m.worldHeight||frameSize/2,
-  gearScale:m.gearScale||1,stride:DEFAULT_STRIDE*((m.worldHeight||26)/26)};
+  gearScale:m.gearScale||1,stride:walk?.meta.stride||DEFAULT_STRIDE*((m.worldHeight||26)/26)};
 }
 export const hasContentActor=id=>!!contentActor(id);
 /** Welthöhe des gelieferten Bogens (4 native Pixel = 1 Welteinheit) oder 0. */

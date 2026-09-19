@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is dieter-brew. In strict row-major order (left to right, top to bottom):
+1. Rücklaufleitung: Schaden an einem markierten Gegner fließt anteilig als zusätzliche Heilung zurück.
+2. Nachfüllen: Jeder Tick der Marke kann einen Aufbaupunkt abwerfen.
+3. Nichts wegkippen: Die Hälfte jeder Überheilung wird zu Deckung, bis das Deckungslimit erreicht ist.
+4. Ruhige Hand: Jede Heilung gibt zusätzlich einen Aufbaupunkt.
+5. Katerfass: Schaltet eine aufstellbare Heilzone mit bremsender Pfütze frei.
+6. Zapfhahn auf: Nach einer Heilung ist die Marke sofort bereit und der nächste Grundangriff kostenlos.
+7. Runde aufs Haus: Ein Finisher mit drei Punkten verlängert die laufende Heilung über Zeit.
+8. Gut gekühlt: Eine gelungene Parade verkürzt die verbleibende Heilungs-Abklingzeit.
+9. Großes Fass: Die Heilzone hält länger und wirft beim Aufstellen sofort Deckung ab.
+10. Letzter Ausschank: Ein Grundangriff innerhalb der eigenen Fasszone lädt zusätzliche Randale.
+11. Pils zuerst: Der Bodenkniff stellt die Tempo-Sorte statt der Heil-Sorte.
+12. Schaumkrone: Die Kellen zählen mit; jede dritte zahlt Randale und verkürzt die Abklingzeit des Bodenkniffs.
+13. Drittes Fass: Es dürfen mehr Fässer zugleich auf dem Boden stehen.
+14. Zapfen im Gehen: Die Heilung unterbricht die Bewegung nicht mehr.
+15. Frisch gezapft: Nach einem Ausweichschritt kostet der nächste Grundangriff nichts, und Randale kommt dazu.
+16. Nächste Runde: Jeder erledigte Gegner verkürzt die Abklingzeit des Bodenkniffs.
+17. Anstich mit Schwung: Der volle Finisher zahlt Randale und einen Aufbaupunkt zurück und bringt sofort das nächste Fass näher.
+18. Weizenkur: Die Heilung wirkt nach dem Sofortbetrag mehrere Sekunden weiter.
+19. Nachschank: Jedes aufgestellte Fass bleibt länger auf dem Boden.
+20. Deckel und Pflaster: Jede geglückte Parade startet eine Heilung über Zeit.
+21. Tropfen für Tropfen: Die Ticks der Marke können kleine Heilungen abwerfen.
+22. Letzte Runde heilt: Erledigst du ein markiertes Ziel, läuft danach eine Heilung über Zeit.
+23. Anstich für alle: Der volle Finisher heilt sofort, legt ein Polster an und setzt die Heilung zurück.
+24. Bock zuerst: Der Bodenkniff stellt die Schadens-Sorte, die im Kreis brennt und beim Anstich explodiert.
+25. Breiter Ausschank: Jedes Fass wirkt in einem größeren Kreis.
+26. Pfand mit Zinsen: Jeder Tick der Marke richtet mehr Schaden an.
+27. Bock drauf: Glückstreffer können Randale und einen Aufbaupunkt abwerfen.
+28. Restbestand: Angeschlagene Gegner kassieren von jedem Treffer mehr.
+29. Bock auf mehr: Nach dem vollen Finisher schlägt der nächste Grundangriff doppelt und Randale kommt dazu.
+30. Scherben bringen Glück: Jeder erledigte Gegner legt ein Polster an und zahlt Randale.

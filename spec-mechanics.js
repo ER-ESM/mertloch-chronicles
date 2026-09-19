@@ -1,3 +1,4 @@
+import {emitClassVisual} from './e32-world-art.js';
 // Laufzeit der Spezialisierungs-Kernmechaniken (E-32). Daten: content/mechanics.js. Zustand liegt in g.classState.m
 // (wird mit dem Klassenzustand zurückgesetzt). Engine und class-mechanics rufen die Haken auf; alle Prüfungen laufen
 // über das gewählte Spec (g.rpg.talents.spec). Ohne Mechanik-Eintrag verhalten sich alle Haken neutral.
@@ -55,9 +56,9 @@ export function onStrikeMech(g,e,cs){
  if(m.stack){s.stack=Math.min(m.stack.max,s.stack+m.stack.gainOnStrike);s.stackUntil=g.time+num(cs,'stackDecay',m.stack.decay);}
  if(m.dot&&e?.mark>0)spreadDot(g,e,num(cs,'dotSpread',m.dot.spreadOnStrike),cs);
 }
-function spreadDot(g,from,count,cs){const m=mechanic(g);if(!m?.dot||count<=0)return;const targets=nb(g,from,num(cs,'dotRadius',m.dot.radius),from).filter(e=>!(e.mark>0)).slice(0,count);for(const t of targets){applyMark(g,t,cs,false);g.effect?.('projectile',t.x,t.y,{from:{x:from.x,y:from.y},life:.3,max:.3,classId:g.member.id});}if(targets.length)note(g,MECHANIC_UI.schimmel||'SCHIMMEL SPRINGT','#a7e88d','mark');}
+function spreadDot(g,from,count,cs){const m=mechanic(g);if(!m?.dot||count<=0)return;const targets=nb(g,from,num(cs,'dotRadius',m.dot.radius),from).filter(e=>!(e.mark>0)).slice(0,count);for(const t of targets){applyMark(g,t,cs,false);emitClassVisual(g,'spore-transfer',t.x,t.y,{from:{x:from.x,y:from.y},life:.4,max:.4});}if(targets.length)note(g,MECHANIC_UI.schimmel||'SCHIMMEL SPRINGT','#a7e88d','mark');}
 /** Geglückte Parade: Ansage/Antwort – Parade während eines angesagten Zaubers gibt Randale (Filter-Furie). */
-export function onParryMech(g,e,cs){const m=mechanic(g);if(!m?.prost||!e?.cast)return;g.player.energy=Math.min(100,g.player.energy+m.prost.energy);note(g,'PROST!','#ecc3fc','parry');}
+export function onParryMech(g,e,cs){const m=mechanic(g);if(!m?.prost||!e?.cast)return;g.player.energy=Math.min(100,g.player.energy+m.prost.energy);emitClassVisual(g,'prost',g.player.x,g.player.y,{offsetY:-37,size:26,life:1,max:1});note(g,'PROST!','#ecc3fc','parry');}
 /** Held kassiert einen Treffer: Pegelstrich (Kneipenschläger). */
 export function onHitTakenMech(g,n,cs){const m=mechanic(g);if(!m?.stack||n<=0)return;const s=M(g);s.stack=Math.min(m.stack.max,s.stack+m.stack.gainOnHit);s.stackUntil=g.time+num(cs,'stackDecay',m.stack.decay);}
 /** Eskalation vor dem Schaden: Faktor aus Pegel/Zustand, Nebenwirkungen (Fässer anstechen, Robbi überlasten, Schimmel platzen, Deckung als Welle). */
@@ -66,9 +67,9 @@ export function burstMultiplier(g,e,cs,context={}){
  if(m.stack&&s.stack>0){f*=1+num(cs,'stackBonus',m.stack.bonusPerStack)*s.stack;if(cs.stackWave)for(const o of nb(g,e,80,e))g.damage(o,Math.round(20*s.stack),'Abriss');context.stack=s.stack;s.stack=0;s.stackUntil=0;}
  if(m.state&&s.state>0){f*=1+num(cs,'stateDamage',m.state.damage)-1;context.extra=Math.round(p.energy*m.state.finisherPerEnergy);s.state=0;p.energy=0;note(g,'AUSGEWRUNGEN','#ecc3fc','burst');}
  if(m.kind==='guard'&&!cs.guardBurst&&g.classState.guard>0){const others=nb(g,p,num(cs,'waveRadius',m.waveRadius),e);if(others.length){const spend=Math.min(m.burstGuard,g.classState.guard);g.classState.guard-=spend;for(const o of others)g.damage(o,spend,'Rausschmiss');}}
- if(m.kind==='fields'){const fields=mechFields(g,m);if(fields.length){for(const z of fields){const tap=m.tap[z.sort];if(z.sort==='bock')for(const o of nb(g,z,tap.radius))g.damage(o,num(cs,'tapDamage',tap.damage),'Fassanstich');if(z.sort==='weizen'&&distance(p,z)<=z.radius+20)healPlayer(g,tap.heal,cs,false,'fassanstich');if(z.sort==='pils'){s.tapHaste=tap.duration;}g.effect?.('burst',z.x,z.y,{life:.6,max:.6,radius:z.radius});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);note(g,'FASSANSTICH','#ffe08a','burst');}}
- if(m.kind==='turret'){for(const z of mechFields(g,m)){for(const o of nb(g,z,num(cs,'overloadRadius',m.overload.radius))){g.damage(o,num(cs,'overloadDamage',m.overload.damage),'Überlast');if(cs.overloadStun)o.stun=Math.max(o.stun,cs.overloadStun);}g.effect?.('burst',z.x,z.y,{life:.7,max:.7,radius:m.overload.radius,strong:true});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);}
- if(m.dot){const targets=markedEnemies(g,num(cs,'dotRadius',m.dot.explode.radius));if(targets.length>=1){for(const t of targets){g.damage(t,(t.dotDamage||12)*num(cs,'dotExplodeTicks',m.dot.explode.perTick),'Durchputzen');if(cs.dotHeal)healPlayer(g,(t.dotDamage||12),cs,false,'durchputzen');t.mark=0;t.slow=1;g.effect?.('burst',t.x,t.y,{life:.5,max:.5,radius:30});}if(targets.length>=3)note(g,'DURCHGEPUTZT','#a7e88d','burst');}}
+ if(m.kind==='fields'){const fields=mechFields(g,m);if(fields.length){for(const z of fields){const tap=m.tap[z.sort];if(z.sort==='bock')for(const o of nb(g,z,tap.radius))g.damage(o,num(cs,'tapDamage',tap.damage),'Fassanstich');if(z.sort==='weizen'&&distance(p,z)<=z.radius+20)healPlayer(g,tap.heal,cs,false,'fassanstich');if(z.sort==='pils'){s.tapHaste=tap.duration;}emitClassVisual(g,'foam-fountain',z.x,z.y,{object:'fass',sort:z.sort,size:55,life:1,max:1});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);note(g,'FASSANSTICH','#ffe08a','burst');}}
+ if(m.kind==='turret'){for(const z of mechFields(g,m)){for(const o of nb(g,z,num(cs,'overloadRadius',m.overload.radius))){g.damage(o,num(cs,'overloadDamage',m.overload.damage),'Überlast');if(cs.overloadStun)o.stun=Math.max(o.stun,cs.overloadStun);}emitClassVisual(g,'metal-overload',z.x,z.y,{object:'robbi',size:65,life:1,max:1});z.remaining=0;}g.fields=g.fields.filter(z=>z.remaining>0);}
+ if(m.dot){const targets=markedEnemies(g,num(cs,'dotRadius',m.dot.explode.radius));if(targets.length>=1){for(const t of targets){g.damage(t,(t.dotDamage||12)*num(cs,'dotExplodeTicks',m.dot.explode.perTick),'Durchputzen');if(cs.dotHeal)healPlayer(g,(t.dotDamage||12),cs,false,'durchputzen');t.mark=0;t.slow=1;emitClassVisual(g,'spore-cloud',t.x,t.y,{size:45});}if(targets.length>=3)note(g,'DURCHGEPUTZT','#a7e88d','burst');}}
  if(m.supply&&s.supply>=num(cs,'supplyMax',m.supply.max)){s.supply=0;s.clean=num(cs,'cleanDuration',m.supply.cleanDuration);note(g,'GROSSREINEMACHEN','#ffe08a','burst');}
  return f;
 }
@@ -81,7 +82,7 @@ export function afterBurst(g,e,cs,dealt,context={}){
   for(let i=0;i<jumps;i++){const next=nb(g,from,num(cs,'chainRadius',m.chain.radius)).find(o=>!hit.has(o));if(!next)break;n=Math.round(n*(1-falloff));hit.add(next);g.effect?.('chain',next.x,next.y,{from:{x:from.x,y:from.y-10},life:.35,max:.35});g.damage(next,n,'Kurzschluss');if(next.mark>0)fuseExplode(g,next,cs);from=next;}
   if(reacting)s.reaction=0;}
 }
-function fuseExplode(g,e,cs){const m=mechanic(g);if(!m?.fuse)return;const s=M(g),ex=m.fuse.explode;e.mark=0;e.slow=1;for(const o of nb(g,e,ex.radius))g.damage(o,num(cs,'fuseDamage',ex.damage),'Lunte');g.effect?.('burst',e.x,e.y,{life:.5,max:.5,radius:ex.radius});
+function fuseExplode(g,e,cs){const m=mechanic(g);if(!m?.fuse)return;const s=M(g),ex=m.fuse.explode;e.mark=0;e.slow=1;for(const o of nb(g,e,ex.radius))g.damage(o,num(cs,'fuseDamage',ex.damage),'Lunte');emitClassVisual(g,'fuse-burst',e.x,e.y,{size:50});
  if(cs.fuseSpread){const t=nb(g,e,90,e).find(o=>!(o.mark>0));if(t)applyMark(g,t,cs,false);}
  const window=num(cs,'reactionWindow',m.reaction.window);s.heat=s.heat.filter(t=>g.time-t<window);s.heat.push(g.time);
  if(s.heat.length>=m.reaction.count&&s.reaction<=0){s.reaction=num(cs,'reactionDuration',m.reaction.duration);s.heat=[];g.cooldowns.burst=0;note(g,'KETTENREAKTION','#9bdce4','burst');fireProcs(g,'reactionStart',cs);}}
@@ -94,7 +95,7 @@ export function onGroundMech(g,s,point,cs){
  const m=mechanic(g);if(!m?.field)return false;const f=m.field,z={...point,kind:f.kind,radius:num(cs,'fieldRadius',f.radius),remaining:num(cs,'fieldDuration',f.duration),tick:1,power:0,fire:0,hp:f.hp||0};
  if(f.kind==='fass'){z.sort=cs.fassBock?'bock':cs.fassPils?'pils':cs.fassWeizen?'weizen':f.defaultSort;const max=num(cs,'fieldCount',f.max),mine=fieldsOf(g,'fass');while(mine.length>=max){const old=mine.shift();old.remaining=0;}}
  else{for(const old of fieldsOf(g,f.kind))old.remaining=0;}
- g.fields=g.fields.filter(x=>x.remaining>0);g.fields.push(z);g.effect?.('rune',z.x,z.y,{life:.8,max:.8});
+ z.visualDuration=z.remaining;z.visualMaxHp=z.hp;g.fields=g.fields.filter(x=>x.remaining>0);g.fields.push(z);g.effect?.('rune',z.x,z.y,{life:.8,max:.8});
  return true;
 }
 /** Schadensfaktor auf ausgehenden Schaden: Kater, Putzwut, Bastler-Glück (Fehl-/Überzündung, Pity, Jackpot). */
@@ -116,16 +117,16 @@ export function onHealMech(g,amount,cs){const m=mechanic(g);if(!m?.supply)return
 export function tickMech(g,dt,cs){
  const m=mechanic(g);if(!m)return;const s=M(g),p=g.player;
  for(const k of ['hangover','clean','state','jackpot','reaction','hausverbot','hausverbotCd','tapHaste'])if(s[k]>0)s[k]=Math.max(0,s[k]-dt);
- if(m.stack&&s.stack>0&&g.time>=s.stackUntil){s.stack=0;s.hangover=cs.hangoverShort?m.stack.hangover/2:m.stack.hangover;note(g,'KATER','#c9c2b4');}
+ if(m.stack&&s.stack>0&&g.time>=s.stackUntil){emitClassVisual(g,'hangover',p.x,p.y,{offsetY:-37,size:25,life:1.2,max:1.2});s.stack=0;s.hangover=cs.hangoverShort?m.stack.hangover/2:m.stack.hangover;note(g,'KATER','#c9c2b4');}
  if(m.state){if(s.state>0){p.energy=Math.max(0,p.energy-num(cs,'stateDrain',m.state.drain)*dt);if(s.state<=0||p.energy<=0){s.state=0;}}
   else if(p.inCombat>0&&p.energy>=num(cs,'stateTrigger',m.state.trigger)){s.state=num(cs,'stateDuration',m.state.duration);note(g,'PUTZWUT','#ecc3fc','burst');}}
  if(m.kind==='guard'&&m.hausverbot){const cap=p.maxHp*.38;if(s.hausverbot<=0&&s.hausverbotCd<=0&&g.classState.guard>=cap*m.hausverbot.threshold){s.hausverbot=num(cs,'hausverbotDuration',m.hausverbot.duration);s.hausverbotCd=20;note(g,'HAUSVERBOT','#ffe08a','parry');}}
  s.fassHaste=0;
  for(const z of g.fields){
   if(z.kind==='fass'){const sort=m.field?.sorts?.[z.sort];if(!sort)continue;if(distance(p,z)<=z.radius){if(sort.haste)s.fassHaste=sort.haste;}z.tick-=dt;if(z.tick<=0){z.tick=1;if(sort.heal&&distance(p,z)<=z.radius)healPlayer(g,sort.heal,cs,false,'fass');if(sort.damage)for(const o of nb(g,z,z.radius))g.damage(o,sort.damage,'Bockfass');}}
-  else if(z.kind==='robbi'){z.fire-=dt;for(const o of nb(g,z,z.radius))o.controlSlow=Math.max(o.controlSlow||0,.3);if(z.fire<=0){z.fire=m.field.interval;const t=nb(g,z,z.radius*2)[0];if(t){g.damage(t,num(cs,'robbiDamage',m.field.damage),'Robbi');g.effect?.('projectile',t.x,t.y,{from:{x:z.x,y:z.y-8},life:.3,max:.3,classId:'kevin'});if(cs.robbiGuard)addGuard(g,4,cs);}}}
+  else if(z.kind==='robbi'){z.fire-=dt;for(const o of nb(g,z,z.radius))o.controlSlow=Math.max(o.controlSlow||0,.3);if(z.fire<=0){z.fire=m.field.interval;const t=nb(g,z,z.radius*2)[0];if(t){z.visualFireUntil=g.time+.25;g.damage(t,num(cs,'robbiDamage',m.field.damage),'Robbi');g.effect?.('projectile',t.x,t.y,{from:{x:z.x,y:z.y-8},life:.3,max:.3,classId:'kevin'});if(cs.robbiGuard)addGuard(g,4,cs);}}}
   else if(z.kind==='nest'){z.tick-=dt;if(z.tick<=0){z.tick=1;if(distance(p,z)<=z.radius)healPlayer(g,num(cs,'fieldHeal',m.field.heal),cs,false,'nest');}
-   if(z.remaining<=dt&&!z.honked){z.honked=true;const h=m.field.honk;for(const o of nb(g,z,h.radius))o.stun=Math.max(o.stun,h.stun*(cs.nestHonk?2:1));g.effect?.('interrupt',z.x,z.y);note(g,'GISELA SCHNATTERT','#a7e88d');}}
+   if(z.remaining<=dt&&!z.honked){z.honked=true;const h=m.field.honk;for(const o of nb(g,z,h.radius))o.stun=Math.max(o.stun,h.stun*(cs.nestHonk?2:1));emitClassVisual(g,'none',z.x,z.y,{object:'nest',life:.8,max:.8});g.effect?.('interrupt',z.x,z.y);note(g,'GISELA SCHNATTERT','#a7e88d');}}
   else if(z.kind==='spores'){z.tick-=dt;if(z.tick<=0){z.tick=.5;for(const o of nb(g,z,z.radius))if(!(o.mark>0))applyMark(g,o,cs,false);}}
  }
  s.hasteBonus=(s.tapHaste>0?m.tap?.pils?.haste||0:0)+s.fassHaste;

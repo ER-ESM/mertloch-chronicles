@@ -1,0 +1,2014 @@
+{
+  "tool": "image_gen.imagegen",
+  "date": "2026-09-19",
+  "jobs": [
+    {
+      "key": "dieter-wall",
+      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is dieter-wall. In strict row-major order (left to right, top to bottom):\n1. Deckelwirtschaft: Jeder dritte erfolgreiche Grundangriff legt Deckung an und gibt Randale.\n2. Deckel-Reflex: Nach einer geglückten Parade kostet die nächste Markierung nichts.\n3. Doppelte Türkontrolle: Das Parierfenster fängt zwei Treffer ab statt nur einen.\n4. Keiner drängelt: Wer in dein Parierfenster läuft, wird danach mehrere Sekunden langsamer.\n5. Absperrband: Schaltet eine aufstellbare Schutzzone frei.\n6. Tresenkante: Glückstreffer werfen Deckung ab und machen das Parierfenster sofort wieder bereit.\n7. Räumungsklage: Der Finisher verbrennt angesammelte Deckung für eine zusätzliche Druckwelle im Umkreis.\n8. Tür bleibt zu: Jede geglückte Parade legt zusätzlich Deckung auf.\n9. Breite Absperrung: Die Schutzzone hält länger und bremst Gegner, die darin stehen.\n10. Letzter Mann am Tresen: Bei niedrigem Leben wirft jede geglückte Parade ein großes Polster ab.\n11. Leergut stapeln: Die Autoangriffe zählen mit; jeder vierte Treffer legt ein kleines Polster nach.\n12. Dicke Haut vom Hausbier: Bei niedrigem Leben kommt weniger von jedem Treffer durch.\n13. Kronkorken-Panzer: Jedes angelegte Polster fällt größer aus, und der Grundangriff legt selbst mehr davon an.\n14. Pfand zurück: Sobald das Leben unter die Notschwelle fällt, kommt schlagartig ein Polster.\n15. Ruhe im Laden: Eine geglückte Unterbrechung legt ein Polster an und zahlt Randale.\n16. Verlängertes Hausverbot: Der Zustand bei fast voller Deckung hält deutlich länger an.\n17. Erst gucken, dann hauen: Das Parierfenster steht länger offen und jede geglückte Parade bringt einen zusätzlichen Aufbaupunkt.\n18. Konterschlag: Auf eine geglückte Parade folgt ein Grundangriff mit doppeltem Schaden.\n19. Nachtreten: Jede geglückte Parade verkürzt die laufende Abklingzeit des Unterbrechens.\n20. Klappe zu, Pegel hoch: Eine geglückte Unterbrechung zahlt Randale nach.\n21. Dritter Deckel gratis: Die Paraden zählen mit; nach der dritten steht das Parierfenster ohne Wartezeit erneut.\n22. Kurzer Prozess: Angeschlagene Gegner nehmen von jedem deiner Treffer mehr.\n23. Und tschüss!: Der volle Finisher betäubt sein Ziel, legt ein Polster an und öffnet sofort ein neues Parierfenster.\n24. Breite Schultern: Die Deckungswelle des Finishers erreicht Gegner in größerem Abstand.\n25. Böllerpfand: Jeder zweite Bodenangriff zahlt Randale zurück.\n26. Runde Sache: Jeder erledigte Gegner verkürzt die Abklingzeit des Bodenangriffs.\n27. Hausbier-Nachschub: Randale fließt stetig schneller nach.\n28. Heimspiel: Eine Parade innerhalb der eigenen Schutzzone legt ein Polster an und bringt einen Aufbaupunkt.\n29. Platzverweis: Der volle Finisher zahlt Randale zurück und verkürzt die Abklingzeit des Bodenangriffs.\n30. Alle raus!: Die Deckungswelle des Finishers reicht viel weiter, und der volle Finisher legt sofort ein neues Polster an.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "dieter-wall-0",
+          "name": "Deckelwirtschaft",
+          "effect": "Jeder dritte erfolgreiche Grundangriff legt Deckung an und gibt Randale.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-1",
+          "name": "Deckel-Reflex",
+          "effect": "Nach einer geglückten Parade kostet die nächste Markierung nichts.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-2",
+          "name": "Doppelte Türkontrolle",
+          "effect": "Das Parierfenster fängt zwei Treffer ab statt nur einen.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-3",
+          "name": "Keiner drängelt",
+          "effect": "Wer in dein Parierfenster läuft, wird danach mehrere Sekunden langsamer.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-4",
+          "name": "Absperrband",
+          "effect": "Schaltet eine aufstellbare Schutzzone frei.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-5",
+          "name": "Tresenkante",
+          "effect": "Glückstreffer werfen Deckung ab und machen das Parierfenster sofort wieder bereit.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-6",
+          "name": "Räumungsklage",
+          "effect": "Der Finisher verbrennt angesammelte Deckung für eine zusätzliche Druckwelle im Umkreis.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-7",
+          "name": "Tür bleibt zu",
+          "effect": "Jede geglückte Parade legt zusätzlich Deckung auf.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-8",
+          "name": "Breite Absperrung",
+          "effect": "Die Schutzzone hält länger und bremst Gegner, die darin stehen.",
+          "row": 8,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-9",
+          "name": "Letzter Mann am Tresen",
+          "effect": "Bei niedrigem Leben wirft jede geglückte Parade ein großes Polster ab.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-10",
+          "name": "Leergut stapeln",
+          "effect": "Die Autoangriffe zählen mit; jeder vierte Treffer legt ein kleines Polster nach.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-11",
+          "name": "Dicke Haut vom Hausbier",
+          "effect": "Bei niedrigem Leben kommt weniger von jedem Treffer durch.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-12",
+          "name": "Kronkorken-Panzer",
+          "effect": "Jedes angelegte Polster fällt größer aus, und der Grundangriff legt selbst mehr davon an.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-13",
+          "name": "Pfand zurück",
+          "effect": "Sobald das Leben unter die Notschwelle fällt, kommt schlagartig ein Polster.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-14",
+          "name": "Ruhe im Laden",
+          "effect": "Eine geglückte Unterbrechung legt ein Polster an und zahlt Randale.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-15",
+          "name": "Verlängertes Hausverbot",
+          "effect": "Der Zustand bei fast voller Deckung hält deutlich länger an.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "dieter-wall-16",
+          "name": "Erst gucken, dann hauen",
+          "effect": "Das Parierfenster steht länger offen und jede geglückte Parade bringt einen zusätzlichen Aufbaupunkt.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-17",
+          "name": "Konterschlag",
+          "effect": "Auf eine geglückte Parade folgt ein Grundangriff mit doppeltem Schaden.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-18",
+          "name": "Nachtreten",
+          "effect": "Jede geglückte Parade verkürzt die laufende Abklingzeit des Unterbrechens.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-19",
+          "name": "Klappe zu, Pegel hoch",
+          "effect": "Eine geglückte Unterbrechung zahlt Randale nach.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-20",
+          "name": "Dritter Deckel gratis",
+          "effect": "Die Paraden zählen mit; nach der dritten steht das Parierfenster ohne Wartezeit erneut.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-21",
+          "name": "Kurzer Prozess",
+          "effect": "Angeschlagene Gegner nehmen von jedem deiner Treffer mehr.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-22",
+          "name": "Und tschüss!",
+          "effect": "Der volle Finisher betäubt sein Ziel, legt ein Polster an und öffnet sofort ein neues Parierfenster.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "dieter-wall-23",
+          "name": "Breite Schultern",
+          "effect": "Die Deckungswelle des Finishers erreicht Gegner in größerem Abstand.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-24",
+          "name": "Böllerpfand",
+          "effect": "Jeder zweite Bodenangriff zahlt Randale zurück.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-25",
+          "name": "Runde Sache",
+          "effect": "Jeder erledigte Gegner verkürzt die Abklingzeit des Bodenangriffs.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-26",
+          "name": "Hausbier-Nachschub",
+          "effect": "Randale fließt stetig schneller nach.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-27",
+          "name": "Heimspiel",
+          "effect": "Eine Parade innerhalb der eigenen Schutzzone legt ein Polster an und bringt einen Aufbaupunkt.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-28",
+          "name": "Platzverweis",
+          "effect": "Der volle Finisher zahlt Randale zurück und verkürzt die Abklingzeit des Bodenangriffs.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "dieter-wall-29",
+          "name": "Alle raus!",
+          "effect": "Die Deckungswelle des Finishers reicht viel weiter, und der volle Finisher legt sofort ein neues Polster an.",
+          "row": 9,
+          "path": 2
+        }
+      ],
+      "sha256": "ee13e41bc5802cf7c0ae772b237f0d8ac7d6258760b801f6358c7247aa1475b4",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-5823bb00-b6b1-41b7-ab0e-0f0900ffd21c.png"
+    },
+    {
+      "key": "dieter-brawl",
+      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is dieter-brawl. In strict row-major order (left to right, top to bottom):\n1. Noch einen auf die Zwölf: Kellen und kassierte Treffer laden doppelt so viel Rausch wie sonst.\n2. Kellenwut: Glückstreffer machen den nächsten Finisher kostenlos.\n3. Volle Kante: Bei vollem Rausch kostet der Finisher nichts und verbraucht dafür den Rausch.\n4. Hinterher!: Ausweichen verkürzt die verbleibende Wurf-Abklingzeit.\n5. Tresensprung: Schaltet einen Satz zu einem Zielpunkt mit Aufschlagschaden frei.\n6. Nachschlag: Nach einem Kill trifft der nächste Grundangriff doppelt und zahlt zusätzlich Randale.\n7. Kneipenschreck: Ein Finisher mit drei Punkten betäubt sein Ziel kurz.\n8. Kater verdrängen: Jeder erledigte Gegner heilt dich um einen festen Betrag.\n9. Sprungbrett: Der Satz bringt zwei Aufbaupunkte statt einem und lädt einen kostenlosen Grundangriff.\n10. Kein Feierabend: Ein Kill macht den Sprungkniff sofort wieder bereit.\n11. Angeschlagen, nicht besoffen: Die Uhr, nach der die Pegelstriche verfallen, läuft länger.\n12. Nachgeschenkt: Die Autoangriffe zählen mit und liefern regelmäßig einen zusätzlichen Aufbaupunkt.\n13. Deckel, Kelle, Pegel: Nach einer geglückten Parade kostet der nächste Grundangriff keine Randale.\n14. Sitzfleisch: Unterhalb der Notschwelle richtet jeder Treffer weniger an.\n15. Konterbrezel-Reserve: Sobald das Leben unter die Notschwelle fällt, kommt sofort eine Heilung.\n16. Kurzer Kater: Läuft der Pegel doch einmal aus, ist die Strafe nur halb so lang.\n17. Durchhalten: Die Heilung legt zusätzlich ein Polster an und bringt einen Aufbaupunkt.\n18. Zweite Luft: Der volle Finisher zahlt Randale und ein Polster zurück, und die Uhr der Pegelstriche läuft noch länger.\n19. Erste Runde: Jeder Pegelstrich zählt beim Finisher mehr.\n20. Volltreffer: Kritische Treffer richten mehr an.\n21. Vorglühen: Treffer auf ein markiertes Ziel können einen Aufbaupunkt abwerfen.\n22. Dreier-Kelle: Die Kellen zählen mit; jede dritte zahlt Randale und verkürzt die Abklingzeit des Finishers.\n23. Abriss mit Ansage: Gegen angeschlagene Ziele fällt jeder Schlag härter aus.\n24. Zugabe!: Ein voller Finisher kann den nächsten Finisher kostenlos machen.\n25. Blitzabriss: Die Pegelstriche zählen beim Finisher noch mehr, und der volle Finisher lädt einen doppelten Grundangriff samt Randale.\n26. Anlauf nehmen: Jeder Ausweichschritt bringt einen Aufbaupunkt.\n27. Flaschenpost: Nach jedem erledigten Gegner ist der Wurf sofort wieder bereit.\n28. Rundumschlag: Der Finisher trifft zusätzlich alle Gegner rings um das Ziel, je Pegelstrich mehr.\n29. Wurf in die Runde: Die Würfe zählen mit; jeder zweite bringt einen Aufbaupunkt und Randale.\n30. Weiter zum Nächsten: Jeder erledigte Gegner verkürzt die Abklingzeit des Ausweichens und zahlt Randale.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "dieter-brawl-0",
+          "name": "Noch einen auf die Zwölf",
+          "effect": "Kellen und kassierte Treffer laden doppelt so viel Rausch wie sonst.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-1",
+          "name": "Kellenwut",
+          "effect": "Glückstreffer machen den nächsten Finisher kostenlos.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-2",
+          "name": "Volle Kante",
+          "effect": "Bei vollem Rausch kostet der Finisher nichts und verbraucht dafür den Rausch.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-3",
+          "name": "Hinterher!",
+          "effect": "Ausweichen verkürzt die verbleibende Wurf-Abklingzeit.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-4",
+          "name": "Tresensprung",
+          "effect": "Schaltet einen Satz zu einem Zielpunkt mit Aufschlagschaden frei.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-5",
+          "name": "Nachschlag",
+          "effect": "Nach einem Kill trifft der nächste Grundangriff doppelt und zahlt zusätzlich Randale.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-6",
+          "name": "Kneipenschreck",
+          "effect": "Ein Finisher mit drei Punkten betäubt sein Ziel kurz.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-7",
+          "name": "Kater verdrängen",
+          "effect": "Jeder erledigte Gegner heilt dich um einen festen Betrag.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-8",
+          "name": "Sprungbrett",
+          "effect": "Der Satz bringt zwei Aufbaupunkte statt einem und lädt einen kostenlosen Grundangriff.",
+          "row": 8,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-9",
+          "name": "Kein Feierabend",
+          "effect": "Ein Kill macht den Sprungkniff sofort wieder bereit.",
+          "row": 9,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-10",
+          "name": "Angeschlagen, nicht besoffen",
+          "effect": "Die Uhr, nach der die Pegelstriche verfallen, läuft länger.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-11",
+          "name": "Nachgeschenkt",
+          "effect": "Die Autoangriffe zählen mit und liefern regelmäßig einen zusätzlichen Aufbaupunkt.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-12",
+          "name": "Deckel, Kelle, Pegel",
+          "effect": "Nach einer geglückten Parade kostet der nächste Grundangriff keine Randale.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-13",
+          "name": "Sitzfleisch",
+          "effect": "Unterhalb der Notschwelle richtet jeder Treffer weniger an.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-14",
+          "name": "Konterbrezel-Reserve",
+          "effect": "Sobald das Leben unter die Notschwelle fällt, kommt sofort eine Heilung.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-15",
+          "name": "Kurzer Kater",
+          "effect": "Läuft der Pegel doch einmal aus, ist die Strafe nur halb so lang.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-16",
+          "name": "Durchhalten",
+          "effect": "Die Heilung legt zusätzlich ein Polster an und bringt einen Aufbaupunkt.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-17",
+          "name": "Zweite Luft",
+          "effect": "Der volle Finisher zahlt Randale und ein Polster zurück, und die Uhr der Pegelstriche läuft noch länger.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "dieter-brawl-18",
+          "name": "Erste Runde",
+          "effect": "Jeder Pegelstrich zählt beim Finisher mehr.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-19",
+          "name": "Volltreffer",
+          "effect": "Kritische Treffer richten mehr an.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-20",
+          "name": "Vorglühen",
+          "effect": "Treffer auf ein markiertes Ziel können einen Aufbaupunkt abwerfen.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-21",
+          "name": "Dreier-Kelle",
+          "effect": "Die Kellen zählen mit; jede dritte zahlt Randale und verkürzt die Abklingzeit des Finishers.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-22",
+          "name": "Abriss mit Ansage",
+          "effect": "Gegen angeschlagene Ziele fällt jeder Schlag härter aus.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-23",
+          "name": "Zugabe!",
+          "effect": "Ein voller Finisher kann den nächsten Finisher kostenlos machen.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-24",
+          "name": "Blitzabriss",
+          "effect": "Die Pegelstriche zählen beim Finisher noch mehr, und der volle Finisher lädt einen doppelten Grundangriff samt Randale.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "dieter-brawl-25",
+          "name": "Anlauf nehmen",
+          "effect": "Jeder Ausweichschritt bringt einen Aufbaupunkt.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-26",
+          "name": "Flaschenpost",
+          "effect": "Nach jedem erledigten Gegner ist der Wurf sofort wieder bereit.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-27",
+          "name": "Rundumschlag",
+          "effect": "Der Finisher trifft zusätzlich alle Gegner rings um das Ziel, je Pegelstrich mehr.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-28",
+          "name": "Wurf in die Runde",
+          "effect": "Die Würfe zählen mit; jeder zweite bringt einen Aufbaupunkt und Randale.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "dieter-brawl-29",
+          "name": "Weiter zum Nächsten",
+          "effect": "Jeder erledigte Gegner verkürzt die Abklingzeit des Ausweichens und zahlt Randale.",
+          "row": 7,
+          "path": 2
+        }
+      ],
+      "sha256": "7ec2726ef7890c0e3499ce792cbf1c11b00ad98d96e1f6957adcd6daf46bcfcc",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-c946c8a0-455d-4f61-b0da-cb3a076bd9fe.png"
+    },
+    {
+      "key": "dieter-brew",
+      "source": "assets/content-art/e32/sources/dieter-brew-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is dieter-brew. In strict row-major order (left to right, top to bottom):\n1. Rücklaufleitung: Schaden an einem markierten Gegner fließt anteilig als zusätzliche Heilung zurück.\n2. Nachfüllen: Jeder Tick der Marke kann einen Aufbaupunkt abwerfen.\n3. Nichts wegkippen: Die Hälfte jeder Überheilung wird zu Deckung, bis das Deckungslimit erreicht ist.\n4. Ruhige Hand: Jede Heilung gibt zusätzlich einen Aufbaupunkt.\n5. Katerfass: Schaltet eine aufstellbare Heilzone mit bremsender Pfütze frei.\n6. Zapfhahn auf: Nach einer Heilung ist die Marke sofort bereit und der nächste Grundangriff kostenlos.\n7. Runde aufs Haus: Ein Finisher mit drei Punkten verlängert die laufende Heilung über Zeit.\n8. Gut gekühlt: Eine gelungene Parade verkürzt die verbleibende Heilungs-Abklingzeit.\n9. Großes Fass: Die Heilzone hält länger und wirft beim Aufstellen sofort Deckung ab.\n10. Letzter Ausschank: Ein Grundangriff innerhalb der eigenen Fasszone lädt zusätzliche Randale.\n11. Pils zuerst: Der Bodenkniff stellt die Tempo-Sorte statt der Heil-Sorte.\n12. Schaumkrone: Die Kellen zählen mit; jede dritte zahlt Randale und verkürzt die Abklingzeit des Bodenkniffs.\n13. Drittes Fass: Es dürfen mehr Fässer zugleich auf dem Boden stehen.\n14. Zapfen im Gehen: Die Heilung unterbricht die Bewegung nicht mehr.\n15. Frisch gezapft: Nach einem Ausweichschritt kostet der nächste Grundangriff nichts, und Randale kommt dazu.\n16. Nächste Runde: Jeder erledigte Gegner verkürzt die Abklingzeit des Bodenkniffs.\n17. Anstich mit Schwung: Der volle Finisher zahlt Randale und einen Aufbaupunkt zurück und bringt sofort das nächste Fass näher.\n18. Weizenkur: Die Heilung wirkt nach dem Sofortbetrag mehrere Sekunden weiter.\n19. Nachschank: Jedes aufgestellte Fass bleibt länger auf dem Boden.\n20. Deckel und Pflaster: Jede geglückte Parade startet eine Heilung über Zeit.\n21. Tropfen für Tropfen: Die Ticks der Marke können kleine Heilungen abwerfen.\n22. Letzte Runde heilt: Erledigst du ein markiertes Ziel, läuft danach eine Heilung über Zeit.\n23. Anstich für alle: Der volle Finisher heilt sofort, legt ein Polster an und setzt die Heilung zurück.\n24. Bock zuerst: Der Bodenkniff stellt die Schadens-Sorte, die im Kreis brennt und beim Anstich explodiert.\n25. Breiter Ausschank: Jedes Fass wirkt in einem größeren Kreis.\n26. Pfand mit Zinsen: Jeder Tick der Marke richtet mehr Schaden an.\n27. Bock drauf: Glückstreffer können Randale und einen Aufbaupunkt abwerfen.\n28. Restbestand: Angeschlagene Gegner kassieren von jedem Treffer mehr.\n29. Bock auf mehr: Nach dem vollen Finisher schlägt der nächste Grundangriff doppelt und Randale kommt dazu.\n30. Scherben bringen Glück: Jeder erledigte Gegner legt ein Polster an und zahlt Randale.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "dieter-brew-0",
+          "name": "Rücklaufleitung",
+          "effect": "Schaden an einem markierten Gegner fließt anteilig als zusätzliche Heilung zurück.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-1",
+          "name": "Nachfüllen",
+          "effect": "Jeder Tick der Marke kann einen Aufbaupunkt abwerfen.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-2",
+          "name": "Nichts wegkippen",
+          "effect": "Die Hälfte jeder Überheilung wird zu Deckung, bis das Deckungslimit erreicht ist.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-3",
+          "name": "Ruhige Hand",
+          "effect": "Jede Heilung gibt zusätzlich einen Aufbaupunkt.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-4",
+          "name": "Katerfass",
+          "effect": "Schaltet eine aufstellbare Heilzone mit bremsender Pfütze frei.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-5",
+          "name": "Zapfhahn auf",
+          "effect": "Nach einer Heilung ist die Marke sofort bereit und der nächste Grundangriff kostenlos.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-6",
+          "name": "Runde aufs Haus",
+          "effect": "Ein Finisher mit drei Punkten verlängert die laufende Heilung über Zeit.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-7",
+          "name": "Gut gekühlt",
+          "effect": "Eine gelungene Parade verkürzt die verbleibende Heilungs-Abklingzeit.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-8",
+          "name": "Großes Fass",
+          "effect": "Die Heilzone hält länger und wirft beim Aufstellen sofort Deckung ab.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-9",
+          "name": "Letzter Ausschank",
+          "effect": "Ein Grundangriff innerhalb der eigenen Fasszone lädt zusätzliche Randale.",
+          "row": 9,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-10",
+          "name": "Pils zuerst",
+          "effect": "Der Bodenkniff stellt die Tempo-Sorte statt der Heil-Sorte.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-11",
+          "name": "Schaumkrone",
+          "effect": "Die Kellen zählen mit; jede dritte zahlt Randale und verkürzt die Abklingzeit des Bodenkniffs.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-12",
+          "name": "Drittes Fass",
+          "effect": "Es dürfen mehr Fässer zugleich auf dem Boden stehen.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-13",
+          "name": "Zapfen im Gehen",
+          "effect": "Die Heilung unterbricht die Bewegung nicht mehr.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-14",
+          "name": "Frisch gezapft",
+          "effect": "Nach einem Ausweichschritt kostet der nächste Grundangriff nichts, und Randale kommt dazu.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-15",
+          "name": "Nächste Runde",
+          "effect": "Jeder erledigte Gegner verkürzt die Abklingzeit des Bodenkniffs.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-16",
+          "name": "Anstich mit Schwung",
+          "effect": "Der volle Finisher zahlt Randale und einen Aufbaupunkt zurück und bringt sofort das nächste Fass näher.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "dieter-brew-17",
+          "name": "Weizenkur",
+          "effect": "Die Heilung wirkt nach dem Sofortbetrag mehrere Sekunden weiter.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-18",
+          "name": "Nachschank",
+          "effect": "Jedes aufgestellte Fass bleibt länger auf dem Boden.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-19",
+          "name": "Deckel und Pflaster",
+          "effect": "Jede geglückte Parade startet eine Heilung über Zeit.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-20",
+          "name": "Tropfen für Tropfen",
+          "effect": "Die Ticks der Marke können kleine Heilungen abwerfen.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-21",
+          "name": "Letzte Runde heilt",
+          "effect": "Erledigst du ein markiertes Ziel, läuft danach eine Heilung über Zeit.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-22",
+          "name": "Anstich für alle",
+          "effect": "Der volle Finisher heilt sofort, legt ein Polster an und setzt die Heilung zurück.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "dieter-brew-23",
+          "name": "Bock zuerst",
+          "effect": "Der Bodenkniff stellt die Schadens-Sorte, die im Kreis brennt und beim Anstich explodiert.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-24",
+          "name": "Breiter Ausschank",
+          "effect": "Jedes Fass wirkt in einem größeren Kreis.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-25",
+          "name": "Pfand mit Zinsen",
+          "effect": "Jeder Tick der Marke richtet mehr Schaden an.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-26",
+          "name": "Bock drauf",
+          "effect": "Glückstreffer können Randale und einen Aufbaupunkt abwerfen.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-27",
+          "name": "Restbestand",
+          "effect": "Angeschlagene Gegner kassieren von jedem Treffer mehr.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-28",
+          "name": "Bock auf mehr",
+          "effect": "Nach dem vollen Finisher schlägt der nächste Grundangriff doppelt und Randale kommt dazu.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "dieter-brew-29",
+          "name": "Scherben bringen Glück",
+          "effect": "Jeder erledigte Gegner legt ein Polster an und zahlt Randale.",
+          "row": 8,
+          "path": 2
+        }
+      ],
+      "sha256": "918a13670e7ebf2e64a046856225abf7fff68a3369f41ba60ebe743978e060cf",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-bb8720b2-c481-4152-9565-facbfa1e4e41.png"
+    },
+    {
+      "key": "baerbel-care",
+      "source": "assets/content-art/e32/sources/baerbel-care-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is baerbel-care. In strict row-major order (left to right, top to bottom):\n1. Warme Schüssel: Jede Heilung hinterlässt zusätzlich eine Heilung über Zeit, die auch im Laufen tickt.\n2. Frisch gewischt: Jede zweite Heilung lädt einen doppelt starken Grundangriff.\n3. Nichts wird weggekippt: Die Hälfte der Überheilung legt sich als Deckung an.\n4. Ein Schluck, ein Plan: Heilen gibt zusätzlich einen Glanzpunkt.\n5. Thermomix-Tafel: Schaltet eine platzierbare Heilzone frei, die jede Sekunde heilt.\n6. Landfrauen-Glanz: Glückstreffer zahlen Randale und einen Aufbaupunkt aus.\n7. Frisch aufgetragen: Nach einer Heilung trifft der nächste Grundangriff doppelt und verbraucht dabei den Frischekick.\n8. Sanfte Versiegelung: Eine geglückte Parade erneuert die Heilung über Zeit.\n9. Anbau mit Fußbodenheilung: Die Heilzone hält länger und legt beim Aufstellen Deckung auf.\n10. Nicht ohne meine Mädels: Ein Finisher mit drei Punkten verlängert die Heilung über Zeit, statt sie auslaufen zu lassen.\n11. Giselas Ruf: Jede direkte Heilung verkürzt die Wartezeit auf das Nest.\n12. Spüli ins Auge: Solange das Großreinemachen läuft, schlägt jede Heilung stärker auf das Ziel durch.\n13. Nachschlag: Jede zweite direkte Heilung verkürzt die eigene Wartezeit.\n14. Brutpflege: Das Nest bleibt länger stehen und heilt entsprechend länger.\n15. Das sechste Glas: Der Vorrat fasst ein Glas mehr; dafür dauert die Putzphase nach vollem Vorrat länger.\n16. Freilaufgans: Der Heilkreis des Nests reicht weiter, du darfst dich mehr bewegen.\n17. Gisela, hierher!: Fällt dein Leben tief, steht die Gans ohne Wartezeit bereit.\n18. Schrubben heilt: Jeder dritte Grundangriff zahlt Leben und etwas Randale aus.\n19. Notration: Bei tiefem Leben ist die direkte Heilung ohne Wartezeit da und legt Deckung vor.\n20. Deckel auf die Schüssel: Ein größerer Anteil der Überheilung wird zu Deckung.\n21. Nebenbei umgerührt: Jeder fünfte Autoangriff heilt dich und gibt Randale.\n22. Am Tisch wird gegessen: Heilst du in deiner Heilzone, bekommst du Randale und einen Aufbaupunkt dazu.\n23. Gründlich, nicht schnell: Die Putzphase nach vollem Vorrat läuft länger.\n24. Nachgelegt: Jeder Kill macht das Nest ohne Wartezeit bereit.\n25. Vom Herd aus: Grundangriffe aus deiner Heilzone legen Deckung an.\n26. Blitzblank: Glückstreffer können die Wartezeit der direkten Heilung verkürzen.\n27. Löffel in der Schürze: Die direkte Heilung lässt sich wirken, ohne stehen zu bleiben.\n28. Restfleck: Ziele mit wenig Leben nehmen mehr Schaden.\n29. Gänsehaut-Finale: Ein Finisher mit drei Punkten ruft die Gans ohne Wartezeit und heilt dich.\n30. Schlussputz: Ein Finisher mit drei Punkten heilt dich, macht die direkte Heilung sofort bereit und verstärkt den Schaden der Putzphase.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "baerbel-care-0",
+          "name": "Warme Schüssel",
+          "effect": "Jede Heilung hinterlässt zusätzlich eine Heilung über Zeit, die auch im Laufen tickt.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-1",
+          "name": "Frisch gewischt",
+          "effect": "Jede zweite Heilung lädt einen doppelt starken Grundangriff.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-2",
+          "name": "Nichts wird weggekippt",
+          "effect": "Die Hälfte der Überheilung legt sich als Deckung an.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-3",
+          "name": "Ein Schluck, ein Plan",
+          "effect": "Heilen gibt zusätzlich einen Glanzpunkt.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-4",
+          "name": "Thermomix-Tafel",
+          "effect": "Schaltet eine platzierbare Heilzone frei, die jede Sekunde heilt.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-5",
+          "name": "Landfrauen-Glanz",
+          "effect": "Glückstreffer zahlen Randale und einen Aufbaupunkt aus.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-6",
+          "name": "Frisch aufgetragen",
+          "effect": "Nach einer Heilung trifft der nächste Grundangriff doppelt und verbraucht dabei den Frischekick.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-7",
+          "name": "Sanfte Versiegelung",
+          "effect": "Eine geglückte Parade erneuert die Heilung über Zeit.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-8",
+          "name": "Anbau mit Fußbodenheilung",
+          "effect": "Die Heilzone hält länger und legt beim Aufstellen Deckung auf.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-9",
+          "name": "Nicht ohne meine Mädels",
+          "effect": "Ein Finisher mit drei Punkten verlängert die Heilung über Zeit, statt sie auslaufen zu lassen.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-10",
+          "name": "Giselas Ruf",
+          "effect": "Jede direkte Heilung verkürzt die Wartezeit auf das Nest.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-11",
+          "name": "Spüli ins Auge",
+          "effect": "Solange das Großreinemachen läuft, schlägt jede Heilung stärker auf das Ziel durch.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-12",
+          "name": "Nachschlag",
+          "effect": "Jede zweite direkte Heilung verkürzt die eigene Wartezeit.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-13",
+          "name": "Brutpflege",
+          "effect": "Das Nest bleibt länger stehen und heilt entsprechend länger.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-14",
+          "name": "Das sechste Glas",
+          "effect": "Der Vorrat fasst ein Glas mehr; dafür dauert die Putzphase nach vollem Vorrat länger.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-15",
+          "name": "Freilaufgans",
+          "effect": "Der Heilkreis des Nests reicht weiter, du darfst dich mehr bewegen.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-16",
+          "name": "Gisela, hierher!",
+          "effect": "Fällt dein Leben tief, steht die Gans ohne Wartezeit bereit.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-17",
+          "name": "Schrubben heilt",
+          "effect": "Jeder dritte Grundangriff zahlt Leben und etwas Randale aus.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-18",
+          "name": "Notration",
+          "effect": "Bei tiefem Leben ist die direkte Heilung ohne Wartezeit da und legt Deckung vor.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-19",
+          "name": "Deckel auf die Schüssel",
+          "effect": "Ein größerer Anteil der Überheilung wird zu Deckung.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-20",
+          "name": "Nebenbei umgerührt",
+          "effect": "Jeder fünfte Autoangriff heilt dich und gibt Randale.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-21",
+          "name": "Am Tisch wird gegessen",
+          "effect": "Heilst du in deiner Heilzone, bekommst du Randale und einen Aufbaupunkt dazu.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-22",
+          "name": "Gründlich, nicht schnell",
+          "effect": "Die Putzphase nach vollem Vorrat läuft länger.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-23",
+          "name": "Nachgelegt",
+          "effect": "Jeder Kill macht das Nest ohne Wartezeit bereit.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-24",
+          "name": "Vom Herd aus",
+          "effect": "Grundangriffe aus deiner Heilzone legen Deckung an.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-25",
+          "name": "Blitzblank",
+          "effect": "Glückstreffer können die Wartezeit der direkten Heilung verkürzen.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-26",
+          "name": "Löffel in der Schürze",
+          "effect": "Die direkte Heilung lässt sich wirken, ohne stehen zu bleiben.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "baerbel-care-27",
+          "name": "Restfleck",
+          "effect": "Ziele mit wenig Leben nehmen mehr Schaden.",
+          "row": 8,
+          "path": 2
+        },
+        {
+          "id": "baerbel-care-28",
+          "name": "Gänsehaut-Finale",
+          "effect": "Ein Finisher mit drei Punkten ruft die Gans ohne Wartezeit und heilt dich.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "baerbel-care-29",
+          "name": "Schlussputz",
+          "effect": "Ein Finisher mit drei Punkten heilt dich, macht die direkte Heilung sofort bereit und verstärkt den Schaden der Putzphase.",
+          "row": 9,
+          "path": 2
+        }
+      ],
+      "sha256": "37cd0105633a9319c7943b829b81c7c4ecd6b88aa62806461e03096e1233d2ae",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-8df20e02-54fa-43a0-8549-c6840543a3e4.png"
+    },
+    {
+      "key": "baerbel-feedback",
+      "source": "assets/content-art/e32/sources/baerbel-feedback-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is baerbel-feedback. In strict row-major order (left to right, top to bottom):\n1. Provision vom Schmerz: Treffer auf markierte Ziele zahlen dir einen Teil des verursachten Schadens als Leben aus.\n2. Putzprovision: Marken-Ticks können Randale und Deckung abwerfen.\n3. Bring noch zwei Freundinnen: Die Marke springt zusätzlich auf bis zu zwei bereits kämpfende Nachbarn.\n4. Kurzer Hausbesuch: Direkte Heilung verkürzt die verbleibende Markierungs-Abklingzeit.\n5. Provisionskur: Schaltet ein Zeitfenster frei, in dem jeder verursachte Schaden zusätzlich heilt.\n6. Mehrwegflasche: Eine geglückte Unterbrechung macht den nächsten Finisher kostenlos.\n7. Kundenbindung: Ein Kill auf einem markierten Ziel erneuert die Heilung über Zeit.\n8. Reklamation abgewürgt: Eine geglückte Unterbrechung macht die Heilung sofort wieder bereit.\n9. Doppelte Marge: Das Schaden-zu-Heilung-Fenster hält länger und zahlt beim Heilen zusätzlich Randale.\n10. Die ganze Downline: Ein Finisher mit drei Punkten erneuert die Marken aller beteiligten Nachbarn.\n11. Feuchte Ecke: Jeder Grundangriff auf ein verschimmeltes Ziel steckt einen zusätzlichen Nachbarn an.\n12. Es wächst nach: Jeder Kill setzt die Wartezeit der Bodenwolke auf null.\n13. Zugluft: Der Schimmel springt über einen größeren Abstand auf Nachbarn und platzt in größerem Umkreis.\n14. Sporenflug: Jeder Schimmel-Tick kann die Wartezeit der Bodenwolke verkürzen.\n15. Muffige Kammer: Die Bodenwolke liegt länger und fasst mehr Gegner.\n16. Nebenbei gestreut: Jeder dritte Autoangriff verkürzt die Wartezeit der Markierung.\n17. Mundpropaganda: Jede zweite Markierung zahlt Randale zurück.\n18. Ruhe im Karton: Eine geglückte Unterbrechung setzt die Markierung ohne Wartezeit zurück.\n19. Sporenregen: Ein Finisher mit drei Punkten liefert die Bodenwolke sofort nach und holt die Markierung fast ganz zurück.\n20. Kleingeld vom Tick: Jeder Marken-Tick heilt dich um einen festen Betrag.\n21. Abschlussprämie: Jeder Kill heilt dich und gibt Randale.\n22. Sonderrabatt: Fällt dein Leben tief, steht das Schaden-zu-Heilung-Fenster ohne Wartezeit bereit.\n23. Bonusausschüttung: Ein Finisher mit drei Punkten zahlt eine große Heilung und Randale aus; dazu wächst der Lebensraub an verschimmelten Zielen.\n24. Einmal mehr drüber: Jeder platzende Schimmel liefert beim Finisher einen zusätzlichen Tick Schaden.\n25. Eintrittsgebühr: Jeder dritte Treffer auf ein markiertes Ziel zahlt Randale.\n26. Startkapital: Jeder zweite Finisher lässt einen Aufbaupunkt stehen.\n27. Passives Einkommen: Treffer auf markierte Ziele können einen Aufbaupunkt abwerfen.\n28. Vertrieb auf Achse: Der Finisher lässt sich zünden, ohne stehen zu bleiben.\n29. Kettenbrief: Jeder Kill bringt einen Aufbaupunkt und etwas Randale.\n30. Doppelt geputzt: Der Finisher holt aus jedem platzenden Schimmel deutlich mehr Ticks heraus.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "baerbel-feedback-0",
+          "name": "Provision vom Schmerz",
+          "effect": "Treffer auf markierte Ziele zahlen dir einen Teil des verursachten Schadens als Leben aus.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-1",
+          "name": "Putzprovision",
+          "effect": "Marken-Ticks können Randale und Deckung abwerfen.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-2",
+          "name": "Bring noch zwei Freundinnen",
+          "effect": "Die Marke springt zusätzlich auf bis zu zwei bereits kämpfende Nachbarn.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-3",
+          "name": "Kurzer Hausbesuch",
+          "effect": "Direkte Heilung verkürzt die verbleibende Markierungs-Abklingzeit.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-4",
+          "name": "Provisionskur",
+          "effect": "Schaltet ein Zeitfenster frei, in dem jeder verursachte Schaden zusätzlich heilt.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-5",
+          "name": "Mehrwegflasche",
+          "effect": "Eine geglückte Unterbrechung macht den nächsten Finisher kostenlos.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-6",
+          "name": "Kundenbindung",
+          "effect": "Ein Kill auf einem markierten Ziel erneuert die Heilung über Zeit.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-7",
+          "name": "Reklamation abgewürgt",
+          "effect": "Eine geglückte Unterbrechung macht die Heilung sofort wieder bereit.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-8",
+          "name": "Doppelte Marge",
+          "effect": "Das Schaden-zu-Heilung-Fenster hält länger und zahlt beim Heilen zusätzlich Randale.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-9",
+          "name": "Die ganze Downline",
+          "effect": "Ein Finisher mit drei Punkten erneuert die Marken aller beteiligten Nachbarn.",
+          "row": 9,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-10",
+          "name": "Feuchte Ecke",
+          "effect": "Jeder Grundangriff auf ein verschimmeltes Ziel steckt einen zusätzlichen Nachbarn an.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-11",
+          "name": "Es wächst nach",
+          "effect": "Jeder Kill setzt die Wartezeit der Bodenwolke auf null.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-12",
+          "name": "Zugluft",
+          "effect": "Der Schimmel springt über einen größeren Abstand auf Nachbarn und platzt in größerem Umkreis.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-13",
+          "name": "Sporenflug",
+          "effect": "Jeder Schimmel-Tick kann die Wartezeit der Bodenwolke verkürzen.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-14",
+          "name": "Muffige Kammer",
+          "effect": "Die Bodenwolke liegt länger und fasst mehr Gegner.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-15",
+          "name": "Nebenbei gestreut",
+          "effect": "Jeder dritte Autoangriff verkürzt die Wartezeit der Markierung.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-16",
+          "name": "Mundpropaganda",
+          "effect": "Jede zweite Markierung zahlt Randale zurück.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-17",
+          "name": "Ruhe im Karton",
+          "effect": "Eine geglückte Unterbrechung setzt die Markierung ohne Wartezeit zurück.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-18",
+          "name": "Sporenregen",
+          "effect": "Ein Finisher mit drei Punkten liefert die Bodenwolke sofort nach und holt die Markierung fast ganz zurück.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "baerbel-feedback-19",
+          "name": "Kleingeld vom Tick",
+          "effect": "Jeder Marken-Tick heilt dich um einen festen Betrag.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-20",
+          "name": "Abschlussprämie",
+          "effect": "Jeder Kill heilt dich und gibt Randale.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-21",
+          "name": "Sonderrabatt",
+          "effect": "Fällt dein Leben tief, steht das Schaden-zu-Heilung-Fenster ohne Wartezeit bereit.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-22",
+          "name": "Bonusausschüttung",
+          "effect": "Ein Finisher mit drei Punkten zahlt eine große Heilung und Randale aus; dazu wächst der Lebensraub an verschimmelten Zielen.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "baerbel-feedback-23",
+          "name": "Einmal mehr drüber",
+          "effect": "Jeder platzende Schimmel liefert beim Finisher einen zusätzlichen Tick Schaden.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-24",
+          "name": "Eintrittsgebühr",
+          "effect": "Jeder dritte Treffer auf ein markiertes Ziel zahlt Randale.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-25",
+          "name": "Startkapital",
+          "effect": "Jeder zweite Finisher lässt einen Aufbaupunkt stehen.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-26",
+          "name": "Passives Einkommen",
+          "effect": "Treffer auf markierte Ziele können einen Aufbaupunkt abwerfen.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-27",
+          "name": "Vertrieb auf Achse",
+          "effect": "Der Finisher lässt sich zünden, ohne stehen zu bleiben.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-28",
+          "name": "Kettenbrief",
+          "effect": "Jeder Kill bringt einen Aufbaupunkt und etwas Randale.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "baerbel-feedback-29",
+          "name": "Doppelt geputzt",
+          "effect": "Der Finisher holt aus jedem platzenden Schimmel deutlich mehr Ticks heraus.",
+          "row": 8,
+          "path": 2
+        }
+      ],
+      "sha256": "4d8e5f4b09018f0a7fed881523efbef270e5a1e11a67e6a9c0c5ee417d169cce",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-383dfe3f-31ca-4fe2-b726-ae4d975595d2.png"
+    },
+    {
+      "key": "baerbel-stage",
+      "source": "assets/content-art/e32/sources/baerbel-stage-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is baerbel-stage. In strict row-major order (left to right, top to bottom):\n1. Perfekter Upload: Ein Treffer im Takt schreibt zusätzliche Randale gut.\n2. Bühnenfunke: Glückstreffer machen den nächsten Wurf kostenlos.\n3. Erst pflegen, dann posten: Eine Heilung lädt zwei doppelt starke Grundangriffe statt einem.\n4. Story-Wechsel: Nach einem Ausweichen kostet der nächste Wurf nichts.\n5. Noch ein Reel, ihr Opfer!: Schaltet einen Knopf frei, der den Finisher zurücksetzt und die Punkte auffüllt.\n6. Zugabe-Rhythmus: Ein Finisher mit drei Punkten setzt den Wurf zurück und zahlt Randale.\n7. Turbostufe zehn: Ein Finisher mit drei Punkten betäubt sein Hauptziel.\n8. Für alle sichtbar: Die Marke springt auf bereits kämpfende Nachbarn über.\n9. Noch ein Take: Der Zurücksetz-Knopf zahlt zusätzlich Randale und lädt einen doppelt starken Grundangriff.\n10. Viral bis zur Feldflur: Jeder Kill setzt die Abklingzeit des Wurfs auf null.\n11. Langzeitbelichtung: Der Wutzustand läuft länger, bevor er von selbst endet.\n12. Dauerschleife: Jeder dritte Autoangriff schreibt Randale gut.\n13. Stromsparmodus: Der Wutzustand zehrt langsamer an deiner Randale.\n14. Abgeblockt: Eine geglückte Parade zahlt Randale und legt Deckung an.\n15. Kommentar gepinnt: Eine geglückte Unterbrechung zahlt einen großen Schub Randale.\n16. Sponsoring-Deal: Jeder zweite Wurf erstattet einen Teil seiner Kosten als Randale.\n17. Follower gewonnen: Jeder Kill zahlt Randale und einen Aufbaupunkt.\n18. Sendezeit verlängert: Der Wutzustand hält spürbar länger und zehrt zugleich langsamer.\n19. Nachglanz: Ein Finisher mit drei Punkten erstattet einen großen Teil Randale und gibt kurz Tempo.\n20. Früh am Herd: Der Wutzustand zündet bei einer niedrigeren Randale-Schwelle.\n21. Scharfgestellt: Glückstreffer richten mehr Schaden an.\n22. Like-Welle: Glückstreffer können einen Schub Randale bringen.\n23. Fleckentest bestanden: Markierte Ziele nehmen von dir zusätzlichen Schaden.\n24. Letzter Schliff: Ein Finisher mit drei Punkten macht die Stärkung sofort bereit, lässt einen Aufbaupunkt stehen und der Wutzustand schlägt härter zu.\n25. Selfie im Gehen: Der Grundangriff lässt sich abfeuern, ohne stehen zu bleiben.\n26. Unsichtbarer Schnitt: Ein Ausweichsprung, der einen Treffer wirklich vermeidet, zahlt Randale und kurz Tempo.\n27. Frisch geföhnt: Jede direkte Heilung gibt kurz Tempo.\n28. Live-Schalte: Der Finisher lässt sich auch außerhalb der Putzwut im Laufen zünden.\n29. Nächste Szene: Jeder Ausweichsprung bringt den Wurf früher zurück.\n30. Sprungschnitt: Jeder Ausweichsprung zahlt Randale und verkürzt seine eigene Wartezeit.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "baerbel-stage-0",
+          "name": "Perfekter Upload",
+          "effect": "Ein Treffer im Takt schreibt zusätzliche Randale gut.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-1",
+          "name": "Bühnenfunke",
+          "effect": "Glückstreffer machen den nächsten Wurf kostenlos.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-2",
+          "name": "Erst pflegen, dann posten",
+          "effect": "Eine Heilung lädt zwei doppelt starke Grundangriffe statt einem.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-3",
+          "name": "Story-Wechsel",
+          "effect": "Nach einem Ausweichen kostet der nächste Wurf nichts.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-4",
+          "name": "Noch ein Reel, ihr Opfer!",
+          "effect": "Schaltet einen Knopf frei, der den Finisher zurücksetzt und die Punkte auffüllt.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-5",
+          "name": "Zugabe-Rhythmus",
+          "effect": "Ein Finisher mit drei Punkten setzt den Wurf zurück und zahlt Randale.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-6",
+          "name": "Turbostufe zehn",
+          "effect": "Ein Finisher mit drei Punkten betäubt sein Hauptziel.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-7",
+          "name": "Für alle sichtbar",
+          "effect": "Die Marke springt auf bereits kämpfende Nachbarn über.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-8",
+          "name": "Noch ein Take",
+          "effect": "Der Zurücksetz-Knopf zahlt zusätzlich Randale und lädt einen doppelt starken Grundangriff.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-9",
+          "name": "Viral bis zur Feldflur",
+          "effect": "Jeder Kill setzt die Abklingzeit des Wurfs auf null.",
+          "row": 9,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-10",
+          "name": "Langzeitbelichtung",
+          "effect": "Der Wutzustand läuft länger, bevor er von selbst endet.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-11",
+          "name": "Dauerschleife",
+          "effect": "Jeder dritte Autoangriff schreibt Randale gut.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-12",
+          "name": "Stromsparmodus",
+          "effect": "Der Wutzustand zehrt langsamer an deiner Randale.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-13",
+          "name": "Abgeblockt",
+          "effect": "Eine geglückte Parade zahlt Randale und legt Deckung an.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-14",
+          "name": "Kommentar gepinnt",
+          "effect": "Eine geglückte Unterbrechung zahlt einen großen Schub Randale.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-15",
+          "name": "Sponsoring-Deal",
+          "effect": "Jeder zweite Wurf erstattet einen Teil seiner Kosten als Randale.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-16",
+          "name": "Follower gewonnen",
+          "effect": "Jeder Kill zahlt Randale und einen Aufbaupunkt.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-17",
+          "name": "Sendezeit verlängert",
+          "effect": "Der Wutzustand hält spürbar länger und zehrt zugleich langsamer.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-18",
+          "name": "Nachglanz",
+          "effect": "Ein Finisher mit drei Punkten erstattet einen großen Teil Randale und gibt kurz Tempo.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "baerbel-stage-19",
+          "name": "Früh am Herd",
+          "effect": "Der Wutzustand zündet bei einer niedrigeren Randale-Schwelle.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-20",
+          "name": "Scharfgestellt",
+          "effect": "Glückstreffer richten mehr Schaden an.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-21",
+          "name": "Like-Welle",
+          "effect": "Glückstreffer können einen Schub Randale bringen.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-22",
+          "name": "Fleckentest bestanden",
+          "effect": "Markierte Ziele nehmen von dir zusätzlichen Schaden.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-23",
+          "name": "Letzter Schliff",
+          "effect": "Ein Finisher mit drei Punkten macht die Stärkung sofort bereit, lässt einen Aufbaupunkt stehen und der Wutzustand schlägt härter zu.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "baerbel-stage-24",
+          "name": "Selfie im Gehen",
+          "effect": "Der Grundangriff lässt sich abfeuern, ohne stehen zu bleiben.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-25",
+          "name": "Unsichtbarer Schnitt",
+          "effect": "Ein Ausweichsprung, der einen Treffer wirklich vermeidet, zahlt Randale und kurz Tempo.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-26",
+          "name": "Frisch geföhnt",
+          "effect": "Jede direkte Heilung gibt kurz Tempo.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-27",
+          "name": "Live-Schalte",
+          "effect": "Der Finisher lässt sich auch außerhalb der Putzwut im Laufen zünden.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-28",
+          "name": "Nächste Szene",
+          "effect": "Jeder Ausweichsprung bringt den Wurf früher zurück.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "baerbel-stage-29",
+          "name": "Sprungschnitt",
+          "effect": "Jeder Ausweichsprung zahlt Randale und verkürzt seine eigene Wartezeit.",
+          "row": 8,
+          "path": 2
+        }
+      ],
+      "sha256": "d79a7c2c1966d99fd576d7594a01b9e5713c6d6b39762f951dc30d48fafa46fa",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-ecddb471-6d26-4f86-91b2-976844585bfd.png"
+    },
+    {
+      "key": "kevin-fuse",
+      "source": "assets/content-art/e32/sources/kevin-fuse-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is kevin-fuse. In strict row-major order (left to right, top to bottom):\n1. Brennender Nachlauf: Der Einschlagpunkt des Bodenangriffs glüht nach und brennt weiter.\n2. Zündfunke: Ticks der Klebemarke können einen Druckpunkt abwerfen.\n3. Kleber für alle: Die Klebemarke überträgt sich auf bereits kämpfende Nachbarn.\n4. Schnellverkabelt: Jede geglückte Unterbrechung zahlt zusätzlich Randale aus.\n5. Kettenzündung: Schaltet den Knopf frei, der alle verteilten Marken gleichzeitig sprengt.\n6. Kurzschluss: Glückstreffer können den Bodenangriff sofort wieder bereit machen.\n7. Rücklaufdruck: Ein Kill auf einem markierten Ziel zahlt Randale und einen Druckpunkt.\n8. Doppelte Sicherung: Direkte Heilung verkürzt die verbleibende Bodenangriffs-Abklingzeit.\n9. Lange Zündschnur: Die Sprengung greift weiter und zahlt je getroffenem Ziel einen Druckpunkt.\n10. Kettenreaktion: Der Finisher erneuert die Marken aller beteiligten Nachbarn.\n11. Dicke Lunte: Die Explosion jeder Lunte fällt größer aus, egal ob abgebrannt oder gezündet.\n12. Funkenflug: Treffer auf ein Ziel mit Lunte können Randale zurückzahlen.\n13. Lunte springt: Eine explodierende Lunte klebt sich an den nächsten Nachbarn ohne Lunte.\n14. Sparflamme: Die Ticks der Lunte zählen mit; bei jedem vierten fließt Randale nach.\n15. Heißer Kleber: Die regelmäßigen Ticks der Lunte treffen härter, solange sie klebt.\n16. Ausgebrannt: Angeschlagene Ziele nehmen aus allen Quellen mehr Schaden.\n17. Alles auf die Lunte: Der Blitz des Finishers springt kürzer, die gezündeten Lunten explodieren dafür deutlich stärker.\n18. Blanker Draht: Der Blitz des Finishers springt auf ein zusätzliches Ziel.\n19. Kupferkern: Der Blitz verliert je Sprung weniger von seinem Schaden.\n20. Rückstrom: Ein voll geladener Finisher gibt einen Teil der Randale sofort zurück.\n21. Erdschluss: Ein voll geladener Finisher betäubt sein erstes Ziel kurz.\n22. Überbrückt: Der Erstschlag des Finishers trifft härter, und die Sprünge rechnen vom größeren Wert.\n23. Serienschaltung: Der Blitz erreicht deutlich mehr Ziele, verliert dafür je Sprung mehr Schaden.\n24. Nullwiderstand: Der Blitz gibt seinen Schaden ungeschmälert weiter und lässt sich aus der Bewegung zünden.\n25. Zündliste: Das Zeitfenster, in dem Zündungen für die Kettenreaktion gezählt werden, ist länger.\n26. Warmlaufen: Die Kettenreaktion bleibt länger aktiv.\n27. Funkenüberschlag: Treffer auf ein Ziel mit Lunte können den Finisher sofort wieder bereit machen.\n28. Zündleitung: Der Blitz erreicht ein Ziel mehr und die Zündungen bleiben länger gezählt.\n29. Nachzünder: Jeder Kill bringt den nächsten Finisher zeitlich näher.\n30. Glühender Draht: Sowohl das Zählfenster der Zündungen als auch die Reaktion selbst laufen länger.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "kevin-fuse-0",
+          "name": "Brennender Nachlauf",
+          "effect": "Der Einschlagpunkt des Bodenangriffs glüht nach und brennt weiter.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-1",
+          "name": "Zündfunke",
+          "effect": "Ticks der Klebemarke können einen Druckpunkt abwerfen.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-2",
+          "name": "Kleber für alle",
+          "effect": "Die Klebemarke überträgt sich auf bereits kämpfende Nachbarn.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-3",
+          "name": "Schnellverkabelt",
+          "effect": "Jede geglückte Unterbrechung zahlt zusätzlich Randale aus.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-4",
+          "name": "Kettenzündung",
+          "effect": "Schaltet den Knopf frei, der alle verteilten Marken gleichzeitig sprengt.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-5",
+          "name": "Kurzschluss",
+          "effect": "Glückstreffer können den Bodenangriff sofort wieder bereit machen.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-6",
+          "name": "Rücklaufdruck",
+          "effect": "Ein Kill auf einem markierten Ziel zahlt Randale und einen Druckpunkt.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-7",
+          "name": "Doppelte Sicherung",
+          "effect": "Direkte Heilung verkürzt die verbleibende Bodenangriffs-Abklingzeit.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-8",
+          "name": "Lange Zündschnur",
+          "effect": "Die Sprengung greift weiter und zahlt je getroffenem Ziel einen Druckpunkt.",
+          "row": 8,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-9",
+          "name": "Kettenreaktion",
+          "effect": "Der Finisher erneuert die Marken aller beteiligten Nachbarn.",
+          "row": 9,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-10",
+          "name": "Dicke Lunte",
+          "effect": "Die Explosion jeder Lunte fällt größer aus, egal ob abgebrannt oder gezündet.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-11",
+          "name": "Funkenflug",
+          "effect": "Treffer auf ein Ziel mit Lunte können Randale zurückzahlen.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-12",
+          "name": "Lunte springt",
+          "effect": "Eine explodierende Lunte klebt sich an den nächsten Nachbarn ohne Lunte.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-13",
+          "name": "Sparflamme",
+          "effect": "Die Ticks der Lunte zählen mit; bei jedem vierten fließt Randale nach.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-14",
+          "name": "Heißer Kleber",
+          "effect": "Die regelmäßigen Ticks der Lunte treffen härter, solange sie klebt.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-15",
+          "name": "Ausgebrannt",
+          "effect": "Angeschlagene Ziele nehmen aus allen Quellen mehr Schaden.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-16",
+          "name": "Alles auf die Lunte",
+          "effect": "Der Blitz des Finishers springt kürzer, die gezündeten Lunten explodieren dafür deutlich stärker.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "kevin-fuse-17",
+          "name": "Blanker Draht",
+          "effect": "Der Blitz des Finishers springt auf ein zusätzliches Ziel.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-18",
+          "name": "Kupferkern",
+          "effect": "Der Blitz verliert je Sprung weniger von seinem Schaden.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-19",
+          "name": "Rückstrom",
+          "effect": "Ein voll geladener Finisher gibt einen Teil der Randale sofort zurück.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-20",
+          "name": "Erdschluss",
+          "effect": "Ein voll geladener Finisher betäubt sein erstes Ziel kurz.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-21",
+          "name": "Überbrückt",
+          "effect": "Der Erstschlag des Finishers trifft härter, und die Sprünge rechnen vom größeren Wert.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-22",
+          "name": "Serienschaltung",
+          "effect": "Der Blitz erreicht deutlich mehr Ziele, verliert dafür je Sprung mehr Schaden.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-23",
+          "name": "Nullwiderstand",
+          "effect": "Der Blitz gibt seinen Schaden ungeschmälert weiter und lässt sich aus der Bewegung zünden.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "kevin-fuse-24",
+          "name": "Zündliste",
+          "effect": "Das Zeitfenster, in dem Zündungen für die Kettenreaktion gezählt werden, ist länger.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-25",
+          "name": "Warmlaufen",
+          "effect": "Die Kettenreaktion bleibt länger aktiv.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-26",
+          "name": "Funkenüberschlag",
+          "effect": "Treffer auf ein Ziel mit Lunte können den Finisher sofort wieder bereit machen.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-27",
+          "name": "Zündleitung",
+          "effect": "Der Blitz erreicht ein Ziel mehr und die Zündungen bleiben länger gezählt.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-28",
+          "name": "Nachzünder",
+          "effect": "Jeder Kill bringt den nächsten Finisher zeitlich näher.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "kevin-fuse-29",
+          "name": "Glühender Draht",
+          "effect": "Sowohl das Zählfenster der Zündungen als auch die Reaktion selbst laufen länger.",
+          "row": 7,
+          "path": 2
+        }
+      ],
+      "sha256": "a321b011f29f5b3c297ee478b8c7181e083506a2ecff91f539eb1dbe652e2b20",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-e8bc75ab-54c4-4164-a111-5c58bbc477bf.png"
+    },
+    {
+      "key": "kevin-iron",
+      "source": "assets/content-art/e32/sources/kevin-iron-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is kevin-iron. In strict row-major order (left to right, top to bottom):\n1. Frisch verschraubt: Ein Finisher mit drei Punkten schweißt dir Deckung auf.\n2. Nietenpanzer: Autoangriffe können nebenbei Deckung abwerfen.\n3. Druckventil: Paraden geben einen zusätzlichen Aufbaupunkt.\n4. Nietfest: Das Parierfenster fängt zwei Treffer ab.\n5. Magnetpanzer: Schaltet einen Knopf frei, der Deckung gibt und Gegner an dich heranzieht.\n6. Dampfdruck: Eine geglückte Parade macht den nächsten Finisher kostenlos.\n7. Überdruck: Der Finisher gibt angesammelte Deckung als Druckwelle im Umkreis ab.\n8. Ersatzteile: Jeder Kill heilt dich um einen festen Betrag.\n9. Starker Magnet: Der Anzieh-Knopf gibt mehr Deckung und hält Gegner länger fest.\n10. Nicht TÜV-geprüft: Bei niedrigem Leben liefert jede geglückte Parade ein großes Polster.\n11. Längere Batterie: Der aufgestellte Robbi bleibt länger stehen, feuert und bremst länger.\n12. Weiter Bremsweg: Robbi bremst Gegner in einem größeren Umkreis.\n13. Scharfe Dose: Robbis Dauerfeuer trifft je Schuss härter.\n14. Robbi hält: Jeder Schuss von Robbi legt dir ein kleines Polster an.\n15. Ersatzdose: Jeder Kill bringt den nächsten Robbi zeitlich näher.\n16. Werkstattpause: Direkte Heilung bringt den nächsten Robbi zeitlich näher.\n17. Letzter Befehl: Die Explosion des Finishers legt alle Getroffenen lahm, und Robbis Bremskreis ist größer.\n18. Blechkante: Jeder Grundangriff legt mehr Deckung an.\n19. Vernietet: Jede geglückte Parade legt zusätzlich Deckung an.\n20. Notniete: Beim Absinken auf niedriges Leben wird sofort ein Polster angelegt.\n21. Parierschlag: Der parierte Angreifer ist danach kurz verlangsamt.\n22. Dosenblech: Bei niedrigem Leben ist der eingehende Schaden gemindert.\n23. Nietenpflaster: Jede geglückte Parade heilt dich um einen festen Betrag.\n24. Zusatzladung: Robbis Explosion beim Finisher trifft härter.\n25. Blitzableiter: Robbis Explosion beim Finisher legt die Getroffenen kurz lahm.\n26. Wiederaufbau: Ein voll geladener Finisher bringt den nächsten Robbi zeitlich näher.\n27. Druckschlag: Ein voll geladener Finisher betäubt sein Hauptziel kurz.\n28. Restwärme: Jeder Kill zahlt einen Druckpunkt und Randale für die nächste Überlast.\n29. Überlast im Laufen: Der Finisher lässt sich aus der Bewegung zünden.\n30. Kernschmelze: Robbis Explosion beim Finisher wird zum härtesten Schlag des Kolosses.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "kevin-iron-0",
+          "name": "Frisch verschraubt",
+          "effect": "Ein Finisher mit drei Punkten schweißt dir Deckung auf.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-1",
+          "name": "Nietenpanzer",
+          "effect": "Autoangriffe können nebenbei Deckung abwerfen.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-2",
+          "name": "Druckventil",
+          "effect": "Paraden geben einen zusätzlichen Aufbaupunkt.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-3",
+          "name": "Nietfest",
+          "effect": "Das Parierfenster fängt zwei Treffer ab.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-4",
+          "name": "Magnetpanzer",
+          "effect": "Schaltet einen Knopf frei, der Deckung gibt und Gegner an dich heranzieht.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-5",
+          "name": "Dampfdruck",
+          "effect": "Eine geglückte Parade macht den nächsten Finisher kostenlos.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-6",
+          "name": "Überdruck",
+          "effect": "Der Finisher gibt angesammelte Deckung als Druckwelle im Umkreis ab.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-7",
+          "name": "Ersatzteile",
+          "effect": "Jeder Kill heilt dich um einen festen Betrag.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-8",
+          "name": "Starker Magnet",
+          "effect": "Der Anzieh-Knopf gibt mehr Deckung und hält Gegner länger fest.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-9",
+          "name": "Nicht TÜV-geprüft",
+          "effect": "Bei niedrigem Leben liefert jede geglückte Parade ein großes Polster.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-10",
+          "name": "Längere Batterie",
+          "effect": "Der aufgestellte Robbi bleibt länger stehen, feuert und bremst länger.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-11",
+          "name": "Weiter Bremsweg",
+          "effect": "Robbi bremst Gegner in einem größeren Umkreis.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-12",
+          "name": "Scharfe Dose",
+          "effect": "Robbis Dauerfeuer trifft je Schuss härter.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-13",
+          "name": "Robbi hält",
+          "effect": "Jeder Schuss von Robbi legt dir ein kleines Polster an.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-14",
+          "name": "Ersatzdose",
+          "effect": "Jeder Kill bringt den nächsten Robbi zeitlich näher.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-15",
+          "name": "Werkstattpause",
+          "effect": "Direkte Heilung bringt den nächsten Robbi zeitlich näher.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-16",
+          "name": "Letzter Befehl",
+          "effect": "Die Explosion des Finishers legt alle Getroffenen lahm, und Robbis Bremskreis ist größer.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "kevin-iron-17",
+          "name": "Blechkante",
+          "effect": "Jeder Grundangriff legt mehr Deckung an.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-18",
+          "name": "Vernietet",
+          "effect": "Jede geglückte Parade legt zusätzlich Deckung an.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-19",
+          "name": "Notniete",
+          "effect": "Beim Absinken auf niedriges Leben wird sofort ein Polster angelegt.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-20",
+          "name": "Parierschlag",
+          "effect": "Der parierte Angreifer ist danach kurz verlangsamt.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-21",
+          "name": "Dosenblech",
+          "effect": "Bei niedrigem Leben ist der eingehende Schaden gemindert.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-22",
+          "name": "Nietenpflaster",
+          "effect": "Jede geglückte Parade heilt dich um einen festen Betrag.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "kevin-iron-23",
+          "name": "Zusatzladung",
+          "effect": "Robbis Explosion beim Finisher trifft härter.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-24",
+          "name": "Blitzableiter",
+          "effect": "Robbis Explosion beim Finisher legt die Getroffenen kurz lahm.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-25",
+          "name": "Wiederaufbau",
+          "effect": "Ein voll geladener Finisher bringt den nächsten Robbi zeitlich näher.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-26",
+          "name": "Druckschlag",
+          "effect": "Ein voll geladener Finisher betäubt sein Hauptziel kurz.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-27",
+          "name": "Restwärme",
+          "effect": "Jeder Kill zahlt einen Druckpunkt und Randale für die nächste Überlast.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-28",
+          "name": "Überlast im Laufen",
+          "effect": "Der Finisher lässt sich aus der Bewegung zünden.",
+          "row": 8,
+          "path": 2
+        },
+        {
+          "id": "kevin-iron-29",
+          "name": "Kernschmelze",
+          "effect": "Robbis Explosion beim Finisher wird zum härtesten Schlag des Kolosses.",
+          "row": 9,
+          "path": 2
+        }
+      ],
+      "sha256": "842e7cc2ab85c547091a0a7d491479017e267fac6669765dd0b8da33c4828d93",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-566921a8-ae9c-4aec-b09f-b9b5d7d16230.png"
+    },
+    {
+      "key": "kevin-hunt",
+      "source": "assets/content-art/e32/sources/kevin-hunt-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is kevin-hunt. In strict row-major order (left to right, top to bottom):\n1. Wurf aus der Bewegung: Ausweichen gibt zusätzlich zum kostenlosen Wurf einen Druckpunkt.\n2. Fangschuss: Nach einem Ausweichen trifft der nächste Wurf doppelt.\n3. Klebefalle: Die erste Markierung auf einem Ziel hält es zusätzlich kurz fest.\n4. Nachladen im Rennen: Ausweichen verkürzt die verbleibende Abklingzeit des Fernwurfs.\n5. Pfandseil: Schaltet eine Bodenfalle frei, die den ersten Eindringling festnagelt.\n6. Beutefieber: Ein Kill setzt das Ausweichen zurück und zahlt Randale und einen Druckpunkt.\n7. Fangprämie: Würfe auf festgehaltene Gegner geben einen Druckpunkt.\n8. Schritt voraus: Eine gelungene Unterbrechung verkürzt die verbleibende Ausweich-Abklingzeit.\n9. Stahlseil: Die Falle hält länger fest und setzt beim Auslösen den Wurf zurück.\n10. Nie am selben Fleck: Der Finisher stößt weiter zurück, und jeder Kill setzt das Ausweichen zurück.\n11. Gezinkte Dose: Der Würfel des Bastler-Glücks fällt öfter auf die Überzündung.\n12. Restwert: Eine Fehlzündung kostet deutlich weniger Schaden als sonst.\n13. Kurze Pechsträhne: Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher.\n14. Glücksgriff: Glückstreffer können nebenbei einen Druckpunkt abwerfen.\n15. Pfandgeschoss im Laufen: Der Grundangriff lässt sich aus der Bewegung werfen.\n16. Pfandbon: Schaden an markierten Zielen heilt dich anteilig.\n17. Automatenrhythmus: Die Grundangriffe zählen mit; jeder vierte gibt Randale zurück.\n18. Alles auf Rot: Der Finisher trifft härter und gewinnt bei einem Glückstreffer noch einmal deutlich dazu.\n19. Abgesprungen: Jedes Ausweichen legt dir ein Polster an.\n20. Nachschub: Jeder Kill setzt den Fernwurf zurück.\n21. Fangnetz: Ein voll geladener Finisher hält sein Ziel kurz still.\n22. Rückstoß: Die Fernwürfe zählen mit; jeder zweite setzt das Ausweichen zurück.\n23. Rakete im Rennen: Die Rakete verlangt keinen Stillstand mehr und fliegt auch aus dem Sprint.\n24. Zweite Serie: Die Serie an Überzündungen, die den Jackpot auslöst, ist kürzer.\n25. Pfandrückgabe: Treffer auf ein markiertes Ziel können Randale zurückgeben.\n26. Gewinnausschüttung: Jeder Kill zahlt dir einen festen Betrag Leben aus.\n27. Glücksbringer: Die Phase, in der jeder Wurf überzündet, dauert länger.\n28. Glücksrausch: Jeder Kill beschleunigt für kurze Zeit alle Kniffe.\n29. Restgewinn: Angeschlagene Ziele nehmen von jedem Wurf mehr Schaden.\n30. Gewinnrakete: Ein voll geladener Finisher zahlt Tempo und Randale aus.",
+      "refs": [
+        "D:/Dev/MertlochChronicles-ui3/assets/class-visuals/runtime/icons.png"
+      ],
+      "entries": [
+        {
+          "id": "kevin-hunt-0",
+          "name": "Wurf aus der Bewegung",
+          "effect": "Ausweichen gibt zusätzlich zum kostenlosen Wurf einen Druckpunkt.",
+          "row": 0,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-1",
+          "name": "Fangschuss",
+          "effect": "Nach einem Ausweichen trifft der nächste Wurf doppelt.",
+          "row": 1,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-2",
+          "name": "Klebefalle",
+          "effect": "Die erste Markierung auf einem Ziel hält es zusätzlich kurz fest.",
+          "row": 2,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-3",
+          "name": "Nachladen im Rennen",
+          "effect": "Ausweichen verkürzt die verbleibende Abklingzeit des Fernwurfs.",
+          "row": 3,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-4",
+          "name": "Pfandseil",
+          "effect": "Schaltet eine Bodenfalle frei, die den ersten Eindringling festnagelt.",
+          "row": 4,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-5",
+          "name": "Beutefieber",
+          "effect": "Ein Kill setzt das Ausweichen zurück und zahlt Randale und einen Druckpunkt.",
+          "row": 5,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-6",
+          "name": "Fangprämie",
+          "effect": "Würfe auf festgehaltene Gegner geben einen Druckpunkt.",
+          "row": 6,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-7",
+          "name": "Schritt voraus",
+          "effect": "Eine gelungene Unterbrechung verkürzt die verbleibende Ausweich-Abklingzeit.",
+          "row": 7,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-8",
+          "name": "Stahlseil",
+          "effect": "Die Falle hält länger fest und setzt beim Auslösen den Wurf zurück.",
+          "row": 8,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-9",
+          "name": "Nie am selben Fleck",
+          "effect": "Der Finisher stößt weiter zurück, und jeder Kill setzt das Ausweichen zurück.",
+          "row": 9,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-10",
+          "name": "Gezinkte Dose",
+          "effect": "Der Würfel des Bastler-Glücks fällt öfter auf die Überzündung.",
+          "row": 0,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-11",
+          "name": "Restwert",
+          "effect": "Eine Fehlzündung kostet deutlich weniger Schaden als sonst.",
+          "row": 1,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-12",
+          "name": "Kurze Pechsträhne",
+          "effect": "Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher.",
+          "row": 3,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-13",
+          "name": "Glücksgriff",
+          "effect": "Glückstreffer können nebenbei einen Druckpunkt abwerfen.",
+          "row": 4,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-14",
+          "name": "Pfandgeschoss im Laufen",
+          "effect": "Der Grundangriff lässt sich aus der Bewegung werfen.",
+          "row": 6,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-15",
+          "name": "Pfandbon",
+          "effect": "Schaden an markierten Zielen heilt dich anteilig.",
+          "row": 7,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-16",
+          "name": "Automatenrhythmus",
+          "effect": "Die Grundangriffe zählen mit; jeder vierte gibt Randale zurück.",
+          "row": 8,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-17",
+          "name": "Alles auf Rot",
+          "effect": "Der Finisher trifft härter und gewinnt bei einem Glückstreffer noch einmal deutlich dazu.",
+          "row": 9,
+          "path": 0
+        },
+        {
+          "id": "kevin-hunt-18",
+          "name": "Abgesprungen",
+          "effect": "Jedes Ausweichen legt dir ein Polster an.",
+          "row": 2,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-19",
+          "name": "Nachschub",
+          "effect": "Jeder Kill setzt den Fernwurf zurück.",
+          "row": 4,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-20",
+          "name": "Fangnetz",
+          "effect": "Ein voll geladener Finisher hält sein Ziel kurz still.",
+          "row": 5,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-21",
+          "name": "Rückstoß",
+          "effect": "Die Fernwürfe zählen mit; jeder zweite setzt das Ausweichen zurück.",
+          "row": 6,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-22",
+          "name": "Rakete im Rennen",
+          "effect": "Die Rakete verlangt keinen Stillstand mehr und fliegt auch aus dem Sprint.",
+          "row": 8,
+          "path": 1
+        },
+        {
+          "id": "kevin-hunt-23",
+          "name": "Zweite Serie",
+          "effect": "Die Serie an Überzündungen, die den Jackpot auslöst, ist kürzer.",
+          "row": 0,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-24",
+          "name": "Pfandrückgabe",
+          "effect": "Treffer auf ein markiertes Ziel können Randale zurückgeben.",
+          "row": 1,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-25",
+          "name": "Gewinnausschüttung",
+          "effect": "Jeder Kill zahlt dir einen festen Betrag Leben aus.",
+          "row": 2,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-26",
+          "name": "Glücksbringer",
+          "effect": "Die Phase, in der jeder Wurf überzündet, dauert länger.",
+          "row": 3,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-27",
+          "name": "Glücksrausch",
+          "effect": "Jeder Kill beschleunigt für kurze Zeit alle Kniffe.",
+          "row": 5,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-28",
+          "name": "Restgewinn",
+          "effect": "Angeschlagene Ziele nehmen von jedem Wurf mehr Schaden.",
+          "row": 7,
+          "path": 2
+        },
+        {
+          "id": "kevin-hunt-29",
+          "name": "Gewinnrakete",
+          "effect": "Ein voll geladener Finisher zahlt Tempo und Randale aus.",
+          "row": 9,
+          "path": 2
+        }
+      ],
+      "sha256": "8be255af2df7570422b8278ebb13d3da9f224081b83f45f5cad821b311b00477",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-2b2d6383-c7bd-4990-9a4b-3ae5d0a7b387.png"
+    },
+    {
+      "key": "effects",
+      "source": "assets/content-art/e32/sources/effects-v1.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-ee0231bc-a531-4775-830e-a496b09a1b60.png",
+      "prompt": "Create a premium warm detailed comic pixel art EFFECT SPRITE SHEET for Mertloch Chronicles. Transparent RGBA background, no scene, no text, no borders. Reference is material style only. EXACTLY 5 columns by 4 rows, evenly spaced, 1536x1228. Each cell has generous 18% transparent margins, ALL particles inside. Fixed scale and ground baseline within each row. Each ROW is five consecutive animation frames, anticipation to peak to fade, not five icons. Row1: beer foam fountain: tap pressure swelling, small amber jet with creamy foam, huge powerful tall amber foam fountain, spreading splash falling, tiny residual foam droplets. Row2: robot OVERLOAD EFFECT ONLY NO WHOLE ROBOT: small orange-red ring heating, bright red warning ring cracking, explosive burst of copper rivets and torn tin shards, outward dispersing shards, few cooling sparks. Row3: PROST: two small detailed foaming beer glasses approaching, glasses touch with sharp golden contact splash, cheers splash expanding above touching glasses, glasses separate as splash falls, tiny residual gold droplets with glasses fading. Row4: green fungal spore ground CLOUD without mushrooms: small olive-green swirl with suspended pale spores, larger cloud curl, dense peak spreading cloud, dissipating wisps, sparse residual spores. Crisp readable pixel clusters and hard edged particles, glow confined to painted materials, true transparent background. Five distinct frames for each effect, consistent identity. Keep all images inside cells.",
+      "refs": [
+        "assets/class-visuals/runtime/effects.png"
+      ],
+      "sha256": "0f89ae929dc95fce365348e081980bc816014a5ad60181c950af556523369f80"
+    }
+  ]
+}

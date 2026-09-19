@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is dieter-wall. In strict row-major order (left to right, top to bottom):
+1. Deckelwirtschaft: Jeder dritte erfolgreiche Grundangriff legt Deckung an und gibt Randale.
+2. Deckel-Reflex: Nach einer geglückten Parade kostet die nächste Markierung nichts.
+3. Doppelte Türkontrolle: Das Parierfenster fängt zwei Treffer ab statt nur einen.
+4. Keiner drängelt: Wer in dein Parierfenster läuft, wird danach mehrere Sekunden langsamer.
+5. Absperrband: Schaltet eine aufstellbare Schutzzone frei.
+6. Tresenkante: Glückstreffer werfen Deckung ab und machen das Parierfenster sofort wieder bereit.
+7. Räumungsklage: Der Finisher verbrennt angesammelte Deckung für eine zusätzliche Druckwelle im Umkreis.
+8. Tür bleibt zu: Jede geglückte Parade legt zusätzlich Deckung auf.
+9. Breite Absperrung: Die Schutzzone hält länger und bremst Gegner, die darin stehen.
+10. Letzter Mann am Tresen: Bei niedrigem Leben wirft jede geglückte Parade ein großes Polster ab.
+11. Leergut stapeln: Die Autoangriffe zählen mit; jeder vierte Treffer legt ein kleines Polster nach.
+12. Dicke Haut vom Hausbier: Bei niedrigem Leben kommt weniger von jedem Treffer durch.
+13. Kronkorken-Panzer: Jedes angelegte Polster fällt größer aus, und der Grundangriff legt selbst mehr davon an.
+14. Pfand zurück: Sobald das Leben unter die Notschwelle fällt, kommt schlagartig ein Polster.
+15. Ruhe im Laden: Eine geglückte Unterbrechung legt ein Polster an und zahlt Randale.
+16. Verlängertes Hausverbot: Der Zustand bei fast voller Deckung hält deutlich länger an.
+17. Erst gucken, dann hauen: Das Parierfenster steht länger offen und jede geglückte Parade bringt einen zusätzlichen Aufbaupunkt.
+18. Konterschlag: Auf eine geglückte Parade folgt ein Grundangriff mit doppeltem Schaden.
+19. Nachtreten: Jede geglückte Parade verkürzt die laufende Abklingzeit des Unterbrechens.
+20. Klappe zu, Pegel hoch: Eine geglückte Unterbrechung zahlt Randale nach.
+21. Dritter Deckel gratis: Die Paraden zählen mit; nach der dritten steht das Parierfenster ohne Wartezeit erneut.
+22. Kurzer Prozess: Angeschlagene Gegner nehmen von jedem deiner Treffer mehr.
+23. Und tschüss!: Der volle Finisher betäubt sein Ziel, legt ein Polster an und öffnet sofort ein neues Parierfenster.
+24. Breite Schultern: Die Deckungswelle des Finishers erreicht Gegner in größerem Abstand.
+25. Böllerpfand: Jeder zweite Bodenangriff zahlt Randale zurück.
+26. Runde Sache: Jeder erledigte Gegner verkürzt die Abklingzeit des Bodenangriffs.
+27. Hausbier-Nachschub: Randale fließt stetig schneller nach.
+28. Heimspiel: Eine Parade innerhalb der eigenen Schutzzone legt ein Polster an und bringt einen Aufbaupunkt.
+29. Platzverweis: Der volle Finisher zahlt Randale zurück und verkürzt die Abklingzeit des Bodenangriffs.
+30. Alle raus!: Die Deckungswelle des Finishers reicht viel weiter, und der volle Finisher legt sofort ein neues Polster an.

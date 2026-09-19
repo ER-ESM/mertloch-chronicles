@@ -1,5 +1,7 @@
 # Übergabe an OpenAI Astra · Visuals für Klassen-Kernmechaniken und Talentbäume (E-32)
 
+**Lieferstand 19.09.:** [Astra-Lieferung mit Laufkorrektur](ASTRA-E32-LIEFERUNG-2026-09-19.md) enthält 270 zugeordnete Talenticons, 45 Skill-/Variantenfelder, Weltobjekte, Effekte, HUD und Talentbaumdarstellung. Die Reihen-Fallbacks werden bei geladener Lieferung nicht mehr benutzt. 35 menschliche Figuren haben korrigierte Vier-Richtungs-Laufzyklen. Die folgende Liste bleibt als ursprünglicher Auftrag erhalten; ihre Platzhalterhinweise beschreiben den Stand vor dieser Lieferung.
+
 Stand 2026-09-18. Diese Liste nennt alles Sichtbare, das die Umsetzung von [E-32](ENTSCHEIDUNGEN.md) braucht. Bis die
 Grafiken da sind, läuft alles mit Platzhaltern (Farbfilter auf bestehenden Icons, Kreise/Linien im Renderer). Stil und
 Pipeline wie in [UEBERGABE-3D-ASTRA-2026-09-18.md](UEBERGABE-3D-ASTRA-2026-09-18.md) und [GRAFIK-BEDARF.md](GRAFIK-BEDARF.md):

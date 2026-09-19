@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is dieter-brawl. In strict row-major order (left to right, top to bottom):
+1. Noch einen auf die Zwölf: Kellen und kassierte Treffer laden doppelt so viel Rausch wie sonst.
+2. Kellenwut: Glückstreffer machen den nächsten Finisher kostenlos.
+3. Volle Kante: Bei vollem Rausch kostet der Finisher nichts und verbraucht dafür den Rausch.
+4. Hinterher!: Ausweichen verkürzt die verbleibende Wurf-Abklingzeit.
+5. Tresensprung: Schaltet einen Satz zu einem Zielpunkt mit Aufschlagschaden frei.
+6. Nachschlag: Nach einem Kill trifft der nächste Grundangriff doppelt und zahlt zusätzlich Randale.
+7. Kneipenschreck: Ein Finisher mit drei Punkten betäubt sein Ziel kurz.
+8. Kater verdrängen: Jeder erledigte Gegner heilt dich um einen festen Betrag.
+9. Sprungbrett: Der Satz bringt zwei Aufbaupunkte statt einem und lädt einen kostenlosen Grundangriff.
+10. Kein Feierabend: Ein Kill macht den Sprungkniff sofort wieder bereit.
+11. Angeschlagen, nicht besoffen: Die Uhr, nach der die Pegelstriche verfallen, läuft länger.
+12. Nachgeschenkt: Die Autoangriffe zählen mit und liefern regelmäßig einen zusätzlichen Aufbaupunkt.
+13. Deckel, Kelle, Pegel: Nach einer geglückten Parade kostet der nächste Grundangriff keine Randale.
+14. Sitzfleisch: Unterhalb der Notschwelle richtet jeder Treffer weniger an.
+15. Konterbrezel-Reserve: Sobald das Leben unter die Notschwelle fällt, kommt sofort eine Heilung.
+16. Kurzer Kater: Läuft der Pegel doch einmal aus, ist die Strafe nur halb so lang.
+17. Durchhalten: Die Heilung legt zusätzlich ein Polster an und bringt einen Aufbaupunkt.
+18. Zweite Luft: Der volle Finisher zahlt Randale und ein Polster zurück, und die Uhr der Pegelstriche läuft noch länger.
+19. Erste Runde: Jeder Pegelstrich zählt beim Finisher mehr.
+20. Volltreffer: Kritische Treffer richten mehr an.
+21. Vorglühen: Treffer auf ein markiertes Ziel können einen Aufbaupunkt abwerfen.
+22. Dreier-Kelle: Die Kellen zählen mit; jede dritte zahlt Randale und verkürzt die Abklingzeit des Finishers.
+23. Abriss mit Ansage: Gegen angeschlagene Ziele fällt jeder Schlag härter aus.
+24. Zugabe!: Ein voller Finisher kann den nächsten Finisher kostenlos machen.
+25. Blitzabriss: Die Pegelstriche zählen beim Finisher noch mehr, und der volle Finisher lädt einen doppelten Grundangriff samt Randale.
+26. Anlauf nehmen: Jeder Ausweichschritt bringt einen Aufbaupunkt.
+27. Flaschenpost: Nach jedem erledigten Gegner ist der Wurf sofort wieder bereit.
+28. Rundumschlag: Der Finisher trifft zusätzlich alle Gegner rings um das Ziel, je Pegelstrich mehr.
+29. Wurf in die Runde: Die Würfe zählen mit; jeder zweite bringt einen Aufbaupunkt und Randale.
+30. Weiter zum Nächsten: Jeder erledigte Gegner verkürzt die Abklingzeit des Ausweichens und zahlt Randale.

@@ -1,3 +1,4 @@
+import {paintE32Skill} from './e32-art.js';
 import {drawContentIcon,contentAsset,loadContentArt} from './content-art.js';
 import {styleIcon} from './art-style.js';
 import {loadAperolArt,paintAperolIcon} from './aperol-art.js';
@@ -11,4 +12,4 @@ function paintCell(canvas,member,index){if(member==='baerbel'){paintAperolIcon(c
 function paintSkillRaw(canvas,id,member='dieter'){if(id==='auto'){if(member==='baerbel'){paintAperolIcon(canvas,'skills',16);return;}drawDetailIcon(canvas.getContext('2d'),'auto-'+member,0,0,canvas.width);return;}const index=SKILL_ICON_ORDER[member]?.indexOf(id);if(index>=0)paintCell(canvas,member,index);}
 export function paintSpecIcon(canvas,id){const direct=Object.keys(SKILL_ICON_ORDER).find(m=>contentAsset('skill-'+m+'-'+id));if(direct){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);drawContentIcon(c,'skill-'+direct+'-'+id,0,0,canvas.width);return;}const member=Object.keys(CLASS_SPECS).find(c=>CLASS_SPECS[c].includes(id));if(member)paintCell(canvas,member,13+CLASS_SPECS[member].indexOf(id));}
 export function paintSpecIcons(root){root.querySelectorAll('[data-spec-art]').forEach(c=>paintSpecIcon(c,c.dataset.specArt));}
-export function paintSkillIcon(canvas,id,member='dieter'){const key='skill-'+member+'-'+id;if(contentAsset(key)){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);drawContentIcon(c,key,0,0,canvas.width);return;}paintSkillRaw(canvas,id,member);styleIcon(canvas);}
+export function paintSkillIcon(canvas,id,member='dieter',context={}){if(paintE32Skill(canvas,context.spec,id,context.variant))return;const key='skill-'+member+'-'+id;if(contentAsset(key)){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);drawContentIcon(c,key,0,0,canvas.width);return;}paintSkillRaw(canvas,id,member);styleIcon(canvas);}

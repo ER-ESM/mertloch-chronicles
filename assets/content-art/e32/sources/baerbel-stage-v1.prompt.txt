@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is baerbel-stage. In strict row-major order (left to right, top to bottom):
+1. Perfekter Upload: Ein Treffer im Takt schreibt zusätzliche Randale gut.
+2. Bühnenfunke: Glückstreffer machen den nächsten Wurf kostenlos.
+3. Erst pflegen, dann posten: Eine Heilung lädt zwei doppelt starke Grundangriffe statt einem.
+4. Story-Wechsel: Nach einem Ausweichen kostet der nächste Wurf nichts.
+5. Noch ein Reel, ihr Opfer!: Schaltet einen Knopf frei, der den Finisher zurücksetzt und die Punkte auffüllt.
+6. Zugabe-Rhythmus: Ein Finisher mit drei Punkten setzt den Wurf zurück und zahlt Randale.
+7. Turbostufe zehn: Ein Finisher mit drei Punkten betäubt sein Hauptziel.
+8. Für alle sichtbar: Die Marke springt auf bereits kämpfende Nachbarn über.
+9. Noch ein Take: Der Zurücksetz-Knopf zahlt zusätzlich Randale und lädt einen doppelt starken Grundangriff.
+10. Viral bis zur Feldflur: Jeder Kill setzt die Abklingzeit des Wurfs auf null.
+11. Langzeitbelichtung: Der Wutzustand läuft länger, bevor er von selbst endet.
+12. Dauerschleife: Jeder dritte Autoangriff schreibt Randale gut.
+13. Stromsparmodus: Der Wutzustand zehrt langsamer an deiner Randale.
+14. Abgeblockt: Eine geglückte Parade zahlt Randale und legt Deckung an.
+15. Kommentar gepinnt: Eine geglückte Unterbrechung zahlt einen großen Schub Randale.
+16. Sponsoring-Deal: Jeder zweite Wurf erstattet einen Teil seiner Kosten als Randale.
+17. Follower gewonnen: Jeder Kill zahlt Randale und einen Aufbaupunkt.
+18. Sendezeit verlängert: Der Wutzustand hält spürbar länger und zehrt zugleich langsamer.
+19. Nachglanz: Ein Finisher mit drei Punkten erstattet einen großen Teil Randale und gibt kurz Tempo.
+20. Früh am Herd: Der Wutzustand zündet bei einer niedrigeren Randale-Schwelle.
+21. Scharfgestellt: Glückstreffer richten mehr Schaden an.
+22. Like-Welle: Glückstreffer können einen Schub Randale bringen.
+23. Fleckentest bestanden: Markierte Ziele nehmen von dir zusätzlichen Schaden.
+24. Letzter Schliff: Ein Finisher mit drei Punkten macht die Stärkung sofort bereit, lässt einen Aufbaupunkt stehen und der Wutzustand schlägt härter zu.
+25. Selfie im Gehen: Der Grundangriff lässt sich abfeuern, ohne stehen zu bleiben.
+26. Unsichtbarer Schnitt: Ein Ausweichsprung, der einen Treffer wirklich vermeidet, zahlt Randale und kurz Tempo.
+27. Frisch geföhnt: Jede direkte Heilung gibt kurz Tempo.
+28. Live-Schalte: Der Finisher lässt sich auch außerhalb der Putzwut im Laufen zünden.
+29. Nächste Szene: Jeder Ausweichsprung bringt den Wurf früher zurück.
+30. Sprungschnitt: Jeder Ausweichsprung zahlt Randale und verkürzt seine eigene Wartezeit.

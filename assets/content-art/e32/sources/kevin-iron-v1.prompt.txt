@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is kevin-iron. In strict row-major order (left to right, top to bottom):
+1. Frisch verschraubt: Ein Finisher mit drei Punkten schweißt dir Deckung auf.
+2. Nietenpanzer: Autoangriffe können nebenbei Deckung abwerfen.
+3. Druckventil: Paraden geben einen zusätzlichen Aufbaupunkt.
+4. Nietfest: Das Parierfenster fängt zwei Treffer ab.
+5. Magnetpanzer: Schaltet einen Knopf frei, der Deckung gibt und Gegner an dich heranzieht.
+6. Dampfdruck: Eine geglückte Parade macht den nächsten Finisher kostenlos.
+7. Überdruck: Der Finisher gibt angesammelte Deckung als Druckwelle im Umkreis ab.
+8. Ersatzteile: Jeder Kill heilt dich um einen festen Betrag.
+9. Starker Magnet: Der Anzieh-Knopf gibt mehr Deckung und hält Gegner länger fest.
+10. Nicht TÜV-geprüft: Bei niedrigem Leben liefert jede geglückte Parade ein großes Polster.
+11. Längere Batterie: Der aufgestellte Robbi bleibt länger stehen, feuert und bremst länger.
+12. Weiter Bremsweg: Robbi bremst Gegner in einem größeren Umkreis.
+13. Scharfe Dose: Robbis Dauerfeuer trifft je Schuss härter.
+14. Robbi hält: Jeder Schuss von Robbi legt dir ein kleines Polster an.
+15. Ersatzdose: Jeder Kill bringt den nächsten Robbi zeitlich näher.
+16. Werkstattpause: Direkte Heilung bringt den nächsten Robbi zeitlich näher.
+17. Letzter Befehl: Die Explosion des Finishers legt alle Getroffenen lahm, und Robbis Bremskreis ist größer.
+18. Blechkante: Jeder Grundangriff legt mehr Deckung an.
+19. Vernietet: Jede geglückte Parade legt zusätzlich Deckung an.
+20. Notniete: Beim Absinken auf niedriges Leben wird sofort ein Polster angelegt.
+21. Parierschlag: Der parierte Angreifer ist danach kurz verlangsamt.
+22. Dosenblech: Bei niedrigem Leben ist der eingehende Schaden gemindert.
+23. Nietenpflaster: Jede geglückte Parade heilt dich um einen festen Betrag.
+24. Zusatzladung: Robbis Explosion beim Finisher trifft härter.
+25. Blitzableiter: Robbis Explosion beim Finisher legt die Getroffenen kurz lahm.
+26. Wiederaufbau: Ein voll geladener Finisher bringt den nächsten Robbi zeitlich näher.
+27. Druckschlag: Ein voll geladener Finisher betäubt sein Hauptziel kurz.
+28. Restwärme: Jeder Kill zahlt einen Druckpunkt und Randale für die nächste Überlast.
+29. Überlast im Laufen: Der Finisher lässt sich aus der Bewegung zünden.
+30. Kernschmelze: Robbis Explosion beim Finisher wird zum härtesten Schlag des Kolosses.

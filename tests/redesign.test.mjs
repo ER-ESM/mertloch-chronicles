@@ -23,14 +23,14 @@ test('complete production matrix has every authored action, direction and modula
  assert.equal(Object.keys(catalog.gear).length,6);for(const views of Object.values(catalog.gear))assert.equal(views.length,4);
 });
 test('action priority remains correct while moving; walk is distance-driven and wraps',()=>{
- const moving={moving:true,walkDistance:18};assert.equal(redesignPose(moving),'walk-3');
+ const moving={moving:true,walkDistance:7.5};assert.equal(redesignPose(moving),'walk-3');
  for(const [p,pose]of [[{dead:true},'dead'],[{hp:0},'dead'],[{dash:.1},'dash'],[{hurt:.1},'hit'],[{parry:.1},'parry'],[{casting:true},'cast'],[{casting:true,usingRanged:true},'ranged-aim'],[{attack:.24},'anticipation'],[{attack:.13},'impact'],[{attack:.02},'recovery'],[{attack:.02,usingRanged:true},'ranged-release']])assert.equal(redesignPose({...moving,...p}),pose);
- assert.equal(redesignPose({resting:true}),'rest');assert.equal(redesignPose({resting:true,moving:true}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:48}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:-6}),'walk-7');
+ assert.equal(redesignPose({resting:true}),'rest');assert.equal(redesignPose({resting:true,moving:true}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:20}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:-2.5}),'walk-7');
 });
 test('painted walk articulates both hips and knees with opposite support phases',()=>{
  for(const hero of ['dieter','anni','kevin'])for(let row=0;row<4;row++){
   const a=catalog.assets[hero+'-walk'];assert.equal(a.animation,'two-joint-painted-cutout');
-  const first=a.frames[row*8+2],opposite=a.frames[row*8+6];
+  const first=a.frames[row*8],opposite=a.frames[row*8+4];
   assert.ok(first.joints[0].stridePhase*first.joints[1].stridePhase<0);assert.ok(first.joints[0].stridePhase*opposite.joints[0].stridePhase<0);
   assert.ok(Math.abs(first.joints[0].ankle.x-opposite.joints[0].ankle.x)>10);
   assert.ok(a.frames[row*8].joints[0].kneeAngle!==a.frames[row*8].joints[1].kneeAngle);
@@ -93,6 +93,6 @@ test('all new runtime files reproduce byte-for-byte from reviewed sources',()=>{
  for(const [p,bytes] of buildRedesign().files)assert.deepEqual(bytes,read(p),p);
 });
 test('production boot loads redesign and cache includes runtime without sources',()=>{
- assert.match(read('app.js').toString(),/Promise.all\(\[loadRedesignArt\(\)/);assert.match(read('live-art.js').toString(),/drawDetailedHero/);
+ assert.match(read('app.js').toString(),/Promise.all\(\[[^\]]*loadRedesignArt\(\)/);assert.match(read('live-art.js').toString(),/drawDetailedHero/);
  const cache=read('scripts/pwa-cache.mjs').toString();assert.ok(cache.includes('assets/redesign/runtime/'));assert.ok(!cache.includes('assets/redesign/sources/'));
 });

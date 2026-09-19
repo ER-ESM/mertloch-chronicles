@@ -37,7 +37,7 @@ export function redesignPose(p={}){
  if(p.casting)return p.usingRanged?'ranged-aim':'cast';
  if(p.castPose>0)return 'cast';
  if(p.attack>0){if(p.usingRanged)return p.attack>.12?'ranged-aim':'ranged-release';return p.attack>.18?'anticipation':p.attack>.07?'impact':'recovery';}
- if(p.moving)return 'walk-'+(((Math.floor((p.walkDistance||0)/48*8)%8)+8)%8);
+ if(p.moving)return 'walk-'+(((Math.floor((p.walkDistance||0)/20*8)%8)+8)%8);
  if(p.resting)return 'rest';
  return 'idle';
 }
@@ -93,7 +93,7 @@ export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  const q=sel.resolution||1;c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);
  garment(c,sel,find('body'));
  if(s.back)drawStowed();
- const clothingSockets={...s,legs:f.joints},handSlots=['hands','wrists','ring1','ring2'];
+ const clothingSockets={...s,legs:f.joints,legOrder:f.legOrder},handSlots=['hands','wrists','ring1','ring2'];
  if(drawClothing)drawClothing(c,items.filter(i=>!['body','weapon','offhand','ranged',...handSlots].includes(i.slot)),clothingSockets,p);
  if(!down){drawMain();if(!s.back)drawOff();if(main)glove(c,sel,s.main);if(off&&!s.back||main?.hands===2&&!p.usingRanged)glove(c,sel,s.off);}
  // Equipped gloves and rings must remain above the restored painted fingers.

@@ -82,7 +82,7 @@ function frameSockets(frame,b,row,state,column){
 export function buildRedesign({partial=false}={}){
  const jobs=JSON.parse(readFileSync(new URL('tools/redesign/jobs.json',root))),files=new Map();
  const registration=JSON.parse(readFileSync(new URL('tools/redesign/registration.json',root)));
- const catalog={version:1,style:'Mertloch Themenhelden · Detailpixel',frameSize:192,pivot:{x:96,y:160},nativeHeight:104,worldHeight:26,directions:DIRECTIONS,stride:48,complete:false,aliases:{baerbel:'anni'},assets:{},source:'tools/redesign',animated:true};
+ const catalog={version:1,style:'Mertloch Themenhelden · Detailpixel',frameSize:192,pivot:{x:96,y:160},nativeHeight:104,worldHeight:26,directions:DIRECTIONS,stride:WALK_RIG.stride,complete:false,aliases:{baerbel:'anni'},assets:{},source:'tools/redesign',animated:true};
  for(const job of jobs){
   if(job.state==='walk')continue;
   const file=new URL(job.output,root);if(!existsSync(file)){if(partial)continue;throw Error('Missing animation source: '+job.output);}
@@ -116,7 +116,7 @@ export function buildRedesign({partial=false}={}){
     for(const key of ['main','off','head','torso','waist'])sockets[key].y+=rig.bodyOffset;
     sockets.shoulders.forEach(p=>p.y+=rig.bodyOffset);sockets.feet=rig.joints.map(j=>({...j.ankle,angle:j.footAngle}));
     blit(frame,sheet,{x:0,y:0,w:192,h:192},{x,y});blit(big,detail,{x:0,y:0,w:384,h:384},{x:x*2,y:y*2});blit(garmentMask(big,bounds(big),hero,row,'walk'),cloth,{x:0,y:0,w:384,h:384},{x:x*2,y:y*2});
-    frames.push({x,y,pose:'walk-'+column,direction:DIRECTIONS[row],bounds:box,sockets,clothRuns:maskRuns(garmentMask(frame,box,hero,row,'walk')),joints:rig.joints,hash:hash(frame.data)});
+    frames.push({x,y,pose:'walk-'+column,direction:DIRECTIONS[row],bounds:box,sockets,clothRuns:maskRuns(garmentMask(frame,box,hero,row,'walk')),joints:rig.joints,legOrder:rig.legOrder,hash:hash(frame.data)});
    }
   }
   const state=heavy?'heavywalk':'walk',id=hero+'-'+state,path=base+'runtime/'+id+'.png',detailPath=base+'runtime/'+id+'-detail.png',clothPath=base+'runtime/'+id+'-cloth.png',data=encodePng(sheet);

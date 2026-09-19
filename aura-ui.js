@@ -31,12 +31,13 @@ export function mountAuraUI(root,getGame){
   const r=root.getBoundingClientRect(),style=getComputedStyle(document.body),safe=side=>parseFloat(style.getPropertyValue('--safe-'+side))||0;
   if(r.width>r.height){
    let left=12+safe('left'),right=root.clientWidth-12-safe('right');
-   for(const sel of ['#touchStick','#touchActions','#touchUtility']){const b=root.querySelector(sel)?.getBoundingClientRect();if(!b?.width)continue;if(b.x+b.width/2<r.x+r.width/2)left=Math.max(left,b.right-r.left+8);else right=Math.min(right,b.left-r.left-8);}
+   for(const sel of ['#touchStick','#touchActions','#touchUtility','.player-panel']){const b=root.querySelector(sel)?.getBoundingClientRect();if(!b?.width)continue;if(b.x+b.width/2<r.x+r.width/2)left=Math.max(left,b.right-r.left+8);else right=Math.min(right,b.left-r.left-8);}
    const width=Math.max(44,right-left),short=root.clientHeight<360,split=Math.min(76,(width-8)/2);
    for(const [i,el] of Object.values(bars).entries()){el.style.left=(left+(short&&i===2?split+8:0))+'px';el.style.width=(short&&i>0?(i===1?split:width-split-8):width)+'px';el.style.top=(100+safe('top')+(short?Math.min(1,i)*72:i*72))+'px';}
   }else{
    const player=root.querySelector('.player-panel').getBoundingClientRect(),width=Math.max(44,Math.min(104,root.clientWidth-safe('right')-(player.right-r.left)-20));
-   for(const [i,key] of ['buffs','debuffs'].entries()){bars[key].style.left=root.clientWidth-safe('right')-12-width+'px';bars[key].style.width=width+'px';bars[key].style.top=126+safe('top')+i*64+'px';}
+   const topline=root.querySelector('.touch-topline')?.getBoundingClientRect(),auraTop=Math.max(126+safe('top'),topline?.height?topline.bottom-r.top+8:0);
+   for(const [i,key] of ['buffs','debuffs'].entries()){bars[key].style.left=root.clientWidth-safe('right')-12-width+'px';bars[key].style.width=width+'px';bars[key].style.top=auraTop+i*64+'px';}
    const target=root.querySelector('#targetPanel').getBoundingClientRect();bars.targetDebuffs.style.left=12+safe('left')+'px';bars.targetDebuffs.style.width='205px';bars.targetDebuffs.style.top=Math.max(198+safe('top'),target.bottom-r.top+8)+'px';
   }
  }

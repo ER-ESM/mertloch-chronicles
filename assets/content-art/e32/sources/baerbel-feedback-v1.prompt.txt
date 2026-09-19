@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is baerbel-feedback. In strict row-major order (left to right, top to bottom):
+1. Provision vom Schmerz: Treffer auf markierte Ziele zahlen dir einen Teil des verursachten Schadens als Leben aus.
+2. Putzprovision: Marken-Ticks können Randale und Deckung abwerfen.
+3. Bring noch zwei Freundinnen: Die Marke springt zusätzlich auf bis zu zwei bereits kämpfende Nachbarn.
+4. Kurzer Hausbesuch: Direkte Heilung verkürzt die verbleibende Markierungs-Abklingzeit.
+5. Provisionskur: Schaltet ein Zeitfenster frei, in dem jeder verursachte Schaden zusätzlich heilt.
+6. Mehrwegflasche: Eine geglückte Unterbrechung macht den nächsten Finisher kostenlos.
+7. Kundenbindung: Ein Kill auf einem markierten Ziel erneuert die Heilung über Zeit.
+8. Reklamation abgewürgt: Eine geglückte Unterbrechung macht die Heilung sofort wieder bereit.
+9. Doppelte Marge: Das Schaden-zu-Heilung-Fenster hält länger und zahlt beim Heilen zusätzlich Randale.
+10. Die ganze Downline: Ein Finisher mit drei Punkten erneuert die Marken aller beteiligten Nachbarn.
+11. Feuchte Ecke: Jeder Grundangriff auf ein verschimmeltes Ziel steckt einen zusätzlichen Nachbarn an.
+12. Es wächst nach: Jeder Kill setzt die Wartezeit der Bodenwolke auf null.
+13. Zugluft: Der Schimmel springt über einen größeren Abstand auf Nachbarn und platzt in größerem Umkreis.
+14. Sporenflug: Jeder Schimmel-Tick kann die Wartezeit der Bodenwolke verkürzen.
+15. Muffige Kammer: Die Bodenwolke liegt länger und fasst mehr Gegner.
+16. Nebenbei gestreut: Jeder dritte Autoangriff verkürzt die Wartezeit der Markierung.
+17. Mundpropaganda: Jede zweite Markierung zahlt Randale zurück.
+18. Ruhe im Karton: Eine geglückte Unterbrechung setzt die Markierung ohne Wartezeit zurück.
+19. Sporenregen: Ein Finisher mit drei Punkten liefert die Bodenwolke sofort nach und holt die Markierung fast ganz zurück.
+20. Kleingeld vom Tick: Jeder Marken-Tick heilt dich um einen festen Betrag.
+21. Abschlussprämie: Jeder Kill heilt dich und gibt Randale.
+22. Sonderrabatt: Fällt dein Leben tief, steht das Schaden-zu-Heilung-Fenster ohne Wartezeit bereit.
+23. Bonusausschüttung: Ein Finisher mit drei Punkten zahlt eine große Heilung und Randale aus; dazu wächst der Lebensraub an verschimmelten Zielen.
+24. Einmal mehr drüber: Jeder platzende Schimmel liefert beim Finisher einen zusätzlichen Tick Schaden.
+25. Eintrittsgebühr: Jeder dritte Treffer auf ein markiertes Ziel zahlt Randale.
+26. Startkapital: Jeder zweite Finisher lässt einen Aufbaupunkt stehen.
+27. Passives Einkommen: Treffer auf markierte Ziele können einen Aufbaupunkt abwerfen.
+28. Vertrieb auf Achse: Der Finisher lässt sich zünden, ohne stehen zu bleiben.
+29. Kettenbrief: Jeder Kill bringt einen Aufbaupunkt und etwas Randale.
+30. Doppelt geputzt: Der Finisher holt aus jedem platzenden Schimmel deutlich mehr Ticks heraus.

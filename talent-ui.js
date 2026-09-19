@@ -32,7 +32,7 @@ export function talentsPanel(g){
   const cells=[0,1,2].map(p=>{const t=tree.find(t=>t.row===r&&t.path===p);if(!t)return '<span class="path-cell empty"></span>';
    const known=learned(t.id),taken=!known&&tree.some(x=>x.row===r&&x.id!==t.id&&learned(x.id)),ready=!known&&!taken&&free>0&&talentPrerequisites(t,state.learned)&&!g.dead&&g.player.inCombat<=0;
    const cls=known?'learned':taken?'excluded':ready?'available':'locked';
-   return `<button class="branch-node ${cls} ${t.grants?'active-talent':'passive-talent'} ${r===TALENT_ROWS_PER_SPEC-1?'capstone':''}" data-talent="${t.id}" data-tooltip-talent="${t.id}" data-path="${p}" aria-label="${esc(t.name)} · ${known?UI.learned:taken?UI.excluded:ready?UI.available:UI.locked}" aria-pressed="${known}">${art(t.id)}${t.grants?'<i>★</i>':''}</button>`;}).join('');
+   return `<button class="branch-node ${cls} ${t.grants?'active-talent':'passive-talent'} ${r===TALENT_ROWS_PER_SPEC-1?'capstone':''}" style="border-radius:50% !important" data-talent="${t.id}" data-tooltip-talent="${t.id}" data-path="${p}" aria-label="${esc(t.name)} · ${known?UI.learned:taken?UI.excluded:ready?UI.available:UI.locked}" aria-pressed="${known}">${art(t.id)}${t.grants?'<i>★</i>':''}</button>`;}).join('');
   const unlocked=state.learned.length>=r,done=tree.some(t=>t.row===r&&learned(t.id));
   rows.push(`<div class="path-row ${unlocked?'unlocked':''} ${done?'done':''}" data-row="${r}"><span class="row-gate"><b>${r+1}</b>${r===TALENT_ROWS_PER_SPEC-1?'<small>'+esc(UI.capstone)+'</small>':''}</span>${cells}</div>`);
  }

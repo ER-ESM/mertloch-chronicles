@@ -21,10 +21,10 @@ export function drawEquipment(c,items,s,west,back,behind,p){
  for(const item of items){const a=item.asset,slot=item.slot;
   if(slot==='ranged'||slot==='weapon'||slot==='offhand')continue;
   if(slot==='legs'){
-   if(s.legs)for(const [i,leg]of s.legs.entries())for(const part of legGarmentSegments(leg))gearPart(c,a,part.x,part.y,7,part.h,west,part.angle,i,part.slice);
+   if(s.legs)for(const i of s.legOrder||[0,1])for(const part of legGarmentSegments(s.legs[i]))gearPart(c,a,part.x,part.y,7,part.h,west,part.angle,i,part.slice);
    else for(const [i,f] of s.feet.entries()){const hip={x:s.waist.x+(i?4:-4),y:s.waist.y};const length=Math.max(8,f.y-hip.y-3);gearPart(c,a,(hip.x+f.x)/2,(hip.y+f.y-3)/2,7,length,west,-Math.atan2(f.x-hip.x,length),i);}
   }
-  if(slot==='feet')for(const f of s.feet)gearPart(c,a,f.x,f.y-2.5,9,8,west,f.angle||0);
+  if(slot==='feet')for(const i of s.legOrder||s.feet.map((_,i)=>i)){const f=s.feet[i];gearPart(c,a,f.x,f.y-2.5,9,8,west,f.angle||0);}
  }
  if(body)gearPart(c,body.asset+(back?'Back':''),s.torso.x,s.torso.y+3,s.torso.w+2,s.torso.h,west);
  for(const item of items){const a=item.asset,slot=item.slot;

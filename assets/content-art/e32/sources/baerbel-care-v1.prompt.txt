@@ -1,0 +1,31 @@
+Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. This sheet is baerbel-care. In strict row-major order (left to right, top to bottom):
+1. Warme Schüssel: Jede Heilung hinterlässt zusätzlich eine Heilung über Zeit, die auch im Laufen tickt.
+2. Frisch gewischt: Jede zweite Heilung lädt einen doppelt starken Grundangriff.
+3. Nichts wird weggekippt: Die Hälfte der Überheilung legt sich als Deckung an.
+4. Ein Schluck, ein Plan: Heilen gibt zusätzlich einen Glanzpunkt.
+5. Thermomix-Tafel: Schaltet eine platzierbare Heilzone frei, die jede Sekunde heilt.
+6. Landfrauen-Glanz: Glückstreffer zahlen Randale und einen Aufbaupunkt aus.
+7. Frisch aufgetragen: Nach einer Heilung trifft der nächste Grundangriff doppelt und verbraucht dabei den Frischekick.
+8. Sanfte Versiegelung: Eine geglückte Parade erneuert die Heilung über Zeit.
+9. Anbau mit Fußbodenheilung: Die Heilzone hält länger und legt beim Aufstellen Deckung auf.
+10. Nicht ohne meine Mädels: Ein Finisher mit drei Punkten verlängert die Heilung über Zeit, statt sie auslaufen zu lassen.
+11. Giselas Ruf: Jede direkte Heilung verkürzt die Wartezeit auf das Nest.
+12. Spüli ins Auge: Solange das Großreinemachen läuft, schlägt jede Heilung stärker auf das Ziel durch.
+13. Nachschlag: Jede zweite direkte Heilung verkürzt die eigene Wartezeit.
+14. Brutpflege: Das Nest bleibt länger stehen und heilt entsprechend länger.
+15. Das sechste Glas: Der Vorrat fasst ein Glas mehr; dafür dauert die Putzphase nach vollem Vorrat länger.
+16. Freilaufgans: Der Heilkreis des Nests reicht weiter, du darfst dich mehr bewegen.
+17. Gisela, hierher!: Fällt dein Leben tief, steht die Gans ohne Wartezeit bereit.
+18. Schrubben heilt: Jeder dritte Grundangriff zahlt Leben und etwas Randale aus.
+19. Notration: Bei tiefem Leben ist die direkte Heilung ohne Wartezeit da und legt Deckung vor.
+20. Deckel auf die Schüssel: Ein größerer Anteil der Überheilung wird zu Deckung.
+21. Nebenbei umgerührt: Jeder fünfte Autoangriff heilt dich und gibt Randale.
+22. Am Tisch wird gegessen: Heilst du in deiner Heilzone, bekommst du Randale und einen Aufbaupunkt dazu.
+23. Gründlich, nicht schnell: Die Putzphase nach vollem Vorrat läuft länger.
+24. Nachgelegt: Jeder Kill macht das Nest ohne Wartezeit bereit.
+25. Vom Herd aus: Grundangriffe aus deiner Heilzone legen Deckung an.
+26. Blitzblank: Glückstreffer können die Wartezeit der direkten Heilung verkürzen.
+27. Löffel in der Schürze: Die direkte Heilung lässt sich wirken, ohne stehen zu bleiben.
+28. Restfleck: Ziele mit wenig Leben nehmen mehr Schaden.
+29. Gänsehaut-Finale: Ein Finisher mit drei Punkten ruft die Gans ohne Wartezeit und heilt dich.
+30. Schlussputz: Ein Finisher mit drei Punkten heilt dich, macht die direkte Heilung sofort bereit und verstärkt den Schaden der Putzphase.
