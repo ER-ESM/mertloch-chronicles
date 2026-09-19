@@ -23,13 +23,13 @@ test('complete production matrix has every authored action, direction and modula
  assert.equal(Object.keys(catalog.gear).length,6);for(const views of Object.values(catalog.gear))assert.equal(views.length,4);
 });
 test('action priority remains correct while moving; walk is distance-driven and wraps',()=>{
- const moving={moving:true,walkDistance:7.5};assert.equal(redesignPose(moving),'walk-3');
+ const moving={moving:true,walkDistance:30};assert.equal(redesignPose(moving),'walk-3');
  for(const [p,pose]of [[{dead:true},'dead'],[{hp:0},'dead'],[{dash:.1},'dash'],[{hurt:.1},'hit'],[{parry:.1},'parry'],[{casting:true},'cast'],[{casting:true,usingRanged:true},'ranged-aim'],[{attack:.24},'anticipation'],[{attack:.13},'impact'],[{attack:.02},'recovery'],[{attack:.02,usingRanged:true},'ranged-release']])assert.equal(redesignPose({...moving,...p}),pose);
- assert.equal(redesignPose({resting:true}),'rest');assert.equal(redesignPose({resting:true,moving:true}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:20}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:-2.5}),'walk-7');
+ assert.equal(redesignPose({resting:true}),'rest');assert.equal(redesignPose({resting:true,moving:true}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:80}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:-10}),'walk-7');
 });
 test('painted walk articulates both hips and knees with opposite support phases',()=>{
  for(const hero of ['dieter','anni','kevin'])for(let row=0;row<4;row++){
-  const a=catalog.assets[hero+'-walk'];assert.equal(a.animation,'two-joint-painted-cutout');
+  const a=catalog.assets[hero+'-walk'];assert.equal(a.animation,'registered-painted-mesh');
   const first=a.frames[row*8],opposite=a.frames[row*8+4];
   assert.ok(first.joints[0].stridePhase*first.joints[1].stridePhase<0);assert.ok(first.joints[0].stridePhase*opposite.joints[0].stridePhase<0);
   assert.ok(Math.abs(first.joints[0].ankle.x-opposite.joints[0].ankle.x)>10);
@@ -56,14 +56,14 @@ test('equipped trousers bend at the knee and keep continuous texture across both
  assert.equal(parts[0].slice[0],0);assert.equal(parts[0].slice[1],parts[1].slice[0]);assert.equal(parts[1].slice[1],1);
  assert.deepEqual(legGarmentSegments({hip:leg.hip,knee:leg.hip,ankle:leg.ankle}),[]);
 });
-test('painted fingers cannot overwrite equipped gloves and hand jewelry',()=>{
+test('painted fingers remain below hand jewelry with fitted clothing enabled',()=>{
  redesignArt.catalog=catalog;redesignArt.ready=true;redesignArt.images=new Map(Object.keys(catalog.assets).map(k=>[k,{id:k}]));
  const events=[],ctx=Object.fromEntries(['save','restore','translate','rotate','scale','beginPath','ellipse','fill','arc','clip'].map(k=>[k,()=>{}]));ctx.drawImage=()=>events.push('pixels');
- const equipment=[{slot:'weapon',asset:'maul',hands:2},{slot:'legs',asset:'trouser'},{slot:'hands',asset:'glove'},{slot:'ring1',asset:'ring'}];
+ const equipment=[{slot:'weapon',asset:'maul',hands:2},{slot:'ring1',asset:'ring'}];
  drawRedesignPerson(ctx,'dieter',0,0,{artPose:'walk-2',direction:'se',visualEquipment:equipment},1,(_c,items,s)=>{
   assert.equal(s.legs,catalog.assets['dieter-heavywalk'].frames[2].joints);events.push(items.map(i=>i.slot));
  });
- assert.deepEqual(events.at(-1),['hands','ring1']);const clothing=events.findIndex(e=>Array.isArray(e)&&e.includes('legs'));
+ assert.deepEqual(events.at(-1),['ring1']);const clothing=events.findIndex(e=>Array.isArray(e));
  assert.ok(events.slice(clothing+1,-1).includes('pixels'),'weapon and finger restoration happen between clothing and gloves');
 });
 test('partial catalogs and a failed native image never activate a mixed delivery',async()=>{

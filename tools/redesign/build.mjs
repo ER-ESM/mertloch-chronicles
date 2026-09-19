@@ -6,6 +6,7 @@ import {segment} from '../sprite-pipeline/segment.mjs';
 import {resample} from '../sprite-pipeline/precision-resample.mjs';
 import {bodyAnchor} from '../sprite-pipeline/build-walk.mjs';
 import {rigWalk,WALK_RIG} from './walk-rig.mjs';
+import {wearMasks} from './wear-masks.mjs';
 
 const root=new URL('../../',import.meta.url),base='assets/redesign/';
 export const DIRECTIONS=['se','sw','ne','nw'];
@@ -99,7 +100,7 @@ export function buildRedesign({partial=false}={}){
    const authored=registration.sockets[job.id]?.[i];if(authored){sockets.main={x:box.x+box.w*authored[0],y:box.y+box.h*authored[1]};sockets.off={x:box.x+box.w*authored[2],y:box.y+box.h*authored[3]};sockets.mainAngle=Math.atan2(sockets.off.y-sockets.main.y,sockets.off.x-sockets.main.x)-(sockets.west?-.85:-2.30);}
    blit(frame,sheet,{x:0,y:0,w:size,h:size},{x,y});blit(big,detail,{x:0,y:0,w:size*2,h:size*2},{x:x*2,y:y*2});
    blit(garmentMask(big,bounds(big),job.hero,Math.floor(i/job.cols),pose),cloth,{x:0,y:0,w:384,h:384},{x:x*2,y:y*2});
-   frames.push({x,y,pose,direction:DIRECTIONS[Math.floor(i/job.cols)],sourceBounds:b,bounds:box,sockets,clothRuns:maskRuns(garmentMask(frame,box,job.hero,Math.floor(i/job.cols),pose)),hash:hash(frame.data)});
+   frames.push({x,y,pose,direction:DIRECTIONS[Math.floor(i/job.cols)],sourceBounds:b,bounds:box,sockets,wearRuns:wearMasks(frame,sockets,job.hero),clothRuns:maskRuns(garmentMask(frame,box,job.hero,Math.floor(i/job.cols),pose)),hash:hash(frame.data)});
   }
   const path=base+'runtime/'+job.id+'.png',detailPath=base+'runtime/'+job.id+'-detail.png',data=encodePng(sheet);files.set(path,data);files.set(detailPath,encodePng(detail));
   const clothPath=base+'runtime/'+job.id+'-cloth.png';files.set(clothPath,encodePng(cloth));
@@ -111,17 +112,17 @@ export function buildRedesign({partial=false}={}){
   for(let row=0;row<4;row++){
    const source=surface(384,384),idle=poses.frames[row*poses.columns.length];blit(original,source,{x:idle.x*2,y:idle.y*2,w:384,h:384},{x:0,y:0});
    for(let column=0;column<8;column++){
-    const rig=rigWalk(source,column,row),big=rig.image,frame=surface(192,192);resample(big,frame,{x:0,y:0,w:384,h:384},{x:0,y:0},.5);
+    const rig=rigWalk(source,column,row,{hero,heavy,sockets:idle.sockets}),big=rig.image,frame=surface(192,192);resample(big,frame,{x:0,y:0,w:384,h:384},{x:0,y:0},.5);
     const x=column*192,y=row*192,box=bounds(frame),sockets=structuredClone(idle.sockets);
-    for(const key of ['main','off','head','torso','waist'])sockets[key].y+=rig.bodyOffset;
-    sockets.shoulders.forEach(p=>p.y+=rig.bodyOffset);sockets.feet=rig.joints.map(j=>({...j.ankle,angle:j.footAngle}));
+    for(const key of ['main','off','head','torso','waist'])Object.assign(sockets[key],rig.bodyTransform(sockets[key]));
+    sockets.shoulders.forEach(p=>Object.assign(p,rig.bodyTransform(p)));sockets.feet=rig.joints.map(j=>({...j.ankle,angle:j.footAngle}));
     blit(frame,sheet,{x:0,y:0,w:192,h:192},{x,y});blit(big,detail,{x:0,y:0,w:384,h:384},{x:x*2,y:y*2});blit(garmentMask(big,bounds(big),hero,row,'walk'),cloth,{x:0,y:0,w:384,h:384},{x:x*2,y:y*2});
-    frames.push({x,y,pose:'walk-'+column,direction:DIRECTIONS[row],bounds:box,sockets,clothRuns:maskRuns(garmentMask(frame,box,hero,row,'walk')),joints:rig.joints,legOrder:rig.legOrder,hash:hash(frame.data)});
+    frames.push({x,y,pose:'walk-'+column,direction:DIRECTIONS[row],bounds:box,sockets,wearRuns:{...wearMasks(frame,sockets,hero,rig.joints),...rig.wearRuns},clothRuns:maskRuns(garmentMask(frame,box,hero,row,'walk')),joints:rig.joints,legOrder:rig.legOrder,hash:hash(frame.data)});
    }
   }
   const state=heavy?'heavywalk':'walk',id=hero+'-'+state,path=base+'runtime/'+id+'.png',detailPath=base+'runtime/'+id+'-detail.png',clothPath=base+'runtime/'+id+'-cloth.png',data=encodePng(sheet);
   files.set(path,data);files.set(detailPath,encodePng(detail));files.set(clothPath,encodePng(cloth));
-  catalog.assets[id]={hero,state,path,detailPath,clothPath,frameSize:192,pivot:catalog.pivot,columns:COLUMNS.walk,nativeHeight:104,worldHeight:26,source:poses.source,sourceHash:poses.sourceHash,hash:hash(data),sourceHeight:poses.sourceHeight,sourceScale:poses.sourceScale,animation:'two-joint-painted-cutout',rig:WALK_RIG,frames};
+  catalog.assets[id]={hero,state,path,detailPath,clothPath,frameSize:192,pivot:catalog.pivot,columns:COLUMNS.walk,nativeHeight:104,worldHeight:26,source:poses.source,sourceHash:poses.sourceHash,hash:hash(data),sourceHeight:poses.sourceHeight,sourceScale:poses.sourceScale,animation:'registered-painted-mesh',rig:WALK_RIG,frames};
  }
  const gearFile=new URL(base+'sources/theme-gear.png',root);
  if(existsSync(gearFile)){
