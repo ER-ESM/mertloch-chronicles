@@ -606,3 +606,4 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .online-chat-form input{flex:1;min-width:0;padding:5px 8px;border:1px solid var(--kraft-2);border-radius:8px;background:#0b1216d0;color:var(--cream);font:inherit}
 .online-chat-channel{padding:4px 8px;border:1px solid var(--kraft-2);border-radius:8px;background:#0b1216d0;color:var(--kraft);font:inherit;cursor:pointer}
 .touch-mode .online-chat{top:150px;width:min(300px,56vw);font-size:12px}
+.online-chat-login{pointer-events:auto;font-size:12px;padding:6px 10px}
