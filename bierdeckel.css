@@ -596,3 +596,13 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .online-message{min-height:1em;font-size:12px;margin:6px 0 0}.online-message.bad{color:#f0b0a0}
 .online-board{padding-left:20px;margin:4px 0 10px}.online-board li{margin:2px 0}
 .online-status,.online-off{font-size:12px;color:var(--kraft)}
+
+/* Online-Chat (online.js): unten links über der Welt, Zeilen verblassen nach 30 s, Enter öffnet die Eingabe */
+.online-chat{position:absolute;left:12px;top:250px;z-index:6;width:min(360px,60vw);pointer-events:none;font-size:13px;line-height:1.3}
+.online-chat-log p{margin:1px 0;padding:1px 6px;border-radius:6px;background:#0b1216a6;color:var(--cream);width:fit-content;max-width:100%;overflow-wrap:anywhere;text-shadow:0 1px 2px #000}
+.online-chat-log p.world b{color:#ffd37a}.online-chat-log p.say b{color:#bfe0ff}.online-chat-log p.system{color:var(--kraft);font-style:italic}
+.online-chat-form{display:flex;gap:4px;margin-top:4px;pointer-events:auto;opacity:.35;transition:opacity .15s}
+.online-chat.typing .online-chat-form,.online-chat-form:hover{opacity:1}
+.online-chat-form input{flex:1;min-width:0;padding:5px 8px;border:1px solid var(--kraft-2);border-radius:8px;background:#0b1216d0;color:var(--cream);font:inherit}
+.online-chat-channel{padding:4px 8px;border:1px solid var(--kraft-2);border-radius:8px;background:#0b1216d0;color:var(--kraft);font:inherit;cursor:pointer}
+.touch-mode .online-chat{top:150px;width:min(300px,56vw);font-size:12px}

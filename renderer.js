@@ -82,7 +82,7 @@ export class Renderer {
       else if(item.type==='hub'){drawHub(c,e,time);}
       else if(item.type==='occupiedCamp'){drawOccupiedCamp(c,e,time,!g.enemies.some(m=>m.campId===e.id&&m.hp>0));}
       else if(item.type==='clanCamp'){drawClanCamp(c,w,time);}
-      else if(item.type==='other'){const k=Math.min(1,(performance.now()-(e.at||0))/2000),ox=e.fromX+(e.x-e.fromX)*k,oy=e.fromY+(e.y-e.fromY)*k;c.globalAlpha=.9;drawHero(c,ox,oy,time,{facing:e.facing||1,classId:e.classId,moving:e.moving&&k<1,walkDistance:e.moving?time*48:0});c.globalAlpha=1;label(c,e.name+' · '+e.level,ox,oy-36,'#bfe0ff',7);}
+      else if(item.type==='other'){const k=Math.min(1,(performance.now()-(e.at||0))/(e.lerp||2000)),ox=e.fromX+(e.x-e.fromX)*k,oy=e.fromY+(e.y-e.fromY)*k;c.globalAlpha=.9;drawHero(c,ox,oy,time,{facing:e.facing||1,classId:e.classId,moving:e.moving,walkDistance:e.moving?time*48:0});c.globalAlpha=1;label(c,e.name+' · '+e.level,ox,oy-36,'#bfe0ff',7);}
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
       else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,{...p,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,w.rules.heroHeight/33);}
