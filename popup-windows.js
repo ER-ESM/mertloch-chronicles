@@ -4,7 +4,7 @@ import {PANEL_UI as UI,GAME_MENU_UI as MENU,SHOP_UI} from './content/index.js';
 import {touchPopupBounds} from './popup-layout.js';
 const titles={shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:'Figur',activity:'Anlagenprüfung',bag:'Rucksack',person:'Figur',book:'Kniffe',quest:'Aufträge',base:'Bude',map:'Karte',menu:MENU.title,clan:'Figur',guide:'Hilfe',admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
 const widths={
-shop:650,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:700,activity:430,bag:560,person:700,book:700,quest:640,base:640,map:760,menu:320,clan:700,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
+shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:700,activity:430,bag:560,person:700,book:700,quest:640,base:640,map:760,menu:320,clan:700,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 // Buchfenster wachsen mit dem Bildschirm (MMO-Vorbild: Charakter- und Talentfenster füllen ein Drittel bis die Hälfte), nie unter 520 px am Desktop.
 const widthFor=id=>{const base=widths[id]||440;if(!isBook(id)||innerWidth<700)return base;return Math.min(base,Math.max(520,Math.round(innerWidth*.44)));}
 ;
@@ -36,7 +36,7 @@ export class PopupWindows{
   if(!this.safeProbe){this.safeProbe=document.createElement('div');this.safeProbe.style.cssText='position:fixed;inset:0;visibility:hidden;pointer-events:none;padding:var(--safe-top,0px) var(--safe-right,0px) var(--safe-bottom,0px) var(--safe-left,0px)';this.root.append(this.safeProbe);}
   const css=getComputedStyle(this.safeProbe),safe=Object.fromEntries(['Top','Right','Bottom','Left'].map(side=>[side.toLowerCase(),parseFloat(css['padding'+side])||0]));
   const controls=[...document.querySelectorAll('#touchStick,#touchActions,#touchUtility')];for(const control of controls)if(this.controlObserver&&!this.observedControls.has(control)){this.observedControls.add(control);this.controlObserver.observe(control);}
-  const r=touchPopupBounds({width:innerWidth,height:innerHeight,safe,controls:controls.map(c=>c.getBoundingClientRect()),preferredWidth:widths[w.id]||360,fill:CHILD.has(w.id)});
+  const r=touchPopupBounds({width:innerWidth,height:innerHeight,safe,controls:controls.map(c=>c.getBoundingClientRect()),preferredWidth:widths[w.id]||360,fill:CHILD.has(w.id)||w.id==='shop',topInset:w.id==='shop'?12:undefined});
   Object.assign(el.style,{width:r.width+'px',maxWidth:r.width+'px',minWidth:'0px',maxHeight:r.maxHeight+'px',left:r.left+'px',top:r.top+'px'});return;
  }el.style.maxHeight='';el.style.minWidth='';el.style.maxWidth=Math.max(240,innerWidth-18)+'px';if(isBook(w.id))el.style.width=Math.min(widthFor(w.id),innerWidth-18)+'px';el.style.left=Math.max(5,Math.min(el.offsetLeft,innerWidth-el.offsetWidth-5))+'px';el.style.top=Math.max(5,Math.min(el.offsetTop,Math.max(5,innerHeight-150-el.offsetHeight)))+'px';}
  /** Einklappen gibt es nicht mehr; bleibt als Leerlauf für ältere Aufrufer. */

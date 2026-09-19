@@ -1,5 +1,5 @@
 import {shopPanel} from './shop-ui.js';
-import {shopUnavailable,merchantPoint,merchantActorPoint,salePrice} from './shop.js';
+import {shopUnavailable,merchantPoint,merchantActorPoint,sellableCount} from './shop.js';
 import {SHOP_UI,SHOP_RULES} from './content/index.js';
 import {updateClassHud} from './class-hud.js';
 import {loadE32WorldArt} from './e32-world-art.js';
@@ -99,17 +99,20 @@ function showLoot(id){const bag=game.openLoot(id);if(bag){selectedLootId=id;open
 function remapHint(text){const keys={'1':'strike','2':'mark','3':'burst','4':'interrupt','5':'buff','E':'parry','LEER':'dash','Q':'heal'};if(translator.active())return translator.textWith(text,key=>keys[key]||null);return text.replace(/\[(1|2|3|4|5|E|LEER|Q)\]/g,(_,key)=>'['+keyFor(game,keys[key])+']');}
 function showBook(){showCharacter(PANEL_UI.skills);buildActions();}
 function showTalents(){showCharacter(PANEL_UI.talents);}
-let shopState={tab:'buy',pending:null};
+let shopState={tab:'buy',selected:null};
 function renderShop(){
- const focused=document.activeElement,focusId=focused?.dataset.shopId,focusTab=focused?.dataset.shopTab;
+ const old=popups.get('shop'),scroll=Object.fromEntries([...(old?.body.querySelectorAll('[data-shop-scroll]')||[])].map(e=>[e.dataset.shopScroll,e.scrollTop]));
+ const focused=document.activeElement,focusId=focused?.dataset.shopId,focusTab=focused?.dataset.shopTab,focusSlot=focused?.dataset.shopSlot;
  const w=openModal(shopPanel(game,shopState),false,'shop');paintRpg();
  w.el.onkeydown=e=>{if(e.key==='Escape')return;e.stopPropagation();if(e.key==='Tab'){const controls=[...w.el.querySelectorAll('button,input')].filter(n=>!n.disabled&&n.getClientRects().length),first=controls[0],last=controls.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}};
- w.body.querySelectorAll('[data-person-art]').forEach(c=>paintPersonPortrait(c,c.dataset.personArt));
- if(shopState.pending){w.body.scrollTop=0;w.body.querySelector('[data-shop-confirm]')?.focus({preventScroll:true});}
- else if(focusId||focusTab){[...w.body.querySelectorAll('button')].find(b=>focusId?b.dataset.shopId===focusId:b.dataset.shopTab===focusTab)?.focus({preventScroll:true});}
+ w.body.querySelectorAll('[data-shop-scroll]').forEach(e=>e.scrollTop=scroll[e.dataset.shopScroll]||0);
+ const buttons=[...w.body.querySelectorAll('button')],next=buttons.find(b=>focusSlot!==undefined?b.dataset.shopSlot===focusSlot:focusId?b.dataset.shopId===focusId:focusTab?b.dataset.shopTab===focusTab:false);
+ if(focusSlot!==undefined||focusId||focusTab)(next||w.body.querySelector('[data-shop-tab]'))?.focus({preventScroll:true});
  return w;
 }
-function showShop(){const reason=shopUnavailable(game);if(reason){toast(reason);return;}game.stopAuto();game.keys.clear();game.moveTo=null;game.path=[];mobile?.stop();shopState={tab:'buy',pending:null};renderShop().body.querySelector('[data-shop-tab]')?.focus({preventScroll:true});}
+function showShop(){const reason=shopUnavailable(game);if(reason){toast(reason);return;}game.stopAuto();game.keys.clear();game.moveTo=null;game.path=[];mobile?.stop();shopState={tab:'buy',selected:null};renderShop().body.querySelector('[data-shop-tab]')?.focus({preventScroll:true});}
+function sellShopSlot(index){const entry=game.rpg.inventory[index];if(!entry)return;game.sellItem(entry.id,Math.min(entry.count,sellableCount(game,entry.id)));shopState.selected=null;events();if(popups.isOpen('shop'))renderShop();}
+function tradeShop(button){if(!button||button.disabled)return;const d=button.dataset,n=Number(button.closest('[data-shop-row]').querySelector('input')?.value||1);if(d.shopTrade==='buy')game.buyItem(d.shopId,n);else game.buybackItem(Number(d.shopToken));events();if(popups.isOpen('shop'))renderShop();}
 let lastTab='person',clanPick=null;
 function selectTab(w,label){if(!label||!w)return;const b=[...w.el.querySelectorAll('.panel-tabs [role="tab"]')].find(x=>x.textContent===label);if(b){if(b.getAttribute('aria-selected')!=='true')b.click();return;}const section=w.body.querySelector(`[data-section="${CSS.escape(label)}"]`);if(section)requestAnimationFrame(()=>section.scrollIntoView({block:'start'}));}
 function showReward(id){openModal(rewardConversationHeader(game,id)+rewardPanel(game,id),false,'dialog');paintRpg();save();}
@@ -240,14 +243,12 @@ async function init(){
 $('#adminButton').onclick=()=>game&&showAdmin();
 modal.addEventListener('input',e=>{const input=e.target.closest('[data-shop-quantity]');if(!input)return;const row=input.closest('[data-shop-row]'),button=row.querySelector('[data-shop-trade]'),n=Number(input.value),valid=Number.isInteger(n)&&n>=1&&n<=Number(input.max);row.querySelector('[data-shop-total]').textContent=valid?n*Number(button.dataset.shopPrice):'—';button.disabled=!valid||(button.dataset.shopTrade==='buy'&&game.rpg.coins<n*Number(button.dataset.shopPrice));});
 modal.addEventListener('click',e=>{const b=e.target.closest('.popup-shop button');if(!b)return;const d=b.dataset;
- if(d.shopTab){shopState={tab:d.shopTab,pending:null};renderShop();return;}
- if('shopCancel' in d){shopState.pending=null;renderShop();return;}
- if('shopConfirm' in d){const pending=shopState.pending;shopState.pending=null;if(pending)game.sellItem(pending.id,pending.count);events();if(popups.isOpen('shop'))renderShop();return;}
- if(d.shopTrade){const n=Number(b.closest('[data-shop-row]').querySelector('input')?.value||1);
-  if(d.shopTrade==='sell'){if(!Number.isInteger(n)||n<1||n>SHOP_RULES.maxQuantity)return;shopState.pending={id:d.shopId,count:n,total:salePrice(d.shopId)*n};renderShop();return;}
-  if(d.shopTrade==='buy')game.buyItem(d.shopId,n);else game.buybackItem(Number(d.shopToken));events();if(popups.isOpen('shop'))renderShop();
- }
+ if(d.shopTab){shopState.tab=d.shopTab;renderShop();return;}
+ if(d.shopSlot!==undefined){if(document.body.classList.contains('touch-mode')||e.detail===0)sellShopSlot(Number(d.shopSlot));else{shopState.selected=Number(d.shopSlot);renderShop();}return;}
+ if(d.shopSellSelected!==undefined){sellShopSlot(Number(d.shopSellSelected));return;}
+ if(d.shopTrade)tradeShop(b);
 });
+modal.addEventListener('contextmenu',e=>{const shop=e.target.closest('.popup-shop');if(!shop)return;e.preventDefault();const slot=e.target.closest('[data-shop-slot]');if(slot){sellShopSlot(Number(slot.dataset.shopSlot));return;}tradeShop(e.target.closest('[data-shop-row]')?.querySelector('[data-shop-trade]'));});
 modal.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
  if('shopFind' in d){const point=merchantPoint(game);if(point)showMap({id:'shop:kalle',title:SHOP_UI.title,point,detail:SHOP_UI.mapDetail});return;}
  if(d.barAdd){openModal('<h2>'+ITEMS[d.barAdd].name+'</h2><p>Platz auf der Leiste wählen.</p><div class="bar-picker">'+game.bar().map(slot=>'<button class="outline-button" data-bar-bind="'+slot.index+'" data-bar-bind-item="'+d.barAdd+'"><kbd>'+slot.key+'</kbd>'+(slot.kind==='empty'?'frei':slot.name)+'</button>').join('')+'</div>',false,'detail');return;}

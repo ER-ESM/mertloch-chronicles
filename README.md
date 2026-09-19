@@ -53,7 +53,7 @@ Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuel
 Nach der Hofprobe findest du **Kalles Kiosk** auf der Karte unter **Läden**; im Rucksack führt „Kalles Kiosk auf der Karte“ direkt dorthin. Am Vorplatz öffnet **F** beziehungsweise mobil **Aktion** den Laden. Kalle lässt sich auch anklicken oder antippen.
 
 - **Kaufen:** Brezel, Konterwasser, Kaltgetränk und Currywurst gegen Pfandmarken, mit Mengenwahl und Stufenanforderung. Bei zu wenig Platz oder Geld wird nichts abgezogen.
-- **Verkaufen:** Material, Verpflegung und abgelegte Ausrüstung. Menge und Erlös vor dem Bestätigen prüfen; benötigtes Material für den laufenden Hauptauftrag und einzigartige Dorflegenden bleiben geschützt.
+- **Verkaufen:** Der Rucksack steht direkt neben dem Händler. Rechtsklick auf einen Gegenstand verkauft den Stapel sofort, ohne Rückfrage; mobil genügt Antippen. Linksklick am Desktop zeigt Werte und Erlös, Enter verkauft den fokussierten Stapel. Benötigtes Hauptauftragsmaterial und Dorflegenden bleiben geschützt.
 - **Rückkauf:** Die letzten zwölf Verkäufe zum gleichen Preis zurückholen, auch nach Neuladen. Ältere Einträge fallen bei weiteren Verkäufen heraus.
 
 Der Handel endet beim Weglaufen oder Kampfbeginn. [Regeln und Prüfbericht](docs/HAENDLER-2026-09-19.md). Charaktererstellung und Handwerk bleiben zurückgestellt.
