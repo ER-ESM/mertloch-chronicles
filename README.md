@@ -36,15 +36,15 @@ Wähle deine Clanfigur und sprich am Treffpunkt mit **Ida**. Die Hofprobe führt
 | Kniffe einsetzen | Belegte Aktionsplätze mit 1–0; offensive Kniffe starten auch den Autoangriff | Kniffbutton antippen; lange halten zeigt die Erklärung |
 | Interagieren | F | „Aktion“ |
 | Ausweichen / Unterbrechen | Leertaste / Q | Stiefel- / Handbutton |
-| Figur / Rucksack / Aufträge / Karte | C / I / J / M | „Menü“, dann den Reiter wählen |
+| Figur / Rucksack / Aufträge / Karte | C / I / J / M | „Menü“ → „Clanbuch“, dann den Reiter wählen |
 | Kniffe / Talente / Hilfe | K / N / H | Unter Figur bzw. über das Hilfe-Symbol |
 | Kampfstatistik | Standardmäßig sichtbar; V oder HUD-Button zum Ein-/Ausblenden | Balken-Knopf unter dem Menü; auch Figur → Werte → Kampfstatistik |
-| UI bearbeiten | F10 oder Hilfe → Einstellungen → UI bearbeiten | Menü → Hilfe → Einstellungen → UI bearbeiten |
-| Schließen / Angriff stoppen | Esc schließt zuerst offene Fenster und beendet danach den Autoangriff | × schließt das Clanbuch; Angriffsbutton stoppt den Angriff |
+| Spielmenü / UI bearbeiten | Esc → UI bearbeiten; auch P oder der Menüknopf | Menü → UI bearbeiten |
+| Schließen / Angriff stoppen | Esc schließt zuerst Fenster bzw. bricht Zielen/Zaubern ab; aus der Welt öffnet es das Spielmenü und beendet den Autoangriff | × schließt das Clanbuch; Angriffsbutton stoppt den Angriff |
 
 Die Aktionsleiste ist frei belegbar. Unter **Hilfe → Einstellungen → Steuerung & Touchbuttons** lassen sich die Touchbelegung, Buttongröße und Joystickseite einstellen. Geöffnete Menüs halten den Kampf nicht an.
 
-Im **UI-Bearbeitungsmodus** pausiert die Welt. Ziehe die blauen Rahmen, wähle die Größe und speichere dein Layout. **Abbrechen / Esc / F10** verwirft die offenen Änderungen. Auf Touch öffnet **Optionen** die Einstellungen; das Bedienfeld selbst lässt sich an seiner Überschrift verschieben. Raster, feines Verschieben, Layoutkopien und Zurücksetzen sind eingebaut. Die Layouts werden lokal im Browser gespeichert. Leere Effektleisten und die Zauberleiste erscheinen zum Platzieren als Rahmen. [Bedienung und Prüfbericht](docs/HUD-EDITOR-2026-09-18.md).
+Im **UI-Bearbeitungsmodus** pausiert die Welt. Ziehe die blauen Rahmen, wähle die Größe und speichere dein Layout. **Abbrechen / Esc** verwirft die offenen Änderungen. Auf Touch öffnet **Optionen** die Einstellungen; das Bedienfeld selbst lässt sich an seiner Überschrift verschieben. Raster, feines Verschieben, Layoutkopien und Zurücksetzen sind eingebaut. Die Layouts werden lokal im Browser gespeichert. Leere Effektleisten und die Zauberleiste erscheinen zum Platzieren als Rahmen. [Bedienung und Prüfbericht](docs/HUD-EDITOR-2026-09-18.md).
 
 Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuellem/letztem Kampf, einzelnen vergangenen Kämpfen und der gesamten Sitzung. Wähle eine Figur für ihre Fähigkeiten und einen Fähigkeitsbalken für Treffer, Durchschnitt, Spitzenwert, kritische Treffer und Überheilung bzw. Überschaden. Auf dem Desktop lässt sich das Fenster an der Titelleiste verschieben; auf Touch passt es sich dem freien Bereich zwischen bzw. über den Kampfbuttons an. Die Statistik läuft auch bei eingeklappter Anzeige weiter und beginnt nach dem Neuladen neu. [Messregeln und Prüfbericht](docs/KAMPFSTATISTIK-2026-09-18.md).
 

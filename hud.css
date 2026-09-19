@@ -35,3 +35,8 @@
 .touch-mode .hud-toolbar{left:calc(12px + var(--safe-left));right:calc(12px + var(--safe-right));top:auto;bottom:calc(12px + var(--safe-bottom));width:auto;max-width:none;max-height:calc(100% - 24px - var(--safe-top) - var(--safe-bottom));transform:none}
 .touch-mode .hud-form{max-height:45dvh}.touch-mode .hud-nudge{grid-column:1/-1}.touch-mode .hud-toolbar header{padding:6px 8px}.touch-mode .hud-toolbar footer{padding:8px}.touch-mode .hud-toolbar strong{font-size:13px}
 @media(max-width:370px){.touch-mode .hud-form{grid-template-columns:1fr}.touch-mode .hud-form>label{grid-column:1}.touch-mode .hud-toolbar header small{font-size:10px}}
+
+/* Compact Esc menu, shared by keyboard, desktop menu button and touch menu button. */
+.popup-menu .game-menu-actions{display:grid;grid-template-columns:1fr;gap:8px}
+.popup-menu .game-menu-actions button{min-height:44px;width:100%;padding:10px;font-size:13px;overflow-wrap:anywhere}
+@media(orientation:landscape){.touch-mode .popup-menu .game-menu-actions{grid-template-columns:1fr 1fr}.touch-mode .popup-menu [data-close]{grid-column:1/-1}}

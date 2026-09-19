@@ -34,7 +34,7 @@ test('translateText: Hilfe-, Glossar- und Tooltip-Wendungen (Iteration 4)',()=>{
  assert.equal(translateText('Tab wählt nahe Gegner; Shift + Tab geht zurück.',ctx),'Ziel-Knopf wählt nahe Gegner.');
  assert.equal(translateText('Der Angriffsbutton schaltet ein/aus; Rechtsklick auf einen Gegner startet, Linksklick und Tab wählen nur aus. Esc beendet den Angriff nach offenen Fenstern.',ctx),'Der Angriffsbutton schaltet ein/aus; Antippen wählt einen Gegner nur aus; der Angriffsknopf startet. Der Angriffsknopf schaltet ihn wieder aus.');
  assert.equal(translateText('LEER weicht aus, Q unterbricht – beide unabhängig von der Leiste.',ctx),'Stiefel weicht aus, Hand unterbricht – beide unabhängig von der Leiste.');
- assert.equal(translateText('C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt.',ctx),'Der Menü-Knopf öffnet das Clanbuch; × schließt.');
+ assert.equal(translateText('C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt.',ctx),'Menü → Clanbuch öffnet die Reiter; × schließt.');
  assert.equal(translateText('Shift über einem Tooltip zeigt die Details: warum das Ding taugt.',ctx),'Antippen zeigt die Details: warum das Ding taugt.');
  assert.equal(translateText('Shift: Details',ctx),'Antippen: Details');
  assert.equal(translateText('Der Finisher auf Taste 3: verbraucht alle Aufbaupunkte.',ctx),'Der Finisher auf Knopf 3: verbraucht alle Aufbaupunkte.');

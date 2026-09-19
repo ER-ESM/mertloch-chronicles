@@ -92,7 +92,6 @@ export function mountHudEditor(root,getGame,api={}){
  layer.addEventListener('change',e=>{if(e.target.hasAttribute('data-hud-profile')){draft.active=e.target.value;controls();apply();}if(e.target.hasAttribute('data-hud-element'))pick(e.target.value);if(e.target.hasAttribute('data-hud-grid')){draft.grid=e.target.checked;paintHandles();}if(e.target.hasAttribute('data-hud-snap'))draft.snap=e.target.checked;});
  document.addEventListener('click',e=>{if(e.target.closest('[data-hud-open]'))open();});
  document.addEventListener('keydown',e=>{
-  if(e.key==='F10'&&!e.ctrlKey&&!e.altKey&&!e.metaKey){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)editing?close():open();return;}
   if(!editing)return;e.stopImmediatePropagation();
   if(e.key==='Escape'){e.preventDefault();close();return;}
   if(e.key==='Tab'){e.preventDefault();const list=[...layer.querySelectorAll('button,input,select')].filter(el=>!el.disabled&&el.getClientRects().length),i=list.indexOf(document.activeElement);list[(i+(e.shiftKey?-1:1)+list.length)%list.length]?.focus();return;}
