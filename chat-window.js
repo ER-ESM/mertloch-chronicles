@@ -39,15 +39,9 @@ export function mountChatWindow(root,options={}){
  // Liegt das Fenster im UI-Editor-Layout (data-hud-custom), gehört die Lage dem Layout: Ziehen meldet sie per hud-move dorthin.
  const hudMove=detail=>{if(el.hasAttribute('data-hud-custom'))el.dispatchEvent(new CustomEvent('hud-move',{bubbles:true,detail:{id:'chat',...detail}}));};
  let drag=null;
-<<<<<<< HEAD
- el.querySelector('.chat-tabs').addEventListener('pointerdown',e=>{if(e.target.closest('.chat-gear'))return;drag={dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};});
+ el.querySelector('.chat-tabs').addEventListener('pointerdown',e=>{if(e.target.closest('.chat-gear,.chat-people'))return;drag={dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};});
  el.querySelector('.chat-tabs').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)<5)return;drag.moved=true;e.currentTarget.setPointerCapture(e.pointerId);}settings.x=e.clientX-drag.dx;settings.y=e.clientY-drag.dy;place();hudMove({x:settings.x,y:settings.y});});
  const endDrag=e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved)return;hudMove({x:settings.x,y:settings.y,save:true});settings.x=el.offsetLeft;settings.y=el.offsetTop;persist();};
-=======
- el.querySelector('.chat-tabs').addEventListener('pointerdown',e=>{if(e.target.closest('.chat-gear,.chat-people'))return;drag={dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};});
- el.querySelector('.chat-tabs').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)<5)return;drag.moved=true;e.currentTarget.setPointerCapture(e.pointerId);}settings.x=e.clientX-drag.dx;settings.y=e.clientY-drag.dy;place();});
- const endDrag=e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved)return;settings.x=el.offsetLeft;settings.y=el.offsetTop;persist();};
->>>>>>> b351cc7 (Online Stufe C: geteilte Gegner mit Bedrohung, Gruppen, Fluestern, Spielerliste)
  el.querySelector('.chat-tabs').addEventListener('pointerup',endDrag);el.querySelector('.chat-tabs').addEventListener('pointercancel',endDrag);
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(!el.classList.contains('active')||drag)return;const w=el.offsetWidth,h=el.offsetHeight;if(w>100&&h>80&&(Math.abs(w-settings.w)>2||Math.abs(h-settings.h)>2)){settings.w=w;settings.h=h;persist();}}).observe(el);
  addEventListener('resize',place);
