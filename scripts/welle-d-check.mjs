@@ -143,13 +143,13 @@ try{
  // --- 4. Kill → Beutezeile im Log → Hover zeigt den Gegenstands-Tooltip ---------------------------
  const beute=JSON.parse(await b.evaluate(`(async()=>{const g=window.game;g.settings.autoLoot=true;
   let n=0;for(const e of g.enemies){if(e.hp>0&&!e.ambient&&!e.arena&&n<14){g.kill(e);n++;}}
-  await new Promise(r=>setTimeout(r,700));const log=document.querySelector('#lootLog');
-  return JSON.stringify({kills:n,zeilen:log.children.length,beutelLiegen:g.rpg.loot.length,
-   erste:log.firstElementChild?.dataset.tooltipItem||null,farbe:log.firstElementChild?.querySelector('b')?.className||null});})()`));
+  await new Promise(r=>setTimeout(r,700));const log=[...document.querySelectorAll('#chatWindow .loot-line')];
+  return JSON.stringify({kills:n,zeilen:log.length,beutelLiegen:g.rpg.loot.length,
+   erste:log[0]?.dataset.tooltipItem||null,farbe:log[0]?.querySelector('b')?.className||null});})()`));
  assert.ok(beute.zeilen>0,'Auto-Loot schreibt keine Beutezeile ins Log: '+JSON.stringify(beute));
  assert.equal(beute.beutelLiegen,0,'Bei Auto-Loot bleibt ein Beutel liegen.');
  assert.ok(/^rarity-/.test(beute.farbe||''),'Die Beutezeile trägt keine Seltenheitsfarbe.');
- const beuteTip=JSON.parse(await b.evaluate(`(async()=>{const line=document.querySelector('#lootLog .loot-line');const r=line.getBoundingClientRect();
+ const beuteTip=JSON.parse(await b.evaluate(`(async()=>{const line=document.querySelector('#chatWindow .loot-line');const r=line.getBoundingClientRect();
   line.dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse',clientX:r.x+5,clientY:r.y+5}));
   await new Promise(r=>setTimeout(r,300));const t=document.querySelector('#itemTooltip');
   return JSON.stringify({offen:!t.classList.contains('hidden'),name:t.querySelector('strong')?.textContent||''});})()`));

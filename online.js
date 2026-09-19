@@ -6,7 +6,7 @@
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
 export const onlineEnabled=()=>!!API;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',chatPlaceholder:'Nachricht … (/w für Welt)',channelSay:'Umkreis',channelWorld:'Welt',channelHint:'Kanal wechseln: Umkreis oder ganze Welt',loginPrompt:'Online spielen: anmelden',connecting:'Verbindung zum Dorf wird aufgebaut …',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
+export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
 
 /** Entscheidung beim Abgleich: 'pull' (Server neuer), 'push' (lokal neuer oder Server leer), 'same'. Reine Funktion (Tests). */
 export function decideSync(local,server){
@@ -34,13 +34,13 @@ async function api(path,body,method){
 /** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
 export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':p.inCombat>0?'combat':p.moving?'walk':'idle'};}
 export function mountOnline(host){
- const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,chat:[],channel:'say',chatEl:null,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0};
+ const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;}};
  const g=()=>host.game();
  async function refreshAccount(){try{const d=await api('auth?action=me');state.account=d.account;state.reachable=true;}catch(e){state.reachable=e.code!=='bad-response'&&!(e.status>=500);state.account=state.reachable?state.account:null;}return state.account;}
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
  async function start(){
-  await refreshAccount();mountChat();renderChat();if(!state.account)return;
+  await refreshAccount();renderChat();if(!state.account)return;
   await syncNow(true);startPresence();
  }
  async function syncNow(silent=false){
@@ -62,7 +62,7 @@ export function mountOnline(host){
  }
  // ── Echtzeit (WebSocket /ws): eigene Position 10×/s wenn sie sich ändert, Schnappschüsse der Nachbarn, Chat ──
  const WS_URL=(()=>{const u=new URL('../ws',API);u.protocol=u.protocol==='https:'?'wss:':'ws:';return u.toString();})();
- function startPresence(){stopPresence();state.wanted=true;connect();state.presenceTimer=setInterval(sendPosition,100);mountChat();}
+ function startPresence(){stopPresence();state.wanted=true;connect();state.presenceTimer=setInterval(sendPosition,100);}
  function stopPresence(){state.wanted=false;clearInterval(state.presenceTimer);clearTimeout(state.retry);state.presenceTimer=null;const ws=state.socket;state.socket=null;try{ws?.close();}catch{}state.connected=false;g().others=[];state.others=[];renderChat();}
  function connect(){
   if(!state.wanted||!state.account||state.socket)return;let ws;try{ws=new WebSocket(WS_URL);}catch{return;}state.socket=ws;
@@ -86,28 +86,11 @@ export function mountOnline(host){
   else if(m.t==='chat')pushChat(m);
   else if(m.t==='notice')pushChat({system:true,text:m.text});
  }
- // ── Chat: Zeilen unten links, Enter öffnet das Eingabefeld, /w oder der Knopf wechselt zwischen Umkreis und Welt ──
- function pushChat(m){state.chat.push({...m,shown:Date.now()});if(state.chat.length>60)state.chat.shift();renderChat();}
- function mountChat(){
-  if(state.chatEl||typeof document==='undefined')return;const shell=document.querySelector('#gameShell');if(!shell)return;
-  const el=document.createElement('div');el.className='online-chat';el.innerHTML='<button type="button" class="online-chat-login gold-button" hidden>'+esc(ONLINE_UI.loginPrompt)+'</button><div class="online-chat-log" aria-live="polite"></div><form class="online-chat-form"><button type="button" class="online-chat-channel" title="'+esc(ONLINE_UI.channelHint)+'"></button><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send" aria-label="'+esc(ONLINE_UI.chatPlaceholder)+'" placeholder="'+esc(ONLINE_UI.chatPlaceholder)+'"></form>';
-  shell.appendChild(el);state.chatEl=el;const input=el.querySelector('input'),form=el.querySelector('form');
-  el.querySelector('.online-chat-login').addEventListener('click',()=>host.openModal(card(),'touchhelp'));
-  el.querySelector('.online-chat-channel').addEventListener('click',()=>{state.channel=state.channel==='say'?'world':'say';renderChat();input.focus();});
-  form.addEventListener('submit',e=>{e.preventDefault();let text=input.value.trim();input.value='';
-   if(/^\/w(elt)?\s/i.test(text)){state.channel='world';text=text.replace(/^\/\S+\s+/,'');}else if(/^\/s(agen)?\s/i.test(text)){state.channel='say';text=text.replace(/^\/\S+\s+/,'');}
-   if(text&&state.socket?.readyState===1)state.socket.send(JSON.stringify({t:'chat',ch:state.channel,text}));input.blur();renderChat();});
-  input.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape'){input.value='';input.blur();}});input.addEventListener('keyup',e=>e.stopPropagation());
-  input.addEventListener('focus',()=>{g().keys?.clear?.();el.classList.add('typing');renderChat();});input.addEventListener('blur',()=>{el.classList.remove('typing');renderChat();});
-  document.addEventListener('keydown',e=>{if(e.key!=='Enter'||!state.connected||e.defaultPrevented||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)||host.busy?.())return;e.preventDefault();input.focus();});
-  setInterval(renderChat,2000);
- }
+ // ── Chat: Anzeige und Eingabe gehören dem Chatfenster (chat-window.js); hier nur Zustand und Versand ──
+ function pushChat(m){host.chat?.push('chat',m.system?{scope:'system',text:m.text}:{scope:m.ch==='world'?'world':'say',from:m.from,text:m.text});}
  function renderChat(){
-  const el=state.chatEl;if(!el)return;el.hidden=!state.reachable;el.classList.toggle('signed-out',!state.account);el.querySelector('form').hidden=!state.connected;el.querySelector('.online-chat-login').hidden=!!state.account;
-  if(!state.connected){el.querySelector('.online-chat-log').innerHTML=state.account?'<p class="system">'+esc(ONLINE_UI.connecting)+'</p>':'';return;}
-  const typing=el.classList.contains('typing'),now=Date.now(),lines=state.chat.filter(m=>typing||now-m.shown<30000).slice(typing?-14:-6);
-  el.querySelector('.online-chat-log').innerHTML=lines.map(m=>m.system?'<p class="system">'+esc(m.text)+'</p>':'<p class="'+(m.ch==='world'?'world':'say')+'"><b>'+(m.ch==='world'?'[Welt] ':'')+esc(m.from)+':</b> '+esc(m.text)+'</p>').join('');
-  el.querySelector('.online-chat-channel').textContent=state.channel==='world'?ONLINE_UI.channelWorld:ONLINE_UI.channelSay;
+  host.chat?.setOnline({state:!state.reachable?'off':!state.account?'signedOut':state.connected?'connected':'connecting',
+   onLogin:()=>host.openModal(card(),'touchhelp'),onSend:(ch,text)=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify({t:'chat',ch,text}));}});
  }
  async function submitArena(report){if(!state.account||!report)return;try{if(report.dps>0)await api('leaderboard',{board:'arena-dps',value:Math.round(report.dps),meta:{classId:g().member?.id,spec:g().rpg?.talents?.spec,seconds:Math.round(report.seconds||0)}});}catch{}}
  // ── Oberfläche ──
