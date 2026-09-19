@@ -1,0 +1,30 @@
+# mertloch.esm-consultant.de · Docroot /home/www/Mertloch (deployt als .htaccess durch deploy/Deploy-Mertloch.ps1)
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Manifest und Punktdateien nie ausliefern
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+AddType application/javascript .js .mjs
+AddType application/manifest+json .webmanifest
+AddType application/wasm .wasm
+AddDefaultCharset utf-8
+
+# Spielcode: kurze Frische, damit das PWA-Update greift; Bilder lange
+<FilesMatch "\.(html|js|mjs|css|json|webmanifest)$">
+  Header set Cache-Control "no-cache"
+</FilesMatch>
+<FilesMatch "\.(png|jpg|webp|gif|woff2?|mp3|ogg)$">
+  Header set Cache-Control "public, max-age=604800"
+</FilesMatch>

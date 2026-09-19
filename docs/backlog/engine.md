@@ -1,5 +1,12 @@
 # Backlog · engine
 
+## Händlerauftrag · 2026-09-19
+
+- [x] Kalles Kiosk: Sortiment, Kaufen, bestätigter Verkauf von Material/Verpflegung/abgelegter Ausrüstung, gespeicherter Rückkauf, Kartenroute und Desktop-/Touch-Oberfläche nach E-34. [Umfang und Abnahme](../HAENDLER-2026-09-19.md).
+- [ ] Werkbank/Handwerk und Pfandbon-Bonus bleiben offen; frühere Sammelaufträge „Händler/Handwerk“ sind damit nur im Händlerteil erledigt.
+- Charaktererstellung ist auf Nutzerwunsch zurückgestellt. Die frühere Zurückstellung des Händlers weiter unten ist historisch und durch E-34 aufgehoben.
+
+
 ## Basis-Runde 1–4 · 2026-09-17
 
 - [x] Mentorenplatzierung mit der Weltprüfung vereinheitlicht; Gespräche ohne Ida-Überlagerung erreichbar.

@@ -1,3 +1,4 @@
+import {shopInteraction,buyItem,sellItem,buybackItem} from './shop.js';
 import {emitCombatFx,emitSkillFx} from './combat-fx.js';
 import {createCombatMeter,beginMeterCombat,finishMeterCombat,tickCombatMeter,recordMeterDamage,restoreMeterHealth} from './combat-meter.js';
 import {moveWithCollisions} from './world-collision.js';
@@ -284,11 +285,15 @@ export class Game {
   interaction(){
     const p=this.player,focus=this.questFocus();if(focus)return focus;
     const mentor=this.mentorInteraction();if(mentor)return {kind:'mentor',point:{x:mentor.x,y:mentor.y},id:mentor.id,name:mentor.name,priority:3};
+    const shop=shopInteraction(this);if(shop)return shop;
     const side=this.questInteraction();if(side)return {...side,point:{x:side.point.x,y:side.point.y},priority:4};
     if(this.world.npc&&distance(p,this.world.npc)<TALK_RANGE)return {kind:'npc',point:{x:this.world.npc.x,y:this.world.npc.y},name:this.world.npc.name,priority:5};
     if(this.world.shrine&&distance(p,this.world.shrine)<GATHER_RANGE)return {kind:'shrine',point:{x:this.world.shrine.x,y:this.world.shrine.y},priority:6};
     return null;
   }
+  buyItem(id,count=1){return buyItem(this,id,count);}
+  sellItem(id,count=1){return sellItem(this,id,count);}
+  buybackItem(token){return buybackItem(this,token);}
   /** Rechtsklick startet ausdrücklich; der Angriffsbutton schaltet um, Esc beendet. */
   startAttack(){return !this.dead&&!this.paused&&startAuto(this);}
   stopAuto(){return stopAuto(this);}

@@ -45,6 +45,7 @@ Regeln für dieses Dokument:
 | E-31 | Kampfstatistik für Schaden und Heilung | 2026-09-18 | gilt |
 | E-32 | Klassen-Kernmechaniken und Talentpfade | 2026-09-18 | gilt |
 | E-33 | Bearbeitbares HUD mit Buff- und Debuffleisten | 2026-09-18 | gilt |
+| E-34 | Kalles Kiosk als Dorfladen; Charaktererstellung zurückgestellt | 2026-09-19 | gilt |
 
 ---
 
@@ -354,7 +355,7 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 
 | Frage | Optionen | Empfehlung | Seit |
 |---|---|---|---|
-| Händler und Handwerk (Zweck der Pfandmarken) | ja; nein; später | später — erst wenn ein Playtest Beute ohne Händler langweilig findet; Konzept kommt von Gameplay | 2026-09-11 |
+| Handwerk (Händler umgesetzt nach E-34) | ja; nein; später | später; Händler unabhängig davon nutzbar | 2026-09-19 |
 | Geräteübergreifender Spielstand | nie; Export/Import-Datei; Konto | Export/Import-Datei, kein Konto (E-01) | 2026-09-12 |
 | Online-Betrieb (Konto, gemeinsames Dorf, Koop) | E-01 belassen; nur Konto (Stufe A); bis Koop (Stufe C); MMO | bis Koop, Reihenfolge A → Engine-Refactor → B → C, siehe [ONLINE-MMORPG-VORBEREITUNG-2026-09-19.md](ONLINE-MMORPG-VORBEREITUNG-2026-09-19.md) | 2026-09-19 |
 | Feldgegner ab Stufe 10 trivial | Skalierung in der Engine; Anhebung über `tuning.js`; bewusst lassen | Skalierung in der Engine, Dorfkern fest (`docs/backlog/engine.md`) | 2026-09-17 |
@@ -369,3 +370,14 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 **Konsequenzen.** Keine Änderung an Kampfregeln oder Spielständen. Layoutpräferenzen liegen separat im Browser. Touchflächen werden im Editor nicht unter ihre Standardgröße skaliert; leere Leisten bleiben dort als Rahmen auffindbar. Umsetzung, Grenzen und Prüfungen: [HUD-Editor](HUD-EDITOR-2026-09-18.md).
 
 **Nachtrag 19.09.2026.** Auf Nutzerwunsch ersetzt ein eigenes Spielmenü den Browserkonflikt mit F10: Esc öffnet aus der Welt die Buttons UI bearbeiten, Hilfe, Einstellungen, Clanbuch und Zurück zum Spiel. Offene Fenster, laufendes Zielen oder Zaubern werden mit Esc zunächst geschlossen beziehungsweise abgebrochen. Das Menü beendet den Autoangriff; nur der UI-Editor pausiert die Welt. P, der Desktop-Menüknopf und der mobile Menüknopf öffnen dasselbe Menü. F10 bleibt unbelegt. Tastaturfokus bleibt im Menü, Touchflächen sind mindestens 44 Pixel groß; im mobilen Querformat stehen die Aktionen zweispaltig.
+
+
+## E-34 · Kalles Kiosk als Dorfladen
+
+**Anlass.** Nutzerauftrag vom 19.09.2026: Charaktererstellung zurückstellen, stattdessen passende Händler für Gegenstände planen beziehungsweise bauen (Beispiel Tante-Emma-Laden).
+
+**Entscheidung.** Der vorhandene Kiosk mit Kioskkönig Kalle wird zum Händler. Vier tatsächlich wirksame Verpflegungen werden zu den bestehenden Katalogpreisen und Mindeststufen verkauft. Kalle kauft Material, Verpflegung und abgelegte Ausrüstung zum halben Wert (mindestens eine Pfandmarke). Jeder Verkauf nennt Menge und Erlös und wird bestätigt. Die letzten zwölf Verkäufe bleiben zum gleichen Preis rückkaufbar, auch nach Neuladen. Material für den angenommenen, noch nicht abgegebenen Hauptauftrag wird reserviert. Ausrüstung gibt es weiterhin als Beute; Handwerk bleibt separat.
+
+**Konsequenzen.** Ersetzt die Händler-Zurückstellung aus E-25/E-26 sowie die Einschränkung des alten Händlerentwurfs „kein Ausrüstungsankauf, keine Rückkaufliste“. Rückkaufdaten und referenzierte gewürfelte Gegenstände werden im bestehenden Spielstand mitgespeichert; alte Spielstände erhalten eine leere Liste. Transaktionen prüfen Reichweite, Sichtlinie, Leben, Kampf, Tutorial, Menge, Marken und Kapazität. Kaufen ist vollständig oder wirkungslos. Karte und Rucksack führen zum begehbaren Vorplatz; ein Popup mit Kaufen/Verkaufen/Rückkauf funktioniert auf Desktop und Touch. Die Charaktererstellung bleibt ein zurückgestellter Entwurf. Umsetzung und Grenzen: [Händler](HAENDLER-2026-09-19.md).
+
+Einzigartige Dorflegenden, Questgegenstände und Gegenstände ohne hinterlegten Verkaufswert werden nicht angekauft. Damit entsteht aus fehlenden Preisangaben kein Verkauf wertvoller Unikate zum Mindestpreis.
