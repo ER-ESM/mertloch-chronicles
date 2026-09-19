@@ -69,7 +69,7 @@ try{
   foreach($rel in ($local.Keys | Sort-Object)){ $newManifest[$rel]=$local[$rel] }
   $tmpDir=Join-Path ([IO.Path]::GetTempPath()) ('mertloch-deploy-'+[guid]::NewGuid().ToString('N')); New-Item -ItemType Directory -Path $tmpDir | Out-Null
   $tmpFile=Join-Path $tmpDir $ManifestName
-  try{ [IO.File]::WriteAllText($tmpFile,($newManifest | ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false)); Set-SFTPItem -SessionId $sftp.SessionId -Path $tmpFile -Destination $RemoteRoot -Force } finally { Remove-Item -LiteralPath $tmpDir -Recurse -Force }
+  try{ [IO.File]::WriteAllText($tmpFile,($newManifest | ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false)); Set-SFTPItem -SessionId $sftp.SessionId -Path $tmpFile -Destination $RemoteRoot -Force } finally { if(Test-Path -LiteralPath $tmpFile){ Remove-Item -LiteralPath $tmpFile -Force }; Remove-Item -LiteralPath $tmpDir -Force }
   Write-Host 'Deploy abgeschlossen.' -ForegroundColor Green
 } finally { Remove-SFTPSession -SessionId $sftp.SessionId | Out-Null }
 
