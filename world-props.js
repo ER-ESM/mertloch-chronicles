@@ -184,6 +184,7 @@ export function placeKiosk(w){
    x:p.x,y:p.y,w:K.w,h:K.h,minX:p.x-K.w/2,maxX:p.x+K.w/2,minY:p.y-K.h/2,maxY:p.y+K.h/2,
    junction:{x:junction.x,y:junction.y,roads:junction.roads},facing:front,
    approach,distanceToSpawn:Math.round(distance(p,w.spawn)),clearedTrees,props};
+  const door={x:props[0].x,y:props[0].y+props[0].h/2+14};place.entrance=!w.blocked(door.x,door.y,9)&&w.accessNode(door)?door:approach;
   w.places={...(w.places||{}),kiosk:place};
   if(w.dressingReport)w.dressingReport.kiosk={junctions:junctions.length,rejected:tally,props:props.length};
   return place;

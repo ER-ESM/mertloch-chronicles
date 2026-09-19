@@ -1,3 +1,5 @@
+import {inKiosk,enterKiosk,leaveKiosk,roomInteraction,roomWorld,tickKiosk,savedKiosk} from './kiosk-instance.js';
+import {KIOSK_ROOM,KIOSK_TEXT} from './content/index.js';
 import {shopInteraction,buyItem,sellItem,buybackItem} from './shop.js';
 import {emitCombatFx,emitSkillFx} from './combat-fx.js';
 import {createCombatMeter,beginMeterCombat,finishMeterCombat,tickCombatMeter,recordMeterDamage,restoreMeterHealth} from './combat-meter.js';
@@ -67,7 +69,7 @@ export class Game {
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
     this.campSerial=0;this.populateCamps();
     this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const build of Object.values(this.rpg.talentBuilds))build.learned=build.learned.slice(0,talentPoints(this));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
-    initTutorial(this,saved,options.guidedStart);
+    initTutorial(this,saved,options.guidedStart);if(sameWorld&&saved.instance?.id===KIOSK_ROOM.id)enterKiosk(this,saved.instance);
   }
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
   resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.procState=freshProcState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.hurt=0;this.player.dash=0;this.player.castPose=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
@@ -78,7 +80,7 @@ export class Game {
   toast(text){this.events.push({type:'toast',text});}
   emit(type,data={}){this.events.push({type,...data});}
   /** Am Treffpunkt und nicht im Kampf? Gilt für Clanwechsel und Basisbau. */
-  atHub(){return this.player.inCombat<=0&&distance(this.player,this.world.spawn)<=HUB_RADIUS;}
+  atHub(){return !inKiosk(this)&&this.player.inCombat<=0&&distance(this.player,this.world.spawn)<=HUB_RADIUS;}
   /** Spruch einer Figur: steht im Kampflog und geht als Ereignis `bark` an die UI (Sprechblase). */
   /** Scrolling Combat Text (combat-text.js): eine Zeile mit Icon und Wert; Schwebetexte am Helden fallen weg, wenn der Kampftext an ist. */
   sct(data){this.emit('combat',{member:this.member.id,...data});return this.settings?.sct!==false;}
@@ -103,9 +105,10 @@ export class Game {
   }
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
-  selectNext(reverse=false){const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
-  selectAt(x,y){const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
+  selectNext(reverse=false){if(inKiosk(this))return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
+  selectAt(x,y){if(inKiosk(this))return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false){
+    if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
     if(this.paused||this.dead)return false;
     // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
     if(Number.isInteger(id))id=actionBar(this)[id]??null;
@@ -282,7 +285,10 @@ export class Game {
   }
   /** Rangfolge der Aktionstaste als ein Wert: Auftragsziel, dann Mentor, dann Nebenquest, dann Ida, dann Konterbrunnen.
    *  Reine Zustandsbeschreibung (kind, point, priority, id) – die Beschriftungen baut die UI aus content/. */
+  enterKiosk(){return enterKiosk(this);}
+  leaveKiosk(force=false){return leaveKiosk(this,force);}
   interaction(){
+    if(inKiosk(this))return roomInteraction(this);
     const p=this.player,focus=this.questFocus();if(focus)return focus;
     const mentor=this.mentorInteraction();if(mentor)return {kind:'mentor',point:{x:mentor.x,y:mentor.y},id:mentor.id,name:mentor.name,priority:3};
     const shop=shopInteraction(this);if(shop)return shop;
@@ -295,7 +301,7 @@ export class Game {
   sellItem(id,count=1){return sellItem(this,id,count);}
   buybackItem(token){return buybackItem(this,token);}
   /** Rechtsklick startet ausdrücklich; der Angriffsbutton schaltet um, Esc beendet. */
-  startAttack(){return !this.dead&&!this.paused&&startAuto(this);}
+  startAttack(){return !inKiosk(this)&&!this.dead&&!this.paused&&startAuto(this);}
   stopAuto(){return stopAuto(this);}
   /** Spieleinstellung setzen (heute nur `autoLoot`). Meldet `settingsChanged` und speichert. */
   setSetting(key,value){if(!Object.hasOwn(this.settings,key))return false;this.settings[key]=!!value;this.emit('settingsChanged',{key,value:this.settings[key]});this.emit('save');return true;}
@@ -346,6 +352,7 @@ export class Game {
   questDestination(){const q=this.world.quests?.find(q=>q.id===this.trackedQuest);if(!q)return null;const s=this.sideQuests[q.id],camp=this.world.camps.find(c=>c.questId===q.id),approach=camp?.approach&&distance(this.player,camp.approach)>110?camp.approach:q.target;return {point:s.progress>=q.required?q.giver:q.items.find(i=>!s.collected.includes(i.id))||approach,label:s.progress>=q.required?q.giver.name:q.title};}
   /** Goldene Wegmarke: nächstes offenes Ziel des laufenden Kapitels, sonst Ida. Beschriftungen kommen aus content/story.js. */
   destination(){
+    if(inKiosk(this))return {point:KIOSK_ROOM.service,label:KIOSK_TEXT.counter};
     const intro=tutorialDestination(this);if(intro)return intro;
     const side=this.questDestination();if(side)return side;
     if(this.quest.actDone)return null;
@@ -358,14 +365,14 @@ export class Game {
     }
     return {point:this.world.npc,label:STORY.giver};
   }
-  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
+  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=inKiosk(this)?roomWorld:this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
-  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.world.findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
+  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=(inKiosk(this)?roomWorld:this.world).findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
   /** Laufweg zur goldenen Wegmarke – ein Befehl statt vieler kurzer Klicks am Bildschirmrand (P6). */
   navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.point):false;}
   /** Neuberechnung des laufenden Laufbefehls, wenn der Schritt an einer Kante klemmt. */
-  repath(){const goal=this.routeGoal;if(!goal)return false;this.path=this.world.findPath(this.player,goal);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.path=[];this.routeGoal=null;return false;}return true;}
+  repath(){const goal=this.routeGoal;if(!goal)return false;this.path=(inKiosk(this)?roomWorld:this.world).findPath(this.player,goal);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.path=[];this.routeGoal=null;return false;}return true;}
   /** Erster Treffer eines neuen Angreifers oder Wechsel inCombat 0→1 (P1): Ereignis `attacked` für den großen
    *  Hinweis der UI, dazu die Zielwahl auf den Angreifer, solange kein Ziel steht. */
   noteAttacker(e,damage,fresh){
@@ -388,10 +395,10 @@ export class Game {
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
-  respawn(){finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});
+  respawn(){if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,runes:0,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
-  tick(dt){if(this.paused||this.dead)return;dt=Math.min(dt,.05);this.time+=dt;
+  tick(dt){if(this.paused||this.dead)return;if(inKiosk(this)){tickKiosk(this,Math.min(dt,.05));return;}dt=Math.min(dt,.05);this.time+=dt;
     if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});emitCombatFx(this,'burst',z,{skillId:'ground',radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this))this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
@@ -430,5 +437,5 @@ export class Game {
     tickCombatMeter(this);this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(!tutorialActive(this)&&distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
   }
-  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,relic:this.relic,discovered:[...this.discovered]};}
+  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,relic:this.relic,discovered:[...this.discovered]};}
 }

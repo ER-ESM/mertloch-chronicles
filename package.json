@@ -31,6 +31,7 @@
     "meter:check": "node scripts/meter-check.mjs",
     "hud:check": "node scripts/hud-check.mjs",
     "shop:check": "node scripts/shop-check.mjs",
+    "kiosk:check": "node scripts/kiosk-instance-check.mjs",
     "pwa:check": "npm run build && node scripts/basis-pwa-check.mjs",
     "performance:check": "node scripts/performance-check.mjs",
     "prerender:build": "node tools/prerender/build-prerender.mjs",

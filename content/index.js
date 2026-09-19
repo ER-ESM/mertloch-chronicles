@@ -30,3 +30,5 @@ export * from './glossary.js';
 export * from './mechanics.js';
 export * from './hud.js';
 export * from './shop.js';
+
+export * from './kiosk.js';

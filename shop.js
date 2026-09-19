@@ -1,25 +1,23 @@
+import {inKiosk,kioskEntrance,roomWorld} from './kiosk-instance.js';
+import {KIOSK_ROOM,KIOSK_TEXT} from './content/index.js';
 import {SHOP_STOCK,SHOP_RULES as R,SHOP_UI as UI,ITEM_CATALOG,NPCS} from './content/index.js';
 import {ITEMS,addItem,countItem,consumeMaterials,placeUsables} from './rpg.js';
 import {tutorialActive} from './tutorial.js';
 
-export const merchantPoint=g=>g.world.places?.kiosk?.approach||null;
+export const merchantPoint=g=>inKiosk(g)?KIOSK_ROOM.service:kioskEntrance(g);
 /** Leave the navigation destination free, with Kalle beside the customer. */
-export function merchantActorPoint(g){
- const p=merchantPoint(g);if(!p)return null;
- const f=g.world.places.kiosk.facing||{x:0,y:1};
- for(const sign of [1,-1]){const q={x:p.x-f.y*R.keeperOffset*sign,y:p.y+f.x*R.keeperOffset*sign};if(!g.world.blocked(q.x,q.y,9)&&g.world.lineClear(p,q))return q;}
- return p;
-}
+export const merchantActorPoint=g=>inKiosk(g)?KIOSK_ROOM.keeper:null;
 export function shopUnavailable(g){
  if(g.dead)return UI.dead;
  if(g.paused)return UI.paused;
  if(tutorialActive(g))return UI.tutorial;
  if(g.player.inCombat>0||g.casting)return UI.combat;
+ if(!inKiosk(g))return KIOSK_TEXT.firstEnter;
  const p=merchantPoint(g);
- if(!p||Math.hypot(p.x-g.player.x,p.y-g.player.y)>R.range||!g.world.lineClear(g.player,p))return UI.far;
+ if(!p||Math.hypot(p.x-g.player.x,p.y-g.player.y)>KIOSK_ROOM.range||!roomWorld.lineClear(g.player,p))return UI.far;
  return '';
 }
-export function shopInteraction(g){const p=merchantPoint(g);return p&&Math.hypot(p.x-g.player.x,p.y-g.player.y)<=R.range?{kind:'shop',id:UI.npc,name:NPCS[UI.npc].name,point:{...p},priority:4}:null;}
+export function shopInteraction(g){const p=kioskEntrance(g);return !inKiosk(g)&&p&&Math.hypot(p.x-g.player.x,p.y-g.player.y)<=KIOSK_ROOM.range?{kind:'enterKiosk',id:UI.npc,name:UI.title,point:{...p},priority:4}:null;}
 export const salePrice=id=>{const d=ITEMS[id];return d&&!d.quest&&!d.unique&&Number.isFinite(d.value)&&d.value>=0&&(d.slot||['material','consumable'].includes(d.kind))?Math.max(R.minSell,Math.floor((d.value||0)*R.sellRate)):0;};
 export function reservedCount(g,id){
  if(!g.quest?.accepted||g.quest.actDone||g.quest.chapterClaimed>=g.quest.chapter)return 0;

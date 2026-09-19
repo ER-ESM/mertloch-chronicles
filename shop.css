@@ -1,31 +1,43 @@
-.popup-shop .shop-head{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-.popup-shop .shop-head canvas{width:64px;height:64px;flex:none;image-rendering:pixelated;border:2px solid #b99665;border-radius:8px}
-.popup-shop .shop-head p{margin:4px 0}.popup-shop .shop-head small{font-size:12px;line-height:1.4}
-.popup-shop .shop-wallet{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding:10px 0;color:#f1d18b}
-.popup-shop .shop-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+.popup-shop{height:580px}
+.popup-shop .popup-body{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:12px}
+.popup-shop .shop-wallet{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding:0 0 10px;color:#f1d18b;font-size:13px;flex:none}
+.popup-shop .shop-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;min-height:0;flex:1}
+.popup-shop .shop-pane{display:flex;flex-direction:column;min-width:0;min-height:0}
+.popup-shop .shop-inventory{border-left:2px solid #967c56;padding-left:16px}
+.popup-shop .shop-tabs{height:auto;min-height:44px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 8px;flex:none}
 .popup-shop button,.popup-shop input{min-height:44px;min-width:44px;font-size:14px}
 .popup-shop .shop-tabs button{padding:8px 3px;overflow-wrap:anywhere}
 .popup-shop .shop-tabs [aria-pressed=true]{border-color:#ecb95c;color:#ffe4a2;background:#3b5545}
+.popup-shop .shop-list,.popup-shop .shop-bag-scroll{overflow:auto;min-height:0;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;padding:0 4px 6px 0}
 .popup-shop .shop-hint{font-size:12px;line-height:1.45;margin:10px 0}
-.popup-shop .shop-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.popup-shop .shop-card{min-width:0;padding:12px;border:2px solid #967c56;background:#263e33;border-radius:8px}
+.popup-shop .shop-cards{display:grid;gap:8px}
+.popup-shop .shop-card{min-width:0;padding:10px;border:2px solid #967c56;background:#263e33;border-radius:6px}
 .popup-shop .shop-item{display:flex;gap:8px;align-items:center}.popup-shop .shop-item>div{min-width:0}
 .popup-shop .shop-item canvas{width:44px;height:44px;flex:none;image-rendering:pixelated}
-.popup-shop .shop-item strong{display:block;font-size:15px;overflow-wrap:anywhere}.popup-shop .shop-item small{display:block;font-size:12px;line-height:1.45;margin-top:4px}
-.popup-shop .shop-meta{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:space-between;font-size:12px;margin:12px 0}
+.popup-shop .shop-item strong{display:block;font-size:15px;overflow-wrap:anywhere}.popup-shop .shop-item small{display:block;font-size:12px;line-height:1.35;margin-top:3px}
+.popup-shop .shop-meta{display:flex;flex-wrap:wrap;gap:4px 8px;justify-content:space-between;font-size:12px;margin:8px 0}
 .popup-shop .shop-controls{display:flex;align-items:end;gap:8px}.popup-shop .shop-controls label{display:grid;gap:4px;font-size:12px}
-.popup-shop .shop-controls input{width:64px;max-width:100%;padding:4px;background:#172b24;color:#fff0d3;border:2px solid #b99665;border-radius:6px}
-.popup-shop .shop-controls button{flex:1;min-width:0;padding:8px 6px;overflow-wrap:anywhere}
-.popup-shop .shop-card p{font-size:12px}.popup-shop .shop-confirm{border:2px solid #ecb95c;padding:12px;margin-bottom:12px;border-radius:8px;background:#304939}
-.popup-shop .shop-confirm>div{display:flex;gap:8px;flex-wrap:wrap}.popup-shop .shop-confirm button{flex:1}
-.touch-mode .popup-shop .shop-cards{grid-template-columns:1fr}
-@media(max-width:600px){.popup-shop .shop-cards{grid-template-columns:1fr}}
-
-.shop-locator{width:100%;min-height:44px;margin-top:12px}
-.atlas-filters{flex-wrap:wrap}
-
+.popup-shop .shop-controls input{width:56px;max-width:100%;padding:4px;background:#172b24;color:#fff0d3;border:2px solid #b99665;border-radius:6px}
+.popup-shop .shop-controls button{flex:1;min-width:44px;padding:8px 4px;overflow-wrap:anywhere}
+.popup-shop .shop-inventory h3{margin:0;font-size:20px}.popup-shop .shop-bag-hint{font-size:12px;line-height:1.35;margin:4px 0 8px;flex:none}
+.popup-shop .shop-bag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
+.popup-shop .shop-bag-slot,.popup-shop .shop-bag-empty{position:relative;min-width:0;height:72px;border:2px solid #967c56;border-radius:4px;background:#172b24;box-shadow:none;padding:2px;display:block}
+.popup-shop .shop-bag-slot canvas{display:block;width:44px;height:44px;margin:auto;image-rendering:pixelated}
+.popup-shop .shop-bag-slot b{position:absolute;right:3px;top:28px;font:700 12px var(--read,sans-serif);background:#172b24;color:#fff0d3;padding:1px 3px}
+.popup-shop .shop-bag-slot small{display:block;font:12px var(--read,sans-serif);color:#f1d18b;margin-top:2px}
+.popup-shop .shop-bag-slot[aria-pressed=true]{border-color:#ecb95c}.popup-shop .shop-bag-slot.is-protected{border-color:#607064}.popup-shop .shop-bag-empty{opacity:.45}
+.popup-shop .shop-selection{font-size:12px;margin-top:12px}.popup-shop .shop-selection p{margin:5px 0}.popup-shop .shop-selection button{width:100%}
+.shop-touch-hint{display:none}.touch-mode .shop-desktop-hint{display:none}.touch-mode .shop-touch-hint{display:inline}.touch-mode .shop-selection{display:none}
+.shop-locator{width:100%;min-height:44px;margin-top:12px}.atlas-filters{flex-wrap:wrap}
 .popup-shop .rarity-uncommon{color:#b0cf8b}
+.touch-mode .popup-shop .popup-body{padding:6px}.touch-mode .popup-shop .shop-layout{gap:8px}
+.touch-mode .popup-shop .shop-inventory{padding-left:8px}.touch-mode .popup-shop .shop-wallet{padding:0 0 6px;font-size:12px}
+.touch-mode .popup-shop .shop-card{padding:6px}.touch-mode .popup-shop .shop-item{flex-wrap:wrap}.touch-mode .popup-shop .shop-item small{display:none}
+.touch-mode .popup-shop .shop-controls{flex-wrap:wrap}.touch-mode .popup-shop .shop-controls label{width:100%;grid-template-columns:1fr 56px;align-items:center}.touch-mode .popup-shop .shop-controls button{width:100%;flex:auto}
+.touch-mode .popup-shop .shop-tabs button{font-size:12px}.touch-mode .popup-shop .shop-bag-grid{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))}
+.touch-mode .popup-shop .shop-bag-slot canvas{width:40px;height:40px}.touch-mode .popup-shop .shop-bag-slot,.touch-mode .popup-shop .shop-bag-empty{height:66px}
 
-.touch-mode .popup-shop .shop-head{display:none}
-.touch-mode .popup-shop .shop-wallet{padding:4px 0;font-size:12px}
-.touch-mode .popup-shop .shop-card{padding:8px}
+/* Very short landscape screens need the travel controls' space for both trading panes. */
+@media(orientation:landscape) and (max-height:360px){
+ .touch-mode:has(.popup-shop) #touchStick,.touch-mode:has(.popup-shop) #touchActions,.touch-mode:has(.popup-shop) #touchUtility{display:none!important}
+}

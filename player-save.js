@@ -13,5 +13,6 @@ export function restorePosition(world,saved){
  return {...point,facing:p.facing===-1?-1:1};
 }
 export function savedPosition(game){
+ if(game.instance?.outsidePosition)return {...game.instance.outsidePosition};
  return game.dead?spawnPosition(game.world):{x:game.player.x,y:game.player.y,facing:game.player.facing===-1?-1:1};
 }

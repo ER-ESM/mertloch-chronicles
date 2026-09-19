@@ -20,8 +20,8 @@ test('außerhalb des Browsers ist die Online-Schicht aus; ein Spielstand mit sav
  assert.ok(ONLINE_UI.title.length>3);
 });
 
-test('API-Dateien und Schema liegen vollständig vor und benutzen nur vorbereitete Abfragen',()=>{
- for(const f of ['_lib.php','auth.php','save.php','presence.php','leaderboard.php','health.php']){const src=readFileSync(new URL('../server/api/'+f,import.meta.url),'utf8');assert.ok(src.startsWith('<?php'),f);assert.ok(!/\$_(GET|POST)\[[^\]]+\]\s*\./.test(src),f+': keine String-Verkettung von Eingaben in SQL');}
- const schema=readFileSync(new URL('../server/schema.sql',import.meta.url),'utf8');
- for(const t of ['account','session','character_save','presence','leaderboard_entry','login_attempt'])assert.ok(schema.includes('CREATE TABLE IF NOT EXISTS '+t),t);
+test('der Client spricht den Spielserver ohne .php-Pfade an und verbindet sich per WebSocket',()=>{
+ const src=readFileSync(new URL('../online.js',import.meta.url),'utf8');
+ assert.ok(!src.includes('.php'));assert.ok(src.includes("new URL('../ws',API)"));
+ for(const f of ['server.mjs','store.mjs','ws.mjs'])assert.ok(readFileSync(new URL('../server/game/'+f,import.meta.url),'utf8').length>500,f);
 });

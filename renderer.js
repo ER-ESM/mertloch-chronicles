@@ -1,3 +1,6 @@
+import {drawKioskRoom,drawKioskMap,drawKioskHouse} from './kiosk-room-art.js';
+import {inKiosk,kioskEntrance} from './kiosk-instance.js';
+import {KIOSK_TEXT} from './content/index.js';
 import {merchantActorPoint} from './shop.js';
 import {SHOP_UI} from './content/index.js';
 import {drawClassField,drawClassWorldFx,classWorldReady} from './e32-world-art.js';
@@ -42,7 +45,7 @@ export class Renderer {
   building(c,b){drawBuilding(c,b,this.game.time);}
   prop(c,p){if(!drawAssetProp(c,p))drawComicProp(c,p,this.game.time);}
   shrine(c){fountain(c,this.world.shrine,this.game.time);if(distance(this.game.player,this.world.shrine)<60)label(c,'Konterbrunnen',this.world.shrine.x,this.world.shrine.y-33,'#d3e1c4',7);}
-  draw(){const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
+  draw(){if(inKiosk(this.game)){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
     const ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*2)/2,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*2)/2;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
     for(let x=Math.floor(ox/512);x<=Math.floor((ox+W)/512);x++)for(let y=Math.floor(oy/512);y<=Math.floor((oy+H)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
@@ -77,12 +80,12 @@ export class Renderer {
     for(const item of sorted){const e=item.obj;c.save();if(this.actorRenderer?.(c,item,time)){c.restore();continue;}if(item.type==='classField'){drawClassField(c,e,time);}else if(item.type==='building'){if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>buildingOccludesActor(e,u)))c.globalAlpha=.38;this.building(c,e);}
       else if(item.type==='tree'){const s=e.size;drawTreeOcclusion(c,e,[p,...(g.target?.hp>0?[g.target]:[])],()=>{if(drawAssetTree(c,e,time))return;const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];c.drawImage(sp,Math.round(e.x-44*s),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));});}
       else if(item.type==='loot'){ellipse(c,'#23372355',e.x,e.y,8,3);drawItem(c,'bag',Math.round(e.x-10),Math.round(e.y-17),.8);if(distance(e,p)<65){label(c,'F · Beute',e.x,e.y-23,'#edce84',7);}else{rect(c,'#ead39c',e.x,e.y-21,1,3);}}
-      else if(item.type==='prop'){drawProp(c,e);}
+      else if(item.type==='prop'){if(e.kind==='kiosk'){drawKioskHouse(c,e);const door=kioskEntrance(g);if(door&&distance(p,door)<100)label(c,KIOSK_TEXT.enter,door.x,door.y+14,'#f1d18b',9);}else drawProp(c,e);}
       else if(item.type==='estate'){drawEstateDetail(c,e,time);}
       else if(item.type==='hub'){drawHub(c,e,time);}
       else if(item.type==='occupiedCamp'){drawOccupiedCamp(c,e,time,!g.enemies.some(m=>m.campId===e.id&&m.hp>0));}
       else if(item.type==='clanCamp'){drawClanCamp(c,w,time);}
-      else if(item.type==='other'){const k=Math.min(1,(performance.now()-(e.at||0))/2000),ox=e.fromX+(e.x-e.fromX)*k,oy=e.fromY+(e.y-e.fromY)*k;c.globalAlpha=.9;drawHero(c,ox,oy,time,{facing:e.facing||1,classId:e.classId,moving:e.moving&&k<1,walkDistance:e.moving?time*48:0});c.globalAlpha=1;label(c,e.name+' · '+e.level,ox,oy-36,'#bfe0ff',7);}
+      else if(item.type==='other'){const k=Math.min(1,(performance.now()-(e.at||0))/(e.lerp||2000)),ox=e.fromX+(e.x-e.fromX)*k,oy=e.fromY+(e.y-e.fromY)*k;c.globalAlpha=.9;drawHero(c,ox,oy,time,{facing:e.facing||1,classId:e.classId,moving:e.moving,walkDistance:e.moving?time*48:0});c.globalAlpha=1;label(c,e.name+' · '+e.level,ox,oy-36,'#bfe0ff',7);}
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
       else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y,time,{...p,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,w.rules.heroHeight/33);}
@@ -123,5 +126,5 @@ export class Renderer {
     else if(f.type==='heal'){for(let i=0;i<9;i++){const x=f.x+Math.sin(i*5)*17,y=f.y-t*36-i*3%15;rect(c,'#badfa2',x,y,1,5);rect(c,'#badfa2',x-2,y+2,5,1);}}
     c.restore();
   }
-  map(canvas,full=false,highlight=null,options={}){drawAtlas(this,canvas,full,highlight,options);}
+  map(canvas,full=false,highlight=null,options={}){if(inKiosk(this.game)){drawKioskMap(this,canvas);return;}drawAtlas(this,canvas,full,highlight,options);}
 }

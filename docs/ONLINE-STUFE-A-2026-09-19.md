@@ -1,4 +1,5 @@
 # Online · Stufe A und B light · 2026-09-19
+n> **Abgelöst am 2026-09-19 durch Stufe B** (`docs/ONLINE-STUFE-B-2026-09-19.md`): eigener Server statt Strato-Webspace, die PHP-Dateien sind entfernt.
 
 Umsetzung der ersten Online-Stufen aus [ONLINE-MMORPG-VORBEREITUNG-2026-09-19.md](ONLINE-MMORPG-VORBEREITUNG-2026-09-19.md)
 auf dem vorhandenen Strato-Webspace (Subdomain **mertloch.esm-consultant.de**, Docroot `/home/www/Mertloch`, eigene

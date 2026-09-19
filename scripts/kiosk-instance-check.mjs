@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {browserSession,wait} from './browser-session.mjs';
+const dir='visual-review/kiosk-instance';mkdirSync(dir,{recursive:true});
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9380),serverPort:4190}),read=s=>b.evaluate(s),checks=[];
+async function click(sel,touch){await read(`document.querySelector(${JSON.stringify(sel)}).scrollIntoView({block:'nearest'})`);await wait(100);const p=await read(`(()=>{const r=document.querySelector(${JSON.stringify(sel)}).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);assert.ok(await read(`!!document.elementFromPoint(${p.x},${p.y})?.closest(${JSON.stringify(sel)})`),sel);if(touch){await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await wait(70);await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}else for(const type of ['mousePressed','mouseReleased'])await b.send('Input.dispatchMouseEvent',{type,...p,button:'left',clickCount:1});await wait(250);}
+async function interact(touch){if(touch)await click('#touchInteract',true);else await b.press('f');await wait(300);}
+try{
+ for(const touch of [false,true]){
+  const name=touch?'phone':'desktop';await b.resize(touch?390:1440,touch?844:1000);await b.send('Emulation.setTouchEmulationEnabled',{enabled:touch,maxTouchPoints:1});
+  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:6,trainingXp:2100,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:200}};
+  const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
+  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',script);await read(`game.enemies=[];Object.assign(game.player,game.world.places.kiosk.entrance);game.player.inCombat=0;`);await wait(500);await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());`);await wait(200);const outside=await read('({x:game.player.x,y:game.player.y})');await b.screenshot(dir+'/'+name+'-outside.png');
+  await interact(touch);assert.equal(await read('game.instance?.id'),'kiosk');assert.equal(await read(`!!document.querySelector('.popup-shop')`),false);const y=await read('game.player.y');
+  if(touch){const p=await read(`(()=>{const r=document.querySelector('#touchStick').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await b.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:p.x,y:p.y-48}]});await wait(620);await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
+  else {await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'w',code:'KeyW'});await wait(620);await b.send('Input.dispatchKeyEvent',{type:'keyUp',key:'w',code:'KeyW'});}
+  await wait(300);assert.ok(await read('game.player.y')<y-20,'walking in the room');assert.equal(await read('game.interaction()?.kind'),'shop');await b.screenshot(dir+'/'+name+'-interior.png');
+  await interact(touch);assert.ok(await read(`!!document.querySelector('.popup-shop .shop-inventory')`));await click('[data-shop-id="brezel"]',touch);assert.equal(await read('game.rpg.coins'),188);await click('.popup-shop [data-window-close]',touch);
+  await b.goto(b.url);await wait(300);assert.equal(await read('game.instance?.id'),'kiosk');assert.equal(await read('game.rpg.coins'),188);assert.equal(await read('game.save().position.x'),outside.x);
+  if(touch)await read('game.navigate({x:180,y:252})');else{await b.press('m');await click('[data-room-go="exit"]',false);}for(let i=0;i<60;i++){if(await read(`game.interaction()?.kind==='leaveKiosk'`))break;await wait(100);}assert.equal(await read('game.interaction()?.kind'),'leaveKiosk');await interact(touch);assert.equal(await read('game.instance'),null);assert.deepEqual(await read('({x:game.player.x,y:game.player.y})'),outside);assert.equal(await read('game.save().instance'),undefined);await b.screenshot(dir+'/'+name+'-returned.png');
+  const result=name+': enter through door, walk with '+(touch?'touch joystick':'W')+', trade at counter, reload inside and return to the same village door';checks.push(result);console.log('PASS '+result);
+ }
+ assert.deepEqual(b.errors,[]);writeFileSync(dir+'/result.json',JSON.stringify({checks,errors:b.errors},null,2));
+}catch(e){await b.screenshot(dir+'/failure.png').catch(()=>{});console.error(JSON.stringify({browserErrors:b.errors}));throw e;}finally{b.close();}
