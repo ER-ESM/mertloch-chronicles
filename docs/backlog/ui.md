@@ -1,5 +1,12 @@
 # Backlog · ui
 
+## Händlerauftrag · 2026-09-19
+
+- [x] Kalles Kiosk: Sortiment, Kaufen, bestätigter Verkauf von Material/Verpflegung/abgelegter Ausrüstung, gespeicherter Rückkauf, Kartenroute und Desktop-/Touch-Oberfläche nach E-34. [Umfang und Abnahme](../HAENDLER-2026-09-19.md).
+- [ ] Werkbank/Handwerk und Pfandbon-Bonus bleiben offen; frühere Sammelaufträge „Händler/Handwerk“ sind damit nur im Händlerteil erledigt.
+- Charaktererstellung ist auf Nutzerwunsch zurückgestellt. Die frühere Zurückstellung des Händlers weiter unten ist historisch und durch E-34 aufgehoben.
+
+
 ## Abgleich 2026-09-18
 
 Aktuelle Priorität und Belege: [Roadmap](../ROADMAP.md), [Basis-Nachschliff](../BASIS-NACHSCHLIFF-2026-09-18.md). Abgehakte historische Befunde bleiben als Herkunft erhalten; der jeweilige Stand-Nachtrag ersetzt die damalige Fehlerbeschreibung.

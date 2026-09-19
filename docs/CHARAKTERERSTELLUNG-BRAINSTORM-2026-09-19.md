@@ -1,5 +1,7 @@
 # Charaktererstellung und Klassen mit Spezialisierungen · Brainstorm 2026-09-19
 
+**Zurückgestellt auf Nutzerwunsch (19.09.2026).** Zuerst Händler umsetzen. Dieser Brainstorm bleibt als spätere Grundlage erhalten; keine Charaktererstellung beauftragt.
+
 Anlass: Auftrag „check mal alles und plane mal eine Charaktererstellung und verschiedene Klassen mit Specs". Aufgesetzt auf
 [E-17](ENTSCHEIDUNGEN.md) (der Held ist ein Fremder, die Klassenwahl ist die Klamottenwahl) und [E-32](ENTSCHEIDUNGEN.md)
 (neun Kernmechaniken, 30 Talente je Spezialisierung in drei Pfaden), Stand `main` ffa884d.

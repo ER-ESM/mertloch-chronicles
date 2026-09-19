@@ -1,3 +1,5 @@
+import {SHOP_STOCK,SHOP_RULES} from '../shop.js';
+import {ITEM_CATALOG} from '../items.js';
 // Prüfungen der Rolle Gameplay (enemies.js, combat.js, buildings.js, Spielsysteme).
 import {ARCHETYPES,ELITES,BOSSES,CAMP_ENEMIES,CAST_SETS,SPAWN_TABLES,ELITE_TABLE,pickElite,CAST_INFO,ANSWER_INFO,answerOf,describeCast} from '../enemies.js';
 import {COMBAT_TEXT,COMBAT_RULES,COMBAT_RULE_INFO,ENEMY_AUTOS,describeAuto} from '../combat.js';
@@ -20,6 +22,9 @@ function checkInfo(bad,where,info,minNumbers=1){
 /** Alle Zahlenpfade eines Regelobjekts, z. B. unarmed.min. */
 function numberPaths(obj,prefix=''){const out=[];for(const [k,v] of Object.entries(obj)){const p=prefix?prefix+'.'+k:k;if(typeof v==='number')out.push(p);else if(v&&typeof v==='object'&&!Array.isArray(v))out.push(...numberPaths(v,p));}return out;}
 export function check(bad){
+ if(new Set(SHOP_STOCK).size!==SHOP_STOCK.length)bad('shop','doppelte Ware');
+ for(const id of SHOP_STOCK){const d=ITEM_CATALOG[id];if(!d||d.kind!=='consumable'||!(d.heal||d.energy))bad('shop '+id,'keine unterstützte Verpflegung');else if(!Number.isSafeInteger(d.price)||d.price<=Math.max(SHOP_RULES.minSell,Math.floor((d.value||0)*SHOP_RULES.sellRate)))bad('shop '+id,'ungültiger Preis oder Handelsgewinn');}
+
  // Jeder Gegner mit castSet nutzt mindestens zwei verschiedene Antworten (Parade/ausweichen/Q/Fläche) – sonst ist er eintönig.
  for(const [id,e] of Object.entries({...ARCHETYPES,...ELITES,...BOSSES})){const set=CAST_SETS[e.castSet||(e.type==='boss'?'horst':e.type)];if(!set)continue;const answers=new Set(Object.values(set.casts).map(c=>c.name.split('·').pop().trim()));if(e.type==='boss'&&answers.size<3)bad('boss '+id,'Boss braucht mindestens drei verschiedene Antworten');if(e.type!=='boss'&&answers.size<2)bad('enemy '+id,'mindestens zwei verschiedene Antworten');}
  // Kapitel-Gegner (chapter gesetzt) dürfen nicht in den freien Spawn-Tabellen stehen.

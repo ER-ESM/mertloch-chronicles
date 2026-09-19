@@ -1,0 +1,31 @@
+.popup-shop .shop-head{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.popup-shop .shop-head canvas{width:64px;height:64px;flex:none;image-rendering:pixelated;border:2px solid #b99665;border-radius:8px}
+.popup-shop .shop-head p{margin:4px 0}.popup-shop .shop-head small{font-size:12px;line-height:1.4}
+.popup-shop .shop-wallet{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding:10px 0;color:#f1d18b}
+.popup-shop .shop-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+.popup-shop button,.popup-shop input{min-height:44px;min-width:44px;font-size:14px}
+.popup-shop .shop-tabs button{padding:8px 3px;overflow-wrap:anywhere}
+.popup-shop .shop-tabs [aria-pressed=true]{border-color:#ecb95c;color:#ffe4a2;background:#3b5545}
+.popup-shop .shop-hint{font-size:12px;line-height:1.45;margin:10px 0}
+.popup-shop .shop-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.popup-shop .shop-card{min-width:0;padding:12px;border:2px solid #967c56;background:#263e33;border-radius:8px}
+.popup-shop .shop-item{display:flex;gap:8px;align-items:center}.popup-shop .shop-item>div{min-width:0}
+.popup-shop .shop-item canvas{width:44px;height:44px;flex:none;image-rendering:pixelated}
+.popup-shop .shop-item strong{display:block;font-size:15px;overflow-wrap:anywhere}.popup-shop .shop-item small{display:block;font-size:12px;line-height:1.45;margin-top:4px}
+.popup-shop .shop-meta{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:space-between;font-size:12px;margin:12px 0}
+.popup-shop .shop-controls{display:flex;align-items:end;gap:8px}.popup-shop .shop-controls label{display:grid;gap:4px;font-size:12px}
+.popup-shop .shop-controls input{width:64px;max-width:100%;padding:4px;background:#172b24;color:#fff0d3;border:2px solid #b99665;border-radius:6px}
+.popup-shop .shop-controls button{flex:1;min-width:0;padding:8px 6px;overflow-wrap:anywhere}
+.popup-shop .shop-card p{font-size:12px}.popup-shop .shop-confirm{border:2px solid #ecb95c;padding:12px;margin-bottom:12px;border-radius:8px;background:#304939}
+.popup-shop .shop-confirm>div{display:flex;gap:8px;flex-wrap:wrap}.popup-shop .shop-confirm button{flex:1}
+.touch-mode .popup-shop .shop-cards{grid-template-columns:1fr}
+@media(max-width:600px){.popup-shop .shop-cards{grid-template-columns:1fr}}
+
+.shop-locator{width:100%;min-height:44px;margin-top:12px}
+.atlas-filters{flex-wrap:wrap}
+
+.popup-shop .rarity-uncommon{color:#b0cf8b}
+
+.touch-mode .popup-shop .shop-head{display:none}
+.touch-mode .popup-shop .shop-wallet{padding:4px 0;font-size:12px}
+.touch-mode .popup-shop .shop-card{padding:8px}

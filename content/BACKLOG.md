@@ -26,7 +26,8 @@ Ideen, die Engine-Arbeit brauchen oder noch nicht geprüft sind. Der Inhalts-Age
 - [ ] **Gegner-Sprüche im HUD** – `ENEMY_BARKS` und `BOSSES.*.phases` laufen heute ins Kampflog. Sprechblase über dem Gegner wäre besser sichtbar.
 - [ ] **Dorfbewohner reden** – `VILLAGERS.says` als Sprechblasentext in `village-life.js`/Renderer.
 - [ ] **Sprites je `variant`** – Ladeliste `assets/content-art/<kind>/<id>.png`; Renderer soll `variant` vor `skin` prüfen.
-- [ ] **Händler** – Pfandmarken haben bisher keinen Zweck. Kioskkönig Kalle als Händler für Verpflegung; Pfandautomat nach Kapitel 3.
+- [x] **Händler** – Kalles Kiosk mit Verpflegung, Ankauf und Rückkauf nach E-34 umgesetzt (19.09.2026); `content/shop.js`, `shop.js`, `shop-ui.js`.
+- [ ] **Pfandautomat** – bleibt Reserve nach E-23; nicht Teil des Händlerauftrags.
 - [ ] **Handwerk** – Material (Borste, Feder, Kronkorken, Dosenblech, Hopfen) in Verpflegung oder Talismane wandeln. Kevin als Werkbank am Clan-Treff.
 - [ ] **Aggressiver Keiler im Wohngebiet** – Sichtprüfung 2026-09-13 (docs/VISUELLE-BEWERTUNG-2026-09-13.md, vr-08): Pfandkeiler 82 m vom Treffpunkt zwischen Wohnhäusern. `buildCell` in encounters.js: Prüfen, ob `field` bei Grasflächen innerhalb der Wohnpolygone falsch wahr wird.
 - [ ] **Neue aktive Fähigkeiten** – erst nach Icon-Lieferung (skill-art.js SKILL_ICON_ORDER).

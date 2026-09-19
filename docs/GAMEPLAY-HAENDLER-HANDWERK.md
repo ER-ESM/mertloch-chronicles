@@ -1,5 +1,7 @@
 # Gameplay-Konzept: Händler und Handwerk · 2026-09-17
 
+**Nachtrag 19.09.2026:** Händlerteil durch Nutzerauftrag aktiviert und nach [E-34](ENTSCHEIDUNGEN.md) umgesetzt. Aktueller Umfang: [Händler](HAENDLER-2026-09-19.md). Abweichend vom Entwurf unten auch Ausrüstungsankauf und zwölf gespeicherte Rückkäufe; Pfandbon-Bündel mangels Bonusmechanik nicht im Sortiment. Handwerk bleibt Entwurf.
+
 Zwei offene Enden werden zusammengeknotet: **Pfandmarken haben heute keinen Zweck** (sie fallen, sie zählen, sie liegen herum), und **Material stapelt sich**, sobald der Basisbau seine Stufen hat. Dieses Konzept macht aus beidem einen Kreislauf: kämpfen → Marken und Material → Verpflegung und Talismane → länger draußen bleiben.
 
 Daten werden hier **noch nicht** angelegt. Erst Konzept, dann Freigabe, dann `content/shop.js` (Gameplay) plus Beute- und Item-Bedarf bei Loot, dann Engine und UI. Die Zahlen unten sind Entwurf, kein Export.

@@ -1,5 +1,10 @@
 # Roadmap — Mertloch Chronicles
 
+## Neue Priorität · 2026-09-19
+
+Auf Nutzerwunsch ist die **Charaktererstellung zurückgestellt**. Stattdessen wird **Kalles Kiosk als Dorfladen** umgesetzt: Verpflegung kaufen, Material und abgelegte Ausrüstung verkaufen, letzte Verkäufe rückkaufen; Desktop und Touch. Details und Abnahme: [Händler](HAENDLER-2026-09-19.md). Dies hebt die frühere Zurückstellung des Händlers ausdrücklich auf. Handwerk und Pfandautomat bleiben offen; die Charaktererstellung bleibt zurückgestellt. Die parallel ergänzte Online-Stufe A ist ein eigener Auftrag.
+
+
 Reihenfolge der Runden bis zum fertigen Akt 1. Besitzer: Lead-Architect. Grundlage: `docs/ENTSCHEIDUNGEN.md` (insbesondere E-22 „Akt 1 perfektionieren, bevor Akt 2 beginnt“), `docs/ROLLEN.md` (Dateibesitz), `docs/PIPELINE.md` (Ablauf je Runde).
 
 **Leitsatz:** Akt 1 wird tief statt breit. Kein Inhalt für Akt 2, solange eine Runde offen ist.

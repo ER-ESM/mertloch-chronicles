@@ -48,6 +48,16 @@ Im **UI-Bearbeitungsmodus** pausiert die Welt. Ziehe die blauen Rahmen, wähle d
 
 Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuellem/letztem Kampf, einzelnen vergangenen Kämpfen und der gesamten Sitzung. Wähle eine Figur für ihre Fähigkeiten und einen Fähigkeitsbalken für Treffer, Durchschnitt, Spitzenwert, kritische Treffer und Überheilung bzw. Überschaden. Auf dem Desktop lässt sich das Fenster an der Titelleiste verschieben; auf Touch passt es sich dem freien Bereich zwischen bzw. über den Kampfbuttons an. Die Statistik läuft auch bei eingeklappter Anzeige weiter und beginnt nach dem Neuladen neu. [Messregeln und Prüfbericht](docs/KAMPFSTATISTIK-2026-09-18.md).
 
+## Kalles Kiosk
+
+Nach der Hofprobe findest du **Kalles Kiosk** auf der Karte unter **Läden**; im Rucksack führt „Kalles Kiosk auf der Karte“ direkt dorthin. Am Vorplatz öffnet **F** beziehungsweise mobil **Aktion** den Laden. Kalle lässt sich auch anklicken oder antippen.
+
+- **Kaufen:** Brezel, Konterwasser, Kaltgetränk und Currywurst gegen Pfandmarken, mit Mengenwahl und Stufenanforderung. Bei zu wenig Platz oder Geld wird nichts abgezogen.
+- **Verkaufen:** Material, Verpflegung und abgelegte Ausrüstung. Menge und Erlös vor dem Bestätigen prüfen; benötigtes Material für den laufenden Hauptauftrag und einzigartige Dorflegenden bleiben geschützt.
+- **Rückkauf:** Die letzten zwölf Verkäufe zum gleichen Preis zurückholen, auch nach Neuladen. Ältere Einträge fallen bei weiteren Verkäufen heraus.
+
+Der Handel endet beim Weglaufen oder Kampfbeginn. [Regeln und Prüfbericht](docs/HAENDLER-2026-09-19.md). Charaktererstellung und Handwerk bleiben zurückgestellt.
+
 ## Spielstand, App und Updates
 
 Der Fortschritt wird lokal im Browser des jeweiligen Geräts gespeichert. Die Online-Adresse und `localhost` haben getrennte Spielstände; es gibt keine automatische Synchronisierung zwischen Geräten oder Browsern.
