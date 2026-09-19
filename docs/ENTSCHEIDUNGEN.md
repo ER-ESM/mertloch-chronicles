@@ -356,6 +356,7 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 |---|---|---|---|
 | Händler und Handwerk (Zweck der Pfandmarken) | ja; nein; später | später — erst wenn ein Playtest Beute ohne Händler langweilig findet; Konzept kommt von Gameplay | 2026-09-11 |
 | Geräteübergreifender Spielstand | nie; Export/Import-Datei; Konto | Export/Import-Datei, kein Konto (E-01) | 2026-09-12 |
+| Online-Betrieb (Konto, gemeinsames Dorf, Koop) | E-01 belassen; nur Konto (Stufe A); bis Koop (Stufe C); MMO | bis Koop, Reihenfolge A → Engine-Refactor → B → C, siehe [ONLINE-MMORPG-VORBEREITUNG-2026-09-19.md](ONLINE-MMORPG-VORBEREITUNG-2026-09-19.md) | 2026-09-19 |
 | Feldgegner ab Stufe 10 trivial | Skalierung in der Engine; Anhebung über `tuning.js`; bewusst lassen | Skalierung in der Engine, Dorfkern fest (`docs/backlog/engine.md`) | 2026-09-17 |
 | Set-Boni für Dorflegenden | ja; nein | nach dem Playtest entscheiden, Konzept Loot + Gameplay | 2026-09-17 |
 
