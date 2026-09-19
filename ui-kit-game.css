@@ -1,0 +1,15 @@
+/* Material adapter: existing layout, hit areas, rarity and combat logic remain authoritative. */
+.game-popup,.hud,.online-card,.hud-toolbar,#combatMeter,.training-dock{
+ border-image:url(assets/ui-kit/runtime/frame-panel-rest.png) 16 / 8px / 0 stretch;
+ background-clip:padding-box;
+}
+.game-popup .popup-titlebar{background-image:url(assets/ui-kit/runtime/texture-panel.png)}
+.game-popup .popup-body{scrollbar-color:var(--kraft-2) var(--green-3);scrollbar-width:thin}
+.game-popup .gold-button{border-image:url(assets/ui-kit/runtime/frame-primary-rest.png) 16 / 6px / 0 stretch}
+.game-popup .outline-button{border-image:url(assets/ui-kit/runtime/frame-panel-rest.png) 16 / 6px / 0 stretch}
+.game-popup :is(.gold-button,.outline-button):disabled{border-image-source:url(assets/ui-kit/runtime/frame-panel-disabled.png)}
+.game-popup :is(.gold-button,.outline-button):focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.game-popup .clan-card{border-image:url(assets/ui-kit/runtime/frame-character-rest.png) 16 / 8px / 0 stretch}
+.game-popup .clan-card.selected{border-image-source:url(assets/ui-kit/runtime/frame-character-hover.png)}
+.online-form input{border-image:url(assets/ui-kit/runtime/frame-inset-rest.png) 16 / 6px / 0 stretch}
+.online-form input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
