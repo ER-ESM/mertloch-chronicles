@@ -14,7 +14,7 @@ Bodenkniff / Stärkung, plus die Variante (Zustand erfüllt). Namen in Anführun
 | Spec | Markierung (2) | Eskalation (3) | Bodenkniff (7) | Variante der Eskalation |
 |---|---|---|---|---|
 | Dieter · Türsteher | „Pfandschuld" (Bestand) | „Rausschmiss" – Stoß mit Tresenkante, Deckung fliegt weg | „Absperrband" (Bestand) | „HAUSVERBOT" (Goldrand, Türschild) |
-| Dieter · Kneipenschläger | (Bestand) | „Abriss" – Bierkrug zerschellt, 10 Pegelstriche | „Tresensprung" (Bestand) | „ABRISS ×10" (voller Pegel) |
+| Dieter · Kneipenschläger | (Bestand) | „Abriss" – Bierkrug zerschellt, 10 Deckelstriche | „Tresensprung" (Bestand) | „ABRISS ×10" (voller Pegel) |
 | Dieter · Zapfmeister | (Bestand) | „Fassanstich" – Zapfhahn schlägt ein Fass an | „Anstich" – Fass stellen | „FASSANSTICH" (Bierschaum-Explosion) |
 | Bärbel · Landhaus-Lazarett | (Bestand) | „Großreinemachen" – Wischmopp mit Funken | „Nest" – Gans Gisela auf dem Nest | „GROSSREINEMACHEN" |
 | Bärbel · Putzpyramide | „Schimmel" – grüner Fleck mit Sporen | „Durchputzen" – Sporen platzen | „Sporenwolke" – Wolke über Boden | „DURCHPUTZEN" |
@@ -72,7 +72,7 @@ Bis dahin: Fallback-Icons je Reihe (`TALENT_ICON_FALLBACK`) mit Pfadfarbe.
 
 | Element | Beschreibung |
 |---|---|
-| Pegel-Uhr | 10 Striche im Halbkreis über der Leiste, Ablaufring außen; Farbe von grün (frisch) nach rot (läuft ab) |
+| Deckel-Uhr | 10 Striche im Halbkreis über der Leiste, Ablaufring außen; Farbe von grün (frisch) nach rot (läuft ab) |
 | Vorrat (Lazarett) | 5 Einmachgläser, füllen sich |
 | Zustandsring „Putzwut" | rosa Ring um die Leiste mit Restzeit |
 | Glücksrad (Pfandjäger) | drei Felder: Fehlzündung (grau), Normal (creme), Überzündung (gold); Zeiger |

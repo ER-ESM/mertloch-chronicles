@@ -31,4 +31,12 @@ spürbar? Bericht gekürzt; Einordnung durch Entwicklung in *kursiv*.
 - [x] Geprüft (2026-09-19): „Stufe für Tests" levelt über gainXp (Werte ziehen mit); Arena-Gegner behalten Stufe-1-Werte, der Tod kam durch fehlende Ausrüstung auf Stufe 15. Arena-Hinweis ergänzt: Ausrüstung bleibt Sache des Spielers.
 - [x] Auto-Retarget nach Kill auf den nächsten kämpfenden Gegner, Autoangriff läuft weiter (engine.js kill, 2026-09-19).
 - [x] Ziffern treffen im Touch-Modus die sichtbaren Touch-Slots der aktuellen Seite (mobile.slotForKey, 2026-09-19).
-- [ ] Wiederholung des Playtests am Desktop ohne Touch-Emulation, mit gesetzter Spec über den neuen Arena-Knopf – offen bis zur nächsten Playtest-Runde.
+- [x] Wiederholung am Desktop (2026-09-19, Build #130): Specs spürbar verschieden (Rangfolge Schrottkoloss › Filter-Furie › Zapfmeister › Kneipenschläger › Zündmeister), Bewertung 4/3/3/2. Abbrecher und Ableitungen:
+  - [x] Steuerungsmodus ging nach „Neu laden" (PWA-Update-Banner) verloren → Auswahl speichert jetzt sofort beim Ändern (mobile-controls).
+  - [x] Stufe 15 ohne Ausrüstung starb an Stufe-1-Dachsen → „Stufe für Tests" legt Testausrüstung an (arena.js outfitForLevel).
+  - [x] Ziel nach Kill traf nicht → im Test nicht reproduzierbar (Retarget und Autoangriff greifen, Tests decken es ab); beobachten.
+  - [x] Spec-Knopf in der Arena springt sofort um und meldet „Arena geräumt · … aktiv".
+  - [x] Leere Desktop-Leiste → Knopf „Leiste: Standardbelegung" im Figur-Fenster.
+  - [x] „Pegel" doppelt belegt → Kneipenschläger-Stapel heißt jetzt Deckelstriche / Deckel-Uhr.
+  - [x] Anstich-Tooltip ohne Böller-Zahlen; Talent-Tooltip nennt den Sperrgrund im Kampf; Baum-Intro erklärt Pfadmischen und Pfadbonus (Bahnkopf-Titel).
+  - [ ] Klickpfad zur Arena (5 Klicks) und Merken von Anzahl/Puppe: kleiner Rest, Admin-Werkzeug.

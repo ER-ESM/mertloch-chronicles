@@ -10,10 +10,10 @@ export const SPEC_MECHANICS={
   kit:{burst:{name:'Rausschmiss',text:'Verbraucht Pegel und bis zu 80 Deckung: Stoß mit der Tresenkante, die Deckung trifft alle Gegner ringsum. Zünde ihn, wenn die Deckung fast voll ist – bei 95 % Deckung gilt 8 s Hausverbot und Paraden werfen doppelt zurück.'}},
   variant:{burst:{when:'hausverbot',name:'HAUSVERBOT',tone:'gold'}},
   paths:[{name:'Türsteher-Kodex',bonus4:{guardOnStrike:6},bonus7:{guardOnParry:20}},{name:'Rausschmeißer',bonus4:{parrySlow:1},bonus7:{doubleParry:1}},{name:'Hausrecht',bonus4:{zoneUpgrade:1},bonus7:{waveRadius:40}}]},
- 'dieter-brawl':{kind:'stack',name:'Pegel',
+ 'dieter-brawl':{kind:'stack',name:'Deckelstriche',
   stack:{max:10,decay:8,gainOnStrike:1,gainOnHit:1,bonusPerStack:.12,hangover:3,hangoverGcd:1.2,hangoverDamage:.8},
-  kit:{burst:{name:'Abriss',text:'Verbraucht Pegel und alle Pegelstriche: je Strich 12 % mehr Schaden. Zünde ihn, bevor der Pegel abläuft – läuft er ohne Abriss aus, kommt 3 s Kater.'},
-   strike:{name:'Kronkorken-Kelle',text:'Eine schwere Kelle im Nahkampf: baut Pegel und einen Pegelstrich auf und frischt die Pegel-Uhr auf. Drück sie, sobald sie bereit ist; jeder kassierte Treffer gibt ebenfalls einen Strich.'}},
+  kit:{burst:{name:'Abriss',text:'Verbraucht Pegel und alle Deckelstriche: je Strich 12 % mehr Schaden. Zünde ihn, bevor der Pegel abläuft – läuft er ohne Abriss aus, kommt 3 s Kater.'},
+   strike:{name:'Kronkorken-Kelle',text:'Eine schwere Kelle im Nahkampf: baut Pegel und einen Deckelstrich auf und frischt die Deckel-Uhr auf. Drück sie, sobald sie bereit ist; jeder kassierte Treffer gibt ebenfalls einen Strich.'}},
   variant:{burst:{when:'stackFull',name:'ABRISS ×10',tone:'burst'}},
   paths:[{name:'Dauerpegel',bonus4:{stackDecay:3},bonus7:{hangoverShort:1}},{name:'Blitzabriss',bonus4:{stackBonus:.04},bonus7:{stackBurstAt:4}},{name:'Rundenkämpfer',bonus4:{stackSpread:1},bonus7:{stackWave:1}}]},
  'dieter-brew':{kind:'fields',name:'Fässer',
@@ -68,4 +68,4 @@ export const SPEC_MECHANICS={
 applyTuning(SPEC_MECHANICS,TUNING.mechanics);
 /** Effektschlüssel der Mechaniken (für Talente und Pfadboni; Prüfung: content/talents.js KNOWN_EFFECTS). */
 export const MECHANIC_EFFECTS=['stackDecay','hangoverShort','stackBonus','stackBurstAt','stackSpread','stackWave','waveRadius','fassPils','fassWeizen','fassBock','fieldCount','fieldDuration','fieldRadius','supplyMax','cleanDuration','nestHonk','cleanDamage','dotSpread','dotRadius','dotHeal','dotExplodeTicks','stateDuration','stateDrain','stateDamage','stateTrigger','mobileHeal','mobileStrike','mobileThrow','mobileBurst','stateMobileAll','fuseDamage','fuseSpread','chainJumps','chainFalloff','reactionWindow','reactionDuration','robbiDamage','robbiGuard','overloadDamage','overloadStun','gambleOver','gamblePity','gambleMisfireMult','jackpotDuration','jackpotStreak','hausverbotDuration','mobileCast','mobileMark','mobileGround','overloadRadius','chainRadius','overSplashShare','tapDamage','fieldHeal','robbiHp','robbiFollows','nestFollows'];
-export const MECHANIC_UI={schimmel:'SCHIMMEL SPRINGT',pegel:'Pegel',kater:'Kater',vorrat:'Vorrat',putzwut:'Putzwut',jackpot:'Jackpot',kettenreaktion:'Kettenreaktion',hausverbot:'Hausverbot',fass:'Fass',robbi:'Robbi',nest:'Gisela',pfadbonus:'Pfadbonus',pfadkrone:'Pfadkrone'};
+export const MECHANIC_UI={schimmel:'SCHIMMEL SPRINGT',pegel:'Deckelstriche',kater:'Kater',vorrat:'Vorrat',putzwut:'Putzwut',jackpot:'Jackpot',kettenreaktion:'Kettenreaktion',hausverbot:'Hausverbot',fass:'Fass',robbi:'Robbi',nest:'Gisela',pfadbonus:'Pfadbonus',pfadkrone:'Pfadkrone'};

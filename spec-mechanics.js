@@ -19,7 +19,7 @@ const mechFields=(g,m)=>m?.field?fieldsOf(g,m.field.kind):[];
 /** Kit-Überschreibungen (Name, Text) und Laufzauber-Flags je Spec. */
 export function applySpecKit(g,skills){
  const m=mechanic(g);if(!m)return skills;
- for(const [id,over] of Object.entries(m.kit||{})){const s=skills.find(s=>s.id===id);if(!s)continue;if(over.name)s.name=over.name;if(over.text)s.text=over.text;}
+ for(const [id,over] of Object.entries(m.kit||{})){const s=skills.find(s=>s.id===id);if(!s)continue;if(over.name)s.name=over.name;if(over.text)s.text=over.text;if(id==='ground'&&m.field){delete s.damage;delete s.delay;s.damageModel=null;s.radius=m.field.radius;s.duration=m.field.duration;s.placed=m.field.kind;}}
  return skills;
 }
 /** Darf dieser Kniff im Laufen gewirkt werden? Spec-Zustand (Putzwut), Kit-Flag oder Talent (mobileStrike, mobileHeal …). */

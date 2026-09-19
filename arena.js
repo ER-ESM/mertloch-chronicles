@@ -1,6 +1,7 @@
 // Trainingsarena (Admin): Gegner nach Wahl neben dem Spieler aufstellen, Puppen ohne Angriff, Schadensmessung.
 // Arenagegner geben keine EP, keine Beute, zählen für keinen Auftrag und kehren nie nach Hause zurück.
 import {ARCHETYPES,ELITES,BOSSES,ENEMY_AUTOS} from './content/index.js';
+import {ITEMS,addItem,equipItem} from './rpg.js';
 import {makeEnemy} from './encounters.js';
 import {distance} from './world.js';
 export const ARENA_KINDS=[...Object.entries(ARCHETYPES).map(([id,d])=>({id,name:d.name,group:'Feld'})),...Object.entries(ELITES).map(([id,d])=>({id,name:d.name,group:'Elite'})),...Object.entries(BOSSES).map(([id,d])=>({id,name:d.name,group:'Boss'}))];
@@ -18,5 +19,7 @@ export function arenaHit(g,e,dealt){const s=g.arenaStats||(g.arenaStats=freshAre
 export function arenaReport(g){const s=g.arenaStats||freshArenaStats(),seconds=s.start===null?0:Math.max(1,s.last-s.start),alive=g.enemies.filter(e=>e.arena&&e.hp>0).length;return {damage:Math.round(s.damage),hits:s.hits,kills:s.kills,seconds:+seconds.toFixed(1),dps:Math.round(s.damage/seconds),taken:Math.round(s.taken),alive,active:g.enemies.some(e=>e.arena)};}
 export const arenaSummary=g=>{const r=arenaReport(g);return r.hits?`${r.damage} Schaden in ${r.seconds} s = ${r.dps} DPS · ${r.hits} Treffer · ${r.kills} Kills · ${r.taken} eingesteckt`:'Noch kein Treffer gemessen.';};
 /** Hebt die Stufe für Tests an (nie senken; dafür Admin-Neustart). */
-export function setArenaLevel(g,level){level=Math.max(1,Math.min(30,Math.floor(level)||1));let guard=0;while(g.player.level<level&&guard++<400)g.gainXp(g.player.level*140-g.player.xp);g.player.hp=g.player.maxHp;g.player.energy=100;return g.player.level;}
+export function setArenaLevel(g,level){level=Math.max(1,Math.min(30,Math.floor(level)||1));let guard=0;while(g.player.level<level&&guard++<400)g.gainXp(g.player.level*140-g.player.xp);outfitForLevel(g,level);g.refreshStats?.();g.player.hp=g.player.maxHp;g.player.energy=100;return g.player.level;}
+/** Testausrüstung: je Platz das stärkste Katalogteil bis zur Stufe (Playtest 2026-09-19: Stufe 15 ohne Ausrüstung starb an Stufe-1-Dachsen). */
+export function outfitForLevel(g,level){const slots=['weapon','offhand','ranged','body','feet','head','ring','trinket','charm'];let changed=0;for(const slot of slots){const candidates=Object.entries(ITEMS).filter(([,it])=>it.slot===slot&&(it.level||1)<=level&&!it.unique).sort((a,b)=>((b[1].level||1)-(a[1].level||1))||((b[1].value||0)-(a[1].value||0)));for(const [id] of candidates){if(Object.values(g.rpg.equipment||{}).includes(id))break;addItem(g.rpg,id,1);if(equipItem(g,id)){changed++;break;}}}if(changed)g.toast?.('Testausrüstung angelegt: '+changed+' Teile bis Stufe '+level+'.');return changed;}
 export function tickArena(g,dt){for(const e of g.enemies){if(!e.arena)continue;if(e.dummy){e.aggro=e.hp<e.maxHp&&g.player.inCombat>0;e.ai=e.aggro?'combat':'roaming';e.cast=null;e.attackTimer=99;e.autoTimer=99;if(g.player.inCombat<=0&&e.hp<e.maxHp)e.hp=e.maxHp;e.roamGoal=null;continue;}if(e.hp>0&&distance(e,g.player)>600)e.aggro=true;}}

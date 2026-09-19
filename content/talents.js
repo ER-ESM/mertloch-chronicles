@@ -9,7 +9,7 @@ import {TALENTS_KEVIN,GLOSSARY_KEVIN} from './talents/kevin.js';
 export const CLASS_SPECS={dieter:['dieter-wall','dieter-brawl','dieter-brew'],baerbel:['baerbel-care','baerbel-feedback','baerbel-stage'],kevin:['kevin-fuse','kevin-iron','kevin-hunt']};
 export const SPECS={
  'dieter-wall':{name:'Türsteher',classId:'dieter',role:'Tank',icon:'shield',text:'Kellen bauen Deckung auf. Paraden kontern; der Rausschmiss wirft die Deckung auf die Gegner, fast volle Deckung gibt Hausverbot.'},
- 'dieter-brawl':{name:'Kneipenschläger',classId:'dieter',role:'Nahkampf-Schaden',icon:'burst',text:'Riskante Prügelei: 15 % mehr Schaden einstecken. Kellen und kassierte Treffer füllen die Pegel-Uhr; der Abriss verbraucht sie – wer zu lange wartet, kassiert den Kater.'},
+ 'dieter-brawl':{name:'Kneipenschläger',classId:'dieter',role:'Nahkampf-Schaden',icon:'burst',text:'Riskante Prügelei: 15 % mehr Schaden einstecken. Kellen und kassierte Treffer füllen die Deckel-Uhr; der Abriss verbraucht sie – wer zu lange wartet, kassiert den Kater.'},
  'dieter-brew':{name:'Zapfmeister',classId:'dieter',role:'Schutz & Heilung',icon:'water',text:'Stellt Fässer: Weizen heilt, Pils gibt Tempo, Bock verletzt. Der Fassanstich sticht alle Fässer auf einmal an. Markierte Ziele liefern heilenden Rücklauf.'},
  'baerbel-care':{name:'Landhaus-Lazarett',classId:'baerbel',role:'Heilung',icon:'food',text:'Jede Heilung füllt ein Vorratsglas; bei fünf beginnt das Großreinemachen, in dem Heilung auch Schaden ist. Gans Gisela heilt vom Nest aus.'},
  'baerbel-feedback':{name:'Putzpyramide',classId:'baerbel',role:'Schadensheilung',icon:'sound',text:'Schimmel springt von Gegner zu Gegner und platzt beim Durchputzen. Schaden an verschimmelten Zielen zahlt Heilprovision.'},

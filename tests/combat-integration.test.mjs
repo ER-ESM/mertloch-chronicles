@@ -30,7 +30,7 @@ test('selection is passive, offensive skills start autos; range, walls and targe
 
 test('offensive ground casts start autos after placement, while healing zones stay passive',()=>{
  const {g,e}=setup('dieter-brew');assert.equal(g.action('ground'),false);assert.equal(g.autoAttack.enabled,false);
- cast(g,'ground',{x:e.x,y:e.y});assert.equal(g.autoAttack.enabled,true);g.stopAuto();cast(g,'keg',{x:0,y:0});assert.equal(g.autoAttack.enabled,false);
+ cast(g,'ground',{x:e.x,y:e.y});assert.equal(g.autoAttack.enabled,false,'Anstich (Fass) ist keine Offensive');g.stopAuto();cast(g,'keg',{x:0,y:0});assert.equal(g.autoAttack.enabled,false);const wall=setup('dieter-wall').g;wall.player.energy=100;cast(wall,'ground',{x:wall.target.x,y:wall.target.y});assert.equal(wall.autoAttack.enabled,true,'Böller startet den Autoangriff');
 });
 
 test('Deckelwirtschaft counts successful strikes only, shows a named HUD counter and fires every third',()=>{
