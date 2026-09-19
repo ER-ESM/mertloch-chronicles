@@ -36,10 +36,12 @@ export function mountChatWindow(root,options={}){
   const x=settings.x==null?12:settings.x,y=settings.y==null?Math.max(90,Math.min(250,b.height-h-200)):settings.y;
   el.style.width=w+'px';el.style.height=h+'px';el.style.left=Math.max(4,Math.min(b.width-w-4,x))+'px';el.style.top=Math.max(4,Math.min(b.height-h-4,y))+'px';
  }
+ // Liegt das Fenster im UI-Editor-Layout (data-hud-custom), gehört die Lage dem Layout: Ziehen meldet sie per hud-move dorthin.
+ const hudMove=detail=>{if(el.hasAttribute('data-hud-custom'))el.dispatchEvent(new CustomEvent('hud-move',{bubbles:true,detail:{id:'chat',...detail}}));};
  let drag=null;
  el.querySelector('.chat-tabs').addEventListener('pointerdown',e=>{if(e.target.closest('.chat-gear'))return;drag={dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};});
- el.querySelector('.chat-tabs').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)<5)return;drag.moved=true;e.currentTarget.setPointerCapture(e.pointerId);}settings.x=e.clientX-drag.dx;settings.y=e.clientY-drag.dy;place();});
- const endDrag=e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved)return;settings.x=el.offsetLeft;settings.y=el.offsetTop;persist();};
+ el.querySelector('.chat-tabs').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)<5)return;drag.moved=true;e.currentTarget.setPointerCapture(e.pointerId);}settings.x=e.clientX-drag.dx;settings.y=e.clientY-drag.dy;place();hudMove({x:settings.x,y:settings.y});});
+ const endDrag=e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved)return;hudMove({x:settings.x,y:settings.y,save:true});settings.x=el.offsetLeft;settings.y=el.offsetTop;persist();};
  el.querySelector('.chat-tabs').addEventListener('pointerup',endDrag);el.querySelector('.chat-tabs').addEventListener('pointercancel',endDrag);
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(!el.classList.contains('active')||drag)return;const w=el.offsetWidth,h=el.offsetHeight;if(w>100&&h>80&&(Math.abs(w-settings.w)>2||Math.abs(h-settings.h)>2)){settings.w=w;settings.h=h;persist();}}).observe(el);
  addEventListener('resize',place);
@@ -102,7 +104,7 @@ export function mountChatWindow(root,options={}){
  config.addEventListener('change',e=>{const k=e.target.dataset.chatSet;if(!k)return;const [group,key]=k.split('.');
   if(key)settings[group][key]=e.target.checked;else if(k==='pinned')settings.pinned=e.target.checked;else if(k==='fade'){settings.fade=Number(e.target.value);for(const l of lines){l.old=false;l.node.classList.remove('old');}age();}else settings[k]=e.target.value;
   settings=normalizeChatSettings(settings);persist();renderTabs();filter();});
- config.addEventListener('click',e=>{if(e.target.closest('[data-chat-done]'))toggleConfig(false);else if(e.target.closest('[data-chat-reset]')){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();place();}});
+ config.addEventListener('click',e=>{if(e.target.closest('[data-chat-done]'))toggleConfig(false);else if(e.target.closest('[data-chat-reset]')){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();hudMove({reset:true,save:true});place();}});
 
  renderTabs();filter();renderFoot();place();refreshActive();
  return {el,push,place,focusInput:()=>input.focus(),

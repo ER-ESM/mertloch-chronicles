@@ -97,8 +97,8 @@ export function mountHudEditor(root,getGame,api={}){
   if(e.key==='Tab'){e.preventDefault();const list=[...layer.querySelectorAll('button,input,select')].filter(el=>!el.disabled&&el.getClientRects().length),i=list.indexOf(document.activeElement);list[(i+(e.shiftKey?-1:1)+list.length)%list.length]?.focus();return;}
   if(e.target.closest('[data-hud-handle]')&&e.key.startsWith('Arrow')){e.preventDefault();const step=e.shiftKey?8:1,delta={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,-step],ArrowDown:[0,step]}[e.key];if(delta)nudge(...delta);}
  },true);
- // Meter dragging remains available outside Edit Mode after it has been moved in a layout.
- root.addEventListener('hud-move',e=>{if(editing||!view().meter)return;move('meter',e.detail.x,e.detail.y,view().meter.scale,false);if(e.detail.save){try{localStorage.setItem(HUD_KEY,JSON.stringify(settings));}catch{}}});
+ // Meter and chat dragging remain available outside Edit Mode after they have been moved in a layout.
+ root.addEventListener('hud-move',e=>{const id=e.detail.id||'meter';if(editing||!elements.has(id)||!view()[id])return;if(e.detail.reset){delete view()[id];apply();}else move(id,e.detail.x,e.detail.y,view()[id].scale,false);if(e.detail.save){try{localStorage.setItem(HUD_KEY,JSON.stringify(settings));}catch{}}});
  function update(force=false){const now=performance.now();if(!force&&now-last<200)return;last=now;const next=hudContext(touch(),root.clientWidth,root.clientHeight);if(next!==context){context=next;for(const e of elements.values())clear(e);if(editing){Object.assign(toolbar.style,{left:'',top:'',bottom:'',transform:''});controls();}}apply();}
  new ResizeObserver(()=>update(true)).observe(root);update(true);
  return{open,close,update,get editing(){return editing;},state:()=>({editing,context,layout:profile().name})};
