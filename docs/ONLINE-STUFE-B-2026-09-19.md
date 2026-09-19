@@ -1,7 +1,7 @@
 # Online Stufe B · eigener Spielserver (2026-09-19)
 
 Ersetzt die PHP-Fassung aus Stufe A (`docs/ONLINE-STUFE-A-2026-09-19.md`, Strato-Webspace). Das Spiel läuft auf dem
-eigenen Windows-Server unter `mertloch.esm-consultant.de` (vorläufig Port 8443, bis das Zertifikat auf 443 steht).
+eigenen Windows-Server unter `https://mertloch.esm-consultant.de` (Zertifikat auf 443; Fortsetzung: `docs/ONLINE-STUFE-C-2026-09-20.md`).
 
 ## Aufbau
 
