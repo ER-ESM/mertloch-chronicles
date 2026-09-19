@@ -8,6 +8,7 @@ import {drawCombatEffect,drawCombatGround,drawCombatStates} from './combat-fx-ar
 import {WORLD_ART_DENSITY} from './art-quality.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
+import {drawTargetRings} from './target-ui.js';
 import {drawTutorial,drawTrainingDummy} from './tutorial-ui.js';
 import {drawWorldPerson} from './person-art.js';
 import {BossSpeech,drawBossSpeech} from './enemy-ui.js';
@@ -69,6 +70,7 @@ export class Renderer {
     drawCombatGround(c,g,visible);
     // Telegraphs live on the ground, underneath units and foliage.
     for(const e of g.enemies){if(!e.cast||!e.cast.ground)continue;const a=e.cast;const progress=1-a.remaining/a.total;c.save();ellipse(c,'#b6503c30',a.x,a.y,a.radius,a.radius*.75);c.strokeStyle='#f1a175';c.lineWidth=1.5;c.setLineDash([4,3]);c.beginPath();c.ellipse(a.x,a.y,a.radius,a.radius*.75,0,0,Math.PI*2);c.stroke();c.setLineDash([]);ellipse(c,'#d7764655',a.x,a.y,a.radius*progress,a.radius*.75*progress);c.restore();}
+    drawTargetRings(c,g,time);
     if(g.target&&g.target.hp>0){const e=g.target;const rad=e.type==='boss'?30:18;c.strokeStyle=e.behavior==='neutral'&&!e.aggro?'#eed180':'#ef9c88';c.lineWidth=1.5;c.beginPath();c.ellipse(e.x,e.y+1,rad,rad*.4,0,0,Math.PI*2);c.stroke();c.fillStyle='#eed39a';poly(c,[{x:e.x-3,y:e.y+rad*.4+5},{x:e.x+3,y:e.y+rad*.4+5},{x:e.x,y:e.y+rad*.4+2}]);c.fill();}
     const sorted=[{type:'clanCamp',obj:w,y:w.church.maxY+42}];for(const d of w.details||[])if(visible(d,30))sorted.push({type:'estate',obj:d,y:d.y});for(const hub of w.hubs||[])if(visible(hub,120))sorted.push({type:'hub',obj:hub,y:hub.y-10});for(const camp of w.camps)if(visible(camp,160))sorted.push({type:'occupiedCamp',obj:camp,y:camp.y-35});for(const a of g.life.actors)if(visible(a,45))sorted.push({type:'resident',obj:a,y:a.y});for(const o of g.others||[])if(visible(o,45))sorted.push({type:'other',obj:o,y:o.y});for(const prop of w.props)if(visible(prop,50)&&['bench','cart','lantern'].includes(prop.type))sorted.push({type:'furniture',obj:prop,y:prop.y});for(const b of w.buildings)if(b.maxX>ox-40&&b.minX<ox+W+40&&b.maxY>oy-60&&b.minY<oy+H+380)sorted.push({type:'building',obj:b,y:b.maxY});for(const t of w.trees)if(visible(t))sorted.push({type:'tree',obj:t,y:t.y});for(const prop of campProps(w))if(visible(prop,60))sorted.push({type:'prop',obj:prop,y:propBaseline(prop)});for(const prop of baseProps(w,g.buildings))if(visible(prop,60))sorted.push({type:'prop',obj:prop,y:propBaseline(prop)});
     for(const bag of g.rpg.loot)if(visible(bag,25))sorted.push({type:'loot',obj:bag,y:bag.y});
