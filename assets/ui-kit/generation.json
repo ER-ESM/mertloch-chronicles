@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "id": "frames",
+      "tool": "image_gen.imagegen",
+      "source": "assets/ui-kit/sources/frames.png",
+      "promptFile": "assets/ui-kit/sources/frames.prompt.txt",
+      "reference": [
+        "D:/Dev/MertlochChronicles-ui3/assets/redesign/review/dressing/game-start.png",
+        "D:/Dev/MertlochChronicles-ui3/assets/precision/runtime/ui/ui-proc-frame.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-a14adbeb-f345-40fd-9008-c30bd4eb0089.png",
+      "sha256": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3"
+    },
+    {
+      "id": "mmo-icons",
+      "tool": "image_gen.imagegen",
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "promptFile": "assets/ui-kit/sources/mmo-icons.prompt.txt",
+      "reference": [
+        "D:/Dev/MertlochChronicles-ui3/assets/precision/runtime/ui/ui-tab-bude.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-d0be76fe-852d-4a10-995f-85e876718cd1.png",
+      "sha256": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a"
+    },
+    {
+      "id": "village-gate",
+      "tool": "image_gen.imagegen",
+      "source": "assets/ui-kit/sources/village-gate.png",
+      "promptFile": "assets/ui-kit/sources/village-gate.prompt.txt",
+      "reference": [
+        "D:/Dev/MertlochChronicles-ui3/assets/redesign/review/dressing/game-start.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-3e46e46b-88a5-45d3-a9f2-e467a8b7a48d.png",
+      "sha256": "f4f2540203862594dec30ee5a19bac7e7724cce6b1d7f98eb46470fb3c48921d"
+    },
+    {
+      "id": "clan-hall",
+      "tool": "image_gen.imagegen",
+      "source": "assets/ui-kit/sources/clan-hall.png",
+      "promptFile": "assets/ui-kit/sources/clan-hall.prompt.txt",
+      "reference": [
+        "D:/Dev/MertlochChronicles-ui3/assets/redesign/review/dressing/game-start.png"
+      ],
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-086d9945-e5d8-46b5-8e12-b804dad46921.png",
+      "sha256": "2113df773f313f179f5bbda892b5b8a46f94e74d46017f022ad152d7d61f3a3d"
+    }
+  ]
+}

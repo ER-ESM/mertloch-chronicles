@@ -5,7 +5,7 @@ Auftrag: vorhandene Mertloch-Grafik wiederverwenden, UI/HUD vollständig aus fes
 ## Durchgänge
 
 1. **Grundlage:** vorhandene Symbole inventarisieren, stabile IDs und Bauteilrezepte, gemeinsame Größen und eine echte HTML-Vorschau. Bestehende Sprechblasen und Proc-Rahmen zeigen den 9-Slice-Vertrag. Stand: Desktop 1440 × 1000 und Mobil 390 × 844 geprüft; 19 Rezepte und 15 geladene Symbole, keine Browserfehler oder horizontaler Überlauf. Befunde für Runde 2: native blaue Regler und zu schwache Papier-Beschriftung. Belege: assets/ui-kit/review/iteration-1-*.png.
-2. **Materialien und Bedienung:** neue Rahmenfamilie mit wiederholbaren Kanten; Knöpfe, Felder, Reiter, Auswahl und Regler mit Ruhe-, Fokus-, Hover-, Aktiv-, Fehler- und Deaktiviert-Zuständen.
+2. **Materialien und Bedienung:** neue Rahmenfamilie mit wiederholbaren Kanten; Knöpfe, Felder, Reiter, Auswahl und Regler mit Ruhe-, Fokus-, Hover-, Aktiv-, Fehler- und Deaktiviert-Zuständen. Geprüft: 24 Rahmen-Sprites, unveränderte Eckgrößen bei 96, 240 und 640 px, harte Palette/Alpha, byteidentischer Export, sichtbarer Tastaturfokus und 44-px-Knopf. Desktop- und Mobilbelege unter assets/ui-kit/review/iteration-2-*.png.
 3. **HUD und Fenster:** Unitframes, Gruppenanzeige, Aktionsplätze, Zauberbalken, Buffs/Debuffs, Auftrag, Minikarte und Chat aus denselben Teilen; Anbindung vorhandener Spielfenster.
 4. **MMORPG:** neue Dorfeingangs- und Clanraum-Illustrationen, kleine Kontosymbole, tatsächliche Anmeldung sowie Charakter-/Spielweisenauswahl mit vorhandenen Helden.
 5. **Finalisierung:** Verbesserungen aus den Sichtprüfungen, Mobilansichten, Tastatur und reduzierte Bewegung, reproduzierbarer Export, Tests, Größen-/Zustandsvertrag und Übergabe.

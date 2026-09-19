@@ -1,0 +1,1463 @@
+{
+  "version": 1,
+  "style": "Mertloch / Bierdeckel",
+  "states": [
+    "rest",
+    "hover",
+    "pressed",
+    "focus",
+    "selected",
+    "disabled",
+    "loading",
+    "error"
+  ],
+  "frames": {
+    "panel-rest": {
+      "path": "assets/ui-kit/runtime/frame-panel-rest.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 0,
+        "y": 0,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 54,
+        "w": 423,
+        "h": 397,
+        "count": 158013,
+        "pieces": 1
+      },
+      "transform": "rest",
+      "hash": "7e472593691da5f6c770e54d53570b301a10f84a28f315522279575d7c6ff6af",
+      "texture": "assets/ui-kit/runtime/texture-panel.png"
+    },
+    "panel-hover": {
+      "path": "assets/ui-kit/runtime/frame-panel-hover.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 0,
+        "y": 96,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 54,
+        "w": 423,
+        "h": 397,
+        "count": 158013,
+        "pieces": 1
+      },
+      "transform": "hover",
+      "hash": "ae943701a929c81b52b490a49fd0d99ecf5d834c102f7e67af337090eecdf063"
+    },
+    "panel-pressed": {
+      "path": "assets/ui-kit/runtime/frame-panel-pressed.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 0,
+        "y": 192,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 54,
+        "w": 423,
+        "h": 397,
+        "count": 158013,
+        "pieces": 1
+      },
+      "transform": "pressed",
+      "hash": "d51340cc405eeffc41b77d56d8ecb5470a7726d6227b2218f491c273c435a2d5"
+    },
+    "panel-disabled": {
+      "path": "assets/ui-kit/runtime/frame-panel-disabled.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 0,
+        "y": 288,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 54,
+        "w": 423,
+        "h": 397,
+        "count": 158013,
+        "pieces": 1
+      },
+      "transform": "disabled",
+      "hash": "909a67aaf1a1d5903cdd25e0a2ef52cfb08d5ed83fd0380327f0aa83d7a55708"
+    },
+    "paper-rest": {
+      "path": "assets/ui-kit/runtime/frame-paper-rest.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 96,
+        "y": 0,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 557,
+        "y": 54,
+        "w": 423,
+        "h": 398,
+        "count": 158731,
+        "pieces": 1
+      },
+      "transform": "rest",
+      "hash": "8d87842cc75abd24bb17a7fe38212fb66396cfec3cdfd22c29cac7b2ebd1221a",
+      "texture": "assets/ui-kit/runtime/texture-paper.png"
+    },
+    "paper-hover": {
+      "path": "assets/ui-kit/runtime/frame-paper-hover.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 96,
+        "y": 96,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 557,
+        "y": 54,
+        "w": 423,
+        "h": 398,
+        "count": 158731,
+        "pieces": 1
+      },
+      "transform": "hover",
+      "hash": "8efb5ab1fa59556b247f516ff09584379614b51b1b30ff2b110b4d7dd17b1dd3"
+    },
+    "paper-pressed": {
+      "path": "assets/ui-kit/runtime/frame-paper-pressed.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 96,
+        "y": 192,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 557,
+        "y": 54,
+        "w": 423,
+        "h": 398,
+        "count": 158731,
+        "pieces": 1
+      },
+      "transform": "pressed",
+      "hash": "2835e7fa788812d23fc6b9728d5e2a5baf5d8313e3cc650280225102800c3f22"
+    },
+    "paper-disabled": {
+      "path": "assets/ui-kit/runtime/frame-paper-disabled.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 96,
+        "y": 288,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 557,
+        "y": 54,
+        "w": 423,
+        "h": 398,
+        "count": 158731,
+        "pieces": 1
+      },
+      "transform": "disabled",
+      "hash": "72b985470532048daf75bbe713ffbff371807b8fdd06491eb06f228f5294e8b4"
+    },
+    "inset-rest": {
+      "path": "assets/ui-kit/runtime/frame-inset-rest.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 192,
+        "y": 0,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 54,
+        "w": 422,
+        "h": 397,
+        "count": 156765,
+        "pieces": 1
+      },
+      "transform": "rest",
+      "hash": "c3dd24d1db882ef49f07022dbf7b30a3639f0ef6ef5131c6a192d01289ceb8c3",
+      "texture": "assets/ui-kit/runtime/texture-inset.png"
+    },
+    "inset-hover": {
+      "path": "assets/ui-kit/runtime/frame-inset-hover.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 192,
+        "y": 96,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 54,
+        "w": 422,
+        "h": 397,
+        "count": 156765,
+        "pieces": 1
+      },
+      "transform": "hover",
+      "hash": "35f56b63c985776078d7151d91fc1c947c9cdc4948023147ef291d9e48495c6d"
+    },
+    "inset-pressed": {
+      "path": "assets/ui-kit/runtime/frame-inset-pressed.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 192,
+        "y": 192,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 54,
+        "w": 422,
+        "h": 397,
+        "count": 156765,
+        "pieces": 1
+      },
+      "transform": "pressed",
+      "hash": "7dc3011035347d5088f6cf81e81a1f639491f6d97d9a6d2d78df58ba9f9b7f66"
+    },
+    "inset-disabled": {
+      "path": "assets/ui-kit/runtime/frame-inset-disabled.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 192,
+        "y": 288,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 54,
+        "w": 422,
+        "h": 397,
+        "count": 156765,
+        "pieces": 1
+      },
+      "transform": "disabled",
+      "hash": "5c31f31a5a1006eb432746f9ef01508e75184f4fbf0071d7a19a9ed0f8a4181e"
+    },
+    "primary-rest": {
+      "path": "assets/ui-kit/runtime/frame-primary-rest.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 288,
+        "y": 0,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 548,
+        "w": 423,
+        "h": 398,
+        "count": 157038,
+        "pieces": 1
+      },
+      "transform": "rest",
+      "hash": "5bdff26de792fc98f04959f25b65079c8ce2f9cf850d418e92d2ca24b506cf7e",
+      "texture": "assets/ui-kit/runtime/texture-primary.png"
+    },
+    "primary-hover": {
+      "path": "assets/ui-kit/runtime/frame-primary-hover.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 288,
+        "y": 96,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 548,
+        "w": 423,
+        "h": 398,
+        "count": 157038,
+        "pieces": 1
+      },
+      "transform": "hover",
+      "hash": "5adf6139556996b19f0aff66f703414765d5382ff3ef26d372ce929e96dea7f1"
+    },
+    "primary-pressed": {
+      "path": "assets/ui-kit/runtime/frame-primary-pressed.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 288,
+        "y": 192,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 548,
+        "w": 423,
+        "h": 398,
+        "count": 157038,
+        "pieces": 1
+      },
+      "transform": "pressed",
+      "hash": "b756a72622273d2acb60c292345311f9e0076222ece31cea6d1f33315b89cc0a"
+    },
+    "primary-disabled": {
+      "path": "assets/ui-kit/runtime/frame-primary-disabled.png",
+      "width": 96,
+      "height": 90,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 288,
+        "y": 288,
+        "w": 96,
+        "h": 90
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 51,
+        "y": 548,
+        "w": 423,
+        "h": 398,
+        "count": 157038,
+        "pieces": 1
+      },
+      "transform": "disabled",
+      "hash": "7ecfd85f72ead611795f249fa7a85aa16db49c52b6d7b6775aba52f028f4f364"
+    },
+    "danger-rest": {
+      "path": "assets/ui-kit/runtime/frame-danger-rest.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 384,
+        "y": 0,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 558,
+        "y": 548,
+        "w": 422,
+        "h": 398,
+        "count": 157940,
+        "pieces": 1
+      },
+      "transform": "rest",
+      "hash": "b1f04a7495c23b6c0fde60130e8cfafee2603a61bd5adb005f41a13646066cad",
+      "texture": "assets/ui-kit/runtime/texture-danger.png"
+    },
+    "danger-hover": {
+      "path": "assets/ui-kit/runtime/frame-danger-hover.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 384,
+        "y": 96,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 558,
+        "y": 548,
+        "w": 422,
+        "h": 398,
+        "count": 157940,
+        "pieces": 1
+      },
+      "transform": "hover",
+      "hash": "acde5797bd48ed4ead6c20937b3635304a251a34be8622c6d3f16fac56e0974c"
+    },
+    "danger-pressed": {
+      "path": "assets/ui-kit/runtime/frame-danger-pressed.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 384,
+        "y": 192,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 558,
+        "y": 548,
+        "w": 422,
+        "h": 398,
+        "count": 157940,
+        "pieces": 1
+      },
+      "transform": "pressed",
+      "hash": "b776e6bc0e701c0de6178ea48fbb51b806beddf7ad55d1febee3c6d974de75ed"
+    },
+    "danger-disabled": {
+      "path": "assets/ui-kit/runtime/frame-danger-disabled.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 384,
+        "y": 288,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 558,
+        "y": 548,
+        "w": 422,
+        "h": 398,
+        "count": 157940,
+        "pieces": 1
+      },
+      "transform": "disabled",
+      "hash": "c1ea3633ab8ed184c581b061f54d739173026abf6929b941dcf1de70c625f19b"
+    },
+    "character-rest": {
+      "path": "assets/ui-kit/runtime/frame-character-rest.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 480,
+        "y": 0,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 547,
+        "w": 422,
+        "h": 399,
+        "count": 157755,
+        "pieces": 1
+      },
+      "transform": "rest",
+      "hash": "fa72c57ef38dcc046b0f58be4f34a98449bcc4b7a31b7093653e0d3a8b83b660",
+      "texture": "assets/ui-kit/runtime/texture-character.png"
+    },
+    "character-hover": {
+      "path": "assets/ui-kit/runtime/frame-character-hover.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 480,
+        "y": 96,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 547,
+        "w": 422,
+        "h": 399,
+        "count": 157755,
+        "pieces": 1
+      },
+      "transform": "hover",
+      "hash": "21c0283738537320b9f42bc11a04e5548d3424d363b056bf29f3376c5da0a259"
+    },
+    "character-pressed": {
+      "path": "assets/ui-kit/runtime/frame-character-pressed.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 480,
+        "y": 192,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 547,
+        "w": 422,
+        "h": 399,
+        "count": 157755,
+        "pieces": 1
+      },
+      "transform": "pressed",
+      "hash": "c89ae9879e61e8dd54dca25ad2880518b954b640d48bf85068708161c4ca80e4"
+    },
+    "character-disabled": {
+      "path": "assets/ui-kit/runtime/frame-character-disabled.png",
+      "width": 96,
+      "height": 91,
+      "slice": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "cssBorder": 8,
+      "minSize": [
+        32,
+        32
+      ],
+      "atlas": {
+        "x": 480,
+        "y": 288,
+        "w": 96,
+        "h": 91
+      },
+      "source": "assets/ui-kit/sources/frames.png",
+      "sourceHash": "edf125c1f0ea0e7d52446b1748f0969298ba157605e3f94cccc923ac1a6784a3",
+      "sourceBounds": {
+        "x": 1063,
+        "y": 547,
+        "w": 422,
+        "h": 399,
+        "count": 157755,
+        "pieces": 1
+      },
+      "transform": "disabled",
+      "hash": "babad17ff7668ae240eeb7eaeb0677e768021554b27320d6d1c913cc3d454461"
+    }
+  },
+  "icons": {
+    "character": {
+      "path": "assets/precision/runtime/ui/ui-tab-figur.png",
+      "size": 48,
+      "label": "Figur",
+      "reused": true,
+      "sha256": "9bd79c9567de633838c1f7df72343795d49184f07e8e8fc66e42e7224bfb38b8"
+    },
+    "inventory": {
+      "path": "assets/precision/runtime/ui/ui-tab-rucksack.png",
+      "size": 48,
+      "label": "Rucksack",
+      "reused": true,
+      "sha256": "e6aca416cca769e92ded80e9cf3dcc588f1e68daa723d6aa3b36ab73f6f1ab3f"
+    },
+    "skills": {
+      "path": "assets/precision/runtime/ui/ui-tab-kniffe.png",
+      "size": 48,
+      "label": "Kniffe",
+      "reused": true,
+      "sha256": "d1910e5260346f934e5f5ceeca9e5e6c274acb388ab22d868514a98a34c71ebf"
+    },
+    "quests": {
+      "path": "assets/precision/runtime/ui/ui-tab-auftraege.png",
+      "size": 48,
+      "label": "Aufträge",
+      "reused": true,
+      "sha256": "ee9a5781fcd0a65864af75e2bbbded1480163910679c2d657e7c34832cf6030f"
+    },
+    "map": {
+      "path": "assets/precision/runtime/ui/ui-tab-karte.png",
+      "size": 48,
+      "label": "Karte",
+      "reused": true,
+      "sha256": "e81d0993a34b04e3645d8e2dc67d9f002b9009c10b11d7365707634cd883f099"
+    },
+    "help": {
+      "path": "assets/precision/runtime/ui/ui-tab-hilfe.png",
+      "size": 48,
+      "label": "Hilfe",
+      "reused": true,
+      "sha256": "eb06113ca3e2eff9b502f7430d2c0b3607d524024bf4341f4cf97ca0906b22b9"
+    },
+    "home": {
+      "path": "assets/precision/runtime/ui/ui-tab-bude.png",
+      "size": 48,
+      "label": "Bude",
+      "reused": true,
+      "sha256": "13bcaa3840384dfbee23bd6de29fb257e05b873c176ce6fcd655fe4d0c1b376c"
+    },
+    "menu": {
+      "path": "assets/precision/runtime/ui/ui-menu.png",
+      "size": 40,
+      "label": "Menü",
+      "reused": true,
+      "sha256": "1ba630142203b5f25e2a0666f16d5d5fbcfd967c304e502205658e7be4acd98e"
+    },
+    "sound": {
+      "path": "assets/precision/runtime/ui/ui-sound.png",
+      "size": 40,
+      "label": "Ton",
+      "reused": true,
+      "sha256": "e69619544a407ac4e3aaf9fab196d567435cc13ae3214f0679700701918c28ab"
+    },
+    "fullscreen": {
+      "path": "assets/precision/runtime/ui/ui-fullscreen.png",
+      "size": 40,
+      "label": "Vollbild",
+      "reused": true,
+      "sha256": "ac5833a1305a6d3519f7b0a24704317080e06bcc3c777bc87832e8d99bee2c8b"
+    },
+    "reward": {
+      "path": "assets/precision/runtime/ui/ui-reward.png",
+      "size": 48,
+      "label": "Belohnung",
+      "reused": true,
+      "sha256": "c5f10a2f532c1fe8b5697fc27481fb6788822f57880f4c95f7a42678d6c2a74e"
+    },
+    "elite": {
+      "path": "assets/precision/runtime/ui/ui-elite-badge.png",
+      "size": 32,
+      "label": "Elite",
+      "reused": true,
+      "sha256": "51c8c2e280ce4441ff7d38faa24e25694b1025cd34de84b0a82e6c0de5c66ef9"
+    },
+    "lock": {
+      "path": "assets/precision/runtime/ui/ui-chapter-lock.png",
+      "size": 48,
+      "label": "Gesperrt",
+      "reused": true,
+      "sha256": "782a9e673eee6ba21f3a6939010def0df4c34b9619d71ee1d60d795b0d3a0df5"
+    },
+    "proc": {
+      "path": "assets/precision/runtime/ui/ui-proc-empower.png",
+      "size": 24,
+      "label": "Verstärkt",
+      "reused": true,
+      "sha256": "af7b8e784b617d11db20ed552847c3c68b2fefaeaef9fca8034f9dccbf3423b5"
+    },
+    "free": {
+      "path": "assets/precision/runtime/ui/ui-proc-free.png",
+      "size": 24,
+      "label": "Kostenlos",
+      "reused": true,
+      "sha256": "46415260af013c738c2247cbd9012428e383d984a4ab97d3d784440cea13b957"
+    },
+    "account": {
+      "path": "assets/ui-kit/runtime/icon-account.png",
+      "size": 48,
+      "atlas": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "217177d827186811bcdc2446cf2947e56528f4da4220612a84108be3eb832873",
+      "reused": false
+    },
+    "identity": {
+      "path": "assets/ui-kit/runtime/icon-identity.png",
+      "size": 48,
+      "atlas": {
+        "x": 48,
+        "y": 0,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "3330ed764279db2774325b964fb98e82a9f2dde8abb1adb407ed88b33a3a1ca4",
+      "reused": false
+    },
+    "group": {
+      "path": "assets/ui-kit/runtime/icon-group.png",
+      "size": 48,
+      "atlas": {
+        "x": 96,
+        "y": 0,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "4f3a5f26d45e5ed8089f715a30ef6d69ef4e52876a003e5ceaeb25785b5568de",
+      "reused": false
+    },
+    "chat": {
+      "path": "assets/ui-kit/runtime/icon-chat.png",
+      "size": 48,
+      "atlas": {
+        "x": 144,
+        "y": 0,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "0328909f4a849359af34222354514a8a0896ff5b18516d3089a1f5cef6e8ca2b",
+      "reused": false
+    },
+    "realm": {
+      "path": "assets/ui-kit/runtime/icon-realm.png",
+      "size": 48,
+      "atlas": {
+        "x": 0,
+        "y": 48,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "9e16914c88f9a9d0f8524dd5ce1b879834a0fdb94a9dc283e0de6a909c6c10a4",
+      "reused": false
+    },
+    "connected": {
+      "path": "assets/ui-kit/runtime/icon-connected.png",
+      "size": 48,
+      "atlas": {
+        "x": 48,
+        "y": 48,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "3956875c18f2edbb9166063ea0f144a4b3eed1f354232acc415d17a805629f60",
+      "reused": false
+    },
+    "disconnected": {
+      "path": "assets/ui-kit/runtime/icon-disconnected.png",
+      "size": 48,
+      "atlas": {
+        "x": 96,
+        "y": 48,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "097eb4d84c61d65f41da918ccf6120dc44116928a23f68aa33d0b5fc650bfa3f",
+      "reused": false
+    },
+    "queue": {
+      "path": "assets/ui-kit/runtime/icon-queue.png",
+      "size": 48,
+      "atlas": {
+        "x": 144,
+        "y": 48,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "9bbf688739369b8f133784e3861e7281bf890790bfab84b56a2a2fffd02021f8",
+      "reused": false
+    },
+    "mail": {
+      "path": "assets/ui-kit/runtime/icon-mail.png",
+      "size": 48,
+      "atlas": {
+        "x": 0,
+        "y": 96,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "36a13ba25cc6156c788e466ad401ea780f1137f52d83cbe843d88647b432827f",
+      "reused": false
+    },
+    "storage": {
+      "path": "assets/ui-kit/runtime/icon-storage.png",
+      "size": 48,
+      "atlas": {
+        "x": 48,
+        "y": 96,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "a267218828d416e22be0347aea656f558a1dca014417952ae2d732f709c49632",
+      "reused": false
+    },
+    "search": {
+      "path": "assets/ui-kit/runtime/icon-search.png",
+      "size": 48,
+      "atlas": {
+        "x": 96,
+        "y": 96,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "a6fcd28e22c2b08be5fca3d0ec5801f069860bb7c42f81bc23994c89996b893d",
+      "reused": false
+    },
+    "settings": {
+      "path": "assets/ui-kit/runtime/icon-settings.png",
+      "size": 48,
+      "atlas": {
+        "x": 144,
+        "y": 96,
+        "w": 48,
+        "h": 48
+      },
+      "source": "assets/ui-kit/sources/mmo-icons.png",
+      "sourceHash": "3752d310fa6055032225c395eeb390c1820a225ee8051bec05c464c1d3c4221a",
+      "hash": "87e906f58f8ae03c7906be97b6451eb1b872cb39e394134ef7f66fc3d19908df",
+      "reused": false
+    }
+  },
+  "illustrations": {
+    "village-gate": {
+      "path": "assets/ui-kit/runtime/village-gate.png",
+      "width": 960,
+      "height": 540,
+      "source": "assets/ui-kit/sources/village-gate.png",
+      "sourceHash": "f4f2540203862594dec30ee5a19bac7e7724cce6b1d7f98eb46470fb3c48921d",
+      "hash": "6d4deff8ba413f4d400070bcbfed048ce0e64d763f2f872f19b609abbfac1439",
+      "focalPoint": [
+        0.73,
+        0.52
+      ]
+    },
+    "clan-hall": {
+      "path": "assets/ui-kit/runtime/clan-hall.png",
+      "width": 960,
+      "height": 540,
+      "source": "assets/ui-kit/sources/clan-hall.png",
+      "sourceHash": "2113df773f313f179f5bbda892b5b8a46f94e74d46017f022ad152d7d61f3a3d",
+      "hash": "b228daa60a85ab8ba843d8f9742417aaf8b9f1fabae6816d5190003c4e04fe96",
+      "focalPoint": [
+        0.5,
+        0.68
+      ]
+    }
+  },
+  "recipes": [
+    {
+      "id": "window",
+      "name": "Fenster",
+      "family": "frames",
+      "parts": [
+        "panel",
+        "header",
+        "close",
+        "scrollbar"
+      ],
+      "min": [
+        240,
+        160
+      ]
+    },
+    {
+      "id": "card",
+      "name": "Pappkarte",
+      "family": "frames",
+      "parts": [
+        "paper",
+        "heading",
+        "body"
+      ],
+      "min": [
+        160,
+        80
+      ]
+    },
+    {
+      "id": "tooltip",
+      "name": "Kurzinfo",
+      "family": "frames",
+      "parts": [
+        "inset",
+        "body",
+        "divider"
+      ],
+      "min": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "dialogue",
+      "name": "Gespräch",
+      "family": "frames",
+      "parts": [
+        "panel",
+        "portrait",
+        "paper",
+        "actions"
+      ],
+      "min": [
+        280,
+        220
+      ]
+    },
+    {
+      "id": "button",
+      "name": "Knopf",
+      "family": "controls",
+      "parts": [
+        "button",
+        "icon",
+        "label"
+      ],
+      "min": [
+        44,
+        44
+      ],
+      "states": [
+        "rest",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled",
+        "loading",
+        "error"
+      ]
+    },
+    {
+      "id": "field",
+      "name": "Eingabefeld",
+      "family": "controls",
+      "parts": [
+        "label",
+        "inset",
+        "input",
+        "hint"
+      ],
+      "min": [
+        160,
+        44
+      ],
+      "states": [
+        "rest",
+        "focus",
+        "disabled",
+        "error"
+      ]
+    },
+    {
+      "id": "tab",
+      "name": "Reiter",
+      "family": "controls",
+      "parts": [
+        "panel",
+        "icon",
+        "label",
+        "selection"
+      ],
+      "min": [
+        44,
+        44
+      ],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ]
+    },
+    {
+      "id": "choice",
+      "name": "Auswahl",
+      "family": "controls",
+      "parts": [
+        "inset",
+        "check",
+        "label"
+      ],
+      "min": [
+        44,
+        44
+      ]
+    },
+    {
+      "id": "slider",
+      "name": "Regler",
+      "family": "controls",
+      "parts": [
+        "track",
+        "thumb",
+        "value"
+      ],
+      "min": [
+        160,
+        44
+      ]
+    },
+    {
+      "id": "unit",
+      "name": "Spieler / Ziel / Gruppe",
+      "family": "hud",
+      "parts": [
+        "panel",
+        "portrait",
+        "health",
+        "resource",
+        "status"
+      ],
+      "min": [
+        240,
+        84
+      ]
+    },
+    {
+      "id": "action",
+      "name": "Aktionsplatz",
+      "family": "hud",
+      "parts": [
+        "inset",
+        "skill",
+        "cooldown",
+        "key",
+        "proc"
+      ],
+      "min": [
+        48,
+        48
+      ]
+    },
+    {
+      "id": "cast",
+      "name": "Zauberbalken",
+      "family": "hud",
+      "parts": [
+        "inset",
+        "cast-fill",
+        "label",
+        "interrupt"
+      ],
+      "min": [
+        180,
+        24
+      ]
+    },
+    {
+      "id": "aura",
+      "name": "Buff / Debuff",
+      "family": "hud",
+      "parts": [
+        "inset",
+        "icon",
+        "duration",
+        "stacks"
+      ],
+      "min": [
+        32,
+        32
+      ]
+    },
+    {
+      "id": "quest",
+      "name": "Auftragsanzeige",
+      "family": "hud",
+      "parts": [
+        "panel",
+        "heading",
+        "objective",
+        "progress"
+      ],
+      "min": [
+        240,
+        120
+      ]
+    },
+    {
+      "id": "chat",
+      "name": "Chat",
+      "family": "hud",
+      "parts": [
+        "panel",
+        "channels",
+        "messages",
+        "field"
+      ],
+      "min": [
+        280,
+        180
+      ]
+    },
+    {
+      "id": "minimap",
+      "name": "Minikarte",
+      "family": "hud",
+      "parts": [
+        "panel",
+        "map",
+        "compass",
+        "markers"
+      ],
+      "min": [
+        144,
+        144
+      ]
+    },
+    {
+      "id": "login",
+      "name": "Anmeldung",
+      "family": "mmo",
+      "parts": [
+        "village-gate",
+        "panel",
+        "account",
+        "field",
+        "button",
+        "status"
+      ],
+      "min": [
+        280,
+        400
+      ]
+    },
+    {
+      "id": "character-select",
+      "name": "Charakterauswahl",
+      "family": "mmo",
+      "parts": [
+        "clan-hall",
+        "character",
+        "portrait",
+        "selection",
+        "details",
+        "button"
+      ],
+      "min": [
+        280,
+        440
+      ]
+    },
+    {
+      "id": "realm",
+      "name": "Welt / Verbindung",
+      "family": "mmo",
+      "parts": [
+        "panel",
+        "realm",
+        "status",
+        "queue",
+        "button"
+      ],
+      "min": [
+        240,
+        80
+      ]
+    }
+  ],
+  "minimumTouch": 44,
+  "source": "tools/ui-kit/build.mjs",
+  "frameAtlas": {
+    "path": "assets/ui-kit/runtime/frames.png",
+    "width": 576,
+    "height": 384
+  },
+  "iconAtlas": {
+    "path": "assets/ui-kit/runtime/mmo-icons.png",
+    "width": 192,
+    "height": 144
+  }
+}

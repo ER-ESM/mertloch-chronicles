@@ -30,7 +30,8 @@ export const escapeUi=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp
 export function uiIcon(id,{size=32,label=''}={}){const a=UI_ICONS[id];if(!a)throw Error('Unknown UI icon: '+id);size=Math.max(12,Math.min(96,Number(size)||32));return `<img class="ui-icon" src="${a.path}" width="${size}" height="${size}" alt="${escapeUi(label)}"${label?'':' aria-hidden="true"'} draggable="false">`;}
 export function uiButton(label,{variant='secondary',icon,disabled=false,state,attributes=''}={}){
  if(!['primary','secondary','danger'].includes(variant))throw Error('Unknown button variant');
- return `<button type="button" class="ui-button" data-ui-variant="${variant}"${state?` data-ui-state="${escapeUi(state)}"`:''}${disabled?' disabled':''} ${attributes}>${icon?uiIcon(icon,{size:24}):''}<span>${escapeUi(label)}</span></button>`;
+ if(state&&!UI_STATES.includes(state))throw Error('Unknown UI state');
+ return `<button type="button" class="ui-button" data-ui-variant="${variant}"${state?` data-ui-state="${state}"`:''}${disabled||state==='loading'?' disabled':''}${state==='loading'?' aria-busy="true"':''} ${attributes}>${icon?uiIcon(icon,{size:24}):''}<span>${escapeUi(label)}</span></button>`;
 }
 export function uiField({id,label,type='text',value='',hint='',error='',autocomplete='off',required=false,disabled=false}={}){
  if(!/^[a-z][a-z0-9-]*$/i.test(id||''))throw Error('A stable field ID is required');
@@ -41,4 +42,13 @@ export function uiMeter({label,value,max=100,kind='health',text}={}){
  if(!['health','resource','cast','experience'].includes(kind))throw Error('Unknown meter kind');
  max=Math.max(1,Number(max)||100);value=Math.max(0,Math.min(max,Number(value)||0));
  return `<div class="ui-meter" data-ui-meter="${kind}" role="progressbar" aria-label="${escapeUi(label)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${value}"><i style="width:${value/max*100}%"></i><span>${escapeUi(text??`${label} · ${value}/${max}`)}</span></div>`;
+}
+/** Canvas consumers use the same [top,right,bottom,left] slice contract as CSS. */
+export function drawUiFrame(ctx,image,definition,{x=0,y=0,w,h},{scale=1,fill=false}={}){
+ const [top,right,bottom,left]=definition.slice,sw=definition.width,sh=definition.height;
+ if(!(scale>0)||w<(left+right)*scale||h<(top+bottom)*scale)throw Error('UI frame is smaller than its fixed corners');
+ const sx=[0,left,sw-right,sw],sy=[0,top,sh-bottom,sh],dx=[x,x+left*scale,x+w-right*scale,x+w],dy=[y,y+top*scale,y+h-bottom*scale,y+h];
+ ctx.save();ctx.imageSmoothingEnabled=false;
+ for(let row=0;row<3;row++)for(let col=0;col<3;col++)if(fill||row!==1||col!==1)ctx.drawImage(image,sx[col],sy[row],sx[col+1]-sx[col],sy[row+1]-sy[row],dx[col],dy[row],dx[col+1]-dx[col],dy[row+1]-dy[row]);
+ ctx.restore();
 }
