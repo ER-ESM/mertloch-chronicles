@@ -111,3 +111,10 @@ test('Schlusssteine (Reihe 9) ändern in jedem Baum den Finisher',()=>{
  for(const [spec,m] of Object.entries(SPEC_MECHANICS)){void m;}
  for(const spec of Object.keys(SPEC_MECHANICS)){const {TALENT_ROWS,TALENT_CELLS}=CONTENT;const rows=TALENT_ROWS[spec];for(let i=0;i<rows.length;i++){if(TALENT_CELLS[spec][i].row!==9)continue;assert.ok(rows[i].skills.includes('burst')||Object.keys(rows[i].effects).some(k=>finisher.has(k)),spec+'-'+i+' '+rows[i].name);}}
 });
+
+test('laufende Begleiter: mit Pfadkrone folgt Robbi dem Helden',()=>{
+ const g=game('kevin','kevin-iron');enemy(g,60,0);cast(g,'ground',{x:1030,y:1000});const z=g.fields.find(z=>z.kind==='robbi');
+ g.player.x=1300;step(g,1);assert.ok(Math.abs(z.x-1030)<1,'ohne Pfadkrone bleibt Robbi stehen');
+ g.rpg.talents.learned=[];const t=CONTENT.TALENT_CELLS['kevin-iron'].map((c,i)=>({...c,i})).filter(c=>c.path===0).slice(0,7).map(c=>'kevin-iron-'+c.i);g.rpg.talents.learned=t;g.refreshStats();
+ assert.ok(combatStats(g).robbiFollows,'Pfadkrone Robbi');step(g,1);assert.ok(z.x>1080,'Robbi läuft mit');
+});

@@ -52,8 +52,8 @@ Bis dahin: Fallback-Icons je Reihe (`TALENT_ICON_FALLBACK`) mit Pfadfarbe.
 | Fass „Pils" | Holzfass, grüner Anstich-Hahn, Schaumkrone | stehend · angestochen (Schaum sprudelt) · leer (Fass kippt) |
 | Fass „Weizen" | Holzfass, goldener Hahn, Weizenähre am Deckel | wie oben |
 | Fass „Bock" | dunkles Fass, roter Hahn, Bocksymbol | wie oben, leer = geplatzt |
-| Dosen-Robbi | Automat aus Dosen, Greifarm (Asset `robotclaw` existiert als Item-Icon), Antennenlicht | steht · feuert (Arm vor) · Überlast (glüht rot) · Schrotthaufen |
-| Gisela auf dem Nest | Gans (Familie `goose` existiert als Gegnerbogen) sitzt auf Strohnest | sitzt · schnattert (Hals gestreckt) |
+| Dosen-Robbi | Automat aus Dosen, Greifarm (Asset `robotclaw` existiert als Item-Icon), Antennenlicht | steht · feuert (Arm vor) · Überlast (glüht rot) · Schrotthaufen · **läuft** (4 Richtungen, 6 Frames – Pfadkrone „Robbi läuft mit") |
+| Gisela auf dem Nest | Gans (Familie `goose` existiert als Gegnerbogen) sitzt auf Strohnest | sitzt · schnattert (Hals gestreckt) · **watschelt** mit Nest unterm Flügel (Pfadkrone „Gisela läuft mit"; Laufzyklus der Gans-Familie reicht) |
 | Sporenwolke | grüne, halbtransparente Wolke mit Sporenpunkten | 3 Frames Wabern |
 
 ## 4 · Effekte (Renderer, Bogen `fx`)

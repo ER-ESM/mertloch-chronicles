@@ -123,6 +123,8 @@ export function tickMech(g,dt,cs){
   else if(p.inCombat>0&&p.energy>=num(cs,'stateTrigger',m.state.trigger)){s.state=num(cs,'stateDuration',m.state.duration);note(g,'PUTZWUT','#ecc3fc','burst');}}
  if(m.kind==='guard'&&m.hausverbot){const cap=p.maxHp*.38;if(s.hausverbot<=0&&s.hausverbotCd<=0&&g.classState.guard>=cap*m.hausverbot.threshold){s.hausverbot=num(cs,'hausverbotDuration',m.hausverbot.duration);s.hausverbotCd=20;note(g,'HAUSVERBOT','#ffe08a','parry');}}
  s.fassHaste=0;
+ // Laufende Begleiter (E-32 Etappe 5): Robbi/Gisela folgen dem Helden, wenn der Pfad es freischaltet
+ for(const z of g.fields){if((z.kind==='robbi'&&cs.robbiFollows)||(z.kind==='nest'&&cs.nestFollows)){const d=distance(z,p);if(d>44){const step=Math.min(d-40,70*dt);g.move(z,(p.x-z.x)/d*step,(p.y-z.y)/d*step);z.moving=true;}else z.moving=false;}}
  for(const z of g.fields){
   if(z.kind==='fass'){const sort=m.field?.sorts?.[z.sort];if(!sort)continue;if(distance(p,z)<=z.radius){if(sort.haste)s.fassHaste=sort.haste;}z.tick-=dt;if(z.tick<=0){z.tick=1;if(sort.heal&&distance(p,z)<=z.radius)healPlayer(g,sort.heal,cs,false,'fass');if(sort.damage)for(const o of nb(g,z,z.radius))g.damage(o,sort.damage,'Bockfass');}}
   else if(z.kind==='robbi'){z.fire-=dt;for(const o of nb(g,z,z.radius))o.controlSlow=Math.max(o.controlSlow||0,.3);if(z.fire<=0){z.fire=m.field.interval;const t=nb(g,z,z.radius*2)[0];if(t){g.damage(t,num(cs,'robbiDamage',m.field.damage),'Robbi');g.effect?.('projectile',t.x,t.y,{from:{x:z.x,y:z.y-8},life:.3,max:.3,classId:'kevin'});if(cs.robbiGuard)addGuard(g,4,cs);}}}
