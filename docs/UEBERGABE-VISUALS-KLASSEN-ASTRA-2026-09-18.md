@@ -16,7 +16,7 @@ Bodenkniff / Stärkung, plus die Variante (Zustand erfüllt). Namen in Anführun
 | Spec | Markierung (2) | Eskalation (3) | Bodenkniff (7) | Variante der Eskalation |
 |---|---|---|---|---|
 | Dieter · Türsteher | „Pfandschuld" (Bestand) | „Rausschmiss" – Stoß mit Tresenkante, Deckung fliegt weg | „Absperrband" (Bestand) | „HAUSVERBOT" (Goldrand, Türschild) |
-| Dieter · Kneipenschläger | (Bestand) | „Abriss" – Bierkrug zerschellt, 10 Pegelstriche | „Tresensprung" (Bestand) | „ABRISS ×10" (voller Pegel) |
+| Dieter · Kneipenschläger | (Bestand) | „Abriss" – Bierkrug zerschellt, 10 Deckelstriche | „Tresensprung" (Bestand) | „ABRISS ×10" (voller Pegel) |
 | Dieter · Zapfmeister | (Bestand) | „Fassanstich" – Zapfhahn schlägt ein Fass an | „Anstich" – Fass stellen | „FASSANSTICH" (Bierschaum-Explosion) |
 | Bärbel · Landhaus-Lazarett | (Bestand) | „Großreinemachen" – Wischmopp mit Funken | „Nest" – Gans Gisela auf dem Nest | „GROSSREINEMACHEN" |
 | Bärbel · Putzpyramide | „Schimmel" – grüner Fleck mit Sporen | „Durchputzen" – Sporen platzen | „Sporenwolke" – Wolke über Boden | „DURCHPUTZEN" |
@@ -54,8 +54,8 @@ Bis dahin: Fallback-Icons je Reihe (`TALENT_ICON_FALLBACK`) mit Pfadfarbe.
 | Fass „Pils" | Holzfass, grüner Anstich-Hahn, Schaumkrone | stehend · angestochen (Schaum sprudelt) · leer (Fass kippt) |
 | Fass „Weizen" | Holzfass, goldener Hahn, Weizenähre am Deckel | wie oben |
 | Fass „Bock" | dunkles Fass, roter Hahn, Bocksymbol | wie oben, leer = geplatzt |
-| Dosen-Robbi | Automat aus Dosen, Greifarm (Asset `robotclaw` existiert als Item-Icon), Antennenlicht | steht · feuert (Arm vor) · Überlast (glüht rot) · Schrotthaufen |
-| Gisela auf dem Nest | Gans (Familie `goose` existiert als Gegnerbogen) sitzt auf Strohnest | sitzt · schnattert (Hals gestreckt) |
+| Dosen-Robbi | Automat aus Dosen, Greifarm (Asset `robotclaw` existiert als Item-Icon), Antennenlicht | steht · feuert (Arm vor) · Überlast (glüht rot) · Schrotthaufen · **läuft** (4 Richtungen, 6 Frames – Pfadkrone „Robbi läuft mit") |
+| Gisela auf dem Nest | Gans (Familie `goose` existiert als Gegnerbogen) sitzt auf Strohnest | sitzt · schnattert (Hals gestreckt) · **watschelt** mit Nest unterm Flügel (Pfadkrone „Gisela läuft mit"; Laufzyklus der Gans-Familie reicht) |
 | Sporenwolke | grüne, halbtransparente Wolke mit Sporenpunkten | 3 Frames Wabern |
 
 ## 4 · Effekte (Renderer, Bogen `fx`)
@@ -74,7 +74,7 @@ Bis dahin: Fallback-Icons je Reihe (`TALENT_ICON_FALLBACK`) mit Pfadfarbe.
 
 | Element | Beschreibung |
 |---|---|
-| Pegel-Uhr | 10 Striche im Halbkreis über der Leiste, Ablaufring außen; Farbe von grün (frisch) nach rot (läuft ab) |
+| Deckel-Uhr | 10 Striche im Halbkreis über der Leiste, Ablaufring außen; Farbe von grün (frisch) nach rot (läuft ab) |
 | Vorrat (Lazarett) | 5 Einmachgläser, füllen sich |
 | Zustandsring „Putzwut" | rosa Ring um die Leiste mit Restzeit |
 | Glücksrad (Pfandjäger) | drei Felder: Fehlzündung (grau), Normal (creme), Überzündung (gold); Zeiger |

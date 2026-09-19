@@ -7,7 +7,7 @@ Aktuelle Priorität und Belege: [Roadmap](../ROADMAP.md), [Basis-Nachschliff](..
 - [x] Anatomische Itemslots samt Querformat-Vorschau: Commit 7e560bc, scripts/character-sheet-check.mjs.
 - [x] Gespräch, Beute und Tod in der Touch-Prüfung: scripts/mobile-check.mjs.
 - [ ] Touch-Belegungseditor per Drag: eigener Restpunkt; Tipp-Tipp funktioniert bereits.
-- [ ] Talent-Tooltip beim Punkteverteilen ohne kompletten Neuaufbau erhalten.
+- [x] Talent-Tooltip beim Punkteverteilen: nach dem Lernen wird der Tooltip des Knotens neu geöffnet (app.js pointerover).
 - [x] Tooltip-Verweise über die Lücke zur Kachel erreichbar: 30ec4bc ergänzt die Ausblend-Verzögerung; Verlinkung seit 0f2b49e vorhanden.
 - [ ] Körpergerechte Ausrüstung / neue Grafikpipeline: auf Nutzerwunsch zurückgestellt.
 
@@ -175,4 +175,4 @@ Hilfetext dafür fehlt in `PLAY_HELP` — Bedarf steht in docs/backlog/story.md.
 
 - [x] **Talentfenster als Pfadbaum** (`talent-ui.js`, `talent-ui.css` Block „E-32 · Pfadbaum"): drei Bahnen (Pfadfarben) × zehn Reihen als Raster, je Reihe genau ein Talent; Zustände gelernt / lernbar / gesperrt / ausgeschlossen (Reihe belegt, ✕-Stempel); Bahnkopf mit Zähler und Pfadtreue-Stufen (✦ bei 4, ♛ bei 7); Reihe 10 = Schlussstein; Tooltip nennt Reihe, Pfad und den Ausschluss. Mobil ohne Wischen (drei Spalten passen in 400 px). Die freie Graph-Platzierung (`.branch-tree`, `talent-links`) ist nicht mehr in Gebrauch, das CSS bleibt vorerst.
 - [x] **HUD-Chips der Kernmechaniken** (`spec-mechanics.js mechChips` → `#buffStrip`): Pegel-Striche ▮▮▯, Vorrat ●○, Balken ▰▱ mit Restzeit für Putzwut, Jackpot, Kettenreaktion, Hausverbot, Fässer, Robbi, Nest. Platzhalter bis die Astra-Grafiken (Pegel-Uhr, Gläser, Zustandsring, Glücksrad) da sind.
-- [ ] **Offen:** Pfadfarben und Untersetzer-Grafik aus der Astra-Übergabe einbinden; Vergleichs-Tooltip „Rotation vor/nach dem Talent" (E-32 §4) fehlt noch.
+- [x] Talent-Tooltip zeigt Rotation (Kernmechanik · Pfad · Schlussstein) und die betroffenen Kniffe mit Taste (2026-09-19). Offen bleibt nur: Pfadfarben und Untersetzer-Grafik aus der Astra-Übergabe einbinden, sobald geliefert.

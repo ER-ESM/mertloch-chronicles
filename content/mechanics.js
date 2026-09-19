@@ -10,10 +10,10 @@ export const SPEC_MECHANICS={
   kit:{burst:{name:'Rausschmiss',text:'Verbraucht Pegel und bis zu 80 Deckung: Stoß mit der Tresenkante, die Deckung trifft alle Gegner ringsum. Zünde ihn, wenn die Deckung fast voll ist – bei 95 % Deckung gilt 8 s Hausverbot und Paraden werfen doppelt zurück.'}},
   variant:{burst:{when:'hausverbot',name:'HAUSVERBOT',tone:'gold'}},
   paths:[{name:'Türsteher-Kodex',bonus4:{guardOnStrike:6},bonus7:{guardOnParry:20}},{name:'Rausschmeißer',bonus4:{parrySlow:1},bonus7:{doubleParry:1}},{name:'Hausrecht',bonus4:{zoneUpgrade:1},bonus7:{waveRadius:40}}]},
- 'dieter-brawl':{kind:'stack',name:'Pegel',
+ 'dieter-brawl':{kind:'stack',name:'Deckelstriche',
   stack:{max:10,decay:8,gainOnStrike:1,gainOnHit:1,bonusPerStack:.12,hangover:3,hangoverGcd:1.2,hangoverDamage:.8},
-  kit:{burst:{name:'Abriss',text:'Verbraucht Pegel und alle Pegelstriche: je Strich 12 % mehr Schaden. Zünde ihn, bevor der Pegel abläuft – läuft er ohne Abriss aus, kommt 3 s Kater.'},
-   strike:{name:'Kronkorken-Kelle',text:'Eine schwere Kelle im Nahkampf: baut Pegel und einen Pegelstrich auf und frischt die Pegel-Uhr auf. Drück sie, sobald sie bereit ist; jeder kassierte Treffer gibt ebenfalls einen Strich.'}},
+  kit:{burst:{name:'Abriss',text:'Verbraucht Pegel und alle Deckelstriche: je Strich 12 % mehr Schaden. Zünde ihn, bevor der Pegel abläuft – läuft er ohne Abriss aus, kommt 3 s Kater.'},
+   strike:{name:'Kronkorken-Kelle',text:'Eine schwere Kelle im Nahkampf: baut Pegel und einen Deckelstrich auf und frischt die Deckel-Uhr auf. Drück sie, sobald sie bereit ist; jeder kassierte Treffer gibt ebenfalls einen Strich.'}},
   variant:{burst:{when:'stackFull',name:'ABRISS ×10',tone:'burst'}},
   paths:[{name:'Dauerpegel',bonus4:{stackDecay:3},bonus7:{hangoverShort:1}},{name:'Blitzabriss',bonus4:{stackBonus:.04},bonus7:{stackBurstAt:4}},{name:'Rundenkämpfer',bonus4:{stackSpread:1},bonus7:{stackWave:1}}]},
  'dieter-brew':{kind:'fields',name:'Fässer',
@@ -30,7 +30,7 @@ export const SPEC_MECHANICS={
    burst:{name:'Großreinemachen',text:'Verbraucht Glanz für einen starken Einschlag. Bei 5 Vorrat beginnt 10 s Großreinemachen: jede Heilung trifft das Ziel zusätzlich als Schaden. Zünde sie, sobald die fünf Gläser voll sind.'},
    heal:{name:'Landhaus-Löffelkur',text:'Heilt dich direkt und füllt ein Vorratsglas (höchstens fünf); Überheilung wird zur Hälfte Deckung. Drück sie auch bei vollem Leben – der Vorrat zählt.'}},
   variant:{burst:{when:'supplyFull',name:'GROSSREINEMACHEN',tone:'gold'}},
-  paths:[{name:'Vorrat',bonus4:{supplyMax:2},bonus7:{cleanDuration:5}},{name:'Gisela',bonus4:{fieldDuration:6},bonus7:{nestHonk:1}},{name:'Reinemachen',bonus4:{cleanDamage:.5},bonus7:{overhealShield:.5}}]},
+  paths:[{name:'Vorrat',bonus4:{supplyMax:2},bonus7:{cleanDuration:5}},{name:'Gisela',bonus4:{fieldDuration:6},bonus7:{nestHonk:1.5,nestFollows:1}},{name:'Reinemachen',bonus4:{cleanDamage:.5},bonus7:{overhealShield:.5}}]},
  'baerbel-feedback':{kind:'dot',name:'Schimmel',
   dot:{spreadOnStrike:1,spreadOnKill:2,radius:100,explode:{perTick:5,radius:120}},field:{kind:'spores',duration:4,radius:70},
   kit:{mark:{name:'Schimmel',text:'Markiert das Ziel mit Schimmel, der regelmäßig Schaden macht. Ein Pinsel-Piekser auf ein verschimmeltes Ziel überträgt den Schimmel auf einen Nachbarn, ein Kill auf zwei. Drück ihn zuerst und verteile ihn dann mit Pieksern.'},
@@ -57,7 +57,7 @@ export const SPEC_MECHANICS={
   kit:{ground:{name:'Aufstellen',text:'Stellt Dosen-Robbi auf den gewählten Boden: 15 s lang feuert er jede Sekunde auf den nächsten Gegner und bremst alle im Umkreis. Stell ihn zwischen dich und die Gruppe, bevor du Druck aufbaust.'},
    burst:{name:'Überlast',text:'Verbraucht Druck für einen schweren Treffer. Steht Robbi, überlastet er dabei und explodiert im Umkreis – Robbi ist danach weg. Zünde sie, wenn die Gegner um Robbi stehen.'}},
   variant:{burst:{when:'fieldsUp',name:'ÜBERLAST',tone:'burst'}},
-  paths:[{name:'Robbi',bonus4:{fieldDuration:5},bonus7:{robbiDamage:15}},{name:'Nieten',bonus4:{guardOnStrike:6},bonus7:{robbiGuard:1}},{name:'Überlast',bonus4:{overloadDamage:80},bonus7:{overloadStun:1.5}}]},
+  paths:[{name:'Robbi',bonus4:{fieldDuration:5},bonus7:{robbiDamage:15,robbiFollows:1}},{name:'Nieten',bonus4:{guardOnStrike:6},bonus7:{robbiGuard:1}},{name:'Überlast',bonus4:{overloadDamage:80},bonus7:{overloadStun:1.5}}]},
  'kevin-hunt':{kind:'gamble',name:'Bastler-Glück',
   gamble:{skills:['throw','strike'],misfire:.2,overcharge:.2,misfireMult:.6,overMult:1.8,pity:3,jackpot:{streak:3,duration:8},overSplash:{radius:60,share:.5}},
   kit:{strike:{name:'Pfandgeschoss',text:'Ein Fernkampftreffer baut Druck und Randale auf – bei Kevin mit Bastler-Glück: 20 % Fehlzündung (schwächer), 20 % Überzündung (fast doppelt, trifft Nachbarn). Nach drei Fehlzündungen ist die nächste garantiert eine Überzündung. Drück ihn, wenn nichts anderes bereit ist.'},
@@ -67,5 +67,5 @@ export const SPEC_MECHANICS={
 };
 applyTuning(SPEC_MECHANICS,TUNING.mechanics);
 /** Effektschlüssel der Mechaniken (für Talente und Pfadboni; Prüfung: content/talents.js KNOWN_EFFECTS). */
-export const MECHANIC_EFFECTS=['stackDecay','hangoverShort','stackBonus','stackBurstAt','stackSpread','stackWave','waveRadius','fassPils','fassWeizen','fassBock','fieldCount','fieldDuration','fieldRadius','supplyMax','cleanDuration','nestHonk','cleanDamage','dotSpread','dotRadius','dotHeal','dotExplodeTicks','stateDuration','stateDrain','stateDamage','stateTrigger','mobileHeal','mobileStrike','mobileThrow','mobileBurst','stateMobileAll','fuseDamage','fuseSpread','chainJumps','chainFalloff','reactionWindow','reactionDuration','robbiDamage','robbiGuard','overloadDamage','overloadStun','gambleOver','gamblePity','gambleMisfireMult','jackpotDuration','jackpotStreak','hausverbotDuration','mobileCast','mobileMark','mobileGround','overloadRadius','chainRadius','overSplashShare','tapDamage','fieldHeal'];
-export const MECHANIC_UI={schimmel:'SCHIMMEL SPRINGT',pegel:'Pegel',kater:'Kater',vorrat:'Vorrat',putzwut:'Putzwut',jackpot:'Jackpot',kettenreaktion:'Kettenreaktion',hausverbot:'Hausverbot',fass:'Fass',robbi:'Robbi',nest:'Gisela',pfadbonus:'Pfadbonus',pfadkrone:'Pfadkrone'};
+export const MECHANIC_EFFECTS=['stackDecay','hangoverShort','stackBonus','stackBurstAt','stackSpread','stackWave','waveRadius','fassPils','fassWeizen','fassBock','fieldCount','fieldDuration','fieldRadius','supplyMax','cleanDuration','nestHonk','cleanDamage','dotSpread','dotRadius','dotHeal','dotExplodeTicks','stateDuration','stateDrain','stateDamage','stateTrigger','mobileHeal','mobileStrike','mobileThrow','mobileBurst','stateMobileAll','fuseDamage','fuseSpread','chainJumps','chainFalloff','reactionWindow','reactionDuration','robbiDamage','robbiGuard','overloadDamage','overloadStun','gambleOver','gamblePity','gambleMisfireMult','jackpotDuration','jackpotStreak','hausverbotDuration','mobileCast','mobileMark','mobileGround','overloadRadius','chainRadius','overSplashShare','tapDamage','fieldHeal','robbiHp','robbiFollows','nestFollows'];
+export const MECHANIC_UI={schimmel:'SCHIMMEL SPRINGT',pegel:'Deckelstriche',kater:'Kater',vorrat:'Vorrat',putzwut:'Putzwut',jackpot:'Jackpot',kettenreaktion:'Kettenreaktion',hausverbot:'Hausverbot',fass:'Fass',robbi:'Robbi',nest:'Gisela',pfadbonus:'Pfadbonus',pfadkrone:'Pfadkrone'};

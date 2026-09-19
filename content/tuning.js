@@ -34,7 +34,13 @@ export const TUNING={
  // Klassen-Kits: klasse/skill → cd, cost, damage, heal, window, duration …
  skills:{},
  // Kernmechaniken (E-32, content/mechanics.js): spec → verschachtelte Zahlen, z. B. 'dieter-brawl':{stack:{decay:9},why,since}
- mechanics:{}
+ mechanics:{
+  // Messlauf scripts/spec-sim.mjs (45 s, drei Puppen, naive Rotation, Stufe 11, ohne Talente): Median 142 DPS. Ziel: Schadens-Specs ±15 %, Tank/Heilung darunter.
+  'kevin-fuse':{chain:{falloff:.45},fuse:{explode:{damage:70}},why:'Kurzschluss + Lunten lagen bei +44 % (mit Lunten-Pfad +151 %): drei Sprünge mit 30 % Verlust plus 90er-Explosionen stapeln sich gegen Gruppen; Verlust 45 %, Explosion 70',since:'2026-09-19'},
+  'baerbel-stage':{state:{damage:1.2,drain:12},why:'Putzwut lag bei +29 %: 25 % Bonus bei 10 s Dauer war zu viel; 20 % und schnellerer Randale-Verbrauch (12/s) verkürzen den Zustand',since:'2026-09-19'},
+  'kevin-hunt':{gamble:{misfire:.15,overMult:2},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8',since:'2026-09-19'}
+  // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
+ }
 };
 /** Legt Zahlen aus `overrides[id]` flach über `target[id]`; verschachtelte Objekte (stats, weapon) werden gemischt. */
 export function applyTuning(target,overrides={}){for(const [id,patch] of Object.entries(overrides)){const t=target[id];if(!t)continue;const {why,since,...values}=patch;for(const [k,v] of Object.entries(values))t[k]=v&&typeof v==='object'&&!Array.isArray(v)?{...(t[k]||{}),...v}:v;}return target;}
