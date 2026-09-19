@@ -36,7 +36,7 @@ try{
  await read(`document.querySelector('#meterSegment').focus();`);await b.press('v');assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');
  await read(`game.paused=false;game.startAttack();game.paused=true;document.activeElement.blur();`);assert.equal(await read('game.autoAttack.enabled'),true);await b.press('Escape');
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);assert.equal(await read('game.autoAttack.enabled'),false);
- assert.equal((await b.state()).popups.length,0);
+ assert.equal((await b.state()).popups[0].id,'menu');await b.press('Escape');assert.equal((await b.state()).popups.length,0);
  pass('compact meter visible by default; V/Shift+V toggle; combat Escape keeps the HUD open');
  await click('[data-meter-actor="dieter"]');assert.ok(await read(`document.querySelectorAll('[data-meter-ability]').length>=3`));
  await click('[data-meter-ability="strike"]');assert.match(await read(`document.querySelector('.meter-detail').textContent`),/Kritisch/);
@@ -68,7 +68,7 @@ try{
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await b.resize(390,844);await fixture(true);
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await click('#meterToggle',true);
  await bounds();await click('[data-meter-close]',true);
- await click('#touchMenu',true);await click('[data-book-tab="person"]',true);
+ await click('#touchMenu',true);await click('[data-game-book]',true);await click('[data-book-tab="person"]',true);
  await click('.meter-entry',true);assert.equal((await b.state()).popups.length,0);
  await click('[data-meter-actor="dieter"]',true);await bounds();await b.screenshot(dir+'/mobile-portrait.png');
  await click('[data-meter-mode="healing"]',true);await click('[data-meter-ability="heal"]',true);await bounds();pass('touch opens from Clanbook and supports both modes and ability details');

@@ -1,17 +1,17 @@
 // Clanbuch: vier Reiter plus Hilfe. Overlays (Gespräch, Beute, Tod, Anlage) liegen daneben.
 // Kein Minimieren, keine Fensterstapel. Details (Gegenstand, Erklärung) hängen am Buch und schließen mit ihm.
-import {PANEL_UI as UI} from './content/index.js';
+import {PANEL_UI as UI,GAME_MENU_UI as MENU} from './content/index.js';
 import {touchPopupBounds} from './popup-layout.js';
-const titles={inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:'Figur',activity:'Anlagenprüfung',bag:'Rucksack',person:'Figur',book:'Kniffe',quest:'Aufträge',base:'Bude',map:'Karte',menu:'Hilfe',clan:'Figur',guide:'Hilfe',admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
+const titles={inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:'Figur',activity:'Anlagenprüfung',bag:'Rucksack',person:'Figur',book:'Kniffe',quest:'Aufträge',base:'Bude',map:'Karte',menu:MENU.title,clan:'Figur',guide:'Hilfe',admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
 const widths={
-inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:700,activity:430,bag:560,person:700,book:700,quest:640,base:640,map:760,menu:620,clan:700,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
+inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:700,activity:430,bag:560,person:700,book:700,quest:640,base:640,map:760,menu:320,clan:700,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 // Buchfenster wachsen mit dem Bildschirm (MMO-Vorbild: Charakter- und Talentfenster füllen ein Drittel bis die Hälfte), nie unter 520 px am Desktop.
 const widthFor=id=>{const base=widths[id]||440;if(!isBook(id)||innerWidth<700)return base;return Math.min(base,Math.max(520,Math.round(innerWidth*.44)));}
 ;
 // Menü-Reduktion 2026-09-17 (E-27): vier Reiter plus Hilfe als Symbol. Kniffe und Talente sind Abschnitte der Figur,
 // Bude und Erinnerungen Abschnitte der Aufträge; K, N und B springen zum Abschnitt.
 export const BOOK_TABS=[['person',UI.tabFigure,'person','C'],['bag',UI.tabBag,'bag','I'],['quest',UI.tabQuests,'quest','J'],['map',UI.tabMap,'map','M'],['guide',UI.tabHelp,'guide','H']];
-export const TAB_OF={person:'person',talents:'person',clan:'person',book:'person',bag:'bag',quest:'quest',base:'quest',map:'map',guide:'guide',menu:'guide',admin:'guide',mobile:'guide',install:'guide'};
+export const TAB_OF={person:'person',talents:'person',clan:'person',book:'person',bag:'bag',quest:'quest',base:'quest',map:'map',guide:'guide',admin:'guide',mobile:'guide',install:'guide'};
 const CHILD=new Set(['inspection','detail','touchhelp']);
 export const isBook=id=>TAB_OF[id]!==undefined;
 export class PopupWindows{

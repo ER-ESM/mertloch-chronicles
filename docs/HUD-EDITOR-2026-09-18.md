@@ -4,11 +4,11 @@ Nutzerauftrag: Oberfläche nach dem Bearbeitungsmodus von WoW Retail einrichten 
 
 ## Bedienung
 
-- **F10** oder **Hilfe → Einstellungen → UI bearbeiten** öffnet den Editor. Mobil: Menü → Hilfe → Einstellungen. Die Welt pausiert; Joystick und gehaltene Bewegung werden freigegeben.
+- **Esc → UI bearbeiten** oder **Hilfe → Einstellungen → UI bearbeiten** öffnet den Editor. Mobil: Menü → UI bearbeiten. F10 ist seit der Rückmeldung vom 19.09. nicht mehr belegt, damit die Browserfunktion frei bleibt. Die Welt pausiert; Joystick und gehaltene Bewegung werden freigegeben.
 - Blaue Rahmen ziehen oder ein Element in der Liste auswählen. Pfeiltasten verschieben um einen Pixel, Umschalt + Pfeiltaste um acht. Die Pfeilknöpfe und ein optionales 8-Pixel-Raster stehen auch auf Touch bereit.
 - Größe auf dem Desktop 75–150 %, mobil 100–150 %, damit Touchflächen nicht verkleinert werden. Der Bildschirm begrenzt übergroße Elemente zusätzlich.
 - Bis zu zehn benannte Layouts, Kopieren, Löschen, ausgewähltes Element oder die Anpassungen des aktuellen Bildschirmformats zurücksetzen. Desktop, Hochkant und Querformat haben getrennte Positionen innerhalb desselben Layouts.
-- **Speichern** übernimmt den Entwurf. **Abbrechen / Esc / F10** stellt den vorherigen Stand wieder her. Bei einem Speicherfehler bleibt der Entwurf zum erneuten Speichern offen.
+- **Speichern** übernimmt den Entwurf. **Abbrechen / Esc** stellt den vorherigen Stand wieder her. Bei einem Speicherfehler bleibt der Entwurf zum erneuten Speichern offen.
 - Auf Touch sind die Optionen zunächst eingeklappt. Das Bedienfeld lässt sich an der Überschrift verschieben; die Optionen lassen sich scrollen. Speichern und Abbrechen bleiben erreichbar.
 - Leere Effektleisten, Ziel- und Zauberfenster bekommen im Editor einen Platzhalterrahmen. Die Platzhalter erzeugen keine Spielzustände.
 
@@ -32,3 +32,5 @@ Layoutdaten liegen separat unter `mertloch-hud-layouts-v1` im lokalen Browser. K
 Diese automatisierten Browserprüfungen sind kein neuer unabhängiger Persona-Playtest und ersetzen keine Prüfung auf physischen iOS-/Android-Geräten.
 
 Lokaler Abnahmestand: 458 Spieltests grün; nach Übernahme des letzten Engine-Updates zusätzlich 70 betroffene Klassen-/Kampf-/Inhaltstests grün. Browser: 9 HUD-, 13 UI-, 9 Meter- und 8 PWA-Prüfgruppen sowie alle 98 Mobile-Schritte bestanden. Die HUD-Prüfung verwendet echte Maus-, Tastatur- und Touch-Ereignisse einschließlich Pfeiltasten, Scrollen und anschließendem Spielen mit verschobenem Joystick.
+
+Nachprüfung für das Esc-Spielmenü am 19.09.: 462 Spieltests, 10 HUD- und 9 Meter-Prüfgruppen sowie die sechs Navigations-/Layout-Prüfgruppen bestanden. Alle 98 Schritte von `mobile:check` liefen ohne Fehler oder Laufzeitfehler; der Bericht enthält zwei Abstandsbefunde unter 8 Pixeln außerhalb des neuen Menüs. Zusätzlich geprüft: F10 bleibt unbelegt, Escape-Priorität, Menübuttons, Tab/Enter-Bedienung und Menügeometrie bis 568×320 beziehungsweise 320×568 mit beiden Joystickseiten.

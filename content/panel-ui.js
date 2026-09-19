@@ -22,13 +22,13 @@ export const PLAY_HELP={
   ['Bewegen & Ziel',['Mit dem Joystick laufen; die Seite lässt sich unter Einstellungen umstellen.','Ziel wählt einen nahen Gegner.','Aktion spricht, plündert und bedient Auftragsziele.','Tipp auf den Auftragskasten läuft zur Wegmarke.']],
   ['Kämpfen',['Die Kniffbuttons liegen gegenüber vom Joystick; die Seitenanzeige wechselt bei Bedarf zur zweiten Belegung.','Gegner antippen wählt nur das Ziel. Autoangriff antippen schaltet ein, erneut antippen schaltet aus; offensive Kniffe starten ihn ebenfalls.','Zum Zaubern stehen bleiben; Autoangriffe treffen auch beim Laufen.','Stiefel weicht aus, Hand unterbricht – eigene Sonderknöpfe.']],
   ['Rucksack & Beute',['„Mehr dazu“ im Tooltip zeigt die Details: warum das Ding taugt und was die Fachwörter heißen.','Verpflegung benutzt du im Rucksack über die Gegenstandsdetails.','Auto-Loot: Beute landet beim Kill direkt im Rucksack, das Beutelog zeigt sie an.','Ist der Rucksack voll, wartet der Rest unter „Ausrüstung zurückholen“ im Rucksack.']],
-  ['Clanbuch',['Menü öffnet das Clanbuch: Figur, Rucksack, Aufträge und Karte plus Hilfe. Kniffe und Talente stehen unter Figur; Bude und Erinnerungen unter Aufträge.','× schließt; der Kampf läuft weiter.','Hilfe → Einstellungen → Steuerung & Touchbuttons: Platz wählen, dann einen gelernten Kniff zuweisen.']],
+  ['Clanbuch',['Menü → Clanbuch öffnet die Reiter: Figur, Rucksack, Aufträge und Karte plus Hilfe. Kniffe und Talente stehen unter Figur; Bude und Erinnerungen unter Aufträge.','× schließt; der Kampf läuft weiter.','Hilfe → Einstellungen → Steuerung & Touchbuttons: Platz wählen, dann einen gelernten Kniff zuweisen.']],
   ['Wörter im Dorf',['Randale: dein Kraftstoff – Kniffe kosten sie, Kills und Kaltgetränke füllen sie nach.','Pegel, Glanz, Druck: dasselbe Prinzip unter drei Namen – jeder Clan-Stil baut damit Eskalation auf und verballert sie im großen Kniff.','Kniffe: deine Fähigkeiten, gelernt im Skillbuch, gelegt auf die Leiste, abgefeuert über deine Kniffbuttons.','Klamotten: die Ersatzsachen deines Mentors – sie entscheiden, wie du kämpfst, nicht wie du riechst.','Pfandmarken: das Geld von Mertloch – Leergut, Beute und Kalle rechnen alle in derselben Währung.']]
  ],
  desktopKeys:[
   ['WASD / Rechtsklick','Laufen / Laufweg'],['Tab / Shift + Tab','Nächstes / voriges nahes Ziel'],['F / Shift + F','Interagieren / Beutel ganz leeren'],
   ['1–0 / LEER / Q','Kniffe / Ausweichen / Unterbrechen'],['C / I / K','Figur / Rucksack / Kniffe'],['J / M / H','Aufträge / Karte / Hilfe'],
-  ['K / N / B','Kniffe / Talente / Bude – zum Abschnitt springen'],['V','Kampfstatistik'],['F10','UI bearbeiten: Rahmen ziehen, skalieren und Layout speichern'],['R','Aggro-Radius'],['1 / Esc','Autoangriff ein/aus / Autoangriff beenden'],['Esc','Fenster schließen; dann Autoangriff aus; sonst Hilfe öffnen'],
+  ['K / N / B','Kniffe / Talente / Bude – zum Abschnitt springen'],['V','Kampfstatistik'],['R','Aggro-Radius'],['1 / Esc','Autoangriff ein/aus / Autoangriff beenden'],['Esc / P','Spielmenü öffnen; Esc schließt zuerst Fenster oder bricht Zielen/Zaubern ab'],
   ['Leeres Feld → Kniff','Direkt auf der Aktionsleiste belegen'],['Kniff ziehen / Rechtsklick auf Feld','Belegen / leeren'],['Item doppelklicken','Passende Ausrüstung austauschen'],
   ['Verpflegung ziehen','Rucksack → freier Platz der Aktionsleiste'],['Shift über einem Tooltip','Details, Zusammenhänge und Fachwörter'],
   ['Item anklicken','Details, Platzwahl und Vergleich'],['Talent rechtsklicken','Punkt zurücknehmen, wenn kein Folgetalent abhängt']
@@ -44,3 +44,5 @@ export const PLAY_HELP={
   'Talente: gelernte Vorgänger öffnen Äste; tiefere Knoten benötigen verteilte Punkte.'
  ]
 };
+
+export const GAME_MENU_UI={title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Clanbuch',help:'Hilfe',settings:'Einstellungen'};

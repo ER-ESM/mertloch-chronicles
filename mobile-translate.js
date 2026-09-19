@@ -19,7 +19,7 @@ const PHRASES=[
  [/ ?Esc beendet den Angriff nach offenen Fenstern\./g,' Der Angriffsknopf schaltet ihn wieder aus.'],
  [/1–0 nutzt deine Kniffe/g,'Die Kniff-Knöpfe nutzen deine Kniffe'],
  [/LEER weicht aus, Q unterbricht/g,TOUCH_TERMS.dash+' weicht aus, '+TOUCH_TERMS.interrupt+' unterbricht'],
- [/C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt\./g,'Der '+TOUCH_TERMS.menu+'-Knopf öffnet das Clanbuch; × schließt.'],
+ [/C I K J B M H öffnen den Reiter; dieselbe Taste oder Esc schließt\./g,TOUCH_TERMS.menu+' → Clanbuch öffnet die Reiter; × schließt.'],
  [/Shift über einem Tooltip zeigt die Details/g,'Antippen zeigt die Details'],
  [/Shift über einem Tooltip/g,'Antippen'],
  [/Shift: Details/g,'Antippen: Details'],
