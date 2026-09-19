@@ -20,7 +20,13 @@ async function drag(sel,dx,dy,touch=false){
  const r=await rect(sel),p={x:r.x+25,y:r.y+20},q={x:p.x+dx,y:p.y+dy};
  assert.ok(await read(`!!document.elementFromPoint(${p.x},${p.y})?.closest(${JSON.stringify(sel)})`),'drag unobstructed '+sel);
  if(touch){await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await wait(80);await b.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[q]});await wait(80);await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
- else {await b.send('Input.dispatchMouseEvent',{type:'mousePressed',...p,button:'left',clickCount:1});await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:p.x+6,y:p.y,button:'left',buttons:1});await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',...q,button:'left',buttons:1});await b.send('Input.dispatchMouseEvent',{type:'mouseReleased',...q,button:'left',clickCount:1});}
+ else {
+  // Allow native pointer capture and the layout frame to run between physical input samples.
+  await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',...p});await wait(40);
+  await b.send('Input.dispatchMouseEvent',{type:'mousePressed',...p,button:'left',clickCount:1});await wait(40);
+  for(let i=1;i<=6;i++){await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:p.x+dx*i/6,y:p.y+dy*i/6,button:'left',buttons:1});await wait(25);}
+  await b.send('Input.dispatchMouseEvent',{type:'mouseReleased',...q,button:'left',clickCount:1});
+ }
  await wait(300);
 }
 async function field(sel,value,event='change'){
@@ -49,6 +55,7 @@ async function menuBounds(){
  assert.ok(result.inside,JSON.stringify(result));assert.equal(result.overlap,false,JSON.stringify(result));assert.ok(result.overflow<2,JSON.stringify(result));assert.equal(result.small,false,JSON.stringify(result));
 }
 try{
+ await b.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
  await b.resize(1440,1000);await fixture();const native=await rect('.player-panel');
  const f10=await read(`(()=>{const e=new KeyboardEvent('keydown',{key:'F10',code:'F10',bubbles:true,cancelable:true});document.dispatchEvent(e);return e.defaultPrevented})()`);assert.equal(f10,false);assert.equal(await editing(),false);
  await b.press('i');await b.press('Escape');assert.equal((await b.state()).popups.length,0);
@@ -64,7 +71,7 @@ try{
  const before=await read('({x:game.player.x,y:game.player.y,time:game.time})');await b.hold('d',300);await b.press('1');
  assert.deepEqual(await read('({x:game.player.x,y:game.player.y,time:game.time})'),before);
  assert.ok(await read(`document.querySelectorAll('[data-hud-handle]').length>=14`));
- await drag('[data-hud-handle="player"]',64,160);const nudged=await rect('.player-panel');await b.press('ArrowRight');assert.ok(Math.abs((await rect('.player-panel')).x-nudged.x-1)<.1);await field('[data-hud-scale]','115','input');
+ await drag('[data-hud-handle="player"]',64,160);const nudged=await rect('.player-panel');await b.press('ArrowRight');await wait(80);assert.ok(Math.abs((await rect('.player-panel')).x-nudged.x-1)<.1);await field('[data-hud-scale]','115','input');
  await b.screenshot(dir+'/desktop-editor.png');await click('[data-hud-save]');assert.equal(await editing(),false);assert.equal(await read('game.paused'),false);
  const moved=await rect('.player-panel');assert.ok(moved.y>native.y+150);assert.ok(Math.abs(moved.width/native.width-1.15)<.02);
  await fixture(false,true);assert.deepEqual(await rect('.player-panel'),moved);
@@ -90,7 +97,8 @@ try{
  await fixture(false,true);assert.deepEqual(await rect('#chatWindow'),chatAfter);await b.screenshot(dir+'/chat-moved-desktop.png');
  pass('chat window moves in the HUD editor, still drags by its tab bar afterwards and persists');
  await openEditor();await field('[data-hud-element]','meter');await field('[data-hud-scale]','110','input');await click('[data-hud-save]');
- const meterBefore=await rect('#combatMeter');await drag('.meter-header',-48,-24);const meterAfter=await rect('#combatMeter');assert.ok(meterAfter.x<meterBefore.x-40);
+ assert.equal(await read("getComputedStyle(document.querySelector('#combatMeter')).transitionDuration"),'0s');
+ const meterBefore=await rect('#combatMeter');await drag('.meter-header',-48,-24);const meterAfter=await rect('#combatMeter');assert.ok(meterAfter.x<meterBefore.x-40,JSON.stringify({meterBefore,meterAfter}));
  await fixture(false,true);assert.deepEqual(await rect('#combatMeter'),meterAfter);await b.press('v');assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');
  pass('Details-style meter still drags and persists after being scaled in the HUD editor');
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await b.resize(390,844);await fixture(true,true);await effects();

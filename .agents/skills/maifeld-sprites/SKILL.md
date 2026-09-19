@@ -9,6 +9,8 @@ Arbeite aus dem Projekt-Root. Lies bei neuen Grafikaufträgen `docs/GRAFIK-REVIE
 
 ## Zuerst wiederverwenden
 
+Für UI/HUD und MMORPG-Masken zuerst `assets/ui-kit/runtime/catalog.json` und `ui-workshop.html#recipes` verwenden. `ui-kit-recipes.js` liefert 19 fertige Zusammenstellungen, `ui-kit.css` die gemeinsamen Rahmen und Zustände. Neue Größen, Texte, Fenster und Menüs aus diesen Teilen zusammensetzen; nur fehlende Motive neu generieren. Vertrag, Prompts und fünf Sichtprüfungen: `docs/UI-SPRITES-5-ITERATIONEN-2026-09-19.md`. Export: `npm run ui:kit:build`; Prüfung: `npm run ui:kit:check` und `npm run ui:kit:browser`. Anmeldeformulare nutzen die bestehende Online-Schicht, Hero-Vorschauen den Spielrenderer mit tatsächlicher Ausrüstung.
+
 Für allgemeine Bewohner zuerst ein bestehendes Rezept oder `recipeFromSeed(seed,index)` aus `refinement-library.js` prüfen. Node-Export: `tools/sprite-pipeline/export-character.mjs`. Neue Köpfe und Hüte benötigen vier Ansichten, neue Körper/animierte Kleidung dieselbe vollständige Posenmatrix. Benannte Figuren nicht zufällig verändern. Menschen- und Tierrigs nicht mischen.
 
 Version 1 unterstützt 432 Kombinationen, vier Richtungen und acht Posen. Ihre kurze Gehfolge, Faustangriffe und fehlenden Waffenebenen erlauben keine pauschale Freigabe als neuer Heldenrenderer. Ein Zusatzteil braucht klare Kompatibilität und Registrierung; keine stillen Fallbacks auf eine falsche Pose.

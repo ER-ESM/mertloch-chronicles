@@ -62,7 +62,7 @@ canvas,img,.pixel{image-rendering:pixelated;}
 /* Radius: siehe „Rundung E-28" am Dateiende. */
 [hidden]{display:none !important;}
 @media (prefers-reduced-motion:reduce){
- *,*::before,*::after{animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms;scroll-behavior:auto;}}
+ *,*::before,*::after{animation-duration:.01ms;animation-iteration-count:1;transition-duration:0s!important;scroll-behavior:auto;}}
 
 /* ------------------------------------------------------------------- Knöpfe
    Genau drei Arten: Primär (Gold), Sekundär (Rahmen), Gefahr (Koralle). */

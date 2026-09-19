@@ -29,6 +29,8 @@ jobs:
         run: npm test
       - name: Build static game
         run: npm run build
+      - name: Check reusable UI sprites and MMO masks
+        run: npm run ui:kit:browser
       - name: Check Clanbook and mobile layouts
         run: npm run ui:check
       - name: Check damage and healing meter
@@ -48,6 +50,7 @@ jobs:
           name: browser-diagnostics
           path: |
             visual-review/ui-regression/
+            visual-review/ui-kit/
             visual-review/meter/
             visual-review/hud/
             visual-review/shop/

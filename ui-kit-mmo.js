@@ -21,6 +21,7 @@ export function uiCharacterChoice(member,{selected=false}={}){
 export async function paintUiHeroes(root,{visualEquipment=[]}={}){
  const [{loadRedesignArt,redesignArt},{drawDetailedHero}]=await Promise.all([import('./redesign-art.js'),import('./detailed-hero-art.js')]);
  await loadRedesignArt();if(!redesignArt.ready)return false;
+ if(visualEquipment.length){const {loadContentArt}=await import('./content-art.js');await loadContentArt();}
  for(const canvas of root.querySelectorAll('[data-ui-hero]')){
   const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
   drawDetailedHero(ctx,canvas.dataset.uiHero,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment},6);
