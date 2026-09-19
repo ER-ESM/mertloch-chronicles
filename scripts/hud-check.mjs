@@ -20,7 +20,7 @@ async function drag(sel,dx,dy,touch=false){
  const r=await rect(sel),p={x:r.x+25,y:r.y+20},q={x:p.x+dx,y:p.y+dy};
  assert.ok(await read(`!!document.elementFromPoint(${p.x},${p.y})?.closest(${JSON.stringify(sel)})`),'drag unobstructed '+sel);
  if(touch){await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await wait(80);await b.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[q]});await wait(80);await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
- else {await b.send('Input.dispatchMouseEvent',{type:'mousePressed',...p,button:'left',clickCount:1});await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',...q,button:'left',buttons:1});await b.send('Input.dispatchMouseEvent',{type:'mouseReleased',...q,button:'left',clickCount:1});}
+ else {await b.send('Input.dispatchMouseEvent',{type:'mousePressed',...p,button:'left',clickCount:1});await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:p.x+6,y:p.y,button:'left',buttons:1});await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',...q,button:'left',buttons:1});await b.send('Input.dispatchMouseEvent',{type:'mouseReleased',...q,button:'left',clickCount:1});}
  await wait(300);
 }
 async function field(sel,value,event='change'){
@@ -84,6 +84,11 @@ try{
  await read(`game.classState.m.hangover=0;game.target=null;game.buffs={remaining:0};game.momentum={stacks:0,until:0};`);await wait(400);
  assert.equal(await read(`document.querySelector('#auraTooltip').hidden`),true);assert.equal(await read(`document.querySelector('#targetDebuffStrip').hidden`),true);assert.equal(await read(`document.querySelector('#debuffStrip').hidden`),true);
  pass('real status timers/stacks reach distinct bars; expiry and target loss remove icons and tooltips');
+ await openEditor();const chatNative=await rect('#chatWindow');await drag('[data-hud-handle="chat"]',240,160);await click('[data-hud-save]');const chatEdited=await rect('#chatWindow');
+ assert.equal(await read(`document.querySelector('#chatWindow').hasAttribute('data-hud-custom')`),true);assert.ok(chatEdited.x>chatNative.x+200&&chatEdited.y>chatNative.y+120,JSON.stringify({chatNative,chatEdited}));
+ await drag('#chatWindow .chat-tabs',64,40);const chatAfter=await rect('#chatWindow');assert.ok(chatAfter.x>chatEdited.x+50&&chatAfter.y>chatEdited.y+30,JSON.stringify({chatEdited,chatAfter}));
+ await fixture(false,true);assert.deepEqual(await rect('#chatWindow'),chatAfter);await b.screenshot(dir+'/chat-moved-desktop.png');
+ pass('chat window moves in the HUD editor, still drags by its tab bar afterwards and persists');
  await openEditor();await field('[data-hud-element]','meter');await field('[data-hud-scale]','110','input');await click('[data-hud-save]');
  const meterBefore=await rect('#combatMeter');await drag('.meter-header',-48,-24);const meterAfter=await rect('#combatMeter');assert.ok(meterAfter.x<meterBefore.x-40);
  await fixture(false,true);assert.deepEqual(await rect('#combatMeter'),meterAfter);await b.press('v');assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');

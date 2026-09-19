@@ -13,6 +13,8 @@
 .game-popup .clan-card.selected{border-image-source:url(assets/ui-kit/runtime/frame-character-hover.png)}
 .online-form input{border-image:url(assets/ui-kit/runtime/frame-inset-rest.png) 16 / 6px / 0 stretch}
 .online-form input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.chat-window:is(:hover,:focus-within,.pinned,.configuring){border-image:url(assets/ui-kit/runtime/frame-panel-rest.png) 16 / 6px / 0 stretch}
+.party-member{border-image:url(assets/ui-kit/runtime/frame-inset-rest.png) 16 / 4px / 0 stretch}
 
 .mmo-clan-grid{background:url(assets/ui-kit/runtime/clan-hall.png) center / cover;padding:12px;gap:16px}.mmo-clan-grid .clan-card{background-color:#223a2ff0}.mmo-clan-grid .clan-card canvas{background:transparent}
 .game-popup .mmo-login-card{max-width:none;background:linear-gradient(#172a22e8,#172a22f5),url(assets/ui-kit/runtime/village-gate.png) center / cover}.game-popup .mmo-login-card .ui-field{color:var(--cream)}

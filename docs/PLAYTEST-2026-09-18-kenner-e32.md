@@ -39,4 +39,4 @@ spürbar? Bericht gekürzt; Einordnung durch Entwicklung in *kursiv*.
   - [x] Leere Desktop-Leiste → Knopf „Leiste: Standardbelegung" im Figur-Fenster.
   - [x] „Pegel" doppelt belegt → Kneipenschläger-Stapel heißt jetzt Deckelstriche / Deckel-Uhr.
   - [x] Anstich-Tooltip ohne Böller-Zahlen; Talent-Tooltip nennt den Sperrgrund im Kampf; Baum-Intro erklärt Pfadmischen und Pfadbonus (Bahnkopf-Titel).
-  - [ ] Klickpfad zur Arena (5 Klicks) und Merken von Anzahl/Puppe: kleiner Rest, Admin-Werkzeug.
+  - [x] Arena merkt sich Gegner, Anzahl und Puppe; nach der ersten Nutzung öffnet das Admin-Fenster direkt den Reiter Trainingsarena (2026-09-20).

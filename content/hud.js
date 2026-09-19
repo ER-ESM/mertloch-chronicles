@@ -18,6 +18,7 @@ export const HUD_ELEMENTS=[
  {id:'controls',selector:'.world-controls',name:'Ton und Vollbild',desktop:true},
  {id:'zone',selector:'.region-label',name:'Ortsname',desktop:true},
  {id:'meter',selector:'#combatMeter',name:'Kampfstatistik'},
+ {id:'chat',selector:'#chatWindow',name:'Chatfenster'},
  {id:'stick',selector:'#touchStick',name:'Joystick',touch:true},
  {id:'touchActions',selector:'#touchActions',name:'Touch-Kniffe',touch:true},
  {id:'utility',selector:'#touchUtility',name:'Ziel und Aktion',touch:true},

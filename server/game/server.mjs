@@ -1,4 +1,4 @@
-// Mertloch-Spielserver (E-33, Stufe B): Konto, Cloud-Spielstand, Bestenlisten über HTTP; Anwesenheit und Chat in Echtzeit
+// Mertloch-Spielserver (E-35): Konto, Cloud-Spielstand, Bestenlisten über HTTP; Anwesenheit und Chat in Echtzeit
 // über WebSocket (/ws). Läuft hinter Caddy auf 127.0.0.1:PORT. Keine Fremdpakete.
 // Start: node server/game/server.mjs   · Konfiguration: Umgebungsvariablen oder C:\Mertloch\mertloch.env (KEY=VALUE).
 import http from 'node:http';
@@ -8,8 +8,9 @@ import {resolve,extname,sep} from 'node:path';
 import {readFile} from 'node:fs/promises';
 import {openStore,validEmail,validName,verifyPassword,BOARDS,SAVE_MAX_BYTES,SESSION_DAYS} from './store.mjs';
 import {acceptUpgrade} from './ws.mjs';
+import {createSharedWorld} from './shared-world.mjs';
 
-export const API_VERSION=2;
+export const API_VERSION=3;
 const COOKIE='mertloch_session';
 const VIEW=1400,SNAP_MS=100,MAX_NEAR=40,IDLE_MS=45000;
 const TEXT={
@@ -143,37 +144,48 @@ export function createGameServer(options={}){
 
  // ── Echtzeit: Anwesenheit und Chat ──
  // Client → Server: {t:'pos',w,x,y,f,c,l,sp,s}  ·  {t:'chat',ch:'say'|'world',text}
+ //                  {t:'hit',e,d,max,th?,r?} · {t:'evade',e?} · {t:'dead'} · {t:'party',op,name?} · {t:'who'}   (Regeln: shared-world.mjs)
+ // Server → Client: {t:'mob'|'mobs'|'kill'|'reset'|'up'} · {t:'party',leader,members} · {t:'invite',from} · {t:'who',list}
  // Server → Client: {t:'welcome',name,online,history} · {t:'snap',o:[{n,x,y,f,c,l,sp,s}]} (10 Hz, nur Umkreis) · {t:'chat',from,ch,text,at} · {t:'notice',text}
  const hub={clients:new Map(),history:[],
   kick(accountId){const c=this.clients.get(accountId);if(c)c.socket.close(4001);},
   join(socket,account){
    this.kick(account.id);
-   const c={socket,id:account.id,name:account.name,world:'',x:0,y:0,f:1,c:'',l:1,sp:'',s:'idle',placed:false,seen:Date.now(),chatTimes:[],lastSnap:''};
+   const c={socket,id:account.id,name:account.name,world:'',x:0,y:0,f:1,c:'',l:1,sp:'',s:'idle',placed:false,seen:Date.now(),chatTimes:[],lastSnap:'',h:100,party:null,rate:{}};
    this.clients.set(account.id,c);
    socket.on('message',text=>{let m;try{m=JSON.parse(text);}catch{return;}if(m&&typeof m==='object')this.receive(c,m);});
-   socket.on('close',()=>{if(this.clients.get(account.id)===c)this.clients.delete(account.id);});
+   socket.on('close',()=>{shared.gone(c);if(this.clients.get(account.id)===c)this.clients.delete(account.id);});
    socket.send(JSON.stringify({t:'welcome',name:account.name,online:this.clients.size,history:this.history.slice(-20)}));
   },
   receive(c,m){
    c.seen=Date.now();
    if(m.t==='pos'){
-    c.world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.placed=!!c.world;
-   }else if(m.t==='chat'){
+    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed)shared.sync(c);}
+   }else if(m.t==='hit'){if(this.allow(c,'hit',40))shared.hit(c,m);}
+   else if(m.t==='evade')shared.evade(c,m.e?clampText(m.e,60):undefined);
+   else if(m.t==='dead')shared.evade(c);
+   else if(m.t==='party'){if(this.allow(c,'party',5))shared.party(c,{op:String(m.op||''),name:clampText(m.name,20)});}
+   else if(m.t==='who'){if(this.allow(c,'who',2))shared.who(c);}
+   else if(m.t==='chat'){
     const text=clampText(m.text,200);if(!text)return;
     const now=Date.now();c.chatTimes=c.chatTimes.filter(t=>now-t<10000);
     if(c.chatTimes.length>=5||(c.chatTimes.length&&now-c.chatTimes.at(-1)<700)){c.socket.send(JSON.stringify({t:'notice',text:'Nicht so schnell – der Wirt kommt mit dem Zuhören nicht nach.'}));return;}
     c.chatTimes.push(now);
+    if(m.ch==='party'){const members=shared.partyMembers(c);if(!members.length){c.socket.send(JSON.stringify({t:'notice',text:'Du bist in keiner Gruppe.'}));return;}const wire=JSON.stringify({t:'chat',from:c.name,ch:'party',text,at:now});for(const o of members)o.socket.send(wire);return;}
+    if(m.ch==='whisper'){const to=[...this.clients.values()].find(o=>o.name.toLowerCase()===clampText(m.to,20).toLowerCase());if(!to||to===c){c.socket.send(JSON.stringify({t:'notice',text:'„'+clampText(m.to,20)+'“ ist gerade nicht online.'}));return;}const w={t:'chat',from:c.name,to:to.name,ch:'whisper',text,at:now};to.socket.send(JSON.stringify(w));c.socket.send(JSON.stringify(w));return;}
     const ch=m.ch==='world'?'world':'say',msg={t:'chat',from:c.name,ch,text,at:now},wire=JSON.stringify(msg);
     if(ch==='world'){this.history.push(msg);if(this.history.length>50)this.history.shift();}
     for(const o of this.clients.values())if(ch==='world'||o===c||(o.placed&&o.world===c.world&&Math.abs(o.x-c.x)<VIEW&&Math.abs(o.y-c.y)<VIEW))o.socket.send(wire);
    }
   },
+  /** einfache Mengenbremse je Verbindung und Nachrichtenart (pro Sekunde) */
+  allow(c,kind,perSecond){const now=Date.now(),b=c.rate[kind]||(c.rate[kind]={at:now,n:0});if(now-b.at>=1000){b.at=now;b.n=0;}return ++b.n<=perSecond;},
   tick(){
    const now=Date.now(),rooms=new Map();
    for(const c of this.clients.values()){if(now-c.seen>IDLE_MS){c.socket.close(4000);continue;}if(c.placed){let r=rooms.get(c.world);if(!r)rooms.set(c.world,r=[]);r.push(c);}}
    for(const room of rooms.values())for(const c of room){
     if(c.socket.backlog>64*1024)continue;
-    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s});if(near.length>=MAX_NEAR)break;}
+    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
     const wire=JSON.stringify({t:'snap',o:near});
     if(wire===c.lastSnap)continue; // nichts hat sich bewegt: nichts zu erzählen
     c.lastSnap=wire;c.socket.send(wire);
@@ -182,6 +194,7 @@ export function createGameServer(options={}){
   pingAll(){for(const c of this.clients.values()){if(!c.socket.alive){c.socket.close(4000);continue;}c.socket.alive=false;c.socket.ping();}}
  };
 
+ const shared=createSharedWorld({clients:()=>hub.clients.values(),send:(c,msg)=>c.socket.send(JSON.stringify(msg))});
  const server=http.createServer(handle);
  server.on('upgrade',(req,raw)=>{
   raw.on('error',()=>{});
@@ -191,9 +204,9 @@ export function createGameServer(options={}){
   if(!account){raw.end('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n');return;}
   const socket=acceptUpgrade(req,raw);if(socket)hub.join(socket,account);
  });
- const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
+ const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>shared.tick(),1000),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
  for(const t of timers)t.unref?.();
- return {server,hub,store,
+ return {server,hub,store,shared,
   listen:(port=options.port??8080,host=options.host||'127.0.0.1')=>new Promise(ok=>server.listen(port,host,()=>ok(server.address()))),
   close:()=>new Promise(ok=>{for(const t of timers)clearInterval(t);for(const c of hub.clients.values())c.socket.close(1001);store.flush();server.close(()=>ok());server.closeAllConnections?.();})};
 }

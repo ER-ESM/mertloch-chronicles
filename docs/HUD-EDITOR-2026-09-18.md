@@ -12,7 +12,7 @@ Nutzerauftrag: Oberfläche nach dem Bearbeitungsmodus von WoW Retail einrichten 
 - Auf Touch sind die Optionen zunächst eingeklappt. Das Bedienfeld lässt sich an der Überschrift verschieben; die Optionen lassen sich scrollen. Speichern und Abbrechen bleiben erreichbar.
 - Leere Effektleisten, Ziel- und Zauberfenster bekommen im Editor einen Platzhalterrahmen. Die Platzhalter erzeugen keine Spielzustände.
 
-Verschiebbar sind Spieler, Ziel, Buffs, Debuffs, Ziel-Debuffs, Zauberleiste, Kampfstatistik, Hofprobe sowie die vorhandenen Desktop- oder Touch-Steuerelemente. Die Seiten des Clanbuchs behalten ihre eigene Fensterlogik. Das Kampfstatistikfenster lässt sich nach einer Layoutänderung weiter an seiner Titelleiste verschieben.
+Verschiebbar sind Spieler, Ziel, Buffs, Debuffs, Ziel-Debuffs, Zauberleiste, Kampfstatistik, Chatfenster, Hofprobe sowie die vorhandenen Desktop- oder Touch-Steuerelemente. Die Seiten des Clanbuchs behalten ihre eigene Fensterlogik. Das Kampfstatistikfenster lässt sich nach einer Layoutänderung weiter an seiner Titelleiste verschieben. Dasselbe gilt seit dem 20.09. für das Chatfenster: Es ist als Element „Chatfenster“ im Editor verschieb- und skalierbar (je Layout und Bildschirmformat), lässt sich danach weiter an seiner Reiterleiste ziehen (die Lage landet im aktiven Layout), und „Lage und Größe zurücksetzen“ in den Chat-Einstellungen löst es wieder aus dem Layout. Ohne Layout-Eintrag gilt wie bisher die eigene Chat-Lage.
 
 ## Effekte und Speicherung
 

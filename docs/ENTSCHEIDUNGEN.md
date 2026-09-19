@@ -381,3 +381,20 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 **Konsequenzen.** Ersetzt die Händler-Zurückstellung aus E-25/E-26 sowie die Einschränkung des alten Händlerentwurfs „kein Ausrüstungsankauf, keine Rückkaufliste“. Rückkaufdaten und referenzierte gewürfelte Gegenstände werden im bestehenden Spielstand mitgespeichert; alte Spielstände erhalten eine leere Liste. Transaktionen prüfen Reichweite, Sichtlinie, Leben, Kampf, Tutorial, Menge, Marken und Kapazität. Kaufen ist vollständig oder wirkungslos. Karte und Rucksack führen zum begehbaren Vorplatz; ein gemeinsames Popup zeigt Kaufen/Rückkauf links und den Rucksack rechts, auf Desktop und Touch. Die Charaktererstellung bleibt ein zurückgestellter Entwurf. Umsetzung und Grenzen: [Händler](HAENDLER-2026-09-19.md).
 
 Einzigartige Dorflegenden, Questgegenstände und Gegenstände ohne hinterlegten Verkaufswert werden nicht angekauft. Damit entsteht aus fehlenden Preisangaben kein Verkauf wertvoller Unikate zum Mindestpreis.
+
+
+## E-35 · Online als MMORPG: eigener Server, geteilte Welt, lokaler Kampf
+
+**Anlass.** Nutzeraufträge vom 19./20.09.2026: Subdomain mertloch.esm-consultant.de, „auf MMORPG umstellen", eigener Ionos-Windows-Server, „Multiplayer als MMORPG finalisieren". Revidiert E-01 (reines Solo-Browserspiel).
+
+**Entscheidung.**
+1. **Betrieb:** eigener Server (Caddy + Node, `server/game/`), keine Fremdpakete, Auslieferung per Push auf `main`. GitHub Pages bleibt als Solo-Fassung ohne Online-Funktionen bestehen.
+2. **Konto und Spielstand:** E-Mail + Passwort (scrypt), Sitzungs-Cookie, Cloud-Spielstand je Welt mit Sicherung des Vorgängers; der Browserspeicher bleibt erste Wahrheit, der neuere Stand gewinnt.
+3. **Geteilte Welt, lokaler Kampf:** Jeder Browser rechnet seinen Kampf weiter selbst (neun Spec-Mechaniken, Procs, Talente bleiben unangetastet). Der Server führt je Lagergegner die gemeinsamen Lebenspunkte, die Bedrohung je Spieler, das Ziel (höchste Bedrohung, 10 % Trägheit; Schutz-Specs Dosenwall und Schrottkoloss zählen dreifach) und die Wiederkehr. Clients melden nur eigenen Schaden. Wer nicht das Ziel ist, sieht den Gegner dem Ziel nachlaufen und wird nicht angegriffen.
+4. **Belohnung:** Beim Tod bekommt jeder Beteiligte und jedes Gruppenmitglied in 200 m die volle lokale Belohnung (EP, eigene Beute, Auftragsfortschritt). Persönliche Beute – kein Streit, kein Würfeln.
+5. **Soziales:** Gruppen bis 5 (einladen, annehmen, verlassen, entfernen, Leitung wandert), Gruppenrahmen, Kanäle Umkreis/Welt/Gruppe/Flüstern, Spielerliste, Bestenlisten.
+6. **Nicht geteilt:** Tutorial, Trainingsarena, Kiosk-Innenraum, Umgebungstiere (Ecology), Aufträge, Clanbau. Wer in einer Instanz ist, ist für andere unsichtbar.
+
+**Verworfen.** Voll serverseitiger Kampf: hätte Engine, Mechaniken und Procs doppelt gebraucht und jede Eingabe um die Laufzeit verzögert – für ein Koop-Spiel ohne PvP und ohne Handel zwischen Spielern kein Gewinn. Grenze, die daraus folgt: Schadenswerte kommen vom Client (Server kappt auf Gegner-Maximum und 40 Meldungen/s). Deshalb hängen an Bestenlisten keine Belohnungen, und es gibt weder PvP noch Handel/Post zwischen Spielern; beides bräuchte Server-Autorität über Inventar und Kampf.
+
+**Konsequenzen.** `docs/ONLINE-STUFE-B-2026-09-19.md` (Betrieb, Schnittstellen), `docs/ONLINE-STUFE-C-2026-09-20.md` (geteilte Welt, Gruppen). Lagergegner tragen `netId` (`<lager>:<index>`); neue Gegnerquellen, die geteilt sein sollen, brauchen ebenfalls einen stabilen Schlüssel.

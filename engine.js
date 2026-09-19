@@ -51,7 +51,9 @@ function restoreQuest(s={},sameWorld=true){
   wolves:clampInt(s.wolves,0,objectiveNeed(first[0]),0),cultists:clampInt(s.cultists,0,objectiveNeed(first[1]),0),boss:!!s.boss,counts,
   gathered:sameWorld&&Array.isArray(s.gathered)?s.gathered.filter(id=>typeof id==='string').slice(0,400):[]};
 }
-export class Game {
+/** Geteilte Welt: Gegner folgt dem Spieler, den er laut Server bekämpft, und schlägt dort sichtbar zu (ohne lokalen Schaden). */
+function followRemote(g,e,dt){const t=e.remoteTarget,d=distance(e,t),reach=e.autoAttack.range*.8;e.facing=e.x<t.x?1:-1;e.direction=walkFacing(t.x-e.x,t.y-e.y,e.direction||'se');if(e.stun>0)return;if(d>reach){const step=Math.min(e.speed*(e.mark>0?e.slow:1)*dt,d-reach+1);if(walkClear(g.world,e,t,7)){g.move(e,(t.x-e.x)/d*step,(t.y-e.y)/d*step);e.moving=true;}else{e.pathTimer-=dt;if(e.pathTimer<=0){e.pathTimer=1.1;e.chasePath=g.world.findPath(e,t);}moveAlong(g,e,e.chasePath,e.speed,dt);}}else{e.autoTimer=(e.autoTimer||0)-dt;if(e.autoTimer<=0){e.autoTimer=e.autoAttack.speed||2;e.attack=.3;}}}
+export class Game{
   constructor(world,saved={},options={}){
     this.meter=createCombatMeter();this.world=world;this.member=member(saved.classId);this.skills=skillsFor(this.member.id);this.lastStrike=-100;this.trainingXp=Math.max(0,Number(saved.trainingXp) || ((Number(saved.level)||1)*((Number(saved.level)||1)-1)*70+(Number(saved.xp)||0)));this.seenSkills=new Set([...(saved.seenSkills||['strike','dash']),'auto']);this.autoAttack={enabled:false,timers:{}};this.casting=null;this.buffs={};this.classState=freshClassState();this.fields=[];this.aiming=null;this.aimPoint=null;this.zones=[];this.life=new VillageLife(world);this.time=0;this.paused=false;this.keys=new Set();this.target=null;this.fx=[];this.texts=[];this.events=[];this.messages=[];this.cooldowns=Object.fromEntries(this.skills.map(s=>[s.id,0]));this.gcd=0;this.moveTo=null;this.path=[];this.dead=false;this.random=rng(9876);this.momentum={stacks:0,until:0,restUntil:0};this.procState=freshProcState();
     const level=Number.isInteger(saved.level)?Math.max(1,Math.min(30,saved.level)):1;
@@ -177,6 +179,16 @@ export class Game {
   gainXp(n){if(!Number.isFinite(n)||n<=0)return;n=Math.round(n*(1+(this.baseEffects().xpBonus||0)));const oldSkills=this.skills.filter(s=>available(this,s.id)).map(s=>s.id),p=this.player;this.trainingXp+=n;p.xp+=n;while(p.level<30&&p.xp>=xpToNext(p.level)){p.xp-=xpToNext(p.level);p.level++;this.refreshStats();p.hp=p.maxHp;this.toast(SYSTEM_LINES.levelUp(p.level));this.memoryEvent({kind:'level',level:p.level});this.emit('rpgChanged');this.effect('heal',p.x,p.y,{life:1.5,max:1.5});}if(p.level===30)p.xp=Math.min(p.xp,xpToNext(p.level));const learned=this.skills.filter(s=>available(this,s.id)&&!oldSkills.includes(s.id)).map(s=>s.id);if(learned.length){unlockOnBar(this,learned);this.emit('skillsUnlocked');}this.emit('save');}
   // ---------- Akt 1: Kapitel, Lager, Erinnerungsfetzen, Basisbau, Mentoren ----------
   /** Lager gehört zu einem Kapitel, das schon läuft? Lager ohne `chapter` sind Kapitel 1 bzw. Nebenquest-Lager. */
+  // ── Geteilte Welt (online.js, E-35): der Server führt Lebenspunkte, Bedrohung und Ziel der Lagergegner ──
+  netEnemy(netId){return this.enemies.find(e=>e.netId===netId)||null;}
+  /** Schaden anderer Spieler: senkt nur die Lebenspunkte, keine Procs, keine Statistik. */
+  applyRemoteHp(e,hp,by){if(!e||e.hp<=0||!(hp<e.hp))return false;const lost=Math.round(e.hp-hp);e.hp=Math.max(1,hp);e.hurt=.15;if(lost>0&&by)this.float(e.x+(this.random()-.5)*14,e.y-27,String(lost),'#9fc4e8');return true;}
+  /** Der Server meldet: Gegner kämpft gegen einen anderen Spieler (Position) – oder wieder gegen mich/niemanden (null). */
+  setRemoteTarget(e,point){if(!e||e.hp<=0)return;if(!point){e.remoteTarget=null;return;}e.remoteTarget={x:point.x,y:point.y,until:this.time+3};e.ai='combat';e.cast=null;}
+  /** Der Server meldet den Tod. credit: ich war beteiligt → volle Belohnung über kill(); sonst verschwindet der Gegner still. */
+  remoteKill(e,{credit=false,respawnIn=45}={}){if(!e)return false;e.remoteTarget=null;if(e.hp>0){if(credit)this.kill(e);else{if(this.target===e){this.target=null;stopAuto(this,false);}e.hp=0;e.aggro=false;e.cast=null;e.ai='dead';e.mark=0;e.roamGoal=null;this.effect('death',e.x,e.y,{life:1.5,max:1.5});}}e.dead=respawnIn;e.respawnAt=this.time+respawnIn;return true;}
+  /** Der Server meldet: niemand kämpft mehr – Gegner läuft heim und heilt. */
+  remoteReset(e){if(!e||e.hp<=0)return;e.remoteTarget=null;if(!e.aggro)beginReturn(this,e);}
   campActive(c){return !c.chapter||c.chapter<=this.quest.chapter;}
   /** Gegnerwerte eines Lagers: Kapitel-Lager nehmen ihren Archetyp bzw. Boss aus content/enemies.js. */
   campDefinition(c){
@@ -192,7 +204,7 @@ export class Game {
       for(let i=0;i<c.count;i++){
         const spot=c.spawns?.[i]||w.findClear(c.x+(i-1)*42,c.y+Math.sin(i*3)*48,9);
         this.enemies.push(makeEnemy(spot,++this.campSerial,{...def,type:c.type,campId:c.id,chapter:c.chapter,questId:c.questId,
-          roamRadius:c.type==='wolf'&&!c.questId?24:40,aggroRange:c.type==='wolf'&&!c.questId?78:c.type==='boss'?105:105,
+          netId:c.id+':'+i,roamRadius:c.type==='wolf'&&!c.questId?24:40,aggroRange:c.type==='wolf'&&!c.questId?78:c.type==='boss'?105:105,
           spawnPoints:c.spawns||[spot],name:c.questId?(w.quests?.find(q=>q.id===c.questId)?.enemyName||'Pfandkeiler am Grillplatz'):def.name}));
       }
     }
@@ -417,6 +429,7 @@ export class Game {
       if(e.hp<=0){e.dead=Math.max(0,e.respawnAt-this.time);tryRespawn(this,e);continue;}
       if(e.mark>0){e.mark-=dt;if(e.mark<=0)onMarkExpire(this,e);e.dotTimer-=dt;if(e.dotTimer<=0){this.damage(e,e.dotDamage||12,'Markierung');e.dotTimer=1;}if(e.hp<=0)continue;}
       e.vulnerable=Math.max(0,e.vulnerable-dt);e.stun=Math.max(0,e.stun-dt);
+      if(e.remoteTarget){if(this.time>e.remoteTarget.until){e.remoteTarget=null;if(!e.aggro||e.ai!=='combat')beginReturn(this,e);}else{followRemote(this,e,dt);continue;}}
       const d=distance(e,p);
       if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&!e.dummy){const buddy=this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange);if(buddy&&e.joinAt==null)e.joinAt=this.time+BALANCE.procs.chainJoinDelay;else if(e.joinAt!=null&&this.time>=e.joinAt){e.joinAt=null;if(!this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange*3))continue;e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;this.float(e.x,e.y-30,'KUMPEL KOMMT','#f0b070');}}
       if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;if(!this.target||this.target.hp<=0)this.target=e;}
