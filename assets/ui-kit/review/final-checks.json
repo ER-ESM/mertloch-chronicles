@@ -1,0 +1,67 @@
+{
+  "iterations": 5,
+  "unitSuite": {
+    "passed": 529,
+    "stage": "after online/chat merge"
+  },
+  "targetedAfterTargetingMerge": {
+    "passed": 11
+  },
+  "ui": {
+    "checks": [
+      "one Clanbook, tab navigation, world movement and detail return",
+      "physical equip/unequip, consumables, search keyboard isolation and persistence",
+      "full inventory swap and partial loot preservation",
+      "dieter: three trees, 90 choices with ten learned talents, granted skills and persistence",
+      "baerbel: three trees, 90 choices with ten learned talents, granted skills and persistence",
+      "kevin: three trees, 90 choices with ten learned talents, granted skills and persistence",
+      "native skill drag to action bar and persistence",
+      "selection, autoattack toggle, escape and skill icons",
+      "desktop: tutorial controls, target clearance and five Clanbook tabs",
+      "phone: tutorial controls, target clearance and five Clanbook tabs",
+      "small: tutorial controls, target clearance and five Clanbook tabs",
+      "landscape: tutorial controls, target clearance and five Clanbook tabs",
+      "landscape-left: tutorial controls, target clearance and five Clanbook tabs"
+    ],
+    "errors": []
+  },
+  "kit": {
+    "checks": [
+      "1440 px: all 19 recipes assemble without horizontal overflow",
+      "390 px: all 19 recipes assemble without horizontal overflow",
+      "320 px: all 19 recipes assemble without horizontal overflow",
+      "reduced motion",
+      "account modes, request mapping, loading and recovery after server error (local fixture)"
+    ],
+    "errors": []
+  },
+  "hud": {
+    "checks": [
+      "F10 stays unbound; Esc closes windows/cancels aiming, opens a keyboard-accessible menu and routes every button",
+      "Esc menu opens editor, which pauses combat and isolates keys; physical drag, scaling and saved coordinates survive reload",
+      "cancel restores previous geometry; named profile copies, switching and reset are transactional",
+      "storage failure keeps the draft open for a successful retry",
+      "real status timers/stacks reach distinct bars; expiry and target loss remove icons and tooltips",
+      "chat window moves in the HUD editor, still drags by its tab bar afterwards and persists",
+      "Details-style meter still drags and persists after being scaled in the HUD editor",
+      "touch game-menu entry, physical finger drag, separate portrait/landscape layouts and touch scale floor",
+      "three active effect bars fit small phones, both orientations/handedness and safe areas without covering combat controls",
+      "editor options scroll with a real finger swipe in short landscape viewports",
+      "moved touch joystick still controls the character after saving"
+    ],
+    "errors": []
+  },
+  "build": {
+    "sourceGuard": "pass",
+    "runtimeFiles": 47,
+    "runtimeBytes": 708292,
+    "sourcesExcluded": true
+  },
+  "screenshots": [
+    "iteration-5-builder.png",
+    "iteration-5-mmo.png",
+    "iteration-5-mobile.png",
+    "iteration-5-merged-game.png",
+    "iteration-5-game-login.png"
+  ]
+}
