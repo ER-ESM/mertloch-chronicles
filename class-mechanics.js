@@ -28,7 +28,7 @@ export function performTalent(g,s,point,cs){const p=g.player,st=g.classState;
  if(s.id==='snare')g.fields.push({...point,kind:'snare',radius:s.radius,remaining:s.duration,tick:0,armedIn:.65,upgrade:!!cs.snareUpgrade});
 }
 export function afterSkill(g,id,e,cs,context={}){const p=g.player,st=g.classState,s=spec(g);
- if(id==='strike'){if(s==='dieter-wall'||s==='kevin-iron')addGuard(g,8+(cs.guardOnStrike||0),cs);if(s==='dieter-brawl')st.rage=Math.min(5,st.rage+1+(cs.rageGain||0));if(context.beat&&cs.beatEnergy)p.energy=Math.min(100,p.energy+cs.beatEnergy);if(cs.zoneEnergy&&g.fields.some(z=>z.kind==='keg'&&distance(p,z)<z.radius))p.energy=Math.min(100,p.energy+cs.zoneEnergy);st.freeStrike=false;}
+ if(id==='strike'){if(s==='dieter-wall'||s==='kevin-iron')addGuard(g,8+(cs.guardOnStrike||0),cs);if(s==='dieter-brawl')st.rage=Math.min(5,st.rage+1+(cs.rageGain||0));if(context.beat&&cs.beatEnergy)p.energy=Math.min(100,p.energy+cs.beatEnergy);if(cs.zoneEnergy&&g.fields.some(z=>['keg','sanctuary','barricade','fass','robbi','nest'].includes(z.kind)&&distance(p,z)<z.radius))p.energy=Math.min(100,p.energy+cs.zoneEnergy);st.freeStrike=false;}
  if(id==='throw'){st.freeThrow=false;if(cs.rootThrow&&e?.stun>0)p.runes=Math.min(3,p.runes+1);}
  if(id==='mark'&&e)applyMark(g,e,cs);
  if(id==='dash'){if(cs.dashFreeThrow||s==='kevin-hunt')st.freeThrow=true;if(cs.dashThrow)g.cooldowns.throw=Math.max(0,g.cooldowns.throw-3);if(cs.dashCombo)p.runes=Math.min(3,p.runes+1);}

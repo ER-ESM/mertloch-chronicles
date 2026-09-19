@@ -27,8 +27,8 @@ spürbar? Bericht gekürzt; Einordnung durch Entwicklung in *kursiv*.
 
 ## Ableitungen (Backlog)
 
-- [ ] Spec-Wechsel: Fehlgrund als Dialogmeldung, Knopf „Zum Clan-Treff" in der Arena (UI).
-- [ ] „Stufe für Tests" muss Werte mitziehen; Arena-Gegnerwerte gegen Spielerstufe prüfen (Engine/Balancing).
-- [ ] Auto-Retarget nach Kill auf den nächsten Angreifer (Engine, Regel prüfen).
-- [ ] Tastenbelegung im Touch-Modus mit Tastatur: Ziffern sollen die beschriftete Seite treffen (Mobile-Schicht).
-- [ ] Wiederholung des Playtests am Desktop ohne Touch-Emulation, mit gesetzter Spec (Arena-Knopf „Spec wählen").
+- [x] Spec-Wechsel: Fehlgrund als Dialog mit Knopf „Zum Clan-Treff und wechseln"; Arena-Panel hat Spezialisierungs-Knöpfe und „Zum Clan-Treff" (2026-09-19).
+- [x] Geprüft (2026-09-19): „Stufe für Tests" levelt über gainXp (Werte ziehen mit); Arena-Gegner behalten Stufe-1-Werte, der Tod kam durch fehlende Ausrüstung auf Stufe 15. Arena-Hinweis ergänzt: Ausrüstung bleibt Sache des Spielers.
+- [x] Auto-Retarget nach Kill auf den nächsten kämpfenden Gegner, Autoangriff läuft weiter (engine.js kill, 2026-09-19).
+- [x] Ziffern treffen im Touch-Modus die sichtbaren Touch-Slots der aktuellen Seite (mobile.slotForKey, 2026-09-19).
+- [ ] Wiederholung des Playtests am Desktop ohne Touch-Emulation, mit gesetzter Spec über den neuen Arena-Knopf – offen bis zur nächsten Playtest-Runde.

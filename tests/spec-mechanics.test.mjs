@@ -8,6 +8,7 @@ import {combatStats} from '../rpg.js';
 import {tickCasting} from '../auto-combat.js';
 import {M,mechVariant,mechChips} from '../spec-mechanics.js';
 import {SPEC_MECHANICS} from '../content/index.js';
+import * as CONTENT from '../content/index.js';
 
 const arena=()=>({spawn:{x:0,y:0},npc:{x:0,y:20},landmarks:[],camps:[],blocked:()=>false,findClear:(x,y)=>({x,y}),lineClear:()=>true,findPath:(a,b)=>[b]});
 function game(classId,spec){const g=new Game(arena(),{classId,level:11});assert.ok(changeSpec(g,spec),spec);g.random=()=>.5;g.player.x=1000;g.player.y=1000;return g;}
@@ -92,4 +93,21 @@ test('GCD: Basis 1,5 s, Varianten und Procs lösen nur den kurzen GCD aus; Boden
 test('Filter-Furie: eine Parade während eines angesagten Zaubers ist ein Prost und gibt Randale',()=>{
  const g=game('baerbel','baerbel-stage'),e=enemy(g,40,0);e.cast={total:2,remaining:1,interruptible:true};g.player.energy=10;
  cast(g,'parry');g.player.energy=10;g.hitPlayer(e,50);assert.equal(g.player.energy,60,'20 Parade + 30 Prost');
+});
+
+test('Schrottkoloss: Robbi zieht die Schläge auf sich, bis sein Leben aufgebraucht ist',()=>{
+ const g=game('kevin','kevin-iron'),e=enemy(g,40,0);cast(g,'ground',{x:1020,y:1000});const hp=g.player.hp;
+ g.hitPlayer(e,100,false);assert.equal(g.player.hp,hp,'Robbi fängt den Treffer');const z=g.fields.find(z=>z.kind==='robbi');assert.ok(z.hp<300);
+ g.hitPlayer(e,10000,false);assert.equal(g.fields.filter(z=>z.kind==='robbi').length,0,'Robbi kaputt');
+});
+
+test('nach einem Kill wechselt das Ziel auf den nächsten kämpfenden Gegner',()=>{
+ const g=game('dieter','dieter-brawl'),a=enemy(g,40,0,50),b=enemy(g,60,10);g.target=a;g.player.inCombat=5;g.damage(a,10000,'Kelle');
+ assert.equal(g.target,b,'nächster Angreifer ist Ziel');
+});
+
+test('Schlusssteine (Reihe 9) ändern in jedem Baum den Finisher',()=>{
+ const finisher=new Set(['guardBurst','waveRadius','stackWave','tapDamage','burstHot','cleanDuration','burstSpread','dotExplodeTicks','stateDamage','chainJumps','overloadStun','hunterFinish','gambleOver']);
+ for(const [spec,m] of Object.entries(SPEC_MECHANICS)){void m;}
+ for(const spec of Object.keys(SPEC_MECHANICS)){const {TALENT_ROWS,TALENT_CELLS}=CONTENT;const rows=TALENT_ROWS[spec];for(let i=0;i<rows.length;i++){if(TALENT_CELLS[spec][i].row!==9)continue;assert.ok(rows[i].skills.includes('burst')||Object.keys(rows[i].effects).some(k=>finisher.has(k)),spec+'-'+i+' '+rows[i].name);}}
 });
