@@ -8,6 +8,7 @@ import {drawBuilding} from './architecture.js';
 const $=s=>document.querySelector(s),directions=['se','sw','ne','nw'],titles=['SÜDOST','SÜDWEST','NORDOST','NORDWEST'];
 export const state={hero:'dieter',action:'walk',outfit:'theme',phase:0,playing:true,sockets:false,armor:false};
 const armor=Object.fromEntries(['dieter','anni','kevin'].map(hero=>[hero,demoArmor(hero)]));
+for(const [id,label]of [['starter','Erste Kutte'],['trousers','Kutte und Hose'],['dressed','Kutte, Hose und Schuhe']])$('#outfit').add(new Option(label,id));
 for(const p of DEMO_PRESETS)$('#outfit').add(new Option(p.name,p.id));
 const params=new URLSearchParams(location.search);
 for(const key of ['hero','action','outfit'])if([...$('#'+key).options].some(o=>o.value===params.get(key)))state[key]=params.get(key);
@@ -24,8 +25,8 @@ function ground(){
 }
 function player(hero=state.hero){
  const action=state.action,phase=Math.floor(state.phase)%8,pose=action==='walk'?'walk-'+phase:action==='attack'?['anticipation','anticipation','impact','impact','recovery','recovery','idle','idle'][phase]:action==='ranged'?(phase<4?'ranged-aim':'ranged-release'):action;
- const preset=DEMO_PRESETS.find(p=>p.id===state.outfit),equipment=state.outfit==='bare'?{}:preset?.equipment||themes[hero];
- return {artPose:pose,direction:'se',parry:action==='parry'?.3:0,usingRanged:action==='ranged'||(state.outfit==='theme'&&hero!=='dieter'&&action!=='attack')||!!preset?.ranged,visualEquipment:[...resolveDemoEquipment(equipment).visualEquipment,...(state.armor?armor[hero]:[])]};
+ const preset=DEMO_PRESETS.find(p=>p.id===state.outfit),progression=['starter','trousers','dressed'].includes(state.outfit),equipment=state.outfit==='bare'?{}:progression?{body:'kutte',...(state.outfit==='dressed'?{feet:'festivalstiefel'}:{})}:preset?.equipment||themes[hero];
+ return {artPose:pose,direction:'se',parry:action==='parry'?.3:0,usingRanged:action==='ranged'||(state.outfit==='theme'&&hero!=='dieter'&&action!=='attack')||!!preset?.ranged,visualEquipment:[...resolveDemoEquipment(equipment).visualEquipment,...(progression&&state.outfit!=='starter'?armor[hero].filter(i=>i.slot==='legs'):state.armor?armor[hero]:[])]};
 }
 function actor(c,hero,x,y,p,magnify){if(!drawDetailedHero(c,hero,x,y,p,magnify))throw Error('Die Detailgrafik für '+hero+' / '+p.artPose+' fehlt.');}
 export function draw(){

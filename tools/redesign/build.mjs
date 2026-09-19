@@ -7,13 +7,14 @@ import {resample} from '../sprite-pipeline/precision-resample.mjs';
 import {bodyAnchor} from '../sprite-pipeline/build-walk.mjs';
 import {rigWalk,WALK_RIG} from './walk-rig.mjs';
 import {wearMasks} from './wear-masks.mjs';
+import {buildUnderwear} from './underwear.mjs';
 
 const root=new URL('../../',import.meta.url),base='assets/redesign/';
 export const DIRECTIONS=['se','sw','ne','nw'];
 export const COLUMNS={poses:['idle','anticipation','impact','recovery','hit','parry','cast','rest'],walk:Array.from({length:8},(_,i)=>'walk-'+i),specials:['ranged-aim','ranged-release','dash','dead'],heavy:['idle','anticipation','impact','recovery'],heavywalk:Array.from({length:8},(_,i)=>'walk-'+i)};
 const median=values=>[...values].sort((a,b)=>a-b)[Math.floor(values.length/2)];
 const hash=data=>createHash('sha256').update(data).digest('hex');
-function cleanAlphaIslands(frame){
+export function cleanAlphaIslands(frame){
  const seen=new Uint8Array(frame.width*frame.height),minimum=8*(frame.width/192)**2;
  for(let start=0;start<seen.length;start++){
   if(seen[start]||!frame.data[start*4+3])continue;const queue=[start];seen[start]=1;
@@ -37,7 +38,7 @@ function garmentMask(frame,b,hero,row,pose){
 function maskRuns(mask){const runs=[];for(let y=0;y<mask.height;y++){let x=0;while(x<mask.width){while(x<mask.width&&!mask.data[(y*mask.width+x)*4+3])x++;const start=x;while(x<mask.width&&mask.data[(y*mask.width+x)*4+3])x++;if(x>start)runs.push([y,start,x-start]);}}return runs;}
 
 /** Coordinates belong to a pose, then refine each point against nearby skin pixels. */
-function frameSockets(frame,b,row,state,column){
+export function frameSockets(frame,b,row,state,column){
  const back=row>1,west=row%2===1;
  // Coordinates are authored in an east-facing source silhouette; western views mirror the registration.
  let main=[.23,.58],off=[.85,.60],angle=-.12;
@@ -134,6 +135,7 @@ export function buildRedesign({partial=false}={}){
   });files.set(base+'runtime/theme-gear.png',encodePng(sheet));catalog.gearPath=base+'runtime/theme-gear.png';catalog.gearSourceHash=hash(bytes);
  }
  catalog.complete=jobs.every(j=>catalog.assets[j.id])&&!!catalog.gear;
+ buildUnderwear(catalog,files,{frameSockets,cleanAlphaIslands});
  files.set(base+'runtime/catalog.json',Buffer.from(JSON.stringify(catalog,null,2)+'\n'));return {files,catalog};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){const {files,catalog}=buildRedesign({partial:process.argv.includes('--partial')});for(const [p,bytes]of files){const url=new URL(p,root);mkdirSync(new URL('./',url),{recursive:true});writeFileSync(url,bytes);}console.log(JSON.stringify({sheets:Object.keys(catalog.assets).length,frames:Object.values(catalog.assets).reduce((n,a)=>n+a.frames.length,0),complete:catalog.complete}));}

@@ -4,7 +4,7 @@
 // sie bleiben nur, weil ihre Bosse Speicher- und Schemaschlüssel sind. Gestaltung: docs/AKT-1-FILMRISS.md.
 import {BALANCE} from './balance.js';
 export const STORY={title:'Filmriss',act:1,giver:'Kisten-Ida',reward:'Goldener Dosenöffner',boss:'Horst Nüchternmann',faction:'Ruhe 22:01 e. V.',
- hero:{state:'Unterhose, eine Socke, Stempel auf dem Unterarm',pocket:'Ein Pfandbon über 0,08 €. Ausgestellt Samstag, 23:58.',stamp:'NIE WIEDER MONTAG · ZUTRITT',memory:'weg. Komplett. Nicht mal der eigene Name.'}};
+ hero:{state:'Unterwäsche, eine Socke, Stempel auf dem Unterarm',pocket:'Ein Pfandbon über 0,08 €. Ausgestellt Samstag, 23:58.',stamp:'NIE WIEDER MONTAG · ZUTRITT',memory:'weg. Komplett. Nicht mal der eigene Name.'}};
 export const LORE={
  setting:'Mertloch im Maifeld, 56753. Ein Dorf mit Kirche, Grillplatz, Pfandhof, einem Schrottplatz am Ortsrand und mehr Vereinen als Einwohnern. Sonntagmorgen. Es riecht nach kaltem Grill und Reue.',
  clan:'Der Poo-Tang-Clan: Kisten-Ida, Dosen-Dieter, Aperol-Anni, Klo-Kevin und Anhang. Geboren, geblieben, nie leise gewesen. Vereinsheim: „die Bude“, eine ehemalige Milchsammelstelle hinter St. Gangolf. Seit 2007 Vereinsheim ohne Verein.',

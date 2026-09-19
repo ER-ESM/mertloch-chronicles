@@ -27,6 +27,23 @@ test('action priority remains correct while moving; walk is distance-driven and 
  for(const [p,pose]of [[{dead:true},'dead'],[{hp:0},'dead'],[{dash:.1},'dash'],[{hurt:.1},'hit'],[{parry:.1},'parry'],[{casting:true},'cast'],[{casting:true,usingRanged:true},'ranged-aim'],[{attack:.24},'anticipation'],[{attack:.13},'impact'],[{attack:.02},'recovery'],[{attack:.02,usingRanged:true},'ranged-release']])assert.equal(redesignPose({...moving,...p}),pose);
  assert.equal(redesignPose({resting:true}),'rest');assert.equal(redesignPose({resting:true,moving:true}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:80}),'walk-0');assert.equal(redesignPose({moving:true,walkDistance:-10}),'walk-7');
 });
+test('every playable pose has an independent underwear body and alpha-owned clothing masks',()=>{
+ const provenance=JSON.parse(read('assets/redesign/sources/underwear/generation.json'));
+ assert.ok(catalog.dressing.complete);
+ for(const a of Object.values(catalog.assets)){
+  assert.ok(provenance.records.some(r=>r.source===a.baseSource&&r.sha256===a.baseSourceHash));
+  const im=decodePng(read(a.basePath));
+  for(const f of a.frames){
+   assert.ok(f.base&&f.base.hash!==f.hash);assert.ok(f.base.bounds.count>500);
+   const ownership=new Set();
+   for(const slot of ['body','legs','feet'])for(const [y,x,w]of f.base.wearRuns[slot])for(let xx=x;xx<x+w;xx++){
+    assert.equal(im.data[((f.y+y)*im.width+f.x+xx)*4+3],255,`${a.hero} ${f.pose}: ${slot} paints outside body`);
+    const key=y*192+xx;assert.ok(!ownership.has(key),`${a.hero} ${f.pose}: slots overlap`);ownership.add(key);
+   }
+  }
+ }
+ const incomplete=structuredClone(catalog);delete incomplete.assets['anni-walk'].frames[0].base;assert.equal(validRedesignCatalog(incomplete),false);
+});
 test('painted walk articulates both hips and knees with opposite support phases',()=>{
  for(const hero of ['dieter','anni','kevin'])for(let row=0;row<4;row++){
   const a=catalog.assets[hero+'-walk'];assert.equal(a.animation,'registered-painted-mesh');
@@ -61,7 +78,7 @@ test('painted fingers remain below hand jewelry with fitted clothing enabled',()
  const events=[],ctx=Object.fromEntries(['save','restore','translate','rotate','scale','beginPath','ellipse','fill','arc','clip'].map(k=>[k,()=>{}]));ctx.drawImage=()=>events.push('pixels');
  const equipment=[{slot:'weapon',asset:'maul',hands:2},{slot:'ring1',asset:'ring'}];
  drawRedesignPerson(ctx,'dieter',0,0,{artPose:'walk-2',direction:'se',visualEquipment:equipment},1,(_c,items,s)=>{
-  assert.equal(s.legs,catalog.assets['dieter-heavywalk'].frames[2].joints);events.push(items.map(i=>i.slot));
+  assert.equal(s.legs,catalog.assets['dieter-heavywalk'].frames[2].base.joints);events.push(items.map(i=>i.slot));
  });
  assert.deepEqual(events.at(-1),['ring1']);const clothing=events.findIndex(e=>Array.isArray(e));
  assert.ok(events.slice(clothing+1,-1).includes('pixels'),'weapon and finger restoration happen between clothing and gloves');
@@ -69,7 +86,7 @@ test('painted fingers remain below hand jewelry with fitted clothing enabled',()
 test('partial catalogs and a failed native image never activate a mixed delivery',async()=>{
  assert.ok(validRedesignCatalog(catalog));const partial=structuredClone(catalog);delete partial.assets['kevin-heavy'];assert.equal(validRedesignCatalog(partial),false);
  const prior={Image:globalThis.Image,fetch:globalThis.fetch};try{
-  globalThis.fetch=async()=>({ok:true,json:async()=>catalog});globalThis.Image=class{set src(v){queueMicrotask(()=>v.includes('anni-specials.png')?this.onerror():this.onload());}};
+  globalThis.fetch=async()=>({ok:true,json:async()=>catalog});globalThis.Image=class{set src(v){queueMicrotask(()=>v.includes('anni-specials-base.png')?this.onerror():this.onload());}};
   const failed=await import('../redesign-art.js?failed-native');await failed.loadRedesignArt();assert.equal(failed.redesignArt.ready,false);
   let count=0;globalThis.Image=class{set src(v){count++;queueMicrotask(()=>this.onload());}};
   const good=await import('../redesign-art.js?complete-native');await good.loadRedesignArt();assert.equal(good.redesignArt.ready,true);assert.equal(count,16);assert.equal(good.redesignArt.details.size,0,'detail atlases are not decoded on game startup');

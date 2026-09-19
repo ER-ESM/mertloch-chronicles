@@ -5,13 +5,15 @@ import {contentAsset,contentArt} from './content-art.js';
 import {legGarmentSegments} from './equipment-art.js';
 const cache=new Map(),colours=new Map();
 function nearest(rgb){const key=rgb.join(',');if(!colours.has(key)){let best=PRECISION_PALETTE[0],distance=Infinity;for(const p of PRECISION_PALETTE){const d=p.reduce((n,v,i)=>n+(v-rgb[i])**2,0);if(d<distance){distance=d;best=p;}}colours.set(key,best);}return colours.get(key);}
-const ramps={trouser:['#283b46','#456071','#7b91a0'],boot:['#342b26','#674536','#a27c51'],leatherboot:['#352c2a','#775438','#b69d73'],furboot:['#51483c','#8c8065','#c9bea0'],glove:['#342b25','#715333','#b99a60'],bracer:['#26353a','#607273','#b4bcb0']};
+const ramps={jacket:['#1d303e','#34586d','#90a6ad'],raincoat:['#62442b','#aa8132','#ddc373'],vest:['#253d34','#416954','#a4b297'],trouser:['#202f39','#304653','#536571'],boot:['#342b26','#674536','#a27c51'],leatherboot:['#352c2a','#775438','#b69d73'],furboot:['#51483c','#8c8065','#c9bea0'],glove:['#342b25','#715333','#b99a60'],bracer:['#26353a','#607273','#b4bcb0']};
 function textureFor(sel,item,q){
- const sheet=contentAsset('equipment-parts'),r=contentArt.catalog?.equipment[item.asset];if(!sheet||!r)return null;
+ const sheet=contentAsset('equipment-parts'),r=contentArt.catalog?.equipment[item.asset+(item.slot==='body'&&sel.frame.sockets.back?'Back':'')];if(!sheet||!r)return null;
  const cv=document.createElement('canvas');cv.width=cv.height=192*q;const c=cv.getContext('2d');c.imageSmoothingEnabled=false;c.scale(q,q);const s=sel.frame.sockets;
  const part=(x,y,w,h,angle=0,half=null,slice=[0,1])=>{c.save();c.translate(x,y);c.rotate(angle);if(s.west)c.scale(-1,1);c.drawImage(sheet.image,r.x+(half===1?r.w/2:0),r.y+r.h*slice[0],half===null?r.w:r.w/2,r.h*(slice[1]-slice[0]),-w/2,-h/2,w,h);c.restore();};
- if(item.slot==='legs'){
+ if(item.slot==='body'){const shoulder={x:(s.shoulders[0].x+s.shoulders[1].x)/2,y:(s.shoulders[0].y+s.shoulders[1].y)/2},h=Math.hypot(s.waist.x-shoulder.x,s.waist.y-shoulder.y);part((shoulder.x+s.waist.x)/2,(shoulder.y+s.waist.y)/2,sel.pose==='dead'?sel.frame.bounds.h*.75:s.torso.w,h+8,-Math.atan2(s.waist.x-shoulder.x,s.waist.y-shoulder.y));}
+ else if(item.slot==='legs'){
   const joints=sel.frame.joints||s.feet.map((f,i)=>({hip:{x:s.waist.x+(i?5:-5),y:s.waist.y-3},knee:{x:(s.waist.x+f.x)/2,y:(s.waist.y+f.y)/2},ankle:f}));
+  if(sel.frame.joints)part(s.waist.x,s.waist.y+4,s.torso.w,15,0,null,[0,.35]);
   for(const i of sel.frame.legOrder||[0,1])for(const p of legGarmentSegments(joints[i]))part(p.x,p.y,16,p.h,p.angle,i,p.slice);
  }else if(item.slot==='feet')for(const f of s.feet)part(f.x,f.y-4,18,18,f.angle||0);
  else for(const h of [s.main,s.off])part(h.x,h.y-(item.slot==='wrists'?5:0),10,item.slot==='wrists'?11:10);

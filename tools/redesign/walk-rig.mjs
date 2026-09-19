@@ -51,7 +51,7 @@ export function rigWalk(source,phase,row,options={}){
   let bottom=hipY;for(let y=hipY;y<b.y+b.h;y++)for(let x=x0;x<x1;x++)if(source.data[(y*source.width+x)*4+3])bottom=Math.max(bottom,y+1);
   const bootY=Math.min(bottom-4*k,Math.max(kneeY+k,bottom-12*k));
   const protectedPixels=new Uint8Array(source.width*source.height),seeds=[];
-  if(rig.hero)for(let y=hipY;y<bootY;y++)for(let x=x0;x<x1;x++){
+  if(rig.hero&&!rig.underwear)for(let y=hipY;y<bootY;y++)for(let x=x0;x<x1;x++){
    const i=(y*source.width+x)*4,[r,g,blue,alpha]=source.data.subarray(i,i+4);
    if(x>b.x+b.w*.3&&x<b.x+b.w*.8&&y<b.y+b.h*.8&&alpha&&r>150&&((r>g*1.2&&g>blue*1.13)||(r>180&&g>155&&blue>115)))for(const dx of [-2*k,2*k])for(const dy of [-2*k,2*k])seeds.push({x:x+dx,y:y+dy});
   }

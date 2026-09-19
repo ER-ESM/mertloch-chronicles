@@ -7,13 +7,13 @@ import {STORY_CHAPTERS} from './story.js';
 export const MAIN_DIALOGUE={
  ida:{
   // ---------- Kapitel 1 · Der übliche Verdächtige ----------
-  intro:{eyebrow:'KISTEN-IDA · LOGISTIK AUF ZWEI PROMILLE',title:'Unterhose, Socke, Stempel. Und du willst was?',
+  intro:{eyebrow:'KISTEN-IDA · LOGISTIK AUF ZWEI PROMILLE',title:'Filmriss, Stempel. Und du willst was?',
    lines:['„Ich kenn hier jeden. Jeden, den ich schon mal rausgeschmissen hab, jeden, der mir Pfand schuldet, und jeden, der beides ist. Dich kenn ich nicht. Du lagst heute Morgen in unseren Trümmern, in Unterhose, mit unserem Stempel auf dem Arm und einem Pfandbon über <b>acht Cent</b>. Herzlichen Glückwunsch, du bist entweder Zeuge, Täter oder Sperrmüll.“',
     '„Für alle drei hab ich Verwendung. Die Bude ist hin, die Kiste ist weg, und <b>Ruhe 22:01 e. V.</b> war verdächtig schnell da, um „Beweise zu sichern“. Drei Pfandkeiler fressen gerade unsere Reste. Zwei Ruhewärter tragen den Rest weg. Und <b>Horst Nüchternmann</b> steht auf dem Feld in einem Panzer aus laminierten Hausordnungen und hält eine Beweismittelkiste fest.“',
     '„In der Kiste liegt unsere Anlage. Und deine Hose. Hol beides. Dann reden wir darüber, wer du bist. Wir brauchen keinen Auserwählten. Wir brauchen jemanden, der nicht schon wieder im Blumenbeet liegt.“'],
    accept:'Erst die Hose. Dann die Wahrheit.',decline:'Ich brauch erst mal ein Kaltgetränk. Und einen Namen.'},
-  ongoing:{title:'Und? Hose schon dran?',line:'„Keiler, Ruhewärter, Horst. In der Reihenfolge. Die gelben Viecher draußen sind neutral – wenn du die anpöbelst, ist das dein Problem, du wandelnder Versicherungsfall. Und wenn dir unterwegs was einfällt, wer du bist: Ich will’s als Erste wissen. Ich hab ’ne Wette laufen.“',close:'Alles klar, Chefin.'},
-  reward:{eyebrow:'POO-TANG LÄSST SICH NICHT ABSCHALTEN',title:'Horst hat ein Alibi. Du hast eine Hose.',
+  ongoing:{title:'Und? Hose schon gefunden?',line:'„Keiler, Ruhewärter, Horst. In der Reihenfolge. Die gelben Viecher draußen sind neutral – wenn du die anpöbelst, ist das dein Problem, du wandelnder Versicherungsfall. Und wenn dir unterwegs was einfällt, wer du bist: Ich will’s als Erste wissen. Ich hab ’ne Wette laufen.“',close:'Alles klar, Chefin.'},
+  reward:{eyebrow:'POO-TANG LÄSST SICH NICHT ABSCHALTEN',title:'Horst hat ein Alibi. Deine Hose ist wieder da.',
    lines:['„Horst hat um 22:01 Uhr die Polizei gerufen. Vom Festnetz. Wie jedes Jahr. Protokolliert, gelocht, abgeheftet. Der Mann hat ein Alibi aus Papier. Scheiße, ich hätte es ihm so gegönnt.“',
     '„Dafür lag in seiner Beweismittelkiste deine Hose. Drin: ein Busticket <b>Koblenz–Mertloch</b>, Samstag, 19:40. Und ein fremdes Handy, Sperrbildschirm „BASTIAN ♥ JENNY“. Du warst nicht allein.“',
     'Ida drückt dir den goldenen Dosenöffner in die Hand. Rückseite: <b>MERTLOCH BLEIBT WACH.</b> Schief graviert, Kevin war’s. „Teil eins bestanden. Teil zwei: Wir bauen die Bude wieder auf. Mit dir. Weil du sonst keine hast.“'],
@@ -122,7 +122,7 @@ export const SYSTEM_LINES={
  gatherProgress:(n,max,item)=>`${n} / ${max} ${item} gesammelt.`,
  mainReady:'Die Trümmer sind sicher. Kehre zu Ida bei St. Gangolf zurück.',
  chapterReady:giver=>`Kapitel erledigt. Kehre zu ${giver} an die Bude zurück.`,
- welcome:'Unterhose. Eine Socke. Ein Stempel. Willkommen in Mertloch, wer immer du bist.',
+ welcome:'Unterwäsche. Eine Socke. Ein Stempel. Willkommen in Mertloch, wer immer du bist.',
  respawn:'Du erwachst bei St. Gangolf. Wieder. Diesmal wenigstens mit Hose.',
  levelUp:level=>'Stufe '+level+'! Neue Kniffe im Skillbuch, ein weiterer Talentpunkt.',
  memory:title=>'Erinnerungsfetzen: '+title,

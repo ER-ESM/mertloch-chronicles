@@ -5,16 +5,16 @@ export const redesignArt={ready:false,catalog:null,images:new Map(),details:new 
 let pending;
 const image=src=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src='./'+src;});
 export function validRedesignCatalog(catalog){
- if(!catalog?.complete||!catalog.gearPath)return false;
+ if(!catalog?.complete||!catalog.dressing?.complete||!catalog.gearPath)return false;
  for(const hero of ['dieter','anni','kevin'])for(const [state,columns]of Object.entries({poses:8,walk:8,specials:4,heavy:4,heavywalk:8})){
-  const a=catalog.assets?.[hero+'-'+state];if(!a?.path||a.columns?.length!==columns||a.frames?.length!==columns*4||a.frames.some(f=>!f.sockets||!Array.isArray(f.clothRuns)))return false;
+  const a=catalog.assets?.[hero+'-'+state];if(!a?.basePath||!a.baseDetailPath||a.frames?.some(f=>!f.base?.wearRuns)||a.columns?.length!==columns||a.frames?.length!==columns*4||a.frames.some(f=>!f.sockets||!Array.isArray(f.clothRuns)))return false;
  }return true;
 }
 export function loadRedesignArt(){return pending||=(async()=>{
  try{
   const r=await fetch('./assets/redesign/runtime/catalog.json');if(!r.ok)return;
   const catalog=await r.json();if(!validRedesignCatalog(catalog))return;
-  const loaded=await Promise.all(Object.entries(catalog.assets).map(async([id,a])=>[id,await image(a.path)]));
+  const loaded=await Promise.all(Object.entries(catalog.assets).map(async([id,a])=>[id,await image(a.basePath)]));
   const gear=await image(catalog.gearPath);
   if(!gear||loaded.some(([,im])=>!im))return;
   redesignArt.catalog=catalog;redesignArt.images=new Map(loaded);redesignArt.gear=gear;redesignArt.ready=true;
@@ -23,7 +23,7 @@ export function loadRedesignArt(){return pending||=(async()=>{
 const detailPending=new Set(),detailWanted=new Map(),detailFailed=new Set();
 function requestDetail(sel){
  detailWanted.set(sel.id,sel.key);if(redesignArt.details.has(sel.key)||detailPending.has(sel.key)||detailFailed.has(sel.key))return;
- detailPending.add(sel.key);image(sel.meta.detailPath).then(im=>{
+ detailPending.add(sel.key);image(sel.meta.baseDetailPath).then(im=>{
   detailPending.delete(sel.key);if(!im){detailFailed.add(sel.key);return;}if(detailWanted.get(sel.id)!==sel.key)return;
   for(const key of redesignArt.details.keys())if(key.startsWith(sel.id+'-'))redesignArt.details.delete(key);
   redesignArt.details.set(sel.key,im);redesignArt.changed?.();
@@ -47,7 +47,7 @@ export function redesignFrame(id,p={}){
  const pose=p.artPose||redesignPose(p),heavy=(!p.usingRanged||p.parry>0)&&p.visualEquipment?.some(i=>i.slot==='weapon'&&i.hands===2),state=pose.startsWith('walk-')?(heavy?'heavywalk':'walk'):['ranged-aim','ranged-release','dash','dead'].includes(pose)?'specials':heavy&&['idle','anticipation','impact','recovery','parry'].includes(pose)?'heavy':'poses';
  const key=id+'-'+state,a=redesignArt.catalog.assets[key];if(!a)return null;
  const row=Math.max(0,redesignArt.catalog.directions.indexOf(p.direction||((p.facing||1)>0?'se':'sw'))),column=a.columns.indexOf(state==='heavy'&&pose==='parry'?'idle':pose);if(column<0)return null;
- return {id,key,meta:a,image:redesignArt.images.get(key),frame:a.frames[row*a.columns.length+column],row,pose};
+ return {id,key,meta:a,image:redesignArt.images.get(key),frame:{...a.frames[row*a.columns.length+column],...a.frames[row*a.columns.length+column].base},row,pose};
 }
 
 /** Cosmetic variants preserve the equipped weapon family and handedness. */
@@ -69,13 +69,6 @@ function glove(c,sel,at){
  // Restore the painted gripping fingers over the handle, with a tiny circular mask.
  const r=3.2;c.save();c.beginPath();c.arc(at.x,at.y,r,0,Math.PI*2);c.clip();const f=sel.frame,q=sel.resolution||1;c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);c.restore();
 }
-const garmentCache=new Map();
-function garment(c,sel,item){
- if(!item||!sel.frame.clothRuns?.length)return;
- const f=sel.frame,q=sel.resolution||1,size=192*q,key=[sel.key,f.x,f.y,item.asset,q].join(':');let canvas=garmentCache.get(key);
- if(!canvas){canvas=document.createElement('canvas');canvas.width=canvas.height=size;const g=canvas.getContext('2d');g.beginPath();for(const [y,x,w]of f.clothRuns)g.rect(x*q,y*q,w*q,q);g.clip();g.drawImage(sel.image,f.x*q,f.y*q,size,size,0,0,size,size);g.globalCompositeOperation='color';g.fillStyle={jacket:'#34586d',raincoat:'#b59b3c',vest:'#416954'}[item.asset]||'#66577a';g.fillRect(0,0,size,size);garmentCache.set(key,canvas);if(garmentCache.size>32)garmentCache.delete(garmentCache.keys().next().value);}
- c.drawImage(canvas,0,0,192,192);
-}
 export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  if(p.parry>0&&p.usingRanged)p={...p,usingRanged:false};
  const sel=redesignFrame(id,p);if(!sel)return false;
@@ -92,7 +85,7 @@ export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  if(!s.back)drawStowed();
  if(s.back&&!down)drawOff();
  const q=sel.resolution||1;c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);
- garment(c,sel,find('body'));
+ drawFittedEquipment(c,sel,items,['body']);
  drawFittedEquipment(c,sel,items,['legs','feet']);
  if(s.back)drawStowed();
  const clothingSockets={...s,legs:f.joints,legOrder:f.legOrder},handSlots=['hands','wrists','ring1','ring2'];

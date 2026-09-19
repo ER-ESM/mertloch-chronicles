@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "id": "anni-poses",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/anni-poses.png",
+      "promptFile": "assets/redesign/sources/underwear/anni-poses.prompt.txt",
+      "reference": "assets/redesign/runtime/anni-poses-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-37684334-6fa1-4f94-aca9-fb77f84ea951.png",
+      "sha256": "38c9f66e0504e059ca3b09871f7985b02e70d9e3d485707480e8589e6c79ee92"
+    },
+    {
+      "id": "dieter-poses",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/dieter-poses.png",
+      "promptFile": "assets/redesign/sources/underwear/dieter-poses.prompt.txt",
+      "reference": "assets/redesign/runtime/dieter-poses-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-f1bc3f0c-bfdd-4d4d-b03a-e0a062f0d278.png",
+      "sha256": "ac9d844f4b5cb3e192c09fe46354cb297e3d835168cfa1e910a3dba4627db7db"
+    },
+    {
+      "id": "kevin-poses",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/kevin-poses-v1.png",
+      "promptFile": "assets/redesign/sources/underwear/kevin-poses-v1.prompt.txt",
+      "reference": "assets/redesign/runtime/kevin-poses-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-c236374e-2b9f-4d6c-9c9b-d6c352a566f0.png",
+      "sha256": "bb2de8ce94aee785526f6cadb444a136a5aa31ee5e662416ab6917a6e1f21760"
+    },
+    {
+      "id": "anni-heavy",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/anni-heavy-v1.png",
+      "promptFile": "assets/redesign/sources/underwear/anni-heavy-v1.prompt.txt",
+      "reference": "assets/redesign/runtime/anni-heavy-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-d9936e7e-df19-46f8-a1fc-65c9e081b4b6.png",
+      "sha256": "82861941ec107f4fd9ae298846c10c60c259f2c1e2ce287e618c43fa0ecd9bde"
+    },
+    {
+      "id": "anni-specials",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/anni-specials-v1.png",
+      "promptFile": "assets/redesign/sources/underwear/anni-specials-v1.prompt.txt",
+      "reference": "assets/redesign/runtime/anni-specials-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-ba67f3de-eb2b-47fa-9ad3-f3de6bf888b0.png",
+      "sha256": "9ec994c8cd7f478934966b0436408f0052b7d2185da6a004c78d32fabf14ee62"
+    },
+    {
+      "id": "dieter-heavy",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/dieter-heavy.png",
+      "promptFile": "assets/redesign/sources/underwear/dieter-heavy.prompt.txt",
+      "reference": "assets/redesign/runtime/dieter-heavy-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-c19e2c91-9d70-4c28-aa39-fdd541b7d802.png",
+      "sha256": "5e7491fa7673b82545d44a0e9d8acd31cbdb55bf2b22df9235342448a673eb9d"
+    },
+    {
+      "id": "dieter-specials",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/dieter-specials.png",
+      "promptFile": "assets/redesign/sources/underwear/dieter-specials.prompt.txt",
+      "reference": "assets/redesign/runtime/dieter-specials-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-0903477a-d10e-49c0-8a2d-91678c0efef9.png",
+      "sha256": "12dd4a7b114c5ed316a9b553f232d5268699cc053140f578209f33c2f3086c1b"
+    },
+    {
+      "id": "kevin-heavy",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/kevin-heavy-v1.png",
+      "promptFile": "assets/redesign/sources/underwear/kevin-heavy-v1.prompt.txt",
+      "reference": "assets/redesign/runtime/kevin-heavy-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-5eaa974c-7280-4147-822e-777464cfab12.png",
+      "sha256": "44f432b66e2f75028124fc7a39d4caa2bc9af94d6eee707c3cfeaae0b56ba613"
+    },
+    {
+      "id": "kevin-specials",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/kevin-specials-v1.png",
+      "promptFile": "assets/redesign/sources/underwear/kevin-specials-v1.prompt.txt",
+      "reference": "assets/redesign/runtime/kevin-specials-detail.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-b890aec2-2661-4bed-b3bc-a531cd8e9110.png",
+      "sha256": "bcdcbb4ffe147574e26922c3dcf2c778a9798382138b05ad98a00efad917fe9a"
+    },
+    {
+      "id": "kevin-poses-clean",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/kevin-poses.png",
+      "promptFile": "assets/redesign/sources/underwear/kevin-poses.prompt.txt",
+      "reference": "assets/redesign/sources/underwear/kevin-poses-v1.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-4f3b7c33-fde8-4951-880d-e2aa7ea5a7fe.png",
+      "sha256": "af81a0c8764cedd4bf79f0691be4aa410fe26cd8229cc8c46bc48bcfb8f0d64b"
+    },
+    {
+      "id": "kevin-heavy-clean",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/kevin-heavy.png",
+      "promptFile": "assets/redesign/sources/underwear/kevin-heavy.prompt.txt",
+      "reference": "assets/redesign/sources/underwear/kevin-heavy-v1.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-2d759e2c-b6ea-4a2a-b815-26d61fe38664.png",
+      "sha256": "bdbc4eb56ab93122925cc5b3bc17b8b1bc61deb5cafdab5200cdc7d8ef4527d8"
+    },
+    {
+      "id": "kevin-specials-clean",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/kevin-specials.png",
+      "promptFile": "assets/redesign/sources/underwear/kevin-specials.prompt.txt",
+      "reference": "assets/redesign/sources/underwear/kevin-specials-v1.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-3e56c1a5-568b-41c4-8b44-a84e2de15f3a.png",
+      "sha256": "bb4b3a34ac3e09e801cb76302a7d884ae30ad21e000bbe8c2c41a66b5f99e146"
+    },
+    {
+      "id": "anni-heavy-clean",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/anni-heavy.png",
+      "promptFile": "assets/redesign/sources/underwear/anni-heavy.prompt.txt",
+      "reference": "assets/redesign/sources/underwear/anni-heavy-v1.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-35877cd9-bb80-4dd9-9357-ce89c6636815.png",
+      "sha256": "224ede8caca84209abf1674184ecff71d0a82ac8a5c089e4c2a82898a9477933"
+    },
+    {
+      "id": "anni-specials-clean",
+      "tool": "image_gen.imagegen",
+      "source": "assets/redesign/sources/underwear/anni-specials.png",
+      "promptFile": "assets/redesign/sources/underwear/anni-specials.prompt.txt",
+      "reference": "assets/redesign/sources/underwear/anni-specials-v1.png",
+      "original": "C:\\Users\\Administrator\\.codex\\generated_images\\01a0b478-a01a-77f2-ac73-423a1ca3c850\\exec-b385e461-271b-40b7-962f-5698e7edc5f5.png",
+      "sha256": "15a00bb3fc4886573140fef448eb43dfd074b2113bb44987ac1f8faa70a1a405"
+    }
+  ]
+}
