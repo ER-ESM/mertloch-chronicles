@@ -3,10 +3,11 @@
 // dann unter ./api/ auf derselben Herkunft. Auf GitHub Pages bleibt alles wie bisher (Solo, Browserspeicher).
 // Regeln: der Browserspeicher bleibt die erste Wahrheit; der Server hält je Konto und Welt den jüngsten Stand
 // (Zeitstempel savedAt). Neuer gewinnt; der ältere Stand bleibt serverseitig als Sicherung.
+import {createNetWorld} from './net-world.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
 export const onlineEnabled=()=>!!API;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
+export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',party:'Gruppe',leaveParty:'Gruppe verlassen',leaveShort:'verlassen',people:'Spieler online',level:'Stufe',elsewhereWorld:'andere Welt',inGroup:'in Gruppe',you:'du',invite:'Einladen',whisper:'Flüstern',whisperTo:'an',whisperFrom:'von',inviteTitle:'Gruppeneinladung',inviteText:'{n} lädt dich in eine Gruppe ein. Gemeinsam besiegte Gegner zählen für alle in der Nähe.',accept:'Annehmen',decline:'Ablehnen',chatHelp:'Befehle: /s Umkreis · /w Welt · /g Gruppe · /f Name Text (flüstern) · /r Antwort · /einladen Name · /verlassen · /wer',unknownCommand:'Unbekannter Befehl. /hilfe zeigt alle.',needName:'Dazu gehört ein Name: ',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
 
 /** Entscheidung beim Abgleich: 'pull' (Server neuer), 'push' (lokal neuer oder Server leer), 'same'. Reine Funktion (Tests). */
 export function decideSync(local,server){
@@ -18,7 +19,23 @@ export function decideSync(local,server){
 export function applySnapshot(previous,list,now,lerp=160){
  return (list||[]).map(o=>{const prev=(previous||[]).find(x=>x.name===o.n);let fromX=o.x,fromY=o.y;
   if(prev){const k=Math.min(1,(now-prev.at)/(prev.lerp||lerp));fromX=prev.fromX+(prev.x-prev.fromX)*k;fromY=prev.fromY+(prev.y-prev.fromY)*k;if(Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>600){fromX=o.x;fromY=o.y;}}
-  return {name:o.n,x:o.x,y:o.y,facing:o.f,classId:o.c,level:o.l,spec:o.sp,state:o.s,fromX,fromY,at:now,lerp,moving:o.s==='walk'||Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>1};});
+  return {name:o.n,x:o.x,y:o.y,facing:o.f,classId:o.c,level:o.l,spec:o.sp,state:o.s,hp:o.h??100,party:!!o.p,fromX,fromY,at:now,lerp,moving:o.s==='walk'||Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>1};});
+}
+/** Chat-Eingabe zerlegen. → {kind:'chat',ch,text,to?} | {kind:'party',op,name?} | {kind:'who'|'help'} | {kind:'error',text}. Reine Funktion (Tests). */
+export function parseChatCommand(raw,channel='say'){
+ const text=String(raw||'').trim();if(!text.startsWith('/'))return {kind:'chat',ch:channel,text};
+ const m=/^\/(\S+)\s*(.*)$/s.exec(text),cmd=m[1].toLowerCase(),rest=m[2].trim();
+ if(['s','sagen','say'].includes(cmd))return {kind:'chat',ch:'say',text:rest};
+ if(['w','welt','world'].includes(cmd))return {kind:'chat',ch:'world',text:rest};
+ if(['g','gruppe','p','party'].includes(cmd))return {kind:'chat',ch:'party',text:rest};
+ if(['f','fl','flüstern','whisper','tell'].includes(cmd)){const q=/^("[^"]+"|\S+)\s+(.+)$/s.exec(rest);if(!q)return {kind:'error',text:ONLINE_UI.needName+'/f Name Text'};return {kind:'chat',ch:'whisper',to:q[1].replace(/"/g,''),text:q[2]};}
+ if(['r','antwort'].includes(cmd))return {kind:'chat',ch:'whisper',to:'',text:rest};
+ if(['einladen','invite','inv'].includes(cmd))return rest?{kind:'party',op:'invite',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/einladen Name'};
+ if(['entfernen','kick'].includes(cmd))return rest?{kind:'party',op:'kick',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/entfernen Name'};
+ if(['verlassen','leave'].includes(cmd))return {kind:'party',op:'leave'};
+ if(['wer','who'].includes(cmd))return {kind:'who'};
+ if(['hilfe','help','?'].includes(cmd))return {kind:'help'};
+ return {kind:'error',text:ONLINE_UI.unknownCommand};
 }
 async function api(path,body,method){
  const res=await fetch(API+path,{method:method||(body?'POST':'GET'),credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
@@ -32,11 +49,13 @@ async function api(path,body,method){
  * host: {game:()=>Game, worldKey:string, readLocal:()=>save|null, writeLocal:(save)=>void, reload:()=>void, toast:(t)=>void, openModal:(html,id)=>void, refresh:()=>void}
  */
 /** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
-export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':p.inCombat>0?'combat':p.moving?'walk':'idle'};}
+export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1))))};}
 export function mountOnline(host){
- const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0};
+ const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;}};
  const g=()=>host.game();
+ const wsSend=msg=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify(msg));};
+ const net=createNetWorld({game:g,me:()=>state.account?.name,send:wsSend,others:()=>g().others||[]});
  async function refreshAccount(){try{const d=await api('auth?action=me');state.account=d.account;state.reachable=true;}catch(e){state.reachable=e.code!=='bad-response'&&!(e.status>=500);state.account=state.reachable?state.account:null;}return state.account;}
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
  async function start(){
@@ -66,9 +85,9 @@ export function mountOnline(host){
  function stopPresence(){state.wanted=false;clearInterval(state.presenceTimer);clearTimeout(state.retry);state.presenceTimer=null;const ws=state.socket;state.socket=null;try{ws?.close();}catch{}state.connected=false;g().others=[];state.others=[];renderChat();}
  function connect(){
   if(!state.wanted||!state.account||state.socket)return;let ws;try{ws=new WebSocket(WS_URL);}catch{return;}state.socket=ws;
-  ws.onopen=()=>{state.connected=true;state.retryMs=1000;state.lastSent='';renderChat();host.refresh?.();};
+  ws.onopen=()=>{state.connected=true;state.retryMs=1000;state.lastSent='';net.reset();renderChat();host.refresh?.();};
   ws.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch{return;}receive(m);};
-  ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;g().others=[];state.others=[];renderChat();
+  ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;g().others=[];state.others=[];setParty({leader:null,members:[]});renderChat();
    if(e.code===4001){pushChat({system:true,text:ONLINE_UI.elsewhere});host.toast(ONLINE_UI.elsewhere);state.wanted=false;return;}
    if(state.wanted){state.retry=setTimeout(connect,state.retryMs);state.retryMs=Math.min(30000,state.retryMs*2);}};
   ws.onerror=()=>{};
@@ -76,21 +95,56 @@ export function mountOnline(host){
  function sendPosition(){
   const ws=state.socket;if(!ws||ws.readyState!==1||document.hidden)return;const game=g(),p=game.player;if(!p)return;
   if(game.instance){game.others=[];state.others=[];}const wire=JSON.stringify(presenceMessage(game,host.worldKey));
-  const now=Date.now();if(wire===state.lastSent&&now-state.lastSentAt<5000)return;state.lastSent=wire;state.lastSentAt=now;ws.send(wire);
+  const now=Date.now();if(!(wire===state.lastSent&&now-state.lastSentAt<5000)){state.lastSent=wire;state.lastSentAt=now;ws.send(wire);}
+  net.tick(game.instance?'':host.worldKey);
  }
  function receive(m){
   const game=g();
   if(m.t==='snap'&&game.instance){game.others=[];state.others=[];return;}
   if(m.t==='snap'){game.others=applySnapshot(game.others,m.o,performance.now());state.others=game.others;}
   else if(m.t==='welcome'){for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
+  else if(net.receive(m)){}
+  else if(m.t==='party')setParty(m);
+  else if(m.t==='invite')host.openModal('<div class="online-card"><h3>'+esc(ONLINE_UI.inviteTitle)+'</h3><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
+  else if(m.t==='who')showPeople(m.list||[]);
   else if(m.t==='chat')pushChat(m);
   else if(m.t==='notice')pushChat({system:true,text:m.text});
  }
  // ── Chat: Anzeige und Eingabe gehören dem Chatfenster (chat-window.js); hier nur Zustand und Versand ──
- function pushChat(m){host.chat?.push('chat',m.system?{scope:'system',text:m.text}:{scope:m.ch==='world'?'world':'say',from:m.from,text:m.text});}
+ function pushChat(m){
+  if(m.system)return host.chat?.push('chat',{scope:'system',text:m.text});
+  const mine=m.from===state.account?.name;
+  host.chat?.push('chat',{scope:['world','party','whisper'].includes(m.ch)?m.ch:'say',from:m.ch==='whisper'?(mine?ONLINE_UI.whisperTo+' '+m.to:ONLINE_UI.whisperFrom+' '+m.from):m.from,text:m.text});
+  if(m.ch==='whisper'&&!mine)state.lastWhisper=m.from;
+ }
+ /** Eingabe aus dem Chatfenster: Befehle beginnen mit /. Rückgabe {channel} stellt den Kanal des Fensters um. */
+ function sendChat(channel,raw){
+  const cmd=parseChatCommand(raw,channel);
+  if(cmd.kind==='help'){pushChat({system:true,text:ONLINE_UI.chatHelp});return {};}
+  if(cmd.kind==='error'){pushChat({system:true,text:cmd.text});return {};}
+  if(cmd.kind==='who')wsSend({t:'who'});
+  else if(cmd.kind==='party')wsSend({t:'party',op:cmd.op,name:cmd.name});
+  else if(cmd.kind==='chat'&&cmd.text){if(cmd.ch==='whisper'&&cmd.to==='')cmd.to=state.lastWhisper||'';wsSend({t:'chat',ch:cmd.ch,text:cmd.text,...(cmd.ch==='whisper'?{to:cmd.to}:{})});}
+  return {channel:cmd.kind==='chat'&&cmd.ch!=='whisper'?cmd.ch:channel};
+ }
  function renderChat(){
-  host.chat?.setOnline({state:!state.reachable?'off':!state.account?'signedOut':state.connected?'connected':'connecting',
-   onLogin:()=>host.openModal(card(),'touchhelp'),onSend:(ch,text)=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify({t:'chat',ch,text}));}});
+  host.chat?.setOnline({state:!state.reachable?'off':!state.account?'signedOut':state.connected?'connected':'connecting',channels:state.party.members.length?['say','world','party']:['say','world'],
+   onLogin:()=>host.openModal(card(),'touchhelp'),onSend:sendChat,onPeople:()=>wsSend({t:'who'})});
+ }
+ // ── Gruppe: Rahmen links unter dem Heldenrahmen, Spielerliste als Fenster ──
+ function setParty(m){
+  const had=state.party.members.length;state.party={leader:m.leader||null,members:(m.members||[]).filter(x=>x.n!==state.account?.name)};
+  if(!state.party.members.length&&!had)return;if(!!had!==!!state.party.members.length)renderChat();renderParty();
+ }
+ function renderParty(){
+  if(typeof document==='undefined')return;const shell=document.querySelector('#gameShell');if(!shell)return;
+  if(!state.partyEl){const el=document.createElement('aside');el.className='party-frames';el.setAttribute('aria-label',ONLINE_UI.party);shell.appendChild(el);state.partyEl=el;el.addEventListener('click',e=>{if(e.target.closest('[data-party-leave]'))wsSend({t:'party',op:'leave'});});}
+  const el=state.partyEl,list=state.party.members;el.hidden=!list.length;if(!list.length)return;
+  el.innerHTML='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==host.worldKey;return '<div class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span><span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
+ }
+ function showPeople(list){
+  const leader=!state.party.members.length||state.party.leader===state.account?.name;
+  host.openModal('<div class="online-card online-people"><h3>'+esc(ONLINE_UI.people)+' · '+list.length+'</h3><ul>'+list.map(p=>'<li><span><b>'+esc(p.n)+'</b> · '+esc(ONLINE_UI.level)+' '+esc(p.l)+(p.here?'':' · '+esc(ONLINE_UI.elsewhereWorld))+(p.party?' · '+esc(ONLINE_UI.inGroup):'')+'</span>'+(p.me?'<em>'+esc(ONLINE_UI.you)+'</em>':'<span class="online-actions">'+(!p.party&&leader?'<button type="button" class="outline-button" data-online="invite" data-name="'+esc(p.n)+'">'+esc(ONLINE_UI.invite)+'</button>':'')+'<button type="button" class="outline-button" data-online="whisper" data-name="'+esc(p.n)+'">'+esc(ONLINE_UI.whisper)+'</button></span>')+'</li>').join('')+'</ul>'+(state.party.members.length?'<div class="online-actions"><button type="button" class="outline-button" data-online="party-leave">'+esc(ONLINE_UI.leaveParty)+'</button></div>':'')+'<p class="online-status">'+esc(ONLINE_UI.chatHelp)+'</p></div>','touchhelp');
  }
  async function submitArena(report){if(!state.account||!report)return;try{if(report.dps>0)await api('leaderboard',{board:'arena-dps',value:Math.round(report.dps),meta:{classId:g().member?.id,spec:g().rpg?.talents?.spec,seconds:Math.round(report.seconds||0)}});}catch{}}
  // ── Oberfläche ──
@@ -109,7 +163,11 @@ export function mountOnline(host){
    try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncNow(true);startPresence();}catch(err){message(form,err.message,true);}return true;}
   const b=e.target.closest?.('[data-online]');if(!b||e.type!=='click')return false;const root=b.closest('.online-card');
   const what=b.dataset.online;
-  if(what==='retry'){await refreshAccount();host.refresh?.();}
+  if(what==='party-accept'||what==='party-decline'){wsSend({t:'party',op:what.slice(6)});host.closeModal?.('touchhelp');}
+  else if(what==='party-leave'){wsSend({t:'party',op:'leave'});host.closeModal?.('touchhelp');}
+  else if(what==='invite'){wsSend({t:'party',op:'invite',name:b.dataset.name});b.disabled=true;}
+  else if(what==='whisper'){host.closeModal?.('touchhelp');host.chat?.prefill('/f '+(/s/.test(b.dataset.name)?'"'+b.dataset.name+'"':b.dataset.name)+' ');}
+  else if(what==='retry'){await refreshAccount();host.refresh?.();}
   else if(what==='sync'){const v=await syncNow(false);message(root,v?'Abgleich: '+({pull:'Server-Stand geladen',push:'hochgeladen',same:'schon aktuell'}[v]||v):ONLINE_UI.offline,!v);}
   else if(what==='logout'){try{await api('auth',{action:'logout'});}catch{}state.account=null;stopPresence();host.refresh?.();renderChat();}
   else if(what==='leaderboard'){try{const d=await api('leaderboard?board=level');const dps=await api('leaderboard?board=arena-dps');host.openModal('<h2>'+esc(ONLINE_UI.leaderboard)+'</h2><h3>Stufe</h3><ol class="online-board">'+d.entries.map(x=>'<li><b>'+esc(x.name)+'</b> Stufe '+esc(x.value)+(x.meta?.spec?' · '+esc(x.meta.spec):'')+'</li>').join('')+'</ol><h3>Arena-DPS</h3><ol class="online-board">'+dps.entries.map(x=>'<li><b>'+esc(x.name)+'</b> '+esc(x.value)+' DPS'+(x.meta?.spec?' · '+esc(x.meta.spec):'')+'</li>').join('')+'</ol>','touchhelp');}catch(err){message(root,err.message,true);}}

@@ -4,7 +4,7 @@
 // Aktiv (Maus darüber, Eingabe, angeheftet): volles Fenster mit Reitern, Verlauf, Einstellungen. Der Spieler richtet
 // Reiter, Inhalt des Gesamtlogs, Verblassen, Schriftgröße, Lage und Größe selbst ein (localStorage).
 export const CHAT_CHANNELS=['chat','events','loot'];
-export const CHAT_UI={tabs:{all:'Alles',chat:'Chat',events:'Ereignisse',loot:'Beute'},settings:'Chatfenster einrichten',showTabs:'Reiter anzeigen',inAll:'Im Gesamtlog „Alles“ zeigen',fade:'Zeilen verblassen nach',fadeNever:'nie',size:'Schrift',sizes:{s:'klein',m:'mittel',l:'groß'},pinned:'Fenster immer sichtbar',reset:'Lage und Größe zurücksetzen',done:'Fertig',login:'Online spielen: anmelden',connecting:'Verbindung zum Dorf wird aufgebaut …',placeholder:'Nachricht … (/w für Welt)',say:'Umkreis',world:'Welt',channelHint:'Kanal wechseln: Umkreis oder ganze Welt',move:'Ziehen verschiebt das Fenster',empty:'Noch nichts passiert.'};
+export const CHAT_UI={tabs:{all:'Alles',chat:'Chat',events:'Ereignisse',loot:'Beute'},settings:'Chatfenster einrichten',showTabs:'Reiter anzeigen',inAll:'Im Gesamtlog „Alles“ zeigen',fade:'Zeilen verblassen nach',fadeNever:'nie',size:'Schrift',sizes:{s:'klein',m:'mittel',l:'groß'},pinned:'Fenster immer sichtbar',reset:'Lage und Größe zurücksetzen',done:'Fertig',login:'Online spielen: anmelden',connecting:'Verbindung zum Dorf wird aufgebaut …',placeholder:'Nachricht … (/hilfe zeigt Befehle)',say:'Umkreis',world:'Welt',party:'Gruppe',whisperTag:'Flüstern',people:'Spieler',peopleHint:'Wer ist online? Einladen und flüstern',channelHint:'Kanal wechseln: Umkreis oder ganze Welt',move:'Ziehen verschiebt das Fenster',empty:'Noch nichts passiert.'};
 export const CHAT_DEFAULTS={x:null,y:null,w:360,h:230,tab:'all',tabs:{all:true,chat:true,events:true,loot:true},all:{chat:true,events:true,loot:true},fade:20,size:'m',pinned:false};
 const KEY='mertloch-chat-window',MAX_LINES=250;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -26,22 +26,28 @@ export function mountChatWindow(root,options={}){
  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(settings));}catch{}};
  const lines=[];let online={state:'off'},channel='say',configuring=false;
  const el=document.createElement('section');el.className='chat-window';el.id='chatWindow';el.setAttribute('aria-label','Chat und Ereignisse');
- el.innerHTML='<header class="chat-tabs" title="'+esc(CHAT_UI.move)+'"><nav role="tablist"></nav><button type="button" class="chat-gear" aria-label="'+esc(CHAT_UI.settings)+'" title="'+esc(CHAT_UI.settings)+'">⚙</button></header><div class="chat-log" aria-live="polite"></div><div class="chat-config" hidden></div><div class="chat-foot"><button type="button" class="chat-login gold-button" hidden>'+esc(CHAT_UI.login)+'</button><form class="chat-form" hidden><button type="button" class="chat-channel" title="'+esc(CHAT_UI.channelHint)+'"></button><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send" aria-label="'+esc(CHAT_UI.placeholder)+'" placeholder="'+esc(CHAT_UI.placeholder)+'"></form></div>';
+ el.innerHTML='<header class="chat-tabs" title="'+esc(CHAT_UI.move)+'"><nav role="tablist"></nav><button type="button" class="chat-people" hidden title="'+esc(CHAT_UI.peopleHint)+'">'+esc(CHAT_UI.people)+'</button><button type="button" class="chat-gear" aria-label="'+esc(CHAT_UI.settings)+'" title="'+esc(CHAT_UI.settings)+'">⚙</button></header><div class="chat-log" aria-live="polite"></div><div class="chat-config" hidden></div><div class="chat-foot"><button type="button" class="chat-login gold-button" hidden>'+esc(CHAT_UI.login)+'</button><form class="chat-form" hidden><button type="button" class="chat-channel" title="'+esc(CHAT_UI.channelHint)+'"></button><input type="text" maxlength="200" autocomplete="off" enterkeyhint="send" aria-label="'+esc(CHAT_UI.placeholder)+'" placeholder="'+esc(CHAT_UI.placeholder)+'"></form></div>';
  root.appendChild(el);
  const nav=el.querySelector('nav'),log=el.querySelector('.chat-log'),config=el.querySelector('.chat-config'),form=el.querySelector('.chat-form'),input=form.querySelector('input'),loginButton=el.querySelector('.chat-login');
 
  // ── Lage und Größe ──
  function place(){
   const b=root.getBoundingClientRect(),w=Math.min(settings.w,b.width-16),h=Math.min(settings.h,b.height-16);
-  const x=settings.x==null?12:settings.x,y=settings.y==null?Math.max(90,Math.min(250,b.height-h-200)):settings.y;
+  const x=settings.x==null?12:settings.x,y=settings.y==null?Math.max(90,Math.min(370,b.height-h-200)):settings.y;
   el.style.width=w+'px';el.style.height=h+'px';el.style.left=Math.max(4,Math.min(b.width-w-4,x))+'px';el.style.top=Math.max(4,Math.min(b.height-h-4,y))+'px';
  }
  // Liegt das Fenster im UI-Editor-Layout (data-hud-custom), gehört die Lage dem Layout: Ziehen meldet sie per hud-move dorthin.
  const hudMove=detail=>{if(el.hasAttribute('data-hud-custom'))el.dispatchEvent(new CustomEvent('hud-move',{bubbles:true,detail:{id:'chat',...detail}}));};
  let drag=null;
+<<<<<<< HEAD
  el.querySelector('.chat-tabs').addEventListener('pointerdown',e=>{if(e.target.closest('.chat-gear'))return;drag={dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};});
  el.querySelector('.chat-tabs').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)<5)return;drag.moved=true;e.currentTarget.setPointerCapture(e.pointerId);}settings.x=e.clientX-drag.dx;settings.y=e.clientY-drag.dy;place();hudMove({x:settings.x,y:settings.y});});
  const endDrag=e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved)return;hudMove({x:settings.x,y:settings.y,save:true});settings.x=el.offsetLeft;settings.y=el.offsetTop;persist();};
+=======
+ el.querySelector('.chat-tabs').addEventListener('pointerdown',e=>{if(e.target.closest('.chat-gear,.chat-people'))return;drag={dx:e.clientX-el.offsetLeft,dy:e.clientY-el.offsetTop,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};});
+ el.querySelector('.chat-tabs').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){if(Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy)<5)return;drag.moved=true;e.currentTarget.setPointerCapture(e.pointerId);}settings.x=e.clientX-drag.dx;settings.y=e.clientY-drag.dy;place();});
+ const endDrag=e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved)return;settings.x=el.offsetLeft;settings.y=el.offsetTop;persist();};
+>>>>>>> b351cc7 (Online Stufe C: geteilte Gegner mit Bedrohung, Gruppen, Fluestern, Spielerliste)
  el.querySelector('.chat-tabs').addEventListener('pointerup',endDrag);el.querySelector('.chat-tabs').addEventListener('pointercancel',endDrag);
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(!el.classList.contains('active')||drag)return;const w=el.offsetWidth,h=el.offsetHeight;if(w>100&&h>80&&(Math.abs(w-settings.w)>2||Math.abs(h-settings.h)>2)){settings.w=w;settings.h=h;persist();}}).observe(el);
  addEventListener('resize',place);
@@ -63,7 +69,7 @@ export function mountChatWindow(root,options={}){
   if(!CHAT_CHANNELS.includes(ch))ch='events';
   const node=document.createElement('div');node.className='chat-line chat-'+ch+(entry.scope?' scope-'+entry.scope:'');
   if(entry.html!=null)node.innerHTML=entry.html;
-  else node.innerHTML=(entry.from?'<b>'+(entry.scope==='world'?'['+esc(CHAT_UI.world)+'] ':'')+esc(entry.from)+':</b> ':'')+esc(entry.text);
+  else node.innerHTML=(entry.from?'<b>'+({world:'['+esc(CHAT_UI.world)+'] ',party:'['+esc(CHAT_UI.party)+'] ',whisper:'['+esc(CHAT_UI.whisperTag)+'] '}[entry.scope]||'')+esc(entry.from)+':</b> ':'')+esc(entry.text);
   const stick=log.scrollHeight-log.scrollTop-log.clientHeight<30;
   const line={channel:ch,at:Date.now(),node,old:false};lines.push(line);log.appendChild(node);options.decorate?.(node);
   while(lines.length>MAX_LINES)lines.shift().node.remove();
@@ -81,13 +87,13 @@ export function mountChatWindow(root,options={}){
  function renderFoot(){
   loginButton.hidden=online.state!=='signedOut';form.hidden=online.state!=='connected';
   el.classList.toggle('has-foot',online.state==='signedOut'||online.state==='connected');
-  form.querySelector('.chat-channel').textContent=channel==='world'?CHAT_UI.world:CHAT_UI.say;
+  const channels=online.channels||['say','world'];if(!channels.includes(channel))channel='say';
+  form.querySelector('.chat-channel').textContent=CHAT_UI[channel]||CHAT_UI.say;form.querySelector('.chat-channel').dataset.channel=channel;el.querySelector('.chat-people').hidden=online.state!=='connected'||!online.onPeople;
  }
  loginButton.addEventListener('click',()=>online.onLogin?.());
- form.querySelector('.chat-channel').addEventListener('click',()=>{channel=channel==='say'?'world':'say';renderFoot();input.focus();});
- form.addEventListener('submit',e=>{e.preventDefault();let text=input.value.trim();input.value='';
-  if(/^\/w(elt)?\s/i.test(text)){channel='world';text=text.replace(/^\/\S+\s+/,'');}else if(/^\/s(agen)?\s/i.test(text)){channel='say';text=text.replace(/^\/\S+\s+/,'');}
-  if(text)online.onSend?.(channel,text);renderFoot();input.blur();});
+ form.querySelector('.chat-channel').addEventListener('click',()=>{const list=online.channels||['say','world'];channel=list[(list.indexOf(channel)+1)%list.length];renderFoot();input.focus();});
+ el.querySelector('.chat-people').addEventListener('click',()=>online.onPeople?.());
+ form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();input.value='';if(text){const r=online.onSend?.(channel,text);if(r?.channel)channel=r.channel;}renderFoot();input.blur();});
  input.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape'){input.value='';input.blur();}});input.addEventListener('keyup',e=>e.stopPropagation());
  input.addEventListener('focus',()=>{options.keys?.()?.clear?.();if(settings.tabs.chat&&settings.tab!=='all'&&settings.tab!=='chat')showTab('chat');});
  document.addEventListener('keydown',e=>{if(e.key!=='Enter'||online.state!=='connected'||e.defaultPrevented||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)||options.busy?.())return;e.preventDefault();input.focus();});
@@ -107,7 +113,7 @@ export function mountChatWindow(root,options={}){
  config.addEventListener('click',e=>{if(e.target.closest('[data-chat-done]'))toggleConfig(false);else if(e.target.closest('[data-chat-reset]')){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();hudMove({reset:true,save:true});place();}});
 
  renderTabs();filter();renderFoot();place();refreshActive();
- return {el,push,place,focusInput:()=>input.focus(),
+ return {el,push,place,focusInput:()=>input.focus(),prefill(text){input.value=text;input.focus();input.setSelectionRange(text.length,text.length);},
   /** state: 'off' (kein Online-Dienst) | 'signedOut' | 'connecting' | 'connected' */
   setOnline(next){const before=online.state;online={...online,...next};renderFoot();if(online.state==='connecting'&&before!=='connecting')push('chat',{scope:'system',text:CHAT_UI.connecting});},
   get settings(){return settings;}};

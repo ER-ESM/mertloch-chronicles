@@ -110,3 +110,18 @@ test('Schnappschuss im Client: Überblendung startet an der sichtbaren Stelle, S
  o=applySnapshot(o,[{n:'Kevin',x:140,y:0,f:1,s:'walk'}],1180);assert.equal(o[0].fromX,110,'halbe Strecke war sichtbar');
  o=applySnapshot(o,[{n:'Kevin',x:5000,y:0,f:1,s:'idle'}],1300);assert.equal(o[0].fromX,5000,'Teleport springt');assert.equal(o[0].moving,false);
 });
+
+test('Echtzeit: geteilter Gegner, Gruppe, Gruppenchat und Flüstern über die Leitung',async t=>{
+ const {client,socket}=await boot(t),a=client(),b=client();await register(a,'Anni');await register(b,'Kevin');
+ const wa=await socket(a),wb=await socket(b),of=(ws,k)=>ws.inbox.filter(m=>m.t===k);
+ for(const [ws,x] of [[wa,100],[wb,160]])ws.send(JSON.stringify({t:'pos',w:'welt-1',x,y:100,f:1,c:'anni',l:3,sp:'',s:'idle',h:80}));await sleep(200);
+ assert.deepEqual(of(wa,'mobs').at(-1).list,[]);assert.equal(of(wa,'snap').at(-1).o[0].h,80);
+ wa.send(JSON.stringify({t:'party',op:'invite',name:'Kevin'}));await sleep(100);assert.equal(of(wb,'invite').at(-1).from,'Anni');
+ wb.send(JSON.stringify({t:'party',op:'accept'}));await sleep(100);assert.equal(of(wa,'party').at(-1).members.length,2);
+ await sleep(150);assert.equal(of(wa,'snap').at(-1).o[0].p,1,'Gruppenmitglied ist im Schnappschuss markiert');
+ wa.send(JSON.stringify({t:'hit',e:'hof:0',d:60,max:100,r:20}));await sleep(100);assert.equal(of(wb,'mob').at(-1).hp,40);assert.equal(of(wb,'mob').at(-1).tg,'Anni');
+ wa.send(JSON.stringify({t:'hit',e:'hof:0',d:60}));await sleep(100);assert.deepEqual(of(wb,'kill').at(-1).credit.sort(),['Anni','Kevin'],'Gruppe in Reichweite wird belohnt');
+ wb.send(JSON.stringify({t:'chat',ch:'party',text:'Gut gemacht'}));await sleep(800);wb.send(JSON.stringify({t:'chat',ch:'whisper',to:'anni',text:'psst'}));await sleep(120);
+ const chats=of(wa,'chat');assert.equal(chats.at(-2).ch,'party');assert.equal(chats.at(-1).ch,'whisper');assert.equal(chats.at(-1).to,'Anni');
+ wb.close();await sleep(200);assert.deepEqual(of(wa,'party').at(-1).members,[],'Trennung löst die Zweiergruppe auf');wa.close();
+});
