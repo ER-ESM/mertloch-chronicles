@@ -11,7 +11,11 @@ Der produktive Detailrenderer läuft vor dem optionalen 3D-Pre-Render-Renderer. 
 
 ## Änderung
 
-`walk-rig.mjs` Version 4 verwendet zusammenhängende Meshstreifen mit gemeinsamen Knie- und Knöchelkanten. Schürzen bleiben vor den Beinen. Kleine isolierte Bildreste werden bei den Helden vor der Vermessung entfernt; sie dürfen weder Fußhöhe noch Beinachse bestimmen. Absenken/Anheben, dezente Gewichtsverlagerung und Armschwung sind getrennt. Die Handanker folgen derselben Verformung wie die gemalten Hände; Zweihandhaltung erhält nur eine kleine gemeinsame Bewegung.
+`walk-rig.mjs` Version 5 verwendet zusammenhängende Meshstreifen mit gemeinsamen Knie- und Knöchelkanten. Schürzen bleiben vor den Beinen. Kleine isolierte Bildreste werden bei den Helden vor der Vermessung entfernt; sie dürfen weder Fußhöhe noch Beinachse bestimmen. Absenken/Anheben, dezente Gewichtsverlagerung und Armschwung sind getrennt. Die Handanker folgen derselben Verformung wie die gemalten Hände; Zweihandhaltung erhält nur eine kleine gemeinsame Bewegung.
+
+Die abschließende Iteration ergänzt zwei kurze Phasen mit beidseitigem Bodenkontakt pro Zyklus. Die Standphase umfasst 62,5 Prozent, die Schwungphase 37,5 Prozent. Der Standardausschlag sinkt von 10 auf 9 native Pixel, die Hubhöhe von 7 auf 5,5 Pixel; lange Säume behalten ihre eigenen kleineren Werte. Eine quadratische Sinuskurve reduziert den vertikalen Ruck beim Abheben und Landen. Kniebeugung und Fußwinkel folgen dieser Schwungphase, Standsohlen bleiben flach. Helden und alle 32 menschlichen NPCs/Gegner wurden mit demselben aktualisierten Rig neu exportiert.
+
+Beim Wiederanlaufen setzt die Heldenanimation auf einer Kontaktpose ein, statt einen zuvor angehobenen Fuß unvermittelt fortzusetzen. Ein separater Startwert bewahrt die kumulierte Wegstrecke. Anlaufen und Abbremsen erkennen Bewegung über eine Geschwindigkeitsschwelle; sie hängen dadurch nicht mehr von einer festen Mindeststrecke pro Bild ab. Casts, Treffer, Angriffe und andere Aktionsposen behalten sofortigen Vorrang. Geprüft bei 30, 60 und 144 Hz. Der Übergang in die gemalte Standpose bleibt ein diskreter Posenwechsel.
 
 Die Heldenanimation benötigt 80 statt 20 Welteinheiten pro Zyklus: bei 122 Welteinheiten/s sind das 1,525 statt 6,1 Zyklen/s. Demo und Laufprüfseite benutzen dieses Tempo ebenfalls. Die Spielgeschwindigkeit bleibt unverändert. Das ist weiterhin eine stilisierte Bewegung: Bei dieser hohen Fortbewegungsgeschwindigkeit gibt es keine physikalisch exakte Fixierung des Standfußes am Weltboden. Eine solche Abstimmung braucht zusätzlich einen eigenen schnellen Laufzyklus oder eine andere Fortbewegungsgeschwindigkeit.
 
@@ -22,11 +26,11 @@ Hose, Stiefel, Handschuhe und Armschienen werden im Detailrenderer über `wearRu
 ## Prüfung
 
 - `tools/redesign/review-fit.browser.js`: 384 Heldenposen mit/ohne die vier betroffenen Slots. Jede Kombination verändert sichtbare Materialpixel; keine verändert die Alpha-Silhouette. Vier Richtungen, Normal- und Zweihandhaltung; keine Browserfehler im geprüften Lauf.
-- Die Kontaktfolgen aller 35 menschlichen Figuren und die vollständigen Heldenfolgen wurden als Bilder geprüft. Die Prüfung fand zusätzlich die isolierten Bildreste bei Annis Zweihandhaltung und die Mantelansätze.
-- Sichtbelege: `assets/redesign/review/walk-fit-v4/`. Die NPC-Übersichten `npc-*` zeigen den Zwischenstand, `coats-final.png` die anschließende Korrektur der langen Säume. Die abschließend regenerierten Heldenübersichten zeigen den neuen Stand.
-- `tests/gait-fit.test.mjs` prüft die tatsächliche Bewegungsschleife, die Animationsfrequenz, alle Maskenregistrierungen und die mitbewegten Handanker. Bestehende Exportprüfungen prüfen weiterhin Reproduzierbarkeit.
+- Die Kontaktfolgen aller 35 menschlichen Figuren und die vollständigen Heldenfolgen wurden als Bilder geprüft. Die erste Korrekturrunde fand zusätzlich die isolierten Bildreste bei Annis Zweihandhaltung und die Mantelansätze. Die letzte Runde prüft beide Kontaktseiten aller 32 NPCs/Gegner in vier Richtungen und die vollständigen acht Phasen von vier langen Säumen.
+- Abschließende Sichtbelege: `assets/redesign/review/walk-fit-v5/`, erzeugt mit `tools/redesign/review-fit.browser.js`. Heldenübersichten zeigen Normal- und Zweihandhaltung, `npc-*` die Kontaktwechsel und `coats.png` die langen Säume. Version 4 bleibt als historischer Vergleich erhalten.
+- `tests/gait-fit.test.mjs` prüft die tatsächliche Bewegungsschleife, Wiederanlaufen und Stillstand bei drei Bildraten, Animationsfrequenz, Bodenkontakt, alle Maskenregistrierungen und die mitbewegten Handanker. Bestehende Exportprüfungen prüfen weiterhin Reproduzierbarkeit.
 
-Validierung: Gesamtsuite 476/476 bestanden. Nach den letzten Anpassungen an Schuhen und Mantelsäumen nochmals alle 21 betroffenen Export-/Renderer-/E32-Tests bestanden. Produktionsbuild erfolgreich; abschließende Browserprüfung 384/384 sichtbare Ausrüstungsänderungen bei unveränderter Silhouette, keine Browserfehler und kein horizontaler Seitenüberlauf auf 390 px.
+Validierung des abschließenden Stands: Gesamtsuite 478/478 bestanden, darin alle 23 betroffenen Export-/Renderer-/E32-Tests. Produktionsbuild erfolgreich; abschließende Browserprüfung 384/384 sichtbare Ausrüstungsänderungen bei unveränderter Silhouette, keine Browserfehler und kein horizontaler Seitenüberlauf auf 390 px. Die angeforderte letzte Verbesserungsiteration ist abgeschlossen; ein öffentlicher Rollout ist damit nicht behauptet.
 
 Vergleich im Browser: `gait-review.html` mit Spieltempo, Zeitlupe und Einzelbildern; `redesign-demo.html?hero=anni&action=walk&armor=1` mit echten Fundstück-Slots. Beide benutzen den Spielrenderer.
 

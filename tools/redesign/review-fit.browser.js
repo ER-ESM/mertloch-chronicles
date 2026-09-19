@@ -1,7 +1,7 @@
 async(page)=>{
  const context=await page.context().browser().newContext({viewport:{width:1600,height:1100},serviceWorkers:'block'}),p=await context.newPage(),errors=[];
  p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400)errors.push(r.status()+' '+r.url());});
- const folder='D:/Dev/MertlochChronicles-ui3/assets/redesign/review/walk-fit-v4/';
+ const folder='D:/Dev/MertlochChronicles-ui3/assets/redesign/review/walk-fit-v5/';
  try{
   await p.goto('http://127.0.0.1:4283/redesign-demo.html?hero=anni&action=walk&frame=0&armor=1');await p.waitForFunction(()=>window.redesignDemo?.ready);
   await p.evaluate(async()=>{const {redesignArt:a}=await import('/redesign-art.js');await Promise.all(Object.entries(a.catalog.assets).map(async([id,meta])=>{const im=new Image();im.src='/'+meta.detailPath;await im.decode();a.details.set(id,im);}));});
@@ -24,7 +24,27 @@ async(page)=>{
   for(const hero of ['dieter','anni','kevin'])for(const heavy of [false,true]){await p.evaluate(({hero,heavy})=>window.fitReview.draw(hero,heavy),{hero,heavy});await p.locator('#fit-sheet').screenshot({path:folder+hero+(heavy?'-heavy':'')+'.png'});}
   await p.evaluate(()=>document.getElementById('fit-sheet').remove());await p.locator('#turnaround').screenshot({path:folder+'equipped-demo.png'});
   await p.goto('http://127.0.0.1:4283/gait-review.html');await p.waitForFunction(()=>window.gaitReview);await p.evaluate(()=>{gaitReview.set('anni',2);document.getElementById('gear').value='normal';gaitReview.draw();});await p.screenshot({path:folder+'review-page.png',fullPage:true});
+  const people=await p.evaluate(async()=>{
+   const {drawLivePerson}=await import('/live-art.js'),{contentActor}=await import('/content-art.js');
+   const cv=document.createElement('canvas');cv.id='npc-final';cv.width=1920;cv.height=1280;cv.style='position:absolute;inset:0;z-index:9999;max-width:none';document.body.append(cv);
+   const c=cv.getContext('2d'),ids=gaitReview.people.slice(3),dirs=['se','sw','ne','nw'];
+   window.npcFinal={draw(group,coats=false){
+    c.fillStyle='#22382e';c.fillRect(0,0,1920,1280);
+    for(let r=0;r<4;r++){
+     const id=coats?['fenja','hedwig','villager5','villager7'][r]:ids[group*4+r];if(!id)continue;
+     const actor=contentActor(id),magnify=Math.min(8,8*26/actor.worldHeight);
+     for(let col=0;col<8;col++){
+      const phase=coats?col:col%2*4,direction=coats?'se':dirs[Math.floor(col/2)];
+      drawLivePerson(c,id,120+col*240,260+r*320,0,{direction,moving:true,walkDistance:phase/8*actor.stride,artMagnify:magnify});
+      c.fillStyle='#ead8b0';c.font='12px sans-serif';c.fillText(id+' '+direction.toUpperCase()+' / '+phase,15+col*240,300+r*320);
+     }
+    }
+   }};return ids.length;
+  });
+  for(let i=0;i<Math.ceil(people/4);i++){await p.evaluate(i=>npcFinal.draw(i),i);await p.locator('#npc-final').screenshot({path:folder+'npc-'+i+'.png'});}
+  await p.evaluate(()=>npcFinal.draw(0,true));await p.locator('#npc-final').screenshot({path:folder+'coats.png'});
+  await p.evaluate(()=>document.getElementById('npc-final').remove());
   await p.setViewportSize({width:390,height:844});if(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Mobile overflow');
-  if(errors.length)throw Error(errors.join('\n'));return {...result,errors};
+  if(errors.length)throw Error(errors.join('\n'));return {...result,people,errors};
  }finally{await context.close();}
 }

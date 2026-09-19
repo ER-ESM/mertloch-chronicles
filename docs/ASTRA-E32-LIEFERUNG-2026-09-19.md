@@ -1,6 +1,6 @@
 # Astra – E32-Grafiklieferung und korrigierte Laufzyklen
 
-**Nachprüfung nach Nutzerfeedback:** Die Lauf- und Gearfreigabe dieses ersten Lieferstands war zu großzügig. [Lauf-/Gear-Korrektur](LAUF-GEAR-KORREKTUR-2026-09-19.md) dokumentiert die anschließend gefundenen Schnitt-, Tempo- und Registrierungsfehler sowie Version 4 des Exports. Insbesondere ist die unten genannte 20er-Animationsstrecke überholt.
+**Nachprüfung nach Nutzerfeedback:** Die Lauf- und Gearfreigabe dieses ersten Lieferstands war zu großzügig. [Lauf-/Gear-Korrektur](LAUF-GEAR-KORREKTUR-2026-09-19.md) dokumentiert die anschließend gefundenen Schnitt-, Tempo- und Registrierungsfehler sowie die abschließende Version 5 des Exports mit kürzeren Schritten, Gewichtsübergabe und korrigiertem Wiederanlaufen. Insbesondere ist die unten genannte 20er-Animationsstrecke überholt.
 
 Umsetzung der [Visuals-Übergabe](UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md), Stand 19.09.2026. Grundlage ist `origin/main` bei `0983272`, zusammengeführt mit dem vorbereiteten Art-Zweig. Diese Lieferung ist in den Spielcode dieses Arbeitszweigs integriert.
 

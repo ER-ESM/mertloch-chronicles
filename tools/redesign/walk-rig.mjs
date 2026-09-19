@@ -2,7 +2,7 @@ import {surface,bounds} from '../sprite-pipeline/png.mjs';
 
 // Contact, down, passing, up; then the opposite supporting leg.
 // Continuous mesh strips share vertices at knees and ankles.
-export const WALK_RIG={version:4,frames:8,stride:80,hipFraction:.66,kneeFraction:.83,stepReach:10,stepLift:7,groundDepth:3.5};
+export const WALK_RIG={version:5,frames:8,stride:80,stanceFraction:.625,hipFraction:.66,kneeFraction:.83,stepReach:9,stepLift:5.5,groundDepth:3.5};
 const mix=(a,b,t)=>a+(b-a)*t;
 const point=(a,b,t)=>({x:mix(a.x,b.x,t),y:mix(a.y,b.y,t)});
 function convexHull(points){
@@ -65,13 +65,17 @@ export function rigWalk(source,phase,row,options={}){
   }
   const center=(y,radius,fallback)=>{let sum=0,count=0;for(let yy=Math.max(hipY,Math.round(y-radius));yy<Math.min(bottom,y+radius+1);yy++)for(let x=x0;x<x1;x++)if(leg.data[(yy*source.width+x)*4+3]){sum+=x;count++;}return count?sum/count:fallback;};
   const ankle={x:center(bottom-3*k,2*k,(x0+x1)/2),y:bottom-3*k},knee={x:center(kneeY,2*k,ankle.x),y:kneeY},hip={x:split+(side?1:-1)*b.w*.12,y:hipY};
-  const cycle=(phase/8+side*.5)%1,support=cycle<.5,stridePhase=support?1-cycle*4:-Math.cos((cycle-.5)*Math.PI*2),lift=support?0:Math.sin((cycle-.5)*Math.PI*2)*rig.stepLift*k;
+  // A short double-support interval transfers weight before the rear foot lifts.
+  // Linear stance avoids a planted foot easing backwards; the swing arc has
+  // zero vertical velocity at takeoff and landing, with a lower toe clearance.
+  const cycle=(phase/8+side*.5)%1,support=cycle<rig.stanceFraction,swing=Math.max(0,(cycle-rig.stanceFraction)/(1-rig.stanceFraction));
+  const stridePhase=support?1-2*cycle/rig.stanceFraction:-Math.cos(swing*Math.PI),lift=support?0:Math.sin(swing*Math.PI)**2*rig.stepLift*k;
   const groundY=b.y+b.h-3*k+(side?1:-1)*1.2*k+stridePhase*rig.groundDepth*k*(row>1?-1:1);
   const nextHip={x:hip.x+bodySway*k,y:hip.y+bodyOffset*k},nextAnkle={x:split+(side?1:-1)*4*k+stridePhase*rig.stepReach*k*direction,y:groundY-lift};
   const nextKnee=point(nextHip,nextAnkle,(knee.y-hip.y)/(ankle.y-hip.y));
-  nextKnee.x+=direction*(support?1:4)*k*Math.sin(cycle*Math.PI*2)**2;
+  nextKnee.x+=direction*k*(support?Math.sin(cycle/rig.stanceFraction*Math.PI)**2:3*Math.sin(swing*Math.PI));
   const footTop={x:mix(knee.x,ankle.x,(bootY-knee.y)/(ankle.y-knee.y)),y:bootY},nextFootTop=point(nextKnee,nextAnkle,(bootY-knee.y)/(ankle.y-knee.y));
-  const footAngle=support?0:-direction*.12*Math.sin((cycle-.5)*Math.PI*2);
+  const footAngle=support?0:-direction*.1*Math.sin(swing*Math.PI);
   const sourcePoints=[hip,knee,footTop,ankle,{x:ankle.x,y:bottom}],targetPoints=[nextHip,nextKnee,nextFootTop,nextAnkle,{x:nextAnkle.x,y:nextAnkle.y+3*k}];
   const painted=surface(source.width,source.height),paintedLabels=surface(source.width,source.height);strip(leg,painted,sourcePoints,targetPoints,x0,x1,footAngle);strip(labels,paintedLabels,sourcePoints,targetPoints,x0,x1,footAngle);
   parts.push({side,depth:groundY,image:painted,labels:paintedLabels});

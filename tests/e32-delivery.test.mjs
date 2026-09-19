@@ -24,7 +24,8 @@ test('35 human characters alternate the leading foot and support side in all dir
  for(const a of [...Object.values(heroes.assets).filter(a=>a.state==='walk'||a.state==='heavywalk'),...Object.values(people.assets)]){
   for(let row=0;row<4;row++){
    const f=a.frames[row*8],opposite=a.frames[row*8+4];assert.notDeepEqual(f.legOrder,opposite.legOrder);
-   assert.equal(f.joints[0].support,true);assert.equal(f.joints[1].support,false);assert.equal(opposite.joints[1].support,true);
+   assert.ok(f.joints.every(j=>j.support),'contact transfers weight with both feet grounded');assert.ok(opposite.joints.every(j=>j.support));
+   assert.equal(a.frames[row*8+2].joints[1].support,false);assert.equal(a.frames[row*8+6].joints[0].support,false);
    assert.ok((f.joints[0].groundY-f.joints[1].groundY)*(opposite.joints[0].groundY-opposite.joints[1].groundY)<0);
    for(const frame of a.frames.slice(row*8,row*8+8))for(const j of frame.joints)if(j.support)assert.equal(j.footAngle,0,'support sole stays flat');
   }

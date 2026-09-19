@@ -38,7 +38,7 @@ export function redesignPose(p={}){
  if(p.casting)return p.usingRanged?'ranged-aim':'cast';
  if(p.castPose>0)return 'cast';
  if(p.attack>0){if(p.usingRanged)return p.attack>.12?'ranged-aim':'ranged-release';return p.attack>.18?'anticipation':p.attack>.07?'impact':'recovery';}
- if(p.moving)return 'walk-'+(((Math.floor((p.walkDistance||0)/(redesignArt.catalog?.stride||80)*8)%8)+8)%8);
+ if(p.moving)return 'walk-'+(((Math.floor(((p.walkDistance||0)-(p.walkStartDistance||0))/(redesignArt.catalog?.stride||80)*8)%8)+8)%8);
  if(p.resting)return 'rest';
  return 'idle';
 }
