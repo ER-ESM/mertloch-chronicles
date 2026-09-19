@@ -1,3 +1,6 @@
+import {uiLoginCard,setUiLoginMode,uiCharacterChoice,paintUiHeroes} from './ui-kit-mmo.js';
+import {CLAN_MEMBERS} from './clan.js';
+import {ONLINE_UI} from './online.js';
 import {uiUnit,uiAction,uiAura} from './ui-kit-hud.js';
 import {UI_ICONS,UI_RECIPES,uiIcon,uiButton,uiField,uiMeter,escapeUi} from './ui-kit.js';
 const $=s=>document.querySelector(s);
@@ -12,4 +15,10 @@ $('#hud-grid').insertAdjacentHTML('beforeend',`
 <div class="ui-stack">${uiUnit({name:'Aperol-Anni',subtitle:'Gruppe · Heilung',health:74,resource:62})}${uiUnit({name:'Pfandkeiler',subtitle:'Ziel · Elite',health:420,max:900,icon:'elite',target:true})}</div>
 <article class="ui-panel wide"><span class="eyebrow">WELTCHAT / VORSCHAU</span><h3>Die Bande ist da.</h3><ul class="ui-chat-lines"><li><b>[Gruppe] Dieter:</b> Treffpunkt am Dorfplatz?</li><li><b>[Gruppe] Anni:</b> Bin gleich da.</li><li>Du hast den Dorfplatz betreten.</li></ul><label class="ui-field">Nachricht<input placeholder="Enter zum Schreiben" disabled aria-label="Chat-Vorschau, keine Verbindung"></label></article>
 <article class="ui-panel"><span class="eyebrow">MINIKARTE</span><div class="workshop-minimap" role="img" aria-label="Schematischer Dorfplatz mit Treffpunkt und Auftrag"><span class="map-north">N</span><span class="map-player">▲</span><span class="map-quest">!</span><span class="map-hub">⌂</span></div><p class="workshop-note">Dorfplatz · St. Gangolf</p></article>`);
-window.uiWorkshop={ready:true,iteration:3,icons:Object.keys(UI_ICONS).length,recipes:UI_RECIPES.length};
+$('#mmo-preview').innerHTML=`<div class="mmo-scene">${uiLoginCard({...ONLINE_UI,title:'Willkommen in Mertloch',intro:'Deine Bande. Dein Dorf. Dein nächstes Abenteuer.'},{preview:true})}</div><div class="mmo-scene mmo-roster"><header><p class="eyebrow">DEINE SPIELWEISE</p><h3>Wer bist du heute?</h3><p>Vorschau mit den Helden aus dem Spiel. Ohne Ausrüstung tragen sie ihre Startkleidung.</p></header><div class="mmo-choices">${CLAN_MEMBERS.map((m,i)=>uiCharacterChoice(m,{selected:i===0})).join('')}</div><div class="mmo-selection-detail" aria-live="polite"></div></div>`;
+const showMember=id=>{const m=CLAN_MEMBERS.find(m=>m.id===id);if(!m)return;for(const b of document.querySelectorAll('[data-ui-character]')){const selected=b.dataset.uiCharacter===id;b.setAttribute('aria-pressed',String(selected));b.querySelector('small').textContent=selected?'Ausgewählt':'Auswählen';}$('.mmo-selection-detail').innerHTML=`<h3>${escapeUi(m.name)}</h3><p>${escapeUi(m.passive)}</p><p><b>Spielweise:</b> ${escapeUi(m.rotation)}</p><a class="ui-button" href="index.html">Ins Dorf</a>`;};
+showMember(CLAN_MEMBERS[0].id);
+$('#mmo-preview').addEventListener('click',e=>{const choice=e.target.closest('[data-ui-character]');if(choice)showMember(choice.dataset.uiCharacter);const mode=e.target.closest('[data-online-submit]'),form=e.target.closest('form');if(mode&&form){e.preventDefault();const register=mode.dataset.onlineSubmit==='register';if(register!==form.classList.contains('registering')){setUiLoginMode(form,register);form.querySelector(register?'[name=name]':'[name=email]').focus();}else{form.querySelector('[data-online-message]').textContent='Designvorschau: keine Verbindung zum Kontoserver.';}}});
+$('#mmo-preview').addEventListener('submit',e=>{e.preventDefault();e.target.querySelector('[data-online-message]').textContent='Designvorschau: es werden keine Daten gesendet.';});
+await paintUiHeroes($('#mmo-preview'));
+window.uiWorkshop={ready:true,iteration:4,icons:Object.keys(UI_ICONS).length,recipes:UI_RECIPES.length};

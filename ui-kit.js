@@ -26,6 +26,7 @@ export const UI_RECIPES=[
  {id:'character-select',name:'Charakterauswahl',family:'mmo',parts:['clan-hall','character','portrait','selection','details','button'],min:[280,440]},
  {id:'realm',name:'Welt / Verbindung',family:'mmo',parts:['panel','realm','status','queue','button'],min:[240,80]},
 ];
+for(const [id,label] of Object.entries({account:'Konto',identity:'Spielername',group:'Gruppe',chat:'Chat',realm:'Welt',connected:'Verbunden',disconnected:'Getrennt',queue:'Warten',mail:'Post',storage:'Lager',search:'Suchen',settings:'Einstellungen'}))UI_ICONS[id]={path:`assets/ui-kit/runtime/icon-${id}.png`,size:48,label,reused:false};
 export const escapeUi=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function uiIcon(id,{size=32,label=''}={}){const a=UI_ICONS[id];if(!a)throw Error('Unknown UI icon: '+id);size=Math.max(12,Math.min(96,Number(size)||32));return `<img class="ui-icon" src="${a.path}" width="${size}" height="${size}" alt="${escapeUi(label)}"${label?'':' aria-hidden="true"'} draggable="false">`;}
 export function uiButton(label,{variant='secondary',icon,disabled=false,state,attributes=''}={}){

@@ -1,4 +1,5 @@
 import {styledSprite} from './art-style.js';
+import {drawDetailedHero} from './detailed-hero-art.js';
 import {drawEquipmentIcon} from './live-art.js';
 import {loadAperolArt,drawAperolIcon} from './aperol-art.js';
 import {loadDetailArt,drawDetailIcon} from './detail-art.js';
@@ -24,7 +25,9 @@ export const uiIconCount=()=>sprites.size;
 // Kartenbild der Klamottenwahl: Einzelbild "idle" nach Südosten aus dem gelieferten Bogen,
 // ganzzahlig auf das Doppelte vergrößert (96 → 192 px). Fehlt der Bogen (Anni), malt der alte Weg.
 export const HERO_PORTRAIT=192;
-export function paintHeroPortrait(canvas,id){
+export function paintHeroPortrait(canvas,id,visualEquipment=[]){
+ const detail=canvas.getContext('2d');detail.clearRect(0,0,canvas.width,canvas.height);
+ if(drawDetailedHero(detail,id,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment},3.5))return true;
  const actor=contentActor('hero-'+id)||contentActor(id);if(!actor)return false;
  const {image,frame,size}=contentFrame(actor,0,{});if(!image||!frame)return false;
  const c=canvas.getContext('2d'),scale=Math.max(1,Math.floor(canvas.width/size));

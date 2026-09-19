@@ -1,3 +1,4 @@
+import {uiLoginCard,setUiLoginMode} from './ui-kit-mmo.js';
 // Online-Schicht (Stufe B, docs/ONLINE-STUFE-B-2026-09-19.md; Server: server/game/server.mjs): Konto, Cloud-Spielstand, Bestenlisten, Anwesenheit.
 // Aktiv nur, wenn das Spiel von mertloch.esm-consultant.de (oder lokal mit ?online=1) ausgeliefert wird – die API liegt
 // dann unter ./api/ auf derselben Herkunft. Auf GitHub Pages bleibt alles wie bisher (Solo, Browserspeicher).
@@ -114,13 +115,16 @@ export function mountOnline(host){
  function card(){
   const a=state.account;
   if(!state.reachable)return '<div class="online-card"><h3>'+esc(ONLINE_UI.title)+'</h3><p class="disabled-note">'+esc(ONLINE_UI.offline)+'</p><button type="button" class="outline-button" data-online="retry">Erneut versuchen</button></div>';
-  if(!a)return '<div class="online-card"><h3>'+esc(ONLINE_UI.title)+'</h3><p>'+esc(ONLINE_UI.intro)+'</p><form data-online-form="login" class="online-form"><label>'+esc(ONLINE_UI.email)+'<input name="email" type="email" required autocomplete="email"></label><label>'+esc(ONLINE_UI.password)+'<input name="password" type="password" required minlength="10" autocomplete="current-password"></label><label class="online-only-register">'+esc(ONLINE_UI.name)+'<input name="name" type="text" minlength="3" maxlength="20" autocomplete="nickname"></label><div class="online-actions"><button type="submit" class="gold-button" data-online-submit="login">'+esc(ONLINE_UI.login)+'</button><button type="submit" class="outline-button" data-online-submit="register">'+esc(ONLINE_UI.register)+'</button></div><p class="online-message" data-online-message></p></form></div>';
+  if(!a)return uiLoginCard(ONLINE_UI);
   return '<div class="online-card"><h3>'+esc(ONLINE_UI.title)+'</h3><p><b>'+esc(ONLINE_UI.signedInAs)+' '+esc(a.name)+'</b> · '+esc(a.email)+'</p><p class="online-status">'+(state.lastSync?'Letzter Abgleich vor '+Math.max(0,Math.round((Date.now()-state.lastSync)/1000))+' s':'Noch nicht abgeglichen')+' · '+esc(state.connected?ONLINE_UI.live:ONLINE_UI.liveOff)+(state.others.length?' · '+state.others.length+' '+esc(ONLINE_UI.others):'')+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="sync">'+esc(ONLINE_UI.syncNow)+'</button><button type="button" class="outline-button" data-online="leaderboard">'+esc(ONLINE_UI.leaderboard)+'</button><button type="button" class="outline-button" data-online="logout">'+esc(ONLINE_UI.logout)+'</button><button type="button" class="outline-button danger" data-online="delete">'+esc(ONLINE_UI.deleteAccount)+'</button></div><p class="online-message" data-online-message></p></div>';
  }
  function message(root,text,bad=false){const el=root?.querySelector('[data-online-message]');if(el){el.textContent=text;el.classList.toggle('bad',bad);}}
  /** Delegierter Klick-/Submit-Handler; gibt true zurück, wenn das Ereignis zur Online-Karte gehörte. */
  async function handle(e){
   const form=e.target.closest?.('[data-online-form]');
+  const modeButton=e.target.closest?.('[data-online-submit]');
+  if(e.type==='click'&&form&&modeButton){const register=modeButton.dataset.onlineSubmit==='register';if(register!==form.classList.contains('registering')){e.preventDefault();setUiLoginMode(form,register);form.querySelector(register?'[name=name]':'[name=email]')?.focus();return true;}}
+
   if(e.type==='submit'&&form){e.preventDefault();const mode=e.submitter?.dataset.onlineSubmit||'login';const f=new FormData(form);const body={action:mode,email:f.get('email'),password:f.get('password'),name:f.get('name')};
    if(mode==='register'&&!String(body.name||'').trim()){form.classList.add('registering');message(form,'Bitte einen Spielernamen wählen.',true);form.querySelector('[name=name]')?.focus();return true;}
    try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncNow(true);startPresence();}catch(err){message(form,err.message,true);}return true;}
