@@ -346,7 +346,7 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 7. **Pets in zwei Stufen:** zuerst stationäre Begleiter (Fass, Robbi, Gisela) auf einem gemeinsamen Baustein „platziertes Objekt mit Aura/Leben/Ablauf" (`g.fields`), laufende Begleiter mit Folge-KI später.
 8. Trinkspiel als Ansage/Antwort-Timing (Parade-Fenster mit Bonus) in der Filter-Furie, keine vierte Klasse.
 
-**Reihenfolge.** Engine-Bausteine + Talentgraph → Inhalte (30 je Spec, Beschreibungsstandard Welle D) → Talentbaum-UI + HUD → Playtest Kenner → Visuals einbinden, sobald Astra liefert. **Stand 2026-09-19:** alle Etappen umgesetzt (laufende Begleiter als Pfadkrone für Robbi und Gisela), Balancing-Erstlauf in `tuning.js`; offen nur die Grafiken aus der Astra-Übergabe.
+**Reihenfolge.** Engine-Bausteine + Talentgraph → Inhalte (30 je Spec, Beschreibungsstandard Welle D) → Talentbaum-UI + HUD → Playtest Kenner → Visuals einbinden, sobald Astra liefert. **Stand 2026-09-19:** alle Etappen umgesetzt (laufende Begleiter als Pfadkrone für Robbi und Gisela), Balancing-Erstlauf in `tuning.js`; die Astra-Grafiklieferung ist seit 2026-09-19 eingebunden (docs/ASTRA-E32-LIEFERUNG-2026-09-19.md).
 
 ---
 

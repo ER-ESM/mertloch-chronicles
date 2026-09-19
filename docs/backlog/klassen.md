@@ -61,4 +61,4 @@ Nachtrag 2026-09-18: Kniff-Kurztexte und alle `info.effect`/`why` auf feste Ziff
 - [x] Wunschliste Engine, Rest umgesetzt (2026-09-19): `robbiHp` + Robbi fängt Schläge in seinem Kreis ab, `nestHonk` in Sekunden, `zoneEnergy` für alle eigenen Flächen, `heal:{damage}` auch bei `burst3`, `stackSpread` = Angetrunken (Bremse je Pegelstrich).
 - [x] Schlussstein-Regel: alle neun Index-9-Talente ändern jetzt den Finisher (Inhalt neu, Index und Pfad gleich; Test in tests/spec-mechanics.test.mjs).
 - [x] `tempo`/`laufzauber` stehen im gemeinsamen Glossar; Klassenmodule können keine gemeinsamen IDs mehr überschreiben.
-- [ ] 20 von 30 Talenten je Spec zeigen Fallback-Icons (Reihenmotiv) – Astra-Übergabe §2.
+- [x] Astra-Lieferung 2026-09-19 eingebunden: 270 eigene Talent-Icons, Skill-/Variantenfelder, Fässer/Robbi/Gisela, Effekte, Klassen-HUD, Talentbaum-Grafik (docs/ASTRA-E32-LIEFERUNG-2026-09-19.md). Keine Fallback-Icons mehr.
