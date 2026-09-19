@@ -29,6 +29,10 @@ die Seite von `*.esm-consultant.de` kommt (lokal zum Testen: `?online=1`).
 
 ## Einrichten und Deployen
 
+**Voraussetzungen im Strato-Kundenmenü:** Subdomain zeigt auf den Ordner `/Mertloch` (bis zur Umstellung liefert Strato die Seite „Domain reserved“), und für die Subdomain ist ein SSL-Zertifikat aktiviert. Ohne HTTPS funktionieren weder das Sitzungs-Cookie (Secure) noch der Service Worker.
+
+**Kurzweg:** `deploy/Setup-MertlochDb.ps1 -DbHost … -DbName … -DbUser …` fragt das Passwort ab, legt die Konfiguration an, spielt das Schema ein und prüft `api/health.php`.
+
 1. **Datenbank:** `server/schema.sql` einmal einspielen (vom Webspace aus, die DB ist von außen nicht erreichbar):
    ```sh
    mysql --default-character-set=utf8mb4 -h <db_host> -u <db_user> -p <db_name> < schema.sql
