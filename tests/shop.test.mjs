@@ -1,3 +1,4 @@
+import {KIOSK_ROOM} from '../content/index.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Game} from '../engine.js';
@@ -8,7 +9,7 @@ import {shopUnavailable,salePrice,reservedCount} from '../shop.js';
 import {restoreShopHistory} from '../shop-state.js';
 import {mapPlaces} from '../cartography.js';
 const world=()=>({id:'shop-test',spawn:{x:100,y:100},npc:{x:1000,y:1000},places:{kiosk:{approach:{x:100,y:100}}},landmarks:[],camps:[],quests:[],findClear:(x,y)=>({x,y}),blocked:()=>false,lineClear:()=>true,findPath:(a,b)=>[b]});
-const game=s=>{const g=new Game(world(),s);g.player.x=100;g.player.y=100;return g;};
+const game=s=>{const g=new Game(world(),s);g.player.x=100;g.player.y=100;g.enterKiosk();Object.assign(g.player,KIOSK_ROOM.service);return g;};
 const snapshot=g=>structuredClone({inventory:g.rpg.inventory,coins:g.rpg.coins,equipment:g.rpg.equipment,buyback:g.rpg.buyback});
 
 test('shop stock has working consumables, valid prices and no buy/sell profit',()=>{
@@ -33,7 +34,7 @@ test('insufficient funds, level locks and malformed quantities preserve the comp
  g.rpg.coins=11;const poor=snapshot(g);assert.equal(g.buyItem('brezel'),false);assert.deepEqual(snapshot(g),poor);
 });
 test('range, sight, combat, death, tutorial and pause gates apply to all transactions',()=>{
- for(const change of [g=>g.player.x=200,g=>g.world.lineClear=()=>false,g=>g.player.inCombat=2,g=>g.dead=true,g=>g.paused=true,g=>g.casting={},g=>g.tutorial={completed:false},g=>delete g.world.places]){
+ for(const change of [g=>g.player.x=300,g=>{g.player.x=190;g.player.y=100;},g=>g.player.inCombat=2,g=>g.dead=true,g=>g.paused=true,g=>g.casting={},g=>g.tutorial={completed:false},g=>g.instance=null]){
   const g=game();g.rpg.coins=100;g.rpg.inventory=[{id:'kabel',count:3}];assert.ok(g.sellItem('kabel'));const token=g.rpg.buyback[0].token;change(g);const before=snapshot(g);
   assert.ok(shopUnavailable(g));assert.equal(g.buyItem('brezel'),false);assert.equal(g.sellItem('kabel'),false);assert.equal(g.buybackItem(token),false);assert.deepEqual(snapshot(g),before);
  }

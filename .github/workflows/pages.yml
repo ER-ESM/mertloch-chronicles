@@ -37,6 +37,8 @@ jobs:
         run: npm run hud:check
       - name: Check kiosk trading and mobile shop
         run: npm run shop:check
+      - name: Check entering and leaving the kiosk instance
+        run: npm run kiosk:check
       - name: Check offline starts and update recovery
         run: node scripts/basis-pwa-check.mjs
       - name: Keep browser diagnostics on failure
@@ -49,6 +51,7 @@ jobs:
             visual-review/meter/
             visual-review/hud/
             visual-review/shop/
+            visual-review/kiosk-instance/
             combat-review/basis-pwa/
       - uses: actions/upload-pages-artifact@v4
         with:

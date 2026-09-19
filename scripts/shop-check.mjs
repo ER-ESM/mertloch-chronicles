@@ -24,7 +24,7 @@ async function fixture(touch=false){
  const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',script);await wait(300);await atShop();
 }
-async function atShop(){await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.enemies=[];Object.assign(game.player,game.world.places.kiosk.approach);game.player.inCombat=0;game.moveTo=null;game.path=[];game.keys.clear();game.paused=false;`);await wait(350);}
+async function atShop(){await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.enemies=[];if(!game.instance){Object.assign(game.player,game.world.places.kiosk.entrance||game.world.places.kiosk.approach);game.player.inCombat=0;game.paused=false;game.enterKiosk();}Object.assign(game.player,{x:190,y:142});game.player.inCombat=0;game.moveTo=null;game.path=[];game.keys.clear();game.paused=false;`);await wait(350);}
 async function open(touch=false){if(touch)await click('#touchInteract',true);else await b.press('f');await wait(200);assert.ok(await read(`!!document.querySelector('.popup-shop')`));}
 async function amount(id,n){await read(`(()=>{const e=document.querySelector('[data-shop-row="${id}"] input');e.value='${n}';e.dispatchEvent(new Event('input',{bubbles:true}));})()`);}
 async function bounds(touch){
@@ -50,7 +50,7 @@ try{
  pass('wallet, inventory and buyback persist across reload; each item returns once at its original price');
  await read('game.player.x+=150');await wait(200);assert.equal(await read(`!!document.querySelector('.popup-shop')`),false);
  await atShop();await open();await read('game.player.inCombat=4');await wait(200);assert.equal(await read(`!!document.querySelector('.popup-shop')`),false);
- await atShop();await b.press('i');await click('[data-shop-find]');assert.ok(await read(`document.querySelector('#atlasSelection').textContent.includes('Kalles Kiosk')`));await read('game.player.x+=100');await click('[data-navigate]');assert.ok(await read('game.moveTo||game.path.length'));
+ await atShop();await read('Object.assign(game.player,{x:180,y:252});game.leaveKiosk()');await wait(200);await b.press('i');await click('[data-shop-find]');assert.ok(await read(`document.querySelector('#atlasSelection').textContent.includes('Kalles Kiosk')`));await read('game.player.x+=100');await click('[data-navigate]');assert.ok(await read('game.moveTo||game.path.length'));
  pass('leaving or combat closes the shop; inventory and atlas expose a route to the walkable kiosk approach');
  for(const [name,w,h,hand] of (process.argv.includes('--desktop-only')?[]:[['phone',390,844,'right'],['small',320,568,'right'],['landscape',844,390,'right'],['landscape-left',844,390,'left'],['short',568,320,'left']])){
   await b.resize(w,h);await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});await fixture(true);

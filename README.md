@@ -50,7 +50,7 @@ Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuel
 
 ## Kalles Kiosk
 
-Nach der Hofprobe findest du **Kalles Kiosk** auf der Karte unter **Läden**; im Rucksack führt „Kalles Kiosk auf der Karte“ direkt dorthin. Am Vorplatz öffnet **F** beziehungsweise mobil **Aktion** den Laden. Kalle lässt sich auch anklicken oder antippen.
+Nach der Hofprobe findest du **Kalles Kiosk** auf der Karte unter **Läden**; im Rucksack führt „Kalles Kiosk auf der Karte“ direkt dorthin. An der Haustür betrittst du mit **F** beziehungsweise mobil **Aktion** den eigenen Kiosk-Innenraum. Drinnen läufst du mit WASD, Klick oder Touch-Joystick zur Theke; **F/Aktion** öffnet dort den Handel. Kalle lässt sich auch anklicken oder antippen. Am Ausgang führt **F/Aktion** zurück zur selben Tür im Dorf. Neuladen erhält deinen Platz im Laden.
 
 - **Kaufen:** Brezel, Konterwasser, Kaltgetränk und Currywurst gegen Pfandmarken, mit Mengenwahl und Stufenanforderung. Bei zu wenig Platz oder Geld wird nichts abgezogen.
 - **Verkaufen:** Der Rucksack steht direkt neben dem Händler. Rechtsklick auf einen Gegenstand verkauft den Stapel sofort, ohne Rückfrage; mobil genügt Antippen. Linksklick am Desktop zeigt Werte und Erlös, Enter verkauft den fokussierten Stapel. Benötigtes Hauptauftragsmaterial und Dorflegenden bleiben geschützt.

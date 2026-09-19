@@ -31,6 +31,8 @@ async function api(path,body,method){
 /**
  * host: {game:()=>Game, worldKey:string, readLocal:()=>save|null, writeLocal:(save)=>void, reload:()=>void, toast:(t)=>void, openModal:(html,id)=>void, refresh:()=>void}
  */
+/** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
+export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':p.inCombat>0?'combat':p.moving?'walk':'idle'};}
 export function mountOnline(host){
  const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,chat:[],channel:'say',chatEl:null,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;}};
@@ -73,11 +75,12 @@ export function mountOnline(host){
  }
  function sendPosition(){
   const ws=state.socket;if(!ws||ws.readyState!==1||document.hidden)return;const game=g(),p=game.player;if(!p)return;
-  const wire=JSON.stringify({t:'pos',w:host.worldKey,x:Math.round(p.x),y:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:p.inCombat>0?'combat':p.moving?'walk':'idle'});
+  if(game.instance){game.others=[];state.others=[];}const wire=JSON.stringify(presenceMessage(game,host.worldKey));
   const now=Date.now();if(wire===state.lastSent&&now-state.lastSentAt<5000)return;state.lastSent=wire;state.lastSentAt=now;ws.send(wire);
  }
  function receive(m){
   const game=g();
+  if(m.t==='snap'&&game.instance){game.others=[];state.others=[];return;}
   if(m.t==='snap'){game.others=applySnapshot(game.others,m.o,performance.now());state.others=game.others;}
   else if(m.t==='welcome'){for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
   else if(m.t==='chat')pushChat(m);

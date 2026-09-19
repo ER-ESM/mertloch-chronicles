@@ -16,7 +16,7 @@ export const SHOP_UI={
  tradeHint:'Rechtsklick auf Ware kauft direkt. Die Menge steht am Artikel.',
  sellStack:(name,n,total)=>name+' × '+n+' · Verkaufen: '+total+' Pfandmarken',
  sellNow:'Stapel verkaufen',selectHint:'Gegenstand auswählen, um Werte und Verkaufspreis zu sehen.',
- far:'Kalle ist zu weit weg. Geh zum Kiosk an der Dorfkreuzung.',
+ far:'Kalle ist zu weit weg. Geh näher an seine Theke.',
  combat:'Erst den Kampf beenden, dann bei Kalle handeln.',dead:'Erst wieder aufstehen, dann einkaufen.',
  tutorial:'Erst die Hofprobe abschließen, dann geht es zum Kiosk.',paused:'Beende zuerst den UI-Bearbeitungsmodus.',
  invalid:'Diese Ware oder Menge ist nicht verfügbar.',money:'Dafür reichen deine Pfandmarken nicht.',
