@@ -32,3 +32,29 @@
 .branch-tree{height:600px}
 
 .talent-effect{font-weight:bold}
+
+/* E-32 · Pfadbaum: drei Bahnen (Pfade) × zehn Reihen als Raster; je Reihe genau ein Talent. Ersetzt den frei platzierten Graphen. */
+.path-tree{--path-0:#8fb8c9;--path-1:#e0bd68;--path-2:#c98f8f;display:grid;gap:6px;margin:10px 0 14px;isolation:isolate}
+.path-heads,.path-row{display:grid;grid-template-columns:34px repeat(3,minmax(0,1fr));align-items:center;gap:6px}
+.path-head{display:grid;justify-items:center;gap:2px;padding:6px 4px;border:var(--edge,2px) solid var(--kraft-2);border-radius:12px;background:var(--green-2);text-align:center}
+.path-head b{font-family:var(--display);font-size:var(--t-13,13px);letter-spacing:.03em;text-transform:uppercase;color:var(--cream)}
+.path-head span{font-size:10px;color:var(--kraft)}
+.path-head[data-path="0"]{border-color:var(--path-0)}.path-head[data-path="1"]{border-color:var(--path-1)}.path-head[data-path="2"]{border-color:var(--path-2)}
+.path-tiers{display:flex;gap:4px}.path-tiers i{font-style:normal;font:700 11px/1 monospace;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--kraft-2);color:var(--kraft);background:#223b30}
+.path-tiers i.on{border-color:#f4ce79;color:#ffe08a;background:#2f452f;box-shadow:0 0 8px #d9af4266}
+.path-row{padding:4px 0;border-top:1px dashed #84907455}
+.path-row.unlocked{border-top-color:#bcb77b88}
+.row-gate{display:grid;justify-items:center;gap:1px;font:700 13px/1 monospace;color:#d3c694}
+.row-gate small{font-size:7px;letter-spacing:.2px;text-transform:uppercase;color:var(--kraft);text-align:center;line-height:1.1}
+.path-row.unlocked .row-gate{color:#f4ce79}
+.path-tree .branch-node{position:relative;transform:none;left:auto;top:auto;width:56px;height:56px;margin:0 auto;display:block;padding:3px}
+.path-tree .branch-node[data-path="0"]{--path:var(--path-0)}.path-tree .branch-node[data-path="1"]{--path:var(--path-1)}.path-tree .branch-node[data-path="2"]{--path:var(--path-2)}
+.path-tree .branch-node.learned{border-color:var(--path)!important;box-shadow:0 0 0 2px var(--path),0 0 12px var(--path)}
+.path-tree .branch-node.excluded{opacity:.42;border-style:dashed;filter:grayscale(.6)}
+.path-tree .branch-node.excluded:after{content:'✕';position:absolute;right:-6px;top:-8px;font:700 12px/1 monospace;color:#e0a48b;background:#223b30;border:1px solid #4b5f4d;border-radius:50%;width:16px;height:16px;display:grid;place-items:center}
+.path-tree .branch-node.locked{opacity:.75}
+.path-tree .branch-node.capstone{width:62px;height:62px}
+.path-tree .branch-node canvas{width:100%;height:100%}
+.path-cell.empty{display:block;width:56px;height:56px;margin:0 auto;border:1px dashed #4b5f4d;border-radius:10px;opacity:.4}
+.touch-mode .path-tree .branch-node{width:48px;height:48px}.touch-mode .path-tree .branch-node.capstone{width:54px;height:54px}.touch-mode .path-heads,.touch-mode .path-row{grid-template-columns:26px repeat(3,minmax(0,1fr));gap:4px}.touch-mode .path-head b{font-size:10px}.touch-mode .path-head span{display:none}
+.compact-panel .path-tree{margin:4px 0 8px}

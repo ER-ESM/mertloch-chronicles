@@ -130,3 +130,12 @@ Tests: `tests/flow.test.mjs` (7 Tests), `tests/arena.test.mjs`. Offen: eigene Sp
 | 7 HUD Schwung + Proc-Leuchten | UI | `app.js`, `combat-ui.js`, `progression-ui.css` | Browsertest Desktop + mobil |
 
 Schritte 1, 4 und 6 sind reine Inhaltsarbeit und können sofort beginnen; 2, 3, 5 brauchen die Engine; 7 die UI. Alles wird in der Arena gemessen, bevor es auf `main` geht.
+
+## 10 · Kernmechaniken und Pfad-Talente (E-32, 2026-09-18)
+
+Die Grundschleife aus §3–§4 bleibt für Stufe 1–4. Ab der Spezialisierung (Stufe 5) deutet jede der neun Specs die Plätze
+Markierung, Eskalation, Bodenkniff und Stärkung um (`content/mechanics.js`, Laufzeit `spec-mechanics.js`): Pegel-Uhr,
+Fässer, Schimmel-Übertragung, Putzwut, Lunte + Kettenblitz, Dosen-Robbi, Bastler-Glück, Rausschmiss, Vorrat.
+Talente: 30 je Spec in 10 Reihen × 3 Pfaden, je Reihe eines; Pfadtreue bei 4 und 7 (`content/talents/<klasse>.js`).
+GCD 1,5 s, Varianten/Procs 1,0 s. Entscheidung: [E-32](ENTSCHEIDUNGEN.md), Ideen: [KLASSEN-BRAINSTORM-2026-09-18.md](KLASSEN-BRAINSTORM-2026-09-18.md),
+Autoren: [TALENT-AUTORENBRIEF-2026-09-18.md](TALENT-AUTORENBRIEF-2026-09-18.md).

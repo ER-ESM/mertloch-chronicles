@@ -53,3 +53,12 @@ Inbox der Rolle Klassendesign (docs/ROLLEN.md).
 - [x] Restliche Talente auf Auslöser-Regeln gebracht (2026-09-17): acht neue Proc-Regeln in `content/procs.js`, sechs Sekunden-Talente auf sichtbares „sofort bereit“, sieben Wert-Texte auf „Wenn X, dann Y“ umformuliert; Engine-Bedarf in `docs/backlog/engine.md` („Aus Klassendesign“). Neue Invarianten in `content/checks/klassen.js` + `tests/content-klassen.test.mjs`: kein reines Wert-Talent, keine tote Proc-Regel, jeder Kniff-Text nennt den Einsatzmoment.
 
 Nachtrag 2026-09-18: Kniff-Kurztexte und alle `info.effect`/`why` auf feste Ziffern bereinigt; Prüfung verhindert neue Zahlen dort. Talent-Tooltips und Nachschlagewerk verwenden `effect` plus abgeleitete `numbers` statt der alten Talent-Kurztexte. Alle 90 Talente tragen geprüfte Kniff-Referenzen. Siehe [Bedienung und Beschreibungen](../BEDIENUNG-BESCHREIBUNGEN-2026-09-18.md).
+
+## Von Klassendesign · 2026-09-18 (E-32, 270 Talente in Pfaden)
+
+- [x] Je Spezialisierung 30 Talente in 10 Reihen × 3 Pfaden (`content/talents/<klasse>.js`, Proc-Regeln `content/procs/<klasse>.js`, Glossar je Klasse), Beschreibungsstandard Welle D eingehalten, Prüfungen grün. Autorenbrief: docs/TALENT-AUTORENBRIEF-2026-09-18.md.
+- [x] Wunschliste Engine, umgesetzt (2026-09-18): Proc-Wirkungen `supply:n`, `clean:s`; Auslöser `overcharge`/`misfire`/`jackpotStart`/`reactionStart`; Schlüssel `mobileMark`, `mobileGround`, `overloadRadius`, `chainRadius`, `overSplashShare`, `tapDamage`, `fieldHeal`; Zonen fass/robbi/nest/spores für `inZone`.
+- [ ] **Wunschliste Engine, offen:** `robbiHp` (Robbi hat kein Leben), numerische statt boolescher Pfadboni (`nestHonk` in s), `zoneEnergy` spec-neutral, `heal:{damage}` auch bei `burst3`, `stackSpread` (Angetrunken-Debuff) ohne Laufzeit.
+- [ ] Schlussstein-Regel: die alten Index-9-Talente (z. B. `kevin-iron-9`, `kevin-hunt-9`, `baerbel-stage-9`) ändern den Finisher nicht – beim nächsten Inhaltsdurchgang tauschen (Index bleibt, Inhalt neu).
+- [ ] Glossar-IDs `tempo`/`laufzauber` sind in mehreren Klassenmodulen definiert (letzter gewinnt) – in das gemeinsame Glossar ziehen.
+- [ ] 20 von 30 Talenten je Spec zeigen Fallback-Icons (Reihenmotiv) – Astra-Übergabe §2.

@@ -13,7 +13,7 @@ import {drawTreeOcclusion} from '../world-presence.js';
 const arena=()=>({id:'integration',seed:1,spawn:{x:0,y:0},npc:{x:0,y:0},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 function setup(spec='dieter-wall'){
  const g=new Game(arena(),{classId:spec.split('-')[0],level:11});g.random=()=>.99;
- assert.ok(changeSpec(g,spec));for(const t of TALENTS[spec])assert.ok(learnTalent(g,t.id));
+ assert.ok(changeSpec(g,spec));for(const t of TALENTS[spec].slice(0,10))assert.ok(learnTalent(g,t.id));
  const e=makeEnemy({x:25,y:0},1,{hp:100000,behavior:'neutral',roamWait:100,attackTimer:100});g.enemies=[e];g.target=e;
  return {g,e};
 }
@@ -52,7 +52,7 @@ test('Frisch gewischt empowers exactly every second direct heal',()=>{
 for(const [spec,id] of [['dieter-brew','ruecklaufleitung'],['baerbel-feedback','provision-vom-schmerz']])test(id+' heals from actual marked damage, including the lethal hit, and never from unmarked hits',()=>{
  const {g,e}=setup(spec);g.player.hp=100;g.damage(e,100,'Kelle');assert.equal(fired(g,id),0);
  g.player.hp=100;e.mark=10;const before=g.player.hp,dealt=g.damage(e,100,'Kelle'),cs=combatStats(g),factor=1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4;
- const base=spec==='dieter-brew'?.06:.15;
+ const base=(spec==='dieter-brew'?.06:.15)+(cs.markedLeech||0);
  assert.equal(g.player.hp-before,Math.round(dealt*base*factor)+Math.round(dealt*PROC_RULES[id].effect.heal.damage*factor));assert.equal(fired(g,id),1);
  g.player.hp=100;e.hp=10;g.damage(e,100000,'Kelle');assert.equal(fired(g,id),2);assert.ok(g.player.hp<110,'overkill damage cannot inflate healing');
 });

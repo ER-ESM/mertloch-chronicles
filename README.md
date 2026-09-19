@@ -15,7 +15,9 @@ Der erste Link öffnet das vollständige Testspiel. Die separate Helden-Demo zei
 - **16 Ausrüstungsplätze**, unterschiedliche Waffenarten, Beutevergleich und eine drehbare Figurenvorschau. Die Plätze im Charakterfenster sind den Körperteilen zugeordnet.
 - **Clanbuch mit vier Reitern:** Figur, Rucksack, Aufträge und Karte; daneben Hilfe. Kniffe und Talente liegen unter Figur, Bude und Erinnerungen unter Aufträge.
 - **Desktop- und Touchbedienung**, Hofprobe als Einstieg, Aufträge, Bosskämpfe und Basisbau im Maifeld.
-- **Kampfstatistik wie ein Damage-/Heal-Meter:** Schaden, wirksame Heilung, DPS/HPS, Fähigkeitsdetails und die letzten zehn Kämpfe; erreichbar über **V** oder **Figur → Werte → Kampfstatistik**.
+- **Kompaktes Damage-/Heal-Meter:** dauerhaftes Desktop-Fenster mit Rangbalken, DPS/HPS, Fähigkeitsdetails und den letzten zehn Kämpfen. **V** blendet es ein/aus; mobil öffnet der **Balken-Knopf unter dem Menü** die Anzeige. Position, Größe und Sichtbarkeit werden gemerkt.
+- **Bearbeitbare Oberfläche:** Spieler-/Zielfenster, Aktionsleisten, Minikarte, Effektleisten, Kampfstatistik und Touchsteuerung verschieben und skalieren. Benannte Layouts mit getrennten Ansichten für Desktop, Handy hochkant und quer.
+- **Buffs und Debuffs:** getrennte Leisten für eigene Stärkungen, eigene negative Effekte und Ziel-Debuffs; mit Restzeit, Stapeln und Erklärungen per Maus oder Antippen.
 - **Speichern, Offlinebetrieb und Updates** sowie automatische Prüfungen für Spiellogik, Oberfläche und Browser-Updates.
 
 Die aktuelle Priorität ist **erst die technische und spielerische Basis, danach neuer Content**. Ladeverhalten, Update-Regressionen und UI-Prüfungen wurden überarbeitet. Die vollständige Passform-Abnahme der Ausrüstung und Tests auf physischen Mobilgeräten bleiben offen; Browseremulation ersetzt diese Geräteprüfung nicht. Akt 2 ist noch nicht beauftragt.
@@ -36,10 +38,13 @@ Wähle deine Clanfigur und sprich am Treffpunkt mit **Ida**. Die Hofprobe führt
 | Ausweichen / Unterbrechen | Leertaste / Q | Stiefel- / Handbutton |
 | Figur / Rucksack / Aufträge / Karte | C / I / J / M | „Menü“, dann den Reiter wählen |
 | Kniffe / Talente / Hilfe | K / N / H | Unter Figur bzw. über das Hilfe-Symbol |
-| Kampfstatistik | V oder der HUD-Button | Menü → Figur → Werte → Kampfstatistik |
+| Kampfstatistik | Standardmäßig sichtbar; V oder HUD-Button zum Ein-/Ausblenden | Balken-Knopf unter dem Menü; auch Figur → Werte → Kampfstatistik |
+| UI bearbeiten | F10 oder Hilfe → Einstellungen → UI bearbeiten | Menü → Hilfe → Einstellungen → UI bearbeiten |
 | Schließen / Angriff stoppen | Esc schließt zuerst offene Fenster und beendet danach den Autoangriff | × schließt das Clanbuch; Angriffsbutton stoppt den Angriff |
 
 Die Aktionsleiste ist frei belegbar. Unter **Hilfe → Einstellungen → Steuerung & Touchbuttons** lassen sich die Touchbelegung, Buttongröße und Joystickseite einstellen. Geöffnete Menüs halten den Kampf nicht an.
+
+Im **UI-Bearbeitungsmodus** pausiert die Welt. Ziehe die blauen Rahmen, wähle die Größe und speichere dein Layout. **Abbrechen / Esc / F10** verwirft die offenen Änderungen. Auf Touch öffnet **Optionen** die Einstellungen; das Bedienfeld selbst lässt sich an seiner Überschrift verschieben. Raster, feines Verschieben, Layoutkopien und Zurücksetzen sind eingebaut. Die Layouts werden lokal im Browser gespeichert. Leere Effektleisten und die Zauberleiste erscheinen zum Platzieren als Rahmen. [Bedienung und Prüfbericht](docs/HUD-EDITOR-2026-09-18.md).
 
 Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuellem/letztem Kampf, einzelnen vergangenen Kämpfen und der gesamten Sitzung. Wähle eine Figur für ihre Fähigkeiten und einen Fähigkeitsbalken für Treffer, Durchschnitt, Spitzenwert, kritische Treffer und Überheilung bzw. Überschaden. Auf dem Desktop lässt sich das Fenster an der Titelleiste verschieben; auf Touch passt es sich dem freien Bereich zwischen bzw. über den Kampfbuttons an. Die Statistik läuft auch bei eingeklappter Anzeige weiter und beginnt nach dem Neuladen neu. [Messregeln und Prüfbericht](docs/KAMPFSTATISTIK-2026-09-18.md).
 
@@ -88,6 +93,7 @@ npm run content:check      # Inhaltsschema und Invarianten
 npm run world:validate     # Weltgenerierung über mehrere Seeds
 npm run ui:check           # Clanbuch sowie Desktop- und Touchlayouts im Browser
 npm run meter:check        # Damage-/Heal-Meter, Details, Zurücksetzen und Touch
+npm run hud:check          # UI-Layouts, Buff-/Debuffleisten und Touchbearbeitung
 npm run pwa:check          # Produktionsbuild, Offline-Starts und Updatefälle
 npm run performance:check  # Ladezeit, Anfragen und Bildzeiten
 npm run build              # Statische Website nach _site/

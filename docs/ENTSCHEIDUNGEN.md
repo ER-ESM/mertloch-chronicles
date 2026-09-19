@@ -42,6 +42,9 @@ Regeln für dieses Dokument:
 | E-28 | Runde, einfache Linien statt Radius 0 | 2026-09-18 | gilt, ändert E-24 |
 | E-29 | Jeder Kniff hat zu jeder Zeit einen Nutzen (frühe Eskalation) | 2026-09-18 | gilt |
 | E-30 | Sichtbare Ausrüstung über Pre-Render aus 3D | 2026-09-18 | gilt |
+| E-31 | Kampfstatistik für Schaden und Heilung | 2026-09-18 | gilt |
+| E-32 | Klassen-Kernmechaniken und Talentpfade | 2026-09-18 | gilt |
+| E-33 | Bearbeitbares HUD mit Buff- und Debuffleisten | 2026-09-18 | gilt |
 
 ---
 
@@ -326,7 +329,24 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 
 **Auftrag.** „Bau und implementiere ein damage und heal meter a la details (wow).“ Die Statistik zeigt tatsächliche Spielerwerte, DPS/HPS und Fähigkeitsanteile für laufende/vergangene Kämpfe und die Sitzung. Im Einzelspielermodus gibt es keine erfundenen Gruppenmitglieder; gewechselte Clanfiguren behalten getrennte Summen.
 
-**Umsetzung.** Ein einklappbares Messfenster ergänzt das Clanbuch und bleibt während Bewegung und Kampf nutzbar. Einstieg über V/HUD am Desktop und Figur → Werte bzw. Hilfe → Einstellungen auf beiden Gerätearten. Auf Touch bleibt der Bereich der Kampfsteuerung frei. Zehn abgeschlossene Kämpfe und unbegrenzte Sitzungssummen aus begrenzten Aggregaten; keine Erweiterung des Spielstandformats. Keine zusätzliche Zufallsziehung, Balanceänderung oder Heilung durch den Zähler. Überheilung/Überschaden getrennt, Schilde und Ruhe-Regeneration ausgeschlossen. Details: [Messregeln und Prüfung](KAMPFSTATISTIK-2026-09-18.md).
+**Umsetzung.** Ein einklappbares Messfenster ergänzt das Clanbuch und bleibt während Bewegung und Kampf nutzbar. Nach Nutzerrückmeldung zur Details-Bedienung ist es am Desktop standardmäßig als kompakte Rangliste sichtbar; V schaltet es um. Position, Größe, Modus und Sichtbarkeit werden gemerkt. Mobil gibt es einen direkten HUD-Knopf; Figur → Werte bzw. Hilfe → Einstellungen bleiben als Einstieg. Auf Touch bleibt der Bereich der Kampfsteuerung frei. Zehn abgeschlossene Kämpfe und unbegrenzte Sitzungssummen aus begrenzten Aggregaten; keine Erweiterung des Spielstandformats. Keine zusätzliche Zufallsziehung, Balanceänderung oder Heilung durch den Zähler. Überheilung/Überschaden getrennt, Schilde und Ruhe-Regeneration ausgeschlossen. Die Veröffentlichung auf Main wird trotz weiterer Pushes abgeschlossen, damit die Live-Seite nicht dauerhaft hinter dem implementierten Stand bleibt. Details: [Messregeln und Prüfung](KAMPFSTATISTIK-2026-09-18.md).
+
+## E-32 · Klassen-Kernmechaniken, Talentbäume mit Pfaden (Faktor 3)
+**Datum:** 2026-09-18 · **Stand:** entschieden auf Nutzerauftrag, Umsetzung in Etappen
+
+**Auftrag.** „Aktuell sind alle gleich: 3 von irgendwas generieren, dann finishen." Brainstorm und Bewertung: [KLASSEN-BRAINSTORM-2026-09-18.md](KLASSEN-BRAINSTORM-2026-09-18.md). Visuals laufen parallel: [UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md](UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md).
+
+**Entschieden.**
+1. Die Grundschleife (Schwung → Eskalation) bleibt auf Stufe 1–4 für alle gleich. Ab der Spezialisierung (Stufe 5) hat jede der neun Specs eine **Kernmechanik**, die die Leistenplätze Markierung, Eskalation, Bodenkniff und Stärkung umdeutet (Namen/Texte je Spec in `content/mechanics.js`, Regeln in `class-mechanics.js`). Kein Paar teilt nach Stufe 5 die Grundlogik: Pegel-Uhr, Fässer, Schimmel-Ausbreitung, Randale-Zustand, Lunte+Kettenblitz, Aufbau-Automat, Bastler-Zufall mit Pity, Deckung als Waffe, Heilung wird Schaden.
+2. **Talentbäume:** 30 Talente je Spec = 10 Reihen × 3 Pfade. Je Reihe genau ein Talent (die anderen beiden sind ausgeschlossen). Punkte bleiben 1 je Stufe ab Stufe 2 (10 auf Stufe 11). **Pfadtreue:** 4 Talente desselben Pfades geben den Pfadbonus, 7 die Pfadkrone (passive Regeln je Pfad in `content/mechanics.js`). Reihe 10 ist der Schlussstein und ändert den Finisher. Regel für jedes Talent: ändert eine Regel, nie nur eine Zahl (Prüfung `content/checks/klassen.js`).
+3. Speicherschlüssel bleiben `<spec>-<index>`, jetzt 0–29 (Reihe = ⌊index/3⌋, Pfad = index mod 3). Alte Builds werden beim Laden zurückgesetzt, die Punkte sind frei.
+4. **GCD:** Basis 1,5 s, Untergrenze 1,0 s (Balancing, `content/balance.js`). Kniffe in einer Variante (Gratis, Verstärkt, Bereit, Eskalation, RESONANZ) und proc-ausgelöste Kniffe lösen nur einen kurzen GCD von 1,0 s aus.
+5. **Bodenkniff auf Stufe 3** für alle Klassen; ab Stufe 5 spec-spezifisch (Fass, Robbi, Nest, Sporenwolke, …).
+6. **Casts im Laufen** nur per Spec-Kit oder Talent (`mobile`-Flag am Kniff), nicht allgemein.
+7. **Pets in zwei Stufen:** zuerst stationäre Begleiter (Fass, Robbi, Gisela) auf einem gemeinsamen Baustein „platziertes Objekt mit Aura/Leben/Ablauf" (`g.fields`), laufende Begleiter mit Folge-KI später.
+8. Trinkspiel als Ansage/Antwort-Timing (Parade-Fenster mit Bonus) in der Filter-Furie, keine vierte Klasse.
+
+**Reihenfolge.** Engine-Bausteine + Talentgraph → Inhalte (30 je Spec, Beschreibungsstandard Welle D) → Talentbaum-UI + HUD → Playtest Kenner → Visuals einbinden, sobald Astra liefert.
 
 ---
 
@@ -338,3 +358,11 @@ Die Runde behebt konkrete Fehler und ergänzt Regressionstests. Sie ist keine vo
 | Geräteübergreifender Spielstand | nie; Export/Import-Datei; Konto | Export/Import-Datei, kein Konto (E-01) | 2026-09-12 |
 | Feldgegner ab Stufe 10 trivial | Skalierung in der Engine; Anhebung über `tuning.js`; bewusst lassen | Skalierung in der Engine, Dorfkern fest (`docs/backlog/engine.md`) | 2026-09-17 |
 | Set-Boni für Dorflegenden | ja; nein | nach dem Playtest entscheiden, Konzept Loot + Gameplay | 2026-09-17 |
+
+## E-33 · Bearbeitbares HUD mit Buff- und Debuffleisten
+
+**Anlass.** Nutzerauftrag vom 18.09.2026: Oberfläche wie im Bearbeitungsmodus von WoW Retail anpassen, Buff- und Debuffleiste ergänzen; mobile Variante mitdenken.
+
+**Entscheidung.** Ein eigener, pausierender Bearbeitungsmodus verschiebt und skaliert vorhandene HUD-Elemente. Benannte Layouts enthalten getrennte Ansichten für Desktop, Hochkant und Querformat. Speichern ist ausdrücklich, Abbrechen stellt den Ausgangsstand wieder her. Eigene Buffs, eigene Debuffs und Ziel-Debuffs haben unabhängige Leisten mit tatsächlichen Laufzeiten und Stapeln. Verworfen: nur fest positionierte Effektchips; ein gemeinsames Pixel-Layout für PC und Handy.
+
+**Konsequenzen.** Keine Änderung an Kampfregeln oder Spielständen. Layoutpräferenzen liegen separat im Browser. Touchflächen werden im Editor nicht unter ihre Standardgröße skaliert; leere Leisten bleiben dort als Rahmen auffindbar. Umsetzung, Grenzen und Prüfungen: [HUD-Editor](HUD-EDITOR-2026-09-18.md).

@@ -1,6 +1,8 @@
 # Klassen, Spezialisierungen, Talentbäume · Brainstorm 2026-09-18
 
 Anlass: „Aktuell sind alle gleich: 3 von irgendwas generieren, dann finishen. Zu eintönig, nicht kreativ, nicht interaktiv."
+**Stand:** entschieden als [E-32](ENTSCHEIDUNGEN.md); Visuals: [Astra-Übergabe](UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md).
+
 Dieses Papier bewertet die eingebrachten Ideen, schlägt je Spezialisierung eine eigene Kernmechanik vor und skizziert
 das Talentbaum-Redesign (Faktor 3). Nichts davon ist entschieden; offene Fragen stehen am Ende. Zahlen sind Entwürfe für
 `content/tuning.js` (Balancing), keine Festlegung.

@@ -27,3 +27,5 @@ export * from './tutorial.js';
 export * from './aperol-art.js';
 export * from './panel-ui.js';
 export * from './glossary.js';
+export * from './mechanics.js';
+export * from './hud.js';
