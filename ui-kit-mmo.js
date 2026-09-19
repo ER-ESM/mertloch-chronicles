@@ -23,6 +23,6 @@ export async function paintUiHeroes(root,{visualEquipment=[]}={}){
  await loadRedesignArt();if(!redesignArt.ready)return false;
  for(const canvas of root.querySelectorAll('[data-ui-hero]')){
   const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawDetailedHero(ctx,canvas.dataset.uiHero,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment},3.5);
+  drawDetailedHero(ctx,canvas.dataset.uiHero,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment},6);
  }return true;
 }

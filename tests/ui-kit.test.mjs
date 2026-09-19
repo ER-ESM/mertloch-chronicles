@@ -3,7 +3,19 @@ import {buildUiKit}from '../tools/ui-kit/build.mjs';
 import {decodePng}from '../tools/sprite-pipeline/png.mjs';
 import {PRECISION_PALETTE}from '../art-quality.js';
 import {uiButton,uiField,uiMeter,uiIcon,drawUiFrame,UI_RECIPES}from '../ui-kit.js';
+import {uiRecipe}from '../ui-kit-recipes.js';
+import {uiAction,uiAura}from '../ui-kit-hud.js';
+import {uiLoginCard}from '../ui-kit-mmo.js';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url)),catalog=JSON.parse(read('assets/ui-kit/runtime/catalog.json'));
+test('every advertised recipe assembles without unsafe title interpolation',()=>{
+ for(const r of UI_RECIPES){const html=uiRecipe(r.id,{title:'<img src=x onerror=evil>'});assert.ok(html.length>30,r.id);assert.ok(!html.includes('<img src=x'),r.id);}
+ assert.throws(()=>uiRecipe('missing'));assert.throws(()=>uiRecipe('window',{frame:'missing'}));
+ const action=uiAction({name:'Cast',cooldown:3,total:6});assert.ok(action.includes('disabled'));assert.ok(action.includes('--cooldown:180deg'));assert.ok(action.includes('Noch 3 Sekunden'));
+ assert.ok(uiAction({name:'Proc',proc:true}).includes('Verstärkt und bereit'));
+ assert.ok(uiAura({name:'<debuff>',harmful:true}).includes('&lt;debuff&gt;'));
+ const card=uiLoginCard({title:'Konto',intro:'Text',email:'E-Mail',password:'Passwort',name:'Name',login:'Anmelden',register:'Registrieren'});
+ for(const value of ['data-online-form="login"','name="email"','name="password"','name="name"','data-online-submit="register"','aria-live="polite"'])assert.ok(card.includes(value),value);
+});
 test('UI kit exports reproduce from frozen sources; source and reuse provenance stay exact',()=>{
  for(const [path,data]of buildUiKit().files)assert.deepEqual(data,read(path),path);
  for(const a of [...Object.values(catalog.frames),...Object.values(catalog.icons),...Object.values(catalog.illustrations)]){

@@ -122,12 +122,14 @@ export function mountOnline(host){
  /** Delegierter Klick-/Submit-Handler; gibt true zurück, wenn das Ereignis zur Online-Karte gehörte. */
  async function handle(e){
   const form=e.target.closest?.('[data-online-form]');
+  if(form?.getAttribute('aria-busy')==='true'){e.preventDefault();return true;}
   const modeButton=e.target.closest?.('[data-online-submit]');
   if(e.type==='click'&&form&&modeButton){const register=modeButton.dataset.onlineSubmit==='register';if(register!==form.classList.contains('registering')){e.preventDefault();setUiLoginMode(form,register);form.querySelector(register?'[name=name]':'[name=email]')?.focus();return true;}}
 
   if(e.type==='submit'&&form){e.preventDefault();const mode=e.submitter?.dataset.onlineSubmit||'login';const f=new FormData(form);const body={action:mode,email:f.get('email'),password:f.get('password'),name:f.get('name')};
    if(mode==='register'&&!String(body.name||'').trim()){form.classList.add('registering');message(form,'Bitte einen Spielernamen wählen.',true);form.querySelector('[name=name]')?.focus();return true;}
-   try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncNow(true);startPresence();}catch(err){message(form,err.message,true);}return true;}
+   form.setAttribute('aria-busy','true');const submits=[...form.querySelectorAll('[data-online-submit]')];submits.forEach(b=>b.disabled=true);e.submitter?.setAttribute('data-ui-state','loading');message(form,'Verbindung wird aufgebaut …');
+   try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncNow(true);startPresence();}catch(err){message(form,err.message,true);}finally{form.removeAttribute('aria-busy');submits.forEach(b=>{b.disabled=false;b.removeAttribute('data-ui-state');});}return true;}
   const b=e.target.closest?.('[data-online]');if(!b||e.type!=='click')return false;const root=b.closest('.online-card');
   const what=b.dataset.online;
   if(what==='retry'){await refreshAccount();host.refresh?.();}

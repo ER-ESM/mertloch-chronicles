@@ -27,7 +27,7 @@ export const uiIconCount=()=>sprites.size;
 export const HERO_PORTRAIT=192;
 export function paintHeroPortrait(canvas,id,visualEquipment=[]){
  const detail=canvas.getContext('2d');detail.clearRect(0,0,canvas.width,canvas.height);
- if(drawDetailedHero(detail,id,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment},3.5))return true;
+ if(drawDetailedHero(detail,id,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment},6))return true;
  const actor=contentActor('hero-'+id)||contentActor(id);if(!actor)return false;
  const {image,frame,size}=contentFrame(actor,0,{});if(!image||!frame)return false;
  const c=canvas.getContext('2d'),scale=Math.max(1,Math.floor(canvas.width/size));
