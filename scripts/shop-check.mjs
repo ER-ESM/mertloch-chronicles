@@ -26,6 +26,20 @@ async function fixture(touch=false){
 }
 async function atShop(){await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.enemies=[];if(!game.instance){Object.assign(game.player,game.world.places.kiosk.entrance||game.world.places.kiosk.approach);game.player.inCombat=0;game.paused=false;game.enterKiosk();}Object.assign(game.player,{x:190,y:142});game.player.inCombat=0;game.moveTo=null;game.path=[];game.keys.clear();game.paused=false;`);await wait(350);}
 async function open(touch=false){if(touch)await click('#touchInteract',true);else await b.press('f');await wait(200);assert.ok(await read(`!!document.querySelector('.popup-shop')`));}
+async function checkShopMarker(){
+ await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.leaveKiosk(true);game.moveTo=null;game.path=[];game.routeGoal=null;`);await wait(250);
+ await b.press('m');
+ await click('[data-filter="shop"]');await click('[data-zoom="fit"]');
+ assert.equal(await read(`document.querySelectorAll('#atlasPlaces [data-place]').length`),1);
+ await read(`document.querySelector('#largeMap').scrollIntoView({block:'center'})`);await wait(200);
+ const marker=await read(`(()=>{const c=document.querySelector('#largeMap'),h=c.atlasHits.find(h=>h.id==='shop:kalle');if(!h)return null;const r=c.getBoundingClientRect();return{x:r.x+h.x*r.width/c.width,y:r.y+h.y*r.height/c.height}})()`);
+ assert.ok(marker&&Number.isFinite(marker.x)&&Number.isFinite(marker.y),'shop filter renders the kiosk marker');
+ assert.ok(await read(`document.elementFromPoint(${marker.x},${marker.y})?.id==='largeMap'`),'map marker is unobstructed');
+ await b.screenshot(dir+'/desktop-map-filter.png');
+ for(const type of ['mousePressed','mouseReleased'])await b.send('Input.dispatchMouseEvent',{type,...marker,button:'left',clickCount:1});
+ await wait(200);assert.ok(await read(`document.querySelector('#atlasSelection').textContent.includes('Kalles Kiosk')`));
+ await b.screenshot(dir+'/desktop-map-shops.png');
+}
 async function amount(id,n){await read(`(()=>{const e=document.querySelector('[data-shop-row="${id}"] input');e.value='${n}';e.dispatchEvent(new Event('input',{bubbles:true}));})()`);}
 async function bounds(touch){
  const a=await read(`(()=>{const e=document.querySelector('.popup-shop'),r=e.getBoundingClientRect(),body=e.querySelector('.popup-body'),controls=[...document.querySelectorAll('#touchStick,#touchActions,#touchUtility')].map(e=>e.getBoundingClientRect());return{inside:r.x>=0&&r.y>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1,overflow:body.scrollWidth-body.clientWidth,small:[...e.querySelectorAll('button,input')].filter(e=>e.getClientRects().length).some(e=>{const r=e.getBoundingClientRect();return r.width<43.9||r.height<43.9}),overlap:controls.some(c=>Math.min(c.right,r.right)-Math.max(c.left,r.left)>1&&Math.min(c.bottom,r.bottom)-Math.max(c.top,r.top)>1)}})()`);
@@ -51,6 +65,7 @@ try{
  await read('game.player.x+=150');await wait(200);assert.equal(await read(`!!document.querySelector('.popup-shop')`),false);
  await atShop();await open();await read('game.player.inCombat=4');await wait(200);assert.equal(await read(`!!document.querySelector('.popup-shop')`),false);
  await atShop();await read('Object.assign(game.player,{x:180,y:252});game.leaveKiosk()');await wait(200);await b.press('i');await click('[data-shop-find]');assert.ok(await read(`document.querySelector('#atlasSelection').textContent.includes('Kalles Kiosk')`));await read('game.player.x+=100');await click('[data-navigate]');assert.ok(await read('game.moveTo||game.path.length'));
+ await checkShopMarker();
  pass('leaving or combat closes the shop; inventory and atlas expose a route to the walkable kiosk approach');
  for(const [name,w,h,hand] of (process.argv.includes('--desktop-only')?[]:[['phone',390,844,'right'],['small',320,568,'right'],['landscape',844,390,'right'],['landscape-left',844,390,'left'],['short',568,320,'left']])){
   await b.resize(w,h);await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});await fixture(true);
