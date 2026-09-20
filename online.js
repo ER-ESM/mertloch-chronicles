@@ -11,7 +11,9 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',party:'Gruppe',leaveParty:'Gruppe verlassen',leaveShort:'verlassen',people:'Spieler online',level:'Stufe',elsewhereWorld:'andere Welt',inGroup:'in Gruppe',you:'du',invite:'Einladen',whisper:'Flüstern',whisperTo:'an',whisperFrom:'von',inviteTitle:'Gruppeneinladung',inviteText:'{n} lädt dich in eine Gruppe ein. Gemeinsam besiegte Gegner zählen für alle in der Nähe.',accept:'Annehmen',decline:'Ablehnen',chatHelp:'Befehle: /s Umkreis · /w Welt · /g Gruppe · /f Name Text (flüstern) · /r Antwort · /einladen Name · /verlassen · /wer',unknownCommand:'Unbekannter Befehl. /hilfe zeigt alle.',needName:'Dazu gehört ein Name: ',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
 
 /** Entscheidung beim Abgleich: 'pull' (Server neuer), 'push' (lokal neuer oder Server leer), 'same'. Reine Funktion (Tests). */
-export function decideSync(local,server){
+/** foreign: der lokale Stand gehört einem anderen Konto – dann gewinnt immer der Server-Stand des angemeldeten Kontos. */
+export function decideSync(local,server,{foreign=false}={}){
+ if(foreign&&server?.save)return 'pull';
  const l=Number(local?.savedAt||0),s=Number(server?.savedAt||0);
  if(!server||!server.save)return l>0?'push':'same';
  if(s>l)return 'pull';if(l>s)return 'push';return 'same';
@@ -52,8 +54,8 @@ async function api(path,body,method){
 /** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
 export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1))))};}
 export function mountOnline(host){
- const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null};
- if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;}};
+ const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null,hold:!!host.holdPresence};
+ if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;},async logout(){},enterWorld(){},leaveWorld(){},account:null};
  const g=()=>host.game();
  const wsSend=msg=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify(msg));};
  const net=createNetWorld({game:g,me:()=>state.account?.name,send:wsSend,others:()=>g().others||[]});
@@ -61,23 +63,27 @@ export function mountOnline(host){
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
  async function start(){
   await refreshAccount();renderChat();if(!state.account)return;
-  await syncNow(true);startPresence();
+  await syncNow(true);if(!state.hold)startPresence();
  }
+ // Wem gehört der Stand im Browser? Verhindert, dass nach einem Kontowechsel der Stand des Vorgängers hochgeladen wird.
+ const OWNER_KEY='mertloch-save-owner';
+ const foreignSave=()=>{try{const o=localStorage.getItem(OWNER_KEY);return !!o&&!!state.account&&o!==state.account.name;}catch{return false;}};
+ const markOwner=()=>{try{if(state.account)localStorage.setItem(OWNER_KEY,state.account.name);}catch{}};
  async function syncNow(silent=false){
   if(!state.account||state.syncing)return null;state.syncing=true;
   try{
    const local=host.readLocal();const server=await api('save?world='+encodeURIComponent(host.worldKey));
-   const verdict=decideSync(local,server);
+   const verdict=decideSync(local,server,{foreign:foreignSave()});
    if(verdict==='pull'){host.writeLocal({...server.save,savedAt:server.savedAt});host.toast(ONLINE_UI.cloudNewer);setTimeout(()=>host.reload(),900);}
    else if(verdict==='push'&&local){const r=await api('save',{world:host.worldKey,save:local,savedAt:local.savedAt||Date.now()});if(r.stale){host.writeLocal({...r.server.save,savedAt:r.server.savedAt});host.toast(ONLINE_UI.cloudNewer);setTimeout(()=>host.reload(),900);}else if(!silent)host.toast(ONLINE_UI.localNewer);}
    else if(!silent)host.toast(ONLINE_UI.synced);
-   state.lastSync=Date.now();state.failures=0;return verdict;
+   markOwner();state.lastSync=Date.now();state.failures=0;return verdict;
   }catch(e){state.failures++;if(!silent||state.failures===1)host.toast(ONLINE_UI.offline);return null;}
   finally{state.syncing=false;host.refresh?.();}
  }
  /** Nach jedem lokalen Speichern: gebündelt hochladen (4 s Ruhe), nie öfter als alle 10 s. */
  function afterSave(save){
-  if(!state.account||!save)return;clearTimeout(state.pending);
+  if(!state.account||!save||foreignSave())return;clearTimeout(state.pending);
   state.pending=setTimeout(async()=>{if(state.syncing)return;state.syncing=true;try{const r=await api('save',{world:host.worldKey,save,savedAt:save.savedAt||Date.now()});if(r.stale&&decideSync(save,r.server)==='pull'){host.writeLocal({...r.server.save,savedAt:r.server.savedAt});host.toast(ONLINE_UI.cloudNewer);setTimeout(()=>host.reload(),900);}state.lastSync=Date.now();state.failures=0;const p=g().player;if(p?.level)api('leaderboard',{board:'level',value:p.level,meta:{classId:g().member?.id,spec:g().rpg?.talents?.spec}}).catch(()=>{});}catch(e){state.failures++;if(state.failures===1)host.toast(ONLINE_UI.offline);}finally{state.syncing=false;}},4000);
  }
  // ── Echtzeit (WebSocket /ws): eigene Position 10×/s wenn sie sich ändert, Schnappschüsse der Nachbarn, Chat ──
@@ -130,7 +136,7 @@ export function mountOnline(host){
  }
  function renderChat(){
   host.chat?.setOnline({state:!state.reachable?'off':!state.account?'signedOut':state.connected?'connected':'connecting',channels:state.party.members.length?['say','world','party']:['say','world'],
-   onLogin:()=>host.openModal(card(),'touchhelp'),onSend:sendChat,onPeople:()=>wsSend({t:'who'})});
+   onLogin:()=>host.showLogin?host.showLogin():host.openModal(card(),'touchhelp'),onSend:sendChat,onPeople:()=>wsSend({t:'who'})});
  }
  // ── Gruppe: Rahmen links unter dem Heldenrahmen, Spielerliste als Fenster ──
  function setParty(m){
@@ -166,7 +172,7 @@ export function mountOnline(host){
   if(e.type==='submit'&&form){e.preventDefault();const mode=e.submitter?.dataset.onlineSubmit||'login';const f=new FormData(form);const body={action:mode,email:f.get('email'),password:f.get('password'),name:f.get('name')};
    if(mode==='register'&&!String(body.name||'').trim()){form.classList.add('registering');message(form,'Bitte einen Spielernamen wählen.',true);form.querySelector('[name=name]')?.focus();return true;}
    form.setAttribute('aria-busy','true');const submits=[...form.querySelectorAll('[data-online-submit]')];submits.forEach(b=>b.disabled=true);e.submitter?.setAttribute('data-ui-state','loading');message(form,'Verbindung wird aufgebaut …');
-   try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncNow(true);startPresence();}catch(err){message(form,err.message,true);}finally{form.removeAttribute('aria-busy');submits.forEach(b=>{b.disabled=false;b.removeAttribute('data-ui-state');});}return true;}
+   try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncNow(true);if(!state.hold)startPresence();}catch(err){message(form,err.message,true);}finally{form.removeAttribute('aria-busy');submits.forEach(b=>{b.disabled=false;b.removeAttribute('data-ui-state');});}return true;}
   const b=e.target.closest?.('[data-online]');if(!b||e.type!=='click')return false;const root=b.closest('.online-card');
   const what=b.dataset.online;
   if(what==='party-accept'||what==='party-decline'){wsSend({t:'party',op:what.slice(6)});host.closeModal?.('touchhelp');}
@@ -175,10 +181,16 @@ export function mountOnline(host){
   else if(what==='whisper'){host.closeModal?.('touchhelp');host.chat?.prefill('/f '+(/s/.test(b.dataset.name)?'"'+b.dataset.name+'"':b.dataset.name)+' ');}
   else if(what==='retry'){await refreshAccount();host.refresh?.();}
   else if(what==='sync'){const v=await syncNow(false);message(root,v?'Abgleich: '+({pull:'Server-Stand geladen',push:'hochgeladen',same:'schon aktuell'}[v]||v):ONLINE_UI.offline,!v);}
-  else if(what==='logout'){try{await api('auth',{action:'logout'});}catch{}state.account=null;stopPresence();host.refresh?.();renderChat();}
-  else if(what==='leaderboard'){try{const d=await api('leaderboard?board=level');const dps=await api('leaderboard?board=arena-dps');host.openModal('<h2>'+esc(ONLINE_UI.leaderboard)+'</h2><h3>Stufe</h3><ol class="online-board">'+d.entries.map(x=>'<li><b>'+esc(x.name)+'</b> Stufe '+esc(x.value)+(x.meta?.spec?' · '+esc(x.meta.spec):'')+'</li>').join('')+'</ol><h3>Arena-DPS</h3><ol class="online-board">'+dps.entries.map(x=>'<li><b>'+esc(x.name)+'</b> '+esc(x.value)+' DPS'+(x.meta?.spec?' · '+esc(x.meta.spec):'')+'</li>').join('')+'</ol>','touchhelp');}catch(err){message(root,err.message,true);}}
+  else if(what==='logout')await logout();
+  else if(what==='leaderboard')await showLeaderboard(root);
   else if(what==='delete'){const word=prompt(ONLINE_UI.deleteConfirm);if(word==='LÖSCHEN'){try{await api('auth',{action:'delete',confirm:'LÖSCHEN'});state.account=null;stopPresence();host.toast('Konto gelöscht.');host.refresh?.();}catch(err){message(root,err.message,true);}}}
   return true;
  }
- return {state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,get account(){return state.account;}};
+ /** Abmelden: Sitzung beenden, Anwesenheit stoppen. Der lokale Spielstand bleibt im Browser. */
+ async function logout(){clearTimeout(state.pending);try{await api('auth',{action:'logout'});}catch{}state.account=null;stopPresence();setParty({leader:null,members:[]});host.refresh?.();renderChat();}
+ async function showLeaderboard(root){try{const d=await api('leaderboard?board=level');const dps=await api('leaderboard?board=arena-dps');host.openModal('<h2>'+esc(ONLINE_UI.leaderboard)+'</h2><h3>Stufe</h3><ol class="online-board">'+d.entries.map(x=>'<li><b>'+esc(x.name)+'</b> Stufe '+esc(x.value)+(x.meta?.spec?' · '+esc(x.meta.spec):'')+'</li>').join('')+'</ol><h3>Arena-DPS</h3><ol class="online-board">'+dps.entries.map(x=>'<li><b>'+esc(x.name)+'</b> '+esc(x.value)+' DPS'+(x.meta?.spec?' · '+esc(x.meta.spec):'')+'</li>').join('')+'</ol>','touchhelp');}catch(err){message(root,err.message,true);}}
+ /** Anmeldebildschirm: Anwesenheit erst beim Betreten der Welt starten, beim Verlassen wieder stoppen. */
+ function enterWorld(){state.hold=false;if(state.account)startPresence();renderChat();}
+ function leaveWorld(){state.hold=true;stopPresence();}
+ return {state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

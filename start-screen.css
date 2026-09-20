@@ -1,0 +1,27 @@
+/* Anmeldebildschirm und Figurenwahl (start-screen.js). Liegt über HUD und Welt, aber unter den Spielfenstern (#popupLayer z-index 40). */
+.start-screen{position:absolute;inset:0;z-index:39;overflow:auto;background:var(--green-3,#16261f);outline:none}
+.start-screen[hidden]{display:none}
+.start-screen .mmo-scene{min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;border:0;border-image:none;padding:clamp(16px,4vw,48px)}
+.start-screen .mmo-scene::before{position:fixed}
+.start-screen .mmo-gate{justify-content:center;align-items:flex-start}
+.start-screen .mmo-gate .mmo-login-card{width:min(400px,100%);box-sizing:border-box}
+.start-screen .mmo-login-card .ui-field{color:var(--cream)}
+.start-screen .start-guest{width:min(400px,100%);box-sizing:border-box;margin-top:12px;padding:12px 24px;background:#172a22eb;display:grid;gap:8px;justify-items:start}
+.start-screen .start-guest small,.start-screen .start-note{font:12px/1.5 var(--read);color:var(--cream);opacity:.85}
+.start-screen .start-stage{width:min(1180px,100%);margin:0 auto;background:none;border:0;padding:0;box-shadow:none}
+.start-screen .mmo-roster header .eyebrow{margin:0 0 8px;color:var(--gold);font:12px/1 var(--display);letter-spacing:.12em;text-transform:uppercase}
+.start-screen .mmo-roster header p{font:14px/1.6 var(--read);margin:0}
+.start-screen .start-who{margin-top:12px;gap:8px;align-items:center;flex-wrap:wrap}
+.start-screen .start-account{font:13px/1.4 var(--read);color:var(--gold);margin-right:8px}
+.start-screen .start-enter{justify-content:space-between;align-items:center;margin-top:12px}
+.start-screen .start-note.bad{color:var(--coral)}
+.start-screen .start-delete{background:none;border:0;color:var(--cream);opacity:.6;font:12px/1 var(--read);text-decoration:underline;cursor:pointer}
+.start-screen .start-delete:hover{opacity:1;color:var(--coral)}
+.start-screen a.ui-button{text-decoration:none;display:inline-flex;align-items:center}
+/* Solange der Schirm offen ist, bleibt vom Spiel nichts bedienbar. */
+body.start-open .touch-controls,body.start-open #touchContext,body.start-open .party-frames{display:none!important}
+@media(max-width:600px){.start-screen .mmo-gate{justify-content:flex-start}.start-screen .start-guest{padding:12px 16px}}
+.start-screen .mmo-roster header{max-width:620px;padding:16px 20px;background:#172a22eb;border:2px solid var(--kraft-2);border-image:url(assets/ui-kit/runtime/frame-panel-rest.png) 16 / 8px / 0 stretch}
+.start-screen .mmo-roster header h3{font:30px/1.1 var(--display);margin:0 0 8px;color:var(--cream)}
+.start-screen .mmo-selection-detail h3{font:24px/1.1 var(--display);margin:0 0 8px;color:var(--cream)}
+.start-screen .start-account{font-size:14px;font-weight:700}

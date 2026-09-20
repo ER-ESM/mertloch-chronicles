@@ -31,5 +31,6 @@ export * from './mechanics.js';
 export * from './hud.js';
 export * from './shop.js';
 export * from './targeting.js';
+export * from './start-screen.js';
 
 export * from './kiosk.js';
