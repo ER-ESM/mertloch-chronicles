@@ -3,7 +3,7 @@
 // Nichts davon wird von Hand an 429 Elementen gepflegt: die Art folgt aus der Beschreibungsart, die Funktion aus dem Platz in der
 // Leiste (SLOT_FUNCTION) und aus den Glossarbegriffen des Elements (TERM_FUNCTION), die Zugehörigkeit aus `skills`, `grants` und `proc:`.
 // Darum müssen `info.terms` stimmen – content/checks/klassen.js prüft Begriffe gegen die Definition (siehe TERM_EVIDENCE).
-import {GLOSSARY,describe,describableIds,talentCell} from './glossary.js';
+import {GLOSSARY,describe,describableIds,talentCell,element} from './glossary.js';
 import {BASE_SKILLS,TALENT_SKILLS} from './skills.js';
 import {TALENT_ROWS,CLASS_SPECS,SPECS} from './talents.js';
 import {PROC_RULES} from './procs.js';
@@ -96,6 +96,10 @@ export function belongsTo(kind,id){
  return {cls,className:member(cls)?.name||'',spec,specName:spec?SPECS[spec]?.name||'':'',modifies:[...new Set(modifies)],source};
 }
 
+/** Nebenfunktionen, die ein aktiver Kniff aus seinen Begriffen übernehmen darf. */
+export const ACTIVE_SECONDARY=['kontrolle','heilung','abwehr','randale','flaeche','staerkung','begleiter'];
+/** Handverlesene Ergänzungen, wo die Regel oben zu streng ist. */
+export const EXTRA_FUNCTION={'talentSkill:slam':['aufbau'],'talentSkill:encore':['eskalation','tempo'],'talentSkill:infusion':['markierung'],'talentSkill:detonate':['markierung']};
 /** Funktionen eines Elements: erst die Hauptfunktion des Leistenplatzes, dann alles, was seine Glossarbegriffe eindeutig benennen. */
 export function functionsOf(kind,id){
  const d=describe(kind,id);if(!d)return [];
@@ -103,7 +107,11 @@ export function functionsOf(kind,id){
  const slot=kind==='skill'?String(id).split('/')[1]:kind==='buff'?'buff':kind==='throw'||kind==='ground'?kind:null;
  if(slot&&SLOT_FUNCTION[slot])found.add(SLOT_FUNCTION[slot]);
  if(kind==='talentSkill'&&TALENT_SKILLS[id]?.ground)found.add('flaeche');
- for(const t of d.terms)if(TERM_FUNCTION[t])found.add(TERM_FUNCTION[t]);
+ // Aktive Kniffe nennen in ihren Begriffen auch Zusammenhänge (eigene Abklingzeit, „stärker gegen Markierte", „raus aus Flächen").
+ // Als Funktion zählt dort nur, was der Kniff selbst bewirkt; Fläche braucht einen Beleg in der Definition.
+ const active=['skill','buff','throw','ground','talentSkill'].includes(kind),def=element(kind,id)?.def||{},area=!!(def.ground||def.radius||def.splash);
+ for(const t of d.terms){const f=TERM_FUNCTION[t];if(!f)continue;if(active&&(!ACTIVE_SECONDARY.includes(f)||(f==='flaeche'&&!area)))continue;found.add(f);}
+ for(const f of EXTRA_FUNCTION[kind+':'+id]||[])found.add(f);
  const main=[...found][0];
  return FUNCTION_IDS.filter(f=>found.has(f)).sort((a,b)=>(a===main?-1:0)-(b===main?-1:0));
 }

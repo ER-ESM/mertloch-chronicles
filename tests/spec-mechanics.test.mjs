@@ -19,7 +19,7 @@ const step=(g,s)=>{for(let i=0;i<Math.round(s/.05);i++)g.tick(.05);};
 test('alle neun Spezialisierungen haben eine Kernmechanik mit Kit-Texten, die sagen, wann man drückt',()=>{
  assert.equal(Object.keys(SPEC_MECHANICS).length,9);
  for(const [spec,m] of Object.entries(SPEC_MECHANICS)){assert.ok(m.kind&&m.name,spec);assert.equal(m.paths.length,3,spec+' drei Pfade');
-  for(const [id,k] of Object.entries(m.kit))assert.ok(/drück|Drück|zünde|Zünde|stell|Stell|wirf|Wirf|sobald|bevor|wenn/i.test(k.text),spec+'/'+id+' Einsatzmoment');}
+  for(const [id,k] of Object.entries(m.kit))assert.ok(/drück|Drück|zünde|Zünde|stell|Stell|wirf|Wirf|sobald|bevor|wenn/i.test(k.use||k.text),spec+'/'+id+' Einsatzmoment');}
 });
 
 test('Kneipenschläger: Kellen bauen Pegelstriche, der Abriss verbraucht sie mit Bonus, Ablauf bringt Kater',()=>{

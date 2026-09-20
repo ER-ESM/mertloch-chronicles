@@ -7,7 +7,7 @@ import {GLOSSARY,hasTerm,describe,describableIds,element,DESCRIBE_KINDS} from '.
 import {categoriesOf,termAudit,categoryTerms,TERM_FUNCTION,FUNCTIONS,MECHANIC_TERMS} from '../categories.js';
 // Effektschlüssel ohne Auslöser: reine Werte. Ein Talent darf nicht nur daraus bestehen (Talente sind Regeln, docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
 const VALUE_ONLY=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating','range','shieldBonus','healBonus'];
-// Kniff-Texte sagen, wann man sie drückt.
+// Jeder Kniff sagt in `use`, wann man ihn drückt; `text` beschreibt nur die Wirkung (Trennung 2026-09-20, scripts/skill-text-split.mjs).
 const WHEN=['drück','Drück','zünde','Zünde','stell','Stell','spring','Spring','leg ','Leg ','wirf','Wirf','wenn','bevor','sobald','solange','Erst ','erst '];
 export function check(bad){
  for(const m of CLAN_MEMBERS){
@@ -18,8 +18,9 @@ export function check(bad){
   const lessons=CLASS_LESSONS[m.id]||{};for(const s of BASE_SKILLS)if(lessons[s.id]===undefined&&!['auto'].includes(s.id))bad('lessons '+m.id,'Lernstufe fehlt für '+s.id);
   // Kit-Texte nennen die Spielerhandlung, nicht nur Zahlen.
   for(const [i,s] of (KITS[m.id]||[]).entries()){if(s.text&&s.text.length<12)bad('kit '+m.id+'/'+BASE_SKILLS[i].id,'text zu kurz');
-   if(!WHEN.some(w=>(s.text||'').includes(w)))bad('kit '+m.id+'/'+BASE_SKILLS[i].id,'Text sagt nicht, wann man den Kniff drückt');}
-  if(!WHEN.some(w=>(BUFF_SKILLS[m.id]?.text||'').includes(w)))bad('buff '+m.id,'Text sagt nicht, wann man den Kniff drückt');
+   if(!WHEN.some(w=>(s.use||'').includes(w)))bad('kit '+m.id+'/'+BASE_SKILLS[i].id,'use sagt nicht, wann man den Kniff drückt');
+   if(WHEN.slice(0,12).some(w=>(s.text||'').includes(w)))bad('kit '+m.id+'/'+BASE_SKILLS[i].id,'text enthält einen Einsatzhinweis – der gehört nach use');}
+  if(!WHEN.some(w=>(BUFF_SKILLS[m.id]?.use||'').includes(w)))bad('buff '+m.id,'use sagt nicht, wann man den Kniff drückt');
  }
  // P13: Auf Stufe 1 gibt es nur Autoangriff, Grundangriff und Ausweichen. Die drei Klamotten müssen sich schon dort
  // messbar unterscheiden – nicht nur im Namen der Ressource. Verglichen werden die Werte, die auf Stufe 1 wirken.
@@ -48,7 +49,7 @@ export function check(bad){
  for(const id of Object.keys(PROC_RULES))if(!used.has(id))bad('proc '+id,'keine Talentregel verweist darauf');
  // Weitere Kniffe: Wurf, Boden und Talentfähigkeiten nennen ebenfalls den Einsatzmoment.
  for(const [id,s] of [['throw',THROW_SKILL],['ground',GROUND_SKILL],...Object.entries(TALENT_SKILLS)])
-  if(!WHEN.some(w=>(s.text||'').includes(w)))bad('kniff '+id,'Text sagt nicht, wann man ihn drückt');
+  if(!WHEN.some(w=>(s.use||'').includes(w)))bad('kniff '+id,'use sagt nicht, wann man ihn drückt');
  checkDescriptions(bad);
 }
 // Welle D · Beschreibungs-Standard: jedes kampfrelevante Element trägt info{effect,why,links,terms} und ein Icon,

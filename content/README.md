@@ -52,3 +52,9 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 - Elite: doppelte Zeit, sichtbarer Lebensverlust; auf Stufe 3 nur mit Ausweichen.
 - Bosse: ohne Ausweichen und Unterbrechen tödlich unterhalb ihrer Stufe, 10–25 s auf ihrer Stufe mit Ausrüstung.
 - Kein Feldgegner darf zwei Stufen unter dem Spieler noch jeden Lauf töten (☠ im Bericht).
+
+## Kategorien, Begriffe und Kniff-Texte (2026-09-20)
+
+- `categories.js`: jedes Kampfelement hat eine **Art** (Kniff, Talent-Kniff, Verstärkung, Klassen-Passiv, Talent, Auslöser), eine oder mehrere **Funktionen** (Aufbau, Markierung, Eskalation, …), optional eine **Baum-Mechanik** und eine **Zugehörigkeit** (Klasse, Baum, veränderte Kniffe, Herkunftstalent). Nichts davon wird von Hand gepflegt: es folgt aus Leistenplatz, `info.terms`, `skills`, `grants` und `proc:`.
+- `info.terms` müssen zu den Daten passen (`termAudit`): verändert ein Talent den Grundangriff, steht `grundangriff` dort – nicht `autoangriff`. Prüfen/korrigieren: `node scripts/term-audit.mjs [--fix]`.
+- Kniff-Texte sind dreigeteilt: `text` = was der Kniff tut, `use` = wann man ihn drückt, `flavor` = Spruch. Der Tooltip zeigt `text`; `use` und `flavor` stehen in den Details (Shift).

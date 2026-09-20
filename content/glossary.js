@@ -304,14 +304,14 @@ export const talentCell=id=>{for(const [member,specs] of Object.entries(CLASS_SP
 /** Rohdefinition + Herkunft eines Elements. Kein Text, nur Struktur – describe() setzt daraus die Anzeige zusammen. */
 export function element(kind,id){
  if(kind==='skill'){const [cls,sid]=String(id).split('/');const i=BASE_SKILLS.findIndex(s=>s.id===sid);const kit=KITS[cls]?.[i];if(i<0||!kit)return null;
-  return {def:{...BASE_SKILLS[i],...kit},cls,skillId:sid,name:kit.name,text:kit.text,info:kit.info,icon:{set:'skills',member:cls,skill:sid,fallback:kit.icon||BASE_SKILLS[i].icon}};}
+  return {def:{...BASE_SKILLS[i],...kit},cls,skillId:sid,name:kit.name,text:kit.text,use:kit.use,flavor:kit.flavor,info:kit.info,icon:{set:'skills',member:cls,skill:sid,fallback:kit.icon||BASE_SKILLS[i].icon}};}
  if(kind==='buff'){const c=BUFF_SKILLS[id];if(!c||id==='common')return null;
-  return {def:{...BUFF_SKILLS.common,...c},cls:id,skillId:'buff',name:c.name,text:c.text,info:c.info,icon:{set:'skills',member:id,skill:'buff',fallback:BUFF_SKILLS.common.icon}};}
+  return {def:{...BUFF_SKILLS.common,...c},cls:id,skillId:'buff',name:c.name,text:c.text,use:c.use,flavor:c.flavor,info:c.info,icon:{set:'skills',member:id,skill:'buff',fallback:BUFF_SKILLS.common.icon}};}
  if(kind==='throw'||kind==='ground'){const s=kind==='throw'?THROW_SKILL:GROUND_SKILL;if(!memberOf(id))return null;
-  return {def:s,cls:id,skillId:s.id,name:s.names[id],text:(s.flavor?.[id]||'')+s.text,info:s.info?.[id],icon:{set:'skills',member:id,skill:s.id,fallback:s.icon}};}
+  return {def:s,cls:id,skillId:s.id,name:s.names[id],text:(s.flavor?.[id]||'')+s.text,use:s.use,info:s.info?.[id],icon:{set:'skills',member:id,skill:s.id,fallback:s.icon}};}
  if(kind==='talentSkill'){const s=TALENT_SKILLS[id];if(!s)return null;
   const member=Object.keys(CLASS_SPECS).find(c=>CLASS_SPECS[c].some(spec=>TALENT_ROWS[spec].some(t=>t.grants===id)));
-  return {def:s,cls:member,skillId:id,name:s.name,text:s.text,info:s.info,icon:{set:'skills',member,skill:id,fallback:s.icon}};}
+  return {def:s,cls:member,skillId:id,name:s.name,text:s.text,use:s.use,flavor:s.flavor,info:s.info,icon:{set:'skills',member,skill:id,fallback:s.icon}};}
  if(kind==='talent'){const cell=talentCell(String(id));const t=cell&&TALENT_ROWS[cell.spec][cell.index];if(!t)return null;
   return {def:t,cls:cell.member,spec:cell.spec,name:t.name,text:t.text,info:t.info,icon:{set:'talents',member:cell.member,cell:cell.cell,spec:cell.spec,index:cell.index}};}
  if(kind==='passive'){const m=memberOf(id);if(!m)return null;
@@ -322,7 +322,7 @@ export function element(kind,id){
 }
 /**
  * Vollständige Beschreibung eines Elements.
- * @returns {{kind,id,name,icon,text,effect,why,links,terms,numbers}} oder null.
+ * @returns {{kind,id,name,icon,text,use,flavor,effect,why,links,terms,numbers}} oder null. text = was es tut, use = wann man es drückt, flavor = Spruch.
  * `numbers` ist immer abgeleitet; `effect`/`why`/`links`/`terms` kommen aus dem `info`-Block der Definition.
  */
 export function describe(kind,id){
@@ -336,7 +336,7 @@ export function describe(kind,id){
   for(const [k,v] of Object.entries(e.def)){const d=L[k];if(!d)continue;
    numbers.push(n(d[0],k==='strikeRange'?metres(v):k==='damageTaken'?v*100:v,d[1],CL));}
   const w=e.def.beatWindow;if(w)numbers.push(n('Taktfenster',nice(w[0])+' bis '+nice(w[1]),'s',CL));}
- return {kind,id:String(id),name:e.name,icon:e.icon,text:e.text,
+ return {kind,id:String(id),name:e.name,icon:e.icon,text:e.text,use:e.use||'',flavor:e.flavor||'',
   effect:info.effect||'',why:info.why||'',links:info.links||[],terms:info.terms||[],numbers};
 }
 /** Alle beschreibbaren Elemente als {kind,id} – Grundlage für Prüfungen und für das Talentbuch. */

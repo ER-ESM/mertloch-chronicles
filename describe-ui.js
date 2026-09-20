@@ -16,6 +16,7 @@ import {styleIcon} from './art-style.js';
 
 /** Beschriftungen der UI-Schicht (keine Inhaltstexte, keine Zahlen). */
 export const DESCRIBE_UI={
+ use:'Einsatz:',
  shiftHint:'Shift: Details',detailsButton:'Details',
  now:'jetzt',base:'Grundwert',
  damage:'Schaden',crit:'Glückstreffer',heal:'Heilung',stack:'Stapel',remaining:'Restzeit',ready:'Bereit in',
@@ -193,13 +194,12 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
   return target?'<button type="button" class="describe-link" data-describe-jump="'+esc(kniffAnchor(lk,lid))+'" data-describe-key="'+esc(lk+':'+lid)+'">'+esc(target.name)+'</button>':'';
  }).join('')+'</div>':'';
  const termHtml=terms.length?'<dl class="describe-terms">'+terms.map(t=>'<div><dt>'+esc(t.name)+'</dt><dd>'+esc(t.long||t.short||'')+'</dd></div>').join('')+'</dl>':'';
- const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+linkHtml+termHtml;
+ const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+useHtml(content)+linkHtml+termHtml;
 
  return '<div class="describe-card"'+(shift?' data-shift="on"':'')+'>'+
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
   categoryChips(game,kind,id)+
-  (text&&text!==effect?'<p class="describe-flavor">'+esc(text)+'</p>':'')+
-  (effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
+  '<p class="describe-effect">'+esc(text||effect)+'</p>'+
   (kind==='talent'?talentSkillsHtml(game,id,touch):'')+numberHtml+
   (details?'<div class="describe-details"'+(shift?'':' hidden')+'>'+details+'</div>':'')+
   (details?'<footer class="describe-hint">'+(touch?'<button type="button" data-describe-more>'+esc(DESCRIBE_UI.detailsButton)+'</button>':esc(DESCRIBE_UI.shiftHint))+'</footer>':'')+
@@ -210,6 +210,8 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
  * Nur der Shift-Block – für die gewachsenen Tooltips (Rucksack, Ausrüstung, Belohnung, Talentbaum),
  * die ihren Vergleich behalten und trotzdem `why`, `links` und das Glossar zeigen sollen.
  */
+/** Einsatzmoment und Spruch eines Kniffs – nur in den Details (Shift), nicht im Grundtext. */
+const useHtml=d=>(d?.use?'<p class="describe-use"><b>'+esc(DESCRIBE_UI.use)+'</b> '+esc(d.use)+'</p>':'')+(d?.flavor?'<p class="describe-flavor">'+esc(d.flavor)+'</p>':'');
 export function describeExtras(game,kind,id,{shift=false,touch=false,includeEffect=true}={}){
  const key=resolve(game,kind,id);
  const content=key.content?contentDescribe(key.content.kind,key.content.id):null;
@@ -224,7 +226,7 @@ export function describeExtras(game,kind,id,{shift=false,touch=false,includeEffe
   return target?'<button type="button" class="describe-link" data-describe-jump="'+esc(kniffAnchor(lk,lid))+'">'+esc(target.name)+'</button>':'';
  }).join('')+'</div>':'';
  const termHtml=terms.length?'<dl class="describe-terms">'+terms.map(t=>'<div><dt>'+esc(t.name)+'</dt><dd>'+esc(t.long||t.short||'')+'</dd></div>').join('')+'</dl>':'';
- const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+linkHtml+termHtml;
+ const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+useHtml(content)+linkHtml+termHtml;
  if(!details&&!effect)return '';
  return '<div class="describe-extras">'+(includeEffect&&effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
   (details?'<div class="describe-details"'+(shift?'':' hidden')+'>'+details+'</div>':'')+

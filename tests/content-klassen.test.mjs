@@ -33,10 +33,10 @@ test('kein Talent ist eine reine Zahl ohne Auslöser',()=>{
  }
 });
 
-test('jeder Kniff-Text sagt, wann man ihn drückt',()=>{
+test('jeder Kniff sagt in use, wann man ihn drückt – text beschreibt nur die Wirkung',()=>{
  const when=['drück','Drück','zünde','Zünde','Stell','Spring','Leg ','Wirf','wenn','bevor','sobald'];
  for(const [cls,kit] of Object.entries(KITS))for(const [i,s] of kit.entries())
-  assert.ok(when.some(w=>(s.text||'').includes(w)),cls+'/'+BASE_SKILLS[i].id+': kein Einsatzmoment im Text');
+  assert.ok(when.some(w=>(s.use||'').includes(w)),cls+'/'+BASE_SKILLS[i].id+': kein Einsatzmoment in use');
 });
 
 test('die drei Klamotten unterscheiden sich schon auf Stufe 1 (P13)',()=>{

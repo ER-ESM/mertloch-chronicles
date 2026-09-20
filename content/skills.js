@@ -12,59 +12,59 @@ export const BASE_SKILLS=[
 ];
 export const KITS={
  dieter:[
-  {name:'Kronkorken-Kelle',cd:1.5,text:"Eine schwere Kelle im Nahkampf: baut Pegel und Randale auf. „Das ist kein Streit. Das ist Leergutklärung.“ Drück sie, sobald sie bereit ist; dazwischen arbeitet dein Autoangriff."},
-  {name:'Du schuldest mir Pfand!',text:"Markiert das Ziel und verursacht regelmäßig Schaden. Dein Abriss trifft markierte Gegner härter. Drück sie als Erstes auf jeden neuen Gegner."},
-  {name:'Bierzelt-Abriss',text:"Verbraucht deinen Pegel für einen schweren Treffer; gegen markierte Gegner wirkt er stärker. Danach steht kein Tisch mehr gerade. Zünde ihn bei vollem Pegel auf ein markiertes Ziel."},
-  {name:'Halt die Fresse!',text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar. Drück ihn, sobald ein gelber Zauberbalken auftaucht; er ist unabhängig von der globalen Abklingzeit."},
-  {name:'Deckel drauf!',text:"Pariert einen kommenden Treffer, reflektiert Schaden und heilt dich. Eine erfolgreiche Parade gibt Pegel und Randale. Drück ihn kurz vor dem angekündigten schweren Schlag, nicht danach."},
-  {name:'Ab durch die Hecke',cd:5,steps:16,text:"Ein beherzter Abgang mit kurzem Schutz vor Treffern. Weicht in Laufrichtung aus, ohne Eingabe vom Ziel weg. Drück ihn raus aus roten Flächen und weg vom Rudel."},
-  {name:'Konterfrühstück',text:"Heilt dich mit einer sehr verdächtigen Brezel. Im Spiel erstaunlich wirksam, kulinarisch ein Straftatbestand. Drück es bei fehlendem Leben; Überheilung verfällt ohne passendes Talent."}
+  {name:'Kronkorken-Kelle',cd:1.5,text:"Eine schwere Kelle im Nahkampf: baut Pegel und Randale auf.",use:"Drück sie, sobald sie bereit ist; dazwischen arbeitet dein Autoangriff.",flavor:"„Das ist kein Streit. Das ist Leergutklärung.“"},
+  {name:'Du schuldest mir Pfand!',text:"Markiert das Ziel und verursacht regelmäßig Schaden. Dein Abriss trifft markierte Gegner härter.",use:"Drück sie als Erstes auf jeden neuen Gegner."},
+  {name:'Bierzelt-Abriss',text:"Verbraucht deinen Pegel für einen schweren Treffer; gegen markierte Gegner wirkt er stärker.",use:"Zünde ihn bei vollem Pegel auf ein markiertes Ziel.",flavor:"Danach steht kein Tisch mehr gerade."},
+  {name:'Halt die Fresse!',text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar.",use:"Drück ihn, sobald ein gelber Zauberbalken auftaucht; er ist unabhängig von der globalen Abklingzeit."},
+  {name:'Deckel drauf!',text:"Pariert einen kommenden Treffer, reflektiert Schaden und heilt dich. Eine erfolgreiche Parade gibt Pegel und Randale.",use:"Drück ihn kurz vor dem angekündigten schweren Schlag, nicht danach."},
+  {name:'Ab durch die Hecke',cd:5,steps:16,text:"Ein beherzter Abgang mit kurzem Schutz vor Treffern. Weicht in Laufrichtung aus, ohne Eingabe vom Ziel weg.",use:"Drück ihn raus aus roten Flächen und weg vom Rudel."},
+  {name:'Konterfrühstück',text:"Heilt dich mit einer sehr verdächtigen Brezel.",use:"Drück es bei fehlendem Leben; Überheilung verfällt ohne passendes Talent.",flavor:"Im Spiel erstaunlich wirksam, kulinarisch ein Straftatbestand."}
  ],
  baerbel:[
-  {name:'Pinsel-Piekser',cd:.95,range:155,damage:48,gain:19,icon:'speaker',text:"Ein Fernkampftreffer baut Glanz und Randale auf. Triff erneut im Taktfenster für zusätzlichen Glanz. Drück ihn im Rhythmus statt zu hämmern."},
-  {name:'Fleckentest, Schätzchen!',range:190,dot:10,text:"Markiert das Ziel und verursacht regelmäßig Schaden. Verstärkt deinen Turbo-Einschlag. Drück ihn auf jeden neuen Gegner, bevor die Turbostufe kommt."},
-  {name:'Thermomix-Turbostufe',range:175,base:40,perPoint:48,splash:95,text:"Verbraucht deinen Glanz für einen starken Einschlag; gegen markierte Gegner wirkt er stärker. Trifft auch Nachbarn, einschließlich neutraler Gegner. Zünde sie bei vollem Glanz auf ein markiertes Ziel mitten in der Gruppe."},
-  {name:'Kommentarspalte zu!',range:190,cd:10,text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar. „Deine Meinung hat Sendepause.“ Drück sie, sobald ein gelber Zauberbalken läuft."},
-  {name:'Hygiene-Handschuh',window:.9,reflect:55,text:"Pariert einen kommenden Treffer und reflektiert Schaden. Gibt bei Erfolg Glanz und Randale. Drück ihn kurz vor dem angekündigten Treffer."},
-  {name:'Raus aus meinem Reel',cd:6,steps:24,text:"Ein längerer Ausweichsprung mit kurzem Schutz. „Du stehst im Bild, verdammte Axt!“ Drück ihn aus roten Flächen heraus und um Abstand zu halten."},
-  {name:'Landhaus-Löffelkur',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Hauspflege, Schutz oder einen offensiven Frischekick. Drück sie früh: die Hauspflege wirkt nur, solange du noch stehst.'}
+  {name:'Pinsel-Piekser',cd:.95,range:155,damage:48,gain:19,icon:'speaker',text:"Ein Fernkampftreffer baut Glanz und Randale auf. Triff erneut im Taktfenster für zusätzlichen Glanz.",use:"Drück ihn im Rhythmus statt zu hämmern."},
+  {name:'Fleckentest, Schätzchen!',range:190,dot:10,text:"Markiert das Ziel und verursacht regelmäßig Schaden. Verstärkt deinen Turbo-Einschlag.",use:"Drück ihn auf jeden neuen Gegner, bevor die Turbostufe kommt."},
+  {name:'Thermomix-Turbostufe',range:175,base:40,perPoint:48,splash:95,text:"Verbraucht deinen Glanz für einen starken Einschlag; gegen markierte Gegner wirkt er stärker. Trifft auch Nachbarn, einschließlich neutraler Gegner.",use:"Zünde sie bei vollem Glanz auf ein markiertes Ziel mitten in der Gruppe."},
+  {name:'Kommentarspalte zu!',range:190,cd:10,text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar.",use:"Drück sie, sobald ein gelber Zauberbalken läuft.",flavor:"„Deine Meinung hat Sendepause.“"},
+  {name:'Hygiene-Handschuh',window:.9,reflect:55,text:"Pariert einen kommenden Treffer und reflektiert Schaden. Gibt bei Erfolg Glanz und Randale.",use:"Drück ihn kurz vor dem angekündigten Treffer."},
+  {name:'Raus aus meinem Reel',cd:6,steps:24,text:"Ein längerer Ausweichsprung mit kurzem Schutz.",use:"Drück ihn aus roten Flächen heraus und um Abstand zu halten.",flavor:"„Du stehst im Bild, verdammte Axt!“"},
+  {name:'Landhaus-Löffelkur',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Hauspflege, Schutz oder einen offensiven Frischekick.',use:'Drück sie früh: die Hauspflege wirkt nur, solange du noch stehst.'}
  ],
  kevin:[
-  {name:'Pfandgeschoss',range:210,damage:42,gain:9,icon:'bottle',text:"Ein Fernkampftreffer baut Druck und Randale auf. Eine Flasche mit erstaunlich überzeugender Flugbahn. Drück ihn aus sicherer Entfernung, wenn nichts anderes bereit ist."},
-  {name:'Kleb die Scheiße fest',range:210,dot:9,slow:.5,text:"Markiert das Ziel, verursacht regelmäßig Schaden und bremst seinen Anlauf. Drück ihn zuerst, bevor du Druck aufbaust und die Rakete zündest."},
-  {name:'Restmüll-Rakete',range:205,base:60,perPoint:44,multiplier:1.8,knockback:28,text:"Verbraucht deinen Druck für einen schweren Treffer; gegen markierte Gegner wirkt er stärker. Stößt das Ziel zurück. Funktioniert laut Bauplan überhaupt nicht. Zünde sie bei vollem Druck auf ein geklebtes Ziel, das dir zu nah kommt."},
-  {name:'Sicherung raus!',range:210,text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar. Ein Erfolg liefert Druck und verkürzt die Abklingzeit deiner Rakete. Drück sie, sobald ein gelber Zauberbalken auftaucht."},
-  {name:'Pömpel-Panzer',window:1.1,reflect:60,text:"Pariert einen kommenden Treffer, reflektiert Schaden und gibt Druck sowie Randale. Der Pömpel dichtet alles ab. Drück ihn kurz vor dem angekündigten Schlag im Nahkampf."},
-  {name:'Kabelbrand-Flucht',cd:3,steps:22,text:"Aus dem Gefahrenbereich flitzen, mit kurzem Schutz vor Treffern. „Das hat vorhin noch nicht geraucht.“ Drück sie, wenn jemand in Nahkampfreichweite kommt oder der Boden raucht."},
-  {name:'Notfall-Laugengebäck',heal:225,text:"Heilt dich mit Laugengebäck. Die Serviette ist gleichzeitig Garantieschein und Brandschutzkonzept. Drück es bei fehlendem Leben, am besten hinter Deckung."}
+  {name:'Pfandgeschoss',range:210,damage:42,gain:9,icon:'bottle',text:"Ein Fernkampftreffer baut Druck und Randale auf. Eine Flasche mit erstaunlich überzeugender Flugbahn.",use:"Drück ihn aus sicherer Entfernung, wenn nichts anderes bereit ist."},
+  {name:'Kleb die Scheiße fest',range:210,dot:9,slow:.5,text:"Markiert das Ziel, verursacht regelmäßig Schaden und bremst seinen Anlauf.",use:"Drück ihn zuerst, bevor du Druck aufbaust und die Rakete zündest."},
+  {name:'Restmüll-Rakete',range:205,base:60,perPoint:44,multiplier:1.8,knockback:28,text:"Verbraucht deinen Druck für einen schweren Treffer; gegen markierte Gegner wirkt er stärker. Stößt das Ziel zurück. Funktioniert laut Bauplan überhaupt nicht.",use:"Zünde sie bei vollem Druck auf ein geklebtes Ziel, das dir zu nah kommt."},
+  {name:'Sicherung raus!',range:210,text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar. Ein Erfolg liefert Druck und verkürzt die Abklingzeit deiner Rakete.",use:"Drück sie, sobald ein gelber Zauberbalken auftaucht."},
+  {name:'Pömpel-Panzer',window:1.1,reflect:60,text:"Pariert einen kommenden Treffer, reflektiert Schaden und gibt Druck sowie Randale. Der Pömpel dichtet alles ab.",use:"Drück ihn kurz vor dem angekündigten Schlag im Nahkampf."},
+  {name:'Kabelbrand-Flucht',cd:3,steps:22,text:"Aus dem Gefahrenbereich flitzen, mit kurzem Schutz vor Treffern.",use:"Drück sie, wenn jemand in Nahkampfreichweite kommt oder der Boden raucht.",flavor:"„Das hat vorhin noch nicht geraucht.“"},
+  {name:'Notfall-Laugengebäck',heal:225,text:"Heilt dich mit Laugengebäck. Die Serviette ist gleichzeitig Garantieschein und Brandschutzkonzept.",use:"Drück es bei fehlendem Leben, am besten hinter Deckung."}
  ]
 };
 /** Klassenbuff (Slot „buff“). */
 export const BUFF_SKILLS={
  common:{id:'buff',cd:28,cost:15,duration:10,color:'#aed7aa',bg:'#426c60',icon:'shield'},
- dieter:{name:'Dosenmut',reduction:.25,text:"Verringert für kurze Zeit eingehenden Schaden. Der Türsteher baut zusätzlich Deckung auf. Zünde ihn, bevor du eine Gruppe aufmischst."},
- baerbel:{name:'Aperol-Nachsorge',hot:12,text:"Hauspflege heilt dich regelmäßig. Orange im Glas, Grün im Lebensbalken. Annis fragwürdiges Wellnessprogramm. Zünde sie, bevor es eng wird, nicht wenn du schon fast liegst."},
- kevin:{name:'Isolierband hält',shield:130,text:'Ein Schutzpolster absorbiert Schaden. Bastelgrips und Handschrift verstärken den Schild. Zünde es, bevor du in Nahkampfreichweite gerätst.'}
+ dieter:{name:'Dosenmut',reduction:.25,text:"Verringert für kurze Zeit eingehenden Schaden. Der Türsteher baut zusätzlich Deckung auf.",use:"Zünde ihn, bevor du eine Gruppe aufmischst."},
+ baerbel:{name:'Aperol-Nachsorge',hot:12,text:"Hauspflege heilt dich regelmäßig. Orange im Glas, Grün im Lebensbalken. Annis fragwürdiges Wellnessprogramm.",use:"Zünde sie, bevor es eng wird, nicht wenn du schon fast liegst."},
+ kevin:{name:'Isolierband hält',shield:130,text:'Ein Schutzpolster absorbiert Schaden. Bastelgrips und Handschrift verstärken den Schild.',use:'Zünde es, bevor du in Nahkampfreichweite gerätst.'}
 };
 /** Gezielter Wurf und Bodenangriff, je Klasse benannt. */
 export const THROW_SKILL={id:'throw',key:'3',cd:6,cost:18,range:235,damage:75,icon:'bottle',color:'#dbc083',bg:'#5b6036',
  names:{dieter:'Pfand auf die Zwölf',baerbel:'Puderdose ins Gesicht',kevin:'Dosen-Drohne'},
  flavor:{dieter:'Eine gezielt geworfene Mehrwegflasche',baerbel:'Eine fliegende Puderdose',kevin:'Eine ferngesteuerte Pfanddose'},
- text:' trifft ein einzelnes Ziel. Ideal, um einen Gegner aus der Gruppe zu ziehen. Wirf ihn aus der Entfernung, bevor der Gegner dich erreicht.'};
+ text:' trifft ein einzelnes Ziel. Ideal, um einen Gegner aus der Gruppe zu ziehen.',use:'Wirf ihn aus der Entfernung, bevor der Gegner dich erreicht.'};
 export const GROUND_SKILL={id:'ground',key:'7',cd:12,cost:35,ground:true,range:210,radius:70,damage:125,delay:1.1,icon:'burst',color:'#e6b769',bg:'#79633e',
  names:{dieter:'Böller unterm Biertisch',baerbel:'Grundreinigung auf eigene Gefahr',kevin:'Restmüll mit Zündschnur'},
- text:'Mit der Maus einen freien Bodenpunkt wählen. Nach kurzer Verzögerung trifft der Einschlag mehrere Gegner im Umkreis – auch neutrale. Rechtsklick oder Esc bricht das Zielen ab. Wirf ihn dorthin, wo die Gruppe gleich steht, nicht dorthin, wo sie gerade steht.'};
+ text:'Mit der Maus einen freien Bodenpunkt wählen. Nach kurzer Verzögerung trifft der Einschlag mehrere Gegner im Umkreis – auch neutrale. Rechtsklick oder Esc bricht das Zielen ab.',use:'Wirf ihn dorthin, wo die Gruppe gleich steht, nicht dorthin, wo sie gerade steht.'};
 /** Aktive Talentfähigkeiten (Schlüssel = grants in talents.js). */
 export const TALENT_SKILLS={
- barricade:{name:'Absperrband',ground:true,range:170,radius:85,duration:8,cd:24,cost:25,text:'Platziere eine Zone, die eingehenden Schaden verringert. Bleib hinter deiner Absperrung, statt blind hinterherzulaufen. Stell sie, bevor die Gruppe bei dir ist.'},
- slam:{name:'Tresensprung',ground:true,range:145,radius:60,damage:95,cd:16,cost:20,text:'Springe zum freien Zielpunkt, triff mehrere Gegner und baue Pegel auf. Hindernisse kannst du nicht überspringen. Spring hin, wenn zwei oder mehr Gegner beieinanderstehen.'},
- keg:{name:'Katerfass',ground:true,range:160,radius:80,duration:10,cd:25,cost:25,text:'Platziere ein Fass, das dich regelmäßig heilt, solange du darin stehst. Gegner in der Pfütze werden langsamer. Stell es auf, bevor die Gruppe dich erreicht.'},
- sanctuary:{name:'Thermomix-Tafel',ground:true,range:190,radius:85,duration:10,cd:24,cost:25,text:'Eine Zone, die dich regelmäßig heilt. Du musst darin stehen bleiben; Bewegung und Heilung sinnvoll abwägen. Stell sie, wenn du länger an einem Fleck kämpfst.'},
- infusion:{name:'Provisionskur',duration:8,cd:24,cost:15,text:'Für kurze Zeit heilt dich ein Anteil deines verursachten Schadens zusätzlich. Dein Schmerz, meine Provision. Schön sauber abrechnen. Zünde sie, bevor du die Gruppe angehst, nicht danach.'},
- encore:{name:'Noch ein Reel, ihr Opfer!',cd:25,cost:10,text:'Setzt die Abklingzeit von Thermomix-Turbostufe zurück und füllt deinen Glanz. Fleckentest vorbereiten, Reel neu starten, Turbostufe zünden.'},
- detonate:{name:'Kettenzündung',radius:210,cd:14,cost:25,text:'Sprengt mehrere markierte Ziele in Sicht und Reichweite. Verbraucht deren Markierungen. Erst verteilen, dann zünden.'},
- magnet:{name:'Magnetpanzer',radius:120,cd:22,cost:25,text:'Gibt Deckung, zieht nahe Gegner an und hält sie kurz fest. Das zieht auch bislang neutrale Ziele in den Kampf. Zünde ihn, wenn Fernkämpfer dich einzeln beharken.'},
- snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling erleidet Schaden und wird kurz festgehalten. Du kannst währenddessen weiterkämpfen. Leg sie auf den Weg, bevor du den nächsten Gegner ziehst.'}
+ barricade:{name:'Absperrband',ground:true,range:170,radius:85,duration:8,cd:24,cost:25,text:'Platziere eine Zone, die eingehenden Schaden verringert.',use:'Bleib hinter deiner Absperrung, statt blind hinterherzulaufen. Stell sie, bevor die Gruppe bei dir ist.'},
+ slam:{name:'Tresensprung',ground:true,range:145,radius:60,damage:95,cd:16,cost:20,text:'Hindernisse kannst du nicht überspringen.',use:'Springe zum freien Zielpunkt, triff mehrere Gegner und baue Pegel auf. Spring hin, wenn zwei oder mehr Gegner beieinanderstehen.'},
+ keg:{name:'Katerfass',ground:true,range:160,radius:80,duration:10,cd:25,cost:25,text:'Gegner in der Pfütze werden langsamer.',use:'Platziere ein Fass, das dich regelmäßig heilt, solange du darin stehst. Stell es auf, bevor die Gruppe dich erreicht.'},
+ sanctuary:{name:'Thermomix-Tafel',ground:true,range:190,radius:85,duration:10,cd:24,cost:25,text:'Eine Zone, die dich regelmäßig heilt. Du musst darin stehen bleiben; Bewegung und Heilung sinnvoll abwägen.',use:'Stell sie, wenn du länger an einem Fleck kämpfst.'},
+ infusion:{name:'Provisionskur',duration:8,cd:24,cost:15,text:'Für kurze Zeit heilt dich ein Anteil deines verursachten Schadens zusätzlich. Dein Schmerz, meine Provision. Schön sauber abrechnen.',use:'Zünde sie, bevor du die Gruppe angehst, nicht danach.'},
+ encore:{name:'Noch ein Reel, ihr Opfer!',cd:25,cost:10,text:'Setzt die Abklingzeit von Thermomix-Turbostufe zurück und füllt deinen Glanz.',use:'Zünde es direkt nach einer Turbostufe: Fleckentest vorbereiten, Reel neu starten, Turbostufe noch einmal zünden.'},
+ detonate:{name:'Kettenzündung',radius:210,cd:14,cost:25,text:'Sprengt mehrere markierte Ziele in Sicht und Reichweite. Verbraucht deren Markierungen.',use:'Erst verteilen, dann zünden.'},
+ magnet:{name:'Magnetpanzer',radius:120,cd:22,cost:25,text:'Gibt Deckung, zieht nahe Gegner an und hält sie kurz fest. Das zieht auch bislang neutrale Ziele in den Kampf.',use:'Zünde ihn, wenn Fernkämpfer dich einzeln beharken.'},
+ snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling erleidet Schaden und wird kurz festgehalten. Du kannst währenddessen weiterkämpfen.',use:'Leg sie auf den Weg, bevor du den nächsten Gegner ziehst.'}
 };
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
 // Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
@@ -118,7 +118,7 @@ GROUND_SKILL.info={
  kevin:{effect:'Verzögerter Flächeneinschlag, den der Zündmeister-Baum um Nachglut und Sofort-Bereitschaft erweitert.',why:'Im Zündmeister-Baum der am häufigsten zurückgesetzte Kniff – Glückstreffer und Heilung laden ihn nach.',links:['proc:kurzschluss','proc:doppelte-sicherung','talent:kevin-fuse-0'],terms:['bodenangriff','flaeche','proc']}
 };
 const TALENT_SKILL_META={
- barricade:{icon:'reinforced',info:{effect:'Stellt eine Zone auf, in der du deutlich weniger Schaden nimmst.',why:'Der Türsteher hält einen Ort, statt hinterherzulaufen: Gegner zu dir kommen lassen und in der Zone bleiben.',links:['talent:dieter-wall-4','talent:dieter-wall-8'],terms:['flaeche','talentfaehigkeit','spezialisierung']}},
+ barricade:{icon:'reinforced',info:{effect:'Stellt eine Zone auf, in der du deutlich weniger Schaden nimmst.',why:'Der Türsteher hält einen Ort, statt hinterherzulaufen: Gegner zu dir kommen lassen und in der Zone bleiben.',links:['talent:dieter-wall-4','talent:dieter-wall-8'],terms:['flaeche','schadensminderung','talentfaehigkeit']}},
  slam:{icon:'burst',info:{effect:'Springt zu einem freien Zielpunkt und trifft dort bis zu fünf Gegner; gibt beim Aufkommen einen Aufbaupunkt.',why:'Dieters einziger Ortswechsel mit Schaden – nur sinnvoll, wenn mindestens zwei Gegner beieinanderstehen. Hindernisse überspringt er nicht.',links:['talent:dieter-brawl-4','talent:dieter-brawl-8','talent:dieter-brawl-9'],terms:['pegel','flaeche','talentfaehigkeit']}},
  keg:{icon:'water',info:{effect:'Stellt ein heilendes Fass auf; die Pfütze darunter verlangsamt Gegner.',why:'Macht aus einem Fleck Boden eine Kampfzone: Dieter steht ohnehin, das Fass belohnt genau das.',links:['talent:dieter-brew-4','talent:dieter-brew-8','talent:dieter-brew-9'],terms:['flaeche','heilung','verlangsamung']}},
  sanctuary:{icon:'food',info:{effect:'Legt eine Heilzone aus, die jede Sekunde heilt, solange du darin stehst.',why:'Zwingt Anni zum Stehen – das ist der Preis für die stärkste anhaltende Heilung im Spiel.',links:['talent:baerbel-care-4','talent:baerbel-care-8'],terms:['flaeche','heilung','talentfaehigkeit']}},
