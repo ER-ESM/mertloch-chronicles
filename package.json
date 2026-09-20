@@ -36,6 +36,7 @@
     "performance:check": "node scripts/performance-check.mjs",
     "prerender:build": "node tools/prerender/build-prerender.mjs",
     "prerender:demo": "node tools/prerender/demo-sheet.mjs",
+    "prerender:shadow-check": "node tools/prerender/shadow-check.mjs",
     "redesign:build": "node tools/redesign/build.mjs",
     "redesign:check": "node --test tests/redesign.test.mjs",
     "fx:build": "node tools/skill-fx/build.mjs",

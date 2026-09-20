@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {decodePng,encodePng,surface,bounds,gridCell,blit} from '../sprite-pipeline/png.mjs';
 import {resample} from '../sprite-pipeline/precision-resample.mjs';
+import {FRAME,CAMERA} from './stage.js';// E-41: Bildformat und Blickrichtungen aus der festen Bühne (gezeichnete Vorlagen, daher keine 3D-Kamera)
 const root=new URL('../../',import.meta.url),base='assets/theme-demo/';
 const definitions=[
  {id:'dieter-braumeister',hero:'dieter',name:'Dosen-Dieter',theme:'Hopfen & Hämmer',subtitle:'Der Braumeister',color:'#d7aa60',description:'Kupfer, Eiche und ein guter Schluck Standfestigkeit.',gear:[{name:'Schaumkrone',type:'Bierkrug-Hammer',detail:'Gehämmerter Stahl, Kupferbänder und ein kräftiger Eichenstiel.'},{name:'Letzte Runde',type:'Fassschild',detail:'Genieteter Eisenreif, sichtbare Holzmaserung und ein massiver Messinghahn.'},{name:'Tragbares Feierabendfass',type:'Rücken & Rüstung',detail:'Ledergurte, Hopfenranken und kupferne Schulterbeschläge.'}]},
@@ -11,7 +12,7 @@ const definitions=[
  {id:'kevin-pfand',hero:'kevin',name:'Klo-Kevin',theme:'Pfand & Präzision',subtitle:'Der Pfand-Ingenieur',color:'#a8bc85',description:'Aus Leergut wird Ausrüstung. Aus Kabelbindern wird Kunst.',gear:[{name:'Rückgaberecht',type:'Mechanische Pfandschleuder',detail:'Holzgabel, Messingbeschläge, doppelte Gummibänder und ein grünes Visier.'},{name:'Drei gewinnt',type:'Flaschenträger',detail:'Grüne und bernsteinfarbene Mehrwegflaschen in einem Metall-Holz-Gestell.'},{name:'Alles noch gut',type:'Werkzeug & Kleidung',detail:'Kronkorken-Panzerung, geflickter Denim, Karabiner und verstärkte Taschen.'}]}
 ];
 export function buildThemeDemo(){
- const files=new Map(),catalog={version:1,source:'built-in imagegen',type:'authored-theme-turnarounds',directions:['se','sw','ne','nw'],frameSize:192,pivot:{x:96,y:160},nativeHeight:104,worldHeight:26,animated:false,modularGear:false,assets:{}};
+ const files=new Map(),catalog={version:1,source:'built-in imagegen',type:'authored-theme-turnarounds',directions:Object.keys(CAMERA.directions),frameSize:FRAME.size,pivot:{...FRAME.pivot},nativeHeight:104,worldHeight:26,animated:false,modularGear:false,assets:{}};
  for(const def of definitions){
   const source=base+'sources/'+def.id+'.png',bytes=readFileSync(new URL(source,root)),im=decodePng(bytes);
   const cells=Array.from({length:4},(_,i)=>bounds(im,gridCell(im,i%2,Math.floor(i/2),2,2)));

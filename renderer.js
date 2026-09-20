@@ -32,6 +32,7 @@ import {drawBuilding,drawFurniture} from './architecture.js';
 import {buildingOccludesActor} from './tiny-architecture.js';
 import {distance,SCALE} from './world.js';
 import {WorldLight,applyGrade} from './world-light.js';
+import {prerenderArt,prerenderHasBakedShadow} from './prerender-art.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
 const poly=(c,p)=>{c.beginPath();p.forEach((v,i)=>i?c.lineTo(Math.round(v.x),Math.round(v.y)):c.moveTo(Math.round(v.x),Math.round(v.y)));c.closePath();};
 const rect=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x*2)/2,Math.round(y*2)/2,Math.round(w*2)/2,Math.round(h*2)/2);};
@@ -43,6 +44,8 @@ function label(c,text,x,y,color='#ead9a7',size=8){c.save();c.font=size>=14?`bold
 export class Renderer {
   constructor(canvas,world,game,options={}){this.actorRenderer=options.actorRenderer;this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.world=world;this.game=game;this.camera={...game.player};this.footfalls=new FootfallTrail();this.chunks=new Map();this.treeSprites=Array.from({length:10},(_,i)=>createComicTree(i%5,i>4));this.shake=0;this.bossSpeech=new BossSpeech();this.light=new WorldLight();this.zoom=2;this.frame=0;this.resize();}
   resize(){const r=this.canvas.getBoundingClientRect();this.zoom=document.body.classList.contains('touch-mode')?(r.width<600?1.35:r.height<500?1.5:1.75):r.width<600?1.6:2;this.viewWidth=Math.ceil(r.width/this.zoom);this.viewHeight=Math.ceil(r.height/this.zoom);this.canvas.width=this.viewWidth*WORLD_ART_DENSITY;this.canvas.height=this.viewHeight*WORLD_ART_DENSITY;this.ctx.imageSmoothingEnabled=false;}
+  /** Vorgerenderte Helden bringen ihren Schatten im Bild mit (E-41, Katalog-Flag shadowBaked): dann zeichnet die Welt keinen zweiten. */
+  bakedShadow(item){const p=this.game.player;return item.type==='player'&&prerenderArt.enabled&&prerenderHasBakedShadow(p.look||p.classId||this.game.member?.id);}
   screenToWorld(x,y){const r=this.canvas.getBoundingClientRect();return{x:(x-r.left)/r.width*this.viewWidth+this.camera.x-this.viewWidth/2,y:(y-r.top)/r.height*this.viewHeight+this.camera.y-this.viewHeight/2};}
   groundChunk(gx,gy){const key=gx+','+gy;if(this.chunks.has(key))return this.chunks.get(key);const cv=createTerrainChunk(this.world,gx,gy);this.chunks.set(key,cv);if(this.chunks.size>40)this.chunks.delete(this.chunks.keys().next().value);return cv;}
   building(c,b){drawBuilding(c,b,this.game.time);}

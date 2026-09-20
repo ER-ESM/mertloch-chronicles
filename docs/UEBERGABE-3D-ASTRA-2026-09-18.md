@@ -6,7 +6,7 @@
 ## 1 · Was die Pipeline macht (damit klar ist, was NICHT geliefert werden muss)
 
 - Lädt je Held ein Rig mit benannten Knochen, hängt Ausrüstungs-Meshes an diese Knochen, stellt acht Posen und einen Laufzyklus **prozedural** ein (`tools/prerender/poses.js`). Eigene Animationen sind willkommen, aber nicht nötig.
-- Rendert orthografisch mit 20° Aufsicht, vier Blickrichtungen (se, sw, ne, nw), 4 native Pixel je Welteinheit, Licht links oben, ohne Antialiasing.
+- Rendert orthografisch mit 22° Aufsicht, vier Blickrichtungen (se, sw, ne, nw), 4 native Pixel je Welteinheit, festes Licht und gebackener Bodenschatten (siehe §7), ohne Antialiasing.
 - Quantisiert auf die 40-Farben-Palette und zieht eine 1-px-Kontur (`171f29`). Texturen werden also auf 40 Farben reduziert: flächige, kontrastreiche Farben liefern, keine Verläufe, keine Fototexturen.
 - Rendert jedes Ausrüstungsteil als eigene Ebene mit dem Körper als Tiefenmaske. Verdeckung ist damit eingebrannt; die Laufzeit stapelt Basis + Ebenen.
 - Schreibt Bögen 192×192 je Bild (Fußpunkt bei 96/160) im Format `assets/precision/runtime/catalog.json` nach `assets/prerender/runtime/`.
@@ -112,3 +112,19 @@ Nach der Kritik an der Detailarmut des Kasten-Rigs entstand die [detaillierte Th
 ## 6 · Umsetzung des anschließend beauftragten Sprite-Redesigns
 
 Der Auftrag, den bestätigten Detail-Look für alle Richtungen und Bewegungen produktiv zu verwenden, ist im neuen Raster-/Gelenkpfad umgesetzt: [Bewegungsdemo](../redesign-demo.html), [Pipeline, Inventaranbindung und Prüfvertrag](REDESIGN-PIPELINE-2026-09-18.md). Der normale Spielrenderer lädt 384 Körperbilder einschließlich eigener Zweihandhaltungen und 24 neue Gear-Ansichten. Die oben beschriebenen GLB-Modelle werden damit nicht als geliefert ausgewiesen; sie gehören weiterhin zum gesonderten 3D-Modellierungsauftrag.
+
+## 7 · Kamera, Licht, Schatten (verbindlich, E-41)
+
+Die Wirkung vorgerenderter Figuren entsteht daraus, dass ALLE Assets mit derselben Kamera, demselben Licht und demselben Schatten entstehen. Diese drei Dinge gehören deshalb der Pipeline (`tools/prerender/stage.js`, `light-convention.js`) und **nicht** dem Modell.
+
+**Nicht mitliefern:** keine Lichter (`KHR_lights_punctual`), keine Kameras, keine Boden-/Schattenebenen, keine eingebrannte Beleuchtung oder Ambient-Occlusion in den Texturen, keine Emissive-Aufheller, keine Schatten-Decals unter den Füßen. Materialien matt (Grundfarbe, keine Spiegelungen, kein Metall-Glanz), weil das Ergebnis auf 40 Farben quantisiert wird. Mitgelieferte Lichter und Kameras werden nicht verwendet.
+
+| Festlegung | Wert | Begründung |
+|---|---|---|
+| Kamera | orthografisch, Neigung **22°** nach unten, keine Drehung (gedreht wird das Modell: se −40°, sw +40°, ne −140°, nw +140°), **4 px je Welteinheit**, Bild 192², Fußpunkt (96,160) | Die Welt ist eine Draufsicht mit frontal gezeichneten Objekten (¾-Sicht), kein 45°-Iso. Die Präzisions-Sprites zeigen die Figur fast frontal mit knapp sichtbarer Kopf-/Schulteroberseite, das entspricht 20–25°. sin 22° = 0,375 ≈ Schatten-Stauchung 0,38: ein Kreis am Boden hat im Render dieselbe Verkürzung wie die Schattenellipse der Laufzeit. |
+| Schlüssellicht (Sonne) | Richtungslicht, Azimut **−139,43°** (Bodenebene ab +z/zur Kamera, positiv nach +x), Höhe **72°**, Farbe `ffe6bb`, Stärke 1,5, einziges Licht mit Schattenwurf | Der Azimut folgt zwingend aus der Konvention „Schatten fällt im Bild nach rechts unten, Richtung (0,80; 0,35)" und der Kameraneigung (Herleitung in `light-convention.js`). Die Sonne steht damit links hinter der Figur – im Bild links oben. Die Höhe bestimmt nur die Schattenlänge (0,23 × Figurenhöhe): kompakt wie die Laufzeit-Ellipse und bei stehender Figur innerhalb des Rahmens. |
+| Fülllicht | Richtungslicht links oben hinter der Kamera (Azimut −37°, Höhe 45°), Farbe `fff2d6`, Stärke 1,5, **ohne** Schattenwurf | Hält die der Kamera zugewandte Seite hell und lesbar (helle Seite links oben, E-10); Lage wie das frühere Einzellicht, damit der Farbcharakter bleibt. |
+| Himmel/Boden | Hemisphäre `fff2d6`/`55704a` Stärke 1,9, Umgebung 0,35 | Verhindert, dass Schattenseiten bei der Quantisierung in fremde Farbtöne kippen. |
+| Bodenschatten | echter Schattenwurf des Körpers auf eine unsichtbare Ebene in Sohlenhöhe, weichgezeichnet (Gauß σ 2,4 px), Farbe `1c2a22`, Deckkraft höchstens 0,42, in den Basisbogen unter die Figur gebacken; Katalog `shadowBaked:true` | Schatten und Licht stammen aus derselben Richtung. Die Laufzeit zeichnet für solche Figuren keinen eigenen Schatten (`prerenderHasBakedShadow`). |
+
+Für das Modell heißt das: **Fußsohlen exakt auf y=0** (dort liegt die Schattenebene), geschlossene Meshes ohne Löcher an der Unterseite (sonst Löcher im Schatten), keine frei schwebenden Hilfsobjekte. Kontrollbilder: `npm run prerender:shadow-check <held>` → `visual-review/prerender-licht/`.

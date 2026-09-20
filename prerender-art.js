@@ -31,6 +31,15 @@ export async function loadPrerenderArt(classId,equipment=[]){
 export function releasePrerenderArt(){generation++;needed=new Set();prerenderArt.enabled=false;prerenderArt.ready=false;prerenderArt.images.clear();}
 const DIRECTIONS=['se','sw','ne','nw'];
 export const hasPrerenderActor=id=>!!(prerenderArt.ready&&prerenderArt.catalog.assets[id+'-poses']&&prerenderArt.images.get(id+'-poses'));
+/**
+ * E-41: true, wenn die Figur gerade vorgerendert gezeichnet wird UND ihr Bodenschatten im Bild steckt (Katalog `shadowBaked`).
+ * Der Laufzeit-Renderer zeichnet dann KEINEN eigenen Schatten. assetId: Klassen-Id (`dieter`), Alias (`hero-dieter`) oder Bogen-Id (`dieter-poses`).
+ */
+export function prerenderHasBakedShadow(assetId){
+ if(!prerenderArt.ready||!prerenderArt.catalog||assetId==null)return false;
+ const cat=prerenderArt.catalog,id=cat.assets[assetId]?assetId:cat.aliases?.[assetId]||assetId+'-poses',sheet=cat.assets[id];
+ return !!(sheet&&sheet.shadowBaked===true&&prerenderArt.images.has(id));
+}
 /** Spalte wie contentFrame in content-art.js: Laufen taktet über die Strecke, sonst Pose aus Zustand. */
 function pick(actor,p,walkSheet){
  const cols=actor.columns,at=n=>cols.indexOf(n);
@@ -55,7 +64,7 @@ export function drawPrerenderPerson(c,classId,x,y,p={},magnify=1){
  const f=sheet.frames[row*8+sel.column];if(!f)return false;
  const k=(sheet.worldHeight||26)/(poses.nativeHeight||104)*magnify,height=(sheet.worldHeight||26)*magnify;
  c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
- c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();
+ if(!sheet.shadowBaked){c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();}// sonst steckt der Schatten im Bild (E-41)
  c.scale(k,k);c.translate(-pivot.x,-pivot.y);
  c.drawImage(image,f.x,f.y,size,size,0,0,size,size);
  for(const item of p.visualEquipment||[]){

@@ -7,23 +7,31 @@
 import * as THREE from './vendor/three.module.min.js';
 import {buildHero,attachGear,GEAR_ASSETS} from './rig.js';
 import {POSES,walkPose,poseLift,COLUMNS,WALK_FRAMES} from './poses.js';
+import {FRAME,CAMERA,LIGHTS,SHADOW,lightVector} from './stage.js';
 // Ziel: Präzisions-Format (assets/precision/runtime): 4 native Pixel je Welteinheit, Bild 192², Fußpunkt (96,160), vier Richtungen se/sw/ne/nw.
-const PPU=4,SIZE=192,PIVOT={x:96,y:160},BIG=288;
-const DIRECTIONS={se:-40,sw:40,ne:-140,nw:140};// Gier des Modells in Grad; Kamera steht fest
+// Kamera, Licht und Schatten sind fest und kommen ausschließlich aus stage.js (E-41); hier keine eigenen Zahlen.
+const PPU=FRAME.ppu,SIZE=FRAME.size,PIVOT=FRAME.pivot,BIG=FRAME.big;
+const DIRECTIONS=CAMERA.directions;// Gier des Modells in Grad; Kamera steht fest
 const PALETTE=['242333','413440','67463e','926044','b67b50','dda071','f4c698','ffe6bb','f8f0d5','c8c5af','898c83','526d76','334d59','243841','354b36','55704a','849451','bac475','953d32','ce5d31','ec8b36','f3b84b','95653e','634b37','171f29','364047','786259','9f806d','d49779','edb495','fff2d6','d9d7c2','aaab98','719090','456476','768a67','a6ac80','b74724','e57438','ffd274'].map(h=>[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]);
 const OUTLINE=[0x17,0x1f,0x29];
 const canvas=document.createElement('canvas');canvas.width=BIG;canvas.height=BIG;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);renderer.setSize(BIG,BIG,false);renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
-const hemi=new THREE.HemisphereLight(0xfff2d6,0x55704a,1.6);scene.add(hemi);
-const sun=new THREE.DirectionalLight(0xffe6bb,2.4);sun.position.set(-30,50,40);scene.add(sun);scene.add(new THREE.AmbientLight(0xffffff,.35));// Licht links oben (E-10)
-// Orthografische Kamera: BIG px entsprechen BIG/PPU Welteinheiten; leichte Aufsicht wie die gelieferten Sprites.
-const span=BIG/PPU,camera=new THREE.OrthographicCamera(-span/2,span/2,span/2,-span/2,-500,500);
-const PITCH=20*Math.PI/180;camera.position.set(0,Math.sin(PITCH)*200+13,Math.cos(PITCH)*200);camera.lookAt(0,13,0);camera.updateMatrixWorld();
+const hemi=new THREE.HemisphereLight(LIGHTS.hemi.sky,LIGHTS.hemi.ground,LIGHTS.hemi.intensity);scene.add(hemi);scene.add(new THREE.AmbientLight(LIGHTS.ambient.color,LIGHTS.ambient.intensity));
+const dirLight=spec=>{const l=new THREE.DirectionalLight(spec.color,spec.intensity),d=lightVector(spec);l.position.set(d.x*200,d.y*200,d.z*200);l.target.position.set(0,0,0);scene.add(l);scene.add(l.target);return l;};
+const sun=dirLight(LIGHTS.key),fill=dirLight(LIGHTS.fill);
+// Schattenwurf: nur die Sonne, nur auf die unsichtbare Bodenebene (ShadowMaterial). Die Schattenkarte wird nur für den Schattendurchgang erneuert.
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
+sun.castShadow=true;sun.shadow.mapSize.set(SHADOW.mapSize,SHADOW.mapSize);Object.assign(sun.shadow.camera,{left:-SHADOW.extent,right:SHADOW.extent,top:SHADOW.extent,bottom:-SHADOW.extent,near:1,far:500});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.0005;
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(600,600),new THREE.ShadowMaterial({color:0x000000,opacity:1}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.visible=false;scene.add(ground);
+// Feste orthografische Kamera (stage.js): BIG px entsprechen BIG/PPU Welteinheiten.
+const span=BIG/PPU,camera=new THREE.OrthographicCamera(-span/2,span/2,span/2,-span/2,CAMERA.near,CAMERA.far);
+const PITCH=CAMERA.pitchDeg*Math.PI/180;camera.position.set(0,Math.sin(PITCH)*CAMERA.distance+CAMERA.lookAtY,Math.cos(PITCH)*CAMERA.distance);camera.lookAt(0,CAMERA.lookAtY,0);camera.updateMatrixWorld();
 const heroes=new Map();
-function hero(classId){if(!heroes.has(classId)){const h=buildHero(classId);scene.add(h.root);h.root.visible=false;heroes.set(classId,h);}return heroes.get(classId);}
+/** Bodenhöhe = tiefster Punkt des Modells in Ruhepose (Sohlen); dort liegt die Schattenebene. Modelle werfen Schatten, empfangen aber keinen. */
+function hero(classId){if(!heroes.has(classId)){const h=buildHero(classId);h.root.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=false;}});h.root.updateMatrixWorld(true);h.groundY=new THREE.Box3().setFromObject(h.root).min.y;scene.add(h.root);h.root.visible=false;heroes.set(classId,h);}return heroes.get(classId);}
 function applyPose(h,name,t){for(const bone of Object.values(h.bones))bone.rotation.set(0,0,0);const pose=typeof t==='number'?walkPose(t):POSES[name]||POSES.idle;for(const [k,v] of Object.entries(pose)){const bone=h.bones[k];if(bone)bone.rotation.set(v.x,v.y,v.z);}h.bones.hips.position.y=h.body.legs+poseLift(name,t);}
-function setLayer(h,mode){h.root.traverse(o=>{if(!o.isMesh)return;if(o.userData.body){o.visible=true;o.material.colorWrite=mode==='body';o.material.depthWrite=true;o.material.transparent=false;}else if(o.userData.gear){o.visible=mode==='gear';}});}
+function setLayer(h,mode){h.root.traverse(o=>{if(!o.isMesh)return;if(o.userData.body){o.visible=true;o.material.colorWrite=mode==='body';o.material.depthWrite=mode!=='shadow';o.material.transparent=false;}else if(o.userData.gear){o.visible=mode==='gear';}});}
 const v=new THREE.Vector3();
 function project(obj,offset){obj.getWorldPosition(v);v.project(camera);return {x:(v.x+1)/2*BIG-offset.x,y:(1-v.y)/2*BIG-offset.y};}
 /** Rendert ein Bild, quantisiert auf die Palette, zieht eine 1-px-Kontur und schneidet 192² um den Fußpunkt. */
@@ -43,6 +51,23 @@ function shoot(h,offsetHint){
  for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++){const i=y*SIZE+x;if(opaque[i])continue;const n=(x>0&&opaque[i-1])||(x<SIZE-1&&opaque[i+1])||(y>0&&opaque[i-SIZE])||(y<SIZE-1&&opaque[i+SIZE]);if(n){const o=i*4;out[o]=OUTLINE[0];out[o+1]=OUTLINE[1];out[o+2]=OUTLINE[2];out[o+3]=255;}}
  return {pixels:out,offset:{x:ox,y:oy}};
 }
+/**
+ * Schattendurchgang: Körper unsichtbar (kein Farb-/Tiefenschreiben), wirft aber Schatten auf die Bodenebene. Aus dem Alphakanal wird eine
+ * weichgezeichnete Maske (Gauß, SHADOW.blurSigmaPx), eingefärbt und gedeckelt nach LIGHT.shadow, und UNTER die Figur gelegt (nur in transparente Pixel).
+ * Kontur und Palette der Figur bleiben unberührt; der Schatten bleibt unter der Deckkraft 128 und zählt deshalb nie zu den Bildgrenzen (bounds).
+ */
+const SHADOW_RGB=[1,3,5].map(i=>parseInt(SHADOW.color.slice(i,i+2),16));
+const KERNEL=(()=>{const r=Math.ceil(SHADOW.blurSigmaPx*3),k=[];let sum=0;for(let i=-r;i<=r;i++){const w=Math.exp(-i*i/(2*SHADOW.blurSigmaPx**2));k.push(w);sum+=w;}return {r,k:k.map(w=>w/sum)};})();
+function bakeShadow(h,figure){
+ setLayer(h,'shadow');ground.position.y=h.groundY;ground.visible=true;ground.updateMatrixWorld(true);renderer.shadowMap.needsUpdate=true;
+ renderer.render(scene,camera);ground.visible=false;
+ const gl=renderer.getContext(),raw=new Uint8Array(BIG*BIG*4);gl.readPixels(0,0,BIG,BIG,gl.RGBA,gl.UNSIGNED_BYTE,raw);
+ let a=new Float32Array(BIG*BIG);for(let y=0;y<BIG;y++)for(let x=0;x<BIG;x++)a[y*BIG+x]=raw[((BIG-1-y)*BIG+x)*4+3]/255;
+ for(const horizontal of [true,false]){const b=new Float32Array(BIG*BIG);for(let y=0;y<BIG;y++)for(let x=0;x<BIG;x++){let v=0;for(let i=-KERNEL.r;i<=KERNEL.r;i++){const xx=horizontal?Math.min(BIG-1,Math.max(0,x+i)):x,yy=horizontal?y:Math.min(BIG-1,Math.max(0,y+i));v+=a[yy*BIG+xx]*KERNEL.k[i+KERNEL.r];}b[y*BIG+x]=v;}a=b;}
+ const {pixels,offset}=figure;let clipped=false;
+ for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++){const o=(y*SIZE+x)*4;if(pixels[o+3])continue;const sx=x+offset.x,sy=y+offset.y;if(sx<0||sy<0||sx>=BIG||sy>=BIG)continue;const raw01=a[sy*BIG+sx],edge=Math.min(x,y,SIZE-1-x,SIZE-1-y);if(edge===0&&raw01>.06)clipped=true;const alpha=Math.round(raw01*Math.min(1,edge/SHADOW.edgeFadePx)*SHADOW.maxAlpha*255);if(alpha<2)continue;pixels[o]=SHADOW_RGB[0];pixels[o+1]=SHADOW_RGB[1];pixels[o+2]=SHADOW_RGB[2];pixels[o+3]=alpha;}
+ return clipped;// true = Schatten erreicht den Bildrand (wird dort weich ausgeblendet, Build meldet es)
+}
 function toDataUrl(pixels){const c=document.createElement('canvas');c.width=SIZE;c.height=SIZE;c.getContext('2d').putImageData(new ImageData(pixels,SIZE,SIZE),0,0);return c.toDataURL('image/png');}
 function sockets(h,offset,west){
  const p=name=>project(h.bones[name],offset);
@@ -56,16 +81,16 @@ function sockets(h,offset,west){
  */
 window.prerender={
  assets:GEAR_ASSETS,
- async render(classId,assets=GEAR_ASSETS,{preview=false,base=true}={}){
+ async render(classId,assets=GEAR_ASSETS,{preview=false,base=true,shadow=true}={}){
   const h=hero(classId);for(const o of heroes.values())o.root.visible=false;h.root.visible=true;
   // Ausrüstung einmal anhängen, per Sichtbarkeit schalten
   const gearMeshes=new Map();for(const a of assets)gearMeshes.set(a,attachGear(h,a));
   const showGear=asset=>{for(const [a,list] of gearMeshes)for(const m of list)m.visible=a===asset;};
-  const result={poses:{base:[],gear:{}},walk:{base:[],gear:{}}};
+  const result={poses:{base:[],gear:{}},walk:{base:[],gear:{}},shadowClipped:[]};
   const shots=[];for(const [dir,yaw] of Object.entries(DIRECTIONS)){for(const col of COLUMNS)shots.push({sheet:'poses',dir,yaw,name:col,t:undefined});for(let i=0;i<WALK_FRAMES;i++)shots.push({sheet:'walk',dir,yaw,name:'walk',t:i/WALK_FRAMES});}
   for(const s of shots){
    h.root.rotation.y=s.yaw*Math.PI/180;applyPose(h,s.name,s.t);h.root.updateMatrixWorld(true);
-   if(base){setLayer(h,'body');showGear(null);const shot=shoot(h);const soc=sockets(h,shot.offset,s.dir.endsWith('w'));result[s.sheet].base.push({dir:s.dir,column:s.name,png:toDataUrl(shot.pixels),sockets:soc});if(preview){const c=document.createElement('canvas');c.width=SIZE;c.height=SIZE;c.getContext('2d').putImageData(new ImageData(shot.pixels,SIZE,SIZE),0,0);document.querySelector('#out').append(c);}}
+   if(base){setLayer(h,'body');showGear(null);const shot=shoot(h);if(shadow&&bakeShadow(h,shot))result.shadowClipped.push(s.sheet+':'+s.dir+':'+s.name);const soc=sockets(h,shot.offset,s.dir.endsWith('w'));result[s.sheet].base.push({dir:s.dir,column:s.name,png:toDataUrl(shot.pixels),sockets:soc});if(preview){const c=document.createElement('canvas');c.width=SIZE;c.height=SIZE;c.getContext('2d').putImageData(new ImageData(shot.pixels,SIZE,SIZE),0,0);document.querySelector('#out').append(c);}}
    setLayer(h,'gear');
    for(const a of assets){showGear(a);const layer=shoot(h);(result[s.sheet].gear[a]||=(result[s.sheet].gear[a]=[])).push({dir:s.dir,column:s.name,png:toDataUrl(layer.pixels)});}
   }

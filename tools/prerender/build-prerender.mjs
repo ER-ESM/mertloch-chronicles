@@ -10,6 +10,7 @@ import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {encodePng,decodePng,surface,bounds as rawBounds,blit} from '../sprite-pipeline/png.mjs';
+import {FRAME,CAMERA,LIGHTS,LIGHT} from './stage.js';
 /** Leere Zellen (verdecktes Teil) sind erlaubt: count 0 statt Fehler. */
 const bounds=(img,rect)=>{try{return rawBounds(img,rect);}catch{return {x:rect.x,y:rect.y,w:0,h:0,count:0};}};
 
@@ -20,7 +21,8 @@ const ASSETS=args.assets?args.assets.split(','):null;
 const port=Number(args.port||4197),cdp=Number(process.env.CDP_PORT||9355);
 const chrome=process.env.CHROME||['C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'].find(existsSync);
 const OUT=join(root,'assets','prerender','runtime');mkdirSync(join(OUT,'heroes'),{recursive:true});mkdirSync(join(OUT,'gear'),{recursive:true});
-const SIZE=192,PIVOT={x:96,y:160},DIRECTIONS=['se','sw','ne','nw'],COLUMNS=['idle','walk-a','walk-pass','walk-b','anticipation','impact','hit','rest'];
+const SIZE=FRAME.size,PIVOT=FRAME.pivot,DIRECTIONS=Object.keys(CAMERA.directions),COLUMNS=['idle','walk-a','walk-pass','walk-b','anticipation','impact','hit','rest'];
+const BAKE_SHADOW=args['no-shadow']!=='1';// --no-shadow: Bögen ohne gebackenen Schatten (Katalog shadowBaked:false)
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 async function launch(){
@@ -40,6 +42,8 @@ async function connect(){
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;};
  return {send,evaluate,errors,close:()=>ws.close()};
 }
+/** Zelle 1:1 samt Teiltransparenz kopieren (blit verwirft Alpha < 128 und damit den gebackenen Schatten). */
+function copyCell(src,dst,at){for(let y=0;y<SIZE;y++)dst.data.set(src.data.subarray(y*src.width*4,(y*src.width+SIZE)*4),((at.y+y)*dst.width+at.x)*4);}
 const fromDataUrl=url=>decodePng(Buffer.from(url.slice(url.indexOf(',')+1),'base64'));
 /** Bogen aus Einzelbildern: Spalten × 4 Richtungszeilen, 192² je Zelle. */
 function sheet(frames,columns){
@@ -52,7 +56,9 @@ function sheet(frames,columns){
 const server=spawn(process.execPath,[join(root,'server.mjs')],{env:{...process.env,PORT:String(port)},stdio:'ignore'});
 await wait(800);
 const chromeProc=await launch();const b=await connect();
-const catalog={version:1,style:'Maifeld-Detailpixel · Pre-Render (E-30)',source:'tools/prerender',humanNativePixelsPerWorldUnit:4,frameSize:SIZE,pivot:PIVOT,directions:DIRECTIONS,aliases:{},assets:{},gear:{}};
+const catalog={version:1,style:'Maifeld-Detailpixel · Pre-Render (E-30)',source:'tools/prerender',humanNativePixelsPerWorldUnit:FRAME.ppu,frameSize:SIZE,pivot:PIVOT,directions:DIRECTIONS,
+ // E-41: feste Bühne; shadowBaked je Asset sagt der Laufzeit, dass der Bodenschatten im Bild steckt (keinen eigenen zeichnen).
+ stage:{camera:{type:CAMERA.type,pitchDeg:CAMERA.pitchDeg,yawDeg:CAMERA.yawDeg,pixelsPerUnit:CAMERA.pixelsPerUnit},light:LIGHT,lights:LIGHTS},aliases:{},assets:{},gear:{}};
 try{
  await b.send('Page.navigate',{url:'http://localhost:'+port+'/tools/prerender/render.html'});
  for(let i=0;i<100;i++){await wait(200);if(await b.evaluate('!!window.prerenderReady').catch(()=>false))break;}
@@ -62,17 +68,19 @@ try{
  const assets=ASSETS||await b.evaluate('window.prerender.assets');
  for(const hero of HEROES){
   const t0=Date.now();
-  const r=await b.evaluate(`window.prerender.render(${JSON.stringify(hero)},[])`);for(let i=0;i<assets.length;i+=4){const part=await b.evaluate(`window.prerender.render(${JSON.stringify(hero)},${JSON.stringify(assets.slice(i,i+4))},{base:false})`);for(const st of ["poses","walk"])Object.assign(r[st].gear,part[st].gear);process.stdout.write(".");}
+  const r=await b.evaluate(`window.prerender.render(${JSON.stringify(hero)},[],{shadow:${BAKE_SHADOW}})`);for(let i=0;i<assets.length;i+=4){const part=await b.evaluate(`window.prerender.render(${JSON.stringify(hero)},${JSON.stringify(assets.slice(i,i+4))},{base:false})`);for(const st of ["poses","walk"])Object.assign(r[st].gear,part[st].gear);process.stdout.write(".");}
+  if(r.shadowClipped?.length)console.log(`
+Hinweis ${hero}: Schatten erreicht in ${r.shadowClipped.length} Bildern den Rahmenrand (weich ausgeblendet): ${r.shadowClipped.slice(0,6).join(', ')}`);
   for(const [state,columns] of [['poses',COLUMNS],['walk',Array.from({length:8},(_,i)=>'walk')]]){
    const frames=r[state].base.map((f,i)=>state==='walk'?{...f,column:'walk',index:i}:f);
    // Laufbilder: 8 Spalten je Richtung in Reihenfolge der Aufnahme
    const image=surface(SIZE*8,SIZE*4),meta=[];
    const perDir={};for(const f of frames){(perDir[f.dir]||=[]).push(f);}
-   for(const [row,dir] of DIRECTIONS.entries())for(const [col,f] of (perDir[dir]||[]).entries()){const img=fromDataUrl(f.png);const at={x:col*SIZE,y:row*SIZE};blit(img,image,{x:0,y:0,w:SIZE,h:SIZE},at);const bb=bounds(image,{x:at.x,y:at.y,w:SIZE,h:SIZE});meta.push({x:at.x,y:at.y,bounds:{x:bb.x-at.x,y:bb.y-at.y,w:bb.w,h:bb.h,count:bb.count},sockets:f.sockets});}
+   for(const [row,dir] of DIRECTIONS.entries())for(const [col,f] of (perDir[dir]||[]).entries()){const img=fromDataUrl(f.png);const at={x:col*SIZE,y:row*SIZE};copyCell(img,image,at);const bb=bounds(image,{x:at.x,y:at.y,w:SIZE,h:SIZE});meta.push({x:at.x,y:at.y,bounds:{x:bb.x-at.x,y:bb.y-at.y,w:bb.w,h:bb.h,count:bb.count},sockets:f.sockets});}
    const id=hero+'-'+state,path='assets/prerender/runtime/heroes/'+id+'.png';
    writeFileSync(join(root,path),encodePng(image));
    const idle=meta[0].bounds;
-   catalog.assets[id]={kind:'heroes',path,frameSize:SIZE,pivot:PIVOT,columns:state==='poses'?COLUMNS:Array.from({length:8},(_,i)=>'walk-'+i),frames:meta,nativeHeight:state==='poses'?idle.h:undefined,worldHeight:26,gearScale:1,revision:'prerender-v1'};
+   catalog.assets[id]={kind:'heroes',path,frameSize:SIZE,pivot:PIVOT,columns:state==='poses'?COLUMNS:Array.from({length:8},(_,i)=>'walk-'+i),frames:meta,nativeHeight:state==='poses'?idle.h:undefined,worldHeight:26,gearScale:1,shadowBaked:BAKE_SHADOW,revision:'prerender-v2'};
    if(state==='walk')delete catalog.assets[id].nativeHeight;
    for(const [asset,list] of Object.entries(r[state].gear)){
     const gimg=surface(SIZE*8,SIZE*4),gmeta=[];const pd={};for(const f of list){(pd[f.dir]||=[]).push(f);}
