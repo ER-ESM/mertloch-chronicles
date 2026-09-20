@@ -27,6 +27,8 @@ async function bounds(){
 }
 try{
  await b.resize(1440,1000);await fixture();
+ // Ruhiger Bildschirm (E-39): ohne gespeicherte Vorliebe bleibt die Kampfstatistik zu und öffnet mit V.
+ assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);
  assert.ok(await read(`document.querySelector('#combatMeter').getBoundingClientRect().height<=240`));
  await b.screenshot(dir+'/desktop-ranking.png');

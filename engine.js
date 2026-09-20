@@ -61,7 +61,7 @@ export class Game{
     this.player={...restorePosition(world,saved),classId:this.member.id,hp:baseHp,maxHp:baseHp,energy:100,runes:0,level,xp:Math.max(0,Number(saved.xp)||0),parry:0,invulnerable:0,moving:false,attack:0,inCombat:0};
     this.quest=restoreQuest(saved.quest||{},saved.worldKey===world.id);
     // Spieleinstellungen. Auto-Loot ist der Standard; die UI schaltet ihn über setSetting('autoLoot', …) ab.
-    this.settings={autoLoot:saved.settings?.autoLoot!==false,prerender:saved.settings?.prerender===true,sct:saved.settings?.sct!==false};
+    this.settings={autoLoot:saved.settings?.autoLoot!==false,prerender:saved.settings?.prerender===true,sct:saved.settings?.sct!==false,light:saved.settings?.light!==false};
     this.memories={seen:Array.isArray(saved.memories?.seen)?saved.memories.seen.filter(id=>typeof id==='string'):[]};
     this.buildings=Object.fromEntries(BUILDING_IDS.map(id=>[id,clampInt(saved.buildings?.[id],0,BUILDINGS[id].stages.length,0)]).filter(([,stage])=>stage>0));
     this.mentorTalks=saved.mentorTalks&&typeof saved.mentorTalks==='object'?Object.fromEntries(Object.entries(saved.mentorTalks).map(([id,n])=>[id,clampInt(n,0,1e6,0)])):{};

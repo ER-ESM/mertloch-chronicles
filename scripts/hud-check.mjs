@@ -98,7 +98,7 @@ try{
  pass('chat window moves in the HUD editor, still drags by its tab bar afterwards and persists');
  await openEditor();await field('[data-hud-element]','meter');await field('[data-hud-scale]','110','input');await click('[data-hud-save]');
  assert.equal(await read("getComputedStyle(document.querySelector('#combatMeter')).transitionDuration"),'0s');
- const meterBefore=await rect('#combatMeter');await drag('.meter-header',-48,-24);const meterAfter=await rect('#combatMeter');assert.ok(meterAfter.x<meterBefore.x-40,JSON.stringify({meterBefore,meterAfter}));
+ if(await read("document.querySelector('#combatMeter').hidden"))await b.press('v');const meterBefore=await rect('#combatMeter');await drag('.meter-header',-48,-24);const meterAfter=await rect('#combatMeter');assert.ok(meterAfter.x<meterBefore.x-40,JSON.stringify({meterBefore,meterAfter}));
  await fixture(false,true);assert.deepEqual(await rect('#combatMeter'),meterAfter);await b.press('v');assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');
  pass('Details-style meter still drags and persists after being scaled in the HUD editor');
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await b.resize(390,844);await fixture(true,true);await effects();

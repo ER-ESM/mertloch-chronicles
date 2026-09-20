@@ -714,3 +714,5 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .spec-tabs .tree-hits[hidden]{display:none}
 .spec-tabs .no-hits{opacity:.55}.spec-tabs .no-hits .tree-hits{background:transparent;color:inherit;border:1px solid currentColor}
 mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-radius:2px}
+/* Ruhiger Bildschirm (E-39): Die Clan-Schule schweigt, solange die Hofprobe führt. */
+.training-dock.is-quiet{display:none!important;}

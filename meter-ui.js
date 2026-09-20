@@ -12,7 +12,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  const finitePair=(value,a,b)=>value&&Number.isFinite(value[a])&&Number.isFinite(value[b])?value:null;
  let device=touch()?'touch':'desktop',mode=prefs.mode==='healing'?'healing':'damage',selection='current',actorId=null,abilityId=null,last=0,lastOptions='',rowKeys='',drag=null;
  let position=finitePair(prefs.position,'x','y'),size=finitePair(prefs.size,'width','height'),previousGame=null,previousSegment=null;
- const visible={desktop:prefs.desktop!==false,touch:prefs.touch===true};
+ const visible={desktop:prefs.desktop===undefined?METER_RULES.openByDefault:prefs.desktop!==false,touch:prefs.touch===true};
  const toggle=document.createElement('button');toggle.id='meterToggle';toggle.type='button';toggle.setAttribute('aria-controls','combatMeter');toggle.title=T.shortcut;toggle.setAttribute('aria-label',T.shortcut);
  toggle.innerHTML=`<span aria-hidden="true">▥</span><span class="meter-toggle-label">${T.title}</span><kbd>V</kbd>`;
  const panel=document.createElement('aside');panel.id='combatMeter';panel.hidden=!visible[device];panel.setAttribute('aria-label',T.title);

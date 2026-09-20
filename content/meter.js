@@ -1,4 +1,5 @@
-export const METER_RULES={history:10,minSeconds:1,refreshMs:250};
+// openByDefault: Die Kampfstatistik ist ein Werkzeug für Kenner und bleibt zu, bis jemand sie mit V öffnet (E-39, ruhiger Bildschirm).
+export const METER_RULES={history:10,minSeconds:1,refreshMs:250,openByDefault:false};
 export const METER_TEXT={
  title:'Kampfstatistik',open:'Kampfstatistik öffnen',close:'Einklappen',damage:'Schaden',healing:'Heilung',
  shortcut:'Kampfstatistik [V]',options:'Optionen',resize:'Fenstergröße ändern (ziehen oder Pfeiltasten)',drag:'Zum Verschieben ziehen',ranking:'Rangliste',
