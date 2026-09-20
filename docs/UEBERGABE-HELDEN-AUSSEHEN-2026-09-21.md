@@ -21,3 +21,5 @@ Versucht und verworfen (am vergrößerten Bild geprüft, drei Körper, Vorder- u
 - **Stoppeln/Vollbart** (Haut-Pixel im Kinnbereich auf Haarfarbe): rechteckiger Fleck über dem Mund; **Rasiert** lässt beim Körper „Kräftig" die gezeichnete Bartkontur stehen.
 
 Was funktioniert, ist alles, was Farbe ändert oder klein und starr am Kopf sitzt (Hautton, Haarfarbe, Brille, Sonnenbrille, Stirnband). Für Frisuren und Bärte braucht es deshalb je Körper gezeichnete Ebenen: **ein Kopf ohne Haare und ohne Bart als Basis**, darüber Frisur- und Bart-Ebenen in den vier Blickrichtungen und allen Posen der Rig-Atlanten. Die Auswahl (`tint.style`, `tint.beard`) ist im Datenmodell schnell ergänzt; `lookKey`/`parseTintKey` tragen weitere Felder ohne Bruch.
+
+**Nachtrag:** Additive Ebenen funktionieren (gebaut: Stoppeln, Kinnbart, Vollbart, Irokese – `drawBeard`, `drawHairStyle`). Offen für die Grafik bleibt nur, was gezeichnetes Haar ersetzt (Kurzhaar, Glatze, lange Haare, Rasur beim Körper „Kräftig").

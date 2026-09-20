@@ -7,14 +7,37 @@ export const HAIR_COLORS=[{id:'natur',name:'Natur',h:null},{id:'schwarz',name:'S
 /** Kopf-Accessoires: prozedural am Kopf-Ankerpunkt gezeichnet (keine Bilddateien). eye/brow = Abstand von der Kopf-Oberkante je Körper. */
 export const FACE_ITEMS=[{id:'ohne',name:'Ohne'},{id:'brille',name:'Brille'},{id:'sonnenbrille',name:'Sonnenbrille'},{id:'stirnband',name:'Stirnband'}];
 const FACE_GEOMETRY={dieter:{eye:13,brow:8,half:9},anni:{eye:21,brow:15,half:8},baerbel:{eye:21,brow:15,half:8},kevin:{eye:16,brow:10,half:8}};
-export const DEFAULT_TINT=Object.freeze({skin:'hell',hair:'natur',face:'ohne'});
+/** Gezeichnete Ebenen (geformte Pixel, keine umgedeuteten): Bart folgt dem Kiefer und bleibt auf der Figur; der Irokese sitzt auf dem Scheitel. */
+export const BEARDS=[{id:'natur',name:'Wie gezeichnet'},{id:'stoppeln',name:'Stoppeln'},{id:'kinnbart',name:'Kinnbart'},{id:'vollbart',name:'Vollbart'}];
+export const HAIR_STYLES=[{id:'natur',name:'Wie gezeichnet'},{id:'irokese',name:'Irokese'}];
+const NATURAL_HAIR={dieter:[62,44,38],anni:[196,120,56],baerbel:[196,120,56],kevin:[58,42,34]};
+export const DEFAULT_TINT=Object.freeze({skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur'});
 /** Beliebige Eingabe → gültige Auswahl. */
-export function normalizeTint(t){return {skin:SKIN_TONES.some(x=>x.id===t?.skin)?t.skin:'hell',hair:HAIR_COLORS.some(x=>x.id===t?.hair)?t.hair:'natur',face:FACE_ITEMS.some(x=>x.id===t?.face)?t.face:'ohne'};}
+export function normalizeTint(t){return {skin:SKIN_TONES.some(x=>x.id===t?.skin)?t.skin:'hell',hair:HAIR_COLORS.some(x=>x.id===t?.hair)?t.hair:'natur',face:FACE_ITEMS.some(x=>x.id===t?.face)?t.face:'ohne',style:HAIR_STYLES.some(x=>x.id===t?.style)?t.style:'natur',beard:BEARDS.some(x=>x.id===t?.beard)?t.beard:'natur'};}
 /** Schlüssel nur für die Farben (Bild-Zwischenspeicher). */
-export const tintKey=t=>{const n=normalizeTint(t);return n.skin==='hell'&&n.hair==='natur'?'':n.skin+'.'+n.hair;};
+export const tintKey=t=>{const n=normalizeTint(t);return n.skin==='hell'&&n.hair==='natur'&&n.beard==='natur'?'':n.skin+'.'+n.hair+'.'+n.beard;};
 /** Schlüssel fürs Netz und für data-Attribute: Farben plus Accessoire. */
-export const lookKey=t=>{const n=normalizeTint(t);return n.skin==='hell'&&n.hair==='natur'&&n.face==='ohne'?'':n.skin+'.'+n.hair+'.'+n.face;};
-export const parseTintKey=k=>{const [skin,hair,face]=String(k||'').split('.');return normalizeTint({skin,hair,face});};
+export const lookKey=t=>{const n=normalizeTint(t);return Object.keys(DEFAULT_TINT).every(k=>n[k]===DEFAULT_TINT[k])?'':[n.skin,n.hair,n.face,n.style,n.beard].join('.');};
+export const parseTintKey=k=>{const [skin,hair,face,style,beard]=String(k||'').split('.');return normalizeTint({skin,hair,face,style,beard});};
+/** Haarfarbe als RGB: gewählte Farbe oder die gezeichnete des Körpers. */
+export function hairRgb(tint,bodyId){const h=HAIR_COLORS.find(x=>x.id===normalizeTint(tint).hair);return h?.h!=null?hslToRgb(h.h,h.s,h.l):NATURAL_HAIR[String(bodyId||'').replace(/-.*/,'')]||NATURAL_HAIR.kevin;}
+const tone=(rgb,k)=>'rgb('+rgb.map(v=>Math.max(0,Math.min(255,Math.round(v*k)))).join(',')+')';
+/** Bart als geformte Ebene; ctx ist der Bild-Zwischenspeicher (nur dort, source-atop hält ihn auf der Figur). */
+export function drawBeard(c,frame,bodyId,tint,q=1){
+ const kind=normalizeTint(tint).beard;if(kind==='natur')return false;const dir=frame.direction||'se';if(dir[0]==='n')return false;
+ const g=FACE_GEOMETRY[String(bodyId||'').replace(/-.*/,'')]||FACE_GEOMETRY.kevin,head=frame.sockets?.head;if(!head)return false;const side=dir[1]==='w'?-1:1,cx=Math.round(head.x)+side*2,ey=Math.round(head.y)+g.eye,rgb=hairRgb(tint,bodyId);
+ c.save();c.scale(q,q);c.globalCompositeOperation='source-atop';
+ const row=(y,from,to,k)=>{c.fillStyle=tone(rgb,k);c.fillRect(cx+from,ey+y,to-from+1,1);};
+ if(kind==='stoppeln'){c.globalAlpha=.42;for(let y=5;y<=10;y++)for(let x=-g.half+2;x<=g.half-2;x++)if((x+y)%2===0&&!(y<=7&&Math.abs(x)<=1)){c.fillStyle=tone(rgb,.9);c.fillRect(cx+x,ey+y,1,1);}}
+ else if(kind==='kinnbart'){row(7,-2,2,1.05);row(8,-3,3,1);row(9,-3,3,.9);row(10,-2,2,.8);row(11,-1,1,.7);c.clearRect?0:0;c.fillStyle=tone(rgb,1.1);c.fillRect(cx-3,ey+5,2,1);c.fillRect(cx+2,ey+5,2,1);}
+ else{const w=g.half-2;row(4,-w-1,-w+1,1.1);row(4,w-1,w+1,1.1);row(5,-w-1,-2,1.1);row(5,2,w+1,1.1);row(6,-w-1,w+1,1.05);row(7,-w,-2,1);row(7,2,w,1);row(8,-w,w,.95);row(9,-w+1,w-1,.88);row(10,-w+2,w-2,.8);row(11,-w+3,w-3,.72);row(12,-2,2,.64);}
+ c.restore();return true;
+}
+/** Irokese: Kamm auf dem Scheitel, in jeder Blickrichtung sichtbar (wird über der Figur gezeichnet). */
+export function drawHairStyle(c,frame,bodyId,tint){
+ if(normalizeTint(tint).style!=='irokese')return false;const head=frame.sockets?.head;if(!head)return false;const dir=frame.direction||'se',side=dir[1]==='w'?-1:1,x=Math.round(head.x)+(dir[0]==='n'?-side:side),y=Math.round(head.y),rgb=hairRgb(tint,bodyId);
+ const heights=[3,5,7,8,7,6,4];c.save();heights.forEach((h,i)=>{const px=x-3+i;c.fillStyle=tone(rgb,.7);c.fillRect(px,y-h+2,1,h+3);c.fillStyle=tone(rgb,i%2?1.15:.95);c.fillRect(px,y-h+3,1,h);});c.fillStyle='#14100e';heights.forEach((h,i)=>c.fillRect(x-3+i,y-h+1,1,1));c.restore();return true;
+}
 /** Zeichnet das Kopf-Accessoire im 192er-Bildraum. frame: Katalogbild (sockets.head, direction), bodyId: Körper. */
 export function drawFaceItem(c,frame,bodyId,tint){
  const item=normalizeTint(tint).face;if(item==='ohne')return false;const g=FACE_GEOMETRY[String(bodyId).replace(/-.*/,'')]||FACE_GEOMETRY.kevin,head=frame.sockets?.head;if(!head)return false;
@@ -60,6 +83,6 @@ export function tintedFrame(sel,tint,bodyId){
  const key=tintKey(tint);if(!key||typeof document==='undefined')return null;
  const q=sel.resolution||1,f=sel.frame,id=(sel.key||'')+'@'+f.x+':'+f.y+'|'+q+'|'+key+'|'+(sel.image?.src||'');let hit=cache.get(id);if(hit)return hit;
  try{const c=document.createElement('canvas');c.width=c.height=192*q;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.imageSmoothingEnabled=false;ctx.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192*q,192*q);
-  const img=ctx.getImageData(0,0,c.width,c.height),head=f.sockets?.head||{x:96,y:60};tintPixels(img.data,c.width,c.height,{x:head.x*q,y:(head.y+6)*q,brow:(head.y+3)*q,side:12*q},32*q,tint,/^(anni|baerbel)/.test(bodyId||''));ctx.putImageData(img,0,0);
+  const img=ctx.getImageData(0,0,c.width,c.height),head=f.sockets?.head||{x:96,y:60};tintPixels(img.data,c.width,c.height,{x:head.x*q,y:(head.y+6)*q,brow:(head.y+3)*q,side:12*q},32*q,tint,/^(anni|baerbel)/.test(bodyId||''));ctx.putImageData(img,0,0);drawBeard(ctx,f,bodyId,tint,q);
   if(cache.size>400)cache.clear();cache.set(id,c);return c;}catch{return null;}
 }

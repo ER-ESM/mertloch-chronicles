@@ -1,7 +1,7 @@
 // Helden-Aussehen: Hautton und Haarfarbe per Umfärben – Klassifizierung an den gemessenen Farben der drei Körper.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {classifyPixel,tintPixels,hslToRgb,rgbToHsl,normalizeTint,tintKey,lookKey,parseTintKey,drawFaceItem,SKIN_TONES,HAIR_COLORS,FACE_ITEMS} from '../hero-tint.js';
+import {classifyPixel,tintPixels,hslToRgb,rgbToHsl,normalizeTint,tintKey,lookKey,parseTintKey,drawFaceItem,drawBeard,drawHairStyle,hairRgb,SKIN_TONES,HAIR_COLORS,FACE_ITEMS,BEARDS,HAIR_STYLES} from '../hero-tint.js';
 import {createCharacter,normalizeRoster} from '../characters.js';
 const px=(h,s,l)=>hslToRgb(h,s/100,l/100);
 
@@ -22,8 +22,8 @@ test('Umfärben: Hautton wird dunkler bei erhaltenem Verlauf, Haar nimmt die Zie
 });
 
 test('Auswahl: ungültige Werte fallen auf den Standard, Netz-Schlüssel hin und zurück, Held speichert sie',()=>{
- assert.deepEqual(normalizeTint({skin:'lila',hair:'rot',face:'monokel'}),{skin:'hell',hair:'rot',face:'ohne'});assert.equal(tintKey({skin:'hell',hair:'natur'}),'');assert.deepEqual(parseTintKey(lookKey({skin:'dunkel',hair:'grau',face:'brille'})),{skin:'dunkel',hair:'grau',face:'brille'});assert.equal(lookKey({face:'stirnband'}),'hell.natur.stirnband');assert.equal(tintKey({face:'stirnband'}),'','Accessoire braucht kein umgefärbtes Bild');assert.deepEqual(parseTintKey('<script>.x'),{skin:'hell',hair:'natur',face:'ohne'});
- const r=createCharacter(normalizeRoster(null),{name:'Rotschopf',classId:'baerbel',look:'kevin',tint:{skin:'gebraeunt',hair:'rot'}});assert.deepEqual(r.character.tint,{skin:'gebraeunt',hair:'rot',face:'ohne'});assert.deepEqual(normalizeRoster(r.roster).list[0].tint,{skin:'gebraeunt',hair:'rot',face:'ohne'});
+ assert.deepEqual(normalizeTint({skin:'lila',hair:'rot',face:'monokel'}),{skin:'hell',hair:'rot',face:'ohne',style:'natur',beard:'natur'});assert.equal(tintKey({skin:'hell',hair:'natur'}),'');assert.deepEqual(parseTintKey(lookKey({skin:'dunkel',hair:'grau',face:'brille',style:'irokese',beard:'vollbart'})),{skin:'dunkel',hair:'grau',face:'brille',style:'irokese',beard:'vollbart'});assert.equal(lookKey({face:'stirnband'}),'hell.natur.stirnband.natur.natur');assert.equal(lookKey({}),'');assert.ok(tintKey({beard:'vollbart'}),'Bart liegt im Bild-Zwischenspeicher');assert.equal(tintKey({face:'stirnband'}),'','Accessoire braucht kein umgefärbtes Bild');assert.deepEqual(parseTintKey('<script>.x'),{skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur'});
+ const r=createCharacter(normalizeRoster(null),{name:'Rotschopf',classId:'baerbel',look:'kevin',tint:{skin:'gebraeunt',hair:'rot'}});assert.deepEqual(r.character.tint,{skin:'gebraeunt',hair:'rot',face:'ohne',style:'natur',beard:'natur'});assert.deepEqual(normalizeRoster(r.roster).list[0].tint,r.character.tint);
  assert.ok(SKIN_TONES.length>=4&&HAIR_COLORS.length>=6);
 });
 
@@ -33,4 +33,13 @@ test('Kopf-Accessoires: Brille nur von vorn, Stirnband rundum, ohne = nichts',()
  drawFaceItem(ctx,frame('se'),'dieter',{face:'brille'});const front=calls.length;assert.ok(front>=5);calls.length=0;
  drawFaceItem(ctx,frame('ne'),'dieter',{face:'brille'});assert.equal(calls.length,0,'von hinten keine Brille');
  drawFaceItem(ctx,frame('nw'),'anni-poses',{face:'stirnband'});assert.ok(calls.length>=4,'Stirnband mit Knoten von hinten');assert.ok(FACE_ITEMS.length>=4);
+});
+
+test('Bart und Irokese als gezeichnete Ebenen: Bart nur von vorn und auf der Figur, Farbe folgt der Haarwahl',()=>{
+ const ops=[],ctx={save(){},restore(){},scale(){},fillRect:(...a)=>ops.push(a),set fillStyle(v){ops.style=v;},set globalCompositeOperation(v){ops.mode=v;},set globalAlpha(v){}};const frame=d=>({direction:d,sockets:{head:{x:96,y:55}}});
+ assert.equal(drawBeard(ctx,frame('se'),'kevin',{beard:'natur'}),false);assert.equal(drawBeard(ctx,frame('ne'),'kevin',{beard:'vollbart'}),false,'von hinten kein Bart');
+ assert.equal(drawBeard(ctx,frame('sw'),'kevin',{beard:'vollbart'}),true);assert.equal(ops.mode,'source-atop','bleibt auf der Figur');const full=ops.length;assert.ok(full>=10);
+ ops.length=0;drawBeard(ctx,frame('se'),'kevin',{beard:'kinnbart'});assert.ok(ops.length>0&&ops.length<full,'Kinnbart ist kleiner');
+ ops.length=0;assert.equal(drawHairStyle(ctx,frame('nw'),'dieter',{style:'irokese'}),true);assert.ok(ops.length>=14);assert.equal(drawHairStyle(ctx,frame('se'),'dieter',{style:'natur'}),false);
+ assert.notDeepEqual(hairRgb({hair:'rot'},'kevin'),hairRgb({hair:'natur'},'kevin'));assert.deepEqual(hairRgb({},'anni-poses'),hairRgb({},'baerbel'));assert.ok(BEARDS.length>=4&&HAIR_STYLES.length>=2);
 });
