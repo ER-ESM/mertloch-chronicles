@@ -23,3 +23,14 @@ Versucht und verworfen (am vergrößerten Bild geprüft, drei Körper, Vorder- u
 Was funktioniert, ist alles, was Farbe ändert oder klein und starr am Kopf sitzt (Hautton, Haarfarbe, Brille, Sonnenbrille, Stirnband). Für Frisuren und Bärte braucht es deshalb je Körper gezeichnete Ebenen: **ein Kopf ohne Haare und ohne Bart als Basis**, darüber Frisur- und Bart-Ebenen in den vier Blickrichtungen und allen Posen der Rig-Atlanten. Die Auswahl (`tint.style`, `tint.beard`) ist im Datenmodell schnell ergänzt; `lookKey`/`parseTintKey` tragen weitere Felder ohne Bruch.
 
 **Nachtrag:** Additive Ebenen funktionieren (gebaut: Stoppeln, Kinnbart, Vollbart, Irokese – `drawBeard`, `drawHairStyle`). Offen für die Grafik bleibt nur, was gezeichnetes Haar ersetzt (Kurzhaar, Glatze, lange Haare, Rasur beim Körper „Kräftig").
+
+## Dritter Versuch (21.09.2026, verworfen): Kappe statt Haar
+
+Oberhalb der Brauenlinie alles entfernen und eine vollständige, schattierte Kuppel neu zeichnen (hautfarben = Glatze, haarfarben = Kurz).
+Ergebnis am vergrößerten Bild: Rückansichten sauber; Vorderansichten wirken wie ein aufgesetzter Helm (gerade Unterkante statt Haaransatz um die
+Schläfen), bei „Kräftig" und „Drahtig" bleiben die fast schwarzen Konturen des Seitenhaars stehen, bei „Schwungvoll" wird das Gesicht eckig.
+Was fehlt, ist genau das, was nur eine Zeichnung liefert: Stirn, Schläfen, Ohren und Hinterkopf unter dem Haar – je Körper, je Blickrichtung.
+
+**Kleinster sinnvoller Zeichenauftrag:** je Körper EIN haarloser Kopf (4 Blickrichtungen × die Kopfhaltungen des Rigs, nicht jede Pose – der Kopf
+ist im Rig ein starres Teil), dazu 3 Frisur-Ebenen und 2 Bart-Ebenen im selben Raster. Einbau: `look.style`/`look.beard` existieren schon,
+gezeichnet wird an derselben Stelle wie `drawHairStyle`/`drawBeard`; Farbe kommt weiter aus der Haarfarben-Auswahl (Graustufen-Ebene + `hairRgb`).
