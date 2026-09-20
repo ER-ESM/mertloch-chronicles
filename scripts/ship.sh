@@ -5,7 +5,15 @@ set -euo pipefail
 branch="${1:-$(git rev-parse --abbrev-ref HEAD)}"
 test -z "$(git status --porcelain)" || { echo "Abbruch: es gibt nicht committete Änderungen."; exit 1; }
 git fetch -q origin
-git rebase origin/main || { echo "Abbruch: Rebase-Konflikt. Von Hand lösen, 'git rebase --continue', dann erneut ausliefern."; exit 1; }
+if ! git rebase origin/main; then
+  # Einziger Konflikt, den das Skript selbst löst: die erzeugte Precache-Liste (jede Sitzung baut sie neu).
+  conflicts="$(git diff --name-only --diff-filter=U)"
+  if [ "$conflicts" = "precache-manifest.js" ]; then
+    git checkout origin/main -- precache-manifest.js; node scripts/build-site.mjs >/dev/null; git add -A; GIT_EDITOR=true git rebase --continue
+  else
+    echo "Abbruch: Rebase-Konflikt in: $conflicts. Von Hand lösen, 'git rebase --continue', dann erneut ausliefern."; exit 1
+  fi
+fi
 node scripts/source-guard.mjs
 npm test 2>&1 | tee /tmp/mertloch-ship-test.log | grep -E "^ℹ (pass|fail)"
 grep -q "^ℹ fail 0" /tmp/mertloch-ship-test.log || { echo "Abbruch: Tests rot."; exit 1; }
