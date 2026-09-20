@@ -52,9 +52,9 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
   if(suites.includes('classes')){
    const icons=[];
    for(const classId of ['dieter','baerbel','kevin']){
-    await fixture({classId});await b.press('p');assert.deepEqual((await state()).popups.map(p=>p.id),['book']);/* E-39: Kniffe sind eine eigene Seite auf P */
+    await fixture({classId});await b.press('p');assert.deepEqual((await state()).popups.map(p=>p.id),['book']);/* E-42: Kniffe sind eine eigene Seite auf P */
     const images=await read(`[...document.querySelectorAll('[data-book-skill] canvas')].map(c=>c.toDataURL())`);assert.equal(images.length,(await state()).skills.length);assert.equal(new Set(images).size,images.length);icons.push(...images);
-    await b.press('n');assert.deepEqual((await state()).popups.map(p=>p.id),['talents']);/* E-39: Talente auf N */
+    await b.press('n');assert.deepEqual((await state()).popups.map(p=>p.id),['talents']);/* E-42: Talente auf N */
     const specs=await read(`[...document.querySelectorAll('[data-view-tree]')].map(e=>e.dataset.viewTree)`);assert.equal(specs.length,3);
     for(const spec of specs){/* offene Bäume (E-37): Punkte bleiben beim Baumwechsel stehen – für die Einzelprüfung je Baum leeren */await read(`(()=>{const g=globalThis.__mertloch.game;g.rpg.talents.learned=[];g.refreshStats();})()`);await click('[data-view-tree="'+spec+'"]');const nodes=await read(`[...document.querySelectorAll('[data-talent]')].map(e=>e.dataset.talent)`);assert.equal(nodes.length,30);await click('[data-talent="'+nodes.at(-1)+'"]');assert.equal((await state()).rpg.talents.learned.length,0);for(const node of nodes.filter((_,i)=>i%3===0))await click('[data-talent="'+node+'"]');const s=await state();assert.equal(s.rpg.talents.learned.length,10);for(const skill of s.skills.filter(x=>x.talent&&s.rpg.talents.learned.includes(x.talent))){assert.ok(s.unlocked.includes(skill.id));assert.ok(s.actionBar.includes(skill.id));}}
     await persist();assert.equal((await state()).rpg.talents.learned.length,10);pass(classId+': three trees, 90 choices with ten learned talents, granted skills and persistence');

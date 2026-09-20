@@ -27,7 +27,7 @@ async function bounds(){
 }
 try{
  await b.resize(1440,1000);await fixture();
- // Ruhiger Bildschirm (E-39): ohne gespeicherte Vorliebe bleibt die Kampfstatistik zu und öffnet mit V.
+ // Ruhiger Bildschirm (E-42): ohne gespeicherte Vorliebe bleibt die Kampfstatistik zu und öffnet mit V.
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);
  assert.ok(await read(`document.querySelector('#combatMeter').getBoundingClientRect().height<=240`));
@@ -71,7 +71,7 @@ try{
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await click('#meterToggle',true);
  await bounds();await click('[data-meter-close]',true);
  await click('#touchMenu',true);await click('[data-game-book]',true);await click('[data-book-tab="person"]',true);
- await read(`[...document.querySelectorAll('.popup-person .panel-tabs button')].find(b=>/Werte/.test(b.textContent))?.click()`);/* E-39: Figur hat die Unterreiter Ausrüstung | Werte */
+ await read(`[...document.querySelectorAll('.popup-person .panel-tabs button')].find(b=>/Werte/.test(b.textContent))?.click()`);/* E-42: Figur hat die Unterreiter Ausrüstung | Werte */
  await click('.meter-entry',true);assert.equal((await b.state()).popups.length,0);
  await click('[data-meter-actor="dieter"]',true);await bounds();await b.screenshot(dir+'/mobile-portrait.png');
  await click('[data-meter-mode="healing"]',true);await click('[data-meter-ability="heal"]',true);await bounds();pass('touch opens from Clanbook and supports both modes and ability details');
