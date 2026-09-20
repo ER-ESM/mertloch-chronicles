@@ -77,8 +77,8 @@ export class Game{
   resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.procState=freshProcState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.hurt=0;this.player.dash=0;this.player.castPose=0;this.player.parryCharges=0;this.player.runes=0;this.buffs={};}
   learnTalentSkill(id){if(id)unlockOnBar(this,[id]);}
   lootRandom(){let n=this.rpg.lootState|0;n^=n<<13;n^=n>>>17;n^=n<<5;this.rpg.lootState=n>>>0;return this.rpg.lootState/4294967296;}
-  /** Helden-Slots (E-38): ein eigener Held behält seine Klasse; nur der übernommene Altstand darf noch die Klamotten tauschen. */
-  get classLocked(){return !!this.hero&&!this.hero.legacy;}
+  /** Helden-Slots (E-38): jeder Held behält seine Klasse – auch der übernommene Altstand; andere Klassen sind eigene Helden. */
+  get classLocked(){return !!this.hero;}
   /** Anzeigename und Rollenzeile des Helden (eigener Name statt Klassenfigur). */
   get heroName(){return this.hero?.name||this.member.name;}
   switchMember(id){if(this.classLocked&&id!==this.member.id){this.toast('Dein Held bleibt bei seiner Klasse. Für eine andere Klasse erstellst du in der Heldenhalle einen neuen Helden.');return false;}if(this.dead||this.paused||!this.atHub()){this.toast(hubRule('Clanwechsel'));return false;}if(member(id).id!==id)return false;finishMeterCombat(this);this.member=member(id);this.rpg.talents=this.rpg.talentBuilds[id];this.player.classId=id;this.lastStrike=-100;this.resetClassState();this.refreshStats();this.target=null;this.emit('classChanged');this.emit('save');return true;}

@@ -51,5 +51,5 @@ test('Eigener Held behält seine Klasse; der übernommene Altstand darf noch tau
  const {Game}=await import('../engine.js');const arena=()=>({spawn:{x:0,y:0},npc:{x:10,y:0},landmarks:[],camps:[],findClear:(x,y)=>({x,y}),blocked:()=>false,lineClear:()=>true,findPath:(a,b)=>[{...b}]});
  const g=new Game(arena(),{classId:'kevin'});assert.equal(g.heroName,g.member.name);g.hero={id:'h1',name:'Brunhilde',look:'baerbel',legacy:false};
  assert.equal(g.heroName,'Brunhilde');assert.equal(g.classLocked,true);assert.equal(g.switchMember('dieter'),false);assert.equal(g.member.id,'kevin');
- g.hero.legacy=true;assert.equal(g.classLocked,false);assert.equal(g.switchMember('dieter'),true);
+ g.hero.legacy=true;assert.equal(g.classLocked,true,'auch der Altstand wechselt nicht mehr');assert.equal(g.switchMember('dieter'),false);g.hero=null;g.player.x=g.world.spawn.x;g.player.y=g.world.spawn.y;assert.equal(g.switchMember('dieter'),true,'ohne Helden-Slot (Tests, Werkzeuge) bleibt die Engine-Funktion');
 });

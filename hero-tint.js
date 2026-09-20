@@ -19,21 +19,24 @@ export function classifyPixel(r,g,b,nearHead,blondBody,aboveBrow=false,beside=fa
   if(h>=12&&h<=42&&s>=.35&&l>=.28&&l<.5)return 'hair';}else if(l>=.1&&l<.37&&s<.62&&(h<60||h>330||s<.2))return 'hair';}
  // Haut: kräftig gesättigt; die beigen Schatten der weißen Unterwäsche (Sättigung ≤ .51 bei Helligkeit ≥ .74) bleiben draußen
  if(h>=14&&h<=38&&l>=.34&&l<=.76&&(s>=.54||(l<.62&&s>=.42)))return 'skin';
- // Glanzlichter der Haut (Helligkeit > .76) bleiben bewusst unberührt: sie sind farblich nicht vom cremefarbenen Stoff zu trennen.
  return null;
 }
 /** Färbt ImageData in place. head: {x,y} in Bildpunkten, radius in Bildpunkten. */
 export function tintPixels(data,width,height,head,radius,tint,blondBody){
  const t=normalizeTint(tint),skin=SKIN_TONES.find(x=>x.id===t.skin),hair=HAIR_COLORS.find(x=>x.id===t.hair);if(skin.h==null&&hair.h==null)return 0;
- let changed=0;const r2=radius*radius;
+ let changed=0;const r2=radius*radius,kinds=new Uint8Array(width*height);
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
   const i=(y*width+x)*4;if(data[i+3]<40)continue;
-  const dx=x-head.x,dy=y-head.y,near=dx*dx+dy*dy<=r2,kind=classifyPixel(data[i],data[i+1],data[i+2],near,blondBody,y<head.brow,Math.abs(dx)>head.side);if(!kind)continue;
+  const dx=x-head.x,dy=y-head.y,near=dx*dx+dy*dy<=r2,kind=classifyPixel(data[i],data[i+1],data[i+2],near,blondBody,y<head.brow,Math.abs(dx)>head.side);if(!kind)continue;kinds[y*width+x]=kind==='skin'?1:2;
   const [,,l]=rgbToHsl(data[i],data[i+1],data[i+2]);let out=null;
   if(kind==='skin'&&skin.h!=null)out=hslToRgb(skin.h,skin.s,Math.max(.05,Math.min(.95,l*skin.m)));
   else if(kind==='hair'&&hair.h!=null){const base=blondBody?.52:.22;out=hslToRgb(hair.h,hair.s,Math.max(.04,Math.min(.92,l*hair.l/base)));}
   if(out){data[i]=out[0];data[i+1]=out[1];data[i+2]=out[2];changed++;}
  }
+ // Glanzlichter der Haut: farblich dem cremefarbenen Stoff gleich, aber von Haut umgeben. Ein heller warmer Pixel wird Haut,
+ // wenn in seinem 7×7-Umfeld deutlich mehr Hautpixel liegen als helle Nicht-Haut-Pixel (Stoff).
+ if(skin.h!=null){const todo=[];for(let y=0;y<height;y++)for(let x=0;x<width;x++){const p=y*width+x;if(kinds[p])continue;const i=p*4;if(data[i+3]<40)continue;const [h,s2,l]=rgbToHsl(data[i],data[i+1],data[i+2]);if(!(h>=14&&h<=42&&s2>=.5&&l>.76&&l<=.9))continue;let sk=0,cl=0;for(let yy=Math.max(0,y-3);yy<=Math.min(height-1,y+3);yy++)for(let xx=Math.max(0,x-3);xx<=Math.min(width-1,x+3);xx++){const q=yy*width+xx;if(kinds[q]===1)sk++;else if(!kinds[q]){const j=q*4;if(data[j+3]>=40&&rgbToHsl(data[j],data[j+1],data[j+2])[2]>.76)cl++;}}if(sk>=14&&sk>cl*1.6)todo.push([i,l]);}
+  for(const [i,l] of todo){const out=hslToRgb(skin.h,skin.s,Math.max(.05,Math.min(.95,l*skin.m)));data[i]=out[0];data[i+1]=out[1];data[i+2]=out[2];changed++;}}
  return changed;
 }
 const cache=new Map();
