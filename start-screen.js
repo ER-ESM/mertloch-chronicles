@@ -8,7 +8,7 @@ import {escapeUi as esc} from './ui-kit.js';
 import {LOOKS,CLASSES,CHARACTER_LIMIT,validHeroName,HERO_TEXT} from './characters.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 import {ITEMS} from './rpg.js';
-import {SKIN_TONES,HAIR_COLORS,FACE_ITEMS,HAIR_STYLES,BEARDS,DEFAULT_TINT,lookKey as tintKey,parseTintKey,hslToRgb} from './hero-tint.js';
+import {SKIN_TONES,HAIR_COLORS,FACE_ITEMS,HAIR_STYLES,BEARDS,offeredFor,DEFAULT_TINT,lookKey as tintKey,parseTintKey,hslToRgb} from './hero-tint.js';
 
 /** Helden-Slots (E-38): Texte der Heldenhalle und der Erstellung. */
 export const HERO_UI={eyebrow:'Deine Helden',title:'Wer zieht heute los?',text:'Jeder Held hat seinen eigenen Spielstand, seine eigene Geschichte und seinen eigenen Rucksack.',empty:'Noch kein Held. Erstelle deinen ersten.',create:'Neuer Held',level:'Stufe',fresh:'Neu',enter:'Ins Dorf',remove:'Held löschen',removeAsk:name=>'„'+name+'“ mit Spielstand wirklich löschen? Das lässt sich nicht rückgängig machen.',
@@ -55,7 +55,7 @@ export function mountStartScreen(host){
   const d=state.draft,steps=[HERO_UI.stepClass,HERO_UI.stepLook,HERO_UI.stepName].map((t,n)=>`<li class="${n===d.step?'on':n<d.step?'done':''}">${esc(t)}</li>`).join('');
   let body='';
   if(d.step===0)body=`<h3>${esc(HERO_UI.classTitle)}</h3><div class="mmo-choices" role="group">${CLASSES.map(id=>`<button type="button" class="ui-panel mmo-choice hero-card" data-draft-class="${id}" aria-pressed="${d.classId===id}">${heroCanvas(id,{},HERO_UI.classes[id][0])}<strong>${esc(HERO_UI.classes[id][0])}</strong><span>${esc(HERO_UI.classes[id][1])}</span></button>`).join('')}</div>`;
-  else if(d.step===1)body=`<h3>${esc(HERO_UI.lookTitle)}</h3><p>${esc(HERO_UI.lookText)}</p><div class="mmo-choices" role="group">${LOOKS.map(l=>`<button type="button" class="ui-panel mmo-choice hero-card" data-draft-look="${l.id}" aria-pressed="${d.look===l.id}">${heroCanvas(l.id,{},l.name,d.tint)}<strong>${esc(l.name)}</strong></button>`).join('')}</div>${swatches(HERO_UI.skin,'skin',SKIN_TONES,d.tint.skin,'#f0b088')}${swatches(HERO_UI.hair,'hair',HAIR_COLORS,d.tint.hair,null)}${swatches(HERO_UI.style,'style',HAIR_STYLES,d.tint.style,null)}${swatches(HERO_UI.beard,'beard',BEARDS,d.tint.beard,null)}${swatches(HERO_UI.face,'face',FACE_ITEMS,d.tint.face,null)}`;
+  else if(d.step===1)body=`<h3>${esc(HERO_UI.lookTitle)}</h3><p>${esc(HERO_UI.lookText)}</p><div class="mmo-choices" role="group">${LOOKS.map(l=>`<button type="button" class="ui-panel mmo-choice hero-card" data-draft-look="${l.id}" aria-pressed="${d.look===l.id}">${heroCanvas(l.id,{},l.name,d.tint)}<strong>${esc(l.name)}</strong></button>`).join('')}</div>${swatches(HERO_UI.skin,'skin',SKIN_TONES,d.tint.skin,'#f0b088')}${swatches(HERO_UI.hair,'hair',HAIR_COLORS,d.tint.hair,null)}${swatches(HERO_UI.style,'style',offeredFor(HAIR_STYLES,d.look),d.tint.style,null)}${swatches(HERO_UI.beard,'beard',offeredFor(BEARDS,d.look),d.tint.beard,null)}${swatches(HERO_UI.face,'face',FACE_ITEMS,d.tint.face,null)}`;
   else body=`<h3>${esc(HERO_UI.nameTitle)}</h3><div class="hero-name-row">${heroCanvas(d.look,{},d.name||'',d.tint)}<form data-hero-form class="online-form"><label>${esc(HERO_UI.nameLabel)}<input name="heroName" type="text" minlength="3" maxlength="20" required autocomplete="off" value="${esc(d.name||'')}"></label><small>${esc(HERO_TEXT.nameRule)}</small><p class="online-message ${d.error?'bad':''}" role="status">${esc(d.busy?HERO_UI.busy:d.error||'')}</p></form></div>`;
   const nav=`<div class="ui-row start-enter"><button type="button" class="outline-button ui-button" data-start="${d.step?'draft-back':'draft-cancel'}">${esc(d.step?HERO_UI.back:HERO_UI.cancel)}</button><button type="button" class="gold-button ui-button" data-ui-variant="primary" data-start="draft-next"${d.busy?' disabled':''}>${esc(d.step===2?HERO_UI.finish:HERO_UI.next)}</button></div>`;
   return `<header><p class="eyebrow">${esc(HERO_UI.create)}</p><ol class="hero-steps">${steps}</ol></header><div class="ui-panel mmo-selection-detail hero-create">${body}${nav}</div>`;
@@ -90,7 +90,7 @@ export function mountStartScreen(host){
   const pick=e.target.closest('[data-hero]');if(pick){state.pick=pick.dataset.hero;render();return;}
   const dc=e.target.closest('[data-draft-class]');if(dc){state.draft.classId=dc.dataset.draftClass;if(!state.draft.lookTouched)state.draft.look=state.draft.classId;render();return;}
   const dt=e.target.closest('[data-draft-tint]');if(dt){const [k,v]=dt.dataset.draftTint.split(':');state.draft.tint={...state.draft.tint,[k]:v};render();return;}
-  const dl=e.target.closest('[data-draft-look]');if(dl){state.draft.look=dl.dataset.draftLook;state.draft.lookTouched=true;render();return;}
+  const dl=e.target.closest('[data-draft-look]');if(dl){state.draft.look=dl.dataset.draftLook;state.draft.lookTouched=true;for(const [k,list] of [['style',HAIR_STYLES],['beard',BEARDS]])if(!offeredFor(list,state.draft.look).some(o=>o.id===state.draft.tint[k]))state.draft.tint={...state.draft.tint,[k]:'natur'};render();return;}
   const b=e.target.closest('[data-start]');
   if(!b){if(e.target.closest('[data-online],[data-online-submit]')){await host.online()?.handle(e);if(state.open&&state.step==='roster'&&host.enabled&&!account()&&!state.guest)go('login');}return;}
   const what=b.dataset.start;

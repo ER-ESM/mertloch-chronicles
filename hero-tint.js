@@ -6,10 +6,12 @@ export const SKIN_TONES=[{id:'hell',name:'Hell',h:null},{id:'mittel',name:'Mitte
 export const HAIR_COLORS=[{id:'natur',name:'Natur',h:null},{id:'schwarz',name:'Schwarz',h:230,s:.12,l:.16},{id:'braun',name:'Braun',h:24,s:.45,l:.3},{id:'blond',name:'Blond',h:44,s:.62,l:.62},{id:'rot',name:'Rot',h:14,s:.72,l:.42},{id:'grau',name:'Grau',h:210,s:.06,l:.62},{id:'blau',name:'Blau',h:205,s:.6,l:.45}];
 /** Kopf-Accessoires: prozedural am Kopf-Ankerpunkt gezeichnet (keine Bilddateien). eye/brow = Abstand von der Kopf-Oberkante je Körper. */
 export const FACE_ITEMS=[{id:'ohne',name:'Ohne'},{id:'brille',name:'Brille'},{id:'sonnenbrille',name:'Sonnenbrille'},{id:'stirnband',name:'Stirnband'}];
-const FACE_GEOMETRY={dieter:{eye:13,brow:8,half:9},anni:{eye:21,brow:15,half:8},baerbel:{eye:21,brow:15,half:8},kevin:{eye:16,brow:10,half:8}};
+const FACE_GEOMETRY={dieter:{eye:13,brow:8,half:9,crown:1},anni:{eye:21,brow:15,half:8,crown:9},baerbel:{eye:21,brow:15,half:8,crown:9},kevin:{eye:16,brow:10,half:8,crown:2}}; // crown = Scheitel unter der Bild-Oberkante (beim Dutt deutlich tiefer)
 /** Gezeichnete Ebenen (geformte Pixel, keine umgedeuteten): Bart folgt dem Kiefer und bleibt auf der Figur; der Irokese sitzt auf dem Scheitel. */
+/** bodies: nur für diese Körper angeboten (dort überzeugt das Ergebnis am Bild); ohne Angabe für alle. */
 export const BEARDS=[{id:'natur',name:'Wie gezeichnet'},{id:'stoppeln',name:'Stoppeln'},{id:'kinnbart',name:'Kinnbart'},{id:'vollbart',name:'Vollbart'}];
 export const HAIR_STYLES=[{id:'natur',name:'Wie gezeichnet'},{id:'irokese',name:'Irokese'}];
+export const offeredFor=(list,body)=>list.filter(o=>!o.bodies||o.bodies.includes(body));
 const NATURAL_HAIR={dieter:[62,44,38],anni:[196,120,56],baerbel:[196,120,56],kevin:[58,42,34]};
 export const DEFAULT_TINT=Object.freeze({skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur'});
 /** Beliebige Eingabe → gültige Auswahl. */
@@ -35,7 +37,7 @@ export function drawBeard(c,frame,bodyId,tint,q=1){
 }
 /** Irokese: Kamm auf dem Scheitel, in jeder Blickrichtung sichtbar (wird über der Figur gezeichnet). */
 export function drawHairStyle(c,frame,bodyId,tint){
- if(normalizeTint(tint).style!=='irokese')return false;const head=frame.sockets?.head;if(!head)return false;const dir=frame.direction||'se',side=dir[1]==='w'?-1:1,x=Math.round(head.x)+(dir[0]==='n'?-side:side),y=Math.round(head.y),rgb=hairRgb(tint,bodyId);
+ if(normalizeTint(tint).style!=='irokese')return false;const head=frame.sockets?.head;if(!head)return false;const dir=frame.direction||'se',side=dir[1]==='w'?-1:1,g=FACE_GEOMETRY[String(bodyId||'').replace(/-.*/,'')]||FACE_GEOMETRY.kevin,x=Math.round(head.x)+(dir[0]==='n'?-side:side)*(g.crown>4?3:1),y=Math.round(head.y)+g.crown,rgb=hairRgb(tint,bodyId);
  const heights=[3,5,7,8,7,6,4];c.save();heights.forEach((h,i)=>{const px=x-3+i;c.fillStyle=tone(rgb,.7);c.fillRect(px,y-h+2,1,h+3);c.fillStyle=tone(rgb,i%2?1.15:.95);c.fillRect(px,y-h+3,1,h);});c.fillStyle='#14100e';heights.forEach((h,i)=>c.fillRect(x-3+i,y-h+1,1,1));c.restore();return true;
 }
 /** Zeichnet das Kopf-Accessoire im 192er-Bildraum. frame: Katalogbild (sockets.head, direction), bodyId: Körper. */
@@ -77,6 +79,8 @@ export function tintPixels(data,width,height,head,radius,tint,blondBody){
   for(const [i,l] of todo){const out=hslToRgb(skin.h,skin.s,Math.max(.05,Math.min(.95,l*skin.m)));data[i]=out[0];data[i+1]=out[1];data[i+2]=out[2];changed++;}}
  return changed;
 }
+// Verworfen (zweimal am vergrößerten Bild geprüft, 21.09.2026): gezeichnetes Haar ERSETZEN – Glatze, Kurzhaar, Rasur. Ohne gezeichneten
+// haarlosen Kopf bleiben Haarscherben, verformte Rückansichten und Maskengesichter. Das bleibt Auftrag an die Grafik.
 const cache=new Map();
 /** Umgefärbtes Körperbild (Canvas, 192·q Kantenlänge) für genau dieses Bild; null = unverändert zeichnen. */
 export function tintedFrame(sel,tint,bodyId){
