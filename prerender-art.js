@@ -65,6 +65,8 @@ export function drawPrerenderPerson(c,classId,x,y,p={},magnify=1){
  const k=(sheet.worldHeight||26)/(poses.nativeHeight||104)*magnify,height=(sheet.worldHeight||26)*magnify;
  c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
  if(!sheet.shadowBaked){c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();}// sonst steckt der Schatten im Bild (E-41)
+ // Merkt, auf welche Fläche zuletzt wirklich vorgerendert gezeichnet wurde: Nur dann lässt die Welt ihren eigenen Schatten weg (renderer.bakedShadow).
+ prerenderArt.drawn={canvas:c.canvas,classId,baked:sheet.shadowBaked===true,at:typeof performance!=='undefined'?performance.now():0};
  c.scale(k,k);c.translate(-pivot.x,-pivot.y);
  c.drawImage(image,f.x,f.y,size,size,0,0,size,size);
  for(const item of p.visualEquipment||[]){

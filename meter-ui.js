@@ -28,7 +28,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify({...visible,mode,position,size}));}catch{}}
  function syncToggle(){toggle.setAttribute('aria-expanded',String(!panel.hidden));toggle.classList.toggle('meter-is-open',!panel.hidden);toggle.title=touch()?T.open:T.shortcut;toggle.setAttribute('aria-label',toggle.title);}
  function layout(){
-  if(panel.hidden)return;
+  // Auch geschlossen bekommt die Statistik ihren Platz: Der HUD-Editor misst sie sonst bei 0/0 und legt sie nach oben links (E-39, standardmäßig zu).
   const base=root.getBoundingClientRect(),r={x:base.x+root.clientLeft,y:base.y+root.clientTop,left:base.left+root.clientLeft,top:base.top+root.clientTop,width:root.clientWidth,height:root.clientHeight},style=getComputedStyle(document.body),safe=side=>parseFloat(style.getPropertyValue('--safe-'+side))||0;
   let left=12+safe('left'),top=12+safe('top'),right=r.width-12-safe('right'),bottom=r.height-12-safe('bottom');
   if(touch()){
@@ -103,5 +103,6 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
   layout();
  }
  syncToggle();render(true);
+ layout();
  return{update:render,open,close,get opened(){return !panel.hidden;}};
 }
