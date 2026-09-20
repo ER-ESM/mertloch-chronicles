@@ -10,7 +10,7 @@ import {openStore,validEmail,validName,verifyPassword,BOARDS,SAVE_MAX_BYTES,SESS
 import {acceptUpgrade} from './ws.mjs';
 import {createSharedWorld} from './shared-world.mjs';
 
-export const API_VERSION=3;
+export const API_VERSION=4;
 const COOKIE='mertloch_session';
 const VIEW=1400,SNAP_MS=100,MAX_NEAR=40,IDLE_MS=45000;
 const TEXT={
@@ -110,6 +110,13 @@ export function createGameServer(options={}){
    if(Buffer.byteLength(JSON.stringify(save))>SAVE_MAX_BYTES)fail(413,'too-large',TEXT.large);
    return store.writeSave(a.id,world,save,Math.min(savedAt,Date.now()+60e3));
   },
+  async characters(req){
+   const a=requireAccount(req);if(req.method==='GET')return {names:store.namesOf(a.id)};
+   const body=await readBody(req,4096),name=String(body.name||'').trim();
+   if(body.action==='release'){store.releaseName(a.id,name);return {};}
+   if(body.action!=='reserve')fail(400,'action',TEXT.action);if(!validName(name))fail(400,'name',TEXT.name);
+   const bad=store.reserveName(a.id,name);if(bad==='taken')fail(409,'taken','Dieser Heldenname ist schon vergeben.');if(bad==='full')fail(409,'full','Zu viele Helden auf diesem Konto.');return {name};
+  },
   async leaderboard(req,url){
    if(req.method==='GET'){const board=String(url.searchParams.get('board')||'level');if(!BOARDS.includes(board))fail(400,'board',TEXT.board);return store.board(board,store.accountForToken(cookieToken(req))?.id);}
    const a=requireAccount(req),body=await readBody(req,8*1024),board=String(body.board||''),value=Number(body.value);
@@ -159,8 +166,9 @@ export function createGameServer(options={}){
   },
   receive(c,m){
    c.seen=Date.now();
+   if(m.t==='hello'){const name=clampText(m.name,20);if(validName(name)&&store.ownsName(c.id,name)&&![...this.clients.values()].some(o=>o!==c&&o.name.toLowerCase()===name.toLowerCase()))c.name=name;return;}
    if(m.t==='pos'){
-    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed)shared.sync(c);}
+    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed)shared.sync(c);}
    }else if(m.t==='hit'){if(this.allow(c,'hit',40))shared.hit(c,m);}
    else if(m.t==='evade')shared.evade(c,m.e?clampText(m.e,60):undefined);
    else if(m.t==='dead')shared.evade(c);
@@ -185,7 +193,7 @@ export function createGameServer(options={}){
    for(const c of this.clients.values()){if(now-c.seen>IDLE_MS){c.socket.close(4000);continue;}if(c.placed){let r=rooms.get(c.world);if(!r)rooms.set(c.world,r=[]);r.push(c);}}
    for(const room of rooms.values())for(const c of room){
     if(c.socket.backlog>64*1024)continue;
-    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
+    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,...(o.k?{k:o.k}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
     const wire=JSON.stringify({t:'snap',o:near});
     if(wire===c.lastSnap)continue; // nichts hat sich bewegt: nichts zu erzählen
     c.lastSnap=wire;c.socket.send(wire);

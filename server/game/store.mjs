@@ -27,7 +27,7 @@ export function openStore(dir){
  const file=n=>join(dir,n+'.json');
  const load=(n,fallback)=>{try{return JSON.parse(readFileSync(file(n),'utf8'));}catch{return fallback;}};
  const writeAtomic=(path,data)=>{const tmp=path+'.'+process.pid+'.tmp';writeFileSync(tmp,data);renameSync(tmp,path);};
- const db={accounts:load('accounts',{nextId:1,list:[]}),sessions:load('sessions',{}),boards:load('boards',{})};
+ const db={names:load('names',{}),accounts:load('accounts',{nextId:1,list:[]}),sessions:load('sessions',{}),boards:load('boards',{})};
  const dirty=new Set();let timer=null;
  const flush=()=>{clearTimeout(timer);timer=null;for(const n of dirty)writeAtomic(file(n),JSON.stringify(db[n]));dirty.clear();};
  const touch=n=>{dirty.add(n);if(!timer)timer=setTimeout(flush,400);timer.unref?.();};
@@ -49,10 +49,16 @@ export function openStore(dir){
   deleteAccount(a){
    for(const [k,s] of Object.entries(db.sessions))if(s.accountId===a.id)delete db.sessions[k];
    for(const b of Object.values(db.boards))delete b[a.id];
+   for(const [k,n] of Object.entries(db.names))if(n.id===a.id)delete db.names[k];touch('names');
    for(const f of readdirSync(join(dir,'saves')))if(f.startsWith(a.id+'-'))rmSync(join(dir,'saves',f),{force:true});
    a.email='deleted-'+a.id+'@invalid';a.name='gelöscht-'+a.id;a.passwordHash='';a.deletedAt=new Date().toISOString();
    touch('accounts');touch('sessions');touch('boards');
   },
+  // Heldennamen: serverweit eindeutig, je Konto höchstens 12 (Schlüssel = kleingeschriebener Name)
+  reserveName(accountId,name){const k=name.toLowerCase(),owner=db.names[k];if(owner)return owner.id===accountId?null:'taken';if(db.accounts.list.some(a=>live(a)&&a.id!==accountId&&a.name.toLowerCase()===k))return 'taken';if(!owner&&Object.values(db.names).filter(n=>n.id===accountId).length>=12)return 'full';db.names[k]={id:accountId,name};touch('names');return null;},
+  releaseName(accountId,name){const k=String(name).toLowerCase();if(db.names[k]?.id===accountId){delete db.names[k];touch('names');}},
+  ownsName(accountId,name){return db.names[String(name).toLowerCase()]?.id===accountId;},
+  namesOf(accountId){return Object.values(db.names).filter(n=>n.id===accountId).map(n=>n.name);},
   // Sitzungen: im Speicher liegt nur der Hash des Tokens.
   startSession(accountId){
    const token=randomBytes(32).toString('hex');db.sessions[tokenHash(token)]={accountId,expires:Date.now()+SESSION_DAYS*864e5};touch('sessions');return token;

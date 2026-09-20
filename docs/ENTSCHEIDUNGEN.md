@@ -429,3 +429,17 @@ Einzigartige Dorflegenden, Questgegenstände und Gegenstände ohne hinterlegten 
 **Muster für künftige Bäume** (`docs/TALENT-AUTORENBRIEF-2026-09-18.md`, Abschnitt „Offene Bäume"): Reihe 0 bis 3 allgemein nützlich (auch für die Nachbarbäume), ab Reihe 4 Mechanik-Talente, Pfeile nur, wo ein Talent ein anderes voraussetzt, mindestens ein „Brücken-Talent" je Baum, das ausdrücklich mit einem Nachbarbaum zusammenspielt.
 
 **Konsequenzen und offene Balance.** Bis zu 29 statt 10 Talente: ab etwa Stufe 15 ist der Held stärker als bisher ausbalanciert. Nächster Schritt ist ein Messlauf (`scripts/spec-sim.mjs` mit 29 Punkten) und danach entweder kleinere Talentwerte oder Ränge (`maxRank` ist im Datenmodell vorbereitet).
+
+
+## E-38 · Helden-Slots: eigene Charaktere mit Klasse, Aussehen und Namen
+
+**Anlass.** Nutzerauftrag 20.09.2026: „Charaktere sind eigene Slots mit eigener Storyline. Zum Start wählt man nur eine Klasse (Tresenbrecher, Landhaus-Lady, Pfandingenieur), gestaltet sein Aussehen in einer der bisherigen Richtungen und vergibt einen Namen. Das ist ein einzigartiger Charakter meines Accounts, ich kann mehrere haben. Im Auswahlbildschirm sehe ich alle Helden mit Level und vollem Gear, so wie sie ingame aussehen." Ersetzt „Eine Bande, ein Spielstand" des Anmeldebildschirms.
+
+**Entscheidung.**
+1. **Ein Held = ein Spielstand.** `characters.js` hält die Liste (höchstens 8): `{id,name,classId,look,summary}`. Speicherschlüssel je Held `mertloch-chronicles-<welt>-<id>`, Cloud-Schlüssel `<welt>#<id>`. Der vorhandene Altstand wird ohne Kopieren zum ersten Helden (`legacy`, alter Schlüssel) – niemand verliert Fortschritt.
+2. **Erstellung in drei Schritten:** Klasse → Aussehen → Name. Aussehen = einer der drei gezeichneten Körper (Kräftig, Schwungvoll, Drahtig), frei zur Klasse wählbar, ohne Einfluss auf Werte. Name 3–20 Zeichen, je Liste eindeutig und – mit Konto – serverweit reserviert (`/api/characters`).
+3. **Heldenhalle** (Startbildschirm): Karte je Held mit dem Spielbild samt angelegter Ausrüstung, Klasse und Stufe; die Kurzfassung (`summary`) wird bei jedem Speichern mitgeschrieben, damit die Halle keine Spielstände öffnen muss. Löschen mit Rückfrage.
+4. **Wechsel = Neuladen** mit gemerktem Ziel (`sessionStorage`), danach direkt ins Dorf. Das hält jeden Modulzustand sauber; Kosten: zwei bis drei Sekunden.
+5. **Online:** Im Dorf, im Chat, in Gruppen und in der Spielerliste tritt man unter dem Heldennamen auf (`hello`), der Server prüft den Besitz. Die Heldenliste wird über den Cloud-Schlüssel `@helden` zwischen Geräten vereinigt; Gelöschtes bleibt gelöscht. Alle Helden teilen sich dieselbe Welt (`roomKey`).
+
+**Bewusst offen.** Der Klassenwechsel innerhalb eines Spielstands (`switchMember`, Clan-Treff) existiert noch und widerspricht dem Slot-Gedanken; er sollte mit der Story-Überarbeitung entfallen. Feinere Gestaltung (Haare, Farben) braucht neue Grafik – Übergabe an die Grafik-Sitzung. Dialoge sprechen den Helden noch nicht überall mit Namen an.
