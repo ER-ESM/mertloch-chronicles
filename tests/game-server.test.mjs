@@ -9,7 +9,8 @@ import {encodeFrame,decodeFrames} from '../server/game/ws.mjs';
 import {validName,hashPassword,verifyPassword} from '../server/game/store.mjs';
 import {applySnapshot} from '../online.js';
 
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+// Wartezeiten großzügig: im vollen Parallellauf unter Last sind 100-ms-Fenster zu knapp (Befund 2026-09-21)
+const sleep=ms=>new Promise(r=>setTimeout(r,ms*3));
 async function boot(t){
  const dir=mkdtempSync(join(tmpdir(),'mertloch-server-')),game=createGameServer({dataDir:dir,publicOrigin:'https://mertloch.esm-consultant.de'}),addr=await game.listen(0);
  t.after(async()=>{await game.close();rmSync(dir,{recursive:true,force:true});});
