@@ -69,7 +69,7 @@
  .touch-mode:has(#classMechanicArt:not([hidden])) #targetPanel{top:calc(150px + var(--safe-top))}
 }
 /* Klein (≤ 370 px): fünf Reiter in einer Zeile trotz 8 px Abstand – Beschriftung 11 px (M-12: ≥ 10 px), kein Umbruch. */
-/* Sieben Reiter (E-42): auf Touch ein festes Raster, damit kein Reiter aus dem Fenster ragt – schmale Handys bekommen zwei Reihen (4 + 3), jeder Reiter bleibt ≥ 44 px. */
+/* Sieben Reiter (E-43): auf Touch ein festes Raster, damit kein Reiter aus dem Fenster ragt – schmale Handys bekommen zwei Reihen (4 + 3), jeder Reiter bleibt ≥ 44 px. */
 .touch-mode .game-popup .book-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.touch-mode .game-popup .book-tabs button{min-width:0;padding:6px 2px;font-size:10px;letter-spacing:0;flex-direction:column;gap:2px;justify-content:center;overflow:hidden}.touch-mode .game-popup .book-tabs button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:370px){.touch-mode .game-popup .book-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}}
 /* Iteration 4 · M-12: kein Text unter 10 px im Touch-Modus (Fremd-CSS setzt 7–9 px): Kniff-Namen, Stufen, Beschriftungen, Zahlenzeilen. */
