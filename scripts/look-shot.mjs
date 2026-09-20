@@ -2,7 +2,7 @@
 import {mkdirSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 const dir='visual-review/look-dreadmyst/'+(process.argv[2]||'shot'),fresh=process.argv[3]==='fresh';mkdirSync(dir,{recursive:true});
-const b=await browserSession({port:Number(process.env.CDP_PORT||9391),serverPort:Number(process.env.PORT||4191)});
+const b=await browserSession({port:Number(process.env.CDP_PORT||9491),serverPort:Number(process.env.PORT||4391)});
 try{
  await b.send('Network.enable');await b.send('Network.setBypassServiceWorker',{bypass:true});
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:11,trainingXp:11000,tutorial:{version:1,step:8,completed:true}};
@@ -15,5 +15,5 @@ try{
   for(const [name,x,y] of spots){await b.evaluate(`(()=>{const g=game;g.player.x=${x};g.player.y=${y};const r=globalThis.__mertloch.renderer;r.camera.x=${x};r.camera.y=${y};})()`);await wait(3200);await b.screenshot(dir+'/'+name+'.png');const r=await b.send('Page.captureScreenshot',{format:'png',clip:{x:520,y:250,width:560,height:400,scale:2}});(await import('node:fs')).writeFileSync(dir+'/'+name+'-zoom.png',Buffer.from(r.data,'base64'));}
   await b.evaluate(`document.body.classList.add('look-shot-nohud')`);
  }
- console.log('errors',JSON.stringify(b.errors?.slice?.(0,5)||[]));
+ console.log('state',JSON.stringify(await b.evaluate(`({light:game.settings.light,frame:globalThis.__mertloch.renderer.light?.frame,filter:document.querySelector('#world').style.filter})`)));console.log('errors',JSON.stringify(b.errors?.slice?.(0,5)||[]));
 }finally{b.close();}

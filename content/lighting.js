@@ -22,5 +22,5 @@ export const LIGHTING={
   hero:{color:'#ffe2b0',radius:70,flicker:0,dx:0,dy:-12}
  },
  // Anteil des warmen Scheins, der auch bei Tag sichtbar bleibt, und Zuwachs mit der Dunkelheit.
- glow:{day:.16,night:.9}
+ glow:{day:.2,night:1}
 };

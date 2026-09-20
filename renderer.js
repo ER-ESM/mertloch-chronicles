@@ -48,7 +48,7 @@ export class Renderer {
   building(c,b){drawBuilding(c,b,this.game.time);}
   prop(c,p){if(!drawAssetProp(c,p))drawComicProp(c,p,this.game.time);}
   shrine(c){fountain(c,this.world.shrine,this.game.time);if(distance(this.game.player,this.world.shrine)<60)label(c,'Konterbrunnen',this.world.shrine.x,this.world.shrine.y-33,'#d3e1c4',7);}
-  draw(){const lit=this.game.settings?.light!==false;applyGrade(this.canvas,lit);if(inKiosk(this.game)){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
+  draw(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);applyGrade(this.canvas,lit);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
     const ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*2)/2,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*2)/2;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
     for(let x=Math.floor(ox/512);x<=Math.floor((ox+W)/512);x++)for(let y=Math.floor(oy/512);y<=Math.floor((oy+H)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
@@ -117,7 +117,7 @@ export class Renderer {
     wildlife(c,w,time,visible);
     // Slow drifting pollen and fireflies catch the late afternoon light.
     for(let i=0;i<28;i++){const x=ox+((i*103.3+time*3)%W),y=oy+((i*71.7+Math.sin(time*.4+i)*9)%H);c.globalAlpha=.2+(Math.sin(time*1.8+i)+1)*.14;rect(c,'#eee5a9',x,y,1,1);}c.globalAlpha=1;c.restore();
-    if(lit)this.light.apply(c,{ox,oy,W,H},g,w,time,elapsed);
+    if(lit)this.light.apply({ox,oy,W,H},g,w,time,elapsed);
     const light=c.createLinearGradient(0,0,W,H);light.addColorStop(0,'#fff1cf08');light.addColorStop(.55,'#faf3ab00');light.addColorStop(1,'#48345212');c.fillStyle=light;c.fillRect(0,0,W,H);
     const bounds=this.canvas.getBoundingClientRect(),obstacles=bubbles.length?[...document.querySelectorAll('.hud,.region-label,.action-area,.game-popup,.attack-warning:not(.hidden),.touch-topline,#touchMenu,#touchContext,#touchStick,#touchActions,#touchUtility,#buffStrip,#touchCancelAim,#tutorialGuide')].map(el=>el.getBoundingClientRect()).filter(b=>b.width&&b.height).map(b=>({x:(b.left-bounds.left)/this.zoom,y:(b.top-bounds.top)/this.zoom,w:b.width/this.zoom,h:b.height/this.zoom})):[];
     obstacles.push({x:p.x-ox-12,y:p.y-oy-30,w:24,h:34});
