@@ -50,7 +50,7 @@ test('a ground reset keeps glowing while aiming and stops after placement',()=>{
  tickCasting(g,g.casting.total);assert.equal(procGlow(g,'ground'),false);
 });
 test('the core rotation is complete on level 4 for every figure: build, mark, finisher, answer',()=>{for(const id of ['dieter','baerbel','kevin']){const L=CLASS_LESSONS[id];assert.equal(L.strike,1);assert.ok(L.mark<=3,id+' mark');assert.ok(L.burst<=4,id+' burst');assert.ok(L.interrupt<=4,id+' interrupt');assert.ok(L.parry<=7);}assert.equal(CAST_TIMES.baerbel.mark,undefined,'mark casts while moving');assert.equal(CAST_TIMES.kevin.mark,undefined);});
-test('a kill gives momentum: energy, a point, mark reset, haste stacks that expire',()=>{const g=game();const e=enemy(g,30,10);g.player.energy=20;g.player.runes=0;g.cooldowns.mark=5;const haste=combatStats(g).haste;g.damage(e,999,'Kelle');assert.equal(g.momentum.stacks,1);assert.ok(g.player.energy>=45);assert.equal(g.player.runes,1);assert.equal(g.cooldowns.mark,0);assert.ok(combatStats(g).haste>haste+BALANCE.momentum.hastePerStack-.001);for(let i=0;i<3;i++)g.damage(enemy(g,30,10),999,'Kelle');assert.equal(g.momentum.stacks,BALANCE.momentum.maxStacks);for(let i=0;i<200;i++)g.tick(.05);assert.equal(g.momentum.stacks,0);assert.ok(Math.abs(combatStats(g).haste-haste)<.001);});
+test('a kill gives momentum: energy, a point, mark reset, haste stacks that expire',()=>{const g=game();g.settings.autoLoot=false;/* Fundstücke würden sonst angelegt und das Tempo verschieben */const e=enemy(g,30,10);g.player.energy=20;g.player.runes=0;g.cooldowns.mark=5;const haste=combatStats(g).haste;g.damage(e,999,'Kelle');assert.equal(g.momentum.stacks,1);assert.ok(g.player.energy>=45);assert.equal(g.player.runes,1);assert.equal(g.cooldowns.mark,0);assert.ok(combatStats(g).haste>haste+BALANCE.momentum.hastePerStack-.001);for(let i=0;i<3;i++)g.damage(enemy(g,30,10),999,'Kelle');assert.equal(g.momentum.stacks,BALANCE.momentum.maxStacks);for(let i=0;i<200;i++)g.tick(.05);assert.equal(g.momentum.stacks,0);assert.ok(Math.abs(combatStats(g).haste-haste)<.001);});
 test('energy regenerates faster in combat',()=>{const g=game();g.player.inCombat=7;g.player.energy=0;g.tick(.05);assert.ok(g.player.energy>=BALANCE.momentum.combatEnergyRegen*.05-.01);});
 
 test('the final kill heals during the combat timeout, then returns to normal regeneration',()=>{
@@ -77,7 +77,7 @@ test('a kill cannot heal while another enemy is fighting; the final kill renews 
 });
 
 test('post-kill rest does not overfill health or activate without a kill',()=>{
- const g=game();g.player.hp=g.player.maxHp-1;g.damage(enemy(g,30,10),999,'Kelle');g.tick(.05);
+ const g=game();g.settings.autoLoot=false;g.player.hp=g.player.maxHp-1;g.damage(enemy(g,30,10),999,'Kelle');g.tick(.05);
  assert.equal(g.player.hp,g.player.maxHp);
  const fresh=game();fresh.player.hp=100;fresh.player.inCombat=7;fresh.tick(.05);
  assert.equal(fresh.player.hp,100,'a combat timeout alone does not grant kill healing');

@@ -25,3 +25,10 @@ test('der Client spricht den Spielserver ohne .php-Pfade an und verbindet sich p
  assert.ok(!src.includes('.php'));assert.ok(src.includes("new URL('../ws',API)"));
  for(const f of ['server.mjs','store.mjs','ws.mjs'])assert.ok(readFileSync(new URL('../server/game/'+f,import.meta.url),'utf8').length>500,f);
 });
+
+test('Erster Abgleich auf einem neuen Gerät: ein frischer Stand überschreibt keinen Cloud-Fortschritt',async()=>{
+ const {progressed}=await import('../online.js');
+ assert.equal(progressed({level:1,xp:0,savedAt:9e12},{level:7,xp:50}),false,'frisch erzeugt, aber neuerer Zeitstempel');
+ assert.equal(progressed(null,{level:1}),false);assert.equal(progressed({level:1,xp:0},{level:1,xp:0}),false);
+ assert.equal(progressed({level:8,xp:0},{level:7,xp:900}),true);assert.equal(progressed({level:7,xp:60},{level:7,xp:50}),true);assert.equal(progressed({level:7,xp:10},{level:7,xp:50}),false);
+});

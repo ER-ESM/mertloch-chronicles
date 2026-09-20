@@ -3,13 +3,14 @@
 // Abweichung vom Median. Aufruf: node scripts/spec-sim.mjs [sekunden] [pfad 0-2|none]
 import {Game} from '../engine.js';
 import {makeEnemy} from '../encounters.js';
-import {changeSpec,pathBuild,learnTalent} from '../talents.js';
+import {changeSpec,pathBuild,learnTalent,TALENTS} from '../talents.js';
 import {tickCasting} from '../auto-combat.js';
 import {CLASS_SPECS} from '../content/index.js';
-const seconds=Number(process.argv[2]||45),pathArg=process.argv[3]??'none';
+const seconds=Number(process.argv[2]||45),pathArg=process.argv[3]??'none',level=Number(process.argv[4]||11),points=Number(process.argv[5]||level-1);
+// Aufruf: node scripts/spec-sim.mjs [sekunden] [pfad 0-2|none] [stufe] [punkte] – offene Bäume (E-37): pathBuild füllt mit Nachbartalenten auf
 const arena=()=>({spawn:{x:0,y:0},npc:{x:0,y:20},landmarks:[],camps:[],blocked:()=>false,findClear:(x,y)=>({x,y}),lineClear:()=>true,findPath:(a,b)=>[b]});
 function run(classId,spec){
- const g=new Game(arena(),{classId,level:11});changeSpec(g,spec);if(pathArg!=='none')for(const id of pathBuild(spec,Number(pathArg)))learnTalent(g,id);
+ const g=new Game(arena(),{classId,level});changeSpec(g,spec);if(pathArg!=='none'){for(const id of pathBuild(spec,Number(pathArg),points))learnTalent(g,id);/* Restpunkte: erst der eigene Baum Reihe für Reihe, dann die Nachbarbäume */for(const tree of [spec,...CLASS_SPECS[classId].filter(x=>x!==spec)])for(const t of TALENTS[tree].slice().sort((a,b)=>a.row-b.row))if(g.rpg.talents.learned.length<points)learnTalent(g,t.id);}
  g.random=()=>.5;g.player.x=1000;g.player.y=1000;
  const foes=[0,1,2].map(i=>{const e=makeEnemy({x:1040+i*40,y:1000+(i%2)*30},i+1,{hp:1e7,roamWait:100,attackTimer:100,stun:1e9});e.aggro=true;e.ai='combat';g.enemies.push(e);return e;});
  g.target=foes[0];g.player.inCombat=7;const hp0=foes.reduce((a,e)=>a+e.hp,0);let healed=0,energySum=0,low=0,ticks=0;const origHeal=g.player;void origHeal;

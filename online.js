@@ -41,6 +41,8 @@ export function parseChatCommand(raw,channel='say'){
  if(['hilfe','help','?'].includes(cmd))return {kind:'help'};
  return {kind:'error',text:ONLINE_UI.unknownCommand};
 }
+/** Hat der lokale Stand mindestens so viel Fortschritt wie der Cloud-Stand? (Stufe, dann Erfahrung; ein Stufe-1-Stand ohne Erfahrung zählt nie) */
+export function progressed(local,cloud){if(!local)return false;const l=Number(local.level)||1,c=Number(cloud?.level)||1,lx=Number(local.xp)||0,cx=Number(cloud?.xp)||0;if(l===1&&lx===0)return false;return l>c||(l===c&&lx>=cx);}
 async function api(path,body,method){
  const res=await fetch(API+path,{method:method||(body?'POST':'GET'),credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
  let data=null;try{data=await res.json();}catch{}
@@ -58,8 +60,10 @@ export function mountOnline(host){
  const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null,hold:!!host.holdPresence};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;},async logout(){},enterWorld(){},leaveWorld(){},account:null};
  const g=()=>host.game();
+ /** Unter diesem Namen kennt mich der Server (Heldenname, sonst Kontoname) – er bestätigt ihn in welcome/you. */
+ const myName=()=>state.netName||state.account?.name||null;
  const wsSend=msg=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify(msg));};
- const net=createNetWorld({game:g,me:()=>state.account?.name,send:wsSend,others:()=>g().others||[]});
+ const net=createNetWorld({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[]});
  async function refreshAccount(){try{const d=await api('auth?action=me');state.account=d.account;state.reachable=true;}catch(e){state.reachable=e.code!=='bad-response'&&!(e.status>=500);state.account=state.reachable?state.account:null;}return state.account;}
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
  async function start(){
@@ -74,11 +78,12 @@ export function mountOnline(host){
   if(!state.account||state.syncing)return null;state.syncing=true;
   try{
    const local=host.readLocal();const server=await api('save?world='+encodeURIComponent(host.worldKey));
-   const verdict=decideSync(local,server,{foreign:foreignSave()});
+   // Erster Abgleich dieses Helden auf diesem Gerät: Hat die Cloud mehr Fortschritt, gewinnt sie – ein frisch erzeugter leerer Stand trägt sonst den neueren Zeitstempel und würde echten Fortschritt überschreiben.
+   const verdict=host.firstSync?.()&&server?.save&&!progressed(local,server.save)?'pull':decideSync(local,server,{foreign:foreignSave()});
    if(verdict==='pull'){host.writeLocal({...server.save,savedAt:server.savedAt});host.toast(ONLINE_UI.cloudNewer);setTimeout(()=>host.reload(),900);}
    else if(verdict==='push'&&local){const r=await api('save',{world:host.worldKey,save:local,savedAt:local.savedAt||Date.now()});if(r.stale){host.writeLocal({...r.server.save,savedAt:r.server.savedAt});host.toast(ONLINE_UI.cloudNewer);setTimeout(()=>host.reload(),900);}else if(!silent)host.toast(ONLINE_UI.localNewer);}
    else if(!silent)host.toast(ONLINE_UI.synced);
-   markOwner();state.lastSync=Date.now();state.failures=0;return verdict;
+   markOwner();host.markSynced?.();state.lastSync=Date.now();state.failures=0;return verdict;
   }catch(e){state.failures++;if(!silent||state.failures===1)host.toast(ONLINE_UI.offline);return null;}
   finally{state.syncing=false;host.refresh?.();}
  }
@@ -110,7 +115,8 @@ export function mountOnline(host){
   const game=g();
   if(m.t==='snap'&&game.instance){game.others=[];state.others=[];return;}
   if(m.t==='snap'){game.others=applySnapshot(game.others,m.o,performance.now());state.others=game.others;}
-  else if(m.t==='welcome'){for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
+  else if(m.t==='you'){state.netName=m.name;}
+  else if(m.t==='welcome'){state.netName=m.name;for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
   else if(net.receive(m)){}
   else if(m.t==='party')setParty(m);
   else if(m.t==='invite')host.openModal('<div class="online-card"><h3>'+esc(ONLINE_UI.inviteTitle)+'</h3><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
@@ -121,7 +127,7 @@ export function mountOnline(host){
  // ── Chat: Anzeige und Eingabe gehören dem Chatfenster (chat-window.js); hier nur Zustand und Versand ──
  function pushChat(m){
   if(m.system)return host.chat?.push('chat',{scope:'system',text:m.text});
-  const mine=m.from===state.account?.name;
+  const mine=m.from===myName();
   host.chat?.push('chat',{player:mine?null:m.from,scope:['world','party','whisper'].includes(m.ch)?m.ch:'say',from:m.ch==='whisper'?(mine?ONLINE_UI.whisperTo+' '+m.to:ONLINE_UI.whisperFrom+' '+m.from):m.from,text:m.text});
   if(m.ch==='whisper'&&!mine)state.lastWhisper=m.from;
  }
@@ -141,7 +147,7 @@ export function mountOnline(host){
  }
  // ── Gruppe: Rahmen links unter dem Heldenrahmen, Spielerliste als Fenster ──
  function setParty(m){
-  const had=state.party.members.length;state.party={leader:m.leader||null,members:(m.members||[]).filter(x=>x.n!==state.account?.name)};
+  const had=state.party.members.length;state.party={leader:m.leader||null,members:(m.members||[]).filter(x=>x.n!==myName())};
   if(!state.party.members.length&&!had)return;if(!!had!==!!state.party.members.length)renderChat();renderParty();
  }
  function renderParty(){
@@ -151,7 +157,7 @@ export function mountOnline(host){
   el.innerHTML='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==(host.roomKey||host.worldKey);return '<div data-party-name="'+esc(x.n)+'" class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span><span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
  }
  function showPeople(list){
-  const leader=!state.party.members.length||state.party.leader===state.account?.name;
+  const leader=!state.party.members.length||state.party.leader===myName();
   host.openModal('<div class="online-card online-people"><h3>'+esc(ONLINE_UI.people)+' · '+list.length+'</h3><ul>'+list.map(p=>'<li><span><b>'+esc(p.n)+'</b> · '+esc(ONLINE_UI.level)+' '+esc(p.l)+(p.here?'':' · '+esc(ONLINE_UI.elsewhereWorld))+(p.party?' · '+esc(ONLINE_UI.inGroup):'')+'</span>'+(p.me?'<em>'+esc(ONLINE_UI.you)+'</em>':'<span class="online-actions">'+(!p.party&&leader?'<button type="button" class="outline-button" data-online="invite" data-name="'+esc(p.n)+'">'+esc(ONLINE_UI.invite)+'</button>':'')+'<button type="button" class="outline-button" data-online="whisper" data-name="'+esc(p.n)+'">'+esc(ONLINE_UI.whisper)+'</button></span>')+'</li>').join('')+'</ul>'+(state.party.members.length?'<div class="online-actions"><button type="button" class="outline-button" data-online="party-leave">'+esc(ONLINE_UI.leaveParty)+'</button></div>':'')+'<p class="online-status">'+esc(ONLINE_UI.chatHelp)+'</p></div>','touchhelp');
  }
  async function submitArena(report){if(!state.account||!report)return;try{if(report.dps>0)await api('leaderboard',{board:'arena-dps',value:Math.round(report.dps),meta:{classId:g().member?.id,spec:g().rpg?.talents?.spec,seconds:Math.round(report.seconds||0)}});}catch{}}
@@ -200,5 +206,5 @@ export function mountOnline(host){
  function enterWorld(){state.hold=false;if(state.account)startPresence();renderChat();}
  function leaveWorld(){state.hold=true;stopPresence();}
  const quoted=n=>/\s/.test(n)?'"'+n+'"':n;
- return {reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>state.account?.name||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===state.account?.name,invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
+ return {reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

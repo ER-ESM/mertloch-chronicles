@@ -18,8 +18,10 @@ export const talentPrerequisites=(t,learned)=>pointsInTree(learned,t.spec,t.id)>
 export const classSpecs=id=>CLASS_SPECS[id]||CLASS_SPECS.dieter;
 /** Hauptbaum (spec) bestimmt Kit und Kernmechanik; ohne gespeicherte Wahl gibt es keinen (neue Helden wählen ab specLevel). Gelernt wird quer über alle Bäume der Klasse. */
 export function talentState(raw,classId='dieter'){const specs=classSpecs(classId),spec=specs.includes(raw?.spec)?raw.spec:null,learned=[];const pending=new Set((Array.isArray(raw?.learned)?raw.learned:[]).filter(id=>specs.includes(BY_ID.get(id)?.spec)).slice(0,90));for(let pass=0;pass<30;pass++){let grew=false;for(const id of pending)if(!learned.includes(id)&&talentPrerequisites(BY_ID.get(id),learned)){learned.push(id);grew=true;}if(!grew)break;}return {spec,learned};}
-export const TALENT_POINT_CAP=BALANCE.maxLevel-1;
-export const talentPoints=g=>Math.min(TALENT_POINT_CAP,Math.max(0,g.player.level-1));
+/** Punkte je Stufe: bis perLevelUntil einer je Stufe, danach einer alle thenEvery Stufen (Messlauf scripts/spec-sim.mjs: 29 Punkte verdoppeln den Schaden einzelner Bäume, 16 halten ihn im Rahmen). */
+export const pointsAtLevel=level=>{const T=BALANCE.player.talentPoints,l=Math.max(1,Math.min(BALANCE.maxLevel,level|0));return Math.min(l,T.perLevelUntil)-1+Math.max(0,Math.floor((l-T.perLevelUntil)/T.thenEvery));};
+export const TALENT_POINT_CAP=pointsAtLevel(BALANCE.maxLevel);
+export const talentPoints=g=>pointsAtLevel(g.player.level);
 /** Zahl der gelernten Talente je Pfad (0–2) im aktuellen Baum. */
 export function pathCounts(g,spec=g.rpg?.talents?.spec){const state=g.rpg?.talents;const out=[0,0,0];if(!state||!TALENTS[spec])return out;for(const id of state.learned){const t=BY_ID.get(id);if(t&&t.spec===spec)out[t.path]++;}return out;}
 /** Pfadboni: bonus4 ab 4, bonus7 ab 7 Talenten desselben Pfades (content/mechanics.js paths). */

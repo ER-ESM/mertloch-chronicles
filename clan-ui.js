@@ -3,6 +3,7 @@ import {CLAN_MEMBERS,STORY} from './clan.js';
 export {STORY};
 /** Klamottenwahl statt Figurentausch: Der Held zieht die Ersatzklamotten eines Mentors an. */
 export function clanMenu(game,pick=game.member.id){
+ if(game.classLocked){const m=game.member;return `<span class="eyebrow">DEIN HELD</span><h2>${game.heroName}</h2><p><b>${m.role}</b></p><p>${m.passive||m.bio||''}</p><p class="disabled-note">Jeder Held hat seine Klasse und seine eigene Geschichte. Für eine andere Klasse erstellst du in der Heldenhalle einen neuen Helden (Menü → Abmelden/Heldenwahl).</p>`;}
  const canSwitch=!game.dead&&(game.atHub?game.atHub():game.player.inCombat<=0&&Math.hypot(game.player.x-game.world.spawn.x,game.player.y-game.world.spawn.y)<150);
  // Stil C: Jede Karte trägt ihre eigene Primäraktion. Der getragene Zustand ist ein schräger
  // Stempel, kein ausgegrauter Knopf (UI-ABNAHME A4). `data-member` bleibt auf der gewählten
