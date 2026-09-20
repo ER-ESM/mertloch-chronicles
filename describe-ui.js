@@ -1,3 +1,4 @@
+import {categoryChips} from './category-ui.js';
 import {talentSkillsHtml} from './talent-ui.js';
 // Ein Tooltip-Baustein für alles Kampfrelevante (Welle D, docs/UEBERGABE-UI-2026-09-17.md §7/§8).
 // Regel: kein Inhaltstext und keine Spielzahl entsteht hier. Die Anzeige besteht aus
@@ -6,7 +7,7 @@ import {talentSkillsHtml} from './talent-ui.js';
 //   content/glossary.js  termsOf(kind,id)  → die Glossarerklärungen für den Shift-Block
 // Nur die Spaltenüberschriften der Laufzeitzeilen und die Abschnittsnamen des Nachschlagewerks stehen als
 // Beschriftung hier (UI-Vokabular). Bedarf, sie nach content/panel-ui.js zu holen: content/BACKLOG.md.
-import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI} from './content/index.js';
+import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI} from './content/index.js';
 import {paintSkillIcon} from './skill-art.js';
 import {paintTalentIcon} from './talent-art.js';
 import {paintItem} from './item-art.js';
@@ -196,6 +197,7 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
 
  return '<div class="describe-card"'+(shift?' data-shift="on"':'')+'>'+
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
+  categoryChips(game,kind,id)+
   (text&&text!==effect?'<p class="describe-flavor">'+esc(text)+'</p>':'')+
   (effect?'<p class="describe-effect">'+esc(effect)+'</p>':'')+
   (kind==='talent'?talentSkillsHtml(game,id,touch):'')+numberHtml+
@@ -247,11 +249,12 @@ export function watchShift(onChange){
 // --- Nachschlagewerk im Reiter „Kniffe“ ----------------------------------------------------------
 const tile=(game,kind,id,extra='')=>{
  const d=contentDescribe(kind,id);if(!d)return '';
+ const fns=categoriesOf(kind,id)?.functions||[];
  const key=resolve(game,kind,id),live=key.runtime&&typeof game?.describe==='function'?game.describe(key.runtime.kind,key.runtime.id)?.live:null;
  // `locked` ist die Zustandsklasse der Oberfläche (Stil C graut sie aus), `is-on` hebt Gelerntes/Aktives hervor.
  const state=kind==='talent'?(live?.learned?'is-on':'locked'):kind==='proc'?(live?.armed?'is-on':'locked'):live?.available===false?'locked':'';
  return '<button type="button" class="kniff-tile icon-skill '+state+'" id="'+kniffAnchor(kind,id)+'" data-describe="'+esc(kind+':'+id)+'" '+
-  'data-kniff-name="'+esc(d.name.toLowerCase())+'" aria-label="'+esc(d.name)+'">'+iconMarkup(d.icon,id)+'<span>'+esc(d.name)+'</span>'+extra+'</button>';
+  'data-kniff-name="'+esc(d.name.toLowerCase())+'" data-cat-fns="'+esc(fns.map(f=>f.id).join(' '))+'" aria-label="'+esc(d.name+(fns[0]?' · '+fns[0].name:''))+'">'+iconMarkup(d.icon,id)+'<span>'+esc(d.name)+'</span>'+(fns[0]?'<small class="kniff-fn">'+esc(fns[0].name)+'</small>':'')+extra+'</button>';
 };
 const section=(title,body,note='')=>body?'<section class="kniff-section" data-section="'+esc(title)+'"><h3>'+esc(title)+'</h3>'+(note?'<small>'+esc(note)+'</small>':'')+'<div class="kniff-grid">'+body+'</div></section>':'';
 
@@ -279,6 +282,7 @@ export function kniffeReference(game){
  }).join('');
  return '<div class="kniff-book">'+
   '<label class="kniff-search"><span>'+esc(DESCRIBE_UI.search)+'</span><input type="search" data-kniff-search aria-label="'+esc(DESCRIBE_UI.search)+'"></label>'+
+  '<div class="cat-filter" role="group" aria-label="'+esc(CATEGORY_UI.filterLabel)+'"><button type="button" class="cat cat-main" data-cat-filter="" aria-pressed="true">'+esc(CATEGORY_UI.filterAll)+'</button>'+FUNCTION_IDS.map(f=>'<button type="button" class="cat" data-cat-filter="'+esc(f)+'" aria-pressed="false" title="'+esc(FUNCTIONS[f].short)+'">'+esc(FUNCTIONS[f].name)+'</button>').join('')+'</div>'+
   section(DESCRIBE_UI.sectionBuffs,running||'<p class="kniff-empty">'+esc(DESCRIBE_UI.empty)+'</p>')+
   section(DESCRIBE_UI.sectionSkills,skills)+
   (specs?'<section class="kniff-section" data-section="'+esc(DESCRIBE_UI.sectionTalents)+'"><h3>'+esc(DESCRIBE_UI.sectionTalents)+'</h3>'+specs+'</section>':'')+
@@ -287,10 +291,13 @@ export function kniffeReference(game){
   '</div>';
 }
 /** Suche im Nachschlagewerk: blendet Kacheln aus, deren Name nicht passt. */
-export function filterKniffe(root,query){
- const q=String(query||'').trim().toLowerCase();
- for(const tile of root.querySelectorAll('.kniff-tile[data-kniff-name]'))tile.hidden=!!q&&!tile.dataset.kniffName.includes(q);
- for(const s of root.querySelectorAll('.kniff-section'))s.hidden=!!q&&![...s.querySelectorAll('.kniff-tile')].some(t=>!t.hidden);
+export function filterKniffe(root,query,fn){
+ const q=String(query??root.querySelector('[data-kniff-search]')?.value??'').trim().toLowerCase();
+ if(fn!==undefined)for(const b of root.querySelectorAll('[data-cat-filter]')){const on=b.dataset.catFilter===fn;b.setAttribute('aria-pressed',String(on));b.classList.toggle('cat-main',on);}
+ const active=root.querySelector('[data-cat-filter][aria-pressed=true]')?.dataset.catFilter||'';
+ for(const tile of root.querySelectorAll('.kniff-tile[data-kniff-name]'))tile.hidden=(!!q&&!tile.dataset.kniffName.includes(q))||(!!active&&!(tile.dataset.catFns||'').split(' ').includes(active));
+ for(const grid of root.querySelectorAll('.kniff-section h4+.kniff-grid')){const empty=![...grid.querySelectorAll('.kniff-tile')].some(t=>!t.hidden);grid.hidden=empty;grid.previousElementSibling.hidden=empty;}
+ for(const s of root.querySelectorAll('.kniff-section'))s.hidden=(!!q||!!active)&&![...s.querySelectorAll('.kniff-tile')].some(t=>!t.hidden);
 }
 
 // ---------------------------------------------------------------- Verweise im Text (2026-09-18)

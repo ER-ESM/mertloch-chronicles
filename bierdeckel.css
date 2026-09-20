@@ -678,3 +678,24 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .context-menu button[disabled]{opacity:.4;cursor:default}.context-menu button.danger{color:#f0a894}
 .context-menu small{color:var(--kraft);font-size:11px}.context-menu hr{border:0;border-top:1px solid #a9956233;margin:4px 6px}
 .touch-mode .context-menu button{padding:11px 12px;font-size:15px}
+/* Kategorien am Kniff/Talent/Auslöser (category-ui.js): Art gefüllt, Hauptfunktion kräftig umrandet, weitere Funktionen dünn, Baum-Mechanik gestrichelt.
+   Farben hängen an currentColor, damit die Chips auf dunklem Fenster und hellem Tooltip-Papier gleich gut lesbar sind. */
+.cat-block{margin:6px 0 8px;display:grid;gap:5px}
+.cat-row{display:flex;flex-wrap:wrap;gap:4px}
+.cat{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--r-pill)!important;font:11px/1.4 var(--display);letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;color:inherit;background:transparent;white-space:nowrap;opacity:.8}
+.cat-kind{background:var(--green-3,#16261f);color:var(--cream);border-color:var(--green-3,#16261f);opacity:1}
+.cat-kind[data-cat-kind=talent]{background:#2f6b45;border-color:#2f6b45}
+.cat-kind[data-cat-kind=proc]{background:#6a4a86;border-color:#6a4a86}
+.cat-kind[data-cat-kind=passive]{background:#2f5f7d;border-color:#2f5f7d}
+.cat-kind[data-cat-kind=talentSkill]{background:#8a5a1f;border-color:#8a5a1f}
+.cat-main{border-width:2px;font-weight:700;opacity:1}
+.cat-mech{border-style:dashed}
+.cat-belongs{font:12px/1.5 var(--read);color:inherit}
+.cat-belongs b{font:11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;margin-right:4px;opacity:.7}
+.cat-rel{opacity:.7}
+.cat-link{all:unset;cursor:pointer;color:inherit;font-weight:700;text-decoration:underline dotted;text-underline-offset:2px}
+.cat-link:hover,.cat-link:focus-visible{text-decoration-style:solid}
+.cat-filter{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 12px}
+.cat-filter button.cat{cursor:pointer}
+.cat-filter button.cat[aria-pressed=true]{background:var(--gold);color:var(--ink);border-color:var(--gold);opacity:1}
+.kniff-tile .kniff-fn{display:block;font:10px/1.2 var(--display);letter-spacing:.06em;text-transform:uppercase;opacity:.75}

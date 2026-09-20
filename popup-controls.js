@@ -54,6 +54,7 @@ export function mountPopupControls(api){const refStack=[];const tooltip=document
   const touchTile=e.target.closest('[data-describe]');if(touchTile&&document.body.classList.contains('touch-mode')&&!e.target.closest('[data-describe-jump]')){e.preventDefault();showDescribeDetail(touchTile);return;}
   const jump=e.target.closest('[data-describe-jump]');if(jump){e.preventDefault();hide();api.showDescribe?.(jump.dataset.describeJump);}});
  api.root.addEventListener('input',e=>{if(e.target.matches('[data-kniff-search]'))filterKniffe(e.target.closest('.popup-body'),e.target.value);});
+ api.root.addEventListener('click',e=>{const b=e.target.closest('[data-cat-filter]');if(b)filterKniffe(b.closest('.popup-body'),undefined,b.dataset.catFilter);});
  return{hide,inspect,get dragging(){return dragging;}};
 }
 export function filterBag(root,query){const text=query.trim().toLocaleLowerCase('de');let visible=0;root.querySelectorAll('[data-item]').forEach(el=>{const match=!text||el.dataset.itemName.toLocaleLowerCase('de').includes(text);el.hidden=!match;el.dataset.searchHidden=String(!match);if(match)visible++;});root.querySelectorAll('.bag-grid>.empty').forEach(el=>{el.hidden=!!text;el.dataset.searchHidden=String(!!text);});root.querySelector('.bag-empty-search')?.classList.toggle('hidden',visible>0||!text);refreshGrid(root.querySelector('.bag-grid'),true);}

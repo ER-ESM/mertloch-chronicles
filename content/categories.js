@@ -144,3 +144,6 @@ export function termAudit(kind,id){
  const unfounded=has.has('autoangriff')&&!autoEvidence&&strike?['autoangriff']:[];
  return {missing,unfounded};
 }
+
+/** Texte der Kategorien-Anzeige (category-ui.js). */
+export const CATEGORY_UI={belongs:'Gehört zu',modifies:'verändert',unlockedBy:'verändert',from:'aus Talent',filterAll:'Alle',filterLabel:'Nach Funktion filtern'};
