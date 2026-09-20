@@ -168,7 +168,7 @@ export function createGameServer(options={}){
    c.seen=Date.now();
    if(m.t==='hello'){const name=clampText(m.name,20);if(validName(name)&&store.ownsName(c.id,name)&&![...this.clients.values()].some(o=>o!==c&&o.name.toLowerCase()===name.toLowerCase()))c.name=name;c.socket.send(JSON.stringify({t:'you',name:c.name}));return;}
    if(m.t==='pos'){
-    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed)shared.sync(c);}
+    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);c.kt=clampText(m.kt,24).replace(/[^a-z.]/g,'');const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed)shared.sync(c);}
    }else if(m.t==='hit'){if(this.allow(c,'hit',40))shared.hit(c,m);}
    else if(m.t==='evade')shared.evade(c,m.e?clampText(m.e,60):undefined);
    else if(m.t==='dead')shared.evade(c);
@@ -193,7 +193,7 @@ export function createGameServer(options={}){
    for(const c of this.clients.values()){if(now-c.seen>IDLE_MS){c.socket.close(4000);continue;}if(c.placed){let r=rooms.get(c.world);if(!r)rooms.set(c.world,r=[]);r.push(c);}}
    for(const room of rooms.values())for(const c of room){
     if(c.socket.backlog>64*1024)continue;
-    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,...(o.k?{k:o.k}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
+    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,...(o.k?{k:o.k}:{}),...(o.kt?{kt:o.kt}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
     const wire=JSON.stringify({t:'snap',o:near});
     if(wire===c.lastSnap)continue; // nichts hat sich bewegt: nichts zu erzählen
     c.lastSnap=wire;c.socket.send(wire);

@@ -6,6 +6,7 @@ import {uiLoginCard,setUiLoginMode} from './ui-kit-mmo.js';
 // (Zeitstempel savedAt). Neuer gewinnt; der ältere Stand bleibt serverseitig als Sicherung.
 import {createNetWorld} from './net-world.js';
 import {mergeRosters} from './characters.js';
+import {tintKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
 export const onlineEnabled=()=>!!API;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -23,7 +24,7 @@ export function decideSync(local,server,{foreign=false}={}){
 export function applySnapshot(previous,list,now,lerp=160){
  return (list||[]).map(o=>{const prev=(previous||[]).find(x=>x.name===o.n);let fromX=o.x,fromY=o.y;
   if(prev){const k=Math.min(1,(now-prev.at)/(prev.lerp||lerp));fromX=prev.fromX+(prev.x-prev.fromX)*k;fromY=prev.fromY+(prev.y-prev.fromY)*k;if(Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>600){fromX=o.x;fromY=o.y;}}
-  return {name:o.n,x:o.x,y:o.y,facing:o.f,classId:o.c,level:o.l,spec:o.sp,state:o.s,look:o.k||null,hp:o.h??100,party:!!o.p,fromX,fromY,at:now,lerp,moving:o.s==='walk'||Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>1};});
+  return {name:o.n,x:o.x,y:o.y,facing:o.f,classId:o.c,level:o.l,spec:o.sp,state:o.s,look:o.k||null,tint:o.kt?parseTintKey(o.kt):null,hp:o.h??100,party:!!o.p,fromX,fromY,at:now,lerp,moving:o.s==='walk'||Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>1};});
 }
 /** Chat-Eingabe zerlegen. → {kind:'chat',ch,text,to?} | {kind:'party',op,name?} | {kind:'who'|'help'} | {kind:'error',text}. Reine Funktion (Tests). */
 export function parseChatCommand(raw,channel='say'){
@@ -55,7 +56,7 @@ async function api(path,body,method){
  * host: {game:()=>Game, worldKey:string, readLocal:()=>save|null, writeLocal:(save)=>void, reload:()=>void, toast:(t)=>void, openModal:(html,id)=>void, refresh:()=>void}
  */
 /** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
-export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1)))),k:p.look||undefined};}
+export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1)))),k:p.look||undefined,kt:tintKey(p.tint)||undefined};}
 export function mountOnline(host){
  const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null,hold:!!host.holdPresence};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;},async logout(){},enterWorld(){},leaveWorld(){},account:null};

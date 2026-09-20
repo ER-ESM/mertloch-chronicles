@@ -37,3 +37,8 @@ body.start-open #combatMeter,body.start-open .chat-window,body.start-open .aura-
 .hero-steps li.on{color:var(--gold)}.hero-steps li.done{color:var(--cream)}
 .hero-name-row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}.hero-name-row canvas{width:150px;height:150px;image-rendering:pixelated}.hero-name-row form{flex:1;min-width:220px}
 .hero-create h3{margin-top:0}
+
+.hero-swatches{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 2px}.hero-swatches b{min-width:84px;font-family:var(--display);letter-spacing:.04em;text-transform:uppercase;font-size:13px;color:var(--kraft)}
+.hero-swatch{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border:2px solid var(--kraft-2);border-radius:999px;background:#13231c;color:var(--cream);font:inherit;font-size:13px;cursor:pointer}
+.hero-swatch::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--swatch);border:1px solid #0008}
+.hero-swatch[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}

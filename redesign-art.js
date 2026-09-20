@@ -1,4 +1,5 @@
 import {contentAsset,contentArt} from './content-art.js';
+import {tintedFrame} from './hero-tint.js';
 import {drawFittedEquipment} from './fitted-equipment-art.js';
 
 export const redesignArt={ready:false,catalog:null,images:new Map(),details:new Map(),gear:null,changed:null};
@@ -67,7 +68,7 @@ function held(c,sel,item,at,angle,off=false,scale=1){
 }
 function glove(c,sel,at){
  // Restore the painted gripping fingers over the handle, with a tiny circular mask.
- const r=3.2;c.save();c.beginPath();c.arc(at.x,at.y,r,0,Math.PI*2);c.clip();const f=sel.frame,q=sel.resolution||1;c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);c.restore();
+ const r=3.2;c.save();c.beginPath();c.arc(at.x,at.y,r,0,Math.PI*2);c.clip();const f=sel.frame,q=sel.resolution||1;if(sel.tinted)c.drawImage(sel.tinted,0,0,192*q,192*q,0,0,192,192);else c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);c.restore();
 }
 export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  if(p.parry>0&&p.usingRanged)p={...p,usingRanged:false};
@@ -84,7 +85,7 @@ export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  const drawStowed=()=>stowed.filter(Boolean).forEach((item,i)=>held(c,sel,item,{x:s.torso.x+(s.west?1:-1)*(i?17:12),y:s.waist.y-5},(s.west?-1:1)*.65,item.slot==='offhand',.65));
  if(!s.back)drawStowed();
  if(s.back&&!down)drawOff();
- const q=sel.resolution||1;c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);
+ const q=sel.resolution||1,tinted=p.tint?tintedFrame(sel,p.tint,id):null;sel.tinted=tinted;if(tinted)c.drawImage(tinted,0,0,192*q,192*q,0,0,192,192);else c.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192,192);
  drawFittedEquipment(c,sel,items,['body']);
  drawFittedEquipment(c,sel,items,['legs','feet']);
  if(s.back)drawStowed();
