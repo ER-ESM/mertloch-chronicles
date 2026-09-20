@@ -649,3 +649,10 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .target-panel.friendly-target .bar.enemy-hp i{background:#5fae68}
 .target-panel.friendly-target[data-disposition=player] .unit-name{color:#8cc8ff}
 .target-panel.friendly-target[data-disposition=player] .bar.enemy-hp i{background:#5a94c8}
+
+/* Randale-Leiste: Marke bei „in Fahrt" (ab 80), Leiste leuchtet, solange die Eskalation davon profitiert */
+.energy-mark{position:absolute;top:0;bottom:0;left:var(--surge-at,80%);width:2px;background:var(--hard-ink);opacity:0;z-index:1;pointer-events:none}
+.energy.surge-ready .energy-mark{opacity:.55}
+.energy.surge i{background:#ffd37a;box-shadow:0 0 6px #ffd37a inset}
+.energy.surge{border-color:#ffd37a}
+.energy span{z-index:2}

@@ -1,6 +1,6 @@
 import {autoWeapons} from './auto-combat.js';
 import {SCALE} from './world.js';
-import {COMBAT_TEXT,EQUIPMENT_SLOTS,COMBAT_RULES} from './content/index.js';
+import {BALANCE,COMBAT_TEXT,EQUIPMENT_SLOTS,COMBAT_RULES} from './content/index.js';
 import {weaponRequirement,weaponRange} from './equipment.js';
 import {actionBar,keyFor,combatStats,rewardOptions,ITEMS,SPECIAL_KEYS} from './rpg.js';
 import {available,skillLevel} from './progression.js';
@@ -18,6 +18,7 @@ function skillVariant(g,id,st,e,usable){
  if(id==='strike'){if(g.player.runes>=3&&!available(g,'burst')&&COMBAT_RULES.earlyEscalation)return {name:'Eskalation',tone:'burst'};if(st.empowered>0)return {name:'Verstärkt',tone:'gold'};if(st.freeStrike)return {name:'Gratis',tone:'free'};}
  if(id==='throw'&&st.freeThrow)return {name:'Gratis',tone:'free'};
  if(id==='burst'&&g.player.runes===3&&e?.mark>0)return {name:'RESONANZ',tone:'burst'};
+ if(id==='burst'&&g.player.runes>0&&g.player.energy>=BALANCE.momentum.surgeAt)return {name:COMBAT_TEXT.surge,tone:'gold'};
  if(procFree(g,id))return {name:'Gratis',tone:'free'};
  if(procEmpowered(g,id))return {name:'Verstärkt',tone:'gold'};
  if(procGlow(g,id))return {name:'Bereit',tone:'gold'};

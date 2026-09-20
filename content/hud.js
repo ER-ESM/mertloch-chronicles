@@ -34,7 +34,7 @@ export const AURA_TEXT={
  freeThrow:{name:'Freier Wurf',text:'Dein nächster Wurf ist kostenlos.',icon:'throw'},
  rage:{name:'Rausch',text:'Gesammelter Rausch verstärkt deine Eskalation.',icon:'burst'},
  infusion:{name:'Infusion',text:'Heilende Infusion ist aktiv.',icon:'heal'},
- stack:{name:'Pegelstriche',text:'Verstärken den Abriss. Lass die Pegel-Uhr nicht auslaufen.',icon:'strike'},
+ stack:{name:'Deckelstriche',text:'Verstärken den Abriss. Lass die Deckel-Uhr nicht auslaufen.',icon:'strike'},
  hangover:{name:'Kater',text:'Dein Schaden ist verringert und die globale Abklingzeit verlängert.',icon:'buff'},
  supply:{name:'Vorrat',text:'Gesammelte Vorratsgläser für Großreinemachen.',icon:'heal'},
  clean:{name:'Großreinemachen',text:'Deine Heilungen verursachen zusätzlich Schaden am Ziel.',icon:'heal'},

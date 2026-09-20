@@ -59,7 +59,7 @@ for(const [spec,id] of [['dieter-brew','ruecklaufleitung'],['baerbel-feedback','
 
 test('beat and own live keg zone dispatch their talent rules once per matching strike',()=>{
  const {g}=setup('baerbel-stage');g.time=10;g.lastStrike=8;cast(g,'strike');assert.equal(fired(g,'perfekter-upload'),0);
- g.time=11;cast(g,'strike');assert.equal(fired(g,'perfekter-upload'),1);assert.equal(g.player.energy,72);
+ g.time=11;cast(g,'strike');assert.equal(fired(g,'perfekter-upload'),1);assert.equal(g.player.energy,81);
  const {g:h}=setup('dieter-brew');h.fields=[{kind:'keg',x:0,y:0,radius:50,remaining:5}];cast(h,'strike');assert.equal(fired(h,'letzter-ausschank'),1);
  h.fields[0].remaining=0;cast(h,'strike');assert.equal(fired(h,'letzter-ausschank'),1);
  h.fields[0].remaining=5;h.fields[0].x=500;cast(h,'strike');assert.equal(fired(h,'letzter-ausschank'),1);

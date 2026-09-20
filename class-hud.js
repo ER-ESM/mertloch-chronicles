@@ -4,7 +4,7 @@ import {e32Art} from './e32-art.js';
 const clamp=v=>Math.max(0,Math.min(1,v));
 /** Reads authoritative resources; painting never advances or consumes a mechanic. */
 export function classHudState(g){const m=SPEC_MECHANICS[g.rpg?.talents?.spec],s=g.classState?.m||{},cs=combatStats(g);if(!m)return null;
- if(m.stack)return {kind:'pegel',title:'Pegel',count:s.stack||0,max:m.stack.max,left:Math.max(0,(s.stackUntil||0)-g.time),total:m.stack.decay+(cs.stackDecay||0),icon:'dieter-brawl-0'};
+ if(m.stack)return {kind:'pegel',title:'Deckelstriche',count:s.stack||0,max:m.stack.max,left:Math.max(0,(s.stackUntil||0)-g.time),total:m.stack.decay+(cs.stackDecay||0),icon:'dieter-brawl-0'};
  if(m.supply)return {kind:'jars',title:'Vorrat',count:s.supply||0,max:m.supply.max+(cs.supplyMax||0),left:s.clean||0,total:m.supply.cleanDuration+(cs.cleanDuration||0),icon:'baerbel-care-0'};
  if(m.state)return {kind:'state',title:'Putzwut',count:g.player.energy,max:100,left:s.state||0,total:m.state.duration+(cs.stateDuration||0),icon:'baerbel-stage-18'};
  if(m.gamble)return {kind:'luck',title:s.jackpot>0?'Jackpot':'Bastler-Glück',count:s.miss||0,max:m.gamble.pity+(cs.gamblePity||0),last:s.last,left:s.jackpot||0,total:m.gamble.jackpot.duration+(cs.jackpotDuration||0),icon:'kevin-hunt-29'};

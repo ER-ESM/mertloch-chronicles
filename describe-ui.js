@@ -44,7 +44,7 @@ export function resolve(game,kind,id){
  if(!kind||id===undefined||id===null)return none;
  id=String(id);
  switch(kind){
-  case 'item':case 'building':case 'cast':return {content:null,runtime:{kind,id}};
+  case 'item':case 'building':case 'cast':case 'glossary':return {content:null,runtime:{kind,id}};
   case 'throw':case 'ground':return {content:{kind,id},runtime:id===cls?{kind:'skill',id:kind}:null};
   case 'talentSkill':return {content:{kind,id},runtime:{kind:'skill',id}};
   case 'talent':return {content:{kind:'talent',id},runtime:{kind:'talent',id}};

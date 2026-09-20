@@ -6,19 +6,19 @@ export const CLAN_MEMBERS=[
   bio:'Seit 38 Jahren Mertloch. Seit 2007 mit demselben Pfandbon unterwegs. Hält einen Bierdeckel für eine gültige Baugenehmigung.',
   passive:'Schwere Hand: Deine Kelle kommt nur alle 1,5 s, haut dafür am härtesten im Clan, und du steckst 10 % weniger ein. Ausweichen ist kurz und selten – Dieter steht, wo andere rennen. Deckel drauf: Eine erfolgreiche Parade heilt zusätzlich 35 Leben.',
   rotation:'Pegel aufbauen → Pfandschuld markieren → Bierzelt-Abriss. Zwischen zwei Kellen schlägt dein Autoangriff. Angekündigte Treffer parieren.',
-  passives:{strikeCd:1.5,dashCd:5,parryHeal:35,damageTaken:.9},
+  passives:{strikeCd:1.5,strikeGain:11,dashCd:5,parryHeal:35,damageTaken:.9},
   look:'Breiter Kerl mit Schnauzer, Clankutte, Bierkasten-Tattoo am Unterarm, Kronkorken-Kelle'},
  {id:'baerbel',name:'Aperol-Anni',role:'Heilerin · Landhaus-Lady',age:34,color:'#edaa67',combo:'Glanz',
   bio:'Landhausküche auf Pump, Aperol im Glas, Thermomix im Dauerlauf. Rettet den Clan mit Schminke und Hygiene – und wirbt dich dabei für ihre Putzpyramide an.',
   passive:'Takt statt Tempo: Triffst du 0,85–1,5 s nach dem letzten Pinsel-Piekser, gibt es 2 Glanz statt 1 – als Einzige im Clan baust du im Rhythmus doppelt auf. Dafür heilst du dich schon ab Stufe 2 selbst. Erst eincremen, dann auf die Fresse.',
   rotation:'Hauspflege erhalten → Glanz aufbauen → Fleckentest → Thermomix-Turbostufe. Spezialisiere dich auf Landhaus-Heilung, Putzprovision durch Schaden oder Instagram-Eskalation.',
-  passives:{strikeCd:.95,dashCd:6,beatWindow:[1,1.9],beatRunes:2},
+  passives:{strikeCd:.95,strikeGain:19,dashCd:6,beatWindow:[1,1.9],beatRunes:2},
   look:'Blonde Frau mit Dutt, Sonnenbrille im Haar, orangefarbener Blumenbluse, karierter Landhausschürze, goldenen Creolen, Lippenstift und Schminkpinsel; Putzspray am Gürtel'},
  {id:'kevin',name:'Klo-Kevin',role:'Fernkämpfer · Pfandingenieur',age:31,color:'#86c6b4',combo:'Druck',
   bio:'Baut aus Pfand, Kabelbindern und einem Pömpel Dinge, die laut TÜV nicht existieren dürften. „Hält schon“ waren seine ersten Worte.',
   passive:'Abstand halten: 26 m Wurfweite – die größte im Clan –, 18 Randale je Geschoss und ein Ausweichen alle 3 s statt alle 4 oder 5. Restdruck: Eine erfolgreiche Unterbrechung gibt einen Druckpunkt und verkürzt Restmüll-Rakete um 2 s.',
   rotation:'Auf Distanz Pfand werfen → Gegner festkleben → Rakete. Ab Stufe 2 fliegt die Dosen-Drohne: deine Antwort, wenn jemand aus der Ferne auf dich hält. Unterbrechen lädt Druck nach.',
-  passives:{strikeRange:210,strikeGain:18,dashCd:3,interruptRunes:1,interruptBurstCd:2},
+  passives:{strikeRange:210,strikeGain:9,dashCd:3,interruptRunes:1,interruptBurstCd:2},
   look:'Dünner Typ mit Werkzeuggürtel, Schutzbrille auf der Stirn, Pömpel am Rücken, Dosen-Drohne'}
 ];
 export const CLASS_IDS=CLAN_MEMBERS.map(m=>m.id);

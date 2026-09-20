@@ -2,7 +2,7 @@
 // sind Speicherschlüssel und Icon-Schlüssel (skill-art.js SKILL_ICON_ORDER). Neue aktive Fähigkeiten brauchen dort ein Icon.
 // BASE = gemeinsames Gerüst je Slot, KITS = klassenspezifische Überschreibungen in derselben Reihenfolge.
 export const BASE_SKILLS=[
- {id:'strike',key:'1',cd:.85,cost:0,range:55,damage:65,gain:14,color:'#ecdca3',bg:'#655d35',icon:'bottle'},
+ {id:'strike',key:'1',cd:.85,cost:0,range:55,damage:65,gain:11,color:'#ecdca3',bg:'#655d35',icon:'bottle'},
  {id:'mark',key:'2',cd:6,cost:20,range:155,dot:12,duration:10,color:'#a7dacf',bg:'#306359',icon:'tag'},
  {id:'burst',key:'3',cd:4,cost:35,range:125,base:55,perPoint:55,multiplier:1.6,color:'#e6c2fa',bg:'#665080',icon:'speaker'},
  {id:'interrupt',key:'4',cd:9,cost:10,range:140,damage:35,color:'#94cadb',bg:'#30546b',icon:'mute'},
@@ -21,7 +21,7 @@ export const KITS={
   {name:'Konterfrühstück',text:"Heilt dich mit einer sehr verdächtigen Brezel. Im Spiel erstaunlich wirksam, kulinarisch ein Straftatbestand. Drück es bei fehlendem Leben; Überheilung verfällt ohne passendes Talent."}
  ],
  baerbel:[
-  {name:'Pinsel-Piekser',cd:.95,range:155,damage:48,gain:10,icon:'speaker',text:"Ein Fernkampftreffer baut Glanz und Randale auf. Triff erneut im Taktfenster für zusätzlichen Glanz. Drück ihn im Rhythmus statt zu hämmern."},
+  {name:'Pinsel-Piekser',cd:.95,range:155,damage:48,gain:19,icon:'speaker',text:"Ein Fernkampftreffer baut Glanz und Randale auf. Triff erneut im Taktfenster für zusätzlichen Glanz. Drück ihn im Rhythmus statt zu hämmern."},
   {name:'Fleckentest, Schätzchen!',range:190,dot:10,text:"Markiert das Ziel und verursacht regelmäßig Schaden. Verstärkt deinen Turbo-Einschlag. Drück ihn auf jeden neuen Gegner, bevor die Turbostufe kommt."},
   {name:'Thermomix-Turbostufe',range:175,base:40,perPoint:48,splash:95,text:"Verbraucht deinen Glanz für einen starken Einschlag; gegen markierte Gegner wirkt er stärker. Trifft auch Nachbarn, einschließlich neutraler Gegner. Zünde sie bei vollem Glanz auf ein markiertes Ziel mitten in der Gruppe."},
   {name:'Kommentarspalte zu!',range:190,cd:10,text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar. „Deine Meinung hat Sendepause.“ Drück sie, sobald ein gelber Zauberbalken läuft."},
@@ -30,7 +30,7 @@ export const KITS={
   {name:'Landhaus-Löffelkur',cd:8,heal:145,text:'Heilt dich direkt. Bastelgrips, Wumms und Handschrift verstärken die Wirkung. Talente verwandeln die Heilung in Hauspflege, Schutz oder einen offensiven Frischekick. Drück sie früh: die Hauspflege wirkt nur, solange du noch stehst.'}
  ],
  kevin:[
-  {name:'Pfandgeschoss',range:210,damage:42,gain:18,icon:'bottle',text:"Ein Fernkampftreffer baut Druck und Randale auf. Eine Flasche mit erstaunlich überzeugender Flugbahn. Drück ihn aus sicherer Entfernung, wenn nichts anderes bereit ist."},
+  {name:'Pfandgeschoss',range:210,damage:42,gain:9,icon:'bottle',text:"Ein Fernkampftreffer baut Druck und Randale auf. Eine Flasche mit erstaunlich überzeugender Flugbahn. Drück ihn aus sicherer Entfernung, wenn nichts anderes bereit ist."},
   {name:'Kleb die Scheiße fest',range:210,dot:9,slow:.5,text:"Markiert das Ziel, verursacht regelmäßig Schaden und bremst seinen Anlauf. Drück ihn zuerst, bevor du Druck aufbaust und die Rakete zündest."},
   {name:'Restmüll-Rakete',range:205,base:60,perPoint:44,multiplier:1.8,knockback:28,text:"Verbraucht deinen Druck für einen schweren Treffer; gegen markierte Gegner wirkt er stärker. Stößt das Ziel zurück. Funktioniert laut Bauplan überhaupt nicht. Zünde sie bei vollem Druck auf ein geklebtes Ziel, das dir zu nah kommt."},
   {name:'Sicherung raus!',range:210,text:"Unterbricht gelbe Zauber, betäubt und macht das Ziel kurz verwundbar. Ein Erfolg liefert Druck und verkürzt die Abklingzeit deiner Rakete. Drück sie, sobald ein gelber Zauberbalken auftaucht."},

@@ -167,6 +167,7 @@ export function describeEntry(game,kind,id){
   case 'item':return describeItem(game,id);
   case 'building':return describeBuilding(game,id);
   case 'cast':return describeCast(game,id);
+  case 'glossary':{const t=(CONTENT.GLOSSARY||{})[id];return t?{icon:null,name:t.name,info:normalizeInfo({effect:t.short,why:t.long}),live:{}}:null;}
   default:return null;
  }
 }

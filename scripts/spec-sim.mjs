@@ -12,7 +12,7 @@ function run(classId,spec){
  const g=new Game(arena(),{classId,level:11});changeSpec(g,spec);if(pathArg!=='none')for(const id of pathBuild(spec,Number(pathArg)))learnTalent(g,id);
  g.random=()=>.5;g.player.x=1000;g.player.y=1000;
  const foes=[0,1,2].map(i=>{const e=makeEnemy({x:1040+i*40,y:1000+(i%2)*30},i+1,{hp:1e7,roamWait:100,attackTimer:100,stun:1e9});e.aggro=true;e.ai='combat';g.enemies.push(e);return e;});
- g.target=foes[0];g.player.inCombat=7;const hp0=foes.reduce((a,e)=>a+e.hp,0);let healed=0;const origHeal=g.player;void origHeal;
+ g.target=foes[0];g.player.inCombat=7;const hp0=foes.reduce((a,e)=>a+e.hp,0);let healed=0,energySum=0,low=0,ticks=0;const origHeal=g.player;void origHeal;
  g.on?.('combat',()=>{});const heals=[];g.events.length=0;
  const has=id=>g.skills.some(s=>s.id===id);
  for(let t=0;t<seconds;t+=.05){
@@ -25,13 +25,14 @@ function run(classId,spec){
    else if(g.cooldowns.strike<=0)g.action('strike');
    else if(has('throw')&&g.cooldowns.throw<=0&&p.energy>=20)g.action('throw');
   }
+  energySum+=g.player.energy;ticks++;if(g.player.energy<35)low++;
   if(g.casting)tickCasting(g,.05);
   g.tick(.05);
   for(const ev of g.events)if(ev.type==='combat'&&ev.kind==='heal'&&ev.area==='in')healed+=ev.value||0;g.events.length=0;
  }
  const dealt=hp0-foes.reduce((a,e)=>a+e.hp,0)+0;const taken=foes.reduce((a,e)=>a+(1e7-e.hp),0);void dealt;
- return {dps:Math.round(taken/seconds),hps:Math.round(healed/seconds)};
+ return {dps:Math.round(taken/seconds),hps:Math.round(healed/seconds),energy:Math.round(energySum/ticks),low:Math.round(100*low/ticks)};
 }
 const rows=[];for(const [cls,specs] of Object.entries(CLASS_SPECS))for(const spec of specs)rows.push({spec,...run(cls,spec)});
 const med=rows.map(r=>r.dps).sort((a,b)=>a-b)[Math.floor(rows.length/2)];
-for(const r of rows)console.log(r.spec.padEnd(18),String(r.dps).padStart(5),'DPS',String(r.hps).padStart(4),'HPS',(Math.round((r.dps/med-1)*100)>=0?'+':'')+Math.round((r.dps/med-1)*100)+' % zum Median');
+for(const r of rows)console.log(r.spec.padEnd(18),String(r.dps).padStart(5),'DPS',String(r.hps).padStart(4),'HPS',(Math.round((r.dps/med-1)*100)>=0?'+':'')+Math.round((r.dps/med-1)*100)+' % zum Median','· Randale Ø',String(r.energy).padStart(3),'· knapp (<35)',String(r.low).padStart(3)+' % der Zeit');

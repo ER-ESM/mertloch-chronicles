@@ -398,3 +398,15 @@ Einzigartige Dorflegenden, Questgegenstände und Gegenstände ohne hinterlegten 
 **Verworfen.** Voll serverseitiger Kampf: hätte Engine, Mechaniken und Procs doppelt gebraucht und jede Eingabe um die Laufzeit verzögert – für ein Koop-Spiel ohne PvP und ohne Handel zwischen Spielern kein Gewinn. Grenze, die daraus folgt: Schadenswerte kommen vom Client (Server kappt auf Gegner-Maximum und 40 Meldungen/s). Deshalb hängen an Bestenlisten keine Belohnungen, und es gibt weder PvP noch Handel/Post zwischen Spielern; beides bräuchte Server-Autorität über Inventar und Kampf.
 
 **Konsequenzen.** `docs/ONLINE-STUFE-B-2026-09-19.md` (Betrieb, Schnittstellen), `docs/ONLINE-STUFE-C-2026-09-20.md` (geteilte Welt, Gruppen). Lagergegner tragen `netId` (`<lager>:<index>`); neue Gegnerquellen, die geteilt sein sollen, brauchen ebenfalls einen stabilen Schlüssel.
+
+
+## E-36 · Randale ist knapp und hat eine Schwelle; zwei Begriffe am Start
+
+**Anlass.** Nutzerbefund 20.09.2026: Randale-Leiste unlesbar (13-px-Schrift in 9 px Höhe), Randale läuft in der normalen Rotation nie leer und ist damit wirkungslos, am Start drei Wörter (Randale, Pegel, Striche). Messung vorher (`scripts/spec-sim.mjs`): Randale im Schnitt 79–87, unter 35 in 0–2 % der Zeit.
+
+**Entscheidung.**
+1. **Knapp:** Randale fließt im Kampf mit 3 je Sekunde nach (vorher 10), außerhalb weiter mit 5 – Verschnaufen füllt auf. Der Grundangriff gibt je Klasse 11 (Dieter), 19 (Anni, eskaliert doppelt so oft) und 9 (Kevin). Ziel und Messung nachher: Dauerfeuer auf Abklingzeit hält im Schnitt 40–55 Randale und steht 20–50 % der Zeit unter 35. Wer alles drückt, läuft leer.
+2. **Schwelle „in Fahrt":** Ab 80 Randale (gemessen vor dem Abzug der Kosten) schlägt die Eskalation 20 % härter. Damit gibt es eine Entscheidung: Randale für Markierung, Wurf und Bodenkniff ausgeben oder für die Eskalation hochhalten. Anzeige: Marke bei 80 auf der Leiste, Leiste leuchtet, Text „· In Fahrt", Eskalations-Knopf zeigt die Variante „In Fahrt".
+3. **Begriffe:** Am Start gibt es Randale (Leiste, erscheint erst mit dem ersten Kniff, der etwas kostet) und die Aufbaupunkte der Klasse (Pegel, Glanz, Druck; Zeile „Pegel 2/3 → Eskalation"). Beide erklären sich beim Überfahren (`data-describe="glossary:…"`). „Deckelstriche" gehört allein dem Kneipenschläger; der Glossareintrag der Aufbaupunkte hieß versehentlich so und heißt wieder „Pegel".
+
+**Konsequenzen.** Zahlen in `content/balance.js` (`momentum.combatEnergyRegen`, `surgeAt`, `surgeBonus`) und `content/classes.js` (`strikeGain`). `scripts/spec-sim.mjs` gibt Randale-Schnitt und Knappheit aus. Der UI-Regressionscheck (Suite layout) schlägt fehl, wenn die Ziffernhöhe eines Balkentexts nicht in den Balken passt. Offen und Sache der Charaktererstellungs-Sitzung: Die Spec-Mechanik (z. B. Deckelstriche) ist ab Stufe 1 aktiv; das dort geplante Spec-Tor würde sie später einführen.
