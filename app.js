@@ -16,7 +16,7 @@ import {decoratePanel,adaptPanel} from './panel-pages.js';
 import {APEROL_TEXT} from './content/index.js';
 import {tutorialActive,tutorialConfirm,tutorialSignal} from './tutorial.js';
 import {mountTutorialUI,tutorialDialogue} from './tutorial-ui.js';
-import {loadTalentArt,paintTalentIcons} from './talent-art.js';
+import {loadTalentArt,paintTalentIcons,paintTalentIcon} from './talent-art.js';
 import {paintPersonPortrait} from './person-art.js';
 import {updateTargetIdentity} from './enemy-ui.js';
 import {selectUnitAt,unitAt,clearFriend,syncFriend,friendUnit,friendPanel} from './target-ui.js';
@@ -34,7 +34,7 @@ import {mountPwa} from './pwa.js';
 import {talentsPanel,talentTooltip,rewardPanel,skillStatus,skillTooltip} from './combat-ui.js';
 import {learnTalent,changeSpec,unlearnTalent,talentPoints,SPECS} from './talents.js';
 import {activityPanel,activityInput} from './activities.js';
-import {paintSkillIcon,loadSkillArt,paintSpecIcons} from './skill-art.js';
+import {paintSkillIcon,loadSkillArt,paintSpecIcons,paintSpecIcon} from './skill-art.js';
 import {questlogPanel} from './questlog-ui.js';
 import {itemTooltip,inventoryPanel,characterPanel,skillbookPanel,lootPanel,kniffeBook} from './rpg-ui.js';
 import {paintItem} from './item-art.js';
@@ -60,7 +60,7 @@ import {loadRedesignArt} from './redesign-art.js';
 import {Renderer,drawHero} from './renderer.js';
 import {PopupWindows} from './popup-windows.js';
 import {mountPopupControls,filterBag} from './popup-controls.js';
-import {loadUiArt,paintUiControls,uiIconCount,paintHeroPortrait} from './ui-art.js';
+import {loadUiArt,paintUiControls,paintUiIcon,uiIconCount,paintHeroPortrait} from './ui-art.js';
 import {createTranslator} from './mobile-translate.js';
 import {BUILD,buildLabel} from './build-info.js';
 const $=s=>document.querySelector(s),modal=$('#popupLayer');$('#gameShell').append(modal);
@@ -90,10 +90,44 @@ function syncPreviewArt(){
  const appearance=equipmentAppearance(game.rpg.equipment,ITEMS),key=game.settings.prerender?game.member.id+':'+appearance.map(p=>p.asset).sort().join(','):'off';
  if(key===previewKey)return;previewKey=key;const request=++previewRequest;prerenderArt.enabled=false;
  if(key==='off'){releasePrerenderArt();paintRpg();paintPortrait();return;}
- loadPrerenderArt(game.member.id,appearance).then(ready=>{if(request!==previewRequest)return;prerenderArt.enabled=ready;if(!ready)previewKey='';paintRpg();paintPortrait();});
+ loadPrerenderArt(game.member.id,appearance).then(ready=>{if(request!==previewRequest)return;artEpoch++;prerenderArt.enabled=ready;if(!ready)previewKey='';paintRpg();paintPortrait();});
 }
 document.addEventListener('click',e=>{if(e.target.closest('[data-preview-turn]')){const dirs=['se','sw','nw','ne'];previewDirection=dirs[(dirs.indexOf(previewDirection)+1)%4];paintRpg();}});
-function paintRpg(){paintUiControls();paintDescribeIcons(document,game);paintSpecIcons(document);paintTalentIcons(document);document.querySelectorAll('[data-item-art]').forEach(c=>paintItem(c,c.dataset.itemArt));document.querySelectorAll('#popupLayer [data-skill-art]').forEach(c=>paintSkillIcon(c,c.dataset.skillArt,game.member.id,{spec:game.rpg.talents.spec}));document.querySelectorAll('[data-item-art],[data-skill-art],[data-spec-art],[data-talent-art],[data-ui-icon]').forEach(styleIcon);for(const cv of document.querySelectorAll('[data-character-art]')){const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);c.save();c.imageSmoothingEnabled=false;c.scale(cv.width/144,cv.height/180);drawHero(c,72,161,0,{facing:1,direction:previewDirection,classId:game.member.id,visualEquipment:equipmentAppearance(game.rpg.equipment,ITEMS)},false,4);c.restore();}}
+// Icon-Canvases werden je Inhalt nur einmal gemalt (WeakMap je Canvas); artEpoch steigt, wenn neue Grafik geladen ist.
+// Vorher malte jedes Öffnen alle Icons des ganzen Dokuments neu, samt styleIcon/getImageData – das machte die Menüs träge.
+const paintedIcons=new WeakMap();let artEpoch=0;
+// Fertige Icons liegen zusätzlich als Bitmap je Schlüssel im Cache: neu gebaute Fenster kopieren nur noch (drawImage) statt neu zu malen und zu normalisieren.
+const iconBitmaps=new Map();
+function paintOnce(canvas,key,paint,{cache=true}={}){
+ key=artEpoch+'|'+canvas.width+'x'+canvas.height+'|'+key;if(paintedIcons.get(canvas)===key)return;
+ const hit=cache&&iconBitmaps.get(key);
+ if(hit){const c=canvas.getContext('2d');if(paintedIcons.has(canvas))c.clearRect(0,0,canvas.width,canvas.height);/* frische Canvases sind leer */c.drawImage(hit.bitmap,0,0);if(hit.precision)canvas.dataset.precision=hit.precision;}
+ else{paint();if(cache&&canvas.width&&canvas.height){const bitmap=document.createElement('canvas');bitmap.width=canvas.width;bitmap.height=canvas.height;bitmap.getContext('2d').drawImage(canvas,0,0);if(iconBitmaps.size>1500)iconBitmaps.clear();iconBitmaps.set(key,{bitmap,precision:canvas.dataset.precision||''});}}
+ paintedIcons.set(canvas,key);
+}
+const ICON_SELECTOR='[data-ui-icon],[data-spec-art],[data-talent-art],[data-item-art],[data-skill-art],[data-describe-icon]';
+function paintIcons(root=document){for(const c of root.querySelectorAll(ICON_SELECTOR))paintIconCanvas(c,!!c.closest('#popupLayer'));}
+function paintIconCanvas(c,inPopup){
+ {const member=game.member.id,spec=game.rpg.talents.spec;
+  const d=c.dataset;
+  if(d.describeIcon!==undefined)paintOnce(c,'describe:'+d.describeIcon+':'+spec+':'+(d.skillArt||d.talentArt||d.itemArt||'')+':'+(d.skillMember||member),()=>{paintDescribeIcons({querySelectorAll:()=>[c]},game);if(d.skillArt&&inPopup)paintSkillIcon(c,d.skillArt,member,{spec});if(d.skillArt||d.talentArt||d.itemArt)styleIcon(c);});
+  else if(d.uiIcon!==undefined)paintOnce(c,'ui:'+d.uiIcon,()=>{paintUiIcon(c,d.uiIcon);styleIcon(c);});
+  else if(d.specArt!==undefined)paintOnce(c,'spec:'+d.specArt,()=>{paintSpecIcon(c,d.specArt);styleIcon(c);});
+  else if(d.talentArt!==undefined)paintOnce(c,'talent:'+d.talentArt,()=>{paintTalentIcon(c,d.talentArt);styleIcon(c);});
+  else if(d.itemArt!==undefined)paintOnce(c,'item:'+d.itemArt,()=>{paintItem(c,d.itemArt);styleIcon(c);});
+  else if(inPopup)paintOnce(c,'skill:'+d.skillArt+':'+member+':'+spec,()=>{paintSkillIcon(c,d.skillArt,member,{spec});styleIcon(c);});
+  else paintOnce(c,'style:'+d.skillArt+':'+member+':'+spec,()=>styleIcon(c),{cache:false}); // Aktionsleiste: gemalt von buildActions, hier nur der Stil
+ }
+}
+/** Nach dem Betreten der Welt im Leerlauf: die Icons der großen Fenster einmal abseits des Bildschirms malen, damit schon das erste Öffnen nur noch kopiert. */
+function prewarmIcons(){
+ const idle=globalThis.requestIdleCallback||(f=>setTimeout(()=>f({timeRemaining:()=>8}),60)),epoch=artEpoch,box=document.createElement('div');
+ try{box.innerHTML=characterPanel(game)+skillbookPanel(game,selectedSkill,pendingSlot)+talentsPanel(game)+inventoryPanel(game,selectedItem)+guide(game)+kniffeBook(game);}catch{return;}
+ const queue=[...box.querySelectorAll(ICON_SELECTOR)];
+ const step=deadline=>{if(epoch!==artEpoch)return;let n=0;while(queue.length&&(deadline.timeRemaining()>3||n<2)){paintIconCanvas(queue.pop(),true);n++;}if(queue.length)idle(step);};
+ idle(step);
+}
+function paintRpg(){paintIcons();const appearance=equipmentAppearance(game.rpg.equipment,ITEMS),look=game.member.id+':'+previewDirection+':'+prerenderArt.enabled+':'+appearance.map(p=>p.asset).join(',');for(const cv of document.querySelectorAll('[data-character-art]'))paintOnce(cv,'hero:'+look,()=>{const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);c.save();c.imageSmoothingEnabled=false;c.scale(cv.width/144,cv.height/180);drawHero(c,72,161,0,{facing:1,direction:previewDirection,classId:game.member.id,visualEquipment:appearance},false,4);c.restore();});}
 function showInventory(){const query=popups.get('bag')?.body.querySelector('input')?.value||'';openModal(inventoryPanel(game,selectedItem),false,'bag');const body=popups.get('bag').body;body.querySelector('input').value=query;filterBag(body,query);paintRpg();tutorialSignal(game,'inventory');}
 // Auto-Loot räumt den Beutel selbst ab und gibt null zurück – dann bleibt das Beutefenster zu (§8.2).
 function showLoot(id){const bag=game.openLoot(id);if(bag){selectedLootId=id;openModal(lootPanel(bag,game),false,'loot');paintRpg();}else events();}
@@ -137,7 +171,7 @@ function toast(text){text=translator.text(text);$('#toast').textContent=text;$('
 function save(){if(saveBlocked)return false;try{{const snapshot={...game.save(),savedAt:Date.now()};writeProgress(localStorage,'mertloch-chronicles-'+world.id,snapshot);online?.afterSave(snapshot);}saveWarning=false;return true;}catch{if(!saveWarning){saveWarning=true;toast('Speichern fehlgeschlagen. Fortschritt bleibt vorerst in dieser Sitzung; bitte nicht neu laden.');}return false;}}
 function getSaved(){const legacy=world.seed===56753&&world.rules.roads.street===72&&world.rules.vegetation.density===1?['mertloch-chronicles-v2-56753-56-1','mertloch-chronicles-v1']:['mertloch-chronicles-v1'];let loaded;try{loaded=readProgress(localStorage,'mertloch-chronicles-'+world.id,legacy);}catch{loaded={save:{},notice:'Speicherung ist im Browser gesperrt. Fortschritt gilt für diese Sitzung.'};}saveBlocked=!!loaded.blocked;saveNotice=loaded.notice||'';if(loaded.save.worldKey==='v2-56753-56-1'&&legacy.length>1)loaded.save.worldKey=world.id;return loaded.save;}
 function syncPause(){if(!game)return;game.paused=document.hidden||!!hudEditor?.editing||!!startScreen?.isOpen;$('#pauseOverlay').classList.add('hidden');$('#pauseButton').setAttribute('aria-label','Spielmenü');if(game.paused){game.touchMove=null;mobile?.stop();game.keys.clear();game.player.vx=game.player.vy=0;game.player.moving=false;}}
-function openModal(html,isMap=false,id='dialog'){if(mobile?.active||id==='death')meterUI?.close({remember:false});const panel=popups.open(id,html);if(id==='inspection')panel.inspectedItem=null;decoratePanel(panel);if(['guide','detail','touchhelp','inspection'].includes(id))linkReferences(panel.body,game);translator.node(panel.body);panel.el.classList.toggle('atlas-dialog',isMap);paintUiControls(panel.el);paintSpecIcons(panel.el);paintTalentIcons(panel.el);mountConversationPortraits(panel.el);return panel;}
+function openModal(html,isMap=false,id='dialog'){if(mobile?.active||id==='death')meterUI?.close({remember:false});const panel=popups.open(id,html,{deferClamp:true});if(id==='inspection')panel.inspectedItem=null;decoratePanel(panel);if(!document.body.classList.contains('touch-mode'))popups.clamp(panel);if(['guide','detail','touchhelp','inspection'].includes(id))linkReferences(panel.body,game);translator.node(panel.body);panel.el.classList.toggle('atlas-dialog',isMap);paintIcons(panel.el);mountConversationPortraits(panel.el);return panel;}
 function closeModal(id=popups.top()){popups.close(id);$('#world').focus({preventScroll:true});}
 function showGuide(tab){const w=openModal(guide(game)+'<div class="guide-kniffe">'+kniffeBook(game)+'</div>'+settingsPanel(),false,'guide');paintRpg();selectTab(w,tab);}
 document.addEventListener('open-combat-help',showGuide);
@@ -188,7 +222,7 @@ function friendAction(u){
 /** Anmeldebildschirm → Welt: gewählte Figur anziehen, Anwesenheit starten, Spiel läuft weiter. */
 function enterWorld(id){
   if(!game.enterAs(id))return false;
-  online?.enterWorld();setTimeout(()=>{syncPause();events();buildActions();paintPortrait();updateUI();$('#world').focus({preventScroll:true});if(tutorialActive(game)&&game.tutorial.step===0)showTutorial();},0);return true;
+  online?.enterWorld();setTimeout(prewarmIcons,1500);setTimeout(()=>{syncPause();events();buildActions();paintPortrait();updateUI();$('#world').focus({preventScroll:true});if(tutorialActive(game)&&game.tutorial.step===0)showTutorial();},0);return true;
 }
 /** Welt → Anmeldebildschirm: speichern, aus dem Dorf verschwinden; step 'logout' meldet zusätzlich das Konto ab. */
 function leaveToStart(step){
