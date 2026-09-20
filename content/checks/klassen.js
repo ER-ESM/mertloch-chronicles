@@ -4,6 +4,7 @@ import {KITS,BASE_SKILLS,CLASS_LESSONS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALE
 import {CLASS_SPECS,TALENT_ROWS,isProcEffect} from '../talents.js';
 import {PROC_RULES} from '../procs.js';
 import {GLOSSARY,hasTerm,describe,describableIds,element,DESCRIBE_KINDS} from '../glossary.js';
+import {categoriesOf,termAudit,categoryTerms,TERM_FUNCTION,FUNCTIONS,MECHANIC_TERMS} from '../categories.js';
 // Effektschlüssel ohne Auslöser: reine Werte. Ein Talent darf nicht nur daraus bestehen (Talente sind Regeln, docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
 const VALUE_ONLY=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating','range','shieldBonus','healBonus'];
 // Kniff-Texte sagen, wann man sie drückt.
@@ -68,6 +69,15 @@ export function checkDescriptions(bad){
   for(const l of d.links){const [lk,...rest]=String(l).split(':');
    if(!DESCRIBE_KINDS.includes(lk)||!element(lk,rest.join(':')))bad(w,'links: unbekannte ID "'+l+'"');}
  }
+ // Kategorien (content/categories.js): jedes Element hat Art und mindestens eine Funktion; Begriffe decken sich mit den Daten.
+ for(const t of categoryTerms())bad('kategorien','Glossarverweis fehlt: '+t);
+ for(const [t,f] of Object.entries(TERM_FUNCTION)){if(!hasTerm(t))bad('kategorien','TERM_FUNCTION: kein Glossareintrag "'+t+'"');if(!FUNCTIONS[f])bad('kategorien','TERM_FUNCTION: unbekannte Funktion "'+f+'"');}
+ for(const t of MECHANIC_TERMS)if(!hasTerm(t))bad('kategorien','MECHANIC_TERMS: kein Glossareintrag "'+t+'"');
+ for(const {kind,id} of describableIds()){const w=kind+' '+id,c=categoriesOf(kind,id);
+  if(!c||!c.functions.length)bad(w,'keine Funktions-Kategorie: info.terms nennt keinen Begriff aus TERM_FUNCTION');
+  const audit=termAudit(kind,id);
+  for(const t of audit.missing)bad(w,'terms: "'+t+'" fehlt, obwohl Kniff-Bezug/Auslöser/Wirkung ihn belegen (node scripts/term-audit.mjs --fix)');
+  for(const t of audit.unfounded)bad(w,'terms: "'+t+'" ohne Beleg – gemeint ist der Grundangriff');}
  for(const [id,g] of Object.entries(GLOSSARY)){const w='glossar '+id;
   if(!/^[A-Za-z0-9-]+$/.test(id))bad(w,'ID nur a-zA-Z0-9-');
   if(!g.name||!g.short||!g.long)bad(w,'name/short/long fehlt');
