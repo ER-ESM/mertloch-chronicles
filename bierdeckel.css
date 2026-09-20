@@ -664,3 +664,17 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .branch-node .parent-arrow{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-style:normal;color:var(--kraft);font-size:12px;pointer-events:none}
 .branch-node.learned .parent-arrow{color:var(--gold)}
 .branch-node.main-only{opacity:.55}.branch-node .main-only-mark{position:absolute;right:-4px;top:-6px;font-style:normal;font-size:10px;color:var(--coral,#d9694a);pointer-events:none}
+/* Ausrüstungs-Einschätzung (rpg.js upgradeVerdict): Marke am Rucksackplatz, Zeile im Tooltip */
+.item-slot .item-verdict{position:absolute;left:3px;top:2px;z-index:4;font-style:normal;font-size:12px;line-height:1;text-shadow:1px 1px 0 var(--hard-ink),-1px 0 0 var(--hard-ink)}
+.verdict-gain{color:#8fe08a}.verdict-loss{color:#e2735a}.verdict-same{color:var(--kraft)}.verdict-blocked{color:#9aa3a0}
+.tooltip-verdict{margin:6px 0 2px;font-family:var(--display);letter-spacing:.03em}.tooltip-verdict span{font-family:var(--read);opacity:.8}
+.item-tooltip .verdict-gain{color:#2f7a3a}.item-tooltip .verdict-loss{color:#a8402c}.item-tooltip .verdict-same,.item-tooltip .verdict-blocked{color:#5d5a48}
+
+/* Kontextmenü (context-menu.js): Rechtsklick im Bierdeckel-Stil statt Browser-Menü */
+.context-menu{position:fixed;z-index:1200;min-width:190px;max-width:280px;padding:5px;border:var(--edge,2px) solid var(--kraft-2);border-radius:12px;background:var(--green-2,#1d3329);box-shadow:0 8px 22px #000a;font-family:var(--read);color:var(--cream)}
+.context-menu header{padding:5px 9px 6px;font-family:var(--display);font-size:var(--t-13,13px);letter-spacing:.04em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid #a9956244;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.context-menu button{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:7px 10px;border:0;border-radius:8px;background:none;color:inherit;font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.context-menu button:hover,.context-menu button:focus-visible{background:var(--green-3,#2a4537);outline:none;color:var(--gold)}
+.context-menu button[disabled]{opacity:.4;cursor:default}.context-menu button.danger{color:#f0a894}
+.context-menu small{color:var(--kraft);font-size:11px}.context-menu hr{border:0;border-top:1px solid #a9956233;margin:4px 6px}
+.touch-mode .context-menu button{padding:11px 12px;font-size:15px}

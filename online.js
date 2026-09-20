@@ -121,7 +121,7 @@ export function mountOnline(host){
  function pushChat(m){
   if(m.system)return host.chat?.push('chat',{scope:'system',text:m.text});
   const mine=m.from===state.account?.name;
-  host.chat?.push('chat',{scope:['world','party','whisper'].includes(m.ch)?m.ch:'say',from:m.ch==='whisper'?(mine?ONLINE_UI.whisperTo+' '+m.to:ONLINE_UI.whisperFrom+' '+m.from):m.from,text:m.text});
+  host.chat?.push('chat',{player:mine?null:m.from,scope:['world','party','whisper'].includes(m.ch)?m.ch:'say',from:m.ch==='whisper'?(mine?ONLINE_UI.whisperTo+' '+m.to:ONLINE_UI.whisperFrom+' '+m.from):m.from,text:m.text});
   if(m.ch==='whisper'&&!mine)state.lastWhisper=m.from;
  }
  /** Eingabe aus dem Chatfenster: Befehle beginnen mit /. Rückgabe {channel} stellt den Kanal des Fensters um. */
@@ -147,7 +147,7 @@ export function mountOnline(host){
   if(typeof document==='undefined')return;const shell=document.querySelector('#gameShell');if(!shell)return;
   if(!state.partyEl){const el=document.createElement('aside');el.className='party-frames';el.setAttribute('aria-label',ONLINE_UI.party);shell.appendChild(el);state.partyEl=el;el.addEventListener('click',e=>{if(e.target.closest('[data-party-leave]'))wsSend({t:'party',op:'leave'});});}
   const el=state.partyEl,list=state.party.members;el.hidden=!list.length;if(!list.length)return;
-  el.innerHTML='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==host.worldKey;return '<div class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span><span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
+  el.innerHTML='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==host.worldKey;return '<div data-party-name="'+esc(x.n)+'" class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span><span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
  }
  function showPeople(list){
   const leader=!state.party.members.length||state.party.leader===state.account?.name;
@@ -192,5 +192,6 @@ export function mountOnline(host){
  /** Anmeldebildschirm: Anwesenheit erst beim Betreten der Welt starten, beim Verlassen wieder stoppen. */
  function enterWorld(){state.hold=false;if(state.account)startPresence();renderChat();}
  function leaveWorld(){state.hold=true;stopPresence();}
- return {state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
+ const quoted=n=>/\s/.test(n)?'"'+n+'"':n;
+ return {social:{connected:()=>state.connected,me:()=>state.account?.name||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===state.account?.name,invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

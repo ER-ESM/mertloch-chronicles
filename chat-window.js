@@ -61,7 +61,7 @@ export function mountChatWindow(root,options={}){
  /** channel: 'chat'|'events'|'loot'. entry: {text, from?, scope?:'say'|'world'|'system', html? (vom Aufrufer gebaut und maskiert)} */
  function push(ch,entry){
   if(!CHAT_CHANNELS.includes(ch))ch='events';
-  const node=document.createElement('div');node.className='chat-line chat-'+ch+(entry.scope?' scope-'+entry.scope:'');
+  const node=document.createElement('div');node.className='chat-line chat-'+ch+(entry.scope?' scope-'+entry.scope:'');if(entry.player)node.dataset.chatPlayer=entry.player;
   if(entry.html!=null)node.innerHTML=entry.html;
   else node.innerHTML=(entry.from?'<b>'+({world:'['+esc(CHAT_UI.world)+'] ',party:'['+esc(CHAT_UI.party)+'] ',whisper:'['+esc(CHAT_UI.whisperTag)+'] '}[entry.scope]||'')+esc(entry.from)+':</b> ':'')+esc(entry.text);
   const stick=log.scrollHeight-log.scrollTop-log.clientHeight<30;
@@ -107,7 +107,7 @@ export function mountChatWindow(root,options={}){
  config.addEventListener('click',e=>{if(e.target.closest('[data-chat-done]'))toggleConfig(false);else if(e.target.closest('[data-chat-reset]')){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();hudMove({reset:true,save:true});place();}});
 
  renderTabs();filter();renderFoot();place();refreshActive();
- return {el,push,place,focusInput:()=>input.focus(),prefill(text){input.value=text;input.focus();input.setSelectionRange(text.length,text.length);},
+ return {el,push,place,configure:()=>toggleConfig(true),resetPlace(){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();place();},focusInput:()=>input.focus(),prefill(text){input.value=text;input.focus();input.setSelectionRange(text.length,text.length);},
   /** state: 'off' (kein Online-Dienst) | 'signedOut' | 'connecting' | 'connected' */
   setOnline(next){const before=online.state;online={...online,...next};renderFoot();if(online.state==='connecting'&&before!=='connecting')push('chat',{scope:'system',text:CHAT_UI.connecting});},
   get settings(){return settings;}};
