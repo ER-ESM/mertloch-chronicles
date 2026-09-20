@@ -25,3 +25,5 @@ body.start-open .touch-controls,body.start-open #touchContext,body.start-open .p
 .start-screen .mmo-roster header h3{font:30px/1.1 var(--display);margin:0 0 8px;color:var(--cream)}
 .start-screen .mmo-selection-detail h3{font:24px/1.1 var(--display);margin:0 0 8px;color:var(--cream)}
 .start-screen .start-account{font-size:14px;font-weight:700}
+/* Frei schwebende Spielfenster (Kampfstatistik, Chat, Auren) verschwinden hinter dem Schirm, ohne ihren Zustand zu verlieren. */
+body.start-open #combatMeter,body.start-open .chat-window,body.start-open .aura-bars,body.start-open .update-hint~.toast{visibility:hidden}

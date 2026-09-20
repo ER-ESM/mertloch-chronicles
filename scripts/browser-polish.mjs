@@ -14,7 +14,8 @@ export async function browser({port=9222}={}){
  const key=async(key,type='keyDown')=>send('Input.dispatchKeyEvent',{type,key,code:key===' '?'Space':/^\d$/.test(key)?'Digit'+key:key.length===1?'Key'+key.toUpperCase():key,windowsVirtualKeyCode:key==='Tab'?9:key==='Escape'?27:key===' '?32:key.toUpperCase().charCodeAt(0)});
  return {send,evaluate,errors,on:(method,fn)=>{if(!listeners.has(method))listeners.set(method,[]);listeners.get(method).push(fn);},close:()=>ws.close(),key,press:async k=>{await key(k);await key(k,'keyUp');},hold:async(k,ms)=>{await key(k);await wait(ms);await key(k,'keyUp');},click:s=>evaluate(`document.querySelector(${JSON.stringify(s)}).click()`),
   state:()=>evaluate('window.mertloch.state()'),
-  async goto(url='http://localhost:4173'){await send('Page.navigate',{url});for(let i=0;i<160;i++){await wait(100);if(await evaluate('!!window.mertloch'))return;}throw Error('Game did not initialize');},
+  // Seit dem Anmeldebildschirm (start-screen.js) liegt vor dem Spiel die Figurenwahl; Prüfskripte gehen mit der zuletzt gespielten Figur „Ins Dorf" (passStart:false lässt den Schirm stehen).
+  async goto(url='http://localhost:4173',{passStart=true}={}){await send('Page.navigate',{url});for(let i=0;i<160;i++){await wait(100);if(await evaluate('!!window.mertloch')){if(passStart)for(let j=0;j<50;j++){const open=await evaluate(`(()=>{const s=document.querySelector('#startScreen');if(!s||s.hidden)return false;s.querySelector('[data-start=guest]')?.click();s.querySelector('[data-start=enter]')?.click();return true;})()`);if(!open)break;await wait(100);}return;}}throw Error('Game did not initialize');},
   async screenshot(path){const r=await send('Page.captureScreenshot',path.endsWith('.jpg')?{format:'jpeg',quality:90}:{format:'png'});writeFileSync(path,Buffer.from(r.data,'base64'));},
   resize:(width,height)=>send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false})};
 }
