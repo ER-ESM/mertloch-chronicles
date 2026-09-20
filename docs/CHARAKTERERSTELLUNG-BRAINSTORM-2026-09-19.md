@@ -401,13 +401,13 @@ Erst nach Etappe 0 in die Inboxen übernehmen.
 
 **docs/backlog/balance.md**
 
-- [ ] **Konstanten**: `player.specLevel`, `talents.bankBeforeSpec`, optional `probe` in `content/balance.js`; nach dem
+- [x] (teilweise, E-37 am 2026-09-20: `player.specLevel` steht) **Konstanten**: `player.specLevel`, `talents.bankBeforeSpec`, optional `probe` in `content/balance.js`; nach dem
   Kenner-Playtest ein `spec-sim`-Lauf je Spec mit Stufe-5-Build (vier Punkte in einem Pfad). Abnahme: BALANCE-REPORT mit
   neun Zeilen.
 
 **docs/backlog/engine.md**
 
-- [ ] **Spec-Tor, gebankte Punkte, Held-Zustand, Ausmusterung alter Spec-Regeln** (Abschnitt 8, Punkte 1 bis 4 und 6).
+- [x] (Punkte 1 und 2 durch E-37 erledigt: Hauptbaum ab Stufe 5, gesparte Punkte, erste Wahl überall; offen bleiben Held-Zustand und Ausmusterung) **Spec-Tor, gebankte Punkte, Held-Zustand, Ausmusterung alter Spec-Regeln** (Abschnitt 8, Punkte 1 bis 4 und 6).
   Abnahme: genannte Tests grün, Altstand lädt mit Spec und Punkten, Übergabe an UI geschrieben.
 
 **docs/backlog/ui.md**

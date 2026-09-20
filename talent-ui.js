@@ -1,6 +1,7 @@
 // Talentfenster (E-32): drei Pfade als Bahnen, zehn Reihen, je Reihe genau ein Talent. Pfadtreue (4/7) zeigt sich am
 // Bahnkopf. Daten: talents.js (TALENTS, pathCounts), Pfadnamen/-boni content/mechanics.js, Texte content/talent-layout.js TALENT_UI.
-import {TALENTS,SPECS,classSpecs,talentPoints,talentPrerequisites,pathCounts,PATH_BONUS_AT} from './talents.js';
+import {TALENTS,SPECS,classSpecs,talentPoints,talentPrerequisites,pathCounts,pointsInTree,mainTreeOnly,specUnlocked,talentById,TIER_POINTS,TALENT_POINT_CAP,PATH_BONUS_AT} from './talents.js';
+import {BALANCE} from './content/index.js';
 import {TALENT_UI as UI,describe as describeContent,SPEC_MECHANICS,TALENT_ROWS_PER_SPEC} from './content/index.js';
 import {keyFor,actionBar,SPECIAL_KEYS} from './rpg.js';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -26,15 +27,24 @@ function pathHead(spec,p,count){
  const path=pathsOf(spec)[p]||{},bonusText=b=>Object.entries(b||{}).map(([k,v])=>k+(typeof v==='number'?' '+v:'')).join(', '),tiers=PATH_BONUS_AT.map((n,i)=>`<i class="${count>=n?'on':''}" title="${esc(i?UI.pathCrown:UI.pathBonus)} · ${n}: ${esc(bonusText(i?path.bonus7:path.bonus4))}">${count>=n?(i?'♛':'✦'):n}</i>`).join('');
  return `<div class="path-head" data-path="${p}"><b>${esc(path.name||'')}</b><span>${count}/${TALENT_ROWS_PER_SPEC} ${esc(UI.pathProgress)}</span><div class="path-tiers">${tiers}</div></div>`;
 }
+/** Welcher Baum gerade angezeigt wird (nur Ansicht; der Hauptbaum ist g.rpg.talents.spec). */
+let viewed=null;
+export function viewTalentTree(spec){viewed=spec;}
+/** Offene Bäume (E-37): drei Bäume der Klasse als Reiter mit Punktestand, Punkte frei verteilbar, Stufen-Tor je Baum, Pfeile aus parents. */
 export function talentsPanel(g){
- const state=g.rpg.talents,tree=TALENTS[state.spec],points=talentPoints(g),learned=id=>state.learned.includes(id),counts=pathCounts(g),free=points-state.learned.length;
+ const state=g.rpg.talents,specs=classSpecs(g.member.id),spec=specs.includes(viewed)?viewed:state.spec||specs[0],tree=TALENTS[spec],points=talentPoints(g),learned=id=>state.learned.includes(id),counts=pathCounts(g,spec),free=points-state.learned.length,inTree=pointsInTree(state.learned,spec),open=specUnlocked(g);
  const rows=[];for(let r=0;r<TALENT_ROWS_PER_SPEC;r++){
+  const need=r*TIER_POINTS,unlocked=inTree>=need;
   const cells=[0,1,2].map(p=>{const t=tree.find(t=>t.row===r&&t.path===p);if(!t)return '<span class="path-cell empty"></span>';
-   const known=learned(t.id),taken=!known&&tree.some(x=>x.row===r&&x.id!==t.id&&learned(x.id)),ready=!known&&!taken&&free>0&&talentPrerequisites(t,state.learned)&&!g.dead&&g.player.inCombat<=0;
-   const cls=known?'learned':taken?'excluded':ready?'available':'locked';
-   return `<button class="branch-node ${cls} ${t.grants?'active-talent':'passive-talent'} ${r===TALENT_ROWS_PER_SPEC-1?'capstone':''}" style="border-radius:50% !important" data-talent="${t.id}" data-tooltip-talent="${t.id}" data-path="${p}" aria-label="${esc(t.name)} · ${known?UI.learned:taken?UI.excluded:ready?UI.available:UI.locked}" aria-pressed="${known}">${art(t.id)}${t.grants?'<i>★</i>':''}</button>`;}).join('');
-  const unlocked=state.learned.length>=r,done=tree.some(t=>t.row===r&&learned(t.id));
-  rows.push(`<div class="path-row ${unlocked?'unlocked':''} ${done?'done':''}" data-row="${r}"><span class="row-gate"><b>${r+1}</b>${r===TALENT_ROWS_PER_SPEC-1?'<small>'+esc(UI.capstone)+'</small>':''}</span>${cells}</div>`);
+   const known=learned(t.id),ready=!known&&open&&free>0&&talentPrerequisites(t,state.learned)&&!g.dead&&g.player.inCombat<=0;
+   const idle=mainTreeOnly(t)&&state.spec!==spec,cls=(known?'learned':ready?'available':'locked')+(idle?' main-only':''),parent=t.parents.map(id=>talentById(id)?.name).filter(Boolean).join(', ');
+   return `<button class="branch-node ${cls} ${t.grants?'active-talent':'passive-talent'} ${r===TALENT_ROWS_PER_SPEC-1?'capstone':''} ${t.parents.length?'has-parent':''}" style="border-radius:50% !important" data-talent="${t.id}" data-tooltip-talent="${t.id}" data-path="${p}" aria-label="${esc(t.name)} · ${known?UI.learned:ready?UI.available:UI.locked}${parent?' · '+esc(UI.needs)+' '+esc(parent):''}${idle?' · '+esc(UI.mainOnly):''}" ${idle?'title="'+esc(UI.mainOnly)+'"':''} aria-pressed="${known}">${art(t.id)}${t.grants?'<i>★</i>':''}${idle?'<em class="main-only-mark" aria-hidden="true">★?</em>':''}${t.parents.length?'<em class="parent-arrow" aria-hidden="true">↓</em>':''}</button>`;}).join('');
+  rows.push(`<div class="path-row ${unlocked?'unlocked':''}" data-row="${r}"><span class="row-gate" title="${need} ${esc(UI.gate)}"><b>${need}</b>${r===TALENT_ROWS_PER_SPEC-1?'<small>'+esc(UI.capstone)+'</small>':''}</span>${cells}</div>`);
  }
- return `<div class="book-intro"><b>${g.member.name}</b><span>${g.member.role}</span></div><div class="spec-tabs">${classSpecs(g.member.id).map(id=>`<button data-spec="${id}" data-tooltip-spec="${id}" class="${state.spec===id?'selected':''}"><canvas width="48" height="48" data-spec-art="${id}"></canvas><span>${SPECS[id].name}</span><small>${SPECS[id].role}</small></button>`).join('')}</div><p>${SPECS[state.spec].text}</p><p class="branch-intro">${esc(UI.intro)}</p><div class="talent-points ${free>0?'has-free':''}"><b>${free} Punkte frei</b><span>${state.learned.length}/${TALENT_ROWS_PER_SPEC} verteilt</span></div><div class="path-tree" aria-label="${esc(SPECS[state.spec].name)} Talentbaum"><div class="path-heads"><span class="row-gate head"></span>${[0,1,2].map(p=>pathHead(state.spec,p,counts[p])).join('')}</div>${rows.join('')}</div><div class="talent-build">${tree.filter(t=>learned(t.id)).sort((a,b)=>a.row-b.row).map(t=>`<button type="button" class="talent-build-chip" data-tooltip-talent="${t.id}">${art(t.id)}<span>${esc(t.name)}</span></button>`).join('')||''}</div><button class="outline-button" data-reset-talents ${state.learned.length?'':'disabled'}>${UI.reset}</button>`;
+ const tabs=specs.map(id=>`<button data-view-tree="${id}" data-tooltip-spec="${id}" class="${spec===id?'selected':''} ${state.spec===id?'main-tree':''}"><canvas width="48" height="48" data-spec-art="${id}"></canvas><span>${SPECS[id].name}</span><small>${pointsInTree(state.learned,id)} ${esc(UI.treePoints)}${state.spec===id?' · '+esc(UI.mainTree):''}</small></button>`).join('');
+ const main=state.spec===spec?'<span class="main-tree-badge">★ '+esc(UI.mainTree)+'</span>':open?'<button class="outline-button" data-spec="'+spec+'">'+esc(UI.makeMain)+'</button>':'';
+ const bank=open?`<b>${free} Punkte frei</b><span>${state.learned.length}/${TALENT_POINT_CAP} verteilt · ${specs.map(id=>pointsInTree(state.learned,id)).join(' / ')}</span>`:`<b>${points} ${esc(UI.saved)}</b><span>${esc(UI.fromLevel)} ${BALANCE.player.specLevel}</span>`;
+ const all=state.learned.map(talentById).filter(Boolean).sort((a,b)=>specs.indexOf(a.spec)-specs.indexOf(b.spec)||a.row-b.row);
+ return `<div class="book-intro"><b>${g.member.name}</b><span>${g.member.role}</span></div><div class="spec-tabs">${tabs}</div><p>${SPECS[spec].text}</p><p class="branch-intro">${esc(UI.intro)}</p><div class="main-tree-row">${main}<small>${esc(UI.mainHint)}</small></div><div class="talent-points ${free>0&&open?'has-free':''}">${bank}</div><div class="path-tree" aria-label="${esc(SPECS[spec].name)} Talentbaum"><div class="path-heads"><span class="row-gate head"></span>${[0,1,2].map(p=>pathHead(spec,p,counts[p])).join('')}</div>${rows.join('')}</div><div class="talent-build">${all.map(t=>`<button type="button" class="talent-build-chip" data-tooltip-talent="${t.id}">${art(t.id)}<span>${esc(t.name)}</span></button>`).join('')}</div><button class="outline-button" data-reset-talents ${state.learned.length?'':'disabled'}>${UI.reset}</button>`;
 }
+

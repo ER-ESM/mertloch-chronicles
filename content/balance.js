@@ -7,6 +7,7 @@ export const BALANCE=Object.freeze({
   baseHp:600,hpPerLevel:45,            // Lebenspunkte ohne Ausrüstung
   baseStamina:12,basePrimary:10,primaryPerLevel:2, // Grundwerte; Wumms/Taktgefühl/Bastelgrips wachsen je Stufe
   hpPerStamina:8,
+  specLevel:5,                         // Spec-Tor (E-37): bis dahin spielt jede Klasse nur ihren Kern, Talentpunkte werden gespart
   energyRegen:5,                       // Randale je Sekunde
   outOfCombatRegen:16,                 // Leben je Sekunde außerhalb des Kampfes
   consumableCooldown:15,               // gemeinsame Abklingzeit der Verpflegung

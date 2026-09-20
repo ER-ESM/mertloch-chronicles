@@ -9,7 +9,7 @@ import {onStrikeMech,tickMech} from '../spec-mechanics.js';
 import {applyMark} from '../class-mechanics.js';
 import {consumeProc} from '../procs.js';
 const world=()=>({spawn:{x:0,y:0},npc:{x:0,y:20},landmarks:[],camps:[],blocked:()=>false,findClear:(x,y)=>({x,y}),lineClear:()=>true,findPath:(a,b)=>[b]});
-const game=(id='dieter')=>new Game(world(),{classId:id,level:11});
+const game=(id='dieter')=>new Game(world(),{classId:id,level:11,rpg:{talents:{spec:{dieter:'dieter-wall',baerbel:'baerbel-care',kevin:'kevin-fuse'}[id],learned:[]}}});
 test('auras preserve real buff timers, stacks, shields and read-only game state',()=>{
  const g=game();g.buffs={...g.skills.find(s=>s.id==='buff'),remaining:9,shield:50};g.momentum={stacks:3,until:g.time+7};g.classState.guard=40;g.classState.hot=4;
  const before=JSON.stringify({st:g.classState,b:g.buffs,p:g.procState,m:g.momentum,save:g.save()});let rolls=0;g.random=()=>{rolls++;return .5;};

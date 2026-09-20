@@ -656,3 +656,11 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .energy.surge i{background:#ffd37a;box-shadow:0 0 6px #ffd37a inset}
 .energy.surge{border-color:#ffd37a}
 .energy span{z-index:2}
+
+/* Offene Talentbäume (E-37): Hauptbaum-Zeile, Reiter mit Punktestand, Pfeil-Marke für Abhängigkeiten */
+.main-tree-row{display:flex;align-items:center;gap:10px;margin:6px 0;flex-wrap:wrap}.main-tree-row small{color:var(--kraft);flex:1;min-width:180px}
+.main-tree-badge{font-family:var(--display);color:var(--gold);letter-spacing:.04em;text-transform:uppercase;font-size:var(--t-13,13px)}
+.spec-tabs button.main-tree small{color:var(--gold)}
+.branch-node .parent-arrow{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-style:normal;color:var(--kraft);font-size:12px;pointer-events:none}
+.branch-node.learned .parent-arrow{color:var(--gold)}
+.branch-node.main-only{opacity:.55}.branch-node .main-only-mark{position:absolute;right:-4px;top:-6px;font-style:normal;font-size:10px;color:var(--coral,#d9694a);pointer-events:none}

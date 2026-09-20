@@ -103,3 +103,14 @@ Auslöser: `crit`, `kill`, `parry`, `interrupt`, `dodge`, `dash`, `markTick`, `a
 2. Jeder Pfad erzählt von unten nach oben eine Linie (Reihe 0 Einstieg → Reihe 9 Schlussstein).
 3. Texte im Ton des Spiels (Kneipe, Landfrauen, Bastler), kurz, mit Zahlen.
 4. `npm test` muss grün sein – die Prüfungen sagen dir genau, was fehlt (Zellen, Begriffe, Links, Zahlenblock).
+
+## Offene Bäume (E-37, ab 2026-09-20)
+
+Vorbild ist WoW Classic: Punkte frei über alle drei Bäume der Klasse, Tore je Baum, Pfeile für echte Abhängigkeiten.
+
+- **Reihe 0 bis 3 = Gemeingut.** Diese Talente müssen auch jemandem nützen, dessen Hauptbaum ein anderer ist: Werte, Kniffe der Klasse (Grundangriff, Markierung, Wurf, Parade, Ausweichen), Randale, Überleben. Keine Effektschlüssel aus `MECHANIC_EFFECTS`.
+- **Ab Reihe 4 = Handschrift.** Hier dürfen Talente an der Kernmechanik drehen. Sie wirken nur mit diesem Baum als Hauptbaum; das Fenster kennzeichnet sie. Faustregel: höchstens 10 von 30.
+- **Pfeile (`requires:<Index>`)** nur, wenn Talent B ohne Talent A keinen Sinn ergibt (B verändert den Kniff, den A gibt; B steigert A). Pfeile zeigen immer nach oben, nie über Baumgrenzen.
+- **Brücken-Talent.** Jeder Baum hat mindestens ein Talent in Reihe 2 bis 5, das ausdrücklich mit einem Nachbarbaum zusammenspielt (Beispiel: Türsteher-Talent, das Deckung gibt, wenn ein Fass des Zapfmeisters steht).
+- **Schlussstein (Reihe 9)** bleibt Hauptbaum-Handschrift und kostet 10 Punkte im Baum.
+- Prüfen: `npm test` (Regeln in `tests/tutorial-talents.test.mjs`), danach `node tools/class-visuals/build-talents.mjs`.

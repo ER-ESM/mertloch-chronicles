@@ -42,8 +42,8 @@ test('invalid, paused and dead movement requests leave the current path untouche
  g.paused=true;assert.equal(g.navigate({x:200,y:200}),false);g.paused=false;g.dead=true;assert.equal(g.navigate({x:200,y:200}),false);g.dead=false;
  g.casting={id:'burst'};assert.equal(g.navigate({x:200,y:200}),true);assert.equal(g.casting,null);
 });
-test('Schrottkoloss builds pressure and guard against ranged enemies from level one',()=>{
- const g=new Game(arena(),{classId:'kevin'});assert.ok(changeSpec(g,'kevin-iron'));const e=makeEnemy({x:280,y:100},1,{hp:10000});g.enemies=[e];g.target=e;g.random=()=>.99;
+test('Schrottkoloss builds pressure and guard against ranged enemies from the spec gate on',()=>{
+ const g=new Game(arena(),{classId:'kevin',level:5});assert.ok(changeSpec(g,'kevin-iron'));const e=makeEnemy({x:280,y:100},1,{hp:10000});g.enemies=[e];g.target=e;g.random=()=>.99;
  assert.equal(g.skills.find(s=>s.id==='strike').weaponSource,'ranged');assert.ok(g.action('strike'));assert.ok(e.hp<e.maxHp);assert.equal(g.player.runes,1);assert.ok(g.classState.guard>0);
  const hp=e.hp;tickAuto(g,1);assert.equal(e.hp,hp,'melee autos do not hit at range');
 });

@@ -410,3 +410,22 @@ Einzigartige Dorflegenden, Questgegenstände und Gegenstände ohne hinterlegten 
 3. **Begriffe:** Am Start gibt es Randale (Leiste, erscheint erst mit dem ersten Kniff, der etwas kostet) und die Aufbaupunkte der Klasse (Pegel, Glanz, Druck; Zeile „Pegel 2/3 → Eskalation"). Beide erklären sich beim Überfahren (`data-describe="glossary:…"`). „Deckelstriche" gehört allein dem Kneipenschläger; der Glossareintrag der Aufbaupunkte hieß versehentlich so und heißt wieder „Pegel".
 
 **Konsequenzen.** Zahlen in `content/balance.js` (`momentum.combatEnergyRegen`, `surgeAt`, `surgeBonus`) und `content/classes.js` (`strikeGain`). `scripts/spec-sim.mjs` gibt Randale-Schnitt und Knappheit aus. Der UI-Regressionscheck (Suite layout) schlägt fehl, wenn die Ziffernhöhe eines Balkentexts nicht in den Balken passt. Offen und Sache der Charaktererstellungs-Sitzung: Die Spec-Mechanik (z. B. Deckelstriche) ist ab Stufe 1 aktiv; das dort geplante Spec-Tor würde sie später einführen.
+
+
+## E-37 · Offene Talentbäume nach dem Vorbild WoW Classic
+
+**Anlass.** Nutzerauftrag 20.09.2026: „Man kann beliebig zwischen den Spezialisierungen skillen, es gibt innerhalb Abhängigkeiten, die Sinn ergeben, jeder Spec kann auch für einen anderen interessant sein – Cross-Spec soll sich lohnen. Alles möglich und offen. So gestalten wir die künftigen Talentbäume." Ersetzt aus E-32 die Regeln „je Reihe genau ein Talent" und „Spec-Wechsel setzt Punkte zurück" sowie das geplante Spec-Tor mit Pflichtwahl.
+
+**Entscheidung.**
+1. **Drei Bäume je Klasse, ein Punktetopf.** Punkte (Stufe − 1, höchstens 29) gehen frei in alle drei Bäume der eigenen Klasse. Mehrere Talente je Reihe sind erlaubt.
+2. **Stufen-Tor je Baum.** Reihe n öffnet sich mit n Punkten in DIESEM Baum (`TIER_POINTS = 1`). Punkte im Nachbarbaum öffnen nichts. Der Schlussstein kostet damit 10 Punkte im Baum; bei 29 Punkten sind zwei Schlusssteine oder ein Schlussstein plus breite Nebenbäume möglich. Verworfen: 2 Punkte je Reihe – macht jeden Altstand und jeden reinen Pfad ungültig.
+3. **Pfeile.** Abhängigkeiten setzt der Inhalt bewusst mit `requires:<Index im Baum>` (nur nach oben). Automatisch abgeleitete Pfeile wurden verworfen, weil sie bestehende Builds brechen. Die heutigen Bäume haben noch keine Pfeile; neue und überarbeitete Bäume bekommen sie dort, wo ein Talent ein anderes verändert.
+4. **Hauptbaum.** `talents.spec` ist der Hauptbaum: Er bestimmt Kit (Kniff-Namen) und Kernmechanik. Wählbar ab Stufe 5 (`BALANCE.player.specLevel`), die erste Wahl überall außerhalb des Kampfes, jeder Wechsel am Clan-Treff. Ein Wechsel lässt die Punkte stehen. Neue Helden haben bis zur Wahl keinen Hauptbaum (Stufe 1 bis 4 spielen den Klassenkern), die Punkte bis dahin werden gespart. Altstände behalten Hauptbaum und Talente.
+5. **Pfadboni bleiben** (4 und 7 Talente eines Pfades) und zählen je Baum – sie belohnen Treue, ohne Offenheit zu verbieten.
+6. **Alle Punkte zurück** nur am Clan-Treff (`resetTalents`).
+
+**Cross-Spec heute.** Je Baum wirken 18 bis 26 von 30 Talenten unabhängig vom Hauptbaum (Werte, Procs, Kniffe). 71 von 270 drehen an der Kernmechanik ihres Baums und wirken nur, wenn er Hauptbaum ist; das Fenster kennzeichnet sie (`mainTreeOnly`).
+
+**Muster für künftige Bäume** (`docs/TALENT-AUTORENBRIEF-2026-09-18.md`, Abschnitt „Offene Bäume"): Reihe 0 bis 3 allgemein nützlich (auch für die Nachbarbäume), ab Reihe 4 Mechanik-Talente, Pfeile nur, wo ein Talent ein anderes voraussetzt, mindestens ein „Brücken-Talent" je Baum, das ausdrücklich mit einem Nachbarbaum zusammenspielt.
+
+**Konsequenzen und offene Balance.** Bis zu 29 statt 10 Talente: ab etwa Stufe 15 ist der Held stärker als bisher ausbalanciert. Nächster Schritt ist ein Messlauf (`scripts/spec-sim.mjs` mit 29 Punkten) und danach entweder kleinere Talentwerte oder Ränge (`maxRank` ist im Datenmodell vorbereitet).
