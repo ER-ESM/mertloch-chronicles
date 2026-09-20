@@ -12,3 +12,12 @@
 **Technischer Vertrag.** `look` wird vom String zum Objekt `{body, hair, hairColor, skin, face}`; `characters.js` normalisiert bereits unbekannte Werte auf den Körper der Klasse, ein alter String bleibt gültig. Ebenen liegen unter `assets/heroes/<body>/<layer>-<variante>.png` im Raster der bestehenden Rig-Atlanten; die Farbvarianten entstehen zur Laufzeit per Palettentausch (eine Graustufen-Rampe je Ebene). Abnahme: Heldenhalle, Spielfigur, Porträt und andere Spieler zeigen dieselbe Kombination; `tests/characters.test.mjs` bekommt einen Fall für das Objekt.
 
 **Nicht Teil davon.** Körperbau-Regler, Größen, Kleidung außerhalb der Ausrüstung.
+
+## Befund 21.09.2026: Frisuren und Bärte lassen sich nicht aus den vorhandenen Pixeln ableiten
+
+Versucht und verworfen (am vergrößerten Bild geprüft, drei Körper, Vorder- und Rückansicht):
+- **Kurz** (Haar-Pixel außerhalb einer Kopf-Ellipse löschen): ausgefranste Reste, schwebende Strähnen, Löcher – hinter dem Haar ist im Körperbild nichts gezeichnet.
+- **Glatze** (Haar-Pixel auf Hautton setzen): flache Kuppel ohne Schädelform, Haarkranz bleibt, beim Körper „Schwungvoll" fleckig.
+- **Stoppeln/Vollbart** (Haut-Pixel im Kinnbereich auf Haarfarbe): rechteckiger Fleck über dem Mund; **Rasiert** lässt beim Körper „Kräftig" die gezeichnete Bartkontur stehen.
+
+Was funktioniert, ist alles, was Farbe ändert oder klein und starr am Kopf sitzt (Hautton, Haarfarbe, Brille, Sonnenbrille, Stirnband). Für Frisuren und Bärte braucht es deshalb je Körper gezeichnete Ebenen: **ein Kopf ohne Haare und ohne Bart als Basis**, darüber Frisur- und Bart-Ebenen in den vier Blickrichtungen und allen Posen der Rig-Atlanten. Die Auswahl (`tint.style`, `tint.beard`) ist im Datenmodell schnell ergänzt; `lookKey`/`parseTintKey` tragen weitere Felder ohne Bruch.
