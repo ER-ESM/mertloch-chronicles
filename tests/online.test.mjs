@@ -32,3 +32,8 @@ test('Erster Abgleich auf einem neuen Gerät: ein frischer Stand überschreibt k
  assert.equal(progressed(null,{level:1}),false);assert.equal(progressed({level:1,xp:0},{level:1,xp:0}),false);
  assert.equal(progressed({level:8,xp:0},{level:7,xp:900}),true);assert.equal(progressed({level:7,xp:60},{level:7,xp:50}),true);assert.equal(progressed({level:7,xp:10},{level:7,xp:50}),false);
 });
+
+test('übernommener Cloud-Stand wird vom laufenden Spiel nicht mehr überschrieben (Sperre bis zum Neuladen)',()=>{
+ const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+ assert.match(app,/writeLocal:s=>\{[^}]*cloudPulled=true;/);assert.match(app,/function save\(\)\{if\(saveBlocked\|\|cloudPulled\)return false;/);
+});
