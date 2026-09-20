@@ -42,5 +42,14 @@ export const TUNING={
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
  }
 };
+// Zusätze gewürfelter Beute (E-40, content/affixes.js). Eigener Block statt TUNING-Zeile, weil TUNING nur Korrekturen je ID trägt: Budgetanteil je Zusatz, Punkte je Budgetpunkt, Chance bei Ungewöhnlich.
+// Zusätze kommen OBEN AUF das Grundbudget (BALANCE.items) – ein Fundstück wird dadurch nie schwächer, gespeicherte Teile gewinnen höchstens maxGain.
+export const AFFIX_TUNING={
+  share:{prefix:.1,epithet:.1,why:'je Zusatz 10 % des Grundbudgets: spürbar im Tooltip (Stufe 10 ≈ +3 Punkte), aber kleiner als der Abstand Ungewöhnlich→Selten (×1,4); ein epischer Doppelzusatz bleibt mit +20 % unter dem Sprung zur nächsten Güte',since:'2026-09-20'},
+  uncommonChance:.5,
+  maxGain:.2,
+  rate:{might:1,finesse:1,wit:1,stamina:1,critRating:1.3,hasteRating:1.3,masteryRating:1.3,armorRating:3,why:'Punkte je Budgetpunkt wie im Grundwurf: Primärwert 1, Wertungen = BALANCE.items.secondaryShare (1,3), Dicke Haut = armorShare (3). Standfestigkeit 1 statt 0,45, weil sie hier den ganzen Anteil trägt',since:'2026-09-20'},
+  why:'uncommonChance .5: die Hälfte der gewöhnlichen Funde bleibt schlicht, damit ein Zusatz auffällt. maxGain .2 ist der Deckel, den content/checks/loot.js gegen die Summe der share-Werte prüft',since:'2026-09-20'
+};
 /** Legt Zahlen aus `overrides[id]` flach über `target[id]`; verschachtelte Objekte (stats, weapon) werden gemischt. */
 export function applyTuning(target,overrides={}){for(const [id,patch] of Object.entries(overrides)){const t=target[id];if(!t)continue;const {why,since,...values}=patch;for(const [k,v] of Object.entries(values))t[k]=v&&typeof v==='object'&&!Array.isArray(v)?{...(t[k]||{}),...v}:v;}return target;}

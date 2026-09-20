@@ -3,6 +3,7 @@ export * from './balance.js';
 export * from './items.js';
 export * from './item-info.js';
 export * from './drops.js';
+export * from './affixes.js';
 export * from './recipes.js';
 export * from './enemies.js';
 export * from './skills.js';

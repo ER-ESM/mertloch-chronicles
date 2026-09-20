@@ -477,3 +477,19 @@ Alle Zahlen stehen in `content/lighting.js`. Bildbelege vorher/nachher: `visual-
 
 **Bewusst offen.** Ausrüstung (z. B. Hammer, Schild) wirft noch keinen eigenen Schatten, weil getrennte Ebenen sich beim Stapeln doppelt abdunkeln würden. In weiten Posen (Ausfallschritt, Treffer; 3–5 von 64 Bildern je Held) reichen die Füße fast bis zum Rahmenrand; der Schatten wird dort über 6 px weich ausgeblendet, der Build meldet die Bilder. Die 40-Farben-Quantisierung kippt dunkles Blaugrün weiterhin stellenweise nach Grün (bestand schon vor E-41).
 
+## E-40 · Zusatz-Generator für gewürfelte Beute (Vorsilben und Beinamen)
+**Datum:** 2026-09-20 · **Stand:** gilt
+
+**Anlass.** Gewürfelte Beute bestand aus Grundteil + einem von drei Spec-Nachsätzen („des Tresens“, „der Zugabe“, „des Kurzschlusses“) – rund 60 Namen, eintönig. Vorbild Dreadmyst (`affix_template`): wenige Grundteile × viele Zusätze mit Stufenband und 1–2 Wertbeiträgen ergeben tausende unterscheidbare Fundstücke.
+
+**Entscheidung.**
+1. **Zwei Pools in `content/affixes.js`:** Vorsilben (vor dem Grundteil) und Beinamen (hinter dem Spec-Nachsatz) – „Klebriger Pfandprügel des Tresens ohne TÜV“. Je Zusatz: `id`, Namensform, Stufenband, Slotgruppen (`waffe`, `ruestung`, `schmuck`, `alle`), erlaubte Güten, 1–2 Werte als **Anteil** am Zusatzbudget (Summe 1).
+2. **Genus sauber statt geraten:** Grundteile tragen ihr Genus (`ROLLED_BASES[slot][2]`, `WEAPON_BASE_GENUS`, `FAMILY_TROPHIES[family][2]`; m/f/n/p). Vorsilben sind entweder ein Adjektivstamm (`stem`, Endung aus `ADJECTIVE_ENDINGS`) oder ein unveränderliches Bestimmungswort mit Bindestrich (`fixed`, „Kirmes-“). Der Inhalts-Check verlangt das Genus für jedes Grundteil.
+3. **Kein neues Feld im Spielstand.** Die Zusätze werden deterministisch aus den sechs gespeicherten Rohdaten (`slot, spec, level, quality, roll, family`) abgeleitet (FNV-1a + Mischschritt, `rolledAffixes` in `itemization.js`). Roll-IDs, ID-Regex und `restoreRolls` bleiben unverändert.
+4. **Güte steuert die Anzahl:** ungewöhnlich 0–1 (Chance `AFFIX_TUNING.uncommonChance`), selten genau 1, episch Vorsilbe + Beiname.
+5. **Budget: obendrauf, klein, gedeckelt.** Jeder Zusatz gibt `AFFIX_TUNING.share` (10 %) des Grundbudgets zusätzlich, verteilt nach den Anteilen und umgerechnet mit `AFFIX_TUNING.rate`; der Grundwurf bleibt unangetastet. Deckel `maxGain` 20 % (Check). Verkaufswert bleibt am Grundbudget. Zahlen stehen in `content/tuning.js` (`AFFIX_TUNING`, eigener Export, weil `TUNING` nur Korrekturen je ID trägt).
+6. **Anzeige:** Der Tooltip zeigt je Zusatz eine Zeile („Klebrig“: +3 Standfestigkeit), die Beschreibung und `describe()` (`info.numbers`, `live.affixes`) nennen dieselben Zahlen – alle aus dem gewürfelten Gegenstand abgeleitet, kein Handtext (E-25).
+
+**Folgen für vorhandene Spielstände.** Bereits gefundene Teile bekommen beim Laden ggf. einen neuen Namen und 0–2 Zusätze. Kein Wert sinkt; der Zuwachs liegt im Rahmen von `maxGain`. Wer die Pools später ändert (Zusatz ergänzen, Stufenband verschieben), verschiebt die Auswahl per Modulo: Namen und Zusatzwerte vorhandener Teile können wechseln, das Grundbudget nie. IDs von Zusätzen stehen nicht im Spielstand.
+
+**Bewusst offen.** Zusätze mit Effekt (Procs) statt nur Werten; eigene Grundteil-Varianten je Slot (mehr als ein Name pro Platz); Zusatz-Gewichte (seltene Zusätze) – heute sind alle passenden Zusätze gleich wahrscheinlich.

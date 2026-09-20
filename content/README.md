@@ -11,6 +11,7 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 | `balance.js` | Alle Stellschrauben: EP-Kurve, Lebenspunkte, Wertungskurven, Gegenstandsbudget, Gegner-Skalierung, Beute-Münzen | rpg.js, engine.js, itemization.js, progression.js |
 | `items.js` | `ITEM_CATALOG` (jeder Gegenstand), `PROCS` (Effekte der Dorflegenden), `ICONS`, `SLOTS`, `RARITIES` | rpg.js, itemization.js |
 | `drops.js` | `DROP_TABLES` je Gegnerfamilie, `FOOD_DROPS` | itemization.js |
+| `affixes.js` | Zusätze gewürfelter Beute (E-40): `LOOT_PREFIXES`, `LOOT_EPITHETS`, `SLOT_GROUPS`, Namensbau `affixedName()`, Tooltip-Zeilen `affixLines()`/`affixNumbers()` | itemization.js, describe.js |
 | `enemies.js` | `ARCHETYPES` (Feld), `ELITES`, `CAMP_ENEMIES` (Lager), `BOSSES`, `CAST_SETS` (Angriffsmuster), `SPAWN_TABLES` | encounters.js, engine.js |
 | `skills.js` | `BASE_SKILLS`, `KITS` je Klasse, `BUFF_SKILLS`, `THROW_SKILL`, `GROUND_SKILL`, `TALENT_SKILLS`, `LESSONS`/`CLASS_LESSONS` | clan.js, progression.js |
 | `classes.js` | `CLAN_MEMBERS` (Figuren, Bio, Passiv, Bildhinweis) | clan.js |
@@ -24,6 +25,16 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 | `schema.js` | `validateContent()` – Schema- und Invariantenprüfung | tests/content.test.mjs |
 | `BALANCE-REPORT.md` | erzeugt von `scripts/balance-report.mjs` | Mensch, Agent |
 | `ART-BRIEF.md` | erzeugt von `scripts/art-brief.mjs` | Bild-KI |
+
+## Zusätze gewürfelter Beute (E-40)
+
+Ein Fundstück heißt `[Vorsilbe] Grundteil Spec-Nachsatz [Beiname]`, z. B. „Klebriger Pfandprügel des Tresens ohne TÜV“. Ungewöhnlich trägt 0–1 Zusatz, selten 1, episch beide.
+
+- **Neuer Zusatz:** Zeile in `LOOT_PREFIXES` oder `LOOT_EPITHETS` (`content/affixes.js`). Vorsilbe entweder als Adjektivstamm ohne Endung (`'Klebrig'` → Klebriger/Klebrige/Klebriges) oder als Bestimmungswort mit Bindestrich (`'Kirmes-'`). Beinamen beginnen klein (`'ohne TÜV'`). Höchstens 30 Zeichen.
+- **Werte sind Anteile, keine Zahlen:** `{critRating:.6,finesse:.4}` verteilt das Zusatzbudget (Summe 1, 1–2 Werte, nur Schlüssel aus `STAT_NAMES`). Wie groß das Zusatzbudget ist, steht in `AFFIX_TUNING` (`content/tuning.js`, mit `why`/`since`).
+- **Neues Grundteil:** Genus mitgeben (`m`/`f`/`n`/`p`) – drittes Feld in `ROLLED_BASES` und `FAMILY_TROPHIES`, bzw. `WEAPON_BASE_GENUS`.
+- **Check (`content/checks/loot.js`):** eindeutige IDs über beide Pools, mindestens drei passende Zusätze je Art für jeden Platz × Stufe 1–30 × Güte, bekannte Werte, Anteile 0,25–1, Deckel `maxGain`.
+- **Spielstände:** Zusätze stehen nicht im Spielstand, sie werden aus den Rohdaten abgeleitet. Pool-Änderungen können Namen vorhandener Teile verschieben – das Grundbudget nie.
 
 ## Arbeitsablauf für den Inhalts-Agenten
 

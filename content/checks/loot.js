@@ -5,6 +5,11 @@ import {DROP_TABLES} from '../drops.js';
 import {RECIPES,BENCH_STAGES} from '../recipes.js';
 import {BUILDINGS} from '../buildings.js';
 import {STORY_CHAPTERS} from '../story.js';
+import {LOOT_PREFIXES,LOOT_EPITHETS,LOOT_AFFIX_POOLS,SLOT_GROUPS,ADJECTIVE_ENDINGS,SPEC_SUFFIXES,affixFits} from '../affixes.js';
+import {STAT_NAMES,ROLLED_BASES,WEAPON_BASE_NAMES,WEAPON_BASE_GENUS,EQUIPMENT_SLOTS,AFFIXES} from '../equipment.js';
+import {FAMILY_TROPHIES} from '../item-icons.js';
+import {AFFIX_TUNING} from '../tuning.js';
+import {BALANCE} from '../balance.js';
 export function check(bad){
  // Jede Dorflegende fällt irgendwo (Beutetabelle) oder ist ausdrücklich Questbelohnung (reward:true).
  const dropped=new Set(Object.values(DROP_TABLES).map(t=>t.unique));
@@ -60,6 +65,43 @@ export function check(bad){
  for(const id of Object.keys(PROCS)){if(!PROC_INFO[id]){bad('proc '+id,'ohne info in content/item-info.js');continue;}
   infoBlock('proc '+id,describeProc(id),id);
   if(PROC_INFO[id].effect.trim()===PROCS[id].text.trim())bad('proc '+id,'info.effect wiederholt nur den text');}
+ // --- Zusätze gewürfelter Beute (E-40, content/affixes.js) ---
+ const T=AFFIX_TUNING,QUAL=Object.keys(BALANCE.items.quality),groups=Object.keys(SLOT_GROUPS),seen=new Set();
+ for(const kind of Object.keys(LOOT_AFFIX_POOLS)){if(!(T.share[kind]>0&&T.share[kind]<=.15))bad('AFFIX_TUNING.share.'+kind,'Budgetanteil je Zusatz muss in (0, 0,15] liegen');}
+ if(T.share.prefix+T.share.epithet>T.maxGain+1e-9)bad('AFFIX_TUNING','Vorsilbe + Beiname sprengen maxGain – ein epischer Doppelzusatz darf das Grundbudget höchstens um maxGain heben');
+ if(!(T.maxGain>0&&T.maxGain<=.25))bad('AFFIX_TUNING.maxGain','Rahmen muss klein bleiben (≤ 25 % des Grundbudgets)');
+ if(!(T.uncommonChance>=0&&T.uncommonChance<=1))bad('AFFIX_TUNING.uncommonChance','muss eine Wahrscheinlichkeit sein');
+ for(const k of Object.keys(STAT_NAMES))if(!(T.rate[k]>0))bad('AFFIX_TUNING.rate','Punkte je Budgetpunkt fehlen für '+k);
+ for(const spec of Object.keys(AFFIXES))if(!SPEC_SUFFIXES[spec])bad('SPEC_SUFFIXES','Nachsatz fehlt für '+spec);
+ const slotsInGroups=Object.values(SLOT_GROUPS).flat();
+ for(const slot of Object.keys(ROLLED_BASES)){if(slotsInGroups.filter(s=>s===slot).length!==1)bad('SLOT_GROUPS','Platz '+slot+' muss in genau einer Slotgruppe stehen');if(!ADJECTIVE_ENDINGS[ROLLED_BASES[slot][2]])bad('ROLLED_BASES.'+slot,'Genus (m/f/n/p) fehlt – deklinierte Vorsilben brauchen es');}
+ for(const type of Object.keys(WEAPON_BASE_NAMES))if(!ADJECTIVE_ENDINGS[WEAPON_BASE_GENUS[type]])bad('WEAPON_BASE_GENUS.'+type,'Genus (m/f/n/p) fehlt');
+ for(const [family,t] of Object.entries(FAMILY_TROPHIES))if(!ADJECTIVE_ENDINGS[t[2]])bad('FAMILY_TROPHIES.'+family,'Genus (m/f/n/p) fehlt');
+ if(LOOT_PREFIXES.length<40)bad('LOOT_PREFIXES','mindestens 40 Vorsilben, sonst wiederholen sich die Fundstücke');
+ if(LOOT_EPITHETS.length<40)bad('LOOT_EPITHETS','mindestens 40 Beinamen, sonst wiederholen sich die Fundstücke');
+ for(const [kind,pool] of Object.entries(LOOT_AFFIX_POOLS)){const labels=new Set();
+  for(const a of pool){const w='affix '+a.id;
+   if(!/^[a-z][a-z0-9-]*$/.test(a.id||''))bad(w,'id ungültig');
+   if(seen.has(a.id))bad(w,'id doppelt (eindeutig über beide Pools)');seen.add(a.id);
+   const forms=['stem','fixed','text'].filter(k=>a[k]);
+   if(forms.length!==1)bad(w,'genau eine Namensform: stem, fixed oder text');
+   if(kind==='prefix'&&a.text)bad(w,'Vorsilben brauchen stem oder fixed');
+   if(kind==='epithet'&&!a.text)bad(w,'Beinamen brauchen text');
+   if(a.fixed&&!a.fixed.endsWith('-'))bad(w,'fixed endet mit Bindestrich („Kirmes-“)');
+   if(a.stem&&/(e|er|es|-)$/.test(a.stem)&&!/(iert|elt|ert)$/.test(a.stem))bad(w,'stem ist der ungebeugte Stamm ohne Endung: '+a.stem);
+   if(a.text&&!/^[a-zäöü]/.test(a.text))bad(w,'Beiname beginnt klein (steht mitten im Namen)');
+   const label=a.stem||a.fixed||a.text;if(labels.has(label))bad(w,'Name doppelt: '+label);labels.add(label);
+   if(label.length>30)bad(w,'Name länger als 30 Zeichen – der Tooltip-Kopf läuft über');
+   if(!(Number.isInteger(a.minLevel)&&Number.isInteger(a.maxLevel)&&a.minLevel>=1&&a.maxLevel<=BALANCE.maxLevel&&a.minLevel<=a.maxLevel))bad(w,'Stufenband außerhalb 1–'+BALANCE.maxLevel);
+   if(!Array.isArray(a.slots)||!a.slots.length||a.slots.some(g=>g!=='alle'&&!groups.includes(g)))bad(w,'slots: nur Slotgruppen oder „alle“');
+   if(!Array.isArray(a.qualities)||!a.qualities.length||a.qualities.some(q=>!QUAL.includes(q)))bad(w,'qualities: nur bekannte Güten');
+   const parts=Object.entries(a.stats||{});
+   if(parts.length<1||parts.length>2)bad(w,'1–2 Werte je Zusatz');
+   for(const [k,v] of parts){if(!STAT_NAMES[k])bad(w,'unbekannter Wert: '+k);if(!(v>=.25&&v<=1))bad(w,'Anteil '+k+' außerhalb 0,25–1');}
+   if(Math.abs(parts.reduce((n,[,v])=>n+v,0)-1)>1e-9)bad(w,'Anteile müssen zusammen 1 ergeben (das Zusatzbudget wird verteilt, nicht vergrößert)');}
+  // Stufenbänder lückenlos: jeder Platz findet auf jeder Stufe und in jeder Güte mindestens drei passende Zusätze je Art.
+  for(const slot of Object.keys(ROLLED_BASES))for(const q of QUAL)for(let level=1;level<=BALANCE.maxLevel;level++){const n=pool.filter(a=>affixFits(a,slot,level,q)).length;if(n<3)bad('affix '+kind,'Lücke: '+slot+' · Stufe '+level+' · '+q+' hat nur '+n+' passende Zusätze');}}
+ for(const slot of Object.keys(ROLLED_BASES))if(!EQUIPMENT_SLOTS[slot]&&!['ring','trinket','charm'].includes(slot))bad('ROLLED_BASES.'+slot,'unbekannter Ausrüstungsplatz');
  // Kein totes Material: jedes Material muss irgendwo verbraucht oder gesucht werden.
  const used=new Set();
  for(const r of Object.values(RECIPES))for(const item of Object.keys(r.input||{}))used.add(item);

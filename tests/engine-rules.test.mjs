@@ -86,7 +86,9 @@ test('Belohnungsgüte epic würfelt echt: mehr Budget und höhere Gegenstandsstu
   assert.ok(epic.stats.might>rare.stats.might,'Budget epic > rare auf Stufe '+level);
   assert.ok(epic.itemLevel>rare.itemLevel,'Gegenstandsstufe epic > rare auf Stufe '+level);
   const factor=BALANCE.items.quality.epic/BALANCE.items.quality.rare;
-  assert.ok(Math.abs(epic.stats.might/rare.stats.might-factor)<.05,'Budget folgt BALANCE.items.quality.epic');
+  // Zusätze (E-40) liegen obendrauf; das Güte-Verhältnis gilt für den Grundwurf.
+  const base=d=>d.stats.might-(d.affixes||[]).reduce((n,x)=>n+(x.stats.might||0),0);
+  assert.ok(Math.abs(base(epic)/base(rare)-factor)<.05,'Budget folgt BALANCE.items.quality.epic');
  }
  const weapon=rolledDefinition({slot:'weapon',spec:'tresen',level:20,quality:'epic',roll:120});
  assert.ok(weapon.weapon?.max>0,'epische Waffen bekommen Waffenschaden');
