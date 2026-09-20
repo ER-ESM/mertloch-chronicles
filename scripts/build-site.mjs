@@ -25,6 +25,8 @@ await cp(path.join(root,'assets'),path.join(output,'assets'),{recursive:true,fil
 }});
 await mkdir(path.join(output,'data'));
 await cp(path.join(root,'data','mertloch.json'),path.join(output,'data','mertloch.json'));
+// Renderer-Prototypen C/D (proto-c.js, proto-d.js) laden three.js und das Kasten-Rig aus der Pre-Render-Werkstatt; nicht im Spiel-Cache.
+for(const file of ['vendor/three.module.min.js','rig.js','poses.js'])await cp(path.join(root,'tools','prerender',file),path.join(output,'tools','prerender',file));
 await writeFile(path.join(output,'.nojekyll'),'');
 // Buildnummer (build-info.js): Commit-Zahl des gebauten Stands, Kurz-Hash, Commit-Datum, package-Version. Ohne Git (z. B. Zip) bleibt der Arbeitsstand.
 {const git=cmd=>{try{return execSync('git '+cmd,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();}catch{return '';}};
