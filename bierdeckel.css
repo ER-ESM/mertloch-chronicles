@@ -699,3 +699,18 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .cat-filter button.cat{cursor:pointer}
 .cat-filter button.cat[aria-pressed=true]{background:var(--gold);color:var(--ink);border-color:var(--gold);opacity:1}
 .kniff-tile .kniff-fn{display:block;font:10px/1.2 var(--display);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+/* Talentsuche (talent-ui.js): Treffer leuchten golden, alles andere tritt zurück; Baumreiter zählen ihre Treffer. */
+.talent-search{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:end;margin:8px 0 10px}
+.talent-search label{display:grid;gap:4px;font:11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.talent-search input{width:100%;box-sizing:border-box;padding:8px 10px;background:#0b121660;border:2px solid var(--kraft-2);color:var(--cream);font:14px/1.2 var(--read);border-radius:var(--r)!important}
+.talent-search input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.talent-search small{grid-column:1/-1;font:12px/1.4 var(--read);opacity:.8}
+.talent-search [data-talent-search-clear]{min-width:36px;height:36px;padding:0}
+.path-tree.searching .branch-node.search-miss{opacity:.22;filter:grayscale(1)}
+.path-tree.searching .branch-node.search-hit{opacity:1;filter:none;outline:3px solid var(--gold);outline-offset:3px;box-shadow:0 0 14px 4px #ecb95c99;animation:talent-hit 1.1s ease-in-out infinite alternate;z-index:1}
+@keyframes talent-hit{from{box-shadow:0 0 8px 2px #ecb95c66}to{box-shadow:0 0 18px 6px #ecb95ccc}}
+@media(prefers-reduced-motion:reduce){.path-tree.searching .branch-node.search-hit{animation:none}}
+.spec-tabs .tree-hits{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;margin-left:6px;border-radius:var(--r-pill)!important;background:var(--gold);color:var(--ink);font:700 12px/1 var(--read);font-style:normal}
+.spec-tabs .tree-hits[hidden]{display:none}
+.spec-tabs .no-hits{opacity:.55}.spec-tabs .no-hits .tree-hits{background:transparent;color:inherit;border:1px solid currentColor}
+mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-radius:2px}
