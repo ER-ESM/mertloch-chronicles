@@ -5,12 +5,14 @@ import {uiLoginCard,setUiLoginMode} from './ui-kit-mmo.js';
 // Regeln: der Browserspeicher bleibt die erste Wahrheit; der Server hält je Konto und Welt den jüngsten Stand
 // (Zeitstempel savedAt). Neuer gewinnt; der ältere Stand bleibt serverseitig als Sicherung.
 import {createNetWorld} from './net-world.js';
+import {createNetParty,mountRollUi} from './net-party.js';
+import {RARITIES} from './content/index.js';
 import {mergeRosters} from './characters.js';
 import {tintKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
 export const onlineEnabled=()=>!!API;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',party:'Gruppe',leaveParty:'Gruppe verlassen',leaveShort:'verlassen',people:'Spieler online',level:'Stufe',elsewhereWorld:'andere Welt',inGroup:'in Gruppe',you:'du',invite:'Einladen',whisper:'Flüstern',whisperTo:'an',whisperFrom:'von',inviteTitle:'Gruppeneinladung',inviteText:'{n} lädt dich in eine Gruppe ein. Gemeinsam besiegte Gegner zählen für alle in der Nähe.',accept:'Annehmen',decline:'Ablehnen',chatHelp:'Befehle: /s Umkreis · /w Welt · /g Gruppe · /f Name Text (flüstern) · /r Antwort · /einladen Name · /verlassen · /wer',unknownCommand:'Unbekannter Befehl. /hilfe zeigt alle.',needName:'Dazu gehört ein Name: ',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
+export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',party:'Gruppe',leaveParty:'Gruppe verlassen',leaveShort:'verlassen',people:'Spieler online',level:'Stufe',elsewhereWorld:'andere Welt',inGroup:'in Gruppe',you:'du',invite:'Einladen',whisper:'Flüstern',whisperTo:'an',whisperFrom:'von',inviteTitle:'Gruppeneinladung',inviteText:'{n} lädt dich in eine Gruppe ein. Gemeinsam besiegte Gegner und Sammelziele zählen für alle in der Nähe, Buffs wirken mit, seltene Beute wird ausgewürfelt.',accept:'Annehmen',decline:'Ablehnen',chatHelp:'Befehle: /s Umkreis · /w Welt · /g Gruppe · /f Name Text (flüstern) · /r Antwort · /einladen Name · /verlassen · /wer',unknownCommand:'Unbekannter Befehl. /hilfe zeigt alle.',needName:'Dazu gehört ein Name: ',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
 
 /** Entscheidung beim Abgleich: 'pull' (Server neuer), 'push' (lokal neuer oder Server leer), 'same'. Reine Funktion (Tests). */
 /** foreign: der lokale Stand gehört einem anderen Konto – dann gewinnt immer der Server-Stand des angemeldeten Kontos. */
@@ -65,6 +67,8 @@ export function mountOnline(host){
  const myName=()=>state.netName||state.account?.name||null;
  const wsSend=msg=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify(msg));};
  const net=createNetWorld({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[]});
+ let rollUi=null;const rollProxy={roll:(m,v)=>{const shell=document.querySelector('#gameShell')||document.body;(rollUi||(rollUi=mountRollUi(shell,{choose:(id,c)=>play.choose(id,c),esc,rarityName:r=>RARITIES[r]||r}))).roll(m,v);},pick:m=>rollUi?.pick(m),result:(m,mine)=>rollUi?.result(m,mine),clear:()=>rollUi?.clear()};
+ const play=createNetParty({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[],ui:rollProxy});
  async function refreshAccount(){try{const d=await api('auth?action=me');state.account=d.account;state.reachable=true;}catch(e){state.reachable=e.code!=='bad-response'&&!(e.status>=500);state.account=state.reachable?state.account:null;}return state.account;}
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
  async function start(){
@@ -101,7 +105,7 @@ export function mountOnline(host){
   if(!state.wanted||!state.account||state.socket)return;let ws;try{ws=new WebSocket(WS_URL);}catch{return;}state.socket=ws;
   ws.onopen=()=>{const heroName=host.heroName?.();if(heroName)ws.send(JSON.stringify({t:'hello',name:heroName}));state.connected=true;state.retryMs=1000;state.lastSent='';net.reset();renderChat();host.refresh?.();};
   ws.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch{return;}receive(m);};
-  ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;g().others=[];state.others=[];setParty({leader:null,members:[]});renderChat();
+  ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;play.reset();g().others=[];state.others=[];setParty({leader:null,members:[]});renderChat();
    if(e.code===4001){pushChat({system:true,text:ONLINE_UI.elsewhere});host.toast(ONLINE_UI.elsewhere);state.wanted=false;return;}
    if(state.wanted){state.retry=setTimeout(connect,state.retryMs);state.retryMs=Math.min(30000,state.retryMs*2);}};
   ws.onerror=()=>{};
@@ -110,7 +114,7 @@ export function mountOnline(host){
   const ws=state.socket;if(!ws||ws.readyState!==1||document.hidden)return;const game=g(),p=game.player;if(!p)return;
   if(game.instance){game.others=[];state.others=[];}const wire=JSON.stringify(presenceMessage(game,host.roomKey||host.worldKey));
   const now=Date.now();if(!(wire===state.lastSent&&now-state.lastSentAt<5000)){state.lastSent=wire;state.lastSentAt=now;ws.send(wire);}
-  net.tick(game.instance?'':host.roomKey||host.worldKey);
+  net.tick(game.instance?'':host.roomKey||host.worldKey);play.tick();
  }
  function receive(m){
   const game=g();
@@ -118,7 +122,7 @@ export function mountOnline(host){
   if(m.t==='snap'){game.others=applySnapshot(game.others,m.o,performance.now());state.others=game.others;}
   else if(m.t==='you'){state.netName=m.name;}
   else if(m.t==='welcome'){state.netName=m.name;for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
-  else if(net.receive(m)){}
+  else if(net.receive(m)||play.receive(m)){}
   else if(m.t==='party')setParty(m);
   else if(m.t==='invite')host.openModal('<div class="online-card"><h3>'+esc(ONLINE_UI.inviteTitle)+'</h3><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
   else if(m.t==='who')showPeople(m.list||[]);

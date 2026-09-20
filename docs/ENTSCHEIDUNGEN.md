@@ -493,3 +493,15 @@ Alle Zahlen stehen in `content/lighting.js`. Bildbelege vorher/nachher: `visual-
 **Folgen für vorhandene Spielstände.** Bereits gefundene Teile bekommen beim Laden ggf. einen neuen Namen und 0–2 Zusätze. Kein Wert sinkt; der Zuwachs liegt im Rahmen von `maxGain`. Wer die Pools später ändert (Zusatz ergänzen, Stufenband verschieben), verschiebt die Auswahl per Modulo: Namen und Zusatzwerte vorhandener Teile können wechseln, das Grundbudget nie. IDs von Zusätzen stehen nicht im Spielstand.
 
 **Bewusst offen.** Zusätze mit Effekt (Procs) statt nur Werten; eigene Grundteil-Varianten je Slot (mehr als ein Name pro Platz); Zusatz-Gewichte (seltene Zusätze) – heute sind alle passenden Zusätze gleich wahrscheinlich.
+
+## E-42 · Gruppenspiel: Bedarf/Gier, geteilter Fortschritt, Gruppen-Buffs (21.09.2026)
+
+**Auftrag des Nutzers:** „Zusammen ist besser" – gemeinsame Gegner, geteilte Quests in direkter Nähe, Beute für den, der sie findet, seltene Beute wird nach Bedarf oder Gier ausgewürfelt, gemeinsame Buffs.
+
+1. **Beute:** Jeder Beteiligte behält seinen eigenen Beutel (gewöhnlich/ungewöhnlich, Marken, Material). Teile ab „Selten" (`BALANCE.party.rollRarities`) gehen in den Wurf, sobald ein Gruppenmitglied in Reichweite (1600) steht: Bedarf schlägt Gier, 1–100, 30 s Bedenkzeit, Schweigen = Passen, alle passen → Finder behält. Der Server würfelt (`server/game/party-play.mjs`); gewürfelte Teile reisen als Bauplan (`raw`) und werden beim Gewinner neu registriert. Reißt die Verbindung, fällt ein offenes Angebot an den Finder zurück.
+2. **Quests:** Kill-Ziele zählen schon über `credit` (E-35) für die Gruppe in Reichweite. Neu: Sammelziele zählen für Gruppenmitglieder in Reichweite mit (`qshare` → `game.sharedGather`), ohne dass der Gegenstand kopiert wird.
+3. **Buffs:** Der Klassenbuff wirkt zu 50 % (`BALANCE.party.buffShare`) auch auf Gruppenmitglieder in Reichweite – Schadensminderung, Schild, Heilung über Zeit; eigener Platz `game.partyBuff`, sichtbar in der Buffleiste mit Namen des Spenders.
+4. **EP:** +5 % je Gruppenmitglied in Reichweite (`BALANCE.party.xpPerMember`, höchstens +20 %). Gruppe darf nie schlechter sein als allein.
+5. **Bewusst nicht:** kein gemeinsamer Beutel/Plündermeister, kein Handel, kein serverseitiger Kampf (bleibt E-35). Der Server vertraut der Beute-Angabe des Finders wie beim Schaden; er säubert nur Form und Grenzen.
+
+Offen für die nächsten Runden (Reihenfolge = Wert fürs Gruppengefühl): Heilung und Schutz auf Mitspieler zielen, Wiederbeleben, Handel, Gilde/Clan, Gruppen-Instanz (Kiosk zu fünft), Weltbosse mit Ansage im Weltchat.

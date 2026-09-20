@@ -3,7 +3,7 @@ import {emitCombatFx} from './combat-fx.js';
 import {restoreMeterHealth} from './combat-meter.js';
 import {EQUIPMENT_SLOTS,equipmentPlan,restoreEquipment,weaponRange} from './equipment.js';
 import {talentState,talentEffects,SPECS} from './talents.js';
-import {restoreRolls,rollDrop,questChoices} from './itemization.js';
+import {restoreRolls,rollDrop,questChoices,registerRoll} from './itemization.js';
 import {available,LESSONS,skillLevel} from './progression.js';
 import {BALANCE,ITEM_CATALOG,rating,SYSTEM_LINES} from './content/index.js';
 export const BAG_SIZE=24;
@@ -108,7 +108,9 @@ export function autoLootBag(game,bag){const r=game.rpg,taken=[],coins=bag.coins;
  lootEvent(game,taken,coins,bag.source);autoEquipFound(game,taken.map(e=>e.id));
  if(lost)game.toast(SYSTEM_LINES.lootFull?.(lost)||`Rucksack voll · ${lost} Fundstück${lost===1?'':'e'} warten unter „Ausrüstung zurückholen“.`);
  changed(game);return {items:taken,coins,lost};}
-export function createDrop(game,enemy){const r=game.rpg,n=++r.sequence,{items,coins}=rollDrop(game,enemy,ITEMS);if(!items.length&&!coins)return null;const bag={id:'drop-'+n,x:enemy.x,y:enemy.y,coins,items,source:{name:enemy.name,kind:enemy.type==='boss'?'boss':'enemy'}};r.loot.push(bag);game.emit('rpgChanged');if(game.settings?.autoLoot)autoLootBag(game,bag);return bag;}
+/** Gewonnenes oder zurückgegebenes Würfelteil (E-39) einbuchen. Gewürfelte Teile kommen als Bauplan `raw` und werden hier neu registriert. */
+export function grantLoot(game,item,source){const r=game.rpg;let id=item?.id;if(item?.raw)id=registerRoll(r,ITEMS,item.raw);if(!ITEMS[id])return null;return autoLootBag(game,{id:'won-'+(++r.sequence),coins:0,items:[{id,count:1}],source:source||{name:'Gruppe',kind:'enemy'}});}
+export function createDrop(game,enemy){const r=game.rpg,n=++r.sequence,drop=rollDrop(game,enemy,ITEMS),coins=drop.coins,items=game.netParty?.loot?game.netParty.loot(drop.items,enemy):drop.items;if(!items.length&&!coins)return null;const bag={id:'drop-'+n,x:enemy.x,y:enemy.y,coins,items,source:{name:enemy.name,kind:enemy.type==='boss'?'boss':'enemy'}};r.loot.push(bag);game.emit('rpgChanged');if(game.settings?.autoLoot)autoLootBag(game,bag);return bag;}
 export function nearestLoot(game){return game.rpg.loot.filter(b=>Math.hypot(b.x-game.player.x,b.y-game.player.y)<43).sort((a,b)=>Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y))[0]||null;}
 export function sortInventory(game){const inventory=[];for(const item of game.rpg.inventory)addItem({inventory},item.id,item.count);inventory.sort((a,b)=>{const rank=d=>d.slot?0:d.kind==='consumable'?1:2;return rank(ITEMS[a.id])-rank(ITEMS[b.id])||ITEMS[a.id].name.localeCompare(ITEMS[b.id].name,'de');});game.rpg.inventory=inventory;changed(game);game.toast('Rucksack sortiert: Ausrüstung, Verpflegung, Material.');}
 export function takeLoot(game,id,selection=null){const r=game.rpg,bag=r.loot.find(b=>b.id===id);if(!bag||game.dead)return false;if(Math.hypot(bag.x-game.player.x,bag.y-game.player.y)>43){game.toast('Der Beutel ist zu weit weg. Geh näher heran.');return false;}if(selection&&selection!=='coins'&&!bag.items.some(e=>e.id===selection))return false;let coins=0;if(!selection||selection==='coins'){coins=bag.coins;r.coins+=coins;bag.coins=0;}const taken=[];for(const item of bag.items)if(!selection||selection===item.id){const rest=addItem(r,item.id,item.count);if(item.count-rest>0)taken.push({id:item.id,count:item.count-rest});item.count=rest;}bag.items=bag.items.filter(e=>e.count>0);if(!bag.items.length&&!bag.coins)r.loot=r.loot.filter(b=>b.id!==id);placeUsables(game,taken.map(e=>e.id));lootEvent(game,taken,coins,{...bag.source,kind:bag.source?.kind||'chest'});autoEquipFound(game,taken.map(e=>e.id));game.toast(bag.items.some(e=>!selection||e.id===selection)?'Rucksack voll. Der Rest bleibt liegen.':'Beute eingepackt.');changed(game);return true;}

@@ -176,6 +176,7 @@ export function describeEntry(game,kind,id){
 export function activeBuffs(game){
  const t=game.time,out=[],name=id=>game.skills.find(s=>s.id===id)?.name||id;
  if(game.buffs?.remaining>0)out.push({kind:'buff',id:'buff',name:game.buffs.name||'Stärkung',remaining:round(game.buffs.remaining,2),shield:game.buffs.shield||0,describe:{kind:'buff',id:'buff'}});
+ if(game.partyBuff?.remaining>0)out.push({kind:'buff',id:'party-buff',name:game.partyBuff.name+' ('+game.partyBuff.from+')',remaining:round(game.partyBuff.remaining,2),shield:game.partyBuff.shield||0,describe:{kind:'buff',id:'buff'}});
  if(game.momentum?.stacks>0&&game.momentum.until>t)out.push({kind:'buff',id:'momentum',name:'Schwung',remaining:round(game.momentum.until-t,2),stacks:game.momentum.stacks,describe:{kind:'buff',id:'momentum'}});
  if(game.classState?.guard>0)out.push({kind:'buff',id:'guard',name:'Deckung',remaining:null,value:Math.round(game.classState.guard),describe:{kind:'buff',id:'guard'}});
  if(game.classState?.hot>0)out.push({kind:'buff',id:'hot',name:'Hauspflege',remaining:round(game.classState.hot,2),value:game.classState.hotPower||0,describe:{kind:'buff',id:'hot'}});

@@ -9,8 +9,9 @@ import {readFile} from 'node:fs/promises';
 import {openStore,validEmail,validName,verifyPassword,BOARDS,SAVE_MAX_BYTES,SESSION_DAYS} from './store.mjs';
 import {acceptUpgrade} from './ws.mjs';
 import {createSharedWorld} from './shared-world.mjs';
+import {createPartyPlay} from './party-play.mjs';
 
-export const API_VERSION=4;
+export const API_VERSION=5;
 const COOKIE='mertloch_session';
 const VIEW=1400,SNAP_MS=100,MAX_NEAR=40,IDLE_MS=45000;
 const TEXT={
@@ -151,6 +152,7 @@ export function createGameServer(options={}){
 
  // ── Echtzeit: Anwesenheit und Chat ──
  // Client → Server: {t:'pos',w,x,y,f,c,l,sp,s}  ·  {t:'chat',ch:'say'|'world',text}
+ //                  {t:'offer',item} · {t:'choice',id,c} · {t:'qshare',item} · {t:'buff',b}   (Gruppenspiel: party-play.mjs)
  //                  {t:'hit',e,d,max,th?,r?} · {t:'evade',e?} · {t:'dead'} · {t:'party',op,name?} · {t:'who'}   (Regeln: shared-world.mjs)
  // Server → Client: {t:'mob'|'mobs'|'kill'|'reset'|'up'} · {t:'party',leader,members} · {t:'invite',from} · {t:'who',list}
  // Server → Client: {t:'welcome',name,online,history} · {t:'snap',o:[{n,x,y,f,c,l,sp,s}]} (10 Hz, nur Umkreis) · {t:'chat',from,ch,text,at} · {t:'notice',text}
@@ -161,7 +163,7 @@ export function createGameServer(options={}){
    const c={socket,id:account.id,name:account.name,world:'',x:0,y:0,f:1,c:'',l:1,sp:'',s:'idle',placed:false,seen:Date.now(),chatTimes:[],lastSnap:'',h:100,party:null,rate:{}};
    this.clients.set(account.id,c);
    socket.on('message',text=>{let m;try{m=JSON.parse(text);}catch{return;}if(m&&typeof m==='object')this.receive(c,m);});
-   socket.on('close',()=>{shared.gone(c);if(this.clients.get(account.id)===c)this.clients.delete(account.id);});
+   socket.on('close',()=>{play.gone(c);shared.gone(c);if(this.clients.get(account.id)===c)this.clients.delete(account.id);});
    socket.send(JSON.stringify({t:'welcome',name:account.name,online:this.clients.size,history:this.history.slice(-20)}));
   },
   receive(c,m){
@@ -173,6 +175,9 @@ export function createGameServer(options={}){
    else if(m.t==='evade')shared.evade(c,m.e?clampText(m.e,60):undefined);
    else if(m.t==='dead')shared.evade(c);
    else if(m.t==='party'){if(this.allow(c,'party',5))shared.party(c,{op:String(m.op||''),name:clampText(m.name,20)});}
+   else if(m.t==='offer'){if(this.allow(c,'offer',4))play.offer(c,m);}
+   else if(m.t==='choice')play.choice(c,m);
+   else if(m.t==='qshare'||m.t==='buff'){if(this.allow(c,m.t,4))play.share(c,m);}
    else if(m.t==='who'){if(this.allow(c,'who',2))shared.who(c);}
    else if(m.t==='chat'){
     const text=clampText(m.text,200);if(!text)return;
@@ -203,6 +208,7 @@ export function createGameServer(options={}){
  };
 
  const shared=createSharedWorld({clients:()=>hub.clients.values(),send:(c,msg)=>c.socket.send(JSON.stringify(msg))});
+ const play=createPartyPlay({members:c=>shared.partyMembers(c),send:(c,msg)=>c.socket.send(JSON.stringify(msg))});
  const server=http.createServer(handle);
  server.on('upgrade',(req,raw)=>{
   raw.on('error',()=>{});
@@ -212,9 +218,9 @@ export function createGameServer(options={}){
   if(!account){raw.end('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n');return;}
   const socket=acceptUpgrade(req,raw);if(socket)hub.join(socket,account);
  });
- const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>shared.tick(),1000),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
+ const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>{shared.tick();play.tick();},1000),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
  for(const t of timers)t.unref?.();
- return {server,hub,store,shared,
+ return {server,hub,store,shared,play,
   listen:(port=options.port??8080,host=options.host||'127.0.0.1')=>new Promise(ok=>server.listen(port,host,()=>ok(server.address()))),
   close:()=>new Promise(ok=>{for(const t of timers)clearInterval(t);for(const c of hub.clients.values())c.socket.close(1001);store.flush();server.close(()=>ok());server.closeAllConnections?.();})};
 }
