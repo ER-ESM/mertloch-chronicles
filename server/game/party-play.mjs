@@ -1,4 +1,4 @@
-// Gruppenspiel (E-39): Bedarf/Gier um seltene Beute, geteilter Sammelfortschritt, Gruppen-Buffs.
+// Gruppenspiel (E-42): Bedarf/Gier um seltene Beute, geteilter Sammelfortschritt, Gruppen-Buffs.
 // Der Server rechnet keinen Kampf: er kennt nur, wer mit wem in Reichweite steht, würfelt und reicht weiter.
 // Ohne Netz testbar: members(c) → Gruppenmitglieder (inkl. c), send(client,msg), now() in ms, random() 0..1.
 export const PARTY_RULES=Object.freeze({range:1600,rollMs:30000,maxOpenRolls:8,rarities:['rare','epic'],choices:['need','greed','pass'],buffMaxSeconds:60});

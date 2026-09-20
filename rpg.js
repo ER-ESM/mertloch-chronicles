@@ -108,7 +108,7 @@ export function autoLootBag(game,bag){const r=game.rpg,taken=[],coins=bag.coins;
  lootEvent(game,taken,coins,bag.source);autoEquipFound(game,taken.map(e=>e.id));
  if(lost)game.toast(SYSTEM_LINES.lootFull?.(lost)||`Rucksack voll · ${lost} Fundstück${lost===1?'':'e'} warten unter „Ausrüstung zurückholen“.`);
  changed(game);return {items:taken,coins,lost};}
-/** Gewonnenes oder zurückgegebenes Würfelteil (E-39) einbuchen. Gewürfelte Teile kommen als Bauplan `raw` und werden hier neu registriert. */
+/** Gewonnenes oder zurückgegebenes Würfelteil (E-42) einbuchen. Gewürfelte Teile kommen als Bauplan `raw` und werden hier neu registriert. */
 export function grantLoot(game,item,source){const r=game.rpg;let id=item?.id;if(item?.raw)id=registerRoll(r,ITEMS,item.raw);if(!ITEMS[id])return null;return autoLootBag(game,{id:'won-'+(++r.sequence),coins:0,items:[{id,count:1}],source:source||{name:'Gruppe',kind:'enemy'}});}
 export function createDrop(game,enemy){const r=game.rpg,n=++r.sequence,drop=rollDrop(game,enemy,ITEMS),coins=drop.coins,items=game.netParty?.loot?game.netParty.loot(drop.items,enemy):drop.items;if(!items.length&&!coins)return null;const bag={id:'drop-'+n,x:enemy.x,y:enemy.y,coins,items,source:{name:enemy.name,kind:enemy.type==='boss'?'boss':'enemy'}};r.loot.push(bag);game.emit('rpgChanged');if(game.settings?.autoLoot)autoLootBag(game,bag);return bag;}
 export function nearestLoot(game){return game.rpg.loot.filter(b=>Math.hypot(b.x-game.player.x,b.y-game.player.y)<43).sort((a,b)=>Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y))[0]||null;}

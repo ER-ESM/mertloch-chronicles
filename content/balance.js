@@ -49,7 +49,7 @@ export const BALANCE=Object.freeze({
   eliteHp:2.2,eliteDamage:1.3,
   spawnGrace:1.8
  },
- // Gruppenspiel (E-39): EP-Bonus je Gruppenmitglied in Reichweite, Würfeln ab Seltenheit, Anteil fremder Buffs
+ // Gruppenspiel (E-42): EP-Bonus je Gruppenmitglied in Reichweite, Würfeln ab Seltenheit, Anteil fremder Buffs
  party:{xpPerMember:.05,range:1600,rollRarities:['rare','epic'],buffShare:.5},
  loot:{coinsBoss:25,coinsHuman:2,coinsSpread:6,foodChanceHuman:.15},
  momentum:{                            // Schwung: der Kill ist die Belohnung, nicht das Ende

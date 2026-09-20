@@ -1,4 +1,4 @@
-// Gruppenspiel (E-39): Würfeln um seltene Beute, geteilter Sammelfortschritt, Gruppen-Buffs, EP-Bonus.
+// Gruppenspiel (E-42): Würfeln um seltene Beute, geteilter Sammelfortschritt, Gruppen-Buffs, EP-Bonus.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createPartyPlay,cleanItem,PARTY_RULES} from '../server/game/party-play.mjs';

@@ -1,4 +1,4 @@
-// Gruppenspiel, Client-Seite (E-39): seltene Beute wird in der Gruppe ausgewürfelt (Bedarf vor Gier), Sammelziele und
+// Gruppenspiel, Client-Seite (E-42): seltene Beute wird in der Gruppe ausgewürfelt (Bedarf vor Gier), Sammelziele und
 // Klassenbuffs zählen für Gruppenmitglieder in der Nähe mit, gemeinsame Kills geben mehr EP. Regeln: server/game/party-play.mjs.
 // Ohne Browser-APIs: game(), me(), send(), others(), ui kommen von außen (Tests mit Attrappen).
 import {ITEMS,grantLoot,upgradeVerdict} from './rpg.js';

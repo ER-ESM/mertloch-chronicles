@@ -640,7 +640,7 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .party-frames header{display:flex;justify-content:space-between;align-items:center;color:var(--kraft);font-size:10px;letter-spacing:.05em;text-transform:uppercase;text-shadow:0 1px 2px #000}
 .party-frames header button{pointer-events:auto;border:0;background:none;color:var(--kraft);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
 .party-member{padding:3px 6px;border:1px solid var(--kraft-2);border-radius:7px;background:#16241dd9}.party-member.far{opacity:.55}.party-member.dead .party-name{color:#d9694a}
-/* Würfelfenster (E-39): Bedarf/Gier um seltene Beute, blockiert das Spiel nicht */
+/* Würfelfenster (E-42): Bedarf/Gier um seltene Beute, blockiert das Spiel nicht */
 .roll-frames{position:absolute;left:50%;bottom:210px;transform:translateX(-50%);z-index:6;display:grid;gap:6px;width:min(320px,calc(100% - 32px));font-family:var(--read);color:var(--cream);pointer-events:none}
 .roll-card{position:relative;overflow:hidden;padding:8px 10px 10px;border:1px solid var(--kraft-2);border-radius:9px;background:#16241df2;box-shadow:0 4px 14px #0008;pointer-events:auto}
 .roll-card header{display:grid;gap:1px;margin-bottom:6px}.roll-card header b{font-size:15px}.roll-card header small{font-size:11px;color:var(--kraft)}.roll-card header em{font-style:normal;color:var(--ok)}

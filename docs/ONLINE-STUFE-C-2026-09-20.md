@@ -29,7 +29,7 @@ Server → Client: `mob {e,hp,max,tg,by?}` · `mobs {list}` (beim Betreten) · `
 `npm test` (u. a. `tests/shared-world.test.mjs`, `tests/game-server.test.mjs`, `tests/chat-window.test.mjs`). Von Hand: zwei Browser (einer privat), beide anmelden, im Chatfenster „Spieler" → Einladen, gemeinsam einen Lagergegner angreifen.
 Lokal: `PORT=4195 STATIC_DIR=. node server/game/server.mjs`, dann `http://127.0.0.1:4195/?online=1` (Service Worker vorher abmelden).
 
-## Nachtrag 21.09.2026 · Gruppenspiel (E-39)
+## Nachtrag 21.09.2026 · Gruppenspiel (E-42)
 
 Dateien: `server/game/party-play.mjs` (Würfeln, Weiterreichen), `net-party.js` (Client + Würfelfenster), Engine-Haken `game.netParty {near,loot,buff,gather}`, `sharedGather`, `applyPartyBuff`, `rpg.js grantLoot`.
 Client → Server: `offer {item}` · `choice {id,c:need|greed|pass}` · `qshare {item}` · `buff {b}`. Server → Client: `roll {id,item,from,secs}` · `rollpick {id,n,c}` · `rolled {id,item,winner,rolls[]}` · `qshare {from,item}` · `buff {from,b}`. API_VERSION 5.

@@ -186,9 +186,9 @@ export class Game{
   // ---------- Akt 1: Kapitel, Lager, Erinnerungsfetzen, Basisbau, Mentoren ----------
   /** Lager gehört zu einem Kapitel, das schon läuft? Lager ohne `chapter` sind Kapitel 1 bzw. Nebenquest-Lager. */
   // ── Geteilte Welt (online.js, E-35): der Server führt Lebenspunkte, Bedrohung und Ziel der Lagergegner ──
-  /** Gruppenspiel (E-39): ein Gruppenmitglied in der Nähe hat gesammelt – mein gleiches Sammelziel zählt mit. */
+  /** Gruppenspiel (E-42): ein Gruppenmitglied in der Nähe hat gesammelt – mein gleiches Sammelziel zählt mit. */
   sharedGather(item,from){if(this.dead||!this.quest.accepted||this.quest.chapterClaimed>=this.quest.chapter)return false;const index=this.objectives().findIndex(o=>o.kind==='gather'&&o.item===item);if(index<0)return false;const before=this.questCount(this.quest.chapter,index);if(this.setQuestCount(this.quest.chapter,index,before+1)===before)return false;const p=this.objectiveProgress(index);this.toast(from+' sammelt für die Gruppe · '+(ITEMS[item]?.name||item)+' '+p.done+'/'+p.need);if(this.questReady())this.toast(SYSTEM_LINES.chapterReady(STORY.giver));this.emit('rpgChanged');this.emit('save');return true;}
-  /** Gruppenspiel (E-39): Klassenbuff eines Gruppenmitglieds wirkt anteilig (BALANCE.party.buffShare) auch auf mich. */
+  /** Gruppenspiel (E-42): Klassenbuff eines Gruppenmitglieds wirkt anteilig (BALANCE.party.buffShare) auch auf mich. */
   applyPartyBuff(b,from){if(this.dead||!b?.name)return false;const k=BALANCE.party.buffShare;this.partyBuff={name:b.name,from,icon:b.icon,remaining:Math.min(60,Number(b.duration)||0),reduction:(Number(b.reduction)||0)*k,shield:Math.round((Number(b.shield)||0)*k),hot:Math.round((Number(b.hot)||0)*k),tick:1};this.effect('heal',this.player.x,this.player.y,{life:.8,max:.8});this.log(from+' stärkt die Gruppe: '+b.name+'.');return true;}
   netEnemy(netId){return this.enemies.find(e=>e.netId===netId)||null;}
   /** Schaden anderer Spieler: senkt nur die Lebenspunkte, keine Procs, keine Statistik. */
