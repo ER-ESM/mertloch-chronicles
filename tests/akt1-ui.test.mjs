@@ -14,11 +14,12 @@ import {addItem,ITEMS} from '../rpg.js';
 const world=new World(JSON.parse(readFileSync('data/mertloch.json','utf8')));
 const fresh=()=>new Game(world,{});
 
-test('Das Clanbuch bleibt ein Fenster mit höchstens fünf Reitern und trägt die Bude als Abschnitt der Aufträge (E-27)',()=>{
- assert.ok(BOOK_TABS.length<=5,'höchstens fünf Reiter');
+test('Das Clanbuch bleibt EIN Fenster; Figur, Kniffe und Talente sind eigene Seiten mit eigener Taste, die Bude bleibt Abschnitt der Aufträge (E-27, geändert 2026-09-21)',()=>{
+ assert.ok(BOOK_TABS.length<=7,'höchstens sieben Reiter');
  assert.equal(new Set(BOOK_TABS.map(t=>t[0])).size,BOOK_TABS.length);
  assert.equal(new Set(BOOK_TABS.map(t=>t[3])).size,BOOK_TABS.length,'jede Taste kommt genau einmal vor');
- assert.equal(TAB_OF.base,'quest');assert.equal(TAB_OF.book,'person');
+ const key=id=>BOOK_TABS.find(t=>t[0]===id)?.[3];assert.equal(key('person'),'C');assert.equal(key('book'),'P');assert.equal(key('talents'),'N');
+ assert.equal(TAB_OF.base,'quest');assert.equal(TAB_OF.book,'book');assert.equal(TAB_OF.talents,'talents');
 });
 
 test('Reiter „Bude“ zeigt vor Kapitel 2 die Trümmer und danach nur freigeschaltete Gebäude',()=>{

@@ -86,3 +86,5 @@ Gezeichnet wird in `world-prop-ui.js`. Liegt im Katalog (`assets/content-art/han
 ID **`prop-<kind>`** (z. B. `prop-schrotthaufen`, `prop-bus`, `prop-bude-tresen`), nimmt die UI es automatisch:
 Fußpunkt ist `pivot`, die Größe skaliert auf die Zeichenhöhe der Art. Ohne Bild bleibt der Ersatzkörper in der
 Fallback-Farbe aus `PROP_KINDS`. Für die Bude gilt dieselbe ID je Stufe – Stufe 0 ist `prop-bude-truemmer`.
+
+- **ui-tab-talente** (2026-09-21): Reitersymbol für die eigene Talente-Seite im Clanbuch (E-39), Format wie `ui-tab-kniffe`. Bis dahin steht dort das Elite-Abzeichen.

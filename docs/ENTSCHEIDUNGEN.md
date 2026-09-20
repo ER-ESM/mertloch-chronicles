@@ -505,3 +505,14 @@ Alle Zahlen stehen in `content/lighting.js`. Bildbelege vorher/nachher: `visual-
 5. **Bewusst nicht:** kein gemeinsamer Beutel/Plündermeister, kein Handel, kein serverseitiger Kampf (bleibt E-35). Der Server vertraut der Beute-Angabe des Finders wie beim Schaden; er säubert nur Form und Grenzen.
 
 Offen für die nächsten Runden (Reihenfolge = Wert fürs Gruppengefühl): Heilung und Schutz auf Mitspieler zielen, Wiederbeleben, Handel, Gilde/Clan, Gruppen-Instanz (Kiosk zu fünft), Weltbosse mit Ansage im Weltchat.
+**Bewusst offen.** Der Klassenwechsel innerhalb eines Spielstands (`switchMember`, Clan-Treff) existiert noch und widerspricht dem Slot-Gedanken; er sollte mit der Story-Überarbeitung entfallen. Feinere Gestaltung (Haare, Farben) braucht neue Grafik – Übergabe an die Grafik-Sitzung. Dialoge sprechen den Helden noch nicht überall mit Namen an.
+
+## E-43 · Figur, Kniffe und Talente sind eigene Seiten mit eigener Taste (ändert E-27)
+
+**Entschieden am 2026-09-21 vom Nutzer.** Die Figur-Seite trug Ausrüstung, Kniffe, Talente, Werte und Bande untereinander und war dadurch ein langer Scrollweg.
+
+- Drei eigene Clanbuch-Seiten: **Figur [C]** (Ausrüstung, Werte), **Kniffe [P]** (wie das Zauberbuch im Vorbild; K bleibt als alter Griff), **Talente [N]**. Jede baut nur ihren eigenen Inhalt.
+- Das Spielmenü liegt nur noch auf **Esc**; P gehört den Kniffen.
+- Die **Bande** (Figurenwechsel im Spiel) entfällt: Helden wählt man am Anmeldebildschirm (E-38). Das Spielmenü führt dorthin.
+- Spielmenü ohne „Clanbuch" am Desktop (Tasten und Dock reichen); auf Touch bleibt der Knopf, weil es dort keine Tasten gibt. Entwickler-Schaufenster (Effekt-Demo, Helden-Demo, Weltschmiede) liegen im Admin-Fenster statt in den Einstellungen.
+- E-27 gilt weiter für: EIN Fenster, keine Seiten zum Blättern, Bude als Abschnitt der Aufträge.

@@ -59,10 +59,10 @@ try{
  await b.resize(1440,1000);await fixture();const native=await rect('.player-panel');
  const f10=await read(`(()=>{const e=new KeyboardEvent('keydown',{key:'F10',code:'F10',bubbles:true,cancelable:true});document.dispatchEvent(e);return e.defaultPrevented})()`);assert.equal(f10,false);assert.equal(await editing(),false);
  await b.press('i');await b.press('Escape');assert.equal((await b.state()).popups.length,0);
- await b.press('Escape');assert.deepEqual(await read(`[...document.querySelectorAll('.game-menu-actions button')].map(b=>b.textContent)`),['UI bearbeiten','Hilfe','Einstellungen','Clanbuch','Charakterauswahl','Zum Anmeldebildschirm','Zurück zum Spiel']);
+ await b.press('Escape');assert.deepEqual(await read(`[...document.querySelectorAll('.game-menu-actions button')].map(b=>b.textContent)`),['UI bearbeiten','Hilfe','Einstellungen','Charakterauswahl','Zum Anmeldebildschirm','Zurück zum Spiel']);
  await b.screenshot(dir+'/escape-menu-desktop.png');await b.press('Tab');assert.equal(await read(`document.activeElement.dataset.shell`),'guide');for(const type of ['keyDown','keyUp'])await b.send('Input.dispatchKeyEvent',{type,key:'Enter',code:'Enter',windowsVirtualKeyCode:13,...(type==='keyDown'?{text:'\r'}:{})});await wait(250);assert.equal((await b.state()).popups[0].id,'guide');await b.press('Escape');
  await b.press('Escape');await click('.popup-menu [data-shell="settings"]');assert.equal(await read(`document.querySelector('.panel-tabs [aria-selected="true"]').textContent`),'Einstellungen');await b.press('Escape');
- await b.press('Escape');await click('[data-game-book]');assert.equal((await b.state()).popups[0].id,'guide');await b.press('Escape');
+ await b.press('Escape');assert.equal(await read(`!!document.querySelector('.popup-menu [data-game-book]')`),false,'Desktop: Clanbuch nur über Tasten und Dock (E-39)');await b.press('Escape');
  await b.press('Escape');await click('.popup-menu [data-close]');assert.equal((await b.state()).popups.length,0);
  await read(`game.aiming='ground'`);await b.press('Escape');assert.equal(await read('game.aiming'),null);assert.equal((await b.state()).popups.length,0);
  pass('F10 stays unbound; Esc closes windows/cancels aiming, opens a keyboard-accessible menu and routes every button');
