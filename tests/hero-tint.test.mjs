@@ -1,7 +1,7 @@
 // Helden-Aussehen: Hautton und Haarfarbe per Umfärben – Klassifizierung an den gemessenen Farben der drei Körper.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {classifyPixel,tintPixels,hslToRgb,rgbToHsl,normalizeTint,tintKey,parseTintKey,SKIN_TONES,HAIR_COLORS} from '../hero-tint.js';
+import {classifyPixel,tintPixels,hslToRgb,rgbToHsl,normalizeTint,tintKey,lookKey,parseTintKey,drawFaceItem,SKIN_TONES,HAIR_COLORS,FACE_ITEMS} from '../hero-tint.js';
 import {createCharacter,normalizeRoster} from '../characters.js';
 const px=(h,s,l)=>hslToRgb(h,s/100,l/100);
 
@@ -22,7 +22,15 @@ test('Umfärben: Hautton wird dunkler bei erhaltenem Verlauf, Haar nimmt die Zie
 });
 
 test('Auswahl: ungültige Werte fallen auf den Standard, Netz-Schlüssel hin und zurück, Held speichert sie',()=>{
- assert.deepEqual(normalizeTint({skin:'lila',hair:'rot'}),{skin:'hell',hair:'rot'});assert.equal(tintKey({skin:'hell',hair:'natur'}),'');assert.deepEqual(parseTintKey(tintKey({skin:'dunkel',hair:'grau'})),{skin:'dunkel',hair:'grau'});assert.deepEqual(parseTintKey('<script>.x'),{skin:'hell',hair:'natur'});
- const r=createCharacter(normalizeRoster(null),{name:'Rotschopf',classId:'baerbel',look:'kevin',tint:{skin:'gebraeunt',hair:'rot'}});assert.deepEqual(r.character.tint,{skin:'gebraeunt',hair:'rot'});assert.deepEqual(normalizeRoster(r.roster).list[0].tint,{skin:'gebraeunt',hair:'rot'});
+ assert.deepEqual(normalizeTint({skin:'lila',hair:'rot',face:'monokel'}),{skin:'hell',hair:'rot',face:'ohne'});assert.equal(tintKey({skin:'hell',hair:'natur'}),'');assert.deepEqual(parseTintKey(lookKey({skin:'dunkel',hair:'grau',face:'brille'})),{skin:'dunkel',hair:'grau',face:'brille'});assert.equal(lookKey({face:'stirnband'}),'hell.natur.stirnband');assert.equal(tintKey({face:'stirnband'}),'','Accessoire braucht kein umgefärbtes Bild');assert.deepEqual(parseTintKey('<script>.x'),{skin:'hell',hair:'natur',face:'ohne'});
+ const r=createCharacter(normalizeRoster(null),{name:'Rotschopf',classId:'baerbel',look:'kevin',tint:{skin:'gebraeunt',hair:'rot'}});assert.deepEqual(r.character.tint,{skin:'gebraeunt',hair:'rot',face:'ohne'});assert.deepEqual(normalizeRoster(r.roster).list[0].tint,{skin:'gebraeunt',hair:'rot',face:'ohne'});
  assert.ok(SKIN_TONES.length>=4&&HAIR_COLORS.length>=6);
+});
+
+test('Kopf-Accessoires: Brille nur von vorn, Stirnband rundum, ohne = nichts',()=>{
+ const calls=[],ctx={save(){},restore(){},fillRect:(...a)=>calls.push(a),set fillStyle(v){}};const frame=d=>({direction:d,sockets:{head:{x:96,y:55}}});
+ assert.equal(drawFaceItem(ctx,frame('se'),'dieter',{face:'ohne'}),false);assert.equal(calls.length,0);
+ drawFaceItem(ctx,frame('se'),'dieter',{face:'brille'});const front=calls.length;assert.ok(front>=5);calls.length=0;
+ drawFaceItem(ctx,frame('ne'),'dieter',{face:'brille'});assert.equal(calls.length,0,'von hinten keine Brille');
+ drawFaceItem(ctx,frame('nw'),'anni-poses',{face:'stirnband'});assert.ok(calls.length>=4,'Stirnband mit Knoten von hinten');assert.ok(FACE_ITEMS.length>=4);
 });

@@ -1,5 +1,5 @@
 import {contentAsset,contentArt} from './content-art.js';
-import {tintedFrame} from './hero-tint.js';
+import {tintedFrame,drawFaceItem} from './hero-tint.js';
 import {drawFittedEquipment} from './fitted-equipment-art.js';
 
 export const redesignArt={ready:false,catalog:null,images:new Map(),details:new Map(),gear:null,changed:null};
@@ -95,6 +95,7 @@ export function drawRedesignPerson(c,id,x,y,p={},magnify=1,drawClothing){
  // Equipped gloves and rings must remain above the restored painted fingers.
  drawFittedEquipment(c,sel,items,['wrists','hands']);
  if(drawClothing)drawClothing(c,items.filter(i=>handSlots.includes(i.slot)&&!(f.wearRuns&&['hands','wrists'].includes(i.slot))),clothingSockets,p);
+ if(p.tint&&!down&&!items.some(i=>i.slot==='head'))drawFaceItem(c,f,id,p.tint); // ein Helm verdeckt Brille und Stirnband
  if(p.parry>0&&!down){c.strokeStyle='#f3b84b';c.lineWidth=1.2/k;c.lineCap='round';c.beginPath();c.arc(96,110,50,s.west?2: -1.3,s.west?4.5:1.1);c.stroke();}
  c.restore();return true;
 }

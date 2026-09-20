@@ -7,7 +7,7 @@
 **Gewünscht.** Je Körper wählbare Varianten, ohne dass Ausrüstung neu gezeichnet werden muss:
 1. Haare: 4 Frisuren × 5 Farben je Körper (als eigene Ebene über dem Kopf, in allen Lauf- und Kampfposen der bestehenden Rigs).
 2. Hautton: erledigt. Wunsch an die Grafik: Porträts (`portrait-<körper>`) als Graustufen-Haut/-Haar-Ebenen, damit auch der Heldenrahmen die Farben zeigt; Glanzlichter der Haut in einem eigenen Farbton, damit sie mitgefärbt werden können.
-3. Gesicht: Bart/kein Bart bzw. Brille/keine Brille als Ebene.
+3. Gesicht: Brille, Sonnenbrille und Stirnband sind erledigt (prozedural, `drawFaceItem`). Offen: Bart/kein Bart als gezeichnete Ebene.
 
 **Technischer Vertrag.** `look` wird vom String zum Objekt `{body, hair, hairColor, skin, face}`; `characters.js` normalisiert bereits unbekannte Werte auf den Körper der Klasse, ein alter String bleibt gültig. Ebenen liegen unter `assets/heroes/<body>/<layer>-<variante>.png` im Raster der bestehenden Rig-Atlanten; die Farbvarianten entstehen zur Laufzeit per Palettentausch (eine Graustufen-Rampe je Ebene). Abnahme: Heldenhalle, Spielfigur, Porträt und andere Spieler zeigen dieselbe Kombination; `tests/characters.test.mjs` bekommt einen Fall für das Objekt.
 

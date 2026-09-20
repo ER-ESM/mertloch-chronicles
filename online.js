@@ -8,7 +8,7 @@ import {createNetWorld} from './net-world.js';
 import {createNetParty,mountRollUi} from './net-party.js';
 import {RARITIES} from './content/index.js';
 import {mergeRosters} from './characters.js';
-import {tintKey,parseTintKey} from './hero-tint.js';
+import {lookKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
 export const onlineEnabled=()=>!!API;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -58,7 +58,7 @@ async function api(path,body,method){
  * host: {game:()=>Game, worldKey:string, readLocal:()=>save|null, writeLocal:(save)=>void, reload:()=>void, toast:(t)=>void, openModal:(html,id)=>void, refresh:()=>void}
  */
 /** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
-export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1)))),k:p.look||undefined,kt:tintKey(p.tint)||undefined};}
+export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1)))),k:p.look||undefined,kt:lookKey(p.tint)||undefined};}
 export function mountOnline(host){
  const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null,hold:!!host.holdPresence};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;},async logout(){},enterWorld(){},leaveWorld(){},account:null};
