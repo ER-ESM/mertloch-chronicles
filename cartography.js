@@ -17,6 +17,8 @@ export function mapView(w,p,W,H,full,options={}){
  return{scale,ox:center.x-W/scale/2,oy:center.y-H/scale/2};
 }
 export function visibleCreatures(g,full,showCreatures=false){return g.enemies.filter(e=>e.hp>0&&(e===g.target||(full?showCreatures:(isElite(e)||e.aggro||e.behavior!=='neutral')&&distance(e,g.player)<190)));}
+export function worldBosses(g){return g.enemies.filter(e=>e.worldBoss&&e.hp>0);}
+export function drawWorldBossMarker(c,a,full=false){const r=full?10:6;c.save();c.strokeStyle='#ffd9c9';c.lineWidth=full?2:1.5;c.fillStyle='#8f2f2ccc';c.beginPath();c.arc(a.x,a.y,r+(full?6:4),0,7);c.fill();c.stroke();c.beginPath();c.moveTo(a.x-r,a.y-r/2);c.lineTo(a.x-r/2,a.y);c.lineTo(a.x,a.y-r);c.lineTo(a.x+r/2,a.y);c.lineTo(a.x+r,a.y-r/2);c.lineTo(a.x+r-1,a.y+r/2);c.lineTo(a.x-r+1,a.y+r/2);c.closePath();c.fillStyle='#eecb78';c.strokeStyle='#4d292b';c.lineWidth=2;c.fill();c.stroke();c.restore();}
 export function drawCreatureMarker(c,e,a,target=false){
  c.fillStyle=target?'#fff1bb':e.behavior==='neutral'&&!e.aggro?'#d9c57e':'#f2947c';
  c.beginPath();
@@ -41,8 +43,12 @@ export function drawAtlas(renderer,canvas,full=false,highlight=null,options={}){
  if(dest){let route;if(full){const key=[p.x,p.y,dest.x,dest.y].map(Math.round).join(',');if(renderer.atlasRoute?.key!==key)renderer.atlasRoute={key,path:w.findPath(p,dest)};route=renderer.atlasRoute.path;}else route=g.path?.length?g.path:[dest];path([p,...route]);c.strokeStyle='#242c35';c.lineWidth=4;c.stroke();c.strokeStyle='#f1cd77';c.lineWidth=2;c.setLineDash([5,4]);c.stroke();c.setLineDash([]);}
  const occupiedLabels=[];
  function textLabel(text,x,y,color){c.font='600 12px system-ui';const width=c.measureText(text).width+12,box={x:x-width/2,y:y-13,w:width,h:19};if(box.x<8||box.x+width>W-8||box.y<34||box.y+19>H-30||occupiedLabels.some(b=>box.x<b.x+b.w&&box.x+width>b.x&&box.y<b.y+b.h&&box.y+19>b.y))return;occupiedLabels.push(box);c.fillStyle='#202f2be8';c.fillRect(box.x,box.y,width,19);c.textAlign='center';c.fillStyle=color;c.fillText(text,x,y);}
+ // Der Name eines Weltbosses hat Vorrang vor den Ortsnamen.
+ if(full)for(const e of worldBosses(g)){const a=pos(e);if(inside(a,12))textLabel(e.name,a.x,a.y-22,'#ffd9c9');}
  const hits=[];for(const h of mapPlaces(g)){if(options.filter&&options.filter!=='all'&&h.kind!==options.filter)continue;const a=pos(h.point);if(!inside(a,full?16:8))continue;const selected=options.selected===h.id,r=full?11:6;c.fillStyle=h.kind==='shop'?'#836832':h.kind==='hub'?'#3b8174':'#a55c50';c.strokeStyle=selected?'#ffe4a2':h.kind==='shop'?'#f1d18b':h.kind==='hub'?'#b6e8c5':'#edaf89';c.lineWidth=selected?3:1.5;c.beginPath();if(h.kind==='hub')c.arc(a.x,a.y,r,0,7);else{c.moveTo(a.x,a.y-r-1);c.lineTo(a.x+r+1,a.y);c.lineTo(a.x,a.y+r+1);c.lineTo(a.x-r-1,a.y);c.closePath();}c.fill();c.stroke();if(full){c.textAlign='center';c.font='bold 11px system-ui';c.fillStyle='#fff2d4';c.fillText(h.number,a.x,a.y+4);textLabel(h.title,a.x,a.y+29,h.kind==='hub'?'#d1ead5':'#f2ccb0');if(h.quests){c.fillStyle='#f1cd77';c.beginPath();c.arc(a.x+9,a.y-9,4,0,7);c.fill();}}hits.push({...a,id:h.id,r:18});}
- for(const e of visibleCreatures(g,full,options.creatures)){const a=pos(e);if(!inside(a,8))continue;drawCreatureMarker(c,e,a,e===g.target);}
+ for(const e of visibleCreatures(g,full,options.creatures)){if(e.worldBoss)continue;const a=pos(e);if(!inside(a,8))continue;drawCreatureMarker(c,e,a,e===g.target);}
+ // Weltbosse stehen immer auf der Karte; auf der Umgebungskarte rücken sie an den Rand, wenn sie außerhalb liegen.
+ for(const e of worldBosses(g)){let a=pos(e);if(!inside(a,12)){if(full)continue;const dx=a.x-W/2,dy=a.y-H/2,f=Math.min((W/2-12)/Math.max(.01,Math.abs(dx)),(H/2-12)/Math.max(.01,Math.abs(dy)));a={x:W/2+dx*f,y:H/2+dy*f};}drawWorldBossMarker(c,a,full);}
  if(dest){let a=pos(dest);const off=!inside(a,13);if(!full&&off){const dx=a.x-W/2,dy=a.y-H/2,f=Math.min((W/2-13)/Math.max(.01,Math.abs(dx)),(H/2-13)/Math.max(.01,Math.abs(dy)));a={x:W/2+dx*f,y:H/2+dy*f};}if(!off||!full){c.strokeStyle='#ffe3a1';c.lineWidth=2;c.beginPath();c.arc(a.x,a.y,full?7:4,0,7);c.stroke();}}
  const a=pos(p);if(inside(a,6)){c.fillStyle='#18333299';c.beginPath();c.arc(a.x,a.y,full?15:10,0,7);c.fill();c.save();c.translate(a.x,a.y);c.fillStyle='#fff5d6';c.strokeStyle='#263d3b';c.lineWidth=2;c.beginPath();c.moveTo(0,-9);c.lineTo(-6,6);c.lineTo(0,3);c.lineTo(6,6);c.closePath();c.fill();c.stroke();c.restore();}
  c.textAlign='center';c.fillStyle='#f7e7bf';c.font=`bold ${full?13:10}px system-ui`;c.fillText('N',W-18,19);c.fillRect(W-19,23,2,full?14:5);
