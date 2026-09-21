@@ -41,7 +41,7 @@ void main(){
  vec2 st=vec2(uv.x,1.-uv.y),wp=origin+st*size;
  float fg=fog*smoothstep(.38,.82,fbm(wp*fogScale+fogWind*time));
  float streaks=0.;
- if(rain>0.){vec2 q=st*res/vec2(5.,64.);q.x+=q.y*.9;float a=step(.965,hash(floor(vec2(q.x,q.y+time*9.))))*fract(q.y+time*9.);vec2 r=st*res/vec2(3.,44.);r.x+=r.y*.9;float b=step(.975,hash(floor(vec2(r.x+31.,r.y+time*13.))))*fract(r.y+time*13.);streaks=(a*.6+b*.4)*rain*streak;}
+ if(rain>0.){vec2 q=st*res/vec2(5.,64.);q.x+=q.y*.9;float a=step(.965,hash(floor(vec2(q.x,q.y-time*9.))))*fract(q.y-time*9.);vec2 r=st*res/vec2(3.,44.);r.x+=r.y*.9;float b=step(.975,hash(floor(vec2(r.x+31.,r.y-time*13.))))*fract(r.y-time*13.);streaks=(a*.6+b*.4)*rain*streak;}
  if(full<.5){ // leichte Stufe: durchsichtige Überlagerung, vormultipliziert
   float a=clamp(fg+rain*dim,0.,1.);vec3 c=fogCol*fg+rainCol*streaks+vec3(.55,.6,.75)*flash;o=vec4(c,a);return;}
  vec2 d=vec2(0.);
