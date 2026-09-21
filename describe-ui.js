@@ -1,3 +1,4 @@
+import {termHelp} from './mechanic-help.js';
 import {categoryChips} from './category-ui.js';
 import {talentSkillsHtml} from './talent-ui.js';
 // Ein Tooltip-Baustein für alles Kampfrelevante (Welle D, docs/UEBERGABE-UI-2026-09-17.md §7/§8).
@@ -46,7 +47,7 @@ export function resolve(game,kind,id){
  if(!kind||id===undefined||id===null)return none;
  id=String(id);
  switch(kind){
-  case 'item':case 'building':case 'cast':case 'glossary':return {content:null,runtime:{kind,id}};
+  case 'mechanic':case 'item':case 'building':case 'cast':case 'glossary':return {content:null,runtime:{kind,id}};
   case 'throw':case 'ground':return {content:{kind,id},runtime:id===cls?{kind:'skill',id:kind}:null};
   case 'talentSkill':return {content:{kind,id},runtime:{kind:'skill',id}};
   case 'talent':return {content:{kind:'talent',id},runtime:{kind:'talent',id}};
@@ -174,15 +175,15 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
  const entry=key.runtime&&typeof game?.describe==='function'?game.describe(key.runtime.kind,key.runtime.id):null;
  if(!content&&!entry)return '';
  const live=entry?.live||null,liveKind=key.runtime?.kind||key.content?.kind||kind;
- const name=content?.name||entry?.name||'';
+ const name=entry?.name||content?.name||'';
  const icon=content?.icon||entry?.icon||null;
- const effect=content?.effect||entry?.info?.effect||'';
+ const effect=entry?.info?.effect||content?.effect||'';
  // Talent-Kurztexte enthalten historische Zahlen; Regeln und Werte kommen aus effect/numbers.
- const text=kind==='talent'?'':content?.text||'';
+ const text=(entry?.info?.effect||kind==='talent')?'':content?.text||'';
  const why=content?.why||entry?.info?.why||'';
  const links=content?.links?.length?content.links:(entry?.info?.links||[]);
- const numbers=mergeNumbers(content?.numbers?.length?content.numbers:(entry?.info?.numbers||[]),liveRows(liveKind,live));
- const terms=termList(key,entry);
+ const numbers=mergeNumbers(liveKind==='talent'&&entry?entry.info.numbers:content?.numbers?.length?content.numbers:(entry?.info?.numbers||[]),liveRows(liveKind,live));
+ const terms=termList(key,entry).map(t=>{const h=termHelp(game,t.id);return h?{...t,long:h.lines.join(' ')+' '+h.scope}:t;});
  const status=statusLine(liveKind,live);
 
  const numberHtml=numbers.length?'<dl class="describe-numbers">'+numbers.map(r=>
@@ -200,7 +201,7 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
   categoryChips(game,kind,id)+
   '<p class="describe-effect">'+esc(text||effect)+'</p>'+
-  (kind==='talent'?talentSkillsHtml(game,id,touch):'')+numberHtml+
+  (entry?.info?.context||[]).map(line=>'<p class="describe-context">'+esc(line)+'</p>').join('')+(kind==='talent'?talentSkillsHtml(game,id,touch):'')+numberHtml+
   (details?'<div class="describe-details"'+(shift?'':' hidden')+'>'+details+'</div>':'')+
   (details?'<footer class="describe-hint">'+(touch?'<button type="button" data-describe-more>'+esc(DESCRIBE_UI.detailsButton)+'</button>':esc(DESCRIBE_UI.shiftHint))+'</footer>':'')+
   '</div>';
@@ -219,8 +220,8 @@ export function describeExtras(game,kind,id,{shift=false,touch=false,includeEffe
  if(!content&&!entry)return '';
  const why=content?.why||entry?.info?.why||'';
  const links=content?.links?.length?content.links:(entry?.info?.links||[]);
- const terms=termList(key,entry);
- const effect=content?.effect||entry?.info?.effect||'';
+ const terms=termList(key,entry).map(t=>{const h=termHelp(game,t.id);return h?{...t,long:h.lines.join(' ')+' '+h.scope}:t;});
+ const effect=entry?.info?.effect||content?.effect||'';
  const linkHtml=links.length?'<div class="describe-links">'+links.map(entryId=>{
   const [lk,...rest]=String(entryId).split(':');const lid=rest.join(':');const target=contentDescribe(lk,lid);
   return target?'<button type="button" class="describe-link" data-describe-jump="'+esc(kniffAnchor(lk,lid))+'">'+esc(target.name)+'</button>':'';
@@ -349,7 +350,7 @@ export function linkReferences(root,game,selfKey=null){
 /** Karte zu einem Verweis: Glossarbegriff oder Beschreibungskarte mit Details. */
 export function refCard(game,key,{touch=false}={}){
  const [kind,...rest]=String(key).split(':'),id=rest.join(':');
- if(kind==='term'){const g=GLOSSARY[id];if(!g)return '';return '<div class="describe-card ref-term-card"><header class="describe-head"><div><strong>'+esc(g.name)+'</strong><small>'+esc(PANEL_UI.glossary||'Begriff')+'</small></div></header><p class="describe-effect">'+esc(g.short||'')+'</p>'+(g.long?'<p class="describe-why">'+esc(g.long)+'</p>':'')+'</div>';}
+ if(kind==='term'){const h=termHelp(game,id);if(h)return '<div class="describe-card ref-term-card"><header class="describe-head"><strong>'+esc(GLOSSARY[id]?.name||h.name)+'</strong></header>'+h.lines.map(line=>'<p>'+esc(line)+'</p>').join('')+'<p>'+esc(h.scope)+'</p></div>';const g=GLOSSARY[id];if(!g)return '';return '<div class="describe-card ref-term-card"><header class="describe-head"><div><strong>'+esc(g.name)+'</strong><small>'+esc(PANEL_UI.glossary||'Begriff')+'</small></div></header><p class="describe-effect">'+esc(g.short||'')+'</p>'+(g.long?'<p class="describe-why">'+esc(g.long)+'</p>':'')+'</div>';}
  return describeCard(game,kind,id,{shift:true,touch});
 }
 export const refTitle=key=>{const [kind,...rest]=String(key).split(':'),id=rest.join(':');return kind==='term'?(GLOSSARY[id]?.name||''):(contentDescribe(kind,id)?.name||'');};

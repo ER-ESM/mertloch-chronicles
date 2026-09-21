@@ -272,7 +272,7 @@ const PROC_EFFECT_INFO={
 };
 const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am markierten Ziel',beat:'Grundangriff im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick der Markierung',autoHit:'Treffer des Autoangriffs',heal:'Direkte Heilung',burst3:'Eskalation mit drei Punkten',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt'};
 const skillName=id=>{const b=BASE_SKILLS.find(s=>s.id===id);return TALENT_SKILLS[id]?.name||(b?({strike:'Grundangriff',mark:'Markierung',burst:'Eskalation',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung'})[id]:null)||({throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'})[id]||id;};
-function effectNumbers(effects={},source=TL){
+export function effectNumbers(effects={},source=TL){
  const out=[];
  for(const [key,value] of Object.entries(effects)){
   if(key.startsWith('proc:')){const r=PROC_RULES[key.slice(5)];if(r)out.push(...procNumbers(r));continue;}

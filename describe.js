@@ -1,3 +1,4 @@
+import {mechanicHelp,talentHelp,passiveHelp,skillHelp} from './mechanic-help.js';
 // Beschreibungs-API der Engine. Texte und Zahlen kommen aus content/ (Feld `info` bzw. die Helfer
 // describe()/describeItem()/describeStage(), sobald es sie gibt – Rückfall auf die Rohfelder text/description/passive).
 // Die Engine legt nur `live` obendrauf: was der Wert HEUTE ist, mit Ausrüstung, Talenten, Procs und Basisbau.
@@ -59,7 +60,7 @@ function describeSkill(game,id){
  if(s.cost)numbers.push(num('Kosten',cost,'Randale',''));
  if(s.range)numbers.push(num('Reichweite',Math.round((s.range+(cs.range||0))/8),'m',''));
  return {icon:s.icon||null,name:s.name,
-  info:infoFor(s,{effect:s.text||'',numbers},'skill',id),
+  info:{...infoFor(s,{effect:s.text||'',numbers},'skill',id),effect:skillHelp(game,id)},
   live:{available:available(game,id),level:skillLevel(game,id),cooldown:round(cd,2),baseCooldown:s.cd||0,remaining:round(Math.max(0,game.cooldowns[id]||0),2),
    ready:available(game,id)&&(game.cooldowns[id]||0)<=.01,cost,baseCost:s.cost||0,damage,
    heal:s.heal?Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4)):0,
@@ -72,7 +73,7 @@ function describeTalent(game,id){
  if(!t)return null;
  const state=game.rpg.talents,mine=list.includes(t),learned=!!state?.learned.includes(id);
  return {icon:t.icon||null,name:t.name,
-  info:{...infoFor(t,{effect:t.text||'',numbers:[]},'talent',id),effect:t.scaling?effectAt(t,Math.max(1,talentRank(state,id))):infoFor(t,{effect:t.text||''},'talent',id).effect,numbers:t.scaling?[num(t.scaling.label,t.scaling.values[Math.max(0,talentRank(state,id)-1)],t.scaling.unit)]:infoFor(t,{numbers:[]},'talent',id).numbers},
+  info:{...infoFor(t,{effect:t.text||'',numbers:[]},'talent',id),effect:talentHelp(game,t).effect,context:talentHelp(game,t).context,numbers:t.scaling?[num(t.scaling.label,t.scaling.values[Math.max(0,talentRank(state,id)-1)],t.scaling.unit)]:CONTENT.describe('talent',id).numbers},
   live:{learned,spec:mine?spec:Object.keys(TALENTS).find(s=>TALENTS[s].includes(t)),tier:t.tier,
    rank:talentRank(state,id),maxRank:t.maxRank,open:canLearnTalent(game,id),
    pointsLeft:Math.max(0,talentPoints(game)-spentPoints(state)),grants:t.grants||null,effects:effectsAt(t,Math.max(1,talentRank(state,id)))}};
@@ -83,7 +84,7 @@ function describePassive(game,id){
  if(!m)return null;
  const values=m.passives||{};
  return {icon:m.icon||null,name:m.name?m.name+' · Eigenart':'Eigenart',
-  info:infoFor(m,{effect:m.passive||'',numbers:Object.entries(values).map(([k,v])=>num(k,Array.isArray(v)?v.join('–'):v))},'passive',id),
+  info:{...infoFor(m,{effect:m.passive||'',numbers:Object.entries(values).map(([k,v])=>num(k,Array.isArray(v)?v.join('–'):v))},'passive',id),effect:passiveHelp(game,m.id)},
   live:{classId:m.id||id,active:game.member?.id===(m.id||id),values:{...values}}};
 }
 
@@ -162,6 +163,7 @@ function describeCast(game,id){
 /** game.describe(kind,id): content-Info plus Laufzeitwerte. Unbekannte Art oder Id → null. */
 export function describeEntry(game,kind,id){
  switch(kind){
+  case 'mechanic':{const h=mechanicHelp(game,id);return h?{name:h.name,icon:'book',info:{effect:h.lines[0],context:[...h.lines.slice(1),h.scope],numbers:[],why:'',links:[],terms:[]},live:{}}:null;}
   case 'skill':return describeSkill(game,id);
   case 'talent':return describeTalent(game,id);
   case 'passive':return describePassive(game,id);

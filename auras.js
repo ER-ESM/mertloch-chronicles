@@ -1,3 +1,4 @@
+import {mechanicHelp,skillHelp} from './mechanic-help.js';
 // Read-only projection of real combat state. No synthetic combat statuses or extra timers.
 import {AURA_TEXT,AURA_FIELD_SORTS,SPEC_MECHANICS,PROC_RULES} from './content/index.js';
 import {combatStats} from './rpg.js';
@@ -27,5 +28,6 @@ export function collectAuras(g){
   for(const id of ['stun','vulnerable','controlSlow'])if(e[id]>0)add('targetDebuffs',id,e[id]);
   if(e.mark>0&&e.slow<1)add('targetDebuffs','slow',e.mark);
  }
+ const help=mechanicHelp(g);if(help){for(const a of [...out.buffs,...out.debuffs]){if(['supply','clean','state','stack','hangover','rage','jackpot','miss','over','reaction','heat','hausverbot','fass','robbi','nest','spores'].includes(a.id))a.text=help.lines.join(' ');}}const mark=out.targetDebuffs.find(a=>a.id==='mark');if(mark)mark.text=skillHelp(g,'mark');
  return out;
 }
