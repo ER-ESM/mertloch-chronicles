@@ -23,13 +23,13 @@ test('Legacy saves bypass tutorial, fresh progress resumes and claimed tutorial 
  const g=new Game(world(),{},{guidedStart:true});tutorialConfirm(g);const next=new Game(world(),JSON.parse(JSON.stringify(g.save())));assert.equal(next.tutorial.step,1);assert.ok(tutorialActive(next));
  g.tutorial.step=5;g.tutorial.bagSpawned=true;const claimed=new Game(world(),g.save());assert.equal(claimed.rpg.loot.length,0);nextTick(claimed);assert.equal(claimed.tutorial.step,6);
 });
-test('Talent graphs (E-32): 30 Talente je Spec in 10 Reihen × 3 Pfaden, je Reihe genau eines, Pfadbau und Speicherprüfung',()=>{
- for(const [spec,tree] of Object.entries(TALENTS)){assert.equal(tree.length,30,spec);const cells=new Set(tree.map(t=>t.row+'/'+t.path));assert.equal(cells.size,30,spec+': jede Zelle genau einmal');for(const t of tree){assert.ok(t.row>=0&&t.row<10&&t.path>=0&&t.path<3,t.id);assert.equal(t.spent,t.row*TIER_POINTS);assert.ok(talentIconCell(t.id),t.id+' Icon-Zelle');}}
+test('Talent graphs: stable art IDs, five sparse tiers, open rows and saved builds',()=>{
+ for(const [spec,tree] of Object.entries(TALENTS)){assert.equal(tree.length,30,spec);const cells=new Set(tree.map(t=>t.row+'/'+t.path));assert.equal(cells.size,30,spec+': jede Zelle genau einmal');for(const t of tree){assert.ok(t.row>=0&&t.row<10&&t.path>=0&&t.path<3,t.id);assert.equal(t.spent,t.tier*TIER_POINTS);assert.ok(talentIconCell(t.id),t.id+' Icon-Zelle');}}
  assert.equal(Object.keys(CLASS_SPECS).length,3);
- const g=new Game(world(),{level:11,rpg:{talents:{spec:'dieter-wall',learned:[]}}}),tree=TALENTS['dieter-wall'],at=(row,path)=>tree.find(t=>t.row===row&&t.path===path).id;
- assert.ok(learnTalent(g,at(0,0)));assert.equal(learnTalent(g,at(2,0)),false,'Reihe 2 verlangt zwei Punkte in DIESEM Baum');
- assert.ok(learnTalent(g,'dieter-brew-0'),'Nachbarbaum ist offen');assert.equal(learnTalent(g,at(2,0)),false,'Punkte im Nachbarbaum öffnen dieses Stufen-Tor nicht');
- assert.ok(learnTalent(g,at(0,1)),'mehrere Talente je Reihe sind erlaubt');assert.ok(learnTalent(g,at(2,1)));assert.equal(unlearnTalent(g,at(0,0)),false,'Punkt, auf dem ein Stufen-Tor ruht, bleibt');assert.ok(unlearnTalent(g,at(2,1)));assert.ok(unlearnTalent(g,'dieter-brew-0'));
+ const g=new Game(world(),{level:11,rpg:{talents:{spec:'dieter-wall',learned:[]}}}),tree=TALENTS['dieter-wall'],at=(tier,path)=>tree.find(t=>t.tier===tier&&t.path===path).id;
+ assert.ok(learnTalent(g,at(0,0)));assert.equal(learnTalent(g,at(1,0)),false,'Reihe 2 verlangt zwei Punkte in DIESEM Baum');
+ assert.ok(learnTalent(g,'dieter-brew-0'),'Nachbarbaum ist offen');assert.equal(learnTalent(g,at(1,0)),false,'Punkte im Nachbarbaum öffnen dieses Stufen-Tor nicht');
+ assert.ok(learnTalent(g,at(0,1)),'mehrere Talente je Reihe sind erlaubt');assert.ok(learnTalent(g,at(1,1)));assert.equal(unlearnTalent(g,at(0,0)),false,'Punkt, auf dem ein Stufen-Tor ruht, bleibt');assert.ok(unlearnTalent(g,at(1,1)));assert.ok(unlearnTalent(g,'dieter-brew-0'));
  for(const spec of Object.keys(TALENTS))for(const p of [0,1,2]){const build=pathBuild(spec,p,10);assert.equal(build.length,10,spec+' Pfadbau');assert.equal(build.filter(id=>talentById(id).path===p).length,10,spec+' reiner Pfad');assert.equal(talentState({spec,learned:build.toReversed()},spec.split('-')[0]).learned.length,10,spec+' Speicherprüfung');}
  // quer geskillt: 6 + 3 + 1 über drei Bäume, Pfadboni zählen je Baum; ein Altstand (ein Talent je Reihe) bleibt gültig
  const cross=[...pathBuild('dieter-wall',0,6),...pathBuild('dieter-brawl',1,3),...pathBuild('dieter-brew',2,1)],st=talentState({spec:'dieter-brawl',learned:cross},'dieter');assert.equal(st.learned.length,10);assert.equal(st.spec,'dieter-brawl');

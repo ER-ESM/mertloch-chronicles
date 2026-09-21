@@ -19,7 +19,7 @@ import {registerRoll,QUALITIES} from './itemization.js';
 import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
 import {available,xpToNext} from './progression.js';
-import {talentPoints} from './talents.js';
+import {talentPoints,talentState} from './talents.js';
 import {freshClassState,classSkills,healPlayer,addGuard,beforeSkill,skillCost,performTalent,afterSkill,afterDamage,onParry,onKill,modifyHit,tickClass} from './class-mechanics.js';
 import {VillageLife} from './village-life.js';
 import {distance,rng,SCALE} from './world.js';
@@ -72,7 +72,7 @@ export class Game{
     this.sideQuests=Object.fromEntries((world.quests||[]).map(q=>{const old=sameWorld?saved.sideQuests?.[q.id]:null;return[q.id,{accepted:!!old?.accepted,progress:Math.min(q.required,Math.max(0,Number(old?.progress)||0)),collected:Array.isArray(old?.collected)?old.collected.filter(id=>q.items.some(i=>i.id===id)):[],claimed:!!old?.claimed}];}));
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
     this.campSerial=0;this.populateCamps();
-    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const build of Object.values(this.rpg.talentBuilds))build.learned=build.learned.slice(0,talentPoints(this));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
+    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
     initCompanions(this,sameWorld?saved.companions:null);
     initTutorial(this,saved,options.guidedStart);if(sameWorld&&saved.instance?.id===KIOSK_ROOM.id)enterKiosk(this,saved.instance);
   }

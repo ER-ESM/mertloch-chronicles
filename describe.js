@@ -5,7 +5,8 @@ import * as CONTENT from './content/index.js';
 import {ITEMS,combatStats,countItem,actionBar,barItemEntry,usableItem} from './rpg.js';
 import {skillDamage} from './equipment.js';
 import {skillCost} from './class-mechanics.js';
-import {TALENTS,talentPrerequisites,talentPoints} from './talents.js';
+import {TALENTS,talentPoints,spentPoints,talentRank,canLearnTalent} from './talents.js';
+import {effectAt,effectsAt} from './talent-ranks.js';
 import {available,skillLevel} from './progression.js';
 import {procCount,procIds} from './procs.js';
 
@@ -71,10 +72,10 @@ function describeTalent(game,id){
  if(!t)return null;
  const state=game.rpg.talents,mine=list.includes(t),learned=!!state?.learned.includes(id);
  return {icon:t.icon||null,name:t.name,
-  info:infoFor(t,{effect:t.text||'',numbers:Object.entries(t.effects||{}).map(([k,v])=>num(k,v))},'talent',id),
+  info:{...infoFor(t,{effect:t.text||'',numbers:[]},'talent',id),effect:t.scaling?effectAt(t,Math.max(1,talentRank(state,id))):infoFor(t,{effect:t.text||''},'talent',id).effect,numbers:t.scaling?[num(t.scaling.label,t.scaling.values[Math.max(0,talentRank(state,id)-1)],t.scaling.unit)]:infoFor(t,{numbers:[]},'talent',id).numbers},
   live:{learned,spec:mine?spec:Object.keys(TALENTS).find(s=>TALENTS[s].includes(t)),tier:t.tier,
-   open:mine&&!learned&&talentPrerequisites(t,state.learned)&&state.learned.length<talentPoints(game),
-   pointsLeft:Math.max(0,talentPoints(game)-(state?.learned.length||0)),grants:t.grants||null,effects:{...t.effects}}};
+   rank:talentRank(state,id),maxRank:t.maxRank,open:canLearnTalent(game,id),
+   pointsLeft:Math.max(0,talentPoints(game)-spentPoints(state)),grants:t.grants||null,effects:effectsAt(t,Math.max(1,talentRank(state,id)))}};
 }
 
 function describePassive(game,id){
@@ -102,13 +103,15 @@ function describeBuff(game,id){
 
 function describeProc(game,id){
  const rules=CONTENT.PROC_RULES||{},r=rules[id];if(!r)return null;
- const cs=combatStats(game),st=game.procState||{},armed=procIds(cs).includes(id),t=game.time;
+ const cs=combatStats(game),st=game.procState||{},armed=procIds(cs).includes(id),t=game.time,chance=cs['talentProcChance:'+id]??r.chance??1,leech=cs['talentProcLeech:'+id];
  const glow=r.glow?Math.max(st.free?.[r.glow]||0,st.empower?.[r.glow]||0,st.glow?.[r.glow]||0):0;
- const numbers=[num('Auslöser',r.trigger),...(r.chance<1?[num('Chance',Math.round(r.chance*100),'%')]:[]),...(r.every>1?[num('Jeder',r.every,'. Treffer')]:[]),num('Fenster',r.window,'s')];
+ const numbers=[num('Auslöser',r.trigger),...(chance<1?[num('Chance',Math.round(chance*100),'%')]:[]),...(r.every>1?[num('Jeder',r.every,'. Treffer')]:[]),num('Fenster',r.window,'s')];
+ const info=infoFor(r,{effect:r.text||'',numbers},'proc',id);info.numbers=info.numbers.map(n=>n.label==='Chance'?{...n,value:Math.round(chance*100)}:n);
+ if(leech!==undefined){const source=Object.values(TALENTS).flat().find(t=>t.effects?.['proc:'+id]);if(source){info.effect=effectAt(source,talentRank(game.rpg.talents,source.id));info.numbers=[num(source.scaling.label,Math.round(leech*100),'%')];}}
  return {icon:r.glow||null,name:r.name||id,
-  info:infoFor(r,{effect:r.text||'',numbers},'proc',id),
+  info,
   live:{armed,trigger:r.trigger,skill:r.skill||null,every:r.every||0,count:procCount(game,id),
-   active:glow>t,remaining:glow>t?round(glow-t,2):0,chance:r.chance??1,window:r.window||0,effect:{...r.effect}}};
+   active:glow>t,remaining:glow>t?round(glow-t,2):0,chance,window:r.window||0,effect:leech===undefined?{...r.effect}:{...r.effect,heal:{damage:leech}}}};
 }
 
 function describeItem(game,id){

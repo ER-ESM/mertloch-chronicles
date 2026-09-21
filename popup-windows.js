@@ -7,7 +7,7 @@ const widths={
 companions:780,
 shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:700,activity:430,bag:560,person:700,book:700,quest:640,base:640,map:760,menu:320,clan:700,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 // Buchfenster wachsen mit dem Bildschirm (MMO-Vorbild: Charakter- und Talentfenster füllen ein Drittel bis die Hälfte), nie unter 520 px am Desktop.
-const widthFor=id=>{const base=widths[id]||440;if(!isBook(id)||innerWidth<700)return base;return Math.min(base,Math.max(520,Math.round(innerWidth*.44)));}
+const widthFor=id=>{const base=widths[id]||440;if(id==='talents')return Math.min(1040,innerWidth-28);if(!isBook(id)||innerWidth<700)return base;return Math.min(base,Math.max(520,Math.round(innerWidth*.44)));}
 ;
 // Reiter seit 2026-09-21 (Nutzerauftrag): Figur [C], Kniffe [P], Talente [N] sind eigene Seiten statt Abschnitte einer langen Figur-Seite;
 // Bude und Erinnerungen bleiben Abschnitte der Aufträge. Die „Bande“ ist entfallen – Helden wählt man am Anmeldebildschirm.

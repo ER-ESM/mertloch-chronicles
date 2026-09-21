@@ -1,3 +1,4 @@
+import {learnCoreBuild} from './talent-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Game} from '../engine.js';
@@ -13,7 +14,7 @@ import {drawTreeOcclusion} from '../world-presence.js';
 const arena=()=>({id:'integration',seed:1,spawn:{x:0,y:0},npc:{x:0,y:0},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 function setup(spec='dieter-wall'){
  const g=new Game(arena(),{classId:spec.split('-')[0],level:11});g.random=()=>.99;
- assert.ok(changeSpec(g,spec));for(const t of TALENTS[spec].slice(0,10))assert.ok(learnTalent(g,t.id));
+ assert.ok(changeSpec(g,spec));learnCoreBuild(g,spec);
  const e=makeEnemy({x:25,y:0},1,{hp:100000,behavior:'neutral',roamWait:100,attackTimer:100});g.enemies=[e];g.target=e;
  return {g,e};
 }
@@ -70,7 +71,7 @@ for(const [spec,id,action,affected,seconds] of [
  ['baerbel-feedback','kurzer-hausbesuch','heal','mark',3],['kevin-fuse','doppelte-sicherung','heal','ground',3],
  ['kevin-hunt','nachladen-im-rennen','dash','throw',3],['kevin-hunt','schritt-voraus','interrupt','dash',2]
 ])test(id+' reduces the cooldown on its real gameplay trigger without granting a free skill',()=>{
- const {g,e}=setup(spec);g.cooldowns[affected]=10;
+ const {g,e}=setup(spec);g.cooldowns[affected]=10;if(action==='heal')g.player.hp-=100;
  if(action==='interrupt')e.cast={interruptible:true};cast(g,action);
  if(action==='parry')g.hitPlayer(e,10);
  assert.equal(fired(g,id),1);assert.equal(g.cooldowns[affected],10-seconds);assert.equal(g.procState.free[affected],undefined);
