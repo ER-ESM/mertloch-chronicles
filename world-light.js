@@ -49,7 +49,7 @@ export class WorldLight{
   else{const F=L.ambient.forest;let n=0;for(const t of world.trees)if(Math.abs(t.x-p.x)<F.radius&&Math.abs(t.y-p.y)<F.radius&&++n>=F.trees)break;goal=Z.fields+(Z.forest-Z.fields)*Math.min(1,n/F.trees);}
   this.dark+=(goal-this.dark)*(1-Math.exp(-L.ambient.ease*elapsed));return this.dark;}
  /** Sichtbare Lichtquellen in Weltkoordinaten. */
- sources(game,world,visible,time){const out=[],add=(kind,x,y,scale=1)=>{const s=L.sources[kind];if(s&&visible({x,y},s.radius+20))out.push({s,x:x+s.dx,y:y+s.dy,scale,seed:x*.37+y*.11});};
+ sources(game,world,visible,time){if(this.sourceCache?.time===time&&this.sourceCache.frame===this.frame&&this.sourceCache.game===game)return this.sourceCache.out;const out=[],add=(kind,x,y,scale=1)=>{const s=L.sources[kind];if(s&&visible({x,y},s.radius+20))out.push({s,x:x+s.dx,y:y+s.dy,scale,seed:x*.37+y*.11});};
   for(const p of world.props)if(p.type==='lantern')add('streetLantern',p.x,p.y);
   for(const site of [...(world.hubs||[]),...world.camps])for(const p of site.dressing||[])if(p.type==='lantern')add('lantern',p.x,p.y);
   for(const k of world.camps)if(k.type!=='wolf')add('campfire',k.x+19,k.y+19);
@@ -58,7 +58,7 @@ export class WorldLight{
   for(const z of game.fields||[])if(z.kind==='burn'&&z.remaining>0)add('burn',z.x,z.y,Math.max(.6,z.radius/60));
   for(const f of game.fx||[])if(['burst','impact','interrupt'].includes(f.type)&&f.max)add('flash',f.x,f.y,.5+f.life/f.max);
   add('hero',game.player.x,game.player.y);
-  for(const o of out)o.flicker=1+o.s.flicker*(Math.sin(time*9+o.seed)+Math.sin(time*5.3+o.seed*2))*.5;return out;}
+  for(const o of out)o.flicker=1+o.s.flicker*(Math.sin(time*9+o.seed)+Math.sin(time*5.3+o.seed*2))*.5;this.sourceCache={time,frame:this.frame,game,out};return out;}
  glow(color){let g=this.glows.get(color);if(!g){g=glowSprite(color);this.glows.set(color,g);}return g;}
  /** Lichtschicht über der fertigen Welt (Bildschirmkoordinaten): multiplizieren, warmen Schein aufhellen, Rand abdunkeln. */
  apply(view,game,world,time,elapsed){const {ox,oy,W,H}=view,dark=this.zoneDark(game,world,elapsed),visible=(o,pad)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad,lights=this.sources(game,world,visible,time),lw=Math.ceil(W/2),lh=Math.ceil(H/2),layer=this.lightLayer;

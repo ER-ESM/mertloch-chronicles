@@ -18,5 +18,7 @@ export const WORLD_FX={
  // Partikel laufen vollständig im Vertex-Shader. Funken steigen über Feuerstellen auf, Glühwürmchen erscheinen ab `fireflyFrom` Dunkelanteil.
  particles:{embers:220,fireflies:140,fireflyFrom:.16,fireflyFull:.32,cell:{x:1400,y:900}},
  // Selbstschutz: Kostet die Schicht im Mittel mehr als `budgetMs` je Bild, fällt sie nach `window` Bildern auf die leichte Stufe (ohne Weltbild-Textur) zurück.
- guard:{budgetMs:7,window:120}
+ // `slowMs`: Liegt der Bildabstand im Mittel darüber (22 ms ≈ unter 45 FPS), gilt die volle Stufe ebenfalls als zu teuer – Grafikkarten-Last
+ // (Weltbild-Textur, Bloom, Vollbild-Shader) erscheint in der CPU-Zeit nicht. Budget 4 ms: ein Bild hat bei 60 FPS nur 16,7 ms für alles.
+ guard:{budgetMs:4,window:60,slowMs:22}
 };

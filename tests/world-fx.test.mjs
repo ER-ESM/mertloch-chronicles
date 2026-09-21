@@ -69,3 +69,12 @@ test('die Einstellung „Wetter & Effekte" steht im Spielstand und ist standardm
  assert.notEqual(game.setSetting('fx',false),false);assert.equal(game.settings.fx,false);
  const again=new Game(world,{classId:'dieter',version:1,settings:{fx:false}});assert.equal(again.settings.fx,false);
 });
+
+test('Selbstschutz: zu hohe CPU-Kosten ODER zu niedriges Bildtempo schalten von voll auf leicht; erzwungene Stufe und Pausen nicht',async()=>{
+ const {WorldFx}=await import('../world-fx.js'),G=WORLD_FX.guard,run=(fx,ms,gap,n=G.window+5)=>{let now=1000;for(let i=0;i<n;i++){now+=gap;fx.guard(ms,now);}return fx;};
+ assert.equal(run(new WorldFx(),.5,16).mode,'voll','billig und flüssig bleibt voll');
+ assert.equal(run(new WorldFx(),G.budgetMs+3,16,400).mode,'leicht','CPU-Kosten über Budget');
+ const slow=run(new WorldFx(),.5,G.slowMs+10);assert.equal(slow.mode,'leicht','Grafikkarten-Last zeigt sich nur im Bildtempo');assert.match(slow.reason,/Bildtempo/);
+ assert.equal(run(new WorldFx({mode:'voll'}),.5,G.slowMs+10).mode,'voll','erzwungen bleibt');
+ const paused=new WorldFx();run(paused,.5,16,30);paused.guard(.5,999999);run(paused,.5,16);assert.equal(paused.mode,'voll','eine Pause zählt nicht als langsames Bild');
+});

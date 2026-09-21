@@ -579,3 +579,15 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Verworfen.** C (three.js-Renderer, 2–3 Wochen, alle Rollen warten, Grafik nur aus einer Blickrichtung brauchbar) und D (Live-3D, Monate, gesamte Pixelgrafik entfällt; widerspricht E-10 und E-30). three.js bleibt Werkzeug der Pre-Render-Werkstatt.
 
 **Bewusst offen.** Die Kosten der Weltbild-Textur sind nur mit Software-Grafik gemessen (dort ~40–50 ms, deshalb der Selbstschutz); seit E-46 folgt die Weltleinwand der Bildschirmauflösung (Dichte 2–4), die Textur ist damit höchstens bildschirmgroß – nur „Volle Grafikauflösung“ (`settings.fullRes`) macht sie wieder groß. Auf echter Hardware mit `?fx=debug` nachmessen. Druckwellen verzerren auch die Beschriftungen, die auf der Weltfläche liegen. Wetter hat keine Spielwirkung und keinen Ton. Der Kiosk-Innenraum bekommt keine Effekte.
+
+## E-48 · Leistung II: Selbstschutz der Effektschicht misst das Bildtempo, Raster-Index für ruhende Weltobjekte (21.09.2026)
+
+**Anlass.** Nutzer nach E-46/E-47: „Im Kampf und mit Animationen sinkt die FPS schon mal.“ Profil der Kampfszene: eigenes JavaScript ≈ 5 ms je Bild und breit verteilt (kein Einzelposten > 0,6 ms); Layout/Style ≈ 1,5 ms. Auffällig war die neue Effektschicht (E-47): Stufe `voll` lädt je Bild das Weltbild als Textur und baut Mipmaps (hier 19–24 ms), der Selbstschutz griff bei niedrigem Tempo erst nach > 20 s – und er sah nur CPU-Zeit, keine Grafikkarten-Last.
+
+**Entschieden.**
+1. **Selbstschutz ergänzt E-47 (Nr. 5):** zusätzlich zum CPU-Budget zählt das echte Bildtempo – liegt der mittlere Bildabstand in Stufe `voll` über `guard.slowMs` (22 ms ≈ unter 45 FPS), fällt die Schicht auf `leicht`. Budget 7 → 4 ms, Fenster 120 → 60 Bilder. Pausen (> 250 ms) zählen nicht, `?fx=voll` bleibt erzwungen.
+2. **Raster-Index** (`spatial-index.js`): Bäume, Props, Gebäude, Anwesen kommen je Bild aus den berührten 512er-Zellen (≈ 35 statt 3.324 Bäume) statt aus der ganzen Karte; Listenreihenfolge und genaue Sichtprüfung bleiben. Neuaufbau bei anderer Liste/Länge oder nach 2 s.
+3. **Lichtquellen je Bild nur einmal** bestimmen (Lichtschicht und Effektschicht teilen das Ergebnis).
+4. **FPS-Anzeige nennt die Effektstufe** („Effekte voll/leicht/aus“), damit sichtbar ist, wann der Selbstschutz gegriffen hat.
+
+**Offen.** Messrechner hat keine Grafikkarte und war bei der Messung zu 94 % ausgelastet – absolute Zahlen fehlen. Entscheidend ist die Rückmeldung vom echten Gerät: FPS/ms/Stufe im Kampf, jeweils mit „Wetter & Effekte“ an und aus.
