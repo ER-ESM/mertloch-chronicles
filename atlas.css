@@ -4,3 +4,5 @@ dialog.atlas-dialog{width:min(1150px,96vw);max-width:1150px;padding:28px;max-hei
 @media(max-width:760px){dialog.atlas-dialog{padding:22px 14px;width:96vw}.atlas-dialog h2{max-width:90%}.atlas-layout{grid-template-columns:1fr;gap:14px}.atlas-toolbar{gap:8px}.atlas-toolbar button{padding:9px 8px}.atlas-paper canvas{height:auto}.atlas-stamp{padding:6px;top:8px;left:8px}.atlas-key{gap:9px}#atlasPlaces{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.atlas-place em{display:none}#atlasSelection{margin-top:12px}.world-footer{align-items:center}.admin-summary{gap:12px}}
 
 .footer-tools{display:flex;align-items:center;gap:12px}#adminError{color:#f2b5a0}html:has(dialog[open]){overflow:hidden}
+
+#largeMap.can-pan{cursor:grab;touch-action:none}#largeMap.can-pan.panning{cursor:grabbing}
