@@ -5,7 +5,7 @@ import {merchantActorPoint} from './shop.js';
 import {SHOP_UI} from './content/index.js';
 import {drawClassField,drawClassWorldFx,classWorldReady} from './e32-world-art.js';
 import {drawCombatEffect,drawCombatGround,drawCombatStates} from './combat-fx-art.js';
-import {WORLD_ART_DENSITY} from './art-quality.js';
+import {worldDensity} from './art-quality.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
 import {drawTargetRings} from './target-ui.js';
@@ -43,7 +43,7 @@ function questBadge(c,x,y,glyph,framed,time=0){c.save();const w=framed?22:16,h=f
 function label(c,text,x,y,color='#ead9a7',size=8){c.save();c.font=size>=14?`bold ${size}px 'Jersey 15','Trebuchet MS',Georgia`:`${size}px Georgia`;const width=c.measureText(text).width,b={x:x-width/2-2,y:y-size-2,w:width+4,h:size+5};if(size<11&&labelBoxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)){c.restore();return;}labelBoxes.push(b);c.textAlign='center';c.strokeStyle='#293b44e8';c.lineWidth=1.5;c.lineJoin='round';c.strokeText(text,Math.round(x),Math.round(y));c.fillStyle=color;c.fillText(text,Math.round(x),Math.round(y));c.restore();}
 export class Renderer {
   constructor(canvas,world,game,options={}){this.actorRenderer=options.actorRenderer;this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.world=world;this.game=game;this.camera={...game.player};this.footfalls=new FootfallTrail();this.chunks=new Map();this.treeSprites=Array.from({length:10},(_,i)=>createComicTree(i%5,i>4));this.shake=0;this.bossSpeech=new BossSpeech();this.light=new WorldLight();this.zoom=2;this.frame=0;this.resize();}
-  resize(){const r=this.canvas.getBoundingClientRect();this.zoom=document.body.classList.contains('touch-mode')?(r.width<600?1.35:r.height<500?1.5:1.75):r.width<600?1.6:2;this.viewWidth=Math.ceil(r.width/this.zoom);this.viewHeight=Math.ceil(r.height/this.zoom);this.canvas.width=this.viewWidth*WORLD_ART_DENSITY;this.canvas.height=this.viewHeight*WORLD_ART_DENSITY;this.ctx.imageSmoothingEnabled=false;}
+  resize(){const r=this.canvas.getBoundingClientRect();this.zoom=document.body.classList.contains('touch-mode')?(r.width<600?1.35:r.height<500?1.5:1.75):r.width<600?1.6:2;this.viewWidth=Math.ceil(r.width/this.zoom);this.viewHeight=Math.ceil(r.height/this.zoom);this.density=worldDensity(this.zoom,this.game.settings?.fullRes);this.canvas.width=this.viewWidth*this.density;this.canvas.height=this.viewHeight*this.density;this.ctx.imageSmoothingEnabled=false;}
   /** Vorgerenderte Helden bringen ihren Schatten im Bild mit (E-41, Katalog-Flag shadowBaked): dann zeichnet die Welt keinen zweiten. */
   bakedShadow(item){const d=prerenderArt.drawn;return item.type==='player'&&prerenderArt.enabled&&!!d&&d.baked&&d.canvas===this.canvas&&performance.now()-d.at<400&&prerenderHasBakedShadow(d.classId);}
   screenToWorld(x,y){const r=this.canvas.getBoundingClientRect();return{x:(x-r.left)/r.width*this.viewWidth+this.camera.x-this.viewWidth/2,y:(y-r.top)/r.height*this.viewHeight+this.camera.y-this.viewHeight/2};}
@@ -51,7 +51,7 @@ export class Renderer {
   building(c,b){drawBuilding(c,b,this.game.time);}
   prop(c,p){if(!drawAssetProp(c,p))drawComicProp(c,p,this.game.time);}
   shrine(c){fountain(c,this.world.shrine,this.game.time);if(distance(this.game.player,this.world.shrine)<60)label(c,'Konterbrunnen',this.world.shrine.x,this.world.shrine.y-33,'#d3e1c4',7);}
-  draw(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);applyGrade(this.canvas,lit);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(WORLD_ART_DENSITY,0,0,WORLD_ART_DENSITY,0,0);this.shake*=.87;
+  draw(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);applyGrade(this.canvas,lit);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(this.density,0,0,this.density,0,0);this.shake*=.87;
     const ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*2)/2,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*2)/2;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
     for(let x=Math.floor(ox/512);x<=Math.floor((ox+W)/512);x++)for(let y=Math.floor(oy/512);y<=Math.floor((oy+H)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
@@ -81,8 +81,8 @@ export class Renderer {
     for(const bag of g.rpg.loot)if(visible(bag,25))sorted.push({type:'loot',obj:bag,y:bag.y});
     const merchant=merchantActorPoint(g);if(merchant&&visible(merchant,80))sorted.push({type:'merchant',obj:merchant,y:merchant.y});
     for(const m of w.mentors||[])if(visible(m)&&(!g.tutorial||g.tutorial.completed))sorted.push({type:'mentor',obj:m,y:m.y});
-    for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});sorted.sort((a,b)=>a.y-b.y);
-    for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});sorted.sort((a,b)=>a.y-b.y);
+    for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});
+    for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});
     for(const z of g.fields||[])if(z.remaining>0&&visible(z))sorted.push({type:'classField',obj:z,y:z.y});sorted.sort((a,b)=>a.y-b.y);
     // Bodenschatten aller stehenden Dinge in einer Ebene, eine Lichtrichtung (light-convention.js).
     if(lit)this.light.shadows(c,{ox,oy,W,H},sorted,{bounds:buildingVisualBounds,building:(cc,b)=>drawBuilding(cc,b,0),tree:(cc,t)=>{if(drawAssetTree(cc,t,0))return true;const sp=this.treeSprites[t.variant+(t.type==='pine'?5:0)];cc.drawImage(sp,Math.round(t.x-44*t.size),Math.round(t.y-96*t.size),Math.round(88*t.size),Math.round(110*t.size));return false;},baked:item=>this.bakedShadow?.(item)});

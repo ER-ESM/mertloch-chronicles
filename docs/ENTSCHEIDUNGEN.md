@@ -545,3 +545,18 @@ Offen: Gilde/Clan, Gruppen-Instanz (Kiosk zu fünft), Freundesliste, Post/Auktio
 **Verworfen.** *Bots am Server als Söldner* – sehen weder Zauber noch Instanzen, hängen an der Verbindung; bleiben als Dorfbewohner fürs Ambiente (Dienst `MertlochBots`, außerhalb des Repos). *Serverseitiger Kampf für Instanzen* – widerspricht E-35, zu groß für den Nutzen. *Boss-spezifische Skripte für Begleiter* – jeder neue Boss bräuchte Begleiter-Code.
 
 **Konsequenzen.** `docs/BEGLEITER-2026-09-21.md` (Aufbau, Schnittstelle, Grenzen). Offen: Sichtbarkeit fremder Begleiter für Mitspieler (Weitergabe über den Server), `g.partyHumans` aus `net-party.js`, Fenster/Gruppenrahmen/Grafik, Balancing-Erstlauf, Merkmale für Dungeon-Mechaniken, Pets als Klassenmechanik. Aufträge in `docs/backlog/ui.md`, `engine.md`, `balance.md`, `gameplay.md`, `klassen.md`. IDs `merc-*` stehen in Spielständen.
+
+## E-46 · Leistung: Weltdichte folgt dem Bildschirm, Licht als eine normale Überlagerung (21.09.2026)
+
+**Anlass.** Nutzer: „läuft nicht mehr flüssig, gerade im Kampf“. Messung (2024×900, Rechner ohne Grafikkarte, Kampf gegen 6 Keiler, Licht an): 12 FPS, schlechtestes Bild 94 ms. Spiellogik 0,3 ms – der Engpass war allein das Bild.
+
+**Entschieden.**
+1. **Weltdichte = Zoom × Gerätepixel, mindestens 2, höchstens 4** (`worldDensity` in `art-quality.js`). Vorher fest 4: 4040×1792 Canvas-Pixel für 2020×896 Bildschirmpixel. Zeichenzeit 23 → 10 ms. Die Grafik bleibt in Dichte 4; Einstellung „Volle Grafikauflösung“ (`settings.fullRes`, Standard aus) erzwingt sie.
+2. **Lichtschicht ohne `mix-blend-mode`** (ändert die Technik von E-39, nicht das Bild): statt zwei Ebenen (multiply + screen) EINE normale Alpha-Ebene – Dunkel und Wolken überdecken, Lichtquellen stanzen aus (`destination-out`), Schein liegt obenauf. Blend-Modi zwangen den Compositor, je Bild den Hintergrund zurückzulesen. Umrechnung Multiplizierfarbe → Deckfarbe in `cover()` (`world-light.js`); neue Werte `clouds.tint`, `glow.cover` in `content/lighting.js`.
+3. **FPS-Anzeige** (`fps-meter.js`, `settings.fps`) als Messwerkzeug für Spieler und Sitzungen.
+
+**Ergebnis.** Gleiche Szene: 32 FPS (Obergrenze des Messrechners, 30 % Leerlauf), schlechtestes Bild 31 ms. Vergleichsbilder `visual-review/performance/licht-vorher-*.png` / `licht-nachher-*.png`. Nachmessen: `scripts/perf-profile.playwright.js` (CPU-Profil Kampfszene).
+
+**Verworfen.** *Farbabstimmung in die Grafik backen* – der CSS-Filter kostet nach (1)+(2) nichts Messbares mehr. *Schatten statischer Objekte zwischenspeichern* – 2,3 ms, lohnt den Aufwand erst, wenn echte Geräte es zeigen.
+
+**Falle.** `restore()` in `drawContentPerson` führt jedes CPU-Profil an (≈25 %): dort rastert der Browser das aufgezeichnete Bild, die Figuren selbst kosten ≈3 ms. Nicht die Figuren optimieren, sondern die Pixelmenge.

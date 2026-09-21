@@ -204,3 +204,9 @@ test('FPS-Anzeige ist standardmäßig aus, per setSetting schaltbar und überleb
  const g=new Game(arena());assert.equal(g.settings.fps,false,'Standard aus');
  assert.equal(g.setSetting('fps',true),true);assert.equal(new Game(arena(),g.save()).settings.fps,true);
 });
+
+test('Weltdichte folgt dem Bildschirm (mindestens 2, höchstens Grafikdichte 4); „Volle Grafikauflösung“ erzwingt 4 und wird gespeichert',async()=>{
+ const {worldDensity,WORLD_ART_DENSITY}=await import('../art-quality.js');
+ assert.equal(worldDensity(2,false,1),2,'Standardmonitor, Zoom 2');assert.equal(worldDensity(1.6,false,1),2);assert.equal(worldDensity(2,false,1.5),3);assert.equal(worldDensity(1.75,false,3),WORLD_ART_DENSITY,'gedeckelt');assert.equal(worldDensity(2,true,1),WORLD_ART_DENSITY);
+ const g=new Game(arena());assert.equal(g.settings.fullRes,false);g.setSetting('fullRes',true);assert.equal(new Game(arena(),g.save()).settings.fullRes,true);
+});

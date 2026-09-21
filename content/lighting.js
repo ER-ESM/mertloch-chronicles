@@ -7,7 +7,7 @@ export const LIGHTING={
  shadow:{tree:.8,building:.5,actor:10,boss:16,prop:8,cacheLimit:90},
  // Dunkelanteil je Gebiet (0 = Mittag, 1 = Nacht) und wie schnell er beim Wechsel nachzieht.
  ambient:{tint:'#232c5a',ease:.9,zones:{rest:.04,fields:.1,forest:.26,camp:.3,cleared:.12,boss:.4},forest:{radius:130,trees:7}},
- clouds:{alpha:.2,size:620,wind:{x:7,y:3}},
+ clouds:{alpha:.2,tint:'#1c2a42',size:620,wind:{x:7,y:3}},
  // Lichtquellen: Farbe, Radius in Weltpixeln, Flackern (Anteil), Versatz der Lichtmitte gegen den Fußpunkt.
  sources:{
   lantern:{color:'#ffcb74',radius:78,flicker:.05,dx:9,dy:-18},
@@ -22,5 +22,6 @@ export const LIGHTING={
   hero:{color:'#ffe2b0',radius:70,flicker:0,dx:0,dy:-12}
  },
  // Anteil des warmen Scheins, der auch bei Tag sichtbar bleibt, und Zuwachs mit der Dunkelheit.
- glow:{day:.2,night:1}
+ // `cover`: Deckkraft des Scheins beim normalen Überdecken (früher `screen`, das heller auftrug).
+ glow:{day:.2,night:1,cover:.8}
 };
