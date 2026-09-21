@@ -30,10 +30,11 @@ export function mountAuraUI(root,getGame){
   if(!touch)return;
   const r=root.getBoundingClientRect(),style=getComputedStyle(document.body),safe=side=>parseFloat(style.getPropertyValue('--safe-'+side))||0;
   if(r.width>r.height){
-   let left=12+safe('left'),right=root.clientWidth-12-safe('right');
-   for(const sel of ['#touchStick','#touchActions','#touchUtility','.player-panel']){const b=root.querySelector(sel)?.getBoundingClientRect();if(!b?.width)continue;if(b.x+b.width/2<r.x+r.width/2)left=Math.max(left,b.right-r.left+8);else right=Math.min(right,b.left-r.left-8);}
-   const width=Math.max(44,right-left),short=root.clientHeight<360,split=Math.min(76,(width-8)/2);
-   for(const [i,el] of Object.values(bars).entries()){el.style.left=(left+(short&&i===2?split+8:0))+'px';el.style.width=(short&&i>0?(i===1?split:width-split-8):width)+'px';el.style.top=(100+safe('top')+(short?Math.min(1,i)*72:i*72))+'px';}
+   const tiny=root.clientHeight<360;let left=12+safe('left'),right=root.clientWidth-12-safe('right');
+   for(const sel of ['#touchStick','#touchActions','#touchUtility',...(!tiny?['.player-panel']:[])]){const b=root.querySelector(sel)?.getBoundingClientRect();if(!b?.width)continue;if(b.x+b.width/2<r.x+r.width/2)left=Math.max(left,b.right-r.left+8);else right=Math.min(right,b.left-r.left-8);}
+   const width=Math.max(44,right-left),short=root.clientHeight<430,split=Math.min(76,(width-8)/2),oneRow=tiny&&width>=144;
+   const top=Math.max(100+safe('top'),...['.player-panel','#targetPanel'].map(s=>root.querySelector(s)?.getBoundingClientRect()).filter(b=>b?.width&&b.left<r.left+right&&b.right>r.left+left).map(b=>b.bottom-r.top+8));
+   for(const [i,el] of Object.values(bars).entries()){el.style.left=(left+(oneRow?i*(width+6)/3:short&&i===2?split+8:0))+'px';el.style.width=(oneRow?(width-12)/3:short&&i>0?(i===1?split:width-split-8):width)+'px';el.style.top=(top+(oneRow?0:short?Math.min(1,i)*72:i*72))+'px';}
   }else{
    const player=root.querySelector('.player-panel').getBoundingClientRect(),width=Math.max(44,Math.min(104,root.clientWidth-safe('right')-(player.right-r.left)-20));
    const topline=root.querySelector('.touch-topline')?.getBoundingClientRect(),auraTop=Math.max(126+safe('top'),topline?.height?topline.bottom-r.top+8:0);

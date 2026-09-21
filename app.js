@@ -18,6 +18,8 @@ import {tutorialActive,tutorialConfirm,tutorialSignal} from './tutorial.js';
 import {mountTutorialUI,tutorialDialogue} from './tutorial-ui.js';
 import {loadTalentArt,paintTalentIcons,paintTalentIcon} from './talent-art.js';
 import {paintPersonPortrait} from './person-art.js';
+import {updatePlayerVitals} from './unit-frame.js';
+import {layoutUnitFrames} from './unit-layout.js';
 import {updateTargetIdentity} from './enemy-ui.js';
 import {selectUnitAt,unitAt,clearFriend,syncFriend,friendUnit,friendPanel} from './target-ui.js';
 import {TARGET_UI} from './content/index.js';
@@ -285,6 +287,8 @@ function buildActions(){if(popupControls?.dragging)return;const bar=$('#actionBa
 function momentumChip(g){const stacks=Math.min(3,g.momentum.stacks),src=contentPath('ui-momentum-'+stacks),rest=' '+Math.ceil(g.momentum.until-g.time)+' s';
  return 'Schwung '+(src?`<img class="momentum-mark" src="${src}" width="20" height="20" alt="${g.momentum.stacks} Stufen">`:'▲'.repeat(g.momentum.stacks))+rest;}
 function updateUI(){
+  layoutUnitFrames(document.querySelector('#gameShell'));
+  updatePlayerVitals(document,game);
  if(online?.social){const so=online.social;game.partyHumans=so.party().members.filter(m=>m.n!==so.me()).length;}
  companionHud?.update();
  if(popups.isOpen('companions')){

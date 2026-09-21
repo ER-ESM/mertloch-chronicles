@@ -32,6 +32,7 @@ export function mountChatWindow(root,options={}){
 
  // ── Lage und Größe ──
  function place(){
+  el.dataset.autoLayout=String(settings.x==null&&settings.y==null);
   const b=root.getBoundingClientRect(),w=Math.min(settings.w,b.width-16),h=Math.min(settings.h,b.height-16);
   const x=settings.x==null?12:settings.x,y=settings.y==null?Math.max(90,Math.min(370,b.height-h-200)):settings.y;
   el.style.width=w+'px';el.style.height=h+'px';el.style.left=Math.max(4,Math.min(b.width-w-4,x))+'px';el.style.top=Math.max(4,Math.min(b.height-h-4,y))+'px';

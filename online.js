@@ -1,4 +1,5 @@
 import {uiLoginCard,setUiLoginMode} from './ui-kit-mmo.js';
+import {partyMemberFrame,paintUnitPortraits} from './unit-frame.js';
 // Online-Schicht (Stufe B, docs/ONLINE-STUFE-B-2026-09-19.md; Server: server/game/server.mjs): Konto, Cloud-Spielstand, Bestenlisten, Anwesenheit.
 // Aktiv nur, wenn das Spiel von mertloch.esm-consultant.de (oder lokal mit ?online=1) ausgeliefert wird – die API liegt
 // dann unter ./api/ auf derselben Herkunft. Auf GitHub Pages bleibt alles wie bisher (Solo, Browserspeicher).
@@ -170,8 +171,12 @@ export function mountOnline(host){
   if(typeof document==='undefined')return;const shell=document.querySelector('#gameShell');if(!shell)return;
   if(!state.partyEl){const el=document.createElement('aside');el.className='party-frames';el.setAttribute('aria-label',ONLINE_UI.party);shell.appendChild(el);state.partyEl=el;el.addEventListener('click',e=>{if(e.target.closest('[data-party-leave]'))wsSend({t:'party',op:'leave'});else if(e.target.closest('[data-party-revive]'))mate.revive(e.target.closest('[data-party-name]').dataset.partyName);else{const m=e.target.closest('[data-party-name]');if(m){mate.setFriend(m.dataset.partyName);renderParty();}}});}
   const el=state.partyEl,list=state.party.members;el.hidden=!list.length;if(!list.length)return;
-  const html='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==(host.roomKey||host.worldKey);return '<div data-party-name="'+esc(x.n)+'" class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+(mate.state.friend===x.n?' aid':'')+'" title="'+esc(ONLINE_UI.aidHint)+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span>'+(x.s==='dead'&&!far?'<button type="button" data-party-revive>'+esc(ONLINE_UI.revive)+'</button>':'')+'<span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
-  if(html!==state.partyHtml){state.partyHtml=html;el.innerHTML=html;} // nur bei Änderung neu aufbauen: sonst verschluckt der Sekundentakt Klicks
+  const html='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.state.friend,aidHint:ONLINE_UI.aidHint,revive:ONLINE_UI.revive})).join('');
+  if(html!==state.partyHtml){
+   const focus=document.activeElement,name=focus?.closest('[data-party-name]')?.dataset.partyName,action=focus?.hasAttribute('data-party-revive')?'[data-party-revive]':'[data-party-select]';
+   state.partyHtml=html;el.innerHTML=html;paintUnitPortraits(el);
+   if(name)[...el.querySelectorAll('[data-party-name]')].find(row=>row.dataset.partyName===name)?.querySelector(action)?.focus({preventScroll:true});
+  } // nur bei Änderung neu aufbauen: sonst verschluckt der Sekundentakt Klicks
  }
  function showPeople(list){
   const leader=!state.party.members.length||state.party.leader===myName();

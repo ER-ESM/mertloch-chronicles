@@ -1,0 +1,199 @@
+/* Shared live-game material system. Layout and values remain in their owning components. */
+:root{
+ --chrome-material:url(assets/ui-chrome/runtime/panel-material.png);
+ --chrome-vital:url(assets/ui-chrome/runtime/vital-enamel.png);
+ --chrome-resource:url(assets/ui-chrome/runtime/resource-enamel.png);
+ --chrome-frame:url(assets/ui-chrome/runtime/frame-brass.png);
+ --chrome-inset:url(assets/ui-chrome/runtime/frame-inset.png);
+ --chrome-portrait:url(assets/ui-chrome/runtime/portrait-medallion.png);
+ --chrome-surface:#172e27;--chrome-light:#29483b;--chrome-ink:#0b1c17;
+ --chrome-gold:#d7b571;--chrome-text:#f4e5c5;--chrome-muted:#b8c4ab;
+}
+.player-panel,.companion-frame,.party-member{
+ border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;
+ background:linear-gradient(125deg,#2a4539,#172d25 60%,#10221c);background-clip:padding-box;
+ border-radius:0;box-shadow:0 3px 8px #06140f55;color:var(--chrome-text);
+}
+.player-panel{width:312px;min-height:106px;padding:6px 7px;gap:10px;align-items:center}
+.player-panel .unit-info{min-width:0}
+.player-panel .unit-name{gap:5px;margin:0 0 8px;align-items:center}
+.player-panel #playerName{font:400 20px/1.05 var(--display);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-panel #combatState{font:700 8px/1.2 var(--read);max-width:67px;white-space:normal;text-align:right;border:0;padding:0;background:none;color:var(--chrome-muted)}
+.unit-portrait,.player-panel .portrait{position:relative;display:block;flex:none;width:76px;height:76px;isolation:isolate;background:none;border:0;outline:0}
+.unit-portrait::after,.player-panel .portrait::after{content:'';position:absolute;inset:0;background:var(--chrome-portrait) center/100% 100% no-repeat;pointer-events:none;z-index:1}
+.unit-portrait canvas,.player-panel .portrait canvas{position:absolute;left:15%;top:15%;width:70%;height:70%;border-radius:50%;image-rendering:pixelated;outline:0;background:#294637}
+.unit-portrait .unit-level,.player-panel .portrait>span{position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);z-index:2;min-width:22px;height:18px;padding:0 3px;display:grid;place-items:center;font:400 16px/1 var(--display);color:var(--chrome-text);background:#21392c;border:1px solid #c09d58;border-radius:3px;box-shadow:0 1px 2px #071610}
+.companion-frames{width:274px}
+.companion-frame,.party-member .unit-select{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px;align-items:center;text-align:left}
+.companion-frame{padding:3px 4px;min-height:82px}
+.companion-frame .unit-portrait,.party-member .unit-portrait{width:52px;height:52px}
+.unit-content{display:block;min-width:0}
+.companion-frame strong,.party-name{font:400 17px/1.05 var(--display);color:var(--chrome-text);letter-spacing:.01em;margin:0 0 5px;display:flex;gap:4px;justify-content:space-between}
+.companion-frame strong small{font:700 9px/1.4 var(--read)}
+.companion-frame-meta,.unit-status{font:600 10px/1.3 var(--read);color:var(--chrome-muted);margin-top:4px}
+.companion-frame-meta small{font-size:9px}
+.party-frames{width:274px;gap:6px}
+.party-member{padding:3px 4px}
+.party-member .unit-select{border:0;background:none;box-shadow:none;padding:0;width:100%;font:inherit;color:inherit;cursor:pointer}
+.party-hp>span{position:absolute;inset:0;display:grid;place-items:center;font:700 11px/1 var(--read);color:#fff5d7;text-shadow:0 1px 2px #000}
+.party-hp{position:relative;height:17px;overflow:hidden}
+.companion-frame.is-selected,.party-member.aid{outline:2px solid #b9da89;outline-offset:-2px;box-shadow:inset 0 0 16px #80bb6830}
+.companion-frame:hover,.party-member:has(.unit-select:hover){background:linear-gradient(125deg,#36553e,#1d382c)}
+.unit-select:focus-visible{outline:2px solid #f6d994;outline-offset:4px}
+.touch-mode .player-panel{width:234px;height:auto;min-height:94px;padding:4px;gap:6px}
+.touch-mode .player-panel:has(#classMechanicArt:not([hidden])){height:auto;min-height:132px;align-items:flex-start}
+.touch-mode .player-panel .portrait{width:58px;height:58px;margin-top:4px}
+.touch-mode .player-panel #playerName{font-size:17px}
+.touch-mode .player-panel .unit-name{margin:3px 0 6px}
+.touch-mode .player-panel .portrait>span{left:50%;bottom:0;font-size:14px;min-width:20px;height:16px}
+.touch-mode .companion-frames,.touch-mode .party-frames{width:196px}
+.touch-mode .companion-frame{grid-template-columns:42px minmax(0,1fr);gap:5px;padding:2px;min-height:68px}
+.touch-mode .companion-frame .unit-portrait,.touch-mode .party-member .unit-portrait{width:42px;height:42px}
+.touch-mode .companion-frame strong{font-size:14px;margin-bottom:4px}
+.touch-mode .companion-frame strong small{display:none}
+.touch-mode .party-member .unit-select{grid-template-columns:42px minmax(0,1fr);gap:5px;min-height:44px}
+@media(orientation:landscape){.touch-mode .player-panel{width:224px}.touch-mode .companion-frames{width:auto}.touch-mode .companion-frame{grid-template-columns:32px minmax(0,1fr)}.touch-mode .companion-frame .unit-portrait{width:32px;height:32px}}
+@media(max-width:370px){.touch-mode .player-panel{width:218px}.touch-mode .player-panel .portrait{width:50px;height:50px}}
+
+/* Iteration 2: one readable, material-based meter family for every unit. */
+:is(.player-panel,.target-panel) .bar,.companion-life,.party-hp,.ui-meter{
+ position:relative;display:block;height:20px;margin:4px 0;overflow:hidden;border:2px solid transparent;
+ border-image:var(--chrome-inset) 10% / 4px / 0 stretch;border-radius:2px;background:#081b15;box-shadow:inset 0 2px 4px #0008;
+}
+:is(.player-panel,.target-panel) .bar i,.companion-life i,.party-hp i,.ui-meter[data-ui-meter=health] i{
+ display:block;height:100%;border-radius:0;background:#578654 var(--chrome-vital) left center/180px 100% repeat-x;
+ box-shadow:inset 0 1px #dcf0ac66,inset 0 -1px #062711;transition:width .16s linear;
+}
+.player-panel .energy{height:16px;margin-top:6px}
+.player-panel .energy i,.ui-meter[data-ui-meter=resource] i{background:#c28d35 var(--chrome-resource) left center/180px 100% repeat-x;box-shadow:inset 0 1px #fff4bf88,inset 0 -1px #6f4114}
+:is(.player-panel,.target-panel) .bar>span,.companion-life>span,.party-hp>span,.ui-meter>span{
+ display:flex;align-items:center;justify-content:center;position:absolute;inset:0;color:#fff5dc;
+ font:800 11px/1 var(--read);letter-spacing:0;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #06150b,1px 0 #06150b,-1px 0 #06150b;
+}
+.player-panel .energy>span{font-size:10px}
+.is-low-health :is(.hp,.companion-life,.party-hp) i,.target-panel:not(.friendly-target) .enemy-hp i{background-image:linear-gradient(#c17e5388,#853328aa),var(--chrome-resource);background-size:auto,180px 100%}
+.is-low-health .unit-portrait::after,.player-panel.is-low-health .portrait::after{filter:drop-shadow(0 0 3px #d97147)}
+.is-down .unit-portrait,.party-member.dead .unit-portrait{filter:grayscale(.85);opacity:.75}
+.companion-frame.is-selected .unit-portrait::after,.party-member.aid .unit-portrait::after{filter:drop-shadow(0 0 3px #c3ed9a)}
+.target-panel{border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;background:linear-gradient(125deg,#293e31,#14271f);border-radius:0;padding:8px;color:var(--chrome-text)}
+.touch-mode .player-panel .bar{height:18px;margin:4px 0}
+.touch-mode .player-panel .energy{height:15px}
+.touch-mode .player-panel .energy>span{font-size:10px;line-height:1}
+.touch-mode .companion-life,.touch-mode .party-hp{height:18px}
+@media(prefers-reduced-motion:reduce){.bar i,.companion-life i,.party-hp i{transition:none}}
+
+/* Iteration 3: panels, window headers and explanations share the same material. */
+.game-popup,.hud:not(.player-panel):not(.target-panel),.online-card,.hud-toolbar,#combatMeter,.training-dock,.chat-window.active,.ui-panel{
+ border-color:transparent;border-image:var(--chrome-frame) 22% / 18px / 0 stretch;border-radius:0;
+ background-color:var(--chrome-surface);background-image:linear-gradient(135deg,#294739c9,#10251fdd),var(--chrome-material);
+ background-size:auto,384px 384px;background-clip:padding-box;box-shadow:0 4px 14px #06140f66;color:var(--chrome-text);
+}
+.game-popup{border-width:8px}
+.game-popup .popup-titlebar{height:42px;padding:0 5px 0 10px;background:linear-gradient(90deg,#10221bed,#2e4533c9);border-bottom:1px solid #9f874855}
+.game-popup .popup-titlebar strong{font:400 20px/1 var(--display);letter-spacing:.025em;color:var(--chrome-text)}
+.game-popup .popup-body{background:transparent;padding:15px}
+.game-popup .book-tabs{background:#0f241bb8;border-bottom:1px solid #c5a26866;padding:8px 8px 0;gap:6px}
+.game-popup .panel-tabs{background:#0c221a50;border-bottom-color:#a9905466}
+.item-tooltip,#auraTooltip,.ui-tooltip{
+ border:7px solid transparent;border-image:var(--chrome-frame) 22% / 14px / 0 stretch;border-radius:0;
+ background:#11291f var(--chrome-material) center/384px 384px;color:var(--chrome-text);box-shadow:0 4px 15px #0008;
+}
+.game-popup :is(.companion-offer,.guide-card,.book-skill,.character-stats>div),.ui-card{
+ border:5px solid transparent;border-image:var(--chrome-inset) 10% / 7px / 0 stretch;border-radius:0;
+ background:linear-gradient(135deg,#2c4738aa,#10241eaa);color:var(--chrome-text);
+}
+.game-popup .companion-offer header span,.game-popup .companion-offer h3{color:var(--role,var(--chrome-text))}
+.conversation-portrait{border-radius:50%;outline:0;background:#284330;isolation:isolate}
+.conversation-portrait::after{content:'';position:absolute;inset:0;background:var(--chrome-portrait) center/100% 100% no-repeat;pointer-events:none;z-index:2}
+.quest-panel h3{color:var(--chrome-text);line-height:1.15}
+.quest-panel .panel-kicker,.map-caption{color:var(--chrome-gold)}
+.minimap{padding:8px}
+.minimap canvas{width:100%}
+.touch-mode .game-popup .popup-titlebar{height:44px;min-height:44px}
+.touch-mode .game-popup .popup-titlebar strong{font-size:18px}
+.touch-mode .game-popup .popup-body{padding:10px}
+.touch-mode .game-popup .book-tabs{padding:5px 4px 0}
+
+/* Iteration 4: reusable controls; rarity/proc borders keep their semantic colors. */
+.game-shell :is(.gold-button,.outline-button,.ui-button,.game-menu-actions>button,.companion-panel button,.companion-frames header button,.party-frames header button,.popup-close,.world-menu-brand,.world-controls button,.game-menu-rail button,#touchMenu,#touchBook,#touchPage,#touchCancelAim){
+ border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;border-radius:2px;
+ background:linear-gradient(#36513ce8,#172e25ef),var(--chrome-material);background-size:auto,192px 192px;
+ color:var(--chrome-text);box-shadow:0 2px 3px #081b1655;text-decoration:none;text-shadow:none;
+}
+.game-shell :is(.gold-button,.ui-button[data-ui-variant=primary]){
+ background:linear-gradient(#654522bb,#3d2b17cc),var(--chrome-resource);background-size:auto,160px 100%;
+ border-image:var(--chrome-frame) 22% / 9px / 0 stretch;color:#fff0c9;
+}
+.game-shell :is(.gold-button,.outline-button,.ui-button,.game-menu-actions>button,.companion-panel button,.companion-frames header button,.popup-close,.world-menu-brand,.game-menu-rail button):hover:not(:disabled){
+ background-color:#3d543c;box-shadow:inset 0 0 0 1px #f4d39599,0 2px 5px #06130f77;filter:brightness(1.12);
+}
+.game-shell :is(.gold-button,.outline-button,.ui-button,.game-menu-actions>button,.companion-panel button):active:not(:disabled){box-shadow:inset 0 3px 6px #06150daa;filter:brightness(.95)}
+.game-shell :is(.gold-button,.outline-button,.ui-button,.game-menu-actions>button,.companion-panel button):disabled{filter:saturate(.25);opacity:.48;box-shadow:none}
+.game-shell :is(button,input,select,textarea):focus-visible{outline:2px solid #ffe0a0;outline-offset:2px}
+.game-shell .game-menu-actions>button{font:400 18px/1.15 var(--display);letter-spacing:.015em;min-height:44px}
+.game-shell .world-menu-brand{font:700 13px/1 var(--read)}
+.game-shell .game-menu-rail button{box-shadow:0 2px 6px #06150c99}
+.game-shell .game-menu-rail button canvas{filter:drop-shadow(0 2px 1px #06150c)}
+.game-popup .book-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) 44px;gap:5px}
+.game-popup .book-tabs button,.game-popup .panel-tabs button,.companion-panel .companion-tabs button{
+ position:relative;border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;
+ border-radius:2px;background:linear-gradient(#294235,#182e25);color:#c5ceb7;min-width:0;box-shadow:none;
+}
+.game-popup .book-tabs button{padding:7px 3px;gap:5px}
+.game-popup .book-tabs button[aria-selected=true],.game-popup .panel-tabs button[aria-selected=true],.companion-panel .companion-tabs button[aria-pressed=true]{
+ background:linear-gradient(#634e2a,#303a27);color:#fff0c8;border-image-source:var(--chrome-frame);border-image-slice:22%;border-image-width:9px;
+ box-shadow:inset 0 -3px #e3c175;
+}
+.game-popup .book-tabs button:hover,.game-popup .panel-tabs button:hover{color:#fff0c8;filter:brightness(1.12)}
+.game-popup .book-tabs button canvas{filter:drop-shadow(0 2px 1px #0b1d13);flex-shrink:0}
+.game-popup :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea),.online-form input,.ui-field input{
+ border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;border-radius:2px;
+ background:#0d241c;color:var(--chrome-text);font-family:var(--read);box-shadow:inset 0 2px 5px #06140d66;
+}
+.game-popup :is(input,textarea)::placeholder{color:#a4b39b}
+.game-popup :is(input[type=checkbox],input[type=radio],input[type=range]){accent-color:var(--chrome-gold)}
+.game-popup .item-slot,.binding-slot,.skill{background:linear-gradient(140deg,#314636,#10231d);border-radius:3px;box-shadow:inset 0 1px 2px #060f0b99}
+.game-popup .item-slot.empty{background:linear-gradient(140deg,#152b21,#20382b);box-shadow:inset 0 2px 5px #07140e88;border-style:solid;border-color:#58704b66}
+.action-bar{border:5px solid transparent;border-image:var(--chrome-frame) 22% / 12px / 0 stretch;background:#152d23 var(--chrome-material) center/256px 256px;border-radius:0}
+.touch-mode .game-popup .book-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}
+.touch-mode .game-popup .book-tabs button{padding:6px 2px}
+.touch-mode .game-popup .popup-close{min-width:44px;min-height:44px}
+@media(max-width:370px){.touch-mode .game-popup .book-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Iteration 5: a single group rail, compact touch variants and shared canvas trim. */
+#unitGroupDock{position:absolute;z-index:8;display:flex;flex-direction:column;gap:8px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#aa8b51 #152a20;pointer-events:auto;padding:2px;}
+#unitGroupDock[hidden]{display:none}
+#unitGroupDock :is(.party-frames,.companion-frames){position:static;inset:auto;width:100%;max-height:none;overflow:visible;flex:none;margin:0;padding:0;gap:6px;}
+#unitGroupDock .party-frames[hidden],#unitGroupDock .companion-frames[hidden]{display:none}
+#unitGroupDock .party-frames{order:0}#unitGroupDock .companion-frames{order:1}
+.start-open #unitGroupDock{display:none}
+#unitGroupDock .party-frames header{min-height:28px;padding:0 4px}
+#unitGroupDock .party-frames header button{min-height:30px;padding:3px 7px}
+#unitGroupDock .party-member [data-party-revive]{float:none;display:block;width:100%;min-height:36px;margin-top:5px;background:#3c5839;border:1px solid #b6c68b;color:var(--chrome-text)}
+.touch-mode #unitGroupDock .party-frames header button,.touch-mode #unitGroupDock .party-member [data-party-revive]{min-height:44px}
+.touch-mode #unitGroupDock.unit-dock-landscape :is(.party-frames,.companion-frames){display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:5px}
+.touch-mode #unitGroupDock.unit-dock-landscape .party-frames>header{display:flex;grid-column:1/-1;order:1}
+.touch-mode #unitGroupDock.unit-dock-landscape .companion-frames>header{display:none}
+.touch-mode #unitGroupDock.unit-dock-landscape .companion-frame{min-height:60px;padding:2px;grid-template-columns:32px minmax(0,1fr)}
+.touch-mode #unitGroupDock.unit-dock-landscape .companion-frame strong{font-size:13px;white-space:nowrap}
+.touch-mode #unitGroupDock.unit-dock-landscape .companion-life{height:17px}
+.touch-mode #unitGroupDock.unit-dock-landscape .companion-life>span{font-size:10px}
+.touch-mode #unitGroupDock.unit-dock-landscape .companion-frame-meta{display:none}
+.touch-mode #unitGroupDock.unit-dock-landscape .unit-level{font-size:11px;min-width:16px;height:13px}
+.game-shell .game-menu-actions>.gold-button{background:linear-gradient(#77562bb0,#40301dbb),var(--chrome-resource);background-size:auto,180px 100%;color:#fff2cb;border-image:var(--chrome-frame) 22% / 9px / 0 stretch}
+.player-panel .portrait,.unit-portrait{filter:drop-shadow(0 2px 2px #06170ca0)}
+.player-panel.in-combat #combatState{color:#f4b99e;background:none;border:0}
+.party-member .party-name{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block}
+.companion-frame strong{min-width:0}
+.touch-mode .player-panel:has(#classMechanicArt:not([hidden])){min-height:138px}
+@media(orientation:portrait){
+ .touch-mode:has(#classMechanicArt:not([hidden])) .touch-topline,.touch-mode:has(#classMechanicArt:not([hidden])) #targetPanel{top:calc(160px + var(--safe-top))}
+ .touch-mode #chatWindow[data-auto-layout=true]:not(.active):not([data-hud-custom]){top:var(--chat-idle-top,50%)!important;height:52px!important;min-height:0}
+}
+@media(orientation:landscape){
+ .touch-mode .player-panel:has(#classMechanicArt:not([hidden])){min-height:128px}
+ .touch-mode #chatWindow[data-auto-layout=true]:not(.active):not([data-hud-custom]){left:calc(244px + var(--safe-left))!important;top:auto!important;bottom:16px;width:calc(100% - 430px - var(--safe-left) - var(--safe-right))!important;min-width:90px;height:28px!important;min-height:0}
+ .touch-mode #chatWindow:not(.active) .chat-tabs{flex-wrap:nowrap;overflow-x:auto;flex:none}
+ .touch-mode #targetPanel:not([data-hud-custom]){left:calc(246px + var(--safe-left))}
+}
+body:not(.touch-mode) #targetPanel:not([data-hud-custom]){left:350px;top:68px}

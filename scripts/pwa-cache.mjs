@@ -5,7 +5,7 @@ const root=new URL('../',import.meta.url);
 export async function writePrecache(){const files=(await readdir(root)).filter(n=>/\.(js|css|html|webmanifest)$/.test(n)&&!['sw.js','precache-manifest.js'].includes(n));files.push('data/mertloch.json');for(const file of await readdir(new URL('content/',root),{recursive:true}))if(file.endsWith('.js'))files.push('content/'+file.replaceAll('\\','/'));// Nur die tatsächlich verwendeten Exporte der Grafiklieferung: sources/, review/, generation-*.json
 // und PROMPTS.md sind Herkunftsdaten und gehören nicht in den Spiel-Cache.
 files.push('assets/content-art/handoff-catalog.json');
-for(const folder of ['ui-kit','class-visuals','class-mechanics','content-art/e32','content-art/locomotion'])for(const file of await readdir(new URL('assets/'+folder+'/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/'+folder+'/runtime/'+file);
+for(const folder of ['ui-kit','ui-chrome','class-visuals','class-mechanics','content-art/e32','content-art/locomotion'])for(const file of await readdir(new URL('assets/'+folder+'/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/'+folder+'/runtime/'+file);
 // Lokal vendorte Schriften (OFL): Jersey 15 und Nunito, damit die Oberfläche offline im Stil bleibt.
 for(const file of await readdir(new URL('assets/fonts/',root)))if(file.endsWith('.woff2'))files.push('assets/fonts/'+file);
 // Preview graphics are cached on first use. Integrity pins them to the active release.

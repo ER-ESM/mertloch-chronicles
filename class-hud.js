@@ -2,6 +2,7 @@ import {SPEC_MECHANICS} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {e32Art} from './e32-art.js';
 import {loadMechanicArt,paintMechanicSprite} from './class-mechanic-art.js';
+import {loadChromeArt,paintChromeFrame} from './ui-chrome.js';
 const clamp=v=>Math.max(0,Math.min(1,v||0));
 const accents={'dieter-wall':'#e4b96b','dieter-brawl':'#efc468','dieter-brew':'#d8ac62','baerbel-care':'#edc474','baerbel-feedback':'#b5dc64','baerbel-stage':'#f18da2','kevin-fuse':'#77d7df','kevin-iron':'#e5b768','kevin-hunt':'#f1ca6b'};
 /** Reads authoritative resources; painting never advances or consumes a mechanic. */
@@ -20,7 +21,7 @@ function frame(c,accent){
  c.clearRect(0,0,440,112);c.imageSmoothingEnabled=false;
  const bg=c.createLinearGradient(0,0,0,112);bg.addColorStop(0,'#294137');bg.addColorStop(.45,'#192f28');bg.addColorStop(1,'#11251f');
  round(c,1,1,438,110,15);c.fillStyle=bg;c.fill();c.lineWidth=2;c.strokeStyle='#907951';c.stroke();
- round(c,5,5,430,102,11);c.strokeStyle='#465443';c.lineWidth=1;c.stroke();
+ paintChromeFrame(c,0,0,440,112,20);
  c.fillStyle='#0e221d';round(c,8,8,90,96,10);c.fill();
  c.strokeStyle='#596149';c.beginPath();c.moveTo(101,15);c.lineTo(101,97);c.stroke();
  for(const x of [10,430])for(const y of [10,102]){c.fillStyle='#b69a61';c.fillRect(x-1,y-1,3,3);}
@@ -59,4 +60,4 @@ export function drawClassHud(c,state){if(!state)return;
  }
  if(active){c.fillStyle='#0b1d18';c.fillRect(112,103,310,2);c.fillStyle=accent;c.fillRect(112,103,310*clamp(state.left/state.total),2);}
 }
-export function updateClassHud(g){let cv=document.getElementById('classMechanicArt');if(!cv){cv=document.createElement('canvas');cv.id='classMechanicArt';cv.width=440;cv.height=112;cv.tabIndex=0;cv.setAttribute('role','button');cv.dataset.mechanicHelp='true';cv.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();cv.click();}});cv.style.cssText='pointer-events:auto;cursor:help;display:block;width:220px;max-width:100%;height:56px;border-radius:10px;margin:4px auto;';document.querySelector('.action-area')?.prepend(cv);}const host=document.querySelector(document.body.classList.contains('touch-mode')?'.player-panel .unit-info':'.action-area');if(host&&cv.parentNode!==host)host.append(cv);const state=g.player.level>=5?classHudState(g):null;cv.hidden=!state;cv.style.display=state?'block':'none';if(state){loadMechanicArt();cv.dataset.describe='mechanic:'+g.rpg.talents.spec;cv.setAttribute('aria-label',state.title+': '+(state.count??state.fields.length)+(state.left>0?' · '+state.left.toFixed(1)+' Sekunden':''));drawClassHud(cv.getContext('2d'),state);}}
+export function updateClassHud(g){let cv=document.getElementById('classMechanicArt');if(!cv){cv=document.createElement('canvas');cv.id='classMechanicArt';cv.width=440;cv.height=112;cv.tabIndex=0;cv.setAttribute('role','button');cv.dataset.mechanicHelp='true';cv.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();cv.click();}});cv.style.cssText='pointer-events:auto;cursor:help;display:block;width:220px;max-width:100%;height:56px;border-radius:10px;margin:4px auto;';document.querySelector('.action-area')?.prepend(cv);}const host=document.querySelector(document.body.classList.contains('touch-mode')?'.player-panel .unit-info':'.action-area');if(host&&cv.parentNode!==host)host.append(cv);const state=g.player.level>=5?classHudState(g):null;cv.hidden=!state;cv.style.display=state?'block':'none';if(state){loadMechanicArt();loadChromeArt();cv.dataset.describe='mechanic:'+g.rpg.talents.spec;cv.setAttribute('aria-label',state.title+': '+(state.count??state.fields.length)+(state.left>0?' · '+state.left.toFixed(1)+' Sekunden':''));drawClassHud(cv.getContext('2d'),state);}}

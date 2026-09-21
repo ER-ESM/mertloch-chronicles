@@ -1,5 +1,6 @@
 import {COMPANION_TEXT as T,COMPANION_UI as UI,COMPANION_ROLES,COMPANION_RULES as R} from './content/index.js';
 import {selectCompanionAid,companionAidFailure} from './companions.js';
+import {unitPortrait,paintUnitPortraits} from './unit-frame.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const roleIcon={tank:'shield',heal:'bottle',damage:'burst'};
@@ -45,6 +46,7 @@ export function updateCompanionPanel(root,g){
  }
 }
 function updateRow(row,g,c){
+ row.classList.toggle('is-low-health',c.hp>0&&c.hp/c.maxHp<=.25);
  row.classList.toggle('is-down',c.state==='down');const bar=row.querySelector('.companion-life');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax',String(c.maxHp));bar.setAttribute('aria-valuenow',String(Math.ceil(c.hp)));bar.querySelector('i').style.width=hp(c)+'%';bar.querySelector('span').textContent=Math.ceil(c.hp)+' / '+c.maxHp;
  row.querySelector('[data-companion-state]').textContent=status(g,c);row.querySelector('[data-companion-contract]').textContent=contract(c);
 }
@@ -53,11 +55,7 @@ export function mountCompanionHud(shell,getGame,open){
  const el=document.createElement('aside');el.className='companion-frames';el.setAttribute('aria-label',UI.team);shell.append(el);let signature='';
  el.addEventListener('click',e=>{const b=e.target.closest('[data-companion-select]');if(b){selectCompanionAid(getGame(),b.dataset.companionSelect,{toggle:true});return;}const m=e.target.closest('[data-companion-manage]');if(m)open(m.dataset.companionManage);});
  return {update(){const g=getGame(),list=g.companions||[];el.hidden=!list.length;if(!list.length)return;
-  const key=list.map(c=>c.id).join('|');if(key!==signature){signature=key;el.innerHTML=`<header>${button('manage','',UI.team)}${button('select','',UI.self,`title="${UI.selfHint}"`)}</header>`+list.map(c=>`<button type="button" class="companion-frame" data-companion-select="${c.id}" data-companion-row="${c.id}" data-role="${c.def.role}" title="${UI.select}" aria-pressed="false"><strong>${esc(c.name)} <small>${COMPANION_ROLES[c.def.role].name}</small></strong><span class="companion-life" role="progressbar" aria-label="${esc(c.name)}"><i></i><span></span></span><span class="companion-frame-meta"><span data-companion-state></span><small data-companion-contract></small></span></button>`).join('');}
+  const key=list.map(c=>c.id+':'+c.level).join('|');if(key!==signature){signature=key;el.innerHTML=`<header>${button('manage','',UI.team)}${button('select','',UI.self,`title="${UI.selfHint}"`)}</header>`+list.map(c=>`<button type="button" class="companion-frame unit-frame" data-companion-select="${c.id}" data-companion-row="${c.id}" data-role="${c.def.role}" title="${UI.select}" aria-pressed="false">${unitPortrait(c.def.look,c.level)}<span class="unit-content"><strong>${esc(c.name)} <small>${COMPANION_ROLES[c.def.role].name}</small></strong><span class="companion-life" role="progressbar" aria-label="${esc(c.name)}"><i></i><span></span></span><span class="companion-frame-meta"><span data-companion-state></span><small data-companion-contract></small></span></span></button>`).join('');paintUnitPortraits(el);}
   for(const c of list){const row=el.querySelector(`[data-companion-row="${c.id}"]`),selected=g.companionAidId===c.id;updateRow(row,g,c);row.setAttribute('aria-pressed',String(selected));row.classList.toggle('is-selected',selected);row.title=selected?(companionAidFailure(g)||UI.selected):UI.select;if(selected)row.querySelector('[data-companion-state]').textContent=UI.selected+' \u00b7 '+status(g,c);row.classList.toggle('aid-unavailable',selected&&!!companionAidFailure(g));}
-  const base=shell.getBoundingClientRect(),frame=el.getBoundingClientRect();
-  const obstacles=[...shell.querySelectorAll('.player-panel,.party-frames,#targetPanel,#buffStrip,#debuffStrip,#targetDebuffStrip')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height&&r.left<frame.right&&r.right>frame.left);
-  const bottom=Math.max(base.top,...obstacles.map(r=>r.bottom));el.style.setProperty('--companion-top',Math.round(bottom-base.top+8)+'px');
-  if(document.body.classList.contains('touch-mode')&&base.height>base.width){const controls=[...shell.querySelectorAll('#touchStick,#touchActions,#touchUtility')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.height);el.style.maxHeight=Math.max(60,Math.min(base.bottom,...controls.map(r=>r.top))-bottom-16)+'px';}else el.style.removeProperty('max-height');
  }};
 }
