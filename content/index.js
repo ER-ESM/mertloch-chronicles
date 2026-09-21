@@ -31,6 +31,7 @@ export * from './glossary.js';
 export * from './mechanics.js';
 export * from './hud.js';
 export * from './lighting.js';
+export * from './performance.js';
 export * from './world-fx.js';
 export * from './shop.js';
 export * from './targeting.js';

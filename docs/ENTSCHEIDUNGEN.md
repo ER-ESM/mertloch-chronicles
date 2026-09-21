@@ -591,3 +591,24 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 4. **FPS-Anzeige nennt die Effektstufe** („Effekte voll/leicht/aus“), damit sichtbar ist, wann der Selbstschutz gegriffen hat.
 
 **Offen.** Messrechner hat keine Grafikkarte und war bei der Messung zu 94 % ausgelastet – absolute Zahlen fehlen. Entscheidend ist die Rückmeldung vom echten Gerät: FPS/ms/Stufe im Kampf, jeweils mit „Wetter & Effekte“ an und aus.
+
+## E-49 · Leistung III: 60 Bilder auch ohne Grafikkarte – Boden-Zwischenspeicher, Sprites in Zieldichte, Leistungsautomatik (21.09.2026)
+
+**Anlass.** Nutzer: „auch ohne gute Grafikkarte und ohne Effekte stabil bei 60 FPS“. Prüfstand ist der Entwicklungsrechner (keine Grafikkarte, Software-Rendering), Kampf gegen 6 Keiler, 2024×900, Effektschicht aus. Ausgang nach E-46/E-48: Zeichnen 25 ms, Hauptfaden 49 ms je Bild, ~21–30 FPS.
+
+**Befund.** Ohne Grafikkarte zählt, wie viele Pixel je Bild skaliert oder gemischt werden – nicht der eigene Code (< 1 ms Logik). Teuer waren: Bodenkacheln und Sprite-Zwischenbilder, die fest in Dichte 4 lagen und je Bild mit Pixelauslassung verkleinert wurden; ~30 geschert gezeichnete Schattenrisse plus bildschirmgroße Schattenebene je Bild; der CSS-Farbfilter über die ganze Weltfläche (im Software-Compositor teurer als das gesamte Zeichnen: 31 → 50 FPS ohne ihn).
+
+**Entschieden.**
+1. **Boden-Zwischenspeicher** (`ground-cache.js`): Boden, Steine und die Schatten stehender Objekte (Bäume, Gebäude) liegen in einer Ebene in Zieldichte, etwas größer als der Ausschnitt. Je Bild eine Kopie; läuft die Kamera aus dem Rand, wird verschoben und nur der neue Streifen gezeichnet (kein Vollaufbau, kein Ruckler). Neuaufbau bei Licht-Schalter, Dichtewechsel, anderer Objektzahl, nach 20 s oder 1 s nach fehlender Grafik.
+2. **Figuren-, Möbel- und Beuteschatten direkt auf die Welt** statt über eine bildschirmgroße Zwischenebene. Ändert E-39 im Detail: Überlappen zwei dieser kleinen Ellipsen, wird es dort etwas dunkler; die Ein-Ebenen-Regel gilt weiter für die großen Schatten (jetzt im Boden-Zwischenspeicher). Blumen wiegen weiter je Bild und liegen dadurch über statt unter dem Schatten.
+3. **Sprites in Zieldichte** (`scaledFrame`/`contextScale` in `art-quality.js`, `drawMaifeld`, `drawContentPerson`): einmal hochwertig auf die Zielgröße verkleinert, danach 1:1 kopiert. Schneller und feiner als die Pixelauslassung seit E-46.
+4. **Lichtebene nur jedes zweite Bild** neu (Dunkel, Wolken, Schein ändern sich langsam).
+5. **Leistungsautomatik** (`quality-governor.js`, Werte `content/performance.js`, Einstellung „Auflösung automatisch anpassen“, `settings.autoRes`, Standard an): hält der Rechner im Mittel keine ~52 FPS, fällt zuerst der Farbfilter weg, dann sinkt die Dichte der Weltfläche stufenweise bis 1 (scharf vergrößert, `image-rendering: pixelated`). Aufwärts nur nach 30 s gutem Tempo mit wenig eigener Rechenzeit; nach zwei gescheiterten Versuchen bleibt die Stufe. „Volle Grafikauflösung“ schaltet die Automatik ab. Die FPS-Anzeige nennt die Stufe („ohne Farbfilter · Auflösung 1/2“).
+
+**Ergebnis (gleiche Szene, gleicher Rechner).** Bei unveränderter Dichte 2: Zeichnen 25 → 7 ms, Hauptfaden 49 → 21,5 ms. Mit Automatik: nach ~4 s **stabil 60 FPS bei 4–5 ms Rechenzeit** (ohne Farbfilter, Dichte 1). Rechner mit Grafikkarte bleiben bei voller Darstellung. Bild vor/nach: `visual-review/performance/` (`licht-e49-04.png`, `e49-auto.png`, `e49-dichte2-sprites.png`).
+
+**Bekannte Abstriche der untersten Stufe.** Kleine Ortsbeschriftungen in der Welt werden bei Dichte 1 schlecht lesbar; Farben etwas flacher ohne Filter.
+
+**Verworfen.** *Farbabstimmung in die Grafik backen* – träfe nur Teile des Bildes (Boden, Sprites), Gebäude und Effekte blieben ungefiltert. *Zwischenstufe Dichte 1,5* – krumme Vergrößerung verwäscht Pixelgrafik.
+
+**Messen.** `scripts/perf-ab.playwright.js` (A/B je Kostenposten, Hauptfaden-Zeit über CDP – FPS allein täuscht wegen Bildwiederholrate) und `scripts/perf-profile.playwright.js`. Falle: Das Browser-Profil schreibt das Rastern des ganzen Bildes dem `restore()` in `drawContentPerson` zu.

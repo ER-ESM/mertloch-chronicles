@@ -30,12 +30,25 @@ export class WorldLight{
  cast(c,cv,x,y,ax,ay,length){const h=ay*length;this.touch(x-ax-4,y-4,x-ax+cv.width+DX*h+4,y+DY*h+(cv.height-ay)+4);c.save();c.translate(x,y);c.transform(1,0,-DX*length,-DY*length,0,0);c.drawImage(cv,-ax,-ay);c.restore();}
  blob(c,x,y,r){this.touch(x-r*1.5,y-r,x+r*2.5,y+r*1.5);c.save();c.translate(x+DX*r*.55,y+DY*r*.55);c.rotate(ANGLE);c.fillStyle=LIGHT.shadow.color;c.beginPath();c.ellipse(0,0,r*1.25,r*LIGHT.shadow.squash*1.25,0,0,Math.PI*2);c.fill();c.restore();}
  touch(x0,y0,x1,y1){const b=this.bounds;if(x0<b.x0)b.x0=x0;if(y0<b.y0)b.y0=y0;if(x1>b.x1)b.x1=x1;if(y1>b.y1)b.y1=y1;}
+ /** Schattenwurf eines stehenden Objekts (Baum, Gebäude) in die Ebene `c`. Liefert false, solange dessen Grafik noch nicht geladen ist. */
+ standing(c,type,e,painters){let key;
+  if(type==='tree'){const s=Math.max(.2,Math.round(e.size*20)/20),w=170*s,h=130*s,ax=w/2,ay=h-10*s;key='tree:'+e.type+':'+e.variant+':'+s;this.cast(c,this.silhouette(key,w,h,cc=>painters.tree(cc,{...e,size:s,x:ax,y:ay})),e.x,e.y+3,ax,ay,L.shadow.tree);}
+  else{const b=painters.bounds(e),pad=4,w=b.maxX-b.minX+pad*2,h=b.maxY-b.minY+pad*2;if(!(w*h<900000))return true;key='building:'+(e.id??e.minX+','+e.minY);this.cast(c,this.silhouette(key,w,h,cc=>{cc.translate(pad-b.minX,pad-b.minY);return painters.building(cc,e);}),b.minX-pad,e.maxY,0,e.maxY-b.minY+pad,L.shadow.building);}
+  return this.silhouettes.get(key)?.ok!==false;}
+ /** Schatten stehender Objekte für den Boden-Zwischenspeicher (ground-cache.js): gleiche Ebene-dann-Deckkraft-Regel wie `shadows`, aber nur für `rect` und nur einmal statt je Bild. */
+ standingShadows(target,rect,trees,buildings,painters){const w=rect.x1-rect.x0,h=rect.y1-rect.y0,layer=this.standingLayer||=canvas(1,1);if(layer.width!==w||layer.height!==h){layer.width=w;layer.height=h;}
+  const c=layer.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.translate(-rect.x0,-rect.y0);this.bounds={x0:Infinity,y0:Infinity,x1:-Infinity,y1:-Infinity};let ok=true;
+  for(const t of trees)ok=this.standing(c,'tree',t,painters)&&ok;for(const b of buildings)ok=this.standing(c,'building',b,painters)&&ok;
+  target.save();target.imageSmoothingEnabled=false;target.globalAlpha=LIGHT.shadow.alpha;target.drawImage(layer,rect.x0,rect.y0,w,h);target.restore();return ok;}
  /** Alle Schatten in EINE Ebene, dann einmal mit der Deckkraft der Konvention: überlappende Schatten werden nicht schwarz. */
- shadows(target,view,items,painters){this.frame++;this.bounds={x0:Infinity,y0:Infinity,x1:-Infinity,y1:-Infinity};const {ox,oy,W,H}=view,layer=this.shadowLayer;if(layer.width!==W||layer.height!==H){layer.width=W;layer.height=H;}
+ shadows(target,view,items,painters,options={}){this.frame++;this.bounds={x0:Infinity,y0:Infinity,x1:-Infinity,y1:-Infinity};
+  // Stehende Objekte liegen gebacken im Boden (ground-cache.js): übrig sind kleine Ellipsen unter Figuren, Möbeln und Beute – direkt auf die Welt, ohne bildschirmgroße Zwischenebene.
+  // Überlappen zwei Ellipsen, wird es dort etwas dunkler; die Ein-Ebenen-Regel gilt weiter für die großen Schatten im Boden.
+  if(options.skipStanding){target.save();target.globalAlpha=LIGHT.shadow.alpha;for(const item of items){const e=item.obj;if(ACTORS.includes(item.type)){const at=item.type==='questgiver'?e.giver:e;if(!painters.baked?.(item))this.blob(target,at.x,at.y,L.shadow.actor);}else if(item.type==='furniture'||item.type==='loot')this.blob(target,e.x,e.y,L.shadow.prop);else if(item.type!=='tree'&&item.type!=='building'&&e&&e.hp>0&&Number.isFinite(e.x))this.blob(target,e.x,e.y,e.type==='boss'?L.shadow.boss:L.shadow.actor);}target.restore();return;}
+  const {ox,oy,W,H}=view,layer=this.shadowLayer;if(layer.width!==W||layer.height!==H){layer.width=W;layer.height=H;}
   const c=layer.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,W,H);c.imageSmoothingEnabled=true;c.translate(-ox,-oy);
   for(const item of items){const e=item.obj;
-   if(item.type==='tree'){const s=Math.max(.2,Math.round(e.size*20)/20),w=170*s,h=130*s,ax=w/2,ay=h-10*s;this.cast(c,this.silhouette('tree:'+e.type+':'+e.variant+':'+s,w,h,cc=>painters.tree(cc,{...e,size:s,x:ax,y:ay})),e.x,e.y+3,ax,ay,L.shadow.tree);}
-   else if(item.type==='building'){const b=painters.bounds(e),pad=4,w=b.maxX-b.minX+pad*2,h=b.maxY-b.minY+pad*2;if(!(w*h<900000))continue;this.cast(c,this.silhouette('building:'+(e.id??e.minX+','+e.minY),w,h,cc=>{cc.translate(pad-b.minX,pad-b.minY);return painters.building(cc,e);}),b.minX-pad,e.maxY,0,e.maxY-b.minY+pad,L.shadow.building);}
+   if(item.type==='tree'||item.type==='building'){if(!options.skipStanding)this.standing(c,item.type,e,painters);}
    else if(ACTORS.includes(item.type)){const at=item.type==='questgiver'?e.giver:e;if(!painters.baked?.(item))this.blob(c,at.x,at.y,L.shadow.actor);}
    else if(item.type==='furniture'||item.type==='loot')this.blob(c,e.x,e.y,L.shadow.prop);
    else if(e&&e.hp>0&&Number.isFinite(e.x))this.blob(c,e.x,e.y,e.type==='boss'?L.shadow.boss:L.shadow.actor);
@@ -61,7 +74,10 @@ export class WorldLight{
   for(const o of out)o.flicker=1+o.s.flicker*(Math.sin(time*9+o.seed)+Math.sin(time*5.3+o.seed*2))*.5;this.sourceCache={time,frame:this.frame,game,out};return out;}
  glow(color){let g=this.glows.get(color);if(!g){g=glowSprite(color);this.glows.set(color,g);}return g;}
  /** Lichtschicht über der fertigen Welt (Bildschirmkoordinaten): multiplizieren, warmen Schein aufhellen, Rand abdunkeln. */
- apply(view,game,world,time,elapsed){const {ox,oy,W,H}=view,dark=this.zoneDark(game,world,elapsed),visible=(o,pad)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad,lights=this.sources(game,world,visible,time),lw=Math.ceil(W/2),lh=Math.ceil(H/2),layer=this.lightLayer;
+ apply(view,game,world,time,elapsed){const {ox,oy,W,H}=view,dark=this.zoneDark(game,world,elapsed);
+  // Nur jedes zweite Bild neu zeichnen: Dunkel, Wolken und Schein ändern sich langsam; ein Bild Nachlauf der weichen Lichtkreise ist nicht zu sehen. Größenwechsel zeichnet sofort.
+  this.tick=(this.tick||0)+1;if(this.tick%2&&this.lightLayer.width===Math.ceil(W/2)&&this.lightLayer.height===Math.ceil(H/2))return;
+  const visible=(o,pad)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad,lights=this.sources(game,world,visible,time),lw=Math.ceil(W/2),lh=Math.ceil(H/2),layer=this.lightLayer;
   if(layer.width!==lw||layer.height!==lh){layer.width=lw;layer.height=lh;}
   // Dunkel und Wolken überdecken, Lichtquellen stanzen das Dunkel wieder aus, der Rand dunkelt ab, zuletzt liegt der warme Schein obenauf.
   const l=layer.getContext('2d'),A=this.ambient||=cover(L.ambient.tint);l.setTransform(.5,0,0,.5,0,0);l.globalCompositeOperation='source-over';l.globalAlpha=1;l.clearRect(0,0,W,H);l.globalAlpha=dark*A.k;l.fillStyle=A.color;l.fillRect(0,0,W,H);

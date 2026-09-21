@@ -2,11 +2,13 @@ import {drawKioskRoom,drawKioskMap,drawKioskHouse} from './kiosk-room-art.js';
 import {inKiosk,kioskEntrance} from './kiosk-instance.js';
 import {KIOSK_TEXT} from './content/index.js';
 import {merchantActorPoint} from './shop.js';
-import {SHOP_UI} from './content/index.js';
+import {SHOP_UI,PERFORMANCE} from './content/index.js';
 import {drawClassField,drawClassWorldFx,classWorldReady} from './e32-world-art.js';
 import {drawCombatEffect,drawCombatGround,drawCombatStates} from './combat-fx-art.js';
 import {worldDensity} from './art-quality.js';
 import {SpatialIndex} from './spatial-index.js';
+import {GroundCache} from './ground-cache.js';
+import {QualityGovernor} from './quality-governor.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
 import {drawTargetRings} from './target-ui.js';
@@ -47,23 +49,37 @@ function label(c,text,x,y,color='#ead9a7',size=8){c.save();c.font=size>=14?`bold
 export const ZOOM_RANGE={min:.6,max:1.8,step:1.1};
 export class Renderer {
   constructor(canvas,world,game,options={}){this.actorRenderer=options.actorRenderer;this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.world=world;this.game=game;this.camera={...game.player};this.footfalls=new FootfallTrail();this.chunks=new Map();this.treeSprites=Array.from({length:10},(_,i)=>createComicTree(i%5,i>4));this.shake=0;this.bossSpeech=new BossSpeech();this.light=new WorldLight();this.fx=new WorldFx();this.zoom=2;this.frame=0;this.resize();}
-  resize(){const r=this.canvas.getBoundingClientRect();this.zoom=document.body.classList.contains('touch-mode')?(r.width<600?1.35:r.height<500?1.5:1.75):r.width<600?1.6:2;this.zoom*=this.zoomFactor||1;this.viewWidth=Math.ceil(r.width/this.zoom);this.viewHeight=Math.ceil(r.height/this.zoom);this.density=worldDensity(this.zoom,this.game.settings?.fullRes);this.canvas.width=this.viewWidth*this.density;this.canvas.height=this.viewHeight*this.density;this.ctx.imageSmoothingEnabled=false;}
+  resize(){const r=this.canvas.getBoundingClientRect();this.zoom=document.body.classList.contains('touch-mode')?(r.width<600?1.35:r.height<500?1.5:1.75):r.width<600?1.6:2;this.zoom*=this.zoomFactor||1;this.viewWidth=Math.ceil(r.width/this.zoom);this.viewHeight=Math.ceil(r.height/this.zoom);this.density=worldDensity(this.zoom,this.game.settings?.fullRes,undefined,this.densityCap);/* unter Bildschirmauflösung: scharf vergrößern statt weichzeichnen */{const px=this.density<this.zoom*(globalThis.devicePixelRatio||1)-.01?'pixelated':'';if(this.canvas.style.imageRendering!==px)this.canvas.style.imageRendering=px;}this.canvas.width=this.viewWidth*this.density;this.canvas.height=this.viewHeight*this.density;this.ctx.imageSmoothingEnabled=false;}
   /** Vorgerenderte Helden bringen ihren Schatten im Bild mit (E-41, Katalog-Flag shadowBaked): dann zeichnet die Welt keinen zweiten. */
   bakedShadow(item){const d=prerenderArt.drawn;return item.type==='player'&&prerenderArt.enabled&&!!d&&d.baked&&d.canvas===this.canvas&&performance.now()-d.at<400&&prerenderHasBakedShadow(d.classId);}
   // Mausrad-Zoom: Faktor auf den Grundzoom des Geräts, begrenzt auf ZOOM_RANGE.
   setZoomFactor(f){const next=Math.min(ZOOM_RANGE.max,Math.max(ZOOM_RANGE.min,+f||1));if(next===(this.zoomFactor||1))return next;this.zoomFactor=next;this.resize();return next;}
   screenToWorld(x,y){const r=this.canvas.getBoundingClientRect();return{x:(x-r.left)/r.width*this.viewWidth+this.camera.x-this.viewWidth/2,y:(y-r.top)/r.height*this.viewHeight+this.camera.y-this.viewHeight/2};}
   groundChunk(gx,gy){const key=gx+','+gy;if(this.chunks.has(key))return this.chunks.get(key);const cv=createTerrainChunk(this.world,gx,gy);this.chunks.set(key,cv);if(this.chunks.size>40)this.chunks.delete(this.chunks.keys().next().value);return cv;}
+  /** Auflösungs-Automatik (quality-governor.js): je Bild mit Bildabstand und eigener Rechenzeit füttern; senkt oder hebt die Dichte der Weltfläche stufenweise. */
+  pace(gap,work){const s=this.game.settings||{};if(s.fullRes||s.autoRes===false){this.gradeOff=false;if(this.densityCap!=null){this.densityCap=null;this.resize();}return;}
+    const step=(this.governor||=new QualityGovernor(PERFORMANCE.autoRes)).frame(gap,work);if(!step)return;const native=worldDensity(this.zoom,false);
+    // Leiter abwärts: erst die Farbabstimmung (CSS-Filter über die ganze Weltfläche – ohne Grafikkarte teurer als das Zeichnen selbst), dann die Dichte. Aufwärts umgekehrt.
+    if(step==='down'&&!this.gradeOff){this.gradeOff=true;return;}if(step==='up'&&this.density>=native){this.gradeOff=false;return;}
+    const next=step==='down'?Math.max(PERFORMANCE.autoRes.minDensity,this.density-1):Math.min(native,this.density+1);if(next!==this.density){this.densityCap=next>=native?null:next;this.resize();}}
+  shadowPainters(){return this.painters||={bounds:buildingVisualBounds,building:(cc,b)=>drawBuilding(cc,b,0),tree:(cc,t)=>{if(drawAssetTree(cc,t,0))return true;const sp=this.treeSprites[t.variant+(t.type==='pine'?5:0)];cc.drawImage(sp,Math.round(t.x-44*t.size),Math.round(t.y-96*t.size),Math.round(88*t.size),Math.round(110*t.size));return false;},baked:item=>this.bakedShadow?.(item)};}
+  /** Inhalt des Boden-Zwischenspeichers für `r` (Welteinheiten): Bodenkacheln, Steine, bei Licht die Schatten stehender Objekte. Rand 320/420 fängt Schatten von Objekten außerhalb. */
+  paintGround(c,r,lit){const w=this.world,index=this.index||=new SpatialIndex();let ok=true;
+    for(let x=Math.floor(r.x0/512);x<=Math.floor((r.x1-1)/512);x++)for(let y=Math.floor(r.y0/512);y<=Math.floor((r.y1-1)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
+    for(const prop of index.query('props',w.props,r.x0-40,r.y0-40,r.x1+40,r.y1+40))if(prop.type==='rock')this.prop(c,prop);
+    if(lit)ok=this.light.standingShadows(c,r,index.query('trees',w.trees,r.x0-320,r.y0-320,r.x1+320,r.y1+320),index.query('buildings',w.buildings,r.x0-420,r.y0-420,r.x1+420,r.y1+420,b=>b),this.shadowPainters());
+    return ok;}
   building(c,b){drawBuilding(c,b,this.game.time);}
   prop(c,p){if(!drawAssetProp(c,p))drawComicProp(c,p,this.game.time);}
   shrine(c){fountain(c,this.world.shrine,this.game.time);if(distance(this.game.player,this.world.shrine)<60)label(c,'Konterbrunnen',this.world.shrine.x,this.world.shrine.y-33,'#d3e1c4',7);}
-  draw(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);applyGrade(this.canvas,lit);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);const effects=this.game.settings?.fx!==false&&!kiosk;this.fx.mount(this.canvas);this.fx.show(effects);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(this.density,0,0,this.density,0,0);this.shake*=.87;
-    const ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*2)/2,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*2)/2;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
+  draw(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);applyGrade(this.canvas,lit&&!this.gradeOff);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);const effects=this.game.settings?.fx!==false&&!kiosk;this.fx.mount(this.canvas);this.fx.show(effects);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(this.density,0,0,this.density,0,0);this.shake*=.87;
+    const q=Math.min(2,this.density),/* Kameraraster = Pixelraster der Weltfläche, sonst zittern Boden und Figuren bei Dichte 1 gegeneinander */ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*q)/q,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*q)/q;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
-    for(let x=Math.floor(ox/512);x<=Math.floor((ox+W)/512);x++)for(let y=Math.floor(oy/512);y<=Math.floor((oy+H)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
     // Ruhende Weltobjekte kommen aus dem Raster-Index (spatial-index.js), nicht mehr aus der ganzen Karte; Rand 100 deckt jede Sichtprüfung unten ab.
     const index=this.index||=new SpatialIndex(),near=(name,list,box)=>index.query(name,list,ox-100,oy-100,ox+W+100,oy+H+100,box),props=near('props',w.props);
-    for(const prop of props)if(visible(prop,10)&&!FURNITURE.includes(prop.type))this.prop(c,prop);
+    // Boden, Steine und Schatten stehender Objekte kommen aus dem Zwischenspeicher (ground-cache.js); je Bild bleiben nur die wiegenden Blumen.
+    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();ground.draw(c,view,this.density,(lit?'licht':'ohne')+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
+    for(const prop of props)if(visible(prop,10)&&prop.type!=='rock'&&!FURNITURE.includes(prop.type))this.prop(c,prop);
     for(const q of w.quests||[]){if(g.tutorial&&!g.tutorial.completed)continue;const status=g.sideQuests[q.id];for(const item of q.items){if(!visible(item,30)||status.collected.includes(item.id))continue;const x=item.x,y=item.y;if(item.type==='herb'){for(let i=0;i<5;i++){rect(c,'#3c7958',x-8+i*4,y-11+(i%2)*3,2,13);rect(c,'#a5d6a0',x-10+i*4,y-11+(i%2)*3,6,3);rect(c,'#ded3a1',x-8+i*4,y-14+(i%2)*3,2,3);}}else{rect(c,'#293b44',x-12,y-29,24,31);rect(c,'#655273',x-10,y-27,20,26);ellipse(c,'#293b44',x,y-10,8,8);ellipse(c,'#ad93b7',x,y-10,5,5);ellipse(c,'#4a8c9a',x,y-10,2,2);rect(c,'#e7c686',x-8,y-25,16,3);rect(c,'#78bda5',x-7,y-24,3,1);rect(c,'#293b44',x-8,y+2,3,3);rect(c,'#293b44',x+5,y+2,3,3);}if(status.accepted&&!status.claimed){label(c,'✧',x,y-31-Math.sin(time*2)*2,'#f0d38f',12);if(distance(item,p)<75)label(c,'F · '+(q.itemName||q.title),x,y+12,'#e7d8a7',7);}}}
     // Sammelpunkte des laufenden Kapitels: Materialhaufen wie Questgegenstände, Beschriftung aus content/items.js.
     for(const spot of g.gatherPoints?.()||[]){
@@ -93,7 +109,8 @@ export class Renderer {
     for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});
     for(const z of g.fields||[])if(z.remaining>0&&visible(z))sorted.push({type:'classField',obj:z,y:z.y});sorted.sort((a,b)=>a.y-b.y);
     // Bodenschatten aller stehenden Dinge in einer Ebene, eine Lichtrichtung (light-convention.js).
-    if(lit)this.light.shadows(c,{ox,oy,W,H},sorted,{bounds:buildingVisualBounds,building:(cc,b)=>drawBuilding(cc,b,0),tree:(cc,t)=>{if(drawAssetTree(cc,t,0))return true;const sp=this.treeSprites[t.variant+(t.type==='pine'?5:0)];cc.drawImage(sp,Math.round(t.x-44*t.size),Math.round(t.y-96*t.size),Math.round(88*t.size),Math.round(110*t.size));return false;},baked:item=>this.bakedShadow?.(item)});
+    // Je Bild nur noch die Schatten von Figuren, Möbeln und Beute; Bäume und Gebäude liegen gebacken im Boden-Zwischenspeicher.
+    if(lit)this.light.shadows(c,view,sorted,this.shadowPainters(),{skipStanding:true});
     for(const item of sorted){const e=item.obj;c.save();if(this.actorRenderer?.(c,item,time)){c.restore();continue;}if(item.type==='classField'){drawClassField(c,e,time);}else if(item.type==='building'){if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>buildingOccludesActor(e,u)))c.globalAlpha=.38;this.building(c,e);}
       else if(item.type==='tree'){const s=e.size;drawTreeOcclusion(c,e,[p,...(g.target?.hp>0?[g.target]:[])],()=>{if(drawAssetTree(c,e,time))return;const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];c.drawImage(sp,Math.round(e.x-44*s),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));});}
       else if(item.type==='loot'){ellipse(c,'#23372355',e.x,e.y,8,3);drawItem(c,'bag',Math.round(e.x-10),Math.round(e.y-17),.8);if(distance(e,p)<65){label(c,'F · Beute',e.x,e.y-23,'#edce84',7);}else{rect(c,'#ead39c',e.x,e.y-21,1,3);}}

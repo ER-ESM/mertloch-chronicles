@@ -1,6 +1,7 @@
 import {drawBoar} from './maifeld-boar-rig.js';
 import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
+import {contextScale,scaledFrame} from './art-quality.js';
 import {prerenderArt,drawPrerenderPerson} from './prerender-art.js';
 import {drawDetailedHero} from './detailed-hero-art.js';
 import {drawEquipment as gear,equipmentArt} from './equipment-art.js';
@@ -37,12 +38,14 @@ function drawContentPerson(c,id,x,y,p,magnify){
  const row=Math.max(0,DIRECTIONS.indexOf(direction));
  const sel=contentFrame(actor,row,p),f=sel.frame,size=sel.size;
  const k=actor.worldHeight/actor.nativeHeight*magnify,height=actor.worldHeight*magnify;
+ // Zielgröße des Bogenfelds in Gerätepixeln: kleiner als das Original ⇒ vorverkleinertes Zwischenbild (art-quality.js), sonst Original (Porträts).
+ const px=Math.max(1,Math.round(size*k*contextScale(c)));
  c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
  c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,height*.20,height*.06,0,0,7);c.fill();
  c.scale(k,k);c.translate(-actor.pivot.x,-actor.pivot.y);
  const items=f.sockets?p.visualEquipment||[]:[];
  if(items.length){c.save();c.scale(actor.gearScale,actor.gearScale);gear(c,items,f.sockets,west,back,true,p);c.restore();}
- c.drawImage(sel.image,f.x,f.y,size,size,0,0,size,size);
+ if(px<size){const mip=scaledFrame(sel.image,f.x,f.y,size,size,px,px);c.drawImage(mip,0,0,px,px,0,0,size,size);}else c.drawImage(sel.image,f.x,f.y,size,size,0,0,size,size);
  if(items.length){c.save();c.scale(actor.gearScale,actor.gearScale);gear(c,items,f.sockets,west,back,false,p);c.restore();}
  if(p.parry>0){c.strokeStyle='#f3b84b';c.lineWidth=2/k;c.beginPath();c.arc(actor.pivot.x,actor.pivot.y-26*actor.gearScale,25*actor.gearScale,-1.3,1.1);c.stroke();}
  c.restore();return true;
