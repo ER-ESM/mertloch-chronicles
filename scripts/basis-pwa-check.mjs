@@ -5,7 +5,7 @@ import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import http from 'node:http';
 import {browserSession,wait} from './browser-session.mjs';
-const url='http://127.0.0.1:4199/mertloch-chronicles/',dir='combat-review/basis-pwa',key='mertloch-chronicles-v2-56753-72-1';
+const url='http://127.0.0.1:4199/mertloch-chronicles/',dir='combat-review/basis-pwa';
 mkdirSync(dir,{recursive:true});
 let release='';
 const server=http.createServer((req,res)=>{
@@ -15,7 +15,7 @@ const server=http.createServer((req,res)=>{
  }catch{res.writeHead(404).end();}
 });
 await new Promise(r=>server.listen(4199,'127.0.0.1',r));
-let b;const checks=[],answers=[],dialogs=[];
+let b,key;const checks=[],answers=[],dialogs=[];
 async function until(expression,message){for(let i=0;i<240;i++){try{if(await b.evaluate(expression))return;}catch{}await wait(250);}throw Error(message);}
 const pass=name=>{checks.push(name);console.log('PASS '+name);};
 async function reload(){const origin=await b.evaluate('performance.timeOrigin');await b.send('Page.navigate',{url});await until(`performance.timeOrigin!==${origin}&&!!window.mertloch`,'reload');}
@@ -27,6 +27,9 @@ try{
  b.on('Page.javascriptDialogOpening',async p=>{dialogs.push(p);const answer=answers.shift();await b.send('Page.handleJavaScriptDialog',{accept:answer??false});if(answer===undefined)throw Error('Unexpected confirmation: '+p.message);});
  await b.send('Network.enable');await b.resize(390,844);await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await b.goto(url);
  await until('window.mertloch.state().pwa.offline&&!!navigator.serviceWorker.controller','initial offline cache');
+ // Seit den Helden-Slots legt goto() einen benannten Testhelden an. Fehler müssen dessen
+ // tatsächlichen Speicherplatz treffen, nicht den ungenutzten Legacy-Spielstand.
+ key=await b.evaluate(`(async()=>{const {characterKey}=await import('./characters.js');return characterKey(game.world.id,game.hero)})()`);
  const cachedPreview=()=>b.evaluate(`(async()=>{const cache=await caches.open((await caches.keys()).find(k=>k.startsWith('mertloch-pwa-')));return (await cache.keys()).filter(r=>r.url.includes('/prerender/runtime/')).map(r=>r.url)})()`);
  assert.deepEqual(await cachedPreview(),[]);pass('core install skips optional preview assets');
  await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(e=>e.click());game.tutorial.completed=true;game.rpg.coins=173;game.settings.autoLoot=false;localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'touch',size:'large',layouts:{dieter:{slots:['strike','auto'],learned:game.skills.filter(s=>!s.offGcd||s.auto).map(s=>s.id)}}}));window.dispatchEvent(new Event('pagehide'));`);
