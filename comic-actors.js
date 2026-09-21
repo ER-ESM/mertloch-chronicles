@@ -44,7 +44,8 @@ export function drawComicResident(c,a,time){if(a.kind!=='villager'&&drawLiveAnim
     shape(c,'#8f99af',[[-7,-4],[-5,-7],[3,-7],[5,-12],[7,-10],[10,-12],[11,-5],[8,-2],[5,-1],[-4,-1]],P.ink,.75);r(c,'#cdd3cd',-4,-6,6,1);r(c,'#515571',-2,-6,1,3);r(c,'#515571',1,-6,1,3);
     for(const [x,phase] of [[-4,walk],[4,-walk]])framed(c,'#b5b9c3',x,-1+phase,2,3,P.ink,.5);r(c,'#f5d586',8,-7,1,1);r(c,'#e6a3a1',10,-5,1,1);line(c,P.cream,[[9,-4],[13,-4]],.5);
   }
-  c.restore();if(a.bubble>0){const words=['Poo-Tang, Alter!','Wer hat meinen Pfand?!','Horst kann mich mal.','Mertloch bleibt wach.'];c.font='7px Georgia';c.textAlign='center';const text=words[a.variant%4],w=c.measureText(text).width+12;framed(c,'#fff0c9',a.x-w/2,a.y-48,w,13,P.ink,1);shape(c,'#fff0c9',[[a.x-3,a.y-35],[a.x,a.y-31],[a.x+3,a.y-35]],P.ink,.5);c.fillStyle=P.ink;c.fillText(text,a.x,a.y-39);}
+  // Sprechblasen zeichnet allein enemy-ui.js über das Ereignis `bark` (Zeilen aus content/npcs.js) – hier keine zweite Blase.
+  c.restore();
 }
 
 export function drawComicEnemy(c,e,time){c.save();c.translate(Math.round(e.x*2)/2,Math.round(e.y*2)/2);c.scale(e.facing||1,1);const walk=e.moving?Math.sin(time*12)*1.5:0;
