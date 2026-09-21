@@ -34,3 +34,6 @@ Was fehlt, ist genau das, was nur eine Zeichnung liefert: Stirn, Schläfen, Ohre
 **Kleinster sinnvoller Zeichenauftrag:** je Körper EIN haarloser Kopf (4 Blickrichtungen × die Kopfhaltungen des Rigs, nicht jede Pose – der Kopf
 ist im Rig ein starres Teil), dazu 3 Frisur-Ebenen und 2 Bart-Ebenen im selben Raster. Einbau: `look.style`/`look.beard` existieren schon,
 gezeichnet wird an derselben Stelle wie `drawHairStyle`/`drawBeard`; Farbe kommt weiter aus der Haarfarben-Auswahl (Graustufen-Ebene + `hairRgb`).
+
+**Nutzerentscheid 21.09.2026: Zeichenauftrag vergeben.** Der fertige Auftrag mit Raster, Anker, Katalog und Abnahme steht in
+`docs/AUFTRAG-GRAFIK-KOPF-EBENEN-2026-09-21.md`; die Aufnahme im Spiel (`hero-layers.js`) ist gebaut und mit Platzhalter-Kacheln geprüft.

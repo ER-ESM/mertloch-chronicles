@@ -1,3 +1,4 @@
+import {applyDrawnLayers,hasDrawn} from './hero-layers.js';
 // Helden-Aussehen ohne neue Zeichnungen (E-38): Hautton und Haarfarbe werden zur Laufzeit je Körperbild umgefärbt und
 // zwischengespeichert. Haut erkennt man bei allen drei Körpern am Farbton (19–36°, kräftig gesättigt, mittlere Helligkeit);
 // Haare am Kopf-Ankerpunkt des Bildes: dunkle Pixel (Kräftig, Drahtig) bzw. die gedeckten Orange-Töne (Schwungvoll) im Umkreis
@@ -13,11 +14,14 @@ export const BEARDS=[{id:'natur',name:'Wie gezeichnet'},{id:'stoppeln',name:'Sto
 export const HAIR_STYLES=[{id:'natur',name:'Wie gezeichnet'},{id:'irokese',name:'Irokese'}];
 export const offeredFor=(list,body)=>list.filter(o=>!o.bodies||o.bodies.includes(body));
 const NATURAL_HAIR={dieter:[62,44,38],anni:[196,120,56],baerbel:[196,120,56],kevin:[58,42,34]};
+const BUILT_IN_STYLES=['natur','irokese'];
 export const DEFAULT_TINT=Object.freeze({skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur'});
 /** Beliebige Eingabe → gültige Auswahl. */
-export function normalizeTint(t){return {skin:SKIN_TONES.some(x=>x.id===t?.skin)?t.skin:'hell',hair:HAIR_COLORS.some(x=>x.id===t?.hair)?t.hair:'natur',face:FACE_ITEMS.some(x=>x.id===t?.face)?t.face:'ohne',style:HAIR_STYLES.some(x=>x.id===t?.style)?t.style:'natur',beard:BEARDS.some(x=>x.id===t?.beard)?t.beard:'natur'};}
+/** Eingebaute Kennung oder eine gezeichnete aus dem Ebenen-Katalog (hero-layers.js; welcher Körper sie hat, entscheidet sich beim Zeichnen). */
+const validStyle=(list,id)=>list.some(x=>x.id===id)||/^[a-z0-9-]{2,24}$/.test(id||'')?id:'natur';
+export function normalizeTint(t){return {skin:SKIN_TONES.some(x=>x.id===t?.skin)?t.skin:'hell',hair:HAIR_COLORS.some(x=>x.id===t?.hair)?t.hair:'natur',face:FACE_ITEMS.some(x=>x.id===t?.face)?t.face:'ohne',style:validStyle(HAIR_STYLES,t?.style),beard:validStyle(BEARDS,t?.beard)};}
 /** Schlüssel nur für die Farben (Bild-Zwischenspeicher). */
-export const tintKey=t=>{const n=normalizeTint(t);return n.skin==='hell'&&n.hair==='natur'&&n.beard==='natur'?'':n.skin+'.'+n.hair+'.'+n.beard;};
+export const tintKey=t=>{const n=normalizeTint(t),drawn=BUILT_IN_STYLES.includes(n.style)?'':n.style;return n.skin==='hell'&&n.hair==='natur'&&n.beard==='natur'&&!drawn?'':n.skin+'.'+n.hair+'.'+n.beard+'.'+drawn;};
 /** Schlüssel fürs Netz und für data-Attribute: Farben plus Accessoire. */
 export const lookKey=t=>{const n=normalizeTint(t);return Object.keys(DEFAULT_TINT).every(k=>n[k]===DEFAULT_TINT[k])?'':[n.skin,n.hair,n.face,n.style,n.beard].join('.');};
 export const parseTintKey=k=>{const [skin,hair,face,style,beard]=String(k||'').split('.');return normalizeTint({skin,hair,face,style,beard});};
@@ -37,7 +41,7 @@ export function drawBeard(c,frame,bodyId,tint,q=1){
 }
 /** Irokese: Kamm auf dem Scheitel, in jeder Blickrichtung sichtbar (wird über der Figur gezeichnet). */
 export function drawHairStyle(c,frame,bodyId,tint){
- if(normalizeTint(tint).style!=='irokese')return false;const head=frame.sockets?.head;if(!head)return false;const dir=frame.direction||'se',side=dir[1]==='w'?-1:1,g=FACE_GEOMETRY[String(bodyId||'').replace(/-.*/,'')]||FACE_GEOMETRY.kevin,x=Math.round(head.x)+(dir[0]==='n'?-side:side)*(g.crown>4?3:1),y=Math.round(head.y)+g.crown,rgb=hairRgb(tint,bodyId);
+ if(normalizeTint(tint).style!=='irokese'||hasDrawn(bodyId,'hair',normalizeTint(tint).style))return false;const head=frame.sockets?.head;if(!head)return false;const dir=frame.direction||'se',side=dir[1]==='w'?-1:1,g=FACE_GEOMETRY[String(bodyId||'').replace(/-.*/,'')]||FACE_GEOMETRY.kevin,x=Math.round(head.x)+(dir[0]==='n'?-side:side)*(g.crown>4?3:1),y=Math.round(head.y)+g.crown,rgb=hairRgb(tint,bodyId);
  const heights=[3,5,7,8,7,6,4];c.save();heights.forEach((h,i)=>{const px=x-3+i;c.fillStyle=tone(rgb,.7);c.fillRect(px,y-h+2,1,h+3);c.fillStyle=tone(rgb,i%2?1.15:.95);c.fillRect(px,y-h+3,1,h);});c.fillStyle='#14100e';heights.forEach((h,i)=>c.fillRect(x-3+i,y-h+1,1,1));c.restore();return true;
 }
 /** Zeichnet das Kopf-Accessoire im 192er-Bildraum. frame: Katalogbild (sockets.head, direction), bodyId: Körper. */
@@ -86,7 +90,7 @@ const cache=new Map();
 export function tintedFrame(sel,tint,bodyId){
  const key=tintKey(tint);if(!key||typeof document==='undefined')return null;
  const q=sel.resolution||1,f=sel.frame,id=(sel.key||'')+'@'+f.x+':'+f.y+'|'+q+'|'+key+'|'+(sel.image?.src||'');let hit=cache.get(id);if(hit)return hit;
- try{const c=document.createElement('canvas');c.width=c.height=192*q;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.imageSmoothingEnabled=false;ctx.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192*q,192*q);
-  const img=ctx.getImageData(0,0,c.width,c.height),head=f.sockets?.head||{x:96,y:60};tintPixels(img.data,c.width,c.height,{x:head.x*q,y:(head.y+6)*q,brow:(head.y+3)*q,side:12*q},32*q,tint,/^(anni|baerbel)/.test(bodyId||''));ctx.putImageData(img,0,0);drawBeard(ctx,f,bodyId,tint,q);
+ try{const c=document.createElement('canvas');c.width=c.height=192*q;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.imageSmoothingEnabled=false;ctx.drawImage(sel.image,f.x*q,f.y*q,192*q,192*q,0,0,192*q,192*q);const nt=normalizeTint(tint),hairColor=hairRgb(nt,bodyId);applyDrawnLayers(ctx,f,bodyId,nt,hairColor,q,'base',(FACE_GEOMETRY[String(bodyId||'').replace(/-.*/,'')]||FACE_GEOMETRY.kevin).eye+9);
+  const img=ctx.getImageData(0,0,c.width,c.height),head=f.sockets?.head||{x:96,y:60};tintPixels(img.data,c.width,c.height,{x:head.x*q,y:(head.y+6)*q,brow:(head.y+3)*q,side:12*q},32*q,tint,/^(anni|baerbel)/.test(bodyId||''));ctx.putImageData(img,0,0);applyDrawnLayers(ctx,f,bodyId,nt,hairColor,q,'top');if(!hasDrawn(bodyId,'beard',nt.beard))drawBeard(ctx,f,bodyId,tint,q);
   if(cache.size>400)cache.clear();cache.set(id,c);return c;}catch{return null;}
 }
