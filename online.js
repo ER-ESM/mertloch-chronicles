@@ -6,13 +6,14 @@ import {uiLoginCard,setUiLoginMode} from './ui-kit-mmo.js';
 // (Zeitstempel savedAt). Neuer gewinnt; der ältere Stand bleibt serverseitig als Sicherung.
 import {createNetWorld} from './net-world.js';
 import {createNetParty,mountRollUi} from './net-party.js';
+import {createNetSocial,mountTradeUi,SOCIAL_UI} from './net-social.js';
 import {RARITIES} from './content/index.js';
 import {mergeRosters} from './characters.js';
 import {lookKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
 export const onlineEnabled=()=>!!API;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',party:'Gruppe',leaveParty:'Gruppe verlassen',leaveShort:'verlassen',people:'Spieler online',level:'Stufe',elsewhereWorld:'andere Welt',inGroup:'in Gruppe',you:'du',invite:'Einladen',whisper:'Flüstern',whisperTo:'an',whisperFrom:'von',inviteTitle:'Gruppeneinladung',inviteText:'{n} lädt dich in eine Gruppe ein. Gemeinsam besiegte Gegner und Sammelziele zählen für alle in der Nähe, Buffs wirken mit, seltene Beute wird ausgewürfelt.',accept:'Annehmen',decline:'Ablehnen',chatHelp:'Befehle: /s Umkreis · /w Welt · /g Gruppe · /f Name Text (flüstern) · /r Antwort · /einladen Name · /verlassen · /wer',unknownCommand:'Unbekannter Befehl. /hilfe zeigt alle.',needName:'Dazu gehört ein Name: ',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
+export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielstand auf mertloch.esm-consultant.de: weiterspielen auf jedem Gerät, Bestenlisten, andere Spieler im Dorf sehen. Ohne Konto bleibt alles wie bisher im Browser.',login:'Anmelden',register:'Konto anlegen',logout:'Abmelden',email:'E-Mail',password:'Passwort (mindestens 10 Zeichen)',name:'Spielername',syncNow:'Jetzt abgleichen',synced:'Spielstand abgeglichen',cloudNewer:'Auf dem Server liegt ein neuerer Spielstand. Das Spiel lädt ihn jetzt.',localNewer:'Dein Spielstand wurde hochgeladen.',offline:'Online-Dienst nicht erreichbar. Es wird weiter lokal gespeichert.',signedInAs:'Angemeldet als',leaderboard:'Bestenliste',others:'Spieler in der Nähe',deleteAccount:'Konto löschen',deleteConfirm:'Konto und alle Cloud-Spielstände wirklich löschen? Zum Bestätigen LÖSCHEN eingeben.',welcome:'Verbunden · {n} online. Enter öffnet den Chat.',elsewhere:'Dein Konto wurde auf einem anderen Gerät verbunden. Hier ist die Verbindung beendet.',party:'Gruppe',leaveParty:'Gruppe verlassen',leaveShort:'verlassen',people:'Spieler online',level:'Stufe',elsewhereWorld:'andere Welt',inGroup:'in Gruppe',you:'du',invite:'Einladen',whisper:'Flüstern',whisperTo:'an',whisperFrom:'von',aidHint:'Antippen: als Hilfsziel wählen – deine Heilung und dein Schutz wirken dann auch dort.',revive:'Aufhelfen',inviteTitle:'Gruppeneinladung',inviteText:'{n} lädt dich in eine Gruppe ein. Gemeinsam besiegte Gegner und Sammelziele zählen für alle in der Nähe, Buffs wirken mit, seltene Beute wird ausgewürfelt.',accept:'Annehmen',decline:'Ablehnen',chatHelp:'Befehle: /s Umkreis · /w Welt · /g Gruppe · /f Name Text (flüstern) · /r Antwort · /einladen Name · /verlassen · /wer',unknownCommand:'Unbekannter Befehl. /hilfe zeigt alle.',needName:'Dazu gehört ein Name: ',live:'Echtzeit verbunden',liveOff:'Echtzeit getrennt',noApi:'Online-Funktionen gibt es nur unter mertloch.esm-consultant.de.'};
 
 /** Entscheidung beim Abgleich: 'pull' (Server neuer), 'push' (lokal neuer oder Server leer), 'same'. Reine Funktion (Tests). */
 /** foreign: der lokale Stand gehört einem anderen Konto – dann gewinnt immer der Server-Stand des angemeldeten Kontos. */
@@ -69,6 +70,8 @@ export function mountOnline(host){
  const net=createNetWorld({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[]});
  let rollUi=null;const rollProxy={roll:(m,v)=>{const shell=document.querySelector('#gameShell')||document.body;(rollUi||(rollUi=mountRollUi(shell,{choose:(id,c)=>play.choose(id,c),esc,rarityName:r=>RARITIES[r]||r}))).roll(m,v);},pick:m=>rollUi?.pick(m),result:(m,mine)=>rollUi?.result(m,mine),clear:()=>rollUi?.clear()};
  const play=createNetParty({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[],ui:rollProxy});
+ let tradeUi=null;const tradeProxy={trade:m=>{const shell=document.querySelector('#gameShell')||document.body;(tradeUi||(tradeUi=mountTradeUi(shell,{social:mate,game:g,esc}))).trade(m);},tradeClose:()=>tradeUi?.tradeClose()};
+ const mate=createNetSocial({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[],hooks:play.hooks,ui:tradeProxy});
  async function refreshAccount(){try{const d=await api('auth?action=me');state.account=d.account;state.reachable=true;}catch(e){state.reachable=e.code!=='bad-response'&&!(e.status>=500);state.account=state.reachable?state.account:null;}return state.account;}
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
  async function start(){
@@ -105,7 +108,7 @@ export function mountOnline(host){
   if(!state.wanted||!state.account||state.socket)return;let ws;try{ws=new WebSocket(WS_URL);}catch{return;}state.socket=ws;
   ws.onopen=()=>{const heroName=host.heroName?.();if(heroName)ws.send(JSON.stringify({t:'hello',name:heroName}));state.connected=true;state.retryMs=1000;state.lastSent='';net.reset();renderChat();host.refresh?.();};
   ws.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch{return;}receive(m);};
-  ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;play.reset();g().others=[];state.others=[];setParty({leader:null,members:[]});renderChat();
+  ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;play.reset();mate.reset();g().others=[];state.others=[];setParty({leader:null,members:[]});renderChat();
    if(e.code===4001){pushChat({system:true,text:ONLINE_UI.elsewhere});host.toast(ONLINE_UI.elsewhere);state.wanted=false;return;}
    if(state.wanted){state.retry=setTimeout(connect,state.retryMs);state.retryMs=Math.min(30000,state.retryMs*2);}};
   ws.onerror=()=>{};
@@ -114,7 +117,7 @@ export function mountOnline(host){
   const ws=state.socket;if(!ws||ws.readyState!==1||document.hidden)return;const game=g(),p=game.player;if(!p)return;
   if(game.instance){game.others=[];state.others=[];}const wire=JSON.stringify(presenceMessage(game,host.roomKey||host.worldKey));
   const now=Date.now();if(!(wire===state.lastSent&&now-state.lastSentAt<5000)){state.lastSent=wire;state.lastSentAt=now;ws.send(wire);}
-  net.tick(game.instance?'':host.roomKey||host.worldKey);play.tick();
+  net.tick(game.instance?'':host.roomKey||host.worldKey);play.tick();mate.tick();
  }
  function receive(m){
   const game=g();
@@ -122,7 +125,8 @@ export function mountOnline(host){
   if(m.t==='snap'){game.others=applySnapshot(game.others,m.o,performance.now());state.others=game.others;}
   else if(m.t==='you'){state.netName=m.name;}
   else if(m.t==='welcome'){state.netName=m.name;for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
-  else if(net.receive(m)||play.receive(m)){}
+  else if(net.receive(m)||play.receive(m)||mate.receive(m)){}
+  else if(m.t==='tradeask')host.openModal('<div class="online-card"><h3>'+esc(SOCIAL_UI.askTitle)+'</h3><p>'+esc(SOCIAL_UI.askText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="trade-accept">'+esc(SOCIAL_UI.accept)+'</button><button type="button" class="outline-button" data-online="trade-decline">'+esc(SOCIAL_UI.decline)+'</button></div></div>',false,'touchhelp');
   else if(m.t==='party')setParty(m);
   else if(m.t==='invite')host.openModal('<div class="online-card"><h3>'+esc(ONLINE_UI.inviteTitle)+'</h3><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
   else if(m.t==='who')showPeople(m.list||[]);
@@ -157,9 +161,10 @@ export function mountOnline(host){
  }
  function renderParty(){
   if(typeof document==='undefined')return;const shell=document.querySelector('#gameShell');if(!shell)return;
-  if(!state.partyEl){const el=document.createElement('aside');el.className='party-frames';el.setAttribute('aria-label',ONLINE_UI.party);shell.appendChild(el);state.partyEl=el;el.addEventListener('click',e=>{if(e.target.closest('[data-party-leave]'))wsSend({t:'party',op:'leave'});});}
+  if(!state.partyEl){const el=document.createElement('aside');el.className='party-frames';el.setAttribute('aria-label',ONLINE_UI.party);shell.appendChild(el);state.partyEl=el;el.addEventListener('click',e=>{if(e.target.closest('[data-party-leave]'))wsSend({t:'party',op:'leave'});else if(e.target.closest('[data-party-revive]'))mate.revive(e.target.closest('[data-party-name]').dataset.partyName);else{const m=e.target.closest('[data-party-name]');if(m){mate.setFriend(m.dataset.partyName);renderParty();}}});}
   const el=state.partyEl,list=state.party.members;el.hidden=!list.length;if(!list.length)return;
-  el.innerHTML='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==(host.roomKey||host.worldKey);return '<div data-party-name="'+esc(x.n)+'" class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span><span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
+  const html='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>{const far=x.w!==(host.roomKey||host.worldKey);return '<div data-party-name="'+esc(x.n)+'" class="party-member'+(far?' far':'')+(x.s==='dead'?' dead':'')+(mate.state.friend===x.n?' aid':'')+'" title="'+esc(ONLINE_UI.aidHint)+'"><span class="party-name">'+(x.n===state.party.leader?'★ ':'')+esc(x.n)+' <small>'+esc(x.l)+'</small></span>'+(x.s==='dead'&&!far?'<button type="button" data-party-revive>'+esc(ONLINE_UI.revive)+'</button>':'')+'<span class="party-hp"><i style="width:'+Math.max(0,Math.min(100,Number(x.h)||0))+'%"></i></span></div>';}).join('');
+  if(html!==state.partyHtml){state.partyHtml=html;el.innerHTML=html;} // nur bei Änderung neu aufbauen: sonst verschluckt der Sekundentakt Klicks
  }
  function showPeople(list){
   const leader=!state.party.members.length||state.party.leader===myName();
@@ -187,7 +192,8 @@ export function mountOnline(host){
    try{const d=await api('auth',body);state.account=d.account;state.reachable=true;host.toast(ONLINE_UI.signedInAs+' '+d.account.name);if(form.closest('.online-card')&&!form.closest('.help-settings'))host.closeModal?.('touchhelp');host.refresh?.();renderChat();await syncRoster();await syncNow(true);if(!state.hold)startPresence();}catch(err){message(form,err.message,true);}finally{form.removeAttribute('aria-busy');submits.forEach(b=>{b.disabled=false;b.removeAttribute('data-ui-state');});}return true;}
   const b=e.target.closest?.('[data-online]');if(!b||e.type!=='click')return false;const root=b.closest('.online-card');
   const what=b.dataset.online;
-  if(what==='party-accept'||what==='party-decline'){wsSend({t:'party',op:what.slice(6)});host.closeModal?.('touchhelp');}
+  if(what==='trade-accept'||what==='trade-decline'){mate.tradeAnswer(what==='trade-accept');host.closeModal?.('touchhelp');}
+  else if(what==='party-accept'||what==='party-decline'){wsSend({t:'party',op:what.slice(6)});host.closeModal?.('touchhelp');}
   else if(what==='party-leave'){wsSend({t:'party',op:'leave'});host.closeModal?.('touchhelp');}
   else if(what==='invite'){wsSend({t:'party',op:'invite',name:b.dataset.name});b.disabled=true;}
   else if(what==='whisper'){host.closeModal?.('touchhelp');host.chat?.prefill('/f '+(/s/.test(b.dataset.name)?'"'+b.dataset.name+'"':b.dataset.name)+' ');}
@@ -211,5 +217,5 @@ export function mountOnline(host){
  function enterWorld(){state.hold=false;if(state.account)startPresence();renderChat();}
  function leaveWorld(){state.hold=true;stopPresence();}
  const quoted=n=>/\s/.test(n)?'"'+n+'"':n;
- return {reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
+ return {reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),aidTarget:()=>mate.state.friend,setAidTarget:n=>{mate.setFriend(n);renderParty();},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

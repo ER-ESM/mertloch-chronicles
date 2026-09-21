@@ -34,3 +34,9 @@ Lokal: `PORT=4195 STATIC_DIR=. node server/game/server.mjs`, dann `http://127.0.
 Dateien: `server/game/party-play.mjs` (Würfeln, Weiterreichen), `net-party.js` (Client + Würfelfenster), Engine-Haken `game.netParty {near,loot,buff,gather}`, `sharedGather`, `applyPartyBuff`, `rpg.js grantLoot`.
 Client → Server: `offer {item}` · `choice {id,c:need|greed|pass}` · `qshare {item}` · `buff {b}`. Server → Client: `roll {id,item,from,secs}` · `rollpick {id,n,c}` · `rolled {id,item,winner,rolls[]}` · `qshare {from,item}` · `buff {from,b}`. API_VERSION 5.
 Prüfen: `tests/party-play.test.mjs`.
+
+## Nachtrag 21.09.2026 · Miteinander (E-44)
+
+Dateien: `server/game/social-play.mjs`, `net-social.js` (Client + Handelsfenster), Engine `receiveAid`, `reviveHere`, `spawnWorldBoss`, `removeWorldBoss`, `rpg.js tradeGood/tradeAway/grantLoot(count)`.
+Client → Server: `aid {to,heal?,b?,name}` · `revive {to}` · `trade {op:ask|accept|decline|offer|confirm|cancel,…}` · `wbseen {e,name,where}`. Server → Client: `aid` · `revived {from}` · `tradeask {from}` · `trade {with,mine,theirs}` · `tradeend` · `tradedone {with,give,get}` · `wboss {e,boss,spot,hpx,left}` · `wbossgone {e}`. API_VERSION 6.
+Weltboss lokal früher auslösen: `BOSS_FIRST_MS=30000`. Prüfen: `tests/social-play.test.mjs`. Frische Helden im Tutorial können keinen Schaden machen – im Browsertest `game.tutorial.completed=true` setzen.

@@ -226,7 +226,7 @@ function worldInteraction(){
     default:return null;
   }
 }
-function playerMenu(name,level){const so=online?.social,inParty=so?.party().members.some(m=>m.n===name);return {title:name+(level?' · Stufe '+level:''),items:[{label:'Flüstern',action:()=>so?.whisper(name)},!inParty&&so?.isLeader()?{label:'In Gruppe einladen',action:()=>so.invite(name)}:null,inParty&&so?.isLeader()?{label:'Aus Gruppe entfernen',danger:true,action:()=>so.kick(name)}:null,{separator:true},{label:'Spielerliste',action:()=>so?.who()}]};}
+function playerMenu(name,level){const so=online?.social,inParty=so?.party().members.some(m=>m.n===name);return {title:name+(level?' · Stufe '+level:''),items:[so?.canRevive?.(name)?{label:'Aufhelfen',action:()=>so.revive(name)}:null,inParty?{label:so?.aidTarget?.()===name?'Hilfsziel aufheben':'Als Hilfsziel wählen',action:()=>so.setAidTarget(name)}:null,{label:'Handeln',action:()=>so?.trade(name)},{label:'Flüstern',action:()=>so?.whisper(name)},!inParty&&so?.isLeader()?{label:'In Gruppe einladen',action:()=>so.invite(name)}:null,inParty&&so?.isLeader()?{label:'Aus Gruppe entfernen',danger:true,action:()=>so.kick(name)}:null,{separator:true},{label:'Spielerliste',action:()=>so?.who()}]};}
 let lastPointer={x:0,y:0};addEventListener('pointerdown',e=>{lastPointer={x:e.clientX,y:e.clientY};},true);
 function friendAction(u){
   if((u.kind==='player'||u.kind==='party')&&online?.social){const m=playerMenu(u.name,u.level);showContextMenu(lastPointer.x,lastPointer.y,m.title,m.items);return;}
@@ -292,6 +292,7 @@ function events(){for(const ev of game.events.splice(0)){
   if(ev.type==='settingsChanged'&&popups.isOpen('guide'))showGuide(PANEL_UI.settings);
   if(ev.type==='bark')renderer?.bossSpeech.bark(ev,game);if(ev.type==='combat')combatText?.push(ev);
   if(ev.type==='discovery')toast(ev.name+' entdeckt · +20 EP');
+  if(ev.type==='revived'&&popups.isOpen('death'))closeModal();
   if(ev.type==='death')openModal(`<span class="eyebrow">DER ABEND IST NOCH NICHT VORBEI</span><h2>Du wurdest fachgerecht zusammengefaltet.</h2><p>Du wurdest besiegt. Achte auf die Zauberbalken: ${available(game,'interrupt')?'Gelbe Zauber mit <kbd>'+keyFor(game,'interrupt')+'</kbd> unterbrechen.':'Bei Fernangriffen Abstand vergrößern oder die Sichtlinie unterbrechen.'} Rote Flächen verlassen oder mit <kbd>${keyFor(game,'dash')}</kbd> ausweichen. ${available(game,'parry')?'Angekündigte Nahkampfhiebe lassen sich mit <kbd>'+keyFor(game,'parry')+'</kbd> parieren.':'Deine weiteren Verteidigungsfähigkeiten lernst du nach und nach.'} Deine Quest und Erfahrung bleiben erhalten.</p><div class="dialog-actions"><button class="gold-button" id="respawn">Am Treffpunkt zusammenkratzen lassen</button></div>`,false,'death');
   if(ev.type==='bossVictory'&&BOSS_LINES[ev.boss])toast('„'+BOSS_LINES[ev.boss].defeat+'“');
   // Death memories remain saved in Aufträge → Erinnerungen; the existing toast announces them without another modal.

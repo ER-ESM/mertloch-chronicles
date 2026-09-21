@@ -10,8 +10,9 @@ import {openStore,validEmail,validName,verifyPassword,BOARDS,SAVE_MAX_BYTES,SESS
 import {acceptUpgrade} from './ws.mjs';
 import {createSharedWorld} from './shared-world.mjs';
 import {createPartyPlay} from './party-play.mjs';
+import {createSocialPlay} from './social-play.mjs';
 
-export const API_VERSION=5;
+export const API_VERSION=6;
 const COOKIE='mertloch_session';
 const VIEW=1400,SNAP_MS=100,MAX_NEAR=40,IDLE_MS=45000;
 const TEXT={
@@ -153,6 +154,7 @@ export function createGameServer(options={}){
  // ── Echtzeit: Anwesenheit und Chat ──
  // Client → Server: {t:'pos',w,x,y,f,c,l,sp,s}  ·  {t:'chat',ch:'say'|'world',text}
  //                  {t:'offer',item} · {t:'choice',id,c} · {t:'qshare',item} · {t:'buff',b}   (Gruppenspiel: party-play.mjs)
+ //                  {t:'aid',to,heal?,b?} · {t:'revive',to} · {t:'trade',op,...} · {t:'wbseen',e,name,where}   (Miteinander: social-play.mjs)
  //                  {t:'hit',e,d,max,th?,r?} · {t:'evade',e?} · {t:'dead'} · {t:'party',op,name?} · {t:'who'}   (Regeln: shared-world.mjs)
  // Server → Client: {t:'mob'|'mobs'|'kill'|'reset'|'up'} · {t:'party',leader,members} · {t:'invite',from} · {t:'who',list}
  // Server → Client: {t:'welcome',name,online,history} · {t:'snap',o:[{n,x,y,f,c,l,sp,s}]} (10 Hz, nur Umkreis) · {t:'chat',from,ch,text,at} · {t:'notice',text}
@@ -163,15 +165,19 @@ export function createGameServer(options={}){
    const c={socket,id:account.id,name:account.name,world:'',x:0,y:0,f:1,c:'',l:1,sp:'',s:'idle',placed:false,seen:Date.now(),chatTimes:[],lastSnap:'',h:100,party:null,rate:{}};
    this.clients.set(account.id,c);
    socket.on('message',text=>{let m;try{m=JSON.parse(text);}catch{return;}if(m&&typeof m==='object')this.receive(c,m);});
-   socket.on('close',()=>{play.gone(c);shared.gone(c);if(this.clients.get(account.id)===c)this.clients.delete(account.id);});
+   socket.on('close',()=>{social.gone(c);play.gone(c);shared.gone(c);if(this.clients.get(account.id)===c)this.clients.delete(account.id);});
    socket.send(JSON.stringify({t:'welcome',name:account.name,online:this.clients.size,history:this.history.slice(-20)}));
   },
   receive(c,m){
    c.seen=Date.now();
    if(m.t==='hello'){const name=clampText(m.name,20);if(validName(name)&&store.ownsName(c.id,name)&&![...this.clients.values()].some(o=>o!==c&&o.name.toLowerCase()===name.toLowerCase()))c.name=name;c.socket.send(JSON.stringify({t:'you',name:c.name}));return;}
    if(m.t==='pos'){
-    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);c.kt=clampText(m.kt,96).replace(/[^a-z0-9.-]/g,'');const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed)shared.sync(c);}
-   }else if(m.t==='hit'){if(this.allow(c,'hit',40))shared.hit(c,m);}
+    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);c.kt=clampText(m.kt,96).replace(/[^a-z0-9.-]/g,'');const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed){shared.sync(c);social.sync(c);}}
+   }else if(m.t==='hit'){if(this.allow(c,'hit',40)){if(String(m.e).startsWith('wboss:'))social.bossHit(c,m.e);shared.hit(c,m);}}
+   else if(m.t==='aid'){if(this.allow(c,'aid',6))social.aid(c,m);}
+   else if(m.t==='revive'){if(this.allow(c,'revive',2))social.revive(c,m);}
+   else if(m.t==='trade'){if(this.allow(c,'trade',8))social.trade(c,{...m,name:clampText(m.name,20)});}
+   else if(m.t==='wbseen')social.bossSeen(c,m);
    else if(m.t==='evade')shared.evade(c,m.e?clampText(m.e,60):undefined);
    else if(m.t==='dead')shared.evade(c);
    else if(m.t==='party'){if(this.allow(c,'party',5))shared.party(c,{op:String(m.op||''),name:clampText(m.name,20)});}
@@ -207,7 +213,9 @@ export function createGameServer(options={}){
   pingAll(){for(const c of this.clients.values()){if(!c.socket.alive){c.socket.close(4000);continue;}c.socket.alive=false;c.socket.ping();}}
  };
 
- const shared=createSharedWorld({clients:()=>hub.clients.values(),send:(c,msg)=>c.socket.send(JSON.stringify(msg))});
+ const shared=createSharedWorld({clients:()=>hub.clients.values(),send:(c,msg)=>c.socket.send(JSON.stringify(msg)),onKill:(w,e,credit)=>social.bossKilled(w,e,credit)});
+ const social=createSocialPlay({clients:()=>hub.clients.values(),members:c=>shared.partyMembers(c),send:(c,msg)=>c.socket.send(JSON.stringify(msg)),shared,bossFirstMs:options.bossFirstMs,
+  say:text=>{const wire=JSON.stringify({t:'notice',text});for(const c of hub.clients.values())c.socket.send(wire);}});
  const play=createPartyPlay({members:c=>shared.partyMembers(c),send:(c,msg)=>c.socket.send(JSON.stringify(msg))});
  const server=http.createServer(handle);
  server.on('upgrade',(req,raw)=>{
@@ -218,9 +226,9 @@ export function createGameServer(options={}){
   if(!account){raw.end('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n');return;}
   const socket=acceptUpgrade(req,raw);if(socket)hub.join(socket,account);
  });
- const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>{shared.tick();play.tick();},1000),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
+ const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>{shared.tick();play.tick();social.tick();},1000),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
  for(const t of timers)t.unref?.();
- return {server,hub,store,shared,play,
+ return {server,hub,store,shared,play,social,
   listen:(port=options.port??8080,host=options.host||'127.0.0.1')=>new Promise(ok=>server.listen(port,host,()=>ok(server.address()))),
   close:()=>new Promise(ok=>{for(const t of timers)clearInterval(t);for(const c of hub.clients.values())c.socket.close(1001);store.flush();server.close(()=>ok());server.closeAllConnections?.();})};
 }
@@ -228,7 +236,7 @@ export function createGameServer(options={}){
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  loadEnvFile(process.env.MERTLOCH_ENV||'C:\\Mertloch\\mertloch.env');
  const stamp=()=>new Date().toISOString();
- const game=createGameServer({staticDir:process.env.STATIC_DIR||'',dataDir:process.env.DATA_DIR||resolve('.server-data'),publicOrigin:process.env.PUBLIC_ORIGIN||'',port:Number(process.env.PORT)||8080,host:process.env.HOST||'127.0.0.1',log:t=>console.log(stamp()+' '+t)});
+ const game=createGameServer({staticDir:process.env.STATIC_DIR||'',dataDir:process.env.DATA_DIR||resolve('.server-data'),publicOrigin:process.env.PUBLIC_ORIGIN||'',port:Number(process.env.PORT)||8080,bossFirstMs:Number(process.env.BOSS_FIRST_MS)||undefined,host:process.env.HOST||'127.0.0.1',log:t=>console.log(stamp()+' '+t)});
  const address=await game.listen();
  console.log(stamp()+' Mertloch-Spielserver v'+API_VERSION+' lauscht auf '+address.address+':'+address.port+' · Daten: '+(process.env.DATA_DIR||resolve('.server-data')));
  const stop=async()=>{await game.close();process.exit(0);};process.on('SIGINT',stop);process.on('SIGTERM',stop);

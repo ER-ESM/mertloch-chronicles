@@ -516,3 +516,15 @@ Offen für die nächsten Runden (Reihenfolge = Wert fürs Gruppengefühl): Heilu
 - Die **Bande** (Figurenwechsel im Spiel) entfällt: Helden wählt man am Anmeldebildschirm (E-38). Das Spielmenü führt dorthin.
 - Spielmenü ohne „Clanbuch" am Desktop (Tasten und Dock reichen); auf Touch bleibt der Knopf, weil es dort keine Tasten gibt. Entwickler-Schaufenster (Effekt-Demo, Helden-Demo, Weltschmiede) liegen im Admin-Fenster statt in den Einstellungen.
 - E-27 gilt weiter für: EIN Fenster, keine Seiten zum Blättern, Bude als Abschnitt der Aufträge.
+
+## E-44 · Miteinander: Hilfsziel, Aufhelfen, Handel, Weltbosse (21.09.2026)
+
+**Auftrag des Nutzers:** aus der Liste in E-42 die Punkte 1, 2, 3 und 6 bauen. Alles folgt dem Muster von E-35/E-42: der Server rechnet keinen Kampf, er prüft Nähe und Zustand, reicht weiter und sagt an (`server/game/social-play.mjs`, Client `net-social.js`).
+
+1. **Heilung und Schutz auf Mitspieler:** Ein Gruppenmitglied wird per Klick auf seinen Gruppenrahmen (oder Rechtsklick → „Als Hilfsziel wählen") zum Hilfsziel. Die eigene Heilung wirkt dann zusätzlich in voller Höhe dort, der Klassenbuff in voller statt halber Stärke (Reichweite 420). Die eigene Wirkung bleibt unverändert – Helfen kostet nichts, „Zusammen ist besser".
+2. **Aufhelfen:** Jeder Spieler darf jedem helfen, der am Boden liegt (Reichweite 140, Knopf im Gruppenrahmen oder Rechtsklick auf den Spieler). Der Gefallene steht an Ort und Stelle mit 35 % Leben (`BALANCE.party.reviveHp`) und 3 s Schonfrist wieder, ohne Heimweg.
+3. **Handel:** Rechtsklick → „Handeln" (Reichweite 260), Anfrage annehmen, bis zu sechs Posten aus dem Rucksack plus Marken. Jede Änderung nimmt beide Zusagen zurück; erst zwei Zusagen schließen ab. Der Client prüft Platz und Bestand; fehlt beim Abschluss etwas, platzt der Handel auf dieser Seite ganz. Gewürfelte Teile reisen als Bauplan. Angelegte Ausrüstung ist nicht handelbar.
+4. **Weltbosse:** Alle 30 min (erstmals 5 min nach Serverstart) erscheint je bewohnter Welt ein Boss aus `SOCIAL_RULES.boss.ids` an einem Lager, das alle Clients gleich bestimmen; Lebenspunkte = Boss × 4 × (1 + 0,75 je weiterem Spieler), Stufe +2. Ansage im Chat mit Himmelsrichtung, Sieg-Ansage mit den Namen der Beteiligten, Abzug nach 20 min. Die Lebenspunkte führt die geteilte Welt; jeder Beteiligte findet sicher ein seltenes Teil (in der Gruppe wird es nach E-42 ausgewürfelt). Weltbosse zählen nicht für Hauptquest und Erinnerungen.
+5. **Bewusst nicht:** Der Server vertraut den Angaben der Clients (Heilmenge, Handelsgut) und kappt nur Form und Grenzen. Wer manipuliert, kann sich Gegenstände erschaffen – das gilt seit E-35 für Schaden und Beute genauso und ist erst mit serverseitigem Inventar lösbar.
+
+Offen: Gilde/Clan, Gruppen-Instanz (Kiosk zu fünft), Freundesliste, Post/Auktionshaus, serverseitiges Inventar.

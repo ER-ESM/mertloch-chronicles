@@ -12,7 +12,7 @@ export const SHARED_TEXT={
 const clamp=(v,lo,hi,fallback=lo)=>{const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,n)):fallback;};
 
 /** clients: () => Iterable der verbundenen Spieler {id,name,world,x,y,l,c,sp,h,placed,party}; send(client,msg); now() in ms; random() 0..1 */
-export function createSharedWorld({clients,send,now=Date.now,random=Math.random}){
+export function createSharedWorld({clients,send,now=Date.now,random=Math.random,onKill=null}){
  const mobs=new Map(),parties=new Map(),invites=new Map();let partySerial=0;
  const all=()=>[...clients()],byId=id=>all().find(c=>c.id===id)||null,byName=n=>all().find(c=>c.name.toLowerCase()===String(n||'').trim().toLowerCase())||null;
  const inWorld=w=>all().filter(c=>c.placed&&c.world===w);
@@ -38,7 +38,7 @@ export function createSharedWorld({clients,send,now=Date.now,random=Math.random}
   const holders=[...m.threat.keys()].map(byId).filter(Boolean),credit=new Set(holders.map(h=>h.name));
   for(const h of holders)for(const id of parties.get(h.party)?.members||[]){const o=byId(id);if(o&&o.placed&&o.world===m.world&&holders.some(x=>Math.hypot(x.x-o.x,x.y-o.y)<=SHARED_RULES.creditRange))credit.add(o.name);}
   const r=Math.round(m.respawnIn*(1+random()*.4));m.deadUntil=now()+r*1000;m.threat.clear();m.target=null;
-  toWorld(m.world,{t:'kill',e:m.id,by:c.name,credit:[...credit],r});
+  toWorld(m.world,{t:'kill',e:m.id,by:c.name,credit:[...credit],r});onKill?.(m.world,m.id,[...credit]);
  }
  /** Spieler lässt vom Gegner ab (Leine, Tod, Weltwechsel, Trennung). Ohne e: von allen. */
  function evade(c,e){
