@@ -24,9 +24,9 @@ export function tickCombatMeter(g){
  else if(!g.meter?.current){const enemy=g.enemies.find(e=>e.hp>0&&e.aggro&&e.ai!=='returning');if(enemy)beginMeterCombat(g,enemy);}
 }
 export function resetCombatMeter(g){g.meter=createCombatMeter();}
-function record(g,kind,amount,excess,source,critical=false){
+function record(g,kind,amount,excess,source,critical=false,actor=g.member){
  if(!Number.isFinite(amount)||!Number.isFinite(excess)||amount<0||excess<0||amount+excess<=0)return;
- const m=meter(g),s=m.current||beginMeterCombat(g),actor=g.member;
+ const m=meter(g),s=m.current||beginMeterCombat(g);
  for(const scope of [s,m.overall]){
   const a=scope.actors[actor.id]||(scope.actors[actor.id]={id:actor.id,name:actor.name,color:actor.color,abilities:{damage:{},healing:{}},...totals()});
   const rows=a.abilities[kind],r=rows[source.id]||(rows[source.id]={id:source.id,name:source.name,amount:0,excess:0,hits:0,crit:0,max:0});
@@ -35,18 +35,19 @@ function record(g,kind,amount,excess,source,critical=false){
  }
  m.revision++;
 }
-export function recordMeterDamage(g,enemy,actual,dealt,label,critical=false){
+export function recordMeterDamage(g,enemy,actual,dealt,label,critical=false,actor=g.member){
  if(!(actual>0)||!Number.isFinite(actual)||!Number.isFinite(dealt))return;
  beginMeterCombat(g,enemy);
  const id=METER_TEXT.damageSources[label]||(label===APEROL_TEXT.splash?'burst':null),skill=g.skills.find(s=>s.id===id);
- record(g,'damage',Math.max(0,dealt),Math.max(0,actual-dealt),{id:id||'other',name:skill?.name||label||METER_TEXT.unknown},critical);
+ const source=typeof label==='object'?label:{id:id||'other',name:skill?.name||label||METER_TEXT.unknown};
+ record(g,'damage',Math.max(0,dealt),Math.max(0,actual-dealt),source,critical,actor);
 }
-export function recordMeterHealing(g,amount,actual,source='heal'){
+export function recordMeterHealing(g,amount,actual,source='heal',actor=g.member){
  // OOC healing must not open a fight or inflate a previous encounter's HPS.
  if(g.dead||!(g.player.inCombat>0))return;
  const names={leech:METER_TEXT.leech,feedback:METER_TEXT.feedback,hot:METER_TEXT.hot,killHeal:METER_TEXT.killHeal,parryHeal:METER_TEXT.parryHeal};
  const info=typeof source==='object'?source:{id:source,name:g.skills?.find(s=>s.id===source)?.name||names[source]||METER_TEXT.healingOther};
- record(g,'healing',actual,Math.max(0,amount-actual),info);
+ record(g,'healing',actual,Math.max(0,amount-actual),info,false,actor);
 }
 // Heal raw values without applying talent multipliers (food, gear leech and passive parry).
 export function restoreMeterHealth(g,amount,source){

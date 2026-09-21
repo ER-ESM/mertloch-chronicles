@@ -575,6 +575,13 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .touch-mode .sct-in{right:34px;bottom:20px;}
 .touch-mode .sct-out{left:34px;bottom:20px;}
 .touch-mode .sct-note{bottom:52px;}
+.sct-companion{position:absolute;left:0;top:0;width:0;height:0;}
+.sct-companion .sct-in{right:24px;bottom:36px;}
+.sct-companion .sct-out{left:24px;bottom:36px;}
+.sct-companion .sct-note{bottom:64px;}
+.sct-companion .sct-row{font-size:14px;}
+.sct-companion .sct-crit{font-size:19px;}
+.sct-companion .sct-row small{max-width:110px;overflow:hidden;text-overflow:ellipsis;font-size:10px;}
 @media (prefers-reduced-motion:reduce){.sct-row{animation-duration:1s;}}
 
 /* Kniff-Varianten: Icon und Name wechseln, solange die Bedingung gilt (Eskalation, RESONANZ, Gratis, Verstärkt) */

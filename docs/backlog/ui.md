@@ -192,4 +192,4 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 - [x] Begleiter im Gruppenrahmen (Name, Rolle, Leben, am Boden, Restzeit des Vertrags) und Befehls-/Haltungsknöpfe; Taste U öffnet die Verwaltung, Antippen eines Gruppenrahmens wählt diesen Söldner. Ereignisse plus laufende Aktualisierung; Auswahl „Alle Söldner“ oder einzelner Begleiter. Nachweise: visual-review/companions/.
 - [ ] Begleiter am Boden liegend zeichnen (view.down); eigene Sprites je Söldner statt Klassen-Look über content/ART-BRIEF (look-Feld).
   Liegedarstellung über view.down ist umgesetzt; individuelle Sprites bleiben Grafikbedarf.
-- [ ] Kampfstatistik: Begleiter als eigene Zeilen (braucht Engine-Zuarbeit, siehe engine.md).
+- [x] Kampfstatistik: Begleiter als eigene Zeilen mit F?higkeiten, Schaden/Heilung, kritischen Treffern, ?berheilung und ?berschaden; Engine-Zuordnung und Browserpr?fung in scripts/companion-combat-check.mjs.

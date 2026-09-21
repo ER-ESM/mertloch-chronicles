@@ -102,5 +102,5 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 
 - [ ] net-party.js setzt game.partyHumans (Zahl echter Gruppenmitglieder außer mir) bei jeder party-Nachricht; bei mehr Menschen als Plätzen den zuletzt angeheuerten Begleiter entlassen. Abnahme: Test in tests/party-play.test.mjs oder companions.test.mjs.
 - [ ] Fremde Begleiter für Mitspieler sichtbar machen: Besitzer meldet c.view (neue Nachricht im pos-Takt), Server reicht sie im snap mit, Client zeichnet sie wie others. Abnahme: Zwei-Spieler-Test.
-- [ ] Begleiter-Schaden und -Heilung an combat-meter.js melden (eigene Quelle je Begleiter).
+- [x] Begleiter-Schaden und -Heilung an combat-meter.js melden: eigene Figur und F?higkeit, kritische Treffer, ?berheilung/?berschaden; Spielerwerte bleiben getrennt. Regression in tests/companion-combat-feedback.test.mjs.
 - [ ] Dungeon-Merkmale: neue Felder in CAST_SETS (sammeln, verteilen, Tankwechsel) und passende Reaktionen in companions.js tickOne().

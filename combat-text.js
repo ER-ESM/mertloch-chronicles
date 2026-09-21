@@ -14,20 +14,26 @@ function icon(e){
 }
 export function mountCombatText(shell,api){
  const root=document.createElement('div');root.id='sct';root.setAttribute('aria-hidden','true');shell.append(root);
- const areas={};for(const a of ['in','out','note']){const el=document.createElement('div');el.className='sct-area sct-'+a;root.append(el);areas[a]={el,last:0,rows:[]};}
+ function makeAreas(parent){const areas={};for(const a of ['in','out','note']){const el=document.createElement('div');el.className='sct-area sct-'+a;parent.append(el);areas[a]={el,last:0,rows:[]};}return areas;}
+ const areas=makeAreas(root),companions=new Map();
+ function companionAreas(id){
+  if(!api.game()?.companions?.some(c=>c.id===id))return null;
+  if(!companions.has(id)){const el=document.createElement('div');el.className='sct-companion';el.dataset.companion=id;root.append(el);companions.set(id,{el,areas:makeAreas(el)});}
+  return companions.get(id).areas;
+ }
  let enabled=true;
  function push(e){
-  if(!enabled)return;const area=areas[e.area]||areas.note,now=performance.now();
+  if(!enabled)return;const group=e.actor?companionAreas(e.actor):areas;if(!group)return;const area=group[e.area]||group.note,now=performance.now();
   // Zusammenfassen: gleiche Art + gleicher Kniff kurz nacheinander → eine Zeile mit Summe
-  const twin=e.value!==undefined&&area.rows.find(r=>r.e.kind===e.kind&&r.e.skill===e.skill&&r.e.text===e.text&&now-r.at<MERGE*1000);
+  const twin=e.value!==undefined&&area.rows.find(r=>r.e.kind===e.kind&&r.e.skill===e.skill&&r.e.ability===e.ability&&r.e.text===e.text&&now-r.at<MERGE*1000);
   if(twin){twin.e.value+=e.value;twin.e.crit=twin.e.crit||e.crit;twin.node.querySelector('b').textContent=fmt(twin.e);twin.node.classList.toggle('sct-crit',!!twin.e.crit);return;}
   const node=document.createElement('div');node.className='sct-row sct-'+e.kind+(e.crit?' sct-crit':'')+(e.big?' sct-big':'');
   node.innerHTML=icon(e)+'<b>'+esc(fmt(e))+'</b>'+(e.text&&e.value!==undefined?'<small>'+esc(e.text)+'</small>':'');
   if(e.color)node.style.color=e.color;
   // Stapeln: kommt der nächste Eintrag dicht hinter dem letzten, startet er ein Stück höher (MSBT-Warteschlange ohne Warten)
   const gap=now-area.last;const offset=gap<220?Math.min(3,Math.round((220-gap)/70))*18:0;node.style.setProperty('--sct-offset',(-offset)+'px');area.last=now;
-  area.el.append(node);area.rows.push({e,node,at:now});paintDescribeIcons(node,api.game());
-  while(area.rows.length>MAX){const old=area.rows.shift();old.node.remove();}
+  area.el.append(node);area.rows.push({e:{...e},node,at:now});paintDescribeIcons(node,api.game());
+  while(area.rows.length>(e.actor?3:MAX)){const old=area.rows.shift();old.node.remove();}
   setTimeout(()=>{node.remove();const i=area.rows.findIndex(r=>r.node===node);if(i>=0)area.rows.splice(i,1);},LIFE*1000+50);
  }
  const fmt=e=>e.value===undefined?e.text:(e.kind==='damage'&&e.area==='in'?'−':e.kind==='heal'||e.kind==='xp'?'+':'')+Math.round(e.value)+(e.crit?'!':'')+(e.unit?' '+e.unit:'');
@@ -38,6 +44,8 @@ export function mountCombatText(shell,api){
   const o=renderer.viewOrigin||{x:renderer.camera.x-renderer.viewWidth/2,y:renderer.camera.y-renderer.viewHeight/2};
   const x=(p.x-o.x)*kx+r.left-shellRect.left,y=(p.y-o.y)*ky+r.top-shellRect.top;
   root.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px)`;
+  for(const [id,group]of companions){const c=game.companions?.find(c=>c.id===id);if(!c){group.el.remove();companions.delete(id);continue;}group.el.style.transform=`translate(${Math.round((c.x-p.x)*kx)}px,${Math.round((c.y-p.y)*ky)}px)`;}
  }
- return {push,update,set enabled(v){enabled=!!v;root.hidden=!v;},get enabled(){return enabled;},clear(){for(const a of Object.values(areas)){a.el.innerHTML='';a.rows=[];}}};
+ function clear(){for(const a of Object.values(areas)){a.el.innerHTML='';a.rows=[];}for(const group of companions.values())group.el.remove();companions.clear();}
+ return {push,update,set enabled(v){enabled=!!v;root.hidden=!v;if(!v)clear();},get enabled(){return enabled;},clear};
 }
