@@ -56,7 +56,16 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
     const images=await read(`[...document.querySelectorAll('[data-book-skill] canvas')].map(c=>c.toDataURL())`);assert.equal(images.length,(await state()).skills.length);assert.equal(new Set(images).size,images.length);icons.push(...images);
     await b.press('n');assert.deepEqual((await state()).popups.map(p=>p.id),['talents']);/* E-42: Talente auf N */
     const specs=await read(`[...document.querySelectorAll('[data-view-tree]')].map(e=>e.dataset.viewTree)`);assert.equal(specs.length,3);
-    for(const spec of specs){/* offene Bäume (E-37): Punkte bleiben beim Baumwechsel stehen – für die Einzelprüfung je Baum leeren */await read(`(()=>{const g=globalThis.__mertloch.game;g.rpg.talents.learned=[];g.refreshStats();})()`);await click('[data-view-tree="'+spec+'"]');const nodes=await read(`[...document.querySelectorAll('[data-talent]')].map(e=>e.dataset.talent)`);assert.equal(nodes.length,30);await click('[data-talent="'+nodes.at(-1)+'"]');assert.equal((await state()).rpg.talents.learned.length,0);for(const node of nodes.filter((_,i)=>i%3===0))await click('[data-talent="'+node+'"]');const s=await state();assert.equal(s.rpg.talents.learned.length,10);for(const skill of s.skills.filter(x=>x.talent&&s.rpg.talents.learned.includes(x.talent))){assert.ok(s.unlocked.includes(skill.id));assert.ok(s.actionBar.includes(skill.id));}}
+    for(const spec of specs){
+     await read(`(()=>{const g=globalThis.__mertloch.game;Object.assign(g.rpg.talents,{learned:[],ranks:{}});g.refreshStats();})()`);await click('[data-view-tree="'+spec+'"]');
+     const choices=new Set();
+     for(const path of [0,1,2]){await click('[data-view-path="'+path+'"]');const nodes=await read(`[...document.querySelectorAll('[data-talent]')].map(e=>e.dataset.talent)`);assert.equal(nodes.length,10);nodes.forEach(id=>choices.add(id));assert.equal(await read(`document.querySelectorAll('.tt-links>path').length`),2);}
+     assert.equal(choices.size,30);
+     const plan=await read(`(async()=>{const {TALENTS,pathBuild}=await import('./talents.js'),spec=${JSON.stringify(spec)},path=TALENTS[spec].find(t=>t.grants).path;return {path,ids:pathBuild(spec,path,10)};})()`);
+     await click('[data-view-path="'+plan.path+'"]');await click('[data-talent="'+plan.ids.at(-1)+'"]');assert.equal((await state()).rpg.talents.learned.length,0,'inspection never spends points');assert.ok(await read(`document.querySelector('[data-learn-talent]').disabled`));
+     for(const node of plan.ids){await click('[data-talent="'+node+'"]');await click('[data-learn-talent="'+node+'"]');}
+     const s=await state();assert.equal(s.rpg.talents.learned.length,10);assert.equal(Object.values(s.rpg.talents.ranks).reduce((a,b)=>a+b,0),10);for(const skill of s.skills.filter(x=>x.talent&&s.rpg.talents.learned.includes(x.talent))){assert.ok(s.unlocked.includes(skill.id));assert.ok(s.actionBar.includes(skill.id));}
+    }
     await persist();assert.equal((await state()).rpg.talents.learned.length,10);pass(classId+': three trees, 90 choices with ten learned talents, granted skills and persistence');
    }
    assert.equal(new Set(icons).size,icons.length);
