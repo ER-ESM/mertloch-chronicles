@@ -560,3 +560,22 @@ Offen: Gilde/Clan, Gruppen-Instanz (Kiosk zu fünft), Freundesliste, Post/Auktio
 **Verworfen.** *Farbabstimmung in die Grafik backen* – der CSS-Filter kostet nach (1)+(2) nichts Messbares mehr. *Schatten statischer Objekte zwischenspeichern* – 2,3 ms, lohnt den Aufwand erst, wenn echte Geräte es zeigen.
 
 **Falle.** `restore()` in `drawContentPerson` führt jedes CPU-Profil an (≈25 %): dort rastert der Browser das aufgezeichnete Bild, die Figuren selbst kosten ≈3 ms. Nicht die Figuren optimieren, sondern die Pixelmenge.
+
+## E-47 · Effektschicht auf der Grafikkarte: Wetter, Druckwellen, Flimmern, Bloom, Partikel (21.09.2026)
+
+**Anlass.** Nutzerfrage „Umstieg auf three.js für mehr Effekte, Interaktivität und Immersion?". Vier lauffähige Prototypen (`proto-renderer.html`, `docs/RENDERER-PROTOTYPEN-2026-09-21.md`): A Canvas 2D ausbauen, B WebGL-Schicht über dem fertigen Bild, C three.js mit Sprites als Tafeln, D Live-3D. **Der Nutzer hat B gewählt** („Baue auf B auf"). Mobile ist für diese Entscheidung vorerst nicht maßgeblich.
+
+**Entscheidung.**
+1. **Der Canvas-2D-Renderer bleibt.** Eine zweite Leinwand (`world-fx.js`, WebGL2, keine Bibliothek) liegt direkt über der Weltfläche, unter den Licht-Ebenen aus E-39 und unter dem HUD; Klicks gehen durch. `renderer.draw()` ruft sie als Letztes auf, weil sie das fertige Weltbild als Textur nimmt.
+2. **Was die Schicht zeichnet:** Druckwellen, die das Bild ringförmig verzerren (aus `game.fx`: Treffer, Ausbruch, Unterbrechung, Tod sowie die Kniffe `slam`, `detonate`, `keg`); Hitzeflimmern über Lagerfeuern und Brandflächen; Bloom; Bodennebel, der mit dem Dunkelanteil des Gebiets wächst; Regenschauer mit Wetterleuchten nach der Spielzeit; Funken und Glühwürmchen als Partikel, die vollständig im Vertex-Shader laufen.
+3. **Nichts doppelt:** Schatten, Lichtschicht, Randabdunklung und Farbabstimmung bleiben bei `world-light.js` (E-39). Die Schicht liest dessen Dunkelanteil (`light.dark`) und Lichtquellen (`light.sources`) und übernimmt den CSS-Filter der Weltfläche.
+4. **Reine Darstellung:** Die Schicht liest Spielzustand, würfelt nichts, ändert nichts am Kampf. Wetter ist eine feste Funktion der Spielzeit (`weatherAt`) – gleich für alle, prüfbar ohne Browser.
+5. **Drei Stufen:** `voll` (mit Weltbild-Textur) · `leicht` (durchsichtige Überlagerung: nur Nebel, Regen, Partikel) · `aus`. Kostet die Schicht im Mittel mehr als `guard.budgetMs` je Bild, fällt sie nach `guard.window` Bildern von selbst auf `leicht`. Ohne WebGL2, bei Shader-Fehler oder verlorenem Grafikkontext: `aus`, das Spiel läuft unverändert weiter.
+6. **Abschaltbar:** Hilfe → Einstellungen → „Wetter & Effekte" (`settings.fx`, Standard an), unabhängig von „Licht & Schatten".
+7. **Diagnose zuschaltbar:** `?fx=debug` blendet Stufe und Kosten ein, `?fx=voll|leicht|aus` erzwingt eine Stufe (kombinierbar), `window.mertloch.state().fx` liefert denselben Stand. `proto-b.html` ist die Demo der echten Schicht und löst Druckwelle, Feuer, Dunkelheit und Schauer gezielt aus.
+
+Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
+
+**Verworfen.** C (three.js-Renderer, 2–3 Wochen, alle Rollen warten, Grafik nur aus einer Blickrichtung brauchbar) und D (Live-3D, Monate, gesamte Pixelgrafik entfällt; widerspricht E-10 und E-30). three.js bleibt Werkzeug der Pre-Render-Werkstatt.
+
+**Bewusst offen.** Die Kosten der Weltbild-Textur sind nur mit Software-Grafik gemessen (dort ~40–50 ms, deshalb der Selbstschutz); seit E-46 folgt die Weltleinwand der Bildschirmauflösung (Dichte 2–4), die Textur ist damit höchstens bildschirmgroß – nur „Volle Grafikauflösung“ (`settings.fullRes`) macht sie wieder groß. Auf echter Hardware mit `?fx=debug` nachmessen. Druckwellen verzerren auch die Beschriftungen, die auf der Weltfläche liegen. Wetter hat keine Spielwirkung und keinen Ton. Der Kiosk-Innenraum bekommt keine Effekte.

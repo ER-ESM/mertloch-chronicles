@@ -1,7 +1,7 @@
 # Renderer-Prototypen A–D (2026-09-21)
 
 **Anlass.** Frage des Nutzers: Lohnt ein Umstieg auf three.js für mehr Effekte, Interaktivität und Immersion? Mobile ist dafür vorerst nicht maßgeblich.
-**Ergebnis.** Vier lauffähige Prototypen auf derselben echten Welt und Engine. Einstieg: `proto-renderer.html`. Kein Teil des Spiels, nichts davon ist in `index.html` eingebunden. **Entschieden ist nichts** – das gehört nach `docs/ENTSCHEIDUNGEN.md`, sobald der Nutzer gewählt hat.
+**Ergebnis.** Vier lauffähige Prototypen auf derselben echten Welt und Engine. Einstieg: `proto-renderer.html`. Kein Teil des Spiels, nichts davon ist in `index.html` eingebunden. **Entschieden: B** – siehe E-47 in `docs/ENTSCHEIDUNGEN.md`. `proto-b.html` ist seitdem die Demo der echten Effektschicht (`world-fx.js`); A, C und D bleiben als Vergleich stehen.
 
 | | Datei | Idee | Aufwand fürs echte Spiel | Berührt |
 |---|---|---|---|---|
