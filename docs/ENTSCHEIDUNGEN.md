@@ -528,3 +528,20 @@ Offen für die nächsten Runden (Reihenfolge = Wert fürs Gruppengefühl): Heilu
 5. **Bewusst nicht:** Der Server vertraut den Angaben der Clients (Heilmenge, Handelsgut) und kappt nur Form und Grenzen. Wer manipuliert, kann sich Gegenstände erschaffen – das gilt seit E-35 für Schaden und Beute genauso und ist erst mit serverseitigem Inventar lösbar.
 
 Offen: Gilde/Clan, Gruppen-Instanz (Kiosk zu fünft), Freundesliste, Post/Auktionshaus, serverseitiges Inventar.
+
+---
+
+## E-45 · Begleiter: Söldner im Client des Besitzers, ein Baustein auch für Pets (21.09.2026)
+
+**Auftrag (E. Ruf).** „Baue ein richtiges Söldner-System – das können wir auch für Pet-Logiken nutzen, wenn wir mal Klassen aufbauen, die einen dauerhaften Begleiter haben." Anlass: Gruppenspiel soll auch ohne vier Mitspieler funktionieren, besonders im nächsten Meilenstein „Dungeons".
+
+**Entscheidung.**
+1. **Begleiter leben im Client des Besitzers**, nicht als Bots am Server. Der Kampf rechnet im Browser (E-35); nur dort sind Gegner-KI, Zauber und Flächen bekannt, nur dort gibt es Instanzen. Begleiter-Schaden zieht Gegnern Leben ab und wird von `net-world.js` als Schaden des Besitzers gemeldet – der Server bleibt unverändert.
+2. **Ein Baustein für Söldner und Pets** (`companions.js`, Daten in `content/companions.js`): Bedrohung je Gegner (`e.threat`, Zielwechsel bei +10 % wie am Server), Gegner-KI gegen Begleiter, Rollen-KI (Schutz, Heilung, Schaden), Befehle (folgen, warten, angreifen) und Haltungen (unterstützen, verteidigen, passiv). Fähigkeiten laufen allein über `kind`; neue Begleiter sind Daten.
+3. **Zuverlässigkeit über Merkmale, nicht über Bosse:** Begleiter reagieren auf `ground` (Fläche verlassen) und `interruptible` (unterbrechen) in den Zauberdaten, mit fester Reaktionszeit. Neue Dungeon-Mechaniken bekommen ein Merkmal in `CAST_SETS` und eine Reaktion im Baustein.
+4. **Balance-Rahmen:** Stufe des Spielers, 85 % der Stärke eines gleichstufigen Spielers, höchstens vier Begleiter und mit echten Mitspielern nie mehr als fünf Köpfe, kein EP-Abzug, Begleiter würfeln nie um Beute (E-42), keine Wertung in Ranglisten/Arena. Vertrag gegen Münzen, zwei Spielstunden.
+5. **Bedienung zunächst über Chat-Befehle** (`/söldner`, `/entlassen`, `/befehl`, `/haltung`); das Schwarze Brett als Fenster, Gruppenrahmen und eigene Grafik sind UI-Aufträge.
+
+**Verworfen.** *Bots am Server als Söldner* – sehen weder Zauber noch Instanzen, hängen an der Verbindung; bleiben als Dorfbewohner fürs Ambiente (Dienst `MertlochBots`, außerhalb des Repos). *Serverseitiger Kampf für Instanzen* – widerspricht E-35, zu groß für den Nutzen. *Boss-spezifische Skripte für Begleiter* – jeder neue Boss bräuchte Begleiter-Code.
+
+**Konsequenzen.** `docs/BEGLEITER-2026-09-21.md` (Aufbau, Schnittstelle, Grenzen). Offen: Sichtbarkeit fremder Begleiter für Mitspieler (Weitergabe über den Server), `g.partyHumans` aus `net-party.js`, Fenster/Gruppenrahmen/Grafik, Balancing-Erstlauf, Merkmale für Dungeon-Mechaniken, Pets als Klassenmechanik. Aufträge in `docs/backlog/ui.md`, `engine.md`, `balance.md`, `gameplay.md`, `klassen.md`. IDs `merc-*` stehen in Spielständen.

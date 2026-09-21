@@ -62,3 +62,9 @@ Nachtrag 2026-09-18: Kniff-Kurztexte und alle `info.effect`/`why` auf feste Ziff
 - [x] Schlussstein-Regel: alle neun Index-9-Talente ändern jetzt den Finisher (Inhalt neu, Index und Pfad gleich; Test in tests/spec-mechanics.test.mjs).
 - [x] `tempo`/`laufzauber` stehen im gemeinsamen Glossar; Klassenmodule können keine gemeinsamen IDs mehr überschreiben.
 - [x] Astra-Lieferung 2026-09-19 eingebunden: 270 eigene Talent-Icons, Skill-/Variantenfelder, Fässer/Robbi/Gisela, Effekte, Klassen-HUD, Talentbaum-Grafik (docs/ASTRA-E32-LIEFERUNG-2026-09-19.md). Keine Fallback-Icons mehr.
+
+## Begleiter / Söldner (E-45) · 2026-09-21
+
+Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
+
+- [ ] Dauerhafte Klassen-Pets auf dem Begleiter-Baustein: Eintrag in COMPANIONS mit kind:'pet', Auslöser in der Klassenmechanik (Spec-Wechsel/Betreten), eigene Fähigkeiten in COMPANION_ABILITIES. Klären: ersetzt das die laufenden Begleiter der Pfadkronen (Robbi, Gisela) oder bleibt g.fields daneben bestehen?
