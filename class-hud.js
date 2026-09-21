@@ -1,25 +1,62 @@
 import {SPEC_MECHANICS} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {e32Art} from './e32-art.js';
-const clamp=v=>Math.max(0,Math.min(1,v));
+import {loadMechanicArt,paintMechanicSprite} from './class-mechanic-art.js';
+const clamp=v=>Math.max(0,Math.min(1,v||0));
+const accents={'dieter-wall':'#e4b96b','dieter-brawl':'#efc468','dieter-brew':'#d8ac62','baerbel-care':'#edc474','baerbel-feedback':'#b5dc64','baerbel-stage':'#f18da2','kevin-fuse':'#77d7df','kevin-iron':'#e5b768','kevin-hunt':'#f1ca6b'};
 /** Reads authoritative resources; painting never advances or consumes a mechanic. */
-export function classHudState(g){const m=SPEC_MECHANICS[g.rpg?.talents?.spec],s=g.classState?.m||{},cs=combatStats(g);if(!m)return null;
- if(m.stack)return {kind:'pegel',title:'Deckelstriche',count:s.stack||0,max:m.stack.max,left:Math.max(0,(s.stackUntil||0)-g.time),total:m.stack.decay+(cs.stackDecay||0),icon:'dieter-brawl-0'};
- if(m.supply)return {kind:'jars',title:'Vorrat',count:s.supply||0,max:m.supply.max+(cs.supplyMax||0),left:s.clean||0,total:m.supply.cleanDuration+(cs.cleanDuration||0),icon:'baerbel-care-0'};
- if(m.state)return {kind:'state',title:'Putzwut',count:g.player.energy,max:m.state.trigger+(cs.stateTrigger||0),left:s.state||0,total:m.state.duration+(cs.stateDuration||0),icon:'baerbel-stage-18'};
- if(m.gamble)return {kind:'luck',title:s.jackpot>0?'Jackpot':'Bastler-Glück',count:s.miss||0,max:m.gamble.pity+(cs.gamblePity||0),last:s.last,left:s.jackpot||0,total:m.gamble.jackpot.duration+(cs.jackpotDuration||0),icon:'kevin-hunt-29'};
- if(m.field&&['fass','robbi'].includes(m.field.kind))return {kind:'fields',title:m.field.kind==='robbi'?'Dosen-Robbi':'Fässer',fields:g.fields.filter(z=>z.kind===m.field.kind&&z.remaining>0),icon:m.field.kind==='robbi'?'kevin-iron-10':'dieter-brew-8'};
- if(m.chain)return {kind:'state',title:'Kettenreaktion',count:s.heat?.length||0,max:m.reaction.count,left:s.reaction||0,total:m.reaction.duration+(cs.reactionDuration||0),icon:'kevin-fuse-29'};
- return {kind:'state',title:m.kind==='dot'?'Schimmel':'Deckung',count:m.kind==='dot'?g.enemies.filter(e=>e.hp>0&&e.mark>0).length:g.classState.guard,max:m.kind==='dot'?Math.max(1,g.enemies.filter(e=>e.hp>0).length):g.player.maxHp*.38,left:s.hausverbot||0,total:m.hausverbot?.duration||8,icon:m.kind==='dot'?'baerbel-feedback-10':'dieter-wall-0'};
+export function classHudState(g){const spec=g.rpg?.talents?.spec,m=SPEC_MECHANICS[spec],s=g.classState?.m||{},cs=combatStats(g);if(!m)return null;
+ const base={spec};
+ if(m.stack)return {...base,kind:'pegel',title:'Deckelstriche',count:s.stack||0,max:m.stack.max,left:Math.max(0,(s.stackUntil||0)-g.time),total:m.stack.decay+(cs.stackDecay||0),icon:'dieter-brawl-0'};
+ if(m.supply)return {...base,kind:'jars',title:'Vorrat',count:s.supply||0,max:m.supply.max+(cs.supplyMax||0),left:s.clean||0,total:m.supply.cleanDuration+(cs.cleanDuration||0),icon:'baerbel-care-0'};
+ if(m.state)return {...base,kind:'state',title:'Putzwut',count:g.player.energy,max:m.state.trigger+(cs.stateTrigger||0),left:s.state||0,total:m.state.duration+(cs.stateDuration||0),icon:'baerbel-stage-18'};
+ if(m.gamble)return {...base,kind:'luck',title:s.jackpot>0?'Jackpot':'Bastler-Glück',count:s.miss||0,max:m.gamble.pity+(cs.gamblePity||0),last:s.last,left:s.jackpot||0,total:m.gamble.jackpot.duration+(cs.jackpotDuration||0),icon:'kevin-hunt-29'};
+ if(m.field&&['fass','robbi'].includes(m.field.kind))return {...base,kind:'fields',title:m.field.kind==='robbi'?'Dosen-Robbi':'Fässer',max:m.field.kind==='robbi'?1:m.field.max+(cs.fieldCount||0),fields:g.fields.filter(z=>z.kind===m.field.kind&&z.remaining>0),icon:m.field.kind==='robbi'?'kevin-iron-10':'dieter-brew-8'};
+ if(m.chain)return {...base,kind:'chain',title:'Kettenreaktion',count:s.heat?.length||0,max:m.reaction.count,left:s.reaction||0,total:m.reaction.duration+(cs.reactionDuration||0),icon:'kevin-fuse-29'};
+ return {...base,kind:m.kind==='dot'?'spores':'state',title:m.kind==='dot'?'Schimmel':'Deckung',count:m.kind==='dot'?g.enemies.filter(e=>e.hp>0&&e.mark>0).length:g.classState.guard,max:m.kind==='dot'?Math.max(1,g.enemies.filter(e=>e.hp>0).length):g.player.maxHp*.38,left:s.hausverbot||0,total:(m.hausverbot?.duration||8)+(cs.hausverbotDuration||0),icon:m.kind==='dot'?'baerbel-feedback-10':'dieter-wall-0'};
 }
-export function drawClassHud(c,state){if(!state)return;c.clearRect(0,0,440,112);c.fillStyle='#1b332a';c.fillRect(0,0,440,112);c.font='bold 20px Nunito,sans-serif';c.fillStyle='#e6d0a0';c.fillText(state.title,12,24);c.imageSmoothingEnabled=false;
- const icon=e32Art.catalog?.talents[state.icon],image=icon&&e32Art.images.get(icon.atlas);if(image)c.drawImage(image,icon.x,icon.y,64,64,8,35,64,64);
- const ring=(x,y,r,f,color)=>{c.strokeStyle='#49614b';c.lineWidth=4;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();c.strokeStyle=color;c.beginPath();c.arc(x,y,r,-Math.PI/2,-Math.PI/2+clamp(f)*Math.PI*2);c.stroke();};
- if(state.kind==='fields'){for(const [i,z]of state.fields.entries()){const x=90+i*65;if(x>405)break;c.fillStyle=z.sort==='pils'?'#9abc7d':z.sort==='bock'?'#cd7857':'#d9b870';c.fillRect(x,47,30,38);ring(x+15,66,23,z.remaining/(z.visualDuration||z.remaining),c.fillStyle);c.fillStyle='#edddbc';c.font='14px Nunito';c.fillText(Math.ceil(z.remaining)+'s',x,106);}if(!state.fields.length){c.fillStyle='#b0b99b';c.font='17px Nunito';c.fillText('Noch nicht aufgestellt',86,72);}return;}
- if(state.kind==='luck'){const labels=['Fehl','Normal','Über'];for(let i=0;i<3;i++){c.fillStyle=['#78817a','#d6c79f','#dbad54'][i];c.fillRect(85+i*112,43,104,40);c.fillStyle='#192f25';c.font='bold 17px Nunito';c.fillText(labels[i],95+i*112,69);}const selected=['miss','normal','over'].indexOf(state.last);if(selected>=0){c.fillStyle='#fff1bf';c.beginPath();c.moveTo(126+selected*112,31);c.lineTo(138+selected*112,31);c.lineTo(132+selected*112,41);c.fill();}c.fillStyle='#eee0b9';c.font='16px Nunito';c.fillText('Fehlzündungen: '+state.count+' · '+Math.ceil(state.left)+'s',85,106);return;}
- if(state.kind==='jars'){const n=state.max,gap=Math.min(49,330/n);for(let i=0;i<n;i++){const x=90+i*gap;c.strokeStyle='#b8cba6';c.lineWidth=2;c.strokeRect(x,47,28,37);c.fillStyle=i<state.count?'#9fc88d':'#233b31';c.fillRect(x+3,53,22,28);c.fillStyle='#cfb179';c.fillRect(x-2,44,32,7);}}
- else if(state.kind==='pegel'){for(let i=0;i<state.max;i++){const a=Math.PI+(i/(state.max-1))*Math.PI,x=250+Math.cos(a)*118,y=100+Math.sin(a)*52;c.strokeStyle=i<state.count?(state.left<2?'#e88c65':'#abc487'):'#4a5d46';c.lineWidth=9;c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(a)*12,y+Math.sin(a)*12);c.stroke();}c.fillStyle='#eee0b9';c.font='bold 22px Nunito';c.fillText(state.count+'/'+state.max,212,92);}
- else{c.fillStyle='#425640';c.fillRect(90,52,320,18);c.fillStyle=state.title==='Putzwut'?'#d99caf':'#d0b77c';c.fillRect(90,52,320*clamp(state.count/state.max),18);}
- if(state.left>0){ring(405,20,12,state.left/state.total,state.title==='Putzwut'?'#e3a6bd':'#e3bd72');c.fillStyle='#f2e2b9';c.font='16px Nunito';c.fillText(state.left.toFixed(1)+'s',342,25);}
+const round=(c,x,y,w,h,r)=>{c.beginPath();c.roundRect(x,y,w,h,r);};
+function frame(c,accent){
+ c.clearRect(0,0,440,112);c.imageSmoothingEnabled=false;
+ const bg=c.createLinearGradient(0,0,0,112);bg.addColorStop(0,'#294137');bg.addColorStop(.45,'#192f28');bg.addColorStop(1,'#11251f');
+ round(c,1,1,438,110,15);c.fillStyle=bg;c.fill();c.lineWidth=2;c.strokeStyle='#907951';c.stroke();
+ round(c,5,5,430,102,11);c.strokeStyle='#465443';c.lineWidth=1;c.stroke();
+ c.fillStyle='#0e221d';round(c,8,8,90,96,10);c.fill();
+ c.strokeStyle='#596149';c.beginPath();c.moveTo(101,15);c.lineTo(101,97);c.stroke();
+ for(const x of [10,430])for(const y of [10,102]){c.fillStyle='#b69a61';c.fillRect(x-1,y-1,3,3);}
+ c.fillStyle=accent;c.fillRect(112,103,310,2);
 }
-export function updateClassHud(g){let cv=document.getElementById('classMechanicArt');if(!cv){cv=document.createElement('canvas');cv.id='classMechanicArt';cv.width=440;cv.height=112;cv.tabIndex=0;cv.setAttribute('role','button');cv.dataset.mechanicHelp='true';cv.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();cv.click();}});cv.style.cssText='pointer-events:auto;cursor:help;display:block;width:220px;max-width:100%;height:56px;border-radius:10px;margin:4px auto;';document.querySelector('.action-area')?.prepend(cv);}const host=document.querySelector(document.body.classList.contains('touch-mode')?'.player-panel .unit-info':'.action-area');if(host&&cv.parentNode!==host)host.append(cv);const state=g.player.level>=5?classHudState(g):null;cv.hidden=!state;cv.style.display=state?'block':'none';if(state){cv.dataset.describe='mechanic:'+g.rpg.talents.spec;cv.setAttribute('aria-label',state.title+': '+(state.count??state.fields.length)+(state.left>0?' · '+state.left.toFixed(1)+' Sekunden':''));drawClassHud(cv.getContext('2d'),state);}}
+function timer(c,x,y,r,f,color){c.lineWidth=3;c.strokeStyle='#425647';c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();c.strokeStyle=color;c.beginPath();c.arc(x,y,r,-Math.PI/2,-Math.PI/2+clamp(f)*Math.PI*2);c.stroke();}
+export function drawClassHud(c,state){if(!state)return;
+ const accent=accents[state.spec]||'#e4b96b',active=state.left>0;frame(c,accent);
+ const sprite=(variant,x,y,w,h)=>paintMechanicSprite(c,state.spec,variant,x,y,w,h);
+ if(!sprite('emblem',9,10,87,91)){
+  const a=e32Art.catalog?.talents[state.icon],im=a&&e32Art.images.get(a.atlas);if(im)c.drawImage(im,a.x,a.y,64,64,20,24,64,64);
+ }
+ c.font='bold 22px Nunito,sans-serif';c.fillStyle='#f1dfb6';c.textAlign='left';c.fillText(state.title,112,30);
+ const count=state.count||0,max=Math.max(1,state.max||1),number=state.kind==='spores'?count+' Ziele':state.kind==='fields'?state.fields.length+'/'+max:Math.ceil(count)+'/'+Math.ceil(max);
+ c.textAlign='right';c.font='bold 21px Nunito,sans-serif';c.fillStyle=accent;
+ c.fillText(active&&state.kind!=='pegel'?Math.ceil(state.left)+'s':number,422,30);c.textAlign='left';
+ const token=(on,x,y,w,h)=>{if(!sprite(on?'full':'empty',x,y,w,h)){c.fillStyle=on?accent:'#3b5346';round(c,x+4,y+7,w-8,h-14,5);c.fill();}};
+ if(state.kind==='fields'){
+  const n=Math.max(max,state.fields.length),gap=Math.min(90,302/n);
+  for(let i=0;i<n;i++){
+   const z=state.fields[i],x=116+i*gap;token(!!z,x,38,gap-10,51);
+   if(z){const color=z.sort==='pils'?'#b7d78c':z.sort==='bock'?'#ec9676':accent;timer(c,x+(gap-10)/2,63,28,z.remaining/(z.visualDuration||z.remaining),color);c.font='bold 16px Nunito,sans-serif';c.textAlign='center';c.fillStyle='#ecdfbf';c.fillText(Math.ceil(z.remaining)+'s',x+(gap-10)/2,99);c.textAlign='left';}
+  }
+ }else if(state.kind==='pegel'){
+  const gap=30;for(let i=0;i<max;i++)token(i<count,112+i*gap,44,29,45);
+ }else if(['jars','chain','luck','spores'].includes(state.kind)){
+  const n=state.kind==='spores'?Math.min(5,Math.max(1,count)):max,gap=Math.min(state.kind==='jars'?59:66,306/n);
+  for(let i=0;i<n;i++)token(i<count||(active&&['chain','luck'].includes(state.kind)),112+i*gap,38,gap-5,state.kind==='luck'?44:61);
+  if(state.kind==='luck'&&state.last){c.font='16px Nunito,sans-serif';c.fillStyle='#c2cbb1';c.fillText(({miss:'Fehlzündung',normal:'Treffer',over:'Überzündung'})[state.last]||'',114,98);}
+ }else{
+  const f=active&&state.spec==='baerbel-stage'?clamp(state.left/state.total):clamp(count/max);
+  c.fillStyle='#0b1d18';round(c,114,52,246,25,5);c.fill();c.strokeStyle='#897950';c.lineWidth=2;c.stroke();
+  if(f>0){const fill=c.createLinearGradient(0,54,0,75);fill.addColorStop(0,accent);fill.addColorStop(1,state.spec==='baerbel-stage'?'#a63c65':'#937235');c.fillStyle=fill;round(c,118,56,238*f,17,3);c.fill();c.fillStyle='#fff1c7';c.globalAlpha=.35;c.fillRect(120,57,Math.max(0,234*f-2),3);c.globalAlpha=1;}
+  for(let i=1;i<5;i++){c.fillStyle='#14291f';c.fillRect(117+i*48,56,2,17);}
+  token(active||count>=max,368,39,51,55);
+ }
+ if(active){c.fillStyle='#0b1d18';c.fillRect(112,103,310,2);c.fillStyle=accent;c.fillRect(112,103,310*clamp(state.left/state.total),2);}
+}
+export function updateClassHud(g){let cv=document.getElementById('classMechanicArt');if(!cv){cv=document.createElement('canvas');cv.id='classMechanicArt';cv.width=440;cv.height=112;cv.tabIndex=0;cv.setAttribute('role','button');cv.dataset.mechanicHelp='true';cv.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();cv.click();}});cv.style.cssText='pointer-events:auto;cursor:help;display:block;width:220px;max-width:100%;height:56px;border-radius:10px;margin:4px auto;';document.querySelector('.action-area')?.prepend(cv);}const host=document.querySelector(document.body.classList.contains('touch-mode')?'.player-panel .unit-info':'.action-area');if(host&&cv.parentNode!==host)host.append(cv);const state=g.player.level>=5?classHudState(g):null;cv.hidden=!state;cv.style.display=state?'block':'none';if(state){loadMechanicArt();cv.dataset.describe='mechanic:'+g.rpg.talents.spec;cv.setAttribute('aria-label',state.title+': '+(state.count??state.fields.length)+(state.left>0?' · '+state.left.toFixed(1)+' Sekunden':''));drawClassHud(cv.getContext('2d'),state);}}

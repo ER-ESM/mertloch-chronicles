@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "atlases": {
+    "assets/class-mechanics/runtime/dieter.png": {
+      "width": 1254,
+      "height": 1254
+    },
+    "assets/class-mechanics/runtime/baerbel.png": {
+      "width": 1254,
+      "height": 1254
+    },
+    "assets/class-mechanics/runtime/kevin.png": {
+      "width": 1254,
+      "height": 1254
+    }
+  },
+  "sprites": {
+    "dieter-wall/emblem": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 15,
+      "y": 75,
+      "w": 402,
+      "h": 418
+    },
+    "dieter-wall/empty": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 87,
+      "y": 600,
+      "w": 245,
+      "h": 244
+    },
+    "dieter-wall/full": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 79,
+      "y": 885,
+      "w": 267,
+      "h": 270
+    },
+    "dieter-brawl/emblem": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 461,
+      "y": 75,
+      "w": 333,
+      "h": 411
+    },
+    "dieter-brawl/empty": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 521,
+      "y": 622,
+      "w": 213,
+      "h": 212
+    },
+    "dieter-brawl/full": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 521,
+      "y": 917,
+      "w": 214,
+      "h": 215
+    },
+    "dieter-brew/emblem": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 833,
+      "y": 99,
+      "w": 401,
+      "h": 394
+    },
+    "dieter-brew/empty": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 918,
+      "y": 612,
+      "w": 255,
+      "h": 229
+    },
+    "dieter-brew/full": {
+      "atlas": "assets/class-mechanics/runtime/dieter.png",
+      "x": 918,
+      "y": 885,
+      "w": 255,
+      "h": 261
+    },
+    "baerbel-care/emblem": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 29,
+      "y": 52,
+      "w": 378,
+      "h": 345
+    },
+    "baerbel-care/empty": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 72,
+      "y": 472,
+      "w": 284,
+      "h": 331
+    },
+    "baerbel-care/full": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 72,
+      "y": 874,
+      "w": 284,
+      "h": 335
+    },
+    "baerbel-feedback/emblem": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 468,
+      "y": 38,
+      "w": 325,
+      "h": 363
+    },
+    "baerbel-feedback/empty": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 467,
+      "y": 505,
+      "w": 329,
+      "h": 310
+    },
+    "baerbel-feedback/full": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 467,
+      "y": 859,
+      "w": 327,
+      "h": 365
+    },
+    "baerbel-stage/emblem": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 894,
+      "y": 30,
+      "w": 305,
+      "h": 371
+    },
+    "baerbel-stage/empty": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 933,
+      "y": 447,
+      "w": 226,
+      "h": 367
+    },
+    "baerbel-stage/full": {
+      "atlas": "assets/class-mechanics/runtime/baerbel.png",
+      "x": 933,
+      "y": 853,
+      "w": 225,
+      "h": 371
+    },
+    "kevin-fuse/emblem": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 27,
+      "y": 25,
+      "w": 387,
+      "h": 567
+    },
+    "kevin-fuse/empty": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 132,
+      "y": 652,
+      "w": 184,
+      "h": 240
+    },
+    "kevin-fuse/full": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 132,
+      "y": 912,
+      "w": 210,
+      "h": 274
+    },
+    "kevin-iron/emblem": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 428,
+      "y": 81,
+      "w": 367,
+      "h": 519
+    },
+    "kevin-iron/empty": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 515,
+      "y": 647,
+      "w": 216,
+      "h": 245
+    },
+    "kevin-iron/full": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 515,
+      "y": 931,
+      "w": 216,
+      "h": 255
+    },
+    "kevin-hunt/emblem": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 795,
+      "y": 99,
+      "w": 449,
+      "h": 488
+    },
+    "kevin-hunt/empty": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 929,
+      "y": 680,
+      "w": 191,
+      "h": 221
+    },
+    "kevin-hunt/full": {
+      "atlas": "assets/class-mechanics/runtime/kevin.png",
+      "x": 929,
+      "y": 973,
+      "w": 191,
+      "h": 221
+    }
+  }
+}
