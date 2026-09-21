@@ -46,7 +46,7 @@ try{
  await run('g.rpg.coins=500;');await wait(200);for(const o of offers.slice(0,4)){await click(`[data-companion-hire="${o.id}"]`);}
  assert.ok(await read(`document.querySelector('[data-companion-hire="${offers[4].id}"]').disabled`));
  await b.press('Escape');await wait(150);assert.equal(await read("document.querySelectorAll('.companion-frame').length"),4);
- await b.screenshot(dir+'/desktop-hud.jpg');await click(`[data-companion-manage="${c}"]`);assert.equal(await read("document.querySelector('[data-companion-scope]').value"),c);
+ await b.screenshot(dir+'/desktop-hud.jpg');await click(`[data-companion-select="${c}"]`);assert.equal(await read('g.companionAidId'),c);await click('[data-companion-manage=""]');assert.ok(await read("!!document.querySelector('[data-companion-scope]')"));
  pass('Dismissal, expiry, empty state, affordability, four-companion limit and HUD entry');
  await b.press('Escape');await b.press('u');await wait(150);assert.ok(await read("!!document.querySelector('.popup-companions')"));
  await b.press('Tab');assert.ok(await read("!!document.activeElement.closest('.popup-companions')"));await b.press('Escape');

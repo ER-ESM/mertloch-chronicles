@@ -37,6 +37,8 @@ jobs:
         run: npm run meter:check
       - name: Check companion animations, combat text and meter
         run: node scripts/companion-combat-check.mjs
+      - name: Check companion selection and healing
+        run: node scripts/companion-aid-check.mjs
       - name: Check HUD editing and buff/debuff bars
         run: npm run hud:check
       - name: Check kiosk trading and mobile shop
@@ -55,6 +57,7 @@ jobs:
             visual-review/ui-kit/
             visual-review/meter/
             visual-review/companion-combat/
+            visual-review/companion-aid/
             visual-review/hud/
             visual-review/shop/
             visual-review/kiosk-instance/

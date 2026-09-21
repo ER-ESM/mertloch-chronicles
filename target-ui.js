@@ -3,6 +3,7 @@
 import {TARGET_RULES as R,TARGET_UI,VILLAGERS} from './content/index.js';
 import {tutorialActive} from './tutorial.js';
 import {inKiosk} from './kiosk-instance.js';
+import {companionAid,selectCompanionAid} from './companions.js';
 
 const hyp=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 /** Mitspieler werden zwischen zwei Schnappschüssen interpoliert – Treffertest und Rahmen brauchen dieselbe Position wie der Renderer. */
@@ -18,6 +19,7 @@ export function friendlyUnits(g,now){
  if(open)for(const q of w.quests||[])list.push({kind:'questgiver',ref:q.giver,x:q.giver.x,y:q.giver.y,name:q.giver.name});
  for(const a of g.life?.actors||[])if(a.kind==='villager')list.push({kind:'resident',ref:a,x:a.x,y:a.y,name:VILLAGERS.find(v=>v.variant===a.variant)?.name||TARGET_UI.kinds.resident});
  for(const o of g.others||[]){const p=remotePosition(o,now);list.push({kind:o.party?'party':'player',ref:o,x:p.x,y:p.y,name:o.name,level:o.level,hp:o.hp??100,state:o.state});}
+ if(open)for(const c of g.companions||[])list.push({kind:'companion',ref:c,x:c.x,y:c.y,name:c.name,level:c.level,hp:c.hp/c.maxHp*100,state:c.state==='down'?'dead':c.state});
  return list;
 }
 /** Einheit unter dem Weltpunkt; Gegner gewinnen bei Überlappung (Kampf geht vor). → {kind:'enemy',ref,x,y}|freundliche Einheit|null */
@@ -31,22 +33,24 @@ export function friendUnit(g,now){const f=g.friend;if(!f)return null;const name=
 /** Klick-Zielwahl: setzt Gegner oder freundliches Ziel. → gewählte Einheit oder null */
 export function selectUnitAt(g,x,y){
  const u=unitAt(g,x,y);if(!u)return null;
+ if(u.kind==='companion'){selectCompanionAid(g,u.ref.id);return u;}
  if(u.kind==='enemy'){g.friend=null;g.target=u.ref;g.emit('target');return u;}
  g.target=null;g.stopAuto?.();g.friend={kind:u.kind,ref:u.ref,player:u.kind==='player'||u.kind==='party'};g.emit('target');return u;
 }
 export function clearFriend(g){if(g.friend){g.friend=null;return true;}return false;}
 /** Je Bild aufrufen: Ein neu gewählter Gegner (Tab, Autoangriff, Angriff auf dich) löst das freundliche Ziel ab; verschwundene Ziele fallen weg. */
-export function syncFriend(g){if(!g.friend)return;if(g.target?.hp>0||!friendUnit(g))g.friend=null;}
+export function syncFriend(g){if(!g.friend)return;if(g.friend.kind!=='companion'&&g.target?.hp>0||!friendUnit(g))g.friend=null;}
 
 export function ringColor(g,u){if(u.kind!=='enemy')return R.ring[u.kind==='party'?'party':u.kind==='player'?'player':'friendly'];const e=u.ref;return e.behavior==='neutral'&&!e.aggro?R.ring.neutral:R.ring.enemy;}
 function ring(c,x,y,rad,color,glow,alpha,width){c.save();c.globalAlpha=alpha;c.shadowColor=color;c.shadowBlur=glow;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.ellipse(x,y+1,rad,rad*.4,0,0,Math.PI*2);c.stroke();c.stroke();c.restore();}
 /** Bodenrahmen unter den Figuren: gewähltes freundliches Ziel und Mouse-Over. Der Gegner-Zielring bleibt im Renderer. */
 export function drawTargetRings(c,g,time){
- const now=performance.now(),f=friendUnit(g,now);
+ const now=performance.now(),f=friendUnit(g,now),aid=!inKiosk(g)&&companionAid(g);
+ if(aid&&f?.ref!==aid)ring(c,aid.x,aid.y,18,R.ring.party,R.selectGlow,1,1.5);
  if(f)ring(c,f.x,f.y,18,ringColor(g,f),R.selectGlow,1,1.5);
  const h=g.hover&&!g.aiming?unitAt(g,g.hover.x,g.hover.y,now):null;g.hoverUnit=h;
  if(h&&h.ref!==g.target&&h.ref!==f?.ref)ring(c,h.x,h.y,h.ref.type==='boss'?30:18,ringColor(g,h),R.hoverGlow,R.hoverAlpha+Math.sin(time*R.pulse)*.2,2);
  else if(h)ring(c,h.x,h.y,h.ref.type==='boss'?30:18,ringColor(g,h),R.hoverGlow,.55,2.5);
 }
 /** Zielrahmen-Daten für das freundliche Ziel. */
-export function friendPanel(g,u){const player=u.kind==='player'||u.kind==='party';return {name:u.name,level:(TARGET_UI.kinds[u.kind]||'')+(u.level?' · '+TARGET_UI.level(u.level):''),hp:player?Math.max(0,Math.min(100,u.hp)):100,hpText:player?Math.round(u.hp)+' %':'',effect:player&&u.state==='dead'?TARGET_UI.dead:player&&u.state==='combat'?TARGET_UI.fight:TARGET_UI.effect[u.kind],disposition:player?u.kind:'friendly'};}
+export function friendPanel(g,u){const companion=u.kind==='companion',player=companion||u.kind==='player'||u.kind==='party';return {name:u.name,level:(TARGET_UI.kinds[u.kind]||'')+(u.level?' · '+TARGET_UI.level(u.level):''),hp:player?Math.max(0,Math.min(100,u.hp)):100,hpText:companion?Math.ceil(u.ref.hp)+' / '+u.ref.maxHp:player?Math.round(u.hp)+' %':'',effect:player&&u.state==='dead'?TARGET_UI.dead:companion?TARGET_UI.companionAid:player&&u.state==='combat'?TARGET_UI.fight:TARGET_UI.effect[u.kind],disposition:companion?'party':player?u.kind:'friendly'};}

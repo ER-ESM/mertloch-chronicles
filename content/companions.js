@@ -27,6 +27,7 @@ export const COMPANION_RULES=Object.freeze({
  critChance:.1,critFactor:1.5,spread:[.85,1.15], // Trefferstreuung der Begleiter
  vulnerableFactor:1.35,        // wie beim Spieler: verwundbare Gegner nehmen mehr Schaden
  pause:1,                     // gemeinsame Pause zwischen zwei Fähigkeiten
+ aidRange:420,                // gezielte Hilfe des Besitzers, wie bei menschlichen Gruppenmitgliedern
  tauntLead:50,                // Spott setzt die Bedrohung auf den Höchstwert × threatSwitch + diesen Vorsprung
  interruptStun:.6,interruptThreat:40,
  castSight:230,               // Reichweite unterbrechbarer Gegnerzauber (wie im Spieler-Zweig der Engine)
@@ -83,6 +84,9 @@ export const COMPANION_TEXT=Object.freeze({
  money:'Das reicht nicht für den Vertrag.',already:'Der ist schon bei dir.',unknown:'Den kennt hier keiner.',
  hired:n=>n+' ist jetzt bei dir.',dismissed:n=>n+' ist wieder frei.',expired:n=>'Der Vertrag mit '+n+' ist abgelaufen.',
  down:n=>n+' ist am Boden.',revived:n=>n+' steht wieder.',interrupted:'UNTERBROCHEN',taunted:'SPOTT',
+ aidOn:n=>n+' ist dein Hilfsziel. Heilung und Schutz wirken auch dort.',aidOff:'Hilfsziel aufgehoben. Du hilfst wieder dir selbst.',
+ aidMissing:'Dieses Hilfsziel ist nicht mehr bei dir.',aidDown:'Dieser Söldner ist am Boden und kann erst nach dem Kampf wieder aufstehen.',
+ aidFar:'Dein Hilfsziel ist zu weit entfernt. Geh näher heran.',aidBlocked:'Ein Hindernis versperrt die Sicht auf dein Hilfsziel.',
  orders:{follow:'Folgen',stay:'Warten',attack:'Mein Ziel angreifen'},
  stances:{assist:'Unterstützen',defend:'Verteidigen',passive:'Passiv'},
  orderSet:o=>'Befehl: '+o,stanceSet:s=>'Haltung: '+s,

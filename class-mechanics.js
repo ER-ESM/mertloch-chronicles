@@ -1,3 +1,4 @@
+import {healCompanionByPlayer} from './companions.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterHealing} from './combat-meter.js';
 import {SKILL_DAMAGE,CAST_TIMES} from './content/index.js';
@@ -42,6 +43,6 @@ export function onKill(g,e,wasMarked,cs){if(cs.killHeal)healPlayer(g,cs.killHeal
 export function modifyHit(g,n,cs){const p=g.player,st=g.classState,s=spec(g);if(s==='dieter-brawl'){n*=1.15;st.rage=Math.min(5,st.rage+1+(cs.rageGain||0));}n*=s==='kevin-iron'?.9:(g.member.passives?.damageTaken??1);if(g.fields.some(z=>z.kind==='barricade'&&distance(p,z)<z.radius))n*=.7;const shield=Math.min(st.guard,n);st.guard-=shield;return Math.max(0,n-shield);}
 export function tickClass(g,dt,cs){const p=g.player,st=g.classState;tickMech(g,dt,cs);st.infusion=Math.max(0,st.infusion-dt);if(st.hot>0){st.hot=Math.max(0,st.hot-dt);st.hotTick-=dt;if(st.hotTick<=0){st.hotTick=1;healPlayer(g,st.hotPower,cs,false,'hot');}}else st.hotTick=1;if(!p.inCombat)st.guard=Math.max(0,st.guard-dt*5);
  for(const e of g.enemies)e.controlSlow=Math.max(0,(e.controlSlow||0)-dt);
- for(const z of g.fields){z.remaining-=dt;if(z.kind==='snare'){z.armedIn-=dt;if(z.armedIn<=0){const targets=neighbors(g,z,z.radius);if(targets.length){for(const e of targets){g.damage(e,75,'Falle');e.stun=Math.max(e.stun,z.upgrade?4.5:3);}if(z.upgrade)g.cooldowns.throw=0;z.remaining=0;emitCombatFx(g,'trap',z,{radius:z.radius});}}continue;}if(z.slow)for(const e of neighbors(g,z,z.radius))e.controlSlow=.2;z.tick-=dt;if(z.tick<=0){z.tick=1;if(z.power&&distance(p,z)<z.radius)healPlayer(g,z.power,cs,false,z.kind);if(z.kind==='burn')for(const e of neighbors(g,z,z.radius))g.damage(e,18,'Nachglut');}}
+ for(const z of g.fields){z.remaining-=dt;if(z.kind==='snare'){z.armedIn-=dt;if(z.armedIn<=0){const targets=neighbors(g,z,z.radius);if(targets.length){for(const e of targets){g.damage(e,75,'Falle');e.stun=Math.max(e.stun,z.upgrade?4.5:3);}if(z.upgrade)g.cooldowns.throw=0;z.remaining=0;emitCombatFx(g,'trap',z,{radius:z.radius});}}continue;}if(z.slow)for(const e of neighbors(g,z,z.radius))e.controlSlow=.2;z.tick-=dt;if(z.tick<=0){z.tick=1;if(z.power&&distance(p,z)<z.radius)healPlayer(g,z.power,cs,false,z.kind);if(z.power>0)for(const c of g.companions||[])if(distance(c,z)<z.radius&&g.world.lineClear(z,c))healCompanionByPlayer(g,c,z.power*(1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4),z.kind);if(z.kind==='burn')for(const e of neighbors(g,z,z.radius))g.damage(e,18,'Nachglut');}}
  g.fields=g.fields.filter(z=>z.remaining>0);
 }

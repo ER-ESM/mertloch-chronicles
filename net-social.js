@@ -1,6 +1,7 @@
 // Miteinander, Client-Seite (E-44): Hilfsziel (Heilung/Schutz auf ein Gruppenmitglied), Aufhelfen, Handel, Weltboss.
 // Regeln und Nachrichten: server/game/social-play.mjs. Ohne Browser-APIs: game(), me(), send(), others(), hooks
 // (das netParty-Objekt aus net-party.js) und ui kommen von außen (Tests mit Attrappen).
+import {clearCompanionAid} from './companions.js';
 import {ITEMS,BAG_SIZE,grantLoot,tradeGood,tradeAway} from './rpg.js';
 
 export const SOCIAL_UI={aidOn:'{n} ist jetzt dein Hilfsziel: Heilung und Schutz wirken auch dort.',aidOff:'Hilfsziel aufgehoben.',aidFar:'{n} steht zu weit weg – die Hilfe kommt nicht an.',
@@ -16,6 +17,7 @@ export function createNetSocial({game,me,send,others,hooks,ui=null}){
  const friend=()=>{const o=state.friend&&near(state.friend,SOCIAL_RANGE.aid);return o?.party?o:null;};
  function aidSend(payload){if(!state.friend)return false;if(!friend()){game().toast(SOCIAL_UI.aidFar.replace('{n}',state.friend));return false;}send({t:'aid',to:state.friend,...payload});return true;}
  hooks.friend=()=>state.friend;
+ hooks.clearFriend=()=>{state.friend=null;};
  hooks.aidHeal=(heal,name)=>aidSend({heal,name});
  hooks.buffFriend=b=>aidSend({b,name:b.name});
 
@@ -23,7 +25,7 @@ export function createNetSocial({game,me,send,others,hooks,ui=null}){
  const offer=()=>state.trade?.mine||{items:[],coins:0};
  function pushOffer(items,coins){const g=game();coins=Math.max(0,Math.round(coins)||0);if(coins>g.rpg.coins){g.toast(SOCIAL_UI.noCoins);coins=g.rpg.coins;}send({t:'trade',op:'offer',items,coins});}
  const api={state,friend,
-  setFriend(name){const g=game();state.friend=state.friend===name||!name?null:name;g?.toast(state.friend?SOCIAL_UI.aidOn.replace('{n}',state.friend):SOCIAL_UI.aidOff);return state.friend;},
+  setFriend(name){const g=game();if(g)clearCompanionAid(g);state.friend=state.friend===name||!name?null:name;g?.toast(state.friend?SOCIAL_UI.aidOn.replace('{n}',state.friend):SOCIAL_UI.aidOff);return state.friend;},
   canRevive(name){const g=game();return !!g&&!g.dead&&near(name,SOCIAL_RANGE.revive)?.state==='dead';},
   revive(name){send({t:'revive',to:name});},
   tradeAsk(name){send({t:'trade',op:'ask',name});},
