@@ -199,3 +199,8 @@ test('game.activeBuffs zeigt laufende Stärkungen mit Restzeit und Zugriff auf d
  g.time+=60;g.buffs.remaining=0;g.momentum.until=0;g.classState.guard=0;g.classState.hot=0;
  assert.equal(g.activeBuffs().filter(b=>b.kind==='buff').length,0);
 });
+
+test('FPS-Anzeige ist standardmäßig aus, per setSetting schaltbar und überlebt das Laden',()=>{
+ const g=new Game(arena());assert.equal(g.settings.fps,false,'Standard aus');
+ assert.equal(g.setSetting('fps',true),true);assert.equal(new Game(arena(),g.save()).settings.fps,true);
+});
