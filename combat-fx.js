@@ -12,7 +12,7 @@ export function emitSkillFx(g,s,origin,target,context={}){
  // These effects originate in the actual heal, detonation or trap-trigger operation instead.
  if(['heal','detonate'].includes(kind))return;
  const at=['dash','slam'].includes(kind)?g.player:(s.ground?target:s.range?target:g.player);
- emitCombatFx(g,kind==='interrupt'&&!context.interrupted?'attack':kind,at,{skillId:s.id,from:origin,ranged:s.weaponSource==='ranged'||s.range>60,radius:s.splash||s.radius||0,points:context.runes||0,strong:s.id==='burst'&&context.runes===3&&context.marked,successful:kind!=='interrupt'||context.interrupted});
+ emitCombatFx(g,kind==='interrupt'&&!context.interrupted?'attack':kind,at,{skillId:s.id,from:origin,ranged:s.weaponSource==='ranged'||s.range>60,radius:s.splash||s.radius||0,strong:s.id==='burst'&&context.marked,successful:kind!=='interrupt'||context.interrupted});
 }
 export function procVisual(rule,g){
  const ef=rule.effect;
@@ -23,7 +23,7 @@ export function procVisual(rule,g){
  if(ef.shield)return {signal:'guard',label:'DECKUNG'};
  if(ef.heal)return {signal:'heal',label:'HEILUNG'};
  if(ef.haste)return {signal:'haste',label:'TEMPO'};
- return {signal:'resource',label:ef.points?'AUFBAU':'RANDALE'};
+ return {signal:'resource',label:'RANDALE'};
 }
 export function activeCombatStates(g){
  const p=g.player,st=g.classState||{},proc=g.procState||{},out=[];if(g.dead)return out;

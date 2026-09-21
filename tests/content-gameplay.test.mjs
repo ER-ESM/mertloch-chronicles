@@ -86,7 +86,7 @@ test('Kampfmeldungen: Angriffshinweis und Abklingzeit mit Restzeit stehen in den
 
 test('Dieters Schadensmodell liegt auf demselben Waffenfaktor wie Bärbel und Kevin', ()=>{
   assert.equal(SKILL_DAMAGE.dieter.strike.weapon,SKILL_DAMAGE.baerbel.strike.weapon,'Klassenabstand gehört in Kit und Waffe, nicht in den Waffenfaktor von strike');
-  assert.ok(SKILL_DAMAGE.dieter.burst.weaponPerPoint<=2.8,'Dieters burst darf je Punkt nicht über Bärbel liegen');
+  assert.equal(SKILL_DAMAGE.dieter.burst.weapon,SKILL_DAMAGE.baerbel.burst.weapon,'gleicher fester Waffenfaktor ohne Punkte');
 });
 
 // --- Beschreibungs-Standard (docs/backlog/klassen.md, Welle D) ---

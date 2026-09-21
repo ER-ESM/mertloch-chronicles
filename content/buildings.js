@@ -94,7 +94,7 @@ export const BUILDINGS={
      why:'Der Rückweg nach einem Tod wird bezahlbar: die Deckung fängt den ersten Treffer ab, wenn du in einen noch stehenden Gegner läufst.'}},
    {stage:3,name:'Der Stammtisch',cost:{palettenholz:16,kronkorken:30,borste:8},unlock:{chapter:4},effect:{restRegen:.75,respawnHp:.5,buffDuration:.1},text:'Ein Tisch, an dem alle sitzen. Auch Sigi. Regeneration +75 %, Erwachen mit 50 % Deckung, Stärkung 10 % länger.',
     info:{effect:'Regeneration, Deckung beim Erwachen und die Dauer deiner Klassen-Stärkung steigen gemeinsam.',
-     why:'Erste Stufe, die auch im Kampf wirkt: die längere Stärkung deckt bei Bossen eine zusätzliche Eskalation ab.',
+     why:'Erste Stufe, die auch im Kampf wirkt: die längere Stärkung deckt bei Bossen eine zusätzliche Spezialkniff ab.',
      links:['anlage']}}]},
  grill:{name:'Oskars Grill',owner:'oskar',unlock:{chapter:2},icon:'food',
   text:'Der Grill lag auf der Seite, Oskar daneben. Beide stehen wieder. Verpflegung wird besser, je runder der Grill.',

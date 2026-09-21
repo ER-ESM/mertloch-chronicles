@@ -20,32 +20,24 @@ export const pc=v=>nice(v*100)+' %';
 export const metres=u=>Math.round(u/8*10)/10;
 
 export const GLOSSARY={
- randale:{name:'Randale',short:'Dein Kraftstoff: Kniffe kosten Randale, Treffer und Kills füllen sie nach. Ab '+MO.surgeAt+' bist du in Fahrt: die Eskalation schlägt '+Math.round(MO.surgeBonus*100)+' % härter.',
-  long:`Skala 0 bis 100. Außerhalb des Kampfes fließen ${P.energyRegen} Randale je Sekunde nach, im Kampf ${MO.combatEnergyRegen}; jeder Punkt Bastelgrips gibt zusätzlich ${nice(W.energyRegenWit)} je Sekunde. Dein Grundangriff zahlt je nach Klasse 9 bis 19 zurück (Anni am meisten, weil sie doppelt so oft eskaliert), jeder Kill ${MO.energyOnKill}. Im Kampf reicht das nicht für alles: Wer jeden Kniff auf Abklingzeit drückt, steht ohne Randale da. Wer sie über ${MO.surgeAt} hält, ist „in Fahrt“ – die Eskalation schlägt dann ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug ihrer Kosten). Fehlt Randale, zündet der Kniff nicht und die Leiste meldet „Nicht genug Randale“.`},
- punkte:{name:'Aufbaupunkte',short:'Höchstens drei Punkte – dieselbe Mechanik unter drei Namen: Pegel, Glanz, Druck.',
-  long:'Der Grundangriff gibt einen Punkt je Treffer, Paraden und viele Talente geben weitere. Die Eskalation verbraucht alle vorhandenen Punkte und wird mit jedem Punkt stärker; bei drei Punkten zünden zusätzlich Talente und Proc-Regeln mit dem Auslöser burst3. Über drei hinaus wird nichts gespeichert – jeder weitere Punkt verfällt.'},
- pegel:{name:'Pegel',short:'Dieters Aufbaupunkte (höchstens 3). Jede Kelle gibt einen Pegel; die Eskalation verbraucht alle und schlägt mit jedem Punkt härter.',
-  long:'Dieselbe Mechanik wie Glanz und Druck: bis zu drei Punkte, die der Bierzelt-Abriss komplett verbraucht. Dieters Kelle gibt einen Pegel je Treffer, Deckel drauf einen bei geglückter Parade, Tresensprung einen (mit Sprungbrett zwei).'},
- glanz:{name:'Glanz',short:'Annis Aufbaupunkte (höchstens 3). Jeder Piekser gibt einen Glanz, im Takt zwei; die Eskalation verbraucht alle und schlägt mit jedem Punkt härter.',
-  long:`Bis zu drei Punkte für die Thermomix-Turbostufe. Trifft der Pinsel-Piekser ${nice(CLAN_MEMBERS[1].passives.beatWindow[0])} bis ${nice(CLAN_MEMBERS[1].passives.beatWindow[1])} s nach dem letzten Treffer, gibt er ${CLAN_MEMBERS[1].passives.beatRunes} Glanz statt einem – als Einzige im Clan baut Anni im Rhythmus doppelt auf.`},
- druck:{name:'Druck',short:'Kevins Aufbaupunkte (höchstens 3). Jedes Geschoss gibt einen Druck; die Eskalation verbraucht alle und schlägt mit jedem Punkt härter.',
-  long:'Bis zu drei Punkte für die Restmüll-Rakete. Das Pfandgeschoss gibt einen Druck je Treffer, der Pömpel-Panzer einen bei geglückter Parade, jede geglückte Unterbrechung einen weiteren (Restdruck) – und verkürzt die Rakete um 2 s.'},
- eskalation:{name:'Eskalation',short:'Der Finisher auf Taste 3: verbraucht alle Aufbaupunkte für den großen Schlag.',
-  long:'Ab '+MO.surgeAt+' Randale („in Fahrt“) schlägt sie '+Math.round(MO.surgeBonus*100)+' % härter. '+'Schaden = fester Anteil + (150 % + 260 bis 320 % je verbrauchtem Punkt) deines Autoschadens. Gegen ein markiertes Ziel schlägt die Eskalation 60 % (Dieter, Anni) bis 80 % (Kevin) härter. Annis Turbostufe trifft zusätzlich alle im Umkreis mit 55 % des Einschlags, Kevins Rakete stößt zurück.'},
- schwung:{name:'Schwung',short:'Nach jedem Kill kurz schneller, mit Randale und einem Punkt obendrauf – der Kill ist die Belohnung.',
-  long:`${MO.duration} s lang, bis zu ${MO.maxStacks} Stapel. Je Stapel ${pc(MO.hastePerStack)} mehr Tempo – das zählt über die Drehzahl-Kappe von ${pc(R.haste.cap)} hinaus. Jeder Kill gibt zusätzlich ${MO.energyOnKill} Randale und ${MO.pointsOnKill} Aufbaupunkt. Direkt nach dem letzten Kill heilt Verschnaufen ${MO.restRegen} Leben je Sekunde für ${MO.restSeconds} s.`},
+ randale:{name:'Randale',short:'Dein Kraftstoff: Kniffe kosten Randale, Treffer und Kills füllen sie nach. Ab '+MO.surgeAt+' bist du in Fahrt: der Spezialkniff schlägt '+Math.round(MO.surgeBonus*100)+' % härter.',
+  long:`Skala 0 bis 100. Außerhalb des Kampfes fließen ${P.energyRegen} Randale je Sekunde nach, im Kampf ${MO.combatEnergyRegen}; jeder Punkt Bastelgrips gibt zusätzlich ${nice(W.energyRegenWit)} je Sekunde. Dein Grundangriff zahlt je nach Klasse 9 bis 19 zurück, jeder Kill ${MO.energyOnKill}. Im Kampf reicht das nicht für alles: Wer jeden Kniff auf Abklingzeit drückt, steht ohne Randale da. Wer sie über ${MO.surgeAt} hält, ist „in Fahrt“ – der Spezialkniff schlägt dann ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug ihrer Kosten). Fehlt Randale, zündet der Kniff nicht und die Leiste meldet „Nicht genug Randale“.`},
+ spezialkniff:{name:'Spezialkniff',short:'Ein starker Kniff mit Randale-Kosten und Abklingzeit; seine Zusatzwirkung bestimmt dein Hauptbaum.',
+  long:'Gegen markierte Ziele trifft er stärker und entfernt die Markierung. Randale-Kosten, Abklingzeit und Schadenswert stehen beim jeweiligen Kniff. Talente und die eigene Hauptbaum-Mechanik können ihn verstärken.'},
+ schwung:{name:'Schwung',short:'Nach jedem Kill kurz schneller, mit Randale obendrauf – der Kill ist die Belohnung.',
+  long:`${MO.duration} s lang, bis zu ${MO.maxStacks} Stapel. Je Stapel ${pc(MO.hastePerStack)} mehr Tempo – das zählt über die Drehzahl-Kappe von ${pc(R.haste.cap)} hinaus. Jeder Kill gibt zusätzlich ${MO.energyOnKill} Randale. Direkt nach dem letzten Kill heilt Verschnaufen ${MO.restRegen} Leben je Sekunde für ${MO.restSeconds} s.`},
  deckung:{name:'Deckung',short:'Ein Schadenspolster vor deinem Leben. Auch „Schild“ genannt.',
   long:`Eingehender Schaden geht zuerst gegen die Deckung, erst der Rest ans Leben. Höchstens ${pc(P.guardCap)} deines Maximallebens. Jeder Punkt Wumms verstärkt neue Deckung um ${pc(W.shieldMight)}, jeder Punkt Bastelgrips um ${pc(W.shieldWit)}, Handschrift zählt zu 40 % mit. Außerhalb des Kampfes zerfällt Deckung mit 5 Punkten je Sekunde.`},
  parade:{name:'Parade',short:'Ein kurzes Fenster, in dem du den nächsten Treffer schluckst und zurückgibst.',
-  long:'Fenster 0,8 s (Dieter), 0,9 s (Anni) oder 1,1 s (Kevin), Abklingzeit 7 s, kostenlos. Ein Treffer im Fenster wird abgefangen, reflektiert 55 bis 75 Schaden, gibt einen Aufbaupunkt und 20 Randale; Dieter heilt zusätzlich 35 Leben. Eine geglückte Parade ist der Proc-Auslöser parry. Sie braucht einen Schild in der Nebenhand.'},
+  long:'Fenster 0,8 s (Dieter), 0,9 s (Anni) oder 1,1 s (Kevin), Abklingzeit 7 s, kostenlos. Ein Treffer im Fenster wird abgefangen, reflektiert 55 bis 75 Schaden, gibt 20 Randale; Dieter heilt zusätzlich 35 Leben. Eine geglückte Parade ist der Proc-Auslöser parry. Sie braucht einen Schild in der Nebenhand.'},
  ausweichen:{name:'Ausweichen',short:'Ein kurzer Satz zur Seite mit 0,4 s Schutz vor Treffern.',
   long:'Kostenlos, ohne globale Abklingzeit spürbar, Abklingzeit 3 s (Kevin), 4 s (Anni: 6 s) bis 5 s (Dieter). Ohne Eingabe geht es vom Ziel weg, mit Laufrichtung dorthin. Während der 0,4 s gehen Treffer ins Leere. Der Proc-Auslöser dodge hängt daran.'},
  unterbrechen:{name:'Unterbrechen',short:'Bricht einen gelben Zauberbalken ab und macht das Ziel kurz verwundbar.',
   long:`35 Schaden, unterbricht einen unterbrechbaren Zauber, betäubt 2 s und macht das Ziel 4 s verwundbar (${pc(P.vulnerableBonus)} mehr Schaden). Läuft außerhalb der globalen Abklingzeit, Abklingzeit 9 bis 10 s. Nur die geglückte Unterbrechung zählt als Proc-Auslöser interrupt.`},
  flaeche:{name:'Fläche',short:'Ein Stück Boden mit Wirkung – deine Zonen wie die roten Flächen der Gegner.',
   long:'Eigene Flächen platzierst du mit der Maus auf einen freien Bodenpunkt; Rechtsklick oder Esc bricht ab. Absperrband senkt darin den Schaden um 30 %, Katerfass und Thermomix-Tafel heilen je Sekunde, Pfandseil löst beim ersten Eindringling aus, der Bodenangriff schlägt nach 1,1 s ein. Rote Gegnerflächen kündigen Schaden an – da raus, mit Ausweichen.'},
- markierung:{name:'Markierung',short:'Klebt 10 s auf einem Ziel, tickt Schaden und macht deine Eskalation stärker.',
-  long:'9 bis 12 Schaden je Sekunde für 10 s. Deine Eskalation trifft ein markiertes Ziel 60 bis 80 % härter; Kevins Marke halbiert zusätzlich das Bewegungstempo. Jeder Tick ist der Proc-Auslöser markTick. Talente verteilen die Marke auf bis zu zwei kämpfende Nachbarn, halten kurz fest oder sprengen alle Marken auf einmal.'},
+ markierung:{name:'Markierung',short:'Klebt 10 s auf einem Ziel, tickt Schaden und macht deine Spezialkniff stärker.',
+  long:'9 bis 12 Schaden je Sekunde für 10 s. Deine Spezialkniff trifft ein markiertes Ziel 60 bis 80 % härter; Kevins Marke halbiert zusätzlich das Bewegungstempo. Jeder Tick ist der Proc-Auslöser markTick. Talente verteilen die Marke auf bis zu zwei kämpfende Nachbarn, halten kurz fest oder sprengen alle Marken auf einmal.'},
  gcd:{name:'Globale Abklingzeit',short:'Nach jedem Kniff sind alle anderen für einen kurzen Moment gesperrt.',
   long:`Grundwert ${nice(P.gcdBase)} s, sinkt mit Tempo bis auf ${nice(P.gcdMin)} s (Formel ${nice(P.gcdBase)} × (1 − Tempo)). Unterbrechen läuft außerhalb (offGcd) und ist deshalb auch mitten in der Rotation drückbar.`},
  abklingzeit:{name:'Abklingzeit',short:'Die eigene Sperrzeit eines Kniffs, unabhängig von der globalen.',
@@ -83,11 +75,11 @@ export const GLOSSARY={
  pfandmarken:{name:'Pfandmarken',short:'Das Geld von Mertloch – Leergut, Beute und Händler rechnen in derselben Währung.',
   long:`Fallen aus Beute und Aufträgen: ${BALANCE.loot.coinsHuman} Marken je erledigtem Menschen, ${BALANCE.loot.coinsBoss} je Boss, dazu Streuung bis ${BALANCE.loot.coinsSpread}. Gegenstände werden in Marken bewertet (${BALANCE.items.valuePerBudget} je Punkt Wertebudget).`},
  klamotten:{name:'Klamotten',short:'Die drei spielbaren Figuren – sie entscheiden, wie du kämpfst.',
-  long:'Dosen-Dieter (Tank, Nahkampf, Pegel), Aperol-Anni (Heilerin, Fernkampf, Glanz), Klo-Kevin (Fernkämpfer, Druck). Jede hat dieselben sieben Kniff-Plätze, aber eigene Zahlen und ein eigenes Ressourcen-Motiv; ab Stufe 1 unterscheiden sich schon Schlagtempo, Reichweite, Randale-Ertrag und Ausweich-Abklingzeit.'},
+  long:'Dosen-Dieter (Tank, Nahkampf), Aperol-Anni (Heilerin, Fernkampf), Klo-Kevin (Fernkämpfer). Jede hat dieselben sieben Kniff-Plätze, aber eigene Zahlen und eigene Spezialisierungen; ab Stufe 1 unterscheiden sich schon Schlagtempo, Reichweite, Randale-Ertrag und Ausweich-Abklingzeit.'},
  verwundbar:{name:'Verwundbar',short:'Ein Ziel nimmt für kurze Zeit mehr Schaden.',
   long:`${pc(P.vulnerableBonus)} mehr Schaden für 4 s. Kommt bei allen drei Klamotten von der geglückten Unterbrechung – deshalb ist das Fenster nach dem gelben Balken dein bestes Schadensfenster.`},
  betaeubung:{name:'Betäubung',short:'Das Ziel steht still und handelt nicht.',
-  long:'2 s aus der Unterbrechung, 1,5 s aus einer Eskalation mit drei Punkten (Talent), 1 bis 2 s aus Magnetpanzer. Betäubung stapelt nicht, sie setzt nur die längere Dauer.'},
+  long:'2 s aus der Unterbrechung, 1,5 s aus einer Spezialkniff (Talent), 1 bis 2 s aus Magnetpanzer. Betäubung stapelt nicht, sie setzt nur die längere Dauer.'},
  festhalten:{name:'Festhalten',short:'Das Ziel kann sich nicht bewegen, schlägt aber weiter.',
   long:'3 s aus dem Pfandseil (mit Stahlseil 4,5 s), 1 s aus der ersten Klebemarkierung. Fernkämpfer stört das kaum, Nahkämpfer hält es aus deiner Reichweite – deshalb legst du Fallen auf den Anlaufweg.'},
  verlangsamung:{name:'Verlangsamung',short:'Das Ziel läuft langsamer – Zeit für einen Schuss mehr.',
@@ -101,9 +93,9 @@ export const GLOSSARY={
  rausch:{name:'Rausch',short:'Nur Kneipenschläger: eine zweite Leiste bis fünf, die den Abriss aufwertet.',
   long:'Jede Kelle und jeder kassierte Treffer geben 1 Rausch (mit „Noch einen auf die Zwölf“ 2), Höchststand 5. Bei 5 Rausch schlägt der Bierzelt-Abriss 25 % härter und verbraucht den Rausch; mit „Volle Kante“ ist er dann zusätzlich kostenlos.'},
  takt:{name:'Takt',short:'Annis Rhythmusfenster: nicht hämmern, sondern im Takt treffen.',
-  long:`Trifft der Pinsel-Piekser ${nice(CLAN_MEMBERS[1].passives.beatWindow[0])} bis ${nice(CLAN_MEMBERS[1].passives.beatWindow[1])} s nach dem letzten Treffer, gibt er ${CLAN_MEMBERS[1].passives.beatRunes} Glanz statt einem. Zu früh gedrückt zählt es als normaler Treffer – der Takt ist Annis einzige Quelle für doppelten Aufbau.`},
+  long:`Trifft der Pinsel-Piekser ${nice(CLAN_MEMBERS[1].passives.beatWindow[0])} bis ${nice(CLAN_MEMBERS[1].passives.beatWindow[1])} s nach dem letzten Treffer, gibt er ${CLAN_MEMBERS[1].passives.beatEnergy} zusätzliche Randale. Außerhalb des Fensters entfällt nur dieser Bonus.`},
  grundangriff:{name:'Grundangriff',short:'Der Aufbaukniff liefert Punkte und Randale; sein Platz ist frei belegbar.',
-  long:'Billigster Kniff, kurze Abklingzeit, gibt einen Aufbaupunkt und 10 bis 18 Randale je Treffer. Zwischen zwei Grundangriffen arbeitet der Autoangriff weiter – gehämmerte Tasten bringen nichts, die Abklingzeit steht.'},
+  long:'Billigster Kniff, kurze Abklingzeit, gibt 9 bis 19 Randale je Treffer. Zwischen zwei Grundangriffen arbeitet der Autoangriff weiter – gehämmerte Tasten bringen nichts, die Abklingzeit steht.'},
  wurf:{name:'Wurf',short:'Ein gezielter Einzelwurf auf große Entfernung – zum Anziehen eines Gegners.',
   long:`${metres(THROW_SKILL.range)} m Reichweite, ${THROW_SKILL.cd} s Abklingzeit, ${THROW_SKILL.cost} Randale. Trifft ein einzelnes Ziel, ohne die Nachbarn zu wecken – das Gegenstück zum Kettenzug. Viele Talente setzen ihn nach Ausweichen, Kill oder Glückstreffer zurück oder machen ihn kostenlos.`},
  bodenangriff:{name:'Bodenangriff',short:'Ein Einschlag auf einen gewählten Bodenpunkt nach kurzer Verzögerung.',
@@ -121,9 +113,9 @@ export const GLOSSARY={
  talentfaehigkeit:{name:'Talentfähigkeit',short:'Der aktive Kniff aus der Mitte eines Talentbaums.',
   long:'Genau einer je Spezialisierung, immer an Position 5 (Index 4). Er kommt auf die Leiste wie jeder andere Kniff; das Abschlusstalent des Baums wertet ihn auf. Ohne ihn gibt es die Aufwertung nicht.'},
  rotation:{name:'Rotation',short:'Die Reihenfolge deiner Kniffe im Kampf.',
-  long:'Mit den Lernstufen kommen Aufbaukniff, Markierung und Eskalation hinzu, dazu Unterbrechen, Ausweichen und Parade als Antworten. Die Leistenplätze sind frei belegbar; Ausweichen und Unterbrechen haben eigene Sonderknöpfe. Der Ablauf ist überall gleich: markieren, Punkte aufbauen, bei drei Punkten eskalieren – und auf gelbe Balken und rote Flächen reagieren.'},
+  long:'Mit den Lernstufen kommen Aufbaukniff, Markierung und Spezialkniff hinzu, dazu Unterbrechen, Ausweichen und Parade als Antworten. Die Leistenplätze sind frei belegbar; Ausweichen und Unterbrechen haben eigene Sonderknöpfe. Markiere Ziele, nutze deine Kniffe und die Mechanik deines Hauptbaums – und auf gelbe Balken und rote Flächen reagieren.'},
  wirkzeit:{name:'Wirkzeit',short:'Manche Kniffe brauchen einen Moment, in dem du stehen bleiben musst.',
-  long:'Bewegung bricht den Zauber ab („Zauber abgebrochen: Du bewegst dich“), ebenso ein verlorenes Ziel. Betroffen sind Eskalationen von Anni und Kevin (1,1 s), Annis Heilung (1,25 s) und alle Bodenangriffe (0,8 bis 1 s). Markierung und Wurf gehen in Bewegung.'},
+  long:'Bewegung bricht den Zauber ab („Zauber abgebrochen: Du bewegst dich“), ebenso ein verlorenes Ziel. Betroffen sind Spezialkniffen von Anni und Kevin (1,1 s), Annis Heilung (1,25 s) und alle Bodenangriffe (0,8 bis 1 s). Markierung und Wurf gehen in Bewegung.'},
  // Begriffe, die Gameplay, Welt und Loot an ihren eigenen Elementen verwenden (docs/backlog/klassen.md, Welle D).
  leben:{name:'Leben',short:'Deine Lebenspunkte. Auf null bist du raus.',
   long:`Grundleben ${P.baseHp} auf Stufe 1, ${P.hpPerLevel} mehr je weiterer Stufe, dazu ${P.hpPerStamina} je Punkt Standfestigkeit über dem Grundwert. Deckung liegt als Polster davor. Außerhalb des Kampfes füllt sich Leben mit ${P.outOfCombatRegen} je Sekunde.`},
@@ -167,7 +159,6 @@ const SKILL_FIELDS=[
  ['radius','Wirkradius','m',metres],
  ['damage','Grundschaden','',v=>v],
  ['base','Grundwert des Einschlags','',v=>v],
- ['perPoint','zusätzlich je Aufbaupunkt','',v=>v],
  ['multiplier','gegen markiertes Ziel','×',v=>v],
  ['splash','Umkreisanteil','%',v=>v*100],
  ['dot','Schaden je Sekunde','',v=>v],
@@ -190,7 +181,7 @@ function skillNumbers(def,cls,id){
  const dm=SKILL_DAMAGE[cls]?.[id]||SKILL_DAMAGE.shared[id];
  if(dm){if(dm.flat)out.push(n('Fester Schadensanteil',dm.flat,'',CB));
   if(dm.weapon)out.push(n('Autoschaden',dm.weapon*100,'%',CB));
-  if(dm.weaponPerPoint)out.push(n('Autoschaden je Aufbaupunkt',dm.weaponPerPoint*100,'%',CB));}
+ }
  const cast=CAST_TIMES[cls]?.[id];
  out.push(cast?n('Wirkzeit',cast,'s',CB):n('Wirkzeit','sofort','',CB));
  if(def.offGcd)out.push(n('Globale Abklingzeit','entfällt','',SK));
@@ -209,22 +200,22 @@ const EFFECT_INFO={
  doubleParry:{label:'Abgefangene Treffer je Parade',fixed:2,unit:'statt 1',source:CM},
  parrySlow:{label:'Verlangsamung nach Parade',fixed:3,unit:'s',source:CM},
  shieldBonus:{label:'Stärkere Deckung',unit:'Anteil'},
- guardBurst:{label:'Deckung, die die Eskalation in eine Druckwelle umwandelt',fixed:80,unit:'Punkte, Radius 10 m',source:CM},
+ guardBurst:{label:'Deckung, die der Spezialkniff in eine Druckwelle umwandelt',fixed:80,unit:'Punkte, Radius 10 m',source:CM},
  guardOnParry:{label:'Deckung je Parade',unit:'Punkte'},
  zoneUpgrade:{label:'Zone hält länger',fixed:4,unit:'s, dazu 50 Deckung beim Aufstellen',source:CM},
  lastGuard:{label:'Deckung bei Parade unter 35 % Leben',fixed:80,unit:'Punkte',source:CM},
  rageGain:{label:'Zusätzlicher Rausch je Auslöser',fixed:1,unit:'(Höchststand 5)',source:CM},
- rageBurst:{label:'Eskalation bei 5 Rausch',fixed:0,unit:'Randale',source:CM},
+ rageBurst:{label:'Spezialkniff bei 5 Rausch',fixed:0,unit:'Randale',source:CM},
  dashThrow:{label:'Wurf-Abklingzeit nach Ausweichen',fixed:3,unit:'s kürzer',source:CM},
- burstStun:{label:'Betäubung bei Eskalation mit 3 Punkten',fixed:1.5,unit:'s',source:CM},
+ burstStun:{label:'Betäubung bei Spezialkniff',fixed:1.5,unit:'s',source:CM},
  killHeal:{label:'Heilung je Kill',unit:'Leben'},
- slamUpgrade:{label:'Pegel je Tresensprung',fixed:2,unit:'statt 1, dazu ein kostenloser Grundangriff',source:CM},
+ slamUpgrade:{label:'Randale je Tresensprung',fixed:20,unit:'statt 10, dazu ein kostenloser Grundangriff',source:CM},
  killReset:{label:'Tresensprung nach einem Kill',fixed:0,unit:'s Abklingzeit',source:CM},
  markedLeech:{label:'Lebensraub gegen markierte Ziele',unit:'%',scale:v=>v*100},
  overhealShield:{label:'Überheilung wird Deckung',unit:'%',scale:v=>v*100},
- healCombo:{label:'Aufbaupunkt je Heilung',unit:''},
+ healEnergy:{label:'Randale je direkter Heilung',unit:''},
  healBonus:{label:'Stärkere Heilung',unit:'Anteil'},
- burstHot:{label:'Hauspflege nach Eskalation mit 3 Punkten',fixed:4,unit:'s länger, mindestens 10 je Tick',source:CM},
+ burstHot:{label:'Hauspflege nach Spezialkniff',fixed:4,unit:'s länger, mindestens 10 je Tick',source:CM},
  parryHealCd:{label:'Heilung nach Parade',unit:'s kürzer'},
  zoneEnergy:{label:'Randale je Grundangriff in der eigenen Zone',unit:''},
  hotHeal:{label:'Hauspflege je Heilung',unit:'Leben je Sekunde, 6 s',source:CM},
@@ -235,21 +226,21 @@ const EFFECT_INFO={
  markedKillHot:{label:'Hauspflege nach markiertem Kill',fixed:12,unit:'Leben je Sekunde, 6 s',source:CM},
  interruptHeal:{label:'Heilung nach geglückter Unterbrechung',fixed:0,unit:'s Abklingzeit',source:CM},
  infusionUpgrade:{label:'Provisionskur hält länger',fixed:4,unit:'s, dazu 20 Randale je Heilung',source:CM},
- burstSpread:{label:'Markierung springt bei Eskalation mit 3 Punkten',fixed:5,unit:'Nachbarn im Umkreis von 11,3 m',source:CM},
+ burstSpread:{label:'Markierung springt bei Spezialkniff',fixed:5,unit:'Nachbarn im Umkreis von 11,3 m',source:CM},
  beatEnergy:{label:'Randale bei Treffer im Takt',unit:''},
  dashFreeThrow:{label:'Wurf nach Ausweichen',fixed:0,unit:'Randale',source:CM},
  encoreUpgrade:{label:'Randale je Noch ein Reel',fixed:35,unit:'plus ein kostenloser Grundangriff',source:CM},
  killThrow:{label:'Wurf nach einem Kill',fixed:0,unit:'s Abklingzeit',source:CM},
  burnGround:{label:'Nachglut im Einschlag',fixed:18,unit:'Schaden je Sekunde, 4 s',source:CM},
  interruptEnergy:{label:'Randale je geglückter Unterbrechung',unit:''},
- markedKillEnergy:{label:'Randale je markiertem Kill',unit:'plus 1 Aufbaupunkt'},
+ markedKillEnergy:{label:'Randale je markiertem Kill',unit:''},
  healGroundCd:{label:'Bodenangriff nach Heilung',unit:'s kürzer'},
- detonateUpgrade:{label:'Kettenzündung greift weiter',fixed:6.3,unit:'m mehr, dazu 1 Druck je Treffer',source:CM},
- parryCombo:{label:'Aufbaupunkt je Parade zusätzlich',fixed:1,unit:'',source:CM},
+ detonateUpgrade:{label:'Kettenzündung greift weiter',fixed:6.3,unit:'m mehr, dazu 10 Randale je Treffer',source:CM},
+ parryEnergy:{label:'Randale je Parade zusätzlich',unit:'',source:CM},
  magnetUpgrade:{label:'Magnetpanzer gibt Deckung',fixed:200,unit:'statt 140, Festhalten 2 s statt 1',source:CM},
- dashCombo:{label:'Aufbaupunkt je Ausweichen',fixed:1,unit:'',source:CM},
+ dashEnergy:{label:'Randale je Ausweichen',unit:'',source:CM},
  markRoot:{label:'Festhalten bei der ersten Markierung',fixed:1,unit:'s',source:CM},
- rootThrow:{label:'Druck je Wurf auf festgehaltene Ziele',fixed:1,unit:'',source:CM},
+ rootThrow:{label:'Randale je Wurf auf betäubte Ziele',fixed:10,unit:'',source:CM},
  interruptDash:{label:'Ausweichen nach Unterbrechung',unit:'s kürzer'},
  snareUpgrade:{label:'Falle hält fest',fixed:4.5,unit:'s statt 3, setzt den Wurf zurück',source:CM},
  hunterFinish:{label:'Ausweichen nach einem Kill',fixed:0,unit:'s Abklingzeit, Rückstoß weiter',source:CM},
@@ -258,20 +249,20 @@ const EFFECT_INFO={
  fassPils:{label:'Anstich stellt Pils (Tempo)',fixed:1,unit:'',source:MECH},fassWeizen:{label:'Anstich stellt Weizen (Heilung)',fixed:1,unit:'',source:MECH},fassBock:{label:'Anstich stellt Bock (Schaden)',fixed:1,unit:'',source:MECH},fieldCount:{label:'Zusätzliche Fässer',unit:''},fieldDuration:{label:'Platziertes Objekt hält länger',unit:'s'},fieldRadius:{label:'Größerer Wirkkreis',unit:'Welteinheiten'},
  supplyMax:{label:'Zusätzliche Vorratsgläser',unit:''},cleanDuration:{label:'Großreinemachen hält länger',unit:'s'},nestHonk:{label:'Gisela schnattert länger nieder',unit:'s'},cleanDamage:{label:'Mehr Schaden je Heilung im Großreinemachen',unit:'%',scale:v=>v*100},
  dotSpread:{label:'Schimmel springt auf zusätzliche Nachbarn',unit:''},dotRadius:{label:'Schimmel springt weiter',unit:'Welteinheiten'},dotHeal:{label:'Durchputzen heilt je platzendem Schimmel',fixed:1,unit:'Tick',source:MECH},dotExplodeTicks:{label:'Durchputzen zusätzliche Ticks',unit:''},
- stateDuration:{label:'Putzwut hält länger',unit:'s'},stateDrain:{label:'Randale-Verbrauch in der Putzwut',unit:'je s'},stateDamage:{label:'Mehr Schaden in der Putzwut',unit:'%',scale:v=>v*100},stateTrigger:{label:'Putzwut beginnt früher',unit:'Randale'},mobileHeal:{label:'Heilung im Laufen',fixed:1,unit:'',source:MECH},mobileStrike:{label:'Grundangriff im Laufen',fixed:1,unit:'',source:MECH},mobileThrow:{label:'Wurf im Laufen',fixed:1,unit:'',source:MECH},mobileBurst:{label:'Eskalation im Laufen',fixed:1,unit:'',source:MECH},stateMobileAll:{label:'Alle Kniffe im Laufen während der Putzwut',fixed:1,unit:'',source:MECH},
+ stateDuration:{label:'Putzwut hält länger',unit:'s'},stateDrain:{label:'Randale-Verbrauch in der Putzwut',unit:'je s'},stateDamage:{label:'Mehr Schaden in der Putzwut',unit:'%',scale:v=>v*100},stateTrigger:{label:'Putzwut beginnt früher',unit:'Randale'},mobileHeal:{label:'Heilung im Laufen',fixed:1,unit:'',source:MECH},mobileStrike:{label:'Grundangriff im Laufen',fixed:1,unit:'',source:MECH},mobileThrow:{label:'Wurf im Laufen',fixed:1,unit:'',source:MECH},mobileBurst:{label:'Spezialkniff im Laufen',fixed:1,unit:'',source:MECH},stateMobileAll:{label:'Alle Kniffe im Laufen während der Putzwut',fixed:1,unit:'',source:MECH},
  fuseDamage:{label:'Mehr Lunten-Schaden',unit:''},fuseSpread:{label:'Lunte springt beim Zünden weiter',fixed:1,unit:'Nachbar',source:MECH},chainJumps:{label:'Zusätzliche Blitzsprünge',unit:''},chainFalloff:{label:'Weniger Verlust je Sprung',unit:'%',scale:v=>v*100},reactionWindow:{label:'Längeres Fenster für die Kettenreaktion',unit:'s'},reactionDuration:{label:'Kettenreaktion hält länger',unit:'s'},
  robbiDamage:{label:'Mehr Robbi-Schaden je Schuss',unit:''},robbiGuard:{label:'Deckung je Robbi-Schuss',fixed:4,unit:'Punkte',source:MECH},overloadDamage:{label:'Mehr Überlast-Schaden',unit:''},overloadStun:{label:'Überlast betäubt',unit:'s'},
  gambleOver:{label:'Höhere Überzündungs-Chance',unit:'%',scale:v=>v*100},gamblePity:{label:'Garantierte Überzündung früher',unit:'Fehlzündungen'},gambleMisfireMult:{label:'Fehlzündung weniger schwach',unit:'%',scale:v=>v*100},jackpotDuration:{label:'Jackpot hält länger',unit:'s'},jackpotStreak:{label:'Jackpot früher',unit:'Überzündungen'},hausverbotDuration:{label:'Hausverbot hält länger',unit:'s'},mobileCast:{label:'Wirken im Laufen',fixed:1,unit:'',source:MECH},mobileMark:{label:'Markierung im Laufen',fixed:1,unit:'',source:MECH},mobileGround:{label:'Bodenkniff im Laufen',fixed:1,unit:'',source:MECH},overloadRadius:{label:'Größerer Überlast-Kreis',unit:'Welteinheiten'},chainRadius:{label:'Kurzschluss springt weiter',unit:'Welteinheiten'},overSplashShare:{label:'Überzündung trifft Nachbarn stärker',unit:'%',scale:v=>v*100},tapDamage:{label:'Mehr Bock-Explosionsschaden beim Fassanstich',unit:''},fieldHeal:{label:'Mehr Heilung je Sekunde vom Nest',unit:''},robbiHp:{label:'Robbi hält mehr Schläge aus',unit:'Leben'},robbiFollows:{label:'Robbi läuft mit',fixed:1,unit:'',source:MECH},nestFollows:{label:'Gisela läuft mit',fixed:1,unit:'',source:MECH},
- aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Markierungs-Schaden',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Eskalations-Schaden',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''}
+ aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Markierungs-Schaden',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Schaden des Spezialkniffs',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''}
 };
 /** Wirkungen einer Proc-Regel → Zahlenzeilen. */
 const PROC_EFFECT_INFO={
  free:{label:'Kostenlos danach'},reset:{label:'Sofort bereit'},empower:{label:'Doppelter Schaden beim nächsten Einsatz'},
- energy:{label:'Randale sofort'},points:{label:'Aufbaupunkte sofort'},shield:{label:'Deckung sofort',unit:'Punkte'},
+ energy:{label:'Randale sofort'},shield:{label:'Deckung sofort',unit:'Punkte'},
  heal:{label:'Heilung sofort',unit:'Leben'},haste:{label:'Tempo im Fenster',unit:'%',scale:v=>v*100},supply:{label:'Vorratsgläser sofort',unit:''},clean:{label:'Großreinemachen sofort',unit:'s'}
 };
-const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am markierten Ziel',beat:'Grundangriff im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick der Markierung',autoHit:'Treffer des Autoangriffs',heal:'Direkte Heilung',burst3:'Eskalation mit drei Punkten',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt'};
-const skillName=id=>{const b=BASE_SKILLS.find(s=>s.id===id);return TALENT_SKILLS[id]?.name||(b?({strike:'Grundangriff',mark:'Markierung',burst:'Eskalation',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung'})[id]:null)||({throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'})[id]||id;};
+const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am markierten Ziel',beat:'Grundangriff im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick der Markierung',autoHit:'Treffer des Autoangriffs',heal:'Direkte Heilung',burst:'Spezialkniff',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt'};
+const skillName=id=>{const b=BASE_SKILLS.find(s=>s.id===id);return TALENT_SKILLS[id]?.name||(b?({strike:'Grundangriff',mark:'Markierung',burst:'Spezialkniff',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung'})[id]:null)||({throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'})[id]||id;};
 export function effectNumbers(effects={},source=TL){
  const out=[];
  for(const [key,value] of Object.entries(effects)){
@@ -332,7 +323,7 @@ export function describe(kind,id){
  if(kind==='skill'||kind==='buff'||kind==='throw'||kind==='ground'||kind==='talentSkill')numbers=skillNumbers(e.def,e.cls,e.skillId);
  else if(kind==='talent'){numbers=effectNumbers(e.def.effects);if(e.def.grants)numbers.unshift(n('Schaltet frei',TALENT_SKILLS[e.def.grants].name,'',SK));}
  else if(kind==='proc')numbers=procNumbers(e.def);
- else if(kind==='passive'){const L={strikeCd:['Grundangriff alle','s'],strikeRange:['Reichweite des Grundangriffs','m'],strikeGain:['Randale je Grundangriff',''],dashCd:['Ausweichen alle','s'],parryHeal:['Heilung je geglückter Parade','Leben'],damageTaken:['Eingehender Schaden','%'],beatRunes:['Aufbaupunkte im Takt',''],interruptRunes:['Druck je Unterbrechung',''],interruptBurstCd:['Eskalation nach Unterbrechung','s kürzer']};
+ else if(kind==='passive'){const L={strikeCd:['Grundangriff alle','s'],strikeRange:['Reichweite des Grundangriffs','m'],strikeGain:['Randale je Grundangriff',''],dashCd:['Ausweichen alle','s'],parryHeal:['Heilung je geglückter Parade','Leben'],damageTaken:['Eingehender Schaden','%'],beatEnergy:['Zusätzliche Randale im Takt',''],interruptBurstCd:['Spezialkniff nach Unterbrechung','s kürzer']};
   for(const [k,v] of Object.entries(e.def)){const d=L[k];if(!d)continue;
    numbers.push(n(d[0],k==='strikeRange'?metres(v):k==='damageTaken'?v*100:v,d[1],CL));}
   const w=e.def.beatWindow;if(w)numbers.push(n('Taktfenster',nice(w[0])+' bis '+nice(w[1]),'s',CL));}

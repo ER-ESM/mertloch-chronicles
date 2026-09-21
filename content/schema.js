@@ -35,7 +35,7 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
  for(const [id,set] of Object.entries(CAST_SETS)){const w='casts '+id;if(!set.cycle?.length)bad(w,'cycle leer');for(const c of set.cycle||[])if(!set.casts[c])bad(w,'cycle verweist auf unbekannten Zauber '+c);for(const [cid,c] of Object.entries(set.casts)){if(!c.name||!/Parade|ausweichen|Q unterbricht|Fläche verlassen/.test(c.name))bad(w+'/'+cid,'Name muss die Antwort nennen (Parade / ausweichen / Q unterbricht / Fläche verlassen)');num(w+'/'+cid,c,['total','damage','radius'],0);if(c.total<.6)bad(w+'/'+cid,'Zauberzeit unter 0,6 s ist nicht reagierbar');if(c.interruptible&&c.name.includes('Parade'))bad(w+'/'+cid,'unterbrechbarer Zauber darf nicht „Parade“ heißen');if(!c.interruptible&&!c.ground&&!c.radius)bad(w+'/'+cid,'Nahkampfzauber braucht radius');}}
  for(const [side,rows] of Object.entries(SPAWN_TABLES))if(Array.isArray(rows))for(const r of rows)if(!ARCHETYPES[r.kind])bad('spawn '+side,'Art unbekannt: '+r.kind);else if(ARCHETYPES[r.kind].behavior!==side)bad('spawn '+side,r.kind+' hat anderes Verhalten');
  // Fähigkeiten
- for(const [cls,kit] of Object.entries(KITS)){if(kit.length!==BASE_SKILLS.length)bad('kit '+cls,'Länge muss '+BASE_SKILLS.length+' sein');for(const [i,s] of kit.entries()){if(!s.name||!s.text)bad('kit '+cls+'/'+BASE_SKILLS[i].id,'name/text fehlt');num('kit '+cls+'/'+BASE_SKILLS[i].id,s,['cd','cost','range','damage','heal','reflect','window','steps','base','perPoint','splash','dot','duration'],0);}if(!BUFF_SKILLS[cls]?.name)bad('buff '+cls,'fehlt');if(!THROW_SKILL.names[cls]||!GROUND_SKILL.names[cls])bad('skill '+cls,'Wurf-/Bodenname fehlt');}
+ for(const [cls,kit] of Object.entries(KITS)){if(kit.length!==BASE_SKILLS.length)bad('kit '+cls,'Länge muss '+BASE_SKILLS.length+' sein');for(const [i,s] of kit.entries()){if(!s.name||!s.text)bad('kit '+cls+'/'+BASE_SKILLS[i].id,'name/text fehlt');num('kit '+cls+'/'+BASE_SKILLS[i].id,s,['cd','cost','range','damage','heal','reflect','window','steps','base','splash','dot','duration'],0);}if(!BUFF_SKILLS[cls]?.name)bad('buff '+cls,'fehlt');if(!THROW_SKILL.names[cls]||!GROUND_SKILL.names[cls])bad('skill '+cls,'Wurf-/Bodenname fehlt');}
  for(const [id,s] of Object.entries(TALENT_SKILLS)){if(!s.name||!s.text)bad('talentskill '+id,'name/text fehlt');num('talentskill '+id,s,['cd','cost','range','radius','duration','damage'],0);if(s.ground&&!s.range)bad('talentskill '+id,'Bodenfähigkeit braucht range');}
  for(const [cls,levels] of Object.entries(CLASS_LESSONS)){for(const [id,l] of Object.entries(levels)){if(!BASE_SKILLS.some(s=>s.id===id)&&!['auto','buff','throw','ground'].includes(id))bad('lessons '+cls,'unbekannte Fähigkeit '+id);if(!(l>=1&&l<=BALANCE.maxLevel))bad('lessons '+cls,id+' Stufe außerhalb 1–'+BALANCE.maxLevel);}if(levels.strike!==1||levels.dash!==1)bad('lessons '+cls,'Grundangriff und Ausweichen müssen auf Stufe 1 liegen');}
  // Klassen und Talente
@@ -55,9 +55,9 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
   if(r.zone&&!['keg','sanctuary','barricade','snare','burn','fass','robbi','nest','spores'].includes(r.zone))bad(w,'zone unbekannt');
   if(r.trigger==='inZone'&&!r.zone)bad(w,'inZone braucht zone');
   if(!Object.keys(ef).length)bad(w,'effect leer');
-  for(const k of Object.keys(ef))if(!['free','reset','empower','energy','points','shield','haste','heal','cdReduce'].includes(k))bad(w,'Effektart unbekannt: '+k);
+  for(const k of Object.keys(ef))if(!['free','reset','empower','energy','shield','haste','heal','cdReduce'].includes(k))bad(w,'Effektart unbekannt: '+k);
   for(const k of ['free','reset','empower'])if(ef[k]&&!procSkills.has(ef[k]))bad(w,k+' zeigt auf unbekannten Kniff');
-  for(const k of ['energy','points','shield','haste'])if(ef[k]!==undefined&&!(Number.isFinite(ef[k])&&ef[k]>0))bad(w,k+' muss positiv sein');
+  for(const k of ['energy','shield','haste'])if(ef[k]!==undefined&&!(Number.isFinite(ef[k])&&ef[k]>0))bad(w,k+' muss positiv sein');
   if(ef.heal!==undefined&&!(typeof ef.heal==='number'?Number.isFinite(ef.heal)&&ef.heal>0:ef.heal&&Number.isFinite(ef.heal.damage)&&ef.heal.damage>0&&ef.heal.damage<=1))bad(w,'heal braucht Leben oder einen Schadensanteil > 0 bis 1');
   if(ef.cdReduce&&(!cd.length||cd.some(c=>!procSkills.has(c?.skill)||!Number.isFinite(c?.seconds)||c.seconds<=0)))bad(w,'cdReduce braucht bekannte skill und positive seconds');
   if(r.glow&&(!procSkills.has(r.glow)||![ef.free,ef.reset,ef.empower,...cd.map(c=>c?.skill)].includes(r.glow)))bad(w,'glow zeigt nicht auf einen betroffenen Kniff');
@@ -79,7 +79,7 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
  for(const [id,t] of Object.entries(HUB_TALK)){if(!NPCS[id])bad('hub '+id,'NPC unbekannt');if(!t.greet)bad('hub '+id,'greet fehlt');for(const [k,v] of Object.entries(t))if(k!=='greet'&&(!Array.isArray(v)||!v.length))bad('hub '+id+'/'+k,'Zeilenliste leer');}
  for(const v of VILLAGERS)if(!(v.variant>=0&&v.variant<8))bad('villager '+v.name,'variant 0–7');
  for(const [id,a] of Object.entries(ENEMY_AUTOS)){num('auto '+id,a,['min','max','speed','range'],.01);if(a.min>a.max)bad('auto '+id,'min größer als max');}
- for(const [cls,models] of Object.entries(SKILL_DAMAGE))for(const [id,m] of Object.entries(models))num('damage '+cls+'/'+id,m,['flat','weapon','weaponPerPoint','flatPerPoint','bonusPct']);
+ for(const [cls,models] of Object.entries(SKILL_DAMAGE))for(const [id,m] of Object.entries(models))num('damage '+cls+'/'+id,m,['flat','weapon','bonusPct']);
  for(const [cls,skills] of Object.entries(CAST_TIMES))for(const [id,time] of Object.entries(skills))if(!(time>0&&Number.isFinite(time)))bad('cast '+cls+'/'+id,'Zauberzeit muss positiv sein');
  // Rollen-Prüfungen (content/checks/<rolle>.js) – jede Rolle pflegt ihre eigene Datei.
  runRoleChecks(bad);

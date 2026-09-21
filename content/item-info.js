@@ -193,7 +193,7 @@ export const PROC_INFO={
   links:['ruhepfeife','dienstmuetze'],terms:['proc','unterbrechen','randale']},
  verdict:{effect:'Markierte Ziele erleiden zusätzlichen Schaden aus allen Quellen.',
   why:'Belohnt die Reihenfolge Markieren → Zuschlagen; ohne Markierung im Bau wirkt der Proc gar nicht.',
-  links:['horststempel','praktikantenausweis'],terms:['proc','markierung','eskalation']},
+  links:['horststempel','praktikantenausweis'],terms:['proc','markierung','spezialkniff']},
  thirst:{effect:'Jeder Kill gibt Randale zurück.',
   why:'Trägt Kämpfe gegen Gruppen: Der erste Kill bezahlt den Kniff für den zweiten. Gegen einen einzelnen Boss wirkt er nicht.',
   links:['schnorrerbecher','bierbong','automatenarm'],terms:['proc','randale']},

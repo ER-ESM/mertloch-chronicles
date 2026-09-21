@@ -106,7 +106,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,canvas:focus-visib
  color:var(--stamp);background:transparent;border:3px double var(--stamp);transform:rotate(-2deg);}
 
 /* --------------------------------------------------------------------- Chips */
-.buff-chip,.rune-row>span,.quest-reward span,.talent-points,.build-cost li{
+.buff-chip,.quest-reward span,.talent-points,.build-cost li{
  font-family:var(--display);font-weight:400;font-size:var(--t-16);letter-spacing:.04em;text-transform:uppercase;
  background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);padding:2px 8px;box-shadow:none;}
 
@@ -266,9 +266,6 @@ input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);o
 .portrait{background:var(--green-2);border:var(--edge) solid var(--kraft-2);}
 .portrait>span{background:var(--green-2);border:var(--edge) solid var(--kraft-2);color:var(--gold);
  font-family:var(--display);font-size:var(--t-13);}
-.rune-row small{font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;
- text-transform:uppercase;color:var(--kraft);}
-.rune-row>span{background:transparent;border:0;color:var(--gold);font-size:var(--t-16);padding:0;}
 .target-panel .unit-name{color:var(--coral);}
 .target-detail{font-family:var(--display);font-size:var(--t-11);letter-spacing:.06em;
  text-transform:uppercase;color:var(--kraft);}
@@ -459,7 +456,7 @@ button,.gold-button,.outline-button,.panel-tabs button,.quest-tabs button,.secti
 .book-tabs button{border-radius:var(--r-s) var(--r-s) 0 0!important}
 .skill,.item-slot,.gear-cell .item-slot,.binding-slot,.book-skill,.reward-option,.spec-tabs button,.clan-card,.guide-card,.quest-entry,.memory-entry,.build-card,.base-card,.character-stats>div,.secondary-stats>div,.weapon-summary>div,.paper-doll,.gear-doll,.talent-points,.touch-slot-editor button,.touch-skill-picker button{border-radius:var(--r-s)!important}
 #touchActions .touch-skill{border-radius:var(--r-s)!important}
-.buff-chip,.rune-row>span,.clan-stamp,.quest-reward span,kbd,.touch-kbd,.mobile-notice,.game-menu-rail button[data-badge]:after,.book-tabs button[data-badge]:after,.section-jump button[aria-current=true],.talent-gate span,.branch-node small{border-radius:var(--r-pill)!important}
+.buff-chip,.clan-stamp,.quest-reward span,kbd,.touch-kbd,.mobile-notice,.game-menu-rail button[data-badge]:after,.book-tabs button[data-badge]:after,.section-jump button[aria-current=true],.talent-gate span,.branch-node small{border-radius:var(--r-pill)!important}
 .bar,.bar i,.enemy-hp,.energy,.hp,.cast,.cast i,.rpg-xp,.rpg-xp i,.xp-track,.xp-track i,.training-progress,.training-progress i,.quest-meter,.quest-meter i,.health-track,.energy-track,.bar-track,.buff-timer{border-radius:var(--r-pill)!important}
 .branch-node,.branch-node.passive-talent,.talent-node{border-radius:10px!important}
 .branch-node.active-talent,.branch-node.capstone.active-talent{border-radius:50%!important}
@@ -491,8 +488,6 @@ button,.gold-button,.outline-button,.panel-tabs button,.quest-tabs button,.secti
 
 /* Polish 6 (2026-09-18): Randale-Balken erst sichtbar, wenn ein Kniff Randale kostet; Pegel-Hinweis vor dem Finisher gedämpft. */
 .player-panel .energy.bar-hidden{display:none}
-#buffText.hint-next{opacity:.7}
-.rune-row>span{letter-spacing:.1em}
 
 /* Polish 8 (2026-09-18): Aktionsleiste – Tasten deutlich, leere Plätze zurückhaltend. */
 .action-area .skill .key{font-size:var(--t-16);padding:0 4px;background:#0B1216B0;border-radius:0 0 6px 0!important;top:0;left:0}

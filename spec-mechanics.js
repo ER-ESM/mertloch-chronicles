@@ -40,7 +40,7 @@ export function quickGcd(g,id,e){
  if(procGlow(g,id))return true;
  if(id==='strike'&&(st.freeStrike||st.empowered>0))return true;
  if(id==='throw'&&st.freeThrow)return true;
- if(id==='burst'&&p.runes===3&&e?.mark>0)return true;
+ if(id==='burst'&&e?.mark>0)return true;
  if(mechVariant(g,id))return true;
  return false;
 }
@@ -63,7 +63,7 @@ export function robbiTaunt(g,e,n){const m=mechanic(g);if(!m?.field||m.field.kind
 export function onParryMech(g,e,cs){const m=mechanic(g);if(!m?.prost||!e?.cast)return;g.player.energy=Math.min(100,g.player.energy+m.prost.energy);emitClassVisual(g,'prost',g.player.x,g.player.y,{offsetY:-37,size:26,life:1,max:1});note(g,'PROST!','#ecc3fc','parry');}
 /** Held kassiert einen Treffer: Pegelstrich (Kneipenschläger). */
 export function onHitTakenMech(g,n,cs){const m=mechanic(g);if(!m?.stack||n<=0)return;const s=M(g);s.stack=Math.min(m.stack.max,s.stack+m.stack.gainOnHit);s.stackUntil=g.time+num(cs,'stackDecay',m.stack.decay);}
-/** Eskalation vor dem Schaden: Faktor aus Pegel/Zustand, Nebenwirkungen (Fässer anstechen, Robbi überlasten, Schimmel platzen, Deckung als Welle). */
+/** Spezialkniff vor dem Schaden: Faktor aus Pegel/Zustand, Nebenwirkungen (Fässer anstechen, Robbi überlasten, Schimmel platzen, Deckung als Welle). */
 export function burstMultiplier(g,e,cs,context={}){
  const m=mechanic(g);if(!m)return 1;const s=M(g),p=g.player;let f=1;
  if(m.stack&&s.stack>0){f*=1+num(cs,'stackBonus',m.stack.bonusPerStack)*s.stack;if(cs.stackSpread)for(const o of nb(g,e,80)){o.controlSlow=Math.max(o.controlSlow||0,s.stack*.5);}if(cs.stackWave)for(const o of nb(g,e,80,e))g.damage(o,Math.round(20*s.stack),'Abriss');context.stack=s.stack;s.stack=0;s.stackUntil=0;}
@@ -75,7 +75,7 @@ export function burstMultiplier(g,e,cs,context={}){
  if(m.supply&&s.supply>=num(cs,'supplyMax',m.supply.max)){s.supply=0;s.clean=num(cs,'cleanDuration',m.supply.cleanDuration);note(g,'GROSSREINEMACHEN','#ffe08a','burst');}
  return f;
 }
-/** Eskalation nach dem Schaden: Kettenblitz und Bonusschaden aus dem Zustand. */
+/** Spezialkniff nach dem Schaden: Kettenblitz und Bonusschaden aus dem Zustand. */
 export function afterBurst(g,e,cs,dealt,context={}){
  const m=mechanic(g);if(!m)return;const s=M(g);
  if(context.extra>0&&e?.hp>0)g.damage(e,context.extra,'Auswringen');

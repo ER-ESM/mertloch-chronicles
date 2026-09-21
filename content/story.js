@@ -26,7 +26,7 @@ export const STORY_CHAPTERS=[
  {id:1,act:1,title:'Der übliche Verdächtige',boss:'horst',dialogue:'intro',implemented:true,
   summary:'Die Bude liegt in Trümmern, die Kiste ist weg, und Ruhe 22:01 war verdächtig schnell da, um „Beweise zu sichern“. Pfandkeiler fressen die Reste, Ruhewärter tragen weg, was übrig ist, und Horst Nüchternmann bewacht in seiner Rüstung aus Hausordnungen eine Beweismittelkiste. In dieser Kiste liegt auch deine Hose.',
   objectives:[{kind:'kill',type:'wolf',count:3,label:'Pfandkeiler von den Trümmern jagen'},{kind:'kill',type:'cultist',count:2,label:'Ruhewärter beim „Beweise sichern“ stoppen'},{kind:'boss',boss:'horst',label:'Horst Nüchternmann samt Beweismittelkiste stellen'}],
-  reward:{xp:BALANCE.xp.quest.main,coins:25,relic:'Goldener Dosenöffner',relicEffect:'+12 % Eskalationsschaden',gear:'rare'},
+  reward:{xp:BALANCE.xp.quest.main,coins:25,relic:'Goldener Dosenöffner',relicEffect:'+12 % Schaden des Spezialkniffs',gear:'rare'},
   clue:'Horst hat ein Alibi: Um 22:01 Uhr hat er wie jedes Jahr vom Festnetz aus die Polizei gerufen, und der Anruf ist protokolliert. In seiner Beweismittelkiste lag deine Hose. In der Tasche steckten ein Busticket Koblenz–Mertloch und ein Handy, das nicht dir gehört.',
   memories:['kasten-feuerzeug','pizzeria'],
   unlocks:['Deine Hose zurück','Baustelle Bude freigelegt (Basisbau ab Kapitel 2)','Erinnerungsfetzen 1–2']},

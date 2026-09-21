@@ -54,8 +54,8 @@ export const BALANCE=Object.freeze({
  loot:{coinsBoss:25,coinsHuman:2,coinsSpread:6,foodChanceHuman:.15},
  momentum:{                            // Schwung: der Kill ist die Belohnung, nicht das Ende
   duration:8,maxStacks:3,
-  surgeAt:80,surgeBonus:.2,            // „In Fahrt": ab so viel Randale (vor dem Abzug der Kosten) schlägt die Eskalation so viel härter
-  energyOnKill:25,pointsOnKill:1,      // Randale und Punkte je Kill
+  surgeAt:80,surgeBonus:.2,            // „In Fahrt": ab so viel Randale (vor dem Abzug der Kosten) schlägt den Spezialkniff so viel härter
+  energyOnKill:25,      // Randale je Kill
   hastePerStack:.08,                   // zusätzliches Tempo je Stapel (über die Drehzahl-Kappe hinaus)
   combatEnergyRegen:3,                // Randale je Sekunde im Kampf (statt player.energyRegen)
   restRegen:60,restSeconds:4           // Verschnaufen: Leben je Sekunde direkt nach dem letzten Kill

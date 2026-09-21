@@ -1,6 +1,6 @@
 // Scrolling Combat Text (2026-09-18), Vorbild MSBT (Mik's Scrolling Battle Text): drei Laufbereiche um den Helden –
 // links eingehend (Schaden, Heilung, Parade/Ausweichen), rechts ausgehend (eigener Schaden je Kniff), oben Meldungen
-// (Procs, Schwung, Eskalation, Unterbrechen, EP). Jede Zeile hat Icon + Wert, steigt dezent auf und blendet aus; Glückstreffer
+// (Procs, Schwung, Spezialkniff, Unterbrechen, EP). Jede Zeile hat Icon + Wert, steigt dezent auf und blendet aus; Glückstreffer
 // poppen größer. Gleiche Treffer innerhalb von 350 ms werden zu einer Summe zusammengefasst (MSBT „merge").
 // Quelle ist das Engine-Ereignis `combat` (engine.js sct()). Keine Inhaltstexte hier; Namen kommen mit dem Ereignis.
 import {iconMarkup,paintDescribeIcons} from './describe-ui.js';

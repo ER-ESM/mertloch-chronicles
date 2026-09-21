@@ -12,5 +12,5 @@ export const METER_TEXT={
  session:'Die letzten 10 Kämpfe bleiben bis zum Neuladen erhalten. Gesamt umfasst auch ältere Kämpfe der Sitzung.',
  unknown:'Sonstiger Schaden',healingOther:'Sonstige Heilung',leech:'Lebensraub',feedback:'Heilung durch Markierungen / Infusion',
  hot:'Heilung über Zeit',killHeal:'Heilung beim Besiegen',parryHeal:'Parade-Heilung',proc:'Talentheilung',
- damageSources:{Autoangriff:'auto',Kelle:'strike',Eskalation:'strike',Pfandwurf:'throw',Markierung:'mark',RESONANZ:'burst',Entladung:'burst',Ansage:'interrupt',Parade:'parry',Sprung:'slam',Zündung:'detonate',Falle:'snare',Böller:'ground',Nachglut:'ground',Deckelwelle:'burst'},
+ damageSources:{Autoangriff:'auto',Kelle:'strike',Pfandwurf:'throw',Markierung:'mark',RESONANZ:'burst',Entladung:'burst',Ansage:'interrupt',Parade:'parry',Sprung:'slam',Zündung:'detonate',Falle:'snare',Böller:'ground',Nachglut:'ground',Deckelwelle:'burst'},
 };

@@ -25,4 +25,4 @@ export function weaponRange(g,registry,source='melee'){const d=validGear(g,regis
 export function weaponSkillDamage(g,s,base,registry){if(!s.weaponSource)return base;const range=weaponRange(g,registry,s.weaponSource),rolled=range.min+Math.max(0,Math.min(1,g.random()))*(range.max-range.min);return base*rolled/BALANCE.weapons.referenceDamage;}
 
 /** Declarative skill damage. No model retains the old weapon-normalized formula. */
-export function skillDamage(g,s,base,registry,points=0){const m=s.damageModel;if(!m)return weaponSkillDamage(g,s,base,registry);const range=weaponRange(g,registry,s.weaponSource||'melee'),roll=range.min+g.random()*(range.max-range.min);return ((m.flat||0)+(m.flatPerPoint||0)*points+roll*((m.weapon||0)+(m.weaponPerPoint||0)*points))*(1+(m.bonusPct||0));}
+export function skillDamage(g,s,base,registry){const m=s.damageModel;if(!m)return weaponSkillDamage(g,s,base,registry);const range=weaponRange(g,registry,s.weaponSource||'melee'),roll=range.min+g.random()*(range.max-range.min);return ((m.flat||0)+roll*(m.weapon||0))*(1+(m.bonusPct||0));}

@@ -22,9 +22,9 @@ const KIND_OF={skill:'skill',throw:'skill',ground:'skill',talentSkill:'talentSki
 
 /** Funktion: wofür ist es da? Reihenfolge = Anzeigereihenfolge. `term` verweist auf die genaue Regel im Glossar. */
 export const FUNCTIONS={
- aufbau:{name:'Aufbau',short:'Baut Aufbaupunkte und Randale auf.',term:'punkte'},
- markierung:{name:'Markierung',short:'Schaden über Zeit am Ziel; macht die Eskalation stärker.',term:'markierung'},
- eskalation:{name:'Eskalation',short:'Verbraucht Aufbaupunkte für den großen Treffer.',term:'eskalation'},
+ aufbau:{name:'Aufbau',short:'Grundangriff, der Randale gibt.',term:'randale'},
+ markierung:{name:'Markierung',short:'Schaden über Zeit am Ziel; macht den Spezialkniff stärker.',term:'markierung'},
+ spezialkniff:{name:'Spezialkniff',short:'Starker Kniff mit Zusatzwirkung des Hauptbaums.',term:'spezialkniff'},
  unterbrechung:{name:'Unterbrechung',short:'Bricht gelbe Zauber ab.',term:'unterbrechen'},
  abwehr:{name:'Abwehr',short:'Parade, Deckung oder weniger eingehender Schaden.',term:'deckung'},
  bewegung:{name:'Bewegung',short:'Ausweichen und Wirken im Laufen.',term:'ausweichen'},
@@ -44,14 +44,14 @@ export const MECHANIC_TERMS=['pegeluhr','kater','fass','vorrat','grossreinemache
 export const FUNCTION_IDS=Object.keys(FUNCTIONS);
 
 /** Platz in der Leiste → Hauptfunktion. Das ist die eine Kategorie, die ein Kniff immer zuerst zeigt. */
-export const SLOT_FUNCTION={strike:'aufbau',mark:'markierung',burst:'eskalation',interrupt:'unterbrechung',parry:'abwehr',dash:'bewegung',heal:'heilung',buff:'staerkung',throw:'wurf',ground:'flaeche'};
+export const SLOT_FUNCTION={strike:'aufbau',mark:'markierung',burst:'spezialkniff',interrupt:'unterbrechung',parry:'abwehr',dash:'bewegung',heal:'heilung',buff:'staerkung',throw:'wurf',ground:'flaeche'};
 
 /** Glossarbegriff → Funktion. Nur Begriffe, die eine Funktion eindeutig benennen; Ressourcennamen (Pegel, Glanz, Druck) sagen nichts über die Funktion. */
 export const TERM_FUNCTION={
- grundangriff:'aufbau',punkte:'aufbau',takt:'aufbau',pegeluhr:'aufbau',kater:'aufbau',
+ grundangriff:'aufbau',takt:'aufbau',pegeluhr:'aufbau',kater:'aufbau',
  autoangriff:'autoangriff',glueckstreffer:'krit',
  markierung:'markierung',schimmel:'markierung',lunte:'markierung',
- eskalation:'eskalation',durchputzen:'eskalation',auswringen:'eskalation',kurzschluss:'eskalation',ueberlast:'eskalation',
+ spezialkniff:'spezialkniff',durchputzen:'spezialkniff',auswringen:'spezialkniff',kurzschluss:'spezialkniff',ueberlast:'spezialkniff',
  unterbrechen:'unterbrechung',zauberbalken:'unterbrechung',
  deckung:'abwehr',parade:'abwehr',schadensminderung:'abwehr',
  ausweichen:'bewegung',laufzauber:'bewegung',
@@ -99,7 +99,7 @@ export function belongsTo(kind,id){
 /** Nebenfunktionen, die ein aktiver Kniff aus seinen Begriffen übernehmen darf. */
 export const ACTIVE_SECONDARY=['kontrolle','heilung','abwehr','randale','flaeche','staerkung','begleiter'];
 /** Handverlesene Ergänzungen, wo die Regel oben zu streng ist. */
-export const EXTRA_FUNCTION={'talentSkill:slam':['aufbau'],'talentSkill:encore':['eskalation','tempo'],'talentSkill:infusion':['markierung'],'talentSkill:detonate':['markierung']};
+export const EXTRA_FUNCTION={'talentSkill:slam':['aufbau'],'talentSkill:encore':['spezialkniff','tempo'],'talentSkill:infusion':['markierung'],'talentSkill:detonate':['markierung']};
 /** Funktionen eines Elements: erst die Hauptfunktion des Leistenplatzes, dann alles, was seine Glossarbegriffe eindeutig benennen. */
 export function functionsOf(kind,id){
  const d=describe(kind,id);if(!d)return [];
@@ -127,11 +127,11 @@ export {describableIds as categorizableIds};
 
 // ── Begriffsprüfung: harte Daten → Pflichtbegriffe ──
 /** Veränderter Kniff → Begriff, der dann am Element stehen muss (bei Listen: einer davon). */
-export const SKILL_TERM={strike:['grundangriff'],mark:['markierung','schimmel','lunte'],burst:['eskalation','durchputzen','auswringen','kurzschluss','ueberlast'],interrupt:['unterbrechen'],parry:['parade'],dash:['ausweichen'],heal:['heilung','hauspflege','vorrat','grossreinemachen'],throw:['wurf','bastlerglueck'],ground:['bodenangriff','flaeche','fass','nest','sporenwolke']};
+export const SKILL_TERM={strike:['grundangriff'],mark:['markierung','schimmel','lunte'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],interrupt:['unterbrechen'],parry:['parade'],dash:['ausweichen'],heal:['heilung','hauspflege','vorrat','grossreinemachen'],throw:['wurf','bastlerglueck'],ground:['bodenangriff','flaeche','fass','nest','sporenwolke']};
 /** Proc-Auslöser → Pflichtbegriff. */
-export const TRIGGER_TERM={markedHit:['markierung','schimmel','lunte'],markTick:['markierung','schimmel','lunte'],inZone:['flaeche','fass','nest'],parry:['parade'],dash:['ausweichen'],dodge:['ausweichen'],crit:['glueckstreffer'],heal:['heilung'],autoHit:['autoangriff'],interrupt:['unterbrechen'],burst3:['eskalation','durchputzen','auswringen','kurzschluss','ueberlast'],beat:['takt']};
+export const TRIGGER_TERM={markedHit:['markierung','schimmel','lunte'],markTick:['markierung','schimmel','lunte'],inZone:['flaeche','fass','nest'],parry:['parade'],dash:['ausweichen'],dodge:['ausweichen'],crit:['glueckstreffer'],heal:['heilung'],autoHit:['autoangriff'],interrupt:['unterbrechen'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],beat:['takt']};
 /** Proc-Wirkung → Pflichtbegriff. */
-export const EFFECT_TERM={heal:['heilung','lebensraub'],energy:['randale'],shield:['deckung'],cdReduce:['abklingzeit','tempo'],reset:['abklingzeit','tempo'],points:['punkte','pegel','glanz','druck'],haste:['tempo']};
+export const EFFECT_TERM={heal:['heilung','lebensraub'],energy:['randale'],shield:['deckung'],cdReduce:['abklingzeit','tempo'],reset:['abklingzeit','tempo'],haste:['tempo']};
 /**
  * Stimmen die Begriffe eines Talents/Auslösers mit seinen Daten überein?
  * @returns {{missing:string[],unfounded:string[]}} missing = Pflichtbegriff fehlt; unfounded = Begriff ohne Beleg (Autoangriff statt Grundangriff).

@@ -42,9 +42,9 @@ export function skillCooldown(game,s,cs=combatStats(game)){
  return s.cd*(1-cs.haste);
 }
 /** Tatsächlicher Schaden min–max mit Waffe, Talenten und Wertungen (ohne Kritisch, ohne Markierung). */
-export function skillDamageRange(game,s,base,points=0){
+export function skillDamageRange(game,s,base){
  if(!Number.isFinite(base))return null;
- const cs=combatStats(game),low=skillDamage({...game,random:()=>0},s,base,ITEMS,points),high=skillDamage({...game,random:()=>1},s,base,ITEMS,points);
+ const cs=combatStats(game),low=skillDamage({...game,random:()=>0},s,base,ITEMS),high=skillDamage({...game,random:()=>1},s,base,ITEMS);
  const power=1+cs.power+(PHYSICAL.has(s.id)?cs.physicalPower:cs.technicalPower),crit=1.6+(cs.critDamage||0);
  return {min:Math.round(low*power),max:Math.round(high*power),critMin:Math.round(low*power*crit),critMax:Math.round(high*power*crit)};
 }
@@ -52,7 +52,7 @@ export function skillDamageRange(game,s,base,points=0){
 function describeSkill(game,id){
  const s=game.skills.find(s=>s.id===id);if(!s)return null;
  const cs=combatStats(game),cd=skillCooldown(game,s,cs),cost=skillCost(game,s,cs);
- const damage=s.damage!==undefined?skillDamageRange(game,s,s.damage):s.base!==undefined?skillDamageRange(game,s,s.base+game.player.runes*(s.perPoint||0),game.player.runes):null;
+ const damage=s.damage!==undefined?skillDamageRange(game,s,s.damage):s.base!==undefined?skillDamageRange(game,s,s.base):null;
  const numbers=[];
  if(damage)numbers.push(num('Schaden',damage.min===damage.max?damage.min:damage.min+'–'+damage.max,'','Waffe + Wertungen'));
  if(s.heal)numbers.push(num('Heilung',Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4)),'','Handschrift + Meisterschaft'));

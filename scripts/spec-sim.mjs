@@ -21,7 +21,7 @@ function run(classId,spec){
   const p=g.player;if(!g.casting&&g.gcd<=0){
    if(has('mark')&&g.target.mark<=0&&g.cooldowns.mark<=0&&p.energy>=20)g.action('mark');
    else if(g.cooldowns.ground<=0&&has('ground')&&p.energy>=35)g.action('ground',{x:1050,y:1010});
-   else if(p.runes>=3&&g.cooldowns.burst<=0&&p.energy>=35)g.action('burst');
+   else if(g.cooldowns.burst<=0&&p.energy>=35)g.action('burst');
    else if(has('buff')&&g.cooldowns.buff<=0&&p.energy>=30)g.action('buff');
    else if(g.cooldowns.strike<=0)g.action('strike');
    else if(has('throw')&&g.cooldowns.throw<=0&&p.energy>=20)g.action('throw');

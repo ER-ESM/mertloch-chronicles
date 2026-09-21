@@ -32,7 +32,7 @@ export const AURA_TEXT={
  empowered:{name:'Verstärkung',text:'Dein nächster Aufbaukniff ist verstärkt.',icon:'strike'},
  freeStrike:{name:'Freier Aufbaukniff',text:'Dein nächster Aufbaukniff ist kostenlos.',icon:'strike'},
  freeThrow:{name:'Freier Wurf',text:'Dein nächster Wurf ist kostenlos.',icon:'throw'},
- rage:{name:'Rausch',text:'Gesammelter Rausch verstärkt deine Eskalation.',icon:'burst'},
+ rage:{name:'Rausch',text:'Gesammelter Rausch verstärkt deine Spezialkniff.',icon:'burst'},
  infusion:{name:'Infusion',text:'Heilende Infusion ist aktiv.',icon:'heal'},
  stack:{name:'Deckelstriche',text:'Verstärken den Abriss. Lass die Deckel-Uhr nicht auslaufen.',icon:'strike'},
  hangover:{name:'Kater',text:'Dein Schaden ist verringert und die globale Abklingzeit verlängert.',icon:'buff'},

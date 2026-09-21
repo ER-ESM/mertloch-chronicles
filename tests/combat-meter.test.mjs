@@ -50,7 +50,7 @@ test('marked-hit life steal and passive parry healing are counted at their actua
  const r=meterReport(d,'current','healing');assert.equal(r.total,35);assert.equal(r.actors[0].abilities[0].id,'parryHeal');
 });
 test('different clan figures remain separate in the session total and ability variants share one row',()=>{
- const g=game();event(g,20,'Kelle');event(g,30,'Eskalation');g.time=2;finishMeterCombat(g);
+ const g=game();event(g,20,'Entladung');event(g,30,'RESONANZ');g.time=2;finishMeterCombat(g);
  g.player.inCombat=0;Object.assign(g.player,g.world.spawn);assert.equal(g.switchMember('baerbel'),true);
  event(g,40,'Kelle');event(g,30,'Markierung');
  const rows=meterReport(g,'overall').actors;assert.equal(rows.length,2);
