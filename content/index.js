@@ -39,3 +39,4 @@ export * from './categories.js';
 
 export * from './kiosk.js';
 export * from './companions.js';
+export * from './companion-ui.js';

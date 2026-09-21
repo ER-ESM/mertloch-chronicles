@@ -4,6 +4,7 @@ import {PANEL_UI as UI,GAME_MENU_UI as MENU,SHOP_UI} from './content/index.js';
 import {touchPopupBounds} from './popup-layout.js';
 const titles={shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:'Talente',activity:'Anlagenprüfung',bag:'Rucksack',person:'Figur',book:'Kniffe',quest:'Aufträge',base:'Bude',map:'Karte',menu:MENU.title,clan:'Figur',guide:'Hilfe',admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
 const widths={
+companions:780,
 shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:700,activity:430,bag:560,person:700,book:700,quest:640,base:640,map:760,menu:320,clan:700,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 // Buchfenster wachsen mit dem Bildschirm (MMO-Vorbild: Charakter- und Talentfenster füllen ein Drittel bis die Hälfte), nie unter 520 px am Desktop.
 const widthFor=id=>{const base=widths[id]||440;if(!isBook(id)||innerWidth<700)return base;return Math.min(base,Math.max(520,Math.round(innerWidth*.44)));}

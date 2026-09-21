@@ -188,7 +188,8 @@ Hilfetext dafür fehlt in `PLAY_HELP` — Bedarf steht in docs/backlog/story.md.
 
 Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 
-- [ ] Schwarzes Brett als Fenster am Clan-Treff (Interaktion am vorhandenen Brett-Objekt des Hubs): Angebote aus game.companionOffers(), Anheuern/Entlassen, Kosten, Rollen-Name, Beschreibung. Abnahme: Klickpfad Desktop + Touch als scripts/companion-check.mjs über window.mertloch.companions.
-- [ ] Begleiter im Gruppenrahmen (Name, Rolle, Leben, am Boden, Restzeit des Vertrags) und Befehls-/Haltungsknöpfe; Tastenbelegung vorschlagen. Ereignis game.emit('companion',…) nutzen.
+- [x] Schwarzes Brett als Fenster am Clan-Treff (Interaktion am vorhandenen Brett-Objekt des Hubs): Angebote aus game.companionOffers(), Anheuern/Entlassen, Kosten, Rollen-Name, Beschreibung. Abnahme: Klickpfad Desktop + Touch als scripts/companion-check.mjs über window.mertloch.companions. Zusätzlich Spielmenü → Söldner und Taste U; Umsetzung in companion-ui.js / companion-ui.css.
+- [x] Begleiter im Gruppenrahmen (Name, Rolle, Leben, am Boden, Restzeit des Vertrags) und Befehls-/Haltungsknöpfe; Taste U öffnet die Verwaltung, Antippen eines Gruppenrahmens wählt diesen Söldner. Ereignisse plus laufende Aktualisierung; Auswahl „Alle Söldner“ oder einzelner Begleiter. Nachweise: visual-review/companions/.
 - [ ] Begleiter am Boden liegend zeichnen (view.down); eigene Sprites je Söldner statt Klassen-Look über content/ART-BRIEF (look-Feld).
+  Liegedarstellung über view.down ist umgesetzt; individuelle Sprites bleiben Grafikbedarf.
 - [ ] Kampfstatistik: Begleiter als eigene Zeilen (braucht Engine-Zuarbeit, siehe engine.md).
