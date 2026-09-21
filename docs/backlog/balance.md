@@ -24,3 +24,10 @@ Inbox der Rolle Balancing (docs/ROLLEN.md).
 - [x] **Kapitel-Bosse und Feldgegner gegen den Korridor** (2026-09-17): `klaus` 4200→4800 (Dieter 9,0→10,2 s), `timo` 4800→5300 (9,4→10,5 s), `jga` 720→840 (Bärbel 3,9→4,6 s). `kegler` bewusst unverändert, Rechnung in `content/tuning.js`.
 - [x] **Zwei der drei Zahlen aus der Engine-Runde nachgezogen** (2026-09-17, `content/balance.js`): `enemies.playerLead:2` (bestätigt den bisherigen Rückfallwert, keine Verhaltensänderung) und `weapons.quality.epic:1.4` (bisher fiel die Waffe auf den `rare`-Faktor 1,25 zurück; 1,4 setzt den Schritt uncommon→rare→epic gleichmäßig fort und hält den Unique-Deckel von 3,2 ein).
 - [x] **Eigene Invarianten** (2026-09-17, `content/checks/balance.js`): EP-Kurve streng steigend (je Stufe und gesamt), Kill-EP steigen von Tier über Mensch und Elite zum Boss, Kapitelbelohnungen (EP und Münzen) wachsen je Akt mit dem Kapitel, Elite-Schadensfaktor zwischen 1,1 und 1,6.
+
+## Begleiter / Söldner (E-45) · 2026-09-21
+
+Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
+
+- [ ] Erstlauf Begleiter: COMPANION_ROLES/COMPANION_RULES gegen die TTK-Matrix prüfen (Stufe 1 gegen drei Keiler fällt der Schutz-Söldner – gewollt knapp oder zu schwach?). Ziel: mit vier Söldnern machbar, aber langsamer als mit Menschen. Kosten costBase/costPerLevel gegen Münzeinkommen je Stufe.
+- [ ] balance-report.mjs um eine Begleiter-Zeile erweitern (Schaden/Heilung je Sekunde je Rolle und Stufe).

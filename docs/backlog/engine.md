@@ -95,3 +95,12 @@ Stand 2026-09-18: Mentorenplätze sind über clan.js/mentorSpots angebunden und 
 - [x] `content/balance.js`: GCD 1,5 s Basis, 1,0 s Untergrenze, `gcdQuick` 1,0 s für Varianten/Procs (E-32 Nr. 4). Bärbels Taktfenster `beatWindow` [1; 1,9] (content/classes.js), damit der Takt mit dem längeren GCD erreichbar bleibt. `content/skills.js`: Bodenkniff auf Stufe 3.
 - [x] Robbi zieht Aggro (2026-09-19): Gegner in seinem Kreis treffen Robbi statt den Helden, Robbi hat 300 Leben (`robbiHp` talentierbar). Grafik mit der Astra-Lieferung 2026-09-19 eingebunden: Platzierte Objekte (fass/robbi/nest/spores) zeichnet der Renderer als Kreise, Grafiken siehe docs/UEBERGABE-VISUALS-KLASSEN-ASTRA-2026-09-18.md.
 - [x] Balancing (2026-09-19): `tuning.js` hat einen `mechanics`-Block mit Messlauf `scripts/spec-sim.mjs` (45 s, drei Puppen); Kurzschluss/Lunte, Putzwut und Bastler-Glück nachjustiert, Schutz-/Heilrollen bewusst darunter.
+
+## Begleiter / Söldner (E-45) · 2026-09-21
+
+Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
+
+- [ ] net-party.js setzt game.partyHumans (Zahl echter Gruppenmitglieder außer mir) bei jeder party-Nachricht; bei mehr Menschen als Plätzen den zuletzt angeheuerten Begleiter entlassen. Abnahme: Test in tests/party-play.test.mjs oder companions.test.mjs.
+- [ ] Fremde Begleiter für Mitspieler sichtbar machen: Besitzer meldet c.view (neue Nachricht im pos-Takt), Server reicht sie im snap mit, Client zeichnet sie wie others. Abnahme: Zwei-Spieler-Test.
+- [ ] Begleiter-Schaden und -Heilung an combat-meter.js melden (eigene Quelle je Begleiter).
+- [ ] Dungeon-Merkmale: neue Felder in CAST_SETS (sammeln, verteilen, Tankwechsel) und passende Reaktionen in companions.js tickOne().

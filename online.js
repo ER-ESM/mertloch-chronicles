@@ -5,6 +5,7 @@ import {uiLoginCard,setUiLoginMode} from './ui-kit-mmo.js';
 // Regeln: der Browserspeicher bleibt die erste Wahrheit; der Server hält je Konto und Welt den jüngsten Stand
 // (Zeitstempel savedAt). Neuer gewinnt; der ältere Stand bleibt serverseitig als Sicherung.
 import {createNetWorld} from './net-world.js';
+import {companionCommand} from './companions.js';
 import {createNetParty,mountRollUi} from './net-party.js';
 import {createNetSocial,mountTradeUi,SOCIAL_UI} from './net-social.js';
 import {RARITIES} from './content/index.js';
@@ -42,6 +43,11 @@ export function parseChatCommand(raw,channel='say'){
  if(['entfernen','kick'].includes(cmd))return rest?{kind:'party',op:'kick',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/entfernen Name'};
  if(['verlassen','leave'].includes(cmd))return {kind:'party',op:'leave'};
  if(['wer','who'].includes(cmd))return {kind:'who'};
+ // Begleiter (E-45): wirken lokal im Spiel, nichts davon geht an den Server
+ if(['söldner','soeldner','sold','merc'].includes(cmd))return {kind:'companion',op:'board',name:rest};
+ if(['entlassen','dismiss'].includes(cmd))return {kind:'companion',op:'dismiss',name:rest};
+ if(['befehl','order'].includes(cmd))return {kind:'companion',op:'order',name:rest};
+ if(['haltung','stance'].includes(cmd))return {kind:'companion',op:'stance',name:rest};
  if(['hilfe','help','?'].includes(cmd))return {kind:'help'};
  return {kind:'error',text:ONLINE_UI.unknownCommand};
 }
@@ -145,6 +151,7 @@ export function mountOnline(host){
   const cmd=parseChatCommand(raw,channel);
   if(cmd.kind==='help'){pushChat({system:true,text:ONLINE_UI.chatHelp});return {};}
   if(cmd.kind==='error'){pushChat({system:true,text:cmd.text});return {};}
+  if(cmd.kind==='companion'){const game=g();for(const text of game?companionCommand(game,cmd):[])pushChat({system:true,text});return {};}
   if(cmd.kind==='who')wsSend({t:'who'});
   else if(cmd.kind==='party')wsSend({t:'party',op:cmd.op,name:cmd.name});
   else if(cmd.kind==='chat'&&cmd.text){if(cmd.ch==='whisper'&&cmd.to==='')cmd.to=state.lastWhisper||'';wsSend({t:'chat',ch:cmd.ch,text:cmd.text,...(cmd.ch==='whisper'?{to:cmd.to}:{})});}

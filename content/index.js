@@ -37,3 +37,4 @@ export * from './start-screen.js';
 export * from './categories.js';
 
 export * from './kiosk.js';
+export * from './companions.js';

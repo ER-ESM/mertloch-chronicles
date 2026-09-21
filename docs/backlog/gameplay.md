@@ -68,3 +68,9 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 - [x] Konzept „Händler und Handwerk“: `docs/GAMEPLAY-HAENDLER-HANDWERK.md` (Pfandmarken-Zweck, Kalle als Händler, Kevins Werkstatt als Werkbank, Preis- und Rezeptentwurf); Bedarf bei Loot, Engine, Story und Welt eingetragen (2026-09-17).
 - [x] Aggressiver Keiler im Wohngebiet (vr-08) analysiert: Ursache ist die `field`-Bestimmung in `encounters.buildCell` (erste passende Fläche statt Wohnpolygon-Veto, plus Punkte ganz ohne Fläche). Befund und Vorschlag (`residential()` aus `world-layout.js`) in `docs/backlog/engine.md` und `docs/backlog/welt.md` (2026-09-17).
 - [x] Basisbau auf Stufenzuwachs geprüft: alle sechs Gebäude wachsen je Stufe, jedes hat bereits einen „Was du davon merkst“-Satz im `text` – nichts zu ergänzen; Prüfung jetzt zusätzlich als Test (2026-09-17).
+
+## Begleiter / Söldner (E-45) · 2026-09-21
+
+Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
+
+- [ ] Für den Meilenstein Dungeons: jede Boss-Fähigkeit trägt ein maschinenlesbares Merkmal (ground, interruptible, künftig sammeln/verteilen/tankwechsel). Ohne Merkmal können Begleiter nicht reagieren – Prüfung in content/checks/gameplay.js ergänzen.

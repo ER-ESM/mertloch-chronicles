@@ -183,3 +183,12 @@ Hilfetext dafür fehlt in `PLAY_HELP` — Bedarf steht in docs/backlog/story.md.
 - [x] **Talentfenster als Pfadbaum** (`talent-ui.js`, `talent-ui.css` Block „E-32 · Pfadbaum"): drei Bahnen (Pfadfarben) × zehn Reihen als Raster, je Reihe genau ein Talent; Zustände gelernt / lernbar / gesperrt / ausgeschlossen (Reihe belegt, ✕-Stempel); Bahnkopf mit Zähler und Pfadtreue-Stufen (✦ bei 4, ♛ bei 7); Reihe 10 = Schlussstein; Tooltip nennt Reihe, Pfad und den Ausschluss. Mobil ohne Wischen (drei Spalten passen in 400 px). Die freie Graph-Platzierung (`.branch-tree`, `talent-links`) ist nicht mehr in Gebrauch, das CSS bleibt vorerst.
 - [x] **HUD-Chips der Kernmechaniken** (`spec-mechanics.js mechChips` → `#buffStrip`): Pegel-Striche ▮▮▯, Vorrat ●○, Balken ▰▱ mit Restzeit für Putzwut, Jackpot, Kettenreaktion, Hausverbot, Fässer, Robbi, Nest. Platzhalter bis die Astra-Grafiken (Pegel-Uhr, Gläser, Zustandsring, Glücksrad) da sind.
 - [x] Talent-Tooltip zeigt Rotation (Kernmechanik · Pfad · Schlussstein) und die betroffenen Kniffe mit Taste (2026-09-19). Pfadfarben und Untersetzer-Grafik sind mit der Astra-Lieferung vom 2026-09-19 eingebunden.
+
+## Begleiter / Söldner (E-45) · 2026-09-21
+
+Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
+
+- [ ] Schwarzes Brett als Fenster am Clan-Treff (Interaktion am vorhandenen Brett-Objekt des Hubs): Angebote aus game.companionOffers(), Anheuern/Entlassen, Kosten, Rollen-Name, Beschreibung. Abnahme: Klickpfad Desktop + Touch als scripts/companion-check.mjs über window.mertloch.companions.
+- [ ] Begleiter im Gruppenrahmen (Name, Rolle, Leben, am Boden, Restzeit des Vertrags) und Befehls-/Haltungsknöpfe; Tastenbelegung vorschlagen. Ereignis game.emit('companion',…) nutzen.
+- [ ] Begleiter am Boden liegend zeichnen (view.down); eigene Sprites je Söldner statt Klassen-Look über content/ART-BRIEF (look-Feld).
+- [ ] Kampfstatistik: Begleiter als eigene Zeilen (braucht Engine-Zuarbeit, siehe engine.md).
