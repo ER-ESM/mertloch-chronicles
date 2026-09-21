@@ -16,7 +16,7 @@ export const SPECS={
  'baerbel-stage':{name:'Filter-Furie',classId:'baerbel',role:'Fernkampf-Schaden',icon:'speaker',text:'Bei 100 Randale beginnt die Putzwut: alles kostenlos, härter und im Laufen. Auswringen beendet sie mit Bonusschaden aus der Rest-Randale.'},
  'kevin-fuse':{name:'Zündmeister',classId:'kevin',role:'Fernkampf-Schaden',icon:'burst',text:'Lunten kleben und explodieren; der Kurzschluss springt als Blitz über bis zu drei Ziele und zündet sie. Drei Zündungen lösen die Kettenreaktion aus.'},
  'kevin-iron':{name:'Schrottkoloss',classId:'kevin',role:'Tank',icon:'reinforced',text:'Pfandgeschosse bauen auch auf Distanz Deckung auf. Dosen-Robbi steht, feuert und bremst; die Überlast lässt ihn explodieren.'},
- 'kevin-hunt':{name:'Pfandjäger',classId:'kevin',role:'Fallen & Bewegung',icon:'boots',text:'Bastler-Glück: jeder Schuss zündet fehl, normal oder über. Drei Fehlzündungen garantieren die Überzündung, drei Überzündungen den Jackpot. Ausweichen lädt einen kostenlosen Wurf.'}
+ 'kevin-hunt':{name:'Pfandjäger',classId:'kevin',role:'Fernkampf-Schaden',icon:'boots',text:'Bastler-Glück: jeder Schuss zündet fehl, normal oder über. Drei Fehlzündungen garantieren die Überzündung, drei Überzündungen den Jackpot. Ausweichen lädt einen kostenlosen Wurf.'}
 };
 const CLASS_TALENTS={...TALENTS_DIETER,...TALENTS_BAERBEL,...TALENTS_KEVIN};
 /** Reihen je Spec: [{name,text,effects,grants,skills,info}] – Index = Speicherschlüssel. */

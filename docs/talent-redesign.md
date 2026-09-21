@@ -18,6 +18,8 @@ Alte ID-Listen werden als Rang 1 eingelesen. Gültige Auswahlen bleiben erhalten
 
 ## Dateien und Prüfungen
 
+Die kompakte Ansicht zeigt Rollen direkt an den Spezialisierungen, Punktestand und Pfadtreue als kleine Anzeigen und ausschließlich Icons mit Rängen im Baum. Suchhilfe, Reihen-Erklärungen und doppelte Überschriften entfallen. Zusatzinformationen stehen in Hover-/Fokus-Tooltips oder den anklickbaren Touch-Details. Verbindungen laufen unter den Icons von Mittelpunkt zu Mittelpunkt, mit kontrastreichen Linien und Richtungspfeilen; ihre Geometrie bleibt bei geänderter Fensterbreite verbunden. Schriften und Farben verwenden die vorhandenen Bierdeckel-Tokens. Bei 1366 × 768 passt das vollständige Menü ohne Scrollen; bei 390 × 844 bleiben mit aktiven Touch-Steuerelementen 57 Pixel vertikaler Scrollweg.
+
 `talents.js` enthält Layout und Lernregeln, `talent-ranks.js` die expliziten Kurven, `procs.js` wertet die gesteigerten Auslösechancen und Heilanteile im Kampf aus. `talent-tree-view.js` und `talent-tree.css` binden die Ansicht ins bestehende Clanbuch ein. Bilder stammen aus den vorhandenen Talent-Atlanten und dem UI-Kit.
 
 Automatische Prüfungen: `npm test`, `npm run build`. Neue Rangprüfungen liegen in `tests/talent-ranks.test.mjs`. Die Kampftests bauen ihre bisherigen Effekte über einen gültigen Baum einschließlich neuer Voraussetzungen auf (`tests/talent-fixture.mjs`). Browserprüfungen decken Desktop, Tastaturnavigation, Suche, schmale Ansichten, Touch, Rangwechsel, Rücknahme und Speichern/Laden ab.

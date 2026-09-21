@@ -37,7 +37,7 @@ export function applyTalentSearch(root,g,query){talentQuery=String(query||'');co
  for(const n of root.querySelectorAll('.path-tree [data-talent]')){const hit=on&&r.ids.has(n.dataset.talent);if(hit)here++;n.classList.toggle('search-hit',hit);n.classList.toggle('search-miss',on&&!hit);}
  for(const b of root.querySelectorAll('[data-view-tree]')){const n=r.perSpec[b.dataset.viewTree]||0;let badge=b.querySelector('.tree-hits');if(!badge){badge=document.createElement('em');badge.className='tree-hits';b.append(badge);}badge.textContent=on?String(n):'';badge.hidden=!on;b.classList.toggle('no-hits',on&&!n);}
  for(const badge of root.querySelectorAll('[data-path-search]')){const spec=badge.closest('[data-path-spec]').dataset.pathSpec,path=Number(badge.dataset.pathSearch);badge.textContent=TALENTS[spec].filter(t=>t.path===path&&r.ids.has(t.id)).length+' Treffer';badge.hidden=!on;}
- const info=root.querySelector('[data-talent-search-info]');if(info)info.textContent=on?UI.searchHits(r.ids.size,here):UI.searchHint;
+ const info=root.querySelector('[data-talent-search-info]');if(info){info.textContent=on?(r.ids.size?r.ids.size+' Treffer':'Kein Treffer'):'';info.hidden=!on;}
  const clear=root.querySelector('[data-talent-search-clear]');if(clear)clear.hidden=!talentQuery;
  return r;}
 export function talentsPanel(g){const specs=classSpecs(g.member.id),spec=specs.includes(viewed)?viewed:g.rpg.talents.spec||specs[0];return renderTalentTree(g,spec,talentSearch(g),talentQuery);}

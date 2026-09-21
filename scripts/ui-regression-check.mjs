@@ -59,7 +59,7 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
     for(const spec of specs){
      await read(`(()=>{const g=globalThis.__mertloch.game;Object.assign(g.rpg.talents,{learned:[],ranks:{}});g.refreshStats();})()`);await click('[data-view-tree="'+spec+'"]');
      const choices=new Set();
-     for(const path of [0,1,2]){await click('[data-view-path="'+path+'"]');const nodes=await read(`[...document.querySelectorAll('[data-talent]')].map(e=>e.dataset.talent)`);assert.equal(nodes.length,10);nodes.forEach(id=>choices.add(id));assert.equal(await read(`document.querySelectorAll('.tt-links>path').length`),2);}
+     for(const path of [0,1,2]){await click('[data-view-path="'+path+'"]');const nodes=await read(`[...document.querySelectorAll('[data-talent]')].map(e=>e.dataset.talent)`);assert.equal(nodes.length,10);nodes.forEach(id=>choices.add(id));assert.equal(await read(`document.querySelectorAll('.tt-links .tt-link').length`),2);}
      assert.equal(choices.size,30);
      const plan=await read(`(async()=>{const {TALENTS,pathBuild}=await import('./talents.js'),spec=${JSON.stringify(spec)},path=TALENTS[spec].find(t=>t.grants).path;return {path,ids:pathBuild(spec,path,10)};})()`);
      await click('[data-view-path="'+plan.path+'"]');await click('[data-talent="'+plan.ids.at(-1)+'"]');assert.equal((await state()).rpg.talents.learned.length,0,'inspection never spends points');assert.ok(await read(`document.querySelector('[data-learn-talent]').disabled`));
