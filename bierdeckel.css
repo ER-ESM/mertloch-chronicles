@@ -768,7 +768,7 @@ mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-ra
 .game-shell .xp-track.rpg-xp::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 1px),#d7b57150 calc(5% - 1px) 5%)}
 .game-shell .xp-track.rpg-xp #xpCaption{z-index:1;display:grid;place-items:center;font:700 12px/1 var(--read);letter-spacing:.02em;color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 3px #000}
 /* Lern-Fenster neben dem Chat statt darüber; Auftragsliste wächst mit ihren Zielen, statt nach drei Zeilen zu scrollen. */
-@media(min-width:1280px){body:not(.touch-mode) #trainingDock.in-world-lesson{left:388px}}
+@media(min-width:1860px){body:not(.touch-mode) #trainingDock.in-world-lesson{left:388px}}
 @media(min-width:761px) and (min-height:760px){body:not(.touch-mode) .quest-panel{max-height:min(380px,calc(100dvh - 520px))}}
 @media(min-width:1100px){body:not(.touch-mode) .region-label{max-width:min(680px,42vw)}body:not(.touch-mode) .region-label #zoneName{max-width:min(660px,40vw)}}
 /* Ortstitel hebt sich von Welt und Namensschildern darunter ab: weicher dunkler Schleier statt freistehender Schrift. */
