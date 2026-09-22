@@ -30,7 +30,7 @@ async function checkShopMarker(){
  await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.leaveKiosk(true);game.moveTo=null;game.path=[];game.routeGoal=null;`);await wait(250);
  await b.press('m');
  await click('[data-filter="shop"]');await click('[data-zoom="fit"]');
- assert.equal(await read(`document.querySelectorAll('#atlasPlaces [data-place]').length`),1);
+ assert.equal(await read(`document.querySelectorAll('#atlasPlaces [data-place]').length`),4);
  await read(`document.querySelector('#largeMap').scrollIntoView({block:'center'})`);await wait(200);
  const marker=await read(`(()=>{const c=document.querySelector('#largeMap'),h=c.atlasHits.find(h=>h.id==='shop:kalle');if(!h)return null;const r=c.getBoundingClientRect();return{x:r.x+h.x*r.width/c.width,y:r.y+h.y*r.height/c.height}})()`);
  assert.ok(marker&&Number.isFinite(marker.x)&&Number.isFinite(marker.y),'shop filter renders the kiosk marker');
@@ -47,7 +47,7 @@ async function bounds(touch){
 }
 try{
  await b.resize(1440,1000);await fixture();await b.screenshot(dir+'/kiosk-world.png');await open();await bounds(false);await b.screenshot(dir+'/desktop-buy.png');
- assert.equal(await read(`document.querySelectorAll('[data-shop-trade="buy"]').length`),4);
+ assert.equal(await read(`document.querySelectorAll('[data-shop-trade="buy"]').length`),6);
  await b.press('Tab');assert.equal(await read('document.activeElement.dataset.shopTab'),'buyback');for(const type of ['keyDown','keyUp'])await b.send('Input.dispatchKeyEvent',{type,key:'Enter',code:'Enter',windowsVirtualKeyCode:13,...(type==='keyDown'?{text:'\r'}:{})});await wait(150);assert.equal(await read(`document.querySelector('[data-shop-tab="buyback"]').getAttribute('aria-pressed')`),'true');await click('[data-shop-tab="buy"]');
  await amount('brezel',2);await click('[data-shop-row="brezel"] .shop-item',false,'right');assert.equal(await read('game.rpg.coins'),176);assert.equal(await read(`game.rpg.inventory.find(e=>e.id==='brezel').count`),2);
  await amount('currywurst',99);assert.equal(await read(`document.querySelector('[data-shop-id="currywurst"]').disabled`),true);

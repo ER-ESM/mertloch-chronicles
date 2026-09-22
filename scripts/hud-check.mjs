@@ -59,8 +59,8 @@ try{
  await b.resize(1440,1000);await fixture();const native=await rect('.player-panel');
  const f10=await read(`(()=>{const e=new KeyboardEvent('keydown',{key:'F10',code:'F10',bubbles:true,cancelable:true});document.dispatchEvent(e);return e.defaultPrevented})()`);assert.equal(f10,false);assert.equal(await editing(),false);
  await b.press('i');await b.press('Escape');assert.equal((await b.state()).popups.length,0);
- await b.press('Escape');assert.deepEqual(await read(`[...document.querySelectorAll('.game-menu-actions button')].map(b=>b.textContent)`),['Fahrzeuge & Reittiere','Söldner','UI bearbeiten','Hilfe','Einstellungen','Charakterauswahl','Zum Anmeldebildschirm','Zurück zum Spiel']);
- await b.screenshot(dir+'/escape-menu-desktop.png');for(let i=0;i<3;i++)await b.press('Tab');assert.equal(await read(`document.activeElement.dataset.shell`),'guide');for(const type of ['keyDown','keyUp'])await b.send('Input.dispatchKeyEvent',{type,key:'Enter',code:'Enter',windowsVirtualKeyCode:13,...(type==='keyDown'?{text:'\r'}:{})});await wait(250);assert.equal((await b.state()).popups[0].id,'guide');await b.press('Escape');
+ await b.press('Escape');assert.deepEqual(await read(`[...document.querySelectorAll('.game-menu-actions button')].map(b=>b.textContent)`),['Berufe · Shift + B','Fahrzeuge & Reittiere','Söldner','UI bearbeiten','Hilfe','Einstellungen','Charakterauswahl','Zum Anmeldebildschirm','Zurück zum Spiel']);
+ await b.screenshot(dir+'/escape-menu-desktop.png');for(let i=0;i<4;i++)await b.press('Tab');assert.equal(await read(`document.activeElement.dataset.shell`),'guide');for(const type of ['keyDown','keyUp'])await b.send('Input.dispatchKeyEvent',{type,key:'Enter',code:'Enter',windowsVirtualKeyCode:13,...(type==='keyDown'?{text:'\r'}:{})});await wait(250);assert.equal((await b.state()).popups[0].id,'guide');await b.press('Escape');
  await b.press('Escape');await click('.popup-menu [data-shell="settings"]');assert.equal(await read(`document.querySelector('.panel-tabs [aria-selected="true"]').textContent`),'Einstellungen');await b.press('Escape');
  await b.press('Escape');assert.equal(await read(`!!document.querySelector('.popup-menu [data-game-book]')`),false,'Desktop: Clanbuch nur über Tasten und Dock (E-43)');await b.press('Escape');
  await b.press('Escape');await click('.popup-menu [data-close]');assert.equal((await b.state()).popups.length,0);
@@ -91,8 +91,8 @@ try{
  await read(`game.classState.m.hangover=0;game.target=null;game.buffs={remaining:0};game.momentum={stacks:0,until:0};`);await wait(400);
  assert.equal(await read(`document.querySelector('#auraTooltip').hidden`),true);assert.equal(await read(`document.querySelector('#targetDebuffStrip').hidden`),true);assert.equal(await read(`document.querySelector('#debuffStrip').hidden`),true);
  pass('real status timers/stacks reach distinct bars; expiry and target loss remove icons and tooltips');
- await openEditor();const chatNative=await rect('#chatWindow');await drag('[data-hud-handle="chat"]',240,160);await click('[data-hud-save]');const chatEdited=await rect('#chatWindow');
- assert.equal(await read(`document.querySelector('#chatWindow').hasAttribute('data-hud-custom')`),true);assert.ok(chatEdited.x>chatNative.x+200&&chatEdited.y>chatNative.y+120,JSON.stringify({chatNative,chatEdited}));
+ await openEditor();const chatNative=await rect('#chatWindow');await drag('[data-hud-handle="chat"]',240,-160);await click('[data-hud-save]');const chatEdited=await rect('#chatWindow');
+ assert.equal(await read(`document.querySelector('#chatWindow').hasAttribute('data-hud-custom')`),true);assert.ok(chatEdited.x>chatNative.x+200&&Math.abs(chatEdited.y-chatNative.y+160)<1,JSON.stringify({chatNative,chatEdited}));
  await drag('#chatWindow .chat-tabs',64,40);const chatAfter=await rect('#chatWindow');assert.ok(chatAfter.x>chatEdited.x+50&&chatAfter.y>chatEdited.y+30,JSON.stringify({chatEdited,chatAfter}));
  await fixture(false,true);assert.deepEqual(await rect('#chatWindow'),chatAfter);await b.screenshot(dir+'/chat-moved-desktop.png');
  pass('chat window moves in the HUD editor, still drags by its tab bar afterwards and persists');

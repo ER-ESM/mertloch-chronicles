@@ -43,6 +43,10 @@ jobs:
         run: npm run hud:check
       - name: Check kiosk trading and mobile shop
         run: npm run shop:check
+      - name: Check professions with two online players
+        run: npm run professions:check
+      - name: Check mount collection and online riders
+        run: npm run mounts:check && npm run mounts:online-check
       - name: Check entering and leaving the kiosk instance
         run: npm run kiosk:check
       - name: Check offline starts and update recovery
@@ -60,6 +64,8 @@ jobs:
             visual-review/companion-aid/
             visual-review/hud/
             visual-review/shop/
+            visual-review/professions/
+            visual-review/mounts/
             visual-review/kiosk-instance/
             combat-review/basis-pwa/
       - uses: actions/upload-pages-artifact@v4

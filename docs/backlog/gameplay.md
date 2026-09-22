@@ -74,3 +74,8 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 
 - [ ] Für den Meilenstein Dungeons: jede Boss-Fähigkeit trägt ein maschinenlesbares Merkmal (ground, interruptible, künftig sammeln/verteilen/tankwechsel). Ohne Merkmal können Begleiter nicht reagieren – Prüfung in content/checks/gameplay.js ergänzen.
+
+## Erledigt · Berufe (22.09.2026)
+
+- [x] Erste Sammel-/Handwerksstufe: Schrottsammeln, Kräutersammeln, Schrauberei, Hausbrauerei; zwei Hauptberufe pro Held, Fertigkeit 1–75, sechs Rezepte, Stationen, Kiosk-Zutaten und Berufsfenster.
+- [x] Online-Fundstellen mit persönlichen Ernten, atomaren Ergebnisquittungen und Schutz gegen veraltete Cloud-Saves; explizite Solo-Zyklen ohne Konto. Regeln und weitere Grenzen: [Berufsbericht](../BERUFE-2026-09-22.md).

@@ -1,3 +1,4 @@
+import {createProfessionService} from './professions.mjs';
 // Mertloch-Spielserver (E-35): Konto, Cloud-Spielstand, Bestenlisten über HTTP; Anwesenheit und Chat in Echtzeit
 // über WebSocket (/ws). Läuft hinter Caddy auf 127.0.0.1:PORT. Keine Fremdpakete.
 // Start: node server/game/server.mjs   · Konfiguration: Umgebungsvariablen oder C:\Mertloch\mertloch.env (KEY=VALUE).
@@ -13,7 +14,7 @@ import {createSharedWorld} from './shared-world.mjs';
 import {createPartyPlay} from './party-play.mjs';
 import {createSocialPlay} from './social-play.mjs';
 
-export const API_VERSION=6;
+export const API_VERSION=7;
 const COOKIE='mertloch_session';
 const VIEW=1400,SNAP_MS=100,MAX_NEAR=40,IDLE_MS=45000;
 const TEXT={
@@ -96,7 +97,7 @@ export function createGameServer(options={}){
     if(!verifyPassword(String(body.password||''),a.passwordHash))fail(401,'credentials',TEXT.oldPassword);
     const next=String(body.newPassword||'');if(next.length<10||next.length>200)fail(400,'password',TEXT.password);store.setPassword(a,next);return {};
    }
-   if(action==='delete'){if(body.confirm!=='LÖSCHEN')fail(400,'confirm',TEXT.confirm);hub.kick(a.id);store.deleteAccount(a);headers['Set-Cookie']=sessionCookie('',0);return {account:null};}
+   if(action==='delete'){if(body.confirm!=='LÖSCHEN')fail(400,'confirm',TEXT.confirm);hub.kick(a.id);professions.forgetAccount(a.id);store.deleteAccount(a);headers['Set-Cookie']=sessionCookie('',0);return {account:null};}
    fail(400,'action',TEXT.action);
   },
   async save(req,url){
@@ -104,15 +105,16 @@ export function createGameServer(options={}){
    if(req.method==='GET'){
     if(url.searchParams.has('list'))return {saves:store.listSaves(a.id)};
     const world=String(url.searchParams.get('world')||'');if(!world||world.length>80)fail(400,'world',TEXT.world);
-    return store.readSave(a.id,world)||{save:null};
+    return professions.canonical(a.id,world)||{save:null};
    }
    const body=await readBody(req,SAVE_MAX_BYTES+4096),world=String(body.world||''),save=body.save,savedAt=Math.floor(Number(body.savedAt)||0);
    if(!world||world.length>80)fail(400,'world',TEXT.world);
    if(!save||typeof save!=='object'||save.version!==1)fail(400,'save',TEXT.save);
    if(savedAt<=0)fail(400,'savedAt',TEXT.savedAt);
    if(Buffer.byteLength(JSON.stringify(save))>SAVE_MAX_BYTES)fail(413,'too-large',TEXT.large);
-   return store.writeSave(a.id,world,save,Math.min(savedAt,Date.now()+60e3));
+   return professions.guard(a.id,world,save)||store.writeSave(a.id,world,save,Math.min(savedAt,Date.now()+60e3));
   },
+  async professions(req){const a=requireAccount(req);if(req.method!=='POST')fail(405,'method',TEXT.method);const b=await readBody(req,SAVE_MAX_BYTES+4096);if(Buffer.byteLength(JSON.stringify(b))>SAVE_MAX_BYTES)fail(413,'too-large',TEXT.large);return professions.request(a.id,b);},
   async characters(req){
    const a=requireAccount(req);if(req.method==='GET')return {names:store.namesOf(a.id)};
    const body=await readBody(req,4096),name=String(body.name||'').trim();
@@ -171,9 +173,10 @@ export function createGameServer(options={}){
   },
   receive(c,m){
    c.seen=Date.now();
-   if(m.t==='hello'){const name=clampText(m.name,20);if(validName(name)&&store.ownsName(c.id,name)&&![...this.clients.values()].some(o=>o!==c&&o.name.toLowerCase()===name.toLowerCase()))c.name=name;c.socket.send(JSON.stringify({t:'you',name:c.name}));return;}
+   if(m.t==='hello'){const name=clampText(m.name,20);if(validName(name)&&store.ownsName(c.id,name)&&![...this.clients.values()].some(o=>o!==c&&o.name.toLowerCase()===name.toLowerCase()))c.name=name;c.hero=professions.hero(c.id,m.hero)?.name===c.name?m.hero:null;c.socket.send(JSON.stringify({t:'you',name:c.name}));return;}
    if(m.t==='pos'){
     const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);c.kt=clampText(m.kt,96).replace(/[^a-z0-9.-]/g,'');Object.assign(c,mountPresence(m));const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed){shared.sync(c);social.sync(c);}}
+    professions.observe(c);
    }else if(m.t==='hit'){if(this.allow(c,'hit',40)){if(String(m.e).startsWith('wboss:'))social.bossHit(c,m.e);shared.hit(c,m);}}
    else if(m.t==='aid'){if(this.allow(c,'aid',6))social.aid(c,m);}
    else if(m.t==='revive'){if(this.allow(c,'revive',2))social.revive(c,m);}
@@ -214,6 +217,7 @@ export function createGameServer(options={}){
   pingAll(){for(const c of this.clients.values()){if(!c.socket.alive){c.socket.close(4000);continue;}c.socket.alive=false;c.socket.ping();}}
  };
 
+ const professions=createProfessionService({store,dataDir:options.dataDir||resolve('.server-data'),clients:()=>hub.clients});
  const shared=createSharedWorld({clients:()=>hub.clients.values(),send:(c,msg)=>c.socket.send(JSON.stringify(msg)),onKill:(w,e,credit)=>social.bossKilled(w,e,credit)});
  const social=createSocialPlay({clients:()=>hub.clients.values(),members:c=>shared.partyMembers(c),send:(c,msg)=>c.socket.send(JSON.stringify(msg)),shared,bossFirstMs:options.bossFirstMs,
   say:text=>{const wire=JSON.stringify({t:'notice',text});for(const c of hub.clients.values())c.socket.send(wire);}});
@@ -229,7 +233,7 @@ export function createGameServer(options={}){
  });
  const timers=[setInterval(()=>hub.tick(),SNAP_MS),setInterval(()=>{shared.tick();play.tick();social.tick();},1000),setInterval(()=>hub.pingAll(),20000),setInterval(()=>{store.sweepSessions();const now=Date.now();for(const [k,t] of throttle)if(t.until<now)throttle.delete(k);},3600e3)];
  for(const t of timers)t.unref?.();
- return {server,hub,store,shared,play,social,
+ return {server,hub,store,shared,play,social,professions,
   listen:(port=options.port??8080,host=options.host||'127.0.0.1')=>new Promise(ok=>server.listen(port,host,()=>ok(server.address()))),
   close:()=>new Promise(ok=>{for(const t of timers)clearInterval(t);for(const c of hub.clients.values())c.socket.close(1001);store.flush();server.close(()=>ok());server.closeAllConnections?.();})};
 }

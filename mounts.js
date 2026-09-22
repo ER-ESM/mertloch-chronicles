@@ -22,7 +22,7 @@ export function mountUnavailable(g){
  if(g.dead||g.player.hp<=0)return T.dead;if(g.paused)return T.paused;if(g.instance)return T.inside;
  if(tutorialActive(g))return T.tutorial;
  if(g.player.inCombat>0||g.autoAttack?.enabled||g.enemies.some(e=>e.hp>0&&e.aggro&&e.ai!=='returning'&&!e.remoteTarget))return T.combat;
- if(g.casting||g.activity||g.aiming)return T.busy;return '';
+ if(g.casting||g.activity||g.aiming||g.professionCast||g.professionCommit)return T.busy;return '';
 }
 export function acquisitionReason(g,id){const d=mountDefinition(id);if(!d)return T.invalid;if(g.mounts.owned.includes(id))return '';
  const reason=mountUnavailable(g)||(g.mountCast?T.busy:'');if(reason)return reason;if(g.player.level<d.level)return T.level(d.level);

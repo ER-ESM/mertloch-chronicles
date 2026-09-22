@@ -54,11 +54,17 @@ Am **Fahrstall am Clan-Treff** gibt es ab Stufe 3 nach der Hofprobe **Klappermof
 
 **X** sitzt auf/ab, **Shift + P** öffnet die Sammlung; alternativ **Esc → Fahrzeuge & Reittiere**. Das Reisemount lässt sich auf die Aktionsleiste legen. Alle drei reisen 60 % schneller, mit 1,5 Sekunden Aufsteigezeit. Bewegung bricht das Aufsteigen ab; Kampfaktionen, Treffer und Innenräume lassen dich absteigen. Sammlung und Auswahl werden je Held gespeichert. Andere Spieler sehen dein Mount mit Körperform und Kleidung. [Regeln, Technik und Prüfungen](docs/MOUNTS-2026-09-22.md).
 
+## Berufe
+
+**Shift + B** oder **Esc → Berufe** öffnet Lernen, Fertigkeiten, Rezepte und Fundstellen. Ab Stufe 3 nach der Hofprobe wählst du zwei Hauptberufe: **Schrottsammeln, Kräutersammeln, Schrauberei und Hausbrauerei**. Willis Werkhof und Bärbels Braugarten stehen auf der Karte unter **Läden → W/B**. „Hinlaufen“ führt zur passenden Station; vor Ort sammelst du mit F oder stellst im Fenster her.
+
+Fertigkeit bis 75, sechs freischaltbare Rezepte, Bewegung/Kampf brechen die Arbeit ab. Online teilen sich Spieler die Fundstellen mit persönlicher Ernte je Held; ohne Konto gibt es ausdrücklich lokale Solo-Zyklen. Brauwasser und Leerflaschen verkauft Kalle. [Regeln, Speicherung und Server-Update](docs/BERUFE-2026-09-22.md).
+
 ## Kalles Kiosk
 
 Nach der Hofprobe findest du **Kalles Kiosk** auf der Karte unter **Läden**; im Rucksack führt „Kalles Kiosk auf der Karte“ direkt dorthin. An der Haustür betrittst du mit **F** beziehungsweise mobil **Aktion** den eigenen Kiosk-Innenraum. Drinnen läufst du mit WASD, Klick oder Touch-Joystick zur Theke; **F/Aktion** öffnet dort den Handel. Kalle lässt sich auch anklicken oder antippen. Am Ausgang führt **F/Aktion** zurück zur selben Tür im Dorf. Neuladen erhält deinen Platz im Laden.
 
-- **Kaufen:** Brezel, Konterwasser, Kaltgetränk und Currywurst gegen Pfandmarken, mit Mengenwahl und Stufenanforderung. Bei zu wenig Platz oder Geld wird nichts abgezogen.
+- **Kaufen:** Brezel, Konterwasser, Kaltgetränk, Currywurst sowie Brauwasser und Leerflaschen gegen Pfandmarken, mit Mengenwahl und Stufenanforderung. Bei zu wenig Platz oder Geld wird nichts abgezogen.
 - **Verkaufen:** Der Rucksack steht direkt neben dem Händler. Rechtsklick auf einen Gegenstand verkauft den Stapel sofort, ohne Rückfrage; mobil genügt Antippen. Linksklick am Desktop zeigt Werte und Erlös, Enter verkauft den fokussierten Stapel. Benötigtes Hauptauftragsmaterial und Dorflegenden bleiben geschützt.
 - **Rückkauf:** Die letzten zwölf Verkäufe zum gleichen Preis zurückholen, auch nach Neuladen. Ältere Einträge fallen bei weiteren Verkäufen heraus.
 

@@ -8,7 +8,7 @@ Es bündelt Berufs- und Mount-Auswahl, Darstellung, Spawns, Multiplayer-Regeln, 
 
 **Nutzervorgaben:** Dorf-/Maifeld-Setting; Sammelberufe mit entsprechenden Handwerksberufen; vielseitige Mounts einschließlich Mofas, Rollern und dem Pferd des Nachbarbauern; Planung im MMORPG-Kontext; Grundlage vor großer Inhaltsmenge. **Mobile bleibt vorerst zurückgestellt.**
 
-**Umsetzungsnachtrag 22.09.2026:** Der neue Nutzerauftrag gibt Mounts zur Implementierung frei. Die erste Stufe mit Klappermofa, Blechroller und Hofpferd ist im [Mount-Bericht](MOUNTS-2026-09-22.md) beschrieben. Die Berufsplanung und der übrige Mount-Katalog bleiben Brainstorming.
+**Umsetzungsnachtrag 22.09.2026:** Der neue Nutzerauftrag gibt Mounts zur Implementierung frei. Die erste Stufe mit Klappermofa, Blechroller und Hofpferd ist im [Mount-Bericht](MOUNTS-2026-09-22.md) beschrieben. Der folgende Nutzerauftrag gibt auch Berufe zur Umsetzung frei: Schrottsammeln, Kräutersammeln, Schrauberei und Hausbrauerei sind als erste Stufe im [Berufsbericht](BERUFE-2026-09-22.md) dokumentiert. Weitere Berufe, Mounts und die vollständig serververwaltete Wirtschaft bleiben Brainstorming. Die aktuellen Umsetzungsberichte haben für implementierte Regeln Vorrang vor den folgenden Entwürfen.
 
 ## 1. Leitidee
 

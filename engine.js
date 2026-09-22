@@ -1,3 +1,4 @@
+import {initProfessions,savedProfessions,tickProfession,cancelProfession} from './professions.js';
 import {initMounts,savedMounts,toggleMount,dismount,tickMount,acquireMount,selectMount,mountStation} from './mounts.js';
 import {MOUNT_UI,MOUNT_RULES} from './content/index.js';
 import {inKiosk,enterKiosk,leaveKiosk,roomInteraction,roomWorld,tickKiosk,savedKiosk} from './kiosk-instance.js';
@@ -75,7 +76,7 @@ export class Game{
     this.sideQuests=Object.fromEntries((world.quests||[]).map(q=>{const old=sameWorld?saved.sideQuests?.[q.id]:null;return[q.id,{accepted:!!old?.accepted,progress:Math.min(q.required,Math.max(0,Number(old?.progress)||0)),collected:Array.isArray(old?.collected)?old.collected.filter(id=>q.items.some(i=>i.id===id)):[],claimed:!!old?.claimed}];}));
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
     this.campSerial=0;this.populateCamps();
-    initMounts(this,saved.mounts);
+    initMounts(this,saved.mounts);initProfessions(this,saved.professions);
     this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
     initCompanions(this,sameWorld?saved.companions:null);
     initTutorial(this,saved,options.guidedStart);if(sameWorld&&saved.instance?.id===KIOSK_ROOM.id)enterKiosk(this,saved.instance);
@@ -130,6 +131,7 @@ export class Game{
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
     if(this.paused||this.dead)return false;
     // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
+    if(this.professionCommit)return false;cancelProfession(this);
     if(Number.isInteger(id))id=actionBar(this)[id]??null;
     if(id==='mount')return toggleMount(this);
     const barItem=barItemId(id);if(barItem)return useItem(this,barItem);
@@ -449,7 +451,8 @@ export class Game{
   respawn(){dismount(this);if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});resetCompanions(this);
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
-  tick(dt){if(this.paused||this.dead)return;if(inKiosk(this)){tickKiosk(this,Math.min(dt,.05));return;}dt=Math.min(dt,.05);this.time+=dt;
+  tick(dt){
+    if(this.professionCommit)return;tickProfession(this,dt);if(this.professionCommit)return;if(this.paused||this.dead)return;if(inKiosk(this)){tickKiosk(this,Math.min(dt,.05));return;}dt=Math.min(dt,.05);this.time+=dt;
     if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));if(this.partyBuff?.remaining>0){const b=this.partyBuff;b.remaining=Math.max(0,b.remaining-dt);if(b.hot){b.tick-=dt;if(b.tick<=0){b.tick=1;healPlayer(this,b.hot,combatStats(this),false,'hot');}}}tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});emitCombatFx(this,'burst',z,{skillId:'ground',radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this))this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
@@ -491,5 +494,5 @@ export class Game{
     tickCombatMeter(this);this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(!tutorialActive(this)&&distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
   }
-  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,mounts:savedMounts(this),companions:savedCompanions(this),relic:this.relic,discovered:[...this.discovered]};}
+  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,mounts:savedMounts(this),professions:savedProfessions(this),companions:savedCompanions(this),relic:this.relic,discovered:[...this.discovered]};}
 }

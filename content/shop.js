@@ -1,11 +1,11 @@
 // Kalles Dorfladen: Preise bleiben bei den Gegenständen, Regeln und Texte hier.
-export const SHOP_STOCK=['brezel','wasser','kaltgetraenk','currywurst'];
+export const SHOP_STOCK=['brezel','wasser','kaltgetraenk','currywurst','brauwasser','leerflasche'];
 export const SHOP_RULES={range:56,keeperOffset:32,sellRate:.5,minSell:1,maxQuantity:99,buybackLimit:12,maxCoins:1e9};
 export const SHOP_UI={
  title:'Kalles Kiosk',subtitle:'Der Dorfladen für den nächsten Fehltritt',npc:'kalle',marker:'Händler',
  interact:'Bei Kalle einkaufen',mapDetail:'Dorfladen · Verpflegung, Ankauf und Rückkauf',mapFilter:'Läden',mapSymbol:'K',
  buy:'Kaufen',sell:'Verkaufen',buyback:'Rückkauf',coins:'Pfandmarken',quantity:'Menge',each:'je Stück',
- stock:'Verpflegung für unterwegs. Der Vorrat geht Kalle nicht aus.',
+ stock:'Verpflegung und Brauzutaten für unterwegs. Der Vorrat geht Kalle nicht aus.',
  sellHint:'Kalle nimmt Material, Verpflegung und abgelegte Ausrüstung. Benötigtes Material für den laufenden Hauptauftrag bleibt geschützt.',
  buybackHint:'Die letzten 12 Verkäufe bleiben zum gleichen Preis rückkaufbar – auch nach dem Neuladen. Danach fällt jeweils der älteste heraus.',
  empty:'Hier liegt gerade nichts.',owned:'Im Rucksack',reserved:'Für den Hauptauftrag reserviert',

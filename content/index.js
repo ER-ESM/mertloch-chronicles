@@ -43,3 +43,5 @@ export * from './companions.js';
 export * from './companion-ui.js';
 
 export * from './mounts.js';
+
+export * from './professions.js';

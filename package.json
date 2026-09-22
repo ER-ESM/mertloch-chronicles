@@ -46,6 +46,7 @@
     "ui:kit:browser": "node scripts/ui-kit-check.mjs",
     "mounts:build": "node scripts/build-mounts.mjs",
     "mounts:check": "node --test tests/mounts.test.mjs && node scripts/mount-check.mjs && node scripts/mount-art-check.mjs",
-    "mounts:online-check": "node scripts/mount-online-check.mjs"
+    "mounts:online-check": "node scripts/mount-online-check.mjs",
+    "professions:check": "node --test tests/professions.test.mjs && node scripts/profession-check.mjs && node scripts/profession-solo-check.mjs"
   }
 }

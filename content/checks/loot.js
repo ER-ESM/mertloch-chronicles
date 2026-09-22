@@ -1,3 +1,5 @@
+import {PROFESSION_SOURCES,PROFESSION_RECIPES,PROFESSION_ITEMS} from '../professions.js';
+import {SHOP_STOCK} from '../shop.js';
 // Prüfungen der Rolle Gegenstände & Loot (items.js, drops.js, equipment.js, item-icons.js, recipes.js).
 import {ITEM_CATALOG,PROCS} from '../items.js';
 import {ITEM_INFO,PROC_INFO,describeItem,describeProc} from '../item-info.js';
@@ -15,12 +17,12 @@ export function check(bad){
  const dropped=new Set(Object.values(DROP_TABLES).map(t=>t.unique));
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.unique&&!d.retired&&!dropped.has(id)&&!d.reward)bad('item '+id,'Dorflegende ohne Beutetabelle und ohne reward:true');
  // Jedes Material wird irgendwo fallen gelassen oder ist Sammelgut (gather:true).
- const materials=new Set(Object.values(DROP_TABLES).map(t=>t.material));
+ const materials=new Set([...Object.values(DROP_TABLES).map(t=>t.material),...Object.values(PROFESSION_SOURCES).flatMap(s=>Object.keys(s.items)),...SHOP_STOCK]);
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.kind==='material'&&!materials.has(id)&&!d.gather)bad('item '+id,'Material ohne Beutequelle (drops.js) und ohne gather:true');
  // Jeder Gegenstand mit Bildbedarf hat einen look; Verpflegung nennt die Wirkung im Text.
  for(const [id,d] of Object.entries(ITEM_CATALOG)){if(d.unique&&!d.look)bad('item '+id,'Dorflegende ohne look');if(d.kind==='consumable'&&!/\d/.test(d.description))bad('item '+id,'Verpflegungstext nennt keine Zahl');}
  // Kiosk: Verpflegung mit Preis hat einen ganzzahligen Markenpreis über dem halben Verkaufswert (sonst lohnt Kaufen-und-Verkaufen).
- for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.price!==undefined){if(d.kind!=='consumable')bad('item '+id,'price nur bei Verpflegung (Marken kaufen keine Ausrüstung)');if(!(Number.isInteger(d.price)&&d.price>0))bad('item '+id,'price muss eine ganze Zahl > 0 sein');if(d.price<=Math.floor((d.value||0)/2))bad('item '+id,'price unter dem Verkaufserlös – Kaufen und Verkaufen wäre ein Gelddrucker');}
+ for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.price!==undefined){if(d.kind!=='consumable'&&!(PROFESSION_ITEMS[id]?.kind==='material'&&SHOP_STOCK.includes(id)))bad('item '+id,'price nur bei Verpflegung (Marken kaufen keine Ausrüstung)');if(!(Number.isInteger(d.price)&&d.price>0))bad('item '+id,'price muss eine ganze Zahl > 0 sein');if(d.price<=Math.floor((d.value||0)/2))bad('item '+id,'price unter dem Verkaufserlös – Kaufen und Verkaufen wäre ein Gelddrucker');}
  // Werkbank-Rezepte: Eingaben sind Material, Ausgabe ist Verpflegung oder Talisman, Werkbankstufe 1–3.
  for(const [id,r] of Object.entries(RECIPES)){const w='recipe '+id;
   if(!r.name||!r.text)bad(w,'name/text fehlt');
@@ -103,7 +105,7 @@ export function check(bad){
   for(const slot of Object.keys(ROLLED_BASES))for(const q of QUAL)for(let level=1;level<=BALANCE.maxLevel;level++){const n=pool.filter(a=>affixFits(a,slot,level,q)).length;if(n<3)bad('affix '+kind,'Lücke: '+slot+' · Stufe '+level+' · '+q+' hat nur '+n+' passende Zusätze');}}
  for(const slot of Object.keys(ROLLED_BASES))if(!EQUIPMENT_SLOTS[slot]&&!['ring','trinket','charm'].includes(slot))bad('ROLLED_BASES.'+slot,'unbekannter Ausrüstungsplatz');
  // Kein totes Material: jedes Material muss irgendwo verbraucht oder gesucht werden.
- const used=new Set();
+ const used=new Set(Object.values(PROFESSION_RECIPES).flatMap(r=>Object.keys(r.materials)));
  for(const r of Object.values(RECIPES))for(const item of Object.keys(r.input||{}))used.add(item);
  for(const t of Object.values(DROP_TABLES))used.add(t.material);
  for(const b of Object.values(BUILDINGS))for(const s of b.stages||[])for(const item of Object.keys(s.cost||{}))used.add(item);

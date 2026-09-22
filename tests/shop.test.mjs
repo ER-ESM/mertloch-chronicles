@@ -14,7 +14,7 @@ const snapshot=g=>structuredClone({inventory:g.rpg.inventory,coins:g.rpg.coins,e
 
 test('shop stock has working consumables, valid prices and no buy/sell profit',()=>{
  assert.equal(new Set(SHOP_STOCK).size,SHOP_STOCK.length);
- for(const id of SHOP_STOCK){const d=ITEM_CATALOG[id];assert.equal(d.kind,'consumable');assert.ok(d.heal||d.energy);assert.ok(Number.isSafeInteger(d.price)&&d.price>salePrice(id));}
+ for(const id of SHOP_STOCK){const d=ITEM_CATALOG[id];assert.ok(d.kind==='consumable'&&(d.heal||d.energy)||d.kind==='material'&&['brauwasser','leerflasche'].includes(id));assert.ok(Number.isSafeInteger(d.price)&&d.price>salePrice(id));}
  assert.equal(SHOP_STOCK.includes('pfandbon'),false,'unfinished bonus mechanic is not sold');
 });
 test('purchase deducts the exact total, stacks and persists',()=>{

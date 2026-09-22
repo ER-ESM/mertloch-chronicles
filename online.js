@@ -24,6 +24,7 @@ export const ONLINE_UI={title:'Online-Konto',intro:'Mit Konto liegt dein Spielst
 /** foreign: der lokale Stand gehört einem anderen Konto – dann gewinnt immer der Server-Stand des angemeldeten Kontos. */
 export function decideSync(local,server,{foreign=false}={}){
  if(foreign&&server?.save)return 'pull';
+ if(server?.save?.professions?.online&&(local?.professions?.revision||0)!==(server.save.professions.revision||0))return 'pull';
  const l=Number(local?.savedAt||0),s=Number(server?.savedAt||0);
  if(!server||!server.save)return l>0?'push':'same';
  if(s>l)return 'pull';if(l>s)return 'push';return 'same';
@@ -57,8 +58,8 @@ export function parseChatCommand(raw,channel='say'){
 }
 /** Hat der lokale Stand mindestens so viel Fortschritt wie der Cloud-Stand? (Stufe, dann Erfahrung; ein Stufe-1-Stand ohne Erfahrung zählt nie) */
 export function progressed(local,cloud){if(!local)return false;const l=Number(local.level)||1,c=Number(cloud?.level)||1,lx=Number(local.xp)||0,cx=Number(cloud?.xp)||0;if(l===1&&lx===0)return false;return l>c||(l===c&&lx>=cx);}
-async function api(path,body,method){
- const res=await fetch(API+path,{method:method||(body?'POST':'GET'),credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
+async function api(path,body,method,signal){
+ const res=await fetch(API+path,{signal,method:method||(body?'POST':'GET'),credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
  let data=null;try{data=await res.json();}catch{}
  if(!data)throw Object.assign(new Error('Antwort unlesbar'),{code:'bad-response',status:res.status});
  if(!data.ok)throw Object.assign(new Error(data.message||data.error||'Fehler'),{code:data.error,status:res.status});
@@ -116,7 +117,7 @@ export function mountOnline(host){
  function stopPresence(){state.wanted=false;clearInterval(state.presenceTimer);clearTimeout(state.retry);state.presenceTimer=null;const ws=state.socket;state.socket=null;try{ws?.close();}catch{}state.connected=false;g().others=[];state.others=[];renderChat();}
  function connect(){
   if(!state.wanted||!state.account||state.socket)return;let ws;try{ws=new WebSocket(WS_URL);}catch{return;}state.socket=ws;
-  ws.onopen=()=>{const heroName=host.heroName?.();if(heroName)ws.send(JSON.stringify({t:'hello',name:heroName}));state.connected=true;state.retryMs=1000;state.lastSent='';net.reset();renderChat();host.refresh?.();};
+  ws.onopen=()=>{const heroName=host.heroName?.();if(heroName)ws.send(JSON.stringify({t:'hello',name:heroName,hero:g().hero?.id}));state.connected=true;state.retryMs=1000;state.lastSent='';net.reset();renderChat();host.refresh?.();};
   ws.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch{return;}receive(m);};
   ws.onclose=e=>{if(state.socket!==ws)return;state.socket=null;state.connected=false;play.reset();mate.reset();g().others=[];state.others=[];setParty({leader:null,members:[]});renderChat();
    if(e.code===4001){pushChat({system:true,text:ONLINE_UI.elsewhere});host.toast(ONLINE_UI.elsewhere);state.wanted=false;return;}
@@ -127,10 +128,12 @@ export function mountOnline(host){
   const ws=state.socket;if(!ws||ws.readyState!==1||document.hidden)return;const game=g(),p=game.player;if(!p)return;
   if(game.instance){game.others=[];state.others=[];}const wire=JSON.stringify(presenceMessage(game,host.roomKey||host.worldKey));
   const now=Date.now();if(!(wire===state.lastSent&&now-state.lastSentAt<5000)){state.lastSent=wire;state.lastSentAt=now;ws.send(wire);}
+  if(game.professionCommit)return;while(professionMessages.length)receive(professionMessages.shift());
   net.tick(game.instance?'':host.roomKey||host.worldKey);play.tick();mate.tick();
  }
+ const professionMessages=[];
  function receive(m){
-  const game=g();
+  const game=g();if(game.professionCommit&&!['snap','welcome','you','chat','notice'].includes(m.t)){professionMessages.push(m);return;}
   if(m.t==='snap'&&game.instance){game.others=[];state.others=[];return;}
   if(m.t==='snap'){game.others=applySnapshot(game.others,m.o,performance.now());state.others=game.others;}
   else if(m.t==='you'){state.netName=m.name;}
@@ -232,5 +235,6 @@ export function mountOnline(host){
  function enterWorld(){state.hold=false;if(state.account)startPresence();renderChat();}
  function leaveWorld(){state.hold=true;stopPresence();}
  const quoted=n=>/\s/.test(n)?'"'+n+'"':n;
- return {reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),aidTarget:()=>mate.state.friend,setAidTarget:n=>{mate.setFriend(n);renderParty();},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
+ async function profession(body){if(!state.account||!state.connected)return {error:'Berufsserver nicht erreichbar.'};if(body.op!=='state'){clearTimeout(state.pending);while(state.syncing)await new Promise(r=>setTimeout(r,50));state.syncing=true;}try{sendPosition();return await api('professions',{...body,room:host.roomKey||g().world.id,hero:g().hero?.id},undefined,AbortSignal.timeout(15000));}finally{if(body.op!=='state')state.syncing=false;}}
+ return {profession,reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),aidTarget:()=>mate.state.friend,setAidTarget:n=>{mate.setFriend(n);renderParty();},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

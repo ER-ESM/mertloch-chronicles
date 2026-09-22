@@ -209,6 +209,7 @@ export function describeItem(id){const d=ITEM_CATALOG[id],hand=ITEM_INFO[id];if(
 export function describeProc(id){const hand=PROC_INFO[id];if(!PROCS[id]||!hand)return null;
  return {effect:hand.effect,numbers:procNumbers(id),why:hand.why,links:hand.links||[],terms:hand.terms||[]};}
 /** Alle Begriffs-IDs, die Loot aus content/glossary.js braucht (Besitzer: Klassendesign). */
+for(const [id,d]of Object.entries(ITEM_CATALOG))if(['kraeutersud','hopfenschorle','feldtee'].includes(id))ITEM_INFO[id]={effect:d.kind==='consumable'?'Selbst gebraute Verpflegung wirkt sofort und nutzt die gemeinsame Abklingzeit.':'Zutat für die Hausbrauerei.',why:'Sammeln und Hausbrauerei: Handwerk aus dem Dorf.',links:[],terms:d.kind==='consumable'?['verpflegung','abklingzeit']:[]};
 export const LOOT_TERMS=[...new Set([...Object.values(ITEM_INFO),...Object.values(PROC_INFO)].flatMap(i=>i.terms||[]))].sort();
 // Die UI liest info direkt am Gegenstand; der Standard verlangt, dass jedes Element seinen Block trägt.
 for(const id of Object.keys(ITEM_INFO))ITEM_CATALOG[id].info=describeItem(id);

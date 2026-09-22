@@ -1,0 +1,13 @@
+.game-popup[data-window="professions"] .popup-body{overflow:auto!important}
+.profession-panel{padding:4px 8px 18px;color:#dfd6bf;font-size:13px}
+.profession-panel header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.profession-panel h2{margin:0;color:#f3d592}.profession-panel h3{color:#ecd094;border-bottom:1px solid #8d785647;padding-bottom:10px;margin:22px 0 8px}
+.profession-panel p{line-height:1.5;margin:8px 0}.profession-panel small{display:block;color:#c4baa2;line-height:1.6}
+.profession-mode{padding:10px 12px;border:1px solid #9b886542;background:#192c2c}
+.profession-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.profession-card{padding:12px;background:linear-gradient(155deg,#263733,#162320);border:1px solid #716b514d;border-radius:5px;display:flex;flex-direction:column;gap:6px}
+.profession-card.selected{border-color:#d3b879;box-shadow:inset 0 0 16px #d4b16d10}.profession-card p{flex:1}.profession-card strong{margin-top:6px;color:#efd291}
+.profession-card progress{width:100%;height:8px;accent-color:#cfae69}.profession-panel button{font-size:12px;padding:7px 9px;line-height:1.3}.profession-panel button:disabled{opacity:.4;cursor:default}.profession-card>button:first-child{font-weight:700;font-size:14px;color:#efd291}.profession-panel button:focus-visible{outline:2px solid #e9c67a;outline-offset:2px}
+.profession-list{display:grid;gap:8px}.profession-recipe,.profession-source{display:flex;align-items:center;gap:14px;border:1px solid #716b5140;background:#12201f;padding:12px;border-radius:4px}.profession-recipe>div,.profession-source>div{flex:1;min-width:0}.profession-recipe canvas{align-self:flex-start;background:#080e0d;border:1px solid #8d7856;border-radius:4px;image-rendering:pixelated}.profession-recipe ul{padding-left:16px;columns:2;margin:8px 0}.profession-recipe li{padding:2px 0}.profession-recipe b,.profession-source b{color:#efdbaa}.profession-recipe .missing,.profession-reason{color:#d19c81}.profession-reason{font-size:12px}
+.profession-save-lock{position:fixed;inset:0;z-index:100000;background:#071211bd;display:grid;place-content:center;text-align:center;color:#f0dfbd;gap:18px;backdrop-filter:blur(3px)}.profession-save-lock[hidden]{display:none}.profession-save-lock button{padding:12px;background:#263b34;color:#f1d69a;border:1px solid #b29251;cursor:pointer}
+@media(max-width:750px){.profession-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.profession-panel header{display:block}}

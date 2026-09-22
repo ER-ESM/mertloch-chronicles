@@ -13,6 +13,6 @@ export function resolveRules(options={}) {
   const r=structuredClone(WORLD_RULES);
   if(options.seed!==undefined){const n=Number(options.seed);if(!Number.isFinite(n))throw new Error('Der Seed muss eine endliche Zahl sein.');r.seed=n>>>0;}
   if(options.density!==undefined){const n=Number(options.density);if(!Number.isFinite(n)||n<.3||n>1.8)throw new Error('Baumdichte muss zwischen 0,3 und 1,8 liegen.');r.vegetation.density=n;}
-  if(options.roadWidth!==undefined){const n=Number(options.roadWidth);if(!Number.isFinite(n)||n<44||n>80)throw new Error('Straßenbreite muss zwischen 44 und 80 liegen.');r.roads.street=n;r.roads.main=n+22;}
+  if(options.roadWidth!==undefined){const n=Number(options.roadWidth);if(!Number.isFinite(n)||n<44||n>80)throw new Error('Straßenbreite muss zwischen 44 und 80 liegen.');r.roads.street=n;r.roads.main=n===WORLD_RULES.roads.street?WORLD_RULES.roads.main:n+22;}
   return r;
 }

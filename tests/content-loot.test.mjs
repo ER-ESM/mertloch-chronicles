@@ -1,3 +1,4 @@
+import {PROFESSION_RECIPES} from '../content/index.js';
 // Prüfungen der Rolle Gegenstände & Loot: Beutefamilien, Werkbank-Rezepte, Kioskpreise, totes Material.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -42,14 +43,14 @@ test('Kioskpreise sind ganzzahlig und über dem Verkaufserlös', () => {
  const priced=Object.entries(ITEM_CATALOG).filter(([,d])=>d.price!==undefined);
  assert.ok(priced.length>=5,'die fünf Kioskwaren brauchen einen Preis');
  for(const [id,d] of priced){
-  assert.equal(d.kind,'consumable',id+': Marken kaufen keine Ausrüstung');
+  assert.ok(d.kind==='consumable'||d.kind==='material'&&['brauwasser','leerflasche'].includes(id),id+': nur Verpflegung und Brauzutaten');
   assert.ok(Number.isInteger(d.price)&&d.price>0,id+': Preis ungültig');
   assert.ok(d.price>Math.floor((d.value||0)/2),id+': Kaufen und Verkaufen wäre ein Gelddrucker');
  }
 });
 
 test('kein totes Material: jedes Material wird gebraucht', () => {
- const used=new Set();
+ const used=new Set(Object.values(PROFESSION_RECIPES).flatMap(r=>Object.keys(r.materials)));
  for(const r of Object.values(RECIPES))for(const item of Object.keys(r.input))used.add(item);
  for(const t of Object.values(DROP_TABLES))used.add(t.material);
  for(const b of Object.values(BUILDINGS))for(const s of b.stages||[])for(const item of Object.keys(s.cost||{}))used.add(item);
