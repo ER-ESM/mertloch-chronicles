@@ -46,6 +46,11 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
       rect(cc,color,ox,oy,S,S);
       if(!farm){fillMaifeldGround(cc,'groundGrass',ox,oy,S,S,.18);return;}
 
+      // Bodenvariation in großen, weichen Flecken (weltfest), damit der Acker nicht wie eine einfarbige Fläche wirkt.
+      for(let gy=Math.floor((oy-40)/40)*40;gy<oy+S+40;gy+=40)for(let gx=Math.floor((ox-40)/40)*40;gx<ox+S+40;gx+=40){const n=hash(gx+11,gy+7);if(n<.35)continue;cc.fillStyle=n>.7?'#c2bd8424':'#8f935c22';cc.beginPath();cc.ellipse(gx+n*20,gy+hash(gx,gy+3)*20,18+n*16,10+n*8,0,0,Math.PI*2);cc.fill();}
+      // Saum an der Ackerkante: niedergetretener, dunklerer Rand statt harter Farbkante.
+      cc.strokeStyle='#7d7f4c66';cc.lineWidth=5;cc.lineJoin='round';for(const [p,q] of edges){cc.beginPath();cc.moveTo(p.x,p.y);cc.lineTo(q.x,q.y);cc.stroke();}
+      cc.strokeStyle='#6f7445aa';cc.lineWidth=1.5;for(const [p,q] of edges){cc.beginPath();cc.moveTo(p.x,p.y);cc.lineTo(q.x,q.y);cc.stroke();}
       // Continuous world-aligned furrows: no per-chunk slope or hard clipped crop heads.
       for(let y=Math.floor((oy-8)/9)*9;y<oy+S+8;y+=9){
         cc.strokeStyle='#84895740';cc.lineWidth=.5;cc.beginPath();
