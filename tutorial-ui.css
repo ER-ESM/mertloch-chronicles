@@ -20,9 +20,11 @@
 @media(orientation:landscape){.touch-mode #tutorialGuide{left:50%;right:auto;transform:translateX(-50%);width:300px;max-width:calc(100% - 24px - var(--safe-left) - var(--safe-right))}}
 /* Feinschliff 2026-09-22 (Maus): Einklappen und Hilfe als kleine Kopf-Symbole oben rechts statt zweier 44-px-Quader. */
 body:not(.touch-mode) #tutorialGuide{padding:10px 12px 12px}
-body:not(.touch-mode) #tutorialGuide .eyebrow{display:block;padding-right:64px}
-body:not(.touch-mode) #tutorialGuide button{width:26px;height:26px;min-width:26px;min-height:26px;padding:0;font-size:14px;line-height:1;display:grid;place-items:center}
-body:not(.touch-mode) #tutorialGuide [data-tutorial-collapse]{position:absolute;right:6px;top:6px}
-body:not(.touch-mode) #tutorialGuide [data-tutorial-help],body:not(.touch-mode) #tutorialGuide.collapsed [data-tutorial-help]{position:absolute;right:36px;top:6px;margin:0}
+body:not(.touch-mode) #tutorialGuide .eyebrow{display:block;padding-right:88px}
+/* 44-px-Trefferfläche bleibt (Projektregel), optisch aber nur ein ruhiges Symbol ohne Quader. */
+body:not(.touch-mode) .game-shell #tutorialGuide button{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;font-size:18px;line-height:1;display:grid;place-items:center;background:none;border-color:transparent;border-image:none;box-shadow:none;color:#d7b571}
+body:not(.touch-mode) .game-shell #tutorialGuide button:hover{color:#fff0c9;background:#ffffff12}
+body:not(.touch-mode) #tutorialGuide [data-tutorial-collapse]{position:absolute;right:0;top:0}
+body:not(.touch-mode) #tutorialGuide [data-tutorial-help],body:not(.touch-mode) #tutorialGuide.collapsed [data-tutorial-help]{position:absolute;right:40px;top:0;margin:0}
 body:not(.touch-mode) #tutorialGuide.collapsed{padding:8px 12px;min-height:0}
 .dialog-keyhint{font:400 14px/1.3 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#f3cf7a}

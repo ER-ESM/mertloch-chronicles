@@ -240,3 +240,6 @@ button[data-setting-toggle][aria-pressed=true] .setting-switch i{transform:trans
 .game-popup .section-jump{justify-content:flex-start;gap:6px;background:linear-gradient(#1a3026f8,#15281ff2);border-bottom:1px solid #a9905466}
 .game-popup .section-jump button{flex:0 0 auto;min-height:34px;padding:6px 14px;border-radius:2px!important;border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;background:linear-gradient(#294235,#182e25);color:#c5ceb7;font:400 16px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;box-shadow:none}
 .game-popup .section-jump button[aria-current=true]{background:linear-gradient(#634e2a,#303a27);color:#fff0c8;border-image:var(--chrome-frame) 22% / 9px / 0 stretch;box-shadow:inset 0 -3px #e3c175}
+/* Schmal/Touch: Unterreiter teilen sich die Breite und kürzen, statt das Fenster seitlich zu sprengen. */
+.touch-mode .game-popup .section-jump button,.touch-mode .game-popup .quest-tabs button{flex:1 1 0;min-width:0;padding:6px 6px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game-popup .quest-tabs{flex-wrap:wrap}
