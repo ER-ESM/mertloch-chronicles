@@ -1,6 +1,7 @@
 import {artImages} from './asset-art.js';
 import {maifeld,drawMaifeld} from './maifeld-art.js';
 import {rng} from './world.js';
+import {drawVectorSprite} from './art-quality.js';
 import {PALETTE as P,box,shape,oval,line,sprig,blossom,spark} from './pixel-style.js';
 
 function createLegacyTree(variant,pine=false){
@@ -48,6 +49,12 @@ export function createComicTree(variant=0,pine=false){
 export function drawComicProp(c,p,time){const x=p.x,y=p.y;if(p.type==='rock'){
   oval(c,'#30495135',x+2,y+2,7,2.5);shape(c,'#788fa0',[[x-6,y],[x-5,y-5],[x-1,y-8],[x+4,y-6],[x+7,y-1],[x+3,y+2]],P.ink,1);shape(c,'#bdc9ba',[[x-5,y-5],[x-1,y-7],[x+3,y-5],[x,y-3]]);line(c,'#536779',[[x+1,y-3],[x+3,y-2],[x+2,y+1]],.75);sprig(c,x-5,y+2,'#6cad70',.4);return;
   }
-  const colors=['#f9d78c','#c3d9e8','#eb9c86','#c8a4d5','#ffe4aa','#f4c1ab'];const phase=Math.sin(time*1.6+p.seed)*.5;for(let i=0;i<3;i++){const xx=x+i*3-4,yy=y-(i%2)*3;sprig(c,xx,yy+4,'#4c9366',.55);blossom(c,xx+phase,yy,colors[p.variant],i===1?.75:.6);}
-  if(p.seed%19===0){box(c,P.ink,x+6,y+1,1,4);oval(c,P.ink,x+6,y,3,1.5);oval(c,P.coral,x+6,y-.5,2.5,1);box(c,P.cream,x+5,y-1,1,1);}
+  // Als Kleinbild je Farbe, Pilz und Wiegestellung (E-50): gleiche Pixel wie direkt gezeichnet, ein Kopierbefehl statt ~16 Formen.
+  const phase=Math.round(Math.sin(time*1.6+p.seed)*2)/4,shroom=p.seed%19===0;
+  drawVectorSprite(c,'flower:'+p.variant+':'+(shroom?1:0)+':'+phase,FLOWER_BOX,x,y,v=>flowerPatch(v,0,0,p.variant,phase,shroom));
+}
+const FLOWER_BOX={x0:-11,y0:-13,x1:13,y1:7};
+function flowerPatch(c,x,y,variant,phase,shroom){
+  const colors=['#f9d78c','#c3d9e8','#eb9c86','#c8a4d5','#ffe4aa','#f4c1ab'];for(let i=0;i<3;i++){const xx=x+i*3-4,yy=y-(i%2)*3;sprig(c,xx,yy+4,'#4c9366',.55);blossom(c,xx+phase,yy,colors[variant],i===1?.75:.6);}
+  if(shroom){box(c,P.ink,x+6,y+1,1,4);oval(c,P.ink,x+6,y,3,1.5);oval(c,P.coral,x+6,y-.5,2.5,1);box(c,P.cream,x+5,y-1,1,1);}
 }

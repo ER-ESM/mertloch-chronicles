@@ -86,8 +86,13 @@ export class WorldLight{
   l.globalCompositeOperation='destination-out';for(const s of lights){const r=s.s.radius*s.scale*s.flicker;l.globalAlpha=Math.min(1,dark*2.6)*(s.s===L.sources.hero?.55:1);l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2);}
   if(!this.vignette||this.vignette.width!==lw||this.vignette.height!==lh){this.vignette=canvas(lw,lh);const v=this.vignette.getContext('2d'),g=v.createRadialGradient(lw/2,lh/2,Math.min(lw,lh)*.42,lw/2,lh/2,Math.hypot(lw,lh)*.56);g.addColorStop(0,'#10182000');g.addColorStop(1,'#101820');v.fillStyle=g;v.fillRect(0,0,lw,lh);}
   l.globalCompositeOperation='source-over';l.globalAlpha=Math.min(1,L.grade.vignette+dark*.25);l.drawImage(this.vignette,0,0,W,H);
+  // Diagonaler Schimmer (L.sheen), früher je Bild als Vollbildfläche auf der Welt: hier einmal gerechnet und mitgemischt.
+  if(!this.sheen||this.sheen.width!==lw||this.sheen.height!==lh){this.sheen=canvas(lw,lh);const v=this.sheen.getContext('2d'),g=v.createLinearGradient(0,0,lw,lh);g.addColorStop(0,L.sheen.from);g.addColorStop(.55,L.sheen.mid);g.addColorStop(1,L.sheen.to);v.fillStyle=g;v.fillRect(0,0,lw,lh);}
+  l.globalAlpha=1;l.drawImage(this.sheen,0,0,W,H);
   for(const s of lights){if(s.s===L.sources.hero)continue;const r=s.s.radius*s.scale*s.flicker*.8;l.globalAlpha=Math.min(1,(L.glow.day+L.glow.night*dark)*s.flicker*L.glow.cover);l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2);}
   l.globalAlpha=1;}
 }
 /** Farbabstimmung der Weltfläche als CSS-Filter: läuft auf der Grafikkarte und kostet den Zeichenweg nichts. */
-export function applyGrade(element,on){const value=on?`contrast(${L.grade.contrast}) saturate(${L.grade.saturate})`:'';if(element.style.filter!==value)element.style.filter=value;}
+/** Filtertext der Farbabstimmung – als CSS-Filter (mit Grafikkarte) oder eingebacken in Zwischenbilder (ohne, E-50). */
+export const gradeFilter=()=>`contrast(${L.grade.contrast}) saturate(${L.grade.saturate})`;
+export function applyGrade(element,on){const value=on?gradeFilter():'';if(element.style.filter!==value)element.style.filter=value;}

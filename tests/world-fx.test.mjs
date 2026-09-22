@@ -78,3 +78,9 @@ test('Selbstschutz: zu hohe CPU-Kosten ODER zu niedriges Bildtempo schalten von 
  assert.equal(run(new WorldFx({mode:'voll'}),.5,G.slowMs+10).mode,'voll','erzwungen bleibt');
  const paused=new WorldFx();run(paused,.5,16,30);paused.guard(.5,999999);run(paused,.5,16);assert.equal(paused.mode,'voll','eine Pause zählt nicht als langsames Bild');
 });
+
+test('ohne Grafikkarte startet die Effektschicht gleich leicht; eine erzwungene Stufe gewinnt',async()=>{
+ const {WorldFx}=await import('../world-fx.js');
+ const soft=new WorldFx({software:true});assert.equal(soft.mode,'leicht');assert.match(soft.reason,/ohne Grafikkarte/);
+ assert.equal(new WorldFx({software:false}).mode,'voll');assert.equal(new WorldFx({software:true,mode:'voll'}).mode,'voll');
+});

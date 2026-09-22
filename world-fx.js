@@ -4,6 +4,7 @@
 // Stufen: 'voll' (mit Weltbild-Textur) · 'leicht' (durchsichtig, nur Wetter und Partikel) · 'aus'. Werte: content/world-fx.js.
 // Diagnose: ?fx=debug blendet Stufe und Kosten ein, ?fx=voll|leicht|aus erzwingt eine Stufe (kombinierbar: ?fx=voll,debug); Zustand unter window.mertloch.state().fx.
 import {WORLD_FX as F,LIGHTING} from './content/index.js';
+import {softwareRendering} from './gpu-info.js';
 
 const clamp01=v=>Math.max(0,Math.min(1,v)),smooth=(a,b,v)=>{const t=clamp01((v-a)/(b-a));return t*t*(3-2*t);};
 const hash=n=>{const s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s);};
@@ -55,7 +56,7 @@ void main(){
 }`;
 const PVS=`#version 300 es
 precision highp float;
-uniform vec2 origin,size,cell;uniform float time;uniform int nFire,embers;uniform vec3 fire[${MAXH}];
+uniform vec2 origin,size,cell;uniform float time,pscale;uniform int nFire,embers;uniform vec3 fire[${MAXH}];
 out vec4 tint;
 float h(float n){return fract(sin(n*12.9898)*43758.5453);}
 void main(){
@@ -63,13 +64,17 @@ void main(){
  if(gl_VertexID<embers){if(nFire==0){gl_Position=vec4(2.,2.,0.,1.);gl_PointSize=0.;tint=vec4(0.);return;}
   vec3 f=fire[int(a*float(nFire))%nFire];float t=fract(time*(.35+b*.4)+c);wp=f.xy+vec2((b-.5)*18.*f.z+sin(t*7.+a*40.)*7.*t,-t*(38.+a*46.)*f.z);tint=vec4(1.,.35+.5*(1.-t),.12,(1.-t)*(1.-t)*.8);px=1.7-t*.7;}
  else{vec2 base=vec2(a,b)*cell+vec2(sin(time*.35+c*40.),cos(time*.28+a*30.))*40.;vec2 mid=origin+size*.5;wp=mid+mod(base-mid,cell)-cell*.5;tint=vec4(.72,1.,.42,.5+.5*sin(time*2.2+c*60.));px=1.5;}
- vec2 st=(wp-origin)/size;gl_Position=vec4(st.x*2.-1.,1.-st.y*2.,0.,1.);gl_PointSize=px*3.;
+ vec2 st=(wp-origin)/size;gl_Position=vec4(st.x*2.-1.,1.-st.y*2.,0.,1.);gl_PointSize=px*3.*pscale;
 }`;
 const PFS=`#version 300 es
 precision highp float;in vec4 tint;out vec4 o;void main(){float d=length(gl_PointCoord-.5);float a=tint.a*smoothstep(.5,.05,d);o=vec4(tint.rgb*a,0.);}`;
 
 export class WorldFx{
- constructor(options={}){const q=(typeof location==='undefined'?'':new URLSearchParams(location.search).get('fx')||'').split(',');this.forced=q.find(v=>['voll','leicht','aus'].includes(v))||options.mode||null;this.debug=q.includes('debug')||options.debug===true;this.mode=this.forced||'voll';this.cost=0;this.frames=0;this.upload=0;this.reason='';this.stats={mode:this.mode,ms:0,uploadMs:0,shocks:0,heat:0,rain:0,fog:0,fireflies:0,reason:''};}
+ constructor(options={}){const q=(typeof location==='undefined'?'':new URLSearchParams(location.search).get('fx')||'').split(',');this.forced=q.find(v=>['voll','leicht','aus'].includes(v))||options.mode||null;this.debug=q.includes('debug')||options.debug===true;this.cost=0;this.frames=0;this.upload=0;this.reason='';
+  // Ohne Grafikkarte (E-50) kostet allein das Hochladen des Weltbilds ~20 ms je Bild: gleich leicht starten statt 60 ruckelnde Bilder lang zu prüfen.
+  const soft=!this.forced&&options.software!==undefined?options.software:!this.forced&&typeof document!=='undefined'&&softwareRendering();this.mode=this.forced||(soft?'leicht':'voll');if(soft)this.reason='ohne Grafikkarte, leichte Stufe';
+  // Ohne Grafikkarte in geringerer Auflösung rechnen (Nebel und Regen sind weich); der Browser skaliert die Leinwand hoch.
+  this.scale=soft?F.softScale:1;this.stats={mode:this.mode,ms:0,uploadMs:0,shocks:0,heat:0,rain:0,fog:0,fireflies:0,reason:''};}
  /** Hängt die Leinwand direkt hinter die Weltfläche – unter die Licht-Ebenen aus E-39, unter das HUD. Klicks gehen durch. */
  mount(world){if(this.canvas||this.mode==='aus'||!world?.parentNode)return;const cv=this.canvas=document.createElement('canvas');cv.className='world-fx';cv.setAttribute('aria-hidden','true');Object.assign(cv.style,{position:'absolute',inset:'0',width:'100%',height:'100%',pointerEvents:'none',display:'none'});world.after(cv);this.world=world;
   const gl=this.gl=cv.getContext('webgl2',{antialias:false,alpha:true,premultipliedAlpha:true,powerPreference:'high-performance'});if(!gl)return this.fail('WebGL2 nicht verfügbar');
@@ -84,10 +89,13 @@ export class WorldFx{
  show(on){if(!this.canvas)return;const value=on&&this.mode!=='aus'?'block':'none';if(this.canvas.style.display!==value)this.canvas.style.display=value;}
  /** Ein Bild der Effektschicht. `view` = sichtbarer Weltausschnitt, `light` = WorldLight (Dunkelanteil und Lichtquellen aus E-39). */
  render(view,game,world,time,light){const gl=this.gl;if(!gl||this.mode==='aus')return;const t0=performance.now(),cv=this.canvas,src=this.world,{ox,oy,W,H}=view,full=this.mode==='voll';
-  const rect=src.getBoundingClientRect(),dpr=Math.min(2,globalThis.devicePixelRatio||1),w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+  const rect=src.getBoundingClientRect(),dpr=Math.min(2,globalThis.devicePixelRatio||1),w=Math.max(1,Math.round(rect.width*dpr*this.scale)),h=Math.max(1,Math.round(rect.height*dpr*this.scale));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
   if(cv.style.filter!==src.style.filter)cv.style.filter=src.style.filter;
   const dark=light?.dark??0,{rain,flash}=weatherAt(time),fog=fogAt(dark,rain),shocks=full?shocksFrom(game.fx):[],visible=(o,pad)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
   const fires=(light?.sources(game,world,visible,time)||[]).filter(s=>F.heat.sources.some(k=>LIGHTING.sources[k]===s.s)).slice(0,MAXH),flies=firefliesAt(dark);
+  // Leichte Stufe ohne Nebel, Regen, Blitz, Glühwürmchen und Funken: nichts zu zeigen – Leinwand verbergen statt ein leeres Vollbild zu zeichnen und zu mischen (E-50).
+  const blank=!full&&rain<.001&&fog<.001&&flash<.001&&!flies&&!fires.length,vis=blank?'hidden':'';if(cv.style.visibility!==vis)cv.style.visibility=vis;
+  if(blank){Object.assign(this.stats,{mode:this.mode,ms:0,uploadMs:0,shocks:0,heat:0,rain:0,fog:0,fireflies:0,reason:this.reason,blank:true});if(this.panel)this.panel.textContent=`Effekte ${this.mode} · nichts zu zeigen${this.reason?' · '+this.reason:''}`;return;}this.stats.blank=false;
   if(full){const u0=performance.now();gl.bindTexture(gl.TEXTURE_2D,this.tex);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src);if(F.bloom.strength>0)gl.generateMipmap(gl.TEXTURE_2D);this.upload+=(performance.now()-u0-this.upload)*.1;}
   gl.viewport(0,0,w,h);gl.disable(gl.BLEND);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
   const p=this.post,f1=(n,v)=>gl.uniform1f(this.u(p,n),v);gl.useProgram(p);gl.bindVertexArray(this.quad);
@@ -98,7 +106,7 @@ export class WorldFx{
   gl.uniform1i(this.u(p,'nHeat'),full?fires.length:0);if(full&&fires.length)gl.uniform2fv(this.u(p,'heat[0]'),new Float32Array(fires.flatMap(s=>[s.x,s.y])));
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
   const count=F.particles.embers+flies;if(fires.length||flies){const d=this.dots;gl.useProgram(d);gl.bindVertexArray(this.none);gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE);
-   gl.uniform2f(this.u(d,'origin'),ox,oy);gl.uniform2f(this.u(d,'size'),W,H);gl.uniform2f(this.u(d,'cell'),F.particles.cell.x,F.particles.cell.y);gl.uniform1f(this.u(d,'time'),time);gl.uniform1i(this.u(d,'embers'),F.particles.embers);
+   gl.uniform2f(this.u(d,'origin'),ox,oy);gl.uniform2f(this.u(d,'size'),W,H);gl.uniform2f(this.u(d,'cell'),F.particles.cell.x,F.particles.cell.y);gl.uniform1f(this.u(d,'time'),time);gl.uniform1f(this.u(d,'pscale'),this.scale);gl.uniform1i(this.u(d,'embers'),F.particles.embers);
    gl.uniform1i(this.u(d,'nFire'),fires.length);if(fires.length)gl.uniform3fv(this.u(d,'fire[0]'),new Float32Array(fires.flatMap(s=>[s.x,s.y,s.scale||1])));gl.drawArrays(gl.POINTS,0,count);}
   const ms=performance.now()-t0;this.guard(ms);Object.assign(this.stats,{mode:this.mode,ms:+this.cost.toFixed(2),uploadMs:+this.upload.toFixed(2),shocks:shocks.length,heat:fires.length,rain:+rain.toFixed(2),fog:+fog.toFixed(2),fireflies:flies,reason:this.reason});
   if(this.panel)this.panel.textContent=`Effekte ${this.mode} · ${this.stats.ms} ms (Textur ${this.stats.uploadMs} ms) · Wellen ${shocks.length} · Feuer ${fires.length} · Regen ${this.stats.rain} · Nebel ${this.stats.fog}${this.reason?' · '+this.reason:''}`;}

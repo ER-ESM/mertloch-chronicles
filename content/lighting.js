@@ -3,6 +3,8 @@
 export const LIGHTING={
  // Nachbearbeitung der Weltfläche. Kontrast und Sättigung liegen bewusst unter dem Vorbild (1.19 / 1.09): Pixelgrafik kippt früher.
  grade:{contrast:1.1,saturate:1.08,vignette:.3},
+ // Diagonaler Schimmer über der Welt (seit 0.1): links oben warm, rechts unten kühl, nur wenige Prozent Deckkraft. Liegt bei Licht in der Lichtebene.
+ sheen:{from:'#fff1cf08',mid:'#faf3ab00',to:'#48345212'},
  // Schattenlänge als Vielfaches der Objekthöhe; Gebäude kürzer, damit Plätze frei bleiben.
  shadow:{tree:.8,building:.5,actor:10,boss:16,prop:8,cacheLimit:90},
  // Dunkelanteil je Gebiet (0 = Mittag, 1 = Nacht) und wie schnell er beim Wechsel nachzieht.

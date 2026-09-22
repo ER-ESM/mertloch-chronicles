@@ -7,12 +7,13 @@ import {drawKioskRoom,drawKioskMap,drawKioskHouse} from './kiosk-room-art.js';
 import {inKiosk,kioskEntrance} from './kiosk-instance.js';
 import {KIOSK_TEXT} from './content/index.js';
 import {merchantActorPoint} from './shop.js';
-import {SHOP_UI,PERFORMANCE} from './content/index.js';
+import {SHOP_UI,PERFORMANCE,LIGHTING} from './content/index.js';
 import {drawClassField,drawClassWorldFx,classWorldReady} from './e32-world-art.js';
 import {drawCombatEffect,drawCombatGround,drawCombatStates} from './combat-fx-art.js';
-import {worldDensity} from './art-quality.js';
+import {worldDensity,bakedGrade,withGrade} from './art-quality.js';
 import {SpatialIndex} from './spatial-index.js';
 import {GroundCache} from './ground-cache.js';
+import {TerrainPrefetch} from './terrain-prefetch.js';
 import {QualityGovernor} from './quality-governor.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
@@ -39,7 +40,8 @@ function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);co
 import {drawBuilding,drawFurniture} from './architecture.js';
 import {buildingOccludesActor} from './tiny-architecture.js';
 import {distance,SCALE} from './world.js';
-import {WorldLight,applyGrade} from './world-light.js';
+import {WorldLight,applyGrade,gradeFilter} from './world-light.js';
+import {softwareRendering} from './gpu-info.js';
 import {WorldFx} from './world-fx.js';
 import {prerenderArt,prerenderHasBakedShadow} from './prerender-art.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
@@ -63,17 +65,26 @@ export class Renderer {
   // Mausrad-Zoom: Faktor auf den Grundzoom des Geräts, begrenzt auf ZOOM_RANGE.
   setZoomFactor(f){const next=Math.min(ZOOM_RANGE.max,Math.max(ZOOM_RANGE.min,+f||1));if(next===(this.zoomFactor||1))return next;this.zoomFactor=next;this.resize();return next;}
   screenToWorld(x,y){const r=this.canvas.getBoundingClientRect();return{x:(x-r.left)/r.width*this.viewWidth+this.camera.x-this.viewWidth/2,y:(y-r.top)/r.height*this.viewHeight+this.camera.y-this.viewHeight/2};}
-  groundChunk(gx,gy){const key=gx+','+gy;if(this.chunks.has(key))return this.chunks.get(key);const cv=createTerrainChunk(this.world,gx,gy);this.chunks.set(key,cv);if(this.chunks.size>40)this.chunks.delete(this.chunks.keys().next().value);return cv;}
+  groundChunk(gx,gy){const key=gx+','+gy+bakedGrade.filter;if(this.chunks.has(key))return this.chunks.get(key);let cv=createTerrainChunk(this.world,gx,gy);if(bakedGrade.filter){const g=document.createElement('canvas');g.width=cv.width;g.height=cv.height;const gc=g.getContext('2d',{alpha:false});withGrade(gc,()=>gc.drawImage(cv,0,0));cv=g;}this.storeChunk(key,cv);return cv;}
+  /** Bodenkachel für den Bereich `r`: fertig aus dem Speicher, sonst nur die nötigen Stücke bauen (terrain-prefetch.js). */
+  groundTile(gx,gy,r){const key=gx+','+gy+bakedGrade.filter;if(this.chunks.has(key))return this.chunks.get(key);this.prefetch||=new TerrainPrefetch(this.world,PERFORMANCE.terrain);return this.prefetch.ensure(key,gx,gy,r,(k,cv)=>this.storeChunk(k,cv));}
+  storeChunk(key,cv){this.chunks.set(key,cv);if(this.chunks.size>40)this.chunks.delete(this.chunks.keys().next().value);}
+  /** Freie Zeit des Bildes (ms) für vorausgeladene Bodenkacheln (terrain-prefetch.js). */
+  /** Je Bild: Laufrichtung merken und nur dann ein dringendes Stück bauen, wenn der Leerlauf nicht reicht. Das eigentliche Vorausladen läuft im
+   *  Leerlauf des Browsers (requestIdleCallback) – also erst, wenn das Bild abgegeben ist, und nie in die nächste Bildzeit hinein. */
+  idle(){if(!this.viewOrigin||inKiosk(this.game))return;const P=this.prefetch||=new TerrainPrefetch(this.world,PERFORMANCE.terrain),view={ox:this.viewOrigin.x,oy:this.viewOrigin.y,W:this.viewWidth,H:this.viewHeight},key=(gx,gy)=>gx+','+gy+bakedGrade.filter,has=k=>this.chunks.has(k),done=(k,cv)=>this.storeChunk(k,cv);
+    P.step(view,0,key,has,done);if(this.idleStarved>2)P.urgent(view,key,has,done);this.idleStarved=(this.idleStarved||0)+1;
+    if(!this.idleQueued&&typeof requestIdleCallback==='function'){this.idleQueued=true;requestIdleCallback(d=>{this.idleQueued=false;const ms=d.timeRemaining()-PERFORMANCE.terrain.idleReserveMs;if(ms>0){this.idleStarved=0;P.step(view,ms,key,has,done);}},{timeout:PERFORMANCE.terrain.idleTimeoutMs});}}
   /** Auflösungs-Automatik (quality-governor.js): je Bild mit Bildabstand und eigener Rechenzeit füttern; senkt oder hebt die Dichte der Weltfläche stufenweise. */
   pace(gap,work){const s=this.game.settings||{};if(s.fullRes||s.autoRes===false){this.gradeOff=false;if(this.densityCap!=null){this.densityCap=null;this.resize();}return;}
     const step=(this.governor||=new QualityGovernor(PERFORMANCE.autoRes)).frame(gap,work);if(!step)return;const native=worldDensity(this.zoom,false);
     // Leiter abwärts: erst die Farbabstimmung (CSS-Filter über die ganze Weltfläche – ohne Grafikkarte teurer als das Zeichnen selbst), dann die Dichte. Aufwärts umgekehrt.
-    if(step==='down'&&!this.gradeOff){this.gradeOff=true;return;}if(step==='up'&&this.density>=native){this.gradeOff=false;return;}
+    if(step==='down'&&!this.gradeOff&&!this.software){this.gradeOff=true;return;}if(step==='up'&&this.density>=native){this.gradeOff=false;return;}
     const next=step==='down'?Math.max(worldDensity(this.zoom,false,1,PERFORMANCE.autoRes.minDensity),this.density-1):Math.min(native,this.density+1);if(next!==this.density){this.densityCap=next>=native?null:next;this.resize();}}
   shadowPainters(){return this.painters||={bounds:buildingVisualBounds,building:(cc,b)=>drawBuilding(cc,b,0),tree:(cc,t)=>{if(drawAssetTree(cc,t,0))return true;const sp=this.treeSprites[t.variant+(t.type==='pine'?5:0)];cc.drawImage(sp,Math.round(t.x-44*t.size),Math.round(t.y-96*t.size),Math.round(88*t.size),Math.round(110*t.size));return false;},baked:item=>this.bakedShadow?.(item)};}
   /** Inhalt des Boden-Zwischenspeichers für `r` (Welteinheiten): Bodenkacheln, Steine, bei Licht die Schatten stehender Objekte. Rand 320/420 fängt Schatten von Objekten außerhalb. */
   paintGround(c,r,lit){const w=this.world,index=this.index||=new SpatialIndex();let ok=true;
-    for(let x=Math.floor(r.x0/512);x<=Math.floor((r.x1-1)/512);x++)for(let y=Math.floor(r.y0/512);y<=Math.floor((r.y1-1)/512);y++)c.drawImage(this.groundChunk(x,y),x*512,y*512,512,512);
+    for(let x=Math.floor(r.x0/512);x<=Math.floor((r.x1-1)/512);x++)for(let y=Math.floor(r.y0/512);y<=Math.floor((r.y1-1)/512);y++)c.drawImage(this.groundTile(x,y,r),x*512,y*512,512,512);
     for(const prop of index.query('props',w.props,r.x0-40,r.y0-40,r.x1+40,r.y1+40))if(prop.type==='rock')this.prop(c,prop);
     if(lit)ok=this.light.standingShadows(c,r,index.query('trees',w.trees,r.x0-320,r.y0-320,r.x1+320,r.y1+320),index.query('buildings',w.buildings,r.x0-420,r.y0-420,r.x1+420,r.y1+420,b=>b),this.shadowPainters());
     return ok;}
@@ -90,13 +101,13 @@ export class Renderer {
    const k=wd/world.width;c.textAlign='center';c.lineJoin='round';c.strokeStyle='#1d2b24f0';
    for(const l of q){const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a;c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
    c.globalAlpha=1;c.setTransform(1,0,0,1,0,0);}
-  drawScene(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);applyGrade(this.canvas,lit&&!this.gradeOff);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);const effects=this.game.settings?.fx!==false&&!kiosk;this.fx.mount(this.canvas);this.fx.show(effects);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(this.density,0,0,this.density,0,0);this.shake*=.87;
-    const q=Math.min(2,this.density),/* Kameraraster = Pixelraster der Weltfläche, sonst zittern Boden und Figuren bei Dichte 1 gegeneinander */ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*q)/q,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*q)/q;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;rect(c,'#364d37',0,0,W,H);c.save();c.translate(-ox,-oy);
+  drawScene(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);/* Ohne Grafikkarte: Farbabstimmung eingebacken statt CSS-Filter (E-50) */this.software??=softwareRendering();{const baked=this.software&&lit?gradeFilter():'';if(bakedGrade.filter!==baked){bakedGrade.filter=baked;this.ground?.invalidate();}}applyGrade(this.canvas,lit&&!this.gradeOff&&!this.software);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);const effects=this.game.settings?.fx!==false&&!kiosk;this.fx.mount(this.canvas);this.fx.show(effects);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(this.density,0,0,this.density,0,0);this.shake*=.87;
+    const q=Math.min(2,this.density),/* Kameraraster = Pixelraster der Weltfläche, sonst zittern Boden und Figuren bei Dichte 1 gegeneinander */ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*q)/q,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*q)/q;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;/* keine Hintergrundfüllung mehr: der Boden-Zwischenspeicher deckt den Ausschnitt vollständig ab (E-50, spart eine Vollbildfläche) */c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
     // Ruhende Weltobjekte kommen aus dem Raster-Index (spatial-index.js), nicht mehr aus der ganzen Karte; Rand 100 deckt jede Sichtprüfung unten ab.
     const index=this.index||=new SpatialIndex(),near=(name,list,box)=>index.query(name,list,ox-100,oy-100,ox+W+100,oy+H+100,box),props=near('props',w.props);
     // Boden, Steine und Schatten stehender Objekte kommen aus dem Zwischenspeicher (ground-cache.js); je Bild bleiben nur die wiegenden Blumen.
-    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();ground.draw(c,view,this.density,(lit?'licht':'ohne')+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
+    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();ground.draw(c,view,this.density,(lit?'licht':'ohne')+bakedGrade.filter+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
     for(const prop of props)if(visible(prop,10)&&prop.type!=='rock'&&!FURNITURE.includes(prop.type))this.prop(c,prop);
     for(const q of w.quests||[]){if(g.tutorial&&!g.tutorial.completed)continue;const status=g.sideQuests[q.id];for(const item of q.items){if(!visible(item,30)||status.collected.includes(item.id))continue;const x=item.x,y=item.y;if(item.type==='herb'){for(let i=0;i<5;i++){rect(c,'#3c7958',x-8+i*4,y-11+(i%2)*3,2,13);rect(c,'#a5d6a0',x-10+i*4,y-11+(i%2)*3,6,3);rect(c,'#ded3a1',x-8+i*4,y-14+(i%2)*3,2,3);}}else{rect(c,'#293b44',x-12,y-29,24,31);rect(c,'#655273',x-10,y-27,20,26);ellipse(c,'#293b44',x,y-10,8,8);ellipse(c,'#ad93b7',x,y-10,5,5);ellipse(c,'#4a8c9a',x,y-10,2,2);rect(c,'#e7c686',x-8,y-25,16,3);rect(c,'#78bda5',x-7,y-24,3,1);rect(c,'#293b44',x-8,y+2,3,3);rect(c,'#293b44',x+5,y+2,3,3);}if(status.accepted&&!status.claimed){label(c,'✧',x,y-31-Math.sin(time*2)*2,'#f0d38f',12);if(distance(item,p)<75)label(c,'F · '+(q.itemName||q.title),x,y+12,'#e7d8a7',7);}}}
     // Sammelpunkte des laufenden Kapitels: Materialhaufen wie Questgegenstände, Beschriftung aus content/items.js.
@@ -167,7 +178,8 @@ export class Renderer {
     // Slow drifting pollen and fireflies catch the late afternoon light.
     for(let i=0;i<28;i++){const x=ox+((i*103.3+time*3)%W),y=oy+((i*71.7+Math.sin(time*.4+i)*9)%H);c.globalAlpha=.2+(Math.sin(time*1.8+i)+1)*.14;rect(c,'#eee5a9',x,y,1,1);}c.globalAlpha=1;c.restore();
     if(lit)this.light.apply({ox,oy,W,H},g,w,time,elapsed);
-    const light=c.createLinearGradient(0,0,W,H);light.addColorStop(0,'#fff1cf08');light.addColorStop(.55,'#faf3ab00');light.addColorStop(1,'#48345212');c.fillStyle=light;c.fillRect(0,0,W,H);
+    // Diagonaler Schimmer (LIGHTING.sheen): bei Licht liegt er in der Lichtebene (world-light.js) – ohne Grafikkarte kostete die Vollbildfläche mit Verlauf je Bild ~4 ms.
+    if(!lit||kiosk){const S=LIGHTING.sheen,light=c.createLinearGradient(0,0,W,H);light.addColorStop(0,S.from);light.addColorStop(.55,S.mid);light.addColorStop(1,S.to);c.fillStyle=light;c.fillRect(0,0,W,H);}
     const bounds=this.canvas.getBoundingClientRect(),obstacles=bubbles.length?[...document.querySelectorAll('.hud,.region-label,.action-area,.game-popup,.attack-warning:not(.hidden),.touch-topline,#touchMenu,#touchContext,#touchStick,#touchActions,#touchUtility,#buffStrip,#touchCancelAim,#tutorialGuide')].map(el=>el.getBoundingClientRect()).filter(b=>b.width&&b.height).map(b=>({x:(b.left-bounds.left)/this.zoom,y:(b.top-bounds.top)/this.zoom,w:b.width/this.zoom,h:b.height/this.zoom})):[];
     obstacles.push({x:p.x-ox-12,y:p.y-oy-30,w:24,h:34});
     this.speechLayout=drawBossSpeech(c,bubbles,{ox,oy,width:W,height:H,zoom:this.zoom,obstacles});
