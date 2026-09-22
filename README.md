@@ -1,8 +1,8 @@
 # Mertloch Chronicles — Poo-Tang-Clan
 
-**[▶ Jetzt Testspielen – aktuelle Spielversion](https://er-esm.github.io/mertloch-chronicles/)**
+**[▶ Jetzt Testspielen – aktuelle Spielversion](https://mertloch.esm-consultant.de/)**
 
-**[Helden, Bewegung und Ausrüstung testen](https://er-esm.github.io/mertloch-chronicles/redesign-demo.html?hero=dieter&outfit=theme&action=walk)** · [Roadmap](docs/ROADMAP.md) · [GitHub-Repository](https://github.com/ER-ESM/mertloch-chronicles)
+**[Helden, Bewegung und Ausrüstung testen](https://mertloch.esm-consultant.de/redesign-demo.html?hero=dieter&outfit=theme&action=walk)** · [Roadmap](docs/ROADMAP.md) · [GitHub-Repository](https://github.com/ER-ESM/mertloch-chronicles)
 
 Ein spielbares 2D-Browser-Rollenspiel rund um den Poo-Tang-Clan und St. Gangolf in **56753 Mertloch**: Gegner auswählen, Kniffe kombinieren, Beute sammeln und die Dorfgeschichte erleben. Auf PC und Handy ohne Installation und ohne Konto spielbar.
 
@@ -39,7 +39,7 @@ Wähle deine Clanfigur und sprich am Treffpunkt mit **Ida**. Die Hofprobe führt
 | Figur / Rucksack / Aufträge / Karte | C / I / J / M | „Menü“ → „Clanbuch“, dann den Reiter wählen |
 | Kniffe / Talente / Hilfe | K / N / H | Unter Figur bzw. über das Hilfe-Symbol |
 | Kampfstatistik | Standardmäßig sichtbar; V oder HUD-Button zum Ein-/Ausblenden | Balken-Knopf unter dem Menü; auch Figur → Werte → Kampfstatistik |
-| Spielmenü / UI bearbeiten | Esc → UI bearbeiten; auch P oder der Menüknopf | Menü → UI bearbeiten |
+| Spielmenü / UI bearbeiten | Esc → UI bearbeiten; auch der Menüknopf | Menü → UI bearbeiten |
 | Schließen / Angriff stoppen | Esc schließt zuerst Fenster bzw. bricht Zielen/Zaubern ab; aus der Welt öffnet es das Spielmenü und beendet den Autoangriff | × schließt das Clanbuch; Angriffsbutton stoppt den Angriff |
 
 Die Aktionsleiste ist frei belegbar. Unter **Hilfe → Einstellungen → Steuerung & Touchbuttons** lassen sich die Touchbelegung, Buttongröße und Joystickseite einstellen. Geöffnete Menüs halten den Kampf nicht an.
@@ -47,6 +47,12 @@ Die Aktionsleiste ist frei belegbar. Unter **Hilfe → Einstellungen → Steueru
 Im **UI-Bearbeitungsmodus** pausiert die Welt. Ziehe die blauen Rahmen, wähle die Größe und speichere dein Layout. **Abbrechen / Esc** verwirft die offenen Änderungen. Auf Touch öffnet **Optionen** die Einstellungen; das Bedienfeld selbst lässt sich an seiner Überschrift verschieben. Raster, feines Verschieben, Layoutkopien und Zurücksetzen sind eingebaut. Die Layouts werden lokal im Browser gespeichert. Leere Effektleisten und die Zauberleiste erscheinen zum Platzieren als Rahmen. [Bedienung und Prüfbericht](docs/HUD-EDITOR-2026-09-18.md).
 
 Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuellem/letztem Kampf, einzelnen vergangenen Kämpfen und der gesamten Sitzung. Wähle eine Figur für ihre Fähigkeiten und einen Fähigkeitsbalken für Treffer, Durchschnitt, Spitzenwert, kritische Treffer und Überheilung bzw. Überschaden. Auf dem Desktop lässt sich das Fenster an der Titelleiste verschieben; auf Touch passt es sich dem freien Bereich zwischen bzw. über den Kampfbuttons an. Die Statistik läuft auch bei eingeklappter Anzeige weiter und beginnt nach dem Neuladen neu. [Messregeln und Prüfbericht](docs/KAMPFSTATISTIK-2026-09-18.md).
+
+## Fahrzeuge und Reittiere
+
+Am **Fahrstall am Clan-Treff** gibt es ab Stufe 3 nach der Hofprobe **Klappermofa, alten Blechroller und das Pferd des Nachbarbauern**. Mofa gegen Reparaturmaterial, Roller für 160 Pfandmarken, Pferd gegen Verpflegung für die Hofhelfer. Auf der Karte unter **Läden → R**.
+
+**X** sitzt auf/ab, **Shift + P** öffnet die Sammlung; alternativ **Esc → Fahrzeuge & Reittiere**. Das Reisemount lässt sich auf die Aktionsleiste legen. Alle drei reisen 60 % schneller, mit 1,5 Sekunden Aufsteigezeit. Bewegung bricht das Aufsteigen ab; Kampfaktionen, Treffer und Innenräume lassen dich absteigen. Sammlung und Auswahl werden je Held gespeichert. Andere Spieler sehen dein Mount mit Körperform und Kleidung. [Regeln, Technik und Prüfungen](docs/MOUNTS-2026-09-22.md).
 
 ## Kalles Kiosk
 
@@ -72,14 +78,14 @@ Alle Links öffnen die veröffentlichten Browserseiten, keine Quellcodedateien.
 
 | Seite | Zweck |
 |---|---|
-| [Aktuelles Testspiel](https://er-esm.github.io/mertloch-chronicles/) | Vollständiges Spiel mit Fortschritt und Aufträgen |
-| [Helden in Bewegung](https://er-esm.github.io/mertloch-chronicles/redesign-demo.html?hero=dieter&outfit=theme&action=walk) | Aktuelle Figuren, Ausrüstung, Animationen, Einzelbilder und Richtungen |
-| [Hopfen, Zitrus & Pfand](https://er-esm.github.io/mertloch-chronicles/theme-demo.html) | Themenkollektion und Detailansichten der drei Helden |
-| [Weltschmiede](https://er-esm.github.io/mertloch-chronicles/world-forge.html) | Weltvarianten, Seeds, Navigation und Geometrieprüfungen |
-| [Maifeld-Märchen / Artbook](https://er-esm.github.io/mertloch-chronicles/artbook.html) | Weltgestaltung und Motive |
-| [Frühere Pre-Render-Demo](https://er-esm.github.io/mertloch-chronicles/prerender-demo.html) | Technischer Vergleich mit dem älteren Figuren-Rig |
-| [Frühere Sprite-Werkstatt](https://er-esm.github.io/mertloch-chronicles/sprite-lab.html) | Vergleich der ursprünglichen drei Sprite-Stile |
-| [Früherer Maifeld-Prototyp](https://er-esm.github.io/mertloch-chronicles/maifeld-prototype.html) | Eigenständige ältere Hofprobe mit Anni und Dieter |
+| [Aktuelles Testspiel](https://mertloch.esm-consultant.de/) | Vollständiges Spiel mit Fortschritt und Aufträgen |
+| [Helden in Bewegung](https://mertloch.esm-consultant.de/redesign-demo.html?hero=dieter&outfit=theme&action=walk) | Aktuelle Figuren, Ausrüstung, Animationen, Einzelbilder und Richtungen |
+| [Hopfen, Zitrus & Pfand](https://mertloch.esm-consultant.de/theme-demo.html) | Themenkollektion und Detailansichten der drei Helden |
+| [Weltschmiede](https://mertloch.esm-consultant.de/world-forge.html) | Weltvarianten, Seeds, Navigation und Geometrieprüfungen |
+| [Maifeld-Märchen / Artbook](https://mertloch.esm-consultant.de/artbook.html) | Weltgestaltung und Motive |
+| [Frühere Pre-Render-Demo](https://mertloch.esm-consultant.de/prerender-demo.html) | Technischer Vergleich mit dem älteren Figuren-Rig |
+| [Frühere Sprite-Werkstatt](https://mertloch.esm-consultant.de/sprite-lab.html) | Vergleich der ursprünglichen drei Sprite-Stile |
+| [Früherer Maifeld-Prototyp](https://mertloch.esm-consultant.de/maifeld-prototype.html) | Eigenständige ältere Hofprobe mit Anni und Dieter |
 
 ## Lokal starten
 
@@ -120,9 +126,9 @@ Weitere Werkzeuge: `npm run content:balance` erzeugt den [Balance-Bericht](conte
 
 ## Veröffentlichung
 
-[GitHub Actions](https://github.com/ER-ESM/mertloch-chronicles/actions/workflows/pages.yml) prüft Änderungen mit `npm test`, baut `_site/` und führt UI- sowie Offline-/Updateprüfungen durch. Erfolgreiche Builds von `main` werden auf GitHub Pages veröffentlicht; Pull Requests werden geprüft. Der Testspiel-Link zeigt den zuletzt erfolgreich veröffentlichten Build.
+Das Testspiel läuft auf dem eigenen Server unter **https://mertloch.esm-consultant.de/**. Caddy liefert den Client-Build aus `_site/`; der Node-Spielserver stellt Konten, Cloud-Spielstände und WebSocket-Koop bereit. Einrichtung und Betrieb: [Online Stufe B](docs/ONLINE-STUFE-B-2026-09-19.md). Änderungen am Spielserver benötigen zusätzlich zur Client-Auslieferung einen Neustart des Node-Dienstes.
 
-Im Repository ist **Settings → Pages → Source → GitHub Actions** vorgesehen. Über **Actions → Test and publish game → Run workflow** lässt sich der Ablauf erneut starten. Spiel, Kartendaten, Schriften und Laufzeitgrafiken werden mitgeliefert; Grafikquellen und Reviewbilder gehören nicht zum Offline-Spielpaket.
+Der vorhandene [GitHub-Actions-Workflow](https://github.com/ER-ESM/mertloch-chronicles/actions/workflows/pages.yml) prüft Tests, Build und Browserabläufe; seine Pages-Veröffentlichung ist unabhängig vom produktiven Server. Ein erfolgreicher GitHub-Push allein belegt deshalb keinen aktualisierten Testspiel-Stand. Spiel, Kartendaten, Schriften und Laufzeitgrafiken werden mitgeliefert; Grafikquellen und Reviewbilder gehören nicht zum Offline-Spielpaket.
 
 ## Mitwirkende
 
@@ -135,4 +141,4 @@ Im Repository ist **Settings → Pages → Source → GitHub Actions** vorgesehe
 - [OSM API 0.6](https://wiki.openstreetmap.org/wiki/API_v0.6): Schnittstelle für den Snapshot-Import.
 - [Overpass-Ausgabeformate](https://dev.overpass-api.de/output_formats.html): alternative Schnittstelle; der vorhandene Snapshot stammt aus der direkten OSM-API.
 
-Die Rohdaten liegen in `data/mertloch.osm`, die für das Spiel reduzierte Datenbank in `data/mertloch.json`. Bei Weitergabe die OSM-Lizenz und Attribution beibehalten. Das Spiel ist derzeit Einzelspieler ohne MMO-Server, Accounts oder geräteübergreifende Synchronisierung.
+Die Rohdaten liegen in `data/mertloch.osm`, die für das Spiel reduzierte Datenbank in `data/mertloch.json`. Bei Weitergabe die OSM-Lizenz und Attribution beibehalten. Das Spiel unterstützt Gastspiel sowie Konten, Cloud-Spielstände und Koop über den eigenen Spielserver. Die Spielregeln vertrauen weiterhin dem Client; es handelt sich nicht um eine vollständig serververwaltete MMO-Wirtschaft.

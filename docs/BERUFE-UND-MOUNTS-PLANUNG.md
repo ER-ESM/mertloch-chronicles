@@ -8,6 +8,8 @@ Es bündelt Berufs- und Mount-Auswahl, Darstellung, Spawns, Multiplayer-Regeln, 
 
 **Nutzervorgaben:** Dorf-/Maifeld-Setting; Sammelberufe mit entsprechenden Handwerksberufen; vielseitige Mounts einschließlich Mofas, Rollern und dem Pferd des Nachbarbauern; Planung im MMORPG-Kontext; Grundlage vor großer Inhaltsmenge. **Mobile bleibt vorerst zurückgestellt.**
 
+**Umsetzungsnachtrag 22.09.2026:** Der neue Nutzerauftrag gibt Mounts zur Implementierung frei. Die erste Stufe mit Klappermofa, Blechroller und Hofpferd ist im [Mount-Bericht](MOUNTS-2026-09-22.md) beschrieben. Die Berufsplanung und der übrige Mount-Katalog bleiben Brainstorming.
+
 ## 1. Leitidee
 
 Berufe verbinden das Sammeln in der Spielwelt mit passenden Handwerksberufen: Materialien finden, Rezepte lernen und daraus nützliche Gegenstände herstellen. Die Struktur orientiert sich am gewünschten MMO-Prinzip, die Ausgestaltung am Dorf-, Vereins- und Maifeld-Setting.

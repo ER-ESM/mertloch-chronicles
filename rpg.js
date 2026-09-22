@@ -1,3 +1,4 @@
+import {MOUNT_UI} from './content/index.js';
 import {restoreShopHistory} from './shop-state.js';
 import {emitCombatFx} from './combat-fx.js';
 import {restoreMeterHealth} from './combat-meter.js';
@@ -50,9 +51,10 @@ export function useItem(game,id){const def=ITEMS[id],p=game.player;if(game.pause
  if(!game.rpg.inventory.some(e=>e.id===id)){game.toast(def.name+': Davon hast du nichts mehr dabei.');return false;}
  if(game.time<game.rpg.consumableReady){game.toast(def.name+' ist noch nicht bereit · '+Math.max(0,game.rpg.consumableReady-game.time).toFixed(1)+' s.');return false;}if(def.heal&&p.hp>=p.maxHp||def.energy&&p.energy>=100){game.toast('Das brauchst du gerade nicht.');return false;}const hpBefore=p.hp,energyBefore=p.energy;removeItem(game.rpg,id);const b=game.baseEffects?.()||{};if(def.heal)restoreMeterHealth(game,Math.round(def.heal*(1+(b.foodHeal||0))),{id:'item:'+id,name:def.name});if(def.energy)p.energy=Math.min(100,p.energy+Math.round(def.energy*(1+(b.foodHeal||0))));game.rpg.consumableReady=game.time+Math.max(0,BALANCE.player.consumableCooldown-(b.consumableCd||0));if(p.hp>hpBefore)emitCombatFx(game,'heal',p,{amount:p.hp-hpBefore,direct:true});if(p.energy>energyBefore)emitCombatFx(game,'proc',p,{signal:'resource',label:'+'+Math.round(p.energy-energyBefore)+' RANDALE'});game.toast(def.name+' benutzt.');game.memoryEvent?.({kind:'consumable',item:id});changed(game);if(actionBar(game).includes(barItemEntry(id))&&!countItem(game.rpg,id))game.emit('barChanged');return true;}
 /** Belegung der Leiste. Gegenstandsplätze bleiben auch bei leerem Stapel reserviert – die UI graut sie aus. */
-export function actionBar(game){const key=game.member.id,bar=game.rpg.actionBars[key];if(!Array.isArray(bar)){game.rpg.actionBars[key]=DEFAULT_BAR.map(id=>id&&available(game,id)?id:null);return game.rpg.actionBars[key];}const seen=new Set();game.rpg.actionBars[key]=Array.from({length:10},(_,i)=>{const id=bar[i],item=barItemId(id);if(item)return !usableItem(item)||seen.has(id)?null:(seen.add(id),id);if(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id)||!available(game,id)||seen.has(id))return null;seen.add(id);return id;});return game.rpg.actionBars[key];}
+export function actionBar(game){const key=game.member.id,bar=game.rpg.actionBars[key];if(!Array.isArray(bar)){game.rpg.actionBars[key]=DEFAULT_BAR.map(id=>id&&available(game,id)?id:null);return game.rpg.actionBars[key];}const seen=new Set();game.rpg.actionBars[key]=Array.from({length:10},(_,i)=>{const id=bar[i],item=barItemId(id);if(id==='mount')return game.mounts?.owned.length&&!seen.has(id)?(seen.add(id),id):null;if(item)return !usableItem(item)||seen.has(id)?null:(seen.add(id),id);if(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id)||!available(game,id)||seen.has(id))return null;seen.add(id);return id;});return game.rpg.actionBars[key];}
 /** Ein Leistenplatz für die UI: Kniff, Gegenstand (mit Stapelgröße und Bereitschaft) oder leer. */
 export function barSlots(game){const bar=actionBar(game);return bar.map((entry,index)=>{const key=SLOT_KEYS[index],item=barItemId(entry);
+ if(entry==='mount')return {index,key,entry,kind:'mount',id:'mount',name:MOUNT_UI.barName,available:!!game.mounts?.owned.length};
  if(item){const d=ITEMS[item],count=countItem(game.rpg,item),wait=Math.max(0,game.rpg.consumableReady-game.time);
   return {index,key,entry,kind:'item',id:item,name:d.name,icon:d.icon||null,count,empty:count===0,cooldown:wait,ready:count>0&&wait<=0,available:count>0};}
  if(!entry)return {index,key,entry:null,kind:'empty',id:null,name:'',icon:null,available:false};
@@ -62,6 +64,7 @@ export function barSlots(game){const bar=actionBar(game);return bar.map((entry,i
 export function bindSkill(game,id,index){if(!Number.isInteger(index)||index<0||index>9)return false;
  const item=barItemId(id);
  if(item){if(!usableItem(item))return false;}
+ else if(id==='mount'){if(!game.mounts?.owned.length)return false;}
  else if(id&&(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id&&available(game,id))))return false;
  const bar=actionBar(game),old=id?bar.indexOf(id):-1,replaced=bar[index];
  if(old>=0)bar[old]=replaced;else if(barItemId(replaced))noteBarItem(game,barItemId(replaced));

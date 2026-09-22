@@ -1,5 +1,7 @@
 # Roadmap — Mertloch Chronicles
 
+**Nutzerauftrag 22.09.2026 – Mounts:** Erste Stufe mit Klappermofa, Blechroller, Hofpferd, persönlicher Sammlung, Fahrstall, Sitzposen und Online-Anwesenheit. [Umsetzung und Prüfstatus](MOUNTS-2026-09-22.md). Berufe und weitere Mounts bleiben geplant; Mobile bleibt zurückgestellt.
+
 ## Neue Priorität · 2026-09-19
 
 Auf Nutzerwunsch ist die **Charaktererstellung zurückgestellt**. Stattdessen wird **Kalles Kiosk als Dorfladen** umgesetzt: Verpflegung kaufen, Material und abgelegte Ausrüstung direkt aus dem danebenliegenden Inventar verkaufen, letzte Verkäufe rückkaufen; Desktop und Touch. Folgeauftrag: begehbares Kioskhaus mit separater Innenraum-Instanz und Verkaufstheke. Details und Abnahme: [Händler](HAENDLER-2026-09-19.md). Dies hebt die frühere Zurückstellung des Händlers ausdrücklich auf. Handwerk und Pfandautomat bleiben offen; die Charaktererstellung bleibt zurückgestellt. Die parallel ergänzte Online-Stufe A ist ein eigener Auftrag.

@@ -23,6 +23,17 @@ async function boot(t){
 }
 const register=(c,n)=>c.call('auth',{action:'register',email:n.toLowerCase()+'@example.org',password:'ganz-geheim-'+n,name:n});
 
+test('Mounts: two accounts see riding, gear, dismount and reconnect; collections use separate hero saves',async t=>{
+ const {client,socket}=await boot(t),a=client(),b=client();await register(a,'Reiter');await register(b,'Zuschauer');const wa=await socket(a),wb=await socket(b);t.after(()=>{wa.close();wb.close();});
+ const pos={t:'pos',w:'mount-world',x:100,y:100,f:1,c:'kevin',l:6,s:'walk',k:'anni',md:'ne',mt:'hofpferd',eq:[{slot:'body',asset:'jacket',rarity:'rare'}]};
+ wa.send(JSON.stringify(pos));wb.send(JSON.stringify({...pos,x:120,mt:null,eq:[]}));await sleep(180);
+ const snap=()=>wb.inbox.filter(m=>m.t==='snap').at(-1)?.o[0];assert.equal(snap().mt,'hofpferd');assert.equal(snap().k,'anni');assert.equal(snap().md,'ne');assert.equal(applySnapshot([],[snap()],100)[0].visualEquipment[0].asset,'jacket');
+ wa.send(JSON.stringify({...pos,mt:null}));await sleep(180);assert.equal(snap().mt,null);assert.equal(snap().eq,undefined);
+ wa.send(JSON.stringify({...pos,mt:'external-mount',eq:[{slot:'body',asset:'https://invalid'}]}));await sleep(180);assert.equal(snap().mt,null);
+ const owned={version:1,owned:['hofpferd'],selected:'hofpferd'};await a.call('save',{world:'mount-world#hero-one',save:{version:1,mounts:owned},savedAt:10});await a.call('save',{world:'mount-world#hero-two',save:{version:1,mounts:{owned:[]}},savedAt:10});assert.deepEqual((await a.call('save?world=mount-world%23hero-one')).save.mounts,owned);assert.deepEqual((await a.call('save?world=mount-world%23hero-two')).save.mounts.owned,[]);assert.equal((await b.call('save?world=mount-world%23hero-one')).save,null);
+ const reconnected=await socket(a);t.after(()=>reconnected.close());reconnected.send(JSON.stringify({...pos,mt:null,s:'idle'}));await sleep(180);assert.equal(snap().mt,null);
+});
+
 test('Frames: Kodierung und Dekodierung über alle Längenstufen, unmaskierte Client-Frames fallen durch',()=>{
  for(const n of [0,5,125,126,4000]){
   const text='ä'.repeat(n).slice(0,n),server=encodeFrame(1,text),payload=Buffer.from(text,'utf8'),mask=Buffer.from([1,2,3,4]);

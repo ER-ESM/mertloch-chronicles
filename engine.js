@@ -1,3 +1,5 @@
+import {initMounts,savedMounts,toggleMount,dismount,tickMount,acquireMount,selectMount,mountStation} from './mounts.js';
+import {MOUNT_UI,MOUNT_RULES} from './content/index.js';
 import {inKiosk,enterKiosk,leaveKiosk,roomInteraction,roomWorld,tickKiosk,savedKiosk} from './kiosk-instance.js';
 import {KIOSK_ROOM,KIOSK_TEXT} from './content/index.js';
 import {shopInteraction,buyItem,sellItem,buybackItem} from './shop.js';
@@ -73,10 +75,15 @@ export class Game{
     this.sideQuests=Object.fromEntries((world.quests||[]).map(q=>{const old=sameWorld?saved.sideQuests?.[q.id]:null;return[q.id,{accepted:!!old?.accepted,progress:Math.min(q.required,Math.max(0,Number(old?.progress)||0)),collected:Array.isArray(old?.collected)?old.collected.filter(id=>q.items.some(i=>i.id===id)):[],claimed:!!old?.claimed}];}));
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
     this.campSerial=0;this.populateCamps();
+    initMounts(this,saved.mounts);
     this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
     initCompanions(this,sameWorld?saved.companions:null);
     initTutorial(this,saved,options.guidedStart);if(sameWorld&&saved.instance?.id===KIOSK_ROOM.id)enterKiosk(this,saved.instance);
   }
+  toggleMount(id){return toggleMount(this,id);}
+  dismount(){return dismount(this);}
+  acquireMount(id){return acquireMount(this,id);}
+  selectMount(id){return selectMount(this,id);}
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
   resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.procState=freshProcState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.hurt=0;this.player.dash=0;this.player.castPose=0;this.player.parryCharges=0;this.buffs={};}
   learnTalentSkill(id){if(id)unlockOnBar(this,[id]);}
@@ -124,8 +131,10 @@ export class Game{
     if(this.paused||this.dead)return false;
     // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
     if(Number.isInteger(id))id=actionBar(this)[id]??null;
+    if(id==='mount')return toggleMount(this);
     const barItem=barItemId(id);if(barItem)return useItem(this,barItem);
     const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.toast('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
+    dismount(this);
     if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
     const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCostMech(this,s,skillCost(this,s,cs)),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,this.cooldowns[id].toFixed(1))||`${s.name} ist noch nicht bereit · ${this.cooldowns[id].toFixed(1)} s.`);return false;}
     if(!completing&&!s.offGcd&&this.gcd>0)return false;
@@ -332,6 +341,7 @@ export class Game{
     if(inKiosk(this))return roomInteraction(this);
     const p=this.player,focus=this.questFocus();if(focus)return focus;
     const mentor=this.mentorInteraction();if(mentor)return {kind:'mentor',point:{x:mentor.x,y:mentor.y},id:mentor.id,name:mentor.name,priority:3};
+    const stable=mountStation(this.world);if(!tutorialActive(this)&&distance(p,stable)<=MOUNT_RULES.range&&this.world.lineClear(p,stable))return {kind:'mounts',point:stable,name:MOUNT_UI.station,priority:4};
     const shop=shopInteraction(this);if(shop)return shop;
     const side=this.questInteraction();if(side)return {...side,point:{x:side.point.x,y:side.point.y},priority:4};
     if(this.world.npc&&distance(p,this.world.npc)<TALK_RANGE)return {kind:'npc',point:{x:this.world.npc.x,y:this.world.npc.y},name:this.world.npc.name,priority:5};
@@ -424,7 +434,7 @@ export class Game{
     this.emit('attacked',{enemyId:e.id,damage,first:true});
     return true;
   }
-  hitPlayer(e,n,avoidable=true){if(robbiTaunt(this,e,n))return;beginMeterCombat(this,e);const p=this.player,fresh=p.inCombat<=0;if(p.invulnerable>0&&avoidable){this.stats.dodges++;emitCombatFx(this,'dodge',p,{from:{x:e.x,y:e.y}});fireProcs(this,'dodge',combatStats(this));if(!this.sct({area:'in',kind:'avoid',text:'AUSGEWICHEN',skill:'dash'}))this.float(p.x,p.y-25,'AUSGEWICHEN','#b8e0d3');return;}
+  hitPlayer(e,n,avoidable=true){dismount(this);if(robbiTaunt(this,e,n))return;beginMeterCombat(this,e);const p=this.player,fresh=p.inCombat<=0;if(p.invulnerable>0&&avoidable){this.stats.dodges++;emitCombatFx(this,'dodge',p,{from:{x:e.x,y:e.y}});fireProcs(this,'dodge',combatStats(this));if(!this.sct({area:'in',kind:'avoid',text:'AUSGEWICHEN',skill:'dash'}))this.float(p.x,p.y-25,'AUSGEWICHEN','#b8e0d3');return;}
     if(p.parry>0&&avoidable){p.parryCharges=Math.max(0,(p.parryCharges||1)-1);if(!p.parryCharges)p.parry=0;fireProcs(this,'parry',combatStats(this));onParry(this,e,combatStats(this));p.energy=Math.min(100,p.energy+20);this.stats.parries++;this.damage(e,this.skills.find(s=>s.id==='parry').reflect*(1+(combatStats(this).reflect||0))*(this.classState.m?.hausverbot>0?(SPEC_MECHANICS[this.rpg.talents.spec]?.hausverbot?.reflect||2):1),'Parade');{const back=restoreMeterHealth(this,this.member.passives?.parryHeal||0,'parryHeal');if(back>0)this.sct({area:'in',kind:'heal',value:back,text:'Parade',skill:'parry'});}if(!this.sct({area:'in',kind:'avoid',text:'PARIERT',skill:'parry'}))this.float(p.x,p.y-25,'PARIERT','#f2da92');emitCombatFx(this,'parry',p,{from:{x:e.x,y:e.y}});this.log('Perfekte Parade · +20 Randale.');return;}
     const guardBefore=(this.classState.guard||0)+(this.buffs.remaining>0?this.buffs.shield||0:0),hpBefore=p.hp,cs=combatStats(this);n=Math.round(n*(e.damage||1)*(1-cs.armor)*(p.hp/p.maxHp<.35?1-(cs.lastStand||0)-(cs.procs.includes('stout')?.08:0):1));if(this.buffs.remaining>0){n=Math.round(n*(1-(this.buffs.reduction||0)));const absorbed=Math.min(n,this.buffs.shield||0);this.buffs.shield=Math.max(0,(this.buffs.shield||0)-absorbed);n-=absorbed;}if(this.partyBuff?.remaining>0){n=Math.round(n*(1-(this.partyBuff.reduction||0)));const soaked=Math.min(n,this.partyBuff.shield||0);this.partyBuff.shield-=soaked;n-=soaked;}n=Math.round(modifyHit(this,n,cs)*(this.baseEffects().damageTaken??1));onHitTakenMech(this,n,cs);p.hp=Math.max(0,p.hp-n);const absorbedFx=guardBefore-(this.classState.guard||0)-(this.buffs.remaining>0?this.buffs.shield||0:0);if(absorbedFx>0)emitCombatFx(this,'guard',p,{amount:absorbedFx,absorbed:true,from:{x:e.x,y:e.y}});if(p.hp<hpBefore)emitCombatFx(this,'hurt',p,{amount:hpBefore-p.hp,from:{x:e.x,y:e.y}});if(n>0)p.hurt=.16;p.inCombat=7;if(p.hp>0&&p.hp/p.maxHp<.35)fireProcs(this,'lowHealth',cs);if(e.arena)(this.arenaStats||(this.arenaStats=freshArenaStats())).taken+=n;this.noteAttacker(e,n,fresh);if(!this.sct({area:'in',kind:'damage',value:n,text:e.name,iconKey:'claw'}))this.float(p.x,p.y-18,'−'+n,'#f09a81');this.emit('shake',{strength:1.7});this.emit('sound',{id:'hit'});if(p.hp===0){this.dead=true;finishMeterCombat(this);stopAuto(this,false);this.casting=null;this.keys.clear();this.moveTo=null;this.path=[];this.routeGoal=null;this.memoryEvent({kind:'firstDeath'});this.emit('death');}
   }
@@ -436,7 +446,7 @@ export class Game{
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
-  respawn(){if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});resetCompanions(this);
+  respawn(){dismount(this);if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});resetCompanions(this);
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
   tick(dt){if(this.paused||this.dead)return;if(inKiosk(this)){tickKiosk(this,Math.min(dt,.05));return;}dt=Math.min(dt,.05);this.time+=dt;
@@ -451,7 +461,7 @@ export class Game{
     if(p.inCombat===0||resting)p.hp=Math.min(p.maxHp,p.hp+dt*(resting?BALANCE.momentum.restRegen:BALANCE.player.outOfCombatRegen)*(tickStats.procs.includes('hops')?PROCS.hops.regen:1)*(1+(this.baseEffects().restRegen||0)));
     let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
     if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];this.routeGoal=null;}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;if(!this.moveTo)this.routeGoal=null;dx=dy=0;}}
-    stepPlayer(this,dx,dy,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);tickCompanions(this,dt);
+    tickMount(this,dt);stepPlayer(this,dx,dy,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);tickCompanions(this,dt);
     for(const e of this.enemies){
       if((tutorialActive(this)&&!e.arena)||e.tutorial)continue;
       e.attack=Math.max(0,e.attack-dt);e.hurt=Math.max(0,(e.hurt||0)-dt);e.moving=false;e.spawnGrace=Math.max(0,e.spawnGrace-dt);
@@ -481,5 +491,5 @@ export class Game{
     tickCombatMeter(this);this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(!tutorialActive(this)&&distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
   }
-  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,companions:savedCompanions(this),relic:this.relic,discovered:[...this.discovered]};}
+  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,mounts:savedMounts(this),companions:savedCompanions(this),relic:this.relic,discovered:[...this.discovered]};}
 }

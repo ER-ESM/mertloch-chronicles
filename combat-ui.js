@@ -2,7 +2,7 @@ import {skillHelp} from './mechanic-help.js';
 import {categoryChips} from './category-ui.js';
 import {autoWeapons} from './auto-combat.js';
 import {SCALE} from './world.js';
-import {BALANCE,COMBAT_TEXT,EQUIPMENT_SLOTS,COMBAT_RULES} from './content/index.js';
+import {MOUNT_UI,BALANCE,COMBAT_TEXT,EQUIPMENT_SLOTS,COMBAT_RULES} from './content/index.js';
 import {weaponRequirement,weaponRange} from './equipment.js';
 import {actionBar,keyFor,combatStats,rewardOptions,ITEMS,SPECIAL_KEYS} from './rpg.js';
 import {available,skillLevel} from './progression.js';
@@ -11,7 +11,7 @@ import {AFFIXES} from './itemization.js';
 import {skillCost,markedEnemies,beforeSkill} from './class-mechanics.js';
 import {procGlow,procFree,procEmpowered} from './procs.js';
 import {mechVariant,isMobile} from './spec-mechanics.js';
-const art=id=>'<canvas width="48" height="48" data-skill-art="'+id+'"></canvas>';
+const art=id=>id==='mount'?'<canvas width="48" height="48" data-mount-icon></canvas>':'<canvas width="48" height="48" data-skill-art="'+id+'"></canvas>';
 const DEFENSIVE_SKILLS=new Set(['parry','dash','interrupt','heal','buff','infusion','sanctuary','keg','barricade']);
 /** Zustandswechsel eines Kniffs (wie Icon-Overlays im Vorbild): Name der Variante aus den Kampfregeln (Spezialkniff, RESONANZ) oder Proc-Zustand. */
 function skillVariant(g,id,st,e,usable){
@@ -34,7 +34,7 @@ export function skillStatus(g,id){const s=g.skills.find(s=>s.id===id);if(!s)retu
  const defensive=DEFENSIVE_SKILLS.has(id),variant=skillVariant(g,id,st,e,usable);
  return {weaponMissing:!!requirement&&!requirement.met,ideal:usable&&(procGlow(g,id)||(ideal&&!defensive)),defensive,variant,usable,cooldown:g.cooldowns[id]||0,gcd:s.offGcd?0:g.gcd,gcdTotal:cs.gcd};
 }
-export function skillTooltip(g,id,touch=false){const s=g.skills.find(s=>s.id===id);if(!s)return '';const cs=combatStats(g),requirement=weaponRequirement(g,s,ITEMS),range=s.weaponSource&&weaponRange(g,ITEMS,s.weaponSource),bound=actionBar(g).includes(id)||SPECIAL_KEYS[id]!==undefined,unlocked=available(g,id),origin=s.talent?'Talent: '+SPECS[s.spec].name:'Erlernt auf Stufe '+skillLevel(g,id);const cdSeconds=(s.cd*(id==='dash'?(1-(cs.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste)).toFixed(1),cost=skillCost(g,s,cs);
+export function skillTooltip(g,id,touch=false){if(id==='mount')return '<strong>'+MOUNT_UI.barName+'</strong><p>'+MOUNT_UI.barHint+'</p><p>'+MOUNT_UI.rules+'</p>';const s=g.skills.find(s=>s.id===id);if(!s)return '';const cs=combatStats(g),requirement=weaponRequirement(g,s,ITEMS),range=s.weaponSource&&weaponRange(g,ITEMS,s.weaponSource),bound=actionBar(g).includes(id)||SPECIAL_KEYS[id]!==undefined,unlocked=available(g,id),origin=s.talent?'Talent: '+SPECS[s.spec].name:'Erlernt auf Stufe '+skillLevel(g,id);const cdSeconds=(s.cd*(id==='dash'?(1-(cs.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste)).toFixed(1),cost=skillCost(g,s,cs);
  // Iteration 4 (MMO-Vorbilder): Kopfzeilen wie im Vorbild – Kosten links, Reichweite rechts; Zauberzeit links, Abklingzeit rechts. Danach erst der Text.
  const meta=s.auto?'':'<div class="tooltip-meta"><span>'+(cost?cost+' Randale':'Kostenlos')+'</span><span>'+(s.range?Math.round(s.range/SCALE)+' m Reichweite':'')+'</span></div><div class="tooltip-meta"><span>'+(s.castTime?s.castTime.toFixed(1)+' s Zauberzeit':'Sofort')+(isMobile(g,s)?' · im Laufen':'')+'</span><span>'+cdSeconds+' s Abklingzeit</span></div>';
  return '<div class="tooltip-heading">'+art(id)+'<div><strong>'+s.name+'</strong><small>'+origin+(touch?'':' · '+keyFor(g,id))+'</small></div></div>'+categoryChips(g,'skill',id)+meta+'<p>'+skillHelp(g,id)+'</p>'+damageTooltip(g,s)+(requirement?'<p class="'+(requirement.met?'stat-gain':'requirements-failed')+'">'+(requirement.met?'✓ ':'✕ ')+'Benötigt: '+requirement.name+'</p>':'')+(!s.auto&&range&&range.max>0?'<p>Waffenbasis: '+range.min.toFixed(0)+'–'+range.max.toFixed(0)+' Schaden'+(s.weaponSource==='melee'?' (Nebenhand zählt zu 50 %)':'')+'.</p>':'')+(!s.auto&&s.offGcd?'<p class="tooltip-gcd">Ohne globale Abklingzeit.</p>':'')+(!unlocked||!bound?'<p class="'+(unlocked?'stat-gain':'requirements-failed')+'">'+(!unlocked?s.talent?'Dieses Talent im eigenen Baum lernen.':'Benötigt Charakterstufe '+skillLevel(g,id)+'.':'Gelernt, noch nicht auf der Leiste.')+'</p>':'')+(skillStatus(g,id).ideal?'<footer>Ideales Zeitfenster!</footer>':'');}

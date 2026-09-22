@@ -28,7 +28,7 @@ export const PLAY_HELP={
  desktopKeys:[
   ['WASD / Rechtsklick','Laufen / Laufweg'],['Tab / Shift + Tab','Nächstes / voriges nahes Ziel'],['F / Shift + F','Interagieren / Beutel ganz leeren'],
   ['1–0 / LEER / Q','Kniffe / Ausweichen / Unterbrechen'],['C / P / N','Figur / Kniffe / Talente – jede Seite für sich'],['I / J / M / H','Rucksack / Aufträge / Karte / Hilfe'],
-  ['B','Bude (Abschnitt der Aufträge)'],['V','Kampfstatistik'],['R','Aggro-Radius'],['1 / Esc','Autoangriff ein/aus / Autoangriff beenden'],['Esc','Spielmenü öffnen; schließt zuerst Fenster oder bricht Zielen/Zaubern ab'],
+  ['X / Shift + P','Auf-/Absitzen / Mount-Sammlung'],['B','Bude (Abschnitt der Aufträge)'],['V','Kampfstatistik'],['R','Aggro-Radius'],['1 / Esc','Autoangriff ein/aus / Autoangriff beenden'],['Esc','Spielmenü öffnen; schließt zuerst Fenster oder bricht Zielen/Zaubern ab'],
   ['Leeres Feld → Kniff','Direkt auf der Aktionsleiste belegen'],['Kniff ziehen / Rechtsklick auf Feld','Belegen / leeren'],['Item doppelklicken','Passende Ausrüstung austauschen'],
   ['Verpflegung ziehen','Rucksack → freier Platz der Aktionsleiste'],['Shift über einem Tooltip','Details, Zusammenhänge und Fachwörter'],
   ['Item anklicken','Details, Platzwahl und Vergleich'],['Talent rechtsklicken','Punkt zurücknehmen, wenn kein Folgetalent abhängt']

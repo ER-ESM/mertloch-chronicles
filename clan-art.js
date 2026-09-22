@@ -1,3 +1,4 @@
+import {drawMount,loadMountArt,mountArt} from './mount-art.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {drawLiveAnimal,drawLivePerson,hasLiveContent} from './live-art.js';
 import {drawTinyPerson} from './pixel-people.js';
@@ -5,7 +6,7 @@ import {drawMaifeld,maifeld} from './maifeld-art.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,spark} from './pixel-style.js';
 import {drawComicEnemy,drawComicResident} from './comic-actors.js';
 
-export function drawClanHero(c,x,y,time,p,npc=false,scale=1){drawTinyPerson(c,x,y,time,p,npc,scale);}
+export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){if(!mountArt.ready)loadMountArt();if(drawMount(c,x,y,p,time,p.artMagnify??scale/(26/33)))return;}drawTinyPerson(c,x,y,time,p,npc,scale);}
 
 export function drawClanEnemy(c,e,time){
  // Gelieferte Bögen (Gegner, Bosse) bringen ihre Welthöhe selbst mit: artMagnify 1, kein Weltmaßstab darüber.

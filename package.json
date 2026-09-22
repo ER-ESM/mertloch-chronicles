@@ -3,7 +3,7 @@
   "version": "0.20.0",
   "private": true,
   "type": "module",
-  "homepage": "https://er-esm.github.io/mertloch-chronicles/",
+  "homepage": "https://mertloch.esm-consultant.de/",
   "repository": {
     "type": "git",
     "url": "https://github.com/ER-ESM/mertloch-chronicles.git"
@@ -43,6 +43,9 @@
     "fx:check": "node --test tests/combat-fx.test.mjs",
     "ui:kit:build": "node tools/ui-kit/build.mjs",
     "ui:kit:check": "node --test tests/ui-kit.test.mjs",
-    "ui:kit:browser": "node scripts/ui-kit-check.mjs"
+    "ui:kit:browser": "node scripts/ui-kit-check.mjs",
+    "mounts:build": "node scripts/build-mounts.mjs",
+    "mounts:check": "node --test tests/mounts.test.mjs && node scripts/mount-check.mjs && node scripts/mount-art-check.mjs",
+    "mounts:online-check": "node scripts/mount-online-check.mjs"
   }
 }

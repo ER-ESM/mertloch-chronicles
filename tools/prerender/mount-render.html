@@ -1,0 +1,24 @@
+<!doctype html><html><meta charset="utf-8"><title>Mount sprite workshop</title><body><script type="module">
+import * as T from './vendor/three.module.min.js';
+import {mountModel} from './mount-models.js';
+import {CAMERA,LIGHTS,lightVector} from './stage.js';
+import {MOUNTS} from '../../content/mounts.js';
+import {PRECISION_PALETTE} from '../../art-quality.js';
+const size=256,ppu=4,pivot={x:128,y:224},cv=document.createElement('canvas'),render=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:false,preserveDrawingBuffer:true});render.setSize(size,size);render.setClearColor(0,0);
+const scene=new T.Scene();scene.add(new T.HemisphereLight(LIGHTS.hemi.sky,LIGHTS.hemi.ground,LIGHTS.hemi.intensity),new T.AmbientLight(0xffffff,.35));
+for(const l of [LIGHTS.key,LIGHTS.fill]){const light=new T.DirectionalLight(l.color,l.intensity),v=lightVector(l);light.position.set(v.x*200,v.y*200,v.z*200);scene.add(light);}
+const pitch=CAMERA.pitchDeg*Math.PI/180,cam=new T.OrthographicCamera(-32,32,56,-8,-500,500);cam.position.set(0,Math.sin(pitch)*200,Math.cos(pitch)*200);cam.lookAt(0,0,0);cam.updateMatrixWorld();
+const project=(root,p)=>{const v=new T.Vector3(...p);root.localToWorld(v);v.project(cam);return {x:(v.x+1)*size/2,y:(1-v.y)*size/2};};
+window.renderMount=id=>{const atlas=document.createElement('canvas');atlas.width=size*9;atlas.height=size*4;const c=atlas.getContext('2d'),frames=[];
+ for(const [row,direction]of Object.keys(CAMERA.directions).entries())for(let col=0;col<9;col++){
+  const m=mountModel(MOUNTS[id].kind,(col?col-1:0)/8,col>0);m.root.rotation.y=-CAMERA.directions[direction]*Math.PI/180;scene.add(m.root);m.root.updateMatrixWorld(true);render.render(scene,cam);
+  const cell=document.createElement('canvas');cell.width=cell.height=size;const ctx=cell.getContext('2d');ctx.drawImage(cv,0,0);const data=ctx.getImageData(0,0,size,size),pixels=data.data;
+  for(let i=0;i<pixels.length;i+=4){if(pixels[i+3]<100){pixels[i+3]=0;continue;}let best=PRECISION_PALETTE[0],dist=Infinity;for(const p of PRECISION_PALETTE){const d=(p[0]-pixels[i])**2*.3+(p[1]-pixels[i+1])**2*.59+(p[2]-pixels[i+2])**2*.11;if(d<dist){best=p;dist=d;}}pixels.set([...best,255],i);}
+  const alpha=new Uint8Array(size*size);for(let i=0;i<alpha.length;i++)alpha[i]=pixels[i*4+3];for(let y=1;y<size-1;y++)for(let x=1;x<size-1;x++){let i=y*size+x;if(!alpha[i]&&(alpha[i-1]||alpha[i+1]||alpha[i-size]||alpha[i+size]))pixels.set([27,34,37,255],i*4);}
+  ctx.putImageData(data,0,0);c.drawImage(cell,col*size,row*size);
+  frames.push({direction,column:col,seat:project(m.root,m.seat),hands:m.hands.map(p=>project(m.root,p)),knees:m.knees.map(p=>project(m.root,p)),feet:m.feet.map(p=>project(m.root,p)),hips:[-1,1].map(s=>project(m.root,[m.seat[0]+s*2,m.seat[1],m.seat[2]]))});
+  scene.remove(m.root);m.root.traverse(o=>{if(o.isMesh){o.geometry.dispose();o.material.dispose();}});
+ }
+ return {png:atlas.toDataURL('image/png').split(',')[1],meta:{path:'assets/mounts/runtime/'+id+'.png',size,ppu,pivot,columns:9,directions:Object.keys(CAMERA.directions),frames}};
+};window.mountWorkshopReady=true;
+</script></body></html>

@@ -24,7 +24,7 @@ export function enterKiosk(g,saved=null){
  if(g.dead||g.paused||g.player.inCombat>0||g.casting||tutorialActive(g)){g.toast(T.cannotEnter);return false;}
  if(!saved&&(distance(g.player,door)>R.range||!g.world.lineClear(g.player,door))){g.toast(T.far);return false;}
  const position=saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)&&!roomWorld.blocked(saved.x,saved.y,9)?{x:saved.x,y:saved.y}:R.spawn;
- g.instance={id:R.id,outsidePosition:{...door,facing:g.player.facing||1},time:0};stop(g);Object.assign(g.player,position);g.fx=[];g.texts=[];g.emit('instanceChanged');g.emit('save');g.toast(T.welcome);return true;
+ g.dismount?.();g.instance={id:R.id,outsidePosition:{...door,facing:g.player.facing||1},time:0};stop(g);Object.assign(g.player,position);g.fx=[];g.texts=[];g.emit('instanceChanged');g.emit('save');g.toast(T.welcome);return true;
 }
 export function leaveKiosk(g,force=false){
  if(!inKiosk(g)||(!force&&distance(g.player,R.exit)>R.range))return false;

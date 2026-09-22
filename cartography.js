@@ -1,3 +1,5 @@
+import {mountStation} from './mounts.js';
+import {MOUNT_UI} from './content/index.js';
 import {SHOP_UI} from './content/index.js';
 import {isElite} from './enemy-ui.js';
 import {SCALE,distance} from './world.js';
@@ -7,7 +9,7 @@ export function mapPlaces(g){
  const hubs=(g.world.hubs||[]).map((h,i)=>({...h,id:'hub:'+h.id,kind:'hub',number:i+1,title:h.name.split(' · ')[0],point:h,detail:'Geschützter Treffpunkt',quests:g.world.quests.filter(q=>q.giver.hubId===h.id&&!g.sideQuests[q.id]?.claimed).length}));
  const camps=g.world.camps.map((h,i)=>({...h,id:'camp:'+h.id,kind:'camp',number:i+1,title:h.title,point:h.approach||h,detail:g.enemies.some(e=>e.campId===h.id&&e.hp>0)?'Besetztes Lager · Route zum sicheren Rand':'Lager freigeräumt · Gegner kehren zurück'}));
  const kiosk=g.world.places?.kiosk,shops=kiosk?[{id:'shop:kalle',kind:'shop',number:SHOP_UI.mapSymbol,title:SHOP_UI.title,point:kiosk.entrance||kiosk.approach,detail:SHOP_UI.mapDetail}]:[];
- return [...hubs,...camps,...shops];
+ return [...hubs,...camps,...shops,...(g.world.spawn&&g.world.findClear?[{id:'shop:mounts',kind:'shop',number:'R',title:MOUNT_UI.station,point:mountStation(g.world),detail:MOUNT_UI.title}]:[])];
 }
 export function mapView(w,p,W,H,full,options={}){
  if(!full){const scale=W/1050;return{scale,ox:p.x-W/scale/2,oy:p.y-H/scale/2};}
