@@ -18,3 +18,10 @@
 .touch-mode #tutorialGuide [data-tutorial-help]{position:absolute;right:56px;top:4px;margin:0}
 .touch-mode .in-tutorial .touch-topline{display:none}
 @media(orientation:landscape){.touch-mode #tutorialGuide{left:50%;right:auto;transform:translateX(-50%);width:300px;max-width:calc(100% - 24px - var(--safe-left) - var(--safe-right))}}
+/* Feinschliff 2026-09-22 (Maus): Einklappen und Hilfe als kleine Kopf-Symbole oben rechts statt zweier 44-px-Quader. */
+body:not(.touch-mode) #tutorialGuide{padding:10px 12px 12px}
+body:not(.touch-mode) #tutorialGuide .eyebrow{display:block;padding-right:64px}
+body:not(.touch-mode) #tutorialGuide button{width:26px;height:26px;min-width:26px;min-height:26px;padding:0;font-size:14px;line-height:1;display:grid;place-items:center}
+body:not(.touch-mode) #tutorialGuide [data-tutorial-collapse]{position:absolute;right:6px;top:6px}
+body:not(.touch-mode) #tutorialGuide [data-tutorial-help],body:not(.touch-mode) #tutorialGuide.collapsed [data-tutorial-help]{position:absolute;right:36px;top:6px;margin:0}
+body:not(.touch-mode) #tutorialGuide.collapsed{padding:8px 12px;min-height:0}

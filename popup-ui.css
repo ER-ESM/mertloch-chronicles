@@ -178,3 +178,7 @@ body.touch-mode .conversation-person small{margin-top:4px}
 .popup-person .starter-armory{margin:8px 0 0}
 .popup-person .starter-armory small{display:block}
 .popup-person .clan-hint{margin:0;color:#c9d2b4;font-size:11px}
+/* Feinschliff 2026-09-22 (Maus): Clanbuch nutzt die Höhe bis knapp über die Aktionsleiste, die Figur-Seite passt ohne Scrollen; Knöpfe in lesbarer Größe. */
+@media(min-width:761px) and (min-height:700px){body:not(.touch-mode) .game-popup.popup-book{max-height:calc(100dvh - 124px)}}
+body:not(.touch-mode) .game-popup .equipment-grid{--body-height:330px}
+.game-popup .equipment-grid .armory-controls button{font-size:14px;letter-spacing:.03em}

@@ -46,3 +46,8 @@ body:not(.touch-mode) .compact-panel .armory-banner .paper-doll{width:100px;padd
 .book-tabs button.tab-help{flex:0 0 46px}.book-tabs button.tab-help span{display:none}.book-tabs button.tab-help canvas{opacity:.9}
 .person-skills .book-actionbar{margin-top:10px}
 .panel-section{scroll-margin-top:70px}
+/* Feinschliff 2026-09-22: Auftragskarte – Ziel sichtbar, Belohnung lesbar auf Pappe, alle Knöpfe in einer Zeile. */
+.quest-entry .quest-objective{margin:8px 0 2px;padding-left:14px;position:relative;font:700 var(--t-13,13px)/1.5 var(--read);color:var(--ink)}
+.quest-entry .quest-objective::before{content:'➤';position:absolute;left:0;color:var(--stamp)}
+.quest-entry .quest-reward{text-transform:none;letter-spacing:0;color:var(--ink-2);font:var(--t-13,13px)/1.5 var(--read);border-top:1px dashed #0000002e;padding-top:8px}
+.compact-panel .quest-entry-actions{flex-wrap:wrap;gap:8px}

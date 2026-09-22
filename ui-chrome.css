@@ -98,10 +98,27 @@
  border:7px solid transparent;border-image:var(--chrome-frame) 22% / 14px / 0 stretch;border-radius:0;
  background:#11291f var(--chrome-material) center/384px 384px;color:var(--chrome-text);box-shadow:0 4px 15px #0008;
 }
+/* Dunkles Tooltip-Material braucht helle Schrift: die Papier-Tinten aus bierdeckel.css (Tinte, Stempelrot, Link-Farben) hier auf Hell umbiegen. */
+.item-tooltip,#auraTooltip,.ui-tooltip{--ink:#f1e4c4;--ink-2:#d6c9a6;--stamp-ink:#f3cf7a}
+.item-tooltip strong{color:#f3cf7a}
+.item-tooltip :is(p,small,.tooltip-meta,.tooltip-meta span){color:#d6c9a6}
+.item-tooltip .ref-skill,.item-tooltip.is-describe .ref-skill{color:#f0c46a}
+.item-tooltip .ref-talent{color:#f09aa6}
+.item-tooltip .ref-proc{color:#cfa8ef}
+.item-tooltip .ref-passive{color:#9fcbe6}
+.item-tooltip .ref-buff{color:#8fd6c4}
+.item-tooltip .ref-term{color:#f1e4c4}
+.item-tooltip .verdict-gain{color:#8fd47f}
+.item-tooltip .verdict-loss{color:#f08a73}
+.item-tooltip :is(.verdict-same,.verdict-blocked){color:#b9b39b}
+.item-tooltip .cat-kind{border-color:#ffffff40}
 .game-popup :is(.companion-offer,.guide-card,.book-skill,.character-stats>div),.ui-card{
  border:5px solid transparent;border-image:var(--chrome-inset) 10% / 7px / 0 stretch;border-radius:0;
  background:linear-gradient(135deg,#2c4738aa,#10241eaa);color:var(--chrome-text);
 }
+/* Dieselben Karten sind hier dunkel: Papier-Tinte auf Hell umbiegen und den hellen Papier-Innenrand entfernen. */
+.game-popup :is(.companion-offer,.guide-card,.book-skill,.character-stats>div),.ui-card{--ink:#f1e4c4;--ink-2:#d6c9a6;--stamp-ink:#f3cf7a;box-shadow:none}
+.game-popup .guide-card :is(h3,p,li){color:var(--ink-2)}.game-popup .guide-card h3{color:#f3cf7a}
 .game-popup .companion-offer header span,.game-popup .companion-offer h3{color:var(--role,var(--chrome-text))}
 .conversation-portrait{border-radius:50%;outline:0;background:#284330;isolation:isolate}
 .conversation-portrait::after{content:'';position:absolute;inset:0;background:var(--chrome-portrait) center/100% 100% no-repeat;pointer-events:none;z-index:2}
