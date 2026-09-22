@@ -182,3 +182,11 @@ body.touch-mode .conversation-person small{margin-top:4px}
 @media(min-width:761px) and (min-height:700px){body:not(.touch-mode) .game-popup.popup-book{max-height:calc(100dvh - 124px)}}
 body:not(.touch-mode) .game-popup .equipment-grid{--body-height:330px}
 .game-popup .equipment-grid .armory-controls button{font-size:14px;letter-spacing:.03em}
+/* Feinschliff 2026-09-22 (Maus): Beute-Log lesbar wie ein MMO-Beutefeed – Symbol 24 px, Name 13 px, Anzahl in Spielschrift. */
+@media(min-width:761px){body:not(.touch-mode) .loot-log{width:270px;max-height:190px;gap:3px}
+ body:not(.touch-mode) .loot-log:not(:empty){background:#11241cdd;border:0;border-left:3px solid #d7b571;box-shadow:0 2px 8px #0007}
+ body:not(.touch-mode) .loot-line{font:600 13px/1.3 var(--read);gap:8px}
+ body:not(.touch-mode) .loot-line canvas{width:24px;height:24px}
+ body:not(.touch-mode) .loot-line b{font-size:13px}
+ body:not(.touch-mode) .loot-line span{font:400 15px/1 var(--display)}
+ body:not(.touch-mode) .loot-line small{font-size:11px;max-width:90px}}

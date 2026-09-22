@@ -38,3 +38,6 @@
 
 .tt-context{margin:10px 0;font:11px/1.4 var(--read)}.tt-context summary{cursor:pointer;color:var(--ink)}.tt-details .tt-context p{font-size:11px}#classMechanicArt:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .item-tooltip.is-describe .ref-skill{color:var(--stamp-ink)}
+/* Feinschliff 2026-09-22: gesperrte Talente grau, aber lesbar (MMO-Muster) statt halb durchsichtig auf Dunkelgrün. */
+.tt-menu .tt-node.locked canvas{filter:grayscale(1) brightness(1.25) contrast(1.1);opacity:.9}
+.tt-menu .tt-node.locked{background:#1b2a24}

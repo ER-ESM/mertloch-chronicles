@@ -762,3 +762,8 @@ mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-ra
 @media(min-width:761px){body:not(.touch-mode) .target-panel{top:67px;left:346px;min-height:106px;box-sizing:border-box}}
 /* Meldungen („muss noch verschnaufen", „zu weit weg") wie im MMO oben mittig unter dem Ortsnamen, als leuchtende Zeile statt Zettel am Rand. */
 @media(min-width:761px){body:not(.touch-mode) #toast{top:96px!important;bottom:auto!important;left:50%!important;right:auto;transform:translateX(-50%)!important;max-width:min(640px,60vw)!important;padding:4px 14px!important;text-align:center;background:none!important;border:0!important;box-shadow:none!important;font:400 22px/1.2 var(--display);letter-spacing:.03em;color:#ffd98a!important;text-shadow:0 2px 0 #1a120a,0 0 3px #1a120a,0 0 10px #000a}}
+/* EP-Leiste: eigene Farbe (violett, nicht Lebens-Grün), 20 Abschnittsmarken, lesbare Beschriftung. */
+.game-shell .xp-track.rpg-xp{background:#0d1712;border-top:2px solid #6b5a36;box-shadow:inset 0 2px 3px #0009}
+.game-shell .xp-track.rpg-xp i{background:linear-gradient(#b48ae8,#7447b8 60%,#5a3494);box-shadow:0 0 6px #a57ee055}
+.game-shell .xp-track.rpg-xp::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 1px),#d7b57150 calc(5% - 1px) 5%)}
+.game-shell .xp-track.rpg-xp #xpCaption{z-index:1;display:grid;place-items:center;font:700 12px/1 var(--read);letter-spacing:.02em;color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 3px #000}

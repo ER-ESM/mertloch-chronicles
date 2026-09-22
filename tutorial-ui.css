@@ -25,3 +25,4 @@ body:not(.touch-mode) #tutorialGuide button{width:26px;height:26px;min-width:26p
 body:not(.touch-mode) #tutorialGuide [data-tutorial-collapse]{position:absolute;right:6px;top:6px}
 body:not(.touch-mode) #tutorialGuide [data-tutorial-help],body:not(.touch-mode) #tutorialGuide.collapsed [data-tutorial-help]{position:absolute;right:36px;top:6px;margin:0}
 body:not(.touch-mode) #tutorialGuide.collapsed{padding:8px 12px;min-height:0}
+.dialog-keyhint{font:400 14px/1.3 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#f3cf7a}
