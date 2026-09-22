@@ -236,3 +236,7 @@ button[data-setting-toggle][aria-pressed=true] .setting-switch i{transform:trans
 .game-popup .quest-tabs{display:flex;gap:6px}
 .game-popup .quest-tabs button{font:400 16px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;padding:8px 14px;color:#c5ceb7;background:linear-gradient(#294235,#182e25);border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;transform:none}
 .game-popup .quest-tabs button.selected{color:#fff0c9;background:linear-gradient(#77562b,#40301d);border-image:var(--chrome-frame) 22% / 7px / 0 stretch;box-shadow:inset 0 -2px 0 #f0c46a;transform:none}
+/* Abschnittssprünge (Aufträge/Bude/Erinnerungen, Figur/Werte …) sehen aus wie alle anderen Unterreiter: eckig, links, gleiche Schrift. */
+.game-popup .section-jump{justify-content:flex-start;gap:6px;background:linear-gradient(#1a3026f8,#15281ff2);border-bottom:1px solid #a9905466}
+.game-popup .section-jump button{flex:0 0 auto;min-height:34px;padding:6px 14px;border-radius:2px!important;border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;background:linear-gradient(#294235,#182e25);color:#c5ceb7;font:400 16px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;box-shadow:none}
+.game-popup .section-jump button[aria-current=true]{background:linear-gradient(#634e2a,#303a27);color:#fff0c8;border-image:var(--chrome-frame) 22% / 9px / 0 stretch;box-shadow:inset 0 -3px #e3c175}
