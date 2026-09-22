@@ -69,7 +69,7 @@ export class BossSpeech {
 }
 
 export function drawBossSpeech(c,bubbles,{ox,oy,width,height,zoom,obstacles=[]}){
- c.save();c.font=`600 ${12/zoom}px monospace`;c.textAlign='left';c.textBaseline='top';
+ c.save();c.font=`700 ${13/zoom}px Nunito,'Trebuchet MS',sans-serif`;/* Sprechblasen in der Leseschrift des Spiels, nicht in Konsolenschrift */c.textAlign='left';c.textBaseline='top';
  const pad=8/zoom,lineHeight=16/zoom,maxWidth=Math.min(290/zoom,width-4*pad),boxes=[];
  const overlaps=(a,b)=>a.x<b.x+b.w+pad&&a.x+a.w+pad>b.x&&a.y<b.y+b.h+pad&&a.y+a.h+pad>b.y;
  for(const {enemy:e,text,kind} of bubbles){

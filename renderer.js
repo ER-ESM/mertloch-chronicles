@@ -97,10 +97,12 @@ export class Renderer {
    if(!this.labelCanvas){const cv=this.labelCanvas=document.createElement('canvas');cv.className='world-labels';cv.setAttribute('aria-hidden','true');Object.assign(cv.style,{position:'absolute',inset:'0',width:'100%',height:'100%',pointerEvents:'none'});this.labelCtx=cv.getContext('2d');}
    const cv=this.labelCanvas,last=[...world.parentNode.querySelectorAll(':scope>canvas.world-fx,:scope>canvas.world-light')].pop()||world;if(last.nextSibling!==cv)last.after(cv);
    const dpr=Math.min(2,window.devicePixelRatio||1),wd=Math.max(1,Math.round(world.clientWidth*dpr)),ht=Math.max(1,Math.round(world.clientHeight*dpr));if(cv.width!==wd||cv.height!==ht){cv.width=wd;cv.height=ht;}
-   const c=this.labelCtx;c.setTransform(1,0,0,1,0,0);if(this.labelDirty||q.length)c.clearRect(0,0,wd,ht);this.labelDirty=q.length>0;if(!q.length)return;
+   const c=this.labelCtx,sp=q.speech;c.setTransform(1,0,0,1,0,0);if(this.labelDirty||q.length||sp)c.clearRect(0,0,wd,ht);this.labelDirty=q.length>0||!!sp;if(!q.length&&!sp)return;
    const k=wd/world.width;c.textAlign='center';c.lineJoin='round';c.strokeStyle='#1d2b24f0';
    for(const l of q){const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a;c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
-   c.globalAlpha=1;c.setTransform(1,0,0,1,0,0);}
+   c.globalAlpha=1;
+   if(sp){const t=sp.t;c.save();c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);this.speechLayout=drawBossSpeech(c,sp.bubbles,sp.opts);c.restore();}
+   c.setTransform(1,0,0,1,0,0);}
   drawScene(){const lit=this.game.settings?.light!==false,kiosk=inKiosk(this.game);/* Ohne Grafikkarte: Farbabstimmung eingebacken statt CSS-Filter (E-50) */this.software??=softwareRendering();{const baked=this.software&&lit?gradeFilter():'';if(bakedGrade.filter!==baked){bakedGrade.filter=baked;this.ground?.invalidate();}}applyGrade(this.canvas,lit&&!this.gradeOff&&!this.software);this.light.mount(this.canvas);this.light.show(lit&&!kiosk);const effects=this.game.settings?.fx!==false&&!kiosk;this.fx.mount(this.canvas);this.fx.show(effects);if(kiosk){drawKioskRoom(this);return;}const c=this.ctx,w=this.world,g=this.game,p=g.player,time=g.time,bubbles=this.bossSpeech.update(g);labelBoxes=[clanSignBounds(c,w)];this.frame++;const elapsed=Math.min(.1,Math.max(.001,time-(this.lastDrawTime??time-.016)));this.lastDrawTime=time;const follow=1-Math.exp(-10*elapsed);this.camera.x+=(p.x-this.camera.x)*follow;this.camera.y+=(p.y-this.camera.y)*follow;const W=this.viewWidth,H=this.viewHeight;c.setTransform(this.density,0,0,this.density,0,0);this.shake*=.87;
     const q=Math.min(2,this.density),/* Kameraraster = Pixelraster der Weltfläche, sonst zittern Boden und Figuren bei Dichte 1 gegeneinander */ox=Math.round((this.camera.x-W/2+(Math.random()-.5)*this.shake)*q)/q,oy=Math.round((this.camera.y-H/2+(Math.random()-.5)*this.shake)*q)/q;this.viewOrigin={x:ox,y:oy};c.imageSmoothingEnabled=false;/* keine Hintergrundfüllung mehr: der Boden-Zwischenspeicher deckt den Ausschnitt vollständig ab (E-50, spart eine Vollbildfläche) */c.save();c.translate(-ox,-oy);
     const visible=(o,pad=100)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
@@ -182,7 +184,9 @@ export class Renderer {
     if(!lit||kiosk){const S=LIGHTING.sheen,light=c.createLinearGradient(0,0,W,H);light.addColorStop(0,S.from);light.addColorStop(.55,S.mid);light.addColorStop(1,S.to);c.fillStyle=light;c.fillRect(0,0,W,H);}
     const bounds=this.canvas.getBoundingClientRect(),obstacles=bubbles.length?[...document.querySelectorAll('.hud,.region-label,.action-area,.game-popup,.attack-warning:not(.hidden),.touch-topline,#touchMenu,#touchContext,#touchStick,#touchActions,#touchUtility,#buffStrip,#touchCancelAim,#tutorialGuide')].map(el=>el.getBoundingClientRect()).filter(b=>b.width&&b.height).map(b=>({x:(b.left-bounds.left)/this.zoom,y:(b.top-bounds.top)/this.zoom,w:b.width/this.zoom,h:b.height/this.zoom})):[];
     obstacles.push({x:p.x-ox-12,y:p.y-oy-30,w:24,h:34});
-    this.speechLayout=drawBossSpeech(c,bubbles,{ox,oy,width:W,height:H,zoom:this.zoom,obstacles});
+    // Sprechblasen auf der Schrift-Ebene: über dem Licht (nicht abgedunkelt) und in voller Auflösung.
+    if(labelQueue&&c===labelTarget){labelQueue.speech={t:c.getTransform(),bubbles,opts:{ox,oy,width:W,height:H,zoom:this.zoom,obstacles}};this.speechLayout=[];}
+    else this.speechLayout=drawBossSpeech(c,bubbles,{ox,oy,width:W,height:H,zoom:this.zoom,obstacles});
     // Effektschicht (E-47) zuletzt: Sie nimmt das fertige Weltbild als Textur.
     if(effects)this.fx.render({ox,oy,W,H},g,w,time,this.light);
   }
