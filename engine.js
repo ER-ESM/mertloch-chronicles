@@ -1,5 +1,5 @@
 import {initProfessions,savedProfessions,tickProfession,cancelProfession} from './professions.js';
-import {initMounts,savedMounts,toggleMount,dismount,tickMount,acquireMount,selectMount,mountStation} from './mounts.js';
+import {initMounts,savedMounts,toggleMount,dismount,tickMount,acquireMount,learnRiding,selectMount,mountStation} from './mounts.js';
 import {MOUNT_UI,MOUNT_RULES} from './content/index.js';
 import {inKiosk,enterKiosk,leaveKiosk,roomInteraction,roomWorld,tickKiosk,savedKiosk} from './kiosk-instance.js';
 import {KIOSK_ROOM,KIOSK_TEXT} from './content/index.js';
@@ -84,6 +84,7 @@ export class Game{
   toggleMount(id){return toggleMount(this,id);}
   dismount(){return dismount(this);}
   acquireMount(id){return acquireMount(this,id);}
+  learnRiding(){return learnRiding(this);}
   selectMount(id){return selectMount(this,id);}
   refreshStats(){this.skills=classSkills(this);for(const s of this.skills)this.cooldowns[s.id]??=0;refreshEquipment(this);}
   resetClassState(){this.autoAttack.enabled=false;this.casting=null;this.touchMove=null;this.classState=freshClassState();this.procState=freshProcState();this.fields=[];this.zones=[];this.aiming=null;this.aimPoint=null;this.player.parry=0;this.player.hurt=0;this.player.dash=0;this.player.castPose=0;this.player.parryCharges=0;this.buffs={};}

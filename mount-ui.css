@@ -6,3 +6,5 @@
 .popup-mounts .popup-body{overflow-y:auto!important;min-height:0;max-height:none}.mount-panel .eyebrow{color:#c7c9ad}.mount-panel .mount-intro p{margin:5px 0;line-height:1.45}.mount-panel .mount-card p{margin:4px 0 7px;line-height:1.4}.mount-panel .mount-card h3{font-size:17px}.mount-card small{min-height:0}.mount-preview canvas{max-height:155px;object-fit:contain}.mount-reason:empty{display:none}.mount-toolbar,.mount-footer{margin:10px 0}
 
 .mount-panel .mount-intro h2{display:none}.mount-card.owned .mount-cost{display:none}
+
+.mount-riding{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:12px 0;padding:12px;background:#182923dc;border:1px solid #7a7351;border-radius:8px;flex-wrap:wrap}.mount-riding>div:first-child{flex:1;min-width:220px}.mount-riding h3{margin:0 0 5px;color:#f0d89c;font:700 17px Georgia,serif}.mount-riding p{margin:4px 0;line-height:1.4}.mount-riding strong{color:#edc96f}.mount-riding-purchase{display:flex;flex-direction:column;gap:6px}.mount-riding button{min-height:36px;white-space:normal}.mount-riding .mount-reason{min-height:0}

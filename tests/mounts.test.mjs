@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {collectAuras} from '../auras.js';
 import {Game} from '../engine.js';
 import {MOUNTS,MOUNT_RULES} from '../content/index.js';
-import {restoreMounts,mountStation,acquisitionReason,tickMount} from '../mounts.js';
+import {restoreMounts,mountStation,acquisitionReason,tickMount,ridingSkillReason,mountSpeed} from '../mounts.js';
 import {addItem,countItem,bindSkill,actionBar} from '../rpg.js';
 import {stepPlayer} from '../movement.js';
 import {mountPresence} from '../mount-wire.js';
@@ -13,8 +14,8 @@ function game(save={}){const g=new Game(world(),{level:6,...save});g.tutorial={c
 function owner(){return game({mounts:{owned:Object.keys(MOUNTS),selected:'klappermofa'}});}
 const assets=g=>structuredClone({inventory:g.rpg.inventory,coins:g.rpg.coins,mounts:g.mounts});
 test('Mount saves migrate safely, reject unknown IDs, and remain character-specific',()=>{
- assert.deepEqual(restoreMounts(null),{version:1,owned:[],selected:null});
- assert.deepEqual(restoreMounts({owned:['klappermofa','__proto__','klappermofa',null,'hofpferd'],selected:'unknown'}),{version:1,owned:['klappermofa','hofpferd'],selected:'klappermofa'});
+ assert.deepEqual(restoreMounts(null),{version:1,ridingSkill:false,owned:[],selected:null});
+ assert.deepEqual(restoreMounts({owned:['klappermofa','__proto__','klappermofa',null,'hofpferd'],selected:'unknown'}),{version:1,ridingSkill:false,owned:['klappermofa','hofpferd'],selected:'klappermofa'});
  const g=owner();assert.ok(bindSkill(g,'mount',9));g.player.mount='klappermofa';const next=game(g.save());assert.deepEqual(next.mounts,g.mounts);assert.equal(next.player.mount,null);assert.equal(actionBar(next)[9],'mount');assert.deepEqual(game().mounts.owned,[]);
 });
 test('Acquisition charges exactly once, and all blocked transactions are atomic',()=>{
@@ -36,10 +37,28 @@ test('Selecting a neutral target preserves mount; attacks, damage, death and int
  g.player.inCombat=0;g.enemies=[];g.player.mount='hofpferd';assert.ok(g.enterKiosk());assert.equal(g.player.mount,null);assert.equal(g.toggleMount(),false);
  const dead=owner();dead.player.mount='hofpferd';dead.dead=true;tickMount(dead,.1);assert.equal(dead.player.mount,null);
 });
-test('All mounts share a 60% speed bonus and use normal collision resolution',()=>{
- function move(id,blocked=false){const g=owner();g.player.mount=id;g.player.x=g.player.y=0;if(blocked)g.world.blocked=(x)=>x>50;for(let i=0;i<60;i++)stepPlayer(g,1,0,1/60);return g.player.x;}
- const foot=move(null);for(const id of Object.keys(MOUNTS)){assert.ok(Math.abs(move(id)/foot-MOUNT_RULES.speed)<1e-8);assert.ok(move(id,true)<=50);}
+test('Riding skill purchase is atomic, charges once and persists only for this hero',()=>{
+ const g=owner(),coins=g.rpg.coins;assert.ok(g.learnRiding());assert.equal(g.rpg.coins,coins-MOUNT_RULES.ridingSkill.coins);assert.equal(g.mounts.ridingSkill,true);
+ const after=assets(g);assert.ok(g.learnRiding());assert.deepEqual(assets(g),after);
+ const restored=game(g.save());assert.equal(restored.mounts.ridingSkill,true);assert.equal(mountSpeed(restored),2);assert.equal(game().mounts.ridingSkill,false);
+ for(const change of [g=>g.player.level=2,g=>g.player.x+=100,g=>g.world.lineClear=()=>false,g=>g.player.inCombat=1,g=>g.autoAttack.enabled=true,g=>g.dead=true,g=>g.player.hp=0,g=>g.paused=true,g=>g.instance={},g=>g.tutorial.completed=false,g=>g.rpg.coins=MOUNT_RULES.ridingSkill.coins-1,g=>g.mountCast={},g=>g.casting={},g=>g.professionCast={},g=>g.professionCommit={}]){
+  const blocked=owner();change(blocked);const before=assets(blocked);assert.ok(ridingSkillReason(blocked));assert.equal(blocked.learnRiding(),false);assert.deepEqual(assets(blocked),before);
+ }
+ const exact=owner();exact.rpg.coins=MOUNT_RULES.ridingSkill.coins;exact.player.level=MOUNT_RULES.ridingSkill.level;assert.ok(exact.learnRiding());assert.equal(exact.rpg.coins,0);
+ for(const value of [undefined,null,false,1,2,'true',{},[]])assert.equal(restoreMounts({ridingSkill:value}).ridingSkill,false);
+ assert.equal(restoreMounts({ridingSkill:true}).ridingSkill,true);
 });
+
+test('Every mount gains 60% or 100% from riding skill; walking, diagonals and collisions remain correct',()=>{
+ function move(id,ridingSkill=false,blocked=false,diagonal=false){const g=owner();g.mounts.ridingSkill=ridingSkill;g.player.mount=id;g.player.x=g.player.y=0;if(blocked)g.world.blocked=(x)=>x>50;for(let i=0;i<60;i++)stepPlayer(g,1,diagonal?1:0,1/60);return Math.hypot(g.player.x,g.player.y);}
+ const foot=move(null);assert.equal(move(null,true),foot);
+ for(const skill of [false,true])for(const id of Object.keys(MOUNTS)){
+  const expected=skill?2:1.6;assert.ok(Math.abs(move(id,skill)/foot-expected)<1e-8);assert.ok(move(id,skill,true)<=50);assert.ok(Math.abs(move(id,skill,false,true)-move(id,skill))<1e-8);
+ }
+ const g=owner();g.player.mount='hofpferd';assert.match(collectAuras(g).buffs.find(a=>a.id==='mount').text,/60 % schneller/i);
+ g.learnRiding();assert.match(collectAuras(g).buffs.find(a=>a.id==='mount').text,/100 % schneller/i);
+});
+
 test('Cosmetic network presence validates mount, direction and gear; old clients and private rooms stay compatible',()=>{
  const g=owner();g.player.mount='hofpferd';g.player.direction='nw';g.player.look='anni';const packet=presenceMessage(g,'mount-test'),sanitized=mountPresence(packet);assert.equal(sanitized.mt,'hofpferd');assert.equal(sanitized.md,'nw');const [p]=applySnapshot([],[{...packet,n:'Reiter'}],100);assert.equal(p.mount,'hofpferd');assert.equal(p.look,'anni');assert.equal(p.direction,'nw');
  assert.equal(mountPresence({...packet,s:'dead'}).mt,null);assert.equal(mountPresence({mt:'__proto__'}).mt,null);assert.deepEqual(mountPresence({}),{mt:null,md:null,eq:[]});

@@ -52,7 +52,7 @@ Im **Damage-/Heal-Meter** wechselst du zwischen Schaden und Heilung sowie aktuel
 
 Am **Fahrstall am Clan-Treff** gibt es ab Stufe 3 nach der Hofprobe **Klappermofa, alten Blechroller und das Pferd des Nachbarbauern**. Mofa gegen Reparaturmaterial, Roller für 160 Pfandmarken, Pferd gegen Verpflegung für die Hofhelfer. Auf der Karte unter **Läden → R**.
 
-**X** sitzt auf/ab, **Shift + P** öffnet die Sammlung; alternativ **Esc → Fahrzeuge & Reittiere**. Das Reisemount lässt sich auf die Aktionsleiste legen. Alle drei reisen 60 % schneller, mit 1,5 Sekunden Aufsteigezeit. Bewegung bricht das Aufsteigen ab; Kampfaktionen, Treffer und Innenräume lassen dich absteigen. Sammlung und Auswahl werden je Held gespeichert. Andere Spieler sehen dein Mount mit Körperform und Kleidung. [Regeln, Technik und Prüfungen](docs/MOUNTS-2026-09-22.md).
+**X** sitzt auf/ab, **Shift + P** öffnet die Sammlung; alternativ **Esc → Fahrzeuge & Reittiere**. Das Reisemount lässt sich auf die Aktionsleiste legen. Alle drei reisen zunächst 60 % schneller. Am Fahrstall kannst du ab Stufe 3 einmalig für 300 Pfandmarken den Reitskill kaufen: Damit reisen alle Mounts dieses Helden **100 % schneller** (doppelte Gehgeschwindigkeit). Die Aufsteigezeit beträgt 1,5 Sekunden. Bewegung bricht das Aufsteigen ab; Kampfaktionen, Treffer und Innenräume lassen dich absteigen. Sammlung, Auswahl und Reitskill werden je Held gespeichert. Andere Spieler sehen dein Mount mit Körperform und Kleidung. [Regeln, Technik und Prüfungen](docs/MOUNTS-2026-09-22.md).
 
 ## Berufe
 

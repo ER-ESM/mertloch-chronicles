@@ -1,10 +1,11 @@
 import {mechanicHelp,skillHelp} from './mechanic-help.js';
 // Read-only projection of real combat state. No synthetic combat statuses or extra timers.
+import {mountSpeedBonus} from './mounts.js';
 import {MOUNTS,MOUNT_UI,AURA_TEXT,AURA_FIELD_SORTS,SPEC_MECHANICS,PROC_RULES} from './content/index.js';
 import {combatStats} from './rpg.js';
 export function collectAuras(g){
  const out={buffs:[],debuffs:[],targetDebuffs:[]};if(!g||g.dead)return out;
- if(g.player.mount&&MOUNTS[g.player.mount])out.buffs.push({id:'mount',name:MOUNTS[g.player.mount].name,text:MOUNT_UI.rules,icon:'dash',remaining:null});
+ if(g.player.mount&&MOUNTS[g.player.mount])out.buffs.push({id:'mount',name:MOUNTS[g.player.mount].name,text:MOUNT_UI.mounted(MOUNTS[g.player.mount].name,mountSpeedBonus(g))+'. '+MOUNT_UI.rules,icon:'dash',remaining:null});
  const st=g.classState||{},m=st.m||{},spec=SPEC_MECHANICS[g.rpg?.talents?.spec],t=g.time||0;
  const skill=id=>g.skills.find(s=>s.id===id),add=(group,id,remaining=null,extra={})=>{const def=AURA_TEXT[id];if(def&&(remaining===null||remaining>0))out[group].push({id,name:def.name,text:def.text,icon:def.icon,remaining,...extra});};
  for(const b of g.activeBuffs()){

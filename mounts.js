@@ -5,9 +5,24 @@ import {tutorialActive} from './tutorial.js';
 const stations=new WeakMap();
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export const mountDefinition=id=>typeof id==='string'&&Object.hasOwn(MOUNTS,id)?MOUNTS[id]:null;
-export function restoreMounts(raw){const owned=[...new Set((Array.isArray(raw?.owned)?raw.owned:[]).filter(id=>mountDefinition(id)))];return {version:1,owned,selected:owned.includes(raw?.selected)?raw.selected:owned[0]||null};}
+export function restoreMounts(raw){const owned=[...new Set((Array.isArray(raw?.owned)?raw.owned:[]).filter(id=>mountDefinition(id)))];return {version:1,ridingSkill:raw?.ridingSkill===true,owned,selected:owned.includes(raw?.selected)?raw.selected:owned[0]||null};}
 export function initMounts(g,raw){g.mounts=restoreMounts(raw);g.player.mount=null;g.mountCast=null;}
 export const savedMounts=g=>restoreMounts(g.mounts);
+export const mountSpeed=g=>g.mounts?.ridingSkill===true?R.ridingSkill.speed:R.speed;
+export const mountSpeedBonus=g=>Math.round((mountSpeed(g)-1)*100);
+export function ridingSkillReason(g){
+ if(g.mounts.ridingSkill)return '';
+ const reason=mountUnavailable(g)||(g.mountCast?T.busy:'');if(reason)return reason;
+ if(g.player.level<R.ridingSkill.level)return T.level(R.ridingSkill.level);
+ const point=mountStation(g.world);if(distance(g.player,point)>R.range||!g.world.lineClear(g.player,point))return T.far;
+ return g.rpg.coins<R.ridingSkill.coins?T.money:'';
+}
+export function learnRiding(g){
+ if(g.mounts.ridingSkill)return true;
+ const reason=ridingSkillReason(g);if(reason){g.toast(reason);return false;}
+ g.rpg.coins-=R.ridingSkill.coins;g.mounts.ridingSkill=true;
+ g.emit('rpgChanged');g.emit('barChanged');g.emit('mountChanged');g.emit('save');g.toast(T.ridingUnlocked);return true;
+}
 export function mountStation(world){
  if(stations.has(world))return stations.get(world);
  const wanted={x:world.spawn.x+R.stationOffset.x,y:world.spawn.y+R.stationOffset.y};
