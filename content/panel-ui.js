@@ -45,4 +45,4 @@ export const PLAY_HELP={
  ]
 };
 
-export const GAME_MENU_UI={title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Clanbuch',help:'Hilfe',settings:'Einstellungen'};
+export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Clanbuch',help:'Hilfe',settings:'Einstellungen'};

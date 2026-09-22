@@ -40,3 +40,5 @@
 .popup-menu .game-menu-actions{display:grid;grid-template-columns:1fr;gap:8px}
 .popup-menu .game-menu-actions button{min-height:44px;width:100%;padding:10px;font-size:13px;overflow-wrap:anywhere}
 @media(orientation:landscape){.touch-mode .popup-menu .game-menu-actions{grid-template-columns:1fr 1fr}.touch-mode .popup-menu [data-close]{grid-column:1/-1}}
+/* Feinschliff 2026-09-22: Spielmenü in Gruppen (Funktionen · Oberfläche/Hilfe · Figur/Abmelden · Zurück) wie im MMO-Vorbild. */
+.popup-menu .game-menu-sep{grid-column:1 / -1;width:100%;height:0;margin:4px 0;border:0;border-top:1px solid #d7b57140}

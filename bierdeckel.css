@@ -757,3 +757,8 @@ mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-ra
  body:not(.touch-mode) .action-area>.auto-state{grid-column:3;justify-self:start;margin:0 0 6px}
 }
 .auto-state.is-off{color:var(--cream);opacity:.75}
+/* Zielrahmen: Reaktionsfarbe wie im MMO – rot feindlich, gelb neutral; als Paar neben dem Spielerrahmen (gleiche Oberkante und Höhe). */
+.target-panel[data-disposition=neutral] .unit-name{color:#f2d06b}
+@media(min-width:761px){body:not(.touch-mode) .target-panel{top:67px;left:346px;min-height:106px;box-sizing:border-box}}
+/* Meldungen („muss noch verschnaufen", „zu weit weg") wie im MMO oben mittig unter dem Ortsnamen, als leuchtende Zeile statt Zettel am Rand. */
+@media(min-width:761px){body:not(.touch-mode) #toast{top:96px!important;bottom:auto!important;left:50%!important;right:auto;transform:translateX(-50%)!important;max-width:min(640px,60vw)!important;padding:4px 14px!important;text-align:center;background:none!important;border:0!important;box-shadow:none!important;font:400 22px/1.2 var(--display);letter-spacing:.03em;color:#ffd98a!important;text-shadow:0 2px 0 #1a120a,0 0 3px #1a120a,0 0 10px #000a}}
