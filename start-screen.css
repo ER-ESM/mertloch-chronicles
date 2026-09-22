@@ -83,3 +83,15 @@ body.start-open #combatMeter,body.start-open .chat-window,body.start-open .aura-
 .start-screen .hero-name-row canvas{width:224px;height:224px}
 .start-screen .hero-create .start-enter{margin-top:20px}
 @media(max-width:600px){.start-screen .hero-swatches{grid-template-columns:1fr}.start-screen .hero-swatches b{padding-top:0}.start-screen .start-portrait canvas{width:192px;height:192px}.start-screen .start-teaser canvas{width:96px;height:96px}}
+/* Solange der Schirm offen ist: auch Spielmenü- und Statistik-Knopf ausblenden (lagen auf dem Handy über der Heldenhalle). */
+body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
+/* Handy/schmal: Heldenliste als einspaltige Liste mit kleinem Porträt (wie breit), statt Zweierraster mit abgeschnittenem Text. */
+@media(max-width:899px){
+ .start-screen[data-step=roster] .hero-hall{grid-template-columns:1fr!important;gap:8px}
+ .start-screen[data-step=roster] .hero-hall .hero-card{grid-template-columns:64px minmax(0,1fr);justify-items:start;text-align:left;column-gap:12px;align-items:center;padding:8px 12px;min-height:0}
+ .start-screen[data-step=roster] .hero-hall .hero-card canvas{grid-row:span 3;width:64px;height:64px}
+ .start-screen[data-step=roster] .hero-hall .hero-card :is(strong,span,small){grid-column:2}
+ .start-screen[data-step=roster] .hero-hall .hero-card strong{font-size:20px}
+ .start-screen[data-step=roster] .hero-hall .hero-new{min-height:0}
+ .start-screen[data-step=roster] .hero-hall .hero-new .hero-plus{grid-column:1;grid-row:1 / span 2;font-size:36px!important;justify-self:center}
+}

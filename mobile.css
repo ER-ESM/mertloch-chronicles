@@ -95,3 +95,6 @@
 .touch-mode .reward-option{background:var(--kraft,#D9B98A)!important;color:var(--ink,#2B2A26)!important;border-color:var(--kraft-2,#C9A46F)!important}
 .touch-mode .reward-option strong{color:var(--ink,#2B2A26)}
 .touch-mode .reward-option small{color:var(--ink-2,#4E4A41)}
+/* Ortsname behält seine Breite; der lange Auftragschip daneben kürzt sich statt ihn auf „CLAN…" zu quetschen. */
+.touch-topline>#touchPlace{flex:0 0 auto;padding-inline:10px}
+.touch-topline>:not(#touchPlace){flex:1 1 auto;min-width:0}
