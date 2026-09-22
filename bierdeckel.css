@@ -331,7 +331,8 @@ input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);o
 .location-mark{color:var(--gold);}
 .world-footer,.world-footer a{font-family:var(--display);font-size:var(--t-11);letter-spacing:.08em;color:var(--kraft);}
 .world-controls button{background:var(--green);border:var(--edge) solid var(--kraft-2);color:var(--cream);}
-.loading,.pause-overlay{background:#1A2C24F2;}
+.loading{background:#1A2C24;}
+.pause-overlay{background:#1A2C24F2;}
 .loading h2,.pause-overlay h2{font-family:var(--display);font-weight:400;font-size:var(--t-28);color:var(--cream);}
 .loading p{color:var(--kraft);}
 
@@ -744,3 +745,15 @@ mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-ra
 #fpsMeter[data-level="warn"]{color:var(--gold)}
 #fpsMeter[data-level="bad"]{color:var(--coral)}
 .touch-mode #fpsMeter{left:calc(12px + var(--safe-left,0px));top:calc(98px + var(--safe-top,0px));bottom:auto}
+
+/* ===== Visueller Feinschliff 2026-09-22 (Spielersicht, WoW-Maßstab) ===== */
+/* Lange Tastennamen („LEER") klein in die Ecke statt als Block über dem Symbol. */
+.action-area .skill .key.key-long{font-size:11px;letter-spacing:.02em;padding:0 3px}
+/* Sonderaktionen und Autoangriff-Anzeige als EINE ruhige Zeile über der Leiste statt eines Turms. */
+@media(min-width:761px){
+ body:not(.touch-mode) .action-area{display:grid;grid-template-columns:1fr auto auto 1fr;column-gap:10px;align-items:center;justify-items:center}
+ body:not(.touch-mode) .action-area>*{grid-column:1 / -1}
+ body:not(.touch-mode) .action-area>.special-actions{grid-column:2;justify-self:end;margin:0 0 6px}
+ body:not(.touch-mode) .action-area>.auto-state{grid-column:3;justify-self:start;margin:0 0 6px}
+}
+.auto-state.is-off{color:var(--cream);opacity:.75}

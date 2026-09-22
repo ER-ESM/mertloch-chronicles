@@ -42,3 +42,44 @@ body.start-open #combatMeter,body.start-open .chat-window,body.start-open .aura-
 .hero-swatch{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border:2px solid var(--kraft-2);border-radius:999px;background:#13231c;color:var(--cream);font:inherit;font-size:13px;cursor:pointer}
 .hero-swatch::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--swatch);border:1px solid #0008}
 .hero-swatch[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}
+
+/* Bühne der Heldenhalle: alles mittig und bündig. Breit = große Vorschau links, Heldenliste rechts (MMO-Muster); schmal = untereinander. */
+.start-screen .mmo-roster{justify-content:center}
+.start-screen .start-stage{display:grid;gap:16px;align-content:center}
+.start-screen .mmo-roster header,.start-screen .mmo-selection-detail{max-width:none;margin:0;box-sizing:border-box}
+.start-screen .mmo-roster .mmo-choices{margin:0}
+.start-screen[data-step=create] .start-stage,.start-screen[data-heroes="0"] .start-stage{width:min(820px,100%)}
+.start-screen .hero-swatches b{font-size:14px}
+.start-screen .start-portrait{display:grid;place-items:center;margin:-4px 0 8px;padding:8px 0 0;background:radial-gradient(ellipse 46% 38% at 50% 88%,#0007,transparent 70%),radial-gradient(circle at 50% 45%,#f3c96a22,transparent 62%)}
+.start-screen .start-portrait canvas{width:288px;height:288px;image-rendering:pixelated;filter:drop-shadow(0 6px 6px #0006)}
+.start-screen .start-teaser{display:flex;justify-content:center;gap:4px;margin:0 0 8px}
+.start-screen .start-teaser canvas{width:160px;height:160px;image-rendering:pixelated}
+.start-screen .start-empty{text-align:center}.start-screen .start-empty .start-enter{justify-content:center}
+.start-screen .start-empty p{font-size:15px}
+.start-screen .mmo-selection-detail .start-enter .gold-button{min-width:200px;justify-content:center;font-size:20px;letter-spacing:.06em;padding:14px 32px}
+/* Der wichtigste Knopf des Schirms: warmes Messing statt Grün, damit „Ins Dorf" sofort ins Auge fällt. */
+.game-shell .start-screen .start-enter .gold-button,.game-shell .start-screen .start-enter .gold-button:hover:not(:disabled){background:linear-gradient(#c08d3f,#7b5222),var(--chrome-resource,none);background-size:auto,160px 100%;color:#fff6dc;text-shadow:0 2px 0 #3a2410;border-image:var(--chrome-frame) 22% / 9px / 0 stretch;box-shadow:0 0 18px #f3c96a40,0 3px 6px #0008}
+.game-shell .start-screen .start-enter .gold-button:hover:not(:disabled){filter:brightness(1.12)}
+@media(min-width:900px){
+ .start-screen[data-step=roster]:not([data-heroes="0"]) .start-stage{grid-template-columns:minmax(0,1fr) 360px;grid-template-areas:"head list" "detail list";align-items:start}
+ .start-screen[data-step=roster] .start-stage>header{grid-area:head}
+ .start-screen[data-step=roster] .start-stage>.mmo-selection-detail{grid-area:detail}
+ .start-screen[data-step=roster] .hero-hall{grid-area:list;grid-template-columns:1fr!important;gap:8px;align-content:start;max-height:calc(100vh - 96px);overflow:auto;padding:4px}
+ .start-screen[data-step=roster] .hero-hall .hero-card{grid-template-columns:72px minmax(0,1fr);justify-items:start;text-align:left;column-gap:12px;align-items:center;padding:8px 12px;min-height:0}
+ .start-screen[data-step=roster] .hero-hall .hero-card canvas{grid-row:span 3;width:72px;height:72px}
+ .start-screen[data-step=roster] .hero-hall .hero-card strong{font-size:22px;grid-column:2}
+ .start-screen[data-step=roster] .hero-hall .hero-card span,.start-screen[data-step=roster] .hero-hall .hero-card small{grid-column:2}
+ .start-screen[data-step=roster] .hero-hall .hero-new{min-height:0;grid-template-columns:72px minmax(0,1fr)}
+ .start-screen[data-step=roster] .hero-hall .hero-new .hero-plus{grid-column:1;grid-row:1 / span 2;font-size:40px!important;justify-self:center;align-self:center}
+}
+/* Erstellung: Schrittanzeige als lesbare Leiste, Aussehen als sauberes Raster aus Beschriftung und Auswahl. */
+.start-screen .hero-steps{gap:8px;margin-top:10px;font-size:15px}
+.start-screen .hero-steps li{flex:1;padding:8px 10px;border-bottom:3px solid #fff2;color:var(--cream);opacity:.55}
+.start-screen .hero-steps li.done{opacity:.85;border-color:var(--kraft)}
+.start-screen .hero-steps li.on{opacity:1;color:var(--gold);border-color:var(--gold)}
+.start-screen .hero-swatches{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:start;gap:8px 12px;margin:10px 0 0}
+.start-screen .hero-swatches b{min-width:0;padding-top:8px}
+.start-screen .hero-swatch-list{display:flex;flex-wrap:wrap;gap:8px}
+.start-screen .hero-name-row canvas{width:224px;height:224px}
+.start-screen .hero-create .start-enter{margin-top:20px}
+@media(max-width:600px){.start-screen .hero-swatches{grid-template-columns:1fr}.start-screen .hero-swatches b{padding-top:0}.start-screen .start-portrait canvas{width:192px;height:192px}.start-screen .start-teaser canvas{width:96px;height:96px}}

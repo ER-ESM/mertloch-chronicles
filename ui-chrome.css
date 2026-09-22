@@ -115,7 +115,8 @@
 .touch-mode .game-popup .book-tabs{padding:5px 4px 0}
 
 /* Iteration 4: reusable controls; rarity/proc borders keep their semantic colors. */
-.game-shell :is(.gold-button,.outline-button,.ui-button,.game-menu-actions>button,.companion-panel button,.companion-frames header button,.party-frames header button,.popup-close,.world-menu-brand,.world-controls button,.game-menu-rail button,#touchMenu,#touchBook,#touchPage,#touchCancelAim){
+/* IDs stehen in einer eigenen Liste: in :is() würden sie die Spezifität aller Knöpfe auf ID-Niveau heben und die Primärknöpfe darunter überstimmen. */
+.game-shell :is(.gold-button,.outline-button,.ui-button,.game-menu-actions>button,.companion-panel button,.companion-frames header button,.party-frames header button,.popup-close,.world-menu-brand,.world-controls button,.game-menu-rail button),.game-shell #touchMenu,.game-shell #touchBook,.game-shell #touchPage,.game-shell #touchCancelAim{
  border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;border-radius:2px;
  background:linear-gradient(#36513ce8,#172e25ef),var(--chrome-material);background-size:auto,192px 192px;
  color:var(--chrome-text);box-shadow:0 2px 3px #081b1655;text-decoration:none;text-shadow:none;
