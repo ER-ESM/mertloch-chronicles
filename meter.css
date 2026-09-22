@@ -55,3 +55,9 @@
 .touch-mode #combatMeter .meter-summary{padding:6px 8px;flex-wrap:wrap}
 .touch-mode #combatMeter .meter-resize{display:none}
 .touch-mode:has(#combatMeter:not([hidden])) #touchMenu{visibility:hidden}
+/* Feinschliff 2026-09-22: gleicher Messingrahmen wie Spieler-/Zielrahmen, Titel in Anzeigeschrift, aktiver Reiter warm statt knallorange. */
+#combatMeter{border:6px solid transparent;border-image:var(--chrome-frame) 22% / 12px / 0 stretch;border-radius:0;background:#11241ce8 var(--chrome-material) center/384px 384px}
+#combatMeter .meter-header strong{font:400 17px/1.2 var(--display);letter-spacing:.04em;color:#f3cf7a}
+#combatMeter .meter-modes button{font:400 15px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+#combatMeter button[aria-pressed=true]{background:linear-gradient(#7a5528,#4d3418);color:#fff0c9;box-shadow:inset 0 -2px 0 #f0c46a}
+#combatMeter[data-mode=healing] button[aria-pressed=true]{background:linear-gradient(#3d7449,#23472d);box-shadow:inset 0 -2px 0 #a4db9d}

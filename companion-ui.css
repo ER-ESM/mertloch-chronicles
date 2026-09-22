@@ -4,7 +4,7 @@
 .companion-intro h2{margin:4px 0 8px;font-size:24px;color:#f1d99d}
 .companion-intro p,.companion-terms{color:#c5bca8;font-size:13px;line-height:1.5;margin:8px 0 14px}
 .companion-summary{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 0;font-size:13px}.companion-summary strong{color:#f4d28a}
-.companion-tabs{display:flex;gap:8px;margin:4px 0 12px}.companion-tabs button{flex:1}
+.companion-tabs{display:flex;gap:8px;margin:4px 0 12px}.companion-tabs button{flex:1;font:400 18px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase}
 .companion-panel button,.companion-panel select{min-height:44px;min-width:44px;border:1px solid #756044;border-radius:5px;background:#282820;color:#eee4ce;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
 .companion-panel button[aria-pressed=true]{border-color:#d8b770;background:#514330;color:#ffe3a5;box-shadow:inset 0 -2px #d8b770}
 .companion-panel button:disabled{cursor:default;opacity:.5}.companion-panel button:focus-visible,.companion-panel select:focus-visible,.companion-frames button:focus-visible{outline:2px solid #ffdb8c;outline-offset:3px}

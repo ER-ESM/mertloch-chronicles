@@ -6,3 +6,4 @@ dialog.atlas-dialog{width:min(1150px,96vw);max-width:1150px;padding:28px;max-hei
 .footer-tools{display:flex;align-items:center;gap:12px}#adminError{color:#f2b5a0}html:has(dialog[open]){overflow:hidden}
 
 #largeMap.can-pan{cursor:grab;touch-action:none}#largeMap.can-pan.panning{cursor:grabbing}
+.compact-panel .atlas-stamp{top:auto;left:auto;right:10px;bottom:10px;opacity:.55;transform:rotate(-4deg)}
