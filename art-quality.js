@@ -18,7 +18,7 @@ export function scaledFrame(image,sx,sy,sw,sh,pw,ph){const key=sx+','+sy+','+sw+
  if(cv){set.delete(key);set.set(key,cv);return cv;}/* zuletzt benutzt nach hinten */
  cv=document.createElement('canvas');cv.width=pw;cv.height=ph;const c=cv.getContext('2d');c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(image,sx,sy,sw,sh,0,0,pw,ph);set.set(key,cv);if(set.size>SCALED_LIMIT)set.delete(set.keys().next().value);return cv;}
 const SCALED_LIMIT=260;
-export function worldDensity(zoom,fullRes=false,ratio=globalThis.devicePixelRatio||1,cap=null){if(fullRes)return WORLD_ART_DENSITY;const native=Math.min(WORLD_ART_DENSITY,Math.max(2,Math.ceil(zoom*ratio-.01)));/* `cap`: Stufe der Auflösungs-Automatik (quality-governor.js), darf unter 2 liegen */return cap==null?native:Math.max(1,Math.min(native,cap));}
+export function worldDensity(zoom,fullRes=false,ratio=globalThis.devicePixelRatio||1,cap=null){if(fullRes)return WORLD_ART_DENSITY;const native=Math.min(WORLD_ART_DENSITY,Math.max(2,Math.ceil(zoom*ratio-.01)));/* Automatik spart nur HiDPI-Reserve; mindestens ein Canvas-Pixel je CSS-Pixel, bis zur maximalen Grafikdichte. */const floor=Math.min(native,Math.max(2,Math.ceil(zoom-.01)));return cap==null?native:Math.max(floor,Math.min(native,cap));}
 const anchors=DETAIL_PALETTE.map(h=>[0,2,4].map(k=>parseInt(h.slice(k,k+2),16)));
 const ramps=[...anchors];
 for(let i=0;i<anchors.length;i++)for(let j=i+1;j<anchors.length;j++)if(Math.hypot(...anchors[i].map((v,k)=>v-anchors[j][k]))<100)ramps.push(anchors[i].map((v,k)=>Math.round((v+anchors[j][k])/2)));

@@ -66,7 +66,7 @@ export class Renderer {
     const step=(this.governor||=new QualityGovernor(PERFORMANCE.autoRes)).frame(gap,work);if(!step)return;const native=worldDensity(this.zoom,false);
     // Leiter abwärts: erst die Farbabstimmung (CSS-Filter über die ganze Weltfläche – ohne Grafikkarte teurer als das Zeichnen selbst), dann die Dichte. Aufwärts umgekehrt.
     if(step==='down'&&!this.gradeOff){this.gradeOff=true;return;}if(step==='up'&&this.density>=native){this.gradeOff=false;return;}
-    const next=step==='down'?Math.max(PERFORMANCE.autoRes.minDensity,this.density-1):Math.min(native,this.density+1);if(next!==this.density){this.densityCap=next>=native?null:next;this.resize();}}
+    const next=step==='down'?Math.max(worldDensity(this.zoom,false,1,PERFORMANCE.autoRes.minDensity),this.density-1):Math.min(native,this.density+1);if(next!==this.density){this.densityCap=next>=native?null:next;this.resize();}}
   shadowPainters(){return this.painters||={bounds:buildingVisualBounds,building:(cc,b)=>drawBuilding(cc,b,0),tree:(cc,t)=>{if(drawAssetTree(cc,t,0))return true;const sp=this.treeSprites[t.variant+(t.type==='pine'?5:0)];cc.drawImage(sp,Math.round(t.x-44*t.size),Math.round(t.y-96*t.size),Math.round(88*t.size),Math.round(110*t.size));return false;},baked:item=>this.bakedShadow?.(item)};}
   /** Inhalt des Boden-Zwischenspeichers für `r` (Welteinheiten): Bodenkacheln, Steine, bei Licht die Schatten stehender Objekte. Rand 320/420 fängt Schatten von Objekten außerhalb. */
   paintGround(c,r,lit){const w=this.world,index=this.index||=new SpatialIndex();let ok=true;

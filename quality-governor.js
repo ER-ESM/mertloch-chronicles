@@ -1,5 +1,5 @@
 // Auflösungs-Automatik (E-49): hält das Bildtempo, indem sie die Dichte der Weltfläche senkt, wenn der Rechner nicht nachkommt.
-// Ohne Grafikkarte kostet vor allem die Pixelmenge (Rastern und Übergabe an den Compositor) – Dichte 2 → 1 ist ein Viertel davon.
+// Reduziert zuerst Farbfilter und dann HiDPI-Reserve; die Mindestauflösung schützt Welt und Schrift vor grobem Hochskalieren.
 // Reine Logik ohne Browser: `frame(gap, work)` je Bild, Rückgabe 'down' | 'up' | null. Werte in content/performance.js.
 //   gap   Abstand zum vorigen Bild in ms (zeigt auch Last, die nicht im eigenen Code liegt)
 //   work  eigene Rechenzeit des Bildes in ms (nur damit lässt sich Luft nach oben erkennen – bei 60 Hz klebt `gap` sonst an 16,7)

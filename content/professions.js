@@ -6,7 +6,7 @@ export const PROFESSIONS={
  smith:{name:'Schrauberei',kind:'craft',icon:'reinforced',teacher:'Schrauber-Willi',station:'werkhof',description:'Aus geborgenem Metall Waffen und eine robuste Weste bauen.'},
  brew:{name:'Hausbrauerei',kind:'craft',icon:'bottle',teacher:'Braumeisterin Bärbel',station:'braugarten',description:'Alkoholfreie Heil- und Energiegetränke aus Kräutern, Hopfen und Kiosk-Zutaten brauen.'}
 };
-export const PROFESSION_STATIONS={werkhof:{name:'Willis Werkhof',kind:'workbench',offset:{x:-240,y:30},look:'dieter'},braugarten:{name:'Bärbels Braugarten',kind:'cauldron',offset:{x:180,y:180},look:'baerbel'}};
+export const PROFESSION_STATIONS={werkhof:{name:'Willis Werkhof',kind:'workbench',offset:{x:-240,y:30},look:'sigi'},braugarten:{name:'Bärbels Braugarten',kind:'cauldron',offset:{x:180,y:180},look:'gisela'}};
 export const PROFESSION_SOURCES={
  scrap:{name:'Schrotthaufen',profession:'scrap',required:1,grey:35,items:{dosenblech:2,kabel:1}},
  machinery:{name:'Alte Maschinenteile',profession:'scrap',required:25,grey:75,items:{dosenblech:3,kabel:2}},
