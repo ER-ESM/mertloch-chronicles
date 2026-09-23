@@ -30,7 +30,9 @@ export function drawProp(c,prop){
  const x=prop.x,base=prop.y+d/2;
  c.save();c.imageSmoothingEnabled=false;
  // Bodenschatten liegt immer auf der Grundfläche – auch unter einem gelieferten Bild.
- c.fillStyle='#2438294d';c.beginPath();c.ellipse(x,prop.y,w/2,d/2,0,0,Math.PI*2);c.fill();
+ // Weich auslaufender Kontaktschatten statt harter Ellipse (die Trümmer der Bude sahen sonst wie Löcher im Boden aus).
+ if(typeof c.createRadialGradient==='function'&&w>0&&d>0){c.save();c.translate(x,prop.y);c.scale(1,d/w);const g=c.createRadialGradient(0,0,0,0,0,w/2);g.addColorStop(0,'#24382966');g.addColorStop(.55,'#24382938');g.addColorStop(1,'#24382900');c.fillStyle=g;c.fillRect(-w/2,-w/2,w,w);c.restore();}
+ else{c.fillStyle='#2438294d';c.beginPath();c.ellipse(x,prop.y,w/2,d/2,0,0,Math.PI*2);c.fill();}
  const art=contentAsset(propAssetId(prop.kind));
  if(art?.meta.worldProp){
   const m=art.meta,pad=m.padding??4,r=propDrawRect(prop);

@@ -58,11 +58,14 @@ let labelBoxes=[];
 // Beschriftungen des Hauptbilds werden gesammelt und am Bildende auf einer eigenen Ebene in voller Bildschirmauflösung gezeichnet:
 // die Welt darf zur Leistung halb aufgelöst rendern, Namen und Kampfzahlen bleiben trotzdem gestochen scharf (MMO-Maßstab).
 let labelQueue=null,labelTarget=null;
+// Figuren unter dem noch sichtbaren Dach der Bude: ihre Schilder und Auftragszeichen dürfen nicht durchs Dach scheinen.
+let hideLabels=false;
 const FURNITURE=['bench','cart','lantern'];
 /** Auftragszeichen über einer Figur wie in den großen Rollenspielen: goldenes „!“ (neu) bzw. „?“ (abgeben) mit dunkler Kontur
  *  und warmem, atmendem Schein, ohne Kasten; „…“ (läuft noch) grau und ohne Schein. `framed` (Story) ist größer und leuchtet stärker.
  *  Liegt auf der Schrift-Ebene (scharf, über dem Licht); ohne Schrift-Ebene direkt auf der Welt. */
 function questBadge(c,x,y,glyph,framed,time=0){
+ if(hideLabels)return;
  const size=framed?19:14,bob=Math.sin(time*2.4)*(framed?2:1.2),cy=y-size*.62-bob,busy=glyph==='…',alpha=c.globalAlpha;
  const paint=cc=>{cc.globalAlpha=alpha;
   if(!busy){const pulse=.6+.4*Math.sin(time*3.1),r=size*1.25,g=cc.createRadialGradient(x,cy,0,x,cy,r);g.addColorStop(0,`rgba(255,206,110,${(framed?.55:.36)*pulse})`);g.addColorStop(.55,`rgba(255,190,90,${(framed?.2:.12)*pulse})`);g.addColorStop(1,'rgba(255,190,90,0)');cc.fillStyle=g;cc.fillRect(x-r,cy-r,r*2,r*2);}
@@ -73,7 +76,7 @@ function questBadge(c,x,y,glyph,framed,time=0){
  if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:1,paint});return;}
  c.save();paint(c);c.restore();
 }
-function label(c,text,x,y,color='#ead9a7',size=8){c.save();c.font=size>=14?`bold ${size}px 'Jersey 15','Trebuchet MS',sans-serif`:`800 ${size}px Nunito,'Trebuchet MS',sans-serif`;const width=c.measureText(text).width,b={x:x-width/2-2,y:y-size-2,w:width+4,h:size+5};if(size<11&&labelBoxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)){c.restore();return;}labelBoxes.push(b);if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:c.globalAlpha,font:c.font,text,x:Math.round(x),y:Math.round(y),color,b});c.restore();return;}c.textAlign='center';c.strokeStyle='#1d2b24f0';c.lineWidth=2.2;c.lineJoin='round';c.strokeText(text,Math.round(x),Math.round(y));c.fillStyle=color;c.fillText(text,Math.round(x),Math.round(y));c.restore();}
+function label(c,text,x,y,color='#ead9a7',size=8){if(hideLabels)return;c.save();c.font=size>=14?`bold ${size}px 'Jersey 15','Trebuchet MS',sans-serif`:`800 ${size}px Nunito,'Trebuchet MS',sans-serif`;const width=c.measureText(text).width,b={x:x-width/2-2,y:y-size-2,w:width+4,h:size+5};if(size<11&&labelBoxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)){c.restore();return;}labelBoxes.push(b);if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:c.globalAlpha,font:c.font,text,x:Math.round(x),y:Math.round(y),color,b});c.restore();return;}c.textAlign='center';c.strokeStyle='#1d2b24f0';c.lineWidth=2.2;c.lineJoin='round';c.strokeText(text,Math.round(x),Math.round(y));c.fillStyle=color;c.fillText(text,Math.round(x),Math.round(y));c.restore();}
 export const ZOOM_RANGE={min:.6,max:1.8,step:1.1};
 export class Renderer {
   constructor(canvas,world,game,options={}){loadMountArt();this.actorRenderer=options.actorRenderer;this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.world=world;this.game=game;this.camera={...game.player};this.footfalls=new FootfallTrail();this.chunks=new Map();this.treeSprites=Array.from({length:10},(_,i)=>createComicTree(i%5,i>4));this.shake=0;this.bossSpeech=new BossSpeech();this.light=new WorldLight();this.fx=new WorldFx();this.zoom=2;this.frame=0;this.resize();}
@@ -173,10 +176,10 @@ export class Renderer {
     // Bodenschatten aller stehenden Dinge in einer Ebene, eine Lichtrichtung (light-convention.js).
     // Je Bild nur noch die Schatten von Figuren, Möbeln und Beute; Bäume und Gebäude liegen gebacken im Boden-Zwischenspeicher.
     if(lit)this.light.shadows(c,view,sorted,this.shadowPainters(),{skipStanding:true});
-    for(const item of sorted){const e=item.obj;c.save();if(this.actorRenderer?.(c,item,time)){c.restore();continue;}if(item.type==='classField'){drawClassField(c,e,time);}else if(item.type==='houseWall'){drawHouseWall(c,e,house,houseFade);}else if(item.type==='kitItem'){drawHouseItem(c,e,houseFade);}else if(item.type==='houseShell'){drawHouseExterior(c,e,1-houseFade,e.doors.find(d=>d.id==='eingang'));}else if(item.type==='building'){if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>buildingOccludesActor(e,u)))c.globalAlpha=.38;this.building(c,e);}
+    for(const item of sorted){const e=item.obj,at=e?.giver||e;hideLabels=!!(house&&houseFade<.5&&item.type!=='houseShell'&&Number.isFinite(at?.x)&&insideHouse(house,at.x,at.y));c.save();if(this.actorRenderer?.(c,item,time)){c.restore();continue;}if(item.type==='classField'){drawClassField(c,e,time);}else if(item.type==='houseWall'){drawHouseWall(c,e,house,houseFade);}else if(item.type==='kitItem'){drawHouseItem(c,e,houseFade);}else if(item.type==='houseShell'){drawHouseExterior(c,e,1-houseFade,e.doors.find(d=>d.id==='eingang'));}else if(item.type==='building'){if([p,...(g.target?.hp>0?[g.target]:[])].some(u=>buildingOccludesActor(e,u)))c.globalAlpha=.38;this.building(c,e);}
       else if(item.type==='tree'){const s=e.size;drawTreeOcclusion(c,e,[p,...(g.target?.hp>0?[g.target]:[])],()=>{if(drawAssetTree(c,e,time))return;const sp=this.treeSprites[e.variant+(e.type==='pine'?5:0)];c.drawImage(sp,Math.round(e.x-44*s),Math.round(e.y-96*s),Math.round(88*s),Math.round(110*s));});}
       else if(item.type==='loot'){ellipse(c,'#23372355',e.x,e.y,8,3);drawItem(c,'bag',Math.round(e.x-10),Math.round(e.y-17),.8);if(distance(e,p)<65){label(c,'F · Beute',e.x,e.y-23,'#edce84',7);}else{rect(c,'#ead39c',e.x,e.y-21,1,3);}}
-      else if(item.type==='prop'){if(e.kind==='kiosk'){drawKioskHouse(c,e);const door=kioskEntrance(g);if(door&&distance(p,door)<100)label(c,KIOSK_TEXT.enter,door.x,door.y+14,'#f1d18b',9);}else{if(!(e.art&&drawStageFurniture(c,e)))drawProp(c,e);/* Bude-Trümmer: Namen, sobald man nah ist */if(e.kind?.startsWith('bude-')&&e.kind!=='bude-schild'&&w.base&&distance(p,w.base)<150&&(house&&insideHouse(house,e.x,e.y)?houseFade>.5&&distance(p,e)<45:true))label(c,String(e.name).replace(/^Trümmer: /,''),e.x,e.y-Math.max(12,(e.height||e.h||20)*.55),'#e6d3a4',7);}}
+      else if(item.type==='prop'){if(e.kind==='kiosk'){drawKioskHouse(c,e);const door=kioskEntrance(g);if(door&&distance(p,door)<100)label(c,KIOSK_TEXT.enter,door.x,door.y+14,'#f1d18b',9);}else{if(!(e.art&&drawStageFurniture(c,e)))drawProp(c,e);/* Bude-Trümmer: Namen nur direkt daneben oder unter der Maus (keine Schilderwand im Hof) */if(e.kind?.startsWith('bude-')&&e.kind!=='bude-schild'&&w.base&&(distance(p,e)<55||g.hover&&distance(g.hover,e)<Math.max(14,(e.w||20)*.6))&&(house&&insideHouse(house,e.x,e.y)?houseFade>.5:true))label(c,String(e.name).replace(/^Trümmer: /,''),e.x,e.y-Math.max(12,(e.height||e.h||20)*.55),'#e6d3a4',7);}}
       else if(item.type==='estate'){drawEstateDetail(c,e,time);}
       else if(item.type==='hub'){drawHub(c,e,time);}
       else if(item.type==='occupiedCamp'){drawOccupiedCamp(c,e,time,!g.enemies.some(m=>m.campId===e.id&&m.hp>0));}
@@ -197,6 +200,7 @@ export class Renderer {
       else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
+    hideLabels=false;
     // Räume erkennen (E-52): drinnen steht der eigene Raumname in Gold oben im Raum; andere Räume nennen ihren Namen erst,
     // wenn die Maus über ihnen steht (keine Schilderwand im Haus).
     if(houseSeen&&houseFade>.5){const here=roomAt(house,p.x,p.y,level),over=g.hover&&roomAt(house,g.hover.x,g.hover.y,level);c.globalAlpha=Math.min(1,(houseFade-.5)*2);for(const room of houseLevel(house,level).rooms){if(room.outdoor||room!==here&&room!==over)continue;const q=room.rects[0];label(c,room.name,q.x+q.w/2,q.y+11,room===here?'#f0c86a':'#e8dcc0',7);}c.globalAlpha=1;}
