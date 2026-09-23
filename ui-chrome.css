@@ -295,3 +295,7 @@ body.bar-drop .action-area .extra-bar:not(:has(.skill:not(.empty-slot))),body:ha
 .game-popup .atlas-paper{box-shadow:0 2px 0 #0b1a12,0 0 0 1px #0b1a12}
 /* Persona-Befund 2026-09-24: die Menüknöpfe unten rechts waren winzig. Am großen Schirm 46 × 50 mit 34-px-Symbol. */
 @media (min-width:1101px){body:not(.touch-mode) .game-shell .game-menu-rail button{width:46px;height:50px}body:not(.touch-mode) .game-shell .game-menu-rail button canvas{width:34px;height:34px}}
+/* EP-Leiste: Glanzkante oben und leuchtende Spitze am Füllende (WoW-Vorbild), damit der Fortschritt auf einen Blick lesbar ist. */
+.game-shell .xp-track.rpg-xp i{position:relative;background:linear-gradient(#d7b8ff 0,#b48ae8 22%,#7447b8 62%,#5a3494)}
+.game-shell .xp-track.rpg-xp i::after{content:'';position:absolute;right:-1px;top:0;bottom:0;width:3px;background:#f3e6ff;box-shadow:0 0 6px 2px #c9a2ffaa}
+.game-shell .xp-track.rpg-xp i[style*="width: 0"]::after,.game-shell .xp-track.rpg-xp i[style*="width:0"]::after{display:none}
