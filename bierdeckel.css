@@ -793,7 +793,7 @@ body[data-novel~=professions] .game-menu-actions [data-shell=professions]::befor
 body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,body[data-novel~=hudEdit] .game-menu-actions [data-hud-open]::before{content:'Neu';position:absolute;top:-10px;right:-8px;z-index:5;width:24px;height:24px;padding:0;background:url('./assets/precision/runtime/ui/ui-unlock-seal.png') center/contain no-repeat;color:transparent;font-size:0;image-rendering:pixelated;filter:drop-shadow(0 1px 2px #0009)}
 
 /* ===== Meilensteine (milestone-ui.js): Stufenaufstieg und Freischaltung ===== */
-.milestone{position:absolute;left:50%;top:18%;z-index:45;transform:translate(-50%,-12px) scale(.96);opacity:0;transition:opacity .35s ease,transform .35s ease;text-align:center;min-width:min(520px,90vw);max-width:min(640px,92vw);padding:18px 32px 20px;background:radial-gradient(ellipse 70% 90% at 50% 45%,#0d1a14e8,#0d1a14b0 60%,#0d1a1400 100%);pointer-events:none}
+.milestone{position:absolute;left:50%;top:18%;z-index:45;transform:translate(-50%,-12px) scale(.96);opacity:0;transition:opacity .35s ease,transform .35s ease;text-align:center;min-width:min(520px,90vw);max-width:min(640px,92vw);padding:18px 32px 20px;background:radial-gradient(closest-side at 50% 48%,#0d1a14d9,#0d1a1499 55%,#0d1a1400 100%);pointer-events:none}
 .milestone.show{opacity:1;transform:translate(-50%,0) scale(1)}
 .milestone[hidden]{display:none}
 .milestone-eyebrow{display:block;font:400 16px/1 var(--display);letter-spacing:.18em;text-transform:uppercase;color:#d7b571}
