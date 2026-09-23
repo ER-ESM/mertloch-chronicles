@@ -53,6 +53,9 @@ export const BUDE_HOUSE={
   {s:'tisch-rund',x:156,y:110},{s:'aschenbecher',x:156,y:109},{s:'stuhl',x:141,y:110},{s:'stuhl',x:156,y:124},
   {s:'barhocker',x:70,y:118},{s:'barhocker',x:90,y:118},{s:'kisten-stapel',x:200,y:163},
   {s:'laeufer',x:112,y:150},{s:'becher',x:40,y:132},{s:'becher',x:122,y:98},{s:'luftschlangen',x:60,y:118},{s:'socke',x:140,y:160},{s:'scherben',x:170,y:98},
+  // Der Morgen danach (Akt 1 „Filmriss“): Spuren der Nacht auf dem freien Dielenboden, ein Fass und verrückte Stühle.
+  {s:'fass',x:176,y:100},{s:'stuhl',x:14,y:96},
+  {s:'pfuetze',x:134,y:122},{s:'becher',x:88,y:140},{s:'becher',x:171,y:122},{s:'becher',x:30,y:112},{s:'luftschlangen',x:128,y:162},{s:'scherben',x:52,y:126},{s:'luftschlangen',x:204,y:150},
   // Clan-Hinterzimmer
   {s:'bild-landschaft',x:20,y:4},{s:'geweih',x:46,y:4},{s:'kommode',x:74,y:9},{s:'tischlampe',x:80,y:9},{s:'becher',x:60,y:40},{s:'socke',x:18,y:58},
   // Pfandlager
