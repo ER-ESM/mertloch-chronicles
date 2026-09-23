@@ -78,7 +78,8 @@ import {Renderer,drawHero,ZOOM_RANGE} from './renderer.js';
 const ZOOM_KEY='mertloch.zoom';
 import {PopupWindows} from './popup-windows.js';
 import {mountPopupControls,filterBag,bagView} from './popup-controls.js';
-import {hotspotDialogue,noticeDialogue,hotspotTracker} from './hotspot-ui.js';
+import {hotspotDialogue,noticeDialogue,hotspotTracker,hotspotTurnIns} from './hotspot-ui.js';
+import {questOthersHtml,focusQuest} from './quest-tracker.js';
 import {acceptHotspotQuest,claimHotspotQuest,trackHotspotQuest,readNotice,hotspotQuest,turnInOf,giverOffers,hotspotDestination,giverPoint,giverChatter} from './hotspots.js';
 import {HOTSPOT_UI} from './content/index.js';
 import {loadUiArt,paintUiControls,paintUiIcon,uiIconCount,paintHeroPortrait} from './ui-art.js';
@@ -288,7 +289,7 @@ function worldInteraction(){
     case 'giver':return offer({run:()=>showSideQuest(it.quest)});
     case 'hotspot':return offer({label:HOTSPOT_UI.talkTo(it.name),run:()=>{openModal(hotspotDialogue(game,it.giver,giverChatter(game,it.giver)));save();}});
     case 'notice':return offer({label:HOTSPOT_UI.readNotice,run:()=>{readNotice(game,it.id);events();save();openModal(noticeDialogue(game,it.id));}});
-    case 'npc':return offer({label:'Mit '+(it.name||world.npc.name)+' sprechen',run:()=>openModal(idaDialogue(game))});
+    case 'npc':return offer({label:'Mit '+(it.name||world.npc.name)+' sprechen',run:()=>openModal(idaDialogue(game)+hotspotTurnIns(game,'ida'))});
     case 'shrine':return offer({label:'Am Konterbrunnen rasten',run:restAtShrine});
     default:return null;
   }
@@ -359,6 +360,8 @@ const st=game.classState;const p=game.player,e=game.target,q=game.quest;$('#play
   const next=worldInteraction();$('#interact').classList.toggle('hidden',!next||game.dead);if(next)$('#interact span').textContent=next.label;
   {const hs=!tutorialActive(game)&&hotspotTracker(game);if(hs){$('#questTitle').textContent=hs.title;$('#questTasks').innerHTML=task(false,escapeQuest(hs.task))+waypointTask;$('#questRewardText').textContent='✧ '+hs.reward;}}
   if(game.trackedQuest){const def=world.quests.find(q=>q.id===game.trackedQuest),s=game.sideQuests[game.trackedQuest];if(def){$('#questTitle').textContent=def.title;$('#questTasks').innerHTML=task(s.progress>=def.required,escapeQuest(questProgress(def,s)))+task(false,s.progress>=def.required?`Zurück zu ${def.giver.name}`:def.location);}}
+  // Weitere laufende Aufträge (quest-tracker.js): nur neu bauen, wenn sich der Inhalt ändert (Entfernung in 10-m-Schritten).
+  {const html=questOthersHtml(game,pt=>Math.round(distance(p,pt)/SCALE/10)*10),box=$('#questOthers');if(box&&box.dataset.sig!==html){box.dataset.sig=html;box.innerHTML=html;}}
   const road=world.nearestRoad(p.x,p.y),hub=(world.hubs||[]).find(h=>distance(p,h)<125),camp=world.camps.find(c=>distance(p,c)<240),approach=world.camps.find(c=>c.approach&&distance(p,c.approach)<85);$('#zoneName').textContent=hub?hub.name.split(' · ')[0]:camp?camp.title:approach?'Lagerrand':distance(p,world.church)<190?'St. Gangolf':road.distance<60&&road.road?.tags.name?road.road.tags.name:'Mertlocher Fluren';$('#zoneType').textContent=hub||approach||distance(p,world.spawn)<100?'Geschützter Rastplatz':camp?(game.enemies.some(e=>e.campId===camp.id&&e.hp>0)?'Besetztes Außenlager':'Lager freigeräumt'):'Mertloch · Maifeld';const gps=world.unproject(p.x,p.y);$('#coordinates').textContent=gps.lat.toFixed(4)+'° N · '+gps.lon.toFixed(4)+'° O';if(inKiosk(game)){$('#zoneName').textContent=KIOSK_TEXT.inside;$('#zoneType').textContent=KIOSK_TEXT.zone;$('#coordinates').textContent='';}
   $('#rotationTip').innerHTML='<span>PTC</span> '+(!available(game,'mark')?'Tab → Ziel wählen · [1] angreifen · [LEER] ausweichen'+(available(game,'buff')?' · [5] Buff':''):e?.cast?.interruptible&&available(game,'interrupt')?'Jetzt '+game.skills[3].name+' [4] – Klappe zu, Schaden hoch.':e?.cast?.ground?'Raus aus der Fläche! '+game.skills[5].name+' [LEER].':available(game,'burst')&&game.cooldowns.burst<=0&&e?.mark>0?'Bereit: '+game.skills[2].name+' [3]!':game.member.id==='baerbel'?'Im Takt treffen: 1–1,9 s zwischen zwei Pinsel-Pieksern.':'Punkte mit [1]. Markieren mit [2]. Komplett ausrasten mit [3].');
 
@@ -419,6 +422,7 @@ modal.addEventListener('click',e=>{const leave=e.target.closest('[data-start-scr
  const setting=e.target.closest('[data-settings]')?.dataset.settings;if(setting==='touchmenu')mobile?.context();else if(setting)$('#'+setting+'Button').click();const arenaEl=e.target.closest('[data-arena-spawn],[data-arena-clear],[data-arena-level],[data-arena-heal],[data-arena-spec],[data-arena-home]');if(arenaEl)arenaAction(arenaEl);if(e.target.closest('[data-admin-reset]'))adminReset();if(e.target.closest('[data-admin-restore]'))adminReset(true);});
 $('#lessonButton').onclick=()=>{const lesson=lessonPanel(game);if(lesson.unread)game.seenSkills.add(lesson.unread.id);else starterHintSeen=true;save();updateUI();$('#world').focus();};$('#trainingHelp').onclick=()=>game&&showBook();
 $('#clanButton').onclick=()=>game&&showClan();$('#guideButton').onclick=()=>game&&showGuide();$('#mapButton').onclick=$('#miniButton').onclick=()=>game&&showMap();$('#worldButton').onclick=()=>{popups.closeAll();$('#world').focus({preventScroll:true});};$('#pauseButton').onclick=()=>showPanel('menu',true);$('#resumeButton').onclick=syncPause;$('#interact').onclick=speak;
+$('#questOthers')?.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-track-quest]');if(!b||!game)return;e.preventDefault();e.stopPropagation();if(focusQuest(game,b.dataset.trackQuest)){save();events();}});
 $('#journalButton').onclick=()=>game&&showJournal();
 /** Ein Laufbefehl zur goldenen Wegmarke (P6) – statt vieler kurzer Klicks an den Bildschirmrand. */
 function runToDestination(){if(!game||game.dead||!game.destination?.())return false;const ok=!!game.navigateDestination?.();events();return ok;}

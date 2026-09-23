@@ -133,7 +133,7 @@ export function hotspotInteraction(g){if(tutorialActive(g))return null;const p=g
  for(const n of L.notices)if(!g.hotspots.found.includes(n.id)&&distance(p,n)<R.talkRange)return {kind:'notice',id:n.id,point:{x:n.x,y:n.y},name:n.def.title,priority:4};
  return null;}
 /** Wegmarke für den verfolgten Auftrag: fertig → Abgabe, sonst Mitte des Zielgebiets. */
-export function hotspotDestination(g){const id=g.hotspots?.tracked,q=id&&QUESTS.get(id);if(!q)return null;const st=questStatus(g,id);
+export function hotspotDestination(g,id=g.hotspots?.tracked){const q=id&&QUESTS.get(id);if(!q)return null;const st=questStatus(g,id);
  if(st==='ready'&&!q.notice){const at=giverPoint(g,turnInOf(q));return at&&{point:{x:at.x,y:at.y},label:at.name};}
  if(st!=='accepted')return null;if(q.objective.kind==='talk'){const at=giverPoint(g,turnInOf(q));return at&&{point:{x:at.x,y:at.y},label:at.name};}
  const area=questArea(g,q);return area&&{point:{x:area.x,y:area.y},label:questTitle(g,q)};}

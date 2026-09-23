@@ -415,13 +415,17 @@ export class Game{
   questInteraction(){if(tutorialActive(this))return null;const p=this.player,choices=[];for(const q of this.world.quests||[]){const s=this.sideQuests[q.id];if(distance(p,q.giver)<42)choices.push({kind:'giver',quest:q,point:q.giver,label:`Mit ${q.giver.name} sprechen`});if(s.accepted&&!s.claimed)for(const item of q.items)if(!s.collected.includes(item.id)&&distance(p,item)<36)choices.push({kind:'item',quest:q,item,point:item,label:item.type==='herb'?(q.itemName||'Antikater-Minze')+' sammeln':q.activity==='wires'?'Kabelrätsel lösen':'Soundcheck spielen'});}return choices.sort((a,b)=>distance(p,a.point)-distance(p,b.point))[0]||null;}
   collectQuestItem(questId,itemId,verified=false){const q=this.world.quests?.find(q=>q.id===questId),s=this.sideQuests[questId],item=q?.items.find(i=>i.id===itemId);if(this.paused||this.dead||!item||!s?.accepted||s.claimed||s.collected.includes(itemId)||distance(this.player,item)>36)return false;if(q.activity&&!verified){startActivity(this,q,item);return false;}if(q.activity&&(!this.activity||this.activity.questId!==questId||this.activity.itemId!==itemId||this.activity.score<(this.activity.mode==='rhythm'?3:4)))return false;s.collected.push(itemId);s.progress=s.collected.length;this.effect('heal',item.x,item.y,{life:.8,max:.8});this.toast(s.progress===q.required?`Alles erledigt. Kehre zu ${q.giver.name} zurück.`:SYSTEM_LINES.gatherProgress(s.progress,q.required,q.itemName||'Antikater-Minze'));this.emit('save');return true;}
   claimSideQuest(id,choice){const q=this.world.quests?.find(q=>q.id===id),s=this.sideQuests[id];if(this.paused||this.dead||!q||!s?.accepted||s.claimed||s.progress<q.required||distance(this.player,q.giver)>45)return false;if(!chooseReward(this,id,choice))return false;s.claimed=true;this.rpg.coins+=10;this.gainXp(q.reward);if(this.trackedQuest===id)this.trackedQuest=null;this.log(q.title+' abgeschlossen · +'+q.reward+' EP.');this.emit('save');return true;}
-  questDestination(){const q=this.world.quests?.find(q=>q.id===this.trackedQuest);if(!q)return null;const s=this.sideQuests[q.id],camp=this.world.camps.find(c=>c.questId===q.id),approach=camp?.approach&&distance(this.player,camp.approach)>110?camp.approach:q.target;return {point:s.progress>=q.required?q.giver:q.items.find(i=>!s.collected.includes(i.id))||approach,label:s.progress>=q.required?q.giver.name:q.title};}
+  questDestination(id=this.trackedQuest){const q=this.world.quests?.find(q=>q.id===id);if(!q)return null;const s=this.sideQuests[q.id],camp=this.world.camps.find(c=>c.questId===q.id),approach=camp?.approach&&distance(this.player,camp.approach)>110?camp.approach:q.target;return {point:s.progress>=q.required?q.giver:q.items.find(i=>!s.collected.includes(i.id))||approach,label:s.progress>=q.required?q.giver.name:q.title};}
   /** Goldene Wegmarke: nächstes offenes Ziel des laufenden Kapitels, sonst Ida. Beschriftungen kommen aus content/story.js. */
   destination(){
     if(inKiosk(this))return {point:KIOSK_ROOM.service,label:KIOSK_TEXT.counter};
     const intro=tutorialDestination(this);if(intro)return intro;
     const side=this.questDestination();if(side)return side;
     const hotspot=hotspotDestination(this);if(hotspot)return hotspot;
+    return this.mainDestination();
+  }
+  /** Ziel der Hauptquest allein (ohne Neben- und Hotspot-Aufträge) – auch für die Tracker-Liste. */
+  mainDestination(){
     if(this.quest.actDone)return null;
     if(!this.quest.accepted||this.questReady())return {point:this.world.npc,label:STORY.giver};
     for(const [i,o] of this.objectives().entries()){

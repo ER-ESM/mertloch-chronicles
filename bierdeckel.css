@@ -868,3 +868,15 @@ body.intro-open .game-shell>:not(canvas):not(.vignette):not(.intro-film):not(.mi
 .book-term{padding:1px 7px;border:1px solid #67765e;border-radius:10px;font:11px var(--read)}
 .book-swaps b,.book-term-long b{color:var(--cream)}
 .book-scope{display:block;margin-top:6px}
+/* Quest-Tracker: weitere laufende Aufträge unter dem Auftragsfeld, Klick verfolgt (quest-tracker.js) */
+.quest-others{display:flex;flex-direction:column;gap:3px;margin-top:6px;pointer-events:auto}
+.quest-others:empty{display:none}
+.quest-others-head{font:10px var(--read);letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.quest-other{display:grid;grid-template-columns:1fr auto;gap:0 8px;width:100%;text-align:left;padding:4px 7px;background:#ffffff0d;border:1px solid #67765e88;border-radius:4px;color:var(--cream);cursor:pointer;box-shadow:none;min-height:0}
+.quest-other b{grid-column:1;font:700 12px/1.25 var(--read);color:var(--gold)}
+.quest-other span{grid-column:1;font:11px/1.3 var(--read)}
+.quest-other span i{font-style:normal;margin-right:4px}
+.quest-other em{grid-column:2;grid-row:1 / span 2;align-self:center;font:11px var(--read);font-style:normal;opacity:.85;white-space:nowrap}
+.quest-other:hover,.quest-other:focus-visible{border-color:var(--gold)}
+.quest-other.done span{color:#a9d88f}
+.quest-others-more{font:10px var(--read);opacity:.7}

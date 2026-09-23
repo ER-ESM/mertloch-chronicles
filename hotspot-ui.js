@@ -14,6 +14,9 @@ function card(g,q,action){const st=questStatus(g,q.id),line=fillText(g,q,action=
  *  `chatter` = Gesprächszeile eines Stammgasts (giverChatter), steht vor den Aufträgen. */
 export function hotspotDialogue(g,giverId,chatter=null){const at=giverPoint(g,giverId),offers=giverOffers(g,giverId);
  return `${conversationHeader(at?.npc||giverId,at?.name||NPCS[giverId]?.name||'')}${chatter?`<p class="conversation-quote hotspot-chatter">${esc(chatter)}</p>`:''}${offers.map(o=>card(g,o.q,o.action)).join('')}<div class="dialog-actions"><button class="outline-button" data-close>${T.close}</button></div>`;}
+/** Abgaben bei einem Geber als Karten ohne Rahmen – für Idas Hauptquest-Dialog, der sonst jede Abgabe bei ihr verdeckt
+ *  (Nutzerbefund 2026-09-23: Ollis Pitch ließ sich bei laufender Hauptquest nicht abgeben). */
+export function hotspotTurnIns(g,giverId){return giverOffers(g,giverId).filter(o=>o.action==='claim').map(o=>card(g,o.q,o.action)).join('');}
 /** Aushang: Titel, Text, Ziel und Belohnung – der Auftrag läuft bereits. */
 export function noticeDialogue(g,id){const q=hotspotQuest(id),st=questStatus(g,id);
  return `<header class="conversation-header"><span class="eyebrow">${esc(T.notices)}</span><strong>${esc(q.found)}</strong></header><h2>${esc(q.title)}</h2><p>${esc(q.text)}</p><div class="quest-objective">${esc(objectiveText(g,q))}${dropNote(q)}</div>${st==='low'||st==='locked'?`<p class="requirements-failed">${esc(T.level(q.minLevel))}</p>`:''}<div class="loot"><span>✧</span><div><strong>${esc(rewardText(q))}</strong><small>${esc(T.notices)}</small></div></div><div class="dialog-actions">${st==='accepted'?`<button class="gold-button" data-hs-track="${id}">${T.track}</button>`:''}<button class="outline-button" data-close>${T.close}</button></div>`;}

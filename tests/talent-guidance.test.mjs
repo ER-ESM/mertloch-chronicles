@@ -19,7 +19,7 @@ test('ohne Hauptbaum steht ein deutlicher Hinweis über den Bäumen, danach vers
  const g=new Game(arena(),{version:1,level:BALANCE.player.specLevel});const spec=classSpecs(g.member.id)[0];g.rpg.talents.spec=null;
  let html=renderTalentTree(g,spec,none,'');
  assert.match(html,/tt-main-callout"/);assert.match(html,/tt-main-pick/);assert.match(html,/tt-choose/);
- viewTalentPath(spec,1);html=renderTalentTree(g,spec,none,'');assert.ok(html.includes(PATH_FOCUS[spec][1].replace(/&/g,'&amp;')),'Richtung des gewählten Pfads');
+ viewTalentPath(spec,1);html=renderTalentTree(g,spec,none,'');assert.ok(html.includes(PATH_FOCUS[spec][1].replace(/&/g,'&amp;')),'Richtung steht im Hover-Tooltip des Pfadreiters');
  g.rpg.talents.spec=spec;html=renderTalentTree(g,spec,none,'');assert.doesNotMatch(html,/tt-main-callout/);assert.doesNotMatch(html,/tt-main-pick/);
  const young=new Game(arena(),{version:1,level:1});young.rpg.talents.spec=null;html=renderTalentTree(young,spec,none,'');
  assert.match(html,/tt-main-callout quiet/,'vor dem Spec-Tor nur ein ruhiger Vorhinweis');
