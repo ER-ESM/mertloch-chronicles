@@ -709,7 +709,9 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 
 **Verworfen.** *Gemaltes Haus in Ebenen weiterführen* – sieht geschlossen aus, lässt sich aber nicht gezielt umbauen oder auf weitere Häuser übertragen. Kollision und Bild müssen außerdem von Hand gleich gehalten werden. *Raster-Kacheln (feste Tile-Größe)* – einfacher zu prüfen, zwingt aber jedes Möbel auf ein Raster und passt nicht zu den Weltmaßen der Figuren.
 
-**Offen.** Türen als eigene Sprites (heute offene Lücke). Außenansicht aus Fassaden- und Dachteilen. Weitere Häuser und Dorfteile aus dem Baukasten. Hohe Möbel, die Figuren dahinter verdecken, sind schon abgedeckt: Stehende Teile werden nach Tiefe sortiert.
+**Türen:** bleiben vorerst offene Durchgänge ohne Türblatt (Nutzerentscheidung 23.09.2026: „Lasse Türen erstmal weg“); die Tür-Arten im Baukasten tragen nur Namen und Regeln.
+
+**Offen.** Außenansicht aus Fassaden- und Dachteilen. Weitere Häuser und Dorfteile aus dem Baukasten. Hohe Möbel, die Figuren dahinter verdecken, sind schon abgedeckt: Stehende Teile werden nach Tiefe sortiert.
 
 ## E-55 · Startreihe mit geführten Hotspots, Aushänge in der Welt, Aufträge auf der Karte (23.09.2026)
 

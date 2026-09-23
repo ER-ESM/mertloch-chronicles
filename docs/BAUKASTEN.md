@@ -19,7 +19,7 @@ Häuser, Innenräume und Höfe werden aus Einzel-Sprites zusammengesetzt, nicht 
 sprite ─┬─ belag          Bodenbelag · füllt einen Raum · begehbar · gekachelt
         ├─ bodendeko      flach am Boden · begehbar · darf unter Möbeln liegen
         ├─ wand ── zaun   auf Wandlinien · sperrt · gekachelter Streifen (Krone + Front)
-        ├─ tuer           in Wandlücken · begehbar · hält 20 E Durchgang frei
+        ├─ tuer           in Wandlücken · begehbar · hält 20 E Durchgang frei (vorerst ohne Bild: offene Durchgänge)
         ├─ wandschmuck    nur an sichtbaren Wandfronten · Aufhängehöhe mount
         ├─ moebel ─┬─ ablage      sperrt · Ablage für Tischdeko
         │          ├─ sitz

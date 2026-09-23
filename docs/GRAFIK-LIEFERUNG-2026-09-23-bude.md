@@ -55,5 +55,4 @@ Abnahme: `npm run kit:check` (beide Geschosse regelkonform), `npm test`, `script
 
 Offen:
 - Die Dielen-Kacheln zeigen leichte Helligkeitsfelder an den Kachelgrenzen.
-- Türen sind noch offene Lücken ohne Türblatt.
 - Die Treppe ist noch Platzhalter-Zeichnung.
