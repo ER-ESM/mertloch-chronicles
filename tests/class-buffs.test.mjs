@@ -6,7 +6,7 @@ import {CLASS_BUFFS,CLASS_BUFF_TUNING,classBuffsFor,describe,validateContent} fr
 import {classBuffValue,applyClassBuff,tickClassBuffs,savedClassBuffs,restoreClassBuffs,classBuffAuras} from '../class-buffs.js';
 import {combatStats,actionBar} from '../rpg.js';
 import {available,skillLevel} from '../progression.js';
-import {selectCompanionAid} from '../companions.js';
+import {selectFriend,clearSelection} from '../help-target.js';
 import {createNetSocial} from '../net-social.js';
 import {createSocialPlay} from '../server/game/social-play.mjs';
 import {collectAuras} from '../auras.js';
@@ -85,14 +85,14 @@ test('Spielstand: Restzeit, Stärke und Quelle werden gespeichert und beim Laden
 
 test('Söldner: Buff auf den ausgewählten Söldner wirkt dort (Leben, Kutte, Glück), wird gespeichert und zählt ab',()=>{
  const g=hero('dieter');g.hireCompanion('merc-hopfen-horst',{free:true});const c=g.companions[0];Object.assign(c,{x:60,y:0});
- const hp=c.maxHp;selectCompanionAid(g,c.id);
+ const hp=c.maxHp;selectFriend(g,'companion',c);
  assert.equal(cast(g,'dosenpfand'),true);assert.equal(g.classBuffs.dosenpfand,undefined,'nicht auf mich');assert.ok(c.classBuffs.dosenpfand);
  g.tick(.05);assert.equal(c.maxHp,Math.round(hp*(1+val('dosenpfand','health'))),'Söldner bekommt mehr Leben');
  assert.equal(cast(g,'kutteDrueber'),true);assert.equal(classBuffValue(c,'armor'),val('kutteDrueber','armor'));
  const saved=JSON.parse(JSON.stringify(g.save())).companions[0];assert.equal(saved.classBuffs.length,2);
  const again=new Game(world(),JSON.parse(JSON.stringify(g.save())));assert.ok(again.companions[0].classBuffs.kutteDrueber);
  Object.assign(c,{x:5000,y:0});assert.equal(cast(g,'dosenpfand'),false,'zu weit weg: kein Zauber, keine globale Abklingzeit');
- selectCompanionAid(g,null);g.friend=null;assert.equal(cast(g,'dosenpfand'),true);assert.ok(g.classBuffs.dosenpfand,'ohne freundliches Ziel auf mich selbst');
+ clearSelection(g);assert.equal(cast(g,'dosenpfand'),true);assert.ok(g.classBuffs.dosenpfand,'ohne freundliches Ziel auf mich selbst');
 });
 
 test('Talente: der Haken classBuff:<id> verstärkt den Buff um talentStep je Stufe; Text nennt die Verstärkung',()=>{
@@ -105,7 +105,7 @@ test('Talente: der Haken classBuff:<id> verstärkt den Buff um talentStep je Stu
 
 test('Netz: Buff auf ein Gruppenmitglied geht als gezielte Hilfe über den Server, der Empfänger wendet ihn an',()=>{
  const g=hero('dieter'),sent=[],hooks={},others=[{name:'Kevin',x:50,y:0,party:true,state:'idle'},{name:'Fremd',x:40,y:0,party:false}];
- createNetSocial({game:()=>g,me:()=>'Eddi',send:m=>sent.push(m),others:()=>others,hooks});g.netParty=hooks;
+ createNetSocial({game:()=>g,me:()=>'Eddi',send:m=>sent.push(m),others:()=>others,hooks});g.netParty=hooks;g.others=others;
  g.friend={kind:'party',ref:others[0],player:true};assert.equal(cast(g,'dosenpfand'),true);
  assert.deepEqual(sent.at(-1),{t:'aid',to:'Kevin',name:'Dosenpfand',cb:{id:'dosenpfand',power:1,duration:CLASS_BUFF_TUNING.duration}});assert.equal(g.classBuffs.dosenpfand,undefined);
  g.friend={kind:'player',ref:others[1],player:true};const n=sent.length;assert.equal(cast(g,'dosenpfand'),false,'Fremde sind kein Ziel');assert.equal(sent.length,n);

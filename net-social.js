@@ -1,33 +1,39 @@
-// Miteinander, Client-Seite (E-44): Hilfsziel (Heilung/Schutz auf ein Gruppenmitglied), Aufhelfen, Handel, Weltboss.
+// Miteinander, Client-Seite (E-44, Ziel seit E-65): Heilung/Schutz/Buffs auf das gewählte Gruppenmitglied, Aufhelfen, Handel, Weltboss.
+// Das Gruppenmitglied ist das eine Ziel des Spielers (g.friend, help-target.js) – es gibt kein zweites Ziel neben dem Gegner.
+// Protokoll unverändert: {t:'aid',to,heal?,b?,cb?} adressiert jede Hilfe einzeln, der Server führt kein Ziel.
 // Regeln und Nachrichten: server/game/social-play.mjs. Ohne Browser-APIs: game(), me(), send(), others(), hooks
 // (das netParty-Objekt aus net-party.js) und ui kommen von außen (Tests mit Attrappen).
-import {clearCompanionAid} from './companions.js';
+import {selectFriend} from './help-target.js';
+import {TARGET_HELP} from './content/index.js';
 import {ITEMS,BAG_SIZE,grantLoot,tradeGood,tradeAway} from './rpg.js';
 
-export const SOCIAL_UI={aidOn:'{n} ist jetzt dein Hilfsziel: Heilung und Schutz wirken auch dort.',aidOff:'Hilfsziel aufgehoben.',aidFar:'{n} steht zu weit weg – die Hilfe kommt nicht an.',
- tradeTitle:'Handel mit {n}',give:'Du gibst',get:'Du bekommst',coins:'Marken',bag:'Dein Rucksack · antippen zum Anbieten',confirm:'Handel annehmen',waiting:'Warte auf {n} …',cancel:'Abbrechen',ready:'bereit',empty:'Noch nichts',
+export const SOCIAL_UI={tradeTitle:'Handel mit {n}',give:'Du gibst',get:'Du bekommst',coins:'Marken',bag:'Dein Rucksack · antippen zum Anbieten',confirm:'Handel annehmen',waiting:'Warte auf {n} …',cancel:'Abbrechen',ready:'bereit',empty:'Noch nichts',
  noRoom:'Im Rucksack ist nicht genug Platz für diesen Handel.',noCoins:'So viele Marken hast du nicht.',slots:'Mehr als sechs Posten passen nicht in einen Handel.',failed:'Der Handel ist geplatzt: etwas Zugesagtes fehlte.',
  askTitle:'Handelsanfrage',askText:'{n} möchte mit dir handeln.',accept:'Annehmen',decline:'Ablehnen',bossHere:'Weltboss gesichtet: {n}. Gemeinsam schlagen – jeder Beteiligte bekommt Beute.',bossGone:'Der Weltboss hat sich verzogen.'};
 export const SOCIAL_RANGE={aid:420,revive:140,tradeSlots:6};
 
 /** options: {game, me, send, others:()=>[{name,x,y,party,state}], hooks, ui?:{trade(m),tradeClose()}} */
 export function createNetSocial({game,me,send,others,hooks,ui=null}){
- const state={friend:null,trade:null,bossDeadAt:new Map()};
+ const state={trade:null,bossDeadAt:new Map()};
  const near=(name,range)=>{const p=game()?.player,o=(others()||[]).find(x=>x.name===name);return p&&o&&Math.hypot(o.x-p.x,o.y-p.y)<=range?o:null;};
- const friend=()=>{const o=state.friend&&near(state.friend,SOCIAL_RANGE.aid);return o?.party?o:null;};
- function aidSend(payload){if(!state.friend)return false;if(!friend()){game().toast(SOCIAL_UI.aidFar.replace('{n}',state.friend));return false;}send({t:'aid',to:state.friend,...payload});return true;}
- hooks.friend=()=>state.friend;
- hooks.clearFriend=()=>{state.friend=null;};
- hooks.aidHeal=(heal,name)=>aidSend({heal,name});
- hooks.buffFriend=b=>aidSend({b,name:b.name});
- /** Klassen-Buff (class-buffs.js) auf ein bestimmtes Gruppenmitglied: gleicher Weg wie das Hilfsziel, Empfänger wendet ihn an. */
- hooks.classBuffTo=(name,cb)=>{const o=near(name,SOCIAL_RANGE.aid);if(!o?.party){game().toast(SOCIAL_UI.aidFar.replace('{n}',name));return false;}send({t:'aid',to:name,name:cb.name,cb:{id:cb.id,power:cb.power,duration:cb.duration}});return true;};
+ /** Name des gewählten Mitspielers (das eine Ziel) oder null. */
+ const selected=()=>{const f=game()?.friend;return f?.player?f.ref?.name||null:null;};
+ /** Gewähltes Gruppenmitglied in Hilfsreichweite oder null. */
+ const friend=()=>{const n=selected(),o=n&&near(n,SOCIAL_RANGE.aid);return o?.party?o:null;};
+ /** Gezielte Hilfe an ein Gruppenmitglied; die Engine prüft vorher schon (helpFailure), hier nur als Sicherung. */
+ function aidTo(to,payload){const o=to&&near(to,SOCIAL_RANGE.aid);if(!o?.party){if(to)game()?.toast(TARGET_HELP.far(to));return false;}send({t:'aid',to,...payload});return true;}
+ hooks.canAid=name=>!!near(name,SOCIAL_RANGE.aid)?.party;
+ hooks.aidHeal=(to,heal,name)=>aidTo(to,{heal,name});
+ hooks.buffFriend=(to,b)=>aidTo(to,{b,name:b.name});
+ /** Klassen-Buff (class-buffs.js) auf ein bestimmtes Gruppenmitglied; der Empfänger wendet ihn an. */
+ hooks.classBuffTo=(to,cb)=>aidTo(to,{name:cb.name,cb:{id:cb.id,power:cb.power,duration:cb.duration}});
 
  // ── Handel ──
  const offer=()=>state.trade?.mine||{items:[],coins:0};
  function pushOffer(items,coins){const g=game();coins=Math.max(0,Math.round(coins)||0);if(coins>g.rpg.coins){g.toast(SOCIAL_UI.noCoins);coins=g.rpg.coins;}send({t:'trade',op:'offer',items,coins});}
- const api={state,friend,
-  setFriend(name){const g=game();if(g)clearCompanionAid(g);state.friend=state.friend===name||!name?null:name;g?.toast(state.friend?SOCIAL_UI.aidOn.replace('{n}',state.friend):SOCIAL_UI.aidOff);return state.friend;},
+ const api={state,friend,selected,
+  /** Gruppenrahmen oder Menü: Mitspieler als das eine Ziel wählen (ein gewählter Gegner fällt weg). Nur, wenn er in dieser Welt steht. */
+  selectTarget(name){const g=game();if(!g||!name)return null;const o=(others()||[]).find(x=>x.name===name);if(!o){g.toast(TARGET_HELP.away(name));return null;}selectFriend(g,o.party?'party':'player',o);return name;},
   canRevive(name){const g=game();return !!g&&!g.dead&&near(name,SOCIAL_RANGE.revive)?.state==='dead';},
   revive(name){send({t:'revive',to:name});},
   tradeAsk(name){send({t:'trade',op:'ask',name});},

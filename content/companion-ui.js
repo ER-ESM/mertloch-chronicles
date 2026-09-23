@@ -11,6 +11,6 @@ export const COMPANION_UI={
  orderHints:{follow:'Kommt mit dir und folgt deiner Bewegung.',stay:'Bleibt an der aktuellen Position.',attack:'Greift deinen ausgewählten Gegner an. Eine passive Haltung bleibt passiv.'},
  stanceHints:{assist:'Unterstützt die Gruppe im Kampf.',defend:'Verteidigt die Gruppe; Schutz-Söldner binden freie Gegner.',passive:'Greift nicht an. Ein Angriffsbefehl ändert diese Haltung nicht.'},
  open:'Söldner verwalten',shortcut:'Söldner [U]',
- select:'Als Hilfsziel auswählen · Heilung und Schutz wirken auch auf diesen Söldner',selected:'Hilfsziel',self:'Selbst',selfHint:'Hilfsziel aufheben',
- aidHint:'Söldner oder Gruppenrahmen anklicken, dann deine Heilung benutzen. Das Hilfsziel bleibt beim Gegnerwechsel bestehen. Nochmals auf den Gruppenrahmen klicken oder „Selbst“ wählen hebt es auf.',
+ select:'Als Ziel wählen · Heilung, Schutz und Buffs wirken dann auf diesen Söldner',selected:'Dein Ziel',
+ targetHint:'Söldner oder Gruppenrahmen anklicken: er wird dein Ziel, deine Heilung, dein Schutz und deine Buffs wirken dann dort. Ist ein Gegner oder nichts gewählt, wirken sie auf dich. Esc oder ein Klick ins Leere wählt ab.',
 };

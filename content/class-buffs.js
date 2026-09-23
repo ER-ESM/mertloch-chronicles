@@ -5,7 +5,7 @@
 // Regeln (Laufzeit: class-buffs.js im Wurzelordner):
 //  - Jeder Buff hebt genau einen Wert (Aperol-Spritz zwei kleine). Buffs verschiedener Klassen wirken deshalb zusammen,
 //    derselbe Buff von zwei Zaubernden nicht: der stärkere gewinnt, bei gleicher Stärke erneuert der neuere die Dauer.
-//  - Ziel: freundliches Ziel (Söldner, Gruppenmitglied) oder das Hilfsziel; ohne freundliches Ziel der Zaubernde selbst.
+//  - Ziel: das eine gewählte freundliche Ziel (Söldner, Gruppenmitglied, E-65); ohne freundliches Ziel der Zaubernde selbst.
 //  - Keine Kosten, keine Abklingzeit, nur die globale Abklingzeit. Läuft über Ortswechsel und Tod weiter und steht im Spielstand.
 //  - Talente verstärken einen Buff über den Effektschlüssel `classBuff:<id>` (Wert = Anzahl Verstärkungsstufen, je Stufe
 //    CLASS_BUFF_TUNING.talentStep). Ein dritter Buff über Talente braucht nur eine weitere Definition mit `talent:'<spec>-<index>'`.
@@ -28,27 +28,27 @@ export const CLASS_BUFF_STATS={
 const DEF={
  dosenpfand:{cls:'dieter',slot:0,level:4,name:'Dosenpfand',icon:'can',effects:{health:0},
   text:v=>`Dieter drückt dir eine volle Dose in die Hand: ${v.health} mehr maximales Leben für ${M} Minuten. Das Pfand kriegt er zurück. Die Dose nicht.`,
-  use:'Zünde es, bevor ihr loszieht: auf dich, deinen Söldner oder dein Hilfsziel.',flavor:'„Ich trink die nicht. Ich pass nur drauf auf.“',
+  use:'Zünde es, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Ich trink die nicht. Ich pass nur drauf auf.“',
   info:{effect:'Hebt eine halbe Stunde lang das maximale Leben des Ziels; das zusätzliche Leben kommt sofort dazu.',why:'Dieters Beitrag für alle: Leben hilft jeder Klasse und jedem Söldner, und kein anderer Klassen-Buff hebt es.',links:['classBuff:kutteDrueber','talent:dieter-wall-10'],terms:['klassenbuff','staerkung','leben']}},
  kutteDrueber:{cls:'dieter',slot:1,level:8,name:'Kutte drüber',icon:'vest',effects:{armor:0},
   text:v=>`Dieter legt dir seine Lederkutte mit den vierzig Aufnähern um: ${v.armor} weniger erlittener Schaden für ${M} Minuten. Gewaschen wurde sie nie. Deshalb hält sie ja.`,
-  use:'Zünde sie, bevor ihr loszieht: auf dich, deinen Söldner oder dein Hilfsziel.',flavor:'„Die Kutte hat drei Schlägereien und eine Taufe überlebt. Die Taufe war schlimmer.“',
+  use:'Zünde sie, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Die Kutte hat drei Schlägereien und eine Taufe überlebt. Die Taufe war schlimmer.“',
   info:{effect:'Senkt eine halbe Stunde lang den Schaden, den das Ziel nimmt, um einen festen Anteil – zusätzlich zur Dicken Haut.',why:'Schutz, den man nicht drücken muss: wirkt in jedem Kampf, auch auf Söldnern, die sonst keine Rüstung tragen.',links:['classBuff:dosenpfand'],terms:['klassenbuff','staerkung','schadensminderung']}},
  aperolSpritz:{cls:'baerbel',slot:0,level:4,name:'Aperol-Spritz',icon:'cup',effects:{energyRegen:0,healTaken:0},
   text:v=>`Ein Glas Orange mit extra Eis: ${v.energyRegen} Randale je Sekunde und ${v.healTaken} mehr erhaltene Heilung für ${M} Minuten. Wellness, sagt Anni. Vorglühen, sagt das Dorf.`,
-  use:'Reich ihn aus, bevor ihr loszieht: dir, deinem Söldner oder deinem Hilfsziel.',flavor:'„Das ist kein Alkohol. Das ist Selbstfürsorge mit Strohhalm.“',
+  use:'Reich ihn aus, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Das ist kein Alkohol. Das ist Selbstfürsorge mit Strohhalm.“',
   info:{effect:'Füllt eine halbe Stunde lang zusätzlich Randale nach und verstärkt jede Heilung, die beim Ziel ankommt.',why:'Annis Buff macht die Gruppe länger kampffähig: mehr Randale für Kniffe und mehr Wirkung aus jeder Heilung – auch aus fremder.',links:['classBuff:vorherNachher','talent:baerbel-care-3'],terms:['klassenbuff','staerkung','randale','heilung']}},
  vorherNachher:{cls:'baerbel',slot:1,level:8,name:'Vorher-Nachher-Filter',icon:'anni-spray',effects:{haste:0},
   text:v=>`Anni legt ihren Lieblingsfilter über dich: ${v.haste} Tempo für ${M} Minuten. Schneller bist du nicht geworden. Du siehst nur so aus. Wirkt trotzdem.`,
-  use:'Leg ihn auf, bevor ihr loszieht: auf dich, deinen Söldner oder dein Hilfsziel.',flavor:'„Vorher: Dorftrottel. Nachher: Dorftrottel mit Weichzeichner.“',
+  use:'Leg ihn auf, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Vorher: Dorftrottel. Nachher: Dorftrottel mit Weichzeichner.“',
   info:{effect:'Erhöht eine halbe Stunde lang das Tempo: Angriffe, Abklingzeiten und die globale Abklingzeit laufen schneller.',why:'Der einzige Klassen-Buff, der direkt Schaden bringt – er wirkt auf jede Rotation und jeden Söldner.',links:['classBuff:aperolSpritz'],terms:['klassenbuff','staerkung','tempo','gcd']}},
  kabelbinderSohlen:{cls:'kevin',slot:0,level:4,name:'Kabelbinder-Sohlen',icon:'boots',effects:{speed:0},
   text:v=>`Zwei Kabelbinder pro Schuh, straff gezogen: ${v.speed} schneller zu Fuß für ${M} Minuten. TÜV-geprüft ist daran nichts. Aber es quietscht motivierend.`,
-  use:'Zieh sie fest, bevor ein langer Weg ansteht: dir, deinem Söldner oder deinem Hilfsziel.',flavor:'„Die halten bombenfest. Das Wort ‚bomben‘ ist dabei wichtig.“',
+  use:'Zieh sie fest, bevor ein langer Weg ansteht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Die halten bombenfest. Das Wort ‚bomben‘ ist dabei wichtig.“',
   info:{effect:'Erhöht eine halbe Stunde lang die Laufgeschwindigkeit zu Fuß; auf dem Reittier zählt dessen Tempo.',why:'Kevins Alltagsbuff: kürzere Wege zwischen Aufträgen und mehr Luft beim Ausweichen aus Flächen.',links:['classBuff:pfandradar'],terms:['klassenbuff','staerkung','ausweichen']}},
  pfandradar:{cls:'kevin',slot:1,level:8,name:'Pfandradar',icon:'bottle',effects:{crit:0},
   text:v=>`Kevins selbstgelötetes Pfandradar piept bei jeder Schwachstelle: ${v.crit} Glückstreffer-Chance für ${M} Minuten. Meistens piept es bei Leergut. Getroffen wird trotzdem.`,
-  use:'Häng es um, bevor ihr loszieht: dir, deinem Söldner oder deinem Hilfsziel.',flavor:'„Es erkennt Pfand auf dreißig Meter. Und Gegner. Meistens Pfand.“',
+  use:'Häng es um, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Es erkennt Pfand auf dreißig Meter. Und Gegner. Meistens Pfand.“',
   info:{effect:'Erhöht eine halbe Stunde lang die Chance auf Glückstreffer um feste Prozentpunkte.',why:'Ergänzt den Tempo-Buff, statt ihn zu verdoppeln: Glückstreffer lösen bei vielen Talenten Procs aus.',links:['classBuff:kabelbinderSohlen','talent:kevin-hunt-27'],terms:['klassenbuff','staerkung','glueckstreffer','proc']}}
 };
 applyTuning(DEF,TUNING.classBuffs);
@@ -69,7 +69,6 @@ export const CLASS_BUFF_TEXT={
  minutes:'min',minutesShort:'m',from:n=>'von '+n,
  cast:(name,target)=>name+' · '+M+' Minuten auf '+target+'.',self:'dich',
  received:(from,name)=>from+' stärkt dich: '+name+' für '+M+' Minuten.',
- partyOnly:n=>n+' ist nicht in deiner Gruppe. Klassen-Buffs gibt es nur für die eigene Truppe.',
  weaker:(name)=>name+' wirkt dort schon stärker. Doppelt hält hier nicht besser.',
  talentBonus:(name,pct)=>name+' wirkt '+pct+' % stärker (Talent).'
 };

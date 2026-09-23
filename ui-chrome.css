@@ -37,7 +37,7 @@
 .party-member .unit-select{border:0;background:none;box-shadow:none;padding:0;width:100%;font:inherit;color:inherit;cursor:pointer}
 .party-hp>span{position:absolute;inset:0;display:grid;place-items:center;font:700 11px/1 var(--read);color:#fff5d7;text-shadow:0 1px 2px #000}
 .party-hp{position:relative;height:17px;overflow:hidden}
-.companion-frame.is-selected,.party-member.aid{outline:2px solid #b9da89;outline-offset:-2px;box-shadow:inset 0 0 16px #80bb6830}
+.companion-frame.is-selected,.party-member.is-selected{outline:2px solid #b9da89;outline-offset:-2px;box-shadow:inset 0 0 16px #80bb6830}
 .companion-frame:hover,.party-member:has(.unit-select:hover){background:linear-gradient(125deg,#36553e,#1d382c)}
 .unit-select:focus-visible{outline:2px solid #f6d994;outline-offset:4px}
 .touch-mode .player-panel{width:234px;height:auto;min-height:94px;padding:4px;gap:6px}
@@ -74,7 +74,7 @@
 .is-low-health :is(.hp,.companion-life,.party-hp) i,.target-panel:not(.friendly-target) .enemy-hp i{background-image:linear-gradient(#c17e5388,#853328aa),var(--chrome-resource);background-size:auto,180px 100%}
 .is-low-health .unit-portrait::after,.player-panel.is-low-health .portrait::after{filter:drop-shadow(0 0 3px #d97147)}
 .is-down .unit-portrait,.party-member.dead .unit-portrait{filter:grayscale(.85);opacity:.75}
-.companion-frame.is-selected .unit-portrait::after,.party-member.aid .unit-portrait::after{filter:drop-shadow(0 0 3px #c3ed9a)}
+.companion-frame.is-selected .unit-portrait::after,.party-member.is-selected .unit-portrait::after{filter:drop-shadow(0 0 3px #c3ed9a)}
 .target-panel{border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;background:linear-gradient(125deg,#293e31,#14271f);border-radius:0;padding:8px;color:var(--chrome-text)}
 .touch-mode .player-panel .bar{height:18px;margin:4px 0}
 .touch-mode .player-panel .energy{height:15px}

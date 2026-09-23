@@ -3,7 +3,7 @@
 // Stapelregel: je Buff-ID ein Eintrag. Verschiedene Buffs wirken nebeneinander; derselbe Buff wird nur ersetzt, wenn der neue
 // mindestens so stark ist (gleich stark = Dauer erneuern), sonst bleibt der stärkere stehen.
 import {CLASS_BUFFS,CLASS_BUFF_TUNING,CLASS_BUFF_TEXT,CLAN_MEMBERS} from './content/index.js';
-import {companionAid,companionAidFailure} from './companions.js';
+import {helpTarget,helpFailure} from './help-target.js';
 import {refreshEquipment} from './rpg.js';
 import {talentEffects} from './talents.js';
 import {emitCombatFx} from './combat-fx.js';
@@ -42,29 +42,20 @@ export const savedClassBuffs=holder=>Object.values(holder?.classBuffs||{}).filte
 /** Aus dem Spielstand: unbekannte IDs fallen weg, Stärke und Restzeit werden auf die Grenzen gestutzt. */
 export function restoreClassBuffs(saved){const out={};for(const s of Array.isArray(saved)?saved.slice(0,24):[]){if(!s||!isClassBuff(s.id))continue;const remaining=clampTime(s.remaining);if(remaining>0)out[s.id]={id:s.id,power:clampPower(s.power),remaining,from:typeof s.from==='string'?s.from.slice(0,40):''};}return out;}
 
-/** Wer bekommt den Buff? Söldner (Auswahl oder Hilfsziel) → Gruppenmitglied (Auswahl oder Hilfsziel) → man selbst. */
-export function classBuffTarget(g,aidId=g.companionAidId){
- const f=g.friend;
- if(f?.kind==='companion'&&f.ref)return {kind:'companion',ref:f.ref};
- const c=companionAid(g,aidId);if(c)return {kind:'companion',ref:c};
- if(f?.kind==='party'&&f.ref?.name)return {kind:'party',name:f.ref.name};
- if(f?.kind==='player'&&f.ref?.name)return {kind:'stranger',name:f.ref.name};
- const helper=g.netParty?.friend?.();if(helper)return {kind:'party',name:helper};
- return {kind:'self'};
-}
-/** Zaubert Kniff `s` (ein Klassen-Buff). Rückgabe true = gezaubert (GCD läuft), false = abgebrochen mit Meldung. */
-export function castClassBuff(g,s,aidId){
+/** Zaubert Kniff `s` (ein Klassen-Buff) auf das Ziel `t` (E-65, help-target.js): gewählter Söldner oder gewähltes Gruppenmitglied, sonst der Zaubernde selbst.
+ *  Rückgabe true = gezaubert (GCD läuft), false = abgebrochen mit Meldung. */
+export function castClassBuff(g,s,t=helpTarget(g)){
  const d=CLASS_BUFFS[s.id];if(!d)return false;
- const power=classBuffPower(g,s.id),entry={id:s.id,power,remaining:d.duration,from:g.heroName||g.member?.name||''},t=classBuffTarget(g,aidId),p=g.player;
- if(t.kind==='stranger'){g.toast(CLASS_BUFF_TEXT.partyOnly(t.name));return false;}
+ const power=classBuffPower(g,s.id),entry={id:s.id,power,remaining:d.duration,from:g.heroName||g.member?.name||''},p=g.player;
+ const failure=helpFailure(g,t);if(failure){g.toast(failure);return false;}
  if(t.kind==='party'){const ok=g.netParty?.classBuffTo?.(t.name,{id:s.id,power,duration:d.duration,name:d.name});if(!ok)return false;g.log(CLASS_BUFF_TEXT.cast(d.name,t.name));emitCombatFx(g,'buff',p,{skillId:s.id});return true;}
- if(t.kind==='companion'){const c=t.ref,failure=companionAidFailure(g,c.id);if(failure){g.toast(failure);return false;}
+ if(t.kind==='companion'){const c=t.ref;
   const r=applyClassBuff(g,c,entry);if(r==='weaker'){g.toast(CLASS_BUFF_TEXT.weaker(d.name));return false;}
   g.log(CLASS_BUFF_TEXT.cast(d.name,c.name));emitCombatFx(g,'buff',c,{skillId:s.id,companion:c.id});g.emit('companion',{type:'buff',id:c.id,buff:s.id});return true;}
  const r=applyClassBuff(g,g,entry);if(r==='weaker'){g.toast(CLASS_BUFF_TEXT.weaker(d.name));return false;}
  g.log(CLASS_BUFF_TEXT.cast(d.name,CLASS_BUFF_TEXT.self));emitCombatFx(g,'buff',p,{skillId:s.id});return true;
 }
-/** Netz (E-44 „aid“): ein Gruppenmitglied hat einen Klassen-Buff auf mich gezaubert. Der Empfänger prüft ID, Stärke und Dauer selbst. */
+/** Netz (Nachricht „aid“, E-44/E-65): ein Gruppenmitglied hat einen Klassen-Buff auf mich gezaubert. Der Empfänger prüft ID, Stärke und Dauer selbst. */
 export function receiveClassBuff(g,cb,from){
  if(!cb||typeof cb!=='object'||!isClassBuff(cb.id)||g.dead)return false;const d=CLASS_BUFFS[cb.id];
  const r=applyClassBuff(g,g,{id:cb.id,power:cb.power,remaining:cb.duration,from:String(from||'')});if(!r)return false;

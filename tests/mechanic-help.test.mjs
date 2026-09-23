@@ -8,7 +8,7 @@ import {classHudState} from '../class-hud.js';
 import {combatStats} from '../rpg.js';
 import {fireProcs} from '../procs.js';
 import {SPEC_MECHANICS,CLAN_MEMBERS} from '../content/index.js';
-import {selectCompanionAid} from '../companions.js';
+import {selectFriend} from '../help-target.js';
 import {tickMech} from '../spec-mechanics.js';
 const world=()=>({id:'help',spawn:{x:0,y:0},npc:{x:0,y:20},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findPath:(a,b)=>[b],findClear:(x,y)=>({x,y})});
 const game=(classId='baerbel',spec='baerbel-care')=>new Game(world(),{classId,level:30,rpg:{talents:{spec,learned:[]}}});
@@ -37,9 +37,12 @@ test('passives use tuned timing and the handbook keeps runtime skill names and r
  assert.ok(learnTalent(g,'baerbel-feedback-0'));assert.ok(learnTalent(g,'baerbel-feedback-0'));assert.match(describeCard(g,'talent','baerbel-feedback-0'),/9 %/);assert.match(describeCard(g,'talent','baerbel-feedback-0'),/>9</);
 });
 
-test('Vorrat includes a selected companion heal at full own health and explains its clean damage',()=>{
- const g=game();g.hireCompanion('merc-hopfen-horst',{free:true});const c=g.companions[0];Object.assign(c,{x:20,y:0,hp:c.maxHp-100});selectCompanionAid(g,c.id);
- g.skills.find(s=>s.id==='heal').castTime=0;g.player.hp=g.player.maxHp;tickMech(g,0,combatStats(g));g.classState.m.clean=5;g.target={hp:1000};let baseDamage=0;g.damage=(_target,amount)=>{baseDamage=amount;};
- const before=c.hp;assert.equal(g.action('heal'),true);assert.equal(g.classState.m.supply,1);assert.ok(c.hp>before);assert.equal(baseDamage,Math.round((c.hp-before)*SPEC_MECHANICS['baerbel-care'].supply.cleanDamage));
- const help=mechanicHelp(g).lines.join(' ');assert.match(help,/Söldner-Hilfsziel/);assert.match(help,/Online-Mitspielern zählt für diesen Schaden nicht/);assert.match(skillHelp(g,'heal'),/zusätzlich dein gewähltes/);
+test('Vorrat fills when healing the selected companion at full own health; clean damage comes from healing yourself with an enemy selected',()=>{
+ const g=game();g.hireCompanion('merc-hopfen-horst',{free:true});const c=g.companions[0];Object.assign(c,{x:20,y:0,hp:c.maxHp-100});selectFriend(g,'companion',c);
+ g.skills.find(s=>s.id==='heal').castTime=0;g.player.hp=g.player.maxHp;tickMech(g,0,combatStats(g));g.classState.m.clean=5;let baseDamage=0;g.damage=(_target,amount)=>{baseDamage=amount;};
+ const before=c.hp;assert.equal(g.action('heal'),true);assert.equal(g.classState.m.supply,1);assert.ok(c.hp>before);assert.equal(baseDamage,0,'Freund gewählt: kein Gegner, kein Grundschaden');
+ // Ein Ziel (E-65): mit gewähltem Gegner heilt die Löffelkur dich, der Grundschaden trifft den Gegner.
+ g.friend=null;g.target={hp:1000};g.player.hp=g.player.maxHp-100;g.cooldowns.heal=0;g.gcd=0;const own=g.player.hp;
+ assert.equal(g.action('heal'),true);assert.equal(g.classState.m.supply,2);assert.ok(g.player.hp>own);assert.equal(baseDamage,Math.round((g.player.hp-own)*SPEC_MECHANICS['baerbel-care'].supply.cleanDamage));
+ const help=mechanicHelp(g).lines.join(' ');assert.match(help,/als Ziel gewählt/);assert.doesNotMatch(help,/Hilfsziel/);assert.match(skillHelp(g,'heal'),/Heilt dein gewähltes freundliches Ziel/);
 });

@@ -645,8 +645,8 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .roll-timer{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--kraft);transform-origin:left;animation:roll-timer linear forwards}@keyframes roll-timer{to{transform:scaleX(0)}}
 @media (prefers-reduced-motion:reduce){.roll-timer{animation:none}}
 body.start-open .roll-frames{display:none}
-/* Miteinander (E-44): Hilfsziel, Aufhelfen, Handelsfenster */
-.party-member{pointer-events:auto;cursor:pointer}.party-member.aid{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}.party-member [data-party-revive]{float:right;border:0;border-radius:5px;padding:1px 6px;background:var(--ok);color:#10201a;font:inherit;font-size:11px;cursor:pointer}
+/* Miteinander (E-44): gewähltes Gruppenmitglied (das eine Ziel, E-65), Aufhelfen, Handelsfenster */
+.party-member{pointer-events:auto;cursor:pointer}.party-member.is-selected{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}.party-member [data-party-revive]{float:right;border:0;border-radius:5px;padding:1px 6px;background:var(--ok);color:#10201a;font:inherit;font-size:11px;cursor:pointer}
 .trade-window{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;width:min(520px,calc(100% - 32px));max-height:calc(100% - 40px);overflow:auto;padding:12px 14px;border:1px solid var(--kraft-2);border-radius:10px;background:#16241df7;box-shadow:0 8px 28px #000a;font-family:var(--read);color:var(--cream)}
 .trade-window[hidden]{display:none}.trade-window header{margin-bottom:8px;font-size:16px}.trade-window h4{margin:8px 0 4px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--kraft)}.trade-window h4 em{font-style:normal;color:var(--ok)}
 .trade-sides{display:grid;grid-template-columns:1fr 1fr;gap:10px}.trade-sides section{padding:6px 8px;border:1px solid var(--kraft-2);border-radius:8px;min-height:96px}

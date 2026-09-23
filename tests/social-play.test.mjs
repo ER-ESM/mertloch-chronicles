@@ -61,10 +61,10 @@ function client(){
  const social=createNetSocial({game:()=>g,me:()=>'Anni',send:m=>sent.push(m),others:()=>others,hooks,ui});g.netParty=hooks;return {g,sent,hooks,others,social,ui};
 }
 
-test('Client: Hilfsziel schickt Heilung und Schutz, Engine nimmt Hilfe und Aufhelfen an',()=>{
+test('Client: das gewählte Gruppenmitglied (das eine Ziel) bekommt Heilung und Schutz, Engine nimmt Hilfe und Aufhelfen an',()=>{
  const {g,sent,hooks,others,social}=client();
- assert.equal(hooks.aidHeal(80,'Pflaster'),false,'ohne Hilfsziel nichts');social.setFriend('Kevin');assert.equal(hooks.aidHeal(80,'Pflaster'),true);assert.deepEqual(sent.at(-1),{t:'aid',to:'Kevin',heal:80,name:'Pflaster'});
- others[0].x=9999;assert.equal(hooks.buffFriend({name:'Dosenmut'}),false,'zu weit weg');
+ assert.equal(hooks.aidHeal(null,80,'Pflaster'),false,'ohne Ziel nichts');assert.equal(social.selectTarget('Kevin'),'Kevin');assert.equal(social.selected(),'Kevin');assert.equal(g.friend.kind,'party');assert.equal(hooks.aidHeal('Kevin',80,'Pflaster'),true);assert.deepEqual(sent.at(-1),{t:'aid',to:'Kevin',heal:80,name:'Pflaster'});
+ others[0].x=9999;assert.equal(hooks.canAid('Kevin'),false);assert.equal(hooks.buffFriend('Kevin',{name:'Dosenmut'}),false,'zu weit weg');
  g.player.hp=100;g.receiveAid({from:'Kevin',name:'Pflaster',heal:50,b:{name:'Isolierband hält',duration:10,shield:100}});assert.equal(g.player.hp,150);assert.equal(g.partyBuff.shield,100,'gezielter Schutz wirkt voll');
  g.player.hp=0;g.dead=true;assert.equal(g.reviveHere('Kevin'),true);assert.equal(g.dead,false);assert.equal(g.player.hp,Math.round(g.player.maxHp*BALANCE.party.reviveHp));assert.equal(g.reviveHere('Kevin'),false);
  others[0].x=50;others[0].state='dead';assert.equal(social.canRevive('Kevin'),true);others[0].state='idle';assert.equal(social.canRevive('Kevin'),false);

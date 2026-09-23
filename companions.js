@@ -15,7 +15,6 @@ import {DUNGEON_CASTS} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
-import {inKiosk} from './kiosk-instance.js';
 import {walkFacing} from './maifeld-locomotion.js';
 import {classBuffValue,savedClassBuffs,restoreClassBuffs} from './class-buffs.js';
 
@@ -29,23 +28,6 @@ const companionText=(g,c,data)=>g.sct({actor:c.id,member:c.def.look,text:c.name,
 const face=(c,target)=>{c.facing=target.x<c.x?-1:1;c.direction=walkFacing(target.x-c.x,target.y-c.y,c.direction||'se');};
 const inEllipse=(p,c,extra=0)=>Math.hypot((p.x-c.x)/(c.radius+extra),(p.y-c.y)/((c.radius+extra)*.75))<1;
 
-/** Hilfsziel bleibt unabhängig vom gegnerischen Kampfziel bestehen. Keine Änderung an Autoangriff oder Bewegung. */
-export const companionAid=(g,id=g.companionAidId)=>(g.companions||[]).find(c=>c.id===id)||null;
-export function clearCompanionAid(g){g.companionAidId=null;if(g.friend?.kind==='companion')g.friend=null;}
-export function selectCompanionAid(g,id,{toggle=false}={}){
- const c=companionAid(g,id);if(id&&!c)return false;
- const selected=c&&!(toggle&&g.companionAidId===id)?c:null;
- clearCompanionAid(g);g.netParty?.clearFriend?.();
- if(selected){g.companionAidId=selected.id;g.friend={kind:'companion',ref:selected};}
- g.toast(selected?T.aidOn(selected.name):T.aidOff);g.emit('target');return true;
-}
-export function companionAidFailure(g,id=g.companionAidId){
- if(!id)return null;const c=companionAid(g,id);if(!c)return T.aidMissing;
- if(!alive(c))return T.aidDown;
- if(inKiosk(g)||distance(g.player,c)>R.aidRange)return T.aidFar;
- if(!g.world.lineClear(g.player,c))return T.aidBlocked;
- return null;
-}
 /** Heilung durch den Besitzer: seine Statistik und Bedrohung, Text und Effekt am geheilten Söldner. */
 export function healCompanionByPlayer(g,c,amount,source='heal'){
  if(!c||!alive(c)||g.dead||!(amount>0))return 0;
@@ -265,7 +247,7 @@ export function hireCompanion(g,id,{free=false}={}){
 }
 export function dismissCompanion(g,id,reason='dismissed'){
  const c=g.companions.find(x=>x.id===id);if(!c)return {ok:false};
- if(g.companionAidId===id)clearCompanionAid(g);g.companions=g.companions.filter(x=>x!==c);for(const e of g.enemies)clearThreat(e,id);
+ if(g.friend?.ref===c)g.friend=null;g.companions=g.companions.filter(x=>x!==c);for(const e of g.enemies)clearThreat(e,id);
  g.toast((reason==='expired'?T.expired:T.dismissed)(c.name));if(reason!=='expired'&&c.def.lines?.dismiss)g.bark?.(c,c.def.lines.dismiss,'companion');g.emit('companion',{type:reason,id});g.emit('save');return {ok:true};
 }
 /** Befehl an einen (id) oder alle: 'follow' | 'stay' | 'attack' (= aktuelles Ziel des Spielers, auch ohne dass es schon kämpft). */

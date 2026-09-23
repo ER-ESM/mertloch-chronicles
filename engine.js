@@ -3,7 +3,7 @@ import {initMounts,savedMounts,toggleMount,dismount,tickMount,acquireMount,learn
 import {MOUNT_UI,MOUNT_RULES,specOutput} from './content/index.js';
 import {inKiosk,enterKiosk,leaveKiosk,roomInteraction,roomWorld,tickKiosk,savedKiosk} from './kiosk-instance.js';
 import {upperWorld} from './world-house.js';
-import {KIOSK_ROOM,KIOSK_TEXT,BUDE_HOUSE_TEXT} from './content/index.js';
+import {KIOSK_ROOM,KIOSK_TEXT,BUDE_HOUSE_TEXT,TARGET_HELP} from './content/index.js';
 import {shopInteraction,buyItem,sellItem,buybackItem} from './shop.js';
 import {emitCombatFx,emitSkillFx} from './combat-fx.js';
 import {createCombatMeter,beginMeterCombat,finishMeterCombat,tickCombatMeter,recordMeterDamage,restoreMeterHealth} from './combat-meter.js';
@@ -24,13 +24,14 @@ import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
 import {available,xpToNext} from './progression.js';
 import {talentPoints,talentState} from './talents.js';
-import {freshClassState,classSkills,healPlayer,addGuard,beforeSkill,skillCost,performTalent,afterSkill,afterDamage,onParry,onKill,modifyHit,tickClass} from './class-mechanics.js';
+import {freshClassState,classSkills,healPlayer,healerEffects,addGuard,beforeSkill,skillCost,performTalent,afterSkill,afterDamage,onParry,onKill,modifyHit,tickClass} from './class-mechanics.js';
 import {VillageLife} from './village-life.js';
 import {distance,rng,SCALE} from './world.js';
 import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
-import {companionAid,companionAidFailure,healCompanionByPlayer,buffCompanionByPlayer} from './companions.js';
+import {healCompanionByPlayer,buffCompanionByPlayer} from './companions.js';
+import {helpTarget,helpFailure} from './help-target.js';
 import {castClassBuff,receiveClassBuff,tickClassBuffs,savedClassBuffs,restoreClassBuffs,classBuffValue} from './class-buffs.js';
 import {TANK_SPECS} from './net-world.js';
 import {member,skillsFor,STORY} from './clan.js';
@@ -135,9 +136,9 @@ export class Game{
   }
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
-  selectNext(reverse=false){if(inKiosk(this)||this.floor)return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
-  selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
-  action(id,point=null,completing=false,aidId=this.companionAidId){
+  selectNext(reverse=false){if(inKiosk(this)||this.floor)return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.friend=null;this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
+  selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.friend=null;this.target=e;this.emit('target');return true;}return false;}
+  action(id,point=null,completing=false,friend=this.friend){
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
     if(this.paused||this.dead)return false;
     // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
@@ -151,10 +152,11 @@ export class Game{
     const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCostMech(this,s,skillCost(this,s,cs)),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,this.cooldowns[id].toFixed(1))||`${s.name} ist noch nicht bereit · ${this.cooldowns[id].toFixed(1)} s.`);return false;}
     if(!completing&&!s.offGcd&&this.gcd>0)return false;
     if(p.energy<cost){this.toast(COMBAT_TEXT.needResources);return false;}
-    const aid=['heal','buff'].includes(id)?companionAid(this,aidId):null;
-    if(['heal','buff'].includes(id)){const failure=companionAidFailure(this,aidId);if(failure){this.toast(failure);return false;}}
-    // Klassen-Buff (class-buffs.js): Ziel ist Söldner, Gruppenmitglied oder man selbst; kostenlos, nur globale Abklingzeit.
-    if(s.classBuff){if(!castClassBuff(this,s,aidId))return false;this.cooldowns[id]=skillCooldown(this,s,cs);if(!s.offGcd&&!completing)this.gcd=cs.gcd;p.castPose=.28;tutorialSignal(this,id);this.emit('sound',{id:'buff'});this.emit('save');return true;}
+    // Ein Ziel (E-65, help-target.js): Heilung, Schutz und Buffs wirken auf den gewählten Freund, sonst auf dich selbst.
+    const help=['heal','buff'].includes(id)||s.classBuff?helpTarget(this,friend):null,aid=help?.kind==='companion'?help.ref:null,mate=help?.kind==='party'?help.name:null;
+    if(help){const failure=helpFailure(this,help);if(failure){this.toast(failure);return false;}}
+    // Klassen-Buff (class-buffs.js): kostenlos, nur globale Abklingzeit.
+    if(s.classBuff){if(!castClassBuff(this,s,help))return false;this.cooldowns[id]=skillCooldown(this,s,cs);if(!s.offGcd&&!completing)this.gcd=cs.gcd;p.castPose=.28;tutorialSignal(this,id);this.emit('sound',{id:'buff'});this.emit('save');return true;}
     let e=this.target;
     if(s.ground){if(!point){this.aiming=id;this.aimPoint={...p};this.toast('Boden wählen · Rechtsklick / Esc abbrechen.');return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
     if(s.range&&!s.ground){
@@ -163,8 +165,8 @@ export class Game{
       if(distance(p,e)>s.range+(cs.range||0)){this.toast(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m. Bewege dich näher zum Ziel.`);return false;}
       if(!this.world.lineClear(p,e)){this.toast('Ein Gebäude oder Hindernis versperrt die Sicht.');return false;}
     }
-    if(id==='heal'&&p.hp>=p.maxHp&&!(aid&&aid.hp<aid.maxHp)&&!this.netParty?.friend?.()&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast('Deine Gesundheit ist bereits vollständig.');return false;}
-    if(s.castTime&&!completing){if(!isMobile(this,s)&&movingToCast(this)){this.toast(COMBAT_TEXT.moving);return false;}this.casting={id,name:s.name,aidId:aidId||null,point:point?{...point}:null,targetId:s.range&&!s.ground?e.id:null,remaining:s.castTime,total:s.castTime};if(!s.offGcd)this.gcd=quickGcd(this,id,e)?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd;this.aiming=null;this.aimPoint=null;return true;}
+    if(id==='heal'&&!mate&&(aid?aid.hp>=aid.maxHp:p.hp>=p.maxHp)&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast(aid?TARGET_HELP.full(aid.name):'Deine Gesundheit ist bereits vollständig.');return false;}
+    if(s.castTime&&!completing){if(!isMobile(this,s)&&movingToCast(this)){this.toast(COMBAT_TEXT.moving);return false;}this.casting={id,name:s.name,friend:help&&help.kind!=='self'?friend:null,point:point?{...point}:null,targetId:s.range&&!s.ground?e.id:null,remaining:s.castTime,total:s.castTime};if(!s.offGcd)this.gcd=quickGcd(this,id,e)?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd;this.aiming=null;this.aimPoint=null;return true;}
     const origin={x:p.x,y:p.y},fxTarget={x:(s.ground?point:e||p).x,y:(s.ground?point:e||p).y};context.marked=e?.mark>0;context.interrupted=!!e?.cast?.interruptible;
     const base=this.baseEffects(),quick=quickGcd(this,id,e);
     this.cooldowns[id]=skillCooldown(this,s,cs);const surge=id==='burst'&&p.energy>=BALANCE.momentum.surgeAt;p.energy-=cost;consumeProc(this,'glow',id);consumeProc(this,'free',id);const pm=consumeProc(this,'empower',id)?2:1;
@@ -190,8 +192,8 @@ export class Game{
       if(this.touchMove&&(this.touchMove.x||this.touchMove.y)){dx=this.touchMove.x;dy=this.touchMove.y;}if(!dx&&!dy){dx=e?p.x-e.x:p.facing;dy=e?p.y-e.y:0;}const n=Math.hypot(dx,dy)||1;dx/=n;dy/=n;p.invulnerable=.4;this.moveTo=null;this.path=[];this.routeGoal=null;
       for(let i=0;i<s.steps;i++){this.move(p,dx*4,dy*4);}
     }
-    if(id==='buff'){this.buffs={...s,remaining:s.duration*(1+(base.buffDuration||0)),shield:s.shield?Math.round(s.shield*(cs.flatScale||1)*(1+cs.shieldPower+(cs.shieldBonus||0))):0};this.log(s.name+' · '+s.duration+' s aktiv.');if(aid)buffCompanionByPlayer(this,aid,this.buffs);if(!aid)this.netParty?.buffFriend?.({name:s.name,icon:s.icon,duration:this.buffs.remaining,reduction:s.reduction||0,hot:s.hot||0,shield:this.buffs.shield||0});this.netParty?.buff?.({name:s.name,icon:s.icon,duration:this.buffs.remaining,reduction:s.reduction||0,hot:s.hot||0,shield:this.buffs.shield||0});}
-    if(id==='heal'){const amount=Math.round(s.heal*(cs.flatScale||1)*(1+cs.healPower+(cs.healBonus||0))),own=healPlayer(this,s.heal,cs,true),help=aid?healCompanionByPlayer(this,aid,amount):0;if(aid&&(cs.hotHeal||this.rpg.talents.spec==='baerbel-care')&&this.classState.hot>0)aid.aidHot={remaining:this.classState.hot,power:Math.round(this.classState.hotPower*(1+cs.healPower+(cs.healBonus||0))),tick:1};onHealMech(this,own+help,cs);if(!aid)this.netParty?.aidHeal?.(amount,s.name);fireProcs(this,'heal',cs);}
+    if(id==='buff'){const b={...s,remaining:s.duration*(1+(base.buffDuration||0)),shield:s.shield?Math.round(s.shield*(cs.flatScale||1)*(1+cs.shieldPower+(cs.shieldBonus||0))):0},wire={name:s.name,icon:s.icon,duration:b.remaining,reduction:s.reduction||0,hot:s.hot||0,shield:b.shield||0};/* Ein Ziel (E-65): Stärkung auf den gewählten Freund, sonst auf dich; der Gruppenanteil (E-42) strahlt nur von dir selbst aus */if(aid){buffCompanionByPlayer(this,aid,b);this.log(s.name+' · '+s.duration+' s auf '+aid.name+'.');}else if(mate){this.netParty?.buffFriend?.(mate,wire);this.log(s.name+' · '+s.duration+' s auf '+mate+'.');}else{this.buffs=b;this.log(s.name+' · '+s.duration+' s aktiv.');this.netParty?.buff?.(wire);}}
+    if(id==='heal'){/* Ein Ziel (E-65): Heilung auf den gewählten Freund, sonst auf dich. Die Nebenwirkungen beim Heiler (Randale, Stärkung, Abklingzeiten) gibt es in beiden Fällen. */let healed=0;if(help.kind==='self')healed=healPlayer(this,s.heal,cs,true);else{const amount=Math.round(s.heal*(cs.flatScale||1)*(1+cs.healPower+(cs.healBonus||0))),hot=healerEffects(this,cs,false);if(aid){healed=healCompanionByPlayer(this,aid,amount);if(cs.overhealShield)addGuard(this,Math.max(0,amount-healed)*cs.overhealShield,cs,true);if(hot)aid.aidHot={remaining:6,power:Math.round(hot*(1+cs.healPower+(cs.healBonus||0))),tick:1};}else this.netParty?.aidHeal?.(mate,amount,s.name);}onHealMech(this,healed,cs);fireProcs(this,'heal',cs);}
     afterSkill(this,id,e,cs,context);emitSkillFx(this,s,origin,fxTarget,context);if(id==='dash')fireProcs(this,'dash',cs);fireProcs(this,'skillHit',cs,{skill:id});if(context.beat)fireProcs(this,'beat',cs,{skill:id});const zones=this.fields.filter(z=>z.remaining>0&&distance(p,z)<z.radius).map(z=>z.kind);if(zones.length)fireProcs(this,'inZone',cs,{skill:id,zones});tutorialSignal(this,id);this.emit('sound',{id});return true;
   }
   damage(e,n,label){if(e.tutorial){const before=e.hp,result=tutorialDamage(this,e,n,label);if(e.hp<before)emitCombatFx(this,'hit',e,{amount:before-e.hp,label});return result;}if(tutorialActive(this)&&!e.arena)return 0;if(e.hp<=0||e.ai==='returning')return;e.aggro=true;e.ai='combat';this.player.inCombat=7;const cs=combatStats(this),critical=this.random()<cs.crit,mark=e.mark>0,bonus=(label==='Markierung'?(cs.markBonus||0):label==='RESONANZ'||label==='Entladung'?(cs.burstBonus||0):0)+(cs.execute&&e.hp/e.maxHp<.3?cs.execute:0)+(mark&&cs.procs.includes('verdict')?.1:0);n*=damageMultiplier(this,e,label,cs);if(e.dungeon)n*=dungeonDamageFactor(this,e);const actual=Math.round(n*specOutput(cs.spec).damage*(1+cs.power)*(1+bonus)*(critical?1.6+(cs.critDamage||0):1)*(e.vulnerable>0?1.35:1)*(this.buffs.remaining>0?this.buffs.power||1:1));const dealt=Math.min(e.hp,actual);recordMeterDamage(this,e,actual,dealt,label,critical);if(e.arena)arenaHit(this,e,dealt);if(critical)fireProcs(this,'crit',cs);if(label==='Autoangriff')fireProcs(this,'autoHit',cs);if(label==='Markierung')fireProcs(this,'markTick',cs);if(mark)fireProcs(this,'markedHit',cs,{skill:label,enemy:e,damage:dealt});e.hp=Math.max(0,e.hp-actual);this.stats.damage+=dealt;if(this.companions.length)addThreat(e,'player',dealt*(TANK_SPECS.includes(this.rpg.talents.spec)?3:1));if(dealt>0)emitCombatFx(this,'hit',e,{amount:dealt,critical,label});if(critical&&cs.procs.includes('rage')){const before=this.player.energy;this.player.energy=Math.min(100,this.player.energy+PROCS.rage.energy);if(this.player.energy>before)emitCombatFx(this,'proc',this.player,{procId:'item:rage',signal:'resource',label:'RANDALE'});}if(cs.leech){const back=restoreMeterHealth(this,Math.round(dealt*cs.leech),'leech');if(back>0){this.sct({area:'in',kind:'heal',value:back,text:'Lebensraub',iconKey:'food'});emitCombatFx(this,'heal',this.player,{amount:back,direct:false});}}afterDamage(this,e,dealt,cs);e.hurt=.15;const sctSkill={Autoangriff:null,Kelle:'strike',Pfandwurf:'throw',Parade:'parry',Markierung:'mark',Entladung:'burst',RESONANZ:'burst',Sprung:'ground',Deckelwelle:'burst',Spezialkniff:'strike'}[label]||null;/* Anzeige: echter Kniffname der Klasse statt des internen Schlüssels ("Kelle" hieß bei jeder Klasse Kelle) */const sctText=SKILL_LABEL_KEYS.has(label)?(this.skills.find(s=>s.id===sctSkill)?.name||label):label;if(!this.sct({area:'out',kind:'damage',value:actual,crit:critical,skill:sctSkill,text:sctText,enemyId:e.id}))this.float(e.x+(this.random()-.5)*14,e.y-27,String(actual)+(critical?'!':''),critical?'#ffdf78':label==='RESONANZ'?'#ecc3fc':'#fff0bf');if(e.hp<=0)this.kill(e);return dealt;}
@@ -494,7 +496,7 @@ export class Game{
     const set=this.attackers||(this.attackers=new Set());
     if(!fresh&&set.has(e.id))return false;
     set.add(e.id);
-    if(!this.target?.hp){this.target=e;this.emit('target');}
+    if(!this.target?.hp&&!this.friend){this.target=e;this.emit('target');}
     this.emit('attacked',{enemyId:e.id,damage,first:true});
     return true;
   }
