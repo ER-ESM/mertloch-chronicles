@@ -22,7 +22,7 @@ export function createProfessionService({store,dataDir,clients,now=Date.now,layo
  function guard(id,world,save){const h=db.heroes[key(id,world)];if(!h)return null;const old=canonical(id,world);if(restoreProfessions(save.professions).revision!==h.save.professions.revision)return {stale:true,server:old};save.professions=structuredClone(h.save.professions);return null;}
  function identity(id,b){const h=hero(id,b.hero),c=clients().get(id);if(!h||!c||c.hero!==h.id||c.name!==h.name||c.world!==b.room||!c.placed)return null;return {h,c,world:characterCloudKey(b.room,h),k:key(id,characterCloudKey(b.room,h))};}
  function nodeState(room,node,k){const raw=db.nodes[key(room,node)]||{},p=resourcePhase(raw,now());return {...p,spent:p.cycle===raw.cycle&&!!raw.claims?.includes(k)};}
- function availability(c,site,l){if(!site)return T.unknown;if(!c.placed||!c.world)return T.room;if(c.h<=0||['dead','combat','walk'].includes(c.s)||c.mt)return T.combat;if(Math.hypot(c.x-site.x,c.y-site.y)>R.range||l.lineClear&&!l.lineClear(c,site))return T.range;return '';}
+ function availability(c,site,l){if(!site)return T.unknown;if(!c.placed||!c.world)return T.room;if(c.h<=0||['dead','combat'].includes(c.s))return T.combat;if(site.anywhere)return '';if(c.s==='walk'||c.mt)return T.combat;if(Math.hypot(c.x-site.x,c.y-site.y)>R.range||l.lineClear&&!l.lineClear(c,site))return T.range;return '';}
  function request(id,b){
   const who=identity(id,b);if(!who)return {error:T.identity};const {c,world,k}=who,l=layout(b.room);if(!l)return {error:T.room};
   if(b.op==='state')return {nodes:Object.fromEntries(l.nodes.map(n=>[n.id,nodeState(b.room,n.id,k)])),revision:restoreProfessions(canonical(id,world)?.save?.professions).revision,now:now()};
@@ -40,7 +40,7 @@ export function createProfessionService({store,dataDir,clients,now=Date.now,layo
   }
   if(b.op!=='finish')return {error:T.unknown};const p=pending.get(k);if(!p||p.op!==op||p.token!==b.token)return {error:T.expired};
   if(now()-p.at>60000){pending.delete(k);return {error:T.expired};}
-  const bad=availability(c,p.site,l);if(bad||Math.hypot(c.x-p.x,c.y-p.y)>.75)return {error:bad||T.moving};
+  const bad=availability(c,p.site,l);if(bad||!p.site.anywhere&&Math.hypot(c.x-p.x,c.y-p.y)>.75)return {error:bad||T.moving};
   if(now()-p.at<actionDuration(p.a)*1000)return {error:T.early};
   if(p.revision!==restoreProfessions(save.professions).revision)return {error:T.stale};
   const phase=p.a.kind==='gather'?nodeState(b.room,p.a.node,k):null;
@@ -52,7 +52,7 @@ export function createProfessionService({store,dataDir,clients,now=Date.now,layo
   // Receipt and reward afterimage are one atomic rename. Recovery precedes every cloud read/write.
   persist(next);pending.delete(k);store.writeSave(id,world,after,after.savedAt);return {save:after};
  }
- function observe(c){const prefix=JSON.stringify([c.id]).slice(0,-1)+',';for(const [k,p]of pending)if(k.startsWith(prefix)&&(c.s==='combat'||c.s==='dead'||c.s==='walk'||Math.hypot(c.x-p.x,c.y-p.y)>.75||c.world!==p.room||c.h<=0))pending.delete(k);}
+ function observe(c){const prefix=JSON.stringify([c.id]).slice(0,-1)+',';for(const [k,p]of pending)if(k.startsWith(prefix)&&!p.site?.anywhere&&(c.s==='combat'||c.s==='dead'||c.s==='walk'||Math.hypot(c.x-p.x,c.y-p.y)>.75||c.world!==p.room||c.h<=0))pending.delete(k);}
  function forgetAccount(id){const next=structuredClone(db),keys=Object.keys(next.heroes).filter(k=>JSON.parse(k)[0]===id);for(const k of keys){delete next.heroes[k];pending.delete(k);}for(const n of Object.values(next.nodes))n.claims=n.claims.filter(k=>JSON.parse(k)[0]!==id);persist(next);}
  return {request,hero,guard,canonical,observe,forgetAccount};
 }

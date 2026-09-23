@@ -12,9 +12,9 @@ export function nodeTipHtml(g,node){
 }
 /** Aus pointermove: Fundstelle unter dem Weltpunkt merken und den Tooltip an den Mauszeiger setzen. → Fundstelle oder null */
 export function hoverNode(g,point,clientX,clientY){
- const n=point&&!g.paused&&!g.dead?professionTarget(g,point):null,node=n?.type==='professionNode'?n:null,el=element();g.hoverNode=node;
+ const n=point&&!g.paused&&!g.dead?professionTarget(g,point):null,node=n?.type==='professionNode'?n:null,el=element();g.hoverNode=node;g.hoverTeacher=n?.type==='professionTeacher'?n.id:null;
  if(!node){el.hidden=true;return null;}
  el.innerHTML=nodeTipHtml(g,node);el.hidden=false;const w=el.offsetWidth,h=el.offsetHeight;let x=clientX+18,y=clientY+18;if(x+w>innerWidth-8)x=clientX-w-14;if(y+h>innerHeight-8)y=clientY-h-14;
  el.style.left=Math.max(8,Math.round(x))+'px';el.style.top=Math.max(8,Math.round(y))+'px';return node;
 }
-export function clearNodeHover(g){if(g)g.hoverNode=null;if(tip)tip.hidden=true;}
+export function clearNodeHover(g){if(g){g.hoverNode=null;g.hoverTeacher=null;}if(tip)tip.hidden=true;}

@@ -1,21 +1,79 @@
-.game-popup[data-window="professions"] .popup-body{overflow:auto!important}
-.profession-panel{padding:4px 8px 18px;color:#dfd6bf;font-size:13px}
-.profession-panel header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.profession-panel h2{margin:0;color:#f3d592}.profession-panel h3{color:#ecd094;border-bottom:1px solid #8d785647;padding-bottom:10px;margin:22px 0 8px}
-.profession-panel p{line-height:1.5;margin:8px 0}.profession-panel small{display:block;color:#c4baa2;line-height:1.6}
-.profession-mode{padding:10px 12px;border:1px solid #9b886542;background:#192c2c}
-.profession-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.profession-card{padding:12px;background:linear-gradient(155deg,#263733,#162320);border:1px solid #716b514d;border-radius:5px;display:flex;flex-direction:column;gap:6px}
-.profession-card.selected{border-color:#d3b879;box-shadow:inset 0 0 16px #d4b16d10}.profession-card p{flex:1}.profession-card strong{margin-top:6px;color:#efd291}
-.profession-card progress{width:100%;height:8px;accent-color:#cfae69}.profession-panel button{font-size:12px;padding:7px 9px;line-height:1.3}.profession-panel button:disabled{opacity:.4;cursor:default}.profession-card>button:first-child{font-weight:700;font-size:14px;color:#efd291}.profession-panel button:focus-visible{outline:2px solid #e9c67a;outline-offset:2px}
-.profession-list{display:grid;gap:8px}.profession-recipe,.profession-source{display:flex;align-items:center;gap:14px;border:1px solid #716b5140;background:#12201f;padding:12px;border-radius:4px}.profession-recipe>div,.profession-source>div{flex:1;min-width:0}.profession-recipe canvas{align-self:flex-start;background:#080e0d;border:1px solid #8d7856;border-radius:4px;image-rendering:pixelated}.profession-recipe ul{padding-left:16px;columns:2;margin:8px 0}.profession-recipe li{padding:2px 0}.profession-recipe b,.profession-source b{color:#efdbaa}.profession-recipe .missing,.profession-reason{color:#d19c81}.profession-reason{font-size:12px}
+/* Berufe (2026-09-23): Berufefenster mit Reitern (Berufe · Rezepte · Materialien) und Lehrer-Gespräch. Farben aus bierdeckel.css. */
+.game-popup[data-window="professions"] .popup-body,.game-popup[data-window="trainer"] .popup-body{overflow:auto!important}
+.profession-panel{--prof-up:#E89B4A;--prof-grey:#9AA39C;--prof-locked:#7C8B82;--prof-card:#263e33;--prof-edge:#967c56;padding:2px 6px 12px;color:var(--cream,#F4E8C4);font-size:14px}
+.profession-panel h3{margin:0;font-size:20px;color:#f3d592}.profession-panel h4{margin:14px 0 6px;font:400 16px/1.1 var(--display);letter-spacing:.05em;text-transform:uppercase;color:#ecd094}
+.profession-panel p{line-height:1.45;margin:6px 0}.profession-panel small{display:block;color:#c9bfa6;line-height:1.45;font-size:12.5px}
+.profession-panel ul{list-style:none;margin:0;padding:0}
+.profession-panel canvas[data-item-art]{width:40px;height:40px;flex:none;image-rendering:pixelated;background:#101b18;border:2px solid var(--prof-edge);border-radius:5px}
+.game-shell .profession-panel button{font-size:14px;letter-spacing:.03em;padding:7px 12px;min-height:38px}
+.profession-panel button:disabled{opacity:.5;cursor:default}
+.profession-panel button:focus-visible,.profession-panel input:focus-visible{outline:2px solid #e9c67a;outline-offset:2px}
+.profession-reason{color:#e3a58a;font-size:12.5px;min-height:0}
+.profession-mode{margin:14px 0 0!important;padding:8px 10px;border:1px solid #9b886542;background:#18292399;font-size:12.5px;color:#cfc5ab}
+/* Reiter */
+.prof-tabs{display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--prof-edge);padding-bottom:8px;margin-bottom:12px}
+.game-shell .prof-tabs button{min-width:120px}
+.prof-tabs [aria-selected=true]{border-color:#ecb95c!important;color:#ffe4a2!important;background:#3b5545!important}
+.prof-tabs kbd{margin-left:auto;font-size:12px;color:#cdbf9c;border:1px solid #9b886566;padding:3px 7px;border-radius:4px}
+.prof-locked{padding:8px 10px;border:1px solid #c98b6a66;background:#3a2a2266;color:#f0c3a8}
+/* Fertigkeitsbalken */
+.prof-bar{position:relative;height:18px;border:2px solid #0b1216;background:#12201b;border-radius:4px;overflow:hidden;margin:8px 0}
+.prof-bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(#8fbf6d,#5d8c4a);box-shadow:inset 0 -3px 0 #0003}
+.prof-bar span{position:relative;display:block;text-align:center;font-size:12px;line-height:14px;font-weight:800;color:#fff8e3;text-shadow:0 1px 0 #0b1216}
+/* Reiter Berufe */
+.prof-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.prof-slot{display:flex;flex-direction:column;padding:12px;border:2px solid var(--prof-edge);background:var(--prof-card);border-radius:6px;min-width:0}
+.prof-slot>header{display:flex;gap:10px;align-items:center}.prof-slot>header>div{min-width:0}
+.prof-slot.is-free{border-style:dashed;background:#1d3129}
+.prof-next{color:#efd291;font-weight:700;font-size:13px}.prof-known{font-size:13px;color:#d8cfb6}
+.prof-slot footer{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:10px}
+.prof-slot .prof-forget{margin-left:auto}
+.prof-confirm{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border:1px solid #c98b6a88;background:#3a2a2255;border-radius:4px}.prof-confirm p{flex-basis:100%;margin:0 0 4px}
+.prof-sources li{padding:5px 0 5px 10px;border-left:3px solid var(--prof-up)}.prof-sources li+li{margin-top:4px}
+.prof-sources li.is-grey{border-color:var(--prof-grey)}.prof-sources li.is-locked{border-color:var(--prof-locked);opacity:.7}
+.prof-teachers li{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid #967c5640}.prof-teachers li>div{flex:1;min-width:0}
+/* Reiter Rezepte: Liste links, Details rechts */
+.prof-recipes{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:14px;min-height:340px}
+.prof-recipe-list,.prof-detail{border:2px solid var(--prof-edge);background:var(--prof-card);border-radius:6px;padding:10px;min-width:0;max-height:min(58vh,520px);overflow:auto;overscroll-behavior:contain}
+.prof-recipe-list h4:first-of-type{margin-top:6px}.prof-group h4 small{display:inline;font:700 12px var(--read);color:#cfc5ab;letter-spacing:0;text-transform:none}
+.prof-toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;min-height:32px}.prof-toggle input{width:18px;height:18px;accent-color:#cfae69}
+.game-shell .profession-panel .prof-recipe{display:flex;align-items:center;gap:8px;width:100%;text-align:left;justify-content:flex-start;background:none;border:1px solid transparent;border-image:none;box-shadow:none;filter:none;padding:5px 8px;min-height:34px;font:700 14px/1.2 var(--read);letter-spacing:0;text-transform:none;color:var(--prof-up)}
+.prof-recipe i,.prof-legend i{width:9px;height:9px;flex:none;background:currentColor;border:1px solid #0b1216}
+.prof-recipe span{flex:1;min-width:0}.prof-recipe b{color:var(--cream,#F4E8C4);font-size:13px}
+.game-shell .profession-panel .prof-recipe.tone-grey{color:var(--prof-grey)}.game-shell .profession-panel .prof-recipe.tone-locked{color:var(--prof-locked);font-style:italic}
+.game-shell .profession-panel .prof-recipe:hover{background:#ffffff0d;border-color:#967c5680}
+.game-shell .profession-panel .prof-recipe[aria-pressed=true]{background:#3b5545;border-color:#ecb95c}
+.prof-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:12px!important;padding-top:8px!important;border-top:1px solid #967c5640;font-size:12px}
+.prof-legend li{display:flex;align-items:center;gap:5px}.prof-legend .tone-up{color:var(--prof-up)}.prof-legend .tone-grey{color:var(--prof-grey)}.prof-legend .tone-locked{color:var(--prof-locked)}
+.prof-empty{color:#d8cfb6}
+.prof-detail>header{display:flex;gap:12px;align-items:center}.prof-detail>header canvas[data-item-art]{width:56px;height:56px}
+.prof-detail.is-empty{display:grid;place-items:center;color:#c9bfa6}
+.prof-item-text{color:#ded5bc}
+.prof-reagents{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.prof-reagents li{display:flex;align-items:center;gap:8px;padding:5px;background:#12201b;border:1px solid #967c5655;border-radius:4px}
+.prof-reagents li span{flex:1;min-width:0;font-size:13px}.prof-reagents li b{font-size:13px;color:#e7f0d8}
+.prof-reagents li.missing b,.prof-facts li.missing{color:#ef8f75}
+.prof-facts{display:flex;flex-wrap:wrap;gap:4px 14px;margin:12px 0 4px!important;font-size:13px}.prof-facts .tone-up{color:var(--prof-up)}.prof-facts .tone-grey{color:var(--prof-grey)}.prof-facts .tone-locked{color:var(--prof-locked)}
+.prof-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.prof-unlearned{color:#e3c38b}
+/* Reiter Materialien */
+.prof-intro{color:#d8cfb6}
+.prof-materials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.prof-material{display:flex;gap:10px;align-items:center;padding:8px;border:2px solid var(--prof-edge);background:var(--prof-card);border-radius:6px;min-width:0}
+.prof-material>div{flex:1;min-width:0}.prof-material>strong{font:400 26px/1 var(--display);color:#f3d592;min-width:34px;text-align:right}
+.prof-material.is-none>strong{color:#8d9990}.prof-material .is-known{color:#efd291;font-weight:700}
+/* Lehrer-Gespräch */
+.trainer-panel .conversation-quote{margin:8px 0 10px}
+.trainer-learn,.trainer-skill{padding:10px;border:2px solid var(--prof-edge);background:var(--prof-card);border-radius:6px}
+.trainer-recipes li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #967c5640}.trainer-recipes li>div{flex:1;min-width:0}
+.trainer-recipes li.is-locked{opacity:.72}
+.trainer-known{color:var(--ok,#78A865);font-weight:800;font-size:13px}.trainer-need{color:#e3a58a;font-size:13px;white-space:nowrap}.trainer-note{color:#cfc5ab;font-size:12.5px;text-align:right;max-width:120px}
+.trainer-hint{color:#d8cfb6;font-size:13px}
+@media(max-width:750px){.prof-slots,.prof-materials{grid-template-columns:1fr}.prof-recipes{grid-template-columns:1fr}.prof-recipe-list,.prof-detail{max-height:none}.game-shell .prof-tabs button{min-width:0;flex:1}.prof-tabs kbd{display:none}}
 .profession-save-lock{position:fixed;inset:0;z-index:100000;background:#071211bd;display:grid;place-content:center;text-align:center;color:#f0dfbd;gap:18px;backdrop-filter:blur(3px)}.profession-save-lock[hidden]{display:none}.profession-save-lock button{padding:12px;background:#263b34;color:#f1d69a;border:1px solid #b29251;cursor:pointer}
-@media(max-width:750px){.profession-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.profession-panel header{display:block}}
-/* Feinschliff 2026-09-22: Berufsname als Kartentitel statt als Knopf; echte Knöpfe in lesbarer Größe. */
-.game-shell .profession-card>button:first-child{background:none;border:0;border-image:none;box-shadow:none;padding:0;justify-content:flex-start;text-align:left;font:400 22px/1.1 var(--display);letter-spacing:.03em;color:#efd291;filter:none}
-.game-shell .profession-card>button:first-child:hover:not(:disabled){background:none;box-shadow:none;text-decoration:underline;text-underline-offset:4px;filter:none}
-.game-shell .profession-panel button{font-size:15px;letter-spacing:.03em;padding:8px 12px;min-height:38px}
-.profession-panel button:disabled{opacity:.55}
 
 /* Mouse-Over-Tooltip an Fundstellen (profession-tip.js): klein, am Mauszeiger */
 .world-tip{width:auto;max-width:250px;padding:7px 10px}.world-tip[hidden]{display:none!important}.world-tip strong{display:block;margin-bottom:2px}.world-tip p,.world-tip small{display:block;margin:1px 0 0;line-height:1.35}
+/* Feinschliff: Kopf des Lehrer-Gesprächs liegt auf Pappe – Untertitel in Tinte; Reiter wie Schaltflächen mit deutlicher Auswahl. */
+.trainer-panel .conversation-person small{color:var(--ink-2,#3A3732);font-weight:700}
+.game-shell .prof-tabs .outline-button[aria-selected=true]{background:#ecb95c!important;background-image:none!important;color:#2B2A26!important;border-color:#2B2A26!important}

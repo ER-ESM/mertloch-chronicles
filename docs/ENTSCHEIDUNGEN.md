@@ -974,3 +974,23 @@ Balance-Bericht:
 - Live ist allein der eigene Server: Die Aufgabe `MertlochUpdate` zieht `main` alle 10 Minuten; sofort mit `node scripts/server-refresh.mjs` (`--status` zeigt den Live-Build).
 - `npm test` und die betroffenen Browserprüfungen laufen lokal vor dem Push (E-07). Die Skripte (`ui:check`, `hud:check`, `professions:check` …) bleiben bestehen.
 - Links auf `er-esm.github.io/mertloch-chronicles` in älteren Dokumenten sind tot; es gilt die Server-Adresse.
+
+## E-64 · Berufe: lernen beim Lehrer, Berufefenster nach MMO-Vorbild (23.09.2026)
+
+**Auftrag.** Berufe prüfen, das Lernen schien nicht möglich. Kein allgemeines Berufefenster zum Lernen: man spricht mit dem Lehrer, und dort lernt man Rezepte, sobald die Fertigkeitsstufe reicht. Mehr machen die Lehrer nicht. Das Berufefenster zeigt in Reitern die eigenen Berufe, gelernte Rezepte, alles zu Rezepten und die Materialien.
+
+**Befund.** Technisch ging Lernen (solo und online), aber nur direkt an der Station. Aus dem Berufefenster heraus waren die Lern-Knöpfe gesperrt („Geh näher …“). An jeder Station standen zwei Berufe, aber nur eine Figur. Rezepte kannte man allein über die Fertigkeit, es gab nichts zu lernen.
+
+**Entscheidungen.**
+1. **Ein Lehrer je Beruf** steht an seiner Station (`content/professions.js`: `teacher`, `look`, `spot`, `greet`): Schrott-Sigi und Schrauber-Willi im Werkhof, Kräuter-Gisela und Braumeisterin Bärbel im Braugarten. F oder Klick öffnet das Lehrer-Gespräch (Fenster `trainer`), das sich beim Weggehen schließt.
+2. **Lehrer bringen nur zwei Dinge bei:** den Beruf (10 Pfandmarken, höchstens zwei) und Rezepte. Ein Rezept mit `starter` kommt mit dem Beruf, alle anderen kosten `cost` Pfandmarken und sind ab `required` lernbar. Sammelberufe haben keine Rezepte. Ihr Lehrer zeigt, ab welcher Fertigkeit welche Fundstelle erntbar wird.
+3. **Rezepte sind Spielstand** (`professions.recipes`, Version 2). Ältere Stände bekommen beim Laden jedes Rezept, das ihre Fertigkeit bisher erlaubte. So verliert niemand etwas. Verlernen löscht die Rezepte des Berufs.
+4. **Berufefenster (Shift + B) ohne Lernen**, drei Reiter:
+   - **Berufe:** Fertigkeitsbalken mit Rang, nächste Freischaltung, Fundstellen. Knöpfe „Zum Lehrer“, „Zur Station“ bzw. „Nächste Fundstelle“ und „Verlernen“. Freie Plätze nennen die Lehrer.
+   - **Rezepte:** links die Liste mit Vorbild-Farben (orange = bringt Fertigkeit, grau = zu einfach, kursiv = ungelernt) und der Zahl der möglichen Durchgänge, rechts Zutaten, Station, Gebühr und „Herstellen“. „Ungelernte zeigen“ blendet alle Rezepte ein, mit Lehrer und Stufe.
+   - **Materialien:** Rucksack-Menge, Herkunft (Fundstelle mit Beruf und Stufe, Kiosk, Beute) und die Rezepte, die das Material verbrauchen.
+5. **Orte:** Lernen passiert beim Lehrer, Herstellen an der Station, Sammeln an der Fundstelle. Verlernen geht überall, auch beritten (Server: `site.anywhere`).
+
+**Verworfen.**
+- *Lern-Knöpfe im Berufefenster behalten:* widerspricht dem Auftrag und war die Ursache des Befunds.
+- *Gelb/Grün-Stufen wie im Vorbild:* Der Fertigkeitsgewinn ist hier fest (+1 bis Grau). Zwischenfarben würden Zufall vortäuschen.

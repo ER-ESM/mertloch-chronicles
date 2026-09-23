@@ -4,10 +4,10 @@ import {mkdtempSync,rmSync,readFileSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve,sep} from 'node:path';
 import {Game} from '../engine.js';
-import {professionPlan,restoreProfessions,resourcePhase} from '../profession-rules.js';
+import {professionPlan,restoreProfessions,resourcePhase,actionSite,trainState} from '../profession-rules.js';
 import {professionWorld} from '../profession-world.js';
 import {mountProfessions,tickProfession,nodeStatus} from '../professions.js';
-import {PROFESSION_RULES as R,PROFESSION_UI as T,PROFESSION_RECIPES as REC,STORY_CHAPTERS} from '../content/index.js';
+import {PROFESSION_RULES as R,PROFESSION_UI as T,PROFESSION_TRAINER as TR,PROFESSION_RECIPES as REC,PROFESSIONS as P,STORY_CHAPTERS} from '../content/index.js';
 import {BAG_SIZE,ITEMS,countItem} from '../rpg.js';
 import {createProfessionService} from '../server/game/professions.mjs';
 import {decideSync} from '../online.js';
@@ -30,7 +30,7 @@ test('gathering cannot partially fill a full bag; deterministic nodes do not sha
  const a=game(),b=game();assert.deepEqual(professionWorld(a.world),professionWorld(b.world));assert.equal(professionWorld(a.world).nodes.length,16);
  a.professions.learned.scrap=1;const node=professionWorld(a.world).nodes.find(n=>n.kind==='scrap');Object.assign(a.player,node);let written;const ui=mountProfessions({game:()=>a,online:()=>null,write:s=>written=s,lock(){}});assert.ok(await ui.start({kind:'gather',node:node.id}));a.keys.add('w');tickProfession(a,1);assert.equal(a.professionCast,null);assert.equal(written,undefined);a.keys.clear();assert.ok(await ui.start({kind:'gather',node:node.id}));tickProfession(a,2);assert.equal(countItem(a.rpg,'dosenblech'),2);assert.equal(nodeStatus(a,node).spent,true);assert.equal(nodeStatus(b,node).spent,false);const restored=new Game(a.world,written);assert.equal(nodeStatus(restored,node).spent,true);
 });
-function serviceFixture(t){const dir=mkdtempSync(join(tmpdir(),'mertloch-prof-test-')),saves=new Map(),clients=new Map(),layout={stations:[{id:'werkhof',x:0,y:0},{id:'braugarten',x:0,y:0}],nodes:[{id:'node',kind:'scrap',x:0,y:0}],lineClear:()=>true};let time=100000;
+function serviceFixture(t){const dir=mkdtempSync(join(tmpdir(),'mertloch-prof-test-')),saves=new Map(),clients=new Map(),layout={stations:[{id:'werkhof',x:0,y:0},{id:'braugarten',x:0,y:0}],nodes:[{id:'node',kind:'scrap',x:0,y:0}],teachers:['scrap','smith','herbs','brew'].map(id=>({id,x:0,y:0,type:'professionTeacher'})),lineClear:()=>true};let time=100000;
  const store={readSave:(id,w)=>structuredClone(saves.get(id+'|'+w)),writeSave:(id,w,s,savedAt)=>{saves.set(id+'|'+w,{save:structuredClone(s),savedAt});return {savedAt};}};
  for(const id of ['a','b']){store.writeSave(id,'@helden',{roster:{list:[{id:'hero-'+id,name:'Held '+id,classId:'dieter'}]}},time);store.writeSave(id,'test-world#hero-'+id,save({scrap:1,smith:1}),time);clients.set(id,{id,hero:'hero-'+id,name:'Held '+id,world:'test-world',placed:true,x:0,y:0,s:'idle',h:100});}
  let service;const restart=()=>service=createProfessionService({store,dataDir:dir,clients:()=>clients,now:()=>time,layoutFor:()=>layout});restart();t.after(()=>{assert.ok(resolve(dir).startsWith(resolve(tmpdir())+sep)&&dir.includes('mertloch-prof-test-'));rmSync(dir,{recursive:true,force:true});});
@@ -62,3 +62,28 @@ test('online-linked heroes cannot gather while disconnected or logged out; comba
 });
 
 test('default world and explicit default options have identical rules for shared profession positions',async()=>{const {resolveRules}=await import('../world-rules.js');assert.deepEqual(resolveRules({seed:56753,roadWidth:72,density:1}),resolveRules());});
+
+// Lehrer und gelernte Rezepte (Nutzerauftrag 2026-09-23): Rezepte gibt es nur beim Lehrer, ab ihrer Fertigkeitsstufe.
+test('teachers: learning a profession brings its starter recipe; further recipes are bought at the teacher once the skill suffices',()=>{
+ let s=save();s={...s,...professionPlan(s,action('learn','smith'))};assert.deepEqual(s.professions.recipes,['blechklinge']);assert.equal(s.rpg.coins,100-R.learnCost);
+ assert.equal(professionPlan(s,action('craft','blechbrecher')).error,T.required);assert.equal(professionPlan(s,action('train','blechbrecher')).error,TR.errSkill);assert.equal(professionPlan(s,action('train','blechklinge')).error,TR.errKnown);assert.equal(professionPlan(s,action('train','kraeutersud')).error,TR.errProfession);
+ s.professions.learned.smith=15;const r=professionPlan(s,action('train','blechbrecher'));assert.ok(!r.error,r.error);assert.equal(r.rpg.coins,s.rpg.coins-REC.blechbrecher.cost);assert.ok(r.professions.recipes.includes('blechbrecher'));assert.equal(r.professions.revision,s.professions.revision+1);
+ assert.equal(professionPlan({...s,rpg:{...s.rpg,coins:REC.blechbrecher.cost-1}},action('train','blechbrecher')).error,T.money);
+ const next={...s,...r};next.rpg.inventory=[{id:'dosenblech',count:8},{id:'kabel',count:3}];assert.ok(!professionPlan(next,action('craft','blechbrecher')).error);
+ const forgot={...next,...professionPlan(next,action('forget','smith'))};assert.deepEqual(forgot.professions.recipes,[]);const again=professionPlan(forgot,action('learn','smith'));assert.deepEqual(again.professions.recipes,['blechklinge']);assert.equal(again.professions.learned.smith,1);
+});
+test('teachers: old saves keep every recipe their skill already allowed; unknown or foreign recipes are dropped',()=>{
+ const old=restoreProfessions({learned:{smith:20,brew:1}});assert.deepEqual(old.recipes.sort(),['blechbrecher','blechklinge','kraeutersud']);assert.equal(old.version,2);
+ const fresh=restoreProfessions({learned:{smith:40},recipes:['blechklinge','panzerweste','kraeutersud','gibtsnicht','blechklinge']});assert.deepEqual(fresh.recipes,['blechklinge','panzerweste']);
+ assert.equal(trainState(restoreProfessions({learned:{smith:40},recipes:['blechklinge']}),'panzerweste'),'');
+});
+test('teachers: each profession has its own teacher at its station; learning happens at the teacher, crafting at the station, forgetting anywhere',async()=>{
+ const g=game(),l=professionWorld(g.world);assert.equal(l.teachers.length,Object.keys(P).length);for(const t of l.teachers){const s=l.stations.find(s=>s.id===P[t.id].station);assert.ok(s,t.id);assert.equal(t.x,s.x+P[t.id].spot.x);}
+ assert.equal(actionSite(l,action('learn','herbs')),l.teachers.find(t=>t.id==='herbs'));assert.equal(actionSite(l,action('train','feldtee')),l.teachers.find(t=>t.id==='brew'));assert.equal(actionSite(l,action('craft','feldtee')).id,'braugarten');assert.deepEqual(actionSite(l,action('forget','brew')),{anywhere:true});
+ const {professionReason,professionTarget}=await import('../professions.js');const t=l.teachers.find(t=>t.id==='smith');g.player.x=t.x;g.player.y=t.y;assert.equal(professionTarget(g).id,'smith');assert.equal(professionTarget(g).type,'professionTeacher');g.player.x=t.x+500;assert.equal(professionReason(g,{anywhere:true}),'');assert.equal(professionReason(g,t),T.range);
+});
+test('teachers: the server teaches recipes only near the teacher and lets heroes forget a profession anywhere, even mounted',t=>{
+ const f=serviceFixture(t),a=f.clients.get('a');a.x=100;assert.equal(f.call('a',f.body('a',{op:'begin',action:{kind:'train',target:'blechklinge'}})).error,T.range);a.x=0;
+ assert.equal(f.call('a',f.body('a',{op:'begin',action:{kind:'train',target:'blechklinge'}})).error,TR.errKnown);
+ a.x=500;a.mt='hofpferd';const b=f.body('a',{op:'begin',id:'operation-forget-1',action:{kind:'forget',target:'scrap'}}),r=f.call('a',b);assert.ok(r.token,r.error);const done=f.call('a',{...b,op:'finish',token:r.token});assert.ok(!done.error,done.error);assert.equal(done.save.professions.learned.scrap,undefined);assert.ok(done.save.professions.learned.smith);
+});
