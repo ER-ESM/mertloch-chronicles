@@ -32,6 +32,6 @@ export function focusQuest(g,key){
 /** Kompakte Liste der nicht verfolgten Aufträge unter dem Auftragsfeld. `metres(point)` → Entfernung in m. */
 export function questOthersHtml(g,metres,max=4){
  const focus=focusedKey(g),others=trackerEntries(g).filter(e=>e.key!==focus);if(!others.length)return '';
- const rows=others.slice(0,max).map(e=>`<button type="button" class="quest-other${e.done?' done':''}" data-track-quest="${esc(e.key)}" title="${esc(T.track)}"><b>${esc(e.title)}</b><span><i>${e.done?'✓':'◇'}</i>${esc(e.task)}</span>${e.dest?.point?`<em>${metres(e.dest.point)} m</em>`:''}</button>`).join('');
+ const rows=others.slice(0,max).map(e=>`<button type="button" class="quest-other${e.done?' done':''}" data-track-quest="${esc(e.key)}" title="${esc(T.track)}"><b>${esc(e.title)}</b><span><i>${e.done?'✓':'◇'}</i>${esc(e.task)}</span>${metres&&e.dest?.point?`<em>${metres(e.dest.point)} m</em>`:''}</button>`).join('');
  return `<div class="quest-others-head">${esc(T.others)}</div>${rows}${others.length>max?`<small class="quest-others-more">${esc(T.more(others.length-max))}</small>`:''}`;
 }

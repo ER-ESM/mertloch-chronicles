@@ -10,6 +10,8 @@
 import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMPANION_TEXT as T,companionById,companionCost,companionStats,CAST_SETS,COMBAT_RULES} from './content/index.js';
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
+import {resolveDungeonCast,dungeonBossCast,coneHits} from './dungeon.js';
+import {DUNGEON_CASTS} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
@@ -73,7 +75,7 @@ export function companionFocus(g,e){
  return e.focus===PLAYER?null:g.companions.find(c=>c.id===e.focus)||null;
 }
 
-function hitCompanion(g,e,c,n){
+export function hitCompanion(g,e,c,n){
  if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))));
  const b=c.aidBuff;if(b?.remaining>0){n=Math.round(n*(1-(b.reduction||0)));const absorbed=Math.min(n,b.shield||0);b.shield=Math.max(0,(b.shield||0)-absorbed);n-=absorbed;if(absorbed>0)companionFx(g,c,'guard',c,{amount:absorbed,absorbed:true});}
  c.hp=Math.max(0,c.hp-n);if(n>0)c.hurt=.16;c.inCombat=6;
@@ -96,6 +98,7 @@ export function tickEnemyOnCompanion(g,e,c,dt){
   e.cast.remaining-=dt;
   if(e.cast.remaining<=0){
    const k=e.cast;e.cast=null;e.attackTimer=COMBAT_RULES.specialInterval;e.attack=.3;
+   if(e.dungeon&&resolveDungeonCast(g,e,k,c))return true;
    if(k.ground){emitCombatFx(g,'impact',k,{radius:k.radius,hostile:true});for(const o of g.companions)if(alive(o)&&inEllipse(o,k))hitCompanion(g,e,o,k.damage);if(inEllipse(p,k))g.hitPlayer(e,k.damage);}
    else if(k.interruptible){if(d<R.castSight&&g.world.lineClear(e,c))hitCompanion(g,e,c,k.damage);}
    else if(d<k.radius)hitCompanion(g,e,c,k.damage);
@@ -113,8 +116,8 @@ export function tickEnemyOnCompanion(g,e,c,dt){
  if(e.autoTimer<=0&&!(e.spawnGrace>0)&&distance(e,c)<=a.range&&g.world.lineClear(e,c)){e.autoTimer=a.speed;e.attack=.25;hitCompanion(g,e,c,a.min+g.random()*(a.max-a.min));emitCombatFx(g,'attack',c,{from:{x:e.x,y:e.y},ranged:a.ranged,hostile:true,duration:.3});}
  e.attackTimer=Math.max(0,e.attackTimer-dt);
  if(alive(c)&&distance(e,c)<=reach&&e.attackTimer<=0&&g.world.lineClear(e,c)){
-  const set=CAST_SETS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length],k={...set.casts[type]};
-  e.cycle++;e.cast={...k,type,remaining:k.total,x:k.ground?c.x:e.x,y:k.ground?c.y:e.y,focus:c.id};
+  if(e.dungeon&&e.bossId)dungeonBossCast(g,e);const set=CAST_SETS[e.castSet]||DUNGEON_CASTS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length],k={...set.casts[type]};
+  e.cycle++;e.cast={...k,type,remaining:k.total,x:k.ground?c.x:e.x,y:k.ground?c.y:e.y,focus:c.id,angle:Math.atan2(c.y-e.y,c.x-e.x)};
  }
  return true;
 }
@@ -185,7 +188,14 @@ function use(g,c,id,target){
 function reacted(g,c,cast){const seen=c.seen||(c.seen=new WeakMap());if(!seen.has(cast))seen.set(cast,g.time);return g.time-seen.get(cast)>=R.reaction;}
 
 /** Steht der Begleiter in einer angesagten Fläche? → Fluchtpunkt knapp außerhalb, sonst null. */
+/** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. */
+function coneExit(g,c){
+ for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id||!coneHits(e,k,c)||!reacted(g,c,k))continue;
+  for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+.5),r=Math.max(30,Math.min(k.cone.range*.8,distance(e,c))),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
+ return null;
+}
 function dangerExit(g,c){
+ const cone=coneExit(g,c);if(cone)return cone;
  for(const e of g.enemies){const k=e.cast;if(!k?.ground||e.hp<=0||!inEllipse(c,k,R.avoidMargin*.5)||!reacted(g,c,k))continue;
   const base=Math.atan2(c.y-k.y,c.x-k.x)||0;for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:k.x+Math.cos(a)*(k.radius+R.avoidMargin),y:k.y+Math.sin(a)*(k.radius+R.avoidMargin)*.75};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
  return null;

@@ -5,6 +5,8 @@ import {drawMount,loadMountArt} from './mount-art.js';
 import {MOUNT_UI,BASE_SITE_UI} from './content/index.js';
 import {drawKioskRoom,drawKioskMap,drawKioskHouse} from './kiosk-room-art.js';
 import {inKiosk,kioskEntrance} from './kiosk-instance.js';
+import {inDungeon,dungeonEntrance} from './dungeon.js';
+import {drawDungeonGround,drawDungeonMap,drawDungeonEntrance} from './dungeon-art.js';
 import {KIOSK_TEXT} from './content/index.js';
 import {merchantActorPoint} from './shop.js';
 import {SHOP_UI,PERFORMANCE,LIGHTING} from './content/index.js';
@@ -75,7 +77,7 @@ export class Renderer {
   /** Freie Zeit des Bildes (ms) für vorausgeladene Bodenkacheln (terrain-prefetch.js). */
   /** Je Bild: Laufrichtung merken und nur dann ein dringendes Stück bauen, wenn der Leerlauf nicht reicht. Das eigentliche Vorausladen läuft im
    *  Leerlauf des Browsers (requestIdleCallback) – also erst, wenn das Bild abgegeben ist, und nie in die nächste Bildzeit hinein. */
-  idle(){if(!this.viewOrigin||inKiosk(this.game))return;const P=this.prefetch||=new TerrainPrefetch(this.world,PERFORMANCE.terrain),view={ox:this.viewOrigin.x,oy:this.viewOrigin.y,W:this.viewWidth,H:this.viewHeight},key=(gx,gy)=>gx+','+gy+bakedGrade.filter,has=k=>this.chunks.has(k),done=(k,cv)=>this.storeChunk(k,cv);
+  idle(){if(!this.viewOrigin||inKiosk(this.game)||inDungeon(this.game))return;const P=this.prefetch||=new TerrainPrefetch(this.world,PERFORMANCE.terrain),view={ox:this.viewOrigin.x,oy:this.viewOrigin.y,W:this.viewWidth,H:this.viewHeight},key=(gx,gy)=>gx+','+gy+bakedGrade.filter,has=k=>this.chunks.has(k),done=(k,cv)=>this.storeChunk(k,cv);
     P.step(view,0,key,has,done);if(this.idleStarved>2)P.urgent(view,key,has,done);this.idleStarved=(this.idleStarved||0)+1;
     if(!this.idleQueued&&typeof requestIdleCallback==='function'){this.idleQueued=true;requestIdleCallback(d=>{this.idleQueued=false;const ms=d.timeRemaining()-PERFORMANCE.terrain.idleReserveMs;if(ms>0){this.idleStarved=0;P.step(view,ms,key,has,done);}},{timeout:PERFORMANCE.terrain.idleTimeoutMs});}}
   /** Auflösungs-Automatik (quality-governor.js): je Bild mit Bildabstand und eigener Rechenzeit füttern; senkt oder hebt die Dichte der Weltfläche stufenweise. */
@@ -115,8 +117,9 @@ export class Renderer {
     // Ruhende Weltobjekte kommen aus dem Raster-Index (spatial-index.js), nicht mehr aus der ganzen Karte; Rand 100 deckt jede Sichtprüfung unten ab.
     const index=this.index||=new SpatialIndex(),near=(name,list,box)=>index.query(name,list,ox-100,oy-100,ox+W+100,oy+H+100,box),props=near('props',w.props);
     // Boden, Steine und Schatten stehender Objekte kommen aus dem Zwischenspeicher (ground-cache.js); je Bild bleiben nur die wiegenden Blumen.
-    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();ground.draw(c,view,this.density,(lit?'licht':'ohne')+bakedGrade.filter+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
+    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();if(inDungeon(g))drawDungeonGround(c,g,view);else ground.draw(c,view,this.density,(lit?'licht':'ohne')+bakedGrade.filter+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
     for(const prop of props)if(visible(prop,10)&&prop.type!=='rock'&&!FURNITURE.includes(prop.type))this.prop(c,prop);
+    if(!g.instance){const door=dungeonEntrance(g);if(door&&visible(door,80))drawDungeonEntrance(c,door);}
     // Begehbares Haus (E-52): drinnen blendet das Dach aus, Böden und geschnittene Wände erscheinen.
     const house=w.base?.house,houseSeen=!!house&&house.maxX+70>ox&&house.minX-70<ox+W&&house.maxY+40>oy&&house.minY-house.heights.wall-house.heights.roof-40<oy+H;
     if(house){const inside=insideHouse(house,p.x,p.y)?1:0;this.houseFade=(this.houseFade??inside)+(inside-(this.houseFade??inside))*(1-Math.exp(-12*elapsed));if(Math.abs(this.houseFade-inside)<.01)this.houseFade=inside;}
@@ -191,9 +194,9 @@ export class Renderer {
       if(e.cast){const yy=y+11;rect(c,'#282b23',e.x-23,yy,46,4);rect(c,e.cast.interruptible?'#dbb967':'#d99071',e.x-22,yy+1,44*(1-e.cast.remaining/e.cast.total),2);}
     }
     for(const b of w.landmarks){if(!b.church&&visible(b,30)){label(c,b.tags.name,b.x,b.maxY+20,'#ebdfb8',b.church?10:7);}}
-    const nearby=w.nearestRoad(p.x,p.y);if(nearby.road&&nearby.distance<50){const r=nearby.road;const mid=r.points[Math.floor(r.points.length/2)];if(visible(mid,0))label(c,r.tags.name,mid.x,mid.y+12,'#ece0b6',7);}
+    const nearby=inDungeon(g)?{}:w.nearestRoad(p.x,p.y);if(nearby.road&&nearby.distance<50){const r=nearby.road;const mid=r.points[Math.floor(r.points.length/2)];if(visible(mid,0))label(c,r.tags.name,mid.x,mid.y+12,'#ece0b6',7);}
     if(g.moveTo){const t=g.moveTo;c.strokeStyle='#f1db98';c.lineWidth=1;c.beginPath();c.ellipse(t.x,t.y,5,3,0,0,Math.PI*2);c.stroke();}
-    const destination=g.destination();if(destination&&distance(p,destination.point)>145){const d=destination.point,dx=d.x-p.x,dy=d.y-p.y,n=Math.hypot(dx,dy),radius=Math.min(W*.32,H*.26),x=p.x+dx/n*radius,y=p.y+dy/n*radius;c.save();c.translate(x,y);c.rotate(Math.atan2(dy,dx));poly(c,[{x:7,y:0},{x:-4,y:-4},{x:-1,y:0},{x:-4,y:4}]);c.fillStyle='#f2d998';c.fill();c.restore();label(c,Math.round(n/SCALE)+' m',x,y+15,'#f4ddb0',8);}
+    const destination=inDungeon(g)?null:g.destination();if(destination&&distance(p,destination.point)>145){const d=destination.point,dx=d.x-p.x,dy=d.y-p.y,n=Math.hypot(dx,dy),radius=Math.min(W*.32,H*.26),x=p.x+dx/n*radius,y=p.y+dy/n*radius;c.save();c.translate(x,y);c.rotate(Math.atan2(dy,dx));poly(c,[{x:7,y:0},{x:-4,y:-4},{x:-1,y:0},{x:-4,y:4}]);c.fillStyle='#f2d998';c.fill();c.restore();label(c,Math.round(n/SCALE)+' m',x,y+15,'#f4ddb0',8);}
     for(const t of g.texts){c.globalAlpha=Math.min(1,t.life*2);const crit=/!$/.test(t.text),num=/^[+\-]?[0-9]+!?$/.test(t.text),heal=/^\+/.test(t.text),hurt=/^-/.test(t.text);const size=!num?(t.text.length>5?9:12):crit?22:hurt?15:heal?15:16;const color=num?(crit?'#ffe08a':hurt?'#e18569':heal?'#9ed07f':t.color):t.color;const rise=10+(1-t.life/t.max)*(crit?38:26);/* startet über dem Namensschild statt darauf */label(c,crit?t.text.replace('!',''):t.text,t.x,t.y-rise,color,size);if(crit&&t.life>t.max*.5){c.globalAlpha*=.8;label(c,'!',t.x+size*.45*String(t.text).length*.55+6,t.y-rise-4,'#ffe08a',size-4);}}c.globalAlpha=1;
     wildlife(c,w,time,visible);
     // Slow drifting pollen and fireflies catch the late afternoon light.
@@ -219,5 +222,5 @@ export class Renderer {
     else if(f.type==='heal'){for(let i=0;i<9;i++){const x=f.x+Math.sin(i*5)*17,y=f.y-t*36-i*3%15;rect(c,'#badfa2',x,y,1,5);rect(c,'#badfa2',x-2,y+2,5,1);}}
     c.restore();
   }
-  map(canvas,full=false,highlight=null,options={}){if(inKiosk(this.game)){drawKioskMap(this,canvas);return;}drawAtlas(this,canvas,full,highlight,options);}
+  map(canvas,full=false,highlight=null,options={}){if(inKiosk(this.game)){drawKioskMap(this,canvas);return;}if(inDungeon(this.game)){drawDungeonMap(canvas,this.game,{full});return;}drawAtlas(this,canvas,full,highlight,options);}
 }

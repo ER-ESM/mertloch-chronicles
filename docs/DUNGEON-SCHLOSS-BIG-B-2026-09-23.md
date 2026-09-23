@@ -5,7 +5,7 @@ Endboss ist Big B, der Lügenbaron." Nachauftrag am selben Tag: „Plane auch di
 ggf. nicht nur Raum für Raum sein. Außerdem soll es eine Dungeonmap geben." Grundlage: der Meilenstein „Dungeons" aus
 [E-45](ENTSCHEIDUNGEN.md), die offenen Punkte „Dungeon-Merkmale" in [backlog/engine.md](backlog/engine.md) und
 [backlog/gameplay.md](backlog/gameplay.md), Stand `main` 085c15f.
-**Stand:** Planung, nichts entschieden; Entscheidungen trifft die Produktion ([ENTSCHEIDUNGEN.md](ENTSCHEIDUNGEN.md)).
+**Stand:** Planung, nichts entschieden; erster Bauabschnitt auf dem Zweig `dungeon-schloss-bigb` (Abschnitt 0); Entscheidungen trifft die Produktion ([ENTSCHEIDUNGEN.md](ENTSCHEIDUNGEN.md)).
 Alle Zahlen sind Entwürfe für Balancing (`content/tuning.js`, Balance-Sheet E-57). Alle Spielertexte sind Beispiele im Ton
 E-20 und werden von Story ersetzt oder abgenommen. Vorschläge heißen V-D1 bis V-D11; die E-Nummer vergibt der Lead.
 
@@ -23,6 +23,30 @@ mit Türmen und Burggraben; beim Erkunden zeichnet sich darüber die Wirklichkei
 Frau Dr. Exposé und Kellermeister Korken-Kurt als Siegelträger, Reichweiten-Rita als optionaler Boss, das halbe Pferd
 als seltener Boss, Big B als Endboss mit der Kernmechanik **Behauptung und Nachsatz**. Fünf Köpfe, Stufe 8 bis 10,
 kürzester Weg rund 25 Minuten, voller Durchgang rund 45 Minuten, spielbar mit Menschen oder Söldnern.
+
+## 0 · Umsetzungsstand: erster Bauabschnitt auf dem Zweig `dungeon-schloss-bigb`
+
+Auftrag am 2026-09-23: „fang an den dungeon zu bauen". Der erste Bauabschnitt liegt auf dem Zweig
+[`dungeon-schloss-bigb`](https://github.com/ER-ESM/mertloch-chronicles/tree/dungeon-schloss-bigb), **nicht auf `main`**.
+Der Spielserver zieht `main` alle zehn Minuten ohne CI-Sperre, ein Merge ist also eine Veröffentlichung. V-D1 bis V-D11
+bleiben offen. Der Zweig nimmt die Vorschläge als Arbeitsannahme und lässt sich nach den Entscheidungen umbauen.
+
+**Gebaut und geprüft**
+
+| Bereich | Dateien | Inhalt |
+|---|---|---|
+| Inhalt | `content/dungeons.js` | Grundriss aller drei Ebenen mit 15 Räumen, Türen, sechs Übergängen, Geheimnis Pappwand und Durchsagen. Trash in Erdgeschoss, Keller 1 und Weinkeller: Security-Azubis, Pappwachen, Pappschützen, Baumarkt-Ritter, Makler-Praktikanten, Kellerratten, dazu die Streife im Ringflur. Gästeliste-Gerd vollständig mit drei Phasen. Texte als Entwurf im Ton E-20. |
+| Instanz | `dungeon.js`, Anschlüsse in `engine.js` | Eingang an der Burgstraße ab Stufe 8, Welt-Tausch wie beim Kiosk, Speicherposition bleibt draußen, Kollision und Wegsuche nur im Grundriss. Kontrollpunkte, Rücksetzen nach Wipe, Arena-Tür, Tresortür mit drei Siegeln. Treppen, Leiter, Lichtschacht nur abwärts, Wendeltreppe hinter der Pappwand, Aufzug von unten freischaltbar. Beute wird beim Verlassen eingesammelt, der Lauf bleibt 30 Minuten fortsetzbar. Spielstandfeld `dungeons` für dauerhafte Funde. |
+| Merkmale | `dungeon.js`, `companions.js` | Kegel mit Tank-Schutz, Rückstoß mit Sturz in die Ebene darunter, Hilferuf, Heilung der Verbündeten, Frontschild, Boss-Phasen mit Zykluswechsel und Adds. Söldner weichen Kegeln aus und werden von ihnen getroffen. |
+| Oberfläche | `dungeon-art.js`, `renderer.js`, `app.js` | Böden je Ebene, Wände, Türen, Übergänge, Schilder mit Wirklichkeit, Kegel-Warnfläche, Eingang als Garage mit Pappzinnen. Dungeon-Karte auf M im Kartenfenster: Reiter je Ebene, Prospekt gegen Wirklichkeit, Siegelstand, Bosse, Figur und Söldner, läuft live mit. Minikarte, Raumname in der Zonenanzeige. Wegmarke und Entfernungen der Aufträge sind im Dungeon aus. |
+| Tests | `tests/dungeon.test.mjs`, `scripts/dungeon-check.mjs` | 15 Tests, darunter alle sechs Reihenfolgen der Siegelträger erreichbar. Browserprüfung auf Desktop und Handy: Eingang, Betreten, Laufen, Gerds Kegel, Siegel, Treppe, Karte, Verlassen. |
+
+**Noch nicht gebaut**
+
+- Frau Dr. Exposé, Reichweiten-Rita, das halbe Pferd, Korken-Kurt und Big B mit Behauptung und Nachsatz (Merkmal `lie`). Bis dahin bleibt die Tresortür im Spiel zu, und Keller 2 hat nur die Ratten im Weinkeller.
+- Ereignisse unterwegs (Geister, Beamer, Vermieter Volker), Beweise und die Social-Media-Managerin.
+- Eigene Grafik: Gegner nutzen vorhandene Figuren aus dem Katalog.
+- Beutetabellen, Aufträge und Story, Balance-Lauf `dungeon-sim`, Online Stufe 2 mit geteilter Instanz.
 
 ## 1 · Ausgangslage im Repo
 
