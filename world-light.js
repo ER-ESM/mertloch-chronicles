@@ -104,6 +104,10 @@ export class WorldLight{
   if(!this.sheen||this.sheen.width!==lw||this.sheen.height!==lh){this.sheen=canvas(lw,lh);const v=this.sheen.getContext('2d'),g=v.createLinearGradient(0,0,lw,lh);g.addColorStop(0,L.sheen.from);g.addColorStop(.55,L.sheen.mid);g.addColorStop(1,L.sheen.to);v.fillStyle=g;v.fillRect(0,0,lw,lh);}
   l.globalAlpha=1;l.drawImage(this.sheen,0,0,W,H);
   for(const s of lights){if(s.s===L.sources.hero||s.s.noGlow)continue;const r=s.s.radius*s.scale*s.flicker*.8;l.globalAlpha=Math.min(1,(L.glow.day+L.glow.night*(dark+(s.s.indoor?indoorDark:0)))*s.flicker*L.glow.cover);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r*(s.s.aspect?.[0]||1),s.y-oy-r*(s.s.aspect?.[1]||1),r*2*(s.s.aspect?.[0]||1),r*2*(s.s.aspect?.[1]||1)));}
+  // Funken über dem Ofen (steigen auf, verglühen) und Staub im Lampenlicht (schwebt langsam) – nur drinnen, deterministisch aus der Zeit.
+  if(indoorDark>0)for(const s of lights){const P=s.s.sparks,M=s.s.motes;if(!P&&!M)continue;const x=s.x-ox,y=s.y-oy;
+   if(P){l.fillStyle=P.color;for(let i=0;i<P.n;i++){const k=(time*.55+i/P.n+s.seed)%1;l.globalAlpha=this.indoor*(1-k)*.9;l.fillRect(x+Math.sin(time*2.3+i*1.7)*P.spread*k,y-8-k*P.rise,2,2);}}
+   if(M){l.fillStyle=M.color;for(let i=0;i<M.n;i++){const a=time*.25+i*2.4+s.seed,r=M.spread*(.35+.65*((i*.37)%1));l.globalAlpha=this.indoor*(.28+.22*Math.sin(time*1.1+i*1.9));l.fillRect(x+Math.cos(a)*r,y+Math.sin(a*.8)*r*.6+6,1.6,1.6);}}}
   // Lichtschacht (Dachloch): schräger Kegel von oben auf den Fußpunkt, unten am hellsten, darin treibender Staub.
   for(const s of lights){const B=s.s.beam;if(!B||!(indoorDark>0))continue;const x=s.x-ox,y=s.y-oy,tx=x-DX*B.height*.6,ty=y-B.height,g=l.createLinearGradient(0,ty,0,y);
    g.addColorStop(0,s.s.color+'00');g.addColorStop(.7,s.s.color+'80');g.addColorStop(1,s.s.color+'c0');l.globalAlpha=B.alpha*this.indoor;l.fillStyle=g;
