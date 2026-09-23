@@ -5,7 +5,7 @@ Endboss ist Big B, der Lügenbaron." Nachauftrag am selben Tag: „Plane auch di
 ggf. nicht nur Raum für Raum sein. Außerdem soll es eine Dungeonmap geben." Grundlage: der Meilenstein „Dungeons" aus
 [E-45](ENTSCHEIDUNGEN.md), die offenen Punkte „Dungeon-Merkmale" in [backlog/engine.md](backlog/engine.md) und
 [backlog/gameplay.md](backlog/gameplay.md), Stand `main` 085c15f.
-**Stand:** Planung, nichts entschieden; erster Bauabschnitt auf dem Zweig `dungeon-schloss-bigb` (Abschnitt 0); Entscheidungen trifft die Produktion ([ENTSCHEIDUNGEN.md](ENTSCHEIDUNGEN.md)).
+**Stand:** Planung, nichts entschieden; erster Bauabschnitt seit 23.09. auf `main` und damit live (Abschnitt 0); Entscheidungen trifft die Produktion ([ENTSCHEIDUNGEN.md](ENTSCHEIDUNGEN.md)).
 Alle Zahlen sind Entwürfe für Balancing (`content/tuning.js`, Balance-Sheet E-57). Alle Spielertexte sind Beispiele im Ton
 E-20 und werden von Story ersetzt oder abgenommen. Vorschläge heißen V-D1 bis V-D11; die E-Nummer vergibt der Lead.
 
@@ -24,12 +24,12 @@ Frau Dr. Exposé und Kellermeister Korken-Kurt als Siegelträger, Reichweiten-Ri
 als seltener Boss, Big B als Endboss mit der Kernmechanik **Behauptung und Nachsatz**. Fünf Köpfe, Stufe 8 bis 10,
 kürzester Weg rund 25 Minuten, voller Durchgang rund 45 Minuten, spielbar mit Menschen oder Söldnern.
 
-## 0 · Umsetzungsstand: erster Bauabschnitt auf dem Zweig `dungeon-schloss-bigb`
+## 0 · Umsetzungsstand: erster Bauabschnitt, seit 23.09. auf `main`
 
-Auftrag am 2026-09-23: „fang an den dungeon zu bauen". Der erste Bauabschnitt liegt auf dem Zweig
-[`dungeon-schloss-bigb`](https://github.com/ER-ESM/mertloch-chronicles/tree/dungeon-schloss-bigb), **nicht auf `main`**.
-Der Spielserver zieht `main` alle zehn Minuten ohne CI-Sperre, ein Merge ist also eine Veröffentlichung. V-D1 bis V-D11
-bleiben offen. Der Zweig nimmt die Vorschläge als Arbeitsannahme und lässt sich nach den Entscheidungen umbauen.
+Auftrag am 2026-09-23: „fang an den dungeon zu bauen". Der erste Bauabschnitt entstand auf dem Zweig `dungeon-schloss-bigb`
+und kam auf Olivers Auftrag „auf main" am selben Abend nach `main`. Der Spielserver zieht ihn von dort, danach finden
+Figuren ab Stufe 8 den Eingang an der Burgstraße. V-D1 bis V-D11 bleiben offen. Der Bau
+nimmt die Vorschläge als Arbeitsannahme und lässt sich nach den Entscheidungen umbauen.
 
 **Gebaut und geprüft**
 
