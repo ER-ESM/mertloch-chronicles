@@ -36,20 +36,23 @@ try{
  await read(`(()=>{const l=game.world.base.house.upper.stairs.landing;Object.assign(game.player,{x:l.x,y:l.y});game.moveTo=null;game.path=[];})()`);await wait(400);
  await b.press('f');await wait(600);assert.equal(await read('game.floor||0'),0,'F am Absatz führt zurück ins Erdgeschoss');await shot('7-treppe-unten');
  checks.push('stairs: F goes up to the dormitory, walk into the site office upstairs, F at the landing goes back down');
- // 5c Treppe begehbar ohne F (Nutzerbefund 2026-09-23): auf die Treppe zulaufen wechselt, gehaltene Taste (mit Tastenwiederholung) pendelt nicht,
- //    Klick auf die Treppe läuft hin und wechselt.
+ // 5c Treppe begehbar (Nutzerwunsch 2026-09-23): am Antritt einsteigen und hochlaufen – der Held hebt sich Stufe für Stufe, umgeschaltet
+ //    wird erst auf der obersten Stufe; gehaltene Taste pendelt nicht; oben durch den Zugang (Westen) hinab und unten hinaus; Klick läuft die Stufen.
  const repeatHold=async(k,ms)=>{const code='Key'+k.toUpperCase(),vk=k.toUpperCase().charCodeAt(0);await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code,windowsVirtualKeyCode:vk});
   for(let t=0;t<ms;t+=33){await wait(33);await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code,windowsVirtualKeyCode:vk,autoRepeat:true});}await b.send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code,windowsVirtualKeyCode:vk});};
- await read(`(()=>{const h=game.world.base.house;game.floor=0;Object.assign(game.player,{x:h.stairs.foot.x,y:h.stairs.foot.y});game.moveTo=null;game.path=[];})()`);await wait(400);
- await read('window.__floorChanges=0;{const u=game.useStairs.bind(game);game.useStairs=(...a)=>{const ok=u(...a);if(ok)window.__floorChanges++;return ok;};}');
- await repeatHold('a',1500);assert.equal(await read('game.floor||0'),1,'nach links auf die Treppe laufen führt hinauf');
- assert.equal(await read('window.__floorChanges'),1,'gehaltene Taste pendelt nicht zwischen den Geschossen');
- await wait(400);await repeatHold('a',800);assert.equal(await read('game.floor||0'),0,'oben neu ins Treppenloch laufen führt wieder hinunter');
+ await read(`(()=>{const h=game.world.base.house,s=h.stairs;game.floor=0;Object.assign(game.player,{x:(s.minX+s.maxX)/2,y:s.maxY+7});game.moveTo=null;game.path=[];})()`);await wait(400);
+ await read('window.__floorChanges=0;window.__maxLift=0;{const u=game.switchFloor.bind(game);game.switchFloor=(...a)=>{window.__floorChanges++;return u(...a);};}setInterval(()=>{window.__maxLift=Math.max(window.__maxLift,game.stairLift());},20);');
+ await repeatHold('w',2600);assert.equal(await read('game.floor||0'),1,'die Treppe hinauflaufen führt ins Obergeschoss');
+ assert.equal(await read('window.__floorChanges'),1,'gehaltene Taste pendelt nicht zwischen den Geschossen');assert.ok(await read('window.__maxLift')>10,'der Held stieg sichtbar die Stufen hinauf');
+ await wait(400);await read(`(()=>{const u=game.world.base.house.upper.stairs;Object.assign(game.player,{...u.landing});game.moveTo=null;game.path=[];})()`);await wait(400);
+ await repeatHold('a',700);assert.equal(await read('game.floor||0'),0,'oben durch den Zugang ins Treppenloch führt hinab');assert.ok(await read('game.stairLift()')>8,'man steht oben auf der Treppe');
+ await shot('7b-treppe-oben');await repeatHold('s',2200);assert.ok(await read('game.player.y>game.world.base.house.stairs.maxY&&(game.floor||0)===0'),'unten hinaus');
+ await read(`(()=>{const s=game.world.base.house.stairs;Object.assign(game.player,{x:(s.minX+s.maxX)/2,y:s.minY+26});game.moveTo=null;game.path=[];})()`);await wait(500);await shot('7c-treppe-mitte');
  await read(`(()=>{const h=game.world.base.house;Object.assign(game.player,{x:h.minX+150,y:h.minY+150});game.moveTo=null;game.path=[];})()`);await wait(600);
  const at=await read(`(()=>{const s=game.world.base.house.stairs,r=__mertloch.renderer,c=r.canvas.getBoundingClientRect(),wx=(s.minX+s.maxX)/2,wy=(s.minY+s.maxY)/2;return {x:(wx-r.camera.x+r.viewWidth/2)/r.viewWidth*c.width+c.left,y:(wy-r.camera.y+r.viewHeight/2)/r.viewHeight*c.height+c.top};})()`);
  for(const type of ['mouseMoved','mousePressed','mouseReleased'])await b.send('Input.dispatchMouseEvent',{type,x:at.x,y:at.y,button:'left',buttons:type==='mousePressed'?1:0,clickCount:1});
  await until('(game.floor||0)===1',15000);await shot('8-treppe-klick');
- checks.push('stairs are walkable: walking onto them climbs, a held key does not bounce, walking into the stairwell goes down, a click on the stairs walks there and climbs');
+ checks.push('stairs are walkable: run up step by step (hero lifted), switch on the top step, held key does not bounce, down through the access at the top, click walks up');
  // 5d Stammgäste (E-61): keine Helden-Mentoren mehr; Olli, Nyalol und Ron stehen an ihren Plätzen, reden (Taste F) und haben Aufträge.
  const regulars=await read(`(()=>{const h=game.world.base.house,at=p=>(h.rooms.find(r=>r.rects.some(q=>p.x>=q.x&&p.x<q.x+q.w&&p.y>=q.y&&p.y<q.y+q.h))||{}).id||null;
   return {mentors:game.world.mentors.length,list:['olli','nyalol','ron'].map(id=>id+':'+at(h.spots[id]))};})()`);

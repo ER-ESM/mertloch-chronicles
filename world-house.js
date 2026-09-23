@@ -20,7 +20,7 @@ function buildFloor(def,f,o,prefix){
  // Einrichtung aus dem Sprite-Baukasten; was nicht begehbar ist und steht, sperrt mit seiner Standfläche (Kollision).
  const items=placeKitItems(f.items,o,prefix);
  const fixtures=items.filter(it=>!it.walkable&&it.layer==='standing').map(it=>({id:it.id,name:it.name,height:it.height,minX:it.minX,maxX:it.maxX,minY:it.minY,maxY:it.maxY,x:it.x,y:it.y,houseWall:true,fixture:true}));
- const s=f.stairs,stairs=s?{...box(o,prefix+'stairs',s,{houseWall:true,stairs:true}),range:s.range,...(s.foot?{foot:at(o,s.foot)}:{}),...(s.arrive?{arrive:at(o,s.arrive)}:{}),...(s.landing?{landing:at(o,s.landing)}:{})}:null;
+ const s=f.stairs,stairs=s?{...box(o,prefix+'stairs',s,{houseWall:true,stairs:true}),range:s.range,rise:s.rise,topStep:s.topStep,access:s.access,...(s.foot?{foot:at(o,s.foot)}:{}),...(s.arrive?{arrive:at(o,s.arrive)}:{}),...(s.landing?{landing:at(o,s.landing)}:{})}:null;
  // Wandschmuck hängt an seiner Wand (gezeichnet mit ihr), Tischdeko folgt ihrem Möbel in der Tiefensortierung.
  for(const it of items){if(it.def.surface==='wall-face'){const wall=walls.find(w=>w.maxX-w.minX>w.maxY-w.minY&&Math.abs(w.maxY-it.y)<=2&&it.minX>=w.minX-.01&&it.maxX<=w.maxX+.01);if(wall){(wall.decor||=[]).push(it);it.wall=wall.id;}}
   else if(it.def.surface==='top'){const host=items.find(o=>o!==it&&o.def.top&&it.x>=o.minX&&it.x<=o.maxX&&it.y>=o.minY&&it.y<=o.maxY);it.sortY=(host?host.maxY:it.maxY)+.01;it.lift=host?.height||0;}

@@ -67,7 +67,8 @@ export const BUDE_HOUSE={
  ],
  // Treppe ins Obergeschoss an der Westwand des Schankraums, nach Norden steigend (die Wand liegt daneben und verdeckt nichts):
  // unten der Treppenfuß östlich des Antritts, oben der Absatz im Matratzenlager.
- stairs:{x:4,y:104,w:18,h:52,foot:{x:36,y:148},arrive:{x:36,y:112},range:22},
+ // rise = Hub des Helden auf der obersten Stufe (E), topStep = Tiefe der obersten Stufe, ab der ins Obergeschoss umgeschaltet wird.
+ stairs:{x:4,y:104,w:18,h:52,foot:{x:36,y:148},arrive:{x:36,y:112},range:22,rise:15,topStep:8},
  // Bauplätze der sechs Basisbau-Gebäude (content/buildings.js) in ihren Räumen.
  slots:{tresen:{x:84,y:100},anlage:{x:150,y:150},landhausecke:{x:40,y:34},pfandlager:{x:121,y:32},grill:{x:262,y:36},werkstatt:{x:298,y:104}},
  // Schild „Baustelle der Bude“ links neben dem Eingang, vor der Fassade.
@@ -108,7 +109,8 @@ export const BUDE_HOUSE={
    {s:'bild-landschaft',x:150,y:113},{s:'wandlampe',x:215,y:113},{s:'laeufer',x:185,y:150,w:50,h:12}
   ],
   // Treppenloch mit Geländer; oben kommt man östlich davon an.
-  stairs:{x:4,y:104,w:18,h:52,landing:{x:36,y:112},range:22}
+  // access = Zugang im Nordosten (E ab der Nordkante), durch den man von Osten auf die oberen Stufen tritt.
+  stairs:{x:4,y:104,w:18,h:52,landing:{x:30,y:110},range:22,access:22}
  }
 };
 export const BUDE_HOUSE_TEXT={inside:'Die Bude',outside:'Die Bude · Poo-Tang-Clan',up:'Treppe hoch',down:'Treppe runter',upper:'Obergeschoss',ground:'Erdgeschoss'};

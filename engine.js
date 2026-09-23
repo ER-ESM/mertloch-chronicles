@@ -453,21 +453,34 @@ export class Game{
   stairsTarget(){const h=this.world.base?.house;if(!h?.stairs||!h.upper?.stairs||inKiosk(this)||this.dead)return null;
     return this.floor?{label:BUDE_HOUSE_TEXT.down,to:0,point:h.stairs.foot,from:h.upper.stairs.landing,range:h.upper.stairs.range,box:h.upper.stairs}
       :{label:BUDE_HOUSE_TEXT.up,to:1,point:h.upper.stairs.landing,from:h.stairs.foot,range:h.stairs.range,box:h.stairs};}
-  /** Klick auf die Treppe: in Reichweite sofort wechseln, sonst zum Treppenfuß (oben: Absatz) laufen und dort wechseln. */
-  climbStairs(){const s=this.stairsTarget();if(!s||this.paused)return false;if(this.stairsInteraction())return this.useStairs();if(!this.navigate(s.from))return false;this.stairsRoute=true;return true;}
-  /** Stockwerk wechseln: Held steht danach am Absatz beziehungsweise am Treppenfuß, Wege und Ziel sind gelöscht. */
-  useStairs(anywhere=false){const s=anywhere?this.stairsTarget():this.stairsInteraction();if(!s||this.paused)return false;dismount(this);this.floor=s.to;this.stairsRoute=false;this.stairsHeld=true;Object.assign(this.player,{x:s.point.x,y:s.point.y,moving:false,vx:0,vy:0});this.moveTo=null;this.path=[];this.routeGoal=null;this.keys.clear();this.target=null;this.stopAuto();this.emit('floorChanged',{floor:this.floor});return true;}
-  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=inKiosk(this)?roomWorld:(this.floor&&entity===this.player&&upperWorld(this.world.base?.house))||this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
-  /** Wer auf die Treppe zuläuft, wechselt das Stockwerk wie mit F (Nutzerbefund 2026-09-23: „zweite Etage nicht begehbar“ –
-   *  die Treppe war nur ein Hindernis mit Tastenhinweis). Ein Klickweg zur Treppe (climbStairs) wechselt am Ziel.
-   *  Nach einem Wechsel erst wieder scharf nach einer Viertelsekunde ohne Laufrichtung oder ein paar Schritten weg von der Treppe:
-   *  gehaltene Tasten pendeln sonst zwischen den Geschossen. Klickwege laufen nur über climbStairs, nie zufällig im Vorbeigehen. */
-  walkStairs(dx,dy,routed,dt){const s=this.stairsTarget(),p=this.player;if(!s)return false;
-    const b=s.box,gx=Math.max(b.minX,Math.min(p.x,b.maxX))-p.x,gy=Math.max(b.minY,Math.min(p.y,b.maxY))-p.y,gap=Math.hypot(gx,gy);
-    this.stairsIdle=dx||dy?0:(this.stairsIdle||0)+dt;if(this.stairsHeld&&(gap>=18||this.stairsIdle>=.25))this.stairsHeld=false;
-    if(!dx&&!dy){if(this.stairsRoute&&!this.moveTo&&!this.routeGoal){this.stairsRoute=false;this.useStairs();}return false;}
-    if(!routed)this.stairsRoute=false;if(routed||this.stairsHeld||this.paused)return false;
-    return gap<=7&&gx*dx+gy*dy>0?this.useStairs(true):false;}
+  /** Treppe begehbar (Nutzerwunsch 2026-09-23: „so aussehen, dass man sie wirklich hochrennt und erst ab der passenden Stufe umschaltet“):
+   *  Laufspur innerhalb der Treppenbreite, Einstieg nur am Antritt (unten, Süden); seitlich halten Geländer und Wand. */
+  stairLane(x,y,r=5){const b=!this.floor&&this.world.base?.house?.stairs;return !!b&&x-r>=b.minX-.01&&x+r<=b.maxX+.01&&y>=b.minY&&y-r<=b.maxY;}
+  /** Hub des Helden auf der Treppe: 0 am Antritt, `rise` auf der obersten Stufe – der Renderer zeichnet ihn so viel höher. */
+  stairLift(p=this.player){const b=this.world.base?.house?.stairs;if(this.floor||!b||!this.stairLane(p.x,p.y))return 0;return (b.rise||15)*Math.max(0,Math.min(1,(b.maxY-p.y)/(b.maxY-b.minY)));}
+  /** Laufwelt des Helden im Erdgeschoss: wie die Dorfwelt, nur die Treppenspur ist frei. */
+  stairsWorld(){const w=this.world;if(!w.base?.house?.stairs)return w;if(this.laneWorld?.base!==w){const game=this;this.laneWorld={base:w,w:{blocked:(x,y,r=6)=>game.stairLane(x,y,r)?false:w.blocked(x,y,r)}};}return this.laneWorld.w;}
+  /** Am Antritt leicht zur Treppenmitte führen, damit man nicht an der Wange hängen bleibt. */
+  stairFunnel(old,dy){const b=this.world.base?.house?.stairs,p=this.player;if(this.floor||!b||dy>=0||Math.abs(p.y-old.y)>.01||p.y>b.maxY+9||p.y<b.maxY-1||p.x<b.minX||p.x>b.maxX||this.stairLane(p.x,p.y))return;
+    const cx=(b.minX+b.maxX)/2,nx=p.x+Math.sign(cx-p.x)*Math.min(Math.abs(cx-p.x),2);if(!this.stairsWorld().blocked(nx,p.y,5))p.x=nx;}
+  /** Klick auf die Treppe: zum Antritt laufen und die Stufen hinauf; oben zum Absatz, durch den Zugang hinein und hinunter. */
+  climbStairs(){const h=this.world.base?.house,b=this.floor?h?.upper?.stairs:h?.stairs;if(!b||!h.upper?.stairs||this.paused||inKiosk(this)||this.dead)return false;const cx=(h.stairs.minX+h.stairs.maxX)/2;
+    if(!this.floor){const top={x:cx,y:h.stairs.minY+2};if(this.stairLane(this.player.x,this.player.y)){this.moveTo=top;this.path=[];this.routeGoal=null;return true;}
+      if(!this.navigate({x:cx,y:h.stairs.maxY+6.5}))return false;this.path.push({x:cx,y:h.stairs.maxY+6},{x:cx,y:h.stairs.maxY-4},top);this.routeGoal=null;return true;}
+    if(!this.navigate(b.landing))return false;this.path.push({x:b.minX+4,y:b.landing.y});this.routeGoal=null;this.stairsAutoDown=true;return true;}
+  /** Stockwerk wechseln; `then` = nächster Laufpunkt (Klickweg die Treppe hinunter). */
+  switchFloor(to,point,then=null){dismount(this);this.floor=to;this.stairsHeld=true;this.stairsFrom={x:point.x,y:point.y};this.stairsAutoDown=false;Object.assign(this.player,{x:point.x,y:point.y,moving:false,vx:0,vy:0});this.moveTo=then;this.path=[];this.routeGoal=null;this.target=null;this.stopAuto();this.emit('floorChanged',{floor:this.floor});return true;}
+  /** Taste F am Treppenfuß beziehungsweise am Absatz: direkter Wechsel (Abkürzung). */
+  useStairs(anywhere=false){const s=anywhere?this.stairsTarget():this.stairsInteraction();if(!s||this.paused)return false;this.keys.clear();return this.switchFloor(s.to,s.point);}
+  move(entity,dx,dy){const old={x:entity.x,y:entity.y},mine=entity===this.player,w=inKiosk(this)?roomWorld:mine?(this.floor?upperWorld(this.world.base?.house)||this.world:this.stairsWorld()):this.world;moveWithCollisions(w,entity,dx,dy);if(mine&&!inKiosk(this))this.stairFunnel(old,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
+  /** Umschalten erst auf der passenden Stufe: unten auf der obersten Stufe (Laufrichtung Norden) ins Obergeschoss auf den Absatz;
+   *  oben am Zugang im Nordosten (Laufrichtung Westen) hinab auf die oberen Stufen. Nach einem Wechsel erst wieder scharf nach einer
+   *  Viertelsekunde ohne Laufrichtung oder zehn Einheiten Weg – gehaltene Tasten pendeln sonst. */
+  walkStairs(dx,dy,routed,dt){const h=this.world.base?.house,p=this.player;if(!h?.stairs||!h.upper?.stairs||inKiosk(this)||this.dead||this.paused)return false;
+    this.stairsIdle=dx||dy?0:(this.stairsIdle||0)+dt;if(this.stairsHeld&&(this.stairsIdle>=.25||!this.stairsFrom||distance(p,this.stairsFrom)>=10))this.stairsHeld=false;if(this.stairsHeld)return false;
+    const g=h.stairs,u=h.upper.stairs,cx=(g.minX+g.maxX)/2;
+    if(!this.floor)return dy<0&&this.stairLane(p.x,p.y)&&p.y<=g.minY+(g.topStep||8)?this.switchFloor(1,u.landing,this.moveTo&&this.moveTo.y<=g.minY+(g.topStep||8)?{x:u.landing.x+10,y:u.landing.y}:null):false;
+    return dx<0&&p.x>u.maxX&&p.x-6<=u.maxX+1.5&&p.y>=u.minY&&p.y<=u.minY+(u.access||22)?this.switchFloor(0,{x:cx,y:g.minY+(g.topStep||8)+6},this.stairsAutoDown||routed?{x:cx,y:g.maxY+8}:null):false;}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
   navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.walkWorld().findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
