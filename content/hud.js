@@ -12,7 +12,6 @@ export const HUD_ELEMENTS=[
  {id:'actions',selector:'.action-area',name:'Aktionsleisten',desktop:true},
  {id:'map',selector:'#miniButton',name:'Minikarte',desktop:true},
  {id:'quests',selector:'.quest-panel',name:'Auftragsverfolgung',desktop:true},
- {id:'lesson',selector:'#trainingDock',name:'Clan-Schule',desktop:true},
  {id:'tutorial',selector:'#tutorialGuide',name:'Hofprobe'},
  {id:'menu',selector:'.game-menu-rail',name:'Menüleiste',desktop:true},
  {id:'controls',selector:'.world-controls',name:'Ton und Vollbild',desktop:true},

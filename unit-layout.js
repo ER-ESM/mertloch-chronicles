@@ -28,8 +28,7 @@ export function layoutUnitFrames(root,force=false){
  if(touch){for(const r of controls)if(overlapsX(band,r)&&r.top-base.top>top)bottom=Math.min(bottom,r.top-base.top-8);if(visible(chat)&&chat.dataset.autoLayout==='true'&&!chat.hasAttribute('data-hud-custom')){if(landscape)bottom=Math.min(bottom,base.height-52);else if(!chat.classList.contains('active'))bottom=Math.min(bottom,chat.getBoundingClientRect().top-base.top-8);}}
  else{
   const chat=root.querySelector('#chatWindow');if(visible(chat)&&!chat.hasAttribute('data-hud-custom')&&chat.dataset.autoLayout==='true'){
-   const cr=chat.getBoundingClientRect(),lesson=root.querySelector('#trainingDock'),lr=visible(lesson)?lesson.getBoundingClientRect():null;
-   const end=lr&&overlapsX(cr,lr)&&lr.top-base.top>base.height*.45?lr.top-base.top-8:base.height-20;
+   const cr=chat.getBoundingClientRect(),end=base.height-20;
    set(chat,'top',Math.max(top+90,end-cr.height)+'px');
   }
   if(visible(chat)){const r=chat.getBoundingClientRect();if(overlapsX(band,r)&&r.top-base.top>top)bottom=Math.min(bottom,r.top-base.top-8);}

@@ -111,9 +111,9 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,canvas:focus-visib
  background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);padding:2px 8px;box-shadow:none;}
 
 /* -------------------------------------------------------------------- Balken */
-.bar,.quest-meter,.rpg-xp,.xp-track,.training-progress,.cast{
+.bar,.quest-meter,.rpg-xp,.xp-track,.cast{
  background:var(--green-2);border:var(--edge) solid var(--kraft-2);box-shadow:none;overflow:hidden;}
-.bar i,.quest-meter i,.rpg-xp i,.xp-track i,.training-progress i{background:var(--ok);box-shadow:none;}
+.bar i,.quest-meter i,.rpg-xp i,.xp-track i{background:var(--ok);box-shadow:none;}
 .energy i{background:var(--gold);}
 .enemy-hp i,.cast i{background:var(--coral);}
 /* C5: Werte auf farbiger Fläche bekommen eine Kontur statt eines Schlagschattens. */
@@ -348,14 +348,6 @@ input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);o
  font-family:var(--display);font-size:var(--t-13);letter-spacing:.06em;text-transform:uppercase;box-shadow:var(--hard) var(--hard-ink);}
 .interact kbd{color:var(--gold);}
 
-/* Clan-Schule: Lernkasten in der Welt und am Fuß der Seite */
-.in-world-lesson,.training-dock{
- background:var(--green);border:var(--edge) solid var(--kraft-2);box-shadow:var(--hard) var(--hard-ink);color:var(--cream);}
-.in-world-lesson .eyebrow,.training-dock .eyebrow{color:var(--kraft);font-size:var(--t-11);}
-.in-world-lesson strong,.training-copy strong{font-family:var(--display);font-weight:400;font-size:var(--t-20);
- letter-spacing:.04em;text-transform:uppercase;color:var(--cream);}
-.in-world-lesson p,.training-copy p{font-family:var(--read);font-size:var(--t-13);color:var(--kraft);}
-.training-progress{height:6px;}
 
 /* ============================== Gespräch, Beute, Tod, Belohnung, Erinnerung
    Das Gespräch ist eine Pappkarte mit Porträt; die Welt bleibt Zeltstoff. */
@@ -451,7 +443,7 @@ input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);o
 
 /* ===== Rundung E-28 (2026-09-18): einfache runde Linien, die zur Pixelwelt passen. Palette/Schrift bleiben E-24. ===== */
 :root{--r:12px;--r-s:8px;--r-pill:999px}
-.game-popup,.hud,.player-panel,.target-panel,.minimap,.quest-panel,.region-label,.action-bar,.in-world-lesson,.toast,.attack-warning,.item-tooltip,.skill-tooltip,#touchContext,.world-menu-brand,.update-hint{border-radius:var(--r)!important}
+.game-popup,.hud,.player-panel,.target-panel,.minimap,.quest-panel,.region-label,.action-bar,.toast,.attack-warning,.item-tooltip,.skill-tooltip,#touchContext,.world-menu-brand,.update-hint{border-radius:var(--r)!important}
 .game-popup{border-width:3px}
 .popup-titlebar{border-radius:calc(var(--r) - 3px) calc(var(--r) - 3px) 0 0}
 button,.gold-button,.outline-button,.panel-tabs button,.quest-tabs button,.section-jump button,.atlas-toolbar button,.grid-pager button,.popup-titlebar button,.game-menu-rail button,.world-controls button,.interact,.clan-more,.book-help-button,.touch-editor-footer button,.touch-menu-grid>button,select,input[type=search]{border-radius:var(--r-s)!important}
@@ -459,7 +451,7 @@ button,.gold-button,.outline-button,.panel-tabs button,.quest-tabs button,.secti
 .skill,.item-slot,.gear-cell .item-slot,.binding-slot,.book-skill,.reward-option,.spec-tabs button,.clan-card,.guide-card,.quest-entry,.memory-entry,.build-card,.base-card,.character-stats>div,.secondary-stats>div,.weapon-summary>div,.paper-doll,.gear-doll,.talent-points,.touch-slot-editor button,.touch-skill-picker button{border-radius:var(--r-s)!important}
 #touchActions .touch-skill{border-radius:var(--r-s)!important}
 .buff-chip,.clan-stamp,.quest-reward span,kbd,.touch-kbd,.mobile-notice,.game-menu-rail button[data-badge]:after,.book-tabs button[data-badge]:after,.section-jump button[aria-current=true],.talent-gate span,.branch-node small{border-radius:var(--r-pill)!important}
-.bar,.bar i,.enemy-hp,.energy,.hp,.cast,.cast i,.rpg-xp,.rpg-xp i,.xp-track,.xp-track i,.training-progress,.training-progress i,.quest-meter,.quest-meter i,.health-track,.energy-track,.bar-track,.buff-timer{border-radius:var(--r-pill)!important}
+.bar,.bar i,.enemy-hp,.energy,.hp,.cast,.cast i,.rpg-xp,.rpg-xp i,.xp-track,.xp-track i,.quest-meter,.quest-meter i,.health-track,.energy-track,.bar-track,.buff-timer{border-radius:var(--r-pill)!important}
 .branch-node,.branch-node.passive-talent,.talent-node{border-radius:10px!important}
 .branch-node.active-talent,.branch-node.capstone.active-talent{border-radius:50%!important}
 #touchStick,#touchThumb,.stick-ring,#touchUtility button,#touchActions .touch-special,#touchMenu{border-radius:50%!important}
@@ -736,8 +728,6 @@ body.start-open .roll-frames{display:none}
 .spec-tabs .tree-hits[hidden]{display:none}
 .spec-tabs .no-hits{opacity:.55}.spec-tabs .no-hits .tree-hits{background:transparent;color:inherit;border:1px solid currentColor}
 mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-radius:2px}
-/* Ruhiger Bildschirm (E-39): Die Clan-Schule schweigt, solange die Hofprobe führt. */
-.training-dock.is-quiet{display:none!important;}
 
 /* FPS-Anzeige (fps-meter.js): kleine Ecke unten links, Schalter in Hilfe → Einstellungen. Fängt keine Klicks. */
 #fpsMeter{position:absolute;left:8px;bottom:24px;z-index:40;padding:1px 8px;font-family:var(--display);font-size:var(--t-13);letter-spacing:.04em;font-variant-numeric:tabular-nums;color:var(--cream);background:#0B1216B8;border-radius:var(--r-pill);pointer-events:none;white-space:nowrap}
@@ -769,7 +759,6 @@ mark.search-mark{background:var(--gold);color:var(--ink);padding:0 2px;border-ra
 .game-shell .xp-track.rpg-xp::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 1px),#d7b57150 calc(5% - 1px) 5%)}
 .game-shell .xp-track.rpg-xp #xpCaption{z-index:1;display:grid;place-items:center;font:700 12px/1 var(--read);letter-spacing:.02em;color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 3px #000}
 /* Lern-Fenster neben dem Chat statt darüber; Auftragsliste wächst mit ihren Zielen, statt nach drei Zeilen zu scrollen. */
-@media(min-width:1860px){body:not(.touch-mode) #trainingDock.in-world-lesson{left:388px}}
 @media(min-width:761px) and (min-height:760px){body:not(.touch-mode) .quest-panel{max-height:min(380px,calc(100dvh - 520px))}}
 @media(min-width:1100px){body:not(.touch-mode) .region-label{max-width:min(680px,42vw)}body:not(.touch-mode) .region-label #zoneName{max-width:min(660px,40vw)}}
 /* Ortstitel hebt sich von Welt und Namensschildern darunter ab: weicher dunkler Schleier statt freistehender Schrift. */

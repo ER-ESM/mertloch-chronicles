@@ -1,5 +1,5 @@
 /* Material adapter: existing layout, hit areas, rarity and combat logic remain authoritative. */
-.game-popup,.hud,.online-card,.hud-toolbar,#combatMeter,.training-dock{
+.game-popup,.hud,.online-card,.hud-toolbar,#combatMeter{
  border-image:url(assets/ui-kit/runtime/frame-panel-rest.png) 16 / 8px / 0 stretch;
  background-clip:padding-box;
 }

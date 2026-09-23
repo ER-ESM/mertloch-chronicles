@@ -130,12 +130,9 @@ try{
  await screenshot('wegmarke-hofprobe');
  checks.push('P5: jeder Hofproben-Schritt zeigt Pfeil, Ziel und Entfernung in Metern im HUD');
 
- // 4 · Die Clan-Schule bleibt stehen, bis sie bestätigt wird (P11)
- assert.ok(await b.evaluate(`!document.querySelector('#lessonButton').classList.contains('hidden')`),'Clan-Schule zeigt „Verstanden“');
- await b.evaluate(`window.game.trainingXp=40`);await wait(400);
- assert.ok((await text('#trainingDock')).length>40,'Clan-Schule verschwindet nicht von selbst');
- await b.click('#lessonButton');await wait(300);
- checks.push('P11: Der Hinweis der Clan-Schule bleibt, bis er angeklickt wird');
+ // 4 · Die Clan-Schule unten links ist auf Nutzerwunsch entfallen (2026-09-23), P11 damit gegenstandslos.
+ assert.equal(await b.evaluate(`!!document.querySelector('#trainingDock')`),false,'Clan-Schule ist entfernt');
+ checks.push('P11 entfallen: keine Clan-Schule mehr unten links');
 
  // 5 · Autoangriff-Zustand und Angriffshinweis (P1/P2)
  await b.evaluate(`(()=>{const g=window.game;g.tutorial.completed=true;g.autoAttack.enabled=false;})()`);await wait(350);

@@ -10,7 +10,7 @@ async function fixture(touch=false){
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',init);
  await read(`game.paused=true;document.querySelectorAll('[data-window-close]').forEach(e=>e.click());game.player.hp=game.player.maxHp*.64;game.player.energy=68;game.hireCompanion('merc-pils-peter',{free:true});game.hireCompanion('merc-radler-rita',{free:true});game.companions[0].hp=game.companions[0].maxHp*.42;game.companions[1].hp=game.companions[1].maxHp*.87;`);
  await read(`import('./talents.js').then(m=>m.changeSpec(game,'baerbel-care'))`);
- await read(`game.classState.m={supply:3};document.querySelector('#trainingDock').style.display='none';`);
+ await read(`game.classState.m={supply:3};`);
  await read(`Promise.all([import('./class-mechanic-art.js').then(m=>m.loadMechanicArt()),import('./ui-chrome.js').then(m=>m.loadChromeArt())])`);
  await wait(500);
 }

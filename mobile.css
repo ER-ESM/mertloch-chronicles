@@ -2,7 +2,7 @@
 #mobileControls{display:none}.touch-mode #mobileControls{display:contents}
 .touch-mode{--touch-size:56px;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);--safe-right:env(safe-area-inset-right,0px);overscroll-behavior:none;user-select:none;-webkit-user-select:none}
 .touch-mode[data-touch-size=small]{--touch-size:48px}.touch-mode[data-touch-size=large]{--touch-size:64px}
-.touch-mode .action-area,.touch-mode .touch-pad,.touch-mode .game-menu-rail,.touch-mode .world-controls,.touch-mode .world-menu-brand,.touch-mode .quest-panel,.touch-mode .minimap,.touch-mode .region-label,.touch-mode .in-world-lesson,.touch-mode .combat-log,.touch-mode .announcement,.touch-mode #interact{display:none!important}
+.touch-mode .action-area,.touch-mode .touch-pad,.touch-mode .game-menu-rail,.touch-mode .world-controls,.touch-mode .world-menu-brand,.touch-mode .quest-panel,.touch-mode .minimap,.touch-mode .region-label,.touch-mode .combat-log,.touch-mode .announcement,.touch-mode #interact{display:none!important}
 .touch-mode:has(.game-popup) #touchMenu{visibility:hidden}
 #mobileControls button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #touchMenu{position:absolute;right:calc(26px + var(--safe-right));top:calc(12px + var(--safe-top));width:54px;height:54px;z-index:1001;display:grid;justify-items:center;padding:3px;gap:0}#touchMenu canvas{width:29px;height:29px;pointer-events:none}#touchMenu span{font-size:10px}.mobile-notice{position:absolute;right:-5px;top:-5px;padding:1px 6px}
