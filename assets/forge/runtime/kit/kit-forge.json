@@ -292,12 +292,12 @@
   "treppe-holz": {
    "file": "kit-treppe-holz.png",
    "width": 72,
-   "height": 224
+   "height": 304
   },
   "treppenloch": {
    "file": "kit-treppenloch.png",
    "width": 72,
-   "height": 240
+   "height": 248
   },
   "truhe": {
    "file": "kit-truhe.png",

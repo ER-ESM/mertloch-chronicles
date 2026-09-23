@@ -127,55 +127,102 @@ function fahrrad(){
   {f:union(capsule([5.15,0,9.75],[5.9,0,9.75],.55),at(5.95,0,9.75,ellipsoid(.25,.5,.5))),mat:chrome,group:'lampe'},
  ]};}
 
-// ---------- Treppen (Ansicht von oben, von der Laufzeit gestreckt) ----------
-const stairWood=wood('#a0703a',{axis:'x',seed:4}),frameWood=wood('#7a5230',{axis:'y',seed:7}),railWood=wood('#8a5a2c',{axis:'y',seed:1});
+// ---------- Treppen (Ansicht von oben mit Scherung, von der Laufzeit gestreckt) ----------
+// Beide Sprites zeigen DIESELBE Treppe in Hauskoordinaten (x Ost, y Süd, z ab Erdgeschossboden; content/bude-house.js:
+// stairs x 4–22, y 104–156). 13 Steigungen à 2,4 E (31,2 E), Auftritt 4 E, Antritt unten bei y≈155, oben der Austritt
+// bündig mit dem Obergeschoss. Die Höhe wird wie in der Schrägsicht per Scherung sichtbar: wahre Höhe z über dem eigenen
+// Geschossboden erscheint um SH·z nach Norden. SH = 15/31,2 passt zur Hub-Mechanik der Laufzeit (Held auf der Treppe um
+// 15·(156−y)/52 E angehoben): die Trittfläche unter dem Fuß erscheint dort, wo der angehobene Held steht.
+const STAIR={SH:15/31.2,N:13,D:4,R:2.4,y0:154.9,xl:5.2,xr:19.9,xe:20.7,xc:12.55,run:3.3,floor:31.2};
+const stepY=i=>STAIR.y0-STAIR.D*i,stepZ=i=>STAIR.R*(i+1);            // Vorderkante der Setzstufe i, Höhe ihrer Trittfläche
+const stepAt=y=>clamp(Math.floor((STAIR.y0+.7-y)/STAIR.D),0,STAIR.N-1); // Stufe unter der Stelle y
+const lineZ=y=>STAIR.R+STAIR.R/STAIR.D*(STAIR.y0-y);                  // Linie über die Stufenkanten (Wangen, Handlauf)
+const railZ=y=>lineZ(y)+12.5;
+/** Trittfläche lesbar machen: Stufenkante (Stirnseite) hell, nach hinten zur Kehle dunkler. y wahr, n Normale im Bild. */
+const treadShade=(y,n)=>{if(n&&n[1]>.45&&n[2]<.85)return 1.14;const i=stepAt(y),t=clamp((stepY(i)+NOSE-y)/STAIR.D,0,1);return 1.12-.4*t*t;};
+const stairWood=wood('#b27a40',{axis:'x',seed:4}),riserWood=wood('#6a3f22',{axis:'x',seed:9}),frameWood=wood('#7a4a28',{axis:'y',seed:7}),
+ railWood=wood('#5e321a',{axis:'y',seed:1}),postWood=wood('#7c4824',{axis:'z',seed:3}),darkWood=wood('#4a3020',{axis:'x',seed:5});
+const goldRamp=rampFrom('#c8a052'),brassEdge=metal('#b08a3a',{shine:34,spec:.9,rust:.05});
+/** Läufer: dunkelroter Wollstoff mit goldener Borte an beiden Rändern; senkrechte Teile (über die Stufenkante) dunkler. */
+const runnerCloth=custom('stoff','#8a2a22',(u,v,w,n)=>{const e=Math.abs(u-STAIR.xc);
+ const k=(.93+.1*fbm3(u*.6,v*.6,w*.6,3))*(n&&n[2]<.9?.8:1);return e>2.45&&e<2.95?{k:k*1.05,ramp:goldRamp}:{k};},{spec:.03,shine:4});
+/** Abgerundetes Rechteck in x/y (Eckradius rc), in z von z0 bis z1 extrudiert. */
+const roundRect=(x0,x1,y0,y1,rc,z0,z1)=>(x,y,z)=>{const cx=(x0+x1)/2,cy=(y0+y1)/2,qx=Math.abs(x-cx)-(x1-x0)/2+rc,qy=Math.abs(y-cy)-(y1-y0)/2+rc;
+ const d2=Math.hypot(Math.max(qx,0),Math.max(qy,0))+Math.min(Math.max(qx,qy),0)-rc,dz=Math.abs(z-(z0+z1)/2)-(z1-z0)/2;
+ return Math.min(Math.max(d2,dz),0)+Math.hypot(Math.max(d2,0),Math.max(dz,0));};
+/** Achsparalleler Quader von Ecke zu Ecke (Hauskoordinaten), Kanten mit Radius r gerundet. */
+const cuboid=(x0,x1,y0,y1,z0,z1,r=0)=>at((x0+x1)/2,(y0+y1)/2,(z0+z1)/2,box((x1-x0)/2,(y1-y0)/2,(z1-z0)/2,r));
+/** Teil je Stufe; ausgewertet nur für die Stufen um y (sie liegen 4 E auseinander, Nachbarn genügen). */
+const perStep=part=>{const parts=Array.from({length:STAIR.N},(_,i)=>part(i));
+ return (x,y,z)=>{const k=stepAt(y);let d=Infinity;for(let i=Math.max(0,k-1);i<=Math.min(STAIR.N-1,k+1);i++){const v=parts[i](x,y,z);if(v<d)d=v;}return d;};};
 
-/** Holztreppe: 13 Stufen, steigt nach Norden (−y); links Wange, rechts Wange mit Handlauf und zwei Pfosten. */
+// Trittstufen: knapper Überstand nach Süden, damit die Setzstufe darunter als dunkles Band sichtbar bleibt, hinten unter die nächste Setzstufe geschoben.
+// Stufe 0 ist die Antrittsstufe: breiter, im Südosten um den Antrittspfosten gerundet. Stufe 12 ist der Austritt (Geschossboden).
+const NOSE=.15,THICK=.6;
+const tread=i=>i===0?roundRect(STAIR.xl-.4,21.85,stepY(0)-STAIR.D-.3,stepY(0)+NOSE,2.1,stepZ(0)-THICK,stepZ(0))
+ :i===STAIR.N-1?cuboid(STAIR.xl-.4,STAIR.xr+.4,102.9,stepY(i)+NOSE,stepZ(i)-2.4,stepZ(i),.25)
+ :cuboid(STAIR.xl-.4,STAIR.xr+.4,stepY(i)-STAIR.D-.3,stepY(i)+NOSE,stepZ(i)-THICK,stepZ(i),.25);
+const riser=i=>i===0?roundRect(STAIR.xl-.4,21.2,stepY(0)-STAIR.D+.4,stepY(0),1.6,0,stepZ(0)-THICK+.05)
+ :cuboid(STAIR.xl-.4,STAIR.xr+.4,stepY(i)-.7,stepY(i),stepZ(i)-STAIR.R-.1,stepZ(i)-THICK+.05);
+// Läufer: liegt auf der Trittfläche und fällt über die Stufenkante senkrecht bis auf die Stufe darunter.
+const runner=i=>{const a=STAIR.xc-STAIR.run,b=STAIR.xc+STAIR.run,yf=stepY(i)+NOSE;
+ return union(cuboid(a,b,i===STAIR.N-1?stepY(i)-2.6:stepY(i)-STAIR.D,yf+.3,stepZ(i),stepZ(i)+.3,.12),cuboid(a,b,yf,yf+.32,i?stepZ(i)-STAIR.R:0,stepZ(i)+.3,.12));};
+/** Wange entlang der Treppe (Mitte xc, halbe Stärke hw), Oberkante `over` über der Kantenlinie, von y0 bis y1. */
+const stringer=(xc,hw,over,y0,y1)=>{const s=Math.hypot(1,STAIR.R/STAIR.D);
+ return (x,y,z)=>Math.max(Math.abs(x-xc)-hw,(z-lineZ(y)-over)/s,Math.abs(y-(y0+y1)/2)-(y1-y0)/2,-z,z-STAIR.floor-.2);};
+/** Pfosten mit Deckplatte, Hals und Kugelkopf (halbe Seite hw, Schaft h über z0). */
+const newel=(x,y,z0,h,hw)=>union(at(x,y,0,block(hw,hw,z0-.1,z0+h,.25)),at(x,y,z0+h+.35,box(hw+.25,hw+.25,.35,.15)),
+ at(x,y,z0+h+.7,cylZ(hw*.55,0,.7)),at(x,y,z0+h+1.3+hw,ellipsoid(hw*1.05,hw*1.05,hw*1.05)));
+/** Gedrechselte Docke von z0 bis z1. */
+const baluster=(x,y,z0,z1)=>{const m=(z0+z1)/2;return union(at(x,y,0,cylZ(.36,z0,z1)),at(x,y,m-.6,ellipsoid(.8,.8,1.6)),at(x,y,z1-1.4,ellipsoid(.5,.5,.5)),at(x,y,z0+1,ellipsoid(.5,.5,.45)));};
+
+/** Bild → Hauskoordinaten: Bildmitte liegt bei (13, cy), der eigene Geschossboden bei Bild-z zd (der Raycaster sieht von oben
+ * nur bis z≈−4), `base` = Höhe dieses Bodens über dem Erdgeschoss. `shear` scheert einen Körper, `tex` liefert wahre Koordinaten. */
+function stairView(cy,zd,base){const SH=STAIR.SH,L=Math.hypot(1,SH)+.02,w=(X,Y,Z)=>[X+13,Y+cy+SH*(Z-zd),Z-zd+base];
+ return {shear:f=>(X,Y,Z)=>{const [x,y,z]=w(X,Y,Z);return f(x,y,z)/L;},tex:t=>(X,Y,Z)=>{const p=w(X,Y,Z);return t?t(...p):p;}};}
+
+/** Holztreppe im Erdgeschoss: steigt nach Norden, Wange an der Westwand, Ostseite mit Docken, Handlauf, Antritts- und Austrittspfosten,
+ * roter Läufer mit Messingstangen, Antrittsstufe breiter und gerundet. Bild 18 × 76 E: Unterkante = Antritt (y 156), oben y 80. */
 function treppeHolz(){
- const N=13,yS=27.6,yN=-24,D=(yS-yN)/N,R=2.4,xl=-7.25,xr=5.75;
- const topAt=y=>R*clamp((yS-y)/D,0,N);                // Stufenhöhe unter y (Rampe für Wangen und Handlauf)
- // Nach oben (Norden) heller; gerundete Stufenkante vorn (Normale nach Süden) als Lichtkante, hintere Rundung dunkler.
- const light=(u,v,w,n)=>(.58+.5*clamp((yS-v)/(yS-yN),0,1))*(n&&n[2]<.93?(n[1]>.2?1.24:n[1]<-.2?.74:1):1);
- const steps=[];
- for(let i=0;i<N;i++){const yc=yS-D*(i+.5),zt=R*(i+1),cx=(xl+xr)/2,hx=(xr-xl)/2+.15;
-  steps.push({f:at(cx,yc,0,block(hx,D/2+.03,0,zt,.38)),mat:graded(stairWood,light),tex:(x,y,z)=>[x+i*6.1,y,z],group:'stufe'+(i%2),b:[cx,yc,zt/2,Math.hypot(hx,D/2,zt/2)+.3]});}
- const slope=Math.hypot(1,R/D);
- const stringer=(xc,hw,rise)=>(x,y,z)=>Math.max(Math.abs(x-xc)-hw,(z-topAt(y)-rise)/slope,Math.abs(y-(yS+yN)/2+.1)-(yS-yN)/2-.1,-z);
- const railZ=y=>topAt(y)+12;
+ const v=stairView(118,0,0),S=v.shear,top=STAIR.N-1,yNewel=stepY(0)-1.9,yTop=104.6;
+ const lit=(u,vv,w)=>.9+.14*clamp(w/STAIR.floor,0,1);                  // oben etwas heller (Licht aus dem Obergeschoss)
+ const litT=(u,vv,w,n)=>lit(u,vv,w)*treadShade(vv,n);
  return {solids:[
-  ...steps,
-  // Austritt oben (Streifen nördlich der Stufen)
-  {f:at(-1.5,-25.85,0,block(7.25,1.9,0,R*N+1.2,.35)),mat:graded(stairWood,light),tex:(x,y,z)=>[x+3.3,y,z],group:'austritt'},
-  {f:stringer(-8,.75,1.3),mat:graded(railWood,light),group:'wange'},
-  {f:stringer(7.25,1.2,1.1),mat:graded(railWood,light),group:'wange'},
-  {f:capsule([7.25,23.6,railZ(23.6)],[7.25,-23.4,railZ(-23.4)],.8),mat:graded(railWood,light),group:'handlauf'},
-  {f:union(at(7.25,25.6,0,block(1.05,1.05,0,railZ(25.6)+1,.2)),at(7.25,25.6,railZ(25.6)+2,ellipsoid(1.25,1.25,1.25)),
-   at(7.25,-25.8,0,block(1.05,1.05,0,railZ(-25.8)+1,.2)),at(7.25,-25.8,railZ(-25.8)+2,ellipsoid(1.25,1.25,1.25))),mat:graded(railWood,light),group:'pfosten'},
+  {f:S(perStep(tread)),mat:graded(stairWood,litT),tex:v.tex(),group:'tritt'},
+  {f:S(perStep(riser)),mat:graded(riserWood,(u,vv,w)=>lit(u,vv,w)*.8),tex:v.tex(),group:'setz'},
+  {f:S(perStep(runner)),mat:runnerCloth,tex:v.tex(),group:'laeufer'},
+  // Messingkante an der Antrittsstufe: markiert den Einstieg
+  {f:S(capsule([STAIR.xl,stepY(0)+NOSE-.12,stepZ(0)-.2],[19.6,stepY(0)+NOSE-.12,stepZ(0)-.2],.32)),mat:brassEdge,tex:v.tex(),group:'kante'},
+  // Wechsel: Kante der Obergeschossdecke über dem Austritt
+  {f:S(cuboid(4,22,101.2,102.95,27.4,31.6,.2)),mat:darkWood,tex:v.tex(),group:'wechsel'},
+  {f:S(stringer(4.6,.6,2.4,103,stepY(0)+.2)),mat:graded(frameWood,lit),tex:v.tex(),group:'wange-w'},
+  {f:S(stringer(STAIR.xe,.8,1.2,103,stepY(0)-2)),mat:graded(frameWood,lit),tex:v.tex(),group:'wange-o'},
+  {f:S(union(...Array.from({length:11},(_,k)=>{const y=stepY(k+1)-STAIR.D/2;return baluster(STAIR.xe,y,lineZ(y)+1.1,railZ(y)-.5);}))),mat:railWood,tex:v.tex(),group:'docken'},
+  {f:S(capsule([STAIR.xe,yNewel-1,railZ(yNewel-1)],[STAIR.xe,yTop+1,railZ(yTop+1)],.75)),mat:railWood,tex:v.tex(),group:'handlauf'},
+  {f:S(union(newel(STAIR.xe,yNewel,0,railZ(yNewel)+1.2,1.15),newel(STAIR.xe,yTop,stepZ(top),railZ(yTop)-stepZ(top)+.8,1))),mat:postWood,tex:v.tex(),group:'pfosten'},
  ]};}
 
-/** Treppenloch im Obergeschoss: Rahmen ringsum, Brüstung im Norden, Geländer im Osten (Nordost bleibt als Zugang frei),
- * darunter die obersten Stufen, die nach Süden in die Tiefe führen. Scherung: wahre Höhe z erscheint um SH·z nach Norden. */
+/** Treppenloch im Obergeschoss: dieselbe Treppe von oben, nach Süden in die Tiefe; Einfassung ringsum, Brüstung im Norden,
+ * Geländer im Osten erst südlich von y 126 (oben im Nordosten ist der Zugang frei) und im Süden. Bild 18 × 62 E (y 94–156). */
 function treppenloch(){
- // Der Raycaster sieht von oben nur bis z≈−4: das Obergeschoss liegt deshalb bei z=Z0, gebaut wird relativ dazu.
- const SH=.5,Z0=40,shear=f=>(x,y,z)=>f(x,y+SH*(z-Z0),z-Z0)/1.25,trueTex=(x,y,z)=>[x,y+SH*(z-Z0),z-Z0];
- // Je tiefer, desto dunkler; Setzstufen (Normale nach Süden gekippt) dunkler als Trittflächen; Seiten des Schachts verschattet.
- const deep=(u,v,w,n)=>(w<0?clamp(1+w/24,.25,1):1)*(n&&n[1]>.5?.7:1)*(w<-.5?1-.4*clamp((Math.abs(u)-4.2)/3,0,1):1);
- const hx=7.2,yN=-22,yS=28.3,R=2.4,D=4;
- const steps=[];
- for(let i=0;i<11;i++){const yc=yN+D*(i+.5),zt=-R*(i+1);
-  steps.push({f:shear(at(0,yc,0,block(8,D/2+.03,zt-6,zt,.3))),mat:graded(stairWood,(u,v,w,n)=>deep(u-i*6.1,v,w,n)),tex:(x,y,z)=>{const [a,b,c]=trueTex(x,y,z);return [a+i*6.1,b,c];},group:'stufe'+(i%2),noShadow:true});}
- const frame=subtract(at(0,0,-.3,box(8.75,29.75,.9,.2)),at(0,(yN+yS)/2,0,box(hx,(yS-yN)/2,3)));
- const baluster=(x,y)=>union(at(x,y,0,cylZ(.36,.6,10)),at(x,y,4.6,ellipsoid(.62,.62,1.7)),at(x,y,8.4,ellipsoid(.5,.5,.6)));
+ const F=STAIR.floor,v=stairView(125,40,F),S=v.shear;
+ // Je tiefer, desto dunkler; zu den Schachtseiten hin zusätzlich verschattet.
+ const deep=(u,vv,w)=>{const d=w-F;return d<-.1?clamp(1+d/21,.2,1)*(1-.3*clamp((Math.abs(u-STAIR.xc)-5.5)/2.5,0,1)):1;};
+ const zr=F+12,frame=subtract(cuboid(4,22,94,156,F-1.2,F+.25,.15),cuboid(4.8,20.2,102.9,155,F-3,F+2));
  return {solids:[
-  ...steps,
-  {f:shear(at(0,yN-.5,-2,box(8,.5,2.2))),mat:graded(frameWood,deep),tex:trueTex,group:'schacht'},
-  {f:shear(frame),mat:frameWood,tex:trueTex,group:'rahmen'},
-  // Brüstung im Norden: Pfosten mit Kugel, Docken, Hand- und Fußleiste
-  {f:shear(union(at(0,-23,10.2,box(7.7,.55,.45,.2)),at(0,-23,1.05,box(7.7,.45,.4,.15)),...[-5.1,-2.55,0,2.55,5.1].map(x=>baluster(x,-23)))),mat:railWood,tex:trueTex,group:'bruestung'},
-  {f:shear(union(at(-7.9,-23,0,block(.75,.75,0,10.6,.15)),at(-7.9,-23,11.3,ellipsoid(.8,.8,.8)),at(7.9,-23,0,block(.75,.75,0,10.6,.15)),at(7.9,-23,11.3,ellipsoid(.8,.8,.8)))),mat:railWood,tex:trueTex,group:'pfosten'},
-  // Geländer im Osten (Süden bis Mitte), Nordost frei als Zugang zur obersten Stufe
-  {f:shear(union(capsule([7.95,-5.5,10.2],[7.95,28.4,10.2],.55),...[-2.4,1.8,6,10.2,14.4,18.6,22.8].map(y=>at(7.95,y,0,cylZ(.34,.6,10))),at(7.95,28.4,1,box(.5,.5,.4)))),mat:railWood,tex:trueTex,group:'gelaender'},
-  {f:shear(union(at(7.95,-6,0,block(.75,.75,0,10.6,.15)),at(7.95,-6,11.3,ellipsoid(.8,.8,.8)),at(7.95,28.6,0,block(.75,.75,0,10.6,.15)),at(7.95,28.6,11.3,ellipsoid(.8,.8,.8)))),mat:railWood,tex:trueTex,group:'pfosten'},
+  {f:S(perStep(tread)),mat:graded(stairWood,(u,vv,w,n)=>deep(u,vv,w)*treadShade(vv,n)),tex:v.tex(),group:'tritt',noShadow:true},
+  {f:S(perStep(riser)),mat:graded(riserWood,(u,vv,w)=>deep(u,vv,w)*.8),tex:v.tex(),group:'setz',noShadow:true},
+  {f:S(perStep(runner)),mat:graded(runnerCloth,deep),tex:v.tex(),group:'laeufer',noShadow:true},
+  {f:S(union(stringer(4.6,.6,2.4,103,stepY(0)+.2),stringer(STAIR.xe,.8,1.2,103,stepY(0)-2))),mat:graded(frameWood,deep),tex:v.tex(),group:'wange',noShadow:true},
+  // Boden des Erdgeschosses unter dem Loch (fast schwarz in der Tiefe)
+  {f:S(cuboid(4,22,150,200,-1,0)),mat:graded(darkWood,deep),tex:v.tex(),group:'grund',noShadow:true},
+  {f:S(frame),mat:frameWood,tex:v.tex(),group:'rahmen'},
+  // Brüstung im Norden: Hand- und Fußleiste, Docken
+  {f:S(union(cuboid(5,21.2,101.9,103.1,zr-.9,zr,.2),cuboid(5,21.2,102.05,102.95,F+.2,F+1,.15),...[7.7,10.4,13.1,15.8,18.5].map(x=>baluster(x,102.5,F+1,zr-.9)))),mat:railWood,tex:v.tex(),group:'bruestung'},
+  // Geländer im Osten (y 126–155) und im Süden
+  {f:S(union(cuboid(20.55,21.65,126,155.2,zr-.9,zr,.2),cuboid(5,21.2,154.5,155.6,zr-.9,zr,.2),
+   ...[130.3,134.6,138.9,143.2,147.5,151.6].map(y=>baluster(21.1,y,F+.2,zr-.9)),...[8.2,11.4,14.6,17.8].map(x=>baluster(x,155.05,F+.2,zr-.9)))),mat:railWood,tex:v.tex(),group:'gelaender'},
+  {f:S(union(newel(5.05,102.5,F,11.4,.8),newel(20.95,102.5,F,11.4,.8),newel(21.1,126,F,11.4,.85),newel(21.1,155.1,F,11.4,.85),newel(5.05,155.1,F,11.4,.8))),mat:postWood,tex:v.tex(),group:'pfosten'},
  ]};}
 
 export const MODELS={
@@ -184,6 +231,7 @@ export const MODELS={
  regentonne:{height:16,frames:6,fps:6,build:regentonne},
  'kistenstapel-hof':{height:22,build:kistenstapel},
  fahrrad:{height:14,build:fahrrad},
- 'treppe-holz':{view:'top',w:18,h:56,build:treppeHolz},
- treppenloch:{view:'top',w:18,h:60,build:treppenloch},
+ // Bildhöhen passend zu paintStairs (bude-house-art.js): Erdgeschoss 52 + 24 E Überstand nach Norden, Obergeschoss 52 + 10 E.
+ 'treppe-holz':{view:'top',w:18,h:76,build:treppeHolz},
+ treppenloch:{view:'top',w:18,h:62,build:treppenloch},
 };

@@ -19,8 +19,9 @@ const fill=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
 /** Treppe (Erdgeschoss: Stufen) beziehungsweise Treppenloch mit Geländer (Obergeschoss). */
 function paintStairs(c,f,level){
  const s=f.stairs;if(!s)return;const w=s.maxX-s.minX,d=s.maxY-s.minY,steps=Math.max(4,Math.round((d>w?d:w)/6)),long=d>w;
- // Baukasten-Sprite (Holztreppe unten, Treppenloch mit Geländer oben), sonst Platzhalter.
- if(level?drawKitFill(c,'treppenloch',s.minX,s.minY-8,w,d+8):drawKitFill(c,'treppe-holz',s.minX,s.minY-4,w,d+4))return;
+ // Baukasten-Sprite (Holztreppe unten, Treppenloch mit Geländer oben), sonst Platzhalter. Unterkante und Breite = Treppenfeld;
+ // oben der Überstand der geschert gerenderten Höhe (Modellhöhen in tools/sprite-forge/models/aussen.mjs: 52+24 und 52+10 E).
+ if(level?drawKitFill(c,'treppenloch',s.minX,s.minY-10,w,d+10):drawKitFill(c,'treppe-holz',s.minX,s.minY-24,w,d+24))return;
  if(level){fill(c,'#1b1410',s.minX,s.minY,w,d);for(let i=1;i<4;i++)fill(c,'#2c2119',long?s.minX:s.minX+w*i/4,long?s.minY+d*i/4:s.minY,long?w:2,long?2:d);
   // Geländer an der offenen Seite und am oberen Ende
   fill(c,INK,s.maxX,s.minY-10,3,d+10);fill(c,'#7b5634',s.maxX,s.minY-10,2,d+8);fill(c,'#7b5634',s.minX,s.minY-10,w+2,2);for(let y=s.minY;y<=s.maxY;y+=10)fill(c,'#7b5634',s.maxX,y-8,2,8);}
