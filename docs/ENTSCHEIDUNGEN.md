@@ -735,3 +735,24 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Folgen.** Die Startreihe bringt rund 1 420 EP, die Aushänge 740 – zusammen mit Kapitel 1 und den Nebenaufträgen steigt man schneller auf als bisher. Bewusst so gelassen, bis ein Playtest zeigt, ob Kapitel 2 dadurch zu leicht wird.
 
 **Verworfen.** *Mehr Einträge in `world.quests`* – verschiebt über den gemeinsamen Zufallsstrom die halbe Welt und bricht die Festlegung „zwei Aufträge je Treffpunkt“. *Kill-Credit nur im Gebiet* – WoW zählt Arten, nicht Orte; das Gebiet ist Hilfe, keine Pflicht. *Drop-Materialien aus den Beutetabellen wiederverwenden* – dann zählten alte Vorräte und Verkäufe würden Aufträge leeren. *Spawn-Übersicht für alle Feldtiere* – deren Zellen entstehen erst in Spielernähe; die Karte zeigt die Gebiete, die das Spiel wirklich garantiert.
+
+## E-56 · Wertpunkte aus Gegenstandsstufe und Güte: kleine Zahlen am Anfang (23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Die Gearstats sollen anfangs geringer sein. Ein Item hat einen Gegenstandslevel, dieser bestimmt zusammen mit der Rarität die Eigenschaften. Am Anfang hat ein Teil 1–2 Statpunkte, skaliert dann mit dem Itemlevel. Für so Level-10-Gear können es dann ca. 10 Statpunkte sein.“
+
+**Befund.** Ein gewürfeltes Stufe-1-Teil trug rund 17 Wertpunkte (Hauptwert, 45 % Standfestigkeit, 60 % Zweitwert) plus Dicke Haut in zwei- bis fünffacher Höhe, ein Stufe-10-Teil rund 50. Die „Gegenstandsstufe“ war eine eigene Zahl (5 × Stufe + Güte-Aufschlag). Ausrüstung dominierte die Stärke: fünf Teile gaben auf Stufe 10 über +100 % Schaden; der Balance-Bericht zeigte 51 triviale Kämpfe.
+
+**Entschieden.**
+1. **Gegenstandsstufe = Fundstufe.** Zusammen mit der Güte bestimmt sie alle Werte. Der Tooltip zeigt sie an jeder Ausrüstung.
+2. **Punkte = (Gegenstandsstufe + 1) × 0,9 × Güte**, gerundet, mindestens 1 (`itemPoints`, content/balance.js). Güte: gewöhnlich 0,7 · ungewöhnlich 1 · selten 1,3 · episch 1,6; Dorflegenden ×1,25. Stufe 1: 1/2/2/3 · Stufe 10: 7/10/13/16 · Stufe 30: 20/28/36/45. Alle fünf Werte zählen dazu, auch Dicke Haut.
+3. **Ganzzahlige Verteilung** (`splitPoints`, größter Rest): Hauptwert 45 %, Standfestigkeit 25 %, Zweitwert 30 %; Rüstungsplätze geben vorab ihren Anteil als Dicke Haut (Schild 50 %, Brust/Beine 35 %, Kopf/Schultern 25 %, Rest 20 %). Ein Teil mit 1 Punkt trägt nur seinen Hauptwert (bzw. Dicke Haut).
+4. **Zusätze:** je 10 % der Punkte, mindestens 1 Punkt, ganzzahlig auf ihre Werte verteilt.
+5. **Handgebaute Teile** auf dasselbe Maß umgerechnet, das Verhältnis ihrer Werte bleibt (alte Dicke Haut zählte 1/3). Die Schema-Prüfung misst gegen `itemPoints`.
+6. **Kurse nachgezogen, damit ein Punkt etwas wert ist, ohne die Stärke ohne Ausrüstung zu verschieben:** Grundwerte halbiert (5 + 1 je Stufe statt 10 + 2), dafür Wumms 2,4 % Schaden je Punkt, Bastelgrips ×2; Standfestigkeit 30 Leben je Punkt; Dicke Haut k = 5 + 5 je Stufe (voller Satz ≈ 25–30 % auf jeder Stufe). Der Verkaufswert bleibt am alten Wertmaß, damit der Kiosk-Handel (E-34) stabil bleibt.
+7. **Kurse für Glückstreffer, Tempo und Dicke Haut steigen mit der Charakterstufe** (Nutzer-Nachtrag: „Ein Level-1-Charakter braucht weniger Punkte für 1 % Crit als einer auf Level 20.“): k = Grundwert + Zuschlag × Stufe (`ratingK`) – Glückstreffer 60 + 20 × Stufe, Tempo 30 + 10 × Stufe, Dicke Haut 5 + 5 × Stufe. Ein Punkt Taktgefühl gibt auf Stufe 1 1,25 % Glückstreffer-Chance, auf Stufe 20 0,22 %. Weil die Grundwerte mit der Stufe wachsen, bleibt die Chance ohne Ausrüstung über alle Stufen bei 9–11 %.
+
+**Folgen.** Vorhandene Teile zeigen beim Laden die neuen, kleinen Werte (Spielstand trägt nur Rohdaten, E-40). Balance-Bericht gegenüber vorher: triviale Kämpfe 51 → 30, zu schnell 24 → 21, zäh 4 → 6, stirbt immer 1 → 2, stirbt manchmal 2 → 5; Feldkämpfe im Median ×1,02–1,06. Bosse dauern auf eigener Stufe länger: Dieter 13–16 s (vorher 9–13, teils „zu schnell“), Bärbel 19–26 s, **Kevin 37–44 s** (vorher 28–30, schon damals zäh) und stirbt gegen Sperrmüll-Sigi auf Stufe 5 manchmal. Tode ansonsten nur bei Bossen zwei Stufen über dem Helden.
+
+**Offen.** Kevin gegen Bosse (Balance-Rolle): Klassen-Anpassung oder Boss-Leben über `content/tuning.js` – nicht über die allgemeinen Kurse, die würden die anderen Klassen verschieben.
+
+**Verworfen.** *Nur Anzeige verkleinern (Werte ÷ Faktor, Kurse × Faktor)* – ändert nichts an der Stärke, der Auftrag will geringere Werte am Anfang. *Kurse unverändert lassen* – dann wäre ein Ausrüstungspunkt fast nichts wert (Todesfälle im Bericht 1 → 7). *Dicke Haut weiter dreifach neben den Punkten* – dann stimmt die Zahl „Punkte je Teil“ nicht mehr.

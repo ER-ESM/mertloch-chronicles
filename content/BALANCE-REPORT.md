@@ -6,119 +6,113 @@ Lesart: **Zeit bis zum Kill / verlorenes Leben**. ☠ = stirbt in allen Läufen,
 
 | Gegner (St.) | Spielerstufe | Dieter | Bärbel | Kevin |
 |---|---:|---|---|---|
-| Pfanddachs (1) | 1 | 3 s / −6 % ⚡ | 4.9 s / −9 % | 5.4 s / −19 % |
-| Pfanddachs (1) | 3 | 1.5 s / −2 % | 4.1 s / −1 % | 2.5 s / −0 % |
+| Pfanddachs (1) | 1 | 2.9 s / −7 % ⚡ | 4.7 s / −11 % | 5.6 s / −18 % |
+| Pfanddachs (1) | 3 | 1.4 s / −2 % | 4.4 s / −2 % | 2.4 s / −0 % |
 | Pfanddachs (1) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Pfanddachs (1) | 10 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Pfanddachs (1) | 15 | 2.4 s / −1 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Grillgut-Gans * (1) | 1 | 3.5 s / −6 % ⚡ | 5.3 s / −15 % | 6.1 s / −17 % |
-| Grillgut-Gans * (1) | 3 | 1.5 s / −2 % | 4.2 s / −2 % | 2.5 s / −2 % |
+| Pfanddachs (1) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfanddachs (1) | 15 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Grillgut-Gans * (1) | 1 | 3.7 s / −8 % ⚡ | 5.4 s / −19 % | 6.4 s / −26 % |
+| Grillgut-Gans * (1) | 3 | 1.4 s / −1 % | 4.6 s / −7 % | 2.4 s / −2 % |
 | Grillgut-Gans * (1) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Grillgut-Gans * (1) | 10 | 2.6 s / −0 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Grillgut-Gans * (1) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Pfandkeiler * (2) | 1 | 4.4 s / −14 % | 6.3 s / −24 % | 7.6 s / −27 % |
-| Pfandkeiler * (2) | 2 | 4.5 s / −9 % | 4.9 s / −9 % | 5.4 s / −14 % |
-| Pfandkeiler * (2) | 3 | 1.5 s / −2 % | 5 s / −11 % | 2.5 s / −4 % |
-| Pfandkeiler * (2) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Pfandkeiler * (2) | 10 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Pfandkeiler * (2) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Ruhewart auf Streife * (3) | 1 | 6.4 s / −22 % | 8.4 s / −28 % | 9.7 s / −30 % |
-| Ruhewart auf Streife * (3) | 3 | 1.5 s / −2 % ⚡ | 6.1 s / −16 % | 2.5 s / −4 % ⚡ |
-| Ruhewart auf Streife * (3) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Ruhewart auf Streife * (3) | 10 | 2.6 s / −0 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Ruhewart auf Streife * (3) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Leergut-Rabe * (1) | 1 | 3.4 s / −5 % ⚡ | 5.3 s / −14 % | 5.7 s / −14 % |
-| Leergut-Rabe * (1) | 3 | 1.5 s / −2 % | 4.1 s / −2 % | 2.5 s / −2 % |
+| Grillgut-Gans * (1) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Grillgut-Gans * (1) | 15 | 2.7 s / −0 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfandkeiler * (2) | 1 | 4.6 s / −15 % | 6.4 s / −29 % | 7.2 s / −29 % |
+| Pfandkeiler * (2) | 2 | 4.6 s / −13 % | 5.5 s / −19 % | 6.3 s / −22 % |
+| Pfandkeiler * (2) | 3 | 1.4 s / −2 % | 5.2 s / −18 % | 2.4 s / −5 % |
+| Pfandkeiler * (2) | 6 | 2.7 s / −2 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfandkeiler * (2) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfandkeiler * (2) | 15 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Ruhewart auf Streife * (3) | 1 | 6.5 s / −25 % | 8.4 s / −32 % | 9.6 s / −34 % |
+| Ruhewart auf Streife * (3) | 3 | 1.4 s / −2 % ⚡ | 6.9 s / −19 % | 2.4 s / −3 % ⚡ |
+| Ruhewart auf Streife * (3) | 6 | 2.7 s / −2 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Ruhewart auf Streife * (3) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Ruhewart auf Streife * (3) | 15 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Leergut-Rabe * (1) | 1 | 3.3 s / −7 % ⚡ | 5 s / −17 % | 6.2 s / −25 % |
+| Leergut-Rabe * (1) | 3 | 1.4 s / −2 % | 4.2 s / −2 % | 2.4 s / −2 % |
 | Leergut-Rabe * (1) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Leergut-Rabe * (1) | 10 | 2.6 s / −0 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Leergut-Rabe * (1) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Pfandfuchs * (2) | 1 | 3.9 s / −12 % | 5.3 s / −15 % | 6.2 s / −18 % |
-| Pfandfuchs * (2) | 2 | 4.2 s / −11 % | 3.9 s / −10 % ⚡ | 4.9 s / −10 % |
-| Pfandfuchs * (2) | 3 | 1.5 s / −2 % | 4.2 s / −8 % | 2.5 s / −3 % |
-| Pfandfuchs * (2) | 6 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
-| Pfandfuchs * (2) | 10 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Pfandfuchs * (2) | 15 | 2.4 s / −1 % · | 3.5 s / −1 % | 3.5 s / −0 % |
-| Festzelt-Schnorrer * (2) | 1 | 5.3 s / −14 % | 7.3 s / −11 % | 8.4 s / −12 % |
-| Festzelt-Schnorrer * (2) | 2 | 5.3 s / −11 % | 5.4 s / −7 % | 6.5 s / −8 % |
-| Festzelt-Schnorrer * (2) | 3 | 1.5 s / −2 % | 5.1 s / −3 % | 2.5 s / −5 % |
-| Festzelt-Schnorrer * (2) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Festzelt-Schnorrer * (2) | 10 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Festzelt-Schnorrer * (2) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Ordnungsamt-Praktikant * (3) | 1 | 7.4 s / −23 % | 10.1 s / −31 % | 11.2 s / −32 % |
-| Ordnungsamt-Praktikant * (3) | 3 | 1.5 s / −2 % ⚡ | 7.4 s / −18 % | 2.5 s / −7 % ⚡ |
-| Ordnungsamt-Praktikant * (3) | 6 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
-| Ordnungsamt-Praktikant * (3) | 10 | 2.6 s / −0 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Ordnungsamt-Praktikant * (3) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Kegelbruder aus Kalt * (3) | 1 | 6.8 s / −22 % | 9.2 s / −24 % | 10.4 s / −32 % |
-| Kegelbruder aus Kalt * (3) | 3 | 1.5 s / −2 % ⚡ | 6.6 s / −14 % | 2.5 s / −0 % ⚡ |
-| Kegelbruder aus Kalt * (3) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Kegelbruder aus Kalt * (3) | 10 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Kegelbruder aus Kalt * (3) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Junggeselle im Game-Over-Shirt * (4) | 3 | 1.5 s / −2 % | 8.6 s / −20 % | 2.5 s / −0 % |
-| Junggeselle im Game-Over-Shirt * (4) | 4 | 1.5 s / −2 % ⚡ | 2.5 s / −3 % ⚡ | 2.5 s / −0 % ⚡ |
-| Junggeselle im Game-Over-Shirt * (4) | 6 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Junggeselle im Game-Over-Shirt * (4) | 10 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Junggeselle im Game-Over-Shirt * (4) | 15 | 2.4 s / −0 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Borsten-Bruno * (4) | 3 | 3.8 s / −15 % | 15.8 s / −45 % | 9.3 s / −28 % |
-| Borsten-Bruno * (4) | 4 | 2.6 s / −7 % ⚡ | 9.4 s / −31 % | 8.4 s / −23 % |
-| Borsten-Bruno * (4) | 6 | 2.7 s / −3 % | 5.5 s / −9 % | 4.6 s / −0 % |
-| Borsten-Bruno * (4) | 10 | 2.6 s / −2 % | 3.7 s / −2 % | 3.7 s / −0 % |
-| Borsten-Bruno * (4) | 15 | 2.4 s / −1 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Oberpraktikant Olaf * (4) | 3 | 4.6 s / −12 % | 15.2 s / −36 % | 9.3 s / −16 % |
-| Oberpraktikant Olaf * (4) | 4 | 3.6 s / −10 % ⚡ | 9.4 s / −16 % | 9 s / −15 % |
-| Oberpraktikant Olaf * (4) | 6 | 2.7 s / −2 % | 5.2 s / −2 % | 5.1 s / −0 % |
-| Oberpraktikant Olaf * (4) | 10 | 2.6 s / −1 % | 3.7 s / −1 % | 3.7 s / −0 % |
-| Oberpraktikant Olaf * (4) | 15 | 2.4 s / −0 % · | 3.5 s / −1 % | 3.5 s / −0 % |
-| Horst Nüchternmann (4) | 3 | 11.3 s / −30 % | 35.2 s / −54 % | 24.7 s / −61 % |
-| Horst Nüchternmann (4) | 4 | 9.3 s / −23 % ⚡ | 15.6 s / −34 % | 15.7 s / −28 % |
-| Horst Nüchternmann (4) | 6 | 9 s / −9 % | 11.1 s / −10 % | 16.2 s / −9 % |
-| Horst Nüchternmann (4) | 10 | 5.4 s / −3 % | 9.9 s / −6 % | 9.9 s / −2 % |
-| Horst Nüchternmann (4) | 15 | 2.4 s / −1 % · | 5.3 s / −1 % | 6 s / −0 % |
-| Sperrmüll-Sigi (5) | 3 | 12.7 s / −31 % | 42.2 s / −79 % ⚠ | 29.2 s / −71 % |
-| Sperrmüll-Sigi (5) | 5 | 14 s / −20 % | 18.5 s / −28 % | 29.3 s / −37 % ⏳ |
-| Sperrmüll-Sigi (5) | 6 | 9.4 s / −6 % | 17.6 s / −22 % | 16.8 s / −12 % |
-| Sperrmüll-Sigi (5) | 10 | 8.7 s / −5 % | 9.9 s / −2 % | 9.9 s / −0 % |
-| Sperrmüll-Sigi (5) | 15 | 3.3 s / −1 % | 6.8 s / −2 % | 6.6 s / −0 % |
-| Kegelkönig Klaus * (6) | 6 | 13.3 s / −14 % | 22.9 s / −29 % | 28.2 s / −25 % ⏳ |
-| Kegelkönig Klaus * (6) | 10 | 8.7 s / −4 % | 14 s / −10 % | 15.2 s / −4 % |
-| Kegelkönig Klaus * (6) | 15 | 5.7 s / −2 % | 9.8 s / −3 % | 9.4 s / −0 % |
-| Trauzeuge Timo * (7) | 6 | 13.4 s / −13 % | 24.3 s / −33 % | 30.3 s / −33 % |
-| Trauzeuge Timo * (7) | 7 | 13.2 s / −12 % | 19.6 s / −27 % | 28.8 s / −27 % ⏳ |
-| Trauzeuge Timo * (7) | 10 | 9.5 s / −7 % | 16.3 s / −13 % | 15.6 s / −10 % |
-| Trauzeuge Timo * (7) | 15 | 6.8 s / −1 % | 9.8 s / −4 % | 12.2 s / −1 % |
-| Gisela Gießkanne (6) | 6 | 10.7 s / −12 % | 18.1 s / −22 % | 24.2 s / −26 % |
-| Gisela Gießkanne (6) | 10 | 8.7 s / −6 % | 11 s / −6 % | 13.7 s / −6 % |
-| Gisela Gießkanne (6) | 15 | 4.2 s / −2 % | 9.2 s / −4 % | 9 s / −1 % |
-| Der Pfandautomat 3000 (9) | 9 | 10 s / −6 % | 17.5 s / −18 % | 19.9 s / −12 % |
-| Der Pfandautomat 3000 (9) | 10 | 9.5 s / −5 % | 15.5 s / −14 % | 18.1 s / −6 % |
-| Der Pfandautomat 3000 (9) | 15 | 6.2 s / −3 % | 9.8 s / −2 % | 9.6 s / −0 % |
+| Leergut-Rabe * (1) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Leergut-Rabe * (1) | 15 | 2.7 s / −0 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfandfuchs * (2) | 1 | 3.7 s / −14 % | 5.4 s / −20 % | 6.4 s / −22 % |
+| Pfandfuchs * (2) | 2 | 4.1 s / −15 % | 4.6 s / −16 % | 5.5 s / −13 % |
+| Pfandfuchs * (2) | 3 | 1.4 s / −2 % | 4.8 s / −11 % | 2.4 s / −4 % |
+| Pfandfuchs * (2) | 6 | 2.7 s / −1 % | 3.8 s / −4 % | 3.8 s / −0 % |
+| Pfandfuchs * (2) | 10 | 2.7 s / −1 % | 3.8 s / −3 % | 3.8 s / −0 % |
+| Pfandfuchs * (2) | 15 | 2.7 s / −1 % | 3.8 s / −2 % | 3.8 s / −0 % |
+| Festzelt-Schnorrer * (2) | 1 | 5.5 s / −16 % | 7.5 s / −13 % | 8.7 s / −16 % |
+| Festzelt-Schnorrer * (2) | 2 | 5.5 s / −13 % | 6.2 s / −11 % | 6.8 s / −10 % |
+| Festzelt-Schnorrer * (2) | 3 | 1.4 s / −2 % | 6.1 s / −6 % | 2.4 s / −6 % |
+| Festzelt-Schnorrer * (2) | 6 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Festzelt-Schnorrer * (2) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Festzelt-Schnorrer * (2) | 15 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Ordnungsamt-Praktikant * (3) | 1 | 7.8 s / −28 % | 11 s / −39 % | 11.9 s / −40 % |
+| Ordnungsamt-Praktikant * (3) | 3 | 1.4 s / −2 % ⚡ | 8 s / −19 % | 2.4 s / −8 % ⚡ |
+| Ordnungsamt-Praktikant * (3) | 6 | 2.7 s / −2 % | 3.8 s / −2 % | 3.8 s / −0 % |
+| Ordnungsamt-Praktikant * (3) | 10 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Ordnungsamt-Praktikant * (3) | 15 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Kegelbruder aus Kalt * (3) | 1 | 7.3 s / −27 % | 9.2 s / −31 % | 10.6 s / −39 % |
+| Kegelbruder aus Kalt * (3) | 3 | 1.4 s / −2 % ⚡ | 7.7 s / −18 % | 2.4 s / −0 % ⚡ |
+| Kegelbruder aus Kalt * (3) | 6 | 2.7 s / −2 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Kegelbruder aus Kalt * (3) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Kegelbruder aus Kalt * (3) | 15 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Junggeselle im Game-Over-Shirt * (4) | 3 | 1.4 s / −2 % | 10.2 s / −23 % | 2.9 s / −0 % |
+| Junggeselle im Game-Over-Shirt * (4) | 4 | 1.4 s / −2 % ⚡ | 4.1 s / −7 % | 2.5 s / −0 % ⚡ |
+| Junggeselle im Game-Over-Shirt * (4) | 6 | 2.7 s / −2 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Junggeselle im Game-Over-Shirt * (4) | 10 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Junggeselle im Game-Over-Shirt * (4) | 15 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Borsten-Bruno * (4) | 3 | 7 s / −30 % | 17.9 s / −63 % | 9 s / −29 % |
+| Borsten-Bruno * (4) | 4 | 4.6 s / −17 % ⚡ | 9.2 s / −34 % | 9 s / −25 % |
+| Borsten-Bruno * (4) | 6 | 4.6 s / −8 % | 10.3 s / −15 % | 10.2 s / −3 % |
+| Borsten-Bruno * (4) | 10 | 2.7 s / −2 % | 5.2 s / −9 % | 4.3 s / −0 % |
+| Borsten-Bruno * (4) | 15 | 2.7 s / −2 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Oberpraktikant Olaf * (4) | 3 | 7 s / −23 % | 17.4 s / −42 % | 9 s / −19 % |
+| Oberpraktikant Olaf * (4) | 4 | 5.8 s / −17 % ⚡ | 9.2 s / −18 % | 9 s / −16 % |
+| Oberpraktikant Olaf * (4) | 6 | 5.5 s / −10 % | 9.8 s / −3 % | 10.1 s / −1 % |
+| Oberpraktikant Olaf * (4) | 10 | 2.7 s / −2 % | 5.2 s / −0 % | 4.3 s / −0 % |
+| Oberpraktikant Olaf * (4) | 15 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Horst Nüchternmann (4) | 3 | 12.2 s / −42 % | 39 s / −77 % | 30.7 s / −87 % ⚠ |
+| Horst Nüchternmann (4) | 4 | 12.2 s / −29 % | 15.8 s / −38 % | 23.5 s / −53 % |
+| Horst Nüchternmann (4) | 6 | 10.3 s / −13 % | 15.1 s / −20 % | 20.6 s / −23 % |
+| Horst Nüchternmann (4) | 10 | 9.2 s / −9 % | 11.3 s / −10 % | 11.5 s / −6 % |
+| Horst Nüchternmann (4) | 15 | 5.5 s / −3 % | 10.3 s / −7 % | 9.6 s / −3 % |
+| Sperrmüll-Sigi (5) | 3 | 13.8 s / −43 % | 45.5 s / −85 % ⚠ | 33.3 s / −100 % ☠ |
+| Sperrmüll-Sigi (5) | 5 | 15 s / −28 % | 22 s / −38 % | 40.1 s / −67 % ⚠ |
+| Sperrmüll-Sigi (5) | 6 | 11.3 s / −14 % | 17.3 s / −28 % | 27.6 s / −34 % |
+| Sperrmüll-Sigi (5) | 10 | 9.5 s / −5 % | 16.2 s / −19 % | 14.4 s / −8 % |
+| Sperrmüll-Sigi (5) | 15 | 8.5 s / −5 % | 10.3 s / −4 % | 10.3 s / −0 % |
+| Kegelkönig Klaus * (6) | 6 | 15.9 s / −27 % | 21.6 s / −32 % | 42.3 s / −56 % ⏳ |
+| Kegelkönig Klaus * (6) | 10 | 13.7 s / −14 % | 19 s / −22 % | 24.9 s / −18 % |
+| Kegelkönig Klaus * (6) | 15 | 9.1 s / −4 % | 14.4 s / −11 % | 11.9 s / −0 % |
+| Trauzeuge Timo * (7) | 6 | 16.8 s / −27 % | 24.9 s / −41 % | 44.7 s / −72 % ⚠ |
+| Trauzeuge Timo * (7) | 7 | 16 s / −26 % | 21.1 s / −32 % | 44 s / −41 % ⏳ |
+| Trauzeuge Timo * (7) | 10 | 14 s / −14 % | 21.5 s / −25 % | 26.2 s / −22 % |
+| Trauzeuge Timo * (7) | 15 | 9.1 s / −4 % | 16.2 s / −15 % | 14.5 s / −8 % |
+| Gisela Gießkanne (6) | 6 | 13.5 s / −17 % | 19.4 s / −39 % | 37.3 s / −64 % ⏳ |
+| Gisela Gießkanne (6) | 10 | 10.4 s / −10 % | 15.4 s / −16 % | 25 s / −25 % |
+| Gisela Gießkanne (6) | 15 | 9.1 s / −7 % | 10.3 s / −8 % | 10.9 s / −4 % |
+| Der Pfandautomat 3000 (9) | 9 | 13.5 s / −10 % | 26.4 s / −39 % ⏳ | 38.2 s / −34 % ⏳ |
+| Der Pfandautomat 3000 (9) | 10 | 13.7 s / −9 % | 24.7 s / −31 % | 27.7 s / −37 % |
+| Der Pfandautomat 3000 (9) | 15 | 9.1 s / −4 % | 15.5 s / −15 % | 14.9 s / −9 % |
 
 ## Auffälligkeiten
 
-- Pfanddachs fällt für dieter auf eigener Stufe in 3 s statt mindestens 4 s – zu schnell für den Korridor.
-- Grillgut-Gans fällt für dieter auf eigener Stufe in 3.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Ruhewart auf Streife fällt für dieter auf eigener Stufe in 1.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Ruhewart auf Streife fällt für kevin auf eigener Stufe in 2.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Leergut-Rabe fällt für dieter auf eigener Stufe in 3.4 s statt mindestens 4 s – zu schnell für den Korridor.
-- Pfandfuchs fällt für baerbel auf eigener Stufe in 3.9 s statt mindestens 4 s – zu schnell für den Korridor.
-- Ordnungsamt-Praktikant fällt für dieter auf eigener Stufe in 1.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Ordnungsamt-Praktikant fällt für kevin auf eigener Stufe in 2.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Kegelbruder aus Kalt fällt für dieter auf eigener Stufe in 1.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Kegelbruder aus Kalt fällt für kevin auf eigener Stufe in 2.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Kegelbruder aus Kalt fällt für dieter auf Stufe 15 in unter 2,5 s – kaum noch eine Begegnung.
-- Junggeselle im Game-Over-Shirt fällt für dieter auf eigener Stufe in 1.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Junggeselle im Game-Over-Shirt fällt für baerbel auf eigener Stufe in 2.5 s statt mindestens 4 s – zu schnell für den Korridor.
+- Pfanddachs fällt für dieter auf eigener Stufe in 2.9 s statt mindestens 4 s – zu schnell für den Korridor.
+- Grillgut-Gans fällt für dieter auf eigener Stufe in 3.7 s statt mindestens 4 s – zu schnell für den Korridor.
+- Ruhewart auf Streife fällt für dieter auf eigener Stufe in 1.4 s statt mindestens 4 s – zu schnell für den Korridor.
+- Ruhewart auf Streife fällt für kevin auf eigener Stufe in 2.4 s statt mindestens 4 s – zu schnell für den Korridor.
+- Leergut-Rabe fällt für dieter auf eigener Stufe in 3.3 s statt mindestens 4 s – zu schnell für den Korridor.
+- Ordnungsamt-Praktikant fällt für dieter auf eigener Stufe in 1.4 s statt mindestens 4 s – zu schnell für den Korridor.
+- Ordnungsamt-Praktikant fällt für kevin auf eigener Stufe in 2.4 s statt mindestens 4 s – zu schnell für den Korridor.
+- Kegelbruder aus Kalt fällt für dieter auf eigener Stufe in 1.4 s statt mindestens 4 s – zu schnell für den Korridor.
+- Kegelbruder aus Kalt fällt für kevin auf eigener Stufe in 2.4 s statt mindestens 4 s – zu schnell für den Korridor.
+- Junggeselle im Game-Over-Shirt fällt für dieter auf eigener Stufe in 1.4 s statt mindestens 4 s – zu schnell für den Korridor.
 - Junggeselle im Game-Over-Shirt fällt für kevin auf eigener Stufe in 2.5 s statt mindestens 4 s – zu schnell für den Korridor.
-- Junggeselle im Game-Over-Shirt fällt für dieter auf Stufe 15 in unter 2,5 s – kaum noch eine Begegnung.
-- Borsten-Bruno fällt für dieter auf eigener Stufe in 2.6 s statt mindestens 8 s – zu schnell für den Korridor.
-- Borsten-Bruno fällt für dieter auf Stufe 15 in unter 2,5 s – kaum noch eine Begegnung.
-- Oberpraktikant Olaf fällt für dieter auf eigener Stufe in 3.6 s statt mindestens 8 s – zu schnell für den Korridor.
-- Oberpraktikant Olaf fällt für dieter auf Stufe 15 in unter 2,5 s – kaum noch eine Begegnung.
-- Horst Nüchternmann fällt für dieter auf eigener Stufe in 9.3 s statt mindestens 10 s – zu schnell für den Korridor.
-- Horst Nüchternmann fällt für dieter auf Stufe 15 in unter 2,5 s – kaum noch eine Begegnung.
-- Sperrmüll-Sigi braucht für kevin auf Stufe 5 29.3 s statt höchstens 25 s – zäh.
-- Kegelkönig Klaus braucht für kevin auf Stufe 6 28.2 s statt höchstens 25 s – zäh.
-- Trauzeuge Timo braucht für kevin auf Stufe 7 28.8 s statt höchstens 25 s – zäh.
+- Borsten-Bruno fällt für dieter auf eigener Stufe in 4.6 s statt mindestens 8 s – zu schnell für den Korridor.
+- Oberpraktikant Olaf fällt für dieter auf eigener Stufe in 5.8 s statt mindestens 8 s – zu schnell für den Korridor.
+- Kegelkönig Klaus braucht für kevin auf Stufe 6 42.3 s statt höchstens 25 s – zäh.
+- Trauzeuge Timo braucht für kevin auf Stufe 7 44 s statt höchstens 25 s – zäh.
+- Gisela Gießkanne braucht für kevin auf Stufe 6 37.3 s statt höchstens 25 s – zäh.
+- Der Pfandautomat 3000 braucht für baerbel auf Stufe 9 26.4 s statt höchstens 25 s – zäh.
+- Der Pfandautomat 3000 braucht für kevin auf Stufe 9 38.2 s statt höchstens 25 s – zäh.
 
 ## Umland: Feldgegner mit Spielerstufen-Skalierung
 
@@ -126,50 +120,43 @@ Dieselben Arten, wie sie jenseits von `SPAWN_TABLES.tierDistance` wirklich ersch
 
 | Gegner (St.) | Spielerstufe | Leben | Dieter | Bärbel | Kevin |
 |---|---:|---:|---|---|---|
-| Pfanddachs (1) | 1 | 360 | 3 s / −6 % ⚡ | 4.9 s / −9 % | 5.4 s / −19 % |
-| Pfanddachs (1) | 3 | 360 | 1.5 s / −2 % | 4.1 s / −1 % | 2.5 s / −0 % |
-| Pfanddachs (1) | 6 | 490 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Pfanddachs (1) | 10 | 662 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Pfanddachs (1) | 15 | 878 | 2.4 s / −1 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Grillgut-Gans (1) | 1 | 390 | 3.5 s / −6 % ⚡ | 5.3 s / −15 % | 6.1 s / −17 % |
-| Grillgut-Gans (1) | 3 | 390 | 1.5 s / −2 % | 4.2 s / −2 % | 2.5 s / −2 % |
-| Grillgut-Gans (1) | 6 | 530 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Grillgut-Gans (1) | 10 | 718 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Grillgut-Gans (1) | 15 | 952 | 2.4 s / −1 % · | 3.5 s / −1 % | 3.5 s / −0 % |
-| Pfandkeiler (2) | 3 | 460 | 1.5 s / −2 % | 5 s / −11 % | 2.5 s / −4 % |
-| Pfandkeiler (2) | 6 | 570 | 2.7 s / −2 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Pfandkeiler (2) | 10 | 791 | 2.6 s / −2 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Pfandkeiler (2) | 15 | 1067 | 2.4 s / −1 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Ruhewart auf Streife (3) | 3 | 600 | 1.5 s / −2 % ⚡ | 6.1 s / −16 % | 2.5 s / −4 % ⚡ |
-| Ruhewart auf Streife (3) | 6 | 672 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
-| Ruhewart auf Streife (3) | 10 | 960 | 2.6 s / −1 % | 3.7 s / −1 % | 3.7 s / −0 % |
-| Ruhewart auf Streife (3) | 15 | 1320 | 2.4 s / −1 % · | 3.5 s / −1 % | 3.5 s / −0 % |
-| Leergut-Rabe (1) | 1 | 380 | 3.4 s / −5 % ⚡ | 5.3 s / −14 % | 5.7 s / −14 % |
-| Leergut-Rabe (1) | 3 | 380 | 1.5 s / −2 % | 4.1 s / −2 % | 2.5 s / −2 % |
+| Pfanddachs (1) | 1 | 360 | 2.9 s / −7 % ⚡ | 4.7 s / −11 % | 5.6 s / −18 % |
+| Pfanddachs (1) | 3 | 360 | 1.4 s / −2 % | 4.4 s / −2 % | 2.4 s / −0 % |
+| Pfanddachs (1) | 6 | 490 | 2.7 s / −2 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfanddachs (1) | 10 | 662 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Pfanddachs (1) | 15 | 878 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Grillgut-Gans (1) | 1 | 390 | 3.7 s / −8 % ⚡ | 5.4 s / −19 % | 6.4 s / −26 % |
+| Grillgut-Gans (1) | 3 | 390 | 1.4 s / −1 % | 4.6 s / −7 % | 2.4 s / −2 % |
+| Grillgut-Gans (1) | 6 | 530 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Grillgut-Gans (1) | 10 | 718 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Grillgut-Gans (1) | 15 | 952 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Pfandkeiler (2) | 3 | 460 | 1.4 s / −2 % | 5.2 s / −18 % | 2.4 s / −5 % |
+| Pfandkeiler (2) | 6 | 570 | 2.7 s / −2 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Pfandkeiler (2) | 10 | 791 | 2.7 s / −2 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Pfandkeiler (2) | 15 | 1067 | 2.7 s / −2 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Ruhewart auf Streife (3) | 3 | 600 | 1.4 s / −2 % ⚡ | 6.9 s / −19 % | 2.4 s / −3 % ⚡ |
+| Ruhewart auf Streife (3) | 6 | 672 | 2.7 s / −2 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Ruhewart auf Streife (3) | 10 | 960 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Ruhewart auf Streife (3) | 15 | 1320 | 2.7 s / −2 % | 3.8 s / −2 % | 3.8 s / −0 % |
+| Leergut-Rabe (1) | 1 | 380 | 3.3 s / −7 % ⚡ | 5 s / −17 % | 6.2 s / −25 % |
+| Leergut-Rabe (1) | 3 | 380 | 1.4 s / −2 % | 4.2 s / −2 % | 2.4 s / −2 % |
 | Leergut-Rabe (1) | 6 | 517 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Leergut-Rabe (1) | 10 | 699 | 2.6 s / −1 % | 3.7 s / −0 % | 3.7 s / −0 % |
-| Leergut-Rabe (1) | 15 | 927 | 2.4 s / −1 % · | 3.5 s / −0 % | 3.5 s / −0 % |
-| Pfandfuchs (2) | 3 | 400 | 1.5 s / −2 % | 4.2 s / −8 % | 2.5 s / −3 % |
-| Pfandfuchs (2) | 6 | 496 | 2.7 s / −1 % | 3.8 s / −2 % | 3.8 s / −0 % |
-| Pfandfuchs (2) | 10 | 688 | 2.6 s / −1 % | 3.7 s / −2 % | 3.7 s / −0 % |
-| Pfandfuchs (2) | 15 | 928 | 2.4 s / −1 % · | 3.5 s / −2 % | 3.5 s / −0 % |
-| Festzelt-Schnorrer (2) | 3 | 520 | 1.5 s / −2 % | 5.1 s / −3 % | 2.5 s / −5 % |
-| Festzelt-Schnorrer (2) | 6 | 645 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
-| Festzelt-Schnorrer (2) | 10 | 894 | 2.6 s / −1 % | 3.7 s / −1 % | 3.7 s / −0 % |
-| Festzelt-Schnorrer (2) | 15 | 1206 | 2.4 s / −0 % · | 3.5 s / −1 % | 3.5 s / −0 % |
-| Ordnungsamt-Praktikant (3) | 3 | 700 | 1.5 s / −2 % ⚡ | 7.4 s / −18 % | 2.5 s / −7 % ⚡ |
-| Ordnungsamt-Praktikant (3) | 6 | 784 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
-| Ordnungsamt-Praktikant (3) | 10 | 1120 | 2.6 s / −1 % | 3.7 s / −1 % | 3.7 s / −0 % |
-| Ordnungsamt-Praktikant (3) | 15 | 1540 | 2.4 s / −1 % · | 3.5 s / −1 % | 3.5 s / −0 % |
+| Leergut-Rabe (1) | 10 | 699 | 2.7 s / −1 % | 3.8 s / −0 % | 3.8 s / −0 % |
+| Leergut-Rabe (1) | 15 | 927 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Pfandfuchs (2) | 3 | 400 | 1.4 s / −2 % | 4.8 s / −11 % | 2.4 s / −4 % |
+| Pfandfuchs (2) | 6 | 496 | 2.7 s / −2 % | 3.8 s / −5 % | 3.8 s / −0 % |
+| Pfandfuchs (2) | 10 | 688 | 2.7 s / −1 % | 3.8 s / −5 % | 3.8 s / −0 % |
+| Pfandfuchs (2) | 15 | 928 | 2.7 s / −1 % | 3.8 s / −6 % | 3.8 s / −0 % |
+| Festzelt-Schnorrer (2) | 3 | 520 | 1.4 s / −2 % | 6.1 s / −6 % | 2.4 s / −6 % |
+| Festzelt-Schnorrer (2) | 6 | 645 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Festzelt-Schnorrer (2) | 10 | 894 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Festzelt-Schnorrer (2) | 15 | 1206 | 2.7 s / −1 % | 3.8 s / −1 % | 3.8 s / −0 % |
+| Ordnungsamt-Praktikant (3) | 3 | 700 | 1.4 s / −2 % ⚡ | 8 s / −19 % | 2.4 s / −8 % ⚡ |
+| Ordnungsamt-Praktikant (3) | 6 | 784 | 2.7 s / −2 % | 3.8 s / −2 % | 3.8 s / −0 % |
+| Ordnungsamt-Praktikant (3) | 10 | 1120 | 2.7 s / −2 % | 3.8 s / −2 % | 3.8 s / −0 % |
+| Ordnungsamt-Praktikant (3) | 15 | 1540 | 2.7 s / −2 % | 3.8 s / −3 % | 3.8 s / −0 % |
 
-- Pfanddachs fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Grillgut-Gans fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Pfandkeiler fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Ruhewart auf Streife fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Leergut-Rabe fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Pfandfuchs fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Festzelt-Schnorrer fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
-- Ordnungsamt-Praktikant fällt für dieter auf Stufe 15 auch im Umland in unter 2,5 s.
+- Keine Art fällt im Umland unter 2,5 s.
 
 ## Tuning-Korrekturen
 

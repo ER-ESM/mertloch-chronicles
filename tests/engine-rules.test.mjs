@@ -77,18 +77,16 @@ test('Basisbau nur am Treffpunkt und außerhalb des Kampfes',()=>{
  assert.equal(g.buildings.tresen,1);
 });
 
-test('Belohnungsgüte epic würfelt echt: mehr Budget und höhere Gegenstandsstufe als rare, und sie übersteht das Laden',()=>{
+test('Belohnungsgüte epic würfelt echt: mehr Punkte als rare bei gleicher Gegenstandsstufe, und sie übersteht das Laden',()=>{
  assert.ok(QUALITIES.includes('epic'));
  for(const level of [1,9,20,30]){
   const raw={slot:'body',spec:'tresen',level,quality:'epic',roll:500};
   const epic=rolledDefinition(raw),rare=rolledDefinition({...raw,quality:'rare'});
   assert.equal(epic.rarity,'epic','Güte bleibt epic');
-  assert.ok(epic.stats.might>rare.stats.might,'Budget epic > rare auf Stufe '+level);
-  assert.ok(epic.itemLevel>rare.itemLevel,'Gegenstandsstufe epic > rare auf Stufe '+level);
-  const factor=BALANCE.items.quality.epic/BALANCE.items.quality.rare;
-  // Zusätze (E-40) liegen obendrauf; das Güte-Verhältnis gilt für den Grundwurf.
-  const base=d=>d.stats.might-(d.affixes||[]).reduce((n,x)=>n+(x.stats.might||0),0);
-  assert.ok(Math.abs(base(epic)/base(rare)-factor)<.05,'Budget folgt BALANCE.items.quality.epic');
+  // E-56: die Güte steckt in den Punkten, die Gegenstandsstufe ist die Fundstufe.
+  const base=d=>Object.values(d.stats).reduce((n,v)=>n+v,0)-(d.affixes||[]).reduce((n,x)=>n+Object.values(x.stats).reduce((m,v)=>m+v,0),0);
+  assert.ok(base(epic)>=base(rare),'Punkte epic ≥ rare auf Stufe '+level);if(level>=9)assert.ok(base(epic)>base(rare),'Punkte epic > rare auf Stufe '+level);
+  assert.equal(epic.itemLevel,rare.itemLevel,'gleiche Gegenstandsstufe');
  }
  const weapon=rolledDefinition({slot:'weapon',spec:'tresen',level:20,quality:'epic',roll:120});
  assert.ok(weapon.weapon?.max>0,'epische Waffen bekommen Waffenschaden');

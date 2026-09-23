@@ -1,7 +1,7 @@
 import {ENEMY_AUTOS,SKILL_DAMAGE,CAST_TIMES} from './combat.js';
 import {WEAPON_TYPES,WEAPON_SKILL_RULES,STAT_NAMES} from './equipment.js';
 // Schema- und Invariantenprüfung aller Inhaltsregister. Liefert eine Liste lesbarer Probleme; leer = in Ordnung.
-import {BALANCE} from './balance.js';
+import {BALANCE,itemPoints} from './balance.js';
 import {ITEM_CATALOG,ICONS,SLOTS,RARITIES,PROCS} from './items.js';
 import {DROP_TABLES,FOOD_DROPS} from './drops.js';
 import {ARCHETYPES,ELITES,CAMP_ENEMIES,BOSSES,CAST_SETS,SPAWN_TABLES} from './enemies.js';
@@ -22,7 +22,7 @@ const ID=/^[a-z][a-z0-9-]*$/;
 export function validateContent(){const problems=[];const bad=(where,msg)=>problems.push(where+': '+msg);const num=(where,obj,keys,min=0)=>{for(const k of keys)if(obj[k]!==undefined&&!(typeof obj[k]==='number'&&Number.isFinite(obj[k])&&obj[k]>=min))bad(where,'Feld '+k+' muss eine Zahl ≥ '+min+' sein');};
  // Gegenstände
  for(const [id,d] of Object.entries(ITEM_CATALOG)){const w='item '+id;if(!ID.test(id))bad(w,'ID nur a-z0-9-');if(!d.name)bad(w,'name fehlt');if(!ICONS.includes(d.icon))bad(w,'icon unbekannt: '+d.icon);if(!RARITIES[d.rarity])bad(w,'rarity unbekannt');if(!d.slot&&!d.kind)bad(w,'slot oder kind nötig');if(d.slot&&!SLOTS[d.slot])bad(w,'slot unbekannt');if(d.kind&&!['consumable','material'].includes(d.kind))bad(w,'kind unbekannt');if(d.kind==='consumable'&&!d.heal&&!d.energy)bad(w,'Verpflegung braucht heal oder energy');if(d.stats)for(const k of Object.keys(d.stats))if(!STATS.includes(k))bad(w,'stat unbekannt: '+k);if(d.proc&&!PROCS[d.proc])bad(w,'proc unbekannt: '+d.proc);if(d.rarity==='epic'&&!d.unique)bad(w,'Dorflegenden sind unique');num(w,d,['level','value','heal','energy','stack'],0);if(!d.description)bad(w,'description fehlt');
-  if(d.slot&&d.stats){const level=d.level||1,budget=(BALANCE.items.budgetBase+level*BALANCE.items.budgetPerLevel)*(BALANCE.items.quality[d.rarity]||1)*1.15,sum=STATS.filter(k=>!k.endsWith('Rating')).reduce((n,k)=>n+(d.stats[k]||0),0);if(d.rarity!=='common'&&sum>budget*2.6)bad(w,'Primärwerte '+sum+' sprengen das Budget '+Math.round(budget*2.6)+' für Stufe '+level);}}
+  if(d.slot&&d.stats){const level=d.level||1,budget=itemPoints(level,d.rarity==='common'?'common':d.rarity,1+BALANCE.items.rollSpread/2,!!d.unique)+2,sum=STATS.reduce((n,k)=>n+(d.stats[k]||0),0);if(sum>budget)bad(w,'Wertpunkte '+sum+' sprengen das Budget '+budget+' für Gegenstandsstufe '+level+' (E-56)');}}
  // Waffen: Schäden, Bauart und tatsächlicher Ausrüstungsplatz müssen zusammenpassen.
  for(const [id,d] of Object.entries(ITEM_CATALOG)){const w=d.weapon;if(['weapon','ranged'].includes(d.slot)&&!w)bad('item '+id,'Waffe ohne weapon-Daten');if(w){const type=WEAPON_TYPES[w.type];if(!type||type.hands!==w.hands)bad('item '+id,'weapon-Bauart/Hände ungültig');if(!(Number.isFinite(w.min)&&Number.isFinite(w.max)&&w.min>0&&w.max>=w.min))bad('item '+id,'weapon-Schadensspanne ungültig');if(w.hands===0?d.slot!=='ranged':d.slot!=='weapon')bad('item '+id,'weapon passt nicht zum Slot');}if(d.shield&&d.slot!=='offhand')bad('item '+id,'Schild braucht Nebenhand');}
  for(const [kit,rules] of Object.entries(WEAPON_SKILL_RULES))for(const [id,requirement] of Object.entries(rules))if(!['melee','ranged','shield','heavy'].includes(requirement))bad('weapon skill '+kit+'/'+id,'unbekannte Voraussetzung');

@@ -5,15 +5,15 @@
 //            BALANCE wird hier nur gelesen. Keine Doppelpflege: wer eine Zahl ändert, ändert sie in items.js/tuning.js.
 //  why – wozu das Ding im Kampffluss dient. links – verwandte IDs (Gegenstand, Proc, Gebäude). terms – content/glossary.js.
 // Von Hand steht in ITEM_INFO/PROC_INFO nur effect/why/links/terms.
-import {BALANCE,rating} from './balance.js';
+import {BALANCE,rating,ratingK} from './balance.js';
 import {ITEM_CATALOG,PROCS} from './items.js';
 import {STAT_NAMES} from './equipment.js';
 
 /** Anteil, den ein Wert allein beisteuert (abnehmender Ertrag r/(r+k), Kappe aus BALANCE). Dicke Haut hängt an der Stufe. */
 export function ratingShare(key,value,level=1){const r=BALANCE.ratings;
- if(key==='armorRating')return Math.min(r.armor.cap,rating(value,r.armor.k+level*r.armor.perLevel));
- if(key==='crit')return Math.min(r.crit.cap,rating(value*r.crit.finesseWeight,r.crit.k));
- if(key==='haste')return Math.min(r.haste.cap,rating(value*r.haste.finesseWeight,r.haste.k));
+ if(key==='armorRating')return Math.min(r.armor.cap,rating(value,ratingK(r.armor,level)));
+ if(key==='crit')return Math.min(r.crit.cap,rating(value*r.crit.finesseWeight,ratingK(r.crit,level)));
+ if(key==='haste')return Math.min(r.haste.cap,rating(value*r.haste.finesseWeight,ratingK(r.haste,level)));
  return 0;}
 /** E-53: was N Punkte eines Werts für sich allein bewirken – eine Zeile je Wirkung aus STAT_EFFECTS.
  *  value in der angegebenen Einheit; Prozentwerte als Anteil ×100 gerundet. */
@@ -21,8 +21,8 @@ export function statYield(key,value,level=1){const W=BALANCE.power,P=BALANCE.pla
  switch(key){
   case 'stamina':return [{label:'Leben',value:value*P.hpPerStamina,unit:'Leben',source:'BALANCE.player.hpPerStamina'}];
   case 'might':return [{label:'Schaden',value:pct(value*W.might),unit:'%',source:'BALANCE.power.might'}];
-  case 'finesse':return [{label:'Glückstreffer-Chance',value:pct(ratingShare('crit',value)),unit:'%',source:'BALANCE.ratings.crit'},
-   {label:'Tempo',value:pct(ratingShare('haste',value)),unit:'%',source:'BALANCE.ratings.haste'}];
+  case 'finesse':return [{label:'Glückstreffer-Chance',value:pct(ratingShare('crit',value,level)),unit:'%',source:'BALANCE.ratings.crit'},
+   {label:'Tempo',value:pct(ratingShare('haste',value,level)),unit:'%',source:'BALANCE.ratings.haste'}];
   case 'wit':return [{label:'Heilung',value:pct(value*W.healWit),unit:'%',source:'BALANCE.power.healWit'},
    {label:'Deckung',value:pct(value*W.shieldWit),unit:'%',source:'BALANCE.power.shieldWit'},
    {label:'Randale',value:round(value*W.energyRegenWit,2),unit:'je s',source:'BALANCE.power.energyRegenWit'}];

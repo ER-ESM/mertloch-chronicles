@@ -1,15 +1,18 @@
 // Zusätze gewürfelter Beute (E-40): Determinismus, Anzahl je Güte, Budgetrahmen, alte Spielstände, Namensvielfalt.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {BALANCE,AFFIX_TUNING,LOOT_PREFIXES,LOOT_EPITHETS,LOOT_AFFIX_POOLS,ROLLED_BASES,AFFIXES,STAT_NAMES,ADJECTIVE_ENDINGS,affixedName,affixFits,affixNumbers} from '../content/index.js';
+import {BALANCE,itemPoints,AFFIX_TUNING,LOOT_PREFIXES,LOOT_EPITHETS,LOOT_AFFIX_POOLS,ROLLED_BASES,AFFIXES,STAT_NAMES,ADJECTIVE_ENDINGS,affixedName,affixFits,affixNumbers} from '../content/index.js';
 import {rolledDefinition,rolledAffixes,registerRoll,restoreRolls,QUALITIES} from '../itemization.js';
 
 const SLOTS=Object.keys(ROLLED_BASES),SPECS=Object.keys(AFFIXES);
 const rng=(s=>()=>(s=(Math.imul(s,1103515245)+12345)>>>0)/4294967296)(56753);
 const pick=list=>list[Math.floor(rng()*list.length)];
 const randomRaw=quality=>({slot:pick(SLOTS),spec:pick(SPECS),level:1+Math.floor(rng()*BALANCE.maxLevel),quality:quality||(rng()<BALANCE.items.rareChance?'rare':'uncommon'),roll:Math.floor(rng()*1000),family:pick(['warden','boar','quest','horst'])});
-/** Grundwerte ohne Zusätze – dieselbe Formel wie vor E-40. */
-const baseBudget=raw=>Math.round((BALANCE.items.budgetBase+raw.level*BALANCE.items.budgetPerLevel)*BALANCE.items.quality[raw.quality]*(1-BALANCE.items.rollSpread/2+(raw.roll%31)/100));
+/** E-56: Punkte des Grundwurfs aus Gegenstandsstufe (= Fundstufe) und Güte. */
+const spread=raw=>1-BALANCE.items.rollSpread/2+(raw.roll%31)/100;
+const baseBudget=raw=>itemPoints(raw.level,raw.quality,spread(raw));
+const worth=raw=>Math.round((BALANCE.items.worth.base+raw.level*BALANCE.items.worth.perLevel)*BALANCE.items.worth.quality[raw.quality]*spread(raw));
+const total=o=>Object.values(o||{}).reduce((n,v)=>n+v,0);
 
 test('gleiche Rohdaten ergeben immer denselben Gegenstand', () => {
  for(let i=0;i<300;i++){const raw=randomRaw(pick(QUALITIES));assert.deepEqual(rolledDefinition({...raw}),rolledDefinition({...raw}));}
@@ -28,14 +31,19 @@ test('die Güte steuert die Anzahl: ungewöhnlich 0–1, selten 1, episch Vorsil
  assert.ok(Math.abs(share-AFFIX_TUNING.uncommonChance)<.12,'Anteil ungewöhnlicher Funde mit Zusatz liegt bei uncommonChance: '+share);
 });
 
-test('das Budget sinkt nie und steigt nur im Rahmen von AFFIX_TUNING.maxGain', () => {
+test('E-56: Grundwurf hat genau die Punkte aus Gegenstandsstufe und Güte, Zusätze je mindestens einen Punkt', () => {
  for(let i=0;i<1500;i++){const raw=randomRaw(pick(QUALITIES)),d=rolledDefinition(raw),budget=baseBudget(raw),primary=AFFIXES[raw.spec].primary;
-  assert.ok(d.stats[primary]>=budget,'Primärwert unter dem Grundbudget');
-  assert.ok(d.stats.stamina>=Math.ceil(budget*BALANCE.items.staminaShare),'Standfestigkeit unter dem Grundwurf');
-  let gain=0;for(const a of d.affixes||[])for(const [k,v] of Object.entries(a.stats)){assert.ok(STAT_NAMES[k],'unbekannter Wert '+k);assert.ok(Number.isInteger(v)&&v>=1);gain+=v/AFFIX_TUNING.rate[k];}
-  // Aufrunden je Wert: höchstens ein Budgetpunkt je Wertzeile über dem Anteil.
-  assert.ok(gain<=budget*AFFIX_TUNING.maxGain+4,'Zusätze sprengen den Rahmen: +'+gain+' bei Budget '+budget);
-  assert.equal(d.value,budget*BALANCE.items.valuePerBudget,'Verkaufswert bleibt am Grundbudget');}
+  let gain=0;for(const a of d.affixes||[]){const n=total(a.stats);assert.equal(n,Math.max(AFFIX_TUNING.minPoints,Math.round(budget*AFFIX_TUNING.share[a.kind])),'Zusatzpunkte');for(const [k,v] of Object.entries(a.stats)){assert.ok(STAT_NAMES[k],'unbekannter Wert '+k);assert.ok(Number.isInteger(v)&&v>=1);}gain+=n;}
+  assert.equal(total(d.stats)-gain,budget,'Grundwurf = itemPoints');
+  assert.ok(d.stats[primary]>=1,'Hauptwert immer dabei');
+  assert.ok(gain<=Math.max(2*AFFIX_TUNING.minPoints,Math.round(budget*AFFIX_TUNING.maxGain)+2),'Zusätze sprengen den Rahmen: +'+gain+' bei '+budget);
+  assert.equal(d.itemLevel,raw.level,'Gegenstandsstufe = Fundstufe');
+  assert.equal(d.value,worth(raw)*BALANCE.items.valuePerBudget,'Verkaufswert bleibt am alten Wertmaß');}
+});
+
+test('E-56: Stufe 1 bringt 1–2 Punkte, Stufe 10 etwa 10 (ungewöhnlich)', () => {
+ assert.ok([1,2].includes(itemPoints(1,'uncommon')));assert.equal(itemPoints(1,'common'),1);
+ assert.ok(Math.abs(itemPoints(10,'uncommon')-10)<=1);assert.ok(itemPoints(10,'epic')>itemPoints(10,'rare')&&itemPoints(10,'rare')>itemPoints(10,'uncommon'));
 });
 
 test('alte Roll-IDs werden weiter wiederhergestellt, ohne neues Feld im Spielstand', () => {
@@ -52,7 +60,7 @@ test('alte Roll-IDs werden weiter wiederhergestellt, ohne neues Feld im Spielsta
  const old={'roll-body-bass-3-rare-761-warden-5':{slot:'body',spec:'bass',level:3,quality:'rare',roll:761,family:'warden'}},reg={};
  restoreRolls(old,reg);const d=reg['roll-body-bass-3-rare-761-warden-5'];
  assert.ok(d.name.includes('Festtagsjacke')&&d.name.includes('der Zugabe'));
- assert.ok(d.stats.finesse>=baseBudget(old['roll-body-bass-3-rare-761-warden-5']));
+ assert.equal(total(d.stats)-total(Object.assign({},...(d.affixes||[]).map(a=>a.stats))),baseBudget(old['roll-body-bass-3-rare-761-warden-5']),'E-56: alte Teile tragen die neuen Punkte');
 });
 
 test('Namen: Genus stimmt, Tooltip nennt jeden Zusatz mit seinen Werten', () => {

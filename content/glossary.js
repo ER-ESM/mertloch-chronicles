@@ -3,7 +3,7 @@
 // Kurzanzeige, `long` nennt die Mechanik mit Zahlen – immer aus BALANCE und den Definitionen berechnet, nie von Hand
 // gepflegt. Jedes kampfrelevante Element trägt `info:{effect,why,links,terms}` an seiner Definition; den `numbers`-Block
 // baut describe(kind,id) aus cd/cost/Schadensmodell/effects. Vertrag und Shift-Regel: docs/UEBERGABE-UI-2026-09-17.md §7.
-import {BALANCE,rating} from './balance.js';
+import {BALANCE,rating,ratingK} from './balance.js';
 import {STAT_NAMES} from './equipment.js';
 import {BASE_SKILLS,KITS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,CLASS_LESSONS} from './skills.js';
 import {SKILL_DAMAGE,CAST_TIMES,COMBAT_RULES} from './combat.js';
@@ -47,18 +47,18 @@ export const GLOSSARY={
  autoschaden:{name:'Autoschaden',short:'Die gewürfelte Schadensspanne deiner Waffe – die Rechengrundlage aller Kniffe.',
   long:`Kniffe rechnen in Vielfachen davon: „200 % Autoschaden“ heißt zwei Autoangriffswürfe. Referenzwaffe ${BALANCE.weapons.referenceDamage} Schaden, ${pc(BALANCE.weapons.perLevel)} mehr je Gegenstandsstufe, Qualität ×${nice(BALANCE.weapons.quality.uncommon)} bis ×${nice(BALANCE.weapons.quality.epic)}. Zum Autoschaden kommt der feste Anteil des Kniffs, danach erst Werte, Talente und Glückstreffer.`},
  glueckstreffer:{name:'Glückstreffer',short:'Ein kritischer Treffer – deutlich mehr Schaden und Auslöser vieler Talente.',
-  long:`Grundchance ${pc(R.crit.base)}. Mehr gibt es nur über Taktgefühl: r = ${nice(R.crit.finesseWeight)} × Taktgefühl zählt über r ÷ (r + ${R.crit.k}); Kappe ${pc(R.crit.cap)}. Beispiel: 300 Taktgefühl ergeben ${pc(R.crit.base+rating(300*R.crit.finesseWeight,R.crit.k))}. Ein Glückstreffer macht ×${nice(P.critMultiplier)} Schaden und ist der Proc-Auslöser crit.`},
+  long:`Grundchance ${pc(R.crit.base)}. Mehr gibt es nur über Taktgefühl: r = ${nice(R.crit.finesseWeight)} × Taktgefühl zählt über r ÷ (r + ${R.crit.k} + ${R.crit.perLevel} × Stufe); Kappe ${pc(R.crit.cap)}. Je höher deine Stufe, desto mehr Punkte braucht ein Prozent. Beispiel 20 Taktgefühl: Stufe 1 ${pc(R.crit.base+rating(20*R.crit.finesseWeight,ratingK(R.crit,1)))}, Stufe 20 ${pc(R.crit.base+rating(20*R.crit.finesseWeight,ratingK(R.crit,20)))}. Ein Glückstreffer macht ×${nice(P.critMultiplier)} Schaden und ist der Proc-Auslöser crit.`},
  // E-53: fünf Werte, je Wert höchstens drei Wirkungen (STAT_EFFECTS in equipment.js); jede Mechanik hängt an genau einem Wert.
  stamina:{name:STAT_NAMES.stamina,short:'Leben – sonst nichts. Der Wert, der dich länger stehen lässt.',
   long:`${P.hpPerStamina} Leben je Punkt über dem Grundwert ${P.baseStamina}. Dein Grundleben wächst davon unabhängig: ${P.baseHp} auf Stufe 1, ${P.hpPerLevel} je weiterer Stufe.`},
  might:{name:STAT_NAMES.might,short:'Schaden – jeder Angriff und jeder Kniff trifft härter.',
   long:`Je Punkt ${pc(W.might)} mehr Schaden, für Autoangriff, Kniffe, Markierungen und Flächen gleichermaßen. Wumms wächst mit ${P.primaryPerLevel} Punkten je Stufe. Heilung, Deckung und Rüstung hängen nicht daran.`},
  finesse:{name:STAT_NAMES.finesse,short:'Glückstreffer-Chance und Tempo.',
-  long:`Glückstreffer-Chance = ${pc(R.crit.base)} + r ÷ (r + ${R.crit.k}) mit r = ${nice(R.crit.finesseWeight)} × Taktgefühl, Kappe ${pc(R.crit.cap)}. Tempo = r ÷ (r + ${R.haste.k}) mit r = ${nice(R.haste.finesseWeight)} × Taktgefühl, Kappe ${pc(R.haste.cap)}; Tempo beschleunigt den Autoangriff und kürzt die Abklingzeiten samt globaler Abklingzeit. Beispiel 100 Taktgefühl: ${pc(R.crit.base+rating(100*R.crit.finesseWeight,R.crit.k))} Glückstreffer-Chance, ${pc(rating(100*R.haste.finesseWeight,R.haste.k))} Tempo.`},
+  long:`Glückstreffer-Chance = ${pc(R.crit.base)} + r ÷ (r + ${R.crit.k} + ${R.crit.perLevel} × Stufe) mit r = ${nice(R.crit.finesseWeight)} × Taktgefühl, Kappe ${pc(R.crit.cap)}. Tempo = r ÷ (r + ${R.haste.k} + ${R.haste.perLevel} × Stufe) mit r = ${nice(R.haste.finesseWeight)} × Taktgefühl, Kappe ${pc(R.haste.cap)}; Tempo beschleunigt den Autoangriff und kürzt die Abklingzeiten samt globaler Abklingzeit. Der Kurs steigt mit deiner Stufe: ein Punkt bringt auf Stufe 1 ${pc(rating(R.crit.finesseWeight,ratingK(R.crit,1)))} Glückstreffer-Chance, auf Stufe 20 noch ${pc(rating(R.crit.finesseWeight,ratingK(R.crit,20)))}.`},
  wit:{name:STAT_NAMES.wit,short:'Heilung, Deckung und Randale-Nachschub.',
   long:`Je Punkt ${pc(W.healWit)} mehr Heilung, ${pc(W.shieldWit)} mehr Deckung und ${nice(W.energyRegenWit)} Randale je Sekunde zusätzlich. Schaden hängt nicht daran.`},
  armorRating:{name:STAT_NAMES.armorRating,short:'Weniger erlittener Schaden – mit abnehmendem Ertrag und Kappe.',
-  long:`Minderung = r ÷ (r + ${R.armor.k} + Stufe × ${R.armor.perLevel}), Kappe ${pc(R.armor.cap)}. Beispiel Stufe 10 mit 300 Dicke Haut: ${pc(rating(300,R.armor.k+10*R.armor.perLevel))} weniger Schaden. Weil der Nenner je Stufe wächst, muss Dicke Haut mitwachsen, um gleich stark zu bleiben.`},
+  long:`Minderung = r ÷ (r + ${R.armor.k} + ${R.armor.perLevel} × Stufe), Kappe ${pc(R.armor.cap)}. Beispiel Stufe 10 mit 20 Dicke Haut: ${pc(rating(20,ratingK(R.armor,10)))} weniger Schaden. Weil der Nenner je Stufe wächst, muss Dicke Haut mitwachsen, um gleich stark zu bleiben.`},
  proc:{name:'Proc',short:'Eine Regel „Wenn X, dann Y“ mit Zeitfenster – der Kern jedes Talentbaums.',
   long:`Auslöser sind ${PROC_TRIGGERS.join(', ')}. Zündet eine Regel, öffnet sie ein Fenster von ${PR.defaultWindow} s: „gratis“ streicht die Kosten des genannten Kniffs, „zurücksetzen“ macht ihn sofort bereit, „×2“ verdoppelt seinen nächsten Einsatz; dazu kommen Randale, Punkte, Deckung oder Heilung sofort. Der genannte Kniff leuchtet auf der Leiste, solange das Fenster offen ist.`},
  kettenzug:{name:'Kettenzug',short:'Greifst du einen an, ziehen nahe Artgenossen kurz darauf nach.',

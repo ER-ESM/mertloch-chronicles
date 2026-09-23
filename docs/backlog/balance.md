@@ -31,3 +31,5 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 
 - [ ] Erstlauf Begleiter: COMPANION_ROLES/COMPANION_RULES gegen die TTK-Matrix prüfen (Stufe 1 gegen drei Keiler fällt der Schutz-Söldner – gewollt knapp oder zu schwach?). Ziel: mit vier Söldnern machbar, aber langsamer als mit Menschen. Kosten costBase/costPerLevel gegen Münzeinkommen je Stufe.
 - [ ] balance-report.mjs um eine Begleiter-Zeile erweitern (Schaden/Heilung je Sekunde je Rolle und Stufe).
+
+- [ ] **E-56 (23.09.):** Kevin gegen Bosse auf eigener Stufe 37–44 s (Korridor 10–25 s, vorher 28–30 s) und stirbt gegen Sperrmüll-Sigi auf Stufe 5 manchmal. Dieter 13–16 s, Bärbel 21–26 s. Hebel: Kevin-Kniffe oder Boss-Leben in `content/tuning.js`, nicht die allgemeinen Wertkurse in `BALANCE.power/ratings`.

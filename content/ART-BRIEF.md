@@ -47,6 +47,11 @@ Jede Zeile ist ein Bild. `fallback` zeigt, was das Spiel heute stattdessen zeich
 | item | `kraeutersud` | Kräuter-Kontersud | 24×24 Icon | Stellt 150 Leben wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken. — *Stellt 150 Leben wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.* | Icon „water“ |
 | item | `hopfenschorle` | Alkoholfreie Hopfenschorle | 24×24 Icon | Stellt 25 Randale wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken. — *Stellt 25 Randale wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.* | Icon „bottle“ |
 | item | `feldtee` | Kräftiger Feldtee | 24×24 Icon | Stellt 300 Leben wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken. — *Stellt 300 Leben wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.* | Icon „water“ |
+| item | `kollektefeder` | Kollekte-Feder | 24×24 Icon | Weiße Gänsefeder mit einem Tropfen Wachs am Kiel — *Für den Klingelbeutel von St. Gangolf. Angeblich wird er damit „würdevoller“.* | Icon „paper“ |
+| item | `grillborste` | Grillbesen-Borste | 24×24 Icon | Büschel schwarzer Keilerborsten mit Grillfett — *Hart, fettig, nach Meinung des Pfandhofs lebensmittelecht.* | Icon „scrap“ |
+| item | `rabenkronkorken` | Blank gepickter Kronkorken | 24×24 Icon | Glänzender Kronkorken mit Schnabelkratzern — *Ein Rabe hat ihn poliert. Am Kiosk zählt er trotzdem als Pfand.* | Icon „ring“ |
+| item | `schnorrbon` | Geschnorrter Verzehrbon | 24×24 Icon | Zerknitterter roter Festzelt-Verzehrbon — *„Gilt für ein Getränk nach Wahl.“ Die Wahl traf jemand anderes.* | Icon „paper“ |
+| item | `durchschlag` | Durchschlag von Formular 27b | 24×24 Icon | Blaues Durchschlagpapier mit Amtsstempel — *Dreifach, in Blau. Das Original liegt vermutlich im Graben.* | Icon „paper“ |
 | enemy | `raven` | Leergut-Rabe | Sprite 4 Richtungen/2 Frames, Höhe 18–24 px | Schwarzer Rabe mit Kronkorken im Schnabel, frech, leicht zerzaust | Skin „goose“ |
 | enemy | `fox` | Pfandfuchs | Sprite 4 Richtungen/2 Frames, Höhe 18–24 px | Rostroter Fuchs mit Pfandbon im Maul, listiger Blick | Skin „badger“ |
 | enemy | `scrounger` | Festzelt-Schnorrer | Sprite 4 Richtungen/2 Frames, Höhe 26 px | Mann mit Bauchtasche, Bierbecher-Kette, Trainingsjacke, bettelnde Geste | Skin „warden“ |
