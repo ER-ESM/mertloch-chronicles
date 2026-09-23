@@ -807,3 +807,52 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Verworfen.**
 - *Weiter nur imagegen:* keine exakten Maße, Bildfolgen flackern, jede Variante ist ein neuer Auftrag.
 - *three.js/Blender-Prerender (E-30):* braucht Modelle von außen und eine weitere Werkzeugkette. Die Schmiede läuft in Node ohne Abhängigkeiten.
+
+## E-59 · Balancing-Runde 1: feste Werte wachsen mit der Stufe, Spec-Faktoren, ein Messweg für Sheet und Bericht (23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Mache eine Balancing Runde“ – auf Grundlage des Balance-Sheets (E-57).
+
+**Befund.**
+- Feste Heil-, Schild- und Deckungswerte und der feste Anteil der Kniffe blieben auf jeder Stufe gleich, während der Waffenschaden mitwuchs. Deshalb fielen Heiler und Tanks mit der Stufe immer weiter zurück.
+- Zwischen den Spezialisierungen lag bis zu Faktor 2,5 (Kevin „Pfandjäger“ 0,61 des Medians, Dieter „Kneipenschläger“ 1,6 im Einzelziel).
+- Das Sheet hatte drei Messfehler:
+  - Rückstoß schob die Puppen aus der Reichweite.
+  - Ein gesperrter Heilkniff blockierte die ganze Rotation.
+  - Beim „Weglassen“ eines Talents füllte die Restpunkt-Logik den Punkt sofort wieder auf.
+- Dazu kamen zwei Messfehler, die erst in dieser Runde auffielen:
+  - Das Sheet rief `tickCasting` zusätzlich zu `g.tick` auf, dadurch lief jede Zauberzeit doppelt so schnell.
+  - Der Balance-Bericht spielte eine andere, einfachere Rotation (ohne Bodenkniff, Brecher nur nach Markierung). Kevin war dort gegen Bosse 37–44 s langsam, im Sheet aber gleichauf.
+
+**Entschieden.**
+1. **`BALANCE.player.flatPerLevel: 0,055`:** Feste Heilung, Deckung und der feste Kniffanteil wachsen je Stufe um 5,5 % (`combatStats().flatScale`, `equipment.skillDamage`). Heilungen und Deckung, die aus Schaden entstehen (Lebensraub, Überheil-Schild, Schadens-Procs), sind schon skaliert und bekommen den Faktor kein zweites Mal.
+2. **`TUNING.specs`** (`content/tuning.js`, mit `why`/`since` wie die Gegnerkorrekturen) gibt jeder Spezialisierung einen Faktor auf den ausgeteilten Schaden und, beim Landhaus-Lazarett auf die feste Heilung. `specOutput(spec)` liest ihn in `engine.js` und `class-mechanics.js`.
+   - Ziel, jeweils relativ zum Median der Schadens-Specs: Schaden-Specs 1,0; Tanks ≈ 0,82 (dazu Schutz); Heiler ≈ 0,75 (dazu Heilung).
+   - Faktoren: Pfandjäger 1,42 · Zündmeister 0,88 · Kneipenschläger 0,72 · Filter-Furie 0,93 · Putzpyramide 1,09 · Türsteher 1,08 · Schrottkoloss 1,21 · Zapfmeister 1,15 · Landhaus-Lazarett 1,1 (Heilung 1,15).
+3. **Ein Messweg:** `scripts/balance-rotation.mjs` ist die gemeinsame Prioritäten-Rotation für Sheet und Bericht (Heilung bei Not → Markierung → Bodenkniff → Brecher → Stärkung → Schlag → Wurf). Der erste Kniff, der wirklich auslöst, gewinnt. Zauber schreiten nur noch über `g.tick` voran.
+4. **Sheet-Messung:**
+   - Die Puppen bleiben stehen.
+   - Jede Zelle ist das Mittel aus Einzelziel (Boss) und drei Zielen (Kettenzug im Feld); die CSV führt beide Werte getrennt.
+   - Die Zerlegung misst gegen zwei Ziele.
+   - Einen Talentbeitrag misst das Sheet mit `unlearnTalent`. Talente, auf denen andere aufbauen, stehen als „gebunden“ in der Tabelle.
+
+**Ergebnis** (Sheet, Ausrüstung selten, Pfade 0–2, Mittel Stufe 10–30, relativ zum Median der Schadens-Specs):
+- Schaden-Specs 0,99–1,02.
+- Tanks 0,82 (Türsteher und Schrottkoloss).
+- Heiler 0,75–0,76 (Zapfmeister und Landhaus-Lazarett).
+- ⚑ (über 15 % neben dem Rollen-Median) 280 → 209 von 576.
+
+Balance-Bericht:
+- Kein ⏳ mehr. Kevin braucht gegen Klaus, Timo, Gisela und den Pfandautomaten auf eigener Stufe 17–21 s (vorher 37–44 s), Bärbel 20–24 s, Dieter 16–19 s.
+- Niemand stirbt auf eigener Stufe.
+- Übrig sind 15 ⚡: Feld- und Elitegegner fallen für Dieter und Kevin schneller als im Korridor vorgesehen; 13 davon standen schon vorher im Bericht.
+
+**Offen** (`docs/backlog/balance.md`):
+- Drift über die Stufen: Zündmeister 0,84 → 1,19 (Stufe 5 → 30), Tanks 0,93 → 0,76, Kneipenschläger und Putzpyramide auf Stufe 5 bei 1,2.
+- Pfade innerhalb einer Spec: Kneipenschläger Pfad 1 (≈ 1,3) gegen Pfad 0 (0,98 → 0,68). Zündmeister-Pfade 1/2 hängen an Rückstrom, Nullwiderstand und Kettenreaktion, die nur in Gruppen tragen.
+- Talente, die an Kills oder Ausweichen hängen, zeigen im Sheet 0 %, weil die Puppen nicht sterben.
+- ⚡ der Feldgegner gegen Dieter und Kevin.
+
+**Verworfen.**
+- *Allgemeine Wertkurse (`BALANCE.power`/`ratings`) verschieben:* Das trifft alle Specs gleich und löst keinen Abstand zwischen ihnen.
+- *Einzelne Kniffwerte je Spec umschreiben:* Das wäre sauberer, aber neun Specs × fünf Kniffe ohne stabilen Messweg sind Raten. Die Faktoren sind der Zwischenschritt: Die Fachrolle zieht sie bei Gelegenheit in die Kniffwerte (`content/kits.js`) ein und löscht sie aus `tuning.js`, wie die Gegnerkorrekturen.
+- *Nur Einzelziel messen:* Das bevorzugt Einzelziel-Specs (Pfandjäger, Kneipenschläger) und straft Ketten-Specs (Zündmeister), obwohl Feldkämpfe im Kettenzug zu zweit oder dritt laufen.

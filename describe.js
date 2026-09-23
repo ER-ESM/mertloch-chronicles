@@ -54,7 +54,7 @@ function describeSkill(game,id){
  const damage=s.damage!==undefined?skillDamageRange(game,s,s.damage):s.base!==undefined?skillDamageRange(game,s,s.base):null;
  const numbers=[];
  if(damage)numbers.push(num('Schaden',damage.min===damage.max?damage.min:damage.min+'–'+damage.max,'','Waffe + Wertungen'));
- if(s.heal)numbers.push(num('Heilung',Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0))),'','Bastelgrips'));
+ if(s.heal)numbers.push(num('Heilung',Math.round(s.heal*(cs.flatScale||1)*(1+cs.healPower+(cs.healBonus||0))),'','Bastelgrips'));
  if(s.cd)numbers.push(num('Abklingzeit',round(cd,1),'s','Tempo'));
  if(s.cost)numbers.push(num('Kosten',cost,'Randale',''));
  if(s.range)numbers.push(num('Reichweite',Math.round((s.range+(cs.range||0))/8),'m',''));
@@ -62,7 +62,7 @@ function describeSkill(game,id){
   info:{...infoFor(s,{effect:s.text||'',numbers},'skill',id),effect:skillHelp(game,id)},
   live:{available:available(game,id),level:skillLevel(game,id),cooldown:round(cd,2),baseCooldown:s.cd||0,remaining:round(Math.max(0,game.cooldowns[id]||0),2),
    ready:available(game,id)&&(game.cooldowns[id]||0)<=.01,cost,baseCost:s.cost||0,damage,
-   heal:s.heal?Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0))):0,
+   heal:s.heal?Math.round(s.heal*(cs.flatScale||1)*(1+cs.healPower+(cs.healBonus||0))):0,
    range:s.range?s.range+(cs.range||0):0,castTime:s.castTime||0,gcd:round(cs.gcd,2),crit:round(cs.crit,3),onBar:actionBar(game).indexOf(id)}};
 }
 

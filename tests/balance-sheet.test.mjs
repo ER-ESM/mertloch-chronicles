@@ -15,8 +15,10 @@ test('Ausrüstung, Wumms und Talente verschieben den Schaden in die erwartete Ri
  assert.ok(rare.dps>start.dps,'voller Satz schlägt die Startausrüstung');
  assert.ok(might.dps>rare.dps,'mehr Wumms, mehr Schaden');
  assert.ok(rare.talents.length>0,'Stufe 10 lernt Talente');
- const without=simulate({...base,gear:'rare',drop:rare.talents[0]});
- assert.ok(!without.talents.includes(rare.talents[0]),'weggelassenes Talent fehlt wirklich');
+ // Talentbeitrag: das letzte Talent des Pfads lässt sich verlernen, ein früheres, auf dem andere aufbauen, ist gebunden.
+ const last=simulate({...base,gear:'rare',drop:rare.talents.at(-1)});
+ assert.equal(last.dropped,true,'letztes Talent lässt sich verlernen');
+ assert.ok(rare.talents.some(id=>simulate({...base,gear:'rare',drop:id}).dropped===false),'frühe Talente sind gebunden');
  assert.ok(rare.skills.length>0&&Math.abs(rare.skills.reduce((n,s)=>n+s.share,0)-100)<1,'Kniff-Anteile summieren sich auf 100 %');
 });
 

@@ -6,6 +6,7 @@ export const BALANCE=Object.freeze({
  player:{
   baseHp:600,hpPerLevel:45,            // Lebenspunkte ohne Ausrüstung
   baseStamina:12,basePrimary:5,primaryPerLevel:1, // E-56: halbiert, dafür zählt jeder Punkt doppelt (Grundstärke unverändert) // Grundwerte; Wumms/Taktgefühl/Bastelgrips wachsen je Stufe
+  flatPerLevel:.055,                   // E-59: feste Heil-, Schild- und Deckungswerte wachsen je Stufe wie der Waffenschaden (weapons.perLevel)
   hpPerStamina:30,                     // E-56: Standfestigkeit wirkt nur über Ausrüstung, die jetzt kleine Zahlen trägt
   talentPoints:{perLevelUntil:11,thenEvery:3}, // E-37: bis Stufe 11 ein Punkt je Stufe (10), danach alle 3 Stufen einer → 16 auf Stufe 30; Schlussstein kostet 10 (Verhältnis wie WoW Classic 31/51)
   specLevel:5,                         // Spec-Tor (E-37): bis dahin spielt jede Klasse nur ihren Kern, Talentpunkte werden gespart

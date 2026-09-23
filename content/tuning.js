@@ -40,7 +40,21 @@ export const TUNING={
   'baerbel-stage':{state:{damage:1.2,drain:12},why:'Putzwut lag bei +29 %: 25 % Bonus bei 10 s Dauer war zu viel; 20 % und schnellerer Randale-Verbrauch (12/s) verkürzen den Zustand',since:'2026-09-19'},
   'kevin-hunt':{gamble:{misfire:.15,overMult:2},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8',since:'2026-09-19'}
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
- }
+ },
+ // Spezialisierungen (E-59): Faktor auf den ausgeteilten Schaden (damage) bzw. feste Heilung (healing) der Spec.
+ // Messung: npm run balance:sheet – Schaden/s relativ zum Median der Schadens-Specs, Mittel aus Einzelziel und drei Zielen,
+ // Ø Stufe 10–30, Ausrüstung selten, Pfade 0–2. Ziel: Schadens-Specs 1,0 · Tanks ≈ 0,82 (dazu Schutz) · Heiler ≈ 0,75 (dazu Heilung).
+ specs:{
+  'kevin-hunt':{damage:1.42,why:'0,61 des Medians auf allen Stufen (Glücksspiel trägt zu wenig); stark im Einzelziel, schwach in Gruppen – ×1,42 bringt das Mittel auf ≈ 1,0',since:'2026-09-23'},
+  'kevin-fuse':{damage:.88,why:'Kettensprünge und Lunten: 1,24 im Dreierkampf, 0,84 im Einzelziel, steigt mit der Stufe; ×0,88 → Mittel ≈ 1,0',since:'2026-09-23'},
+  'dieter-brawl':{damage:.72,why:'1,14 im Dreierkampf, 1,6 im Einzelziel; ×0,72 → Mittel ≈ 1,0 (nach korrigierter Zauberzeit im Sheet: ×0,76 ergab 1,05)',since:'2026-09-23'},
+  'baerbel-stage':{damage:.93,why:'Putzwut: Mittel 1,03 ohne Faktor; ×0,93',since:'2026-09-23'},
+  'baerbel-feedback':{damage:1.09,why:'Mittel 0,92, fällt mit der Stufe leicht ab; ×1,09',since:'2026-09-23'},
+  'dieter-wall':{damage:1.08,why:'Tank: Mittel 0,76 ohne Faktor (Einzelziel stark, Gruppe schwach); ×1,08 → ≈ 0,82 plus Schutz',since:'2026-09-23'},
+  'kevin-iron':{damage:1.21,why:'Tank: Mittel 0,68 ohne Faktor; ×1,21 → ≈ 0,82',since:'2026-09-23'},
+  'dieter-brew':{damage:1.15,why:'Schutz & Heilung: Mittel 0,65 ohne Faktor; ×1,15 → ≈ 0,75. Die Heilung des Zapfmeisters entsteht aus Schaden und wächst mit',since:'2026-09-23'},
+  'baerbel-care':{damage:1.1,healing:1.15,why:'Heilerin: Mittel 0,68 ohne Faktor und ~⅓ der Zapfmeister-Heilung; ×1,1 Schaden, ×1,15 feste Heilung',since:'2026-09-23'}
+ },
 };
 // Zusätze gewürfelter Beute (E-40, content/affixes.js). Eigener Block statt TUNING-Zeile, weil TUNING nur Korrekturen je ID trägt: Budgetanteil je Zusatz, Punkte je Budgetpunkt, Chance bei Ungewöhnlich.
 // Zusätze kommen OBEN AUF das Grundbudget (BALANCE.items) – ein Fundstück wird dadurch nie schwächer, gespeicherte Teile gewinnen höchstens maxGain.
@@ -51,5 +65,7 @@ export const AFFIX_TUNING={
   minPoints:1,rate:{might:1,finesse:1,wit:1,stamina:1,armorRating:1,why:'E-56: alle Werte zählen gleich als Punkte (Dicke Haut vorher ×3); ein Zusatz bringt mindestens minPoints Punkt, auch an Teilen der Stufe 1',since:'2026-09-23'},
   why:'uncommonChance .5: die Hälfte der gewöhnlichen Funde bleibt schlicht, damit ein Zusatz auffällt. maxGain .2 ist der Deckel, den content/checks/loot.js gegen die Summe der share-Werte prüft',since:'2026-09-20'
 };
+/** Faktoren einer Spezialisierung (E-59); fehlt ein Eintrag, gilt 1. */
+export const specOutput=spec=>({damage:1,healing:1,...(TUNING.specs?.[spec]||{})});
 /** Legt Zahlen aus `overrides[id]` flach über `target[id]`; verschachtelte Objekte (stats, weapon) werden gemischt. */
 export function applyTuning(target,overrides={}){for(const [id,patch] of Object.entries(overrides)){const t=target[id];if(!t)continue;const {why,since,...values}=patch;for(const [k,v] of Object.entries(values))t[k]=v&&typeof v==='object'&&!Array.isArray(v)?{...(t[k]||{}),...v}:v;}return target;}
