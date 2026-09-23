@@ -10,6 +10,8 @@ Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm 
 
 Aktiver Grafikstandard: [Präzisionspixel](docs/PRAEZISIONSPIXEL-2026-09-17.md), Laufzeitkatalog `assets/precision/runtime/catalog.json`. Alte kleine Exporte nur als Vergleich verwenden.
 
+**Bilder selbst anfordern (E-51):** `npm run sprites:generate -- tools/sprite-pipeline/<runde>-jobs.json [--only=id] [--force] [--dry-run]` erzeugt die Originale über das eingebaute Imagegen-Werkzeug von Codex (ChatGPT-Abo, kein API-Schlüssel) und schreibt die Herkunft nach `assets/precision/generation.json`; danach `npm run sprites:precision && node scripts/pwa-cache.mjs`. Anleitung und Fallen: [docs/BILDPIPELINE-DIREKT-2026-09-23.md](docs/BILDPIPELINE-DIREKT-2026-09-23.md).
+
 ## Modulgrenzen
 
 | Bereich | Dateien | Wer arbeitet dort |

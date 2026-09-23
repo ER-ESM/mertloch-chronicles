@@ -632,3 +632,22 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Verworfen.** *`desynchronized`-Leinwand* – spart die Übergabe, verschiebt die Arbeit aber nur (Hauptfaden 54 → 73 %). *CPU-Leinwand (`willReadFrequently`)* – kein Unterschied. *Statische Objekte in den Boden-Zwischenspeicher* – nur ~2 ms, Verdeckung mit Figuren wäre aufwendig. *Bodenkacheln im Web Worker* – `terrain.js` hängt an Texturen und Weltgeometrie; lohnt erst, wenn Vorausladen nicht reicht.
 
 **Offen.** Nachts ohne Grafikkarte hält die Effektschicht (Nebel, Glühwürmchen) keine 60 Bilder; Messungen zur Effekt-Auflösung (`softScale`) waren wegen wechselnder Bildschirmrate der Remote-Sitzung nicht belastbar; ohne `requestIdleCallback` (Safari) läuft nur der dringende Weg. Messskripte: `scripts/perf-trace.playwright.js`, `perf-ab.playwright.js`, `perf-compare.playwright.js`.
+
+## E-51 · Grafik wird direkt aus der bauenden Sitzung angefordert (23.09.2026)
+
+**Anlass.** Nutzerfrage: „Für die Grafikpipeline nutzen wir aktuell imagegen von Codex. Die Grafikübergaben machen wir dateibasiert als Anweisungen. Kriegen wir es direkt eingebunden?“ Bisher: Bestellung in `docs/UEBERGABE-GRAFIK-<Datum>.md`, Bilder in einer zweiten Sitzung (Codex) erzeugt, PNGs zurückgelegt, danach Export und Anbindung. Jede Prompt-Korrektur kostete einen Sitzungswechsel.
+
+**Befund.** Die Codex-CLI liegt lokal (0.155.0-alpha.16.3), angemeldet über das ChatGPT-Abo (`auth_mode: chatgpt`, kein API-Schlüssel), Feature `image_generation` stabil und an. `codex exec` erreicht den Bildskill auch nicht-interaktiv. Zwei Stolpersteine: die Kopie unter `~/.codex/.sandbox-bin` bringt `codex-code-mode-host.exe` nicht mit (Werkzeugaufruf bricht ab), und `--image` ist variadisch (schluckt ohne Gleichheitsform den Prompt).
+
+**Entschieden.**
+1. `tools/sprite-pipeline/imagegen.mjs` (`npm run sprites:generate -- <jobs.json>`) fordert je Auftrag genau ein Bild an und legt das **unveränderte Original** unter `job.output` ab. Auftragsblatt bleibt das bestehende Format (`grafik-20260923-jobs.json`).
+2. Der Agent läuft in Sandbox `read-only` und darf nur erzeugen: kein Kopieren, kein Skalieren, kein Nachbearbeiten. Das Werkzeug holt die Datei selbst aus `~/.codex/generated_images/` und kopiert sie. Grund: sonst bearbeitet die Sitzung das Bild eigenmächtig nach, und das Original ist nicht mehr das Original.
+3. Zuschnitt, Palette, Alpha und Laufzeitkatalog bleiben unverändert bei `npm run sprites:precision`; die Byte-Reproduzierbarkeit aus `tests/art-precision.test.mjs` gilt weiter.
+4. Herkunft wird automatisch nach `assets/precision/generation.json` geschrieben (Prompt, Referenzen, `tool: "built-in imagegen"`, `via: "codex exec <Version>"`, Original-Dateiname, SHA-256). Vorhandene Ausgaben werden ohne `--force` übersprungen.
+5. `docs/UEBERGABE-GRAFIK-<Datum>.md` bleibt die Bestellung (was fehlt, warum, wie angebunden) und `docs/GRAFIK-LIEFERUNG-<Datum>.md` die Abnahme. Entfallen ist nur die zweite Sitzung dazwischen.
+
+**Konsequenz.** Die Grafikrolle in `docs/PIPELINE.md` ist keine externe Handübergabe mehr: Prompt schreiben, Bild anfordern, Bild ansehen, Prompt schärfen läuft in einer Runde. Anleitung und Fallen: `docs/BILDPIPELINE-DIREKT-2026-09-23.md`.
+
+**Verworfen.** *OpenAI-Images-API mit eigenem Schlüssel* – wäre planbarer und deterministischer, kostet aber getrennt von dem Abo, das ohnehin bezahlt ist. *Bilder weiter in einer Codex-Sitzung erzeugen lassen und nur den Aufruf automatisieren* – hätte die Nachbearbeitung durch den Agenten und damit die unklare Herkunft beibehalten.
+
+**Offen.** Der Weg hängt daran, dass eine vollständige Codex-Installation lokal erreichbar ist (heute die VS-Code-Erweiterung `openai.chatgpt-*`; sonst `CODEX_BIN` setzen) – auf GitHub Actions läuft er nicht und soll es auch nicht. Das Bildmodell nennt sich nicht; gleicher Prompt liefert nicht dasselbe Bild.

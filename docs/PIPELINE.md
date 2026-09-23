@@ -13,7 +13,7 @@ Ausprägung der studio-weiten Pipeline `D:/Dev/eresm-github-migration/docs/spiel
 | **Inhalt** | `.claude/agents/inhalt-agent.md` | `content/**`, `tests/content.test.mjs`, `scripts/balance-report.mjs`, `scripts/art-brief.mjs`, `scripts/content-check.mjs` | Engine, UI, Grafik | `content/BACKLOG.md` (Engine/UI-Bedarf), `content/ART-BRIEF.md` (Grafik), `content/BALANCE-REPORT.md` |
 | **Engine** | `.claude/agents/engine-agent.md` | `engine.js`, `rpg.js`, `clan.js`, `class-mechanics.js`, `encounters.js`, `itemization.js`, `talents.js`, `progression.js`, `activities.js`, `movement.js`, `tests/*.test.mjs` (außer content) | UI | `docs/UEBERGABE-UI-<Datum>.md` (neue Events, Felder, Funktionen) |
 | **UI** | `.claude/agents/ui-agent.md` | `app.js`, `*-ui.js`, `popup-*.js`, `mobile-*.js`, `*.css`, `index.html`, `scripts/*-check.mjs`, `scripts/*-playtest.mjs` | Grafik | Bedarf an Icons/Sprites → `content/ART-BRIEF.md` ergänzen (nur `look`-Felder in `content/`, sonst Eintrag in `docs/GRAFIK-BEDARF.md`) |
-| **Grafik** | Bild-KI (extern) + Renderer-Anbindung durch UI | `assets/content-art/**`; Anbindung in `*-art.js`, `renderer.js` durch UI | UI | Dateien nach `assets/content-art/<Art>/<ID>.png`, Prompts in `assets/content-art/PROMPTS.md` |
+| **Grafik** | Bild-KI direkt aus der bauenden Sitzung (`npm run sprites:generate`, E-51) + Renderer-Anbindung durch UI | `assets/content-art/**`, `assets/precision/sources/**`; Anbindung in `*-art.js`, `renderer.js` durch UI | UI | Dateien nach `assets/content-art/<Art>/<ID>.png` bzw. `assets/precision/sources/<Datum>/<ID>.png`, Prompts in `assets/content-art/PROMPTS.md`, Herkunft in `assets/precision/generation.json` |
 | **Welt** | bei Bedarf | `world*.js`, `terrain.js`, `cartography.js`, `data/`, `scripts/build-world.mjs`, `scripts/import-world.mjs` | Engine | Kommentar im Commit + `WORLD-GENERATION.md` |
 | **Playtest** | `.claude/agents/neuling-agent.md`, `kenner-agent.md`, `pruefer-agent.md` (nur Browser, kein Spielwissen) | nichts (liest keine Dateien) | Produktion | `docs/PLAYTEST-<Datum>-<persona>.md` (Vorlage `docs/VORLAGE-PLAYTEST.md`); **sperrt den Release**, solange ein Hänger „bricht ab" offen ist |
 | **Produktion** | E. Ruf + Orchestrator-Session | `docs/PITCH.md`, `docs/ENTSCHEIDUNGEN.md` | alle | Entscheidung mit Begründung und verworfener Alternative in `docs/ENTSCHEIDUNGEN.md`; was dort nicht steht, ist nicht entschieden |
@@ -26,7 +26,8 @@ Gemeinsame Dateien (`README.md`, `package.json`, `CLAUDE.md`, `scripts/build-sit
 1 Inhalt definiert          content/*.js + look-Felder            → npm run content:check grün
 2 Engine-Bedarf?            content/BACKLOG.md „Braucht Engine“   → Engine setzt um, Test in tests/
 3 UI-Bedarf?                docs/UEBERGABE-UI-<Datum>.md          → UI baut, Browsertest (scripts/*-check.mjs)
-4 Grafik-Bedarf?            content/ART-BRIEF.md (npm run content:art) → Bild-KI liefert → UI bindet an
+4 Grafik-Bedarf?            content/ART-BRIEF.md (npm run content:art) bzw. Auftragsblatt tools/sprite-pipeline/<runde>-jobs.json
+                            → npm run sprites:generate -- <jobs.json> → npm run sprites:precision → UI bindet an
 5 Balance                   npm run content:balance, Bericht im Commit
 6 Playtest                  Personas Neuling/Kenner/Prüfer auf dem Branch → docs/PLAYTEST-<Datum>-<persona>.md, kein „bricht ab" offen
 7 Merge                     Branch → main nur per Fast-Forward, npm test grün, Playtest frei, Deploy prüfen
