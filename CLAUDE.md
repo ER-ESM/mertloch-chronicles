@@ -6,7 +6,7 @@
 
 **Buildnummer:** `build-info.js` (Arbeitsstand „dev"); `npm run build` stempelt Commit-Zahl, Kurz-Hash und Datum nach `_site/build-info.js`. Im Spiel: Tag am HUD-Kopf (#Nummer) und Hilfe → Einstellungen. Live-Nummer = `git rev-list --count origin/main`.
 
-Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm test` muss vor jedem Commit grün sein; GitHub Actions prüft `main` und veröffentlicht eine separate Pages-Kopie. Das aktuelle Testspiel läuft auf dem eigenen Server unter https://mertloch.esm-consultant.de/ (siehe README); Client-Build und Node-Dienst dort separat aktualisieren.
+Browser-Rollenspiel ohne Abhängigkeiten (ES-Module, Canvas, Node-Server). `npm test` muss vor jedem Commit grün sein. Kein GitHub Pages, keine GitHub Actions (E-63). Das Spiel läuft nur auf dem eigenen Server unter https://mertloch.esm-consultant.de/ (siehe README); nach dem Push `node scripts/server-refresh.mjs`.
 
 Aktiver Grafikstandard: [Präzisionspixel](docs/PRAEZISIONSPIXEL-2026-09-17.md), Laufzeitkatalog `assets/precision/runtime/catalog.json`. Alte kleine Exporte nur als Vergleich verwenden.
 

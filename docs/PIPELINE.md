@@ -63,7 +63,7 @@ Reihenfolge ist Pflicht: **Inhalt vor Engine vor UI vor Grafik.** Die UI baut ni
 
 **Verbindlich ist die Rollen-Tabelle in `docs/ROLLEN.md` §„Branches und Worktrees“** — dort steht je Rolle Branch und Worktree, dort wird sie gepflegt. Die frühere Tabelle an dieser Stelle war veraltet (Inhalt auf `content-backend`, UI auf `main`) und ist entfallen; der Branch `content-backend` ist stillgelegt (Altbestand, in `main` übernommen, `docs/ENTSCHEIDUNGEN.md` E-19).
 
-Anlegen: `git worktree add -b <branch> D:\Dev\MertlochChronicles-<rolle> origin/main` (existiert der Branch schon: ohne `-b`). Vor jeder Runde `git fetch && git rebase origin/main`. Nach `main` nur Fast-Forward (`git push origin <branch>:main`) nach grünem `npm test` (E-07). Kein `git stash` — der Stash-Stack ist über alle Worktrees geteilt. Nach dem Push prüft die Rolle den Pages-Deploy (`https://er-esm.github.io/mertloch-chronicles/`).
+Anlegen: `git worktree add -b <branch> D:\Dev\MertlochChronicles-<rolle> origin/main` (existiert der Branch schon: ohne `-b`). Vor jeder Runde `git fetch && git rebase origin/main`. Nach `main` nur Fast-Forward (`git push origin <branch>:main`) nach grünem `npm test` (E-07). Kein `git stash` — der Stash-Stack ist über alle Worktrees geteilt. Nach dem Push stößt die Rolle `node scripts/server-refresh.mjs` an und prüft https://mertloch.esm-consultant.de/ (E-63, kein GitHub Pages).
 
 ## Übergabedateien
 
@@ -88,7 +88,7 @@ Vor jedem Merge nach `main`, der Bedienung, Kampf oder Menüs verändert. Seriel
 | `kenner-agent` | „Erreiche Stufe 4, finde deine Rotation und sag mir, ob es flüssig ist." | 50 | wie Neuling |
 | `pruefer-agent` | „Prüfe diese Versprechen: 1 … 2 … 3 …" | 60 | wie Neuling + nummerierte Versprechen aus `docs/PITCH.md`, `GAMEPLAY-KONZEPT-FLUSS.md` §2, Zielbild `MENUE-BEWERTUNG-2026-09-17.md` |
 
-Vorbereitung durch den Orchestrator (die Personas dürfen das nicht wissen): `npm start`, Start-URL `http://localhost:4173` (oder die Pages-URL für den Live-Stand); bei Modul-Änderungen vorher den Service-Worker abmelden und Caches löschen, sonst testet die Persona den alten Stand; leerer Spielstand, wenn der Auftrag „von vorn" heißt (eigenes Browserprofil oder Speicher vorher leeren, nicht durch die Persona). Screenshots landen in `visual-review/playtest-<Datum>/`.
+Vorbereitung durch den Orchestrator (die Personas dürfen das nicht wissen): `npm start`, Start-URL `http://localhost:4173` (oder https://mertloch.esm-consultant.de/ für den Live-Stand); bei Modul-Änderungen vorher den Service-Worker abmelden und Caches löschen, sonst testet die Persona den alten Stand; leerer Spielstand, wenn der Auftrag „von vorn" heißt (eigenes Browserprofil oder Speicher vorher leeren, nicht durch die Persona). Screenshots landen in `visual-review/playtest-<Datum>/`.
 
 Werkzeug-Erkenntnisse aus dem ersten Lauf (2026-09-17, Details in `PLAYTEST-2026-09-17-AUSWERTUNG.md`):
 - **Bewegung nur mit gehaltener Taste oder Klick an Bildposition** über die zwei `run_code`-Snippets in den Persona-Definitionen. `browser_press_key` und `browser_click` bewegen die Figur nicht; ohne Snippets scheitert jede Persona an Hofprobe 2/8 und liefert einen falschen „bricht ab".

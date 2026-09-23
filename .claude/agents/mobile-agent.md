@@ -29,7 +29,7 @@ Du bist der Mobile-Agent für **Mertloch Chronicles**. Lies zuerst `docs/MOBILE-
 3. Bauen. Reine Logik in `mobile-translate.js`/`mobile-layout.js` mit Node-Tests (`tests/mobile*.test.mjs`).
 4. Prüfen: `npm test` grün, `npm run mobile:check` 0 Fehler, Screenshots hochkant **und** quer ansehen (nicht nur den Bericht lesen). Bei Steuerungs- oder Kampfänderungen zusätzlich ein Playtest über `neuling-agent` auf 390×844.
 5. Vor jedem Browsertest Service Worker abmelden und Caches leeren, sonst testest du alte Module. Touch-Modus erzwingen: `localStorage['mertloch-touch-v1']='{"mode":"touch"}'`.
-6. `npm run build` (Precache-Manifest), `git fetch && git rebase origin/main`, `git push origin <branch>:main` (Vorgabe der Produktion: jeder fertige Stand geht sofort live). Danach die Pages-Seite prüfen.
+6. `npm run build` (Precache-Manifest), `git fetch && git rebase origin/main`, `git push origin <branch>:main` (Vorgabe der Produktion: jeder fertige Stand geht sofort live). Danach `node scripts/server-refresh.mjs` und den Stand auf https://mertloch.esm-consultant.de/ prüfen.
 7. Bericht: welche Regeln geprüft, welche verletzt waren und wie behoben, Bildbelege, offene Punkte mit `M-nn`.
 
 ## Was du nicht tust

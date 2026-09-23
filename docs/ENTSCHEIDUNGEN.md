@@ -12,7 +12,7 @@ Regeln für dieses Dokument:
 
 | Nr | Titel | Datum | Stand |
 |---|---|---|---|
-| E-01 | Veröffentlichung über GitHub Pages, Spielstand im Browser | 2026-09-11 | gilt |
+| E-01 | Veröffentlichung über GitHub Pages, Spielstand im Browser | 2026-09-11 | abgelöst durch E-35 und E-63 |
 | E-02 | Drei Clan-Archetypen, universelle Werte, drei Spezialisierungen | 2026-09-11 | gilt, Werteliste fortgeschrieben durch E-53 |
 | E-03 | Inhaltsschicht `content/` mit Schema und `content:check` | 2026-09-11 | gilt |
 | E-04 | IDs sind Speicherschlüssel | 2026-09-11 | gilt |
@@ -50,7 +50,7 @@ Regeln für dieses Dokument:
 ---
 
 ## E-01 · Veröffentlichung über GitHub Pages, Spielstand im Browser
-**Datum:** 2026-09-11 · **Stand:** gilt
+**Datum:** 2026-09-11 · **Stand:** abgelöst durch E-35 (eigener Server) und E-63 (GitHub Pages entfernt)
 
 **Kontext.** Das Spiel soll ohne Installation und ohne laufende Betriebskosten erreichbar sein.
 
@@ -963,3 +963,14 @@ Balance-Bericht:
 9. **Übersetzung:** Tastenhinweise wie „· Taste N“ entfallen auf Touch, auch in Freischalt-Bannern.
 
 **Prüfung.** `npm run mobile:check` (hoch, quer, klein, Sitzung, Desktop). Der Schritt „Gespräch“ bildet jetzt ab, dass der erste Tipp außer Reichweite nur zu Ida führt.
+
+## E-63 · GitHub Pages und GitHub Actions entfernt (23.09.2026)
+
+**Kontext.** Seit E-35 läuft das Spiel auf dem eigenen Server (https://mertloch.esm-consultant.de/). Der Actions-Workflow `pages.yml` veröffentlichte nur noch eine Solo-Kopie auf GitHub Pages und war mit seinen Browserprüfungen dauerhaft rot, ohne etwas über den Live-Stand auszusagen.
+
+**Entscheidung (Nutzer).** `.github/workflows/pages.yml` ist gelöscht, GitHub Pages ist abgeschaltet. Es gibt keinen CI-Lauf mehr.
+
+**Konsequenzen.**
+- Live ist allein der eigene Server: Die Aufgabe `MertlochUpdate` zieht `main` alle 10 Minuten; sofort mit `node scripts/server-refresh.mjs` (`--status` zeigt den Live-Build).
+- `npm test` und die betroffenen Browserprüfungen laufen lokal vor dem Push (E-07). Die Skripte (`ui:check`, `hud:check`, `professions:check` …) bleiben bestehen.
+- Links auf `er-esm.github.io/mertloch-chronicles` in älteren Dokumenten sind tot; es gilt die Server-Adresse.

@@ -95,7 +95,7 @@ Alle Links öffnen die veröffentlichten Browserseiten, keine Quellcodedateien.
 
 ## Lokal starten
 
-Für Entwicklung und Prüfskripte wird **Node.js 24** verwendet, ebenso in GitHub Actions. Es gibt keine npm-Abhängigkeiten; `npm install` ist nicht nötig.
+Für Entwicklung und Prüfskripte wird **Node.js 24** verwendet. Es gibt keine npm-Abhängigkeiten; `npm install` ist nicht nötig.
 
 ```sh
 git clone https://github.com/ER-ESM/mertloch-chronicles.git
@@ -134,7 +134,7 @@ Weitere Werkzeuge: `npm run content:balance` erzeugt den [Balance-Bericht](conte
 
 Das Testspiel läuft auf dem eigenen Server unter **https://mertloch.esm-consultant.de/**. Caddy liefert den Client-Build aus `_site/`; der Node-Spielserver stellt Konten, Cloud-Spielstände und WebSocket-Koop bereit. Einrichtung und Betrieb: [Online Stufe B](docs/ONLINE-STUFE-B-2026-09-19.md). Änderungen am Spielserver benötigen zusätzlich zur Client-Auslieferung einen Neustart des Node-Dienstes.
 
-Der vorhandene [GitHub-Actions-Workflow](https://github.com/ER-ESM/mertloch-chronicles/actions/workflows/pages.yml) prüft Tests, Build und Browserabläufe; seine Pages-Veröffentlichung ist unabhängig vom produktiven Server. Ein erfolgreicher GitHub-Push allein belegt deshalb keinen aktualisierten Testspiel-Stand. Spiel, Kartendaten, Schriften und Laufzeitgrafiken werden mitgeliefert; Grafikquellen und Reviewbilder gehören nicht zum Offline-Spielpaket.
+Es gibt keine GitHub-Pages-Fassung und keinen GitHub-Actions-Lauf mehr (E-63). Der Server zieht `main` alle 10 Minuten; sofort aktualisiert `node scripts/server-refresh.mjs`, den Live-Build zeigt `--status`. Tests und Browserprüfungen laufen lokal vor dem Push. Spiel, Kartendaten, Schriften und Laufzeitgrafiken werden mitgeliefert; Grafikquellen und Reviewbilder gehören nicht zum Offline-Spielpaket.
 
 ## Mitwirkende
 
