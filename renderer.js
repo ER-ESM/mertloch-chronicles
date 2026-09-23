@@ -60,6 +60,15 @@ let labelBoxes=[];
 let labelQueue=null,labelTarget=null;
 // Figuren unter dem noch sichtbaren Dach der Bude: ihre Schilder und Auftragszeichen dürfen nicht durchs Dach scheinen.
 let hideLabels=false;
+/** Lebensbalken über Gegnern (MMO-Maßstab): dunkler Rahmen, Balken mit Glanzkante, dahinter eine helle Verlust-Spur,
+ *  die dem Treffer verzögert folgt – man sieht, wie viel der letzte Schlag genommen hat. */
+function nameplate(c,e,y,neutral){const k=Math.max(0,Math.min(1,e.hp/e.maxHp)),now=performance.now();
+ if(e.plateChip==null||k>e.plateChip){e.plateChip=k;e.plateHit=now;}else if(k<e.plateLast)e.plateHit=now;e.plateLast=k;
+ if(now-e.plateHit>380)e.plateChip=Math.max(k,e.plateChip-Math.min(50,now-(e.plateTick||now))/1000*.9);e.plateTick=now;
+ const x=e.x-19;rect(c,'#150d0b',x-1,y-1,40,6);rect(c,'#3a2521',x,y,38,4);
+ if(e.plateChip>k)rect(c,'#f6e3b4',x+38*k,y,38*(e.plateChip-k),4);
+ rect(c,neutral?'#c9a55a':'#b8404a',x,y,38*k,4);rect(c,neutral?'#f1d894':'#ea7d7c',x,y,38*k,1);
+ if(e.elite||e.type==='boss'){c.strokeStyle='#e8c170';c.lineWidth=.6;c.strokeRect(x-1.3,y-1.3,40.6,6.6);}}
 const FURNITURE=['bench','cart','lantern'];
 /** Treffer-Blitz (Hades/Diablo-Vorbild): solange ein Gegner getroffen ist (e.hurt, 0,15 s), wird er einmal in eine kleine Ebene gezeichnet,
  *  hell übertüncht und mit leichtem Rückstoß vom Helden weg eingesetzt. Sonst zeichnet `draw` direkt – ohne Mehrkosten. */
@@ -215,7 +224,7 @@ export class Renderer {
     for(const f of g.fx)if(visible(f,(f.radius||60)+40)||f.from&&visible(f.from,100))this.drawEffect(c,f,time);
     drawCombatStates(c,g,visible);
     // Namen und Lebensbalken sitzen über dem gelieferten Bogen; die Weltposition selbst bleibt unverändert.
-    for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const dummy=(e.tutorial||e.dummy)&&hasContentAsset('ui-arena-dummy')?37:0;const art=e.tutorial||e.dummy?0:liveActorHeight(e.variant||e.bossId||e.skin,e.variant);const y=e.y-(dummy||(art?art+11:e.tutorial?58:e.type==='boss'?(e.variant==='automat'?56:41):e.type==='cultist'?36:e.elite?37:29));if(e===g.target||e.aggro||distance(e,p)<160){if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))label(c,e.name,e.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);rect(c,'#233b2c',e.x-19,y+4,38,4);rect(c,e.behavior==='neutral'&&!e.aggro?'#d9b86e':'#bb7279',e.x-18,y+5,36*e.hp/e.maxHp,2);if(e.elite)drawContentIcon(c,'ui-elite-badge',Math.round(e.x-29),Math.round(y-9),16);}
+    for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const dummy=(e.tutorial||e.dummy)&&hasContentAsset('ui-arena-dummy')?37:0;const art=e.tutorial||e.dummy?0:liveActorHeight(e.variant||e.bossId||e.skin,e.variant);const y=e.y-(dummy||(art?art+11:e.tutorial?58:e.type==='boss'?(e.variant==='automat'?56:41):e.type==='cultist'?36:e.elite?37:29));if(e===g.target||e.aggro||distance(e,p)<160){if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))label(c,e.name,e.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);nameplate(c,e,y+4,e.behavior==='neutral'&&!e.aggro);if(e.elite)drawContentIcon(c,'ui-elite-badge',Math.round(e.x-29),Math.round(y-9),16);}
       if(e.spawnGrace>0&&distance(e,p)<100)label(c,'Taucht auf …',e.x,y-9,'#d6c5de',7);if(e.ai==='returning')label(c,'Zieht ab',e.x,y-9,'#b3c5dc',7);if(e.mark>0){label(c,'!',e.x,y-10,'#bce3d6',11);}
       if(e.cast){const yy=y+11;rect(c,'#282b23',e.x-23,yy,46,4);rect(c,e.cast.interruptible?'#dbb967':'#d99071',e.x-22,yy+1,44*(1-e.cast.remaining/e.cast.total),2);}
     }
