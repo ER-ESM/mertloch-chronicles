@@ -27,7 +27,7 @@ try{
  await tapPoint(point);assert.equal(await run('return g.companionAidId;'),'merc-radler-rita');
  await click('[data-companion-select=""]');assert.equal(await run('return g.companionAidId;'),null);
  await run('g.target=null;g.stopAuto();');await tapPoint(point);assert.equal(await run('return g.companionAidId;'),'merc-radler-rita');await wait(150);assert.match(await run('return document.querySelector("#targetName").textContent;'),/Radler-Rita/);assert.match(await run('return document.querySelector("#targetHp").textContent;'),/\//);
- await run('g.companions[1].x=g.player.x+600;g.cooldowns.heal=0;g.gcd=0;');await healKey();assert.equal(await run('return g.cooldowns.heal;'),0);assert.ok(await run('return document.querySelector(".companion-frame.is-selected").classList.contains("aid-unavailable");'));
+ await run('g.companions[1].x=g.player.x+600;g.cooldowns.heal=0;g.gcd=0;');await healKey();assert.equal(await run('return g.cooldowns.heal;'),0);/* Rahmen aktualisiert sich mit dem HUD-Takt (100 ms) */await wait(300);assert.ok(await run('return document.querySelector(".companion-frame.is-selected").classList.contains("aid-unavailable");'));
  pass('World selection, friendly target health, explicit self-selection and range failure without cooldown');
  await click('[data-companion-manage=""]');assert.ok(await run('return !!document.querySelector(".popup-companions");'));await b.press('Escape');
  await b.resize(390,844);await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});await fixture(true);
