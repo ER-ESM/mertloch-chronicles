@@ -180,6 +180,7 @@ export function describeEntry(game,kind,id){
 export function activeBuffs(game){
  const t=game.time,out=[],name=id=>game.skills.find(s=>s.id===id)?.name||id;
  if(game.buffs?.remaining>0)out.push({kind:'buff',id:'buff',name:game.buffs.name||'Stärkung',remaining:round(game.buffs.remaining,2),shield:game.buffs.shield||0,describe:{kind:'buff',id:'buff'}});
+ for(const e of Object.values(game.classBuffs||{}))if(e.remaining>0)out.push({kind:'buff',id:'classBuff:'+e.id,name:(CONTENT.CLASS_BUFFS[e.id]?.name||e.id)+(e.from&&e.from!==(game.heroName||game.member?.name)?' ('+e.from+')':''),remaining:round(e.remaining,2),describe:{kind:'classBuff',id:e.id}});
  if(game.partyBuff?.remaining>0)out.push({kind:'buff',id:'party-buff',name:game.partyBuff.name+' ('+game.partyBuff.from+')',remaining:round(game.partyBuff.remaining,2),shield:game.partyBuff.shield||0,describe:{kind:'buff',id:'buff'}});
  if(game.momentum?.stacks>0&&game.momentum.until>t)out.push({kind:'buff',id:'momentum',name:'Schwung',remaining:round(game.momentum.until-t,2),stacks:game.momentum.stacks,describe:{kind:'buff',id:'momentum'}});
  if(game.classState?.guard>0)out.push({kind:'buff',id:'guard',name:'Deckung',remaining:null,value:Math.round(game.classState.guard),describe:{kind:'buff',id:'guard'}});

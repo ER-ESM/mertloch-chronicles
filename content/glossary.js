@@ -10,6 +10,8 @@ import {SKILL_DAMAGE,CAST_TIMES,COMBAT_RULES} from './combat.js';
 import {TALENT_ROWS,CLASS_SPECS,TALENT_GLOSSARY,TALENT_CELLS} from './talents.js';
 import {PROC_RULES,PROC_TRIGGERS} from './procs.js';
 import {CLAN_MEMBERS} from './classes.js';
+import {CLASS_BUFFS,CLASS_BUFF_STATS,CLASS_BUFF_GLOSSARY,classBuffValueText} from './class-buffs.js';
+import {CLASS_BUFF_TUNING} from './tuning.js';
 
 const P=BALANCE.player,R=BALANCE.ratings,W=BALANCE.power,MO=BALANCE.momentum,PR=BALANCE.procs;
 /** Zahl mit deutschem Dezimalkomma. */
@@ -138,13 +140,14 @@ export const GLOSSARY={
   long:'Jede Stufe kostet Material und gibt einen Anteil obendrauf – Regeneration außerhalb des Kampfes, Wirkung der Verpflegung, Beuteausbeute. Die Anteile werden additiv gerechnet und wirken in jedem Kampf, ohne dass du etwas drücken musst.'}
 };
 for(const [k,v] of Object.entries(TALENT_GLOSSARY))if(!GLOSSARY[k])GLOSSARY[k]=v;
+for(const [k,v] of Object.entries(CLASS_BUFF_GLOSSARY))if(!GLOSSARY[k])GLOSSARY[k]=v;
 export const GLOSSARY_IDS=Object.keys(GLOSSARY);
 export const hasTerm=id=>Object.prototype.hasOwnProperty.call(GLOSSARY,id);
 
 // --- Zahlenblöcke ableiten -------------------------------------------------------------------
 // Vertrag: numbers = [{label,value,unit,source}] – value ist bereits gerundet und lesbar, source nennt die Datei,
 // aus der die Zahl stammt. Nichts hiervon wird von Hand gepflegt; ändert sich eine Definition, ändert sich der Block.
-const SK='content/skills.js',CB='content/combat.js',TL='content/talents.js',PRC='content/procs.js',CL='content/classes.js',BL='content/balance.js',CM='class-mechanics.js';
+const TU='content/tuning.js',SK='content/skills.js',CB='content/combat.js',TL='content/talents.js',PRC='content/procs.js',CL='content/classes.js',BL='content/balance.js',CM='class-mechanics.js';
 const n=(label,value,unit='',source=SK)=>({label,value:typeof value==='number'?nice(value):value,unit,source});
 /** Felder einer Kniff-Definition → Zahlenzeile. Reihenfolge = Anzeigereihenfolge. */
 const SKILL_FIELDS=[
@@ -262,6 +265,7 @@ export function effectNumbers(effects={},source=TL){
  const out=[];
  for(const [key,value] of Object.entries(effects)){
   if(key.startsWith('proc:')){const r=PROC_RULES[key.slice(5)];if(r)out.push(...procNumbers(r));continue;}
+  if(key.startsWith('classBuff:')){const b=CLASS_BUFFS[key.slice(10)];if(b)out.push(n(b.name+' stärker',Math.round(value*CLASS_BUFF_TUNING.talentStep*100),'%',TU));continue;}
   const d=EFFECT_INFO[key];if(!d)continue;
   const v=d.fixed!==undefined?d.fixed:(d.scale?d.scale(value):value);
   out.push(n(d.label,v,d.unit||'',d.source||source));
@@ -284,7 +288,7 @@ function procNumbers(r){
 }
 
 // --- describe(kind,id) -----------------------------------------------------------------------
-export const DESCRIBE_KINDS=['skill','buff','throw','ground','talentSkill','talent','passive','proc'];
+export const DESCRIBE_KINDS=['skill','buff','throw','ground','talentSkill','talent','passive','proc','classBuff'];
 const memberOf=id=>CLAN_MEMBERS.find(m=>m.id===id)||null;
 export const talentCell=id=>{for(const [member,specs] of Object.entries(CLASS_SPECS))for(let s=0;s<specs.length;s++){const prefix=specs[s]+'-';if(id.startsWith(prefix)){const i=Number(id.slice(prefix.length));if(Number.isInteger(i)&&i>=0&&i<(TALENT_ROWS[specs[s]]?.length||0))return {member,spec:specs[s],index:i,cell:i<10?s*10+i:-1,row:TALENT_CELLS[specs[s]]?.[i]?.row??0,path:TALENT_CELLS[specs[s]]?.[i]?.path??0};}}return null;};
 /** Rohdefinition + Herkunft eines Elements. Kein Text, nur Struktur – describe() setzt daraus die Anzeige zusammen. */
@@ -302,6 +306,8 @@ export function element(kind,id){
   return {def:t,cls:cell.member,spec:cell.spec,name:t.name,text:t.text,info:t.info,icon:{set:'talents',member:cell.member,cell:cell.cell,spec:cell.spec,index:cell.index}};}
  if(kind==='passive'){const m=memberOf(id);if(!m)return null;
   return {def:m.passives||{},cls:id,name:m.name,text:m.passive,info:m.passiveInfo,icon:{set:'clan',member:id,fallback:'person'}};}
+ if(kind==='classBuff'){const b=CLASS_BUFFS[id];if(!b)return null;
+  return {def:b,cls:b.cls,skillId:id,name:b.name,text:b.text,use:b.use,flavor:b.flavor,info:b.info,icon:{set:'skills',member:b.cls,skill:id,fallback:b.icon}};}
  if(kind==='proc'){const r=PROC_RULES[id];if(!r)return null;
   return {def:r,name:r.name||id,text:r.text,info:r.info,icon:{set:'icons',key:r.icon||'burst'}};}
  return null;
@@ -318,6 +324,7 @@ export function describe(kind,id){
  if(kind==='skill'||kind==='buff'||kind==='throw'||kind==='ground'||kind==='talentSkill')numbers=skillNumbers(e.def,e.cls,e.skillId);
  else if(kind==='talent'){numbers=effectNumbers(e.def.effects);if(e.def.grants)numbers.unshift(n('Schaltet frei',TALENT_SKILLS[e.def.grants].name,'',SK));}
  else if(kind==='proc')numbers=procNumbers(e.def);
+ else if(kind==='classBuff')numbers=[...Object.entries(e.def.effects).map(([k,v])=>n(CLASS_BUFF_STATS[k].label,classBuffValueText(k,v),'',TU)),n('Dauer',Math.round(e.def.duration/60),'min',TU),n('Kosten','keine','',TU),n('Gelernt auf Stufe',e.def.level,'','content/class-buffs.js')];
  else if(kind==='passive'){const L={strikeCd:['Grundangriff alle','s'],strikeRange:['Reichweite des Grundangriffs','m'],strikeGain:['Randale je Grundangriff',''],dashCd:['Ausweichen alle','s'],parryHeal:['Heilung je geglückter Parade','Leben'],damageTaken:['Eingehender Schaden','%'],beatEnergy:['Zusätzliche Randale im Takt',''],interruptBurstCd:['Spezialkniff nach Unterbrechung','s kürzer']};
   for(const [k,v] of Object.entries(e.def)){const d=L[k];if(!d)continue;
    numbers.push(n(d[0],k==='strikeRange'?metres(v):k==='damageTaken'?v*100:v,d[1],CL));}
@@ -335,6 +342,7 @@ export function describableIds(){
  for(const id of Object.keys(TALENT_SKILLS))out.push({kind:'talentSkill',id});
  for(const [spec,rows] of Object.entries(TALENT_ROWS))rows.forEach((_,i)=>out.push({kind:'talent',id:spec+'-'+i}));
  for(const id of Object.keys(PROC_RULES))out.push({kind:'proc',id});
+ for(const id of Object.keys(CLASS_BUFFS))out.push({kind:'classBuff',id});
  return out;
 }
 /** Shift-Block: die langen Glossarerklärungen zu den Begriffen eines Elements. */

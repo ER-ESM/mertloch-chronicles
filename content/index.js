@@ -53,3 +53,4 @@ export * from './professions.js';
 export * from './admin-commands.js';
 export * from './unlocks.js';
 export * from './intro.js';
+export * from './class-buffs.js';

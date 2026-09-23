@@ -8,6 +8,7 @@ import {BASE_SKILLS,TALENT_SKILLS} from './skills.js';
 import {TALENT_ROWS,CLASS_SPECS,SPECS} from './talents.js';
 import {PROC_RULES} from './procs.js';
 import {CLAN_MEMBERS} from './classes.js';
+import {CLASS_BUFFS} from './class-buffs.js';
 
 /** Art: was für ein Ding ist das? Genau eine je Element. */
 export const KINDS={
@@ -18,7 +19,7 @@ export const KINDS={
  talent:{name:'Talent',short:'Dauerhafte Regel aus dem Talentbaum. Wirkt ohne Knopf, verändert aber deine Kniffe.'},
  proc:{name:'Auslöser',short:'Zündet von selbst, wenn seine Bedingung eintritt. Kommt immer aus einem Talent.',term:'proc'}
 };
-const KIND_OF={skill:'skill',throw:'skill',ground:'skill',talentSkill:'talentSkill',buff:'buff',passive:'passive',talent:'talent',proc:'proc'};
+const KIND_OF={skill:'skill',throw:'skill',ground:'skill',talentSkill:'talentSkill',buff:'buff',classBuff:'buff',passive:'passive',talent:'talent',proc:'proc'};
 
 /** Funktion: wofür ist es da? Reihenfolge = Anzeigereihenfolge. `term` verweist auf die genaue Regel im Glossar. */
 export const FUNCTIONS={
@@ -74,6 +75,7 @@ export function skillKey(cls,skillId){
  if(skillId==='buff')return 'buff:'+cls;
  if(skillId==='throw'||skillId==='ground')return skillId+':'+cls;
  if(TALENT_SKILLS[skillId])return 'talentSkill:'+skillId;
+ if(CLASS_BUFFS[skillId]?.cls===cls)return 'classBuff:'+skillId;
  return null;
 }
 /** Welches Talent hängt an diesem Auslöser / dieser Talentfähigkeit? → Talent-IDs */
@@ -92,6 +94,7 @@ export function belongsTo(kind,id){
   if(cell){cls=cell.member;spec=cell.spec;}const r=PROC_RULES[id];modifies=[r?.skill,r?.zone].map(s=>skillKey(cls,s)).filter(Boolean);}
  else if(kind==='talentSkill'){source=talentsWith(t=>t.grants===id);const cell=source[0]&&talentCell(source[0]);if(cell){cls=cell.member;spec=cell.spec;}}
  else if(kind==='skill')cls=String(id).split('/')[0];
+ else if(kind==='classBuff')cls=CLASS_BUFFS[id]?.cls||null;
  else cls=String(id);
  return {cls,className:member(cls)?.name||'',spec,specName:spec?SPECS[spec]?.name||'':'',modifies:[...new Set(modifies)],source};
 }
@@ -104,7 +107,7 @@ export const EXTRA_FUNCTION={'talentSkill:slam':['aufbau'],'talentSkill:encore':
 export function functionsOf(kind,id){
  const d=describe(kind,id);if(!d)return [];
  const found=new Set();
- const slot=kind==='skill'?String(id).split('/')[1]:kind==='buff'?'buff':kind==='throw'||kind==='ground'?kind:null;
+ const slot=kind==='skill'?String(id).split('/')[1]:kind==='buff'||kind==='classBuff'?'buff':kind==='throw'||kind==='ground'?kind:null;
  if(slot&&SLOT_FUNCTION[slot])found.add(SLOT_FUNCTION[slot]);
  if(kind==='talentSkill'&&TALENT_SKILLS[id]?.ground)found.add('flaeche');
  // Aktive Kniffe nennen in ihren Begriffen auch Zusammenhänge (eigene Abklingzeit, „stärker gegen Markierte", „raus aus Flächen").

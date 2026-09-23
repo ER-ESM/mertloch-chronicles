@@ -1,7 +1,10 @@
 // Presentation events describe completed simulation outcomes; they never roll RNG or change combat.
+import {classBuffsFor} from './content/index.js';
 export const FX_THEMES={dieter:{sprite:'beer',color:'#efb94f',light:'#fff0bd'},baerbel:{sprite:'citrus',color:'#ff9b45',light:'#ffe4b0'},kevin:{sprite:'electric',color:'#50d4e7',light:'#caffef'}};
 const common={auto:'attack',strike:'attack',throw:'throw',mark:'mark',burst:'burst',interrupt:'interrupt',parry:'ready',dash:'dash',heal:'heal',buff:'buff',ground:'deploy'};
 export const SKILL_FX={dieter:{...common,barricade:'barricade',slam:'slam',keg:'keg'},baerbel:{...common,sanctuary:'sanctuary',infusion:'infusion',encore:'encore'},kevin:{...common,detonate:'detonate',magnet:'magnet',snare:'snare'}};
+// Klassen-Buffs (class-buffs.js) nutzen das Bild der Stärkung; es erscheint am Ziel (Held oder Söldner).
+for(const cls of Object.keys(SKILL_FX))for(const b of classBuffsFor(cls))SKILL_FX[cls][b.id]='buff';
 export function emitCombatFx(g,kind,at,data={}){
  if(!g.effect||!Number.isFinite(at?.x)||!Number.isFinite(at?.y))return;
  const duration=data.duration??({hit:.36,heal:.75,guard:.6,proc:1.05,'proc-use':.45,burst:.85,detonate:.7,dash:.42,interrupt:.6,parry:.6,hurt:.4,dodge:.45,deploy:.45,death:.85}[kind]||.65);

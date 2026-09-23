@@ -1,8 +1,10 @@
-import {HUD_TEXT as T} from './content/index.js';
+import {HUD_TEXT as T,CLASS_BUFF_TEXT as CB} from './content/index.js';
 import {collectAuras} from './auras.js';
 import {paintSkillIcon} from './skill-art.js';
 const groups={buffs:'buffStrip',debuffs:'debuffStrip',targetDebuffs:'targetDebuffStrip'};
-const clock=n=>n===null?T.untilUsed:Math.ceil(Math.max(0,n))+' '+T.seconds;
+// Klassen-Buffs laufen 30 Minuten: ab einer Minute zählt die Leiste in Minuten.
+const clock=n=>n===null?T.untilUsed:n>=60?Math.ceil(n/60)+' '+CB.minutes:Math.ceil(Math.max(0,n))+' '+T.seconds;
+const short=n=>n>=60?Math.ceil(n/60)+CB.minutesShort:Math.ceil(n)+T.seconds;
 export function mountAuraUI(root,getGame){
  const bars={},peaks=new Map();let last=0,owner=null,ownerGroup=null,report=null,identity=null;
  for(const [key,id] of Object.entries(groups)){const el=document.getElementById(id)||document.createElement('section');el.id=id;el.className='aura-bar aura-'+key;el.removeAttribute('aria-live');el.setAttribute('aria-label',T[key]);el.innerHTML=`<h2>${T[key]}</h2><div class="aura-icons"></div>`;if(!el.parentNode)root.append(el);bars[key]=el;}
@@ -13,7 +15,7 @@ export function mountAuraUI(root,getGame){
  function paintTooltip(){
   if(!owner)return;const item=report?.[ownerGroup]?.find(a=>a.id===owner.dataset.aura);if(!item){hide();return;}
   tooltip.hidden=false;tooltip.querySelector('strong').textContent=item.name;tooltip.querySelector('p').textContent=item.text;
-  tooltip.querySelector('small').textContent=[ownerGroup==='targetDebuffs'?T.target:T.player,clock(item.remaining),item.stacks?T.stacks+': '+item.stacks+(item.every?'/'+item.every:''):'',item.shield?T.shield+': '+item.shield:'',item.value?T.value+': '+item.value:''].filter(Boolean).join(' · ');
+  tooltip.querySelector('small').textContent=[ownerGroup==='targetDebuffs'?T.target:T.player,clock(item.remaining),item.source||'',item.stacks?T.stacks+': '+item.stacks+(item.every?'/'+item.every:''):'',item.shield?T.shield+': '+item.shield:'',item.value?T.value+': '+item.value:''].filter(Boolean).join(' · ');
   const b=owner.getBoundingClientRect(),r=root.getBoundingClientRect();tooltip.style.left=Math.max(8,Math.min(b.left-r.left,root.clientWidth-tooltip.offsetWidth-8))+'px';tooltip.style.top=Math.max(8,Math.min(b.bottom-r.top+8,root.clientHeight-tooltip.offsetHeight-8))+'px';
  }
  for(const [key,bar] of Object.entries(bars)){
@@ -59,7 +61,7 @@ export function mountAuraUI(root,getGame){
    for(const [i,a] of items.entries()){
     const id=key+':'+a.id;alive.add(id);const duration=Math.max(peaks.get(id)||0,a.duration||0,a.remaining||0);peaks.set(id,duration);
     const button=list.children[i];button.setAttribute('aria-label',[a.name,clock(a.remaining),a.stacks?T.stacks+' '+a.stacks:''].filter(Boolean).join(' · '));
-    button.querySelector('.aura-time').textContent=a.remaining===null?(a.shield||a.value?Math.round(a.shield||a.value):''):Math.ceil(a.remaining)+T.seconds;
+    button.querySelector('.aura-time').textContent=a.remaining===null?(a.shield||a.value?Math.round(a.shield||a.value):''):short(a.remaining);
     button.querySelector('.aura-stacks').textContent=a.stacks>1?a.stacks:'';button.style.setProperty('--aura-spent',duration&&a.remaining!==null?(1-a.remaining/duration)*100+'%':'0%');button.classList.toggle('aura-expiring',a.remaining!==null&&a.remaining<=3);
    }
   }

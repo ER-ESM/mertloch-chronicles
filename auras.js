@@ -3,12 +3,14 @@ import {mechanicHelp,skillHelp} from './mechanic-help.js';
 import {mountSpeedBonus} from './mounts.js';
 import {MOUNTS,MOUNT_UI,AURA_TEXT,AURA_FIELD_SORTS,SPEC_MECHANICS,PROC_RULES} from './content/index.js';
 import {combatStats} from './rpg.js';
+import {classBuffAuras} from './class-buffs.js';
 export function collectAuras(g){
  const out={buffs:[],debuffs:[],targetDebuffs:[]};if(!g||g.dead)return out;
  if(g.player.mount&&MOUNTS[g.player.mount])out.buffs.push({id:'mount',name:MOUNTS[g.player.mount].name,text:MOUNT_UI.mounted(MOUNTS[g.player.mount].name,mountSpeedBonus(g))+'. '+MOUNT_UI.rules,icon:'dash',remaining:null});
+ out.buffs.push(...classBuffAuras(g));
  const st=g.classState||{},m=st.m||{},spec=SPEC_MECHANICS[g.rpg?.talents?.spec],t=g.time||0;
  const skill=id=>g.skills.find(s=>s.id===id),add=(group,id,remaining=null,extra={})=>{const def=AURA_TEXT[id];if(def&&(remaining===null||remaining>0))out[group].push({id,name:def.name,text:def.text,icon:def.icon,remaining,...extra});};
- for(const b of g.activeBuffs()){
+ for(const b of g.activeBuffs()){if(b.describe?.kind==='classBuff')continue;/* eigene Einträge oben (classBuffAuras) */
   const rule=b.mode==='count'?PROC_RULES[b.id]:null,icon=b.kind==='proc'?(skill(b.id)?b.id:rule?.skill||'buff'):{guard:'parry',hot:'heal',momentum:'auto','proc-haste':'buff'}[b.id]||'buff';
   out.buffs.push({...b,id:b.kind+':'+b.id+':'+(b.mode||''),icon,text:rule?.text||AURA_TEXT[b.id]?.text||skill(b.describe?.id)?.text||skill(icon)?.text||'',duration:b.id==='buff'?g.buffs?.duration:undefined,stacks:b.stacks||b.count||0});
  }

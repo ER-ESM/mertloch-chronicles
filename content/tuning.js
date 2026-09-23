@@ -46,7 +46,20 @@ export const TUNING={
   'kevin-hunt':{gamble:{misfire:.15,overMult:2},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8',since:'2026-09-19'}
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
  },
+ // Klassen-Buffs (content/class-buffs.js, docs/KLASSEN-BUFFS-2026-09-23.md): Wirkung je Buff und Wert. Jeder Buff hebt einen anderen Wert,
+ // damit Buffs verschiedener Klassen in der Gruppe zusammen wirken. Größenordnung 5–10 %: spürbar, aber kein Muss für den Korridor.
+ classBuffs:{
+  dosenpfand:{effects:{health:.08},why:'Startwert: +8 % maximales Leben ≈ ein Stufenaufstieg Leben auf Stufe 10; spürbar für Tank und Söldner, ohne den Boss-Korridor zu verschieben (kein Schaden)',since:'2026-09-23'},
+  kutteDrueber:{effects:{armor:.05},why:'Startwert: 5 Prozentpunkte Schadensminderung – knapp ein Fünftel dessen, was ein voller Satz Dicke Haut bringt (E-56: 25–30 %)',since:'2026-09-23'},
+  aperolSpritz:{effects:{energyRegen:.3,healTaken:.08},why:'Startwert: +0,3 Randale/s = 10 % der Kampf-Regeneration (3/s) und +8 % erhaltene Heilung; zwei kleine Hebel statt eines großen, weil beide allein kaum spürbar wären',since:'2026-09-23'},
+  vorherNachher:{effects:{haste:.05},why:'Startwert: +5 % Tempo ≈ +5 % Schaden und kürzere globale Abklingzeit; das stärkste Schadenspaket der sechs, deshalb am unteren Rand',since:'2026-09-23'},
+  kabelbinderSohlen:{effects:{speed:.1},why:'Startwert: +10 % Laufgeschwindigkeit zu Fuß; kein Kampfwert, deshalb am oberen Rand. Reittiere haben ihr eigenes Tempo',since:'2026-09-23'},
+  pfandradar:{effects:{crit:.04},why:'Startwert: +4 Prozentpunkte Glückstreffer-Chance ≈ +2,5 % Schaden (Faktor 1,6); ergänzt Tempo statt es zu verdoppeln',since:'2026-09-23'}
+ },
 };
+/** Rahmen der Klassen-Buffs: Dauer in Sekunden, Verstärkung je Talentstufe (`classBuff:<id>`), Obergrenze der Stärke beim Empfang. */
+export const CLASS_BUFF_TUNING={duration:1800,talentStep:.5,maxPower:2,
+ why:'30 Minuten: einmal vor dem Losziehen zaubern, nicht im Kampf nachhalten. Talentstufe +50 %: sichtbar im Tooltip, bleibt im 5–15-%-Rahmen. maxPower begrenzt, was ein fremder Client per Netz schicken darf',since:'2026-09-23'};
 // Zusätze gewürfelter Beute (E-40, content/affixes.js). Eigener Block statt TUNING-Zeile, weil TUNING nur Korrekturen je ID trägt: Budgetanteil je Zusatz, Punkte je Budgetpunkt, Chance bei Ungewöhnlich.
 // Zusätze kommen OBEN AUF das Grundbudget (BALANCE.items) – ein Fundstück wird dadurch nie schwächer, gespeicherte Teile gewinnen höchstens maxGain.
 export const AFFIX_TUNING={

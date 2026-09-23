@@ -162,7 +162,7 @@ export function createGameServer(options={}){
  // ── Echtzeit: Anwesenheit und Chat ──
  // Client → Server: {t:'pos',w,x,y,f,c,l,sp,s,fl} (fl: 1 = Obergeschoss der Bude)  ·  {t:'chat',ch:'say'|'world',text}
  //                  {t:'offer',item} · {t:'choice',id,c} · {t:'qshare',item} · {t:'buff',b}   (Gruppenspiel: party-play.mjs)
- //                  {t:'aid',to,heal?,b?} · {t:'revive',to} · {t:'trade',op,...} · {t:'wbseen',e,name,where}   (Miteinander: social-play.mjs)
+ //                  {t:'aid',to,heal?,b?,cb?} · {t:'revive',to} · {t:'trade',op,...} · {t:'wbseen',e,name,where}   (Miteinander: social-play.mjs)
  //                  {t:'hit',e,d,max,th?,r?} · {t:'evade',e?} · {t:'dead'} · {t:'party',op,name?} · {t:'who'}   (Regeln: shared-world.mjs)
  // Server → Client: {t:'mob'|'mobs'|'kill'|'reset'|'up'} · {t:'party',leader,members} · {t:'invite',from} · {t:'who',list}
  // Server → Client: {t:'welcome',name,online,history} · {t:'snap',o:[{n,x,y,f,c,l,sp,s}]} (10 Hz, nur Umkreis) · {t:'chat',from,ch,text,at} · {t:'notice',text}

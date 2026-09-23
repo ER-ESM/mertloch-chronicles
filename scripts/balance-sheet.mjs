@@ -2,7 +2,7 @@
 // Misst Schaden, Heilung, Deckung und verhinderten Schaden je Sekunde in einem festen Übungskampf und zerlegt sie:
 // Anteil der Ausrüstung, Beitrag jedes Talents (einmal weglassen), Wert je Wertpunkt (+10 Punkte) und Anteil je Kniff.
 // Alles deterministisch – dieselben Zahlen bei jedem Lauf, damit Änderungen an Werten, Talenten oder Kniffen vergleichbar sind.
-// Aufruf: npm run balance:sheet [-- --quick] [-- --rows = ohne Zerlegung]. Ein Worker je Spezialisierung.  → content/BALANCE-SHEET.md, generated/balance-sheet.json, generated/balance-sheet.csv
+// Aufruf: npm run balance:sheet [-- --quick] [-- --rows = ohne Zerlegung] [-- --buffs = mit allen sechs Klassen-Buffs, nur generated/balance-sheet-buffs.*]. Ein Worker je Spezialisierung.  → content/BALANCE-SHEET.md, generated/balance-sheet.json, generated/balance-sheet.csv
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {Worker,isMainThread,parentPort,workerData} from 'node:worker_threads';
@@ -15,7 +15,8 @@ import {changeSpec,pathBuild,learnTalent,unlearnTalent,talentPoints,TALENTS,SPEC
 import {ITEMS,addItem,equipItem} from '../rpg.js';
 import {registerRoll} from '../itemization.js';
 import {meterReport} from '../combat-meter.js';
-import {CLASS_SPECS,STAT_NAMES,BALANCE,TUTORIAL,ARCHETYPES} from '../content/index.js';
+import {applyClassBuff} from '../class-buffs.js';
+import {CLASS_SPECS,STAT_NAMES,BALANCE,TUTORIAL,ARCHETYPES,CLASS_BUFFS} from '../content/index.js';
 
 export const SHEET={seconds:40,dt:.05,levels:[1,5,10,15,20,30],gear:['none','uncommon','rare','epic'],paths:[0,1,2],attributionLevels:[10,20],attributionGear:'rare',statProbe:10,flag:.15,
  // Zielzahl: Bosse kämpfen allein, Feldgegner kommen per Kettenzug zu zweit oder dritt. Zelle = Mittel beider Lagen.
@@ -45,7 +46,7 @@ function learnBuild(g,spec,path){const budget=Math.max(0,talentPoints(g)),ids=[]
 export const foeLife=(level,targets)=>Math.round(scaledStats(ARCHETYPES[SHEET.foe.type],level,true).hp*(targets===1?SHEET.foe.boss:1));
 
 /** Ein Übungskampf: 40 s gegen targets Gegner (1 = Boss, 3 = Feldgruppe) mit der gemeinsamen Prioritäten-Rotation. */
-export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,drop=null,seconds=SHEET.seconds,targets=3,seed=SHEET.seeds[0]}){
+export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,drop=null,seconds=SHEET.seconds,targets=3,seed=SHEET.seeds[0],buffs=false}){
  const g=new Game(arena(),{classId,level,tutorial:{completed:true}});g.random=typeof seed==='function'?seed():rng(seed);g.lootRandom=()=>.99;
  const specOk=level>=BALANCE.player.specLevel&&spec;if(specOk)changeSpec(g,spec);
  equipSet(g,gear,level);
@@ -54,6 +55,8 @@ export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,dr
  const talents=specOk?learnBuild(g,spec,path):[];
  // Talentbeitrag: genau dieses Talent wieder verlernen; geht das nicht (andere bauen darauf auf), ist es gebunden.
  let dropped=null;if(drop){dropped=unlearnTalent(g,drop);}g.refreshStats?.();
+ // „Mit Klassen-Buffs“: volle Gruppe – alle sechs Buffs ohne Talentverstärkung, wie aus drei Klassen gezaubert.
+ if(buffs)for(const id of Object.keys(CLASS_BUFFS))applyClassBuff(g,g,{id,power:1});
  g.player.x=1000;g.player.y=1000;g.player.hp=g.player.maxHp;
  const foeHp=foeLife(level,targets),spawn=i=>{const e=makeEnemy({x:1000+Math.round(32*Math.cos(i*2.1)),y:1000+Math.round(32*Math.sin(i*2.1))},i+1,{hp:foeHp,roamWait:100,attackTimer:100,stun:1e9,damage:1});e.aggro=true;e.ai='combat';e.arena=true;return e;};
  const foes=Array.from({length:targets},(_,i)=>spawn(i));g.enemies.push(...foes);let killed=0;
@@ -90,10 +93,10 @@ export function blend(o){
  return {...runs.at(-1),...mean(runs,KEYS),dropped:runs[0].dropped,single:runs[0],group:runs.at(-1)};}
 
 /** Messzeilen und Zerlegung EINER Spezialisierung – die Einheit, die ein Worker rechnet. */
-export function specPart({classId,spec},{quick=false,attribution:withAttribution=true}={}){
+export function specPart({classId,spec},{quick=false,attribution:withAttribution=true,buffs=false}={}){
  const levels=quick?[1,10]:SHEET.levels,gear=quick?['none','rare']:SHEET.gear,paths=quick?[0]:SHEET.paths,rows=[],attribution=[];
  for(const level of levels)for(const path of level>=BALANCE.player.specLevel?paths:[null])for(const g of gear){
-  const b=blend({classId,spec,path,level,gear:g}),role=SPEC_DEFS[spec]?.role||'';
+  const b=blend({classId,spec,path,level,gear:g,buffs}),role=SPEC_DEFS[spec]?.role||'';
   rows.push({classId,spec,role,group:roleGroup(role),path,level,gear:g,dps:round(b.dps),dpsSingle:round(b.single.dps),dpsGroup:round(b.group.dps),hps:round(b.hps),mitigated:round(b.mitigated),shield:round(b.shield),protection:round(b.mitigated+b.shield),energy:round(b.energy),skills:b.group.skills.slice(0,6).map(s=>({name:s.name,share:round(s.share)}))});}
  if(withAttribution)for(const level of quick?[10]:SHEET.attributionLevels)for(const path of quick?[0]:SHEET.paths){
   const at={classId,spec,path,level,gear:SHEET.attributionGear},base=blend(at),bare=blend({...at,gear:'none'}),probe0=blend({...at,extra:{}});
@@ -138,8 +141,9 @@ function csv(sheet){const head=['klasse','spec','rolle','gruppe','pfad','stufe',
  return [head.join(';'),...sheet.rows.map(r=>[r.classId,r.spec,r.role,r.group,r.path??'kern',r.level,r.gear,r.dps,r.dpsSingle,r.dpsGroup,r.hps,r.mitigated,r.shield,r.protection,r.metric,r.vsMedian,r.energy].join(';'))].join('\n')+'\n';}
 
 if(isMainThread&&process.argv[1]===fileURLToPath(import.meta.url)){
- const quick=process.argv.includes('--quick'),attribution=!process.argv.includes('--rows'),t0=Date.now(),sheet=await buildSheetParallel({quick,attribution});
+ const quick=process.argv.includes('--quick'),buffs=process.argv.includes('--buffs'),attribution=!buffs&&!process.argv.includes('--rows'),t0=Date.now(),sheet=await buildSheetParallel({quick,attribution,buffs});
  mkdirSync(new URL('../generated/',import.meta.url),{recursive:true});
+ if(buffs){writeFileSync(new URL('../generated/balance-sheet-buffs.json',import.meta.url),JSON.stringify(sheet,null,1));writeFileSync(new URL('../generated/balance-sheet-buffs.csv',import.meta.url),csv(sheet));console.log('mit Klassen-Buffs: '+sheet.rows.length+' Messzeilen, '+sheet.rows.filter(r=>r.flag).length+' ⚑ · '+Math.round((Date.now()-t0)/1000)+' s');process.exit(0);}
  writeFileSync(new URL('../generated/balance-sheet.json',import.meta.url),JSON.stringify(sheet,null,1));
  writeFileSync(new URL('../generated/balance-sheet.csv',import.meta.url),csv(sheet));
  writeFileSync(new URL('../content/BALANCE-SHEET.md',import.meta.url),markdown(sheet)+'\n');

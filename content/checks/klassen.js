@@ -1,7 +1,9 @@
 // Prüfungen der Rolle Klassendesign (classes.js, skills.js, talents.js, talent-layout.js, procs.js).
 import {CLAN_MEMBERS} from '../classes.js';
 import {KITS,BASE_SKILLS,CLASS_LESSONS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS} from '../skills.js';
-import {CLASS_SPECS,TALENT_ROWS,isProcEffect} from '../talents.js';
+import {CLASS_SPECS,TALENT_ROWS,isProcEffect,isClassBuffEffect} from '../talents.js';
+import {CLASS_BUFFS,classBuffsFor} from '../class-buffs.js';
+import {TUNING,CLASS_BUFF_TUNING} from '../tuning.js';
 import {PROC_RULES} from '../procs.js';
 import {GLOSSARY,hasTerm,describe,describableIds,element,DESCRIBE_KINDS} from '../glossary.js';
 import {categoriesOf,termAudit,categoryTerms,TERM_FUNCTION,FUNCTIONS,MECHANIC_TERMS} from '../categories.js';
@@ -39,7 +41,7 @@ export function check(bad){
  // Talente sind Regeln: kein Talent besteht nur aus Werten ohne Auslöser.
  for(const [spec,rows] of Object.entries(TALENT_ROWS))for(const [i,t] of rows.entries()){
  const keys=Object.keys(t.effects||{});
-  const classId=spec.split('-')[0],skills=new Set(['auto','buff','throw','ground',...BASE_SKILLS.map(s=>s.id),...CLASS_SPECS[classId].flatMap(s=>TALENT_ROWS[s].map(t=>t.grants).filter(Boolean))]);
+  const classId=spec.split('-')[0],skills=new Set(['auto','buff','throw','ground',...BASE_SKILLS.map(s=>s.id),...CLASS_SPECS[classId].flatMap(s=>TALENT_ROWS[s].map(t=>t.grants).filter(Boolean)),...classBuffsFor(classId).map(b=>b.id)]);
   if(!Array.isArray(t.skills)||t.skills.some(id=>!skills.has(id))||new Set(t.skills).size!==t.skills.length)bad('talent '+spec+'-'+i,'ungültige oder fehlende Kniffbezüge');
   if(t.grants&&!t.skills?.includes(t.grants))bad('talent '+spec+'-'+i,'erlernten Kniff als Bezug nennen');
   if(keys.length&&!t.grants&&keys.every(k=>VALUE_ONLY.includes(k)))bad('talent '+spec+'-'+i,'reines Wert-Talent ohne Auslöser');
@@ -50,7 +52,24 @@ export function check(bad){
  // Weitere Kniffe: Wurf, Boden und Talentfähigkeiten nennen ebenfalls den Einsatzmoment.
  for(const [id,s] of [['throw',THROW_SKILL],['ground',GROUND_SKILL],...Object.entries(TALENT_SKILLS)])
   if(!WHEN.some(w=>(s.use||'').includes(w)))bad('kniff '+id,'use sagt nicht, wann man ihn drückt');
+ checkClassBuffs(bad);
  checkDescriptions(bad);
+}
+// Klassen-Buffs (content/class-buffs.js): zwei je Klasse, jeder hebt einen anderen Wert, Zahlen aus tuning.js, Talent-Haken mit passendem Text.
+export function checkClassBuffs(bad){
+ const stats=new Map();
+ for(const m of CLAN_MEMBERS){const list=classBuffsFor(m.id);if(list.length<2)bad('classBuff '+m.id,'jede Klasse bringt mindestens zwei Klassen-Buffs mit');
+  for(const b of list){const w='classBuff '+b.id;
+   if(!TUNING.classBuffs?.[b.id])bad(w,'Zahlen fehlen in TUNING.classBuffs');
+   for(const [k,v] of Object.entries(b.effects)){if(!(typeof v==='number'&&v>0))bad(w,'Wert '+k+' fehlt oder ist nicht positiv');if(stats.has(k))bad(w,'hebt '+k+' wie '+stats.get(k)+' – Buffs verschiedener Klassen sollen verschiedene Werte heben');stats.set(k,b.id);}
+   if(!WHEN.some(x=>(b.use||'').includes(x)))bad(w,'use sagt nicht, wann man den Buff zaubert');
+   if(!(b.level>=1&&b.level<=30))bad(w,'Lernstufe fehlt');
+   if(!b.icon)bad(w,'Icon fehlt');}}
+ const pct=Math.round(CLASS_BUFF_TUNING.talentStep*100)+' %';
+ for(const [spec,rows] of Object.entries(TALENT_ROWS))rows.forEach((t,i)=>{for(const k of Object.keys(t.effects||{}).filter(isClassBuffEffect)){const b=CLASS_BUFFS[k.slice(10)];if(!b)continue;
+  if(!t.text.includes(b.name)||!t.text.includes(String(Math.round(t.effects[k]*CLASS_BUFF_TUNING.talentStep*100))+' %'))bad('talent '+spec+'-'+i,'Text nennt '+b.name+' und die Verstärkung ('+pct+' je Stufe) nicht');
+  if(!t.skills?.includes(b.id))bad('talent '+spec+'-'+i,'Klassen-Buff '+b.id+' als Kniffbezug nennen');}});
+ for(const m of CLAN_MEMBERS)if(!Object.entries(TALENT_ROWS).some(([spec,rows])=>spec.startsWith(m.id+'-')&&rows.some(t=>Object.keys(t.effects||{}).some(isClassBuffEffect))))bad('classBuff '+m.id,'mindestens ein Talent der Klasse verstärkt einen Klassen-Buff');
 }
 // Welle D · Beschreibungs-Standard: jedes kampfrelevante Element trägt info{effect,why,links,terms} und ein Icon,
 // jeder Begriff steht im Glossar, jeder Verweis zeigt auf eine echte ID, kein effect wiederholt sich oder den Namen.

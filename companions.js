@@ -15,6 +15,7 @@ import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
 import {inKiosk} from './kiosk-instance.js';
 import {walkFacing} from './maifeld-locomotion.js';
+import {classBuffValue,savedClassBuffs,restoreClassBuffs} from './class-buffs.js';
 
 const PLAYER='player';
 const alive=c=>c.state!=='down'&&c.hp>0;
@@ -46,7 +47,7 @@ export function companionAidFailure(g,id=g.companionAidId){
 /** Heilung durch den Besitzer: seine Statistik und Bedrohung, Text und Effekt am geheilten Söldner. */
 export function healCompanionByPlayer(g,c,amount,source='heal'){
  if(!c||!alive(c)||g.dead||!(amount>0))return 0;
- amount=Math.round(amount);const actual=Math.max(0,Math.min(amount,c.maxHp-c.hp));c.hp+=actual;
+ amount=Math.round(amount*(1+classBuffValue(c,'healTaken')));const actual=Math.max(0,Math.min(amount,c.maxHp-c.hp));c.hp+=actual;
  if(c.inCombat>0)g.player.inCombat=Math.max(g.player.inCombat,7);
  recordMeterHealing(g,amount,actual,source);
  if(actual>0){emitCombatFx(g,'heal',c,{amount:actual,direct:source==='heal',companion:c.id});
@@ -73,7 +74,7 @@ export function companionFocus(g,e){
 }
 
 function hitCompanion(g,e,c,n){
- if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)));
+ if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))));
  const b=c.aidBuff;if(b?.remaining>0){n=Math.round(n*(1-(b.reduction||0)));const absorbed=Math.min(n,b.shield||0);b.shield=Math.max(0,(b.shield||0)-absorbed);n-=absorbed;if(absorbed>0)companionFx(g,c,'guard',c,{amount:absorbed,absorbed:true});}
  c.hp=Math.max(0,c.hp-n);if(n>0)c.hurt=.16;c.inCombat=6;
  companionFx(g,c,'hurt',c,{amount:n,from:{x:e.x,y:e.y}});if(!companionText(g,c,{area:'in',kind:'damage',value:n}))g.float(c.x,c.y-18,'−'+n,'#e9b48c');
@@ -119,12 +120,12 @@ export function tickEnemyOnCompanion(g,e,c,dt){
 }
 
 // ── 2. Begleiter-KI ───────────────────────────────────────────────────────────────────────────────────────────
-function refreshStats(g,c){const level=g.player.level;if(c.level===level&&c.maxHp)return;const before=c.maxHp?ratio(c):1,s=companionStats(c.def.role,level);c.level=level;c.maxHp=s.maxHp;c.damage=s.damage;c.hp=Math.round(c.maxHp*before);}
+function refreshStats(g,c){const level=g.player.level,pct=classBuffValue(c,'health');if(c.level===level&&c.maxHp&&c.hpPct===pct)return;const before=c.maxHp?ratio(c):1,s=companionStats(c.def.role,level);c.level=level;c.hpPct=pct;c.maxHp=Math.round(s.maxHp*(1+pct));c.damage=s.damage;c.hp=Math.round(c.maxHp*before);}
 function slot(g,c){const i=Math.max(0,g.companions.indexOf(c))%R.formation.length,[fx,fy]=R.formation[i],side=g.player.facing<0?-1:1;return {x:g.player.x+fx*side,y:g.player.y+fy};}
 function place(g,c,at){let p=at;try{p=g.world.findClear(at.x,at.y,9);}catch{}c.x=p.x;c.y=p.y;c.path=[];}
 
 function walkTo(g,c,goal,speed,dt,stopAt=6){
- const d=distance(c,goal);if(d<=stopAt){c.moving=false;return true;}
+ speed*=1+classBuffValue(c,'speed');const d=distance(c,goal);if(d<=stopAt){c.moving=false;return true;}
  if(walkClear(g.world,c,goal,8)){const step=Math.min(speed*dt,d-stopAt+1);g.move(c,(goal.x-c.x)/d*step,(goal.y-c.y)/d*step);c.path=[];}
  else{c.pathTimer=(c.pathTimer||0)-dt;if(c.pathTimer<=0||!c.path?.length){c.pathTimer=.9;try{c.path=g.world.findPath(c,goal);}catch{c.path=[];}}moveAlong(g,c,c.path,speed,dt);}
  c.moving=true;if(Math.abs(goal.x-c.x)>2)c.facing=goal.x<c.x?-1:1;return false;
@@ -144,7 +145,7 @@ function chooseTarget(g,c){
 
 function damageEnemy(g,c,e,n,id){
  if(!e||e.hp<=0||e.ai==='returning'||e.tutorial)return 0;
- const crit=g.random()<R.critChance,amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1))),dealt=Math.min(e.hp,amount);
+ const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1))),dealt=Math.min(e.hp,amount);
  e.aggro=true;e.ai='combat';g.player.inCombat=7;c.inCombat=6;e.hp=Math.max(0,e.hp-amount);e.hurt=.15;
  addThreat(e,c.id,dealt*COMPANION_ROLES[c.def.role].threat);
  recordMeterDamage(g,e,amount,dealt,abilitySource(id),crit,c);
@@ -156,7 +157,7 @@ function damageEnemy(g,c,e,n,id){
  return dealt;
 }
 function heal(g,c,target,amount,id){
- amount=Math.round(amount);const actual=Math.min(amount,target.maxHp-target.hp);if(actual<=0)return 0;target.hp+=actual;
+ amount=Math.round(amount*(1+classBuffValue(target===g.player?g:target,'healTaken')));const actual=Math.min(amount,target.maxHp-target.hp);if(actual<=0)return 0;target.hp+=actual;
  face(c,target);
  recordMeterHealing(g,amount,actual,abilitySource(id),c);
  companionFx(g,c,'heal',target,{amount:actual,direct:true,from:{x:c.x,y:c.y}});
@@ -192,8 +193,8 @@ function dangerExit(g,c){
 
 function tickOne(g,c,dt){
  refreshStats(g,c);
- for(const id in c.cooldowns)c.cooldowns[id]=Math.max(0,c.cooldowns[id]-dt);
- for(const key of ['gcd','guard','hurt','attack','castPose','inCombat'])c[key]=Math.max(0,(c[key]||0)-dt);
+ const quick=dt*(1+classBuffValue(c,'haste'));for(const id in c.cooldowns)c.cooldowns[id]=Math.max(0,c.cooldowns[id]-quick);c.gcd=Math.max(0,(c.gcd||0)-quick);
+ for(const key of ['guard','hurt','attack','castPose','inCombat'])c[key]=Math.max(0,(c[key]||0)-dt);
  if(c.contract!=null){c.contract-=dt;if(c.contract<=0){dismissCompanion(g,c.id,'expired');return;}}
  c.moving=false;
  if(c.state==='down'){if(g.time>=c.downUntil&&!g.enemies.some(e=>fighting(e)&&distance(e,g.player)<R.assistRange)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));g.toast(T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
@@ -235,7 +236,7 @@ export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(c
 function create(g,def,saved={}){
  const c={id:def.id,def,name:def.name,kind:def.kind,x:g.player.x,y:g.player.y,facing:1,level:0,maxHp:0,hp:0,damage:0,state:'follow',
   stance:T.stances[saved.stance]?saved.stance:COMPANION_ROLES[def.role].stance,order:['follow','stay'].includes(saved.order)?saved.order:'follow',
-  contract:def.kind==='merc'?Math.max(1,Number(saved.contract)||R.contractHours*3600):null,cooldowns:{},gcd:0,guard:0,guardReduction:0,inCombat:0,target:null,path:[],retarget:0,view:{}};
+  contract:def.kind==='merc'?Math.max(1,Number(saved.contract)||R.contractHours*3600):null,cooldowns:{},gcd:0,guard:0,guardReduction:0,inCombat:0,target:null,path:[],retarget:0,view:{},classBuffs:restoreClassBuffs(saved.classBuffs)};
  refreshStats(g,c);c.hp=Math.round(c.maxHp*Math.max(.1,Math.min(1,Number(saved.hp)||1)));place(g,c,slot({...g,companions:[...(g.companions||[]),c]},c));return c;
 }
 /** Freie Plätze: vier Begleiter, zusammen mit echten Gruppenmitgliedern (g.partyHumans, setzt die Netzschicht) höchstens fünf Köpfe. */
@@ -271,5 +272,5 @@ export function companionCommand(g,cmd){
  return [T.chat.help];
 }
 
-export const savedCompanions=g=>(g.companions||[]).map(c=>({defId:c.id,hp:Math.round(ratio(c)*100)/100,contract:c.contract==null?null:Math.round(c.contract),stance:c.stance,order:c.order==='stay'?'stay':'follow'}));
+export const savedCompanions=g=>(g.companions||[]).map(c=>({defId:c.id,hp:Math.round(ratio(c)*100)/100,contract:c.contract==null?null:Math.round(c.contract),stance:c.stance,order:c.order==='stay'?'stay':'follow',...(Object.keys(c.classBuffs||{}).length?{classBuffs:savedClassBuffs(c)}:{})}));
 export function initCompanions(g,saved){g.companions=[];g.partyHumans=g.partyHumans||0;for(const s of Array.isArray(saved)?saved.slice(0,R.maxActive):[]){const def=companionById(s?.defId);if(def&&!g.companions.some(c=>c.id===def.id))g.companions.push(create(g,def,s));}}

@@ -20,6 +20,8 @@ export function createNetSocial({game,me,send,others,hooks,ui=null}){
  hooks.clearFriend=()=>{state.friend=null;};
  hooks.aidHeal=(heal,name)=>aidSend({heal,name});
  hooks.buffFriend=b=>aidSend({b,name:b.name});
+ /** Klassen-Buff (class-buffs.js) auf ein bestimmtes Gruppenmitglied: gleicher Weg wie das Hilfsziel, Empfänger wendet ihn an. */
+ hooks.classBuffTo=(name,cb)=>{const o=near(name,SOCIAL_RANGE.aid);if(!o?.party){game().toast(SOCIAL_UI.aidFar.replace('{n}',name));return false;}send({t:'aid',to:name,name:cb.name,cb:{id:cb.id,power:cb.power,duration:cb.duration}});return true;};
 
  // ── Handel ──
  const offer=()=>state.trade?.mine||{items:[],coins:0};

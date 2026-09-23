@@ -8,7 +8,7 @@ import {talentSkillsHtml} from './talent-ui.js';
 //   content/glossary.js  termsOf(kind,id)  → die Glossarerklärungen für den Shift-Block
 // Nur die Spaltenüberschriften der Laufzeitzeilen und die Abschnittsnamen des Nachschlagewerks stehen als
 // Beschriftung hier (UI-Vokabular). Bedarf, sie nach content/panel-ui.js zu holen: content/BACKLOG.md.
-import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI} from './content/index.js';
+import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI,CLASS_BUFFS,CLASS_BUFF_TEXT} from './content/index.js';
 import {paintSkillIcon} from './skill-art.js';
 import {paintTalentIcon} from './talent-art.js';
 import {paintItem} from './item-art.js';
@@ -52,6 +52,7 @@ export function resolve(game,kind,id){
   case 'talentSkill':return {content:{kind,id},runtime:{kind:'skill',id}};
   case 'talent':return {content:{kind:'talent',id},runtime:{kind:'talent',id}};
   case 'proc':return {content:{kind:'proc',id},runtime:{kind:'proc',id}};
+  case 'classBuff':return CLASS_BUFFS[id]?{content:{kind:'classBuff',id},runtime:CLASS_BUFFS[id].cls===cls?{kind:'skill',id}:null}:none;
   case 'passive':return {content:{kind:'passive',id:MEMBER_IDS.includes(id)?id:cls},runtime:{kind:'passive',id:MEMBER_IDS.includes(id)?id:cls}};
   case 'buff':{
    if(MEMBER_IDS.includes(id))return {content:{kind:'buff',id},runtime:id===cls?{kind:'buff',id:'buff'}:null};
@@ -63,6 +64,7 @@ export function resolve(game,kind,id){
    if(id==='buff')return {content:{kind:'buff',id:cls},runtime:{kind:'buff',id:'buff'}};
    if(id==='throw'||id==='ground')return {content:{kind:id,id:cls},runtime:{kind:'skill',id}};
    if(TALENT_SKILLS[id])return {content:{kind:'talentSkill',id},runtime:{kind:'skill',id}};
+   if(CLASS_BUFFS[id])return {content:{kind:'classBuff',id},runtime:CLASS_BUFFS[id].cls===cls?{kind:'skill',id}:null};
    if(BASE_SKILL_IDS.has(id))return {content:{kind:'skill',id:cls+'/'+id},runtime:{kind:'skill',id}};
    return {content:null,runtime:{kind:'skill',id}};
   }
@@ -269,7 +271,7 @@ export function kniffeReference(game){
  const cls=game?.member?.id||MEMBER_IDS[0];
  const ids=describableIds();
  const skills=ids.filter(e=>(e.kind==='skill'||e.kind==='buff'||e.kind==='throw'||e.kind==='ground')&&String(e.id).split('/')[0]===cls)
-  .map(e=>tile(game,e.kind,e.id)).join('')+ids.filter(e=>e.kind==='talentSkill'&&contentDescribe('talentSkill',e.id)?.icon?.member===cls).map(e=>tile(game,e.kind,e.id)).join('');
+  .map(e=>tile(game,e.kind,e.id)).join('')+ids.filter(e=>e.kind==='talentSkill'&&contentDescribe('talentSkill',e.id)?.icon?.member===cls).map(e=>tile(game,e.kind,e.id)).join('')+ids.filter(e=>e.kind==='classBuff'&&CLASS_BUFFS[e.id]?.cls===cls).map(e=>tile(game,e.kind,e.id)).join('');
  const specs=(CLASS_SPECS[cls]||[]).map(spec=>'<h4>'+esc(SPECS[spec]?.name||spec)+'</h4><div class="kniff-grid">'+
   ids.filter(e=>e.kind==='talent'&&String(e.id).startsWith(spec+'-')).map(e=>tile(game,'talent',e.id)).join('')+'</div>').join('');
  const passives=MEMBER_IDS.map(id=>tile(game,'passive',id)).join('');
@@ -277,7 +279,7 @@ export function kniffeReference(game){
  const procs=[...ids.filter(e=>e.kind==='proc'&&armed.has(e.id)),...ids.filter(e=>e.kind==='proc'&&!armed.has(e.id))].map(e=>tile(game,'proc',e.id)).join('');
  const running=(typeof game?.activeBuffs==='function'?game.activeBuffs():[]).map(b=>{
   const key=resolve(game,b.describe?.kind||b.kind,b.describe?.id??b.id);
-  const label=b.remaining!==null&&b.remaining!==undefined?Math.ceil(b.remaining)+' s':b.count!==undefined?b.count+' / '+b.every:'';
+  const label=b.remaining!==null&&b.remaining!==undefined?(b.remaining>=60?Math.ceil(b.remaining/60)+' '+CLASS_BUFF_TEXT.minutes:Math.ceil(b.remaining)+' s'):b.count!==undefined?b.count+' / '+b.every:'';
   const d=key.content?contentDescribe(key.content.kind,key.content.id):null;
   const entry=key.runtime?game.describe(key.runtime.kind,key.runtime.id):null;
   return '<button type="button" class="kniff-tile icon-skill is-on" data-describe="'+esc((b.describe?.kind||b.kind)+':'+(b.describe?.id??b.id))+'" aria-label="'+esc(b.name)+'">'+

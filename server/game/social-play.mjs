@@ -4,6 +4,8 @@
 // shared → createSharedWorld (für die Lebenspunkte des Weltbosses), say(text) → Ansage im Weltchat.
 import {cleanItem} from './party-play.mjs';
 export const SOCIAL_RULES=Object.freeze({aidRange:420,reviveRange:140,tradeRange:260,askMs:30000,tradeSlots:6,maxCoins:1e6,
+ // Klassen-Buffs (class-buffs.js): der Server reicht nur weiter; Grenzen wie CLASS_BUFF_TUNING (30 min, Stärke ≤ 2), der Empfänger prüft die ID.
+ classBuff:{maxSeconds:1800,maxPower:2},
  boss:{everyMs:30*60e3,firstMs:5*60e3,lifeMs:20*60e3,minPlayers:1,hpPerPlayer:.75,ids:['gisela','sigi','klaus','timo']}});
 export const SOCIAL_TEXT={
  far:n=>n+' ist zu weit weg.',notDead:n=>n+' steht doch noch.',youDead:'Erst selbst aufstehen.',busy:n=>n+' handelt gerade.',gone:n=>'„'+n+'“ ist gerade nicht online.',
@@ -31,7 +33,8 @@ export function createSocialPlay({clients,members,send,shared=null,say=()=>{},no
  function aid(c,msg){
   const o=byName(msg.to);if(!o||o===c||!members(c).includes(o))return false;if(dist(c,o)>SOCIAL_RULES.aidRange){notice(c,SOCIAL_TEXT.far(o.name));return false;}
   if(o.s==='dead')return false;
-  send(o,{t:'aid',from:c.name,name:text(msg.name,40),heal:int(msg.heal,0,5000),b:msg.b&&typeof msg.b==='object'?{name:text(msg.b.name,40),icon:text(msg.b.icon,24),duration:int(msg.b.duration,1,60),reduction:Math.max(0,Math.min(.5,Number(msg.b.reduction)||0)),hot:int(msg.b.hot,0,200),shield:int(msg.b.shield,0,5000)}:null});return true;
+  send(o,{t:'aid',from:c.name,name:text(msg.name,40),heal:int(msg.heal,0,5000),b:msg.b&&typeof msg.b==='object'?{name:text(msg.b.name,40),icon:text(msg.b.icon,24),duration:int(msg.b.duration,1,60),reduction:Math.max(0,Math.min(.5,Number(msg.b.reduction)||0)),hot:int(msg.b.hot,0,200),shield:int(msg.b.shield,0,5000)}:null,
+   cb:msg.cb&&typeof msg.cb==='object'&&/^[a-zA-Z]{1,40}$/.test(String(msg.cb.id))?{id:String(msg.cb.id),power:Math.max(1,Math.min(SOCIAL_RULES.classBuff.maxPower,Number(msg.cb.power)||1)),duration:int(msg.cb.duration,1,SOCIAL_RULES.classBuff.maxSeconds)}:null});return true;
  }
  // ── Aufhelfen: jeder darf jedem helfen, der am Boden liegt ──
  function revive(c,msg){
