@@ -51,3 +51,14 @@
 @keyframes tt-main-pick{0%,100%{box-shadow:0 0 0 0 #f1cd7700}50%{box-shadow:0 0 0 4px #f1cd7773}}
 @media (prefers-reduced-motion:reduce){.tt-menu .tt-toolbar button.tt-main-pick{animation:none;box-shadow:0 0 0 3px #f1cd7773}}
 .tt-origin{margin:4px 0;padding:4px 8px;border-left:3px solid var(--gold);font:12px/1.4 var(--read)} /* Herkunft von Hauptbaum-Kniffen im Talent (Klartext 2026-09-23) */
+/* Feinschliff 2026-09-23 (WoW-Maßstab): Motive füllen den Rahmen (talent-art.js fitMotif), Knoten größer mit Innenkante;
+   gelernt = goldener Schein, verfügbar = sanftes grünes Atmen, gesperrt = dunkel und entsättigt. */
+.tt-menu .tt-node{width:52px;height:52px;border-radius:4px;box-shadow:0 2px 0 var(--hard-ink),inset 0 0 0 1px #0b1a1299}
+.tt-menu .tt-node canvas{width:44px!important;height:44px!important;border-radius:2px;box-shadow:inset 0 0 6px #000a}
+.tt-menu .tt-node.learned{box-shadow:0 2px 0 var(--hard-ink),0 0 10px #f1cd7766,inset 0 0 0 1px #ffe9a855}
+.tt-menu .tt-node.available:not(.learned){animation:tt-node-ready 2.4s ease-in-out infinite}
+@keyframes tt-node-ready{0%,100%{box-shadow:0 2px 0 var(--hard-ink),0 0 0 #aad18b00}50%{box-shadow:0 2px 0 var(--hard-ink),0 0 11px #aad18b99}}
+.tt-menu .tt-node.locked canvas{filter:grayscale(1) brightness(.85) contrast(1.05);opacity:.75}
+.tt-menu .tt-node.locked{border-color:#4d5a4b}
+.tt-node .tt-rank{border-radius:3px;box-shadow:0 1px 0 var(--hard-ink)}
+@media (prefers-reduced-motion:reduce){.tt-menu .tt-node.available:not(.learned){animation:none;box-shadow:0 2px 0 var(--hard-ink),0 0 8px #aad18b77}}
