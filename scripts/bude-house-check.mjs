@@ -36,6 +36,20 @@ try{
  await read(`(()=>{const l=game.world.base.house.upper.stairs.landing;Object.assign(game.player,{x:l.x,y:l.y});game.moveTo=null;game.path=[];})()`);await wait(400);
  await b.press('f');await wait(600);assert.equal(await read('game.floor||0'),0,'F am Absatz führt zurück ins Erdgeschoss');await shot('7-treppe-unten');
  checks.push('stairs: F goes up to the dormitory, walk into the site office upstairs, F at the landing goes back down');
+ // 5c Treppe begehbar ohne F (Nutzerbefund 2026-09-23): auf die Treppe zulaufen wechselt, gehaltene Taste (mit Tastenwiederholung) pendelt nicht,
+ //    Klick auf die Treppe läuft hin und wechselt.
+ const repeatHold=async(k,ms)=>{const code='Key'+k.toUpperCase(),vk=k.toUpperCase().charCodeAt(0);await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code,windowsVirtualKeyCode:vk});
+  for(let t=0;t<ms;t+=33){await wait(33);await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code,windowsVirtualKeyCode:vk,autoRepeat:true});}await b.send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code,windowsVirtualKeyCode:vk});};
+ await read(`(()=>{const h=game.world.base.house;game.floor=0;Object.assign(game.player,{x:h.stairs.foot.x,y:h.stairs.foot.y});game.moveTo=null;game.path=[];})()`);await wait(400);
+ await read('window.__floorChanges=0;{const u=game.useStairs.bind(game);game.useStairs=(...a)=>{const ok=u(...a);if(ok)window.__floorChanges++;return ok;};}');
+ await repeatHold('a',1500);assert.equal(await read('game.floor||0'),1,'nach links auf die Treppe laufen führt hinauf');
+ assert.equal(await read('window.__floorChanges'),1,'gehaltene Taste pendelt nicht zwischen den Geschossen');
+ await wait(400);await repeatHold('a',800);assert.equal(await read('game.floor||0'),0,'oben neu ins Treppenloch laufen führt wieder hinunter');
+ await read(`(()=>{const h=game.world.base.house;Object.assign(game.player,{x:h.minX+150,y:h.minY+150});game.moveTo=null;game.path=[];})()`);await wait(600);
+ const at=await read(`(()=>{const s=game.world.base.house.stairs,r=__mertloch.renderer,c=r.canvas.getBoundingClientRect(),wx=(s.minX+s.maxX)/2,wy=(s.minY+s.maxY)/2;return {x:(wx-r.camera.x+r.viewWidth/2)/r.viewWidth*c.width+c.left,y:(wy-r.camera.y+r.viewHeight/2)/r.viewHeight*c.height+c.top};})()`);
+ for(const type of ['mouseMoved','mousePressed','mouseReleased'])await b.send('Input.dispatchMouseEvent',{type,x:at.x,y:at.y,button:'left',buttons:type==='mousePressed'?1:0,clickCount:1});
+ await until('(game.floor||0)===1',15000);await shot('8-treppe-klick');
+ checks.push('stairs are walkable: walking onto them climbs, a held key does not bounce, walking into the stairwell goes down, a click on the stairs walks there and climbs');
  // 6 Neuer Held (E-52, Runde 1b): wacht im Schankraum auf, Ida und die Hofprobe sind in der Bude.
  const fresh={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:1,tutorial:{version:1,step:1,completed:false}};
  const again=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`localStorage.clear();localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(fresh))});`});

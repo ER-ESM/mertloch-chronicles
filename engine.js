@@ -431,12 +431,26 @@ export class Game{
   /** Welt, in der eine Figur läuft: Kiosk-Raum, Obergeschoss der Bude (nur der eigene Held, E-52) oder das Dorf. */
   walkWorld(entity=this.player){return inKiosk(this)?roomWorld:(this.floor&&entity===this.player&&upperWorld(this.world.base?.house))||this.world;}
   /** Treppe der Bude in Reichweite? Liefert Beschriftung und Ziel des Wechsels. */
-  stairsInteraction(){const h=this.world.base?.house,p=this.player;if(!h?.stairs||!h.upper?.stairs||inKiosk(this)||this.dead)return null;
-    if(!this.floor&&distance(p,h.stairs.foot)<h.stairs.range)return {label:BUDE_HOUSE_TEXT.up,to:1,point:h.upper.stairs.landing};
-    if(this.floor&&distance(p,h.upper.stairs.landing)<h.upper.stairs.range)return {label:BUDE_HOUSE_TEXT.down,to:0,point:h.stairs.foot};return null;}
+  stairsInteraction(){const s=this.stairsTarget();return s&&distance(this.player,s.from)<s.range?s:null;}
+  /** Wechsel über die Treppe des eigenen Geschosses, ohne Reichweite: Treppe (Box), Standpunkt davor (from) und Ziel. */
+  stairsTarget(){const h=this.world.base?.house;if(!h?.stairs||!h.upper?.stairs||inKiosk(this)||this.dead)return null;
+    return this.floor?{label:BUDE_HOUSE_TEXT.down,to:0,point:h.stairs.foot,from:h.upper.stairs.landing,range:h.upper.stairs.range,box:h.upper.stairs}
+      :{label:BUDE_HOUSE_TEXT.up,to:1,point:h.upper.stairs.landing,from:h.stairs.foot,range:h.stairs.range,box:h.stairs};}
+  /** Klick auf die Treppe: in Reichweite sofort wechseln, sonst zum Treppenfuß (oben: Absatz) laufen und dort wechseln. */
+  climbStairs(){const s=this.stairsTarget();if(!s||this.paused)return false;if(this.stairsInteraction())return this.useStairs();if(!this.navigate(s.from))return false;this.stairsRoute=true;return true;}
   /** Stockwerk wechseln: Held steht danach am Absatz beziehungsweise am Treppenfuß, Wege und Ziel sind gelöscht. */
-  useStairs(){const s=this.stairsInteraction();if(!s||this.paused)return false;dismount(this);this.floor=s.to;Object.assign(this.player,{x:s.point.x,y:s.point.y,moving:false,vx:0,vy:0});this.moveTo=null;this.path=[];this.routeGoal=null;this.keys.clear();this.target=null;this.stopAuto();this.emit('floorChanged',{floor:this.floor});return true;}
+  useStairs(anywhere=false){const s=anywhere?this.stairsTarget():this.stairsInteraction();if(!s||this.paused)return false;dismount(this);this.floor=s.to;this.stairsRoute=false;this.stairsHeld=true;Object.assign(this.player,{x:s.point.x,y:s.point.y,moving:false,vx:0,vy:0});this.moveTo=null;this.path=[];this.routeGoal=null;this.keys.clear();this.target=null;this.stopAuto();this.emit('floorChanged',{floor:this.floor});return true;}
   move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=inKiosk(this)?roomWorld:(this.floor&&entity===this.player&&upperWorld(this.world.base?.house))||this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
+  /** Wer auf die Treppe zuläuft, wechselt das Stockwerk wie mit F (Nutzerbefund 2026-09-23: „zweite Etage nicht begehbar“ –
+   *  die Treppe war nur ein Hindernis mit Tastenhinweis). Ein Klickweg zur Treppe (climbStairs) wechselt am Ziel.
+   *  Nach einem Wechsel erst wieder scharf nach einer Viertelsekunde ohne Laufrichtung oder ein paar Schritten weg von der Treppe:
+   *  gehaltene Tasten pendeln sonst zwischen den Geschossen. Klickwege laufen nur über climbStairs, nie zufällig im Vorbeigehen. */
+  walkStairs(dx,dy,routed,dt){const s=this.stairsTarget(),p=this.player;if(!s)return false;
+    const b=s.box,gx=Math.max(b.minX,Math.min(p.x,b.maxX))-p.x,gy=Math.max(b.minY,Math.min(p.y,b.maxY))-p.y,gap=Math.hypot(gx,gy);
+    this.stairsIdle=dx||dy?0:(this.stairsIdle||0)+dt;if(this.stairsHeld&&(gap>=18||this.stairsIdle>=.25))this.stairsHeld=false;
+    if(!dx&&!dy){if(this.stairsRoute&&!this.moveTo&&!this.routeGoal){this.stairsRoute=false;this.useStairs();}return false;}
+    if(!routed)this.stairsRoute=false;if(routed||this.stairsHeld||this.paused)return false;
+    return gap<=7&&gx*dx+gy*dy>0?this.useStairs(true):false;}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
   navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.walkWorld().findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
@@ -482,7 +496,7 @@ export class Game{
     if(p.inCombat===0||resting)p.hp=Math.min(p.maxHp,p.hp+dt*(resting?BALANCE.momentum.restRegen:BALANCE.player.outOfCombatRegen)*(tickStats.procs.includes('hops')?PROCS.hops.regen:1)*(1+(this.baseEffects().restRegen||0)));
     let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
     if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];this.routeGoal=null;}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;if(!this.moveTo)this.routeGoal=null;dx=dy=0;}}
-    tickMount(this,dt);stepPlayer(this,dx,dy,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);tickCompanions(this,dt);
+    const routed=!!this.moveTo;tickMount(this,dt);stepPlayer(this,dx,dy,dt);this.walkStairs(dx,dy,routed,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);tickCompanions(this,dt);
     for(const e of this.enemies){
       if((tutorialActive(this)&&!e.arena)||e.tutorial)continue;
       e.attack=Math.max(0,e.attack-dt);e.hurt=Math.max(0,(e.hurt||0)-dt);e.moving=false;e.spawnGrace=Math.max(0,e.spawnGrace-dt);
