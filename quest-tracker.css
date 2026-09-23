@@ -1,0 +1,38 @@
+/* Auftragsverfolgung nach WoW-Vorbild (quest-tracker.js, 2026-09-23): kein Kasten, Schrift mit Schatten auf einem leichten
+   Verlauf, goldene Titel, darunter nur der nächste Schritt; breiter und ohne Scrollen. Spezifität bewusst hoch, weil ältere
+   Regeln für .quest-panel über style/polish/rpg/bierdeckel/ui-chrome/panel-pages verteilt sind. Touch blendet die Verfolgung aus. */
+body:not(.touch-mode) .quest-panel.quest-tracker{
+ --qt-gold:#f3cf7a;--qt-gold-2:#d8b86a;--qt-text:#f1e4c4;--qt-dim:#c9bb98;--qt-ok:#9fe08a;
+ width:290px;max-height:none;overflow:visible;padding:4px 2px 6px 18px;cursor:default;
+ border:0;border-image:none;border-radius:0!important;box-shadow:none;color:var(--qt-text);
+ background:linear-gradient(to left,#0b1612b8 0%,#0b161288 62%,#0b161200 100%);background-clip:border-box;
+ text-shadow:0 1px 1px #000,0 0 3px #000c;
+}
+body:not(.touch-mode) .quest-panel.quest-tracker:hover{border:0}
+.quest-tracker .qt-body{display:flex;flex-direction:column;gap:6px}
+.quest-tracker .qt-quest{display:block;padding:2px 6px 2px 0;border-radius:3px;outline:none}
+.quest-tracker .qt-title{display:block;font:400 17px/1.05 var(--display,'Jersey 15',sans-serif);letter-spacing:.03em;color:var(--qt-gold-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Verfolgter Auftrag: hellerer Titel mit Rautenmarke davor (wie der hervorgehobene POI in WoW). */
+.quest-tracker .qt-quest.is-focus .qt-title{color:var(--qt-gold);font-size:19px}
+.quest-tracker .qt-quest.is-focus .qt-title:before{content:'';display:inline-block;width:7px;height:7px;margin:0 7px 2px -13px;transform:rotate(45deg);background:var(--qt-gold);box-shadow:0 0 5px #f3cf7a99}
+.quest-tracker .quest-task{display:flex;align-items:baseline;gap:6px;margin:2px 0 0;font:600 13px/1.3 var(--read,'Nunito',sans-serif);color:var(--qt-text);opacity:1}
+.quest-tracker .quest-task i{flex:none;width:5px;height:5px;margin:0 1px 2px 2px;transform:rotate(45deg);background:var(--qt-dim);align-self:center}
+.quest-tracker .quest-task span{flex:1;min-width:0}
+.quest-tracker .quest-task em{flex:none;font:600 11px/1 var(--read,'Nunito',sans-serif);font-style:normal;color:var(--qt-dim);white-space:nowrap}
+.quest-tracker .quest-task.waypoint em{color:var(--qt-gold)}
+.quest-tracker .quest-task.done,.quest-tracker .qt-quest.is-done .quest-task{color:var(--qt-ok)}
+.quest-tracker .quest-task.done i{background:var(--qt-ok)}
+/* Weitere Aufträge: gleicher Aufbau, etwas zurückgenommen; Hover/Fokus hebt hervor, Klick verfolgt. */
+.quest-tracker .quest-others{display:flex;flex-direction:column;gap:5px;margin:0;pointer-events:auto}
+.quest-tracker .quest-others:empty{display:none}
+.quest-tracker .quest-others .qt-quest{cursor:pointer;opacity:.86}
+.quest-tracker .quest-others .qt-title{font-size:15px}
+.quest-tracker .quest-others .quest-task{font-size:12px;font-weight:500}
+.quest-tracker .quest-others .qt-quest:hover,.quest-tracker .quest-others .qt-quest:focus-visible{opacity:1;background:#ffffff10}
+.quest-tracker .quest-others .qt-quest:hover .qt-title,.quest-tracker .quest-others .qt-quest:focus-visible .qt-title{color:var(--qt-gold)}
+.quest-tracker.has-waypoint .qt-quest.is-focus{cursor:pointer}
+.quest-tracker.has-waypoint .qt-quest.is-focus:hover{background:#ffffff10}
+.quest-tracker .qt-more{align-self:flex-start;padding:1px 7px;border:1px solid #d8b86a66;border-radius:9px;font:600 11px/1.4 var(--read,'Nunito',sans-serif);color:var(--qt-dim);cursor:help}
+/* Tooltip-Inhalt der Verfolgung (im gemeinsamen Tooltip aus popup-controls.js). */
+.item-tooltip .qt-tip-step{display:inline-block;line-height:1.45}
+.item-tooltip .qt-tip-step.done{color:#8fd47f}

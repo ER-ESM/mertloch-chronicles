@@ -67,4 +67,4 @@ export const BAG_UI={
 /** Kniffe-Buch, Abschnitt „Eigenarten & Leisten“ (passive-book.js): nur Kachelbeschriftungen – Erklärungen stehen im Tooltip. */
 export const PASSIVE_BOOK_UI={title:'Eigenarten & Leisten',classTitle:()=>'Eigenart',classScope:'Klasse · immer',active:()=>'Hauptbaum · aktiv',withMain:name=>'mit '+name};
 /** Quest-Tracker unter dem Auftragsfeld (quest-tracker.js, Nutzerwunsch 2026-09-23). */
-export const QUEST_TRACKER_UI={others:'Weitere Aufträge · Klick verfolgt',track:'Klick: diesen Auftrag verfolgen (Wegmarke)',talkTo:name=>'Sprich mit '+name,turnIn:name=>'Abgabe bei '+name,more:n=>'+ '+n+' weitere im Auftragsbuch'};
+export const QUEST_TRACKER_UI={track:'Klick: verfolgen (Wegmarke)',run:'Klick: zur Wegmarke laufen',talkTo:name=>'Sprich mit '+name,turnIn:name=>'Abgabe bei '+name,actDone:'Akt abgeschlossen',reward:'Belohnung',moreTitle:'Weitere Aufträge (Auftragsbuch J)'};

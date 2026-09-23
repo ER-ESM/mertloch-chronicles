@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="mount-ui.css">
 <link rel="stylesheet" href="profession-ui.css">
 <link rel="stylesheet" href="bag-ui.css">
+<link rel="stylesheet" href="quest-tracker.css">
   <link rel="stylesheet" href="mobile-polish.css">
 </head>
 <body>
@@ -69,7 +70,7 @@
     <div id="targetPanel" class="hud target-panel hidden"><div class="unit-name"><span id="targetName"></span><small id="targetLevel"></small></div><div id="targetTitle" class="target-title" hidden></div><div class="bar enemy-hp"><i id="targetBar"></i><span id="targetHp"></span></div><div class="target-detail"><span id="targetEffect"></span><span id="targetDistance"></span></div><div id="enemyCast" class="cast hidden"><i id="enemyCastBar"></i><span id="enemyCastText"></span></div></div>
     <div class="region-label"><span>MAIFELD</span><h2 id="zoneName">Mertloch</h2><div><i></i> <span id="zoneType">Dorf & Umland</span></div></div>
     <button class="minimap hud" id="miniButton" aria-label="Weltkarte öffnen"><span class="north">N</span><canvas id="minimap" width="288" height="288"></canvas><span class="map-caption">UMGEBUNG <kbd>M</kbd></span></button>
-    <aside class="quest-panel hud"><div class="panel-kicker">POO-TANG-CLAN <button id="journalButton" aria-label="Auftragsjournal öffnen" title="Auftragsjournal öffnen"><canvas width="48" height="48" data-ui-icon="quest" aria-hidden="true"></canvas></button></div><h3 id="questTitle"></h3><div id="questTasks"></div><div class="quest-reward">BELOHNUNG <span id="questRewardText"></span></div><div id="questOthers" class="quest-others"></div></aside>
+    <aside class="quest-panel hud quest-tracker" aria-label="Auftragsverfolgung"><button id="journalButton" aria-label="Auftragsjournal öffnen" title="Auftragsjournal öffnen"><canvas width="48" height="48" data-ui-icon="quest" aria-hidden="true"></canvas></button><div class="qt-body"></div></aside>
     <div class="world-controls"><button id="soundButton" title="Ton einschalten" aria-label="Ton einschalten"><canvas width="48" height="48" data-ui-icon="sound" aria-hidden="true"></canvas></button><button id="pauseButton" title="Spielmenü (P)" aria-label="Spielmenü"><canvas width="48" height="48" data-ui-icon="menu" aria-hidden="true"></canvas></button><button id="fullscreenButton" title="Vollbild" aria-label="Vollbild"><canvas width="48" height="48" data-ui-icon="fullscreen" aria-hidden="true"></canvas></button></div>
     <div id="announcement" class="announcement"><small>DU BETRITTST</small><strong>Mertloch</strong><span id="announcementMotto"></span></div>
     <div id="attackWarning" class="attack-warning hidden" role="alert"></div>

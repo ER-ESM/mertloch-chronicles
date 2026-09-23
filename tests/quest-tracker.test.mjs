@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {World,distance} from '../world.js';
 import {Game} from '../engine.js';
-import {trackerEntries,focusQuest,focusedKey,questOthersHtml} from '../quest-tracker.js';
+import {trackerEntries,focusQuest,focusedKey,trackerHtml} from '../quest-tracker.js';
 import {acceptHotspotQuest,hotspotLayout,claimHotspotQuest,questStatus} from '../hotspots.js';
 import {hotspotTurnIns} from '../hotspot-ui.js';
 import {idaDialogue} from '../chapter-ui.js';
@@ -18,11 +18,24 @@ test('der Tracker listet Hauptquest und alle laufenden Aufträge, ein Klick verf
  const g=hero();stand(g,'bude-nyalol');assert.ok(acceptHotspotQuest(g,'st-nyalol-1'));stand(g,'kirchhof');acceptHotspotQuest(g,'hs-kirchhof-1');
  const keys=trackerEntries(g).map(e=>e.key);assert.deepEqual(keys,['main','hs:hs-kirchhof-1','hs:st-nyalol-1']);
  assert.equal(focusedKey(g),'hs:hs-kirchhof-1','der zuletzt angenommene Auftrag hat die Wegmarke');
- const html=questOthersHtml(g,pt=>Math.round(distance(g.player,pt)));
+ const html=trackerHtml(g,{metres:pt=>distance(g.player,pt),waypoint:g.destination()});
  assert.match(html,/data-track-quest="main"/);assert.match(html,/data-track-quest="hs:st-nyalol-1"/);assert.doesNotMatch(html,/data-track-quest="hs:hs-kirchhof-1"/,'die verfolgte steht oben, nicht in der Liste');
+ assert.match(html,/id="questTitle"[^>]*>[^<]+</,'der verfolgte Auftrag steht oben mit Titel');
  assert.match(html,/Angebissenes LAN-Kabel.*0\/5/s,'Ziel mit Fortschritt');assert.match(html,/<em>\d+ m<\/em>/,'Laufdistanz');
+ assert.doesNotMatch(html,/Weitere Aufträge|POO-TANG/i,'kein Kopf und kein Erklärtext');
+ assert.match(trackerHtml(g,{room:1}),/class="qt-more"[^>]*>\+1</,'was nicht passt, fasst „+N“ zusammen');
  assert.ok(focusQuest(g,'hs:st-nyalol-1'));assert.equal(focusedKey(g),'hs:st-nyalol-1');assert.equal(g.destination().label.includes('Kabelsalat'),true);
  assert.ok(focusQuest(g,'main'));assert.equal(focusedKey(g),'main');assert.deepEqual(g.destination(),g.mainDestination());
+});
+
+test('bei mehreren Schritten steht nur der nächste offene im HUD, alle stehen im Tooltip',()=>{
+ const g=hero(),steps=g.chapterProgress();assert.ok(steps.length>1,'Kapitel mit mehreren Schritten');
+ const html=trackerHtml(g),focus=html.slice(0,html.indexOf('id="questOthers"')),open=steps.find(s=>!s.complete);
+ const visible=focus.replace(/data-tooltip-[a-z]+="[^"]*"/g,'');
+ assert.equal((visible.match(/class="quest-task/g)||[]).length,1,'genau ein Schritt im HUD');
+ assert.ok(visible.includes(open.objective.label),'es ist der erste offene Schritt');
+ const note=focus.match(/data-tooltip-note="([^"]*)"/)[1];
+ for(const s of steps)assert.ok(note.includes(s.objective.label.slice(0,8)),'Tooltip nennt jeden Schritt: '+s.objective.label);
 });
 
 test('Ollis Pitch: Ida nimmt die Abgabe auch an, solange ihre Hauptquest läuft',()=>{

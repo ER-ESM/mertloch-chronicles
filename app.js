@@ -82,7 +82,7 @@ const ZOOM_KEY='mertloch.zoom';
 import {PopupWindows} from './popup-windows.js';
 import {mountPopupControls,filterBag,bagView} from './popup-controls.js';
 import {hotspotDialogue,noticeDialogue,hotspotTracker,hotspotTurnIns} from './hotspot-ui.js';
-import {questOthersHtml,focusQuest} from './quest-tracker.js';
+import {renderTracker,focusQuest} from './quest-tracker.js';
 import {acceptHotspotQuest,claimHotspotQuest,trackHotspotQuest,readNotice,hotspotQuest,turnInOf,giverOffers,hotspotDestination,giverPoint,giverChatter} from './hotspots.js';
 import {HOTSPOT_UI} from './content/index.js';
 import {loadUiArt,paintUiControls,paintUiIcon,uiIconCount,paintHeroPortrait} from './ui-art.js';
@@ -372,21 +372,11 @@ const st=game.classState;const p=game.player,e=game.target,q=game.quest;$('#play
   $('#world').classList.toggle('aiming',!!game.aiming);const autoOn=!!game.autoAttack.enabled,autoBox=$('#autoState');autoBox.textContent=autoOn?COMBAT_TEXT.autoOn:COMBAT_TEXT.autoOff;autoBox.classList.toggle('is-on',autoOn);autoBox.classList.toggle('is-off',!autoOn);
   if(!sawAttackEvent&&p.inCombat>0&&lastInCombat<=0)warnAttacked(game.target?.aggro?game.target.name:'');lastInCombat=p.inCombat;
   {const el=$('#attackWarning');if(el)el.classList.toggle('hidden',game.time>attackWarnUntil||game.dead);}if(game.activity){const a=game.activity,elapsed=game.time-a.start,score=modal.querySelector('[data-activity-score]');if(score)score.textContent=a.score+' / '+(a.mode==='rhythm'?3:4)+' richtig · '+a.mistakes+' / 3 Patzer';const cursor=modal.querySelector('[data-rhythm-cursor]');if(cursor)cursor.style.left=(elapsed%1.6/1.6*100)+'%';const wires=modal.querySelector('[data-wire-sequence]');if(wires)wires.textContent=elapsed<3?a.sequence.map(i=>['Flasche','Box','Blitz','Ring'][i]).join(' → '):'Jetzt du: '+a.input.length+' / 4';modal.querySelectorAll('[data-wire]').forEach(b=>b.disabled=elapsed<3);}
-  const chapter=game.chapter(),reward=chapter.reward||{},waypoint=inDungeon(game)?null:game.destination();
-  $('#questTitle').textContent=q.actDone?(chapterState(q.chapter,'claimed')?.title||chapter.title):chapter.title;
+  const waypoint=inDungeon(game)?null:game.destination();
   $('.quest-panel').classList.toggle('has-waypoint',!!waypoint&&!game.dead);
-  const task=(done,text)=>`<div class="quest-task${done?' done':''}"><i>${done?'✓':'◇'}</i><span>${text}</span></div>`;
-  const waypointTask=waypoint?`<div class="quest-task waypoint"><i>➤</i><span>${escapeQuest(waypoint.label)} <b>${Math.round(distance(p,waypoint.point)/SCALE)} m</b></span></div>`:'';
-  $('#questTasks').innerHTML=q.actDone?ACTS[0].chapters.map(id=>task(true,escapeQuest(STORY_CHAPTERS.find(c=>c.id===id)?.title||''))).join('')
-   :tutorialActive(game)?waypointTask
-   :!q.accepted?task(false,'Sprich mit '+escapeQuest(STORY.giver)+'.')+waypointTask
-   :game.chapterProgress().map(step=>task(step.complete,escapeQuest(step.objective.label)+` <b>${step.done}/${step.need}</b>`)).join('')+waypointTask;
-  $('#questRewardText').textContent='✧ '+rewardLine(reward);
+  // Auftragsverfolgung (quest-tracker.js): verfolgter Auftrag mit nur dem nächsten Schritt, darunter die übrigen; Details im Tooltip.
+  renderTracker($('.quest-panel'),game,{waypoint,metres:inDungeon(game)?null:pt=>distance(p,pt)/SCALE});
   const next=worldInteraction();$('#interact').classList.toggle('hidden',!next||game.dead);if(next)$('#interact span').textContent=next.label;/* Hofprobe: speak() nimmt nahe Beute zuerst, sonst führt es zu Ida – der Knopf sagt, was der Tipp tut */mobile?.setAction?.(game.dead?null:tutorialActive(game)?(nearestLoot(game)?'loot':'npc'):next?.kind||null);
-  {const hs=!tutorialActive(game)&&hotspotTracker(game);if(hs){$('#questTitle').textContent=hs.title;$('#questTasks').innerHTML=task(false,escapeQuest(hs.task))+waypointTask;$('#questRewardText').textContent='✧ '+hs.reward;}}
-  if(game.trackedQuest){const def=world.quests.find(q=>q.id===game.trackedQuest),s=game.sideQuests[game.trackedQuest];if(def){$('#questTitle').textContent=def.title;$('#questTasks').innerHTML=task(s.progress>=def.required,escapeQuest(questProgress(def,s)))+task(false,s.progress>=def.required?`Zurück zu ${def.giver.name}`:def.location);}}
-  // Weitere laufende Aufträge (quest-tracker.js): nur neu bauen, wenn sich der Inhalt ändert (Entfernung in 10-m-Schritten).
-  {const html=questOthersHtml(game,inDungeon(game)?null:pt=>Math.round(distance(p,pt)/SCALE/10)*10),box=$('#questOthers');if(box&&box.dataset.sig!==html){box.dataset.sig=html;box.innerHTML=html;}}
   if(inDungeon(game)){const run=dungeonRun(game),room=dungeonRoomAt(run.def,p.x,p.y);$('#zoneName').textContent=room?room.sign:run.def.name;$('#zoneType').textContent=run.def.floors[dungeonFloorAt(run.def,p.x,p.y)]?.name||run.def.subtitle;$('#coordinates').textContent='';}else{const road=world.nearestRoad(p.x,p.y),hub=(world.hubs||[]).find(h=>distance(p,h)<125),camp=world.camps.find(c=>distance(p,c)<240),approach=world.camps.find(c=>c.approach&&distance(p,c.approach)<85);$('#zoneName').textContent=hub?hub.name.split(' · ')[0]:camp?camp.title:approach?'Lagerrand':distance(p,world.church)<190?'St. Gangolf':road.distance<60&&road.road?.tags.name?road.road.tags.name:'Mertlocher Fluren';$('#zoneType').textContent=hub||approach||distance(p,world.spawn)<100?'Geschützter Rastplatz':camp?(game.enemies.some(e=>e.campId===camp.id&&e.hp>0)?'Besetztes Außenlager':'Lager freigeräumt'):'Mertloch · Maifeld';const gps=world.unproject(p.x,p.y);$('#coordinates').textContent=gps.lat.toFixed(4)+'° N · '+gps.lon.toFixed(4)+'° O';}if(inKiosk(game)){$('#zoneName').textContent=KIOSK_TEXT.inside;$('#zoneType').textContent=KIOSK_TEXT.zone;$('#coordinates').textContent='';}
   $('#rotationTip').innerHTML='<span>PTC</span> '+(!available(game,'mark')?'Tab → Ziel wählen · [1] angreifen · [LEER] ausweichen'+(available(game,'buff')?' · [5] Buff':''):e?.cast?.interruptible&&available(game,'interrupt')?'Jetzt '+game.skills[3].name+' [4] – Klappe zu, Schaden hoch.':e?.cast?.ground?'Raus aus der Fläche! '+game.skills[5].name+' [LEER].':available(game,'burst')&&game.cooldowns.burst<=0&&e?.mark>0?'Bereit: '+game.skills[2].name+' [3]!':game.member.id==='baerbel'?'Im Takt treffen: 1–1,9 s zwischen zwei Pinsel-Pieksern.':'Punkte mit [1]. Markieren mit [2]. Komplett ausrasten mit [3].');
 
@@ -447,12 +437,12 @@ modal.addEventListener('click',e=>{const leave=e.target.closest('[data-start-scr
  const setting=e.target.closest('[data-settings]')?.dataset.settings;if(setting==='touchmenu')mobile?.context();else if(setting)$('#'+setting+'Button').click();const arenaEl=e.target.closest('[data-arena-spawn],[data-arena-clear],[data-arena-level],[data-arena-heal],[data-arena-spec],[data-arena-home]');if(arenaEl)arenaAction(arenaEl);if(e.target.closest('[data-admin-reset]'))adminReset();if(e.target.closest('[data-admin-restore]'))adminReset(true);});
 
 $('#clanButton').onclick=()=>game&&showClan();$('#guideButton').onclick=()=>game&&showGuide();$('#mapButton').onclick=$('#miniButton').onclick=()=>game&&showMap();$('#worldButton').onclick=()=>{popups.closeAll();$('#world').focus({preventScroll:true});};$('#pauseButton').onclick=()=>showPanel('menu',true);$('#resumeButton').onclick=syncPause;$('#interact').onclick=speak;
-$('#questOthers')?.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-track-quest]');if(!b||!game)return;e.preventDefault();e.stopPropagation();if(focusQuest(game,b.dataset.trackQuest)){save();events();}});
+$('.quest-panel').addEventListener('pointerdown',e=>{const b=e.target.closest('[data-track-quest]');if(!b||!game)return;e.preventDefault();e.stopPropagation();if(focusQuest(game,b.dataset.trackQuest)){save();events();}});
 $('#journalButton').onclick=()=>game&&showJournal();
 /** Ein Laufbefehl zur goldenen Wegmarke (P6) – statt vieler kurzer Klicks an den Bildschirmrand. */
 function runToDestination(){if(!game||game.dead||!game.destination?.())return false;const ok=!!game.navigateDestination?.();events();return ok;}
 // Der ganze HUD-Questkasten (und die Wegmarkenzeile darin) ist der Knopf dafür; das Journalsymbol bleibt das Journal.
-$('.quest-panel').addEventListener('click',e=>{if(e.target.closest('#journalButton'))return;runToDestination();});
+$('.quest-panel').addEventListener('click',e=>{if(e.target.closest('#journalButton,[data-track-quest]'))return;runToDestination();});
 $('#soundButton').onclick=()=>{muted=!muted;$('#soundButton').classList.toggle('sound-active',!muted);$('#soundButton').style.color=muted?'':'#efe0a2';$('#soundButton').setAttribute('aria-label',muted?'Ton einschalten':'Ton ausschalten');$('#soundButton').title=muted?'Ton einschalten':'Ton ausschalten';sound('heal');toast(muted?'Klänge ausgeschaltet.':'Klänge eingeschaltet.');};
 $('#fullscreenButton').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('#gameShell').requestFullscreen();}catch{toast('Vollbild ist in diesem Browser nicht verfügbar.');}};
 modal.addEventListener('click',e=>{const button=e.target.closest('button');if(e.target.closest('[data-close]'))closeModal();if(button?.id==='acceptQuest'){if(game.dead||distance(game.player,world.npc)>=50){toast('Geh wieder zu '+world.npc.name+', um den Auftrag anzunehmen.');return;}game.acceptQuest();closeModal();events();toast('Auftrag angenommen. Die Gegner warten an den markierten Orten.');}if(button?.id==='claimQuest'){if(game.dead||distance(game.player,world.npc)>=50){toast('Die Belohnung gibt es bei '+world.npc.name+'.');return;}showReward(game.rewardKey());}if(button?.id==='respawn'){game.respawn();closeModal();events();}});
