@@ -117,11 +117,11 @@ try{
   document.dispatchEvent(new KeyboardEvent('keydown',{key:'i',bubbles:true}));await new Promise(r=>setTimeout(r,450));
   const src=document.querySelector('[data-item="kaltgetraenk"]'),slot=document.querySelector('#actionBar [data-action-slot="7"]');
   if(!src||!slot)return JSON.stringify({fehler:'Rucksackplatz oder Leistenplatz fehlt',src:!!src,slot:!!slot});
-  const dt=new DataTransfer();
-  src.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:dt}));
-  slot.dispatchEvent(new DragEvent('dragover',{bubbles:true,dataTransfer:dt}));
-  slot.dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer:dt}));
-  document.dispatchEvent(new DragEvent('dragend',{bubbles:true,dataTransfer:dt}));
+  /* Zeiger-Ziehen (2026-09-23, popup-controls.js): drücken, bewegen, über dem Platz loslassen */
+  const at=el=>{const r=el.getBoundingClientRect();return {clientX:r.left+r.width/2,clientY:r.top+r.height/2,bubbles:true,pointerType:'mouse',button:0};};
+  src.dispatchEvent(new PointerEvent('pointerdown',{...at(src),buttons:1}));
+  document.dispatchEvent(new PointerEvent('pointermove',{...at(slot),buttons:1}));
+  slot.dispatchEvent(new PointerEvent('pointerup',{...at(slot),buttons:0}));
   await new Promise(r=>setTimeout(r,450));
   const s=g.bar()[7];
   return JSON.stringify({art:s.kind,id:s.id,stapel:s.count,dom:document.querySelector('#actionBar [data-action-slot="7"]')?.dataset.barItem||null});})()`));

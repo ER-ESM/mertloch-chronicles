@@ -63,13 +63,14 @@ test('Belegung wird gespeichert; ein leerer Stapel lässt den Platz reserviert u
  assert.ok(toasts(loaded).some(t=>t.includes('nichts mehr dabei')));
 });
 
-test('Kniffe haben Vorrang: neu gelernte Kniffe verdrängen den letzten Gegenstand',()=>{
+test('Kniffe haben Vorrang: neu gelernte Kniffe schieben den letzten Gegenstand auf Leiste 2',()=>{
  const g=new Game(arena());
  assert.equal(actionBar(g).filter(e=>e&&e.startsWith('item:')).length,2,'zwei Verpflegungsplätze auf Stufe 1');
  g.gainXp(40000);
- const bar=actionBar(g);
- assert.equal(bar.filter(Boolean).length,10,'die Leiste ist voll');
- assert.equal(bar.filter(e=>e.startsWith('item:')).length,1,'neun Kniffe verdrängen einen der beiden Gegenstände');
+ const bar=actionBar(g),first=bar.slice(0,10);
+ assert.equal(first.filter(Boolean).length,10,'Leiste 1 ist voll');
+ assert.equal(first.filter(e=>e.startsWith('item:')).length,1,'neun Kniffe verdrängen einen der beiden Gegenstände von Leiste 1');
+ assert.equal(bar.slice(10).filter(e=>e&&e.startsWith('item:')).length,1,'der verdrängte Gegenstand liegt jetzt auf Leiste 2');
  assert.ok(g.skills.filter(s=>bar.includes(s.id)).length>=9);
 });
 

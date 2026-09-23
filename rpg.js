@@ -7,9 +7,12 @@ import {talentState,talentEffects,SPECS} from './talents.js';
 import {restoreRolls,rollDrop,questChoices,registerRoll} from './itemization.js';
 import {available,LESSONS,skillLevel} from './progression.js';
 import {classBuffValue} from './class-buffs.js';
-import {BALANCE,ITEM_CATALOG,rating,ratingK,powerRate,SYSTEM_LINES,STAT_NAMES,GEAR_COMPARE,WEAPON_TYPES,BAG_UI,RARITIES} from './content/index.js';
+import {BAR_SIZE,MAX_BARS,DEFAULT_BARS,bindingAt,bindingLabel,cleanBarKeys} from './bar-keys.js';
+import {ACTION_BAR_TEXT,BALANCE,ITEM_CATALOG,rating,ratingK,powerRate,SYSTEM_LINES,STAT_NAMES,GEAR_COMPARE,WEAPON_TYPES,BAG_UI,RARITIES} from './content/index.js';
 export const BAG_SIZE=24;
+/** Standardtasten der ersten Leiste (Touch-Übersetzung). Die wirksame Taste je Platz liefert slotKey() (bar-keys.js). */
 export const SLOT_KEYS=['1','2','3','4','5','6','7','8','9','0'];
+export {BAR_SIZE,MAX_BARS};
 export const SPECIAL_KEYS={dash:' ',interrupt:'q'};
 export const DEFAULT_BAR=['auto','strike','buff','throw','parry','mark','burst','ground','heal',null];
 /** Leistenplätze halten Kniffe (Id) oder benutzbare Gegenstände ('item:<id>'). Beide Formen sind Speicherschlüssel. */
@@ -22,7 +25,7 @@ export const usableItem=id=>{const d=ITEMS[id];return !!d&&(d.usable===true||(d.
 export const ITEMS=Object.fromEntries(Object.entries(ITEM_CATALOG).map(([id,d])=>[id,structuredClone(d)]));
 const integer=(n,max=1e9)=>Math.max(0,Math.min(max,Math.floor(Number(n)||0)));
 const validEntry=e=>e&&ITEMS[e.id]&&integer(e.count,ITEMS[e.id].stack||1)>0;
-export function createRpg(saved,worldKey,classId='dieter'){const s=saved&&typeof saved==='object'?saved:null;const generated=restoreRolls(s?.generated,ITEMS),restored=restoreEquipment(s?.equipment,ITEMS,s?.version||0),talentBuilds=Object.fromEntries(['dieter','baerbel','kevin'].map(id=>[id,talentState(s?.talentBuilds?.[id]||(id===classId?s?.talents:null),id)]));return {version:4,recovery:[...(Array.isArray(s?.recovery)?s.recovery.filter(id=>ITEMS[id]):[]),...restored.recovered],starterClaimed:!!s?.starterClaimed,generated,itemSequence:integer(s?.itemSequence),lootState:integer(s?.lootState,0xffffffff)||Math.floor(Math.random()*2147483646)+1,talentBuilds,talents:talentBuilds[classId],rewardChoices:s?.rewardChoices&&typeof s.rewardChoices==='object'?Object.fromEntries(Object.entries(s.rewardChoices).filter(([,ids])=>Array.isArray(ids)&&ids.length===3&&ids.every(id=>ITEMS[id]))):{},worldKey,buyback:restoreShopHistory(s?.buyback,ITEMS),shopSequence:Number.isSafeInteger(s?.shopSequence)&&s.shopSequence>=0?s.shopSequence:0,coins:integer(s?.coins),inventory:s&&Array.isArray(s.inventory)?s.inventory.filter(validEntry).slice(0,BAG_SIZE).map(e=>({id:e.id,count:integer(e.count,ITEMS[e.id].stack||1)})):[{id:'brezel',count:3},{id:'wasser',count:2}],equipment:restored.equipment,actionBars:s?.version>=2&&s?.actionBars&&typeof s.actionBars==='object'?structuredClone(s.actionBars):{},barSeen:Array.isArray(s?.barSeen)?s.barSeen.filter(id=>ITEMS[id]).slice(0,80):[],sequence:integer(s?.sequence),loot:s&&s.worldKey===worldKey&&Array.isArray(s.loot)?s.loot.filter(b=>typeof b.id==='string'&&Number.isFinite(b.x)&&Number.isFinite(b.y)&&Math.abs(b.x)<200000&&Math.abs(b.y)<200000).map(b=>({id:b.id,x:b.x,y:b.y,coins:integer(b.coins),source:b.source&&typeof b.source==='object'?{name:String(b.source.name||''),kind:String(b.source.kind||'bag')}:{name:'',kind:'bag'},items:Array.isArray(b.items)?b.items.filter(validEntry).map(e=>({id:e.id,count:integer(e.count,ITEMS[e.id].stack||1)})):[]})):[],consumableReady:0};}
+export function createRpg(saved,worldKey,classId='dieter'){const s=saved&&typeof saved==='object'?saved:null;const generated=restoreRolls(s?.generated,ITEMS),restored=restoreEquipment(s?.equipment,ITEMS,s?.version||0),talentBuilds=Object.fromEntries(['dieter','baerbel','kevin'].map(id=>[id,talentState(s?.talentBuilds?.[id]||(id===classId?s?.talents:null),id)]));return {version:4,recovery:[...(Array.isArray(s?.recovery)?s.recovery.filter(id=>ITEMS[id]):[]),...restored.recovered],starterClaimed:!!s?.starterClaimed,generated,itemSequence:integer(s?.itemSequence),lootState:integer(s?.lootState,0xffffffff)||Math.floor(Math.random()*2147483646)+1,talentBuilds,talents:talentBuilds[classId],rewardChoices:s?.rewardChoices&&typeof s.rewardChoices==='object'?Object.fromEntries(Object.entries(s.rewardChoices).filter(([,ids])=>Array.isArray(ids)&&ids.length===3&&ids.every(id=>ITEMS[id]))):{},worldKey,buyback:restoreShopHistory(s?.buyback,ITEMS),shopSequence:Number.isSafeInteger(s?.shopSequence)&&s.shopSequence>=0?s.shopSequence:0,coins:integer(s?.coins),inventory:s&&Array.isArray(s.inventory)?s.inventory.filter(validEntry).slice(0,BAG_SIZE).map(e=>({id:e.id,count:integer(e.count,ITEMS[e.id].stack||1)})):[{id:'brezel',count:3},{id:'wasser',count:2}],equipment:restored.equipment,actionBars:s?.version>=2&&s?.actionBars&&typeof s.actionBars==='object'?structuredClone(s.actionBars):{},barCount:Number.isInteger(s?.barCount)&&s.barCount>=1&&s.barCount<=MAX_BARS?s.barCount:DEFAULT_BARS,barKeys:cleanBarKeys(s?.barKeys),barSeen:Array.isArray(s?.barSeen)?s.barSeen.filter(id=>ITEMS[id]).slice(0,80):[],sequence:integer(s?.sequence),loot:s&&s.worldKey===worldKey&&Array.isArray(s.loot)?s.loot.filter(b=>typeof b.id==='string'&&Number.isFinite(b.x)&&Number.isFinite(b.y)&&Math.abs(b.x)<200000&&Math.abs(b.y)<200000).map(b=>({id:b.id,x:b.x,y:b.y,coins:integer(b.coins),source:b.source&&typeof b.source==='object'?{name:String(b.source.name||''),kind:String(b.source.kind||'bag')}:{name:'',kind:'bag'},items:Array.isArray(b.items)?b.items.filter(validEntry).map(e=>({id:e.id,count:integer(e.count,ITEMS[e.id].stack||1)})):[]})):[],consumableReady:0};}
 export function equipmentStats(game){const result=Object.fromEntries(Object.keys(STAT_NAMES).map(k=>[k,0]));for(const id of Object.values(game.rpg?.equipment||{})){const d=ITEMS[id];if(!d||(d.level||1)>game.player.level)continue;for(const k in result)result[k]+=d.stats?.[k]||0;}return {...result,health:result.stamina*BALANCE.player.hpPerStamina};}
 export function combatStats(game){
  const P=BALANCE.player,R=BALANCE.ratings,W=BALANCE.power,gear=equipmentStats(game),talent=talentEffects(game),level=game.player.level,spec=game.rpg?.talents?.spec||'dieter-wall',raw={};
@@ -56,44 +59,53 @@ export function unequipItem(game,slot){const r=game.rpg,id=r.equipment[slot];if(
 export function useItem(game,id){const def=ITEMS[id],p=game.player;if(game.paused||game.dead||!usableItem(id))return false;
  if(!game.rpg.inventory.some(e=>e.id===id)){game.toast(def.name+': Davon hast du nichts mehr dabei.');return false;}
  if(game.time<game.rpg.consumableReady){game.toast(def.name+' ist noch nicht bereit · '+Math.max(0,game.rpg.consumableReady-game.time).toFixed(1)+' s.');return false;}if(def.heal&&p.hp>=p.maxHp||def.energy&&p.energy>=100){game.toast('Das brauchst du gerade nicht.');return false;}const hpBefore=p.hp,energyBefore=p.energy;removeItem(game.rpg,id);const b=game.baseEffects?.()||{};if(def.heal)restoreMeterHealth(game,Math.round(def.heal*(1+(b.foodHeal||0))),{id:'item:'+id,name:def.name});if(def.energy)p.energy=Math.min(100,p.energy+Math.round(def.energy*(1+(b.foodHeal||0))));game.rpg.consumableReady=game.time+Math.max(0,BALANCE.player.consumableCooldown-(b.consumableCd||0));if(p.hp>hpBefore)emitCombatFx(game,'heal',p,{amount:p.hp-hpBefore,direct:true});if(p.energy>energyBefore)emitCombatFx(game,'proc',p,{signal:'resource',label:'+'+Math.round(p.energy-energyBefore)+' RANDALE'});game.toast(def.name+' benutzt.');game.memoryEvent?.({kind:'consumable',item:id});changed(game);if(actionBar(game).includes(barItemEntry(id))&&!countItem(game.rpg,id))game.emit('barChanged');return true;}
-/** Belegung der Leiste. Gegenstandsplätze bleiben auch bei leerem Stapel reserviert – die UI graut sie aus. */
-export function actionBar(game){const key=game.member.id,bar=game.rpg.actionBars[key];if(!Array.isArray(bar)){game.rpg.actionBars[key]=DEFAULT_BAR.map(id=>id&&available(game,id)?id:null);return game.rpg.actionBars[key];}const seen=new Set();game.rpg.actionBars[key]=Array.from({length:10},(_,i)=>{const id=bar[i],item=barItemId(id);if(id==='mount')return game.mounts?.owned.length&&!seen.has(id)?(seen.add(id),id):null;if(item)return !usableItem(item)||seen.has(id)?null:(seen.add(id),id);if(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id)||!available(game,id)||seen.has(id))return null;seen.add(id);return id;});return game.rpg.actionBars[key];}
+/** Belegung aller sichtbaren Leisten als eine Liste: Platz 0–9 = Leiste 1, 10–19 = Leiste 2 usw. (rpg.barCount, Standard 2).
+ *  Gegenstandsplätze bleiben auch bei leerem Stapel reserviert – die UI graut sie aus. Alte Spielstände (eine Leiste mit 10 Plätzen) werden aufgefüllt. */
+const barLength=game=>BAR_SIZE*(Number.isInteger(game.rpg.barCount)&&game.rpg.barCount>=1&&game.rpg.barCount<=MAX_BARS?game.rpg.barCount:1);
+export function actionBar(game){const key=game.member.id,bar=game.rpg.actionBars[key],length=barLength(game);if(!Array.isArray(bar)){game.rpg.actionBars[key]=Array.from({length},(_,i)=>{const id=DEFAULT_BAR[i];return id&&available(game,id)?id:null;});return game.rpg.actionBars[key];}const seen=new Set();game.rpg.actionBars[key]=Array.from({length},(_,i)=>{const id=bar[i],item=barItemId(id);if(id==='mount')return game.mounts?.owned.length&&!seen.has(id)?(seen.add(id),id):null;if(item)return !usableItem(item)||seen.has(id)?null:(seen.add(id),id);if(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id)||!available(game,id)||seen.has(id))return null;seen.add(id);return id;});return game.rpg.actionBars[key];}
+/** Anzahl sichtbarer Leisten ändern (UI-Einstellung). Plätze einer entfernten Leiste werden geräumt; Gegenstände darauf kehren nicht von allein zurück. */
+export function setBarCount(game,count){if(!Number.isInteger(count)||count<1||count>MAX_BARS)return false;const bar=actionBar(game);for(const entry of bar.slice(count*BAR_SIZE)){const item=barItemId(entry);if(item)noteBarItem(game,item);}game.rpg.barCount=count;actionBar(game);changed(game);game.emit('barChanged');return true;}
+/** Wirksame Taste eines Platzes, kurz beschriftet („3", „⇧2", „M4"); '' = ohne Taste. */
+export const slotKey=(game,index)=>bindingLabel(bindingAt(game.rpg,index));
 /** Ein Leistenplatz für die UI: Kniff, Gegenstand (mit Stapelgröße und Bereitschaft) oder leer. */
-export function barSlots(game){const bar=actionBar(game);return bar.map((entry,index)=>{const key=SLOT_KEYS[index],item=barItemId(entry);
- if(entry==='mount')return {index,key,entry,kind:'mount',id:'mount',name:MOUNT_UI.barName,available:!!game.mounts?.owned.length};
+export function barSlots(game){const bar=actionBar(game);return bar.map((entry,index)=>{const key=slotKey(game,index),item=barItemId(entry),row=Math.floor(index/BAR_SIZE);
+ if(entry==='mount')return {index,row,key,entry,kind:'mount',id:'mount',name:MOUNT_UI.barName,available:!!game.mounts?.owned.length};
  if(item){const d=ITEMS[item],count=countItem(game.rpg,item),wait=Math.max(0,game.rpg.consumableReady-game.time);
-  return {index,key,entry,kind:'item',id:item,name:d.name,icon:d.icon||null,count,empty:count===0,cooldown:wait,ready:count>0&&wait<=0,available:count>0};}
- if(!entry)return {index,key,entry:null,kind:'empty',id:null,name:'',icon:null,available:false};
+  return {index,row,key,entry,kind:'item',id:item,name:d.name,icon:d.icon||null,count,empty:count===0,cooldown:wait,ready:count>0&&wait<=0,available:count>0};}
+ if(!entry)return {index,row,key,entry:null,kind:'empty',id:null,name:'',icon:null,available:false};
  const s=game.skills.find(s=>s.id===entry);
- return {index,key,entry,kind:'skill',id:entry,name:s?.name||entry,icon:s?.icon||null,available:available(game,entry),cooldown:Math.max(0,game.cooldowns[entry]||0),ready:available(game,entry)&&(game.cooldowns[entry]||0)<=.01};});}
-/** Belegt einen Platz mit einem Kniff oder einem Gegenstand ('item:<id>'). `null` räumt den Platz. */
-export function bindSkill(game,id,index){if(!Number.isInteger(index)||index<0||index>9)return false;
+ return {index,row,key,entry,kind:'skill',id:entry,name:s?.name||entry,icon:s?.icon||null,available:available(game,entry),cooldown:Math.max(0,game.cooldowns[entry]||0),ready:available(game,entry)&&(game.cooldowns[entry]||0)<=.01};});}
+/** Belegt einen Platz mit einem Kniff oder einem Gegenstand ('item:<id>'). `null` räumt den Platz. Liegt der Eintrag schon woanders, tauschen die Plätze. */
+export function bindSkill(game,id,index){const bar=actionBar(game);if(!Number.isInteger(index)||index<0||index>=bar.length)return false;
  const item=barItemId(id);
  if(item){if(!usableItem(item))return false;}
  else if(id==='mount'){if(!game.mounts?.owned.length)return false;}
  else if(id&&(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id&&available(game,id))))return false;
- const bar=actionBar(game),old=id?bar.indexOf(id):-1,replaced=bar[index];
+ const old=id?bar.indexOf(id):-1,replaced=bar[index];
  if(old>=0)bar[old]=replaced;else if(barItemId(replaced))noteBarItem(game,barItemId(replaced));
  bar[index]=id||null;
  if(item)noteBarItem(game,item);
  changed(game);game.emit('barChanged');return true;}
 /** Merkt sich einen Gegenstand als „war schon auf der Leiste“ – er wandert nicht von allein zurück. */
 function noteBarItem(game,id){const seen=game.rpg.barSeen||(game.rpg.barSeen=[]);if(!seen.includes(id))seen.push(id);}
-/** Neu gelernte Kniffe auf die Leiste. Kniffe haben Vorrang: ist kein Platz frei, weicht der letzte Gegenstand. */
+const firstFree=(bar,from=0)=>{for(let i=from;i<bar.length;i++)if(!bar[i])return i;return -1;};
+/** Neu gelernte Kniffe auf die Leiste. Leiste 1 zuerst; ist sie voll, rückt ihr letzter Gegenstand auf eine weitere Leiste (oder weicht, wenn keine frei ist). */
 export function unlockOnBar(game,ids){const bar=actionBar(game);let touched=false;
  for(const id of ids.slice().sort((a,b)=>skillLevel(game,a)-skillLevel(game,b))){if(SPECIAL_KEYS[id]!==undefined||bar.includes(id))continue;
-  let slot=bar.indexOf(null);
-  if(slot<0){slot=bar.map(barItemId).findLastIndex(Boolean);if(slot<0)continue;noteBarItem(game,barItemId(bar[slot]));}
+  let slot=bar.slice(0,BAR_SIZE).indexOf(null);
+  if(slot<0){slot=bar.slice(0,BAR_SIZE).map(barItemId).findLastIndex(Boolean);const spare=firstFree(bar,BAR_SIZE);
+   if(slot>=0){if(spare>=0)bar[spare]=bar[slot];else noteBarItem(game,barItemId(bar[slot]));}else slot=spare;
+   if(slot<0)continue;}
   bar[slot]=id;touched=true;}
  if(touched)game.emit('barChanged');return touched;}
-/** Neue Verpflegung nimmt einmalig einen freien Leistenplatz. Wer sie abräumt, bekommt sie nicht ungefragt zurück. */
+/** Neue Verpflegung nimmt einmalig einen freien Leistenplatz (Leiste 1 von hinten, sonst die nächste Leiste). Wer sie abräumt, bekommt sie nicht ungefragt zurück. */
 export function placeUsables(game,ids){const bar=actionBar(game),seen=game.rpg.barSeen||(game.rpg.barSeen=[]);let touched=false;
  for(const id of ids){if(!usableItem(id)||seen.includes(id))continue;const entry=barItemEntry(id);
   if(bar.includes(entry)){noteBarItem(game,id);continue;}
-  const slot=bar.lastIndexOf(null);if(slot<0){noteBarItem(game,id);continue;}bar[slot]=entry;noteBarItem(game,id);touched=true;}
+  let slot=bar.slice(0,BAR_SIZE).lastIndexOf(null);if(slot<0)slot=firstFree(bar,BAR_SIZE);if(slot<0){noteBarItem(game,id);continue;}bar[slot]=entry;noteBarItem(game,id);touched=true;}
  if(touched){game.emit('barChanged');game.emit('save');}
  return touched;}
-export function keyFor(game,id){if(SPECIAL_KEYS[id]!==undefined)return id==='dash'?'LEER':'Q';const i=actionBar(game).indexOf(id);return i<0?'Skillbuch':SLOT_KEYS[i]===' '?'LEER':SLOT_KEYS[i].toUpperCase();}
+export function keyFor(game,id){if(SPECIAL_KEYS[id]!==undefined)return id==='dash'?'LEER':'Q';const i=actionBar(game).indexOf(id);return i<0?'Skillbuch':slotKey(game,i)||ACTION_BAR_TEXT.noKey;}
 /** Beute als Ereignis – gleich, ob sie automatisch oder von Hand eingesammelt wurde. */
 function lootEvent(game,items,coins,source){game.emit('loot',{items:items.map(e=>({id:e.id,count:e.count,rarity:ITEMS[e.id]?.rarity||'common',rolled:e.id.startsWith('roll-')})),coins,source:{name:source?.name||'',kind:source?.kind||'bag'}});}
 /** Wirkungen einer Ausrüstung (E-53): Leben, Schaden, Glückstreffer, Tempo, Waffe je Sekunde, Heilung, Deckung, Randale, Schutz. */

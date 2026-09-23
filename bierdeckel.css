@@ -860,3 +860,37 @@ body.intro-open .game-shell>:not(canvas):not(.vignette):not(.intro-film):not(.mi
 .quest-other:hover,.quest-other:focus-visible{border-color:var(--gold)}
 .quest-other.done span{color:#a9d88f}
 .quest-others-more{font:10px var(--read);opacity:.7}
+/* ===== Aktionsleisten 2026-09-23: mehrere Leisten, Ziehen & Ablegen, Tastenbelegung am Platz ===== */
+.action-area .extra-bar{margin-bottom:6px}
+.action-area .extra-bar .empty-mark{visibility:hidden}
+body:has(.popup-book:not(.minimized)) .action-area .extra-bar .empty-mark{visibility:visible}
+/* Ziehen: nur ein kleines Symbol wandert mit; alle Leisten leuchten, leere Plätze werden sichtbar, der Platz unter dem Zeiger ist klar markiert. */
+.drag-ghost{position:fixed;left:0;top:0;z-index:10000;width:40px;height:40px;pointer-events:none;background:var(--green-2);border:var(--edge) solid var(--gold);box-shadow:var(--hard) var(--hard-ink)}
+.drag-ghost canvas{display:block;width:36px;height:36px}
+body.drag-remove .drag-ghost{border-color:var(--coral);opacity:.7}
+body.is-dragging,body.is-dragging *{user-select:none;cursor:grabbing}
+.drag-source{opacity:.35}
+body.bar-drop .action-area .action-bar{outline:var(--edge) dashed var(--gold);outline-offset:3px}
+body.bar-drop #gameShell .action-bar .skill.empty-slot{opacity:1;border-style:dashed;border-color:var(--gold);background:var(--green-3)}
+body.bar-drop #gameShell .action-bar .empty-mark{visibility:visible;color:var(--gold)}
+body.bar-drop #gameShell .action-bar .skill.drag-over{opacity:1;border-style:solid;border-color:var(--cream);background:var(--gold);box-shadow:var(--hard) var(--hard-ink);outline:3px solid var(--gold);outline-offset:2px;position:relative;z-index:2}
+body.bar-drop #gameShell .action-bar .skill.drag-over canvas{opacity:.85}
+body.bar-drop #gameShell .action-bar .skill.drag-over .empty-mark{color:var(--ink)}
+body.bar-drop.drag-remove .action-area .action-bar{outline-color:var(--coral)}
+/* Taste belegen: der Platz wartet auf eine Taste, der Hinweis steht darüber (M-04: nicht unter dem Zeiger). */
+#gameShell .action-bar .skill.key-capture{opacity:1;border-color:var(--gold);box-shadow:0 0 0 var(--edge) var(--gold)}
+#gameShell .action-bar .skill.key-capture .key{background:var(--gold);color:var(--ink);text-shadow:none}
+.bind-capture{position:absolute;z-index:60;display:grid;gap:2px;max-width:320px;padding:8px 12px;background:var(--kraft);color:var(--ink);border:var(--edge) solid var(--kraft-2);box-shadow:var(--hard) var(--hard-ink);pointer-events:none}
+.bind-capture strong{font-family:var(--display);font-size:var(--t-16);font-weight:400;letter-spacing:.04em}
+.bind-capture span{font-family:var(--read);font-size:var(--t-13);font-weight:700}
+.bind-capture small{font-family:var(--read);font-size:var(--t-11);color:var(--ink-2)}
+.bind-capture small.is-warning{color:var(--stamp-ink);font-weight:700}
+.item-tooltip .bind-tip{margin:8px 0 0;padding-top:6px;border-top:1px solid var(--kraft-2);font-size:var(--t-11);opacity:.85}
+/* Hilfe → Einstellungen: Anzahl der Leisten. */
+.help-settings .bar-settings{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;padding:8px 10px;border:var(--edge) solid var(--kraft-2);background:var(--green-3)}
+.bar-settings .setting-label{font-family:var(--display);font-size:var(--t-16);color:var(--cream)}
+.bar-settings .bar-count-control{display:flex;align-items:center;gap:8px}
+.help-settings .bar-settings button{min-width:44px;min-height:36px;padding:4px 10px;font-size:var(--t-20);line-height:1}
+.bar-settings output{min-width:20px;text-align:center;font-family:var(--display);font-size:var(--t-20);color:var(--gold)}
+.bar-settings small{grid-column:1/-1;font-family:var(--read);font-size:var(--t-11);color:var(--kraft)}
+.touch-mode .bar-settings{display:none}

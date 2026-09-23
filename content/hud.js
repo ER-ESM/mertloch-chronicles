@@ -56,3 +56,27 @@ export const AURA_TEXT={
  controlSlow:{name:'Verlangsamende Fläche',text:'Eine Fläche verringert die Bewegungsgeschwindigkeit des Ziels.',icon:'ground'},
 };
 export const AURA_FIELD_SORTS={pils:'Pils',weizen:'Weizen',bock:'Bock'};
+/** Aktionsleisten (2026-09-23): mehrere Leisten, Ziehen & Ablegen, Tastenbelegung am Platz. Kurzzeichen erscheinen auf dem Platz, Langnamen in Hinweisen. */
+export const ACTION_BAR_TEXT={
+ bar:n=>'Leiste '+n,
+ slot:(bar,slot)=>'Leiste '+bar+' · Platz '+slot,
+ settingsLabel:'Aktionsleisten',
+ settingsHint:'Leiste 1 liegt auf 1–0, Leiste 2 auf Umschalt+1–0. Tasten jedes Platzes änderst du direkt an der Leiste: Maus darüber und B drücken.',
+ add:'Leiste dazu',remove:'Leiste weg',
+ limit:'Höchstens vier Aktionsleisten.',minimum:'Eine Aktionsleiste bleibt immer.',
+ removedBar:n=>'Leiste '+n+' entfernt. Ihre Kniffe liegen weiter im Clanbuch.',addedBar:n=>'Leiste '+n+' ist da. Ziehe Kniffe oder Verpflegung hinein.',
+ bindMenu:'Taste belegen',bindMenuHint:'B über dem Platz',clearSlot:'Platz leeren',clearKey:'Taste löschen',
+ capturePrompt:'Taste oder Maustaste drücken',captureHelp:'Esc bricht ab · Entf löscht die Taste',
+ bound:(key,slot)=>key+' löst jetzt '+slot+' aus.',released:(key,slot)=>key+' lag vorher auf '+slot+' – dort gelöst.',
+ cleared:slot=>slot+' hat jetzt keine Taste.',reserved:key=>key+' ist im Spiel fest vergeben. Nimm eine andere Taste.',
+ noKey:'ohne Taste',
+ tooltipHint:'Taste belegen: B drücken, solange die Maus auf dem Platz liegt, oder Rechtsklick. Ziehen verschiebt, neben der Leiste loslassen nimmt ab.',
+ removed:name=>name+' von der Leiste genommen.',
+ onlyUsable:'Nur Verpflegung passt auf die Leiste.',
+ bookHint:'Zum Belegen auf einen Platz der Aktionsleiste ziehen.',
+ pendingSlot:key=>'Platz ['+key+'] gewählt – jetzt einen Kniff anklicken.',
+ placed:(name,key)=>name+' liegt jetzt auf ['+key+'].',
+ modifiers:{Ctrl:{short:'^',long:'Strg'},Alt:{short:'A',long:'Alt'},Shift:{short:'⇧',long:'Umschalt'}},
+ mouse:n=>'Maustaste '+n,mouseShort:n=>'M'+n,wheel:'Mausrad-Klick',
+ keyNames:{Space:'Leertaste',Backquote:'^',Minus:'ß',Equal:'´',BracketLeft:'Ü',BracketRight:'+',Semicolon:'Ö',Quote:'Ä',Backslash:'#',Comma:',',Period:'.',Slash:'-',IntlBackslash:'<',Insert:'Einfg',Home:'Pos1',End:'Ende',PageUp:'Bild↑',PageDown:'Bild↓',CapsLock:'Feststell',ContextMenu:'Menü',NumpadAdd:'N+',NumpadSubtract:'N-',NumpadMultiply:'N*',NumpadDivide:'N/',NumpadDecimal:'N,',NumpadEnter:'NEnter'},
+};

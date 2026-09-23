@@ -1,4 +1,4 @@
-import {PANEL_UI,STAT_EFFECTS,GLOSSARY,BAG_UI} from './content/index.js';
+import {PANEL_UI,STAT_EFFECTS,GLOSSARY,BAG_UI,ACTION_BAR_TEXT} from './content/index.js';
 import {refreshGrid,showPanelDetail} from './panel-pages.js';
 import {linkReferences,refCard,refTitle} from './describe-ui.js';
 import {paintTalentIcons} from './talent-art.js';
@@ -8,7 +8,7 @@ import {SPECS} from './talents.js';
 import {STAT_NAMES} from './itemization.js';
 import {paintSkillIcon} from './skill-art.js';
 import {paintUiControls} from './ui-art.js';
-import {ITEMS,claimStarterWeapons,recoverEquipment,equipItem,unequipItem,useItem,bindSkill,takeLoot,sortInventory,barItemEntry,usableItem} from './rpg.js';
+import {ITEMS,claimStarterWeapons,recoverEquipment,equipItem,unequipItem,useItem,bindSkill,takeLoot,sortInventory,barItemEntry,usableItem,actionBar,SPECIAL_KEYS} from './rpg.js';
 import {available} from './progression.js';
 import {itemTooltip,itemStats,slots} from './rpg-ui.js';
 import {EQUIPMENT_SLOTS} from './equipment.js';
@@ -23,6 +23,7 @@ export function mountPopupControls(api){const refStack=[];const tooltip=document
   const extraKind=el.dataset.describe?null:el.dataset.tooltipItem?'item':el.dataset.tooltipSkill?'skill':el.dataset.tooltipTalent?'talent':null;
   if(extraKind)tooltip.innerHTML+=describeExtras(api.game(),extraKind,el.dataset.tooltipItem||el.dataset.tooltipSkill||el.dataset.tooltipTalent,{shift:shiftDetails(),touch:document.body.classList.contains('touch-mode'),includeEffect:false});
   if(el.dataset.tooltipTalent&&el.closest('.path-tree'))markWords(tooltip,searchWords(talentSearchQuery()));
+  if(!document.body.classList.contains('touch-mode')){const tip=el.closest('.action-area .action-bar')?ACTION_BAR_TEXT.tooltipHint:el.dataset.bookSkill&&el.dataset.barDrag==='true'?ACTION_BAR_TEXT.bookHint:'';if(tip)tooltip.insertAdjacentHTML('beforeend','<p class="bind-tip">'+tip+'</p>');}
   tooltip.querySelectorAll('[data-skill-art]').forEach(c=>paintSkillIcon(c,c.dataset.skillArt,api.game().member.id));paintUiControls(tooltip);paintTalentIcons(tooltip);tooltip.querySelectorAll('[data-item-art]').forEach(c=>paintItem(c,c.dataset.itemArt));paintDescribeIcons(tooltip,api.game());tooltip.classList.toggle('is-describe',!!el.dataset.describe);linkReferences(tooltip,api.game(),el.dataset.describe||(el.dataset.tooltipSkill?'skill:'+api.game().member.id+'/'+el.dataset.tooltipSkill:el.dataset.tooltipTalent?'talent:'+el.dataset.tooltipTalent:null));refStack.length=0;tooltip.style.pointerEvents='none';tooltip.classList.remove('hidden');const r=el.getBoundingClientRect(),w=tooltip.offsetWidth,h=tooltip.offsetHeight;let x=r.right+12;if(x+w>innerWidth-8)x=r.left-w-12;if(x<8)x=Math.max(8,innerWidth-w-8);let y=Math.min(r.top,innerHeight-h-22);tooltip.style.left=Math.round(x)+'px';tooltip.style.top=Math.max(8,Math.round(y))+'px';}
  const act=(id,slot)=>{const d=ITEMS[id];if(!d)return;hide();const g=api.game();if(d.slot){const before={...g.rpg.equipment};if(equipItem(g,id,slot)){const at=Object.keys(g.rpg.equipment).find(k=>g.rpg.equipment[k]===id&&before[k]!==id);g.toast(BAG_UI.equipped(d.name,EQUIPMENT_SLOTS[at]||''));}}else useItem(g,id);api.events();};
  api.root.addEventListener('scroll',hide,true);
@@ -35,14 +36,48 @@ export function mountPopupControls(api){const refStack=[];const tooltip=document
  api.root.addEventListener('focusin',e=>{if(e.target.matches('input,textarea,select'))api.game().keys.clear();});
  api.root.addEventListener('input',e=>{if(e.target.matches('[data-bag-search]'))filterBag(e.target.closest('.popup-body'),e.target.value);});
  api.root.addEventListener('change',e=>{if(e.target.matches('[data-bag-sort-mode]')){bagView.sort=e.target.value;saveBagView();sortInventory(api.game(),bagView.sort);api.events();}});
- document.addEventListener('contextmenu',e=>{const b=e.target.closest('[data-item],[data-equipped],[data-loot-item],[data-action-slot],[data-bind-slot]');if(!b)return;e.preventDefault();hide();const d=b.dataset;if(d.item)act(d.item);else if(d.equipped){unequipItem(api.game(),d.equipped);api.events();}else if(d.lootItem){takeLoot(api.game(),d.lootBag,d.lootItem);api.events();}else{bindSkill(api.game(),null,Number(d.bindSlot??d.actionSlot));api.events();}});
- document.addEventListener('dragstart',e=>{const b=e.target.closest('[data-book-skill],[data-item],[data-equipped],[data-skill]');if(!b)return;const d=b.dataset;dragKind=d.item?'item':d.equipped?'equipment':'skill';const id=d.item||d.equipped||d.bookSkill||d.skill;if(dragKind==='skill'&&!available(api.game(),id)){e.preventDefault();return;}dragging=true;hide();document.querySelector('.skill-tooltip')?.remove();e.dataTransfer.setData('text/plain',dragKind+':'+id);e.dataTransfer.effectAllowed='copyMove';document.body.classList.add('dragging-'+dragKind);});
- const target=e=>e.target.closest(dragKind==='skill'?'[data-action-slot],[data-bind-slot]':dragKind==='item'?'[data-equipment-slot],.paper-doll,[data-action-slot],[data-bind-slot]':'[data-bag-drop]');
- for(const type of ['dragenter','dragover'])document.addEventListener(type,e=>{const el=target(e);if(!el)return;e.preventDefault();e.dataTransfer.dropEffect='move';el.classList.add('drag-over');});document.addEventListener('dragleave',e=>e.target.closest('.drag-over')?.classList.remove('drag-over'));
- const end=()=>{dragging=false;dragKind=null;document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));document.body.classList.remove('dragging-item','dragging-equipment','dragging-skill');};
- document.addEventListener('drop',e=>{const el=target(e);if(!el)return;e.preventDefault();const [kind,id]=e.dataTransfer.getData('text/plain').split(':');end();if(kind==='skill'){api.clearPending?.();bindSkill(api.game(),id,Number(el.dataset.actionSlot??el.dataset.bindSlot));api.selectSkill(id);}else if(kind==='item'){const barSlot=el.dataset.actionSlot??el.dataset.bindSlot;
-  if(barSlot!==undefined){if(!usableItem(id))api.toast('Nur Verpflegung passt auf die Leiste.');else{bindSkill(api.game(),barItemEntry(id),Number(barSlot));api.clearPending?.();}}
-  else{const slot=el.dataset.equipmentSlot;if(!ITEMS[id]?.slot)api.toast('Dieser Gegenstand wird benutzt, nicht angezogen.');else equipItem(api.game(),id,slot);}}else if(kind==='equipment')unequipItem(api.game(),id);api.events();api.refresh();});document.addEventListener('dragend',()=>{end();api.refresh();});
+ document.addEventListener('contextmenu',e=>{const b=e.target.closest('[data-item],[data-equipped],[data-loot-item],[data-action-slot],[data-bind-slot]');if(!b||b.closest('.action-area .action-bar'))return;e.preventDefault();hide();const d=b.dataset;if(d.item)act(d.item);else if(d.equipped){unequipItem(api.game(),d.equipped);api.events();}else if(d.lootItem){takeLoot(api.game(),d.lootBag,d.lootItem);api.events();}else{bindSkill(api.game(),null,Number(d.bindSlot??d.actionSlot));api.events();}});
+ // Ziehen & Ablegen (2026-09-23): eigenes Zeiger-Ziehen statt HTML5-DnD. Mit wandert nur ein kleines Symbol (40 px), nicht die ganze Kachel;
+ // während des Ziehens leuchten die möglichen Ziele (alle Aktionsleisten mit sichtbaren leeren Plätzen, Ausrüstungsplätze, Rucksack).
+ // Ein Leisteneintrag, der neben einer Leiste losgelassen wird, verlässt die Leiste. Touch bleibt beim Antippen/Halten (mobile-controls.js).
+ const DRAG_SOURCE='[data-book-skill],[data-item],[data-equipped],.action-area .action-bar [data-action-slot]';
+ const BAR_SLOT='.action-area .action-bar [data-action-slot]';
+ let press=null,drag=null,swallowClick=false;
+ document.addEventListener('dragstart',e=>{if(e.target.closest?.(DRAG_SOURCE)||e.target.closest?.('[data-bind-slot]'))e.preventDefault();});
+ function dragSource(el){const d=el.dataset,g=api.game();
+  if(el.matches(BAR_SLOT)){const from=Number(d.actionSlot),id=actionBar(g)[from];return id?{kind:'bar',id,from}:null;}
+  if(d.bookSkill)return available(g,d.bookSkill)&&SPECIAL_KEYS[d.bookSkill]===undefined?{kind:'skill',id:d.bookSkill}:null;
+  if(d.item)return ITEMS[d.item]?{kind:'item',id:d.item}:null;
+  if(d.equipped)return g.rpg.equipment[d.equipped]?{kind:'equipment',id:d.equipped}:null;return null;}
+ const toBar=p=>p.kind==='skill'||p.kind==='bar'||p.kind==='item'&&usableItem(p.id);
+ function dropTarget(x,y){const at=document.elementFromPoint(x,y);if(!at)return null;const k=drag.kind;
+  const bar=at.closest(BAR_SLOT);if(bar)return toBar(drag)?bar:null;
+  if(k==='item')return ITEMS[drag.id]?.slot?at.closest('[data-equipment-slot],.paper-doll'):null;
+  if(k==='equipment')return at.closest('[data-bag-drop]');return null;}
+ function begin(p){drag=p;dragging=true;dragKind=p.kind;hide();document.querySelector('.skill-tooltip')?.remove();document.getSelection?.()?.removeAllRanges();
+  const ghost=document.createElement('div');ghost.className='drag-ghost';ghost.setAttribute('aria-hidden','true');const cv=document.createElement('canvas');cv.width=cv.height=48;
+  const src=p.el.querySelector('canvas');if(src&&src.width){const c=cv.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(src,0,0,48,48);}ghost.append(cv);document.body.append(ghost);p.ghost=ghost;
+  p.el.classList.add('drag-source');document.body.classList.add('is-dragging','dragging-'+(p.kind==='bar'?'skill':p.kind));if(toBar(p))document.body.classList.add('bar-drop');}
+ function moveDrag(e){drag.ghost.style.transform='translate('+Math.round(e.clientX+8)+'px,'+Math.round(e.clientY+8)+'px)';
+  const t=dropTarget(e.clientX,e.clientY);if(t!==drag.over){drag.over?.classList.remove('drag-over');t?.classList.add('drag-over');drag.over=t;}
+  document.body.classList.toggle('drag-remove',drag.kind==='bar'&&!t&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('.action-bar'));}
+ function finish(){if(!drag)return;drag.ghost?.remove();drag.el.classList.remove('drag-source');drag.over?.classList.remove('drag-over');drag=null;dragging=false;dragKind=null;
+  document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));document.body.classList.remove('is-dragging','dragging-item','dragging-equipment','dragging-skill','bar-drop','drag-remove');}
+ function dropDrag(e){const p=drag,g=api.game(),el=dropTarget(e.clientX,e.clientY),overBar=document.elementFromPoint(e.clientX,e.clientY)?.closest('.action-bar');finish();
+  swallowClick=true;setTimeout(()=>{swallowClick=false;},0);
+  const slot=el?.matches(BAR_SLOT)?Number(el.dataset.actionSlot):null;
+  if(p.kind==='bar'){if(slot!==null){if(slot!==p.from)bindSkill(g,p.id,slot);}else if(!overBar){const name=g.bar()[p.from]?.name||'';bindSkill(g,null,p.from);api.toast(ACTION_BAR_TEXT.removed(name));}}
+  else if(p.kind==='skill'){if(slot!==null){api.clearPending?.();bindSkill(g,p.id,slot);api.selectSkill(p.id);}}
+  else if(p.kind==='item'){if(slot!==null){bindSkill(g,barItemEntry(p.id),slot);api.clearPending?.();}else if(el){equipItem(g,p.id,el.dataset.equipmentSlot);}else if(overBar)api.toast(ACTION_BAR_TEXT.onlyUsable);}
+  else if(p.kind==='equipment'&&el)unequipItem(g,p.id);
+  api.events();api.refresh();}
+ document.addEventListener('pointerdown',e=>{if(e.button!==0||e.pointerType==='touch'||document.body.classList.contains('touch-mode'))return;const el=e.target.closest?.(DRAG_SOURCE);if(!el)return;const p=dragSource(el);if(p)press={...p,el,x:e.clientX,y:e.clientY};});
+ document.addEventListener('pointermove',e=>{if(!press)return;if(!drag){if(!(e.buttons&1)){press=null;return;}if(Math.hypot(e.clientX-press.x,e.clientY-press.y)<6)return;begin(press);}moveDrag(e);});
+ document.addEventListener('pointerup',e=>{if(!press)return;press=null;if(drag)dropDrag(e);});
+ document.addEventListener('pointercancel',()=>{press=null;if(drag){finish();api.refresh();}});
+ addEventListener('blur',()=>{press=null;if(drag){finish();api.refresh();}});
+ document.addEventListener('keydown',e=>{if(drag&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();press=null;finish();api.refresh();}},true);
+ document.addEventListener('click',e=>{if(swallowClick){swallowClick=false;e.preventDefault();e.stopImmediatePropagation();}},true);
  const showDescribeDetail=el=>{const [kind,...rest]=(el.dataset.describe||(el.dataset.tooltipItem?'item:'+el.dataset.tooltipItem:el.dataset.tooltipSkill?'skill:'+el.dataset.tooltipSkill:'talent:'+el.dataset.tooltipTalent)).split(':');showPanelDetail(describeCard(api.game(),kind,rest.join(':'),{shift:true,touch:false}),el.getAttribute('aria-label')||'');};
  // Langdruck (Touch): jeder Tooltip-Träger öffnet nach 500 ms ein Fenster; der Details-Knopf schaltet die Shift-Ansicht um (M-04: nichts unter dem Finger).
  const HOLD_SELECTOR='[data-describe],[data-tooltip-item],[data-tooltip-skill],[data-tooltip-talent],[data-tooltip-spec],[data-stat-tip]';let hold=null,heldEl=null;
