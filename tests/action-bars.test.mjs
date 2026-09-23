@@ -81,3 +81,15 @@ test('Spielstand-Tasten werden bereinigt',()=>{
  assert.deepEqual(cleanBarKeys({0:'Digit1',3:'',4:'<script>',99:'KeyE',x:'KeyE',5:7}),{0:'Digit1',3:''});
  assert.equal(defaultBinding(19),'Shift+Digit0');
 });
+
+test('neu gelernte Klassen-Buffs landen auf Leiste 2 und verdrängen keine Kampfkniffe',()=>{
+ for(const classId of ['dieter','baerbel','kevin']){
+  const g=new Game(arena(),{classId}),buffs=g.skills.filter(s=>s.classBuff).map(s=>s.id);assert.equal(buffs.length,2,classId);
+  g.gainXp(400000);const bar=actionBar(g);
+  for(const id of buffs){const at=bar.indexOf(id);assert.ok(at>=10&&at<20,classId+': '+id+' auf Leiste 2 ('+at+')');}
+  assert.equal(bar.slice(0,10).some(id=>buffs.includes(id)),false,'Leiste 1 bleibt den Kampfkniffen');
+ }
+ // Nur eine Leiste (kein freier Platz ab Leiste 2): der Buff bleibt im Kniffe-Menü, Leiste 1 verdrängt nichts dafür.
+ const g=new Game(arena());assert.ok(setBarCount(g,1));g.gainXp(400000);const bar=actionBar(g);
+ assert.equal(bar.length,10);assert.equal(bar.includes('dosenpfand')||bar.includes('kutteDrueber'),false);
+});

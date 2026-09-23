@@ -89,9 +89,11 @@ export function bindSkill(game,id,index){const bar=actionBar(game);if(!Number.is
 /** Merkt sich einen Gegenstand als „war schon auf der Leiste“ – er wandert nicht von allein zurück. */
 function noteBarItem(game,id){const seen=game.rpg.barSeen||(game.rpg.barSeen=[]);if(!seen.includes(id))seen.push(id);}
 const firstFree=(bar,from=0)=>{for(let i=from;i<bar.length;i++)if(!bar[i])return i;return -1;};
-/** Neu gelernte Kniffe auf die Leiste. Leiste 1 zuerst; ist sie voll, rückt ihr letzter Gegenstand auf eine weitere Leiste (oder weicht, wenn keine frei ist). */
+/** Neu gelernte Kniffe auf die Leiste. Leiste 1 zuerst; ist sie voll, rückt ihr letzter Gegenstand auf eine weitere Leiste (oder weicht, wenn keine frei ist).
+ *  Klassen-Buffs (30 min, class-buffs.js) nur auf einen freien Platz ab Leiste 2 – sie verdrängen nie Kampfkniffe; ohne freien Platz bleiben sie im Kniffe-Menü. */
 export function unlockOnBar(game,ids){const bar=actionBar(game);let touched=false;
  for(const id of ids.slice().sort((a,b)=>skillLevel(game,a)-skillLevel(game,b))){if(SPECIAL_KEYS[id]!==undefined||bar.includes(id))continue;
+  if(game.skills.find(s=>s.id===id)?.classBuff){const slot=firstFree(bar,BAR_SIZE);if(slot>=0){bar[slot]=id;touched=true;}continue;}
   let slot=bar.slice(0,BAR_SIZE).indexOf(null);
   if(slot<0){slot=bar.slice(0,BAR_SIZE).map(barItemId).findLastIndex(Boolean);const spare=firstFree(bar,BAR_SIZE);
    if(slot>=0){if(spare>=0)bar[spare]=bar[slot];else noteBarItem(game,barItemId(bar[slot]));}else slot=spare;

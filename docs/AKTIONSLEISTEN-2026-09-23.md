@@ -18,6 +18,8 @@ Nutzerauftrag: Aktionsplätze aus dem Kniffe-Menü weg, Ziehen ohne mitgeschlepp
 - `rpg.barCount` (1–4, Standard 2) und `rpg.barKeys` (`{Platzindex: Belegung}`, nur Abweichungen vom Standard, `''` = bewusst ohne Taste) sind neu. Belegungsformat: `Ctrl+Alt+Shift+<KeyboardEvent.code>` bzw. `Mouse<button>`.
 - Verhalten geändert: Ist Leiste 1 voll, rückt beim Lernen eines Kniffs ihr letzter Gegenstand auf eine freie Stelle der weiteren Leisten, statt zu verschwinden (`unlockOnBar`); neue Verpflegung nimmt Leiste 1 von hinten, sonst die nächste Leiste (`placeUsables`). Test `engine-welle-d` entsprechend angepasst.
 - Eine Leiste entfernen räumt ihre Plätze (Kniffe bleiben im Clanbuch, Gegenstände im Rucksack).
+- Klassen-Buffs (class-buffs.js, je Klasse zwei, Stufe 4 und 8): neu gelernt landen sie auf dem ersten freien Platz ab Leiste 2; sie verdrängen nie etwas. Ohne freien Platz ab Leiste 2 bleiben sie im Kniffe-Menü (`unlockOnBar`; der Filter in `engine.js` gainXp ist dafür entfallen).
+- Während des Ziehens liegen die Leisten über offenen Fenstern (`body.bar-drop … .action-area{z-index:1000}`), weil das Kniffe-Buch mit „Eigenarten & Leisten" hoch genug ist, um Leiste 2 zu verdecken.
 
 ## Prüfen
 

@@ -894,3 +894,5 @@ body.bar-drop.drag-remove .action-area .action-bar{outline-color:var(--coral)}
 .bar-settings output{min-width:20px;text-align:center;font-family:var(--display);font-size:var(--t-20);color:var(--gold)}
 .bar-settings small{grid-column:1/-1;font-family:var(--read);font-size:var(--t-11);color:var(--kraft)}
 .touch-mode .bar-settings{display:none}
+/* Während des Ziehens liegen die Leisten über offenen Fenstern (das Kniffe-Buch ist hoch genug, um sie zu verdecken). */
+body.bar-drop #gameShell .action-area{z-index:1000}
