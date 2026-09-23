@@ -280,3 +280,5 @@ button[data-setting-toggle][aria-pressed=true] .setting-switch i{transform:trans
 body.bar-drop .action-area .extra-bar:not(:has(.skill:not(.empty-slot))) .skill.empty-slot,
 body:has(.popup-book:not(.minimized)) .action-area .extra-bar:not(:has(.skill:not(.empty-slot))) .skill.empty-slot{visibility:visible}
 body.bar-drop .action-area .extra-bar:not(:has(.skill:not(.empty-slot))),body:has(.popup-book:not(.minimized)) .action-area .extra-bar:not(:has(.skill:not(.empty-slot))){background:#152d23c0;border-image:var(--chrome-frame) 22% / 12px / 0 stretch}
+/* Gespräch dockt links unter dem Spielerrahmen (popup-windows.js): so hoch, dass es über der Leiste endet – der Text scrollt. */
+@media (min-width:1100px){body:not(.touch-mode) .game-popup.popup-dialog{max-height:calc(100dvh - 300px)}}
