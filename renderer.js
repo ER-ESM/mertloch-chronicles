@@ -61,6 +61,14 @@ let labelQueue=null,labelTarget=null;
 // Figuren unter dem noch sichtbaren Dach der Bude: ihre Schilder und Auftragszeichen dürfen nicht durchs Dach scheinen.
 let hideLabels=false;
 const FURNITURE=['bench','cart','lantern'];
+/** Treffer-Blitz (Hades/Diablo-Vorbild): solange ein Gegner getroffen ist (e.hurt, 0,15 s), wird er einmal in eine kleine Ebene gezeichnet,
+ *  hell übertüncht und mit leichtem Rückstoß vom Helden weg eingesetzt. Sonst zeichnet `draw` direkt – ohne Mehrkosten. */
+let flashLayer=null;
+function hitFlash(c,e,from,draw){const k=Math.min(1,(e.hurt||0)/.15);if(!(k>0)||typeof document==='undefined'||typeof c.getTransform!=='function'){draw(c);return;}
+ const S=128,ax=64,ay=108,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=flashLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
+ const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=false;f.setTransform(d,0,0,d,(ax-e.x)*d,(ay-e.y)*d);draw(f);
+ f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-atop';f.fillStyle=`rgba(255,246,228,${(.35+.55*k).toFixed(2)})`;f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';
+ const dx=e.x-(from?.x??e.x),dy=e.y-(from?.y??e.y),n=Math.hypot(dx,dy)||1,push=Math.sin(k*Math.PI)*2.5;c.drawImage(L,e.x-ax+dx/n*push,e.y-ay+dy/n*push*.5,S,S);}
 /** Auftragszeichen über einer Figur wie in den großen Rollenspielen: goldenes „!“ (neu) bzw. „?“ (abgeben) mit dunkler Kontur
  *  und warmem, atmendem Schein, ohne Kasten; „…“ (läuft noch) grau und ohne Schein. `framed` (Story) ist größer und leuchtet stärker.
  *  Liegt auf der Schrift-Ebene (scharf, über dem Licht); ohne Schrift-Ebene direkt auf der Welt. */
@@ -199,7 +207,7 @@ export class Renderer {
       else if(item.type==='notice'){c.save();c.fillStyle='#5a3d24';c.fillRect(e.x-1.5,e.y-22,3,22);c.fillStyle='#efe0b8';c.strokeStyle='#3b2a1c';c.lineWidth=1;c.fillRect(e.x-8,e.y-30,16,12);c.strokeRect(e.x-8,e.y-30,16,12);c.fillStyle='#8a7355';for(let i=0;i<3;i++)c.fillRect(e.x-5,e.y-27+i*3,10-i*2,1);c.restore();questBadge(c,e.x,e.y-34,'!',false,time);}
       else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
-      else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
+      else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;hitFlash(c,e,p,cc=>drawComicEnemy(cc,e,time));}c.restore();}
     hideLabels=false;
     // Räume erkennen (E-52): drinnen steht der eigene Raumname in Gold oben im Raum; andere Räume nennen ihren Namen erst,
     // wenn die Maus über ihnen steht (keine Schilderwand im Haus).
