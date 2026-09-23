@@ -1,6 +1,6 @@
 import {KIOSK_ROOM as R,KIOSK_TEXT as T} from './content/index.js';
 import {WORLD_ART_DENSITY} from './art-quality.js';
-import {WORLD_SCALE} from './world-scale.js';
+import {PERSON_SCALE} from './world-scale.js';
 import {drawWorldPerson} from './person-art.js';
 import {drawClanHero} from './clan-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
@@ -60,8 +60,8 @@ export function drawKioskRoom(renderer){
  const d=renderer.density??WORLD_ART_DENSITY;c.setTransform(d,0,0,d,0,0);{/* Innenraum: warmes Licht aus dem Laden, Ränder im Dunkel – statt flacher grüner Leere */const glow=c.createRadialGradient(W/2,H/2,Math.min(W,H)*.25,W/2,H/2,Math.max(W,H)*.62);glow.addColorStop(0,'#2a2418');glow.addColorStop(.55,'#161410');glow.addColorStop(1,'#070605');c.fillStyle=glow;c.fillRect(0,0,W,H);}c.save();c.translate(-ox,-oy);
  drawKioskExterior(c);roomShell(c);
  const objects=R.furniture.map(b=>({y:b.y+b.h,draw:()=>furniture(c,b)}));
- objects.push({y:R.keeper.y,draw:()=>{drawWorldPerson(c,'kalle',R.keeper.x,R.keeper.y,g.instance.time,WORLD_SCALE.npc/33,{facing:1});}});
- objects.push({y:p.y,draw:()=>drawClanHero(c,p.x,p.y,g.instance.time,{...p,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS)},false,g.world.rules.heroHeight/33)});
+ objects.push({y:R.keeper.y,draw:()=>{drawWorldPerson(c,'kalle',R.keeper.x,R.keeper.y,g.instance.time,PERSON_SCALE,{facing:1});}});
+ objects.push({y:p.y,draw:()=>drawClanHero(c,p.x,p.y,g.instance.time,{...p,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS)},false,PERSON_SCALE)});
  objects.sort((a,b)=>a.y-b.y);for(const o of objects)o.draw();
  // Southern wall leaves a visible doorway. The door is the instance transition.
  beam(c,0,R.height-16,R.exit.x-22,16);beam(c,R.exit.x+22,R.height-16,R.width-R.exit.x-22,16);beam(c,R.exit.x-25,R.height-31,5,31);beam(c,R.exit.x+20,R.height-31,5,31);box(c,'#bfa778',R.exit.x-20,R.height-16,40,3);

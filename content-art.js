@@ -18,9 +18,24 @@ export function loadContentArt(){return pending||=(async()=>{
  try{const r=await fetch('./assets/content-art/locomotion/runtime/catalog.json');if(r.ok){const walking=await r.json();await Promise.all(Object.entries(walking.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img){contentArt.catalog.assets[id]=a;contentArt.images.set(id,img);}}));}}catch{}
  // Sprite-Schmiede (E-58, tools/sprite-forge/figures.mjs): selbst gerenderte Figuren aus Körperteilen ersetzen gleichnamige Einträge
  // (z. B. `ida`, `ida-walk`) und bringen neue (`mentor-dieter` …). Gleiches Bogenformat: 192er Zellen, Fußpunkt 96/160, se/sw/ne/nw.
- try{const r=await fetch('./assets/forge/runtime/figures/catalog.json');if(r.ok){const forge=await r.json();await Promise.all(Object.entries(forge.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img){contentArt.catalog.assets[id]=a;contentArt.images.set(id,img);}}));}}catch{}
+ try{const r=await fetch('./assets/forge/runtime/figures/catalog.json');if(r.ok){const forge=await r.json();await Promise.all(Object.entries(forge.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img){if(a.frames?.length&&!id.endsWith('-walk'))a.paintedHeight=paintedHeight(img,a.frames[0],a.frameSize||192);contentArt.catalog.assets[id]=a;contentArt.images.set(id,img);}}));}}catch{}
  contentArt.ready=true;
 })();}
+
+/**
+ * Gezeichnete Figurenhöhe in nativen Pixeln: Kopf bis Fuß (Deckkraft ab 50 %) im Ruhebild Richtung se.
+ * Schmiede-Figuren (E-58) rechnen Höhen 1:1 in der Schrägkamera: der Körper ist 26 E hoch, aber der vordere Fuß reicht unter
+ * den Fußpunkt und der Kopf liegt hinten – gezeichnet ≈ 31 E statt 26 E. Präzisions- und Heldenbögen sind dagegen auf
+ * 104 px Figur gemalt. Damit alle Menschen gleich groß erscheinen, gleicht contentActor über diese gemessene Höhe ab
+ * (nicht über die Bildbreite). Prüfung: scripts/figure-size-check.mjs.
+ */
+export function paintedHeight(img,frame,size){
+ try{const cv=document.createElement('canvas');cv.width=cv.height=size;const c=cv.getContext('2d',{willReadFrequently:true});
+  c.drawImage(img,frame.x,frame.y,size,size,0,0,size,size);const d=c.getImageData(0,0,size,size).data;let top=-1,bottom=-1;
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(d[(y*size+x)*4+3]>=128){if(top<0)top=y;bottom=y;break;}
+  return top<0?0:bottom-top+1;
+ }catch{return 0;}
+}
 
 /** Präfix-IDs der Bedarfsliste (`hero-dieter`, `villager-0`, `enemy-raven`) auf Inhalts-IDs. */
 export const contentId=id=>contentArt.catalog?(contentArt.catalog.aliases?.[id]||id):id;
@@ -37,8 +52,9 @@ export function contentActor(id){
  const walk=contentAsset(poses.id.endsWith('-poses')?poses.id.replace(/-poses$/,'-walk'):poses.id+'-walk');
  const m=poses.meta,frameSize=m.frameSize??contentArt.catalog.frameSize,pivot=m.pivot??contentArt.catalog.pivot;
  return {id:poses.id,poses,walk,frameSize,pivot,columns:m.columns,rows:contentArt.catalog.directions.length,
-  nativeHeight:m.nativeHeight||frameSize,worldHeight:m.worldHeight||frameSize/2,
-  gearScale:m.gearScale||1,stride:walk?.meta.stride||DEFAULT_STRIDE*((m.worldHeight||26)/26)};
+  // paintedHeight (nur Schmiede-Figuren, beim Laden gemessen) ersetzt die Rahmenhöhe; der Schritt schrumpft mit der Figur.
+ nativeHeight:m.paintedHeight||m.nativeHeight||frameSize,worldHeight:m.worldHeight||frameSize/2,
+  gearScale:m.gearScale||1,stride:walk?.meta.stride?walk.meta.stride*(m.paintedHeight?(m.nativeHeight||frameSize)/m.paintedHeight:1):DEFAULT_STRIDE*((m.worldHeight||26)/26)};
 }
 export const hasContentActor=id=>!!contentActor(id);
 /** Welthöhe des gelieferten Bogens (4 native Pixel = 1 Welteinheit) oder 0. */

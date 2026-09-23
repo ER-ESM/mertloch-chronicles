@@ -1,5 +1,11 @@
 // World units, measured against an adult of 26 units. UI enlargement is separate.
 export const WORLD_SCALE=Object.freeze({adult:26,npc:26,boss:29,machine:44,door:35,churchDoor:42,barnDoor:46,bench:18,cart:29,lantern:13,board:36,tent:64,supplies:25});
+// Figurengröße, EINE Stelle: Die Zeichenwege (drawTinyPerson, drawLivePerson, drawClanHero) rechnen historisch mit 33 E Grundhöhe;
+// `scale` = gewünschte Höhe / FIGURE_BASE. PERSON_SCALE ergibt Erwachsene mit WORLD_SCALE.adult (26 E, gezeichnet Kopf bis Fuß).
+// Held, Söldner, andere Spieler, Questgeber, Händler, Dorfbewohner und Stammgäste benutzen genau dieses Maß; Bögen mit anderer
+// gemalter Höhe gleicht content-art.js über die gemessene Figurenhöhe ab. Prüfung: scripts/figure-size-check.mjs, tests/figure-scale.test.mjs.
+export const FIGURE_BASE=33;
+export const PERSON_SCALE=WORLD_SCALE.adult/FIGURE_BASE;
 // Measured openings in the original buildings.png atlas (not the surrounding arch).
 export const BUILDING_OPENINGS=Object.freeze({
  cottage:{x:231,y:343,w:53,h:101},tavern:{x:746,y:343,w:52,h:102},

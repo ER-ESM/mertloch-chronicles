@@ -33,6 +33,7 @@ Parallel arbeitende Agenten benutzen nur `--dry`. Den gemeinsamen Katalog schrei
 - Die Einheit ist die Welteinheit E, 1 m = 14,4 E. Gerendert wird mit **4 px je E**: eine Figur von 26 E ist 104 px hoch, eine Tür 35 E.
 - Die Achsen: x nach Osten, y nach Süden (zum Betrachter), z nach oben.
 - **Schräge Kamera:** Bildschirm-y = y·tan 35° − z. Höhen erscheinen 1:1, die Tiefe ist verkürzt, der Kamerawinkel ist achsparallel und **nicht isometrisch**.
+- **Figurenhöhe im Spiel:** Weil die Tiefe mitgezeichnet wird, ist eine 26-E-Figur im Bild ≈ 31 E hoch (vorderer Fuß unter dem Fußpunkt, Kopf hinten). Die gemalten Helden- und Präzisionsbögen sind 26 E Kopf bis Fuß. `content-art.js` misst deshalb beim Laden die gezeichnete Höhe jeder Schmiede-Figur (`paintedHeight`, Ruhebild se) und zeichnet sie auf 26 E; der Schritt schrumpft mit. Am Modell oder an `nativeHeight` im Katalog ist dafür nichts zu ändern. Prüfung: `npm run figures:check` (siehe `docs/MASSSTAB-2026-09-17.md`).
 - **Licht:**
   - Das Hauptlicht kommt von links oben. Beleuchtet sind die linken Flächen, die Deckflächen und die Vorderseiten.
   - Ein kühles Fülllicht kommt von rechts.

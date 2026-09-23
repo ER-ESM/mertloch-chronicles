@@ -17,7 +17,7 @@ import {SpatialIndex} from './spatial-index.js';
 import {GroundCache} from './ground-cache.js';
 import {TerrainPrefetch} from './terrain-prefetch.js';
 import {QualityGovernor} from './quality-governor.js';
-import {WORLD_SCALE} from './world-scale.js';
+import {PERSON_SCALE} from './world-scale.js';
 import {FootfallTrail,nearestSpeaker,drawTreeOcclusion} from './world-presence.js';
 import {drawTargetRings} from './target-ui.js';
 import {drawTutorial,drawTrainingDummy} from './tutorial-ui.js';
@@ -38,7 +38,7 @@ import {drawComicResident as drawResidentSprite} from './comic-actors.js';
 import {drawClanHero as drawHero,drawClanEnemy as drawComicEnemy,drawClanCamp,clanSignBounds} from './clan-art.js';
 import {createComicTree,drawComicProp} from './comic-nature.js';
 export {drawHero};
-function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);const s=a.kind==='villager'?WORLD_SCALE.npc/33:1;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
+function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);const s=a.kind==='villager'?PERSON_SCALE:1;c.scale(s,s);drawResidentSprite(c,{...a,x:0,y:0},time);c.restore();}
 import {drawBuilding,drawFurniture} from './architecture.js';
 import {buildingOccludesActor} from './tiny-architecture.js';
 import {insideHouse,roomAt} from './world-house.js';
@@ -168,20 +168,20 @@ export class Renderer {
       else if(item.type==='hub'){drawHub(c,e,time);}
       else if(item.type==='occupiedCamp'){drawOccupiedCamp(c,e,time,!g.enemies.some(m=>m.campId===e.id&&m.hp>0));}
       else if(item.type==='clanCamp'){drawClanCamp(c,w,time);}
-      else if(item.type==='other'){const k=Math.min(1,(performance.now()-(e.at||0))/(e.lerp||2000)),ox=e.fromX+(e.x-e.fromX)*k,oy=e.fromY+(e.y-e.fromY)*k;c.save();c.globalAlpha=.9;if(e.down){c.translate(ox,oy);c.rotate(-Math.PI/2);drawHero(c,0,0,time,{facing:e.facing||1,classId:e.look||e.classId,tint:e.tint,moving:false});}else drawHero(c,ox,oy,time,{mount:e.mount,visualEquipment:e.visualEquipment,artMagnify:e.mount?1:undefined,facing:e.facing||1,classId:e.look||e.classId,tint:e.tint,moving:e.moving,direction:e.direction,walkDistance:e.walkDistance??(e.moving?time*48:0),attack:e.attack,hurt:e.hurt,castPose:e.castPose,usingRanged:e.usingRanged,parry:e.parry});c.restore();label(c,e.name+' · '+e.level,ox,oy-(e.mount?52:36),e.party?'#a8e6b0':'#bfe0ff',7);if(e.party||e.state==='combat'){c.fillStyle='#0b1216c0';c.fillRect(ox-14,oy-31,28,3);c.fillStyle=e.hp>35?'#7fc77a':'#d9694a';c.fillRect(ox-14,oy-31,28*Math.max(0,Math.min(100,e.hp??100))/100,3);}}
+      else if(item.type==='other'){const k=Math.min(1,(performance.now()-(e.at||0))/(e.lerp||2000)),ox=e.fromX+(e.x-e.fromX)*k,oy=e.fromY+(e.y-e.fromY)*k;c.save();c.globalAlpha=.9;if(e.down){c.translate(ox,oy);c.rotate(-Math.PI/2);drawHero(c,0,0,time,{facing:e.facing||1,classId:e.look||e.classId,tint:e.tint,moving:false},false,PERSON_SCALE);}else drawHero(c,ox,oy,time,{mount:e.mount,visualEquipment:e.visualEquipment,artMagnify:e.mount?1:undefined,facing:e.facing||1,classId:e.look||e.classId,tint:e.tint,moving:e.moving,direction:e.direction,walkDistance:e.walkDistance??(e.moving?time*48:0),attack:e.attack,hurt:e.hurt,castPose:e.castPose,usingRanged:e.usingRanged,parry:e.parry},false,PERSON_SCALE);c.restore();label(c,e.name+' · '+e.level,ox,oy-(e.mount?52:36),e.party?'#a8e6b0':'#bfe0ff',7);if(e.party||e.state==='combat'){c.fillStyle='#0b1216c0';c.fillRect(ox-14,oy-31,28,3);c.fillStyle=e.hp>35?'#7fc77a':'#d9694a';c.fillRect(ox-14,oy-31,28*Math.max(0,Math.min(100,e.hp??100))/100,3);}}
       else if(item.type==='professionStation'||item.type==='professionNode')drawProfession(c,e,g,time);
       else if(item.type==='mountStation'){for(const [i,id]of ['klappermofa','blechroller','hofpferd'].entries())drawMount(c,e.x+(i-1)*33,e.y-12,{mount:id,direction:'se'},time,.85,false);label(c,MOUNT_UI.station,e.x,e.y-54,'#f0d293',8);if(distance(p,e)<90)label(c,'F · '+MOUNT_UI.open,e.x,e.y+13,'#f0d293',7);}
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
-      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y-(g.stairLift?.()||0),time,{...p,classId:p.look||p.classId,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,w.rules.heroHeight/33);}
-      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,WORLD_SCALE.npc/33);const named=nearestSpeaker(g,e);if(named)label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);if(!g.quest.actDone){const ready=g.questReady(),busy=g.quest.accepted&&!ready;questBadge(c,e.x,e.y-(named?45:36),ready?'?':busy?'…':'!',!busy,time);}}
+      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;drawHero(c,p.x,p.y-(g.stairLift?.()||0),time,{...p,classId:p.look||p.classId,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'},false,PERSON_SCALE);}
+      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,PERSON_SCALE);const named=nearestSpeaker(g,e);if(named)label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);if(!g.quest.actDone){const ready=g.questReady(),busy=g.quest.accepted&&!ready;questBadge(c,e.x,e.y-(named?45:36),ready?'?':busy?'…':'!',!busy,time);}}
       // Mentoren an der Bude tragen dieselbe Figurengrafik wie der Held (classId aus clan.js).
       else if(item.type==='mentor'){// Mentoren in ihrer Tracht aus der Sprite-Schmiede (E-58); ohne Bogen der alte Heldenkörper.
-       if(!drawLivePerson(c,'mentor-'+e.classId,e.x,e.y,time,{facing:-1},WORLD_SCALE.npc/33))drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,WORLD_SCALE.npc/33);if(distance(e,p)<70)label(c,e.name,e.x,e.y-34,'#d8c89a',7);}
-      else if(item.type==='merchant'){drawWorldPerson(c,SHOP_UI.npc,e.x,e.y,time,WORLD_SCALE.npc/33,{facing:1});label(c,SHOP_UI.title,e.x,e.y-65,'#f1d18b',9);label(c,SHOP_UI.marker,e.x,e.y-52,'#d8c89a',8);}
-      else if(item.type==='hotspotgiver'){const n=e.giver,glyph=giverGlyph(g,e.id);drawWorldPerson(c,n.npc,n.x,n.y,time,WORLD_SCALE.npc/33,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(glyph){c.save();if(glyph==='low')c.globalAlpha=.45;questBadge(c,n.x,n.y-(named?43:36),glyph==='low'?'!':glyph,false,time);c.restore();}}
+       if(!drawLivePerson(c,'mentor-'+e.classId,e.x,e.y,time,{facing:-1},PERSON_SCALE))drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,PERSON_SCALE);if(distance(e,p)<70)label(c,e.name,e.x,e.y-34,'#d8c89a',7);}
+      else if(item.type==='merchant'){drawWorldPerson(c,SHOP_UI.npc,e.x,e.y,time,PERSON_SCALE,{facing:1});label(c,SHOP_UI.title,e.x,e.y-65,'#f1d18b',9);label(c,SHOP_UI.marker,e.x,e.y-52,'#d8c89a',8);}
+      else if(item.type==='hotspotgiver'){const n=e.giver,glyph=giverGlyph(g,e.id);drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(glyph){c.save();if(glyph==='low')c.globalAlpha=.45;questBadge(c,n.x,n.y-(named?43:36),glyph==='low'?'!':glyph,false,time);c.restore();}}
       else if(item.type==='notice'){c.save();c.fillStyle='#5a3d24';c.fillRect(e.x-1.5,e.y-22,3,22);c.fillStyle='#efe0b8';c.strokeStyle='#3b2a1c';c.lineWidth=1;c.fillRect(e.x-8,e.y-30,16,12);c.strokeRect(e.x-8,e.y-30,16,12);c.fillStyle='#8a7355';for(let i=0;i<3;i++)c.fillRect(e.x-5,e.y-27+i*3,10-i*2,1);c.restore();questBadge(c,e.x,e.y-34,'!',false,time);}
-      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,WORLD_SCALE.npc/33,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
+      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
     // Räume erkennen (E-52): drinnen steht jeder Raumname oben im Raum, der eigene in Gold.
