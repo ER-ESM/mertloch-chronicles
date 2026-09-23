@@ -777,3 +777,71 @@ body:not(.touch-mode) .region-label #zoneType{font-size:12px;letter-spacing:.06e
 /* Tod: Weltbild entsättigt und abgedunkelt, damit der Zustand ohne Lesen klar ist. */
 .game-shell>canvas{transition:filter .8s ease}
 .game-shell.player-dead>canvas:not(.world-labels):not(#world){filter:grayscale(.85) brightness(.72) contrast(1.05)}
+
+/* ===== Schrittweise Freischaltung (unlocks.js): gesperrte Menüs verschwinden, neue tragen „Neu" bis zum ersten Öffnen ===== */
+body[data-locked~=quest] :is(.game-menu-rail [data-panel=quest],.book-tabs [data-book-tab=quest]),
+body[data-locked~=talents] :is(.game-menu-rail [data-panel=talents],.book-tabs [data-book-tab=talents]),
+body[data-locked~=meter] :is(#meterToggle,#combatMeter),
+body[data-locked~=hudEdit] .game-menu-actions [data-hud-open],
+body[data-locked~=professions] .game-menu-actions [data-shell=professions],
+body[data-locked~=mounts] .game-menu-actions [data-shell=mounts],
+body[data-locked~=companions] .game-menu-actions [data-shell=companions]{display:none!important}
+body[data-novel~=quest] :is(.game-menu-rail [data-panel=quest],.book-tabs [data-book-tab=quest]),
+body[data-novel~=talents] .book-tabs [data-book-tab=talents],
+body[data-novel~=professions] .game-menu-actions [data-shell=professions],
+body[data-novel~=mounts] .game-menu-actions [data-shell=mounts],
+body[data-novel~=companions] .game-menu-actions [data-shell=companions],
+body[data-novel~=hudEdit] .game-menu-actions [data-hud-open]{position:relative;box-shadow:0 0 0 2px #f3cf7a,0 0 12px #f3cf7a88!important}
+body[data-novel~=quest] .book-tabs [data-book-tab=quest]::before,body[data-novel~=talents] .book-tabs [data-book-tab=talents]::before,
+body[data-novel~=professions] .game-menu-actions [data-shell=professions]::before,body[data-novel~=mounts] .game-menu-actions [data-shell=mounts]::before,
+body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,body[data-novel~=hudEdit] .game-menu-actions [data-hud-open]::before{content:'Neu';position:absolute;top:-8px;right:-6px;z-index:5;padding:1px 6px;border-radius:999px;background:#c0392b;color:#fff5dc;font:400 12px/1.3 var(--display);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 1px 3px #0009}
+
+/* ===== Meilensteine (milestone-ui.js): Stufenaufstieg und Freischaltung ===== */
+.milestone{position:absolute;left:50%;top:18%;z-index:45;transform:translate(-50%,-12px) scale(.96);opacity:0;transition:opacity .35s ease,transform .35s ease;text-align:center;min-width:min(520px,90vw);max-width:min(640px,92vw);padding:18px 32px 20px;background:radial-gradient(ellipse 70% 90% at 50% 45%,#0d1a14e8,#0d1a14b0 60%,#0d1a1400 100%);pointer-events:none}
+.milestone.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.milestone[hidden]{display:none}
+.milestone-eyebrow{display:block;font:400 16px/1 var(--display);letter-spacing:.18em;text-transform:uppercase;color:#d7b571}
+.milestone-title{display:block;margin:6px 0 4px;font:400 64px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#ffe39a;text-shadow:0 3px 0 #5a3a10,0 0 18px #f3c96a99,0 0 42px #f3c96a55}
+.milestone-level .milestone-title{animation:milestone-glow 1.6s ease-out 1}
+@keyframes milestone-glow{0%{letter-spacing:.4em;filter:brightness(2)}60%{letter-spacing:.04em}100%{filter:brightness(1)}}
+.milestone-gains{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:10px 0 0;padding:0;font:700 16px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000}
+.milestone-gains li::before{content:'✦ ';color:#f3cf7a}
+.milestone-unlock .milestone-title{font-size:48px;color:#fff0c9}
+.milestone-text{margin:6px auto 4px;max-width:520px;font:600 15px/1.5 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000}
+.milestone-where{display:inline-block;margin-top:4px;padding:3px 12px;border:1px solid #d7b57188;border-radius:999px;font:400 14px/1.3 var(--display);letter-spacing:.05em;text-transform:uppercase;color:#f3cf7a}
+.touch-mode .milestone{top:22%}.touch-mode .milestone-title{font-size:44px}.touch-mode .milestone-unlock .milestone-title{font-size:34px}
+
+/* ===== Admin-Konsole (admin-commands.js) ===== */
+.admin-console{position:absolute;left:50%;top:12px;z-index:60;transform:translateX(-50%);width:min(760px,94vw);background:#0b140fef;border:2px solid #d7b571;box-shadow:0 6px 24px #000c;color:#e6f0d0;font:13px/1.45 ui-monospace,Consolas,monospace}
+.admin-console[hidden]{display:none}
+.admin-console header{display:flex;justify-content:space-between;gap:12px;padding:6px 10px;background:#1f3326;color:#f3cf7a}
+.admin-console header small{color:#b9c4a4}
+.admin-console .admin-log{margin:0;max-height:260px;overflow:auto;padding:8px 10px;white-space:pre-wrap}
+.admin-console form{display:flex;gap:6px;align-items:center;padding:6px 10px;border-top:1px solid #d7b57155}
+.admin-console input{flex:1;background:#000;color:#fff;border:1px solid #5d6b55;padding:6px 8px;font:inherit}
+
+/* ===== Einführungsfilm (intro-ui.js): Kinobalken über der laufenden Welt ===== */
+.intro-film{position:absolute;inset:0;z-index:70;display:flex;flex-direction:column;justify-content:space-between;pointer-events:auto;cursor:pointer;outline:none}
+.intro-film[hidden]{display:none}
+.intro-bar{background:#050807;box-shadow:0 0 40px 20px #050807;position:relative}
+.intro-top{height:11vh;min-height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.intro-bottom{min-height:24vh;display:grid;place-items:center;padding:10px 32px 18px}
+.intro-progress{display:flex;gap:6px}
+.intro-progress i{display:block;width:44px;height:4px;border-radius:2px;background:#ffffff22;overflow:hidden;position:relative}
+.intro-progress i.done{background:#d7b571}
+.intro-progress i.on::after{content:'';position:absolute;inset:0;background:#d7b571;transform-origin:left;animation:intro-fill linear forwards;animation-duration:inherit}
+@keyframes intro-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.game-shell .intro-film .intro-skip{background:none;border:1px solid #d7b57166;border-image:none;box-shadow:none;color:#e9dcb8;font:400 16px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;cursor:pointer}
+.game-shell .intro-film .intro-skip:hover{color:#fff0c9;border-color:#f3cf7a;background:#ffffff10}
+.intro-skip kbd{margin-left:6px;padding:1px 6px;border:1px solid #d7b57188;border-radius:3px;font:inherit;font-size:12px}
+.intro-caption{max-width:880px;text-align:center;opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s ease}
+.intro-caption.show{opacity:1;transform:none}
+.intro-eyebrow{display:block;font:400 15px/1 var(--display);letter-spacing:.2em;text-transform:uppercase;color:#d7b571}
+.intro-title{display:block;margin:6px 0 8px;font:400 44px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#ffe39a;text-shadow:0 3px 0 #3a2410,0 0 20px #f3c96a55}
+.intro-text{margin:0 auto;max-width:760px;font:600 18px/1.55 var(--read);color:#f1e6c8}
+.intro-keys{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px;margin:14px 0 0;padding:0}
+.intro-keys li{display:flex;align-items:center;gap:8px;font:600 15px/1.2 var(--read);color:#d6c9a6}
+.intro-keys kbd{min-width:34px;padding:5px 10px;border:2px solid #d7b571;border-bottom-width:4px;border-radius:6px;background:#1c2b22;color:#fff0c9;font:400 17px/1 var(--display);letter-spacing:.04em;text-align:center;box-shadow:0 2px 0 #000}
+.intro-start{margin-top:16px;font-size:20px;padding:12px 34px}
+body.intro-open .game-shell>:not(canvas):not(.vignette):not(.intro-film):not(.milestone){visibility:hidden}
+.touch-mode .intro-title{font-size:30px}.touch-mode .intro-text{font-size:15px}.touch-mode .intro-top{padding:0 12px}.touch-mode .intro-progress i{width:26px}

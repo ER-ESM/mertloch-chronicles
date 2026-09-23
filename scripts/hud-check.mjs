@@ -39,7 +39,7 @@ async function openEditor(){
 }
 async function fixture(touch=false,preserve=false){
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:11,trainingXp:11000,tutorial:{version:1,step:8,completed:true}};
- const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;${preserve?'':`localStorage.removeItem('${key}');localStorage.removeItem('mertloch-meter-ui-v1');`}localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
+ const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-unlock-all','1');${preserve?'':`localStorage.removeItem('${key}');localStorage.removeItem('mertloch-meter-ui-v1');`}localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',script);await wait(400);
  await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.paused=true;`);
 }

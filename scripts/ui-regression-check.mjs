@@ -10,7 +10,7 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
  const state=()=>b.state(),read=expression=>b.evaluate(expression);
  async function fixture(save={},touch=false){
   const data={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:11,trainingXp:11000,tutorial:{version:1,step:8,completed:true},...save};
-  const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(data))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
+  const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(data))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));localStorage.setItem('mertloch-unlock-all','1');`});/* Layoutprüfung: alle Menüs frei; die schrittweise Freischaltung prüft tests/unlocks.test.mjs */
   await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',script);await wait(200);await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click())`);
  }
  async function point(selector){await read(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'center'})`);await wait(100);return read(`(()=>{const e=document.querySelector(${JSON.stringify(selector)}),r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);}

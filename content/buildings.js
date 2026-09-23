@@ -81,6 +81,8 @@ export function effectNumber(key,value,source=''){
   :String(value);
  return {label:def?.name||key,value:v,unit:def?.unit||'',source,effect:key};
 }
+/** Baustelle in der Welt (Trümmer hinter St. Gangolf): Schild, Interaktion, Hinweis vor der Freigabe. */
+export const BASE_SITE_UI={title:'Baustelle der Bude',interact:'Bude ansehen',locked:'Die Trümmer der Bude aus der Filmriss-Nacht: Tresen, Grill, Werkstatt, Anlage, Landhaus-Ecke, Pfandlager. Ida gibt den Wiederaufbau frei, sobald du Kapitel 2 der Hauptgeschichte abgeschlossen hast.'};
 export const BUILDINGS={
  tresen:{name:'Der Tresen',owner:'dieter',unlock:{chapter:2},icon:'maul',
   text:'Ohne Tresen kein Clan. Dieter baut ihn aus Paletten, Bierdeckeln und Sturheit. Jede Stufe macht die Pause an der Bude wertvoller.',

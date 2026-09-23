@@ -21,7 +21,7 @@ async function swipe(sel){
 }
 async function fixture(touch=false){
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:6,trainingXp:2100,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:200,inventory:[{id:'kabel',count:10},{id:'regenjacke',count:1}]}};
- const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
+ const script=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-unlock-all','1');localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',script);await wait(300);await atShop();
 }
 async function atShop(){await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.enemies=[];if(!game.instance){Object.assign(game.player,game.world.places.kiosk.entrance||game.world.places.kiosk.approach);game.player.inCombat=0;game.paused=false;game.enterKiosk();}Object.assign(game.player,{x:190,y:142});game.player.inCombat=0;game.moveTo=null;game.path=[];game.keys.clear();game.paused=false;`);await wait(350);}

@@ -9,7 +9,7 @@ async function click(selector){await run(`document.querySelector(${JSON.stringif
 async function collection(){await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'P',code:'KeyP',modifiers:8});await b.send('Input.dispatchKeyEvent',{type:'keyUp',key:'P',code:'KeyP',modifiers:8});await wait(400);}
 try{
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:6,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:500,inventory:[]}};
- const init=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});`});
+ const init=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-unlock-all','1');localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});`});
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',init);await wait(1800);
  await run(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());g.tutorial.completed=true;g.enemies=[];g.companions=[];g.player.level=6;g.player.inCombat=0;g.stopAuto();g.quest.accepted=false;const {mountStation}=await import('./mounts.js');Object.assign(g.player,mountStation(g.world));g.rpg.coins=500;const {addItem}=await import('./rpg.js');for(const [id,n]of Object.entries({dosenblech:6,kabel:2,wasser:2,brezel:3}))addItem(g.rpg,id,n);`);
  await collection();assert.ok(await run('return !!document.querySelector(".mount-panel");'));await b.screenshot(dir+'/collection-locked.png');
