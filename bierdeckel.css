@@ -542,7 +542,7 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .sct-in{right:46px;bottom:26px;align-items:flex-end;}
 .sct-out{left:46px;bottom:26px;}
 .sct-note{left:-110px;bottom:64px;width:220px;align-items:center;}
-.sct-row{display:flex;align-items:center;gap:5px;font-family:var(--display,'Trebuchet MS',sans-serif);font-size:23px;line-height:1;color:#fff0bf;white-space:nowrap;
+.sct-row{display:flex;align-items:center;gap:5px;font-family:var(--display,'Trebuchet MS',sans-serif);font-size:28px;line-height:1;color:#fff0bf;white-space:nowrap;
  text-shadow:0 0 3px var(--ink,#2B2A26),2px 2px 0 var(--ink,#2B2A26),-2px 2px 0 var(--ink,#2B2A26),2px -2px 0 var(--ink,#2B2A26),-2px -2px 0 var(--ink,#2B2A26),0 2px 0 var(--ink,#2B2A26),0 -2px 0 var(--ink,#2B2A26),2px 0 0 var(--ink,#2B2A26),-2px 0 0 var(--ink,#2B2A26);
  animation:sct-rise 1.6s cubic-bezier(.2,.7,.3,1) forwards;transform:translateY(var(--sct-offset,0px));will-change:transform,opacity;}
 .sct-row canvas{width:20px;height:20px;image-rendering:pixelated;flex:none;filter:drop-shadow(0 1px 0 var(--ink,#2B2A26));}
@@ -555,9 +555,9 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .sct-xp{color:#bacd8b;}
 .sct-proc{color:#ffd77a;}
 .sct-momentum{color:#f4c06a;}
-.sct-crit{font-size:34px;animation:sct-crit 1.6s cubic-bezier(.2,.7,.3,1) forwards;}
+.sct-crit{font-size:40px;animation:sct-crit 1.6s cubic-bezier(.2,.7,.3,1) forwards;}
 .sct-out .sct-crit b,.sct-crit b{color:#ffe27a;text-shadow:0 0 10px #ff9a2e,0 0 3px #7a3a08,2px 2px 0 var(--ink,#2B2A26),-2px 2px 0 var(--ink,#2B2A26),2px -2px 0 var(--ink,#2B2A26),-2px -2px 0 var(--ink,#2B2A26);}
-.sct-in .sct-damage b{font-size:20px;}
+.sct-in .sct-damage b{font-size:24px;}
 .sct-row b{letter-spacing:.02em;}
 .sct-crit canvas{width:26px;height:26px;}
 /* Ausgehend treibt nach rechts, eingehend nach links (MMO-Vorbild): die Richtung sagt, wer wen trifft. */
@@ -565,8 +565,8 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .sct-in .sct-row{--sct-drift:-14px;}
 @keyframes sct-rise{0%{opacity:0;transform:translate(0,calc(var(--sct-offset,0px) + 10px)) scale(1.35);}10%{opacity:1;transform:translate(0,var(--sct-offset,0px)) scale(1);}70%{opacity:1;}100%{opacity:0;transform:translate(var(--sct-drift,0px),calc(var(--sct-offset,0px) - 58px)) scale(.9);}}
 @keyframes sct-crit{0%{opacity:0;transform:translate(0,calc(var(--sct-offset,0px) + 6px)) scale(2.1) rotate(-4deg);}9%{opacity:1;transform:translate(0,var(--sct-offset,0px)) scale(.92) rotate(2deg);}16%{transform:translate(0,calc(var(--sct-offset,0px) - 4px)) scale(1.12) rotate(-1deg);}26%{transform:translate(0,calc(var(--sct-offset,0px) - 10px)) scale(1) rotate(0);}72%{opacity:1;}100%{opacity:0;transform:translate(var(--sct-drift,0px),calc(var(--sct-offset,0px) - 60px)) scale(.95);}}
-.touch-mode .sct-row{font-size:18px;}
-.touch-mode .sct-crit{font-size:26px;}
+.touch-mode .sct-row{font-size:21px;}
+.touch-mode .sct-crit{font-size:30px;}
 .touch-mode .sct-in{right:34px;bottom:20px;}
 .touch-mode .sct-out{left:34px;bottom:20px;}
 .touch-mode .sct-note{bottom:52px;}
