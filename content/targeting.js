@@ -1,7 +1,7 @@
 // Zielwahl und Mouse-Over: Farben der Leuchtrahmen, Trefferradien und Texte des Zielrahmens für freundliche Ziele.
 export const TARGET_RULES={
  hitRadius:27,bossHitRadius:38,hitLift:10,                 // Treffertest sitzt auf Körpermitte, nicht auf den Füßen
- ring:{enemy:'#ff8a6e',neutral:'#f2d36b',friendly:'#86e08f',party:'#86e08f',player:'#8cc8ff'},
+ ring:{enemy:'#ff8a6e',neutral:'#f2d36b',friendly:'#86e08f',party:'#86e08f',player:'#8cc8ff',node:'#f0d38f'},
  hoverAlpha:.75,hoverGlow:9,selectGlow:5,pulse:3.2
 };
 export const TARGET_UI={

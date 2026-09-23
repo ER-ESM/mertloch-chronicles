@@ -16,3 +16,6 @@
 .game-shell .profession-card>button:first-child:hover:not(:disabled){background:none;box-shadow:none;text-decoration:underline;text-underline-offset:4px;filter:none}
 .game-shell .profession-panel button{font-size:15px;letter-spacing:.03em;padding:8px 12px;min-height:38px}
 .profession-panel button:disabled{opacity:.55}
+
+/* Mouse-Over-Tooltip an Fundstellen (profession-tip.js): klein, am Mauszeiger */
+.world-tip{width:auto;max-width:250px;padding:7px 10px}.world-tip[hidden]{display:none!important}.world-tip strong{display:block;margin-bottom:2px}.world-tip p,.world-tip small{display:block;margin:1px 0 0;line-height:1.35}

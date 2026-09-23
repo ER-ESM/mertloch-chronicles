@@ -45,7 +45,7 @@ export function clearFriend(g){if(g.friend){g.friend=null;return true;}return fa
 export function syncFriend(g){if(!g.friend)return;if(g.friend.kind!=='companion'&&g.target?.hp>0||!friendUnit(g))g.friend=null;}
 
 export function ringColor(g,u){if(u.kind!=='enemy')return R.ring[u.kind==='party'?'party':u.kind==='player'?'player':'friendly'];const e=u.ref;return e.behavior==='neutral'&&!e.aggro?R.ring.neutral:R.ring.enemy;}
-function ring(c,x,y,rad,color,glow,alpha,width){c.save();c.globalAlpha=alpha;c.shadowColor=color;c.shadowBlur=glow;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.ellipse(x,y+1,rad,rad*.4,0,0,Math.PI*2);c.stroke();c.stroke();c.restore();}
+export function ring(c,x,y,rad,color,glow,alpha,width){c.save();c.globalAlpha=alpha;c.shadowColor=color;c.shadowBlur=glow;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.ellipse(x,y+1,rad,rad*.4,0,0,Math.PI*2);c.stroke();c.stroke();c.restore();}
 /** Bodenrahmen unter den Figuren: gewähltes freundliches Ziel und Mouse-Over. Der Gegner-Zielring bleibt im Renderer. */
 export function drawTargetRings(c,g,time){
  const now=performance.now(),f=friendUnit(g,now),aid=!inKiosk(g)&&companionAid(g);
