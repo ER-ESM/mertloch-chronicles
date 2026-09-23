@@ -6247,7 +6247,7 @@
       "x": 0,
       "y": 448,
       "cell": 64,
-      "name": "Wurf aus der Bewegung",
+      "name": "Schwung aus der Flucht",
       "effect": "Jede Kabelbrand-Flucht gibt zusätzliche Randale.",
       "spec": "kevin-hunt",
       "row": 0,

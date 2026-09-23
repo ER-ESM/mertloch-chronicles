@@ -18,3 +18,6 @@ node_modules/
 /akt1b-review/
 /welle-d-review/
 .server-data/
+
+# Arbeitskopien von Hilfsagenten (git worktree)
+.claude/worktrees/
