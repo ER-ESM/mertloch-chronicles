@@ -802,6 +802,10 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
    - Die Mentoren zeichnet `renderer.js` als `mentor-<klasse>` in ihrer Tracht, statt als Heldenkörper in Unterwäsche.
 5. **Arbeitsweise:** Parallel arbeitende Agenten benutzen `--dry` (nur Vorschau). Den gemeinsamen Katalog schreibt nur der volle Lauf. Prüfung über `tests/sprite-forge.test.mjs` und `scripts/forge-bude-check.mjs`.
 
+6. **Drei Schichten statt Gesamtpaket** (Nutzervorgabe 23.09.2026: „Es gibt keine heldenspezifische Kleidung. Es sind nur 3 Archetypen von Körperbau und grober Struktur. Die Details ergeben sich aus der Kleidung/Gear, die man anzieht. Gesichtsdetails, Farben oder Frisuren ergeben sich aus dem Charaktereditor bei Erstellung.“):
+   - Jede Figur ist Archetyp (`figures/archetypes.mjs`: Kräftig/Schwungvoll/Drahtig) + Aussehen aus dem Editor (`figures/appearance.mjs`, Kennungen wie `hero-tint.js`) + getragene Ausrüstung (`figures/gear.mjs`, Platz und sichtbare Familie wie `equipment-appearance.js`).
+   - Auch Ida und die Mentoren sind so gebaut. Kleidung wie Strickjacke, Schürze oder Kutte ist ein Gegenstand, den jeder Archetyp tragen kann.
+
 **Stand.** Der Baukasten ist live. Die Figuren von Ida und den Mentoren hielt der Nutzer für zu generisch („viel zu einfach gemalt … deutlich mehr Details und Charakter“). Die Detailrunde läuft: Gesicht und Haar, Kleidung mit Falten, Nähten und Mustern, persönliches Beiwerk und Haltung. Der Renderer hat dafür wählbare Malstufen bekommen (Doppelauflösung, Relief, Kantenlicht). Die Figuren gehen erst danach live.
 
 **Verworfen.**

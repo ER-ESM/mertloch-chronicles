@@ -6,7 +6,7 @@ import {browserSession,wait} from './browser-session.mjs';
 const dir='visual-review/forge/bude';mkdirSync(dir,{recursive:true});
 const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9433,serverPort:4233}),checks=[];
 const read=s=>b.evaluate(s),shot=name=>b.screenshot(dir+'/'+name+'.png');
-const put=(x,y,floor=0)=>read(`(()=>{const h=game.world.base.house;game.floor=${floor};Object.assign(game.player,{x:h.minX+${x},y:h.minY+${y},inCombat:0});game.moveTo=null;game.path=[];game.enemies=[];document.querySelectorAll('[data-window-close]').forEach(b=>b.click());})()`);
+const put=(x,y,floor=0)=>read(`(()=>{const h=game.world.base.house;game.floor=${floor};Object.assign(game.player,{x:h.minX+${x},y:h.minY+${y},inCombat:0});game.moveTo=null;game.path=[];game.enemies=[];document.querySelectorAll('[data-window-close]').forEach(b=>b.click());__mertloch.renderer.setZoomFactor(1.8);})()`);
 try{
  await b.resize(2024,900);
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:3,trainingXp:0,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:50}};
@@ -17,12 +17,16 @@ try{
  // 1 Schankraum am Ofen: Schmiede-Katalog und Ofen-Bildfolge geladen.
  await put(40,112);await wait(6000);
  const loaded=await read(`performance.getEntriesByType('resource').map(e=>e.name).filter(n=>n.includes('/assets/forge/runtime/kit/')).map(n=>n.split('/').pop())`);
- console.log(JSON.stringify(await read(`({kit:performance.getEntriesByType("resource").map(e=>e.name).filter(n=>n.includes("/runtime/kit/")).map(n=>n.split("/").slice(-3).join("/")).slice(0,12),fade:__mertloch.renderer.houseFade,p:[game.player.x,game.player.y],h:[game.world.base.house.minX,game.world.base.house.minY]})`)));
  for(const f of ["kit-forge.json","kit-kanonenofen.png"])assert.ok(loaded.includes(f),'geladen: '+f+' · '+loaded.join(','));
  checks.push('forge catalog and stove sheet loaded ('+loaded.length+' forge files)');
+ const figs=await read(`performance.getEntriesByType('resource').map(e=>e.name).filter(n=>n.includes('/assets/forge/runtime/figures/')).map(n=>n.split('/').pop())`);
+ for(const f of ['catalog.json','ida.png','mentor-dieter.png'])assert.ok(figs.includes(f),'Figur geladen: '+f+' · '+figs.join(','));
+ checks.push('forge figures loaded: '+figs.filter(f=>f.endsWith('.png')).length+' sheets');
  await shot('1-schankraum-ofen-a');await wait(260);await shot('1-schankraum-ofen-b');
  // 2 Sitzecke mit rundem Tisch und Stühlen.
  await put(150,140);await wait(1500);await shot('2-sitzecke');
+ // 2b Dieter im Schankraum (Mentor in seiner Ausrüstung).
+ await put(115,110);await wait(1500);await shot('2b-dieter');
  // 3 Küche mit Wandlampe.
  await put(170,40);await wait(1500);await shot('3-kueche');
  // 4 Eingang mit Ida.

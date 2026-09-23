@@ -123,7 +123,34 @@ export const MODELS={
 | `figure/props.mjs` | Beiwerk an Gelenken (Kasten, Fass, Tank, Werkzeug …) |
 | `figure/poses.mjs` | Posen der acht Bogenspalten und der Gehzyklus |
 
-- **Rezepte** (`tools/sprite-forge/figures/*.mjs`, reine Daten): Körper, Haut, Gesicht, Haar, Bart, Kleidung, Beiwerk und Grundhaltung.
+### Drei Schichten statt Gesamtpaket (Nutzervorgabe 23.09.2026)
+
+> „Es gibt keine heldenspezifische Kleidung. Es sind nur 3 Archetypen von Körperbau und grober Struktur. Die Details ergeben sich aus der Kleidung/Gear, die man anzieht. Gesichtsdetails, Farben oder Frisuren ergeben sich aus dem Charaktereditor bei Erstellung.“
+
+Jede Figur, ob Held oder NPC, besteht deshalb aus genau drei Schichten:
+
+| Schicht | Datei | Inhalt |
+|---|---|---|
+| Körper-Archetyp | `figures/archetypes.mjs` | `dieter` = Kräftig, `baerbel` = Schwungvoll, `kevin` = Drahtig (Kennungen wie `LOOKS` in `characters.js`). Nur Körperbau. |
+| Aussehen (Charaktereditor) | `figures/appearance.mjs` | Haut, Haarfarbe (Kennungen wie `hero-tint.js`), Frisur, Bart, Gesichtsbausteine (Augen, Brauen, Mund, Nase, Alter), Extra (Brille, Sonnenbrille, Stirnband) |
+| Ausrüstung | `figures/gear.mjs` | Kleidung und Beiwerk als Gegenstände mit Platz (`slot`) und sichtbarer Familie (`family`, wie `equipment-appearance.js`). Jedes Teil passt auf jeden Archetyp, weil es als Hülle um dessen Körperteile entsteht. |
+
+- **Figur (reine Daten):**
+
+  ```js
+  {name, archetype:'baerbel',
+   look:{skin:'hell', hair:{style:'dutt', color:'blond'}, face:{mouth:'resolut', age:.8}},
+   gear:[['strickjacke',{}], ['schuerze',{emblem:'#5f7e3a'}], ['bierkasten',{side:-1}], …],
+   pose:{…}}
+  ```
+
+  `characterRecipe()` in `figure.mjs` löst das in das interne Rezept auf.
+- **NPCs mit fester Identität** (Ida, Mentoren) nutzen dieselben drei Schichten. Ihre Wiedererkennung kommt aus Ausrüstung, Editorwerten und Haltung, nicht aus einem eigenen Körper.
+- **Helden (nächster Schritt):**
+  - Je Archetyp einen Grundbogen (Körper + Unterwäsche) rendern, je Ausrüstungsteil einen Ebenenbogen mit eingerechneter Verdeckung (wie die alten 3D-Prerender-Ebenen, E-30) und Frisuren und Bärte in Grau zum Einfärben (`hero-tint.js`).
+  - Die Laufzeit legt die Ebenen der getragenen Gegenstände übereinander.
+- **Musterreihen:** `figures/_schichten.mjs`, nur mit `--dry`: gleiche Ausrüstung auf allen drei Archetypen, gleicher Archetyp mit verschiedenen Editor-Einstellungen.
+- **Rezepte** (`tools/sprite-forge/figures/*.mjs`, reine Daten) werden an die Worker-Threads geschickt: keine Funktionen, keine Materialobjekte.
 - **Ebenen:** Jeder Körper trägt eine Ebene (`layer`). Mit `--layers` entsteht je Ebene ein Bogen mit eingerechneter Verdeckung. Das ist die Grundlage für generische NPCs, den Charaktereditor und Ausrüstung am Helden.
 - **Ausgabe:** Das Format ist das des Präzisionskatalogs (192er Zellen, Fußpunkt 96/160, Zeilen se/sw/ne/nw, Spalten idle … rest, dazu ein Laufbogen mit acht Bildern). `content-art.js` lädt `assets/forge/runtime/figures/catalog.json` und ersetzt gleichnamige Einträge.
 
