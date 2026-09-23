@@ -11,6 +11,7 @@ Inbox des Lead-Architect (`docs/ROLLEN.md`): Entscheidungen, Zirkel, Dateispaltu
 
 ## Offen
 
+- [ ] **Erster Dungeon „Schloss Big B" (Planung 2026-09-23):** [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md). Ziel: die Vorschläge V-D1 bis V-D8 (Abschnitt 19) der Produktion vorlegen, Besitzer für `content/dungeons.js` festlegen, Prüfregeln aus Abschnitt 12 in `content/schema.js`. Abnahme: Einträge in ENTSCHEIDUNGEN.md mit verworfener Alternative. Danach gelten die Verweise in den Inboxen der Rollen.
 Aktueller Auftrag 2026-09-18: nur Basis-Punkte 1, 2, 5 und 6; siehe [Roadmap](../ROADMAP.md) und [Abnahme](../BASIS-NACHSCHLIFF-2026-09-18.md). Händler/Handwerk, erneuter Gesamt-Playtest, Grafikpassform und physische Geräteprüfung sind zurückgestellt. Wiederkehrende Prüfpflichten unten sind keine unerledigten Implementierungen.
 
 - [ ] **Brainstorm Charaktererstellung und Klassen mit Spezialisierungen** (2026-09-19, abgeglichen 2026-09-23): [CHARAKTERERSTELLUNG-BRAINSTORM-2026-09-19.md](../CHARAKTERERSTELLUNG-BRAINSTORM-2026-09-19.md), abgeglichen gegen E-37, E-38 und E-43. Ziel: die Vorschläge V-1 bis V-6 (Abschnitt 5) der Produktion vorlegen, darunter E-17 als „geändert durch E-38" führen; die Backlog-Schnipsel je Rolle (Abschnitt 7) erst nach der Entscheidung übernehmen. Abnahme: Einträge in ENTSCHEIDUNGEN.md mit verworfener Alternative, oder eine Zeile „abgelehnt" hier.

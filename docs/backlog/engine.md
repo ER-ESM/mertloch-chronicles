@@ -40,6 +40,7 @@ Talente sollen Regeln mit Auslöser sein (docs/GAMEPLAY-KONZEPT-FLUSS.md §6). N
 
 ## Offen
 
+- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D8): Instanz-Baustein aus `kiosk-instance.js`, Kontrollpunkt, Arena-Türen, Boss-Phasen mit eigenen Zyklen, Adds, Merkmale `cone`, `line`, `stack`, `spread`, `decoy`, `lie`, `summon`, `tankDebuff`, `interrupts`, `persist`, `enrage`, Söldner-Reaktionen, Spielstandfeld `dungeons`. Auftrag: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitte 8, 9, 15.
 - [x] **Sprechblasen-Drossel** (2026-09-18, additiv durch UI-Session, Nutzerbefund „viele Nachrichten auf einmal"): engine.js bark() – Bewohner höchstens alle 7 s und nie, solange ein Gegner spricht; Gegner-Sprüche höchstens alle 4 s (Gruppen von drei riefen dreifach); Boss/Phase nie gedrosselt. enemy-ui.js zeigt höchstens zwei Blasen (Boss vor Gegner vor Bewohner). Test tests/bark-throttle.test.mjs.
 
 - [x] **Leine und Abbruchdistanz** (2026-09-18, additiv durch UI-Session): encounters.js Standard-Leine 380 → 560, engine.js Abbruch bei Spielerabstand 450 → 620, Lager-Menschen Aggro 120 → 105. Grund: Kiten war unmöglich, Gegner drehten nach 2–3 s Rückzug ab. Test tests/aggro-kiting.test.mjs.

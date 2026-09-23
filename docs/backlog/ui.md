@@ -34,6 +34,7 @@ Inbox der UI-Rolle (docs/ROLLEN.md). Andere Rollen tragen hier Bedarf ein: Ziel,
 
 ## Offen
 
+- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D8): Eingangskarte, Raumnamen in zwei Zeilen, Bossrahmen mit Phasen und Wut-Uhr, Zauberleiste mit Ansage und Nachsatz, Attrappen-Kreise, Dungeon-Karte, Gruppentod-Einblendung, `scripts/dungeon-check.mjs`. Auftrag: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitt 13.
 ### Mobile-Iterationen 2026-09-18 (Mobile-Agent, docs/MOBILE-ITERATIONEN-2026-09-18.md)
 
 Nachtrag 2026-09-18: Die vier unten abgehakten Befunde sind im Basis-Nachschliff behoben. Fenstergrenzen kommen aus Safe Areas und HUD-Rechtecken, die Todes-Erinnerung bleibt ohne zweiten Dialog im Tagebuch, und die Kontrastregeln gelten auch am Desktop. Talent-Tooltips nennen zudem die betroffenen Kniffe mit aktueller Tastenbelegung (Touch ohne Tastaturhinweise). Beleg: [Bedienung und Beschreibungen](../BEDIENUNG-BESCHREIBUNGEN-2026-09-18.md).

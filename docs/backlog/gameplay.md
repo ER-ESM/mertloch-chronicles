@@ -11,6 +11,7 @@ Inbox der Rolle Gameplay (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D8): `content/dungeons.js`, Trash und Bosse, Zaubermuster mit den neuen Merkmalen, Prüfung „jede Boss-Fähigkeit trägt ein Merkmal". Auftrag und Datenbeispiele: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitte 5, 6, 8, 12.
 - [ ] **Aggro und Leine geprüft, Zahlen in tuning.js** (UI/Balancing 2026-09-18, Nutzerbefund): Feldgegner-Aggro von 14–19 m auf 11–14 m, Standard-Leine 47 m → 70 m ab Heimatpunkt, Abbruch bei Spielerabstand 78 m statt 56 m, Lager-Menschen 105. Gameplay bitte in die Definitionen einpflegen (Tuning-Zeilen löschen), wenn ein Playtest die Werte bestätigt. Test: tests/aggro-kiting.test.mjs.
 
 - [ ] **Tote Kit-Felder `damage`, `base`, `perPoint` in `content/skills.js`** (Nebenbefund Klassendesign, Runde B): seit `damageModel` ignoriert `equipment.skillDamage()` den übergebenen Grundwert, sobald ein Modell existiert – die drei Felder wirken nirgends mehr. Lebende Schadensschalter der Kits sind nur noch `multiplier`, `splash`, `knockback`. Entscheidung gemeinsam mit Klassendesign: entweder raus aus `skills.js` oder das Modell so umbauen, dass der Grundwert wieder trägt. Gameplay entscheidet mit, weil `SKILL_DAMAGE` hier liegt.

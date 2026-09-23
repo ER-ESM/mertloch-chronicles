@@ -4,6 +4,7 @@ Inbox der Rolle Gegenstände & Loot (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D8): Beutetabellen je Boss und Trash, sechs Dorflegenden, Materialien, Auftragsgegenstand, Reittier „Das halbe Pferd". Entwurf: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitt 10.
 - [ ] Ideen aus content/IDEEN-LANDJUNGS.md (Kabelbinder-Gürtel, Diagnose-Dongle, Headset …) erst nach Freigabe der Themen durch den Lead.
 - [ ] Verpflegung je Kapitel-Familie prüfen (kegler, jga, sigi, klaus, timo nutzen vorhandene Sorten); eigene Sorte für den Bus (z. B. „Bierbong-Rest“) nur, wenn Gameplay einen Zweck nennt.
 
