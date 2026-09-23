@@ -10,8 +10,9 @@ const root=new URL('../',import.meta.url);
 const catalog=JSON.parse(readFileSync(new URL('assets/content-art/handoff-catalog.json',root)));
 
 test('all chapter prop types have matching generated sprites and ground anchors',()=>{
+ const active=JSON.parse(readFileSync(new URL('assets/precision/runtime/catalog.json',root)));
  for(const [id,p] of Object.entries(PROP_KINDS)){
-  const a=catalog.assets['prop-'+id];assert.ok(a,id);
+  const a=active.assets['prop-'+id];assert.ok(a,id);
   assert.deepEqual(a.worldProp,{id,w:p.w,h:p.h,height:p.height});
   const r=chapterPropRect({...p,kind:id,x:100,y:200});
   assert.equal(r.w,p.w);assert.equal(r.y+r.h,200+p.h/2);assert.equal(r.depth,200+p.h/2);

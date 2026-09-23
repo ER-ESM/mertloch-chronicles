@@ -794,7 +794,7 @@ body[data-novel~=companions] .game-menu-actions [data-shell=companions],
 body[data-novel~=hudEdit] .game-menu-actions [data-hud-open]{position:relative;box-shadow:0 0 0 2px #f3cf7a,0 0 12px #f3cf7a88!important}
 body[data-novel~=quest] .book-tabs [data-book-tab=quest]::before,body[data-novel~=talents] .book-tabs [data-book-tab=talents]::before,
 body[data-novel~=professions] .game-menu-actions [data-shell=professions]::before,body[data-novel~=mounts] .game-menu-actions [data-shell=mounts]::before,
-body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,body[data-novel~=hudEdit] .game-menu-actions [data-hud-open]::before{content:'Neu';position:absolute;top:-8px;right:-6px;z-index:5;padding:1px 6px;border-radius:999px;background:#c0392b;color:#fff5dc;font:400 12px/1.3 var(--display);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 1px 3px #0009}
+body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,body[data-novel~=hudEdit] .game-menu-actions [data-hud-open]::before{content:'Neu';position:absolute;top:-10px;right:-8px;z-index:5;width:24px;height:24px;padding:0;background:url('./assets/precision/runtime/ui/ui-unlock-seal.png') center/contain no-repeat;color:transparent;font-size:0;image-rendering:pixelated;filter:drop-shadow(0 1px 2px #0009)}
 
 /* ===== Meilensteine (milestone-ui.js): Stufenaufstieg und Freischaltung ===== */
 .milestone{position:absolute;left:50%;top:18%;z-index:45;transform:translate(-50%,-12px) scale(.96);opacity:0;transition:opacity .35s ease,transform .35s ease;text-align:center;min-width:min(520px,90vw);max-width:min(640px,92vw);padding:18px 32px 20px;background:radial-gradient(ellipse 70% 90% at 50% 45%,#0d1a14e8,#0d1a14b0 60%,#0d1a1400 100%);pointer-events:none}
@@ -802,7 +802,8 @@ body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,
 .milestone[hidden]{display:none}
 .milestone-eyebrow{display:block;font:400 16px/1 var(--display);letter-spacing:.18em;text-transform:uppercase;color:#d7b571}
 .milestone-title{display:block;margin:6px 0 4px;font:400 64px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#ffe39a;text-shadow:0 3px 0 #5a3a10,0 0 18px #f3c96a99,0 0 42px #f3c96a55}
-.milestone-level .milestone-title{animation:milestone-glow 1.6s ease-out 1}
+.milestone-level .milestone-title{position:relative;min-height:106px;display:grid;place-items:center;animation:milestone-glow 1.6s ease-out 1}
+.milestone-crest{position:absolute;left:50%;top:34px;transform:translateX(-50%);width:320px;max-width:100%;height:120px;object-fit:contain;image-rendering:pixelated;pointer-events:none}
 @keyframes milestone-glow{0%{letter-spacing:.4em;filter:brightness(2)}60%{letter-spacing:.04em}100%{filter:brightness(1)}}
 .milestone-gains{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:10px 0 0;padding:0;font:700 16px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000}
 .milestone-gains li::before{content:'✦ ';color:#f3cf7a}
@@ -846,4 +847,8 @@ body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,
 body.intro-open .game-shell>:not(canvas):not(.vignette):not(.intro-film):not(.milestone){visibility:hidden}
 .touch-mode .intro-title{font-size:30px}.touch-mode .intro-text{font-size:15px}.touch-mode .intro-top{padding:0 12px}.touch-mode .intro-progress i{width:26px}
 .attack-warning:empty{display:none!important}
-.intro-still{position:absolute;left:0;right:0;top:11vh;bottom:24vh;width:100%;height:calc(100% - 35vh);object-fit:cover;image-rendering:pixelated;animation:intro-kenburns 9s ease-out both}.intro-still[hidden]{display:none}@keyframes intro-kenburns{from{transform:scale(1.08)}to{transform:scale(1)}}
+.intro-film{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;justify-content:normal;overflow:hidden;background:#050807}
+.intro-top{grid-row:1;z-index:1}.intro-bottom{grid-row:3;z-index:1}
+.intro-film:not(:has(.intro-still:not([hidden]))){background:transparent}
+.intro-still{grid-row:2;grid-column:1;width:100%;height:100%;min-height:0;object-fit:contain;image-rendering:pixelated;background:#050807}.intro-still[hidden]{display:none}
+@media(max-width:600px){.intro-bottom{padding:10px 14px 18px}.intro-text{font-size:15px;line-height:1.4}.intro-title{font-size:30px}.intro-top{padding:0 12px}.intro-progress i{width:26px}.milestone{padding-inline:12px}.milestone-title{font-size:44px}}

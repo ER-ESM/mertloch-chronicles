@@ -96,7 +96,14 @@
     "ring": "gear-ring",
     "reinforced": "gear-club",
     "shield": "gear-shield",
-    "speaker": "gear-sprayer"
+    "speaker": "gear-sprayer",
+    "bude-truemmer-tresen": "prop-bude-truemmer-tresen",
+    "bude-truemmer-grill": "prop-bude-truemmer-grill",
+    "bude-truemmer-werkstatt": "prop-bude-truemmer-werkstatt",
+    "bude-truemmer-anlage": "prop-bude-truemmer-anlage",
+    "bude-truemmer-landhausecke": "prop-bude-truemmer-landhausecke",
+    "bude-truemmer-pfandlager": "prop-bude-truemmer-pfandlager",
+    "bude-schild": "prop-bude-schild"
   },
   "assets": {
     "ui-tab-figur": {
@@ -65709,6 +65716,221 @@
       "width": 64,
       "height": 64,
       "hash": "6ba03b7117f3c63e4c91e30de476c0e1715a0f02586e331b9a202b5df16ab175",
+      "revision": "precision-v1"
+    },
+    "prop-bude-truemmer-tresen": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-truemmer-tresen.png",
+      "sourceHash": "0772f874b756db8607ca294f4c4d13c194571db968e83164ffa32eedb0e3d5bf",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-truemmer-tresen",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "pivot": {
+        "x": 76,
+        "y": 100
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-truemmer-tresen.png",
+      "width": 152,
+      "height": 108,
+      "hash": "e4668b0637f4d8f20bfcd146ed86b0670429f44f335e3739b40d7622d8fecafa",
+      "revision": "precision-v1"
+    },
+    "prop-bude-truemmer-grill": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-truemmer-grill.png",
+      "sourceHash": "b94a471b003a792c41532a1d17c1558978a30860ebfefc553be18bd9a63c07f0",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-truemmer-grill",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "pivot": {
+        "x": 76,
+        "y": 100
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-truemmer-grill.png",
+      "width": 152,
+      "height": 108,
+      "hash": "23dbf6aad859301f779ad332a0f5e9c638196b6018e53888a161eb8a97e7557f",
+      "revision": "precision-v1"
+    },
+    "prop-bude-truemmer-werkstatt": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-truemmer-werkstatt.png",
+      "sourceHash": "83dc156eeb8ce5130d70800dd66e45cd8dcec249e8a75f8f1bb1394569042d38",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-truemmer-werkstatt",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "pivot": {
+        "x": 76,
+        "y": 100
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-truemmer-werkstatt.png",
+      "width": 152,
+      "height": 108,
+      "hash": "4040db5e50f93708ea7b1f15ceba7e81145b9241f69e195b4a93401a6ba00014",
+      "revision": "precision-v1"
+    },
+    "prop-bude-truemmer-anlage": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-truemmer-anlage.png",
+      "sourceHash": "1558f8f7139dc3e497172b038a65bfaf267bab65805f8faa7154f0f152bfb141",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-truemmer-anlage",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "pivot": {
+        "x": 76,
+        "y": 100
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-truemmer-anlage.png",
+      "width": 152,
+      "height": 108,
+      "hash": "09108d04e1853b1728618b089afe3134366bd31eceb08489613bdcf345e82b40",
+      "revision": "precision-v1"
+    },
+    "prop-bude-truemmer-landhausecke": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-truemmer-landhausecke.png",
+      "sourceHash": "cbf9faa6dc1fbf9c9d5667fceed789a067af5e4148c3b57bbd544c7eaf075e16",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-truemmer-landhausecke",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "pivot": {
+        "x": 76,
+        "y": 100
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-truemmer-landhausecke.png",
+      "width": 152,
+      "height": 108,
+      "hash": "3e3d865c814de739c0b0562ca143922ecfb8f8013f62c62d33bd560aa25e8c31",
+      "revision": "precision-v1"
+    },
+    "prop-bude-truemmer-pfandlager": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-truemmer-pfandlager.png",
+      "sourceHash": "20f976fdc3118acef39b1ccadd8b3d842cae96bcc1c44a98a4e8cfff79f6de88",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-truemmer-pfandlager",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "pivot": {
+        "x": 76,
+        "y": 100
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-truemmer-pfandlager.png",
+      "width": 152,
+      "height": 108,
+      "hash": "7137812afc062e462db294d8337c7b16362abd0c2c7ea7fe2980967b098400f7",
+      "revision": "precision-v1"
+    },
+    "prop-bude-schild": {
+      "kind": "props",
+      "source": "assets/precision/sources/2026-09-23/bude-schild.png",
+      "sourceHash": "b4d017ea2347d73c3f6e2570240a5ec1939d186818a45e62c130f3cf13eee889",
+      "padding": 8,
+      "worldProp": {
+        "id": "bude-schild",
+        "w": 40,
+        "h": 8,
+        "height": 44
+      },
+      "pivot": {
+        "x": 88,
+        "y": 200
+      },
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/props/prop-bude-schild.png",
+      "width": 176,
+      "height": 208,
+      "hash": "14415bcf4c1d0b031c51f5835b1ed3f455ff09e93de9fb2056f8cd6fbab337b3",
+      "revision": "precision-v1"
+    },
+    "ui-levelup-crest": {
+      "kind": "ui",
+      "source": "assets/precision/sources/2026-09-23/ui-levelup-crest.png",
+      "sourceHash": "18b01968e40d4d33491ee049fa4d3ac62bb8d676b4dd9e28035c931e674fe5ce",
+      "padding": 1,
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/ui/ui-levelup-crest.png",
+      "width": 320,
+      "height": 120,
+      "hash": "ff269009f9a78d6074e8d14ed52fd62a17057c625e26fea37b439a7010c3291e",
+      "revision": "precision-v1"
+    },
+    "ui-unlock-seal": {
+      "kind": "ui",
+      "source": "assets/precision/sources/2026-09-23/ui-unlock-seal.png",
+      "sourceHash": "d4ea6bb303545a533964c7456e1da77f1aa522a0a82be770ee8cbc9c251ff347",
+      "padding": 1,
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/ui/ui-unlock-seal.png",
+      "width": 24,
+      "height": 24,
+      "hash": "e4da6f721c488e2647a300657c97372138c663703830b5f055af82b026f9c4de",
+      "revision": "precision-v1"
+    },
+    "intro-filmriss": {
+      "kind": "intro",
+      "source": "assets/precision/sources/2026-09-23/intro-filmriss.png",
+      "sourceHash": "b66fcde67338c2d239b3da5779f69bdc611d660bc333e1b58ebd215622ea64d1",
+      "padding": 0,
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/intro/intro-filmriss.png",
+      "width": 1280,
+      "height": 720,
+      "hash": "c41cef6f62cb5fb52d0c418126bea3e2461c12230819ceb948d74d8ab8550a79",
+      "revision": "precision-v1"
+    },
+    "intro-maifeld": {
+      "kind": "intro",
+      "source": "assets/precision/sources/2026-09-23/intro-maifeld.png",
+      "sourceHash": "fb7fb11dd945ad5ad0e5676f1a38b9a38aff49be9b47b72fe6591b8f3136a996",
+      "padding": 0,
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/intro/intro-maifeld.png",
+      "width": 1280,
+      "height": 720,
+      "hash": "d45640ffc05b412326569d578a70f6d46fc3f04b3018ac9ce75403688a62eb75",
+      "revision": "precision-v1"
+    },
+    "kiosk-aussenwand": {
+      "kind": "tiles",
+      "source": "assets/precision/sources/2026-09-23/kiosk-aussenwand.png",
+      "sourceHash": "5c17079b5b9e810fa30b85ecab6252cb7a5ee061f11443ee348f94184530ae4b",
+      "padding": 0,
+      "tileSize": 64,
+      "delivery": "2026-09-23",
+      "path": "assets/precision/runtime/tiles/kiosk-aussenwand.png",
+      "width": 192,
+      "height": 192,
+      "hash": "50302a1c0f2c951db659241e711a55d061bd70363a68a55b7e7589b4a21dcada",
       "revision": "precision-v1"
     }
   },

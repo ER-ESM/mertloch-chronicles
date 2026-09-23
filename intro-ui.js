@@ -25,7 +25,9 @@ export function mountIntro(host){
   clearTimeout(timer);index=i;const s=INTRO_SCENES[i];if(!s){end();return;}
   const pt=point(s.focus),r=host.renderer();if(r&&pt){r.cameraFocus={x:pt.x,y:pt.y-(s.focus==='hero'?0:10),speed:1.4};/* erste Szene: harter Schnitt statt Fahrt */if(i===0)r.camera={...r.camera,x:pt.x,y:pt.y-10};}
   // Standbild der Szene (Bildlieferung), sonst die Kamerafahrt durch die Welt.
-  const still=el.querySelector('.intro-still'),src=s.image&&contentPath(s.image);still.hidden=!src;if(src)still.src=src;
+  const still=el.querySelector('.intro-still'),src=s.image&&contentPath(s.image);still.hidden=true;
+  still.onload=()=>{still.hidden=!running||index!==i;};still.onerror=()=>{still.hidden=true;};
+  if(src)still.src=src;else still.removeAttribute('src');
   progress.innerHTML=INTRO_SCENES.map((_,n)=>`<i class="${n<i?'done':n===i?'on':''}"></i>`).join('');
   caption.classList.remove('show');
   caption.innerHTML=`<span class="intro-eyebrow">${esc(s.eyebrow)}</span><strong class="intro-title">${esc(s.title)}</strong><p class="intro-text">${esc(s.text)}</p>${s.keys?`<ul class="intro-keys">${s.keys.map(([k,t])=>`<li><kbd>${esc(k)}</kbd><span>${esc(t)}</span></li>`).join('')}</ul>`:''}${s.final?`<button type="button" class="gold-button intro-start" data-intro-next>${esc(T.start)}</button>`:''}`;

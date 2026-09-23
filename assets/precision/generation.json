@@ -492,6 +492,205 @@
       "originalFile": "exec-1750b96a-0611-41da-b8ee-713208e78a55.png",
       "output": "assets/precision/sources/kegler.png",
       "sourceHash": "3413f82c425dc6254f600e87c25530167981b0db07dc4eb7807059c6ca0b629f"
+    },
+    {
+      "id": "prop-bude-truemmer-tresen",
+      "output": "assets/precision/sources/2026-09-23/bude-truemmer-tresen.png",
+      "width": 152,
+      "height": 108,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-truemmer-tresen",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "prompt": "Use case: stylized-concept. Asset type: one transparent isolated game prop sprite for Mertloch Chronicles, asset ID bude-truemmer-tresen. Subject: the recognizable wreck of a small rustic beer counter, an overturned wooden pallet bar with broken slats, several scattered round beer coasters, and one snapped brass beer tap. Compact low horizontal rubble silhouette, all parts touching or closely grouped. A few tufts of grass between the wreckage, no background or ground tile. Style: finely detailed warm comic pixel art, crisp deliberate pixel clusters, dark slate contours, amber wood, cream highlights, faded moss greens, restrained rust and brass, light from upper left. Orthographic game view from above at about 35 degrees, three-quarter front, no perspective vanishing point. Composition: the complete object centered, isolated on genuinely transparent RGBA background with generous clear margins, wider than tall, bottom centered ground contact; preserve clean hard alpha and readable shapes when exported to 152 by 108 pixels. No text, no logos, no label, no border, no photorealism, no blur, no scattered noise, no people. Generate a polished production sprite, not a scene or a mockup.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "0772f874b756db8607ca294f4c4d13c194571db968e83164ffa32eedb0e3d5bf"
+    },
+    {
+      "id": "prop-bude-truemmer-grill",
+      "output": "assets/precision/sources/2026-09-23/bude-truemmer-grill.png",
+      "width": 152,
+      "height": 108,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-truemmer-grill",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "prompt": "Use case: stylized-concept. Asset type: one transparent isolated game prop sprite for Mertloch Chronicles, asset ID bude-truemmer-grill. Subject: an overturned rusty barrel barbecue, its round grilling grate fallen into grass, cold ash and a few charred pieces. Compact low horizontal rubble silhouette, all parts touching or closely grouped. A few tufts of grass between wreckage, no background or ground tile. Style: finely detailed warm comic pixel art, crisp deliberate pixel clusters, dark slate contours, amber wood, cream highlights, faded moss greens, restrained rust, upper left light. Orthographic game view from above at about 35 degrees, three-quarter front, no perspective vanishing point. Complete object centered on genuinely transparent RGBA background, generous clear margins, wider than tall, bottom centered ground contact; readable at 152 by 108 pixels. No text, logos, labels, borders, photorealism, blur, scattered noise or people. Polished production sprite, not a scene or mockup.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "b94a471b003a792c41532a1d17c1558978a30860ebfefc553be18bd9a63c07f0"
+    },
+    {
+      "id": "prop-bude-truemmer-werkstatt",
+      "output": "assets/precision/sources/2026-09-23/bude-truemmer-werkstatt.png",
+      "width": 152,
+      "height": 108,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-truemmer-werkstatt",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "prompt": "Use case: stylized-concept. Asset type: one transparent isolated game prop sprite for Mertloch Chronicles, asset ID bude-truemmer-werkstatt. Subject: a collapsed wooden workbench, tangled extension cables, one recognizable screwdriver, broken timber. Compact low horizontal rubble silhouette, all parts touching or closely grouped. A few tufts of grass between wreckage, no background or ground tile. Style: finely detailed warm comic pixel art, crisp deliberate pixel clusters, dark slate contours, amber wood, cream highlights, faded moss greens, restrained rust, upper left light. Orthographic game view from above at about 35 degrees, three-quarter front, no perspective vanishing point. Complete object centered on genuinely transparent RGBA background, generous clear margins, wider than tall, bottom centered ground contact; readable at 152 by 108 pixels. No text, logos, labels, borders, photorealism, blur, scattered noise or people. Polished production sprite, not a scene or mockup.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "83dc156eeb8ce5130d70800dd66e45cd8dcec249e8a75f8f1bb1394569042d38"
+    },
+    {
+      "id": "prop-bude-truemmer-anlage",
+      "output": "assets/precision/sources/2026-09-23/bude-truemmer-anlage.png",
+      "width": 152,
+      "height": 108,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-truemmer-anlage",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "prompt": "Use case: stylized-concept. Asset type: one transparent isolated game prop sprite for Mertloch Chronicles, asset ID bude-truemmer-anlage. Subject: a broken black loudspeaker with a torn cone, coiled speaker cable, an unlit string of warm fairy lights tangled in dirt. Compact low horizontal rubble silhouette, all parts touching or closely grouped. A few tufts of grass between wreckage, no background or ground tile. Style: finely detailed warm comic pixel art, crisp deliberate pixel clusters, dark slate contours, amber wood, cream highlights, faded moss greens, restrained rust, upper left light. Orthographic game view from above at about 35 degrees, three-quarter front, no perspective vanishing point. Complete object centered on genuinely transparent RGBA background, generous clear margins, wider than tall, bottom centered ground contact; readable at 152 by 108 pixels. No text, logos, labels, borders, photorealism, blur, scattered noise or people. Polished production sprite, not a scene or mockup.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "1558f8f7139dc3e497172b038a65bfaf267bab65805f8faa7154f0f152bfb141"
+    },
+    {
+      "id": "prop-bude-truemmer-landhausecke",
+      "output": "assets/precision/sources/2026-09-23/bude-truemmer-landhausecke.png",
+      "width": 152,
+      "height": 108,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-truemmer-landhausecke",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "prompt": "Use case: stylized-concept. Asset type: one transparent isolated game prop sprite for Mertloch Chronicles, asset ID bude-truemmer-landhausecke. Subject: an overturned wicker armchair, a tipped orange Aperol stem glass, broken terracotta flowerpot pieces. Compact low horizontal rubble silhouette, all parts touching or closely grouped. A few tufts of grass between wreckage, no background or ground tile. Style: finely detailed warm comic pixel art, crisp deliberate pixel clusters, dark slate contours, amber wood, cream highlights, faded moss greens, restrained rust, upper left light. Orthographic game view from above at about 35 degrees, three-quarter front, no perspective vanishing point. Complete object centered on genuinely transparent RGBA background, generous clear margins, wider than tall, bottom centered ground contact; readable at 152 by 108 pixels. No text, logos, labels, borders, photorealism, blur, scattered noise or people. Polished production sprite, not a scene or mockup.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "cbf9faa6dc1fbf9c9d5667fceed789a067af5e4148c3b57bbd544c7eaf075e16"
+    },
+    {
+      "id": "prop-bude-truemmer-pfandlager",
+      "output": "assets/precision/sources/2026-09-23/bude-truemmer-pfandlager.png",
+      "width": 152,
+      "height": 108,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-truemmer-pfandlager",
+        "w": 34,
+        "h": 22,
+        "height": 12
+      },
+      "prompt": "Use case: stylized-concept. Asset type: one transparent isolated game prop sprite for Mertloch Chronicles, asset ID bude-truemmer-pfandlager. Subject: two overturned green beer crates spilling a small avalanche of empty amber and green returnable bottles. Compact low horizontal rubble silhouette, all parts touching or closely grouped. A few tufts of grass between wreckage, no background or ground tile. Style: finely detailed warm comic pixel art, crisp deliberate pixel clusters, dark slate contours, amber wood, cream highlights, faded moss greens, restrained rust, upper left light. Orthographic game view from above at about 35 degrees, three-quarter front, no perspective vanishing point. Complete object centered on genuinely transparent RGBA background, generous clear margins, wider than tall, bottom centered ground contact; readable at 152 by 108 pixels. No text, logos, labels, borders, photorealism, blur, scattered noise or people. Polished production sprite, not a scene or mockup.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "20f976fdc3118acef39b1ccadd8b3d842cae96bcc1c44a98a4e8cfff79f6de88"
+    },
+    {
+      "id": "prop-bude-schild",
+      "output": "assets/precision/sources/2026-09-23/bude-schild.png",
+      "width": 176,
+      "height": 208,
+      "padding": 8,
+      "kind": "props",
+      "worldProp": {
+        "id": "bude-schild",
+        "w": 40,
+        "h": 8,
+        "height": 44
+      },
+      "prompt": "Use case: stylized-concept. Production game asset for Mertloch Chronicles, ID bude-schild. Asset: single freestanding wooden construction sign, slightly crooked plank on two short wooden posts, black and yellow hazard tape tied around one post, small tufts of grass. Exact handpainted cream lettering on three lines: \"Baustelle\" / \"der\" / \"Bude\". Make the sign broad enough for clean readable letters, no other text. Frontal view with a slight top-down angle. Game world prop, legible at 160 by 192 native pixels displayed around 40 by 48 CSS pixels. Style: crisp warm comic pixel art with intentional pixel clusters, dark slate outlines, light from upper left, matching a rustic German village RPG. Complete isolated object on genuinely transparent RGBA background. No backdrop, mockup, watermark, logos or extra objects. Preserve alpha transparency and clean silhouette.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "b4d017ea2347d73c3f6e2570240a5ec1939d186818a45e62c130f3cf13eee889"
+    },
+    {
+      "id": "ui-levelup-crest",
+      "output": "assets/precision/sources/2026-09-23/ui-levelup-crest.png",
+      "width": 320,
+      "height": 120,
+      "padding": 1,
+      "kind": "ui",
+      "prompt": "Use case: stylized-concept. Production game asset for Mertloch Chronicles, ID ui-levelup-crest. Asset: wide symmetrical celebratory crest composed of two curved hop vines with golden leaves, hops and two small brass bottle caps. The branches surround a generous EMPTY dark-transparent center to hold a level number from the UI. No lettering, no numbers. Low wide 8:3 composition, full motif fitting inside 320 by 120 pixels with clear margins. Flat front view, elegant warm gold and olive. Style: crisp warm comic pixel art with intentional pixel clusters, dark slate outlines, light from upper left, matching a rustic German village RPG. Complete isolated object on genuinely transparent RGBA background. No backdrop, mockup, watermark, logos or extra objects. Preserve alpha transparency and clean silhouette.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "18b01968e40d4d33491ee049fa4d3ac62bb8d676b4dd9e28035c931e674fe5ce"
+    },
+    {
+      "id": "ui-unlock-seal",
+      "output": "assets/precision/sources/2026-09-23/ui-unlock-seal.png",
+      "width": 24,
+      "height": 24,
+      "padding": 1,
+      "kind": "ui",
+      "prompt": "Use case: stylized-concept. Production game asset for Mertloch Chronicles, ID ui-unlock-seal. Asset: one tiny round red cardboard beer coaster seal with cream inner rim. Exact centered text \"Neu\" in large bold simple cream handlettering, only this word. Flat front view, extremely simple compact shapes designed to stay legible at 24 by 24 pixels; crimson red fill and cream lettering, no complex details, no shadows outside the circular silhouette. Style: crisp warm comic pixel art with intentional pixel clusters, dark slate outlines, light from upper left, matching a rustic German village RPG. Complete isolated object on genuinely transparent RGBA background. No backdrop, mockup, watermark, logos or extra objects. Preserve alpha transparency and clean silhouette.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "d4ea6bb303545a533964c7456e1da77f1aa522a0a82be770ee8cbc9c251ff347"
+    },
+    {
+      "id": "intro-filmriss",
+      "output": "assets/precision/sources/2026-09-23/intro-filmriss.png",
+      "width": 1280,
+      "height": 720,
+      "padding": 0,
+      "kind": "intro",
+      "prompt": "Use case: stylized-concept. Asset ID intro-filmriss, production graphics for Mertloch Chronicles. A cinematic 16:9 establishing still for the first scene \"Filmriss.\" First-person perspective waking seated among the wreckage of a rustic German village clubhouse at early morning. Foreground: knees and lower legs, one foot wearing one rumpled sock and the other bare, dark shorts visible, left forearm resting across knee with a blue circular ink entry stamp. No full protagonist face or gender-specific portrait. Splintered pallet bar, empty bottles, torn bunting, overturned barrel grill, wild grass and a few drifting dust motes. Soft golden sunrise from upper left through a broken timber wall. Quiet funny aftermath, not disaster horror. Depth leads toward green Maifeld hills, muted warm honey browns, slate outlines, moss green. Entire frame opaque 1280x720 composition, key details inside central 70 percent, no typography or captions. Style: polished warm comic pixel art, precise hard pixel clusters, dark slate ink contours, rich hand-drawn details. Match the rustic German village RPG mood of a humorous painted graphic novel translated to fine pixel art. No photorealism, no blur, no watermark.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "b66fcde67338c2d239b3da5779f69bdc611d660bc333e1b58ebd215622ea64d1"
+    },
+    {
+      "id": "intro-maifeld",
+      "output": "assets/precision/sources/2026-09-23/intro-maifeld.png",
+      "width": 1280,
+      "height": 720,
+      "padding": 0,
+      "kind": "intro",
+      "prompt": "Use case: stylized-concept. Asset ID intro-maifeld, production graphics for Mertloch Chronicles. A cinematic 16:9 establishing still for \"Irgendwo da draußen\". German Maifeld countryside at blue-gold dawn. Two stocky wild boars rooting through empty returnable bottles beside a small glowing campfire in foreground, one bottle caught near a tusk; funny grounded RPG creatures, not anthropomorphic. Behind them at mid-right stands Horst Nüchternmann, a stern middle-aged municipal bureaucrat wearing ridiculous improvised armor made from laminated house rules, carrying a thick office ring binder as a shield and a large rubber stamp as a weapon. He guards a mysterious closed wooden crate beside a rural path. Village church and rolling fields in far background. Warm amber campfire, moss green fields, muted blue distance, expressive but restrained satire. Entire frame opaque 1280x720 composition; both boars and Horst visible, important details inside central 70 percent. No readable text, speech balloons, logos or captions. Style: polished warm comic pixel art, precise hard pixel clusters, dark slate ink contours, rich hand-drawn details. Match the rustic German village RPG mood of a humorous painted graphic novel translated to fine pixel art. No photorealism, no blur, no watermark.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "fb7fb11dd945ad5ad0e5676f1a38b9a38aff49be9b47b72fe6591b8f3136a996"
+    },
+    {
+      "id": "kiosk-aussenwand",
+      "output": "assets/precision/sources/2026-09-23/kiosk-aussenwand.png",
+      "width": 192,
+      "height": 192,
+      "padding": 0,
+      "kind": "tiles",
+      "tileSize": 64,
+      "prompt": "Use case: stylized-concept. Asset ID kiosk-aussenwand, production graphics for Mertloch Chronicles. ONE coherent game environment tileset for a rustic German village kiosk outer wall. Produce a perfectly regular 3 by 3 grid of nine equal SQUARE tiles, no gutters, labels or border around sheet. Entire image square, 192 by 192 native pixel layout (each tile intended 64 by 64). Row1: top-left stone coping corner, seamless horizontal top brick coping edge, top-right coping corner. Row2: left vertical brick wall panel containing a small warm glowing display window with beer bottle silhouette and unlettered vintage advertising placard; center is ONLY seamless repeating weathered russet brick wall texture; right vertical brick wall panel with a second small warm glowing display window, simple bottle advertising sign and tiny nightlight. Row3: bottom-left stone coping corner, seamless horizontal bottom brick plinth edge, bottom-right coping corner. Orthographic flat front view, aligned brick courses across tile boundaries. Edge tiles designed to repeat along their axis, corner tiles join them. Corners and top/bottom use dark green painted trim on the OUTER edge of the full grid. Weathered brick orange-brown, dark slate grout, cream stone highlights, moss and warm golden nightlight. Fully opaque art, no shadows outside sheet, no scene perspective or ground. Important: nine tiles occupy EXACT thirds and fill sheet with no gaps. Style: polished warm comic pixel art, precise hard pixel clusters, dark slate ink contours, rich hand-drawn details. Match the rustic German village RPG mood of a humorous painted graphic novel translated to fine pixel art. No photorealism, no blur, no watermark.",
+      "references": [],
+      "date": "2026-09-23",
+      "tool": "built-in imagegen",
+      "sourceHash": "5c17079b5b9e810fa30b85ecab6252cb7a5ee061f11443ee348f94184530ae4b"
     }
   ]
 }

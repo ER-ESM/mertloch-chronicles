@@ -231,3 +231,7 @@ Zehn große Pixelillustrationen (davon ein zweiteiliger Comic), im Spiel beim Fr
 ## Nachlieferung der gemeldeten Lücken
 
 Bude-Reiter, Anni, vier Gegner mit separaten Laufbögen, Pit und alle 19 Kulissen-Arten sind einschließlich Renderer-Anbindung nachgeliefert. Details, Herkunft, Prüfungen und Grenzen: [Grafik-Nachlieferung](../../docs/GRAFIK-NACHLIEFERUNG-2026-09-17.md).
+
+## Baustelle, Intro, Meilensteine und Kiosk · 2026-09-23
+
+Zwölf neue Motive aus der [Übergabe vom 23.09.](../../docs/UEBERGABE-GRAFIK-2026-09-23.md), jeweils mit einem eigenen Aufruf des eingebauten `imagegen`-Werkzeugs erzeugt. Vollständige tatsächlich verwendete [Prompts und Exportparameter](../../tools/sprite-pipeline/grafik-20260923-jobs.json), [Herkunft und SHA-256](../precision/generation.json), unveränderte [Originale](../precision/sources/2026-09-23/). Die konkrete Modellversion wird vom Werkzeug nicht ausgewiesen. Export mit der vorhandenen Präzisionspixel-Palette, hartem Alpha und Flächenabtastung über `npm run sprites:precision`; keine hochskalierten Altgrafiken. [Einbindung und Browserabnahme](../../docs/GRAFIK-LIEFERUNG-2026-09-23.md).

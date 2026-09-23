@@ -76,5 +76,7 @@ export function baseProps(world,buildings={}){
   const prop=slot.stages.find(s=>s.stage===level)||slot.stages[0];
   if(prop)out.push(prop);
  }
+ // A physical sign at the plot's southern edge, away from the six building slots.
+ if(Number.isFinite(world.base.x)&&Number.isFinite(world.base.maxY))out.push({kind:'bude-schild',x:world.base.x,y:world.base.maxY+12});
  return out;
 }

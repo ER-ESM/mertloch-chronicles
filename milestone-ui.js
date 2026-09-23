@@ -1,6 +1,7 @@
 // Große Einblendungen für Meilensteine: Stufenaufstieg (goldener Schriftzug mit Zugewinn) und neu freigeschaltete Menüs.
 // Eine Warteschlange, damit Aufstieg und Freischaltung nacheinander statt übereinander erscheinen.
 import {MILESTONE_UI as T} from './content/index.js';
+import {contentPath} from './content-art.js';
 
 export function mountMilestones(shell,{sound,blocked}={}){
  const el=document.createElement('section');el.className='milestone';el.hidden=true;el.setAttribute('role','status');el.setAttribute('aria-live','polite');
@@ -11,6 +12,8 @@ export function mountMilestones(shell,{sound,blocked}={}){
   // Nicht über Gespräch, Erinnerung oder Tod-Fenster legen – kurz warten und erneut versuchen.
   if(blocked?.()){clearTimeout(timer);timer=setTimeout(next,500);return;}busy=true;const m=queue.shift();
   el.className='milestone milestone-'+m.kind;el.innerHTML=m.html;el.hidden=false;
+  const src=m.kind==='level'&&contentPath('ui-levelup-crest');
+  if(src){const art=document.createElement('img');art.className='milestone-crest';art.alt='';art.src=src;el.prepend(art);}
   requestAnimationFrame(()=>el.classList.add('show'));sound?.(m.kind==='level'?'levelUp':'unlock');
   timer=setTimeout(close,queue.length?m.ms*.65:m.ms);/* bei Stau kürzer */
  }

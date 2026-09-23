@@ -1,5 +1,7 @@
 # Übergabe an die Bildgenerierung · 2026-09-23
 
+**Erledigt am 23.09.2026:** Alle zwölf angeforderten Motive sind erzeugt, in den aktiven Präzisionspixel-Katalog eingebunden und im Browser geprüft. [Lieferung, Prompts und Abnahme](GRAFIK-LIEFERUNG-2026-09-23.md). Die Spalte „Heute“ unten dokumentiert den Ausgangszustand der Übergabe.
+
 Anlass: visueller Spielerdurchgang (Feinschliff-Runden 1–13). Was hier steht, ist heute im Spiel **mit Ersatz gezeichnet** oder wirkt dadurch unfertig. Reihenfolge = Priorität.
 
 Stil, Maßstab, Ablage und Abnahme wie bisher: [UEBERGABE-GRAFIK-2026-09-17.md](UEBERGABE-GRAFIK-2026-09-17.md), Präzisionspixel [PRAEZISIONSPIXEL-2026-09-17.md](PRAEZISIONSPIXEL-2026-09-17.md), Laufzeitkatalog `assets/precision/runtime/catalog.json`. Dateiname = ID.

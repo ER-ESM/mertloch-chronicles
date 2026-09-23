@@ -7,6 +7,7 @@ import {equipmentAppearance} from './equipment-appearance.js';
 import {ITEMS} from './rpg.js';
 import {drawBuilding} from './architecture.js';
 import {drawProp} from './world-prop-ui.js';
+import {contentAsset} from './content-art.js';
 import {fillMaifeldGround,drawMaifeld} from './maifeld-art.js';
 const box=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
 function text(c,s,x,y,size=9){c.font=`${size}px 'Jersey 15',sans-serif`;c.textAlign='center';c.fillStyle='#f1d18b';c.fillText(s,x,y);}
@@ -16,6 +17,20 @@ function beam(c,x,y,w,h){
  box(c,'#3e352e',x,y,w,h);box(c,'#785639',x+1,y+1,w-2,h-2);
  box(c,'#af8350',x+1,y+1,w>h?w-2:1,w>h?1:h-2);
  for(let n=4;n<(w>h?w:h)-3;n+=9)box(c,'#59402e',x+(w>h?n:3),y+(w>h?3:n),w>h?5:1,w>h?1:5);
+}
+/** Tile the delivered brick frame around the room, keeping the southern exit open. */
+export function drawKioskExterior(c){
+ const art=contentAsset('kiosk-aussenwand');if(!art)return false;
+ const size=32,tile=art.meta.tileSize||64,left=-40,top=-78,right=R.width+12,bottom=R.height+8;
+ const draw=(col,row,x,y,w=size,h=size)=>c.drawImage(art.image,col*tile,row*tile,tile*w/size,tile*h/size,x,y,w,h);
+ c.save();c.imageSmoothingEnabled=false;
+ for(let x=left+size;x<right;x+=size){const w=Math.min(size,right-x);draw(1,0,x,top,w);}
+ for(const [from,to] of [[left+size,R.exit.x-22],[R.exit.x+22,right]])
+  for(let x=from;x<to;x+=size)draw(1,2,x,bottom,Math.min(size,to-x));
+ for(let y=top+size;y<bottom;y+=size){const h=Math.min(size,bottom-y);draw(1,1,left,y,size,h);draw(1,1,right,y,size,h);}
+ for(const y of [50,178]){draw(0,1,left,y);draw(2,1,right,y);}
+ draw(0,0,left,top);draw(2,0,right,top);draw(0,2,left,bottom);draw(2,2,right,bottom);
+ c.restore();return true;
 }
 function roomShell(c){
  // Reuse the village's limestone texture, subdued so actors remain readable.
@@ -43,7 +58,7 @@ export function drawKioskRoom(renderer){
  const c=renderer.ctx,g=renderer.game,p=g.player,W=renderer.viewWidth,H=renderer.viewHeight;
  renderer.camera={x:p.x,y:p.y-22};const ox=renderer.camera.x-W/2,oy=renderer.camera.y-H/2;renderer.viewOrigin={x:ox,y:oy};renderer.speechLayout=[];
  const d=renderer.density??WORLD_ART_DENSITY;c.setTransform(d,0,0,d,0,0);{/* Innenraum: warmes Licht aus dem Laden, Ränder im Dunkel – statt flacher grüner Leere */const glow=c.createRadialGradient(W/2,H/2,Math.min(W,H)*.25,W/2,H/2,Math.max(W,H)*.62);glow.addColorStop(0,'#2a2418');glow.addColorStop(.55,'#161410');glow.addColorStop(1,'#070605');c.fillStyle=glow;c.fillRect(0,0,W,H);}c.save();c.translate(-ox,-oy);
- roomShell(c);
+ drawKioskExterior(c);roomShell(c);
  const objects=R.furniture.map(b=>({y:b.y+b.h,draw:()=>furniture(c,b)}));
  objects.push({y:R.keeper.y,draw:()=>{drawWorldPerson(c,'kalle',R.keeper.x,R.keeper.y,g.instance.time,WORLD_SCALE.npc/33,{facing:1});}});
  objects.push({y:p.y,draw:()=>drawClanHero(c,p.x,p.y,g.instance.time,{...p,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS)},false,g.world.rules.heroHeight/33)});

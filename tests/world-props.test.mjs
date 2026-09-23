@@ -97,7 +97,7 @@ test('die Bude trägt für jedes Basisbau-Gebäude die Stufen aus content/buildi
   const slot=b.stageProps[id],def=BUILDINGS[id];
   assert.equal(slot.owner,def.owner,id+' ohne Paten');
   assert.deepEqual(slot.stages.map(s=>s.stage),[0,...def.stages.map(s=>s.stage)],id+' Stufenfolge');
-  assert.equal(slot.stages[0].kind,'bude-truemmer',id+' beginnt nicht als Trümmer');
+  assert.equal(slot.stages[0].kind,'bude-truemmer-'+id,id+' beginnt nicht mit eigenen Trümmern');
   for(const [i,s] of slot.stages.entries()){
    assert.ok(PROP_KINDS[s.kind],id+' unbekannte Art '+s.kind);
    assert.ok(s.name,id+' Stufe ohne Namen');

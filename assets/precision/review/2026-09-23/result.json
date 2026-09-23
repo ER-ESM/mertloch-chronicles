@@ -1,0 +1,61 @@
+{
+  "checks": [
+    "12 runtime images loaded",
+    "six distinct ruins and physical sign in the scene",
+    "actual level-up event displays the crest",
+    "desktop: both intro images fit between captions and skip controls",
+    "phone: both intro images fit between captions and skip controls",
+    "kiosk frame renders on desktop/phone and exit stays usable"
+  ],
+  "assets": [
+    {
+      "id": "prop-bude-truemmer-tresen",
+      "loaded": true
+    },
+    {
+      "id": "prop-bude-truemmer-grill",
+      "loaded": true
+    },
+    {
+      "id": "prop-bude-truemmer-werkstatt",
+      "loaded": true
+    },
+    {
+      "id": "prop-bude-truemmer-anlage",
+      "loaded": true
+    },
+    {
+      "id": "prop-bude-truemmer-landhausecke",
+      "loaded": true
+    },
+    {
+      "id": "prop-bude-truemmer-pfandlager",
+      "loaded": true
+    },
+    {
+      "id": "prop-bude-schild",
+      "loaded": true
+    },
+    {
+      "id": "ui-levelup-crest",
+      "loaded": true
+    },
+    {
+      "id": "ui-unlock-seal",
+      "loaded": true
+    },
+    {
+      "id": "intro-filmriss",
+      "loaded": true
+    },
+    {
+      "id": "intro-maifeld",
+      "loaded": true
+    },
+    {
+      "id": "kiosk-aussenwand",
+      "loaded": true
+    }
+  ],
+  "errors": []
+}

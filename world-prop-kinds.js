@@ -21,6 +21,13 @@ export const PROP_KINDS=Object.freeze({
  'wett-tafel':{name:'Wett-Tafel · Quote gut, Ende schlecht',w:26,h:9,height:26,blocking:false,color:'#3f4a3d'},
  // Bude: Trümmer und die sechs Basisbau-Gebäude (Maße gelten für die höchste Stufe, siehe stageProps)
  'bude-truemmer':{name:'Trümmer der Bude',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-truemmer-tresen':{name:'Trümmer des Tresens',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-truemmer-grill':{name:'Trümmer des Grills',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-truemmer-werkstatt':{name:'Trümmer der Werkstatt',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-truemmer-anlage':{name:'Trümmer der Anlage',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-truemmer-landhausecke':{name:'Trümmer der Landhaus-Ecke',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-truemmer-pfandlager':{name:'Trümmer des Pfandlagers',w:34,h:22,height:12,blocking:false,color:'#6f6558'},
+ 'bude-schild':{name:'Baustelle der Bude',w:40,h:8,height:44,blocking:false,color:'#a97c4c'},
  'bude-tresen':{name:'Der Tresen',w:54,h:20,height:20,blocking:false,color:'#a97c4c'},
  'bude-grill':{name:'Oskars Grill',w:32,h:22,height:24,blocking:false,color:'#6d6a66'},
  'bude-werkstatt':{name:'Kevins Werkstatt',w:40,h:26,height:26,blocking:false,color:'#8a9298'},
@@ -46,5 +53,5 @@ export const PROP_RULES=Object.freeze({
  kiosk:{w:86,h:64,minDistance:220,maxDistance:2600,plazaGap:40,hubGap:40,baseGap:30,questGap:60,
   junctionTolerance:14,junctionGrid:30,minRoadWidth:42,distances:Object.freeze([70,84,98,112,126]),angles:24,approach:30,
   props:Object.freeze({counter:12,front:16,side:22})},
- base:{w:156,h:110,minDistance:150,maxDistance:700,step:14,angles:36,slotX:50,slotY:30,approach:32,rubble:.55}
+ base:{w:156,h:110,minDistance:150,maxDistance:700,step:14,angles:36,slotX:50,slotY:30,approach:32,rubble:.9}
 });
