@@ -1,7 +1,7 @@
 // Zeichnung des begehbaren Hauses (E-52, E-54). Innenräume, Hof und Einrichtung kommen aus dem Sprite-Baukasten (kit-art.js);
 // gemalt bleiben die Außenansicht mit Dach und die Möbel der Basisbau-Stufen (tools/sprite-pipeline/build-bude-house.mjs).
 // Schräge Draufsicht: Boden 1:1, Höhen nach oben.
-import {drawBelag,drawDecal,drawKitWall,drawKitItem} from './kit-art.js';
+import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill} from './kit-art.js';
 const INK='#293b44';
 const BASE='./assets/precision/runtime/buildings/',ART={meta:null,aussen:null};let requested=false;
 /** Nur Platzhalter zeichnen (Bildvorlagen der Pipeline), nie die gemalten Bilder. */
@@ -19,6 +19,8 @@ const fill=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
 /** Treppe (Erdgeschoss: Stufen) beziehungsweise Treppenloch mit Geländer (Obergeschoss). */
 function paintStairs(c,f,level){
  const s=f.stairs;if(!s)return;const w=s.maxX-s.minX,d=s.maxY-s.minY,steps=Math.max(4,Math.round((d>w?d:w)/6)),long=d>w;
+ // Baukasten-Sprite (Holztreppe unten, Treppenloch mit Geländer oben), sonst Platzhalter.
+ if(level?drawKitFill(c,'treppenloch',s.minX,s.minY-8,w,d+8):drawKitFill(c,'treppe-holz',s.minX,s.minY-4,w,d+4))return;
  if(level){fill(c,'#1b1410',s.minX,s.minY,w,d);for(let i=1;i<4;i++)fill(c,'#2c2119',long?s.minX:s.minX+w*i/4,long?s.minY+d*i/4:s.minY,long?w:2,long?2:d);
   // Geländer an der offenen Seite und am oberen Ende
   fill(c,INK,s.maxX,s.minY-10,3,d+10);fill(c,'#7b5634',s.maxX,s.minY-10,2,d+8);fill(c,'#7b5634',s.minX,s.minY-10,w+2,2);for(let y=s.minY;y<=s.maxY;y+=10)fill(c,'#7b5634',s.maxX,y-8,2,8);}

@@ -19,7 +19,9 @@ export const KIT_SHEETS={
  'kit-moebel-a':{rows:2,ids:['kanonenofen','stehtisch','tisch-rund','stuhl','barhocker','sofa','kommode','kuehlschrank','fass','kisten-stapel']},
  'kit-moebel-b':{rows:2,ids:['sackkarre','schreibtisch','aktenschrank','etagenbett','truhe','schutthaufen','eimer','kuechenzeile','kloschuessel','waschbecken']},
  'kit-deko':{rows:3,ids:['bierkrug','flasche','aschenbecher','tischlampe','bauplaene','laeufer','matratze','becher','luftschlangen','socke','pfuetze','scherben']},
- 'kit-aussen':{rows:1,ids:['bierbank','gartenstuhl','regentonne','kistenstapel-hof','fahrrad']}
+ 'kit-aussen':{rows:1,ids:['bierbank','gartenstuhl','regentonne','kistenstapel-hof','fahrrad']},
+ // Treppen: Breite = Treppenbreite der Bude (18 E), Höhe aus dem Bild.
+ 'kit-treppe':{rows:1,ids:['treppe-holz','treppenloch'],width:18}
 };
 
 function exportBox(src,box,w,h,file,{palette=true}={}){const dst=surface(w,h);resample(src,dst,box,{x:0,y:0},w/box.w,{palette});writeFileSync(OUT+file,encodePng(dst));return {file,width:w,height:h};}
@@ -53,7 +55,7 @@ if(process.argv[1]?.endsWith('build-kit.mjs')){
    if(bands.length!==cfg.strips.length)throw Error(sheet+': erwartet '+cfg.strips.length+' Wandstreifen, gefunden '+bands.length);
    for(const [i,id] of cfg.strips.entries()){const b=bands[i],face=resolveSprite(id).cut,capPx=Math.round(b.h*(Array.isArray(cfg.cap)?cfg.cap[i]:cfg.cap)),frontPx=b.h-capPx,scale=face*PX/frontPx,w=Math.round(img.width*scale),h=Math.round(b.h*scale);
     sprites[id]={...exportBox(img,{x:0,y:b.y,w:img.width,h:b.h},w,h,'kit-'+id+'.png'),cap:Math.round(capPx*scale)};}}
-  else for(const {id,box} of gridSprites(img,cfg.ids,cfg.rows)){const d=resolveSprite(id),w=Math.max(4,Math.round(d.w*PX)),h=Math.max(2,Math.round(box.h*w/box.w));
+  else for(const {id,box} of gridSprites(img,cfg.ids,cfg.rows)){const d=resolveSprite(id),w=Math.max(4,Math.round((cfg.width||d.w)*PX)),h=Math.max(2,Math.round(box.h*w/box.w));
    sprites[id]=exportBox(img,box,w,h,'kit-'+id+'.png');}
   console.log('✓',sheet);
  }

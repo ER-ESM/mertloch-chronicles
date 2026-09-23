@@ -76,3 +76,5 @@ export function drawKitItem(c,it){
  const color=it.def.color||'#8a6a48',h=it.height||8,y0=it.minY-lift,y1=it.maxY-lift;
  fill(c,INK,it.minX-.5,y0-h-.5,it.w+1,it.h+h+1);fill(c,shade(color,.72),it.minX,y1-h,it.w,h);fill(c,shade(color,1.1),it.minX,y0-h,it.w,it.h);
 }
+/** Ein Sprite in eine feste Fläche einpassen (Treppe, Treppenloch); false, solange das Bild fehlt. */
+export function drawKitFill(c,id,x,y,w,h){const s=sprite(id);if(!s)return false;c.drawImage(s.img,x,y,w,h);return true;}

@@ -313,6 +313,16 @@
    "file": "kit-fahrrad.png",
    "width": 88,
    "height": 49
+  },
+  "treppe-holz": {
+   "file": "kit-treppe-holz.png",
+   "width": 72,
+   "height": 276
+  },
+  "treppenloch": {
+   "file": "kit-treppenloch.png",
+   "width": 72,
+   "height": 173
   }
  }
 }

@@ -26,7 +26,8 @@ export const KIT_CLASSES={
  tischdeko:{is:'sprite',name:'Tischdeko',surface:'top',walkable:true,shadow:false,w:4,h:4,height:6,overlap:true},
  aussen:{is:'moebel',name:'Draußen',indoor:false,outdoor:true},
  zaun:{is:'wand',name:'Zaun',outdoor:true,cut:12},
- basisbau:{is:'moebel',name:'Basisbau',walkable:true,keepDoors:false,indoor:false}
+ basisbau:{is:'moebel',name:'Basisbau',walkable:true,keepDoors:false,indoor:false},
+ treppe:{is:'sprite',name:'Treppe',layer:'ground',surface:'stairs',walkable:false,shadow:false}
 };
 
 export const KIT_SPRITES={
@@ -44,6 +45,9 @@ export const KIT_SPRITES={
  'wand-aussen':{is:'wand',name:'Außenwand',thickness:8,color:'#b9a27a'},
  'wand-putz':{is:'wand',name:'Innenwand',thickness:6,color:'#cdbb92'},
  'zaun-latten':{is:'zaun',name:'Lattenzaun',thickness:4,color:'#7a5a3a'},
+ // Treppen (füllen die Treppenfläche eines Geschosses)
+ 'treppe-holz':{is:'treppe',name:'Holztreppe nach oben',color:'#9c7450'},
+ 'treppenloch':{is:'treppe',name:'Treppenloch mit Geländer',color:'#1b1410'},
  // Türen (in Wandlücken)
  'tuer-holz':{is:'tuer',name:'Holztür',color:'#6b4a2f'},
  'tuer-eingang':{is:'tuer',name:'Eingangstür',color:'#5c3f28'},
