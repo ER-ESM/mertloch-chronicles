@@ -1,0 +1,88 @@
+/* Minikarte (minimap.js): Messingring (rund) oder Messingrahmen (eckig), Ortsschild darüber, Knöpfe am Rand wie in WoW.
+   Material aus ui-chrome.css (Medaillon, Rahmen, Zeltstoff). Keine Blend-Modi, keine Filter (E-46–E-50). */
+#gameShell #miniButton{--mm-size:164px;--mm-disc:121px;--mm-knob:22px;--mm-plate:15px;
+ position:absolute;top:12px;right:16px;left:auto;bottom:auto;width:var(--mm-size);height:calc(var(--mm-size) + var(--mm-plate));
+ padding:0;margin:0;border:0;border-image:none;background:none;box-shadow:none;overflow:visible;color:var(--chrome-text,#f4e5c5);z-index:3;cursor:pointer}
+#gameShell #miniButton[data-size=s]{--mm-knob:20px}
+#gameShell #miniButton[data-size=l]{--mm-knob:25px}
+.touch-mode #miniButton,.touch-mode .mm-tip{display:none!important}
+
+/* Ortsschild über dem Ring */
+#miniButton .mm-plate{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:4;max-width:calc(var(--mm-size) + 12px);min-width:calc(var(--mm-size) * .56);
+ height:21px;padding:0 10px;display:flex;align-items:center;justify-content:center;border:2px solid #b8924f;border-radius:11px;
+ background:linear-gradient(#2d4a3a,#16291f);box-shadow:0 2px 0 #0b1216,inset 0 1px 0 #ffffff1c}
+#miniButton .mm-zone{font:400 14px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;color:#f4e5c5;text-shadow:1px 1px 0 #0b1216;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#miniButton .mm-zone:empty::before{content:'\00a0'}
+
+/* Ring und Karte */
+#miniButton .mm-body{position:absolute;left:0;top:var(--mm-plate);width:var(--mm-size);height:var(--mm-size)}
+#miniButton .mm-disc{position:absolute;left:50%;top:50%;width:var(--mm-disc);height:var(--mm-disc);transform:translate(-50%,-50%);padding:0;margin:0;border:0;
+ border-radius:50%!important;overflow:hidden;background:#1d2a22;box-shadow:none;cursor:pointer;z-index:1}
+#miniButton .mm-disc:hover{background:#1d2a22}
+#miniButton .mm-disc canvas{display:block;width:100%;height:100%;image-rendering:auto;border-radius:inherit}
+#miniButton .mm-disc::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 9px 3px #081410b8,inset 0 0 0 1px #0b1216;pointer-events:none}
+#miniButton .mm-ring{position:absolute;inset:0;z-index:2;pointer-events:none;background:var(--chrome-portrait) center/100% 100% no-repeat}
+#miniButton[data-shape=square] .mm-disc{border-radius:3px!important}
+#miniButton[data-shape=square] .mm-ring{background-image:var(--chrome-frame)}
+
+/* Norden: kleines Schild auf dem Ring, wandert beim Drehen mit */
+#miniButton .mm-north{position:absolute;left:50%;top:50%;z-index:5;width:17px;height:17px;margin:-8.5px 0 0 -8.5px;display:grid;place-items:center;
+ transform:rotate(var(--mm-north,0deg)) translateY(calc(var(--mm-size) * -.445)) rotate(calc(-1 * var(--mm-north,0deg)));
+ border:1.5px solid #d7b571;border-radius:50%;background:#1a2d24;font:400 12px/1 var(--display);color:#ffe3a3;text-shadow:1px 1px 0 #0b1216;box-shadow:0 1px 0 #0b1216}
+#miniButton[data-rotate="0"] .mm-north{display:none}
+
+/* Knöpfe am Rand */
+#miniButton .mm-knob{position:absolute;left:calc(var(--x) * 100%);top:calc(var(--y) * 100%);z-index:3;width:var(--mm-knob);height:var(--mm-knob);min-height:0;
+ transform:translate(-50%,-50%);padding:0;margin:0;display:grid;place-items:center;border:1.5px solid #caa35d;border-radius:50%!important;
+ background:radial-gradient(circle at 50% 35%,#35574a,#142a21 70%);color:#f4e5c5;box-shadow:0 2px 0 #0b1216,inset 0 1px 0 #ffffff26;cursor:pointer}
+#miniButton .mm-knob svg{width:62%;height:62%;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#miniButton .mm-knob:hover{background:radial-gradient(circle at 50% 35%,#4a7361,#1c3a2d 70%);color:#ffe3a3;border-color:#f0cf86}
+#miniButton .mm-knob:active{transform:translate(-50%,-45%)}
+#miniButton .mm-knob[aria-expanded=true]{color:#2b2118;background:radial-gradient(circle at 50% 35%,#ffe3a3,#d49b3c 75%);border-color:#fff0c4}
+#miniButton .mm-knob:disabled{opacity:.45;cursor:default;background:radial-gradient(circle at 50% 35%,#35574a,#142a21 70%);color:#b8c4ab}
+#miniButton .mm-k-track{--x:.19;--y:.19}
+#miniButton .mm-k-map{--x:.81;--y:.19}
+#miniButton .mm-k-opts{--x:.19;--y:.81}
+#miniButton .mm-k-in{--x:.915;--y:.66}
+#miniButton .mm-k-out{--x:.775;--y:.855}
+#miniButton[data-shape=square] .mm-k-track{--x:.075;--y:.075}
+#miniButton[data-shape=square] .mm-k-map{--x:.925;--y:.075}
+#miniButton[data-shape=square] .mm-k-opts{--x:.075;--y:.925}
+#miniButton[data-shape=square] .mm-k-in{--x:.925;--y:.745}
+#miniButton[data-shape=square] .mm-k-out{--x:.925;--y:.925}
+
+/* Uhr unten auf dem Ring */
+#miniButton .mm-clock{position:absolute;left:50%;top:calc(100% - 9px);transform:translate(-50%,-50%);z-index:3;padding:2px 7px 1px;border:1.5px solid #b8924f;border-radius:8px;
+ background:#16291f;font:400 13px/1 var(--display);letter-spacing:.06em;color:#f4e5c5;text-shadow:1px 1px 0 #0b1216;box-shadow:0 1px 0 #0b1216;pointer-events:none}
+#miniButton[data-shape=square] .mm-clock{top:calc(100% - 4px)}
+
+/* Menüs (Lupe, Zahnrad): links neben der Karte */
+#miniButton .mm-menu{position:absolute;right:calc(100% + 6px);top:var(--mm-plate);z-index:6;width:214px;padding:6px;cursor:default;
+ border:7px solid transparent;border-image:var(--chrome-frame) 22% / 14px / 0 stretch;border-radius:0;background:#11291f var(--chrome-material) center/384px 384px;background-clip:padding-box;box-shadow:0 4px 12px #0008}
+#miniButton .mm-menu>strong{display:block;margin:0 4px 5px;font:400 16px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#f3cf7a}
+#miniButton .mm-menu button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;min-height:28px;padding:3px 6px;border-radius:6px;
+ font:600 13px/1.2 var(--read);color:#f4e5c5;cursor:pointer}
+#miniButton .mm-menu button:hover,#miniButton .mm-menu button:focus-visible{background:#ffffff17;outline:none}
+#miniButton .mm-menu button canvas{width:16px;height:16px;flex:none;image-rendering:auto}
+#miniButton .mm-menu button span{flex:1}
+#miniButton .mm-menu button i{width:16px;height:16px;flex:none;border:1.5px solid #8f7a4e;border-radius:4px;display:grid;place-items:center;background:#0c1c16}
+#miniButton .mm-menu button[aria-checked=true] i{border-color:#d7b571;background:#2d4a3a}
+#miniButton .mm-menu button i svg{width:13px;height:13px;fill:none;stroke:#ffe3a3;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#miniButton .mm-menu button[aria-checked=false] span{color:#b8c4ab}
+#miniButton .mm-seg{padding:3px 6px 6px}
+#miniButton .mm-seg>span{display:block;margin-bottom:4px;font:400 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:#d7b571}
+#miniButton .mm-seg>div{display:flex;gap:4px}
+#miniButton .mm-seg button{flex:1;justify-content:center;min-height:26px;padding:2px 4px;border:1.5px solid #6d5d3c;background:#0c1c16;font-size:12px;text-align:center}
+#miniButton .mm-seg button[aria-pressed=true]{border-color:#e3bf72;background:#3a5a47;color:#ffe3a3}
+#miniButton .mm-menu .mm-reset{justify-content:center;margin-top:4px;border-top:1px solid #d7b57140;border-radius:0;color:#d6c9a6;font-size:12px}
+
+/* Tooltip am Mauszeiger (Material wie .item-tooltip) */
+.mm-tip{position:fixed!important;z-index:40;width:auto!important;max-width:250px;padding:6px 10px!important;pointer-events:none}
+.mm-tip[hidden]{display:none!important}
+.mm-tip strong{font:700 13px/1.3 var(--read);letter-spacing:0;text-transform:none;color:#f3cf7a;display:inline;margin:0}
+.mm-tip kbd{margin-left:4px;font-size:11px}
+.mm-tip .mm-tip-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;line-height:1.35;padding:1px 0}
+.mm-tip .mm-tip-row+.mm-tip-row{border-top:1px solid #ffffff14}
+.mm-tip .mm-tip-row b{font:700 13px/1.3 var(--read);color:#f4e5c5}
+.mm-tip .mm-tip-row small{font:600 11px/1.3 var(--read);color:#d7b571}
+.mm-tip .mm-tip-row em{flex-basis:100%;font:italic 600 11px/1.3 var(--read);color:#b8c4ab}

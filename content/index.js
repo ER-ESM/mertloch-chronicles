@@ -55,3 +55,4 @@ export * from './unlocks.js';
 export * from './intro.js';
 export * from './class-buffs.js';
 export * from './dungeons.js';
+export * from './minimap.js';

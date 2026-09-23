@@ -29,6 +29,7 @@ import {drawContentIcon,hasContentAsset} from './content-art.js';
 import {combatStats,ITEMS} from './rpg.js';
 import {drawItem} from './item-art.js';
 import {drawAtlas} from './cartography.js';
+import {attachMinimap} from './minimap.js';
 import {drawAssetTree,drawAssetProp,drawAssetEffect,drawAssetFire} from './asset-art.js';
 import {drawHub,drawOccupiedCamp,drawEstateDetail} from './world-details.js';
 import {drawProp,campProps,baseProps,propBaseline} from './world-prop-ui.js';
@@ -222,5 +223,5 @@ export class Renderer {
     else if(f.type==='heal'){for(let i=0;i<9;i++){const x=f.x+Math.sin(i*5)*17,y=f.y-t*36-i*3%15;rect(c,'#badfa2',x,y,1,5);rect(c,'#badfa2',x-2,y+2,5,1);}}
     c.restore();
   }
-  map(canvas,full=false,highlight=null,options={}){if(inKiosk(this.game)){drawKioskMap(this,canvas);return;}if(inDungeon(this.game)){drawDungeonMap(canvas,this.game,{full});return;}drawAtlas(this,canvas,full,highlight,options);}
+  map(canvas,full=false,highlight=null,options={}){if(!full&&canvas.id==='minimap'&&attachMinimap(this,canvas))return;if(inKiosk(this.game)){drawKioskMap(this,canvas);return;}if(inDungeon(this.game)){drawDungeonMap(canvas,this.game,{full});return;}drawAtlas(this,canvas,full,highlight,options);}
 }
