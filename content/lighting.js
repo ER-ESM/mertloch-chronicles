@@ -21,8 +21,15 @@ export const LIGHTING={
   kiosk:{color:'#ffd27a',radius:85,flicker:.03,dx:0,dy:-20},
   burn:{color:'#ff8a3a',radius:70,flicker:.2,dx:0,dy:0},
   flash:{color:'#fff0c0',radius:60,flicker:0,dx:0,dy:-8},
-  hero:{color:'#ffe2b0',radius:70,flicker:0,dx:0,dy:-12}
+  hero:{color:'#ffe2b0',radius:70,flicker:0,dx:0,dy:-12},
+  // Innenlicht der Bude (E-52): Baukasten-Teile mit `light` (Wand-/Tischlampe), Glut im Kanonenofen, Tageslicht durchs Dachloch.
+  lamp:{color:'#ffc978',radius:70,flicker:.04,dx:0,dy:0,indoor:true},
+  stove:{color:'#ff8a3c',radius:52,flicker:.14,dx:0,dy:-8,indoor:true},
+  skylight:{color:'#fff4d8',radius:74,flicker:0,dx:0,dy:-4,indoor:true,beam:{height:74,top:30,foot:40,alpha:.34,motes:16}}
  },
+ // Drinnen ist es dämmrig: Dunkel nur über der Grundfläche des Hauses (draußen bleibt Tag), Lampen stanzen es aus.
+ // `dark` Anteil wie ambient.zones, `ease` Nachziehen beim Betreten, `wallShade` Schatten am Wandfuß (Deckkraft, Tiefe in E).
+ interior:{dark:.56,tint:'#3a2616',ease:5,wallShade:{alpha:.46,depth:16,side:7}},
  // Anteil des warmen Scheins, der auch bei Tag sichtbar bleibt, und Zuwachs mit der Dunkelheit.
  // `cover`: Deckkraft des Scheins beim normalen Überdecken (früher `screen`, das heller auftrug).
  glow:{day:.2,night:1,cover:.8}

@@ -2,6 +2,7 @@
 // gemalt bleiben die Außenansicht mit Dach und die Möbel der Basisbau-Stufen (tools/sprite-pipeline/build-bude-house.mjs).
 // Schräge Draufsicht: Boden 1:1, Höhen nach oben.
 import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill} from './kit-art.js';
+import {LIGHTING} from './content/index.js';
 const INK='#293b44';
 const BASE='./assets/precision/runtime/buildings/',ART={meta:null,aussen:null};let requested=false;
 /** Nur Platzhalter zeichnen (Bildvorlagen der Pipeline), nie die gemalten Bilder. */
@@ -31,6 +32,16 @@ function paintStairs(c,f,level){
   if(long){fill(c,INK,s.maxX-1,s.minY-10,3,d+10);fill(c,'#7b5634',s.maxX-1,s.minY-10,2,d+8);}}
 }
 
+/** Schatten am Wandfuß: Der Boden dunkelt zur Wand hin ab (unter waagerechten Wänden nach Süden, an senkrechten beidseitig),
+ *  damit Räume Tiefe bekommen statt wie ein Grundriss zu wirken. Die südliche Außenwand wirft nach draußen – dort nichts. */
+function wallShade(c,house,f){
+ const S=LIGHTING.interior?.wallShade;if(!S||typeof c.createLinearGradient!=='function')return;const a=c.globalAlpha,ink='26,17,11';
+ const band=(x0,y0,x1,y1,gx0,gy0,gx1,gy1)=>{const g=c.createLinearGradient(gx0,gy0,gx1,gy1);g.addColorStop(0,`rgba(${ink},${S.alpha})`);g.addColorStop(.45,`rgba(${ink},${S.alpha*.35})`);g.addColorStop(1,`rgba(${ink},0)`);c.fillStyle=g;c.fillRect(x0,y0,x1-x0,y1-y0);};
+ for(const w of f.walls){if(w.outdoor)continue;
+  if(w.maxX-w.minX>w.maxY-w.minY){if(w.maxY>=house.maxY-1)continue;band(w.minX,w.maxY,w.maxX,w.maxY+S.depth,0,w.maxY,0,w.maxY+S.depth);}
+  else{band(w.maxX,w.minY,w.maxX+S.side,w.maxY,w.maxX,0,w.maxX+S.side,0);band(w.minX-S.side,w.minY,w.minX,w.maxY,w.minX,0,w.minX-S.side,0);}}
+ c.globalAlpha=a;
+}
 /** Böden des Geschosses: Belag je Raum und Bodendeko. Innenräume folgen dem Ausblenden des Dachs (`alpha`),
  *  der Hof liegt draußen und wird immer gezeichnet (er gehört zum Erdgeschoss). */
 export function drawHouseFloor(c,house,alpha,level=0){
@@ -40,6 +51,7 @@ export function drawHouseFloor(c,house,alpha,level=0){
  if(alpha>0){c.globalAlpha=alpha;
   for(const room of f.rooms)if(!room.outdoor)drawBelag(c,room,house.origin);
   for(const it of f.items)if(!it.outdoor&&it.layer==='decal')drawDecal(c,it);
+  wallShade(c,house,f);
   paintStairs(c,f,level);}
  c.globalAlpha=1;
 }

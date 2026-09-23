@@ -2,6 +2,7 @@
 // Werte: content/lighting.js. Richtung und Schattenfarbe: light-convention.js (gilt auch für vorgerenderte Figuren).
 import {LIGHT} from './light-convention.js';
 import {LIGHTING as L} from './content/index.js';
+import {insideHouse} from './world-house.js';
 const canvas=(w,h)=>{const cv=document.createElement('canvas');cv.width=Math.max(1,Math.ceil(w));cv.height=Math.max(1,Math.ceil(h));return cv;};
 const norm=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),DX=LIGHT.dir.x/norm,DY=LIGHT.dir.y/norm,ANGLE=Math.atan2(DY*LIGHT.shadow.squash,DX);
 const rgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255),MID=.45;
@@ -70,6 +71,11 @@ export class WorldLight{
   if(world.shrine)add('shrine',world.shrine.x,world.shrine.y);
   for(const z of game.fields||[])if(z.kind==='burn'&&z.remaining>0)add('burn',z.x,z.y,Math.max(.6,z.radius/60));
   for(const f of game.fx||[])if(['burst','impact','interrupt'].includes(f.type)&&f.max)add('flash',f.x,f.y,.5+f.life/f.max);
+  // Innenlicht der Bude: Lampen des Baukastens (`light`), Glut im Ofen, Tageslicht durchs Dachloch – nur solange man drinnen ist.
+  const house=world.base?.house;if(house&&this.indoor>.01){const f=game.floor&&house.upper?house.upper:house;
+   for(const it of f.items){if(it.outdoor)continue;const d=it.def||{};
+    if(d.light)add('lamp',it.x,it.y-(d.surface==='wall-face'?(d.mount||0)+(it.height||8)*.5:(it.lift||0)+(it.height||6))*.55);
+    else if(it.sprite==='kanonenofen')add('stove',it.x,it.y);else if(it.sprite==='schutthaufen')add('skylight',it.x,it.y);}}
   add('hero',game.player.x,game.player.y);
   for(const o of out)o.flicker=1+o.s.flicker*(Math.sin(time*9+o.seed)+Math.sin(time*5.3+o.seed*2))*.5;this.sourceCache={time,frame:this.frame,game,out};return out;}
  glow(color){let g=this.glows.get(color);if(!g){g=glowSprite(color);this.glows.set(color,g);}return g;}
@@ -81,15 +87,26 @@ export class WorldLight{
   if(layer.width!==lw||layer.height!==lh){layer.width=lw;layer.height=lh;}
   // Dunkel und Wolken überdecken, Lichtquellen stanzen das Dunkel wieder aus, der Rand dunkelt ab, zuletzt liegt der warme Schein obenauf.
   const l=layer.getContext('2d'),A=this.ambient||=cover(L.ambient.tint);l.setTransform(.5,0,0,.5,0,0);l.globalCompositeOperation='source-over';l.globalAlpha=1;l.clearRect(0,0,W,H);l.globalAlpha=dark*A.k;l.fillStyle=A.color;l.fillRect(0,0,W,H);
+  // Drinnen: eigenes Dunkel nur über der Grundfläche des Hauses (samt sichtbarer Nordwandfront), weich beim Betreten.
+  const house=world.base?.house,I=L.interior,inside=house&&insideHouse(house,game.player.x,game.player.y)?1:0;this.indoor=(this.indoor??inside)+(inside-(this.indoor??inside))*(1-Math.exp(-I.ease*elapsed));if(Math.abs(this.indoor-inside)<.01)this.indoor=inside;
+  // Warmes Kneipendunkel statt Nachtblau; Innenlicht bleibt in der Grundfläche (`clipIn`), sonst leuchtet die Lampe durch die Wand ins Gras.
+  const indoorDark=I.dark*this.indoor,room=indoorDark>0&&[house.minX-ox,house.minY-house.heights.cut-oy,house.maxX-house.minX,house.maxY-house.minY+house.heights.cut],T=this.interiorCover||=cover(I.tint);
+  if(room){l.globalAlpha=indoorDark*T.k;l.fillStyle=T.color;l.fillRect(...room);}
+  const clipIn=(s,draw)=>{if(!(s.s.indoor&&room))return draw();l.save();l.beginPath();l.rect(...room);l.clip();draw();l.restore();};
   const K=this.cloudCover||=cover(L.clouds.tint);this.clouds||=cloudTile(256,K.bytes);const size=L.clouds.size,cx=-((((ox+time*L.clouds.wind.x)%size)+size)%size),cy=-((((oy+time*L.clouds.wind.y)%size)+size)%size);
   l.globalAlpha=L.clouds.alpha*(1-dark*.6)*K.k;l.imageSmoothingEnabled=true;for(let x=cx;x<W;x+=size)for(let y=cy;y<H;y+=size)l.drawImage(this.clouds,x,y,size,size);
-  l.globalCompositeOperation='destination-out';for(const s of lights){const r=s.s.radius*s.scale*s.flicker;l.globalAlpha=Math.min(1,dark*2.6)*(s.s===L.sources.hero?.55:1);l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2);}
+  l.globalCompositeOperation='destination-out';for(const s of lights){const r=s.s.radius*s.scale*s.flicker;l.globalAlpha=Math.min(1,(dark+(s.s.indoor?indoorDark:0))*2.6)*(s.s===L.sources.hero?.55:1);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2));}
   if(!this.vignette||this.vignette.width!==lw||this.vignette.height!==lh){this.vignette=canvas(lw,lh);const v=this.vignette.getContext('2d'),g=v.createRadialGradient(lw/2,lh/2,Math.min(lw,lh)*.42,lw/2,lh/2,Math.hypot(lw,lh)*.56);g.addColorStop(0,'#10182000');g.addColorStop(1,'#101820');v.fillStyle=g;v.fillRect(0,0,lw,lh);}
   l.globalCompositeOperation='source-over';l.globalAlpha=Math.min(1,L.grade.vignette+dark*.25);l.drawImage(this.vignette,0,0,W,H);
   // Diagonaler Schimmer (L.sheen), früher je Bild als Vollbildfläche auf der Welt: hier einmal gerechnet und mitgemischt.
   if(!this.sheen||this.sheen.width!==lw||this.sheen.height!==lh){this.sheen=canvas(lw,lh);const v=this.sheen.getContext('2d'),g=v.createLinearGradient(0,0,lw,lh);g.addColorStop(0,L.sheen.from);g.addColorStop(.55,L.sheen.mid);g.addColorStop(1,L.sheen.to);v.fillStyle=g;v.fillRect(0,0,lw,lh);}
   l.globalAlpha=1;l.drawImage(this.sheen,0,0,W,H);
-  for(const s of lights){if(s.s===L.sources.hero)continue;const r=s.s.radius*s.scale*s.flicker*.8;l.globalAlpha=Math.min(1,(L.glow.day+L.glow.night*dark)*s.flicker*L.glow.cover);l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2);}
+  for(const s of lights){if(s.s===L.sources.hero)continue;const r=s.s.radius*s.scale*s.flicker*.8;l.globalAlpha=Math.min(1,(L.glow.day+L.glow.night*(dark+(s.s.indoor?indoorDark:0)))*s.flicker*L.glow.cover);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2));}
+  // Lichtschacht (Dachloch): schräger Kegel von oben auf den Fußpunkt, unten am hellsten, darin treibender Staub.
+  for(const s of lights){const B=s.s.beam;if(!B||!(indoorDark>0))continue;const x=s.x-ox,y=s.y-oy,tx=x-DX*B.height*.6,ty=y-B.height,g=l.createLinearGradient(0,ty,0,y);
+   g.addColorStop(0,s.s.color+'00');g.addColorStop(.7,s.s.color+'80');g.addColorStop(1,s.s.color+'c0');l.globalAlpha=B.alpha*this.indoor;l.fillStyle=g;
+   l.beginPath();l.moveTo(tx-B.top/2,ty);l.lineTo(tx+B.top/2,ty);l.lineTo(x+B.foot/2,y);l.lineTo(x-B.foot/2,y);l.closePath();l.fill();
+   l.fillStyle=s.s.color;for(let i=0;i<B.motes;i++){const k=((i*.618+time*.05)%1),m=tx+(x-tx)*k+Math.sin(time*.7+i*2.1)*B.top*.4*(1-k*.3),n=ty+(y-ty)*k;l.globalAlpha=this.indoor*(.35+.35*Math.sin(time*1.3+i));l.fillRect(m,n,2,2);}}
   l.globalAlpha=1;}
 }
 /** Farbabstimmung der Weltfläche als CSS-Filter: läuft auf der Grafikkarte und kostet den Zeichenweg nichts. */
