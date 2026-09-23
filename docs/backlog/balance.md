@@ -37,11 +37,20 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 
 - [x] **Balance-Sheet (E-57), erster Lauf 23.09., erste Runde E-59:** Spec-Mittel jetzt auf Ziel (Schaden 0,99–1,02, Tanks 0,82, Heiler 0,75), ⚑ 280 → 209. Ursprünglich: 280/540 Messungen > 15 % neben dem Median ihrer Rolle. Zuerst: Kevin „Jagd“ Pfad 1 ab Stufe 15 ~45 Schaden/s (Talent bricht Rotation?), Dieter „Brauerei“ Stufe 5 ohne Heilung, Bärbel Schaden-Specs Stufe 5 ~+90 %. Arbeitsweise: `npm run balance:sheet`, Zerlegung lesen (Talent/Kniff/Wert), Zahlen in content/ anpassen, Sheet erneut.
 
-## Balancing-Runde 1 (E-59) · offen · 2026-09-23
+## Balancing-Runde 1 (E-59) · erledigt mit E-60 · 2026-09-23
 
-- [ ] **Stufen-Drift der Specs** (Sheet, selten, relativ zum Schadens-Median): Zündmeister 0,84 (St. 5) → 1,19 (St. 30), Türsteher 0,93 → 0,77, Schrottkoloss 1,02 → 0,75, Kneipenschläger 1,2 und Putzpyramide 1,17 auf Stufe 5. Hebel: Stufenanteil einzelner Kniffe (`content/kits.js`), nicht der Spec-Faktor.
-- [ ] **Pfade innerhalb einer Spec:** Kneipenschläger Pfad 1 ≈ 1,3 auf allen Stufen, Pfad 0 fällt von 0,98 (St. 10) auf 0,68 (St. 30). Zündmeister-Pfade 1/2 tragen Rückstrom (+40 %), Nullwiderstand (+26 %) und Kettenreaktion (+43 %), alle gruppenabhängig. Erst im Dreierkampf gegenprüfen, dann Talente einzeln anfassen.
-- [ ] **Sheet misst Kill- und Ausweich-Talente nicht** (0 %, die Puppen sterben nie). Vorschlag: eine Zusatzmessung mit sterbenden Feldgegnern im Kettenzug.
-- [ ] **Spec-Faktoren einpflegen:** `TUNING.specs` ist ein Zwischenschritt. Die Faktoren wandern in die Kniffwerte der Spezialisierung und werden aus `tuning.js` gelöscht.
-- [ ] **⚡ Feld- und Elitegegner zu schnell für Dieter und Kevin** (Balance-Bericht, 15 Zeilen, 13 davon schon vor E-59): Stufe-1- bis Stufe-3-Feldgegner 2,7–3,8 s statt ≥ 4 s, Borsten-Bruno und Oberpraktikant Olaf 6,4–7,8 s statt ≥ 8 s. Bärbel liegt im Korridor. Hebel: Gegnerleben über `tuning.js` oder Dieters/Kevins Einstiegsschaden.
-- [ ] `scripts/class-pacing.mjs` nutzt noch die alte, einfache Rotation. Auf `scripts/balance-rotation.mjs` umstellen, falls die Tempo-Messung mit Sheet und Bericht vergleichbar sein soll.
+- [x] **Stufen-Drift der Specs:** Hauptursache waren Wumms und Bastelgrips ohne Stufenkurs; seit `powerRate` bleibt das Spec-Mittel über die Stufen stabil (Rest siehe unten).
+- [x] **Pfade innerhalb einer Spec** (Abstand zum Mittel der Spec): Zündmeister Pfad 2 +20 → +2 % (Kettenreaktion-Fehler), Pfandjäger Pfad 0 +10 → +5 % (Alles auf Rot 30/30 → 10/15 %), Kneipenschläger Pfad 1 +23 → +15 % (Blitzabriss 8 → 2 %); Rest siehe unten.
+- [x] **Sheet misst Kill- und Ausweich-Talente:** Gegner sterben und werden ersetzt, Zufall mit Startwerten, Talentfähigkeiten in der Rotation.
+- [x] **Spec-Faktoren eingepflegt:** `SPEC_MECHANICS[spec].output` (`content/mechanics.js`), `TUNING.specs` gestrichen.
+- [x] **⚡ Feldgegner zu schnell:** Ursache waren Finisher in Größe eines Feldgegners plus Ausrüstungsbonus ohne Stufenkurs. Von 15 Hinweisen bleiben 2.
+- [x] `scripts/class-pacing.mjs` nutzt die gemeinsame Rotation (und läuft wieder).
+
+## Balancing-Runde 2 (E-60) · offen · 2026-09-23
+
+- [ ] **Pfade mit Restabstand** (Sheet, selten, Stufe 10–30, Abstand zum Mittel der Spec): Filter-Furie Pfad 1 +14 %, Pfad 2 −15 % (Treiber „Noch ein Take“ – `encoreUpgrade` ist ein Schalter mit fest verdrahteten 35 Randale in `class-mechanics.js`; erst als Zahl ins Talent holen, dann senken); Kneipenschläger Pfad 1 +15 %, Pfad 0 −14 % (Überlebenspfad – der Übungskampf bewertet Überleben nicht).
+- [ ] **Heilpfade:** Zapfmeister Pfad 1 heilt 1,58× den Heil-Median (Pfade 0/2: 0,83/0,73), Landhaus-Lazarett Pfad 0 0,78. Die Heilkennzahl zählt Überheilung mit, bei nur 3 % Grundleben Schaden je Sekunde – vor weiteren Eingriffen eine Messung mit Gruppenschaden (E-42) bauen.
+- [ ] **Boss gegen Feld je Spec:** Kneipenschläger Boss 1,35 / Feld 0,84, Pfandjäger 1,26 / 0,96, Zündmeister 0,76 / 1,33. Gewollte Identität, solange das Mittel stimmt; nach Playtest bestätigen.
+- [ ] **Umland für Kevin knapp unter 4 s** (Median 3,8 s, 28 von 35 Zeilen): Markierung und Rakete legen einen Feldgegner fast immer in derselben Zeit. Hebel: Raketen-Multiplikator 1,8 (höher als 1,6 bei Dieter und Bärbel).
+- [ ] **Stufe 1:** Dieter legt den Pfanddachs in 3,7 s (Korridor ≥ 4 s). Erster Treffer ist deutlich stärker als die folgenden; prüfen, woher.
+- [ ] **Sheet-Boss mit 10× Feldleben** stirbt ab Stufe 30 an wenigen Abrissen (Überschuss verpufft); für Einzelziel-Talente auf hohen Stufen den Boss-Faktor anheben oder mit echten Bossen messen.

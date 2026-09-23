@@ -6,7 +6,7 @@ import {EQUIPMENT_SLOTS,equipmentPlan,restoreEquipment,weaponRange,compatibleSlo
 import {talentState,talentEffects,SPECS} from './talents.js';
 import {restoreRolls,rollDrop,questChoices,registerRoll} from './itemization.js';
 import {available,LESSONS,skillLevel} from './progression.js';
-import {BALANCE,ITEM_CATALOG,rating,ratingK,SYSTEM_LINES,STAT_NAMES,GEAR_COMPARE,WEAPON_TYPES,BAG_UI,RARITIES} from './content/index.js';
+import {BALANCE,ITEM_CATALOG,rating,ratingK,powerRate,SYSTEM_LINES,STAT_NAMES,GEAR_COMPARE,WEAPON_TYPES,BAG_UI,RARITIES} from './content/index.js';
 export const BAG_SIZE=24;
 export const SLOT_KEYS=['1','2','3','4','5','6','7','8','9','0'];
 export const SPECIAL_KEYS={dash:' ',interrupt:'q'};
@@ -30,7 +30,7 @@ export function combatStats(game){
  const primary=k=>k==='might'||k==='finesse'||k==='wit';
  for(const key of Object.keys(STAT_NAMES))raw[key]=(key==='stamina'?P.baseStamina:primary(key)?P.basePrimary+(level-1)*P.primaryPerLevel:0)+(gear[key]||0)+(talent[key]||0);
  const haste=Math.min(R.haste.cap,rating(raw.finesse*R.haste.finesseWeight,ratingK(R.haste,level)))+(game.momentum?.stacks||0)*BALANCE.momentum.hastePerStack+(game.procState&&game.procState.hasteUntil>game.time?game.procState.haste:0)+(game.classState?.m?.hasteBonus||0),procs=Object.values(game.rpg?.equipment||{}).filter(id=>(ITEMS[id]?.level||1)<=level).map(id=>ITEMS[id]?.proc).filter(Boolean);
- return {...talent,...raw,health:(raw.stamina-P.baseStamina)*P.hpPerStamina,power:raw.might*W.might,healPower:raw.wit*W.healWit,shieldPower:raw.wit*W.shieldWit,armor:Math.min(R.armor.cap,rating(raw.armorRating,ratingK(R.armor,level))),crit:Math.min(R.crit.cap,R.crit.base+rating(raw.finesse*R.crit.finesseWeight,ratingK(R.crit,level))),haste,flatScale:1+(level-1)*(P.flatPerLevel||0),energyRegen:(talent.energyRegen||0)+raw.wit*W.energyRegenWit,gcd:Math.max(P.gcdMin,P.gcdBase*(1-haste)),procs,spec};
+ return {...talent,...raw,health:(raw.stamina-P.baseStamina)*P.hpPerStamina,power:raw.might*powerRate('might',level),healPower:raw.wit*powerRate('healWit',level),shieldPower:raw.wit*powerRate('shieldWit',level),armor:Math.min(R.armor.cap,rating(raw.armorRating,ratingK(R.armor,level))),crit:Math.min(R.crit.cap,R.crit.base+rating(raw.finesse*R.crit.finesseWeight,ratingK(R.crit,level))),haste,flatScale:1+(level-1)*(P.flatPerLevel||0),energyRegen:(talent.energyRegen||0)+raw.wit*powerRate('energyRegenWit',level),gcd:Math.max(P.gcdMin,P.gcdBase*(1-haste)),procs,spec};
 }
 export const baseHealth=level=>BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel;
 export function refreshEquipment(game){game.player.maxHp=baseHealth(game.player.level)+combatStats(game).health;game.player.hp=Math.min(game.player.hp,game.player.maxHp);}

@@ -860,3 +860,57 @@ Balance-Bericht:
 - *Allgemeine Wertkurse (`BALANCE.power`/`ratings`) verschieben:* Das trifft alle Specs gleich und löst keinen Abstand zwischen ihnen.
 - *Einzelne Kniffwerte je Spec umschreiben:* Das wäre sauberer, aber neun Specs × fünf Kniffe ohne stabilen Messweg sind Raten. Die Faktoren sind der Zwischenschritt: Die Fachrolle zieht sie bei Gelegenheit in die Kniffwerte (`content/kits.js`) ein und löscht sie aus `tuning.js`, wie die Gegnerkorrekturen.
 - *Nur Einzelziel messen:* Das bevorzugt Einzelziel-Specs (Pfandjäger, Kneipenschläger) und straft Ketten-Specs (Zündmeister), obwohl Feldkämpfe im Kettenzug zu zweit oder dritt laufen.
+
+## E-60 · Balancing-Runde 2: Finisher ohne Oneshot, Wertkurse wachsen mit der Stufe, ehrlicher Messweg (23.09.2026)
+
+**Anlass.** Nutzerauftrag „Gehe die offenen Punkte an“ (Backlog aus E-59). Dazu kam ein Nutzerbefund aus dem Spiel: „Der Bierzelt-Abriss, auf Level 3 erhalten, oneshottet die Gegner, das ist zu stark.“
+
+**Befund.**
+- **Messweg des Sheets, fünf Fehler:**
+  - Der Zufall stand fest auf 0,5. Krits und Procs unter 50 % Chance lösten deshalb nie aus, Taktgefühl war im Sheet wertlos.
+  - Die Puppen starben nie. Kill-, Hinrichtungs- und Kettentalente zählten deshalb 0 %.
+  - Die Wertprobe verdrängte das Schmuckstück auf trinket2. Jeder Wert erschien dadurch negativ.
+  - Talentfähigkeiten (Kettenzündung, Tresensprung, „Noch ein Reel“ …) kamen in der Rotation nie vor.
+  - Der Abriss des Kneipenschlägers zündete mit ein, zwei Deckelstrichen. „Zweite Luft“ stand deshalb bei −24 %.
+- **Finisher:** Markiert trafen sie das 1,5- bis 2,5-Fache eines Feldgegners seiner Stufe, bei allen Klassen und auf jeder Stufe. Im Umland dauerte jeder Kampf 2,7 s (Dieter) bzw. 3,8 s (Bärbel, Kevin), egal wie viel Leben der Gegner hatte.
+- **Wumms und Bastelgrips wandelten ohne Stufenbezug um** (2,4 % Schaden je Punkt auf jeder Stufe). Ein voller Satz „ungewöhnlich“ gab deshalb auf Stufe 1 +43 % Schaden, auf Stufe 30 +391 %. Taktgefühl und Dicke Haut hatten den Stufenkurs seit E-56 schon.
+- **Kettenreaktion (Zündmeister):** `neighbors()` enthielt das Ziel selbst, weil es im Abstand 0 steht. Der Kurzschluss markierte sein eigenes Ziel deshalb sofort neu, gegen Bosse +58 %, obwohl der Text nur Nachbarn verspricht.
+
+**Entschieden.**
+1. **Finisher kleiner, Aufbaukniff größer** (`content/combat.js`): Der Waffenfaktor des Finishers sinkt bei allen drei Klassen auf ×5,2 (vorher ×9,9 bzw. ×9,3). Der Aufbaukniff steigt von ×2 auf ×2,6. Bärbels Abstand (1,1 s Zauberzeit, trifft Nachbarn) steht im festen Anteil: 14 → 40. Ein markierter Bierzelt-Abriss trifft auf Stufe 3 jetzt rund 390 (vorher 680) gegen 600–700 Leben eines Feldgegners.
+2. **Wertkurse wachsen mit der Stufe:** `BALANCE.power.perLevel: 0,16`, `powerRate(key, level)` in `content/balance.js`. Wumms und Bastelgrips wirken je Punkt ÷ (1 + 0,16 × (Stufe − 1)), wie E-56 es für Taktgefühl und Dicke Haut festgelegt hat. Ein voller Satz „ungewöhnlich“ gibt jetzt auf jeder Stufe +43 bis +69 % Schaden.
+   - Ein Feldgegner braucht mit vollem Satz „ungewöhnlich“ von Stufe 10 bis 30 jetzt 3,3–4,2 s (vorher fiel das von 2,0 auf 1,2 s).
+   - Tooltips (`statYield`) und Glossar rechnen mit demselben Kurs.
+3. **Gegnerleben nachgezogen** (`content/tuning.js`, jeweils mit Begründung):
+   - Bosse: Sigi 2950, Klaus 3700, Timo 3950, Gisela 3300, Pfandautomat 3900. Die bisherigen Aufschläge für Klaus und Timo stammten aus der Zeit, als Dieter sie in 9 s legte, und sind entfallen.
+   - Starttiere auf Stufe 1–2, die nur mit dem Aufbaukniff bekämpft werden: Dachs 450, Gans 480, Rabe 470, Fuchs 480.
+4. **Talente:**
+   - Blitzabriss: 8 → 2 % je Deckelstrich.
+   - Alles auf Rot: 30/30 → 10/15 %.
+   - Anstich für alle und Schlussputz: ohne die zusätzlichen 80 Grundheilung. Das sofortige Zurücksetzen der Heilung bleibt.
+   - Kettenreaktion markiert nur noch Nachbarn (`class-mechanics.js`).
+5. **Spec-Faktoren eingepflegt:** Die Faktoren stehen jetzt als `output` in der Spec-Definition (`content/mechanics.js`, `specOutput`), nicht mehr als Korrektur in `tuning.js`.
+   - Pfandjäger 1,25 · Zündmeister 0,85 · Kneipenschläger 0,82 · Filter-Furie 0,89 · Putzpyramide 1,18 · Türsteher 0,93 · Schrottkoloss 1,08 · Zapfmeister 1,15 · Landhaus-Lazarett 1,18 (Heilung 1,15).
+   - Die Faktoren sind kein Dauerpflaster für kaputte Kniffe mehr, sondern die bewusste Stellschraube je Spec.
+6. **Messweg:**
+   - **Sheet:** Gegner sterben und werden sofort ersetzt (Feldgruppe mit Umland-Leben, Boss mit 10× Feldleben; Arena-Gegner geben keine EP und keine Beute). Der Zufall läuft über drei feste Startwerte, jede Zelle ist deren Mittel. Tabelle und Zerlegung rechnen mit demselben `blend()`. Die Wertprobe misst gegen eine leere Probe. Ein Worker je Spezialisierung bringt einen vollen Lauf von über 15 auf 1,5 Minuten; `--rows` rechnet nur die Tabelle.
+   - **Rotation (`scripts/balance-rotation.mjs`):** Talentfähigkeiten laufen mit. „Noch ein Reel“ zündet nur, solange der Finisher abklingt, Kettenzündung erst ab zwei markierten Gegnern. Der Kneipenschläger hält den Abriss, bis die Striche voll sind oder gleich verfallen.
+   - **Balance-Bericht:** Die Umland-Tabelle prüft den Feld-Korridor auf jeder Stufe, nicht nur auf der eigenen.
+   - `scripts/class-pacing.mjs` nutzt die gemeinsame Rotation. Es lief vorher gar nicht mehr, weil ohne Spezialisierung `TALENTS[null]` zurückkam.
+   - `scripts/combat-integration-check.mjs` geht wie ein Spieler durch den Anmeldebildschirm. Seit dem Anmeldebildschirm vom 20.09. klickte die Prüfung ins pausierte Spiel.
+
+**Ergebnis.**
+- **Sheet** (selten, Pfade 0–2, Stufe 10–30, relativ zum Median der Schadens-Specs):
+  - Schadens-Specs 0,97–1,02, Tanks 0,84, Heiler 0,74–0,75.
+  - ⚑ 156 von 576.
+  - Pfade gegen das Mittel ihrer Spec: Zündmeister Pfad 2 +20 % → +2 %, Pfandjäger Pfad 0 +10 % → +5 %, Kneipenschläger Pfad 1 +23 % → +15 %. Offen bleiben Kneipenschläger (Pfad 0 −14 %) und Filter-Furie (Pfad 1 +14 %, Pfad 2 −15 %).
+- **Balance-Bericht:**
+  - Bosse auf eigener Stufe 17–24 s bei allen Klassen.
+  - Feldgegner der Stufe 3 brauchen 4,3–7,8 s.
+  - Umland-Median: Dieter 4,0 s, Bärbel 4,8 s, Kevin 3,8 s (vorher 2,7–3,8 s, unabhängig vom Leben).
+  - Es bleiben 2 Hinweise: Pfanddachs/Dieter 3,7 s und Kegelbruder/Kevin 3,8 s.
+
+**Verworfen.**
+- *Feldleben verdoppeln statt Finisher und Wertkurse anzufassen:* Das hätte den Oneshot auf Stufe 3 behoben, nicht aber die Schere mit der Stufe. Der Schadensbonus aus Ausrüstung wuchs linear ohne Stufenbezug, jeder Lebenswert wäre ab Stufe 15 wieder überrollt worden.
+- *Allgemeine Halteregel für alle Finisher:* Finisher mit Gruppenbedingung (drei Verschimmelte, Lunten) zünden gegen Einzelziele dann nie.
+- *Das Heil-Zurücksetzen streichen:* Es ist der Kern beider Talente. Die zusätzlichen 80 Heilung waren der verzichtbare Teil.

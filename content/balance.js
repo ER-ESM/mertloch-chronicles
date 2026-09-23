@@ -26,7 +26,10 @@ export const BALANCE=Object.freeze({
   crit:{base:.04,k:60,perLevel:20,cap:.4,finesseWeight:1}, // Glückstreffer-Chance aus Taktgefühl
   armor:{k:5,perLevel:5,cap:.6}                 // Schadensminderung aus Dicke Haut (E-56: voller Satz ≈ 25–30 % auf jeder Stufe)
  },
- power:{                               // Beitrag je Punkt
+ power:{                               // Beitrag je Punkt auf Stufe 1
+  // E-60: wie die Kurse der Wertungen (E-56) wachsen auch diese mit der Stufe – Beitrag = Wert ÷ (1 + perLevel × (Stufe − 1)).
+  // Sonst stieg der Schadensbonus eines vollen Satzes von +43 % (Stufe 1) auf +390 % (Stufe 30) und überrollte das Gegnerleben.
+  perLevel:.16,
   might:.024,                          // Wumms: Schaden aller Angriffe und Kniffe (E-56: ×2, Grundwert halbiert)
   healWit:.016,shieldWit:.014,energyRegenWit:.05 // Bastelgrips: Heilung, Deckung, Randale je Sekunde (E-56: ×2)
  },
@@ -74,6 +77,8 @@ export const xpToNext=level=>Math.max(1,level)*BALANCE.xpPerLevel;
 export const totalXpForLevel=level=>BALANCE.xpPerLevel*(level-1)*level/2;
 export const rating=(value,k)=>value/(value+k);
 /** E-56: Umrechnungskurs einer Wertung auf der Charakterstufe (Glückstreffer, Tempo, Dicke Haut). */
+/** E-60: Beitrag je Punkt Wumms/Bastelgrips auf dieser Stufe (key: might, healWit, shieldWit, energyRegenWit). */
+export const powerRate=(key,level=1)=>BALANCE.power[key]/(1+Math.max(0,level-1)*(BALANCE.power.perLevel||0));
 export const ratingK=(r,level=1)=>r.k+(r.perLevel||0)*Math.max(1,level);
 export const killXp=e=>e.type==='boss'?BALANCE.xp.kill.boss:e.elite?BALANCE.xp.kill.elite:e.type==='cultist'?BALANCE.xp.kill.human:BALANCE.xp.kill.creature;
 /** Multiplikatoren für Gegner, deren Stufe über der Grundstufe ihres Archetyps liegt. */

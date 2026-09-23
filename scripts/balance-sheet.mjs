@@ -2,22 +2,29 @@
 // Misst Schaden, Heilung, Deckung und verhinderten Schaden je Sekunde in einem festen Übungskampf und zerlegt sie:
 // Anteil der Ausrüstung, Beitrag jedes Talents (einmal weglassen), Wert je Wertpunkt (+10 Punkte) und Anteil je Kniff.
 // Alles deterministisch – dieselben Zahlen bei jedem Lauf, damit Änderungen an Werten, Talenten oder Kniffen vergleichbar sind.
-// Aufruf: npm run balance:sheet [-- --quick]  → content/BALANCE-SHEET.md, generated/balance-sheet.json, generated/balance-sheet.csv
+// Aufruf: npm run balance:sheet [-- --quick] [-- --rows = ohne Zerlegung]. Ein Worker je Spezialisierung.  → content/BALANCE-SHEET.md, generated/balance-sheet.json, generated/balance-sheet.csv
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
+import {Worker,isMainThread,parentPort,workerData} from 'node:worker_threads';
 import {Game} from '../engine.js';
-import {makeEnemy} from '../encounters.js';
+import {makeEnemy,scaledStats} from '../encounters.js';
+import {rng} from '../world.js';
 import {startAuto} from '../auto-combat.js';
 import {rotate} from './balance-rotation.mjs';
 import {changeSpec,pathBuild,learnTalent,unlearnTalent,talentPoints,TALENTS,SPECS as SPEC_DEFS} from '../talents.js';
 import {ITEMS,addItem,equipItem} from '../rpg.js';
 import {registerRoll} from '../itemization.js';
 import {meterReport} from '../combat-meter.js';
-import {CLASS_SPECS,STAT_NAMES,BALANCE,TUTORIAL} from '../content/index.js';
+import {CLASS_SPECS,STAT_NAMES,BALANCE,TUTORIAL,ARCHETYPES} from '../content/index.js';
 
 export const SHEET={seconds:40,dt:.05,levels:[1,5,10,15,20,30],gear:['none','uncommon','rare','epic'],paths:[0,1,2],attributionLevels:[10,20],attributionGear:'rare',statProbe:10,flag:.15,
  // Zielzahl: Bosse kämpfen allein, Feldgegner kommen per Kettenzug zu zweit oder dritt. Zelle = Mittel beider Lagen.
- targets:[1,3],attributionTargets:2,
+ targets:[1,3],
+ // Gegner sterben (E-60): Feldgegner mit Leben wie im Umland (encounters.scaledStats), der Einzelgegner als Boss mit boss × diesem Leben.
+ // Stirbt einer, steht sofort ein neuer da – so zählen Kill-, Hinrichtungs- und Kettentalente mit. Arena-Gegner: keine EP, keine Beute.
+ foe:{type:'boar',boss:10},
+ // Zufall mit festem Startwert: Krits und Procs unter 50 % Chance lösen aus wie im Spiel, und jeder Lauf bleibt reproduzierbar.
+ seeds:[7,8,9],
  // Eingehender Schaden der Übungspuppen: Anteil des Grundlebens je Sekunde, damit Heilung und Rüstung etwas zu tun haben.
  incoming:.03};
 const arena=()=>({spawn:{x:0,y:0},npc:{x:0,y:20},landmarks:[],camps:[],quests:[],blocked:()=>false,findClear:(x,y)=>({x,y}),lineClear:()=>true,findPath:(a,b)=>[b]});
@@ -34,9 +41,12 @@ function learnBuild(g,spec,path){const budget=Math.max(0,talentPoints(g)),ids=[]
  for(const tree of [spec,...Object.values(CLASS_SPECS).find(l=>l.includes(spec)).filter(x=>x!==spec)])for(const t of TALENTS[tree].slice().sort((a,b)=>a.row-b.row))if(g.rpg.talents.learned.length<budget)learnTalent(g,t.id);
  return [...g.rpg.talents.learned];}
 
-/** Ein Übungskampf: 40 s gegen targets Puppen (Standard 3) mit fester Prioritäten-Rotation. */
-export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,drop=null,seconds=SHEET.seconds,targets=3}){
- const g=new Game(arena(),{classId,level,tutorial:{completed:true}});g.random=()=>.5;g.lootRandom=()=>.99;
+/** Leben einer Puppe: Feldgegner wie im Umland; allein steht ein Boss mit SHEET.foe.boss × diesem Leben. */
+export const foeLife=(level,targets)=>Math.round(scaledStats(ARCHETYPES[SHEET.foe.type],level,true).hp*(targets===1?SHEET.foe.boss:1));
+
+/** Ein Übungskampf: 40 s gegen targets Gegner (1 = Boss, 3 = Feldgruppe) mit der gemeinsamen Prioritäten-Rotation. */
+export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,drop=null,seconds=SHEET.seconds,targets=3,seed=SHEET.seeds[0]}){
+ const g=new Game(arena(),{classId,level,tutorial:{completed:true}});g.random=typeof seed==='function'?seed():rng(seed);g.lootRandom=()=>.99;
  const specOk=level>=BALANCE.player.specLevel&&spec;if(specOk)changeSpec(g,spec);
  equipSet(g,gear,level);
  if(extra){ITEMS.__probe={slot:'charm',level:1,stats:extra};g.rpg.equipment.trinket2='__probe';}
@@ -45,20 +55,24 @@ export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,dr
  // Talentbeitrag: genau dieses Talent wieder verlernen; geht das nicht (andere bauen darauf auf), ist es gebunden.
  let dropped=null;if(drop){dropped=unlearnTalent(g,drop);}g.refreshStats?.();
  g.player.x=1000;g.player.y=1000;g.player.hp=g.player.maxHp;
- const foes=Array.from({length:targets},(_,i)=>i).map(i=>{const e=makeEnemy({x:1040+i*40,y:1000+(i%2)*30},i+1,{hp:1e7,roamWait:100,attackTimer:100,stun:1e9,damage:1});e.aggro=true;e.ai='combat';g.enemies.push(e);return e;});
+ const foeHp=foeLife(level,targets),spawn=i=>{const e=makeEnemy({x:1000+Math.round(32*Math.cos(i*2.1)),y:1000+Math.round(32*Math.sin(i*2.1))},i+1,{hp:foeHp,roamWait:100,attackTimer:100,stun:1e9,damage:1});e.aggro=true;e.ai='combat';e.arena=true;return e;};
+ const foes=Array.from({length:targets},(_,i)=>spawn(i));g.enemies.push(...foes);let killed=0;
  g.target=foes[0];g.player.inCombat=7;startAuto(g);const healer=/Heilung/.test(SPEC_DEFS[spec]?.role||'');
  const hitSize=(BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel)*SHEET.incoming;let raw=0,taken=0,healed=0,shield=0,energySum=0,ticks=0,clock=0;
  for(let t=0;t<seconds;t+=SHEET.dt){
-  g.player.inCombat=7;for(const e of foes){e.hp=Math.max(e.hp,1e6);e.x=e.home.x;e.y=e.home.y;}/* Puppen bleiben stehen: Rückstoß würde sie aus der Reichweite schieben, echte Spieler gehen nach */
-  const p=g.player;if(!g.casting&&g.gcd<=0)rotate(g,{healer,ground:{x:1050,y:1010}});
+  g.player.inCombat=7;
+  // Puppen bleiben stehen (Rückstoß würde sie aus der Reichweite schieben, echte Spieler gehen nach); gefallene ersetzt sofort eine neue.
+  foes.forEach((e,i)=>{if(e.hp>0){e.x=e.home.x;e.y=e.home.y;return;}killed++;const n=spawn(i);g.enemies[g.enemies.indexOf(e)]=n;foes[i]=n;});
+  if(!(g.target?.hp>0)){g.target=foes.find(e=>e.hp>0);startAuto(g);}
+  const p=g.player;if(!g.casting&&g.gcd<=0)rotate(g,{healer});
   clock+=SHEET.dt;if(clock>=1){clock-=1;const hp=p.hp,guard=g.classState?.guard||0;raw+=hitSize;g.hitPlayer(foes[0],hitSize);taken+=Math.max(0,hp-p.hp);shield+=Math.max(0,guard-(g.classState?.guard||0));if(p.hp<1)p.hp=1;}
   energySum+=p.energy;ticks++;
   g.tick(SHEET.dt);/* g.tick schreitet den Zauber selbst voran (tickCasting) – ein zweiter Aufruf halbierte bis E-59 jede Zauberzeit */
   for(const ev of g.events)if(ev.type==='combat'&&ev.kind==='heal'&&ev.area==='in')healed+=ev.value||0;g.events.length=0;g.dead=false;if(p.hp<1)p.hp=1;
  }
  if(extra)delete ITEMS.__probe;
- const dealt=foes.reduce((a,e)=>a+(1e7-e.hp),0),report=meterReport(g,'current','damage'),me=report.actors?.[0],heal=meterReport(g,'current','healing');
- return {dropped,dps:dealt/seconds,hps:Math.max(healed,(heal.total||0)+(heal.excess||0))/seconds,mitigated:(raw-taken)/seconds,shield:shield/seconds,energy:energySum/ticks,talents,
+ const dealt=killed*foeHp+foes.reduce((a,e)=>a+(foeHp-Math.max(0,e.hp)),0),report=meterReport(g,'current','damage'),me=report.actors?.[0],heal=meterReport(g,'current','healing');
+ return {dropped,kills:killed,dps:dealt/seconds,hps:Math.max(healed,(heal.total||0)+(heal.excess||0))/seconds,mitigated:(raw-taken)/seconds,shield:shield/seconds,energy:energySum/ticks,talents,
   skills:(me?.abilities||[]).map(a=>({name:a.name,share:a.share}))};
 }
 
@@ -68,26 +82,43 @@ export const roleGroup=role=>/Tank/.test(role)?'tank':/Heilung/.test(role)?'heal
 export const METRIC={dps:{key:'dps',label:'Schaden/s'},heal:{key:'hps',label:'Heilung/s'},tank:{key:'protection',label:'Schutz/s'}};
 const talentName=id=>Object.values(TALENTS).flat().find(t=>t.id===id)?.name||id;
 const specsOf=()=>Object.entries(CLASS_SPECS).flatMap(([classId,specs])=>specs.map(spec=>({classId,spec})));
-/** Das ganze Raster plus Zerlegung. `quick` misst weniger Stufen und Pfade (für Tests und schnelle Durchläufe). */
-export function buildSheet({quick=false}={}){
- const levels=quick?[1,10]:SHEET.levels,gear=quick?['none','rare']:SHEET.gear,paths=quick?[0]:SHEET.paths,rows=[];
- for(const {classId,spec} of specsOf())for(const level of levels)for(const path of level>=BALANCE.player.specLevel?paths:[null])for(const g of gear){
-  const runs=SHEET.targets.map(targets=>simulate({classId,spec,path,level,gear:g,targets})),avg=k=>runs.reduce((n,r)=>n+r[k],0)/runs.length,role=SPEC_DEFS[spec]?.role||'';
-  rows.push({classId,spec,role,group:roleGroup(role),path,level,gear:g,dps:round(avg('dps')),dpsSingle:round(runs[0].dps),dpsGroup:round(runs.at(-1).dps),hps:round(avg('hps')),mitigated:round(avg('mitigated')),shield:round(avg('shield')),protection:round(avg('mitigated')+avg('shield')),energy:round(avg('energy')),skills:runs.at(-1).skills.slice(0,6).map(s=>({name:s.name,share:round(s.share)}))});}
- // Abweichung vom Median je Stufe × Ausrüstung – das ist die Zahl, auf die alle Specs zulaufen sollen.
- // Je Rollengruppe eigener Median; Stufe 1 hat noch keine Spezialisierung und läuft außer Wertung.
- for(const level of levels)for(const g of gear)for(const group of Object.keys(METRIC)){const key=METRIC[group].key,cell=rows.filter(r=>r.level===level&&r.gear===g&&r.group===group),med=[...cell.map(r=>r[key])].sort((a,b)=>a-b)[cell.length>>1]||1;for(const r of cell){r.metric=r[key];r.vsMedian=pct(r[key]/med-1);r.flag=level>=BALANCE.player.specLevel&&Math.abs(r[key]/med-1)>SHEET.flag;}}
- const attribution=[];
- for(const {classId,spec} of specsOf())for(const level of quick?[10]:SHEET.attributionLevels)for(const path of quick?[0]:SHEET.paths){
-  const base=simulate({classId,spec,path,level,gear:SHEET.attributionGear,targets:SHEET.attributionTargets}),bare=simulate({classId,spec,path,level,gear:'none',targets:SHEET.attributionTargets});
-  const talents=base.talents.map(id=>{const r=simulate({classId,spec,path,level,gear:SHEET.attributionGear,drop:id,targets:SHEET.attributionTargets});return r.dropped?{id,name:talentName(id),dps:pct(base.dps/Math.max(1,r.dps)-1),hps:pct(base.hps/Math.max(1,r.hps)-1)}:{id,name:talentName(id),bound:true};}).sort((a,b)=>(b.dps??-1e9)-(a.dps??-1e9));
-  const stats=Object.keys(STAT_NAMES).map(k=>{const r=simulate({classId,spec,path,level,gear:SHEET.attributionGear,extra:{[k]:SHEET.statProbe},targets:SHEET.attributionTargets});return {stat:k,name:STAT_NAMES[k],dpsPerPoint:round((r.dps-base.dps)/SHEET.statProbe),hpsPerPoint:round((r.hps-base.hps)/SHEET.statProbe),mitigatedPerPoint:round((r.mitigated-base.mitigated)/SHEET.statProbe)};});
+const mean=(runs,keys)=>Object.fromEntries(keys.map(k=>[k,runs.reduce((n,r)=>n+r[k],0)/runs.length]));
+const KEYS=['dps','hps','mitigated','shield','energy','kills'];
+/** Kennzahl einer Zelle: je Zielzahl (Boss, Feldgruppe) Mittel über SHEET.seeds, dann Mittel beider Lagen. Tabelle und Zerlegung nutzen dasselbe. */
+export function blend(o){
+ const runs=SHEET.targets.map(targets=>{const rs=SHEET.seeds.map(seed=>simulate({...o,targets,seed}));return {...rs[0],...mean(rs,KEYS)};});
+ return {...runs.at(-1),...mean(runs,KEYS),dropped:runs[0].dropped,single:runs[0],group:runs.at(-1)};}
+
+/** Messzeilen und Zerlegung EINER Spezialisierung – die Einheit, die ein Worker rechnet. */
+export function specPart({classId,spec},{quick=false,attribution:withAttribution=true}={}){
+ const levels=quick?[1,10]:SHEET.levels,gear=quick?['none','rare']:SHEET.gear,paths=quick?[0]:SHEET.paths,rows=[],attribution=[];
+ for(const level of levels)for(const path of level>=BALANCE.player.specLevel?paths:[null])for(const g of gear){
+  const b=blend({classId,spec,path,level,gear:g}),role=SPEC_DEFS[spec]?.role||'';
+  rows.push({classId,spec,role,group:roleGroup(role),path,level,gear:g,dps:round(b.dps),dpsSingle:round(b.single.dps),dpsGroup:round(b.group.dps),hps:round(b.hps),mitigated:round(b.mitigated),shield:round(b.shield),protection:round(b.mitigated+b.shield),energy:round(b.energy),skills:b.group.skills.slice(0,6).map(s=>({name:s.name,share:round(s.share)}))});}
+ if(withAttribution)for(const level of quick?[10]:SHEET.attributionLevels)for(const path of quick?[0]:SHEET.paths){
+  const at={classId,spec,path,level,gear:SHEET.attributionGear},base=blend(at),bare=blend({...at,gear:'none'}),probe0=blend({...at,extra:{}});
+  const talents=base.talents.map(id=>{const r=blend({...at,drop:id});return r.dropped?{id,name:talentName(id),dps:pct(base.dps/Math.max(1,r.dps)-1),hps:pct(base.hps/Math.max(1,r.hps)-1)}:{id,name:talentName(id),bound:true};}).sort((a,b)=>(b.dps??-1e9)-(a.dps??-1e9));
+  const stats=Object.keys(STAT_NAMES).map(k=>{const r=blend({...at,extra:{[k]:SHEET.statProbe}});/* gegen dieselbe Probe ohne Werte: die Probe belegt trinket2 */return {stat:k,name:STAT_NAMES[k],dpsPerPoint:round((r.dps-probe0.dps)/SHEET.statProbe),hpsPerPoint:round((r.hps-probe0.hps)/SHEET.statProbe),mitigatedPerPoint:round((r.mitigated-probe0.mitigated)/SHEET.statProbe)};});
   attribution.push({classId,spec,level,path,gear:SHEET.attributionGear,dps:round(base.dps),gearShare:pct(base.dps/Math.max(1,bare.dps)-1),talents:quick?talents.slice(0,3):talents,stats,skills:base.skills.map(s=>({name:s.name,share:round(s.share)}))});}
+ return {rows,attribution};
+}
+/** Teile zusammenführen: Abweichung vom Median je Stufe × Ausrüstung – die Zahl, auf die alle Specs zulaufen sollen.
+ *  Je Rollengruppe eigener Median; Stufe 1 hat noch keine Spezialisierung und läuft außer Wertung. */
+function assemble(parts){
+ const rows=parts.flatMap(p=>p.rows),attribution=parts.flatMap(p=>p.attribution);
+ for(const level of new Set(rows.map(r=>r.level)))for(const g of new Set(rows.map(r=>r.gear)))for(const group of Object.keys(METRIC)){const key=METRIC[group].key,cell=rows.filter(r=>r.level===level&&r.gear===g&&r.group===group),med=[...cell.map(r=>r[key])].sort((a,b)=>a-b)[cell.length>>1]||1;for(const r of cell){r.metric=r[key];r.vsMedian=pct(r[key]/med-1);r.flag=level>=BALANCE.player.specLevel&&Math.abs(r[key]/med-1)>SHEET.flag;}}
  return {date:new Date().toISOString().slice(0,10),rules:SHEET,rows,attribution};
 }
+/** Das ganze Raster plus Zerlegung in einem Thread (Tests). `quick` misst weniger Stufen und Pfade. */
+export function buildSheet(opts={}){return assemble(specsOf().map(s=>specPart(s,opts)));}
+/** Dasselbe parallel: ein Worker je Spezialisierung. */
+export function buildSheetParallel(opts={}){
+ return Promise.all(specsOf().map(s=>new Promise((resolve,reject)=>{const w=new Worker(new URL(import.meta.url),{workerData:{spec:s,opts}});w.once('message',resolve);w.once('error',reject);w.once('exit',code=>code&&reject(new Error(s.spec+': Worker-Ende '+code)));}))).then(assemble);
+}
+if(!isMainThread&&workerData?.spec)parentPort.postMessage(specPart(workerData.spec,workerData.opts));
 
 function markdown(sheet){const L=[],gearName={none:'Startausrüstung',uncommon:'ungewöhnlich',rare:'selten',epic:'episch'},groupName={dps:'Schaden',heal:'Heilung',tank:'Tank'};
- L.push('# Balance-Sheet','',`Automatisch erzeugt von \`npm run balance:sheet\` · ${sheet.date} · ${SHEET.seconds} s Übungskampf, jede Zelle als Mittel aus Einzelziel (Boss) und drei Zielen (Feldgruppe), Zerlegung gegen zwei Ziele, feste Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit ${pct(SHEET.incoming)} % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über \`pathBuild\`, Stufe 1 ohne Spezialisierung.`,'',
+ L.push('# Balance-Sheet','',`Automatisch erzeugt von \`npm run balance:sheet\` · ${sheet.date} · ${SHEET.seconds} s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (${SHEET.foe.boss}× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit ${SHEET.seeds.length} festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit ${pct(SHEET.incoming)} % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über \`pathBuild\`, Stufe 1 ohne Spezialisierung.`,'',
   'Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** → Heilung/s (Ausstoß inkl. Überheilung), **Tank** → Schutz/s (verhinderter Schaden + Deckung). Zelle: Kennzahl (Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung). ⚑ = mehr als '+pct(SHEET.flag)+' % daneben (ab Stufe '+BALANCE.player.specLevel+').','');
  const levels=[...new Set(sheet.rows.map(r=>r.level))],gears=[...new Set(sheet.rows.map(r=>r.gear))];
  const flags=sheet.rows.filter(r=>r.flag);L.push('## Überblick','',`${flags.length} von ${sheet.rows.filter(r=>r.level>=BALANCE.player.specLevel).length} Messungen liegen mehr als ${pct(SHEET.flag)} % neben dem Median ihrer Rolle.`,'');
@@ -106,8 +137,8 @@ function markdown(sheet){const L=[],gearName={none:'Startausrüstung',uncommon:'
 function csv(sheet){const head=['klasse','spec','rolle','gruppe','pfad','stufe','ausruestung','schaden_s','schaden_einzelziel_s','schaden_drei_ziele_s','heilung_s','verhindert_s','deckung_s','schutz_s','kennzahl','abweichung_median_pct','randale_avg'];
  return [head.join(';'),...sheet.rows.map(r=>[r.classId,r.spec,r.role,r.group,r.path??'kern',r.level,r.gear,r.dps,r.dpsSingle,r.dpsGroup,r.hps,r.mitigated,r.shield,r.protection,r.metric,r.vsMedian,r.energy].join(';'))].join('\n')+'\n';}
 
-if(process.argv[1]===fileURLToPath(import.meta.url)){
- const quick=process.argv.includes('--quick'),t0=Date.now(),sheet=buildSheet({quick});
+if(isMainThread&&process.argv[1]===fileURLToPath(import.meta.url)){
+ const quick=process.argv.includes('--quick'),attribution=!process.argv.includes('--rows'),t0=Date.now(),sheet=await buildSheetParallel({quick,attribution});
  mkdirSync(new URL('../generated/',import.meta.url),{recursive:true});
  writeFileSync(new URL('../generated/balance-sheet.json',import.meta.url),JSON.stringify(sheet,null,1));
  writeFileSync(new URL('../generated/balance-sheet.csv',import.meta.url),csv(sheet));

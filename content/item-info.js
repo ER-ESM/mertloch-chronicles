@@ -5,7 +5,7 @@
 //            BALANCE wird hier nur gelesen. Keine Doppelpflege: wer eine Zahl ändert, ändert sie in items.js/tuning.js.
 //  why – wozu das Ding im Kampffluss dient. links – verwandte IDs (Gegenstand, Proc, Gebäude). terms – content/glossary.js.
 // Von Hand steht in ITEM_INFO/PROC_INFO nur effect/why/links/terms.
-import {BALANCE,rating,ratingK} from './balance.js';
+import {BALANCE,rating,ratingK,powerRate} from './balance.js';
 import {ITEM_CATALOG,PROCS} from './items.js';
 import {STAT_NAMES} from './equipment.js';
 
@@ -17,15 +17,15 @@ export function ratingShare(key,value,level=1){const r=BALANCE.ratings;
  return 0;}
 /** E-53: was N Punkte eines Werts für sich allein bewirken – eine Zeile je Wirkung aus STAT_EFFECTS.
  *  value in der angegebenen Einheit; Prozentwerte als Anteil ×100 gerundet. */
-export function statYield(key,value,level=1){const W=BALANCE.power,P=BALANCE.player;if(!value)return [];
+export function statYield(key,value,level=1){const W=k=>powerRate(k,level),P=BALANCE.player;if(!value)return [];
  switch(key){
   case 'stamina':return [{label:'Leben',value:value*P.hpPerStamina,unit:'Leben',source:'BALANCE.player.hpPerStamina'}];
-  case 'might':return [{label:'Schaden',value:pct(value*W.might),unit:'%',source:'BALANCE.power.might'}];
+  case 'might':return [{label:'Schaden',value:pct(value*W('might')),unit:'%',source:'BALANCE.power.might'}];
   case 'finesse':return [{label:'Glückstreffer-Chance',value:pct(ratingShare('crit',value,level)),unit:'%',source:'BALANCE.ratings.crit'},
    {label:'Tempo',value:pct(ratingShare('haste',value,level)),unit:'%',source:'BALANCE.ratings.haste'}];
-  case 'wit':return [{label:'Heilung',value:pct(value*W.healWit),unit:'%',source:'BALANCE.power.healWit'},
-   {label:'Deckung',value:pct(value*W.shieldWit),unit:'%',source:'BALANCE.power.shieldWit'},
-   {label:'Randale',value:round(value*W.energyRegenWit,2),unit:'je s',source:'BALANCE.power.energyRegenWit'}];
+  case 'wit':return [{label:'Heilung',value:pct(value*W('healWit')),unit:'%',source:'BALANCE.power.healWit'},
+   {label:'Deckung',value:pct(value*W('shieldWit')),unit:'%',source:'BALANCE.power.shieldWit'},
+   {label:'Randale',value:round(value*W('energyRegenWit'),2),unit:'je s',source:'BALANCE.power.energyRegenWit'}];
   case 'armorRating':return [{label:'Schadensminderung',value:pct(ratingShare('armorRating',value,level)),unit:'%',source:'BALANCE.ratings.armor'}];
  }
  return [];}

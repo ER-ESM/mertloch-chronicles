@@ -1,16 +1,19 @@
 // Deterministic pacing budget, not a human play-time measurement.
 // Real combat/XP/regen, single pulls, 16–24 seconds search/travel between kills.
+// Rotation: dieselbe wie Balance-Sheet und Balance-Bericht (scripts/balance-rotation.mjs, E-59).
 import {Game} from '../engine.js';
 import {makeEnemy} from '../encounters.js';
 import {rng,distance} from '../world.js';
 import {available} from '../progression.js';
-import {TALENTS,learnTalent} from '../talents.js';
+import {TALENTS,learnTalent,classSpecs} from '../talents.js';
+import {BALANCE} from '../content/index.js';
+import {rotate} from './balance-rotation.mjs';
 import {writeFileSync,mkdirSync} from 'node:fs';
 const world=()=>({id:'pacing',spawn:{x:0,y:0},npc:{x:0,y:10},landmarks:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[b]});
 function run(classId,seed,mixed){const g=new Game(world(),{classId}),random=rng(seed);g.random=rng(seed+999);g.player.x=500;let combat=0,travel=0,deaths=0,kills=0,four=null,quests=0;
  const advance=seconds=>{for(let t=0;t<seconds;t+=.05)g.tick(.05);};
- while(g.player.level<6&&g.time<7200){g.player.inCombat=0;for(const t of TALENTS[g.rpg.talents.spec])learnTalent(g,t.id);const type=random()<.15?'cultist':'wolf',hp=type==='cultist'?600:random()<.5?360:460,e=makeEnemy({x:g.player.x+30,y:g.player.y},kills+1,{type,hp,aggro:true,ai:'combat'});g.enemies=[e];g.target=e;const start=g.time;
-  for(let i=0;i<1200&&e.hp>0&&!g.dead;i++){if(e.cast?.interruptible&&available(g,'interrupt')&&g.cooldowns.interrupt===0)g.action('interrupt');if(g.gcd===0){const ready=id=>available(g,id)&&g.cooldowns[id]===0;let id='strike';if(ready('heal')&&g.player.hp/g.player.maxHp<.65)id='heal';else if(ready('buff')&&!g.buffs.remaining)id='buff';else if(ready('burst')&&e.mark>0)id='burst';else if(ready('mark')&&!e.mark&&e.hp>120)id='mark';else if(ready('throw'))id='throw';g.action(id);}if(distance(g.player,e)>45){const d=distance(g.player,e);g.move(g.player,(e.x-g.player.x)/d*4,(e.y-g.player.y)/d*4);}g.tick(.05);}
+ while(g.player.level<6&&g.time<7200){g.player.inCombat=0;if(!g.rpg.talents.spec&&g.player.level>=BALANCE.player.specLevel){g.rpg.talents.spec=classSpecs(classId)[seed%3];g.rpg.talentBuilds[classId]=g.rpg.talents;g.refreshStats();}for(const t of TALENTS[g.rpg.talents.spec]||[])learnTalent(g,t.id);const type=random()<.15?'cultist':'wolf',hp=type==='cultist'?600:random()<.5?360:460,e=makeEnemy({x:g.player.x+30,y:g.player.y},kills+1,{type,hp,aggro:true,ai:'combat'});g.enemies=[e];g.target=e;const start=g.time;
+  for(let i=0;i<1200&&e.hp>0&&!g.dead;i++){if(e.cast?.interruptible&&available(g,'interrupt')&&g.cooldowns.interrupt===0)g.action('interrupt');if(!g.casting&&g.gcd<=0)rotate(g,{healAt:.65});if(distance(g.player,e)>45){const d=distance(g.player,e);g.move(g.player,(e.x-g.player.x)/d*4,(e.y-g.player.y)/d*4);}g.tick(.05);}
   combat+=g.time-start;if(g.dead){deaths++;g.respawn();g.player.x=500;}else if(e.hp<=0)kills++;else throw Error('Unfinished encounter');g.enemies=[];g.target=null;
   const walk=16+random()*8,before=g.time;advance(walk);while(g.player.hp<g.player.maxHp*.8)advance(1);travel+=g.time-before;
   // Mixed route: one side quest per 15 kills, 3 min budget for NPC travel/activity.

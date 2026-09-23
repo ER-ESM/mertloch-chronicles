@@ -31,7 +31,7 @@ test('Rotation recomputes portrait size from viewport and HUD, independent of pr
 });
 test('Skill tooltip damage follows the combat model after a balance change, without stale prose',()=>{
  const g=new Game(world()),model=SKILL_DAMAGE.dieter.strike,old=model.weapon;
- assert.equal(old,2);assert.doesNotMatch(KITS.dieter[0].text,/\d/);
+ assert.ok(old>0&&old!==2.57);assert.doesNotMatch(KITS.dieter[0].text,/\d/);
  try{
   model.weapon=2.57;
   const html=describeCard(g,'skill','strike');

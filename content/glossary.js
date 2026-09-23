@@ -3,7 +3,7 @@
 // Kurzanzeige, `long` nennt die Mechanik mit Zahlen – immer aus BALANCE und den Definitionen berechnet, nie von Hand
 // gepflegt. Jedes kampfrelevante Element trägt `info:{effect,why,links,terms}` an seiner Definition; den `numbers`-Block
 // baut describe(kind,id) aus cd/cost/Schadensmodell/effects. Vertrag und Shift-Regel: docs/UEBERGABE-UI-2026-09-17.md §7.
-import {BALANCE,rating,ratingK} from './balance.js';
+import {BALANCE,rating,ratingK,powerRate} from './balance.js';
 import {STAT_NAMES} from './equipment.js';
 import {BASE_SKILLS,KITS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,CLASS_LESSONS} from './skills.js';
 import {SKILL_DAMAGE,CAST_TIMES,COMBAT_RULES} from './combat.js';
@@ -21,13 +21,13 @@ export const metres=u=>Math.round(u/8*10)/10;
 
 export const GLOSSARY={
  randale:{name:'Randale',short:'Dein Kraftstoff: Kniffe kosten Randale, Treffer und Kills füllen sie nach. Ab '+MO.surgeAt+' bist du in Fahrt: der Spezialkniff schlägt '+Math.round(MO.surgeBonus*100)+' % härter.',
-  long:`Skala 0 bis 100. Außerhalb des Kampfes fließen ${P.energyRegen} Randale je Sekunde nach, im Kampf ${MO.combatEnergyRegen}; jeder Punkt Bastelgrips gibt zusätzlich ${nice(W.energyRegenWit)} je Sekunde. Dein Grundangriff zahlt je nach Klasse 9 bis 19 zurück, jeder Kill ${MO.energyOnKill}. Im Kampf reicht das nicht für alles: Wer jeden Kniff auf Abklingzeit drückt, steht ohne Randale da. Wer sie über ${MO.surgeAt} hält, ist „in Fahrt“ – der Spezialkniff schlägt dann ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug ihrer Kosten). Fehlt Randale, zündet der Kniff nicht und die Leiste meldet „Nicht genug Randale“.`},
+  long:`Skala 0 bis 100. Außerhalb des Kampfes fließen ${P.energyRegen} Randale je Sekunde nach, im Kampf ${MO.combatEnergyRegen}; jeder Punkt Bastelgrips gibt zusätzlich ${nice(W.energyRegenWit)} je Sekunde (Stufe 1; der Kurs steigt mit der Stufe). Dein Grundangriff zahlt je nach Klasse 9 bis 19 zurück, jeder Kill ${MO.energyOnKill}. Im Kampf reicht das nicht für alles: Wer jeden Kniff auf Abklingzeit drückt, steht ohne Randale da. Wer sie über ${MO.surgeAt} hält, ist „in Fahrt“ – der Spezialkniff schlägt dann ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug ihrer Kosten). Fehlt Randale, zündet der Kniff nicht und die Leiste meldet „Nicht genug Randale“.`},
  spezialkniff:{name:'Spezialkniff',short:'Ein starker Kniff mit Randale-Kosten und Abklingzeit; seine Zusatzwirkung bestimmt dein Hauptbaum.',
   long:'Gegen markierte Ziele trifft er stärker und entfernt die Markierung. Randale-Kosten, Abklingzeit und Schadenswert stehen beim jeweiligen Kniff. Talente und die eigene Hauptbaum-Mechanik können ihn verstärken.'},
  schwung:{name:'Schwung',short:'Nach jedem Kill kurz schneller, mit Randale obendrauf – der Kill ist die Belohnung.',
   long:`${MO.duration} s lang, bis zu ${MO.maxStacks} Stapel. Je Stapel ${pc(MO.hastePerStack)} mehr Tempo – das zählt über die Tempo-Kappe von ${pc(R.haste.cap)} hinaus. Jeder Kill gibt zusätzlich ${MO.energyOnKill} Randale. Direkt nach dem letzten Kill heilt Verschnaufen ${MO.restRegen} Leben je Sekunde für ${MO.restSeconds} s.`},
  deckung:{name:'Deckung',short:'Ein Schadenspolster vor deinem Leben. Auch „Schild“ genannt.',
-  long:`Eingehender Schaden geht zuerst gegen die Deckung, erst der Rest ans Leben. Höchstens ${pc(P.guardCap)} deines Maximallebens. Jeder Punkt Bastelgrips verstärkt neue Deckung um ${pc(W.shieldWit)}. Außerhalb des Kampfes zerfällt Deckung mit 5 Punkten je Sekunde.`},
+  long:`Eingehender Schaden geht zuerst gegen die Deckung, erst der Rest ans Leben. Höchstens ${pc(P.guardCap)} deines Maximallebens. Jeder Punkt Bastelgrips verstärkt neue Deckung um ${pc(W.shieldWit)} (Stufe 1; der Kurs steigt mit der Stufe). Außerhalb des Kampfes zerfällt Deckung mit 5 Punkten je Sekunde.`},
  parade:{name:'Parade',short:'Ein kurzes Fenster, in dem du den nächsten Treffer schluckst und zurückgibst.',
   long:'Fenster 0,8 s (Dieter), 0,9 s (Anni) oder 1,1 s (Kevin), Abklingzeit 7 s, kostenlos. Ein Treffer im Fenster wird abgefangen, reflektiert 55 bis 75 Schaden, gibt 20 Randale; Dieter heilt zusätzlich 35 Leben. Eine geglückte Parade ist der Proc-Auslöser parry. Sie braucht einen Schild in der Nebenhand.'},
  ausweichen:{name:'Ausweichen',short:'Ein kurzer Satz zur Seite mit 0,4 s Schutz vor Treffern.',
@@ -52,11 +52,11 @@ export const GLOSSARY={
  stamina:{name:STAT_NAMES.stamina,short:'Leben – sonst nichts. Der Wert, der dich länger stehen lässt.',
   long:`${P.hpPerStamina} Leben je Punkt über dem Grundwert ${P.baseStamina}. Dein Grundleben wächst davon unabhängig: ${P.baseHp} auf Stufe 1, ${P.hpPerLevel} je weiterer Stufe.`},
  might:{name:STAT_NAMES.might,short:'Schaden – jeder Angriff und jeder Kniff trifft härter.',
-  long:`Je Punkt ${pc(W.might)} mehr Schaden, für Autoangriff, Kniffe, Markierungen und Flächen gleichermaßen. Wumms wächst mit ${P.primaryPerLevel} Punkten je Stufe. Heilung, Deckung und Rüstung hängen nicht daran.`},
+  long:`Je Punkt ${pc(W.might)} mehr Schaden auf Stufe 1, ${pc(powerRate('might',20))} auf Stufe 20 – der Kurs steigt mit der Stufe wie bei Taktgefühl. Das gilt für Autoangriff, Kniffe, Markierungen und Flächen gleichermaßen. Wumms wächst mit ${P.primaryPerLevel} Punkten je Stufe. Heilung, Deckung und Rüstung hängen nicht daran.`},
  finesse:{name:STAT_NAMES.finesse,short:'Glückstreffer-Chance und Tempo.',
   long:`Glückstreffer-Chance = ${pc(R.crit.base)} + r ÷ (r + ${R.crit.k} + ${R.crit.perLevel} × Stufe) mit r = ${nice(R.crit.finesseWeight)} × Taktgefühl, Kappe ${pc(R.crit.cap)}. Tempo = r ÷ (r + ${R.haste.k} + ${R.haste.perLevel} × Stufe) mit r = ${nice(R.haste.finesseWeight)} × Taktgefühl, Kappe ${pc(R.haste.cap)}; Tempo beschleunigt den Autoangriff und kürzt die Abklingzeiten samt globaler Abklingzeit. Der Kurs steigt mit deiner Stufe: ein Punkt bringt auf Stufe 1 ${pc(rating(R.crit.finesseWeight,ratingK(R.crit,1)))} Glückstreffer-Chance, auf Stufe 20 noch ${pc(rating(R.crit.finesseWeight,ratingK(R.crit,20)))}.`},
  wit:{name:STAT_NAMES.wit,short:'Heilung, Deckung und Randale-Nachschub.',
-  long:`Je Punkt ${pc(W.healWit)} mehr Heilung, ${pc(W.shieldWit)} mehr Deckung und ${nice(W.energyRegenWit)} Randale je Sekunde zusätzlich. Schaden hängt nicht daran.`},
+  long:`Je Punkt ${pc(W.healWit)} mehr Heilung, ${pc(W.shieldWit)} mehr Deckung und ${nice(W.energyRegenWit)} Randale je Sekunde zusätzlich – auf Stufe 1. Der Kurs steigt mit der Stufe (Stufe 20: ${pc(powerRate('healWit',20))} Heilung je Punkt). Schaden hängt nicht daran.`},
  armorRating:{name:STAT_NAMES.armorRating,short:'Weniger erlittener Schaden – mit abnehmendem Ertrag und Kappe.',
   long:`Minderung = r ÷ (r + ${R.armor.k} + ${R.armor.perLevel} × Stufe), Kappe ${pc(R.armor.cap)}. Beispiel Stufe 10 mit 20 Dicke Haut: ${pc(rating(20,ratingK(R.armor,10)))} weniger Schaden. Weil der Nenner je Stufe wächst, muss Dicke Haut mitwachsen, um gleich stark zu bleiben.`},
  proc:{name:'Proc',short:'Eine Regel „Wenn X, dann Y“ mit Zeitfenster – der Kern jedes Talentbaums.',
@@ -96,7 +96,7 @@ export const GLOSSARY={
  bodenangriff:{name:'Bodenangriff',short:'Ein Einschlag auf einen gewählten Bodenpunkt nach kurzer Verzögerung.',
   long:`${metres(GROUND_SKILL.radius)} m Radius, ${GROUND_SKILL.delay} s Verzögerung, bis zu 5 Ziele, ${GROUND_SKILL.damage} Grundschaden, ${GROUND_SKILL.cd} s Abklingzeit. Trifft auch neutrale Gegner. Wirf ihn dorthin, wo die Gruppe gleich steht – die Verzögerung ist Teil der Rechnung.`},
  heilung:{name:'Heilung',short:'Stellt Leben wieder her; Bastelgrips verstärkt sie.',
-  long:`Geheilt wird Grundwert × (1 + ${pc(W.healWit)} je Bastelgrips). Was über dein Maximalleben hinausgeht, ist Überheilung. Jede direkte Heilung ist der Proc-Auslöser heal – darauf bauen ganze Talentbäume.`},
+  long:`Geheilt wird Grundwert × (1 + ${pc(W.healWit)} je Bastelgrips auf Stufe 1, der Kurs steigt mit der Stufe). Was über dein Maximalleben hinausgeht, ist Überheilung. Jede direkte Heilung ist der Proc-Auslöser heal – darauf bauen ganze Talentbäume.`},
  lebensraub:{name:'Lebensraub',short:'Ein Anteil deines Schadens kommt als Leben zurück.',
   long:'Gilt nur gegen markierte Ziele: Putzpyramide 15 %, Zapfmeister 6 %, dazu Talente mit markedLeech (5 bis 6 %). Die Provisionskur gibt 8 s lang 35 % auf allen Schaden, egal ob markiert. Die Anteile addieren sich.'},
  reichweite:{name:'Reichweite',short:'Wie weit ein Kniff trägt – gemessen in Metern.',

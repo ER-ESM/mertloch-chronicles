@@ -11,10 +11,12 @@ export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,fir
 export const COMBAT_TEXT={surge:'In Fahrt',surgeHint:'In Fahrt: Spezialkniff +20 %',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
 // (flat + weapon × rolled auto damage) × (1 + bonusPct).
 // No damage model = legacy fixed values, so old content can migrate incrementally.
+// E-60: Finisher Waffe ×9,9 → ×5,2 (Nutzerbefund: der Bierzelt-Abriss oneshottete auf Stufe 3 jeden Feldgegner), Aufbaukniff ×2 → ×2,6.
+// Gleicher Waffenfaktor für alle Klassen; der Klassenabstand steht im festen Anteil (Bärbel castet 1,1 s und trifft Nachbarn).
 export const SKILL_DAMAGE={
- dieter:{strike:{flat:14,weapon:2},burst:{flat:30,weapon:9.9}},
- baerbel:{strike:{flat:14,weapon:2},burst:{flat:14,weapon:9.9}},
- kevin:{strike:{flat:8,weapon:2},burst:{flat:34,weapon:9.3}},
+ dieter:{strike:{flat:14,weapon:2.6},burst:{flat:30,weapon:5.2}},
+ baerbel:{strike:{flat:14,weapon:2.6},burst:{flat:40,weapon:5.2}},
+ kevin:{strike:{flat:8,weapon:2.6},burst:{flat:34,weapon:5.2}},
  shared:{throw:{flat:24,weapon:3},ground:{flat:125},interrupt:{flat:35},slam:{flat:44,weapon:3}}
 };
 // Markierung und Wurf gehen in Bewegung; nur Finisher, Heilung und Bodenzauber brauchen den Stand.
