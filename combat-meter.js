@@ -28,7 +28,7 @@ function record(g,kind,amount,excess,source,critical=false,actor=g.member){
  if(!Number.isFinite(amount)||!Number.isFinite(excess)||amount<0||excess<0||amount+excess<=0)return;
  const m=meter(g),s=m.current||beginMeterCombat(g);
  for(const scope of [s,m.overall]){
-  const a=scope.actors[actor.id]||(scope.actors[actor.id]={id:actor.id,name:actor.name,color:actor.color,abilities:{damage:{},healing:{}},...totals()});
+  const a=scope.actors[actor.id]||(scope.actors[actor.id]={id:actor.id,name:actor===g.member?(g.heroName||actor.name):actor.name,color:actor.color,abilities:{damage:{},healing:{}},...totals()});
   const rows=a.abilities[kind],r=rows[source.id]||(rows[source.id]={id:source.id,name:source.name,amount:0,excess:0,hits:0,crit:0,max:0});
   r.amount+=amount;r.excess+=excess;r.hits++;r.crit+=critical?1:0;r.max=Math.max(r.max,amount);
   scope[kind]+=amount;a[kind]+=amount;const extra=kind==='healing'?'overheal':'overkill';scope[extra]+=excess;a[extra]+=excess;

@@ -77,3 +77,15 @@ test('empty pulls and invalid values do not create bogus rows or divide by zero'
 test('pausing the game does not increase elapsed combat time',()=>{
  const g=game();event(g);g.time=3;g.paused=true;g.tick(.05);assert.equal(meterReport(g).seconds,3);
 });
+
+
+test('DPS and healing retain the character name in current, overall and finished fights without renaming companions',()=>{
+ for(const classId of ['dieter','baerbel','kevin']){
+  const g=game({classId});g.hero={id:'hero-test',name:'Pfandpirat'};event(g);recordMeterHealing(g,60,40);
+  const ally={id:'companion:test',name:'Kumpel Karl',color:'#ffffff'};
+  recordMeterDamage(g,enemy,20,20,'Kelle',false,ally);recordMeterHealing(g,20,10,'heal',ally);
+  const check=selection=>{for(const kind of ['damage','healing']){const rows=meterReport(g,selection,kind).actors;assert.equal(rows.find(a=>a.id===classId).name,'Pfandpirat');assert.equal(rows.find(a=>a.id===ally.id).name,'Kumpel Karl');}};
+  check('current');check('overall');g.time=3;finishMeterCombat(g);check('1');check('overall');
+ }
+ const legacy=game();event(legacy);assert.equal(meterReport(legacy).actors[0].name,legacy.member.name);
+});
