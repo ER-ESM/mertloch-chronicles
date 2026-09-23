@@ -48,7 +48,7 @@ export const BUDE_HOUSE={
  // Einrichtung des Erdgeschosses (Sprite-Baukasten).
  items:[
   // Schankraum
-  {s:'kanonenofen',x:14,y:86},{s:'bild-landschaft',x:15,y:75},{s:'flaschenbord',x:84,y:75},{s:'dartscheibe',x:145,y:75},
+  {s:'kanonenofen',x:74,y:58},{s:'bild-landschaft',x:15,y:75},{s:'flaschenbord',x:84,y:75},{s:'dartscheibe',x:145,y:75},
   {s:'stehtisch',x:107,y:128},{s:'bierkrug',x:104,y:128},{s:'flasche',x:110,y:126},
   {s:'tisch-rund',x:156,y:110},{s:'aschenbecher',x:156,y:109},{s:'stuhl',x:141,y:110},{s:'stuhl',x:156,y:124},
   {s:'barhocker',x:70,y:118},{s:'barhocker',x:90,y:118},{s:'kisten-stapel',x:200,y:163},
