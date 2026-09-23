@@ -17,6 +17,7 @@ try{
  const state=await run(`const p=document.querySelector('.quest-panel'),cs=getComputedStyle(p),r=p.getBoundingClientRect();return {text:p.innerText,width:r.width,scroll:p.scrollHeight>p.clientHeight+1,overflow:cs.overflowY,focusTasks:p.querySelectorAll('.qt-quest.is-focus .quest-task').length,others:p.querySelectorAll('.quest-others .qt-quest').length,rect:{x:r.x,y:r.y,w:r.width,h:r.height}};`);
  console.log(JSON.stringify(state));
  assert.doesNotMatch(state.text,/POO-TANG|Weitere Aufträge|Klick verfolgt|BELOHNUNG/i,'kein Kopf, kein Erklärtext');
+ const mini=await run(`return document.querySelector('#miniButton')?.getBoundingClientRect().bottom??0;`);assert.ok(state.rect.y>=mini,'Verfolgung beginnt unter der Minikarte ('+state.rect.y+' ≥ '+mini+')');
  assert.ok(state.width>=280,'breiter als vorher (212 px)');assert.equal(state.scroll,false,'kein Scrollen');assert.equal(state.focusTasks,1,'nur der nächste Schritt');assert.ok(state.others>=2,'weitere Aufträge darunter');
  await b.screenshot(dir+'/verfolgung.jpg');
  // Tooltip über dem verfolgten Auftrag

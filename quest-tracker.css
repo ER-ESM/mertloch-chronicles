@@ -3,6 +3,8 @@
    Regeln für .quest-panel über style/polish/rpg/bierdeckel/ui-chrome/panel-pages verteilt sind. Touch blendet die Verfolgung aus. */
 body:not(.touch-mode) .quest-panel.quest-tracker{
  --qt-gold:#f3cf7a;--qt-gold-2:#d8b86a;--qt-text:#f1e4c4;--qt-dim:#c9bb98;--qt-ok:#9fe08a;
+ /* direkt unter der Minikarte: minimap.js führt --minimap-bottom bei Größe/Form/HUD-Editor nach; eigene HUD-Position (inline) gewinnt */
+ top:calc(var(--minimap-bottom,194px) + 6px);
  width:290px;max-height:none;overflow:visible;padding:4px 2px 6px 18px;cursor:default;
  border:0;border-image:none;border-radius:0!important;box-shadow:none;color:var(--qt-text);
  background:linear-gradient(to left,#0b1612b8 0%,#0b161288 62%,#0b161200 100%);background-clip:border-box;
