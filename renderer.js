@@ -97,13 +97,13 @@ function hitFlash(c,e,from,draw){const k=Math.min(1,(e.hurt||0)/.15);if(!(k>0)||
 function questBadge(c,x,y,glyph,framed,time=0){
  if(hideLabels)return;
  const size=framed?19:14,bob=Math.sin(time*2.4)*(framed?2:1.2),cy=y-size*.62-bob,busy=glyph==='…',alpha=c.globalAlpha;
- const paint=cc=>{cc.globalAlpha=alpha;
+ const paint=(cc,fade=1)=>{cc.globalAlpha=alpha*fade;
   if(!busy){const pulse=.6+.4*Math.sin(time*3.1),r=size*1.25,g=cc.createRadialGradient(x,cy,0,x,cy,r);g.addColorStop(0,`rgba(255,206,110,${(framed?.55:.36)*pulse})`);g.addColorStop(.55,`rgba(255,190,90,${(framed?.2:.12)*pulse})`);g.addColorStop(1,'rgba(255,190,90,0)');cc.fillStyle=g;cc.fillRect(x-r,cy-r,r*2,r*2);}
   cc.font=`bold ${Math.round(size*(glyph==='!'?1.45:1.3))}px 'Jersey 15','Trebuchet MS',sans-serif`;cc.textAlign='center';cc.textBaseline='middle';cc.lineJoin='round';
   cc.lineWidth=framed?4.5:3.5;cc.strokeStyle='#2a1808';cc.strokeText(glyph,x,cy);
   const f=cc.createLinearGradient(0,cy-size*.7,0,cy+size*.7);if(busy){f.addColorStop(0,'#e4dccb');f.addColorStop(1,'#9a9282');}else{f.addColorStop(0,'#fff4c2');f.addColorStop(.45,'#ffd35a');f.addColorStop(1,'#d8891e');}
   cc.fillStyle=f;cc.fillText(glyph,x,cy);};
- if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:1,paint});return;}
+ if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:1,paint,b:{x:x-size*.6,y:cy-size,w:size*1.2,h:size*2}});return;}
  c.save();paint(c);c.restore();
 }
 function label(c,text,x,y,color='#ead9a7',size=8){if(hideLabels)return;c.save();c.font=size>=14?`bold ${size}px 'Jersey 15','Trebuchet MS',sans-serif`:`800 ${size}px Nunito,'Trebuchet MS',sans-serif`;const width=c.measureText(text).width,b={x:x-width/2-2,y:y-size-2,w:width+4,h:size+5};if(size<11&&labelBoxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)){c.restore();return;}labelBoxes.push(b);if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:c.globalAlpha,font:c.font,text,x:Math.round(x),y:Math.round(y),color,b});c.restore();return;}c.textAlign='center';c.strokeStyle='#1d2b24f0';c.lineWidth=2.2;c.lineJoin='round';c.strokeText(text,Math.round(x),Math.round(y));c.fillStyle=color;c.fillText(text,Math.round(x),Math.round(y));c.restore();}
@@ -153,7 +153,8 @@ export class Renderer {
    // Sprechblasen zuerst vermessen (Probelauf auf 1×1-Leinwand): Namensschilder darunter entfallen, solange die Blase steht.
    let bubbleBoxes=[];if(sp){const pr=this.probeCtx||(this.probeCtx=Object.assign(document.createElement('canvas'),{width:1,height:1}).getContext('2d'));pr.setTransform(sp.t);bubbleBoxes=drawBossSpeech(pr,sp.bubbles,sp.opts).map(r=>({x:r.x+sp.opts.ox,y:r.y+sp.opts.oy,w:r.w,h:r.h}));}
    const under=b=>b&&bubbleBoxes.some(r=>b.x<r.x+r.w+4&&b.x+b.w>r.x-4&&b.y<r.y+r.h+4&&b.y+b.h>r.y-4);
-   for(const l of q){if(under(l.b))continue;const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a;if(l.paint){c.save();l.paint(c);c.restore();continue;}c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
+   /* Schilder über dem eigenen Helden werden durchscheinend: die Figur bleibt immer sichtbar (Persona-Befund 2026-09-24) */const hero=q.hero,overHero=b=>hero&&b&&b.x<hero.x+hero.w&&b.x+b.w>hero.x&&b.y<hero.y+hero.h&&b.y+b.h>hero.y;
+   for(const l of q){if(under(l.b))continue;const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a*(overHero(l.b)?.35:1);if(l.paint){c.save();l.paint(c,overHero(l.b)?.35:1);c.restore();continue;}c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
    c.globalAlpha=1;
    if(sp){const t=sp.t;c.save();c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);this.speechLayout=drawBossSpeech(c,sp.bubbles,sp.opts);c.restore();}
    c.setTransform(1,0,0,1,0,0);}
@@ -261,7 +262,7 @@ export class Renderer {
     const bounds=this.canvas.getBoundingClientRect(),obstacles=bubbles.length?[...document.querySelectorAll('.hud,.region-label,.action-area,.game-popup,.attack-warning:not(.hidden),.touch-topline,#touchMenu,#touchContext,#touchStick,#touchActions,#touchUtility,#buffStrip,#touchCancelAim,#tutorialGuide')].map(el=>el.getBoundingClientRect()).filter(b=>b.width&&b.height).map(b=>({x:(b.left-bounds.left)/this.zoom,y:(b.top-bounds.top)/this.zoom,w:b.width/this.zoom,h:b.height/this.zoom})):[];
     obstacles.push({x:p.x-ox-12,y:p.y-oy-30,w:24,h:34});
     // Sprechblasen auf der Schrift-Ebene: über dem Licht (nicht abgedunkelt) und in voller Auflösung.
-    if(labelQueue&&c===labelTarget){labelQueue.speech={t:c.getTransform(),bubbles,opts:{ox,oy,width:W,height:H,zoom:this.zoom,obstacles}};this.speechLayout=[];}
+    if(labelQueue&&c===labelTarget){labelQueue.hero={x:p.x-11,y:p.y-34-(g.stairLift?.()||0),w:22,h:34};labelQueue.speech={t:c.getTransform(),bubbles,opts:{ox,oy,width:W,height:H,zoom:this.zoom,obstacles}};this.speechLayout=[];}
     else this.speechLayout=drawBossSpeech(c,bubbles,{ox,oy,width:W,height:H,zoom:this.zoom,obstacles});
     // Effektschicht (E-47) zuletzt: Sie nimmt das fertige Weltbild als Textur.
     if(effects)this.fx.render({ox,oy,W,H},g,w,time,this.light);
