@@ -756,3 +756,19 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Offen.** Kevin gegen Bosse (Balance-Rolle): Klassen-Anpassung oder Boss-Leben über `content/tuning.js` – nicht über die allgemeinen Kurse, die würden die anderen Klassen verschieben.
 
 **Verworfen.** *Nur Anzeige verkleinern (Werte ÷ Faktor, Kurse × Faktor)* – ändert nichts an der Stärke, der Auftrag will geringere Werte am Anfang. *Kurse unverändert lassen* – dann wäre ein Ausrüstungspunkt fast nichts wert (Todesfälle im Bericht 1 → 7). *Dicke Haut weiter dreifach neben den Punkten* – dann stimmt die Zahl „Punkte je Teil“ nicht mehr.
+
+## E-57 · Balance-Sheet: fertige Rechentabellen statt Einzelrechnungen (23.09.2026)
+
+**Anlass.** Nutzerfrage: „Wie ermittelst du aktuell Balancing und DPS- oder HPS-Zahlen? Ich habe mir vorgestellt, dass es für jede Klasse mit unterschiedlichen Builds auf unterschiedlichen Stufen fertige Berechnungstabellen gibt … vollautomatisch … wie viel wirkt Gear auf die DPS, wie viel einzelne Talente oder einzelne Skills anteilsmäßig … damit alle Klassen mit allen Specs in unterschiedlichen Gearstufen auf dieselben Zahlen kommen.“
+
+**Befund.** Es gab drei Einzelskripte: `content:balance` (Zeit bis zum Kill und verlorenes Leben je Klasse × Gegner × Stufe, fünf Testteile), `scripts/spec-sim.mjs` (Schaden/Heilung je Spec gegen eine Puppe, eine Stufe, ohne Ausrüstung) und `scripts/class-pacing.mjs` (Weg von Kill zu Kill). Keines zerlegte die Zahlen nach Ausrüstung, Talenten, Werten oder Kniffen.
+
+**Entschieden.**
+1. **`npm run balance:sheet`** (`scripts/balance-sheet.mjs`) rechnet ein festes Raster: 9 Spezialisierungen × Talentpfad 0–2 × Stufe 1/5/10/15/20/30 × Ausrüstung Start/ungewöhnlich/selten/episch (voller Satz auf Charakterstufe, Werteprofile im Wechsel). 576 Messungen in rund 35 s, deterministisch.
+2. **Kennzahl je Rolle:** Schaden-Specs → Schaden/s, Heiler → Heilung/s (Ausstoß inklusive Überheilung), Tanks → Schutz/s (verhinderter Schaden + Deckung). Die Puppen treffen jede Sekunde mit 3 % des Grundlebens über den normalen Trefferweg, damit Rüstung, Deckung und Heilung wirken. Jede Zelle zeigt die Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung; ⚑ ab 15 %.
+3. **Zerlegung** für jede Spezialisierung auf Stufe 10 und 20 (seltene Ausrüstung): Anteil der Ausrüstung gegenüber Startausrüstung, Beitrag jedes Talents (einmal weglassen), Wert je Wertpunkt (+10 Punkte je Wert), Anteil jedes Kniffs am Schaden.
+4. **Ausgabe:** `content/BALANCE-SHEET.md` (eingecheckt wie der Balance-Bericht), `generated/balance-sheet.csv` für Tabellenprogramme, `generated/balance-sheet.json`. Pipeline-Schritt „Balance“ führt beide Berichte.
+
+**Erster Befund (nicht behoben, Balance-Backlog):** 280 von 540 Messungen liegen mehr als 15 % neben dem Median ihrer Rolle. Auffällig: Kevin „Jagd“ Pfad 1 bricht ab Stufe 15 auf rund 45 Schaden/s ein; Dieter „Brauerei“ heilt auf Stufe 5 nicht; Bärbels Schaden-Specs liegen auf Stufe 5 fast doppelt über dem Median.
+
+**Verworfen.** *Formeln statt Simulation* (DPS aus Kniffwerten ausrechnen) – Procs, Talente als Regeln (E-12), Randale-Knappheit und Abklingzeiten greifen ineinander; nur der echte Kampfablauf trifft sie alle. *Den Balance-Bericht erweitern* – der misst Gegner-Korridore, das Sheet misst Klassen gegeneinander; zwei Fragen, zwei Tabellen.

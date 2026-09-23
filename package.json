@@ -14,6 +14,7 @@
     "test": "node --test tests/*.test.mjs",
     "content:check": "node scripts/content-check.mjs && node --test tests/content*.test.mjs",
     "content:balance": "node scripts/balance-report.mjs --json",
+    "balance:sheet": "node scripts/balance-sheet.mjs",
     "content:art": "node scripts/art-brief.mjs",
     "world:import": "node scripts/import-world.mjs",
     "world:build": "node scripts/build-world.mjs",

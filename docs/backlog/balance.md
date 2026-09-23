@@ -33,3 +33,5 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 - [ ] balance-report.mjs um eine Begleiter-Zeile erweitern (Schaden/Heilung je Sekunde je Rolle und Stufe).
 
 - [ ] **E-56 (23.09.):** Kevin gegen Bosse auf eigener Stufe 37–44 s (Korridor 10–25 s, vorher 28–30 s) und stirbt gegen Sperrmüll-Sigi auf Stufe 5 manchmal. Dieter 13–16 s, Bärbel 21–26 s. Hebel: Kevin-Kniffe oder Boss-Leben in `content/tuning.js`, nicht die allgemeinen Wertkurse in `BALANCE.power/ratings`.
+
+- [ ] **Balance-Sheet (E-57), erster Lauf 23.09.:** 280/540 Messungen > 15 % neben dem Median ihrer Rolle. Zuerst: Kevin „Jagd“ Pfad 1 ab Stufe 15 ~45 Schaden/s (Talent bricht Rotation?), Dieter „Brauerei“ Stufe 5 ohne Heilung, Bärbel Schaden-Specs Stufe 5 ~+90 %. Arbeitsweise: `npm run balance:sheet`, Zerlegung lesen (Talent/Kniff/Wert), Zahlen in content/ anpassen, Sheet erneut.

@@ -30,6 +30,7 @@ Inhalt darf nie Logik enthalten, Logik nie Inhaltstexte oder Zahlen (Ausnahme: F
 npm test                  # alle Spieltests inkl. tests/content.test.mjs
 npm run content:check     # Schema/Invarianten der Inhalte + Tests
 npm run content:balance   # TTK-Matrix → content/BALANCE-REPORT.md
+npm run balance:sheet     # Rechentabellen je Klasse × Spec × Pfad × Stufe × Ausrüstung → content/BALANCE-SHEET.md (E-57)
 npm run content:art       # Grafik-Briefing → content/ART-BRIEF.md
 ```
 

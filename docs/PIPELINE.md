@@ -28,7 +28,7 @@ Gemeinsame Dateien (`README.md`, `package.json`, `CLAUDE.md`, `scripts/build-sit
 3 UI-Bedarf?                docs/UEBERGABE-UI-<Datum>.md          → UI baut, Browsertest (scripts/*-check.mjs)
 4 Grafik-Bedarf?            content/ART-BRIEF.md (npm run content:art) bzw. Auftragsblatt tools/sprite-pipeline/<runde>-jobs.json
                             → npm run sprites:generate -- <jobs.json> → npm run sprites:precision → UI bindet an
-5 Balance                   npm run content:balance, Bericht im Commit
+5 Balance                   npm run content:balance + npm run balance:sheet, Berichte im Commit
 6 Playtest                  Personas Neuling/Kenner/Prüfer auf dem Branch → docs/PLAYTEST-<Datum>-<persona>.md, kein „bricht ab" offen
 7 Merge                     Branch → main nur per Fast-Forward, npm test grün, Playtest frei, Deploy prüfen
 ```
