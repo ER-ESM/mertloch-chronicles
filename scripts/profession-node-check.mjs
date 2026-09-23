@@ -14,7 +14,9 @@ try{
  const nodes=await run(`g.tutorial.completed=true;g.player.level=6;g.enemies=[];g.player.inCombat=0;g.stopAuto();const {professionWorld}=await import('./profession-world.js');const L=professionWorld(g.world).nodes;const n=L.find(n=>n.kind==='hops');g.player.x=n.x-60;g.player.y=n.y+10;g.moveTo=null;g.keys.clear();document.querySelectorAll('[data-window-close]').forEach(b=>b.click());return {hops:n,learned:g.professions.learned};`);
  await wait(900);
  // Bildschirmposition aus zwei Mauspunkten eichen (screenToWorld ist linear).
- await mouse(1000,450);await wait(80);const a=await run('return g.hover');await mouse(1100,450);await wait(80);const c=await run('return g.hover');const k=100/(c.x-a.x),sx=wx=>1000+(wx-a.x)*k,sy=wy=>450+(wy-a.y)*k;
+ // Die Kamera läuft dem versetzten Helden nach: erst eichen, wenn derselbe Mauspunkt zweimal denselben Weltpunkt liefert.
+ const probe=async x=>{await mouse(x,450);await wait(80);return run('return g.hover');};let a=await probe(1000);for(let i=0;i<40;i++){await wait(150);const again=await probe(1000);if(Math.hypot(again.x-a.x,again.y-a.y)<.5){a=again;break;}a=again;}
+ const c=await probe(1100),k=100/(c.x-a.x),sx=wx=>1000+(wx-a.x)*k,sy=wy=>450+(wy-a.y)*k;
  await mouse(10,880);await wait(250);await b.screenshot(dir+'/fundstelle-ohne-hover.jpg');
  assert.equal(await run("return document.querySelector('#worldTip')?.hidden??true"),true,'kein Tooltip ohne Mouse-Over');
  await mouse(Math.round(sx(nodes.hops.x)),Math.round(sy(nodes.hops.y-6)));await wait(250);
