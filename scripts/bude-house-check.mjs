@@ -20,7 +20,7 @@ try{
  // 2 Echter Weg durch die Eingangstür in den Schankraum.
  await walkTo('wake');s=await read(state);assert.equal(s.room,'schankraum','Held steht im Schankraum: '+JSON.stringify(s));assert.equal(s.fade,1,'Dach ausgeblendet');await shot('2-schankraum');checks.push('walked through the front door into the taproom, roof faded');
  // 3 Weiter durch die Innentür in die Küche.
- await walkTo('kevin');s=await read(state);assert.equal(s.room,'kueche','Küche: '+JSON.stringify(s));await shot('3-kueche');checks.push('walked through the inner door into the kitchen');
+ await read(`(()=>{const h=game.world.base.house;game.navigate({x:h.minX+196,y:h.minY+44});})()`);await until('!game.moveTo&&!game.routeGoal',20000);await wait(500);/* Küche (früher Kevins Platz) */s=await read(state);assert.equal(s.room,'kueche','Küche: '+JSON.stringify(s));await shot('3-kueche');checks.push('walked through the inner door into the kitchen');
  // 4 Wand hält: im Schankraum unter einer türlosen Wandstelle nach oben laufen.
  const wall=await read(`(()=>{const h=game.world.base.house;/* freie Wandstelle zwischen Flaschenbord und Tresen-Bauplatz */Object.assign(game.player,{x:h.minX+80,y:h.minY+125});game.moveTo=null;game.path=[];return h.minY+72;})()`);
  await b.hold('w',1500);s=await read(state);assert.ok(s.y>wall+3&&s.y<wall+14,'steht nicht direkt vor der Wand: '+JSON.stringify(s));assert.equal(s.room,'schankraum');checks.push('wall without door stops the hero ('+(s.y-wall)+' units in front of it)');
@@ -50,16 +50,27 @@ try{
  for(const type of ['mouseMoved','mousePressed','mouseReleased'])await b.send('Input.dispatchMouseEvent',{type,x:at.x,y:at.y,button:'left',buttons:type==='mousePressed'?1:0,clickCount:1});
  await until('(game.floor||0)===1',15000);await shot('8-treppe-klick');
  checks.push('stairs are walkable: walking onto them climbs, a held key does not bounce, walking into the stairwell goes down, a click on the stairs walks there and climbs');
+ // 5d Stammgäste (E-61): keine Helden-Mentoren mehr; Olli, Nyalol und Ron stehen an ihren Plätzen, reden (Taste F) und haben Aufträge.
+ const regulars=await read(`(()=>{const h=game.world.base.house,at=p=>(h.rooms.find(r=>r.rects.some(q=>p.x>=q.x&&p.x<q.x+q.w&&p.y>=q.y&&p.y<q.y+q.h))||{}).id||null;
+  return {mentors:game.world.mentors.length,list:['olli','nyalol','ron'].map(id=>id+':'+at(h.spots[id]))};})()`);
+ assert.deepEqual(regulars,{mentors:0,list:['olli:schankraum','nyalol:hinterzimmer','ron:hof']},JSON.stringify(regulars));
+ for(const id of ['olli','nyalol','ron']){
+  await read(`(()=>{game.floor=0;document.querySelectorAll('[data-close],[data-window-close]').forEach(b=>b.click());const p=game.world.base.house.spots.${id};Object.assign(game.player,{x:p.x,y:p.y+14});game.moveTo=null;game.path=[];})()`);await wait(700);
+  await b.press('f');await wait(700);
+  const talk=await read(`(()=>{const m=document.querySelector('.hotspot-chatter')?.closest('.modal,dialog,[role=dialog],.popup')||document.querySelector('.hotspot-chatter')?.parentElement;return {chatter:document.querySelector('.hotspot-chatter')?.textContent||'',accept:document.querySelectorAll('[data-hs-accept]').length,portrait:!!document.querySelector('[data-person-art]')};})()`);
+  assert.ok(talk.chatter.length>20,id+' sagt eine Zeile: '+JSON.stringify(talk));assert.ok(talk.portrait,id+' hat ein Porträt');await shot('9-stammgast-'+id);
+  checks.push(id+' talks ('+talk.accept+' offer'+(talk.accept===1?'':'s')+')');}
+ await read(`document.querySelectorAll('[data-close],[data-window-close]').forEach(b=>b.click())`);
  // 6 Neuer Held (E-52, Runde 1b): wacht im Schankraum auf, Ida und die Hofprobe sind in der Bude.
  const fresh={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:1,tutorial:{version:1,step:1,completed:false}};
  const again=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`localStorage.clear();localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(fresh))});`});
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',again);await wait(500);
  await read(`document.querySelector('.intro-skip')?.click();document.querySelectorAll('[data-window-close]').forEach(b=>b.click());`);await wait(2500);
- const start=await read(`(()=>{const h=game.world.base.house,at=p=>(h.rooms.find(r=>r.rects.some(q=>p.x>=q.x&&p.x<q.x+q.w&&p.y>=q.y&&p.y<q.y+q.h))||{}).id||null;return {hero:at(game.player),ida:at(game.world.npc),course:at(game.tutorial.course),dummy:at(game.tutorial.dummy),mentors:game.world.mentors.map(m=>m.id+':'+at(m)),step:game.tutorial.step};})()`);
+ const start=await read(`(()=>{const h=game.world.base.house,at=p=>(h.rooms.find(r=>r.rects.some(q=>p.x>=q.x&&p.x<q.x+q.w&&p.y>=q.y&&p.y<q.y+q.h))||{}).id||null;return {hero:at(game.player),ida:at(game.world.npc),course:at(game.tutorial.course),dummy:at(game.tutorial.dummy),mentors:game.world.mentors.length,step:game.tutorial.step};})()`);
  assert.deepEqual({hero:start.hero,ida:start.ida,course:start.course,dummy:start.dummy},{hero:'schankraum',ida:'schankraum',course:'schankraum',dummy:'hof'},JSON.stringify(start));
- assert.deepEqual(start.mentors,['dieter:schankraum','baerbel:hinterzimmer','kevin:kueche']);await shot('4-neuer-held');
+ assert.equal(start.mentors,0,'keine Helden-Mentoren in der Bude (E-61)');await shot('4-neuer-held');
  await read('game.navigate(game.tutorial.dummy)');await until('!game.moveTo&&!game.routeGoal',20000);s=await read(state);assert.equal(s.room,'hof','Weg zu Papp-Horst durch die Hoftür: '+JSON.stringify(s));await shot('5-hofprobe');
- checks.push('new hero wakes in the taproom; Ida, course marker and mentors inside, Papp-Horst in the yard, reachable through the yard door');
+ checks.push('new hero wakes in the taproom; Ida and course marker inside, no hero mentors, Papp-Horst in the yard, reachable through the yard door');
  assert.deepEqual(b.errors,[]);
  writeFileSync(dir+'/report.json',JSON.stringify({checks,errors:[]},null,2));console.log('PASS bude house:',checks.join(' · '));
 }catch(e){console.error('FAIL',e);try{await shot('failure');console.log(await read(state));}catch{}process.exitCode=1;}

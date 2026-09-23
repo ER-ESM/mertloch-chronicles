@@ -3,7 +3,8 @@
 // unberührt, Bäume, Lager und Nebenaufträge liegen deshalb wie bisher. Inhalte (Arten, Zahlen, Texte): content/hotspots.js.
 import {rng,distance} from './world.js';
 import {inhabitable,makeEnemy,walkClear,ENCOUNTER_RULES} from './encounters.js';
-import {HOTSPOTS,WORLD_NOTICES,HOTSPOT_RULES,HOTSPOT_UI,ARCHETYPES,ELITES,NPCS,ITEM_CATALOG} from './content/index.js';
+import {HOTSPOTS,WORLD_NOTICES,HOTSPOT_RULES,HOTSPOT_UI,ARCHETYPES,ELITES,NPCS,ITEM_CATALOG,hubLine} from './content/index.js';
+import {insideHouse} from './world-house.js';
 import {addItem,countItem,consumeMaterials} from './rpg.js';
 import {tutorialActive} from './tutorial.js';
 
@@ -11,7 +12,9 @@ const R=HOTSPOT_RULES,layouts=new WeakMap();
 const speciesDef=kind=>ARCHETYPES[kind]||ELITES[kind];
 export const speciesOf=e=>e.archetype||e.family;
 export const speciesName=kind=>speciesDef(kind)?.name||kind;
-const QUESTS=new Map([...HOTSPOTS.flatMap(h=>h.quests.map(q=>[q.id,{...q,hotspot:h.id}])),...WORLD_NOTICES.map(n=>[n.id,{...n,notice:true}])]);
+// Stammgäste der Bude (E-61): Hotspots ohne eigenes Tiergebiet (area fehlt), Geber mit festem Platz in der Bude.
+const regularHotspot=h=>!h.area;
+const QUESTS=new Map([...HOTSPOTS.flatMap(h=>h.quests.map(q=>[q.id,{...q,hotspot:h.id,...(regularHotspot(h)?{regular:true}:{})}])),...WORLD_NOTICES.map(n=>[n.id,{...n,notice:true}])]);
 export const hotspotQuest=id=>QUESTS.get(id);
 export const hotspotQuests=()=>[...QUESTS.values()];
 
@@ -20,6 +23,7 @@ function anchorPoint(w,anchor){
  if(anchor==='kiosk'){const k=w.places?.kiosk;return k?.entrance||k?.approach||k||null;}
  if(anchor?.startsWith('hub:'))return w.hubs?.find(h=>h.id===anchor.slice(4))||null;
  if(anchor==='ida')return w.npc||null;
+ if(anchor?.startsWith('bude:'))return w.base?.house?.spots?.[anchor.slice(5)]||null;
  return null;
 }
 const reachable=(w,a,b)=>{const path=w.findPath?.(a,b);return !w.findPath||Array.isArray(path)&&path.length>0;};
@@ -49,7 +53,11 @@ export function hotspotLayout(w){
  const random=rng((w.seed^0x51ed270b)>>>0),taken=[],areas=[],hotspots=[],notices=[];
  // Geber: der erste passende, der in dieser Welt nicht schon Nebenaufträge vergibt und kein Mentor ist – keine doppelten Leute.
  const busy=new Set([...(w.quests||[]).map(q=>q.giver?.npc).filter(Boolean),'ida','dieter','baerbel','kevin']);
- for(const h of HOTSPOTS){const anchor=anchorPoint(w,h.anchor)||w.spawn,center=placeArea(w,anchor,h.area.distance,random,taken);if(!center)continue;taken.push(center);
+ for(const h of HOTSPOTS){
+  // Stammgäste (E-61): Platz aus content/bude-house.js, kein Tiergebiet, kein Zufall – die Lage aller anderen Hotspots bleibt gleich.
+  if(regularHotspot(h)){const at=anchorPoint(w,h.anchor);if(!at)continue;const npc=h.givers[0];busy.add(npc);
+   hotspots.push({id:h.id,name:h.name,def:h,anchor:at,area:null,regular:true,giver:{x:at.x,y:at.y,npc,name:NPCS[npc]?.name||npc}});continue;}
+  const anchor=anchorPoint(w,h.anchor)||w.spawn,center=placeArea(w,anchor,h.area.distance,random,taken);if(!center)continue;taken.push(center);
   const area={id:h.id,x:center.x,y:center.y,r:h.area.radius,spawns:spawnSpots(w,center,h.area.radius,h.area.spawns,random),species:[...new Set(h.area.spawns.map(s=>s.kind))]};areas.push(area);
   const npc=h.givers.find(id=>!busy.has(id))||h.givers[0];busy.add(npc);hotspots.push({id:h.id,name:h.name,def:h,anchor,area,giver:{...giverSpot(w,anchor,center),npc,name:NPCS[npc]?.name||npc}});}
  for(const n of WORLD_NOTICES){const [lo,hi]=n.ring;let spot=null;
@@ -61,9 +69,11 @@ export function hotspotLayout(w){
  const layout={hotspots,notices,areas};layouts.set(w,layout);return layout;
 }
 /** Text mit Namen: {giver} = Geber des Hotspots, {next} = wo die Überleitung endet bzw. der nächste Geber. */
-export function fillText(g,q,text){if(!text||!q||q.notice)return text||'';const i=HOTSPOTS.findIndex(h=>h.id===q.hotspot),next=q.turnIn&&q.turnIn!==q.hotspot?q.turnIn:HOTSPOTS[i+1]?.id||'ida';
+export function fillText(g,q,text){if(!text||!q||q.notice)return text||'';const i=HOTSPOTS.findIndex(h=>h.id===q.hotspot),next=q.turnIn&&q.turnIn!==q.hotspot?q.turnIn:nextInSeries(i);
  return text.replaceAll('{giver}',giverPoint(g,q.hotspot)?.name||'').replaceAll('{next}',giverPoint(g,next)?.name||'');}
 export const questTitle=(g,q)=>fillText(g,q,q.title);
+/** Nächster Hotspot der Startreihe (Stammgäste-Reihen zählen nicht mit). */
+const nextInSeries=i=>HOTSPOTS.slice(i+1).find(h=>!regularHotspot(h))?.id||'ida';
 /** Standort eines Gebers oder Abgabeorts ('ida' = Kisten-Ida in der Bude). */
 export function giverPoint(g,id){if(id==='ida')return g.world.npc?{x:g.world.npc.x,y:g.world.npc.y,npc:'ida',name:g.world.npc.name||NPCS.ida?.name}:null;return hotspotLayout(g.world).hotspots.find(h=>h.id===id)?.giver||null;}
 
@@ -114,16 +124,26 @@ export function giverOffers(g,giverId){const list=[];for(const q of QUESTS.value
  const rank={claim:0,accept:1,progress:2,low:3};return list.sort((a,b)=>rank[a.action]-rank[b.action]);}
 /** Markierung über dem Geber und auf der Karte: '?' abgeben, '!' annehmen, '…' läuft, 'low' zu früh, null nichts. */
 export function giverGlyph(g,giverId){const o=giverOffers(g,giverId)[0];return !o?null:o.action==='claim'?'?':o.action==='accept'?'!':o.action==='low'?'low':'…';}
+/** Steht der Punkt auf dem Geschoss des Helden? Leute im Haus stehen im Erdgeschoss (oben nicht ansprechbar). */
+export const onPlayerFloor=(g,pt)=>!g.floor||!insideHouse(g.world.base?.house,pt.x,pt.y);
 export function hotspotInteraction(g){if(tutorialActive(g))return null;const p=g.player,L=hotspotLayout(g.world);
- for(const h of L.hotspots)if(distance(p,h.giver)<R.talkRange&&giverOffers(g,h.id).length)return {kind:'hotspot',giver:h.id,point:{x:h.giver.x,y:h.giver.y},name:h.giver.name,priority:4};
- const ida=giverPoint(g,'ida');if(ida&&distance(p,ida)<R.talkRange&&giverOffers(g,'ida').some(o=>o.action==='claim'))return {kind:'hotspot',giver:'ida',point:{x:ida.x,y:ida.y},name:ida.name,priority:4};
+ // Stammgäste reden immer (Gesprächszeile je Kapitel), die Startreihe nur mit Auftrag.
+ for(const h of L.hotspots)if(distance(p,h.giver)<R.talkRange&&onPlayerFloor(g,h.giver)&&(h.regular||giverOffers(g,h.id).length))return {kind:'hotspot',giver:h.id,point:{x:h.giver.x,y:h.giver.y},name:h.giver.name,priority:4};
+ const ida=giverPoint(g,'ida');if(ida&&distance(p,ida)<R.talkRange&&onPlayerFloor(g,ida)&&giverOffers(g,'ida').some(o=>o.action==='claim'))return {kind:'hotspot',giver:'ida',point:{x:ida.x,y:ida.y},name:ida.name,priority:4};
  for(const n of L.notices)if(!g.hotspots.found.includes(n.id)&&distance(p,n)<R.talkRange)return {kind:'notice',id:n.id,point:{x:n.x,y:n.y},name:n.def.title,priority:4};
  return null;}
 /** Wegmarke für den verfolgten Auftrag: fertig → Abgabe, sonst Mitte des Zielgebiets. */
 export function hotspotDestination(g){const id=g.hotspots?.tracked,q=id&&QUESTS.get(id);if(!q)return null;const st=questStatus(g,id);
  if(st==='ready'&&!q.notice){const at=giverPoint(g,turnInOf(q));return at&&{point:{x:at.x,y:at.y},label:at.name};}
  if(st!=='accepted')return null;if(q.objective.kind==='talk'){const at=giverPoint(g,turnInOf(q));return at&&{point:{x:at.x,y:at.y},label:at.name};}
- const area=hotspotLayout(g.world).areas.find(a=>a.id===(q.hotspot||q.id));return area&&{point:{x:area.x,y:area.y},label:questTitle(g,q)};}
+ const area=questArea(g,q);return area&&{point:{x:area.x,y:area.y},label:questTitle(g,q)};}
+/** Zielgebiet eines Auftrags: das eigene, bei Stammgäste-Aufträgen das nächste Gebiet, in dem die Art lebt. */
+function questArea(g,q){const areas=hotspotLayout(g.world).areas,own=areas.find(a=>a.id===(q.hotspot||q.id));if(own||!q.regular)return own||null;
+ return areas.filter(a=>a.species.includes(q.objective.species)).sort((a,b)=>distance(a,g.player)-distance(b,g.player))[0]||null;}
+/** Gesprächszeile eines Stammgasts für das laufende Kapitel; zählt mit, damit beim nächsten Mal die nächste Zeile kommt. */
+export function giverChatter(g,giverId){const h=hotspotLayout(g.world).hotspots.find(x=>x.id===giverId);if(!h?.regular)return null;const npc=h.giver.npc;
+ const talks=g.mentorTalks||(g.mentorTalks={}),n=talks[npc]=(talks[npc]||0)+1;g.emit?.('save');
+ return n===1?hubLine(npc,0)||hubLine(npc,g.quest?.chapter||1,0,!!g.quest?.actDone):hubLine(npc,g.quest?.chapter||1,n-2,!!g.quest?.actDone);}
 /** Aufgabenzeile für Tracker, Questbuch und Karte. */
 export function objectiveText(g,q){const o=q.objective,n=questProgress(g,q.id);
  if(o.kind==='talk'){const at=giverPoint(g,turnInOf(q));return HOTSPOT_UI.talk(at?.name||'');}
@@ -132,7 +152,7 @@ export function objectiveText(g,q){const o=q.objective,n=questProgress(g,q.id);
 export function hotspotMapMarks(g){const L=hotspotLayout(g.world),givers=[],areas=[];
  for(const h of L.hotspots){const glyph=giverGlyph(g,h.id);if(glyph)givers.push({id:'hotspot:'+h.id,x:h.giver.x,y:h.giver.y,glyph,name:h.giver.name,title:h.name});}
  if(giverGlyph(g,'ida')==='?'){const ida=giverPoint(g,'ida');givers.push({id:'hotspot:ida',x:ida.x,y:ida.y,glyph:'?',name:ida.name,title:ida.name});}
- const active=new Set(hotspotQuests().filter(q=>questStatus(g,q.id)==='accepted'&&q.objective.species).map(q=>q.hotspot||q.id));
+ const active=new Set(hotspotQuests().filter(q=>questStatus(g,q.id)==='accepted'&&q.objective.species).map(q=>questArea(g,q)?.id).filter(Boolean));
  for(const a of L.areas){const h=L.hotspots.find(x=>x.id===a.id),n=L.notices.find(x=>x.id===a.id);
   // Tiergebiete der Startreihe sind sichtbar, sobald der Hotspot freigeschaltet ist; Aushang-Gebiete erst nach dem Fund.
   const open=h?h.def.quests.some(q=>questStatus(g,q.id)!=='locked'):g.hotspots.found.includes(a.id);if(!open)continue;

@@ -72,9 +72,10 @@ export const BUDE_HOUSE={
  slots:{tresen:{x:84,y:100},anlage:{x:150,y:150},landhausecke:{x:40,y:34},pfandlager:{x:121,y:32},grill:{x:262,y:36},werkstatt:{x:298,y:104}},
  // Schild „Baustelle der Bude“ links neben dem Eingang, vor der Fassade.
  sign:{x:60,y:188},
- // Start in der Bude: Aufwachen im Schankraum, Ida am Eingang, die Mentoren in ihren Räumen (IDs aus content/npcs.js),
+ // Start in der Bude: Aufwachen im Schankraum, Ida am Eingang, die Stammgäste an ihren Plätzen (IDs aus content/npcs.js, E-61):
+ // Olli am Tresen-Bauplatz, Nyalol im Hinterzimmer, Ron im Hof bei der Werkstatt.
  // Hofprobe: Laufmarke im Schankraum, Papp-Horst im Hof.
- spots:{wake:{x:62,y:150},ida:{x:80,y:160},dieter:{x:120,y:98},baerbel:{x:74,y:40},kevin:{x:196,y:44},course:{x:170,y:136},dummy:{x:280,y:146}},
+ spots:{wake:{x:62,y:150},ida:{x:80,y:160},olli:{x:120,y:98},nyalol:{x:62,y:34},ron:{x:262,y:104},course:{x:170,y:136},dummy:{x:280,y:146}},
  // Obergeschoss: gleiche Außenmauern, eigene Räume. Das Dachloch der Außenansicht liegt über dem Dachboden.
  upper:{
   walls:[

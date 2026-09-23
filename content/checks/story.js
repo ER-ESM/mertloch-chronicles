@@ -7,6 +7,7 @@ import {NPCS} from '../npcs.js';
 import {HOTSPOTS,WORLD_NOTICES,HOTSPOT_ITEMS} from '../hotspots.js';
 import {ARCHETYPES,ELITES} from '../enemies.js';
 import {ITEM_CATALOG} from '../items.js';
+import {BUDE_HOUSE} from '../bude-house.js';
 export function check(bad){
  // Jeder Akt hat Titel und Bogen; ein nicht-reservierter Akt braucht ein Ende.
  for(const a of ACTS){if(!a.arc)bad('act '+a.id,'arc fehlt');if(!a.reserve&&!a.ending)bad('act '+a.id,'ending fehlt');}
@@ -42,9 +43,18 @@ function checkHotspots(bad){
   if(q.hotspot&&!(q.lines?.offer&&q.lines?.progress&&q.lines?.done))bad(w,'lines offer/progress/done fehlen');
   if(q.turnIn&&q.turnIn!=='ida'&&!hotspotIds.has(q.turnIn))bad(w,'turnIn unbekannt: '+q.turnIn);}
  for(const q of quests)for(const r of q.requires||[])if(!ids.has(r))bad('quest '+q.id,'requires unbekannt: '+r);
- HOTSPOTS.forEach((h,i)=>{if(!h.givers?.length||h.givers.some(n=>!NPCS[n]))bad('hotspot '+h.id,'Geber unbekannt');
+ // Stammgäste der Bude (E-61): Hotspots ohne area – ein Geber mit regular:true, Platz in bude-house.js, Gesprächszeilen je Kapitel,
+ // jede Zielart lebt in einem Gebiet der Startreihe oder eines Aushangs (sonst gäbe es keine Wegmarke). Keine Überleitung.
+ const series=HOTSPOTS.filter(h=>h.area),livesSomewhere=kind=>[...series.map(h=>h.area),...WORLD_NOTICES.map(n=>n.area)].some(a=>a.spawns.some(s=>s.kind===kind));
+ for(const h of HOTSPOTS.filter(h=>!h.area)){const npc=h.givers?.[0],w='hotspot '+h.id;
+  if(h.givers?.length!==1||!NPCS[npc]?.regular)bad(w,'Stammgast braucht genau einen Geber mit regular:true');
+  if(!h.anchor?.startsWith('bude:')||!BUDE_HOUSE.spots?.[h.anchor.slice(5)])bad(w,'Anker bude:<Platz> fehlt in bude-house.js spots');
+  const t=HUB_TALK[npc];if(!t?.greet||[1,2,3,4].some(c=>!(t[c]?.length>=2))||!t.done?.length)bad(w,'HUB_TALK braucht greet, Kapitel 1–4 (je ≥ 2) und done');
+  for(const q of h.quests)if(q.objective.species&&!livesSomewhere(q.objective.species))bad('quest '+q.id,'Art lebt in keinem Gebiet');}
+ for(const id of Object.keys(NPCS).filter(id=>NPCS[id].regular))if(!HOTSPOTS.some(h=>!h.area&&h.givers[0]===id))bad('npc '+id,'Stammgast ohne Platz in der Bude');
+ series.forEach((h,i)=>{if(!h.givers?.length||h.givers.some(n=>!NPCS[n]))bad('hotspot '+h.id,'Geber unbekannt');
   for(const q of h.quests)for(const t of [q.title,q.text,...Object.values(q.lines||{})].join(' ').match(/{[a-z]+}/g)||[])if(!['{giver}','{next}'].includes(t))bad('quest '+q.id,'Platzhalter unbekannt: '+t);const leads=h.quests.filter(q=>q.objective.kind==='talk');
-  if(leads.length!==1)bad('hotspot '+h.id,'braucht genau eine Überleitung');const next=HOTSPOTS[i+1]?.id||'ida';if(leads[0]&&leads[0].turnIn!==next)bad('hotspot '+h.id,'Überleitung muss zu '+next+' führen');
+  if(leads.length!==1)bad('hotspot '+h.id,'braucht genau eine Überleitung');const next=series[i+1]?.id||'ida';if(leads[0]&&leads[0].turnIn!==next)bad('hotspot '+h.id,'Überleitung muss zu '+next+' führen');
   for(const s of h.area.spawns)if(!(ARCHETYPES[s.kind]||ELITES[s.kind]))bad('hotspot '+h.id,'Spawnart unbekannt: '+s.kind);
   // Jedes Auftragsziel wird im eigenen Gebiet auch wirklich angelegt.
   for(const q of h.quests)if(q.objective.species&&!h.area.spawns.some(s=>s.kind===q.objective.species))bad('quest '+q.id,'Art spawnt nicht im Hotspot');});

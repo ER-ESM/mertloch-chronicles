@@ -369,6 +369,7 @@ input:focus-visible,select:focus-visible{outline:var(--edge) solid var(--gold);o
 .conversation-portrait{background:var(--green-2);border:var(--edge) solid var(--kraft-2);}
 .conversation-portrait img,.conversation-portrait canvas{image-rendering:pixelated;}
 .conversation-quote{font-family:var(--read);font-size:var(--t-13);color:var(--ink-2);padding:10px 12px;}
+.conversation-quote.hotspot-chatter{color:var(--ink-2);margin:0 0 10px;} /* Stammgäste (E-61): Zeile direkt im Fenster, nicht in einer Auftragskarte */
 .conversation-initial{font-family:var(--display);font-weight:400;font-size:var(--t-28);color:var(--kraft);}
 .popup-dialog .popup-body>h2{font-size:var(--t-28);color:var(--cream);}
 

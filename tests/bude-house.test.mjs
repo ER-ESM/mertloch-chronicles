@@ -40,8 +40,11 @@ test('Wände sperren, Innenräume sind durch die Türen erreichbar', ()=>{
 
 test('Räume: Punkt → Raum, Dach nur über dem Haus, Hof liegt draußen', ()=>{
  assert.equal(roomAt(house,house.spots.wake.x,house.spots.wake.y).id,'schankraum');
- assert.equal(roomAt(house,house.spots.kevin.x,house.spots.kevin.y).id,'kueche');
- assert.equal(roomAt(house,house.spots.baerbel.x,house.spots.baerbel.y).id,'hinterzimmer');
+ // Stammgäste (E-61): Olli am Tresen-Bauplatz, Nyalol im Hinterzimmer, Ron im Hof; die Helden stehen nicht mehr in der Bude.
+ assert.equal(roomAt(house,house.spots.olli.x,house.spots.olli.y).id,'schankraum');
+ assert.equal(roomAt(house,house.spots.nyalol.x,house.spots.nyalol.y).id,'hinterzimmer');
+ assert.equal(roomAt(house,house.spots.ron.x,house.spots.ron.y).id,'hof');
+ for(const id of ['dieter','baerbel','kevin'])assert.equal(house.spots[id],undefined,id+' hat keinen Platz mehr in der Bude');
  assert.equal(insideHouse(house,house.spots.wake.x,house.spots.wake.y),true);
  assert.equal(insideHouse(house,world.base.approach.x,world.base.approach.y),false);
  const hof=house.rooms.find(r=>r.id==='hof');assert.equal(hof.outdoor,true);

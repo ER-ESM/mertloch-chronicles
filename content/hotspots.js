@@ -25,6 +25,11 @@ export const HOTSPOT_ITEMS={
  grillborste:{name:'Grillbesen-Borste',kind:'material',quest:true,rarity:'common',icon:'scrap',stack:20,value:0,description:'Hart, fettig, nach Meinung des Pfandhofs lebensmittelecht.',look:'Büschel schwarzer Keilerborsten mit Grillfett'},
  rabenkronkorken:{name:'Blank gepickter Kronkorken',kind:'material',quest:true,rarity:'common',icon:'ring',stack:20,value:0,description:'Ein Rabe hat ihn poliert. Am Kiosk zählt er trotzdem als Pfand.',look:'Glänzender Kronkorken mit Schnabelkratzern'},
  schnorrbon:{name:'Geschnorrter Verzehrbon',kind:'material',quest:true,rarity:'common',icon:'paper',stack:20,value:0,description:'„Gilt für ein Getränk nach Wahl.“ Die Wahl traf jemand anderes.',look:'Zerknitterter roter Festzelt-Verzehrbon'},
+ // Stammgäste der Bude (E-61)
+ zuendkerze:{name:'Uschis Zündkerze',kind:'material',quest:true,rarity:'common',icon:'metal',stack:20,value:0,description:'Von einem Raben blank poliert. Uschi springt damit trotzdem nicht an, aber jetzt liegt es nicht mehr an der Kerze.',look:'Zündkerze mit weißem Keramikkörper und Schnabelkratzern am Gewinde'},
+ schaltknauf:{name:'Totenkopf-Schaltknauf',kind:'material',quest:true,rarity:'common',icon:'ring',stack:5,value:0,description:'Plexiglas mit Totenkopf und Luftblase. Laut Ron trug ihn ein Junggeselle als Kette, laut Fuchsbau nicht.',look:'Durchsichtiger Schaltknauf mit eingegossenem Totenkopf, Fuchshaare im Gewinde'},
+ lankabel:{name:'Angebissenes LAN-Kabel',kind:'material',quest:true,rarity:'common',icon:'cable',stack:20,value:0,description:'Ein Meter Nyalol-Ping. Die Dachse haben die Adern nach Farben sortiert gefressen.',look:'Blaues Netzwerkkabel mit Bissspuren und Erdkrumen am Stecker'},
+ absperrband:{name:'Meter Absperrband',kind:'material',quest:true,rarity:'common',icon:'paper',stack:20,value:0,description:'Rot-weiß und riecht nach Keiler. Olli nennt es „Branding der Baustelle“.',look:'Zerknülltes rot-weißes Flatterband mit Borsten dran'},
  durchschlag:{name:'Durchschlag von Formular 27b',kind:'material',quest:true,rarity:'common',icon:'paper',stack:20,value:0,description:'Dreifach, in Blau. Das Original liegt vermutlich im Graben.',look:'Blaues Durchschlagpapier mit Amtsstempel'}
 };
 
@@ -95,6 +100,58 @@ export const HOTSPOTS=[
   ]}
 ];
 
+/** Stammgäste der Bude (E-61, Figurenbibel docs/FIGUREN-STAMMGAESTE.md): je eine kleine Auftragsreihe beim Stammgast.
+ *  Anker `bude:<Platz>` = content/bude-house.js spots; ohne `area` – die Tiere leben in den Gebieten der Startreihe und der
+ *  Aushänge, die Wegmarke zeigt aufs nächste passende Gebiet. Keine Überleitung nötig; die Reihen laufen unabhängig von der Startreihe.
+ *  Stehen am Ende der Liste, damit Reihenfolge und Lage der Startreihe unverändert bleiben. Gesprächszeilen: HUB_TALK in dialogues.js. */
+HOTSPOTS.push(
+ {id:'bude-olli',name:'Ollis Co-Working-Space',anchor:'bude:olli',givers:['olli'],level:1,
+  quests:[
+   {id:'st-olli-1',title:'Pitch bei der Bauleitung',minLevel:1,objective:{kind:'talk'},turnIn:'ida',
+    text:'{giver} hat einen Businessplan für die Bude geschrieben: das Franchise „Bude to go“, eine Bude in jedem Dorf der Eifel. Er traut sich nur nicht, ihn Kisten-Ida selbst vorzustellen. Bring ihr den Bierdeckel mit dem Plan.',
+    lines:{offer:'Das ist kein Bierdeckel, das ist ein Pitch Deck. Es hat nur eine Folie, aber die hat es in sich.',progress:'Ida steht im Schankraum am Eingang. Sag ihr, es ist eine Chance, und lauf danach schnell weg.',done:'Ein Franchise? Olli kriegt nicht mal diese eine Bude dicht. Sag ihm Nein, und sag ihm, er soll meine Wasserwaage zurückbringen.'},
+    reward:{xp:70,coins:4}},
+   {id:'st-olli-2',title:'Absperrband im Umlauf',minLevel:2,requires:['st-olli-1'],objective:{kind:'drop',species:'boar',item:'absperrband',chance:.5,count:6},
+    text:'Ollis Absperrband von der Baustelle hat sich in den Pfandkeilern verheddert, und jetzt sperren die Viecher halb Mertloch ab. {giver} braucht sechs Meter zurück, bevor das Ordnungsamt glaubt, hier gäbe es eine echte Baustelle.',
+    lines:{offer:'Sechs Meter Absperrband, rot-weiß. Wenn ein Keiler aussieht wie ein Geschenk, dann hat er meins.',progress:'Da läuft noch ein Keiler als Baustelle verkleidet herum. Das ist schlecht für unser Branding.',done:'Sechs Meter und kaum angeknabbert. Ich nenne das Kreislaufwirtschaft, Ida nennt es eine Schweinerei.'},
+    reward:{xp:130,coins:8}},
+   {id:'st-olli-3',title:'Betriebsprüfung',minLevel:3,requires:['st-olli-2'],objective:{kind:'kill',species:'inspector',count:4},
+    text:'Praktikanten vom Ordnungsamt wollen die Baustelle der Bude stilllegen: kein Bauschild, keine Genehmigung, dafür eine App. {giver} bittet dich, vier von ihnen von der Digitalisierung der Eifel zu überzeugen.',
+    lines:{offer:'Ich habe denen eine Demo gezeigt, und sie haben mir ein Formular gezeigt. Wir haben uns nicht verstanden. Überzeug du sie, aber bitte auf Augenhöhe.',progress:'Die sind noch da und stempeln. Man hört das Stempeln bis in den Schankraum.',done:'Vier Praktikanten weniger und kein einziges Formular mehr offen. Wir sind jetzt offiziell papierlos.'},
+    reward:{xp:150,coins:10}}
+  ]},
+ {id:'bude-nyalol',name:'Nyalols Raidzentrale',anchor:'bude:nyalol',givers:['nyalol'],level:1,
+  quests:[
+   {id:'st-nyalol-1',title:'Daily: Kabelsalat',minLevel:1,objective:{kind:'drop',species:'badger',item:'lankabel',chance:.5,count:5},
+    text:'Die Pfanddachse haben das LAN-Kabel zur Bude ausgegraben und in Stücke gebissen. {giver} braucht fünf Stücke zurück, damit er wieder unter 900 Ping kommt.',
+    lines:{offer:'Das ist eine Daily. Heute holst du fünf Kabelstücke, und morgen fragst du dich, warum du das jeden Tag machst.',progress:'Mein Ping steht immer noch bei 900. Ich habe gerade einen Boss gelegt, der schon seit gestern tot ist.',done:'Kabel da, Ping bei 30, Welt in Ordnung. Das Kabel hält jetzt mit Isolierband und Hoffnung.'},
+    reward:{xp:110,coins:6}},
+   {id:'st-nyalol-2',title:'Trash clearen',minLevel:2,requires:['st-nyalol-1'],objective:{kind:'kill',species:'boar',count:6},
+    text:'Bevor der Clan irgendetwas Großes angeht, muss der Trash weg, sagt {giver}. Mit Trash meint er die Pfandkeiler rund um den Pfandhof, und er meint sechs Stück.',
+    lines:{offer:'Sechs Keiler. Pull nicht alle auf einmal, das ist kein Tank-Spiel. Obwohl – du bist ja Tank, Heiler und Fernkampf in einem. Also doch.',progress:'Da laufen noch welche herum. Kein Raid startet, solange der Trash nicht liegt.',done:'Trash gecleart, keiner gestorben, kein Wipe. Das ist mehr, als meine Gilde in zwei Wochen geschafft hat.'},
+    reward:{xp:130,coins:8}},
+   {id:'st-nyalol-3',title:'Rare-Spawn: Borsten-Bruno',minLevel:5,requires:['st-nyalol-2'],objective:{kind:'kill',species:'alphaBoar',count:1},
+    text:'{giver} hat im Dorf-Chat gelesen, dass Borsten-Bruno wieder auf den Weiden unterwegs ist, ein Rare-Spawn mit eigenem Steckbrief. Er will den Kill unbedingt im Log haben und selbst auf keinen Fall mitkommen.',
+    lines:{offer:'Ein Rare! Der spawnt nur alle paar Tage, und dann campt ihn halb Mertloch. Du legst ihn, ich schneide das Video.',progress:'Bruno läuft noch. Ich habe den Timer im Blick, du hoffentlich deine Heiltränke.',done:'Bruno liegt, der Kill ist im Log, und ich habe alles aufgenommen. Das Video heißt „Rare-Kill ohne Raidleiter (echt)“.'},
+    reward:{xp:240,coins:20}}
+  ]},
+ {id:'bude-ron',name:'Rons Boxengasse',anchor:'bude:ron',givers:['ron'],level:2,
+  quests:[
+   {id:'st-ron-1',title:'Boxenstopp für Uschi',minLevel:2,objective:{kind:'drop',species:'raven',item:'zuendkerze',chance:.5,count:4},
+    text:'Die Leergut-Raben haben aus Uschi, Rons Kadett, alle vier Zündkerzen geklaut, weil sie glänzen. Hol sie zurück, bevor die Viecher sie am Kiosk als Pfand abgeben.',
+    lines:{offer:'Vier Zündkerzen, dann läuft Uschi wieder auf allen Töpfen. Die Raben erkennst du daran, dass sie gepflegter aussehen als ich.',progress:'Uschi stottert noch. Mit weniger als vier Kerzen ist das kein Motor, sondern ein Rasseln.',done:'Alle vier da und kaum angepickt. Uschi springt trotzdem nicht an, aber jetzt weiß ich wenigstens, dass es nicht an den Kerzen liegt.'},
+    reward:{xp:130,coins:8}},
+   {id:'st-ron-2',title:'Blitzer auf zwei Beinen',minLevel:3,requires:['st-ron-1'],objective:{kind:'kill',species:'warden',count:4},
+    text:'Ruhewarte stehen mit Schallpegelmessern an der Landstraße und schreiben Uschi auf, sobald {giver} den Motor auch nur ansieht. Vier von ihnen sollen die Messung abbrechen.',
+    lines:{offer:'Die haben mich gestern mit 104 Dezibel gemessen, dabei stand Uschi still. Das ist Rufmord mit Eichsiegel.',progress:'Ich höre noch einen Messwagen piepen. Das ist das einzige Geräusch in diesem Dorf, das mich stört.',done:'Keine Messung, kein Knöllchen, keine Beweise. So gewinnt man Rennen in der Eifel.'},
+    reward:{xp:140,coins:9}},
+   {id:'st-ron-3',title:'Der Totenkopf-Schaltknauf',minLevel:4,requires:['st-ron-2'],objective:{kind:'drop',species:'fox',item:'schaltknauf',chance:.35,count:1},
+    text:'{giver} schwört, dass einer aus dem Koblenzer Bus seinen Totenkopf-Schaltknauf als Halskette trägt. Kalle hat dagegen einen Pfandfuchs mit etwas Glänzendem im Maul Richtung Wegestube laufen sehen. Kalle hat recht, aber sag es Ron schonend.',
+    lines:{offer:'Ohne Schaltknauf schalte ich mit einer Zange. Das geht, aber die Zange guckt nicht so böse.',progress:'Kein Totenkopf? Dann schau den Füchsen ins Maul. Oder den Junggesellen. Hauptsache, du schaust irgendwem ins Maul.',done:'Ein Fuchs also. Ich erzähle trotzdem allen, es war ein Junggeselle, das klingt mehr nach Motorsport.'},
+    reward:{xp:160,coins:12}}
+  ]}
+);
+
 /** Aushänge: liegen in der Welt, der Fund startet den Auftrag, der letzte Treffer schließt ihn ab. */
 export const WORLD_NOTICES=[
  {id:'aushang-bruno',title:'Steckbrief: Borsten-Bruno',found:'Steckbrief am Weidezaun',minLevel:4,
@@ -119,7 +176,7 @@ export const WORLD_NOTICES=[
 
 /** Texte für Karte, Questbuch und Dialoge der Startreihe. */
 export const HOTSPOT_UI={
- series:'Startreihe',notices:'Aushänge',questFilter:'Aufträge',
+ series:'Startreihe',regulars:'Stammgäste der Bude',notices:'Aushänge',questFilter:'Aufträge',
  accept:'Auftrag annehmen',claim:'Abgeben',track:'Verfolgen',close:'Weiterziehen',
  kill:(n,name)=>n+' × '+name+' besiegen',drop:(n,item,name)=>n+' × '+item+' (von '+name+')',talk:name=>'Sprich mit '+name,
  turnInAt:name=>'Abgabe bei '+name,level:n=>'Ab Stufe '+n,locked:'Noch nicht freigeschaltet',

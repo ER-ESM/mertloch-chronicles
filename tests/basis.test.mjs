@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Game} from '../engine.js';
 import {World,distance} from '../world.js';
-import {mentorSpots} from '../world-layout.js';
 import {makeEnemy} from '../encounters.js';
 import {tickCasting,tickAuto} from '../auto-combat.js';
 import {bindSkill} from '../rpg.js';
@@ -30,11 +29,6 @@ test('unreadable and future saves block autosave instead of being silently repla
  const db=storage();for(const save of ['{oops',JSON.stringify({version:1,seenSkills:{}}),JSON.stringify({version:1,rpg:{loot:[null]}}),JSON.stringify({version:2,level:20})]){db.setItem('test',save);assert.equal(readProgress(db,'test').blocked,true);assert.equal(db.getItem('test'),save);}
  db.entries.delete('test');db.setItem('legacy',JSON.stringify({version:1,level:4}));assert.equal(readProgress(db,'test',['legacy']).save.level,4);
  assert.ok(readProgress({getItem(){throw Error('SecurityError');}},'test').notice);
-});
-test('real world mentors use the shared positions and can be addressed without Ida intercepting',()=>{
- const w=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url)))),g=new Game(w,{version:1});
- assert.deepEqual(w.mentors.map(({id,x,y})=>({id,x,y})),mentorSpots(w));
- for(const mentor of w.mentors){Object.assign(g.player,{x:mentor.x,y:mentor.y});assert.ok(distance(g.player,w.npc)>60);assert.equal(g.mentorInteraction()?.id,mentor.id);assert.ok(g.talkToMentor(mentor.id));/* seit E-52 in den Räumen der Bude: echter Weg vom Startpunkt statt gerader Linie */const path=w.findPath(w.start||w.spawn,mentor);let prev=w.start||w.spawn;assert.ok(path.length&&path.every(p=>{const ok=w.walkClear(prev,p,9);prev=p;return ok;}),mentor.id+' nicht erreichbar');}
 });
 test('invalid, paused and dead movement requests leave the current path untouched; valid movement cancels a cast',()=>{
  const {g}=fight();g.navigate({x:180,y:100});const original=g.routeGoal;

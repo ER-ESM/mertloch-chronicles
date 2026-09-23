@@ -9,7 +9,9 @@ import {decodePng} from '../tools/sprite-pipeline/png.mjs';
 import {buildPrecision} from '../tools/sprite-pipeline/build-precision.mjs';
 const root=new URL('../',import.meta.url),read=p=>readFileSync(new URL(p,root)),catalog=JSON.parse(read('assets/precision/runtime/catalog.json')),asset=id=>catalog.assets[catalog.aliases[id]||id],hash=b=>createHash('sha256').update(b).digest('hex');
 test('precision covers every present person, mob, boss, item icon, skill and talent',()=>{
- for(const [id,n] of Object.entries(NPCS))if(!n.absent)assert.ok(asset(id)?.frames,id);
+ // Personen ohne Präzisionsbogen brauchen eine Figur aus der Sprite-Schmiede (E-58), z. B. die Stammgäste (E-61).
+ const forge=JSON.parse(read('assets/forge/runtime/figures/catalog.json')),forged=id=>(forge.assets||forge)[id]?.frames;
+ for(const [id,n] of Object.entries(NPCS))if(!n.absent)assert.ok(asset(id)?.frames||forged(id),id);
  for(const id of [...Object.keys(ARCHETYPES),...Object.keys(BOSSES),'cat','chicken',...Array.from({length:8},(_,i)=>'villager'+i)])assert.equal(asset(id)?.frames.length,asset(id)?.columns.length*4,id);
  for(const id of ICONS)assert.ok(asset(id),id);
  const skillHashes=[];for(const [member,ids] of Object.entries(SKILL_ICON_ORDER))for(const id of [...ids,'auto']){const a=asset('skill-'+member+'-'+id);assert.ok(a,id);assert.ok(a.width>=64,id);skillHashes.push(a.hash);}

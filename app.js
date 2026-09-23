@@ -78,7 +78,7 @@ const ZOOM_KEY='mertloch.zoom';
 import {PopupWindows} from './popup-windows.js';
 import {mountPopupControls,filterBag,bagView} from './popup-controls.js';
 import {hotspotDialogue,noticeDialogue,hotspotTracker} from './hotspot-ui.js';
-import {acceptHotspotQuest,claimHotspotQuest,trackHotspotQuest,readNotice,hotspotQuest,turnInOf,giverOffers,hotspotDestination,giverPoint} from './hotspots.js';
+import {acceptHotspotQuest,claimHotspotQuest,trackHotspotQuest,readNotice,hotspotQuest,turnInOf,giverOffers,hotspotDestination,giverPoint,giverChatter} from './hotspots.js';
 import {HOTSPOT_UI} from './content/index.js';
 import {loadUiArt,paintUiControls,paintUiIcon,uiIconCount,paintHeroPortrait} from './ui-art.js';
 import {createTranslator} from './mobile-translate.js';
@@ -269,9 +269,10 @@ function worldInteraction(){
  const profession=professionTarget(game);if(profession)return {kind:'profession',label:profession.type==='professionNode'?PROFESSION_UI.gather+' · '+PROFESSION_SOURCES[profession.kind].name:PROFESSION_STATIONS[profession.id].name,run:()=>useProfessionTarget(profession)};
   const board=!game.instance&&!tutorialActive(game)&&companionBoardPoint(world);
   if(board&&distance(game.player,board)<50)return {kind:'companions',label:COMPANION_TEXT.board,run:()=>openCompanions()};
+  // Leute in Gesprächsreichweite gehen vor der Baustelle (Stammgäste und Ida stehen im Radius der Baustelle, E-61).
+  const it=game.interaction?.(),person=it&&['hotspot','npc','mentor','giver'].includes(it.kind);
   // Baustelle der Bude: vor der Freigabe erklärt sie sich, danach öffnet sie den Basisbau.
-  if(world.base&&distance(game.player,world.base)<75)return {kind:'bude',label:BASE_SITE_UI.interact,run:()=>unlocks&&!unlocks.unlocked('bude')?toast(BASE_SITE_UI.locked):showPanel('base')};
-  const it=game.interaction?.();
+  if(!person&&world.base&&distance(game.player,world.base)<75)return {kind:'bude',label:BASE_SITE_UI.interact,run:()=>unlocks&&!unlocks.unlocked('bude')?toast(BASE_SITE_UI.locked):showPanel('base')};
   if(!it)return null;
   const offer=extra=>({...it,...extra});
   switch(it.kind){
@@ -284,7 +285,7 @@ function worldInteraction(){
     case 'mentor':return offer({label:'Mit '+it.name+' reden',run:()=>{game.talkToMentor(it.id);events();}});
     case 'item':return offer({run:()=>{game.collectQuestItem(it.quest.id,it.item.id);events();}});
     case 'giver':return offer({run:()=>showSideQuest(it.quest)});
-    case 'hotspot':return offer({label:HOTSPOT_UI.talkTo(it.name),run:()=>openModal(hotspotDialogue(game,it.giver))});
+    case 'hotspot':return offer({label:HOTSPOT_UI.talkTo(it.name),run:()=>{openModal(hotspotDialogue(game,it.giver,giverChatter(game,it.giver)));save();}});
     case 'notice':return offer({label:HOTSPOT_UI.readNotice,run:()=>{readNotice(game,it.id);events();save();openModal(noticeDialogue(game,it.id));}});
     case 'npc':return offer({label:'Mit '+(it.name||world.npc.name)+' sprechen',run:()=>openModal(idaDialogue(game))});
     case 'shrine':return offer({label:'Am Konterbrunnen rasten',run:restAtShrine});

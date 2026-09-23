@@ -19,7 +19,9 @@ test('live sprites reproduce exactly and every hero socket remains within its re
  for(const h of Object.values(catalog.heroes))for(const sheet of Object.values(h.sheets)){assert.equal(sheet.frames.length,32);for(const f of sheet.frames){assert.ok(f.bounds.x>0&&f.bounds.y>0);for(const p of [f.sockets.main,f.sockets.off,f.sockets.head,...f.sockets.feet])assert.ok(p.x>0&&p.x<96&&p.y>0&&p.y<96);}}
 });
 test('all named people and enemy families resolve to live art, including fox, raven and bosses',()=>{
- for(const id of Object.keys(PERSON_APPEARANCE)){const key=livePersonId(id);assert.ok(catalog.heroes[key]||catalog.people[key],id);}
+ // Neue Figuren kommen aus der Sprite-Schmiede (E-58: content-art.js lädt assets/forge/runtime/figures/catalog.json), etwa die Stammgäste (E-61).
+ const forge=JSON.parse(readFileSync(new URL('../assets/forge/runtime/figures/catalog.json',import.meta.url),'utf8')),forged=id=>!!(forge.assets||forge)[id];
+ for(const id of Object.keys(PERSON_APPEARANCE)){const key=livePersonId(id);assert.ok(catalog.heroes[key]||catalog.people[key]||forged(id),id);}
  for(const e of Object.values({...ARCHETYPES,...ELITES,...CAMP_ENEMIES,...BOSSES})){const ids=[e.variant,e.family,e.skin];assert.ok(ids.some(id=>id==='boar'||catalog.animals[id]||catalog.people[id]),e.name);}
  assert.ok(catalog.people.automat);assert.equal(Object.keys(catalog.animals).length,6);
 });

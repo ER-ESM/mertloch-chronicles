@@ -1,4 +1,4 @@
-// Akt 1 „Filmriss“: Kapitelumschalter, Kapitel-Lager, Erinnerungsfetzen, Basisbau, Mentoren.
+// Akt 1 „Filmriss“: Kapitelumschalter, Kapitel-Lager, Erinnerungsfetzen, Basisbau.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -7,7 +7,6 @@ import {Game,ACT_CHAPTERS,FIRST_CHAPTER,LAST_CHAPTER,chapterAt} from '../engine.
 import {rewardOptions,addItem,countItem,useItem} from '../rpg.js';
 import {rollDrop} from '../itemization.js';
 import {ITEMS} from '../rpg.js';
-import {MENTOR_IDS} from '../clan.js';
 import {STORY_CHAPTERS,SPAWN_TABLES,MEMORY_FRAGMENTS,BUILDINGS,SIDE_QUESTS,NPCS,ARCHETYPES,hubLine,pickTemplates} from '../content/index.js';
 
 const realWorld=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')));
@@ -187,28 +186,7 @@ test('jeder Basisbau-Vorteil wirkt an seiner Stellschraube',()=>{
  assert.ok(drop(shopped(),coinDraws).coins>0);
 });
 
-test('Dieter, Anni und Kevin stehen als Mentoren an der Bude und sprechen ihr Kapitel',()=>{
- assert.deepEqual(MENTOR_IDS,['dieter','baerbel','kevin']);
- const mentors=realWorld.mentors;
- assert.equal(mentors.length,MENTOR_IDS.length);
- for(const m of mentors){
-  assert.equal(m.name,NPCS[m.id].name);
-  assert.equal(realWorld.blocked(m.x,m.y,9),false,`${m.id} steht im Hindernis`);
-  // seit E-52 in den Räumen der Bude, nahe am Startpunkt
-  const home=realWorld.start||realWorld.spawn;assert.ok(Math.hypot(m.x-home.x,m.y-home.y)<200);
- }
- const g=new Game(realWorld,{});
- Object.assign(g.player,mentors[0]);
- assert.equal(g.mentorInteraction().id,'dieter');
- const first=g.talkToMentor('dieter'),second=g.talkToMentor('dieter');
- assert.equal(first.line,hubLine('dieter',1,0,false));
- assert.equal(second.line,hubLine('dieter',1,1,false));
- assert.notEqual(first.line,second.line);
- assert.equal(g.events.some(e=>e.type==='mentorTalk'&&e.npc==='dieter'),true);
- Object.assign(g.player,realWorld.spawn,{x:realWorld.spawn.x+900});
- assert.equal(g.talkToMentor('dieter'),null,'außer Reichweite gibt es kein Gespräch');
- assert.equal(g.mentorInteraction(),null);
-});
+// Seit E-61 stehen Dieter, Anni und Kevin nicht mehr als Mentoren in der Bude – Stammgäste: tests/stammgaeste.test.mjs.
 
 test('die Akt-1-Nebenquests kommen mit ihren eigenen Questgebern an ihre Orte',()=>{
  const act=SIDE_QUESTS.filter(t=>['dieter','baerbel','kevin','pit','ida'].includes(t.npc));

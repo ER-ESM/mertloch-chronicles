@@ -6,8 +6,9 @@
 // Lesbarkeit: Details unter 0,5 E verschwinden in Spielgröße – Kleinteile sind bewusst kräftig überzeichnet und
 // tragen Farbe (Etikett, Kronkorken, Karabiner) oder Glanz (Glas, Messing) statt Form.
 import {clamp,fbm3,hash3,at,union,subtract,box,cylZ,capsule,ellipsoid,roundCone,torusZ,sphere} from '../sdf.mjs';
-import {glass,wood,metal,fabric,leather,plastic,custom,rampFrom} from '../materials.mjs';
+import {glass,wood,metal,fabric,leather,plastic,custom,rampFrom,glow} from '../materials.mjs';
 import {add,mul,rotXv,rotZv} from './skeleton.mjs';
+import {tilt,FZ} from './face.mjs';
 
 // ---------- Vektoren und Rahmen ----------
 const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
@@ -274,4 +275,97 @@ export const PROPS={
   const rims=(X,Y,Z)=>Math.min(...[.72,-.72].map(x=>Math.max(Math.abs(Math.hypot(X-x*hs,Z-z*hs)-.48*hs)-.13*hs,Math.abs(Y-y*hs+.05*hs)-.22*hs)));
   const strap=(X,Y,Z)=>Math.max(Math.abs(Math.hypot(X/1.02,Y+.05*hs)-2.42*hs)-.14*hs,Math.abs(Z-z*hs+.05*hs)-.2*hs,Y-y*hs+.3*hs);
   return [{f:F.H(union(lensF(.72*hs),lensF(-.72*hs))),mat:glassShine(lens),layer,group:'brille'},{f:F.H(union(rims,strap)),mat:rubber(band),layer,group:'brille'}];},
+
+ // ================= Stammgäste (E-61): Racing Ron, Nyalol, Hotfix-Olli =================
+ /** Brille auf der Nase (Kopf-Rahmen, im geneigten Entwurfsrahmen von face.mjs): kind 'pilot' = Pilotensonnenbrille (Tropfengläser,
+  *  Doppelsteg, Goldfassung) | 'eckig' = eckige Fassung ohne Tönung. Die Gläser tragen die Lesbarkeit, die Fassung ist Beiwerk. */
+ brille(k,F,{kind='pilot',frame,lens,layer='beiwerk'}={}){const h=k.b.head*k.s,pilot=kind==='pilot';
+  frame=frame||(pilot?'#b89a5a':'#1e1c20');lens=lens===undefined?(pilot?'#2a2a36':'#b4cadc'):lens;
+  const S=f=>F.H((x,y,z)=>{const [a,b,c]=tilt(x/h,y/h,z/h);return f(a,b,c)*h;});
+  const Y0=2.66,Z0=FZ+.02,yp=x=>Y0-.16*x*x;// Glasebene folgt der Gesichtsrundung
+  const slab=(y,x,t)=>Math.abs(y-yp(x))-t;
+  let glas,rand;
+  if(pilot){// Tropfenform: oben flach, unten außen bauchig
+   const e2=(x,z)=>{const X=Math.abs(x)-.86-.16*Math.max(0,-(z-Z0)),Z=z-Z0;return (Math.hypot(X/.64,Z/(Z<0?.6:.38))-1)*.42;};
+   glas=(x,y,z)=>Math.max(e2(x,z),slab(y,x,.08));
+   rand=(x,y,z)=>{const e=e2(x,z);return Math.min(Math.max(Math.abs(e)-.045,slab(y,x,.09)),
+    capsule([-.46,Y0-.02,Z0+.36],[.46,Y0-.02,Z0+.36],.08)(x,y,z),capsule([-.3,Y0+.02,Z0+.1],[.3,Y0+.02,Z0+.1],.07)(x,y,z),
+    capsule([-1.45,yp(1.45),Z0+.28],[-2.28,.2,Z0+.2],.08)(x,y,z),capsule([1.45,yp(1.45),Z0+.28],[2.28,.2,Z0+.2],.08)(x,y,z));};}
+  else{// Eckige Fassung: kräftiger Rahmen, damit sie in Spielgröße als Brille liest
+   const bx=(x,z,hx,hz,r)=>{const qx=Math.abs(Math.abs(x)-.84)-hx+r,qz=Math.abs(z-Z0+.02)-hz+r;return Math.min(Math.max(qx,qz),0)+Math.hypot(Math.max(qx,0),Math.max(qz,0))-r;};
+   glas=(x,y,z)=>Math.max(bx(x,z,.46,.3,.08),slab(y,x,.03));
+   rand=(x,y,z)=>Math.min(Math.max(bx(x,z,.6,.44,.12),-bx(x,z,.43,.27,.06),slab(y,x,.1)),
+    capsule([-.4,Y0+.02,Z0+.14],[.4,Y0+.02,Z0+.14],.09)(x,y,z),
+    capsule([-1.44,yp(1.44),Z0+.2],[-2.28,.2,Z0+.16],.09)(x,y,z),capsule([1.44,yp(1.44),Z0+.2],[2.28,.2,Z0+.16],.09)(x,y,z));}
+  const out=[{f:S(rand),mat:pilot?shiny(frame,{spec:1,shine:40}):plastic(frame),layer,group:'brille'}];
+  // Gläser ohne Glas-Fresnel (der hellt schräge Flächen weiß auf): getönt = dunkle, flache Rampe (liest in Spielgröße als Sonnenbrille);
+  // klar = helles Blaugrau mit Lichtpunkt, weil eine dunkle Fassung allein mit den Augen verschmilzt
+  if(lens)out.push({f:S(glas),mat:custom('glas',lens,(u,v,w,n)=>({k:glint(n,-.8,-.4)?1.2:1}),pilot?{spec:.25,shine:50,ramp:rampFrom(lens,{deep:.5,hi:.18})}:{spec:.6,shine:40}),layer,group:'brille'});
+  return out;},
+
+ /** Abnehmbares Sportlenkrad locker in der Hand, am Kranz gegriffen: schwarzer Lederkranz, drei silberne Speichen, Nabe mit Hupenknopf,
+  *  rote 12-Uhr-Markierung. Ø ≈ 35 cm ≈ 4,6 E. Radebene senkrecht, um `dreh` Grad aus der Körperseite nach vorn gedreht; `marke` =
+  *  Winkel der Markierung von der Griffstelle nach vorn. Hängt die Hand tief (Sitzen), liegt das Rad flach auf dem Oberschenkel. */
+ lenkrad(k,F,{hand='l',leder='#2a2624',metall='#c8ccd0',rot='#cc2e26',knopf='#222022',dreh=72,marke=55,layer='beiwerk'}={}){
+  const {s}=k,a=k.arms[hand],sd=hand==='r'?1:-1,Rw=2.3*s,tr=.4*s,low=a.hand[2]<6*s;
+  const r=dreh*Math.PI/180,ez=low?unit([sd*.25,.1,1]):unit([sd*Math.cos(r),Math.sin(r),0]),ex=low?unit(cross([0,1,0],ez)):[0,0,1],ey=cross(ez,ex);
+  const c=low?add(a.hand,mul(ex,-Rw*.9)):add(a.hand,[0,0,-Rw+.05*s]),m0=-sd*marke*Math.PI/180;
+  const L=f=>inFrame(c,[ex,ey,ez],f),ang=(X,Y)=>{let d=Math.atan2(Y,X)-m0;d-=2*Math.PI*Math.round(d/(2*Math.PI));return d;};
+  // Kranz leicht oval im Querschnitt (flacher zur Radebene), Griffmulden als Relief über das Material
+  const rim=(X,Y,Z)=>{const q=Math.hypot(X,Y)-Rw;return Math.hypot(q,Z*1.25)-tr;};
+  const mark=(X,Y,Z)=>Math.max(Math.hypot(Math.hypot(X,Y)-Rw,Z*1.25)-tr-.05*s,Math.abs(ang(X,Y))*Rw-.42*s);
+  const spoke=phi=>{const c1=Math.cos(phi),s1=Math.sin(phi);return (X,Y,Z)=>{const Xr=c1*X+s1*Y,Yr=-s1*X+c1*Y,t=clamp(Xr/Rw,0,1);
+   return box((Rw-.4*s)/2,(.44-.16*t)*s,.13*s,.06*s)(Xr-(Rw+.4*s)/2,Yr,Z+.12*s);};};
+  const spokes=union(spoke(m0+Math.PI/2),spoke(m0-Math.PI/2),spoke(m0+Math.PI));
+  const hub=(X,Y,Z)=>cylZ(.78*s,-.42*s,.2*s,.12*s)(X,Y,Z),horn=(X,Y,Z)=>cylZ(.56*s,.12*s,.36*s,.14*s)(X,Y,Z);
+  const lederM=custom('leder',leder,(X,Y,Z,n)=>({k:(glint(n,-.9,-.3)?1.35:1)*(.9+.12*fbm3(X*1.4,Y*1.4,Z*1.4,2))}),{spec:.35,shine:20});
+  const tex=L(LOC);
+  return [{f:L(rim),mat:lederM,layer,group:'kranz',tex},{f:L(mark),mat:custom('leder',rot,()=>({k:1.05}),{spec:.3,shine:18}),layer,group:'kranz',tex},
+   {f:L(union(spokes,hub)),mat:shiny(metall,{spec:1,shine:40}),layer,group:'speichen',tex},{f:L(horn),mat:plastic(knopf),layer,group:'nabe',tex}];},
+
+ /** Over-Ear-Headset um den Hals: zwei Muscheln liegen auf dem Kragen (Außenring leuchtet grün), Bügel im Nacken, Mikrofonarm auf der
+  *  Seite `mic` schwenkt nach vorn oben, grüner Schaumkopf. Im Oberkörper-Rahmen, folgt Neigung und Drehung. */
+ headset(k,F,{color='#1e1e24',accent=['#3d4a3f','#55704a','#849451','#bac475','#cace9c'],mic=-1,layer='beiwerk'}={}){const {s}=k,r0=k.root[2],zc=r0+k.shoulderZ+1.55*s;
+  // Muscheln liegen vorn auf dem Kragen, Außenseite schräg nach vorn oben (zur Kamera) – groß genug für Spielgröße (Ø ≈ 2,4 E)
+  const cups=[-1,1].map(sd=>{const c=[sd*1.8*s,.95*s,zc],n=unit([sd*.5,.55,.68]);return {sd,c,B:basis(n,[0,0,1])};});
+  const cupF=union(...cups.map(({c,B})=>inFrame(c,B,(x,y,z)=>cylZ(1.2*s,-.5*s,.4*s,.26*s)(x,y,z))));
+  const ringF=union(...cups.map(({c,B})=>inFrame(c,B,(x,y,z)=>torusZ(.74*s,.2*s)(x,y,z-.38*s))));
+  const band=tube([add(cups[0].c,[-.1*s,-.9*s,.3*s]),[-1.75*s,-1.6*s,zc+.7*s],[0,-2.25*s,zc+.9*s],[1.75*s,-1.6*s,zc+.7*s],add(cups[1].c,[.1*s,-.9*s,.3*s])],.28*s,4);
+  const mc=cups.find(q=>q.sd===mic)||cups[0],p0=add(mc.c,[-mic*.2*s,.8*s,.25*s]),end=[mic*.8*s,2.7*s,zc+.35*s];
+  const arm=tube([p0,[mic*1.45*s,2.2*s,zc+.35*s],end],.2*s,4),tip=at(...end,sphere(.4*s));
+  const neon=glow(accent);
+  return [{f:F.U(union(cupF,band.f,arm.f)),mat:custom('kunststoff',color,(u,v,w,n)=>({k:glint(n,-.9,-.3)?1.5:1}),{spec:.6,shine:28}),layer,group:'headset',tex:F.U(LOC)},
+   {f:F.U(ringF),mat:neon,glow:.8,layer,group:'headset-ring'},{f:F.U(tip),mat:custom('schaum','#26262c',(u,v,w)=>({k:.9+.2*fbm3(u*3,v*3,w*3,2)}),{spec:.05,shine:4}),layer,group:'mikro',tex:F.U(LOC)}];},
+
+ /** Aufgeklappter silberner Laptop auf dem Unterarm, Bildschirm zeigt nach vorn (Olli pitcht): Tastatur und Touchpad auf der Grundplatte,
+  *  Deckel an der Kante zum Körper um `offen` Grad aufgeklappt, leuchtender Bildschirm mit Balkendiagramm (selbstleuchtend, bläulich). */
+ laptop(k,F,{hand='l',color='#c4c8cc',tasten='#34363a',offen=104,layer='beiwerk'}={}){const {s}=k,a=k.arms[hand];
+  const fw=unit([a.dir[0],a.dir[1],0]),ez=[0,0,1],ex=cross(fw,ez),B=[ex,fw,ez];
+  const W=2.3*s,Dp=1.6*s,T=.14*s,Lh=1.55*s,Lt=.1*s,o=add(add(a.wrist,mul(fw,.2*s)),[0,0,.72*s]),L=f=>inFrame(o,B,f);
+  const an=(offen-90)*Math.PI/180,u=[0,-Math.sin(an),Math.cos(an)],nL=[0,Math.cos(an),Math.sin(an)],hy=-Dp+.05*s;
+  const lidC=(X,Y,Z)=>{const y=Y-hy,z=Z-T;return [X,y*nL[1]+z*nL[2],y*u[1]+z*u[2]];};// [quer, Normale (Bildschirmseite +), entlang Deckel]
+  const base=(X,Y,Z)=>box(W,Dp,T,.07*s)(X,Y,Z);
+  const lid=(X,Y,Z)=>{const [x,p,q]=lidC(X,Y,Z);return box(W,Lt,Lh,.07*s)(x,p-Lt,q-Lh);};
+  const scr=(X,Y,Z)=>{const [x,p,q]=lidC(X,Y,Z);return box(W-.2*s,.04*s,Lh-.2*s,.03*s)(x,p-2*Lt,q-Lh-.04*s);};
+  const kb=Dp*.2;// Tastatur zwischen Scharnier und Touchpad
+  const body=custom('metall',color,(X,Y,Z,n)=>{const g=glint(n)?1.35:1;
+   if(Z>T-.03*s&&n&&n[2]>.5){if(Math.abs(X)<W-.32*s&&Y>-Dp+.3*s&&Y<kb){const fx=((X/(.42*s))%1+1)%1,fy=(((Y-(-Dp))/(.4*s))%1+1)%1;return fx<.74&&fy<.72?{k:1.05,ramp:R(tasten)}:{k:.62,ramp:R(tasten)};}
+    if(Math.abs(X)<.75*s&&Y>kb+.2*s&&Y<Dp-.2*s)return {k:.9*g};}
+   return {k:g*(.95+.08*fbm3(X*.6,Y*.6,Z*.6,2))};},{spec:.8,shine:32});
+  const lcd=glow(['#142038','#223c68','#34609c','#5a8ccc','#9cc8f0']),bars=[[-1.45,.55],[-.75,.95],[-.05,1.3],[.65,1.75]];
+  const glowF=(X,Y,Z)=>{const [x,p,q]=lidC(X,Y,Z),U=x/s,V=q/s;if(V>2.45&&V<2.7&&U>-1.6&&U<.6)return .78;
+   for(const [b0,hh] of bars)if(U>b0&&U<b0+.5&&V>.45&&V<.45+hh)return b0>.5?.95:.82;return .42+.05*Math.sin(V*9);};
+  return [{f:L(base),mat:body,layer,group:'laptop',tex:L(LOC)},{f:L(lid),mat:body,layer,group:'deckel',tex:L(LOC)},
+   {f:L(scr),mat:lcd,glow:(X,Y,Z)=>glowF(X,Y,Z),layer,group:'bildschirm',tex:L(LOC)}];},
+
+ /** Kaffeebecher zum Mitnehmen in der Hand (aufrecht): weißer Pappbecher, braune Manschette, Deckel mit Trinköffnung. */
+ kaffeebecher(k,F,{hand='r',color='#f2efe8',manschette='#8a5630',deckel='#e8e4dc',layer='beiwerk'}={}){const {s}=k,o=add(k.arms[hand].hand,[0,.14*s,.3*s]),H=1.2*s;
+  const rz=z=>.5*s+.2*s*clamp((z+H)/(2*H),0,1);
+  const cup=at(...o,(x,y,z)=>Math.max(Math.hypot(x,y)-rz(z),Math.abs(z)-H)*.95);
+  const sleeve=at(...o,(x,y,z)=>Math.max(Math.hypot(x,y)-rz(z)-.07*s,Math.abs(z+.05*s)-.5*s)*.95);
+  const lid=at(...o,(x,y,z)=>Math.min(cylZ(.78*s,H-.04*s,H+.24*s,.1*s)(x,y,z),cylZ(.6*s,H+.18*s,H+.44*s,.14*s)(x,y,z)));
+  const tex=(x,y,z)=>[x-o[0],y-o[1],z-o[2]];
+  return [{f:cup,mat:custom('papier',color,(x,y,z,n)=>({k:glint(n)?1.25:1}),{spec:.2,shine:12}),layer,group:'becher',tex},
+   {f:sleeve,mat:custom('papier',manschette,(x,y,z)=>({k:Math.hypot(Math.atan2(x,y)-.4,z/(.35*s))<.5&&y>0?1.35:1}),{spec:.05,shine:6}),layer,group:'manschette',tex},
+   {f:lid,mat:plastic(deckel),layer,group:'deckel',tex}];},
 };

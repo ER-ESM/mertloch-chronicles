@@ -4,6 +4,7 @@ import {TARGET_RULES as R,TARGET_UI,VILLAGERS} from './content/index.js';
 import {tutorialActive} from './tutorial.js';
 import {inKiosk} from './kiosk-instance.js';
 import {companionAid,selectCompanionAid} from './companions.js';
+import {hotspotLayout,onPlayerFloor} from './hotspots.js';
 
 const hyp=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 /** Mitspieler werden zwischen zwei Schnappschüssen interpoliert – Treffertest und Rahmen brauchen dieselbe Position wie der Renderer. */
@@ -16,6 +17,8 @@ export function friendlyUnits(g,now){
  const w=g.world,open=!tutorialActive(g),list=[];
  if(w.npc)list.push({kind:'npc',ref:w.npc,x:w.npc.x,y:w.npc.y,name:w.npc.name});
  if(open)for(const m of w.mentors||[])list.push({kind:'mentor',ref:m,x:m.x,y:m.y,name:m.name});
+ // Stammgäste der Bude (E-61): ansprechbar wie Mentoren, nur auf dem Geschoss des Helden.
+ if(open&&g.hotspots)for(const h of hotspotLayout(w).hotspots)if(h.regular&&onPlayerFloor(g,h.giver))list.push({kind:'regular',ref:h.giver,x:h.giver.x,y:h.giver.y,name:h.giver.name});
  if(open)for(const q of w.quests||[])list.push({kind:'questgiver',ref:q.giver,x:q.giver.x,y:q.giver.y,name:q.giver.name});
  for(const a of g.life?.actors||[])if(a.kind==='villager')list.push({kind:'resident',ref:a,x:a.x,y:a.y,name:VILLAGERS.find(v=>v.variant===a.variant)?.name||TARGET_UI.kinds.resident});
  for(const o of g.others||[]){const p=remotePosition(o,now);list.push({kind:o.party?'party':'player',ref:o,x:p.x,y:p.y,name:o.name,level:o.level,hp:o.hp??100,state:o.state});}

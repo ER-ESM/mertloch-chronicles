@@ -5,9 +5,9 @@ export const TARGET_RULES={
  hoverAlpha:.75,hoverGlow:9,selectGlow:5,pulse:3.2
 };
 export const TARGET_UI={
- kinds:{npc:'Auftraggeber',mentor:'Mentor',questgiver:'Questgeber',resident:'Dorfbewohner',player:'Spieler',party:'Gruppenmitglied',companion:'Söldner'},
+ kinds:{npc:'Auftraggeber',mentor:'Mentor',regular:'Stammgast',questgiver:'Questgeber',resident:'Dorfbewohner',player:'Spieler',party:'Gruppenmitglied',companion:'Söldner'},
  level:n=>'ST. '+n,
- effect:{npc:'Freundlich · Rechtsklick: ansprechen',mentor:'Freundlich · Rechtsklick: ansprechen',questgiver:'Freundlich · Rechtsklick: ansprechen',resident:'Freundlich',player:'Mitspieler · Rechtsklick: Flüstern / Einladen',party:'In deiner Gruppe · Rechtsklick: Flüstern'},
+ effect:{npc:'Freundlich · Rechtsklick: ansprechen',mentor:'Freundlich · Rechtsklick: ansprechen',regular:'Freundlich · Rechtsklick: ansprechen',questgiver:'Freundlich · Rechtsklick: ansprechen',resident:'Freundlich',player:'Mitspieler · Rechtsklick: Flüstern / Einladen',party:'In deiner Gruppe · Rechtsklick: Flüstern'},
  fight:'Im Kampf',dead:'Am Boden',companionAid:'Hilfsziel · Heilung und Schutz wirken auch hier',
  menuWhisper:'Flüstern',menuInvite:'In Gruppe einladen',tooFar:'Zu weit weg – du läufst hin.'
 };

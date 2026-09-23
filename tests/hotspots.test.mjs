@@ -19,6 +19,9 @@ test('jeder Hotspot und jeder Aushang liegt in der echten Welt: bewohnbar, errei
  assert.deepEqual(L.hotspots.map(h=>h.id),HOTSPOTS.map(h=>h.id));
  assert.deepEqual(L.notices.map(n=>n.id),WORLD_NOTICES.map(n=>n.id));
  for(const h of L.hotspots){
+  // Stammgäste (E-61): Platz in der Bude, kein eigenes Gebiet, erreichbar vom Aufwachplatz.
+  if(!h.def.area){const spot=world.base.house.spots[h.def.anchor.slice(5)];assert.ok(h.regular&&h.area===null,h.id);assert.deepEqual({x:h.giver.x,y:h.giver.y},{x:spot.x,y:spot.y},h.id+' steht auf seinem Platz');
+   assert.equal(world.blocked(h.giver.x,h.giver.y,6),false,h.id+' frei');assert.ok(world.findPath(world.base.house.spots.wake,h.giver).length>0,h.id+' erreichbar');continue;}
   assert.ok(distance(h.anchor,h.area)<=h.def.area.distance[1]+1,h.id+' Gebiet nah am Geber');
   assert.ok(world.camps.every(c=>distance(c,h.area)>=320),h.id+' Abstand zu Lagern');
   assert.ok(world.findPath(h.giver,h.area).length>0,h.id+' erreichbar');

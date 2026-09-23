@@ -441,7 +441,8 @@ export const WARDROBE={
   return out;},
 
  /** Fischerhut (Steppringe auf der Krempe, Bahnen, Hutband, Lüftungsösen, leicht verbeult) / Schiebermütze. */
- hut(k,F,{color='#56603c',kind='fischer',layer='hut',beule=1,hutband=null}={}){const hs=k.b.head*k.s,bandC=hutband||mixHex(color,'#2a2a22',.35);
+ hut(k,F,{color='#56603c',kind='fischer',layer='hut',beule=1,hutband=null,aufkleber='#3a66b0'}={}){const hs=k.b.head*k.s,bandC=hutband||mixHex(color,'#2a2a22',.35);
+  if(kind==='bauhelm')return bauhelm(k,F,{color,layer,aufkleber});
   if(kind==='fischer'){
    const crown=(x,y,z)=>{const zz=z-1.25*hs,r=Math.hypot(x,y),Rr=2.35*hs-.2*hs*sat(zz/(1.5*hs)),dent=beule*.3*hs*Math.exp(-x*x/(.45*hs*hs))*sat((r/hs-.2)/1)*(y>0?1:.6),H=1.5*hs-dent,rr=.45*hs;
     const dx=r-Rr+rr,dz=Math.abs(zz-H/2)-H/2+rr;return Math.min(Math.max(dx,dz),0)+Math.hypot(Math.max(dx,0),Math.max(dz,0))-rr;};
@@ -465,7 +466,61 @@ export const WARDROBE={
   const ring=(x,y,z)=>{const dn=F.neck(x,y,z);if(dn>1.6*s)return dn-.6*s;const [,,Z]=P(x,y,z);return Math.max(Math.abs(dn-.3*s)-.2*s,Math.abs(Z-zN)-.45*s);};
   const knot=F.U(at(0,yf,k.root[2]+hipZ+zN-.6*s,union(ellipsoid(.45*s,.3*s,.38*s),capsule([.1*s,.05*s,-.2*s],[.35*s,.35*s,-1.4*s],.2*s),capsule([-.1*s,.05*s,-.2*s],[-.2*s,.3*s,-1.2*s],.2*s))));
   return [{f:union(ring,knot),mat:tuch(color,{art:'leinen',muster:mu,deko:(o,u,v)=>{o.h+=.03*Math.sin(v/s*TAU/.5+u);}}),tex:rumpfTex(k,F),layer,group:'tuch'}];},
+
+ // ---------- Stammgäste (E-61) ----------
+ /** Rennstreifen: heller Lederstreifen außen über beide Jackenärmel (Schulter bis Bündchen), sitzt auf den Ärmeln von `jacke`
+  *  (gleiche Faltenlage: pad, tEnd, stau wie dort). breite = halbe Streifenbreite in Körpermaß. */
+ rennstreifen(k,F,{color='#efe8d6',pad=.5,breite=.34,tEnd=.86,falten=1,layer='jacke'}={}){const {s}=k,out=[];
+  for(const [n,side] of [['l',-1],['r',1]]){const A=k.arms[n];
+   const G=glied(k,[A.shoulder,A.elbow,A.wrist],side,armR(k),pad-.06+.06,{tEnd,stau:.5,falten:falten*1.15});
+   const f=(x,y,z)=>{const d=G.f(x,y,z);if(d>.6)return d;const [u,t]=G.tex(x,y,z);return Math.max(d,Math.abs(u)-breite*s,.15*s-t,t-(G.end-.75*s));};
+   const deko=(o,u,v)=>{naht(o,(Math.abs(u)/s-breite)+.1,.05,.35);};
+   out.push({f,mat:tuch(color,{art:'leder',deko}),tex:G.tex,layer,group:'arm'+n});}
+  return out;},
+
+ /** Warnweste: Weste mit V-Ausschnitt ohne Knöpfe, zwei silberne Reflexstreifen rundum (Höhe über der Hüfte in `streifen`). */
+ warnweste(k,F,{color='#e8792a',reflex='#d8dcdc',streifen=[1.25,2.85],pad=.46,laenge=.3,layer='weste',...opt}={}){const {s}=k,P=rumpfP(k,F);
+  const out=WARDROBE.weste(k,F,{color,pad,laenge,knoepfe:0,taschen:null,riegel:false,layer,...opt});
+  const shell=inflate((pad+.15)*s,torsoM(F));
+  const f=(x,y,z)=>{const d=shell(x,y,z);if(d>1)return d;const Zs=P(x,y,z)[2]/s;let e=9;for(const c of streifen)e=Math.min(e,Math.abs(Zs-c)-.3);return Math.max(d,e*s);};
+  const mat=custom('reflex',reflex,(u,v,w,n)=>({k:(n&&n[0]<-.2&&n[1]>.1?1.3:1)*(.96+.06*Math.sin(u*TAU/.5))}),{spec:.9,shine:30});
+  out.push({f,mat,tex:rumpfTex(k,F),layer,group:'reflex'});
+  return out;},
+
+ /** Badelatschen mit Tennissocken: weiße Rippsocke bis über den Knöchel, flache dunkle Sohle, breiter Riemen über dem Rist mit drei hellen Streifen. */
+ latschen(k,F,{color='#1f2a48',sohle='#26262c',socke='#f0ede2',streifen='#eeeae0',ringel='#9aa4b8',sockH=.36,layer='schuhe'}={}){const {s}=k,out=[];
+  for(const [n,L] of [['l',k.legs.l],['r',k.legs.r]]){
+   const heel=add(L.ankle,[0,-.4*s,-.35*s]),toe=add(L.toe,[0,.1*s,0]),Rf=(.72+.13)*s,ax=nrm3(sub3(toe,heel)),up=nrm3(sub3([0,0,1],mul(ax,ax[2]))),lat=cross3(ax,up),Lf=len3(sub3(toe,heel));
+   const loc=(x,y,z)=>{const p=[x-heel[0],y-heel[1],z-heel[2]];return [dot3(p,ax),dot3(p,lat),dot3(p,up)];};
+   const foot=roundCone(heel,toe,Rf,Rf*.84),shaft=segment(L.ankle,L.knee,-.05,sockH,.75*s,1*s,.16*s);
+   const sock=union(foot,shaft);
+   const sockDeko=(o,al,la,hu)=>{const top=sockH*len3(sub3(L.knee,L.ankle))+Rf*.4;if(hu>top-.6*s){o.k*=1+.06*Math.cos(la/s*TAU/.3);if(Math.abs(hu-(top-.35*s))<.12*s)o.ramp=R(ringel);}};
+   const sole=(x,y,z)=>{const [al,la,hu]=loc(x,y,z),ac=clamp(al,-.1*s,Lf+.2*s),r=Math.hypot(al-ac,la)-mix(Rf,Rf*.84,clamp(al/Lf,0,1))*1.12;
+    return Math.max(r,-Rf-.08*s-hu,hu-(-Rf+.34*s))*.9;};
+   const strap=(x,y,z)=>{const d=foot(x,y,z)-.14*s;if(d>.6)return d;const [al,,hu]=loc(x,y,z);return Math.max(d,Math.abs(al-Lf*.6)-Lf*.2,-Rf+.2*s-hu);};
+   const sDeko=(o,al,la,hu)=>{const q=(al-Lf*.4)/(Lf*.4);if(q>0&&q<1&&Math.abs(la)>.25*s){const f=fract(q*3);if(f>.3&&f<.72)o.ramp=R(streifen);}naht(o,(Math.abs(al-Lf*.6)-Lf*.2)/s,.06,.4);};
+   out.push({f:sock,mat:tuch(socke,{art:'strick',deko:sockDeko,relief:.6}),tex:loc,layer,group:'socke'+n});
+   out.push({f:strap,mat:tuch(color,{art:'leder',deko:sDeko,spec:.3,shine:18}),tex:loc,layer,group:'riemen'+n});
+   out.push({f:sole,mat:tuch(sohle,{art:'leder',deko:(o,al,la,hu)=>{naht(o,(hu-(-Rf+.26*s))/s,.05,.3);},spec:.15,shine:8}),tex:loc,layer,group:'sohle'+n});}
+  return out;},
 };
+
+/** Bauhelm (Kopf-Rahmen): glatte Kunststoffschale mit Mittelgrat, Randwulst und kleinem Schirm vorn, Aufkleber an der linken Seite. */
+function bauhelm(k,F,{color='#eeece4',layer='hut',aufkleber='#3a66b0'}={}){const hs=k.b.head*k.s,zc=1.02*hs,yc=-.12*hs,Rx=2.6*hs,Ry=2.84*hs,Rz=2.1*hs;
+ const shell=ellipsoid(Rx,Ry,Rz),dome=(x,y,z)=>Math.max(shell(x,y-yc,z-zc),zc+.02*hs-z);
+ const ridge=(x,y,z)=>Math.max(ellipsoid(Rx+.22*hs,Ry+.24*hs,Rz+.26*hs)(x,y-yc,z-zc),Math.abs(x)-.36*hs,zc+.75*hs-z);
+ const lip=(x,y,z)=>{const e=(Math.hypot(x/(Rx+.16*hs),(y-yc)/(Ry+.16*hs))-1)*Rx;return Math.max(e,-(e+.45*hs),Math.abs(z-zc-.14*hs)-.15*hs);};
+ // Schirm kurz halten: die Augen liegen im Kopf-Rahmen bei z ≈ 0,5 h (Gesicht ist zur Kamera geneigt) und sollen darunter sichtbar bleiben
+ const peak=(x,y,z)=>{const Y=y-yc,e=(Math.hypot(x/(1.95*hs),(Y-1.45*hs)/(1.75*hs))-1)*1.8*hs,zp=zc+.14*hs-.2*Math.max(0,Y-Ry*.75);
+  return Math.max(e,Math.abs(z-zp)-.12*hs,Ry*.5-Y);};
+ const deko=(o,x,y,z)=>{const X=x/hs,Y=(y-yc)/hs,Z=(z-zc)/hs;
+  if(Math.abs(X)<.42&&Z>.7)naht(o,Math.abs(X)-.38,.05,.45);                          // Kanten des Mittelgrats
+  if(Z<.32)o.k*=.93;                                                                 // Randwulst etwas dunkler
+  if(X<-1.4&&Math.abs(Y+.15)<.62&&Math.abs(Z-1.05)<.42){o.ramp=R(aufkleber);if(Math.hypot(Y+.15,Z-1.05)<.22)o.ramp=R('#f2efe6');}
+  o.k*=1+.03*(noise3(x*1.1,y*1.1,z*1.1)-.5);};
+ const mat=custom('kunststoff',color,(x,y,z,n)=>{const o={k:1,h:0,ramp:null,spec:null,r:false};deko(o,x,y,z);const g=n&&n[0]<-.25&&n[0]>-.9&&n[1]>.1?1.12:1;
+  return {k:o.k*g,...(o.ramp?{ramp:o.ramp}:{})};},{spec:.6,shine:30});
+ return [{f:F.H(union(dome,ridge,lip,peak)),mat,tex:F.H((x,y,z)=>[x,y,z]),layer,group:'hut'}];}
 
 /** Hopfendolde als Stickerei/Druck: Dolde aus Reihen spitzer, überlappender Deckblätter (hängt nach unten), zwei gelappte Blätter mit
  * Adern, Stiel mit Ranke. x quer, y hoch (Einheit ≈ E bei Größe 1). */

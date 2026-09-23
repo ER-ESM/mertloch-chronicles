@@ -46,6 +46,21 @@ export const GEAR={
  armreif:{slot:'wrists',family:'bracer',carry:[['armreif',{}]]},
  putzspray:{slot:'trinket',carry:[['putzspray',{}]]},
  schutzbrille:{slot:'head',carry:[['schutzbrille',{}]]},
+ // Stammgäste der Bude (E-61): Racing Ron, Nyalol, Hotfix-Olli
+ rennjacke:{slot:'body',family:'jacket',wear:[['jacke',{color:'#b3322a',art:'leder',sleeves:'long',open:true,kragen:'stehkragen',taschen:'paspel'}],['rennstreifen',{}]]},
+ kapuzenpulli:{slot:'body',family:'jacket',wear:[['jacke',{color:'#5a3a58',art:'wolle',sleeves:'three4',open:false,kapuze:true,kragen:null,taschen:'aufgesetzt',buendchen:true,pad:.55}]]},
+ warnweste:{slot:'body',family:'vest',wear:[['warnweste',{}]]},
+ jogginghose:{slot:'legs',family:'trouser',wear:[['hose',{color:'#8a8a8c',art:'wolle',taschen:'einfach',gesaess:false,schlaufen:false,stau:1.5,abrieb:.15}]]},
+ chinos:{slot:'legs',family:'trouser',wear:[['hose',{color:'#c9b48a',art:'drill',abrieb:.2}]]},
+ adiletten:{slot:'feet',family:'boot',wear:[['latschen',{}]]},
+ bauhelm:{slot:'head',family:'helmet',wear:[['hut',{color:'#eeece4',kind:'bauhelm'}]]},
+ pilotenbrille:{slot:'head',carry:[['brille',{kind:'pilot'}]]},
+ brille:{slot:'head',carry:[['brille',{kind:'eckig'}]]},
+ lenkrad:{slot:'offhand',carry:[['lenkrad',{}]]},
+ headset:{slot:'neck',carry:[['headset',{}]]},
+ laptop:{slot:'offhand',carry:[['laptop',{}]]},
+ kaffeebecher:{slot:'trinket',family:'bottle',carry:[['kaffeebecher',{}]]},
+ laufuhr:{slot:'wrists',family:'bracer',carry:[['armreif',{color:'#1e1e22'}]]},
 };
 
 /** Getragene Teile → Kleidungsstücke und Beiwerk für figure.mjs. Unbekannte Teile sind ein Fehler (nichts still weglassen). */

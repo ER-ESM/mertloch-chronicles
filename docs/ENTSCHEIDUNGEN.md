@@ -914,3 +914,30 @@ Balance-Bericht:
 - *Feldleben verdoppeln statt Finisher und Wertkurse anzufassen:* Das hätte den Oneshot auf Stufe 3 behoben, nicht aber die Schere mit der Stufe. Der Schadensbonus aus Ausrüstung wuchs linear ohne Stufenbezug, jeder Lebenswert wäre ab Stufe 15 wieder überrollt worden.
 - *Allgemeine Halteregel für alle Finisher:* Finisher mit Gruppenbedingung (drei Verschimmelte, Lunten) zünden gegen Einzelziele dann nie.
 - *Das Heil-Zurücksetzen streichen:* Es ist der Kern beider Talente. Die zusätzlichen 80 Heilung waren der verzichtbare Teil.
+
+## E-61 · Stammgäste statt Helden in der Bude: Racing Ron, Nyalol, Hotfix-Olli (23.09.2026)
+
+**Nutzerauftrag:** „Die Helden sollen nicht in der Bude stehen, entferne sie. Platziere dort entsprechend andere NPCs mit Nebenquests und einigen Dialogen. Das sind Leute, die sonst zum Poo-Tang-Stamm gehören … Charaktere, die auch sonst im späteren Verlauf immer wieder auftauchen sollen.“
+
+**Entscheidung.**
+- Dosen-Dieter, Aperol-Anni und Klo-Kevin sind die spielbaren Klassen und stehen nicht mehr als Mentoren in der Bude (`world.mentors=[]`). Ihre Namen bleiben in Texten und Erinnerungen, `HUB_TALK.dieter|baerbel|kevin` ruhen.
+- Drei Stammgäste nehmen die Plätze ein. Figurenbibel: `docs/FIGUREN-STAMMGAESTE.md`.
+  - **Racing Ron**, Hof („Boxengasse“)
+  - **Nyalol** alias Zocker-Marco, Hinterzimmer („Raidzentrale“)
+  - **Hotfix-Olli**, Schankraum am Tresen-Bauplatz. Der Spitzname war freigestellt. Alternativen: „Go-Live-Olli“, „Olli Bauschaum“.
+- **Umsetzung im Hotspot-System (E-55)**, kein zweites Questsystem:
+  - Je Stammgast ein Hotspot ohne `area` mit Anker `bude:<Platz>` und einer Reihe aus drei Aufträgen: Kill, Drop und eine Überleitung zu Ida bei Olli.
+  - Die Hotspots stehen am Ende von `HOTSPOTS` und verbrauchen keinen Zufall. Lage und Reihenfolge der Startreihe bleiben unverändert.
+  - Die Wegmarke zeigt auf das nächste Gebiet, in dem die Zielart lebt.
+- **Gespräche:** Stammgäste sind immer ansprechbar, auch ohne offenen Auftrag. Beim ersten Mal kommt `greet`, danach reihum die Zeilen des laufenden Kapitels, nach dem Akt `done`. Der Zähler liegt im vorhandenen Spielstandfeld `mentorTalks`.
+- **Stockwerk:** Leute im Erdgeschoss sind oben weder ansprechbar noch anwählbar.
+- **Vorrang:** Leute in Gesprächsreichweite gehen vor der Baustelle der Bude. Vorher öffnete F an Olli den Basisbau.
+- **Grafik:** Die Figuren kommen aus der Sprite-Schmiede (`tools/sprite-forge/figures/stamm.mjs`, drei Schichten nach E-58). Die Grafik-Tests erkennen Schmiede-Figuren als Personengrafik an.
+
+**Verworfen.**
+- *Mentoren-Mechanik weiterverwenden:* Die Stammgäste wären dann doppelt verdrahtet gewesen, als Mentor zum Reden und als Hotspot-Geber für die Aufträge.
+- *Eigene Tiergebiete für die Stammgäste:* Das hätte den Zufallsstrom und damit die Lage der Startreihe verschoben.
+
+**Offen.**
+- Die ruhende Mentoren-Mechanik (`mentorInteraction`, `talkToMentor`, `mentorDialogue`, `mentorSpots`) aufräumen oder für spätere Auftritte nutzen.
+- Weitere Auftritte der drei in Akt 2 (Koblenz): Nyalols Mitschnitte und Ollis gelöschte Datenbank als Erinnerungsquellen, Uschi als Fahrzeug.

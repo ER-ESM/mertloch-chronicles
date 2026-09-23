@@ -1,10 +1,18 @@
 // Bewohner mit Namen. IDs werden von quests.js, dialogues.js, buildings.js und memories.js referenziert. look = Bildhinweis für Porträts/Sprites.
-// Die drei Clanmitglieder stehen als Mentoren an der Bude (Akt 1: der Held trägt ihre Ersatzklamotten); Bild und Werte kommen aus classes.js.
+// Die drei Clanmitglieder sind die spielbaren Klassen (Akt 1: der Held trägt ihre Ersatzklamotten); Bild und Werte kommen aus classes.js.
+// Seit E-61 stehen sie nicht mehr in der Bude. Dort stehen die Stammgäste (regular:true) – Figurenbibel docs/FIGUREN-STAMMGAESTE.md.
 export const NPCS={
  ida:{name:'Kisten-Ida',role:'Logistik auf zwei Promille · Hauptquestgeberin · Bauleitung der Bude',home:'St. Gangolf',faction:'clan',look:'Resolute Frau Ende 40, Bierkasten unter dem Arm, Schlüsselbund, Zigarette hinterm Ohr, Zollstock in der Gesäßtasche'},
  dieter:{name:'Dosen-Dieter',role:'Clan · Mentor Tank · Baumeister ohne Baugenehmigung',home:'Clan-Treff',faction:'clan',member:true,look:'siehe classes.js'},
  baerbel:{name:'Aperol-Anni',role:'Clan · Mentorin Heilung · Vorher-Nachher-Beauftragte',home:'Clan-Treff',faction:'clan',member:true,look:'siehe classes.js'},
  kevin:{name:'Klo-Kevin',role:'Clan · Mentor Fernkampf · Werkstatt, Strom, Drohne',home:'Clan-Treff',faction:'clan',member:true,look:'siehe classes.js'},
+ // --- Stammgäste der Bude (E-61): wiederkehrende Figuren, Platz in content/bude-house.js, Aufträge in content/hotspots.js ---
+ ron:{name:'Racing Ron',role:'Stamm · Kfz-Mechatroniker, Nordschleifen-Prophet · Boxengasse im Hof',home:'Bude',faction:'clan',regular:true,
+  look:'Sehniger Kerl Ende 30, Fahrerbräune nur links, kurzes dunkles Haar, Schnauzer, Pilotensonnenbrille, rote Leder-Rennjacke über weißem Shirt, Jeans mit Ölflecken, Rennhandschuhe, abnehmbares Sportlenkrad in der Hand'},
+ nyalol:{name:'Nyalol',role:'Stamm · „Zocker-Marco“, Raidleiter der Gilde <Poo Tang Clan> · Raidzentrale im Hinterzimmer',home:'Bude',faction:'clan',regular:true,
+  look:'Kräftiger, blasser Kerl Anfang 30 mit Bauchansatz, zerzaustes dunkelblondes Haar, Bartstoppeln, Augenringe, lila Kapuzenpulli, graue Jogginghose, Adiletten mit Tennissocken, Headset um den Hals, giftgrüne Energydrink-Dose'},
+ olli:{name:'Hotfix-Olli',role:'Stamm · Seriengründer, Vibe-Coder, „Bauleitung Digital“ · Co-Working-Space am Tresen',home:'Bude',faction:'clan',regular:true,
+  look:'Schlanker, fitter Typ Mitte 30, gepflegter Kurzhaarschnitt, Dreitagebart, eckige Brille, hellblaues Hemd mit hochgekrempelten Ärmeln unter oranger Warnweste, Chinos, weiße Sneaker mit Baustaub, weißer Bauhelm, aufgeklappter Laptop, Kaffeebecher zum Mitnehmen'},
  mara:{name:'Mara „Katerkiller“',role:'Kräuterhexe mit Mixer',home:'Clan-Treff',faction:'clan',look:'Junge Frau mit Bandana, Mörser, grüne Finger, Augenringe'},
  leander:{name:'Lauti-Leander',role:'Tontechniker ohne Gehör',home:'Clan-Treff',faction:'clan',look:'Dünner Typ mit Kopfhörern, Bollerbox, Kabelsalat um den Hals'},
  oskar:{name:'Grill-Oskar',role:'Grillmeister und Wurstphilosoph',home:'Pfandhof',faction:'clan',look:'Dicker Mann mit Schürze „Kiss the Grill“, Grillzange, Brandflecken'},

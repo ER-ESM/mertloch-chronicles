@@ -15,7 +15,9 @@ export function placeMentors(world){return mentorSpots(world).map(p=>({...p,clas
 /** Benennt Ida und bestückt die generierten Nebenquests mit Vorlagen aus content/quests.js (seedabhängig, ohne Wiederholung). */
 export function dressStory(world){
   world.npc.name=STORY.giver;
-  world.mentors=placeMentors(world);
+  // Die Helden stehen nicht mehr als Mentoren in der Bude (Nutzerentscheidung 2026-09-23, E-61): Dieter, Anni und Kevin sind die
+  // spielbaren Klassen. In der Bude stehen jetzt die Stammgäste Ron, Nyalol und Olli (content/hotspots.js, Anker bude:*).
+  world.mentors=[];
   const templates=pickTemplates(world.quests,world.seed);
   for(const [i,q] of world.quests.entries()){const t=templates[i];q.template=t.id;q.giver.npc=t.npc;q.giver.name=NPCS[t.npc].name;q.title=t.title;q.description=t.description(q.location);q.quote=t.quote;q.lines=t.lines;q.reward=questReward(t);if(t.itemName)q.itemName=t.itemName;if(t.enemyName)q.enemyName=t.enemyName;if(q.type==='scout')q.activity=t.activity;}
 }
