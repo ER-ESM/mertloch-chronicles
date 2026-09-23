@@ -12,6 +12,8 @@ import {Worker,isMainThread,parentPort} from 'node:worker_threads';
 import {cpus} from 'node:os';
 import path from 'node:path';
 import {renderScene,autoBounds} from './render.mjs';
+import {setMood} from './materials.mjs';
+setMood('warm');// Figuren im warmen Licht der gemalten Bögen (gilt im Haupt- und in jedem Worker-Thread)
 import {figureScene,place,POSES,POSE_COLUMNS,walkPose,DIRECTIONS,characterRecipe} from './figure.mjs';
 import {encodePng,surface} from '../sprite-pipeline/png.mjs';
 
@@ -27,7 +29,8 @@ export async function loadFigures({tests=false}={}){const dir=path.join(ROOT,'to
 
 /** Eine Zelle rendern: Rezept + Pose + Blickrichtung → 96×136-Fenster samt Ebenenname je Pixel. */
 /** Malstufen der Figuren (render.mjs): Doppelauflösung, Kantenlicht, gemalte Helligkeitsstufen. */
-export const FIGURE_STYLE={oversample:2,ss:1,rim:.35,bands:6},QUICK_STYLE={oversample:1,ss:1,rim:.35,bands:6};
+// Figuren: flache Kamera (15°, fast frontal wie die gemalten Bögen), warmes Kantenlicht, weiche Übergänge.
+export const FIGURE_STYLE={oversample:2,ss:1,rim:.3,rimTint:'#ffd9a0',bands:0,pitch:15,exposure:.84},QUICK_STYLE={...FIGURE_STYLE,oversample:1};
 export function renderCell(recipe,pose,facing,style=FIGURE_STYLE){
  const scene=autoBounds(place(figureScene(recipe,pose),facing));
  const img=renderScene(scene,{view:'oblique',x0:WIN.x0,y0:WIN.y0,width:WIN.w,height:WIN.h,zTop:38,...style});
@@ -84,6 +87,7 @@ if(isMainThread&&process.argv[1]&&SELF===path.resolve(process.argv[1])){
    cat.assets[id]={...common,path:OUT+id+'.png',columns:POSE_COLUMNS,frames:r.frames};
    // Schrittweite: ein Laufzyklus (8 Bilder) = zwei Schritte à 2 · Beinlänge · sin 27° ≈ 2 · 11,4 E.
    cat.assets[id+'-walk']={...common,path:OUT+id+'-walk.png',columns:[...Array(WALK_FRAMES).keys()].map(i=>'walk-'+i),stride:24,animation:'forge-rig',frames:r.walkFrames};}
+  if(dry){mkdirSync('visual-review/forge/bogen',{recursive:true});writeFileSync('visual-review/forge/bogen/'+(arg('name')||'vorschau')+'-'+id+'.png',encodePng(r.poses));}
   if(layers){const dir='visual-review/forge/ebenen/';mkdirSync(dir,{recursive:true});for(const [L,s] of r.layerSheets)writeFileSync(dir+id+'-'+L+'.png',encodePng(s));}
   console.log(`✓ ${id} (${((Date.now()-t0)/1000).toFixed(1)} s)`);}
  workers.close();

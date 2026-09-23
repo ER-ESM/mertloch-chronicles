@@ -47,12 +47,12 @@ function frame(ax){const a=norm(ax),t=norm(cross(a,Math.abs(a[0])<.9?[1,0,0]:[0,
 
 // ---------- Material ----------
 /** Haar mit Strähnenmalerei: flow(x,y,z) (in h) liefert den Strähnenwinkel, n Strähnen je Umlauf. */
-function hairMaterial(color,h,flow,{n=26,highlight=null,depth=.035,seed=0,warp=1.3}={}){
- const base=rampFrom(color,{deep:.74,hi:.66}),hi=rampFrom(highlight?toRgb(highlight):mixRgb(color,'#ffe2a0',.3),{deep:.7,hi:.75}),lo=rampFrom(mixRgb(color,'#2a1c22',.4),{deep:.8,hi:.4});
+function hairMaterial(color,h,flow,{n=26,highlight=null,depth=.055,seed=0,warp=1.3}={}){
+ const base=rampFrom(color,{deep:.74,hi:.66}),hi=rampFrom(highlight?toRgb(highlight):mixRgb(color,'#ffe2a0',.3),{deep:.7,hi:.75}),lo=rampFrom(mixRgb(color,'#5a2412',.5),{deep:.8,hi:.35});// warme Schattenbüschel wie in den gemalten Bögen
  const strand=(u,v,w)=>{const x=u/h,y=v/h,z=w/h;return flow(x,y,z)*n+warp*fbm3(x*1.1+seed,y*1.1,z*1.1,2);};
  // Büschel (je zwei Strähnen) heller oder dunkler, feine Strähnen als Relief
  const tex=(u,v,w)=>{const s=strand(u,v,w),id=Math.floor(s/(2*Math.PI)),r=hash3(id+400,seed,9);
-  return {k:.92+.07*Math.sin(s*2)+.08*(r-.5),ramp:r>.82?hi:r<.14?lo:base};};
+  return {k:.9+.1*Math.sin(s*2)+.1*(r-.5),ramp:r>.84?hi:r<.3?lo:base};};
  const bump=(u,v,w)=>{const s=strand(u,v,w);return depth*(Math.abs(Math.sin(s*.5))+.4*Math.abs(Math.sin(s*1.7)));};
  return custom('haar',color,tex,{spec:.32,shine:20,bump,bumpScale:1});}
 /** Knoten (Dutt): gedrehte Lappen um einen Kern im Rahmen der Achse, Strähnen laufen spiralig herum. */
@@ -89,6 +89,22 @@ const STYLES={
   return {f:(x,y,z)=>{let d=smin(cap(x,y,z),stem(x,y,z),.15);d=smin(d,bun(x,y,z),.1);return smin(d,strands(x,y,z,d+.1),.09);},core:cap,
    flow:bunFlow(F,C,1.1*size),n:16,
    extra:[{f:band,mat:fabric(o.band||'#a8452f',{weave:3}),group:'haarband'}]};},
+ /** Lockige, voluminöse Hochsteckfrisur (Ida, nach dem gemalten Bogen): Lockenberg oben, freie Stirn,
+  *  Korkenzieherlocken rahmen das Gesicht bis zum Kiefer, abstehende Kringel, kleiner Haargummi hinten. */
+ locken(o){const messy=o.messy??.7,G=[0,-.75,1.85],ax=norm([0,-.6,1]),F=frame(ax),size=1.5,C=[G[0]+ax[0]*.5,G[1]+ax[1]*.5,G[2]+ax[2]*.5];
+  // Volumen zur Seite statt in die Höhe: dicke Kappe mit breitem Lockenpolster über den Schläfen
+  const cap=capField({T:.42,messy,line:{zF:1.32,zS:-.15,zB:-1.3,temple:.22},top:(x,y,z)=>ellipsoid(2.75,2.45,1.35)(x,y+.25,z-1.45)-.25*(fbm3(x*1.6,y*1.6,z*1.6,2)-.5)});
+  const bun=bunField(F,C,size,11,5);
+  const curl=(s,x0,y0,len)=>{const pts=[[s*x0,y0,.95]];for(let i=1;i<=len;i++)pts.push([s*(x0+.12+.2*(i%2)),y0+.1*(i%2),.95-.46*i]);
+   return pts.slice(0,-1).map((p,i)=>[p,[(p[0]+pts[i+1][0])/2+s*.26,(p[1]+pts[i+1][1])/2+.16,(p[2]+pts[i+1][2])/2],pts[i+1],.26-.022*i,.21-.024*i]);};
+  const strands=lockSet([...curl(1,1.95,1.15,5),...curl(-1,1.95,1.15,5),...curl(1,2.2,.45,4),...curl(-1,2.2,.45,4),
+   // lockere Strähnen über der Stirn zum Lockenberg
+   ...[-.9,-.2,.55,1.1].map((x,i)=>[[x,1.75,1.45],[x*.8+.2*(R(i,8)-.5),1.35,2.3],[x*.4,.2,2.75],.24,.2]),
+   // abstehende Kringel oben
+   ...[0,1,2,3,4].map(i=>{const a=i/5*Math.PI*2+.3,d=[Math.cos(a),Math.sin(a)],p=[C[0]+d[0]*1.1,C[1]+d[1]*.9,C[2]+.45];return [p,[p[0]+d[0]*.4,p[1]+d[1]*.3,p[2]+.5],[p[0]+d[0]*.7,p[1]+d[1]*.5,p[2]+.2],.13,.05];})]);
+  const band=(x,y,z)=>{const [a,b,c]=F(x-G[0],y-G[1],z-G[2]);return torusZ(.62,.14)(a,b+.55,c-.05);};
+  return {f:(x,y,z)=>{let d=smin(cap(x,y,z),bun(x,y,z),.3);return smin(d,strands(x,y,z,d+.1),.1);},core:cap,
+   flow:bunFlow(F,C,1.2*size),n:22,extra:[{f:band,mat:fabric(o.band||'#8a3a2a',{weave:3}),group:'haarband'}]};},
  /** Voluminöse Hochsteckfrisur (Anni): toupierter Oberkopf, großer Knoten, Pony-Schwung, Korkenzieherlocken, Haarband, Sonnenbrille. */
  hochgesteckt(o){const messy=o.messy??.4,G=[0,-1.05,2.3],ax=norm([0,-.7,1]),F=frame(ax),size=1.6,C=[G[0]+ax[0]*.8,G[1]+ax[1]*.8,G[2]+ax[2]*.8];
   const cap=capField({T:.28,messy,line:{zF:1.08,zS:-.25,zB:-1.35,temple:.15},top:(x,y,z)=>ellipsoid(2.1,1.9,1.0)(x,y-.45,z-2.0)});
@@ -134,7 +150,7 @@ const STYLES={
   const strands=lockSet(L);
   return {f:(x,y,z)=>{const c=cap(x,y,z);return smin(c,strands(x,y,z,c+.1),.1);},core:cap,flow:(x,y,z)=>Math.atan2(x,z+.5)+1.3*fbm3(x*.7,y*.7,z*.7,2),n:28};},
 };
-STYLES.dutt.hull=[0,-.35,.55,3.1,3.35,3.25];STYLES.hochgesteckt.hull=[0,-.15,.8,3.2,3.4,3.35];STYLES.kurz.hull=[0,-.05,.4,2.95,3.1,2.95];STYLES.zerzaust.hull=[0,.05,.4,3.2,3.35,3.2];
+STYLES.dutt.hull=[0,-.35,.55,3.1,3.35,3.25];STYLES.locken.hull=[0,-.15,.5,3.6,3.5,3.4];STYLES.hochgesteckt.hull=[0,-.15,.8,3.2,3.4,3.35];STYLES.kurz.hull=[0,-.05,.4,2.95,3.1,2.95];STYLES.zerzaust.hull=[0,.05,.4,3.2,3.35,3.2];
 
 // ---------- Bärte ----------
 const BEARDS={

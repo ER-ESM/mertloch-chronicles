@@ -5,11 +5,11 @@
 export const SKIN={hell:'#e6ae88',mittel:'#d49870',gebraeunt:'#b87a52',dunkel:'#7a4e34'};
 export const HAIR_COLOR={schwarz:'#2a2426',braun:'#5a3a22',blond:'#d9a441',rot:'#a8472a',grau:'#9a948c',natur:null};
 /** Frisuren der Schmiede (figure/hair.mjs); `irokese` bleibt vorerst der prozedurale Laufzeit-Stil aus hero-tint.js. */
-export const HAIR_STYLES=['kurz','dutt','hochgesteckt','zerzaust','glatze'];
+export const HAIR_STYLES=['kurz','dutt','locken','hochgesteckt','zerzaust','glatze'];
 /** Bärte: Editor-Kennung → Schmiede-Stil. */
 export const BEARDS={stoppeln:'stoppel',vollbart:'voll',schnauzer:'schnauzer'};
 /** Gesichtsbausteine (figure/face.mjs) – die Auswahlmöglichkeiten eines künftigen Gesichts-Reiters im Editor. */
-export const FACE={brows:['gerade','buschig','geschwungen','zerzaust'],mouth:['neutral','resolut','grinsen','kokett','schief'],nose:['gerade','stups','knolle','spitz'],
+export const FACE={brows:['gerade','buschig','geschwungen','zerzaust'],mouth:['neutral','resolut','laecheln','grinsen','kokett','schief'],nose:['gerade','stups','knolle','spitz'],
  iris:{blau:'#4a6a86',graublau:'#4d6a7a',gruen:'#4f7a62',tuerkis:'#3f7a78',braun:'#6a4a2e'}};
 /** Standardfarben je Archetyp, wenn der Editor „natur“ meldet (wie die bisher gezeichneten Körper). */
 export const NATURAL_HAIR={dieter:'#5a3a22',baerbel:'#d4a24e',kevin:'#4a3020'};

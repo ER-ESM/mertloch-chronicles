@@ -110,6 +110,22 @@ export const MODELS={
 | `rim` | kühles Kantenlicht von hinten rechts, trennt die Figur vom Boden |
 | `bands` | Helligkeit zu gemalten Stufen ziehen |
 
+### Figuren wie die gemalten Bögen (Ida-Abgleich, 9 Runden, 23.09.2026)
+
+Nutzerbefund: „sehr kalt statt warm und rund, es fehlen deutlich viele Details“. Beim Abgleich mit dem gemalten Präzisionsbogen von Ida (`assets/precision/runtime/npcs/ida.png`) hat sich Folgendes als Regel für Figuren ergeben:
+
+| Regel | Umsetzung |
+|---|---|
+| Warmes Licht | `setMood('warm')` in `figures.mjs`: Schatten laufen ins Rotbraun statt ins Violett. Das Kantenlicht ist warm (`rimTint`), die Belichtung liegt bei `exposure .84`. |
+| Fast frontal | Figurenkamera 15° statt 35°. `FACING` se/sw nur 25° gedreht. Die Gesichtskippung `TILT` beträgt 5°, bei 16° wirkten die Augen geschlossen. |
+| Weich statt gestuft | `bands: 0` |
+| Stilisierte Köpfe | Kopf ≈ 1/4,7 der Figur (Archetyp `head`). Das Gesicht wird mit `face.breite` schmaler, das Haarvolumen darum herum bleibt breit. |
+| Große dunkle Augen | Das Auge ist 2–3 px hoch, die Iris groß und dunkel, das Augenweiß warm und wenig sichtbar, die Lidlinie kräftig. |
+| Haar mit Büscheln | Warme dunkle Büschel (`#5a2412`), tieferes Strähnenrelief. Neuer Stil `locken`: seitliches Volumen, Locken rahmen das Gesicht. |
+| Ruhige Flächen | Die Schürze bekommt die Option `falten` (Ida .3), sonst wirken die Röhrenfalten in Spielgröße wie Schmutzstreifen. |
+
+**Vergleichswerkzeug** (im Scratchpad der Sitzung, schnell neu zu bauen): Original und Schmiede als Grundhaltung se/sw nebeneinander, 4× vergrößert und 1×, dazu ein Kopfausschnitt 8×. Der Posenbogen jedes `--dry`-Laufs liegt unter `visual-review/forge/bogen/<name>-<id>.png`.
+
 ## Figuren (Körperteile zum Wiederverwenden)
 
 `tools/sprite-forge/figure.mjs` setzt Figuren aus Modulen zusammen, jedes mit eigenem Besitzer:

@@ -6,13 +6,13 @@
 // `fspread` < 0 = Unterarm zum Körper (Hand in der Hüfte), `weight` = Standbein; headPitch ≥ 0 hebt das Kinn zur Kamera.
 export const FIGURES={
  ida:{name:'Kisten-Ida',archetype:'baerbel',
-  // Resolute Frau Ende 40: Bierkasten unter dem linken Arm, rechte Hand in der Hüfte, Kinn leicht oben.
-  look:{skin:'hell',hair:{style:'dutt',color:'blond',band:'#a8452f',messy:.6},
-   face:{iris:'blau',brows:'gerade',mouth:'resolut',nose:'gerade',jaw:.4,chin:.5,cheeks:.3,age:.8,rouge:.55,lashes:.35}},
-  gear:[['hemd',{color:'#f0e6cf'}],['hose',{umschlag:1}],['strickjacke',{weite:1.5,laenge:3.1}],
-   ['schuerze',{from:5.2,to:6.5,emblem:'#5f7e3a',emblemZ:2.7,emblemGroesse:1.15,saum:'#6f8f44',flecken:.3}],['schuhe'],
-   ['bierkasten',{side:-1}],['schluessel',{side:1}],['zigarette',{side:1}],['zollstock',{side:1}],['bleistift',{side:-1}]],
-  pose:{armL:{swing:-15,spread:42,elbow:85,fspread:0,hold:true},armR:{swing:-10,spread:52,elbow:35,fspread:-35},weight:-1,headYaw:10,headPitch:4}},
+  // Resolute Frau Ende 40: rechte Hand in der Hüfte (im Bild links), Bierkasten an der linken Hüfte (im Bild rechts), breiter Stand.
+  look:{skin:'#cf8e62',hair:{style:'locken',color:'#c98a35',highlight:'#f0c860',messy:.75},
+   face:{breite:.8,iris:'#2f5a66',brows:'gerade',mouth:'laecheln',lips:'#b8443a',nose:'stups',jaw:0,chin:.15,cheeks:0,age:.15,rouge:.9,lashes:.7}},
+  gear:[['hemd',{color:'#f0e6cf'}],['hose',{umschlag:1}],['strickjacke',{weite:1.05,laenge:3.1}],
+   ['schuerze',{color:'#f6ead0',from:5.4,to:9.5,width:.8,tasche:false,falten:.3,emblem:'#4f7a36',emblemZ:5.2,emblemGroesse:1.6,saum:'#6f8f44'}],['schuhe'],
+   ['bierkasten',{side:1,vor:1.3,color:'#5a3b24'}],['schluessel',{side:-1}],['zigarette',{side:-1}],['zollstock',{side:-1}],['bleistift',{side:1}]],
+  pose:{armR:{swing:-15,spread:42,elbow:85,fspread:0,hold:true},armL:{swing:-14,spread:62,elbow:40,fspread:-42},legL:{spread:15,knee:9},legR:{spread:13,knee:7},weight:1,headYaw:10,headPitch:5}},
  'mentor-dieter':{name:'Dosen-Dieter',archetype:'dieter',
   // Breiter Kerl: breitbeinig, Dose in der linken Hand, rechter Daumen im Tragegurt; Fass mit Hopfen auf dem Rücken.
   look:{skin:'#e0a07c',hair:{style:'kurz',color:'braun'},beard:{style:'vollbart',color:'#6a3f24',highlight:'#b0643a'},

@@ -3,7 +3,10 @@
 import {clamp,mix,fbm3,noise3} from './sdf.mjs';
 
 export const hex=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
-const SHADOW=hex('#2a2440'),LIGHT=hex('#fff0cc');
+// Stimmung der Rampen: 'kuehl' (Baukasten, Schatten zum Violett) oder 'warm' (Figuren wie die gemalten Bögen: Schatten rotbraun).
+// Figuren setzen setMood('warm') vor dem ersten Rendern; Rampen entstehen beim Bau der Szene und übernehmen die Stimmung.
+let SHADOW=hex('#2a2440'),LIGHT=hex('#fff0cc');
+export function setMood(m){[SHADOW,LIGHT]=m==='warm'?[hex('#4a1f18'),hex('#fff2d2')]:[hex('#2a2440'),hex('#fff0cc')];}
 /** Sieben Stufen aus einer Grundfarbe: 0–2 zum kühlen Violett, 3 = Grundfarbe, 4–6 zum warmen Licht. */
 export function rampFrom(base,{deep=.78,hi=.62}={}){const b=typeof base==='string'?hex(base):base;
  return [deep,deep*.64,deep*.3].map(t=>b.map((c,k)=>mix(c,SHADOW[k],t))).concat([b],[hi*.3,hi*.62,hi].map(t=>b.map((c,k)=>mix(c,LIGHT[k],t))));}

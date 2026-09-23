@@ -20,7 +20,7 @@ import {clamp,mix,smoothstep,at,union,smoothUnion,ellipsoid,capsule,sphere,torus
 import {custom,rampFrom,hex,metal} from '../materials.mjs';
 import {hairSolids} from './hair.mjs';
 
-export const FACE_DEFAULTS={iris:'#4f6f86',brows:'gerade',browColor:null,mouth:'neutral',lips:null,nose:'gerade',jaw:.3,chin:.4,cheeks:.4,
+export const FACE_DEFAULTS={breite:1,iris:'#4f6f86',brows:'gerade',browColor:null,mouth:'neutral',lips:null,nose:'gerade',jaw:.3,chin:.4,cheeks:.4,
  age:0,rouge:.4,freckles:0,stubble:0,lashes:.3,lids:0,look:[0,0],earrings:null};
 /** Rezeptwerte mit Standardwerten auffüllen (recipe.eyes bleibt als Irisfarbe gültig). */
 export function faceOptions(recipe={}){const f={...FACE_DEFAULTS,...(recipe.face||{})};
@@ -43,7 +43,8 @@ export function skinRamp(c,{deep=.62,hi=.42,sat=1.25}={}){let b=toRgb(c);const m
 // ---------- Kopfneigung ----------
 // Stilmittel: das Gesicht ist um TILT zur (schräg von oben blickenden) Kamera gehoben – mehr Gesicht, weniger Schädeldecke,
 // wie in den gemalten Vorbildern. Alle Formen und Malereien entstehen im geneigten Entwurfsrahmen.
-export const TILT=16*Math.PI/180,TC=Math.cos(TILT),TS=Math.sin(TILT);
+// Mit der flachen Figurenkamera (15°, figures.mjs) nur noch leicht gekippt; 16° ließen die Augen halb geschlossen wirken.
+export const TILT=5*Math.PI/180,TC=Math.cos(TILT),TS=Math.sin(TILT);
 /** Gesichtszüge (Brauen, Augen, Nase, Mund, Wangen) sitzen FZ unter der Kopfmitte: Augen etwa auf halber Kopfhöhe und
  *  im Kopf-Rahmen bei z ≈ 0,38 h – unter Mützenschirm und Hutkrempe aus wardrobe.mjs. */
 export const FZ=-.26;
@@ -52,7 +53,8 @@ export const tilt=(x,y,z)=>{z-=.06;return [x,TC*y+TS*z,-TS*y+TC*z];};
 
 // ---------- Kopfform ----------
 /** Kopf als Distanzfeld im Kopf-Rahmen. opt: {jaw, chin, cheeks, nose, smile}. Ohne opt die neutrale (schmalste) Form. */
-export function headLocal(h,opt={}){const d=headDesign(opt);return (X,Y,Z)=>{const [x,y,z]=tilt(X/h,Y/h,Z/h);return d(x,y,z)*h;};}
+/** width < 1 = schmaleres Gesicht (Editor: face.breite); Kopfform und aufgemalte Züge werden gemeinsam gestaucht. */
+export function headLocal(h,opt={}){const d=headDesign(opt),w=opt.width??1;return (X,Y,Z)=>{const [x,y,z]=tilt(X/h,Y/h,Z/h);return d(x/w,y,z)*h*Math.min(1,w);};}
 /** Kopfform im Entwurfsrahmen (geneigt, Einheiten h) – für Bart und Frisur, die selbst schon im Entwurfsrahmen rechnen. */
 export function headDesign(opt={}){const jaw=opt.jaw??0,chin=opt.chin??0,cheeks=opt.cheeks??0,smile=opt.smile??0,nose=opt.nose||'klein';
  const cran=at(0,-.12,0,ellipsoid(2.28,2.4,2.3));// Scheitel bleibt unter z ≈ 2,4 h (Hüte aus wardrobe.mjs passen)
@@ -95,8 +97,9 @@ function noseField(kind){
 const EX=.8,EZ=.06,MZ=-1.32;
 /** Augenform: Rückgabe {in, lash, lower, iris…} für den Punkt (x,z) relativ zum Auge der Seite `side`. */
 function eyeAt(o,x,z,side){const dx=(x-side*EX)*side,dz=z-EZ,w=.5,t=dx/w;if(Math.abs(t)>1.5||dz>.5||dz<-.35)return null;
- const q=Math.max(0,1-t*t),lid=1-.4*o.lids,up=.22*lid*Math.pow(q,.6)+.02,lo=-.16*Math.pow(q,.8)-.01*t;
- const lashT=(.12+.05*o.lashes)*(.65+.35*clamp((t+1)/2,0,1)),wing=o.lashes>.4&&t>.6?(t-.6)*.4*o.lashes:0;
+ // Stilisiert große Augen wie in den gemalten Bögen (in Spielgröße 2–3 px hoch statt knapp 2).
+ const q=Math.max(0,1-t*t),lid=1-.4*o.lids,up=.3*lid*Math.pow(q,.55)+.03,lo=-.21*Math.pow(q,.75)-.01*t;
+ const lashT=(.17+.09*o.lashes)*(.65+.35*clamp((t+1)/2,0,1)),wing=o.lashes>.4&&t>.6?(t-.6)*.4*o.lashes:0;
  if(Math.abs(t)<=1&&dz<up&&dz>lo)return {eye:1,t,dx,dz};
  // Wimpernlinie: dunkles Band über dem Oberlid, außen kräftiger und mit Schwung
  if(t>-1.05&&t<1+.45*o.lashes&&dz>=up-.01&&dz<up+lashT+wing&&(t<=1||dz>up+wing*.5))return {lash:1};
@@ -114,11 +117,12 @@ function browAt(o,x,z,side,seed){const kind=o.brows,dx=(x-side*.78)*side,t=dx/(k
 /** Mundlinie z(t), t = −1 … 1 von Mundwinkel zu Mundwinkel (Seite +1 = rechts der Figur). */
 function mouthCurve(kind,t){const a=Math.abs(t);
  if(kind==='grinsen')return .2*t*t-.02;
+ if(kind==='laecheln')return .16*t*t-.01;// geschlossenes Lächeln, Mundwinkel hoch
  if(kind==='kokett')return .1*t*t+.03*t;
  if(kind==='schief')return t>0?.2*t*t:-.04*t*t;
  if(kind==='resolut')return t>0?.05*t*t:-.03*t*t;
  return -.02*a*a;}
-function mouthAt(o,x,z){const kind=o.mouth,w=kind==='grinsen'?.7:kind==='kokett'?.42:kind==='schief'?.54:.5,cx=kind==='schief'?.08:0,t=(x-cx)/w;
+function mouthAt(o,x,z){const kind=o.mouth,w=kind==='laecheln'?.64:kind==='grinsen'?.7:kind==='kokett'?.42:kind==='schief'?.54:.5,cx=kind==='schief'?.08:0,t=(x-cx)/w;
  if(Math.abs(t)>1.2)return null;const zc=MZ+mouthCurve(kind,t),q=Math.max(0,1-t*t),dz=z-zc;
  const full=o.lips?1:0,open=kind==='grinsen'?.15*Math.pow(q,.8):0,L=full?.05:.065,upper=(.05+.03*full)*Math.pow(q,.6),lower=(kind==='resolut'?.07:.1+.04*full)*Math.pow(q,.5);
  if(Math.abs(t)<=1){if(open&&dz<=0&&dz>-open)return {teeth:1};
@@ -136,7 +140,7 @@ export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,see
  const base=skinRamp(skin,{deep:.5}),warm=skinRamp(mixRgb(skin,'#f08a78',.42),{deep:.5,hi:.38});
  const lipC=o.lips?toRgb(o.lips):mixRgb(skin,'#b8574a',.38),lipR=rampFrom(lipC,{deep:.72,hi:.42}),lipD=rampFrom(mixRgb(lipC,'#3a1c20',.35),{deep:.75,hi:.3});
  const browC=o.browColor?toRgb(o.browColor):mixRgb(hairCol,'#241a1a',.35),browR=rampFrom(browC,{deep:.7,hi:.35});
- const lashR=rampFrom('#1e1519',{deep:.4,hi:.12}),whiteR=rampFrom('#f6f0e6',{deep:.45,hi:.7}),irisR=rampFrom(o.iris,{deep:.62,hi:.4}),pupilR=flat('#1a1620'),glintR=flat('#fffaf0');
+ const lashR=rampFrom('#1e1519',{deep:.4,hi:.12}),whiteR=rampFrom('#e6d6c2',{deep:.5,hi:.45}),irisR=rampFrom(o.iris,{deep:.62,hi:.4}),pupilR=flat('#1a1620'),glintR=flat('#fffaf0');
  const teethR=rampFrom('#f2ead8',{deep:.5,hi:.4}),lineR=rampFrom('#5a2a2c',{deep:.6,hi:.2});
  const stubC=beardCol?toRgb(beardCol):mixRgb(hairCol,'#3a3038',.2),stub=blender(base,skinRamp(mixRgb(skin,stubC,.55),{deep:.55,hi:.4}));
  const rouge=blender(base,warm),look=o.look||[0,0];
@@ -147,7 +151,7 @@ export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,see
    const e=eyeAt(o,x,z,side);
    if(e){if(e.eye){const ix=side*EX+look[0]+.02*side,iz=EZ+.05+look[1],r=Math.hypot(x-ix,z-iz);
      if(Math.hypot(x-ix+.07,z-iz-.05)<.06)return {k:1,ramp:glintR,spec:0};
-     if(r<.085)return {k:1,ramp:pupilR,spec:.6};if(r<.18)return {k:r>.145?.82:1.05,ramp:irisR,spec:.5};
+     if(r<.13)return {k:1,ramp:pupilR,spec:.6};if(r<.3)return {k:r>.24?.78:1,ramp:irisR,spec:.5};
      return {k:1-.12*Math.max(0,1-(e.dz-.02)/.12),ramp:whiteR,spec:.3};}
     if(e.lash)return {k:1,ramp:lashR,spec:.2};
     if(e.lower)return {k:.86,ramp:rouge(.35)};
@@ -176,11 +180,11 @@ export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,see
 // ---------- Gesicht zusammensetzen ----------
 /** Gesichtszüge, Ohrschmuck und Frisur/Bart als Körper. */
 export function face(k,F,recipe){const h=k.b.head*k.s,o=faceOptions(recipe),hairCol=recipe.hair?.color||'#5a3b24',solids=[];
- const smile=o.mouth==='grinsen'?1:o.mouth==='kokett'||o.mouth==='schief'?.5:0;
- const shape={jaw:o.jaw,chin:o.chin,cheeks:o.cheeks,nose:o.nose,smile},charHead=headLocal(h,shape);// enthält die neutrale Form (F.head)
- const tex=F.H((x,y,z)=>tilt(x/h,y/h,z/h).map(v=>v*h)),mat=faceSkin(h,o,{skin:recipe.skin||'#e2ab86',hairCol,beardCol:recipe.beard?.color,seed:(recipe.skin||'').length});
+ const smile=o.mouth==='grinsen'?1:o.mouth==='kokett'||o.mouth==='schief'||o.mouth==='laecheln'?.6:0;
+ const wf=o.breite,shape={jaw:o.jaw,chin:o.chin,cheeks:o.cheeks,nose:o.nose,smile,width:wf},charHead=headLocal(h,shape);// enthält die neutrale Form (F.head)
+ const tex=F.H((x,y,z)=>{const t=tilt(x/h,y/h,z/h);return [t[0]/wf*h,t[1]*h,t[2]*h];}),mat=faceSkin(h,o,{skin:recipe.skin||'#e2ab86',hairCol,beardCol:recipe.beard?.color,seed:(recipe.skin||'').length});
  // Gesichtshaut: hauchdünn über F.head (neutral), damit das Material mit Gesicht sichtbar ist; Lippen als kleines Relief
- const lips=(x,y,z)=>{const [X,Y,Z]=tilt(x/h,y/h,z/h);if(Math.abs(X)>.8||Z>-.9+FZ||Z<-1.8+FZ||Y<1.3)return 1e3;return ellipsoid(.5,.24,.2)(X,Y-2.02,Z-FZ-MZ+.12)*h;};
+ const lips=(x,y,z)=>{let [X,Y,Z]=tilt(x/h,y/h,z/h);X/=wf;if(Math.abs(X)>.8||Z>-.9+FZ||Z<-1.8+FZ||Y<1.3)return 1e3;return ellipsoid(.5,.24,.2)(X,Y-2.02,Z-FZ-MZ+.12)*h;};
  // noShadow: keine Schlagschatten von Haar, Krempe oder Schirm im Gesicht – die Züge bleiben in Spielgröße lesbar (Form über Licht + AO)
  solids.push({f:F.H((x,y,z)=>Math.min(charHead(x,y,z),lips(x,y,z)+.04*h)-.02*h),mat,tex,layer:'haut',group:'kopf',noShadow:true});
  solids.push({f:(x,y,z)=>F.neck(x,y,z)-.02*h,mat,tex,layer:'haut',group:'hals'});

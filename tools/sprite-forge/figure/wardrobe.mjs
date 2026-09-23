@@ -352,13 +352,13 @@ export const WARDROBE={
   * emblem (Farbe) + motiv ('hopfen' = Dolde mit Blättern | 'kreis'), emblemZ (Höhe über Hüfte), emblemGroesse, flecken.
   */
  schuerze(k,F,{color='#e8dcc0',from=5.8,to=5,width=1,layer='schuerze',material,stoff='stoff',emblem=null,motiv='hopfen',emblemZ=1,emblemGroesse=1,
-  tasche:ta=true,naht:stepp=true,baender=true,saum=null,nieten:nt,flecken=0}={}){const {s,hipZ,hw}=k,r0=k.root[2],leder=stoff==='leder';nt=nt??leder;
+  tasche:ta=true,naht:stepp=true,baender=true,saum=null,nieten:nt,flecken=0,falten=1}={}){const {s,hipZ,hw}=k,r0=k.root[2],leder=stoff==='leder';nt=nt??leder;
   const zTop=r0+hipZ+from*s,zBot=r0+to*s,halfW=(hw+1.25*s)*width,waist=r0+hipZ+2.6*s;
   // Die Schürze ist eine Hülle um Rumpf, einen hängenden Stoffzylinder und die Oberschenkel – vorn, zwischen zBot und zTop.
   const ry=(1.85+.35*k.b.build+.9*k.b.belly)*s,rx=hw+1.35*s,hang=(x,y,z)=>Math.max((Math.hypot(x/rx,y/ry)-1)*Math.min(rx,ry),z-(r0+hipZ+1.5*s));
   const core=union(torsoM(F),hang,F.legL,F.legR);
   // Faltenwurf: Stoff fällt unterhalb der Taille in senkrechte Röhrenfalten, Leder bleibt steif mit flachen Wellen
-  const fold=(x,z)=>leder?.035*s*(.5+.5*Math.sin(x*TAU/(1.6*s)+z*.3)):.15*s*(.5+.5*Math.sin(x*TAU/(1.15*s)+.4*Math.sin(z*.7)))*sat((waist-z)/(2.5*s)+.25);
+  const fold=(x,z)=>leder?.035*s*(.5+.5*Math.sin(x*TAU/(1.6*s)+z*.3)):.15*falten*s*(.5+.5*Math.sin(x*TAU/(1.15*s)+.4*Math.sin(z*.7)))*sat((waist-z)/(2.5*s)+.25);
   const sheet=(inf,th)=>(x,y,z)=>Math.abs(core(x,y,z)-inf*s-fold(x,z))-th*s;
   const wOf=z=>halfW*(z>waist?.64:1);
   const clip=f=>(x,y,z)=>Math.max(f(x,y,z),Math.abs(x)-wOf(z),.15*s-y,z-zTop,zBot-z);

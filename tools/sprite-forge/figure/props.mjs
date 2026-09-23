@@ -64,9 +64,9 @@ export const PROPS={
  // ================= Kisten-Ida =================
  /** Bierkasten unter dem Arm (side −1 = links): Grifflöcher, Rippen, Etikett in der Mulde, 15 Flaschen mit Halsschleife und Kronkorken.
   * Echte Maße 40 × 30 × 30 cm ≈ 5,8 × 4,3 × 4,3 E; lange Seite in Blickrichtung, an die Hüfte gedrückt (Innenseite an der Kleidung). */
- kasten(k,F,{side=-1,color='#2f4a33',label='#ecdcb0',band='#b5382a',text='#4a2a1a',bottle='#5a3814',cap='#d6aa48',foil='#e2c66e',layer='beiwerk'}={}){
+ kasten(k,F,{side=-1,vor=0,color='#2f4a33',label='#ecdcb0',band='#b5382a',text='#4a2a1a',bottle='#5a3814',cap='#d6aa48',foil='#e2c66e',layer='beiwerk'}={}){
   const {s,hipZ}=k,r0=k.root[2],hx=2.05*s,hy=2.85*s,hz=2.05*s,zc=r0+hipZ+1.05*s;
-  const inner=surfU(k,F,[0,.3*s,zc],[side,0,0]),c=[inner[0]+side*(.62*s+hx),.35*s,zc];
+  const inner=surfU(k,F,[0,.3*s,zc],[side,0,0]),c=[inner[0]+side*(.62*s+hx),(.35+vor)*s,zc];// vor: Kasten nach vorn an die Hüfte
   // Kasten-Koordinaten: X nach außen (weg vom Körper), Y nach vorn, Z nach oben
   const Lc=f=>F.U((x,y,z)=>f((x-c[0])*side,y-c[1],z-c[2]));
   const crate=(X,Y,Z)=>{let d=box(hx,hy,hz,.3*s)(X,Y,Z);

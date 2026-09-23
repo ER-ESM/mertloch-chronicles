@@ -11,7 +11,7 @@ import {D,FACING,skeleton,bodyFields} from './figure/skeleton.mjs';
 import {WARDROBE} from './figure/wardrobe.mjs';
 import {HAIR,BEARD} from './figure/hair.mjs';
 import {PROPS} from './figure/props.mjs';
-import {face} from './figure/face.mjs';
+import {face,headLocal} from './figure/face.mjs';
 import {ARCHETYPES} from './figures/archetypes.mjs';
 import {resolveAppearance} from './figures/appearance.mjs';
 import {resolveGear} from './figures/gear.mjs';
@@ -35,7 +35,10 @@ export function characterRecipe(def){if(!def.archetype)return def.recipe;const a
  * Liefert die Szene in Figurenkoordinaten; `place(scene, facing)` dreht sie in eine Blickrichtung.
  */
 export function figureScene(recipe,pose={}){
- const k=skeleton(recipe.body,pose),F=bodyFields(k),{s}=k,sk=skinMat(recipe.skin||'#e2ab86'),solids=[];
+ const k=skeleton(recipe.body,pose),F=bodyFields(k),{s}=k,wf=recipe.face?.breite??1;
+ // Schmaleres Gesicht (Editor): auch die neutrale Kopfform darunter mitstauchen, sonst schaut sie seitlich hervor.
+ if(wf!==1)F.head=F.H(headLocal(k.b.head*s,{lite:true,width:wf}));
+ const sk=skinMat(recipe.skin||'#e2ab86'),solids=[];
  const hs=k.b.head*s;
  // Haut (Körper bleibt unter der Kleidung erhalten – Kleidung liegt als Hülle darüber)
  solids.push({f:F.torso,mat:sk,layer:'haut',group:'rumpf'},{f:F.neck,mat:sk,layer:'haut',group:'hals'},{f:F.head,mat:sk,layer:'haut',group:'kopf'},

@@ -22,7 +22,7 @@ const KEY=norm(-.55,.3,.78),FILL=norm(.65,.55,.25),SPEC_TINT=hex('#fff3d6');
 // Materialien mit `bump(u,v,w)` (Höhe in E, Stärke `bumpScale`) kippen die Normale: Falten, Strick, Nähte, Poren.
 const RIM=norm(.55,-.6,.45),RIM_TINT=hex('#c9d8ee');
 export function renderScene(scene,opts={}){
- const {width,height,x0,y0,px=PX,pitch=PITCH,view='oblique',ss=2,outline=true,inner=true,palette=true,zTop=140,shadows=true,oversample=1,rim=0,bands=0}=opts;
+ const {width,height,x0,y0,px=PX,pitch=PITCH,view='oblique',ss=2,outline=true,inner=true,palette=true,zTop=140,shadows=true,oversample=1,rim=0,bands=0,rimTint=null,exposure=1}=opts,RT=rimTint?hex(rimTint):RIM_TINT;
  if(oversample>1){const o=oversample,hi=renderScene(scene,{...opts,width:width*o,height:height*o,px:px*o,oversample:1,outline:false,palette:false});
   const N=width*height,rgba=new Uint8Array(N*4),ids=new Int16Array(N).fill(-1),depth=new Float32Array(N).fill(-1e9);
   for(let y=0;y<height;y++)for(let x=0;x<width;x++){let r=0,g=0,b=0,n=0,id=-1,dp=-1e9;
@@ -53,9 +53,9 @@ export function renderScene(scene,opts={}){
   const tx=m.tex(u,v,w,[nx,ny,nz])||{k:1},ramp=tx.ramp||m.ramp,spec=tx.spec??m.spec;
   const kd=Math.max(0,nx*KEY[0]+ny*KEY[1]+nz*KEY[2]),fd=Math.max(0,nx*FILL[0]+ny*FILL[1]+nz*FILL[2]);
   let val=(kd*.64*sh+fd*.12+.2*ao)*tx.k*(.7+.3*ao);
-  if(bands)val=mix(val,Math.round(val*bands)/bands,.5);
+  val*=exposure;if(bands)val=mix(val,Math.round(val*bands)/bands,.5);
   let col=rampColor(ramp,val);
-  if(rim){const r=rim*Math.pow(1-Math.max(0,nx*V[0]+ny*V[1]+nz*V[2]),2.2)*Math.max(0,nx*RIM[0]+ny*RIM[1]+nz*RIM[2]);col=col.map((c,k)=>mix(c,RIM_TINT[k],clamp(r,0,.6)));}
+  if(rim){const r=rim*Math.pow(1-Math.max(0,nx*V[0]+ny*V[1]+nz*V[2]),2.2)*Math.max(0,nx*RIM[0]+ny*RIM[1]+nz*RIM[2]);col=col.map((c,k)=>mix(c,RT[k],clamp(r,0,.6)));}
   const sp=spec*Math.pow(Math.max(0,nx*H[0]+ny*H[1]+nz*H[2]),m.shine)*sh;
   let glowAdd=[0,0,0];for(const l of L){const lx=l.p[0]-x,ly=l.p[1]-y,lz=l.p[2]-z,d=Math.hypot(lx,ly,lz);if(d>=l.r)continue;
    const a=(1-d/l.r)**2*l.k*Math.max(0,(nx*lx+ny*ly+nz*lz)/d);glowAdd=glowAdd.map((c,k)=>c+l.color[k]*a);}

@@ -6,7 +6,8 @@ import {headLocal} from './face.mjs';
 export const D=Math.PI/180;
 export const DIRECTIONS=['se','sw','ne','nw'];
 /** Drehung der Figur je Blickrichtung (Blick +y lokal → Welt). */
-export const FACING={se:45,sw:-45,ne:135,nw:-135};
+// Gemalte Bögen zeigen die Figur fast frontal: se/sw nur 25° gedreht, Rückansichten entsprechend.
+export const FACING={se:25,sw:-25,ne:155,nw:-155};
 export const BODY={height:26,build:.5,belly:0,bust:0,shoulders:1,hips:1,head:1,legs:1};
 
 // ---------- Vektoren ----------
