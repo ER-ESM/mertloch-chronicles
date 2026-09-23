@@ -65,6 +65,9 @@ export function drawKitWall(c,wall,cut){
   fill(c,INK,wall.minX-1,wall.minY-h-1,w+2,d+h+2);
   if(h>0)fill(c,shade(color,.85),wall.minX,wall.maxY-h,w,h);
   fill(c,shade(color,1.12),wall.minX,wall.minY-h,w,d);
+  // Senkrechte Wandkrone mit Körper: Licht von links (light-convention), Schatten rechts, Lichtkante und feine Putzfugen.
+  if(!flat&&w>=3&&typeof c.createLinearGradient==='function'){const g=c.createLinearGradient(wall.minX,0,wall.maxX,0);g.addColorStop(0,shade(color,1.24));g.addColorStop(.45,shade(color,1.1));g.addColorStop(1,shade(color,.86));c.fillStyle=g;c.fillRect(wall.minX,wall.minY-h,w,d);
+   c.fillStyle=shade(color,1.02);for(let y=wall.minY-h+6;y<wall.maxY-h-1;y+=11)c.fillRect(wall.minX+1,y,w-2,1);fill(c,shade(color,1.34),wall.minX,wall.minY-h,1,d);fill(c,shade(color,.7),wall.maxX-1,wall.minY-h,1,d);}
   if(h>0)fill(c,shade(color,.62),wall.minX,wall.maxY-2,w,2);
   if(wall.kind==='zaun'&&h>0){c.fillStyle=shade(color,.6);for(let x=wall.minX+2;x<wall.maxX;x+=5)c.fillRect(x,wall.maxY-h,1,h);}
  }

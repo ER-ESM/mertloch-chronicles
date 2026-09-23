@@ -75,7 +75,9 @@ export class WorldLight{
   const house=world.base?.house;if(house&&this.indoor>.01){const f=game.floor&&house.upper?house.upper:house;
    for(const it of f.items){if(it.outdoor)continue;const d=it.def||{};
     if(d.light)add('lamp',it.x,it.y-(d.surface==='wall-face'?(d.mount||0)+(it.height||8)*.5:(it.lift||0)+(it.height||6))*.55);
-    else if(it.sprite==='kanonenofen')add('stove',it.x,it.y);else if(it.sprite==='schutthaufen')add('skylight',it.x,it.y);}}
+    else if(it.sprite==='kanonenofen')add('stove',it.x,it.y);else if(it.sprite==='schutthaufen')add('skylight',it.x,it.y);}
+   // Tageslicht durch die Südfenster: helle Flecken knapp hinter der Südwand, an der Eingangstür ausgespart.
+   const W=L.sources.window,door=(f.doors||[]).find(d=>d.id==='eingang');if(W)for(let x=house.minX+W.edge;x<house.maxX-W.edge/2;x+=W.spacing)if(!door||Math.abs(x-door.x)>W.doorGap)add('window',x,house.maxY-W.inset);}
   add('hero',game.player.x,game.player.y);
   for(const o of out)o.flicker=1+o.s.flicker*(Math.sin(time*9+o.seed)+Math.sin(time*5.3+o.seed*2))*.5;this.sourceCache={time,frame:this.frame,game,out};return out;}
  glow(color){let g=this.glows.get(color);if(!g){g=glowSprite(color);this.glows.set(color,g);}return g;}
@@ -95,13 +97,13 @@ export class WorldLight{
   const clipIn=(s,draw)=>{if(!(s.s.indoor&&room))return draw();l.save();l.beginPath();l.rect(...room);l.clip();draw();l.restore();};
   const K=this.cloudCover||=cover(L.clouds.tint);this.clouds||=cloudTile(256,K.bytes);const size=L.clouds.size,cx=-((((ox+time*L.clouds.wind.x)%size)+size)%size),cy=-((((oy+time*L.clouds.wind.y)%size)+size)%size);
   l.globalAlpha=L.clouds.alpha*(1-dark*.6)*K.k;l.imageSmoothingEnabled=true;for(let x=cx;x<W;x+=size)for(let y=cy;y<H;y+=size)l.drawImage(this.clouds,x,y,size,size);
-  l.globalCompositeOperation='destination-out';for(const s of lights){const r=s.s.radius*s.scale*s.flicker;l.globalAlpha=Math.min(1,(dark+(s.s.indoor?indoorDark:0))*2.6)*(s.s===L.sources.hero?.55:1);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2));}
+  l.globalCompositeOperation='destination-out';for(const s of lights){const r=s.s.radius*s.scale*s.flicker;l.globalAlpha=Math.min(1,(dark+(s.s.indoor?indoorDark:0))*2.6)*(s.s===L.sources.hero?.55:1);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r*(s.s.aspect?.[0]||1),s.y-oy-r*(s.s.aspect?.[1]||1),r*2*(s.s.aspect?.[0]||1),r*2*(s.s.aspect?.[1]||1)));}
   if(!this.vignette||this.vignette.width!==lw||this.vignette.height!==lh){this.vignette=canvas(lw,lh);const v=this.vignette.getContext('2d'),g=v.createRadialGradient(lw/2,lh/2,Math.min(lw,lh)*.42,lw/2,lh/2,Math.hypot(lw,lh)*.56);g.addColorStop(0,'#10182000');g.addColorStop(1,'#101820');v.fillStyle=g;v.fillRect(0,0,lw,lh);}
   l.globalCompositeOperation='source-over';l.globalAlpha=Math.min(1,L.grade.vignette+dark*.25);l.drawImage(this.vignette,0,0,W,H);
   // Diagonaler Schimmer (L.sheen), früher je Bild als Vollbildfläche auf der Welt: hier einmal gerechnet und mitgemischt.
   if(!this.sheen||this.sheen.width!==lw||this.sheen.height!==lh){this.sheen=canvas(lw,lh);const v=this.sheen.getContext('2d'),g=v.createLinearGradient(0,0,lw,lh);g.addColorStop(0,L.sheen.from);g.addColorStop(.55,L.sheen.mid);g.addColorStop(1,L.sheen.to);v.fillStyle=g;v.fillRect(0,0,lw,lh);}
   l.globalAlpha=1;l.drawImage(this.sheen,0,0,W,H);
-  for(const s of lights){if(s.s===L.sources.hero)continue;const r=s.s.radius*s.scale*s.flicker*.8;l.globalAlpha=Math.min(1,(L.glow.day+L.glow.night*(dark+(s.s.indoor?indoorDark:0)))*s.flicker*L.glow.cover);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r,s.y-oy-r,r*2,r*2));}
+  for(const s of lights){if(s.s===L.sources.hero||s.s.noGlow)continue;const r=s.s.radius*s.scale*s.flicker*.8;l.globalAlpha=Math.min(1,(L.glow.day+L.glow.night*(dark+(s.s.indoor?indoorDark:0)))*s.flicker*L.glow.cover);clipIn(s,()=>l.drawImage(this.glow(s.s.color),s.x-ox-r*(s.s.aspect?.[0]||1),s.y-oy-r*(s.s.aspect?.[1]||1),r*2*(s.s.aspect?.[0]||1),r*2*(s.s.aspect?.[1]||1)));}
   // Lichtschacht (Dachloch): schräger Kegel von oben auf den Fußpunkt, unten am hellsten, darin treibender Staub.
   for(const s of lights){const B=s.s.beam;if(!B||!(indoorDark>0))continue;const x=s.x-ox,y=s.y-oy,tx=x-DX*B.height*.6,ty=y-B.height,g=l.createLinearGradient(0,ty,0,y);
    g.addColorStop(0,s.s.color+'00');g.addColorStop(.7,s.s.color+'80');g.addColorStop(1,s.s.color+'c0');l.globalAlpha=B.alpha*this.indoor;l.fillStyle=g;
