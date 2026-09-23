@@ -65,9 +65,7 @@ export const BAG_UI={
  weaponWords:'Waffe Waffenschaden Tempo Schaden',
  equipped:(name,slot)=>'Angelegt: '+name+' · '+slot
 };
-/** Kniffe-Buch, Abschnitt „Eigenarten & Leisten“ (passive-book.js, Nutzerwunsch 2026-09-23). */
-export const PASSIVE_BOOK_UI={title:'Eigenarten & Leisten',hint:'Was im Hintergrund mitläuft, woher es kommt und wie es funktioniert. Aufgeklappt ist dein Hauptbaum.',
- hintNoMain:'Was im Hintergrund mitläuft, woher es kommt und wie es funktioniert. Die Leisten der drei Bäume wirken erst, wenn du einen davon als Hauptbaum wählst (Talente, Taste N).',
- classTitle:name=>'Eigenart von '+name,classScope:'Klasse · wirkt immer',active:'wirkt jetzt (Hauptbaum)',withMain:name=>'wirkt mit Hauptbaum '+name,swaps:'Kniffe mit diesem Hauptbaum:'};
+/** Kniffe-Buch, Abschnitt „Eigenarten & Leisten“ (passive-book.js): nur Kachelbeschriftungen – Erklärungen stehen im Tooltip. */
+export const PASSIVE_BOOK_UI={title:'Eigenarten & Leisten',classTitle:()=>'Eigenart',classScope:'Klasse · immer',active:()=>'Hauptbaum · aktiv',withMain:name=>'mit '+name};
 /** Quest-Tracker unter dem Auftragsfeld (quest-tracker.js, Nutzerwunsch 2026-09-23). */
 export const QUEST_TRACKER_UI={others:'Weitere Aufträge · Klick verfolgt',track:'Klick: diesen Auftrag verfolgen (Wegmarke)',talkTo:name=>'Sprich mit '+name,turnIn:name=>'Abgabe bei '+name,more:n=>'+ '+n+' weitere im Auftragsbuch'};

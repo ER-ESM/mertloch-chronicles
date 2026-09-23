@@ -1,4 +1,4 @@
-import {mechanicHelp,talentHelp,passiveHelp,skillHelp} from './mechanic-help.js';
+import {mechanicHelp,talentHelp,passiveHelp,skillHelp,kitSwaps} from './mechanic-help.js';
 // Beschreibungs-API der Engine. Texte und Zahlen kommen aus content/ (Feld `info` bzw. die Helfer
 // describe()/describeItem()/describeStage(), sobald es sie gibt – Rückfall auf die Rohfelder text/description/passive).
 // Die Engine legt nur `live` obendrauf: was der Wert HEUTE ist, mit Ausrüstung, Talenten, Procs und Basisbau.
@@ -162,7 +162,7 @@ function describeCast(game,id){
 /** game.describe(kind,id): content-Info plus Laufzeitwerte. Unbekannte Art oder Id → null. */
 export function describeEntry(game,kind,id){
  switch(kind){
-  case 'mechanic':{const h=mechanicHelp(game,id);return h?{name:h.name,icon:'book',info:{effect:h.lines[0],context:[...h.lines.slice(1),h.scope],numbers:[],why:'',links:[],terms:[]},live:{}}:null;}
+  case 'mechanic':{const h=mechanicHelp(game,id);return h?{name:h.name,icon:'book',info:{effect:h.lines[0],context:[...h.lines.slice(1),...kitSwaps(game,id).map(k=>k.role+' „'+k.replaces+'“ → „'+k.name+'“ mit diesem Hauptbaum.'),h.scope],numbers:[],why:'',links:[],terms:[]},live:{}}:null;}
   case 'skill':return describeSkill(game,id);
   case 'talent':return describeTalent(game,id);
   case 'passive':return describePassive(game,id);

@@ -8,8 +8,9 @@ try{await b.resize(2024,900);
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',inj);await wait(500);
  await read(`document.querySelector('.intro-skip')?.click();document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.enemies=[];game.rpg.talents.spec='dieter-brawl';`);await wait(4000);
  await b.press('k');await wait(1000);
- const book=await read(`(()=>{const s=document.querySelector('.book-passives');s?.scrollIntoView({block:'start'});return {has:!!s,rausch:!!s&&s.textContent.includes('Rausch'),open:!!document.querySelector('#book-passive-dieter-brawl[open]')};})()`);
+ const book=await read(`(()=>{const s=document.querySelector('.book-passives');s?.scrollIntoView({block:'center'});return {has:!!s,rausch:!!s?.querySelector('[data-describe="glossary:rausch"]'),open:!!s?.querySelector('.passive-tile.is-on[data-describe="mechanic:dieter-brawl"]')};})()`);
  assert.deepEqual(book,{has:true,rausch:true,open:true},JSON.stringify(book));await wait(300);await b.screenshot(dir+'1-kniffe-buch-leisten.jpg');
+ {const r=await read(`(()=>{const e=document.querySelector('[data-describe="glossary:rausch"]').getBoundingClientRect();return {x:e.x+e.width/2,y:e.y+e.height/2};})()`);await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:r.x,y:r.y});await wait(500);assert.match(await read(`document.querySelector('#itemTooltip').textContent`),/Rausch/,'Tooltip erklärt Rausch');await b.screenshot(dir+'1b-rausch-tooltip.jpg');}
  // Tooltip: Hover auf ein Kniff-Symbol, dann weg – nach 60 ms muss er verschwunden sein.
  const at=await read(`(()=>{const el=document.querySelector('[data-book-skill]');el.scrollIntoView({block:'center'});const r=el.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
  await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:at.x,y:at.y});await wait(400);

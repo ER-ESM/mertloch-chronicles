@@ -37,13 +37,15 @@ test('„Anstich“ im Talent sagt, woher er kommt – mit und ohne Hauptbaum Za
  assert.deepEqual(kitSwaps(hero('dieter',null),'dieter-brew').map(k=>k.name),['Anstich','Fassanstich']);
 });
 
-test('Kniffe-Buch zeigt Eigenart und Leisten aller drei Bäume; Rausch steht beim Kneipenschläger',()=>{
+test('Kniffe-Buch zeigt Eigenart und Leisten als Kacheln (kein Fließtext); Rausch steht beim Kneipenschläger, Details im Tooltip',()=>{
  const g=hero('dieter','dieter-brawl'),html=passiveBook(g);
- assert.match(html,/Eigenart von Dosen-Dieter/);
- for(const spec of CLASS_SPECS.dieter)assert.match(html,new RegExp('id="book-passive-'+spec+'"'));
- assert.match(html,/id="book-passive-dieter-brawl" open/,'Hauptbaum aufgeklappt');
- assert.ok(specTerms('dieter-brawl').some(t=>t.name==='Rausch'));assert.match(html,/Rausch/);
- assert.match(html,/Bodenkniff „Böller unterm Biertisch“ → „Anstich“/,'Zapfmeister nennt seine Kniff-Ersetzung');
+ assert.doesNotMatch(html,/<p[ >]/,'keine Absätze – Erklärungen gehören in den Tooltip');
+ assert.match(html,/data-describe="passive:dieter"/);
+ for(const spec of CLASS_SPECS.dieter)assert.match(html,new RegExp('data-describe="mechanic:'+spec+'"'));
+ assert.match(html,/passive-tile is-on" data-describe="mechanic:dieter-brawl"/,'Hauptbaum hervorgehoben');
+ assert.match(html,/passive-tile locked" data-describe="mechanic:dieter-brew"/,'andere Bäume gedimmt');
+ assert.ok(specTerms('dieter-brawl').some(t=>t.name==='Rausch'));assert.match(html,/data-describe="glossary:rausch"/);
+ assert.match(html,/draggable="false"/);
+ const brew=g.describe('mechanic','dieter-brew');assert.ok(brew.info.context.some(l=>l.includes('„Böller unterm Biertisch“ → „Anstich“')),'Kniff-Ersetzung im Tooltip');
  assert.match(skillbookPanel(g,null,null),/book-passives/,'Teil des Reiters Kniffe');
- assert.match(passiveBook(hero('dieter',null)),/erst, wenn du einen davon als Hauptbaum wählst/);
 });
