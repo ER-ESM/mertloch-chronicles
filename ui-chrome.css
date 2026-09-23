@@ -289,3 +289,7 @@ body.bar-drop .action-area .extra-bar:not(:has(.skill:not(.empty-slot))),body:ha
 .game-popup .icon-skillbook .book-skill .book-skill-name{font-size:12px}
 .game-popup .icon-skillbook .book-skill.locked .book-skill-name{color:#b9bfa8}
 .game-popup .icon-skillbook .book-skill.locked .book-skill-origin,.game-popup .icon-skillbook .book-skill.locked kbd{color:#8d9a86;opacity:1}
+/* Persona-Befund 2026-09-24: die Karte wirkte wie ein technischer Plan. Ohne die Kartografie umzubauen: Papierkörnung,
+   abgegriffene dunkle Ränder und ein warmer Schimmer – eine alte Wanderkarte statt Bildschirmgrafik. Klicks gehen durch. */
+.game-popup .atlas-paper::after{content:"";position:absolute;inset:0;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95  0 0 0 0 .86  0 0 0 0 .62  0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E") repeat,radial-gradient(ellipse 75% 70% at 50% 48%,transparent 55%,#1a120a55 82%,#0e0906aa 100%),linear-gradient(135deg,#f3d99a14,transparent 45%,#3a220f22);mix-blend-mode:normal;opacity:.9;box-shadow:inset 0 0 0 1px #d9b97055,inset 0 0 24px #0b0703aa}
+.game-popup .atlas-paper{box-shadow:0 2px 0 #0b1a12,0 0 0 1px #0b1a12}
