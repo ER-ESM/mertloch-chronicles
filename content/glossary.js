@@ -9,6 +9,7 @@ import {BASE_SKILLS,KITS,BUFF_SKILLS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,CLAS
 import {SKILL_DAMAGE,CAST_TIMES,COMBAT_RULES} from './combat.js';
 import {TALENT_ROWS,CLASS_SPECS,TALENT_GLOSSARY,TALENT_CELLS} from './talents.js';
 import {PROC_RULES,PROC_TRIGGERS} from './procs.js';
+import {SPEC_MECHANICS} from './mechanics.js';
 import {CLAN_MEMBERS} from './classes.js';
 import {CLASS_BUFFS,CLASS_BUFF_STATS,CLASS_BUFF_GLOSSARY,classBuffValueText} from './class-buffs.js';
 import {CLASS_BUFF_TUNING} from './tuning.js';
@@ -188,70 +189,71 @@ function skillNumbers(def,cls,id){
  if(lesson)out.push(n('Gelernt auf Stufe',lesson,'',SK));
  return out;
 }
-/** Effektschlüssel eines Talents → Zahlenzeile. value:'fest' = Zahl steht in der Engine, nicht im Talent. */
+/** Effektschlüssel eines Talents → Zahlenzeile. value:'fest' = Zahl steht in der Engine, nicht im Talent.
+ * {strike}, {burst} … in label/unit stehen für den Leistennamen des Kniffs (kitName) – je Klasse/Hauptbaum aufgelöst. */
 const MECH='content/mechanics.js';
 const EFFECT_INFO={
  stamina:{label:STAT_NAMES.stamina,unit:'Punkte'},might:{label:STAT_NAMES.might,unit:'Punkte'},finesse:{label:STAT_NAMES.finesse,unit:'Punkte'},wit:{label:STAT_NAMES.wit,unit:'Punkte'},
  armorRating:{label:STAT_NAMES.armorRating,unit:'Punkte'},
  range:{label:'Mehr Reichweite',unit:'Welteinheiten'},
- guardOnStrike:{label:'Zusätzliche Deckung je Grundangriff',unit:'Punkte'},
+ guardOnStrike:{label:'Zusätzliche Deckung je {strike}',unit:'Punkte'},
  doubleParry:{label:'Abgefangene Treffer je Parade',fixed:2,unit:'statt 1',source:CM},
  parrySlow:{label:'Verlangsamung nach Parade',fixed:3,unit:'s',source:CM},
  shieldBonus:{label:'Stärkere Deckung',unit:'Anteil'},
- guardBurst:{label:'Deckung, die der Spezialkniff in eine Druckwelle umwandelt',fixed:80,unit:'Punkte, Radius 10 m',source:CM},
+ guardBurst:{label:'Deckung, die {burst} in eine Druckwelle umwandelt',fixed:80,unit:'Punkte, Radius 10 m',source:CM},
  guardOnParry:{label:'Deckung je Parade',unit:'Punkte'},
  zoneUpgrade:{label:'Zone hält länger',fixed:4,unit:'s, dazu 50 Deckung beim Aufstellen',source:CM},
  lastGuard:{label:'Deckung bei Parade unter 35 % Leben',fixed:80,unit:'Punkte',source:CM},
  rageGain:{label:'Zusätzlicher Rausch je Auslöser',fixed:1,unit:'(Höchststand 5)',source:CM},
- rageBurst:{label:'Spezialkniff bei 5 Rausch',fixed:0,unit:'Randale',source:CM},
- dashThrow:{label:'Wurf-Abklingzeit nach Ausweichen',fixed:3,unit:'s kürzer',source:CM},
- burstStun:{label:'Betäubung bei Spezialkniff',fixed:1.5,unit:'s',source:CM},
+ rageBurst:{label:'{burst} bei 5 Rausch',fixed:0,unit:'Randale',source:CM},
+ dashThrow:{label:'Abklingzeit von {throw} nach Ausweichen',fixed:3,unit:'s kürzer',source:CM},
+ burstStun:{label:'Betäubung durch {burst}',fixed:1.5,unit:'s',source:CM},
  killHeal:{label:'Heilung je Kill',unit:'Leben'},
- slamUpgrade:{label:'Randale je Tresensprung',fixed:20,unit:'statt 10, dazu ein kostenloser Grundangriff',source:CM},
+ slamUpgrade:{label:'Randale je Tresensprung',fixed:20,unit:'statt 10, dazu ein kostenloser Einsatz von {strike}',source:CM},
  killReset:{label:'Tresensprung nach einem Kill',fixed:0,unit:'s Abklingzeit',source:CM},
- markedLeech:{label:'Lebensraub gegen markierte Ziele',unit:'%',scale:v=>v*100},
+ markedLeech:{label:'Lebensraub gegen Ziele mit {mark}',unit:'%',scale:v=>v*100},
  overhealShield:{label:'Überheilung wird Deckung',unit:'%',scale:v=>v*100},
- healEnergy:{label:'Randale je direkter Heilung',unit:''},
+ healEnergy:{label:'Randale je {heal}',unit:''},
  healBonus:{label:'Stärkere Heilung',unit:'Anteil'},
- burstHot:{label:'Hauspflege nach Spezialkniff',fixed:4,unit:'s länger, mindestens 10 je Tick',source:CM},
- parryHealCd:{label:'Heilung nach Parade',unit:'s kürzer'},
- zoneEnergy:{label:'Randale je Grundangriff in der eigenen Zone',unit:''},
- hotHeal:{label:'Hauspflege je Heilung',unit:'Leben je Sekunde, 6 s',source:CM},
- healEmpower:{label:'Nächster Grundangriff nach Heilung',fixed:2,unit:'× Schaden',source:CM},
+ burstHot:{label:'Hauspflege nach {burst}',fixed:4,unit:'s länger, mindestens 10 je Tick',source:CM},
+ parryHealCd:{label:'{heal} nach Parade',unit:'s kürzer'},
+ zoneEnergy:{label:'Randale je {strike} in der eigenen Zone',unit:''},
+ hotHeal:{label:'Hauspflege je {heal}',unit:'Leben je Sekunde, 6 s',source:CM},
+ healEmpower:{label:'Nächster Einsatz von {strike} nach {heal}',fixed:2,unit:'× Schaden',source:CM},
  parryHot:{label:'Hauspflege nach Parade',fixed:10,unit:'Leben je Sekunde, 6 s',source:CM},
- spreadMark:{label:'Markierte Nachbarn zusätzlich',fixed:2,unit:'im Umkreis von 10,6 m',source:CM},
- healMarkCd:{label:'Markierung nach Heilung',unit:'s kürzer'},
- markedKillHot:{label:'Hauspflege nach markiertem Kill',fixed:12,unit:'Leben je Sekunde, 6 s',source:CM},
- interruptHeal:{label:'Heilung nach geglückter Unterbrechung',fixed:0,unit:'s Abklingzeit',source:CM},
+ spreadMark:{label:'{mark} auf zusätzliche Nachbarn',fixed:2,unit:'im Umkreis von 10,6 m',source:CM},
+ healMarkCd:{label:'{mark} nach {heal}',unit:'s kürzer'},
+ markedKillHot:{label:'Hauspflege nach Kill an einem Ziel mit {mark}',fixed:12,unit:'Leben je Sekunde, 6 s',source:CM},
+ interruptHeal:{label:'{heal} nach geglückter Unterbrechung',fixed:0,unit:'s Abklingzeit',source:CM},
  infusionUpgrade:{label:'Provisionskur hält länger',fixed:4,unit:'s, dazu 20 Randale je Heilung',source:CM},
- burstSpread:{label:'Markierung springt bei Spezialkniff',fixed:5,unit:'Nachbarn im Umkreis von 11,3 m',source:CM},
+ burstSpread:{label:'{mark} springt bei {burst}',fixed:5,unit:'Nachbarn im Umkreis von 11,3 m',source:CM},
  beatEnergy:{label:'Randale bei Treffer im Takt',unit:''},
- dashFreeThrow:{label:'Wurf nach Ausweichen',fixed:0,unit:'Randale',source:CM},
- encoreUpgrade:{label:'Randale je Noch ein Reel',fixed:35,unit:'plus ein kostenloser Grundangriff',source:CM},
- killThrow:{label:'Wurf nach einem Kill',fixed:0,unit:'s Abklingzeit',source:CM},
- burnGround:{label:'Nachglut im Einschlag',fixed:18,unit:'Schaden je Sekunde, 4 s',source:CM},
+ dashFreeThrow:{label:'{throw} nach Ausweichen',fixed:0,unit:'Randale',source:CM},
+ encoreUpgrade:{label:'Randale je Noch ein Reel',fixed:35,unit:'plus ein kostenloser Einsatz von {strike}',source:CM},
+ killThrow:{label:'{throw} nach einem Kill',fixed:0,unit:'s Abklingzeit',source:CM},
+ burnGround:{label:'Nachglut im Einschlag von {ground}',fixed:18,unit:'Schaden je Sekunde, 4 s',source:CM},
  interruptEnergy:{label:'Randale je geglückter Unterbrechung',unit:''},
- markedKillEnergy:{label:'Randale je markiertem Kill',unit:''},
- healGroundCd:{label:'Bodenangriff nach Heilung',unit:'s kürzer'},
+ markedKillEnergy:{label:'Randale je Kill an einem Ziel mit {mark}',unit:''},
+ healGroundCd:{label:'{ground} nach {heal}',unit:'s kürzer'},
  detonateUpgrade:{label:'Kettenzündung greift weiter',fixed:6.3,unit:'m mehr, dazu 10 Randale je Treffer',source:CM},
  parryEnergy:{label:'Randale je Parade zusätzlich',unit:'',source:CM},
  magnetUpgrade:{label:'Magnetpanzer gibt Deckung',fixed:200,unit:'statt 140, Festhalten 2 s statt 1',source:CM},
- dashEnergy:{label:'Randale je Ausweichen',unit:'',source:CM},
- markRoot:{label:'Festhalten bei der ersten Markierung',fixed:1,unit:'s',source:CM},
- rootThrow:{label:'Randale je Wurf auf betäubte Ziele',fixed:10,unit:'',source:CM},
- interruptDash:{label:'Ausweichen nach Unterbrechung',unit:'s kürzer'},
- snareUpgrade:{label:'Falle hält fest',fixed:4.5,unit:'s statt 3, setzt den Wurf zurück',source:CM},
- hunterFinish:{label:'Ausweichen nach einem Kill',fixed:0,unit:'s Abklingzeit, Rückstoß weiter',source:CM},
+ dashEnergy:{label:'Randale je {dash}',unit:'',source:CM},
+ markRoot:{label:'Festhalten beim ersten {mark}',fixed:1,unit:'s',source:CM},
+ rootThrow:{label:'Randale je {throw} auf betäubte Ziele',fixed:10,unit:'',source:CM},
+ interruptDash:{label:'{dash} nach Unterbrechung',unit:'s kürzer'},
+ snareUpgrade:{label:'Falle hält fest',fixed:4.5,unit:'s statt 3, setzt {throw} zurück',source:CM},
+ hunterFinish:{label:'{dash} nach einem Kill',fixed:0,unit:'s Abklingzeit, Rückstoß weiter',source:CM},
  // --- E-32 Kernmechaniken (spec-mechanics.js, Zahlen aus content/mechanics.js) ---
  stackDecay:{label:'Deckel-Uhr läuft länger',unit:'s'},hangoverShort:{label:'Kater halbiert',fixed:1.5,unit:'s statt 3',source:MECH},stackBonus:{label:'Mehr Abriss-Schaden je Deckelstrich',unit:'%',scale:v=>v*100},stackBurstAt:{label:'Voller Abriss so viele Striche früher',unit:''},stackSpread:{label:'Abriss macht Nachbarn angetrunken (halbe Sekunde je Deckelstrich)',fixed:1,unit:'',source:MECH},stackWave:{label:'Abriss trifft Nachbarn je Deckelstrich',fixed:20,unit:'Schaden',source:MECH},waveRadius:{label:'Größerer Rausschmiss-Radius',unit:'Welteinheiten'},
  fassPils:{label:'Anstich stellt Pils (Tempo)',fixed:1,unit:'',source:MECH},fassWeizen:{label:'Anstich stellt Weizen (Heilung)',fixed:1,unit:'',source:MECH},fassBock:{label:'Anstich stellt Bock (Schaden)',fixed:1,unit:'',source:MECH},fieldCount:{label:'Zusätzliche Fässer',unit:''},fieldDuration:{label:'Platziertes Objekt hält länger',unit:'s'},fieldRadius:{label:'Größerer Wirkkreis',unit:'Welteinheiten'},
  supplyMax:{label:'Zusätzliche Vorratsgläser',unit:''},cleanDuration:{label:'Großreinemachen hält länger',unit:'s'},nestHonk:{label:'Gisela schnattert länger nieder',unit:'s'},cleanDamage:{label:'Mehr Schaden je Heilung im Großreinemachen',unit:'%',scale:v=>v*100},
  dotSpread:{label:'Schimmel springt auf zusätzliche Nachbarn',unit:''},dotRadius:{label:'Schimmel springt weiter',unit:'Welteinheiten'},dotHeal:{label:'Durchputzen heilt je platzendem Schimmel',fixed:1,unit:'Tick',source:MECH},dotExplodeTicks:{label:'Durchputzen zusätzliche Ticks',unit:''},
- stateDuration:{label:'Putzwut hält länger',unit:'s'},stateDrain:{label:'Randale-Verbrauch in der Putzwut',unit:'je s'},stateDamage:{label:'Mehr Schaden in der Putzwut',unit:'%',scale:v=>v*100},stateTrigger:{label:'Putzwut beginnt früher',unit:'Randale'},mobileHeal:{label:'Heilung im Laufen',fixed:1,unit:'',source:MECH},mobileStrike:{label:'Grundangriff im Laufen',fixed:1,unit:'',source:MECH},mobileThrow:{label:'Wurf im Laufen',fixed:1,unit:'',source:MECH},mobileBurst:{label:'Spezialkniff im Laufen',fixed:1,unit:'',source:MECH},stateMobileAll:{label:'Alle Kniffe im Laufen während der Putzwut',fixed:1,unit:'',source:MECH},
+ stateDuration:{label:'Putzwut hält länger',unit:'s'},stateDrain:{label:'Randale-Verbrauch in der Putzwut',unit:'je s'},stateDamage:{label:'Mehr Schaden in der Putzwut',unit:'%',scale:v=>v*100},stateTrigger:{label:'Putzwut beginnt früher',unit:'Randale'},mobileHeal:{label:'{heal} im Laufen',fixed:1,unit:'',source:MECH},mobileStrike:{label:'{strike} im Laufen',fixed:1,unit:'',source:MECH},mobileThrow:{label:'{throw} im Laufen',fixed:1,unit:'',source:MECH},mobileBurst:{label:'{burst} im Laufen',fixed:1,unit:'',source:MECH},stateMobileAll:{label:'Alle Kniffe im Laufen während der Putzwut',fixed:1,unit:'',source:MECH},
  fuseDamage:{label:'Mehr Lunten-Schaden',unit:''},fuseSpread:{label:'Lunte springt beim Zünden weiter',fixed:1,unit:'Nachbar',source:MECH},chainJumps:{label:'Zusätzliche Blitzsprünge',unit:''},chainFalloff:{label:'Weniger Verlust je Sprung',unit:'%',scale:v=>v*100},reactionWindow:{label:'Längeres Fenster für die Kettenreaktion',unit:'s'},reactionDuration:{label:'Kettenreaktion hält länger',unit:'s'},
  robbiDamage:{label:'Mehr Robbi-Schaden je Schuss',unit:''},robbiGuard:{label:'Deckung je Robbi-Schuss',fixed:4,unit:'Punkte',source:MECH},overloadDamage:{label:'Mehr Überlast-Schaden',unit:''},overloadStun:{label:'Überlast betäubt',unit:'s'},
- gambleOver:{label:'Höhere Überzündungs-Chance',unit:'%',scale:v=>v*100},gamblePity:{label:'Garantierte Überzündung früher',unit:'Fehlzündungen'},gambleMisfireMult:{label:'Fehlzündung weniger schwach',unit:'%',scale:v=>v*100},jackpotDuration:{label:'Jackpot hält länger',unit:'s'},jackpotStreak:{label:'Jackpot früher',unit:'Überzündungen'},hausverbotDuration:{label:'Hausverbot hält länger',unit:'s'},mobileCast:{label:'Wirken im Laufen',fixed:1,unit:'',source:MECH},mobileMark:{label:'Markierung im Laufen',fixed:1,unit:'',source:MECH},mobileGround:{label:'Bodenkniff im Laufen',fixed:1,unit:'',source:MECH},overloadRadius:{label:'Größerer Überlast-Kreis',unit:'Welteinheiten'},chainRadius:{label:'Kurzschluss springt weiter',unit:'Welteinheiten'},overSplashShare:{label:'Überzündung trifft Nachbarn stärker',unit:'%',scale:v=>v*100},tapDamage:{label:'Mehr Bock-Explosionsschaden beim Fassanstich',unit:''},fieldHeal:{label:'Mehr Heilung je Sekunde vom Nest',unit:''},robbiHp:{label:'Robbi hält mehr Schläge aus',unit:'Leben'},robbiFollows:{label:'Robbi läuft mit',fixed:1,unit:'',source:MECH},nestFollows:{label:'Gisela läuft mit',fixed:1,unit:'',source:MECH},
- aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Markierungs-Schaden',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Schaden des Spezialkniffs',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''}
+ gambleOver:{label:'Höhere Überzündungs-Chance',unit:'%',scale:v=>v*100},gamblePity:{label:'Garantierte Überzündung früher',unit:'Fehlzündungen'},gambleMisfireMult:{label:'Fehlzündung weniger schwach',unit:'%',scale:v=>v*100},jackpotDuration:{label:'Jackpot hält länger',unit:'s'},jackpotStreak:{label:'Jackpot früher',unit:'Überzündungen'},hausverbotDuration:{label:'Hausverbot hält länger',unit:'s'},mobileCast:{label:'Wirken im Laufen',fixed:1,unit:'',source:MECH},mobileMark:{label:'{mark} im Laufen',fixed:1,unit:'',source:MECH},mobileGround:{label:'{ground} im Laufen',fixed:1,unit:'',source:MECH},overloadRadius:{label:'Größerer Überlast-Kreis',unit:'Welteinheiten'},chainRadius:{label:'Kurzschluss springt weiter',unit:'Welteinheiten'},overSplashShare:{label:'Überzündung trifft Nachbarn stärker',unit:'%',scale:v=>v*100},tapDamage:{label:'Mehr Bock-Explosionsschaden beim Fassanstich',unit:''},fieldHeal:{label:'Mehr Heilung je Sekunde vom Nest',unit:''},robbiHp:{label:'Robbi hält mehr Schläge aus',unit:'Leben'},robbiFollows:{label:'Robbi läuft mit',fixed:1,unit:'',source:MECH},nestFollows:{label:'Gisela läuft mit',fixed:1,unit:'',source:MECH},
+ aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Schaden von {mark}',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Schaden von {burst}',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''}
 };
 /** Wirkungen einer Proc-Regel → Zahlenzeilen. */
 const PROC_EFFECT_INFO={
@@ -259,21 +261,42 @@ const PROC_EFFECT_INFO={
  energy:{label:'Randale sofort'},shield:{label:'Deckung sofort',unit:'Punkte'},
  heal:{label:'Heilung sofort',unit:'Leben'},haste:{label:'Tempo im Fenster',unit:'%',scale:v=>v*100},supply:{label:'Vorratsgläser sofort',unit:''},clean:{label:'Großreinemachen sofort',unit:'s'}
 };
-const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am markierten Ziel',beat:'Grundangriff im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick der Markierung',autoHit:'Treffer des Autoangriffs',heal:'Direkte Heilung',burst:'Spezialkniff',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt'};
-const skillName=id=>{const b=BASE_SKILLS.find(s=>s.id===id);return TALENT_SKILLS[id]?.name||(b?({strike:'Grundangriff',mark:'Markierung',burst:'Spezialkniff',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung'})[id]:null)||({throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'})[id]||id;};
-export function effectNumbers(effects={},source=TL){
+const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am Ziel mit {mark}',beat:'{strike} im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick von {mark}',autoHit:'Treffer des Autoangriffs',heal:'{heal}',burst:'{burst}',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt'};
+/** Gattungsnamen der Leistenplätze – nur Rückfall, wenn weder Klasse noch Hauptbaum bekannt sind. */
+export const GENERIC_SKILL_NAMES={strike:'Grundangriff',mark:'Markierung',burst:'Spezialkniff',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung',throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'};
+/**
+ * Leistenname eines Kniffs: erst der Name im Hauptbaum (SPEC_MECHANICS[spec].kit), dann der Klassenname (KITS, Wurf, Boden,
+ * Stärkung), zuletzt der Gattungsname. ctx = {cls, spec}; ohne Kontext bleibt der Gattungsname.
+ */
+export function kitName(id,{cls,spec}={}){
+ if(TALENT_SKILLS[id])return TALENT_SKILLS[id].name;
+ const own=spec&&SPEC_MECHANICS[spec]?.kit?.[id]?.name;if(own)return own;
+ if(cls){const i=BASE_SKILLS.findIndex(s=>s.id===id),kit=i>=0?KITS[cls]?.[i]?.name:null;if(kit)return kit;
+  if(id==='throw'&&THROW_SKILL.names[cls])return THROW_SKILL.names[cls];if(id==='ground'&&GROUND_SKILL.names[cls])return GROUND_SKILL.names[cls];if(id==='buff'&&BUFF_SKILLS[cls]?.name)return BUFF_SKILLS[cls].name;}
+ return GENERIC_SKILL_NAMES[id]||id;
+}
+const fill=(text,ctx)=>String(text).replace(/\{([a-z]+)\}/gi,(_,id)=>kitName(id,ctx));
+/** Herkunft einer Proc-Regel: Klasse und Baum des Talents, das sie trägt. */
+let procOwners=null;
+export function procContext(id){
+ if(!procOwners){procOwners={};for(const [cls,specs] of Object.entries(CLASS_SPECS))for(const spec of specs)for(const t of TALENT_ROWS[spec]||[])for(const k of Object.keys(t.effects||{}))if(k.startsWith('proc:'))procOwners[k.slice(5)]??={cls,spec};}
+ return procOwners[id]||{};
+}
+/** Zahlenzeilen eines Talent-Effektblocks. ctx = {cls, spec} löst Kniffnamen auf (siehe kitName). */
+export function effectNumbers(effects={},source=TL,ctx={}){
  const out=[];
  for(const [key,value] of Object.entries(effects)){
-  if(key.startsWith('proc:')){const r=PROC_RULES[key.slice(5)];if(r)out.push(...procNumbers(r));continue;}
+  if(key.startsWith('proc:')){const r=PROC_RULES[key.slice(5)];if(r)out.push(...procNumbers(r,ctx));continue;}
   if(key.startsWith('classBuff:')){const b=CLASS_BUFFS[key.slice(10)];if(b)out.push(n(b.name+' stärker',Math.round(value*CLASS_BUFF_TUNING.talentStep*100),'%',TU));continue;}
   const d=EFFECT_INFO[key];if(!d)continue;
   const v=d.fixed!==undefined?d.fixed:(d.scale?d.scale(value):value);
-  out.push(n(d.label,v,d.unit||'',d.source||source));
+  out.push(n(fill(d.label,ctx),v,fill(d.unit||'',ctx),d.source||source));
  }
  return out;
 }
-function procNumbers(r){
- const out=[n('Auslöser',TRIGGER_TEXT[r.trigger]||r.trigger,'',PRC),n('Chance',r.chance*100,'%',PRC),n('Zeitfenster',r.window,'s',r.window===BALANCE.procs.defaultWindow?BL:PRC)];
+function procNumbers(r,ctx={}){
+ const skillName=id=>kitName(id,ctx);
+ const out=[n('Auslöser',fill(TRIGGER_TEXT[r.trigger]||r.trigger,ctx),'',PRC),n('Chance',r.chance*100,'%',PRC),n('Zeitfenster',r.window,'s',r.window===BALANCE.procs.defaultWindow?BL:PRC)];
  if(r.skill)out.push(n('Kniff',skillName(r.skill),'',PRC));
  if(r.zone)out.push(n('Eigene Fläche',({keg:'Fasskreis',sanctuary:'Heilkreis',barricade:'Barrikade',snare:'Falle',burn:'Brandfläche',fass:'Fass',robbi:'Robbi',nest:'Nest',spores:'Sporenwolke'})[r.zone]||r.zone,'',PRC));
  if(r.every>1)out.push(n('Zündet jedes',r.every,'. Mal',PRC));
@@ -322,8 +345,8 @@ export function describe(kind,id){
  const info=e.info||{};
  let numbers=[];
  if(kind==='skill'||kind==='buff'||kind==='throw'||kind==='ground'||kind==='talentSkill')numbers=skillNumbers(e.def,e.cls,e.skillId);
- else if(kind==='talent'){numbers=effectNumbers(e.def.effects);if(e.def.grants)numbers.unshift(n('Schaltet frei',TALENT_SKILLS[e.def.grants].name,'',SK));}
- else if(kind==='proc')numbers=procNumbers(e.def);
+ else if(kind==='talent'){numbers=effectNumbers(e.def.effects,TL,{cls:e.cls,spec:e.spec});if(e.def.grants)numbers.unshift(n('Schaltet frei',TALENT_SKILLS[e.def.grants].name,'',SK));}
+ else if(kind==='proc')numbers=procNumbers(e.def,procContext(id));
  else if(kind==='classBuff')numbers=[...Object.entries(e.def.effects).map(([k,v])=>n(CLASS_BUFF_STATS[k].label,classBuffValueText(k,v),'',TU)),n('Dauer',Math.round(e.def.duration/60),'min',TU),n('Kosten','keine','',TU),n('Gelernt auf Stufe',e.def.level,'','content/class-buffs.js')];
  else if(kind==='passive'){const L={strikeCd:['Grundangriff alle','s'],strikeRange:['Reichweite des Grundangriffs','m'],strikeGain:['Randale je Grundangriff',''],dashCd:['Ausweichen alle','s'],parryHeal:['Heilung je geglückter Parade','Leben'],damageTaken:['Eingehender Schaden','%'],beatEnergy:['Zusätzliche Randale im Takt',''],interruptBurstCd:['Spezialkniff nach Unterbrechung','s kürzer']};
   for(const [k,v] of Object.entries(e.def)){const d=L[k];if(!d)continue;

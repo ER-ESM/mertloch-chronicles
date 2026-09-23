@@ -1,8 +1,9 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
-import {SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,PROC_RULES,describe as contentDescribe,effectNumbers} from './content/index.js';
+import {SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
 import {effectAt} from './talent-ranks.js';
+import {available,skillLevel} from './progression.js';
 const n=v=>String(Math.round(v*100)/100).replace('.',','),pct=v=>n(v*100)+' %';
 export function skillName(g,id,spec=g.rpg?.talents?.spec){
  if(spec===g.rpg?.talents?.spec){const live=g.skills.find(s=>s.id===id);if(live)return live.name;}
@@ -65,17 +66,44 @@ function procText(g,t,id){
  if(ef.haste)effects.push(`${pct(ef.haste)} Tempo für ${r.window} s`);
  return `${r.every>1?'Bei jedem '+r.every+'. passenden Auslöser':'Auslöser'}: ${trigger}. ${chance<1?`${pct(chance)} Chance: `:''}${effects.join('; ')}.`;
 }
+const SLOT_IDS=['strike','mark','burst','interrupt','parry','dash','heal','buff','throw','ground'];
+const escapeRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+/**
+ * Ersetzt in einem Text die Kniffnamen des Baums `fromSpec` (Hauptbaum-Kit und Klassen-Kit) durch die Namen des aktuellen
+ * Hauptbaums, z. B. „Abriss“ oder „Bierzelt-Abriss“ → „Rausschmiss“. Nur ganze Namen (kein Treffer in „Abriss-Schaden“ oder
+ * „Bierzelt-Abriss“ für „Abriss“), vorhandene „…“ werden mitgenommen. Texte anderer Klassen bleiben unverändert.
+ */
+export function liveSkillNames(g,text,fromSpec){
+ const cls=SPECS[fromSpec]?.classId;if(!text||!cls||cls!==g.member?.id)return text;
+ const map=new Map();
+ for(const id of SLOT_IDS){const live=skillName(g,id);if(!live||live===id)continue;
+  for(const from of [SPEC_MECHANICS[fromSpec]?.kit?.[id]?.name,kitName(id,{cls})])if(from&&from!==live&&!map.has(from))map.set(from,live);}
+ if(!map.size)return text;
+ const names=[...map.keys()].sort((a,b)=>b.length-a.length).map(escapeRe).join('|');
+ return text.replace(new RegExp(`„?(?<![\\p{L}\\p{N}-])(${names})(?![\\p{L}\\p{N}-])“?`,'gu'),(_,name)=>'„'+map.get(name)+'“');
+}
+// Auslöser, die an einem Kniff hängen (Reaktionen eingeschlossen) – für den Hinweis auf noch nicht gelernte Kniffe.
+const TRIGGER_SKILL={burst:'burst',heal:'heal',dash:'dash',dodge:'dash',parry:'parry',interrupt:'interrupt',markTick:'mark',markedHit:'mark',beat:'strike'};
+/** Kontextzeilen für Kniffe des Talents, die der Spieler auf seiner Stufe noch nicht gelernt hat (Lernstufe aus progression.js). */
+function unlearnedLines(g,t,skills,procs){
+ if(!g.player||SPECS[t.spec]?.classId!==g.member?.id)return [];
+ const ids=[...new Set([...skills,...procs.map(id=>TRIGGER_SKILL[PROC_RULES[id].trigger]).filter(Boolean)])].filter(id=>SLOT_IDS.includes(id)&&!available(g,id));
+ // Ganz wirkungslos, wenn alle Bezüge fehlen oder eine Auslöser-Regel an einem fehlenden Kniff hängt (Auslöser oder Ziel).
+ const needs=r=>[TRIGGER_SKILL[r.trigger],r.skill,r.effect.free,r.effect.reset,r.effect.empower,...[].concat(r.effect.cdReduce||[]).map(c=>c.skill)].filter(Boolean);
+ const deps=[...new Set([...skills,...procs.flatMap(id=>needs(PROC_RULES[id]))])].filter(id=>SLOT_IDS.includes(id));
+ const dead=ids.length&&(deps.every(id=>ids.includes(id))||(procs.length&&procs.every(id=>needs(PROC_RULES[id]).some(s=>ids.includes(s)))&&Object.keys(t.effects).every(k=>k.startsWith('proc:'))));
+ return ids.filter(id=>Number.isFinite(skillLevel(g,id))).sort((a,b)=>skillLevel(g,a)-skillLevel(g,b)).map(id=>`„${skillName(g,id)}“ lernst du auf Stufe ${skillLevel(g,id)} – bis dahin ${dead?'wirkt das Talent nicht':'greift das Talent bei diesem Kniff nicht'}.`);
+}
 export function talentHelp(g,t){
  const cls=SPECS[t.spec].classId,keys=Object.keys(t.effects),procs=keys.filter(k=>k.startsWith('proc:')).map(k=>k.slice(5)),rank=talentRank(g.rpg.talents,t.id)||1;
  const ordinary=Object.fromEntries(Object.entries(t.effects).filter(([key])=>!key.startsWith('proc:')));
- const extra=effectNumbers(ordinary).map(row=>row.label+': '+(typeof row.value==='number'?n(row.value):row.value)+(row.unit?' '+row.unit:'')).join('; ');
+ const extra=effectNumbers(ordinary,undefined,{cls,spec:t.spec}).map(row=>row.label+': '+(typeof row.value==='number'?n(row.value):row.value)+(row.unit?' '+row.unit:'')).join('; ');
  let effect=procs.length?procs.map(id=>procText(g,t,id)).join(' ')+(extra?' Zusätzlich: '+extra+'.':''):t.scaling?effectAt(t,rank):contentDescribe('talent',t.id).effect;
  const groups=new Map();let general=false;
  for(const key of keys){const r=key.startsWith('proc:')?PROC_RULES[key.slice(5)]:null;const specs=r?(['overcharge','misfire','jackpotStart'].includes(r.trigger)?['kevin-hunt']:r.trigger==='reactionStart'?['kevin-fuse']:[]):effectSpecs(key,cls);if(!specs.length){general=true;continue;}const group=specs.join('|');if(!groups.has(group))groups.set(group,{specs,keys:[]});groups.get(group).keys.push(key);}
  const context=[];
- if(groups.size)for(const {specs,keys:part} of groups.values()){const names=specs.map(id=>SPECS[id].name).join(' oder '),labels=part.map(key=>effectNumbers({[key]:t.effects[key]})[0]?.label).filter(Boolean).join(', ');context.push(`${general?'Nur dieser Anteil ('+labels+') benötigt':'Benötigt als Hauptbaum'} ${names}.${general?' Die übrigen Effekte wirken auch mit anderen Hauptbäumen.':''}`);const related=specs.includes(g.rpg.talents.spec)?g.rpg.talents.spec:specs[0];const h=mechanicHelp(g,related);if(part.some(key=>['fieldDuration','fieldRadius'].includes(key)))context.push('Verbessert den platzierten Bodenkniff des aktiven Hauptbaums: '+specs.map(id=>skillName(g,'ground',id)+' ('+SPECS[id].name+')').join(' oder ')+'.');else if(h)context.push(h.lines[part.some(key=>key.startsWith('rage'))?2:0]);}
+ if(groups.size)for(const {specs,keys:part} of groups.values()){const names=specs.map(id=>SPECS[id].name).join(' oder '),labels=part.map(key=>effectNumbers({[key]:t.effects[key]},undefined,{cls,spec:t.spec})[0]?.label).filter(Boolean).join(', ');context.push(`${general?'Nur dieser Anteil ('+labels+') benötigt':'Benötigt als Hauptbaum'} ${names}.${general?' Die übrigen Effekte wirken auch mit anderen Hauptbäumen.':''}`);const related=specs.includes(g.rpg.talents.spec)?g.rpg.talents.spec:specs[0];const h=mechanicHelp(g,related);if(part.some(key=>['fieldDuration','fieldRadius'].includes(key)))context.push('Verbessert den platzierten Bodenkniff des aktiven Hauptbaums: '+specs.map(id=>skillName(g,'ground',id)+' ('+SPECS[id].name+')').join(' oder ')+'.');else if(h)context.push(h.lines[part.some(key=>key.startsWith('rage'))?2:0]);}
  else context.push(`Wirkt mit allen drei Hauptbäumen deiner Klasse; ${SPECS[t.spec].name} muss dafür nicht dein Hauptbaum sein.`);
- if(!groups.size)for(const [id,kit] of Object.entries(SPEC_MECHANICS[t.spec].kit||{})){const name=skillName(g,id);if(kit.name!==name)effect=effect.replaceAll(kit.name,'„'+name+'“');}
  const skills=[...new Set([...t.skills,...procs.flatMap(id=>{const r=PROC_RULES[id];return [r.skill,r.effect.free,r.effect.reset,r.effect.empower,...[].concat(r.effect.cdReduce||[]).map(c=>c.skill)].filter(Boolean);})])];
  if(skills.length)context.push('Betroffene Kniffe: '+skills.map(id=>skillName(g,id,namingSpec(g,t))).join(', ')+'.');
  const markRelevant=keys.some(k=>['markBonus','markedLeech','spreadMark','burstSpread','markedKillHot','markedKillEnergy','markRoot'].includes(k))||procs.some(id=>['markTick','markedHit'].includes(PROC_RULES[id].trigger));
@@ -83,6 +111,7 @@ export function talentHelp(g,t){
  // Nennt der Text einen Hauptbaum-Kniff (z. B. „Anstich“), steht dabei, woher er kommt.
  const main=g.rpg?.talents?.spec,origin=[];for(const k of kitSwaps(g,t.spec))if(effect.includes(k.name)||t.text?.includes(k.name))origin.push(main===t.spec?`„${k.name}“ ist dein ${k.role} – er ersetzt „${k.replaces}“, weil ${SPECS[t.spec].name} dein Hauptbaum ist.`:`„${k.name}“ ist der ${k.role} des Hauptbaums ${SPECS[t.spec].name}: Er ersetzt „${k.replaces}“, sobald du ${SPECS[t.spec].name} als Hauptbaum wählst.`);
  effect=nameSkills(g,effect,namingSpec(g,t)).replace(/(?<![\s.][A-Za-z])\.(\s+)([a-zäöü])/g,(m,sp,c)=>'.'+sp+c.toUpperCase());/* Satzanfang nach zusammengesetzten Auslöser-Texten */
+ context.push(...unlearnedLines(g,t,skills,procs));
  const required=skills.filter(id=>TALENT_SKILLS[id]&&id!==t.grants);if(required.length)context.push('Benötigt zusätzlich die erlernte Talentfähigkeit '+required.map(id=>'„'+skillName(g,id)+'“').join(', ')+'.');
  return {effect,context,origin};
 }
@@ -95,6 +124,7 @@ export function skillHelp(g,id){
  if(id==='heal'&&m?.supply)return `Heilt dich direkt und zusätzlich dein gewähltes Söldner- oder Online-Hilfsziel. ${h.lines[0]} ${h.lines[2]}`;
  if(id==='burst'&&h){const lead=`Ein starker Treffer; gegen markierte Ziele verstärkt. `;if(m.chain){const cs=combatStats(g);return lead+`Springt auf bis zu ${m.chain.jumps+(cs.chainJumps||0)} weitere Gegner, mit ${pct(Math.max(0,m.chain.falloff+(cs.chainFalloff||0)))} weniger Schaden je Sprung, und zündet ihre Lunten. `+h.lines[1];}return lead+(m.supply?h.lines[1]+' '+h.lines[2]:m.state?h.lines[2]:m.dot?h.lines[2]:h.lines[1]);}
  if(id==='strike'&&m?.dot)return s.text+' '+h.lines[1];
+ if(TALENT_SKILLS[id]){const from=Object.keys(TALENT_ROWS).find(spec=>TALENT_ROWS[spec].some(t=>t.grants===id));if(from)return liveSkillNames(g,s.text,from);}
  return s.text;
 }
 export const TERM_SPECS={schimmel:'baerbel-feedback',durchputzen:'baerbel-feedback',sporenwolke:'baerbel-feedback',vorrat:'baerbel-care',grossreinemachen:'baerbel-care',putzwut:'baerbel-stage',auswringen:'baerbel-stage',pegeluhr:'dieter-brawl',kater:'dieter-brawl',rausch:'dieter-brawl',hausverbot:'dieter-wall',lunte:'kevin-fuse',kettenreaktion:'kevin-fuse',bastlerglueck:'kevin-hunt',jackpot:'kevin-hunt'};
