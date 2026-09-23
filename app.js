@@ -398,7 +398,7 @@ function events(){for(const ev of game.events.splice(0)){
   if(ev.type==='loot')lootLine(ev);
   if(ev.type==='barChanged'){buildActions();if(popups.isOpen('book'))showBook();}
   if(ev.type==='settingsChanged'&&popups.isOpen('guide'))showGuide(PANEL_UI.settings);
-  if(ev.type==='bark')renderer?.bossSpeech.bark(ev,game);if(ev.type==='combat')combatText?.push(ev);
+  if(ev.type==='bark')renderer?.bossSpeech.bark(ev,game);if(ev.type==='combat'){combatText?.push(ev);/* Eigener Glückstreffer: kurzer Kamerastoß (Hades/Diablo), sanft und nur ohne reduzierte Bewegung */if(ev.crit&&ev.area==='out'&&!ev.actor&&renderer&&!matchMedia?.('(prefers-reduced-motion: reduce)').matches)renderer.shake=Math.max(renderer.shake||0,2.2);}
   if(ev.type==='discovery')toast(ev.name+' entdeckt · +20 EP');
   if(ev.type==='revived'&&popups.isOpen('death'))closeModal();
   if(ev.type==='death')openModal(`<span class="eyebrow">DER ABEND IST NOCH NICHT VORBEI</span><h2>Du wurdest fachgerecht zusammengefaltet.</h2><p>Du wurdest besiegt. Achte auf die Zauberbalken: ${available(game,'interrupt')?'Gelbe Zauber mit <kbd>'+keyFor(game,'interrupt')+'</kbd> unterbrechen.':'Bei Fernangriffen Abstand vergrößern oder die Sichtlinie unterbrechen.'} Rote Flächen verlassen oder mit <kbd>${keyFor(game,'dash')}</kbd> ausweichen. ${available(game,'parry')?'Angekündigte Nahkampfhiebe lassen sich mit <kbd>'+keyFor(game,'parry')+'</kbd> parieren.':'Deine weiteren Verteidigungsfähigkeiten lernst du nach und nach.'} Deine Quest und Erfahrung bleiben erhalten.</p><div class="dialog-actions"><button class="gold-button" id="respawn">Am Treffpunkt zusammenkratzen lassen</button></div>`,false,'death');
