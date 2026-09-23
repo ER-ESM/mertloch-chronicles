@@ -92,7 +92,7 @@ export const COMPANION_TEXT=Object.freeze({
  orderSet:o=>'Befehl: '+o,stanceSet:s=>'Haltung: '+s,
  // Chat-Befehle (Übergangsbedienung, bis das Schwarze Brett als Fenster da ist)
  chat:{help:'/söldner zeigt das Schwarze Brett · /söldner Name heuert an · /entlassen [Name] · /befehl folgen|warten|angriff · /haltung unterstützen|verteidigen|passiv',
-  offer:(o,role)=>o.def.name+' · '+role+' · '+(o.hired?'bei dir':o.cost+' Münzen')+' – '+o.def.description,
+  offer:(o,role)=>o.def.name+' · '+role+' · '+(o.hired?'bei dir':o.cost+' Pfandmarken')+' – '+o.def.description,
   needOrder:'Befehl fehlt: folgen, warten oder angriff.',needStance:'Haltung fehlt: unterstützen, verteidigen oder passiv.',none:'Du hast niemanden angeheuert.',
   orderWords:{folgen:'follow',follow:'follow',warten:'stay',stay:'stay',angriff:'attack',angreifen:'attack',attack:'attack'},
   stanceWords:{'unterstützen':'assist',unterstuetzen:'assist',assist:'assist',verteidigen:'defend',defend:'defend',passiv:'passive',passive:'passive'}}

@@ -243,3 +243,5 @@ button[data-setting-toggle][aria-pressed=true] .setting-switch i{transform:trans
 /* Schmal/Touch: Unterreiter teilen sich die Breite und kürzen, statt das Fenster seitlich zu sprengen. */
 .touch-mode .game-popup .section-jump button,.touch-mode .game-popup .quest-tabs button{flex:1 1 0;min-width:0;padding:6px 6px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .game-popup .quest-tabs{flex-wrap:wrap}
+/* Abschnittstitel im Fenster sind Überschriften, keine Knöpfe: goldene Schrift mit feiner Linie statt Kasten. */
+.game-popup .panel-section-title{background:none;border:0;border-bottom:1px solid #d7b57155;border-radius:0;padding:0 0 4px;margin:4px 0 10px;color:#f3cf7a;font-size:18px;box-shadow:none}

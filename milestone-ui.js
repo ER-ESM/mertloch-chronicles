@@ -12,15 +12,17 @@ export function mountMilestones(shell,{sound,blocked}={}){
   if(blocked?.()){clearTimeout(timer);timer=setTimeout(next,500);return;}busy=true;const m=queue.shift();
   el.className='milestone milestone-'+m.kind;el.innerHTML=m.html;el.hidden=false;
   requestAnimationFrame(()=>el.classList.add('show'));sound?.(m.kind==='level'?'levelUp':'unlock');
-  timer=setTimeout(close,m.ms);
+  timer=setTimeout(close,queue.length?m.ms*.65:m.ms);/* bei Stau kürzer */
  }
  function close(){clearTimeout(timer);el.classList.remove('show');setTimeout(()=>{el.hidden=true;busy=false;next();},350);}
  /* klickdurchlässig: die Einblendung blockiert nie das Spiel, sie läuft über die Zeit ab */
  return {
   level({level,hpGain=0,points=0,skills=[]}){
+   // Mehrere Aufstiege auf einmal (Kapitelbelohnung) zu EINER Einblendung zusammenfassen: höchste Stufe, Zugewinne addiert.
+   const prev=queue.find(m=>m.kind==='level');if(prev){queue.splice(queue.indexOf(prev),1);hpGain+=prev.hpGain;points+=prev.points;skills=[...prev.skills,...skills];}
    const gains=[hpGain>0?T.hp(hpGain):'',points>0?T.points(points):'',...skills.map(T.skill)].filter(Boolean);
    // Aufstieg vor Freischaltungen derselben Stufe (Ursache vor Wirkung).
-   queue.unshift({kind:'level',ms:4200,html:`<span class="milestone-eyebrow">${esc(T.levelEyebrow)}</span><strong class="milestone-title">${esc(T.level(level))}</strong>${gains.length?`<ul class="milestone-gains">${gains.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`:''}`});next();},
+   queue.unshift({kind:'level',ms:4200,hpGain,points,skills,html:`<span class="milestone-eyebrow">${esc(T.levelEyebrow)}</span><strong class="milestone-title">${esc(T.level(level))}</strong>${gains.length?`<ul class="milestone-gains">${gains.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`:''}`});next();},
   unlock(def){
    queue.push({kind:'unlock',ms:5600,html:`<span class="milestone-eyebrow">${esc(T.unlockEyebrow)}</span><strong class="milestone-title">${esc(def.name)}</strong><p class="milestone-text">${esc(def.text)}</p><small class="milestone-where">${esc(def.where)}</small>`});next();},
   get busy(){return busy;}
