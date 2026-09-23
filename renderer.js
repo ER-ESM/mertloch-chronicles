@@ -43,7 +43,7 @@ function drawResident(c,a,time){c.save();c.globalAlpha=1;c.translate(a.x,a.y);co
 import {drawBuilding,drawFurniture} from './architecture.js';
 import {buildingOccludesActor} from './tiny-architecture.js';
 import {insideHouse,roomAt} from './world-house.js';
-import {drawHouseFloor,drawHouseWall,drawHouseExterior,houseLevel,drawStageFurniture,drawHouseItem} from './bude-house-art.js';
+import {drawHouseFloor,drawHouseWall,drawHouseExterior,houseLevel,drawStageFurniture,drawHouseItem,drawGarlands} from './bude-house-art.js';
 import {distance,SCALE} from './world.js';
 import {WorldLight,applyGrade,gradeFilter} from './world-light.js';
 import {softwareRendering} from './gpu-info.js';
@@ -231,6 +231,8 @@ export class Renderer {
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;hitFlash(c,e,p,cc=>drawComicEnemy(cc,e,time));}c.restore();}
     hideLabels=false;
+    // Lichterketten über dem Hof hängen über allen Figuren.
+    if(houseSeen&&!g.floor)drawGarlands(c,house,time);
     // Räume erkennen (E-52): drinnen steht der eigene Raumname in Gold oben im Raum; andere Räume nennen ihren Namen erst,
     // wenn die Maus über ihnen steht (keine Schilderwand im Haus).
     if(houseSeen&&houseFade>.5){const here=roomAt(house,p.x,p.y,level),over=g.hover&&roomAt(house,g.hover.x,g.hover.y,level);c.globalAlpha=Math.min(1,(houseFade-.5)*2);for(const room of houseLevel(house,level).rooms){if(room.outdoor||room!==here&&room!==over)continue;const q=room.rects[0];label(c,room.name,q.x+q.w/2,q.y+11,room===here?'#f0c86a':'#e8dcc0',7);}c.globalAlpha=1;}

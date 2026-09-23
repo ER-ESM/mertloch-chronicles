@@ -73,6 +73,8 @@ export const BUDE_HOUSE={
  // rise = Hub des Helden auf der obersten Stufe (E), topStep = Tiefe der obersten Stufe, ab der ins Obergeschoss umgeschaltet wird.
  stairs:{x:4,y:104,w:18,h:52,foot:{x:36,y:148},arrive:{x:36,y:112},range:22,rise:15,topStep:8},
  // Bauplätze der sechs Basisbau-Gebäude (content/buildings.js) in ihren Räumen.
+ // Lichterketten über dem Hof (vom Hausgiebel zum Zaun), h = Aufhängehöhe über dem Boden, sag = Durchhang in E.
+ garlands:[{x1:232,y1:18,x2:326,y2:34,h:38,sag:12},{x1:232,y1:96,x2:326,y2:118,h:38,sag:14}],
  slots:{tresen:{x:84,y:100},anlage:{x:150,y:150},landhausecke:{x:40,y:34},pfandlager:{x:121,y:32},grill:{x:262,y:36},werkstatt:{x:298,y:104}},
  // Schild „Baustelle der Bude“ links neben dem Eingang, vor der Fassade.
  sign:{x:60,y:188},

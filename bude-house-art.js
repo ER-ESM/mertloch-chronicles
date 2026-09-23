@@ -117,3 +117,14 @@ export function drawHouseExterior(c,house,alpha,door){
  if(door){fill(c,INK,door.x-14,y1-31,28,31);fill(c,'#6b4a2f',door.x-12,y1-29,24,29);fill(c,'#4e3522',door.x-1,y1-29,2,29);fill(c,'#e0b45c',door.x+6,y1-15,2,2);fill(c,'#8b8577',door.x-16,y1-2,32,2);}
  c.globalAlpha=1;
 }
+
+/** Birnen einer Lichterkette: gleichmäßig entlang eines durchhängenden Bogens, je Birne Bodenpunkt (x, y) und Höhe (lift). */
+export function garlandBulbs(g){const len=Math.hypot(g.x2-g.x1,g.y2-g.y1),n=Math.max(3,Math.floor(len/9)),out=[];
+ for(let i=1;i<n;i++){const t=i/n;out.push({x:g.x1+(g.x2-g.x1)*t,y:g.y1+(g.y2-g.y1)*t,lift:g.h-g.sag*4*t*(1-t),i});}return out;}
+const BULBS=['#ffd36a','#ff8f6a','#8fd6ff','#b8f08a','#ffb0e0'];
+/** Lichterketten über dem Hof, über allen Figuren gezeichnet (hängen oben): Kabel mit Durchhang, farbige Birnen mit Glanzpunkt, sachtes Funkeln. */
+export function drawGarlands(c,house,time){if(!house?.garlands?.length)return;c.save();
+ for(const g of house.garlands){c.strokeStyle='#2a2018';c.lineWidth=.8;c.beginPath();for(let i=0;i<=24;i++){const t=i/24,x=g.x1+(g.x2-g.x1)*t,y=g.y1+(g.y2-g.y1)*t-(g.h-g.sag*4*t*(1-t));i?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();
+  for(const b of garlandBulbs(g)){const col=BULBS[b.i%BULBS.length],tw=.75+.25*Math.sin(time*2.2+b.i*1.7),x=b.x,y=b.y-b.lift+2;c.globalAlpha=1;c.fillStyle='#2a2018';c.fillRect(x-.5,y-2,1,1.5);
+   c.globalAlpha=.35*tw;c.fillStyle=col;c.beginPath();c.arc(x,y+1,3.2,0,Math.PI*2);c.fill();c.globalAlpha=tw;c.beginPath();c.ellipse(x,y+1,1.5,2,0,0,Math.PI*2);c.fill();c.globalAlpha=1;c.fillStyle='#ffffffcc';c.fillRect(x-.6,y,.8,.8);}}
+ c.restore();}

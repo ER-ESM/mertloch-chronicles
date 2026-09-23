@@ -25,6 +25,7 @@ export const LIGHTING={
   // Innenlicht der Bude (E-52): Baukasten-Teile mit `light` (Wand-/Tischlampe), Glut im Kanonenofen, Tageslicht durchs Dachloch.
   lamp:{color:'#ffc978',radius:70,flicker:.04,dx:0,dy:0,indoor:true,motes:{n:5,spread:18,color:'#ffe9b8'}},
   stove:{color:'#ff8a3c',radius:52,flicker:.14,dx:0,dy:-8,indoor:true,sparks:{n:7,rise:30,spread:5,color:'#ffc070'}},
+  bulb:{color:'#ffd98a',radius:15,flicker:.06,dx:0,dy:2},
   window:{color:'#fff0cc',radius:26,flicker:0,dx:0,dy:0,indoor:true,noGlow:true,aspect:[.9,1.25],edge:26,spacing:34,inset:16,doorGap:26},
   skylight:{color:'#fff4d8',radius:74,flicker:0,dx:0,dy:-4,indoor:true,beam:{height:74,top:30,foot:40,alpha:.34,motes:16}}
  },

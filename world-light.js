@@ -3,6 +3,7 @@
 import {LIGHT} from './light-convention.js';
 import {LIGHTING as L} from './content/index.js';
 import {insideHouse} from './world-house.js';
+import {garlandBulbs} from './bude-house-art.js';
 const canvas=(w,h)=>{const cv=document.createElement('canvas');cv.width=Math.max(1,Math.ceil(w));cv.height=Math.max(1,Math.ceil(h));return cv;};
 const norm=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),DX=LIGHT.dir.x/norm,DY=LIGHT.dir.y/norm,ANGLE=Math.atan2(DY*LIGHT.shadow.squash,DX);
 const rgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255),MID=.45;
@@ -78,6 +79,8 @@ export class WorldLight{
     else if(it.sprite==='kanonenofen')add('stove',it.x,it.y);else if(it.sprite==='schutthaufen')add('skylight',it.x,it.y);}
    // Tageslicht durch die Südfenster: helle Flecken knapp hinter der Südwand, an der Eingangstür ausgespart.
    const W=L.sources.window,door=(f.doors||[]).find(d=>d.id==='eingang');if(W)for(let x=house.minX+W.edge;x<house.maxX-W.edge/2;x+=W.spacing)if(!door||Math.abs(x-door.x)>W.doorGap)add('window',x,house.maxY-W.inset);}
+  // Birnen der Lichterketten über dem Hof (auch draußen, solange man im Erdgeschoss ist).
+  if(house&&!game.floor)for(const g of house.garlands||[])for(const b of garlandBulbs(g))add('bulb',b.x,b.y-b.lift);
   add('hero',game.player.x,game.player.y);
   for(const o of out)o.flicker=1+o.s.flicker*(Math.sin(time*9+o.seed)+Math.sin(time*5.3+o.seed*2))*.5;this.sourceCache={time,frame:this.frame,game,out};return out;}
  glow(color){let g=this.glows.get(color);if(!g){g=glowSprite(color);this.glows.set(color,g);}return g;}

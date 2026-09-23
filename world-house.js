@@ -32,7 +32,7 @@ function buildFloor(def,f,o,prefix){
 export function buildHouse(def,origin){
  const o={x:Math.round(origin.x),y:Math.round(origin.y)},ground=buildFloor(def,def,o,def.id+'-');
  const spots=Object.fromEntries(Object.entries(def.spots||{}).map(([k,p])=>[k,at(o,p)]));
- return {id:def.id,origin:o,minX:o.x,minY:o.y,maxX:o.x+def.width,maxY:o.y+def.depth,width:def.width,depth:def.depth,heights:{...def.heights},
+ return {garlands:(def.garlands||[]).map(g=>({...g,x1:o.x+g.x1,y1:o.y+g.y1,x2:o.x+g.x2,y2:o.y+g.y2})),id:def.id,origin:o,minX:o.x,minY:o.y,maxX:o.x+def.width,maxY:o.y+def.depth,width:def.width,depth:def.depth,heights:{...def.heights},
   ...ground,spots,...(def.upper?{upper:buildFloor(def,def.upper,o,def.id+'-og-')}:{})};
 }
 
