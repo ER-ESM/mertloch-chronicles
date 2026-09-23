@@ -3,6 +3,7 @@
 // Schräge Draufsicht: Boden 1:1, Höhen nach oben.
 import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill} from './kit-art.js';
 import {LIGHTING} from './content/index.js';
+import {LIGHT} from './light-convention.js';
 const INK='#293b44';
 const BASE='./assets/precision/runtime/buildings/',ART={meta:null,aussen:null};let requested=false;
 /** Nur Platzhalter zeichnen (Bildvorlagen der Pipeline), nie die gemalten Bilder. */
@@ -42,12 +43,21 @@ function wallShade(c,house,f){
   else{band(w.maxX,w.minY,w.maxX+S.side,w.maxY,w.maxX,0,w.maxX+S.side,0);band(w.minX-S.side,w.minY,w.minX,w.maxY,w.minX,0,w.minX-S.side,0);}}
  c.globalAlpha=a;
 }
+/** Schlagschatten des Hauses auf Hof und Gras (Lichtrichtung aus light-convention.js, wie Bäume und Nachbarhäuser):
+ *  mit sichtbarem Dach lang (Wand + halbes Dach), drinnen nur so hoch wie die geschnittenen Wände. Zwei Lagen für eine weiche Kante. */
+function castShadow(c,house,fade){
+ const n=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),dx=LIGHT.dir.x/n,dy=LIGHT.dir.y/n,H=house.heights,len=(H.wall+H.roof*.5)*(1-fade)+H.cut*fade,k=LIGHTING.shadow?.building??.5;
+ const {minX:x0,maxX:x1,minY:y0,maxY:y1}=house,a=c.globalAlpha;c.fillStyle=LIGHT.shadow.color;
+ for(const [f,al] of [[1,.16],[.7,.2]]){const ox=dx*len*k*f,oy=dy*len*k*f;c.globalAlpha=al;c.beginPath();c.moveTo(x1,y0);c.lineTo(x1+ox,y0+oy);c.lineTo(x1+ox,y1+oy);c.lineTo(x0+ox,y1+oy);c.lineTo(x0,y1);c.lineTo(x1,y1);c.closePath();c.fill();}
+ c.globalAlpha=a;
+}
 /** Böden des Geschosses: Belag je Raum und Bodendeko. Innenräume folgen dem Ausblenden des Dachs (`alpha`),
  *  der Hof liegt draußen und wird immer gezeichnet (er gehört zum Erdgeschoss). */
 export function drawHouseFloor(c,house,alpha,level=0){
  const f=houseLevel(house,level);
  c.globalAlpha=1;for(const room of house.rooms)if(room.outdoor)drawBelag(c,room,house.origin);
  for(const it of house.items)if(it.outdoor&&it.layer==='decal')drawDecal(c,it);
+ if(level===0)castShadow(c,house,alpha);
  if(alpha>0){c.globalAlpha=alpha;
   for(const room of f.rooms)if(!room.outdoor)drawBelag(c,room,house.origin);
   for(const it of f.items)if(!it.outdoor&&it.layer==='decal')drawDecal(c,it);
