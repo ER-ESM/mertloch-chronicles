@@ -28,6 +28,8 @@
     "sprites:live": "node tools/sprite-pipeline/build-live.mjs",
     "sprites:precision": "node tools/sprite-pipeline/build-precision.mjs",
     "sprites:generate": "node tools/sprite-pipeline/imagegen.mjs",
+    "loading:build": "node tools/loading-screens/build.mjs",
+    "loading:check": "node scripts/loading-screen-check.mjs",
     "mobile:check": "node scripts/mobile-check.mjs",
     "ui:check": "node scripts/ui-regression-check.mjs",
     "meter:check": "node scripts/meter-check.mjs",

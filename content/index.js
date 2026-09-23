@@ -37,6 +37,7 @@ export * from './world-fx.js';
 export * from './shop.js';
 export * from './targeting.js';
 export * from './start-screen.js';
+export * from './loading-screen.js';
 export * from './categories.js';
 
 export * from './kiosk.js';

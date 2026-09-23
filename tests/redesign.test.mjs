@@ -110,6 +110,6 @@ test('all new runtime files reproduce byte-for-byte from reviewed sources',()=>{
  for(const [p,bytes] of buildRedesign().files)assert.deepEqual(bytes,read(p),p);
 });
 test('production boot loads redesign and cache includes runtime without sources',()=>{
- assert.match(read('app.js').toString(),/Promise.all\(\[[^\]]*loadRedesignArt\(\)/);assert.match(read('live-art.js').toString(),/drawDetailedHero/);
+ assert.match(read('app.js').toString(),/(Promise\.all|boot\.track)\(\[[^\]]*loadRedesignArt\(\)/);assert.match(read('live-art.js').toString(),/drawDetailedHero/);
  const cache=read('scripts/pwa-cache.mjs').toString();assert.ok(cache.includes('assets/redesign/runtime/'));assert.ok(!cache.includes('assets/redesign/sources/'));
 });

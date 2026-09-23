@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Poo-Tang">
   <title>Mertloch Chronicles · Poo-Tang-Clan</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23131d19'/%3E%3Cpath d='M16 3 28 16 16 29 4 16Z' fill='none' stroke='%23d8b87a' stroke-width='2'/%3E%3Cpath d='M16 8v16M10 12l6 6 6-6' fill='none' stroke='%23d8b87a' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="loading-screen.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="comic-theme.css">
   <link rel="stylesheet" href="clan.css">
@@ -39,6 +40,19 @@
 <link rel="stylesheet" href="bag-ui.css">
 </head>
 <body>
+<div id="loading" class="boot" aria-busy="true">
+ <div class="boot-art" aria-hidden="true"><img id="bootArt" alt="" decoding="async"></div>
+ <div class="boot-shade" aria-hidden="true"></div>
+ <header class="boot-brand"><span class="boot-kicker" data-boot="kicker">Poo-Tang-Clan</span><h2 class="boot-title"><span data-boot="title">Mertloch</span> <b data-boot="titleStrong">Chronicles</b></h2><p class="boot-caption" id="bootCaption"></p></header>
+ <section class="boot-panel" aria-label="Spielstart">
+  <div class="boot-coaster" aria-hidden="true"><img src="assets/loading/deckel.png" alt="" width="128" height="128"><svg class="boot-tally" viewBox="0 0 48 30"><path pathLength="1" d="M8 4 7 27"/><path pathLength="1" d="M17 3 16 27"/><path pathLength="1" d="M26 4 26 27"/><path pathLength="1" d="M35 3 34 26"/><path pathLength="1" d="M2 22 44 7"/></svg></div>
+  <div class="boot-main">
+   <div class="boot-row"><span class="boot-step" id="bootStep">Das Maifeld erwacht …</span><span class="boot-pct" id="bootPct">0 %</span></div>
+   <div class="boot-bar rail" id="bootBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Spielstart"><div class="boot-fill"></div></div>
+   <p class="boot-tip" id="bootTip"></p>
+  </div>
+ </section>
+</div>
 <header class="topbar">
   <a class="brand" href="./"><span class="sigil">ᛉ</span><span>MERTLOCH <b>CHRONICLES</b><small>POO-TANG-CLAN</small></span></a>
   <nav aria-label="Spielmenü"><button id="worldButton" class="nav active">Die Welt</button><button id="mapButton" class="nav">Weltkarte <kbd>M</kbd></button><button id="guideButton" class="nav">Kampfhilfe <kbd>H</kbd></button><button id="clanButton" class="nav">Clan <kbd>C</kbd></button></nav>
@@ -49,7 +63,6 @@
   <section class="game-shell" id="gameShell" aria-label="Spielwelt Mertloch">
     <canvas id="world" tabindex="0" aria-label="Begehbare Pixelwelt. WASD bewegen, Tab Ziel wählen, 1 bis 4 kämpfen."></canvas>
     <div class="vignette"></div>
-    <div id="loading" class="loading"><span class="sigil">ᛉ</span><h2>Das Maifeld erwacht.</h2><p>Die Welt wird gezeichnet …</p></div>
     <div class="hud player-panel"><div class="portrait"><canvas id="portrait" width="96" height="96"></canvas><span id="level">1</span></div><div class="unit-info"><div class="unit-name"><span id="playerName">Dosen-Dieter</span> <small id="combatState">AUF ERKUNDUNG</small></div><div class="bar hp"><i id="hpBar"></i><span id="hpText">600 / 600</span></div><div class="bar energy" data-describe="glossary:randale"><i id="energyBar"></i><b class="energy-mark" aria-hidden="true"></b><span id="energyText">100 Randale</span></div></div></div>
     <div id="buffStrip" class="buff-strip" aria-live="polite"></div>
     <div id="targetPanel" class="hud target-panel hidden"><div class="unit-name"><span id="targetName"></span><small id="targetLevel"></small></div><div id="targetTitle" class="target-title" hidden></div><div class="bar enemy-hp"><i id="targetBar"></i><span id="targetHp"></span></div><div class="target-detail"><span id="targetEffect"></span><span id="targetDistance"></span></div><div id="enemyCast" class="cast hidden"><i id="enemyCastBar"></i><span id="enemyCastText"></span></div></div>
@@ -69,5 +82,6 @@
   <footer class="world-footer"><div class="footer-tools"><button id="adminButton" class="admin-button">Admin · Reset</button><a href="graphics-pack.html">Grafikwerkstatt ↗</a></div><span><i></i> LOKALE SPIELWELT <b>·</b> <span id="coordinates">50.267° N · 7.278° O</span></span><span>Echte Geografie. Neue Geschichten. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap-Mitwirkende</a></span></footer>
 </main>
 <div id="popupLayer" aria-label="Spielfenster"></div>
+<script type="module" src="loading-screen.js"></script>
 <script type="module" src="app.js"></script>
 </body></html>

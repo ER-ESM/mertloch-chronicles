@@ -1,0 +1,65 @@
+[
+ {
+  "id": "lade-bude-morgen",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/lade-bude-morgen.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "loading-screen",
+  "references": ["docs/konzept-bude-2026-09-23/aussen.jpg"],
+  "prompt": "Loading screen illustration for a cozy comic pixel-art role-playing game, 1536 x 1024, landscape. Scene: the half-timbered village clubhouse pub of a rural German village at sunrise, the morning after a wild party. Its slate roof is half stripped: exposed wooden rafters, a blue tarp tied over the hole, loose slates on the ground. In front: knocked-over white plastic garden chairs, green beer crates, empty bottles, paper streamers in the wet grass. One tiny man in white underpants stands in front of the door scratching his head. Behind the house: soft morning mist over wide flat farmland fields, a church tower on the horizon, pink and gold sunrise sky. Composition: elevated three-quarter view from the front, cinematic wide shot, the building slightly right of center; the lower quarter of the image is calm, darker ground (grass and a gravel path in shadow) with no important details, because a loading bar will sit there. Style: finely detailed warm comic pixel art exactly like the reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm light, cool violet shadows, honey plaster, dark oak, worn materials, small funny story details. No text, no letters, no logos, no UI, no frame, no border."
+ },
+ {
+  "id": "lade-maifeld-abend",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/lade-maifeld-abend.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "loading-screen",
+  "references": ["docs/konzept-bude-2026-09-23/aussen.jpg"],
+  "prompt": "Loading screen illustration for a cozy comic pixel-art role-playing game, 1536 x 1024, landscape. Scene: the wide open Maifeld plateau in the German Eifel at golden hour. Rolling fields of ripe wheat and yellow rapeseed divided by a narrow farm track, a lone red tractor with a trailer of hay bales, a small wayside cross under an old lime tree, round volcanic hills on the far horizon, a small village with a church spire and red roofs in the middle distance. Three wild boars trot along the edge of a cornfield. Long warm shadows, a few swallows, big glowing sky with soft clouds. Composition: elevated wide landscape view, horizon in the upper third; the lower quarter of the image is calm, darker field in shadow with no important details, because a loading bar will sit there. Style: finely detailed warm comic pixel art exactly like the reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm light, cool violet shadows, saturated greens and golds. No text, no letters, no logos, no UI, no frame, no border."
+ },
+ {
+  "id": "lade-dorfplatz-nacht",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/lade-dorfplatz-nacht.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "loading-screen",
+  "references": ["docs/konzept-bude-2026-09-23/start.jpg"],
+  "prompt": "Loading screen illustration for a cozy comic pixel-art role-playing game, 1536 x 1024, landscape. Scene: a small German village square at night. Cobblestones, half-timbered houses with green shutters and flower boxes, warm yellow light spilling from a few windows, old iron street lanterns with moths, a stone fountain, a village church with a dark slate spire. On one side a long low bowling-alley clubhouse with lit windows and a skittle pin painted on a wooden sign without letters. A paper party garland hangs between two houses, a cat sits on a wall, one window upstairs is lit where an angry neighbour peeks out. Deep blue night sky with stars and a crescent moon. Composition: elevated three-quarter view, cinematic wide shot; the lower quarter of the image is calm, dark cobblestones in shadow with no important details, because a loading bar will sit there. Style: finely detailed warm comic pixel art exactly like the reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm lantern light against cool violet and blue shadows. No text, no letters, no logos, no UI, no frame, no border."
+ },
+ {
+  "id": "lade-sperrmuell",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/lade-sperrmuell.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "loading-screen",
+  "references": ["docs/konzept-bude-2026-09-23/aussen.jpg"],
+  "prompt": "Loading screen illustration for a cozy comic pixel-art role-playing game, 1536 x 1024, landscape. Scene: a rural junk collector's yard at the edge of a German village in the late afternoon. Towering piles of bulky waste: old floral sofas, a stack of white fridges, a bathtub full of rainwater, bicycles, a broken grandfather clock, a jukebox, carpets, a garden gnome army. A rusty old flatbed van loaded with furniture, a small corrugated-iron shed with a crooked chimney, a chain-link fence overgrown with brambles, magpies on the junk. Behind it fields and a line of poplars, warm hazy sun. Composition: elevated three-quarter view, cinematic wide shot; the lower quarter of the image is calm, darker gravel ground in shadow with no important details, because a loading bar will sit there. Style: finely detailed warm comic pixel art exactly like the reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm light, cool violet shadows, rust, worn wood, small funny story details. No text, no letters, no logos, no UI, no frame, no border."
+ },
+ {
+  "id": "lade-jga-bus",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/lade-jga-bus.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "loading-screen",
+  "references": ["docs/konzept-bude-2026-09-23/aussen.jpg"],
+  "prompt": "Loading screen illustration for a cozy comic pixel-art role-playing game, 1536 x 1024, landscape. Scene: a narrow country road through farmland at dusk. A colourful old party coach bus from the city is parked crookedly at the roadside with its hazard lights blinking: balloons and paper streamers tied to the mirrors, a plastic flamingo on the roof, confetti on the asphalt, a pyramid of beer crates next to it, a lost veil hanging from a fence post. Low basalt stone walls, an old apple tree, a milestone, a lonely bus stop shelter, fields and dark volcanic hills behind, the lights of a distant town on the horizon, violet and orange evening sky. Composition: elevated three-quarter view, cinematic wide shot, the bus slightly left of center; the lower quarter of the image is calm, darker road and grass in shadow with no important details, because a loading bar will sit there. Style: finely detailed warm comic pixel art exactly like the reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm light, cool violet shadows, small funny story details. No text, no letters, no logos, no UI, no frame, no border."
+ },
+ {
+  "id": "ladebalken-deckel",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/ladebalken-deckel.png",
+  "width": 1024,
+  "height": 1024,
+  "kind": "ui-element",
+  "references": ["docs/konzept-bude-2026-09-23/aussen.jpg"],
+  "prompt": "Game UI element, 1024 x 1024, a single object centered on a fully transparent background (no ground, no shadow outside the object, no scene). Object: one round cardboard beer coaster seen exactly from above, filling about 85 percent of the canvas. Warm cream cardboard with a slightly scalloped embossed rim, a dark green printed ring near the edge, and in the center a printed emblem: a golden diamond outline with a downward pointing rune arrow inside, like a clan crest. The coaster is used: one small wet ring stain, a slightly bent edge, a tiny pencil tick mark near the rim. The area between the emblem and the ring is plain empty cardboard. Style: finely detailed warm comic pixel art matching the reference image (Mertloch Chronicles): crisp deliberate pixel clusters, dark slate outline, warm light from the upper left. No text, no letters, no numbers."
+ },
+ {
+  "id": "ladebalken-rahmen",
+  "output": "assets/precision/sources/2026-09-23/ladeschirm/ladebalken-rahmen.png",
+  "width": 1536,
+  "height": 256,
+  "kind": "ui-element",
+  "references": ["docs/konzept-bude-2026-09-23/start.jpg"],
+  "prompt": "Game UI element, a very wide horizontal loading bar frame on a fully transparent background (nothing outside the frame). The frame is a long polished dark oak pub bar rail, straight and perfectly horizontal, seen exactly from the front, spanning the full width of the canvas with a small margin. Both ends are capped with round brass end fittings with a rivet. Along the whole length the oak rail has a thin brass trim line top and bottom. Inside the rail runs one long straight empty recessed channel (the slot of the loading bar) in very dark green-black, with a thin dark inner shadow on its top edge; the channel is completely empty and takes about half of the frame height. The middle part of the rail is uniform and repetitive (same wood grain pattern) so it can be stretched; all decoration sits only at the two ends. Style: finely detailed warm comic pixel art matching the reference image (Mertloch Chronicles): crisp deliberate pixel clusters, dark slate outline, warm light from above. No text, no letters, no numbers, no fill inside the channel."
+ }
+]

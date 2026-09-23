@@ -11,6 +11,8 @@ for(const file of await readdir(new URL('assets/fonts/',root)))if(file.endsWith(
 // Preview graphics are cached on first use. Integrity pins them to the active release.
 const optional={};
 try{for(const file of (await readdir(new URL('assets/prerender/runtime/',root),{recursive:true})).sort())if(/\.(png|json)$/.test(file)){const path='assets/prerender/runtime/'+file.replaceAll('\\','/');optional[path]='sha256-'+createHash('sha256').update(await readFile(new URL(path,root))).digest('base64');}}catch(error){if(error.code!=='ENOENT')throw error;}
+// Ladeschirm: Deckel und Tresenleiste gehören zum Start; die großen Hintergründe kommen beim ersten Zeigen in den Cache.
+for(const file of (await readdir(new URL('assets/loading/',root)).catch(()=>[])).sort()){const path='assets/loading/'+file;if(file.endsWith('.png'))files.push(path);else if(file.endsWith('.webp'))optional[path]='sha256-'+createHash('sha256').update(await readFile(new URL(path,root))).digest('base64');}
 for(const file of await readdir(new URL('assets/theme-demo/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/theme-demo/runtime/'+file);
 for(const file of await readdir(new URL('assets/skill-fx/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/skill-fx/runtime/'+file);
 for(const file of await readdir(new URL('assets/redesign/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/redesign/runtime/'+file);

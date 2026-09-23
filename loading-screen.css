@@ -1,0 +1,86 @@
+/* Ladeschirm beim Spielstart (loading-screen.js). Wird als ERSTES Stylesheet geladen und steht vor jedem Skript.
+   Bierdeckel-Regeln (bierdeckel.css): Radius 0 · Rahmen 2 px · harter Schatten · keine Unschärfe · Größen 11/13/16/20/28.
+   Farben kommen aus den Bierdeckel-Tokens; die Rückfallwerte gelten nur, bis bierdeckel.css geladen ist. */
+.boot{position:fixed;inset:0;z-index:100;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;
+ background:var(--green-3,#1A2C24);color:var(--cream,#F4E8C4);font-family:var(--read,'Nunito',system-ui,sans-serif);
+ transition:opacity .45s ease;--boot-p:0;--boot-ink:#0B1216}
+.boot.boot-out{opacity:0;pointer-events:none}
+
+/* ---------------------------------------------------------------- Hintergrund aus der Bildpipeline */
+.boot-art{position:absolute;inset:0;overflow:hidden}
+.boot-art img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;opacity:0;transform:scale(1.02);transition:opacity .7s ease}
+.boot.art-ready .boot-art img{opacity:1;animation:boot-drift 30s ease-out forwards}
+@keyframes boot-drift{to{transform:scale(1.09) translate(-1.2%,-.6%)}}
+/* Unten dunkler, damit Balken und Tipp auf jedem Motiv lesbar bleiben (ein Verlauf, zwei Stufen). */
+.boot-shade{position:absolute;inset:auto 0 0;height:52%;background:linear-gradient(#0B121600,#0B1216eb)}
+
+/* ---------------------------------------------------------------- Marke oben links */
+.boot-brand{position:relative;padding:clamp(16px,3.4vw,44px) clamp(16px,3.4vw,48px) 0;display:grid;justify-items:start;gap:8px}
+.boot-kicker{font:var(--t-16,16px)/1 var(--display,'Jersey 15',system-ui);letter-spacing:.12em;text-transform:uppercase;
+ background:var(--stamp,#AD5260);color:var(--cream,#F4E8C4);padding:4px 10px 3px;border:2px solid var(--stamp-ink,#6E2531);box-shadow:0 3px 0 var(--boot-ink);transform:rotate(-2deg)}
+.boot-title{margin:0;font:400 clamp(44px,7vw,92px)/.86 var(--display,'Jersey 15',system-ui);letter-spacing:.03em;text-transform:uppercase;
+ color:var(--cream,#F4E8C4);text-shadow:0 4px 0 var(--boot-ink),3px 0 0 var(--boot-ink),-3px 0 0 var(--boot-ink),0 -3px 0 var(--boot-ink)}
+.boot-title b{display:block;font-weight:400;color:var(--gold,#ECB95C)}
+.boot-caption{margin:0;font:var(--t-16,16px)/1.2 var(--display,'Jersey 15',system-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--kraft,#D9B98A);text-shadow:0 2px 0 var(--boot-ink)}
+.boot-caption:empty{display:none}
+.boot-caption::before{content:'◆ ';color:var(--gold,#ECB95C)}
+
+/* ---------------------------------------------------------------- Ladeleiste unten */
+.boot-panel{position:relative;grid-row:3;box-sizing:border-box;width:min(880px,calc(100% - 32px));margin:0 auto clamp(20px,6vh,64px);display:flex;align-items:center;gap:clamp(10px,2vw,20px)}
+.boot-main{flex:1;min-width:0;display:grid;gap:8px}
+.boot-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.boot-step{font:var(--t-28,28px)/1.05 var(--display,'Jersey 15',system-ui);letter-spacing:.04em;color:var(--cream,#F4E8C4);text-shadow:0 2px 0 var(--boot-ink);min-width:0;overflow-wrap:anywhere}
+.boot-pct{flex:none;font:36px/1 var(--display,'Jersey 15',system-ui);color:var(--gold,#ECB95C);text-shadow:0 3px 0 var(--boot-ink);font-variant-numeric:tabular-nums}
+
+/* Bierdeckel mit Strichliste: jeder fertige Schritt ein Bleistiftstrich, der fünfte kreuzt das Bündel. */
+.boot-coaster{position:relative;flex:none;width:clamp(76px,10vw,120px);aspect-ratio:1}
+.boot-coaster img{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 0 var(--boot-ink))}
+.boot-coaster.thunk{animation:boot-thunk .32s ease-out}
+@keyframes boot-thunk{40%{transform:rotate(-7deg) scale(.94)}}
+.boot-tally{position:absolute;left:50%;top:79%;width:40%;transform:translate(-50%,-50%) rotate(-6deg);overflow:visible}
+.boot-tally path{fill:none;stroke:#34312C;stroke-width:3;stroke-linecap:square;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .3s ease-out}
+.boot-tally path.on{stroke-dashoffset:0}
+
+/* Der Balken: Tresenleiste aus Eiche (Bildpipeline) als Rahmen, darin läuft Bier mit Schaumkrone. */
+.boot-bar{position:relative;box-sizing:border-box;height:46px;padding:7px;
+ background:var(--green-3,#1A2C24);border:2px solid var(--kraft-2,#C9A46F);box-shadow:0 3px 0 var(--boot-ink),inset 0 3px 0 #0B121699}
+/* rahmen.png ist 1200×94: Kanal y 33–64, Messingkappen bis x 56 bzw. ab x 1140 – genau dort wird geschnitten, der Inhalt ist der Kanal. */
+.boot-bar.rail{height:78px;padding:0;background:none;box-shadow:none;border-style:solid;border-color:transparent;
+ border-width:27px 49px 24px 45px;border-image:url(assets/loading/rahmen.png) 33 60 30 56 fill / 27px 49px 24px 45px stretch;
+ filter:drop-shadow(0 4px 0 #0B1216b0)}
+.boot-fill{position:relative;height:100%;width:calc(var(--boot-p) * 1%);min-width:0;transition:width .3s ease-out;
+ background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28' shape-rendering='crispEdges'%3E%3Cg fill='%23FFF1C9'%3E%3Crect x='5' y='4' width='3' height='3'/%3E%3Crect x='19' y='17' width='2' height='2'/%3E%3Crect x='31' y='8' width='4' height='4'/%3E%3Crect x='44' y='21' width='2' height='2'/%3E%3Crect x='53' y='12' width='3' height='3'/%3E%3Crect x='70' y='5' width='2' height='2'/%3E%3Crect x='78' y='18' width='3' height='3'/%3E%3Crect x='92' y='10' width='2' height='2'/%3E%3Crect x='101' y='23' width='3' height='3'/%3E%3Crect x='113' y='6' width='3' height='3'/%3E%3C/g%3E%3Cg fill='%23FFE08A'%3E%3Crect x='12' y='12' width='1' height='1'/%3E%3Crect x='62' y='24' width='1' height='1'/%3E%3Crect x='86' y='3' width='1' height='1'/%3E%3Crect x='107' y='15' width='1' height='1'/%3E%3C/g%3E%3C/svg%3E") 0 0/120px 28px repeat,
+  linear-gradient(#0000 0 48%,#FFCB6B 48% 52%,#0000 52%),
+  linear-gradient(#EFA532 0 70%,#B96F1C 70%);
+ animation:boot-bubbles 1.8s linear infinite}
+@keyframes boot-bubbles{to{background-position:0 -28px,0 0,0 0}}
+/* Schaumkrone oben und an der Spitze – harte Kanten, keine Unschärfe. */
+.boot-fill::before{content:'';position:absolute;left:0;right:0;top:0;height:42%;min-height:7px;background:var(--cream,#F4E8C4);
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' shape-rendering='crispEdges'%3E%3Crect width='12' height='6'/%3E%3Crect x='1' y='6' width='4' height='2'/%3E%3Crect x='7' y='6' width='3' height='3'/%3E%3C/svg%3E") 0 0/12px 100% repeat-x;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' shape-rendering='crispEdges'%3E%3Crect width='12' height='6'/%3E%3Crect x='1' y='6' width='4' height='2'/%3E%3Crect x='7' y='6' width='3' height='3'/%3E%3C/svg%3E") 0 0/12px 100% repeat-x}
+.boot-fill::after{content:'';position:absolute;top:-4px;bottom:-2px;right:-10px;width:14px;background:var(--cream,#F4E8C4);opacity:calc(var(--boot-p) * 1);
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='16' shape-rendering='crispEdges'%3E%3Crect width='8' height='16'/%3E%3Crect x='8' y='1' width='3' height='5'/%3E%3Crect x='8' y='8' width='4' height='5'/%3E%3Crect x='11' y='2' width='2' height='3'/%3E%3C/svg%3E") 0 0/100% 100%;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='16' shape-rendering='crispEdges'%3E%3Crect width='8' height='16'/%3E%3Crect x='8' y='1' width='3' height='5'/%3E%3Crect x='8' y='8' width='4' height='5'/%3E%3Crect x='11' y='2' width='2' height='3'/%3E%3C/svg%3E") 0 0/100% 100%}
+.boot-failed .boot-fill{background:var(--coral,#E18569);animation:none}
+.boot-failed .boot-fill::before,.boot-failed .boot-fill::after{display:none}
+.boot-failed .boot-step{color:var(--coral,#E18569)}
+
+.boot-tip{margin:0;min-height:3em;font:var(--t-16,16px)/1.5 var(--read,system-ui);color:var(--cream,#F4E8C4);text-shadow:0 1px 0 var(--boot-ink);opacity:0;transition:opacity .4s ease}
+.boot-tip.in{opacity:.94}
+.boot-tip b{font:400 var(--t-16,16px)/1 var(--display,'Jersey 15',system-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--ink,#2B2A26);background:var(--kraft,#D9B98A);padding:1px 6px;margin-right:6px;box-shadow:0 2px 0 var(--boot-ink)}
+.boot-retry{justify-self:start}
+
+@media(max-width:640px){
+ .boot-panel{flex-direction:column;align-items:stretch;margin-bottom:max(20px,env(safe-area-inset-bottom))}
+ .boot-coaster{position:absolute;right:0;top:-92px;width:80px}
+ .boot-step{font-size:var(--t-20,20px)}
+ .boot-pct{font-size:var(--t-28,28px)}
+ .boot-tip{font-size:var(--t-13,13px)}
+ .boot-bar.rail{height:58px;border-width:20px 37px 18px 34px;border-image-width:20px 37px 18px 34px}
+}
+@media(max-height:480px){.boot-title{font-size:clamp(32px,9vh,56px)}.boot-panel{margin-bottom:12px}.boot-tip{min-height:0}}
+@media(prefers-reduced-motion:reduce){
+ .boot-art img,.boot-fill,.boot-coaster.thunk{animation:none}
+ .boot-art img,.boot,.boot-fill,.boot-tip,.boot-tally path{transition:none}
+}

@@ -12,6 +12,8 @@ Aktiver Grafikstandard: [Präzisionspixel](docs/PRAEZISIONSPIXEL-2026-09-17.md),
 
 **Bilder selbst anfordern (E-51):** `npm run sprites:generate -- tools/sprite-pipeline/<runde>-jobs.json [--only=id] [--force] [--dry-run]` erzeugt die Originale über das eingebaute Imagegen-Werkzeug von Codex (ChatGPT-Abo, kein API-Schlüssel) und schreibt die Herkunft nach `assets/precision/generation.json`; danach `npm run sprites:precision && node scripts/pwa-cache.mjs`. Anleitung und Fallen: [docs/BILDPIPELINE-DIREKT-2026-09-23.md](docs/BILDPIPELINE-DIREKT-2026-09-23.md).
 
+**Ladeschirm:** `loading-screen.js` (Modul vor `app.js`, Schritte `boot.phase/track/finish/fail`), Texte/Motive/Tipps in `content/loading-screen.js`, Export `npm run loading:build`, Browserprüfung `npm run loading:check`. Details: [docs/GRAFIK-LIEFERUNG-2026-09-23-ladeschirm.md](docs/GRAFIK-LIEFERUNG-2026-09-23-ladeschirm.md).
+
 ## Modulgrenzen
 
 | Bereich | Dateien | Wer arbeitet dort |
