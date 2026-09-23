@@ -91,15 +91,20 @@ const STYLES={
    extra:[{f:band,mat:fabric(o.band||'#a8452f',{weave:3}),group:'haarband'}]};},
  /** Lockige, voluminöse Hochsteckfrisur (Ida, nach dem gemalten Bogen): Lockenberg oben, freie Stirn,
   *  Korkenzieherlocken rahmen das Gesicht bis zum Kiefer, abstehende Kringel, kleiner Haargummi hinten. */
- locken(o){const messy=o.messy??.7,G=[0,-.75,1.85],ax=norm([0,-.6,1]),F=frame(ax),size=1.5,C=[G[0]+ax[0]*.5,G[1]+ax[1]*.5,G[2]+ax[2]*.5];
+ locken(o){const messy=o.messy??.7,G=[0,-.55,2.35],ax=norm([0,-.45,1]),F=frame(ax),size=1.45,C=[G[0]+ax[0]*.5,G[1]+ax[1]*.5,G[2]+ax[2]*.5];
   // Volumen zur Seite statt in die Höhe: dicke Kappe mit breitem Lockenpolster über den Schläfen
-  const cap=capField({T:.42,messy,line:{zF:1.32,zS:-.15,zB:-1.3,temple:.22},top:(x,y,z)=>ellipsoid(2.75,2.45,1.35)(x,y+.25,z-1.45)-.25*(fbm3(x*1.6,y*1.6,z*1.6,2)-.5)});
+  const cap=capField({T:.42,messy,line:{zF:1.32,zS:-.15,zB:-1.3,temple:.22},top:(x,y,z)=>ellipsoid(2.8,2.5,1.1)(x,y+.3,z-1.35)-.55*(fbm3(x*2.4,y*2.4,z*2.4,2)-.5)-.18*Math.sin(x*4.1+z*2.3)*Math.sin(y*3.7-z*1.9)});// Lockenpolster: unruhige Oberfläche statt glatter Haube
   const bun=bunField(F,C,size,11,5);
   const curl=(s,x0,y0,len)=>{const pts=[[s*x0,y0,.95]];for(let i=1;i<=len;i++)pts.push([s*(x0+.12+.2*(i%2)),y0+.1*(i%2),.95-.46*i]);
    return pts.slice(0,-1).map((p,i)=>[p,[(p[0]+pts[i+1][0])/2+s*.26,(p[1]+pts[i+1][1])/2+.16,(p[2]+pts[i+1][2])/2],pts[i+1],.26-.022*i,.21-.024*i]);};
   const strands=lockSet([...curl(1,1.95,1.15,5),...curl(-1,1.95,1.15,5),...curl(1,2.2,.45,4),...curl(-1,2.2,.45,4),
+   // Stirnlocken: fallen über die Schläfen bis auf Wangenhöhe und rahmen das Gesicht (gemalter Bogen)
+   [[1.05,1.95,1.25],[1.7,2.1,.3],[1.45,2.05,-.75],.3,.14],[[-1.05,1.95,1.25],[-1.7,2.1,.3],[-1.45,2.05,-.75],.3,.14],
+   [[.4,2.0,1.4],[1.0,2.25,.9],[1.25,2.15,.35],.22,.1],
    // lockere Strähnen über der Stirn zum Lockenberg
    ...[-.9,-.2,.55,1.1].map((x,i)=>[[x,1.75,1.45],[x*.8+.2*(R(i,8)-.5),1.35,2.3],[x*.4,.2,2.75],.24,.2]),
+   // Locken am Rand des Polsters (Silhouette unruhig wie im gemalten Bogen)
+   ...[0,1,2,3,4,5,6,7].map(i=>{const a=i/8*Math.PI*2+.2,d=[Math.cos(a),Math.sin(a)*.9],p=[d[0]*2.55,d[1]*2.3-.3,1.3+.3*R(i,11)];return [p,[p[0]+d[0]*.5,p[1]+d[1]*.45,p[2]+.35],[p[0]+d[0]*.3,p[1]+d[1]*.25,p[2]-.35],.24,.12];}),
    // abstehende Kringel oben
    ...[0,1,2,3,4].map(i=>{const a=i/5*Math.PI*2+.3,d=[Math.cos(a),Math.sin(a)],p=[C[0]+d[0]*1.1,C[1]+d[1]*.9,C[2]+.45];return [p,[p[0]+d[0]*.4,p[1]+d[1]*.3,p[2]+.5],[p[0]+d[0]*.7,p[1]+d[1]*.5,p[2]+.2],.13,.05];})]);
   const band=(x,y,z)=>{const [a,b,c]=F(x-G[0],y-G[1],z-G[2]);return torusZ(.62,.14)(a,b+.55,c-.05);};

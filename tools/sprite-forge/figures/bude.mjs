@@ -7,8 +7,8 @@
 export const FIGURES={
  ida:{name:'Kisten-Ida',archetype:'baerbel',
   // Resolute Frau Ende 40: rechte Hand in der Hüfte (im Bild links), Bierkasten an der linken Hüfte (im Bild rechts), breiter Stand.
-  look:{skin:'#cf8e62',hair:{style:'locken',color:'#c98a35',highlight:'#f0c860',messy:.75},
-   face:{breite:.8,iris:'#2f5a66',brows:'gerade',mouth:'laecheln',lips:'#b8443a',nose:'stups',jaw:0,chin:.15,cheeks:0,age:.15,rouge:.9,lashes:.7}},
+  look:{skin:'#cf8e62',hair:{style:'locken',color:'#c98a35',highlight:'#f0c860',messy:1.2},
+   face:{stamp:'feminin',breite:.8,iris:'#2f5a66',brows:'geschwungen',mouth:'laecheln',lips:'#c0453a',nose:'stups',jaw:0,chin:.1,cheeks:0,age:0,rouge:.9,lashes:.65}},
   gear:[['hemd',{color:'#f0e6cf'}],['hose',{umschlag:1}],['strickjacke',{weite:1.05,laenge:3.1}],
    ['schuerze',{color:'#f6ead0',from:5.4,to:9.5,width:.8,tasche:false,falten:.3,emblem:'#4f7a36',emblemZ:5.2,emblemGroesse:1.6,saum:'#6f8f44'}],['schuhe'],
    ['bierkasten',{side:1,vor:1.3,color:'#5a3b24'}],['schluessel',{side:-1}],['zigarette',{side:-1}],['zollstock',{side:-1}],['bleistift',{side:1}]],
@@ -16,14 +16,14 @@ export const FIGURES={
  'mentor-dieter':{name:'Dosen-Dieter',archetype:'dieter',
   // Breiter Kerl: breitbeinig, Dose in der linken Hand, rechter Daumen im Tragegurt; Fass mit Hopfen auf dem Rücken.
   look:{skin:'#e0a07c',hair:{style:'kurz',color:'braun'},beard:{style:'vollbart',color:'#6a3f24',highlight:'#b0643a'},
-   face:{iris:'graublau',brows:'buschig',mouth:'grinsen',nose:'knolle',jaw:1,chin:.6,cheeks:.9,age:.35,rouge:.85}},
+   face:{stamp:'maskulin',iris:'graublau',brows:'buschig',mouth:'grinsen',nose:'knolle',jaw:1,chin:.6,cheeks:.9,age:.35,rouge:.85}},
   gear:[['hemd',{sleeves:'rolled'}],['jeans',{abrieb:.8,fransen:.5}],['weste'],['lederschuerze',{from:6,to:5.5,flecken:.5}],['stiefel'],
    ['fass'],['geschirrtuch',{side:1}],['oeffner',{side:-1}],['dose',{hand:'l'}]],
   pose:{legL:{spread:12,knee:6},legR:{spread:12,knee:6},armL:{swing:10,spread:14,elbow:100,fspread:-10},armR:{swing:15,spread:22,elbow:105,fspread:-50},headPitch:3}},
  'mentor-baerbel':{name:'Aperol-Anni',archetype:'baerbel',
   // Kurvige Landhaus-Lady: Standbein rechts, linke Hand in der Hüfte, Sprühlanze locker erhoben, Kopf schräg.
   look:{skin:'#eeb48e',hair:{style:'hochgesteckt',color:'#d4a24e',band:'#d9573a',glasses:'#2c2a36'},
-   face:{iris:'tuerkis',brows:'geschwungen',mouth:'kokett',lips:'#b8403a',nose:'stups',jaw:.1,chin:.3,cheeks:.5,rouge:.6,lashes:1,lids:.35}},
+   face:{stamp:'feminin',iris:'tuerkis',brows:'geschwungen',mouth:'kokett',lips:'#b8403a',nose:'stups',jaw:.1,chin:.3,cheeks:.5,rouge:.6,lashes:1,lids:.35}},
   gear:[['hemd',{color:'#e27a34',muster:'karo',karoFarbe:'#b0441c',bausch:.3}],['hose',{color:'#44472e',pad:.22}],['mieder',{from:.5,to:4.5}],
    ['schuerze',{color:'#efe2c6',from:2.4,to:7.4,width:.85,tasche:false,saum:'#d9824a'}],['stiefel',{height:2.6,absatz:.35,stulpe:false}],
    ['tank'],['creolen'],['armreif',{hand:'l'}],['putzspray',{side:-1,a:128}]],
@@ -31,7 +31,7 @@ export const FIGURES={
  'mentor-kevin':{name:'Klo-Kevin',archetype:'kevin',
   // Drahtiger Bastler: lässig-krumm, Pümpel über der linken Schulter, rechte Hand an der Hosentasche, Fischerhut wie im gemalten Bogen.
   look:{skin:'#e4a882',hair:{style:'zerzaust',color:'#6a3a22',messy:1},beard:{style:'stoppeln',color:'#5a3624'},
-   face:{iris:'gruen',brows:'zerzaust',mouth:'schief',nose:'spitz',jaw:.35,chin:.35,cheeks:.2,rouge:.35,stubble:.8}},
+   face:{stamp:'maskulin',iris:'gruen',brows:'zerzaust',mouth:'schief',nose:'spitz',jaw:.35,chin:.35,cheeks:.2,rouge:.35,stubble:.8}},
   gear:[['tshirt'],['cargohose',{umschlag:1,flicken:'#6a6448',abrieb:.6,flecken:.5,fransen:.8}],['jacke',{kapuze:true,flicken:'#c0622e',flecken:.4}],
    ['guertel',{height:.9,z:1.6,schlaufen:'#4a4430'}],['sneaker',{streifen:'#3e7a44'}],['handschuhe'],['fischerhut'],
    ['flaschenkiste'],['puempel',{hand:'l'}],['werkzeuggurt'],['schutzbrille']],

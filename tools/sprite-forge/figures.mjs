@@ -13,6 +13,7 @@ import {cpus} from 'node:os';
 import path from 'node:path';
 import {renderScene,autoBounds} from './render.mjs';
 import {setMood} from './materials.mjs';
+import {paint} from './pixel.mjs';
 setMood('warm');// Figuren im warmen Licht der gemalten Bögen (gilt im Haupt- und in jedem Worker-Thread)
 import {figureScene,place,POSES,POSE_COLUMNS,walkPose,DIRECTIONS,characterRecipe} from './figure.mjs';
 import {encodePng,surface} from '../sprite-pipeline/png.mjs';
@@ -30,10 +31,12 @@ export async function loadFigures({tests=false}={}){const dir=path.join(ROOT,'to
 /** Eine Zelle rendern: Rezept + Pose + Blickrichtung → 96×136-Fenster samt Ebenenname je Pixel. */
 /** Malstufen der Figuren (render.mjs): Doppelauflösung, Kantenlicht, gemalte Helligkeitsstufen. */
 // Figuren: flache Kamera (15°, fast frontal wie die gemalten Bögen), warmes Kantenlicht, weiche Übergänge.
-export const FIGURE_STYLE={oversample:2,ss:1,rim:.3,rimTint:'#ffd9a0',bands:0,pitch:15,exposure:.84},QUICK_STYLE={...FIGURE_STYLE,oversample:1};
+// painter: Renderer liefert nur Form/Material/Licht je Pixel, der Pixelmaler (pixel.mjs) malt Tonstufen, Linien und Kontur.
+export const FIGURE_STYLE={painter:true,ss:1,pitch:15,exposure:.84},QUICK_STYLE=FIGURE_STYLE;
 export function renderCell(recipe,pose,facing,style=FIGURE_STYLE){
  const scene=autoBounds(place(figureScene(recipe,pose),facing));
- const img=renderScene(scene,{view:'oblique',x0:WIN.x0,y0:WIN.y0,width:WIN.w,height:WIN.h,zTop:38,...style});
+ const opts={view:'oblique',x0:WIN.x0,y0:WIN.y0,width:WIN.w,height:WIN.h,zTop:38,...style};
+ const img=style.painter?paint(renderScene(scene,{...opts,gbuffer:true})):renderScene(scene,opts);
  const names=[...new Set(scene.solids.map(s=>s.layer))],layer=new Int8Array(img.ids.length).fill(-1);
  for(let i=0;i<layer.length;i++)if(img.ids[i]>=0)layer[i]=names.indexOf(scene.solids[img.ids[i]].layer);
  return {data:img.data,layer,names};}

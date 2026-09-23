@@ -20,7 +20,7 @@ import {clamp,mix,smoothstep,at,union,smoothUnion,ellipsoid,capsule,sphere,torus
 import {custom,rampFrom,hex,metal} from '../materials.mjs';
 import {hairSolids} from './hair.mjs';
 
-export const FACE_DEFAULTS={breite:1,iris:'#4f6f86',brows:'gerade',browColor:null,mouth:'neutral',lips:null,nose:'gerade',jaw:.3,chin:.4,cheeks:.4,
+export const FACE_DEFAULTS={stamp:null,breite:1,iris:'#4f6f86',brows:'gerade',browColor:null,mouth:'neutral',lips:null,nose:'gerade',jaw:.3,chin:.4,cheeks:.4,
  age:0,rouge:.4,freckles:0,stubble:0,lashes:.3,lids:0,look:[0,0],earrings:null};
 /** Rezeptwerte mit Standardwerten auffüllen (recipe.eyes bleibt als Irisfarbe gültig). */
 export function faceOptions(recipe={}){const f={...FACE_DEFAULTS,...(recipe.face||{})};
@@ -136,7 +136,7 @@ function mouthAt(o,x,z){const kind=o.mouth,w=kind==='laecheln'?.64:kind==='grins
 function segDist(px,pz,ax,az,bx,bz){const ex=bx-ax,ez=bz-az,h=clamp(((px-ax)*ex+(pz-az)*ez)/(ex*ex+ez*ez),0,1);return Math.hypot(px-ax-ex*h,pz-az-ez*h);}
 
 /** Hautmaterial mit gemaltem Gesicht (u,v,w = Kopfkoordinaten in E). */
-export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,seed=0}={}){
+export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,seed=0,noFeatures=false}={}){
  const base=skinRamp(skin,{deep:.5}),warm=skinRamp(mixRgb(skin,'#f08a78',.42),{deep:.5,hi:.38});
  const lipC=o.lips?toRgb(o.lips):mixRgb(skin,'#b8574a',.38),lipR=rampFrom(lipC,{deep:.72,hi:.42}),lipD=rampFrom(mixRgb(lipC,'#3a1c20',.35),{deep:.75,hi:.3});
  const browC=o.browColor?toRgb(o.browColor):mixRgb(hairCol,'#241a1a',.35),browR=rampFrom(browC,{deep:.7,hi:.35});
@@ -146,8 +146,8 @@ export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,see
  const rouge=blender(base,warm),look=o.look||[0,0];
  const tex=(u,v,w)=>{const x=u/h,y=v/h,z=w/h-FZ,ax=Math.abs(x),side=x<0?-1:1;
   const pore=(.97+.05*noise3(u*7,v*7,w*7))*(1+.14*smoothstep(.6,1.8,y));
-  // Gesicht vorn
-  if(y>1.1&&z>-2.9&&z<1.3){
+  // Gesicht vorn (bei Pixel-Stempeln setzt der Pixelmaler Augen, Brauen und Mund – hier nur Haut)
+  if(!noFeatures&&y>1.1&&z>-2.9&&z<1.3){
    const e=eyeAt(o,x,z,side);
    if(e){if(e.eye){const ix=side*EX+look[0]+.02*side,iz=EZ+.05+look[1],r=Math.hypot(x-ix,z-iz);
      if(Math.hypot(x-ix+.07,z-iz-.05)<.06)return {k:1,ramp:glintR,spec:0};
@@ -182,11 +182,14 @@ export function faceSkin(h,o,{skin='#e2ab86',hairCol='#5a3b24',beardCol=null,see
 export function face(k,F,recipe){const h=k.b.head*k.s,o=faceOptions(recipe),hairCol=recipe.hair?.color||'#5a3b24',solids=[];
  const smile=o.mouth==='grinsen'?1:o.mouth==='kokett'||o.mouth==='schief'||o.mouth==='laecheln'?.6:0;
  const wf=o.breite,shape={jaw:o.jaw,chin:o.chin,cheeks:o.cheeks,nose:o.nose,smile,width:wf},charHead=headLocal(h,shape);// enthält die neutrale Form (F.head)
- const tex=F.H((x,y,z)=>{const t=tilt(x/h,y/h,z/h);return [t[0]/wf*h,t[1]*h,t[2]*h];}),mat=faceSkin(h,o,{skin:recipe.skin||'#e2ab86',hairCol,beardCol:recipe.beard?.color,seed:(recipe.skin||'').length});
+ const tex=F.H((x,y,z)=>{const t=tilt(x/h,y/h,z/h);return [t[0]/wf*h,t[1]*h,t[2]*h];}),mat=faceSkin(h,o,{skin:recipe.skin||'#e2ab86',hairCol,beardCol:recipe.beard?.color,seed:(recipe.skin||'').length,noFeatures:!!o.stamp});
  // Gesichtshaut: hauchdünn über F.head (neutral), damit das Material mit Gesicht sichtbar ist; Lippen als kleines Relief
  const lips=(x,y,z)=>{let [X,Y,Z]=tilt(x/h,y/h,z/h);X/=wf;if(Math.abs(X)>.8||Z>-.9+FZ||Z<-1.8+FZ||Y<1.3)return 1e3;return ellipsoid(.5,.24,.2)(X,Y-2.02,Z-FZ-MZ+.12)*h;};
  // noShadow: keine Schlagschatten von Haar, Krempe oder Schirm im Gesicht – die Züge bleiben in Spielgröße lesbar (Form über Licht + AO)
- solids.push({f:F.H((x,y,z)=>Math.min(charHead(x,y,z),lips(x,y,z)+.04*h)-.02*h),mat,tex,layer:'haut',group:'kopf',noShadow:true});
+ // Pixel-Stempel (figure/stamps.mjs): Lage der Merkmale in Kopfkoordinaten und ihre Farben für den Pixelmaler
+ let stamp=null;if(o.stamp){const sk=recipe.skin||'#e2ab86',sr=skinRamp(sk),lip=o.lips?toRgb(o.lips):mixRgb(sk,'#b8574a',.45),brow=o.browColor?toRgb(o.browColor):mixRgb(hairCol,'#241a1a',.45);
+  stamp={kind:o.stamp,h,EX,EZ,MZ,FZ,colors:{D:toRgb('#1e1a24'),P:toRgb('#161a26'),I:toRgb(o.iris),W:toRgb('#e6d8c6'),G:toRgb('#f2ead8'),l:sr[2],b:brow,u:mixRgb(lip,'#3a1418',.35),m:lip,n:sr[2],r:mixRgb(sk,'#d8583e',.35)}};}
+ solids.push({f:F.H((x,y,z)=>Math.min(charHead(x,y,z),lips(x,y,z)+.04*h)-.02*h),mat,tex,layer:'haut',group:'kopf',noShadow:true,stamp});
  solids.push({f:(x,y,z)=>F.neck(x,y,z)-.02*h,mat,tex,layer:'haut',group:'hals'});
  if(o.earrings){const ring=side=>at(side*2.22,-.02,-.98,rotY(Math.PI/2,torusZ(.26,.07)));
   solids.push({f:F.H((x,y,z)=>{const [X,Y,Z]=tilt(x/h,y/h,z/h);return Math.min(ring(1)(X,Y,Z),ring(-1)(X,Y,Z))*h;}),mat:metal(o.earrings,{shine:40,spec:.9}),layer:'haut',group:'schmuck'});}

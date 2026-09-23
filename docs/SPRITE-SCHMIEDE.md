@@ -124,6 +124,21 @@ Nutzerbefund: „sehr kalt statt warm und rund, es fehlen deutlich viele Details
 | Haar mit Büscheln | Warme dunkle Büschel (`#5a2412`), tieferes Strähnenrelief. Neuer Stil `locken`: seitliches Volumen, Locken rahmen das Gesicht. |
 | Ruhige Flächen | Die Schürze bekommt die Option `falten` (Ida .3), sonst wirken die Röhrenfalten in Spielgröße wie Schmutzstreifen. |
 
+### Pixelmaler statt verkleinertem 3D (Ida, zweiter Anlauf, 23.09.2026)
+
+Nutzerbefund nach Runde 9: „sieht nicht aus wie Pixellook, sondern durch die Flächen eher wie billige 3D-Arbeit“. Neuer Ansatz: Der Renderer liefert für Figuren nur noch einen G-Buffer (`renderScene(…, {gbuffer:true})`: Material, Helligkeit, Farbtreppe, Normale, Tiefe und Kopfkoordinaten je Pixel, ein Abtastpunkt, keine Mittelung). Das eigentliche Bild malt `tools/sprite-forge/pixel.mjs`:
+
+1. **Tonstufen** statt Verläufen: wenige harte Töne je Material. `CONTRAST` spreizt die Helligkeit je Material um die Mitte (Haut und Haar stärker).
+2. **Cluster:** Einzelpixel gehen im Mehrheitston auf.
+3. **Linien:** Bei einem Tiefensprung zwischen Teilen und an scharfen Knicken entsteht eine Linie im dunklen Ton des hinteren Materials.
+4. **Kontur:** Die Außenkontur ist in der dunkelsten Stufe des angrenzenden Materials gefärbt, zum warmen Dunkelbraun gezogen (statt Schiefertinte).
+5. **Gesichts-Stempel** (`figure/stamps.mjs`, `face.stamp: 'feminin' | 'maskulin'`):
+   - Der Pixelmaler findet Augen, Brauen, Nase, Mund und Wangen über die Kopfkoordinaten der Gesichtshaut und setzt dort handgezeichnete Pixelvorlagen.
+   - Das nähere Auge wird voll gezeichnet, das fernere verkürzt. Verdeckung durch Haar oder Bart ergibt sich von selbst.
+   - Neue Stempel sind die Gesichtsoptionen des Charaktereditors.
+
+`FIGURE_STYLE={painter:true, pitch:15, exposure:.84}`. Die alte Malstufe (Doppelauflösung, Kantenlicht) bleibt über `renderScene` wählbar.
+
 **Vergleichswerkzeug** (im Scratchpad der Sitzung, schnell neu zu bauen): Original und Schmiede als Grundhaltung se/sw nebeneinander, 4× vergrößert und 1×, dazu ein Kopfausschnitt 8×. Der Posenbogen jedes `--dry`-Laufs liegt unter `visual-review/forge/bogen/<name>-<id>.png`.
 
 ## Figuren (Körperteile zum Wiederverwenden)

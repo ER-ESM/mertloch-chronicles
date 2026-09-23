@@ -22,7 +22,7 @@ const KEY=norm(-.55,.3,.78),FILL=norm(.65,.55,.25),SPEC_TINT=hex('#fff3d6');
 // Materialien mit `bump(u,v,w)` (Höhe in E, Stärke `bumpScale`) kippen die Normale: Falten, Strick, Nähte, Poren.
 const RIM=norm(.55,-.6,.45),RIM_TINT=hex('#c9d8ee');
 export function renderScene(scene,opts={}){
- const {width,height,x0,y0,px=PX,pitch=PITCH,view='oblique',ss=2,outline=true,inner=true,palette=true,zTop=140,shadows=true,oversample=1,rim=0,bands=0,rimTint=null,exposure=1}=opts,RT=rimTint?hex(rimTint):RIM_TINT;
+ const {width,height,x0,y0,px=PX,pitch=PITCH,view='oblique',ss=2,outline=true,inner=true,palette=true,zTop=140,shadows=true,oversample=1,rim=0,bands=0,rimTint=null,exposure=1,gbuffer=false}=opts,RT=rimTint?hex(rimTint):RIM_TINT;
  if(oversample>1){const o=oversample,hi=renderScene(scene,{...opts,width:width*o,height:height*o,px:px*o,oversample:1,outline:false,palette:false});
   const N=width*height,rgba=new Uint8Array(N*4),ids=new Int16Array(N).fill(-1),depth=new Float32Array(N).fill(-1e9);
   for(let y=0;y<height;y++)for(let x=0;x<width;x++){let r=0,g=0,b=0,n=0,id=-1,dp=-1e9;
@@ -41,13 +41,15 @@ export function renderScene(scene,opts={}){
   for(let i=0;i<320&&t<tMax;i++){const d=dist(x,y,z);if(d<.006)return {x,y,z,id:hitId};const st=Math.max(d*.85,.004);x+=dir[0]*st;y+=dir[1]*st;z+=dir[2]*st;t+=st;}
   return null;}
  function softShadow(x,y,z){let res=1,t=.08;for(let i=0;i<48&&t<45;i++){const h=dist(x+KEY[0]*t,y+KEY[1]*t,z+KEY[2]*t);if(h<.003)return 0;res=Math.min(res,9*h/t);t+=clamp(h,.06,2.5);}return clamp(res,0,1);}
+ // last: Daten des letzten shade()-Aufrufs für den Pixelmaler (gbuffer): Helligkeit, Farbtreppe, Normale, Glanz.
+ let last=null;
  function shade(hit){const s=S[hit.id],m=s.mat,{x,y,z}=hit,e=.015,f=s.f;
   let nx=f(x+e,y,z)-f(x-e,y,z),ny=f(x,y+e,z)-f(x,y-e,z),nz=f(x,y,z+e)-f(x,y,z-e);const nl=Math.hypot(nx,ny,nz)||1;nx/=nl;ny/=nl;nz/=nl;
   const [u,v,w]=s.tex?s.tex(x,y,z):[x,y,z];
   if(m.bump){const hb=(X,Y,Z)=>{const t=s.tex?s.tex(X,Y,Z):[X,Y,Z];return m.bump(t[0],t[1],t[2]);},eb=.04,k=(m.bumpScale??1)/(2*eb);
    let gx=(hb(x+eb,y,z)-hb(x-eb,y,z))*k,gy=(hb(x,y+eb,z)-hb(x,y-eb,z))*k,gz=(hb(x,y,z+eb)-hb(x,y,z-eb))*k;const gn=gx*nx+gy*ny+gz*nz;gx-=gn*nx;gy-=gn*ny;gz-=gn*nz;
    nx-=gx;ny-=gy;nz-=gz;const l2=Math.hypot(nx,ny,nz)||1;nx/=l2;ny/=l2;nz/=l2;}
-  if(m.emissive){const g=typeof s.glow==='function'?s.glow(u,v,w):(s.glow??.8);return rampColor(m.ramp,g);}
+  if(m.emissive){const g=typeof s.glow==='function'?s.glow(u,v,w):(s.glow??.8),c=rampColor(m.ramp,g);last={val:g,ramp:m.ramp,n:[nx,ny,nz],spec:0,emissive:c};return c;}
   let ao=1;for(let i=1;i<=4;i++){const h=.45*i;ao-=(h-dist(x+nx*h,y+ny*h,z+nz*h))*.34/i;}ao=clamp(ao,.35,1);
   const sh=shadows&&!s.noShadow?softShadow(x+nx*.05,y+ny*.05,z+nz*.05):1;
   const tx=m.tex(u,v,w,[nx,ny,nz])||{k:1},ramp=tx.ramp||m.ramp,spec=tx.spec??m.spec;
@@ -60,9 +62,15 @@ export function renderScene(scene,opts={}){
   let glowAdd=[0,0,0];for(const l of L){const lx=l.p[0]-x,ly=l.p[1]-y,lz=l.p[2]-z,d=Math.hypot(lx,ly,lz);if(d>=l.r)continue;
    const a=(1-d/l.r)**2*l.k*Math.max(0,(nx*lx+ny*ly+nz*lz)/d);glowAdd=glowAdd.map((c,k)=>c+l.color[k]*a);}
   if(m.glass){const fr=Math.pow(1-Math.max(0,nx*V[0]+ny*V[1]+nz*V[2]),3);col=col.map((c,k)=>mix(c,SPEC_TINT[k],fr*.35));}
+  last={val,ramp,n:[nx,ny,nz],spec:sp,glow:glowAdd,mat:m.name,uvw:[u,v,w]};
   return col.map((c,k)=>clamp(mix(c,SPEC_TINT[k],clamp(sp,0,1))+glowAdd[k]*255*(.35+.65*c/255),0,255));}
 
  const N=width*height,rgba=new Uint8Array(N*4),ids=new Int16Array(N).fill(-1),depth=new Float32Array(N).fill(-1e9);
+ // gbuffer: ein Abtastpunkt je Pixel (Pixelmitte), keine Mittelung – Grundlage für den Pixelmaler (pixel.mjs).
+ if(gbuffer){const gb=new Array(N).fill(null);
+  for(let py=0;py<height;py++)for(let pxl=0;pxl<width;pxl++){const hit=cast(x0+(pxl+.5)/px,y0+(py+.5)/px);if(!hit)continue;const i=py*width+pxl,c=shade(hit);
+   ids[i]=hit.id;depth[i]=hit.x*V[0]+hit.y*V[1]+hit.z*V[2];rgba.set([c[0],c[1],c[2],255],i*4);gb[i]=last;}
+  return {width,height,data:rgba,ids,depth,gb,solids:S};}
  for(let py=0;py<height;py++)for(let pxl=0;pxl<width;pxl++){let r=0,g=0,b=0,n=0,id=-1,dp=-1e9;
   for(let sy=0;sy<ss;sy++)for(let sx=0;sx<ss;sx++){const X=x0+(pxl+(sx+.5)/ss)/px,Y=y0+(py+(sy+.5)/ss)/px,hit=cast(X,Y);if(!hit)continue;
    const c=shade(hit);r+=c[0];g+=c[1];b+=c[2];n++;const d=hit.x*V[0]+hit.y*V[1]+hit.z*V[2];if(d>dp){dp=d;id=hit.id;}}
