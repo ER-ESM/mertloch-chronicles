@@ -20,7 +20,7 @@ async function fixture(touch=false){
  await run(`Object.assign(g.player,{x:g.world.spawn.x,y:g.world.spawn.y});g.moveTo=null;g.path=[];`);await wait(1500);
  await run(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());g.tutorial.completed=true;g.enemies=[];g.companions=[];g.paused=false;g.hireCompanion('merc-hopfen-horst',{free:true});g.hireCompanion('merc-radler-rita',{free:true});
  for(const [i,c]of g.companions.entries())Object.assign(c,{x:g.player.x+(i?110:-90),y:g.player.y+85,order:'stay',stance:'passive',inCombat:999,hp:c.maxHp-300});
- const {spawnArena}=await import('./arena.js');const [e]=spawnArena(g,{kind:'wolf'});Object.assign(e,{x:g.player.x+200,y:g.player.y,stun:999,attackTimer:999,autoTimer:999,damage:0});g.player.hp=g.player.maxHp-250;g.player.energy=100;g.gcd=0;g.cooldowns.heal=0;g.stopAuto();`);await wait(300);
+ const {spawnArena}=await import('./arena.js');const [e]=spawnArena(g,{kind:'wolf'});g.probeFoe=e;Object.assign(e,{x:g.player.x+200,y:g.player.y,stun:999,attackTimer:999,autoTimer:999,damage:0});g.player.hp=g.player.maxHp-250;g.player.energy=100;g.gcd=0;g.cooldowns.heal=0;g.stopAuto();`);await wait(300);
 }
 try{
  await b.resize(1440,1000);await fixture();
@@ -37,7 +37,7 @@ try{
  await b.press('v');await click('[data-meter-mode="healing"]');assert.match(await run('return document.querySelector(".meter-rows").textContent;'),/Dieter/);await b.screenshot(dir+'/desktop-heal-companion.jpg');await b.press('v');
  pass('Söldner anklicken: einziges Ziel, Gegner abgewählt, Autoangriff aus; Heilung heilt ihn und zählt für dich');
  // 3. Gegner anklicken → Söldner abgewählt; Heilung → heilt dich.
- await tapPoint(await screen('g.enemies[0]'));assert.deepEqual(await pick(),{enemy:await run('return g.enemies[0].name;'),friend:null,auto:false});
+ await tapPoint(await screen('g.probeFoe'));assert.deepEqual(await pick(),{enemy:await run('return g.probeFoe.name;'),friend:null,auto:false});
  assert.equal(await run('return document.querySelector(".companion-frame.is-selected");'),null);
  before=await hp();await healKey();after=await hp();assert.ok(after.me>before.me,'Heilung auf dich');assert.equal(after.horst,before.horst,'Söldner bleibt ungeheilt');
  pass('Gegner anklicken löst den Söldner ab; Heilung heilt dich');
