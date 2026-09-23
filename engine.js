@@ -38,7 +38,8 @@ export const SKILLS=skillsFor('dieter');
 export const ACT_CHAPTERS=STORY_CHAPTERS.filter(c=>!c.reserve&&c.act===STORY.act);
 export const FIRST_CHAPTER=ACT_CHAPTERS[0].id,LAST_CHAPTER=ACT_CHAPTERS.at(-1).id;
 export const chapterAt=n=>ACT_CHAPTERS.find(c=>c.id===n)||ACT_CHAPTERS[0];
-/** Treffpunkt-Regel: Clanwechsel und Basisbau gehen nur im Umkreis von HUB_RADIUS um world.spawn und außerhalb des Kampfes. */
+/** Treffpunkt-Regel: Clanwechsel und Basisbau gehen nur im Umkreis von HUB_RADIUS um world.spawn oder in der Bude
+ *  (Haus und Hof, E-52) und außerhalb des Kampfes. */
 export const HUB_RADIUS=150;
 /** Gesprächsreichweite zu Ida und den Mentoren; die Aktionstaste der UI arbeitet mit denselben Zahlen. */
 export const TALK_RANGE=50,MENTOR_RANGE=42,GATHER_RANGE=36;
@@ -103,7 +104,7 @@ export class Game{
   /** Am Treffpunkt und nicht im Kampf? Gilt für Clanwechsel und Basisbau. */
   /** Figurenwahl am Anmeldebildschirm: außerhalb des Clan-Treffs startet die neue Figur dort; mitten im Kampf oder am Boden geht kein Wechsel. */
   enterAs(id){if(member(id).id!==id)return false;if(id===this.member.id)return true;if(this.dead||this.player.inCombat>0)return false;const paused=this.paused;this.paused=false;if(!this.atHub()){if(inKiosk(this))leaveKiosk(this,true);Object.assign(this.player,this.world.spawn,{vx:0,vy:0,moving:false});this.path=[];}const ok=this.switchMember(id);this.paused=paused;return ok;}
-  atHub(){return !inKiosk(this)&&this.player.inCombat<=0&&distance(this.player,this.world.spawn)<=HUB_RADIUS;}
+  atHub(){const p=this.player,b=this.world.base;return !inKiosk(this)&&p.inCombat<=0&&(distance(p,this.world.spawn)<=HUB_RADIUS||!!b&&p.x>b.minX-20&&p.x<b.maxX+20&&p.y>b.minY-20&&p.y<b.maxY+20);}
   /** Spruch einer Figur: steht im Kampflog und geht als Ereignis `bark` an die UI (Sprechblase). */
   /** Scrolling Combat Text (combat-text.js): eine Zeile mit Icon und Wert; Schwebetexte am Helden fallen weg, wenn der Kampftext an ist. */
   sct(data){this.emit('combat',{member:this.member.id,...data});return this.settings?.sct!==false;}

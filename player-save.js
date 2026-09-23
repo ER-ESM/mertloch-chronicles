@@ -1,7 +1,9 @@
-// Position belongs to a generated world. Old saves continue at its spawn.
+// Position belongs to a generated world. New heroes and saves from another world start where the world says:
+// in der Bude (E-52, `world.start`), sonst am Spawn. Wer stirbt, steht weiterhin am Spawn auf.
 const spawnPosition=world=>({x:world.spawn.x,y:world.spawn.y,facing:1});
+const startPosition=world=>world.start?{x:world.start.x,y:world.start.y,facing:1}:spawnPosition(world);
 export function restorePosition(world,saved){
- const p=saved.position,fallback=spawnPosition(world);
+ const p=saved.position,fallback=startPosition(world);
  if(saved.worldKey!==world.id||!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))return fallback;
  const inBounds=p=>p.x>=0&&p.y>=0&&(!Number.isFinite(world.width)||p.x<=world.width)&&(!Number.isFinite(world.height)||p.y<=world.height);
  if(!inBounds(p))return fallback;

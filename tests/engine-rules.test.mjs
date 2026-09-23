@@ -115,7 +115,8 @@ test('Feldgegner im Umland wachsen mit der Spielerstufe, der Dorfkern bleibt fes
 
  // Echte Welt: Dorfkern auf Stufe 1 unverändert, Umland auf Stufe 10 skaliert.
  const C=ENCOUNTER_RULES.cellSize;
- const cells=(level)=>{const g=new Game(realWorld,{level,trainingXp:level*level*70}),out=[];
+ // Figur am Kirchvorplatz: seit E-52 starten neue Helden in der Bude, dort „warten“ nahe Tiere noch (hp 0).
+ const cells=(level)=>{const g=new Game(realWorld,{level,trainingXp:level*level*70}),out=[];Object.assign(g.player,{x:realWorld.spawn.x,y:realWorld.spawn.y});
   for(let cy=0;cy*C<realWorld.height;cy++)for(let cx=0;cx*C<realWorld.width;cx++)for(const e of g.ecology.buildCell(cx,cy))out.push(e);return out;};
  const low=cells(1),high=cells(10);
  const core=e=>Math.hypot(e.home.x-realWorld.spawn.x,e.home.y-realWorld.spawn.y)<=SPAWN_TABLES.tierDistance;

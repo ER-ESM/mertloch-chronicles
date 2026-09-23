@@ -34,7 +34,7 @@ test('unreadable and future saves block autosave instead of being silently repla
 test('real world mentors use the shared positions and can be addressed without Ida intercepting',()=>{
  const w=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url)))),g=new Game(w,{version:1});
  assert.deepEqual(w.mentors.map(({id,x,y})=>({id,x,y})),mentorSpots(w));
- for(const mentor of w.mentors){Object.assign(g.player,{x:mentor.x,y:mentor.y});assert.ok(distance(g.player,w.npc)>60);assert.equal(g.mentorInteraction()?.id,mentor.id);assert.ok(g.talkToMentor(mentor.id));assert.ok(w.walkClear(w.spawn,mentor,9));}
+ for(const mentor of w.mentors){Object.assign(g.player,{x:mentor.x,y:mentor.y});assert.ok(distance(g.player,w.npc)>60);assert.equal(g.mentorInteraction()?.id,mentor.id);assert.ok(g.talkToMentor(mentor.id));/* seit E-52 in den Räumen der Bude: echter Weg vom Startpunkt statt gerader Linie */const path=w.findPath(w.start||w.spawn,mentor);let prev=w.start||w.spawn;assert.ok(path.length&&path.every(p=>{const ok=w.walkClear(prev,p,9);prev=p;return ok;}),mentor.id+' nicht erreichbar');}
 });
 test('invalid, paused and dead movement requests leave the current path untouched; valid movement cancels a cast',()=>{
  const {g}=fight();g.navigate({x:180,y:100});const original=g.routeGoal;

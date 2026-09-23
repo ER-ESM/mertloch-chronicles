@@ -27,8 +27,9 @@ function plotFree(w,p,roadMargin){const r=rectOf(p),gap=14;
  if(w.buildings.some(b=>distance(b.door,p)<halfDiag(p)+DOOR_CLEARANCE))return false;
  return rectPoints(p).every(q=>!nearWater(w,q,6)&&!w.onRoad(q.x,q.y,roadMargin));}
 /** Bewuchs auf dem Bauplatz roden und das Kollisionsraster neu aufbauen (Wege werden dadurch nur freier, nie enger). */
-function clearPlot(w,p,margin=10){const r=rectOf(p),before=w.trees.length;
- w.trees=w.trees.filter(t=>t.x<r.minX-margin||t.x>r.maxX+margin||t.y<r.minY-margin||t.y>r.maxY+margin);
+// `south`: Bäume südlich des Platzes ragen mit der Krone in der Draufsicht darüber (bis ~125 E) – bei Bedarf weiter roden.
+function clearPlot(w,p,margin=10,south=margin){const r=rectOf(p),before=w.trees.length;
+ w.trees=w.trees.filter(t=>t.x<r.minX-margin||t.x>r.maxX+margin||t.y<r.minY-margin||t.y>r.maxY+south);
  w.grid.clear();for(const b of w.buildings)w.addGrid(b);for(const o of w.fixedColliders||[])w.addGrid(o);
  for(const t of w.trees)w.addGrid({x:t.x,y:t.y,radius:4*t.size,minX:t.x-6,maxX:t.x+6,minY:t.y-6,maxY:t.y+6});
  w.props=w.props.filter(q=>q.x<r.minX-4||q.x>r.maxX+4||q.y<r.minY-4||q.y>r.maxY+4);
@@ -124,7 +125,9 @@ export function placeBase(w){
    text:'Ehemalige Milchsammelstelle hinter St. Gangolf, seit 2007 Vereinsheim ohne Verein. Seit der Nacht: Baustelle.',
    x:p.x,y:p.y,w:R.w,h:R.h,minX:p.x-R.w/2,maxX:p.x+R.w/2,minY:p.y-R.h/2,maxY:p.y+R.h/2,
    approach:{x:Math.round(approach.x),y:Math.round(approach.y)},distanceToChurch:Math.round(d),house,sign:houseLocal(house,BUDE_HOUSE.sign)};
-  base.clearedTrees=clearPlot(w,p,30);addHouseColliders(w,house);
+  base.clearedTrees=clearPlot(w,p,30,140);addHouseColliders(w,house);
+  // Start in der Bude (E-52): neue Helden wachen im Schankraum auf, Kisten-Ida steht als Bauleiterin am Eingang.
+  w.start={x:house.spots.wake.x,y:house.spots.wake.y};w.npc={...w.npc,x:house.spots.ida.x,y:house.spots.ida.y};
   base.stageProps=stagePropsFor(base);w.base=base;return base;
  }
  throw new Error('Kein freier, erreichbarer Bauplatz für die Bude hinter St. Gangolf gefunden. Abgelehnt: '+JSON.stringify(tally));

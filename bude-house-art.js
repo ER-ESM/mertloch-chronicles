@@ -2,6 +2,20 @@
 // Innen mit geschnittenen Wänden) geliefert sind – das Spiel darf ohne Bild nicht kaputtgehen.
 // Schräge Draufsicht wie überall: Boden 1:1, Höhen nach oben (y - Höhe).
 const INK='#293b44';
+// Gemalte Ebenen (tools/sprite-pipeline/build-bude-house.mjs): werden einmal geladen; bis dahin zeichnet der Platzhalter.
+const BASE='./assets/precision/runtime/buildings/',ART={meta:null,innen:null,aussen:null};let requested=false;
+function art(){
+ if(!requested&&typeof Image!=='undefined'&&typeof fetch!=='undefined'){requested=true;
+  fetch(BASE+'bude-haus.json').then(r=>r.ok?r.json():null).then(meta=>{if(!meta)return;ART.meta=meta;
+   for(const k of ['innen','aussen']){const img=new Image();img.onload=()=>{ART[k]=img;};img.src=BASE+meta[k].file;}}).catch(()=>{});}
+ return ART;
+}
+/** Ausschnitt der gemalten Innenansicht in Hauskoordinaten (u,v,w,h) an seine Weltstelle zeichnen. */
+function innenPart(c,house,u,v,w,h){
+ const a=ART,m=a.meta.innen,k=a.meta.pxPerUnit,sx=(u-m.local.x)*k,sy=(v-m.local.y)*k;
+ const x0=Math.max(0,sx),y0=Math.max(0,sy),x1=Math.min(a.innen.width,sx+w*k),y1=Math.min(a.innen.height,sy+h*k);if(x1<=x0||y1<=y0)return;
+ c.drawImage(a.innen,x0,y0,x1-x0,y1-y0,house.origin.x+m.local.x+x0/k,house.origin.y+m.local.y+y0/k,(x1-x0)/k,(y1-y0)/k);
+}
 const FLOOR={
  dielen:{base:'#8a5a34',line:'#6d4527',step:7,dir:'h'},
  teppich:{base:'#6f302d',line:'#a8793f',border:true},
@@ -22,6 +36,12 @@ function paintFloor(c,kind,q){
 
 /** Böden aller Innenräume; `alpha` folgt dem Ausblenden des Dachs. Der Hof liegt draußen und wird immer gezeichnet. */
 export function drawHouseFloor(c,house,alpha){
+ const a=art();
+ if(a.innen){const m=a.meta.innen,split=m.houseWidth+4;
+  // Haus (samt Außenwänden) folgt dem Ausblenden des Dachs, der Hof liegt draußen und bleibt immer sichtbar.
+  if(alpha>0){c.globalAlpha=alpha;innenPart(c,house,m.local.x,m.local.y,split-m.local.x,a.innen.height/a.meta.pxPerUnit);}
+  // Hof genau auf seine Fläche (0…Tiefe): darüber und darunter liegt im Original nur der Vorlagenrand.
+  c.globalAlpha=1;innenPart(c,house,split,0,a.innen.width/a.meta.pxPerUnit+m.local.x-split,house.depth);return;}
  for(const room of house.rooms){
   const a=room.outdoor?1:alpha;if(a<=0)continue;
   c.globalAlpha=a;for(const q of room.rects)paintFloor(c,room.floor,q);
@@ -31,7 +51,13 @@ export function drawHouseFloor(c,house,alpha){
 
 /** Eine auf Hüfthöhe geschnittene Wand (Oberseite hell, Vorderseite dunkler), tiefensortiert an ihrer Südkante. */
 export function drawHouseWall(c,wall,house,alpha){
- if(alpha<=0)return;const h=house.heights.cut,w=wall.maxX-wall.minX,d=wall.maxY-wall.minY;
+ if(alpha<=0)return;
+ const a=art();
+ if(a.innen){
+  // Nur waagerechte Wände verdecken Figuren dahinter (Beine hinter der Hüfthöhe); senkrechte liegen schon im Boden.
+  if(wall.maxX-wall.minX<=wall.maxY-wall.minY)return;const o=house.origin,h=house.heights.cut;
+  c.globalAlpha=alpha;innenPart(c,house,wall.minX-o.x,wall.minY-o.y-h,wall.maxX-wall.minX,wall.maxY-wall.minY+h);c.globalAlpha=1;return;}
+ const h=house.heights.cut,w=wall.maxX-wall.minX,d=wall.maxY-wall.minY;
  c.globalAlpha=alpha;
  fill(c,INK,wall.minX-1,wall.minY-h-1,w+2,d+h+2);
  fill(c,wall.kind==='outer'?'#b9a27a':'#cdbb92',wall.minX,wall.maxY-h,w,h);
@@ -43,6 +69,8 @@ export function drawHouseWall(c,wall,house,alpha){
 /** Außenansicht: Fassade mit zwei Geschossen und Satteldach, halb abgedeckt (Plane, freie Sparren). */
 export function drawHouseExterior(c,house,alpha,door){
  if(alpha<=0)return;
+ const a=art();
+ if(a.aussen){const m=a.meta.aussen,k=a.meta.pxPerUnit;c.globalAlpha=alpha;c.drawImage(a.aussen,house.origin.x+m.local.x,house.origin.y+m.local.y,a.aussen.width/k,a.aussen.height/k);c.globalAlpha=1;return;}
  const {minX:x0,maxX:x1,minY:y0,maxY:y1}=house,W=x1-x0,H=house.heights.wall,R=house.heights.roof;
  const eaveF=y1-H,eaveB=y0-H,ridge=(y0+y1)/2-H-R;
  c.globalAlpha=alpha;

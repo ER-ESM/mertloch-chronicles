@@ -1021,6 +1021,38 @@
       "date": "2026-09-23",
       "originalFile": "exec-84d5beaf-a215-4d87-a2ff-084f4b220f72.png",
       "sourceHash": "ceb829b03a10c036267d48fd409793b7f5ce325471d5b726a024b475b948f0b8"
+    },
+    {
+      "id": "bude-haus-innen",
+      "kind": "building-layer",
+      "output": "assets/precision/sources/2026-09-23/bude-haus-innen.png",
+      "prompt": "Game art layer, 1536 x 1024. Repaint the FIRST reference image (a flat layout guide) as finished pixel art. The layout guide is exact and binding: keep the canvas framing, every wall, every wall end and every doorway at exactly the same pixel positions and sizes; do not move, add or remove walls or openings; keep the house outline and the yard on the right exactly where they are. Walls are cut at hip height (the dollhouse cutaway of a village clubhouse pub, the morning after a wild party): show the cut wall tops as cream plaster with a dark timber or stone core and their front faces below. Rooms and floors, exactly where the guide colors them: large taproom (bottom, worn dark wooden floor planks), clan back room (top left, patterned red carpet over planks), deposit storage room (top middle, grey concrete), kitchen (top right, white tiles), tiny toilet (right, white tiles), yard outside the house on the right (packed gravel and dirt, a few weeds, a wooden fence on its outer edges). Only fixed fittings placed tight against the walls: dartboard, framed pictures and garlands on walls, an iron stove in the taproom's left corner, a bar back shelf with bottles against the taproom's top wall, kitchen counter with sink along the kitchen top wall, a fridge, stacked bottle crates along the storage walls, a toilet and small sink in the toilet room. Keep the middle of every room free of furniture (the game places the bar, sofa, grill and workbench itself); light party debris only: paper cups, bottle caps, streamers, a lone sock. No characters, no text. Style: finely detailed warm comic pixel art exactly like the second reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, honey plaster, dark oak, worn materials, small story details. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated.",
+      "references": [
+        "assets/precision/sources/2026-09-23/guides/bude-haus-innen-vorlage.png",
+        "docs/konzept-bude-2026-09-23/innen.jpg"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-04f4fb0c-ddd5-4a24-80e0-0354d672eae8.png",
+      "sourceHash": "5ae74bd1b27f7e820b90bbdec7091cd00a48a977418c825eefb6819db8317cb3"
+    },
+    {
+      "id": "bude-haus-aussen",
+      "kind": "building-layer",
+      "output": "assets/precision/sources/2026-09-23/bude-haus-aussen.png",
+      "prompt": "Game art layer, 1024 x 1024, one isolated building on a fully transparent background (no ground, no grass, no shadow outside the building). Repaint the FIRST reference image (a flat layout guide) as finished pixel art. The guide is exact and binding: keep the building outline, the facade rectangle, the roof edges, the door and every window at exactly the same pixel positions and sizes; keep the canvas framing. The building is the village clubhouse pub of the Poo-Tang clan, a former dairy milk collection point: two-storey half-timbered facade with honey plaster, dark oak timbers, green shutters, flower boxes, a stone plinth, a wooden front door with a small lantern on each side, a big slate roof seen from above with the ridge running left to right. The roof is half stripped after a wild party: exposed wooden rafters where the guide shows them, a blue tarp tied over part of the hole, a few loose slates, a stone chimney. Morning light from the upper left. No characters, no text, no signs with letters. Style: finely detailed warm comic pixel art exactly like the second reference image (Mertloch Chronicles concept): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, honey plaster, dark oak, worn materials, small story details. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated.",
+      "references": [
+        "assets/precision/sources/2026-09-23/guides/bude-haus-aussen-vorlage.png",
+        "docs/konzept-bude-2026-09-23/aussen.jpg"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-1abc9884-ffd6-48bd-abe5-21a647cccb97.png",
+      "sourceHash": "e0656780532d11b1a438e6e9b810789b5fb2979ddb3e3b46853d3ae71ade949e"
     }
   ]
 }

@@ -98,6 +98,8 @@ export const MENTOR_RULES=Object.freeze({
 export const MENTOR_ORDER=Object.freeze(Object.keys(NPCS).filter(id=>NPCS[id].member));
 /** Liefert je Mentor `{id,x,y}` in stabiler Reihenfolge. */
 export function mentorSpots(w){
+ // Mit begehbarer Bude (E-52) stehen die Mentoren in ihren Räumen – Plätze aus content/bude-house.js.
+ const home=w.base?.house?.spots;if(home&&MENTOR_ORDER.every(id=>home[id]))return MENTOR_ORDER.map(id=>({id,x:home[id].x,y:home[id].y}));
  const R=MENTOR_RULES,out=[],away=Math.atan2(w.spawn.y-w.npc.y,w.spawn.x-w.npc.x);
  const fits=(p,gapIda,gapMentor,keepRoadFree)=>{
   if(w.blocked(p.x,p.y,R.clearance))return false;

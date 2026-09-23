@@ -670,6 +670,8 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 
 **Offen.** Laufwege und Leistung bei Variante A; wie Figuren hinter hohen gemalten Möbeln verdeckt werden (Runde 2: hohe Möbel als eigene Sprites mit Tiefensortierung); Basisbau-Stufen (heute Requisiten auf dem Grundstück) als Möbel in den Räumen.
 
+**Stand 23.09.2026.** Runde 1a (Haus, Kollision, Dach-Ausblenden), 1b (Start im Schankraum, Ida und Mentoren in ihren Räumen, Hofprobe in Schankraum und Hof, Bude zählt als Clan-Treffpunkt) und 2 (gemalte Ebenen, `docs/GRAFIK-LIEFERUNG-2026-09-23-bude.md`) sind umgesetzt. Wer stirbt, steht weiterhin am Kirchvorplatz auf; der Kirchvorplatz bleibt Treffpunkt und Dorfmitte.
+
 ## E-53 · Fünf Werte mit klarer Wirkung, Vergleich über Wirkungen, Rucksack mit Filtern (23.09.2026)
 
 **Anlass.** Nutzerauftrag: „Inventarsystem weiter aufbauen, Polishing, Filtereinstellungen, den Vergleich optimieren – und die Stats reduzieren, dass sie eindeutiger beschreiben, was sie machen: jeder Stat beeinflusst ein, zwei, maximal drei Sachen.“

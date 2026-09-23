@@ -11,6 +11,8 @@ async function fixture(touch=false){
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:10,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:200,inventory:[]}};
  const init=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'${touch?'touch':'desktop'}'}));`});
  await b.goto(b.url);await wait(1200);await b.send('Page.removeScriptToEvaluateOnNewDocument',init);
+ // Aufstellung im Freien: neue Helden starten seit E-52 in der Bude, Begleiter stünden sonst hinter der Wand. Nach dem Sprung Szene und Rahmen zur Ruhe kommen lassen.
+ await run(`Object.assign(g.player,{x:g.world.spawn.x,y:g.world.spawn.y});g.moveTo=null;g.path=[];`);await wait(1500);
  await run(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());g.tutorial.completed=true;g.enemies=[];g.companions=[];g.paused=false;g.hireCompanion('merc-hopfen-horst',{free:true});g.hireCompanion('merc-radler-rita',{free:true});
  for(const [i,c]of g.companions.entries())Object.assign(c,{x:g.player.x+(i?110:-90),y:g.player.y+85,order:'stay',stance:'passive',inCombat:999,hp:c.maxHp-300});
  const {spawnArena}=await import('./arena.js');const [e]=spawnArena(g,{kind:'wolf'});Object.assign(e,{x:g.player.x+200,y:g.player.y,stun:999});g.player.hp=g.player.maxHp;g.player.energy=100;g.gcd=0;g.cooldowns.heal=0;g.stopAuto();`);await wait(300);

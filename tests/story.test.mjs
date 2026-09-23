@@ -194,7 +194,8 @@ test('Dieter, Anni und Kevin stehen als Mentoren an der Bude und sprechen ihr Ka
  for(const m of mentors){
   assert.equal(m.name,NPCS[m.id].name);
   assert.equal(realWorld.blocked(m.x,m.y,9),false,`${m.id} steht im Hindernis`);
-  assert.ok(Math.hypot(m.x-realWorld.spawn.x,m.y-realWorld.spawn.y)<200);
+  // seit E-52 in den Räumen der Bude, nahe am Startpunkt
+  const home=realWorld.start||realWorld.spawn;assert.ok(Math.hypot(m.x-home.x,m.y-home.y)<200);
  }
  const g=new Game(realWorld,{});
  Object.assign(g.player,mentors[0]);

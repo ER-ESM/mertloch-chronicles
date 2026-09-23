@@ -1,0 +1,29 @@
+{
+ "format": "bude-haus-v1",
+ "pxPerUnit": 4,
+ "innen": {
+  "file": "bude-haus-innen.png",
+  "width": 1176,
+  "height": 780,
+  "local": {
+   "x": -4,
+   "y": -18
+  },
+  "houseWidth": 230
+ },
+ "aussen": {
+  "file": "bude-haus-aussen.png",
+  "width": 969,
+  "height": 1060,
+  "local": {
+   "x": -6.29817444219067,
+   "y": -91.98985801217043
+  },
+  "measured": {
+   "facadeLeft": 135,
+   "facadeRight": 1120,
+   "bottom": 1187,
+   "sourcePxPerUnit": 4.287
+  }
+ }
+}

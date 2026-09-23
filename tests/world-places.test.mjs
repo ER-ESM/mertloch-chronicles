@@ -39,8 +39,9 @@ test('Mentorenplätze sind begehbar, erreichbar und lassen den Hauptweg frei', (
  for(const s of mentorSpots(world)){
   assert.equal(world.blocked(s.x,s.y,MENTOR_RULES.clearance),false,s.id+' steht im Hindernis');
   assert.equal(world.onRoad(s.x,s.y,MENTOR_RULES.roadMargin),false,s.id+' steht auf dem Hauptweg');
-  assert.equal(world.walkClear(world.spawn,s,MENTOR_RULES.clearance),true,s.id+' ist vom Treffpunkt nicht frei erreichbar');
-  assert.ok(world.findPath(world.spawn,s).length>0,s.id+' ohne Route');
+  // Seit E-52 stehen die Mentoren in den Räumen der Bude: erreichbar über einen echten Weg (durch die Türen), vom Startpunkt und vom Kirchvorplatz.
+  for(const from of [world.start||world.spawn,world.spawn]){const path=world.findPath(from,s);let prev=from;
+   assert.ok(path.length&&path.every(p=>{const ok=world.walkClear(prev,p,MENTOR_RULES.clearance);prev=p;return ok;}),s.id+' ist nicht erreichbar');}
  }
 });
 

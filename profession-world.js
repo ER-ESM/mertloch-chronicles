@@ -2,7 +2,7 @@ import {PROFESSION_STATIONS} from './content/index.js';
 import {mountStation} from './mounts.js';
 const cache=new WeakMap();
 // Nicht im Haus oder Hof der Bude (E-52): drinnen ist der Boden frei und erreichbar, eine Fundstelle gehört trotzdem nicht in den Schankraum.
-const inBude=(b,p,size)=>!!b&&p.x>b.minX-size-20&&p.x<b.maxX+size+20&&p.y>b.minY-size-20&&p.y<b.maxY+size+20;
+const inBude=(b,p,size)=>!!b&&p.x>b.minX-size-20&&p.x<b.maxX+size+20&&p.y>b.minY-size-20&&p.y<b.maxY+size+80;/* südlich: Vorplatz vor dem Eingang frei */
 
 export function professionWorld(world){
  if(cache.has(world))return cache.get(world);const used=[world.spawn,world.npc,mountStation(world),...(world.mentors||[])].filter(Boolean),stations=[],nodes=[];

@@ -8,8 +8,14 @@ export const ARENA_KINDS=[...Object.entries(ARCHETYPES).map(([id,d])=>({id,name:
 const definition=id=>ARCHETYPES[id]||ELITES[id]||BOSSES[id]||ARCHETYPES.boar;
 export const freshArenaStats=()=>({damage:0,hits:0,kills:0,start:null,last:0,taken:0});
 /** Stellt `count` Gegner der Art `kind` im Halbkreis vor den Spieler. `dummy` = Übungspuppe: greift nie an, stirbt nie, heilt sich außerhalb des Kampfes. */
+/** Platz für einen Arena-Gegner: bevorzugt Winkel/Abstand, aber nur mit freier Sichtlinie zum Helden –
+ *  in Räumen (Bude, E-52) wird weitergedreht und näher gesucht, statt hinter eine Wand zu setzen. */
+function arenaSpot(g,p,angle,r){const w=g.world,at=(a,d)=>{const q={x:p.x+Math.cos(a)*d,y:p.y+Math.sin(a)*d};return w.findClear?w.findClear(q.x,q.y,9):q;};
+ if(!w.lineClear)return at(angle,r);
+ for(const d of [r,r*.7,r*.45,26])for(let k=0;k<12;k++){const a=angle+(k%2?1:-1)*Math.ceil(k/2)*Math.PI/6,q=at(a,d);if(q&&Math.hypot(q.x-p.x,q.y-p.y)<=d+4&&w.lineClear(p,q)&&!w.blocked(q.x,q.y,9))return q;}
+ return at(angle,r);}
 export function spawnArena(g,{kind='boar',count=1,dummy=false,level=null}={}){const def=definition(kind),p=g.player,list=[];count=Math.max(1,Math.min(10,Math.floor(count)||1));
- for(let i=0;i<count;i++){const angle=Math.PI/2+(i-(count-1)/2)*(Math.PI/Math.max(4,count)),r=dummy?42:110,spot=g.world.findClear?g.world.findClear(p.x+Math.cos(angle)*r,p.y+Math.sin(angle)*r,9):{x:p.x+Math.cos(angle)*r,y:p.y+Math.sin(angle)*r};
+ for(let i=0;i<count;i++){const angle=Math.PI/2+(i-(count-1)/2)*(Math.PI/Math.max(4,count)),r=dummy?42:110,spot=arenaSpot(g,p,angle,r);
   const hp=dummy?100000:Math.round(def.hp*(level&&def.level?1+Math.max(0,level-def.level)*.12:1));
   const e=makeEnemy(spot,90000+(g.arenaSerial=(g.arenaSerial||0)+1),{...def,hp,level:level||def.level,bossId:def.id,arena:true,ambient:true,dummy,behavior:'aggressive',respawn:[1e9,1e9],leash:1e9,aggroRange:dummy?0:def.aggroRange||100,spawnGrace:0,name:dummy?'Übungspuppe · '+def.name:def.name});
   if(dummy)e.autoAttack={...(e.autoAttack||ENEMY_AUTOS.boar),min:0,max:0};if(!dummy){e.aggro=true;e.ai='combat';e.attackTimer=2;}g.enemies.push(e);list.push(e);}

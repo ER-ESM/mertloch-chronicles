@@ -17,17 +17,20 @@ export function scaledStats(def,playerLevel,far){
   return {hp:Math.round((def.hp||1)*hp),damage:(def.damage||1)*damage};
 }
 export const walkClear=(w,a,b,r=7)=>w.walkClear?w.walkClear(a,b,r):w.lineClear(a,b);
-export function inSanctuary(w,p){return (w.quests||[]).some(q=>q.activity&&q.items.some(item=>distance(item,p)<55))||distance(p,w.spawn)<95||(w.hubs||[]).some(h=>distance(p,h)<105)||(w.camps||[]).some(c=>c.approach&&distance(p,c.approach)<85);}
+// Die Bude (E-52) ist Clanhaus: kein Wildtier darin oder direkt davor, drinnen herrscht Frieden wie im Dorfkern.
+const nearBude=(w,p,m)=>!!w.base&&p.x>w.base.minX-m&&p.x<w.base.maxX+m&&p.y>w.base.minY-m&&p.y<w.base.maxY+m;
+export function inSanctuary(w,p){return nearBude(w,p,20)||(w.quests||[]).some(q=>q.activity&&q.items.some(item=>distance(item,p)<55))||distance(p,w.spawn)<95||(w.hubs||[]).some(h=>distance(p,h)<105)||(w.camps||[]).some(c=>c.approach&&distance(p,c.approach)<85);}
 function nearPeople(w,p,pad){return (w.quests||[]).some(q=>distance(p,q.giver)<pad)||distance(p,w.npc)<pad;}
 export function inhabitable(w,p){
   if((w.quests||[]).some(q=>q.activity&&q.items.some(item=>distance(item,p)<130)))return false;
-  if((w.hubs||[]).some(h=>distance(p,h)<165)||(w.camps||[]).some(c=>c.approach&&distance(p,c.approach)<170))return false;
+  if((w.hubs||[]).some(h=>distance(p,h)<165)||(w.camps||[]).some(c=>c.approach&&distance(p,c.approach)<170)||nearBude(w,p,90))return false;
   if(p.x<25||p.y<25||p.x>w.width-25||p.y>w.height-25||w.blocked(p.x,p.y,12)||distance(p,w.spawn)<ENCOUNTER_RULES.safeTownRadius||nearPeople(w,p,85)||w.onRoad(p.x,p.y,10))return false;
   if(w.areas.some(a=>a.tags.natural==='water'&&inside(p.x,p.y,a.points)))return false;
   if(w.water.some(r=>r.points.some((b,i)=>i&&segmentDistance(p.x,p.y,r.points[i-1],b)<18)))return false;
   return true;
 }
-function anchorFor(w,p){const near=w.accessNode(p);if(near)return near;const nodes=w.nodes.filter(n=>w.connected.has(n.id)&&distance(n,p)<1100).sort((a,b)=>distance(a,p)-distance(b,p));return nodes.slice(0,24).find(n=>walkClear(w,n,p,9));}
+// Der nächste Wegenetz-Knoten zählt nur mit freier Linie: das Netz entsteht vor der Bude und kennt ihre Wände nicht.
+function anchorFor(w,p){const near=w.accessNode(p);if(near&&walkClear(w,near,p,9))return near;const nodes=w.nodes.filter(n=>w.connected.has(n.id)&&distance(n,p)<1100).sort((a,b)=>distance(a,p)-distance(b,p));return nodes.slice(0,24).find(n=>walkClear(w,n,p,9));}
 
 /** Finite, deterministic habitat cells; inactive records retain health and respawn deadlines. */
 export class EncounterDirector{
@@ -45,11 +48,11 @@ export class EncounterDirector{
       const elite=aggressive?pickElite(town,random):null;
       if(elite&&random()<S.eliteChance){kind=elite.kind;def=elite.def;}
       const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,...scaledStats(def,g.player.level,far),campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
-      e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9)&&(!aggressive||!residential(w,dest)))e.spawnPoints.push(dest);}
+      e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9)&&walkClear(w,anchor,dest,9)&&(!aggressive||!residential(w,dest)))e.spawnPoints.push(dest);/* Ausweichstelle auch vom Anker aus frei: sonst läuft die Heimkehr gegen ein Hindernis */}
       if(distance(p,g.player)<ENCOUNTER_RULES.spawnDistance){e.hp=0;e.respawnAt=g.time;e.dead=0;e.ai='waiting';}else{e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.ai='appearing';}
       list.push(e);
       // Gruppen: im Umland ziehen aggressive Arten zu zweit oder zu dritt herum (Kettenzug statt Laufwege).
-      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9)||residential(w,dest))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,far),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
+      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9)||!walkClear(w,e.anchor,dest,9)||residential(w,dest))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,far),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
     }list.push(...companions);this.cells.set(key,list);return list;
   }
   tick(dt){if(!this.enabled)return;const g=this.game,w=this.world,C=ENCOUNTER_RULES.cellSize,cx=Math.floor(g.player.x/C),cy=Math.floor(g.player.y/C),key=cx+','+cy;this.clock-=dt;

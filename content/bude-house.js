@@ -39,7 +39,8 @@ export const BUDE_HOUSE={
  slots:{tresen:{x:127,y:94},anlage:{x:30,y:98},landhausecke:{x:40,y:34},pfandlager:{x:121,y:32},grill:{x:258,y:35},werkstatt:{x:260,y:95}},
  // Schild „Baustelle der Bude“ links neben dem Eingang, vor der Fassade.
  sign:{x:60,y:188},
- // Plätze für Runde 1b (Start in der Bude): Aufwachen, Ida, Mentoren.
- spots:{wake:{x:60,y:140},ida:{x:112,y:158},dieter:{x:166,y:92},anni:{x:62,y:52},kevin:{x:200,y:50}}
+ // Start in der Bude: Aufwachen im Schankraum, Ida am Eingang, die Mentoren in ihren Räumen (IDs aus content/npcs.js),
+ // Hofprobe: Laufmarke im Schankraum, Papp-Horst im Hof.
+ spots:{wake:{x:60,y:140},ida:{x:112,y:158},dieter:{x:166,y:92},baerbel:{x:62,y:52},kevin:{x:200,y:50},course:{x:170,y:138},dummy:{x:264,y:148}}
 };
 export const BUDE_HOUSE_TEXT={inside:'Die Bude',outside:'Die Bude · Poo-Tang-Clan'};
