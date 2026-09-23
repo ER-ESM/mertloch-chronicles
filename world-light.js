@@ -70,7 +70,7 @@ export class WorldLight{
   for(const b of world.buildings)if(b.door)add(b===world.church||b.church?'church':'door',b.door.x,b.maxY);
   if(world.shrine)add('shrine',world.shrine.x,world.shrine.y);
   for(const z of game.fields||[])if(z.kind==='burn'&&z.remaining>0)add('burn',z.x,z.y,Math.max(.6,z.radius/60));
-  for(const f of game.fx||[])if(['burst','impact','interrupt'].includes(f.type)&&f.max)add('flash',f.x,f.y,.5+f.life/f.max);
+  for(const f of game.fx||[])if(['burst','impact','interrupt','levelup'].includes(f.type)&&f.max)add('flash',f.x,f.y,.5+f.life/f.max);
   // Innenlicht der Bude: Lampen des Baukastens (`light`), Glut im Ofen, Tageslicht durchs Dachloch – nur solange man drinnen ist.
   const house=world.base?.house;if(house&&this.indoor>.01){const f=game.floor&&house.upper?house.upper:house;
    for(const it of f.items){if(it.outdoor)continue;const d=it.def||{};

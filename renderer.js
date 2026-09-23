@@ -69,6 +69,13 @@ function nameplate(c,e,y,neutral){const k=Math.max(0,Math.min(1,e.hp/e.maxHp)),n
  if(e.plateChip>k)rect(c,'#f6e3b4',x+38*k,y,38*(e.plateChip-k),4);
  rect(c,neutral?'#c9a55a':'#b8404a',x,y,38*k,4);rect(c,neutral?'#f1d894':'#ea7d7c',x,y,38*k,1);
  if(e.elite||e.type==='boss'){c.strokeStyle='#e8c170';c.lineWidth=.6;c.strokeRect(x-1.3,y-1.3,40.6,6.6);}}
+/** Stufenaufstieg in der Welt (WoW-Vorbild): goldene Lichtsäule, Bodenring, der sich ausbreitet, und aufsteigende Funken – 1,8 s. */
+function drawLevelUp(c,f,time){const t=1-f.life/f.max,fade=t<.15?t/.15:Math.max(0,1-(t-.15)/.85),x=f.x,y=f.y;c.save();
+ const w=16+t*10,h=150,g=c.createLinearGradient(0,y-h,0,y);g.addColorStop(0,'#fff4c000');g.addColorStop(.55,'#ffe38a66');g.addColorStop(1,'#fff4c0cc');c.globalAlpha=fade;c.fillStyle=g;c.fillRect(x-w/2,y-h,w,h);
+ const g2=c.createLinearGradient(0,y-h,0,y);g2.addColorStop(0,'#ffffff00');g2.addColorStop(1,'#ffffffcc');c.fillStyle=g2;c.fillRect(x-w/6,y-h*.85,w/3,h*.85);
+ for(const [k,al] of [[1,1],[.6,.5]]){const r=8+t*62*k;c.globalAlpha=(1-t)*al;c.strokeStyle='#ffd766';c.lineWidth=2.5*(1-t)+.5;c.beginPath();c.ellipse(x,y,r,r*.4,0,0,Math.PI*2);c.stroke();}
+ c.fillStyle='#fff0a8';for(let i=0;i<16;i++){const a=i*2.39996,rr=10+(i%5)*4,k=(t*1.3+i*.07)%1;c.globalAlpha=fade*(1-k);const sx=x+Math.cos(a)*rr*(1-k*.4),sy=y-6-k*90-Math.sin(a)*rr*.3;c.fillRect(sx-1,sy-1,2,2);if(i%3===0){c.fillRect(sx-2.5,sy-.25,5,.5);c.fillRect(sx-.25,sy-2.5,.5,5);}}
+ c.restore();}
 const FURNITURE=['bench','cart','lantern'];
 /** Treffer-Blitz (Hades/Diablo-Vorbild): solange ein Gegner getroffen ist (e.hurt, 0,15 s), wird er einmal in eine kleine Ebene gezeichnet,
  *  hell übertüncht und mit leichtem Rückstoß vom Helden weg eingesetzt. Sonst zeichnet `draw` direkt – ohne Mehrkosten. */
@@ -247,7 +254,7 @@ export class Renderer {
     // Effektschicht (E-47) zuletzt: Sie nimmt das fertige Weltbild als Textur.
     if(effects)this.fx.render({ox,oy,W,H},g,w,time,this.light);
   }
-  drawEffect(c,f,time){if(drawCombatEffect(c,f))return;const t=1-f.life/f.max;if(drawAssetEffect(c,f))return;c.save();c.globalAlpha=Math.min(1,f.life*3);if(f.type==='slash'){c.strokeStyle='#f4e3ae';c.lineWidth=3;c.beginPath();c.arc(f.x,f.y-12,18+t*7,-1.5+t,1+t);c.stroke();c.strokeStyle='#acded4';c.lineWidth=1;c.stroke();}
+  drawEffect(c,f,time){if(f.type==='levelup'){drawLevelUp(c,f,time);return;}if(drawCombatEffect(c,f))return;const t=1-f.life/f.max;if(drawAssetEffect(c,f))return;c.save();c.globalAlpha=Math.min(1,f.life*3);if(f.type==='slash'){c.strokeStyle='#f4e3ae';c.lineWidth=3;c.beginPath();c.arc(f.x,f.y-12,18+t*7,-1.5+t,1+t);c.stroke();c.strokeStyle='#acded4';c.lineWidth=1;c.stroke();}
     else if(f.type==='projectile'){const x=f.from.x+(f.x-f.from.x)*t,y=f.from.y+(f.y-f.from.y)*t-15-Math.sin(t*Math.PI)*12;rect(c,'#293b44',x-2,y-5,5,9);rect(c,f.classId==='baerbel'?'#efaa64':'#91b698',x-1,y-4,3,7);rect(c,'#f4d394',x-1,y-1,3,2);}
     else if(f.type==='trail'){ellipse(c,'#b1d9c15c',f.x,f.y-9,5,10);}
     else if(f.type==='burst'||f.type==='interrupt'||f.type==='impact'||f.type==='death'){const col=f.type==='burst'?'#d2adeb':f.type==='interrupt'?'#a3ddda':f.type==='impact'?'#ddba79':'#b8d995';c.strokeStyle=col;c.lineWidth=f.strong?3:1.5;c.beginPath();c.ellipse(f.x,f.y-6,8+t*(f.radius||45),5+t*(f.radius||45)*.6,0,0,Math.PI*2);c.stroke();for(let i=0;i<12;i++){const a=i/12*Math.PI*2;rect(c,col,f.x+Math.cos(a)*t*42,f.y-10+Math.sin(a)*t*30-t*12,2,2);}}
