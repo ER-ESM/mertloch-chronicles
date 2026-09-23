@@ -13,7 +13,7 @@ Regeln für dieses Dokument:
 | Nr | Titel | Datum | Stand |
 |---|---|---|---|
 | E-01 | Veröffentlichung über GitHub Pages, Spielstand im Browser | 2026-09-11 | gilt |
-| E-02 | Drei Clan-Archetypen, universelle Werte, drei Spezialisierungen | 2026-09-11 | gilt |
+| E-02 | Drei Clan-Archetypen, universelle Werte, drei Spezialisierungen | 2026-09-11 | gilt, Werteliste fortgeschrieben durch E-53 |
 | E-03 | Inhaltsschicht `content/` mit Schema und `content:check` | 2026-09-11 | gilt |
 | E-04 | IDs sind Speicherschlüssel | 2026-09-11 | gilt |
 | E-05 | Kampf- und Ausrüstungsmodell, Handy gleichberechtigt | 2026-09-12 | gilt |
@@ -59,7 +59,7 @@ Regeln für dieses Dokument:
 **Konsequenzen.** Jeder Push nach `main` ist eine Veröffentlichung — der Playtest gehört vor den Merge, nicht danach. Ein geräteübergreifender Spielstand ist nur als Export/Import-Datei denkbar (siehe „Offen“).
 
 ## E-02 · Drei Clan-Archetypen, universelle Werte, drei Spezialisierungen
-**Datum:** 2026-09-11 · **Stand:** gilt
+**Datum:** 2026-09-11 · **Stand:** gilt; die Werteliste schreibt E-53 fort (fünf Werte, universell bleibt)
 
 **Kontext.** Klassengebundene Werte erzeugen tote Stats, die für die halbe Spielerschaft Müll sind.
 
@@ -669,3 +669,22 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Verworfen.** *Figuren schrumpfen (Variante B)* – gleiches Bild wie A, aber die ganze Kampf- und Laufabstimmung müsste neu gerechnet werden. *Eigene Instanz wie der Kiosk* – einfacher, aber drinnen allein und ein harter Schnitt beim Eintreten. *Baukasten aus Wand-, Boden- und Möbelteilen* – flexibler für spätere Häuser, erreicht aber schwerer die Geschlossenheit (Licht, Schmutz, Übergänge) der Mockups.
 
 **Offen.** Laufwege und Leistung bei Variante A; wie Figuren hinter hohen gemalten Möbeln verdeckt werden (Runde 2: hohe Möbel als eigene Sprites mit Tiefensortierung); Basisbau-Stufen (heute Requisiten auf dem Grundstück) als Möbel in den Räumen.
+
+## E-53 · Fünf Werte mit klarer Wirkung, Vergleich über Wirkungen, Rucksack mit Filtern (23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Inventarsystem weiter aufbauen, Polishing, Filtereinstellungen, den Vergleich optimieren – und die Stats reduzieren, dass sie eindeutiger beschreiben, was sie machen: jeder Stat beeinflusst ein, zwei, maximal drei Sachen.“
+
+**Befund.** Acht Werte, stark verflochten: Wumms und Bastelgrips wirkten auf je fünf Dinge (Schaden, körperlicher bzw. technischer Zusatzschaden, Heilung, Deckung, Rüstung bzw. Randale), Handschrift auf vier unzusammenhängende (Markierungen, Spezialkniff, Heilung, Deckung), Taktgefühl zählte zusätzlich als Glückstreffer- und Drehzahl-Wertung. Schaden hing an drei Werten, Heilung und Deckung an je drei. Die Physisch/Technisch-Aufteilung im Schaden war zwischen Engine und Beschreibung uneinheitlich. Vier Stellen beschrieben Handschrift unterschiedlich. Der Vergleich summierte rohe Werte 1:1 (Dicke Haut dominierte), ignorierte das Waffentempo, verglich Ringe/Schmuck immer mit Platz 1 und wurde im Tooltip beim Überfahren entfernt.
+
+**Entschieden.**
+1. **Fünf Werte, jede Mechanik an genau einem:** Standfestigkeit → Leben · Wumms → Schaden aller Angriffe und Kniffe · Taktgefühl → Glückstreffer-Chance und Tempo · Bastelgrips → Heilung, Deckung, Randale-Nachschub · Dicke Haut → erlittener Schaden. Textquelle `STAT_EFFECTS` (`content/equipment.js`), Zahlen `BALANCE.ratings`/`BALANCE.power`, Glossar daraus berechnet. E-02 bleibt: jeder Wert hilft jeder Klasse.
+2. **Umrechnung ohne Spielstand-Migration:** Werte-Schlüssel stehen nicht im Spielstand (gewürfelte Teile werden aus sechs Rohdaten abgeleitet, E-40). Handgebaute Teile: Wertungspunkte ÷ 1,3 als Taktgefühl (Glückstreffer, Drehzahl) bzw. Bastelgrips (Handschrift); zwei Teile auf das Schema-Budget gekürzt (hausordnung, horststempel). Zusätze: Anteile gleich umgeschlüsselt. Gewürfelte Teile tragen statt der Wertung einen zweiten Hauptwert (`secondaryShare` 0,6).
+3. **Vergleich über Wirkungen:** `gearComparison`/`upgradeVerdict` (`rpg.js`) rechnen Leben, Schaden, Glückstreffer, Tempo, Waffe je Sekunde, Heilung, Deckung, Randale und Schadensminderung vorher/nachher; Gewichte je Klasse in `GEAR_COMPARE` (Tank: Leben und Schutz voll, Heilerin: Heilung voll). Bei zwei Plätzen zählt ein freier, sonst der lohnendste; ein zweites Exemplar eines getragenen Rings bekommt eine Einschätzung; eine Einhandwaffe verdrängt keinen Schild (Parade hat keine Wirkungszahl).
+4. **Anzeige:** Tooltip nennt jeden Wert mit Wirkung („+8 Wumms · Schaden +7,2 %“) und den Vergleich wieder beim Überfahren: Ursache („Werte: −1 Wumms · +8 Taktgefühl“) plus Wirkungs-Chips statt einer einheitenlosen „Wertung“. Figur → Werte zeigt je Wert, was er gerade bewirkt, dazu Waffenschaden je Sekunde; „Schadensbonus“ und „Schutz“ als Doppelungen entfernt.
+5. **Rucksack:** Filter Alles · Ausrüstung · Besser · Verpflegung · Material; Reihenfolge Art · Güte · Stufe · Name · Verbesserung zuerst (Auswahl sortiert sofort); Suche findet Art, Güte, Wertnamen und Wirkungen auf Deutsch; Filter und Reihenfolge merkt sich der Browser (`mertloch-bag-view`); „N/24 Plätze“; Meldung nach dem Anlegen. Texte in `BAG_UI` (`content/panel-ui.js`).
+
+**Folgen.** Vorhandene Teile zeigen beim nächsten Laden die neuen Werte; die E-40-Zusage „kein Wert sinkt“ gilt hier nicht wörtlich, weil drei Werte entfallen – die Umrechnung hält das Budget. Balance-Bericht: Auffälligkeiten 127 → 82 (zäh 10 → 4, zu schnell 26 → 24, trivial 87 → 51, manchmal Tod 3 → 2); Feldkämpfe im Median Dieter ±0 %, Bärbel +13 %, Kevin +9 % länger; Bosse auf eigener Stufe bleiben im Korridor.
+
+**Verworfen.** *Sechs Werte (Glückstreffer und Tempo getrennt, Taktgefühl gestrichen)* – bricht die Spec-Profile „Tempo & Präzision“ und die drei E-02-Namen, ohne klarer zu werden. *Wertungen behalten, nur besser beschriften* – löst die Verflechtung nicht. *Vergleich weiter über rohe Werte mit festen Gewichten je Wert* – bleibt blind für Waffentempo, Kappen und Klasse.
+
+**Offen.** Playtest Kenner (`docs/PLAYTEST-2026-09-23-kenner.md`): frei mit Auflagen; Hofprobe 5/8 und stumme Clankiste siehe `docs/backlog/gameplay.md`/`ui.md`.

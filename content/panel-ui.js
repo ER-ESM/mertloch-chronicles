@@ -46,3 +46,22 @@ export const PLAY_HELP={
 };
 
 export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Clanbuch',help:'Hilfe',settings:'Einstellungen'};
+
+/** Rucksack (E-53): Filter, Sortierung, Suche und Vergleich. Filter- und Sortierwahl merkt sich der Browser. */
+export const BAG_UI={
+ slots:'Plätze',coins:'Pfandmarken',
+ search:'Suchen',searchPlaceholder:'Name, Art, Güte oder Wert …',searchLabel:'Rucksack durchsuchen',
+ noMatch:'Hier passt gerade nichts zu Suche und Filter.',
+ filterLabel:'Rucksack filtern',
+ filters:[['all','Alles'],['gear','Ausrüstung'],['better','Besser'],['food','Verpflegung'],['material','Material']],
+ filterHints:{all:'Alles zeigen',gear:'Nur Ausrüstung',better:'Nur Teile, die einen freien Platz füllen oder besser sind als das Angelegte',food:'Nur Verpflegung',material:'Nur Material und Auftragsgegenstände'},
+ sortLabel:'Reihenfolge',sortButton:'Sortieren',sortHint:'Stapel zusammenlegen und den Rucksack in dieser Reihenfolge ordnen',
+ sortModes:[['kind','Art'],['rarity','Güte'],['level','Stufe'],['name','Name'],['better','Verbesserung zuerst']],
+ sorted:'Rucksack sortiert: ',
+ kindNames:{consumable:'Verpflegung',material:'Material'},
+ compare:'Vergleich',compareFree:'Platz frei',compareNone:'Keine spürbare Änderung.',compareLevel:'Werte wirken erst ab Stufe ',
+ statEffects:'wirkt auf',
+ compareStats:'Werte',perHit:'Ø je Treffer',perSecond:'Schaden/s',lifeTotal:'gesamt',
+ weaponWords:'Waffe Waffenschaden Tempo Schaden',
+ equipped:(name,slot)=>'Angelegt: '+name+' · '+slot
+};

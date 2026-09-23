@@ -16,7 +16,6 @@ export const DESCRIBE_KINDS=['skill','talent','passive','buff','proc','item','bu
 export const num=(label,value,unit='',source='')=>({label,value,unit,source});
 const round=(n,d=2)=>Math.round(n*10**d)/10**d;
 /** Kniffe, deren Schaden über Wumms läuft; der Rest rechnet mit Bastelgrips (siehe Game.damage). */
-const PHYSICAL=new Set(['strike','throw','parry','slam','auto']);
 
 /** content/-Helfer, falls vorhanden. Fehlt der Helfer oder wirft er, gilt der Rückfall auf die Rohfelder. */
 function fromContent(fn,...args){
@@ -45,7 +44,7 @@ export function skillCooldown(game,s,cs=combatStats(game)){
 export function skillDamageRange(game,s,base){
  if(!Number.isFinite(base))return null;
  const cs=combatStats(game),low=skillDamage({...game,random:()=>0},s,base,ITEMS),high=skillDamage({...game,random:()=>1},s,base,ITEMS);
- const power=1+cs.power+(PHYSICAL.has(s.id)?cs.physicalPower:cs.technicalPower),crit=1.6+(cs.critDamage||0);
+ const power=1+cs.power,crit=1.6+(cs.critDamage||0);
  return {min:Math.round(low*power),max:Math.round(high*power),critMin:Math.round(low*power*crit),critMax:Math.round(high*power*crit)};
 }
 
@@ -55,7 +54,7 @@ function describeSkill(game,id){
  const damage=s.damage!==undefined?skillDamageRange(game,s,s.damage):s.base!==undefined?skillDamageRange(game,s,s.base):null;
  const numbers=[];
  if(damage)numbers.push(num('Schaden',damage.min===damage.max?damage.min:damage.min+'–'+damage.max,'','Waffe + Wertungen'));
- if(s.heal)numbers.push(num('Heilung',Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4)),'','Handschrift + Meisterschaft'));
+ if(s.heal)numbers.push(num('Heilung',Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0))),'','Bastelgrips'));
  if(s.cd)numbers.push(num('Abklingzeit',round(cd,1),'s','Tempo'));
  if(s.cost)numbers.push(num('Kosten',cost,'Randale',''));
  if(s.range)numbers.push(num('Reichweite',Math.round((s.range+(cs.range||0))/8),'m',''));
@@ -63,7 +62,7 @@ function describeSkill(game,id){
   info:{...infoFor(s,{effect:s.text||'',numbers},'skill',id),effect:skillHelp(game,id)},
   live:{available:available(game,id),level:skillLevel(game,id),cooldown:round(cd,2),baseCooldown:s.cd||0,remaining:round(Math.max(0,game.cooldowns[id]||0),2),
    ready:available(game,id)&&(game.cooldowns[id]||0)<=.01,cost,baseCost:s.cost||0,damage,
-   heal:s.heal?Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4)):0,
+   heal:s.heal?Math.round(s.heal*(1+cs.healPower+(cs.healBonus||0))):0,
    range:s.range?s.range+(cs.range||0):0,castTime:s.castTime||0,gcd:round(cs.gcd,2),crit:round(cs.crit,3),onBar:actionBar(game).indexOf(id)}};
 }
 

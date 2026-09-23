@@ -31,7 +31,7 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 Ein Fundstück heißt `[Vorsilbe] Grundteil Spec-Nachsatz [Beiname]`, z. B. „Klebriger Pfandprügel des Tresens ohne TÜV“. Ungewöhnlich trägt 0–1 Zusatz, selten 1, episch beide.
 
 - **Neuer Zusatz:** Zeile in `LOOT_PREFIXES` oder `LOOT_EPITHETS` (`content/affixes.js`). Vorsilbe entweder als Adjektivstamm ohne Endung (`'Klebrig'` → Klebriger/Klebrige/Klebriges) oder als Bestimmungswort mit Bindestrich (`'Kirmes-'`). Beinamen beginnen klein (`'ohne TÜV'`). Höchstens 30 Zeichen.
-- **Werte sind Anteile, keine Zahlen:** `{critRating:.6,finesse:.4}` verteilt das Zusatzbudget (Summe 1, 1–2 Werte, nur Schlüssel aus `STAT_NAMES`). Wie groß das Zusatzbudget ist, steht in `AFFIX_TUNING` (`content/tuning.js`, mit `why`/`since`).
+- **Werte sind Anteile, keine Zahlen:** `{might:.6,finesse:.4}` verteilt das Zusatzbudget (Summe 1, 1–2 Werte, nur Schlüssel aus `STAT_NAMES`). Wie groß das Zusatzbudget ist, steht in `AFFIX_TUNING` (`content/tuning.js`, mit `why`/`since`).
 - **Neues Grundteil:** Genus mitgeben (`m`/`f`/`n`/`p`) – drittes Feld in `ROLLED_BASES` und `FAMILY_TROPHIES`, bzw. `WEAPON_BASE_GENUS`.
 - **Check (`content/checks/loot.js`):** eindeutige IDs über beide Pools, mindestens drei passende Zusätze je Art für jeden Platz × Stufe 1–30 × Güte, bekannte Werte, Anteile 0,25–1, Deckel `maxGain`.
 - **Spielstände:** Zusätze stehen nicht im Spielstand, sie werden aus den Rohdaten abgeleitet. Pool-Änderungen können Namen vorhandener Teile verschieben – das Grundbudget nie.

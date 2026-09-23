@@ -84,11 +84,11 @@ test('die Zahlen im info-Block sind abgeleitet, nicht abgeschrieben', () => {
   if(d.weapon)assert.equal(by.Waffenschaden,d.weapon.min+'–'+d.weapon.max,id+': Waffenspanne nicht übernommen');
   if(d.stats?.might)assert.equal(by.Wumms,d.stats.might,id+': Wumms nicht übernommen');
   if(d.stats?.stamina)assert.equal(by['Leben daraus'],d.stats.stamina*BALANCE.player.hpPerStamina,id+': Leben aus Standfestigkeit falsch');
-  if(d.stats?.critRating)assert.equal(by['Glückstrefferchance daraus'],Math.round(ratingShare('critRating',d.stats.critRating,d.level||1)*1000)/10,id+': Wertungsumrechnung falsch');
+  if(d.stats?.finesse)assert.equal(by['Glückstreffer-Chance daraus'],Math.round(ratingShare('crit',d.stats.finesse)*1000)/10,id+': Umrechnung Taktgefühl → Glückstreffer falsch');
  }
  // Die Umrechnung liest BALANCE und nichts anderes: doppelte Wertung ⇒ weniger als doppelter Ertrag.
- const einfach=ratingShare('hasteRating',20),doppelt=ratingShare('hasteRating',40);
- assert.ok(doppelt<einfach*2,'Wertungen müssen abnehmenden Ertrag zeigen');
+ const einfach=ratingShare('haste',20),doppelt=ratingShare('haste',40);
+ assert.ok(doppelt<einfach*2,'Tempo aus Taktgefühl muss abnehmenden Ertrag zeigen');
  assert.ok(ratingShare('armorRating',100,1)>ratingShare('armorRating',100,10),'Rüstung wirkt auf höherer Stufe schwächer');
 });
 

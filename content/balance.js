@@ -16,18 +16,17 @@ export const BALANCE=Object.freeze({
   guardCap:.38,                        // Deckung höchstens 38 % des Maximallebens
   vulnerableBonus:.35,critMultiplier:1.6
  },
- ratings:{                             // Wertung → Prozent mit abnehmendem Ertrag: r/(r+k)
-  haste:{k:350,cap:.35,finesseWeight:.4},
-  crit:{base:.04,k:700,cap:.4,finesseWeight:.8},
-  armor:{k:450,perLevel:35,cap:.6,mightWeight:.65},
-  mastery:{k:400}
+ // E-53: fünf Werte, jede Spielmechanik hängt an genau einem davon.
+ //   Standfestigkeit → Leben · Wumms → Schaden · Taktgefühl → Glückstreffer-Chance und Tempo
+ //   Bastelgrips → Heilung, Deckung, Randale-Nachschub · Dicke Haut → erlittener Schaden
+ ratings:{                             // Punkte → Prozent mit abnehmendem Ertrag: r/(r+k)
+  haste:{k:350,cap:.35,finesseWeight:.6},       // Tempo aus Taktgefühl
+  crit:{base:.04,k:700,cap:.4,finesseWeight:1}, // Glückstreffer-Chance aus Taktgefühl
+  armor:{k:450,perLevel:35,cap:.6}              // Schadensminderung aus Dicke Haut
  },
- power:{                               // Beitrag der Primärwerte je Punkt
-  might:.003,finesse:.002,wit:.002,
-  physicalMight:.002,technicalWit:.002,
-  healWit:.006,healMight:.002,
-  shieldMight:.003,shieldWit:.004,
-  energyRegenWit:.025
+ power:{                               // Beitrag je Punkt
+  might:.009,                          // Wumms: Schaden aller Angriffe und Kniffe
+  healWit:.008,shieldWit:.007,energyRegenWit:.025 // Bastelgrips: Heilung, Deckung, Randale je Sekunde
  },
  xp:{
   kill:{creature:30,human:45,elite:80,boss:150},
@@ -40,7 +39,7 @@ export const BALANCE=Object.freeze({
   quality:{uncommon:1,rare:1.4,epic:1.8},
   rollSpread:.30,                      // 0.85 … 1.15 des Budgets
   itemLevel:{perLevel:5,rare:4,epic:8},
-  staminaShare:.45,secondaryShare:1.3,armorShare:3,valuePerBudget:2,
+  staminaShare:.45,secondaryShare:.6,armorShare:3,valuePerBudget:2,
   rareChance:.22                       // Anteil seltener Gegenstände unter gewürfelter Beute
  },
  enemies:{
@@ -56,7 +55,7 @@ export const BALANCE=Object.freeze({
   duration:8,maxStacks:3,
   surgeAt:80,surgeBonus:.2,            // „In Fahrt": ab so viel Randale (vor dem Abzug der Kosten) schlägt den Spezialkniff so viel härter
   energyOnKill:25,      // Randale je Kill
-  hastePerStack:.08,                   // zusätzliches Tempo je Stapel (über die Drehzahl-Kappe hinaus)
+  hastePerStack:.08,                   // zusätzliches Tempo je Stapel (über die Tempo-Kappe hinaus)
   combatEnergyRegen:3,                // Randale je Sekunde im Kampf (statt player.energyRegen)
   restRegen:60,restSeconds:4           // Verschnaufen: Leben je Sekunde direkt nach dem letzten Kill
  },

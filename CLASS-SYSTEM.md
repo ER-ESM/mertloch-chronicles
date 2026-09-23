@@ -18,16 +18,17 @@ Jeder Baum hat zehn einmal lernbare Talente in fünf Reihen. Zwei verteilte Punk
 
 ## Werte und Gegenstände
 
-| Wert | Nutzen für jede Klasse |
+Fünf Werte (E-53). Jede Spielmechanik hängt an genau einem Wert, kein Wert wirkt auf mehr als drei Dinge. Textquelle: `STAT_EFFECTS` in `content/equipment.js`, Zahlen: `BALANCE.ratings`/`BALANCE.power`.
+
+| Wert | Wirkt auf – bei jeder Klasse |
 |---|---|
-| Standfestigkeit | Mehr Lebenspunkte |
-| Wumms | Grundschaden, besonders direkte Treffer; außerdem Rüstung, Heilung und Schilde |
-| Taktgefühl | Grundschaden, kritische Treffer und Tempo |
-| Bastelgrips | Grundschaden, besonders technische Effekte; Heilung, Schilde und Randale-Regeneration |
-| Dicke Haut | Schadensminderung |
-| Glückstreffer | Kritische Treffer |
-| Drehzahl | Kürzere normale Abklingzeiten und globaler Cooldown |
-| Handschrift | Stärkere Markierungen, Eskalationen, Heilung und Schilde |
+| Standfestigkeit | Leben |
+| Wumms | Schaden aller Angriffe und Kniffe |
+| Taktgefühl | Glückstreffer-Chance · Tempo (Autoangriff und Abklingzeiten) |
+| Bastelgrips | Heilung · Deckung · Randale-Nachschub |
+| Dicke Haut | weniger erlittener Schaden |
+
+Seit E-53 entfallen Glückstreffer-, Drehzahl- und Handschrift-Wertung als eigene Werte; Gewürfeltes trägt statt der Wertung einen zweiten Hauptwert.
 
 Werteprofile auf zufälligen Gegenständen heißen Wucht & Ausdauer, Tempo & Präzision und Technik & Regeneration. Sie sind nicht an Figuren oder Talentbäume gebunden. Vorhandene gewürfelte Gegenstände, Beutetabellen, seltene Einzelstücke und die Auswahl eines von drei Questgegenständen bleiben erhalten. Talente spezialisieren die Verwendung der Werte, statt andere Werte nutzlos zu machen.
 

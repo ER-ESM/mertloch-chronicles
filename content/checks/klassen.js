@@ -6,7 +6,7 @@ import {PROC_RULES} from '../procs.js';
 import {GLOSSARY,hasTerm,describe,describableIds,element,DESCRIBE_KINDS} from '../glossary.js';
 import {categoriesOf,termAudit,categoryTerms,TERM_FUNCTION,FUNCTIONS,MECHANIC_TERMS} from '../categories.js';
 // Effektschlüssel ohne Auslöser: reine Werte. Ein Talent darf nicht nur daraus bestehen (Talente sind Regeln, docs/GAMEPLAY-KONZEPT-FLUSS.md §6).
-const VALUE_ONLY=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating','range','shieldBonus','healBonus'];
+const VALUE_ONLY=['stamina','might','finesse','wit','armorRating','range','shieldBonus','healBonus'];
 // Jeder Kniff sagt in `use`, wann man ihn drückt; `text` beschreibt nur die Wirkung (Trennung 2026-09-20, scripts/skill-text-split.mjs).
 const WHEN=['drück','Drück','zünde','Zünde','stell','Stell','spring','Spring','leg ','Leg ','wirf','Wirf','wenn','bevor','sobald','solange','Erst ','erst '];
 export function check(bad){

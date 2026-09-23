@@ -1,7 +1,7 @@
 // Erweiterte Beschreibungen der Rolle Gegenstände & Loot (Welle D, Beschreibungs-Standard aus docs/backlog/loot.md).
 // info = {effect, numbers:[{label,value,unit,source}], why, links:[ids], terms:[glossar-ids]}
 //  effect – was der Gegenstand tut, ohne die Zahlen zu wiederholen, die numbers ohnehin zeigt.
-//  numbers – ABGELEITET aus items.js (stats, weapon, heal, energy, proc); Wertungen über BALANCE.ratings umgerechnet.
+//  numbers – ABGELEITET aus items.js (stats, weapon, heal, energy, proc); Wirkungen je Wert über statYield (E-53).
 //            BALANCE wird hier nur gelesen. Keine Doppelpflege: wer eine Zahl ändert, ändert sie in items.js/tuning.js.
 //  why – wozu das Ding im Kampffluss dient. links – verwandte IDs (Gegenstand, Proc, Gebäude). terms – content/glossary.js.
 // Von Hand steht in ITEM_INFO/PROC_INFO nur effect/why/links/terms.
@@ -9,20 +9,26 @@ import {BALANCE,rating} from './balance.js';
 import {ITEM_CATALOG,PROCS} from './items.js';
 import {STAT_NAMES} from './equipment.js';
 
-const PRIMARY=['stamina','might','finesse','wit'];
-const RATINGS=['armorRating','critRating','hasteRating','masteryRating'];
-const RATING_META={
- armorRating:{label:'Schadensminderung daraus',source:'BALANCE.ratings.armor'},
- critRating:{label:'Glückstrefferchance daraus',source:'BALANCE.ratings.crit'},
- hasteRating:{label:'Tempogewinn daraus',source:'BALANCE.ratings.haste'},
- masteryRating:{label:'Handschrift daraus',source:'BALANCE.ratings.mastery'}
-};
-/** Anteil, den eine Wertung allein beisteuert (abnehmender Ertrag r/(r+k), Kappe aus BALANCE). Rüstung hängt an der Stufe. */
+/** Anteil, den ein Wert allein beisteuert (abnehmender Ertrag r/(r+k), Kappe aus BALANCE). Dicke Haut hängt an der Stufe. */
 export function ratingShare(key,value,level=1){const r=BALANCE.ratings;
  if(key==='armorRating')return Math.min(r.armor.cap,rating(value,r.armor.k+level*r.armor.perLevel));
- if(key==='critRating')return Math.min(r.crit.cap,rating(value,r.crit.k));
- if(key==='hasteRating')return Math.min(r.haste.cap,rating(value,r.haste.k));
- return rating(value,r.mastery.k);}
+ if(key==='crit')return Math.min(r.crit.cap,rating(value*r.crit.finesseWeight,r.crit.k));
+ if(key==='haste')return Math.min(r.haste.cap,rating(value*r.haste.finesseWeight,r.haste.k));
+ return 0;}
+/** E-53: was N Punkte eines Werts für sich allein bewirken – eine Zeile je Wirkung aus STAT_EFFECTS.
+ *  value in der angegebenen Einheit; Prozentwerte als Anteil ×100 gerundet. */
+export function statYield(key,value,level=1){const W=BALANCE.power,P=BALANCE.player;if(!value)return [];
+ switch(key){
+  case 'stamina':return [{label:'Leben',value:value*P.hpPerStamina,unit:'Leben',source:'BALANCE.player.hpPerStamina'}];
+  case 'might':return [{label:'Schaden',value:pct(value*W.might),unit:'%',source:'BALANCE.power.might'}];
+  case 'finesse':return [{label:'Glückstreffer-Chance',value:pct(ratingShare('crit',value)),unit:'%',source:'BALANCE.ratings.crit'},
+   {label:'Tempo',value:pct(ratingShare('haste',value)),unit:'%',source:'BALANCE.ratings.haste'}];
+  case 'wit':return [{label:'Heilung',value:pct(value*W.healWit),unit:'%',source:'BALANCE.power.healWit'},
+   {label:'Deckung',value:pct(value*W.shieldWit),unit:'%',source:'BALANCE.power.shieldWit'},
+   {label:'Randale',value:round(value*W.energyRegenWit,2),unit:'je s',source:'BALANCE.power.energyRegenWit'}];
+  case 'armorRating':return [{label:'Schadensminderung',value:pct(ratingShare('armorRating',value,level)),unit:'%',source:'BALANCE.ratings.armor'}];
+ }
+ return [];}
 const round=(n,d=1)=>Math.round(n*10**d)/10**d;
 const pct=n=>round(n*100);
 
@@ -38,17 +44,15 @@ const PROC_NUMBERS={
 export function procNumbers(id){const p=PROCS[id];if(!p)return [];
  return Object.entries(PROC_NUMBERS).filter(([k])=>p[k]!==undefined).map(([k,m])=>({label:m.label,value:round(p[k]*m.scale),unit:m.unit,source:'PROCS.'+id+'.'+k}));}
 
-/** Zahlen eines Gegenstands aus stats/weapon/heal/energy/stack/proc. Reihenfolge fest: Waffe, Primärwerte, Wertungen, Verpflegung, Proc. */
+/** Zahlen eines Gegenstands aus stats/weapon/heal/energy/stack/proc. Reihenfolge fest: Waffe, Werte mit ihren Wirkungen, Verpflegung, Proc. */
 export function itemNumbers(id){const d=ITEM_CATALOG[id];if(!d)return [];const level=d.level||1,s=d.stats||{},out=[];
  if(d.weapon){const w=d.weapon;out.push({label:'Waffenschaden',value:w.min+'–'+w.max,unit:'je Treffer',source:'weapon.min/max'});
   if(w.speed){out.push({label:'Schlagfolge',value:round(w.speed,2),unit:'s',source:'WEAPON_TYPES.'+w.type+'.speed'});
    out.push({label:'Schaden je Sekunde',value:round((w.min+w.max)/2/w.speed),unit:'Schaden/s',source:'abgeleitet aus weapon'});}
   out.push({label:'Hände',value:w.hands===0?'Fernkampf':w.hands,unit:w.hands===0?'':'Hand',source:'weapon.hands'});}
  if(d.shield)out.push({label:'Schildparade',value:'frei',unit:'',source:'shield'});
- for(const k of PRIMARY)if(s[k])out.push({label:STAT_NAMES[k],value:s[k],unit:'Punkte',source:'stats.'+k});
- if(s.stamina)out.push({label:'Leben daraus',value:s.stamina*BALANCE.player.hpPerStamina,unit:'Leben',source:'BALANCE.player.hpPerStamina'});
- for(const k of RATINGS)if(s[k]){out.push({label:STAT_NAMES[k],value:s[k],unit:'Wertung',source:'stats.'+k});
-  out.push({label:RATING_META[k].label,value:pct(ratingShare(k,s[k],level)),unit:'%',source:RATING_META[k].source});}
+ for(const k of Object.keys(STAT_NAMES))if(s[k]){out.push({label:STAT_NAMES[k],value:s[k],unit:'Punkte',source:'stats.'+k});
+  for(const y of statYield(k,s[k],level))out.push({...y,label:y.label+' daraus'});}
  if(d.heal)out.push({label:'Leben sofort',value:d.heal,unit:'Leben',source:'heal'});
  if(d.energy)out.push({label:'Randale sofort',value:d.energy,unit:'Randale',source:'energy'});
  if(d.kind==='consumable'){out.push({label:'Gemeinsame Abklingzeit',value:BALANCE.player.consumableCooldown,unit:'s',source:'BALANCE.player.consumableCooldown'});
@@ -96,92 +100,92 @@ export const ITEM_INFO={
   why:'Der einzige Weg, einen Kill gezielt zu Geld zu machen – zünde ihn vor einem Elite oder Boss, nicht zwischen Gänsen.',
   links:['wasser','pfandlager'],terms:['verpflegung','randale','pfandmarken']},
  // --- Feste Ausrüstungsstücke ---
- dosenbrecher:{effect:'Verstärkter Einhandprügel: mehr Grundschaden als die Mehrwegflasche, dazu Wumms und Glückstreffer im selben Takt.',
-  why:'Der erste klare Waffenzuwachs in Akt 1 und der Einstieg in Glückstreffer-Bauweisen – er lässt die Nebenhand frei.',
-  links:['flasche','keilerzahn'],terms:['waffenschaden','might','critRating','glueckstreffer']},
+ dosenbrecher:{effect:'Verstärkter Einhandprügel: mehr Grundschaden als die Mehrwegflasche, dazu Wumms und Taktgefühl im selben Takt.',
+  why:'Der erste klare Waffenzuwachs in Akt 1 und der Einstieg in Taktgefühl-Bauweisen – er lässt die Nebenhand frei.',
+  links:['flasche','keilerzahn'],terms:['waffenschaden','might','glueckstreffer']},
  regenjacke:{effect:'Brustteil mit viel Dicker Haut und Standfestigkeit, ohne Voraussetzung an die Stufe.',
   why:'Der günstigste Sprung weg von der Clanjacke; Rüstung wirkt gegen jeden Treffer, nicht nur gegen angesagte Zauber.',
   links:['kutte','bierdeckelweste'],terms:['stamina','armorRating','deckung']},
- festivalstiefel:{effect:'Schuhe mit Taktgefühl, Drehzahl und etwas Dicker Haut.',
-  why:'Drehzahl verkürzt die gemeinsame Sperre zwischen zwei Kniffen – sie macht die ganze Rotation schneller, nicht nur einen Schlag.',
-  links:['kabelbinderstiefel','fuchspfote'],terms:['finesse','hasteRating','armorRating']},
- pfandring:{effect:'Ring mit Bastelgrips und Handschrift.',
+ festivalstiefel:{effect:'Schuhe mit viel Taktgefühl und etwas Dicker Haut.',
+  why:'Taktgefühl bringt Tempo: es verkürzt die gemeinsame Sperre zwischen zwei Kniffen – sie macht die ganze Rotation schneller, nicht nur einen Schlag.',
+  links:['kabelbinderstiefel','fuchspfote'],terms:['finesse','tempo','armorRating']},
+ pfandring:{effect:'Ring mit viel Bastelgrips.',
   why:'Bastelgrips speist Technikschaden, Heilung und Randale-Regeneration zugleich – der Ring lohnt für jede Klasse, die Randale ausgibt statt spart.',
-  links:['hausordnung','schnorrerbecher'],terms:['wit','masteryRating','randale']},
- hausordnung:{effect:'Glücksbringer mit Bastelgrips, Standfestigkeit und der höchsten Handschrift unter den festen Stücken vor Stufe 5.',
+  links:['hausordnung','schnorrerbecher'],terms:['wit','randale']},
+ hausordnung:{effect:'Glücksbringer mit Standfestigkeit und dem meisten Bastelgrips unter den festen Stücken vor Stufe 5.',
   why:'Belohnung aus Horsts Kapitel und damit der erste Glücksbringer überhaupt – bis dahin ist der Platz leer.',
-  links:['pfandring','horststempel'],terms:['wit','stamina','masteryRating']},
+  links:['pfandring','horststempel'],terms:['wit','stamina']},
  bierdeckelweste:{effect:'Schweres Brustteil: die meiste Dicke Haut aller nicht einzigartigen Stücke, dazu Standfestigkeit und Wumms.',
   why:'Für Spielarten, die im Nahkampf stehen bleiben statt auszuweichen – Rüstung und Leben greifen gemeinsam.',
   links:['regenjacke','kutte'],terms:['stamina','might','armorRating','deckung']},
- kabelbinderstiefel:{effect:'Schuhe mit hoher Drehzahl, dazu Taktgefühl, Bastelgrips und Dicke Haut.',
-  why:'Der Drehzahl-Schuh für Akt 1; er drückt die Sperre zwischen zwei Kniffen spürbar, bevor Dorflegenden fallen.',
-  links:['festivalstiefel','fuchspfote'],terms:['finesse','wit','hasteRating','abklingzeit']},
- megafon:{effect:'Fernkampfwaffe mit der höchsten Schadensspanne unter den nicht einzigartigen Stücken, dazu Taktgefühl, Bastelgrips, Glückstreffer und Handschrift.',
+ kabelbinderstiefel:{effect:'Schuhe mit viel Taktgefühl, dazu Bastelgrips und Dicke Haut.',
+  why:'Der Tempo-Schuh für Akt 1; er drückt die Sperre zwischen zwei Kniffen spürbar, bevor Dorflegenden fallen.',
+  links:['festivalstiefel','fuchspfote'],terms:['finesse','wit','tempo','abklingzeit']},
+ megafon:{effect:'Fernkampfwaffe mit der höchsten Schadensspanne unter den nicht einzigartigen Stücken, dazu Taktgefühl und Bastelgrips.',
   why:'Ein Fernkampfplatz auf Bosskampf-Niveau: Er versorgt Wurf und Salve gleichermaßen, ohne die Hände zu belegen.',
-  links:['pfandschleuder','ruhepfeife'],terms:['waffenschaden','finesse','critRating','masteryRating']},
+  links:['pfandschleuder','ruhepfeife'],terms:['waffenschaden','finesse','glueckstreffer','wit']},
  kabeltalisman:{effect:'Erster gebauter Talisman an Kevins Werkbank (Stufe 2). Bewusst schwächer als gewürfelte seltene Ware derselben Stufe – dafür planbar statt erwürfelt.',
   why:'Schließt die Lücke, solange der Talismanplatz leer ist; Material dafür fällt bei Ordnungsamt und Oberpraktikant.',
-  links:['blechtalisman','werkstatt','kabelbinder'],terms:['wit','stamina','hasteRating']},
- blechtalisman:{effect:'Zweiter gebauter Talisman (Werkbank Stufe 3) mit Wumms, Standfestigkeit, Bastelgrips und Glückstreffern.',
+  links:['blechtalisman','werkstatt','kabelbinder'],terms:['wit','stamina','tempo']},
+ blechtalisman:{effect:'Zweiter gebauter Talisman (Werkbank Stufe 3) mit Wumms, Standfestigkeit, Bastelgrips und Taktgefühl.',
   why:'Die planbare Alternative, wenn die Dorflegende einer Familie nach vielen Kills immer noch nicht gefallen ist.',
-  links:['kabeltalisman','werkstatt','dosenblech'],terms:['might','stamina','critRating','glueckstreffer']},
+  links:['kabeltalisman','werkstatt','dosenblech'],terms:['might','stamina','glueckstreffer']},
  // --- Dorflegenden ---
- keilerzahn:{effect:'Dorflegende mit Wumms, Standfestigkeit und Glückstreffern; ihr Proc gibt bei jedem Glückstreffer Randale zurück.',
-  why:'Kurzschluss zwischen Glückstreffern und Randale: Je mehr Glückstreffer der Bau trägt, desto häufiger kannst du Kniffe zünden.',
+ keilerzahn:{effect:'Dorflegende mit Wumms, Standfestigkeit und Taktgefühl; ihr Proc gibt bei jedem Glückstreffer Randale zurück.',
+  why:'Kurzschluss zwischen Glückstreffern und Randale: Je mehr Taktgefühl der Bau trägt, desto häufiger kannst du Kniffe zünden.',
   links:['rage','dosenbrecher','kegelkugel'],terms:['dorflegende','proc','glueckstreffer','randale','might']},
- gansorden:{effect:'Frühe Dorflegende mit Taktgefühl und Drehzahl; ihr Proc verkürzt die Abklingzeit von Ausweichen.',
+ gansorden:{effect:'Frühe Dorflegende mit viel Taktgefühl; ihr Proc verkürzt die Abklingzeit von Ausweichen.',
   why:'Ausweichen ist die Antwort auf jede angesagte Fläche. Kürzer bereit heißt: Du darfst öfter stehen bleiben und angreifen.',
-  links:['fleet','fuchspfote','schaerpe'],terms:['dorflegende','proc','ausweichen','abklingzeit','hasteRating']},
+  links:['fleet','fuchspfote','schaerpe'],terms:['dorflegende','proc','ausweichen','abklingzeit','tempo']},
  dachsdeckel:{effect:'Dorflegende mit der höchsten Dicken Haut ihrer Stufe; ihr Proc senkt den erlittenen Schaden, sobald du unter die Lebensschwelle fällst.',
   why:'Eine Notbremse statt eines Dauerbonus: Sie greift genau dann, wenn der nächste Treffer tödlich wäre.',
   links:['stout','topfdeckel','sigizange'],terms:['dorflegende','proc','stamina','armorRating','deckung']},
- ruhepfeife:{effect:'Einzigartige Fernkampfwaffe mit Bastelgrips, Handschrift und Glückstreffern; ihr Proc lädt beim Unterbrechen zusätzliche Randale.',
+ ruhepfeife:{effect:'Einzigartige Fernkampfwaffe mit Bastelgrips und Taktgefühl; ihr Proc lädt beim Unterbrechen zusätzliche Randale.',
   why:'Sie macht das Unterbrechen doppelt wertvoll: Der Zauber fällt aus und du bekommst die Randale für den Gegenschlag.',
-  links:['silence','dienstmuetze','praktikantenausweis'],terms:['dorflegende','proc','unterbrechen','randale','masteryRating']},
+  links:['silence','dienstmuetze','praktikantenausweis'],terms:['dorflegende','proc','unterbrechen','randale','wit']},
  horststempel:{effect:'Einzigartiger Zweihandhammer mit gleich hohen Werten in Wumms, Taktgefühl und Bastelgrips; sein Proc erhöht den Schaden auf markierte Ziele.',
   why:'Er belohnt Spielarten, die erst markieren und dann zuschlagen – und er passt zu jeder Klasse, weil alle drei Primärwerte gleich hoch liegen.',
-  links:['verdict','praktikantenausweis','tresenhammer'],terms:['dorflegende','proc','markierung','might','critRating']},
- fuchspfote:{effect:'Einzigartige Schuhe mit Taktgefühl und hoher Drehzahl; ihr Proc verkürzt die Abklingzeit von Ausweichen.',
-  why:'Drehzahl und schnelleres Ausweichen ziehen in dieselbe Richtung: mehr Angriffe je Gefahr.',
-  links:['fleet','gansorden','kabelbinderstiefel'],terms:['dorflegende','proc','ausweichen','hasteRating','finesse']},
- schnorrerbecher:{effect:'Dorflegende mit Bastelgrips, Standfestigkeit und Handschrift; ihr Proc gibt bei jedem Kill Randale zurück.',
+  links:['verdict','praktikantenausweis','tresenhammer'],terms:['dorflegende','proc','markierung','might','glueckstreffer']},
+ fuchspfote:{effect:'Einzigartige Schuhe mit sehr viel Taktgefühl; ihr Proc verkürzt die Abklingzeit von Ausweichen.',
+  why:'Tempo aus Taktgefühl und schnelleres Ausweichen ziehen in dieselbe Richtung: mehr Angriffe je Gefahr.',
+  links:['fleet','gansorden','kabelbinderstiefel'],terms:['dorflegende','proc','ausweichen','tempo','finesse']},
+ schnorrerbecher:{effect:'Dorflegende mit viel Bastelgrips und Standfestigkeit; ihr Proc gibt bei jedem Kill Randale zurück.',
   why:'Für Kämpfe gegen Gruppen: Der erste Kill bezahlt den Kniff für den zweiten. Gegen einzelne Bosse wirkt er nicht.',
-  links:['thirst','bierbong','automatenarm'],terms:['dorflegende','proc','randale','wit','masteryRating']},
- praktikantenausweis:{effect:'Dorflegende mit Bastelgrips, Taktgefühl, Glückstreffern und Handschrift; ihr Proc erhöht den Schaden auf markierte Ziele.',
+  links:['thirst','bierbong','automatenarm'],terms:['dorflegende','proc','randale','wit']},
+ praktikantenausweis:{effect:'Dorflegende mit Bastelgrips und Taktgefühl; ihr Proc erhöht den Schaden auf markierte Ziele.',
   why:'Der Talisman zum Stempel: zweimal derselbe Proc stapelt sich nicht, aber der Ausweis trägt ihn in Bauten ohne Zweihandwaffe.',
-  links:['verdict','horststempel','dienstmuetze'],terms:['dorflegende','proc','markierung','wit','critRating']},
+  links:['verdict','horststempel','dienstmuetze'],terms:['dorflegende','proc','markierung','wit','glueckstreffer']},
  dienstmuetze:{effect:'Einzige Dorflegende für den Kopf; ihr Proc lädt beim Unterbrechen zusätzliche Randale.',
   why:'Der Kopfplatz bleibt sonst den ganzen ersten Akt leer – die Mütze ist dort Rüstung, Leben und Proc in einem.',
   links:['silence','ruhepfeife','kabelbinder'],terms:['dorflegende','proc','unterbrechen','armorRating','stamina']},
- kegelkugel:{effect:'Dorflegende der Kegelbrüder mit Wumms, Standfestigkeit und Glückstreffern; ihr Proc gibt bei Glückstreffern Randale zurück.',
+ kegelkugel:{effect:'Dorflegende der Kegelbrüder mit Wumms, Standfestigkeit und Taktgefühl; ihr Proc gibt bei Glückstreffern Randale zurück.',
   why:'Die Nahkampf-Antwort auf den Keilerzahn: derselbe Kurzschluss, eine Stufe später und mit mehr Standfestigkeit.',
   links:['rage','keilerzahn','koenigskette'],terms:['dorflegende','proc','glueckstreffer','randale','might']},
- bierbong:{effect:'Dorflegende der Junggesellen mit gleich viel Wumms wie Standfestigkeit, dazu Drehzahl; ihr Proc gibt bei jedem Kill Randale zurück.',
-  why:'Sie trägt Gruppenkämpfe: Drehzahl bringt dich schneller zum nächsten Ziel, der Proc bezahlt den Kniff dafür.',
-  links:['thirst','schnorrerbecher','automatenarm'],terms:['dorflegende','proc','randale','hasteRating','stamina']},
+ bierbong:{effect:'Dorflegende der Junggesellen mit gleich viel Wumms wie Standfestigkeit, dazu Taktgefühl; ihr Proc gibt bei jedem Kill Randale zurück.',
+  why:'Sie trägt Gruppenkämpfe: Tempo bringt dich schneller zum nächsten Ziel, der Proc bezahlt den Kniff dafür.',
+  links:['thirst','schnorrerbecher','automatenarm'],terms:['dorflegende','proc','randale','tempo','stamina']},
  sigizange:{effect:'Einzigartiger Zweihandhammer mit dem höchsten Grundschaden vor Stufe 6; ihr Proc senkt den erlittenen Schaden unter der Lebensschwelle.',
   why:'Zweihand ohne Schild heißt Treffer einstecken – die Zange bringt ihre eigene Notbremse mit.',
-  links:['stout','dachsdeckel','tresenhammer'],terms:['dorflegende','proc','waffenschaden','might','masteryRating']},
- koenigskette:{effect:'Dorflegende mit Taktgefühl, Bastelgrips und den meisten Glückstreffern ihrer Stufe; ihr Proc gibt bei Glückstreffern Randale zurück.',
+  links:['stout','dachsdeckel','tresenhammer'],terms:['dorflegende','proc','waffenschaden','might','wit']},
+ koenigskette:{effect:'Dorflegende mit dem meisten Taktgefühl ihrer Stufe, dazu Bastelgrips; ihr Proc gibt bei Glückstreffern Randale zurück.',
   why:'Der Bau-Abschluss für Glückstreffer: Je höher die Glückstrefferchance, desto gleichmäßiger fließt die Randale.',
-  links:['rage','kegelkugel','keilerzahn'],terms:['dorflegende','proc','glueckstreffer','critRating','randale']},
- schaerpe:{effect:'Dorflegende mit Standfestigkeit, Wumms, Taktgefühl und hoher Drehzahl; ihr Proc verkürzt die Abklingzeit von Ausweichen.',
+  links:['rage','kegelkugel','keilerzahn'],terms:['dorflegende','proc','glueckstreffer','randale']},
+ schaerpe:{effect:'Dorflegende mit Standfestigkeit, Wumms und sehr viel Taktgefühl; ihr Proc verkürzt die Abklingzeit von Ausweichen.',
   why:'Der breiteste Wertesatz im Spiel – sie passt in jeden Bau, der die Antwort auf Flächen häufiger braucht.',
-  links:['fleet','gansorden','fuchspfote'],terms:['dorflegende','proc','ausweichen','hasteRating','stamina']},
+  links:['fleet','gansorden','fuchspfote'],terms:['dorflegende','proc','ausweichen','tempo','stamina']},
  giesskanne:{effect:'Einzigartiger Zweihandhammer mit Wumms und Bastelgrips zu gleichen Teilen; ihr Proc verdoppelt die Regeneration außerhalb des Kampfes.',
   why:'Der einzige Proc, der zwischen den Kämpfen wirkt: Er spart Verpflegung und damit Pfandmarken auf langen Wegen.',
-  links:['hops','tresen','brezel'],terms:['dorflegende','proc','leben','masteryRating','verpflegung']},
- automatenarm:{effect:'Stärkste Dorflegende des ersten Aktes: alle drei Primärwerte hoch, dazu Standfestigkeit und die höchsten Glückstreffer im Spiel; ihr Proc gibt bei jedem Kill Randale zurück.',
+  links:['hops','tresen','brezel'],terms:['dorflegende','proc','leben','wit','verpflegung']},
+ automatenarm:{effect:'Stärkste Dorflegende des ersten Aktes: Wumms, Taktgefühl und Bastelgrips gleich hoch, dazu Standfestigkeit und das meiste Taktgefühl im Spiel; ihr Proc gibt bei jedem Kill Randale zurück.',
   why:'Abschlussbelohnung – der Arm trägt jede Klasse und jeden Bau, weil er keinen Primärwert bevorzugt.',
-  links:['thirst','schnorrerbecher','bierbong'],terms:['dorflegende','proc','randale','critRating','glueckstreffer']}
+  links:['thirst','schnorrerbecher','bierbong'],terms:['dorflegende','proc','randale','glueckstreffer']}
 };
 
 /** Von Hand: effect/why/links/terms der Procs. Die Zahlen kommen aus PROCS. */
 export const PROC_INFO={
  rage:{effect:'Jeder Glückstreffer gibt Randale zurück – unabhängig davon, welcher Kniff oder Autoangriff den Glückstreffer gelandet hat.',
   why:'Verbindet Glückstrefferchance mit deiner Ressource: Ein Bau auf Glückstreffer finanziert damit seine eigene Rotation.',
-  links:['keilerzahn','kegelkugel','koenigskette'],terms:['proc','glueckstreffer','randale','critRating']},
+  links:['keilerzahn','kegelkugel','koenigskette'],terms:['proc','glueckstreffer','randale']},
  fleet:{effect:'Verkürzt die Abklingzeit von Ausweichen um einen Anteil.',
   why:'Ausweichen ist die Antwort auf angesagte Flächen. Häufiger bereit heißt: Du musst nicht vorsorglich früh wegspringen.',
   links:['gansorden','fuchspfote','schaerpe'],terms:['proc','ausweichen','abklingzeit']},

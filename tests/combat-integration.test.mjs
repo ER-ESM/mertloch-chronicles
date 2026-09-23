@@ -52,7 +52,7 @@ test('Frisch gewischt empowers exactly every second direct heal',()=>{
 
 for(const [spec,id] of [['dieter-brew','ruecklaufleitung'],['baerbel-feedback','provision-vom-schmerz']])test(id+' heals from actual marked damage, including the lethal hit, and never from unmarked hits',()=>{
  const {g,e}=setup(spec);g.player.hp=100;g.damage(e,100,'Kelle');assert.equal(fired(g,id),0);
- g.player.hp=100;e.mark=10;const before=g.player.hp,dealt=g.damage(e,100,'Kelle'),cs=combatStats(g),factor=1+cs.healPower+(cs.healBonus||0)+cs.mastery*.4;
+ g.player.hp=100;e.mark=10;const before=g.player.hp,dealt=g.damage(e,100,'Kelle'),cs=combatStats(g),factor=1+cs.healPower+(cs.healBonus||0);
  const base=(spec==='dieter-brew'?.06:.15)+(cs.markedLeech||0);
  assert.equal(g.player.hp-before,Math.round(dealt*base*factor)+Math.round(dealt*PROC_RULES[id].effect.heal.damage*factor));assert.equal(fired(g,id),1);
  g.player.hp=100;e.hp=10;g.damage(e,100000,'Kelle');assert.equal(fired(g,id),2);assert.ok(g.player.hp<110,'overkill damage cannot inflate healing');

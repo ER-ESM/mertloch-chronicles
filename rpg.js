@@ -2,11 +2,11 @@ import {MOUNT_UI} from './content/index.js';
 import {restoreShopHistory} from './shop-state.js';
 import {emitCombatFx} from './combat-fx.js';
 import {restoreMeterHealth} from './combat-meter.js';
-import {EQUIPMENT_SLOTS,equipmentPlan,restoreEquipment,weaponRange} from './equipment.js';
+import {EQUIPMENT_SLOTS,equipmentPlan,restoreEquipment,weaponRange,compatibleSlots} from './equipment.js';
 import {talentState,talentEffects,SPECS} from './talents.js';
 import {restoreRolls,rollDrop,questChoices,registerRoll} from './itemization.js';
 import {available,LESSONS,skillLevel} from './progression.js';
-import {BALANCE,ITEM_CATALOG,rating,SYSTEM_LINES} from './content/index.js';
+import {BALANCE,ITEM_CATALOG,rating,SYSTEM_LINES,STAT_NAMES,GEAR_COMPARE,WEAPON_TYPES,BAG_UI,RARITIES} from './content/index.js';
 export const BAG_SIZE=24;
 export const SLOT_KEYS=['1','2','3','4','5','6','7','8','9','0'];
 export const SPECIAL_KEYS={dash:' ',interrupt:'q'};
@@ -22,12 +22,15 @@ export const ITEMS=Object.fromEntries(Object.entries(ITEM_CATALOG).map(([id,d])=
 const integer=(n,max=1e9)=>Math.max(0,Math.min(max,Math.floor(Number(n)||0)));
 const validEntry=e=>e&&ITEMS[e.id]&&integer(e.count,ITEMS[e.id].stack||1)>0;
 export function createRpg(saved,worldKey,classId='dieter'){const s=saved&&typeof saved==='object'?saved:null;const generated=restoreRolls(s?.generated,ITEMS),restored=restoreEquipment(s?.equipment,ITEMS,s?.version||0),talentBuilds=Object.fromEntries(['dieter','baerbel','kevin'].map(id=>[id,talentState(s?.talentBuilds?.[id]||(id===classId?s?.talents:null),id)]));return {version:4,recovery:[...(Array.isArray(s?.recovery)?s.recovery.filter(id=>ITEMS[id]):[]),...restored.recovered],starterClaimed:!!s?.starterClaimed,generated,itemSequence:integer(s?.itemSequence),lootState:integer(s?.lootState,0xffffffff)||Math.floor(Math.random()*2147483646)+1,talentBuilds,talents:talentBuilds[classId],rewardChoices:s?.rewardChoices&&typeof s.rewardChoices==='object'?Object.fromEntries(Object.entries(s.rewardChoices).filter(([,ids])=>Array.isArray(ids)&&ids.length===3&&ids.every(id=>ITEMS[id]))):{},worldKey,buyback:restoreShopHistory(s?.buyback,ITEMS),shopSequence:Number.isSafeInteger(s?.shopSequence)&&s.shopSequence>=0?s.shopSequence:0,coins:integer(s?.coins),inventory:s&&Array.isArray(s.inventory)?s.inventory.filter(validEntry).slice(0,BAG_SIZE).map(e=>({id:e.id,count:integer(e.count,ITEMS[e.id].stack||1)})):[{id:'brezel',count:3},{id:'wasser',count:2}],equipment:restored.equipment,actionBars:s?.version>=2&&s?.actionBars&&typeof s.actionBars==='object'?structuredClone(s.actionBars):{},barSeen:Array.isArray(s?.barSeen)?s.barSeen.filter(id=>ITEMS[id]).slice(0,80):[],sequence:integer(s?.sequence),loot:s&&s.worldKey===worldKey&&Array.isArray(s.loot)?s.loot.filter(b=>typeof b.id==='string'&&Number.isFinite(b.x)&&Number.isFinite(b.y)&&Math.abs(b.x)<200000&&Math.abs(b.y)<200000).map(b=>({id:b.id,x:b.x,y:b.y,coins:integer(b.coins),source:b.source&&typeof b.source==='object'?{name:String(b.source.name||''),kind:String(b.source.kind||'bag')}:{name:'',kind:'bag'},items:Array.isArray(b.items)?b.items.filter(validEntry).map(e=>({id:e.id,count:integer(e.count,ITEMS[e.id].stack||1)})):[]})):[],consumableReady:0};}
-export function equipmentStats(game){const result={stamina:0,might:0,finesse:0,wit:0,armorRating:0,critRating:0,hasteRating:0,masteryRating:0};for(const id of Object.values(game.rpg?.equipment||{})){const d=ITEMS[id];if(!d||(d.level||1)>game.player.level)continue;for(const k in result)result[k]+=d.stats?.[k]||0;}return {...result,health:result.stamina*BALANCE.player.hpPerStamina,power:0,armor:result.armorRating/(result.armorRating+485)};}
+export function equipmentStats(game){const result=Object.fromEntries(Object.keys(STAT_NAMES).map(k=>[k,0]));for(const id of Object.values(game.rpg?.equipment||{})){const d=ITEMS[id];if(!d||(d.level||1)>game.player.level)continue;for(const k in result)result[k]+=d.stats?.[k]||0;}return {...result,health:result.stamina*BALANCE.player.hpPerStamina};}
 export function combatStats(game){
  const P=BALANCE.player,R=BALANCE.ratings,W=BALANCE.power,gear=equipmentStats(game),talent=talentEffects(game),level=game.player.level,spec=game.rpg?.talents?.spec||'dieter-wall',raw={};
- for(const key of ['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating'])raw[key]=(key==='stamina'?P.baseStamina:['might','finesse','wit'].includes(key)?P.basePrimary:0)+(gear[key]||0)+(talent[key]||0)+(['might','finesse','wit'].includes(key)?(level-1)*P.primaryPerLevel:0);
- const haste=Math.min(R.haste.cap,rating(raw.hasteRating+raw.finesse*R.haste.finesseWeight,R.haste.k))+(game.momentum?.stacks||0)*BALANCE.momentum.hastePerStack+(game.procState&&game.procState.hasteUntil>game.time?game.procState.haste:0)+(game.classState?.m?.hasteBonus||0),armorValue=raw.armorRating+raw.might*R.armor.mightWeight,procs=Object.values(game.rpg?.equipment||{}).filter(id=>(ITEMS[id]?.level||1)<=level).map(id=>ITEMS[id]?.proc).filter(Boolean);
- return {...talent,...raw,health:(raw.stamina-P.baseStamina)*P.hpPerStamina,power:raw.might*W.might+raw.finesse*W.finesse+raw.wit*W.wit,physicalPower:raw.might*W.physicalMight,technicalPower:raw.wit*W.technicalWit,healPower:raw.wit*W.healWit+raw.might*W.healMight,shieldPower:raw.might*W.shieldMight+raw.wit*W.shieldWit,armor:Math.min(R.armor.cap,rating(armorValue,R.armor.k+level*R.armor.perLevel)),crit:Math.min(R.crit.cap,R.crit.base+rating(raw.critRating+raw.finesse*R.crit.finesseWeight,R.crit.k)),haste,mastery:rating(raw.masteryRating,R.mastery.k),energyRegen:(talent.energyRegen||0)+raw.wit*W.energyRegenWit,gcd:Math.max(P.gcdMin,P.gcdBase*(1-haste)),procs,spec};
+ // E-53: fünf Werte, jede Mechanik hängt an genau einem – Standfestigkeit → Leben, Wumms → Schaden,
+ // Taktgefühl → Glückstreffer-Chance und Tempo, Bastelgrips → Heilung/Deckung/Randale, Dicke Haut → Schadensminderung.
+ const primary=k=>k==='might'||k==='finesse'||k==='wit';
+ for(const key of Object.keys(STAT_NAMES))raw[key]=(key==='stamina'?P.baseStamina:primary(key)?P.basePrimary+(level-1)*P.primaryPerLevel:0)+(gear[key]||0)+(talent[key]||0);
+ const haste=Math.min(R.haste.cap,rating(raw.finesse*R.haste.finesseWeight,R.haste.k))+(game.momentum?.stacks||0)*BALANCE.momentum.hastePerStack+(game.procState&&game.procState.hasteUntil>game.time?game.procState.haste:0)+(game.classState?.m?.hasteBonus||0),procs=Object.values(game.rpg?.equipment||{}).filter(id=>(ITEMS[id]?.level||1)<=level).map(id=>ITEMS[id]?.proc).filter(Boolean);
+ return {...talent,...raw,health:(raw.stamina-P.baseStamina)*P.hpPerStamina,power:raw.might*W.might,healPower:raw.wit*W.healWit,shieldPower:raw.wit*W.shieldWit,armor:Math.min(R.armor.cap,rating(raw.armorRating,R.armor.k+level*R.armor.perLevel)),crit:Math.min(R.crit.cap,R.crit.base+rating(raw.finesse*R.crit.finesseWeight,R.crit.k)),haste,energyRegen:(talent.energyRegen||0)+raw.wit*W.energyRegenWit,gcd:Math.max(P.gcdMin,P.gcdBase*(1-haste)),procs,spec};
 }
 export const baseHealth=level=>BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel;
 export function refreshEquipment(game){game.player.maxHp=baseHealth(game.player.level)+combatStats(game).health;game.player.hp=Math.min(game.player.hp,game.player.maxHp);}
@@ -90,16 +93,36 @@ export function placeUsables(game,ids){const bar=actionBar(game),seen=game.rpg.b
 export function keyFor(game,id){if(SPECIAL_KEYS[id]!==undefined)return id==='dash'?'LEER':'Q';const i=actionBar(game).indexOf(id);return i<0?'Skillbuch':SLOT_KEYS[i]===' '?'LEER':SLOT_KEYS[i].toUpperCase();}
 /** Beute als Ereignis – gleich, ob sie automatisch oder von Hand eingesammelt wurde. */
 function lootEvent(game,items,coins,source){game.emit('loot',{items:items.map(e=>({id:e.id,count:e.count,rarity:ITEMS[e.id]?.rarity||'common',rolled:e.id.startsWith('roll-')})),coins,source:{name:source?.name||'',kind:source?.kind||'bag'}});}
+/** Wirkungen einer Ausrüstung (E-53): Leben, Schaden, Glückstreffer, Tempo, Waffe je Sekunde, Heilung, Deckung, Randale, Schutz. */
+export function gearProfile(game,equipment=game.rpg.equipment){const shadow={...game,rpg:{...game.rpg,equipment}},cs=combatStats(shadow),dps=source=>{const r=weaponRange(shadow,ITEMS,source),d=ITEMS[equipment[source==='ranged'?'ranged':'weapon']],speed=d?.weapon?.speed||WEAPON_TYPES[d?.weapon?.type]?.speed||0;return speed?(r.min+r.max)/2/speed:0;};
+ return {health:cs.health,power:cs.power,crit:cs.crit,haste:cs.haste,melee:dps('melee'),ranged:dps('ranged'),heal:cs.healPower,shield:cs.shieldPower,energy:cs.energyRegen,armor:cs.armor};}
+/** Änderung je Wirkung in Prozent (Leben relativ zum Maximalleben, Randale relativ zum Nachschub im Kampf). */
+function profileDelta(game,before,after){const pct=(a,b)=>((1+a)/(1+b)-1)*100,rel=(a,b)=>b>0?(a/b-1)*100:a>0?100:0,maxHp=baseHealth(game.player.level)+before.health;
+ return {health:(after.health-before.health)/maxHp*100,power:pct(after.power,before.power),crit:(after.crit-before.crit)*100,haste:(after.haste-before.haste)*100,melee:rel(after.melee,before.melee),ranged:rel(after.ranged,before.ranged),heal:pct(after.heal,before.heal),shield:pct(after.shield,before.shield),energy:(after.energy-before.energy)/BALANCE.momentum.combatEnergyRegen*100,armor:(after.armor-before.armor)*100};}
+/**
+ * Vergleich eines Ausrüstungsteils mit dem, was es verdrängt (E-53), für genau einen Platz.
+ * changes: [{key,label,value,unit,percent}] – nur Wirkungen, die sich ändern; value in Anzeigeeinheit (Leben absolut, sonst %).
+ * score: Kampfkraft = Σ Gewicht(Klasse) × Änderung in %.
+ */
+export function gearComparison(game,id,slot){const r=game.rpg,plan=equipmentPlan(r.equipment,ITEMS,id,slot);if(plan.error)return {error:plan.error};
+ const before=gearProfile(game),after=gearProfile(game,plan.next),delta=profileDelta(game,before,after),weights=GEAR_COMPARE.weights[game.member?.id]||GEAR_COMPARE.weights.dieter;
+ const changes=Object.keys(GEAR_COMPARE.labels).filter(k=>Math.abs(delta[k])>=.05).map(k=>({key:k,label:GEAR_COMPARE.labels[k],percent:delta[k],value:k==='health'?Math.round(after.health-before.health):Math.round(delta[k]*10)/10,unit:k==='health'?'':'%'}));
+ const score=Object.keys(delta).reduce((n,k)=>n+(weights[k]||0)*delta[k],0);
+ return {slot:plan.slot,plan,changes,score:Math.round(score*10)/10};}
 /**
  * Einschätzung eines Ausrüstungsteils gegen das, was es verdrängen würde.
  * verdict: 'empty' (Platz frei) | 'upgrade' | 'downgrade' | 'sidegrade' | 'blocked' (Stufe/Hand passt nicht) | null (kein Ausrüstungsteil, schon angelegt)
- * score: Summe der Zusatzwert-Änderungen plus doppelt gewichtete Änderung des mittleren Waffenschadens.
+ * Bei zwei Plätzen (Ringe, Schmuck, Einhandwaffe) zählt ein freier Platz, sonst der Platz mit dem besten Ergebnis.
+ * score/changes aus gearComparison (Wirkungen statt roher Werte, gewichtet je Klasse).
  */
-export function upgradeVerdict(game,id){const d=ITEMS[id],r=game.rpg;if(!d?.slot||Object.values(r.equipment).includes(id))return null;if((d.level||1)>game.player.level)return {verdict:'blocked',score:0,reason:'level'};const plan=equipmentPlan(r.equipment,ITEMS,id);if(plan.error)return {verdict:'blocked',score:0,reason:'slot'};
- let score=0;for(const k of new Set([...Object.keys(d.stats||{}),...plan.displaced.flatMap(e=>Object.keys(ITEMS[e.id]?.stats||{}))]))score+=(d.stats?.[k]||0)-plan.displaced.reduce((n,e)=>n+(ITEMS[e.id]?.stats?.[k]||0),0);
- if(d.weapon){const source=d.weapon.hands===0?'ranged':'melee',before=weaponRange(game,ITEMS,source),after=weaponRange({...game,rpg:{...r,equipment:plan.next}},ITEMS,source);score+=(after.min+after.max-before.min-before.max);}
- if(!plan.displaced.length)return {verdict:'empty',score,slot:plan.slot};
- return {verdict:score>.5?'upgrade':score<-.5?'downgrade':'sidegrade',score:Math.round(score*10)/10,slot:plan.slot};}
+export function upgradeVerdict(game,id){const d=ITEMS[id],r=game.rpg;if(!d?.slot)return null;const choices=compatibleSlots(d);
+ if(!choices.length||choices.every(slot=>r.equipment[slot]===id)||(d.unique&&Object.values(r.equipment).includes(id)))return null;
+ if((d.level||1)>game.player.level)return {verdict:'blocked',score:0,reason:'level',changes:[]};
+ // Ein Schild in der Nebenhand bleibt außen vor: er schaltet die Parade frei, die keine Wirkungszahl hat.
+ const options=choices.filter(slot=>r.equipment[slot]!==id&&!(slot==='offhand'&&d.weapon&&ITEMS[r.equipment.offhand]?.shield)).map(slot=>gearComparison(game,id,slot)).filter(c=>!c.error);if(!options.length)return {verdict:'blocked',score:0,reason:'slot',changes:[]};
+ const free=options.find(c=>!c.plan.displaced.length),best=free||options.reduce((a,b)=>b.score>a.score?b:a);
+ const verdict=free?'empty':best.score>GEAR_COMPARE.threshold?'upgrade':best.score<-GEAR_COMPARE.threshold?'downgrade':'sidegrade';
+ return {verdict,score:best.score,slot:best.slot,changes:best.changes,displaced:best.plan.displaced};}
 /** Fundstücke wandern direkt an den Körper, wenn ihr Platz leer ist (nie im Kampf-Tod, nie mit Verdrängen). Meldung ins Ereignis-Log. */
 export function autoEquipFound(game,ids){const done=[];for(const id of ids){const v=upgradeVerdict(game,id);if(v?.verdict!=='empty')continue;if(equipItem(game,id)){done.push(id);game.log('Angelegt: '+ITEMS[id].name+' – der Platz war frei.');}}return done;}
 /** Auto-Loot: der ganze Beutel wandert sofort in den Rucksack. Was nicht passt, geht nach rpg.recovery. */
@@ -121,5 +144,10 @@ export function tradeAway(game,items=[],coins=0){const r=game.rpg;coins=Math.max
 function worldBossBonus(game,enemy,drop){if(!enemy?.worldBoss)return drop;const slots=['weapon','head','shoulders','body','hands','legs','feet','ring','trinket'],specs=['tresen','bass','pfand'],rnd=()=>game.lootRandom();const probe={slot:slots[Math.floor(rnd()*slots.length)],spec:specs[Math.floor(rnd()*specs.length)],level:Math.max(1,Math.min(game.player.level+1,enemy.level||1)),quality:'rare',family:enemy.family||'quest',roll:Math.floor(rnd()*1000)};drop.items.push({id:registerRoll(game.rpg,ITEMS,probe),count:1});drop.coins+=BALANCE.loot.coinsBoss;return drop;}
 export function createDrop(game,enemy){const r=game.rpg,n=++r.sequence,drop=worldBossBonus(game,enemy,rollDrop(game,enemy,ITEMS)),coins=drop.coins,items=game.netParty?.loot?game.netParty.loot(drop.items,enemy):drop.items;if(!items.length&&!coins)return null;const bag={id:'drop-'+n,x:enemy.x,y:enemy.y,coins,items,source:{name:enemy.name,kind:enemy.type==='boss'?'boss':'enemy'}};r.loot.push(bag);game.emit('rpgChanged');if(game.settings?.autoLoot)autoLootBag(game,bag);return bag;}
 export function nearestLoot(game){return game.rpg.loot.filter(b=>Math.hypot(b.x-game.player.x,b.y-game.player.y)<43).sort((a,b)=>Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y))[0]||null;}
-export function sortInventory(game){const inventory=[];for(const item of game.rpg.inventory)addItem({inventory},item.id,item.count);inventory.sort((a,b)=>{const rank=d=>d.slot?0:d.kind==='consumable'?1:2;return rank(ITEMS[a.id])-rank(ITEMS[b.id])||ITEMS[a.id].name.localeCompare(ITEMS[b.id].name,'de');});game.rpg.inventory=inventory;changed(game);game.toast('Rucksack sortiert: Ausrüstung, Verpflegung, Material.');}
+/** Stapel zusammenlegen und ordnen (E-53). mode: kind (Ausrüstung, Verpflegung, Material) | rarity | level | name | better. */
+export function sortInventory(game,mode='kind'){const inventory=[];for(const item of game.rpg.inventory)addItem({inventory},item.id,item.count);
+ const kind=d=>d.slot?0:d.kind==='consumable'?1:2,grade=Object.keys(RARITIES),rarityRank=d=>-grade.indexOf(d.rarity),level=d=>-(d.itemLevel||d.level||0),verdicts={upgrade:0,empty:0,sidegrade:1,downgrade:2,blocked:3},better=id=>{const v=upgradeVerdict(game,id);return v?[verdicts[v.verdict]??4,-v.score]:[4,0];};
+ const keys={kind:id=>[kind(ITEMS[id])],rarity:id=>[rarityRank(ITEMS[id]),kind(ITEMS[id])],level:id=>[level(ITEMS[id]),kind(ITEMS[id])],name:()=>[],better:id=>better(id)},key=keys[mode]?mode:'kind',cache=new Map(inventory.map(e=>[e.id,keys[key](e.id)]));
+ inventory.sort((a,b)=>{const x=cache.get(a.id),y=cache.get(b.id);for(let i=0;i<x.length;i++)if(x[i]!==y[i])return x[i]-y[i];return ITEMS[a.id].name.localeCompare(ITEMS[b.id].name,'de');});
+ game.rpg.inventory=inventory;changed(game);game.toast(BAG_UI.sorted+(BAG_UI.sortModes.find(([m])=>m===key)?.[1]||key)+'.');}
 export function takeLoot(game,id,selection=null){const r=game.rpg,bag=r.loot.find(b=>b.id===id);if(!bag||game.dead)return false;if(Math.hypot(bag.x-game.player.x,bag.y-game.player.y)>43){game.toast('Der Beutel ist zu weit weg. Geh näher heran.');return false;}if(selection&&selection!=='coins'&&!bag.items.some(e=>e.id===selection))return false;let coins=0;if(!selection||selection==='coins'){coins=bag.coins;r.coins+=coins;bag.coins=0;}const taken=[];for(const item of bag.items)if(!selection||selection===item.id){const rest=addItem(r,item.id,item.count);if(item.count-rest>0)taken.push({id:item.id,count:item.count-rest});item.count=rest;}bag.items=bag.items.filter(e=>e.count>0);if(!bag.items.length&&!bag.coins)r.loot=r.loot.filter(b=>b.id!==id);placeUsables(game,taken.map(e=>e.id));lootEvent(game,taken,coins,{...bag.source,kind:bag.source?.kind||'chest'});autoEquipFound(game,taken.map(e=>e.id));game.toast(bag.items.some(e=>!selection||e.id===selection)?'Rucksack voll. Der Rest bleibt liegen.':'Beute eingepackt.');changed(game);return true;}

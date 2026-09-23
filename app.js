@@ -75,7 +75,7 @@ import {loadRedesignArt} from './redesign-art.js';
 import {Renderer,drawHero,ZOOM_RANGE} from './renderer.js';
 const ZOOM_KEY='mertloch.zoom';
 import {PopupWindows} from './popup-windows.js';
-import {mountPopupControls,filterBag} from './popup-controls.js';
+import {mountPopupControls,filterBag,bagView} from './popup-controls.js';
 import {loadUiArt,paintUiControls,paintUiIcon,uiIconCount,paintHeroPortrait} from './ui-art.js';
 import {createTranslator} from './mobile-translate.js';
 import {BUILD,buildLabel} from './build-info.js';
@@ -178,7 +178,7 @@ function prewarmIcons(){
  idle(step);
 }
 function paintRpg(){paintIcons();const appearance=equipmentAppearance(game.rpg.equipment,ITEMS),look=game.member.id+':'+previewDirection+':'+prerenderArt.enabled+':'+appearance.map(p=>p.asset).join(',');for(const cv of document.querySelectorAll('[data-character-art]'))paintOnce(cv,'hero:'+look,()=>{const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);c.save();c.imageSmoothingEnabled=false;c.scale(cv.width/144,cv.height/180);drawHero(c,72,161,0,{facing:1,direction:previewDirection,classId:game.member.id,visualEquipment:appearance},false,4);c.restore();});}
-function showInventory(){const query=popups.get('bag')?.body.querySelector('input')?.value||'';openModal(inventoryPanel(game,selectedItem),false,'bag');const body=popups.get('bag').body;body.querySelector('input').value=query;filterBag(body,query);paintRpg();tutorialSignal(game,'inventory');}
+function showInventory(){const query=popups.get('bag')?.body.querySelector('[data-bag-search]')?.value||'';openModal(inventoryPanel(game,selectedItem,bagView),false,'bag');const body=popups.get('bag').body;body.querySelector('[data-bag-search]').value=query;filterBag(body,query);paintRpg();tutorialSignal(game,'inventory');}
 // Auto-Loot räumt den Beutel selbst ab und gibt null zurück – dann bleibt das Beutefenster zu (§8.2).
 function showLoot(id){const bag=game.openLoot(id);if(bag){selectedLootId=id;openModal(lootPanel(bag,game),false,'loot');paintRpg();}else events();}
 function remapHint(text){const keys={'1':'strike','2':'mark','3':'burst','4':'interrupt','5':'buff','E':'parry','LEER':'dash','Q':'heal'};if(translator.active())return translator.textWith(text,key=>keys[key]||null);return text.replace(/\[(1|2|3|4|5|E|LEER|Q)\]/g,(_,key)=>'['+keyFor(game,keys[key])+']');}

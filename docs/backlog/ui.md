@@ -193,3 +193,11 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 - [ ] Begleiter am Boden liegend zeichnen (view.down); eigene Sprites je Söldner statt Klassen-Look über content/ART-BRIEF (look-Feld).
   Liegedarstellung über view.down ist umgesetzt; individuelle Sprites bleiben Grafikbedarf.
 - [x] Kampfstatistik: Begleiter als eigene Zeilen mit F?higkeiten, Schaden/Heilung, kritischen Treffern, ?berheilung und ?berschaden; Engine-Zuordnung und Browserpr?fung in scripts/companion-combat-check.mjs.
+
+## Rucksack & Werte (E-53) · 2026-09-23
+
+- [x] Fünf Werte mit Wirkung im Tooltip und auf Figur → Werte; Vergleich über Wirkungen mit Ursache-Zeile, wieder im Hover-Tooltip; Filter/Reihenfolge/Suche; Meldung nach dem Anlegen. Browserabnahme `scripts/bag-check.mjs` (Desktop 2024×900, Handy 390×844 Touch).
+- [ ] **Clankiste stumm (Kenner: bricht fast ab):** am falschen Ort passiert beim Klick nichts, am Treffpunkt verschwindet nur der Knopf. Erwartet: „Nur am Treffpunkt“ bzw. „Dosenklinge + Tresenhammer erhalten“; Treffpunkt in der Welt markieren.
+- [ ] Figur → Werte → „Kampfstatistik“ schließt das Figurenfenster, sichtbar öffnet sich nichts.
+- [ ] Veraltete Browserskripte (scheitern auch auf dem Stand vor E-53): `scripts/mobile-check.mjs` (fährt im Figurenfenster über `[data-tooltip-skill="strike"]`, Kniffe liegen seit E-43 auf eigener Seite), `scripts/polish-playtest.mjs` (`.popup-menu [data-shell="bag"]` fehlt), `scripts/character-sheet-check.mjs` und `scripts/tutorial-talents-check.mjs` (`null`-Zugriff). Außerdem erwarten sie einen extern laufenden Server auf 4173/4181 statt ihn selbst zu starten.
+- [ ] Idee (Kenner): Schaden/s und Angriffstempo stehen jetzt auf Figur → Werte; offen, ob Tooltip und Werteseite dieselbe Zahl „je Sekunde inkl. Tempo“ zeigen sollen (heute: Waffe ohne Tempo, Tempo getrennt).

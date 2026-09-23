@@ -49,7 +49,7 @@ Hauptrotation ab Stufe 4, jede Figur: **1 · 1 · 2 · 1 · 3**, dazwischen 4 al
 Neuer Zustand `g.momentum` (0–3 Stapel, 8 s Dauer, Kill erneuert):
 
 - **Kill:** +25 Randale, +1 Punkt, Abklingzeit der Markierung auf 0, Stapel +1.
-- **Je Stapel:** +8 % Drehzahl (Tempo), Laufgeschwindigkeit +6 % außerhalb der Reichweite.
+- **Je Stapel:** +8 % Tempo, Laufgeschwindigkeit +6 % außerhalb der Reichweite.
 - **Kein Verfall der Punkte beim Gegnerwechsel:** Punkte bleiben 8 s nach dem Kill erhalten.
 - **Regeneration:** im Kampf 10 Randale/s statt 5; außerhalb 60 Leben/s für 4 s nach dem letzten Kill („Verschnaufen“), danach normal. Wer weiterzieht, verliert nichts.
 - HUD: drei Bierdeckel-Pfeile neben dem Spielerfenster, die mit dem Stapel aufleuchten.

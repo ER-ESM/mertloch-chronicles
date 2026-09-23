@@ -1,5 +1,5 @@
 import {ENEMY_AUTOS,SKILL_DAMAGE,CAST_TIMES} from './combat.js';
-import {WEAPON_TYPES,WEAPON_SKILL_RULES} from './equipment.js';
+import {WEAPON_TYPES,WEAPON_SKILL_RULES,STAT_NAMES} from './equipment.js';
 // Schema- und Invariantenprüfung aller Inhaltsregister. Liefert eine Liste lesbarer Probleme; leer = in Ordnung.
 import {BALANCE} from './balance.js';
 import {ITEM_CATALOG,ICONS,SLOTS,RARITIES,PROCS} from './items.js';
@@ -17,7 +17,7 @@ import {STORY_CHAPTERS,ACTS} from './story.js';
 import {MEMORY_FRAGMENTS,MEMORY_TRIGGERS} from './memories.js';
 import {BUILDINGS,BUILDING_EFFECTS} from './buildings.js';
 import {runRoleChecks} from './checks/index.js';
-const STATS=['stamina','might','finesse','wit','armorRating','critRating','hasteRating','masteryRating'];
+const STATS=Object.keys(STAT_NAMES); // E-53
 const ID=/^[a-z][a-z0-9-]*$/;
 export function validateContent(){const problems=[];const bad=(where,msg)=>problems.push(where+': '+msg);const num=(where,obj,keys,min=0)=>{for(const k of keys)if(obj[k]!==undefined&&!(typeof obj[k]==='number'&&Number.isFinite(obj[k])&&obj[k]>=min))bad(where,'Feld '+k+' muss eine Zahl ≥ '+min+' sein');};
  // Gegenstände

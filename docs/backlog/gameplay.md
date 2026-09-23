@@ -79,3 +79,9 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 
 - [x] Erste Sammel-/Handwerksstufe: Schrottsammeln, Kräutersammeln, Schrauberei, Hausbrauerei; zwei Hauptberufe pro Held, Fertigkeit 1–75, sechs Rezepte, Stationen, Kiosk-Zutaten und Berufsfenster.
 - [x] Online-Fundstellen mit persönlichen Ernten, atomaren Ergebnisquittungen und Schutz gegen veraltete Cloud-Saves; explizite Solo-Zyklen ohne Konto. Regeln und weitere Grenzen: [Berufsbericht](../BERUFE-2026-09-22.md).
+
+## Playtest Kenner 2026-09-23 (E-53, Bericht `docs/PLAYTEST-2026-09-23-kenner.md`)
+
+- [ ] **Hofprobe 5/8 „Der rote Kreis ist kein Tanzplatz“ – Kenner: bricht ab.** Drei Versuche (Leertaste nach „JETZT AUSWEICHEN!“, erneut, 1 s S gehalten) zählten nicht; der rote Kreis lag auch 27–30 m vom Papp-Horst noch unter der Figur. Mitursache Werkzeugverzögerung möglich. Unit-Test `tests/tutorial-talents.test.mjs` (Wiederholung nach Fehlversuch) grün; das Browserskript `scripts/tutorial-talents-check.mjs` bricht schon vorher ab (`null.dataset`) und prüft den Schritt derzeit nicht. Nicht Teil von E-53 – vor dem nächsten Release mit einem Menschen oder repariertem Skript nachstellen.
+- [ ] Kniff/Autoangriff aus 7 m: nur „Zu weit entfernt“, die Figur läuft nicht selbst hin (Genre-Erwartung).
+- [ ] Rechtsklick-Laufweg in der Welt landet zweimal nicht am Klickpunkt (einmal weit hinter der Kirche); WASD zuverlässig.
