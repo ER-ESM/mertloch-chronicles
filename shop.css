@@ -41,3 +41,6 @@
 @media(orientation:landscape) and (max-height:360px){
  .touch-mode:has(.popup-shop) #touchStick,.touch-mode:has(.popup-shop) #touchActions,.touch-mode:has(.popup-shop) #touchUtility{display:none!important}
 }
+/* Verkaufspreis unter dem Platz als Preis erkennbar (Pfandmarke), nicht als zweite Stückzahl. */
+.shop-bag-slot small{display:inline-flex;align-items:center;gap:3px;color:#f3cf7a}
+.shop-bag-slot small:not(:empty)::before{content:'';width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff0b5,#c99a3f 60%,#7a5520);box-shadow:0 0 0 1px #3a2810}

@@ -24,7 +24,7 @@ export function mountMilestones(shell,{sound,blocked}={}){
    // Aufstieg vor Freischaltungen derselben Stufe (Ursache vor Wirkung).
    queue.unshift({kind:'level',ms:4200,hpGain,points,skills,html:`<span class="milestone-eyebrow">${esc(T.levelEyebrow)}</span><strong class="milestone-title">${esc(T.level(level))}</strong>${gains.length?`<ul class="milestone-gains">${gains.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`:''}`});next();},
   unlock(def){
-   queue.push({kind:'unlock',ms:5600,html:`<span class="milestone-eyebrow">${esc(T.unlockEyebrow)}</span><strong class="milestone-title">${esc(def.name)}</strong><p class="milestone-text">${esc(def.text)}</p><small class="milestone-where">${esc(def.where)}</small>`});next();},
+   queue.push({kind:'unlock',ms:5600,html:`<span class="milestone-eyebrow">${esc(T.unlockEyebrow)}</span><strong class="milestone-title">${esc(def.name)}</strong><p class="milestone-text">${esc(def.text)}</p><small class="milestone-where">${esc(def.where)}</small>`});/* einen Takt warten: ein Aufstieg im selben Bild soll zuerst erscheinen */setTimeout(next,80);},
   get busy(){return busy;}
  };
 }

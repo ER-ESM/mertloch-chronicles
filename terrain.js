@@ -51,20 +51,17 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
       // Saum an der Ackerkante: niedergetretener, dunklerer Rand statt harter Farbkante.
       cc.strokeStyle='#7d7f4c66';cc.lineWidth=5;cc.lineJoin='round';for(const [p,q] of edges){cc.beginPath();cc.moveTo(p.x,p.y);cc.lineTo(q.x,q.y);cc.stroke();}
       cc.strokeStyle='#6f7445aa';cc.lineWidth=1.5;for(const [p,q] of edges){cc.beginPath();cc.moveTo(p.x,p.y);cc.lineTo(q.x,q.y);cc.stroke();}
-      // Continuous world-aligned furrows: no per-chunk slope or hard clipped crop heads.
-      for(let y=Math.floor((oy-8)/9)*9;y<oy+S+8;y+=9){
-        cc.strokeStyle='#84895740';cc.lineWidth=.5;cc.beginPath();
-        for(let x=Math.floor((ox-16)/16)*16;x<ox+S+32;x+=16){
-          const yy=y+Math.sin(x/180)*1.5;if(x===Math.floor((ox-16)/16)*16)cc.moveTo(x,yy);else cc.lineTo(x,yy);
-        }cc.stroke();
+      // Furchen als weiche, unterbrochene Erdstreifen (nicht als Linienraster) – weltfest, keine Kachelkanten.
+      for(let y=Math.floor((oy-12)/12)*12;y<oy+S+12;y+=12){
+        for(let x=Math.floor((ox-40)/40)*40;x<ox+S+40;x+=40){const n=hash(x+3,y+5);if(n<.25)continue;const yy=y+Math.sin(x/180)*2+(n-.5)*2;
+          cc.fillStyle=n>.7?'#8a8a5a38':'#7b7d4c30';cc.beginPath();cc.ellipse(x+20,yy,14+n*10,1.4+n*.6,0,0,Math.PI*2);cc.fill();}
       }
-
-      for(let yy=Math.floor((oy-8)/9)*9;yy<oy+S+8;yy+=9)for(let xx=Math.floor((ox-8)/7)*7;xx<ox+S+8;xx+=7){
-
-        const n=hash(xx,yy);if(n<.3)continue;
-        const x=xx+n*3,y=yy+Math.sin(xx/180)*1.5+n;
+      // Pflanzen: Reihen, aber mit Lücken, Dichteflecken und Versatz – aus der Nähe wie gesät, von weitem kein Karomuster.
+      for(let yy=Math.floor((oy-12)/12)*12;yy<oy+S+12;yy+=12)for(let xx=Math.floor((ox-10)/9)*9;xx<ox+S+10;xx+=9){
+        const patch=hash(Math.floor(xx/60)+911,Math.floor(yy/48)+37),n=hash(xx,yy);if(n<.25+patch*.55)continue;
+        const x=xx+(hash(xx+7,yy)-.5)*6,y=yy+Math.sin(xx/180)*2+(n-.5)*3;
         let edge=7;for(const [p,q]of edges){if(x<Math.min(p.x,q.x)-7||x>Math.max(p.x,q.x)+7||y<Math.min(p.y,q.y)-7||y>Math.max(p.y,q.y)+7)continue;edge=Math.min(edge,segmentDistance(x,y,p,q));}
-        cc.globalAlpha=Math.min(1,edge/7);
+        cc.globalAlpha=Math.min(1,edge/7)*(.65+n*.35);
         rect(cc,'#75824e80',x,y,.5,3);rect(cc,'#d3c482b0',x-.5,y-1,1.5,2);
         rect(cc,'#87905580',x-1,y+1,1,.5);rect(cc,'#b5bd7890',x+.5,y,1,.5);
         rect(cc,'#e5d49c',x,y-2,.5,1.5);if(n>.8)rect(cc,'#91a363',x+1,y,1,.5);

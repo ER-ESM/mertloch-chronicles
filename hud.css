@@ -42,3 +42,15 @@
 @media(orientation:landscape){.touch-mode .popup-menu .game-menu-actions{grid-template-columns:1fr 1fr}.touch-mode .popup-menu [data-close]{grid-column:1/-1}}
 /* Feinschliff 2026-09-22: Spielmenü in Gruppen (Funktionen · Oberfläche/Hilfe · Figur/Abmelden · Zurück) wie im MMO-Vorbild. */
 .popup-menu .game-menu-sep{grid-column:1 / -1;width:100%;height:0;margin:4px 0;border:0;border-top:1px solid #d7b57140}
+/* Feinschliff 2026-09-23: „UI bearbeiten" im Fensterstil des Spiels – Messingrahmen, Titel in Spielschrift, Knöpfe wie überall, eigene Häkchen. */
+#hudEditor .hud-toolbar{border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;border-radius:0;background:#11241cf5 var(--chrome-material) center/384px 384px}
+#hudEditor .hud-toolbar header{background:linear-gradient(#2c4637,#1a2f25);border-bottom:1px solid #d7b57155}
+#hudEditor .hud-toolbar header strong,#hudEditor .hud-toolbar header b{font:400 22px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#f3cf7a}
+#hudEditor .hud-form>label,#hudEditor .hud-form>label>span{font:400 15px/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#d7b571}
+#hudEditor button{border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;border-radius:2px;background:linear-gradient(#36513ce8,#172e25ef);font:400 16px/1.1 var(--display);letter-spacing:.03em}
+#hudEditor [data-hud-save]{background:linear-gradient(#c08d3f,#7b5222);color:#fff6dc;border-image:var(--chrome-frame) 22% / 9px / 0 stretch;text-shadow:0 2px 0 #3a2410}
+#hudEditor select,#hudEditor input:not([type]),#hudEditor input[type=text]{background:#0c1d16;border:1px solid #5d6b55}
+#hudEditor .hud-pair input[type=checkbox]{appearance:none;width:26px;height:26px;min-width:26px;min-height:26px;margin:9px;border:2px solid #d7b571;border-radius:4px;background:#0c1d16;display:grid;place-items:center;cursor:pointer}
+#hudEditor .hud-pair input[type=checkbox]:checked::after{content:'✓';color:#ffe3a3;font:700 18px/1 var(--read)}
+#hudEditor .hud-pair label{font:700 13px/1.3 var(--read)}
+#hudEditor select,#hudEditor input{font:600 14px/1.3 var(--read)}
