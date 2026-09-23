@@ -43,6 +43,14 @@ function wallShade(c,house,f){
   else{band(w.maxX,w.minY,w.maxX+S.side,w.maxY,w.maxX,0,w.maxX+S.side,0);band(w.minX-S.side,w.minY,w.minX,w.maxY,w.minX,0,w.minX-S.side,0);}}
  c.globalAlpha=a;
 }
+/** Offene Kante eines Außenbelags (Hof nach Süden): Kies streut unregelmäßig ins Gras, Grasbüschel wachsen in den Kies –
+ *  statt einer linealgeraden Kante. Deterministisch aus der Position, gleiche Kante in jedem Bild. */
+function softEdge(c,x0,y,w){const h=(n)=>{const v=Math.sin(n*127.1+y*.311)*43758.5453;return v-Math.floor(v);},a=c.globalAlpha;
+ // Überlappende Kiesflecken wechselnder Größe knapp unter der Kante, dazu einzelne Steinchen weiter draußen.
+ for(let x=x0-2;x<x0+w+2;x+=4){const r=h(x),rx=2.5+r*4.5,ry=1.4+h(x*.61)*2.4,cy=y+ry*.4+h(x*.29)*3;c.globalAlpha=.85;c.fillStyle=r>.55?'#8f7d5d':'#9a8868';c.beginPath();c.ellipse(x+h(x*.13)*3,cy,rx,ry,0,0,Math.PI*2);c.fill();
+  for(let k=0;k<3;k++){const q=h(x*1.7+k*9.1);if(q<.5)continue;c.globalAlpha=.55+.3*(1-q);c.fillStyle=q>.8?'#b8a888':'#7d6d52';c.fillRect(x+Math.round(q*4),y+Math.round(4+q*11),q>.8?2:1,1);}
+  const t=h(x*3.3);if(t>.58){c.globalAlpha=.95;c.fillStyle=t>.82?'#5f8a3c':'#4d7a33';const bx=x+1,by=y-1-Math.round(t*6);c.fillRect(bx,by,1,3);c.fillRect(bx-1,by+1,1,2);c.fillRect(bx+1,by+1,1,2);}}
+ c.globalAlpha=a;}
 /** Schlagschatten des Hauses auf Hof und Gras (Lichtrichtung aus light-convention.js, wie Bäume und Nachbarhäuser):
  *  mit sichtbarem Dach lang (Wand + halbes Dach), drinnen nur so hoch wie die geschnittenen Wände. Zwei Lagen für eine weiche Kante. */
 function castShadow(c,house,fade){
@@ -59,6 +67,7 @@ export function drawHouseFloor(c,house,alpha,level=0){
  const f=houseLevel(house,level);
  c.globalAlpha=1;for(const room of house.rooms)if(room.outdoor)drawBelag(c,room,house.origin);
  for(const it of house.items)if(it.outdoor&&it.layer==='decal')drawDecal(c,it);
+ for(const room of house.rooms)if(room.outdoor)for(const q of room.rects)softEdge(c,q.x,q.y+q.h,q.w);
  if(level===0)castShadow(c,house,alpha);
  if(alpha>0){c.globalAlpha=alpha;
   for(const room of f.rooms)if(!room.outdoor)drawBelag(c,room,house.origin);
