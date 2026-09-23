@@ -52,7 +52,7 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
   if(r.every!==undefined&&!(Number.isInteger(r.every)&&r.every>=2))bad(w,'every muss eine ganze Zahl ≥ 2 sein');
   if(r.skill&&!procSkills.has(r.skill))bad(w,'skill unbekannt');
   if(r.trigger==='skillHit'&&(!r.skill||!r.every))bad(w,'skillHit braucht skill und every');
-  if(r.zone&&!['keg','sanctuary','barricade','snare','burn','fass','robbi','nest','spores'].includes(r.zone))bad(w,'zone unbekannt');
+  if(r.zone&&![].concat(r.zone).every(z=>['keg','sanctuary','barricade','snare','burn','fass','robbi','nest','spores'].includes(z)))bad(w,'zone unbekannt');
   if(r.trigger==='inZone'&&!r.zone)bad(w,'inZone braucht zone');
   if(!Object.keys(ef).length)bad(w,'effect leer');
   for(const k of Object.keys(ef))if(!['free','reset','empower','energy','shield','haste','heal','cdReduce'].includes(k))bad(w,'Effektart unbekannt: '+k);

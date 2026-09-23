@@ -75,7 +75,7 @@ Lesart: **Zeit bis zum Kill / verlorenes Leben**. ☠ = stirbt in allen Läufen,
 | Horst Nüchternmann (4) | 10 | 11.9 s / −10 % | 17.9 s / −12 % | 16.6 s / −7 % |
 | Horst Nüchternmann (4) | 15 | 11.2 s / −7 % | 13.9 s / −5 % | 12.2 s / −1 % |
 | Sperrmüll-Sigi * (5) | 3 | 20.6 s / −64 % | 34.5 s / −50 % | 24 s / −65 % ⚠ |
-| Sperrmüll-Sigi * (5) | 5 | 19.5 s / −30 % | 22 s / −35 % | 22.1 s / −22 % |
+| Sperrmüll-Sigi * (5) | 5 | 18.2 s / −22 % | 22.7 s / −35 % | 22.1 s / −22 % |
 | Sperrmüll-Sigi * (5) | 6 | 16.9 s / −25 % | 19.6 s / −22 % | 19.5 s / −16 % |
 | Sperrmüll-Sigi * (5) | 10 | 14.5 s / −17 % | 18.4 s / −13 % | 16.6 s / −6 % |
 | Sperrmüll-Sigi * (5) | 15 | 11.1 s / −9 % | 15.2 s / −8 % | 14.8 s / −4 % |

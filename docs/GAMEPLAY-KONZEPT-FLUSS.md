@@ -29,7 +29,7 @@ Gemessen mit dem Balance-Bericht und in der Arena, beobachtet im Spiel:
 
 ## 3 · Grundrotation Stufe 1–4 je Figur
 
-Neue Lernreihenfolge (`content/skills.js` LESSONS). Der Finisher rückt von Stufe 6 auf Stufe 3; Parade und Unterbrechen bilden Stufe 4. Buff, Wurf, Heilung und Boden kommen danach als Erweiterungen.
+Neue Lernreihenfolge (`content/skills.js` LESSONS). Der Finisher rückt von Stufe 6 auf Stufe 3; Parade und Unterbrechen bilden Stufe 4. Buff, Wurf, Heilung und Boden kommen danach als Erweiterungen. E-60: Auf Stufe 5 (Spezialisierung) kommt alles, woran die ersten Talentreihen hängen – kein Talent ist früher lernbar als sein Kniff (Prüfung `tests/talent-unlock.test.mjs`).
 
 | Stufe | Dosen-Dieter (Tank) | Aperol-Anni (Heilerin) | Klo-Kevin (Fernkampf) |
 |---|---|---|---|
@@ -37,9 +37,9 @@ Neue Lernreihenfolge (`content/skills.js` LESSONS). Der Finisher rückt von Stuf
 | 2 | Pfandschuld (Markieren) | Hauspflege (Heilung über Zeit) | Kleber (Markieren + Verlangsamen) |
 | 3 | Bierzelt-Abriss (Finisher) | Fleckentest (Markieren) | Restmüll-Rakete (Finisher) |
 | 4 | Deckel drauf (Parade) + Halt die Fresse (Unterbrechen) | Thermomix-Turbostufe (Finisher) + Unterbrechen | Sicherung raus (Unterbrechen) + Pömpel-Panzer (Parade) |
-| 5 | Dosenmut (Buff) | Buff | Buff |
-| 6 | Wurf | Wurf | Dosen-Drohne (zweiter Wurf) |
-| 7 | Konterfrühstück (Heilung) | Parade | Heilung |
+| 5 | Pfand auf die Zwölf (Wurf) + Konterfrühstück (Heilung) | Puderdose ins Gesicht (Wurf) + Hygiene-Handschuh (Parade) | Buff |
+| 6 | Dosenmut (Buff) | Buff | – |
+| 7 | – | – | Heilung |
 | 9 | Bodenangriff | Bodenangriff | Bodenangriff |
 
 Hauptrotation ab Stufe 4, jede Figur: **1 · 1 · 2 · 1 · 3**, dazwischen 4 als Antwort auf gelbe Balken und angekündigte Treffer. Das lernt man in zwei Minuten und behält es bis Stufe 30.

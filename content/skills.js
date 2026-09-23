@@ -68,11 +68,14 @@ export const TALENT_SKILLS={
 };
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
 // Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
-export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:5,throw:6,heal:7,ground:3};
+// E-60: Wurf auf 5, Stärkung auf 6 – Talente der ersten Reihen (ab Stufe 5 lernbar) hängen am Wurf, keins vor Stufe 10 an der Stärkung.
+export const LESSONS={auto:1,strike:1,dash:1,mark:2,burst:3,parry:4,interrupt:4,buff:6,throw:5,heal:7,ground:3};
 // Kevin bekommt den Wurf auf Stufe 2 statt 6. Er ist der Fernkämpfer, und die Spielart Schrottkoloss macht seinen
 // Grundangriff zum Nahkampf (class-mechanics.js). Ohne Wurf hatte er bis Stufe 6 keine Antwort auf Gegner, die aus
 // der Distanz auf ihn halten – genau daher kamen die ⚠-Tode gegen Ruhewart, Schnorrer und Ordnungsamt-Praktikant.
-export const CLASS_LESSONS={dieter:LESSONS,baerbel:{...LESSONS,heal:2,mark:3,burst:4,interrupt:4,parry:7},kevin:{...LESSONS,mark:2,throw:2,burst:3,interrupt:4,parry:4}};
+// E-60: Dieters Konterfrühstück auf 5 (die Einstiege des Zapfmeisters bauen darauf), Bärbels Parade auf 5 („Abgeblockt“ ab Stufe 5 lernbar).
+// Kevin behält die Stärkung auf 5 – sein Wurf kam schon auf 2, sonst bekäme er auf Stufe 5 nichts Neues.
+export const CLASS_LESSONS={dieter:{...LESSONS,heal:5},baerbel:{...LESSONS,heal:2,mark:3,burst:4,interrupt:4,parry:5},kevin:{...LESSONS,mark:2,throw:2,burst:3,interrupt:4,parry:4,buff:5}};
 // Balancing-Korrekturen (content/tuning.js): Klassen definieren Kits, Balancing korrigiert Zahlen je klasse/skill-ID.
 import {TUNING,applyTuning} from './tuning.js';
 for(const [cls,patch] of Object.entries(TUNING.skills)){const kit=KITS[cls];if(!kit)continue;const byId=Object.fromEntries(kit.map((s,i)=>[BASE_SKILLS[i].id,s]));applyTuning(byId,patch);}
