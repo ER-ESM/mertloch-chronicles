@@ -93,3 +93,5 @@
 /* Offener Chat auf Touch: Reiter und Zahnrad als 44-px-Ziele mit 8 px Abstand (vorher 24 px hoch, 2 px Abstand) */
 .touch-mode #chatWindow.active .chat-tabs nav{gap:8px;overflow-x:auto;scrollbar-width:none}
 .touch-mode #chatWindow.active .chat-tabs button{min-height:44px;min-width:44px;padding:0 12px;font-size:13px;flex:none}
+/* Hochkant reicht das Fenster bis knapp über die Knöpfe; eine Meldung liegt dann kurz über dem Fenster statt dahinter */
+@media(orientation:portrait){.touch-mode:has(.game-popup) #toast{z-index:41}}

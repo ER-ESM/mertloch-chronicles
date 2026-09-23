@@ -23,7 +23,8 @@
 // Chrome: CHROME=<pfad> oder Vorgabe C:\Program Files\Google\Chrome\Application\chrome.exe. Kein npm-Paket.
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync,mkdtempSync,existsSync} from 'node:fs';
-import {spawn,spawnSync} from 'node:child_process';
+import {spawn} from 'node:child_process';
+import {makeProfile,disposeChrome} from './chrome-profile.mjs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
@@ -41,12 +42,14 @@ const SAFE=(w,h)=>w>h?{top:0,bottom:21,left:47,right:47}:{top:47,bottom:34,left:
 const CORNER=24;
 const DESKTOP_WORDS=/\[(LEER|Q|F|E|[0-9])\]|\bTab\b(?= wählt| oder| →| \/)|\bWASD\b|Rechtsklick|Linksklick|rechtsklicken|doppelklicken|\bMaus\b|Mausrad|\bShift\b|\bTaste\b|\bTasten\b|Tastendruck|\bEsc\b|\bKlick\b|\bLEER\b/;
 
-// Windows: Chrome startet Kindprozesse, die den Debug-Port halten – nur den ganzen Baum beenden (sonst scheitert der nächste Teil am Port).
-const killTree=proc=>{if(process.platform==='win32'&&proc?.pid)spawnSync('taskkill',['/PID',String(proc.pid),'/T','/F'],{stdio:'ignore'});else proc?.kill();};
+// Chrome-Prozessbaum beenden und sein Profil löschen (chrome-profile.mjs); je Chrome ein Profil.
+const profiles=new Map(),killTree=proc=>{disposeChrome(proc,profiles.get(proc));profiles.delete(proc);};
 async function launch(){
  if(!chrome)throw Error('Kein Chrome gefunden; CHROME=<pfad> setzen.');
- const profile=mkdtempSync(join(tmpdir(),'mertloch-mobile-'));
- const proc=spawn(chrome,['--headless=new','--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--no-default-browser-check','--hide-scrollbars','--window-size=900,900','about:blank'],{stdio:'ignore'});
+ // Nie an einen fremden Chrome hängen: laufen zwei Prüfungen parallel (andere Sitzung), eigenen CDP_PORT setzen.
+ try{await fetch('http://127.0.0.1:'+port+'/json/version');throw Error('CDP-Port '+port+' ist belegt (läuft schon eine Prüfung?) – CDP_PORT=<frei> setzen.');}catch(e){if(e.message.startsWith('CDP-Port'))throw e;}
+ const profile=makeProfile('mertloch-mobile-');
+ const proc=spawn(chrome,['--headless=new','--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--no-default-browser-check','--hide-scrollbars','--window-size=900,900','about:blank'],{stdio:'ignore'});profiles.set(proc,profile);
  for(let i=0;i<60;i++){await wait(250);try{const t=await (await fetch('http://127.0.0.1:'+port+'/json')).json();if(t.some(x=>x.type==='page'))return proc;}catch{}}
  killTree(proc);throw Error('Chrome antwortet nicht auf Port '+port);
 }

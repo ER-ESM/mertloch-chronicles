@@ -11,6 +11,7 @@ import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {encodePng,decodePng,surface,bounds as rawBounds,blit} from '../sprite-pipeline/png.mjs';
 import {FRAME,CAMERA,LIGHTS,LIGHT} from './stage.js';
+import {makeProfile,disposeChrome} from '../../scripts/chrome-profile.mjs';
 /** Leere Zellen (verdecktes Teil) sind erlaubt: count 0 statt Fehler. */
 const bounds=(img,rect)=>{try{return rawBounds(img,rect);}catch{return {x:rect.x,y:rect.y,w:0,h:0,count:0};}};
 
@@ -27,10 +28,10 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 async function launch(){
  if(!chrome)throw Error('Kein Chrome gefunden; CHROME=<pfad> setzen.');
- const profile=mkdtempSync(join(tmpdir(),'mertloch-prerender-'));
+ const profile=makeProfile('mertloch-prerender-');
  const proc=spawn(chrome,['--headless=new','--remote-debugging-port='+cdp,'--user-data-dir='+profile,'--no-first-run','--no-default-browser-check','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--window-size=900,900','about:blank'],{stdio:'ignore'});
- for(let i=0;i<80;i++){await wait(250);try{const t=await (await fetch('http://127.0.0.1:'+cdp+'/json')).json();if(t.some(x=>x.type==='page'))return proc;}catch{}}
- proc.kill();throw Error('Chrome antwortet nicht auf Port '+cdp);
+ for(let i=0;i<80;i++){await wait(250);try{const t=await (await fetch('http://127.0.0.1:'+cdp+'/json')).json();if(t.some(x=>x.type==='page')){proc.profile=profile;return proc;}}catch{}}
+ disposeChrome(proc,profile);throw Error('Chrome antwortet nicht auf Port '+cdp);
 }
 async function connect(){
  const targets=await (await fetch('http://127.0.0.1:'+cdp+'/json')).json();const target=targets.find(t=>t.type==='page');
@@ -98,4 +99,4 @@ Hinweis ${hero}: Schatten erreicht in ${r.shadowClipped.length} Bildern den Rahm
  const total=Object.values(catalog.assets).length+Object.values(catalog.gear).length;
  console.log(`Pre-Render fertig: ${Object.keys(catalog.assets).length} Heldenbögen, ${Object.keys(catalog.gear).length} Ausrüstungsebenen, Katalog ${join(OUT,'catalog.json')}`);
  if(b.errors.length)console.log('Browser-Meldungen:\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'));
-}finally{b.close();chromeProc.kill();server.kill();}
+}finally{b.close();disposeChrome(chromeProc,chromeProc.profile);server.kill();}
