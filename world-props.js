@@ -82,8 +82,9 @@ function stagePropsFor(base){
  for(const [index,id] of BUILDING_IDS.entries()){
   const def=PROP_KINDS['bude-'+id],building=BUILDINGS[id];
   const slot={x:base.x+(index%3-1)*R.slotX,y:base.y+(index<3?-1:1)*R.slotY};
-  const max=building.stages.length,rubble=PROP_KINDS['bude-truemmer'];
-  const stages=[{stage:0,kind:'bude-truemmer',name:'Trümmer: '+building.name,x:slot.x,y:slot.y,
+  // Eigener Trümmer-Sprite je Gebäude, sobald geliefert (docs/UEBERGABE-GRAFIK-2026-09-23.md), sonst der gemeinsame.
+  const rubbleKind=PROP_KINDS['bude-truemmer-'+id]?'bude-truemmer-'+id:'bude-truemmer',max=building.stages.length,rubble=PROP_KINDS[rubbleKind];
+  const stages=[{stage:0,kind:rubbleKind,name:'Trümmer: '+building.name,x:slot.x,y:slot.y,
    w:Math.round(rubble.w*R.rubble),h:Math.round(rubble.h*R.rubble),height:rubble.height,blocking:false}];
   for(const s of building.stages){const f=.6+.4*s.stage/max;
    stages.push({stage:s.stage,kind:'bude-'+id,name:s.name,x:slot.x,y:slot.y,

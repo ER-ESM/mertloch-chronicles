@@ -845,3 +845,5 @@ body[data-novel~=companions] .game-menu-actions [data-shell=companions]::before,
 .intro-start{margin-top:16px;font-size:20px;padding:12px 34px}
 body.intro-open .game-shell>:not(canvas):not(.vignette):not(.intro-film):not(.milestone){visibility:hidden}
 .touch-mode .intro-title{font-size:30px}.touch-mode .intro-text{font-size:15px}.touch-mode .intro-top{padding:0 12px}.touch-mode .intro-progress i{width:26px}
+.attack-warning:empty{display:none!important}
+.intro-still{position:absolute;left:0;right:0;top:11vh;bottom:24vh;width:100%;height:calc(100% - 35vh);object-fit:cover;image-rendering:pixelated;animation:intro-kenburns 9s ease-out both}.intro-still[hidden]{display:none}@keyframes intro-kenburns{from{transform:scale(1.08)}to{transform:scale(1)}}

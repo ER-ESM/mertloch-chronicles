@@ -42,7 +42,7 @@ function roomShell(c){
 export function drawKioskRoom(renderer){
  const c=renderer.ctx,g=renderer.game,p=g.player,W=renderer.viewWidth,H=renderer.viewHeight;
  renderer.camera={x:p.x,y:p.y-22};const ox=renderer.camera.x-W/2,oy=renderer.camera.y-H/2;renderer.viewOrigin={x:ox,y:oy};renderer.speechLayout=[];
- const d=renderer.density??WORLD_ART_DENSITY;c.setTransform(d,0,0,d,0,0);box(c,'#15241e',0,0,W,H);c.save();c.translate(-ox,-oy);
+ const d=renderer.density??WORLD_ART_DENSITY;c.setTransform(d,0,0,d,0,0);{/* Innenraum: warmes Licht aus dem Laden, Ränder im Dunkel – statt flacher grüner Leere */const glow=c.createRadialGradient(W/2,H/2,Math.min(W,H)*.25,W/2,H/2,Math.max(W,H)*.62);glow.addColorStop(0,'#2a2418');glow.addColorStop(.55,'#161410');glow.addColorStop(1,'#070605');c.fillStyle=glow;c.fillRect(0,0,W,H);}c.save();c.translate(-ox,-oy);
  roomShell(c);
  const objects=R.furniture.map(b=>({y:b.y+b.h,draw:()=>furniture(c,b)}));
  objects.push({y:R.keeper.y,draw:()=>{drawWorldPerson(c,'kalle',R.keeper.x,R.keeper.y,g.instance.time,WORLD_SCALE.npc/33,{facing:1});}});

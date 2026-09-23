@@ -245,3 +245,6 @@ button[data-setting-toggle][aria-pressed=true] .setting-switch i{transform:trans
 .game-popup .quest-tabs{flex-wrap:wrap}
 /* Abschnittstitel im Fenster sind Überschriften, keine Knöpfe: goldene Schrift mit feiner Linie statt Kasten. */
 .game-popup .panel-section-title{background:none;border:0;border-bottom:1px solid #d7b57155;border-radius:0;padding:0 0 4px;margin:4px 0 10px;color:#f3cf7a;font-size:18px;box-shadow:none}
+/* Laden-Reiter (Kaufen/Rückkauf) im selben Reiter-Look wie der Rest. */
+.game-popup [data-shop-tab]{font:400 17px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(#294235,#182e25);color:#c5ceb7;border:2px solid transparent;border-image:var(--chrome-inset) 10% / 5px / 0 stretch;box-shadow:none}
+.game-popup [data-shop-tab][aria-pressed=true],.game-popup [data-shop-tab].selected,.game-popup [data-shop-tab][aria-selected=true]{background:linear-gradient(#634e2a,#303a27);color:#fff0c8;border-image:var(--chrome-frame) 22% / 9px / 0 stretch;box-shadow:inset 0 -3px #e3c175}
