@@ -33,3 +33,27 @@
 
 - **Möbel der Basisbau-Plätze:** Tresen, Sofa, Grill und Werkstatt sind noch die kleinen Trümmer- und Stufen-Requisiten. Das gemalte Innenbild lässt die Raummitten dafür frei. Nächster Schritt: je Stufe ein gemaltes Möbel in derselben Kamera.
 - **Hoher Hausrat verdeckt noch nicht:** Das Barregal und der Kühlschrank sind ins Innenbild gemalt, Figuren laufen also optisch darüber.
+
+---
+
+## Nachtrag: Sprite-Baukasten (E-54)
+
+Auf Nutzerwunsch ersetzt der Baukasten die gemalten Innenebenen (Regeln: `docs/BAUKASTEN.md`). Geliefert und angebunden:
+
+- **Baukasten-Sprites:** `tools/sprite-pipeline/kit-20260923-jobs.json` (9 Bögen), Export `node tools/sprite-pipeline/build-kit.mjs`, zusammen 60 Sprites unter `assets/precision/runtime/kit/`:
+  - 9 Beläge als 64-E-Kacheln
+  - 3 Wandstreifen (Krone und Front)
+  - 11 Wandschmuck-Teile
+  - 20 Möbel
+  - 12 Tisch- und Bodendeko-Teile
+  - 5 Draußen-Teile
+- **Möbel je Basisbau-Stufe:** 16 gemalte Sprites (`bude-moebel-<gebäude>-<stufe>.png`), angebunden über `prop.art`.
+- **Obergeschoss:** Baubüro, Dachboden, Matratzenlager und Flur, eingerichtet aus dem Baukasten.
+- **Nicht mehr zur Laufzeit genutzt:** die gemalten Innenebenen `bude-haus-innen*.png` und `bude-haus-oben.png`. Sie bleiben als Herkunft und Stilreferenz unter `sources/`.
+
+Abnahme: `npm run kit:check` (beide Geschosse regelkonform), `npm test`, `scripts/bude-house-check.mjs` mit Screenshots unter `visual-review/bude-house/`.
+
+Offen:
+- Die Dielen-Kacheln zeigen leichte Helligkeitsfelder an den Kachelgrenzen.
+- Türen sind noch offene Lücken ohne Türblatt.
+- Die Treppe ist noch Platzhalter-Zeichnung.

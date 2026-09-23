@@ -108,3 +108,29 @@ test('Treppe: hoch und runter per Aktion, oben eigene Kollision, Speichern am Tr
  g.floor=1;g.respawn();assert.equal(g.floor,0,'Wiederbeleben im Erdgeschoss');
  Object.assign(g.player,{x:h.stairs.foot.x+60,y:h.stairs.foot.y});assert.equal(g.stairsInteraction(),null,'nur direkt an der Treppe');
 });
+
+test('Baukasten: Arten erben die Regeln ihrer Klasse, Überschreibungen gewinnen', async()=>{
+ const {resolveSprite,kitIs}=await import('../world-kit.js');
+ const t=resolveSprite('stehtisch');assert.equal(t.top,true,'Ablage von ablage');assert.equal(t.walkable,false,'sperrt wie moebel');assert.equal(t.indoor,true);assert.ok(kitIs(t,'moebel'));
+ const k=resolveSprite('kloschuessel');assert.deepEqual(k.needs,['nass']);assert.ok(kitIs(k,'nassmoebel'));
+ const d=resolveSprite('dartscheibe');assert.equal(d.surface,'wall-face');assert.equal(d.walkable,true);assert.equal(d.mount,9,'eigene Aufhängehöhe überschreibt die Klasse');
+ assert.equal(resolveSprite('zaun-latten').cut,12,'Zaun erbt von wand, überschreibt die Höhe');
+ assert.throws(()=>resolveSprite('gibt-es-nicht'));
+});
+
+test('Baukasten-Prüfer: jede Regel erkennt ihren Verstoß', async()=>{
+ const {validateKitFloor,placeKitItems}=await import('../world-kit.js');
+ const o=house.origin,with_=extra=>({...house,items:[...house.items,...placeKitItems(extra,o,'test-')]});
+ const broke=(extra,rule)=>{const p=validateKitFloor(with_(extra)).filter(x=>x.startsWith(rule+':'));assert.ok(p.length,rule+' nicht erkannt: '+JSON.stringify(extra));};
+ assert.deepEqual(validateKitFloor(house),[],'die Bude selbst ist regelkonform');
+ assert.deepEqual(validateKitFloor(house.upper),[],'das Obergeschoss ist regelkonform');
+ broke([{s:'dartscheibe',x:60,y:130}],'wandschmuck');            // mitten im Raum
+ broke([{s:'dartscheibe',x:92,y:40}],'wandschmuck');             // an einer senkrechten Wand
+ broke([{s:'kloschuessel',x:60,y:120}],'merkmale');              // Klo im Schankraum
+ broke([{s:'stuhl',x:112,y:163}],'tueren');                      // vor dem Eingang
+ broke([{s:'bierkrug',x:60,y:120}],'ablage');                     // Krug auf dem Boden
+ broke([{s:'bierbank',x:60,y:120}],'draussen');                   // Bierbank unter dem Dach
+ broke([{s:'kommode',x:280,y:60}],'draussen');                    // Kommode im Hof
+ broke([{s:'stehtisch',x:107,y:128}],'sperrt');                   // auf den vorhandenen Stehtisch
+ broke([{s:'kommode',x:92,y:40}],'boden');                        // in der Wand
+});

@@ -51,13 +51,14 @@ export const BUDE_HOUSE={
   {s:'kanonenofen',x:14,y:86},{s:'bild-landschaft',x:15,y:75},{s:'flaschenbord',x:84,y:75},{s:'dartscheibe',x:145,y:75},
   {s:'stehtisch',x:107,y:128},{s:'bierkrug',x:104,y:128},{s:'flasche',x:110,y:126},
   {s:'tisch-rund',x:156,y:110},{s:'aschenbecher',x:156,y:109},{s:'stuhl',x:141,y:110},{s:'stuhl',x:156,y:124},
+  {s:'barhocker',x:70,y:118},{s:'barhocker',x:90,y:118},{s:'kisten-stapel',x:200,y:163},
   {s:'laeufer',x:112,y:150},{s:'becher',x:40,y:132},{s:'becher',x:122,y:98},{s:'luftschlangen',x:60,y:118},{s:'socke',x:140,y:160},{s:'scherben',x:170,y:98},
   // Clan-Hinterzimmer
   {s:'bild-landschaft',x:20,y:4},{s:'geweih',x:46,y:4},{s:'kommode',x:74,y:9},{s:'tischlampe',x:80,y:9},{s:'becher',x:60,y:40},{s:'socke',x:18,y:58},
   // Pfandlager
   {s:'regalbrett',x:121,y:4},{s:'sackkarre',x:100,y:62},{s:'eimer',x:144,y:64},
   // Küche
-  {s:'kuechenzeile',x:184,y:10},{s:'flasche',x:170,y:9},{s:'kuehlschrank',x:220,y:29},{s:'wandlampe',x:160,y:4},{s:'pfuetze',x:175,y:45},{s:'scherben',x:210,y:58},
+  {s:'kuechenzeile',x:184,y:10},{s:'flasche',x:170,y:9},{s:'kuehlschrank',x:220,y:29},{s:'fass',x:218,y:58},{s:'wandlampe',x:160,y:4},{s:'pfuetze',x:175,y:45},{s:'scherben',x:210,y:58},
   // Klo
   {s:'kloschuessel',x:218,y:86},{s:'waschbecken',x:195,y:80},{s:'spiegel',x:195,y:75},
   // Hof
@@ -99,7 +100,7 @@ export const BUDE_HOUSE={
    {s:'bauplan-tafel',x:40,y:4},{s:'plakat',x:70,y:4},{s:'schreibtisch',x:40,y:13},{s:'bauplaene',x:34,y:13},{s:'tischlampe',x:54,y:12},
    {s:'stuhl',x:40,y:26},{s:'aktenschrank',x:88,y:9},
    // Dachboden unter dem Dachloch
-   {s:'schutthaufen',x:168,y:53},{s:'eimer',x:192,y:50},{s:'truhe',x:117,y:11},{s:'truhe',x:136,y:11},{s:'pfuetze',x:175,y:78},{s:'scherben',x:140,y:70},
+   {s:'schutthaufen',x:168,y:53},{s:'eimer',x:192,y:50},{s:'truhe',x:117,y:11},{s:'truhe',x:136,y:11},{s:'fass',x:215,y:20},{s:'kisten-stapel',x:218,y:95},{s:'pfuetze',x:175,y:78},{s:'scherben',x:140,y:70},
    // Matratzenlager
    {s:'wimpelkette',x:20,y:93},{s:'hakenleiste',x:87,y:93},{s:'etagenbett',x:77,y:158},{s:'matratze',x:45,y:136},{s:'matratze',x:115,y:140},{s:'socke',x:30,y:162},
    // Flur

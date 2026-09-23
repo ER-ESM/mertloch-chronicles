@@ -1,0 +1,318 @@
+{
+ "format": "kit-v1",
+ "pxPerUnit": 4,
+ "sprites": {
+  "dielen-dunkel": {
+   "file": "kit-dielen-dunkel.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "dielen-hell": {
+   "file": "kit-dielen-hell.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "teppichboden-rot": {
+   "file": "kit-teppichboden-rot.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "estrich": {
+   "file": "kit-estrich.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "fliesen-weiss": {
+   "file": "kit-fliesen-weiss.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "bretter-grau": {
+   "file": "kit-bretter-grau.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "kies-hof": {
+   "file": "kit-kies-hof.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "pflaster-stein": {
+   "file": "kit-pflaster-stein.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "bretter-staubig": {
+   "file": "kit-bretter-staubig.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "wand-aussen": {
+   "file": "kit-wand-aussen.png",
+   "width": 638,
+   "height": 105,
+   "cap": 17
+  },
+  "wand-putz": {
+   "file": "kit-wand-putz.png",
+   "width": 566,
+   "height": 102,
+   "cap": 14
+  },
+  "zaun-latten": {
+   "file": "kit-zaun-latten.png",
+   "width": 346,
+   "height": 48,
+   "cap": 0
+  },
+  "dartscheibe": {
+   "file": "kit-dartscheibe.png",
+   "width": 40,
+   "height": 41
+  },
+  "bild-landschaft": {
+   "file": "kit-bild-landschaft.png",
+   "width": 56,
+   "height": 36
+  },
+  "geweih": {
+   "file": "kit-geweih.png",
+   "width": 48,
+   "height": 50
+  },
+  "wimpelkette": {
+   "file": "kit-wimpelkette.png",
+   "width": 160,
+   "height": 48
+  },
+  "flaschenbord": {
+   "file": "kit-flaschenbord.png",
+   "width": 136,
+   "height": 57
+  },
+  "wandlampe": {
+   "file": "kit-wandlampe.png",
+   "width": 24,
+   "height": 30
+  },
+  "spiegel": {
+   "file": "kit-spiegel.png",
+   "width": 40,
+   "height": 75
+  },
+  "plakat": {
+   "file": "kit-plakat.png",
+   "width": 40,
+   "height": 52
+  },
+  "hakenleiste": {
+   "file": "kit-hakenleiste.png",
+   "width": 64,
+   "height": 69
+  },
+  "bauplan-tafel": {
+   "file": "kit-bauplan-tafel.png",
+   "width": 96,
+   "height": 56
+  },
+  "regalbrett": {
+   "file": "kit-regalbrett.png",
+   "width": 80,
+   "height": 36
+  },
+  "kanonenofen": {
+   "file": "kit-kanonenofen.png",
+   "width": 64,
+   "height": 121
+  },
+  "stehtisch": {
+   "file": "kit-stehtisch.png",
+   "width": 56,
+   "height": 98
+  },
+  "tisch-rund": {
+   "file": "kit-tisch-rund.png",
+   "width": 72,
+   "height": 72
+  },
+  "stuhl": {
+   "file": "kit-stuhl.png",
+   "width": 32,
+   "height": 55
+  },
+  "barhocker": {
+   "file": "kit-barhocker.png",
+   "width": 24,
+   "height": 48
+  },
+  "sofa": {
+   "file": "kit-sofa.png",
+   "width": 160,
+   "height": 88
+  },
+  "kommode": {
+   "file": "kit-kommode.png",
+   "width": 112,
+   "height": 143
+  },
+  "kuehlschrank": {
+   "file": "kit-kuehlschrank.png",
+   "width": 48,
+   "height": 105
+  },
+  "fass": {
+   "file": "kit-fass.png",
+   "width": 40,
+   "height": 68
+  },
+  "kisten-stapel": {
+   "file": "kit-kisten-stapel.png",
+   "width": 56,
+   "height": 117
+  },
+  "sackkarre": {
+   "file": "kit-sackkarre.png",
+   "width": 32,
+   "height": 60
+  },
+  "schreibtisch": {
+   "file": "kit-schreibtisch.png",
+   "width": 160,
+   "height": 102
+  },
+  "aktenschrank": {
+   "file": "kit-aktenschrank.png",
+   "width": 64,
+   "height": 157
+  },
+  "etagenbett": {
+   "file": "kit-etagenbett.png",
+   "width": 136,
+   "height": 179
+  },
+  "truhe": {
+   "file": "kit-truhe.png",
+   "width": 56,
+   "height": 52
+  },
+  "schutthaufen": {
+   "file": "kit-schutthaufen.png",
+   "width": 144,
+   "height": 158
+  },
+  "eimer": {
+   "file": "kit-eimer.png",
+   "width": 24,
+   "height": 30
+  },
+  "kuechenzeile": {
+   "file": "kit-kuechenzeile.png",
+   "width": 240,
+   "height": 118
+  },
+  "kloschuessel": {
+   "file": "kit-kloschuessel.png",
+   "width": 48,
+   "height": 105
+  },
+  "waschbecken": {
+   "file": "kit-waschbecken.png",
+   "width": 40,
+   "height": 47
+  },
+  "bierkrug": {
+   "file": "kit-bierkrug.png",
+   "width": 16,
+   "height": 19
+  },
+  "flasche": {
+   "file": "kit-flasche.png",
+   "width": 8,
+   "height": 22
+  },
+  "aschenbecher": {
+   "file": "kit-aschenbecher.png",
+   "width": 16,
+   "height": 16
+  },
+  "tischlampe": {
+   "file": "kit-tischlampe.png",
+   "width": 16,
+   "height": 24
+  },
+  "bauplaene": {
+   "file": "kit-bauplaene.png",
+   "width": 48,
+   "height": 31
+  },
+  "laeufer": {
+   "file": "kit-laeufer.png",
+   "width": 56,
+   "height": 161
+  },
+  "matratze": {
+   "file": "kit-matratze.png",
+   "width": 56,
+   "height": 139
+  },
+  "becher": {
+   "file": "kit-becher.png",
+   "width": 12,
+   "height": 9
+  },
+  "luftschlangen": {
+   "file": "kit-luftschlangen.png",
+   "width": 32,
+   "height": 26
+  },
+  "socke": {
+   "file": "kit-socke.png",
+   "width": 16,
+   "height": 13
+  },
+  "pfuetze": {
+   "file": "kit-pfuetze.png",
+   "width": 56,
+   "height": 36
+  },
+  "scherben": {
+   "file": "kit-scherben.png",
+   "width": 32,
+   "height": 32
+  },
+  "bierbank": {
+   "file": "kit-bierbank.png",
+   "width": 120,
+   "height": 70
+  },
+  "gartenstuhl": {
+   "file": "kit-gartenstuhl.png",
+   "width": 32,
+   "height": 49
+  },
+  "regentonne": {
+   "file": "kit-regentonne.png",
+   "width": 40,
+   "height": 72
+  },
+  "kistenstapel-hof": {
+   "file": "kit-kistenstapel-hof.png",
+   "width": 64,
+   "height": 111
+  },
+  "fahrrad": {
+   "file": "kit-fahrrad.png",
+   "width": 88,
+   "height": 49
+  }
+ }
+}

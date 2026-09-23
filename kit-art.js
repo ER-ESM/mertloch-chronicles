@@ -36,7 +36,10 @@ export function drawBelag(c,room,origin){
 }
 /** Flach liegende Teile (Bodendeko): unter allen Figuren, keine Höhe. */
 export function drawDecal(c,it){
- const s=sprite(it.sprite);if(s){c.drawImage(s.img,it.minX,it.minY,it.w,it.h);return;}
+ const s=sprite(it.sprite);
+ if(s){// Längs gezeichnete Bodendeko darf quer liegen: dann um 90° gedreht statt verzerrt.
+  if((it.w>it.h)!==(s.img.width>s.img.height)&&Math.abs(it.w-it.h)>2){c.save();c.translate(it.x,it.y);c.rotate(Math.PI/2);c.drawImage(s.img,-it.h/2,-it.w/2,it.h,it.w);c.restore();return;}
+  c.drawImage(s.img,it.minX,it.minY,it.w,it.h);return;}
  const color=it.def.color||'#888';c.fillStyle=shade(color,.7);c.fillRect(it.minX,it.minY,it.w,it.h);c.fillStyle=color;c.fillRect(it.minX+.5,it.minY+.5,it.w-1,it.h-1);
 }
 /** Eine Wand samt ihrem Wandschmuck. Waagerecht: Front (`wall.face`) und Krone; senkrecht: nur die Krone und das Südende. */
@@ -46,7 +49,7 @@ export function drawKitWall(c,wall,cut){
   // Wandstreifen: oberer Teil Krone, unterer Teil Front; horizontal gekachelt, auf die Frontthöhe gestaucht.
   const cap=s.m.cap||0,k=s.k,frontPx=s.img.height-cap;
   for(let x=0;x<w;x+=s.img.width/k){const cw=Math.min(s.img.width/k,w-x);
-   if(cap)c.drawImage(s.img,0,0,cw*k,cap,wall.minX+x,wall.minY-h,cw,d);
+   if(cap)c.drawImage(s.img,0,0,cw*k,cap,wall.minX+x,wall.minY-h,cw,d);else if(x===0)fill(c,shade(def.color||'#7a5a3a',.8),wall.minX,wall.minY-h,w,d);
    c.drawImage(s.img,0,cap,cw*k,frontPx,wall.minX+x,wall.maxY-h,cw,h);}
  }else{
   const color=def.color||'#cdbb92';

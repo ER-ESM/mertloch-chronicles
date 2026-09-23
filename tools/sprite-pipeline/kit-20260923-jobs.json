@@ -1,0 +1,101 @@
+[
+ {
+  "id": "kit-belag-a",
+  "output": "assets/precision/sources/2026-09-23/kit-belag-a.png",
+  "width": 1536,
+  "height": 512,
+  "kind": "tiles",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game texture sheet, 1536 x 512: exactly 3 square seamless tileable floor textures side by side, each exactly 512 x 512 pixels, filling its square edge to edge (no border, no frame, no gap), each tiling seamlessly with itself left-right and top-bottom, seen straight from above: 1) dark worn oak floor planks running left to right, a few nail heads and stains; 2) lighter pine floor planks running left to right, worn; 3) worn red patterned carpet with an ornamental border pattern repeating. Even lighting without vignette, no objects on them. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-belag-b",
+  "output": "assets/precision/sources/2026-09-23/kit-belag-b.png",
+  "width": 1536,
+  "height": 512,
+  "kind": "tiles",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game texture sheet, 1536 x 512: exactly 3 square seamless tileable floor textures side by side, each exactly 512 x 512 pixels, filling its square edge to edge (no border, no frame, no gap), each tiling seamlessly with itself left-right and top-bottom, seen straight from above: 1) smooth grey concrete floor with cracks and stains; 2) small white square ceramic floor tiles with grey grout, slightly dirty; 3) grey weathered attic floor boards running left to right. Even lighting without vignette, no objects on them. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-belag-c",
+  "output": "assets/precision/sources/2026-09-23/kit-belag-c.png",
+  "width": 1536,
+  "height": 512,
+  "kind": "tiles",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game texture sheet, 1536 x 512: exactly 3 square seamless tileable floor textures side by side, each exactly 512 x 512 pixels, filling its square edge to edge (no border, no frame, no gap), each tiling seamlessly with itself left-right and top-bottom, seen straight from above: 1) packed gravel and dirt yard ground with small stones and a few weeds; 2) rough dark stone paving; 3) plain dusty wooden boards. Even lighting without vignette, no objects on them. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-waende",
+  "output": "assets/precision/sources/2026-09-23/kit-waende.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "tiles",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game wall strip sheet, 1536 x 1024: exactly three horizontal wall strips stacked from top to bottom, each strip exactly 1536 wide and about 300 high, separated by fully transparent bands. Each strip is seamlessly tileable left-right and shows, seen from the front and slightly from above like the cut walls in the reference: at its TOP a narrow cut wall crown (the top of the wall, about a quarter of the strip height), below it the wall FRONT down to the floor line. Strips: 1) exterior wall from the inside: cream plaster with a dark oak half-timber beam along the top and a grey stone plinth at the bottom; 2) interior wall: honey plaster with dark wood wainscoting on the lower third; 3) weathered wooden picket fence with horizontal rails, the crown being the pointed picket tops. No decorations on the walls. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-wandschmuck",
+  "output": "assets/precision/sources/2026-09-23/kit-wandschmuck.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "props",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game sprite sheet, 1536 x 1024, fully transparent background. Exactly 11 separate objects arranged in a grid of 4 columns and 3 rows, in reading order (left to right, then next row): 1) round dartboard with darts; 2) framed landscape painting; 3) mounted deer antlers on a wooden plaque; 4) string of colorful triangular bunting flags (wide and low); 5) wall shelf full of liquor bottles (wide); 6) brass wall lamp with warm light; 7) small wall mirror; 8) faded festival poster without letters; 9) coat hook rail with two jackets hanging; 10) chalkboard with pinned construction plans (wide); 11) simple wooden wall shelf with jars. Every object stands alone in its own cell with wide clear transparent gaps to its neighbours, no object touches another, no ground tile, no shadow outside the object. All objects are wall decorations seen straight from the front, hanging flat on a wall. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-moebel-a",
+  "output": "assets/precision/sources/2026-09-23/kit-moebel-a.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "props",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game sprite sheet, 1536 x 1024, fully transparent background. Exactly 10 separate objects arranged in a grid of 5 columns and 2 rows, in reading order (left to right, then next row): 1) black iron pot-belly stove with chimney pipe; 2) high round standing table (bar table); 3) round wooden pub table; 4) simple wooden chair seen from the front; 5) wooden bar stool; 6) worn old sofa (wide); 7) low chest of drawers with a doily; 8) old white fridge; 9) empty metal beer keg; 10) stack of green beer crates. Every object stands alone in its own cell with wide clear transparent gaps to its neighbours, no object touches another, no ground tile, no shadow outside the object. Furniture standing on the floor. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-moebel-b",
+  "output": "assets/precision/sources/2026-09-23/kit-moebel-b.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "props",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game sprite sheet, 1536 x 1024, fully transparent background. Exactly 10 separate objects arranged in a grid of 5 columns and 2 rows, in reading order (left to right, then next row): 1) red hand truck (sack barrow); 2) wide wooden desk; 3) grey metal filing cabinet; 4) wooden bunk bed with a checkered blanket; 5) old wooden chest; 6) pile of broken slates, rafters and plaster rubble; 7) metal bucket; 8) steel kitchen counter with sink (very wide, low); 9) white toilet bowl seen from the front; 10) small white washbasin. Every object stands alone in its own cell with wide clear transparent gaps to its neighbours, no object touches another, no ground tile, no shadow outside the object. Furniture and objects standing on the floor. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-deko",
+  "output": "assets/precision/sources/2026-09-23/kit-deko.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "props",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game sprite sheet, 1536 x 1024, fully transparent background. Exactly 12 separate objects arranged in a grid of 4 columns and 3 rows, in reading order (left to right, then next row): 1) glass beer mug with foam; 2) empty green beer bottle; 3) glass ashtray with cigarette butts; 4) small table lamp with warm light; 5) unrolled construction plans on paper; 6) narrow red runner rug seen from above (long); 7) thin mattress with a sleeping bag seen from above (long); 8) crumpled white plastic cup lying on the floor; 9) tangle of colorful paper streamers lying flat; 10) single lost white sock lying flat; 11) small water puddle seen from above; 12) shards of a broken green bottle. Every object stands alone in its own cell with wide clear transparent gaps to its neighbours, no object touches another, no ground tile, no shadow outside the object. Small table items (upright) and flat floor items (seen from above). Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ },
+ {
+  "id": "kit-aussen",
+  "output": "assets/precision/sources/2026-09-23/kit-aussen.png",
+  "width": 1536,
+  "height": 1024,
+  "kind": "props",
+  "references": [
+   "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png"
+  ],
+  "prompt": "Game sprite sheet, 1536 x 1024, fully transparent background. Exactly 5 separate objects arranged in a grid of 5 columns and 1 rows, in reading order (left to right, then next row): 1) wooden beer garden bench (wide, low); 2) white plastic garden chair; 3) blue rain barrel; 4) stack of empty beer crates in the yard; 5) old rusty bicycle seen from the side (wide). Every object stands alone in its own cell with wide clear transparent gaps to its neighbours, no object touches another, no ground tile, no shadow outside the object. Outdoor yard objects. Style: finely detailed warm comic pixel art exactly matching the reference image (the painted interior of the same village clubhouse pub): crisp deliberate pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn materials. Camera: axis-aligned top-down view with a steep downward angle like the reference, NOT isometric, NOT rotated; standing objects show their front side facing the viewer and their top. No text, no letters, no characters."
+ }
+]

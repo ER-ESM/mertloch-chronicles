@@ -38,6 +38,8 @@ export const KIT_SPRITES={
  'fliesen-weiss':{is:'belag',name:'Weiße Fliesen',color:'#cfd3cf'},
  'bretter-grau':{is:'belag',name:'Graue Bodenbretter',color:'#6e6a62'},
  'kies-hof':{is:'belag',name:'Kies und Erde',color:'#9c8a6a',outdoor:true},
+ 'pflaster-stein':{is:'belag',name:'Steinpflaster',color:'#6a6660',outdoor:true},
+ 'bretter-staubig':{is:'belag',name:'Staubige Bretter',color:'#8a7a60'},
  // Wände
  'wand-aussen':{is:'wand',name:'Außenwand',thickness:8,color:'#b9a27a'},
  'wand-putz':{is:'wand',name:'Innenwand',thickness:6,color:'#cdbb92'},

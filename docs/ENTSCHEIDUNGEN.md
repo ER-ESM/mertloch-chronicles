@@ -690,3 +690,23 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Verworfen.** *Sechs Werte (Glückstreffer und Tempo getrennt, Taktgefühl gestrichen)* – bricht die Spec-Profile „Tempo & Präzision“ und die drei E-02-Namen, ohne klarer zu werden. *Wertungen behalten, nur besser beschriften* – löst die Verflechtung nicht. *Vergleich weiter über rohe Werte mit festen Gewichten je Wert* – bleibt blind für Waffentempo, Kappen und Klasse.
 
 **Offen.** Playtest Kenner (`docs/PLAYTEST-2026-09-23-kenner.md`): frei mit Auflagen; Hofprobe 5/8 und stumme Clankiste siehe `docs/backlog/gameplay.md`/`ui.md`.
+
+## E-54 · Sprite-Baukasten mit vererbten Regeln statt gemalter Hausbilder; Obergeschoss (23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Baue auf einzelne Sprites um, die du selbstständig platzieren kannst, um eigene Welten und Gebäude und Innenleben aufzubauen. Definiere Regeln, welche Spritearten wo anzubringen sind, z. B. Wände, wo auch nur Wandaccessoires platziert werden. Mit solchen Regeln kommt auch dazu, wo man drübergehen kann und wo nicht … gezielt perfekte Welten gestalten, mit hohem Detailgrad und automatisch vererbten Eigenschaften der einzelnen Sprites.“ Außerdem: Die Bude ist außen zweigeschossig, innen war nur ein Stockwerk abgebildet.
+
+**Entschieden.**
+1. **Baukasten statt gemalter Innenbilder.** Innenräume, Hof und Einrichtung setzen sich aus Einzel-Sprites zusammen. Jede Art erbt über `is` die Regeln ihrer Klasse (`content/sprite-kit.js`). Damit ist E-52 Punkt 3 revidiert, und die dort verworfene Alternative „Baukasten“ gilt jetzt.
+2. **Regeln sind Daten, der Prüfer ist Code** (`world-kit.js`). Er prüft Belag je Raum, Wandschmuck nur an sichtbaren Wandfronten in deren Höhe, Möbel auf freiem Boden und nicht vor Türen, Sperrflächen ohne Überlappung, Tischdeko nur auf Ablagen, draußen/drinnen und Raum-Merkmale. `npm run kit:check` und Tests halten jede Szene regelkonform.
+3. **Kollision, Wege und Zeichenebenen folgen aus den Arten.** Was nicht begehbar ist, sperrt mit seiner Standfläche. Es gibt keine zweite, handgepflegte Kollisionsliste.
+4. **Wandfronten:** Waagerechte Innenwände zeigen 22 E (1,5 m) Front, auf ihr hängt der Wandschmuck. Die südliche Außenwand zeigt nur einen Sockel (8 E), damit man in die Räume sieht. Senkrechte Wände zeigen nur ihre Krone.
+5. **Obergeschoss:**
+   - Die Treppe an der Westwand des Schankraums bedient man mit F (hoch/runter).
+   - Oben gibt es eine eigene Stockwerk-Welt für Kollision und Wege.
+   - Online wird das Stockwerk mitgeschickt (`fl`). Sichtbar ist nur, wer auf dem eigenen Geschoss steht.
+   - Oben gibt es keine Zielwahl und keine Gespräche mit Leuten unten. Gespeichert wird der Treppenfuß.
+6. **Gemalt bleiben** die Außenansicht mit Dach und die Möbel der Basisbau-Stufen. Beides sind Einzel-Sprites im selben Stil. Die gemalten Innenebenen bleiben nur als Herkunft und Stilreferenz unter `sources/`.
+
+**Verworfen.** *Gemaltes Haus in Ebenen weiterführen* – sieht geschlossen aus, lässt sich aber nicht gezielt umbauen oder auf weitere Häuser übertragen. Kollision und Bild müssen außerdem von Hand gleich gehalten werden. *Raster-Kacheln (feste Tile-Größe)* – einfacher zu prüfen, zwingt aber jedes Möbel auf ein Raster und passt nicht zu den Weltmaßen der Figuren.
+
+**Offen.** Türen als eigene Sprites (heute offene Lücke). Außenansicht aus Fassaden- und Dachteilen. Weitere Häuser und Dorfteile aus dem Baukasten. Hohe Möbel, die Figuren dahinter verdecken, sind schon abgedeckt: Stehende Teile werden nach Tiefe sortiert.
