@@ -59,8 +59,20 @@ let labelBoxes=[];
 // die Welt darf zur Leistung halb aufgelöst rendern, Namen und Kampfzahlen bleiben trotzdem gestochen scharf (MMO-Maßstab).
 let labelQueue=null,labelTarget=null;
 const FURNITURE=['bench','cart','lantern'];
-/** Auftragsabzeichen über einer Figur: Glyph mit Pille; `framed` (Story) bekommt zusätzlich einen goldenen Rahmen und pulsiert leicht. */
-function questBadge(c,x,y,glyph,framed,time=0){c.save();const w=framed?22:16,h=framed?22:16,bob=Math.sin(time*2.4)*(framed?2:1);const bx=Math.round(x-w/2),by=Math.round(y-h-bob);c.fillStyle=framed?'#AD5260':'#223A2F';c.strokeStyle=framed?'#ECB95C':'#C9A46F';c.lineWidth=framed?2:1;c.beginPath();c.roundRect?c.roundRect(bx,by,w,h,framed?7:5):c.rect(bx,by,w,h);c.fill();c.stroke();if(framed){c.strokeStyle='#FFE08A';c.lineWidth=1;c.beginPath();c.roundRect?c.roundRect(bx-3,by-3,w+6,h+6,9):c.rect(bx-3,by-3,w+6,h+6);c.stroke();}c.font=(framed?'bold 15px':'bold 12px')+" 'Jersey 15','Trebuchet MS',sans-serif";c.textAlign='center';c.textBaseline='middle';c.fillStyle=framed?'#FFF3D6':'#F4E8C4';c.fillText(glyph,Math.round(x),by+h/2+1);c.restore();}
+/** Auftragszeichen über einer Figur wie in den großen Rollenspielen: goldenes „!“ (neu) bzw. „?“ (abgeben) mit dunkler Kontur
+ *  und warmem, atmendem Schein, ohne Kasten; „…“ (läuft noch) grau und ohne Schein. `framed` (Story) ist größer und leuchtet stärker.
+ *  Liegt auf der Schrift-Ebene (scharf, über dem Licht); ohne Schrift-Ebene direkt auf der Welt. */
+function questBadge(c,x,y,glyph,framed,time=0){
+ const size=framed?19:14,bob=Math.sin(time*2.4)*(framed?2:1.2),cy=y-size*.62-bob,busy=glyph==='…',alpha=c.globalAlpha;
+ const paint=cc=>{cc.globalAlpha=alpha;
+  if(!busy){const pulse=.6+.4*Math.sin(time*3.1),r=size*1.25,g=cc.createRadialGradient(x,cy,0,x,cy,r);g.addColorStop(0,`rgba(255,206,110,${(framed?.55:.36)*pulse})`);g.addColorStop(.55,`rgba(255,190,90,${(framed?.2:.12)*pulse})`);g.addColorStop(1,'rgba(255,190,90,0)');cc.fillStyle=g;cc.fillRect(x-r,cy-r,r*2,r*2);}
+  cc.font=`bold ${Math.round(size*(glyph==='!'?1.45:1.3))}px 'Jersey 15','Trebuchet MS',sans-serif`;cc.textAlign='center';cc.textBaseline='middle';cc.lineJoin='round';
+  cc.lineWidth=framed?4.5:3.5;cc.strokeStyle='#2a1808';cc.strokeText(glyph,x,cy);
+  const f=cc.createLinearGradient(0,cy-size*.7,0,cy+size*.7);if(busy){f.addColorStop(0,'#e4dccb');f.addColorStop(1,'#9a9282');}else{f.addColorStop(0,'#fff4c2');f.addColorStop(.45,'#ffd35a');f.addColorStop(1,'#d8891e');}
+  cc.fillStyle=f;cc.fillText(glyph,x,cy);};
+ if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:1,paint});return;}
+ c.save();paint(c);c.restore();
+}
 function label(c,text,x,y,color='#ead9a7',size=8){c.save();c.font=size>=14?`bold ${size}px 'Jersey 15','Trebuchet MS',sans-serif`:`800 ${size}px Nunito,'Trebuchet MS',sans-serif`;const width=c.measureText(text).width,b={x:x-width/2-2,y:y-size-2,w:width+4,h:size+5};if(size<11&&labelBoxes.some(a=>b.x<a.x+a.w&&b.x+b.w>a.x&&b.y<a.y+a.h&&b.y+b.h>a.y)){c.restore();return;}labelBoxes.push(b);if(labelQueue&&c===labelTarget){labelQueue.push({t:c.getTransform(),a:c.globalAlpha,font:c.font,text,x:Math.round(x),y:Math.round(y),color,b});c.restore();return;}c.textAlign='center';c.strokeStyle='#1d2b24f0';c.lineWidth=2.2;c.lineJoin='round';c.strokeText(text,Math.round(x),Math.round(y));c.fillStyle=color;c.fillText(text,Math.round(x),Math.round(y));c.restore();}
 export const ZOOM_RANGE={min:.6,max:1.8,step:1.1};
 export class Renderer {
@@ -108,7 +120,7 @@ export class Renderer {
    // Sprechblasen zuerst vermessen (Probelauf auf 1×1-Leinwand): Namensschilder darunter entfallen, solange die Blase steht.
    let bubbleBoxes=[];if(sp){const pr=this.probeCtx||(this.probeCtx=Object.assign(document.createElement('canvas'),{width:1,height:1}).getContext('2d'));pr.setTransform(sp.t);bubbleBoxes=drawBossSpeech(pr,sp.bubbles,sp.opts).map(r=>({x:r.x+sp.opts.ox,y:r.y+sp.opts.oy,w:r.w,h:r.h}));}
    const under=b=>b&&bubbleBoxes.some(r=>b.x<r.x+r.w+4&&b.x+b.w>r.x-4&&b.y<r.y+r.h+4&&b.y+b.h>r.y-4);
-   for(const l of q){if(under(l.b))continue;const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a;c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
+   for(const l of q){if(under(l.b))continue;const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a;if(l.paint){c.save();l.paint(c);c.restore();continue;}c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
    c.globalAlpha=1;
    if(sp){const t=sp.t;c.save();c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);this.speechLayout=drawBossSpeech(c,sp.bubbles,sp.opts);c.restore();}
    c.setTransform(1,0,0,1,0,0);}
@@ -185,8 +197,9 @@ export class Renderer {
       else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}
-    // Räume erkennen (E-52): drinnen steht jeder Raumname oben im Raum, der eigene in Gold.
-    if(houseSeen&&houseFade>.5){const here=roomAt(house,p.x,p.y,level);c.globalAlpha=Math.min(1,(houseFade-.5)*2);for(const room of houseLevel(house,level).rooms){if(room.outdoor)continue;const q=room.rects[0];label(c,room.name,q.x+q.w/2,q.y+11,room===here?'#f0c86a':'#e8dcc0',7);}c.globalAlpha=1;}
+    // Räume erkennen (E-52): drinnen steht der eigene Raumname in Gold oben im Raum; andere Räume nennen ihren Namen erst,
+    // wenn die Maus über ihnen steht (keine Schilderwand im Haus).
+    if(houseSeen&&houseFade>.5){const here=roomAt(house,p.x,p.y,level),over=g.hover&&roomAt(house,g.hover.x,g.hover.y,level);c.globalAlpha=Math.min(1,(houseFade-.5)*2);for(const room of houseLevel(house,level).rooms){if(room.outdoor||room!==here&&room!==over)continue;const q=room.rects[0];label(c,room.name,q.x+q.w/2,q.y+11,room===here?'#f0c86a':'#e8dcc0',7);}c.globalAlpha=1;}
     for(const f of g.fx)if(visible(f,(f.radius||60)+40)||f.from&&visible(f.from,100))this.drawEffect(c,f,time);
     drawCombatStates(c,g,visible);
     // Namen und Lebensbalken sitzen über dem gelieferten Bogen; die Weltposition selbst bleibt unverändert.
