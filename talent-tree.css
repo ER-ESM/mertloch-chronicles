@@ -41,3 +41,14 @@
 /* Feinschliff 2026-09-22: gesperrte Talente grau, aber lesbar (MMO-Muster) statt halb durchsichtig auf Dunkelgrün. */
 .tt-menu .tt-node.locked canvas{filter:grayscale(1) brightness(1.25) contrast(1.1);opacity:.9}
 .tt-menu .tt-node.locked{background:#1b2a24}
+/* Hauptbaum-Wahl hervorheben, solange keiner gewählt ist; Richtung je Pfad (Nutzerwunsch 2026-09-23). */
+.tt-main-callout{display:flex;flex-direction:column;gap:3px;margin:0 0 8px;padding:8px 12px;border:2px solid var(--gold);border-radius:6px;background:linear-gradient(180deg,#f1cd7726,#f1cd770d);color:var(--cream)}
+.tt-main-callout b{font:17px/1.15 var(--display);letter-spacing:.02em;color:var(--gold)}
+.tt-main-callout span{font:12px/1.4 var(--read)}
+.tt-main-callout.quiet{border:1px dashed #67765e;background:none;opacity:.85}
+.tt-menu .tt-toolbar button.tt-main-pick{background:var(--gold);border-color:var(--gold);color:#2a261c;font-weight:700;animation:tt-main-pick 1.8s ease-in-out infinite}
+.tt-menu .tt-spec-tabs button.tt-choose:not(.selected){outline:1px dashed #f1cd77aa;outline-offset:-3px}
+@keyframes tt-main-pick{0%,100%{box-shadow:0 0 0 0 #f1cd7700}50%{box-shadow:0 0 0 4px #f1cd7773}}
+@media (prefers-reduced-motion:reduce){.tt-menu .tt-toolbar button.tt-main-pick{animation:none;box-shadow:0 0 0 3px #f1cd7773}}
+.tt-path-focus{margin:2px 0 8px;font:12px/1.4 var(--read);color:var(--cream)}
+.tt-path-focus b{color:var(--gold);font-weight:600}

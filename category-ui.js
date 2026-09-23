@@ -1,4 +1,4 @@
-// Kategorien direkt am Kniff/Talent/Auslöser: Art · Funktion · Baum-Mechanik, darunter „Gehört zu" mit Sprung zu den veränderten Kniffen.
+// Kategorien direkt am Kniff/Talent/Auslöser: Art · Funktion · Baum-Mechanik, darunter der Talentbaum („Gehört zu", ohne die eigene Klasse) und Sprünge zu den veränderten Kniffen.
 // Daten und Regeln: content/categories.js. Ein Baustein für alle Tooltips und die Karten im Nachschlagewerk.
 import {categoriesOf,describe as contentDescribe,CATEGORY_UI as UI,KINDS,FUNCTIONS} from './content/index.js';
 import {resolve,kniffAnchor} from './describe-ui.js';
@@ -10,11 +10,12 @@ export function categoryKey(game,kind,id){return resolve(game,kind,id).content;}
 /** Chips + Zugehörigkeit als HTML; leer, wenn das Element keine Kategorien hat (Gegenstände, Gebäude). */
 export function categoryChips(game,kind,id){
  // Der Autoangriff ist kein Inhaltselement mit eigener Beschreibung, soll aber genauso einsortiert sein.
- if(kind==='skill'&&id==='auto')return '<div class="cat-block" data-categories="skill:auto"><div class="cat-row"><span class="cat cat-kind" data-cat-kind="skill" title="'+esc(KINDS.skill.short)+'">'+esc(KINDS.skill.name)+'</span><span class="cat cat-fn cat-main" data-cat-fn="autoangriff" title="'+esc(FUNCTIONS.autoangriff.short)+'">'+esc(FUNCTIONS.autoangriff.name)+'</span></div><div class="cat-belongs"><b>'+esc(UI.belongs)+'</b> '+esc(game?.member?.name||'')+'</div></div>';
+ if(kind==='skill'&&id==='auto')return '<div class="cat-block" data-categories="skill:auto"><div class="cat-row"><span class="cat cat-kind" data-cat-kind="skill" title="'+esc(KINDS.skill.short)+'">'+esc(KINDS.skill.name)+'</span><span class="cat cat-fn cat-main" data-cat-fn="autoangriff" title="'+esc(FUNCTIONS.autoangriff.short)+'">'+esc(FUNCTIONS.autoangriff.name)+'</span></div></div>';
  const key=categoryKey(game,kind,id),c=key&&categoriesOf(key.kind,key.id);if(!c)return '';
  const chip=(cls,x,attr='')=>'<span class="cat '+cls+'"'+attr+' title="'+esc(x.short||'')+'">'+esc(x.name)+'</span>';
  const chips=chip('cat-kind',c.kind,' data-cat-kind="'+esc(c.kind.id)+'"')+c.functions.slice(0,3).map((f,i)=>chip('cat-fn'+(i?'':' cat-main'),f,' data-cat-fn="'+esc(f.id)+'"')).join('')+c.mechanics.slice(0,2).map(m=>chip('cat-mech',m,' data-cat-mech="'+esc(m.id)+'"')).join('');
- const b=c.belongs,where=[b.className,b.specName].filter(Boolean).map(esc).join(' · ');
+ // Die eigene Klasse steht nicht dabei: Der Held spielt ohnehin nur seine Klasse (Nutzerbefund 2026-09-23, „Gehört zu Dosen-Dieter“ ist unnütz).
+ const b=c.belongs,where=b.specName?esc(b.specName):'';
  const links=[b.modifies.length?'<span class="cat-rel">'+esc(c.kind.id==='talentSkill'?UI.unlockedBy:UI.modifies)+'</span> '+b.modifies.map(jump).join(' '):'',b.source.length?'<span class="cat-rel">'+esc(UI.from)+'</span> '+b.source.slice(0,2).map(t=>jump('talent:'+t)).join(' '):''].filter(Boolean).join(' · ');
- return '<div class="cat-block" data-categories="'+esc(key.kind+':'+key.id)+'"><div class="cat-row">'+chips+'</div>'+(where||links?'<div class="cat-belongs"><b>'+esc(UI.belongs)+'</b> '+where+(where&&links?' · ':'')+links+'</div>':'')+'</div>';
+ return '<div class="cat-block" data-categories="'+esc(key.kind+':'+key.id)+'"><div class="cat-row">'+chips+'</div>'+(where||links?'<div class="cat-belongs">'+(where?'<b>'+esc(UI.belongs)+'</b> '+where:'')+(where&&links?' · ':'')+links+'</div>':'')+'</div>';
 }
