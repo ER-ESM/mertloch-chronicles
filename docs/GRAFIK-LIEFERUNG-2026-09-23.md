@@ -30,3 +30,21 @@ Prop-Dateien tragen wie bisher das Präfix `prop-`; öffentliche Motiv-IDs sind 
 Die Bildabnahme führte zu zwei Korrekturen: größere Trümmerdarstellung und eine ausdrücklich einspaltige Intro-Anordnung. Der bestehende Kamerafilm bleibt bei Szenen ohne Bild oder bei einem Bildladefehler verfügbar.
 
 [Prüfergebnis](../assets/precision/review/2026-09-23/result.json) · [Baustelle](../assets/precision/review/2026-09-23/bude-desktop.jpg) · [Stufenaufstieg](../assets/precision/review/2026-09-23/levelup.jpg) · [Intro Desktop](../assets/precision/review/2026-09-23/intro-filmriss-desktop.jpg) · [Intro Handy](../assets/precision/review/2026-09-23/intro-maifeld-phone.jpg) · [Kiosk](../assets/precision/review/2026-09-23/kiosk-desktop.jpg) · [Neu-Siegel](../assets/precision/review/2026-09-23/unlock.jpg)
+
+## Zweite Runde: 22 Symbole direkt aus der Sitzung (E-51)
+
+Erste Runde über den neuen Direktweg ([BILDPIPELINE-DIREKT-2026-09-23.md](BILDPIPELINE-DIREKT-2026-09-23.md)): `npm run sprites:generate -- tools/sprite-pipeline/items-20260923-jobs.json`, ohne Übergabesitzung. Zwei Probemotive (`kraeutersud`, `ui-tab-talente`) zuerst, danach die übrigen 20 in einem Lauf.
+
+| Lieferung | Laufzeitformat | Einbindung |
+|---|---|---|
+| 21 Gegenstände: `pfandbon`, `kabelbinder`, `palettenholz`, `jga-shirt`, `kabeltalisman`, `blechtalisman`, `keilerzahn`, `gansorden`, `dachsdeckel`, `ruhepfeife`, `horststempel`, `dienstmuetze`, `sigizange`, `koenigskette`, `schaerpe`, `feldkraut`, `brauwasser`, `leerflasche`, `kraeutersud`, `hopfenschorle`, `feldtee` | je 48×48 mit 4 px Rand, transparent | Automatisch über die Gegenstands-ID (`itemArt()` in `rpg-ui.js` nimmt das Katalogbild vor dem alten Ersatzsymbol): Rucksack, Tooltip, Händler, Aktionsleiste |
+| `ui-tab-talente` | 48×48, transparent | Buch-Reiter „Talente“ (`ui-art.js`, vorher `ui-elite-badge`) |
+
+- Export: [precision-september.mjs](../tools/sprite-pipeline/precision-september.mjs) liest jetzt beide Auftragsblätter des Tages; Katalog 373 Assets, nur ergänzt (22 neu, kein bestehender Eintrag verändert).
+- Herkunft: 22 neue Einträge in [generation.json](../assets/precision/generation.json) mit `via: codex exec …`. `imagegen.mjs` schreibt die Herkunft jetzt nach jedem Bild (vorher erst am Laufende: ein Abbruch hätte fertige Bilder ohne Herkunft hinterlassen, die ein Folgelauf überspringt) und mit der Einrückung der Datei (2 statt 1 Leerzeichen).
+- Bildabnahme der Originale: alle 22 treffen ihren Auftrag, echte Transparenz (Motiv-Alpha 250–253, wie die erste Runde). `kabeltalisman` und `gansorden` berühren oben mit wenigen Konturpixeln den Bildrand; bei 48 px unsichtbar, nicht nachgezogen.
+- Schwächstes Motiv: `sigizange` — dünne, dunkle Silhouette, auf dunklem Grund in 48 px am schwächsten lesbar. Bei Bedarf mit `--only=sigizange --force` und hellerem Griff/dickeren Backen nachziehen.
+
+**Abnahme:** `npm test` 691/691. `node scripts/items-20260923-check.mjs`: 22 Bilder geladen, Rucksack zeichnet alle 21 Gegenstände aus dem Katalog (Desktop und 390×844), Talente-Reiter zeigt `ui-tab-talente` (Übereinstimmung 0,80 gegenüber 0,24 zum alten Abzeichen). `npm run ui:check`, `npm run shop:check` und `node scripts/grafik-20260923-check.mjs` (Erwartung jetzt 34 Bilder mit `delivery: 2026-09-23`) grün, **keine JavaScript-Fehler**.
+
+[Prüfergebnis](../assets/precision/review/2026-09-23/items/result.json) · [Rucksack Desktop](../assets/precision/review/2026-09-23/items/rucksack-desktop.jpg) · [Rucksack Handy](../assets/precision/review/2026-09-23/items/rucksack-phone.jpg) · [Talente Desktop](../assets/precision/review/2026-09-23/items/talente-desktop.jpg) · [Talente Handy](../assets/precision/review/2026-09-23/items/talente-phone.jpg)

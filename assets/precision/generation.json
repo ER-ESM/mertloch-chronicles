@@ -691,6 +691,336 @@
       "date": "2026-09-23",
       "tool": "built-in imagegen",
       "sourceHash": "5c17079b5b9e810fa30b85ecab6252cb7a5ee061f11443ee348f94184530ae4b"
+    },
+    {
+      "id": "kraeutersud",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/kraeutersud.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID kraeutersud. Subject: a swing-top glass bottle filled with murky dark green herbal brew, closed ceramic stopper, a sprig of green herbs tied to the neck with twine. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-eb7c01e7-2269-4c6a-9969-29cc2b5f4c28.png",
+      "sourceHash": "3b6f881763126921f619f7066ee11cbdd57163f1321bd5115d4721430c1bf3ba"
+    },
+    {
+      "id": "ui-tab-talente",
+      "kind": "ui",
+      "output": "assets/precision/sources/2026-09-23/ui-tab-talente.png",
+      "prompt": "Use case: stylized-concept. Production menu tab icon for Mertloch Chronicles, ID ui-tab-talente, the tab for the talent trees page. Subject: a small branching hop vine sprout growing upward from a short root, splitting into three shoots, each shoot ending in a round golden bottle cap node that glows softly; green leaves, amber and gold nodes. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact symmetric emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-b86d7205-a34c-47a3-839a-f6f66702a915.png",
+      "sourceHash": "ad7240bc32f9e64fc2a5cb121f800b3c180eb020a3684f3df4112701f07cd9cc"
+    },
+    {
+      "id": "pfandbon",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/pfandbon.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID pfandbon. Subject: a small bundle of crumpled cream paper deposit receipts held by a red rubber band, the top receipt bent up, faint grey print lines only. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-acfb0442-5954-46ec-9895-5b5f2332d69c.png",
+      "sourceHash": "60c0dc85dfe52ac82af65bfbd2fa543e99791b13e56992035bb2a5a971331ba7"
+    },
+    {
+      "id": "kabelbinder",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/kabelbinder.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID kabelbinder. Subject: one coiled white plastic cable tie with a small square head that carries a tiny round blue official stamp mark. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-99b13e9c-18fb-49fc-aa37-7ba094e21f08.png",
+      "sourceHash": "42a1764508af3cc8b09f86f2929e7006627627714f36081db1ec1aa64d38d197"
+    },
+    {
+      "id": "palettenholz",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/palettenholz.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID palettenholz. Subject: a broken pale pine pallet board plank with splintered end, one rusty bent nail sticking out, a dark branded rectangular stamp mark burned into the wood. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-ac3e4a10-364e-41fb-a761-747a998084ea.png",
+      "sourceHash": "418aba3de178721c87c686c2361e942ba9cd3413f4a39a649e6a43c03c24fe2e"
+    },
+    {
+      "id": "jga-shirt",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/jga-shirt.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID jga-shirt. Subject: a crumpled sweaty white T-shirt with a bold black rectangular print block on the chest made of two thick bars, a few amber beer stains. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-d34b8168-58fd-471f-9bdf-45771c4e0ef1.png",
+      "sourceHash": "f87e31a7d73ada56136cd86fab9a61b8906760b2be36665630e78badf2c742bf"
+    },
+    {
+      "id": "kabeltalisman",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/kabeltalisman.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID kabeltalisman. Subject: a braided pendant woven from colorful cable ties in red, yellow, blue and green, a shiny bottle cap set in the middle, hanging from a short loop. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-194940bf-c7ea-4ca2-8e66-71ce8b9c48f6.png",
+      "sourceHash": "e545e6b84b4af056be97748844bf0e0c26e8751004393b1f776e62e12c86b27c"
+    },
+    {
+      "id": "blechtalisman",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/blechtalisman.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID blechtalisman. Subject: a round hammered tin disc amulet with coarse dark boar bristles as fringe around its rim and a scrap of cream paper glued onto the center, on a short cord. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-37124fc3-26f3-4235-85cc-89a23f172b53.png",
+      "sourceHash": "1ae49157639493e2454d6287d37895de3c949ce773251aa13f383fc0e0da0ac0"
+    },
+    {
+      "id": "keilerzahn",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/keilerzahn.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID keilerzahn. Subject: a curved yellowed boar tusk with a small notch near the tip, hanging from a knotted brown leather cord. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-4ba9a4d6-fb49-4264-a687-41d16409f30e.png",
+      "sourceHash": "e3fe5e58cefde982444aedc63bdfcc9286e3a9bb38ec581ca1d8c0c262438810"
+    },
+    {
+      "id": "gansorden",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/gansorden.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID gansorden. Subject: a tin medal with an embossed goose head profile, hanging from a short red and white striped ribbon. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-c4d31bd7-2856-431e-8172-246ebfd0f34d.png",
+      "sourceHash": "d446901fa41ba5afb7a8c0ba0bd353c7a477cf5ebe646cfdb5b3fdf1753e7f06"
+    },
+    {
+      "id": "dachsdeckel",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/dachsdeckel.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID dachsdeckel. Subject: a shaggy grey and white badger fur cap whose front is a badger snout forming the visor, black and white face stripes. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-e3d7cb13-18b4-4f68-8e4b-1042849c1db3.png",
+      "sourceHash": "80cec3c9f6324fd2c178b10784e374679a77498d6ddc56b46127e3b87666259b"
+    },
+    {
+      "id": "ruhepfeife",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/ruhepfeife.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID ruhepfeife. Subject: a chrome referee whistle with engraved line marks on its side, attached to a braided dark cord loop. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-757367f2-8648-4f02-a5d6-361eaf09e85f.png",
+      "sourceHash": "52702697c1a5309b3233d96b59844df7a93bab619e45d276459fa7241373a8bb"
+    },
+    {
+      "id": "horststempel",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/horststempel.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID horststempel. Subject: a heavy office rubber stamp with a rounded dark wooden handle and a thick red inked rubber stamp plate at the bottom. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-b2bbddfb-9535-450c-925b-599608f1ab8b.png",
+      "sourceHash": "30adfaed5ee31254a4f9e778a32060159e24915b536aa92a1943961fdbd6d571"
+    },
+    {
+      "id": "dienstmuetze",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/dienstmuetze.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID dienstmuetze. Subject: a grey official uniform peaked cap with a stiff black visor and a small silver badge at the front, a darker sweat rim on the band. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-af0302b0-1c95-452c-8d08-ffea46b1dc59.png",
+      "sourceHash": "655d6b4f75605d6c580f42b2a1a3e0f36411e4d05426cc43a90e51a8c5af35c7"
+    },
+    {
+      "id": "sigizange",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/sigizange.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID sigizange. Subject: a rusty scrap grabber tongs tool with two jagged oily jaws, a worn wooden handle and a short chain dangling from the pivot. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-6f722340-1e7e-488c-8ef1-e8ff31984ee5.png",
+      "sourceHash": "26e9e3b3c383d68d75e56ac9dce07b51fb02bd88eb3623581ce834f110ebacb7"
+    },
+    {
+      "id": "koenigskette",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/koenigskette.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID koenigskette. Subject: a gold chain with a small gold bowling pin pendant and a tiny plaque, one chain link visibly repaired with wire. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-a05d3207-3950-42f8-9814-140db479e8b7.png",
+      "sourceHash": "a4fcc591ed12da6998b711635a98b3e2a851802adfbacb8bef18b6ce96a3849e"
+    },
+    {
+      "id": "schaerpe",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/schaerpe.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID schaerpe. Subject: a folded red satin sash with a gold trim stripe along its edges, a pale beer stain, a small bow knot at the end. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-1df318d3-19ca-423e-90aa-c130f0fb505b.png",
+      "sourceHash": "b49989ecb6ae14e144d972c060413c56a9d44cf633812a01a58ad0498e97d17a"
+    },
+    {
+      "id": "feldkraut",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/feldkraut.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID feldkraut. Subject: a small bundle of fresh wild meadow herbs tied with twine: green stems and leaves with little white yarrow umbels and a few yellow-white chamomile flowers. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-d8c55f3a-9d2c-412e-94c3-6197cffe39e4.png",
+      "sourceHash": "ff9d1f3cb33a7aba3023a18b732a9204b682022672638b2225b497f47d4d6df4"
+    },
+    {
+      "id": "brauwasser",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/brauwasser.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID brauwasser. Subject: a squat clear plastic water canister with a blue screw cap and a carrying handle, filled with clear pale blue water, three small measuring notches on the side. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-b134991f-026f-4a59-b3c2-43deae11c233.png",
+      "sourceHash": "e31621c1bbc18a34196c260cdcdb5895ed931586e39995025b00832b8495aa97"
+    },
+    {
+      "id": "leerflasche",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/leerflasche.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID leerflasche. Subject: one clean empty brown glass swing-top bottle, open ceramic stopper on its wire clasp, sparkling highlights, visibly empty. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-bb6a0fb4-f2c1-4f9a-84ee-f56d5b435dbb.png",
+      "sourceHash": "cddf5b9e89a815a02b61e14c4c5ed055dc0643a9226333904f6214fed12f7db6"
+    },
+    {
+      "id": "hopfenschorle",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/hopfenschorle.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID hopfenschorle. Subject: a swing-top glass bottle filled with sparkling golden amber liquid with rising bubbles, closed stopper, one green hop cone tied to the neck. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-695d595f-ffac-44d0-a396-7d2db1a642ec.png",
+      "sourceHash": "42a42e54b2fd68ff47ce4388671cf7d122b6e2a6d972a83684e9015d764e2bf8"
+    },
+    {
+      "id": "feldtee",
+      "kind": "items",
+      "output": "assets/precision/sources/2026-09-23/feldtee.png",
+      "prompt": "Use case: stylized-concept. Production inventory icon for Mertloch Chronicles, item ID feldtee. Subject: a sturdy swing-top glass bottle filled with deep reddish brown tea, closed stopper sealed with a dab of red wax, two small herb sprigs tied to the neck. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject. Composition: exactly one complete object, centered, filling most of a square frame, slightly tilted three-quarter view, isolated on genuinely transparent RGBA background with clear margins. Bold simple readable silhouette that stays recognizable when exported to 48 by 48 pixels. No text, no letters, no numbers, no logos, no label, no border, no frame, no backdrop, no shadow outside the object, no photorealism, no blur, no second object. Polished production inventory icon, not a scene or mockup.",
+      "references": [
+        "assets/content-art/sources/2026-09-17/dosenblech.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-84d5beaf-a215-4d87-a2ff-084f4b220f72.png",
+      "sourceHash": "ceb829b03a10c036267d48fd409793b7f5ce325471d5b726a024b475b948f0b8"
     }
   ]
 }

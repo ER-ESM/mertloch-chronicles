@@ -107,10 +107,12 @@ export function runJobs(jobsPath,{only=null,force=false,dryRun=false,generationP
    date:new Date().toISOString().slice(0,10),originalFile:source.split(/[\\/]/).pop(),sourceHash};
   const at=generation.records.findIndex(r=>r.id===job.id&&r.output===job.output);
   if(at>=0)generation.records[at]=record;else generation.records.push(record);
+  // Herkunft sofort sichern: bricht der Lauf später ab, überspringt ein Folgelauf dieses Bild
+  // (Datei vorhanden) und würde seine Herkunft sonst nie mehr schreiben.
+  writeFileSync(genFile,JSON.stringify(generation,null,2)+'\n');
   done.push(job.id);
   console.log(`  → ${job.output} (${(bytes.length/1024).toFixed(0)} kB)`);
  }
- if(done.length)writeFileSync(genFile,JSON.stringify(generation,null,1)+'\n');
  return {done,skipped};
 }
 

@@ -1,0 +1,122 @@
+{
+  "checks": [
+    "22 runtime images loaded at 48 px",
+    "desktop: bag paints all 21 item icons from the catalog (min match 0.66)",
+    "desktop: book tab \"Talente\" shows ui-tab-talente (0.8 vs. old badge 0.24)",
+    "phone: bag paints all 21 item icons from the catalog (min match 0.66)",
+    "phone: book tab \"Talente\" shows ui-tab-talente (0.8 vs. old badge 0.24)"
+  ],
+  "assets": [
+    {
+      "id": "pfandbon",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "kabelbinder",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "palettenholz",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "jga-shirt",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "kabeltalisman",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "blechtalisman",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "keilerzahn",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "gansorden",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "dachsdeckel",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "ruhepfeife",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "horststempel",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "dienstmuetze",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "sigizange",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "koenigskette",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "schaerpe",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "feldkraut",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "brauwasser",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "leerflasche",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "kraeutersud",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "hopfenschorle",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "feldtee",
+      "loaded": true,
+      "size": 48
+    },
+    {
+      "id": "ui-tab-talente",
+      "loaded": true,
+      "size": 48
+    }
+  ],
+  "errors": []
+}

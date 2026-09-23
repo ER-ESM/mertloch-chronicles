@@ -2,7 +2,9 @@
 import {readFileSync} from 'node:fs';
 import {surface,bounds} from './png.mjs';
 import {resample} from './precision-resample.mjs';
-const jobs=JSON.parse(readFileSync(new URL('./grafik-20260923-jobs.json',import.meta.url)));
+// Both sheets of the day: props/intro/ui first, then the 22 inventory and tab icons.
+const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json']
+ .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))));
 export function buildSeptemberDelivery({catalog,put,read,hashSource}){
  for(const job of jobs){
   const {id,output:source,width,height,kind,padding=0,worldProp,tileSize}=job;

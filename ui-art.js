@@ -6,7 +6,7 @@ import {loadDetailArt,drawDetailIcon} from './detail-art.js';
 import {drawContentIcon,contentAsset,loadContentArt,contentActor,contentFrame} from './content-art.js';
 // Bildschirmsymbole der Lieferung 2026-09-17: Reiter des Clanbuchs und HUD.
 // Beschriftungen, Titel und Tastenhinweise bleiben unberührt; fehlt ein Bild, malt der alte Weg.
-const CONTENT_ICONS={base:'ui-tab-bude',person:'ui-tab-figur',talents:'ui-elite-badge',bag:'ui-tab-rucksack',book:'ui-tab-kniffe',quest:'ui-tab-auftraege',map:'ui-tab-karte',guide:'ui-tab-hilfe',menu:'ui-menu',sound:'ui-sound',fullscreen:'ui-fullscreen',reward:'ui-reward',elite:'ui-elite-badge',lock:'ui-chapter-lock'};
+const CONTENT_ICONS={base:'ui-tab-bude',person:'ui-tab-figur',talents:'ui-tab-talente',bag:'ui-tab-rucksack',book:'ui-tab-kniffe',quest:'ui-tab-auftraege',map:'ui-tab-karte',guide:'ui-tab-hilfe',menu:'ui-menu',sound:'ui-sound',fullscreen:'ui-fullscreen',reward:'ui-reward',elite:'ui-elite-badge',lock:'ui-chapter-lock'};
 const contentIcon=id=>CONTENT_ICONS[id]||(contentAsset(id)?id:null);
 // Ohne Lieferung fällt der neue Reiter „Hilfe“ auf das alte Buchsymbol zurück.
 const FALLBACK_ICONS={guide:'book',lock:'quest',elite:'mark'};

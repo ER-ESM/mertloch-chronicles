@@ -15,7 +15,7 @@ try{
  await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',injection);await wait(500);
  await read(`document.querySelector('.intro-skip')?.click();document.querySelectorAll('[data-window-close]').forEach(b=>b.click());game.enemies=[];`);await wait(6500);
  const assets=await read(`(async()=>{const {contentArt,contentAsset}=await import('./content-art.js');return Object.entries(contentArt.catalog.assets).filter(([,a])=>a.delivery==='2026-09-23').map(([id])=>({id,loaded:!!contentAsset(id)?.image?.complete}));})()`);
- assert.equal(assets.length,12);assert.ok(assets.every(a=>a.loaded));checks.push('12 runtime images loaded');
+ assert.equal(assets.length,34);assert.ok(assets.every(a=>a.loaded));checks.push('34 runtime images loaded (props/intro/ui + 22 icons from items-20260923)');
  await read(`Object.assign(game.player,{x:game.world.base.x,y:game.world.base.y+75});__mertloch.renderer.cameraFocus={x:game.world.base.x,y:game.world.base.y,speed:20};`);await wait(700);await shot('bude-desktop');
  const rubble=await read(`(async()=>{const {baseProps}=await import('./world-prop-ui.js');return baseProps(game.world,{}).map(p=>p.kind)})()`);
  assert.equal(new Set(rubble.filter(id=>id.startsWith('bude-truemmer-'))).size,6);assert.ok(rubble.includes('bude-schild'));checks.push('six distinct ruins and physical sign in the scene');
