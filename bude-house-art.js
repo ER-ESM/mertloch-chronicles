@@ -1,69 +1,64 @@
-// Zeichnung des begehbaren Hauses (E-52). Platzhalter aus Formen, bis die gemalten Ebenen (Außen mit Dach,
-// Innen mit geschnittenen Wänden) geliefert sind – das Spiel darf ohne Bild nicht kaputtgehen.
-// Schräge Draufsicht wie überall: Boden 1:1, Höhen nach oben (y - Höhe).
+// Zeichnung des begehbaren Hauses (E-52, E-54). Innenräume, Hof und Einrichtung kommen aus dem Sprite-Baukasten (kit-art.js);
+// gemalt bleiben die Außenansicht mit Dach und die Möbel der Basisbau-Stufen (tools/sprite-pipeline/build-bude-house.mjs).
+// Schräge Draufsicht: Boden 1:1, Höhen nach oben.
+import {drawBelag,drawDecal,drawKitWall,drawKitItem} from './kit-art.js';
 const INK='#293b44';
-// Gemalte Ebenen (tools/sprite-pipeline/build-bude-house.mjs): werden einmal geladen; bis dahin zeichnet der Platzhalter.
-const BASE='./assets/precision/runtime/buildings/',ART={meta:null,innen:null,aussen:null};let requested=false;
+const BASE='./assets/precision/runtime/buildings/',ART={meta:null,aussen:null};let requested=false;
+/** Nur Platzhalter zeichnen (Bildvorlagen der Pipeline), nie die gemalten Bilder. */
+export function houseArtOff(){ART.off=true;}
 function art(){
+ if(ART.off)return {meta:null};
  if(!requested&&typeof Image!=='undefined'&&typeof fetch!=='undefined'){requested=true;
   fetch(BASE+'bude-haus.json').then(r=>r.ok?r.json():null).then(meta=>{if(!meta)return;ART.meta=meta;
-   for(const k of ['innen','aussen']){const img=new Image();img.onload=()=>{ART[k]=img;};img.src=BASE+meta[k].file;}}).catch(()=>{});}
+   if(meta.aussen){const img=new Image();img.onload=()=>{ART.aussen=img;};img.src=BASE+meta.aussen.file;}}).catch(()=>{});}
  return ART;
 }
-/** Ausschnitt der gemalten Innenansicht in Hauskoordinaten (u,v,w,h) an seine Weltstelle zeichnen. */
-function innenPart(c,house,u,v,w,h){
- const a=ART,m=a.meta.innen,k=a.meta.pxPerUnit,sx=(u-m.local.x)*k,sy=(v-m.local.y)*k;
- const x0=Math.max(0,sx),y0=Math.max(0,sy),x1=Math.min(a.innen.width,sx+w*k),y1=Math.min(a.innen.height,sy+h*k);if(x1<=x0||y1<=y0)return;
- c.drawImage(a.innen,x0,y0,x1-x0,y1-y0,house.origin.x+m.local.x+x0/k,house.origin.y+m.local.y+y0/k,(x1-x0)/k,(y1-y0)/k);
-}
-const FLOOR={
- dielen:{base:'#8a5a34',line:'#6d4527',step:7,dir:'h'},
- teppich:{base:'#6f302d',line:'#a8793f',border:true},
- estrich:{base:'#8d8a84',line:'#7a7771',step:14,dir:'grid'},
- fliesen:{base:'#cfd3cf',line:'#a9aea9',step:9,dir:'grid'},
- hof:{base:'#9c8a6a',line:'#877655',step:11,dir:'dots'}
-};
+/** Geschoss: 0 = Erdgeschoss (Felder am Haus selbst), 1 = Obergeschoss (`house.upper`). */
+export const houseLevel=(house,level)=>level&&house.upper?house.upper:house;
 const fill=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
-
-function paintFloor(c,kind,q){
- const f=FLOOR[kind]||FLOOR.estrich;fill(c,f.base,q.x,q.y,q.w,q.h);
- c.fillStyle=f.line;
- if(f.dir==='h')for(let y=q.y+f.step;y<q.y+q.h;y+=f.step){c.fillRect(q.x,y,q.w,1);for(let x=q.x+((y/f.step|0)%2?11:27);x<q.x+q.w;x+=34)c.fillRect(x,y-f.step+1,1,f.step-1);}
- else if(f.dir==='grid'){for(let y=q.y+f.step;y<q.y+q.h;y+=f.step)c.fillRect(q.x,y,q.w,1);for(let x=q.x+f.step;x<q.x+q.w;x+=f.step)c.fillRect(x,q.y,1,q.h);}
- else if(f.dir==='dots')for(let y=q.y+4;y<q.y+q.h;y+=f.step)for(let x=q.x+((y/f.step|0)%2?3:8);x<q.x+q.w;x+=f.step)c.fillRect(x,y,2,1);
- if(f.border){c.strokeStyle=f.line;c.lineWidth=2;c.strokeRect(q.x+10,q.y+10,q.w-20,q.h-20);}
+/** Treppe (Erdgeschoss: Stufen) beziehungsweise Treppenloch mit Geländer (Obergeschoss). */
+function paintStairs(c,f,level){
+ const s=f.stairs;if(!s)return;const w=s.maxX-s.minX,d=s.maxY-s.minY,steps=Math.max(4,Math.round((d>w?d:w)/6)),long=d>w;
+ if(level){fill(c,'#1b1410',s.minX,s.minY,w,d);for(let i=1;i<4;i++)fill(c,'#2c2119',long?s.minX:s.minX+w*i/4,long?s.minY+d*i/4:s.minY,long?w:2,long?2:d);
+  // Geländer an der offenen Seite und am oberen Ende
+  fill(c,INK,s.maxX,s.minY-10,3,d+10);fill(c,'#7b5634',s.maxX,s.minY-10,2,d+8);fill(c,'#7b5634',s.minX,s.minY-10,w+2,2);for(let y=s.minY;y<=s.maxY;y+=10)fill(c,'#7b5634',s.maxX,y-8,2,8);}
+ else{fill(c,INK,s.minX-1,s.minY-1,w+2,d+2);
+  for(let i=0;i<steps;i++){const t=i/steps;if(long){const y=s.minY+t*d;fill(c,i%2?'#8a6443':'#9c7450',s.minX,y,w,d/steps);fill(c,'#5c3f28',s.minX,y,w,1);}else{const x=s.minX+t*w;fill(c,i%2?'#8a6443':'#9c7450',x,s.minY,w/steps,d);fill(c,'#5c3f28',x,s.minY,1,d);}}
+  // Handlauf an der offenen Seite
+  if(long){fill(c,INK,s.maxX-1,s.minY-10,3,d+10);fill(c,'#7b5634',s.maxX-1,s.minY-10,2,d+8);}}
 }
 
-/** Böden aller Innenräume; `alpha` folgt dem Ausblenden des Dachs. Der Hof liegt draußen und wird immer gezeichnet. */
-export function drawHouseFloor(c,house,alpha){
- const a=art();
- if(a.innen){const m=a.meta.innen,split=m.houseWidth+4;
-  // Haus (samt Außenwänden) folgt dem Ausblenden des Dachs, der Hof liegt draußen und bleibt immer sichtbar.
-  if(alpha>0){c.globalAlpha=alpha;innenPart(c,house,m.local.x,m.local.y,split-m.local.x,a.innen.height/a.meta.pxPerUnit);}
-  // Hof genau auf seine Fläche (0…Tiefe): darüber und darunter liegt im Original nur der Vorlagenrand.
-  c.globalAlpha=1;innenPart(c,house,split,0,a.innen.width/a.meta.pxPerUnit+m.local.x-split,house.depth);return;}
- for(const room of house.rooms){
-  const a=room.outdoor?1:alpha;if(a<=0)continue;
-  c.globalAlpha=a;for(const q of room.rects)paintFloor(c,room.floor,q);
- }
+/** Böden des Geschosses: Belag je Raum und Bodendeko. Innenräume folgen dem Ausblenden des Dachs (`alpha`),
+ *  der Hof liegt draußen und wird immer gezeichnet (er gehört zum Erdgeschoss). */
+export function drawHouseFloor(c,house,alpha,level=0){
+ const f=houseLevel(house,level);
+ c.globalAlpha=1;for(const room of house.rooms)if(room.outdoor)drawBelag(c,room,house.origin);
+ for(const it of house.items)if(it.outdoor&&it.layer==='decal')drawDecal(c,it);
+ if(alpha>0){c.globalAlpha=alpha;
+  for(const room of f.rooms)if(!room.outdoor)drawBelag(c,room,house.origin);
+  for(const it of f.items)if(!it.outdoor&&it.layer==='decal')drawDecal(c,it);
+  paintStairs(c,f,level);}
  c.globalAlpha=1;
 }
-
-/** Eine auf Hüfthöhe geschnittene Wand (Oberseite hell, Vorderseite dunkler), tiefensortiert an ihrer Südkante. */
+/** Eine Wand samt Wandschmuck, tiefensortiert an ihrer Südkante; Zäune draußen sind immer sichtbar. */
 export function drawHouseWall(c,wall,house,alpha){
- if(alpha<=0)return;
- const a=art();
- if(a.innen){
-  // Nur waagerechte Wände verdecken Figuren dahinter (Beine hinter der Hüfthöhe); senkrechte liegen schon im Boden.
-  if(wall.maxX-wall.minX<=wall.maxY-wall.minY)return;const o=house.origin,h=house.heights.cut;
-  c.globalAlpha=alpha;innenPart(c,house,wall.minX-o.x,wall.minY-o.y-h,wall.maxX-wall.minX,wall.maxY-wall.minY+h);c.globalAlpha=1;return;}
- const h=house.heights.cut,w=wall.maxX-wall.minX,d=wall.maxY-wall.minY;
- c.globalAlpha=alpha;
- fill(c,INK,wall.minX-1,wall.minY-h-1,w+2,d+h+2);
- fill(c,wall.kind==='outer'?'#b9a27a':'#cdbb92',wall.minX,wall.maxY-h,w,h);
- fill(c,wall.kind==='outer'?'#e4d6b2':'#efe3c4',wall.minX,wall.minY-h,w,d);
- fill(c,'#8f7a57',wall.minX,wall.maxY-2,w,2);
- c.globalAlpha=1;
+ const a=wall.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;drawKitWall(c,wall,house.heights.cut);c.globalAlpha=1;
+}
+/** Stehendes Teil der Einrichtung; drinnen mit dem Dach ausgeblendet, draußen immer. */
+export function drawHouseItem(c,it,alpha){
+ const a=it.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;drawKitItem(c,it);c.globalAlpha=1;
+}
+
+/** Gemaltes Möbel einer Basisbau-Stufe (`prop.art`, etwa „tresen-2“): unten mittig auf der Vorderkante der Standfläche,
+ *  so breit wie die Stufe in der Welt. Liefert false, solange das Bild fehlt – dann zeichnet drawProp den Ersatz. */
+const stageImages=new Map();
+export function drawStageFurniture(c,prop){
+ const a=art(),m=a.meta?.stages?.[prop.art];if(!m)return false;
+ let img=stageImages.get(prop.art);if(!img){img=new Image();img.src=BASE+m.file;stageImages.set(prop.art,img);}
+ if(!img.complete||!img.naturalWidth)return false;
+ const k=a.meta.pxPerUnit,w=prop.w,scale=w/(m.width/k),h=m.height/k*scale,base=prop.y+prop.h/2;
+ c.save();c.imageSmoothingEnabled=false;c.fillStyle='#2438294d';c.beginPath();c.ellipse(prop.x,prop.y,w/2,prop.h/2,0,0,Math.PI*2);c.fill();
+ c.drawImage(img,Math.round((prop.x-w/2)*2)/2,Math.round((base-h)*2)/2,w,h);c.restore();return true;
 }
 
 /** Außenansicht: Fassade mit zwei Geschossen und Satteldach, halb abgedeckt (Plane, freie Sparren). */

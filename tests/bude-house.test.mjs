@@ -72,3 +72,39 @@ test('alle Prüf-Seeds bauen die Bude als Haus, Wände überstehen spätere Rodu
   for(const wall of h.walls)assert.equal(w.blocked((wall.minX+wall.maxX)/2,(wall.minY+wall.maxY)/2,5),true,'Seed '+seed+' '+wall.id+' fehlt im Raster');
  }
 });
+
+test('Einbauten sperren und stehen weder auf Stellplätzen noch auf Bauplätzen', ()=>{
+ const hit=(a,b)=>a.minX<b.maxX&&a.maxX>b.minX&&a.minY<b.maxY&&a.maxY>b.minY;
+ for(const f of [...house.fixtures,house.stairs]){
+  assert.equal(world.blocked((f.minX+f.maxX)/2,(f.minY+f.maxY)/2,5),true,f.id+' sperrt nicht');
+  for(const [id,p] of Object.entries(house.spots))assert.ok(!hit(f,{minX:p.x-6,maxX:p.x+6,minY:p.y-6,maxY:p.y+6}),f.id+' steht auf '+id);
+  for(const [id,slot] of Object.entries(world.base.stageProps)){const s=slot.stages.at(-1);assert.ok(!hit(f,{minX:s.x-s.w/2,maxX:s.x+s.w/2,minY:s.y-s.h/2,maxY:s.y+s.h/2}),f.id+' überdeckt den Bauplatz '+id);}
+ }
+ assert.equal(world.blocked(house.stairs.foot.x,house.stairs.foot.y,6),false,'Treppenfuß frei');
+});
+
+test('Obergeschoss: eigene Wände, Treppenloch, jeder Raum vom Absatz erreichbar', async()=>{
+ const {upperWorld}=await import('../world-house.js');const up=upperWorld(house),f=house.upper,landing=f.stairs.landing;
+ assert.equal(up.blocked(landing.x,landing.y,6),false,'Absatz frei');
+ assert.equal(up.blocked((f.stairs.minX+f.stairs.maxX)/2,(f.stairs.minY+f.stairs.maxY)/2,5),true,'Treppenloch sperrt');
+ assert.equal(up.blocked(house.minX-20,house.minY+50,5),true,'außerhalb des Hauses gibt es oben keinen Boden');
+ for(const wall of f.walls)assert.equal(up.blocked((wall.minX+wall.maxX)/2,(wall.minY+wall.maxY)/2,5),true,wall.id+' sperrt nicht');
+ for(const room of f.rooms){const q=room.rects[0],goal=up.findClear(q.x+q.w/2,q.y+q.h/2,6),path=up.findPath(landing,goal);let prev=landing;
+  assert.ok(path.length&&path.every(p=>{const ok=up.walkClear(prev,p,6);prev=p;return ok;}),room.id+' vom Absatz nicht erreichbar');
+  assert.equal(roomAt(house,goal.x,goal.y,1)?.id,room.id);}
+});
+
+test('Treppe: hoch und runter per Aktion, oben eigene Kollision, Speichern am Treppenfuß, Wiederbeleben unten', async()=>{
+ const {Game}=await import('../engine.js'),g=new Game(world,{version:1,tutorial:{version:1,step:8,completed:true}}),h=house;
+ Object.assign(g.player,{x:h.stairs.foot.x,y:h.stairs.foot.y});
+ assert.equal(g.stairsInteraction()?.label,'Treppe hoch');
+ assert.equal(g.useStairs(),true);assert.equal(g.floor,1);assert.deepEqual({x:g.player.x,y:g.player.y},{x:h.upper.stairs.landing.x,y:h.upper.stairs.landing.y});
+ assert.equal(g.walkWorld().upper,true,'oben läuft der Held in der Obergeschoss-Welt');
+ // Ins Treppenloch kann man oben nicht laufen: nach Westen gegen das Loch.
+ const before=g.player.x;for(let i=0;i<40;i++)g.move(g.player,-2,0);assert.ok(g.player.x>h.upper.stairs.maxX-1,'durchs Treppenloch gefallen: '+g.player.x+' (vorher '+before+')');
+ assert.deepEqual(g.save().position,{x:h.stairs.foot.x,y:h.stairs.foot.y,facing:g.player.facing===-1?-1:1},'oben gespeichert, unten am Treppenfuß weiter');
+ Object.assign(g.player,{x:h.upper.stairs.landing.x,y:h.upper.stairs.landing.y});
+ assert.equal(g.stairsInteraction()?.label,'Treppe runter');assert.equal(g.useStairs(),true);assert.equal(g.floor,0);
+ g.floor=1;g.respawn();assert.equal(g.floor,0,'Wiederbeleben im Erdgeschoss');
+ Object.assign(g.player,{x:h.stairs.foot.x+60,y:h.stairs.foot.y});assert.equal(g.stairsInteraction(),null,'nur direkt an der Treppe');
+});

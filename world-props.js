@@ -91,7 +91,8 @@ function stagePropsFor(base){
   const stages=[{stage:0,kind:rubbleKind,name:'Trümmer: '+building.name,x:slot.x,y:slot.y,
    w:Math.round(rubble.w*R.rubble),h:Math.round(rubble.h*R.rubble),height:rubble.height,blocking:false}];
   for(const s of building.stages){const f=.6+.4*s.stage/max;
-   stages.push({stage:s.stage,kind:'bude-'+id,name:s.name,x:slot.x,y:slot.y,
+   // `art`: gemaltes Möbel genau dieser Stufe (bude-house-art.js), sonst zeichnet die Art ihr gemeinsames Bild.
+   stages.push({stage:s.stage,kind:'bude-'+id,art:id+'-'+s.stage,name:s.name,x:slot.x,y:slot.y,
     w:Math.round(def.w*f),h:Math.round(def.h*f),height:Math.round(def.height*f),blocking:false});}
   out[id]={owner:building.owner,slot,stages};
  }

@@ -1,15 +1,103 @@
 {
- "format": "bude-haus-v1",
+ "format": "bude-haus-v2",
  "pxPerUnit": 4,
- "innen": {
-  "file": "bude-haus-innen.png",
-  "width": 1176,
-  "height": 780,
-  "local": {
-   "x": -4,
-   "y": -18
+ "stages": {
+  "tresen-1": {
+   "file": "bude-moebel-tresen-1.png",
+   "width": 160,
+   "height": 103,
+   "worldWidth": 40
   },
-  "houseWidth": 230
+  "tresen-2": {
+   "file": "bude-moebel-tresen-2.png",
+   "width": 188,
+   "height": 120,
+   "worldWidth": 47
+  },
+  "tresen-3": {
+   "file": "bude-moebel-tresen-3.png",
+   "width": 216,
+   "height": 110,
+   "worldWidth": 54
+  },
+  "grill-1": {
+   "file": "bude-moebel-grill-1.png",
+   "width": 92,
+   "height": 76,
+   "worldWidth": 23
+  },
+  "grill-2": {
+   "file": "bude-moebel-grill-2.png",
+   "width": 112,
+   "height": 74,
+   "worldWidth": 28
+  },
+  "grill-3": {
+   "file": "bude-moebel-grill-3.png",
+   "width": 128,
+   "height": 122,
+   "worldWidth": 32
+  },
+  "werkstatt-1": {
+   "file": "bude-moebel-werkstatt-1.png",
+   "width": 116,
+   "height": 61,
+   "worldWidth": 29
+  },
+  "werkstatt-2": {
+   "file": "bude-moebel-werkstatt-2.png",
+   "width": 140,
+   "height": 113,
+   "worldWidth": 35
+  },
+  "werkstatt-3": {
+   "file": "bude-moebel-werkstatt-3.png",
+   "width": 160,
+   "height": 126,
+   "worldWidth": 40
+  },
+  "anlage-1": {
+   "file": "bude-moebel-anlage-1.png",
+   "width": 100,
+   "height": 237,
+   "worldWidth": 25
+  },
+  "anlage-2": {
+   "file": "bude-moebel-anlage-2.png",
+   "width": 116,
+   "height": 192,
+   "worldWidth": 29
+  },
+  "anlage-3": {
+   "file": "bude-moebel-anlage-3.png",
+   "width": 136,
+   "height": 158,
+   "worldWidth": 34
+  },
+  "landhausecke-1": {
+   "file": "bude-moebel-landhausecke-1.png",
+   "width": 148,
+   "height": 94,
+   "worldWidth": 37
+  },
+  "landhausecke-2": {
+   "file": "bude-moebel-landhausecke-2.png",
+   "width": 184,
+   "height": 112,
+   "worldWidth": 46
+  },
+  "pfandlager-1": {
+   "file": "bude-moebel-pfandlager-1.png",
+   "width": 140,
+   "height": 138,
+   "worldWidth": 35
+  },
+  "pfandlager-2": {
+   "file": "bude-moebel-pfandlager-2.png",
+   "width": 176,
+   "height": 176,
+   "worldWidth": 44
+  }
  },
  "aussen": {
   "file": "bude-haus-aussen.png",

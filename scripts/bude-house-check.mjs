@@ -22,10 +22,20 @@ try{
  // 3 Weiter durch die Innentür in die Küche.
  await walkTo('kevin');s=await read(state);assert.equal(s.room,'kueche','Küche: '+JSON.stringify(s));await shot('3-kueche');checks.push('walked through the inner door into the kitchen');
  // 4 Wand hält: im Schankraum unter einer türlosen Wandstelle nach oben laufen.
- const wall=await read(`(()=>{const h=game.world.base.house;Object.assign(game.player,{x:h.minX+15,y:h.minY+110});game.moveTo=null;game.path=[];return h.minY+72;})()`);
- await b.hold('w',1500);s=await read(state);assert.ok(s.y>wall+3,'durch die Wand gelaufen: '+JSON.stringify(s));assert.equal(s.room,'schankraum');checks.push('wall without door stops the hero ('+(s.y-wall)+' units in front of it)');
+ const wall=await read(`(()=>{const h=game.world.base.house;/* freie Wandstelle zwischen Flaschenbord und Tresen-Bauplatz */Object.assign(game.player,{x:h.minX+80,y:h.minY+125});game.moveTo=null;game.path=[];return h.minY+72;})()`);
+ await b.hold('w',1500);s=await read(state);assert.ok(s.y>wall+3&&s.y<wall+14,'steht nicht direkt vor der Wand: '+JSON.stringify(s));assert.equal(s.room,'schankraum');checks.push('wall without door stops the hero ('+(s.y-wall)+' units in front of it)');
  // 5 Wieder hinaus: Dach blendet ein.
  await read(`Object.assign(game.player,{x:game.world.base.approach.x,y:game.world.base.approach.y+40});game.moveTo=null;game.path=[];`);await wait(1200);s=await read(state);assert.equal(s.fade,0,'Dach wieder da');checks.push('leaving shows the roof again');
+ // 5b Treppe: am Treppenfuß per F hinauf, oben ins Baubüro, am Absatz per F wieder hinunter.
+ await read(`(()=>{const h=game.world.base.house;Object.assign(game.player,{x:h.stairs.foot.x,y:h.stairs.foot.y});game.moveTo=null;game.path=[];})()`);await wait(1500);
+ await b.press('f');await wait(600);let fl=await read(`({floor:game.floor||0,room:(game.world.base.house.upper.rooms.find(r=>r.rects.some(q=>game.player.x>=q.x&&game.player.x<q.x+q.w&&game.player.y>=q.y&&game.player.y<q.y+q.h))||{}).id})`);
+ assert.deepEqual(fl,{floor:1,room:'matratzenlager'},'F am Treppenfuß führt ins Obergeschoss');
+ await read(`(()=>{const r=game.world.base.house.upper.rooms.find(r=>r.id==='baubuero').rects[0];game.navigate({x:r.x+r.w/2,y:r.y+r.h/2+10});})()`);await until('!game.moveTo&&!game.routeGoal',20000);await wait(400);
+ fl=await read(`({floor:game.floor||0,room:(game.world.base.house.upper.rooms.find(r=>r.rects.some(q=>game.player.x>=q.x&&game.player.x<q.x+q.w&&game.player.y>=q.y&&game.player.y<q.y+q.h))||{}).id})`);
+ assert.deepEqual(fl,{floor:1,room:'baubuero'},'oben durch die Tür ins Baubüro');await shot('6-obergeschoss');
+ await read(`(()=>{const l=game.world.base.house.upper.stairs.landing;Object.assign(game.player,{x:l.x,y:l.y});game.moveTo=null;game.path=[];})()`);await wait(400);
+ await b.press('f');await wait(600);assert.equal(await read('game.floor||0'),0,'F am Absatz führt zurück ins Erdgeschoss');await shot('7-treppe-unten');
+ checks.push('stairs: F goes up to the dormitory, walk into the site office upstairs, F at the landing goes back down');
  // 6 Neuer Held (E-52, Runde 1b): wacht im Schankraum auf, Ida und die Hofprobe sind in der Bude.
  const fresh={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:1,tutorial:{version:1,step:1,completed:false}};
  const again=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`localStorage.clear();localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(fresh))});`});

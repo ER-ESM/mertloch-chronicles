@@ -16,5 +16,7 @@ export function restorePosition(world,saved){
 }
 export function savedPosition(game){
  if(game.instance?.outsidePosition)return {...game.instance.outsidePosition};
+ // Obergeschoss der Bude (E-52): gespeichert wird der Treppenfuß im Erdgeschoss, das Stockwerk steht nicht im Spielstand.
+ const foot=game.floor&&game.world.base?.house?.stairs?.foot;if(foot&&!game.dead)return {x:foot.x,y:foot.y,facing:game.player.facing===-1?-1:1};
  return game.dead?spawnPosition(game.world):{x:game.player.x,y:game.player.y,facing:game.player.facing===-1?-1:1};
 }

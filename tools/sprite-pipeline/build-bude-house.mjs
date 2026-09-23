@@ -4,11 +4,14 @@
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {decodePng,encodePng,surface} from './png.mjs';
 import {resample} from './precision-resample.mjs';
-import {GUIDE} from './bude-house-guide.mjs';
 import {BUDE_HOUSE} from '../../content/bude-house.js';
+import {BUILDINGS,BUILDING_IDS} from '../../content/buildings.js';
+import {PROP_KINDS} from '../../world-prop-kinds.js';
+import {components} from './segment.mjs';
+import {existsSync} from 'node:fs';
 
 const SRC='assets/precision/sources/2026-09-23/',OUT='assets/precision/runtime/buildings/',PX=4;
-const W=BUDE_HOUSE.width,D=BUDE_HOUSE.depth,PLOT=W+BUDE_HOUSE.yard.width,CUT=BUDE_HOUSE.heights.cut;
+const W=BUDE_HOUSE.width,D=BUDE_HOUSE.depth;
 mkdirSync(OUT,{recursive:true});
 const load=name=>decodePng(readFileSync(SRC+name));
 function exportRegion(src,box,scale,file){
@@ -18,12 +21,20 @@ function exportRegion(src,box,scale,file){
  writeFileSync(OUT+file,encodePng(dst));return {file,width:dst.width,height:dst.height};
 }
 
-// Innen: das Original folgt der Vorlage, also gilt ihre Registrierung (5 px/E, Nordwest-Ecke bei origin).
-const innen=load('bude-haus-innen.png'),g=GUIDE.innen;
-if(innen.width!==g.width||innen.height!==g.height)throw Error('Innenansicht hat nicht das Format der Vorlage');
-const inner={x:-4,y:-CUT-4,w:PLOT+4,h:D+4+CUT+4}; // Hauskoordinaten: linke Außenwand bis Hofrand, Wandkrone bis Sockel
-const innenBox={x:Math.round(g.origin.x+inner.x*g.scale),y:Math.round(g.origin.y+inner.y*g.scale),w:Math.round(inner.w*g.scale),h:Math.round(inner.h*g.scale)};
-const innenOut=exportRegion(innen,innenBox,PX/g.scale,'bude-haus-innen.png');
+// Innenräume und Hof entstehen seit E-54 aus dem Sprite-Baukasten (build-kit.mjs); die gemalten Innenebenen
+// (bude-haus-innen*.png, bude-haus-oben.png) bleiben nur als Herkunft und Stilreferenz unter sources/.
+
+// Möbel je Ausbaustufe: ein Bogen je Gebäude, Stufen von links nach rechts. Die N größten Bildteile geben die Stufen vor,
+// kleinere Teile (Kabel, Deckel, Funken) gehören zur Stufe, in deren Spalte sie liegen. Breite = Weltbreite der Stufe × 4 px.
+const stages={};
+for(const id of BUILDING_IDS){const file='bude-moebel-'+id+'.png';if(!existsSync(SRC+file))continue;const img=load(file),n=BUILDINGS[id].stages.length,def=PROP_KINDS['bude-'+id];
+ const parts=components(img),big=[...parts].sort((a,b)=>b.count-a.count).slice(0,n).sort((a,b)=>a.cx-b.cx);
+ if(big.length!==n)throw Error(file+': erwartet '+n+' Möbel, gefunden '+big.length);
+ const cuts=big.slice(1).map((b,i)=>(big[i].cx+b.cx)/2);
+ for(const [i,s] of BUILDINGS[id].stages.entries()){const lo=i?cuts[i-1]:-1,hi=i<cuts.length?cuts[i]:img.width+1,mine=parts.filter(p=>p.cx>lo&&p.cx<hi&&p.count>=30);
+  const x0=Math.min(...mine.map(p=>p.x)),y0=Math.min(...mine.map(p=>p.y)),x1=Math.max(...mine.map(p=>p.x+p.w)),y1=Math.max(...mine.map(p=>p.y+p.h));
+  const worldW=Math.round(def.w*(.6+.4*s.stage/n)),scale=worldW*PX/(x1-x0);
+  stages[id+'-'+s.stage]={...exportRegion(img,{x:x0,y:y0,w:x1-x0,h:y1-y0},scale,'bude-moebel-'+id+'-'+s.stage+'.png'),worldWidth:worldW};}}
 
 // Außen: Fassade vermessen – linke/rechte Kante auf halber Sockelhöhe, Unterkante in der Mitte = Hausfront (y = D).
 const aussen=load('bude-haus-aussen.png'),A=aussen,opaque=(x,y)=>A.data[(y*A.width+x)*4+3]>=128;
@@ -35,8 +46,8 @@ const aussenBox={x:left,y:top,w:right-left+1,h:bottom-top+1};
 const aussenOut=exportRegion(aussen,aussenBox,PX/s,'bude-haus-aussen.png');
 
 const meta={
- format:'bude-haus-v1',pxPerUnit:PX,
- innen:{...innenOut,local:{x:inner.x,y:inner.y},houseWidth:W},
+ format:'bude-haus-v2',pxPerUnit:PX,
+ stages,
  aussen:{...aussenOut,local:{x:(left-x0)/s,y:D-(bottom-top+1)/s},measured:{facadeLeft:x0,facadeRight:x1,bottom,sourcePxPerUnit:+s.toFixed(4)}}
 };
 writeFileSync(OUT+'bude-haus.json',JSON.stringify(meta,null,1)+'\n');

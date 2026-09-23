@@ -1053,6 +1053,128 @@
       "date": "2026-09-23",
       "originalFile": "exec-1abc9884-ffd6-48bd-abe5-21a647cccb97.png",
       "sourceHash": "e0656780532d11b1a438e6e9b810789b5fb2979ddb3e3b46853d3ae71ade949e"
+    },
+    {
+      "id": "bude-haus-innen-v2",
+      "kind": "building-layer",
+      "output": "assets/precision/sources/2026-09-23/bude-haus-innen-v2.png",
+      "prompt": "Game art layer, 1536 x 1024: the GROUND FLOOR of the village clubhouse pub, the morning after a wild party. The FIRST reference image is an exact layout guide and binding: keep the canvas framing, every wall, wall end, doorway, the house outline and every brown furniture box and the staircase exactly at the same pixel positions and sizes; do not move, add or remove walls or openings. Walls are cut at hip height (dollhouse cutaway): cream plaster cut tops with a dark timber core and their front faces below. Rooms and floors where the guide colors them: large taproom (bottom, worn dark wooden planks), clan back room (top left, patterned red carpet over planks), deposit storage room (top middle, grey concrete), kitchen (top right, white tiles), tiny toilet (right, white tiles), gravel yard outside the house on the right with a wooden fence on its outer edges. Paint each brown guide box as the object named here, at its exact box: taproom top-left corner: black iron stove with pipe; along the taproom top wall left of the storage door: bottle shelf full of bottles; small high standing table in the middle of the taproom; storage room lower right: three empty beer kegs; kitchen along its top wall: steel kitchen counter with sink; kitchen right wall: old fridge; back room along its top wall: chest of drawers with a lamp; toilet room: toilet bowl on the right and small washbasin at the top left. The striped strip along the taproom's left wall is a WOODEN STAIRCASE with a handrail rising towards the top of the image to the upper floor (steps clearly readable). Keep the rest of every room's floor free (the game places the bar, sofa, music system, grill and workbench itself); light party debris only. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/guides/bude-haus-innen-vorlage.png",
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-baf92a26-dbb2-4070-8c05-4132b752c45a.png",
+      "sourceHash": "7a1449aa84760e579564f6737b30a01b7c0c051b188e7f18dedfc00c04a69df5"
+    },
+    {
+      "id": "bude-haus-oben",
+      "kind": "building-layer",
+      "output": "assets/precision/sources/2026-09-23/bude-haus-oben.png",
+      "prompt": "Game art layer, 1536 x 1024: the UPPER FLOOR of the same village clubhouse pub, same cutaway view. The FIRST reference image is an exact layout guide and binding: keep the canvas framing, every wall, wall end, doorway, the house outline and every brown furniture box and the staircase exactly at the same pixel positions and sizes; do not move, add or remove walls or openings. Walls are cut at hip height (dollhouse cutaway): cream plaster cut tops with a dark timber core and their front faces below. Rooms: Ida's site office (top left, worn red carpet) with a desk covered in construction plans and a grey filing cabinet at the brown boxes; attic storage (top right, rough grey boards) directly under the damaged roof: bright daylight and a few raindrops falling through a hole in the ceiling onto a pile of broken slates and wood at the big brown box, old wooden chests at the small brown box near the top; dormitory (bottom left, wooden floor) with mattresses and sleeping bags on the floor, a wooden bunk bed at the brown box, a party garland; corridor (bottom right, wooden floor). The dark rectangle along the left wall is the STAIRWELL opening going down, with a wooden railing around it and the top steps visible inside. The area right of the house (the yard) stays plain grass, it is not used. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/guides/bude-haus-oben-vorlage.png",
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-b0f869c4-aa57-445b-854d-88e9fef3951b.png",
+      "sourceHash": "a4f833dbf622c0ac006331cad386d43c0daeccd32310d0dd15534a1e7165d50e"
+    },
+    {
+      "id": "bude-moebel-tresen",
+      "kind": "props",
+      "output": "assets/precision/sources/2026-09-23/bude-moebel-tresen.png",
+      "prompt": "Game prop sheet, 1536 x 1024, fully transparent background. Exactly 3 isolated furniture objects of the same clubhouse pub in ONE horizontal row, left to right, evenly spaced with wide clear transparent gaps between them, all at the same scale and seen from the same camera (axis-aligned top-down with a steep downward angle, front side facing the viewer, NOT isometric): 1) makeshift bar counter built from six stacked euro pallets, beer coasters glued on top as tiles, a bottle cap strip along the edge, slightly crooked; 2) proper long wooden bar counter with a shiny brass beer tap, drip tray and glasses; 3) grand bar counter with brass tap and a big round regulars' table (Stammtisch) with chairs and a small flag stand joined to it. Wide low objects, the later ones bigger and more solid. Each object stands alone on its own, no floor tile, no ground, no shadow outside the object, no people. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-4ca9d2ff-3e9c-459b-b4c3-c9426025709d.png",
+      "sourceHash": "7f26cd1ee6e0e9dbda74f1c3736e97a3dac420c0b5e5a23b714e2e550eff1f20"
+    },
+    {
+      "id": "bude-moebel-grill",
+      "kind": "props",
+      "output": "assets/precision/sources/2026-09-23/bude-moebel-grill.png",
+      "prompt": "Game prop sheet, 1536 x 1024, fully transparent background. Exactly 3 isolated furniture objects of the same clubhouse pub in ONE horizontal row, left to right, evenly spaced with wide clear transparent gaps between them, all at the same scale and seen from the same camera (axis-aligned top-down with a steep downward angle, front side facing the viewer, NOT isometric): 1) half oil drum barbecue on welded legs with a grate made from a shopping cart; 2) the oil drum barbecue with a side warming box and a cool box; 3) shrine-like grill station: three grates, a smoke hood with chimney pipe, sausages, a small sign without letters. Compact objects, the later ones bigger. Each object stands alone on its own, no floor tile, no ground, no shadow outside the object, no people. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-edaf7d25-acee-4ba7-b73c-1322c921cba8.png",
+      "sourceHash": "69128b7ec017eb85e84207e0fa86b4f3fd6506e6bb76a21ba5b2304a20405495"
+    },
+    {
+      "id": "bude-moebel-werkstatt",
+      "kind": "props",
+      "output": "assets/precision/sources/2026-09-23/bude-moebel-werkstatt.png",
+      "prompt": "Game prop sheet, 1536 x 1024, fully transparent background. Exactly 3 isolated furniture objects of the same clubhouse pub in ONE horizontal row, left to right, evenly spaced with wide clear transparent gaps between them, all at the same scale and seen from the same camera (axis-aligned top-down with a steep downward angle, front side facing the viewer, NOT isometric): 1) workbench made from a gutted fridge lying on its side, cable ties everywhere, a few tools; 2) the fridge workbench with a lamp, an extension cable reel and a small shelf with a can drone; 3) full tinkering station: workbench, shelves, a drone with a gripper arm, warning sign without letters, rags. Medium objects, the later ones bigger. Each object stands alone on its own, no floor tile, no ground, no shadow outside the object, no people. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-eb2d5a71-3412-474d-b462-ee6e04c99010.png",
+      "sourceHash": "9eb4bbdf19f5fb7c99a62c32d78b523232ce249a752b2140427fb4514a17f4b4"
+    },
+    {
+      "id": "bude-moebel-anlage",
+      "kind": "props",
+      "output": "assets/precision/sources/2026-09-23/bude-moebel-anlage.png",
+      "prompt": "Game prop sheet, 1536 x 1024, fully transparent background. Exactly 3 isolated furniture objects of the same clubhouse pub in ONE horizontal row, left to right, evenly spaced with wide clear transparent gaps between them, all at the same scale and seen from the same camera (axis-aligned top-down with a steep downward angle, front side facing the viewer, NOT isometric): 1) tower of three portable party speakers stacked on beer crates, cable mess; 2) speaker tower with a big subwoofer and a small mixing desk; 3) a whole wall of stacked speakers and subwoofers with a mixing desk and colored lights. Tall-ish objects, the later ones bigger. Each object stands alone on its own, no floor tile, no ground, no shadow outside the object, no people. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-d373d5b2-7d01-4466-b059-0ed0162be730.png",
+      "sourceHash": "66da15e7d36d738db295b47b61824472c9c1d8dc3a46ad22857b7e7708169e69"
+    },
+    {
+      "id": "bude-moebel-landhausecke",
+      "kind": "props",
+      "output": "assets/precision/sources/2026-09-23/bude-moebel-landhausecke.png",
+      "prompt": "Game prop sheet, 1536 x 1024, fully transparent background. Exactly 2 isolated furniture objects of the same clubhouse pub in ONE horizontal row, left to right, evenly spaced with wide clear transparent gaps between them, all at the same scale and seen from the same camera (axis-aligned top-down with a steep downward angle, front side facing the viewer, NOT isometric): 1) cozy corner: sofa built from pallets with checkered cushions, fairy lights, a small side table with a spritz glass; 2) the cozy corner extended into a field hospital: sofa, first aid kit, folding screen, mirror with ring light, towels. Wide low objects, the second bigger. Each object stands alone on its own, no floor tile, no ground, no shadow outside the object, no people. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-cc59c53f-aa36-4a3e-9413-5a72d5103569.png",
+      "sourceHash": "ec89d0d16d4637da12ceaef1760c991d77acb968796e901c23ffb1893833e8d1"
+    },
+    {
+      "id": "bude-moebel-pfandlager",
+      "kind": "props",
+      "output": "assets/precision/sources/2026-09-23/bude-moebel-pfandlager.png",
+      "prompt": "Game prop sheet, 1536 x 1024, fully transparent background. Exactly 2 isolated furniture objects of the same clubhouse pub in ONE horizontal row, left to right, evenly spaced with wide clear transparent gaps between them, all at the same scale and seen from the same camera (axis-aligned top-down with a steep downward angle, front side facing the viewer, NOT isometric): 1) deposit shelf built from pallets holding about twenty stacked beer crates in rows; 2) huge deposit shelf wall packed with beer crates up to the top, a roll of deposit receipts, clipboard hanging on it. Wide objects, the second bigger and taller. Each object stands alone on its own, no floor tile, no ground, no shadow outside the object, no people. Style: finely detailed warm comic pixel art exactly matching the second reference image (the existing painted interior of the same building): same crisp pixel clusters, dark slate contours, warm light from the upper left, cool violet shadows, worn oak, honey plaster, party debris. Axis-aligned orthographic top-down view with a steep downward angle, NOT isometric, NOT rotated. No characters, no text, no letters.",
+      "references": [
+        "assets/precision/sources/2026-09-23/bude-haus-innen.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-23",
+      "originalFile": "exec-b4ecd1e8-9fec-4b3d-85bc-fdd400400135.png",
+      "sourceHash": "23b2c9bb4d9aa782ff8ce15a9a572ff382440336ff8268bf8ec868522ba713d3"
     }
   ]
 }

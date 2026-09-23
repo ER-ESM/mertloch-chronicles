@@ -259,6 +259,9 @@ function restAtShrine(){const p=game.player;if(p.inCombat>0){toast('Der Konterbr
  *  (Auftragsziel vor Mentor vor Nebenquest vor Ida vor Konterbrunnen, P3/P5) – die UI baut nur
  *  die Beschriftungen aus dem Spielzustand (Sammelgut, Mentor, Nebenquest, Ida). */
 function worldInteraction(){
+ // Treppe der Bude (E-52): nur direkt am Treppenfuß beziehungsweise am oberen Absatz.
+ const stairs=game.stairsInteraction?.();if(stairs)return {kind:'stairs',label:stairs.label,run:()=>{game.useStairs();events();}};
+ if(game.floor)return world.base&&distance(game.player,world.base)<75?{kind:'bude',label:BASE_SITE_UI.interact,run:()=>unlocks&&!unlocks.unlocked('bude')?toast(BASE_SITE_UI.locked):showPanel('base')}:null;
  const profession=professionTarget(game);if(profession)return {kind:'profession',label:profession.type==='professionNode'?PROFESSION_UI.gather+' · '+PROFESSION_SOURCES[profession.kind].name:PROFESSION_STATIONS[profession.id].name,run:()=>useProfessionTarget(profession)};
   const board=!game.instance&&!tutorialActive(game)&&companionBoardPoint(world);
   if(board&&distance(game.player,board)<50)return {kind:'companions',label:COMPANION_TEXT.board,run:()=>openCompanions()};

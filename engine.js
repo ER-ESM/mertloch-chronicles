@@ -2,7 +2,8 @@ import {initProfessions,savedProfessions,tickProfession,cancelProfession} from '
 import {initMounts,savedMounts,toggleMount,dismount,tickMount,acquireMount,learnRiding,selectMount,mountStation} from './mounts.js';
 import {MOUNT_UI,MOUNT_RULES} from './content/index.js';
 import {inKiosk,enterKiosk,leaveKiosk,roomInteraction,roomWorld,tickKiosk,savedKiosk} from './kiosk-instance.js';
-import {KIOSK_ROOM,KIOSK_TEXT} from './content/index.js';
+import {upperWorld} from './world-house.js';
+import {KIOSK_ROOM,KIOSK_TEXT,BUDE_HOUSE_TEXT} from './content/index.js';
 import {shopInteraction,buyItem,sellItem,buybackItem} from './shop.js';
 import {emitCombatFx,emitSkillFx} from './combat-fx.js';
 import {createCombatMeter,beginMeterCombat,finishMeterCombat,tickCombatMeter,recordMeterDamage,restoreMeterHealth} from './combat-meter.js';
@@ -129,8 +130,8 @@ export class Game{
   }
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
-  selectNext(reverse=false){if(inKiosk(this))return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
-  selectAt(x,y){if(inKiosk(this))return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
+  selectNext(reverse=false){if(inKiosk(this)||this.floor)return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
+  selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false,aidId=this.companionAidId){
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
     if(this.paused||this.dead)return false;
@@ -345,6 +346,8 @@ export class Game{
   leaveKiosk(force=false){return leaveKiosk(this,force);}
   interaction(){
     if(inKiosk(this))return roomInteraction(this);
+    // Obergeschoss der Bude (E-52): Leute und Orte im Erdgeschoss oder draußen sind von oben nicht ansprechbar.
+    if(this.floor)return null;
     const p=this.player,focus=this.questFocus();if(focus)return focus;
     const mentor=this.mentorInteraction();if(mentor)return {kind:'mentor',point:{x:mentor.x,y:mentor.y},id:mentor.id,name:mentor.name,priority:3};
     const stable=mountStation(this.world);if(!tutorialActive(this)&&distance(p,stable)<=MOUNT_RULES.range&&this.world.lineClear(p,stable))return {kind:'mounts',point:stable,name:MOUNT_UI.station,priority:4};
@@ -422,14 +425,22 @@ export class Game{
     }
     return {point:this.world.npc,label:STORY.giver};
   }
-  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=inKiosk(this)?roomWorld:this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
+  /** Welt, in der eine Figur läuft: Kiosk-Raum, Obergeschoss der Bude (nur der eigene Held, E-52) oder das Dorf. */
+  walkWorld(entity=this.player){return inKiosk(this)?roomWorld:(this.floor&&entity===this.player&&upperWorld(this.world.base?.house))||this.world;}
+  /** Treppe der Bude in Reichweite? Liefert Beschriftung und Ziel des Wechsels. */
+  stairsInteraction(){const h=this.world.base?.house,p=this.player;if(!h?.stairs||!h.upper?.stairs||inKiosk(this)||this.dead)return null;
+    if(!this.floor&&distance(p,h.stairs.foot)<h.stairs.range)return {label:BUDE_HOUSE_TEXT.up,to:1,point:h.upper.stairs.landing};
+    if(this.floor&&distance(p,h.upper.stairs.landing)<h.upper.stairs.range)return {label:BUDE_HOUSE_TEXT.down,to:0,point:h.stairs.foot};return null;}
+  /** Stockwerk wechseln: Held steht danach am Absatz beziehungsweise am Treppenfuß, Wege und Ziel sind gelöscht. */
+  useStairs(){const s=this.stairsInteraction();if(!s||this.paused)return false;dismount(this);this.floor=s.to;Object.assign(this.player,{x:s.point.x,y:s.point.y,moving:false,vx:0,vy:0});this.moveTo=null;this.path=[];this.routeGoal=null;this.keys.clear();this.target=null;this.stopAuto();this.emit('floorChanged',{floor:this.floor});return true;}
+  move(entity,dx,dy){const old={x:entity.x,y:entity.y},w=inKiosk(this)?roomWorld:(this.floor&&entity===this.player&&upperWorld(this.world.base?.house))||this.world;moveWithCollisions(w,entity,dx,dy);const travelled=Math.hypot(entity.x-old.x,entity.y-old.y);if(travelled>.001){entity.direction=walkFacing(entity.x-old.x,entity.y-old.y,entity.direction||'se');if(entity!==this.player)entity.walkDistance=(entity.walkDistance||0)+travelled;}}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
-  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=(inKiosk(this)?roomWorld:this.world).findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
+  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.walkWorld().findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
   /** Laufweg zur goldenen Wegmarke – ein Befehl statt vieler kurzer Klicks am Bildschirmrand (P6). */
   navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.point):false;}
   /** Neuberechnung des laufenden Laufbefehls, wenn der Schritt an einer Kante klemmt. */
-  repath(){const goal=this.routeGoal;if(!goal)return false;this.path=(inKiosk(this)?roomWorld:this.world).findPath(this.player,goal);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.path=[];this.routeGoal=null;return false;}return true;}
+  repath(){const goal=this.routeGoal;if(!goal)return false;this.path=this.walkWorld().findPath(this.player,goal);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.path=[];this.routeGoal=null;return false;}return true;}
   /** Erster Treffer eines neuen Angreifers oder Wechsel inCombat 0→1 (P1): Ereignis `attacked` für den großen
    *  Hinweis der UI, dazu die Zielwahl auf den Angreifer, solange kein Ziel steht. */
   noteAttacker(e,damage,fresh){
@@ -452,7 +463,7 @@ export class Game{
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y};
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
-  respawn(){dismount(this);if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});resetCompanions(this);
+  respawn(){dismount(this);this.floor=0;if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});resetCompanions(this);
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
     this.toast(SYSTEM_LINES.respawn);}
   tick(dt){
