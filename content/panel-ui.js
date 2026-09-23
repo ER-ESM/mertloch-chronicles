@@ -65,3 +65,7 @@ export const BAG_UI={
  weaponWords:'Waffe Waffenschaden Tempo Schaden',
  equipped:(name,slot)=>'Angelegt: '+name+' · '+slot
 };
+/** Kniffe-Buch, Abschnitt „Eigenarten & Leisten“ (passive-book.js, Nutzerwunsch 2026-09-23). */
+export const PASSIVE_BOOK_UI={title:'Eigenarten & Leisten',hint:'Was im Hintergrund mitläuft, woher es kommt und wie es funktioniert. Aufgeklappt ist dein Hauptbaum.',
+ hintNoMain:'Was im Hintergrund mitläuft, woher es kommt und wie es funktioniert. Die Leisten der drei Bäume wirken erst, wenn du einen davon als Hauptbaum wählst (Talente, Taste N).',
+ classTitle:name=>'Eigenart von '+name,classScope:'Klasse · wirkt immer',active:'wirkt jetzt (Hauptbaum)',withMain:name=>'wirkt mit Hauptbaum '+name,swaps:'Kniffe mit diesem Hauptbaum:'};

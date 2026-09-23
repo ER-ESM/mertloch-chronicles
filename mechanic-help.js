@@ -1,7 +1,7 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
 import {SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,PROC_RULES,describe as contentDescribe,effectNumbers} from './content/index.js';
 import {combatStats} from './rpg.js';
-import {talentRank} from './talents.js';
+import {talentRank,mainTreeOnly} from './talents.js';
 import {effectAt} from './talent-ranks.js';
 const n=v=>String(Math.round(v*100)/100).replace('.',','),pct=v=>n(v*100)+' %';
 export function skillName(g,id,spec=g.rpg?.talents?.spec){
@@ -9,6 +9,19 @@ export function skillName(g,id,spec=g.rpg?.talents?.spec){
  const cls=SPECS[spec]?.classId||g.member.id,base=BASE_SKILLS.findIndex(s=>s.id===id);
  return SPEC_MECHANICS[spec]?.kit?.[id]?.name||(base>=0?KITS[cls][base]?.name:null)||TALENT_SKILLS[id]?.name||(id==='ground'?GROUND_SKILL.names[cls]:id==='throw'?THROW_SKILL.names[cls]:null)||g.skills.find(s=>s.id===id)?.name||id;
 }
+/** Sammelbegriffe der Texte → Kniff-Platz (Nutzerwunsch 2026-09-23: „bitte immer präzise nennen, welcher konkrete Skill gemeint ist“). */
+export const ROLE_WORDS={ground:'Bodenkniff',burst:'Spezialkniff',heal:'Heilkniff',strike:'Grundangriff',throw:'Wurf',buff:'Stärkung',mark:'Markierung',interrupt:'Unterbrechung',dash:'Ausweichen',parry:'Parade'};
+const ROLE_RE=/(?<![\wäöüÄÖÜß-])(Bodenkniffs?|Bodenangriffs?|Spezialkniffs?|Heilkniffs?|Grundangriffe?s?|Würfe|Wurfs?|Stärkung|Markierung|Unterbrechung|Unterbrechen|Ausweichen|Paraden?)(?![\wäöüÄÖÜß-])/g;
+const roleOf=w=>/^Boden/.test(w)?'ground':/^Spezial/.test(w)?'burst':/^Heil/.test(w)?'heal':/^Grund/.test(w)?'strike':/^W[uü]rf/.test(w)?'throw':w==='Stärkung'?'buff':w==='Markierung'?'mark':/^Unterbrech/.test(w)?'interrupt':w==='Ausweichen'?'dash':'parry';
+/** Hängt an Sammelbegriffe einmal je Text den Namen des Kniffs, der hier gemeint ist: „Dein Bodenkniff („Anstich“) …“.
+ *  `spec` = Baum, dessen Kniff-Namen gelten (Talente, die nur im Hauptbaum wirken, nennen die Namen ihres Baums). */
+export function nameSkills(g,text,spec=g.rpg?.talents?.spec){if(!text)return text;const seen=new Set();
+ return String(text).replace(ROLE_RE,w=>{const id=roleOf(w);if(seen.has(id))return w;seen.add(id);const name=skillName(g,id,spec);return !name||name===id||text.includes(name)?w:w+' („'+name+'“)';});}
+/** Welcher Baum die Namen eines Talents bestimmt: sein eigener, wenn es nur im Hauptbaum wirkt, sonst der aktuelle Hauptbaum. */
+export const namingSpec=(g,t)=>mainTreeOnly(t)?t.spec:g.rpg?.talents?.spec;
+/** Hauptbaum-Kniffe eines Baums: was sie ersetzen. → [{id,name,role,replaces}] */
+export function kitSwaps(g,spec){const kit=SPEC_MECHANICS[spec]?.kit||{},cls=SPECS[spec]?.classId||g.member.id,base=id=>{const i=BASE_SKILLS.findIndex(s=>s.id===id);return (i>=0?KITS[cls]?.[i]?.name:null)||(id==='ground'?GROUND_SKILL.names[cls]:id==='throw'?THROW_SKILL.names[cls]:null)||id;};
+ return Object.entries(kit).map(([id,k])=>({id,name:k.name,role:ROLE_WORDS[id]||id,replaces:base(id)})).filter(k=>k.name!==k.replaces);}
 export function mechanicHelp(g,spec=g.rpg?.talents?.spec){
  const m=SPEC_MECHANICS[spec];if(!m)return null;
  const cs=combatStats(g),s=g.classState?.m||{},add=(key,base)=>base+(cs[key]||0),skill=id=>'„'+skillName(g,id,spec)+'“';let lines=[];
@@ -64,11 +77,14 @@ export function talentHelp(g,t){
  else context.push(`Wirkt mit allen drei Hauptbäumen deiner Klasse; ${SPECS[t.spec].name} muss dafür nicht dein Hauptbaum sein.`);
  if(!groups.size)for(const [id,kit] of Object.entries(SPEC_MECHANICS[t.spec].kit||{})){const name=skillName(g,id);if(kit.name!==name)effect=effect.replaceAll(kit.name,'„'+name+'“');}
  const skills=[...new Set([...t.skills,...procs.flatMap(id=>{const r=PROC_RULES[id];return [r.skill,r.effect.free,r.effect.reset,r.effect.empower,...[].concat(r.effect.cdReduce||[]).map(c=>c.skill)].filter(Boolean);})])];
- if(skills.length)context.push('Betroffene Kniffe: '+skills.map(id=>skillName(g,id)).join(', ')+'.');
+ if(skills.length)context.push('Betroffene Kniffe: '+skills.map(id=>skillName(g,id,namingSpec(g,t))).join(', ')+'.');
  const markRelevant=keys.some(k=>['markBonus','markedLeech','spreadMark','burstSpread','markedKillHot','markedKillEnergy','markRoot'].includes(k))||procs.some(id=>['markTick','markedHit'].includes(PROC_RULES[id].trigger));
  if(markRelevant)context.push(`Deine Markierung wird durch „${skillName(g,'mark')}“ aufgetragen und verursacht Schaden über Zeit.${g.rpg.talents.spec==='baerbel-feedback'?' Auch Sporenwolke trägt Schimmel auf.':cls==='baerbel'?' „Schimmel“ bezeichnet dieselbe Markierung im Hauptbaum Putzpyramide; dieses Talent zählt auch Fleckentest.':''}`);
+ // Nennt der Text einen Hauptbaum-Kniff (z. B. „Anstich“), steht dabei, woher er kommt.
+ const main=g.rpg?.talents?.spec,origin=[];for(const k of kitSwaps(g,t.spec))if(effect.includes(k.name)||t.text?.includes(k.name))origin.push(main===t.spec?`„${k.name}“ ist dein ${k.role} – er ersetzt „${k.replaces}“, weil ${SPECS[t.spec].name} dein Hauptbaum ist.`:`„${k.name}“ ist der ${k.role} des Hauptbaums ${SPECS[t.spec].name}: Er ersetzt „${k.replaces}“, sobald du ${SPECS[t.spec].name} als Hauptbaum wählst.`);
+ effect=nameSkills(g,effect,namingSpec(g,t)).replace(/(?<![\s.][A-Za-z])\.(\s+)([a-zäöü])/g,(m,sp,c)=>'.'+sp+c.toUpperCase());/* Satzanfang nach zusammengesetzten Auslöser-Texten */
  const required=skills.filter(id=>TALENT_SKILLS[id]&&id!==t.grants);if(required.length)context.push('Benötigt zusätzlich die erlernte Talentfähigkeit '+required.map(id=>'„'+skillName(g,id)+'“').join(', ')+'.');
- return {effect,context};
+ return {effect,context,origin};
 }
 export function skillHelp(g,id){
  const s=g.skills.find(s=>s.id===id);if(!s)return '';
@@ -81,7 +97,7 @@ export function skillHelp(g,id){
  if(id==='strike'&&m?.dot)return s.text+' '+h.lines[1];
  return s.text;
 }
-const TERM_SPECS={schimmel:'baerbel-feedback',durchputzen:'baerbel-feedback',sporenwolke:'baerbel-feedback',vorrat:'baerbel-care',grossreinemachen:'baerbel-care',putzwut:'baerbel-stage',auswringen:'baerbel-stage',pegeluhr:'dieter-brawl',kater:'dieter-brawl',rausch:'dieter-brawl',hausverbot:'dieter-wall',lunte:'kevin-fuse',kettenreaktion:'kevin-fuse',bastlerglueck:'kevin-hunt',jackpot:'kevin-hunt'};
+export const TERM_SPECS={schimmel:'baerbel-feedback',durchputzen:'baerbel-feedback',sporenwolke:'baerbel-feedback',vorrat:'baerbel-care',grossreinemachen:'baerbel-care',putzwut:'baerbel-stage',auswringen:'baerbel-stage',pegeluhr:'dieter-brawl',kater:'dieter-brawl',rausch:'dieter-brawl',hausverbot:'dieter-wall',lunte:'kevin-fuse',kettenreaktion:'kevin-fuse',bastlerglueck:'kevin-hunt',jackpot:'kevin-hunt'};
 export function termHelp(g,id){const spec=TERM_SPECS[id];return spec?mechanicHelp(g,spec):null;}
 export function passiveHelp(g,id=g.member.id){
  const m=CLAN_MEMBERS.find(x=>x.id===id);if(!m)return '';const p=m.passives,skill=s=>'„'+skillName({...g,member:m},s,CLASS_SPECS[id][0])+'“';

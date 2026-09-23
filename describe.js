@@ -72,7 +72,7 @@ function describeTalent(game,id){
  if(!t)return null;
  const state=game.rpg.talents,mine=list.includes(t),learned=!!state?.learned.includes(id);
  return {icon:t.icon||null,name:t.name,
-  info:{...infoFor(t,{effect:t.text||'',numbers:[]},'talent',id),effect:talentHelp(game,t).effect,context:talentHelp(game,t).context,numbers:t.scaling?[num(t.scaling.label,t.scaling.values[Math.max(0,talentRank(state,id)-1)],t.scaling.unit)]:CONTENT.describe('talent',id).numbers},
+  info:{...infoFor(t,{effect:t.text||'',numbers:[]},'talent',id),...(h=>({effect:h.effect,context:[...h.origin,...h.context]}))(talentHelp(game,t)),numbers:t.scaling?[num(t.scaling.label,t.scaling.values[Math.max(0,talentRank(state,id)-1)],t.scaling.unit)]:CONTENT.describe('talent',id).numbers},
   live:{learned,spec:mine?spec:Object.keys(TALENTS).find(s=>TALENTS[s].includes(t)),tier:t.tier,
    rank:talentRank(state,id),maxRank:t.maxRank,open:canLearnTalent(game,id),
    pointsLeft:Math.max(0,talentPoints(game)-spentPoints(state)),grants:t.grants||null,effects:effectsAt(t,Math.max(1,talentRank(state,id)))}};

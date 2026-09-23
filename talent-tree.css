@@ -52,3 +52,4 @@
 @media (prefers-reduced-motion:reduce){.tt-menu .tt-toolbar button.tt-main-pick{animation:none;box-shadow:0 0 0 3px #f1cd7773}}
 .tt-path-focus{margin:2px 0 8px;font:12px/1.4 var(--read);color:var(--cream)}
 .tt-path-focus b{color:var(--gold);font-weight:600}
+.tt-origin{margin:4px 0;padding:4px 8px;border-left:3px solid var(--gold);font:12px/1.4 var(--read)} /* Herkunft von Hauptbaum-Kniffen im Talent (Klartext 2026-09-23) */
