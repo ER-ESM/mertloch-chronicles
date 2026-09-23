@@ -38,13 +38,21 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 | 28 | Welt | Schilder/Auftragszeichen über dem eigenen Helden durchscheinend | `renderer.js` (`labelQueue.hero`) |
 | 29 | HUD | Menüknöpfe unten rechts 46 × 50 mit randfüllenden Symbolen | `ui-art.js`, `ui-chrome.css` |
 | 30 | HUD | EP-Leiste mit Glanzkante und leuchtender Spitze | `ui-chrome.css` |
+| 31 | Kampf | Eigener Glückstreffer: kurzer Kamerastoß (aus bei reduzierter Bewegung) | `app.js` |
+| 32 | Bude | Pfandlager mit Bodendeko | `content/bude-house.js` |
+| 33 | Persona 2 | Leichen 6 s, Held hinter der Bude als heller Umriss, Schilder über dem Helden 60 % | `renderer.js` (`ghost`, `CORPSE_TIME`) |
+| 34 | Clanbuch | Auswahlfelder im Spielstil, Kniff-Namen zweizeilig, `icon-fit` ohne Canvas-Warnungen | `ui-chrome.css`, `icon-fit.js` |
 
 ## Werkzeuge
 
 - `visual-review/shot.mjs` (nicht eingecheckt, `visual-review/` ist ignoriert): Headless-Aufnahmen mit voller Bildrate. Szenen `sct`, `fight`, `kill`, `aoe`, `bude:x:y:zoom:geschoss`, `ui:<taste>` (mit `PRE`/`HOVER`), `eval` (mit `EVAL`/`WAIT`/`CLIP`).
 - Falle: Das Playwright-MCP-Fenster läuft gedrosselt (Dokument-Zeitleiste steht, rAF ~4/s) – CSS-Animationen und Kampftext sind dort unsichtbar. Für Animationen Headless-Chrome über `scripts/browser-session.mjs` nehmen.
 
-## Persona-Bewertung (Kenner, Build #360)
+## Persona-Bewertungen
+
+Zweite Kenner-Runde auf #375: **6,5/10** (Bude außen 7,5, Clanbuch 7, Gespräch 6,5, HUD 6,5, Bude innen 5,5, Kampf 4,5). Achtung: Personas laufen im gedrosselten Playwright-Fenster – Kampftext/EP (CSS-Animationen) sehen sie nicht, die Kampfnote ist dadurch zu niedrig. Offen laut Runde 2: Innenwände ohne Wandflächen, drei Schriftarten, Karte nicht gemalt, frei schwebende HUD-Teile (F-Hinweis, LEER/Q, Autoangriff-Pille).
+
+### Kenner, Build #360
 
 Gesamt 6/10; stark: Startbildschirm/Film, Fassaden, UI-Rahmen. Abgearbeitet in Runden 23–29: leere Leiste, Rechteckschatten, Dialog-Lage, gesperrte Kniffe, Hofkante, Karte, Held unter Schildern, Menüknöpfe.
 Offen (bewusst nicht angefasst):
