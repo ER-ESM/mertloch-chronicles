@@ -380,7 +380,7 @@ Normale technische Detailentscheidungen begründet treffen. Nicht beschlossene Z
 - [Online Stufe C: geteilte Gegner, Gruppen und Vertrauensmodell](ONLINE-STUFE-C-2026-09-20.md)
 - [Online Stufe B: Server und Betrieb](ONLINE-STUFE-B-2026-09-19.md)
 - [Händler und bisherige private Kiosk-Instanz](HAENDLER-2026-09-19.md)
-- [Frühere Charaktererstellungs-Ideen – gegen E-38 abgleichen](CHARAKTERERSTELLUNG-BRAINSTORM-2026-09-19.md)
+- [Charaktererstellungs-Ideen, gegen E-38 abgeglichen am 23.09.](CHARAKTERERSTELLUNG-BRAINSTORM-2026-09-19.md)
 - [Roadmap](ROADMAP.md)
 - [Repository-Arbeitsregeln](../CLAUDE.md) und [Pipeline](PIPELINE.md)
 
