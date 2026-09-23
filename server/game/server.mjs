@@ -13,6 +13,7 @@ import {acceptUpgrade} from './ws.mjs';
 import {createSharedWorld} from './shared-world.mjs';
 import {createPartyPlay} from './party-play.mjs';
 import {createSocialPlay} from './social-play.mjs';
+import {createDeploy} from './deploy.mjs';
 
 export const API_VERSION=7;
 const COOKIE='mertloch_session';
@@ -68,7 +69,11 @@ export function createGameServer(options={}){
  const requireAccount=req=>store.accountForToken(cookieToken(req))||fail(401,'login',TEXT.login);
 
  // ── HTTP-Endpunkte (gleicher Vertrag wie die PHP-Fassung aus Stufe A) ──
+ // Server-Refresh auf Zuruf (deploy.mjs): nur mit MERTLOCH_DEPLOY_TOKEN aktiv.
+ const deploy=options.deploy||createDeploy({buildFile:options.buildFile||fileURLToPath(new URL('../../_site/build-info.js',import.meta.url)),log});
  const routes={
+  version(){return deploy.version();},
+  async deploy(req){if(req.method!=='POST')fail(405,'method',TEXT.method);const r=deploy.trigger(req);if(!r.started)fail(r.status,r.code,r.message);return r;},
   async health(){return {version:API_VERSION,uptime:Math.round((Date.now()-started)/1000),online:hub.clients.size,...store.counts()};},
   async auth(req,url,headers){
    const body=req.method==='POST'?await readBody(req,64*1024):{},action=String(body.action||url.searchParams.get('action')||'me'),ip=clientIp(req);
