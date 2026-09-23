@@ -1,4 +1,5 @@
 import {PROFESSION_ITEMS} from './professions.js';
+import {HOTSPOT_ITEMS} from './hotspots.js';
 // Gegenstandskatalog. IDs sind Speicherschlüssel: nie umbenennen, nie löschen – höchstens `retired:true` setzen.
 // Felder: name, slot (Ausrüstungskategorie aus SLOTS) ODER kind (consumable|material), rarity, icon (siehe ICONS),
 // level (Mindeststufe), stats {stamina,might,finesse,wit,armorRating} (E-53),
@@ -79,7 +80,7 @@ export const ITEM_CATALOG={
  giesskanne:{weapon:{type:'maul',hands:2,min:37,max:53},name:'Giselas Gießkanne der Gerechtigkeit',slot:'weapon',rarity:'epic',icon:'water',level:6,stats:{might:20,wit:42,stamina:12},unique:true,proc:'hops',description:'Selten von Gisela. Außerhalb des Kampfes regenerierst du doppelt so schnell. Innen: Hopfen, kein Wasser.',look:'Grüne Blechgießkanne mit Vereinsaufkleber „Ruhe 22:01“'},
  automatenarm:{name:'Greifarm des Pfandautomaten',slot:'charm',rarity:'epic',icon:'reinforced',level:9,stats:{might:22,finesse:45,wit:22,stamina:14},unique:true,proc:'thirst',description:'Selten vom Pfandautomaten 3000. Jeder Kill gibt 20 Randale zurück. Nimmt weiterhin keine Dosen an.',look:'Verchromter Roboter-Greifarm mit blinkender LED'}
 };
-Object.assign(ITEM_CATALOG,PROFESSION_ITEMS);
+Object.assign(ITEM_CATALOG,PROFESSION_ITEMS,HOTSPOT_ITEMS);
 for(const d of Object.values(PROFESSION_ITEMS))d.look=d.description;
 for(const [id,icon] of Object.entries(ITEM_ICON_OVERRIDES))ITEM_CATALOG[id].icon=icon;
 // Balancing-Korrekturen (content/tuning.js): Loot definiert Gegenstände, Balancing korrigiert Zahlen darüber.

@@ -85,3 +85,8 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 - [ ] **Hofprobe 5/8 „Der rote Kreis ist kein Tanzplatz“ – Kenner: bricht ab.** Drei Versuche (Leertaste nach „JETZT AUSWEICHEN!“, erneut, 1 s S gehalten) zählten nicht; der rote Kreis lag auch 27–30 m vom Papp-Horst noch unter der Figur. Mitursache Werkzeugverzögerung möglich. Unit-Test `tests/tutorial-talents.test.mjs` (Wiederholung nach Fehlversuch) grün; das Browserskript `scripts/tutorial-talents-check.mjs` bricht schon vorher ab (`null.dataset`) und prüft den Schritt derzeit nicht. Nicht Teil von E-53 – vor dem nächsten Release mit einem Menschen oder repariertem Skript nachstellen.
 - [ ] Kniff/Autoangriff aus 7 m: nur „Zu weit entfernt“, die Figur läuft nicht selbst hin (Genre-Erwartung).
 - [ ] Rechtsklick-Laufweg in der Welt landet zweimal nicht am Klickpunkt (einmal weit hinter der Kirche); WASD zuverlässig.
+- [ ] **Neuling 23.09. (L2 H4, bricht ab):** Alte Nebenaufträge (`world.quests`) schicken Stufe-1-Helden 200–460 m ins aggressive Umland (Fuchs, Praktikant, Ruhewärter in Gruppe) – Tod nach 5 s auf dem ersten Weg. Vorschlag: Stufenempfehlung an Nebenaufträgen oder Ziele näher an den Ort; die Startreihe (E-55) ist der ruhige Einstieg.
+- [ ] Neuling (L2 H3): F-Reihenfolge allgemein – das Schwarze Brett gewinnt gegen die Figur daneben. Nächstes Ziel statt fester Reihenfolge?
+- [ ] Neuling (L2 H1/H2): Ida 1/8 – erster Klick auf „Ausrüstung nehmen und Hofprobe anfangen“ ohne Wirkung; „Spielweise aussuchen“ öffnet die Figur ohne sichtbare Wahl.
+- [ ] Neuling (L2 H8): nach „Bereit für den üblichen Verdächtigen“ drei Fenster gleichzeitig.
+- [ ] Balance E-55: Startreihe ~1 420 EP + Aushänge 740 EP zusätzlich – prüfen, ob Kapitel 2 dadurch zu leicht wird.

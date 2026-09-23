@@ -201,3 +201,12 @@ Herkunft und Schnittstelle: [Begleiter-Übergabe](../BEGLEITER-2026-09-21.md).
 - [ ] Figur → Werte → „Kampfstatistik“ schließt das Figurenfenster, sichtbar öffnet sich nichts.
 - [ ] Veraltete Browserskripte (scheitern auch auf dem Stand vor E-53): `scripts/mobile-check.mjs` (fährt im Figurenfenster über `[data-tooltip-skill="strike"]`, Kniffe liegen seit E-43 auf eigener Seite), `scripts/polish-playtest.mjs` (`.popup-menu [data-shell="bag"]` fehlt), `scripts/character-sheet-check.mjs` und `scripts/tutorial-talents-check.mjs` (`null`-Zugriff). Außerdem erwarten sie einen extern laufenden Server auf 4173/4181 statt ihn selbst zu starten.
 - [ ] Idee (Kenner): Schaden/s und Angriffstempo stehen jetzt auf Figur → Werte; offen, ob Tooltip und Werteseite dieselbe Zahl „je Sekunde inkl. Tempo“ zeigen sollen (heute: Waffe ohne Tempo, Tempo getrennt).
+
+## Startreihe & Karte (E-55) · 2026-09-23
+
+- [x] Hotspot-Geber in Welt, Dialog, Tracker, Questbuch; Karte mit „!“/„?“, Zielgebieten und Tiergebieten, Filter „Aufträge“. Browserabnahme `scripts/hotspots-check.mjs`.
+- [ ] Playtest Neuling 23.09. (H5): Auf dem Kartenreiter „Karte“ fehlt die Legende, sie steht nur unter „Orte“; Treffpunkt und Lager tragen beide die Nummer „1“; Lager heißen wie Aufträge („Trauzeuge Timo vom Busdach holen“). Legende direkt an die Karte, Lager eigene Zeichen.
+- [ ] Playtest Neuling (H2): Während der Hofprobe öffnet F immer Kisten-Ida, auch aus 26 m, obwohl im Bild „F · Sammeln“ an einem anderen Objekt steht.
+- [ ] Playtest Neuling (H4): Hilfe nennt Reiter „Aufträge“ und Taste J, beide sind während der Hofprobe noch gesperrt – Hinweis „erst nach der Hofprobe“.
+- [ ] Playtest Neuling (H6): Ida bietet „Spielweise aussuchen“, obwohl die Klasse in der Heldenerstellung schon gewählt ist.
+- [ ] Banner „Neue Version · Neu laden“ bleibt dauerhaft stehen (Neuling unsicher, ob er neu laden muss).

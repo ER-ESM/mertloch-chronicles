@@ -4,6 +4,7 @@ import {SHOP_STOCK} from '../shop.js';
 import {ITEM_CATALOG,PROCS} from '../items.js';
 import {ITEM_INFO,PROC_INFO,describeItem,describeProc} from '../item-info.js';
 import {DROP_TABLES} from '../drops.js';
+import {HOTSPOTS,WORLD_NOTICES} from '../hotspots.js';
 import {RECIPES,BENCH_STAGES} from '../recipes.js';
 import {BUILDINGS} from '../buildings.js';
 import {STORY_CHAPTERS} from '../story.js';
@@ -17,7 +18,7 @@ export function check(bad){
  const dropped=new Set(Object.values(DROP_TABLES).map(t=>t.unique));
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.unique&&!d.retired&&!dropped.has(id)&&!d.reward)bad('item '+id,'Dorflegende ohne Beutetabelle und ohne reward:true');
  // Jedes Material wird irgendwo fallen gelassen oder ist Sammelgut (gather:true).
- const materials=new Set([...Object.values(DROP_TABLES).map(t=>t.material),...Object.values(PROFESSION_SOURCES).flatMap(s=>Object.keys(s.items)),...SHOP_STOCK]);
+ const materials=new Set([...[...HOTSPOTS.flatMap(h=>h.quests),...WORLD_NOTICES].map(q=>q.objective.item).filter(Boolean),...Object.values(DROP_TABLES).map(t=>t.material),...Object.values(PROFESSION_SOURCES).flatMap(s=>Object.keys(s.items)),...SHOP_STOCK]);
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.kind==='material'&&!materials.has(id)&&!d.gather)bad('item '+id,'Material ohne Beutequelle (drops.js) und ohne gather:true');
  // Jeder Gegenstand mit Bildbedarf hat einen look; Verpflegung nennt die Wirkung im Text.
  for(const [id,d] of Object.entries(ITEM_CATALOG)){if(d.unique&&!d.look)bad('item '+id,'Dorflegende ohne look');if(d.kind==='consumable'&&!/\d/.test(d.description))bad('item '+id,'Verpflegungstext nennt keine Zahl');}
@@ -110,5 +111,7 @@ export function check(bad){
  for(const t of Object.values(DROP_TABLES))used.add(t.material);
  for(const b of Object.values(BUILDINGS))for(const s of b.stages||[])for(const item of Object.keys(s.cost||{}))used.add(item);
  for(const c of STORY_CHAPTERS)for(const o of c.objectives||[])if(o.kind==='gather'&&o.item)used.add(o.item);
+ // Questgegenstände der Startreihe und der Aushänge werden bei der Abgabe eingezogen (E-55).
+ for(const q of [...HOTSPOTS.flatMap(h=>h.quests),...WORLD_NOTICES])if(q.objective.item)used.add(q.objective.item);
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.kind==='material'&&!d.retired&&!used.has(id))bad('item '+id,'totes Material: kommt in keinem Rezept, keiner Beutetabelle, keinem Sammelziel und keinem Basisbau vor');
 }

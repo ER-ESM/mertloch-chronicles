@@ -12,6 +12,7 @@ export * from './talents.js';
 export * from './npcs.js';
 export * from './portraits.js';
 export * from './quests.js';
+export * from './hotspots.js';
 export * from './dialogues.js';
 export * from './story.js';
 export * from './memories.js';

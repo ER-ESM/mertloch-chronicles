@@ -47,6 +47,7 @@ import {softwareRendering} from './gpu-info.js';
 import {WorldFx} from './world-fx.js';
 import {prerenderArt,prerenderHasBakedShadow} from './prerender-art.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
+import {hotspotLayout,giverGlyph} from './hotspots.js';
 const poly=(c,p)=>{c.beginPath();p.forEach((v,i)=>i?c.lineTo(Math.round(v.x),Math.round(v.y)):c.moveTo(Math.round(v.x),Math.round(v.y)));c.closePath();};
 const rect=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x*2)/2,Math.round(y*2)/2,Math.round(w*2)/2,Math.round(h*2)/2);};
 const ellipse=(c,color,x,y,rx,ry)=>{c.fillStyle=color;c.beginPath();c.ellipse(Math.round(x),Math.round(y),rx,ry,0,0,Math.PI*2);c.fill();};
@@ -150,6 +151,8 @@ export class Renderer {
     for(const m of w.mentors||[])if(visible(m)&&(!g.tutorial||g.tutorial.completed))sorted.push({type:'mentor',obj:m,y:m.y});
     for(const e of g.enemies)if(visible(e)&&e.hp>0)sorted.push({type:e.type,obj:e,y:e.y});sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});
     for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});
+    // Startreihe (E-55): Geber am Hotspot und Aushänge, die noch niemand gefunden hat.
+    if(g.hotspots&&(!g.tutorial||g.tutorial.completed)){const L=hotspotLayout(w);for(const h of L.hotspots)if(visible(h.giver))sorted.push({type:'hotspotgiver',obj:h,y:h.giver.y});for(const n of L.notices)if(!g.hotspots.found.includes(n.id)&&visible(n))sorted.push({type:'notice',obj:n,y:n.y});}
     for(const z of g.fields||[])if(z.remaining>0&&visible(z))sorted.push({type:'classField',obj:z,y:z.y});/* Stockwerke (E-52): im Haus nur zeigen, wer und was auf dem eigenen Geschoss steht; andere Spieler tragen ihr Stockwerk mit. */if(houseSeen&&houseFade>0)for(let i=sorted.length-1;i>=0;i--){const it=sorted[i],o=it.obj;if(!o||it.type==='player'||it.type==='houseWall'||it.type==='houseShell'||it.type==='kitItem'||it.type==='building'||it.type==='tree')continue;const ox=it.type==='questgiver'?o.giver?.x:o.x,oy=it.type==='questgiver'?o.giver?.y:o.y;if(!insideHouse(house,ox,oy))continue;if((it.type==='other'?o.floor||0:0)!==level)sorted.splice(i,1);}sorted.sort((a,b)=>a.y-b.y);
     // Bodenschatten aller stehenden Dinge in einer Ebene, eine Lichtrichtung (light-convention.js).
     // Je Bild nur noch die Schatten von Figuren, Möbeln und Beute; Bäume und Gebäude liegen gebacken im Boden-Zwischenspeicher.
@@ -172,6 +175,8 @@ export class Renderer {
       // Mentoren an der Bude tragen dieselbe Figurengrafik wie der Held (classId aus clan.js).
       else if(item.type==='mentor'){drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,WORLD_SCALE.npc/33);if(distance(e,p)<70)label(c,e.name,e.x,e.y-34,'#d8c89a',7);}
       else if(item.type==='merchant'){drawWorldPerson(c,SHOP_UI.npc,e.x,e.y,time,WORLD_SCALE.npc/33,{facing:1});label(c,SHOP_UI.title,e.x,e.y-65,'#f1d18b',9);label(c,SHOP_UI.marker,e.x,e.y-52,'#d8c89a',8);}
+      else if(item.type==='hotspotgiver'){const n=e.giver,glyph=giverGlyph(g,e.id);drawWorldPerson(c,n.npc,n.x,n.y,time,WORLD_SCALE.npc/33,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(glyph){c.save();if(glyph==='low')c.globalAlpha=.45;questBadge(c,n.x,n.y-(named?43:36),glyph==='low'?'!':glyph,false,time);c.restore();}}
+      else if(item.type==='notice'){c.save();c.fillStyle='#5a3d24';c.fillRect(e.x-1.5,e.y-22,3,22);c.fillStyle='#efe0b8';c.strokeStyle='#3b2a1c';c.lineWidth=1;c.fillRect(e.x-8,e.y-30,16,12);c.strokeRect(e.x-8,e.y-30,16,12);c.fillStyle='#8a7355';for(let i=0;i<3;i++)c.fillRect(e.x-5,e.y-27+i*3,10-i*2,1);c.restore();questBadge(c,e.x,e.y-34,'!',false,time);}
       else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,WORLD_SCALE.npc/33,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;drawComicEnemy(c,e,time);}c.restore();}

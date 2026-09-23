@@ -2,7 +2,7 @@ import {PROFESSION_RECIPES} from '../content/index.js';
 // Prüfungen der Rolle Gegenstände & Loot: Beutefamilien, Werkbank-Rezepte, Kioskpreise, totes Material.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ITEM_CATALOG,DROP_TABLES,FOOD_DROPS,RECIPES,BENCH_STAGES,BUILDINGS,STORY_CHAPTERS} from '../content/index.js';
+import {ITEM_CATALOG,DROP_TABLES,FOOD_DROPS,RECIPES,BENCH_STAGES,BUILDINGS,STORY_CHAPTERS,HOTSPOTS,WORLD_NOTICES} from '../content/index.js';
 
 test('jede Beutefamilie lohnt sich: Material, Dorflegende und Verpflegung hängen zusammen', () => {
  for(const [family,t] of Object.entries(DROP_TABLES)){
@@ -55,6 +55,7 @@ test('kein totes Material: jedes Material wird gebraucht', () => {
  for(const t of Object.values(DROP_TABLES))used.add(t.material);
  for(const b of Object.values(BUILDINGS))for(const s of b.stages||[])for(const item of Object.keys(s.cost||{}))used.add(item);
  for(const c of STORY_CHAPTERS)for(const o of c.objectives||[])if(o.kind==='gather'&&o.item)used.add(o.item);
+ for(const q of [...HOTSPOTS.flatMap(h=>h.quests),...WORLD_NOTICES])if(q.objective.item)used.add(q.objective.item);
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.kind==='material'&&!d.retired)assert.ok(used.has(id),id+': totes Material');
 });
 

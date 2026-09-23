@@ -32,6 +32,7 @@ import {companionAid,companionAidFailure,healCompanionByPlayer,buffCompanionByPl
 import {TANK_SPECS} from './net-world.js';
 import {member,skillsFor,STORY} from './clan.js';
 import {EncounterDirector,makeEnemy,idleEnemy,beginReturn,tryRespawn,walkClear,moveAlong,inSanctuary,ARCHETYPES} from './encounters.js';
+import {HotspotDirector,restoreHotspots,onHotspotKill,hotspotInteraction,hotspotDestination} from './hotspots.js';
 import {BALANCE,SPEC_MECHANICS,CAST_SETS,killXp,PROCS,SYSTEM_LINES,BOSS_LINES,BOSSES,ENEMY_BARKS,VILLAGERS,COMBAT_RULES,COMBAT_TEXT,STORY_CHAPTERS,triggeredMemories,BUILDINGS,BUILDING_IDS,nextStage,buildingEffects,hubLine} from './content/index.js';
 export const COMBAT_FX_VERSION=1;
 export const SKILLS=skillsFor('dieter');
@@ -78,10 +79,10 @@ export class Game{
     this.relic=!!saved.relic;this.discovered=new Set(saved.discovered||[]);this.stats={damage:0,interrupts:0,parries:0,dodges:0,kills:0};this.enemies=[];
     const sameWorld=saved.worldKey===world.id;
     this.sideQuests=Object.fromEntries((world.quests||[]).map(q=>{const old=sameWorld?saved.sideQuests?.[q.id]:null;return[q.id,{accepted:!!old?.accepted,progress:Math.min(q.required,Math.max(0,Number(old?.progress)||0)),collected:Array.isArray(old?.collected)?old.collected.filter(id=>q.items.some(i=>i.id===id)):[],claimed:!!old?.claimed}];}));
-    this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;
+    this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;this.hotspots=restoreHotspots(saved.hotspots);
     this.campSerial=0;this.populateCamps();
     initMounts(this,saved.mounts);initProfessions(this,saved.professions);
-    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
+    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);this.hotspotDirector=new HotspotDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
     initCompanions(this,sameWorld?saved.companions:null);
     initTutorial(this,saved,options.guidedStart);if(sameWorld&&saved.instance?.id===KIOSK_ROOM.id)enterKiosk(this,saved.instance);
   }
@@ -191,7 +192,7 @@ export class Game{
   kill(e){const wasMarked=e.mark>0,cs=combatStats(this);onKill(this,e,wasMarked,cs);onKillMech(this,e,wasMarked,cs);this.gainMomentum(cs);if(cs.procs.includes('thirst')){const before=this.player.energy;this.player.energy=Math.min(100,this.player.energy+PROCS.thirst.energy);if(this.player.energy>before)emitCombatFx(this,'proc',this.player,{procId:'item:thirst',signal:'resource',label:'RANDALE'});}e.hp=0;const wasAuto=this.autoAttack.enabled;if(this.target===e){stopAuto(this,false);const next=this.enemies.filter(o=>o!==e&&o.hp>0&&o.aggro&&o.ai!=='returning'&&!(o.spawnGrace>0)).sort((a,b)=>distance(a,this.player)-distance(b,this.player))[0];if(next&&this.player.inCombat>0){this.target=next;if(wasAuto)startAuto(this);}}e.aggro=false;e.cast=null;e.dead=(e.respawn?.[0]||35)+this.random()*((e.respawn?.[1]||55)-(e.respawn?.[0]||35));e.respawnAt=this.time+e.dead;e.ai='dead';e.mark=0;e.roamGoal=null;this.stats.kills++;
     if(e.arena){(this.arenaStats||(this.arenaStats=freshArenaStats())).kills++;e.respawnAt=Infinity;this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · Arena, keine EP.');if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');return;}
     createDrop(this,e);const xp=Math.round(killXp(e)*(1+BALANCE.party.xpPerMember*Math.min(4,this.netParty?.near?.()||0)));this.gainXp(xp);if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');if(!this.sct({area:'note',kind:'xp',value:xp,unit:'EP',iconKey:'coins',color:'#bacd8b'}))this.float(e.x,e.y-40,'+'+xp+' EP','#bacd8b');this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · +'+xp+' EP.');
-    const sq=this.sideQuests[e.questId],def=this.world.quests?.find(q=>q.id===e.questId);if(sq?.accepted&&!sq.claimed&&def){sq.progress=Math.min(def.required,sq.progress+1);if(sq.progress===def.required)this.toast(SYSTEM_LINES.questDone(def.giver.name));}
+    const sq=this.sideQuests[e.questId],def=this.world.quests?.find(q=>q.id===e.questId);if(sq?.accepted&&!sq.claimed&&def){sq.progress=Math.min(def.required,sq.progress+1);if(sq.progress===def.required)this.toast(SYSTEM_LINES.questDone(def.giver.name));}onHotspotKill(this,e);
     if(this.quest.accepted&&!e.ambient&&!e.questId&&!e.worldBoss&&this.quest.chapterClaimed<this.quest.chapter){
       const chapter=this.quest.chapter;let progressed=false;
       for(const [i,o] of this.objectives(chapter).entries()){
@@ -349,6 +350,7 @@ export class Game{
     // Obergeschoss der Bude (E-52): Leute und Orte im Erdgeschoss oder draußen sind von oben nicht ansprechbar.
     if(this.floor)return null;
     const p=this.player,focus=this.questFocus();if(focus)return focus;
+    const hotspot=hotspotInteraction(this);if(hotspot)return hotspot;
     const mentor=this.mentorInteraction();if(mentor)return {kind:'mentor',point:{x:mentor.x,y:mentor.y},id:mentor.id,name:mentor.name,priority:3};
     const stable=mountStation(this.world);if(!tutorialActive(this)&&distance(p,stable)<=MOUNT_RULES.range&&this.world.lineClear(p,stable))return {kind:'mounts',point:stable,name:MOUNT_UI.station,priority:4};
     const shop=shopInteraction(this);if(shop)return shop;
@@ -415,6 +417,7 @@ export class Game{
     if(inKiosk(this))return {point:KIOSK_ROOM.service,label:KIOSK_TEXT.counter};
     const intro=tutorialDestination(this);if(intro)return intro;
     const side=this.questDestination();if(side)return side;
+    const hotspot=hotspotDestination(this);if(hotspot)return hotspot;
     if(this.quest.actDone)return null;
     if(!this.quest.accepted||this.questReady())return {point:this.world.npc,label:STORY.giver};
     for(const [i,o] of this.objectives().entries()){
@@ -468,7 +471,7 @@ export class Game{
     this.toast(SYSTEM_LINES.respawn);}
   tick(dt){
     if(this.professionCommit)return;tickProfession(this,dt);if(this.professionCommit)return;if(this.paused||this.dead)return;if(inKiosk(this)){tickKiosk(this,Math.min(dt,.05));return;}dt=Math.min(dt,.05);this.time+=dt;
-    if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));if(this.partyBuff?.remaining>0){const b=this.partyBuff;b.remaining=Math.max(0,b.remaining-dt);if(b.hot){b.tick-=dt;if(b.tick<=0){b.tick=1;healPlayer(this,b.hot,combatStats(this),false,'hot');}}}tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});emitCombatFx(this,'burst',z,{skillId:'ground',radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this))this.ecology.tick(dt);if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
+    if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));if(this.partyBuff?.remaining>0){const b=this.partyBuff;b.remaining=Math.max(0,b.remaining-dt);if(b.hot){b.tick-=dt;if(b.tick<=0){b.tick=1;healPlayer(this,b.hot,combatStats(this),false,'hot');}}}tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});emitCombatFx(this,'burst',z,{skillId:'ground',radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this)){this.ecology.tick(dt);this.hotspotDirector.tick(dt);}if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
     if(this.target&&(!this.target.hp||distance(this.target,p)>520&&!this.target.aggro))this.target=null;
     for(const key in this.cooldowns)this.cooldowns[key]=Math.max(0,this.cooldowns[key]-dt);this.gcd=Math.max(0,this.gcd-dt);
     for(const key of ['parry','invulnerable','attack','inCombat','dash','hurt','castPose'])p[key]=Math.max(0,(p[key]||0)-dt);
@@ -509,5 +512,5 @@ export class Game{
     tickCombatMeter(this);this.fx=this.fx.filter(f=>(f.life-=dt)>0);this.texts=this.texts.filter(f=>(f.life-=dt)>0);
     for(const l of this.world.landmarks){if(!tutorialActive(this)&&distance(p,l)<95&&!this.discovered.has(l.id)){this.discovered.add(l.id);this.emit('discovery',{name:l.tags.name});this.gainXp(BALANCE.xp.discovery);this.emit('save');}}
   }
-  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,mounts:savedMounts(this),professions:savedProfessions(this),companions:savedCompanions(this),relic:this.relic,discovered:[...this.discovered]};}
+  save(){return {version:1,progressionVersion:2,position:savedPosition(this),...(inKiosk(this)?{instance:savedKiosk(this)}:{}),...(this.tutorial?{tutorial:savedTutorial(this)}:{}),rpg:savedRpg(this),trainingXp:this.trainingXp,seenSkills:[...this.seenSkills],classId:this.member.id,worldKey:this.world.id,worldSeed:this.world.seed,level:this.player.level,xp:this.player.xp,quest:this.quest,settings:{...this.settings},memories:{seen:[...this.memories.seen]},buildings:{...this.buildings},mentorTalks:{...this.mentorTalks},sideQuests:this.sideQuests,trackedQuest:this.trackedQuest,hotspots:this.hotspots,mounts:savedMounts(this),professions:savedProfessions(this),companions:savedCompanions(this),relic:this.relic,discovered:[...this.discovered]};}
 }
