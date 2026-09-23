@@ -651,3 +651,21 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Verworfen.** *OpenAI-Images-API mit eigenem Schlüssel* – wäre planbarer und deterministischer, kostet aber getrennt von dem Abo, das ohnehin bezahlt ist. *Bilder weiter in einer Codex-Sitzung erzeugen lassen und nur den Aufruf automatisieren* – hätte die Nachbearbeitung durch den Agenten und damit die unklare Herkunft beibehalten.
 
 **Offen.** Der Weg hängt daran, dass eine vollständige Codex-Installation lokal erreichbar ist (heute die VS-Code-Erweiterung `openai.chatgpt-*`; sonst `CODEX_BIN` setzen) – auf GitHub Actions läuft er nicht und soll es auch nicht. Das Bildmodell nennt sich nicht; gleicher Prompt liefert nicht dasselbe Bild.
+
+## E-52 · Die Bude als erstes begehbares Haus im Echtmaßstab (23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Aktuell sind alle Charaktere fast so groß wie die Gebäude … anpassen, damit man in Gebäude reingehen kann, dort verschiedene Räume erkennen kann“, die Bude soll zur Startkneipe werden, „dass man dort startet und sich am Anfang zurechtfindet und NPCs findet“. Nach dem Konzept-Mockup (`docs/konzept-bude-2026-09-23/`): „Erst die Bude“, Innenraum „nahtlos“, Grafik „gemaltes Haus in Ebenen“; „wenn wir mit unseren Sprites an die Optik und Detailgrad rankommen würden, wäre das hervorragend“.
+
+**Befund.** Die Karte rechnet mit 8 Welteinheiten pro Meter, der Held ist 26 E hoch (3,25 m), Türen 35 E (1,35-fache Heldenhöhe), Wände 62 E (ein Geschoss). Die Bude ist kein Haus, sondern ein Grundstück 156 × 110 E mit Trümmer-Requisiten von 20–45 E. Das Intro sagt „Du wachst in den Trümmern einer Clan-Bude auf“, der Held erscheint aber auf dem Kirchvorplatz.
+
+**Entschieden.**
+1. **Pilot statt Weltumbau.** Nur die Bude wird im Echtmaßstab gebaut: 14,4 E je Meter, also 1,80 m für die 26-E-Figur. Grundriss 16 × 12 m = 230 × 173 E, sechs Räume (Schankraum, Hinterzimmer, Pfandlager, Küche, Klo, Hof hinter der Hintertür). Das übrige Dorf bleibt vorerst in seinem Maßstab (Variante C im Konzept); der Weltumbau (Variante A, 14,4 E/m überall) wird nach dem Pilot entschieden.
+2. **Nahtlos auf der Dorfkarte.** Gleiche Karte, gleiche Koordinaten: Wände und Türöffnungen sind Kollision, das Dach blendet aus, sobald die eigene Figur drinnen steht. Online sieht man die anderen drinnen. **Revidiert E-34 für die Bude** (dort: begehbares Dachmodell auf der Dorfkarte verworfen); der Kiosk bleibt eine eigene Instanz.
+3. **Gemaltes Haus in Ebenen.** Die Bude wird als großes Bild in der Spielkamera erzeugt (E-51) und in Ebenen gelegt: Außenansicht mit Dach, Innenansicht mit auf Hüfthöhe geschnittenen Wänden. Räume, Wände, Türen, Möbelkollision und NPC-Plätze stehen als Daten in `content/`, nicht im Bild. Figuren bleiben die bestehenden 104-px-Präzisionssprites.
+4. **Start in der Bude.** Neue Helden wachen im Schankraum auf; Ida und die Mentoren stehen in den Räumen der Bude.
+
+**Reihenfolge.** Runde 1: Grundriss als Daten, Kollision, Dach-Ausblenden, NPC-Plätze, Start (mit schlichter Platzhalterzeichnung). Runde 2: gemalte Ebenen anbinden. Runde 3: Tutorialweg durch die Räume, Basisbau-Stufen in den Räumen.
+
+**Verworfen.** *Figuren schrumpfen (Variante B)* – gleiches Bild wie A, aber die ganze Kampf- und Laufabstimmung müsste neu gerechnet werden. *Eigene Instanz wie der Kiosk* – einfacher, aber drinnen allein und ein harter Schnitt beim Eintreten. *Baukasten aus Wand-, Boden- und Möbelteilen* – flexibler für spätere Häuser, erreicht aber schwerer die Geschlossenheit (Licht, Schmutz, Übergänge) der Mockups.
+
+**Offen.** Laufwege und Leistung bei Variante A; wie Figuren hinter hohen gemalten Möbeln verdeckt werden (Runde 2: hohe Möbel als eigene Sprites mit Tiefensortierung); Basisbau-Stufen (heute Requisiten auf dem Grundstück) als Möbel in den Räumen.

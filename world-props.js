@@ -10,6 +10,8 @@ const DOOR_CLEARANCE=DRESSING_RULES.doorClearance;
 import {BUILDINGS,BUILDING_IDS} from './content/buildings.js';
 import {PROP_KINDS,CHAPTER_PROPS,PROP_RULES} from './world-prop-kinds.js';
 import {inSettlement} from './world-layout.js';
+import {BUDE_HOUSE} from './content/bude-house.js';
+import {budeHouse,budePlotSize,houseLocal,addHouseColliders} from './world-house.js';
 
 export {PROP_KINDS,PROP_KIND_IDS,CHAPTER_PROPS,PROP_RULES} from './world-prop-kinds.js';
 const halfDiag=k=>Math.hypot(k.w,k.h)/2;
@@ -27,7 +29,7 @@ function plotFree(w,p,roadMargin){const r=rectOf(p),gap=14;
 /** Bewuchs auf dem Bauplatz roden und das Kollisionsraster neu aufbauen (Wege werden dadurch nur freier, nie enger). */
 function clearPlot(w,p,margin=10){const r=rectOf(p),before=w.trees.length;
  w.trees=w.trees.filter(t=>t.x<r.minX-margin||t.x>r.maxX+margin||t.y<r.minY-margin||t.y>r.maxY+margin);
- w.grid.clear();for(const b of w.buildings)w.addGrid(b);
+ w.grid.clear();for(const b of w.buildings)w.addGrid(b);for(const o of w.fixedColliders||[])w.addGrid(o);
  for(const t of w.trees)w.addGrid({x:t.x,y:t.y,radius:4*t.size,minX:t.x-6,maxX:t.x+6,minY:t.y-6,maxY:t.y+6});
  w.props=w.props.filter(q=>q.x<r.minX-4||q.x>r.maxX+4||q.y<r.minY-4||q.y>r.maxY+4);
  w.gardens=w.gardens.filter(q=>q.x<r.minX-4||q.x>r.maxX+4||q.y<r.minY-4||q.y>r.maxY+4);
@@ -79,9 +81,10 @@ export function placeCampProps(w){
  * Stufe 0 sind die Trümmer aus der Filmriss-Nacht; die Stufennamen kommen aus content/buildings.js (nur gelesen). */
 function stagePropsFor(base){
  const out={},R=PROP_RULES.base;
- for(const [index,id] of BUILDING_IDS.entries()){
+ for(const id of BUILDING_IDS){
   const def=PROP_KINDS['bude-'+id],building=BUILDINGS[id];
-  const slot={x:base.x+(index%3-1)*R.slotX,y:base.y+(index<3?-1:1)*R.slotY};
+  // Jeder Bauplatz steht in seinem Raum des Hauses (content/bude-house.js), der Grill und die Werkstatt im Hof.
+  const slot=houseLocal(base.house,BUDE_HOUSE.slots[id]);
   // Eigener Trümmer-Sprite je Gebäude, sobald geliefert (docs/UEBERGABE-GRAFIK-2026-09-23.md), sonst der gemeinsame.
   const rubbleKind=PROP_KINDS['bude-truemmer-'+id]?'bude-truemmer-'+id:'bude-truemmer',max=building.stages.length,rubble=PROP_KINDS[rubbleKind];
   const stages=[{stage:0,kind:rubbleKind,name:'Trümmer: '+building.name,x:slot.x,y:slot.y,
@@ -93,13 +96,14 @@ function stagePropsFor(base){
  }
  return out;
 }
-/** Die Bude: ehemalige Milchsammelstelle hinter St. Gangolf. Fläche frei von Wegen, Gebäuden und Bäumen,
- * mit begehbarem Anlaufpunkt am Wegenetz. Gezeichnet wird sie von der UI. */
+/** Die Bude: ehemalige Milchsammelstelle hinter St. Gangolf, seit E-52 ein begehbares Haus mit Hof im Echtmaßstab.
+ * Fläche frei von Wegen, Gebäuden und Bäumen, Anlaufpunkt vor dem Eingang am Wegenetz. Gezeichnet wird sie von der UI. */
 export function placeBase(w){
- const R=PROP_RULES.base,random=rng((w.seed|0)^PROP_RULES.baseSalt),church=w.church,start=-Math.PI/2+(random()-.5)*.6;
+ const R={...PROP_RULES.base,...budePlotSize()},random=rng((w.seed|0)^PROP_RULES.baseSalt),church=w.church,start=-Math.PI/2+(random()-.5)*.6;
  const tally={},no=r=>{tally[r]=(tally[r]||0)+1;};
  // Erst die Rückseite der Kirche (vom Kirchvorplatz abgewandt), dann erst der Rest des Umfelds.
- for(const behind of [true,false])for(let d=R.minDistance;d<=R.maxDistance;d+=R.step)for(let i=0;i<R.angles;i++){
+ // Erst bis maxDistance; nur wenn dort nichts frei ist (breitere Straßen, dichtere Bebauung), bis zum Doppelten weitersuchen.
+ for(const [from,to] of [[R.minDistance,R.maxDistance],[R.maxDistance+R.step,R.maxDistance*2]])for(const behind of [true,false])for(let d=from;d<=to;d+=R.step)for(let i=0;i<R.angles;i++){
   const angle=start+(i%2?1:-1)*Math.ceil(i/2)*(Math.PI*2/R.angles);
   if(behind!==(Math.cos(angle-start)>0))continue;
   const p={x:Math.round(church.x+Math.cos(angle)*d),y:Math.round(church.y+Math.sin(angle)*d),w:R.w,h:R.h};
@@ -108,15 +112,19 @@ export function placeBase(w){
   if((w.hubs||[]).some(h=>h.id!=='kirchplatz'&&distance(p,h)<(h.reserve||120)+halfDiag(p))){no('treffpunkt');continue;}
   if(w.camps.some(c=>distance(c,p)<(c.reserve||150)+halfDiag(p))){no('lager');continue;}
   if(w.quests.some(q=>distance(q.giver,p)<60+halfDiag(p)||distance(q.target,p)<80+halfDiag(p))){no('quest');continue;}
+  // Sammel-, Spawn- und Questgegenstandspunkte dürfen nicht im Haus oder Hof landen (sonst Kisten im Schankraum).
+  {const r=rectOf(p),inPlot=q=>q&&q.x>r.minX-16&&q.x<r.maxX+16&&q.y>r.minY-16&&q.y<r.maxY+16;
+   if(w.camps.some(c=>[...(c.gathers||[]),...(c.spawns||[]),c.approach].some(inPlot))||w.quests.some(q=>(q.items||[]).some(inPlot))){no('sammelpunkt');continue;}}
   if(!nodeFree(w,p,PROP_RULES.nodeMargin.loose)){no('wegenetz');continue;}
-  const approach=[{x:p.x,y:p.y+R.h/2+R.approach},{x:p.x,y:p.y-R.h/2-R.approach},{x:p.x+R.w/2+R.approach,y:p.y},{x:p.x-R.w/2-R.approach,y:p.y}]
-   .find(a=>!w.blocked(a.x,a.y,9)&&w.walkClear(a,p,9)&&!!w.accessNode(a));
+  // Angelaufen wird die Eingangstür an der Südseite; durch die 34 E breite Öffnung führt der Weg mit Abstand 9 hinein.
+  const house=budeHouse(rectOf(p)),door=house.doors.find(d=>d.id==='eingang'),inside={x:door.x,y:house.maxY-24};
+  const approach=[{x:door.x,y:house.maxY+R.approach}].find(a=>!w.blocked(a.x,a.y,9)&&w.walkClear(a,inside,9)&&!!w.accessNode(a));
   if(!approach){no('anlaufpunkt');continue;}
   const base={id:'bude',name:'Die Bude',title:'Die Bude · Poo-Tang-Clan',
    text:'Ehemalige Milchsammelstelle hinter St. Gangolf, seit 2007 Vereinsheim ohne Verein. Seit der Nacht: Baustelle.',
    x:p.x,y:p.y,w:R.w,h:R.h,minX:p.x-R.w/2,maxX:p.x+R.w/2,minY:p.y-R.h/2,maxY:p.y+R.h/2,
-   approach:{x:Math.round(approach.x),y:Math.round(approach.y)},distanceToChurch:Math.round(d)};
-  base.clearedTrees=clearPlot(w,p);
+   approach:{x:Math.round(approach.x),y:Math.round(approach.y)},distanceToChurch:Math.round(d),house,sign:houseLocal(house,BUDE_HOUSE.sign)};
+  base.clearedTrees=clearPlot(w,p,30);addHouseColliders(w,house);
   base.stageProps=stagePropsFor(base);w.base=base;return base;
  }
  throw new Error('Kein freier, erreichbarer Bauplatz für die Bude hinter St. Gangolf gefunden. Abgelehnt: '+JSON.stringify(tally));
