@@ -89,6 +89,6 @@ Fallback-Farbe aus `PROP_KINDS`. Für die Bude gilt dieselbe ID je Stufe – Stu
 
 - **ui-tab-talente** (2026-09-21): Reitersymbol für die eigene Talente-Seite im Clanbuch (E-39), Format wie `ui-tab-kniffe`. Bis dahin steht dort das Elite-Abzeichen.
 
-## Dungeon „Schloss Big B" (Planung 2026-09-23, wartet auf V-D1 bis V-D8)
+## Dungeon „Schloss Big B" (Planung 2026-09-23, wartet auf V-D1 bis V-D11)
 
-Räume, Requisiten, fünf Bosse, sieben Trash-Gegner, Effekte, Symbole und das Reittier „Das halbe Pferd": Liste in [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitt 14. Bis zur Lieferung zeichnen vorhandene Skins mit Variante.
+Räume über drei Ebenen, Requisiten, sechs Bosse, Trash, Vermieter Volker, Effekte, Symbole, der Prospekt je Ebene für die Dungeon-Karte und das Reittier „Das halbe Pferd": Liste in [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitt 15, Grundriss in [images/dungeon-schloss-bigb-karte.svg](images/dungeon-schloss-bigb-karte.svg). Bis zur Lieferung zeichnen vorhandene Skins mit Variante.

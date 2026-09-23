@@ -4,7 +4,7 @@ Inbox der Rolle Story-Teller (docs/ROLLEN.md).
 
 ## Offen
 
-- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D8): Sprüche der Bosse, Raumschilder mit Wirklichkeit, Aufträge, Einschreiben, Mentor-Zeilen, Geständnis; E-20-Prüfung, dass „Big B" keine reale Person erkennbar macht. Entwürfe: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitte 6 und 11.
+- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D11): Sprüche aller sechs Bosse, Raumschilder mit Wirklichkeit, Durchsagen, Prospekt-Namen, Aufträge, Vermieter Volker, Ausreden zu den Beweisen, Mentor-Zeilen; E-20-Prüfung für „Big B". Entwürfe: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitte 4, 5, 7, 12.
 - [ ] **Hilfetext „Ein Buch, sieben Reiter"** (UI, 2026-09-17, E-27): PLAY_HELP (Abschnitt Clanbuch) nennt sieben Reiter und die Tasten C I K J B M H. Neu: vier Reiter Figur/Rucksack/Aufträge/Karte plus Hilfe; K, N, B springen zu den Abschnitten Kniffe, Talente, Bude. Abnahme: Hilfe → Tasten zeigt die neue Zeile.
 
 - [ ] Akt 2 erst nach Auftrag: Haken sind Bastian, die Kiste, die Hochzeit in Koblenz; Gisela/Automat bleiben Reserve.

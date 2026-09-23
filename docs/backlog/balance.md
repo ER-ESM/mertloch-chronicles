@@ -4,7 +4,7 @@ Inbox der Rolle Balancing (docs/ROLLEN.md).
 
 ## Offen
 
-- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D8): Zahlenentwurf ins Tuning, Gruppenlauf `scripts/dungeon-sim.mjs`, Zielzeiten je Boss für fünf Köpfe und für Solo mit Söldnern; Heilung auf Stufe 10 zuerst messen. Entwurf: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitte 7 und 15.
+- [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D11): Zahlenentwurf ins Tuning, Gruppenlauf `scripts/dungeon-sim.mjs` für kürzesten Weg und vollen Durchgang, Zielzeiten je Boss für fünf Köpfe und für Solo mit Söldnern, Beweis-Abzug für die Lügen-Frist; Heilung auf Stufe 10 zuerst messen. Entwurf: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitte 8 und 16.
 - [ ] **Frühe Eskalation (E-29)**: COMBAT_RULES.earlyEscalation.factor=1.6 ist ein Startwert der UI-Runde. In der Arena Stufe 1–2 prüfen, ob die Kelle mit Automatik den Korridor 4–7 s je Feldgegner hält; Korrektur über tuning.js.
 
 - [ ] **Restposten aus Runde B: acht ⚡ bei Dieter, davon fünf nicht über Kit oder Schadensmodell erreichbar** (Klassendesign, 2026-09-17). Dieters Kelle liegt jetzt auf 1,5 s statt 0,85 s, das hat 20 Auffälligkeiten auf 8 gedrückt und alle ⚠ bei Kevin beseitigt. Offen bleiben Pfanddachs 2,6 s, Leergut-Rabe 2,6 s, Grillgut-Gans 3,0 s, Pfandfuchs 3,3 s, Pfandkeiler 3,6 s (Korridor 4–12 s) sowie Borsten-Bruno 4,2 s und Oberpraktikant Olaf 4,6 s (Korridor 8–24 s) und der Pfandautomat mit 9,4 s (Korridor 10–25 s). Drei davon (Keiler, Automat, teils die Eliten) fallen weg, sobald Gameplay das Schadensmodell angleicht (`docs/backlog/gameplay.md`).
