@@ -59,7 +59,7 @@ export const BUDE_HOUSE={
   // Clan-Hinterzimmer
   {s:'bild-landschaft',x:20,y:4},{s:'geweih',x:46,y:4},{s:'kommode',x:74,y:9},{s:'tischlampe',x:80,y:9},{s:'becher',x:60,y:40},{s:'socke',x:18,y:58},
   // Pfandlager
-  {s:'regalbrett',x:121,y:4},{s:'sackkarre',x:100,y:62},{s:'eimer',x:144,y:64},
+  {s:'regalbrett',x:121,y:4},{s:'sackkarre',x:100,y:62},{s:'eimer',x:144,y:64},{s:'scherben',x:132,y:62},{s:'becher',x:104,y:44},{s:'becher',x:141,y:18},{s:'pfuetze',x:112,y:60},
   // Küche
   {s:'kuechenzeile',x:184,y:10},{s:'flasche',x:170,y:9},{s:'kuehlschrank',x:220,y:29},{s:'fass',x:218,y:58},{s:'wandlampe',x:160,y:4},{s:'pfuetze',x:175,y:45},{s:'scherben',x:210,y:58},
   // Klo
