@@ -1,7 +1,8 @@
 // Klartext (2026-09-23): Kniffe-Buch zeigt Eigenarten & Leisten (Rausch), Tooltips verschwinden sofort, Talente nennen konkrete Kniffe.
 import assert from 'node:assert/strict';
+import {mkdirSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9437,serverPort:4237});const read=s=>b.evaluate(s),dir='visual-review/klartext/';
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9437,serverPort:4237});const read=s=>b.evaluate(s),dir='visual-review/klartext/';mkdirSync(dir,{recursive:true});
 try{await b.resize(2024,900);
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:8,trainingXp:0,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:50,talents:{spec:'dieter-brawl',learned:[]}}};
  const inj=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});`});

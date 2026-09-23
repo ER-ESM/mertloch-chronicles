@@ -1,7 +1,8 @@
 // Quest-Tracker (2026-09-23): mehrere Aufträge im Auftragsfeld, Klick verfolgt, Entfernung; Ollis Abgabe bei Ida trotz Hauptquest.
 import assert from 'node:assert/strict';
+import {mkdirSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9438,serverPort:4238});const read=s=>b.evaluate(s),dir='visual-review/quest-tracker/';
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9438,serverPort:4238});const read=s=>b.evaluate(s),dir='visual-review/quest-tracker/';mkdirSync(dir,{recursive:true});
 try{await b.resize(2024,900);
  const save={version:1,worldKey:'v2-56753-72-1',classId:'dieter',level:3,trainingXp:0,tutorial:{version:1,step:8,completed:true},rpg:{version:4,coins:50}};
  const inj=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-chronicles-v2-56753-72-1',${JSON.stringify(JSON.stringify(save))});`});
