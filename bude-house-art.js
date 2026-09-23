@@ -48,7 +48,9 @@ function wallShade(c,house,f){
 function castShadow(c,house,fade){
  const n=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),dx=LIGHT.dir.x/n,dy=LIGHT.dir.y/n,H=house.heights,len=(H.wall+H.roof*.5)*(1-fade)+H.cut*fade,k=LIGHTING.shadow?.building??.5;
  const {minX:x0,maxX:x1,minY:y0,maxY:y1}=house,a=c.globalAlpha;c.fillStyle=LIGHT.shadow.color;
- for(const [f,al] of [[1,.16],[.7,.2]]){const ox=dx*len*k*f,oy=dy*len*k*f;c.globalAlpha=al;c.beginPath();c.moveTo(x1,y0);c.lineTo(x1+ox,y0+oy);c.lineTo(x1+ox,y1+oy);c.lineTo(x0+ox,y1+oy);c.lineTo(x0,y1);c.lineTo(x1,y1);c.closePath();c.fill();}
+ // Eine Lage, die vom Hausfuß in Lichtrichtung ausläuft (zwei harte Lagen zeichneten sichtbare Rechteckstufen).
+ const ox=dx*len*k,oy=dy*len*k,sh=LIGHT.shadow.color,g=typeof c.createLinearGradient==='function'?c.createLinearGradient(x1,y1,x1+ox,y1+oy):null;if(g){g.addColorStop(0,sh+'66');g.addColorStop(.55,sh+'33');g.addColorStop(1,sh+'00');c.fillStyle=g;c.globalAlpha=1;}else c.globalAlpha=.25;
+ c.beginPath();c.moveTo(x1,y0);c.lineTo(x1+ox,y0+oy);c.lineTo(x1+ox,y1+oy);c.lineTo(x0+ox,y1+oy);c.lineTo(x0,y1);c.lineTo(x1,y1);c.closePath();c.fill();
  c.globalAlpha=a;
 }
 /** Böden des Geschosses: Belag je Raum und Bodendeko. Innenräume folgen dem Ausblenden des Dachs (`alpha`),
