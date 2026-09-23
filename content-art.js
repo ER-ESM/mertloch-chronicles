@@ -16,6 +16,9 @@ export function loadContentArt(){return pending||=(async()=>{
  await Promise.all(Object.entries(catalog.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img)contentArt.images.set(id,img);}));
  // Registered biped cycles replace the short pose alternation for NPCs and human enemies.
  try{const r=await fetch('./assets/content-art/locomotion/runtime/catalog.json');if(r.ok){const walking=await r.json();await Promise.all(Object.entries(walking.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img){contentArt.catalog.assets[id]=a;contentArt.images.set(id,img);}}));}}catch{}
+ // Sprite-Schmiede (E-58, tools/sprite-forge/figures.mjs): selbst gerenderte Figuren aus Körperteilen ersetzen gleichnamige Einträge
+ // (z. B. `ida`, `ida-walk`) und bringen neue (`mentor-dieter` …). Gleiches Bogenformat: 192er Zellen, Fußpunkt 96/160, se/sw/ne/nw.
+ try{const r=await fetch('./assets/forge/runtime/figures/catalog.json');if(r.ok){const forge=await r.json();await Promise.all(Object.entries(forge.assets).map(async([id,a])=>{const img=await loadImage('./'+a.path);if(img){contentArt.catalog.assets[id]=a;contentArt.images.set(id,img);}}));}}catch{}
  contentArt.ready=true;
 })();}
 

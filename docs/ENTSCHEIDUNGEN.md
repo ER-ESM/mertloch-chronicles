@@ -772,3 +772,38 @@ Alle Zahlen stehen in `content/world-fx.js`. Tests: `tests/world-fx.test.mjs`.
 **Erster Befund (nicht behoben, Balance-Backlog):** 280 von 540 Messungen liegen mehr als 15 % neben dem Median ihrer Rolle. Auffällig: Kevin „Jagd“ Pfad 1 bricht ab Stufe 15 auf rund 45 Schaden/s ein; Dieter „Brauerei“ heilt auf Stufe 5 nicht; Bärbels Schaden-Specs liegen auf Stufe 5 fast doppelt über dem Median.
 
 **Verworfen.** *Formeln statt Simulation* (DPS aus Kniffwerten ausrechnen) – Procs, Talente als Regeln (E-12), Randale-Knappheit und Abklingzeiten greifen ineinander; nur der echte Kampfablauf trifft sie alle. *Den Balance-Bericht erweitern* – der misst Gegner-Korridore, das Sheet misst Klassen gegeneinander; zwei Fragen, zwei Tabellen.
+
+## E-58 · Sprite-Schmiede: eigene Sprites aus 3D-Grundkörpern statt Bild-KI, Bude zuerst (23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Erstelle dir Hilfsmittel für die Spritegeneration, damit das in Zukunft schneller geht. Fange an, die ersten Animationen im Spiel darauf umzustellen … Nimm dir als Startobjekt die Bude … Du könntest auch für einzelne Objekte direkt Animationen anbringen, um die Räume lebendiger zu gestalten. Außerdem baue die ersten NPCs im Haus darauf um, auch im Hinblick, dass wir Körperteile wiederverwenden wollen für eine generische Erstellung neuer NPCs oder für den Charaktereditor … und die Anpassung von Gearteilen an den Helden.“ Vorlauf: Vergleich Sigizange (imagegen) gegen einen eigenen Renderer; eine animierte Fassung stand nach 3½ Minuten.
+
+**Entschieden.**
+1. **Werkzeug `tools/sprite-forge/`** (Doku `docs/SPRITE-SCHMIEDE.md`):
+   - Ein Raycaster über Distanzfelder rendert in der Spielkamera: 4 px/E, Höhen 1:1, Neigung 35°, Licht nach `light-convention.js`.
+   - Die Farben rasten auf `PRECISION_PALETTE` ein, dazu harte Alphakante und Kontur in Schiefertinte.
+   - Der Export ist byte-gleich reproduzierbar.
+   - Bildfolgen entstehen aus demselben Modell mit Phasenparameter, deshalb flackert nichts.
+2. **Baukasten (E-54) zuerst:**
+   - Alle 62 Arten der Bude sind Modelle (`models/*.mjs`), Maße und Anker kommen aus `content/sprite-kit.js`.
+   - Die Ausgabe landet in `assets/forge/runtime/kit/` mit `kit-forge.json`.
+   - `kit-art.js` bevorzugt die Schmiede vor den imagegen-Bögen. Die Bögen bleiben als Rückfall.
+3. **Belebung nur mit Grund** (Anti-Slop-Regel 9):
+   - Ofenglut, Wand- und Tischlampen flackern.
+   - Am Aschenbecher steigt Rauch auf.
+   - In Pfütze und Regentonne ziehen Tropfenringe, der Küchenhahn tropft.
+   - Die Wimpelkette bewegt sich im Luftzug.
+   - `kit-art.js` spielt `frames`/`fps` ab und versetzt die Phase je Teil nach seiner Lage.
+4. **Figuren aus Körperteilen:**
+   - `figure/skeleton.mjs` baut Skelett und Körper aus Maßen und Pose.
+   - `face`, `hair`, `wardrobe`, `props` und `poses` sind eigene Module.
+   - Rezepte sind reine Daten (`figures/*.mjs`), gerendert werden alle vier Blickrichtungen.
+   - Jede Ebene (`layer`) lässt sich mit eingerechneter Verdeckung einzeln ausgeben. Darauf bauen generische NPCs, der Charaktereditor und Ausrüstung am Helden auf.
+   - Das Bogenformat ist das des Präzisionskatalogs. `content-art.js` lädt `assets/forge/runtime/figures/catalog.json` und ersetzt gleichnamige Einträge (`ida`).
+   - Die Mentoren zeichnet `renderer.js` als `mentor-<klasse>` in ihrer Tracht, statt als Heldenkörper in Unterwäsche.
+5. **Arbeitsweise:** Parallel arbeitende Agenten benutzen `--dry` (nur Vorschau). Den gemeinsamen Katalog schreibt nur der volle Lauf. Prüfung über `tests/sprite-forge.test.mjs` und `scripts/forge-bude-check.mjs`.
+
+**Stand.** Der Baukasten ist live. Die Figuren von Ida und den Mentoren hielt der Nutzer für zu generisch („viel zu einfach gemalt … deutlich mehr Details und Charakter“). Die Detailrunde läuft: Gesicht und Haar, Kleidung mit Falten, Nähten und Mustern, persönliches Beiwerk und Haltung. Der Renderer hat dafür wählbare Malstufen bekommen (Doppelauflösung, Relief, Kantenlicht). Die Figuren gehen erst danach live.
+
+**Verworfen.**
+- *Weiter nur imagegen:* keine exakten Maße, Bildfolgen flackern, jede Variante ist ein neuer Auftrag.
+- *three.js/Blender-Prerender (E-30):* braucht Modelle von außen und eine weitere Werkzeugkette. Die Schmiede läuft in Node ohne Abhängigkeiten.

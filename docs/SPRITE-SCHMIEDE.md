@@ -1,0 +1,136 @@
+# Sprite-Schmiede (E-58)
+
+Selbst gerenderte Sprites ohne Bild-KI: Modelle aus 3D-Grundkörpern (Distanzfelder), gerendert in der Spielkamera,
+eingerastet auf `PRECISION_PALETTE`, mit Kontur in Schiefertinte. Jeder Lauf ist byte-gleich reproduzierbar.
+Vorteile gegenüber imagegen: exakte Maße aus den Daten, Bildfolgen ohne Flackern (dasselbe Objekt in anderer Stellung),
+Varianten per Parameter, Figuren aus wiederverwendbaren Körperteilen in allen vier Blickrichtungen.
+
+## Werkzeuge
+
+| Datei | Aufgabe |
+|---|---|
+| `tools/sprite-forge/sdf.mjs` | Grundkörper (`box`, `block`, `cylZ`, `capsule`, `roundCone`, `ellipsoid`, `torusZ`, `extrudeXZ`), Verknüpfungen (`union`, `smoothUnion`, `subtract`, `intersect`, `shell`), Lage (`at`, `rotX/Y/Z`, `mirrorX/Y`, `repeatX/Y`), Rauschen (`noise3`, `fbm3`, kachelbar `fbmTile3`) |
+| `tools/sprite-forge/materials.mjs` | Materialien mit Farbrampe (Schatten kühl-violett, Lichter warm): `wood`, `metal` (mit Rost), `plaster`, `stone`, `fabric`, `leather`, `skin`, `hair`, `ceramic`, `glass`, `paper`, `plastic`, `glow` (leuchtend), `custom` (eigene Textur) |
+| `tools/sprite-forge/render.mjs` | Raycaster: Ansichten `oblique` (Standard), `top` (Beläge, Bodendeko), `front` (Wandfronten); Licht, Umgebungsverdeckung, weiche Eigenschatten, Punktlichter, Innenlinien, Kontur, Palette |
+| `tools/sprite-forge/kit.mjs` | Baukasten-Export: rendert alle Modelle aus `tools/sprite-forge/models/*.mjs` nach `assets/forge/runtime/kit/` und schreibt `kit-forge.json` |
+| `tools/sprite-forge/figure.mjs` | Figuren aus Skelett + Körperteilen (siehe unten) |
+| `scripts/forge-bude-check.mjs` | Browserprüfung in der Bude mit Aufnahmen unter `visual-review/forge/bude/` |
+
+### Aufrufe
+
+```
+node tools/sprite-forge/kit.mjs                              # alles bauen (assets + Katalog)
+node tools/sprite-forge/kit.mjs --only=sofa,kommode --sheet  # nur diese, plus Kontaktbogen
+node tools/sprite-forge/kit.mjs --only=sofa --dry --name=a1  # nur Vorschau: visual-review/forge/kontakt-a1.png, schreibt NICHTS unter assets/
+node scripts/pwa-cache.mjs && npm run kit:check && npm test
+node scripts/forge-bude-check.mjs                            # Sichtprüfung im Browser
+```
+
+Parallel arbeitende Agenten benutzen nur `--dry`. Den gemeinsamen Katalog schreibt nur der volle Lauf.
+
+## Kamera und Maße
+
+- Die Einheit ist die Welteinheit E, 1 m = 14,4 E. Gerendert wird mit **4 px je E**: eine Figur von 26 E ist 104 px hoch, eine Tür 35 E.
+- Die Achsen: x nach Osten, y nach Süden (zum Betrachter), z nach oben.
+- **Schräge Kamera:** Bildschirm-y = y·tan 35° − z. Höhen erscheinen 1:1, die Tiefe ist verkürzt, der Kamerawinkel ist achsparallel und **nicht isometrisch**.
+- **Licht:**
+  - Das Hauptlicht kommt von links oben. Beleuchtet sind die linken Flächen, die Deckflächen und die Vorderseiten.
+  - Ein kühles Fülllicht kommt von rechts.
+  - Bodenschatten backen wir **nicht** ein. Die Laufzeit zeichnet die Ellipse selbst.
+
+## Modelle für den Baukasten
+
+Eine Modelldatei sieht so aus:
+
+```js
+export const MODELS={
+  sofa:{height:14, frames:1, build(t,def){ return {solids:[{f, mat, group, tex?, glow?, noShadow?}], lights:[{p,r,k,color}]}; }},
+};
+```
+
+**Maße und Anker kommen aus `content/sprite-kit.js`** über `resolveSprite(id)`: Standfläche `w×h` und Höhe `height`.
+
+| Klasse | Modellkoordinaten | Bild |
+|---|---|---|
+| möbel, sitz, ablage, aussen, tischdeko | Standfläche mittig um (0,0); x ∈ ±w/2, y ∈ ±h/2; Boden z=0 | Breite = w·4 px; Unterkante = Vorderkante (y=+h/2, z=0) |
+| wandschmuck | wie oben. Die Rückseite liegt bei y=−h/2 an der Wand, z=0 ist die Unterkante des Schmucks. | wie oben; die Laufzeit hängt ihn auf `mount` über dem Wandfuß |
+| bodendeko | flach von oben, x ∈ ±w/2, y ∈ ±h/2 | w·4 × h·4 px, Ansicht `top` |
+| belag | eine Kachel 64×64 E, x/y ∈ ±32, Oberfläche knapp unter z=0 | 256×256 px, Ansicht `top`, **nahtlos periodisch** (`fbmTile3`, Bretterbreiten, die 64 teilen) |
+| wand, zaun | Wand entlang x, Länge `length` (Standard 64, periodisch), Mitte y=0, Fuß z=0, Höhe mindestens `cut` | oben die Krone (von oben, Tiefe = `thickness`), darunter die Front (von vorn, Höhe `cut`); `cap` steht im Katalog |
+
+- Nichts darf über die Standfläche seitlich hinausragen, sonst wird es abgeschnitten.
+- Nach oben ist Platz: `extraTop`, Standard 6 E.
+- `group` fasst Körper zusammen. Zwischen Gruppen entstehen bei Tiefensprüngen dunkle Innenlinien, etwa zwischen Tischplatte und Bein.
+- `tex(x,y,z)→[u,v,w]` legt Textur-Koordinaten fest. Bei bewegten Teilen müssen sie sich mitbewegen, sonst „schwimmt“ die Maserung.
+
+### Bildfolgen (Animation)
+
+- `frames: n`, `fps: k`. `build(t)` bekommt t ∈ [0,1).
+- Für nahtlose Schleifen läuft das Rauschen über einen Kreis. `flicker(t,seed)` und `fireGlow(t)` aus `models/referenz.mjs` sind die Vorlage.
+- `glow` ist eine Zahl oder Funktion von 0 bis 1 und steuert leuchtende Materialien.
+- `lights` sind warme Punktlichter, die die Umgebung im Sprite mit erhellen.
+- Die Laufzeit (`kit-art.js`) versetzt die Phase je Teil nach seiner Lage, damit gleiche Lampen nicht im Gleichtakt flackern.
+- Höchstens 8 Bilder, lieber 4–6. Nur animieren, was einen Grund hat (Anti-Slop-Regel 9): Feuer, Licht, Flüssigkeit, Stoff im Luftzug.
+
+### Qualitätsregeln
+
+1. **Vorbild ist der imagegen-Bogen derselben Art** (`assets/precision/sources/2026-09-23/kit-*.png`): dieselben erkennbaren Details (Decke auf dem Sofa, Flaschen im Kasten). Die Maße und die Lesbarkeit im Spiel gehen vor.
+2. **Lesbar in Spielgröße.** Die Laufzeit zeichnet bei 2–4 px je E. Details unter 0,5 E verschwinden. Lieber wenige kräftige Formen mit klaren Innenlinien.
+3. **Kontrast:**
+   - Dunkles Material dunkel lassen (Gusseisen `#2f2e35`), Holz warm, Putz hell.
+   - Jede Fläche braucht eine Licht- und eine Schattenseite.
+4. **Ein Material je Körper**, Farbe über den Grundton der Fabrik (`wood('#7a5230')`). Die Palette rastet die Farben selbst ein.
+5. Kein `Math.random`, keine Uhrzeit, damit der Export byte-gleich bleibt.
+6. **Prüfen:**
+   - Nach jeder Änderung den Kontaktbogen mit dem Read-Werkzeug ansehen.
+   - Mindestens zwei Runden „ansehen, schärfen“.
+   - Das imagegen-Original daneben ansehen.
+
+### Fallen (gesammelt beim Bau der Bude, 23.09.2026)
+
+- **Unterkante:** Die Bildunterkante liegt bei Bildschirm-y = h/2·tan 35°. Was nahe z = 0 nach vorn übersteht, wird abgeschnitten, sobald y·tan 35° − z größer ist.
+- **Ansicht `top` sieht nur bis z ≈ −4.** Tiefere Stellen bleiben durchsichtig. Bei tiefen Mulden (Treppenloch) die Oberkante hoch legen, etwa auf z = 40.
+- **Flache Deckflächen in `top` werden hell** (Helligkeit ≈ 0,73, also Lichtstufe 4–5). Bei Bodendeko und Belägen dunklere Grundtöne wählen oder die Textur mit `k ≈ 0,75` dämpfen.
+- **Lücken zwischen senkrechten Körpern verschwinden in der Schrägsicht**, wenn sie schmaler als 2r·tan 35° sind. Rauch und Latten brauchen deshalb mindestens 1 E Lücke.
+- **Glas an senkrechten Flächen bekommt kaum Glanz.** Einen Glanzstreifen per `custom`-Textur setzen (Vorbild: `models/wandschmuck.mjs`).
+- **Grün:** Im Schatten zieht die Standardrampe Grün ins Oliv-Braune. Eine eigene Rampe aus Palettentönen zurückgeben (`tex` → `{ramp}`; Vorbild: `models/deko.mjs`).
+- **Innenlinien** entstehen nur zwischen verschiedenen `group`s und erst ab 1,1 E Tiefensprung. Bündige Schubladen und Türen brauchen deshalb dunkle Fugen-Körper dahinter.
+- **Mulden** (Eimer, Becken, Schüssel) bleiben zu hell. Eigene Materialien mit Innen-Abdunklung verwenden (Vorbild: `models/moebel-arbeit.mjs`).
+- **`fbm3`** liefert im Mittel 0,35–0,45, nicht 0,5. Schwellen für Flecken entsprechend niedriger ansetzen.
+- **Beläge und Wände:** Die Standardmaterialien sind nicht kachelbar. Eigene Texturen mit `fbmTile3` bauen (Vorbild: `models/belag-wand.mjs`).
+
+## Malstufen für Figuren
+
+`renderScene` kennt wählbare Stufen, die Figuren standardmäßig nutzen (`FIGURE_STYLE` in `figures.mjs`). Die Kit-Modelle bleiben ohne sie.
+
+| Stufe | Wirkung |
+|---|---|
+| `oversample: 2` | in doppelter Auflösung rendern, flächengemittelt verkleinern: feine Details bleiben als Mischfarbe erhalten |
+| `bump(u,v,w)` am Material, `bumpScale` | Höhenrelief kippt die Normale: Stofffalten, Strickrippen, Nähte, Poren, Haarsträhnen |
+| `rim` | kühles Kantenlicht von hinten rechts, trennt die Figur vom Boden |
+| `bands` | Helligkeit zu gemalten Stufen ziehen |
+
+## Figuren (Körperteile zum Wiederverwenden)
+
+`tools/sprite-forge/figure.mjs` setzt Figuren aus Modulen zusammen, jedes mit eigenem Besitzer:
+
+| Modul | Inhalt |
+|---|---|
+| `figure/skeleton.mjs` | Skelett aus Körpermaßen (`height`, `build`, `belly`, `bust`, `shoulders`, `hips`, `head`, `legs`) und Pose (Gelenkwinkel), Rahmen für Oberkörper (`F.U`) und Kopf (`F.H`), nackter Körper als Distanzfelder |
+| `figure/face.mjs` | Gesicht: Augen, Brauen, Nase, Mund, Alterszüge |
+| `figure/hair.mjs` | Frisuren und Bärte im Kopf-Rahmen |
+| `figure/wardrobe.mjs` | Kleidung als Hüllen um die Körperteile (Hemd, Jacke, Hose, Rock, Schürze, Schuhe, Hut …) |
+| `figure/props.mjs` | Beiwerk an Gelenken (Kasten, Fass, Tank, Werkzeug …) |
+| `figure/poses.mjs` | Posen der acht Bogenspalten und der Gehzyklus |
+
+- **Rezepte** (`tools/sprite-forge/figures/*.mjs`, reine Daten): Körper, Haut, Gesicht, Haar, Bart, Kleidung, Beiwerk und Grundhaltung.
+- **Ebenen:** Jeder Körper trägt eine Ebene (`layer`). Mit `--layers` entsteht je Ebene ein Bogen mit eingerechneter Verdeckung. Das ist die Grundlage für generische NPCs, den Charaktereditor und Ausrüstung am Helden.
+- **Ausgabe:** Das Format ist das des Präzisionskatalogs (192er Zellen, Fußpunkt 96/160, Zeilen se/sw/ne/nw, Spalten idle … rest, dazu ein Laufbogen mit acht Bildern). `content-art.js` lädt `assets/forge/runtime/figures/catalog.json` und ersetzt gleichnamige Einträge.
+
+```
+node tools/sprite-forge/figures.mjs --dry --quick --rows=se --only=ida --name=test   # schnell, nur Vorschau
+node tools/sprite-forge/figures.mjs --dry --only=ida                                  # volle Qualität, nur Vorschau
+node tools/sprite-forge/figures.mjs                                                   # alle Figuren nach assets/ + Katalog
+```
+
+Jeder Lauf schreibt `visual-review/forge/figuren-<name>.png` (Posen und Laufzyklus) und `zoom-<name>.png` (Grundhaltung in allen Richtungen, 3×). Testfiguren in `figures/_*.mjs` erscheinen nur mit `--dry`.
