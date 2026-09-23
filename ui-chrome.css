@@ -282,3 +282,10 @@ body:has(.popup-book:not(.minimized)) .action-area .extra-bar:not(:has(.skill:no
 body.bar-drop .action-area .extra-bar:not(:has(.skill:not(.empty-slot))),body:has(.popup-book:not(.minimized)) .action-area .extra-bar:not(:has(.skill:not(.empty-slot))){background:#152d23c0;border-image:var(--chrome-frame) 22% / 12px / 0 stretch}
 /* Gespräch dockt links unter dem Spielerrahmen (popup-windows.js): so hoch, dass es über der Leiste endet – der Text scrollt. */
 @media (min-width:1100px){body:not(.touch-mode) .game-popup.popup-dialog{max-height:calc(100dvh - 300px)}}
+/* Persona-Befund 2026-09-24: gesperrte Kniffe waren als ganze Karte auf 42 % – Namen unlesbar. Wie im WoW-Zauberbuch:
+   nur das Symbol entsättigt und abgedunkelt, Name und Stufe bleiben lesbar. Namen im Kniffe-Buch allgemein größer. */
+.game-popup .icon-skillbook .book-skill.locked{opacity:1;background:#12241b}
+.game-popup .icon-skillbook .book-skill.locked canvas{filter:grayscale(1) brightness(.6);opacity:.85}
+.game-popup .icon-skillbook .book-skill .book-skill-name{font-size:12px}
+.game-popup .icon-skillbook .book-skill.locked .book-skill-name{color:#b9bfa8}
+.game-popup .icon-skillbook .book-skill.locked .book-skill-origin,.game-popup .icon-skillbook .book-skill.locked kbd{color:#8d9a86;opacity:1}
