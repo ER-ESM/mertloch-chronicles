@@ -6,11 +6,11 @@ import {spawn} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {browser,wait} from './browser-polish.mjs';
-import {makeProfile,disposeChrome} from './chrome-profile.mjs';
+import {makeProfile,disposeChrome,LEAN_ARGS} from './chrome-profile.mjs';
 const url=process.argv[2]||'http://localhost:4181/',port=Number(process.env.CDP_PORT||9346),dir='visual-review/character-sheet';
 mkdirSync(dir,{recursive:true});
 const chrome=process.env.CHROME||['C:/Program Files/Google/Chrome/Application/chrome.exe','/usr/bin/google-chrome','/usr/bin/chromium'].find(existsSync);
-const profile=makeProfile('mertloch-sheet-'),proc=spawn(chrome,['--headless=new','--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--hide-scrollbars','about:blank'],{stdio:'ignore'});
+const profile=makeProfile('mertloch-sheet-'),proc=spawn(chrome,['--headless=new',...LEAN_ARGS,'--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--hide-scrollbars','about:blank'],{stdio:'ignore'});
 let b;const report=[];
 try{
  for(let i=0;i<60;i++){try{await fetch('http://127.0.0.1:'+port+'/json');break;}catch{await wait(200);}}

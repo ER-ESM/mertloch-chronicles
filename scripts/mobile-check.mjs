@@ -24,7 +24,7 @@
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync,mkdtempSync,existsSync} from 'node:fs';
 import {spawn} from 'node:child_process';
-import {makeProfile,disposeChrome} from './chrome-profile.mjs';
+import {makeProfile,disposeChrome,LEAN_ARGS} from './chrome-profile.mjs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
@@ -49,7 +49,7 @@ async function launch(){
  // Nie an einen fremden Chrome hängen: laufen zwei Prüfungen parallel (andere Sitzung), eigenen CDP_PORT setzen.
  try{await fetch('http://127.0.0.1:'+port+'/json/version');throw Error('CDP-Port '+port+' ist belegt (läuft schon eine Prüfung?) – CDP_PORT=<frei> setzen.');}catch(e){if(e.message.startsWith('CDP-Port'))throw e;}
  const profile=makeProfile('mertloch-mobile-');
- const proc=spawn(chrome,['--headless=new','--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--no-default-browser-check','--hide-scrollbars','--window-size=900,900','about:blank'],{stdio:'ignore'});profiles.set(proc,profile);
+ const proc=spawn(chrome,['--headless=new',...LEAN_ARGS,'--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--no-default-browser-check','--hide-scrollbars','--window-size=900,900','about:blank'],{stdio:'ignore'});profiles.set(proc,profile);
  for(let i=0;i<60;i++){await wait(250);try{const t=await (await fetch('http://127.0.0.1:'+port+'/json')).json();if(t.some(x=>x.type==='page'))return proc;}catch{}}
  killTree(proc);throw Error('Chrome antwortet nicht auf Port '+port);
 }

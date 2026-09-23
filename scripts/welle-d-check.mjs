@@ -6,10 +6,10 @@
 // Service Worker ab (damit nie eine alte Fassung geprüft wird) und legt die Bilder in welle-d-review/ ab.
 // Vorhandener Server/Browser wird wiederverwendet: node scripts/welle-d-check.mjs http://localhost:4194/ 9334
 import assert from 'node:assert/strict';
-import {mkdirSync,writeFileSync,existsSync,rmSync} from 'node:fs';
+import {mkdirSync,writeFileSync,existsSync} from 'node:fs';
 import {spawn} from 'node:child_process';
-import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {makeProfile,disposeChrome,LEAN_ARGS} from './chrome-profile.mjs';
 
 const url=process.argv[2]||'http://localhost:4194/';
 const port=Number(process.argv[3]||process.env.CDP_PORT||9334);
@@ -36,8 +36,8 @@ async function boot(){
  try{await fetch('http://127.0.0.1:'+port+'/json/version');return;}catch{}
  const exe=CHROMES.find(p=>existsSync(p));
  assert.ok(exe,'Kein Chrome/Edge gefunden. CHROME=<pfad> setzen.');
- const profile=join(tmpdir(),'welle-d-'+Date.now());
- children.push(spawn(exe,['--remote-debugging-port='+port,'--user-data-dir='+profile,'--headless=new',
+ const profile=makeProfile('mertloch-welle-d-');
+ children.push(spawn(exe,['--remote-debugging-port='+port,'--user-data-dir='+profile,'--headless=new',...LEAN_ARGS,
   '--no-first-run','--no-default-browser-check','--disable-gpu','--window-size=2024,900','about:blank'],{stdio:'ignore'}));
  children.at(-1).profile=profile;
  assert.ok(await reachable('http://127.0.0.1:'+port+'/json/version'),'Chrome-Fernsteuerung antwortet nicht auf Port '+port);
@@ -194,7 +194,7 @@ try{
  code=1;
 }finally{
  b.close();
- for(const child of children){try{child.kill();}catch{}if(child.profile)try{rmSync(child.profile,{recursive:true,force:true});}catch{}}
+ for(const child of children)disposeChrome(child,child.profile);
  await wait(200);
  process.exit(code);
 }

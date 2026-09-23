@@ -3,8 +3,8 @@
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync,existsSync} from 'node:fs';
 import {spawn} from 'node:child_process';
-import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {makeProfile,disposeChrome,LEAN_ARGS} from './chrome-profile.mjs';
 
 const url=process.argv[2]||'http://localhost:4197/';
 const port=Number(process.argv[3]||process.env.CDP_PORT||9337);
@@ -31,8 +31,8 @@ async function boot(){
  try{await fetch('http://127.0.0.1:'+port+'/json/version');return;}catch{}
  const exe=CHROMES.find(p=>existsSync(p));
  assert.ok(exe,'Kein Chrome/Edge gefunden. CHROME=<pfad> setzen.');
- const profile=join(tmpdir(),'combat-integration-'+Date.now());
- children.push(spawn(exe,['--remote-debugging-port='+port,'--user-data-dir='+profile,'--headless=new',
+ const profile=makeProfile('mertloch-combat-');
+ children.push(spawn(exe,['--remote-debugging-port='+port,'--user-data-dir='+profile,'--headless=new',...LEAN_ARGS,
   '--no-first-run','--no-default-browser-check','--disable-gpu','--window-size=2024,900','about:blank'],{stdio:'ignore'}));
  children.at(-1).profile=profile;
  assert.ok(await reachable('http://127.0.0.1:'+port+'/json/version'),'Chrome-Fernsteuerung antwortet nicht auf Port '+port);
@@ -99,5 +99,5 @@ try{
  }
  assert.deepEqual(b.errors,[]);writeFileSync(join(dir,'checks.json'),JSON.stringify(checks,null,2));console.log(JSON.stringify(checks));
 }finally{
- b.close();for(const child of children)child.kill();
+ b.close();for(const child of children)disposeChrome(child,child.profile);
 }

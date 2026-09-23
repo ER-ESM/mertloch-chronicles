@@ -1012,3 +1012,16 @@ Balance-Bericht:
 **Verworfen.** *Hilfsziel behalten, nur umbenennen* – zwei Ziele bleiben zwei Ziele, genau das wollte der Nutzer nicht. *Heilung wirkt weiter zusätzlich auf dich* (E-44: „Helfen kostet nichts“) – dann heilt ein Knopf zwei Ziele; mit einem Ziel entscheidet der Spieler, wen er heilt. *Maus-Über-Heilen / Selbst per Zusatztaste* – mehr Bedienung, kein Auftrag; „nichts wählen“ reicht für die Selbstheilung. *Esc öffnet weiter sofort das Menü* – dann gäbe es am Desktop keinen Tastenweg zum Abwählen.
 
 **Konsequenzen.** E-44 Punkt 1 ist abgelöst. Prüfung: `tests/companion-aid.test.mjs` (Ein-Ziel-Regeln, Wirkung nach Zielart, Reichweite, Zauberbindung, Gruppenmitglied), `scripts/companion-aid-check.mjs` (echter Klickpfad: Söldner → Heilung → Gegner → Heilung → Esc → Heilung). Offen: Die Heilmenge auf Freunde rechnet den Spec-Heilfaktor (`specOutput().healing`) weiterhin nicht ein – wie vor E-65; ein Balancing-Auftrag, keine Bedienfrage.
+
+## E-66 · Chrome-Profile der Prüfskripte auf dem Repo-Laufwerk, schlank und stündlich weggeräumt (23.09.2026)
+
+**Befund.** Am selben Tag war C: zum zweiten Mal voll: 43 GB in `%TEMP%\mertloch-*`. Drei Ursachen: (a) die meisten Worktrees haben noch Skriptstände, die ihr Profil mit `mkdtempSync(tmpdir())` anlegen und nie löschen; (b) auch `chrome-profile.mjs` ließ Profile liegen, weil Chrome die Dateien nach `taskkill` erst nach mehr als 2 s freigibt; (c) jedes frische Profil lud Modelle, Safe-Browsing-Listen und Komponenten nach (130–400 MB je Lauf).
+
+**Entscheidung.**
+1. `scripts/chrome-profile.mjs` legt Profile unter `<Laufwerk des Repos>:\Temp\mertloch-profiles` an (auf dieser Maschine D:). Anderer Ort: `MERTLOCH_PROFILE_ROOT`. Das Aufräumen beim Start räumt dort und am alten Ort `%TEMP%` alles älter als 2 h weg.
+2. `LEAN_ARGS` schaltet Komponenten-Updates, Hintergrundnetz, Safe-Browsing-Updates und Optimization-Guide-Modelle ab. Übrig bleibt der Service-Worker-Cache des Spiels (~180 MB je Profil), und der wird nach dem Lauf gelöscht.
+3. `removeProfile` versucht bis zu 15 s lang zu löschen.
+4. `combat-integration-check`, `basis-check` und `welle-d-check` nutzen jetzt ebenfalls `makeProfile`/`disposeChrome`.
+5. `scripts/sweep-temp-profiles.ps1 -Register` trägt eine stündliche Windows-Aufgabe ein (SYSTEM). Sie räumt auch die Reste alter Worktrees in `%TEMP%` weg, die nie auf `chrome-profile.mjs` umgestellt werden.
+
+**Regel.** Neue Prüfskripte starten Chrome nur über `makeProfile` und `...LEAN_ARGS` und beenden es mit `disposeChrome`.

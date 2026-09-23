@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {browser,wait} from './browser-polish.mjs';
-import {makeProfile,disposeChrome} from './chrome-profile.mjs';
+import {makeProfile,disposeChrome,LEAN_ARGS} from './chrome-profile.mjs';
 export {wait};
 export async function browserSession({url,port=Number(process.env.CDP_PORT||9370),serverPort=4188}={}){
  const children=[];
@@ -20,7 +20,7 @@ export async function browserSession({url,port=Number(process.env.CDP_PORT||9370
   // Eigenes Wegwerf-Profil; stop() beendet den ganzen Chrome-Prozessbaum und löscht es sofort (2026-09-23: liegengebliebene
   // Profile füllten C:). Auf Windows hält sonst ein Kindprozess die Dateien, und ein exit-Handler läuft nach Skriptende nicht mehr.
   profile=makeProfile('mertloch-check-');
-  browserProc=spawn(chrome,['--headless=new','--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--hide-scrollbars','about:blank'],{stdio:'ignore',windowsHide:true});
+  browserProc=spawn(chrome,['--headless=new',...LEAN_ARGS,'--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--hide-scrollbars','about:blank'],{stdio:'ignore',windowsHide:true});
   let ready=false;
   for(let i=0;i<80;i++){try{const r=await fetch('http://127.0.0.1:'+port+'/json');if(r.ok){ready=true;break;}}catch{}await wait(150);}
   if(!ready)throw Error('Test browser did not start.');
