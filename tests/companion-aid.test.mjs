@@ -27,9 +27,11 @@ test('one target: selecting a companion drops the enemy and stops auto-attack; s
  assert.equal(selectUnitAt(g,c.x,c.y-10).kind,'companion');assert.equal(selectedCompanion(g),c);
  assert.equal(g.target,null,'kein Gegner mehr gewählt');assert.equal(g.autoAttack.enabled,false,'Autoangriff stoppt wie beim Abwählen');
  syncFriend(g);assert.equal(friendUnit(g).ref,c);
- const panel=friendPanel(g,friendUnit(g));assert.equal(panel.hpText,Math.ceil(c.hp)+' / '+c.maxHp);assert.equal(panel.disposition,'party');assert.doesNotMatch(panel.effect,/Hilfsziel/);
+ const panel=friendPanel(g,friendUnit(g));assert.equal(panel.hpText,Math.ceil(c.hp)+' / '+c.maxHp);assert.equal(panel.disposition,'party');assert.doesNotMatch(panel.effect,/hilfs\s*ziel/i);
  selectUnitAt(g,e.x,e.y-10);assert.equal(g.target,e);assert.equal(selectedCompanion(g),null,'Gegner löst den Söldner ab');
  selectFriend(g,'companion',c);g.selectNext();assert.ok(g.target);assert.equal(g.friend,null,'Tab wählt einen Gegner und löst den Freund ab');
+ selectFriend(g,'companion',c);g.noteAttacker(e,5,true);assert.equal(selectedCompanion(g),c,'ein Angreifer lenkt den Heiler nicht vom Söldner ab');assert.equal(g.target,null);
+ selectFriend(g,'npc',g.world.npc);g.noteAttacker(e,5,true);assert.equal(g.target,e,'NPC gewählt: der Angreifer wird Ziel');assert.equal(g.friend,null);
  selectFriend(g,'companion',c);assert.equal(clearSelection(g),true);assert.equal(g.friend,null);assert.equal(g.target,null);assert.equal(clearSelection(g),false);
 });
 
@@ -61,7 +63,7 @@ test('a selected, unhurt companion is not healed; a friendly NPC counts as no he
 test('down, out-of-range and obstructed targets reject healing and buffs without spending resources',()=>{
  for(const mutate of [({c})=>{c.state='down';c.hp=0;},({c})=>{c.x=1000;},({g})=>{g.world.lineClear=()=>false;}]){
   const f=fixture(),{g,c}=f;selectFriend(g,'companion',c);mutate(f);
-  for(const id of ['heal','buff']){const before={hp:c.hp,energy:g.player.energy,gcd:g.gcd,cd:g.cooldowns[id]};assert.equal(g.action(id),false);assert.deepEqual({hp:c.hp,energy:g.player.energy,gcd:g.gcd,cd:g.cooldowns[id]},before);assert.ok(g.lastToast);assert.doesNotMatch(g.lastToast,/Hilfsziel/);}
+  for(const id of ['heal','buff']){const before={hp:c.hp,energy:g.player.energy,gcd:g.gcd,cd:g.cooldowns[id]};assert.equal(g.action(id),false);assert.deepEqual({hp:c.hp,energy:g.player.energy,gcd:g.gcd,cd:g.cooldowns[id]},before);assert.ok(g.lastToast);assert.doesNotMatch(g.lastToast,/hilfs\s*ziel/i);}
  }
 });
 

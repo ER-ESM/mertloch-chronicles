@@ -26,7 +26,7 @@ try{
  await b.resize(1440,1000);await fixture();
  assert.ok((await pick()).enemy,'Ausgangslage: Gegner gewählt');await run('g.startAttack();');assert.equal((await pick()).auto,true);
  assert.equal(await run('return !!document.querySelector(".companion-frames [data-companion-select=\\"\\"]");'),false,'kein „Selbst“-Knopf mehr');
- assert.doesNotMatch(await run('return document.body.innerText;'),/Hilfsziel/);
+ assert.doesNotMatch(await run('return document.body.innerText;'),/hilfs\s*ziel/i);
  // 1. Söldner anklicken → er ist das Ziel, der Gegner ist abgewählt, der Autoangriff stoppt.
  await click('[data-companion-select="merc-hopfen-horst"]');await wait(150);
  assert.deepEqual(await pick(),{enemy:null,friend:'merc-hopfen-horst',auto:false});assert.equal(await run('return !!document.querySelector(".popup-companions");'),false);
@@ -49,13 +49,16 @@ try{
  // 5. Weltklick auf den zweiten Söldner; Zielrahmen freundlich mit Leben; Klick ins Leere wählt ab.
  const rita=await screen('g.companions[1]');await tapPoint(rita);assert.equal((await pick()).friend,'merc-radler-rita');await wait(150);
  assert.match(await run('return document.querySelector("#targetName").textContent;'),/Radler-Rita/);assert.match(await run('return document.querySelector("#targetHp").textContent;'),/\//);await b.screenshot(dir+'/desktop-target-frame.jpg');
- const empty=await run(`const {unitAt}=await import('./target-ui.js');for(const [dx,dy] of [[0,-160],[-220,-140],[220,-150],[0,190]]){const p={x:g.player.x+dx,y:g.player.y+dy};if(!unitAt(g,p.x,p.y-10)&&!g.world.blocked(p.x,p.y,3))return p;}return null;`);assert.ok(empty,'freier Punkt');
- await tapPoint(await screen(`(${JSON.stringify(empty)})`));assert.deepEqual(await pick(),{enemy:null,friend:null,auto:false});
+ // Freier Bodenpunkt: keine Einheit, kein Hindernis, und am Bildschirm liegt dort wirklich die Welt (kein HUD-Fenster darüber).
+ const empty=await run(`const {unitAt}=await import('./target-ui.js'),r=__mertloch.renderer,box=r.canvas.getBoundingClientRect();
+  for(const [dx,dy] of [[60,-60],[-60,-70],[0,-110],[130,40],[-150,30],[0,160]]){const p={x:g.player.x+dx,y:g.player.y+dy},s={x:box.left+(p.x-r.viewOrigin.x)*box.width/r.viewWidth,y:box.top+(p.y-r.viewOrigin.y)*box.height/r.viewHeight};
+   if(!unitAt(g,p.x,p.y)&&!g.world.blocked(p.x,p.y,3)&&document.elementFromPoint(s.x,s.y)?.closest('#world'))return s;}return null;`);assert.ok(empty,'freier Punkt');
+ await tapPoint(empty);assert.deepEqual(await pick(),{enemy:null,friend:null,auto:false});
  pass('Weltklick wählt den Söldner, Zielrahmen zeigt Name und Leben; Klick ins Leere wählt ab');
  // 6. Außer Reichweite: keine Abklingzeit, Rahmen markiert.
  await tapPoint(rita);await run('g.companions[1].x=g.player.x+600;');await healKey();assert.equal(await run('return g.cooldowns.heal;'),0);/* Rahmen aktualisiert sich mit dem HUD-Takt (100 ms) */await wait(300);assert.ok(await run('return document.querySelector(".companion-frame.is-selected").classList.contains("target-unavailable");'));
- assert.doesNotMatch(await run('return document.body.innerText;'),/Hilfsziel/);
- pass('Ziel außer Reichweite: keine Abklingzeit, Rahmen markiert, Meldung ohne „Hilfsziel“');
+ assert.doesNotMatch(await run('return document.body.innerText;'),/hilfs\s*ziel/i);
+ pass('Ziel außer Reichweite: keine Abklingzeit, Rahmen markiert, Meldung ohne das alte Zweitziel-Wort');
  await click('[data-companion-manage=""]');assert.ok(await run('return !!document.querySelector(".popup-companions");'));await b.press('Escape');
  await b.resize(390,844);await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});await fixture(true);
  await click('[data-companion-select="merc-hopfen-horst"]',true);assert.equal((await pick()).friend,'merc-hopfen-horst');const mobileHp=await run('return g.companions[0].hp;');

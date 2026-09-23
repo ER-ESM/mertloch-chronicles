@@ -44,5 +44,5 @@ test('Vorrat fills when healing the selected companion at full own health; clean
  // Ein Ziel (E-65): mit gewähltem Gegner heilt die Löffelkur dich, der Grundschaden trifft den Gegner.
  g.friend=null;g.target={hp:1000};g.player.hp=g.player.maxHp-100;g.cooldowns.heal=0;g.gcd=0;const own=g.player.hp;
  assert.equal(g.action('heal'),true);assert.equal(g.classState.m.supply,2);assert.ok(g.player.hp>own);assert.equal(baseDamage,Math.round((g.player.hp-own)*SPEC_MECHANICS['baerbel-care'].supply.cleanDamage));
- const help=mechanicHelp(g).lines.join(' ');assert.match(help,/als Ziel gewählt/);assert.doesNotMatch(help,/Hilfsziel/);assert.match(skillHelp(g,'heal'),/Heilt dein gewähltes freundliches Ziel/);
+ const help=mechanicHelp(g).lines.join(' ');assert.match(help,/als Ziel gewählt/);assert.doesNotMatch(help,/hilfs\s*ziel/i);assert.match(skillHelp(g,'heal'),/Heilt dein gewähltes freundliches Ziel/);
 });

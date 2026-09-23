@@ -496,7 +496,7 @@ export class Game{
     const set=this.attackers||(this.attackers=new Set());
     if(!fresh&&set.has(e.id))return false;
     set.add(e.id);
-    if(!this.target?.hp&&!this.friend){this.target=e;this.emit('target');}
+    /* Ein Ziel (E-65): ein gewählter Söldner oder Mitspieler bleibt Ziel, damit der Heiler nicht umgelenkt wird */if(!this.target?.hp&&helpTarget(this).kind==='self'){this.friend=null;this.target=e;this.emit('target');}
     this.emit('attacked',{enemyId:e.id,damage,first:true});
     return true;
   }

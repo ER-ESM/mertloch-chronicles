@@ -519,6 +519,8 @@ Offen für die nächsten Runden (Reihenfolge = Wert fürs Gruppengefühl): Heilu
 
 ## E-44 · Miteinander: Hilfsziel, Aufhelfen, Handel, Weltbosse (21.09.2026)
 
+> **Punkt 1 abgelöst durch E-65 (23.09.2026):** Es gibt kein Hilfsziel mehr, nur noch ein Ziel (Gegner, Freund oder nichts). Heilung, Schutz und Buffs wirken nur auf den gewählten Freund, sonst auf dich. Die Punkte 2–5 gelten weiter.
+
 **Auftrag des Nutzers:** aus der Liste in E-42 die Punkte 1, 2, 3 und 6 bauen. Alles folgt dem Muster von E-35/E-42: der Server rechnet keinen Kampf, er prüft Nähe und Zustand, reicht weiter und sagt an (`server/game/social-play.mjs`, Client `net-social.js`).
 
 1. **Heilung und Schutz auf Mitspieler:** Ein Gruppenmitglied wird per Klick auf seinen Gruppenrahmen (oder Rechtsklick → „Als Hilfsziel wählen") zum Hilfsziel. Die eigene Heilung wirkt dann zusätzlich in voller Höhe dort, der Klassenbuff in voller statt halber Stärke (Reichweite 420). Die eigene Wirkung bleibt unverändert – Helfen kostet nichts, „Zusammen ist besser".
@@ -994,3 +996,19 @@ Balance-Bericht:
 **Verworfen.**
 - *Lern-Knöpfe im Berufefenster behalten:* widerspricht dem Auftrag und war die Ursache des Befunds.
 - *Gelb/Grün-Stufen wie im Vorbild:* Der Fertigkeitsgewinn ist hier fest (+1 bis Grau). Zwischenfarben würden Zufall vortäuschen.
+
+## E-65 · Ein Ziel: Gegner, Freund oder nichts – kein Hilfsziel mehr (ersetzt E-44 Punkt 1, 23.09.2026)
+
+**Anlass.** Nutzerauftrag: „Es soll kein ‚Hilfsziel‘ geben, es gibt nur ein Ziel, bei Gegnern setzt man DPS ein, bei freundlichen Target Heals und Buffs. Es macht keinen Sinn 2 Ziele zu haben. Deswegen ist der ‚Selbst‘ Button auch unnötig, es reicht wenn ich einfach nichts als Ziel habe, damit es auf mich geht.“ Bis dahin gab es neben dem Kampfziel ein zweites, dauerhaftes Hilfsziel (Söldner oder Gruppenmitglied, E-44/E-45) mit eigenem „Selbst“-Knopf.
+
+**Entscheidung.**
+1. **Genau eine Auswahl:** ein Gegner (`g.target`) ODER ein Freund (`g.friend` = Söldner, Gruppenmitglied, anderer Spieler, NPC) ODER nichts. Einen Freund wählen wählt den Gegner ab und stoppt den Autoangriff; einen Gegner wählen (Klick, Tab, Schadenskniff ohne Ziel) wählt den Freund ab. Ein Angreifer wird nur dann automatisch zum Ziel, wenn kein Gegner und kein Söldner oder Mitspieler gewählt ist – ein Heiler wird nicht umgelenkt. Baustein: `help-target.js` (`selectFriend`, `selectEnemy`, `clearSelection`, `helpTarget`, `helpFailure`).
+2. **Wirkung nach Zielart:** Schadenskniffe brauchen einen Gegner (wie bisher). Heilung, Stärkung (Schutz/Deckung) und Klassen-Buffs wirken auf den gewählten Söldner oder das gewählte Gruppenmitglied – **nur dort**, nicht zusätzlich beim Heiler. Ist ein Gegner, ein NPC oder nichts gewählt, wirken sie auf dich. Fremde Spieler außerhalb der Gruppe sind kein Hilfeziel (Meldung, nichts verbraucht). Reichweite (420), Sichtlinie, „am Boden“ und „nicht mehr da“ werden vor Randale und Abklingzeit geprüft und als Ziel-Meldungen angezeigt (`TARGET_HELP` in `content/targeting.js`).
+3. **Nebenwirkungen beim Heiler bleiben:** Randale durch Heilung, Frischekick, Abklingzeit-Verkürzungen und Vorratsgläser gibt es auch, wenn die Heilung einen Freund trifft (`healerEffects` in `class-mechanics.js`). Die Hauspflege läuft beim geheilten Ziel; Überheilung eines Söldners wird mit dem Überheilungs-Talent zu eigener Deckung. Großreinemachen trifft nur einen gewählten Gegner – dann heilt die Löffelkur dich.
+4. **Stärkung auf einen Freund** strahlt keinen Gruppenanteil (E-42 Nr. 3) aus; der Anteil kommt nur, wenn du sie auf dich selbst legst. Sonst hätte das Ziel zweimal denselben Platz `partyBuff` belegt.
+5. **Bedienung:** Söldner-Rahmen, Gruppenrahmen, Klick in der Welt oder Rechtsklick → „Als Ziel wählen“ wählen den Freund; der Zielrahmen zeigt ihn mit Name und Leben, freundlich eingefärbt. **Esc wählt zuerst das Ziel ab**, erst das nächste Esc öffnet das Spielmenü (Reihenfolge wie im Vorbild: Fenster → Zauber/Zielen → Ziel → Menü; ergänzt E-19/E-43). Klick ins Leere wählt ab wie bisher. Der „Selbst“-Knopf entfällt, ebenso das Umschalten durch erneutes Anklicken des Rahmens.
+6. **Online:** Das Protokoll bleibt unverändert. `{t:'aid',to,heal?,b?,cb?}` adressiert jede Hilfe einzeln, der Server (`server/game/social-play.mjs`) führt kein Ziel und prüft wie bisher Gruppe, Reichweite und Zustand. Der Client führt kein eigenes Gruppen-Ziel mehr (`state.friend` entfällt); `net-social.js` liest das eine Ziel aus `g.friend` (`selectTarget`, `selected`, `hooks.canAid`, `hooks.aidHeal(to,…)`, `hooks.buffFriend(to,…)`).
+
+**Verworfen.** *Hilfsziel behalten, nur umbenennen* – zwei Ziele bleiben zwei Ziele, genau das wollte der Nutzer nicht. *Heilung wirkt weiter zusätzlich auf dich* (E-44: „Helfen kostet nichts“) – dann heilt ein Knopf zwei Ziele; mit einem Ziel entscheidet der Spieler, wen er heilt. *Maus-Über-Heilen / Selbst per Zusatztaste* – mehr Bedienung, kein Auftrag; „nichts wählen“ reicht für die Selbstheilung. *Esc öffnet weiter sofort das Menü* – dann gäbe es am Desktop keinen Tastenweg zum Abwählen.
+
+**Konsequenzen.** E-44 Punkt 1 ist abgelöst. Prüfung: `tests/companion-aid.test.mjs` (Ein-Ziel-Regeln, Wirkung nach Zielart, Reichweite, Zauberbindung, Gruppenmitglied), `scripts/companion-aid-check.mjs` (echter Klickpfad: Söldner → Heilung → Gegner → Heilung → Esc → Heilung). Offen: Die Heilmenge auf Freunde rechnet den Spec-Heilfaktor (`specOutput().healing`) weiterhin nicht ein – wie vor E-65; ein Balancing-Auftrag, keine Bedienfrage.
