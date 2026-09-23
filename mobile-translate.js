@@ -6,6 +6,8 @@
 // Reine Funktionen (testbar in Node): touchKeyFor, translateText, translateNode. createTranslator bindet sie ans Spiel.
 
 /** Touch-Bezeichner, die es nur auf dem Handy gibt (Knöpfe des Touch-HUD, mobile-controls.js). */
+/** Beschriftung des Aktion-Knopfs je Aktionsart (worldInteraction in app.js): der Knopf sagt, was passiert (M-13). */
+export const TOUCH_ACTION_LABELS=Object.freeze({loot:'Beute',item:'Aufheben',gather:'Sammeln',npc:'Reden',mentor:'Reden',giver:'Reden',notice:'Lesen',hotspot:'Ansehen',shop:'Handeln',shrine:'Rasten',mounts:'Reiten',bude:'Bude',companions:'Söldner',profession:'Beruf',stairs:'Treppe'});
 export const TOUCH_TERMS=Object.freeze({dash:'Stiefel',interrupt:'Hand',target:'Ziel',interact:'Aktion',menu:'Menü',stick:'Joystick',page:'Seite',button:'Knopf',book:'Kniffe-Buch',hold:'länger drücken',tap:'antippen',cancelAim:'Zielen abbrechen'});
 export const TOUCH_PAGE_SIZE=6;
 /** Buchstaben, die am Desktop Reiter des Clanbuchs öffnen; auf Touch heißt das immer „Menü“. */
@@ -14,6 +16,8 @@ const TAB_LETTERS=new Set(['C','K','I','J','B','M','H','N','P']);
 const PHRASES=[
  // Hilfe → Bedienung und Glossar (content/panel-ui.js, content/glossary.js): ganze Sätze zuerst
  [/Tab wählt nahe Gegner; Shift \+ Tab geht zurück\./g,TOUCH_TERMS.target+'-Knopf wählt nahe Gegner.'],
+ // Tastenhinweise hinter Orten („Clanbuch · Taste N“, „Knopf oben links · Taste V“) entfallen auf Touch.
+ [/ ?· ?Taste [A-Z0-9](?![A-Za-zÄÖÜäöüß])/g,''],
  [/Klick auf den Auftragskasten/g,'Tipp auf die Wegmarke'],
  [/Rechtsklick auf einen Gegner startet, Linksklick und Tab wählen nur aus\./g,'Antippen wählt einen Gegner nur aus; der Angriffsknopf startet.'],
  [/ ?Esc beendet den Angriff nach offenen Fenstern\./g,' Der Angriffsknopf schaltet ihn wieder aus.'],

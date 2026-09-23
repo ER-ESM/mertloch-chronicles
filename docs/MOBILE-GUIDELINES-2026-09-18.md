@@ -27,7 +27,7 @@ Regelwerk für die Mobile-Schicht von Mertloch Chronicles (Touch-Modus, `mobile-
 |---|---|---|
 | M-10 | Kontextueller Minimalismus: im HUD nur, was häufig **oder** dringend ist. Alles andere ins Clanbuch. | Appnality, WANDR |
 | M-11 | Fenster verdecken nie Joystick oder Kniff-Knöpfe; im Kampf rutschen sie nach oben (`touch-combat`). | eigene Regel, geprüft in `mobile-check` |
-| M-12 | Text auf dem Handy **größer**, nicht kleiner: Lesetext ≥ 12 px, Beschriftungen ≥ 10 px; Kontrast auch auf billigen Displays in der Sonne prüfen. | WANDR, Xbox Accessibility |
+| M-12 | Lesetext ≥ 12 px, Beschriftungen ≥ 10 px – das sind Untergrenzen, kein Ziel. **Nutzerentscheidung 2026-09-23:** auf Touch lieber knapp darüber und dichter (Fenster-Lesetext 12,5 px, Zeilenhöhe 1,4, Überschriften 16 px; `mobile-polish.css`), damit mehr auf den Schirm passt. Kontrast auch auf billigen Displays in der Sonne prüfen. | WANDR, Xbox Accessibility, Nutzer |
 | M-13 | Keine Desktop-Begriffe auf Touch (Tab, WASD, Rechtsklick, Maus, [1]…[0], [LEER], [F]): die Übersetzungsschicht `mobile-translate.js` übersetzt beim Anzeigen. | eigene Regel |
 | M-14 | Kein Desktop-Layout „geerbt": keine Hamburger-Seitenleisten, keine skalierten Raster; Bottom-Navigation mit 3–5 Zielen (Icon + Beschriftung). | WANDR, Thumb-Zone-Guide |
 | M-15 | Ein Eingriff zur Rückkehr ins Spiel: nach Unterbrechung höchstens ein Tipp (kein Modal-Stapel). | WANDR |

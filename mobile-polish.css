@@ -1,0 +1,95 @@
+/* Mobile-Feinschliff (Übersetzungsschicht Touch, docs/MOBILE-GUIDELINES-2026-09-18.md). Letzte Stildatei: gewinnt gegen
+   ältere Regeln gleicher Spezifität (ui-chrome.css, bag-ui.css …). Je Runde ein Abschnitt; geprüft mit npm run mobile:check. */
+
+/* ===== Runde 1 (2026-09-23): dichter setzen, ohne unter 44 px Tipp-Fläche (M-01) und 12 px Lesetext (M-12) zu fallen ===== */
+.touch-mode .game-popup .popup-body{font-size:13px}
+.touch-mode .game-popup .popup-body button:not(.item-slot):not(.icon-skill):not(.talent-node):not(.bag-filter){font-size:13px;line-height:1.15;padding-top:6px;padding-bottom:6px}
+.touch-mode #touchContext .touch-menu-grid>button{font-size:13px}
+/* Clanbuch-Reiter: 8 px Abstand (M-02); Hilfe auf Touch mit Beschriftung wie alle Ziele der Leiste (M-14) */
+.touch-mode .book-tabs button.tab-help span{display:block}
+/* Rucksack: Filter als eine wischbare Zeile, Sortierung und Suche ohne sichtbare Vorsätze (Auswahl und Feld tragen ihre Bezeichnung) */
+.touch-mode .game-popup .bag-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:0 0 8px}
+.touch-mode .game-popup .bag-controls>.bag-filters{grid-column:1/-1}
+.touch-mode .game-popup .bag-controls>.bag-search{grid-row:2;grid-column:1;margin:0}
+.touch-mode .game-popup .bag-controls>.bag-sort{grid-row:2;grid-column:2}
+.touch-mode .game-popup .bag-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:8px;padding-bottom:1px}
+.touch-mode .game-popup .bag-filters::-webkit-scrollbar{display:none}
+.touch-mode .game-popup .bag-filters>.bag-filter{flex:0 0 auto;min-height:44px;padding:0 14px;font:12px/1 'Trebuchet MS',sans-serif;text-transform:none;letter-spacing:0}
+.touch-mode .game-popup .bag-sort{flex-wrap:nowrap;gap:8px}
+.touch-mode .game-popup .bag-sort label{flex:1 1 auto}
+.touch-mode .game-popup .bag-sort label>span,.touch-mode .game-popup .bag-search>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.touch-mode .game-popup .bag-sort select{width:118px}
+/* Sortieren als Symbolknopf; der Name bleibt für Vorlesehilfen im Text */
+.touch-mode .game-popup .bag-sort [data-sort-bag]{position:relative;width:44px;min-width:44px;padding:0!important;overflow:hidden;white-space:nowrap;color:transparent!important}
+.touch-mode .game-popup .bag-sort [data-sort-bag]::before{content:"⇅";position:absolute;inset:0;display:grid;place-items:center;font-size:20px;line-height:1;color:#f0dfb5}
+.touch-mode .game-popup .bag-search input{min-height:44px;font-size:13px}
+/* Meilensteine (Aufstieg, Freischaltung): kleiner, unterhalb der Kopfzeile, nie über einem Fenster */
+.touch-mode .milestone{top:calc(190px + var(--safe-top));max-width:calc(100vw - 24px - var(--safe-left) - var(--safe-right))}
+.touch-mode .milestone-title{font-size:40px}
+.touch-mode .milestone-eyebrow{font-size:12px}
+.touch-mode:has(.game-popup) .milestone{visibility:hidden}
+@media(orientation:landscape){.touch-mode .milestone{top:calc(70px + var(--safe-top))}.touch-mode .milestone-title{font-size:34px}}
+.touch-mode .game-popup .popup-titlebar{gap:8px}
+/* Clanbuch-Reiter füllen auf Touch die Zeile: so viele Spalten wie sichtbare Reiter, je mindestens 48 px (M-01) und 10 px Abstand (M-02);
+   bei vielen freigeschalteten Reitern wischen statt quetschen */
+.touch-mode .game-popup .book-tabs{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(46px,1fr);gap:10px;overflow-x:auto;scrollbar-width:none}
+.touch-mode .game-popup .book-tabs::-webkit-scrollbar{display:none}
+.touch-mode .game-popup .book-tabs{padding:10px 4px 0}
+.touch-mode .game-popup .book-tabs button[data-badge]{overflow:visible}
+.touch-mode .game-popup .bag-search input{width:100%;min-width:0}
+
+/* Runde 2 (2026-09-23): Fensterlage je Ausrichtung. Quer rückt der Spielerrahmen bei offenem Fenster auf die Breite der
+   linken Knopfspalte zusammen (Bild, Name, Balken bleiben sichtbar); popup-layout.js hält das Fenster daneben frei. */
+@media(orientation:landscape){
+ .touch-mode:has(.game-popup) .player-panel{width:124px;min-height:0;padding:4px 6px 4px 4px;gap:4px;align-items:center}
+ .touch-mode:has(.game-popup) .player-panel .portrait{width:38px;height:38px;margin-top:0}
+ .touch-mode:has(.game-popup) .player-panel .portrait>span{font-size:11px;min-width:16px;height:13px}
+ .touch-mode:has(.game-popup) .player-panel .unit-name{margin:0 0 2px}
+ .touch-mode:has(.game-popup) .player-panel #playerName{font-size:13px}
+ .touch-mode:has(.game-popup) .player-panel #combatState{display:none}
+ .touch-mode:has(.game-popup) .player-panel .bar{height:15px;margin:2px 0}
+ .touch-mode:has(.game-popup) .player-panel .bar>span{font-size:10px}
+ .touch-mode:has(.game-popup) .player-panel{min-height:0!important}
+ .touch-mode:has(.game-popup) .player-panel #classMechanicArt{max-width:100%!important;height:auto!important}
+}
+
+/* Runde 3 (2026-09-23): Überlagerungen. Ruhender Chat zeigt auf Touch nur frische Zeilen – die blassen Reiter waren
+   Mini-Ziele mitten im Spielfeld; der Chat öffnet über Menü → Chat (chat-window.js open). */
+.touch-mode #chatWindow:not(.active):not(.configuring) .chat-tabs{display:none}
+/* Hochkant im Kampf: Zielrahmen sitzt unter dem Spielerrahmen; die Hofprobe rückt darunter statt verdeckt zu werden. */
+@media(orientation:portrait){
+ .touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:calc(206px + var(--safe-top))}
+ .touch-mode:has(#targetPanel:not(.hidden)):has(#tutorialGuide) #buffStrip{top:calc(270px + var(--safe-top))}
+ /* Aufstiegs-/Freischalt-Banner mittig ins freie Spielfeld, nicht über Ziel- und Auftragsrahmen */
+ .touch-mode .milestone{top:calc(252px + var(--safe-top))}
+ .touch-mode:has(.milestone.show) #chatWindow:not(.active){visibility:hidden}
+}
+/* Quer mit offenem Fenster: Meldungen oben in die freie Ecke über den Kniffen statt halb unter das Fenster */
+@media(orientation:landscape){
+ .touch-mode:has(.game-popup) #toast{left:auto;right:calc(12px + var(--safe-right));top:calc(12px + var(--safe-top));bottom:auto;width:auto;max-width:160px;padding:8px 10px}
+ /* Ruhender Chat quer über der EP-Leiste statt auf ihr; bei offenem Fenster ruht er ganz (Zeilen bleiben im Verlauf) */
+ .touch-mode #chatWindow[data-auto-layout=true]:not(.active):not([data-hud-custom]){bottom:calc(40px + var(--safe-bottom))!important}
+ .touch-mode:has(.game-popup) #chatWindow:not(.active){visibility:hidden}
+}
+
+/* Runde 4 (2026-09-23): Dichte. Nutzerwunsch „auf Mobile etwas kleinere Schrift, damit man mehr erkennt“ – Lesetext
+   12,5 px (Untergrenze M-12: 12 px), engerer Zeilenabstand, Überschriften 16 statt 20 px. Knöpfe bleiben 13 px. */
+.touch-mode .game-popup .popup-body{font-size:12.5px;line-height:1.4}
+.touch-mode .game-popup .popup-body :is(p,li,td,th,dd,.quest-reward,.quest-objective,.memory-clue){font-size:12.5px;line-height:1.4}
+.touch-mode .game-popup .popup-body li{margin-block:3px}
+.touch-mode .game-popup .popup-body :is(h2,h3){font-size:16px;line-height:1.15}
+.touch-mode .game-popup .popup-body h2+p,.touch-mode .game-popup .popup-body h3+p{margin-top:4px}
+.touch-mode #chatWindow{font-size:12px}
+/* Reiterleiste: passt nicht alles, lugt der nächste Reiter an der Kante hervor und blendet aus – Wischen ist erkennbar */
+.touch-mode .game-popup .book-tabs.more-right{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),#0000);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),#0000)}
+.touch-mode .game-popup .book-tabs button[aria-selected=true]{transform:none}
+/* Hochkant-Kopfzeile: Ort als kleine Zeile darüber, Wegmarke und „Neuer Kniff!“ darunter in voller Breite –
+   nichts wird mehr abgeschnitten; rechts bleibt die Spalte mit Menü und Kampfstatistik frei (vorher 12 px Überlappung). */
+@media(orientation:portrait){
+ .touch-mode .touch-topline{flex-wrap:wrap;row-gap:4px;max-width:calc(100% - 104px - var(--safe-left) - var(--safe-right))}
+ .touch-mode .touch-topline>#touchPlace{flex:1 0 100%;max-width:none;min-height:0;padding:0 2px;border:0;background:none;box-shadow:none;border-image:none;font-size:11px;line-height:1.2;text-shadow:0 1px 2px #000,0 0 4px #000}
+ .touch-mode #touchWaypoint{max-width:none}
+}
+/* Offener Chat auf Touch: Reiter und Zahnrad als 44-px-Ziele mit 8 px Abstand (vorher 24 px hoch, 2 px Abstand) */
+.touch-mode #chatWindow.active .chat-tabs nav{gap:8px;overflow-x:auto;scrollbar-width:none}
+.touch-mode #chatWindow.active .chat-tabs button{min-height:44px;min-width:44px;padding:0 12px;font-size:13px;flex:none}

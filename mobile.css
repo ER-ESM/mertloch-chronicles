@@ -98,3 +98,4 @@
 /* Ortsname behält seine Breite; der lange Auftragschip daneben kürzt sich statt ihn auf „CLAN…" zu quetschen. */
 .touch-topline>#touchPlace{flex:0 0 auto;padding-inline:10px}
 .touch-topline>:not(#touchPlace){flex:1 1 auto;min-width:0}
+

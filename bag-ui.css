@@ -1,6 +1,8 @@
 /* Rucksack, Vergleich und Werte (E-53). Letzte Stildatei: gewinnt gegen ältere Regeln gleicher Spezifität. */
 .bag-capacity{color:#cbd3b6;white-space:nowrap}
 .bag-controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px}
+/* Suche sitzt im selben Block wie Filter und Reihenfolge (Touch: eine Zeile mit der Reihenfolge); am Desktop eigene Zeile. */
+.bag-controls>.bag-search{flex:1 0 100%;margin:2px 0 0}
 .bag-filters{display:flex;flex-wrap:wrap;gap:4px;flex:1 1 auto}
 .bag-filter{padding:4px 10px;font:11px/1.2 'Trebuchet MS',sans-serif;color:var(--cream,#F4E8C4);background:var(--green-3,#1A2C24);border:1px solid #6c7650;border-radius:var(--r-pill,999px);cursor:pointer}
 .bag-filter:hover{border-color:var(--kraft-2,#C9A46F)}

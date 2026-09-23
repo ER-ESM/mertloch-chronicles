@@ -941,3 +941,25 @@ Balance-Bericht:
 **Offen.**
 - Die ruhende Mentoren-Mechanik (`mentorInteraction`, `talkToMentor`, `mentorDialogue`, `mentorSpots`) aufräumen oder für spätere Auftritte nutzen.
 - Weitere Auftritte der drei in Akt 2 (Koblenz): Nyalols Mitschnitte und Ollis gelöschte Datenbank als Erinnerungsquellen, Uschi als Fahrzeug.
+
+## E-62 · Mobile Übersetzungsschicht: dichter, nichts verdeckt, alles erreichbar (23.09.2026)
+
+**Auftrag.** Grafik- und UI-Optimierung der Touch-Schicht, hochkant und quer, nach den Mobile-Regeln (M-01…M-21). Auf dem Handy etwas kleinere Schrift, damit mehr zu sehen ist. Fünf Runden mit Prüfung und Bewertung.
+
+**Entscheidungen.**
+1. **Eigene Datei `mobile-polish.css`, zuletzt geladen.** `mobile.css` lädt vor `ui-chrome.css`/`bag-ui.css` und verliert bei gleicher Spezifität. Die Runden-Regeln liegen deshalb gesammelt am Ende der Kette.
+2. **Schrift (M-12 angepasst, Nutzerentscheidung):** Fenster-Lesetext 12,5 px bei Zeilenhöhe 1,4, Überschriften 16 statt 20 px. Knöpfe bleiben 13 px. Die Untergrenzen 12 px (Lesetext) und 10 px (Beschriftung) gelten weiter.
+3. **Fensterlage:** Quer schrumpft der Spielerrahmen bei offenem Fenster auf die Breite der linken Knopfspalte. `touchPopupBounds` hält ihn quer als `hud` frei, hochkant bleibt das 104-px-Band.
+4. **Rucksack:** Suche, Reihenfolge und Sortieren (als Symbolknopf) stehen in einer Zeile. Das spart eine 44-px-Zeile, quer wird die erste Gegenstandsreihe sichtbar.
+5. **Reiterleiste:** Sieben Reiter passen nicht in 342 px (M-01/M-02). Die Leiste wischt, der aktive Reiter wird eingeblendet, und am Rand blendet eine Kante aus, solange rechts noch Reiter liegen.
+6. **Überlagerungen:**
+   - Hochkant rückt die Hofprobe unter den Zielrahmen.
+   - Aufstiegsbanner liegen mittig im freien Feld.
+   - Quer erscheint der Toast oben in der freien Ecke.
+   - Der ruhende Chat liegt quer über der EP-Leiste statt auf ihr.
+   - Die hochkant-Kopfzeile trennt Ort und Wegmarke und hält die Menüspalte frei (vorher 12 px Überlappung).
+7. **Chat auf Touch:** Die blassen Ruhe-Reiter fallen weg (Mini-Ziele mitten im Feld). Der Chat öffnet über Spielmenü → Chat (`chat-window.js` `open()`), offen sind die Reiter 44-px-Ziele.
+8. **Aktion-Knopf sagt, was passiert:** Beute, Reden, Treppe, Handeln … (`TOUCH_ACTION_LABELS`). Die Beschriftung setzt nur noch `update()` in `mobile-controls.js`. In der Hofprobe folgt sie `speak()`.
+9. **Übersetzung:** Tastenhinweise wie „· Taste N“ entfallen auf Touch, auch in Freischalt-Bannern.
+
+**Prüfung.** `npm run mobile:check` (hoch, quer, klein, Sitzung, Desktop). Der Schritt „Gespräch“ bildet jetzt ab, dass der erste Tipp außer Reichweite nur zu Ida führt.

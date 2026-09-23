@@ -75,7 +75,9 @@ export function mountChatWindow(root,options={}){
  nav.addEventListener('click',e=>{const b=e.target.closest('[data-chat-tab]');if(b)b.querySelector('.chat-unread').hidden=true;},true);
 
  // ── Aktiv / Ruhe ──
- const refreshActive=()=>{const on=settings.pinned||configuring||el.matches(':hover')||el.contains(document.activeElement);if(on!==el.classList.contains('active')){el.classList.toggle('active',on);log.scrollTop=log.scrollHeight;}};
+ // opened: über Menü → Chat geöffnet (Touch, ohne Hover); der nächste Tipp außerhalb schließt wieder.
+ let opened=false;document.addEventListener('pointerdown',e=>{if(opened&&!el.contains(e.target)){opened=false;setTimeout(refreshActive,0);}},true);
+ const refreshActive=()=>{const on=opened||settings.pinned||configuring||el.matches(':hover')||el.contains(document.activeElement);if(on!==el.classList.contains('active')){el.classList.toggle('active',on);log.scrollTop=log.scrollHeight;}};
  for(const ev of ['pointerenter','pointerleave','focusin','focusout'])el.addEventListener(ev,()=>setTimeout(refreshActive,0));
 
  // ── Eingabe (nur online) ──
@@ -108,7 +110,9 @@ export function mountChatWindow(root,options={}){
  config.addEventListener('click',e=>{if(e.target.closest('[data-chat-done]'))toggleConfig(false);else if(e.target.closest('[data-chat-reset]')){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();hudMove({reset:true,save:true});place();}});
 
  renderTabs();filter();renderFoot();place();refreshActive();
- return {el,push,place,configure:()=>toggleConfig(true),resetPlace(){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();place();},focusInput:()=>input.focus(),prefill(text){input.value=text;input.focus();input.setSelectionRange(text.length,text.length);},
+ return {el,push,place,configure:()=>toggleConfig(true),resetPlace(){settings={...settings,x:null,y:null,w:CHAT_DEFAULTS.w,h:CHAT_DEFAULTS.h};persist();place();},focusInput:()=>input.focus(),
+  /** Touch (Menü → Chat): Fenster aktiv schalten und den gewählten Reiter fokussieren; ein Tipp daneben schließt es wieder. */
+  open(){opened=true;refreshActive();(nav.querySelector('[aria-selected=true]')||nav.querySelector('[data-chat-tab]'))?.focus({preventScroll:true});},prefill(text){input.value=text;input.focus();input.setSelectionRange(text.length,text.length);},
   /** state: 'off' (kein Online-Dienst) | 'signedOut' | 'connecting' | 'connected' */
   setOnline(next){const before=online.state;online={...online,...next};renderFoot();if(online.state==='connecting'&&before!=='connecting')push('chat',{scope:'system',text:CHAT_UI.connecting});},
   get settings(){return settings;}};

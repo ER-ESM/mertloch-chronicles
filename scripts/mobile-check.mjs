@@ -23,7 +23,7 @@
 // Chrome: CHROME=<pfad> oder Vorgabe C:\Program Files\Google\Chrome\Application\chrome.exe. Kein npm-Paket.
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync,mkdtempSync,existsSync} from 'node:fs';
-import {spawn} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
@@ -41,12 +41,14 @@ const SAFE=(w,h)=>w>h?{top:0,bottom:21,left:47,right:47}:{top:47,bottom:34,left:
 const CORNER=24;
 const DESKTOP_WORDS=/\[(LEER|Q|F|E|[0-9])\]|\bTab\b(?= wählt| oder| →| \/)|\bWASD\b|Rechtsklick|Linksklick|rechtsklicken|doppelklicken|\bMaus\b|Mausrad|\bShift\b|\bTaste\b|\bTasten\b|Tastendruck|\bEsc\b|\bKlick\b|\bLEER\b/;
 
+// Windows: Chrome startet Kindprozesse, die den Debug-Port halten – nur den ganzen Baum beenden (sonst scheitert der nächste Teil am Port).
+const killTree=proc=>{if(process.platform==='win32'&&proc?.pid)spawnSync('taskkill',['/PID',String(proc.pid),'/T','/F'],{stdio:'ignore'});else proc?.kill();};
 async function launch(){
  if(!chrome)throw Error('Kein Chrome gefunden; CHROME=<pfad> setzen.');
  const profile=mkdtempSync(join(tmpdir(),'mertloch-mobile-'));
  const proc=spawn(chrome,['--headless=new','--remote-debugging-port='+port,'--user-data-dir='+profile,'--no-first-run','--no-default-browser-check','--hide-scrollbars','--window-size=900,900','about:blank'],{stdio:'ignore'});
  for(let i=0;i<60;i++){await wait(250);try{const t=await (await fetch('http://127.0.0.1:'+port+'/json')).json();if(t.some(x=>x.type==='page'))return proc;}catch{}}
- proc.kill();throw Error('Chrome antwortet nicht auf Port '+port);
+ killTree(proc);throw Error('Chrome antwortet nicht auf Port '+port);
 }
 async function connect(){
  const targets=await (await fetch('http://127.0.0.1:'+port+'/json')).json();const target=targets.find(t=>t.type==='page');
@@ -58,7 +60,11 @@ async function connect(){
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;};
  return {send,evaluate,errors,close:()=>ws.close(),
   async device(width,height,dsf=2){await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:dsf,mobile:true,screenOrientation:{type:width>height?'landscapePrimary':'portraitPrimary',angle:width>height?90:0}});await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});},
-  async goto(u){await send('Page.navigate',{url:u});for(let i=0;i<200;i++){await wait(100);if(await evaluate('!!window.mertloch').catch(()=>false))return;}throw Error('Spiel startet nicht');},
+  // Seit dem Anmeldebildschirm (start-screen.js) liegt vor dem Spiel die Heldenauswahl: „Ins Dorf“ mit dem zuletzt gespielten
+  // Helden (ohne Held legt die Prüfung einen an, wie browser-polish.mjs), danach den Einführungsfilm überspringen.
+  async goto(u){await send('Page.navigate',{url:u});for(let i=0;i<200;i++){await wait(100);if(await evaluate('!!window.mertloch').catch(()=>false)){
+   for(let j=0;j<50;j++){const open=await evaluate(`(()=>{const s=document.querySelector('#startScreen');if(!s||s.hidden)return false;s.querySelector('[data-start=guest]')?.click();const enter=s.querySelector('[data-start=enter]');if(enter){enter.click();return true;}const name=s.querySelector('[name=heroName]');if(name){if(!name.value)name.value='Pruefheld';s.querySelector('[data-start=draft-next]')?.click();}else if(s.querySelector('[data-start=draft-next]'))s.querySelector('[data-start=draft-next]').click();else s.querySelector('[data-start=create]')?.click();return true;})()`).catch(()=>false);if(!open)break;await wait(100);}
+   await evaluate(`document.querySelector('.intro-skip')?.click()`).catch(()=>{});return;}}throw Error('Spiel startet nicht');},
   async safe(w,h){await evaluate(`(s=>{for(const k in s)document.body.style.setProperty('--safe-'+k,s[k]+'px');})(${JSON.stringify(SAFE(w,h))})`);},
   async rotate(w,h){await this.device(w,h);await this.safe(w,h);await wait(700);},
   /** Joystick-Probe: Berührung in der Mitte muss den Joystick greifen (state().mobile.joystick) und beim Loslassen freigeben. */
@@ -152,7 +158,8 @@ try{
    ['arena-raeumen',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.arenaClear();}],
    ['drehen',async()=>{const out=[];await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="person"]').click()`);await wait(400);await b.rotate(h,w);const r=await b.evaluate(AUDIT);await b.shot(name+'-drehen-gedreht');if(!r.popups.some(p=>p.id==='person'))out.push('Fenster nach Drehen zu (M-17)');if(r.offscreen.length)out.push('Fenster nach Drehen außerhalb: '+r.offscreen.join(','));if(r.overlapStick.length||r.overlapSkills.length)out.push('Fenster nach Drehen über HUD');if(!r.stick||r.stick.x<r.safe.left||r.stick.y+r.stick.h>r.vh-r.safe.bottom)out.push('Joystick nach Drehen nicht im sicheren Bereich');await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await wait(200);const probe=await b.stickProbe();if(probe)out.push(probe+' (gedreht)');await b.rotate(w,h);await b.evaluate(`document.querySelector('.game-menu-rail [data-panel="person"]').click()`);await wait(300);return out;}],
    ['unterbrechung',async()=>{const out=[];await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await wait(200);const before=await b.evaluate(`document.querySelectorAll('.game-popup').length`);await b.evaluate(`window.dispatchEvent(new Event('blur'));document.dispatchEvent(new Event('visibilitychange'))`);await wait(300);const after=await b.evaluate(`document.querySelectorAll('.game-popup').length`);if(after>before)out.push('Unterbrechung öffnet Fenster (M-15)');if(await b.evaluate(`!!window.mertloch?.state?.().mobile?.joystick`))out.push('Joystick nach Unterbrechung aktiv');await b.tap('#touchTarget');await wait(300);if(!await b.evaluate(`document.querySelector('#toast')?.classList.contains('visible')`))out.push('Ein Tipp nach Unterbrechung ohne Wirkung (M-15)');return out;}],
-   ['gespraech',async()=>{const out=[];await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await wait(200);if(await b.evaluate(`document.querySelector('#touchInteract').disabled`)){await b.evaluate(`document.querySelector('#touchWaypoint:not([hidden])')?.click()`);for(let i=0;i<50;i++){await wait(200);if(!await b.evaluate(`document.querySelector('#touchInteract').disabled`))break;}if(await b.evaluate(`document.querySelector('#touchInteract').disabled`))return ['Aktion-Knopf gesperrt: kein Gespräch in Reichweite (auch nach Wegmarke)'];}await b.tap('#touchInteract');await wait(600);if(!await b.evaluate(`!!document.querySelector('.popup-dialog')`))out.push('Kein Gesprächsfenster nach Aktion');return out;}],
+   ['gespraech',async()=>{const out=[];await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await wait(200);if(await b.evaluate(`document.querySelector('#touchInteract').disabled`)){await b.evaluate(`document.querySelector('#touchWaypoint:not([hidden])')?.click()`);for(let i=0;i<50;i++){await wait(200);if(!await b.evaluate(`document.querySelector('#touchInteract').disabled`))break;}if(await b.evaluate(`document.querySelector('#touchInteract').disabled`))return ['Aktion-Knopf gesperrt: kein Gespräch in Reichweite (auch nach Wegmarke)'];}/* Steht Ida außer Reichweite, führt der erste Tipp nur zu ihr (Hofprobe, wie F am Desktop): dann ankommen lassen */const near=()=>b.evaluate(`Math.hypot(game.player.x-game.world.npc.x,game.player.y-game.world.npc.y)<50`);if(!await near()&&await b.evaluate(`document.querySelector('#touchInteract span')?.textContent!=='Beute'`)){await b.tap('#touchInteract');for(let i=0;i<50&&!await near();i++)await wait(200);}/* Liegt Beute in Reichweite, nimmt der erste Tipp sie (Knopf zeigt „Beute“) – wie ein Spieler erst einsammeln */for(let i=0;i<4&&await b.evaluate(`document.querySelector('#touchInteract span')?.textContent==='Beute'`);i++){await b.tap('#touchInteract');await wait(500);await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await wait(200);}
+   await b.tap('#touchInteract');await wait(600);if(!await b.evaluate(`!!document.querySelector('.popup-dialog')`))out.push('Kein Gesprächsfenster nach Aktion – '+await b.evaluate(`JSON.stringify({it:game.interaction?.()?.kind||null,label:document.querySelector('#touchInteract')?.textContent,inCombat:Math.round(game.player.inCombat*10)/10,ida:Math.round(Math.hypot(game.player.x-game.world.npc.x,game.player.y-game.world.npc.y)),windows:[...document.querySelectorAll('[data-window]')].map(e=>e.dataset.window),tut:game.tutorial?.step,scroll:[scrollX,scrollY,document.scrollingElement.scrollTop],under:(()=>{const r=document.querySelector('#touchInteract').getBoundingClientRect(),t=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return (t?.closest('button')?.id||t?.id||t?.className||t?.tagName)+' @'+Math.round(r.x+r.width/2)+','+Math.round(r.y+r.height/2);})(),paused:game.paused,dead:game.dead})`));return out;}],
    ['tod',async()=>{const out=[];await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.arena('/Boss/',8);let dead=false;for(let i=0;i<60&&!dead;i++){await wait(500);dead=await b.evaluate(`!!document.querySelector('.popup-death')`);}if(!dead)out.push('Kein Todesfenster nach 30 s Arena-Boss × 8');await b.rotate(h,w);const r=await b.evaluate(AUDIT);await b.shot(name+'-tod-gedreht');if(dead&&!r.dead)out.push('Todesfenster nach Drehen weg (M-17)');await b.rotate(w,h);return out;}],
    ['tod-zurueck',async()=>{const out=[];if(!await b.evaluate(`!!document.querySelector('#respawn')`))return ['Kein Aufsteh-Knopf'];await b.tap('#respawn');let r;for(let i=0;i<10;i++){await wait(250);r=await b.evaluate(`({popups:[...document.querySelectorAll('.game-popup')].map(p=>p.dataset.window+(p.hidden||getComputedStyle(p).display==='none'?'(unsichtbar)':'')),dead:!!document.querySelector('.popup-death')})`);if(!r.popups.length&&!r.dead)break;}if(r.dead||r.popups.length)out.push('Nach einem Tipp nicht zurück im Spiel: '+r.popups.join(',')+' (M-15)');if(!await b.evaluate(`window.mertloch.state().memories.includes('wurst-ins-gesicht')`))out.push('Todes-Erinnerung fehlt im Tagebuch');await b.arenaClear();return out;}]];
   for(const [step,run] of steps){
@@ -201,7 +208,7 @@ try{
  }
  // Chrome kann nach vielen Touch-Rotationen beim Wechsel zum Desktop-Compositor hängen.
  // Die Desktop-Gegenprobe bekommt deshalb einen eigenen Browserprozess und einen frischen Spielstand.
- const mobileErrors=b.errors.slice();b.close();const stopped=new Promise(r=>b0.once('exit',r));b0.kill();await stopped;
+ const mobileErrors=b.errors.slice();b.close();const stopped=new Promise(r=>b0.once('exit',r));killTree(b0);await stopped;
  b0=await launch();b=await connect();b.errors.push(...mobileErrors);await b.goto(url);
  await b.send('Emulation.clearDeviceMetricsOverride');await b.send('Emulation.setTouchEmulationEnabled',{enabled:false});await b.send('Emulation.setDeviceMetricsOverride',{width:2024,height:900,deviceScaleFactor:1,mobile:false});
  await b.evaluate(`localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'desktop',size:'normal',layouts:{}}))`);await b.goto(url);await wait(1500);
@@ -209,11 +216,15 @@ try{
  const dp=[];if(d.touch)dp.push('Touch-Modus am Desktop aktiv');if(d.controls!=='none')dp.push('Touch-HUD am Desktop sichtbar');if(!d.rail)dp.push('Menüleiste am Desktop fehlt');
  report.push({device:'desktop',step:'2024x900',problems:dp,warn:0,warnList:'',gaps:0,gapList:'',targets:0,popups:''});if(dp.length)failures++;
  // Desktop-Kontrast und Beschreibungen: dieselben realen Fenster und Hover-Tooltips wie im Spiel.
- const hover=async selector=>{await b.evaluate(`document.querySelector(${JSON.stringify(selector)})?.scrollIntoView({block:'center'})`);await wait(300);const pos=await b.evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw Error('Tooltip-Ziel fehlt');const r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};})()`);await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',...pos});await wait(300);assert.equal(await b.evaluate(`document.querySelector('#itemTooltip').classList.contains('hidden')`),false,'Tooltip muss sichtbar sein');};
+ const hover=async selector=>{await b.evaluate(`document.querySelector(${JSON.stringify(selector)})?.scrollIntoView({block:'center'})`);await wait(300);const pos=await b.evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw Error('Tooltip-Ziel fehlt: '+${JSON.stringify(selector)}+' · Fenster '+(document.querySelector('.game-popup .popup-titlebar strong')?.textContent||'keins')+' · Klasse '+game.member?.id+' · Stufe '+game.rpg?.level+' · vorhanden '+[...document.querySelectorAll('[data-tooltip-skill],[data-tooltip-talent]')].map(x=>x.dataset.tooltipSkill||x.dataset.tooltipTalent).slice(0,8).join(','));const r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};})()`);await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',...pos});await wait(300);assert.equal(await b.evaluate(`document.querySelector('#itemTooltip').classList.contains('hidden')`),false,'Tooltip muss sichtbar sein');};
+ // Talente gibt es erst ab Stufe 6 (Freischaltung): wie die Arena-Schritte über Hilfe → Einstellungen → Admin anheben, ohne Kampf.
+ const toLevel6=async()=>{for(const js of [`document.querySelector('.game-menu-rail [data-panel="map"]').click()`,`document.querySelector('[data-book-tab="guide"]')?.click()`,`[...document.querySelectorAll('.game-popup [role=tab]')].find(t=>/Einstellungen/.test(t.textContent))?.click()`,`document.querySelector('[data-shell="admin"]')?.click()`,`document.querySelector('[data-arena-level="6"]')?.click()`,`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`]){await b.evaluate(js);await wait(300);}};
+ await toLevel6();
  const desktopSteps=[
   ['figur',()=>b.evaluate(`document.querySelector('.game-menu-rail [data-panel="person"]').click()`)],
-  ['kelle',async()=>{await hover('[data-tooltip-skill="strike"]');assert.match(await b.evaluate(`document.querySelector('#itemTooltip').innerText`),/200\s*%/);assert.doesNotMatch(await b.evaluate(`document.querySelector('#itemTooltip').innerText`),/300\s*%/);}],
-  ['talent',async()=>{await hover('[data-tooltip-talent="dieter-wall-0"]');assert.match(await b.evaluate(`document.querySelector('#itemTooltip').innerText`),/Betroffene Kniffe:.*Kronkorken-Kelle/s);}],
+  // Kniffe und Talente stehen in eigenen Reitern (seit der Werte-Umstellung E-53), nicht mehr im Figur-Reiter.
+  ['kelle',async()=>{await b.evaluate(`document.querySelector('[data-book-tab="book"]')?.click()`);await wait(300);await hover('[data-tooltip-skill="strike"]');assert.match(await b.evaluate(`document.querySelector('#itemTooltip').innerText`),/200\s*%/);assert.doesNotMatch(await b.evaluate(`document.querySelector('#itemTooltip').innerText`),/300\s*%/);}],
+  ['talent',async()=>{await b.evaluate(`document.querySelector('[data-book-tab="talents"]')?.click()`);await wait(300);await hover('[data-tooltip-talent="dieter-wall-0"]');assert.match(await b.evaluate(`document.querySelector('#itemTooltip').innerText`),/Betroffene Kniffe:.*Kronkorken-Kelle/s);}],
   ['auftraege',()=>b.evaluate(`document.querySelector('.game-menu-rail [data-panel="quest"]').click()`)],
   ['hilfe',()=>b.evaluate(`document.querySelector('[data-book-tab="guide"]').click()`)]
  ];
@@ -224,7 +235,7 @@ try{
   ...report.map(r=>`| ${r.device} | ${r.step} | ${r.popups||'–'} | ${r.targets} | ${r.warnList?(r.warn?r.warn+': ':'')+r.warnList:'–'} | ${r.gaps?r.gaps+': '+r.gapList:'–'} | ${r.textSmall?r.textSmall+': '+r.textSmallList:'–'} | ${r.problems.join('; ')||'–'} |`),'',`Befunde gesamt: ${report.reduce((n,r)=>n+r.warn,0)} Tipp-Ziele unter 44 px, ${report.reduce((n,r)=>n+r.gaps,0)} Paare mit Abstand unter 8 px (M-01/M-02), ${report.reduce((n,r)=>n+(r.textSmall||0),0)} Lesetexte unter 12 px (M-12).`,'',b.errors.length?'## Laufzeitfehler\n\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'):'Keine Laufzeitfehler.'];
  writeFileSync(join(dir,PART==='alle'?'REPORT.md':'REPORT-'+PART+'.md'),lines.join('\n'));writeFileSync(join(dir,PART==='alle'?'audit.json':'audit-'+PART+'.json'),JSON.stringify(audits,null,1));
  console.log(lines.join('\n'));
- b.close();b0.kill();
+ b.close();killTree(b0);
 }
 assert.equal(failures,0,failures+' Schritte mit Problemen, siehe '+join(dir,'REPORT.md'));
 assert.equal(b.errors.length,0,'Browserfehler, siehe '+join(dir,'REPORT.md'));

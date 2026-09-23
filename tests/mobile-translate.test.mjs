@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {touchKeyFor,translateText,translateKeyToken,translateNode,createTranslator,TOUCH_TERMS} from '../mobile-translate.js';
+import {touchKeyFor,translateText,translateKeyToken,translateNode,createTranslator,TOUCH_TERMS,TOUCH_ACTION_LABELS} from '../mobile-translate.js';
 
 const slots=['strike','mark','burst','parry','buff',null,'heal','throw',null,null,null,null];
 const ctx={slots,page:0,skillForKey:k=>({'1':'strike','2':'mark','3':'burst','4':'interrupt','5':'buff','E':'parry','7':'heal'})[k]||null};
@@ -71,4 +71,15 @@ test('createTranslator ist ohne Touch-Modus ein Durchlauf und übersetzt mit',()
  active=true;
  assert.equal(t.text('[1] und [LEER] und [E]'),'[Seite 1 · Knopf 1] und [Stiefel] und [Seite 1 · Knopf 4]');
  assert.equal(t.keyFor('heal'),'Knopf 1');
+});
+
+test('translateText: Tastenhinweise hinter Orten entfallen, Satz-Tasten werden Knöpfe',()=>{
+ assert.equal(translateText('Clanbuch · Taste N',ctx),'Clanbuch');
+ assert.equal(translateText('Knopf oben links · Taste V – dort',ctx),'Knopf oben links – dort');
+ assert.equal(translateText('Taste 1 drücken',{}),'Knopf 1 drücken');
+ assert.equal(translateText('Tastenhinweis',ctx),'Tastenhinweis');
+});
+test('TOUCH_ACTION_LABELS: jede Aktionsart hat ein kurzes Touch-Wort',()=>{
+ for(const kind of ['loot','npc','mentor','giver','shop','stairs','bude','profession'])assert.ok(TOUCH_ACTION_LABELS[kind]?.length<=8,kind);
+ assert.equal(TOUCH_ACTION_LABELS.npc,'Reden');assert.equal(TOUCH_ACTION_LABELS.loot,'Beute');
 });

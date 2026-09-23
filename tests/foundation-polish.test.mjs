@@ -21,6 +21,15 @@ test('Touch windows stay between asymmetric controls and safe areas in either ha
   if(fill)assert.equal(r.width,right.left-left.right-16);
  }
 });
+test('Landscape windows keep the player frame beside them; portrait ignores it (top band reserved)',()=>{
+ const safe={left:47,right:47,top:0,bottom:21},controls=[box(59,240,104,104),box(595,172,190,173)],hud=[box(59,12,124,70)];
+ const r=touchPopupBounds({width:844,height:390,safe,controls,hud,preferredWidth:700});
+ assert.equal(r.left,183+8);
+ const narrow=touchPopupBounds({width:844,height:390,safe,controls,hud:[box(59,12,224,70)],preferredWidth:700});
+ assert.equal(narrow.left,283+8);
+ const portrait={width:390,height:844,safe:{top:47,bottom:34,left:0,right:0},controls:[box(20,665,128,128),box(190,575,184,218)]};
+ assert.deepEqual(touchPopupBounds({...portrait,hud:[box(12,59,234,94)]}),touchPopupBounds(portrait));
+});
 test('Rotation recomputes portrait size from viewport and HUD, independent of previous width',()=>{
  const args={width:390,height:844,safe:{top:47,bottom:34,left:0,right:0},controls:[box(20,665,128,128),box(190,575,184,218)]};
  const r=touchPopupBounds({...args,preferredWidth:700});
