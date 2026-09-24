@@ -84,6 +84,7 @@ try{
  // 11 Dritte Leiste über Spielmenü → Einstellungen.
  /* Runde 2a: Einstellungen sind ein eigenes Fenster aus dem Spielmenü */await read(`document.querySelector('#gameMenuButton').click()`);await wait(500);
  await read(`document.querySelector('.popup-menu [data-shell="settings"]')?.click()`);await wait(400);
+ await read(`document.querySelector('[data-opt-cat=interface]')?.click()`);await wait(300);
  assert.ok(await center('[data-bar-settings]'),'Einstellung Aktionsleisten fehlt');await shot('11-einstellungen');
  await read(`document.querySelector('[data-bar-count="1"]').click()`);await wait(300);
  assert.equal(await read('game.rpg.barCount'),3);assert.equal(await read(`document.querySelectorAll('.action-area .action-bar').length`),3);assert.equal(await read(`document.querySelector('[data-bar-settings] output').textContent`),'3');

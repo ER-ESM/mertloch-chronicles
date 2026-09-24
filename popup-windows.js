@@ -11,7 +11,7 @@ import {touchPopupBounds} from './popup-layout.js';
 const titles={professions:'Berufe',trainer:'Lehrer',mounts:MOUNT_UI.title,shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',settings:MENU.settings,install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:UI.talents,activity:'Anlagenprüfung',bag:UI.tabBag,person:UI.tabFigure,book:UI.tabSkills,quest:UI.tabQuests,base:UI.tabBase,map:UI.tabMap,menu:MENU.title,clan:UI.tabFigure,guide:UI.tabHelp,admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
 const widths={
 professions:900,trainer:520,mounts:820,companions:780,
-shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:760,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:220,settings:560,clan:470,guide:560,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
+shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:760,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:220,settings:820,clan:470,guide:560,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 /** Die Fenster mit eigener Taste: [id, Name, Symbol, Taste, Andockseite, Zweittaste]. Reihenfolge = Menüleiste. */
 export const WINDOWS=WINDOW_UI.windows;
 export const DOCK=Object.fromEntries(WINDOWS.map(w=>[w[0],w[4]]));

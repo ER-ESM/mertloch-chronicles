@@ -57,3 +57,4 @@ export * from './class-buffs.js';
 export * from './dungeons.js';
 export * from './minimap.js';
 export * from './keybinds.js';
+export * from './options.js';

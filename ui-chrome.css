@@ -385,3 +385,63 @@ body:has(.player-panel.is-low-health) .game-shell::after{opacity:.55;animation:l
 .game-popup{animation:popup-in .14s ease-out}
 @keyframes popup-in{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.game-popup{animation:none}}
+/* ===== Einstellungen nach WoW-Vorbild (options-ui.js): Kategorien links, Abschnitte rechts, Standard/Schließen unten ===== */
+.popup-settings .popup-body{padding:0!important;overflow:hidden}
+.opt-window{display:grid;grid-template-columns:190px minmax(0,1fr);min-height:min(560px,calc(100dvh - 220px));max-height:calc(100dvh - 190px)}
+.opt-nav{display:flex;flex-direction:column;gap:4px;padding:12px 8px;background:linear-gradient(180deg,#0f2219,#0b1a13);border-right:2px solid #6b5a36;box-shadow:inset -6px 0 10px -8px #000}
+.opt-nav button{display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 10px;border:1px solid transparent;border-radius:4px;background:none;color:#d9cfae;font:400 16px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;text-align:left;cursor:pointer;box-shadow:none}
+.opt-nav button canvas{width:22px;height:22px;image-rendering:pixelated;flex:none}
+.opt-nav button:hover{background:#ffffff0d;color:#fff0c9}
+.opt-nav button[aria-selected=true]{background:linear-gradient(90deg,#77562b,#40301d 85%,transparent);border-color:#b8955a;color:#fff0c9;box-shadow:inset 3px 0 0 #f0c46a}
+.opt-page{display:flex;flex-direction:column;min-width:0;min-height:0}
+.opt-page>h3{margin:0;padding:12px 18px 8px;font:400 26px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;color:#f3cf7a;border-bottom:1px solid #6b5a3666}
+.opt-scroll{flex:1;min-height:0;overflow:auto;padding:4px 18px 12px;scrollbar-color:#a48750 #1e3026;scrollbar-width:thin}
+.opt-section{margin-top:12px}
+.opt-section h4{margin:0 0 4px;padding-bottom:3px;font:400 15px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:#d7b571;border-bottom:1px solid #d7b57140}
+.opt-row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding:4px 6px;border-radius:3px}
+.opt-row:hover{background:#ffffff08}
+.opt-label{display:flex;flex-direction:column;gap:2px;color:#f1e4c4;font:600 14px/1.25 var(--read)}
+.opt-label small{font:400 12px/1.3 var(--read);color:#a9a58f}
+.opt-control{flex:none;display:flex;align-items:center;gap:8px}
+.opt-switch{display:flex;align-items:center;gap:8px;min-height:36px;padding:2px 4px;background:none!important;border:0!important;box-shadow:none!important;color:#d9cfae;cursor:pointer}
+.opt-switch[aria-pressed=true] .setting-switch{background:#3f6b36;border-color:#d7b571}.opt-switch[aria-pressed=true] .setting-switch i{transform:translateX(18px);background:#ffe3a3}
+.opt-switch .setting-state{min-width:24px;font:700 12px var(--read);color:#c9bfa2}
+.opt-range{display:flex;align-items:center;gap:10px}
+.opt-range input[type=range]{width:180px;accent-color:#e0c070}
+.opt-range output{min-width:48px;text-align:right;font:700 13px var(--read);color:#f3cf7a}
+.opt-open{min-height:34px;padding:4px 14px}
+.opt-wide{display:block}.opt-wide .bar-settings{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.opt-entry{display:flex;gap:8px;flex-wrap:wrap}
+.opt-segment{display:inline-flex;align-items:center;border:2px solid #6b5a36;border-radius:4px;overflow:hidden}
+.opt-segment button{min-height:32px;padding:4px 12px;border:0;border-right:1px solid #6b5a36;border-radius:0;background:#10231a;color:#d9cfae;font:700 12px var(--read);box-shadow:none;cursor:pointer}
+.opt-segment button:last-of-type{border-right:0}
+.opt-segment button[aria-pressed=true]{background:linear-gradient(#77562b,#40301d);color:#fff0c9;box-shadow:inset 0 -2px 0 #f0c46a}
+.opt-custom{padding:0 10px;font:italic 12px var(--read);color:#a9a58f}
+.opt-footer{display:flex;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid #6b5a3666;background:#0b1a1399}
+.opt-footer button{min-height:36px;padding:6px 18px}
+/* Tastenbelegung */
+.opt-intro{margin:10px 0 8px;color:#c9bfa2;font:400 13px/1.45 var(--read)}
+.opt-search input{width:100%;min-height:34px;padding:6px 10px;margin-bottom:6px}
+.opt-keyhead,.opt-keyrow{display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;gap:8px;align-items:center}
+.opt-keyhead{position:sticky;top:0;z-index:1;padding:6px 6px 4px;background:#132a20;font:400 13px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:#a9a58f;border-bottom:1px solid #6b5a3666}
+.opt-keyrow{min-height:38px;padding:2px 6px;border-radius:3px}.opt-keyrow:nth-child(even){background:#ffffff05}.opt-keyrow:hover{background:#ffffff0c}
+.opt-key{min-height:30px;padding:3px 8px;border:1px solid #6b5a36;border-radius:3px;background:linear-gradient(#1c3428,#10231a);color:#f1e4c4;font:700 13px var(--read);box-shadow:inset 0 1px 0 #ffffff14,0 1px 0 #0b1a12;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt-key:hover{border-color:#e0c070;color:#fff0c9}
+.opt-key.is-empty{color:#7d8472;font-weight:400}
+.opt-key:disabled{opacity:.55;cursor:default}
+.opt-key.is-capturing{border-color:#ffe08a;color:#ffe08a;background:linear-gradient(#4a3a1c,#2a2112);animation:opt-capture 1s ease-in-out infinite}
+@keyframes opt-capture{50%{box-shadow:0 0 10px #ffe08a88,inset 0 0 6px #ffe08a44}}
+@media (prefers-reduced-motion:reduce){.opt-key.is-capturing{animation:none;box-shadow:0 0 8px #ffe08a88}}
+/* Handy: Kategorien als Reihe oben, eine Spalte */
+.touch-mode .opt-window{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+.touch-mode .opt-nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:2px solid #6b5a36;padding:6px}
+.touch-mode .opt-nav button{flex:none;min-height:44px}
+.touch-mode .opt-keyhead,.touch-mode .opt-keyrow{grid-template-columns:minmax(0,1fr) 96px 96px}
+.touch-mode .opt-key{min-height:44px}
+/* UI-Skalierung (Einstellungen → Interface): Leisten, Rahmen und Menüleiste wachsen mit, die Welt nicht. */
+#gameShell>.player-panel,#gameShell>.quest-panel,#gameShell>.action-area,#gameShell>.game-menu-rail,#gameShell>#miniButton,#gameShell>#gameMenuButton,#gameShell>#meterToggle{zoom:var(--ui-scale,1)}
+body:not(.touch-mode) .game-popup.popup-settings{height:min(620px,calc(100dvh - 170px))!important;max-height:none!important}
+.popup-settings .popup-body{flex:1;min-height:0}
+.opt-window{height:100%;min-height:0!important;max-height:none!important}
+.opt-nav button{justify-content:flex-start!important}
+.game-popup .opt-key{border:1px solid #6b5a36!important;border-image:none!important;border-radius:3px!important}.game-popup .opt-key:hover{border-color:#e0c070!important}.game-popup .opt-key.is-capturing{border-color:#ffe08a!important}
