@@ -23,7 +23,8 @@ export class BossSpeech {
  constructor(){this.game=null;this.seen=new WeakSet();this.bubbles=new Map();this.observed=new Map();this.barks=[];this.usesBarks=false;}
  /** Ereignis `bark`: Zeile roh übernehmen, Figur später über die Id wiederfinden. */
  bark(ev,game){if(!ev?.text)return;this.usesBarks=true;
-  const until=(game?.time??this.game?.time??0)+3;
+  // Spielerzeilen (Chat „sagen“/Gruppe) bleiben je nach Länge 3–7 s stehen, alles andere 3 s.
+  const until=(game?.time??this.game?.time??0)+(ev.kind==='player'?Math.min(7,3+String(ev.text).length/25):3);
   this.barks=this.barks.filter(b=>b.id!==ev.enemyId||b.kind!==ev.kind);
   this.barks.push({id:ev.enemyId,name:ev.name,text:ev.text,kind:ev.kind,x:ev.x,y:ev.y,until});}
  /** Figur zum Spruch: erst Gegner, dann Dorfbewohner; sonst die Position aus dem Ereignis. */
@@ -31,11 +32,13 @@ export class BossSpeech {
   // Ids sind nur je Art eindeutig (Gegner 1…n, Bewohner 0–23): nach Art suchen, sonst hängt die Bewohner-Blase an einem Gegner.
   if(bark.kind==='villager')return game.life?.actors?.find(a=>a.id===bark.id)||{id:bark.id,x:bark.x,y:bark.y};
   if(bark.kind==='companion')return game.companions?.find(c=>c.id===bark.id)||{id:bark.id,x:bark.x,y:bark.y};
+  // Mitspieler über den Namen (sichtbare, überblendete Stelle), eigener Held über '@ich'.
+  if(bark.kind==='player'){if(bark.id==='@ich')return game.player;const o=game.others?.find(x=>x.name===bark.id);if(!o)return {id:bark.id,x:bark.x,y:bark.y};const k=Math.min(1,(performance.now()-(o.at||0))/(o.lerp||160));return {id:bark.id,x:o.fromX+(o.x-o.fromX)*k,y:o.fromY+(o.y-o.fromY)*k};}
   return game.enemies?.find(e=>e.id===bark.id&&e.hp>0)||game.life?.actors?.find(a=>a.id===bark.id)||{id:bark.id,x:bark.x,y:bark.y};}
  activeBarks(game){
   this.barks=this.barks.filter(b=>game.time<b.until);
   // Höchstens zwei Blasen gleichzeitig: Boss und Phase zuerst, dann Gegner, zuletzt Bewohner; die jüngste je Stufe gewinnt.
-  const rank={boss:0,phase:0,chapter:0,enemy:1,villager:2};
+  const rank={boss:0,phase:0,chapter:0,player:1,enemy:1,villager:2};
   const shown=[...this.barks].sort((a,b)=>(rank[a.kind]??1)-(rank[b.kind]??1)||b.until-a.until).slice(0,2);
   return shown.map(b=>({enemy:this.barkAnchor(game,b),text:b.text,until:b.until,kind:b.kind}));}
  update(game){
@@ -79,7 +82,7 @@ export function drawBossSpeech(c,bubbles,{ox,oy,width,height,zoom,obstacles=[]})
  const overlaps=(a,b)=>a.x<b.x+b.w+pad&&a.x+a.w+pad>b.x&&a.y<b.y+b.h+pad&&a.y+a.h+pad>b.y;
  for(const {enemy:e,text,kind} of bubbles){
   // Bosse sind hoch gezeichnet; Bewohner, Söldner und Feldgegner sind klein – die Blase säße sonst losgelöst weit über dem Kopf.
-  const small=kind==='villager'||kind==='companion'||kind==='enemy'||kind==='speaker',lift=small?(kind==='speaker'?48:32):104,body=small?30:82;
+  const small=kind==='villager'||kind==='companion'||kind==='enemy'||kind==='speaker'||kind==='player',lift=small?(kind==='speaker'||kind==='player'?48:32):104,body=small?30:82;
   const anchor={x:e.x-ox,y:e.y-oy};if(anchor.x<0||anchor.x>width||anchor.y<0||anchor.y>height)continue;
   const lines=[];let line='';
   for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(line&&c.measureText(next).width>maxWidth){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);

@@ -87,6 +87,11 @@ try{
  await run(b,`const p=g.world.findClear(g.player.x+300,g.player.y+40,9);Object.assign(g.player,p);`);
  await until(a,`(()=>{const o=g.others.find(x=>x.name==='Moni');return o&&Math.hypot(o.x-g.player.x,o.y-g.player.y)<110;})()`,12000,'Rudi schließt zu Moni auf');ok('Folgen: Rudi läuft Moni hinterher');
  await a.press('d');await wait(400);assert.equal(await run(a,`return !g.routeGoal&&!g.path?.length;`),true,'eigene Bewegung beendet das Folgen');ok('Eigene Bewegung beendet das Folgen');
+ // Runde 13: Sprechblase – Moni sagt etwas im Chat, bei Rudi steht es als Blase über ihrem Kopf
+ await run(b,`const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x+40,n.y+60,9));`);await run(a,`const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x-30,n.y+60,9));`);await wait(900);
+ await run(b,`const f=[...document.querySelectorAll('form')].find(f=>f.closest('#chatWindow,.chat-window'));const i=f.querySelector('input');i.value='/s Hallo Rudi, auf geht es!';f.requestSubmit();`);
+ await until(a,`M.renderer.bossSpeech.barks.some(b=>b.kind==='player'&&b.id==='Moni'&&b.text.startsWith('Hallo Rudi'))`,4000,'Blase bei Rudi');ok('Chat „sagen“ erscheint als Sprechblase über dem Mitspieler');
+ await wait(300);await shot(a,'bubble-a');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

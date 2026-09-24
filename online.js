@@ -161,6 +161,8 @@ export function mountOnline(host){
   const mine=m.from===myName();
   host.chat?.push('chat',{player:mine?null:m.from,scope:['world','party','whisper'].includes(m.ch)?m.ch:'say',from:m.ch==='whisper'?(mine?ONLINE_UI.whisperTo+' '+m.to:ONLINE_UI.whisperFrom+' '+m.from):m.from,text:m.text});
   if(m.ch==='whisper'&&!mine)state.lastWhisper=m.from;
+  // Sprechblase über dem Kopf (WoW): „sagen“ und Gruppenchat, nicht Welt/Flüstern; nur wenn der Sprecher zu sehen ist.
+  if(m.ch==='say'||m.ch==='party'){const game=g(),o=mine?game?.player:game?.others?.find(x=>x.name===m.from);if(o)game.emit?.('bark',{enemyId:mine?'@ich':m.from,name:m.from,text:m.text,kind:'player',x:o.x,y:o.y});}
  }
  /** Eingabe aus dem Chatfenster: Befehle beginnen mit /. Rückgabe {channel} stellt den Kanal des Fensters um. */
  function sendChat(channel,raw){
