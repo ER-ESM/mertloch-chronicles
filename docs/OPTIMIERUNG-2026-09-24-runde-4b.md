@@ -7,7 +7,7 @@ Teil A (Weltkarte) und Teil C (Handy-Fenster, Spielmenü, Puppenplätze, Zielrah
 
 Prüfskript: `node scripts/optimierung-r4b-check.mjs` (CDP 9532, Server 4332, `CDP_PORT`/`SERVER_PORT`, `ONLY=1,…`). 20 Prüfungen mit echter Maus und Tastatur, Desktop 2024×900 und Handy hochkant 390×844.
 Bilder in `visual-review/optimierung-r4b/` (lokal, nicht im Repo). `*z-*` sind zweifach vergrößerte Ausschnitte.
-Unit-Tests: `tests/optimierung-r4b.test.mjs` (7).
+Unit-Tests: `tests/optimierung-r4b.test.mjs` (7). Live seit Build #541 (51f61d1).
 
 ## Punkte
 
@@ -35,7 +35,7 @@ Unit-Tests: `tests/optimierung-r4b.test.mjs` (7).
 ## Prüfungen
 
 Grün auf diesem Stand (eigene Ports 9532–9539 / 4332–4339, `BOOT_TRIES=450…600` wegen 100 % CPU-Last, 35 Chrome- und 40 Node-Prozesse anderer Sitzungen):
-`npm test` (895), `npm run content:check` (57), `npm run build`, `optimierung-r4b-check` (20), `optimierung-r3a-check` (19, wieder ganz grün), `optimierung-r2b-check` (25),
+`npm test` (919 nach dem Rebase auf 4a/4c; ein Lauf davor hatte einmal einen einzelnen wackelnden Test, der Wiederholungslauf war grün), `npm run content:check` (57), `npm run build`, `optimierung-r4b-check` (20), `optimierung-r3a-check` (19, wieder ganz grün), `optimierung-r2b-check` (25),
 `optimierung-r1-check` (16), `aktionsleisten-check`, `profession-node-check` (Kopie mit Port 9538/4338), `quest-tracker-hud-check`, dazu `optimierung-r3b-check` (12) und `optimierung-r2a-check` (13).
 
 Schon vorher rot:
