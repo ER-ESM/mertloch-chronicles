@@ -69,7 +69,7 @@ try{
  const four={};for(const id of ['person','quest','bag','book'])four[id]=await win(id);
  await b.screenshot(`${dir}/r1-10-vier-fenster.jpg`);
  assert.equal(new Set(Object.values(four).map(r=>r.t)).size,1,'alle vier Fenster auf derselben Oberkante '+JSON.stringify(four));
- assert.ok(four.bag.b===four.book.b,'Rucksack und Kniffe teilen die Unterkante');
+ /* Runde 3b (WoW teilt nur die Oberkante): Rucksack und Kniffe sind so hoch wie ihr Inhalt, keiner reicht unter die Unterkante der Aufträge */assert.ok(four.bag.b<=four.quest.b&&four.book.b<=four.quest.b,'Rucksack und Kniffe enden über der gemeinsamen Grenze '+JSON.stringify(four));
  const col=await column();for(const id of ['bag','book']){assert.ok(four[id].r<=col.l,id+' endet vor der Spalte Minikarte/Auftragsverfolgung '+JSON.stringify({col,[id]:four[id]}));}
  for(const hud of ['.quest-panel','#miniButton','#actionBar','.game-menu-rail','.player-panel'])for(const id of Object.keys(four))assert.ok(!overlap(four[id],await rect(hud)),id+' deckt '+hud+' nicht ab');
  const ids=Object.keys(four);for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)assert.ok(!overlap(four[ids[i]],four[ids[j]]),ids[i]+' / '+ids[j]+' überlappen nicht');

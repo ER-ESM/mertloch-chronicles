@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 const dir='visual-review/aktionsleisten';mkdirSync(dir,{recursive:true});
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9477,serverPort:4277}),checks=[];
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9477),serverPort:Number(process.env.SERVER_PORT||4277)}),checks=[];
 const read=s=>b.evaluate(s),shot=name=>b.screenshot(dir+'/'+name+'.png');
 const mouse=(type,x,y,button='none',buttons=0)=>b.send('Input.dispatchMouseEvent',{type,x,y,button,buttons,clickCount:type==='mouseMoved'?0:1});
 const center=sel=>read(`(()=>{const el=document.querySelector(${JSON.stringify(sel)});if(!el)return null;el.scrollIntoView?.({block:'nearest'});const r=el.getBoundingClientRect();return {x:Math.round(r.left+r.width/2),y:Math.round(r.top+r.height/2)};})()`);

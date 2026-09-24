@@ -1,6 +1,6 @@
 // Gespräch kompakt wie das WoW-Questfenster (Runde 2, 2026-09-24):
 // - Porträt und Name in die Titelzeile, die Kopfkarte entfällt (Rolle im Tooltip des Namens).
-// - Keine Pergamentkarten; der Gesprächstext zeigt höchstens drei Zeilen, der Rest steht im Tooltip und hinter „Mehr“.
+// - Keine Pergamentkarten; der Gesprächstext zeigt so viel, wie Platz ist (Runde 3b: bis zehn Zeilen), der Rest steht im Tooltip und hinter „Mehr“.
 // - Antwortknöpfe immer sichtbar unten; „Annehmen“ heißt Annehmen, der witzige Satz steht im Tooltip.
 // - Mehrere Aufträge eines Gebers als Gossip-Zeilen (Symbol ! oder ?), ein Klick zeigt den Auftrag.
 // Arbeitet nur auf dem fertigen DOM; Datenattribute und Klickwege bleiben unangetastet.
@@ -21,7 +21,13 @@ function textBlocks(root,name=''){
  for(const el of kids){if(isText(el))run.push(el);else flush();}flush();
  for(const card of root.querySelectorAll(':scope>.hotspot-offer,:scope>article'))textBlocks(card,name);}
 /** Nach dem Layout: „Mehr“ nur zeigen, wo der Text wirklich abgeschnitten ist. */
-export function measureDialog(w){for(const box of w.body.querySelectorAll('.dlg-text')){const lines=box.querySelector('.dlg-lines'),more=box.querySelector('.dlg-more');if(!lines||!more)continue;more.hidden=!box.classList.contains('open')&&lines.scrollHeight<=lines.clientHeight+2;}}
+// Runde 3b (2026-09-24): Der Text zeigt so viele Zeilen, wie das Fenster bis zur gemeinsamen Unterkante hergibt (höchstens zehn, fenster-r3.css);
+// nur wenn er dann noch nicht passt, erscheint „Mehr“ – als eigene Zeile rechts unter dem Text, nie auf dem letzten Wort. Abgeschnitten wird
+// immer an einer ganzen Zeile.
+export function measureDialog(w){for(const box of w.body.querySelectorAll('.dlg-text')){const lines=box.querySelector('.dlg-lines'),more=box.querySelector('.dlg-more');if(!lines||!more)continue;
+  lines.style.maxHeight='';more.hidden=true;if(box.classList.contains('open')){more.hidden=false;continue;}
+  const lh=parseFloat(getComputedStyle(lines).lineHeight)||20;if(lines.scrollHeight<=lines.clientHeight+2)continue;
+  more.hidden=false;const room=lines.clientHeight;lines.style.maxHeight=Math.max(lh*2,Math.floor(room/lh)*lh)+'px';}}
 function portrait(w){const bar=w.el.querySelector('.popup-titlebar'),head=w.body.querySelector('.conversation-person');bar.querySelector('.dlg-portrait')?.remove();bar.classList.remove('has-portrait');
  if(!head)return;const pic=head.querySelector('.conversation-portrait');const name=text(head.querySelector('strong')),role=text(head.querySelector('small'));
  if(pic){pic.classList.remove('conversation-portrait');pic.classList.add('dlg-portrait');pic.dataset.conversationNpc=head.dataset.conversationNpc||'';bar.querySelector('.popup-emblem')?.after(pic);bar.classList.add('has-portrait');}

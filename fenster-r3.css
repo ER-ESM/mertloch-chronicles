@@ -1,0 +1,315 @@
+/* ===== Optimierung Runde 3b „UI-Grafik & Handy“ (2026-09-24) =====
+   Zuletzt geladen. Belege in docs/OPTIMIERUNG-2026-09-24-runde-3b.md, Zielbilder in docs/REVIEW-GRAFIK-2026-09-24-r3.md.
+   Regel wie Runde 2a: nirgends scrollen – jetzt auch am Handy (quer 844×390, hoch 390×844). */
+
+/* ---------- 1 · Handy: dieselben verdichteten Fenster wie am Desktop, mobil angeordnet, ohne Scrollen ---------- */
+/* Rahmen: Titelzeile 44 px, Körper füllt den Rest und scrollt nie. */
+.touch-mode .game-popup:is(.popup-person,[data-window="book"],.popup-bag,.popup-talents,.popup-map,.popup-menu,.popup-quest,.popup-guide){display:flex;flex-direction:column}
+.touch-mode .game-popup:is(.popup-person,[data-window="book"],.popup-bag,.popup-talents,.popup-map,.popup-menu,.popup-quest,.popup-guide)>.popup-body{flex:1 1 auto;min-height:0;overflow:hidden!important;padding:6px 10px 8px!important}
+.touch-mode .popup-titlebar .book-title-tools{gap:8px}
+.touch-mode .popup-titlebar .book-title-tools .ql-tool canvas{width:26px;height:26px}
+.touch-mode .popup-titlebar strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Kniffe (P): das Zauberbuch – 44-px-Plätze in Leistenoptik, 8 px Abstand (Touch-Maß), Tastenlabel oben rechts */
+.touch-mode [data-window="book"] .person-skills{display:block;margin:0}
+.touch-mode [data-window="book"] .icon-skillbook{display:grid!important;grid-template-columns:repeat(auto-fill,44px)!important;gap:8px!important;justify-content:start;margin:0!important;padding:0!important;background:none!important;border:0!important}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill{position:relative;width:44px!important;height:44px!important;min-width:0!important;min-height:0!important;aspect-ratio:auto!important;padding:0!important;margin:0!important;display:grid!important;place-items:center;background:#0d1b16!important;border:2px solid #b8955a!important;border-radius:6px!important;box-shadow:inset 0 0 0 1px #0b1216,0 2px 0 #0b1216!important;overflow:visible}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill::before,.touch-mode [data-window="book"] .icon-skillbook>.book-skill::after{display:none!important}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill :is(canvas,img){width:38px!important;height:38px!important;max-width:none!important;border:0!important;border-radius:4px!important;box-shadow:none!important;background:none!important;image-rendering:pixelated}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill.selected{border-color:#f3cf7a!important;box-shadow:0 0 0 1px #f3cf7a88,0 0 8px #f3cf7a55!important}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill.locked{border-color:#56655a!important}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill :is(.book-skill-name,.book-skill-origin),.touch-mode [data-window="book"] .icon-skillbook>.book-skill>i:not(.book-lock){display:none!important}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill kbd{position:absolute!important;top:1px!important;right:3px!important;left:auto!important;bottom:auto!important;transform:none!important;min-width:0!important;height:auto!important;padding:0!important;margin:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;font:800 12px/1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important;color:#fff8e6!important;text-shadow:1px 0 0 #0b1216,-1px 0 0 #0b1216,0 1px 0 #0b1216,0 -1px 0 #0b1216,1px 1px 0 #0b1216,-1px -1px 0 #0b1216!important;white-space:nowrap}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill kbd.kbd-long{font-size:10px!important}
+.touch-mode [data-window="book"] .icon-skillbook>.book-skill>i.book-lock{position:absolute!important;left:auto!important;top:auto!important;right:2px!important;bottom:2px!important;width:12px!important;height:12px!important;margin:0!important;padding:0!important;background-color:transparent!important;border:0!important;transform:none!important}
+.touch-mode [data-window="book"] .book-passives{margin:0!important;padding:0!important;background:none!important;border:0!important}
+.touch-mode [data-window="book"] .book-divider{margin:5px 0 4px}
+.touch-mode [data-window="book"] :is(.book-intro,.book-instruction:empty,.book-actionbar,.grid-pager){display:none!important}
+
+/* Figur (C): Puppe mit Plätzen, Schmuck und Waffen daneben (quer) bzw. darunter (hoch), Werte als Symbolzeilen */
+.touch-mode .popup-person .popup-body{display:grid!important;align-content:start;gap:8px 12px}
+.touch-mode .popup-person .rpg-heading{display:none!important}
+.touch-mode .popup-person .equipment-grid{display:contents;--gear-size:44px;--body-height:252px}
+.touch-mode .popup-person .body-equipment{width:100%;max-width:none;margin:0}
+.touch-mode .popup-person .body-equipment>.gear-cell{width:44px}
+.touch-mode .popup-person .equipment-grid .gear-doll canvas{height:calc(var(--body-height) * .92);width:calc(var(--body-height) * .74);top:4%}
+.touch-mode .popup-person .gear-footer{margin:0!important;padding:0!important;display:grid;grid-template-columns:repeat(4,44px);gap:8px;align-content:start}
+.touch-mode .popup-person .gear-footer :is(.accessory-row,.weapon-row){display:contents}
+.touch-mode .popup-person .gear-footer .gear-cell{width:44px!important;margin:0!important}
+.touch-mode .popup-person .compact-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 6px;margin:0!important;align-content:start}
+.touch-mode .popup-person .compact-stats>div{display:flex!important;align-items:center;gap:5px;min-height:0!important;height:24px;padding:0 6px!important;margin:0!important;flex:none!important}
+.touch-mode .popup-person .compact-stats>div canvas{width:20px!important;height:20px!important;flex:none}
+.touch-mode .popup-person .compact-stats>div b{font:700 12.5px/1 var(--read,'Nunito',sans-serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.touch-mode .popup-person .compact-stats>div:nth-child(-n+2){grid-column:1/-1}
+@media (orientation:landscape){
+ .touch-mode .popup-person .popup-body{grid-template-columns:250px minmax(0,1fr);grid-template-rows:auto 1fr}
+ .touch-mode .popup-person .body-equipment{grid-column:1;grid-row:1/span 2}
+ .touch-mode .popup-person .gear-footer{grid-column:2;grid-row:1}
+ .touch-mode .popup-person .compact-stats{grid-column:2;grid-row:2}
+}
+@media (orientation:portrait){
+ .touch-mode .game-popup.popup-person>.popup-body{grid-template-columns:minmax(0,1fr);padding:6px 4px 6px!important;gap:6px 12px}
+ .touch-mode .popup-person .equipment-grid{--body-height:250px}
+ .touch-mode .popup-person .gear-footer{grid-template-columns:repeat(auto-fill,44px);gap:5px;justify-content:center}
+ .touch-mode .popup-person .compact-stats{grid-template-columns:repeat(4,minmax(0,1fr));padding:0 5px}
+ .touch-mode .popup-person .compact-stats>div{grid-column:auto/span 1}
+ .touch-mode .popup-person .compact-stats>div:nth-child(-n+3){grid-column:auto/span 2}
+ .touch-mode .popup-person .compact-stats>div:nth-child(-n+2) b{font-size:12px}
+}
+
+/* Rucksack (I): Kopf eine Zeile (Filter + Lupe + Sortieren), Raster, Fuß mit Münzen/Platz/Art/Laden wie der WoW-Beutel */
+.touch-mode .popup-bag .popup-body{display:flex!important;flex-direction:column;gap:6px}
+.touch-mode .popup-bag .bag-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(50px,1fr))!important;gap:8px!important;margin:0!important}
+.touch-mode .popup-bag .bag-grid>.item-slot{width:auto!important;height:44px!important;min-height:0!important;padding:2px!important}
+.touch-mode .popup-bag .bag-grid>.item-slot canvas{width:36px!important;height:36px!important}
+
+/* Talente (N): Baum auf die Höhe skaliert; Wappen und Pfade neben (quer) bzw. unter (hoch) dem Baum */
+.touch-mode .popup-talents .popup-body.tt-compact{padding:6px 10px 8px!important}
+.touch-mode .tt-compact .tt-board{min-height:250px!important;overflow:hidden!important}
+.touch-mode .tt-compact .tt-menu .tt-node{width:44px;height:44px}
+.touch-mode .tt-compact .tt-menu .tt-node canvas{width:36px!important;height:36px!important}
+.touch-mode .tt-compact .tt-bonuses{display:grid!important;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:8px;margin:8px 0 0!important}
+.touch-mode .tt-compact .tt-spec-body{display:flex!important;gap:8px;margin:0!important;padding:0!important;border:0!important;grid-template-columns:none!important}
+.touch-mode .tt-compact .tt-spec-body .tt-spec-icon{position:relative;width:44px!important;height:44px!important;min-width:0!important;min-height:0!important;padding:2px!important;display:grid!important;place-items:center;grid-template-columns:none!important;border-radius:7px!important;opacity:.7}
+.touch-mode .tt-compact .tt-spec-body .tt-spec-icon.selected{opacity:1;border-color:#f3cf7a!important;box-shadow:0 0 6px #f3cf7a55}
+.touch-mode .tt-compact .tt-spec-body .tt-spec-icon canvas{display:block!important;width:34px!important;height:34px!important}
+.touch-mode .tt-compact .tt-spec-body .tt-spec-icon .tt-spec-name{display:none!important}
+.touch-mode .tt-compact .tt-spec-body .tt-spec-icon .tt-spec-count{position:absolute;right:2px;bottom:0;font:800 11px/1 var(--read,sans-serif);color:#fff8e6;text-shadow:0 0 2px #0b1216,0 1px 0 #0b1216;background:none!important;padding:0!important;min-width:0!important}
+.touch-mode .tt-compact .tt-path-tabs{gap:8px!important}
+.touch-mode .tt-compact .tt-path-tabs button{width:44px!important;height:44px!important}
+.touch-mode .tt-compact .tt-bonus-buttons{display:flex;gap:8px}
+.touch-mode .tt-compact .tt-bonus-buttons button{min-width:44px}
+@media (orientation:landscape){
+ .touch-mode .tt-compact .tt-tree{flex-direction:row!important;gap:10px}
+ .touch-mode .tt-compact .tt-board{flex:1 1 auto;min-width:0;min-height:258px!important}
+ .touch-mode .tt-compact .tt-bonuses{flex:none;width:96px;grid-template-columns:44px 44px;grid-auto-rows:auto;align-content:start;margin:0!important}
+ .touch-mode .tt-compact .tt-spec-body,.touch-mode .tt-compact .tt-path-tabs{flex-direction:column}
+ .touch-mode .tt-compact .tt-bonuses .tt-track{grid-column:1/-1}
+ .touch-mode .tt-compact .tt-bonus-buttons{grid-column:1/-1}
+ .touch-mode .tt-compact .tt-bonus-buttons button{flex:1;padding:0!important;font-size:11px!important}
+}
+@media (orientation:portrait){
+ .touch-mode .tt-compact .tt-bonuses{grid-template-columns:auto auto;justify-content:space-between}
+ .touch-mode .tt-compact .tt-bonuses .tt-track{grid-column:1}
+}
+
+/* Spielmenü: Fenster, Berufe, Fahrzeuge, Söldner als Kacheln; die übrigen Einträge als flache Knöpfe in zwei bzw. drei Spalten */
+.touch-mode .popup-menu .game-menu-windows{grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px;margin:0 0 8px}
+.touch-mode .popup-menu .game-menu-windows button{min-height:52px;height:52px;padding:4px 2px 3px!important;gap:1px;overflow:hidden}
+.touch-mode .popup-menu .game-menu-windows button canvas{width:28px;height:28px}
+.touch-mode .popup-menu .game-menu-windows button span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 11px/1.1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important}
+.touch-mode .popup-menu .game-menu-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.touch-mode .popup-menu .game-menu-actions>button{min-height:44px!important;height:44px;padding:0 6px!important;font:700 12.5px/1.1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.touch-mode .popup-menu .game-menu-actions>[data-close]{grid-column:auto}
+@media (orientation:portrait){.touch-mode .popup-menu .game-menu-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.touch-mode .popup-menu .game-menu-actions>[data-close]{grid-column:1/-1}}
+body[data-locked~=professions] .game-menu-windows [data-shell=professions],body[data-locked~=mounts] .game-menu-windows [data-shell=mounts],body[data-locked~=companions] .game-menu-windows [data-shell=companions]{display:none!important}
+
+/* ---------- 9 · Rucksack wie der WoW-Beutel: Kopf eine Zeile, Suche als Lupe, Münzen/Platz/Art/Laden unten ---------- */
+.popup-bag .bag-head{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:6px;position:relative;margin:0 0 8px!important}
+.popup-bag .bag-head .bag-filters{flex:1 1 auto;flex-wrap:nowrap!important;min-width:0}
+.popup-bag .bag-head-tools{display:flex;gap:4px;flex:none;margin-left:auto}
+.popup-bag .bag-head .bag-search{display:none!important}
+.popup-bag.bag-search-open .bag-head .bag-search{display:flex!important;align-items:center;position:absolute;left:0;top:0;bottom:0;right:36px;margin:0!important;z-index:2}
+.popup-bag.bag-search-open .bag-head .bag-search>span{display:none}
+.popup-bag.bag-search-open .bag-head .bag-search input{width:100%;height:100%;min-height:0;box-sizing:border-box;padding:0 10px;font:600 13px/1 var(--read,'Nunito',sans-serif)}
+.popup-bag.bag-search-open .bag-head .bag-filters{visibility:hidden}
+.popup-bag .bag-foot{display:flex;align-items:center;gap:10px;margin:8px 0 0;font:700 13px/1 var(--read,'Nunito',sans-serif);color:#efe4c6}
+.popup-bag .bag-foot>span{display:inline-flex;align-items:center;gap:4px;cursor:default}
+.popup-bag .bag-foot>span canvas{width:20px;height:20px}
+.popup-bag .bag-foot .bag-capacity{color:#c9d2b4}
+.popup-bag .bag-foot .bag-mode{margin-left:auto;display:flex;align-items:center}
+.popup-bag .bag-foot .bag-mode select{height:28px;min-height:0;padding:0 24px 0 8px;font:700 12px/1 var(--read,'Nunito',sans-serif)}
+.popup-bag .bag-foot .shop-locator{margin:0!important}
+.touch-mode .popup-bag .bag-head{gap:8px}
+.touch-mode .popup-bag .bag-head .bag-filters{gap:8px}
+.touch-mode .popup-bag .bag-head-tools{gap:8px}
+.touch-mode .popup-bag.bag-search-open .bag-head .bag-search{right:52px}
+.touch-mode .popup-bag .bag-foot{gap:8px}
+.touch-mode .popup-bag .bag-foot .bag-mode select{height:44px;min-height:44px}
+
+/* Karte (M) am Handy: Reiter, eine Werkzeugzeile, die Karte füllt den Rest; die Ortsliste blättert (‹ 1/3 ›) statt zu scrollen */
+.touch-mode .popup-map>.popup-body{display:flex!important;flex-direction:column}
+.touch-mode .popup-titlebar .map-title-tabs{display:flex!important;gap:8px;flex:none;margin:0 8px 0 auto!important;padding:0!important;border:0!important;background:none!important}
+.touch-mode .popup-titlebar .map-title-tabs button{height:44px!important;min-height:44px!important;min-width:44px!important;padding:0 10px!important;font:700 12.5px/1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important}
+.touch-mode .popup-map .panel-page:not([hidden]){flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px}
+.touch-mode .popup-map .atlas-toolbar{flex:none;display:flex!important;flex-wrap:wrap;gap:8px!important;margin:0!important}
+.touch-mode .popup-map .atlas-toolbar>*{margin:0!important}
+.touch-mode .popup-map .atlas-paper{flex:1 1 auto;min-height:0;height:auto!important;margin:0!important}
+.touch-mode .popup-map .atlas-paper canvas{width:100%!important;height:100%!important}
+.touch-mode .popup-map #atlasPlaces{gap:8px!important}
+.touch-mode .popup-map .atlas-place{min-height:44px!important;height:44px;margin:0!important;padding:0 10px!important}
+.touch-mode .popup-map .atlas-place small{display:none!important}
+
+/* Handy: schmaler Spielerrahmen neben offenem Fenster – Lebenszahl einzeilig, Randale mit Auslassung statt Umbruch */
+.touch-mode:has(.game-popup) .player-panel .bar>span{display:block!important;position:absolute;left:0!important;right:0!important;top:0;bottom:0;transform:none!important;width:auto!important;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:none;padding:0 3px;box-sizing:border-box;font:800 9px/15px var(--read,'Nunito',sans-serif)!important;letter-spacing:-.02em!important;padding:0 1px!important}
+@media (orientation:landscape){.touch-mode:has(.game-popup) .player-panel{width:134px!important}}
+.touch-mode .player-panel .bar>span{white-space:nowrap}
+/* Handy: Meldungen nicht übereinander – solange die Kurzmeldung steht, treten die frischen Chatzeilen zurück */
+.touch-mode:has(#toast.visible) .chat-window:not(.active) .chat-line{visibility:hidden}
+.touch-mode .popup-titlebar .map-title-tabs button[aria-selected=true]{color:#fff0c8}
+
+/* ---------- 2 · Gespräch: so hoch wie der Inhalt (WoW teilt nur die Oberkante), Text bis zehn Zeilen, „Mehr“ als eigene Zeile ---------- */
+.popup-dialog .popup-body.dlg-compact{display:flex!important;flex-direction:column;overflow:hidden!important}
+.touch-mode .game-popup.popup-dialog{display:flex;flex-direction:column}
+.touch-mode .popup-dialog>.popup-body.dlg-compact{flex:1 1 auto;min-height:0;padding:6px 10px 8px!important}
+.dlg-compact .dlg-text{display:flex;flex-direction:column;flex:0 1 auto;min-height:0;margin:0 0 6px}
+.dlg-compact .dlg-lines{flex:0 1 auto;min-height:calc(2 * 1.45em);max-height:calc(10 * 1.45em);overflow:hidden}
+.dlg-compact .dlg-text.open .dlg-lines{max-height:none;flex:1 1 auto}
+.dlg-compact .dlg-more{position:static!important;flex:none;align-self:flex-end;margin:2px 0 0;box-shadow:none}
+.touch-mode .dlg-compact .dlg-more{margin-top:4px}
+.dlg-compact h2{font:800 16px/1.2 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important;color:#f3dfae}
+
+/* ---------- 3 · Gegenstands-Tooltip nach Zielbild 2: 300 px, Name Nunito 15 in Seltenheitsfarbe, Werte je Zeile, ≤ 3 Deltas ---------- */
+#itemTooltip:has(.tip-lines),.item-tooltip.tip-compare{width:300px;max-height:none!important;overflow:hidden!important;padding:10px 12px!important}
+.item-tooltip.tip-compare{width:240px;z-index:99999;pointer-events:none;opacity:.97}
+.item-tooltip.tip-compare.hidden{display:none}
+.item-tooltip :is(.tooltip-heading,.tip-compare-card .tooltip-heading) strong{display:block;font:800 15px/1.2 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.item-tooltip .tooltip-heading.rarity-legendary strong{color:#ff9d3c}
+.item-tooltip .tooltip-heading small{display:block;font:600 12px/1.3 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important;color:#c9d2b4}
+.item-tooltip .tooltip-heading .tip-ilvl{color:#e7c87b}
+.item-tooltip .tip-lines{margin:6px 0 0}
+.item-tooltip .tip-lines p{margin:0!important;font:600 13px/1.4 var(--read,'Nunito',sans-serif);color:#f4e8c4}
+.item-tooltip .tip-lines .tip-stat small{display:block;margin:0 0 2px 10px;font:600 11.5px/1.3 var(--read,sans-serif);color:#9fd08a}
+.item-tooltip .tip-req{margin:4px 0 0!important;font:600 12px/1.3 var(--read,sans-serif);color:#c9d2b4}
+.item-tooltip .tip-req.requirements-failed{color:#ff7a6a}
+.item-tooltip .tooltip-affixes{margin:4px 0 0!important;font:600 12.5px/1.35 var(--read,sans-serif);color:#5fd35a}
+.item-tooltip .tip-deltas{margin:6px 0 0;padding:5px 0 0;border-top:1px solid #c5a26855}
+.item-tooltip .tip-delta{margin:0!important;font:700 13px/1.4 var(--read,sans-serif)}
+.item-tooltip .tip-delta.stat-gain{color:#6ee06a}.item-tooltip .tip-delta.stat-loss{color:#ff7a6a}
+.item-tooltip .tip-delta b{font-size:11px;margin-right:2px}
+.item-tooltip .tip-shift{margin:6px 0 0!important;font:600 11px/1 var(--read,sans-serif);color:#9aa58c}
+.item-tooltip>footer{margin:5px 0 0;font:600 11px/1.3 var(--read,sans-serif);color:#c9d2b4}
+.item-tooltip .tip-band{margin:-2px 0 5px;font:700 11px/1 var(--read,sans-serif);letter-spacing:.02em;color:#9aa58c}
+.item-tooltip .tooltip-flavor{margin:5px 0 0!important;font:italic 600 12px/1.35 var(--read,sans-serif);color:#e7c87b}
+
+/* ---------- 4 · Hilfe als Tastenbelegungsliste (Zielbild 3): drei Spalten, Kappe + ein Wort, Themenkopf Jersey 13 Gold ---------- */
+.popup-guide .help-grid.hk-list:not([hidden]){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;align-items:start}
+.hk-list .hk-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.hk-list .hk-col+.hk-col{border-left:1px solid #c5a26833;padding-left:12px}
+.hk-list .hk-group{display:flex;flex-direction:column;gap:0;margin:0;padding:0;border:0;background:none}
+.hk-list .hk-head{display:flex;align-items:center;gap:6px;height:24px;margin:0!important;font:400 14px/1 var(--display,'Jersey 15',sans-serif)!important;letter-spacing:.04em;color:#e7c87b;text-transform:uppercase}
+.hk-list .hk-head .hk-topic{width:20px;height:20px;margin:0;border:0;background:none}
+.hk-list .hk-head .hk-topic :is(canvas,.ui-glyph){width:18px;height:18px}
+.hk-list .hk-item{display:grid!important;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:8px;height:24px;padding:0 4px!important;border-radius:4px;cursor:default}
+.hk-list .hk-item.hk-has-tip{cursor:help}
+.hk-list .hk-item.hk-has-tip .hk-word{text-decoration:underline dotted #c5a26877;text-underline-offset:3px}
+.hk-list .hk-keys{display:flex;align-items:center;gap:2px;min-width:0}
+.hk-list .hk-cap{min-width:22px;height:22px!important;padding:0 4px!important;font-size:14px!important;border-bottom-width:2px}
+.hk-list .hk-cap.hk-wide{font-size:12px!important}
+.hk-list .hk-cap.hk-mouse .ui-glyph{width:14px;height:14px}
+.hk-list .hk-word{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 13px/1 var(--read,'Nunito',sans-serif);color:#f4e8c4}
+.touch-mode .popup-guide .help-grid.hk-list:not([hidden]){grid-template-columns:repeat(2,minmax(0,1fr))}
+.touch-mode .hk-list .hk-item{grid-template-columns:64px minmax(0,1fr);height:26px}
+.touch-mode .hk-list .hk-cap{height:26px!important;min-width:0}
+
+/* ---------- 5 · Aktionsfläche als EIN Leistensystem (Zielbild 1) ----------
+   Ausweichen/Unterbrechen sitzen als zwei 40-px-Plätze links IM Rahmen der Hauptleiste, getrennt durch einen Messingstrich (wie die
+   WoW-Haltungsleiste). Die Zusatzleisten stehen ohne Platte spaltengenau darüber (gleiche Spalte, gleicher Innenabstand). Beim Ziehen
+   erscheinen Platte und leere Plätze wie bisher – ohne dass sich ein Platz verschiebt (Rahmen und Innenabstand bleiben, nur unsichtbar).
+   Stapel 47 + 6 + 69 = 122 px statt 194 (Hauptleiste allein 69). Baut auf Feinschliff Runde 40 (Ablage) und Runde 2b Nr. 7 auf. */
+@media(min-width:761px){
+ body:not(.touch-mode) .action-area{grid-template-columns:auto auto!important;grid-template-areas:"tip tip" ". e3" ". e2" "sp main"!important;column-gap:0!important;row-gap:0!important;justify-content:center;align-items:end}
+ body:not(.touch-mode) .action-area>*{grid-area:tip}
+ body:not(.touch-mode) .action-area>#actionBar{grid-area:main}
+ body:not(.touch-mode) .action-area>#actionBar2{grid-area:e2}
+ body:not(.touch-mode) .action-area>#actionBar3{grid-area:e3}
+ body:not(.touch-mode) .action-area>.extra-bar{margin:-11px 0 -5px!important}
+ body:not(.touch-mode) .action-area>.special-actions{grid-area:sp;align-self:stretch;justify-self:end;display:flex!important;align-items:center;gap:5px;margin:0!important;padding:0 10px 0 6px!important;position:relative;z-index:1;
+  background:#152d23 var(--chrome-material) center/256px 256px!important;border:5px solid transparent!important;border-right-width:0!important;border-image:var(--chrome-frame) 22% / 12px 0 12px 12px / 0 stretch!important;border-radius:0!important;box-shadow:none!important}
+ body:not(.touch-mode) .action-area>.special-actions::after{content:'';position:absolute;right:0;top:3px;bottom:3px;width:4px;border-left:1px solid #f3dfa0;border-right:1px solid #8a6a30;background:linear-gradient(#e8c170,#a07a3a 55%,#e8c170)}
+ body:not(.touch-mode) .action-area>.special-actions::before{display:none!important}
+ body:not(.touch-mode) .action-area>.special-actions .skill{width:40px!important;height:40px!important;margin:0!important}
+ body:not(.touch-mode) .action-area>#actionBar{border-left-width:0!important;border-image:var(--chrome-frame) 22% / 12px 12px 12px 0 / 0 stretch!important;padding-left:11px!important}
+ body:not(.touch-mode) .action-area:not(:has(.special-actions .skill))>#actionBar{border-left-width:5px!important;border-image:var(--chrome-frame) 22% / 12px / 0 stretch!important}
+}
+
+/* ---------- 6 · Zonentitel nie auf Fenstertiteln: bei offenem Seitenfenster rückt er in das freie Band über der Oberkante (≤ 168 px),
+   die Fehlerzeile darüber auf 64 px. Ohne Fenster bleibt alles bei 18 % bzw. 11 % (Runde 2b). Nur EIN Ortswechsel-Schriftzug: #zoneSplash ist zurückgebaut. */
+@media(min-width:761px){
+ body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label{top:100px!important}
+ body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label h2{font-size:36px!important}
+ body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label #zoneType{font-size:14px!important}
+ body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label>div{margin-top:2px}
+ body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #toast{top:64px!important}
+}
+
+/* ---------- 7 · Fenster über dem Helden: statt 30 %-Geisterbild bleibt nur die Titelzeile stehen, der Körper klappt weg;
+   mit der Maus über der Titelzeile klappt es wieder auf (hero-reveal.js). Der Held steht frei, das Fenster ist sichtbar noch da. */
+.game-popup.hero-seethrough{opacity:1!important;height:auto!important;min-height:0!important;max-height:none!important;box-shadow:0 3px 8px #0008}
+.game-popup.hero-seethrough>:not(.popup-titlebar){display:none!important}
+.game-popup.hero-seethrough>.popup-titlebar{opacity:.92}
+
+/* ---------- 9 · Einheitliche Knöpfe und Fenster ---------- */
+/* Zielrahmen: Name in gemischter Schreibung (Nunito 800, 14 px) wie der Spielerrahmen, Zauberleiste Nunito 12; das Medaillon
+   (Feinschliff Runde 63) sitzt IM Rahmen statt rechts darüber hinaus. */
+body:not(.touch-mode) #targetPanel #targetName{font:800 14px/1.1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important}
+#targetPanel #enemyCastText{font:700 12px/1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important}
+body:not(.touch-mode) #targetPanel #targetPortrait{right:8px;width:54px;height:54px;border-width:2px}
+body:not(.touch-mode) .target-panel:has(#targetPortrait){padding-right:72px!important}
+/* Auswahlfelder im Spielstil (Einstellungen, Kampfstatistik, Rucksack): Messingrand, dunkles Leder, eigener Pfeil, Nunito */
+:is(.game-popup,#combatMeter) select{appearance:none;-webkit-appearance:none;height:30px;min-height:0;padding:0 26px 0 9px;border:1px solid #c5a268aa;border-radius:5px;background:#0f1f19 no-repeat right 8px center/10px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23e7c87b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");color:#f4e8c4;font:700 12.5px/1 var(--read,'Nunito',sans-serif);box-shadow:inset 0 1px 3px #0008;cursor:pointer}
+:is(.game-popup,#combatMeter) select:hover{border-color:#f3cf7a}
+:is(.game-popup,#combatMeter) select:focus-visible{outline:2px solid #f3cf7a;outline-offset:1px}
+.touch-mode .game-popup select{height:44px}
+/* Kampfstatistik (V): derselbe Fensterrahmen wie alle Spielfenster (Messingecken, Leder), Titel wie eine Titelzeile */
+body:not(.touch-mode) #combatMeter{border:5px solid transparent!important;border-image:var(--chrome-frame) 22% / 12px / 0 stretch!important;background:#152d23 var(--chrome-material) center/256px 256px!important;border-radius:0!important}
+body:not(.touch-mode) #combatMeter .meter-header{background:none!important;border-bottom:1px solid #c5a26855;padding:4px 4px 4px 8px}
+body:not(.touch-mode) #combatMeter .meter-header strong{font:400 15px/1 var(--display,'Jersey 15',sans-serif)!important;letter-spacing:.04em;color:#f3dfae}
+#combatMeter select{width:100%;height:28px!important;min-height:0!important}
+.popup-bag .bag-foot>button{flex:none}
+.touch-mode .popup-bag .bag-foot>button{width:44px!important;min-width:44px!important}
+.popup-bag .bag-foot .bag-mode{flex:0 1 auto;min-width:0}
+.popup-bag .bag-foot .bag-mode select{width:100%;max-width:130px}
+/* Tastenspalte je Spalte so breit wie ihre längste Kappenfolge (Bewegen/Kampf: W A S D, Fenster: eine Taste, Beute/Dorf: ⇧ + B) */
+.hk-list .hk-col:nth-child(2) .hk-item{grid-template-columns:30px minmax(0,1fr)}
+.hk-list .hk-col:nth-child(3) .hk-item{grid-template-columns:52px minmax(0,1fr)}
+.touch-mode .hk-list .hk-col .hk-item{grid-template-columns:auto minmax(0,1fr)}
+.touch-mode .popup-menu .game-menu-actions kbd{display:none}
+@media (orientation:portrait){.touch-mode .tt-compact .tt-board{min-height:300px!important}}
+.touch-mode .popup-menu .game-menu-actions>button{display:flex;align-items:center;justify-content:center;min-width:0}
+.touch-mode .popup-menu .game-menu-actions>button>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.touch-mode .popup-menu .game-menu-actions>[data-close]{grid-column:1/-1!important}
+@media (orientation:portrait) and (max-width:370px){.touch-mode .popup-person .equipment-grid{--body-height:224px}.touch-mode .popup-person .compact-stats>div:nth-child(-n+2) b{font-size:11px}}
+/* Sehr schmale Hochkant-Schirme (≤ 370 px): Figur mit zwei Reitern (Ausrüstung | Werte), Rucksack-Reihen dürfen schrumpfen statt zu scrollen */
+.touch-mode .popup-person .popup-body:has(>.panel-tabs){display:flex!important;flex-direction:column;gap:6px}
+.touch-mode .popup-person .popup-body:has(>.panel-tabs)>.panel-tabs{flex:none;margin:0!important;padding:0 0 4px!important;gap:8px}
+.touch-mode .popup-person .popup-body:has(>.panel-tabs)>.panel-page:not([hidden]){display:grid;gap:6px;align-content:start;min-height:0}
+.touch-mode .popup-bag .bag-grid{flex:0 1 auto;min-height:0;grid-auto-rows:minmax(0,44px)}
+.touch-mode .popup-bag .bag-grid>.item-slot{height:auto!important;min-height:0!important}
+.touch-mode .popup-bag .bag-grid>.item-slot canvas{max-height:100%}
+/* Figur am Handy: der Körper ist ein Größen-Container – die Puppe passt sich der Höhe an (Safe Areas, kleine Schirme), nie Scrollen */
+.touch-mode .game-popup.popup-person>.popup-body{container-type:size}
+.touch-mode .popup-person .compact-stats>div{height:22px}
+@media (orientation:landscape){
+ .touch-mode .game-popup.popup-person>.popup-body{grid-template-columns:minmax(0,250px) minmax(200px,1fr)}
+ .touch-mode .popup-person .equipment-grid{--body-height:min(252px,calc(100cqh - 2px))}
+}
+@media (orientation:portrait){
+ .touch-mode .popup-person .equipment-grid{--body-height:min(250px,calc(100cqh - 150px))}
+ .touch-mode .popup-person .popup-body:has(>.panel-tabs) .equipment-grid{--body-height:min(236px,calc(100cqh - 60px))}
+}
+@media (orientation:landscape){.touch-mode .popup-person .compact-stats>div:nth-child(n+3){grid-column:auto/span 1!important}.touch-mode .popup-person .compact-stats{gap:4px 6px}}
+@media (orientation:landscape){.touch-mode .popup-person .compact-stats{gap:3px 6px}.touch-mode .popup-person .compact-stats>div{height:21px}}
+/* Rucksack am Handy (mobile-check): 9 px Abstand (8 px wird durch Bruchteile zu 7), Plätze 40–44 px – mit Safe Areas quer passen 24 Plätze
+   nur mit 40 px ohne Scrollen (Befund, kein Fehler); ohne Safe Areas bleiben es 44 px. Der Kopf hält Abstand zur Titelzeile. */
+.touch-mode .popup-bag .bag-grid{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))!important;grid-auto-rows:minmax(40px,44px);gap:9px!important}
+.touch-mode .popup-bag .bag-head{margin-top:0!important}
+.touch-mode .popup-bag .bag-head,.touch-mode .popup-bag .bag-head .bag-filters,.touch-mode .popup-bag .bag-foot{gap:9px!important}
+@media (max-width:370px){.touch-mode .game-popup.popup-bag>.popup-body{padding:9px 6px 8px!important}.touch-mode .popup-bag .bag-head :is(button,.ql-tool){width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important}.touch-mode .popup-bag .bag-head,.touch-mode .popup-bag .bag-head .bag-filters{gap:9px!important}}
+/* mobile-check M-02 (Abstand ≥ 8 px zwischen Tipp-Zielen): Symbolknöpfe in Titelzeilen 9 px auseinander und vom ×, Körper 9 px unter der Titelzeile */
+.touch-mode .popup-titlebar :is(.ql-filters,.help-tabs,.book-title-tools,.tt-title-tools,.map-title-tabs){gap:9px!important;margin-right:9px!important}
+.touch-mode .game-popup:is(.popup-person,[data-window="book"],.popup-bag,.popup-talents,.popup-map,.popup-menu,.popup-quest,.popup-guide)>.popup-body{padding-top:9px!important}
+@media (orientation:portrait){.touch-mode .popup-person .equipment-grid{--body-height:min(264px,calc(100cqh - 145px))}}
+@media (orientation:landscape){.touch-mode .popup-menu .game-menu-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important}.touch-mode .popup-menu .game-menu-actions>[data-close]{grid-column:auto!important}.touch-mode .popup-menu .game-menu-actions>button{font-size:12px!important;padding:0 4px!important}}
+/* Kniffe quer: Kniffe und Eigenarten nebeneinander (senkrechter Trenner) – so bleiben es 44-px-Plätze auch mit Safe Areas */
+@media (orientation:landscape){
+ .touch-mode [data-window="book"] .person-skills{display:flex!important;align-items:flex-start;gap:0}
+ .touch-mode [data-window="book"] .person-skills>.icon-skillbook{flex:none;width:203px;grid-template-columns:repeat(4,44px)!important;gap:9px 9px!important}
+ .touch-mode [data-window="book"] .book-passives{flex:1 1 auto;display:flex;align-items:flex-start;gap:0;min-width:0}
+ .touch-mode [data-window="book"] .book-passives .book-divider{flex-direction:column;align-self:stretch;margin:0 8px!important;width:18px}
+ .touch-mode [data-window="book"] .book-passives .book-divider::before,.touch-mode [data-window="book"] .book-passives .book-divider::after{width:1px;height:auto;flex:1;background:linear-gradient(180deg,transparent,#c5a26899,transparent)}
+ .touch-mode [data-window="book"] .book-passives .icon-skillbook{grid-template-columns:repeat(auto-fill,44px)!important;gap:9px!important;flex:1 1 auto;min-width:0}
+}
+.touch-mode .game-popup.popup-map>.popup-body{padding-top:11px!important}
+.touch-mode .popup-bag .bag-head .bag-filters>button,.touch-mode .popup-bag .bag-head-tools>button{flex:none}
+.touch-mode .popup-bag .bag-head .bag-filters{flex:0 1 auto}

@@ -11,7 +11,7 @@ import {touchPopupBounds} from './popup-layout.js';
 const titles={professions:'Berufe',trainer:'Lehrer',mounts:MOUNT_UI.title,shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',settings:MENU.settings,install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:UI.talents,activity:'Anlagenprüfung',bag:UI.tabBag,person:UI.tabFigure,book:UI.tabSkills,quest:UI.tabQuests,base:UI.tabBase,map:UI.tabMap,menu:MENU.title,clan:UI.tabFigure,guide:UI.tabHelp,admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
 const widths={
 professions:900,trainer:520,mounts:820,companions:780,
-shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:760,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:220,settings:820,clan:470,guide:560,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
+shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:760,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:220,settings:820,clan:470,guide:720,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
 /** Die Fenster mit eigener Taste: [id, Name, Symbol, Taste, Andockseite, Zweittaste]. Reihenfolge = Menüleiste. */
 export const WINDOWS=WINDOW_UI.windows;
 export const DOCK=Object.fromEntries(WINDOWS.map(w=>[w[0],w[4]]));
@@ -27,6 +27,9 @@ export const isDocked=id=>DOCK[id]!==undefined;
 export const isBook=isDocked;
 const touch=()=>document.body.classList.contains('touch-mode');
 const GAP=8,EDGE=10;
+/** Runde 3b (2026-09-24): Breiten am Handy – Figur und Spielmenü nutzen quer die ganze Lücke zwischen den Bedienelementen (kein Scrollen). */
+const TOUCH_WIDTHS={person:520,menu:520,book:440,bag:500};
+/* Hochkant beginnen die Fenster (Talente, Karte, Figur, Rucksack, Kniffe, Hilfe, Aufträge, Spielmenü) oben am Rand (über dem Spielerrahmen) – sie brauchen die Höhe; quer alle unter dem Rand. */
 /** Rechteck eines sichtbaren HUD-Teils oder null. */
 function box(selector){const el=document.querySelector(selector);if(!el||el.hidden)return null;const r=el.getBoundingClientRect();return r.width&&r.height?r:null;}
 /** Runde 2 (2026-09-24): Die Fenster enden über den Leisten, die man SIEHT – nicht über der ganzen Aktionsfläche. Eine leere,
@@ -39,6 +42,8 @@ export function visibleBars(height=innerHeight){const out=[];const seen=el=>{if(
  const rail=seen(document.querySelector('.game-menu-rail'));if(rail)out.push(rail);return out;}
 /** Overlays mit festem Platz im Raster (Runde 2): das Gespräch steht wie im Vorbild links, wo sonst die Figur steht. */
 const GRID_OVERLAY={dialog:'person',settings:'center'};
+/** Fenster, deren Höhe dem Inhalt folgt (Runde 3b): gemeinsame Oberkante, eigene Unterkante (höchstens die gemeinsame). */
+const CONTENT_HEIGHT=new Set(['book','bag','dialog','person']);
 export class PopupWindows{
  constructor(root){this.root=root;this.windows=new Map();this.serial=20;this.opened=0;this.positions={};try{this.positions=JSON.parse(localStorage.getItem('mertloch-popup-positions')||'{}')||{};}catch{}root.addEventListener('pointerdown',e=>{const el=e.target.closest('.game-popup');if(el)this.focus(el.dataset.window);},true);root.addEventListener('click',e=>{const el=e.target.closest('.game-popup');if(el)this.focus(el.dataset.window);},true);root.addEventListener('click',e=>{const b=e.target.closest('[data-window-close]');if(b)this.close(b.closest('.game-popup').dataset.window);});window.addEventListener('resize',()=>this.reflow());window.addEventListener('orientationchange',()=>this.reflow());this.observedControls=new WeakSet();if(typeof ResizeObserver!=='undefined')this.controlObserver=new ResizeObserver(()=>this.reflow());if(typeof MutationObserver!=='undefined'){this.layoutObserver=new MutationObserver(()=>this.reflow());this.layoutObserver.observe(document.body,{attributes:true,attributeFilter:['class','style','data-touch-hand','data-touch-size']});}}
  isOpen(id){return this.windows.has(id);}
@@ -93,7 +98,9 @@ export class PopupWindows{
   // Die Unterkante ist die niedrigste Grenze über den sichtbaren Leisten unter allen Seitenplätzen (nicht nur den offenen), damit
   // nichts springt, wenn ein Nachbar auf- oder zugeht. Die Fenster sind fest so hoch; der Inhalt passt sich an, nicht umgekehrt.
   const frame=this.frame(a,slot,floor);
-  for(const w of list.filter(w=>DOCK[w.id]==='left'||DOCK[w.id]==='right')){const s=slot[w.id];place(w,s.left,a.top,s.width,frame.height,true);}
+  // Runde 3b (2026-09-24, WoW teilt nur die Oberkante): Kniffe, Rucksack und Figur sind so hoch wie ihr Inhalt, höchstens bis zur gemeinsamen
+  // Unterkante über den sichtbaren Leisten (auch die Figur). Die Aufträge behalten die volle Höhe (die Liste füllt sie wie das Questlog).
+  for(const w of list.filter(w=>DOCK[w.id]==='left'||DOCK[w.id]==='right')){const s=slot[w.id];place(w,s.left,a.top,s.width,frame.height,!CONTENT_HEIGHT.has(w.id));}
   // Mitte: Talente/Hilfe als Gruppe bildschirmmittig, wenn dort nichts offen ist; sonst mittig in der Lücke zwischen den offenen
   // Seitenfenstern; passt sie auch dort nicht, bildschirmmittig (dann überdeckt sie, was nicht anders geht).
   const center=list.filter(w=>DOCK[w.id]==='center');if(center.length){const side=list.filter(w=>DOCK[w.id]==='left'||DOCK[w.id]==='right').map(w=>({dock:DOCK[w.id],...slot[w.id]}));
@@ -112,14 +119,14 @@ export class PopupWindows{
  /** Overlays mit Rasterplatz (Gespräch links wie die Figur, Einstellungen mittig) – nicht verschiebbar, gleiche Kanten. */
  placeGrid(w){const a=this.dockArea(),slot=this.slots(a),f=this.frame(a,slot),where=GRID_OVERLAY[w.id],width=Math.min(widths[w.id]||440,a.width-2*EDGE);
   const left=where==='center'?Math.max(EDGE,Math.min((a.width-width)/2,a.right-width)):slot[where].left;
-  Object.assign(w.el.style,{left:Math.round(left)+'px',top:Math.round(f.top)+'px',width:Math.round(width)+'px',maxWidth:'',minWidth:'',maxHeight:Math.round(f.height)+'px',height:where==='center'?'':Math.round(f.height)+'px'});}
+  Object.assign(w.el.style,{left:Math.round(left)+'px',top:Math.round(f.top)+'px',width:Math.round(width)+'px',maxWidth:'',minWidth:'',maxHeight:Math.round(f.height)+'px',height:where==='center'||CONTENT_HEIGHT.has(w.id)?'':Math.round(f.height)+'px'});}
  reflow(){if(this.reflowFrame)return;this.reflowFrame=requestAnimationFrame(()=>{this.reflowFrame=0;if(!touch()&&this.docked().length)this.layout();for(const w of this.windows.values())if(touch()||!isDocked(w.id))this.clamp(w);});}
  clamp(w){const {el}=w;if(touch()){
   if(!this.safeProbe){this.safeProbe=document.createElement('div');this.safeProbe.style.cssText='position:fixed;inset:0;visibility:hidden;pointer-events:none;padding:var(--safe-top,0px) var(--safe-right,0px) var(--safe-bottom,0px) var(--safe-left,0px)';this.root.append(this.safeProbe);}
   const css=getComputedStyle(this.safeProbe),safe=Object.fromEntries(['Top','Right','Bottom','Left'].map(side=>[side.toLowerCase(),parseFloat(css['padding'+side])||0]));
   const controls=[...document.querySelectorAll('#touchStick,#touchActions,#touchUtility')];for(const control of controls)if(this.controlObserver&&!this.observedControls.has(control)){this.observedControls.add(control);this.controlObserver.observe(control);}
-  const r=touchPopupBounds({width:innerWidth,height:innerHeight,safe,controls:controls.map(c=>c.getBoundingClientRect()),hud:[...document.querySelectorAll('#gameShell>.player-panel')].map(c=>c.getBoundingClientRect()),preferredWidth:w.id==='map'?innerWidth:widths[w.id]||360,fill:CHILD.has(w.id)||['shop','map','talents'].includes(w.id),topInset:['shop','talents','map'].includes(w.id)?28:undefined});
-  Object.assign(el.style,{width:r.width+'px',maxWidth:r.width+'px',minWidth:'0px',maxHeight:r.maxHeight+'px',height:'',left:r.left+'px',top:r.top+'px'});return;
+  const r=touchPopupBounds({width:innerWidth,height:innerHeight,safe,controls:controls.map(c=>c.getBoundingClientRect()),hud:[...document.querySelectorAll('#gameShell>.player-panel')].map(c=>c.getBoundingClientRect()),preferredWidth:w.id==='map'?innerWidth:TOUCH_WIDTHS[w.id]||widths[w.id]||360,fill:CHILD.has(w.id)||['shop','map','talents'].includes(w.id),topInset:(innerWidth>innerHeight?['shop']:['shop','talents','map','person','menu','bag','book','guide','quest']).includes(w.id)?28:undefined});
+  /* Runde 3b: Figur und Aufträge füllen am Handy die volle Höhe – ihr Inhalt passt sich per Container-Abfrage an (fenster-r3.css) statt zu scrollen */Object.assign(el.style,{width:r.width+'px',maxWidth:r.width+'px',minWidth:'0px',maxHeight:r.maxHeight+'px',height:['person','quest'].includes(w.id)?r.maxHeight+'px':'',left:r.left+'px',top:r.top+'px'});return;
  }if(isDocked(w.id)){this.layout();return;}if(GRID_OVERLAY[w.id]){this.placeGrid(w);return;}
  el.style.maxHeight='';el.style.minWidth='';el.style.maxWidth=Math.max(240,innerWidth-18)+'px';/* erst alles lesen, dann schreiben: ein Layout statt zwei */const left=el.offsetLeft,width=el.offsetWidth,top=el.offsetTop,height=el.offsetHeight;el.style.left=Math.max(5,Math.min(left,innerWidth-width-5))+'px';el.style.top=Math.max(5,Math.min(top,Math.max(5,innerHeight-112-height)))+'px';}
  /** Einklappen gibt es nicht mehr; bleibt als Leerlauf für ältere Aufrufer. */

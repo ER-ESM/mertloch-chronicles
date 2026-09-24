@@ -48,6 +48,8 @@ export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title
 
 /** Rucksack (E-53): Filter, Sortierung, Suche und Vergleich. Filter- und Sortierwahl merkt sich der Browser. */
 export const BAG_UI={
+ /** Runde 3b: Gegenstands-Tooltip (Zielbild 2) */
+ tipDamage:'Schaden',tipDps:'Schaden/s',tipItemLevel:'Gegenstandsstufe',tipEquipped:'Angelegt',tipShift:'Shift: Details',
  slots:'Plätze',coins:'Pfandmarken',
  search:'Suchen',searchPlaceholder:'Name, Art, Güte oder Wert …',searchLabel:'Rucksack durchsuchen',
  noMatch:'Hier passt gerade nichts zu Suche und Filter.',
@@ -84,7 +86,9 @@ export const WINDOW_UI={
   questFilters:{active:'ui-quest-aktiv',open:'ui-quest-dorf',done:'ui-quest-erledigt'},
   bagFilters:{all:'bag',gear:'ui-filter-ausruestung',better:'ui-filter-besser',food:'ui-filter-verpflegung',material:'ui-filter-material'},
   mapFilters:{all:'map',quest:'ui-quest-aktiv',hub:'ui-map-treffpunkt',camp:'ui-map-lager',shop:'ui-map-laden'},
-  baseRuined:'Bude in Trümmern',memoryUnknown:'Noch keine Erinnerung'
+  baseRuined:'Bude in Trümmern',memoryUnknown:'Noch keine Erinnerung',
+  /** Runde 3b: Spielmenü am Handy – diese Einträge werden Kacheln im Fensterraster (Symbol je Eintrag). */
+  menuTiles:[['professions','scrap'],['mounts','dash','Fahrzeuge'],['companions','shield']]
  }
 };
 /** Aufträge als WoW-Questlog (Runde 2, 2026-09-24): Titelliste oben, Detail unten, Belohnung als Kacheln, Symbolknöpfe mit Namen im Tooltip. */
@@ -105,43 +109,46 @@ export const DIALOG_UI={accept:'Annehmen',later:'Später',more:'Mehr',less:'Weni
  *  nur im Tooltip (label + ein Satz). Kappen: Text = Taste; 'mouse'/'mouseR'/'mouse2'/'drag' = Maussymbole. to: Strichsymbol
  *  (ui-glyphs.js) oder 'ui:<id>' für ein gemaltes UI-Symbol. Einstellungen stehen NICHT hier, sondern im Spielmenü. */
 export const HELP_GRID={
+ /** Runde 3b (Zielbild 3): Tastenbelegungsliste wie im Vorbild – je Zeile Kappe + ein Wort (label), Tooltip (note) nur bei Mehrwert.
+  *  columns: welche Themen in welcher Spalte stehen (Desktop drei, Handy zwei). */
+ columns:{desktop:[[0,1],[2],[3,4]],touch:[[0,1],[2]]},
  tabs:[['keys','Tasten','keyboard','Alle Tasten auf einen Blick'],['kniffe','Kniffe','spark','Kniffe, Talente, Eigenarten und Stärkungen nachschlagen']],film:'Einführungsfilm ansehen',filmNote:'Der Film vom Anfang, noch einmal von vorn.',
  desktop:[
   ['Bewegen','run',[
-   {keys:['W','A','S','D'],to:'run',label:'Laufen',note:'WASD läuft.'},
+   {keys:['W','A','S','D'],to:'run',label:'Laufen',note:''},
    {keys:['mouseR'],to:'route',label:'Laufweg',note:'Rechtsklick auf den Boden plant den Weg dorthin.'},
-   {keys:['mouse'],to:'flag',label:'Zur Wegmarke',note:'Klick auf den Auftragskasten rechts läuft zur Wegmarke des Auftrags.'},
+   {keys:['mouse'],to:'flag',label:'Wegmarke',note:'Klick auf den Auftragskasten rechts läuft zur Wegmarke des Auftrags.'},
    {keys:['F'],to:'hand',label:'Interagieren',note:'F spricht, plündert und bedient Auftragsziele; Shift + F leert einen Beutel ganz.'},
-   {keys:['X'],to:'ui:boots',label:'Auf- und absitzen',note:'X setzt dich auf dein Reittier oder Fahrzeug.'}]],
+   {keys:['X'],to:'ui:boots',label:'Aufsitzen',note:'Reittier oder Fahrzeug; X noch einmal steigt ab.'}]],
   ['Kampf','sword',[
    {keys:['Tab'],to:'target',label:'Ziel wählen',note:'Tab wählt nahe Gegner, Shift + Tab geht zurück. Rechtsklick auf einen Gegner greift an.'},
    {keys:['1','–','0'],to:'spark',label:'Kniffe',note:'1–0 nutzt die Kniffe der Leiste, Umschalt + 1–0 die zweite Leiste. Zum Zaubern stehen bleiben.'},
-   {keys:['Leer'],to:'ui:dash',label:'Ausweichen',note:'Leertaste weicht aus – unabhängig von der Leiste.'},
-   {keys:['Q'],to:'ui:interrupt',label:'Unterbrechen',note:'Q unterbricht einen Gegner, der gerade etwas wirkt.'},
+   {keys:['Leer'],to:'ui:dash',label:'Ausweichen',note:'Fester Platz links in der Hauptleiste, unabhängig von der Belegung.'},
+   {keys:['Q'],to:'ui:interrupt',label:'Unterbrechen',note:'Wirkt nur, solange der Gegner etwas wirkt.'},
    {keys:['Esc'],to:'close',label:'Abbrechen',note:'Esc bricht Zielen und Zaubern ab, schließt alle Fenster auf einmal, wählt das Ziel ab – erst dann kommt das Spielmenü.'}]],
   ['Fenster','frame',[
-   {keys:['C'],to:'ui:person',label:'Figur',note:'Ausrüstung und Werte.'},
+   {keys:['C'],to:'ui:person',label:'Figur',note:''},
    {keys:['J'],to:'ui:quest',label:'Aufträge',note:'Aufträge, Bude und Erinnerungen (auch L).'},
    {keys:['N'],to:'ui:talents',label:'Talente',note:'Talentbäume und Hauptbaum.'},
-   {keys:['M'],to:'ui:map',label:'Karte',note:'Revierplan mit Orten und Laufweg.'},
-   {keys:['P'],to:'ui:book',label:'Kniffe',note:'Skillbuch und Aktionsleiste.'},
-   {keys:['I'],to:'ui:bag',label:'Rucksack',note:'Rucksack, Filter und Suche.'},
+   {keys:['M'],to:'ui:map',label:'Karte',note:''},
+   {keys:['P'],to:'ui:book',label:'Kniffe',note:''},
+   {keys:['I'],to:'ui:bag',label:'Rucksack',note:''},
    {keys:['V'],to:'chart',label:'Kampfstatistik',note:'Schaden und Heilung der letzten Kämpfe.'}]],
   ['Beute & Leiste','bag',[
    {keys:['⇧'],to:'magnify',label:'Details',note:'Shift über einem Tooltip zeigt, warum das Ding taugt und was die Fachwörter heißen.'},
-   {keys:['drag'],to:'spark',label:'Auf die Leiste',note:'Kniffe und Verpflegung auf einen freien Platz der Leiste ziehen; neben die Leiste gezogen nimmt sie ab.'},
+   {keys:['drag'],to:'spark',label:'Belegen',note:'Kniffe und Verpflegung auf einen freien Platz der Leiste ziehen; neben die Leiste gezogen nimmt sie ab.'},
    {keys:['mouse2'],to:'check',label:'Anlegen',note:'Doppelklick auf ein Teil im Rucksack tauscht passende Ausrüstung.'},
    {keys:['mouseR'],to:'gear',label:'Feldmenü',note:'Rechtsklick auf ein Leistenfeld öffnet sein Menü; Maus auf das Feld + B belegt eine Taste.'}]],
   ['Dorf','ui:base',[
-   {keys:['B'],to:'ui:base',label:'Bude',note:'Springt in den Aufträgen zur Bude.'},
+   {keys:['B'],to:'ui:base',label:'Bude',note:'Öffnet die Aufträge beim Reiter Bude.'},
    {keys:['⇧','B'],to:'hand',label:'Berufe',note:'Rezepte und Materialien deiner Berufe.'},
    {keys:['U'],to:'ui:person',label:'Söldner',note:'Wer mit dir zieht und wie.'},
    {keys:['R'],to:'target',label:'Aggro-Radius',note:'Zeigt, ab wo das gewählte Ziel dich bemerkt.'}]]
  ],
  touch:[
   ['Bewegen','run',[
-   {keys:['Stick'],to:'run',label:'Laufen',note:'Mit dem Joystick laufen; die Seite wählst du unter Menü → Einstellungen.'},
-   {keys:['Tipp'],to:'flag',label:'Zur Wegmarke',note:'Tipp auf den Auftragskasten läuft zur Wegmarke.'},
+   {keys:['Stick'],to:'run',label:'Laufen',note:'Die Seite wählst du unter Menü → Einstellungen.'},
+   {keys:['Tipp'],to:'flag',label:'Wegmarke',note:'Tipp auf den Auftragskasten läuft zur Wegmarke.'},
    {keys:['Aktion'],to:'hand',label:'Interagieren',note:'Aktion spricht, plündert und bedient Auftragsziele.'}]],
   ['Kampf','sword',[
    {keys:['Ziel'],to:'target',label:'Ziel wählen',note:'Ziel wählt einen nahen Gegner; Gegner antippen wählt ihn aus.'},

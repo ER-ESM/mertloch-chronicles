@@ -88,31 +88,31 @@ try{
  // ---------- 3) Fensterraster ----------
  for(const k of 'cjip'){await b.press(k);await wait(350);}await wait(300);
  const four=await Promise.all(['person','quest','book','bag'].map(win));const tops=new Set(four.map(r=>r.t)),bottoms=new Set(four.map(r=>r.b));
- assert.equal(tops.size,1,'eine Oberkante '+JSON.stringify(four));assert.equal(bottoms.size,1,'eine Unterkante '+JSON.stringify(four));
+ assert.equal(tops.size,1,'eine Oberkante '+JSON.stringify(four));/* Runde 3b (WoW teilt nur die Oberkante): Figur, Kniffe und Rucksack sind so hoch wie ihr Inhalt, keine Unterkante liegt tiefer als die der Aufträge */const qb=four[1].b;assert.ok(four.every(r=>r.b<=qb),'keine Unterkante unter der gemeinsamen Grenze '+JSON.stringify(four));
  assert.deepEqual(await scrolling(),[],'vier Fenster scrollen nicht');await measure('vier');await shot('r2a-10-vier-fenster');
- const top=four[0].t,bottom=four[0].b;await closeAll();
+ const top=four[0].t,bottom=four[1].b;await closeAll();
  await read(`g.quest.accepted=false;g.player.x=g.world.npc.x+20;g.player.y=g.world.npc.y+10;`);await wait(300);await b.press('f');await wait(900);
- const d=await win('dialog');assert.ok(d,'Gespräch offen');assert.ok(near(d.l,12,2)&&d.t===top&&d.b===bottom,'Gespräch auf dem Figurplatz, gleiche Kanten '+JSON.stringify({d,top,bottom}));
+ const d=await win('dialog');assert.ok(d,'Gespräch offen');assert.ok(near(d.l,12,2)&&d.t===top&&d.b<=bottom,'Gespräch auf dem Figurplatz, gleiche Oberkante, Höhe nach Inhalt '+JSON.stringify({d,top,bottom}));
  ok(`3 Raster: Figur/Aufträge/Kniffe/Rucksack und Gespräch auf y=${top}…${bottom}, Gespräch bei x=${d.l}`);
  // ---------- 4) Gespräch kompakt ----------
  const g4=await read(`const p=document.querySelector('.popup-dialog'),body=p.querySelector('.popup-body'),acc=p.querySelector('#acceptQuest'),r=acc.getBoundingClientRect(),pr=p.getBoundingClientRect(),lines=p.querySelector('.dlg-lines');return {portrait:!!p.querySelector('.popup-titlebar .dlg-portrait'),name:p.querySelector('.popup-titlebar strong').textContent,head:!!p.querySelector('.conversation-person:not([hidden])'),parchment:p.querySelectorAll('.loot,.hotspot-offer .conversation-quote:not(.dlg-lines *)').length,accept:acc.textContent.trim(),acceptNote:acc.dataset.tooltipNote||'',acceptVisible:r.bottom<=pr.bottom&&r.top>=pr.top&&r.height>0,lineH:lines?lines.clientHeight:0,lineFont:lines?parseFloat(getComputedStyle(lines).lineHeight):0,more:!!p.querySelector('.dlg-more:not([hidden])'),tiles:p.querySelectorAll('.rt-tile').length,emptyTitle:p.querySelector('.popup-titlebar strong').offsetHeight>0}`);
  assert.ok(g4.portrait,'Porträt in der Titelzeile');assert.equal(g4.name,'Kisten-Ida');assert.equal(g4.head,false,'keine Kopfkarte');assert.equal(g4.parchment,0,'keine Pergamentkarten');
  assert.equal(g4.accept,DIALOG_UI.accept,'Knopf heißt Annehmen');assert.ok(g4.acceptNote.length>5,'witziger Satz im Tooltip');assert.ok(g4.acceptVisible,'Annehmen sichtbar ohne Scrollen');
- assert.ok(g4.lineH<=g4.lineFont*3+2,'höchstens 3 Zeilen Text '+JSON.stringify(g4));assert.ok(g4.tiles>=2,'Belohnung als Kacheln');
+ /* Runde 3b: so viele Zeilen, wie das Fenster hergibt, höchstens zehn */assert.ok(g4.lineH<=g4.lineFont*10+2,'höchstens 10 Zeilen Text '+JSON.stringify(g4));assert.ok(g4.tiles>=2,'Belohnung als Kacheln');
  assert.match(await hoverTip('.popup-dialog #acceptQuest'),/Annehmen[\s\S]*Hose/i,'Tooltip: Annehmen + witziger Satz');
  assert.deepEqual(await scrolling(),[],'Gespräch scrollt nicht');await shot('r2a-20-gespraech');await zoom(`${dir}/r2a-20z-gespraech.jpg`,'.popup-dialog');
  if(g4.more){await click('.popup-dialog .dlg-more');assert.ok(await read(`return document.querySelector('.popup-dialog .dlg-text').classList.contains('open')`),'Mehr klappt auf');await zoom(`${dir}/r2a-21z-gespraech-mehr.jpg`,'.popup-dialog');assert.deepEqual(await scrolling(),[],'aufgeklappt scrollt nichts');}
- ok('4 Gespräch: Porträt+Name in der Titelzeile, 3 Zeilen Text'+(g4.more?' + Mehr':'')+', Kacheln, „Annehmen“ sichtbar, witziger Satz im Tooltip');
+ ok('4 Gespräch: Porträt+Name in der Titelzeile, '+Math.round(g4.lineH/g4.lineFont)+' Zeilen Text'+(g4.more?' + Mehr':'')+', Kacheln, „Annehmen“ sichtbar, witziger Satz im Tooltip');
  await closeAll();await read(`g.quest.accepted=true;g.player.x=g.world.spawn.x;g.player.y=g.world.spawn.y;`);await calm();await wait(300);
  // ---------- 3b/5) Hilfe als Tastenraster, mittig auf der Oberkante; Einstellungen im Spielmenü ----------
  await b.press('h');await wait(600);const h=await win('guide');
- const h5=await read(`const p=document.querySelector('.popup-guide');return {caps:p.querySelectorAll('.help-grid .hk-cap').length,rows:p.querySelectorAll('.help-grid .hk-row').length,prose:[...p.querySelectorAll('.help-grid p,.help-grid li,.help-grid table')].length,settings:p.querySelectorAll('.help-settings').length,tabs:p.querySelectorAll('.popup-titlebar [data-help-tab]').length,film:!!p.querySelector('.popup-titlebar [data-intro-replay]'),rowsOneLine:[...p.querySelectorAll('.help-grid .hk-row')].every(r=>r.getBoundingClientRect().height<48)}`);
- assert.equal(h.t,top,'Hilfe auf der gemeinsamen Oberkante');assert.ok(h.w<=580&&h.h<=330,'Hilfe ≈ 560×300 '+JSON.stringify(h));assert.ok(h5.caps>=25&&h5.rows>=5,'Tastenkappen-Raster '+JSON.stringify(h5));
+ const h5=await read(`const p=document.querySelector('.popup-guide');return {caps:p.querySelectorAll('.help-grid .hk-cap').length,rows:p.querySelectorAll('.help-grid .hk-item').length,prose:[...p.querySelectorAll('.help-grid p,.help-grid li,.help-grid table')].length,settings:p.querySelectorAll('.help-settings').length,tabs:p.querySelectorAll('.popup-titlebar [data-help-tab]').length,film:!!p.querySelector('.popup-titlebar [data-intro-replay]'),rowsOneLine:[...p.querySelectorAll('.help-grid .hk-item')].every(r=>r.getBoundingClientRect().height<48)}`);
+ assert.equal(h.t,top,'Hilfe auf der gemeinsamen Oberkante');/* Runde 3b: Tastenbelegungsliste 720×≈370 (Zielbild 3) */assert.ok(h.w<=740&&h.h<=400,'Hilfe ≈ 720×370 '+JSON.stringify(h));assert.ok(h5.caps>=25&&h5.rows>=20,'Tastenliste '+JSON.stringify(h5));
  assert.equal(h5.prose,0,'keine Sätze im Raster');assert.equal(h5.settings,0,'keine Einstellungen in der Hilfe');assert.equal(h5.tabs,2);assert.ok(h5.film,'Film als Symbol');assert.ok(h5.rowsOneLine,'jede Themenzeile einzeilig');
- assert.match(await hoverTip('.popup-guide .hk-item'),/Laufen/i,'Erklärung im Tooltip');assert.deepEqual(await scrolling(),[],'Hilfe scrollt nicht');
+ assert.match(await hoverTip('.popup-guide .hk-item[data-tooltip-note]'),/Laufweg|Rechtsklick/i,'Zusatzwissen im Tooltip');assert.deepEqual(await scrolling(),[],'Hilfe scrollt nicht');
  await shot('r2a-30-hilfe');await zoom(`${dir}/r2a-30z-hilfe.jpg`,'.popup-guide');
  await click('.popup-guide [data-help-tab="kniffe"]');await wait(300);assert.deepEqual(await scrolling(),[],'Hilfe/Kniffe scrollt nicht');await zoom(`${dir}/r2a-31z-hilfe-kniffe.jpg`,'.popup-guide');
- await closeAll();await b.press('Escape');await wait(500);const menu=await win('menu');assert.ok(menu&&menu.w<=240&&menu.h<=380,'Spielmenü kompakt '+JSON.stringify(menu));await zoom(`${dir}/r2a-32z-spielmenue.jpg`,'.popup-menu');
+ await closeAll();await b.press('Escape');await wait(500);const menu=await win('menu');/* Spielmenü nach WoW-Vorbild (Feinschliff 8a10565) hat zwei Einträge mehr: 393 px, weiter schmal und ohne Scrollen */assert.ok(menu&&menu.w<=240&&menu.h<=420,'Spielmenü kompakt '+JSON.stringify(menu));assert.deepEqual(await scrolling(),[],'Spielmenü scrollt nicht');await zoom(`${dir}/r2a-32z-spielmenue.jpg`,'.popup-menu');
  await click('.popup-menu [data-shell="settings"]');await wait(500);assert.deepEqual(await open(),['settings'],'Einstellungen als eigenes Fenster');assert.deepEqual(await scrolling(),[],'Einstellungen scrollen nicht');await zoom(`${dir}/r2a-33z-einstellungen.jpg`,'.popup-settings');
  ok(`5 Hilfe ${h.w}×${h.h} mit ${h5.caps} Kappen in ${h5.rows} Zeilen, Erklärung im Tooltip; Einstellungen eigenes Fenster aus dem Spielmenü (${menu.w}×${menu.h})`);
  await closeAll();
@@ -148,14 +148,14 @@ try{
  assert.ok(covered,'Kniffe liegen über der Bildmitte (Held)');
  assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'in Ruhe bleibt das Fenster voll');
  await read(`g.navigate({x:g.player.x+600,y:g.player.y+40});`);await mouse(1000,885);await wait(450);
- const r10=await read(`const p=document.querySelector('.popup-book'),cs=getComputedStyle(p);return {cls:p.classList.contains('hero-seethrough'),op:parseFloat(cs.opacity),pe:getComputedStyle(p.querySelector('button')).pointerEvents,moving:!!g.moveTo,ghost:window.game&&document.querySelector('#world')?true:false}`);
- assert.ok(r10.moving,'Figur läuft von selbst');assert.ok(r10.cls&&r10.op<.5&&r10.pe==='none','durchsichtig und klickdurchlässig '+JSON.stringify(r10));
+ const r10=await read(`const p=document.querySelector('.popup-book'),cs=getComputedStyle(p);return {cls:p.classList.contains('hero-seethrough'),op:parseFloat(cs.opacity),folded:getComputedStyle(p.querySelector('.popup-body')).display==='none'&&p.getBoundingClientRect().height<60,pe:getComputedStyle(p.querySelector('button')).pointerEvents,moving:!!g.moveTo,ghost:window.game&&document.querySelector('#world')?true:false}`);
+ assert.ok(r10.moving,'Figur läuft von selbst');/* Runde 3b: statt 30 %-Geisterbild klappt das Fenster auf die Titelzeile ein */assert.ok(r10.cls&&r10.folded&&r10.pe==='none','eingeklappt und klickdurchlässig '+JSON.stringify(r10));
  await shot('r2a-60-held-unter-fenster');
- const bk=await win('book');await mouse(bk.l+60,bk.t+120);await wait(350);assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'Hover macht es wieder voll');await mouse(1000,885);await wait(400);
+ const bk=await win('book');await mouse(bk.l+60,bk.t+15);/* Maus über der stehenden Titelzeile */await wait(350);assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'Hover macht es wieder voll');await mouse(1000,885);await wait(400);
  await read(`g.moveTo=null;g.path=null;g.player.inCombat=6;`);await wait(400);assert.ok(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),'im Kampf ebenfalls durchsichtig');
  await zoom(`${dir}/r2a-60z-held-umriss.jpg`,{l:1012-160,t:450-140,w:320,h:240},0);
  await read(`g.player.inCombat=0;`);await wait(400);assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'nach dem Kampf wieder voll');assert.deepEqual(await open(),['book'],'Fenster bleibt offen');
- ok('10 Held: beim Auto-Laufen und im Kampf werden überdeckende Fenster 30 % und klickdurchlässig, Hover macht sie voll, Umriss über den Renderer, nichts schließt');
+ ok('10 Held: beim Auto-Laufen und im Kampf klappen überdeckende Fenster auf die Titelzeile ein (Runde 3b) und sind klickdurchlässig, Hover klappt sie auf, Umriss über den Renderer, nichts schließt');
  await closeAll();
  // ---------- 11) kein Fenster scrollt (alle einzeln, Desktop 2024×900) ----------
  const all=[];for(const k3 of 'cjinphm'){await closeAll();await b.press(k3);await wait(600);all.push(...await scrolling());}await closeAll();
