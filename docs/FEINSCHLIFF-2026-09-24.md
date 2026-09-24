@@ -80,6 +80,37 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 | 68 | Figur | Neu angelegter Gegenstand: Platz blitzt in Qualitätsfarbe | `app.js` (`equipFlash`), `ui-chrome.css` |
 | 69 | Fenster | Weiches Einblenden beim Öffnen (140 ms, nur Deckkraft) | `ui-chrome.css` |
 
+## Anmeldung, Einstellungen, Tastenbelegung nach WoW-Vorbild (Runden 70–99, live bis #495+)
+
+Auftrag: „GUI rund um die Anmeldung, Login Screen, freie Tastaturbelegungen in den Einstellungen, Einstellungen und Interface-Menüs gliedern und nach WoW-Vorbild aufbauen“ (30 Runden).
+
+**Aufbau**
+
+- **Tastenbelegung** – `content/keybinds.js` (Gruppen, Aktionen mit zwei Tasten, Texte), `keymap.js` (Logik: `assignKey` – neue Taste gewinnt, alter Platz wird gelöst; nur Abweichungen vom Standard werden gespeichert). Kontoweit in `mertloch-keybinds-v1`; die Aktionsleisten-Tasten bleiben je Held (`rpg.barKeys`, `bar-keys.js`) und erscheinen im selben Menü. Esc ist fest (Menü/Abbrechen). Bedienung: Taste anklicken → neue drücken; Esc bricht ab, Entf oder Rechtsklick löscht. Gruppen einklappbar, Suchfeld. Auf Touch ausgeblendet.
+- **Einstellungen** – `content/options.js` (Kategorien/Zeilen/Standardwerte), `options-ui.js` (Fenster). Kategorien Spiel · Interface · Grafik · Ton · Tastenbelegung · System; Erklärungen als Tooltip an der Zeile (auf Touch als Zeile), Standard je Kategorie, Hinweise in der Fußzeile, letzte Kategorie gemerkt, Pfeiltasten wechseln die Kategorie. Kontoweit (`mertloch-options-v1`): UI-Skalierung, Lautstärke, Statustext, Auftragsverfolgung/Minikarte/EP-Leiste. Je Held (`game.settings`): Auto-Loot, Kampftext (+ eingehend/Meldungen/Söldner), Namen (freundlich/Gegner/Spieler), Grafik-Details.
+- **Spielmenü** (`rpg-shell.js` `gameMenu`) – Einstellungen (O), Tastenbelegung, UI bearbeiten, Hilfe | Berufe, Reittiere, Söldner | Heldenwahl, Abmelden | Zurück zum Spiel; rechts die belegte Taste.
+- **Startschirm** (`start-screen.js/.css`) – Anmeldung: Logo mit Schein und Lichtstreif, Kasten mittig unten, „E-Mail merken“, Feststelltasten-Warnung, Passwort zeigen, Version/Serverstatus unten links, Einstellungen unten rechts. Heldenwahl: Held groß in der Taverne, Liste rechts (Brustbilder, Pfeil hoch/runter), „Ins Dorf“ unten mittig, Löschen nur mit eingetipptem Namen. Ohne Helden direkt die Erstellung (eine Seite: Klassen links, Modell mittig, Aussehen rechts, Name unten; Esc = Zurück).
+
+| Runde | Bereich | Was | Wo |
+|---|---|---|---|
+| 70–72 | Tasten | Freie Belegung aller Aktionen, Tasteneingabe darüber, Leisten sperren die wirksame Belegung | `keymap.js`, `app.js`, `bar-keys.js` |
+| 73 | Einstellungen | Fenster mit sechs Kategorien, Tastenbelegungs-Tabelle mit Konfliktauflösung | `options-ui.js`, `content/options.js` |
+| 74–75 | Menü/Hilfe | Spielmenü gegliedert, Hilfe zeigt die wirksame Taste | `rpg-shell.js`, `help-keys.js` |
+| 76–78 | Startschirm | Anmeldung, Heldenwahl und Erstellung nach WoW-Aufbau | `start-screen.js/.css` |
+| 79–84 | Einstellungen | Namensschilder, Kamera-Regler, Hinweise in der Fußzeile, Tastatur-Navigation, sicheres Löschen | `options-ui.js`, `renderer.js` |
+| 85–87 | Startschirm/HUD | Registriermodus-Knöpfe, Held atmet, HUD-Teile ausblendbar | `start-screen.*`, `ui-chrome.css` |
+| 88 | Einstellungen | Erklärungen als Tooltip, Schalter ohne an/aus | `options-ui.js` |
+| 89 | Spiel | Kampftext-Feinschalter (eingehend, Meldungen, Söldner) | `combat-text.js`, `engine.js` |
+| 90–91 | Startschirm | Ohne Helden direkt Erstellung; Brustbilder in Liste/Klassenwahl | `start-screen.js` (`BUST`) |
+| 92 | Interface | Statustext Zahl/Prozent/beides/aus (Handy: Prozent) | `options-ui.js` (`statusText`), `app.js` |
+| 93, 95 | Tasten | Gruppen einklappbar, kompakte Zeilen, Rechtsklick löscht | `options-ui.js` |
+| 94 | Anmeldung | Feststelltaste, Passwort zeigen, Länge nur beim Registrieren, Gast schlank | `start-screen.js`, `ui-kit-mmo.js` |
+| 96 | Handy | Einstellungen: Fußzeile sichtbar, ohne Seitentitel und Tastenbelegung | `ui-chrome.css` |
+| 97 | Anmeldung | Logo-Schein und Lichtstreif (aus bei reduzierter Bewegung) | `start-screen.css` |
+| 98 | Heldenwahl | Liste nur so hoch wie ihr Inhalt, Pfeil hoch/runter, Esc in der Erstellung | `start-screen.*` |
+
+Fallen: Der Prüf-Chrome emuliert `prefers-reduced-motion: reduce` – Animationen dort nur mit `Emulation.setEmulatedMedia` sehen. Den Anmeldekasten lokal über `?online=1` plus eine vorgetäuschte `/api/`-Antwort aufnehmen (lokaler Server hat keine API). Fensterknöpfe in `.game-popup` bekommen Rahmen mit `!important` – eigene Knöpfe dort (z. B. `.opt-fold`, `.opt-key`) brauchen eigene `!important`-Überschreibungen.
+
 ## Werkzeuge
 
 - `visual-review/shot.mjs` (nicht eingecheckt, `visual-review/` ist ignoriert): Headless-Aufnahmen mit voller Bildrate. Szenen `sct`, `fight`, `kill`, `aoe`, `bude:x:y:zoom:geschoss`, `ui:<taste>` (mit `PRE`/`HOVER`), `eval` (mit `EVAL`/`WAIT`/`CLIP`).
