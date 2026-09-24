@@ -41,20 +41,15 @@ export function mountStartScreen(host){
  }
  const heroes=()=>host.roster?.().list||[];
  const classOf=id=>CLAN_MEMBERS.find(m=>m.id===id)||CLAN_MEMBERS[0];
- const heroCanvas=(look,equipment,label,tint,size=192)=>`<canvas width="${size}" height="${size}" data-hero-look="${esc(look)}" data-hero-tint="${esc(tintKey(tint))}" data-hero-gear="${esc(JSON.stringify(equipment||{}))}" aria-label="${esc(label)}"></canvas>`;
+ const heroCanvas=(look,equipment,label,tint,size=192,portrait=false)=>`<canvas width="${size}" height="${size}"${portrait?' data-hero-portrait':''} data-hero-look="${esc(look)}" data-hero-tint="${esc(tintKey(tint))}" data-hero-gear="${esc(JSON.stringify(equipment||{}))}" aria-label="${esc(label)}"></canvas>`;
  function whoRow(){const a=account();return a?`<span class="start-account">${esc(T.signedIn(a.name))}</span><button type="button" class="outline-button ui-button" data-start="leaderboard">${esc(T.leaderboard)}</button><button type="button" class="outline-button ui-button" data-start="logout">${esc(T.logout)}</button>`
    :`<span class="start-account">${esc(T.guestLine)}</span>${host.enabled?`<button type="button" class="outline-button ui-button" data-start="login">${esc(T.toLogin)}</button>`:`<a class="outline-button ui-button" href="${esc(T.serverUrl)}">${esc(T.serverLink)}</a>`}`;}
  function rosterHtml(){
   const list=heroes(),picked=list.find(c=>c.id===state.pick)||list.find(c=>c.id===host.activeId?.())||list[0]||null;state.pick=picked?.id||null;
-  const cards=list.map(c=>{const cls=HERO_UI.classes[c.classId],sum=c.summary;return `<button type="button" class="ui-panel mmo-choice hero-card" data-ui-frame="character" data-hero="${esc(c.id)}" aria-pressed="${c.id===state.pick}">${heroCanvas(c.look,sum?.equipment,c.name,c.tint)}<strong>${esc(c.name)}</strong><span>${esc(cls[0])}</span><small>${sum?esc(HERO_UI.level)+' '+sum.level:esc(HERO_UI.fresh)}${c.id===host.activeId?.()?' · '+esc(T.lastPlayed):''}</small></button>`;}).join('');
-  const add=list.length<CHARACTER_LIMIT?`<button type="button" class="ui-panel mmo-choice hero-card hero-new" data-start="create"><span class="hero-plus" aria-hidden="true">+</span><strong>${esc(HERO_UI.create)}</strong><span>${list.length}/${CHARACTER_LIMIT}</span></button>`:'';
   const m=picked?classOf(picked.classId):null,g=host.game(),blocked=picked&&picked.id===host.activeId?.()&&(g.dead||g.player.inCombat>0);
-  const detail=picked?`<div class="ui-panel mmo-selection-detail"><div class="start-portrait" aria-hidden="true">${heroCanvas(picked.look,picked.summary?.equipment,picked.name,picked.tint,288)}</div><h3>${esc(picked.name)} · ${esc(HERO_UI.classes[picked.classId][0])}</h3><p>${esc(HERO_UI.classes[picked.classId][1])}</p>${m.rotation?`<p><b>${esc(T.playstyle)}</b> ${esc(m.rotation)}</p>`:''}${blocked?`<p class="start-note bad">${esc(T.combatNote)}</p>`:''}<div class="ui-row start-enter"><button type="button" class="gold-button ui-button" data-ui-variant="primary" data-start="enter"${blocked?' disabled':''}>${esc(HERO_UI.enter)}</button><button type="button" class="start-delete" data-start="remove">${esc(HERO_UI.remove)}</button>${account()?`<button type="button" class="start-delete" data-online="delete">${esc(T.deleteAccount)}</button>`:''}</div><p class="online-message" data-online-message></p></div>`
-   :`<div class="ui-panel mmo-selection-detail start-empty"><div class="start-teaser" aria-hidden="true">${CLASSES.map(id=>heroCanvas(id,{},HERO_UI.classes[id][0])).join('')}</div><p>${esc(HERO_UI.empty)}</p><div class="ui-row start-enter"><button type="button" class="gold-button ui-button" data-ui-variant="primary" data-start="create">${esc(HERO_UI.create)}</button></div></div>`;
-  if(!list.length)return `<header><p class="eyebrow">${esc(HERO_UI.eyebrow)}</p><h3>${esc(HERO_UI.title)}</h3><p>${esc(HERO_UI.text)}</p><div class="start-who ui-row">${whoRow()}</div></header>${detail}`;
   // Heldenwahl nach WoW-Vorbild (2026-09-24): Held frei in der Mitte der Szene, Heldenliste rechts, „Ins Dorf“ groß unten mittig,
   // Konto oben, Einstellungen/Löschen unten rechts. Karten tragen Porträt, Stufe, Klasse und „zuletzt gespielt“.
-  const listCards=list.map(c=>{const cls=HERO_UI.classes[c.classId],sum=c.summary;return `<button type="button" class="cs-card" data-hero="${esc(c.id)}" aria-pressed="${c.id===state.pick}">${heroCanvas(c.look,sum?.equipment,c.name,c.tint,96)}<span class="cs-card-text"><strong>${esc(c.name)}</strong><span>${sum?esc(HERO_UI.level)+' '+sum.level+' · ':''}${esc(cls[0])}</span><small>${c.id===host.activeId?.()?esc(T.lastPlayed):sum?'':esc(HERO_UI.fresh)}</small></span></button>`;}).join('');
+  const listCards=list.map(c=>{const cls=HERO_UI.classes[c.classId],sum=c.summary;return `<button type="button" class="cs-card" data-hero="${esc(c.id)}" aria-pressed="${c.id===state.pick}">${heroCanvas(c.look,sum?.equipment,c.name,c.tint,96,true)}<span class="cs-card-text"><strong>${esc(c.name)}</strong><span>${sum?esc(HERO_UI.level)+' '+sum.level+' · ':''}${esc(cls[0])}</span><small>${c.id===host.activeId?.()?esc(T.lastPlayed):sum?'':esc(HERO_UI.fresh)}</small></span></button>`;}).join('');
   const addCard=list.length<CHARACTER_LIMIT?`<button type="button" class="outline-button ui-button cs-new" data-start="create">+ ${esc(HERO_UI.create)} <small>${list.length}/${CHARACTER_LIMIT}</small></button>`:'';
   return `<div class="cs"><div class="cs-top start-who">${whoRow()}</div>
    <div class="cs-stage"><div class="cs-hero" aria-hidden="true">${heroCanvas(picked.look,picked.summary?.equipment,picked.name,picked.tint,384)}</div>
@@ -68,24 +63,33 @@ export function mountStartScreen(host){
  /** Erstellung auf einer Seite nach WoW-Vorbild (2026-09-24): Klassen links, großes Modell mittig, Aussehen rechts, Name und „Held erstellen“ unten. */
  function createHtml(){
   const d=state.draft,cls=HERO_UI.classes[d.classId];
-  const classes=CLASSES.map(id=>`<button type="button" class="cc-class" data-draft-class="${id}" aria-pressed="${d.classId===id}">${heroCanvas(id,{},HERO_UI.classes[id][0],null,96)}<span><strong>${esc(HERO_UI.classes[id][0])}</strong><small>${esc(HERO_UI.classes[id][1])}</small></span></button>`).join('');
+  const classes=CLASSES.map(id=>`<button type="button" class="cc-class" data-draft-class="${id}" aria-pressed="${d.classId===id}">${heroCanvas(id,{},HERO_UI.classes[id][0],null,96,true)}<span><strong>${esc(HERO_UI.classes[id][0])}</strong><small>${esc(HERO_UI.classes[id][1])}</small></span></button>`).join('');
   const bodies=`<div class="cc-bodies" role="group" aria-label="${esc(HERO_UI.body)}">${LOOKS.map(l=>`<button type="button" data-draft-look="${l.id}" aria-pressed="${d.look===l.id}">${esc(l.name)}</button>`).join('')}</div>`;
   const look=`${swatches(HERO_UI.skin,'skin',SKIN_TONES,d.tint.skin,'#f0b088')}${swatches(HERO_UI.hair,'hair',HAIR_COLORS,d.tint.hair,null)}${swatches(HERO_UI.style,'style',[...offeredFor(HAIR_STYLES,d.look),...drawnStyles(d.look,'hair')],d.tint.style,null)}${swatches(HERO_UI.beard,'beard',[...offeredFor(BEARDS,d.look),...drawnStyles(d.look,'beard')],d.tint.beard,null)}${swatches(HERO_UI.face,'face',FACE_ITEMS,d.tint.face,null)}`;
   return `<div class="cc"><h2 class="cc-title">${esc(HERO_UI.create)}</h2>
    <aside class="cc-panel cc-classes"><h3>${esc(HERO_UI.classTitle)}</h3>${classes}</aside>
    <div class="cc-stage"><div class="cc-hero" aria-hidden="true">${heroCanvas(d.look,{},d.name||'',d.tint,384)}</div><div class="cc-role"><b>${esc(cls[0])}</b><span>${esc(cls[1])}</span></div></div>
-   <aside class="cc-panel cc-look"><h3>${esc(HERO_UI.lookTitle)}</h3><h4>${esc(HERO_UI.body)}</h4>${bodies}${look}<p class="cc-note">${esc(HERO_UI.lookText)}</p></aside>
-   <div class="cc-bottom"><button type="button" class="outline-button ui-button" data-start="draft-cancel">${esc(HERO_UI.back)}</button>
+   <aside class="cc-panel cc-look"><h3 data-tooltip-label="${esc(HERO_UI.lookTitle)}" data-tooltip-note="${esc(HERO_UI.lookText)}">${esc(HERO_UI.lookTitle)}</h3><h4>${esc(HERO_UI.body)}</h4>${bodies}${look}</aside>
+   <div class="cc-bottom">${backButton()}
     <form data-hero-form class="online-form cc-name"><label>${esc(HERO_UI.nameLabel)}<input name="heroName" type="text" minlength="3" maxlength="20" required autocomplete="off" value="${esc(d.name||'')}" placeholder="${esc(HERO_UI.nameTitle)}"></label><small>${esc(HERO_TEXT.nameRule)}</small><p class="online-message ${d.error?'bad':''}" role="status">${esc(d.busy?HERO_UI.busy:d.error||'')}</p></form>
     <button type="button" class="gold-button ui-button cc-create" data-ui-variant="primary" data-start="draft-next"${d.busy?' disabled':''}>${esc(HERO_UI.finish)}</button></div></div>`;
  }
+ /** „Zurück“ der Erstellung: mit Helden zur Heldenwahl; ohne Helden gibt es keine Wahl – Konto meldet ab, Gast geht zur Anmeldung (WoW). */
+ function backButton(){
+  if(heroes().length)return `<button type="button" class="outline-button ui-button" data-start="draft-cancel">${esc(HERO_UI.back)}</button>`;
+  const to=account()?['logout',T.logout]:host.enabled?['login',T.toLogin]:null;
+  return to?`<button type="button" class="outline-button ui-button" data-start="${to[0]}">${esc(to[1])}</button>`:'<span aria-hidden="true"></span>';
+ }
+ const newDraft=()=>({step:2,classId:'dieter',look:'dieter',tint:{...DEFAULT_TINT},name:'',error:'',busy:false});
+ const BUST={foot:1.8,span:15};// Figur ≈26 Einheiten hoch: Kopf 8 % unter dem Rand, obere gut 50 % im Bild
  async function paintHeroCards(){
   const canvases=[...el.querySelectorAll('[data-hero-look]')];if(!canvases.length)return;
   const [{loadRedesignArt,redesignArt},{drawDetailedHero},{loadContentArt},{loadPaperdoll,paperdoll,onPaperdollLoad}]=await Promise.all([import('./redesign-art.js'),import('./detailed-hero-art.js'),import('./content-art.js'),import('./paperdoll-art.js')]);
   await Promise.all([loadRedesignArt(),loadPaperdoll()]);if(!redesignArt.ready&&!paperdoll.ready)return;await loadContentArt();
   // Ausrüstung lädt die Anziehpuppe nach Bedarf: sobald Bögen da sind, die Karten noch einmal zeichnen.
   if(!paintHeroCards.watch)paintHeroCards.watch=onPaperdollLoad(()=>{if(el.querySelector('[data-hero-look]'))paintHeroCards().catch(()=>{});});
-  for(const canvas of canvases){let gear={};try{gear=JSON.parse(canvas.dataset.heroGear||'{}');}catch{}const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);drawDetailedHero(ctx,canvas.dataset.heroLook,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment:equipmentAppearance(gear,ITEMS),tint:canvas.dataset.heroTint?parseTintKey(canvas.dataset.heroTint):null},canvas.width/32);}
+  for(const canvas of canvases){let gear={};try{gear=JSON.parse(canvas.dataset.heroGear||'{}');}catch{}const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);// Brustbild (Liste, Klassenwahl): Kopf und Schultern füllen das Rund statt einer winzigen Ganzfigur.
+  const bust=canvas.hasAttribute('data-hero-portrait');drawDetailedHero(ctx,canvas.dataset.heroLook,canvas.width/2,canvas.height*(bust?BUST.foot:.88),{facing:1,visualEquipment:equipmentAppearance(gear,ITEMS),tint:canvas.dataset.heroTint?parseTintKey(canvas.dataset.heroTint):null},canvas.width/(bust?BUST.span:32));}
  }
  function render(){
   if(state.step==='create'&&state.draft){const n=el.querySelector('[name=heroName]');if(n)state.draft.name=n.value;}
@@ -100,7 +104,8 @@ export function mountStartScreen(host){
  function rememberField(){const form=el.querySelector('[data-online-form]');if(!form||form.querySelector('[data-remember]'))return;let saved='';try{saved=localStorage.getItem(REMEMBER)||'';}catch{}const mail=form.querySelector('[name=email]');if(saved&&mail&&!mail.value)mail.value=saved;
   const box=document.createElement('label');box.className='lg-remember';box.innerHTML='<input type="checkbox" data-remember'+(saved?' checked':'')+'><span>'+esc(T.remember)+'</span>';form.querySelector('.online-actions')?.before(box);if(saved)requestAnimationFrame(()=>requestAnimationFrame(()=>form.querySelector('[name=password]')?.focus({preventScroll:true})));}
  function rememberSubmit(form){const on=form.querySelector('[data-remember]')?.checked,mail=form.querySelector('[name=email]')?.value||'';try{if(on&&mail)localStorage.setItem(REMEMBER,mail);else localStorage.removeItem(REMEMBER);}catch{}}
- function go(step){state.step=step;render();}
+ /** Ohne Helden gibt es nichts zu wählen: gleich in die Erstellung (WoW: erster Login öffnet die Charaktererstellung). */
+ function go(step){if(step==='roster'&&!heroes().length){if(!state.draft)state.draft=newDraft();step='create';}state.step=step;render();}
  function show(){state.open=true;state.pick=host.activeId?.()||null;el.hidden=false;document.body.classList.add('start-open');host.onOpen?.();}
  /** Schirm aus dem Spiel heraus zeigen. step weglassen = je nach Konto entscheiden. */
  function open(step){show();go(step||firstStep({enabled:host.enabled,account:account(),guest:state.guest}));}
@@ -112,7 +117,7 @@ export function mountStartScreen(host){
   if(host.enabled){state.busy=T.checking;go('login');try{await host.online().start();}catch{}state.busy='';}
   go(firstStep({enabled:host.enabled,account:account(),guest:false}));
  }
- async function logout(){state.guest=false;await host.online()?.logout?.();if(!state.open)show();go(firstStep({enabled:host.enabled,account:null,guest:false}));}
+ async function logout(){state.guest=false;state.draft=null;await host.online()?.logout?.();if(!state.open)show();go(firstStep({enabled:host.enabled,account:null,guest:false}));}
  el.addEventListener('submit',async e=>{if(!e.target.closest('[data-online-form]'))return;rememberSubmit(e.target.closest('[data-online-form]'));await host.online()?.handle(e);if(account()&&state.open)go('roster');});
  el.addEventListener('click',async e=>{
   const pick=e.target.closest('[data-hero]');if(pick){state.pick=pick.dataset.hero;render();return;}
@@ -123,19 +128,19 @@ export function mountStartScreen(host){
   if(!b){if(e.target.closest('[data-online],[data-online-submit]')){await host.online()?.handle(e);if(state.open&&state.step==='roster'&&host.enabled&&!account()&&!state.guest)go('login');}return;}
   const what=b.dataset.start;
   if(what==='guest'){state.guest=true;go('roster');}
-  else if(what==='login'){state.guest=false;go('login');}
+  else if(what==='login'){state.guest=false;state.draft=null;go('login');}
   else if(what==='retry'){state.busy=T.checking;render();try{await host.online()?.start();}catch{}state.busy='';go(firstStep({enabled:host.enabled,account:account(),guest:false}));}
   else if(what==='logout')await logout();
   else if(what==='options')host.openOptions?.();
   else if(what==='leaderboard')await host.online()?.showLeaderboard?.(el);
   else if(what==='enter'){if(state.pick&&host.onEnter(state.pick)!==false)close();}
-  else if(what==='create'){state.draft={step:2,classId:'dieter',look:'dieter',tint:{...DEFAULT_TINT},name:'',error:'',busy:false};go('create');}
+  else if(what==='create'){state.draft=newDraft();go('create');}
   else if(what==='draft-cancel'){state.draft=null;go('roster');}
   else if(what==='draft-back'){state.draft.name=el.querySelector('[name=heroName]')?.value||state.draft.name;state.draft.step--;state.draft.error='';render();}
   else if(what==='draft-next')await draftNext();
   else if(what==='remove'){const c=heroes().find(x=>x.id===state.pick);if(c){state.removing=c.id;render();}}
   else if(what==='remove-cancel'){state.removing=null;render();}
-  else if(what==='remove-confirm'){const c=heroes().find(x=>x.id===state.removing),typed=(el.querySelector('[name=removeName]')?.value||'').trim();if(!c)return;if(typed.toLowerCase()!==c.name.toLowerCase()){const m=el.querySelector('.cs-remove .online-message');if(m){m.textContent=HERO_UI.removeWrong;m.classList.add('bad');}return;}state.removing=null;if(c.id===host.activeId?.()){host.deleteHero(c.id);location.reload();}else{host.deleteHero(c.id);state.pick=null;render();}}
+  else if(what==='remove-confirm'){const c=heroes().find(x=>x.id===state.removing),typed=(el.querySelector('[name=removeName]')?.value||'').trim();if(!c)return;if(typed.toLowerCase()!==c.name.toLowerCase()){const m=el.querySelector('.cs-remove .online-message');if(m){m.textContent=HERO_UI.removeWrong;m.classList.add('bad');}return;}state.removing=null;if(c.id===host.activeId?.()){host.deleteHero(c.id);location.reload();}else{host.deleteHero(c.id);state.pick=null;go('roster');}}
  });
  async function draftNext(){const d=state.draft;if(d.step<2){d.step++;render();return;}
   d.name=(el.querySelector('[name=heroName]')?.value||'').trim();if(!validHeroName(d.name)){d.error=HERO_TEXT.nameRule;render();return;}

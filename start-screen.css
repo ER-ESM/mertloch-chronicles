@@ -52,10 +52,6 @@ body.start-open #combatMeter,body.start-open .chat-window,body.start-open .aura-
 .start-screen .hero-swatches b{font-size:14px}
 .start-screen .start-portrait{display:grid;place-items:center;margin:-4px 0 8px;padding:8px 0 0;background:radial-gradient(ellipse 46% 38% at 50% 88%,#0007,transparent 70%),radial-gradient(circle at 50% 45%,#f3c96a22,transparent 62%)}
 .start-screen .start-portrait canvas{width:288px;height:288px;image-rendering:pixelated;filter:drop-shadow(0 6px 6px #0006)}
-.start-screen .start-teaser{display:flex;justify-content:center;gap:4px;margin:0 0 8px}
-.start-screen .start-teaser canvas{width:160px;height:160px;image-rendering:pixelated}
-.start-screen .start-empty{text-align:center}.start-screen .start-empty .start-enter{justify-content:center}
-.start-screen .start-empty p{font-size:15px}
 .start-screen .mmo-selection-detail .start-enter .gold-button{min-width:200px;justify-content:center;font-size:20px;letter-spacing:.06em;padding:14px 32px}
 /* Der wichtigste Knopf des Schirms: warmes Messing statt Grün, damit „Ins Dorf" sofort ins Auge fällt. */
 .game-shell .start-screen .start-enter .gold-button,.game-shell .start-screen .start-enter .gold-button:hover:not(:disabled){background:linear-gradient(#c08d3f,#7b5222),var(--chrome-resource,none);background-size:auto,160px 100%;color:#fff6dc;text-shadow:0 2px 0 #3a2410;border-image:var(--chrome-frame) 22% / 9px / 0 stretch;box-shadow:0 0 18px #f3c96a40,0 3px 6px #0008}
@@ -82,7 +78,7 @@ body.start-open #combatMeter,body.start-open .chat-window,body.start-open .aura-
 .start-screen .hero-swatch-list{display:flex;flex-wrap:wrap;gap:8px}
 .start-screen .hero-name-row canvas{width:224px;height:224px}
 .start-screen .hero-create .start-enter{margin-top:20px}
-@media(max-width:600px){.start-screen .hero-swatches{grid-template-columns:1fr}.start-screen .hero-swatches b{padding-top:0}.start-screen .start-portrait canvas{width:192px;height:192px}.start-screen .start-teaser canvas{width:96px;height:96px}}
+@media(max-width:600px){.start-screen .hero-swatches{grid-template-columns:1fr}.start-screen .hero-swatches b{padding-top:0}.start-screen .start-portrait canvas{width:192px;height:192px}}
 /* Solange der Schirm offen ist: auch Spielmenü- und Statistik-Knopf ausblenden (lagen auf dem Handy über der Heldenhalle). */
 body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 /* Handy/schmal: Heldenliste als einspaltige Liste mit kleinem Porträt (wie breit), statt Zweierraster mit abgeschnittenem Text. */
@@ -188,7 +184,6 @@ body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 .start-screen .cc-look .hero-swatches{margin:4px 0 0;gap:6px}
 .start-screen .cc-look .hero-swatches b{min-width:0;width:100%;font-size:13px}
 .start-screen .cc-look .hero-swatch{padding:3px 8px 3px 3px;font-size:12px}
-.start-screen .cc-note{margin:6px 0 0;font:400 12px/1.4 var(--read);color:#a9a58f}
 .start-screen .cc-bottom{grid-area:bottom;display:grid;grid-template-columns:auto minmax(0,380px) auto;justify-content:center;align-items:center;gap:18px}
 .start-screen .cc-name{display:grid;gap:4px;padding:10px 14px;background:#0c1c15e6;border:1px solid #6b5a36;border-radius:4px}
 .start-screen .cc-name label{display:grid;gap:4px;font:400 14px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:#d7b571}
