@@ -445,7 +445,12 @@ body:not(.touch-mode) .opt-label small{display:none}
 /* Handy: Kategorien als Reihe oben, eine Spalte */
 .touch-mode .opt-window{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
 .touch-mode .opt-nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:2px solid #6b5a36;padding:6px}
-.touch-mode .opt-nav button{flex:none;min-height:44px}
+.touch-mode .opt-nav button{flex:none;min-height:44px;font-size:14px}
+.touch-mode .opt-page>h3{display:none}
+.touch-mode .game-popup.popup-settings{height:min(620px,calc(100dvh - 32px))!important;max-height:none!important}
+.touch-mode .opt-footer{padding:6px 12px}
+/* Statustext im schmalen Handy-Heldenrahmen einzeilig halten */
+.touch-mode #hpText{white-space:nowrap}
 .touch-mode .opt-keyhead,.touch-mode .opt-keyrow{grid-template-columns:minmax(0,1fr) 96px 96px}
 .touch-mode .opt-key,.touch-mode .game-popup .opt-key{min-height:44px;height:auto}
 /* UI-Skalierung (Einstellungen → Interface): Leisten, Rahmen und Menüleiste wachsen mit, die Welt nicht. */

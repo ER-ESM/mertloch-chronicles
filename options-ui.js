@@ -61,8 +61,9 @@ export function mountOptions(api){
   return `<label class="opt-search"><input type="search" data-opt-filter placeholder="${esc(K.search)}" value="${esc(state.filter)}" aria-label="${esc(K.search)}"></label><div class="opt-keyhead"${tip(K.title,K.intro)}><span>${esc(K.action)}</span><span>${esc(K.key1)}</span><span>${esc(K.key2)}</span></div>${groups}${barRows.length?section('bars',K.bars,barRows.join('')):''}`;
  }
  function html(){
-  const cat=T.categories.find(c=>c.id===state.cat)||T.categories[0];
-  const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${T.categories.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}"><canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas><span>${esc(c.name)}</span></button>`).join('')}</nav>`;
+  // Touch hat keine Tastatur: dort entfällt die Tastenbelegung (Knöpfe ordnet System → Touchbuttons).
+  const cats=T.categories.filter(c=>c.id!=='keys'||!api.touch?.()),cat=cats.find(c=>c.id===state.cat)||cats[0];
+  const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${cats.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}"><canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas><span>${esc(c.name)}</span></button>`).join('')}</nav>`;
   const body=cat.id==='keys'?keysHtml():(T.sections[cat.id]||[]).map(s=>{const rows=s.rows.map(rowHtml).join('');return rows?`<section class="opt-section"><h4>${esc(s.title)}</h4>${rows}</section>`:'';}).join('');
   return `<div class="opt-window" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note${state.note?'':' is-hint'}" role="status" aria-live="polite">${esc(state.note||(cat.id==='keys'?K.footHint:''))}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
  }

@@ -22,7 +22,7 @@ export const OPTIONS_UI={
   interface:[
    {title:'Darstellung',rows:[
     {pref:'uiScale',label:'UI-Skalierung',kind:'range',min:80,max:130,step:5,unit:' %',hint:'Größe von Leisten, Rahmen und Fenstern.'},
-    {pref:'statusText',kind:'choice',label:'Statustext',hint:'Lebenspunkte an Heldenrahmen und Ziel: als Zahl, in Prozent, beides oder ausgeblendet (WoW „Statustext“).',choices:[{id:'number',name:'Zahl'},{id:'percent',name:'Prozent'},{id:'both',name:'Beides'},{id:'none',name:'Aus'}]},
+    {pref:'statusText',kind:'choice',label:'Statustext',hint:'Lebenspunkte an Heldenrahmen und Ziel: als Zahl, in Prozent, beides oder ausgeblendet. Auf dem Handy immer Prozent.',choices:[{id:'number',name:'Zahl'},{id:'percent',name:'Prozent'},{id:'both',name:'Beides'},{id:'none',name:'Aus'}]},
     {setting:'fps',label:'FPS-Anzeige',hint:'Bilder pro Sekunde oben links.'}]},
    {title:'Namen',rows:[
     {setting:'namesFriendly',label:'Freundliche Figuren',hint:'Namen von Dorfbewohnern, Händlern und Auftraggebern.'},
