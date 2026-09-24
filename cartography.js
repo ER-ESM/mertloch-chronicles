@@ -6,6 +6,7 @@ import {SHOP_UI} from './content/index.js';
 import {isElite} from './enemy-ui.js';
 import {SCALE,distance} from './world.js';
 import {hotspotMapMarks} from './hotspots.js';
+import {chapterAreas} from './quest-mobs.js';
 import {HOTSPOT_UI} from './content/index.js';
 
 // Strategic markers aggregate quest givers by their meeting place.
@@ -64,7 +65,7 @@ export function drawAtlas(renderer,canvas,full=false,highlight=null,options={}){
  const dest=highlight||g.moveTo||g.destination()?.point;
  if(dest){let route;if(full){const key=[p.x,p.y,dest.x,dest.y].map(Math.round).join(',');if(renderer.atlasRoute?.key!==key)renderer.atlasRoute={key,path:w.findPath(p,dest)};route=renderer.atlasRoute.path;}else route=g.path?.length?g.path:[dest];path([p,...route]);c.strokeStyle='#242c35';c.lineWidth=4;c.stroke();c.strokeStyle='#f1cd77';c.lineWidth=2;c.setLineDash([5,4]);c.stroke();c.setLineDash([]);}
  const occupiedLabels=[],areaLabels=[];
- if(g.hotspots&&(!options.filter||options.filter==='all'||options.filter==='quest'))for(const ar of hotspotMapMarks(g).areas){const a=pos(ar),r=Math.max(full?12:7,ar.r*scale);if(a.x+r<0||a.y+r<0||a.x-r>W||a.y-r>H||(!full&&!ar.active))continue;c.beginPath();c.arc(a.x,a.y,r,0,7);c.fillStyle=ar.active?'#f1cd772e':'#b6e8c51a';c.fill();c.setLineDash(ar.active?[]:[4,3]);c.strokeStyle=ar.active?'#f1cd77d9':'#b6e8c580';c.lineWidth=ar.active?2:1.2;c.stroke();c.setLineDash([]);if(full)areaLabels.push([ar.label,a.x,a.y+r+14,ar.active?'#f6dc95':'#cfe5c8']);}
+ if(g.hotspots&&(!options.filter||options.filter==='all'||options.filter==='quest'))/* Zielgebiet des Kapitelziels als Fläche (Runde 3a) */for(const ar of [...hotspotMapMarks(g).areas,...chapterAreas(g).map(a=>({...a,active:true}))]){const a=pos(ar),r=Math.max(full?12:7,ar.r*scale);if(a.x+r<0||a.y+r<0||a.x-r>W||a.y-r>H||(!full&&!ar.active))continue;c.beginPath();c.arc(a.x,a.y,r,0,7);c.fillStyle=ar.active?'#f1cd772e':'#b6e8c51a';c.fill();c.setLineDash(ar.active?[]:[4,3]);c.strokeStyle=ar.active?'#f1cd77d9':'#b6e8c580';c.lineWidth=ar.active?2:1.2;c.stroke();c.setLineDash([]);if(full)areaLabels.push([ar.label,a.x,a.y+r+14,ar.active?'#f6dc95':'#cfe5c8']);}
  function textLabel(text,x,y,color){c.font="700 12px Nunito,system-ui,sans-serif";const width=c.measureText(text).width+12,box={x:x-width/2,y:y-13,w:width,h:19};if(box.x<8||box.x+width>W-8||box.y<34||box.y+19>H-30||occupiedLabels.some(b=>box.x<b.x+b.w&&box.x+width>b.x&&box.y<b.y+b.h&&box.y+19>b.y))return;occupiedLabels.push(box);/* Wie auf einer gemalten Karte: Tinte mit hellem Papierschein statt Bildschirmkasten; Aufträge in Rotbraun */c.save();c.font="15px 'Jersey 15',Nunito,system-ui,sans-serif";c.textAlign='center';c.lineJoin='round';c.strokeStyle='#f6ead0e6';c.lineWidth=4;c.strokeText(text,x,y);c.fillStyle=color==='#f2ccb0'||color==='#f6dc95'?'#7a2e1c':color==='#d1ead5'||color==='#cfe5c8'?'#1f4a34':'#2c1c10';c.fillText(text,x,y);c.restore();}
  // Der Name eines Weltbosses hat Vorrang vor den Ortsnamen.
  if(full)for(const e of worldBosses(g)){const a=pos(e);if(inside(a,12))textLabel(e.name,a.x,a.y-22,'#ffd9c9');}

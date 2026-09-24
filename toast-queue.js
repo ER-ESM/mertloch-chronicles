@@ -11,7 +11,10 @@ export function createToastQueue(el,{hold=()=>false,now=()=>performance.now(),re
  function hide(){el.classList.remove('visible');current='';}
  return {
   /** Neue Meldung: sofort, wenn frei; sonst hinten an (höchstens TOAST_MAX warten, die älteste fällt weg). */
-  push(text){text=String(text||'');if(!text)return;const key=same(text);
+  /** urgent (Runde 3a): Ablehnungen („noch nicht bereit“, „zu weit“ …) warten nicht in der Schlange – wie die rote Fehlerzeile in WoW
+   *  ersetzen sie die stehende Meldung sofort (die wandert an den Anfang der Schlange zurück). */
+  push(text,{urgent=false}={}){text=String(text||'');if(!text)return;const key=same(text);
+   if(urgent&&!hold()&&!(visible()&&same(current)===key)){const i=queue.findIndex(q=>same(q)===key);if(i>=0)queue.splice(i,1);if(visible()&&current)queue.unshift(current);if(queue.length>TOAST_MAX)queue.length=TOAST_MAX;show(text);return;}
    if(visible()&&same(current)===key){if(current!==text){current=text;render(el,text);}until=Math.max(until,now()+(queue.length?TOAST_MIN:TOAST_FULL));return;}
    const i=queue.findIndex(q=>same(q)===key);if(i>=0){queue[i]=text;return;}
    if(!visible()&&!hold()){show(text);return;}

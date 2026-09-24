@@ -5,6 +5,7 @@
 // Einstellungen je Browser in localStorage (`mertloch-minimap-v1`). Kiosk und Verlies zeichnet weiter renderer.map.
 import {MINIMAP as M,MINIMAP_GROUPS as GROUPS,MINIMAP_UI as T,PROFESSIONS,PROFESSION_SOURCES as SRC,PROFESSION_STATIONS as PST,MOUNT_UI,SHOP_UI,DUNGEONS,DUNGEON_TEXT} from './content/index.js';
 import {hotspotMapMarks} from './hotspots.js';
+import {chapterAreas} from './quest-mobs.js';
 import {professionWorld} from './profession-world.js';
 import {nodeStatus} from './professions.js';
 import {mountStation} from './mounts.js';
@@ -228,7 +229,7 @@ function mountMinimap(root,canvas){
   hits=[];const pad=5,inside=a=>insideDisc(a.x-R,a.y-R,R-pad,s.shape),iz=16*M.iconScale[s.zoom]*(s.size==='s'?.86:1),put=(key,a,info,r=5)=>{const cv=icon(key),z=key.startsWith('node-')?iz*.85:iz;c.drawImage(cv,Math.round(a.x*2)/2-z/2,Math.round(a.y*2)/2-z/2,z,z);if(info)hits.push({x:a.x,y:a.y,r,...info});};
   const edge=(o,m=9)=>{const a=proj(o);if(inside(a))return{a,off:false};const e=edgePoint(a.x-R,a.y-R,R-m,s.shape);return{a:{x:R+e.x,y:R+e.y},off:true,dir:Math.atan2(a.y-R,a.x-R)};};
   // Auftragsgebiete und Laufweg liegen unter den Symbolen.
-  if(now-placesAt>1000||!places.length){places=collectPlaces(g);areas=g.hotspots?hotspotMapMarks(g).areas.filter(a=>a.active):[];placesAt=now;}
+  if(now-placesAt>1000||!places.length){places=collectPlaces(g);areas=[...(g.hotspots?hotspotMapMarks(g).areas.filter(a=>a.active):[]),/* Zielgebiet des Kapitelziels (Runde 3a) */...chapterAreas(g).map(a=>({...a,active:true,title:a.label}))];placesAt=now;}
   if(s.track.quest)for(const ar of areas){const a=proj(ar),r=Math.max(6,ar.r*k);if(Math.hypot(a.x-R,a.y-R)-r>R)continue;c.beginPath();c.arc(a.x,a.y,r,0,TAU);c.fillStyle='#f1cd7733';c.fill();c.strokeStyle='#f1cd77d0';c.lineWidth=1.4;c.stroke();hits.push({x:a.x,y:a.y,r:Math.max(0,r-M.hitRadius),name:ar.title||ar.label,kind:T.kinds.area,detail:ar.label,prio:0,group:'quest'});}
   const destination=g.destination?.(),dest=g.moveTo||destination?.point;
   if(s.track.route&&dest){const route=g.path?.length?g.path:[dest];c.beginPath();const a0=proj(p);c.moveTo(a0.x,a0.y);for(const q of route){const a=proj(q);c.lineTo(a.x,a.y);}c.lineJoin='round';c.lineCap='round';c.strokeStyle='#1d252bcc';c.lineWidth=3.6;c.stroke();c.setLineDash([4,3]);c.strokeStyle='#f1cd77';c.lineWidth=1.8;c.stroke();c.setLineDash([]);}

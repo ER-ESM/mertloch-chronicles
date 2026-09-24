@@ -28,7 +28,12 @@ import {freshClassState,classSkills,healPlayer,healerEffects,addGuard,beforeSkil
 import {VillageLife} from './village-life.js';
 import {pathNear} from './path-near.js';
 import {adoptAttacker,preferAttacker} from './attacker-target.js';
-import {tickApproach} from './attack-approach.js';
+import {tickApproach,approachTarget} from './attack-approach.js';
+import {startAutopilot,autopilotThreat} from './autopilot.js';
+import {tabTarget} from './tab-target.js';
+import {entryCalm,entryAggroRange} from './entry-path.js';
+import {chapterCredit} from './quest-mobs.js';
+import {hostile} from './attacker-target.js';
 import {deNum} from './number-format.js';
 const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
@@ -112,6 +117,8 @@ export class Game{
   switchMember(id){if(this.classLocked&&id!==this.member.id){this.toast('Dein Held bleibt bei seiner Klasse. Für eine andere Klasse erstellst du in der Heldenhalle einen neuen Helden.');return false;}if(this.dead||this.paused||!this.atHub()){this.toast(hubRule('Clanwechsel'));return false;}if(member(id).id!==id)return false;finishMeterCombat(this);this.member=member(id);this.rpg.talents=this.rpg.talentBuilds[id];this.player.classId=id;this.lastStrike=-100;this.resetClassState();this.refreshStats();this.target=null;this.emit('classChanged');this.emit('save');return true;}
   log(text){this.messages.push({text,time:this.time});this.messages=this.messages.slice(-5);}
   toast(text){this.events.push({type:'toast',text});}
+  /** Ablehnung (WoW: rote Fehlerzeile): wie toast, aber als Fehler markiert. */
+  fail(text){this.events.push({type:'toast',text,error:true});}
   emit(type,data={}){this.events.push({type,...data});}
   /** Am Treffpunkt und nicht im Kampf? Gilt für Clanwechsel und Basisbau. */
   /** Figurenwahl am Anmeldebildschirm: außerhalb des Clan-Treffs startet die neue Figur dort; mitten im Kampf oder am Boden geht kein Wechsel. */
@@ -141,7 +148,8 @@ export class Game{
   }
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
-  selectNext(reverse=false){if(inKiosk(this)||this.floor)return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>e.aggro&&!e.remoteTarget&&distance(e,p)<260||(fighting?e.behavior==='aggressive'&&distance(e,p)<65:distance(e,p)<240));/* Wer dich angreift, kommt zuerst dran – auch vor dem ersten Treffer (Runde 2b) */if(choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.friend=null;this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
+  /** Tab wie in WoW: Angreifer, dann Feinde, neutrale Tiere nur ohne Feind in Reichweite (tab-target.js). */
+  selectNext(reverse=false){return tabTarget(this,reverse);}
   selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.friend=null;this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false,friend=this.friend){
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
@@ -151,12 +159,12 @@ export class Game{
     if(Number.isInteger(id))id=actionBar(this)[id]??null;
     if(id==='mount')return toggleMount(this);
     const barItem=barItemId(id);if(barItem)return useItem(this,barItem);
-    const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.toast('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
+    const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.fail('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
     dismount(this);
     if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
-    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCostMech(this,s,skillCost(this,s,cs)),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,deNum(this.cooldowns[id],1))||`${s.name} ist noch nicht bereit · ${deNum(this.cooldowns[id],1)} s.`);return false;}
+    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCostMech(this,s,skillCost(this,s,cs)),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.fail(failure);return false;}if(this.cooldowns[id]>.01){this.fail(COMBAT_TEXT.cooldown?.(s.name,deNum(this.cooldowns[id],1))||`${s.name} ist noch nicht bereit · ${deNum(this.cooldowns[id],1)} s.`);return false;}
     if(!completing&&!s.offGcd&&this.gcd>0)return false;
-    if(p.energy<cost){this.toast(COMBAT_TEXT.needResources);return false;}
+    if(p.energy<cost){this.fail(COMBAT_TEXT.needResources);return false;}
     // Ein Ziel (E-65, help-target.js): Heilung, Schutz und Buffs wirken auf den gewählten Freund, sonst auf dich selbst.
     const help=['heal','buff'].includes(id)||s.classBuff?helpTarget(this,friend):null,aid=help?.kind==='companion'?help.ref:null,mate=help?.kind==='party'?help.name:null;
     if(help){const failure=helpFailure(this,help);if(failure){this.toast(failure);return false;}}
@@ -167,9 +175,9 @@ export class Game{
     if(s.range&&!s.ground){
       if(preferAttacker(this))e=this.target;
       if(!e||e.hp<=0){this.selectNext();e=this.target;}
-      if(!e){return false;}if(e.ai==='returning'||e.spawnGrace>0){this.toast('Dieses Ziel zieht gerade ab oder kommt erst an.');return false;}
-      if(distance(p,e)>s.range+(cs.range||0)){this.toast(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m. Bewege dich näher zum Ziel.`);return false;}
-      if(!this.world.lineClear(p,e)){this.toast('Ein Gebäude oder Hindernis versperrt die Sicht.');return false;}
+      if(!e){return false;}if(e.ai==='returning'||e.spawnGrace>0){/* Symbol mit Tooltip am Zielrahmen statt Satz (Runde 3a) */this.emit('targetState',{state:e.ai==='returning'?'leaving':'arriving'});return false;}
+      if(distance(p,e)>s.range+(cs.range||0)){/* Feind außer Reichweite: hinlaufen wie in WoW mit Klick-zum-Bewegen (Runde 3a) */if(hostile(e)&&!this.approach&&startAuto(this)&&this.target===e&&approachTarget(this,e))return false;if(this.approach?.e===e)return false;this.fail(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m.`);return false;}
+      if(!this.world.lineClear(p,e)){this.fail('Ein Gebäude oder Hindernis versperrt die Sicht.');return false;}
     }
     if(id==='heal'&&!mate&&(aid?aid.hp>=aid.maxHp:p.hp>=p.maxHp)&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast(aid?TARGET_HELP.full(aid.name):'Deine Gesundheit ist bereits vollständig.');return false;}
     if(s.castTime&&!completing){if(!isMobile(this,s)&&movingToCast(this)){this.toast(COMBAT_TEXT.moving);return false;}this.casting={id,name:s.name,friend:help&&help.kind!=='self'?friend:null,point:point?{...point}:null,targetId:s.range&&!s.ground?e.id:null,remaining:s.castTime,total:s.castTime};if(!s.offGcd)this.gcd=quickGcd(this,id,e)?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd;this.aiming=null;this.aimPoint=null;return true;}
@@ -208,10 +216,10 @@ export class Game{
     if(e.dungeon)onDungeonKill(this,e);
     createDrop(this,e);const xp=Math.round(killXp(e)*(1+BALANCE.party.xpPerMember*Math.min(4,this.netParty?.near?.()||0)));this.gainXp(xp);if(e.type==='boss'&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].defeat,'boss');if(!this.sct({area:'note',kind:'xp',value:xp,unit:'EP',iconKey:'coins',color:'#bacd8b'}))this.float(e.x,e.y-40,'+'+xp+' EP','#bacd8b');this.effect('death',e.x,e.y,{life:1.5,max:1.5});this.log(e.name+' besiegt · +'+xp+' EP.');
     const sq=this.sideQuests[e.questId],def=this.world.quests?.find(q=>q.id===e.questId);if(sq?.accepted&&!sq.claimed&&def){sq.progress=Math.min(def.required,sq.progress+1);if(sq.progress===def.required)this.toast(SYSTEM_LINES.questDone(def.giver.name));}onHotspotKill(this,e);
-    if(this.quest.accepted&&!e.ambient&&!e.questId&&!e.worldBoss&&!e.dungeon&&this.quest.chapterClaimed<this.quest.chapter){
+    if(this.quest.accepted&&!e.questId&&!e.worldBoss&&!e.dungeon&&this.quest.chapterClaimed<this.quest.chapter){
       const chapter=this.quest.chapter;let progressed=false;
       for(const [i,o] of this.objectives(chapter).entries()){
-        const hit=o.kind==='boss'?e.type==='boss'&&(!e.bossId||e.bossId===o.boss):o.kind==='kill'&&(o.type?e.type===o.type:e.family===o.family);
+        const hit=chapterCredit(this,e,o)/* Feldgegner derselben Art zählen im Zielgebiet (quest-mobs.js) */;
         if(!hit)continue;this.setQuestCount(chapter,i,this.questCount(chapter,i)+1);progressed=true;
       }
       if(progressed&&this.questReady())this.toast(chapter===FIRST_CHAPTER?SYSTEM_LINES.mainReady:SYSTEM_LINES.chapterReady(STORY.giver));
@@ -449,7 +457,9 @@ export class Game{
       const progress=this.objectiveProgress(i);if(progress.complete)continue;
       if(o.kind==='gather'){const spot=this.gatherPoints().sort((a,b)=>distance(this.player,a)-distance(this.player,b))[0];if(spot)return {point:spot,label:o.label};}
       const camp=this.campFor(o);if(!camp)continue;
-      return {point:camp.approach&&distance(this.player,camp.approach)>110?camp.approach:camp,label:o.label};
+      /* Pfeil und Wegmarke zeigen fest auf die Gebietsmitte (Runde 3a: sprang zwischen Lagerrand und Lager, 79/50/25/41 m); der Laufweg führt aus der Ferne über den sicheren Lagerrand. */
+      const far=camp.approach&&distance(this.player,camp)>distance(camp.approach,camp)+60;
+      return {point:{x:camp.x,y:camp.y},...(far?{route:{x:camp.approach.x,y:camp.approach.y}}:{}),area:o.kind==='kill'?camp.id:undefined,label:o.label};
     }
     return {point:this.world.npc,label:STORY.giver};
   }
@@ -491,14 +501,15 @@ export class Game{
     return dx<0&&p.x>u.maxX&&p.x-6<=u.maxX+1.5&&p.y>=u.minY&&p.y<=u.minY+(u.access||22)?this.switchFloor(0,{x:cx,y:g.minY+(g.topStep||8)+6},this.stairsAutoDown||routed?{x:cx,y:g.maxY+8}:null):false;}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
-  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;const walk=this.walkWorld();try{this.path=walk.findPath(this.player,point);}catch{this.path=[];}/* unerreichbar: so nah wie möglich heran (path-near.js) */if(!this.path.length){this.path=pathNear(walk,this.player,point);if(this.path.length)this.routeGoal={...this.path.at(-1)};}this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast(NO_PATH);return false;}return true;}
+  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;const walk=this.walkWorld();try{this.path=walk.findPath(this.player,point);}catch{this.path=[];}/* unerreichbar: so nah wie möglich heran (path-near.js) */if(!this.path.length){this.path=pathNear(walk,this.player,point);if(this.path.length)this.routeGoal={...this.path.at(-1)};}this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast(NO_PATH);return false;}/* Autopilot hält beim ersten neuen Angreifer (autopilot.js) */startAutopilot(this);return true;}
   /** Laufweg zur goldenen Wegmarke – ein Befehl statt vieler kurzer Klicks am Bildschirmrand (P6). */
-  navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.point):false;}
+  navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.route||goal.point):false;}
   /** Neuberechnung des laufenden Laufbefehls, wenn der Schritt an einer Kante klemmt. */
   repath(){const goal=this.routeGoal;if(!goal)return false;this.path=this.walkWorld().findPath(this.player,goal);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.path=[];this.routeGoal=null;return false;}return true;}
   /** Erster Treffer eines neuen Angreifers oder Wechsel inCombat 0→1 (P1): Ereignis `attacked` für den großen
    *  Hinweis der UI, dazu die Zielwahl auf den Angreifer, solange kein Ziel steht. */
   noteAttacker(e,damage,fresh){
+    autopilotThreat(this,e);
     const set=this.attackers||(this.attackers=new Set());
     if(!fresh&&set.has(e.id))return false;
     set.add(e.id);
@@ -520,7 +531,7 @@ export class Game{
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
   respawn(){dismount(this);this.floor=0;if(inKiosk(this))leaveKiosk(this,true);finishMeterCombat(this);const p=this.player;this.attackers?.clear();Object.assign(p,this.world.spawn,{hp:p.maxHp,energy:100,inCombat:0,parry:0,attack:0,hurt:0,dash:0,castPose:0,invulnerable:2,vx:0,vy:0,moving:false});this.dead=false;this.resetClassState();this.target=null;this.enemies.forEach(e=>{if(e.aggro)this.resetEnemy(e);});resetCompanions(this);if(inDungeon(this))dungeonRespawn(this);
     const share=this.baseEffects().respawnHp||0;if(share>0)addGuard(this,p.maxHp*share,combatStats(this));
-    this.toast(SYSTEM_LINES.respawn);}
+    this.toast(this.quest.chapterClaimed>=FIRST_CHAPTER?SYSTEM_LINES.respawn:SYSTEM_LINES.respawnNoPants||SYSTEM_LINES.respawn);}
   tick(dt){
     if(this.professionCommit)return;tickProfession(this,dt);if(this.professionCommit)return;if(this.paused||this.dead)return;tickClassBuffs(this,Math.min(dt,.05));if(inKiosk(this)){tickKiosk(this,Math.min(dt,.05));return;}dt=Math.min(dt,.05);this.time+=dt;
     if(this.tutorial?.completed&&!this.tutorialReported){this.tutorialReported=true;this.memoryEvent({kind:'tutorialDone'});}tickActivity(this);const p=this.player;tickClass(this,dt,combatStats(this));if(this.partyBuff?.remaining>0){const b=this.partyBuff;b.remaining=Math.max(0,b.remaining-dt);if(b.hot){b.tick-=dt;if(b.tick<=0){b.tick=1;healPlayer(this,b.hot,combatStats(this),false,'hot');}}}tickArena(this,dt);tickProcs(this);if(this.momentum.until<=this.time)this.momentum.stacks=0;for(const z of this.zones){z.remaining-=dt;if(z.remaining<=0){const victims=this.enemies.filter(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&distance(e,z)<z.radius&&this.world.lineClear(z,e)).sort((a,b)=>distance(a,z)-distance(b,z)).slice(0,5);for(const e of victims)this.damage(e,z.damage*(1+(combatStats(this).aoe||0)),'Böller');if(this.rpg.talents.spec==='kevin-fuse'||combatStats(this).burnGround)this.fields.push({...z,kind:'burn',remaining:combatStats(this).burnGround?6:2,tick:1,power:0});emitCombatFx(this,'burst',z,{skillId:'ground',radius:z.radius});}}this.zones=this.zones.filter(z=>z.remaining>0);if(inDungeon(this))tickDungeon(this,dt);else{this.life.tick(dt,p);this.villagerBarks();if(!tutorialActive(this)){this.ecology.tick(dt);this.hotspotDirector.tick(dt);}}if(this.buffs.remaining>0)this.buffs.remaining=Math.max(0,this.buffs.remaining-dt);
@@ -545,8 +556,8 @@ export class Game{
       // Begleiter (E-45): hält ein Begleiter die höchste Bedrohung, kämpft der Gegner gegen ihn statt gegen den Spieler.
       if(e.aggro&&e.ai==='combat'&&!e.dummy){const companion=companionFocus(this,e);if(companion){tickEnemyOnCompanion(this,e,companion,dt);if(this.dead)break;continue;}}
       const d=distance(e,p);
-      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&!e.dummy){const buddy=this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange);if(buddy&&e.joinAt==null)e.joinAt=this.time+BALANCE.procs.chainJoinDelay;else if(e.joinAt!=null&&this.time>=e.joinAt){e.joinAt=null;if(!this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange*3))continue;e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;this.float(e.x,e.y-30,'KUMPEL KOMMT','#f0b070');}}
-      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;adoptAttacker(this,e);}
+      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&!e.dummy&&!entryCalm(this,e)/* Einstiegsweg ohne Kettenzug (entry-path.js) */){const buddy=this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange);if(buddy&&e.joinAt==null)e.joinAt=this.time+BALANCE.procs.chainJoinDelay;else if(e.joinAt!=null&&this.time>=e.joinAt){e.joinAt=null;if(!this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange*3))continue;e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;this.float(e.x,e.y-30,'KUMPEL KOMMT','#f0b070');autopilotThreat(this,e);}}
+      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<entryAggroRange(this,e)&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;adoptAttacker(this,e);autopilotThreat(this,e);}
       if(!e.aggro){if(!e.dummy)idleEnemy(this,e,dt);continue;}
       if(e.dummy){e.facing=e.x<p.x?1:-1;continue;}
       if(!e.arena&&(distance(e,e.home)>e.leash||d>620||inSanctuary(this.world,p))){beginReturn(this,e);continue;}

@@ -31,7 +31,7 @@ export const ITEM_CATALOG={
  flasche:{weapon:{type:'club',hands:1,min:14,max:20},name:'Bewährte Mehrwegflasche',slot:'weapon',rarity:'common',icon:'bottle',value:2,stats:{might:1},description:'Schon mit Opa auf dem Dorffest gewesen.'},
  kutte:{name:'Abgewetzte Clanjacke',slot:'body',rarity:'common',icon:'coat',value:2,stats:{armorRating:1},description:'Riecht nach Heimat. Und Rauch.'},
  // --- Verpflegung ---
- brezel:{name:'Notfallbrezel',kind:'consumable',usable:true,rarity:'common',icon:'food',heal:160,stack:10,value:3,price:12,description:'160 Leben. Erst kauen, dann weiterpöbeln.'},
+ brezel:{name:'Notfallbrezel',kind:'consumable',usable:true,rarity:'common',icon:'food',heal:160,stack:10,value:3,price:12,description:'160 Leben, auch im Kampf. Erst kauen, dann weiterpöbeln.'},
  wasser:{name:'Konterwasser',kind:'consumable',usable:true,rarity:'common',icon:'water',energy:40,stack:10,value:3,price:12,description:'40 Randale. Verdächtig alkoholfrei.'},
  currywurst:{name:'Oskars Currywurst',kind:'consumable',usable:true,rarity:'uncommon',icon:'food',heal:240,energy:20,stack:5,value:6,price:40,level:3,description:'240 Leben und 20 Randale. Die Soße ist ein Familiengeheimnis und ein Verstoß gegen die Lebensmittelverordnung.',look:'Pappschale mit Currywurst, rote Soße, Holzpieker'},
  kaltgetraenk:{name:'Eiskaltes Kaltgetränk',kind:'consumable',usable:true,rarity:'uncommon',icon:'water',energy:70,stack:5,value:5,price:28,level:2,description:'70 Randale. Auf dem Etikett steht nur „Ja“.',look:'Beschlagene Dose ohne Marke, Kondenswasser, gelbes Etikett'},

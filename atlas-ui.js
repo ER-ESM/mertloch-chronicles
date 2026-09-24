@@ -10,16 +10,16 @@ const placeMark=h=>h.tracked?glyph('pin'):h.kind==='quest'?`<b class="ql-mark ${
 export function mountAtlas(root,renderer,navigate,initial=null){
  const g=renderer.game,canvas=root.querySelector('#largeMap'),places=mapPlaces(g),options={filter:'all',zoom:1},list=root.querySelector('#atlasPlaces'),selection=root.querySelector('#atlasSelection');
  // Ohne Auswahl zeigt „Ziel“ das aktuelle Auftragsziel statt einer leeren Seite.
- let chosen=initial||(()=>{const d=g.destination?.();return d?.point?{id:'quest-destination',title:d.label||'Auftragsziel',detail:'Dein Auftragsziel',point:d.point}:null;})();
+ let chosen=initial||(()=>{const d=g.destination?.();return d?.point?{id:'quest-destination',title:d.label||'Auftragsziel',detail:'Dein Auftragsziel',point:d.point,route:d.route}:null;})();
  // Runde 2 (2026-09-24): das verfolgte Ziel steht hervorgehoben oben in der Liste, der Rest gedimmt darunter (einzeilig, ohne Nummern).
- const dest=g.destination?.();if(dest?.point)places.unshift({id:'quest-destination',kind:'tracked',tracked:true,title:dest.label||'Auftragsziel',detail:'Dein Auftragsziel',point:dest.point});
+ const dest=g.destination?.();if(dest?.point)places.unshift({id:'quest-destination',kind:'tracked',tracked:true,title:dest.label||'Auftragsziel',detail:'Dein Auftragsziel',point:dest.point,route:dest.route});
  if(chosen?.id==='quest-destination')chosen=places[0];
  function draw(){renderer.map(canvas,true,chosen?.point,options);canvas.classList.toggle('can-pan',options.zoom>1);}
  function select(place){root.querySelector('.panel-tabs button:nth-child(3)')?.click();chosen=place;options.selected=place?.id;options.center=options.zoom>1?place?.point:undefined;render();}
  function render(){const rows=places.filter(h=>h.tracked||options.filter==='all'||options.filter===h.kind);list.innerHTML=rows.map(h=>{const note=h.kind==='hub'?h.quests+' offene Aufträge':h.detail||'';return `<button class="atlas-place ${h.kind}${h.tracked?' atlas-tracked':''}${h.low?' low':''}" data-place="${esc(h.id)}" aria-pressed="${h.id===chosen?.id}" data-tooltip-label="${esc(h.title)}" data-tooltip-note="${esc(note)}" aria-label="${esc(h.title+' · '+note)}"><i aria-hidden="true">${placeMark(h)}</i><span><b>${esc(h.title)}</b></span><em>${Math.round(distance(g.player,h.point)/SCALE)} m</em></button>`;}).join('');selection.innerHTML=chosen?`<span class="eyebrow">DEIN NÄCHSTER HALT</span><h3>${esc(chosen.title)}</h3><p>${esc(chosen.detail||'Dein Auftragsziel')} · ${Math.round(distance(g.player,chosen.point)/SCALE)} m Luftlinie</p><button class="gold-button" data-navigate>Weg einschlagen →</button>`:'<p>Wähle einen Ort auf der Karte oder in der Liste. Goldene Punkte zeigen offene Aufträge.</p>';draw();document.dispatchEvent(new CustomEvent('panel-reflow',{detail:'map'}));}
  root.querySelector('.atlas-toolbar').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.filter){options.filter=b.dataset.filter;root.querySelectorAll('[data-filter]').forEach(el=>el.setAttribute('aria-pressed',el===b));render();}if(b.dataset.zoom){const z=b.dataset.zoom;options.zoom=z==='in'?Math.min(MAX_ZOOM,options.zoom*1.5):z==='out'?Math.max(1,options.zoom/1.5):z==='player'?2:1;options.center=z==='player'?g.player:z==='fit'?undefined:options.center||chosen?.point;draw();}};
  list.onclick=e=>{const b=e.target.closest('[data-place]');if(b)select(places.find(h=>h.id===b.dataset.place));};
- selection.onclick=e=>{if(e.target.closest('[data-navigate]')&&chosen)navigate(chosen.point);};
+ selection.onclick=e=>{if(e.target.closest('[data-navigate]')&&chosen)navigate(chosen.route||chosen.point);};
  root.querySelector('#atlasCreatures').onchange=e=>{options.creatures=e.target.checked;draw();};
  // Ziehen verschiebt den gezoomten Ausschnitt; die Mitte bleibt innerhalb der Übersicht. Ein Zug zählt nicht als Klick auf einen Ort.
  let drag=null,dragged=false;

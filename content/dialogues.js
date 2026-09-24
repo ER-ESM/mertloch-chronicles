@@ -144,6 +144,8 @@ export const SYSTEM_LINES={
  chapterReady:giver=>`Kapitel erledigt. Kehre zu ${giver} an die Bude zurück.`,
  welcome:'Du wachst in Unterwäsche auf, hast nur eine Socke und einen Stempel auf dem Arm. Willkommen in Mertloch, wer immer du bist.',
  respawn:'Du wachst schon wieder bei St. Gangolf auf – diesmal wenigstens mit Hose.',
+ // Vor Kapitel 1 liegt die Hose noch in Horsts Beweismittelkiste (Runde 3a, Kenner-Befund 10).
+ respawnNoPants:'Du wachst schon wieder bei St. Gangolf auf – immer noch ohne Hose.',
  levelUp:level=>'Stufe '+level+' erreicht! Im Skillbuch warten neue Kniffe, und du hast einen weiteren Talentpunkt.',
  memory:title=>'Erinnerungsfetzen: '+title,
  building:(name,stage)=>name+' ausgebaut · Stufe '+stage+'.',

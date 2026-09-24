@@ -18,6 +18,8 @@ const realWorld=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json
 const arena=()=>({id:'runde-b',seed:3,spawn:{x:0,y:0},npc:{x:10,y:0,name:'Kisten-Ida'},shrine:{x:-4000,y:0},mentors:[],landmarks:[],camps:[],quests:[],hubs:[],
  findClear:(x,y)=>({x,y}),blocked:()=>false,lineClear:()=>true,walkClear:()=>true,findPath:(a,b)=>[{...b}]});
 const toasts=g=>g.events.filter(e=>e.type==='toast').map(e=>e.text);
+// Runde 3a: „Autoangriff an/aus“ ist keine Kurzmeldung mehr, sondern das Ereignis autoAttack (Platz und #autoState zeigen es).
+const autoEv=g=>g.events.filter(e=>e.type==='autoAttack').map(e=>e.on?COMBAT_TEXT.autoOn:COMBAT_TEXT.autoOff);
 
 test('P2 · Taste 1 schaltet um; Rechtsklick startet idempotent, Esc und Zielverlust stoppen',()=>{
  const g=new Game(arena(),{level:8,trainingXp:9000});
@@ -25,22 +27,22 @@ test('P2 · Taste 1 schaltet um; Rechtsklick startet idempotent, Esc und Zielver
  g.enemies=[e];g.target=e;
  assert.equal(g.action('auto'),true);
  assert.equal(g.autoAttack.enabled,true);
- assert.ok(toasts(g).includes(COMBAT_TEXT.autoOn));
+ assert.ok(autoEv(g).includes(COMBAT_TEXT.autoOn));assert.ok(!toasts(g).includes(COMBAT_TEXT.autoOn),'keine Kurzmeldung');
  g.events.length=0;
  assert.equal(g.action('auto'),true);assert.equal(g.autoAttack.enabled,false);
  g.events.length=0;
  for(let i=0;i<5;i++)assert.equal(g.startAttack(),true,'Rechtsklick bleibt ein Einschalten');
  assert.equal(g.autoAttack.enabled,true);
- assert.ok(!toasts(g).includes(COMBAT_TEXT.autoOff));
+ assert.ok(!autoEv(g).includes(COMBAT_TEXT.autoOff));
  // Esc der UI
  assert.equal(g.stopAuto(),true);
  assert.equal(g.autoAttack.enabled,false);
- assert.ok(toasts(g).includes(COMBAT_TEXT.autoOff));
+ assert.ok(autoEv(g).includes(COMBAT_TEXT.autoOff));assert.ok(!toasts(g).includes(COMBAT_TEXT.autoOff));
  assert.equal(g.stopAuto(),false,'nichts zu melden, wenn er schon aus ist');
  // Zielverlust beendet ihn still
  g.action('auto');g.events.length=0;e.hp=0;g.tick(.05);
  assert.equal(g.autoAttack.enabled,false);
- assert.ok(!toasts(g).includes(COMBAT_TEXT.autoOff),'Zielverlust meldet nicht zusätzlich');
+ assert.ok(!autoEv(g).includes(COMBAT_TEXT.autoOff),'Zielverlust meldet nicht zusätzlich');
  // Ohne Ziel lässt er sich nicht starten
  g.enemies=[];g.target=null;
  assert.equal(startAuto(g),false);
@@ -160,9 +162,9 @@ test('P8 · Kein Hofproben-Schritt erledigt sich ohne Eingabe, Zähler starten b
  tickTutorial(g,.05);
  assert.ok(!toasts(g).includes(TUTORIAL.retry),'beim ersten Versuch gibt es keinen Nochmal-Hinweis');assert.ok(toasts(g).includes(TUTORIAL.late),'Runde 2b: klare Rückmeldung „Zu spät“ schon beim ersten Versuch');
  t.clock=0;tickTutorial(g,.05);
- assert.ok(e.cast);e.cast.remaining=.01;g.events.length=0;
+ assert.ok(e.cast);assert.equal(e.cast.bar,true,'Runde 3a: der zweite Kreis zeigt einen Wirkzeit-Balken');e.cast.remaining=.01;g.events.length=0;
  tickTutorial(g,.05);
- assert.ok(toasts(g).includes(TUTORIAL.late),'ab dem zweiten Fehlversuch wieder „Zu spät“ (Runde 2b statt des langen Nochmal-Hinweises)');
+ assert.ok(toasts(g).includes(TUTORIAL.giveUp),'Runde 3a: höchstens zwei Versuche, dann eine klare Meldung statt stillem Überspringen');assert.equal(t.step,5);
 });
 
 test('P8 · Die Abklingzeit-Meldung nennt die Restzeit',()=>{

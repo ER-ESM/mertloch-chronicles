@@ -103,12 +103,12 @@ test('Tiergebiete werden in Spielernähe angelegt und zählen nicht für Kapitel
  g.hotspotDirector.clock=0;g.hotspotDirector.tick(1);assert.equal(g.enemies.filter(e=>e.hotspot==='kirchhof').length,8,'nicht doppelt');
 });
 
-test('Hofprobe 5/8 hält niemanden vor den Aufträgen fest: nach vier verpassten Kreisen geht es weiter',async()=>{
+test('Hofprobe 5/8 hält niemanden vor den Aufträgen fest: nach zwei verpassten Kreisen geht es weiter (Runde 3a: höchstens zwei Versuche)',async()=>{
  const {TUTORIAL}=await import('../content/index.js');
  const g=new Game(world,{level:1,tutorial:{version:1,step:4,completed:false}});
  let t=0;while(g.tutorial.step===4&&t<60){g.tick(.05);t+=.05;}
  assert.equal(g.tutorial.step,5,'ohne Ausweichen weiter nach '+TUTORIAL.maxDodgeTries+' Kreisen');
- assert.ok(t<=(TUTORIAL.castTime+TUTORIAL.castPause)*TUTORIAL.maxDodgeTries+((TUTORIAL.firstCastTime||TUTORIAL.castTime)-TUTORIAL.castTime)+1,'nach spätestens vier Runden (der erste Kreis steht länger)');
+ assert.ok(t<=((TUTORIAL.firstCastTime||TUTORIAL.castTime)+TUTORIAL.castPause)*TUTORIAL.maxDodgeTries+1,'nach spätestens zwei Runden');
  assert.ok(g.events.some(e=>e.type==='toast'&&e.text===TUTORIAL.giveUp));
 });
 

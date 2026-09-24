@@ -84,7 +84,7 @@ export const ITEM_INFO={
   why:'Der Brustplatz ist von der ersten Sekunde an belegt – alles Weitere ist Ersatz, kein Zugewinn aus dem Nichts.',
   links:['regenjacke','bierdeckelweste'],terms:['stamina','armorRating']},
  // --- Verpflegung ---
- brezel:{effect:'Stellt beim Benutzen sofort Leben her. Teilt sich die gemeinsame Abklingzeit mit jeder anderen Verpflegung; Oskars Grill steigert die Wirkung und verkürzt die Wartezeit.',
+ brezel:{effect:'Stellt beim Benutzen sofort Leben her, auch mitten im Kampf. Teilt sich die gemeinsame Abklingzeit mit jeder anderen Verpflegung; Oskars Grill steigert die Wirkung und verkürzt die Wartezeit.',
   why:'Die einzige Heilung, die jede Klasse ohne Kniff hat. Sie gehört in die Aktionsleiste, nicht in den Rucksack.',
   links:['currywurst','grill','wasser'],terms:['verpflegung','leben','abklingzeit']},
  wasser:{effect:'Füllt sofort Randale nach. Dieselbe gemeinsame Abklingzeit wie jede Verpflegung.',
