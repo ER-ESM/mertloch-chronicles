@@ -350,3 +350,5 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
 /* Meldungen (Persona 3): unter der Rahmenzeile von Spieler/Ziel statt auf ihrer Höhe, schmaler, mit geschlossener Kontur –
    so laufen sie nie über den Zielrahmen und bleiben auf Pflaster und Gras lesbar. */
 @media(min-width:761px){body:not(.touch-mode) #toast{top:186px!important;max-width:min(560px,44vw)!important;text-shadow:2px 0 0 #1a120a,-2px 0 0 #1a120a,0 2px 0 #1a120a,0 -2px 0 #1a120a,2px 2px 0 #1a120a,-2px 2px 0 #1a120a,2px -2px 0 #1a120a,-2px -2px 0 #1a120a,0 0 12px #000c!important}}
+/* Gespräch (Persona 3): Porträt deutlich größer (Eastward/Hades), der Name daneben rückt mit. */
+@media(min-width:1100px){body:not(.touch-mode) .popup-dialog .conversation-portrait{flex-basis:128px;width:128px;height:128px}}
