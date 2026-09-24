@@ -293,5 +293,5 @@ export function remoteCompanionViews(list,prev,owner,now,lerp=160){
  return (Array.isArray(list)?list:[]).map(w=>{const def=companionById(w?.i);if(!def)return null;const p=(prev||[]).find(v=>v.companion===w.i);let fromX=w.x,fromY=w.y;
   if(p){const k=Math.min(1,(now-p.at)/(p.lerp||lerp));fromX=p.fromX+(p.x-p.fromX)*k;fromY=p.fromY+(p.y-p.fromY)*k;if(Math.abs(fromX-w.x)+Math.abs(fromY-w.y)>600){fromX=w.x;fromY=w.y;}}
   const f=mercLook(def);return {name:def.name,owner:owner.name,x:w.x,y:w.y,fromX,fromY,at:now,lerp,facing:w.f,classId:def.look,look:def.look,spec:def.spec,level:w.l,state:w.s==='down'?'dead':w.s,hp:w.h,party:owner.party,floor:owner.floor,
-   moving:w.s==='walk'||Math.abs(fromX-w.x)+Math.abs(fromY-w.y)>1,companion:w.i,role:def.role,down:w.s==='down',remote:true,attack:w.a===1?.2:0,castPose:w.a===2?.2:0,usingRanged:!!w.r,tint:f.tint,visualEquipment:f.visualEquipment};}).filter(Boolean);
+   moving:w.s==='walk'||Math.abs(fromX-w.x)+Math.abs(fromY-w.y)>1,companion:w.i,role:def.role,down:w.s==='down',remote:true,attack:w.a===1?.2:0,castPose:w.a===2?.2:0,usingRanged:!!w.r,tint:f.tint,visualEquipment:f.visualEquipment,paperdollId:f.paperdollId};}).filter(Boolean);
 }
