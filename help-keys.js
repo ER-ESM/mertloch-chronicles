@@ -3,11 +3,16 @@
 // dazu der Einführungsfilm als Symbolknopf. Einstellungen stehen im Spielmenü (eigenes Fenster), nicht mehr hier.
 import {HELP_GRID as T,INTRO_UI} from './content/index.js';
 import {glyph} from './ui-glyphs.js';
+import {keysOf,liveKeymap} from './keymap.js';
+import {bindingLabel} from './bar-keys.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MOUSE={mouse:['mouse',''],mouseR:['mouse','r'],mouse2:['mouse','2×'],drag:['hand','']};
 const symbol=id=>id?.startsWith('ui:')?`<canvas width="48" height="48" data-ui-icon="${esc(id.slice(3))}" aria-hidden="true"></canvas>`:glyph(id);
 const cap=k=>{const m=MOUSE[k];if(m)return `<kbd class="hk-cap hk-mouse${m[1]==='r'?' hk-right':''}">${glyph(m[0])}${m[1]&&m[1]!=='r'?`<small>${esc(m[1])}</small>`:''}</kbd>`;return k==='–'?'<span class="hk-dash">–</span>':`<kbd class="hk-cap${k.length>2?' hk-wide':''}">${esc(k)}</kbd>`;};
-function item(e){return `<span class="hk-item" tabindex="0" data-tooltip-label="${esc(e.label)}" data-tooltip-note="${esc(e.note)}" aria-label="${esc(e.label+': '+e.note)}">${e.keys.map(cap).join('')}<i class="hk-arrow" aria-hidden="true"></i><span class="hk-to">${symbol(e.to)}</span></span>`;}
+/** Hilfe-Einträge → Aktionen der Tastenbelegung (keymap.js): die Kappen zeigen die wirksame Taste statt des Standards. */
+const ACT={'run|WASD':['moveUp','moveLeft','moveDown','moveRight'],'hand|F':['interact'],'ui:boots|X':['mount'],'target|Tab':['targetNext'],'ui:dash|Leer':['dash'],'ui:interrupt|Q':['interrupt'],'ui:person|C':['person'],'ui:quest|J':['quest'],'ui:talents|N':['talents'],'ui:map|M':['map'],'ui:book|P':['book'],'ui:bag|I':['bag'],'chart|V':['meter'],'ui:base|B':['base'],'hand|⇧B':['professions'],'ui:person|U':['companions'],'target|R':['aggro']};
+const liveKeys=e=>{const ids=ACT[e.to+'|'+e.keys.join('')];if(!ids)return e.keys;const k=ids.map(id=>bindingLabel(keysOf(liveKeymap(),id)[0])||'–');return k;};
+function item(e){e={...e,keys:liveKeys(e)};return `<span class="hk-item" tabindex="0" data-tooltip-label="${esc(e.label)}" data-tooltip-note="${esc(e.note)}" aria-label="${esc(e.label+': '+e.note)}">${e.keys.map(cap).join('')}<i class="hk-arrow" aria-hidden="true"></i><span class="hk-to">${symbol(e.to)}</span></span>`;}
 export function helpPanel({touch=false,kniffe=''}={}){
  const rows=(touch?T.touch:T.desktop).map(([name,icon,items])=>`<div class="hk-row"><span class="hk-topic" tabindex="0" data-tooltip-label="${esc(name)}" data-tooltip-note="" aria-label="${esc(name)}">${symbol(icon)}</span>${items.map(item).join('')}</div>`).join('');
  const tabs=`<nav class="help-tabs panel-tabs" role="tablist">${T.tabs.map(([id,name,icon,note])=>`<button type="button" role="tab" class="ql-tool" data-help-tab="${id}" aria-label="${esc(name)}" data-tooltip-label="${esc(name)}" data-tooltip-note="${esc(note)}">${glyph(icon)}<span class="ql-tab-name">${esc(name)}</span></button>`).join('')}<button type="button" class="ql-tool" data-intro-replay aria-label="${esc(INTRO_UI.helpButton||T.film)}" data-tooltip-label="${esc(T.film)}" data-tooltip-note="${esc(T.filmNote)}">${glyph('film')}</button></nav>`;
