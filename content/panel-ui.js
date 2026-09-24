@@ -14,7 +14,7 @@ export const PLAY_HELP={
   ['Bewegen & Ziel',['WASD läuft, Rechtsklick plant den Weg.','Tab wählt nahe Gegner; Shift + Tab geht zurück.','F spricht, plündert und bedient Auftragsziele.','Klick auf den Auftragskasten läuft zur Wegmarke.']],
   ['Kämpfen',['1–0 nutzt deine Kniffe; Autoangriffe folgen dem Waffentempo.','Der Angriffsbutton schaltet ein/aus; Rechtsklick auf einen Gegner startet, Linksklick und Tab wählen nur aus. Esc beendet den Angriff nach offenen Fenstern.','Zum Zaubern stehen bleiben; normale Kniffe teilen eine Abklingzeit.','LEER weicht aus, Q unterbricht – beide unabhängig von der Leiste.']],
   ['Rucksack & Beute',['Shift über einem Tooltip zeigt die Details: warum das Ding taugt und was die Fachwörter heißen.','Verpflegung ziehst du aus dem Rucksack auf einen freien Platz der Aktionsleiste.','Auto-Loot: Beute landet beim Kill direkt im Rucksack, das Beutelog zeigt sie an.','Ist der Rucksack voll, wartet der Rest unter „Ausrüstung zurückholen“ im Rucksack.']],
-  ['Fenster',['Jede Seite ist ein eigenes Fenster: links Figur und Aufträge, rechts Rucksack und Kniffe, mittig Talente, die Karte fast bildschirmgroß.','C, J, I, P, N, M und H öffnen und schließen ihr Fenster; B springt in den Aufträgen zur Bude. Esc schließt das oberste.','Menüs halten den Kampf nicht an.']],
+  ['Fenster',['Jede Seite ist ein eigenes Fenster: links Figur und Aufträge, rechts Rucksack und Kniffe, mittig Talente, die Karte fast bildschirmgroß.','C, J (oder L), I, P, N, M und H öffnen und schließen ihr Fenster; B springt in den Aufträgen zur Bude. Esc schließt das oberste.','Menüs halten den Kampf nicht an.']],
   ['Wörter im Dorf',['Randale: dein Kraftstoff – Kniffe kosten sie, Kills und Kaltgetränke füllen sie nach.','Kniffe: deine Fähigkeiten, gelernt im Skillbuch, gelegt auf die Leiste, abgefeuert mit 1–0.','Klamotten: die Ersatzsachen deines Mentors – sie entscheiden, wie du kämpfst, nicht wie du riechst.','Pfandmarken: das Geld von Mertloch – Leergut, Beute und Kalle rechnen alle in derselben Währung.']]
  ],
  touch:[
@@ -26,7 +26,7 @@ export const PLAY_HELP={
  ],
  desktopKeys:[
   ['WASD / Rechtsklick','Laufen / Laufweg'],['Tab / Shift + Tab','Nächstes / voriges nahes Ziel'],['F / Shift + F','Interagieren / Beutel ganz leeren'],
-  ['1–0 / Umschalt + 1–0 / LEER / Q','Leiste 1 / Leiste 2 / Ausweichen / Unterbrechen'],['C / P / N','Figur / Kniffe / Talente – jedes ein eigenes Fenster'],['I / J / M / H','Rucksack / Aufträge / Karte / Hilfe'],
+  ['1–0 / Umschalt + 1–0 / LEER / Q','Leiste 1 / Leiste 2 / Ausweichen / Unterbrechen'],['C / P / N','Figur / Kniffe / Talente – jedes ein eigenes Fenster'],['I / J oder L / M / H','Rucksack / Aufträge / Karte / Hilfe'],
   ['X / Shift + P','Auf-/Absitzen / Mount-Sammlung'],['B','Bude (Abschnitt der Aufträge)'],['V','Kampfstatistik'],['R','Aggro-Radius'],['1 / Esc','Autoangriff ein/aus / Autoangriff beenden'],['Esc','Spielmenü öffnen; schließt zuerst Fenster oder bricht Zielen/Zaubern ab'],
   ['Leeres Feld → Kniff','Direkt auf der Aktionsleiste belegen'],['Kniff ziehen / neben die Leiste ziehen','Belegen oder verschieben / abnehmen'],['Maus auf Feld + B / Rechtsklick auf Feld','Taste belegen (auch Mausrad und Seitentasten) / Feldmenü'],['Item doppelklicken','Passende Ausrüstung austauschen'],
   ['Verpflegung ziehen','Rucksack → freier Platz der Aktionsleiste'],['Shift über einem Tooltip','Details, Zusammenhänge und Fachwörter'],
@@ -71,9 +71,11 @@ export const QUEST_TRACKER_UI={track:'Klick: verfolgen (Wegmarke)',run:'Klick: z
 /** Einzelfenster (2026-09-23, löst das Clanbuch mit Reitern ab): [id, Name, Symbol, Taste, Andockseite].
  *  Reihenfolge = Menüleiste unten rechts und Touch-Menü. left/right docken am Rand an, center mittig, full fast Vollbild. */
 export const WINDOW_UI={
- windows:[['person','Figur','person','C','left'],['quest','Aufträge','quest','J','left'],['talents','Talente','talents','N','center'],['map','Karte','map','M','full'],['book','Kniffe','book','P','right'],['bag','Rucksack','bag','I','right'],['guide','Hilfe','guide','H','center']],
+ windows:[['person','Figur','person','C','left'],['quest','Aufträge','quest','J','left','L'],['talents','Talente','talents','N','center'],['map','Karte','map','M','full'],['book','Kniffe','book','P','right'],['bag','Rucksack','bag','I','right'],['guide','Hilfe','guide','H','center']],
  notes:{person:'Ausrüstung und Werte deiner Figur.',quest:'Aufträge, Bude und Erinnerungen.',talents:'Talentbäume und Hauptbaum.',map:'Revierplan mit Orten und Laufweg.',book:'Skillbuch und Aktionsleiste.',bag:'Rucksack, Filter und Suche.',guide:'Tasten, Kniffe erklärt, Einstellungen.'},
  rail:'Fenster',close:'Schließen [Esc]',keyHint:key=>'Taste '+key+' öffnet und schließt',
+ /** Tooltip-Kopf der Menüleiste: „Aufträge [J / L]“. */
+ railLabel:([,name,,key,,alt])=>name+' ['+key+(alt?' / '+alt:'')+']',
  open:name=>name+' öffnen',
  /** Symbole statt Beschriftungen in den Fenstern; Namen erscheinen als Tooltip. */
  compact:{

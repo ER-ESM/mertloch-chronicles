@@ -7,7 +7,7 @@ import {nodeStatus} from './professions.js';
 import {ring} from './target-ui.js';
 import {PROFESSION_STATIONS as ST,PROFESSION_SOURCES as SRC,PROFESSIONS as P,TARGET_RULES as R} from './content/index.js';
 import {professionWorld} from './profession-world.js';
-function label(c,text,x,y,color='#eed39a'){c.font="800 8px Nunito,'Trebuchet MS',sans-serif";c.textAlign='center';c.lineWidth=3;c.strokeStyle='#13201ded';c.strokeText(text,x,y);c.fillStyle=color;c.fillText(text,x,y);}
+function label(c,text,x,y,color='#eed39a'){c.font="800 8px Nunito,'Trebuchet MS',sans-serif";c.textAlign='center';c.lineWidth=3;c.lineJoin='round';/* runde Ecken: sonst schwarze Zacken (Grafikbefund 12) */c.strokeStyle='#13201ded';c.strokeText(text,x,y);c.fillStyle=color;c.fillText(text,x,y);}
 /** Kraut als Kleinbild (E-50): unbewegt, ~25 Formen – einmal je Sorte malen, danach kopieren. */
 const HERB_BOX={x0:-17,y0:-25,x1:17,y1:3};
 function herb(c,x,y,hop){drawVectorSprite(c,'herb:'+(hop?1:0),HERB_BOX,x,y,v=>herbShape(v,0,0,hop));}
@@ -30,5 +30,5 @@ function drawNode(c,e,g,time){
  if(scrap)drawProp(c,{kind:e.kind==='machinery'?'kuehlschrank':'schrotthaufen',x:0,y:0,w:e.kind==='machinery'?19:30,h:18});else herb(c,0,0,e.kind==='hops');c.restore();
  // Schimmer: drei Glanzpunkte blitzen versetzt auf, steigen leicht und verlöschen – ohne Mischmodi (E-50).
  if(ready)for(let i=0;i<3;i++){const t=(time*.55+i/3+seed*.13)%1,a=Math.sin(t*Math.PI),x=e.x+Math.sin(seed+i*2.1)*7,y=e.y-3-i*3-t*6,s=.8+a*2;c.globalAlpha=a*.9;c.fillStyle=tone;c.fillRect(x-s,y-.5,s*2,1);c.fillRect(x-.5,y-s,1,s*2);c.fillStyle='#fffbe6';c.fillRect(x-.5,y-.5,1,1);}
- c.globalAlpha=1;if(hover)label(c,SRC[e.kind].name,e.x,e.y-NODE.top-4,empty?'#ada891':'#f0d38f');
+ c.globalAlpha=1;/* Name nur einmal: beim Überfahren nennt ihn der Tooltip, der Leuchtring bleibt (Runde 1, 2026-09-24) */
 }

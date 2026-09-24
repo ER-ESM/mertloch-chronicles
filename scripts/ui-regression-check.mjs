@@ -78,6 +78,13 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
    await b.press('k');await hover('[data-book-skill="auto"]');assert.ok(await read(`document.querySelector('[data-book-skill="auto"] canvas').getContext('2d').getImageData(0,0,64,64).data.some((v,i)=>i%4===3&&v)`));await b.press('Escape');await b.press('1');await b.press('Escape');assert.equal((await state()).autoAttack.enabled,false);pass('selection, autoattack toggle, escape and skill icons');
   }
   if(suites.includes('layout')){
+   // Nirgends scrollen (Runde 1, 2026-09-24): jede sichtbare .popup-body und jeder scrollende Innenbereich am Desktop 2024×900 wird
+   // gemeldet. Vorerst nur Warnung – rot wird die Regel, wenn Runde 2 die Fenster verdichtet hat (SCROLL_STRICT=1 macht sie schon jetzt rot).
+   {await b.resize(2024,900);await b.send('Emulation.setTouchEmulationEnabled',{enabled:false,maxTouchPoints:1});await fixture();const warnings=[];
+    for(const id of ['person','quest','talents','map','book','bag','guide']){await fresh(id);await wait(300);
+     warnings.push(...await read(`[...document.querySelectorAll('.game-popup')].filter(p=>p.offsetParent).flatMap(p=>[p.querySelector('.popup-body'),...p.querySelectorAll('.popup-body *')].filter(e=>e&&e.offsetParent&&(e.classList.contains('popup-body')||/auto|scroll/.test(getComputedStyle(e).overflowY))&&e.scrollHeight>e.clientHeight+2).map(e=>p.dataset.window+' '+(e.classList.contains('popup-body')?'.popup-body':(e.className||e.tagName).toString().split(' ')[0])+' '+e.scrollHeight+'/'+e.clientHeight))`));}
+    for(const w of [...new Set(warnings)])console.warn('WARNUNG Scrollen (2024×900): '+w);writeFileSync(dir+'/scroll-warnings.json',JSON.stringify([...new Set(warnings)],null,2));
+    if(process.env.SCROLL_STRICT==='1')assert.deepEqual([...new Set(warnings)],[],'Fenster scrollen');pass('desktop 2024×900: Scroll-Prüfung ('+new Set(warnings).size+' Warnungen)');}
    for(const [name,width,height,touch,hand] of [['desktop',1440,1000,false,'right'],['phone',390,844,true,'right'],['small',320,740,true,'right'],['landscape',844,390,true,'right'],['landscape-left',844,390,true,'left']]){
     await b.resize(width,height);await b.send('Emulation.setTouchEmulationEnabled',{enabled:touch,maxTouchPoints:5});await fixture({tutorial:{version:1,step:3,completed:false}},touch);
     if(touch)await read(`document.body.dataset.touchHand='${hand}';for(const [k,v] of Object.entries(${JSON.stringify(width>height?{left:47,right:47,top:0,bottom:21}:{left:0,right:0,top:47,bottom:34})}))document.body.style.setProperty('--safe-'+k,v+'px')`);

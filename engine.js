@@ -26,6 +26,8 @@ import {available,xpToNext} from './progression.js';
 import {talentPoints,talentState} from './talents.js';
 import {freshClassState,classSkills,healPlayer,healerEffects,addGuard,beforeSkill,skillCost,performTalent,afterSkill,afterDamage,onParry,onKill,modifyHit,tickClass} from './class-mechanics.js';
 import {VillageLife} from './village-life.js';
+import {pathNear} from './path-near.js';
+const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
 import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
@@ -485,7 +487,7 @@ export class Game{
     return dx<0&&p.x>u.maxX&&p.x-6<=u.maxX+1.5&&p.y>=u.minY&&p.y<=u.minY+(u.access||22)?this.switchFloor(0,{x:cx,y:g.minY+(g.topStep||8)+6},this.stairsAutoDown||routed?{x:cx,y:g.maxY+8}:null):false;}
   /** Laufbefehl bis zum Klickpunkt. Der Wunschort bleibt in routeGoal stehen, damit ein hängengebliebener
    *  Schritt den Weg neu berechnen kann statt den Rest der Strecke wegzuwerfen (P6). */
-  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;this.path=this.walkWorld().findPath(this.player,point);this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast('Dieser Ort ist nicht erreichbar. Wähle einen freien Weg.');return false;}return true;}
+  navigate(point){if(this.dead||this.paused||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||!tutorialAllowsTravel(this,point))return false;this.casting=null;this.keys.clear();this.routeGoal={x:point.x,y:point.y};this.routeStuck=0;this.routeRetried=false;const walk=this.walkWorld();try{this.path=walk.findPath(this.player,point);}catch{this.path=[];}/* unerreichbar: so nah wie möglich heran (path-near.js) */if(!this.path.length){this.path=pathNear(walk,this.player,point);if(this.path.length)this.routeGoal={...this.path.at(-1)};}this.moveTo=this.path.shift()||null;if(!this.moveTo){this.routeGoal=null;this.toast(NO_PATH);return false;}return true;}
   /** Laufweg zur goldenen Wegmarke – ein Befehl statt vieler kurzer Klicks am Bildschirmrand (P6). */
   navigateDestination(){const goal=this.destination();return goal?this.navigate(goal.point):false;}
   /** Neuberechnung des laufenden Laufbefehls, wenn der Schritt an einer Kante klemmt. */

@@ -76,8 +76,11 @@
 #miniButton .mm-seg button[aria-pressed=true]{border-color:#e3bf72;background:#3a5a47;color:#ffe3a3}
 #miniButton .mm-menu .mm-reset{justify-content:center;margin-top:4px;border-top:1px solid #d7b57140;border-radius:0;color:#d6c9a6;font-size:12px}
 
+/* Stapelordnung (Runde 1, 2026-09-24; Übersicht in docs/OPTIMIERUNG-2026-09-24-runde-1.md): Welt und HUD 0–30, Fenster (#popupLayer) 40,
+   Minikarte mit offener Lupe/Optionen 1100, Kontextmenü 1200, Tooltips 100000. Menüs und Tooltips liegen damit immer über allen Fenstern. */
+#gameShell #miniButton:has(.mm-menu:not([hidden])){z-index:1100}
 /* Tooltip am Mauszeiger (Material wie .item-tooltip) */
-.mm-tip{position:fixed!important;z-index:40;width:auto!important;max-width:250px;padding:6px 10px!important;pointer-events:none}
+.mm-tip{position:fixed!important;z-index:100000;width:auto!important;max-width:250px;padding:6px 10px!important;pointer-events:none}
 .mm-tip[hidden]{display:none!important}
 .mm-tip strong{font:700 13px/1.3 var(--read);letter-spacing:0;text-transform:none;color:#f3cf7a;display:inline;margin:0}
 .mm-tip kbd{margin-left:4px;font-size:11px}
@@ -86,3 +89,7 @@
 .mm-tip .mm-tip-row b{font:700 13px/1.3 var(--read);color:#f4e5c5}
 .mm-tip .mm-tip-row small{font:600 11px/1.3 var(--read);color:#d7b571}
 .mm-tip .mm-tip-row em{flex-basis:100%;font:italic 600 11px/1.3 var(--read);color:#b8c4ab}
+/* Ortsschild wie in WoW (Runde 1, 2026-09-24, zone-announce.js): nur kurz beim Gebietswechsel und solange die Maus über der Minikarte liegt.
+   Im HUD-Editor bleibt es sichtbar, damit man es findet. */
+body.zone-fade:not(.hud-editing) #gameShell #miniButton .mm-plate{opacity:0;transition:opacity .9s ease}
+body.zone-fade #gameShell #miniButton.zone-show .mm-plate,body.zone-fade #gameShell #miniButton:hover .mm-plate{opacity:1;transition:opacity .25s ease}

@@ -4,7 +4,7 @@ import {FEATURE_UNLOCKS,UNLOCK_UI as T,buildingsUnlocked} from './content/index.
 
 const BY_ID=new Map(FEATURE_UNLOCKS.map(f=>[f.id,f]));
 /** Fenster/Knopf → Freischaltung. Nicht aufgeführte Fenster sind immer offen. */
-export const PANEL_FEATURE={quest:'quest',talents:'talents',base:'bude',professions:'professions',mounts:'mounts',companions:'companions',meter:'meter',hud:'hudEdit'};
+export const PANEL_FEATURE={talents:'talents',base:'bude',professions:'professions',mounts:'mounts',companions:'companions',meter:'meter',hud:'hudEdit'};
 
 /** Reine Prüfung einer Bedingung (Tests). */
 export function conditionMet(game,when={}){
@@ -36,8 +36,12 @@ export function mountUnlocks(host){
   for(const id of open)if(!known.seen.has(id)){known.seen.add(id);fresh.add(id);save();host.onUnlock?.(BY_ID.get(id));}
   const locked=FEATURE_UNLOCKS.filter(f=>!open.includes(f.id)).map(f=>f.id).join(' '),novel=open.filter(id=>!known.opened.has(id)).join(' ');
   if(document.body.dataset.locked!==locked)document.body.dataset.locked=locked;
+  syncMenu(locked);
   if((document.body.dataset.novel||'')!==novel)document.body.dataset.novel=novel;
  }
+ /** Menüleiste/Touch-Raster (Runde 1, 2026-09-24): gesperrte Fenster bleiben sichtbar, ausgegraut, der Tooltip nennt die Bedingung.
+  *  Läuft nur, wenn sich die Sperren ändern oder ein Raster neu gebaut wurde (Merker am Element). */
+ function syncMenu(locked){for(const b of document.querySelectorAll('.game-menu-rail [data-panel],.game-menu-windows [data-shell]')){if(b.dataset.lockSync===locked)continue;b.dataset.lockSync=locked;const f=PANEL_FEATURE[b.dataset.panel||b.dataset.shell];if(!f)continue;const lock=!unlocked(f);if(!('openNote' in b.dataset))b.dataset.openNote=b.dataset.tooltipNote||'';b.classList.toggle('is-locked',lock);if(b.dataset.tooltipLabel)b.dataset.tooltipNote=lock?lockedMessage(f):b.dataset.openNote;if(lock)b.setAttribute('aria-disabled','true');else b.removeAttribute('aria-disabled');}}
  /** Beim Öffnen: gesperrt → false (Meldung zeigt der Aufrufer), sonst „Neu"-Marke entfernen. */
  function opened(id){if(!BY_ID.has(id))return true;if(!unlocked(id))return false;if(known&&!known.opened.has(id)){known.opened.add(id);save();update();}return true;}
  return {update,opened,unlocked,

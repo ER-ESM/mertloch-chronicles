@@ -774,15 +774,14 @@ body:not(.touch-mode) .region-label #zoneType{font-size:12px;letter-spacing:.06e
 .game-shell>canvas{transition:filter .8s ease}
 .game-shell.player-dead>canvas:not(.world-labels):not(#world){filter:grayscale(.85) brightness(.72) contrast(1.05)}
 
-/* ===== Schrittweise Freischaltung (unlocks.js): gesperrte Menüs verschwinden, neue tragen „Neu" bis zum ersten Öffnen ===== */
-body[data-locked~=quest] :is(.game-menu-rail [data-panel=quest],.book-tabs [data-book-tab=quest]),
-body[data-locked~=talents] :is(.game-menu-rail [data-panel=talents],.book-tabs [data-book-tab=talents]),
+/* ===== Schrittweise Freischaltung (unlocks.js): gesperrte Menüs verschwinden, neue tragen „Neu" bis zum ersten Öffnen.
+   Ausnahme Menüleiste (Runde 1, 2026-09-24): sie zeigt immer alle sieben Fenster, gesperrte ausgegraut (einzelfenster.css). ===== */
+body[data-locked~=talents] .book-tabs [data-book-tab=talents],
 body[data-locked~=meter] :is(#meterToggle,#combatMeter),
 body[data-locked~=hudEdit] .game-menu-actions [data-hud-open],
 body[data-locked~=professions] .game-menu-actions [data-shell=professions],
 body[data-locked~=mounts] .game-menu-actions [data-shell=mounts],
 body[data-locked~=companions] .game-menu-actions [data-shell=companions]{display:none!important}
-body[data-novel~=quest] :is(.game-menu-rail [data-panel=quest],.book-tabs [data-book-tab=quest]),
 body[data-novel~=talents] .book-tabs [data-book-tab=talents],
 body[data-novel~=professions] .game-menu-actions [data-shell=professions],
 body[data-novel~=mounts] .game-menu-actions [data-shell=mounts],
@@ -869,7 +868,8 @@ body.intro-open .game-shell>:not(canvas):not(.vignette):not(.intro-film):not(.mi
 /* ===== Aktionsleisten 2026-09-23: mehrere Leisten, Ziehen & Ablegen, Tastenbelegung am Platz ===== */
 .action-area .extra-bar{margin-bottom:6px}
 .action-area .extra-bar .empty-mark{visibility:hidden}
-body:has(.popup-book:not(.minimized)) .action-area .extra-bar .empty-mark{visibility:visible}
+/* Runde 1: leere Plätze der zweiten Leiste nur beim Ziehen (nicht mehr bei jedem offenen Fenster). */
+body.bar-drop .action-area .extra-bar .empty-mark{visibility:visible}
 /* Ziehen: nur ein kleines Symbol wandert mit; alle Leisten leuchten, leere Plätze werden sichtbar, der Platz unter dem Zeiger ist klar markiert. */
 .drag-ghost{position:fixed;left:0;top:0;z-index:10000;width:40px;height:40px;pointer-events:none;background:var(--green-2);border:var(--edge) solid var(--gold);box-shadow:var(--hard) var(--hard-ink)}
 .drag-ghost canvas{display:block;width:36px;height:36px}
@@ -906,8 +906,8 @@ body.bar-drop #gameShell .action-area{z-index:1000}
    sonst stand dort eine Reihe „⇧2 … ⇧0“ ohne Inhalt. */
 .action-area .extra-bar .skill.empty-slot{opacity:.32}
 .action-area .extra-bar .skill.empty-slot .key{visibility:hidden}
-body:has(.popup-book:not(.minimized)) .action-area .extra-bar .skill.empty-slot .key,body.bar-drop .action-area .extra-bar .skill.empty-slot .key{visibility:visible}
-body:has(.popup-book:not(.minimized)) .action-area .extra-bar .skill.empty-slot{opacity:.6}
+body.bar-drop .action-area .extra-bar .skill.empty-slot .key{visibility:visible}
+body.bar-drop .action-area .extra-bar .skill.empty-slot{opacity:.6}
 /* Kniffe-Buch: Symbol im Messingrahmen statt frei auf der Karte. */
 .icon-skillbook .book-skill canvas{border:2px solid #b8955a;border-radius:4px;box-shadow:0 2px 0 var(--hard-ink,#0d1a13),0 0 0 1px #0d1a13;background:#10231a}
 .icon-skillbook .book-skill.locked canvas{border-color:#56655a}

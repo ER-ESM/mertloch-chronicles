@@ -1,7 +1,14 @@
 import {questResponse,questProgress,escapeQuest as esc} from './quest-status-ui.js';
 import {chaptersPanel,rewardLine,rewardNote} from './chapter-ui.js';
-import {STORY,STORY_CHAPTERS} from './content/index.js';
+import {STORY,STORY_CHAPTERS,TUTORIAL} from './content/index.js';
+import {tutorialActive} from './tutorial.js';
 import {hotspotQuestEntries,hotspotActiveCount,hotspotDoneCount} from './hotspot-ui.js';
+/** Hofprobe als Auftrag (Runde 1, 2026-09-24): J/L öffnet die Aufträge schon während der Hofprobe. Schritte als Häkchenliste,
+ *  der Erklärtext je Schritt steht im Tooltip. */
+function tutorialEntry(game){
+ const step=game.tutorial.step||0;
+ return `<article class="quest-entry main-quest tutorial-quest tracked"><span class="eyebrow">${esc(STORY.giver)}</span><h3>${esc(TUTORIAL.title)}</h3><ul class="tutorial-steps">${TUTORIAL.steps.map((s,i)=>`<li class="${i<step?'done':i===step?'current':''}" data-tooltip-label="${esc(s.title)}" data-tooltip-note="${esc(s.text)}">${esc(s.title)}</li>`).join('')}</ul></article>`;
+}
 /** Hauptgeschichte: Titel, Ziele und Belohnung immer aus dem laufenden Kapitel. */
 function mainEntry(game){
  const q=game.quest||{},chapter=game.chapter?game.chapter():STORY_CHAPTERS[0],progress=game.chapterProgress?game.chapterProgress():[];
@@ -14,7 +21,7 @@ function mainEntry(game){
 export function questlogPanel(game,filter='active'){
  const q=game.quest||{},all=[{id:'main',accepted:!!q.accepted,claimed:!!q.actDone},...game.world.quests.map(d=>({id:d.id,...game.sideQuests[d.id]}))],matches=s=>filter==='all'||filter==='active'&&s.accepted&&!s.claimed||filter==='open'&&!s.accepted||filter==='done'&&s.claimed;
  // Die Hauptgeschichte steht unter „Aktiv", solange sie läuft – auch bevor sie angenommen ist (sonst hieße es „Hier ist gerade Ruhe" über der offenen Hauptquest).
- const main=matches(all[0])||filter==='active'&&!all[0].claimed?mainEntry(game):'';
+ const main=(filter==='active'&&tutorialActive(game)?tutorialEntry(game):'')+(matches(all[0])||filter==='active'&&!all[0].claimed?mainEntry(game):'');
  const side=game.world.quests.filter(d=>matches(game.sideQuests[d.id])).map(d=>{const s=game.sideQuests[d.id],ready=s.progress>=d.required,tracked=game.trackedQuest===d.id,line=questResponse(d,s);return `<article class="quest-entry ${tracked?'tracked':''}"><span class="eyebrow">${d.activity==='rhythm'?'Timing-Soundcheck':d.activity==='wires'?'Kabelrätsel':d.type==='hunt'?'Jagd':d.type==='gather'?'Sammeln':'Erkundung'} · ${d.location}</span><h3>${d.title}${tracked?' <span class="tracking-dot" title="Wird verfolgt">◆</span>':''}</h3><p>${esc(d.description)}</p>${line?`<p class="conversation-quote">„${esc(line)}“</p>`:''}<small>${esc(d.giver.name)}${s.accepted?` · ${esc(questProgress(d,s))}`:' · Auftrag noch nicht angenommen'}</small>${s.accepted?`<div class="quest-meter" role="progressbar" aria-label="${d.title}" aria-valuenow="${s.progress}" aria-valuemin="0" aria-valuemax="${d.required}"><i style="width:${Math.min(100,s.progress/d.required*100)}%"></i></div>`:''}<div class="quest-reward">${d.reward} EP · 10 Pfandmarken · Ausrüstung nach Wahl${s.claimed?' · Abgeschlossen':ready?' · Bereit zur Abgabe':''}</div><div class="quest-entry-actions"><button class="outline-button" data-route-giver="${d.id}">${s.accepted&&!s.claimed?'Ziel auf der Karte':'Questgeber auf der Karte'}</button>${s.accepted&&!s.claimed?`<button class="${tracked?'outline-button':'gold-button'}" data-track-side="${d.id}">${tracked?'Wird verfolgt':'Verfolgen'}</button>`:''}</div></article>`;}).join('');
  return `<header class="rpg-heading"><h2>Das Dorf hat was vor.</h2><p>${(n=>n===1?'1 aktiver Auftrag':n+' aktive Aufträge')(all.filter(s=>s.accepted&&!s.claimed).length+(game.hotspots?hotspotActiveCount(game):0))} · ${all.filter(s=>s.claimed).length+(game.hotspots?hotspotDoneCount(game):0)} abgeschlossen</p></header><nav class="quest-tabs" aria-label="Aufträge filtern">${[['active','Aktiv'],['open','Im Dorf'],['done','Erledigt']].map(([id,name])=>`<button data-quest-filter="${id}" aria-pressed="${filter===id}" class="${filter===id?'selected':''}">${name}</button>`).join('')}</nav><div class="quest-entries">${main+side+(game.hotspots?hotspotQuestEntries(game,filter):'')||'<div class="quest-empty"><h3>Hier ist gerade Ruhe.</h3><p>Unter „Im Dorf“ findest du Bewohner, die Hilfe brauchen. Auf der Karte führt dich eine Route zu ihnen.</p><button class="gold-button" data-quest-filter="open">Aufträge im Dorf ansehen</button></div>'}</div>${chaptersPanel(game)}`;
 }

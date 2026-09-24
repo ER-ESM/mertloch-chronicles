@@ -24,7 +24,12 @@ body:not(.touch-mode) .popup-map.dock-full .grid-pager{display:none}
 .game-menu-windows{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px}
 .game-menu-windows button{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:5px 2px;font-size:11px}
 .game-menu-windows canvas{width:26px;height:26px;image-rendering:pixelated}
-body[data-locked~=quest] .game-menu-windows [data-shell=quest],body[data-locked~=talents] .game-menu-windows [data-shell=talents]{display:none!important}
+/* Runde 1 (2026-09-24): Menüleiste und Touch-Raster zeigen immer alle sieben Fenster. Gesperrte (unlocks.js setzt .is-locked und
+   nennt die Bedingung im Tooltip) sind ausgegraut und tragen ein kleines Schloss; die Taste öffnet eine Vorschau oder meldet die Bedingung. */
+:is(.game-menu-rail,.game-menu-windows) button.is-locked{position:relative}
+:is(.game-menu-rail,.game-menu-windows) button.is-locked canvas{filter:grayscale(.9) brightness(.7)!important;opacity:.7}
+:is(.game-menu-rail,.game-menu-windows) button.is-locked kbd{opacity:.55}
+:is(.game-menu-rail,.game-menu-windows) button.is-locked::before{content:'';position:absolute;left:3px;top:3px;width:13px;height:13px;z-index:2;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 5V3.5a3 3 0 0 1 6 0V5' fill='none' stroke='%23e0c070' stroke-width='1.6'/%3E%3Crect x='2' y='5' width='8' height='6' rx='1' fill='%23e0c070'/%3E%3C/svg%3E");filter:drop-shadow(0 1px 0 #0b1216)}
 .game-menu-windows button[data-badge]{position:relative;overflow:visible}
 .game-menu-windows button[data-badge]:after{content:attr(data-badge);position:absolute;top:-6px;right:-4px;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border:1px solid #1f2d20;border-radius:9px;background:linear-gradient(#ffe08a,#d9a83f);color:#1f2d20;font:700 10px/14px var(--read,sans-serif)}
 body:not(.touch-mode) .game-popup.popup-map.dock-full{max-width:none}
@@ -126,3 +131,18 @@ body:not(.touch-mode) .game-popup.popup-dock .section-jump{margin:-10px -12px 8p
 .game-popup.popup-book .icon-skillbook .book-skill .book-skill-name,.game-popup.popup-book .icon-skillbook .book-skill .book-skill-origin{display:none}
 /* Sprungleiste bündig mit dem schmaleren Innenrand der angedockten Fenster */
 body:not(.touch-mode) .game-popup.popup-dock .section-jump{margin:-10px -12px 8px;padding:6px 12px;top:-10px}
+/* Hofprobe als Auftrag (Runde 1, 2026-09-24): Schritte als Häkchenliste, Erklärung im Tooltip. */
+.quest-entry .tutorial-steps{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:1px;line-height:1.35}
+.quest-entry .tutorial-steps li{position:relative;padding:2px 4px 2px 22px;border-radius:4px;opacity:.72;cursor:help}
+.quest-entry .tutorial-steps li::before{content:'';position:absolute;left:5px;top:50%;width:9px;height:9px;margin-top:-5px;border:1.5px solid currentColor;border-radius:2px;opacity:.7}
+.quest-entry .tutorial-steps li.done{opacity:.6;text-decoration:line-through;text-decoration-thickness:1px}
+.quest-entry .tutorial-steps li.done::before{border:0;opacity:1;width:11px;height:6px;margin-top:-5px;border-left:2.5px solid #4f8a3a;border-bottom:2.5px solid #4f8a3a;transform:rotate(-45deg)}
+.quest-entry .tutorial-steps li.current{opacity:1;font-weight:800;background:#d8b86a33}
+.quest-entry .tutorial-steps li.current::before{border-color:#b8791f;background:#f3cf7a;opacity:1}
+/* Zonentitel oben mittig wie die Gebietsankündigung in WoW (Runde 1, 2026-09-24, zone-announce.js): einblenden beim Betreten,
+   ≈3,6 s stehen, ausblenden. Im HUD-Editor bleibt er sichtbar, damit er sich verschieben lässt. */
+body.zone-fade:not(.hud-editing):not(.touch-mode) #gameShell .region-label{opacity:0;visibility:hidden;transition:opacity 1.1s ease,visibility 0s linear 1.1s}
+body.zone-fade:not(.hud-editing):not(.touch-mode) #gameShell .region-label.zone-show{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
+/* Runde 1 (2026-09-24): Kniffe-Fenster ohne Leerraum über/unter dem Raster (je 18 px), damit es auch mit belegter zweiter Leiste ohne Scrollen
+   in den rechten Fensterblock passt. */
+body:not(.touch-mode) .game-popup[data-window=book] .icon-skillbook{margin-top:4px;margin-bottom:6px}

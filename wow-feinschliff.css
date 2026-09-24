@@ -1,0 +1,24 @@
+/* Optimierung Runde 1 (2026-09-24): Quick Wins aus dem Grafikbericht docs/REVIEW-GRAFIK-2026-09-24-r1.md, WoW als Vorbild.
+   Zuletzt geladen; Fensterlage und Freischaltung stehen in einzelfenster.css, Ortsschild in minimap.css. */
+
+/* Tastenziffern auf der Aktionsleiste ohne dunkle Box: weiße Ziffer mit 1-px-Umriss (WoW), Nunito statt Pixelschrift – die 6 liest sich nicht mehr als 8. */
+body:not(.touch-mode) .action-area .skill .key{background:none!important;padding:0 2px;top:1px;left:2px;font:800 13px/1 var(--read,'Nunito',sans-serif);letter-spacing:0;color:#fff8e6;
+ text-shadow:1px 0 0 #0b1216,-1px 0 0 #0b1216,0 1px 0 #0b1216,0 -1px 0 #0b1216,1px 1px 0 #0b1216,-1px -1px 0 #0b1216,1px -1px 0 #0b1216,-1px 1px 0 #0b1216}
+body:not(.touch-mode) .action-area .skill .key.key-long{font-size:10px}
+
+/* Kein Textschild „Buffs“/„Debuffs“ über den Symbolen; der Name steht im aria-label, im HUD-Editor bleibt er als Griff. */
+body:not(.hud-editing) .aura-bar>h2{display:none}
+
+/* Einheit „m“ nie in Versalien (Zielrahmen, Kartenliste, Auftragsverfolgung). */
+#targetDistance,.atlas-place em,.atlas-list em,.quest-task em,.touch-quest em{text-transform:none!important}
+
+/* Kartenlegende: das Häkchen „Lebewesen“ war ein leeres weißes Quadrat (Browser-Kasten ohne Stil). */
+.game-popup .atlas-key input[type=checkbox]{appearance:none!important;-webkit-appearance:none!important;width:14px!important;height:14px!important;min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;
+ border:1.5px solid #d7b571!important;border-radius:3px!important;background:#0c1c16!important;box-shadow:none!important;display:inline-grid;place-items:center;cursor:pointer;flex:none}
+.game-popup .atlas-key input[type=checkbox]:checked{background:#2d4a3a no-repeat center/11px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.5 5 9l5-6' fill='none' stroke='%23ffe3a3' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
+
+/* Figur: Drehen/Wechseln lagen über dem unteren rechten Ausrüstungsplatz – jetzt mittig unter der Puppe. */
+body:not(.touch-mode) .popup-person .equipment-grid .armory-controls{right:auto!important;left:50%;transform:translateX(-50%);top:calc(var(--body-height) * .9)!important}
+
+/* Gespräch: der Name steht in der Kopfkarte, die Titelzeile trägt nur das Symbol. */
+.popup-dialog:has(.conversation-portrait) .popup-titlebar strong{visibility:hidden}

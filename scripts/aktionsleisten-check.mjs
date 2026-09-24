@@ -35,7 +35,7 @@ try{
  // 2 Clanbuch → Kniffe: keine Aktionsplätze mehr; Kniff auf Leiste 2 ziehen.
  await b.press('k');await wait(700);
  assert.equal(await read(`document.querySelectorAll('.popup-book [data-bind-slot],.popup-book .binding-slots').length`),0,'das Kniffe-Menü zeigt keine Aktionsplätze mehr');
- {const p=await center('[data-book-skill="strike"]');await mouse('mouseMoved',p.x,p.y);await wait(300);assert.match(await read("document.querySelector('#itemTooltip').textContent"),/Aktionsleiste ziehen/,'Kniff-Tooltip nennt das Ziehen');await shot('02a-kniff-tooltip');}
+ {const p=await center('[data-book-skill="strike"]');await mouse('mouseMoved',p.x,p.y);await wait(300);/* Runde 1 (2026-09-24): keine Bedienhilfe mehr im Kniff-Tooltip, Ziehen/Belegen steht in der Hilfe */assert.doesNotMatch(await read("document.querySelector('#itemTooltip').textContent"),/Aktionsleiste ziehen/,'Kniff-Tooltip ohne Bedienhilfe');await shot('02a-kniff-tooltip');}
  const skill=await read(`[...document.querySelectorAll('[data-book-skill]')].find(el=>!el.classList.contains('locked')&&!['dash','interrupt'].includes(el.dataset.bookSkill)&&!window.mertloch.state().actionBar.includes(el.dataset.bookSkill))?.dataset.bookSkill||'burst'`);
  let during=await drag(`[data-book-skill="${skill}"]`,slot(12),{shotName:'02-kniff-ziehen'});
  assert.ok(during.ghost&&during.ghostSize<=44,'nur ein kleines Symbol wandert mit: '+JSON.stringify(during));assert.ok(during.barDrop&&during.outlined&&during.emptyVisible,'Leisten hervorgehoben, leere Plätze sichtbar: '+JSON.stringify(during));assert.equal(during.over,'12','Zielplatz markiert');

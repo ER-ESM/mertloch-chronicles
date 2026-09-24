@@ -49,10 +49,15 @@ function tipNote(e,focus){
  const steps=(e.steps?.length?e.steps:[{text:e.task,done:e.done}]).map(s=>`<span class="qt-tip-step${s.done?' done':''}">${s.done?'✓':'◇'} ${esc(s.text)}</span>`).join('<br>');
  return steps+(e.reward?`<br><small>${esc(T.reward)}: ${esc(e.reward)}</small>`:'')+`<br><small>${esc(focus?T.run:T.track)}</small>`;
 }
+/** Runde 1 (2026-09-24, Grafikbefund Quick Win 8): „Daily:“ wird ein Symbol vor dem Titel, der Zähler „0/3“ steht in der
+ *  Distanzspalte statt auf einer eigenen Zeile. */
+const DAILY=/^Daily:\s*/i,COUNT=/^(.*?)[\s·:]+(\d+\s*\/\s*\d+)$/;
+const titleHtml=t=>DAILY.test(t)?`<i class="qt-daily" aria-label="Täglich"></i>${esc(t.replace(DAILY,''))}`:esc(t);
 function row(e,{focus,dist}){
- const tip=`data-tooltip-label="${esc(e.title)}" data-tooltip-note="${esc(tipNote(e,focus))}"`,task=`<div class="quest-task${focus&&dist!=null?' waypoint':''}${e.done?' done':''}"><i aria-hidden="true"></i><span>${esc(e.task)}</span>${dist!=null?`<em>${dist} m</em>`:''}</div>`;
- return focus?`<div class="qt-quest is-focus${e.done?' is-done':''}" ${tip}><b id="questTitle" class="qt-title">${esc(e.title)}</b><div id="questTasks">${task}</div></div>`
-  :`<div class="qt-quest${e.done?' is-done':''}" role="button" tabindex="0" data-track-quest="${esc(e.key)}" ${tip}><b class="qt-title">${esc(e.title)}</b>${task}</div>`;
+ const count=COUNT.exec(e.task||''),text=count?count[1]:e.task;
+ const tip=`data-tooltip-label="${esc(e.title)}" data-tooltip-note="${esc(tipNote(e,focus))}"`,task=`<div class="quest-task${focus&&dist!=null?' waypoint':''}${e.done?' done':''}"><i aria-hidden="true"></i><span>${esc(text)}</span>${count?`<b class="qt-count">${esc(count[2].replace(/\s+/g,''))}</b>`:''}${dist!=null?`<em>${dist} m</em>`:''}</div>`;
+ return focus?`<div class="qt-quest is-focus${e.done?' is-done':''}" ${tip}><b id="questTitle" class="qt-title">${titleHtml(e.title)}</b><div id="questTasks">${task}</div></div>`
+  :`<div class="qt-quest${e.done?' is-done':''}" role="button" tabindex="0" data-track-quest="${esc(e.key)}" ${tip}><b class="qt-title">${titleHtml(e.title)}</b>${task}</div>`;
 }
 /**
  * HTML der Verfolgung: verfolgter Auftrag oben, darunter bis zu `room` weitere, der Rest als „+N“.

@@ -45,3 +45,9 @@ test('Ollis Pitch: Ida nimmt die Abgabe auch an, solange ihre Hauptquest läuft'
  const html=idaDialogue(g)+hotspotTurnIns(g,'ida');assert.match(html,/data-hs-claim="st-olli-1"/,'die Abgabe steht in Idas Gespräch');
  assert.ok(claimHotspotQuest(g,'st-olli-1'));
 });
+
+test('Runde 1: „Daily:“ wird ein Symbol, der Zähler steht ohne Umbruch in der Distanzspalte',()=>{
+ const g=hero();stand(g,'bude-nyalol');assert.ok(acceptHotspotQuest(g,'st-nyalol-1'));
+ const html=trackerHtml(g,{metres:pt=>distance(g.player,pt),waypoint:g.destination()});
+ assert.doesNotMatch(html,/qt-title">Daily:/);assert.match(html,/class="qt-daily"[^>]*><\/i>Kabelsalat/);assert.match(html,/<b class="qt-count">0\/5<\/b>/);
+});

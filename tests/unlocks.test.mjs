@@ -7,10 +7,10 @@ const game=(o={})=>({player:{level:o.level||1},tutorial:{completed:!!o.tutorial}
 
 test('neuer Held sieht nur die Grundmenüs',()=>{
  const g=game();for(const f of FEATURE_UNLOCKS)assert.equal(featureUnlocked(g,f.id),false,f.id);
- for(const always of ['person','bag','map','book','guide'])assert.equal(featureUnlocked(g,always),true,always);
+ for(const always of ['person','bag','map','book','guide','quest'])assert.equal(featureUnlocked(g,always),true,always);
 });
 test('Hofprobe, Stufe und Kapitel schalten schrittweise frei',()=>{
- assert.equal(featureUnlocked(game({tutorial:true}),'quest'),true);
+ assert.equal(featureUnlocked(game({tutorial:true}),'meter'),true);
  assert.equal(featureUnlocked(game({tutorial:true,level:2}),'professions'),false);
  assert.equal(featureUnlocked(game({tutorial:true,level:3}),'professions'),true);
  assert.equal(featureUnlocked(game({tutorial:true,level:5}),'talents'),true);

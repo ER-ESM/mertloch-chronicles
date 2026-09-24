@@ -7,18 +7,34 @@ Nutzerauftrag: Die Reiter im einen Fenster („Clanbuch“) auflösen, jedes Men
 | Fenster | Taste | Lage (Desktop) |
 |---|---|---|
 | Figur | C | links, unter Menüknopf/Spielerrahmen |
-| Aufträge (mit Bude, Erinnerungen) | J (B springt zur Bude) | links, neben Figur |
+| Aufträge (mit Bude, Erinnerungen) | J oder L (B springt zur Bude) | links, neben Figur |
 | Talente | N | mittig |
 | Karte | M | mittig, fast Vollbild (2,5 % Rand), Karte + Ortsliste nebeneinander |
 | Kniffe | P (K als alter Griff) | rechts, neben Rucksack |
 | Rucksack | I | rechts, vor Minikarte/Auftragsverfolgung |
 | Hilfe | H | mittig |
 
-- Mehrere Fenster zugleich; je Seite reihen sie sich in Öffnungsreihenfolge vom Rand nach innen. Dieselbe Taste schließt, Esc schließt das oberste. Sie halten Aktionsleiste und Menüleiste frei (Höhe endet darüber, wo sie waagrecht überlappen).
+- Mehrere Fenster zugleich. **Seit Runde 1 (2026-09-24) feste Plätze** statt Öffnungsreihenfolge, Details unten. Dieselbe Taste schließt, Esc schließt das oberste. Sie halten Aktionsleiste und Menüleiste frei (Höhe endet darüber, wo sie waagrecht überlappen).
 - Overlays (Gespräch, Menü, Laden, Tod …) schließen weiter alle Fenster; Beute darf neben ihnen stehen. Gegenstands-/Kniffdetails hängen neben ihrem Fenster (bei rechts angedockten links daneben) und schließen mit ihm.
 - Angedockte Fenster sind nicht verschiebbar (feste Plätze wie im Vorbild); Overlays bleiben verschiebbar.
 - Menüleiste unten rechts: alle sieben Fenster, Tooltip „Name [Taste]“ + Kurzzweck; Talentpunkte-Abzeichen jetzt am Talente-Knopf.
 - Touch: immer nur ein Fenster (wie bisher Vollfenster). Spielmenü oben ein Symbolraster mit allen sieben Fenstern (ersetzt „Clanbuch“).
+
+## Feste Plätze und Stapelordnung (Optimierung Runde 1, 2026-09-24)
+
+- **Plätze** (`popup-windows.js`, `SLOTS`/`slots()`): links Figur (Rand), Aufträge (daneben); rechts Rucksack (außen), Kniffe (innen).
+  Die x-Lage hängt nur vom Platz ab, nicht davon, was sonst offen ist: schließt die Figur, bleiben die Aufträge stehen.
+- **Oberkante**: alle Seitenfenster beginnen unter dem Spielerrahmen (`dockArea().top`, ≈183 px bei 2024×900).
+- **Rechts**: Die Fenster enden vor der Spalte aus Minikarte und Auftragsverfolgung (auch wenn die Verfolgung gerade leer/verborgen
+  ist; dann aus ihrer Stilbreite berechnet). Rucksack und Kniffe stehen als Block: gleich hoch wie das höhere, soweit der Platz über
+  Aktions- und Menüleiste reicht.
+- **Mitte** (Talente, Hilfe): bildschirmmittig, wenn dort nichts offen ist; sonst mittig in der Lücke zwischen den offenen
+  Seitenfenstern; erst wenn sie dort nicht hineinpassen, bildschirmmittig mit Überdeckung.
+- **Stapelordnung (z-index)**: Welt/HUD 0–30 · Fenster `#popupLayer` 40 (Fenster darin 20+ je Fokus) · Minikarte mit offener
+  Lupe/Optionen 1100 (`minimap.css`) · Kontextmenü 1200 · Aura-Tooltip 1500 · Tooltips (`#itemTooltip`, `.mm-tip`) 100000.
+- **Menüleiste**: immer alle sieben Fenster; gesperrte (`unlocks.js` → `.is-locked`) ausgegraut mit Schloss, der Tooltip nennt die
+  Bedingung. Aufträge sind nicht mehr gesperrt (Hofprobe steht dort als Auftrag), Talente öffnen vor Stufe 5 die graue Vorschau.
+- Prüfung: `node scripts/optimierung-r1-check.mjs` (CDP 9472 / Server 4272).
 
 ## Kompakter / Tooltips / Symbole
 

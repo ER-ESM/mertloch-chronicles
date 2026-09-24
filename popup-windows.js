@@ -1,7 +1,10 @@
 // Einzelfenster (Nutzerauftrag 2026-09-23, löst das Clanbuch mit Reitern ab): jede Seite ist ein eigenes Fenster
 // mit eigener Taste. Wie im MMO-Vorbild docken sie an: links Figur und Aufträge, rechts Rucksack und Kniffe,
-// mittig Talente und Hilfe, die Karte fast bildschirmfüllend. Mehrere dürfen gleichzeitig offen sein; links und rechts
-// reihen sie sich nebeneinander, solange Platz ist. Overlays (Gespräch, Beute, Tod, Anlage) liegen daneben.
+// mittig Talente und Hilfe, die Karte fast bildschirmfüllend. Mehrere dürfen gleichzeitig offen sein.
+// Feste Plätze (Runde 1, 2026-09-24, WoW-Vorbild): jedes angedockte Fenster hat seinen Platz, nichts rutscht nach, wenn ein
+// anderes schließt. Links und rechts beginnen auf derselben Oberkante (unter dem Spielerrahmen); rechts enden die Fenster vor
+// der Spalte aus Minikarte und Auftragsverfolgung und teilen eine Unterkante über der Aktionsleiste. Talente/Hilfe stehen mittig
+// in der Lücke zwischen den offenen Seitenfenstern, soweit sie hineinpassen. Overlays (Gespräch, Beute, Tod, Anlage) liegen daneben.
 // Details (Gegenstand, Erklärung) hängen an ihrem Fenster und schließen mit ihm. Touch: immer nur ein Fenster.
 import {PANEL_UI as UI,GAME_MENU_UI as MENU,SHOP_UI,MOUNT_UI,WINDOW_UI} from './content/index.js';
 import {touchPopupBounds} from './popup-layout.js';
@@ -9,9 +12,11 @@ const titles={professions:'Berufe',trainer:'Lehrer',mounts:MOUNT_UI.title,shop:S
 const widths={
 professions:900,trainer:520,mounts:820,companions:780,
 shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:1040,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:320,clan:470,guide:620,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
-/** Die Fenster mit eigener Taste: [id, Name, Symbol, Taste, Andockseite]. Reihenfolge = Menüleiste. */
+/** Die Fenster mit eigener Taste: [id, Name, Symbol, Taste, Andockseite, Zweittaste]. Reihenfolge = Menüleiste. */
 export const WINDOWS=WINDOW_UI.windows;
 export const DOCK=Object.fromEntries(WINDOWS.map(w=>[w[0],w[4]]));
+/** Feste Plätze je Seite, vom Rand nach innen: links in Menüreihenfolge (Figur, Aufträge), rechts von außen (Rucksack, dann Kniffe). */
+export const SLOTS={left:WINDOWS.filter(w=>w[4]==='left').map(w=>w[0]),right:WINDOWS.filter(w=>w[4]==='right').map(w=>w[0]).reverse()};
 /** Aufrufe, die in einem der Fenster landen (Bude ist ein Abschnitt der Aufträge). */
 export const WINDOW_OF={...Object.fromEntries(WINDOWS.map(w=>[w[0],w[0]])),clan:'person',base:'quest'};
 const CHILD=new Set(['inspection','detail','touchhelp']);
@@ -62,14 +67,31 @@ export class PopupWindows{
  dockArea(){const W=innerWidth,H=innerHeight;let top=EDGE,right=W-EDGE;
   for(const r of ['.world-menu-brand','#meterToggle','.player-panel'].map(box))if(r&&r.left<W*.3&&r.top<H*.4)top=Math.max(top,Math.round(r.bottom+GAP));
   for(const r of ['#miniButton','.minimap','.quest-panel'].map(box))if(r&&r.left>W*.6&&r.top<H*.5)right=Math.min(right,Math.round(r.left-GAP));
+  // Auftragsverfolgung gerade leer/verborgen (Hofprobe, Kampfstart): ihr Platz bleibt trotzdem frei, sonst läge der Rucksack
+  // über ihr, sobald sie erscheint (Kenner-Befund 2026-09-24). Breite und Randabstand aus dem Stil.
+  const qp=document.querySelector('.quest-panel');if(qp&&!box('.quest-panel')&&!touch()){const cs=getComputedStyle(qp),w=parseFloat(cs.width),rr=parseFloat(cs.right);if(w>0&&rr>=0&&w<W*.4)right=Math.min(right,Math.round(W-rr-w-GAP));}
   const xp=box('.xp-track'),bottom=Math.round((xp&&xp.top>H*.8?xp.top:H)-GAP);
   return{left:EDGE,top,right,bottom,width:W,height:H};}
- /** Alle angedockten Fenster setzen: je Seite in Öffnungsreihenfolge vom Rand nach innen, Mitte zentriert, Karte fast Vollbild. */
- layout(){const a=this.dockArea(),list=[...this.windows.values()].filter(w=>isDocked(w.id)).sort((x,y)=>x.opened-y.opened);
-  const room=Math.max(240,a.right-a.left),low=['.action-area','.game-menu-rail'].map(box).filter(r=>r&&r.top>a.height*.6),floor=(left,width,bottom)=>low.reduce((b,r)=>left<r.right&&left+width>r.left?Math.min(b,Math.round(r.top-GAP)):b,bottom),place=(w,left,top,width,height)=>{if(DOCK[w.id]!=='full')height=floor(left,width,top+height)-top;Object.assign(w.el.style,{left:Math.round(left)+'px',top:Math.round(top)+'px',width:Math.round(width)+'px',maxWidth:'',minWidth:'',maxHeight:Math.round(height)+'px',height:DOCK[w.id]==='full'?Math.round(height)+'px':''});};
-  let x=a.left;for(const w of list.filter(w=>DOCK[w.id]==='left')){const width=Math.min(widths[w.id],room);if(x+width>a.width-EDGE)x=Math.max(a.left,a.width-EDGE-width);place(w,x,a.top,width,a.bottom-a.top);x+=width+GAP;}
-  let r=a.right;for(const w of list.filter(w=>DOCK[w.id]==='right')){const width=Math.min(widths[w.id],room);if(r-width<EDGE)r=EDGE+width;place(w,r-width,EDGE,width,a.bottom-EDGE);r-=width+GAP;}
-  for(const w of list.filter(w=>DOCK[w.id]==='center')){const width=Math.min(widths[w.id],a.width-2*EDGE);place(w,(a.width-width)/2,EDGE,width,a.bottom-EDGE);/* mittig auch in der Höhe, soweit das Fenster kürzer ist */const h=w.el.offsetHeight,room=parseFloat(w.el.style.maxHeight)||a.bottom-EDGE;if(h<room)w.el.style.top=Math.round(EDGE+(room-h)/2*.6)+'px';}
+ /** Feste Plätze (Runde 1): x hängt nur vom Platz ab, nicht davon, was sonst offen ist. Links vom Rand nach rechts, rechts von der
+  *  Minikarten-/Verfolgungsspalte nach links. Liefert {left,width} je Fenster-id. */
+ slots(a){const room=Math.max(240,a.right-a.left),out={};let x=a.left;for(const id of SLOTS.left){const width=Math.min(widths[id],room);out[id]={left:Math.min(x,a.width-EDGE-width),width};x+=width+GAP;}
+  let r=a.right;for(const id of SLOTS.right){const width=Math.min(widths[id],room);out[id]={left:Math.max(EDGE,r-width),width};r-=width+GAP;}return out;}
+ /** Alle angedockten Fenster setzen: feste Plätze links/rechts, Mitte in der freien Lücke, Karte fast Vollbild. */
+ layout(){const a=this.dockArea(),list=[...this.windows.values()].filter(w=>isDocked(w.id)).sort((x,y)=>x.opened-y.opened),slot=this.slots(a);
+  const low=['.action-area','.game-menu-rail'].map(box).filter(r=>r&&r.top>a.height*.6),floor=(left,width,bottom)=>low.reduce((b,r)=>left<r.right&&left+width>r.left?Math.min(b,Math.round(r.top-GAP)):b,bottom),place=(w,left,top,width,height,fixed=DOCK[w.id]==='full')=>{if(DOCK[w.id]!=='full')height=Math.min(height,floor(left,width,top+height)-top);Object.assign(w.el.style,{left:Math.round(left)+'px',top:Math.round(top)+'px',width:Math.round(width)+'px',maxWidth:'',minWidth:'',maxHeight:Math.round(height)+'px',height:fixed?Math.round(height)+'px':''});};
+  for(const w of list.filter(w=>DOCK[w.id]==='left')){const s=slot[w.id];place(w,s.left,a.top,s.width,a.bottom-a.top);}
+  // Rechts: die Fenster stehen als Block mit gemeinsamer Unterkante – alle so hoch wie das höchste, soweit ihr Platz über Aktions- und
+  // Menüleiste reicht (dann endet eines etwas früher, statt dass eines scrollen muss).
+  const right=list.filter(w=>DOCK[w.id]==='right');for(const w of right){const s=slot[w.id];place(w,s.left,a.top,s.width,a.bottom-a.top);}
+  if(right.length>1){const tall=Math.max(...right.map(w=>w.el.offsetHeight));for(const w of right)w.el.style.height=Math.min(tall,parseFloat(w.el.style.maxHeight)||tall)+'px';}
+  // Mitte: Talente/Hilfe als Gruppe bildschirmmittig, wenn dort nichts offen ist; sonst mittig in der Lücke zwischen den offenen
+  // Seitenfenstern; passt sie auch dort nicht, bildschirmmittig (dann überdeckt sie, was nicht anders geht).
+  const center=list.filter(w=>DOCK[w.id]==='center');if(center.length){const side=list.filter(w=>DOCK[w.id]==='left'||DOCK[w.id]==='right').map(w=>({dock:DOCK[w.id],...slot[w.id]}));
+   const L=Math.max(a.left,...side.filter(s=>s.dock==='left').map(s=>s.left+s.width+GAP)),R=Math.min(a.right,...side.filter(s=>s.dock==='right').map(s=>s.left-GAP));
+   const sizes=center.map(w=>Math.min(widths[w.id],a.width-2*EDGE)),total=sizes.reduce((s,v)=>s+v,0)+GAP*(sizes.length-1);
+   // Passt die Gruppe nicht in die Lücke: bildschirmmittig, aber nie über die Minikarten-/Verfolgungsspalte hinaus.
+   const mid=(a.width-total)/2;let x=mid>=L&&mid+total<=R?mid:total<=R-L?L+(R-L-total)/2:total<=a.right-a.left?Math.min((a.width-total)/2,a.right-total):null;
+   center.forEach((w,i)=>{const width=sizes[i],left=x===null?Math.max(EDGE,Math.min((a.width-width)/2,a.right-width)):x;place(w,left,EDGE,width,a.bottom-EDGE);/* mittig auch in der Höhe, soweit das Fenster kürzer ist */const h=w.el.offsetHeight,room=parseFloat(w.el.style.maxHeight)||a.bottom-EDGE;if(h<room)w.el.style.top=Math.round(EDGE+(room-h)/2*.6)+'px';if(x!==null)x+=width+GAP;});}
   // Karte: fast Vollbild – ein schmaler Rand bleibt, damit klar ist, dass die Welt dahinter weiterläuft.
   for(const w of list.filter(w=>DOCK[w.id]==='full')){const mx=Math.max(EDGE,Math.round(a.width*.025)),my=Math.max(EDGE,Math.round(a.height*.02));place(w,mx,my,a.width-2*mx,a.bottom-my-(my-EDGE));}
   for(const c of this.windows.values())if(c.parent&&CHILD.has(c.id)&&!this.positions[c.id])this.besideParent(c);}

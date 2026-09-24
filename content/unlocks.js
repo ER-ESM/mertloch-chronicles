@@ -1,10 +1,10 @@
-// Schrittweise Freischaltung der Menüs (unlocks.js). Am Anfang sieht ein neuer Held nur Figur, Kniffe, Rucksack,
-// Karte, Hilfe und Einstellungen; alles Weitere kommt als Belohnung für Hofprobe, Stufen und Kapitel dazu.
+// Schrittweise Freischaltung der Menüs (unlocks.js). Die sieben Fenster der Menüleiste stehen immer da (Runde 1, 2026-09-24):
+// Aufträge (J/L) sind ab dem Start offen, die Hofprobe steht dort als Auftrag; Talente zeigen vor Stufe 5 eine ausgegraute Vorschau.
+// Alles Weitere kommt als Belohnung für Hofprobe, Stufen und Kapitel dazu.
 // Bedingungen werden aus dem Spielstand abgeleitet (nichts wird gespeichert) – alte Spielstände verlieren nichts.
 // when: {tutorial:true} Hofprobe bestanden · {level:n} Stufe n · {chapter:n} Kapitel n abgeholt · {memory:n} n Erinnerungen
 //       {bude:true} erstes Bude-Gebäude freigeschaltet (Kapitelbelohnung laut content/buildings.js)
 export const FEATURE_UNLOCKS=[
- {id:'quest',name:'Aufträge',where:'Menüleiste · Taste J',when:{tutorial:true},text:'Ida führt dich jetzt im Auftragsbuch: Hauptgeschichte, Aufträge der Bewohner und was du schon erledigt hast.'},
  {id:'meter',name:'Kampfstatistik',where:'Knopf oben links · Taste V',when:{tutorial:true},text:'Schaden und Heilung jedes Kampfes zum Nachlesen.'},
  {id:'hudEdit',name:'UI bearbeiten',where:'Spielmenü (Esc)',when:{tutorial:true},text:'Rahmen, Leisten und Fenster nach deinem Geschmack verschieben und skalieren.'},
  {id:'memories',name:'Erinnerungen',where:'Fenster Aufträge',when:{memory:1},text:'Jeder Erinnerungsfetzen der Filmriss-Nacht landet hier – mit Bild und Hinweis.'},
