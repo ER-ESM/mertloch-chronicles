@@ -29,7 +29,10 @@ export function mountStartScreen(host){
  const state={open:false,step:'login',pick:null,guest:false,busy:'',draft:null};
  const account=()=>host.online()?.account||null;
  const card=(title,body)=>`<div class="online-card ui-panel mmo-login-card"><h3>${esc(title)}</h3>${body}</div>`;
- function loginHtml(){
+ /** Anmeldebildschirm nach WoW-Vorbild (2026-09-24): Logo oben, Anmeldekasten mittig im unteren Drittel, Version unten links, Einstellungen unten rechts. */
+ function gateFrame(inner){return `<div class="lg"><h1 class="lg-logo"><span>Mertloch</span><b>Chronicles</b></h1><div class="lg-box">${inner}</div><div class="lg-foot lg-left"><span>${esc(host.version?.()||'')}</span>${host.enabled?`<span class="lg-server ${host.online()?.state?.reachable===false?'bad':'ok'}">${esc(host.online()?.state?.reachable===false?T.serverDown:T.serverUp)}</span>`:''}</div><div class="lg-foot lg-right"><button type="button" class="outline-button ui-button" data-start="options">${esc(T.options)}</button></div></div>`;}
+ function loginHtml(){return gateFrame(loginInner());}
+ function loginInner(){
   const o=host.online();
   if(!host.enabled)return card(T.noServerTitle,`<p>${esc(T.noServer)}</p><div class="online-actions ui-row"><button type="button" class="gold-button ui-button" data-ui-variant="primary" data-start="guest">${esc(T.enter)}</button><a class="outline-button ui-button" href="${esc(T.serverUrl)}">${esc(T.serverLink)}</a></div>`);
   if(state.busy)return card(T.loginTitle,`<p role="status">${esc(state.busy)}</p>`);
@@ -80,9 +83,14 @@ export function mountStartScreen(host){
  function render(){
   el.dataset.step=state.step;el.dataset.heroes=String(heroes().length);
   const hall=state.step==='roster'||state.step==='create';el.innerHTML=`<div class="mmo-scene ${hall?'mmo-roster':'mmo-gate'}">${hall?'<div class="online-card start-stage">'+(state.step==='create'?createHtml():rosterHtml())+'</div>':loginHtml()}</div>`;
-  if(hall)paintHeroCards().catch(()=>{});
+  if(hall)paintHeroCards().catch(()=>{});else rememberField();
   requestAnimationFrame(()=>(el.querySelector(state.step==='create'?'input[name=heroName],[aria-pressed=true],[data-draft-class]':state.step==='roster'?'[data-start=enter],[data-start=create]':'input[name=email],[data-start]')||el).focus({preventScroll:true}));
  }
+ /** „E-Mail merken“ (WoW: Kontoname merken): nur die Adresse, nie das Passwort; kontoweit in diesem Browser. */
+ const REMEMBER='mertloch-login-email';
+ function rememberField(){const form=el.querySelector('[data-online-form]');if(!form||form.querySelector('[data-remember]'))return;let saved='';try{saved=localStorage.getItem(REMEMBER)||'';}catch{}const mail=form.querySelector('[name=email]');if(saved&&mail&&!mail.value)mail.value=saved;
+  const box=document.createElement('label');box.className='lg-remember';box.innerHTML='<input type="checkbox" data-remember'+(saved?' checked':'')+'><span>'+esc(T.remember)+'</span>';form.querySelector('.online-actions')?.before(box);if(saved)requestAnimationFrame(()=>requestAnimationFrame(()=>form.querySelector('[name=password]')?.focus({preventScroll:true})));}
+ function rememberSubmit(form){const on=form.querySelector('[data-remember]')?.checked,mail=form.querySelector('[name=email]')?.value||'';try{if(on&&mail)localStorage.setItem(REMEMBER,mail);else localStorage.removeItem(REMEMBER);}catch{}}
  function go(step){state.step=step;render();}
  function show(){state.open=true;state.pick=host.activeId?.()||null;el.hidden=false;document.body.classList.add('start-open');host.onOpen?.();}
  /** Schirm aus dem Spiel heraus zeigen. step weglassen = je nach Konto entscheiden. */
@@ -96,7 +104,7 @@ export function mountStartScreen(host){
   go(firstStep({enabled:host.enabled,account:account(),guest:false}));
  }
  async function logout(){state.guest=false;await host.online()?.logout?.();if(!state.open)show();go(firstStep({enabled:host.enabled,account:null,guest:false}));}
- el.addEventListener('submit',async e=>{if(!e.target.closest('[data-online-form]'))return;await host.online()?.handle(e);if(account()&&state.open)go('roster');});
+ el.addEventListener('submit',async e=>{if(!e.target.closest('[data-online-form]'))return;rememberSubmit(e.target.closest('[data-online-form]'));await host.online()?.handle(e);if(account()&&state.open)go('roster');});
  el.addEventListener('click',async e=>{
   const pick=e.target.closest('[data-hero]');if(pick){state.pick=pick.dataset.hero;render();return;}
   const dc=e.target.closest('[data-draft-class]');if(dc){state.draft.classId=dc.dataset.draftClass;if(!state.draft.lookTouched)state.draft.look=state.draft.classId;render();return;}

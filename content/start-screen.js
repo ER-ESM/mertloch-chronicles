@@ -1,6 +1,6 @@
 // Anmeldebildschirm und Figurenwahl vor dem Spiel (start-screen.js). Texte hier, Ablauf im Modul.
 export const START_UI={
- options:'Einstellungen',
+ options:'Einstellungen',remember:'E-Mail merken',serverUp:'Server erreichbar',serverDown:'Server nicht erreichbar',
  loginTitle:'Willkommen in Mertloch',loginIntro:'Deine Bande. Dein Dorf. Dein nächstes Abenteuer.',
  guest:'Ohne Konto spielen',guestHint:'Der Spielstand bleibt dann nur in diesem Browser. Andere Spieler siehst du erst mit Konto.',
  noServerTitle:'Mertloch Chronicles',noServer:'Hier läuft das Spiel ohne Server: Dein Spielstand liegt in diesem Browser. Mit Konto und anderen Spielern im Dorf spielst du auf mertloch.esm-consultant.de.',
