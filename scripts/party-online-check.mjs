@@ -40,10 +40,10 @@ try{
  await run(a,`for(const id of ['merc-pils-peter','merc-schorle-susi','merc-radler-rita'])g.hireCompanion(id,{free:true});`);
  await until(b,`g.others.find(o=>o.name==='Rudi')?.companions?.length===3&&g.partyCompanions===3`,5000,'B kennt drei fremde Söldner');
  assert.equal(await run(b,`g.hireCompanion('merc-tresen-tina',{free:true});return g.companions.length;`),0,'Gruppe voll: B kann nicht anheuern');ok('Volle Gruppe (2 Menschen + 3 Söldner) sperrt weiteres Anheuern');
- await run(b,`on.social.leave();`);await until(b,`!on.state.party.members.length`,4000,'B verlässt');await until(a,`!on.state.party.members.length`,4000,'A allein');
- await run(b,`g.hireCompanion('merc-tresen-tina',{free:true});g.hireCompanion('merc-hopfen-horst',{free:true});`);await wait(600);
+ await run(b,`on.social.leave();`);await until(b,`!on.state.party.members.length&&g.partyHumans===0&&!g.partyCompanions`,4000,'B verlässt, Zähler zurückgesetzt');await until(a,`!on.state.party.members.length`,4000,'A allein');
+ await run(b,`g.hireCompanion('merc-tresen-tina',{free:true});g.hireCompanion('merc-hopfen-horst',{free:true});`);await until(b,`g.companions.length===2`,3000,'Moni heuert zwei an');await wait(600);
  await run(a,`on.social.invite('Moni');`);await until(b,`document.querySelector('[data-online=party-accept]')`,5000,'zweite Einladung');await run(b,`document.querySelector('[data-online=party-accept]').click();`);
- await until(a,`g.companions.length===1`,10000,'Rudi (alphabetisch später) gibt zwei Söldner ab');await wait(800);
+ try{await until(a,`g.companions.length===1`,10000,'Rudi (alphabetisch später) gibt zwei Söldner ab');}catch(err){console.log('DEBUG A',await run(a,`return JSON.stringify({mine:g.companions.map(c=>c.id),humans:g.partyHumans,pc:g.partyCompanions,party:on.state.party.members.map(m=>m.n),me:on.social.me(),moni:g.others.find(o=>o.name==='Moni')?.companions?.map(c=>c.companion)})`));console.log('DEBUG B',await run(b,`return JSON.stringify({mine:g.companions.map(c=>c.id),party:on.state.party.members.map(m=>m.n)})`));throw err;}await wait(800);
  assert.equal(await run(b,`return g.companions.length;`),2,'Moni behält ihre Söldner');assert.deepEqual(await run(a,`return g.companions.map(c=>c.id);`),['merc-pils-peter'],'die zuletzt angeheuerten gehen');
  await until(a,`document.querySelector('.party-count')?.textContent==='5/5'`,4000,'Kopfzahl 5/5');ok('Beitritt über fünf: passende Söldner machen Platz, 5/5');
  // Runde 5: Zielmarkierung über das Kontextmenü des Zielrahmens, kommt beim Mitspieler am selben Gegner an
