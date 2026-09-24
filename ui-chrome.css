@@ -328,7 +328,7 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
  body:not(.touch-mode):not(.bar-drop) .action-area:not(:has(.extra-bar .skill:not(.empty-slot)))>:is(.special-actions,.auto-state){margin-bottom:calc(-3px - var(--extra-bar-step,75px))}
 }
 .game-popup select{min-height:34px}.touch-mode .game-popup select{min-height:44px}
-.touch-mode .game-popup input[type=checkbox]{min-width:32px;min-height:32px;width:32px;height:32px}
+.touch-mode .game-popup input[type=checkbox]{min-width:44px;min-height:44px}
 /* Tooltip-Kopf (Kniffe, Gegenstände): Symbol 36 px im Messingrahmen wie im WoW-Tooltip, statt klein und rahmenlos. */
 .item-tooltip .tooltip-heading canvas,.skill-tooltip .tooltip-heading canvas{width:36px!important;height:36px!important;flex:none;border:2px solid #b8955a;border-radius:4px;background:#10231a;box-shadow:0 1px 0 #0b1a12,inset 0 0 6px #000a;image-rendering:pixelated}
 .item-tooltip:has(.rarity-uncommon) .tooltip-heading canvas{border-color:#4fae4a}
@@ -345,7 +345,7 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
 .game-popup input[type=checkbox]:checked{background:#2c4a33;border-color:#e0c070}
 .game-popup input[type=checkbox]:checked::after{content:'';width:5px;height:9px;border:solid #ffe08a;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
 .game-popup input[type=checkbox]:focus-visible{outline:2px solid #e0c070;outline-offset:2px}
-.touch-mode .game-popup input[type=checkbox]{width:32px!important;height:32px!important}
+.touch-mode .game-popup input[type=checkbox]{width:44px!important;height:44px!important}
 .touch-mode .game-popup input[type=checkbox]:checked::after{width:8px;height:15px;border-width:0 3px 3px 0}
 /* Meldungen (Persona 3): unter der Rahmenzeile von Spieler/Ziel statt auf ihrer Höhe, schmaler, mit geschlossener Kontur –
    so laufen sie nie über den Zielrahmen und bleiben auf Pflaster und Gras lesbar. */
@@ -361,3 +361,8 @@ body:has(.player-panel.is-low-health) .game-shell::after{opacity:.55;animation:l
 /* Tastendruck auf der Aktionsleiste (app.js triggerSlot): Knopf gibt nach und leuchtet kurz golden. */
 .action-area .skill.key-press{transform:translateY(1px) scale(.94);box-shadow:inset 0 0 12px #ffe08aaa,0 0 8px #ffe08a88;transition:transform .05s}
 .action-area .skill.key-press canvas{filter:brightness(1.35)}
+/* Gegnerporträt (app.js paintTargetPortrait): rundes Medaillon rechts am Zielrahmen, gespiegelt zum Spielerporträt links. */
+#targetPortrait{position:absolute;right:-26px;top:50%;width:64px;height:64px;transform:translateY(-50%);border-radius:50%;border:3px solid #b8955a;box-shadow:0 0 0 2px #0b1a12,0 3px 6px #000a;image-rendering:pixelated;pointer-events:none;z-index:2}
+.target-panel.friendly-target #targetPortrait{display:none}
+.target-panel.elite-target #targetPortrait{border-color:#e8c170;box-shadow:0 0 0 2px #0b1a12,0 0 10px #e8c17088}
+.target-panel:has(#targetPortrait){padding-right:42px!important}
