@@ -60,12 +60,13 @@ export const BUDE_HOUSE={
   {s:'pfuetze',x:134,y:122},{s:'becher',x:88,y:140},{s:'becher',x:171,y:122},{s:'becher',x:30,y:112},{s:'luftschlangen',x:128,y:162},{s:'scherben',x:52,y:126},{s:'luftschlangen',x:204,y:150},
   // Clan-Hinterzimmer
   {s:'bild-landschaft',x:20,y:4},{s:'geweih',x:46,y:4},{s:'kommode',x:74,y:9},{s:'tischlampe',x:80,y:9},{s:'becher',x:60,y:40},{s:'socke',x:18,y:58},
+  {s:'flasche',x:68,y:8},{s:'fass',x:10,y:14},{s:'luftschlangen',x:30,y:60},{s:'becher',x:84,y:48},{s:'scherben',x:14,y:44},
   // Pfandlager
   {s:'regalbrett',x:121,y:4},{s:'sackkarre',x:100,y:62},{s:'eimer',x:144,y:64},{s:'scherben',x:132,y:62},{s:'becher',x:104,y:44},{s:'becher',x:141,y:18},{s:'pfuetze',x:112,y:60},
   // Küche
-  {s:'kuechenzeile',x:184,y:10},{s:'flasche',x:170,y:9},{s:'kuehlschrank',x:220,y:29},{s:'fass',x:218,y:58},{s:'wandlampe',x:160,y:4},{s:'pfuetze',x:175,y:45},{s:'scherben',x:210,y:58},
+  {s:'kuechenzeile',x:184,y:10},{s:'flasche',x:170,y:9},{s:'flasche',x:196,y:9},{s:'bierkrug',x:204,y:10},{s:'aschenbecher',x:186,y:10},{s:'becher',x:162,y:30},{s:'luftschlangen',x:196,y:42},{s:'kuehlschrank',x:220,y:29},{s:'fass',x:218,y:58},{s:'wandlampe',x:160,y:4},{s:'pfuetze',x:175,y:45},{s:'scherben',x:210,y:58},
   // Klo
-  {s:'kloschuessel',x:218,y:86},{s:'waschbecken',x:195,y:80},{s:'spiegel',x:195,y:75},
+  {s:'kloschuessel',x:218,y:86},{s:'waschbecken',x:195,y:80},{s:'spiegel',x:195,y:75},{s:'pfuetze',x:205,y:104},{s:'socke',x:222,y:108},
   // Hof
   {s:'regentonne',x:240,y:10},{s:'kistenstapel-hof',x:315,y:20},{s:'fahrrad',x:245,y:80},{s:'bierbank',x:300,y:164},{s:'gartenstuhl',x:318,y:132},
   {s:'pfuetze',x:270,y:120},{s:'becher',x:310,y:60}
