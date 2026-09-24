@@ -20,7 +20,7 @@ export function presetOf(settings){return T.presets.find(p=>Object.entries(p.val
 /** api: game(), prefs(), setPrefs(p), toast(t), rebuild(), events(), rerender(), extras:{bars(),meter(),hud()}, touch(), admin() */
 export function mountOptions(api){
  const CAT_KEY='mertloch-options-cat';let saved='game';try{saved=localStorage.getItem(CAT_KEY)||'game';}catch{}
- const state={cat:T.categories.some(c=>c.id===saved)?saved:'game',capture:null,filter:'',note:''};
+ const state={cat:T.categories.some(c=>c.id===saved)?saved:'game',capture:null,filter:'',note:'',folded:new Set()};
  /** Meldung unten im Fenster (WoW: Hinweiszeile der Tastaturbelegung) statt Einblendung über dem Spiel. */
  const say=t=>{state.note=t;const n=document.querySelector('.opt-note');if(n)n.textContent=t;};
  const S=()=>api.game().settings;
@@ -49,20 +49,22 @@ export function mountOptions(api){
  const rowHtml=r=>r.slot?slot(r.slot):r.setting?row(r.label,r.hint,toggle(r),r.parent?'opt-sub'+(settingOn(S(),r.parent)?'':' is-off'):''):r.pref?row(r.label,r.hint,r.kind==='switch'?prefSwitch(r):r.kind==='choice'?choice(r):range(r)):'';
  /** Tastenknopf einer Aktion bzw. eines Leistenplatzes; im Erfassungsmodus „Neue Taste drücken …“. */
  const keyButton=(attrs,binding,capturing,fixed)=>`<button type="button" class="opt-key${capturing?' is-capturing':''}${binding?'':' is-empty'}" ${attrs}${fixed?' disabled':''}>${capturing?esc(K.capture):binding?esc(bindingLabel(binding,true)):esc(K.none)}</button>`;
+ /** Einklappbare Gruppe der Tastenbelegung (WoW): Kopf ist ein Knopf, beim Suchen ist alles offen. */
+ const section=(id,name,rows)=>{const shut=!state.filter.trim()&&state.folded.has(id);return `<section class="opt-section"><h4><button type="button" class="opt-fold" data-opt-fold="${id}" aria-expanded="${!shut}">${esc(name)}</button></h4>${shut?'':rows}</section>`;};
  function keysHtml(){
   const g=api.game(),map=liveKeymap(),f=state.filter.trim().toLowerCase(),hit=n=>!f||n.toLowerCase().includes(f),cap=state.capture;
   const groups=KEYBIND_GROUPS.map(gr=>{const rows=KEYBIND_ACTIONS.filter(a=>a.group===gr.id&&hit(a.name)).map(a=>{const k=keysOf(map,a.id);
    return `<div class="opt-keyrow"${a.fixed?tip(a.name,K.fixedNote):''}><span class="opt-label">${esc(a.name)}${a.fixed?`<small>${esc(K.fixedNote)}</small>`:''}</span>${[0,1].map(i=>keyButton(`data-opt-key="${a.id}:${i}"`,k[i],cap?.id===a.id&&cap.slot===i,a.fixed)).join('')}</div>`;}).join('');
-   return rows?`<section class="opt-section"><h4>${esc(gr.name)}</h4>${rows}</section>`:'';}).join('');
+   return rows?section(gr.id,gr.name,rows):'';}).join('');
   const bars=Math.max(1,Math.min(MAX_BARS,g.rpg?.barCount||1)),barRows=[];
   for(let i=0;i<bars*BAR_SIZE;i++){const name=K.barSlot(Math.floor(i/BAR_SIZE)+1,i%BAR_SIZE+1);if(!hit(name)&&!hit(K.bars))continue;barRows.push(`<div class="opt-keyrow"><span class="opt-label">${esc(name)}</span>${keyButton(`data-opt-bar="${i}"`,bindingAt(g.rpg,i),cap?.bar===i)}<span class="opt-key-pad" aria-hidden="true"></span></div>`);}
-  return `<p class="opt-intro">${esc(K.intro)}</p><label class="opt-search"><input type="search" data-opt-filter placeholder="${esc(K.search)}" value="${esc(state.filter)}" aria-label="${esc(K.search)}"></label><div class="opt-keyhead"><span>${esc(K.action)}</span><span>${esc(K.key1)}</span><span>${esc(K.key2)}</span></div>${groups}${barRows.length?`<section class="opt-section"><h4>${esc(K.bars)}</h4>${barRows.join('')}</section>`:''}`;
+  return `<label class="opt-search"><input type="search" data-opt-filter placeholder="${esc(K.search)}" value="${esc(state.filter)}" aria-label="${esc(K.search)}"></label><div class="opt-keyhead"${tip(K.title,K.intro)}><span>${esc(K.action)}</span><span>${esc(K.key1)}</span><span>${esc(K.key2)}</span></div>${groups}${barRows.length?section('bars',K.bars,barRows.join('')):''}`;
  }
  function html(){
   const cat=T.categories.find(c=>c.id===state.cat)||T.categories[0];
   const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${T.categories.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}"><canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas><span>${esc(c.name)}</span></button>`).join('')}</nav>`;
   const body=cat.id==='keys'?keysHtml():(T.sections[cat.id]||[]).map(s=>{const rows=s.rows.map(rowHtml).join('');return rows?`<section class="opt-section"><h4>${esc(s.title)}</h4>${rows}</section>`:'';}).join('');
-  return `<div class="opt-window" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note" role="status" aria-live="polite">${esc(state.note)}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
+  return `<div class="opt-window" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note${state.note?'':' is-hint'}" role="status" aria-live="polite">${esc(state.note||(cat.id==='keys'?K.footHint:''))}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
  }
  function commitAction(id,slot,binding){
   const g=api.game(),r=assignKey(liveKeymap(),id,slot,binding),name=KEYBIND_ACTIONS.find(a=>a.id===id)?.name||id;
@@ -95,6 +97,7 @@ export function mountOptions(api){
   const key=e.target.closest('[data-opt-key]');if(key){const [id,slot]=key.dataset.optKey.split(':');state.capture={id,slot:Number(slot)};api.game().keys?.clear?.();api.rerender();return true;}
   const bar=e.target.closest('[data-opt-bar]');if(bar){state.capture={bar:Number(bar.dataset.optBar)};api.game().keys?.clear?.();api.rerender();return true;}
   const preset=e.target.closest('[data-opt-preset]');if(preset){const p=T.presets.find(x=>x.id===preset.dataset.optPreset);for(const [k,v] of Object.entries(p.values))if(settingOn(api.game().settings,k)!==v)api.game().setSetting(k,v);api.events();api.rerender();return true;}
+  const fold=e.target.closest('[data-opt-fold]');if(fold){const id=fold.dataset.optFold;if(state.folded.has(id))state.folded.delete(id);else state.folded.add(id);api.rerender();return true;}
   const pc=e.target.closest('[data-opt-choice]');if(pc){const [k,v]=pc.dataset.optChoice.split(':');api.setPrefs(cleanPrefs({...api.prefs(),[k]:v}));api.rerender();return true;}
   const pt=e.target.closest('[data-opt-toggle]');if(pt){const k=pt.dataset.optToggle;api.setPrefs(cleanPrefs({...api.prefs(),[k]:api.prefs()[k]===false}));api.rerender();return true;}
   if(e.target.closest('[data-opt-defaults]')){defaults();return true;}

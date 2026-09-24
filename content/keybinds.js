@@ -41,6 +41,7 @@ export const KEYBIND_UI={
  intro:'Klicke auf eine Taste und drücke die neue. Esc bricht ab, Entf löscht. Belegungen gelten für alle Helden; die Aktionsleisten merkt sich jeder Held selbst.',
  key1:'Taste 1',key2:'Taste 2',action:'Aktion',
  bars:'Aktionsleisten',barSlot:(bar,slot)=>'Leiste '+bar+' · Platz '+slot,
+ footHint:'Taste anklicken, neue drücken · Esc bricht ab · Entf löscht',
  capture:'Neue Taste drücken …',captureHelp:'Esc bricht ab · Entf löscht',
  none:'—',fixed:'fest',
  bound:(key,name)=>key+' löst jetzt „'+name+'“ aus.',
