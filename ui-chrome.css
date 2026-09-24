@@ -482,3 +482,10 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 .party-member.ready-yes{box-shadow:0 0 0 2px #8fe08a88}.party-member.ready-no{box-shadow:0 0 0 2px #ef6a5588}
 .ready-card{position:relative;overflow:hidden}.ready-card .ready-timer{position:absolute;left:0;bottom:0;height:4px;width:100%;background:#e7c56a;transform-origin:left;animation:ready-run linear forwards}
 @keyframes ready-run{to{transform:scaleX(0)}}
+/* Söldner der Mitspieler unter deren Gruppenrahmen (WoW-Begleiterrahmen) */
+.party-member .party-pets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 6px;margin:3px 6px 4px 58px}
+.party-member .party-pet{display:grid;gap:1px;min-width:0;font:600 10px/1.1 var(--read);color:#d9cfae}
+.party-member .party-pet b{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.party-member .party-pet>i{display:block;height:4px;background:#0b1216c0;border-radius:2px;overflow:hidden}.party-member .party-pet>i>i{display:block;height:100%;background:#7fc77a}
+.party-member .party-pet[data-role=tank]>i>i{background:#8fb4e0}.party-member .party-pet[data-role=heal]>i>i{background:#9fe0a0}
+.party-member .party-pet.dead{opacity:.5}

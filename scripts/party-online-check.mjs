@@ -81,6 +81,7 @@ try{
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}
+ if(process.env.PRINT_B)console.log('PRINT_B',await run(b,process.env.PRINT_B));
  for(const [i,x]of browsers.entries())assert.deepEqual(x.errors,[],'Browserfehler bei Spieler '+i);
  writeFileSync(dir+'/report.json',JSON.stringify({passed},null,2));console.log('PASS Gruppenspiel online ('+passed.length+' Prüfungen)');
 }catch(e){for(const [i,x]of browsers.entries())try{await shot(x,'fehler-'+i);console.log(JSON.stringify(await run(x,'return {party:on.state.party,others:g.others.map(o=>o.name),errors:[]};')));}catch{}throw e;}
