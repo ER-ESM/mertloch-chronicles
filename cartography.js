@@ -34,18 +34,32 @@ export function drawCreatureMarker(c,e,a,target=false){
   c.fillStyle=target?'#fff1bb':'#eecb78';c.strokeStyle='#4d292b';c.lineWidth=2;c.fill();c.stroke();
  }else{c.arc(a.x,a.y,target?4:2.5,0,7);c.fill();}
 }
+/** Gemalte Flächenmuster der Karte (einmal erzeugt, kachelbar, deterministisch): Wiese, Acker mit Furchen, Wald mit Kronen, Dorfgrund. */
+const PATTERNS=new Map();
+function mapPattern(c,kind){const key=kind;let p=PATTERNS.get(key);if(p)return p;const S=48,cv=document.createElement('canvas');cv.width=cv.height=S;const t=cv.getContext('2d'),h=n=>{const v=Math.sin(n*127.1)*43758.5453;return v-Math.floor(v);};
+ const base={wiese:'#6f9150',acker:'#b39a5a',wald:'#2f5534',dorf:'#7f9a5c'}[kind]||'#6f9150';t.fillStyle=base;t.fillRect(0,0,S,S);
+ if(kind==='acker'){for(let y=0;y<S;y+=4){t.fillStyle='#8f7a3e';t.fillRect(0,y,S,1);t.fillStyle='#c9b070';t.fillRect(0,y+2,S,1);}}
+ else if(kind==='wald'){for(let i=0;i<14;i++){const x=h(i)*S,y=h(i+31)*S,r=4+h(i+7)*4;t.fillStyle='#1d3d24';t.beginPath();t.arc(x+1,y+1,r,0,7);t.fill();t.fillStyle=i%2?'#3a6b3a':'#2f5f35';t.beginPath();t.arc(x,y,r,0,7);t.fill();t.fillStyle='#5b8a45';t.fillRect(x-r*.4,y-r*.5,2,2);}}
+ else for(let i=0;i<60;i++){const x=Math.floor(h(i)*S),y=Math.floor(h(i+99)*S);t.fillStyle=h(i+5)>.5?(kind==='dorf'?'#94ad6a':'#86a85f'):'#5f7f44';t.fillRect(x,y,h(i+3)>.7?2:1,1);}
+ p=c.createPattern(cv,'repeat');PATTERNS.set(key,p);return p;}
+/** Haus als Dach von oben: Schatten, Dachfläche in Ziegel/Reet/Schiefer (fest je Gebäude), First entlang der langen Seite, Kirche golden. */
+function drawRoof(c,b,pos,scale){const pts=b.points.map(pos);const trace=(dx=0,dy=0)=>{c.beginPath();pts.forEach((v,i)=>i?c.lineTo(v.x+dx,v.y+dy):c.moveTo(v.x+dx,v.y+dy));c.closePath();};
+ const id=String(b.id??(b.minX+','+b.minY)),n=[...id].reduce((a,ch)=>a*31+ch.charCodeAt(0)>>>0,7),roof=b.church?['#d9b25a','#f3d98f']:[['#a4523a','#c9714f'],['#c29a4e','#e0bd6e'],['#5d6670','#7f8a94'],['#8e4a36','#b0654a']][n%4];
+ trace(Math.max(1,3*scale*4),Math.max(1,3*scale*4));c.fillStyle='#1a2a1a66';c.fill();trace();c.fillStyle=roof[0];c.fill();c.strokeStyle='#2a1a12';c.lineWidth=1;c.stroke();
+ const a=pos({x:b.minX,y:b.minY}),z=pos({x:b.maxX,y:b.maxY}),wide=z.x-a.x>=z.y-a.y;c.save();trace();c.clip();c.fillStyle=roof[1];if(wide)c.fillRect(a.x,a.y,z.x-a.x,(z.y-a.y)/2);else c.fillRect(a.x,a.y,(z.x-a.x)/2,z.y-a.y);
+ c.strokeStyle='#2a1a1288';c.lineWidth=1;c.beginPath();if(wide){c.moveTo(a.x,(a.y+z.y)/2);c.lineTo(z.x,(a.y+z.y)/2);}else{c.moveTo((a.x+z.x)/2,a.y);c.lineTo((a.x+z.x)/2,z.y);}c.stroke();c.restore();
+ if(b.church){const m={x:(a.x+z.x)/2,y:(a.y+z.y)/2};c.fillStyle='#fff2c4';c.fillRect(m.x-1,m.y-4,2,8);c.fillRect(m.x-3,m.y-2,6,2);}}
 export function drawAtlas(renderer,canvas,full=false,highlight=null,options={}){
  const c=canvas.getContext('2d'),w=renderer.world,g=renderer.game,p=g.player,dpr=full?1:2,W=canvas.width/dpr,H=canvas.height/dpr,{scale,ox,oy}=mapView(w,p,W,H,full,options);
  const pos=o=>({x:(o.x-ox)*scale,y:(o.y-oy)*scale}),inside=(a,pad=0)=>a.x>=pad&&a.y>=pad&&a.x<W-pad&&a.y<H-pad;
- c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);c.fillStyle='#354d49';c.fillRect(0,0,W,H);c.lineCap='round';c.lineJoin='round';
+ c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);c.fillStyle=mapPattern(c,'wiese');c.fillRect(0,0,W,H);c.lineCap='round';c.lineJoin='round';
  const path=points=>{c.beginPath();points.forEach((v,i)=>{const a=pos(v);i?c.lineTo(a.x,a.y):c.moveTo(a.x,a.y);});};
- for(const a of w.areas){path(a.points);c.closePath();c.fillStyle=a.tags.landuse==='farmland'?'#69735b':a.tags.landuse==='residential'?'#59615c':['forest','wood'].includes(a.tags.landuse||a.tags.natural)?'#294840':'#465c50';c.fill();c.strokeStyle='#d6d9a00d';c.lineWidth=1;c.stroke();}
- // Quiet coordinate grid; the geographic detail stays behind routes and places.
- c.strokeStyle='#d8e6c008';c.lineWidth=1;for(let x=0;x<W;x+=64){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}for(let y=0;y<H;y+=64){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
- for(const r of w.water){path(r.points);c.strokeStyle='#79b5b7';c.lineWidth=Math.max(2,12*scale);c.stroke();}
- const roads=w.roads.filter(r=>!r.entrance);for(const outline of [true,false])for(const r of roads){path(r.points);const main=!['footway','path','track'].includes(r.tags.highway);c.strokeStyle=outline?'#293c37':main?'#c7bea0':'#85927b';c.lineWidth=Math.max(full?1.1:1.5,r.width*scale*.52)+(outline?2:0);c.stroke();}
- for(const b of w.buildings){if(b.maxX<ox||b.minX>ox+W/scale||b.maxY<oy||b.minY>oy+H/scale)continue;path(b.points);c.closePath();c.fillStyle=b.church?'#f0d292':'#a9a690';c.fill();}
- if(!full)for(const t of w.trees){const a=pos(t);if(!inside(a))continue;c.fillStyle='#25473d';c.beginPath();c.arc(a.x,a.y,Math.max(1.3,5*t.size*scale),0,7);c.fill();}
+ for(const a of w.areas){path(a.points);c.closePath();const kind=a.tags.landuse==='farmland'?'acker':a.tags.landuse==='residential'?'dorf':['forest','wood'].includes(a.tags.landuse||a.tags.natural)?'wald':'wiese';c.fillStyle=mapPattern(c,kind);c.fill();c.strokeStyle=kind==='acker'?'#6b5a2e66':kind==='wald'?'#12281c88':'#2f4a2a33';c.lineWidth=kind==='acker'?1.5:1;c.stroke();}
+ // Handgemalte Karte (Nutzerentscheidung 2026-09-24): kein Koordinatengitter mehr; Flächen tragen gemalte Muster (mapPattern).
+ for(const [col,k] of [['#2c4a5a',1.6],['#5f9fb4',1],['#9fd3dc',.28]])for(const r of w.water){path(r.points);c.strokeStyle=col;c.lineWidth=Math.max(k*2,12*scale*k);c.stroke();}
+ const roads=w.roads.filter(r=>!r.entrance);for(const pass of [0,1,2])for(const r of roads){path(r.points);const main=!['footway','path','track'].includes(r.tags.highway),lw=Math.max(full?1.4:1.5,r.width*scale*.55);c.strokeStyle=pass===0?'#3a2a1a88':pass===1?(main?'#cdb68a':'#a68c62'):(main?'#e6d4a855':'#c2a77a44');c.lineWidth=pass===0?lw+2.5:pass===1?lw:Math.max(.8,lw*.35);if(pass===2)c.setLineDash(main?[]:[2,3]);c.stroke();c.setLineDash([]);}
+ for(const b of w.buildings){if(b.maxX<ox||b.minX>ox+W/scale||b.maxY<oy||b.minY>oy+H/scale)continue;drawRoof(c,b,pos,scale);}
+ for(const t of w.trees){const a=pos(t);if(!inside(a))continue;const r=Math.max(1.6,5.5*t.size*scale);c.fillStyle='#10241699';c.beginPath();c.arc(a.x+r*.35,a.y+r*.35,r,0,7);c.fill();c.fillStyle=t.type==='pine'||t.variant%3===0?'#2d5a34':'#3f6e36';c.beginPath();c.arc(a.x,a.y,r,0,7);c.fill();c.fillStyle='#6f9a4a';c.beginPath();c.arc(a.x-r*.3,a.y-r*.35,r*.45,0,7);c.fill();}
  const dest=highlight||g.moveTo||g.destination()?.point;
  if(dest){let route;if(full){const key=[p.x,p.y,dest.x,dest.y].map(Math.round).join(',');if(renderer.atlasRoute?.key!==key)renderer.atlasRoute={key,path:w.findPath(p,dest)};route=renderer.atlasRoute.path;}else route=g.path?.length?g.path:[dest];path([p,...route]);c.strokeStyle='#242c35';c.lineWidth=4;c.stroke();c.strokeStyle='#f1cd77';c.lineWidth=2;c.setLineDash([5,4]);c.stroke();c.setLineDash([]);}
  const occupiedLabels=[],areaLabels=[];
