@@ -53,4 +53,13 @@ misst je Fenster `scrollHeight` gegen `clientHeight`. Bilder in `visual-review/o
 
 Grün auf diesem Stand: `npm test` (811), `npm run content:check`, `npm run build`, `node scripts/optimierung-r2a-check.mjs` (13),
 `npm run ui:check`, `einzelfenster-check` (10), `optimierung-r1-check` (16), `quest-tracker-hud-check`. Alle auf eigenen Ports 9481–9487/4281–4287.
-Schon auf main rot und nicht aus dieser Runde: siehe Rückmeldung (Vergleichslauf main ↔ Runde 2a).
+Außerdem grün: `aktionsleisten-check`, `profession-solo-check` (auf main 98840d8 ebenfalls grün).
+
+Vergleichslauf main 98840d8 (vor dieser Runde, eigener Worktree) ↔ Runde 2a, gleiche Skripte, eigene Ports:
+
+| Prüfung | main 98840d8 | Runde 2a | Befund |
+|---|---|---|---|
+| `hud:check` | rot | rot | gleiche Stelle `hud-check.mjs:95` (Chat nach dem HUD-Editor, 14/752 → 258/594) |
+| `akt1b-check` | rot | rot | gleiche Stelle `akt1b-check.mjs:93` („Abschnitt ‚Ausrüstung‘ steht untereinander“) |
+| `mobile-check` | rot, 4 bzw. 1 Problemschritte (zwei Läufe) | rot, 6 Problemschritte (zwei Läufe) | Problemschritte: Unterbrechung (M-15), Gespräch/Beute (Aktion-Knopf „Reden“ statt „Beute“, Gespräch nicht in Reichweite), Kampf-Kniff „klein“ (Held tot). Alle hängen an Lage und Kampf aus dem Spielstand und schwanken schon auf main zwischen Läufen; kein Fensterbefund. Der einzige Fensterbefund („Mehr“ unter 32 px) ist behoben. Dass Runde 2a zweimal 6 zeigt, ist nicht geklärt – Rest für Runde 3. |
+| `profession-solo-check` | grün | grün | – |
