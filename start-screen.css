@@ -218,3 +218,8 @@ body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 /* Konto anlegen: dann ist „Konto anlegen“ der goldene Hauptknopf oben, „Anmelden“ wird zum Verweis darunter. */
 .start-screen .lg-box .registering .online-actions [data-online-submit=register]{order:-1;min-height:48px;font-size:20px!important;letter-spacing:.06em;text-decoration:none;color:#2a1c0e!important;background:linear-gradient(#e6c06a,#a87a2e)!important;border:2px solid #f0d488!important;border-radius:3px;box-shadow:0 0 14px #f0c46a44!important}
 .start-screen .lg-box .registering .online-actions [data-online-submit=login]{min-height:32px;font-size:14px!important;background:none!important;border-color:transparent!important;border-image:none!important;box-shadow:none!important;color:#d7b571!important;text-decoration:underline}
+/* Held lebt: leichtes Atmen (von den Füßen aus), weiches Einblenden beim Heldenwechsel. */
+.start-screen .cs-hero canvas,.start-screen .cc-hero canvas{transform-origin:50% 92%;animation:cs-breathe 3.6s ease-in-out infinite,cs-fade-in .35s ease-out}
+@keyframes cs-breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.008,1.018)}}
+@keyframes cs-fade-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
+@media (prefers-reduced-motion:reduce){.start-screen .cs-hero canvas,.start-screen .cc-hero canvas{animation:none}}
