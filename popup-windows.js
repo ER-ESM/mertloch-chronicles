@@ -80,10 +80,11 @@ export class PopupWindows{
  layout(){const a=this.dockArea(),list=[...this.windows.values()].filter(w=>isDocked(w.id)).sort((x,y)=>x.opened-y.opened),slot=this.slots(a);
   const low=['.action-area','.game-menu-rail'].map(box).filter(r=>r&&r.top>a.height*.6),floor=(left,width,bottom)=>low.reduce((b,r)=>left<r.right&&left+width>r.left?Math.min(b,Math.round(r.top-GAP)):b,bottom),place=(w,left,top,width,height,fixed=DOCK[w.id]==='full')=>{if(DOCK[w.id]!=='full')height=Math.min(height,floor(left,width,top+height)-top);Object.assign(w.el.style,{left:Math.round(left)+'px',top:Math.round(top)+'px',width:Math.round(width)+'px',maxWidth:'',minWidth:'',maxHeight:Math.round(height)+'px',height:fixed?Math.round(height)+'px':''});};
   for(const w of list.filter(w=>DOCK[w.id]==='left')){const s=slot[w.id];place(w,s.left,a.top,s.width,a.bottom-a.top);}
-  // Rechts: die Fenster stehen als Block mit gemeinsamer Unterkante – alle so hoch wie das höchste, soweit ihr Platz über Aktions- und
-  // Menüleiste reicht (dann endet eines etwas früher, statt dass eines scrollen muss).
-  const right=list.filter(w=>DOCK[w.id]==='right');for(const w of right){const s=slot[w.id];place(w,s.left,a.top,s.width,a.bottom-a.top);}
-  if(right.length>1){const tall=Math.max(...right.map(w=>w.el.offsetHeight));for(const w of right)w.el.style.height=Math.min(tall,parseFloat(w.el.style.maxHeight)||tall)+'px';}
+  // Rechts: die Fenster stehen als Block mit gemeinsamer Unterkante – alle so hoch wie das höchste (zuletzt gemessene Inhaltshöhe je
+  // Fenster, auch wenn es gerade zu ist: schließt der Rucksack, behält Kniffe seine Höhe), soweit der Platz über Aktions- und Menüleiste
+  // reicht (dann endet eines etwas früher, statt dass eines scrollen muss).
+  const right=list.filter(w=>DOCK[w.id]==='right');this.natural??={};for(const w of right){const s=slot[w.id];place(w,s.left,a.top,s.width,a.bottom-a.top);this.natural[w.id]=w.el.offsetHeight;}
+  if(right.length){const tall=Math.max(...SLOTS.right.map(id=>this.natural[id]||0));for(const w of right)w.el.style.height=Math.min(tall,parseFloat(w.el.style.maxHeight)||tall)+'px';}
   // Mitte: Talente/Hilfe als Gruppe bildschirmmittig, wenn dort nichts offen ist; sonst mittig in der Lücke zwischen den offenen
   // Seitenfenstern; passt sie auch dort nicht, bildschirmmittig (dann überdeckt sie, was nicht anders geht).
   const center=list.filter(w=>DOCK[w.id]==='center');if(center.length){const side=list.filter(w=>DOCK[w.id]==='left'||DOCK[w.id]==='right').map(w=>({dock:DOCK[w.id],...slot[w.id]}));
