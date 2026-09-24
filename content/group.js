@@ -9,3 +9,7 @@ export const READY_UI={
 /** Folgen (WoW „Folgen“): Abstände in Welt-Einheiten, Neuplanung in ms. */
 export const FOLLOW_RULES={start:70,stop:45,repathMs:450,maxRange:1400};
 export const FOLLOW_UI={menu:'Folgen',menuStop:'Folgen beenden',start:n=>'Du folgst '+n+'. Eigene Bewegung beendet das.',stop:n=>'Du folgst '+n+' nicht mehr.',lost:n=>n+' ist außer Sicht – Folgen beendet.'};
+/** Tooltip am Gruppenkopf: was die Gruppe gerade bringt (Zahlen aus BALANCE.party). */
+export const GROUP_TIP={title:'Gruppe',
+ note:({near,xp,buff})=>['In der Nähe: '+near+' Mitspieler · +'+xp+' % EP je Kill',
+  'Sammelziele zählen für alle, Buffs wirken zu '+buff+' % mit','Seltene Beute wird ausgewürfelt (Bedarf vor Gier)','Söldner zählen mit: höchstens fünf Köpfe'].join('<br>')};

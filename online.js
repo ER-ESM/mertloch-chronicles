@@ -15,7 +15,7 @@ import {createNetSocial,mountTradeUi,SOCIAL_UI,SOCIAL_RANGE} from './net-social.
 import {RARITIES,TARGET_MARK_UI} from './content/index.js';
 import {applyNetMark,markDef} from './target-marks.js';
 import {createReadyCheck} from './party-ready.js';
-import {READY_UI} from './content/index.js';
+import {READY_UI,GROUP_TIP,BALANCE} from './content/index.js';
 import {mergeRosters} from './characters.js';
 import {lookKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
@@ -199,10 +199,14 @@ export function mountOnline(host){
   if(!list.length)return;
   const heads=1+list.length+(g()?.companions?.length||0)+(g()?.others||[]).filter(o=>o.party).reduce((n,o)=>n+(o.companions?.length||0),0);
   // Kopfleiste wie „Deine Truppe“: Gruppe, Köpfe (Menschen + Söldner) von fünf, Verlassen als kleiner Knopf mit Tooltip.
-  const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive,targetName:x.tg?(g()?.netEnemy?.(x.tg)?.hp>0?g().netEnemy(x.tg).name:''):'',ready:ready.status(x.n),pets:(g()?.others||[]).find(o=>o.name===x.n)?.companions||[],outOfRange:!!g()?.player&&Math.hypot((x.x??0)-g().player.x,(x.y??0)-g().player.y)>SOCIAL_RANGE.aid})).join('');
+  const near=play.near(),tip=GROUP_TIP.note({near,xp:Math.round(BALANCE.party.xpPerMember*100*Math.min(4,near)),buff:Math.round(BALANCE.party.buffShare*100)});
+  // Kopf bleibt stehen (nur Zahl und Tooltip ändern sich), damit sein Tooltip beim Sekundentakt nicht verschwindet; neu aufgebaut wird nur die Liste.
+  if(!state.partyHead){el.innerHTML='<header class="party-head" data-tooltip-label="'+esc(GROUP_TIP.title)+'"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count"></small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header><div class="party-list"></div>';state.partyHead=el.querySelector('.party-head');state.partyList=el.querySelector('.party-list');}
+  state.partyHead.dataset.tooltipNote=tip;state.partyHead.querySelector('.party-count').textContent=heads+'/5';
+  const html=list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive,targetName:x.tg?(g()?.netEnemy?.(x.tg)?.hp>0?g().netEnemy(x.tg).name:''):'',ready:ready.status(x.n),pets:(g()?.others||[]).find(o=>o.name===x.n)?.companions||[],outOfRange:!!g()?.player&&Math.hypot((x.x??0)-g().player.x,(x.y??0)-g().player.y)>SOCIAL_RANGE.aid})).join('');
   if(html!==state.partyHtml){
    const focus=document.activeElement,name=focus?.closest('[data-party-name]')?.dataset.partyName,action=focus?.hasAttribute('data-party-revive')?'[data-party-revive]':'[data-party-select]';
-   state.partyHtml=html;el.innerHTML=html;paintUnitPortraits(el);
+   state.partyHtml=html;state.partyList.innerHTML=html;paintUnitPortraits(state.partyList);
    if(name)[...el.querySelectorAll('[data-party-name]')].find(row=>row.dataset.partyName===name)?.querySelector(action)?.focus({preventScroll:true});
   } // nur bei Änderung neu aufbauen: sonst verschluckt der Sekundentakt Klicks
  }

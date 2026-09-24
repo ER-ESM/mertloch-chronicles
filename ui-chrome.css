@@ -500,3 +500,4 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 /* Handy quer: Gruppenkopf nur so breit wie sein Inhalt, nicht als Balken quer über die Welt */
 .touch-mode #unitGroupDock.unit-dock-landscape .party-frames>header.party-head{justify-self:start;width:auto;max-width:100%;gap:10px}
 .touch-mode .party-frames header.party-head .party-count{flex:none}
+.party-frames>.party-list{display:contents}
