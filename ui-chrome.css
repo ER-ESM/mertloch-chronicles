@@ -497,3 +497,6 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 .roll-card>.roll-item.rarity-rare{border-color:#4f8fe0;box-shadow:0 0 8px #4f8fe066}.roll-card>.roll-item.rarity-epic{border-color:#a45ce0;box-shadow:0 0 8px #a45ce066}
 .roll-card>header,.roll-card>.roll-actions,.roll-card>.roll-picks{grid-column:2}
 .party-member.out-of-range .unit-select{opacity:.5;filter:saturate(.6)}.party-member.out-of-range .party-pets{opacity:.5}
+/* Handy quer: Gruppenkopf nur so breit wie sein Inhalt, nicht als Balken quer über die Welt */
+.touch-mode #unitGroupDock.unit-dock-landscape .party-frames>header.party-head{justify-self:start;width:auto;max-width:100%;gap:10px}
+.touch-mode .party-frames header.party-head .party-count{flex:none}

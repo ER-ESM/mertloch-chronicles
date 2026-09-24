@@ -19,9 +19,11 @@ try{
  for(const [i,h]of HEROES.entries()){
   const res=await fetch(new URL('/api/auth',url),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'register',email:h.name.toLowerCase()+'@example.org',name:h.name,password:'test-party-account-123'})});assert.equal(res.status,200);
   const cookie=res.headers.get('set-cookie').split(';')[0],cut=cookie.indexOf('='),b=await browserSession({url,port:Number(process.env.CDP_PORT||9470)+i});browsers.push(b);
-  await b.resize(1600,900);await b.send('Network.setCookie',{name:cookie.slice(0,cut),value:cookie.slice(cut+1),url,httpOnly:true});
+  // TOUCH_B=1: Moni spielt auf dem Handy quer (844×390, Touch-Modus)
+  const phone=i===1&&!!process.env.TOUCH_B;await b.resize(phone?844:1600,phone?390:900);if(phone){await b.send('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:2,mobile:true});await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});}
+  await b.send('Network.setCookie',{name:cookie.slice(0,cut),value:cookie.slice(cut+1),url,httpOnly:true});
   const made=createCharacter(null,{name:h.name,classId:h.classId,look:h.look,tint:h.tint}),save={version:1,savedAt:Date.now(),worldKey:'v2-56753-72-1',classId:h.classId,level:12,rpg:{version:4,coins:900},tutorial:{version:1,step:8,completed:true}};
-  const init=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-touch-v1','{"mode":"desktop"}');localStorage.setItem('mertloch-characters',${JSON.stringify(JSON.stringify(made.roster))});localStorage.setItem(${JSON.stringify(characterKey(save.worldKey,made.character))},${JSON.stringify(JSON.stringify(save))});`});
+  const init=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;localStorage.setItem('mertloch-touch-v1','{"mode":"${phone?'touch':'desktop'}"}');localStorage.setItem('mertloch-characters',${JSON.stringify(JSON.stringify(made.roster))});localStorage.setItem(${JSON.stringify(characterKey(save.worldKey,made.character))},${JSON.stringify(JSON.stringify(save))});`});
   await b.goto(url);await b.send('Page.removeScriptToEvaluateOnNewDocument',init);await wait(700);
   await run(b,`g.tutorial.completed=true;g.player.inCombat=0;g.stopAuto?.();const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x+${i?40:-20},n.y+60,9));g.moveTo=null;g.path=[];g.keys.clear();document.querySelectorAll('[data-window-close]').forEach(x=>x.click());`);
  }
