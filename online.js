@@ -194,6 +194,8 @@ export function mountOnline(host){
   const el=state.partyEl,list=state.party.members;el.hidden=!list.length;
   // Anführer-Krone am eigenen Rahmen (WoW): nur wenn ich eine Gruppe führe.
   document.querySelector('.player-panel')?.classList.toggle('is-party-leader',!!list.length&&state.party.leader===myName());
+  // Karte (cartography.js): Gruppenmitglieder in derselben Welt, auch außerhalb der Sichtweite.
+  if(g())g().partyPositions=list.filter(x=>x.w===(host.roomKey||host.worldKey)&&Number.isFinite(x.x)).map(x=>({name:x.n,x:x.x,y:x.y,dead:x.s==='dead'}));
   if(!list.length)return;
   const heads=1+list.length+(g()?.companions?.length||0)+(g()?.others||[]).filter(o=>o.party).reduce((n,o)=>n+(o.companions?.length||0),0);
   // Kopfleiste wie „Deine Truppe“: Gruppe, Köpfe (Menschen + Söldner) von fünf, Verlassen als kleiner Knopf mit Tooltip.

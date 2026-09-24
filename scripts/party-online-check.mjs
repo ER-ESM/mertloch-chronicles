@@ -103,6 +103,11 @@ try{
  await until(a,`document.querySelector('[data-party-name=Moni].out-of-range')`,5000,'Moni blass außer Reichweite');
  await run(b,`const p=g.others.find(o=>o.name==='Rudi');Object.assign(g.player,g.world.findClear(p.x+40,p.y,9));`);
  await until(a,`document.querySelector('[data-party-name=Moni]:not(.out-of-range)')`,5000,'Moni wieder in Reichweite');ok('Rahmen zeigt, wer außer Reichweite ist');
+ // Runde 17: große Karte zeigt Gruppenmitglieder auch außerhalb der Sichtweite
+ await run(b,`Object.assign(g.player,g.world.findClear(g.player.x+2500,g.player.y+300,9));`);
+ await until(a,`!g.others.some(o=>o.name==='Moni')&&g.partyPositions?.some(m=>m.name==='Moni')`,6000,'Moni fern, aber in der Kartenliste');
+ await a.press('m');await wait(1200);await shot(a,'map-a');await a.press('m');ok('Karte kennt ferne Gruppenmitglieder');
+ await run(b,`const p=g.partyPositions.find(m=>m.name==='Rudi');Object.assign(g.player,g.world.findClear(p.x+40,p.y,9));`);await wait(800);
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}
