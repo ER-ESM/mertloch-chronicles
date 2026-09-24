@@ -69,7 +69,8 @@ export const BUDE_HOUSE={
   {s:'kloschuessel',x:218,y:86},{s:'waschbecken',x:195,y:80},{s:'spiegel',x:195,y:75},{s:'pfuetze',x:205,y:104},{s:'socke',x:222,y:108},
   // Hof
   {s:'regentonne',x:240,y:10},{s:'kistenstapel-hof',x:315,y:20},{s:'fahrrad',x:245,y:80},{s:'bierbank',x:300,y:164},{s:'gartenstuhl',x:318,y:132},
-  {s:'pfuetze',x:270,y:120},{s:'becher',x:310,y:60}
+  {s:'pfuetze',x:270,y:120},{s:'becher',x:310,y:60},
+  {s:'gartenstuhl',x:242,y:36},{s:'becher',x:250,y:156},{s:'becher',x:320,y:92},{s:'luftschlangen',x:246,y:120},{s:'scherben',x:302,y:136},{s:'socke',x:254,y:54}
  ],
  // Treppe ins Obergeschoss an der Westwand des Schankraums, nach Norden steigend (die Wand liegt daneben und verdeckt nichts):
  // unten der Treppenfuß östlich des Antritts, oben der Absatz im Matratzenlager.
