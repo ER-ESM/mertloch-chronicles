@@ -13,6 +13,7 @@ import {inKiosk} from './kiosk-instance.js';
 import {inDungeon,dungeonEntrance} from './dungeon.js';
 import {isElite} from './enemy-ui.js';
 import {SCALE} from './world.js';
+import {mapIcon,paintMapIcon,MAP_OUTLINE} from './map-symbols.js';
 
 export const MINIMAP_KEY='mertloch-minimap-v1';
 const DPR=2,TAU=Math.PI*2;
@@ -35,41 +36,11 @@ export function edgePoint(dx,dy,R,shape='round'){
 }
 export const insideDisc=(dx,dy,R,shape='round')=>shape==='round'?dx*dx+dy*dy<=R*R:Math.abs(dx)<=R&&Math.abs(dy)<=R;
 
-// ------------------------------------------------------------------ Symbole (einmal vorgezeichnet, je Bild nur kopiert)
-const OUT='#1c1712';
-function badge(c,fill,rim){c.beginPath();c.arc(8,8,6.6,0,TAU);c.fillStyle=OUT;c.fill();c.beginPath();c.arc(8,8,5.6,0,TAU);c.fillStyle=fill;c.fill();c.lineWidth=1;c.strokeStyle=rim;c.stroke();}
-function glyph(c,ch,fill){c.font='900 15px Nunito,"Segoe UI",system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';c.lineWidth=3.6;c.strokeStyle=OUT;c.strokeText(ch,8,8.6);c.fillStyle=fill;c.fillText(ch,8,8.6);}
-const PAINT={
- 'quest':c=>glyph(c,'!','#ffd23f'),
- 'quest-ready':c=>glyph(c,'?','#ffd23f'),
- 'quest-low':c=>glyph(c,'!','#bdb8a4'),
- 'dest':c=>{c.beginPath();c.moveTo(8,1.5);c.lineTo(14.5,8);c.lineTo(8,14.5);c.lineTo(1.5,8);c.closePath();c.fillStyle=OUT;c.fill();c.beginPath();c.moveTo(8,3.4);c.lineTo(12.6,8);c.lineTo(8,12.6);c.lineTo(3.4,8);c.closePath();c.fillStyle='#f3c44e';c.fill();c.beginPath();c.arc(8,8,1.7,0,TAU);c.fillStyle='#fff6d6';c.fill();},
- 'waypoint':c=>{c.lineCap='round';c.strokeStyle=OUT;c.lineWidth=4.4;c.beginPath();c.moveTo(4,4);c.lineTo(12,12);c.moveTo(12,4);c.lineTo(4,12);c.stroke();c.strokeStyle='#fff0c4';c.lineWidth=2;c.stroke();},
- 'trade':c=>{badge(c,'#7b5427','#f1d18b');c.beginPath();c.arc(8,8,3.1,0,TAU);c.fillStyle='#f3c44e';c.fill();c.fillStyle='#7b5427';c.fillRect(7.4,6.2,1.2,3.6);},
- 'trainer-werkhof':c=>{badge(c,'#3c5c68','#bfe0e6');c.save();c.translate(8,8);c.rotate(-.75);c.fillStyle='#c9a36a';c.fillRect(-.8,-1.2,1.6,5.4);c.fillStyle='#f2e6c8';c.fillRect(-3.4,-3.8,6.8,2.8);c.fillStyle='#9fb3b8';c.fillRect(-3.4,-1.6,6.8,.6);c.restore();},
- 'trainer-braugarten':c=>{badge(c,'#3c5c68','#bfe0e6');c.fillStyle='#f2e6c8';c.fillRect(5.2,5.6,4.4,5.4);c.fillStyle='#f3c44e';c.fillRect(5.8,6.8,3.2,3.6);c.strokeStyle='#f2e6c8';c.lineWidth=1.1;c.strokeRect(9.8,6.8,1.6,2.6);c.fillStyle='#fff';c.fillRect(5.2,4.8,4.4,1.3);},
- 'stable':c=>{badge(c,'#5a4631','#e8cf9a');c.strokeStyle='#e8e0cc';c.lineWidth=1.7;c.lineCap='round';c.beginPath();c.arc(8,7.6,2.9,Math.PI*.95,Math.PI*2.05,true);c.stroke();c.beginPath();c.moveTo(5.1,8.4);c.lineTo(5.3,11);c.moveTo(10.9,8.4);c.lineTo(10.7,11);c.stroke();},
- 'base':c=>{badge(c,'#8a3f47','#f29aa6');c.fillStyle='#f6e7c4';c.beginPath();c.moveTo(8,4.2);c.lineTo(11.6,7.6);c.lineTo(10.6,7.6);c.lineTo(10.6,11.4);c.lineTo(5.4,11.4);c.lineTo(5.4,7.6);c.lineTo(4.4,7.6);c.closePath();c.fill();c.fillStyle='#8a3f47';c.fillRect(7.2,8.8,1.6,2.6);},
- 'hub':c=>{c.beginPath();c.moveTo(8,1.6);c.lineTo(14,4);c.lineTo(13.2,9.4);c.lineTo(8,14.6);c.lineTo(2.8,9.4);c.lineTo(2,4);c.closePath();c.fillStyle=OUT;c.fill();c.beginPath();c.moveTo(8,3.2);c.lineTo(12.5,5);c.lineTo(11.9,9);c.lineTo(8,12.8);c.lineTo(4.1,9);c.lineTo(3.5,5);c.closePath();c.fillStyle='#3b8174';c.fill();c.fillStyle='#d8f3dd';c.fillRect(7.2,5.2,1.6,5.4);c.fillRect(5.3,7,5.4,1.6);},
- 'dungeon':c=>{badge(c,'#433a55','#cdb9f2');c.fillStyle='#16121c';c.beginPath();c.moveTo(5.6,11.6);c.lineTo(5.6,7.4);c.arc(8,7.4,2.4,Math.PI,0);c.lineTo(10.4,11.6);c.closePath();c.fill();c.fillStyle='#cdb9f2';c.fillRect(7.5,8.6,1,1);},
- 'camp':c=>{c.beginPath();c.moveTo(8,1.4);c.lineTo(14.6,8);c.lineTo(8,14.6);c.lineTo(1.4,8);c.closePath();c.fillStyle=OUT;c.fill();c.beginPath();c.moveTo(8,3.2);c.lineTo(12.8,8);c.lineTo(8,12.8);c.lineTo(3.2,8);c.closePath();c.fillStyle='#a8483c';c.fill();c.strokeStyle='#ffe1c9';c.lineWidth=1.3;c.lineCap='round';c.beginPath();c.moveTo(5.8,5.8);c.lineTo(10.2,10.2);c.moveTo(10.2,5.8);c.lineTo(5.8,10.2);c.stroke();},
- 'camp-free':c=>{c.beginPath();c.moveTo(8,2.4);c.lineTo(13.6,8);c.lineTo(8,13.6);c.lineTo(2.4,8);c.closePath();c.fillStyle=OUT;c.fill();c.beginPath();c.moveTo(8,4);c.lineTo(12,8);c.lineTo(8,12);c.lineTo(4,8);c.closePath();c.fillStyle='#8c8a7a';c.fill();},
- 'node-herbs':c=>{c.fillStyle=OUT;c.beginPath();c.ellipse(8,8,4.2,6.6,.7,0,TAU);c.fill();c.fillStyle='#8fd16a';c.beginPath();c.ellipse(8,8,2.9,5.2,.7,0,TAU);c.fill();c.strokeStyle='#3f6e2c';c.lineWidth=.9;c.beginPath();c.moveTo(5,11);c.lineTo(11,5);c.stroke();},
- 'node-hops':c=>{c.fillStyle=OUT;c.beginPath();c.ellipse(8,8.6,4.8,6,0,0,TAU);c.fill();for(const [y,w] of [[5.4,2.6],[8,3.4],[10.6,2.8]]){c.fillStyle='#c6e27a';c.beginPath();c.ellipse(8,y,w,1.9,0,0,TAU);c.fill();c.fillStyle='#6f9a3a';c.fillRect(8-w,y+.9,w*2,.7);}c.fillStyle='#5b7d2c';c.fillRect(7.5,1.8,1,1.8);},
- 'node-scrap':c=>{c.save();c.translate(8,8.4);c.rotate(-.45);c.fillStyle=OUT;c.fillRect(-3.8,-5,7.6,10);c.fillStyle='#a9b5ba';c.fillRect(-2.8,-4,5.6,8);c.fillStyle='#d9e2e4';c.fillRect(-2.8,-4,5.6,1.4);c.fillStyle='#b8693a';c.fillRect(-.6,-.6,2.6,2.4);c.fillStyle='#6f7b80';c.fillRect(-2.8,2.4,5.6,.9);c.restore();},
- 'node-machinery':c=>{c.fillStyle=OUT;c.beginPath();c.arc(8,8,6.4,0,TAU);c.fill();c.fillStyle='#d0b07a';for(let i=0;i<8;i++){c.save();c.translate(8,8);c.rotate(i*Math.PI/4);c.fillRect(-1.1,-5.4,2.2,2.4);c.restore();}c.beginPath();c.arc(8,8,3.6,0,TAU);c.fill();c.fillStyle=OUT;c.beginPath();c.arc(8,8,1.4,0,TAU);c.fill();},
- 'player':c=>{c.beginPath();c.arc(8,8,4.4,0,TAU);c.fillStyle=OUT;c.fill();c.beginPath();c.arc(8,8,3.4,0,TAU);c.fillStyle='#f5f0dc';c.fill();c.beginPath();c.arc(8,8,2.4,0,TAU);c.fillStyle='#63c46f';c.fill();},
- 'party':c=>{c.beginPath();c.arc(8,8,4.8,0,TAU);c.fillStyle=OUT;c.fill();c.beginPath();c.arc(8,8,3.8,0,TAU);c.fillStyle='#f5f0dc';c.fill();c.beginPath();c.arc(8,8,2.8,0,TAU);c.fillStyle='#4fa3f0';c.fill();},
- 'companion':c=>{c.beginPath();c.arc(8,8,3.6,0,TAU);c.fillStyle=OUT;c.fill();c.beginPath();c.arc(8,8,2.5,0,TAU);c.fillStyle='#9fd3ff';c.fill();},
- 'enemy':c=>{c.beginPath();c.arc(8,8,3.4,0,TAU);c.fillStyle=OUT;c.fill();c.beginPath();c.arc(8,8,2.4,0,TAU);c.fillStyle='#ee6a4f';c.fill();},
- 'neutral':c=>{c.beginPath();c.arc(8,8,3.2,0,TAU);c.fillStyle=OUT;c.fill();c.beginPath();c.arc(8,8,2.2,0,TAU);c.fillStyle='#e6cf6a';c.fill();},
- 'elite':c=>{c.fillStyle=OUT;c.beginPath();c.moveTo(2.4,5);c.lineTo(5.4,8);c.lineTo(8,3.4);c.lineTo(10.6,8);c.lineTo(13.6,5);c.lineTo(12.6,12.4);c.lineTo(3.4,12.4);c.closePath();c.fill();c.fillStyle='#eecb78';c.beginPath();c.moveTo(3.8,6.8);c.lineTo(5.6,9.2);c.lineTo(8,5.4);c.lineTo(10.4,9.2);c.lineTo(12.2,6.8);c.lineTo(11.6,11.2);c.lineTo(4.4,11.2);c.closePath();c.fill();},
- 'boss':c=>{badge(c,'#8f2f2c','#ffd9c9');c.fillStyle='#eecb78';c.beginPath();c.moveTo(4.4,6.6);c.lineTo(6,8.4);c.lineTo(8,5.2);c.lineTo(10,8.4);c.lineTo(11.6,6.6);c.lineTo(11,10.8);c.lineTo(5,10.8);c.closePath();c.fill();}
-};
-const iconCache=new Map();
-function icon(key){let cv=iconCache.get(key);if(cv)return cv;const base=key.replace(/:dim$/,'');cv=document.createElement('canvas');cv.width=cv.height=16*DPR;const c=cv.getContext('2d');c.scale(DPR,DPR);if(key.endsWith(':dim'))c.globalAlpha=.42;(PAINT[base]||PAINT.player)(c);iconCache.set(key,cv);return cv;}
+// ------------------------------------------------------------------ Symbole (Runde 4a: gemeinsam mit der Weltkarte, map-symbols.js)
+const OUT=MAP_OUTLINE;
+const icon=key=>mapIcon(key,16);
 /** Kleines Symbol in ein Menü-Canvas malen (Lupe, Legende). */
-export function paintMinimapIcon(canvas,key){const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.drawImage(icon(key),0,0,canvas.width,canvas.height);}
+export const paintMinimapIcon=paintMapIcon;
 const GROUP_ICON={quest:'quest',trade:'trade',trainer:'trainer-werkhof',places:'base',nodes:'node-herbs',people:'party',enemies:'camp',route:'waypoint'};
 
 // ------------------------------------------------------------------ Grundkarte (Zwischenspeicher)

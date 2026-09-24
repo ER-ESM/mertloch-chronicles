@@ -38,7 +38,7 @@ export function questMob(g,e){
 /** Zielgebiete der laufenden Kapitel-Tötungsziele für Karte und Minikarte: [{x,y,r,label}]. */
 export function chapterAreas(g){
  const q=g.quest;if(!q?.accepted||q.chapterClaimed>=q.chapter)return [];
- return (g.objectives?.()||[]).map((o,i)=>{if(o.kind!=='kill'||g.objectiveProgress(i)?.complete)return null;const c=g.campFor(o);return c?{x:c.x,y:c.y,r:QUEST_AREA,label:o.label}:null;}).filter(Boolean);
+ return (g.objectives?.()||[]).map((o,i)=>{const pr=g.objectiveProgress(i);if(o.kind!=='kill'||pr?.complete)return null;const c=g.campFor(o);/* done/need: Fortschritt für den Tooltip der Weltkarte (Runde 4a) */return c?{x:c.x,y:c.y,r:QUEST_AREA,label:o.label,done:pr?.done??0,need:pr?.need??o.count??0}:null;}).filter(Boolean);
 }
 /** Zeichen über Ida (Runde 3a, Kenner-Befund 7, WoW): „?“, sobald bei ihr etwas abzugeben ist – Kapitel fertig, Hofprobe zurück
  *  bei Ida oder ein Treffpunkt-Auftrag mit Abgabe bei ihr; „…“ solange ein Auftrag läuft; „!“ nur für einen neuen Auftrag. */

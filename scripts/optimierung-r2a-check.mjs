@@ -67,8 +67,8 @@ try{
  await click('.popup-quest [data-ql-tab="log"]');
  // „auf der Karte“ beim Hauptauftrag zeigt das verfolgte Ziel, nicht Kisten-Ida
  await click('.popup-quest [data-ql-select="main"]');await click('.popup-quest .ql-detail:not([hidden]) [data-ql-map]');await wait(900);
- const sel=await read(`return document.querySelector('#atlasSelection h3')?.textContent||''`),dest=await read(`return g.mainDestination()?.label||''`);
- assert.ok((await open()).includes('map'),'Karte geht auf');assert.notEqual(sel,'Kisten-Ida','Karte zeigt nicht den Auftraggeber');assert.equal(await read(`return !g.trackedQuest&&!g.hotspots?.tracked`),true,'Hauptauftrag wird verfolgt');
+ /* Runde 4a: statt des Blocks „Dein nächster Halt“ ist die gewählte Zeile der Seitenleiste markiert */const sel=await read(`return document.querySelector('.popup-map .wk-row[aria-pressed="true"] b')?.textContent||''`),dest=await read(`return g.mainDestination()?.label||''`);
+ assert.ok((await open()).includes('map'),'Karte geht auf');assert.ok(sel,'Karte wählt ein Ziel');assert.notEqual(sel,'Kisten-Ida','Karte zeigt nicht den Auftraggeber');assert.equal(await read(`return !g.trackedQuest&&!g.hotspots?.tracked`),true,'Hauptauftrag wird verfolgt');
  ok('1 Aufträge: Titelliste, ein Detail mit Häkchen und Kacheln, Filter oben, Symbolreiter unten, Lesen, Karte zeigt das Ziel („'+sel+'“ / Ziel „'+dest+'“)');
  // ---------- 8) Karte: Liste einzeilig, verfolgtes Ziel oben ----------
  const m=await read(`const rows=[...document.querySelectorAll('.popup-map .atlas-place')];return {n:rows.length,first:rows[0]?.className,tall:rows.filter(r=>r.getBoundingClientRect().height>34).length,second:rows.some(r=>r.querySelector('small')&&r.querySelector('small').offsetParent),numbers:rows.filter(r=>/^\\s*\\d+\\s*$/.test(r.querySelector('i')?.textContent||'')).length,dim:getComputedStyle(rows[1]).opacity,lastVisible:(()=>{const s=document.querySelector('.popup-map #atlasPlaces').getBoundingClientRect(),l=rows.at(-1).getBoundingClientRect();return l.bottom<=s.bottom+1;})()}`);

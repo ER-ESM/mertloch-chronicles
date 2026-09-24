@@ -1,0 +1,125 @@
+/* Weltkarte (M), Runde 4a (2026-09-24, Zielbild 1 des Grafikberichts R4): Werkzeuge in der Titelzeile, Karte ≈ 1600 × 799 ohne
+   Werkzeugleiste, Legende und Fuß, Seitenleiste mit Gruppentrennern und Stiefel, POI-Tooltip, Filterliste wie die Lupe der Minikarte.
+   Am Handy füllt die Karte das Fenster; die Ortsliste klappt über ein Symbol in der Titelzeile auf. Zuletzt geladen (nach fenster-r3.css). */
+
+/* ---------- Titelzeile: Filter, Zu mir, Übersicht (am Handy zusätzlich die Ortsliste) */
+.popup-titlebar .wk-tools{display:flex;align-items:center;gap:6px;flex:none;margin:0 10px 0 auto}
+.popup-titlebar .wk-tools .wk-tool{width:30px;height:30px}
+.popup-titlebar .wk-tools .ui-glyph{width:18px;height:18px}
+body:not(.touch-mode) .popup-titlebar .wk-tools [data-wk-side]{display:none}
+.touch-mode .popup-titlebar .wk-tools{gap:8px!important;margin-right:8px}
+.touch-mode .popup-titlebar .wk-tools .wk-tool{width:44px;height:44px}
+.touch-mode .wk-window .popup-titlebar strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:520px){.touch-mode .wk-window .popup-titlebar strong{display:none}}
+
+/* ---------- Filterliste (kombinierbar) */
+.wk-filter{position:absolute;z-index:30;width:218px;padding:6px;background:linear-gradient(#173026,#10221b);border:1px solid #c5a268;border-radius:8px;box-shadow:0 10px 26px #000b}
+.wk-filter[hidden]{display:none!important}
+.wk-filter>strong{display:block;margin:0 4px 5px;font:400 16px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase;color:#f3cf7a}
+.wk-filter button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;min-height:28px;padding:3px 6px;border-radius:6px;cursor:pointer;font:700 13px/1.2 var(--read,'Nunito',sans-serif);color:#f4e5c5}
+.wk-filter button:hover,.wk-filter button:focus-visible{background:#ffffff17;outline:none}
+.wk-filter button canvas{width:18px;height:18px;flex:none}
+.wk-filter button span{flex:1}
+.wk-filter button i{width:16px;height:16px;flex:none;border:1.5px solid #8f7a4e;border-radius:4px;display:grid;place-items:center;background:#0c1c16}
+.wk-filter button[aria-checked=true] i{border-color:#d7b571;background:#2d4a3a}
+.wk-filter button[aria-checked=false] span{color:#b8c4ab}
+.wk-filter button i .ui-glyph{width:13px;height:13px;stroke:#ffe3a3;stroke-width:2.6}
+.touch-mode .wk-filter{width:240px}
+.touch-mode .wk-filter button{min-height:44px!important}
+
+/* ---------- Aufbau: Karte + Seitenleiste */
+.popup-map .wk{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.popup-map .wk-body{flex:1 1 auto;min-height:0;position:relative;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:8px}
+.popup-map .wk-paper{position:relative;min-height:0;height:auto!important;margin:0!important;overflow:hidden}
+.popup-map .wk-paper canvas{display:block;width:100%!important;height:100%!important;cursor:default}
+.popup-map .wk-paper canvas.wk-over{cursor:pointer}
+.popup-map .wk-paper #largeMap.can-pan{cursor:grab}
+.popup-map .wk-paper #largeMap.can-pan.wk-over{cursor:pointer}
+.popup-map .wk-paper #largeMap.panning{cursor:grabbing}
+.wk-zoom{position:absolute;z-index:3;right:8px;bottom:24px;display:flex;flex-direction:column;gap:4px}
+.wk-zoom .wk-tool{width:26px;height:26px;background:#10221bcc}
+.wk-zoom .ui-glyph{width:15px;height:15px}
+.touch-mode .wk-zoom{bottom:26px;gap:8px}
+.touch-mode .wk-zoom .wk-tool{width:44px;height:44px;border-radius:50%!important}
+.wk-osm{position:absolute;z-index:3;right:6px;bottom:4px;padding:1px 5px;border-radius:3px;background:#f6ead0b3;color:#2c1c10!important;opacity:.6;font:600 10px/1.3 var(--read,'Nunito',sans-serif);text-decoration:none;letter-spacing:0}
+.wk-osm:hover{opacity:1}
+
+/* ---------- Seitenleiste: Trenner (Symbol + Linie), einzeilige Einträge, Stiefel */
+.popup-map .wk-side{min-height:0;overflow:hidden!important;display:flex;flex-direction:column;padding:0!important}
+.popup-map .wk-list{display:flex!important;flex-direction:column;gap:1px!important;min-height:0;overflow:hidden}
+.popup-map .wk-sep{display:flex;align-items:center;gap:6px;height:14px;margin:5px 2px 2px;flex:none}
+.popup-map .wk-sep canvas{width:14px;height:14px;flex:none}
+.popup-map .wk-sep hr{flex:1;height:0;margin:0;border:0;border-top:1px solid #d7b57159}
+.game-popup.popup-map .wk-list .atlas-place.wk-row{display:flex!important;align-items:stretch;height:26px!important;min-height:0!important;padding:0!important;margin:0!important;gap:0!important;flex:none;opacity:.8;background:#152a20!important;border:1px solid #c5a26833!important;border-radius:5px!important;box-shadow:none}
+.game-popup.popup-map .wk-list .atlas-place.wk-row:hover,.game-popup.popup-map .wk-list .atlas-place.wk-row[aria-pressed=true],.game-popup.popup-map .wk-list .atlas-place.wk-row.atlas-tracked,.game-popup.popup-map .wk-list .atlas-place.wk-row.wk-target{opacity:1}
+.game-popup.popup-map .wk-list .atlas-place.wk-row[aria-pressed=true]{border-color:#f3cf7a99!important;background:#1d3a2c!important}
+.game-popup.popup-map .wk-list .atlas-place.wk-row.atlas-tracked{height:30px!important;margin:0 0 3px!important;background:#3b4a26!important;border:1px solid #f3cf7a!important;box-shadow:0 0 8px #f3cf7a44}
+.game-popup.popup-map .wk-list .atlas-place.wk-row.wk-target{height:30px!important;margin:0 0 3px!important;background:#2b3a2a!important;border:1px solid #e9dfb8aa!important}
+.game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-pick{all:unset;box-sizing:border-box;flex:1;min-width:0;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:7px;padding:0 4px 0 7px;cursor:pointer;border-radius:5px}
+.game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-pick:focus-visible{outline:2px solid #ffe7aa;outline-offset:-2px}
+.game-popup.popup-map .wk-list .wk-row.atlas-place .wk-ico{width:18px;height:18px}
+.game-popup.popup-map .wk-list .wk-row.atlas-place b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 13px/1.1 var(--read,'Nunito',sans-serif)!important;color:#f3dfae!important;text-transform:none!important;letter-spacing:0!important}
+.game-popup.popup-map .wk-list .wk-row.atlas-place.camp b{color:#f0b9a4!important}
+.game-popup.popup-map .wk-list .wk-row.atlas-place.low b{color:#bdb8a4!important}
+.game-popup.popup-map .wk-list .wk-row.atlas-place.atlas-tracked b{color:#fff0c0!important;font-size:14px!important}
+.game-popup.popup-map .wk-list .wk-row.atlas-place em{font:600 12px/1 var(--read,'Nunito',sans-serif)!important;font-style:normal!important;color:#e7d3a0;white-space:nowrap}
+.game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-boot{all:unset;box-sizing:border-box;flex:none;width:28px;display:grid;place-items:center;color:#e7c87b;opacity:.35;cursor:pointer;border-left:1px solid #c5a26826;border-radius:0 5px 5px 0}
+.game-popup.popup-map .wk-list .wk-row.atlas-place:hover>.wk-boot,.game-popup.popup-map .wk-list .wk-row.atlas-place[aria-pressed=true]>.wk-boot,.game-popup.popup-map .wk-list .wk-row.atlas-place.atlas-tracked>.wk-boot,.game-popup.popup-map .wk-list .wk-row.atlas-place.wk-target>.wk-boot{opacity:1}
+.game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-boot:hover,.game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-boot:focus-visible{background:#f3cf7a33;color:#fff0c0;outline:none}
+.game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-boot .ui-glyph{width:16px;height:16px}
+
+/* ---------- POI-Tooltip (WoW WorldMapTooltip), 260 px, rechts unten am Marker */
+.wk-tip{position:fixed!important;z-index:100000;width:260px!important;max-width:calc(100vw - 16px);padding:8px 10px!important;pointer-events:none}
+.wk-tip[hidden]{display:none!important}
+.wk-tip.wk-tip-touch{pointer-events:auto}
+.wk-tip-head{display:flex;align-items:center;gap:8px}
+.wk-tip-head canvas{width:20px;height:20px;flex:none}
+.wk-tip-head strong{font:800 14px/1.25 var(--read,'Nunito',sans-serif)!important;color:#f3cf7a;letter-spacing:0;text-transform:none;margin:0}
+.wk-tip strong.hostile,.wk-tip b.hostile{color:#ff9a80!important}
+.wk-tip small{display:block;margin:3px 0 0 28px;font:700 12px/1.3 var(--read,'Nunito',sans-serif);color:#d7c9a4}
+.wk-tip em{display:block;margin:2px 0 0 28px;font:italic 600 12px/1.3 var(--read,'Nunito',sans-serif);color:#b8c4ab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-tip .wk-tip-dist{display:block;margin:2px 0 0 28px;font:800 12px/1.3 var(--read,'Nunito',sans-serif);color:#f4e5c5}
+.wk-tip-title{font:800 13px/1.3 var(--read,'Nunito',sans-serif);color:#f3cf7a;margin-bottom:3px}
+.wk-tip-row{display:grid;grid-template-columns:16px minmax(0,1fr) auto;column-gap:6px;align-items:center;padding:3px 0}
+.wk-tip-row+.wk-tip-row{border-top:1px solid #ffffff14}
+.wk-tip-row canvas{width:16px;height:16px}
+.wk-tip-row b{font:800 13px/1.25 var(--read,'Nunito',sans-serif);color:#f4e5c5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wk-tip-row b{grid-column:2;grid-row:1}
+.wk-tip-row canvas{grid-column:1;grid-row:1}
+.wk-tip-row em{grid-column:3;grid-row:1;margin:0;font:700 11px/1 var(--read,'Nunito',sans-serif);font-style:normal;color:#e7d3a0}
+.wk-tip-row small{grid-column:2/4;grid-row:2;margin:1px 0 0;font-size:11px}
+.wk-tip-foot{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;padding-top:5px;border-top:1px solid #ffffff1a;font:600 11px/1.2 var(--read,'Nunito',sans-serif);color:#b8c4ab}
+.wk-tip-foot span{display:inline-flex;align-items:center;gap:3px}
+.wk-tip-foot kbd{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 3px;border:1px solid #c5a26877;border-radius:3px;background:#0f1f19;font:700 10px/1 var(--read,sans-serif);color:#f3dfae}
+.wk-tip-foot kbd .ui-glyph{width:11px;height:11px}
+.wk-tip-walk{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;margin-top:8px;border:1px solid #f3cf7a;border-radius:6px;background:#3b4a26;color:#fff0c0;font:800 14px/1 var(--read,'Nunito',sans-serif);cursor:pointer}
+.wk-tip-walk .ui-glyph{width:20px;height:20px}
+
+/* ---------- Desktop: Fenster 1922 × 847 bleibt; ohne Werkzeugleiste, Legende und Fuß wird die Karte ≈ 1600 × 799.
+   Chat bei offener Vollbildkarte ausblenden (WoW blendet die UI aus) – sonst schauen Zeilen unter dem Rahmen hervor. */
+body:not(.touch-mode) .game-popup.popup-map.dock-full>.popup-body{padding:6px 6px 6px!important}
+body:not(.touch-mode):has(.popup-map.dock-full) .chat-window{visibility:hidden}
+
+/* ---------- Handy: Karte füllt das Fenster (quer und hoch), Ortsliste als aufklappbare Leiste über der Karte */
+.touch-mode .game-popup.popup-map{height:100dvh!important}
+.touch-mode .popup-map>.popup-body{padding:6px 8px 8px!important}
+.touch-mode .popup-map .wk-body{display:block}
+.touch-mode .popup-map .wk-paper{position:absolute;inset:0}
+.touch-mode .popup-map .wk-side{position:absolute;z-index:6;top:0;right:0;bottom:0;width:min(300px,82%);display:none;padding:6px!important;background:#0f1f19f2;border:1px solid #c5a268;border-radius:8px;box-shadow:-6px 0 18px #0009}
+.touch-mode .popup-map .wk-side-open .wk-side{display:flex}
+.touch-mode .popup-map .wk-list{flex:1 1 0;display:grid!important;grid-template-columns:minmax(0,1fr);grid-auto-rows:44px;align-content:start;gap:6px!important}
+.touch-mode .popup-map .wk-pager{height:50px!important;min-height:0!important;max-height:50px;margin:0!important;display:flex;align-items:center;justify-content:center;gap:14px;flex:none;padding-top:6px;font:800 13px/1 var(--read,'Nunito',sans-serif);color:#f3dfae}
+.touch-mode .popup-map .wk-pager[hidden]{display:none!important}
+body:not(.touch-mode) .popup-map .wk-pager{display:none!important}
+/* Quer: die Karte reicht bis an den rechten Rand (über die Kniff-Knöpfe – mit offener Karte kämpft man nicht), die Liste zweispaltig */
+@media (orientation:landscape){.touch-mode .game-popup.popup-map{right:calc(var(--safe-right,0px) + 12px)!important;width:auto!important;max-width:none!important}
+ .touch-mode .popup-map .wk-side{width:min(560px,94%)}
+}
+.touch-mode .game-popup.popup-map .wk-list .atlas-place.wk-row,.touch-mode .game-popup.popup-map .wk-list .atlas-place.wk-row.atlas-tracked,.touch-mode .game-popup.popup-map .wk-list .atlas-place.wk-row.wk-target{height:44px!important;min-height:44px!important;margin:0!important}
+.touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-pick{min-height:44px!important;padding:0 6px 0 10px}
+.touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-boot{width:44px;min-height:44px!important;opacity:1}
+.touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place .wk-ico{width:20px;height:20px}
+.touch-mode .popup-map .wk-sep{height:10px;margin:2px}
+.touch-mode .popup-map .wk-side .grid-pager{margin-top:auto;padding-top:6px}
+.touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place em{display:block!important}
+.game-popup.popup-map .wk-list .atlas-place.wk-row[hidden],.game-popup.popup-map .wk-list .wk-sep[hidden]{display:none!important}

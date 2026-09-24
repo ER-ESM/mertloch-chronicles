@@ -7,15 +7,44 @@ import {isElite} from './enemy-ui.js';
 import {SCALE,distance} from './world.js';
 import {hotspotMapMarks} from './hotspots.js';
 import {chapterAreas} from './quest-mobs.js';
-import {HOTSPOT_UI} from './content/index.js';
+import {HOTSPOT_UI,WORLD_MAP_UI} from './content/index.js';
+import {mapIcon} from './map-symbols.js';
 
-// Strategic markers aggregate quest givers by their meeting place.
+// Orte der Weltkarte und Ortsliste. Runde 4a (2026-09-24): jede Ortsart hat eine Gruppe (Filter) und ein Symbol aus map-symbols.js –
+// dieselben Symbole wie auf der Minikarte, keine Ziffern (Lager, Treffpunkte) und keine Buchstaben (W/B/R/K) mehr.
 export function mapPlaces(g){
- const hubs=(g.world.hubs||[]).map((h,i)=>({...h,id:'hub:'+h.id,kind:'hub',number:i+1,title:h.name.split(' · ')[0],point:h,detail:'Geschützter Treffpunkt',quests:g.world.quests.filter(q=>q.giver.hubId===h.id&&!g.sideQuests[q.id]?.claimed).length}));
- const camps=g.world.camps.map((h,i)=>({...h,id:'camp:'+h.id,kind:'camp',number:i+1,title:h.title,point:h.approach||h,detail:g.enemies.some(e=>e.campId===h.id&&e.hp>0)?'Besetztes Lager · Route zum sicheren Rand':'Lager freigeräumt · Gegner kehren zurück'}));
- const kiosk=g.world.places?.kiosk,shops=kiosk?[{id:'shop:kalle',kind:'shop',number:SHOP_UI.mapSymbol,title:SHOP_UI.title,point:kiosk.entrance||kiosk.approach,detail:SHOP_UI.mapDetail}]:[];
- const quests=g.hotspots?hotspotMapMarks(g).givers.map(m=>({id:m.id,kind:'quest',number:m.glyph==='low'?'!':m.glyph,low:m.glyph==='low',title:m.name,point:{x:m.x,y:m.y},detail:(m.glyph==='?'?HOTSPOT_UI.mapReady:HOTSPOT_UI.mapGiver)+' · '+m.title})):[];
- return [...quests,...hubs,...camps,...shops,...(g.world.spawn&&g.world.findClear?professionWorld(g.world).stations.map(s=>({id:'shop:profession:'+s.id,kind:'shop',number:s.id==='werkhof'?'W':'B',title:PST[s.id].name,point:s,detail:PT.teachers})):[]),...(g.world.spawn&&g.world.findClear?[{id:'shop:mounts',kind:'shop',number:'R',title:MOUNT_UI.station,point:mountStation(g.world),detail:MOUNT_UI.title}]:[])];
+ const hubs=(g.world.hubs||[]).map(h=>({...h,id:'hub:'+h.id,kind:'hub',group:'hub',icon:'hub',title:h.name.split(' · ')[0],point:h,detail:'Geschützter Treffpunkt',quests:g.world.quests.filter(q=>q.giver.hubId===h.id&&!g.sideQuests[q.id]?.claimed).length}));
+ const camps=g.world.camps.map(h=>{const crew=g.enemies.filter(e=>e.campId===h.id),busy=crew.some(e=>e.hp>0),lv=crew.map(e=>e.level).filter(Number.isFinite);return {...h,id:'camp:'+h.id,kind:'camp',group:'camp',icon:busy?'camp':'camp-free',title:h.title,point:h.approach||h,center:{x:h.x,y:h.y},busy,level:lv.length?{min:Math.min(...lv),max:Math.max(...lv)}:null,detail:busy?'Besetztes Lager · Route zum sicheren Rand':'Lager freigeräumt · Gegner kehren zurück'};});
+ const kiosk=g.world.places?.kiosk,shops=kiosk?[{id:'shop:kalle',kind:'shop',group:'shop',icon:'trade',title:SHOP_UI.title,point:kiosk.entrance||kiosk.approach,detail:SHOP_UI.mapDetail}]:[];
+ const quests=g.hotspots?hotspotMapMarks(g).givers.map(m=>({id:m.id,kind:'quest',group:'quest',icon:m.glyph==='?'?'quest-ready':m.glyph==='low'?'quest-low':'quest',number:m.glyph==='low'?'!':m.glyph,low:m.glyph==='low',ready:m.glyph==='?',title:m.name,point:{x:m.x,y:m.y},detail:(m.glyph==='?'?HOTSPOT_UI.mapReady:HOTSPOT_UI.mapGiver)+' · '+m.title,quest:m.title})):[];
+ const trainers=g.world.spawn&&g.world.findClear?professionWorld(g.world).stations.map(s=>({id:'shop:profession:'+s.id,kind:'shop',group:'trainer',icon:s.id==='werkhof'?'trainer-werkhof':'trainer-braugarten',title:PST[s.id].name,point:s,detail:PT.teachers})):[];
+ const stable=g.world.spawn&&g.world.findClear?[{id:'shop:mounts',kind:'shop',group:'shop',icon:'stable',title:MOUNT_UI.station,point:mountStation(g.world),detail:MOUNT_UI.title}]:[];
+ return [...quests,...hubs,...camps,...shops,...trainers,...stable];
+}
+/** Wichtigkeit beim Bündeln: Aufträge vor Treffpunkten vor Diensten vor Lagern (das wichtigste Symbol steht für das Bündel). */
+export const PLACE_PRIO={quest:4,hub:3,shop:2,trainer:2,camp:1};
+/** Marker bündeln (WoW-Weltkarte): Symbole näher als `radius` Bildpunkte werden eine Gruppe mit Zahl. Rein, testbar.
+ *  items: [{x,y,prio?}] in Bildschirmkoordinaten → [{x,y,members}]; danach liegen alle Gruppenmitten mindestens `radius` auseinander. */
+export function clusterMarkers(items,radius=24){
+ const groups=[];for(const it of [...items].sort((a,b)=>(b.prio||0)-(a.prio||0))){const hit=groups.find(c=>Math.hypot(c.ax-it.x,c.ay-it.y)<radius);if(hit)hit.members.push(it);else groups.push({ax:it.x,ay:it.y,members:[it]});}
+ const centre=c=>{c.x=c.members.reduce((s,m)=>s+m.x,0)/c.members.length;c.y=c.members.reduce((s,m)=>s+m.y,0)/c.members.length;};groups.forEach(centre);
+ for(let again=true;again;){again=false;search:for(let i=0;i<groups.length;i++)for(let j=i+1;j<groups.length;j++)if(Math.hypot(groups[i].x-groups[j].x,groups[i].y-groups[j].y)<radius){groups[i].members.push(...groups[j].members);groups.splice(j,1);centre(groups[i]);again=true;break search;}}
+ return groups.map(({x,y,members})=>({x,y,members}));
+}
+/** Schwierigkeitsfarbe nach Stufenabstand (WoW): grau ≤ −5, grün −3…−4, gelb ±2, orange +3…+4, rot ≥ +5. */
+export function levelTone(diff){return diff<=-5?'#a4a29a':diff<=-3?'#6fd06a':diff<=2?'#f2d24b':diff<=4?'#ff9a3c':'#ff5f4a';}
+/** Zielgebiete (Kapitelziele und angenommene Treffpunkt-Aufträge) und Tiergebiete für die Weltkarte; `tracked` = das Gebiet des verfolgten Ziels. */
+export function worldAreas(g,dest=g.destination?.()?.point){
+ const out=[];
+ if(g.hotspots)for(const a of hotspotMapMarks(g).areas)out.push({id:'area:'+a.id,x:a.x,y:a.y,r:a.r,title:a.title||a.label,detail:a.label,spawn:!a.active});
+ chapterAreas(g).forEach((a,i)=>out.push({id:'area:chapter:'+i,x:a.x,y:a.y,r:a.r,title:a.label,detail:'',done:a.done,need:a.need,spawn:false}));
+ if(dest){let best=null,bd=Infinity;for(const a of out){if(a.spawn)continue;const d=Math.hypot(a.x-dest.x,a.y-dest.y);if(d<=a.r&&d<bd){best=a;bd=d;}}if(best)best.tracked=true;}
+ return out;
+}
+/** Welche Gruppen die Weltkarte zeigt. `show` (Filterliste) gewinnt; ein alter Einzelfilter (`filter:'shop'`) zeigt nur diese Gruppe. */
+export function mapShow(options={}){
+ if(options.show)return options.show;const all=Object.fromEntries(WORLD_MAP_UI.groups.map(x=>[x.id,x.on]));
+ if(!options.filter||options.filter==='all')return all;const only=Object.fromEntries(WORLD_MAP_UI.groups.map(x=>[x.id,false]));only[options.filter]=true;if(options.filter==='shop')only.trainer=true;if(options.filter==='quest')only.area=true;return only;
 }
 export function mapView(w,p,W,H,full,options={}){
  if(!full){const scale=W/1050;return{scale,ox:p.x-W/scale/2,oy:p.y-H/scale/2};}
@@ -34,6 +63,62 @@ export function drawCreatureMarker(c,e,a,target=false){
   const r=target?7:6;c.moveTo(a.x-r,a.y-r/2);c.lineTo(a.x-r/2,a.y);c.lineTo(a.x,a.y-r);c.lineTo(a.x+r/2,a.y);c.lineTo(a.x+r,a.y-r/2);c.lineTo(a.x+r-1,a.y+r/2);c.lineTo(a.x-r+1,a.y+r/2);c.closePath();
   c.fillStyle=target?'#fff1bb':'#eecb78';c.strokeStyle='#4d292b';c.lineWidth=2;c.fill();c.stroke();
  }else{c.arc(a.x,a.y,target?4:2.5,0,7);c.fill();}
+}
+/** Beschriftungsschicht der Weltkarte (Runde 4a, Zielbild 1): Symbole statt Ziffern, Bündel statt Klumpen, Zielgebiete schraffiert,
+ *  keine Dauerschilder außer den großen Ortsnamen; Name, Art und Entfernung stehen im Tooltip (atlas-ui.js). Der Standort liegt immer oben.
+ *  Liefert die Trefferflächen: canvas.atlasHits (Marker/Bündel), canvas.atlasAreas (Zielgebiete), canvas.atlasPin, canvas.atlasPlayer. */
+const TAU=Math.PI*2,ICON=22,PIN=24,NEAR_PLAYER=20;
+function drawWorldLayer(c,canvas,g,W,H,pos,inside,options){
+ const show=mapShow(options),now=options.now??(typeof performance!=='undefined'?performance.now():0),p=g.player,me=pos(p),tracked=g.destination?.()?.point||null,occupied=[];
+ const draw=(key,x,y,size,alpha=1)=>{const img=mapIcon(key,size);if(!img)return;c.save();c.globalAlpha=alpha;c.drawImage(img,Math.round(x-size/2),Math.round(y-size/2),size,size);c.restore();};
+ const halo=(x,y,r,color='#fff3c4')=>{c.save();c.shadowColor=color;c.shadowBlur=10;c.strokeStyle=color;c.lineWidth=2.5;c.beginPath();c.arc(x,y,r,0,TAU);c.stroke();c.restore();};
+ const ink=(text,x,y,{size=15,color='#2c1c10'}={})=>{c.save();c.font=`${size}px 'Jersey 15',Nunito,system-ui,sans-serif`;const w=(c.measureText(text).width||text.length*7)+10,box={x:x-w/2,y:y-size,w,h:size+6};if(box.x<6||box.x+w>W-6||box.y<28||box.y+box.h>H-28||occupied.some(b=>box.x<b.x+b.w&&box.x+w>b.x&&box.y<b.y+b.h&&box.y+box.h>b.y)){c.restore();return false;}occupied.push(box);c.textAlign='center';c.lineJoin='round';c.strokeStyle='#f6ead0e6';c.lineWidth=4;c.strokeText(text,x,y);c.fillStyle=color;c.fillText(text,x,y);c.restore();return true;};
+ // 1) Zielgebiete wie Questgebiete in WoW-Retail: schraffierte Fläche, verfolgtes Gebiet golden mit Zielsymbol, Name nur im Tooltip.
+ const areaHits=[];
+ for(const ar of worldAreas(g,tracked)){if(!show[ar.spawn?'spawn':'area'])continue;const a=pos(ar),r=Math.max(12,ar.r*canvas.atlasView.scale);if(a.x+r<0||a.y+r<0||a.x-r>W||a.y-r>H)continue;
+  const hover=options.hover===ar.id,gold=ar.spawn?'182,232,197':'241,205,119',fill=ar.tracked?.18:.08;
+  c.save();c.beginPath();c.arc(a.x,a.y,r,0,TAU);c.fillStyle=`rgba(${gold},${hover?fill+.1:fill})`;c.fill();c.clip();
+  c.strokeStyle=`rgba(${gold},${ar.tracked?.42:hover?.36:.24})`;c.lineWidth=1.2;c.beginPath();for(let d=-r*2;d<r*2;d+=8){c.moveTo(a.x+d-r,a.y-r);c.lineTo(a.x+d+r,a.y+r);}c.stroke();c.restore();
+  c.save();c.beginPath();c.arc(a.x,a.y,r,0,TAU);c.setLineDash(ar.tracked?[]:[5,4]);c.strokeStyle=`rgba(${gold},${ar.tracked||hover?.95:.7})`;c.lineWidth=ar.tracked?2:hover?1.8:1.2;c.stroke();c.restore();
+  /* Zielsymbol unter der Mitte – dort steht meist die Stecknadel des verfolgten Ziels */if(ar.tracked)draw('claw',a.x,a.y+Math.min(r*.5,26),18);
+  areaHits.push({id:ar.id,x:a.x,y:a.y,r,area:ar});}
+ // 2) Große Ortsnamen (Treffpunkte, Kirche) als Tinte wie die Gebietsnamen der WoW-Zonenkarte – sie belegen zuerst ihren Platz.
+ const bigNames=[...(g.world.hubs||[]).map(h=>({text:h.name.split(' · ')[0],pt:h})),...(g.world.church?[{text:'St. Gangolf',pt:g.world.church}]:[])];
+ // 3) Marker filtern und bündeln (< 24 px → ein Bündel mit Zahl).
+ const items=[];for(const h of mapPlaces(g)){if(!show[h.group])continue;const a=pos(h.point);if(!inside(a,12))continue;items.push({x:a.x,y:a.y,prio:PLACE_PRIO[h.group]||0,place:h});}
+ const groups=clusterMarkers(items,24),hits=[];
+ for(const grp of groups){const lead=grp.members[0].place,one=grp.members.length===1,key=one?lead.id:'cluster:'+grp.members.map(m=>m.place.id).sort().join('|'),near=Math.hypot(grp.x-me.x,grp.y-me.y)<NEAR_PLAYER,alpha=near?.5:1;
+  const selected=grp.members.some(m=>m.place.id===options.selected);
+  if(options.hover===key||selected)halo(grp.x,grp.y,one?14:15,selected&&options.hover!==key?'#ffe4a2':'#fff3c4');
+  if(one)draw(lead.icon,grp.x,grp.y,ICON,alpha);
+  else{c.save();c.globalAlpha=alpha;c.beginPath();c.arc(grp.x,grp.y,12,0,TAU);c.fillStyle='#1c1712';c.fill();c.beginPath();c.arc(grp.x,grp.y,10.5,0,TAU);c.fillStyle='#6b4526';c.fill();c.strokeStyle='#f3e2b8';c.lineWidth=1.6;c.stroke();c.fillStyle='#fff3d6';c.font='900 12px Nunito,system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(String(grp.members.length),grp.x,grp.y+.5);c.textBaseline='alphabetic';
+   /* Das wichtigste Symbol des Bündels klein oben rechts: man sieht, was drinsteckt */c.restore();draw(lead.icon,grp.x+10,grp.y-10,12,alpha);}
+  if(grp.members.some(m=>m.place.quests)){c.save();c.globalAlpha=alpha;c.fillStyle='#f1cd77';c.strokeStyle='#1c1712';c.lineWidth=1.5;c.beginPath();c.arc(grp.x-9,grp.y-9,3.5,0,TAU);c.fill();c.stroke();c.restore();}
+  occupied.push({x:grp.x-13,y:grp.y-13,w:26,h:26});
+  hits.push({x:grp.x,y:grp.y,r:one?14:15,id:one?lead.id:key,key,cluster:!one,ids:grp.members.map(m=>m.place.id)});}
+ for(const n of bigNames){const a=pos(n.pt);if(inside(a,20))ink(n.text,a.x,a.y+30,{size:17,color:'#1f3a2c'});}
+ // Gewählter Ort: Name als Tinte (nur dieser, WoW zeigt den Namen des gewählten POI).
+ const chosen=options.selected&&hits.find(h=>h.ids.includes(options.selected));if(chosen){const place=items.find(i=>i.place.id===options.selected)?.place;if(place)ink(place.title,chosen.x,chosen.y-20,{color:place.group==='camp'?'#7a2e1c':'#2c1c10'});}
+ // 4) Lebewesen (Filter) und Weltbosse.
+ if(show.creatures)for(const e of visibleCreatures(g,true,true)){if(e.worldBoss)continue;const a=pos(e);if(!inside(a,8))continue;drawCreatureMarker(c,e,a,e===g.target);}
+ for(const e of worldBosses(g)){const a=pos(e);if(!inside(a,12))continue;drawWorldBossMarker(c,a,true);ink(e.name,a.x,a.y-24,{color:'#7a2e1c'});}
+ // Ziel von außen (Aufträge „auf der Karte“), das kein eigener Ort ist: Wegmarke mit Namen.
+ if(options.target?.point){const a=pos(options.target.point);if(inside(a,10)){draw('waypoint',a.x,a.y,ICON);ink(options.target.title,a.x,a.y-18);}}
+ // Mitspieler (Feinschliff fbdff74, hier übernommen): Gruppe grün mit Namen – auch fern, aus der Gruppenmeldung –, andere Spieler in der Nähe klein und blau; der Tooltip nennt Name und Art.
+ const people=[];{const mates=g.partyPositions||[],names=new Set(mates.map(m=>m.name));for(const o of [...(g.others||[]).filter(o=>!names.has(o.name)&&(o.floor||0)===(g.floor||0)).map(o=>({name:o.name,x:o.x,y:o.y,party:false})),...mates.map(m=>({...m,party:true}))]){const b=pos(o);if(!inside(b,4))continue;
+  c.fillStyle=o.dead?'#d9694a':o.party?'#8fe08a':'#8fb4e0';c.strokeStyle='#10201a';c.lineWidth=1.5;c.beginPath();c.arc(b.x,b.y,o.party?5.5:3.5,0,TAU);c.fill();c.stroke();
+  if(o.party){c.save();c.font='800 12px Nunito,sans-serif';c.textAlign='center';c.lineJoin='round';c.lineWidth=3;c.strokeStyle='#10201a';c.fillStyle='#eaf6d8';c.strokeText(o.name,b.x,b.y-10);c.fillText(o.name,b.x,b.y-10);c.restore();}
+  people.push({x:b.x,y:b.y,r:o.party?9:7,name:o.name,party:!!o.party,dead:!!o.dead});}}
+ // 5) Verfolgtes Ziel: Stecknadel 24 px (Spitze auf dem Ziel), pulsiert einmal beim Öffnen.
+ let pin=null;if(tracked){const a=pos(tracked);if(inside(a,10)){const t=options.openedAt!=null?(now-options.openedAt)/900:2;if(t>=0&&t<1){c.save();c.strokeStyle=`rgba(243,196,78,${(1-t).toFixed(2)})`;c.lineWidth=3;c.beginPath();c.arc(a.x,a.y,6+t*26,0,TAU);c.stroke();c.restore();}
+  if(options.hover==='pin')halo(a.x,a.y-12,15);draw('dest',a.x,a.y-PIN/2+2,PIN);pin={x:a.x,y:a.y-12,r:13};}}
+ // 6) Standort zuletzt: Pfeil 24 px mit weißem Halo, liegt über allem.
+ let player=null;if(inside(me,6)){const last=canvas.atlasHeading||{x:p.x,y:p.y,a:-Math.PI/2};const dx=p.x-last.x,dy=p.y-last.y;if(dx*dx+dy*dy>1)last.a=Math.atan2(dy,dx);last.x=p.x;last.y=p.y;canvas.atlasHeading=last;
+  c.save();c.translate(me.x,me.y);c.rotate(last.a+Math.PI/2);const arrow=()=>{c.beginPath();c.moveTo(0,-13);c.lineTo(-9,10);c.lineTo(0,5);c.lineTo(9,10);c.closePath();};
+  c.lineJoin='round';arrow();c.strokeStyle='#ffffff';c.lineWidth=7;c.stroke();arrow();c.strokeStyle='#1c1712';c.lineWidth=2.4;c.stroke();arrow();c.fillStyle='#fff3cf';c.fill();c.beginPath();c.moveTo(0,-13);c.lineTo(0,5);c.lineTo(9,10);c.closePath();c.fillStyle='#e9b84a';c.fill();c.restore();player={x:me.x,y:me.y,r:13};}
+ c.textAlign='center';c.fillStyle='#f7e7bf';c.font='bold 13px system-ui';c.fillText('N',W-18,19);c.fillRect(W-19,23,2,14);
+ const meters=50,len=meters*SCALE*canvas.atlasView.scale;c.fillStyle='#22332cdd';c.fillRect(9,H-28,len+14,22);c.fillStyle='#dcd6b5';c.fillRect(16,H-21,len,1);c.font='10px system-ui';c.fillText(meters+' m',16+len/2,H-9);
+ canvas.atlasHits=hits;canvas.atlasPeople=people;canvas.atlasAreas=areaHits;canvas.atlasPin=pin;canvas.atlasPlayer=player;
 }
 /** Gemalte Flächenmuster der Karte (einmal erzeugt, kachelbar, deterministisch): Wiese, Acker mit Furchen, Wald mit Kronen, Dorfgrund. */
 const PATTERNS=new Map();
@@ -64,6 +149,8 @@ export function drawAtlas(renderer,canvas,full=false,highlight=null,options={}){
  for(const t of w.trees){const a=pos(t);if(!inside(a))continue;const r=Math.max(1.6,5.5*t.size*scale);c.fillStyle='#10241699';c.beginPath();c.arc(a.x+r*.35,a.y+r*.35,r,0,7);c.fill();c.fillStyle=t.type==='pine'||t.variant%3===0?'#2d5a34':'#3f6e36';c.beginPath();c.arc(a.x,a.y,r,0,7);c.fill();c.fillStyle='#6f9a4a';c.beginPath();c.arc(a.x-r*.3,a.y-r*.35,r*.45,0,7);c.fill();}
  const dest=highlight||g.moveTo||g.destination()?.point;
  if(dest){let route;if(full){const key=[p.x,p.y,dest.x,dest.y].map(Math.round).join(',');if(renderer.atlasRoute?.key!==key)renderer.atlasRoute={key,path:w.findPath(p,dest)};route=renderer.atlasRoute.path;}else route=g.path?.length?g.path:[dest];path([p,...route]);c.strokeStyle='#242c35';c.lineWidth=4;c.stroke();c.strokeStyle='#f1cd77';c.lineWidth=2;c.setLineDash([5,4]);c.stroke();c.setLineDash([]);}
+ // Weltkarte (Runde 4a): eigene Beschriftungsschicht; die Umgebungskarte (full=false, nur noch Tests/Altpfad) zeichnet wie bisher.
+ if(full){canvas.atlasView={scale,ox,oy};drawWorldLayer(c,canvas,g,W,H,pos,inside,options);return;}
  const occupiedLabels=[],areaLabels=[];
  if(g.hotspots&&(!options.filter||options.filter==='all'||options.filter==='quest'))/* Zielgebiet des Kapitelziels als Fläche (Runde 3a) */for(const ar of [...hotspotMapMarks(g).areas,...chapterAreas(g).map(a=>({...a,active:true}))]){const a=pos(ar),r=Math.max(full?12:7,ar.r*scale);if(a.x+r<0||a.y+r<0||a.x-r>W||a.y-r>H||(!full&&!ar.active))continue;c.beginPath();c.arc(a.x,a.y,r,0,7);c.fillStyle=ar.active?'#f1cd772e':'#b6e8c51a';c.fill();c.setLineDash(ar.active?[]:[4,3]);c.strokeStyle=ar.active?'#f1cd77d9':'#b6e8c580';c.lineWidth=ar.active?2:1.2;c.stroke();c.setLineDash([]);if(full)areaLabels.push([ar.label,a.x,a.y+r+14,ar.active?'#f6dc95':'#cfe5c8']);}
  function textLabel(text,x,y,color){c.font="700 12px Nunito,system-ui,sans-serif";const width=c.measureText(text).width+12,box={x:x-width/2,y:y-13,w:width,h:19};if(box.x<8||box.x+width>W-8||box.y<34||box.y+19>H-30||occupiedLabels.some(b=>box.x<b.x+b.w&&box.x+width>b.x&&box.y<b.y+b.h&&box.y+19>b.y))return;occupiedLabels.push(box);/* Wie auf einer gemalten Karte: Tinte mit hellem Papierschein statt Bildschirmkasten; Aufträge in Rotbraun */c.save();c.font="15px 'Jersey 15',Nunito,system-ui,sans-serif";c.textAlign='center';c.lineJoin='round';c.strokeStyle='#f6ead0e6';c.lineWidth=4;c.strokeText(text,x,y);c.fillStyle=color==='#f2ccb0'||color==='#f6dc95'?'#7a2e1c':color==='#d1ead5'||color==='#cfe5c8'?'#1f4a34':'#2c1c10';c.fillText(text,x,y);c.restore();}

@@ -34,7 +34,13 @@ const P={
  speaker:'M4 9h4l5-4v14l-5-4H4Z|M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11',
  monitor:'M3 4h18v12H3Z|M8 20h8M12 16v4',
  keycap:'M4 5h16v13H4Z|M7 8h10v7H7Z|M10 12h4',
- route:'M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z|M18 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z|M8 17h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7'
+ route:'M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z|M18 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z|M8 17h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7',
+ // Weltkarte (Runde 4a): Filter-Trichter, Stiefel = hinlaufen, Liste, Zoom
+ funnel:'M3.5 4.5h17l-6.5 8v6l-4 2v-8Z',
+ boot:'M8 3h5v8.5l5.5 2.5c1.5.7 2.5 2 2.5 3.5V19H4V16l2-1.5V6.5Z|M4 16h17|M13 7H10',
+ list:'M9 6h11M9 12h11M9 18h11|M4.5 6h.5M4.5 12h.5M4.5 18h.5',
+ plus:'M12 5v14M5 12h14',
+ minus:'M5 12h14'
 };
 /** Inline-SVG eines Symbols (24er Raster, Strich 2 px). */
 export function glyph(id,cls=''){const d=P[id];if(!d)return '';return `<svg class="ui-glyph${cls?' '+cls:''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${d.split('|').map(p=>`<path d="${p}"/>`).join('')}</svg>`;}

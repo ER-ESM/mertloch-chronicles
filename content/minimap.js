@@ -40,3 +40,25 @@ export const MINIMAP_UI={
  level:n=>'Stufe '+n,levels:(a,b)=>'Stufe '+a+'–'+b,quests:n=>n+(n===1?' Auftrag':' Aufträge'),
  nodeLine:(prof,req)=>prof+' '+req,nodeSpent:'Gerade leer · wächst nach',teaches:list=>'Lehrt '+list
 };
+// Weltkarte (M), Runde 4a (2026-09-24): gleiche Symbolsprache wie die Minikarte, Namen nur im Tooltip, kombinierbarer Filter.
+export const WORLD_MAP_UI={
+ title:'Mertloch · Maifeld',
+ filter:'Kartensymbole',filterNote:'Welche Symbole die Karte zeigt – beliebig kombinierbar.',
+ toMe:'Zu mir',toMeNote:'Karte auf deinen Standort',overview:'Übersicht',overviewNote:'Ganzes Revier zeigen',
+ list:'Orte',listNote:'Liste aller Orte ein- und ausklappen',zoomIn:'Näher heran',zoomOut:'Weiter weg',
+ // Filtergruppen in Reihenfolge der Liste; `on` = Standard.
+ groups:[
+  {id:'quest',name:'Aufträge',icon:'quest',on:true},{id:'area',name:'Zielgebiete',icon:'claw',on:true},
+  {id:'hub',name:'Treffpunkte',icon:'hub',on:true},{id:'camp',name:'Lager',icon:'camp',on:true},
+  {id:'shop',name:'Händler',icon:'trade',on:true},{id:'trainer',name:'Berufe',icon:'trainer-werkhof',on:true},
+  {id:'spawn',name:'Tiergebiete',icon:'neutral',on:false},{id:'creatures',name:'Lebewesen',icon:'enemy',on:false}
+ ],
+ // Seitenleiste: Gruppentrenner (Symbol + Linie, Wort im Tooltip).
+ sections:{tracked:'Verfolgt',quest:'Aufträge',hub:'Treffpunkte',camp:'Lager',shop:'Händler & Berufe'},
+ walk:'Hinlaufen',walkNote:'Läuft los und schließt die Karte',
+ you:'Dein Standort',tracked:'Verfolgtes Ziel',cluster:n=>n+' Orte hier',clusterNote:'Klick zoomt hinein',
+ area:'Zielgebiet',areaActive:'Verfolgtes Zielgebiet',spawnArea:'Tiergebiet',progress:(d,n)=>d+'/'+n,
+ camp:'Gegnerlager',hub:'Geschützter Treffpunkt',meters:m=>m+' m',
+ click:'Route zeigen',shiftClick:'hinlaufen',tapWalk:'Hinlaufen',
+ osm:'© OpenStreetMap',osmNote:'Kartendaten © OpenStreetMap-Mitwirkende, ODbL'
+};

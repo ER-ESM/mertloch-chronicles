@@ -100,12 +100,8 @@ function bag(b){
  // zum Ende der letzten belegten Reihe (die freie Zahl steht unten: 8/24), statt die Reihen unter 44 px zu drücken.
  if(document.body.classList.contains('touch-mode')&&grid)requestAnimationFrame(()=>{if(!grid.isConnected)return;const first=grid.firstElementChild;if(!first||first.getBoundingClientRect().height>=43.5)return;const cols=getComputedStyle(grid).gridTemplateColumns.split(' ').length||1,slots=[...grid.children],used=slots.filter(e=>!e.classList.contains('empty')).length,keep=Math.max(cols,Math.ceil(used/cols)*cols);slots.slice(keep).forEach(e=>{if(e.classList.contains('empty'))e.remove();});});
 }
-function map(b){
- for(const f of b.querySelectorAll('.atlas-filters [data-filter]')){const id=C.mapFilters[f.dataset.filter];if(id)iconButton(f,id);}
- b.querySelector('.atlas-sidebar>.eyebrow')?.remove();
- // Runde 3b: am Handy stehen die Reiter Karte/Orte/Ziel in der Titelzeile – die Karte bekommt die Höhe.
- const pop=b.closest('.game-popup'),nav=b.querySelector(':scope>.panel-tabs');if(document.body.classList.contains('touch-mode')&&pop&&nav){const title=pop.querySelector('.popup-titlebar');title.querySelector('.panel-tabs')?.remove();nav.classList.add('map-title-tabs');title.querySelector('.popup-close').before(nav);}
-}
+/** Karte: seit Runde 4a baut atlas-ui.js Titelzeile, Filterliste und Seitenleiste selbst (Symbole, keine Reiter). */
+function map(){}
 function talents(b,touch){
  // Hinweiskasten „Wähle deinen Hauptbaum“ wird Tooltip des Knopfs „★ Hauptbaum wählen“ daneben.
  const box=b.querySelector('.tt-main-callout'),pick=b.querySelector('.tt-main-pick');if(box&&pick){tip(pick,text(box.querySelector('b')),text(box.querySelector('span')));box.remove();}

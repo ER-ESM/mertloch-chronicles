@@ -44,7 +44,7 @@ export function decoratePanel(w){const b=w.body;resetPanelFlow(b);if(['dialog','
  if(w.id==='inspection'){b.querySelectorAll(':scope>p:not(.tooltip-flavor)').forEach(p=>p.classList.add('gear-condition'));const selected=b.querySelector('.selected-item');selected?.querySelector('strong')?.remove();selected?.querySelector('small')?.remove();tabs(w,[[UI.equip,'.tooltip-heading,.tooltip-stats,.selected-item,.gear-condition'],[UI.compare,'.tooltip-compare'],[UI.story,'.tooltip-flavor,footer']]);}
  if(w.id==='mobile'){const selection=b.querySelector('.touch-editor-pages+p');selection?.classList.add('touch-selection');tabs(w,[[UI.slots,'.touch-editor-pages,.touch-editor-footer'],[UI.skills,'.touch-selection,.touch-skill-picker'],[UI.options,'.touch-editor-intro,.touch-settings-row,#touchBindHelp']]);b.onclick=e=>{if(e.target.closest('[data-touch-edit-slot]'))w.activePage=1;};}
  if(w.id==='guide')helpWindow(w);
- if(w.id==='map'){/* Desktop: die große Karte zeigt Karte und Ortsliste nebeneinander; Touch blättert in Reitern */if(document.body.classList.contains('touch-mode')){tabs(w,[[UI.map,'.atlas-toolbar,.atlas-paper'],[UI.places,'#atlasPlaces,.atlas-intro,.atlas-key,.data-note'],[UI.destination,'#atlasSelection']]);b.querySelector('.atlas-layout')?.remove();}else b.querySelector('.atlas-intro')?.remove();b.querySelector(':scope>h2')?.remove();b.querySelector(':scope>.eyebrow')?.remove();}
+ if(w.id==='map'){/* Runde 4a: keine Reiter mehr, auch am Handy nicht – die Karte füllt das Fenster, die Ortsliste klappt über ein Symbol in der Titelzeile auf (atlas-ui.js) */b.querySelector(':scope>h2')?.remove();b.querySelector(':scope>.eyebrow')?.remove();}
  if(w.id==='admin'){const backup=b.querySelector('.admin-restore'),arena=b.querySelector('.admin-arena');backup?.classList.add('admin-backup-page');for(const el of [...b.children])if(el!==backup&&el!==arena)el.classList.add('admin-reset-page');tabs(w,[...(arena?[['Trainingsarena','.admin-arena']]:[]),[UI.reset,'.admin-reset-page'],[UI.backup,'.admin-backup-page']]);}
  compactWindow(w);
  if(w.id==='quest')questWindow(w);
@@ -64,7 +64,7 @@ export function adaptPanel(w){
  pageGrid(b.querySelector('.quest-entries'),w,all,1);
  pageGrid(b.querySelector('.touch-editor-pages'),w,all,1);
  pageGrid(b.querySelector('.touch-skill-picker'),w,all,4);
- /* Runde 3b: am Handy blättert die Ortsliste seitenweise (44-px-Zeilen), statt zu scrollen */pageGrid(b.querySelector('#atlasPlaces'),w,touch?Math.max(3,Math.floor((room-(landscape?64:70))/52)):all,1);b.style.setProperty('--map-height',Math.max(160,Math.min(400,room-(b.querySelector('.atlas-toolbar')?.offsetHeight||100)-20))+'px');b.dataset.compactLandscape=String(landscape);
+ /* Runde 4a: die Ortsliste der Karte blättert am Handy selbst (atlas-ui.js, Seiten nach der Höhe der aufgeklappten Leiste) */b.style.setProperty('--map-height',Math.max(160,Math.min(400,room-(b.querySelector('.atlas-toolbar')?.offsetHeight||100)-20))+'px');b.dataset.compactLandscape=String(landscape);
  if(b.querySelector('.branch-tree')){
   const tree=b.querySelector('.branch-tree'),height=Math.max(140,Math.min(410,capacity-(capacity<385?152:110)));
   b.style.setProperty('--tree-height',height+'px');
