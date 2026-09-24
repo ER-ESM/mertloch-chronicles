@@ -36,12 +36,12 @@ export function drawCreatureMarker(c,e,a,target=false){
 }
 /** Gemalte Flächenmuster der Karte (einmal erzeugt, kachelbar, deterministisch): Wiese, Acker mit Furchen, Wald mit Kronen, Dorfgrund. */
 const PATTERNS=new Map();
-function mapPattern(c,kind){const key=kind;let p=PATTERNS.get(key);if(p)return p;const S=48,cv=document.createElement('canvas');cv.width=cv.height=S;const t=cv.getContext('2d'),h=n=>{const v=Math.sin(n*127.1)*43758.5453;return v-Math.floor(v);};
+function mapPattern(c,kind){const key=kind;let p=PATTERNS.get(key);if(p)return p;const flat={wiese:'#6f9150',acker:'#b39a5a',wald:'#2f5534',dorf:'#7f9a5c'}[kind]||'#6f9150';/* ohne DOM (Tests) oder ohne Muster: Grundfarbe */if(typeof document==='undefined'||typeof c.createPattern!=='function')return flat;const S=48,cv=document.createElement('canvas');cv.width=cv.height=S;const t=cv.getContext('2d'),h=n=>{const v=Math.sin(n*127.1)*43758.5453;return v-Math.floor(v);};
  const base={wiese:'#6f9150',acker:'#b39a5a',wald:'#2f5534',dorf:'#7f9a5c'}[kind]||'#6f9150';t.fillStyle=base;t.fillRect(0,0,S,S);
  if(kind==='acker'){for(let y=0;y<S;y+=4){t.fillStyle='#8f7a3e';t.fillRect(0,y,S,1);t.fillStyle='#c9b070';t.fillRect(0,y+2,S,1);}}
  else if(kind==='wald'){for(let i=0;i<14;i++){const x=h(i)*S,y=h(i+31)*S,r=4+h(i+7)*4;t.fillStyle='#1d3d24';t.beginPath();t.arc(x+1,y+1,r,0,7);t.fill();t.fillStyle=i%2?'#3a6b3a':'#2f5f35';t.beginPath();t.arc(x,y,r,0,7);t.fill();t.fillStyle='#5b8a45';t.fillRect(x-r*.4,y-r*.5,2,2);}}
  else for(let i=0;i<60;i++){const x=Math.floor(h(i)*S),y=Math.floor(h(i+99)*S);t.fillStyle=h(i+5)>.5?(kind==='dorf'?'#94ad6a':'#86a85f'):'#5f7f44';t.fillRect(x,y,h(i+3)>.7?2:1,1);}
- p=c.createPattern(cv,'repeat');PATTERNS.set(key,p);return p;}
+ p=c.createPattern(cv,'repeat')||flat;PATTERNS.set(key,p);return p;}
 /** Haus als Dach von oben: Schatten, Dachfläche in Ziegel/Reet/Schiefer (fest je Gebäude), First entlang der langen Seite, Kirche golden. */
 function drawRoof(c,b,pos,scale){const pts=b.points.map(pos);const trace=(dx=0,dy=0)=>{c.beginPath();pts.forEach((v,i)=>i?c.lineTo(v.x+dx,v.y+dy):c.moveTo(v.x+dx,v.y+dy));c.closePath();};
  const id=String(b.id??(b.minX+','+b.minY)),n=[...id].reduce((a,ch)=>a*31+ch.charCodeAt(0)>>>0,7),roof=b.church?['#d9b25a','#f3d98f']:[['#a4523a','#c9714f'],['#c29a4e','#e0bd6e'],['#5d6670','#7f8a94'],['#8e4a36','#b0654a']][n%4];
