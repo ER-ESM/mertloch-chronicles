@@ -307,3 +307,12 @@ body.bar-drop .action-area .extra-bar:not(:has(.skill:not(.empty-slot))),body:ha
 .game-popup .icon-skillbook .book-skill .book-skill-name{white-space:normal;overflow:visible;text-overflow:clip;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.15;text-align:center}
 /* :is()-Falle: .game-popup :is(input:not(…)…,select) trägt Input-Spezifität – Pfeil daher mit !important */
 .game-popup select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23e0c070' stroke-width='2'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 10px center!important;padding-right:32px!important;appearance:none;-webkit-appearance:none}
+/* Talente vor der Freischaltung (Nutzerentscheidung 2026-09-24): Reiter bleibt sichtbar (gedämpft, Schloss), das Fenster zeigt den Baum
+   entsättigt als Vorschau mit Hinweis – wie das ausgegraute Talentfenster in WoW. Lernen sperrt talents.js ohnehin. */
+body[data-locked~=talents] .book-tabs [data-book-tab=talents]{display:flex!important;opacity:.62;filter:saturate(.35)}
+body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';position:absolute;top:6px;right:8px;width:12px;height:12px;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 5V3.5a3 3 0 0 1 6 0V5' fill='none' stroke='%23e0c070' stroke-width='1.6'/%3E%3Crect x='2' y='5' width='8' height='6' rx='1' fill='%23e0c070'/%3E%3C/svg%3E")}
+.game-popup .book-tabs button{position:relative}
+.talent-preview .tt-tree,.talent-preview .tt-spec-tabs,.talent-preview .tt-path-tabs{filter:grayscale(.8) brightness(.85)}
+.talent-preview .tt-details{filter:grayscale(.5)}
+.talent-preview-note{display:flex;align-items:center;gap:8px;margin:0 0 10px!important;padding:8px 12px;border:2px solid #e0c07099;border-radius:6px;background:linear-gradient(180deg,#f1cd7722,#f1cd7708);color:#f6e7c0;font:600 13px/1.4 var(--read)}
+.talent-preview-note::before{content:'';flex:none;width:16px;height:16px;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 5V3.5a3 3 0 0 1 6 0V5' fill='none' stroke='%23e0c070' stroke-width='1.6'/%3E%3Crect x='2' y='5' width='8' height='6' rx='1' fill='%23e0c070'/%3E%3C/svg%3E")}
