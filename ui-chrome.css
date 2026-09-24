@@ -347,3 +347,6 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
 .game-popup input[type=checkbox]:focus-visible{outline:2px solid #e0c070;outline-offset:2px}
 .touch-mode .game-popup input[type=checkbox]{width:32px!important;height:32px!important}
 .touch-mode .game-popup input[type=checkbox]:checked::after{width:8px;height:15px;border-width:0 3px 3px 0}
+/* Meldungen (Persona 3): unter der Rahmenzeile von Spieler/Ziel statt auf ihrer Höhe, schmaler, mit geschlossener Kontur –
+   so laufen sie nie über den Zielrahmen und bleiben auf Pflaster und Gras lesbar. */
+@media(min-width:761px){body:not(.touch-mode) #toast{top:186px!important;max-width:min(560px,44vw)!important;text-shadow:2px 0 0 #1a120a,-2px 0 0 #1a120a,0 2px 0 #1a120a,0 -2px 0 #1a120a,2px 2px 0 #1a120a,-2px 2px 0 #1a120a,2px -2px 0 #1a120a,-2px -2px 0 #1a120a,0 0 12px #000c!important}}
