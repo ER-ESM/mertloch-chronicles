@@ -44,7 +44,7 @@ export const PLAY_HELP={
  ]
 };
 
-export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Fenster',chat:'Chat',help:'Hilfe',settings:'Einstellungen'};
+export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Fenster',chat:'Chat',help:'Hilfe',settings:'Einstellungen',keybinds:'Tastenbelegung'};
 
 /** Rucksack (E-53): Filter, Sortierung, Suche und Vergleich. Filter- und Sortierwahl merkt sich der Browser. */
 export const BAG_UI={

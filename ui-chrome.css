@@ -445,3 +445,8 @@ body:not(.touch-mode) .game-popup.popup-settings{height:min(620px,calc(100dvh - 
 .opt-window{height:100%;min-height:0!important;max-height:none!important}
 .opt-nav button{justify-content:flex-start!important}
 .game-popup .opt-key{border:1px solid #6b5a36!important;border-image:none!important;border-radius:3px!important}.game-popup .opt-key:hover{border-color:#e0c070!important}.game-popup .opt-key.is-capturing{border-color:#ffe08a!important}
+/* Spielmenü nach WoW-Vorbild: Einträge mit Taste rechts, Abschnitte durch Goldlinien getrennt. */
+.popup-menu .game-menu-actions button{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left}
+.popup-menu .game-menu-actions button kbd{flex:none;min-width:22px;padding:1px 6px;border:1px solid #6b5a36;border-radius:3px;background:#0b1a13;font:700 11px/1.4 var(--read);color:#d7b571;text-align:center}
+.popup-menu .game-menu-actions .gold-button{justify-content:center}
+.popup-menu .game-menu-sep{border:0;height:1px;margin:6px 4px;background:linear-gradient(90deg,transparent,#d7b57188,transparent)}
