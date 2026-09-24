@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {companionWire,remoteCompanionViews} from '../companions.js';
 import {cleanCompanionWire} from '../server/game/server.mjs';
+import {COMPANION_PLATE} from '../content/index.js';
+
+test('Namensschild: Besitzer im Genitiv',()=>{assert.equal(COMPANION_PLATE.owner('Rudi'),'Rudis Söldner');assert.equal(COMPANION_PLATE.owner('Klaus'),'Klaus’ Söldner');assert.equal(COMPANION_PLATE.owner('Max'),'Max’ Söldner');});
 
 test('Söldner im Netz: Besitzer schickt nur Katalog-ID und Zustand, im Raum „privat“ nichts',()=>{
  const c={def:{id:'merc-pils-peter'},x:10.4,y:20.6,facing:-1,state:'follow',moving:true,hp:50,maxHp:100,level:7};

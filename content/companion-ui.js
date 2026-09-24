@@ -14,3 +14,5 @@ export const COMPANION_UI={
  select:'Als Ziel wählen · Heilung, Schutz und Buffs wirken dann auf diesen Söldner',selected:'Dein Ziel',
  targetHint:'Söldner oder Gruppenrahmen anklicken: er wird dein Ziel, deine Heilung, dein Schutz und deine Buffs wirken dann dort. Ist ein Gegner oder nichts gewählt, wirken sie auf dich. Esc oder ein Klick ins Leere wählt ab.',
 };
+/** Namensschild eines Söldners (2026-09-24, WoW-Begleiter): zweite, kleine Zeile mit dem Besitzer. Genitiv: „Rudis“, „Klaus’“. */
+export const COMPANION_PLATE={owner:n=>(/[sßxz]$/i.test(n)?n+'’':n+'s')+' Söldner'};
