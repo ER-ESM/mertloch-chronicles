@@ -31,6 +31,11 @@ try{
  await run(b,`document.querySelector('[data-online=party-accept]').click();`);
  await until(a,`on.state.party.members.some(m=>m.n==='Moni')`,5000,'Gruppe gebildet');await until(b,`on.state.party.members.some(m=>m.n==='Rudi')`,5000,'Gruppe bei B');ok('Einladung angenommen, Gruppe steht');
  await wait(1200);await shot(a,'basis-a');await shot(b,'basis-b');
+ // Runde 2: Söldner des Mitspielers sind sichtbar (Welt + Kopfzahl), Name/Aussehen aus dem Katalog
+ await run(a,`g.hireCompanion('merc-pils-peter',{free:true});`);
+ await until(b,`g.others.find(o=>o.name==='Rudi')?.companions?.some(c=>c.name==='Pils-Peter'&&c.party&&c.visualEquipment)`,5000,'B sieht Rudis Söldner');
+ await until(b,`document.querySelector('.party-count')?.textContent==='3/5'`,4000,'Kopfzahl bei B zählt Rudis Söldner');ok('Mitspieler sieht fremde Söldner, Kopfzahl 3/5');
+ await run(a,`g.dismissCompanion('merc-pils-peter');`);await until(b,`!g.others.find(o=>o.name==='Rudi')?.companions?.length`,5000,'Entlassen kommt an');ok('Entlassen verschwindet beim Mitspieler');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

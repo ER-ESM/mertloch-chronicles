@@ -270,3 +270,14 @@ export function companionCommand(g,cmd){
 
 export const savedCompanions=g=>(g.companions||[]).map(c=>({defId:c.id,hp:Math.round(ratio(c)*100)/100,contract:c.contract==null?null:Math.round(c.contract),stance:c.stance,order:c.order==='stay'?'stay':'follow',...(Object.keys(c.classBuffs||{}).length?{classBuffs:savedClassBuffs(c)}:{})}));
 export function initCompanions(g,saved){g.companions=[];g.partyHumans=g.partyHumans||0;for(const s of Array.isArray(saved)?saved.slice(0,R.maxActive):[]){const def=companionById(s?.defId);if(def&&!g.companions.some(c=>c.id===def.id))g.companions.push(create(g,def,s));}}
+
+// Netz (2026-09-24): Mitspieler sehen meine Söldner. Übertragen werden nur Katalog-ID und Zustand; Name und Aussehen
+// setzt der Empfänger aus dem Katalog zusammen (keine fremden Texte im Netz). Der Server säubert dieselben Felder (server.mjs).
+export function companionWire(g){if(g.instance)return undefined;const list=(g.companions||[]).slice(0,R.maxActive).map(c=>({i:c.def.id,x:Math.round(c.x),y:Math.round(c.y),f:c.facing<0?-1:1,s:c.state==='down'?'down':c.state==='combat'?'combat':c.moving?'walk':'idle',h:Math.round(ratio(c)*100),l:c.level}));return list.length?list:undefined;}
+/** Empfänger: Netzangabe → Zeichenansicht wie c.view; Überblendung startet an der zuletzt sichtbaren Stelle (wie applySnapshot). */
+export function remoteCompanionViews(list,prev,owner,now,lerp=160){
+ return (Array.isArray(list)?list:[]).map(w=>{const def=companionById(w?.i);if(!def)return null;const p=(prev||[]).find(v=>v.companion===w.i);let fromX=w.x,fromY=w.y;
+  if(p){const k=Math.min(1,(now-p.at)/(p.lerp||lerp));fromX=p.fromX+(p.x-p.fromX)*k;fromY=p.fromY+(p.y-p.fromY)*k;if(Math.abs(fromX-w.x)+Math.abs(fromY-w.y)>600){fromX=w.x;fromY=w.y;}}
+  const f=mercLook(def);return {name:def.name,owner:owner.name,x:w.x,y:w.y,fromX,fromY,at:now,lerp,facing:w.f,classId:def.look,look:def.look,spec:def.spec,level:w.l,state:w.s==='down'?'dead':w.s,hp:w.h,party:owner.party,floor:owner.floor,
+   moving:w.s==='walk'||Math.abs(fromX-w.x)+Math.abs(fromY-w.y)>1,companion:w.i,role:def.role,down:w.s==='down',remote:true,tint:f.tint,visualEquipment:f.visualEquipment};}).filter(Boolean);
+}

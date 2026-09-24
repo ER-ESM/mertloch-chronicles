@@ -9,7 +9,7 @@ import {partyMemberFrame,paintUnitPortraits} from './unit-frame.js';
 // Regeln: der Browserspeicher bleibt die erste Wahrheit; der Server hält je Konto und Welt den jüngsten Stand
 // (Zeitstempel savedAt). Neuer gewinnt; der ältere Stand bleibt serverseitig als Sicherung.
 import {createNetWorld} from './net-world.js';
-import {companionCommand} from './companions.js';
+import {companionCommand,companionWire,remoteCompanionViews} from './companions.js';
 import {createNetParty,mountRollUi} from './net-party.js';
 import {createNetSocial,mountTradeUi,SOCIAL_UI} from './net-social.js';
 import {RARITIES} from './content/index.js';
@@ -33,7 +33,7 @@ export function decideSync(local,server,{foreign=false}={}){
 export function applySnapshot(previous,list,now,lerp=160){
  return (list||[]).map(o=>{const prev=(previous||[]).find(x=>x.name===o.n);let fromX=o.x,fromY=o.y;
   if(prev){const k=Math.min(1,(now-prev.at)/(prev.lerp||lerp));fromX=prev.fromX+(prev.x-prev.fromX)*k;fromY=prev.fromY+(prev.y-prev.fromY)*k;if(Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>600){fromX=o.x;fromY=o.y;}}
-  const mount=mountPresence(o);return {name:o.n,x:o.x,y:o.y,facing:o.f,classId:o.c,level:o.l,spec:o.sp,state:o.s,mount:mount.mt,direction:mount.md,visualEquipment:mount.eq,look:o.k||null,tint:o.kt?parseTintKey(o.kt):null,hp:o.h??100,floor:o.fl===1?1:0,party:!!o.p,fromX,fromY,at:now,lerp,moving:o.s==='walk'||Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>1};});
+  const mount=mountPresence(o),owner={name:o.n,party:!!o.p,floor:o.fl===1?1:0};return {companions:remoteCompanionViews(o.cp,prev?.companions,owner,now,lerp),name:o.n,x:o.x,y:o.y,facing:o.f,classId:o.c,level:o.l,spec:o.sp,state:o.s,mount:mount.mt,direction:mount.md,visualEquipment:mount.eq,look:o.k||null,tint:o.kt?parseTintKey(o.kt):null,hp:o.h??100,floor:o.fl===1?1:0,party:!!o.p,fromX,fromY,at:now,lerp,moving:o.s==='walk'||Math.abs(fromX-o.x)+Math.abs(fromY-o.y)>1};});
 }
 /** Chat-Eingabe zerlegen. → {kind:'chat',ch,text,to?} | {kind:'party',op,name?} | {kind:'who'|'help'} | {kind:'error',text}. Reine Funktion (Tests). */
 export function parseChatCommand(raw,channel='say'){
@@ -70,7 +70,7 @@ async function api(path,body,method,signal){
  * host: {game:()=>Game, worldKey:string, readLocal:()=>save|null, writeLocal:(save)=>void, reload:()=>void, toast:(t)=>void, openModal:(html,id)=>void, refresh:()=>void}
  */
 /** Private interiors are not placed in the shared village; keep the socket alive without leaking room coordinates. */
-export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1)))),fl:!privateRoom&&game.floor?1:undefined,k:p.look||undefined,kt:lookKey(p.tint)||undefined,mt:privateRoom||game.dead?null:p.mount||null,md:p.direction,eq:!privateRoom?equipmentAppearance(game.rpg?.equipment,ITEMS).map(({slot,id,asset,rarity,hands})=>({slot,id,asset,rarity,hands})):undefined};}
+export function presenceMessage(game,worldKey){const p=game.player,privateRoom=!!game.instance;return {t:'pos',w:privateRoom?'':worldKey,x:privateRoom?0:Math.round(p.x),y:privateRoom?0:Math.round(p.y),f:p.facing||1,c:game.member?.id,l:p.level,sp:game.rpg?.talents?.spec,s:privateRoom?'idle':game.dead?'dead':p.inCombat>0?'combat':p.moving?'walk':'idle',h:Math.max(0,Math.min(100,Math.round(100*p.hp/(p.maxHp||1)))),fl:!privateRoom&&game.floor?1:undefined,k:p.look||undefined,kt:lookKey(p.tint)||undefined,mt:privateRoom||game.dead?null:p.mount||null,md:p.direction,eq:!privateRoom?equipmentAppearance(game.rpg?.equipment,ITEMS).map(({slot,id,asset,rarity,hands})=>({slot,id,asset,rarity,hands})):undefined,cp:privateRoom?undefined:companionWire(game)};}
 export function mountOnline(host){
  const state={socket:null,connected:false,wanted:false,retry:null,retryMs:1000,lastSent:'',lastSentAt:0,account:null,reachable:!!API,syncing:false,lastSync:0,pending:null,others:[],presenceTimer:null,failures:0,party:{leader:null,members:[]},partyEl:null,hold:!!host.holdPresence};
  if(!API)return {state,enabled:false,card:()=>'<p class="online-off">'+esc(ONLINE_UI.noApi)+'</p>',afterSave(){},start(){},stop(){},handle(){return false;},async logout(){},enterWorld(){},leaveWorld(){},account:null};
@@ -180,7 +180,7 @@ export function mountOnline(host){
   // Anführer-Krone am eigenen Rahmen (WoW): nur wenn ich eine Gruppe führe.
   document.querySelector('.player-panel')?.classList.toggle('is-party-leader',!!list.length&&state.party.leader===myName());
   if(!list.length)return;
-  const heads=1+list.length+(g()?.companions?.length||0);
+  const heads=1+list.length+(g()?.companions?.length||0)+(g()?.others||[]).filter(o=>o.party).reduce((n,o)=>n+(o.companions?.length||0),0);
   // Kopfleiste wie „Deine Truppe“: Gruppe, Köpfe (Menschen + Söldner) von fünf, Verlassen als kleiner Knopf mit Tooltip.
   const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive})).join('');
   if(html!==state.partyHtml){

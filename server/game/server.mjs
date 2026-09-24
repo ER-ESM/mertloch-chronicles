@@ -36,6 +36,8 @@ class Fail extends Error{constructor(status,code,message){super(message);this.st
 const fail=(status,code,message)=>{throw new Fail(status,code,message);};
 const clampText=(s,n)=>String(s??'').replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,n);
 const num=(v,lo,hi,fallback=0)=>{const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,n)):fallback;};
+/** Söldner eines Spielers (höchstens vier): nur Katalog-ID und Zustand; Name/Aussehen setzt der Empfänger aus dem Katalog. */
+export function cleanCompanionWire(list){if(!Array.isArray(list))return undefined;const out=[];for(const w of list.slice(0,4)){const i=String(w?.i||'');if(!/^merc-[a-z-]{2,40}$/.test(i)||out.some(o=>o.i===i))continue;out.push({i,x:Math.round(num(w.x,-1e6,1e6)),y:Math.round(num(w.y,-1e6,1e6)),f:Number(w.f)<0?-1:1,s:['idle','walk','combat','down'].includes(w.s)?w.s:'idle',h:Math.round(num(w.h,0,100,100)),l:Math.round(num(w.l,1,60,1))});}return out.length?out:undefined;}
 
 const TYPES={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.woff2':'font/woff2','.mp3':'audio/mpeg','.ogg':'audio/ogg'};
 /** options: {staticDir (nur Entwicklung/Notbetrieb ohne Caddy), dataDir, publicOrigin, port, host, log} → {server, hub, store, listen(), close()} */
@@ -180,7 +182,7 @@ export function createGameServer(options={}){
    c.seen=Date.now();
    if(m.t==='hello'){const name=clampText(m.name,20);if(validName(name)&&store.ownsName(c.id,name)&&![...this.clients.values()].some(o=>o!==c&&o.name.toLowerCase()===name.toLowerCase()))c.name=name;c.hero=professions.hero(c.id,m.hero)?.name===c.name?m.hero:null;c.socket.send(JSON.stringify({t:'you',name:c.name}));return;}
    if(m.t==='pos'){
-    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);c.fl=m.fl===1?1:0;c.kt=clampText(m.kt,96).replace(/[^a-z0-9.-]/g,'');Object.assign(c,mountPresence(m));const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed){shared.sync(c);social.sync(c);}}
+    const world=clampText(m.w,80);c.x=num(m.x,-1e6,1e6);c.y=num(m.y,-1e6,1e6);c.f=Number(m.f)<0?-1:1;c.c=clampText(m.c,20);c.l=Math.round(num(m.l,1,60,1));c.sp=clampText(m.sp,40);c.s=clampText(m.s,16)||'idle';c.h=Math.round(num(m.h,0,100,100));c.k=clampText(m.k,20);c.fl=m.fl===1?1:0;c.kt=clampText(m.kt,96).replace(/[^a-z0-9.-]/g,'');Object.assign(c,mountPresence(m));c.cp=cleanCompanionWire(m.cp);const before=c.world;c.world=world;c.placed=!!c.world;if(before!==c.world){if(before){const w=c.world;c.world=before;shared.evade(c);c.world=w;}if(c.placed){shared.sync(c);social.sync(c);}}
     professions.observe(c);
    }else if(m.t==='hit'){if(this.allow(c,'hit',40)){if(String(m.e).startsWith('wboss:'))social.bossHit(c,m.e);shared.hit(c,m);}}
    else if(m.t==='aid'){if(this.allow(c,'aid',6))social.aid(c,m);}
@@ -213,7 +215,7 @@ export function createGameServer(options={}){
    for(const c of this.clients.values()){if(now-c.seen>IDLE_MS){c.socket.close(4000);continue;}if(c.placed){let r=rooms.get(c.world);if(!r)rooms.set(c.world,r=[]);r.push(c);}}
    for(const room of rooms.values())for(const c of room){
     if(c.socket.backlog>64*1024)continue;
-    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,mt:o.mt||null,md:o.md||undefined,...(o.eq?.length?{eq:o.eq}:{}),...(o.fl?{fl:1}:{}),...(o.k?{k:o.k}:{}),...(o.kt?{kt:o.kt}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
+    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,mt:o.mt||null,md:o.md||undefined,...(o.eq?.length?{eq:o.eq}:{}),...(o.fl?{fl:1}:{}),...(o.k?{k:o.k}:{}),...(o.kt?{kt:o.kt}:{}),...(o.cp?{cp:o.cp}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
     const wire=JSON.stringify({t:'snap',o:near});
     if(wire===c.lastSnap)continue; // nichts hat sich bewegt: nichts zu erzählen
     c.lastSnap=wire;c.socket.send(wire);
