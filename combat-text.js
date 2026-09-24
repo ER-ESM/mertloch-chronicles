@@ -44,6 +44,8 @@ export function mountCombatText(shell,api){
   const o=renderer.viewOrigin||{x:renderer.camera.x-renderer.viewWidth/2,y:renderer.camera.y-renderer.viewHeight/2};
   const x=(p.x-o.x)*kx+r.left-shellRect.left,y=(p.y-o.y)*ky+r.top-shellRect.top;
   root.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px)`;
+  // Eigener Schaden steigt über dem Ziel auf (WoW/Diablo), oberhalb von Namensschild und Balken – nicht neben dem Helden auf dem Gegner.
+  const t=game.target;if(t&&t.hp>0&&Math.hypot(t.x-p.x,t.y-p.y)<320){const head=(t.type==='boss'?58:t.elite?48:44)*ky;areas.out.el.style.transform='translate('+Math.round((t.x-p.x)*kx-46-14)+'px,'+Math.round((t.y-p.y)*ky-head+26)+'px)';}else if(areas.out.el.style.transform)areas.out.el.style.transform='';
   for(const [id,group]of companions){const c=game.companions?.find(c=>c.id===id);if(!c){group.el.remove();companions.delete(id);continue;}group.el.style.transform=`translate(${Math.round((c.x-p.x)*kx)}px,${Math.round((c.y-p.y)*ky)}px)`;}
  }
  function clear(){for(const a of Object.values(areas)){a.el.innerHTML='';a.rows=[];}for(const group of companions.values())group.el.remove();companions.clear();}
