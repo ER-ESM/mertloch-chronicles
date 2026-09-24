@@ -77,20 +77,22 @@ try{
  ok('8 Karte: '+m.n+' Orte einzeilig (Symbol, Name, m), verfolgtes Ziel hervorgehoben oben, Rest gedimmt, keine Nummern, kein Scrollen');
  await closeAll();
  // ---------- 2) Fensterhöhe nur an sichtbaren Leisten ----------
- await b.press('j');await wait(500);const withBars=await win('quest');
+ /* Runde 5b: Die Aufträge sind jetzt so hoch wie ihr Inhalt – gemessen wird die erlaubte Unterkante (Oberkante + max-height aus popup-windows.js) */
+ const cap=async()=>{const r=await read(`const p=document.querySelector('.game-popup[data-window="quest"]'),q=p.getBoundingClientRect();return {l:Math.round(q.left),t:Math.round(q.top),b:Math.round(q.top+parseFloat(p.style.maxHeight))}`);return r;};
+ await b.press('j');await wait(500);const withBars=await cap();
  const bars=await read(`const {visibleBars}=await import('./popup-windows.js');return visibleBars().map(r=>({l:Math.round(r.left),t:Math.round(r.top),r:Math.round(r.right)}))`);
  const hide=`for(const el of document.querySelectorAll('.action-area>*:not(#actionBar)'))el.dataset.r2aHidden=el.style.visibility||'x',el.style.visibility='hidden';window.dispatchEvent(new Event('resize'));`;
- await read(hide);await wait(400);const withoutBars=await win('quest');await read(`for(const el of document.querySelectorAll('[data-r2a-hidden]')){el.style.visibility=el.dataset.r2aHidden==='x'?'':el.dataset.r2aHidden;delete el.dataset.r2aHidden;}window.dispatchEvent(new Event('resize'));`);await wait(400);
+ await read(hide);await wait(400);const withoutBars=await cap();await read(`for(const el of document.querySelectorAll('[data-r2a-hidden]')){el.style.visibility=el.dataset.r2aHidden==='x'?'':el.dataset.r2aHidden;delete el.dataset.r2aHidden;}window.dispatchEvent(new Event('resize'));`);await wait(400);
  const mainBar=await rect('#actionBar');assert.ok(withoutBars.b>withBars.b+40,'unsichtbare Leisten kosten keine Höhe '+JSON.stringify({withBars,withoutBars}));assert.ok(withoutBars.b<=mainBar.t,'endet über der sichtbaren Hauptleiste');
- assert.equal(await win('quest').then(r=>r.b),withBars.b,'wieder sichtbar: wieder die alte Kante');
+ assert.equal(await cap().then(r=>r.b),withBars.b,'wieder sichtbar: wieder die alte Kante');
  ok(`2 Boden aus sichtbaren Leisten (${bars.length} sichtbar): mit Haltungs-/zweiter Leiste Unterkante ${withBars.b}, ohne ${withoutBars.b} (Hauptleiste ${mainBar.t})`);
  await closeAll();
  // ---------- 3) Fensterraster ----------
  for(const k of 'cjip'){await b.press(k);await wait(350);}await wait(300);
  const four=await Promise.all(['person','quest','book','bag'].map(win));const tops=new Set(four.map(r=>r.t)),bottoms=new Set(four.map(r=>r.b));
- assert.equal(tops.size,1,'eine Oberkante '+JSON.stringify(four));/* Runde 3b (WoW teilt nur die Oberkante): Figur, Kniffe und Rucksack sind so hoch wie ihr Inhalt, keine Unterkante liegt tiefer als die der Aufträge */const qb=four[1].b;assert.ok(four.every(r=>r.b<=qb),'keine Unterkante unter der gemeinsamen Grenze '+JSON.stringify(four));
+ assert.equal(tops.size,1,'eine Oberkante '+JSON.stringify(four));/* Runde 3b (WoW teilt nur die Oberkante): Figur, Kniffe und Rucksack sind so hoch wie ihr Inhalt, keine Unterkante liegt tiefer als die der Aufträge *//* Runde 5b: auch die Aufträge folgen dem Inhalt – die gemeinsame Grenze ist ihre erlaubte Unterkante (max-height) */const qb=(await cap()).b;assert.ok(four.every(r=>r.b<=qb+1),'keine Unterkante unter der gemeinsamen Grenze '+JSON.stringify({qb,four}));
  assert.deepEqual(await scrolling(),[],'vier Fenster scrollen nicht');await measure('vier');await shot('r2a-10-vier-fenster');
- const top=four[0].t,bottom=four[1].b;await closeAll();
+ const top=four[0].t,bottom=qb;/* Runde 5b: gemeinsame Grenze statt Unterkante der Aufträge */await closeAll();
  await read(`g.quest.accepted=false;g.player.x=g.world.npc.x+20;g.player.y=g.world.npc.y+10;`);await wait(300);await b.press('f');await wait(900);
  const d=await win('dialog');assert.ok(d,'Gespräch offen');assert.ok(near(d.l,12,2)&&d.t===top&&d.b<=bottom,'Gespräch auf dem Figurplatz, gleiche Oberkante, Höhe nach Inhalt '+JSON.stringify({d,top,bottom}));
  ok(`3 Raster: Figur/Aufträge/Kniffe/Rucksack und Gespräch auf y=${top}…${bottom}, Gespräch bei x=${d.l}`);

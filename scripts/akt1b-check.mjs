@@ -288,7 +288,7 @@ try{
   g.events.push({type:'memory',fragment:frag});return true;})()`);
  await wait(600);
  assert.ok(!await exists('.popup-memory'),'Erinnerung wartet, solange ein Fenster offen ist (P9)');
- await b.press('Escape');for(let i=0;i<30&&!await exists('.popup-memory');i++)await wait(200);/* Freischalt-Meldung (Erinnerungen) läuft vorher ab */
+ await b.press('Escape');for(let i=0;i<60&&!await exists('.popup-memory');i++){/* Erinnerungen warten auf Ruhe (kein Kampf, kein Laufweg, keine Meldung) – nahe Gegner an der Bude halten den Helden sonst im Kampf */await b.evaluate('(()=>{const g=window.game;g.player.inCombat=0;g.moveTo=null;g.path=[];g.keys.clear();g.enemies.forEach(e=>{if(Math.hypot(e.x-g.player.x,e.y-g.player.y)<500)e.aggro=false;});})()');await wait(200);}/* Freischalt-Meldung (Erinnerungen) läuft vorher ab */
  assert.ok(await exists('.popup-memory'),'Erinnerung erscheint, sobald kein Fenster mehr offen ist '+JSON.stringify(await windows()));
  await screenshot('erinnerung-wartet');
  await b.click('[data-memory-next]');await wait(350);
