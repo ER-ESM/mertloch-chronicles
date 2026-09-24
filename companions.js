@@ -150,7 +150,7 @@ function damageEnemy(g,c,e,n,id){
 }
 /** Verletztester Mitspieler (Gruppe, lebt, unter der Heilschwelle, in Reichweite des Söldners und des Hilfswegs) oder null. */
 function partyPatient(g,c,a,range){if(!g.netParty?.aidHeal)return null;return (g.others||[]).filter(o=>o.party&&o.state!=='dead'&&(o.hp??100)<a.below*100&&(o.hp??100)>0&&distance(o,c)<=range&&g.netParty.canAid?.(o.name)).sort((x,y)=>x.hp-y.hp)[0]||null;}
-function healMate(g,c,o,amount,id){amount=Math.round(amount);if(!g.netParty.aidHeal(o.name,amount,COMPANION_ABILITIES[id]?.name||c.name))return 0;face(c,o);recordMeterHealing(g,amount,amount,abilitySource(id),c);companionFx(g,c,'heal',o,{amount,direct:true,from:{x:c.x,y:c.y}});g.float(o.x,o.y-20,'+'+amount,'#b7df92');return amount;}
+function healMate(g,c,o,amount,id){amount=Math.round(amount);if(!g.netParty.aidHeal(o.name,amount,(COMPANION_ABILITIES[id]?.name||'')+' ('+c.name+')'))return 0;face(c,o);recordMeterHealing(g,amount,amount,abilitySource(id),c);companionFx(g,c,'heal',o,{amount,direct:true,from:{x:c.x,y:c.y}});g.float(o.x,o.y-20,'+'+amount,'#b7df92');return amount;}
 function heal(g,c,target,amount,id){
  amount=Math.round(amount*(1+classBuffValue(target===g.player?g:target,'healTaken')));const actual=Math.min(amount,target.maxHp-target.hp);if(actual<=0)return 0;target.hp+=actual;
  face(c,target);

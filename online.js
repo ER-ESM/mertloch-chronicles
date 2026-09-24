@@ -83,7 +83,7 @@ export function mountOnline(host){
  const myName=()=>state.netName||state.account?.name||null;
  const wsSend=msg=>{if(state.socket?.readyState===1)state.socket.send(JSON.stringify(msg));};
  const net=createNetWorld({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[]});
- let rollUi=null;const rollProxy={roll:(m,v)=>{const shell=document.querySelector('#gameShell')||document.body;(rollUi||(rollUi=mountRollUi(shell,{choose:(id,c)=>play.choose(id,c),esc,rarityName:r=>RARITIES[r]||r}))).roll(m,v);},pick:m=>rollUi?.pick(m),result:(m,mine)=>rollUi?.result(m,mine),clear:()=>rollUi?.clear()};
+ let rollUi=null;const rollProxy={roll:(m,v)=>{const shell=document.querySelector('#gameShell')||document.body;(rollUi||(rollUi=mountRollUi(shell,{choose:(id,c)=>play.choose(id,c),esc,rarityName:r=>RARITIES[r]||r,paint:el=>host.paintIcons?.(el)}))).roll(m,v);},pick:m=>rollUi?.pick(m),result:(m,mine)=>rollUi?.result(m,mine),clear:()=>rollUi?.clear()};
  const play=createNetParty({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[],ui:rollProxy});
  let tradeUi=null;const tradeProxy={trade:m=>{const shell=document.querySelector('#gameShell')||document.body;(tradeUi||(tradeUi=mountTradeUi(shell,{social:mate,game:g,esc}))).trade(m);},tradeClose:()=>tradeUi?.tradeClose()};
  // Bereitschaftscheck (party-ready.js): Frage als kleines Fenster mit ablaufendem Balken, Antworten an den Rahmen.

@@ -489,3 +489,10 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 .party-member .party-pet>i{display:block;height:4px;background:#0b1216c0;border-radius:2px;overflow:hidden}.party-member .party-pet>i>i{display:block;height:100%;background:#7fc77a}
 .party-member .party-pet[data-role=tank]>i>i{background:#8fb4e0}.party-member .party-pet[data-role=heal]>i>i{background:#9fe0a0}
 .party-member .party-pet.dead{opacity:.5}
+/* Würfelkarte (Bedarf/Gier) wie in WoW: Gegenstandsbild links mit Qualitätsrahmen, Tooltip/Vergleich beim Überfahren */
+.roll-frames{width:min(380px,calc(100% - 32px))}
+.roll-card{display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:10px;align-items:start}
+.roll-card>.roll-item{grid-row:1/span 3;display:block;width:52px;height:52px;border:2px solid #6b5a36;border-radius:6px;background:#0b1712;cursor:help}
+.roll-card>.roll-item canvas{width:48px;height:48px;image-rendering:pixelated;display:block}
+.roll-card>.roll-item.rarity-rare{border-color:#4f8fe0;box-shadow:0 0 8px #4f8fe066}.roll-card>.roll-item.rarity-epic{border-color:#a45ce0;box-shadow:0 0 8px #a45ce066}
+.roll-card>header,.roll-card>.roll-actions,.roll-card>.roll-picks{grid-column:2}

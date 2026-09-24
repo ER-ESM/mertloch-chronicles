@@ -47,12 +47,13 @@ try{
  assert.equal(await run(b,`return g.companions.length;`),2,'Moni behält ihre Söldner');assert.deepEqual(await run(a,`return g.companions.map(c=>c.id);`),['merc-pils-peter'],'die zuletzt angeheuerten gehen');
  await until(a,`document.querySelector('.party-count')?.textContent==='5/5'`,4000,'Kopfzahl 5/5');ok('Beitritt über fünf: passende Söldner machen Platz, 5/5');
  // Runde 5: Zielmarkierung über das Kontextmenü des Zielrahmens, kommt beim Mitspieler am selben Gegner an
- const foe=await run(a,`const e=g.enemies.filter(e=>e.netId&&e.hp>0&&!e.questId).sort((x,y)=>Math.hypot(x.x-g.player.x,x.y-g.player.y)-Math.hypot(y.x-g.player.x,y.y-g.player.y))[0];Object.assign(g.player,g.world.findClear(e.x-60,e.y+30,9));g.moveTo=null;g.path=[];g.target=e;return e.netId;`);
+ await run(b,`for(const c of g.companions)c.stance="passive";`);
+ const foe=await run(a,`for(const c of g.companions)c.stance="passive";const e=g.enemies.filter(e=>e.netId&&e.hp>0&&!e.questId).sort((x,y)=>Math.hypot(x.x-g.player.x,x.y-g.player.y)-Math.hypot(y.x-g.player.x,y.y-g.player.y))[0];Object.assign(g.player,g.world.findClear(e.x-60,e.y+30,9));g.moveTo=null;g.path=[];g.target=e;return e.netId;`);
  await wait(300);await run(a,`const t=document.querySelector('#targetPanel');const r=t.getBoundingClientRect();t.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+20,clientY:r.y+20}));`);
  await until(a,`[...document.querySelectorAll('.context-menu button')].some(b=>b.textContent.startsWith('Totenkopf'))`,3000,'Menü mit Markierungen');
  await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent.startsWith('Totenkopf')).click();`);
  await until(b,`g.netEnemy(${JSON.stringify(foe)})?.groupMark==='skull'`,4000,'Moni sieht den Totenkopf');ok('Zielmarkierung über das Zielrahmen-Menü erreicht den Mitspieler');
- await run(b,`const e=g.netEnemy(${JSON.stringify(foe)});Object.assign(g.player,g.world.findClear(e.x-40,e.y+30,9));`);await run(a,`const e=g.target;Object.assign(g.player,g.world.findClear(e.x-70,e.y+40,9));g.target=null;`);await wait(900);
+ await run(b,`const e=g.netEnemy(${JSON.stringify(foe)});Object.assign(g.player,g.world.findClear(e.x-40,e.y+30,9));`);await run(a,`const e=g.netEnemy(${JSON.stringify(foe)})||g.player;Object.assign(g.player,g.world.findClear(e.x-70,e.y+40,9));g.target=null;`);await wait(900);
  await shot(a,'mark-a');await shot(b,'mark-b');
  // Runde 7: Assist – Moni visiert den Totenkopf an, Rudis Gruppenrahmen zeigt es, Rudi übernimmt ihr Ziel über das Menü am Rahmen
  await run(b,`g.target=g.netEnemy(${JSON.stringify(foe)});`)
