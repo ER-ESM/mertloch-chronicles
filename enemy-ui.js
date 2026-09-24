@@ -74,7 +74,7 @@ export function drawBossSpeech(c,bubbles,{ox,oy,width,height,zoom,obstacles=[]})
  const overlaps=(a,b)=>a.x<b.x+b.w+pad&&a.x+a.w+pad>b.x&&a.y<b.y+b.h+pad&&a.y+a.h+pad>b.y;
  for(const {enemy:e,text,kind} of bubbles){
   // Bosse sind hoch gezeichnet; Bewohner, Söldner und Feldgegner sind klein – die Blase säße sonst losgelöst weit über dem Kopf.
-  const small=kind==='villager'||kind==='companion'||kind==='enemy',lift=small?32:104,body=small?30:82;
+  const small=kind==='villager'||kind==='companion'||kind==='enemy'||kind==='speaker',lift=small?(kind==='speaker'?48:32):104,body=small?30:82;
   const anchor={x:e.x-ox,y:e.y-oy};if(anchor.x<0||anchor.x>width||anchor.y<0||anchor.y>height)continue;
   const lines=[];let line='';
   for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(line&&c.measureText(next).width>maxWidth){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);
