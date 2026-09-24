@@ -80,6 +80,9 @@ export function mountOptions(api){
  addEventListener('keydown',e=>{if(!state.capture)return;e.preventDefault();e.stopImmediatePropagation();if(e.repeat)return;
   if(e.code==='Escape'){finish(null);return;}if((e.code==='Delete'||e.code==='Backspace')&&!e.shiftKey&&!e.ctrlKey&&!e.altKey){finish('');return;}
   const b=bindingFromKey(e);if(b)finish(b);},true);
+ // Tastatur (WoW): Pfeile wechseln die Kategorie, Esc schließt – auf dem Startbildschirm ruhen die Spieltasten, dort übernimmt das Fenster selbst.
+ document.addEventListener('keydown',e=>{if(state.capture)return;const nav=e.target.closest?.('.opt-nav');if(nav&&/^Arrow(Up|Down)$/.test(e.key)){e.preventDefault();const i=T.categories.findIndex(c=>c.id===state.cat),n=T.categories.length,next=T.categories[(i+(e.key==='ArrowDown'?1:-1)+n)%n];state.cat=next.id;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}api.rerender();requestAnimationFrame(()=>document.querySelector('[data-opt-cat="'+next.id+'"]')?.focus());return;}
+  if(e.key==='Escape'&&api.startOpen?.()&&document.querySelector('.popup-settings')){e.preventDefault();e.stopPropagation();api.close();}},true);
  addEventListener('pointerdown',e=>{if(!state.capture)return;if(e.target.closest?.('[data-opt-key],[data-opt-bar]')&&e.button===0)return;const b=bindingFromMouse(e);e.preventDefault();e.stopImmediatePropagation();finish(b||null);},true);
  function click(e){
   const cat=e.target.closest('[data-opt-cat]');if(cat){state.cat=cat.dataset.optCat;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}state.capture=null;api.rerender();return true;}
