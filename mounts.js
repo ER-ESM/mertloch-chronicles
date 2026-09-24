@@ -5,6 +5,8 @@ import {tutorialActive} from './tutorial.js';
 const stations=new WeakMap();
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export const mountDefinition=id=>typeof id==='string'&&Object.hasOwn(MOUNTS,id)?MOUNTS[id]:null;
+/** Klang beim Aufsitzen aus dem Inhalt (Tiere wiehern, Rad klingelt, Motoren knattern). */
+export const mountSound=id=>mountDefinition(id)?.sound||'mount-motor';
 export function restoreMounts(raw){const owned=[...new Set((Array.isArray(raw?.owned)?raw.owned:[]).filter(id=>mountDefinition(id)))];return {version:1,ridingSkill:raw?.ridingSkill===true,owned,selected:owned.includes(raw?.selected)?raw.selected:owned[0]||null};}
 export function initMounts(g,raw){g.mounts=restoreMounts(raw);g.player.mount=null;g.mountCast=null;}
 export const savedMounts=g=>restoreMounts(g.mounts);
@@ -62,5 +64,5 @@ export function tickMount(g,dt){
  const cast=g.mountCast;if(!cast)return;
  if(mountUnavailable(g)||moving(g)||distance(g.player,cast)>.5){dismount(g,true);return;}
  cast.remaining-=dt;if(cast.remaining>0)return;
- g.player.mount=cast.id;g.mountCast=null;g.emit('mountChanged');g.emit('sound',{id:MOUNTS[cast.id].kind==='horse'?'mount-horse':'mount-motor'});
+ g.player.mount=cast.id;g.mountCast=null;g.emit('mountChanged');g.emit('sound',{id:mountSound(cast.id)});
 }

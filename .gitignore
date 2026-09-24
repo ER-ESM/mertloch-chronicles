@@ -21,3 +21,5 @@ node_modules/
 
 # Arbeitskopien von Hilfsagenten (git worktree)
 .claude/worktrees/
+# Vorschau-Ausgaben der Anziehpuppe (tools/paperdoll/*.mjs <ordner>), nur Arbeitsmaterial
+/tools/paperdoll/out-*/

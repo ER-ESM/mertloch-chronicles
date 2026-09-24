@@ -11,7 +11,7 @@ import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMP
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
 import {resolveDungeonCast,dungeonBossCast,coneHits} from './dungeon.js';
-import {DUNGEON_CASTS} from './content/index.js';
+import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
@@ -23,6 +23,10 @@ const alive=c=>c.state!=='down'&&c.hp>0;
 const fighting=e=>e.hp>0&&e.aggro&&e.ai!=='returning'&&!e.dummy&&!e.tutorial;
 const ratio=x=>x.hp/x.maxHp;
 const abilitySource=id=>({id,name:COMPANION_ABILITIES[id].name});
+/** Aussehen des Söldners als Anziehpuppe (content/figuren.js): Tönung und sichtbare Kleidung für den Heldenweg im Renderer.
+ *  Nur wenn der Archetyp zum look passt (der Heldenweg zeichnet den Körper des look). */
+function mercLook(def){const f=FIGUREN[def.id];if(!f?.arch||f.arch!==def.look)return {};
+ return {tint:f.tint,visualEquipment:f.gear.map(id=>{const h=FIGUR_HANDSTUECKE[id];return {slot:h?.slot||'figur',id,asset:h?.asset||id,rarity:'common',hands:h?.hands??null};})};}
 const companionFx=(g,c,kind,at,data={})=>emitCombatFx(g,kind,at,{...data,companion:c.id,classId:c.def.look});
 const companionText=(g,c,data)=>g.sct({actor:c.id,member:c.def.look,text:c.name,...data});
 const face=(c,target)=>{c.facing=target.x<c.x?-1:1;c.direction=walkFacing(target.x-c.x,target.y-c.y,c.direction||'se');};
@@ -219,7 +223,7 @@ export function tickCompanions(g,dt){
  if(tutorialActive(g))return;
  for(const e of g.enemies){if(e.hp<=0||!e.aggro||e.ai==='returning'){if(e.threat)clearThreat(e);continue;}if(!e.threat)addThreat(e,PLAYER,1);}
  for(const c of [...g.companions]){try{tickOne(g,c,dt);}catch(err){c.target=null;c.path=[];g.emit('companion',{type:'error',id:c.id,message:String(err?.message||err)});}}
- for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down'});
+ for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment});
 }
 /** Nach dem Tod des Besitzers: Begleiter stehen geheilt neben ihm, alle Kämpfe sind vergessen. */
 export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;place(g,c,slot(g,c));}}
@@ -228,7 +232,7 @@ export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(c
 function create(g,def,saved={}){
  const c={id:def.id,def,name:def.name,kind:def.kind,x:g.player.x,y:g.player.y,facing:1,level:0,maxHp:0,hp:0,damage:0,state:'follow',
   stance:T.stances[saved.stance]?saved.stance:COMPANION_ROLES[def.role].stance,order:['follow','stay'].includes(saved.order)?saved.order:'follow',
-  contract:def.kind==='merc'?Math.max(1,Number(saved.contract)||R.contractHours*3600):null,cooldowns:{},gcd:0,guard:0,guardReduction:0,inCombat:0,target:null,path:[],retarget:0,view:{},classBuffs:restoreClassBuffs(saved.classBuffs)};
+  contract:def.kind==='merc'?Math.max(1,Number(saved.contract)||R.contractHours*3600):null,cooldowns:{},gcd:0,guard:0,guardReduction:0,inCombat:0,target:null,path:[],retarget:0,view:{},figure:mercLook(def),classBuffs:restoreClassBuffs(saved.classBuffs)};
  refreshStats(g,c);c.hp=Math.round(c.maxHp*Math.max(.1,Math.min(1,Number(saved.hp)||1)));place(g,c,slot({...g,companions:[...(g.companions||[]),c]},c));return c;
 }
 /** Freie Plätze: vier Begleiter, zusammen mit echten Gruppenmitgliedern (g.partyHumans, setzt die Netzschicht) höchstens fünf Köpfe. */

@@ -2,6 +2,7 @@ import {drawLiveAnimal} from './live-art.js';
 import {drawTinyPerson} from './pixel-people.js';
 import {drawMaifeld,maifeld} from './maifeld-art.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,spark} from './pixel-style.js';
+import {drawFigure} from './paperdoll-figuren.js';
 
 function face(c,variant=0,helmet=false){
   shape(c,'#bb7c75',[[-5,-28],[-3,-31],[4,-31],[6,-28],[6,-22],[3,-19],[-3,-20],[-5,-23]],P.ink,1);
@@ -30,6 +31,8 @@ export function drawComicHero(c,x,y,time,p,npc=false,scale=1){
 }
 
 export function drawComicResident(c,a,time){if(a.kind!=='villager'&&drawLiveAnimal(c,a,time))return;
+ // Dorfbewohner: Anziehpuppe villager0–7 (content/figuren.js). Maß 1 wie drawTinyPerson hier – der Aufrufer skaliert schon auf PERSON_SCALE.
+ if(a.kind==='villager'&&drawFigure(c,'villager'+((a.variant||0)%8),a.x,a.y,1,{direction:a.direction,facing:a.facing,moving:a.moving,walkDistance:a.walkDistance}))return;
  if(a.kind!=='villager'&&maifeld[a.kind]){c.save();c.translate(Math.round(a.x),Math.round(a.y));c.scale(a.facing||1,1);drawMaifeld(c,a.kind,0,a.moving?Math.round(Math.sin(time*10+a.id)*.5):0,a.kind==='cat'?13:11);c.restore();return;}
   c.save();c.translate(Math.round(a.x*2)/2,Math.round(a.y*2)/2);c.scale(a.kind==='villager'&&a.direction?(a.direction.endsWith('w')?-1:1):a.facing||1,1);const walk=a.moving?Math.sin(time*9+a.id):0;
   oval(c,'#352b4538',0,2,a.kind==='villager'?8:6,2.5);

@@ -3,17 +3,19 @@
 // Ebene gerendert; das Zusammensetzen (Band für Band: Körper, dann die getragenen Teile) macht die Laufzeit.
 // Alle Formen hängen an Gelenken und an den Rumpfzeilen des Archetyps – dieselbe Jacke passt deshalb an jeden Körperbau.
 // Stil: flache Formen, Formlicht von links oben, Innenlinien an Verdeckungen, gefärbte Kanten (dunkelste Stufe des Teils).
-import {writeFileSync,mkdirSync,readFileSync,existsSync} from 'node:fs';
+import {writeFileSync,mkdirSync,readFileSync,existsSync,readdirSync,unlinkSync} from 'node:fs';
 import {encodePng,decodePng,surface} from '../sprite-pipeline/png.mjs';
 import {fileURLToPath} from 'node:url';
 const HERE=p=>fileURLToPath(new URL(p,import.meta.url));
 import {familien} from './familien.mjs';
-import {aussehen} from './aussehen.mjs';
+import {aussehen,kopfEinrasten} from './aussehen.mjs';
 import {npc_kleidung} from './npc-kleidung.mjs';
 
 export let W=160,H=216;export const GROUND=206;// W/H veränderlich: Reittiere liegen auf größerer Leinwand
 export const BANDS=['haarHinten','armHinten','beinHinten','beinVorn','rumpf','kopf','armVorn'];
-export const FRAMES=[...[0,1,2,3].map(i=>({anim:'stehen',i})),{anim:'blinzeln',i:0},...[0,1,2,3,4,5,6,7].map(i=>({anim:'laufen',i}))];
+export const FRAMES=[...[0,1,2,3].map(i=>({anim:'stehen',i})),{anim:'blinzeln',i:0},...[0,1,2,3,4,5,6,7].map(i=>({anim:'laufen',i})),
+ // Kampf/Aktion (E-58): nur hinten anhängen – die Spalte ist die Bildnummer im Bogen (Anker, Laufzeit)
+ ...[0,1,2].map(i=>({anim:'hieb',i})),...[0,1,2].map(i=>({anim:'hieb2',i})),...['getroffen','parade','parade2','zaubern','rasten','sprint','zielen','schuss'].map(anim=>({anim,i:0}))];
 
 // ---------- Farbtreppen (hell → dunkel, warm) ----------
 const hex=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
@@ -150,7 +152,83 @@ function ik(a,b,l1,l2,bend){const dx=b[0]-a[0],dy=b[1]-a[1],d=Math.min(Math.hypo
  *  pos = Fußlage entlang der Laufrichtung in Schrittlängen, lift = Fußhöhe, pitch −1 Zehen hoch … +1 Ferse hoch, bob = Körperhub (+ = tiefer). */
 const WALK={pos:[1,.55,.1,-.35,-.85,-.35,.35,.8],lift:[0,0,0,0,.5,2.5,3.5,1.5],pitch:[-1,0,0,.3,1,.5,0,-.5],bob:[1,2.5,.5,-1.5,1,2.5,.5,-1.5],tilt:[0,2,2,1,0,-2,-2,-1]};
 const STRIDE=14;
-export function pose(fr,A,look,back=false){const Fd=back?[-F[0],-F[1]]:F;const {anim,i}=fr;
+// ---------- Kampf- und Aktionsposen (E-58): Schlüsselposen im Figurenrahmen ----------
+// v = vorwärts (Blickrichtung), u = aufwärts, o = auswärts zur Seite des jeweiligen Arms/Beins (negativ = zur Körpermitte).
+// Waffe immer rechte Hand: W = armN, bei swap (Rücken XOR gespiegelt) armF – wie im Quellen-Wrapper; Führungsbein = Gegenseite.
+// w/f = Griffpunkt (handPos) der Waffen-/Gegenhand relativ zur eigenen Schulter, b = Ellbogen-Beugerichtung; f:'griff' = zweite Hand
+// am Schaft (fg px entlang der Waffe, sonst GRIP2; negativ = zum Schaftende; Beugung fb), f.knee = relativ zum Knie des Führungsbeins; g/og = Achse der Waffe/Nebenhand
+// (ihre Bildachse „unten“), daraus swingN/swingF.
+// lead/rear = Führungs-/Standbein: v in Schrittlängen, o px, lift px, pit (Ferse hoch), toe [v,u] = Zehen frei gesetzt.
+// drop = Becken tiefer, adv = Becken vor, lean = Rumpfneigung in px auf Brusthöhe (Scherung um das Becken, beim Zeichnen: leanT),
+// wb = Waffenschulter zurück (+) / vor (−), hf = Hüfte des Führungsbeins vor, head = Kopfversatz [v,u]; sw/nw/ne = Abweichungen je Richtung
+// (sw, ne: Waffenschulter liegt auf der Blickseite – weniger Reichweite, Ausholen nicht hinter den Kopf; ne: Gegenhand nicht vor den Rumpf, der Deckel liegt im vorderen Band).
+const GRIP2=12,SX=[1,-.12];// Abstand der zweiten Hand am Schaft; Seitenachse zur fernen Seite
+export const ACTS={
+ hieb:[// Einhand: ausholen · Treffer · Nachschwung
+  {drop:3,adv:-3,lean:-3,wb:.6,hf:.3,lead:{v:.6,o:3},rear:{v:-.5,o:2},w:{v:-8,u:36,o:6,b:[-1,.3,.5]},g:{v:-.55,u:.85},f:{v:34,u:-10,o:4,b:[0,-1,.3]},
+   sw:{w:{v:-2,u:38,o:16,b:[-.3,.2,1]},g:{v:-.35,u:.9,o:.25}},ne:{f:{v:16,u:-12,o:18,b:[0,-1,.3]}}},
+  {drop:6,adv:5,lean:8,wb:-.7,hf:.5,lead:{v:1.2,o:4},rear:{v:-1.15,o:2,pit:.8},w:{v:62,u:-8,o:0,b:[0,-.4,1]},g:{v:.75,u:-.65},f:{v:-4,u:-26,o:16,b:[-1,0,.5]},head:[2,0],
+   sw:{adv:0,lean:4,w:{v:42,u:-12,o:-6,b:[0,-.4,1]},g:{v:.45,u:-.9}},ne:{adv:0,lean:4,w:{v:38,u:-14,o:-8,b:[0,-.4,1]},g:{v:.45,u:-.9}},nw:{w:{v:52,u:-8,o:0,b:[0,-.4,1]},g:{v:.65,u:-.75}}},
+  {drop:6,adv:4,lean:6,wb:-.9,hf:.6,lead:{v:1.2,o:4},rear:{v:-1.15,o:2,pit:1},w:{v:36,u:-44,o:-10,b:[.4,0,1]},g:{v:.2,u:-1,o:-.4},f:{v:-2,u:-26,o:16,b:[-1,.2,.5]},head:[1,0],
+   sw:{w:{v:24,u:-44,o:-6,b:[.4,0,1]}},ne:{adv:0,lean:4,w:{v:20,u:-44,o:-10,b:[.4,0,1]}}}],
+ hieb2:[// Zweihand: beide Hände am Schaft
+  {drop:4,adv:-3,lean:-4,wb:.7,hf:.3,lead:{v:.6,o:4},rear:{v:-.5,o:2},w:{v:-8,u:10,o:4,b:[-1,-.2,.6]},g:{v:-.65,u:.75},f:'griff',fg:-9,fb:[0,-1,.4],nw:{w:{v:-8,u:10,o:0,b:[-1,-.2,.6]},g:{v:-.55,u:.85}},
+   sw:{w:{v:0,u:-4,o:14,b:[-.3,-1,.6]},g:{v:-.3,u:.9,o:.3},fg:12}},
+  {drop:7,adv:6,lean:9,wb:-.5,hf:.5,lead:{v:1.2,o:4},rear:{v:-1.15,o:2,pit:.8},w:{v:52,u:-6,o:-6,b:[0,-.4,1]},g:{v:.75,u:-.6},f:'griff',fb:[.3,-1,.5],
+   sw:{adv:0,lean:4,w:{v:38,u:-12,o:-8,b:[0,-.4,1]},g:{v:.45,u:-.9}},ne:{adv:0,lean:4,w:{v:28,u:-14,o:-10,b:[0,-.4,1]},g:{v:.45,u:-.9}},nw:{w:{v:54,u:-12,o:-4,b:[0,-.4,1]},g:{v:.25,u:-1}}},
+  {drop:7,adv:5,lean:8,wb:-.7,hf:.6,lead:{v:1.2,o:4},rear:{v:-1.15,o:2,pit:1},w:{v:34,u:-40,o:-8,b:[.3,-.3,1]},g:{v:.4,u:-.9},f:'griff',fb:[.3,-1,.5],
+   sw:{w:{v:22,u:-40,o:-6,b:[.3,-.3,1]},g:{v:.25,u:-1}},ne:{adv:0,lean:4,w:{v:18,u:-40,o:-10,b:[.3,-.3,1]},g:{v:.15,u:-1}},nw:{w:{v:28,u:-40,o:-6,b:[.3,-.3,1]},g:{v:.3,u:-1}}}],
+ getroffen:[{drop:4,adv:-4,lean:-7,wb:.2,hf:-.2,lead:{v:.3,o:3},rear:{v:-.9,o:3,pit:.4},w:{v:-2,u:-26,o:-3,b:[.3,-1,.4]},g:{v:-.1,u:-1},f:{v:4,u:-16,o:15,b:[0,-1,.6]},head:[-2,1],blink:true}],
+ parade:[{drop:6,adv:1,lean:1,wb:.1,hf:.4,lead:{v:.8,o:5},rear:{v:-.6,o:4},w:{v:24,u:-10,o:0,b:[0,-1,.8]},g:{v:.6,u:.8},f:{v:28,u:-12,o:6,b:[0,-1,.4]}}],
+ parade2:[{drop:6,adv:1,lean:1,wb:.2,hf:.4,lead:{v:.8,o:5},rear:{v:-.6,o:4},w:{v:20,u:-16,o:4,b:[0,-1,.8]},g:{v:.55,u:.8,o:-.2},f:'griff',fb:[0,-1,.5]}],
+ zaubern:[{drop:2,lean:-3,wb:-.2,hf:.3,lead:{v:.5,o:4},rear:{v:-.4,o:3},w:{v:30,u:0,o:-2,b:[0,-1,.6]},g:{v:.55,u:.85},f:{v:4,u:24,o:30,b:[0,-.3,1]},head:[0,1],nw:{g:{v:.7,u:.7}},ne:{w:{v:18,u:0,o:-4,b:[0,-1,.6]},g:{v:.5,u:.85}},sw:{w:{v:18,u:0,o:-4,b:[0,-1,.6]},g:{v:.5,u:.85}}}],
+ rasten:[{drop:34,adv:0,lean:2,wb:0,hf:.2,lead:{v:1,o:4},rear:{v:-1.7,o:2,toe:[-6,-3]},w:{v:8,u:-12,o:6,b:[0,-1,.5]},g:{v:-.3,u:1,o:.3},f:{knee:1,v:2,u:4,o:2,b:[0,-.2,1]},
+   nw:{rear:{v:-1.1,o:7,toe:[-5,-1]}},ne:{rear:{v:-1.1,o:7,toe:[-5,-1]}}}],
+ sprint:[{drop:0,adv:6,lean:11,wb:-.5,hf:.6,lead:{v:1.1,o:2,lift:10},rear:{v:-1.5,o:1,lift:5,pit:1},w:{v:-12,u:-26,o:6,b:[-1,.4,.3]},g:{v:-.6,u:-.7},f:{v:18,u:-6,o:-2,b:[.3,-1,.2]},head:[3,-1]}],
+ zielen:[{drop:3,adv:1,lean:2,wb:-.3,hf:.4,lead:{v:.8,o:4},rear:{v:-.6,o:3},w:{v:44,u:4,o:-2,b:[0,-.3,1]},g:{v:1,u:.25},f:{v:14,u:-10,o:-2,b:[-.4,-.5,.8]},head:[1,0]}],
+ schuss:[{drop:3,adv:0,lean:0,wb:-.2,hf:.4,lead:{v:.8,o:4},rear:{v:-.6,o:3},w:{v:40,u:8,o:-2,b:[0,-.3,1]},g:{v:1,u:.45},f:{v:0,u:-14,o:12,b:[-.4,-.5,.8]},head:[0,0]}],
+};
+const nrm=v=>{const l=Math.hypot(v[0],v[1])||1;return [v[0]/l,v[1]/l];};
+const clampTo=(a,b,m)=>{const d=Math.hypot(b[0]-a[0],b[1]-a[1]);return d>m?[a[0]+(b[0]-a[0])*m/d,a[1]+(b[1]-a[1])*m/d]:b;};
+/** Arm so stellen, dass der Griffpunkt (handPos) auf g liegt: Handgelenk 5,2 px davor entlang des Unterarms (iterativ), nie überstreckt. */
+function armTo(sh,g,la,bend){const L=la[0]+la[1];g=clampTo(sh,g,L+4.6);{const d=Math.hypot(g[0]-sh[0],g[1]-sh[1]);if(d<22){const u=d>1?[(g[0]-sh[0])/d,(g[1]-sh[1])/d]:nrm(bend);g=[sh[0]+u[0]*22,sh[1]+u[1]*22];}}// nie ganz zusammengefaltet
+ let u=nrm([g[0]-sh[0],g[1]-sh[1]]),w=g,e=sh;
+ for(let k=0;k<6;k++){w=clampTo(sh,[g[0]-u[0]*5.2,g[1]-u[1]*5.2],L-.4);e=ik(sh,w,la[0],la[1],bend);if(!k)bend=[e[0]-(sh[0]+w[0])/2,e[1]-(sh[1]+w[1])/2];u=nrm([w[0]-e[0],w[1]-e[1]]);}// Ellbogenseite aus dem ersten Schritt halten (sonst springt die Lösung)
+ w=clampTo(sh,[g[0]-u[0]*5.2,g[1]-u[1]*5.2],L-.4);return [sh,ik(sh,w,la[0],la[1],bend),w];}
+/** Aktionspose aus ACTS (siehe oben); p.lean = Scherung je px Höhe über dem Becken (x), p.grip2 = zweite Hand am Schaft. */
+function poseAct(fr,A,look,back,swap){const K0=ACTS[fr.anim][fr.i]||ACTS[fr.anim][0],K={...K0,...K0[back?(swap?'nw':'ne'):(swap?'sw':'se')]};
+ if(back&&!swap&&typeof K.f==='object'&&!K.f.knee&&!K0.ne?.f)K.f={...K.f,v:(K.f.v||0)*.5,o:(K.f.o||0)+14};// ne: Gegenhand vor dem Körper läge hinter dem Rumpf – nach außen
+ const Fd=back?[-F[0],-F[1]]:F,WN=!swap,sW=WN?-1:1,sO=-sW,FW=back?[-.55,-.45]:[.55,.45],la=A.leg[0]>36?[29,27]:[27,25],LL=A.leg[0]+A.leg[1];
+ const twist=-sW*(K.wb||0),ht=sW*(K.hf||0);// twist>0: nahe Schulter zurück; ht>0: nahe Hüfte vor
+ const adv=K.adv||0,P=[80+Fd[0]*adv,GROUND-8-LL+1+(K.drop||0)+Fd[1]*adv];
+ const hipN=[P[0]+A.hip[0]+Fd[0]*1.8*ht,P[1]+Fd[1]*1.8*ht],hipF=[P[0]+A.hip[1]-Fd[0]*1.8*ht,P[1]-3-Fd[1]*1.8*ht];
+ const trk=Math.max(0,9-(A.hip[1]-A.hip[0])/2),leadN=!WN,qN=(leadN?K.lead:K.rear)||{},qF=(leadN?K.rear:K.lead)||{};
+ const ank=(hip,q,near)=>{const dy=(near?0:-5)-(q.lift||0)-2.5*Math.max(0,q.pit||0);let v=q.v||0;const my=back?3:5.5;if(dy+FW[1]*v*STRIDE>my)v=(my-dy)/(FW[1]*STRIDE);// Fuß zur Kamera hin höchstens so tief wie im Lauf (Leinwand unten; von hinten kippt der Fuß nach unten)
+  return clampTo(hip,[hip[0]+(near?-1:1)*(2+trk+(q.o||0))+FW[0]*v*STRIDE,GROUND-8+dy+FW[1]*v*STRIDE],LL-.8);};
+ const ankN=ank(hipN,qN,true),ankF=ank(hipF,qF,false),kneeN=ik(hipN,ankN,A.leg[0],A.leg[1],Fd),kneeF=ik(hipF,ankF,A.leg[0],A.leg[1],Fd);
+ const toe=(a,q)=>{const pit=q.pit||0;if(q.toe)return [a[0]+Fd[0]*q.toe[0],a[1]+Fd[1]*q.toe[0]-q.toe[1]];return back?(pit<0?[a[0]-4,a[1]+3+2*pit]:[a[0]-3,a[1]+4+pit]):pit<0?[a[0]+6.5,a[1]+5+4*pit]:[a[0]+6-2*pit,a[1]+5+2*pit];};
+ const C=[P[0],P[1]-40],lean=(Fd[0]>0?1:-1)*(K.lean||0)/40,lx=q=>[q[0]+lean*(P[1]-q[1]),q[1]],tsh=K.tsh||0;
+ const R0=A.armR[0],xN=A.sh[0]+R0*.2,xF=A.sh[1]-R0*.2,yN=Math.min(-2,shTop(A,-1,xN)-1+R0),yF=Math.min(-5,shTop(A,1,xF)-1+R0);
+ const shN=lx([C[0]+xN-Fd[0]*2.6*twist,C[1]+yN+tsh-Fd[1]*2.6*twist]),shF=lx([C[0]+xF+Fd[0]*2.6*twist,C[1]+yF-tsh+Fd[1]*2.6*twist]);
+ const hd=K.head||[0,0],neck=[C[0]+1,C[1]-18],head=[C[0]+2+Fd[0]*hd[0],C[1]-40+Fd[1]*hd[0]-hd[1]];
+ const vec=(q,s)=>[(q.v||0)*Fd[0]+(q.o||0)*s*SX[0],(q.v||0)*Fd[1]-(q.u||0)+(q.o||0)*s*SX[1]];
+ const bend=(b,s)=>b?vec({v:b[0],u:b[1],o:b[2]},s):[-Fd[0],-Fd[1]],ang=(q,s)=>{if(!q)return 0;const d=nrm(vec(q,s));return Math.atan2(-d[0],d[1]);};
+ const shW=WN?shN:shF,shO=WN?shF:shN,dW=vec(K.w,sW),aW=ang(K.g,sW),dir=[-Math.sin(aW),Math.cos(aW)];let gW=[shW[0]+dW[0],shW[1]+dW[1]];
+ const G2=K.fg??GRIP2;if(K.f==='griff'){const R=la[0]+la[1]+4;// beide Hände am Schaft: Griffpaar gemeinsam verschieben, bis auch die Gegenhand es erreicht
+  for(let k=0;k<8;k++){const gO=[gW[0]+dir[0]*G2,gW[1]+dir[1]*G2],e=[gO[0]-shO[0],gO[1]-shO[1]],dO=Math.hypot(...e)||1,s=dO>R?(dO-R)/dO:dO<24?(dO-24)/dO:0;gW=clampTo(shW,[gW[0]-e[0]*s,gW[1]-e[1]*s],R);const dw=Math.hypot(gW[0]-shW[0],gW[1]-shW[1])||1;if(dw<24)gW=[shW[0]+(gW[0]-shW[0])*24/dw,shW[1]+(gW[1]-shW[1])*24/dw];}}
+ const armW=armTo(shW,gW,la,bend(K.w.b,sW));
+ let armO;if(K.f==='griff'){const h=handPos(armW);armO=armTo(shO,[h[0]+dir[0]*G2,h[1]+dir[1]*G2],la,bend(K.fb,sO));}
+ else{const dO=vec(K.f,sO),o=K.f.knee?(leadN?kneeN:kneeF):shO;armO=armTo(shO,[o[0]+dO[0],o[1]+dO[1]],la,bend(K.f.b,sO));}// knee: Unterarm aufs Knie des Führungsbeins
+ const aO=ang(K.og,sO);
+ return {back,A,look,P,C,neck,head,breath:0,lag:0,blink:!!K.blink,grip2at:G2,tilt:{sh:tsh,hip:K.thip||0},sway:-1.5*twist,twist,rot:K.rot||0,bob:0,lean,sided:true,grip2:K.f==='griff',
+  swingN:WN?aW:aO,swingF:WN?aO:aW,legN:[hipN,kneeN,ankN],legF:[hipF,kneeF,ankF],toeN:toe(ankN,qN),toeF:toe(ankF,qF),armN:WN?armW:armO,armF:WN?armO:armW};}
+/** Rumpfneigung beim Zeichnen (Punkt-Transform der Ebene): Rumpf und Haar hinten geschert um das Becken, Kopf starr mitgeführt. */
+export function leanT(p,band){if(!p.lean)return null;const k=p.lean,Py=p.P[1];
+ if(band==='rumpf'||band==='haarHinten')return ([x,y])=>[x+k*(Py-y),y];
+ if(band==='kopf'){const dx=k*(Py-p.head[1]);return ([x,y])=>[x+dx,y];}return null;}
+/** Punkt des Rumpfs/Kopfs nach der Neigung (Anker für Effekte). */
+export const leanPt=(p,q)=>p.lean?[q[0]+p.lean*(p.P[1]-q[1]),q[1]]:q;
+export function pose(fr,A,look,back=false,swap=false){if(ACTS[fr.anim])return poseAct(fr,A,look,back,swap);const Fd=back?[-F[0],-F[1]]:F;const {anim,i}=fr;
  let swing=0,bob=0,breath=0,posN=0,posF=0,liftN=0,liftF=0,pitN=0,pitF=0,thip=0,tsh=0,twist=0,lag=0,relax=0;
  if(anim!=='laufen'){breath=anim==='stehen'?[0,1,1,0][i]:0;thip=back?-1.5:1.5;tsh=back?-1.2:1.2;relax=1;}// Kontrapost: Gewicht auf dem nahen Bein
  else{const j=(i+4)%8;posN=WALK.pos[i];posF=WALK.pos[j];liftN=WALK.lift[i];liftF=WALK.lift[j];pitN=WALK.pitch[i];pitF=WALK.pitch[j];
@@ -485,11 +563,16 @@ const HYB_DIR=HERE('./hybrid/teile/');
 export const HYB=new Set((process.env.HYBRID??'kopf,teil,talisman,koerper,kleidung').split(',').filter(x=>x&&x!=='none'));
 let HT=null;
 /** Eingepasstes Teil (Bild + Versatz zum Ankerpunkt) oder null. */
-function hyb(id){HT??=existsSync(HYB_DIR+'teile.json')?JSON.parse(readFileSync(HYB_DIR+'teile.json','utf8')):{};const t=HT[id];if(!t)return null;t.img??=decodePng(readFileSync(HYB_DIR+id+'.png'));return t;}
+function hyb(id){HT??=existsSync(HYB_DIR+'teile.json')?JSON.parse(readFileSync(HYB_DIR+'teile.json','utf8')):{};const t=HT[id];if(!t)return null;if(!t.img){t.img=decodePng(readFileSync(HYB_DIR+id+'.png'));kopfEinrasten(id,t,{PAL,LOOK});}return t;}// Köpfe: Haarpixel auf die Haartreppe (aussehen.mjs)
 /** Bild an Ankerpunkt setzen; eigene Kontur bleibt (keep), optional gespiegelt am Anker und nur Zeilen ober-/unterhalb einer Grenze. */
-function blit(L,t,ax,ay,{mirror=false,rows=null}={}){const id=L.piece([[0,0,0],[0,0,0],[0,0,0]]);L.ramps[id].keep=true;
+function blit(L,t,ax,ay,{mirror=false,rows=null}={}){const id=L.piece([[0,0,0],[0,0,0],[0,0,0]]);L.ramps[id].keep=true;[ax,ay]=tp(L,[ax,ay]);// Anker folgt der Rumpfneigung
  const x0=Math.round(mirror?ax-t.dx-t.w:ax+t.dx),y0=Math.round(ay+t.dy);
  for(let y=0;y<t.h;y++){const Y=y0+y;if(rows&&!rows(Y))continue;for(let x=0;x<t.w;x++){const sx=mirror?t.w-1-x:x,i=(y*t.w+sx)*4;if(t.img.data[i+3])L.px(x0+x,Y,[t.img.data[i],t.img.data[i+1],t.img.data[i+2]]);}}return id;}
+/** Bild um den Anker gedreht setzen (Waffe in der Hand, Winkel wie L.T der Zeichner): Rückabbildung je Zielpixel, nächster Nachbar. */
+function blitRot(L,t,ax,ay,a){if(!a)return blit(L,t,ax,ay);const id=L.piece([[0,0,0],[0,0,0],[0,0,0]]);L.ramps[id].keep=true;
+ const co=Math.cos(a),si=Math.sin(a),x0=Math.round(ax+t.dx)-ax,y0=Math.round(ay+t.dy)-ay,cs=[[x0,y0],[x0+t.w,y0],[x0,y0+t.h],[x0+t.w,y0+t.h]].map(([u,v])=>[ax+u*co-v*si,ay+u*si+v*co]);
+ for(let Y=Math.floor(Math.min(...cs.map(c=>c[1])));Y<=Math.ceil(Math.max(...cs.map(c=>c[1])));Y++)for(let X=Math.floor(Math.min(...cs.map(c=>c[0])));X<=Math.ceil(Math.max(...cs.map(c=>c[0])));X++){
+  const rx=X+.5-ax,ry=Y+.5-ay,sx=Math.floor(rx*co+ry*si-x0),sy=Math.floor(-rx*si+ry*co-y0);if(sx<0||sy<0||sx>=t.w||sy>=t.h)continue;const i=(sy*t.w+sx)*4;if(t.img.data[i+3])L.px(X,Y,[t.img.data[i],t.img.data[i+1],t.img.data[i+2]]);}return id;}
 /** Blinzeln auf einem Bild-Kopf: Augenzone mit Hautton füllen, Lidstrich darüber. */
 function blinkOver(L,p){const S=PAL.skin,[x,y]=p.head,X=x+2;for(const [x0,x1] of [[X-14,X-6],[X+4,X+9]]){for(let yy=y-6;yy<=y-1;yy++)for(let xx=x0;xx<=x1;xx++)if(L.part[yy*W+xx]>=0)L.px(xx,yy,S[1]);line(L,[[x0,y-3],[x1,y-3]],PAL.lash);line(L,[[x0+1,y-2],[x1-1,y-2]],S[2]);}}
 const hybHead=p=>HYB.has('kopf')?hyb(`kopf-${Object.keys(LOOK).find(k=>LOOK[k]===p.look)}-${p.back?'nw':'se'}`):null;
@@ -561,9 +644,9 @@ function texBilder(src,p){const V=texVorlage(src,p);if(!V)return null;const key=
  const {img,fit,seg,segs,p0,GW,GH,bands,ramps}=V,out={},pal=ramps.flat();
  for(const band of bands){const b0=bones(band,p0),bf=bones(band,p),acc=new Float32Array(W*H*4),tr=[];
   if(b0)b0.forEach((k,j)=>{const a0=k[0],e0=k[1],af=bf[j][0],ef=bf[j][1];tr.push({id:segs.findIndex(s=>s.band===band&&s.j===j),prev:j>0?segs.findIndex(s=>s.band===band&&s.j===j-1):-2,joint:a0,jr:k[2]*1.15,a0,af,u0:norm([e0[0]-a0[0],e0[1]-a0[1]]),uf:norm([ef[0]-af[0],ef[1]-af[1]])});});
-  else tr.push({id:segs.findIndex(s=>s.band===band),shift:[p.C[0]-p0.C[0],p.C[1]-p0.C[1]]});
+  else tr.push({id:segs.findIndex(s=>s.band===band),shift:[p.C[0]-p0.C[0],p.C[1]-p0.C[1]],k:(band==='rumpf'||band==='haarHinten')&&p.lean||0,py:p.P[1]});// k: Rumpfneigung (leanT)
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){const x=(gx+.5)/SS,y=(gy+.5)/SS;
-   for(let k=tr.length-1;k>=0;k--){const T=tr[k];let x0,y0;if(T.shift){x0=x-T.shift[0];y0=y-T.shift[1];}else{const dx=x-T.af[0],dy=y-T.af[1],t=dx*T.uf[0]+dy*T.uf[1],s=-dx*T.uf[1]+dy*T.uf[0];x0=T.a0[0]+t*T.u0[0]-s*T.u0[1];y0=T.a0[1]+t*T.u0[1]+s*T.u0[0];}
+   for(let k=tr.length-1;k>=0;k--){const T=tr[k];let x0,y0;if(T.shift){x0=x-T.shift[0]-T.k*(T.py-y);y0=y-T.shift[1];}else{const dx=x-T.af[0],dy=y-T.af[1],t=dx*T.uf[0]+dy*T.uf[1],s=-dx*T.uf[1]+dy*T.uf[0];x0=T.a0[0]+t*T.u0[0]-s*T.u0[1];y0=T.a0[1]+t*T.u0[1]+s*T.u0[0];}
     const g0x=Math.floor(x0*SS),g0y=Math.floor(y0*SS);if(g0x<0||g0y<0||g0x>=GW||g0y>=GH)continue;const sg=seg[g0y*GW+g0x];if(sg!==T.id&&!(sg===T.prev&&Math.hypot(x0-T.joint[0],y0-T.joint[1])<=T.jr))continue;
     const sx=Math.floor((x0-fit.ox)/fit.s),sy=Math.floor((y0-fit.oy)/fit.s),si=(sy*img.width+sx)*4,i=(Math.floor(y)*W+Math.floor(x))*4;
     acc[i]+=img.data[si];acc[i+1]+=img.data[si+1];acc[i+2]+=img.data[si+2];acc[i+3]+=1;break;}}
@@ -669,17 +752,18 @@ const SIDE={
  fuchspfote:{normal:{beinVorn:GEAR.fuchspfote.beinVorn,beinHinten:GEAR.fuchspfote.beinHinten},swapped:GEAR_BACK.fuchspfote},
  bierbong:{normal:{rumpf:(L,p)=>{if(!p.back)GEAR.bierbong.rumpf(L,p);},armHinten:(L,p)=>{if(p.back)GEAR.bierbong.rumpf(L,p);}},swapped:{rumpf:(L,p)=>{if(!p.back)GEAR_BACK.bierbong.rumpf(L,p);},armHinten:(L,p)=>{if(p.back)GEAR_BACK.bierbong.rumpf(L,p);}}},
 };
-const SIDED=new Set([...MOD_SIDED,'kutte','fuchspfote','bierbong','schaerpe','gansorden',...Object.keys(GEAR).filter(k=>GEAR[k].slot==='weapon'||GEAR[k].slot==='offhand')]);
+// eingepasste Codex-Teile mit Schrift/Bild (Ausweis, Kette) und die Regenjacke mit Füllung sehen gespiegelt falsch aus → eigene sw/ne-Bögen
+const SIDED=new Set([...MOD_SIDED,'kutte','fuchspfote','bierbong','schaerpe','gansorden','praktikantenausweis','koenigskette','regenjacke',...Object.keys(GEAR).filter(k=>GEAR[k].slot==='weapon'||GEAR[k].slot==='offhand')]);
 const TEXABLE=new Set(['kutte','regenjacke','jeans','festivalstiefel','kabelbinderstiefel','fuchspfote']);
 export const DIRS={se:'',sw:'-sw',nw:'-nw',ne:'-ne'};
 /** Quellen: Körper, Dutt und je Gegenstand ein Zeichner mit Seitenregel, Codex-Teilen und Stofffüllung. */
-let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...Object.fromEntries(Object.entries(GEAR).map(([id,g])=>[id,(L,band,p0)=>{let p=p0,bd=band;if(p0.swap&&(g.slot==='weapon'||g.slot==='offhand')){p={...p0,armN:p0.armF,armF:p0.armN,swingN:p0.swingF,swingF:p0.swingN};if(g.slot==='weapon'){if(band==='armVorn')return;if(band==='armHinten')bd='armVorn';}}
+let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...Object.fromEntries(Object.entries(GEAR).map(([id,g])=>[id,(L,band,p0)=>{let p=p0,bd=band;if(p0.swap&&(g.slot==='weapon'||g.slot==='offhand')){p={...p0,armN:p0.armF,armF:p0.armN,swingN:p0.swingF,swingF:p0.swingN};if(g.slot==='weapon'){if(band==='armVorn'){if(g.hands===2&&p0.grip2)handOver(L,p0.armN);return;}if(band==='armHinten')bd='armVorn';}}
    {const cat=g.slot==='charm'?'talisman':'teil',hdir=g.slot==='head'?(p.back?'nw':'se'):'se',t=HYB.has(cat)&&!(p.back&&g.slot==='charm')&&id!=='gansorden'?hyb(`teil-${id}-${g.slot==='offhand'&&p.back?'nw':hdir}`):null;
-    if(t){if((g.slot==='weapon'||g.slot==='offhand')&&bd==='armVorn'){const arm=g.slot==='weapon'?p.armN:p.armF,[hx,hy]=handPos(arm);blit(L,t,hx,hy);handOver(L,arm);return;}
+    if(t){if((g.slot==='weapon'||g.slot==='offhand')&&bd==='armVorn'){const arm=g.slot==='weapon'?p.armN:p.armF,[hx,hy]=handPos(arm);blitRot(L,t,hx,hy,g.slot==='weapon'?p.swingN:p.swingF);handOver(L,arm);if(g.hands===2&&p.grip2)handOver(L,p.armF);return;}// Zweihand-Posen: zweite Faust am Schaft
      if(g.slot==='head'&&bd==='kopf'){blit(L,t,p.head[0],p.head[1]);return;}if(g.slot==='head'&&bd==='haarHinten')return;
      if(g.slot==='charm'&&bd==='rumpf'){blit(L,t,p.C[0],p.C[1],{mirror:p.swap});return;}if(g.slot==='weapon'||g.slot==='offhand')return;}}
    const SD=SIDE[id],B=p.back?GEAR_BACK[id]:null,fn=SD&&bd in SD.normal?(p.swap?SD.swapped:SD.normal)[bd]:B&&bd in B?B[bd]:g[bd];if(!fn)return;const piv=g.slot==='weapon'?[handPos(p.armN),p.swingN]:g.slot==='offhand'?[handPos(p.armF),p.swingF]:null;
-   if(piv&&piv[1]){const [[ox,oy],a]=piv,co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}fn(L,p);L.T=null;L.rot=0;if(TEXABLE.has(id))texOverlay(L,band,p0,id);}]))};}
+   if(piv&&piv[1]){const [[ox,oy],a]=piv,co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}fn(L,p);L.T=null;L.rot=0;if(g.hands===2&&p.grip2&&bd==='armVorn')handOver(L,p.armF);if(TEXABLE.has(id))texOverlay(L,band,p0,id);}]))};}
 // ---------- Reiten: Reittiere mit eigenen Sitzformen, Reiterpose aus dem Skelett ----------
 // Statt ein Stehbild zu zerschneiden und zu verzerren, stellt das Skelett je Sitzform eine echte Pose: Becken auf dem Sitz,
 // Füße an Steigbügel/Pedal/Trittbrett, Hände an Zügel/Lenker/Lenkrad. Alle Kleidungsebenen folgen, weil sie am Skelett hängen.
@@ -688,7 +772,7 @@ let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...
 Object.assign(PAL,{horse:R(['#dc9a5c','#b06a38','#824a2a','#58301e','#341a14']),mane:R(['#6e4c3c','#4c3028','#34201e','#22141a','#140a10']),
  donkey:R(['#d0c8c0','#a49c96','#7a7270','#524c4c','#2e2a2a']),rust:R(['#eaa66e','#c0703e','#90482a','#60301e','#381a14']),
  mint:R(['#d2eedc','#9ccdb4','#70a28c','#4a766e','#2c464a']),mower:R(['#ff7a5a','#e0402e','#aa2a24','#741c1c','#461014'])});
-export const MW=288,MH=300,MGROUND=286;
+export const MW=288,MH=330,MGROUND=286;// MH mit Rand unter dem Fußpunkt: nahe Hufe/Räder liegen in se bis ~35 px tiefer (vorher bei 300 abgeschnitten)
 const SX3=[.55,-.38],RP=[80,118];// ferne Seite auf dem Bildschirm; Beckenlage des Reiters in seiner 160×216-Kachel
 /** Leinwand vorübergehend wechseln (Reittier auf größerer Fläche). */
 function canvas(w,h,fn){const a=W,b=H;W=w;H=h;try{return fn();}finally{W=a;H=b;}}
@@ -909,20 +993,32 @@ function poseRide(A,look,back,R){const Fd=back?[-F[0],-F[1]]:F,P=R.seat,lean=R.l
  const hN=wrist(shN,R.hands[0]),hF=wrist(shF,R.hands[1]),eb=[-Fd[0]*.4,1];
  return {back,A,look,P,C,neck:[C[0]+1,C[1]-18],head:[C[0]+2,C[1]-40],breath:0,lag:0,blink:false,tilt:{sh:0,hip:0},sway:0,twist:0,rot:0,bob:0,swingN:0,swingF:0,ride:true,
   legN:[hipN,kneeN,ankN],legF:[hipF,kneeF,ankF],toeN:toe(ankN,pit[0]),toeF:toe(ankF,pit[1]),armN:[shN,ik(shN,hN,la[0],la[1],eb),hN],armF:[shF,ik(shF,hF,la[0],la[1],eb),hF]};}
-/** Ein Reitbild: Reiter-Kacheln (160×216) je Quelle und Band, Versatz in die Reittier-Leinwand, Reittier-Kacheln (MW×MH). Bild 0 = Stand, 1–8 = Bewegung. */
-export function renderRide(lid,mountId,ids,dir,k){const look=LOOK[lid],A=ARCH[look.arch],M=MOUNTS[mountId],back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';
+/** Seitengebunden (eigene Zeichnung für sw/ne statt Spiegelung) – dieselbe Regel wie im Hauptkatalog (own). */
+export const rideSided=id=>SIDED.has(id);
+/** Reitquellen: Körper, Dutt und alle Gegenstände außer Waffen/Nebenhand/Fernwaffen (die bleiben beim Reiten verstaut). */
+export const rideSources=()=>['koerper','dutt',...Object.keys(GEAR).filter(id=>!['weapon','offhand','ranged'].includes(GEAR[id].slot))];
+/** Reittier-Zustand und Anker eines Reitbilds; key = Reiterpose (gleiche Anker ⇒ gleiche Reiterkacheln, z. B. Fahrzeuge im Leerlauf). */
+function rideSetup(mountId,dir,k){const M=MOUNTS[mountId],back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';
  const q={ox:MW/2,oy:MGROUND,Fd:back?[-.95,-.2]:[.92,.32],back,k,sc:M.sc||1.25};q.st=M.state(k===0?0:k-1,k>0);const an=M.anchors(q);
  const off=[Math.round(an.seat[0]-RP[0]),Math.round(an.seat[1]-RP[1])],rel=v=>[v[0]-off[0],v[1]-off[1]];
  const R={seat:RP,feet:an.feet.map(rel),hands:an.hands.map(rel),lean:an.lean,knee:an.knee,pitch:an.pitch};
- const p=poseRide(A,look,back,R);p.fi=1000+MOUNT_IDS.indexOf(mountId)*40+['se','sw','nw','ne'].indexOf(dir)*10+k;HW=handW(A);p.lefty=mir;p.swap=back!==mir;
- const srcs=makeSrcs(),rider={};for(const id of ids){rider[id]={};for(const band of BANDS){const L=layer(mir?'sw':'se');srcs[id](L,band,p);edges(L);if(mir)mirror(L);
-  let any=false;const px=new Uint8ClampedArray(W*H*4);for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;px.set([...c,255],i*4);any=true;}if(any)rider[id][band]=px;}}
- const mount=canvas(MW,MH,()=>{RS=q.sc;const out={};try{for(const band of BANDS){const L=layer(mir?'sw':'se');M.draw(L,band,q);edges(L);if(mir)mirror(L);
-  let any=false;const px=new Uint8ClampedArray(W*H*4);for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;px.set([...c,255],i*4);any=true;}if(any)out[band]=px;}}finally{RS=1;}return out;});
- return {rider,mount,off:mir?[MW-off[0]-W,off[1]]:off};}
+ return {M,q,back,mir,off,R,key:JSON.stringify([back,off,R.feet,R.hands,R.lean,R.knee||0,R.pitch||0],(_,v)=>typeof v==='number'?+v.toFixed(3):v)};}
+export const rideKey=(mountId,dir,k)=>rideSetup(mountId,dir,k).key;
+/** Ebene → RGBA-Feld (aktuelle Leinwand) oder null, wenn leer. */
+function rgbaOf(L){let any=false;const px=new Uint8ClampedArray(W*H*4);for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;px.set([...c,255],i*4);any=true;}return any?px:null;}
+/** Reiter eines Reitbilds: Kacheln (160×216) je Quelle und Band, Versatz in die Reittier-Leinwand; text = Quellen mit Schrift (nur in sw/ne erkennbar). */
+export function rideRider(lid,mountId,ids,dir,k){const look=LOOK[lid],A=ARCH[look.arch],S=rideSetup(mountId,dir,k);
+ const p=poseRide(A,look,S.back,S.R);p.fi=1000+MOUNT_IDS.indexOf(mountId)*40+['se','sw','nw','ne'].indexOf(dir)*10+k;HW=handW(A);p.lefty=S.mir;p.swap=S.back!==S.mir;
+ const srcs=makeSrcs(),rider={},text=new Set();for(const id of ids){rider[id]={};for(const band of BANDS){const L=layer(S.mir?'sw':'se');srcs[id](L,band,p);edges(L);if(L.texts.length)text.add(id);if(S.mir)mirror(L);const px=rgbaOf(L);if(px)rider[id][band]=px;}}
+ return {rider,text,off:S.mir?[MW-S.off[0]-W,S.off[1]]:S.off,key:S.key};}
+/** Reittier eines Reitbilds: Kacheln (MW×MH) je Band. */
+export function rideMount(mountId,dir,k){const S=rideSetup(mountId,dir,k);
+ return canvas(MW,MH,()=>{RS=S.q.sc;const out={};try{for(const band of BANDS){const L=layer(S.mir?'sw':'se');S.M.draw(L,band,S.q);edges(L);if(S.mir)mirror(L);const px=rgbaOf(L);if(px)out[band]=px;}}finally{RS=1;}return out;});}
+/** Ein Reitbild: Reiter-Kacheln (160×216) je Quelle und Band, Versatz in die Reittier-Leinwand, Reittier-Kacheln (MW×MH). Bild 0 = Stand, 1–8 = Bewegung. */
+export function renderRide(lid,mountId,ids,dir,k){const r=rideRider(lid,mountId,ids,dir,k);return {rider:r.rider,mount:rideMount(mountId,dir,k),off:r.off};}
 
 function renderSource(draw,A,look,dir='se'){const sheet=surface(W*FRAMES.length,H*BANDS.length),back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';let text=false;
- FRAMES.forEach((fr,col)=>{const p=pose(fr,A,look,back);p.fi=col;HW=handW(A);p.lefty=mir;p.swap=back!==mir;BANDS.forEach((band,row)=>{const L=layer(mir?'sw':'se');draw(L,band,p);edges(L);if(L.texts.length)text=true;if(mir)mirror(L);
+ FRAMES.forEach((fr,col)=>{const sw=back!==mir,p=pose(fr,A,look,back,sw);p.fi=col+(p.sided&&sw?500:0);HW=handW(A);p.lefty=mir;p.swap=sw;BANDS.forEach((band,row)=>{const L=layer(mir?'sw':'se');L.T=leanT(p,band);draw(L,band,p);L.T=null;edges(L);if(L.texts.length)text=true;if(mir)mirror(L);
   for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;const x=i%W,y=i/W|0;sheet.data.set([...c,255],((row*H+y)*sheet.width+col*W+x)*4);}});});
  sheet.text=text;return sheet;}
 // ---------- Laufzeit-Ausgabe fürs Spiel: assets/paperdoll/runtime (node tools/paperdoll/puppe.mjs --runtime) ----------
@@ -931,30 +1027,53 @@ export const GAME_ARCH={ida:'baerbel',dieter:'dieter',kevin:'kevin'};
 /** Sichtbare Familien der Spiel-Ausrüstung (equipment-appearance.js) → Puppen-Quelle, solange es keine eigene Zeichnung gibt. */
 export const FAMILY_SOURCE={trouser:'jeans',jacket:'kutte',raincoat:'regenjacke',vest:'bierdeckelweste',maul:'tresenhammer',stamp:'horststempel',wateringcan:'giesskanne',
  bottle:'flasche',potlid:'topfdeckel',furboot:'fuchspfote',leatherboot:'kabelbinderstiefel',boot:'festivalstiefel',medal:'gansorden',badge:'praktikantenausweis',badgercharm:'dachsdeckel',chain:'koenigskette'};
-export function buildRuntime(out){mkdirSync(out,{recursive:true});const t0=Date.now(),srcs=makeSrcs(),cat={version:1,W,H,ground:GROUND,pivot:{x:W/2,y:GROUND},worldHeight:26,bands:BANDS,dirs:DIRS,own:{sw:[],ne:[]},
+// Laufzeit-Bögen je Quelle × Archetyp × Richtung, zugeschnitten: Zeilen = nur die Tiefenbänder der Quelle (cat.sources[id].bands),
+// Spalten geteilt in Grundbilder (Stehen/Blinzeln/Laufen, <id>-<arch><dir>.png) und Aktionsbilder ab cat.split (…-akt.png).
+// So lädt paperdoll-art.js nach Bedarf, und entpackt belegt ein Bogen nur, was die Quelle wirklich zeichnet.
+const bandsOf=id=>{if(id==='koerper')return BANDS;if(id==='dutt')return ['kopf'];const g=GEAR[id];if(!g)return BANDS;
+ return BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b==='armHinten'));};
+export const RUNTIME_SPLIT=(i=>i<0?FRAMES.length:i)(FRAMES.findIndex(f=>!['stehen','blinzeln','laufen'].includes(f.anim)));
+// Aktionsposen hängen an der Seitenregel (Waffenarm = armF bei swap): gespiegeltes se ist dort nicht sw. Deshalb bekommt jede Quelle für
+// sw/ne einen eigenen Aktionsbogen (cat.ownAkt), nur Grundbilder dürfen weiter gespiegelt werden (cat.own).
+const OWN_AKT=RUNTIME_SPLIT<FRAMES.length;
+function cutSheet(sh,rows,f0,f1){const w=(f1-f0)*W,h=Math.max(1,rows.length)*H,o=new Uint8Array(w*h*4);
+ rows.forEach((b,r)=>{const src=BANDS.indexOf(b);for(let y=0;y<H;y++){const si=((src*H+y)*sh.width+f0*W)*4;o.set(sh.data.subarray(si,si+w*4),(r*H+y)*w*4);}});return {width:w,height:h,data:o};}
+export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of readdirSync(out))if(f.endsWith('.png'))unlinkSync(out+'/'+f);
+ const t0=Date.now(),srcs=makeSrcs(),cat={version:2,layout:'bands',split:RUNTIME_SPLIT,W,H,ground:GROUND,pivot:{x:W/2,y:GROUND},worldHeight:26,bands:BANDS,dirs:DIRS,own:{sw:[],ne:[]},ownAkt:{sw:[],ne:[]},
   frames:FRAMES.map(fr=>({...fr,bob:pose(fr,ARCH.schwungvoll,LOOK.ida).bob})),archetypes:{},sources:{},items:{},families:{...FAMILY_SOURCE,...MOD_FAMILIES},anchors:{},ramps:{}};
  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];cat.archetypes[gid]={name:A.name,dutt:look.style==='locken',hair:Object.keys(PAL).find(k=>PAL[k]===look.hair)};
-  for(const dir of Object.keys(DIRS))for(const [id,fn] of Object.entries(srcs)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne';if(mir&&!sh.text&&!SIDED.has(id))continue;if(mir&&!cat.own[dir].includes(id))cat.own[dir].push(id);
-   writeFileSync(`${out}/${id}-${gid}${DIRS[dir]}.png`,encodePng(sh));
-   if(id==='koerper'&&dir==='se'){let top=H;for(let y=0;y<H&&top===H;y++)for(let b=0;b<BANDS.length;b++){for(let x=0;x<W;x++)if(sh.data[((b*H+y)*sh.width+x)*4+3]){top=y;break;}if(top<H)break;}cat.archetypes[gid].height=GROUND-top;}}
+  for(const dir of Object.keys(DIRS))for(const [id,fn] of Object.entries(srcs)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne',rows=bandsOf(id),name=`${out}/${id}-${gid}${DIRS[dir]}`;
+   if(mir&&OWN_AKT&&!cat.ownAkt[dir].includes(id))cat.ownAkt[dir].push(id);
+   if(mir&&!sh.text&&!SIDED.has(id)){if(OWN_AKT)writeFileSync(name+'-akt.png',encodePng(cutSheet(sh,rows,RUNTIME_SPLIT,FRAMES.length)));continue;}if(mir&&!cat.own[dir].includes(id))cat.own[dir].push(id);
+   writeFileSync(name+'.png',encodePng(cutSheet(sh,rows,0,RUNTIME_SPLIT)));
+   if(RUNTIME_SPLIT<FRAMES.length)writeFileSync(name+'-akt.png',encodePng(cutSheet(sh,rows,RUNTIME_SPLIT,FRAMES.length)));
+   // Figurenhöhe (Kopf bis Fuß, Deckkraft ab 50 %) inklusive Dutt – paperdoll-art.js unitScale gleicht darüber auf 26 E an
+   if((id==='koerper'||id==='dutt'&&look.style==='locken')&&dir==='se'){let top=H;for(let y=0;y<H&&top===H;y++)for(let b=0;b<BANDS.length;b++){for(let x=0;x<W;x++)if(sh.data[((b*H+y)*sh.width+x)*4+3]>=128){top=y;break;}if(top<H)break;}cat.archetypes[gid].height=Math.max(cat.archetypes[gid].height||0,GROUND-top);}}
   cat.anchors[gid]={};for(const dir of Object.keys(DIRS)){const back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne',sw=back!==mir,mx=q=>[+(mir?W-q[0]:q[0]).toFixed(1),+q[1].toFixed(1)];
-   cat.anchors[gid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(p.C),h:mx(p.head),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
- for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b==='armHinten'))};cat.items[id]=id;}
+   cat.anchors[gid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back,sw);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(leanPt(p,p.C)),h:mx(leanPt(p,p.head)),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
+ for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id)};cat.items[id]=id;}
  cat.sources.koerper={slot:'body-base',bands:BANDS};cat.sources.dutt={slot:'hair',bands:['kopf']};
+ // Kopfteile, die den Scheitel frei lassen (offen:true, z. B. Kopfhörer), und Aussehen-Quellen am Scheitel (scheitel:true: Irokese, Stirnband) – paperdoll-art.js lookSources
+ cat.openHead=Object.keys(GEAR).filter(id=>GEAR[id].slot==='head'&&GEAR[id].offen);cat.crownLooks=Object.keys(GEAR).filter(id=>GEAR[id].scheitel);
  for(const k of ['skin','blush','lip','hair','hairBrown','hairBlack'])cat.ramps[k]=Array.isArray(PAL[k][0])?PAL[k]:[PAL[k]];
  cat.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in cat.shade))cat.shade[key]=v[k+1];}}
  cat.palette=[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))];
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Laufzeit-Bögen fertig',(Date.now()-t0)+' ms',out);}
-if(process.argv[1]&&process.argv[1].endsWith('puppe.mjs')&&process.argv[2]==='--runtime')buildRuntime(process.argv[3]||HERE('../../assets/paperdoll/runtime'));
-else if(process.argv[1]&&process.argv[1].endsWith('puppe.mjs')){const out=process.argv[2]||'.';mkdirSync(out,{recursive:true});const t0=Date.now();
+// Schalter: --runtime [ziel] = Laufzeit-Bögen fürs Spiel; --reiten [ziel] = Reit-Bögen (tools/paperdoll/reiten.mjs, dauert Minuten);
+// ohne Schalter = Prototyp-Ausgabe. In Arbeits-Threads (Reit-Build) nie ausführen: dort ist argv[1] ebenfalls puppe.mjs.
+import {isMainThread} from 'node:worker_threads';
+const CLI=isMainThread&&process.argv[1]&&process.argv[1].endsWith('puppe.mjs');
+if(CLI&&process.argv[2]==='--runtime')buildRuntime(process.argv[3]||HERE('../../assets/paperdoll/runtime'));
+else if(CLI&&process.argv[2]==='--reiten')import('./reiten.mjs').then(m=>m.buildRideRuntime(process.argv[3]||HERE('../../assets/paperdoll/reiten')));
+else if(CLI){const out=process.argv[2]||'.';mkdirSync(out,{recursive:true});const t0=Date.now();
  const meta={W,H,ground:GROUND,bands:BANDS,frames:FRAMES,figures:{},gear:{},dirs:DIRS,own:{sw:[],ne:[]}};
  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch];meta.figures[lid]={name:look.name,arch:A.name};
   const srcs=makeSrcs();
-  for(const dir of Object.keys(DIRS))for(const [id,fn] of Object.entries(srcs)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne';if(mir&&!sh.text&&!SIDED.has(id))continue;if(mir&&!meta.own[dir].includes(id))meta.own[dir].push(id);writeFileSync(`${out}/${id}-${lid}${DIRS[dir]}.png`,encodePng(sh));}}
+  for(const dir of Object.keys(DIRS))for(const [id,fn] of Object.entries(srcs)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne';if(mir&&!sh.text&&!SIDED.has(id)&&!OWN_AKT)continue;if(mir&&!meta.own[dir].includes(id))meta.own[dir].push(id);writeFileSync(`${out}/${id}-${lid}${DIRS[dir]}.png`,encodePng(sh));}}// OWN_AKT: Aktionsbilder sw/ne nie spiegeln
  // Anker für Effekte (Ausrüstungsstufen): Waffenhand w, Nebenhand o, Brust c, Kopf h, Knöchel f – je Figur, Richtung, Bild; Seitenregel wie beim Zeichnen
  meta.anchors={};for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch];meta.anchors[lid]={};
   for(const dir of ['se','sw','nw','ne']){const back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne',sw=back!==mir,mx=q=>[+(mir?W-q[0]:q[0]).toFixed(1),+q[1].toFixed(1)];
-   meta.anchors[lid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(p.C),h:mx(p.head),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
+   meta.anchors[lid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back,sw);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(leanPt(p,p.C)),h:mx(leanPt(p,p.head)),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
  // Glanzfarben (Metall, Gold, Zinn, Glas) für Lichtkanten; Goldtreppe für Aura und Funken
  meta.shiny=[...new Set(['metal','gold','tin','glass'].flatMap(k=>PAL[k].map(c=>c[0]<<16|c[1]<<8|c[2])))];meta.gold=PAL.gold;meta.body=[...new Set(['skin','blush','lip','eye','iris','lash','hair','hairBrown','hairBlack'].flatMap(k=>{const v=PAL[k];return (Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2]);}))];
  meta.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in meta.shade))meta.shade[key]=v[k+1];}}

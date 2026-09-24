@@ -8,6 +8,12 @@
 import assert from 'node:assert/strict';
 import {mkdirSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
+import {readFileSync} from 'node:fs';
+import {FIGUREN} from '../content/figuren.js';
+// Anziehpuppe: Kopfschmuck (Kopfteil wie Mütze/Kopfhörer, eigene Frisur wie Irokese) zählt nicht zur Körpergröße – nach oben bis +12 %.
+const PD=JSON.parse(readFileSync(new URL('../assets/paperdoll/runtime/catalog.json',import.meta.url),'utf8'));
+const figOf=id=>{let f=FIGUREN[String(id).replace(/^mentor-/,'')];for(let i=0;f?.wie&&i<4;i++)f=FIGUREN[f.wie];return f;};
+const headwear=id=>{const f=figOf(id);return !!f&&(f.gear.some(g=>PD.sources[g]?.slot==='head')||(f.tint?.style&&f.tint.style!=='natur'));};
 const TOLERANCE=.05,dir='visual-review/figure-size',shots=!process.argv.includes('--no-shots');mkdirSync(dir,{recursive:true});
 const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9447,serverPort:4247});
 const read=s=>b.evaluate(s);
@@ -39,7 +45,9 @@ try{
   for(const id of givers)if(id!=='ida')add('questgeber',id,c=>drawWorldPerson(c,id,0,0,0,PERSON_SCALE,{facing:-1}));
   add('haendler',SHOP_UI.npc,c=>drawWorldPerson(c,SHOP_UI.npc,0,0,0,PERSON_SCALE,{facing:1}));
   for(let v=0;v<8;v++)add('dorf','villager'+v,c=>{c.scale(PERSON_SCALE,PERSON_SCALE);drawComicResident(c,{kind:'villager',variant:v,x:0,y:0,id:v},0);});
-  for(const id of ['gisela','sigi'])add('lehrer',id,c=>drawWorldPerson(c,id,0,0,0,PERSON_SCALE,{facing:-1,artMagnify:WORLD_SCALE.npc/(liveActorHeight(id)||WORLD_SCALE.npc)}));
+  // Lehrer wie profession-art.js: Anziehpuppe beruf-<Beruf>, sonst der gelieferte Bogen mit Größenausgleich
+  const {drawFigure}=await import('./paperdoll-figuren.js');
+  for(const [id,prof] of [['gisela','herbs'],['sigi','scrap']])add('lehrer',id,c=>{if(!drawFigure(c,'beruf-'+prof,0,0,PERSON_SCALE,{facing:-1}))drawWorldPerson(c,id,0,0,0,PERSON_SCALE,{facing:-1,artMagnify:WORLD_SCALE.npc/(liveActorHeight(id)||WORLD_SCALE.npc)});});
   for(const id of ['dieter','baerbel','kevin'])add('mentor (ruht, E-61)','mentor-'+id,c=>drawLivePerson(c,'mentor-'+id,0,0,0,{facing:-1},PERSON_SCALE));
   return rows;})()`);
  // ---- Kamera: Bildschirmpixel je Welteinheit im Dorf und in der Bude (gleiche Zeichenwege, Kamera kann abweichen).
@@ -49,8 +57,8 @@ try{
  await place(village.x,village.y);await wait(600);const zoomVillage=await read('__mertloch.renderer.zoom');
  await place(bude.x,bude.y);await wait(600);const zoomBude=await read('__mertloch.renderer.zoom');
  const hero=m.find(r=>r.kind==='held'&&r.id===(save.classId)).h,bad=[];
- const table=m.map(r=>{const boss=r.id==='timo',dev=r.h/hero-1,ok=boss?dev>=-TOLERANCE&&dev<=.25:Math.abs(dev)<=TOLERANCE;if(!ok)bad.push(r.kind+' '+r.id+' '+r.h+' E ('+(dev*100).toFixed(1)+' %)');
-  return{art:r.kind+(boss?' (Boss-Figur)':''),figur:r.id,'Höhe E':r.h,'über Fuß E':r.overFoot,'Dorf px':+(r.h*zoomVillage).toFixed(1),'Bude px':+(r.h*zoomBude).toFixed(1),'Abw. %':+(dev*100).toFixed(1),ok:ok?'ja':'NEIN'};});
+ const table=m.map(r=>{const boss=r.id==='timo',hat=!boss&&headwear(r.id),dev=r.h/hero-1,ok=boss?dev>=-TOLERANCE&&dev<=.25:hat?dev>=-TOLERANCE&&dev<=.12:Math.abs(dev)<=TOLERANCE;if(!ok)bad.push(r.kind+' '+r.id+' '+r.h+' E ('+(dev*100).toFixed(1)+' %)');
+  return{art:r.kind+(boss?' (Boss-Figur)':hat?' (Kopfschmuck)':''),figur:r.id,'Höhe E':r.h,'über Fuß E':r.overFoot,'Dorf px':+(r.h*zoomVillage).toFixed(1),'Bude px':+(r.h*zoomBude).toFixed(1),'Abw. %':+(dev*100).toFixed(1),ok:ok?'ja':'NEIN'};});
  console.table(table);
  console.log('Kamera: Dorf '+zoomVillage+' px/E, Bude '+zoomBude+' px/E · Held '+hero+' E · Grenze ±'+TOLERANCE*100+' %');
  if(shots){

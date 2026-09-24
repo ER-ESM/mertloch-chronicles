@@ -1,6 +1,7 @@
 import {drawDetailedHero} from './detailed-hero-art.js';
 import {redesignFrame,redesignArt} from './redesign-art.js';
-import {MOUNT_RULES} from './content/index.js';
+import {MOUNT_RULES,MOUNTS} from './content/index.js';
+import {paintPaperdollMountIcon,drawPaperdollMount} from './paperdoll-mount.js';
 export const mountArt={ready:false,catalog:null,images:new Map()};
 let loading;const riders=new Map(),sources=new Map();
 const canvas=(w=256,h=w)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
@@ -38,4 +39,7 @@ export function drawMount(c,x,y,p={},time=0,magnify=1,rider=true){const id=p.mou
  if(layers)c.drawImage(layers,0,0);else c.drawImage(img,col*meta.size,row*meta.size,meta.size,meta.size,0,0,meta.size,meta.size);
  c.restore();return true;
 }
-export function paintMountIcon(cv,id){const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);return drawMount(c,cv.width/2,cv.height*.86,{mount:id,direction:'se'},0,cv.width/45,false);}
+/** Symbol: zuerst das Reittier der Anziehpuppe (malt nach dem Nachladen selbst nach), sonst der bisherige Bogen. */
+export function paintMountIcon(cv,id){if(paintPaperdollMountIcon(cv,id))return true;const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);return drawMount(c,cv.width/2,cv.height*.86,{mount:id,direction:'se'},0,cv.width/45,false);}
+/** Fahrstall am Clan-Treff: alle Reittiere in Reihen zu dritt (hintere Reihe zuerst), abwechselnd nach se/sw; Anziehpuppe vor dem bisherigen Bogen. */
+export function drawMountStation(c,x,y,time){Object.keys(MOUNTS).forEach((id,i)=>{const px=x+(i%3-1)*24,py=y-24+Math.floor(i/3)*18,p={mount:id,direction:i%2?'sw':'se'};if(!drawPaperdollMount(c,px,py,p,time,.8,false))drawMount(c,px,py,p,time,.85,false);});}

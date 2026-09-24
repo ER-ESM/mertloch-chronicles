@@ -17,6 +17,7 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 | `classes.js` | `CLAN_MEMBERS` (Figuren, Bio, Passiv, Bildhinweis) | clan.js |
 | `talents.js` | `CLASS_SPECS`, `SPECS`, `TALENT_ROWS`, `KNOWN_EFFECTS` | talents.js |
 | `npcs.js` | `NPCS`, `FACTIONS`, `VILLAGERS` | clan.js (dressStory) |
+| `figuren.js` | `FIGUREN` (Anziehpuppe je NPC, Dorfbewohner, Berufslehrer, Söldner: Archetyp + Aussehen + Kleidung), `FIGUR_HANDSTUECKE` | paperdoll-figuren.js, companions.js |
 | `quests.js` | `SIDE_QUESTS` (Vorlagen), `pickTemplates()` | clan.js (dressStory) |
 | `dialogues.js` | `MAIN_DIALOGUE` (Ida), `BOSS_LINES`, `ENEMY_BARKS`, `SYSTEM_LINES` | engine.js |
 | `story.js` | `STORY`, `LORE`, `ACTS`, `STORY_CHAPTERS` (Akt 1 „Filmriss“ = Kapitel 1–4; docs/AKT-1-FILMRISS.md) | clan.js, dialogues.js |

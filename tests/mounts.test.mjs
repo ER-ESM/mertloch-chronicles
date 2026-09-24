@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {collectAuras} from '../auras.js';
 import {Game} from '../engine.js';
 import {MOUNTS,MOUNT_RULES} from '../content/index.js';
-import {restoreMounts,mountStation,acquisitionReason,tickMount,ridingSkillReason,mountSpeed} from '../mounts.js';
-import {addItem,countItem,bindSkill,actionBar} from '../rpg.js';
+import {restoreMounts,mountStation,acquisitionReason,tickMount,ridingSkillReason,mountSpeed,mountSound} from '../mounts.js';
+import {addItem,countItem,bindSkill,actionBar,ITEMS} from '../rpg.js';
 import {stepPlayer} from '../movement.js';
 import {mountPresence} from '../mount-wire.js';
 import {presenceMessage,applySnapshot} from '../online.js';
@@ -64,4 +64,14 @@ test('Cosmetic network presence validates mount, direction and gear; old clients
  assert.equal(mountPresence({...packet,s:'dead'}).mt,null);assert.equal(mountPresence({mt:'__proto__'}).mt,null);assert.deepEqual(mountPresence({}),{mt:null,md:null,eq:[]});
  assert.equal(mountPresence({mt:'hofpferd',eq:[{slot:'body',asset:'jacket',rarity:'rare'},{slot:'body',asset:'jacket'},{slot:'weapon',asset:'external-url'},{slot:'__proto__',asset:'jacket'}]}).eq.length,1);
  g.instance={};assert.equal(presenceMessage(g,'mount-test').mt,null);assert.equal(presenceMessage(g,'mount-test').w,'');
+});
+
+test('Paperdoll mounts: donkey, bicycle and mower are complete content with fitting mount sounds',()=>{
+ assert.deepEqual(Object.keys(MOUNTS),['klappermofa','blechroller','hofpferd','packesel','drahtesel','rasenkoenig']);
+ assert.deepEqual(Object.fromEntries(Object.values(MOUNTS).map(d=>[d.id,d.kind])),{klappermofa:'mofa',blechroller:'scooter',hofpferd:'horse',packesel:'donkey',drahtesel:'bicycle',rasenkoenig:'mower'});
+ for(const d of Object.values(MOUNTS)){assert.equal(d.id,Object.keys(MOUNTS).find(k=>MOUNTS[k]===d));assert.ok(d.name&&d.description&&d.source&&d.acquire&&d.color);assert.ok(d.level>=3&&d.level<=6);for(const item of Object.keys(d.materials))assert.ok(ITEMS[item],item);}
+ assert.deepEqual(Object.keys(MOUNTS).map(mountSound),['mount-motor','mount-motor','mount-horse','mount-horse','mount-bell','mount-motor']);assert.equal(mountSound('unknown'),'mount-motor');
+ for(const [id,sound] of [['packesel','mount-horse'],['drahtesel','mount-bell'],['rasenkoenig','mount-motor']]){const g=owner();assert.ok(g.toggleMount(id));g.events=[];tickMount(g,2);assert.equal(g.player.mount,id);assert.deepEqual(g.events.filter(e=>e.type==='sound').map(e=>e.id),[sound]);}
+ assert.deepEqual(restoreMounts({owned:['rasenkoenig','packesel','drahtesel','unknown'],selected:'drahtesel'}),{version:1,ridingSkill:false,owned:['rasenkoenig','packesel','drahtesel'],selected:'drahtesel'});
+ const low=game({level:4});low.player.level=4;assert.match(acquisitionReason(low,'rasenkoenig'),/Stufe 5/);
 });

@@ -11,7 +11,7 @@ export const FEATURE_UNLOCKS=[
  {id:'professions',name:'Berufe',where:'Lehrer im Werkhof und Braugarten · Shift + B',when:{level:3},text:'Zwei Berufe beim Lehrer lernen, Rezepte ab Fertigkeitsstufe dazukaufen, an Fundstellen sammeln und an der Station herstellen.'},
  {id:'companions',name:'Söldner',where:'Spielmenü · Schwarzes Brett am Clan-Treff',when:{level:4},text:'Heuere Mitstreiter an: Schutz, Heilung oder Schaden für die nächsten Kämpfe.'},
  {id:'talents',name:'Talente',where:'Menüleiste · Taste N',when:{level:5},text:'Wähle deinen Hauptbaum – die seit Stufe 2 gesparten Punkte warten schon.'},
- {id:'mounts',name:'Fahrzeuge & Reittiere',where:'Spielmenü · Fahrstall am Clan-Treff',when:{chapter:1},text:'Mit der Hose zurück kommt auch die Würde: Mofa, Roller und Pony für die Dorfwege.'},
+ {id:'mounts',name:'Fahrzeuge & Reittiere',where:'Spielmenü · Fahrstall am Clan-Treff',when:{chapter:1},text:'Mit der Hose zurück kommt auch die Würde: Mofa, Roller, Pferd, Esel, Drahtesel und Aufsitzmäher für die Dorfwege.'},
  {id:'bude',name:'Bude',where:'Fenster Aufträge',when:{bude:true},text:'Der Wiederaufbau beginnt: Aus den Trümmern hinter St. Gangolf wird Stück für Stück wieder die Bude.'},
 ];
 export const UNLOCK_UI={

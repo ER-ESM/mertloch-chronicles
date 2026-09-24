@@ -213,7 +213,7 @@ export function createGameServer(options={}){
    for(const c of this.clients.values()){if(now-c.seen>IDLE_MS){c.socket.close(4000);continue;}if(c.placed){let r=rooms.get(c.world);if(!r)rooms.set(c.world,r=[]);r.push(c);}}
    for(const room of rooms.values())for(const c of room){
     if(c.socket.backlog>64*1024)continue;
-    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,mt:o.mt||null,md:o.md||undefined,...(o.mt?{eq:o.eq}:{}),...(o.fl?{fl:1}:{}),...(o.k?{k:o.k}:{}),...(o.kt?{kt:o.kt}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
+    const near=[];for(const o of room){if(o===c||Math.abs(o.x-c.x)>VIEW||Math.abs(o.y-c.y)>VIEW)continue;near.push({n:o.name,x:Math.round(o.x),y:Math.round(o.y),f:o.f,c:o.c,l:o.l,sp:o.sp,s:o.s,h:o.h,mt:o.mt||null,md:o.md||undefined,...(o.eq?.length?{eq:o.eq}:{}),...(o.fl?{fl:1}:{}),...(o.k?{k:o.k}:{}),...(o.kt?{kt:o.kt}:{}),...(o.party&&o.party===c.party?{p:1}:{})});if(near.length>=MAX_NEAR)break;}
     const wire=JSON.stringify({t:'snap',o:near});
     if(wire===c.lastSnap)continue; // nichts hat sich bewegt: nichts zu erzählen
     c.lastSnap=wire;c.socket.send(wire);

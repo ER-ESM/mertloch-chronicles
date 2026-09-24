@@ -1037,3 +1037,19 @@ Balance-Bericht:
 4. **Minikarte** (7376216): Messingring rund oder eckig, Zoom, Lupe für Symbolgruppen, Optionen, Tooltips. Umsetzung: `docs/UMSETZUNG-MINIMAP-2026-09-23.md`.
 
 **Offen.** Das Aufträge-Fenster endet über der doppelten Aktionsleiste und scrollt deshalb früher. Die Karte verdeckt die Menüleiste. Die linken Fenster verdecken den Chat. Die Hilfe hat noch Unterreiter. Das Aufträge-Fenster zeigt noch Erklärsätze und Knöpfe mit langem Text. Das Ortsschild der Minikarte doppelt den Ortsnamen oben mittig. Kiosk und Verlies haben noch die alte Innenraum-Minikarte.
+
+## E-68 · Anziehpuppe live: alle Figuren aus Archetyp + Aussehen + Ausrüstung (24.09.2026, setzt E-58 Punkt 6 um)
+
+**Befund.** Nach zehn Hybrid-Runden (Puppe + Codex-Köpfe, -Teile und -Stoffe), Ausrüstungsstufen und Reittier-Optimierung gab der Nutzer die Figurengrafik frei: „Setze jetzt soweit alles produktiv, inkl. Charaktererstellung und vervollständige NPCs und Mounts produktiv.“
+
+**Entscheidung.**
+1. **Eine Figurenquelle für alle Menschen:** Helden, Mitspieler, Söldner, NPCs, Dorfbewohner und Berufslehrer werden aus der Anziehpuppe zusammengesetzt (`paperdoll-art.js`, Andocken in `drawDetailedHero`, `drawWorldPerson`, Mentoren-, Dorfbewohner- und Lehrerweg). Nur drei Körper (Kräftig/Schwungvoll/Drahtig), Aussehen aus dem Editor (`hero-tint.js`), Kleidung als Ebenen. NPC-Figuren stehen als Daten in `content/figuren.js`. Gegner, Bosse und Porträts bleiben beim bisherigen Weg. Fehlt die Puppe, zeichnet der alte Weg.
+2. **Charaktererstellung:** Alle Editor-Optionen sind eigene Ebenen (Stoppeln, Kinnbart, Vollbart, Brille, Sonnenbrille, Stirnband, Irokese), bei Dieter mit Rasur des gezeichneten Barts. Brillen bleiben unter Kopfbedeckungen; Irokese und Stirnband entfallen nur unter Kopfteilen, die den Scheitel bedecken. Der Held startet weiter in Unterwäsche (Geschichte der Hofprobe).
+3. **Ausrüstung und Posen:** Jede Gegenstands-ID und jede Familie hat eine Zeichnung. 14 Aktionsbilder (Hieb, Zweihand, Getroffen, Parade, Zaubern, Rasten, Sprint, Zielen, Schuss) mit derselben Rangfolge wie bisher. Mitspieler übertragen ihre Ausrüstung auch zu Fuß, mit geprüfter Gegenstandskennung.
+4. **Reittiere:** Reiter und Tier aus der Puppe (`paperdoll-mount.js`), neue Reittiere Packesel, Drahtesel und Aufsitzmäher.
+5. **Laden und Leistung:** Bögen nach Tiefenbändern zugeschnitten und in Grund- und Aktionsbögen geteilt (13 MB statt 22 MB, entpackt ein Bruchteil). Pflicht beim Start sind 0,3 MB, alles andere lädt nach Bedarf und steht optional im Offline-Cache. Weltbilder liegen in einem eigenen Speicher, höchstens 2 neue je Bild, NPC-Standbilder werden im Leerlauf vorgewärmt. Gemessen: 40 Figuren warm ≈ 1 ms je Bild; im Dorf mit Puppe 54–56 FPS gegen 51 FPS mit der alten Grafik.
+6. **Größe:** Alle drei Körper (Schwungvoll mit Dutt gemessen) auf 26 E angeglichen, ein Fünftel der natürlichen Streuung bleibt; `figures:check` ±5 %, Kopfschmuck bis +12 %.
+
+Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
+
+**Offen.** Lange Waffen (Greifzange, Gießkanne) stoßen in Aktionsbildern an den Bildrand. Waffen in der fernen Hand verschwinden in sw/nw teils hinter dem Bein. Blonde Stoppeln auf dunkler Haut wirken in Weltgröße fleckig. Radler-Rita wirkt auf dem drahtigen Körper männlich. Porträts von NPCs ohne eigenes Porträtbild zeigen noch die alte Figur. Das Vorwärmen braucht nach dem Laden rund 15 Sekunden.

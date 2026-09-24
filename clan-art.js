@@ -1,12 +1,17 @@
 import {drawMount,loadMountArt,mountArt} from './mount-art.js';
+import {drawPaperdollMount} from './paperdoll-mount.js';
 import {WORLD_SCALE,FIGURE_BASE,PERSON_SCALE} from './world-scale.js';
 import {drawLiveAnimal,drawLivePerson,hasLiveContent} from './live-art.js';
 import {drawTinyPerson} from './pixel-people.js';
 import {drawMaifeld,maifeld} from './maifeld-art.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,spark} from './pixel-style.js';
 import {drawComicEnemy,drawComicResident} from './comic-actors.js';
+import {drawFigure} from './paperdoll-figuren.js';
 
-export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){if(!mountArt.ready)loadMountArt();if(drawMount(c,x,y,p,time,p.artMagnify??scale/PERSON_SCALE))return;}drawTinyPerson(c,x,y,time,p,npc,scale);}
+// Reiten: zuerst die Anziehpuppe auf ihrem Reittier (paperdoll-mount.js), sonst die bisherigen Reittierbögen (mount-art.js), sonst zu Fuß.
+export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){const magnify=p.artMagnify??scale/PERSON_SCALE;if(drawPaperdollMount(c,x,y,p,time,magnify))return;if(!mountArt.ready)loadMountArt();if(drawMount(c,x,y,p,time,magnify))return;}
+ // NPC-Zweig (Ida bzw. p.npcId): Anziehpuppe aus content/figuren.js, sonst der bisherige Weg.
+ if(npc&&drawFigure(c,p.npcId||'ida',x,y,scale,p))return;drawTinyPerson(c,x,y,time,p,npc,scale);}
 
 export function drawClanEnemy(c,e,time){
  // Gelieferte Bögen (Gegner, Bosse) bringen ihre Welthöhe selbst mit: artMagnify 1, kein Weltmaßstab darüber.
