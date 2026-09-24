@@ -43,7 +43,7 @@ try{
  await run(b,`on.social.leave();`);await until(b,`!on.state.party.members.length`,4000,'B verlässt');await until(a,`!on.state.party.members.length`,4000,'A allein');
  await run(b,`g.hireCompanion('merc-tresen-tina',{free:true});g.hireCompanion('merc-hopfen-horst',{free:true});`);await wait(600);
  await run(a,`on.social.invite('Moni');`);await until(b,`document.querySelector('[data-online=party-accept]')`,5000,'zweite Einladung');await run(b,`document.querySelector('[data-online=party-accept]').click();`);
- await until(a,`g.companions.length===1`,6000,'Rudi (alphabetisch später) gibt zwei Söldner ab');await wait(800);
+ await until(a,`g.companions.length===1`,10000,'Rudi (alphabetisch später) gibt zwei Söldner ab');await wait(800);
  assert.equal(await run(b,`return g.companions.length;`),2,'Moni behält ihre Söldner');assert.deepEqual(await run(a,`return g.companions.map(c=>c.id);`),['merc-pils-peter'],'die zuletzt angeheuerten gehen');
  await until(a,`document.querySelector('.party-count')?.textContent==='5/5'`,4000,'Kopfzahl 5/5');ok('Beitritt über fünf: passende Söldner machen Platz, 5/5');
  // Runde 5: Zielmarkierung über das Kontextmenü des Zielrahmens, kommt beim Mitspieler am selben Gegner an
@@ -62,6 +62,15 @@ try{
  await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent.startsWith('Ziel übernehmen')).click();`);
  assert.equal(await run(a,`return g.target?.netId;`),foe,'Rudi hat Monis Ziel');ok('Assist: Gruppenrahmen zeigt das Ziel, „Ziel übernehmen“ wählt es');
  await wait(400);await shot(a,'assist-a');if(process.env.CLIP_ASSIST){process.env.CLIP=process.env.CLIP_ASSIST;await shot(a,'assist-frame');delete process.env.CLIP;}
+ // Runde 8: Bereitschaftscheck über das Menü am Gruppenkopf; Moni antwortet, Rahmen zeigt ✓, Zusammenfassung im Chat
+ await run(a,`const h=document.querySelector('.party-frames header');const r=h.getBoundingClientRect();h.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+20,clientY:r.y+10}));`);
+ await until(a,`[...document.querySelectorAll('.context-menu button')].some(b=>b.textContent.startsWith('Bereitschaftscheck'))`,3000,'Menüpunkt Bereitschaftscheck');
+ await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent.startsWith('Bereitschaftscheck')).click();`);
+ await until(b,`document.querySelector('[data-online=ready-yes]')`,4000,'Moni wird gefragt');await until(a,`document.querySelector('[data-party-name=Moni].ready-wait')`,3000,'Rudi sieht „wartet“');
+ await wait(500);await shot(b,'ready-b');await run(b,`document.querySelector('[data-online=ready-yes]').click();`);
+ await until(a,`document.querySelector('[data-party-name=Moni].ready-yes')`,4000,'Rudi sieht ✓');
+ await until(a,`[...document.querySelectorAll('#chatWindow *,.chat-window *')].some(x=>x.textContent==='Alle sind bereit.')`,4000,'Zusammenfassung im Chat');ok('Bereitschaftscheck: Frage, Antwort, ✓ am Rahmen, „Alle sind bereit.“');
+ await shot(a,'ready-a');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

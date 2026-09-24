@@ -476,3 +476,9 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 .game-shell .party-frames header.party-head button{min-height:24px!important;padding:2px 8px!important;font:600 11px var(--read)!important;text-decoration:none}
 .player-panel.is-party-leader #playerName::before{content:'♛ ';color:#f3cf7a}
 .party-member .unit-status .unit-target{font-weight:700;color:#f0b0a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;max-width:100%}
+/* Bereitschaftscheck (party-ready.js) */
+.party-member .ready-mark{margin-left:6px;font:800 13px var(--read);color:#e7d9b0}
+.party-member.ready-yes .ready-mark{color:#8fe08a}.party-member.ready-no .ready-mark{color:#ef6a55}.party-member.ready-wait .ready-mark{color:#e7c56a}
+.party-member.ready-yes{box-shadow:0 0 0 2px #8fe08a88}.party-member.ready-no{box-shadow:0 0 0 2px #ef6a5588}
+.ready-card{position:relative;overflow:hidden}.ready-card .ready-timer{position:absolute;left:0;bottom:0;height:4px;width:100%;background:#e7c56a;transform-origin:left;animation:ready-run linear forwards}
+@keyframes ready-run{to{transform:scaleX(0)}}

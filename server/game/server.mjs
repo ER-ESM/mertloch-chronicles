@@ -197,6 +197,8 @@ export function createGameServer(options={}){
    else if(m.t==='qshare'||m.t==='buff'){if(this.allow(c,m.t,4))play.share(c,m);}
    // Zielmarkierung (2026-09-24): an die Gruppe weiterreichen; der Server prüft nur Form und Menge, nicht den Kampf.
    else if(m.t==='mark'){if(this.allow(c,'mark',4)&&['skull','cross','star','circle',''].includes(m.m)){const wire=JSON.stringify({t:'mark',e:clampText(m.e,60),m:m.m,from:c.name});for(const o of shared.partyMembers(c))if(o!==c)o.socket.send(wire);}}
+   // Bereitschaftscheck (2026-09-24): nur der Anführer fragt; Antworten gehen an alle, gezählt wird im Client (party-ready.js).
+   else if(m.t==='ready'){if(this.allow(c,'ready',2)){const members=shared.partyMembers(c);if(members.length>1&&(m.op==='answer'||(m.op==='ask'&&shared.isLeader(c)))){const wire=JSON.stringify(m.op==='ask'?{t:'ready',op:'ask',from:c.name}:{t:'ready',op:'answer',n:c.name,ok:!!m.ok});for(const o of members)o.socket.send(wire);}}}
    else if(m.t==='who'){if(this.allow(c,'who',2))shared.who(c);}
    else if(m.t==='chat'){
     const text=clampText(m.text,200);if(!text)return;

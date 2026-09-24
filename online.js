@@ -14,6 +14,8 @@ import {createNetParty,mountRollUi} from './net-party.js';
 import {createNetSocial,mountTradeUi,SOCIAL_UI} from './net-social.js';
 import {RARITIES,TARGET_MARK_UI} from './content/index.js';
 import {applyNetMark,markDef} from './target-marks.js';
+import {createReadyCheck} from './party-ready.js';
+import {READY_UI} from './content/index.js';
 import {mergeRosters} from './characters.js';
 import {lookKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
@@ -49,6 +51,7 @@ export function parseChatCommand(raw,channel='say'){
  if(['entfernen','kick'].includes(cmd))return rest?{kind:'party',op:'kick',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/entfernen Name'};
  if(['verlassen','leave'].includes(cmd))return {kind:'party',op:'leave'};
  if(['wer','who'].includes(cmd))return {kind:'who'};
+ if(['bereit','ready','rc'].includes(cmd))return {kind:'ready'};
  // Begleiter (E-45): wirken lokal im Spiel, nichts davon geht an den Server
  if(['söldner','soeldner','sold','merc'].includes(cmd))return {kind:'companion',op:'board',name:rest};
  if(['entlassen','dismiss'].includes(cmd))return {kind:'companion',op:'dismiss',name:rest};
@@ -83,6 +86,9 @@ export function mountOnline(host){
  let rollUi=null;const rollProxy={roll:(m,v)=>{const shell=document.querySelector('#gameShell')||document.body;(rollUi||(rollUi=mountRollUi(shell,{choose:(id,c)=>play.choose(id,c),esc,rarityName:r=>RARITIES[r]||r}))).roll(m,v);},pick:m=>rollUi?.pick(m),result:(m,mine)=>rollUi?.result(m,mine),clear:()=>rollUi?.clear()};
  const play=createNetParty({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[],ui:rollProxy});
  let tradeUi=null;const tradeProxy={trade:m=>{const shell=document.querySelector('#gameShell')||document.body;(tradeUi||(tradeUi=mountTradeUi(shell,{social:mate,game:g,esc}))).trade(m);},tradeClose:()=>tradeUi?.tradeClose()};
+ // Bereitschaftscheck (party-ready.js): Frage als kleines Fenster mit ablaufendem Balken, Antworten an den Rahmen.
+ const readyUi={ask(from,secs){host.openModal('<div class="online-card ready-card" data-ui-window-title="'+esc(READY_UI.title)+'"><p>'+esc(READY_UI.ask(from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="ready-yes">'+esc(READY_UI.yes)+'</button><button type="button" class="outline-button" data-online="ready-no">'+esc(READY_UI.no)+'</button></div><i class="ready-timer" style="animation-duration:'+secs+'s"></i></div>','touchhelp');},close(){if(document.querySelector('.ready-card'))host.closeModal?.('touchhelp');}};
+ const ready=createReadyCheck({me:()=>myName(),members:()=>state.party.members.map(m=>m.n),send:wsSend,say:t=>pushChat({system:true,text:t}),ui:readyUi});
  const mate=createNetSocial({game:g,me:()=>myName(),send:wsSend,others:()=>g().others||[],hooks:play.hooks,ui:tradeProxy});
  async function refreshAccount(){try{const d=await api('auth?action=me');state.account=d.account;state.reachable=true;}catch(e){state.reachable=e.code!=='bad-response'&&!(e.status>=500);state.account=state.reachable?state.account:null;}return state.account;}
  /** Beim Start: Konto prüfen, Cloud-Stand vergleichen, Anwesenheit starten. */
@@ -130,7 +136,7 @@ export function mountOnline(host){
   if(game.instance){game.others=[];state.others=[];}const wire=JSON.stringify(presenceMessage(game,host.roomKey||host.worldKey));
   const now=Date.now();if(!(wire===state.lastSent&&now-state.lastSentAt<5000)){state.lastSent=wire;state.lastSentAt=now;ws.send(wire);}
   if(game.professionCommit)return;while(professionMessages.length)receive(professionMessages.shift());
-  net.tick(game.instance?'':host.roomKey||host.worldKey);play.tick();mate.tick();renderParty();
+  net.tick(game.instance?'':host.roomKey||host.worldKey);play.tick();mate.tick();ready.tick();renderParty();
  }
  const professionMessages=[];
  function receive(m){
@@ -142,8 +148,9 @@ export function mountOnline(host){
   else if(net.receive(m)||play.receive(m)||mate.receive(m)){}
   else if(m.t==='tradeask')host.openModal('<div class="online-card"><h3>'+esc(SOCIAL_UI.askTitle)+'</h3><p>'+esc(SOCIAL_UI.askText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="trade-accept">'+esc(SOCIAL_UI.accept)+'</button><button type="button" class="outline-button" data-online="trade-decline">'+esc(SOCIAL_UI.decline)+'</button></div></div>',false,'touchhelp');
   else if(m.t==='party')setParty(m);
+  else if(m.t==='ready'){ready.receive(m);renderParty();}
   else if(m.t==='mark'){const e=applyNetMark(g(),m.e,m.m);if(e)pushChat({system:true,text:m.m?TARGET_MARK_UI.set(m.from,markDef(m.m).name,e.name):TARGET_MARK_UI.cleared(m.from,e.name)});}
-  else if(m.t==='invite')host.openModal('<div class="online-card"><h3>'+esc(ONLINE_UI.inviteTitle)+'</h3><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
+  else if(m.t==='invite')host.openModal('<div class="online-card" data-ui-window-title="'+esc(ONLINE_UI.inviteTitle)+'"><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
   else if(m.t==='who')showPeople(m.list||[]);
   else if(m.t==='chat')pushChat(m);
   else if(m.t==='notice')pushChat({system:true,text:m.text});
@@ -163,6 +170,7 @@ export function mountOnline(host){
   if(cmd.kind==='companion'){const game=g();for(const text of game?companionCommand(game,cmd):[])pushChat({system:true,text});return {};}
   if(cmd.kind==='who')wsSend({t:'who'});
   else if(cmd.kind==='party')wsSend({t:'party',op:cmd.op,name:cmd.name});
+  else if(cmd.kind==='ready'){if(state.party.members.length&&state.party.leader===myName())ready.start();else pushChat({system:true,text:READY_UI.onlyLeader});}
   else if(cmd.kind==='chat'&&cmd.text){if(cmd.ch==='whisper'&&cmd.to==='')cmd.to=state.lastWhisper||'';wsSend({t:'chat',ch:cmd.ch,text:cmd.text,...(cmd.ch==='whisper'?{to:cmd.to}:{})});}
   return {channel:cmd.kind==='chat'&&cmd.ch!=='whisper'?cmd.ch:channel};
  }
@@ -184,7 +192,7 @@ export function mountOnline(host){
   if(!list.length)return;
   const heads=1+list.length+(g()?.companions?.length||0)+(g()?.others||[]).filter(o=>o.party).reduce((n,o)=>n+(o.companions?.length||0),0);
   // Kopfleiste wie „Deine Truppe“: Gruppe, Köpfe (Menschen + Söldner) von fünf, Verlassen als kleiner Knopf mit Tooltip.
-  const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive,targetName:x.tg?(g()?.netEnemy?.(x.tg)?.hp>0?g().netEnemy(x.tg).name:''):''})).join('');
+  const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive,targetName:x.tg?(g()?.netEnemy?.(x.tg)?.hp>0?g().netEnemy(x.tg).name:''):'',ready:ready.status(x.n)})).join('');
   if(html!==state.partyHtml){
    const focus=document.activeElement,name=focus?.closest('[data-party-name]')?.dataset.partyName,action=focus?.hasAttribute('data-party-revive')?'[data-party-revive]':'[data-party-select]';
    state.partyHtml=html;el.innerHTML=html;paintUnitPortraits(el);
@@ -218,6 +226,7 @@ export function mountOnline(host){
   const b=e.target.closest?.('[data-online]');if(!b||e.type!=='click')return false;const root=b.closest('.online-card');
   const what=b.dataset.online;
   if(what==='trade-accept'||what==='trade-decline'){mate.tradeAnswer(what==='trade-accept');host.closeModal?.('touchhelp');}
+  else if(what==='ready-yes'||what==='ready-no'){ready.answer(what==='ready-yes');renderParty();}
   else if(what==='party-accept'||what==='party-decline'){wsSend({t:'party',op:what.slice(6)});host.closeModal?.('touchhelp');}
   else if(what==='party-leave'){wsSend({t:'party',op:'leave'});host.closeModal?.('touchhelp');}
   else if(what==='invite'){wsSend({t:'party',op:'invite',name:b.dataset.name});b.disabled=true;}
@@ -246,6 +255,7 @@ export function mountOnline(host){
  return {profession,reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),selected:()=>mate.selected(),selectTarget:n=>{const r=mate.selectTarget(n);renderParty();return r;},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'}),
   /** Eigene Zielmarkierung an die Gruppe (Endzustand), mit Zeile im Chat. */
   /** Assist (WoW): Ziel eines Gruppenmitglieds übernehmen → Gegner oder null. */
+  readyCheck:()=>{if(state.party.members.length&&state.party.leader===myName())ready.start();},
   assistTarget:n=>{const m=state.party.members.find(x=>x.n===n),e=m?.tg?g()?.netEnemy?.(m.tg):null;return e&&e.hp>0?e:null;},
   mark:(e,m)=>{if(!state.party.members.length||!e?.netId)return;wsSend({t:'mark',e:e.netId,m});pushChat({system:true,text:m?TARGET_MARK_UI.set(myName(),markDef(m).name,e.name):TARGET_MARK_UI.cleared(myName(),e.name)});}},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

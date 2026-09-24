@@ -49,7 +49,7 @@ import {layoutUnitFrames} from './unit-layout.js';
 import {updateTargetIdentity} from './enemy-ui.js';
 import {selectUnitAt,unitAt,syncFriend,friendUnit,friendPanel} from './target-ui.js';
 import {clearSelection} from './help-target.js';
-import {TARGET_UI} from './content/index.js';
+import {TARGET_UI,READY_UI} from './content/index.js';
 import {questProgress,escapeQuest} from './quest-status-ui.js';
 import {BALANCE,COMBAT_RULES,COMBAT_TEXT,GLOSSARY} from './content/index.js';
 import {sideQuestDialogue,rewardConversationHeader,mountConversationPortraits} from './dialogue-ui.js';
@@ -569,7 +569,7 @@ mountContextMenu(target=>{
  const member=q('[data-party-name]');if(member)return playerMenu(member.dataset.partyName);
  const line=q('[data-chat-player]');if(line&&so?.connected())return playerMenu(line.dataset.chatPlayer);
  if(q('#chatWindow'))return {title:'Chatfenster',items:[{label:'Einrichten',action:()=>chatWindow?.configure()},{label:'Lage und Größe zurücksetzen',action:()=>chatWindow?.resetPlace()},so?.connected()?{label:'Spielerliste',action:()=>so.who()}:null]};
- if(q('.party-frames'))return {title:'Gruppe',items:[{label:'Gruppe verlassen',danger:true,action:()=>so?.leave()}]};
+ if(q('.party-frames'))return {title:'Gruppe',items:[so?.isLeader?.()?{label:READY_UI.menu,action:()=>so.readyCheck()}:null,{label:'Gruppe verlassen',danger:true,action:()=>so?.leave()}]};
  if(q('.player-panel'))return {title:game.heroName,items:[{label:'Figur',action:()=>showPanel('person')},{label:'Talente',action:()=>showPanel('talents')},{label:'Rucksack',action:()=>showPanel('bag')},so?.party().members.length?{separator:true}:null,so?.party().members.length?{label:'Gruppe verlassen',danger:true,action:()=>so.leave()}:null]};
  if(q('#targetPanel')){const f=game.friend,player=f?.player?f.ref?.name:null;return {title:$('#targetName').textContent||'Ziel',items:[...(player&&so?playerMenu(player).items.slice(0,-2):[]),game.target?{label:game.autoAttack.enabled?'Angriff stoppen':'Angreifen',action:()=>{game.autoAttack.enabled?game.stopAuto():game.startAttack();events();}}:null,{label:TARGET_UI.menuClear,action:()=>{clearSelection(game);events();}},...markMenu(game.target)]};}
  if(q('#miniButton'))return {title:'Karte',items:[{label:'Weltkarte öffnen',action:()=>showPanel('map')},{label:'Zum Auftragsziel laufen',disabled:!game.destination?.(),action:()=>{game.navigateDestination();events();}}]};

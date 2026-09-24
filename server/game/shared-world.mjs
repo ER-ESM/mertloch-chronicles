@@ -79,7 +79,8 @@ export function createSharedWorld({clients,send,now=Date.now,random=Math.random,
  const partyMembers=c=>(parties.get(c.party)?.members||[]).map(byId).filter(Boolean);
  const who=c=>send(c,{t:'who',list:all().map(o=>({n:o.name,l:o.l,c:o.c,sp:o.sp,here:o.placed&&o.world===c.world,party:!!o.party,me:o===c}))});
 
- return {mobs,parties,hit,evade,sync,party,partyMembers,who,
+ const isLeader=c=>!!c.party&&parties.get(c.party)?.leader===c.id;
+ return {mobs,parties,hit,evade,sync,party,partyMembers,isLeader,who,
   gone(c){evade(c);leave(c);invites.delete(c.id);},
   /** einmal je Sekunde: Wiederkehr, verwaiste Kämpfe, Gruppenstand */
   tick(){
