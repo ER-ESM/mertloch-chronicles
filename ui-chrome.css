@@ -329,3 +329,8 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
 }
 .game-popup select{min-height:34px}.touch-mode .game-popup select{min-height:44px}
 .touch-mode .game-popup input[type=checkbox]{min-width:32px;min-height:32px;width:32px;height:32px}
+/* Tooltip-Kopf (Kniffe, Gegenstände): Symbol 36 px im Messingrahmen wie im WoW-Tooltip, statt klein und rahmenlos. */
+.item-tooltip .tooltip-heading canvas,.skill-tooltip .tooltip-heading canvas{width:36px!important;height:36px!important;flex:none;border:2px solid #b8955a;border-radius:4px;background:#10231a;box-shadow:0 1px 0 #0b1a12,inset 0 0 6px #000a;image-rendering:pixelated}
+.item-tooltip:has(.rarity-uncommon) .tooltip-heading canvas{border-color:#4fae4a}
+.item-tooltip:has(.rarity-rare) .tooltip-heading canvas{border-color:#3d86e0}
+.item-tooltip:has(.rarity-epic) .tooltip-heading canvas{border-color:#a45ce0}
