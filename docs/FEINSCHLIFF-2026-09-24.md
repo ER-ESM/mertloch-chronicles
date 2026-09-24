@@ -4,7 +4,7 @@ Nutzerauftrag: „visueller Feinschliff mit Live-Bewertung … Bude in allen Inh
 Arbeitsweise: je Runde Aufnahme (Headless oder Playwright), Vergleich mit WoW/Diablo IV/Hades/Stardew/Eastward, gezielte Änderung, `npm test` grün, Fast-Forward nach `main`, `server-refresh`.
 Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- und NPC-Grafik wurde bewusst **nicht** angefasst (Freigabe-Regel).
 
-## Runden (live #329 bis #420)
+## Runden (live #329 bis #440)
 
 **Nutzerentscheidungen 2026-09-24:** Kamera näher (statt größere Figuren), Rückwände mit Tapete, Karte handgemalt im Code, Talente als ausgegraute Vorschau.
 
@@ -64,6 +64,16 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 | 52 | Bude | Pfützen mit Wasserglanz | `kit-art.js` (`glint`) |
 | 53 | Welt | Held hinter Baumkronen als Umriss | `renderer.js` |
 | 54 | Gespräch | Porträt 128 px | `ui-chrome.css` |
+| 55 | Gespräch | Erste Zeile zusätzlich als Sprechblase über der Figur (Eastward) | `app.js` (`speakOpening`), `renderer.js` (`speakers`), `enemy-ui.js` |
+| 56 | Bude | Hinterzimmer, Küche, Klo mit Spuren der Nacht | `content/bude-house.js` |
+| 57 | Welt | Staubwölkchen je Schritt; Schrittzähler über echte Wegstrecke | `world-presence.js` |
+| 58 | Minikarte | Dachfarben/Flächen wie die große Karte | `minimap.js` |
+| 59 | HUD | Wenig Leben: roter pulsierender Bildschirmrand | `ui-chrome.css` (`.game-shell::after`) |
+| 60 | Kampf | Held blitzt bei Treffern rot | `renderer.js` (`hitFlash` mit Farbe) |
+| 61 | Bude | Hof mit weiteren Draußen-Teilen | `content/bude-house.js` |
+| 62 | HUD | Tastendruck: Knopf gibt nach und leuchtet | `app.js` (`triggerSlot`), `ui-chrome.css` |
+| 63 | Zielrahmen | Gegnerporträt als Brustbild im Medaillon | `app.js` (`paintTargetPortrait`), `ui-chrome.css` |
+| 64 | Beute | Lichtsäule in Qualitätsfarbe über Beuteln, Schild nur am nächsten | `renderer.js` (`lootBeam`) |
 
 ## Werkzeuge
 
