@@ -62,3 +62,11 @@
 .tt-menu .tt-node.locked{border-color:#4d5a4b}
 .tt-node .tt-rank{border-radius:3px;box-shadow:0 1px 0 var(--hard-ink)}
 @media (prefers-reduced-motion:reduce){.tt-menu .tt-node.available:not(.learned){animation:none;box-shadow:0 2px 0 var(--hard-ink),0 0 8px #aad18b77}}
+/* Touch (Mobile-Regel ≥ 8 px zwischen Tipp-Zielen, mobile-check 2026-09-24): Baumreiter, Werkzeugzeile und Pfadreiter mit Luft. */
+.touch-mode .tt-menu .tt-spec-tabs{gap:10px;margin-bottom:10px}
+.touch-mode .tt-menu .tt-toolbar{gap:10px;margin-bottom:10px}
+.touch-mode .tt-menu .tt-path-tabs{gap:10px;margin-bottom:10px}
+.touch-mode .popup-book .icon-skillbook{gap:14px 10px!important}
+.touch-mode .popup-body .tt-menu .tt-spec-tabs{gap:12px 10px!important}
+/* Kleine Handys: 6 Spalten (einzelfenster.css) sind schmaler als die 44-px-Karten – dort 5 Spalten, sonst überlappen die Lücken. */
+@media (max-width:370px){.touch-mode .popup-book .icon-skillbook{grid-template-columns:repeat(5,minmax(0,1fr))!important}}

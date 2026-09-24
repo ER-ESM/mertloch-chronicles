@@ -327,3 +327,5 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
  /* Leere Zusatzleiste (unsichtbar, Platz bleibt – beim Ziehen darf nichts springen): die Ablage rutscht über ihre leere Fläche an die Hauptleiste. */
  body:not(.touch-mode):not(.bar-drop):not(:has(.popup-book:not(.minimized))) .action-area:not(:has(.extra-bar .skill:not(.empty-slot)))>:is(.special-actions,.auto-state){margin-bottom:calc(-3px - var(--extra-bar-step,75px))}
 }
+.game-popup select{min-height:34px}.touch-mode .game-popup select{min-height:44px}
+.touch-mode .game-popup input[type=checkbox]{min-width:32px;min-height:32px;width:32px;height:32px}
