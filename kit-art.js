@@ -17,6 +17,11 @@ function meta(){
 }
 /** Geladenes Bild einer Sprite-Art samt Registrierung, sonst null. */
 function sprite(id){const m=meta()?.sprites?.[id];if(!m)return null;let img=KIT.images.get(id);if(!img){img=new Image();img.src=m.base+m.file;KIT.images.set(id,img);}return img.complete&&img.naturalWidth?{img,m,k:KIT.meta.pxPerUnit}:null;}
+/** Stehende Teile mit feinem dunklem Umriss (Stardew-Lesbarkeit): einmal je Sprite erzeugt – Silhouette in Tinte, 8 Richtungen versetzt, Bild darüber. */
+const OUTLINED=new Map();
+function outlined(s,id){if(typeof document==='undefined')return s.img;let o=OUTLINED.get(id);if(o)return o;const p=2,W=s.img.width+p*2,H=s.img.height+p*2,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
+ for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]])c.drawImage(s.img,p+dx*p,p+dy*p);c.globalCompositeOperation='source-in';c.fillStyle='#1c130d';c.fillRect(0,0,W,H);c.globalCompositeOperation='source-over';c.drawImage(s.img,p,p);
+ o={canvas:cv,pad:p};OUTLINED.set(id,o);return o;}
 const clock=()=>(typeof performance!=='undefined'?performance.now():Date.now())/1000;
 /** Quellrechteck des aktuellen Bilds; `seed` versetzt die Phase je Teil, damit gleiche Lampen nicht im Gleichtakt flackern. */
 function frameOf(s,seed=0){const {m}=s,w=m.width||s.img.width,h=m.height||s.img.height;if(!(m.frames>1))return [0,0,w,h];
@@ -110,7 +115,7 @@ export function drawKitItem(c,it){
  const s=sprite(it.sprite);
  if(it.def.shadow&&!it.lift){c.fillStyle='#24382940';c.beginPath();c.ellipse(it.x,it.y,it.w/2+1,it.h/2+1,0,0,Math.PI*2);c.fill();}
  const lift=it.lift||0;
- if(s){const [sx,sy,sw,sh]=frameOf(s,seedOf(it)),hh=sh/sw*it.w;c.drawImage(s.img,sx,sy,sw,sh,it.minX,it.maxY-lift-hh,it.w,hh);return;}
+ if(s){const [sx,sy,sw,sh]=frameOf(s,seedOf(it)),hh=sh/sw*it.w;if(!(s.m.frames>1)){const o=outlined(s,it.sprite),k=it.w/sw,pp=o.pad*k;c.drawImage(o.canvas,sx,sy,sw+o.pad*2,sh+o.pad*2,it.minX-pp,it.maxY-lift-hh-pp,it.w+pp*2,hh+pp*2);return;}c.drawImage(s.img,sx,sy,sw,sh,it.minX,it.maxY-lift-hh,it.w,hh);return;}
  const color=it.def.color||'#8a6a48',h=it.height||8,y0=it.minY-lift,y1=it.maxY-lift;
  fill(c,INK,it.minX-.5,y0-h-.5,it.w+1,it.h+h+1);fill(c,shade(color,.72),it.minX,y1-h,it.w,h);fill(c,shade(color,1.1),it.minX,y0-h,it.w,it.h);
 }

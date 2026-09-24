@@ -31,7 +31,7 @@ export const LIGHTING={
  },
  // Drinnen ist es dämmrig: Dunkel nur über der Grundfläche des Hauses (draußen bleibt Tag), Lampen stanzen es aus.
  // `dark` Anteil wie ambient.zones, `ease` Nachziehen beim Betreten, `wallShade` Schatten am Wandfuß (Deckkraft, Tiefe in E).
- interior:{dark:.56,tint:'#3a2616',ease:5,wallShade:{alpha:.46,depth:16,side:7}},
+ interior:{dark:.46,tint:'#3a2616',ease:5,wallShade:{alpha:.46,depth:16,side:7}},
  // Anteil des warmen Scheins, der auch bei Tag sichtbar bleibt, und Zuwachs mit der Dunkelheit.
  // `cover`: Deckkraft des Scheins beim normalen Überdecken (früher `screen`, das heller auftrug).
  glow:{day:.2,night:1,cover:.8}
