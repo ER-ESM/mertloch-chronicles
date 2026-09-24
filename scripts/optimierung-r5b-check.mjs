@@ -151,5 +151,14 @@ try{
   await tap('button[data-opt-cat=game]');await wait(500);await tap('.popup-settings .opt-info');await wait(300);const tip=await read(`const t=document.querySelector('.popup-settings .opt-tip');return t?t.textContent:null`);assert.ok(tip&&tip.length>10,name+': ⓘ zeigt die Erklärung');await shot(`r5b-11-einstellungen-info-${name}`);
   ok(`1 Einstellungen ${name}: 5 Kategorien ohne Scrollen (Seiten ${Object.entries(report['settings-'+name]).filter(([k])=>!k.includes('-')).map(([k,v])=>k+' '+v).join(', ')}), Reiter als Symbole, ⓘ: „${tip.slice(0,40)}…“`);}
 
+ // =============== 14 · Handy-Karte hochkant: Fenster endet 8 px über den Kniff-Knöpfen, keine Seitenkappe ===============
+ if(run(14))for(const [name,w,h] of [['hoch',390,844],['klein',320,568]]){await start({touch:true,w,h,safe:true});await calm();
+  await tap('#touchMenu');await wait(500);await tap('.game-menu-windows [data-shell="map"]');await wait(1500);
+  const m=await read(`const p=document.querySelector('.popup-map').getBoundingClientRect(),ta=document.querySelector('#touchActions'),skills=document.querySelector('#touchSkills').getBoundingClientRect(),head=document.querySelector('.touch-action-head'),hs=getComputedStyle(head);return {bottom:Math.round(p.bottom),skills:Math.round(skills.top),actions:Math.round(ta.getBoundingClientRect().top),head:hs.display,controls:getComputedStyle(ta).visibility}`);
+  report['map-'+name]=m;await shot(`r5b-110-karte-${name}-${w}x${h}`);assert.equal(m.head,'none',name+': Seitenkappe ruht');
+  if(m.controls!=='hidden')assert.ok(m.skills-m.bottom>=8&&m.skills-m.bottom<=20,name+': Karte endet 8 px über den Kniff-Knöpfen '+JSON.stringify(m));
+  const a=await audit('map');assert.equal(a.over,'',name+': Karte läuft über');assert.deepEqual(a.small,[],name+': Ziele < 44');
+  ok(`14 Karte ${name}: Unterkante ${m.bottom}, Kniff-Knöpfe ab ${m.skills}${m.controls==='hidden'?' (Steuerung ruht, modal)':''}, Seitenkappe ruht`);}
+
  console.log(`\n${checks.length} Prüfungen grün.`);
 }finally{writeFileSync(`${dir}/report.json`,JSON.stringify({checks,report},null,1));b.close();}

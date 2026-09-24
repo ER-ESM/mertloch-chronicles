@@ -142,3 +142,8 @@ body:not(.touch-mode) #combatMeter .meter-empty{margin:4px 0!important;min-heigh
 /* meter-check: sehr schmale Statistik am Handy quer (568×320, 220 px zwischen den Knöpfen) – der Kopf bricht um statt überzulaufen */
 .touch-mode #combatMeter .meter-header{flex-wrap:wrap;height:auto!important;row-gap:8px;min-width:0}
 .touch-mode #combatMeter .meter-header>strong{display:none}
+
+/* ---------- Punkt 14: Handy-Karte hochkant – die Seitenkappe „1/2“ ruht bei offener Karte, das Fenster reicht bis über die Kniff-Knöpfe ---------- */
+@media (orientation:portrait){
+ .touch-mode:has(.popup-map) .touch-action-head{display:none!important}
+}
