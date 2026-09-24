@@ -12,7 +12,8 @@ import {createNetWorld} from './net-world.js';
 import {companionCommand,companionWire,remoteCompanionViews} from './companions.js';
 import {createNetParty,mountRollUi} from './net-party.js';
 import {createNetSocial,mountTradeUi,SOCIAL_UI} from './net-social.js';
-import {RARITIES} from './content/index.js';
+import {RARITIES,TARGET_MARK_UI} from './content/index.js';
+import {applyNetMark,markDef} from './target-marks.js';
 import {mergeRosters} from './characters.js';
 import {lookKey,parseTintKey} from './hero-tint.js';
 const API=(()=>{try{const h=location.hostname;if(/(^|\.)esm-consultant\.de$/i.test(h)||new URLSearchParams(location.search).get('online')==='1')return new URL('api/',location.href).toString();}catch{}return null;})();
@@ -141,6 +142,7 @@ export function mountOnline(host){
   else if(net.receive(m)||play.receive(m)||mate.receive(m)){}
   else if(m.t==='tradeask')host.openModal('<div class="online-card"><h3>'+esc(SOCIAL_UI.askTitle)+'</h3><p>'+esc(SOCIAL_UI.askText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="trade-accept">'+esc(SOCIAL_UI.accept)+'</button><button type="button" class="outline-button" data-online="trade-decline">'+esc(SOCIAL_UI.decline)+'</button></div></div>',false,'touchhelp');
   else if(m.t==='party')setParty(m);
+  else if(m.t==='mark'){const e=applyNetMark(g(),m.e,m.m);if(e)pushChat({system:true,text:m.m?TARGET_MARK_UI.set(m.from,markDef(m.m).name,e.name):TARGET_MARK_UI.cleared(m.from,e.name)});}
   else if(m.t==='invite')host.openModal('<div class="online-card"><h3>'+esc(ONLINE_UI.inviteTitle)+'</h3><p>'+esc(ONLINE_UI.inviteText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="party-accept">'+esc(ONLINE_UI.accept)+'</button><button type="button" class="outline-button" data-online="party-decline">'+esc(ONLINE_UI.decline)+'</button></div></div>','touchhelp');
   else if(m.t==='who')showPeople(m.list||[]);
   else if(m.t==='chat')pushChat(m);
@@ -241,5 +243,7 @@ export function mountOnline(host){
  function leaveWorld(){state.hold=true;stopPresence();}
  const quoted=n=>/\s/.test(n)?'"'+n+'"':n;
  async function profession(body){if(!state.account||!state.connected)return {error:'Berufsserver nicht erreichbar.'};if(body.op!=='state'){clearTimeout(state.pending);while(state.syncing)await new Promise(r=>setTimeout(r,50));state.syncing=true;}try{sendPosition();return await api('professions',{...body,room:host.roomKey||g().world.id,hero:g().hero?.id},undefined,AbortSignal.timeout(15000));}finally{if(body.op!=='state')state.syncing=false;}}
- return {profession,reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),selected:()=>mate.selected(),selectTarget:n=>{const r=mate.selectTarget(n);renderParty();return r;},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'})},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
+ return {profession,reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),selected:()=>mate.selected(),selectTarget:n=>{const r=mate.selectTarget(n);renderParty();return r;},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'}),
+  /** Eigene Zielmarkierung an die Gruppe (Endzustand), mit Zeile im Chat. */
+  mark:(e,m)=>{if(!state.party.members.length||!e?.netId)return;wsSend({t:'mark',e:e.netId,m});pushChat({system:true,text:m?TARGET_MARK_UI.set(myName(),markDef(m).name,e.name):TARGET_MARK_UI.cleared(myName(),e.name)});}},state,enabled:true,card,start,stop:stopPresence,afterSave,submitArena,syncNow,handle,logout,showLeaderboard,enterWorld,leaveWorld,get account(){return state.account;}};
 }

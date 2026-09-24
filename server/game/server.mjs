@@ -195,6 +195,8 @@ export function createGameServer(options={}){
    else if(m.t==='offer'){if(this.allow(c,'offer',4))play.offer(c,m);}
    else if(m.t==='choice')play.choice(c,m);
    else if(m.t==='qshare'||m.t==='buff'){if(this.allow(c,m.t,4))play.share(c,m);}
+   // Zielmarkierung (2026-09-24): an die Gruppe weiterreichen; der Server prüft nur Form und Menge, nicht den Kampf.
+   else if(m.t==='mark'){if(this.allow(c,'mark',4)&&['skull','cross','star','circle',''].includes(m.m)){const wire=JSON.stringify({t:'mark',e:clampText(m.e,60),m:m.m,from:c.name});for(const o of shared.partyMembers(c))if(o!==c)o.socket.send(wire);}}
    else if(m.t==='who'){if(this.allow(c,'who',2))shared.who(c);}
    else if(m.t==='chat'){
     const text=clampText(m.text,200);if(!text)return;

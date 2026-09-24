@@ -24,3 +24,12 @@ export const TARGET_HELP={
  full:n=>n+' ist unverletzt.',
  away:n=>n+' ist gerade nicht in deiner Nähe.'
 };
+/** Zielmarkierungen (2026-09-24, WoW „Schlachtzugsmarkierungen“): gelten für die ganze Gruppe; Reihenfolge = Angriffsreihenfolge der Söldner. */
+export const TARGET_MARKS=[
+ {id:'skull',name:'Totenkopf',color:'#f4efe2',note:'zuerst umhauen'},
+ {id:'cross',name:'Kreuz',color:'#e0503c',note:'als Zweites'},
+ {id:'star',name:'Stern',color:'#f3cf4a',note:''},
+ {id:'circle',name:'Kreis',color:'#f09a3a',note:''}
+];
+export const TARGET_MARK_UI={menu:'Markieren',clear:'Markierung entfernen',
+ set:(who,mark,target)=>who+' markiert '+target+' mit '+mark+'.',cleared:(who,target)=>who+' entfernt die Markierung von '+target+'.'};
