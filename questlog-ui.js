@@ -6,7 +6,7 @@
 import {questResponse,questProgress,escapeQuest as esc} from './quest-status-ui.js';
 import {rewardLine,rewardNote,actOf,actChapterList} from './chapter-ui.js';
 import {STORY,STORY_CHAPTERS,TUTORIAL,HOTSPOT_UI as H,QUESTLOG_UI as T} from './content/index.js';
-import {tutorialActive} from './tutorial.js';
+import {tutorialActive,tutorialDestination} from './tutorial.js';
 import {hotspotQuests,questStatus,giverPoint,turnInOf,objectiveText,fillText,hotspotDestination} from './hotspots.js';
 import {rewardTiles} from './reward-tiles.js';
 import {glyph} from './ui-glyphs.js';
@@ -22,7 +22,10 @@ export const chosenQuest=()=>chosen;
 
 function tutorialEntry(g){const step=g.tutorial.step||0;
  return {key:'tutorial',group:T.hofprobe,mark:'main',title:TUTORIAL.title,state:'active',tutorial:true,
-  steps:TUTORIAL.steps.map((s,i)=>({text:s.title,note:s.text,done:i<step,current:i===step})),lore:[]};}
+  steps:TUTORIAL.steps.map((s,i)=>({text:s.title,note:s.text,done:i<step,current:i===step})),lore:[],
+  /* Runde 4b (Prüfer-Bruch 10): Belohnung als Kacheln und „Ziel auf der Karte“ wie bei jedem Auftrag */
+  reward:{xp:TUTORIAL.rewardXp,coins:TUTORIAL.loot.coins,items:TUTORIAL.loot.items.map(i=>i.id)},rewardSummary:TUTORIAL.rewardXp+' EP · '+TUTORIAL.loot.coins+' Pfandmarken',
+  target:tutorialDestination(g)?.point||null,targetIsGiver:false};}
 function mainEntry(g){
  const q=g.quest||{},chapter=g.chapter?g.chapter():STORY_CHAPTERS[0],progress=g.chapterProgress?g.chapterProgress():[],done=!!q.actDone,ready=!!q.accepted&&!done&&!!g.questReady?.();
  const steps=q.accepted&&!done?progress.map(p=>({text:p.objective.label,count:p.done+'/'+p.need,done:p.complete})):[{text:done?STORY.giver+' wartet an der Bude.':'Sprich mit '+STORY.giver+', um anzufangen.',done}];
@@ -53,7 +56,7 @@ function hotspotEntry(g,q){const st=questStatus(g,q.id),active=st==='accepted'||
 export function questlogEntries(g,filter='active'){
  const want=e=>filter==='all'||e.state===filter||filter==='active'&&e.key==='main'&&e.state==='open';
  const out=[];
- if(filter==='active'&&g.tutorial&&tutorialActive(g))out.push(tutorialEntry(g));
+ if((filter==='active'||filter==='all')&&g.tutorial&&tutorialActive(g))out.push(tutorialEntry(g));
  if(g.quest)out.push(mainEntry(g));
  if(g.hotspots)for(const q of hotspotQuests())out.push(hotspotEntry(g,q));
  for(const d of g.world?.quests||[])out.push(sideEntry(g,d));
@@ -65,7 +68,7 @@ function row(g,e,sel){const dist=e.state==='done'?null:metres(g,e.target);
  return `<button type="button" class="ql-row${sel?' selected':''}${e.tracked&&e.track?' tracked':''}${e.state==='done'?' done':''}${e.low?' low':''}" data-ql-select="${esc(e.key)}" aria-pressed="${sel}" data-tooltip-label="${esc(e.title)}" data-tooltip-note="${esc(tip)}">${mark(e.mark)}<span class="ql-title">${esc(e.title)}</span><b class="ql-count">${esc(e.count||'')}</b><em>${dist!=null?dist+' m':''}</em></button>`;}
 function detail(g,e,sel){
  const tools=[e.track?`<button type="button" class="ql-tool${e.tracked?' on':''}" data-ql-track="${esc(e.key)}" aria-pressed="${!!e.tracked}" aria-label="${esc(e.tracked?T.tracked:T.track)}" data-tooltip-label="${esc(e.tracked?T.tracked:T.track)}" data-tooltip-note="${esc(T.trackNote)}">${glyph(e.tracked?'eyeOn':'eye')}</button>`:'',
-  e.target&&!e.tutorial?`<button type="button" class="ql-tool" data-ql-map="${esc(e.key)}" aria-label="${esc(e.targetIsGiver?T.mapGiver:T.mapTarget)}" data-tooltip-label="${esc(e.targetIsGiver?T.mapGiver:T.mapTarget)}" data-tooltip-note="${esc(T.mapNote)}">${glyph('pin')}</button>`:'',
+  e.target?`<button type="button" class="ql-tool" data-ql-map="${esc(e.key)}" aria-label="${esc(e.targetIsGiver?T.mapGiver:T.mapTarget)}" data-tooltip-label="${esc(e.targetIsGiver?T.mapGiver:T.mapTarget)}" data-tooltip-note="${esc(T.mapNote)}">${glyph('pin')}</button>`:'',
   e.lore.some(Boolean)||e.quote?`<button type="button" class="ql-tool" data-ql-read="${esc(e.key)}" aria-label="${esc(T.read)}" data-tooltip-label="${esc(T.read)}" data-tooltip-note="">${glyph('book')}</button>`:''].join('');
  const steps=e.steps.map(s=>`<li class="${s.done?'done':''}${s.current?' current':''}${s.warn?' warn':''}" data-tooltip-label="${esc(s.text)}" data-tooltip-note="${esc(s.note||'')}"><span>${esc(s.text)}</span>${s.count?`<b>${esc(s.count)}</b>`:''}</li>`).join('');
  const state=e.state==='done'?T.done:e.mark==='ready'?T.ready:'';

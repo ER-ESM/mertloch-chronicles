@@ -135,7 +135,7 @@ try{
  ok('Nahkampf: Gegnerschild und „F · Beute“ weichen neben die eigene Figur aus');
  // Wegmarke: Entfernung am Pfeil (auf dem Ring um den Helden), nicht frei im Bild
  await read(`const g=window.game,w=g.world;Object.assign(g.player,w.findClear(w.church.x,w.church.maxY+150,9),{vx:0,vy:0});`);await wait(2000);drawn=await labelsNow();
- const way=drawn.find(l=>/^\d+ m$/.test(l.t));if(way){const h2=await read(TO_SCREEN+`return toS(window.game.player)`);const d=Math.hypot(way.x-h2.x,way.y-h2.y);assert.ok(d>150&&d<460,'Entfernung am Richtungspfeil '+JSON.stringify({way,d}));ok('Wegmarke: Entfernung „'+way.t+'“ an der Pfeilspitze');}
+ const way=drawn.find(l=>/^\d+ m$/.test(l.t));if(way){const h2=await read(TO_SCREEN+`return toS(window.game.player)`);const d=Math.hypot(way.x-h2.x,way.y-h2.y);/* Runde 4b: Pfeil auf enger Kreisbahn um den Helden (r = 36 E), Entfernung direkt daneben */assert.ok(d>40&&d<220,'Entfernung am Richtungspfeil '+JSON.stringify({way,d}));ok('Wegmarke: Entfernung „'+way.t+'“ an der Pfeilspitze');}
  // ---------- 7) Leisten-Stapel ----------
  await read(`const g=window.game;g.rpg.actionBar=g.rpg.actionBar||[];g.rpg.actionBar[10]='item:currywurst';g.emit('save');g.emit('bar');`);await wait(400);
  const bar2=await read(`const x=document.querySelector('.action-area .extra-bar'),cs=getComputedStyle(x),shown=[...x.querySelectorAll('.skill')].filter(s=>getComputedStyle(s).visibility!=='hidden'&&Number(getComputedStyle(s).opacity)>.05);return {plate:cs.borderImageSource!=='none'||cs.backgroundImage!=='none'||cs.backgroundColor!=='rgba(0, 0, 0, 0)',shown:shown.length,used:x.querySelectorAll('.skill:not(.empty-slot)').length}`);

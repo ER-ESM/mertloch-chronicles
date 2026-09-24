@@ -106,11 +106,11 @@ try{
  assert.equal(zone.hits,0,'Zonentitel trifft keine Fenstertitelzeile '+JSON.stringify(zone));assert.ok(zone.b<=176,'Zonentitel im Band über den Fenstern '+JSON.stringify(zone));assert.equal(zone.splash,false,'kein zweiter Ortswechsel-Schriftzug (#zoneSplash)');assert.equal(zone.labels,1,'nur EIN Ortswechsel-Schriftzug');assert.ok(Math.abs(zone.toast-64)<=2,'Fehlerzeile bei 64 px');
  await shot('r3b-70-zonentitel-fenster');await read(`document.querySelector('.region-label').classList.remove('zone-show')`);ok('6 Zonentitel mit vier Fenstern bei y '+zone.t+'–'+zone.b+', keine Titelzeile getroffen, Fehlerzeile 64 px, nur ein Schriftzug');
  // ---------- 7 Fenster über dem Helden klappen ein ----------
- await closeAll();await calm();await b.press('p');await wait(500);await read(`g.navigate({x:g.player.x+600,y:g.player.y+40});`);await mouse(1000,885);await wait(500);
+ await closeAll();await calm();/* Runde 4b: sonst legt die Kamera den Helden in die Lücke neben die Kniffe – hier geht es nur ums Einklappen ohne Lücke */await read(`document.body.dataset.heroFrame='off'`);await b.press('p');await wait(500);await read(`g.navigate({x:g.player.x+600,y:g.player.y+40});`);await mouse(1000,885);await wait(500);
  const fold=await read(`const p=document.querySelector('.game-popup[data-window="book"]');return {cls:p.classList.contains('hero-seethrough'),h:Math.round(p.getBoundingClientRect().height),op:parseFloat(getComputedStyle(p).opacity),body:getComputedStyle(p.querySelector('.popup-body')).display}`);
  assert.ok(fold.cls&&fold.h<60&&fold.op>.8&&fold.body==='none','Kniffe klappen auf die Titelzeile ein '+JSON.stringify(fold));await shot('r3b-80-eingeklappt');
  const bk=await popup('book');await mouse(bk.l+60,bk.t+15);await wait(400);assert.equal(await read(`return document.querySelector('.game-popup[data-window="book"]').classList.contains('hero-seethrough')`),false,'Hover über der Titelzeile klappt auf');
- await read(`g.moveTo=null;g.path=null;`);ok('7 Fenster über dem Helden: Titelzeile bleibt ('+fold.h+' px), Körper weg, Hover klappt auf');await closeAll();
+ await read(`g.moveTo=null;g.path=null;delete document.body.dataset.heroFrame;`);ok('7 Fenster über dem Helden: Titelzeile bleibt ('+fold.h+' px), Körper weg, Hover klappt auf');await closeAll();
  // =============== Handy quer und hoch ===============
  for(const [name,w,h] of [['quer',844,390],['hoch',390,844]]){
   await start({touch:true,w,h});await calm();const res={};

@@ -34,6 +34,7 @@ const P={
  speaker:'M4 9h4l5-4v14l-5-4H4Z|M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11',
  monitor:'M3 4h18v12H3Z|M8 20h8M12 16v4',
  keycap:'M4 5h16v13H4Z|M7 8h10v7H7Z|M10 12h4',
+ globe:'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z|M3.5 9h17|M3.5 15h17|M12 3c-3 3.2-3 14.8 0 18|M12 3c3 3.2 3 14.8 0 18',
  route:'M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z|M18 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z|M8 17h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7',
  // Weltkarte (Runde 4a): Filter-Trichter, Stiefel = hinlaufen, Liste, Zoom
  funnel:'M3.5 4.5h17l-6.5 8v6l-4 2v-8Z',

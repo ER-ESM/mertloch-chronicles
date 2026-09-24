@@ -1,0 +1,51 @@
+# Optimierung Runde 4, Teil B „Welt, Kampf & Hofprobe“ · 24.09.2026
+
+Eingang: Prüfer-Playtest R4 (`docs/PLAYTEST-2026-09-24-r4-pruefer.md`) und Grafikbericht R4 (`docs/REVIEW-GRAFIK-2026-09-24-r4.md`, Zielbild 2, Befunde 3, 4 und 10). Teil A übernimmt beide ins Repo.
+Vorbild WoW. Symbole und Tooltips statt Fließtext, nirgends scrollen.
+Entscheidung des Orchestrators: NPC-Namen stehen dauerhaft über den Figuren. Orte, Stationen und Sammelobjekte zeigen ihren Namen nur unter der Maus.
+Teil A (Weltkarte) und Teil C (Handy-Fenster, Spielmenü, Puppenplätze, Zielrahmen, Kampfstatistik, Rucksack) sind nicht angefasst.
+
+Prüfskript: `node scripts/optimierung-r4b-check.mjs` (CDP 9532, Server 4332, `CDP_PORT`/`SERVER_PORT`, `ONLY=1,…`). 20 Prüfungen mit echter Maus und Tastatur, Desktop 2024×900 und Handy hochkant 390×844.
+Bilder in `visual-review/optimierung-r4b/` (lokal, nicht im Repo). `*z-*` sind zweifach vergrößerte Ausschnitte.
+Unit-Tests: `tests/optimierung-r4b.test.mjs` (7).
+
+## Punkte
+
+| Nr | Stand | Was | Beleg |
+|---|---|---|---|
+| 1 | erledigt | **Eigene Figur nie verdeckt, auch beim normalen Laufen.** `hero-frame.js` sucht auf einem 16-px-Raster den freien Fußpunkt, der der Bildmitte am nächsten liegt. Hindernisse sind alle offenen Fenster und die festen HUD-Flächen (Aktionsleiste, Rahmen, Verfolgung, Minikarte, Menüleiste, Chat). Zum Rand bleibt Abstand (8 % seitlich, 18 % oben, 12 % unten). Senkrechter Versatz zählt etwas mehr als seitlicher. Ein frei gebliebener alter Punkt wird gehalten, damit nichts springt. `hero-reveal.js` misst alle 120 ms und gibt den Versatz an den Renderer (`renderer.heroShift`). Der Renderer blendet ihn weich über (Rate 5/s). In der Lücke hängt die Kamera fest am Helden, sonst rutscht er beim Laufen durch das Nachziehen der Kamera aus der Lücke. Sind die Fenster zu, steht er wieder mittig. **Ohne Lücke** klappen die Fenster über dem Helden ein (Runde 3b), jetzt auch beim manuellen Laufen (WASD, Stick). Die Vollbild-Karte (über 70 % der Fläche) ist davon ausgenommen und weicht wie bisher nur Autolauf und Kampf. Am Handy gibt es keine Lücke: Dort ist immer nur ein Fenster offen. | C+J+I+P: Held bei 1012/649 unter dem Kniffe-Fenster statt bei 1012/450 darunter. Bei W, A, S und D je 8 Messungen im Abstand von 150 ms: nie unter einem Fenster, kein Fenster eingeklappt. `r4b-10-cjip-stehend.jpg`, `r4b-11-laufen-{w,a,s,d}.jpg`, `r4b-12z-held-in-luecke.jpg`, ohne Lücke `r4b-13-ohne-luecke-eingeklappt.jpg` |
+| 2 | erledigt | **Hofprobe als Auftrag in der Verfolgung** (`quest-tracker.js` `tutorialTrackerEntry`, `keyLineHtml`). Der Titel ist der Schritt. Darunter steht eine Zeile mit Tastenkappen („[Leer] ausweichen · [WASD] Richtung“) und der Entfernung zum Schrittziel. Der Tooltip zeigt „Hofprobe statt Totalschaden · 5/8“, den Erklärtext und die Belohnung. Der Kasten `#tutorialGuide` mit Kopfzeile und Absatz fällt am Desktop weg. Andere aktive Aufträge stehen darunter, etwa „Der übliche Verdächtige · Sprich mit Kisten-Ida“. „0 m“ entfällt, wenn man schon dort steht. Im **Auftragsfenster** (J) hat die Hofprobe Belohnungskacheln (40 EP, 2 Pfandmarken, Konterwasser) und „Ziel auf der Karte“. Die Tastenzeilen in `content/tutorial.js` sind gekürzt, nicht umgeschrieben, etwa „1: Autoangriff · 2: erster Kniff“. Am **Handy** bleibt die kompakte Hofprobe-Leiste oben, weil es dort keine Verfolgung gibt. | Verfolgung 98 px, kein „Hofprobe ·“, kein `<p>`: `r4b-20z-hofprobe-verfolgung.jpg`, Tooltip `r4b-21-hofprobe-tooltip.jpg`, Fenster `r4b-22z-auftragsfenster-hofprobe.jpg`, Karte `r4b-23-hofprobe-karte.jpg` |
+| 3 | erledigt | **Ein Rechtsklick greift an.** Ursache: Der Hofprobe-Schritt 3/8 „Papp-Horst im Visier“ ist mit der Zielwahl erledigt. `advance()` schaltete danach den Autoangriff ab, und damit endete auch das Hinlaufen (`attack-approach.js`). Der Rechtsklick hatte beides schon gestartet. Jetzt bleiben Autoangriff und Hinlaufen über diesen Schritt hinweg an (`tutorial.js`). Draußen griff ein Rechtsklick schon vorher an. Das ist jetzt mitgeprüft. | Hofprobe: 1 Rechtsklick → Schritt 4/8, Autoangriff an, Treffer `r4b-30-hofprobe-ein-rechtsklick.jpg`. Draußen: Pfandkeiler in 15 m, 1 Rechtsklick → Treffer. Unit-Test. |
+| 4 | erledigt | **Regression `optimierung-r3a-check.mjs:107` behoben.** Der Spielcode hat keinen Fehler. Das Prüfskript klickte 700 ms nach dem Versetzen des Helden auf Ida. Unter Last lief der Renderer mit wenigen Bildern pro Sekunde, die Kamera stand dann noch 20–40 E neben dem Helden, und der Rechtsklick traf den Boden (gemessen: Laufziel 23 E links unter Ida, `friend:null`). 3b hat das nicht verursacht. Es trat nur auf der stark belasteten Maschine häufiger auf. `settle()` wartet jetzt, bis die Kamera ruht, und dieser Schritt nutzt es. | r3a-check 19/19 grün. Das neue Skript prüft denselben Pfad (Teil 4). |
+| 5 | erledigt | **Schichtordnung der Weltbeschriftung** (`world-labels.js`, `renderer.js`). *Zonentitel hat Vorrang:* Solange `.region-label.zone-show` steht, tritt jede Schrift auf der Schrift-Ebene in ihrem Kasten plus 16 px zurück. Das betrifft NPC-Namen, Gegnernamen und Entfernungen. Je Schicht bleiben 18 %, Kontur und Füllung zusammen ergeben etwa 30 %. Auftragszeichen bleiben bei 40 %. Ausblenden dauert 0,45 s, Einblenden 0,6 s. Die Lehrernamen (Bärbel, Gisela) gingen bisher an der Schrift-Ebene vorbei direkt in die Welt (`profession-art.js`). Jetzt laufen sie über dieselbe Ebene. *Namensschilder als Einheit:* Name und Balken werden zusammen gesetzt (`stackPlates`). Das Ziel bleibt fest. Angreifer stapeln und werden nie ausgeblendet. Übrige Schilder stapeln bis drei Lagen (Δ 18 E), danach fällt das ganze Schild weg, nie nur der Name. Am Bildrand wird das ganze Schild hineingeklemmt (`clampPlate`). | Braugarten: Kräuter-Gisela und Braumeisterin Bärbel im Titelband bei 18 %, danach 100 % (`r4b-51z-titelband-kirchstrasse.jpg`, `…-danach.jpg`). Clan-Treff nach echtem Ortswechsel: Hedwig 18 %, „!“ 40 % (`r4b-51z-titelband-clantreff.jpg`). Fünf Pfanddachse: drei Schilder gestapelt ohne Überlappung, zwei ganz weg (`r4b-52z-namensschilder-gestapelt.jpg`). |
+| 6 | erledigt | **Wegmarke:** goldener Verlaufspfeil (≈ 20 px) mit 2-px-Kontur `#0b1216` und weichem Schatten auf der Schrift-Ebene. Er läuft auf einer Kreisbahn mit 36 E (≈ 93 px) um die Körpermitte des Helden, statt frei im Bild zu stehen. Die Entfernung steht darunter bzw. bei Zielen oberhalb darüber, in Hellgold mit Kontur. Am Handy liegt der Pfeil dicht am Helden und damit von den Chatzeilen links unten weg. | `r4b-60z-wegmarke.jpg`, Handy hoch `r4b-80-handy-hoch-wegmarke.jpg` (keine Meldungszeile auf der Marke) |
+| 7a | geprüft, gewollt | Schritt 5/8 „roter Kreis“ ohne Leertaste abgehakt: Das ist die Regel aus 3a (`maxDodgeTries:2`). Nach zwei verpassten Kreisen geht es mit „… übst du später im echten Kampf“ weiter. Der Prüfer drückte zweimal „2“ und wartete dabei beide Kreise ab. | Unit-Test, r3a-check Teil 8 |
+| 7b | erledigt | **Film überspringen:** Die Kamera schneidet hart auf den Helden (`intro-ui.js`). Vorher fuhr sie im gedrosselten Browser (≈ 4 Bilder/s) sekundenlang von der Bude zurück. | `r4b-70-nach-film.jpg`: 1012/450 = Mitte |
+| 7c | erledigt | **Chat:** Die Reiterzeile („Alles …“) ist in Ruhe ganz ausgeblendet statt 22 % blass. Unter der Maus erscheint sie wie in WoW. | Prüfung Teil 7 |
+| 7d | erledigt | **„Online spielen: anmelden“** ist jetzt ein Globus-Symbol (36 px, am Handy 44 px) mit Tooltip „Online spielen · Anmelden: Chat, Gruppe und Mitspieler im Dorf“ statt einer Textzeile. | `r4b-71z-online-symbol.jpg` |
+
+## Überschneidungen
+
+- **Runde 3b (`hero-reveal.js`)** ist erweitert. Das Einklappen greift jetzt nur ohne Lücke. `optimierung-r3b-check` (7) und `optimierung-r2a-check` (10) prüfen das Einklappen allein und schalten die Lückensuche dafür mit `body[data-hero-frame=off]` ab.
+- **Runde 2b (Wegmarke an der Pfeilspitze)**: `optimierung-r2b-check` erwartet die Entfernung jetzt 40–220 px vom Helden statt 150–460 px, weil die Kreisbahn enger ist.
+- **Feinschliff Runde 45 (NPC-Namen) und Runde 2 (Auftragszeichen)** bleiben. Neu ist nur das Zurücktreten im Titelband.
+- **Hofprobe-Kasten am Desktop**: `ui-regression-check` und `dialog-polish-check` prüfen den Kasten nur noch am Handy. Am Desktop prüft `ui-regression-check` stattdessen die Hofprobe in der Verfolgung.
+- `scripts/browser-polish.mjs`: `BOOT_TRIES` verlängert das Startfenster (Vorgabe 160 × 100 ms). Unter 100 % CPU brauchte der Spielstart hier länger als 16 s.
+
+## Prüfungen
+
+Grün auf diesem Stand (eigene Ports 9532–9539 / 4332–4339, `BOOT_TRIES=450…600` wegen 100 % CPU-Last, 35 Chrome- und 40 Node-Prozesse anderer Sitzungen):
+`npm test` (895), `npm run content:check` (57), `npm run build`, `optimierung-r4b-check` (20), `optimierung-r3a-check` (19, wieder ganz grün), `optimierung-r2b-check` (25),
+`optimierung-r1-check` (16), `aktionsleisten-check`, `profession-node-check` (Kopie mit Port 9538/4338), `quest-tracker-hud-check`, dazu `optimierung-r3b-check` (12) und `optimierung-r2a-check` (13).
+
+Schon vorher rot:
+- `hud:check`: rot an `hud-check.mjs:62`, wie in 3b belegt. Die Prüfung erwartet die alte Spielmenü-Reihenfolge.
+- `akt1b-check`: nicht gelaufen, weil es ein von Hand gestartetes Chrome braucht. In 3a und 3b war es auf main an `akt1b-check.mjs:93` rot.
+
+## Rest
+
+1. **Weltschilder als Grafik** (Holzschild „Baustelle der Bude“, Clan-Schild) sind gemalte Weltteile und keine Schrift. Sie treten im Titelband nicht zurück. Nach Zielbild 2 (Regel 8) ist das richtig, das Schild kann aber weiter unter dem Titel liegen.
+2. **Lücke am Rand:** Bei sehr vollen Bildschirmen wandert der Held bis an 12 % Abstand zum unteren Rand. Wer das zu weit findet, kann die Ränder in `hero-frame.js` (`margin`) enger stellen, dann klappt öfter ein Fenster ein.
+3. **Idas Anleitung (?)** hatte am Desktop einen Knopf im Hofprobe-Kasten. Jetzt öffnet sie sich im Gespräch mit Ida (F). Einen eigenen Knopf in der Verfolgung gibt es nicht.
+4. **Handy:** Die Hofprobe-Leiste oben bleibt, bis Teil C die Handy-Fenster abschließt. Eine Verfolgung gibt es am Handy nicht.
+5. **Echter Ortswechsel am Braugarten** ließ sich im Prüfskript nicht sicher auslösen, weil die Zone dieselbe blieb. Dort setzt das Skript den Titel über die Klasse. Am Clan-Treff lief ein echter Ortswechsel.

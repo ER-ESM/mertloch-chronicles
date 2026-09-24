@@ -35,7 +35,7 @@ export function mountIntro(host){
   if(!s.final){const ms=Math.max(s.seconds*1000,(s.text.length/T.readingSpeed)*1000+1500);el.style.setProperty('--scene-ms',ms+'ms');progress.querySelector('.on')?.style.setProperty('animation-duration',ms+'ms');timer=setTimeout(()=>show(i+1),ms);}
  }
  function start(){if(running)return;const g=host.game();if(!g)return;running=true;g.keys?.clear?.();el.hidden=false;document.body.classList.add('intro-open');el.focus({preventScroll:true});show(0);}
- function end(){if(!running)return;running=false;clearTimeout(timer);const r=host.renderer();if(r)r.cameraFocus=null;el.hidden=true;document.body.classList.remove('intro-open');markIntroSeen(host.heroId());host.onEnd?.();}
+ function end(){if(!running)return;running=false;clearTimeout(timer);const r=host.renderer();/* Runde 4b (Prüfer-Nebenbefund): harter Schnitt zurück auf den Helden – sonst fährt die Kamera bei niedriger Bildrate sekundenlang von der Bude zurück */if(r){r.cameraFocus=null;const p=host.game()?.player;if(p)r.camera={...r.camera,x:p.x,y:p.y};}el.hidden=true;document.body.classList.remove('intro-open');markIntroSeen(host.heroId());host.onEnd?.();}
  el.addEventListener('click',e=>{if(e.target.closest('[data-intro-skip]')){end();return;}if(e.target.closest('[data-intro-next]')){end();return;}show(index+1);});
  const swallow=e=>{if(!running)return;e.stopPropagation();e.preventDefault();};
  document.addEventListener('keydown',e=>{if(!running)return;swallow(e);if(e.key==='Escape')end();else if(e.key==='Enter'||e.key===' ')show(index+1);},true);

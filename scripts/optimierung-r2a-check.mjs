@@ -143,7 +143,8 @@ try{
  await b.press('Escape');await wait(400);assert.deepEqual(await open(),['menu'],'erst ohne Fenster kommt das Spielmenü');await b.press('Escape');await wait(250);
  ok('9 Esc: drei Fenster mit einem Druck zu'+(hadTarget?', dann Ziel ab':'')+', dann Spielmenü');
  // ---------- 10) Held nie unter Fenstern verloren ----------
- await calm();await b.press('p');await wait(500);
+ /* Runde 4b: Lückensuche aus – hier geht es ums Einklappen ohne Lücke (die Lücke prüft optimierung-r4b-check) */
+ await calm();await read(`document.body.dataset.heroFrame='off'`);await b.press('p');await wait(500);
  const covered=await read(`await new Promise(r=>setTimeout(r,300));return !!window.mertloch&&document.querySelector('.popup-book').getBoundingClientRect().left<innerWidth/2&&document.querySelector('.popup-book').getBoundingClientRect().right>innerWidth/2`);
  assert.ok(covered,'Kniffe liegen über der Bildmitte (Held)');
  assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'in Ruhe bleibt das Fenster voll');
@@ -154,7 +155,7 @@ try{
  const bk=await win('book');await mouse(bk.l+60,bk.t+15);/* Maus über der stehenden Titelzeile */await wait(350);assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'Hover macht es wieder voll');await mouse(1000,885);await wait(400);
  await read(`g.moveTo=null;g.path=null;g.player.inCombat=6;`);await wait(400);assert.ok(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),'im Kampf ebenfalls durchsichtig');
  await zoom(`${dir}/r2a-60z-held-umriss.jpg`,{l:1012-160,t:450-140,w:320,h:240},0);
- await read(`g.player.inCombat=0;`);await wait(400);assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'nach dem Kampf wieder voll');assert.deepEqual(await open(),['book'],'Fenster bleibt offen');
+ await read(`g.player.inCombat=0;`);await wait(400);assert.equal(await read(`return document.querySelector('.popup-book').classList.contains('hero-seethrough')`),false,'nach dem Kampf wieder voll');assert.deepEqual(await open(),['book'],'Fenster bleibt offen');await read(`delete document.body.dataset.heroFrame`);
  ok('10 Held: beim Auto-Laufen und im Kampf klappen überdeckende Fenster auf die Titelzeile ein (Runde 3b) und sind klickdurchlässig, Hover klappt sie auf, Umriss über den Renderer, nichts schließt');
  await closeAll();
  // ---------- 11) kein Fenster scrollt (alle einzeln, Desktop 2024×900) ----------

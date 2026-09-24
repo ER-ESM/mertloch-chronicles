@@ -15,7 +15,7 @@ import {TUTORIAL,COMBAT_TEXT,SYSTEM_LINES} from '../content/index.js';
 const s=await session();
 const {b,read,rect,click,shot,zoom,start,TO_SCREEN}=s;
 /** Warten, bis die Kamera nach einem Versetzen des Helden wieder auf ihm steht. */
-async function settle(){for(let i=0;i<40;i++){const d=await read(TO_SCREEN+`const p=window.game.player,a=toS(p),r=document.querySelector('#world').getBoundingClientRect();return Math.hypot(a.x-(r.left+r.width/2),a.y-(r.top+r.height/2))`);if(d<30)return;await wait(100);}}
+async function settle(){/* Runde 4b: zusätzlich warten, bis die Kamera ruht – unter Last stand sie nach 700 ms noch 20–40 E neben dem Helden, der Rechtsklick auf Ida traf dann den Boden */let last=null;for(let i=0;i<60;i++){const c=await read(`const v=window.mertloch.state().viewport;return {x:v.camera.x,y:v.camera.y}`);if(last&&Math.hypot(c.x-last.x,c.y-last.y)<.4)break;last=c;await wait(150);}for(let i=0;i<40;i++){const d=await read(TO_SCREEN+`const p=window.game.player,a=toS(p),r=document.querySelector('#world').getBoundingClientRect();return Math.hypot(a.x-(r.left+r.width/2),a.y-(r.top+r.height/2))`);if(d<30)return;await wait(100);}}
 const checks=[];const ok=m=>{checks.push(m);console.log('ok',m);};
 const only=process.env.ONLY?process.env.ONLY.split(','):null,run=n=>!only||only.includes(String(n));
 const fresh={level:1,tutorial:{version:1,step:8,completed:true},quest:{accepted:true,chapter:1}};
@@ -101,7 +101,7 @@ try{
  ok('Kniff auf einen Feind außer Reichweite: die Figur läuft hin (kein „Zu weit entfernt“)');
  // Rechtsklick auf einen NPC: hinlaufen und reden.
  await read(`const g=window.game,w=g.world;g.target=null;g.approach=null;g.moveTo=null;g.path=[];g.routeGoal=null;g.autoAttack.enabled=false;for(const e of g.enemies)if(Math.hypot(e.x-w.npc.x,e.y-w.npc.y)<600){e.x+=6000;e.home={x:e.x,y:e.y};e.aggro=false;}Object.assign(g.player,w.findClear(w.npc.x+120,w.npc.y+60,9),{inCombat:0});`);
- await wait(700);
+ await wait(300);await settle();
  at=await read(TO_SCREEN+`const n=window.game.world.npc;return toS({x:n.x,y:n.y-12})`);
  await click(at.x,at.y,'right');await wait(200);
  assert.ok(await read(`return !!window.game.talkTo&&!!window.game.moveTo`),'Rechtsklick auf Ida: Figur läuft los');

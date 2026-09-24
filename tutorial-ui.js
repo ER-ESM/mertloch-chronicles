@@ -9,8 +9,11 @@ export function mountTutorialUI(root,game,touch,show){
  root.append(box);box.querySelector('[data-tutorial-help]').onclick=show;let last='',device=null,collapsed=false;
  const fold=()=>{box.classList.toggle('collapsed',collapsed);box.querySelector('#tutorialHint').hidden=collapsed;const b=box.querySelector('[data-tutorial-collapse]');b.setAttribute('aria-expanded',String(!collapsed));b.setAttribute('aria-label',collapsed?'Hofprobe ausklappen':'Hofprobe einklappen');b.textContent=collapsed?'⌄':'⌃';};
  box.querySelector('[data-tutorial-collapse]').onclick=()=>{collapsed=!collapsed;fold();};
- return{update(){const g=game(),on=tutorialActive(g);box.hidden=!on;root.classList.toggle('in-tutorial',on);if(!on)return;
-  if(device!==touch()){device=touch();collapsed=device;fold();}
+ return{update(){const g=game(),on=tutorialActive(g);
+  // Runde 4b (Prüfer-Brüche 2 und 4): Am Desktop steht die Hofprobe als Auftrag in der Verfolgung (quest-tracker.js) – kein eigener Kasten
+  // mit Überschrift und Absatz mehr. Am Handy bleibt die kompakte Leiste oben (dort gibt es keine Verfolgung).
+  if(device!==touch()){device=touch();collapsed=device;fold();last='';}
+  box.hidden=!on||!device;root.classList.toggle('in-tutorial',on&&device);if(!on||!device)return;
   if(device){const own=box.getBoundingClientRect(),panels=[...root.querySelectorAll('.player-panel,#targetPanel:not(.hidden)')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.left<own.right&&r.right>own.left);if(panels.length)box.style.top=(Math.max(...panels.map(r=>r.bottom))+6-root.getBoundingClientRect().top)+'px';else box.style.removeProperty('top');}else box.style.removeProperty('top');
   const t=g.tutorial,s=D.steps[t.step],key=[t.step,t.hits,t.autos,device].join(':');if(key===last)return;last=key;
   box.querySelector('.eyebrow').textContent='Hofprobe · '+(t.step+1)+'/'+D.steps.length;box.querySelector('strong').textContent=s.title;box.querySelector('p').textContent=s.text;

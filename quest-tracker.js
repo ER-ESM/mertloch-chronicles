@@ -2,11 +2,11 @@
 // der NÄCHSTE offene Schritt, Entfernung rechts; alle Schritte, Belohnung und „Klick verfolgt“ stehen im Tooltip.
 // Kein Kopf, kein Erklärtext, kein Scrollen: was nicht passt, fasst „+N“ zusammen (Namen im Tooltip).
 import {hotspotQuests,questStatus,questTitle,objectiveText,hotspotDestination,trackHotspotQuest,giverPoint,turnInOf} from './hotspots.js';
-import {tutorialActive} from './tutorial.js';
+import {tutorialActive,tutorialDestination} from './tutorial.js';
 import {questProgress} from './quest-status-ui.js';
 import {chapterState,rewardLine} from './chapter-ui.js';
 import {hotspotTracker} from './hotspot-ui.js';
-import {QUEST_TRACKER_UI as T,ACTS,STORY_CHAPTERS} from './content/index.js';
+import {QUEST_TRACKER_UI as T,ACTS,STORY_CHAPTERS,TUTORIAL as TUT} from './content/index.js';
 import {isDailyTitle} from './daily-mark.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -20,10 +20,20 @@ function mainEntry(g){
  const steps=q.accepted?g.chapterProgress().map(s=>({text:s.objective.label+' '+s.done+'/'+s.need,done:s.complete})):[],open=steps.find(s=>!s.done),ready=!!q.accepted&&g.questReady();
  return {key:'main',title:g.chapter().title,task:!q.accepted?T.talkTo(npc):ready?T.turnIn(npc):open?.text||'',done:ready,steps,reward:rewardLine(g.chapter().reward||{}),dest:g.mainDestination?.()};
 }
+/** Tastenzeile „F: mit Ida sprechen · I: Rucksack“ → Kappen + Wort (Schlüssel vor dem Doppelpunkt, „Tab/Klick“ = zwei Kappen). */
+export function keyLineHtml(line){return String(line||'').split(' · ').map(seg=>{const m=/^([^:\s]+(?:\/[^:\s]+)*):\s*(.*)$/.exec(seg);return m?m[1].split('/').map(k=>`<kbd>${esc(k)}</kbd>`).join('')+' '+esc(m[2]):esc(seg);}).join('<i class="qt-sep" aria-hidden="true">·</i>');}
+/** Hofprobe wie jeder Auftrag (Runde 4b, Prüfer-Brüche 2 und 4): Titel = Schritt, eine Tastenzeile, Entfernung zum Schrittziel;
+ *  Erklärtext, Fortschritt „Hofprobe · 6/8“ und Belohnung im Tooltip. */
+export function tutorialTrackerEntry(g){
+ const t=g.tutorial,s=TUT.steps[t.step];if(!s)return null;const hits=t.step===3;
+ return {key:'tutorial',title:s.title,task:s.desktop,taskHtml:keyLineHtml(s.desktop),count:hits?(t.hits+t.autos)+'/'+(TUT.hits+TUT.autos):'',done:false,
+  label:TUT.title+' · '+(t.step+1)+'/'+TUT.steps.length,note:s.text+(hits?' ('+TUT.hitsLabel+' '+t.hits+'/'+TUT.hits+' · '+TUT.autoLabel+' '+t.autos+'/'+TUT.autos+')':''),
+  reward:TUT.rewardXp+' EP · '+TUT.loot.coins+' Pfandmarken',dest:tutorialDestination(g)};
+}
 /** Alle laufenden Aufträge als {key,title,task,done,steps?,reward?,dest}. Reihenfolge: Hauptquest, Hotspot-Aufträge, Nebenaufträge. */
 export function trackerEntries(g){
- if(tutorialActive(g))return [];
  const out=[];
+ if(tutorialActive(g)){const t=tutorialTrackerEntry(g);if(t)out.push(t);}
  if(g.quest&&!g.quest.actDone)out.push(mainEntry(g));
  for(const hq of hotspotQuests()){const st=questStatus(g,hq.id);if(st!=='accepted'&&st!=='ready')continue;const at=!hq.notice&&st==='ready'?giverPoint(g,turnInOf(hq)):null;
   out.push({key:'hs:'+hq.id,title:questTitle(g,hq),task:at?T.turnIn(at.name):objectiveText(g,hq),done:st==='ready',dest:hotspotDestination(g,hq.id)});}
@@ -33,6 +43,7 @@ export function trackerEntries(g){
 }
 /** Der verfolgte Auftrag (auch nach Akt-Ende und für Hotspot-Aufträge mit Belohnungstext). */
 function focusedEntry(g,entries){
+ if(tutorialActive(g)){const t=entries.find(e=>e.key==='tutorial');if(t)return t;}
  const key=focusedKey(g),hit=entries.find(e=>e.key===key);
  if(key.startsWith('hs:')){const hs=hotspotTracker(g);if(hs)return {...hit,key,title:hs.title,task:hs.task,reward:hs.reward};}
  if(hit)return hit;
@@ -49,15 +60,15 @@ export function focusQuest(g,key){
 function tipNote(e,focus){
  /* klein (Runde 2b): ein einzelner Schritt steht schon im Kasten – der Tooltip nennt dann nur Belohnung und Klick */
  const steps=(e.steps?.length>1?e.steps:[]).map(s=>`<span class="qt-tip-step${s.done?' done':''}">${s.done?'✓':'◇'} ${esc(s.text)}</span>`).join('<br>');
- return [steps,e.reward?`<small>${esc(T.reward)}: ${esc(e.reward)}</small>`:'',`<small>${esc(focus?T.run:T.track)}</small>`].filter(Boolean).join('<br>');
+ return [e.note?esc(e.note):'',steps,e.reward?`<small>${esc(T.reward)}: ${esc(e.reward)}</small>`:'',`<small>${esc(focus?T.run:T.track)}</small>`].filter(Boolean).join('<br>');
 }
 /** Runde 1 (2026-09-24, Grafikbefund Quick Win 8): „Daily:“ wird ein Symbol vor dem Titel, der Zähler „0/3“ steht in der
  *  Distanzspalte statt auf einer eigenen Zeile. */
 const DAILY=/^Daily:\s*/i,COUNT=/^(.*?)[\s·:]+(\d+\s*\/\s*\d+)$/;
 const titleHtml=t=>DAILY.test(t)||isDailyTitle(t)?`<i class="qt-daily" aria-label="Täglich"></i>${esc(t.replace(DAILY,''))}`:esc(t);
 function row(e,{focus,dist}){
- const count=COUNT.exec(e.task||''),text=count?count[1]:e.task;
- const tip=`data-tooltip-label="${esc(e.title)}" data-tooltip-note="${esc(tipNote(e,focus))}"`,task=`<div class="quest-task${focus&&dist!=null?' waypoint':''}${e.done?' done':''}"><i aria-hidden="true"></i><span>${esc(text)}</span>${count?`<b class="qt-count">${esc(count[2].replace(/\s+/g,''))}</b>`:''}${dist!=null?`<em>${dist} m</em>`:''}</div>`;
+ const count=e.count?[null,e.task,e.count]:e.taskHtml?null:COUNT.exec(e.task||''),text=count?count[1]:e.task;
+ const tip=`data-tooltip-label="${esc(e.label||e.title)}" data-tooltip-note="${esc(tipNote(e,focus))}"`,task=`<div class="quest-task${focus&&dist!=null?' waypoint':''}${e.done?' done':''}"><i aria-hidden="true"></i><span>${e.taskHtml||esc(text)}</span>${count?`<b class="qt-count">${esc(count[2].replace(/\s+/g,''))}</b>`:''}${dist!=null?`<em>${dist} m</em>`:''}</div>`;
  return focus?`<div class="qt-quest is-focus${e.done?' is-done':''}" ${tip}><b id="questTitle" class="qt-title">${titleHtml(e.title)}</b><div id="questTasks">${task}</div></div>`
   :`<div class="qt-quest${e.done?' is-done':''}" role="button" tabindex="0" data-track-quest="${esc(e.key)}" ${tip}><b class="qt-title">${titleHtml(e.title)}</b>${task}</div>`;
 }
@@ -67,7 +78,7 @@ function row(e,{focus,dist}){
  */
 export function trackerHtml(g,{metres,waypoint,room=4}={}){
  const entries=trackerEntries(g),focus=focusedEntry(g,entries),others=entries.filter(e=>e.key!==focus?.key),shown=others.slice(0,room),rest=others.slice(room);
- const near=pt=>metres&&pt?Math.round(metres(pt)):null,far=pt=>metres&&pt?Math.round(metres(pt)/10)*10:null;
+ const near=pt=>metres&&pt?Math.round(metres(pt)):null,far=pt=>{if(!metres||!pt)return null;const m=metres(pt);/* Runde 4b: kein „0 m“ – wer schon dort steht, braucht keine Zahl */return m<5?null:Math.round(m/10)*10;};
  return (focus?row(focus,{focus:true,dist:waypoint?near(waypoint.point):null}):'')
   +`<div id="questOthers" class="quest-others">${shown.map(e=>row(e,{focus:false,dist:far(e.dest?.point)})).join('')}${rest.length?`<small class="qt-more" data-tooltip-label="${esc(T.moreTitle)}" data-tooltip-note="${esc(rest.map(e=>esc(e.title)).join('<br>'))}">+${rest.length}</small>`:''}</div>`;
 }
