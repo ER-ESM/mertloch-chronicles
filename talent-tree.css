@@ -70,3 +70,9 @@
 .touch-mode .popup-body .tt-menu .tt-spec-tabs{gap:12px 10px!important}
 /* Kleine Handys: 6 Spalten (einzelfenster.css) sind schmaler als die 44-px-Karten – dort 5 Spalten, sonst überlappen die Lücken. */
 @media (max-width:370px){.touch-mode .popup-book .icon-skillbook{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+/* Gelerntes Talent (app.js celebrateTalent): goldener Aufblitz und ein Ring, der nach außen läuft. */
+.tt-menu .tt-node.just-learned{animation:tt-learned-pop .6s ease-out}
+.tt-menu .tt-node.just-learned::after{content:'';position:absolute;inset:-4px;border:3px solid #ffe08a;border-radius:6px;pointer-events:none;animation:tt-learned-ring .8s ease-out forwards}
+@keyframes tt-learned-pop{0%{filter:brightness(2.2) saturate(1.4);transform:translate(-50%,-50%) scale(1.18)}100%{filter:none;transform:translate(-50%,-50%) scale(1)}}
+@keyframes tt-learned-ring{0%{opacity:1;transform:scale(.9);box-shadow:0 0 14px #ffe08a}100%{opacity:0;transform:scale(1.6);box-shadow:0 0 0 #ffe08a00}}
+@media (prefers-reduced-motion:reduce){.tt-menu .tt-node.just-learned,.tt-menu .tt-node.just-learned::after{animation:none}}
