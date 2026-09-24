@@ -13,7 +13,7 @@ import {SKIN_TONES,HAIR_COLORS,FACE_ITEMS,HAIR_STYLES,BEARDS,offeredFor,DEFAULT_
 
 /** Helden-Slots (E-38): Texte der Heldenhalle und der Erstellung. */
 export const HERO_UI={eyebrow:'Deine Helden',title:'Wer zieht heute los?',text:'Jeder Held hat seinen eigenen Spielstand, seine eigene Geschichte und seinen eigenen Rucksack.',empty:'Noch kein Held. Erstelle deinen ersten.',create:'Neuer Held',level:'Stufe',fresh:'Neu',enter:'Ins Dorf',remove:'Held löschen',removeAsk:name=>'„'+name+'“ mit Spielstand wirklich löschen? Das lässt sich nicht rückgängig machen.',
- stepClass:'1 · Klasse',skin:'Hautton',hair:'Haarfarbe',face:'Am Kopf',style:'Frisur',beard:'Bart',stepLook:'2 · Aussehen',stepName:'3 · Name',classTitle:'Welche Klasse?',lookTitle:'Wie siehst du aus?',lookText:'Das Aussehen ist frei wählbar und hat keinen Einfluss auf Werte. Ausrüstung siehst du später am Körper.',nameTitle:'Wie heißt dein Held?',nameLabel:'Name',next:'Weiter',back:'Zurück',cancel:'Abbrechen',finish:'Held erstellen',busy:'Name wird geprüft …',
+ body:'Körperbau',stepClass:'1 · Klasse',skin:'Hautton',hair:'Haarfarbe',face:'Am Kopf',style:'Frisur',beard:'Bart',stepLook:'2 · Aussehen',stepName:'3 · Name',classTitle:'Welche Klasse?',lookTitle:'Wie siehst du aus?',lookText:'Das Aussehen ist frei wählbar und hat keinen Einfluss auf Werte. Ausrüstung siehst du später am Körper.',nameTitle:'Wie heißt dein Held?',nameLabel:'Name',next:'Weiter',back:'Zurück',cancel:'Abbrechen',finish:'Held erstellen',busy:'Name wird geprüft …',
  classes:{dieter:['Tresenbrecher','Nahkampf · hält aus und teilt aus'],baerbel:['Landhaus-Lady','Fernkampf und Heilung · im Takt am stärksten'],kevin:['Pfandingenieur','Fernkampf · Basteln, Zünden, Glück']}};
 
 /** Welcher Schritt zuerst? Reine Funktion (Tests). → 'login'|'roster' */
@@ -63,16 +63,20 @@ export function mountStartScreen(host){
    <div class="cs-enter"><button type="button" class="gold-button ui-button cs-enter-button" data-ui-variant="primary" data-start="enter"${blocked?' disabled':''}>${esc(HERO_UI.enter)}</button></div>
    <div class="cs-corner"><button type="button" class="outline-button ui-button" data-start="options">${esc(T.options)}</button><button type="button" class="outline-button ui-button cs-delete" data-start="remove">${esc(HERO_UI.remove)}</button></div></div>`;
  }
- /** Erstellung in drei Schritten: Klasse → Aussehen → Name. */
  const swatches=(title,key,list,current,natural)=>`<div class="hero-swatches" role="group" aria-label="${esc(title)}"><b>${esc(title)}</b><span class="hero-swatch-list">${list.map(o=>{const rgb=o.h==null||!['skin','hair'].includes(key)?null:hslToRgb(o.h,o.s,key==='skin'?.68*o.m:o.l);return `<button type="button" class="hero-swatch" data-draft-tint="${key}:${o.id}" aria-pressed="${current===o.id}" title="${esc(o.name)}" aria-label="${esc(title)} ${esc(o.name)}" style="--swatch:${rgb?'rgb('+rgb.join(',')+')':natural||'repeating-linear-gradient(45deg,#c9b98a 0 4px,#8a7a52 4px 8px)'}"><span>${esc(o.name)}</span></button>`;}).join('')}</span></div>`;
+ /** Erstellung auf einer Seite nach WoW-Vorbild (2026-09-24): Klassen links, großes Modell mittig, Aussehen rechts, Name und „Held erstellen“ unten. */
  function createHtml(){
-  const d=state.draft,steps=[HERO_UI.stepClass,HERO_UI.stepLook,HERO_UI.stepName].map((t,n)=>`<li class="${n===d.step?'on':n<d.step?'done':''}">${esc(t)}</li>`).join('');
-  let body='';
-  if(d.step===0)body=`<h3>${esc(HERO_UI.classTitle)}</h3><div class="mmo-choices" role="group">${CLASSES.map(id=>`<button type="button" class="ui-panel mmo-choice hero-card" data-draft-class="${id}" aria-pressed="${d.classId===id}">${heroCanvas(id,{},HERO_UI.classes[id][0])}<strong>${esc(HERO_UI.classes[id][0])}</strong><span>${esc(HERO_UI.classes[id][1])}</span></button>`).join('')}</div>`;
-  else if(d.step===1)body=`<h3>${esc(HERO_UI.lookTitle)}</h3><p>${esc(HERO_UI.lookText)}</p><div class="mmo-choices" role="group">${LOOKS.map(l=>`<button type="button" class="ui-panel mmo-choice hero-card" data-draft-look="${l.id}" aria-pressed="${d.look===l.id}">${heroCanvas(l.id,{},l.name,d.tint)}<strong>${esc(l.name)}</strong></button>`).join('')}</div>${swatches(HERO_UI.skin,'skin',SKIN_TONES,d.tint.skin,'#f0b088')}${swatches(HERO_UI.hair,'hair',HAIR_COLORS,d.tint.hair,null)}${swatches(HERO_UI.style,'style',[...offeredFor(HAIR_STYLES,d.look),...drawnStyles(d.look,'hair')],d.tint.style,null)}${swatches(HERO_UI.beard,'beard',[...offeredFor(BEARDS,d.look),...drawnStyles(d.look,'beard')],d.tint.beard,null)}${swatches(HERO_UI.face,'face',FACE_ITEMS,d.tint.face,null)}`;
-  else body=`<h3>${esc(HERO_UI.nameTitle)}</h3><div class="hero-name-row">${heroCanvas(d.look,{},d.name||'',d.tint,224)}<form data-hero-form class="online-form"><label>${esc(HERO_UI.nameLabel)}<input name="heroName" type="text" minlength="3" maxlength="20" required autocomplete="off" value="${esc(d.name||'')}"></label><small>${esc(HERO_TEXT.nameRule)}</small><p class="online-message ${d.error?'bad':''}" role="status">${esc(d.busy?HERO_UI.busy:d.error||'')}</p></form></div>`;
-  const nav=`<div class="ui-row start-enter"><button type="button" class="outline-button ui-button" data-start="${d.step?'draft-back':'draft-cancel'}">${esc(d.step?HERO_UI.back:HERO_UI.cancel)}</button><button type="button" class="gold-button ui-button" data-ui-variant="primary" data-start="draft-next"${d.busy?' disabled':''}>${esc(d.step===2?HERO_UI.finish:HERO_UI.next)}</button></div>`;
-  return `<header><p class="eyebrow">${esc(HERO_UI.create)}</p><ol class="hero-steps">${steps}</ol></header><div class="ui-panel mmo-selection-detail hero-create">${body}${nav}</div>`;
+  const d=state.draft,cls=HERO_UI.classes[d.classId];
+  const classes=CLASSES.map(id=>`<button type="button" class="cc-class" data-draft-class="${id}" aria-pressed="${d.classId===id}">${heroCanvas(id,{},HERO_UI.classes[id][0],null,96)}<span><strong>${esc(HERO_UI.classes[id][0])}</strong><small>${esc(HERO_UI.classes[id][1])}</small></span></button>`).join('');
+  const bodies=`<div class="cc-bodies" role="group" aria-label="${esc(HERO_UI.body)}">${LOOKS.map(l=>`<button type="button" data-draft-look="${l.id}" aria-pressed="${d.look===l.id}">${esc(l.name)}</button>`).join('')}</div>`;
+  const look=`${swatches(HERO_UI.skin,'skin',SKIN_TONES,d.tint.skin,'#f0b088')}${swatches(HERO_UI.hair,'hair',HAIR_COLORS,d.tint.hair,null)}${swatches(HERO_UI.style,'style',[...offeredFor(HAIR_STYLES,d.look),...drawnStyles(d.look,'hair')],d.tint.style,null)}${swatches(HERO_UI.beard,'beard',[...offeredFor(BEARDS,d.look),...drawnStyles(d.look,'beard')],d.tint.beard,null)}${swatches(HERO_UI.face,'face',FACE_ITEMS,d.tint.face,null)}`;
+  return `<div class="cc"><h2 class="cc-title">${esc(HERO_UI.create)}</h2>
+   <aside class="cc-panel cc-classes"><h3>${esc(HERO_UI.classTitle)}</h3>${classes}</aside>
+   <div class="cc-stage"><div class="cc-hero" aria-hidden="true">${heroCanvas(d.look,{},d.name||'',d.tint,384)}</div><div class="cc-role"><b>${esc(cls[0])}</b><span>${esc(cls[1])}</span></div></div>
+   <aside class="cc-panel cc-look"><h3>${esc(HERO_UI.lookTitle)}</h3><h4>${esc(HERO_UI.body)}</h4>${bodies}${look}<p class="cc-note">${esc(HERO_UI.lookText)}</p></aside>
+   <div class="cc-bottom"><button type="button" class="outline-button ui-button" data-start="draft-cancel">${esc(HERO_UI.back)}</button>
+    <form data-hero-form class="online-form cc-name"><label>${esc(HERO_UI.nameLabel)}<input name="heroName" type="text" minlength="3" maxlength="20" required autocomplete="off" value="${esc(d.name||'')}" placeholder="${esc(HERO_UI.nameTitle)}"></label><small>${esc(HERO_TEXT.nameRule)}</small><p class="online-message ${d.error?'bad':''}" role="status">${esc(d.busy?HERO_UI.busy:d.error||'')}</p></form>
+    <button type="button" class="gold-button ui-button cc-create" data-ui-variant="primary" data-start="draft-next"${d.busy?' disabled':''}>${esc(HERO_UI.finish)}</button></div></div>`;
  }
  async function paintHeroCards(){
   const canvases=[...el.querySelectorAll('[data-hero-look]')];if(!canvases.length)return;
@@ -81,6 +85,7 @@ export function mountStartScreen(host){
   for(const canvas of canvases){let gear={};try{gear=JSON.parse(canvas.dataset.heroGear||'{}');}catch{}const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);drawDetailedHero(ctx,canvas.dataset.heroLook,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment:equipmentAppearance(gear,ITEMS),tint:canvas.dataset.heroTint?parseTintKey(canvas.dataset.heroTint):null},canvas.width/32);}
  }
  function render(){
+  if(state.step==='create'&&state.draft){const n=el.querySelector('[name=heroName]');if(n)state.draft.name=n.value;}
   el.dataset.step=state.step;el.dataset.heroes=String(heroes().length);
   const hall=state.step==='roster'||state.step==='create';el.innerHTML=`<div class="mmo-scene ${hall?'mmo-roster':'mmo-gate'}">${hall?'<div class="online-card start-stage">'+(state.step==='create'?createHtml():rosterHtml())+'</div>':loginHtml()}</div>`;
   if(hall)paintHeroCards().catch(()=>{});else rememberField();
@@ -120,7 +125,7 @@ export function mountStartScreen(host){
   else if(what==='options')host.openOptions?.();
   else if(what==='leaderboard')await host.online()?.showLeaderboard?.(el);
   else if(what==='enter'){if(state.pick&&host.onEnter(state.pick)!==false)close();}
-  else if(what==='create'){state.draft={step:0,classId:'dieter',look:'dieter',tint:{...DEFAULT_TINT},name:'',error:'',busy:false};go('create');}
+  else if(what==='create'){state.draft={step:2,classId:'dieter',look:'dieter',tint:{...DEFAULT_TINT},name:'',error:'',busy:false};go('create');}
   else if(what==='draft-cancel'){state.draft=null;go('roster');}
   else if(what==='draft-back'){state.draft.name=el.querySelector('[name=heroName]')?.value||state.draft.name;state.draft.step--;state.draft.error='';render();}
   else if(what==='draft-next')await draftNext();
