@@ -158,7 +158,11 @@ export function mountStartScreen(host){
  el.addEventListener('submit',e=>{if(e.target.closest('[data-hero-form]')){e.preventDefault();draftNext();}});
  el.addEventListener('dblclick',e=>{if(e.target.closest('[data-hero]'))el.querySelector('[data-start=enter]:not([disabled])')?.click();});
  // Tasten bleiben im Schirm: das Spiel darunter darf weder laufen noch Fenster öffnen.
- el.addEventListener('keydown',e=>{e.stopPropagation();if(state.removing){if(e.key==='Enter'){e.preventDefault();el.querySelector('[data-start=remove-confirm]')?.click();}else if(e.key==='Escape'){e.preventDefault();state.removing=null;render();}return;}if(state.step==='roster'&&e.key==='Enter'&&!e.target.matches?.('input,button')){e.preventDefault();el.querySelector('[data-start=enter]:not([disabled])')?.click();return;}if(state.step!=='roster'||!/^Arrow(Left|Right)$/.test(e.key)||e.target.matches?.('input'))return;const list=heroes();if(!list.length)return;e.preventDefault();const i=list.findIndex(c=>c.id===state.pick),n=list.length;state.pick=list[(i+(e.key==='ArrowRight'?1:-1)+n)%n].id;render();});
+ el.addEventListener('keydown',e=>{e.stopPropagation();if(state.removing){if(e.key==='Enter'){e.preventDefault();el.querySelector('[data-start=remove-confirm]')?.click();}else if(e.key==='Escape'){e.preventDefault();state.removing=null;render();}return;}if(state.step==='roster'&&e.key==='Enter'&&!e.target.matches?.('input,button')){e.preventDefault();el.querySelector('[data-start=enter]:not([disabled])')?.click();return;}
+  // Erstellung: Esc = „Zurück“ (WoW). Offenes Einstellungsfenster schließt sich vorher selbst.
+  if(state.step==='create'&&e.key==='Escape'&&!document.querySelector('.popup-settings')){e.preventDefault();el.querySelector('.cc-bottom [data-start]:not(.cc-create)')?.click();return;}
+  // Heldenliste steht rechts senkrecht: hoch/runter wie in WoW, links/rechts weiterhin.
+  if(state.step!=='roster'||!/^Arrow(Left|Right|Up|Down)$/.test(e.key)||e.target.matches?.('input'))return;const list=heroes();if(!list.length)return;e.preventDefault();const i=list.findIndex(c=>c.id===state.pick),n=list.length;state.pick=list[(i+(/Right|Down/.test(e.key)?1:-1)+n)%n].id;render();});
  el.addEventListener('keyup',e=>e.stopPropagation());
  return {boot,open,close,logout,get isOpen(){return state.open;},get step(){return state.step;},get guest(){return state.guest;}};
 }

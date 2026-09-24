@@ -107,6 +107,7 @@ body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 .start-screen .cs-name span{font:700 16px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 6px #000}
 .start-screen .cs-name small{font:400 13px/1.3 var(--read);color:#d9cfae;text-shadow:0 1px 0 #000,0 0 6px #000;cursor:help}
 .start-screen .cs-list{grid-area:list;display:flex;flex-direction:column;gap:8px;min-height:0;padding:14px;background:linear-gradient(180deg,#132a20f2,#0c1c15f2);border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;box-shadow:0 8px 24px #000a}
+.start-screen .cs-list{align-self:start;max-height:calc(100dvh - 130px)}.start-screen .cs-cards{overflow:auto;min-height:0}
 .start-screen .cs-list h3{margin:0 0 4px;padding-bottom:6px;font:400 20px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:#f3cf7a;border-bottom:1px solid #d7b57140}
 .start-screen .cs-cards{display:flex;flex-direction:column;gap:6px;overflow:auto;min-height:0}
 .start-screen .cs-card{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:center;gap:10px;padding:6px 10px 6px 6px;min-height:64px;background:linear-gradient(90deg,#1c3428,#12251c);border:1px solid #4d5a44;border-radius:4px;color:#f1e4c4;text-align:left;cursor:pointer;box-shadow:none}
