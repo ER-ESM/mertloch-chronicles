@@ -366,3 +366,11 @@ body:has(.player-panel.is-low-health) .game-shell::after{opacity:.55;animation:l
 .target-panel.friendly-target #targetPortrait{display:none}
 .target-panel.elite-target #targetPortrait{border-color:#e8c170;box-shadow:0 0 0 2px #0b1a12,0 0 10px #e8c17088}
 .target-panel:has(#targetPortrait){padding-right:42px!important}
+/* Ortswechsel (app.js zoneSplash): großer Name mittig oben wie in WoW, blendet ein und nach 2,5 s aus; klickdurchlässig. */
+#zoneSplash{position:absolute;left:50%;top:22%;transform:translateX(-50%);z-index:44;pointer-events:none;text-align:center;opacity:0;white-space:nowrap}
+#zoneSplash b{display:block;font:400 46px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:#ffe39a;text-shadow:0 3px 0 #3a2410,0 0 16px #000c,2px 2px 0 #1a120a,-2px -2px 0 #1a120a,2px -2px 0 #1a120a,-2px 2px 0 #1a120a}
+#zoneSplash small{display:block;margin-top:6px;font:700 15px/1.2 var(--read);letter-spacing:.08em;color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 6px #000}
+#zoneSplash.show{animation:zone-splash 3s ease forwards}
+@keyframes zone-splash{0%{opacity:0;transform:translate(-50%,6px)}12%{opacity:1;transform:translate(-50%,0)}75%{opacity:1}100%{opacity:0}}
+.touch-mode #zoneSplash b{font-size:30px}
+@media (prefers-reduced-motion:reduce){#zoneSplash.show{animation-duration:2s}}
