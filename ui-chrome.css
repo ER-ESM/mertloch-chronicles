@@ -451,3 +451,4 @@ body:not(.touch-mode) .game-popup.popup-settings{height:min(620px,calc(100dvh - 
 .popup-menu .game-menu-actions .gold-button{justify-content:center}
 .popup-menu .game-menu-sep{border:0;height:1px;margin:6px 4px;background:linear-gradient(90deg,transparent,#d7b57188,transparent)}
 .opt-footer{align-items:center}.opt-note{flex:1;min-width:0;text-align:center;font:600 12px/1.35 var(--read);color:#f3cf7a}
+.opt-range small{font:400 11px var(--read);color:#a9a58f}

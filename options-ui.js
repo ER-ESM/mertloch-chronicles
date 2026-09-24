@@ -32,6 +32,7 @@ export function mountOptions(api){
   if(id==='meter')return row(T.meter,T.meterHint,open(T.open,'data-meter-open'));
   if(id==='hud')return row(T.hud,T.hudHint,open(T.open,'data-hud-open'));
   if(id==='preset'){const cur=presetOf(S());return row(T.presetLabel,T.presetHint,`<span class="opt-segment" role="group" aria-label="${esc(T.presetLabel)}">${T.presets.map(p=>`<button type="button" data-opt-preset="${p.id}" aria-pressed="${cur===p.id}">${esc(p.name)}</button>`).join('')}<span class="opt-custom"${cur?' hidden':''}>${esc(T.presetCustom)}</span></span>`);}
+  if(id==='zoom'){const r=api.zoomRange(),v=Math.round(api.zoom()*100);return row(T.zoom,T.zoomHint,`<span class="opt-range"><small>${esc(T.zoomFar)}</small><input type="range" min="${Math.round(r.min*100)}" max="${Math.round(r.max*100)}" step="5" value="${v}" data-opt-zoom aria-label="${esc(T.zoom)}"><small>${esc(T.zoomNear)}</small><output>${v} %</output></span>`);}
   if(id==='fullscreen')return row(T.fullscreen,T.fullscreenHint,open(T.open,'data-settings="fullscreen"'));
   if(id==='install')return row(T.install,T.installHint,open(T.open,'data-shell="install"'));
   if(id==='touch')return row(T.touch,T.touchHint,open(T.open,'data-shell="mobile"'));
@@ -94,7 +95,7 @@ export function mountOptions(api){
   const rows=(T.sections[state.cat]||[]).flatMap(s=>s.rows);const prefs={...api.prefs()};
   for(const r of rows){if(r.setting&&SETTING_DEFAULTS[r.setting]!==undefined)g.setSetting(r.setting,SETTING_DEFAULTS[r.setting]);if(r.pref)prefs[r.pref]=OPTIONS_DEFAULTS[r.pref];if(r.slot==='preset')for(const [k,v] of Object.entries(SETTING_DEFAULTS))if(['light','fx','autoRes','fullRes'].includes(k))g.setSetting(k,v);}
   api.setPrefs(prefs);api.events();say(T.defaultsDone(cat.name));api.rerender();}
- function input(e){const el=e.target.closest('[data-opt-pref]');if(el){const p={...api.prefs(),[el.dataset.optPref]:Number(el.value)};api.setPrefs(cleanPrefs(p));const out=el.parentElement.querySelector('output'),r=Object.values(T.sections).flat().flatMap(s=>s.rows).find(x=>x.pref===el.dataset.optPref);if(out)out.textContent=el.value+(r?.unit||'');return true;}
+ function input(e){const z=e.target.closest('[data-opt-zoom]');if(z){api.setZoom(Number(z.value)/100);const out=z.parentElement.querySelector('output');if(out)out.textContent=z.value+' %';return true;}const el=e.target.closest('[data-opt-pref]');if(el){const p={...api.prefs(),[el.dataset.optPref]:Number(el.value)};api.setPrefs(cleanPrefs(p));const out=el.parentElement.querySelector('output'),r=Object.values(T.sections).flat().flatMap(s=>s.rows).find(x=>x.pref===el.dataset.optPref);if(out)out.textContent=el.value+(r?.unit||'');return true;}
   const f=e.target.closest('[data-opt-filter]');if(f){state.filter=f.value;api.rerender({keepFocus:'[data-opt-filter]'});return true;}return false;}
  return {html,click,input,open(cat){if(cat)state.cat=cat;state.capture=null;},get capturing(){return !!state.capture;},get category(){return state.cat;},stop(){state.capture=null;}};
 }

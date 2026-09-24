@@ -33,6 +33,7 @@ export const OPTIONS_UI={
     {setting:'fx',label:'Wetter & Effekte',hint:'Regen, Staub, Funken und Zauberglanz.'},
     {setting:'autoRes',label:'Auflösung automatisch anpassen',hint:'Senkt die Auflösung der Welt von selbst, wenn der Rechner die 60 Bilder nicht hält.'},
     {setting:'fullRes',label:'Volle Grafikauflösung',hint:'Vierfache Dichte – schärfer auf hochauflösenden Bildschirmen, kostet deutlich Leistung.'}]},
+   {title:'Kamera',rows:[{slot:'zoom'}]},
    {title:'Anzeige',rows:[{slot:'fullscreen'}]}
   ],
   audio:[
@@ -47,6 +48,7 @@ export const OPTIONS_UI={
  },
  presets:[{id:'low',name:'Niedrig',values:{light:false,fx:false,autoRes:true,fullRes:false}},{id:'mid',name:'Mittel',values:{light:true,fx:false,autoRes:true,fullRes:false}},{id:'high',name:'Hoch',values:{light:true,fx:true,autoRes:true,fullRes:false}},{id:'ultra',name:'Ultra',values:{light:true,fx:true,autoRes:false,fullRes:true}}],
  presetLabel:'Grafikqualität',presetCustom:'Eigene',presetHint:'Setzt die Details darunter auf einmal.',
+ zoom:'Kameraabstand',zoomHint:'Wie nah die Kamera am Helden ist (auch per Mausrad).',zoomNear:'nah',zoomFar:'weit',
  fullscreen:'Vollbild',fullscreenHint:'Spiel ohne Browserleisten (Esc beendet).',
  install:'Als App installieren',installHint:'Startet ohne Browserfenster, auch offline.',
  touch:'Steuerung & Touchbuttons',touchHint:'Knöpfe für Handy und Tablet anordnen.',

@@ -36,7 +36,7 @@ import {mountOptions,loadPrefs,savePrefs} from './options-ui.js';
 let uiPrefs=loadPrefs();
 const applyUiScale=p=>document.documentElement.style.setProperty('--ui-scale',String(p.uiScale/100));applyUiScale(uiPrefs);
 const options=mountOptions({game:()=>game,prefs:()=>uiPrefs,setPrefs:p=>{uiPrefs=p;savePrefs(p);applyUiScale(p);muted=p.volume<=0;},toast:t=>toast(t),rebuild:()=>game&&buildActions(),events:()=>game&&events(),
- rerender:o=>{if(popups.isOpen('settings'))showSettings(null,o);},close:()=>popups.close('settings'),extras:{bars:()=>barSettings(game),meter:()=>meterEntry(),hud:()=>hudEntry()},touch:()=>!!mobile?.active,admin:()=>true});
+ rerender:o=>{if(popups.isOpen('settings'))showSettings(null,o);},close:()=>popups.close('settings'),extras:{bars:()=>barSettings(game),meter:()=>meterEntry(),hud:()=>hudEntry()},touch:()=>!!mobile?.active,admin:()=>true,zoom:()=>renderer?.zoomFactor||1,zoomRange:()=>ZOOM_RANGE,setZoom:f=>{if(!renderer)return;const v=renderer.setZoomFactor(f);try{localStorage.setItem(ZOOM_KEY,v.toFixed(3));}catch{}}});
 import {decoratePanel,adaptPanel} from './panel-pages.js';
 import {APEROL_TEXT} from './content/index.js';
 import {tutorialActive,tutorialConfirm,tutorialSignal} from './tutorial.js';
