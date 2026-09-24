@@ -17,7 +17,10 @@ export function presetOf(settings){return T.presets.find(p=>Object.entries(p.val
 
 /** api: game(), prefs(), setPrefs(p), toast(t), rebuild(), events(), rerender(), extras:{bars(),meter(),hud()}, touch(), admin() */
 export function mountOptions(api){
- const state={cat:'game',capture:null,filter:''};
+ const CAT_KEY='mertloch-options-cat';let saved='game';try{saved=localStorage.getItem(CAT_KEY)||'game';}catch{}
+ const state={cat:T.categories.some(c=>c.id===saved)?saved:'game',capture:null,filter:'',note:''};
+ /** Meldung unten im Fenster (WoW: Hinweiszeile der Tastaturbelegung) statt Einblendung über dem Spiel. */
+ const say=t=>{state.note=t;const n=document.querySelector('.opt-note');if(n)n.textContent=t;};
  const S=()=>api.game().settings;
  const toggle=r=>{const on=settingOn(S(),r.setting);
   return `<button type="button" class="opt-switch" data-setting-toggle="${r.setting}" aria-pressed="${on}" aria-label="${esc(r.label)}"><span class="setting-switch" aria-hidden="true"><i></i></span><span class="setting-state">${on?T.on:T.off}</span></button>`;};
@@ -52,24 +55,24 @@ export function mountOptions(api){
   const cat=T.categories.find(c=>c.id===state.cat)||T.categories[0];
   const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${T.categories.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}"><canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas><span>${esc(c.name)}</span></button>`).join('')}</nav>`;
   const body=cat.id==='keys'?keysHtml():(T.sections[cat.id]||[]).map(s=>{const rows=s.rows.map(rowHtml).join('');return rows?`<section class="opt-section"><h4>${esc(s.title)}</h4>${rows}</section>`:'';}).join('');
-  return `<div class="opt-window" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
+  return `<div class="opt-window" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note" role="status" aria-live="polite">${esc(state.note)}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
  }
  function commitAction(id,slot,binding){
   const g=api.game(),r=assignKey(liveKeymap(),id,slot,binding),name=KEYBIND_ACTIONS.find(a=>a.id===id)?.name||id;
-  if(!r.ok){api.toast(r.reason==='browser'?K.blocked(bindingLabel(binding,true)):K.fixedNote);return false;}
+  if(!r.ok){say(r.reason==='browser'?K.blocked(bindingLabel(binding,true)):K.fixedNote);return false;}
   const freed=[];if(binding)for(let i=0;i<BAR_SIZE*MAX_BARS;i++)if(bindingAt(g.rpg,i)===binding){assignBinding(g.rpg,i,'');freed.push(K.barSlot(Math.floor(i/BAR_SIZE)+1,i%BAR_SIZE+1));}
   setLiveKeymap(r.map);saveKeymap(r.map);const label=bindingLabel(binding,true);
-  api.toast(binding?[K.bound(label,name),...r.released.map(x=>K.released(label,KEYBIND_ACTIONS.find(a=>a.id===x.id)?.name||x.id)),...freed.map(n=>K.released(label,n))].join(' '):K.cleared(name));
+  say(binding?[K.bound(label,name),...r.released.map(x=>K.released(label,KEYBIND_ACTIONS.find(a=>a.id===x.id)?.name||x.id)),...freed.map(n=>K.released(label,n))].join(' '):K.cleared(name));
   if(freed.length)g.emit('save');api.rebuild();return true;
  }
  function commitBar(index,binding){
   const g=api.game(),name=K.barSlot(Math.floor(index/BAR_SIZE)+1,index%BAR_SIZE+1);
-  if(isBrowserKey(binding)){api.toast(K.blocked(bindingLabel(binding,true)));return false;}
+  if(isBrowserKey(binding)){say(K.blocked(bindingLabel(binding,true)));return false;}
   const released=[],act=binding&&actionFor(liveKeymap(),binding);
-  if(act){const a=KEYBIND_ACTIONS.find(x=>x.id===act);if(a.fixed){api.toast(K.fixedNote);return false;}const slot=keysOf(liveKeymap(),act).indexOf(binding),r=assignKey(liveKeymap(),act,slot,'');setLiveKeymap(r.map);saveKeymap(r.map);released.push(a.name);}
-  const r=assignBinding(g.rpg,index,binding);if(!r.ok){api.toast(K.blocked(bindingLabel(binding,true)));return false;}
+  if(act){const a=KEYBIND_ACTIONS.find(x=>x.id===act);if(a.fixed){say(K.fixedNote);return false;}const slot=keysOf(liveKeymap(),act).indexOf(binding),r=assignKey(liveKeymap(),act,slot,'');setLiveKeymap(r.map);saveKeymap(r.map);released.push(a.name);}
+  const r=assignBinding(g.rpg,index,binding);if(!r.ok){say(K.blocked(bindingLabel(binding,true)));return false;}
   const label=bindingLabel(binding,true);released.push(...r.released.map(j=>K.barSlot(Math.floor(j/BAR_SIZE)+1,j%BAR_SIZE+1)));
-  api.toast(binding?[K.bound(label,name),...released.map(n=>K.released(label,n))].join(' '):K.cleared(name));g.emit('save');api.rebuild();return true;
+  say(binding?[K.bound(label,name),...released.map(n=>K.released(label,n))].join(' '):K.cleared(name));g.emit('save');api.rebuild();return true;
  }
  function finish(binding){const c=state.capture;state.capture=null;if(binding!==null&&c)(c.bar!==undefined?commitBar(c.bar,binding):commitAction(c.id,c.slot,binding));api.rerender();}
  // Erfassung vor allen anderen Tastenwegen (Fenster, Aktionsleisten): Fenster-Ebene, Erfassungsphase, als erstes angemeldet.
@@ -78,7 +81,7 @@ export function mountOptions(api){
   const b=bindingFromKey(e);if(b)finish(b);},true);
  addEventListener('pointerdown',e=>{if(!state.capture)return;if(e.target.closest?.('[data-opt-key],[data-opt-bar]')&&e.button===0)return;const b=bindingFromMouse(e);e.preventDefault();e.stopImmediatePropagation();finish(b||null);},true);
  function click(e){
-  const cat=e.target.closest('[data-opt-cat]');if(cat){state.cat=cat.dataset.optCat;state.capture=null;api.rerender();return true;}
+  const cat=e.target.closest('[data-opt-cat]');if(cat){state.cat=cat.dataset.optCat;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}state.capture=null;api.rerender();return true;}
   const key=e.target.closest('[data-opt-key]');if(key){const [id,slot]=key.dataset.optKey.split(':');state.capture={id,slot:Number(slot)};api.game().keys?.clear?.();api.rerender();return true;}
   const bar=e.target.closest('[data-opt-bar]');if(bar){state.capture={bar:Number(bar.dataset.optBar)};api.game().keys?.clear?.();api.rerender();return true;}
   const preset=e.target.closest('[data-opt-preset]');if(preset){const p=T.presets.find(x=>x.id===preset.dataset.optPreset);for(const [k,v] of Object.entries(p.values))if(settingOn(api.game().settings,k)!==v)api.game().setSetting(k,v);api.events();api.rerender();return true;}
@@ -87,10 +90,10 @@ export function mountOptions(api){
   return false;
  }
  function defaults(){const g=api.game(),cat=T.categories.find(c=>c.id===state.cat);
-  if(state.cat==='keys'){setLiveKeymap({});saveKeymap({});g.rpg.barKeys={};g.emit('save');api.rebuild();api.toast(K.resetDone);api.rerender();return;}
+  if(state.cat==='keys'){setLiveKeymap({});saveKeymap({});g.rpg.barKeys={};g.emit('save');api.rebuild();say(K.resetDone);api.rerender();return;}
   const rows=(T.sections[state.cat]||[]).flatMap(s=>s.rows);const prefs={...api.prefs()};
   for(const r of rows){if(r.setting&&SETTING_DEFAULTS[r.setting]!==undefined)g.setSetting(r.setting,SETTING_DEFAULTS[r.setting]);if(r.pref)prefs[r.pref]=OPTIONS_DEFAULTS[r.pref];if(r.slot==='preset')for(const [k,v] of Object.entries(SETTING_DEFAULTS))if(['light','fx','autoRes','fullRes'].includes(k))g.setSetting(k,v);}
-  api.setPrefs(prefs);api.events();api.toast(T.defaultsDone(cat.name));api.rerender();}
+  api.setPrefs(prefs);api.events();say(T.defaultsDone(cat.name));api.rerender();}
  function input(e){const el=e.target.closest('[data-opt-pref]');if(el){const p={...api.prefs(),[el.dataset.optPref]:Number(el.value)};api.setPrefs(cleanPrefs(p));const out=el.parentElement.querySelector('output'),r=Object.values(T.sections).flat().flatMap(s=>s.rows).find(x=>x.pref===el.dataset.optPref);if(out)out.textContent=el.value+(r?.unit||'');return true;}
   const f=e.target.closest('[data-opt-filter]');if(f){state.filter=f.value;api.rerender({keepFocus:'[data-opt-filter]'});return true;}return false;}
  return {html,click,input,open(cat){if(cat)state.cat=cat;state.capture=null;},get capturing(){return !!state.capture;},get category(){return state.cat;},stop(){state.capture=null;}};
