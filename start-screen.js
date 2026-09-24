@@ -30,7 +30,7 @@ export function mountStartScreen(host){
  const account=()=>host.online()?.account||null;
  const card=(title,body)=>`<div class="online-card ui-panel mmo-login-card"><h3>${esc(title)}</h3>${body}</div>`;
  /** Anmeldebildschirm nach WoW-Vorbild (2026-09-24): Logo oben, Anmeldekasten mittig im unteren Drittel, Version unten links, Einstellungen unten rechts. */
- function gateFrame(inner){return `<div class="lg"><h1 class="lg-logo"><span>Mertloch</span><b>Chronicles</b></h1><div class="lg-box">${inner}</div><div class="lg-foot lg-left"><span>${esc(host.version?.()||'')}</span>${host.enabled?`<span class="lg-server ${host.online()?.state?.reachable===false?'bad':'ok'}">${esc(host.online()?.state?.reachable===false?T.serverDown:T.serverUp)}</span>`:''}</div><div class="lg-foot lg-right"><button type="button" class="outline-button ui-button" data-start="options">${esc(T.options)}</button></div></div>`;}
+ function gateFrame(inner){return `<div class="lg"><h1 class="lg-logo"><span data-text="Mertloch">Mertloch</span><b data-text="Chronicles">Chronicles</b></h1><div class="lg-box">${inner}</div><div class="lg-foot lg-left"><span>${esc(host.version?.()||'')}</span>${host.enabled?`<span class="lg-server ${host.online()?.state?.reachable===false?'bad':'ok'}">${esc(host.online()?.state?.reachable===false?T.serverDown:T.serverUp)}</span>`:''}</div><div class="lg-foot lg-right"><button type="button" class="outline-button ui-button" data-start="options">${esc(T.options)}</button></div></div>`;}
  function loginHtml(){return gateFrame(loginInner());}
  function loginInner(){
   const o=host.online();

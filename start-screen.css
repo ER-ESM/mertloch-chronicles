@@ -135,6 +135,15 @@ body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 .start-screen .lg{position:relative;min-height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;justify-items:center;padding:clamp(20px,5vh,56px) 24px 20px;box-sizing:border-box}
 .start-screen .lg-logo{margin:0;display:grid;justify-items:center;font:400 clamp(48px,7.5vw,104px)/.86 var(--display,'Jersey 15',system-ui);letter-spacing:.04em;text-transform:uppercase;color:#f4e8c4;text-shadow:0 5px 0 #1a120a,4px 0 0 #1a120a,-4px 0 0 #1a120a,0 -4px 0 #1a120a,0 0 30px #000c}
 .start-screen .lg-logo b{font-weight:400;color:#ecb95c;text-shadow:0 5px 0 #3a2410,4px 0 0 #1a120a,-4px 0 0 #1a120a,0 -4px 0 #1a120a,0 0 24px #f0c46a66}
+/* Logo-Glanz (WoW-Login): warmer Schein dahinter atmet, alle paar Sekunden läuft ein Lichtstreif über die Schrift. */
+.start-screen .lg-logo{position:relative;isolation:isolate}
+.start-screen .lg-logo::before{content:'';position:absolute;z-index:-1;inset:-18% -12%;background:radial-gradient(ellipse at 50% 60%,#f0b04a44,#f0b04a14 45%,transparent 70%);animation:lg-glow 5s ease-in-out infinite}
+.start-screen .lg-logo span,.start-screen .lg-logo b{position:relative}
+.start-screen .lg-logo [data-text]::after{content:attr(data-text);position:absolute;inset:0;color:transparent;text-shadow:none;background:linear-gradient(100deg,transparent 40%,#fffbe8 48%,#ffffff 50%,#fffbe8 52%,transparent 60%) no-repeat;background-size:300% 100%;filter:drop-shadow(0 0 6px #ffe7a0aa);background-position:130% 0;-webkit-background-clip:text;background-clip:text;animation:lg-shine 8s ease-in-out infinite;pointer-events:none}
+.start-screen .lg-logo b[data-text]::after{animation-delay:.25s}
+@keyframes lg-shine{0%,72%{background-position:130% 0}100%{background-position:-30% 0}}
+@keyframes lg-glow{50%{opacity:.55;transform:scale(.97)}}
+@media (prefers-reduced-motion:reduce){.start-screen .lg-logo::before,.start-screen .lg-logo [data-text]::after{animation:none}.start-screen .lg-logo [data-text]::after{display:none}}
 .start-screen .lg-box{align-self:end;display:grid;gap:10px;width:min(380px,100%);margin-bottom:clamp(12px,6vh,64px)}
 .start-screen .lg-box .mmo-login-card{width:100%!important;margin:0;padding:18px 22px;background:linear-gradient(180deg,#132a20f2,#0c1c15f2);border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;box-shadow:0 10px 30px #000c}
 .start-screen .lg-box .mmo-login-card>.ui-row{justify-content:center}
