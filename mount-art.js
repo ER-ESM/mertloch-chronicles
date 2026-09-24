@@ -15,7 +15,7 @@ function limb(c,img,src,dst,x0,x1){for(let i=0;i<src.length-1;i++){const a=src[i
 }}
 function riderSource(p,direction){const equipment=(p.visualEquipment||[]).filter(i=>!['weapon','offhand','ranged'].includes(i.slot)),body=p.look||p.classId||'dieter',key=JSON.stringify([body,direction,p.tint,equipment,redesignArt.details.has((redesignArt.catalog?.aliases?.[body]||body)+'-poses')]);if(sources.has(key))return sources.get(key);
  const pose={...p,mount:null,dead:false,attack:0,hurt:0,parry:0,castPose:0,casting:false,moving:false,resting:false,artPose:'idle',direction,visualEquipment:equipment};const sel=redesignFrame(body,pose);if(!sel)return null;
- const cv=canvas(192),ctx=cv.getContext('2d');if(!drawDetailedHero(ctx,body,96,160,pose,4))return null;
+ const cv=canvas(192),ctx=cv.getContext('2d');if(!drawDetailedHero(ctx,body,96,160,{...pose,legacyArt:true},4))return null;
  const s={...sel.frame.sockets,shoulders:[...sel.frame.sockets.shoulders].sort((a,b)=>a.x-b.x)},hipY=s.waist.y+7,split=s.waist.x,parts=Array.from({length:5},()=>canvas(192)),data=ctx.getImageData(0,0,192,192),outs=parts.map(v=>v.getContext('2d').createImageData(192,192));
  // Cut only the already composed character: clothing and gloves deform with their actual limb.
  for(let y=0;y<167;y++)for(let x=0;x<192;x++){const i=(y*192+x)*4;if(!data.data[i+3])continue;let part=0;const side=x<split?0:1,shoulder=s.shoulders[side],hand=[s.main,s.off].sort((a,b)=>a.x-b.x)[side];

@@ -17,6 +17,8 @@ for(const file of await readdir(new URL('assets/theme-demo/runtime/',root)))if(/
 for(const file of await readdir(new URL('assets/skill-fx/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/skill-fx/runtime/'+file);
 for(const file of await readdir(new URL('assets/redesign/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/redesign/runtime/'+file);
 for(const file of await readdir(new URL('assets/precision/runtime/',root),{recursive:true}))if(/\.(png|json)$/.test(file))files.push('assets/precision/runtime/'+file.replaceAll('\\','/'));
+// Anziehpuppe (Hybrid 2026-09-24): Ebenenbögen je Quelle × Archetyp × Richtung, zur Laufzeit zusammengesetzt.
+for(const file of await readdir(new URL('assets/paperdoll/runtime/',root)).catch(()=>[]))if(/\.(png|json)$/.test(file))files.push('assets/paperdoll/runtime/'+file);
 // Sprite-Schmiede (E-58): selbst gerenderte Sprites, nur Laufzeitdateien.
 for(const file of await readdir(new URL('assets/forge/runtime/',root),{recursive:true}).catch(()=>[]))if(/\.(png|json)$/.test(file))files.push('assets/forge/runtime/'+file.replaceAll('\\','/'));
 for(const folder of ['maifeld-09','maifeld-rpg','maifeld-ui-011','clan-skills-013','app','content-art/memories','content-art/npcs','content-art/items','content-art/talents','content-art/talents/procs','content-art/aperol-anni','content-art/ui','content-art/heroes','content-art/enemies','content-art/bosses','content-art/props','content-art/portraits'])for(const file of await readdir(new URL('assets/'+folder+'/',root)))if(/\.(png|svg)$/.test(file)&&!(file==='baerbel.png'&&['clan-skills-013','content-art/talents'].includes(folder))&&!(folder==='content-art/talents/procs'&&file.startsWith('proc-')))files.push('assets/'+folder+'/'+file);

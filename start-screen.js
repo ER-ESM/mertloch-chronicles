@@ -81,8 +81,8 @@ export function mountStartScreen(host){
  }
  async function paintHeroCards(){
   const canvases=[...el.querySelectorAll('[data-hero-look]')];if(!canvases.length)return;
-  const [{loadRedesignArt,redesignArt},{drawDetailedHero},{loadContentArt}]=await Promise.all([import('./redesign-art.js'),import('./detailed-hero-art.js'),import('./content-art.js')]);
-  await loadRedesignArt();if(!redesignArt.ready)return;await loadContentArt();
+  const [{loadRedesignArt,redesignArt},{drawDetailedHero},{loadContentArt},{loadPaperdoll,paperdoll}]=await Promise.all([import('./redesign-art.js'),import('./detailed-hero-art.js'),import('./content-art.js'),import('./paperdoll-art.js')]);
+  await Promise.all([loadRedesignArt(),loadPaperdoll()]);if(!redesignArt.ready&&!paperdoll.ready)return;await loadContentArt();
   for(const canvas of canvases){let gear={};try{gear=JSON.parse(canvas.dataset.heroGear||'{}');}catch{}const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);drawDetailedHero(ctx,canvas.dataset.heroLook,canvas.width/2,canvas.height*.88,{facing:1,visualEquipment:equipmentAppearance(gear,ITEMS),tint:canvas.dataset.heroTint?parseTintKey(canvas.dataset.heroTint):null},canvas.width/32);}
  }
  function render(){
