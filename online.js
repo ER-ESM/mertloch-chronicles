@@ -176,8 +176,13 @@ export function mountOnline(host){
  function renderParty(){
   if(typeof document==='undefined')return;const shell=document.querySelector('#gameShell');if(!shell)return;
   if(!state.partyEl){const el=document.createElement('aside');el.className='party-frames';el.setAttribute('aria-label',ONLINE_UI.party);shell.appendChild(el);state.partyEl=el;el.addEventListener('click',e=>{if(e.target.closest('[data-party-leave]'))wsSend({t:'party',op:'leave'});else if(e.target.closest('[data-party-revive]'))mate.revive(e.target.closest('[data-party-name]').dataset.partyName);else{const m=e.target.closest('[data-party-name]');if(m){mate.selectTarget(m.dataset.partyName);renderParty();}}});}
-  const el=state.partyEl,list=state.party.members;el.hidden=!list.length;if(!list.length)return;
-  const html='<header><b>'+esc(ONLINE_UI.party)+'</b><button type="button" data-party-leave title="'+esc(ONLINE_UI.leaveParty)+'">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive})).join('');
+  const el=state.partyEl,list=state.party.members;el.hidden=!list.length;
+  // Anführer-Krone am eigenen Rahmen (WoW): nur wenn ich eine Gruppe führe.
+  document.querySelector('.player-panel')?.classList.toggle('is-party-leader',!!list.length&&state.party.leader===myName());
+  if(!list.length)return;
+  const heads=1+list.length+(g()?.companions?.length||0);
+  // Kopfleiste wie „Deine Truppe“: Gruppe, Köpfe (Menschen + Söldner) von fünf, Verlassen als kleiner Knopf mit Tooltip.
+  const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive})).join('');
   if(html!==state.partyHtml){
    const focus=document.activeElement,name=focus?.closest('[data-party-name]')?.dataset.partyName,action=focus?.hasAttribute('data-party-revive')?'[data-party-revive]':'[data-party-select]';
    state.partyHtml=html;el.innerHTML=html;paintUnitPortraits(el);

@@ -469,3 +469,9 @@ body:not(.touch-mode) .game-popup.popup-settings{height:min(620px,calc(100dvh - 
 .opt-range small{font:400 11px var(--read);color:#a9a58f}
 /* Einstellungen → Interface → Bildschirm */
 html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButton,html.hide-xp #gameShell>.xp-track{display:none!important}
+/* Gruppe (2026-09-24): Kopfleiste im Stil von „Deine Truppe“, Anführer-Krone am eigenen Rahmen */
+.party-frames header.party-head{display:flex;align-items:center;gap:8px;min-height:30px;padding:0 4px 0 10px;background:#24291fee;border:1px solid #756749;border-radius:4px;color:#e5d5ab;font:600 12px var(--read);letter-spacing:.04em;text-transform:none;text-shadow:none;pointer-events:auto}
+.party-frames header.party-head b{font:400 15px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:#f3cf7a}
+.party-frames header.party-head .party-count{flex:1;color:#b9ad8a}
+.game-shell .party-frames header.party-head button{min-height:24px!important;padding:2px 8px!important;font:600 11px var(--read)!important;text-decoration:none}
+.player-panel.is-party-leader #playerName::before{content:'♛ ';color:#f3cf7a}
