@@ -104,7 +104,12 @@ function hitFlash(c,e,from,draw,tint='255,246,228',strength=1){const k=Math.min(
  const S=128,ax=64,ay=108,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=flashLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
  const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=false;f.setTransform(d,0,0,d,(ax-e.x)*d,(ay-e.y)*d);draw(f);
  f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-atop';f.fillStyle=`rgba(${tint},${((.35+.55*k)*strength).toFixed(2)})`;f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';
- const dx=e.x-(from?.x??e.x),dy=e.y-(from?.y??e.y),n=Math.hypot(dx,dy)||1,push=Math.sin(k*Math.PI)*2.5;c.drawImage(L,e.x-ax+dx/n*push,e.y-ay+dy/n*push*.5,S,S);}
+ const dx=e.x-(from?.x??e.x),dy=e.y-(from?.y??e.y),n=Math.hypot(dx,dy)||1,push=Math.sin(k*Math.PI)*2.5;c.drawImage(L,e.x-ax+dx/n*push,e.y-ay+dy/n*push*.5,S,S);
+ // Trefferfunken (Hades): aus der Brust vom Angreifer weg, fächerförmig, fliegen aus und verglühen; fest je Gegner, kein Zufall je Bild.
+ if(from&&n>1){const t=1-k,base=Math.atan2(dy,dx),cx=e.x,cy=e.y-14;c.save();c.lineCap='round';
+  for(let i=0;i<7;i++){const a=base+(((e.id||0)*7+i*37)%100/100-.5)*1.6,len=4+((i*53+(e.id||0))%7),r0=3+t*10,r1=r0+len*(1-t*.6);
+   c.globalAlpha=Math.max(0,1-t*1.1);c.strokeStyle=i%3?'#ffd35a':'#fff4c2';c.lineWidth=i%2?1.4:1;c.beginPath();c.moveTo(cx+Math.cos(a)*r0,cy+Math.sin(a)*r0*.8);c.lineTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1*.8);c.stroke();}
+  c.restore();}}
 /** Auftragszeichen über einer Figur wie in den großen Rollenspielen: goldenes „!“ (neu) bzw. „?“ (abgeben) mit dunkler Kontur
  *  und warmem, atmendem Schein, ohne Kasten; „…“ (läuft noch) grau und ohne Schein. `framed` (Story) ist größer und leuchtet stärker.
  *  Liegt auf der Schrift-Ebene (scharf, über dem Licht); ohne Schrift-Ebene direkt auf der Welt. */
