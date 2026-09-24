@@ -25,7 +25,7 @@ try{
  }
  await panel('person');await shot('character');
  await panel('bag');await shot('inventory');
- await read(`document.querySelector('[data-book-tab="talents"]')?.click()`);await shot('talents');await close();
+ await read(`document.querySelector('.game-menu-rail [data-panel="talents"]')?.click()`);await shot('talents');await close();
  await b.press('Escape');await shot('menu');await close();
  await b.resize(390,844);await fixture(true);await shot('touch-hud');
  await read(`document.querySelector('[data-companion-manage]').click()`);await shot('touch-companions');await close();

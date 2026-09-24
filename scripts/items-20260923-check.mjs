@@ -31,8 +31,8 @@ try{
   const bag=[];for(const id of items)bag.push([id,await read(match(`.game-popup [data-item-art="${id}"]`,id))]);
   await shot('rucksack-'+name);
   assert.deepEqual(bag.filter(([,v])=>v<0.6),[]);checks.push(name+': bag paints all '+items.length+' item icons from the catalog (min match '+Math.min(...bag.map(([,v])=>v))+')');
-  await b.press('n');await until(`!!document.querySelector('[data-book-tab="talents"] [data-ui-icon]')`);await wait(600);
-  const tab='[data-book-tab="talents"] [data-ui-icon]',now=await read(match(tab,'ui-tab-talente')),before=await read(match(tab,'ui-elite-badge'));
+  await b.press('n');await until(`!!document.querySelector('[data-window="talents"] .popup-emblem')`);await wait(600);
+  const tab='[data-window="talents"] .popup-emblem',now=await read(match(tab,'ui-tab-talente')),before=await read(match(tab,'ui-elite-badge'));
   assert.ok(now>=0.6&&now>before,'Talente-Reiter: ui-tab-talente '+now+' / ui-elite-badge '+before);
   await shot('talente-'+name);checks.push(name+': book tab "Talente" shows ui-tab-talente ('+now+' vs. old badge '+before+')');
   await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click());`);await wait(300);

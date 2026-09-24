@@ -5,7 +5,7 @@ export const PANEL_UI={slotEmptyNote:'Noch nichts angelegt. Zieh ein passendes T
  questDetails:'Auftrag lesen',equip:'Anlegen',compare:'Vergleich',story:'Geschichte',slots:'Plätze',options:'Optionen',map:'Karte',places:'Orte',destination:'Ziel',legend:'Legende',reset:'Neustart',backup:'Sicherung',
  upperTalents:'Obere Talente',lowerTalents:'Untere Talente',upperTree:'Wurzel & Äste',lowerTree:'Äste & Abschluss',pending:'gewählt',
  inspection:'Gegenstand',detail:'Details',movement:'Steuerung',combat:'Kampf',world:'Dorf',figure:'Figur',
- book:'Clanbuch',bookTabs:'Clanbuch-Reiter',tabFigure:'Figur',tabBag:'Rucksack',tabSkills:'Kniffe',tabQuests:'Aufträge',tabBase:'Bude',tabMemories:'Erinnerungen',tabMap:'Karte',tabHelp:'Hilfe',talents:'Talente',band:'Bande',settings:'Einstellungen',
+ book:'Fenster',bookTabs:'Abschnitte',tabFigure:'Figur',tabBag:'Rucksack',tabSkills:'Kniffe',tabQuests:'Aufträge',tabBase:'Bude',tabMemories:'Erinnerungen',tabMap:'Karte',tabHelp:'Hilfe',talents:'Talente',band:'Bande',settings:'Einstellungen',
  memoryHidden:'Noch nichts. Da ist nur Rauschen und ein pelziger Nachgeschmack.',
  settingsIntro:'Steuerung, App, Ton und Vollbild. Ganz unten der Admin-Neustart mit Sicherung.'
 };
@@ -14,19 +14,19 @@ export const PLAY_HELP={
   ['Bewegen & Ziel',['WASD läuft, Rechtsklick plant den Weg.','Tab wählt nahe Gegner; Shift + Tab geht zurück.','F spricht, plündert und bedient Auftragsziele.','Klick auf den Auftragskasten läuft zur Wegmarke.']],
   ['Kämpfen',['1–0 nutzt deine Kniffe; Autoangriffe folgen dem Waffentempo.','Der Angriffsbutton schaltet ein/aus; Rechtsklick auf einen Gegner startet, Linksklick und Tab wählen nur aus. Esc beendet den Angriff nach offenen Fenstern.','Zum Zaubern stehen bleiben; normale Kniffe teilen eine Abklingzeit.','LEER weicht aus, Q unterbricht – beide unabhängig von der Leiste.']],
   ['Rucksack & Beute',['Shift über einem Tooltip zeigt die Details: warum das Ding taugt und was die Fachwörter heißen.','Verpflegung ziehst du aus dem Rucksack auf einen freien Platz der Aktionsleiste.','Auto-Loot: Beute landet beim Kill direkt im Rucksack, das Beutelog zeigt sie an.','Ist der Rucksack voll, wartet der Rest unter „Ausrüstung zurückholen“ im Rucksack.']],
-  ['Clanbuch',['Vier Reiter: Figur, Rucksack, Aufträge und Karte; daneben das Hilfe-Symbol.','C, I, J und M öffnen die vier Reiter; H öffnet Hilfe. K und N springen in der Figur zu Kniffen und Talenten, B in den Aufträgen zur Bude. Esc schließt.','Menüs halten den Kampf nicht an.']],
+  ['Fenster',['Jede Seite ist ein eigenes Fenster: links Figur und Aufträge, rechts Rucksack und Kniffe, mittig Talente, die Karte fast bildschirmgroß.','C, J, I, P, N, M und H öffnen und schließen ihr Fenster; B springt in den Aufträgen zur Bude. Esc schließt das oberste.','Menüs halten den Kampf nicht an.']],
   ['Wörter im Dorf',['Randale: dein Kraftstoff – Kniffe kosten sie, Kills und Kaltgetränke füllen sie nach.','Kniffe: deine Fähigkeiten, gelernt im Skillbuch, gelegt auf die Leiste, abgefeuert mit 1–0.','Klamotten: die Ersatzsachen deines Mentors – sie entscheiden, wie du kämpfst, nicht wie du riechst.','Pfandmarken: das Geld von Mertloch – Leergut, Beute und Kalle rechnen alle in derselben Währung.']]
  ],
  touch:[
   ['Bewegen & Ziel',['Mit dem Joystick laufen; die Seite lässt sich unter Einstellungen umstellen.','Ziel wählt einen nahen Gegner.','Aktion spricht, plündert und bedient Auftragsziele.','Tipp auf den Auftragskasten läuft zur Wegmarke.']],
   ['Kämpfen',['Die Kniffbuttons liegen gegenüber vom Joystick; die Seitenanzeige wechselt bei Bedarf zur zweiten Belegung.','Gegner antippen wählt nur das Ziel. Autoangriff antippen schaltet ein, erneut antippen schaltet aus; offensive Kniffe starten ihn ebenfalls.','Zum Zaubern stehen bleiben; Autoangriffe treffen auch beim Laufen.','Stiefel weicht aus, Hand unterbricht – eigene Sonderknöpfe.']],
   ['Rucksack & Beute',['„Mehr dazu“ im Tooltip zeigt die Details: warum das Ding taugt und was die Fachwörter heißen.','Verpflegung benutzt du im Rucksack über die Gegenstandsdetails.','Auto-Loot: Beute landet beim Kill direkt im Rucksack, das Beutelog zeigt sie an.','Ist der Rucksack voll, wartet der Rest unter „Ausrüstung zurückholen“ im Rucksack.']],
-  ['Clanbuch',['Menü → Clanbuch öffnet die Reiter: Figur, Rucksack, Aufträge und Karte plus Hilfe. Kniffe und Talente stehen unter Figur; Bude und Erinnerungen unter Aufträge.','× schließt; der Kampf läuft weiter.','Hilfe → Einstellungen → Steuerung & Touchbuttons: Platz wählen, dann einen gelernten Kniff zuweisen.']],
+  ['Fenster',['Menü → Fenster: Figur, Aufträge, Talente, Karte, Kniffe, Rucksack und Hilfe öffnen je ein eigenes Fenster. Bude und Erinnerungen stehen unter Aufträge.','× schließt; der Kampf läuft weiter.','Hilfe → Einstellungen → Steuerung & Touchbuttons: Platz wählen, dann einen gelernten Kniff zuweisen.']],
   ['Wörter im Dorf',['Randale: dein Kraftstoff – Kniffe kosten sie, Kills und Kaltgetränke füllen sie nach.','Kniffe: deine Fähigkeiten, gelernt im Skillbuch, gelegt auf die Leiste, abgefeuert über deine Kniffbuttons.','Klamotten: die Ersatzsachen deines Mentors – sie entscheiden, wie du kämpfst, nicht wie du riechst.','Pfandmarken: das Geld von Mertloch – Leergut, Beute und Kalle rechnen alle in derselben Währung.']]
  ],
  desktopKeys:[
   ['WASD / Rechtsklick','Laufen / Laufweg'],['Tab / Shift + Tab','Nächstes / voriges nahes Ziel'],['F / Shift + F','Interagieren / Beutel ganz leeren'],
-  ['1–0 / Umschalt + 1–0 / LEER / Q','Leiste 1 / Leiste 2 / Ausweichen / Unterbrechen'],['C / P / N','Figur / Kniffe / Talente – jede Seite für sich'],['I / J / M / H','Rucksack / Aufträge / Karte / Hilfe'],
+  ['1–0 / Umschalt + 1–0 / LEER / Q','Leiste 1 / Leiste 2 / Ausweichen / Unterbrechen'],['C / P / N','Figur / Kniffe / Talente – jedes ein eigenes Fenster'],['I / J / M / H','Rucksack / Aufträge / Karte / Hilfe'],
   ['X / Shift + P','Auf-/Absitzen / Mount-Sammlung'],['B','Bude (Abschnitt der Aufträge)'],['V','Kampfstatistik'],['R','Aggro-Radius'],['1 / Esc','Autoangriff ein/aus / Autoangriff beenden'],['Esc','Spielmenü öffnen; schließt zuerst Fenster oder bricht Zielen/Zaubern ab'],
   ['Leeres Feld → Kniff','Direkt auf der Aktionsleiste belegen'],['Kniff ziehen / neben die Leiste ziehen','Belegen oder verschieben / abnehmen'],['Maus auf Feld + B / Rechtsklick auf Feld','Taste belegen (auch Mausrad und Seitentasten) / Feldmenü'],['Item doppelklicken','Passende Ausrüstung austauschen'],
   ['Verpflegung ziehen','Rucksack → freier Platz der Aktionsleiste'],['Shift über einem Tooltip','Details, Zusammenhänge und Fachwörter'],
@@ -34,7 +34,7 @@ export const PLAY_HELP={
  ],
  touchKeys:[
   ['Joystick / Ziel / Aktion','Laufen / Gegner wählen / interagieren'],['Kniff antippen / lange halten','Ausführen / Erklärung'],['Hilfe → Einstellungen → Steuerung & Touchbuttons','Kampfbuttons belegen, Größe einstellen'],
-  ['Gegenstand antippen','Details, Ausrüsten und Vergleich'],['Tooltip → Mehr dazu','Zusammenhänge und Fachwörter'],['Verpflegung benutzen','Rucksack → Gegenstand → Benutzen'],['Talent antippen','Erklärung und Lernen / Zurücknehmen'],['×','Clanbuch schließen'],
+  ['Gegenstand antippen','Details, Ausrüsten und Vergleich'],['Tooltip → Mehr dazu','Zusammenhänge und Fachwörter'],['Verpflegung benutzen','Rucksack → Gegenstand → Benutzen'],['Talent antippen','Erklärung und Lernen / Zurücknehmen'],['×','Fenster schließen'],
   ['Karte → Orte → Ziel','Laufroute setzen'],['Hofprobe: Pfeil / ?','Hinweis ausklappen / Idas Anleitung']
  ],
  symbols:[
@@ -44,7 +44,7 @@ export const PLAY_HELP={
  ]
 };
 
-export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Clanbuch',chat:'Chat',help:'Hilfe',settings:'Einstellungen'};
+export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title:'Spielmenü',open:'Spielmenü öffnen',resume:'Zurück zum Spiel',book:'Fenster',chat:'Chat',help:'Hilfe',settings:'Einstellungen'};
 
 /** Rucksack (E-53): Filter, Sortierung, Suche und Vergleich. Filter- und Sortierwahl merkt sich der Browser. */
 export const BAG_UI={
@@ -68,3 +68,20 @@ export const BAG_UI={
 export const PASSIVE_BOOK_UI={title:'Eigenarten & Leisten',classTitle:()=>'Eigenart',classScope:'Klasse · immer',active:()=>'Hauptbaum · aktiv',withMain:name=>'mit '+name};
 /** Quest-Tracker unter dem Auftragsfeld (quest-tracker.js, Nutzerwunsch 2026-09-23). */
 export const QUEST_TRACKER_UI={track:'Klick: verfolgen (Wegmarke)',run:'Klick: zur Wegmarke laufen',talkTo:name=>'Sprich mit '+name,turnIn:name=>'Abgabe bei '+name,actDone:'Akt abgeschlossen',reward:'Belohnung',moreTitle:'Weitere Aufträge (Auftragsbuch J)'};
+/** Einzelfenster (2026-09-23, löst das Clanbuch mit Reitern ab): [id, Name, Symbol, Taste, Andockseite].
+ *  Reihenfolge = Menüleiste unten rechts und Touch-Menü. left/right docken am Rand an, center mittig, full fast Vollbild. */
+export const WINDOW_UI={
+ windows:[['person','Figur','person','C','left'],['quest','Aufträge','quest','J','left'],['talents','Talente','talents','N','center'],['map','Karte','map','M','full'],['book','Kniffe','book','P','right'],['bag','Rucksack','bag','I','right'],['guide','Hilfe','guide','H','center']],
+ notes:{person:'Ausrüstung und Werte deiner Figur.',quest:'Aufträge, Bude und Erinnerungen.',talents:'Talentbäume und Hauptbaum.',map:'Revierplan mit Orten und Laufweg.',book:'Skillbuch und Aktionsleiste.',bag:'Rucksack, Filter und Suche.',guide:'Tasten, Kniffe erklärt, Einstellungen.'},
+ rail:'Fenster',close:'Schließen [Esc]',keyHint:key=>'Taste '+key+' öffnet und schließt',
+ open:name=>name+' öffnen',
+ /** Symbole statt Beschriftungen in den Fenstern; Namen erscheinen als Tooltip. */
+ compact:{
+  statIcons:{stamina:'ui-stat-stamina',might:'ui-stat-might',finesse:'ui-stat-finesse',wit:'ui-stat-wit',armorRating:'ui-stat-armor'},
+  sectionIcons:{'Aufträge':'quest','Bude':'base','Erinnerungen':'ui-sec-erinnerungen'},
+  questFilters:{active:'ui-quest-aktiv',open:'ui-quest-dorf',done:'ui-quest-erledigt'},
+  bagFilters:{all:'bag',gear:'ui-filter-ausruestung',better:'ui-filter-besser',food:'ui-filter-verpflegung',material:'ui-filter-material'},
+  mapFilters:{all:'map',quest:'ui-quest-aktiv',hub:'ui-map-treffpunkt',camp:'ui-map-lager',shop:'ui-map-laden'},
+  baseRuined:'Bude in Trümmern',memoryUnknown:'Noch keine Erinnerung'
+ }
+};

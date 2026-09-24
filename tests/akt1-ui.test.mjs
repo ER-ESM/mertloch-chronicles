@@ -7,19 +7,19 @@ import {Game,ACT_CHAPTERS} from '../engine.js';
 import {basePanel,memoriesPanel,chaptersPanel,baseEffectList,canBuild,rewardLine} from '../chapter-ui.js';
 import {questlogPanel} from '../questlog-ui.js';
 import {clanMenu} from '../clan-ui.js';
-import {BOOK_TABS,TAB_OF} from '../popup-windows.js';
+import {WINDOWS,DOCK,WINDOW_OF} from '../popup-windows.js';
 import {BUILDINGS,MEMORY_FRAGMENTS,LORE,TUTORIAL,CLAN_MEMBERS} from '../content/index.js';
 import {addItem,ITEMS} from '../rpg.js';
 
 const world=new World(JSON.parse(readFileSync('data/mertloch.json','utf8')));
 const fresh=()=>new Game(world,{});
 
-test('Das Clanbuch bleibt EIN Fenster; Figur, Kniffe und Talente sind eigene Seiten mit eigener Taste, die Bude bleibt Abschnitt der Aufträge (E-27, geändert 2026-09-21)',()=>{
- assert.ok(BOOK_TABS.length<=7,'höchstens sieben Reiter');
- assert.equal(new Set(BOOK_TABS.map(t=>t[0])).size,BOOK_TABS.length);
- assert.equal(new Set(BOOK_TABS.map(t=>t[3])).size,BOOK_TABS.length,'jede Taste kommt genau einmal vor');
- const key=id=>BOOK_TABS.find(t=>t[0]===id)?.[3];assert.equal(key('person'),'C');assert.equal(key('book'),'P');assert.equal(key('talents'),'N');
- assert.equal(TAB_OF.base,'quest');assert.equal(TAB_OF.book,'book');assert.equal(TAB_OF.talents,'talents');
+test('Einzelfenster statt Clanbuch: jede Seite ein eigenes Fenster mit eigener Taste; links Figur/Aufträge, rechts Rucksack/Kniffe, mittig Talente, Karte fast Vollbild (Nutzerauftrag 2026-09-23)',()=>{
+ assert.equal(new Set(WINDOWS.map(t=>t[0])).size,WINDOWS.length);
+ assert.equal(new Set(WINDOWS.map(t=>t[3])).size,WINDOWS.length,'jede Taste kommt genau einmal vor');
+ const key=id=>WINDOWS.find(t=>t[0]===id)?.[3];assert.equal(key('person'),'C');assert.equal(key('book'),'P');assert.equal(key('talents'),'N');assert.equal(key('bag'),'I');assert.equal(key('quest'),'J');assert.equal(key('map'),'M');assert.equal(key('guide'),'H');
+ assert.equal(DOCK.person,'left');assert.equal(DOCK.quest,'left');assert.equal(DOCK.bag,'right');assert.equal(DOCK.book,'right');assert.equal(DOCK.talents,'center');assert.equal(DOCK.map,'full');
+ assert.equal(WINDOW_OF.base,'quest','Bude bleibt Abschnitt der Aufträge');assert.equal(WINDOW_OF.clan,'person');
 });
 
 test('Reiter „Bude“ zeigt vor Kapitel 2 die Trümmer und danach nur freigeschaltete Gebäude',()=>{

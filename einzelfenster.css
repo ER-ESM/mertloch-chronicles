@@ -1,0 +1,128 @@
+/* ===== Einzelfenster (2026-09-23): angedockte Fenster statt Clanbuch mit Reitern =====
+   popup-windows.js setzt Lage und Maße (dock-left/right/center/full); hier nur Rahmen, Dichte und Karte. */
+.game-popup.popup-dock{min-height:0}
+body:not(.touch-mode) .game-popup.popup-dock .popup-titlebar{cursor:default}
+body:not(.touch-mode) .game-popup.popup-dock .popup-titlebar:active{cursor:default}
+.game-popup .popup-titlebar .popup-key{flex:none;min-width:20px;height:20px;padding:0 5px;display:grid;place-items:center;font:700 11px/1 var(--read,sans-serif);color:#f3dfae;background:#10221bcc;border:1px solid #c5a26877;border-radius:5px;opacity:.85}
+body:not(.touch-mode) .game-popup.popup-dock .popup-body{flex:1 1 auto}
+
+/* Karte (M): fast Vollbild, Karte und Ortsliste nebeneinander, die Zeichenfläche füllt den Rest. */
+body:not(.touch-mode) .game-popup.popup-map.dock-full{max-height:none}
+body:not(.touch-mode) .popup-map.dock-full .popup-body{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:10px 12px}
+body:not(.touch-mode) .popup-map.dock-full .popup-body>.eyebrow,body:not(.touch-mode) .popup-map.dock-full .popup-body>h2{display:none}
+body:not(.touch-mode) .popup-map.dock-full .atlas-layout{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:12px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-main{display:flex;flex-direction:column;min-height:0}
+body:not(.touch-mode) .popup-map.dock-full .atlas-toolbar{flex:none;margin-bottom:6px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-paper{flex:1 1 auto;min-height:0;height:auto!important}
+body:not(.touch-mode) .popup-map.dock-full .atlas-paper canvas{width:100%;height:100%}
+body:not(.touch-mode) .popup-map.dock-full .atlas-key{flex:none;margin-top:6px;gap:10px;font-size:12px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-sidebar{min-height:0;overflow:auto;padding-top:0}
+body:not(.touch-mode) .popup-map.dock-full .data-note{flex:none;margin:4px 0 0;font-size:11px;opacity:.7}
+body:not(.touch-mode) .popup-map.dock-full .grid-pager{display:none}
+
+/* Touch-Spielmenü: die Fenster als Symbolraster oben */
+.game-menu-windows{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px}
+.game-menu-windows button{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:5px 2px;font-size:11px}
+.game-menu-windows canvas{width:26px;height:26px;image-rendering:pixelated}
+body[data-locked~=quest] .game-menu-windows [data-shell=quest],body[data-locked~=talents] .game-menu-windows [data-shell=talents]{display:none!important}
+.game-menu-windows button[data-badge]{position:relative;overflow:visible}
+.game-menu-windows button[data-badge]:after{content:attr(data-badge);position:absolute;top:-6px;right:-4px;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border:1px solid #1f2d20;border-radius:9px;background:linear-gradient(#ffe08a,#d9a83f);color:#1f2d20;font:700 10px/14px var(--read,sans-serif)}
+body:not(.touch-mode) .game-popup.popup-map.dock-full{max-width:none}
+
+/* ===== Runde 2: dichter. Symbole statt Beschriftung (window-compact.js), Namen im Tooltip ===== */
+body:not(.touch-mode) .game-popup.popup-dock .popup-body{padding:10px 12px}
+body:not(.touch-mode) .game-popup.popup-dock .popup-titlebar{height:36px}
+body:not(.touch-mode) .game-popup.popup-dock .popup-titlebar strong{font-size:18px}
+.compact-window .icon-only{display:inline-grid;place-items:center;padding:3px!important;min-width:36px;min-height:36px;line-height:0}
+.compact-window .icon-only canvas{width:28px;height:28px;image-rendering:pixelated}
+.touch-mode .compact-window .icon-only{min-width:44px;min-height:44px}
+
+/* Figur */
+.popup-person .rpg-heading{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 2px;padding:0 0 4px}
+.popup-person .rpg-heading .eyebrow{display:none}
+.popup-person .rpg-heading h2{margin:0;font-size:20px;line-height:1.1}
+.popup-person .rpg-heading .sub-line{margin:0;font-size:12px;line-height:1.3;opacity:.8}
+.popup-person .armory-controls{display:flex;gap:4px}
+.popup-person .gear-footer{margin-top:4px;padding-top:6px}
+.compact-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:8px 0 4px}
+/* Reihenfolge: Nahkampf, Fernkampf, Leben, Geld, dann fünf Zweitwerte – Waffen und Leben je halbe Breite */
+.compact-stats>div:nth-child(-n+3){grid-column:span 2}
+.compact-stats>div{display:flex!important;align-items:center;gap:5px;min-width:0;padding:3px 6px!important;background:#152a20;border:1px solid #c5a26840;border-radius:6px;cursor:default}
+.compact-stats>div:hover,.compact-stats>div:focus-visible{border-color:#e7c87b;outline:none}
+.compact-stats canvas{width:22px;height:22px;flex:none;image-rendering:pixelated}
+.compact-stats b{font-size:12px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.compact-stats .stat-effect{display:none}
+.popup-person .starter-armory{margin:6px 0 0}
+
+/* Aufträge */
+.popup-quest .panel-section-title{display:none}
+.popup-quest .section-jump button.with-icon,.popup-quest .quest-tabs button{display:inline-flex;align-items:center;gap:5px}
+.popup-quest .section-jump canvas,.popup-quest .quest-tabs canvas{width:20px;height:20px;image-rendering:pixelated;flex:none}
+.popup-quest .quest-tabs{margin:6px 0}
+.popup-quest .chapter-log{margin-top:8px}
+.popup-quest .chapter-entry{padding:6px 10px!important;margin:0 0 4px!important;cursor:default}
+.popup-quest .chapter-entry h3{margin:0!important;font-size:14px}
+.popup-quest .chapter-entry .chapter-status{font-size:11px}
+.popup-quest .base-locked.compact-row{display:flex;align-items:center;gap:8px;margin:4px 0;cursor:default}
+.popup-quest .base-locked.compact-row canvas{width:24px;height:24px;image-rendering:pixelated}
+.popup-quest .memory-panel>.rpg-heading{margin:0 0 4px;padding:0}
+.popup-quest .memory-panel>.rpg-heading p{margin:0;font-size:12px}
+.memory-tiles{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.memory-tiles .memory-entry{margin:0!important;padding:4px!important;min-height:0;min-width:0}
+.memory-tiles .memory-entry.unknown{aspect-ratio:3/2;border:1px dashed #c5a26855!important;background:#10221b80!important;border-radius:6px}
+.memory-tiles .memory-entry.known{grid-column:span 2}
+.memory-tiles .memory-entry.known h3{margin:0 0 3px!important;font-size:12px}
+.memory-tiles .memory-picture{display:block;width:100%;padding:0}
+.memory-tiles .memory-picture img{width:100%;height:auto;display:block;border-radius:4px}
+
+/* Kniffe: Kacheln nur als Symbol, Name im Kniff-Tooltip */
+.popup-book .icon-skillbook{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:5px}
+.popup-book .icon-skillbook .book-skill-name,.popup-book .icon-skillbook .book-skill-origin{display:none}
+.popup-book .icon-skillbook .book-skill{min-height:0!important;padding:4px!important;aspect-ratio:1/1}
+.popup-book .book-actionbar{margin-top:8px}
+.popup-book .binding-slots{display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.popup-book .binding-slot{min-width:0!important;min-height:36px!important;padding:2px!important}
+.popup-book .book-passives{margin-top:8px}
+.popup-book .book-passives .compact-head{margin:0 0 4px;font-size:13px}
+.popup-book [data-reset-bar].icon-only{float:right;margin:-2px 0 4px 6px}
+
+/* Rucksack */
+.popup-bag .bag-controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
+.popup-bag .bag-filters{display:flex;gap:4px;flex-wrap:nowrap}
+.popup-bag .bag-sort{display:flex;align-items:center;gap:4px;margin-left:auto}
+.popup-bag .bag-sort label>span,.popup-bag .bag-search>span{display:none}
+.popup-bag .bag-sort select{height:36px;max-width:118px}
+.popup-bag .bag-search{flex:1 1 150px;display:flex;margin:0}
+.popup-bag .bag-search input{width:100%;height:34px}
+.popup-bag .bag-toolbar{display:flex;align-items:center;gap:8px;margin:0}
+.popup-bag .bag-toolbar>span{display:inline-flex;align-items:center;gap:4px;font-size:13px}
+.popup-bag .bag-toolbar canvas:not(.icon-only canvas){width:20px;height:20px;image-rendering:pixelated}
+.popup-bag .bag-toolbar .shop-locator{width:auto;margin:0}
+
+/* Karte */
+.popup-map .atlas-filters .icon-only canvas{width:24px;height:24px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place{padding:5px 8px!important;background:#152a20;color:var(--cream,#f1e6c8);border-width:1px;min-height:0}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place b{color:#f3dfae;font-size:13px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place small{color:#c9d2b4;margin-top:1px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place em{color:#f3dfae}
+body:not(.touch-mode) .popup-map.dock-full #atlasSelection{margin-top:8px;padding:8px}
+body:not(.touch-mode) .popup-map.dock-full #atlasSelection h3{font-size:18px;margin:2px 0}
+
+/* Figur am Desktop: Puppe kleiner, Schmuck und Waffen in einer Zeile, Drehen/Wechseln in die freie Ecke unten rechts */
+body:not(.touch-mode) .popup-person .equipment-grid{position:relative;--gear-size:46px;--body-height:300px;margin:0 auto 4px}
+body:not(.touch-mode) .popup-person .body-equipment>.gear-cell{width:56px}
+body:not(.touch-mode) .popup-person .equipment-grid .armory-controls{position:absolute;right:4px;top:calc(var(--body-height) * .84);margin:0;z-index:2}
+body:not(.touch-mode) .popup-person .equipment-grid .gear-footer{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+body:not(.touch-mode) .popup-person .equipment-grid :is(.accessory-row,.weapon-row){grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:var(--gear-size);gap:4px;margin:0;padding-top:8px}
+.popup-quest .chapter-entry{display:flex!important;align-items:center;justify-content:space-between;gap:8px;min-height:0!important}
+.popup-quest .chapter-entry h3{display:flex;align-items:center;gap:6px;min-width:0}
+.popup-quest .chapter-entry .chapter-lock{width:18px;height:18px}
+.popup-quest .chapter-entry .chapter-status{flex:none;margin:0!important}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place>span{flex:1;min-width:0;text-align:left}
+body:not(.touch-mode) .popup-map.dock-full .atlas-key,body:not(.touch-mode) .popup-map.dock-full .atlas-key label{color:#c9d2b4}
+body:not(.touch-mode) .popup-map.dock-full .data-note a{color:#e7c87b}
+body:not(.touch-mode) .game-popup.popup-dock .section-jump{margin:-10px -12px 8px;padding:6px 12px;top:-10px}
+/* Kniffe-Fenster: Namen nur im Tooltip (schlägt die zweizeiligen Namen aus ui-chrome.css) */
+.game-popup.popup-book .icon-skillbook .book-skill .book-skill-name,.game-popup.popup-book .icon-skillbook .book-skill .book-skill-origin{display:none}
+/* Sprungleiste bündig mit dem schmaleren Innenrand der angedockten Fenster */
+body:not(.touch-mode) .game-popup.popup-dock .section-jump{margin:-10px -12px 8px;padding:6px 12px;top:-10px}

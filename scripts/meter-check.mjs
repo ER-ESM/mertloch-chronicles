@@ -70,7 +70,7 @@ try{
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await b.resize(390,844);await fixture(true);
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await click('#meterToggle',true);
  await bounds();await click('[data-meter-close]',true);
- await click('#touchMenu',true);await click('[data-game-book]',true);await click('[data-book-tab="person"]',true);
+ await click('#touchMenu',true);await click('.game-menu-windows [data-shell="person"]',true);
  await read(`[...document.querySelectorAll('.popup-person .panel-tabs button')].find(b=>/Werte/.test(b.textContent))?.click()`);/* E-43: Figur hat die Unterreiter Ausrüstung | Werte */
  await click('.meter-entry',true);assert.equal((await b.state()).popups.length,0);
  await click('[data-meter-actor="dieter"]',true);await bounds();await b.screenshot(dir+'/mobile-portrait.png');

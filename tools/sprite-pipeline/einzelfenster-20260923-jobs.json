@@ -1,0 +1,296 @@
+[
+ {
+  "id": "ui-filter-ausruestung",
+  "output": "assets/precision/sources/2026-09-23/ui-filter-ausruestung.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-filter-ausruestung, a bag filter button meaning equipment only. Subject: a worn denim vest with a small round wooden barrel-lid shield leaning against it. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-filter-besser",
+  "output": "assets/precision/sources/2026-09-23/ui-filter-besser.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-filter-besser, a bag filter button meaning better than equipped. Subject: a bold upward pointing arrow in fresh moss green with a cream highlight, rising out of a round amber beer coaster. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-filter-verpflegung",
+  "output": "assets/precision/sources/2026-09-23/ui-filter-verpflegung.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-filter-verpflegung, a bag filter button meaning food and drinks. Subject: a brown beer bottle standing beside a small golden pretzel. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-filter-material",
+  "output": "assets/precision/sources/2026-09-23/ui-filter-material.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-filter-material, a bag filter button meaning crafting materials. Subject: a small bundle of pallet wood slats tied with a coiled black cable and a zip tie. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-sort",
+  "output": "assets/precision/sources/2026-09-23/ui-sort.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-sort, a button that sorts the backpack. Subject: three small stacked wooden crates of decreasing size with a curved amber arrow beside them. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-quest-aktiv",
+  "output": "assets/precision/sources/2026-09-23/ui-quest-aktiv.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-quest-aktiv, a quest log filter meaning active quests. Subject: a rolled parchment note with a big golden exclamation mark stamped on it. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-quest-dorf",
+  "output": "assets/precision/sources/2026-09-23/ui-quest-dorf.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-quest-dorf, a quest log filter meaning quests available in the village. Subject: a tiny half-timbered German village house with a red roof and a golden exclamation mark above it. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-quest-erledigt",
+  "output": "assets/precision/sources/2026-09-23/ui-quest-erledigt.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-quest-erledigt, a quest log filter meaning completed quests. Subject: a round cardboard beer coaster with a bold green check mark stamped on it. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-sec-erinnerungen",
+  "output": "assets/precision/sources/2026-09-23/ui-sec-erinnerungen.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-sec-erinnerungen, a section heading for memory fragments of a blackout night. Subject: a torn instant photo snapshot with a faded blurry silhouette and a crumpled corner. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-leben",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-leben.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-leben, a character stat meaning health points. Subject: a chunky red heart with a small white highlight and a tiny bandage plaster across it. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-nahkampf",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-nahkampf.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-nahkampf, a character stat meaning melee damage. Subject: a green glass bottle held like a club with small impact sparks. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-fernkampf",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-fernkampf.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-fernkampf, a character stat meaning ranged damage. Subject: a wooden forked slingshot with a taut rubber band holding a bottle cap. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-stamina",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-stamina.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-stamina, a character stat meaning stamina and toughness. Subject: a solid oak tree stump with deep roots and a few rings visible. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-might",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-might.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-might, a character stat meaning raw strength. Subject: a clenched muscular fist with a bottle cap ring on one finger. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-finesse",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-finesse.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-finesse, a character stat meaning timing and dexterity. Subject: a brass metronome with its pendulum swung to one side. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-wit",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-wit.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-wit, a character stat meaning tinkering wits. Subject: a small wrench crossed with a glowing yellow light bulb. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-stat-armor",
+  "output": "assets/precision/sources/2026-09-23/ui-stat-armor.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-stat-armor, a character stat meaning armor rating. Subject: a thick leather hide patch stitched onto a round barrel-lid shield. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-map-treffpunkt",
+  "output": "assets/precision/sources/2026-09-23/ui-map-treffpunkt.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-map-treffpunkt, a map filter meaning meeting points where villagers give quests. Subject: a round wooden beer table with two mugs on it, seen from the front. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-map-lager",
+  "output": "assets/precision/sources/2026-09-23/ui-map-lager.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-map-lager, a map filter meaning enemy camps. Subject: a small crude tent made of a tarp with a crossed pair of sticks and a warning red flag. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-map-laden",
+  "output": "assets/precision/sources/2026-09-23/ui-map-laden.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-map-laden, a map filter meaning shops and kiosks. Subject: a tiny kiosk booth with a striped awning and a coin in front. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ },
+ {
+  "id": "ui-reset",
+  "output": "assets/precision/sources/2026-09-23/ui-reset.png",
+  "width": 48,
+  "height": 48,
+  "padding": 4,
+  "kind": "ui",
+  "prompt": "Use case: stylized-concept. Production UI icon for Mertloch Chronicles, ID ui-reset, a button that resets the action bar to default. Subject: a curved circular amber arrow looping around a small beer coaster. Style: match the attached reference image exactly - finely detailed warm comic pixel art with crisp deliberate pixel clusters, dark slate outline around the whole silhouette, cream and amber highlights, light from upper left, restrained muted palette of a rustic German village RPG. The reference only shows the style; do not copy its subject, but match its icon scale and outline weight. Composition: exactly one compact emblem, centered, filling most of a square frame, flat front view, isolated on genuinely transparent RGBA background. Extremely simple readable silhouette that stays recognizable at 24 by 24 pixels. No text, no letters, no numbers, no logos, no border, no frame, no backdrop, no photorealism, no blur. Polished production UI icon.",
+  "references": [
+   "assets/content-art/sources/2026-09-17/ui-tab-kniffe.png"
+  ],
+  "date": "2026-09-23",
+  "tool": "built-in imagegen"
+ }
+]
