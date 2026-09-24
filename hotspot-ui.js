@@ -3,13 +3,16 @@ import {HOTSPOT_UI as T,ITEM_CATALOG,NPCS} from './content/index.js';
 import {hotspotQuests,questStatus,giverOffers,giverPoint,turnInOf,objectiveText,hotspotQuest,fillText} from './hotspots.js';
 import {conversationHeader} from './dialogue-ui.js';
 import {escapeQuest as esc} from './quest-status-ui.js';
+import {rewardTiles} from './reward-tiles.js';
 
 const rewardText=q=>{const r=q.reward||{};return [r.xp&&r.xp+' Erfahrung',r.coins&&r.coins+' Pfandmarken',r.item&&ITEM_CATALOG[r.item]?.name].filter(Boolean).join(' · ');};
+/** Belohnung als Kacheln (Runde 2); rewardText bleibt als Vorlesezeile. */
+const tiles=q=>rewardTiles({xp:q.reward?.xp,coins:q.reward?.coins,items:q.reward?.item?[q.reward.item]:[]},rewardText(q));
 const seriesName=q=>q.regular?T.regulars:T.series;
 const dropNote=q=>q.objective.kind==='drop'?' <small class="hotspot-drop">'+esc(T.dropHint(q.objective.chance))+'</small>':'';
 function card(g,q,action){const st=questStatus(g,q.id),line=fillText(g,q,action==='claim'?q.lines?.done:st==='accepted'?q.lines?.progress:q.lines?.offer),at=giverPoint(g,turnInOf(q));
  const button=action==='accept'?`<button class="gold-button" data-hs-accept="${q.id}">${T.accept}</button>`:action==='claim'?`<button class="gold-button" data-hs-claim="${q.id}">${T.claim}</button>`:action==='progress'?`<button class="outline-button" data-hs-track="${q.id}">${T.track}</button>`:`<button class="outline-button" disabled>${esc(T.level(q.minLevel))}</button>`;
- return `<article class="hotspot-offer"><h2>${esc(fillText(g,q,q.title))}</h2><p>${esc(fillText(g,q,q.text))}</p>${line?`<p class="conversation-quote">„${esc(line)}“</p>`:''}<div class="quest-objective">${esc(objectiveText(g,q))}${dropNote(q)}</div>${at&&turnInOf(q)!==q.hotspot?`<small>${esc(T.turnInAt(at.name))}</small>`:''}<div class="loot"><span>✧</span><div><strong>${esc(rewardText(q))}</strong><small>${esc(seriesName(q))}</small></div></div><div class="dialog-actions">${button}</div></article>`;}
+ return `<article class="hotspot-offer"><h2>${esc(fillText(g,q,q.title))}</h2><p>${esc(fillText(g,q,q.text))}</p>${line?`<p class="conversation-quote">„${esc(line)}“</p>`:''}<div class="quest-objective">${esc(objectiveText(g,q))}${dropNote(q)}</div>${at&&turnInOf(q)!==q.hotspot?`<small>${esc(T.turnInAt(at.name))}</small>`:''}${tiles(q)}<div class="dialog-actions">${button}</div></article>`;}
 /** Gespräch am Hotspot-Geber (oder bei Ida für die letzte Überleitung): Abgaben zuerst, dann neue Aufträge.
  *  `chatter` = Gesprächszeile eines Stammgasts (giverChatter), steht vor den Aufträgen. */
 export function hotspotDialogue(g,giverId,chatter=null){const at=giverPoint(g,giverId),offers=giverOffers(g,giverId);
@@ -19,7 +22,7 @@ export function hotspotDialogue(g,giverId,chatter=null){const at=giverPoint(g,gi
 export function hotspotTurnIns(g,giverId){return giverOffers(g,giverId).filter(o=>o.action==='claim').map(o=>card(g,o.q,o.action)).join('');}
 /** Aushang: Titel, Text, Ziel und Belohnung – der Auftrag läuft bereits. */
 export function noticeDialogue(g,id){const q=hotspotQuest(id),st=questStatus(g,id);
- return `<header class="conversation-header"><span class="eyebrow">${esc(T.notices)}</span><strong>${esc(q.found)}</strong></header><h2>${esc(q.title)}</h2><p>${esc(q.text)}</p><div class="quest-objective">${esc(objectiveText(g,q))}${dropNote(q)}</div>${st==='low'||st==='locked'?`<p class="requirements-failed">${esc(T.level(q.minLevel))}</p>`:''}<div class="loot"><span>✧</span><div><strong>${esc(rewardText(q))}</strong><small>${esc(T.notices)}</small></div></div><div class="dialog-actions">${st==='accepted'?`<button class="gold-button" data-hs-track="${id}">${T.track}</button>`:''}<button class="outline-button" data-close>${T.close}</button></div>`;}
+ return `<header class="conversation-header"><span class="eyebrow">${esc(T.notices)}</span><strong>${esc(q.found)}</strong></header><h2>${esc(q.title)}</h2><p>${esc(q.text)}</p><div class="quest-objective">${esc(objectiveText(g,q))}${dropNote(q)}</div>${st==='low'||st==='locked'?`<p class="requirements-failed">${esc(T.level(q.minLevel))}</p>`:''}${tiles(q)}<div class="dialog-actions">${st==='accepted'?`<button class="gold-button" data-hs-track="${id}">${T.track}</button>`:''}<button class="outline-button" data-close>${T.close}</button></div>`;}
 /** Einträge fürs Questbuch: aktiv = angenommen/fertig, offen = annehmbar, erledigt = abgegeben. */
 export function hotspotQuestEntries(g,filter){const want=st=>filter==='all'||filter==='active'&&(st==='accepted'||st==='ready')||filter==='open'&&(st==='available'||st==='low')||filter==='done'&&st==='claimed';
  return hotspotQuests().filter(q=>want(questStatus(g,q.id))).map(q=>{const st=questStatus(g,q.id),tracked=g.hotspots.tracked===q.id,at=q.notice?null:giverPoint(g,st==='ready'||st==='accepted'?turnInOf(q):q.hotspot);

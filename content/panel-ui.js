@@ -87,3 +87,72 @@ export const WINDOW_UI={
   baseRuined:'Bude in Trümmern',memoryUnknown:'Noch keine Erinnerung'
  }
 };
+/** Aufträge als WoW-Questlog (Runde 2, 2026-09-24): Titelliste oben, Detail unten, Belohnung als Kacheln, Symbolknöpfe mit Namen im Tooltip. */
+export const QUESTLOG_UI={
+ filters:[['active','Aktiv','ui-quest-aktiv'],['open','Im Dorf','ui-quest-dorf'],['done','Erledigt','ui-quest-erledigt']],
+ filterNotes:{active:'Laufende Aufträge',open:'Wer im Dorf Hilfe sucht',done:'Abgeschlossen'},
+ tabs:[['log','Aufträge','quest'],['base','Bude','base'],['memories','Erinnerungen','ui-sec-erinnerungen']],
+ village:'Im Dorf',hofprobe:'Hofprobe',
+ track:'Verfolgen',tracked:'Wird verfolgt',trackNote:'Wegmarke und Verfolgung zeigen auf diesen Auftrag.',
+ mapTarget:'Ziel auf der Karte',mapGiver:'Auftraggeber auf der Karte',mapNote:'Öffnet die Karte beim verfolgten Ziel.',
+ read:'Auftrag lesen',back:'Zurück',empty:'Hier ist gerade Ruhe.',emptyNote:'Unter „Im Dorf“ stehen Bewohner, die Hilfe brauchen.',
+ xp:n=>n+' Erfahrung',coins:n=>n+' Pfandmarken',choice:'Ausrüstung nach Wahl',choiceNote:'Ein Teil von drei – du wählst beim Abgeben.',
+ notAccepted:'Noch nicht angenommen',ready:'Bereit zur Abgabe',done:'Abgeschlossen',page:'Seite',previous:'Vorherige Seite',next:'Nächste Seite'
+};
+/** Gespräch kompakt (Runde 2): Antwortknöpfe mit kurzem Namen, der witzige Satz steht im Tooltip. */
+export const DIALOG_UI={accept:'Annehmen',later:'Später',more:'Mehr',less:'Weniger',offers:'Aufträge'};
+/** Hilfe als Tastenkappen-Raster (Runde 2, 2026-09-24, Zielbild 2): je Zeile ein Thema, je Kappe Taste → Symbol; die Erklärung steht
+ *  nur im Tooltip (label + ein Satz). Kappen: Text = Taste; 'mouse'/'mouseR'/'mouse2'/'drag' = Maussymbole. to: Strichsymbol
+ *  (ui-glyphs.js) oder 'ui:<id>' für ein gemaltes UI-Symbol. Einstellungen stehen NICHT hier, sondern im Spielmenü. */
+export const HELP_GRID={
+ tabs:[['keys','Tasten','keyboard','Alle Tasten auf einen Blick'],['kniffe','Kniffe','spark','Kniffe, Talente, Eigenarten und Stärkungen nachschlagen']],film:'Einführungsfilm ansehen',filmNote:'Der Film vom Anfang, noch einmal von vorn.',
+ desktop:[
+  ['Bewegen','run',[
+   {keys:['W','A','S','D'],to:'run',label:'Laufen',note:'WASD läuft.'},
+   {keys:['mouseR'],to:'route',label:'Laufweg',note:'Rechtsklick auf den Boden plant den Weg dorthin.'},
+   {keys:['mouse'],to:'flag',label:'Zur Wegmarke',note:'Klick auf den Auftragskasten rechts läuft zur Wegmarke des Auftrags.'},
+   {keys:['F'],to:'hand',label:'Interagieren',note:'F spricht, plündert und bedient Auftragsziele; Shift + F leert einen Beutel ganz.'},
+   {keys:['X'],to:'ui:boots',label:'Auf- und absitzen',note:'X setzt dich auf dein Reittier oder Fahrzeug.'}]],
+  ['Kampf','sword',[
+   {keys:['Tab'],to:'target',label:'Ziel wählen',note:'Tab wählt nahe Gegner, Shift + Tab geht zurück. Rechtsklick auf einen Gegner greift an.'},
+   {keys:['1','–','0'],to:'spark',label:'Kniffe',note:'1–0 nutzt die Kniffe der Leiste, Umschalt + 1–0 die zweite Leiste. Zum Zaubern stehen bleiben.'},
+   {keys:['Leer'],to:'ui:dash',label:'Ausweichen',note:'Leertaste weicht aus – unabhängig von der Leiste.'},
+   {keys:['Q'],to:'ui:interrupt',label:'Unterbrechen',note:'Q unterbricht einen Gegner, der gerade etwas wirkt.'},
+   {keys:['Esc'],to:'close',label:'Abbrechen',note:'Esc bricht Zielen und Zaubern ab, schließt alle Fenster auf einmal, wählt das Ziel ab – erst dann kommt das Spielmenü.'}]],
+  ['Fenster','frame',[
+   {keys:['C'],to:'ui:person',label:'Figur',note:'Ausrüstung und Werte.'},
+   {keys:['J'],to:'ui:quest',label:'Aufträge',note:'Aufträge, Bude und Erinnerungen (auch L).'},
+   {keys:['N'],to:'ui:talents',label:'Talente',note:'Talentbäume und Hauptbaum.'},
+   {keys:['M'],to:'ui:map',label:'Karte',note:'Revierplan mit Orten und Laufweg.'},
+   {keys:['P'],to:'ui:book',label:'Kniffe',note:'Skillbuch und Aktionsleiste.'},
+   {keys:['I'],to:'ui:bag',label:'Rucksack',note:'Rucksack, Filter und Suche.'},
+   {keys:['V'],to:'chart',label:'Kampfstatistik',note:'Schaden und Heilung der letzten Kämpfe.'}]],
+  ['Beute & Leiste','bag',[
+   {keys:['⇧'],to:'magnify',label:'Details',note:'Shift über einem Tooltip zeigt, warum das Ding taugt und was die Fachwörter heißen.'},
+   {keys:['drag'],to:'spark',label:'Auf die Leiste',note:'Kniffe und Verpflegung auf einen freien Platz der Leiste ziehen; neben die Leiste gezogen nimmt sie ab.'},
+   {keys:['mouse2'],to:'check',label:'Anlegen',note:'Doppelklick auf ein Teil im Rucksack tauscht passende Ausrüstung.'},
+   {keys:['mouseR'],to:'gear',label:'Feldmenü',note:'Rechtsklick auf ein Leistenfeld öffnet sein Menü; Maus auf das Feld + B belegt eine Taste.'}]],
+  ['Dorf','ui:base',[
+   {keys:['B'],to:'ui:base',label:'Bude',note:'Springt in den Aufträgen zur Bude.'},
+   {keys:['⇧','B'],to:'hand',label:'Berufe',note:'Rezepte und Materialien deiner Berufe.'},
+   {keys:['U'],to:'ui:person',label:'Söldner',note:'Wer mit dir zieht und wie.'},
+   {keys:['R'],to:'target',label:'Aggro-Radius',note:'Zeigt, ab wo das gewählte Ziel dich bemerkt.'}]]
+ ],
+ touch:[
+  ['Bewegen','run',[
+   {keys:['Stick'],to:'run',label:'Laufen',note:'Mit dem Joystick laufen; die Seite wählst du unter Menü → Einstellungen.'},
+   {keys:['Tipp'],to:'flag',label:'Zur Wegmarke',note:'Tipp auf den Auftragskasten läuft zur Wegmarke.'},
+   {keys:['Aktion'],to:'hand',label:'Interagieren',note:'Aktion spricht, plündert und bedient Auftragsziele.'}]],
+  ['Kampf','sword',[
+   {keys:['Ziel'],to:'target',label:'Ziel wählen',note:'Ziel wählt einen nahen Gegner; Gegner antippen wählt ihn aus.'},
+   {keys:['Kniff'],to:'spark',label:'Kniffe',note:'Antippen führt aus, lange halten erklärt.'},
+   {keys:['Stiefel'],to:'ui:dash',label:'Ausweichen',note:'Eigener Sonderknopf.'},
+   {keys:['Hand'],to:'ui:interrupt',label:'Unterbrechen',note:'Eigener Sonderknopf.'}]],
+  ['Fenster','frame',[
+   {keys:['Menü'],to:'frame',label:'Fenster',note:'Menü öffnet Figur, Aufträge, Talente, Karte, Kniffe, Rucksack und Hilfe.'},
+   {keys:['×'],to:'close',label:'Schließen',note:'× schließt; der Kampf läuft weiter.'},
+   {keys:['Tipp'],to:'magnify',label:'Details',note:'Gegenstand oder Talent antippen zeigt Details, „Mehr dazu“ die Fachwörter.'}]]
+ ]
+};
+/** Talente kompakt (Runde 2): Symbole statt Beschriftung, Details im Tooltip. */
+export const TALENT_COMPACT={locked:n=>'Ab Stufe '+n,lockedNote:'Dann wählst du deinen Hauptbaum. Punkte darfst du in alle drei Bäume setzen.',free:'Freie Talentpunkte',freeNote:'Klick auf ein Talent lernt es, Rechtsklick nimmt einen Punkt zurück.',main:'Hauptbaum wählen',mainActive:'Hauptbaum',mainNote:'Der Hauptbaum bestimmt deine Kernmechanik und die Namen deiner Kniffe.',reset:'Alle Talentpunkte zurücksetzen'};

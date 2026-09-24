@@ -127,10 +127,10 @@ try{
  const tracker=await read(`return document.querySelector('.quest-panel').innerText`);assert.doesNotMatch(tracker,/Daily:/,'Tracker ohne „Daily:“');
  const src=readFileSync('profession-art.js','utf8');assert.match(src,/lineJoin='round'/);assert.doesNotMatch(src,/if\(hover\)label\(/,'Fundstelle: Name nur im Tooltip');
  ok('Quick Wins: Komma/Tausenderpunkt, keine Bedienhilfe im Tooltip, Tastenziffer ohne Box, Figur mit Name nur im Titel, Drehen frei, kein Buffs-Schild, Legende, „m“, Tracker, Fundstellen-Label');
- // Gespräch: Name nur in der Kopfkarte.
+// Gespräch: Name nur einmal – seit Runde 2a steht er mit dem Porträt in der Titelzeile, die Kopfkarte entfällt.
  await read(`const g=window.game;Object.assign(g.player,g.world.findClear(g.world.npc.x+20,g.world.npc.y+10,9));`);await wait(300);await b.press('f');await wait(700);
- const dlg=await read(`const p=document.querySelector('.popup-dialog');if(!p)return null;return {title:getComputedStyle(p.querySelector('.popup-titlebar strong')).visibility,head:!!p.querySelector('.conversation-portrait')}`);
- if(dlg&&dlg.head){assert.equal(dlg.title,'hidden','Gesprächstitel ohne doppelten Namen');await b.screenshot(`${dir}/r1-44-gespraech.jpg`);ok('Gespräch: Name nur in der Kopfkarte');}else console.log('Hinweis: kein Gespräch geöffnet (Ida nicht erreichbar), Prüfung übersprungen');
+ const dlg=await read(`const p=document.querySelector('.popup-dialog');if(!p)return null;return {title:getComputedStyle(p.querySelector('.popup-titlebar strong')).visibility,head:!!p.querySelector('.popup-titlebar .dlg-portrait'),names:[...p.querySelectorAll('.popup-titlebar strong,.conversation-person strong')].filter(e=>e.offsetParent).length}`);
+ if(dlg&&dlg.head){assert.equal(dlg.title,'visible','Name in der Titelzeile');assert.equal(dlg.names,1,'Name nur einmal');await b.screenshot(`${dir}/r1-44-gespraech.jpg`);ok('Gespräch: Name nur einmal (Titelzeile mit Porträt)');}else console.log('Hinweis: kein Gespräch geöffnet (Ida nicht erreichbar), Prüfung übersprungen');
  await closeAll();
  // ---------- 6) Zweite Leiste, Kein Weg dorthin ----------
  const bar2=async()=>read(`const x=document.querySelector('.action-area .extra-bar');if(!x)return null;const s=x.querySelector('.skill.empty-slot');return {used:!!x.querySelector('.skill:not(.empty-slot)'),vis:s?getComputedStyle(s).visibility:null,top:Math.round(document.querySelector('.action-area').getBoundingClientRect().top)}`);

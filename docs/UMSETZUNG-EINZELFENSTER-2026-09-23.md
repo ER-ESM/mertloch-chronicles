@@ -69,3 +69,13 @@ Angepasst: `scripts/ui-regression-check.mjs` (Navigation: Fenster nebeneinander)
 - Chatfenster unten links wird von linken Fenstern überdeckt (wie im Vorbild); bei Bedarf Chat über den Fenstern stapeln.
 - Hilfe bleibt mit Unterreitern (Tasten/Kniffe/Einstellungen) mittig; nicht weiter verdichtet.
 - Gespeicherte Fensterpositionen (`mertloch-popup-positions`, Schlüssel `book`) gelten nur noch für Overlays.
+
+## Raster und Esc (Optimierung Runde 2a, 2026-09-24)
+
+- **Ein Raster**: Alle Seitenfenster und das Gespräch (Figurplatz, nicht verschiebbar) stehen fest auf derselben Ober- und Unterkante
+  (`PopupWindows.frame()`); Talente, Hilfe und Einstellungen mittig auf derselben Oberkante. Die Unterkante kommt aus den **sichtbaren**
+  Leisten (`visibleBars()`), nicht aus der ganzen Aktionsfläche.
+- **Esc** schließt alle offenen Fenster auf einmal (vorher: das oberste); danach wählt es das Ziel ab, dann kommt das Spielmenü.
+- **Einstellungen** sind ein eigenes Fenster aus dem Spielmenü, nicht mehr ein Reiter der Hilfe.
+- **Held unter Fenstern** (`hero-reveal.js`): beim Auto-Laufen und im Kampf werden überdeckende Fenster durchsichtig und klickdurchlässig.
+- Details: `docs/OPTIMIERUNG-2026-09-24-runde-2a.md`, Prüfung `node scripts/optimierung-r2a-check.mjs`.

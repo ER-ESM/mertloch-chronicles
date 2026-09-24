@@ -1,0 +1,337 @@
+/* ===== Optimierung Runde 2a „Fenster“ (2026-09-24): WoW-Raster, Questlog, Gespräch, Hilfe, Kniffe, Talente, Karte =====
+   Zuletzt geladen. Lage und Höhe setzt popup-windows.js (gemeinsame Ober- und Unterkante), hier nur Dichte und Optik.
+   Regel: nirgends scrollen – jede .popup-body ist overflow:hidden; was nicht passt, blättert (‹ 1/2 ›) oder steht im Tooltip. */
+
+/* Strich-Symbole (ui-glyphs.js) */
+.ui-glyph{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;pointer-events:none}
+.ql-tool{width:28px;height:28px;min-width:0!important;min-height:0!important;display:inline-grid;place-items:center;padding:0!important;margin:0;background:#10221b;border:1px solid #c5a26877;border-radius:6px;color:#e7c87b;cursor:pointer;box-shadow:none}
+.ql-tool:hover,.ql-tool:focus-visible{border-color:#f3cf7a;color:#fff0c0;outline:none;background:#1b3328}
+.ql-tool.on{background:#3b4a26;border-color:#f3cf7a;color:#fff0c0;box-shadow:0 0 0 1px #f3cf7a55,0 0 8px #f3cf7a44}
+.ql-tool canvas{width:22px;height:22px;image-rendering:pixelated}
+.touch-mode .ql-tool{width:44px;height:44px}
+
+/* ---------- Aufträge (J): Questlog ---------- */
+.popup-quest .popup-body{display:flex;flex-direction:column;overflow:hidden!important;padding:6px 10px 6px!important}
+.popup-quest .popup-body>[hidden]{display:none!important}
+.popup-quest .quest-log{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.popup-quest :is(.quest-base,.quest-memories){flex:1 1 auto;min-height:0;overflow:hidden}
+.ql{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.ql-list{flex:1 1 auto;min-height:44px;overflow:hidden;display:flex;flex-direction:column;align-items:stretch}
+.ql-list>[hidden]{display:none!important}
+.ql-group{margin:5px 0 1px;padding:0 0 0 2px;font:400 15px/1.1 var(--display,'Jersey 15',sans-serif);letter-spacing:.03em;color:#e7c87b;cursor:default;flex:none}
+.ql-group:first-child{margin-top:0}
+.ql-row{flex:none;display:grid!important;grid-template-columns:16px minmax(0,1fr) auto 46px;align-items:center;gap:6px;width:100%;height:23px;min-height:0!important;margin:0!important;padding:0 4px 0 9px!important;background:none!important;border:0!important;border-left:3px solid transparent!important;border-radius:3px!important;box-shadow:none!important;text-align:left;color:#efe4c6!important;font:600 13px/1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;text-transform:none!important;cursor:pointer}
+.ql-row:hover{background:#ffffff12!important}
+.ql-row.selected{background:#e7c87b24!important;border-left-color:#f3cf7a!important;color:#fff4d6!important}
+.ql-row.done,.ql-row.low{color:#b6bfa4!important}
+.ql-row .ql-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ql-row .ql-count{font:700 12px/1 var(--read,sans-serif);color:#d7ddc3}
+.ql-row em{font:600 12px/1 var(--read,sans-serif);font-style:normal;text-align:right;color:#c9d2b4;text-transform:none}
+.ql-mark{display:inline-grid;place-items:center;width:15px;height:15px;font:400 15px/1 var(--display,'Jersey 15',sans-serif);font-style:normal;color:#f3cf7a;text-shadow:0 1px 0 #0b1216}
+.ql-mark.ql-main::before{content:'!'}
+.ql-mark.ql-ready::before{content:'?'}
+.ql-mark.ql-side::before{content:'';width:7px;height:7px;background:#d9b765;transform:rotate(45deg);box-shadow:0 1px 0 #0b1216}
+.ql-mark.ql-daily{background:no-repeat center/13px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Crect x='1' y='2' width='10' height='9' rx='1.5' fill='%23213a2e' stroke='%23f3cf7a' stroke-width='1.2'/%3E%3Cpath d='M1.6 4.6h8.8' stroke='%23f3cf7a' stroke-width='1.2'/%3E%3Cpath d='M3.5 1v2.2M8.5 1v2.2' stroke='%23f3cf7a' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E")}
+.ql-pager{flex:none;display:flex;justify-content:flex-end;align-items:center;gap:6px;height:22px;margin:1px 0 0;font:700 12px/1 var(--read,sans-serif);color:#d7ddc3}
+.ql-pager[hidden]{display:none}
+.ql-pager button{width:22px;height:22px;min-width:0!important;min-height:0!important;padding:0!important;display:grid;place-items:center;background:#10221b;border:1px solid #c5a26866;border-radius:5px;color:#e7c87b}
+.ql-pager button:disabled{opacity:.35}
+.ql-pager .ui-glyph{width:14px;height:14px}
+.ql-detail{flex:none;margin:5px 0 0;padding:6px 0 0;border-top:1px solid #c5a26870;box-shadow:0 -1px 0 #0b121666}
+.ql-detail[hidden]{display:none!important}
+.ql-detail>header{display:flex;align-items:center;gap:6px;min-height:28px}
+.ql-detail h3{flex:1 1 auto;min-width:0;margin:0!important;font:400 17px/1.1 var(--display,'Jersey 15',sans-serif)!important;letter-spacing:.02em;color:#f3dfae;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ql-state{flex:none;font:700 11px/1 var(--read,sans-serif);color:#9fe08a}
+.ql-tools{display:flex;gap:4px;flex:none}
+.ql-back{display:none!important}
+.ql-steps{list-style:none;margin:4px 0 0!important;padding:0!important;display:grid;gap:1px}
+.ql-steps li{position:relative;display:flex;align-items:center;gap:8px;height:20px;padding:0 4px 0 21px;border-radius:3px;font:600 13px/1 var(--read,sans-serif);color:#efe4c6;cursor:default}
+.ql-steps li span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ql-steps li b{flex:none;font:700 12px/1 var(--read,sans-serif);color:#f3dfae}
+.ql-steps li::before{content:'';position:absolute;left:5px;top:50%;width:9px;height:9px;margin-top:-6px;border:1.5px solid #d7c48f;border-radius:2px}
+.ql-steps li.done{color:#9fb28e}
+.ql-steps li.done span{text-decoration:line-through;text-decoration-thickness:1px}
+.ql-steps li.done::before{border:0;width:11px;height:6px;margin-top:-5px;border-left:2.5px solid #7bc463;border-bottom:2.5px solid #7bc463;border-radius:0;transform:rotate(-45deg)}
+.ql-steps li.current{background:#e7c87b26;color:#fff4d6}
+.ql-steps li.current::before{border-color:#f3cf7a;background:#f3cf7a}
+.ql-steps li.warn{color:#f0a48c}
+.ql-reading>:not(.ql-read-page){display:none!important}
+.ql-read-page{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px}
+.ql-read-page[hidden]{display:none!important}
+.ql-read-page>header{display:flex;align-items:center;gap:8px}
+.ql-read-page h3{margin:0!important;font:400 18px/1.1 var(--display,'Jersey 15',sans-serif)!important;color:#f3dfae}
+.ql-read-page p{margin:0!important;font:500 14px/1.45 var(--read,sans-serif);color:#efe4c6}
+.ql-read-page .ql-quote{font-style:italic;color:#f6e7bd}
+.ql-read-page .ql-quote small{font-style:normal;opacity:.75}
+.ql-empty{display:flex;align-items:center;gap:8px;padding:8px 4px;color:#d7ddc3;font:600 14px/1.2 var(--read,sans-serif)}
+.ql-empty .ui-glyph{width:22px;height:22px;color:#9fe08a}
+.ql-empty span{flex:1}
+/* Filter als Symbolschalter in der Titelzeile */
+.popup-titlebar .ql-filters{display:flex;gap:3px;flex:none;margin:0 2px 0 auto}
+.popup-titlebar .ql-filters[hidden]{display:none}
+.popup-titlebar .ql-filter{width:28px;height:28px;min-width:0!important;min-height:0!important;padding:0!important;display:grid;place-items:center;background:#0f1f19;border:1px solid #c5a26855;border-radius:6px;box-shadow:none;opacity:.72;cursor:pointer}
+.popup-titlebar .ql-filter canvas{width:22px;height:22px;image-rendering:pixelated}
+.popup-titlebar .ql-filter:hover{opacity:1;border-color:#e7c87b}
+.popup-titlebar .ql-filter.selected{opacity:1;border-color:#f3cf7a;background:#2f3f25;box-shadow:0 0 6px #f3cf7a44}
+.popup-quest .popup-titlebar strong{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.touch-mode .popup-titlebar .ql-filter{width:40px;height:40px}
+/* Symbolreiter unten: Aufträge, Bude, Erinnerungen */
+.popup-quest .ql-tabs{flex:none;display:flex!important;gap:6px;justify-content:flex-start;margin:6px 0 0!important;padding:5px 0 0!important;border-top:1px solid #c5a26855;border-bottom:0!important;background:none!important;position:static!important}
+.popup-quest .ql-tabs button{width:34px;height:32px;min-width:0!important;min-height:0!important;padding:0!important;display:grid;place-items:center;background:#0f1f19;border:1px solid #c5a26855;border-radius:6px;opacity:.72;box-shadow:none}
+.popup-quest .ql-tabs button canvas{width:24px;height:24px;image-rendering:pixelated}
+.popup-quest .ql-tabs button.selected{opacity:1;border-color:#f3cf7a;background:#2f3f25}
+.ql-tab-name{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.touch-mode .popup-quest .ql-tabs button{width:48px;height:44px}
+/* Touch: Liste oder Detail (Tippen tauscht, Zurück-Pfeil) */
+.touch-mode .ql:not(.ql-show-detail) .ql-detail{display:none!important}
+.touch-mode .ql.ql-show-detail>:is(.ql-list,.ql-pager){display:none!important}
+.touch-mode .ql.ql-show-detail .ql-detail{border-top:0;margin:0;padding:0}
+.touch-mode .ql-back{display:inline-grid!important}
+.touch-mode .ql-row{height:40px}
+/* Bude und Erinnerungen im selben Fenster ohne Überschriften */
+.popup-quest .quest-memories .memory-panel>.rpg-heading h2{display:none}
+
+/* ---------- Belohnung als Kacheln ---------- */
+.reward-tiles{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;flex:none}
+.rt-tile{position:relative;width:36px;height:36px;display:grid;place-items:center;background:#0d1b16;border:2px solid #b8955a;border-radius:6px;box-shadow:inset 0 0 0 1px #0b1216;cursor:default}
+.rt-tile:hover,.rt-tile:focus-visible{border-color:#f3cf7a;outline:none}
+.rt-tile canvas{width:28px;height:28px;image-rendering:pixelated}
+.rt-tile b{position:absolute;right:2px;bottom:0;font:800 11px/1 var(--read,'Nunito',sans-serif);color:#fff8e6;text-shadow:1px 0 0 #0b1216,-1px 0 0 #0b1216,0 1px 0 #0b1216,0 -1px 0 #0b1216,1px 1px 0 #0b1216,-1px -1px 0 #0b1216}
+.rt-tile.uncommon{border-color:#5fbf4f}.rt-tile.rare{border-color:#4b8fe0}.rt-tile.epic{border-color:#a45fe0}.rt-tile.legendary{border-color:#e89a3c}
+.rt-tile.rt-relic{border-color:#e89a3c}
+.rt-tile.rt-choice::after{content:'?';position:absolute;right:2px;bottom:0;font:400 13px/1 var(--display,sans-serif);color:#f3cf7a;text-shadow:0 1px 0 #0b1216}
+
+/* ---------- Gespräch: Porträt und Name in der Titelzeile, Text höchstens drei Zeilen, Knöpfe immer sichtbar ---------- */
+.popup-dialog .popup-titlebar.has-portrait .popup-emblem{display:none}
+.popup-dialog .popup-titlebar strong{visibility:visible!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlg-portrait{position:relative;display:block;flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid #c5a268;background:#284330;margin:-3px 0}
+.dlg-portrait canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.dlg-portrait .conversation-initial{position:absolute;inset:0;display:grid;place-items:center;font:400 20px/1 var(--display,sans-serif);color:#f3dfae}
+.dlg-portrait:has(canvas) .conversation-initial{display:none}
+.popup-dialog .dlg-head-hidden{display:none!important}
+body:not(.touch-mode) .popup-dialog .popup-body.dlg-compact{display:flex;flex-direction:column;overflow:hidden!important;padding:8px 12px 10px!important}
+.dlg-compact>[hidden],.dlg-compact [hidden]{display:none!important}
+.dlg-compact h2{margin:2px 0 6px!important;font-size:19px!important;line-height:1.15!important;display:flex;align-items:center;gap:6px;flex:none}
+.dlg-compact .hotspot-offer,.dlg-compact>article{display:flex;flex-direction:column;flex:0 1 auto;min-height:0;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+.dlg-compact .hotspot-offer::before,.dlg-compact .hotspot-offer::after{display:none!important}
+.dlg-text{position:relative;flex:0 1 auto;min-height:0;margin:0 0 6px;cursor:default}
+.dlg-lines{max-height:calc(3 * 1.45em);overflow:hidden;font:500 14px/1.45 var(--read,'Nunito',sans-serif);color:#efe4c6}
+.dlg-lines p{margin:0!important;line-height:1.45!important;font-size:14px!important}
+.dlg-lines .conversation-quote{margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;font-style:italic;color:#f6e7bd!important}
+.dlg-lines .conversation-quote::before,.dlg-lines .conversation-quote::after{display:none!important}
+.dlg-text.open{flex:1 1 auto}
+.dlg-text.open .dlg-lines{max-height:none;height:100%}
+.dlg-more{position:absolute;right:0;bottom:-3px;width:26px;height:18px;min-width:0!important;min-height:0!important;padding:0!important;display:grid;place-items:center;background:#10221bee;border:1px solid #c5a26877;border-radius:9px;color:#e7c87b;box-shadow:-10px 0 10px #16291f}
+.dlg-more[hidden]{display:none!important}
+.dlg-compact .quest-objective{flex:none;margin:2px 0 4px!important;padding:3px 6px 3px 22px!important;position:relative;background:#0f1f19!important;border:1px solid #c5a26844!important;border-radius:5px;font:600 13px/1.3 var(--read,sans-serif)!important;color:#efe4c6!important;box-shadow:none!important}
+.dlg-compact .quest-objective::before{content:'';position:absolute;left:7px;top:50%;width:9px;height:9px;margin-top:-6px;border:1.5px solid #d7c48f;border-radius:2px}
+.dlg-compact .quest-objective.has-note::after{content:'i';position:absolute;right:5px;top:50%;margin-top:-7px;width:14px;height:14px;border-radius:50%;border:1px solid #c5a268;font:700 10px/12px var(--read,sans-serif);text-align:center;color:#e7c87b}
+.dlg-compact .dialog-actions{flex:none;display:flex!important;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin:8px 0 0!important;padding:0!important}
+.dlg-compact>.dialog-actions:last-child,.dlg-compact .hotspot-offer .dialog-actions{margin-top:auto!important;padding-top:8px!important}
+.dlg-compact>.gold-button:last-child,.dlg-compact>.outline-button:last-child{margin-top:auto;align-self:flex-end}
+.dlg-compact .dialog-actions button{min-width:110px}
+.dlg-compact .requirements-failed{flex:none;margin:2px 0!important;font-size:12px!important}
+.dlg-gossip{display:flex;flex-direction:column;gap:2px;margin:0 0 6px;flex:none}
+.dlg-gossip button{display:grid!important;grid-template-columns:16px minmax(0,1fr);align-items:center;gap:6px;height:26px;min-height:0!important;padding:0 8px!important;background:none!important;border:0!important;border-radius:4px!important;box-shadow:none!important;text-align:left;color:#efe4c6!important;font:700 14px/1 var(--read,sans-serif)!important;text-transform:none!important;letter-spacing:0!important}
+.dlg-gossip button:hover{background:#e7c87b24!important}
+.dlg-gossip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlg-back{width:24px;height:24px}
+.touch-mode .dlg-portrait{width:36px;height:36px}
+.dlg-compact .reward-picker{flex:0 1 auto;min-height:0}
+.ql-row .ql-title{justify-self:stretch;text-align:left}
+.ql-row.tracked .ql-title{color:#f6d68a}
+
+/* ---------- Figur (C): passt auf die gemeinsame Unterkante (484 px) ---------- */
+body:not(.touch-mode) .popup-person .popup-body{overflow:hidden!important;padding:6px 12px 8px!important}
+body:not(.touch-mode) .popup-person .rpg-heading:not(:has(*:not(.eyebrow))){display:none}
+body:not(.touch-mode) .popup-person .equipment-grid{--body-height:250px;--gear-size:42px;margin-bottom:0}
+body:not(.touch-mode) .popup-person .compact-stats{margin:6px 0 0;gap:3px}
+body:not(.touch-mode) .popup-person .compact-stats>div{min-height:0!important;padding:2px 6px!important}
+body:not(.touch-mode) .popup-person .armory-controls .icon-only{min-width:32px;min-height:32px}
+
+/* ---------- Hilfe (H): Tastenkappen-Raster, Erklärung im Tooltip ---------- */
+.popup-guide .popup-body{overflow:hidden!important;padding:10px 12px 10px!important}
+.popup-guide [data-help-page][hidden]{display:none!important}
+.popup-titlebar .help-tabs{display:flex!important;gap:4px;flex:none;margin:0 2px 0 auto!important;padding:0!important;border:0!important;background:none!important;position:static!important}
+.popup-guide .popup-titlebar strong{flex:1 1 auto;min-width:0}
+.help-grid{display:grid;gap:6px}
+.hk-row{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-height:40px;padding:0 0 6px;border-bottom:1px solid #c5a26833}
+.hk-row:last-child{border-bottom:0;padding-bottom:0}
+.hk-topic{flex:none;width:30px;height:30px;display:grid;place-items:center;margin-right:4px;border-radius:50%;background:#0f1f19;border:1px solid #c5a26877;color:#f3cf7a;cursor:default}
+.hk-topic canvas{width:24px;height:24px;image-rendering:pixelated}
+.hk-item{display:inline-flex;align-items:center;gap:3px;padding:3px 5px;border-radius:6px;cursor:help}
+.hk-item:hover,.hk-item:focus-visible{background:#e7c87b22;outline:none}
+.hk-cap{min-width:28px;height:28px;box-sizing:border-box;padding:0 5px;display:inline-grid;place-items:center;background:linear-gradient(#2a4136,#1d2f27);border:1px solid #c5a268aa;border-bottom-width:3px;border-radius:5px;font:400 17px/1 var(--display,'Jersey 15',sans-serif);color:#f3dfae;text-shadow:0 1px 0 #0b1216;box-shadow:0 1px 0 #0b1216}
+.hk-cap.hk-wide{font-size:14px;padding:0 6px}
+.hk-cap.hk-mouse{position:relative;color:#f3dfae}
+.hk-cap.hk-mouse .ui-glyph{width:17px;height:17px}
+.hk-cap.hk-mouse small{position:absolute;right:1px;bottom:0;font:800 9px/1 var(--read,sans-serif);color:#f3cf7a}
+.hk-cap.hk-right::after{content:'';position:absolute;left:50%;top:6px;width:4px;height:5px;background:#f3cf7a;border-radius:0 3px 0 0}
+.hk-dash{color:#c9d2b4;font:700 12px/1 var(--read,sans-serif)}
+.hk-arrow{width:10px;height:10px;flex:none;background:no-repeat center/10px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 5h7M5.5 2 8.5 5 5.5 8' fill='none' stroke='%23c9a45c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.hk-to{width:26px;height:26px;display:grid;place-items:center;color:#f3cf7a}
+.hk-to canvas{width:26px;height:26px;image-rendering:pixelated}
+.hk-to .ui-glyph{width:20px;height:20px}
+.touch-mode .hk-cap{height:36px;min-width:36px;font-size:14px}
+/* Reiter „Kniffe“: das Nachschlagewerk als Symbolraster ohne Suche, Namen im Tooltip */
+.popup-guide .guide-kniffe :is(.kniff-search,.cat-filter,.kniff-section>small){display:none!important}
+.popup-guide .kniff-book{display:grid;gap:5px}
+.popup-guide .kniff-section{display:grid;grid-template-columns:96px minmax(0,1fr);gap:3px 8px;align-items:center;margin:0!important;padding:0 0 5px!important;border:0!important;border-bottom:1px solid #c5a26833!important;background:none!important;box-shadow:none!important}
+.popup-guide .kniff-section h3{grid-column:1;margin:0!important;font:400 14px/1.1 var(--display,sans-serif)!important;color:#e7c87b}
+.popup-guide .kniff-section h4{grid-column:1;margin:0!important;font:600 12px/1.1 var(--read,sans-serif)!important;color:#c9d2b4;text-align:right}
+.popup-guide .kniff-section>h3+h4{grid-row:auto}
+.popup-guide .kniff-grid{grid-column:2;display:flex!important;flex-wrap:wrap;gap:3px}
+.popup-guide .kniff-tile{position:relative;width:34px!important;height:34px!important;min-width:0!important;min-height:0!important;padding:1px!important;display:grid!important;place-items:center;border-radius:6px!important}
+.popup-guide .kniff-tile>span,.popup-guide .kniff-tile .kniff-fn{display:none!important}
+.popup-guide .kniff-tile :is(canvas,img){width:28px!important;height:28px!important}
+.popup-guide .kniff-tile kbd{position:absolute;right:1px;bottom:0;font-size:9px}
+.popup-guide .kniff-empty{margin:0!important;font-size:12px;opacity:.7}
+
+/* ---------- Einstellungen: eigenes Fenster aus dem Spielmenü, zwei Spalten, ohne Scrollen ---------- */
+.popup-settings .popup-body{overflow:hidden!important;padding:10px 12px!important}
+.popup-settings .help-settings{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;align-items:start}
+.popup-settings .help-settings>p:first-child{display:none}
+.popup-settings .help-settings>*{margin:0!important}
+.popup-settings .help-settings>:is(.meter-entry,.hud-entry,.bar-settings,[class*="entry"],[class*="settings"]):not(button){grid-column:1/-1}
+.popup-settings .help-settings>button{min-height:32px!important;padding:4px 10px!important;font-size:13px!important}
+.popup-settings .help-settings .build-line{grid-column:1/-1;font-size:11px;opacity:.7;text-align:right}
+.popup-settings .help-settings .help-settings-admin{grid-column:1/-1}
+
+/* ---------- Spielmenü: kompakt wie im Vorbild (≈ 220 × 360) ---------- */
+body:not(.touch-mode) .popup-menu .popup-body{overflow:hidden!important;padding:8px 10px 10px!important}
+body:not(.touch-mode) .popup-menu .game-menu-actions{display:grid;gap:4px}
+body:not(.touch-mode) .popup-menu .game-menu-actions button{min-height:0!important;height:28px;padding:0 8px!important;font-size:12px!important;line-height:1!important;margin:0!important}
+body:not(.touch-mode) .popup-menu .game-menu-sep{margin:3px 0!important}
+body:not(.touch-mode) .popup-menu .popup-titlebar strong{font-size:17px}
+/* Feinschliff Runde 2a: Kappen eckig wie echte Tasten, jede Themenzeile einzeilig */
+.help-grid .hk-cap{border-radius:5px!important;min-width:24px;height:26px;padding:0 4px;font-size:15px}
+.help-grid .hk-item{gap:2px;padding:2px 3px}
+.help-grid .hk-row{gap:2px 2px;flex-wrap:nowrap}
+.help-grid .hk-to{width:22px;height:22px}
+.help-grid .hk-to canvas{width:22px;height:22px}
+.help-grid .hk-to .ui-glyph{width:18px;height:18px}
+.touch-mode .help-grid .hk-row{flex-wrap:wrap}
+body:not(.touch-mode) .popup-menu .game-menu-actions{gap:3px}
+body:not(.touch-mode) .popup-menu .game-menu-actions button{height:26px;box-sizing:border-box}
+
+/* ---------- Talente (N): ohne Suche und Detailspalte, Symbole in der Titelzeile, Pfade unten ---------- */
+.popup-talents .popup-body.tt-compact{overflow:hidden!important;padding:8px 10px!important}
+.tt-compact .tt-menu{display:flex;flex-direction:column;gap:6px;height:100%}
+.tt-compact .tt-workspace{display:block!important;grid-template-columns:none!important;flex:1 1 auto;min-height:0}
+.tt-compact .tt-workspace>div{display:flex;flex-direction:column;height:100%}
+.tt-compact .tt-tree{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;margin:0!important}
+.tt-compact .tt-board{flex:1 1 auto;height:auto!important;min-height:300px}
+.tt-compact .tt-bonuses{display:flex!important;align-items:center;gap:8px;margin:6px 0 0!important;padding:0!important}
+.tt-compact .tt-bonuses .tt-track{flex:1 1 auto}
+.tt-compact .tt-path-tabs{display:flex!important;gap:4px;margin:0!important;padding:0!important;border:0!important;flex:none}
+.tt-compact .tt-path-tabs button{position:relative;width:40px;height:34px;min-width:0!important;min-height:0!important;padding:2px!important;display:grid!important;place-items:center;grid-template-columns:none!important}
+.tt-compact .tt-path-tabs button>span:not(.tt-tab-count){display:none!important}
+.tt-compact .tt-path-tabs button canvas{width:26px;height:26px}
+.tt-compact .tt-path-tabs .tt-tab-count{position:absolute;right:2px;bottom:0;font:800 11px/1 var(--read,sans-serif);color:#fff8e6;text-shadow:0 0 2px #0b1216,0 1px 0 #0b1216}
+.tt-compact .tt-path-tabs button.selected{border-color:#f3cf7a!important;background:#2f3f25!important}
+.popup-titlebar .tt-title-tools{display:flex;align-items:center;gap:4px;flex:none;margin:0 4px 0 auto}
+.popup-titlebar .tt-title-tools .tt-bank{display:flex;align-items:baseline;gap:3px;height:28px;padding:0 6px;margin:0 2px;border:1px solid #c5a26855;border-radius:6px;background:#0f1f19;font:600 11px/28px var(--read,sans-serif);color:#c9d2b4;cursor:default}
+.popup-titlebar .tt-title-tools .tt-bank strong{font:400 18px/28px var(--display,sans-serif);color:#f3cf7a}
+.popup-titlebar .tt-title-tools .tt-star.tt-main-pick{border-color:#f3cf7a;box-shadow:0 0 8px #f3cf7a66}
+.popup-titlebar .tt-spec-tabs{display:flex!important;gap:4px;margin:0 0 0 8px!important;padding:0!important;border:0!important;grid-template-columns:none!important}
+.popup-titlebar .tt-spec-icon{position:relative;width:34px!important;height:34px!important;min-width:0!important;min-height:0!important;padding:1px!important;display:grid!important;place-items:center;grid-template-columns:none!important;border-radius:7px!important;opacity:.7}
+.popup-titlebar .tt-spec-icon.selected{opacity:1;border-color:#f3cf7a!important;box-shadow:0 0 6px #f3cf7a55}
+.popup-titlebar .tt-spec-icon canvas{width:28px!important;height:28px!important}
+.popup-titlebar .tt-spec-icon .tt-spec-name{display:none!important}
+.popup-titlebar .tt-spec-icon .tt-spec-count{position:absolute;right:1px;bottom:-1px;font:800 11px/1 var(--read,sans-serif);color:#fff8e6;text-shadow:0 0 2px #0b1216,0 1px 0 #0b1216;background:none!important;padding:0!important;min-width:0!important}
+.popup-titlebar .tt-spec-icon .tt-spec-count i{color:#f3cf7a;font-style:normal}
+.popup-talents .popup-titlebar strong{flex:0 1 auto}
+/* Vorschau vor Stufe 5: drei Wappen, ein Schloss */
+.tt-compact.tt-locked :is(.tt-toolbar,.tt-workspace,.tt-migration){display:none!important}
+.tt-compact.tt-locked .tt-menu{align-items:center;justify-content:center;gap:10px;padding:10px 0}
+.tt-compact.tt-locked .tt-spec-tabs{display:flex!important;gap:18px;grid-template-columns:none!important}
+.tt-compact.tt-locked .tt-spec-icon{width:72px!important;height:72px!important;min-height:0!important;padding:4px!important;display:grid!important;place-items:center;grid-template-columns:none!important;filter:grayscale(.55) brightness(.85)}
+.tt-compact.tt-locked .tt-spec-icon canvas{width:60px!important;height:60px!important}
+.tt-compact.tt-locked .tt-spec-icon :is(.tt-spec-name,.tt-spec-count){display:none!important}
+.tt-lock-row{display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid #c5a26877;border-radius:14px;background:#0f1f19;font:700 13px/1 var(--read,sans-serif);color:#f3dfae;cursor:default}
+.tt-lock-row .ui-glyph{width:16px;height:16px;color:#f3cf7a}
+
+/* ---------- Kniffe (P): WoW-Zauberbuch – dieselbe Slot-Optik wie die Aktionsleiste, 44 px, nach Taste sortiert ---------- */
+body:not(.touch-mode) .popup-book .popup-body{overflow:hidden!important;padding:10px 14px!important}
+body:not(.touch-mode) .popup-book .icon-skillbook{display:grid!important;grid-template-columns:repeat(7,44px)!important;gap:6px!important;justify-content:start;margin:0!important;padding:0!important;background:none!important;border:0!important}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill{position:relative;width:44px!important;height:44px!important;min-width:0!important;min-height:0!important;aspect-ratio:auto!important;padding:0!important;margin:0!important;display:grid!important;place-items:center;background:#0d1b16!important;border:2px solid #b8955a!important;border-radius:6px!important;box-shadow:inset 0 0 0 1px #0b1216,0 2px 0 #0b1216!important;overflow:visible}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill::before,body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill::after{display:none!important}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill canvas{width:38px!important;height:38px!important;border:0!important;border-radius:4px!important;box-shadow:none!important;background:none!important;image-rendering:pixelated}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill:hover{border-color:#f3cf7a!important}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill.selected{border-color:#f3cf7a!important;box-shadow:0 0 0 1px #f3cf7a88,0 0 8px #f3cf7a55!important}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill.unbound{border-color:#f3cf7a!important;animation:book-new 1.6s ease-in-out 2}
+@keyframes book-new{50%{box-shadow:0 0 10px #f3cf7a,inset 0 0 6px #f3cf7a88}}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill kbd{position:absolute!important;top:1px!important;right:3px!important;left:auto!important;bottom:auto!important;transform:none!important;min-width:0!important;height:auto!important;padding:0!important;margin:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;font:800 12px/1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0!important;color:#fff8e6!important;text-shadow:1px 0 0 #0b1216,-1px 0 0 #0b1216,0 1px 0 #0b1216,0 -1px 0 #0b1216,1px 1px 0 #0b1216,-1px -1px 0 #0b1216!important}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill>i:not(.book-lock){display:none!important}
+.icon-skillbook .book-skill.locked canvas,.passive-book .passive-tile.locked :is(canvas,img){filter:grayscale(1) brightness(.55)}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill.locked{border-color:#56655a!important}
+.book-lock{position:absolute;right:2px;bottom:2px;width:12px;height:12px;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 5V3.5a3 3 0 0 1 6 0V5' fill='none' stroke='%23e0c070' stroke-width='1.6'/%3E%3Crect x='2' y='5' width='8' height='6' rx='1' fill='%23e0c070'/%3E%3C/svg%3E");filter:drop-shadow(0 1px 0 #0b1216)}
+.popup-titlebar .book-title-tools{display:flex;gap:4px;flex:none;margin:0 2px 0 auto}
+.popup-titlebar .book-title-tools .ql-tool canvas{width:22px;height:22px}
+.popup-book .popup-titlebar strong{flex:1 1 auto}
+.book-divider{display:flex;align-items:center;gap:8px;margin:12px 0 8px;color:#9fe08a;cursor:default}
+.book-divider::before,.book-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,#c5a26899,transparent)}
+.book-divider .ui-glyph{width:18px;height:18px}
+body:not(.touch-mode) .popup-book .book-passives{margin:0!important;padding:0!important;background:none!important;border:0!important}
+body:not(.touch-mode) .popup-book .book-instruction:empty{display:none}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill kbd.kbd-long{font-size:10px!important}
+body:not(.touch-mode) .popup-book .icon-skillbook>.book-skill>i.book-lock{position:absolute!important;left:auto!important;top:auto!important;right:2px!important;bottom:2px!important;width:12px!important;height:12px!important;margin:0!important;padding:0!important;background-color:transparent!important;border:0!important;transform:none!important}
+
+/* ---------- Karte (M): Ortsliste einzeilig ohne Nummern, verfolgtes Ziel oben hervorgehoben, Rest gedimmt ---------- */
+body:not(.touch-mode) .popup-map.dock-full .atlas-sidebar{overflow:hidden!important;display:flex;flex-direction:column;min-height:0}
+body:not(.touch-mode) .popup-map.dock-full #atlasPlaces{display:flex!important;flex-direction:column;gap:1px;flex:0 1 auto;min-height:0;overflow:hidden}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place{display:grid!important;grid-template-columns:20px minmax(0,1fr) auto;align-items:center;gap:6px;height:24px;min-height:0!important;padding:0 8px!important;margin:0!important;opacity:.62;border-radius:5px!important;flex:none}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place:hover,body:not(.touch-mode) .popup-map.dock-full .atlas-place[aria-pressed="true"]{opacity:1}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place>i{width:20px;height:20px;display:grid;place-items:center;font-style:normal;color:#e7c87b;background:none!important;border:0!important;min-width:0!important}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place>i .ui-glyph{width:16px;height:16px}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place.camp>i{color:#e38b74}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 13px/1 var(--read,sans-serif)!important;text-transform:none!important;letter-spacing:0!important}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place small{display:none!important}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place em{font:600 12px/1 var(--read,sans-serif)!important;font-style:normal}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place.atlas-tracked{opacity:1;height:32px;margin:0 0 4px!important;background:#3b4a26!important;border:1px solid #f3cf7a!important;box-shadow:0 0 8px #f3cf7a44}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place.atlas-tracked b{color:#fff0c0!important;font-size:14px!important}
+body:not(.touch-mode) .popup-map.dock-full .atlas-place.atlas-tracked>i{color:#f3cf7a}
+body:not(.touch-mode) .popup-map.dock-full #atlasSelection{flex:none}
+body:not(.touch-mode) .popup-map.dock-full #atlasSelection p{margin:2px 0 6px!important;font-size:13px}
+
+/* ---------- Held nie unter Fenstern verloren (hero-reveal.js): beim Auto-Laufen/Kampf durchsichtig und klickdurchlässig ---------- */
+.game-popup{transition:opacity .22s ease}
+.game-popup.hero-seethrough{opacity:.3!important}
+.game-popup.hero-seethrough,.game-popup.hero-seethrough *{pointer-events:none!important}
+.popup-settings .help-settings>button{height:32px;box-sizing:border-box}
+.popup-settings .help-settings .setting-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.popup-settings .bar-settings{display:flex!important;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px!important;min-height:0!important}
+.touch-mode .help-grid kbd.hk-cap{display:inline-grid!important;visibility:visible!important}
+.game-popup.popup-grid{display:flex;flex-direction:column}
+.game-popup.popup-grid>.popup-body{flex:1 1 auto;min-height:0}
+.popup-guide .kniff-spec-tabs{grid-column:2;display:flex;gap:4px}
+.popup-guide .kniff-spec-tab{height:22px;min-height:0!important;padding:0 8px!important;font:700 11px/1 var(--read,sans-serif)!important;text-transform:none!important;letter-spacing:0!important;background:#0f1f19!important;border:1px solid #c5a26855!important;border-radius:11px!important;color:#c9d2b4!important;box-shadow:none!important}
+.popup-guide .kniff-spec-tab.on{border-color:#f3cf7a!important;color:#fff0c0!important;background:#2f3f25!important}
+.popup-guide .kniff-spec-grid[hidden]{display:none!important}
+.popup-guide .kniff-spec-grid:has(.kniff-jumped){display:flex!important}
+.popup-guide .kniff-section:has(.kniff-spec-tabs)>h3{grid-row:span 2}
+.popup-guide .kniff-section:has(.kniff-empty){display:none!important}
+.popup-guide .kniff-grid{gap:2px}
+.popup-guide .kniff-tile{width:28px!important;height:28px!important;border-radius:5px!important}
+.popup-guide .kniff-tile :is(canvas,img){width:24px!important;height:24px!important}
+.popup-guide .kniff-section{grid-template-columns:84px minmax(0,1fr);padding-bottom:4px!important}
+.popup-guide .kniff-tile[hidden]{display:none!important}
+.popup-guide .kniff-pager{grid-column:2;display:flex;align-items:center;justify-content:flex-end;gap:6px;font:700 11px/1 var(--read,sans-serif);color:#c9d2b4}
+.popup-guide .kniff-pager button{width:22px;height:22px;min-width:0!important;min-height:0!important;padding:0!important;display:grid;place-items:center;background:#10221b!important;border:1px solid #c5a26866!important;border-radius:5px!important;color:#e7c87b!important;box-shadow:none!important}
+.popup-guide .kniff-pager button:disabled{opacity:.35}
+.popup-guide .kniff-pager .ui-glyph{width:13px;height:13px}
+/* Gespräch wie das WoW-Questfenster: Text oben, Belohnung und Antworten unten */
+.dlg-compact .hotspot-offer:not([hidden]){flex:1 1 auto}
+.dlg-compact .reward-tiles{margin-top:auto!important}
+.dlg-compact .reward-tiles+.dialog-actions{margin-top:8px!important;padding-top:0!important}
+/* Bude im Questlog: eine Zeile je Gebäude */
+.popup-quest .build-grid{display:flex!important;flex-direction:column;gap:3px;grid-template-columns:none!important}
+.popup-quest .build-card{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;min-height:0!important;height:40px;margin:0!important;padding:2px 8px!important;background:#0f1f19!important;border:1px solid #c5a26844!important;border-radius:6px!important;box-shadow:none!important;cursor:default}
+.popup-quest .build-card::before,.popup-quest .build-card::after{display:none!important}
+.popup-quest .build-card>header{display:flex;align-items:center;gap:8px;min-width:0;margin:0!important;padding:0!important}
+.popup-quest .build-card>header canvas{width:30px;height:30px;image-rendering:pixelated}
+.popup-quest .build-card h3{margin:0!important;font:400 15px/1 var(--display,sans-serif)!important;color:#f3dfae!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.popup-quest .build-card>header small{font-size:11px!important;color:#c9d2b4!important}
+.popup-quest .build-badge{min-width:22px;height:22px;display:grid;place-items:center;border:1px solid #c5a268;border-radius:50%;font:800 12px/1 var(--read,sans-serif);color:#f3cf7a}
+.popup-quest .build-go{height:28px!important;min-height:0!important;padding:0 10px!important;font-size:12px!important}
+.popup-quest .compact-effects{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0 0 6px!important;padding:0!important;list-style:none;font:600 12px/1.2 var(--read,sans-serif);color:#c9d2b4}

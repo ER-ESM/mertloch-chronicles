@@ -263,6 +263,8 @@ export class Renderer {
     if(heroGhost&&house&&houseFade<.9&&!insideHouse(house,p.x,p.y)&&p.x>house.minX-10&&p.x<house.maxX+10&&p.y<house.maxY-2&&p.y>house.minY-house.heights.wall-house.heights.roof)ghost(c,p,heroGhost);
     // …hinter einer Baumkrone (der Baum wird ohnehin durchsichtig): zarter Umriss, damit der Held nicht im Laub verschwimmt.
     else if(heroGhost&&heroTree)ghost(c,p,heroGhost,.42);
+    // …unter einem Fenster (hero-reveal.js, Runde 2): derselbe helle Umriss, damit der Held durch das halbdurchsichtige Fenster zu finden ist.
+    else if(heroGhost&&this.heroCovered)ghost(c,p,heroGhost);
     // …und drinnen hinter einer Rückwand: die Front einer waagerechten Wand südlich des Helden reicht über seine Figur.
     else if(heroGhost&&house&&houseFade>.5&&insideHouse(house,p.x,p.y)&&houseLevel(house,level).walls.some(wl=>wl.face>12&&p.x>wl.minX-6&&p.x<wl.maxX+6&&wl.maxY>p.y+1&&wl.maxY-wl.face<p.y+2))ghost(c,p,heroGhost);
     // Lichterketten über dem Hof hängen über allen Figuren.

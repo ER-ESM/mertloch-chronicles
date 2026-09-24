@@ -2,6 +2,7 @@ import {questResponse,questProgress} from './quest-status-ui.js';
 import {hasContentAsset} from './content-art.js';
 import {paintPersonPortraits} from './person-art.js';
 import {NPCS,PERSON_APPEARANCE} from './content/index.js';
+import {rewardTiles} from './reward-tiles.js';
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /** Identity follows the NPC ID, never the position of a generated quest. */
 export function conversationHeader(id,fallbackName=''){
@@ -14,5 +15,5 @@ export function rewardConversationHeader(game,id){const main=id==='main'||String
 export function mountConversationPortraits(root){paintPersonPortraits(root);}
 export function sideQuestDialogue(q,s){
  const line=questResponse(q,s);
- return `${conversationHeader(q.giver.npc,q.giver.name)}<h2>${escape(q.title)}</h2><p>${escape(q.description)}</p>${line?`<p class="conversation-quote">„${escape(line)}“</p>`:''}${s.accepted&&!s.claimed?`<p>Fortschritt: <b>${escape(questProgress(q,s))}</b></p>`:''}<div class="loot"><span>✧</span><div><strong>${q.reward} Erfahrung · 10 Pfandmarken · Ausrüstung nach Wahl</strong><small>${q.type==='gather'?'Sammelauftrag':q.type==='hunt'?'Jagdauftrag':'Erkundungsauftrag'} · ${escape(q.location)}</small></div></div><div class="dialog-actions">${!s.accepted?`<button class="gold-button" data-accept-side="${q.id}">Auftrag annehmen</button>`:s.progress>=q.required&&!s.claimed?`<button class="gold-button" data-claim-side="${q.id}">Belohnung abholen</button>`:!s.claimed?`<button class="gold-button" data-track-side="${q.id}">Auftrag verfolgen</button>`:''}<button class="outline-button" data-close>Weiterziehen</button></div>`;
+ return `${conversationHeader(q.giver.npc,q.giver.name)}<h2>${escape(q.title)}</h2><p>${escape(q.description)}</p>${line?`<p class="conversation-quote">„${escape(line)}“</p>`:''}${s.accepted&&!s.claimed?`<p>Fortschritt: <b>${escape(questProgress(q,s))}</b></p>`:''}${rewardTiles({xp:q.reward,coins:10,choice:true},q.reward+' Erfahrung · 10 Pfandmarken · Ausrüstung nach Wahl')}<div class="dialog-actions">${!s.accepted?`<button class="gold-button" data-accept-side="${q.id}">Auftrag annehmen</button>`:s.progress>=q.required&&!s.claimed?`<button class="gold-button" data-claim-side="${q.id}">Belohnung abholen</button>`:!s.claimed?`<button class="gold-button" data-track-side="${q.id}">Auftrag verfolgen</button>`:''}<button class="outline-button" data-close>Weiterziehen</button></div>`;
 }

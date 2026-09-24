@@ -4,7 +4,7 @@ import {createCharacter,characterKey} from '../characters.js';
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
-const dir='visual-review/quest-tracker';mkdirSync(dir,{recursive:true});const b=await browserSession({port:9432,serverPort:4232});
+const dir='visual-review/quest-tracker';mkdirSync(dir,{recursive:true});const b=await browserSession({port:Number(process.env.CDP_PORT||9432),serverPort:Number(process.env.SERVER_PORT||4232)});
 const run=s=>b.evaluate(`(async()=>{const g=window.game;${s}})()`);
 const mouse=(type,x,y,extra={})=>b.send('Input.dispatchMouseEvent',{type,x,y,pointerType:'mouse',...extra});
 try{

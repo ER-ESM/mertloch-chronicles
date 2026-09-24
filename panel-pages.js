@@ -1,6 +1,9 @@
 import {PANEL_UI as UI} from './content/index.js';
 import {paginateFlow,panelCapacity,resetPanelFlow} from './panel-flow.js';
 import {compactWindow} from './window-compact.js';
+import {questWindow} from './questlog-window.js';
+import {helpWindow} from './help-keys.js';
+import {dialogWindow} from './dialog-compact.js';
 const grids=new WeakMap();
 function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=fn;return b;}
 export function showPanelDetail(source,title){document.dispatchEvent(new CustomEvent('panel-detail',{detail:{html:source,title}}));}
@@ -35,14 +38,17 @@ export function decoratePanel(w){const b=w.body;resetPanelFlow(b);if(['dialog','
  for(const talents of b.querySelectorAll('.person-talents')){const info=[...talents.querySelectorAll(':scope>p')].map(e=>e.outerHTML).join('');talents.querySelectorAll(':scope>p,.book-intro').forEach(e=>e.remove());if(info){const help=detailButton(UI.talentHelp,info);help.classList.add('talent-help-button');talents.append(help);}}
  if(w.id==='activity'){const help=[...b.querySelectorAll(':scope>p')],info=help.map(p=>p.outerHTML).join(''),title=b.querySelector('h2')?.textContent;help.forEach(p=>p.remove());b.querySelector('h2')?.remove();b.querySelector('.eyebrow')?.remove();if(title)w.el.querySelector('.popup-titlebar strong').textContent=title;b.append(detailButton(UI.help,info));}
  if(w.id==='dialog'){const name=b.querySelector('.conversation-person strong')?.textContent;if(name)w.el.querySelector('.popup-titlebar strong').textContent=name;const reward=b.querySelector('.reward-picker');if(reward){if(document.body.classList.contains('touch-mode'))reward.querySelector(':scope>small').textContent=UI.rewardTouch;const p=reward.querySelector('p');if(p){reward.append(detailButton(UI.help,p.outerHTML));p.remove();}}}
- if(w.id==='quest'){b.querySelectorAll('.rpg-heading h2').forEach(e=>e.remove());b.querySelector('.quest-base .rpg-heading')?.remove();sections(w,[[UI.tabQuests,'.quest-log'],[UI.tabBase,'.quest-base'],[UI.tabMemories,'.quest-memories']]);for(const entry of b.querySelectorAll('.quest-entry')){const info=[...entry.querySelectorAll(':scope>p,.conversation-quote')];if(info.length){const more=detailButton(UI.questDetails,info.map(e=>e.outerHTML).join(''));info.forEach(e=>e.remove());(entry.querySelector('.quest-entry-actions')||entry).append(more);}const pages=document.createElement('div');pages.className='quest-pages';for(const el of [...entry.children])if(!el.matches('h3'))pages.append(el);entry.append(pages);}}
+ // Runde 2 (2026-09-24): Aufträge als WoW-Questlog – Liste oben, Detail unten, Bude/Erinnerungen als Symbolreiter (questlog-window.js).
+ if(w.id==='quest'){b.querySelectorAll('.rpg-heading h2').forEach(e=>e.remove());b.querySelector('.quest-base .rpg-heading')?.remove();}
  if(['inspection','touchhelp'].includes(w.id)){const title=b.querySelector('.tooltip-heading strong')?.textContent;if(title)w.el.querySelector('.popup-titlebar strong').textContent=title;}
  if(w.id==='inspection'){b.querySelectorAll(':scope>p:not(.tooltip-flavor)').forEach(p=>p.classList.add('gear-condition'));const selected=b.querySelector('.selected-item');selected?.querySelector('strong')?.remove();selected?.querySelector('small')?.remove();tabs(w,[[UI.equip,'.tooltip-heading,.tooltip-stats,.selected-item,.gear-condition'],[UI.compare,'.tooltip-compare'],[UI.story,'.tooltip-flavor,footer']]);}
  if(w.id==='mobile'){const selection=b.querySelector('.touch-editor-pages+p');selection?.classList.add('touch-selection');tabs(w,[[UI.slots,'.touch-editor-pages,.touch-editor-footer'],[UI.skills,'.touch-selection,.touch-skill-picker'],[UI.options,'.touch-editor-intro,.touch-settings-row,#touchBindHelp']]);b.onclick=e=>{if(e.target.closest('[data-touch-edit-slot]'))w.activePage=1;};}
- if(w.id==='guide')tabs(w,[[document.body.classList.contains('touch-mode')?'Bedienung':'Tasten','.help-movement,.help-controls'],[UI.skills,'.help-clan,.guide-kniffe'],...(b.querySelector('.help-settings')?[[UI.settings,'.help-settings']]:[])]);
+ if(w.id==='guide')helpWindow(w);
  if(w.id==='map'){/* Desktop: die große Karte zeigt Karte und Ortsliste nebeneinander; Touch blättert in Reitern */if(document.body.classList.contains('touch-mode')){tabs(w,[[UI.map,'.atlas-toolbar,.atlas-paper'],[UI.places,'#atlasPlaces,.atlas-intro,.atlas-key,.data-note'],[UI.destination,'#atlasSelection']]);b.querySelector('.atlas-layout')?.remove();}else b.querySelector('.atlas-intro')?.remove();b.querySelector(':scope>h2')?.remove();b.querySelector(':scope>.eyebrow')?.remove();}
  if(w.id==='admin'){const backup=b.querySelector('.admin-restore'),arena=b.querySelector('.admin-arena');backup?.classList.add('admin-backup-page');for(const el of [...b.children])if(el!==backup&&el!==arena)el.classList.add('admin-reset-page');tabs(w,[...(arena?[['Trainingsarena','.admin-arena']]:[]),[UI.reset,'.admin-reset-page'],[UI.backup,'.admin-backup-page']]);}
  compactWindow(w);
+ if(w.id==='quest')questWindow(w);
+ if(w.id==='dialog')dialogWindow(w);
  adaptPanel(w);
 }
 export function adaptPanel(w){

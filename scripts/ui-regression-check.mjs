@@ -34,7 +34,7 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
   // Keep reload/persistence checks isolated too; the PWA suite owns offline installation.
   await b.send('Page.addScriptToEvaluateOnNewDocument',{source:'delete Navigator.prototype.serviceWorker;'});
   if(suites.includes('navigation')){
-   await fixture();await panel('bag');await panel('person');assert.deepEqual((await state()).popups.map(p=>p.id).sort(),['bag','person'],'Einzelfenster: Rucksack und Figur zugleich');await b.press('Escape');await b.press('Escape');assert.equal((await state()).popups.length,0);
+   await fixture();await panel('bag');await panel('person');assert.deepEqual((await state()).popups.map(p=>p.id).sort(),['bag','person'],'Einzelfenster: Rucksack und Figur zugleich');await b.press('Escape');assert.equal((await state()).popups.length,0,'Esc schließt alle Fenster auf einmal (Runde 2, WoW)');
    for(const [n,id] of ['bag','person','book','talents','quest','map','guide'].entries()){await panel(id);assert.deepEqual((await state()).popups.map(p=>p.id),[id]);const before=await state();await b.hold(n%2?'w':'s',300);/* abwechselnd, sonst läuft die Figur über sieben Seiten in ein Hindernis */const after=await state();assert.equal(after.paused,false);assert.ok(after.time>before.time);assert.ok(Math.hypot(after.player.x-before.player.x,after.player.y-before.player.y)>1);await b.press('Escape');}
    await panel('person');await click('[data-equipped="body"]');assert.ok((await state()).popups.some(p=>p.id==='detail'));await click('.popup-detail [data-window-close]');assert.deepEqual((await state()).popups.map(p=>p.id),['person']);await b.press('Escape');assert.equal((await state()).popups.length,0);
    pass('single windows side by side, rail navigation, world movement and detail return');
@@ -64,8 +64,9 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
      for(const path of [0,1,2]){await click('[data-view-path="'+path+'"]');const nodes=await read(`[...document.querySelectorAll('[data-talent]')].map(e=>e.dataset.talent)`);assert.equal(nodes.length,10);nodes.forEach(id=>choices.add(id));assert.equal(await read(`document.querySelectorAll('.tt-links .tt-link').length`),2);}
      assert.equal(choices.size,30);
      const plan=await read(`(async()=>{const {TALENTS,pathBuild}=await import('./talents.js'),spec=${JSON.stringify(spec)},path=TALENTS[spec].find(t=>t.grants).path;return {path,ids:pathBuild(spec,path,10)};})()`);
-     await click('[data-view-path="'+plan.path+'"]');await click('[data-talent="'+plan.ids.at(-1)+'"]');assert.equal((await state()).rpg.talents.learned.length,0,'inspection never spends points');assert.ok(await read(`document.querySelector('[data-learn-talent]').disabled`));
-     for(const node of plan.ids){await click('[data-talent="'+node+'"]');await click('[data-learn-talent="'+node+'"]');}
+     // Runde 2 (2026-09-24, WoW): Klick auf ein Talent lernt es direkt; ohne Vorgänger bleibt es ungelernt, die Details stehen im Tooltip.
+     await click('[data-view-path="'+plan.path+'"]');await click('[data-talent="'+plan.ids.at(-1)+'"]');assert.equal((await state()).rpg.talents.learned.length,0,'ein Talent ohne Vorgänger kostet keinen Punkt');assert.equal(await read(`document.querySelectorAll('.popup-talents [data-learn-talent],.popup-talents .tt-details,.popup-talents [data-talent-search]').length`),0,'keine Detailspalte, keine Suche');
+     for(const node of plan.ids)await click('[data-talent="'+node+'"]');
      const s=await state();assert.equal(s.rpg.talents.learned.length,10);assert.equal(Object.values(s.rpg.talents.ranks).reduce((a,b)=>a+b,0),10);for(const skill of s.skills.filter(x=>x.talent&&s.rpg.talents.learned.includes(x.talent))){assert.ok(s.unlocked.includes(skill.id));assert.ok(s.actionBar.includes(skill.id));}
     }
     await persist();assert.equal((await state()).rpg.talents.learned.length,10);pass(classId+': three trees, 90 choices with ten learned talents, granted skills and persistence');
@@ -78,13 +79,16 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
    await b.press('k');await hover('[data-book-skill="auto"]');assert.ok(await read(`document.querySelector('[data-book-skill="auto"] canvas').getContext('2d').getImageData(0,0,64,64).data.some((v,i)=>i%4===3&&v)`));await b.press('Escape');await b.press('1');await b.press('Escape');assert.equal((await state()).autoAttack.enabled,false);pass('selection, autoattack toggle, escape and skill icons');
   }
   if(suites.includes('layout')){
-   // Nirgends scrollen (Runde 1, 2026-09-24): jede sichtbare .popup-body und jeder scrollende Innenbereich am Desktop 2024×900 wird
-   // gemeldet. Vorerst nur Warnung – rot wird die Regel, wenn Runde 2 die Fenster verdichtet hat (SCROLL_STRICT=1 macht sie schon jetzt rot).
+   // Nirgends scrollen (Runde 1 als Warnung, seit Runde 2a 2026-09-24 scharf): jede sichtbare .popup-body und jeder scrollende
+   // Innenbereich am Desktop 2024×900 ist ein FEHLER. Einzige Ausnahme: der volle Rucksack (SCROLL_ALLOW, siehe unten).
+   // SCROLL_STRICT=0 macht die Regel für eine Messung wieder zur Warnung.
    {await b.resize(2024,900);await b.send('Emulation.setTouchEmulationEnabled',{enabled:false,maxTouchPoints:1});await fixture();const warnings=[];
-    for(const id of ['person','quest','talents','map','book','bag','guide']){await fresh(id);await wait(300);
+    for(const id of ['person','quest','talents','map','book','bag','guide','settings']){if(id==='settings'){await read(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await b.press('Escape');await wait(250);await click('.popup-menu [data-shell="settings"]');}else await fresh(id);await wait(300);
      warnings.push(...await read(`[...document.querySelectorAll('.game-popup')].filter(p=>p.offsetParent).flatMap(p=>[p.querySelector('.popup-body'),...p.querySelectorAll('.popup-body *')].filter(e=>e&&e.offsetParent&&(e.classList.contains('popup-body')||/auto|scroll/.test(getComputedStyle(e).overflowY))&&e.scrollHeight>e.clientHeight+2).map(e=>p.dataset.window+' '+(e.classList.contains('popup-body')?'.popup-body':(e.className||e.tagName).toString().split(' ')[0])+' '+e.scrollHeight+'/'+e.clientHeight))`));}
     for(const w of [...new Set(warnings)])console.warn('WARNUNG Scrollen (2024×900): '+w);writeFileSync(dir+'/scroll-warnings.json',JSON.stringify([...new Set(warnings)],null,2));
-    if(process.env.SCROLL_STRICT==='1')assert.deepEqual([...new Set(warnings)],[],'Fenster scrollen');pass('desktop 2024×900: Scroll-Prüfung ('+new Set(warnings).size+' Warnungen)');}
+    // Ausnahme nur für den vollen Rucksack: mehr Stapel als Plätze im Raster passen nicht anders (docs/OPTIMIERUNG-2026-09-24-runde-2a.md).
+    const SCROLL_ALLOW=/^bag .bag-grid /;const errors=[...new Set(warnings)].filter(w=>!SCROLL_ALLOW.test(w));
+    if(process.env.SCROLL_STRICT!=='0')assert.deepEqual(errors,[],'Fenster scrollen (2024×900)');pass('desktop 2024×900: kein Fenster scrollt ('+errors.length+' Befunde)');}
    for(const [name,width,height,touch,hand] of [['desktop',1440,1000,false,'right'],['phone',390,844,true,'right'],['small',320,740,true,'right'],['landscape',844,390,true,'right'],['landscape-left',844,390,true,'left']]){
     await b.resize(width,height);await b.send('Emulation.setTouchEmulationEnabled',{enabled:touch,maxTouchPoints:5});await fixture({tutorial:{version:1,step:3,completed:false}},touch);
     if(touch)await read(`document.body.dataset.touchHand='${hand}';for(const [k,v] of Object.entries(${JSON.stringify(width>height?{left:47,right:47,top:0,bottom:21}:{left:0,right:0,top:47,bottom:34})}))document.body.style.setProperty('--safe-'+k,v+'px')`);

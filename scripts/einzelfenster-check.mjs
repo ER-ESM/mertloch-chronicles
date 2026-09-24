@@ -1,5 +1,5 @@
 // Einzelfenster (2026-09-23): jede Taste öffnet und schließt ihr eigenes Fenster, links und rechts docken nebeneinander
-// ohne Überlappung, die Karte ist fast Vollbild, Esc schließt das oberste, die Menüleiste öffnet jedes Fenster,
+// ohne Überlappung, die Karte ist fast Vollbild, Esc schließt alle Fenster, die Menüleiste öffnet jedes Fenster,
 // Symbolknöpfe tragen ihren Namen als Tooltip, und am Handy erreicht das Touch-Menü jedes Fenster einzeln.
 // Screenshots nach visual-review/einzelfenster/. Ports: CDP 9440, Server 4240.
 import {createCharacter,characterKey} from '../characters.js';
@@ -8,7 +8,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 import {WINDOW_UI} from '../content/index.js';
 const dir='visual-review/einzelfenster';mkdirSync(dir,{recursive:true});
-const b=await browserSession({port:9440,serverPort:4240});
+const b=await browserSession({port:Number(process.env.CDP_PORT||9440),serverPort:Number(process.env.SERVER_PORT||4240)});
 const read=js=>b.evaluate(`(()=>{${js}})()`);
 const rect=sel=>read(`const e=document.querySelector(${JSON.stringify(sel)});if(!e)return null;const r=e.getBoundingClientRect();return {l:r.left,t:r.top,r:r.right,b:r.bottom,w:r.width,h:r.height};`);
 const open=()=>read(`return [...document.querySelectorAll('.game-popup')].map(e=>e.dataset.window)`);
@@ -36,9 +36,8 @@ try{
  const ids=Object.keys(boxes);for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++)assert.ok(!overlap(boxes[ids[i]],boxes[ids[j]]),`${ids[i]} und ${ids[j]} überlappen nicht `+JSON.stringify(boxes));
  for(const hud of ['#actionBar','#miniButton','.quest-panel','.player-panel','.game-menu-rail']){const h=await rect(hud);if(h)for(const id of ids)assert.ok(!overlap(boxes[id],h),`${id} deckt ${hud} nicht ab`);}
  await b.screenshot(`${dir}/links-rechts-vier.jpg`);ok('Vier Fenster links+rechts gleichzeitig, ohne Überlappung, HUD frei');
- // 3) Esc schließt das oberste Fenster, dann das nächste.
- await b.press('Escape');await wait(250);assert.deepEqual((await open()).sort(),['bag','person','quest'],'Esc schließt das oberste (Kniffe)');
- await b.press('Escape');await wait(250);await b.press('Escape');await wait(250);await b.press('Escape');await wait(250);assert.deepEqual(await open(),[],'viermal Esc schließt alle');ok('Esc schließt das oberste Fenster');
+ // 3) Esc schließt wie in WoW alle offenen Fenster auf einmal (Runde 2a, 2026-09-24); erst danach kommt das Spielmenü.
+ await b.press('Escape');await wait(250);assert.deepEqual(await open(),[],'ein Esc schließt alle vier');await b.press('Escape');await wait(350);assert.deepEqual(await open(),['menu'],'Esc ohne Fenster: Spielmenü');await b.press('Escape');await wait(250);ok('Esc schließt alle Fenster auf einmal, dann Spielmenü');
  // 4) Karte fast Vollbild.
  await b.press('m');await wait(600);const m=await rect('.game-popup[data-window="map"]');assert.ok(m.w>=W*.9&&m.h>=900*.85,'Karte fast Vollbild: '+JSON.stringify(m));const canvas=await rect('#largeMap');assert.ok(canvas.w>W*.6&&canvas.h>500,'Kartenfläche groß: '+JSON.stringify(canvas));await b.screenshot(`${dir}/karte.jpg`);await b.press('m');await wait(250);ok('Karte fast Vollbild, Zeichenfläche füllt das Fenster');
  // 5) Talente mittig.

@@ -1,6 +1,7 @@
 // Akt-1-Oberflächen: Ida je Kapitel, Erinnerungsfetzen, Basisbau, Kapitelliste.
 // Kein Text steht hier: Titel, Zeilen, Namen, Zahlen und Vorteile kommen aus content/ und dem Spielzustand.
 import {conversationHeader} from './dialogue-ui.js';
+import {rewardTiles} from './reward-tiles.js';
 import {escapeQuest as esc} from './quest-status-ui.js';
 import {distance} from './world.js';
 import {countItem,ITEMS} from './rpg.js';
@@ -22,7 +23,8 @@ export function chapterState(chapter,state){const d=chapterDialogue(chapter);ret
 
 export const rewardLine=(r={})=>[r.xp?r.xp+' EP':'',r.coins?r.coins+' Pfandmarken':'',r.relic].filter(Boolean).join(' · ');
 export const rewardNote=(r={})=>[r.relicEffect,'Ausrüstung nach Wahl'].filter(Boolean).join(' · ');
-function rewardBox(chapter){const r=chapter.reward||{};return `<div class="loot"><canvas width="48" height="48" data-ui-icon="reward" aria-label="${esc(r.relic||'')}"></canvas><div><strong>${esc(rewardLine(r))}</strong><small>${esc(rewardNote(r))}</small></div></div>`;}
+/** Runde 2 (2026-09-24): Belohnung als Kacheln (reward-tiles.js), die Zeile „600 EP · …“ bleibt als Vorlesetext. */
+function rewardBox(chapter){const r=chapter.reward||{};return rewardTiles({xp:r.xp,coins:r.coins,relic:r.relic,relicEffect:r.relicEffect,choice:true},rewardLine(r)+' · '+rewardNote(r));}
 const lines=d=>(d.lines||[]).map(line=>`<p>${line}</p>`).join('');
 const eyebrow=d=>d.eyebrow?`<span class="eyebrow">${esc(d.eyebrow)}</span>`:'';
 
