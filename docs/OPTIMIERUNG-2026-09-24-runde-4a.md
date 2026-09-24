@@ -29,7 +29,7 @@ Die Teile B (Welt, Kampf, Hofprobe) und C (Handy-Fenster, Zielrahmen, Kampfstati
 | 5 | erledigt | **Titelzeile** „MERTLOCH · MAIFELD“ mit Filter-Trichter, „Zu mir“ und „Übersicht“ als Symbolknöpfe (Name im Tooltip). **Filter** als Häkchenliste wie die Lupe der Minikarte, 8 kombinierbare Gruppen: Aufträge, Zielgebiete, Treffpunkte, Lager, Händler, Berufe, Tiergebiete, Lebewesen. Die Auswahl wird je Browser gemerkt (`mertloch-weltkarte-v1`), Esc schließt nur die Liste. Die Legende entfällt, ebenso die Fußzeile „Norden ist oben · Welt läuft weiter“ und der Stempel. **OSM-Nennung** bleibt klein auf der Karte unten rechts (10 px, 60 %, Link zur Lizenz), weil die ODbL das verlangt. −/+ liegen als kleine Knöpfe unten rechts auf der Karte. Der Chat ist bei offener Karte verborgen. | 5, 7 |
 | 6 | erledigt | **Seitenleiste:** Das verfolgte Ziel steht golden oben. Darunter folgen Gruppentrenner aus Symbol und Linie (Wort im Tooltip) für Aufträge, Treffpunkte, Lager sowie Händler & Berufe, innerhalb der Gruppe nach Entfernung sortiert. Jeder Eintrag ist einzeilig (26 px) und hat einen **Stiefel** am Ende. Der Block „Dein nächster Halt“ und der Goldknopf sind weg. Stiefel = hinlaufen, Karte zu (Verhalten aus 3a). Ein Ziel von außen (Aufträge „auf der Karte“) wird die gewählte Zeile. | 6, 7: 23 Zeilen und 4 Trenner ohne Blättern |
 | 7 | erledigt | **Kartenfläche 1592 × 779 px** (vorher 1572 × 653, +21 %), Fenster unverändert 1922 × 847. Die fehlenden ≈ 20 px zum Zielmaß 1600 × 799 stecken in Rahmen und Titelzeile. Nichts scrollt. | 7 |
-| 8 | erledigt | **Handy:** keine Reiter „Karte/Orte/Ziel“ mehr. Die Werkzeuge (Filter, Zu mir, Übersicht, Ortsliste) stehen als 44-px-Knöpfe in der Titelzeile. Die Karte füllt das Fenster; quer reicht das Fenster jetzt bis an den rechten Rand über die Kniff-Knöpfe. Tippen zeigt den Tooltip mit einem 44-px-Knopf „Hinlaufen“. Zwei Finger zoomen, ± liegen als runde 44-px-Knöpfe auf der Karte. Die **Ortsliste** klappt über das Listensymbol auf: 44-px-Zeilen mit Stiefel, quer zweispaltig, seitenweise statt scrollend. | 8: quer Karte 538 × 242 (vorher ≈ 470 × 165), hoch 326 × 383 (vorher ≈ 330 × 245) |
+| 8 | erledigt | **Handy:** Die Reiter „Karte/Orte/Ziel“ sind weg. Die Werkzeuge (Filter, Zu mir, Übersicht, Ortsliste) stehen als 44-px-Knöpfe mit 8 px Abstand in der Titelzeile. Die Karte füllt das ganze Fenster; das Fenster bleibt zwischen Spielerrahmen/Stick und den Kniff-Knöpfen (mobile-check verbietet Fenster über den Kniffen). Tippen zeigt den Tooltip mit einem 44-px-Knopf „Hinlaufen“. Zwei Finger zoomen, ± sind runde 44-px-Knöpfe auf der Karte. Die OSM-Nennung ist am Handy Text ohne Link, also kein Tipp-Ziel. Die **Ortsliste** klappt über das Listensymbol als Leiste über der Karte auf: 44-px-Zeilen mit Stiefel, seitenweise statt scrollend, quer mit senkrechtem Blätterer. | 8: quer Karte 372 × 242 (vorher ≈ 470 × 165 ohne Safe Areas, jetzt mit), hoch 326 × 383 (vorher ≈ 330 × 245) |
 
 ## Vorher / nachher
 
@@ -45,6 +45,11 @@ Die Teile B (Welt, Kampf, Hofprobe) und C (Handy-Fenster, Zielrahmen, Kampfstati
 ## Überschneidungen
 
 - **Minikarte:** Nur die Symbole sind neu, gezeichnet in `map-symbols.js`. Geändert sind Treffpunkt (Fahne statt Schild), Lager (Schwerter auf Schild statt Raute), Kiosk (Beutel statt Münze), Werkhof (Amboss statt Hammer) und das verfolgte Ziel (Stecknadel statt Raute). `minimap-check` bleibt grün (13).
+- **Parallele Kartenarbeit** (fbdff74, „Gruppenmitglieder als grüne Punkte mit Namen“, kam während der Runde auf main): in die neue Beschriftungsschicht übernommen.
+  - Gruppe: grün mit Namen, auch fern. Andere Spieler: klein und blau.
+  - Deren Legendenzeile entfällt mit der Legende; Name und Art stehen jetzt im Tooltip.
+  - Die Gruppennamen bleiben als einzige Namen neben den Ortsnamen dauerhaft stehen (Entscheidung jener Sitzung).
+- Runde 4c (Handy-Fenster) kam ebenfalls während der Runde; die Kartenprüfungen liefen danach erneut.
 - `quest-mobs.js` `chapterAreas` liefert zusätzlich `done/need` für den Tooltip.
 - `panel-pages.js`: keine Karten-Reiter am Handy, kein `pageGrid` mehr für die Ortsliste.
 - `window-compact.js` `map()`: leer, weil die Karte ihre Titelzeile selbst baut.
@@ -56,7 +61,7 @@ Die Teile B (Welt, Kampf, Hofprobe) und C (Handy-Fenster, Zielrahmen, Kampfstati
 Alle Browser-Prüfungen liefen auf eigenen Ports 9520–9527 / 4320–4327.
 
 - **Grün:**
-  - `npm test` (896)
+  - `npm test` (903, nach dem Rebase auf 4c)
   - `npm run content:check`
   - `npm run build`
   - `npm run ui:check`
@@ -64,10 +69,20 @@ Alle Browser-Prüfungen liefen auf eigenen Ports 9520–9527 / 4320–4327.
   - `minimap-check` (13)
   - `optimierung-r3a-check` (19)
   - `optimierung-r2a-check` (13)
-- **`optimierung-r3a-check`:** Der Schritt „Rechtsklick auf Ida“, im Review zweimal rot, war hier grün. Er ist also wechselhaft; Teil B klärt die Ursache.
-- **Unter Last:** `minimap-check` scheiterte im ersten Anlauf an „Game did not initialize“ und lief allein grün.
+- **`optimierung-r3a-check`, Schritt „Rechtsklick auf Ida“:** im Review zweimal rot, hier wechselhaft.
+  - Vor dem Rebase: grün.
+  - Nach dem Rebase auf 4c: einmal grün, einmal rot („Figur läuft los“, `optimierung-r3a-check.mjs:107`).
+  - Die Karte ist an diesem Schritt nicht beteiligt; Teil B klärt die Ursache.
+  - Alle 19 Prüfungen waren nach dem Rebase in mindestens einem Lauf grün.
+- **Unter Last** (CPU 100 %, 66 Chrome-Prozesse anderer Sitzungen) brachen einige Läufe mit „Game did not initialize“ ab. Einzeln wiederholt waren sie grün:
+  - `minimap-check`
+  - `optimierung-r3a-check` nach dem Rebase in Teilen (`ONLY=2`, `3–8`, `8`); alle 19 Prüfungen grün
+  - drei Server-Tests in `tests/game-server.test.mjs`: im Gesamtlauf rot, einzeln 9/9 grün
 - **`hud:check`: schon auf main rot.** Kopie mit Server-Port über `SERVER_PORT`. Auf main 239fc20 (eigene Arbeitskopie) und auf diesem Stand rot an derselben Stelle (`hud-check.mjs:62`): Die Einträge des Spielmenüs lauten „Einstellungen/Tastenbelegung“ statt „Berufe/Fahrzeuge/Söldner“. Das betrifft nicht die Karte.
-- **`mobile-check`:** siehe Nachtrag unten.
+- **`mobile-check`** (Kopie mit .jpg statt .png, eigener Server 4327): **1 von 98 Schritten** mit Problemen; im Review auf 7890c30 waren es 6. Das eine Problem ist „quer unterbrechung (M-15)“, das zwischen den Läufen wechselt.
+  - Die drei Kartenschritte (hoch, quer, klein) sind ohne Befund.
+  - In Zwischenläufen fielen auf, inzwischen behoben: 6 px Abstand zwischen den Werkzeugknöpfen (jetzt 8 px), die OSM-Nennung als Tipp-Ziel unter 32 px (am Handy jetzt ohne Link) und das Kartenfenster über den Kniff-Knöpfen (zurückgenommen).
+  - Die übrigen Befunde gehören zu anderen Fenstern und sind dieselben wie auf main: Figur-Plätze 3–5 px, Talente quer 7 px, Rucksack klein 40 px. Gesamt: 6 Tipp-Ziele unter 44 px und 87 Abstandspaare.
 - **`akt1b-check`:** nicht gelaufen. Er braucht ein von Hand gestartetes Chrome mit Fernsteuerung und ist laut 3a/3b auf main rot an derselben Zusicherung. Die Karte berührt er nicht.
 
 ## Rest
@@ -76,4 +91,5 @@ Alle Browser-Prüfungen liefen auf eigenen Ports 9520–9527 / 4320–4327.
 2. Die Bude und der Verlies-Eingang stehen auf der Minikarte, auf der Weltkarte noch nicht (eigener Ort nötig, mit sicherem Laufpunkt).
 3. Hochkant bleibt die Karte über der Touch-Steuerung stehen (366 × 466). Ganz nach unten zu reichen hieße, Joystick und Kniffe zu verdecken; das ist eine Fensterfrage von Teil C.
 4. Die Zielgebiet-Symbole kennen nur „besiegen“ (Kralle). Hand für „sammeln“ und Sprechblase für „reden“ folgen, sobald die Minikarte auch Sammelgebiete zeigt (Rest 3a/3).
-5. `hud:check` und `akt1b-check` bleiben rot wie auf main.
+5. Quer passen in die aufgeklappte Ortsliste 4 Zeilen je Seite (6 Seiten), weil das Fenster zwischen Stick und Kniffen nur 265 px hoch ist.
+6. `hud:check` und `akt1b-check` bleiben rot wie auf main.

@@ -111,10 +111,11 @@ body:not(.touch-mode):has(.popup-map.dock-full) .chat-window{visibility:hidden}
 .touch-mode .popup-map .wk-pager{height:50px!important;min-height:0!important;max-height:50px;margin:0!important;display:flex;align-items:center;justify-content:center;gap:14px;flex:none;padding-top:6px;font:800 13px/1 var(--read,'Nunito',sans-serif);color:#f3dfae}
 .touch-mode .popup-map .wk-pager[hidden]{display:none!important}
 body:not(.touch-mode) .popup-map .wk-pager{display:none!important}
-/* Quer: die Karte reicht bis an den rechten Rand (über die Kniff-Knöpfe – mit offener Karte kämpft man nicht), die Liste zweispaltig */
-@media (orientation:landscape){.touch-mode .game-popup.popup-map{right:calc(var(--safe-right,0px) + 12px)!important;width:auto!important;max-width:none!important}
- .touch-mode .popup-map .wk-side{width:min(560px,94%)}
-}
+/* Quer: die Ortsliste nimmt fast die ganze Kartenbreite (zweispaltig ab 440 px, atlas-ui.js). Das Fenster selbst bleibt zwischen
+   Spielerrahmen/Stick und Kniff-Knöpfen – mobile-check: kein Fenster über den Kniffen. */
+@media (orientation:landscape){.touch-mode .popup-map .wk-side{width:94%;flex-direction:row!important;gap:8px}
+ .touch-mode .popup-map .wk-list{align-self:stretch}
+ .touch-mode .popup-map .wk-pager{flex-direction:column;justify-content:center;gap:10px;width:44px;height:auto!important;max-height:none;padding:0}}
 .touch-mode .game-popup.popup-map .wk-list .atlas-place.wk-row,.touch-mode .game-popup.popup-map .wk-list .atlas-place.wk-row.atlas-tracked,.touch-mode .game-popup.popup-map .wk-list .atlas-place.wk-row.wk-target{height:44px!important;min-height:44px!important;margin:0!important}
 .touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-pick{min-height:44px!important;padding:0 6px 0 10px}
 .touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place>.wk-boot{width:44px;min-height:44px!important;opacity:1}
