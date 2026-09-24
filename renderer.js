@@ -87,6 +87,8 @@ let heroGhost=null,ghostLayer=null;
 function ghost(c,p,draw){if(typeof document==='undefined'||typeof c.getTransform!=='function')return;const S=96,ax=48,ay=84,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=ghostLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
  const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=false;f.setTransform(d,0,0,d,(ax-p.x)*d,(ay-p.y)*d);draw(f);
  f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-in';f.fillStyle='#f3e2b0';f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';c.save();c.globalAlpha=.68;c.drawImage(L,p.x-ax,p.y-ay,S,S);c.restore();}
+/** Namen freundlicher Figuren wie im MMO: kräftiges Grün-Gelb statt blassem Beige (auf Holzboden kaum lesbar). */
+const NPC_NAME='#b9f07a';
 const FURNITURE=['bench','cart','lantern'];
 /** Treffer-Blitz (Hades/Diablo-Vorbild): solange ein Gegner getroffen ist (e.hurt, 0,15 s), wird er einmal in eine kleine Ebene gezeichnet,
  *  hell übertüncht und mit leichtem Rückstoß vom Helden weg eingesetzt. Sonst zeichnet `draw` direkt – ohne Mehrkosten. */
@@ -161,7 +163,7 @@ export class Renderer {
    let bubbleBoxes=[];if(sp){const pr=this.probeCtx||(this.probeCtx=Object.assign(document.createElement('canvas'),{width:1,height:1}).getContext('2d'));pr.setTransform(sp.t);bubbleBoxes=drawBossSpeech(pr,sp.bubbles,sp.opts).map(r=>({x:r.x+sp.opts.ox,y:r.y+sp.opts.oy,w:r.w,h:r.h}));}
    const under=b=>b&&bubbleBoxes.some(r=>b.x<r.x+r.w+4&&b.x+b.w>r.x-4&&b.y<r.y+r.h+4&&b.y+b.h>r.y-4);
    /* Schilder über dem eigenen Helden werden durchscheinend: die Figur bleibt immer sichtbar (Persona-Befund 2026-09-24) */const hero=q.hero,overHero=b=>hero&&b&&b.x<hero.x+hero.w&&b.x+b.w>hero.x&&b.y<hero.y+hero.h&&b.y+b.h>hero.y;
-   for(const l of q){if(under(l.b))continue;const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a*(overHero(l.b)?.6:1);if(l.paint){c.save();l.paint(c,overHero(l.b)?.6:1);c.restore();continue;}c.font=l.font;c.lineWidth=2.2;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
+   for(const l of q){if(under(l.b))continue;const t=l.t;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a*(overHero(l.b)?.6:1);if(l.paint){c.save();l.paint(c,overHero(l.b)?.6:1);c.restore();continue;}c.font=l.font;c.lineWidth=2.8;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
    c.globalAlpha=1;
    if(sp){const t=sp.t;c.save();c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);this.speechLayout=drawBossSpeech(c,sp.bubbles,sp.opts);c.restore();}
    c.setTransform(1,0,0,1,0,0);}
@@ -232,14 +234,14 @@ export class Renderer {
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
       else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;const heroArgs=[p.x,p.y-(g.stairLift?.()||0),time,{...p,classId:p.look||p.classId,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'}];drawHero(c,...heroArgs,false,PERSON_SCALE);heroGhost=cc=>drawHero(cc,...heroArgs,false,PERSON_SCALE);}
-      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,PERSON_SCALE);const named=nearestSpeaker(g,e);if(named)label(c,w.npc.name,e.x,e.y-34,'#d8c89a',7);if(!g.quest.actDone){const ready=g.questReady(),busy=g.quest.accepted&&!ready;questBadge(c,e.x,e.y-(named?45:36),ready?'?':busy?'…':'!',!busy,time);}}
+      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,PERSON_SCALE);const named=nearestSpeaker(g,e);if(named)label(c,w.npc.name,e.x,e.y-34,NPC_NAME,8);if(!g.quest.actDone){const ready=g.questReady(),busy=g.quest.accepted&&!ready;questBadge(c,e.x,e.y-(named?45:36),ready?'?':busy?'…':'!',!busy,time);}}
       // Mentoren an der Bude tragen dieselbe Figurengrafik wie der Held (classId aus clan.js).
       else if(item.type==='mentor'){// Mentoren in ihrer Tracht aus der Sprite-Schmiede (E-58); ohne Bogen der alte Heldenkörper.
-       if(!drawLivePerson(c,'mentor-'+e.classId,e.x,e.y,time,{facing:-1},PERSON_SCALE))drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,PERSON_SCALE);if(distance(e,p)<70)label(c,e.name,e.x,e.y-34,'#d8c89a',7);}
+       if(!drawLivePerson(c,'mentor-'+e.classId,e.x,e.y,time,{facing:-1},PERSON_SCALE))drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,PERSON_SCALE);if(distance(e,p)<70)label(c,e.name,e.x,e.y-34,NPC_NAME,8);}
       else if(item.type==='merchant'){drawWorldPerson(c,SHOP_UI.npc,e.x,e.y,time,PERSON_SCALE,{facing:1});label(c,SHOP_UI.title,e.x,e.y-65,'#f1d18b',9);label(c,SHOP_UI.marker,e.x,e.y-52,'#d8c89a',8);}
-      else if(item.type==='hotspotgiver'){const n=e.giver,glyph=giverGlyph(g,e.id);drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(glyph){c.save();if(glyph==='low')c.globalAlpha=.45;questBadge(c,n.x,n.y-(named?43:36),glyph==='low'?'!':glyph,false,time);c.restore();}}
+      else if(item.type==='hotspotgiver'){const n=e.giver,glyph=giverGlyph(g,e.id);drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,NPC_NAME,8);if(glyph){c.save();if(glyph==='low')c.globalAlpha=.45;questBadge(c,n.x,n.y-(named?43:36),glyph==='low'?'!':glyph,false,time);c.restore();}}
       else if(item.type==='notice'){c.save();c.fillStyle='#5a3d24';c.fillRect(e.x-1.5,e.y-22,3,22);c.fillStyle='#efe0b8';c.strokeStyle='#3b2a1c';c.lineWidth=1;c.fillRect(e.x-8,e.y-30,16,12);c.strokeRect(e.x-8,e.y-30,16,12);c.fillStyle='#8a7355';for(let i=0;i<3;i++)c.fillRect(e.x-5,e.y-27+i*3,10-i*2,1);c.restore();questBadge(c,e.x,e.y-34,'!',false,time);}
-      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,'#d8c89a',7);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
+      else if(item.type==='questgiver'){const n=e.giver,s=g.sideQuests[e.id];drawWorldPerson(c,n.npc,n.x,n.y,time,PERSON_SCALE,{facing:-1});const named=nearestSpeaker(g,n);if(named)label(c,n.name,n.x,n.y-32,NPC_NAME,8);if(!s.claimed)questBadge(c,n.x,n.y-(named?43:36),s.progress>=e.required?'?':s.accepted?'…':'!',false,time);}
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;hitFlash(c,e,p,cc=>drawComicEnemy(cc,e,time));}c.restore();}
     hideLabels=false;
