@@ -71,6 +71,13 @@ try{
  await until(a,`document.querySelector('[data-party-name=Moni].ready-yes')`,4000,'Rudi sieht ✓');
  await until(a,`[...document.querySelectorAll('#chatWindow *,.chat-window *')].some(x=>x.textContent==='Alle sind bereit.')`,4000,'Zusammenfassung im Chat');ok('Bereitschaftscheck: Frage, Antwort, ✓ am Rahmen, „Alle sind bereit.“');
  await shot(a,'ready-a');
+ // Runde 9: Rudis Heil-Söldnerin heilt die verletzte Moni über den Hilfsweg
+ await run(a,`for(const c of [...g.companions])g.dismissCompanion(c.id);g.hireCompanion('merc-schorle-susi',{free:true});g.target=null;for(const e of g.enemies)if(Math.hypot(e.x-g.player.x,e.y-g.player.y)<700){e.hp=0;e.aggro=false;e.ai='dead';e.respawnAt=1e12;}const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x-20,n.y+60,9));const c=g.companions[0];Object.assign(c,g.world.findClear(n.x,n.y+80,9));`);
+ await run(b,`for(const c of [...g.companions])g.dismissCompanion(c.id);g.target=null;const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x+40,n.y+60,9));g.player.hp=Math.round(g.player.maxHp*.4);g.player.inCombat=0;`);
+ await wait(1200);const before=await run(b,'return g.player.hp;');
+ await run(a,`window.__fight=setInterval(()=>{g.player.inCombat=7;for(const c of g.companions)c.inCombat=6;},100);`);
+ await until(b,`g.player.hp>${before}`,8000,'Moni wird von Rudis Söldnerin geheilt');await run(a,'clearInterval(window.__fight);');
+ ok('Heil-Söldnerin heilt einen verletzten Mitspieler (Hilfsweg)');await shot(b,'heal-b');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

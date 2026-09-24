@@ -151,3 +151,12 @@ test('Zielmarkierung: Schadens-Söldner greift den Totenkopf an, nicht das Ziel 
  setMark(g,other,'');setMark(g,e,'cross');c.retarget=0;run(g,.6);assert.equal(c.target,e);
  c.order='attack';g.target=other;c.retarget=0;run(g,.6);assert.equal(c.target,other,'ausdrücklicher Befehl geht vor');
 });
+
+test('Gruppe: Heil-Söldnerin heilt den verletzten Mitspieler über den Hilfsweg, nicht den gesunden Besitzer',()=>{
+ const g=game(12);g.hireCompanion(HEALER);const e=engage(g,'wolf',70);e.damage=0;const c=g.companions[0],calls=[];
+ g.netParty={aidHeal:(n,amount,name)=>{calls.push({n,amount,name});return true;},canAid:()=>true};
+ g.others=[{name:'Moni',party:true,state:'combat',hp:30,x:c.x+30,y:c.y}];
+ run(g,3,()=>{g.others[0].x=c.x+30;g.others[0].y=c.y;});
+ assert.ok(calls.length>=1,'Heilung an Moni geschickt');assert.equal(calls[0].n,'Moni');assert.ok(calls[0].amount>0);
+ g.others=[{name:'Fremd',party:false,state:'combat',hp:10,x:c.x+30,y:c.y}];const before=calls.length;run(g,3);assert.equal(calls.length,before,'Fremde außerhalb der Gruppe nicht');
+});

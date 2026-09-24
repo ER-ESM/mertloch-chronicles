@@ -148,6 +148,9 @@ function damageEnemy(g,c,e,n,id){
  if(e.hp<=0){clearThreat(e);g.kill(e);}
  return dealt;
 }
+/** Verletztester Mitspieler (Gruppe, lebt, unter der Heilschwelle, in Reichweite des Söldners und des Hilfswegs) oder null. */
+function partyPatient(g,c,a,range){if(!g.netParty?.aidHeal)return null;return (g.others||[]).filter(o=>o.party&&o.state!=='dead'&&(o.hp??100)<a.below*100&&(o.hp??100)>0&&distance(o,c)<=range&&g.netParty.canAid?.(o.name)).sort((x,y)=>x.hp-y.hp)[0]||null;}
+function healMate(g,c,o,amount,id){amount=Math.round(amount);if(!g.netParty.aidHeal(o.name,amount,COMPANION_ABILITIES[id]?.name||c.name))return 0;face(c,o);recordMeterHealing(g,amount,amount,abilitySource(id),c);companionFx(g,c,'heal',o,{amount,direct:true,from:{x:c.x,y:c.y}});g.float(o.x,o.y-20,'+'+amount,'#b7df92');return amount;}
 function heal(g,c,target,amount,id){
  amount=Math.round(amount*(1+classBuffValue(target===g.player?g:target,'healTaken')));const actual=Math.min(amount,target.maxHp-target.hp);if(actual<=0)return 0;target.hp+=actual;
  face(c,target);
@@ -163,7 +166,10 @@ function use(g,c,id,target){
  const a=COMPANION_ABILITIES[id];if(!a||(c.cooldowns[id]||0)>0)return false;
  const range=a.range||COMPANION_ROLES[c.def.role].range,done=()=>{c.cooldowns[id]=a.cooldown;c.gcd=R.pause;c.attack=.3;c.castPose=a.kind==='heal'?.3:0;c.usingRanged=!!a.ranged;return true;};
  if(a.kind==='guard'){if(ratio(c)>a.below||c.inCombat<=0)return false;c.guard=a.duration;c.guardReduction=a.reduction;companionFx(g,c,'guard',c,{amount:0});return done();}
- if(a.kind==='heal'){const allies=[g.player,...g.companions.filter(alive)].filter(x=>ratio(x)<a.below&&distance(x,c)<=range).sort((x,y)=>ratio(x)-ratio(y));if(!allies.length)return false;heal(g,c,allies[0],c.damage*a.power,id);return done();}
+ if(a.kind==='heal'){const allies=[g.player,...g.companions.filter(alive)].filter(x=>ratio(x)<a.below&&distance(x,c)<=range).sort((x,y)=>ratio(x)-ratio(y));
+  // Gruppe (2026-09-24): Heil-Söldner kümmern sich auch um Mitspieler in Reichweite; die Heilung reist über den Hilfsweg (net-social aidHeal).
+  const mate=partyPatient(g,c,a,range);if(mate&&(!allies.length||mate.hp/100<ratio(allies[0]))){healMate(g,c,mate,c.damage*a.power,id);return done();}
+  if(!allies.length)return false;heal(g,c,allies[0],c.damage*a.power,id);return done();}
  if(a.kind==='taunt'){const e=g.enemies.filter(e=>fighting(e)&&(e.focus||PLAYER)!==c.id&&distance(e,c)<=range).sort((x,y)=>distance(x,c)-distance(y,c))[0];if(!e)return false;
   const top=Math.max(0,...Object.values(e.threat||{}));e.threat={...(e.threat||{}),[c.id]:top*R.threatSwitch+R.tauntLead};e.focus=c.id;if(!companionText(g,c,{area:'note',kind:'proc',text:T.taunted,ability:id}))g.float(e.x,e.y-38,T.taunted,'#f0c987');return done();}
  if(a.kind==='interrupt'){const e=g.enemies.find(e=>fighting(e)&&e.cast?.interruptible&&distance(e,c)<=range&&(!e.cast.claimed||e.cast.claimed===c.id));if(!e)return false;
