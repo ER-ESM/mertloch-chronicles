@@ -41,7 +41,12 @@ const P={
  boot:'M8 3h5v8.5l5.5 2.5c1.5.7 2.5 2 2.5 3.5V19H4V16l2-1.5V6.5Z|M4 16h17|M13 7H10',
  list:'M9 6h11M9 12h11M9 18h11|M4.5 6h.5M4.5 12h.5M4.5 18h.5',
  plus:'M12 5v14M5 12h14',
- minus:'M5 12h14'
+ minus:'M5 12h14',
+ // Runde 5a: Tod (Schädel), Dropchance (Würfel), Bodenmarke (Kreis mit Einschlag), Auftragszeichen
+ skull:'M12 3c-4.4 0-8 3.2-8 7.5 0 2.6 1.3 4.3 3 5.3V19h10v-3.2c1.7-1 3-2.7 3-5.3C20 6.2 16.4 3 12 3Z|M9 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z|M15 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z|M10 19v2M14 19v2',
+ dice:'M5 5h14v14H5Z|M9 8.5h.5M15 8.5h.5M12 12h.5M9 15.5h.5M15 15.5h.5',
+ area:'M12 6c5 0 9 2.7 9 6s-4 6-9 6-9-2.7-9-6 4-6 9-6Z|M12 9.5c2.2 0 4 1.1 4 2.5s-1.8 2.5-4 2.5-4-1.1-4-2.5 1.8-2.5 4-2.5Z',
+ quest:'M12 3v12|M12 19v1.5'
 };
 /** Inline-SVG eines Symbols (24er Raster, Strich 2 px). */
 export function glyph(id,cls=''){const d=P[id];if(!d)return '';return `<svg class="ui-glyph${cls?' '+cls:''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${d.split('|').map(p=>`<path d="${p}"/>`).join('')}</svg>`;}

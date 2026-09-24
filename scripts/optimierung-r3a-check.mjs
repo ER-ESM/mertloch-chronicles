@@ -251,7 +251,7 @@ try{
  assert.ok(m.auto&&m.toast!==COMBAT_TEXT.autoOn,'Autoangriff an ohne Kurzmeldung '+JSON.stringify(m));
  await zoom('r3a-72z-randale-leiste',await rect('.player-panel'),10);
  await read(`const g=window.game;window.__t=[];const o=g.toast.bind(g);g.toast=t=>{window.__t.push(t);return o(t)};g.player.hp=1;const k=window.__k;k.aggro=true;g.hitPlayer(k,50);`);await wait(500);
- await read(`document.querySelector('#respawn')?.click()`);await wait(600);
+ await read(`document.querySelector('#respawn, #deathScreen [data-ds-wake]')?.click()`);await wait(600);
  m=await read(`return window.__t`);
  assert.ok(m.includes(SYSTEM_LINES.respawnNoPants)&&!m.includes(SYSTEM_LINES.respawn),'Tod-Satz ohne Hose '+JSON.stringify(m));
  ok('Randale-Leiste sichtbar, „Autoangriff an“ nur am Platz (keine Kurzmeldung), Tod-Satz „immer noch ohne Hose“');

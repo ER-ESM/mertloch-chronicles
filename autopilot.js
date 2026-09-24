@@ -4,6 +4,7 @@
 // im Kampf waren, zählen nicht: Wer aus einem Kampf wegläuft, wird von seinen Verfolgern nicht festgehalten.
 // Der Lauf zum Gegner nach Rechtsklick (attack-approach.js) ist kein Autopilot, er ist ein Angriff.
 
+import {AUTOPILOT_UI} from './content/index.js';
 /** Beim Start eines Laufwegs: merken, wer schon kämpft. */
 export function startAutopilot(g){
  g.autopilot={known:new Set((g.enemies||[]).filter(e=>e.aggro&&e.hp>0).map(e=>e.id))};
@@ -17,6 +18,6 @@ export function autopilotThreat(g,e){
  if(!g.routeGoal||g.approach){g.autopilot=null;return false;}
  if(a.known.has(e.id))return false;
  g.moveTo=null;g.path=[];g.routeGoal=null;g.autopilot=null;g.stairsAutoDown=false;
- g.emit?.('autopilotStop',{enemyId:e.id});
+ g.emit?.('autopilotStop',{enemyId:e.id});/* Runde 5a: rote Zeile, damit der Stopp auch hinter Fenstern auffällt */g.fail?.(AUTOPILOT_UI.stopped);
  return true;
 }

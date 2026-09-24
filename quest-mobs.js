@@ -4,8 +4,8 @@
 //   gleichartigen Pfandkeiler, die im selben Gebiet herumlaufen und angreifen. Jetzt zählt im Zielgebiet (QUEST_AREA um das Lager)
 //   jeder Gegner derselben Art; außerhalb zählen nur die Lagergegner selbst. Das Zielgebiet steht als Fläche auf Karte und Minikarte.
 import {distance} from './world.js';
-import {ARCHETYPES,CAMP_ENEMIES,TUTORIAL} from './content/index.js';
-import {speciesOf,hotspotQuest,questProgress,giverOffers} from './hotspots.js';
+import {ARCHETYPES,CAMP_ENEMIES,TUTORIAL,ITEM_CATALOG} from './content/index.js';
+import {speciesOf,hotspotQuest,questProgress,giverOffers,questTitle} from './hotspots.js';
 
 /** Halbmesser des Zielgebiets um ein Kapitel-Lager (Welteinheiten, 8 = 1 m). Reicht bis über den Lagerrand (camp.approach). */
 export const QUEST_AREA=330;
@@ -48,4 +48,21 @@ export function idaMark(g){
  if(claim||!g.quest.actDone&&g.questReady())return '?';
  if(g.quest.actDone)return null;
  return g.quest.accepted?'…':'!';
+}
+/** Auftragszeilen am Gegner für Tooltip und Zielrahmen (Runde 5a, 2026-09-24, Kenner-Befund 2, WoW: „Pfandkeiler jagen 0/3“).
+ *  → [{title,done,need,chance?,outside?}]. chance = Dropchance 0…1 bei Sammelzielen; outside = gleiche Art, zählt aber hier nicht
+ *  (Feldgegner außerhalb des Zielgebiets) – so sieht man, WELCHER Keiler zählt. Fertige Ziele stehen nicht mehr drin. */
+export function questLines(g,e){
+ if(!e||!(e.hp>0))return [];const out=[];
+ const q=g.quest;
+ if(q?.accepted&&!(q.chapterClaimed>=q.chapter)&&!e.questId&&!e.worldBoss&&!e.dungeon&&!e.arena&&!e.tutorial){
+  const list=g.objectives?.()||[];
+  list.forEach((o,i)=>{const p=g.objectiveProgress(i);if(!p||p.complete)return;
+   if(chapterCredit(g,e,o))out.push({title:o.label,done:p.done??0,need:p.need??o.count??0});
+   else if(o.kind==='kill'&&(o.type?e.type===o.type:e.family===o.family))out.push({title:o.label,done:p.done??0,need:p.need??o.count??0,outside:true});});
+ }
+ const sq=e.questId&&g.sideQuests?.[e.questId];if(sq?.accepted&&!sq.claimed){const def=g.world.quests?.find(x=>x.id===e.questId);if(def&&sq.progress<def.required)out.push({title:def.title,done:sq.progress,need:def.required});}
+ if(g.hotspots&&!e.arena&&!e.tutorial){const kind=speciesOf(e);for(const [id,s] of Object.entries(g.hotspots.quests||{})){if(!s.accepted||s.claimed)continue;const def=hotspotQuest(id),o=def?.objective;if(!o||o.species!==kind)continue;const n=questProgress(g,id);if(n>=o.count)continue;
+  out.push({title:questTitle(g,def),done:n,need:o.count,...(o.kind==='drop'?{chance:o.chance,item:ITEM_CATALOG[o.item]?.name||o.item}:{})});}}
+ return out;
 }

@@ -72,3 +72,13 @@ export const labelYieldLevel=()=>level;
 /** Wegmarke auf einer Kreisbahn um die Körpermitte des Helden (Runde 4b, Grafikbefund 10): Richtung dx/dy → Punkt auf dem Kreis und Winkel. */
 export const WAYPOINT={radius:36};
 export function waypointOrbit(dx,dy,radius=WAYPOINT.radius){const n=Math.hypot(dx,dy)||1;return {x:dx/n*radius,y:dy/n*radius,angle:Math.atan2(dy,dx)};}
+/** Runde 5a (Kenner-Befund 8): Der Pfeil samt Entfernung darf kein Gegner-Namensschild überdecken. Probiert die Kreisbahn in
+ *  wachsenden Halbmessern (36 → 54 → 72 E); ist keine frei, bleibt er auf der engsten Bahn, wird aber blass (fade 0,3).
+ *  plates: [{l,r,t,b}] in Welteinheiten. → {x,y,angle,radius,fade,labelY} relativ zur Körpermitte. */
+export const WAYPOINT_RADII=[36,54,72];
+export function waypointPlace(dx,dy,plates=[],radii=WAYPOINT_RADII,cx=0,cy=0){
+ const boxOf=o=>{const ly=o.y>-4?15:-8;return [{l:o.x-7,r:o.x+7,t:o.y-7,b:o.y+7},{l:o.x-13,r:o.x+13,t:o.y+ly-7,b:o.y+ly+2}];};
+ const hits=o=>boxOf(o).some(a=>plates.some(q=>a.l+cx<q.r&&q.l<a.r+cx&&a.t+cy<q.b&&q.t<a.b+cy));
+ for(const r of radii){const o=waypointOrbit(dx,dy,r);if(!hits(o))return {...o,radius:r,fade:1,labelY:o.y>-4?15:-8};}
+ const o=waypointOrbit(dx,dy,radii[0]);return {...o,radius:radii[0],fade:.3,labelY:o.y>-4?15:-8};
+}

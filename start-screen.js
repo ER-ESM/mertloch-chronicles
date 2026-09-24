@@ -97,7 +97,7 @@ export function mountStartScreen(host){
   const hall=state.step==='roster'||state.step==='create';el.innerHTML=`<div class="mmo-scene ${hall?'mmo-roster':'mmo-gate'}">${hall?'<div class="online-card start-stage">'+(state.step==='create'?createHtml():rosterHtml())+'</div>':loginHtml()}</div>`;
   if(hall)paintHeroCards().catch(()=>{});else rememberField();
   if(state.removing){requestAnimationFrame(()=>el.querySelector('[name=removeName]')?.focus());return;}
-  requestAnimationFrame(()=>(el.querySelector(state.step==='create'?'input[name=heroName],[aria-pressed=true],[data-draft-class]':state.step==='roster'?'[data-start=enter],[data-start=create]':'input[name=email],[data-start]')||el).focus({preventScroll:true}));
+  /* Runde 5a (Kenner): in der Heldenwahl hat „Ins Dorf“ den Fokus, nicht „+ Neuer Held“ (Enter legte sonst einen neuen Helden an) */requestAnimationFrame(()=>(state.step==='roster'?el.querySelector('[data-start=enter]')||el.querySelector('[data-start=create]'):el.querySelector(state.step==='create'?'input[name=heroName],[aria-pressed=true],[data-draft-class]':'input[name=email],[data-start]')||el)?.focus({preventScroll:true}));
  }
  /** „E-Mail merken“ (WoW: Kontoname merken): nur die Adresse, nie das Passwort; kontoweit in diesem Browser. */
  const REMEMBER='mertloch-login-email';

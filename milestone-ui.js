@@ -4,11 +4,12 @@
 // UI bearbeiten), erscheinen als EINE Einblendung; zwischen zwei Freischalt-Einblendungen liegen mindestens UNLOCK_GAP ms.
 // Sie ist einzeilig (Name, darunter nur der Ort als Kleindruck); die Erklärung steht im Tooltip des Namens.
 // Warten Kurzmeldungen (toast-queue.js), kürzt sich die Einblendung auf HURRY_MS.
-import {MILESTONE_UI as T} from './content/index.js';
+import {MILESTONE_UI as T,QUEST_DONE_UI as Q} from './content/index.js';
+import {rewardTiles} from './reward-tiles.js';
 import {contentPath} from './content-art.js';
 
 export const UNLOCK_BUNDLE_MS=1500,UNLOCK_GAP=45000,UNLOCK_MS=3600,HURRY_MS=1600;
-export function mountMilestones(shell,{sound,blocked,hurry,translate=t=>t,now=()=>performance.now()}={}){
+export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,now=()=>performance.now()}={}){
  const el=document.createElement('section');el.className='milestone';el.hidden=true;el.setAttribute('role','status');el.setAttribute('aria-live','polite');
  shell.append(el);const queue=[];let timer=0,poll=0,busy=false,lastUnlock=-Infinity,bundle=null;
  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -18,10 +19,10 @@ export function mountMilestones(shell,{sound,blocked,hurry,translate=t=>t,now=()
   const head=queue[0];if(head.kind==='unlock'&&now()-lastUnlock<UNLOCK_GAP){clearTimeout(timer);timer=setTimeout(next,Math.min(5000,UNLOCK_GAP-(now()-lastUnlock)+20));return;}
   // Nicht über Gespräch, Erinnerung, Tod-Fenster, Zonentitel oder eine frische Kurzmeldung legen – kurz warten und erneut versuchen.
   if(blocked?.()){clearTimeout(timer);timer=setTimeout(next,400);return;}busy=true;const m=queue.shift();if(m.kind==='unlock')lastUnlock=now();
-  el.className='milestone milestone-'+m.kind;el.innerHTML=m.html;el.hidden=false;
+  el.className='milestone milestone-'+m.kind;el.innerHTML=m.html;el.hidden=false;paint?.(el);
   const src=m.kind==='level'&&contentPath('ui-levelup-crest');
   if(src){const art=document.createElement('img');art.className='milestone-crest';art.alt='';art.src=src;el.prepend(art);}
-  requestAnimationFrame(()=>el.classList.add('show'));sound?.(m.kind==='level'?'levelUp':'unlock');
+  requestAnimationFrame(()=>el.classList.add('show'));sound?.(m.kind==='level'?'levelUp':m.kind==='quest'?'questDone':'unlock');
   const started=now();timer=setTimeout(close,queue.length?m.ms*.65:m.ms);/* bei Stau kürzer */
   clearInterval(poll);poll=setInterval(()=>{if(hurry?.()&&now()-started>=HURRY_MS)close();},200);
  }
@@ -43,6 +44,9 @@ export function mountMilestones(shell,{sound,blocked,hurry,translate=t=>t,now=()
    const waiting=queue.find(m=>m.kind==='unlock');
    if(waiting){const i=queue.indexOf(waiting);queue[i]=unlockEntry([...waiting.defs,def]);return;}
    queue.push(unlockEntry([def]));clearTimeout(bundle);bundle=setTimeout(next,UNLOCK_BUNDLE_MS);},
+  /** Runde 5a (Kenner-Befund 9, WoW): „Auftrag abgeschlossen“ groß mittig wie der Aufstieg, darunter die Belohnung als Kacheln. */
+  quest({title,xp=0,coins=0,item=null}={}){const tiles=rewardTiles({xp,coins,items:item?[item]:[]},[xp?Q.xp(xp):'',coins?Q.coins(coins):''].filter(Boolean).join(' · '));
+   queue.push({kind:'quest',ms:3400,html:`<span class="milestone-eyebrow">${esc(Q.eyebrow)}</span><strong class="milestone-title">${esc(title||'')}</strong>${tiles}`});next();},
   get busy(){return busy;},
   state:()=>({busy,queued:queue.map(m=>m.kind==='unlock'?m.defs.map(d=>d.id||d.name).join('+'):m.kind)}),
  };

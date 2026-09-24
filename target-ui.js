@@ -32,20 +32,36 @@ export function friendlyUnits(g,now){
 // Namensschild samt Lebensbalken (e.plateAt, im Nahkampf seitlich neben dem Helden). Erst danach der alte Kreis um die Körpermitte.
 const spriteTopOf=e=>e.spriteTop??e.y-(e.type==='boss'?35:e.type==='cultist'?30:23);
 export function spriteHit(e,pt){const top=spriteTopOf(e),h=Math.max(10,e.y+4-top),half=Math.max(8,Math.min(22,h*(e.type==='wolf'?.62:.36)));return pt.x>=e.x-half&&pt.x<=e.x+half&&pt.y>=top&&pt.y<=e.y+4;}
+/** Runde 5a (Kenner: Rechtsklick auf einen laufenden Dachs traf daneben): Bei gedrosselter Darstellung liegt zwischen gezeichnetem
+ *  Bild und Klick bis zu ein Bild (250 ms bei 4 Bildern/s). Der Treffer zählt deshalb auch auf den Lagen der letzten TRAIL ms
+ *  (e.seenAt aus dem Renderer) und mit Vorhalt 150 ms in Laufrichtung. */
+export const TRAIL={ms:350,lead:.15};
+export function trailHit(e,pt,now=performance.now()){const tr=e.seenAt;if(!tr?.length)return false;const top=spriteTopOf(e)-e.y;
+ const recent=tr.filter(s=>now-s.t<=TRAIL.ms);for(const s of recent)if(spriteHit({...e,x:s.x,y:s.y,spriteTop:s.y+top},pt))return true;
+ const old=recent[0];if(old&&now-old.t>30){const k=TRAIL.lead*1000/(now-old.t),lx=e.x+(e.x-old.x)*k,ly=e.y+(e.y-old.y)*k;if(spriteHit({...e,x:lx,y:ly,spriteTop:ly+top},pt))return true;}
+ return false;}
 export function plateHit(e,pt,now=performance.now()){const q=e.plateAt;return !!q&&now-q.t<400&&pt.x>=q.x-24&&pt.x<=q.x+24&&pt.y>=q.y-11&&pt.y<=q.y+9;}
 /** Gegner unter dem Weltpunkt (x,y = Mauspunkt ohne Anhebung). */
 export function enemyAt(g,x,y,now=performance.now()){
  const pt={x,y},at={x,y:y+R.hitLift},list=g.enemies.filter(e=>selectableEnemy(g,e));
  const drawn=list.filter(e=>spriteHit(e,pt)).sort((a,b)=>b.y-a.y)[0];if(drawn)return drawn;
  const plate=list.filter(e=>plateHit(e,pt,now)).sort((a,b)=>b.y-a.y)[0];if(plate)return plate;
+ const moving=list.filter(e=>trailHit(e,pt,now)).sort((a,b)=>b.y-a.y)[0];if(moving)return moving;
  return list.filter(e=>hyp(at,e)<(e.type==='boss'?R.bossHitRadius:R.hitRadius)).sort((a,b)=>hyp(at,a)-hyp(at,b))[0]||null;
 }
+/** Rechteck von den Füßen bis über das Auftragszeichen (Auftraggeber) bzw. den Kopf (übrige). */
+export const FRIEND_BOX={half:11,foot:4,head:34,badge:58};
+const BADGED=['npc','mentor','regular','questgiver'];
+export function friendBoxHit(u,pt){const top=u.y-(BADGED.includes(u.kind)?FRIEND_BOX.badge:FRIEND_BOX.head);return pt.x>=u.x-FRIEND_BOX.half&&pt.x<=u.x+FRIEND_BOX.half&&pt.y>=top&&pt.y<=u.y+FRIEND_BOX.foot;}
 /** Einheit unter dem Weltpunkt; Gegner gewinnen bei Überlappung (Kampf geht vor). → {kind:'enemy',ref,x,y}|freundliche Einheit|null */
 export function unitAt(g,x,y,now){
  const at={x,y:y+R.hitLift};
  if(!inKiosk(g)){const e=enemyAt(g,x,y);if(e)return {kind:'enemy',ref:e,x:e.x,y:e.y,name:e.name};}
  // Dorfbewohner laufen oft über Ida und die Auftraggeber: bei Überlappung gewinnt, wer etwas zu sagen hat (Runde 3a).
- return friendlyUnits(g,now).filter(u=>hyp(at,u)<R.hitRadius).sort((a,b)=>(a.kind==='resident')-(b.kind==='resident')||hyp(at,a)-hyp(at,b))[0]||null;
+ const list=friendlyUnits(g,now),pt={x,y};
+ /* Runde 5a (Kenner: Rechtsklick unter dem „!“ traf den falschen NPC): Trefferfläche = Figur + Auftragszeichen darüber; vorn gewinnt */
+ const boxed=list.filter(u=>friendBoxHit(u,pt)).sort((a,b)=>(a.kind==='resident')-(b.kind==='resident')||b.y-a.y)[0];if(boxed)return boxed;
+ return list.filter(u=>hyp(at,u)<R.hitRadius).sort((a,b)=>(a.kind==='resident')-(b.kind==='resident')||hyp(at,a)-hyp(at,b))[0]||null;
 }
 /** Aktuelle Daten des gewählten freundlichen Ziels; null, sobald es nicht mehr existiert (Spieler weg, Tutorial, Kiosk). */
 export function friendUnit(g,now){const f=g.friend;if(!f)return null;const name=f.ref?.name;return friendlyUnits(g,now).find(u=>u.ref===f.ref||(f.player&&u.ref.name===name&&(u.kind==='player'||u.kind==='party')))||null;}

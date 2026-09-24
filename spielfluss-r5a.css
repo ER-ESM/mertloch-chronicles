@@ -1,0 +1,53 @@
+/* Runde 5a „Spielfluss“ (2026-09-24): Todesbildschirm, Gegner-Tooltip mit Auftragszeilen, Zauber-Puffer, Auftrag abgeschlossen.
+   Zuletzt geladen. Belege in docs/OPTIMIERUNG-2026-09-24-runde-5a.md. */
+
+/* ---------- Todesbildschirm (death-screen.js): oben mittig über allen Fenstern, Welt entsättigt (WoW) ---------- */
+body.hero-dead #world{filter:grayscale(.85) brightness(.8);transition:filter .6s ease}
+.death-screen{position:absolute;left:50%;top:16%;z-index:90;transform:translate(-50%,-10px);opacity:0;transition:opacity .35s ease,transform .35s ease;
+ display:grid;justify-items:center;gap:12px;min-width:min(420px,92vw);max-width:min(560px,94vw);padding:18px 28px 22px;
+ background:linear-gradient(#1a1311f2,#120d0cf2);border:2px solid #8a3a2a;border-radius:6px;box-shadow:0 0 0 1px #000,0 10px 40px #000c,inset 0 0 30px #5a1a1266;pointer-events:auto;text-align:center}
+.death-screen.show{opacity:1;transform:translate(-50%,0)}
+.death-screen[hidden]{display:none}
+.death-screen .ds-skull{width:46px;height:46px;color:#e8d8c0;filter:drop-shadow(0 0 8px #c4302699)}
+.death-screen .ds-skull .ui-glyph{width:100%;height:100%;stroke-width:1.6}
+.death-screen h2{margin:0;font:400 44px/1 var(--display,'Jersey 15',sans-serif);letter-spacing:.05em;text-transform:uppercase;color:#ff6a50;text-shadow:0 3px 0 #3a0c06,0 0 18px #c4302688}
+.death-screen .ds-cause{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.death-screen .ds-chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:4px 10px;border:1px solid #6b3024;border-radius:4px;background:#2a1511;color:#f3dfc0;cursor:help}
+.death-screen .ds-chip .ui-glyph{width:20px;height:20px;color:#ff8a6e}
+.death-screen .ds-chip b{font:800 15px/1 Nunito,sans-serif}
+.death-screen .ds-chip small{font:700 12px/1 Nunito,sans-serif;color:#d7b571}
+.death-screen .ds-ground .ui-glyph{color:#ff5a3c}
+.death-screen .ds-tips{display:flex;gap:8px;justify-content:center}
+.death-screen .ds-tip{display:inline-grid;place-items:center;min-width:36px;height:36px;border:1px solid #6d5a36;border-radius:4px;background:#1d1a12;cursor:help}
+.death-screen .ds-tip kbd{font:800 13px/1 Nunito,sans-serif;color:#ffe39a;background:none;border:0;box-shadow:none;padding:0 6px}
+.death-screen .ds-wake{min-height:44px;padding:8px 22px;font-size:16px}
+body.touch-mode .death-screen{top:12%}
+
+/* ---------- Gegner-Tooltip in der Welt (unit-tooltip.js): WoW GameTooltip, weg vom Helden ---------- */
+.unit-tooltip{position:fixed;z-index:95;min-width:180px;max-width:280px;padding:8px 11px 9px;pointer-events:none;background:#0f1a15f2;border:1px solid #b99b5d;border-radius:4px;box-shadow:0 0 0 1px #000,0 6px 18px #0009;font:700 13px/1.25 Nunito,sans-serif;color:#e9dfc6}
+.unit-tooltip[hidden]{display:none}
+.unit-tooltip .ut-name{display:block;font:800 15px/1.2 Nunito,sans-serif}
+.unit-tooltip .ut-name.hostile{color:#ff6a50}.unit-tooltip .ut-name.neutral{color:#f2d36b}
+.unit-tooltip .ut-sub{display:block;margin-top:2px;font-size:12px;color:#cbbd9c}
+.unit-tooltip .ut-quest{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;margin-top:6px}
+.unit-tooltip .ut-quest i{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#2a1808;border:1px solid #ffd35a;color:#ffd35a;font:400 13px/1 var(--display,'Jersey 15',sans-serif);font-style:normal}
+.unit-tooltip .ut-quest i::before{content:'!'}
+.unit-tooltip .ut-quest span{color:#ffe6a8}
+.unit-tooltip .ut-quest b{color:#fff4c2;font-variant-numeric:tabular-nums}
+.unit-tooltip .ut-quest.done span,.unit-tooltip .ut-quest.done b{color:#9ed07f}
+.unit-tooltip .ut-quest.outside{opacity:.6}.unit-tooltip .ut-quest.outside i{filter:grayscale(1)}
+.unit-tooltip .ut-drop{grid-column:2/4;display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#d7b571}
+.unit-tooltip .ut-drop .ui-glyph{width:14px;height:14px}
+
+/* ---------- Zauber-Puffer (spell-queue.js): vorgemerkter Kniff leuchtet kurz ---------- */
+.skill.queued{box-shadow:0 0 0 2px #ffe39a,0 0 12px #ffd35a!important}
+
+/* ---------- Auftrag abgeschlossen (milestone-ui.js, Art 'quest') ---------- */
+.milestone-quest .milestone-title{font-size:46px;color:#ffe39a}
+.milestone-rewards{display:flex;justify-content:center;gap:14px;margin-top:8px}
+.milestone-rewards span{display:inline-flex;align-items:center;gap:6px;font:800 17px/1 Nunito,sans-serif;color:#fff4c2;text-shadow:0 2px 0 #1b120a}
+.milestone-rewards canvas{width:30px;height:30px;image-rendering:pixelated}
+
+/* Tot: Zonentitel tritt zurück (lag sonst hinter dem Todesbildschirm) */
+body.hero-dead .region-label{opacity:0!important}
+.milestone-quest .reward-tiles{justify-content:center;margin-top:10px}

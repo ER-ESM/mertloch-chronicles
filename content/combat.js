@@ -8,7 +8,7 @@ export const ENEMY_AUTOS={
  horst:{name:'Ordnerkante',min:46,max:64,speed:2.6,range:58},elite:{name:'Alphahauer',min:40,max:54,speed:2.1,range:43},gisela:{name:'Kannenschlag',min:55,max:72,speed:2.7,range:60},automat:{name:'Greifarm',min:60,max:85,speed:2.9,range:65}
 };
 export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43};
-export const COMBAT_TEXT={surge:'In Fahrt',surgeHint:'In Fahrt: Spezialkniff +20 %',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
+export const COMBAT_TEXT={surge:'In Fahrt',surgeHint:'In Fahrt: Spezialkniff +20 %',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',notReady:'Noch nicht bereit.',noTarget:'Kein Ziel.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
 // (flat + weapon × rolled auto damage) × (1 + bonusPct).
 // No damage model = legacy fixed values, so old content can migrate incrementally.
 // E-60: Finisher Waffe ×9,9 → ×5,2 (Nutzerbefund: der Bierzelt-Abriss oneshottete auf Stufe 3 jeden Feldgegner), Aufbaukniff ×2 → ×2,6.
@@ -90,3 +90,18 @@ export const COMBAT_RULE_INFO={
   long:'Der Autoangriff läuft unabhängig vom Zaubermuster weiter und ist über einen langen Kampf die größere Schadensquelle. Fernkämpfer (ranged) treffen dich über die ganze Distanz; gegen sie hilft nur Deckung oder Nähe. Zahlen je Art in ENEMY_AUTOS.',
   numbers:Object.entries(ENEMY_AUTOS).map(([id,a])=>({label:a.name,value:a.min+'–'+a.max+' / '+a.speed+' s',unit:a.ranged?'Fernkampf':'Nahkampf',source:'ENEMY_AUTOS.'+id}))}
 };
+// Runde 5a (2026-09-24, Kenner-Endurteil): Todesbildschirm, Auftragszeilen am Gegner, Ausweich-Rückmeldung, Autopilot-Stopp.
+export const DEATH_UI={
+ title:'Du bist umgekippt',wake:'Aufwachen bei St. Gangolf',wakeNote:'Volle Leben, kurzer Schutz. Aufträge und Erfahrung bleiben.',
+ by:'Umgehauen von',ground:'Rote Fläche',groundNote:'Aus roten Flächen herauslaufen oder mit Ausweichen herausspringen.',
+ others:n=>'+'+n+' weitere Angreifer',othersNote:'Mehrere Gegner zugleich. Einzeln anlocken, Brezel früh essen.',
+ tips:{interrupt:['Unterbrechen','Gelbe Zauberbalken im Zielrahmen damit abbrechen.'],dash:['Ausweichen','Rote Bodenmarken verlassen: Sprung in Laufrichtung.'],parry:['Parieren','Angekündigte Nahkampfhiebe abfangen.'],food:['Brezel','Heilt auch im Kampf – früh essen, nicht erst bei 10 %.']},
+};
+export const UNIT_TIP={
+ level:n=>'Stufe '+n,elite:'Elite',neutral:'Neutral',hostile:'Feindlich',
+ quest:'Auftrag',chance:p=>'~'+p+' %',chanceNote:'Chance je Gegner, dass er den Gegenstand fallen lässt.',
+ outside:'Zählt hier nicht – erst im Zielgebiet',
+};
+export const DODGE_UI={dodged:'Ausgewichen!',hit:'Getroffen'};
+export const AUTOPILOT_UI={stopped:'Angegriffen – Laufweg angehalten.'};
+export const QUEST_DONE_UI={eyebrow:'Auftrag abgeschlossen',xp:n=>'+'+n+' EP',coins:n=>'+'+n+' Pfandmarken'};

@@ -100,7 +100,7 @@ export function claimHotspotQuest(g,id){if(questStatus(g,id)!=='ready')return fa
  if(o.kind==='drop'&&!consumeMaterials(g.rpg,{[o.item]:o.count}))return false;
  if(!reward(g,q)){if(o.kind==='drop')addItem(g.rpg,o.item,o.count);return false;}
  const s=entry(g,id);s.claimed=true;if(g.hotspots.tracked===id)g.hotspots.tracked=nextTracked(g);
- g.toast(q.notice?HOTSPOT_UI.noticeReady(q.title):HOTSPOT_UI.claimed(questTitle(g,q)));g.log(HOTSPOT_UI.claimed(questTitle(g,q))+' · +'+(q.reward?.xp||0)+' EP');g.emit('rpgChanged');return true;}
+ g.toast(q.notice?HOTSPOT_UI.noticeReady(q.title):HOTSPOT_UI.claimed(questTitle(g,q)));g.log(HOTSPOT_UI.claimed(questTitle(g,q))+' · +'+(q.reward?.xp||0)+' EP');/* „Auftrag abgeschlossen“ groß mittig (milestone-ui.js, Runde 5a) */g.emit('questDone',{title:questTitle(g,q),xp:q.reward?.xp||0,coins:q.reward?.coins||0,item:q.reward?.item||null});g.emit('rpgChanged');return true;}
 const nextTracked=g=>hotspotQuests().find(q=>['accepted','ready'].includes(questStatus(g,q.id)))?.id||null;
 export function trackHotspotQuest(g,id){if(!['accepted','ready'].includes(questStatus(g,id)))return false;g.hotspots.tracked=id;g.trackedQuest=null;return true;}
 /** Aushang aufheben: startet den Auftrag sofort. */
@@ -143,7 +143,7 @@ function questArea(g,q){const areas=hotspotLayout(g.world).areas,own=areas.find(
 /** Gesprächszeile eines Stammgasts für das laufende Kapitel; zählt mit, damit beim nächsten Mal die nächste Zeile kommt. */
 export function giverChatter(g,giverId){const h=hotspotLayout(g.world).hotspots.find(x=>x.id===giverId);if(!h?.regular)return null;const npc=h.giver.npc;
  const talks=g.mentorTalks||(g.mentorTalks={}),n=talks[npc]=(talks[npc]||0)+1;g.emit?.('save');
- return n===1?hubLine(npc,0)||hubLine(npc,g.quest?.chapter||1,0,!!g.quest?.actDone):hubLine(npc,g.quest?.chapter||1,n-2,!!g.quest?.actDone);}
+ return n===1?hubLine(npc,0,0,false,g.player?.level||1)||hubLine(npc,g.quest?.chapter||1,0,!!g.quest?.actDone):hubLine(npc,g.quest?.chapter||1,n-2,!!g.quest?.actDone);}
 /** Aufgabenzeile für Tracker, Questbuch und Karte. */
 export function objectiveText(g,q){const o=q.objective,n=questProgress(g,q.id);
  if(o.kind==='talk'){const at=giverPoint(g,turnInOf(q));return HOTSPOT_UI.talk(at?.name||'');}

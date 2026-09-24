@@ -4,7 +4,7 @@
 // - Zielrahmen: Auftragszeichen, wenn der Gegner für einen laufenden Auftrag zählt; Symbol mit Tooltip statt des Satzes
 //   „Dieses Ziel zieht gerade ab oder kommt erst an.“
 import {glyph} from './ui-glyphs.js';
-import {questMob} from './quest-mobs.js';
+import {questMob,questLines} from './quest-mobs.js';
 
 export const CUE_TEXT={
  quest:{label:'Auftragsgegner',note:'Zählt für einen laufenden Auftrag.'},
@@ -12,7 +12,7 @@ export const CUE_TEXT={
  arriving:{label:'Kommt gerade an',note:'Gleich angreifbar.'},
 };
 /** Ist die Meldung eine Ablehnung? (engine.fail markiert sie; bekannte Wortlaute aus älteren Stellen zählen mit.) */
-export const REJECT=/noch nicht bereit|Zu weit entfernt|Nicht genug|versperrt die Sicht|brauchst du gerade nicht|nichts mehr dabei|lernst du später|Kein passendes Ziel|Kein Weg dorthin|Zum Zaubern|nicht im Kampf|Freien Boden/i;
+export const REJECT=/noch nicht bereit|Zu weit entfernt|Nicht genug|versperrt die Sicht|brauchst du gerade nicht|nichts mehr dabei|lernst du später|Kein passendes Ziel|Kein Ziel|Kein Weg dorthin|Zum Zaubern|nicht im Kampf|Freien Boden/i;
 export function createCombatCues({doc=document,popups}={}){
  const errors=new Set();let rimTimer=0;
  const shell=()=>doc.querySelector('#gameShell')||doc.body;
@@ -31,7 +31,7 @@ export function createCombatCues({doc=document,popups}={}){
    let q=row.querySelector('.target-quest'),s=row.querySelector('.target-state');
    if(!q){q=doc.createElement('i');q.className='target-quest';q.dataset.tooltipLabel=CUE_TEXT.quest.label;q.dataset.tooltipNote=CUE_TEXT.quest.note;q.setAttribute('aria-label',CUE_TEXT.quest.label);row.prepend(q);}
    if(!s){s=doc.createElement('i');s.className='target-state';row.append(s);}
-   const quest=!!e&&questMob(g,e);q.hidden=!quest;
+   const quest=!!e&&questMob(g,e);q.hidden=!quest;/* Runde 5a: Tooltip nennt die Auftragszeilen samt Stand und Dropchance (quest-mobs.js questLines) */if(quest){const note=questLines(g,e).filter(l=>!l.outside).map(l=>l.title+' '+l.done+'/'+l.need+(l.chance?' · ~'+Math.round(l.chance*100)+' %':'')).join(' · ')||CUE_TEXT.quest.note;if(q.dataset.tooltipNote!==note)q.dataset.tooltipNote=note;}
    const state=!e?null:e.ai==='returning'?'leaving':e.spawnGrace>0?'arriving':null;
    if(s.dataset.state!==(state||'')){s.dataset.state=state||'';s.innerHTML=state?glyph(state==='leaving'?'back':'spark'):'';if(state){s.dataset.tooltipLabel=CUE_TEXT[state].label;s.dataset.tooltipNote=CUE_TEXT[state].note;s.setAttribute('aria-label',CUE_TEXT[state].label);}}
    s.hidden=!state;
