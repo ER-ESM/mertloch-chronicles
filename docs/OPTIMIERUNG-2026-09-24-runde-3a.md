@@ -50,7 +50,7 @@ Frischer Held Stufe 1 (600 Leben, Tresenbrecher-Rotation 1-2-3 per Bot, Brezel u
 
 ## Prüfungen
 
-- Grün: `npm test` (833), `npm run content:check`, `npm run build`, `optimierung-r3a-check` (19), `optimierung-r2b-check` (25), `optimierung-r1-check` (16), `aktionsleisten-check`, `profession-node-check` – jeweils mit eigenen Ports 9500–9509 / 4300–4309 (aktionsleisten- und profession-node-check als Kopie mit geänderten Ports, danach gelöscht).
+- Grün: `npm test` (873, nach dem Rebase auf main mit Anziehpuppe), `npm run content:check`, `npm run build`, `optimierung-r3a-check` (19), `optimierung-r2b-check` (25), `optimierung-r1-check` (16), `aktionsleisten-check`, `profession-node-check` – jeweils mit eigenen Ports 9500–9509 / 4300–4309 (aktionsleisten- und profession-node-check als Kopie mit geänderten Ports, danach gelöscht).
 - `optimierung-r2b-check` Zeile 217 („neue Fassung beim Start still übernommen“): hier grün. Ein Wackler ist sehr wahrscheinlich; die Maschine lief mit bis zu 87 % CPU-Last und 40 Chrome-Prozessen anderer Sitzungen, der Spielstart brauchte 12–20 s. Unter dieser Last scheiterten auch `optimierung-r2b-check` und `aktionsleisten-check` einmal mit „Game did not initialize“ (Startfenster 16 s in `browser-polish.mjs`) und liefen im zweiten Anlauf grün.
 - Schon auf main rot, gleicher Lauf auf main 8dce615 (eigene Arbeitskopie) und auf dieser Runde, jeweils eigener Server/CDP-Port:
   - `hud:check`: auf beiden an derselben Stelle rot (`deepStrictEqual`, Chat-Rahmen wie in Runde 2b).
