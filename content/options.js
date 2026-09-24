@@ -67,6 +67,8 @@ export const OPTIONS_UI={
  meter:'Kampfstatistik',meterHint:'Schaden, Heilung und Zeit je Kampf (Taste V).',hud:'UI bearbeiten',hudHint:'Rahmen und Leisten verschieben und skalieren.',
  open:'Öffnen',on:'an',off:'aus',
  defaults:'Standard',defaultsDone:name=>'„'+name+'“ steht wieder auf Standard.',close:'Schließen',
+ /* Runde 5b (Handy): Erklärung hinter ⓘ, Seiten statt Scrollen, Kategorie im Fenstertitel */
+ info:'Erklärung',page:'Seite',prevPage:'Vorherige Seite',nextPage:'Nächste Seite',titleWith:name=>'Einstellungen · '+name,
  volumeOff:'Klänge ausgeschaltet.'
 };
 /** Standardwerte der kontoweiten Einstellungen (options-ui.js). */

@@ -14,12 +14,13 @@ const rectAt=(x,y,box)=>({left:x-box.left,right:x+box.right,top:y-box.up,bottom:
  * view: {left,top,right,bottom} der Weltfläche; box: heroBox(); obstacles: [{left,top,right,bottom}]; prev: letzter Punkt (Ruhe statt Springen).
  * margin: Mindestabstand der Figur zum Bildrand (Pixel, Standard 8 % seitlich, 18 % oben, 12 % unten). → {x,y} (Fußpunkt in Pixeln) oder null (keine Lücke).
  */
-export function findHeroSpot({view,box,obstacles,prev=null,step=16,margin=null,keep=60}){
+export function findHeroSpot({view,box,obstacles,prev=null,step=16,margin=null,keep=60,maxY=null}){
  /* nicht an den Rand: wer ganz unten oder in der Ecke steht, sieht nicht, wohin er läuft – dann lieber einklappen */
  margin??={x:(view.right-view.left)*.08,top:(view.bottom-view.top)*.18,bottom:(view.bottom-view.top)*.12};
  const cx=(view.left+view.right)/2,cy=(view.top+view.bottom)/2,free=(x,y)=>{const r=rectAt(x,y,box);return !obstacles.some(o=>hit(r,o));};
  if(free(cx,cy))return {x:cx,y:cy};
- const x0=view.left+margin.x+box.left,x1=view.right-margin.x-box.right,y0=view.top+margin.top+box.up,y1=view.bottom-margin.bottom-box.down;
+ /* Runde 5b (Grafik-Endliste 7): maxY = tiefster erlaubter Fußpunkt (Oberkante der Aktionsfläche − eine Figurhöhe, höchstens +25 % unter der Mitte) */
+ const x0=view.left+margin.x+box.left,x1=view.right-margin.x-box.right,y0=view.top+margin.top+box.up,y1=Math.min(view.bottom-margin.bottom-box.down,maxY??Infinity);
  if(x0>x1||y0>y1)return null;
  /* senkrecht wiegt etwas schwerer: seitlich neben den Fenstern liest sich ruhiger als ganz oben oder unten */
  const cost=(x,y)=>Math.hypot(x-cx,(y-cy)*1.25);
@@ -33,10 +34,16 @@ export function findHeroSpot({view,box,obstacles,prev=null,step=16,margin=null,k
 }
 /** Welches Element zählt als Hindernis? Fenster (außer der Vollbild-Karte) und feste HUD-Flächen. */
 export const FRAME_HUD=['.action-area','.player-panel','#targetPanel:not(.hidden)','.quest-panel','#miniButton','.game-menu-rail','.chat-window'];
+/** Runde 5b (Grafik-Endliste 6, Entscheidung des Orchestrators): Einstellungen und Spielmenü sind modal wie in WoW – die Welt läuft dahinter
+ *  weiter, der Held darf verdeckt sein. Sie sind kein Hindernis für die Lücke und klappen nie ein. */
+export const MODAL_WINDOWS='.popup-settings,.popup-menu';
+export const isModalWindow=w=>!!w?.matches?.(MODAL_WINDOWS);
+/** Tiefster Fußpunkt (Pixel): Oberkante der Aktionsfläche minus eine Figurhöhe, höchstens 25 % der Bildhöhe unter der Mitte (Runde 5b, Punkt 7). */
+export function heroFloor(view,barTop,figure){const cy=(view.top+view.bottom)/2,cap=cy+(view.bottom-view.top)*.25;return Math.min(cap,Number.isFinite(barTop)?barTop-figure:cap);}
 /** Große Fenster (Karte, > 70 % der Fläche) sind modal: an ihnen ist kein Platz zu suchen, sie bleiben wie bisher. */
 export function frameObstacles(root,view){/* root = Fensterebene (#popupLayer); HUD-Flächen liegen außerhalb, darum document */
  const wins=[],hud=[];const area=(view.right-view.left)*(view.bottom-view.top);
- for(const w of root.querySelectorAll('.game-popup')){const r=w.classList.contains('hero-seethrough')&&w._heroRect?w._heroRect:w.getBoundingClientRect();if(r.width<2||r.height<2)continue;if(r.width*r.height>area*.7)continue;wins.push({left:r.left,top:r.top,right:r.right,bottom:r.bottom});}
+ for(const w of root.querySelectorAll('.game-popup')){if(isModalWindow(w))continue;const r=w.classList.contains('hero-seethrough')&&w._heroRect?w._heroRect:w.getBoundingClientRect();if(r.width<2||r.height<2)continue;if(r.width*r.height>area*.7)continue;wins.push({left:r.left,top:r.top,right:r.right,bottom:r.bottom});}
  for(const s of FRAME_HUD)for(const el of document.querySelectorAll(s)){const r=el.getBoundingClientRect();if(r.width>1&&r.height>1&&getComputedStyle(el).visibility!=='hidden'&&getComputedStyle(el).display!=='none')hud.push({left:r.left,top:r.top,right:r.right,bottom:r.bottom});}
  return {wins,hud};
 }

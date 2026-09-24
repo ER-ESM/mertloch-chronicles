@@ -46,7 +46,11 @@ const P={
  skull:'M12 3c-4.4 0-8 3.2-8 7.5 0 2.6 1.3 4.3 3 5.3V19h10v-3.2c1.7-1 3-2.7 3-5.3C20 6.2 16.4 3 12 3Z|M9 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z|M15 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z|M10 19v2M14 19v2',
  dice:'M5 5h14v14H5Z|M9 8.5h.5M15 8.5h.5M12 12h.5M9 15.5h.5M15 15.5h.5',
  area:'M12 6c5 0 9 2.7 9 6s-4 6-9 6-9-2.7-9-6 4-6 9-6Z|M12 9.5c2.2 0 4 1.1 4 2.5s-1.8 2.5-4 2.5-4-1.1-4-2.5 1.8-2.5 4-2.5Z',
- quest:'M12 3v12|M12 19v1.5'
+ quest:'M12 3v12|M12 19v1.5',
+ /* Runde 5b: Warnung (Doppelbelegung), Zurücksetzen (Standard), Info (Erklärung am Handy) */
+ warn:'M12 3 2 20h20Z|M12 9v5|M12 17v.5',
+ reset:'M4 12a8 8 0 1 0 2.4-5.7|M4 4v5h5',
+ info:'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z|M12 11v6|M12 7.5v.5'
 };
 /** Inline-SVG eines Symbols (24er Raster, Strich 2 px). */
 export function glyph(id,cls=''){const d=P[id];if(!d)return '';return `<svg class="ui-glyph${cls?' '+cls:''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${d.split('|').map(p=>`<path d="${p}"/>`).join('')}</svg>`;}

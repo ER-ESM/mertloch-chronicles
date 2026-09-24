@@ -1,6 +1,8 @@
 import {METER_TEXT as T,METER_RULES} from './content/index.js';
 import {meterReport,resetCombatMeter} from './combat-meter.js';
 import {glyph} from './ui-glyphs.js';
+import {actionFor,liveKeymap} from './keymap.js';
+import {bindingFromKey} from './bar-keys.js';
 const number=new Intl.NumberFormat('de-DE',{maximumFractionDigits:1});
 const fmt=n=>number.format(n||0);
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -24,7 +26,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  <div class="meter-scroll"><h3 class="meter-list-title" hidden></h3><div class="meter-rows" aria-label="${T.ranking}"></div><p class="meter-empty" tabindex="0"></p>
  <section class="meter-detail" hidden></section><section class="meter-options" hidden><details class="meter-info"><summary>${T.info}</summary><p>${T.hint}</p><p>${T.session}</p></details>
  <button type="button" class="meter-reset" data-meter-reset>${T.reset}</button><div class="meter-confirm" hidden><p>${T.resetQuestion}</p><button type="button" data-meter-confirm>${T.confirmReset}</button><button type="button" data-meter-cancel>${T.cancel}</button></div></section></div>
- <footer class="meter-summary"><span class="meter-time" tabindex="0" ${tipAttr(T.seconds)}>${glyph('clock')}<span data-meter-time>0 s</span></span></footer><button type="button" class="meter-resize" data-meter-resize aria-label="${T.resize}" title="${T.resize}">◢</button>`;
+ <footer class="meter-summary"><button type="button" class="meter-seg" data-meter-seg="-1" aria-label="${T.prevFight}" ${tipAttr(T.prevFight)}>${glyph('back')}</button><span class="meter-time" tabindex="0" ${tipAttr(T.seconds)}>${glyph('clock')}<span data-meter-time>0 s</span></span><button type="button" class="meter-seg" data-meter-seg="1" aria-label="${T.nextFight}" ${tipAttr(T.nextFight)}>${glyph('next')}</button></footer><button type="button" class="meter-resize" data-meter-resize aria-label="${T.resize}" title="${T.resize}">◢</button>`;
  root.append(toggle,panel);
  const $=s=>panel.querySelector(s),select=$('#meterSegment'),rows=$('.meter-rows');
  function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify({...visible,mode,position,size}));}catch{}}
@@ -39,9 +41,11 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
    else for(const b of obstacles)bottom=Math.min(bottom,b.top-r.top-8);
    panel.style.width=Math.max(160,right-left)+'px';panel.style.height='auto';panel.style.maxHeight=Math.max(100,bottom-top)+'px';
   }else{
-   const width=Math.min(Math.max(280,size?.width||320),right-left),height=Math.min(Math.max(200,size?.height||(actorId||!$('.meter-options').hidden?420:220)),bottom-top);
-   panel.style.width=width+'px';panel.style.height=height+'px';panel.style.maxHeight='none';
-   left=Math.max(left,Math.min(position?.x??right-width,right-width));top=Math.max(top,Math.min(position?.y??bottom-height-90,bottom-height));
+   /* Runde 5b (Punkt 8): Höhe nach Zeilen (1–8 à 28 px) – keine Leerfläche mehr; aufgeklappte Figur/Optionen behalten die Fensterhöhe */
+   const byRows=!actorId&&$('.meter-options').hidden,width=Math.min(Math.max(280,size?.width||320),right-left),height=byRows?null:Math.min(Math.max(200,size?.height||420),bottom-top);
+   panel.style.width=width+'px';if(byRows){panel.style.height='auto';panel.style.maxHeight=Math.max(120,bottom-top)+'px';}else{panel.style.height=height+'px';panel.style.maxHeight='none';}
+   const ph=byRows?panel.offsetHeight:height;
+   left=Math.max(left,Math.min(position?.x??right-width,right-width));top=Math.max(top,Math.min(position?.y??bottom-ph-90,bottom-ph));
   }
   panel.style.left=left+'px';panel.style.top=top+'px';
  }
@@ -50,7 +54,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  toggle.onclick=()=>panel.hidden?open():close();
  document.addEventListener('click',e=>{if(e.target.closest('[data-meter-open]'))open();});
  // Native controls keep their keyboard behavior; an unfocused HUD never consumes combat Escape.
- panel.addEventListener('keydown',e=>{const shortcut=(e.key.toLowerCase()==='v'||e.code==='KeyV')&&!e.ctrlKey&&!e.metaKey&&!e.altKey;if(e.key==='Escape'||shortcut){e.preventDefault();e.stopPropagation();if(!e.repeat)close();return;}if(['INPUT','SELECT','BUTTON','SUMMARY'].includes(e.target.tagName)&&[' ','Enter','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.stopPropagation();});
+ panel.addEventListener('keydown',e=>{const shortcut=actionFor(liveKeymap(),bindingFromKey(e))==='meter';/* Runde 5b: die belegte Taste, nicht fest V */if(e.key==='Escape'||shortcut){e.preventDefault();e.stopPropagation();if(!e.repeat)close();return;}if(['INPUT','SELECT','BUTTON','SUMMARY'].includes(e.target.tagName)&&[' ','Enter','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.stopPropagation();});
  toggle.addEventListener('keydown',e=>{if([' ','Enter','Tab'].includes(e.key))e.stopPropagation();});
  panel.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
@@ -60,6 +64,8 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
   if(b.dataset.meterActor){actorId=b.dataset.meterActor;abilityId=null;render(true);}
   if(b.dataset.meterAbility){abilityId=abilityId===b.dataset.meterAbility?null:b.dataset.meterAbility;render(true);if(abilityId)$('.meter-detail').scrollIntoView({block:'nearest'});}
   if(b.hasAttribute('data-meter-back')){actorId=null;abilityId=null;render(true);}
+  /* Runde 5b (Grafik-Endliste 8): Kampf als ‹ › Blätterer mit Uhr in der Fußzeile statt Auswahlfeld; der Name steht im Tooltip der Dauer */
+  if(b.dataset.meterSeg){const opts=[...select.options].map(o=>o.value),i=Math.max(0,Math.min(opts.length-1,opts.indexOf(selection)+Number(b.dataset.meterSeg)));if(opts[i]!==selection){selection=opts[i];select.value=selection;actorId=abilityId=null;render(true);}}
   if(b.hasAttribute('data-meter-reset')){$('.meter-confirm').hidden=false;b.hidden=true;$('[data-meter-cancel]').focus();}
   if(b.hasAttribute('data-meter-cancel')||b.hasAttribute('data-meter-confirm')){
    if(b.hasAttribute('data-meter-confirm')){resetCombatMeter(getGame());selection='current';actorId=abilityId=null;render(true);}
@@ -89,6 +95,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
   if(previousSegment!==report.id){abilityId=null;previousSegment=report.id;}
   for(const b of panel.querySelectorAll('[data-meter-mode]'))b.setAttribute('aria-pressed',String(b.dataset.meterMode===mode));
   panel.dataset.mode=mode;$('[data-meter-time]').textContent=fmt(report.seconds)+' s';
+  {const opts=[...select.options].map(o=>o.value),i=opts.indexOf(selection);$('[data-meter-seg="-1"]').disabled=i<=0;$('[data-meter-seg="1"]').disabled=i<0||i>=opts.length-1;}
   // Die Fußzeile wiederholt die Balkenzeile nicht mehr: nur die Kampfdauer, Zustand und Kampf im Tooltip.
   const status=selection==='overall'?T.overall:report.id===null?T.empty:(report.live?T.active:T.finished)+' · '+(report.training?T.training+' · ':'')+(report.title||T.fight),time=$('.meter-time');time.dataset.tooltipNote=status;time.setAttribute('aria-label',T.seconds+' '+fmt(report.seconds)+' s · '+status);
   const actor=report.actors.find(a=>a.id===actorId),items=actor?actor.abilities:report.actors;

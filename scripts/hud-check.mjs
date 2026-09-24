@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 const dir='visual-review/hud';mkdirSync(dir,{recursive:true});
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9376),serverPort:4186});
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9376),serverPort:Number(process.env.SERVER_PORT||4186)});
 const read=s=>b.evaluate(s),checks=[],pass=s=>{checks.push(s);console.log('PASS '+s);},key='mertloch-hud-layouts-v1';
 const rect=sel=>read(`(()=>{const r=document.querySelector(${JSON.stringify(sel)}).getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height}})()`);
 const editing=()=>read(`!document.querySelector('#hudEditor').hidden`);
@@ -51,7 +51,8 @@ async function auraBounds(){
  assert.equal(result.length,3);for(const r of result){assert.ok(r.inside,JSON.stringify(r));assert.equal(r.overlap,false,JSON.stringify(r));assert.equal(r.small,false,JSON.stringify(r));}
 }
 async function menuBounds(){
- const result=await read(`(()=>{const e=document.querySelector('.popup-menu'),r=e.getBoundingClientRect(),controls=['#touchStick','#touchActions','#touchUtility'].map(s=>document.querySelector(s).getBoundingClientRect());return{inside:r.x>=0&&r.y>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1,overlap:controls.some(c=>Math.min(c.right,r.right)-Math.max(c.left,r.left)>1&&Math.min(c.bottom,r.bottom)-Math.max(c.top,r.top)>1),overflow:e.querySelector('.popup-body').scrollWidth-e.querySelector('.popup-body').clientWidth,small:[...e.querySelectorAll('button')].some(b=>{const z=b.getBoundingClientRect();return z.width<43.9||z.height<43.9})}})()`);
+ // Runde 4c: hochkant ist das Spielmenü modal – die Touch-Steuerung ruht (visibility:hidden) und zählt dann nicht als Hindernis.
+ const result=await read(`(()=>{const e=document.querySelector('.popup-menu'),r=e.getBoundingClientRect(),controls=['#touchStick','#touchActions','#touchUtility'].map(s=>document.querySelector(s)).filter(c=>getComputedStyle(c).visibility!=='hidden').map(c=>c.getBoundingClientRect());return{size:innerWidth+'x'+innerHeight,inside:r.x>=0&&r.y>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1,overlap:controls.some(c=>Math.min(c.right,r.right)-Math.max(c.left,r.left)>1&&Math.min(c.bottom,r.bottom)-Math.max(c.top,r.top)>1),overflow:e.querySelector('.popup-body').scrollWidth-e.querySelector('.popup-body').clientWidth,small:[...e.querySelectorAll('button')].some(b=>{const z=b.getBoundingClientRect();return z.width<43.9||z.height<43.9})}})()`);
  assert.ok(result.inside,JSON.stringify(result));assert.equal(result.overlap,false,JSON.stringify(result));assert.ok(result.overflow<2,JSON.stringify(result));assert.equal(result.small,false,JSON.stringify(result));
 }
 try{
@@ -59,8 +60,10 @@ try{
  await b.resize(1440,1000);await fixture();const native=await rect('.player-panel');
  const f10=await read(`(()=>{const e=new KeyboardEvent('keydown',{key:'F10',code:'F10',bubbles:true,cancelable:true});document.dispatchEvent(e);return e.defaultPrevented})()`);assert.equal(f10,false);assert.equal(await editing(),false);
  await b.press('i');await b.press('Escape');assert.equal((await b.state()).popups.length,0);
- await b.press('Escape');assert.deepEqual(await read(`[...document.querySelectorAll('.game-menu-actions button')].map(b=>b.textContent)`),['Berufe','Fahrzeuge & Reittiere','Söldner','UI bearbeiten','Hilfe','Einstellungen','Charakterauswahl','Zum Anmeldebildschirm','Zurück zum Spiel']);
- await b.screenshot(dir+'/escape-menu-desktop.png');for(let i=0;i<4;i++)await b.press('Tab');assert.equal(await read(`document.activeElement.dataset.shell`),'guide');for(const type of ['keyDown','keyUp'])await b.send('Input.dispatchKeyEvent',{type,key:'Enter',code:'Enter',windowsVirtualKeyCode:13,...(type==='keyDown'?{text:'\r'}:{})});await wait(250);assert.equal((await b.state()).popups[0].id,'guide');await b.press('Escape');
+ // Spielmenü nach WoW-Vorbild (seit 2026-09-24): Einstellungen, Tastenbelegung, UI bearbeiten, Hilfe | Berufe, Fahrzeuge & Reittiere, Söldner |
+ // Charakterauswahl, Zum Anmeldebildschirm | Zurück zum Spiel. Rechts stehen die Tastenkappen (<kbd>) – verglichen wird die Beschriftung.
+ await b.press('Escape');assert.deepEqual(await read(`[...document.querySelectorAll('.game-menu-actions button')].map(b=>(b.querySelector('span')||b).textContent)`),['Einstellungen','Tastenbelegung','UI bearbeiten','Hilfe','Berufe','Fahrzeuge & Reittiere','Söldner','Charakterauswahl','Zum Anmeldebildschirm','Zurück zum Spiel']);
+ await b.screenshot(dir+'/escape-menu-desktop.png');for(let i=0;i<3;i++)await b.press('Tab');assert.equal(await read(`document.activeElement.dataset.shell`),'guide');for(const type of ['keyDown','keyUp'])await b.send('Input.dispatchKeyEvent',{type,key:'Enter',code:'Enter',windowsVirtualKeyCode:13,...(type==='keyDown'?{text:'\r'}:{})});await wait(250);assert.equal((await b.state()).popups[0].id,'guide');await b.press('Escape');
  await b.press('Escape');await click('.popup-menu [data-shell="settings"]');assert.equal((await b.state()).popups[0].id,'settings','Einstellungen: eigenes Fenster (Runde 2a)');await b.press('Escape');
  await b.press('Escape');assert.equal(await read(`!!document.querySelector('.popup-menu [data-game-book]')`),false,'Desktop: Clanbuch nur über Tasten und Dock (E-43)');await b.press('Escape');
  await b.press('Escape');await click('.popup-menu [data-close]');assert.equal((await b.state()).popups.length,0);
@@ -92,7 +95,7 @@ try{
  assert.equal(await read(`document.querySelector('#auraTooltip').hidden`),true);assert.equal(await read(`document.querySelector('#targetDebuffStrip').hidden`),true);assert.equal(await read(`document.querySelector('#debuffStrip').hidden`),true);
  pass('real status timers/stacks reach distinct bars; expiry and target loss remove icons and tooltips');
  await openEditor();const chatNative=await rect('#chatWindow');await drag('[data-hud-handle="chat"]',240,-160);await click('[data-hud-save]');const chatEdited=await rect('#chatWindow');
- assert.equal(await read(`document.querySelector('#chatWindow').hasAttribute('data-hud-custom')`),true);assert.ok(chatEdited.x>chatNative.x+200&&Math.abs(chatEdited.y-chatNative.y+160)<1,JSON.stringify({chatNative,chatEdited}));
+ assert.equal(await read(`document.querySelector('#chatWindow').hasAttribute('data-hud-custom')`),true);/* 2 px Spiel: der Chat rastet nach dem Ziehen am Rahmen der Fläche ein */assert.ok(chatEdited.x>chatNative.x+200&&Math.abs(chatEdited.y-chatNative.y+160)<3,JSON.stringify({chatNative,chatEdited}));
  await drag('#chatWindow .chat-tabs',64,40);const chatAfter=await rect('#chatWindow');assert.ok(chatAfter.x>chatEdited.x+50&&chatAfter.y>chatEdited.y+30,JSON.stringify({chatEdited,chatAfter}));
  await fixture(false,true);assert.deepEqual(await rect('#chatWindow'),chatAfter);await b.screenshot(dir+'/chat-moved-desktop.png');
  pass('chat window moves in the HUD editor, still drags by its tab bar afterwards and persists');

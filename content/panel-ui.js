@@ -128,7 +128,7 @@ export const HELP_GRID={
    {keys:['Esc'],to:'close',label:'Abbrechen',note:'Esc bricht Zielen und Zaubern ab, schließt alle Fenster auf einmal, wählt das Ziel ab – erst dann kommt das Spielmenü.'}]],
   ['Fenster','frame',[
    {keys:['C'],to:'ui:person',label:'Figur',note:''},
-   {keys:['J'],to:'ui:quest',label:'Aufträge',note:'Aufträge, Bude und Erinnerungen (auch L).'},
+   {keys:['J'],to:'ui:quest',label:'Aufträge',note:'Aufträge, Bude und Erinnerungen.'},
    {keys:['N'],to:'ui:talents',label:'Talente',note:'Talentbäume und Hauptbaum.'},
    {keys:['M'],to:'ui:map',label:'Karte',note:''},
    {keys:['P'],to:'ui:book',label:'Kniffe',note:''},

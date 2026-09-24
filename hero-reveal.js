@@ -5,8 +5,11 @@
 // derselbe Umriss wie hinter Dächern). Fenster werden nie geschlossen.
 // Runde 4b (Prüfer-Bruch 7): Zuerst sucht hero-frame.js eine freie Lücke zwischen den offenen Fenstern; die Kamera legt den Helden
 // weich dorthin (renderer.heroShift). Nur ohne Lücke klappen Fenster ein – dann auch beim manuellen Laufen (WASD, Stick).
-import {heroBox,findHeroSpot,frameObstacles} from './hero-frame.js';
+import {heroBox,findHeroSpot,frameObstacles,isModalWindow,heroFloor} from './hero-frame.js';
 const PAD=18,TICK=120,GRACE=2000;
+/** Runde 5b: letztes Bildschirmrechteck des Helden (Füße bis Kopf) – Tooltips der Leiste weichen ihm aus (fenster-r3.js placeTooltip). */
+let lastHero=null;
+export const heroScreenRect=()=>lastHero&&{...lastHero};
 export function mountHeroReveal({renderer,game,root=document}){
  let pointer={x:-1,y:-1},timer=0,busySince=0,wasBusy=false,spot=null;const seen=new WeakMap();
  const touch=()=>document.body.classList.contains('touch-mode');
@@ -20,13 +23,20 @@ export function mountHeroReveal({renderer,game,root=document}){
   const b=cv.getBoundingClientRect(),sx=b.width/r.viewWidth,sy=b.height/r.viewHeight,view={left:b.left,top:b.top,right:b.right,bottom:b.bottom};
   /* body[data-hero-frame=off] schaltet die Lückensuche ab (Prüfskripte, die das Einklappen allein prüfen) */const {wins,hud}=touch()||r.cameraFocus||document.body.dataset.heroFrame==='off'?{wins:[],hud:[]}:frameObstacles(root,view);
   if(!wins.length){spot=null;r.heroShift={x:0,y:0,on:false};return null;}
-  const box=heroBox(sx,sy,PAD-4);spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:spot});
+  /* Runde 5b (Punkt 7): nie neben oder dicht über der Aktionsleiste – der Fußpunkt bleibt eine Figurhöhe über ihrer Oberkante, höchstens +25 % unter der Mitte */
+  const box=heroBox(sx,sy,PAD-4),bar=document.querySelector('.action-area')?.getBoundingClientRect(),figure=box.up+box.down;
+  const before=spot;spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:spot,maxY:heroFloor(view,bar&&bar.height?bar.top:NaN,figure)});
   if(!spot){r.heroShift={x:0,y:0,on:false};return null;}
+  {const off=Math.hypot(spot.x-(view.left+view.right)/2,spot.y-(view.top+view.bottom)/2)>24,was=before&&Math.hypot(before.x-(view.left+view.right)/2,before.y-(view.top+view.bottom)/2)>24;if(off&&!was)pulse(spot,box);}
   const cx=(view.left+view.right)/2,cy=(view.top+view.bottom)/2;r.heroShift={x:(spot.x-cx)/sx,y:(spot.y-cy)/sy,on:true};
   return{left:spot.x-box.left,right:spot.x+box.right,top:spot.y-box.up,bottom:spot.y+box.down};}
- function update(){const r=renderer(),g=game();const wins=[...root.querySelectorAll('.game-popup')];
-  if(!r||!g||!g.player||g.dead){for(const w of wins)w.classList.remove('hero-seethrough');if(r){r.heroCovered=false;r.heroShift={x:0,y:0,on:false};}spot=null;return;}
-  const target=frame(r,g),hero=target||heroRect(r,g);if(!hero)return;
+ /** Runde 5b (Punkt 7): beim ersten Sprung in die Lücke pulst einmal ein Bodenring (0,4 s), damit das Auge dem Helden folgt. DOM statt Renderer. */
+ function pulse(p,box){if(touch()||matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;const el=document.createElement('i');el.className='hero-gap-pulse';el.setAttribute('aria-hidden','true');const w=Math.round((box.left+box.right)*1.4);
+  Object.assign(el.style,{left:Math.round(p.x-w/2)+'px',top:Math.round(p.y-w/4)+'px',width:w+'px',height:Math.round(w/2)+'px'});(document.querySelector('#gameShell')||document.body).append(el);setTimeout(()=>el.remove(),650);}
+ function update(){const r=renderer(),g=game();const wins=[...root.querySelectorAll('.game-popup')].filter(w=>!isModalWindow(w));/* Runde 5b: modale Fenster klappen nie ein */
+  for(const w of root.querySelectorAll('.game-popup.hero-seethrough'))if(isModalWindow(w))w.classList.remove('hero-seethrough');
+  if(!r||!g||!g.player||g.dead){for(const w of wins)w.classList.remove('hero-seethrough');if(r){r.heroCovered=false;r.heroShift={x:0,y:0,on:false};}spot=null;lastHero=null;return;}
+  const target=frame(r,g),hero=target||heroRect(r,g);if(!hero)return;lastHero=heroRect(r,g)||hero;
   // Runde 4b: auch manuelles Laufen zählt – greift aber nur, wenn keine Lücke frei ist (dann liegt kein Fenster über dem Ziel).
   const auto=!touch()&&(!!g.moveTo||(g.player.inCombat||0)>0),busy=auto||!touch()&&!!g.player.moving,cv=r.canvas?.getBoundingClientRect(),area=cv?cv.width*cv.height:0;let covered=false;const now=performance.now();if(busy&&!wasBusy)busySince=now;wasBusy=busy;
   // Runde 3b: Ein Fenster, das du erst im Kampf oder beim Laufen öffnest, willst du benutzen – es klappt die ersten 2 s nicht ein.

@@ -11,7 +11,11 @@ const symbol=id=>id?.startsWith('ui:')?`<canvas width="48" height="48" data-ui-i
 const cap=k=>{const m=MOUSE[k];if(m)return `<kbd class="hk-cap hk-mouse${m[1]==='r'?' hk-right':''}">${glyph(m[0])}${m[1]&&m[1]!=='r'?`<small>${esc(m[1])}</small>`:''}</kbd>`;return k==='–'?'<span class="hk-dash">–</span>':`<kbd class="hk-cap${k.length>2?' hk-wide':''}">${esc(k)}</kbd>`;};
 /** Hilfe-Einträge → Aktionen der Tastenbelegung (keymap.js): die Kappen zeigen die wirksame Taste statt des Standards. */
 const ACT={'run|WASD':['moveUp','moveLeft','moveDown','moveRight'],'hand|F':['interact'],'ui:boots|X':['mount'],'target|Tab':['targetNext'],'ui:dash|Leer':['dash'],'ui:interrupt|Q':['interrupt'],'ui:person|C':['person'],'ui:quest|J':['quest'],'ui:talents|N':['talents'],'ui:map|M':['map'],'ui:book|P':['book'],'ui:bag|I':['bag'],'chart|V':['meter'],'ui:base|B':['base'],'hand|⇧B':['professions'],'ui:person|U':['companions'],'target|R':['aggro']};
-const liveKeys=e=>{const ids=ACT[e.to+'|'+e.keys.join('')];if(!ids)return e.keys;const k=ids.map(id=>bindingLabel(keysOf(liveKeymap(),id)[0])||'–');return k;};
+/** Runde 5b (Spielerbericht R5): die Hilfe zeigt die WIRKLICH wirksamen Tasten – bei einer Aktion beide belegten Plätze (Aufträge „J L“),
+ *  bei Gruppen (WASD) je Aktion die erste. Ohne Belegung ein Strich. */
+export const liveKeys=(e,map=liveKeymap())=>{const ids=ACT[e.to+'|'+e.keys.join('')];if(!ids)return e.keys;
+ if(ids.length===1){const k=keysOf(map,ids[0]).filter(Boolean).map(b=>bindingLabel(b));return k.length?k:['–'];}
+ return ids.map(id=>bindingLabel(keysOf(map,id).find(Boolean)||'')||'–');};
 /** Runde 3b (2026-09-24, Zielbild 3): Tastenbelegungsliste wie im Vorbild – je Zeile Kappe(n) + ein Wort, kein Pfeil, kein Zielsymbol.
  *  Tooltip nur, wo er etwas hinzufügt (note nicht leer). Themen als Köpfe in drei Spalten (Handy zwei). */
 function item(e){e={...e,keys:liveKeys(e)};const tip=e.note?` tabindex="0" data-tooltip-label="${esc(e.label)}" data-tooltip-note="${esc(e.note)}"`:'';return `<div class="hk-item${e.note?' hk-has-tip':''}"${tip} aria-label="${esc(e.label+(e.note?': '+e.note:''))}"><span class="hk-keys">${e.keys.map(cap).join('')}</span><span class="hk-word">${esc(e.label)}</span></div>`;}

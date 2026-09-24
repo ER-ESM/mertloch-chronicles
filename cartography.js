@@ -7,14 +7,24 @@ import {isElite} from './enemy-ui.js';
 import {SCALE,distance} from './world.js';
 import {hotspotMapMarks} from './hotspots.js';
 import {chapterAreas} from './quest-mobs.js';
-import {HOTSPOT_UI,WORLD_MAP_UI} from './content/index.js';
+import {HOTSPOT_UI,WORLD_MAP_UI,STORY_CHAPTERS} from './content/index.js';
 import {mapIcon} from './map-symbols.js';
 
 // Orte der Weltkarte und Ortsliste. Runde 4a (2026-09-24): jede Ortsart hat eine Gruppe (Filter) und ein Symbol aus map-symbols.js –
 // dieselben Symbole wie auf der Minikarte, keine Ziffern (Lager, Treffpunkte) und keine Buchstaben (W/B/R/K) mehr.
+/** Runde 5b (Grafik-Endliste 5): Ortsname eines Lagers für die Kartenliste – eigener Kurzname (`short`), sonst der Ort des Kapitelziels
+ *  (`place` in content/story.js), sonst ein kurzer Lagername selbst, sonst die nächste benannte Straße bzw. der nächste Treffpunkt.
+ *  Der Auftragssatz (title) steht im Tooltip. Je Lager einmal gerechnet. */
+export function campShort(w,h){if(h.short)return h.short;if(h._short!=null)return h._short;
+ let name=h.chapter!=null?STORY_CHAPTERS.find(c=>c.id===h.chapter)?.objectives?.find(o=>o.label===h.title)?.place||'':'';
+ if(!name)name=WORLD_MAP_UI.campShort?.[h.title]||'';
+ if(!name&&h.title&&h.title.length<=22)name=h.title;
+ if(!name)try{const r=w.nearestRoad?.(h.x,h.y);if(r?.road?.tags?.name&&r.distance<420)name=r.road.tags.name;}catch{}
+ if(!name){const hub=(w.hubs||[]).map(x=>[x,Math.hypot(x.x-h.x,x.y-h.y)]).sort((a,b)=>a[1]-b[1])[0];if(hub)name=hub[0].name.split(' · ')[0];}
+ try{Object.defineProperty(h,'_short',{value:name,enumerable:false,configurable:true});}catch{}return name;}
 export function mapPlaces(g){
  const hubs=(g.world.hubs||[]).map(h=>({...h,id:'hub:'+h.id,kind:'hub',group:'hub',icon:'hub',title:h.name.split(' · ')[0],point:h,detail:'Geschützter Treffpunkt',quests:g.world.quests.filter(q=>q.giver.hubId===h.id&&!g.sideQuests[q.id]?.claimed).length}));
- const camps=g.world.camps.map(h=>{const crew=g.enemies.filter(e=>e.campId===h.id),busy=crew.some(e=>e.hp>0),lv=crew.map(e=>e.level).filter(Number.isFinite);return {...h,id:'camp:'+h.id,kind:'camp',group:'camp',icon:busy?'camp':'camp-free',title:h.title,point:h.approach||h,center:{x:h.x,y:h.y},busy,level:lv.length?{min:Math.min(...lv),max:Math.max(...lv)}:null,detail:busy?'Besetztes Lager · Route zum sicheren Rand':'Lager freigeräumt · Gegner kehren zurück'};});
+ const camps=g.world.camps.map(h=>{const crew=g.enemies.filter(e=>e.campId===h.id),busy=crew.some(e=>e.hp>0),lv=crew.map(e=>e.level).filter(Number.isFinite);return {...h,id:'camp:'+h.id,kind:'camp',group:'camp',icon:busy?'camp':'camp-free',title:h.title,short:campShort(g.world,h),point:h.approach||h,center:{x:h.x,y:h.y},busy,level:lv.length?{min:Math.min(...lv),max:Math.max(...lv)}:null,detail:busy?'Besetztes Lager · Route zum sicheren Rand':'Lager freigeräumt · Gegner kehren zurück'};});
  const kiosk=g.world.places?.kiosk,shops=kiosk?[{id:'shop:kalle',kind:'shop',group:'shop',icon:'trade',title:SHOP_UI.title,point:kiosk.entrance||kiosk.approach,detail:SHOP_UI.mapDetail}]:[];
  const quests=g.hotspots?hotspotMapMarks(g).givers.map(m=>({id:m.id,kind:'quest',group:'quest',icon:m.glyph==='?'?'quest-ready':m.glyph==='low'?'quest-low':'quest',number:m.glyph==='low'?'!':m.glyph,low:m.glyph==='low',ready:m.glyph==='?',title:m.name,point:{x:m.x,y:m.y},detail:(m.glyph==='?'?HOTSPOT_UI.mapReady:HOTSPOT_UI.mapGiver)+' · '+m.title,quest:m.title})):[];
  const trainers=g.world.spawn&&g.world.findClear?professionWorld(g.world).stations.map(s=>({id:'shop:profession:'+s.id,kind:'shop',group:'trainer',icon:s.id==='werkhof'?'trainer-werkhof':'trainer-braugarten',title:PST[s.id].name,point:s,detail:PT.teachers})):[];
@@ -77,9 +87,15 @@ function drawWorldLayer(c,canvas,g,W,H,pos,inside,options){
  const areaHits=[];
  for(const ar of worldAreas(g,tracked)){if(!show[ar.spawn?'spawn':'area'])continue;const a=pos(ar),r=Math.max(12,ar.r*canvas.atlasView.scale);if(a.x+r<0||a.y+r<0||a.x-r>W||a.y-r>H)continue;
   const hover=options.hover===ar.id,gold=ar.spawn?'182,232,197':'241,205,119',fill=ar.tracked?.18:.08;
-  c.save();c.beginPath();c.arc(a.x,a.y,r,0,TAU);c.fillStyle=`rgba(${gold},${hover?fill+.1:fill})`;c.fill();c.clip();
-  c.strokeStyle=`rgba(${gold},${ar.tracked?.42:hover?.36:.24})`;c.lineWidth=1.2;c.beginPath();for(let d=-r*2;d<r*2;d+=8){c.moveTo(a.x+d-r,a.y-r);c.lineTo(a.x+d+r,a.y+r);}c.stroke();c.restore();
-  c.save();c.beginPath();c.arc(a.x,a.y,r,0,TAU);c.setLineDash(ar.tracked?[]:[5,4]);c.strokeStyle=`rgba(${gold},${ar.tracked||hover?.95:.7})`;c.lineWidth=ar.tracked?2:hover?1.8:1.2;c.stroke();c.restore();
+  /* Runde 5b (Grafik-Endliste 9, Kontrast): nicht verfolgte Auftragsgebiete in dunkler Tinte (#5a3a14) – Schraffur und 1,5-px-Rand,
+     damit sie auf Weizenfeld und Wiese gleich lesbar sind; das verfolgte Gebiet golden mit 2-px-Tintenrand und weißer Außenkante. */
+  const ink='90,58,20',hatch=ar.spawn?gold:ar.tracked?gold:ink;
+  c.save();c.beginPath();c.arc(a.x,a.y,r,0,TAU);c.fillStyle=ar.spawn||ar.tracked?`rgba(${gold},${hover?fill+.1:fill})`:`rgba(${ink},${hover?.14:.07})`;c.fill();c.clip();
+  c.strokeStyle=`rgba(${hatch},${ar.tracked?.42:ar.spawn?(hover?.36:.24):(hover?.5:.34)})`;c.lineWidth=1.2;c.beginPath();for(let d=-r*2;d<r*2;d+=8){c.moveTo(a.x+d-r,a.y-r);c.lineTo(a.x+d+r,a.y+r);}c.stroke();c.restore();
+  c.save();c.beginPath();c.arc(a.x,a.y,r,0,TAU);
+  if(ar.tracked){c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=4.5;c.stroke();c.strokeStyle=`rgba(${ink},.95)`;c.lineWidth=2;c.stroke();}
+  else if(ar.spawn){c.setLineDash([5,4]);c.strokeStyle=`rgba(${gold},${hover?.95:.7})`;c.lineWidth=hover?1.8:1.2;c.stroke();}
+  else{c.setLineDash([5,4]);c.strokeStyle=`rgba(${ink},${hover?.85:.6})`;c.lineWidth=hover?2:1.5;c.stroke();}c.restore();
   /* Zielsymbol unter der Mitte – dort steht meist die Stecknadel des verfolgten Ziels */if(ar.tracked)draw('claw',a.x,a.y+Math.min(r*.5,26),18);
   areaHits.push({id:ar.id,x:a.x,y:a.y,r,area:ar});}
  // 2) Große Ortsnamen (Treffpunkte, Kirche) als Tinte wie die Gebietsnamen der WoW-Zonenkarte – sie belegen zuerst ihren Platz.

@@ -1,0 +1,144 @@
+/* ===== Optimierung Runde 5, Teil B „Grafik-Endliste“ (2026-09-24, docs/REVIEW-GRAFIK-2026-09-24-r5.md) =====
+   Zuletzt geladen (nach weltkarte.css). Vorbild WoW: Symbole und Tooltips statt Fließtext, nirgends scrollen, kompakt. */
+
+/* ---------- Punkt 7: Bodenring beim ersten Sprung des Helden in die Lücke (hero-reveal.js) ---------- */
+.hero-gap-pulse{position:fixed;z-index:30;pointer-events:none;border:3px solid #f3cf7a;border-radius:50%;box-shadow:0 0 12px #f3cf7a99,inset 0 0 8px #f3cf7a66;animation:heroGapPulse .4s ease-out forwards}
+@keyframes heroGapPulse{from{opacity:1;transform:scale(.55)}to{opacity:0;transform:scale(1.25)}}
+
+/* ---------- Punkt 1: Einstellungen am Handy – Reiter als Symbole, Erklärung hinter ⓘ, einzeilige 44-px-Zeilen, Seiten statt Scrollen ---------- */
+.touch-mode:has(.popup-settings) #mobileControls>:not(.game-popup){visibility:hidden!important}
+.touch-mode:has(.popup-settings) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+.touch-mode .game-popup.popup-settings{display:flex;flex-direction:column;max-height:none!important}
+.touch-mode .popup-settings>.popup-body{flex:1 1 auto;min-height:0;padding:0!important;overflow:hidden!important}
+.touch-mode .popup-settings .opt-window{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100%;min-height:0}
+.touch-mode .popup-settings .opt-nav{display:flex;flex-direction:row;gap:8px;overflow:visible;padding:6px 10px;border-right:0;border-bottom:2px solid #6b5a36}
+.touch-mode .game-popup.popup-settings .opt-nav button{flex:none;width:44px;height:44px;min-width:44px!important;min-height:44px!important;padding:0!important;margin:0!important;display:grid;place-items:center;justify-content:center!important}
+.touch-mode .popup-settings .opt-nav button>span{display:none!important}
+.touch-mode .popup-settings .opt-nav .ui-glyph{width:24px;height:24px}
+.touch-mode .popup-settings .opt-page{display:flex;flex-direction:column;min-height:0}
+.touch-mode .popup-settings .opt-page>h3{display:none}
+.touch-mode .popup-settings .opt-scroll{flex:1 1 auto;min-height:0;overflow:hidden!important;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:44px;row-gap:8px;column-gap:16px;align-content:start;padding:8px 10px!important}
+.touch-mode .popup-settings .opt-section{display:contents}
+.touch-mode .popup-settings .opt-section h4{display:none}
+.touch-mode .popup-settings .opt-row{display:flex;height:44px;min-height:44px;margin:0!important;padding:0!important;gap:8px;border-radius:0}
+.touch-mode .popup-settings .opt-row[hidden]{display:none!important}
+.touch-mode .popup-settings .opt-row.opt-sub{margin:0!important;padding-left:10px!important}
+.touch-mode .popup-settings .opt-label{flex:1 1 auto;min-width:0;display:flex;flex-direction:row;align-items:center;gap:6px;height:44px;white-space:nowrap;font:600 14px/1.1 var(--read,'Nunito',sans-serif)}
+.touch-mode .popup-settings .opt-label>span{overflow:hidden;text-overflow:ellipsis}
+.touch-mode .game-popup.popup-settings .opt-info{min-height:44px!important;height:44px;padding:0 4px 0 0!important;margin:0!important;background:none!important;border:0!important;border-image:none!important;box-shadow:none!important;justify-content:flex-start!important;text-align:left;color:#f1e4c4!important;text-transform:none!important;letter-spacing:0!important;cursor:pointer}
+.touch-mode .popup-settings .opt-info .ui-glyph{width:18px;height:18px;flex:none;color:#e7c87b}
+.touch-mode .popup-settings .opt-control{flex:none}
+.touch-mode .game-popup.popup-settings .opt-switch{min-height:44px!important;height:44px}
+.touch-mode .game-popup.popup-settings .opt-segment button,.touch-mode .game-popup.popup-settings .opt-open{min-height:44px!important;height:44px}
+.touch-mode .popup-settings .opt-range{gap:6px}
+.touch-mode .popup-settings .opt-range input[type=range]{width:clamp(72px,26vw,160px);height:44px}
+.touch-mode .popup-settings .opt-range output{min-width:40px}
+.touch-mode .popup-settings .opt-range small{display:none}
+.touch-mode .popup-settings .opt-pager{flex:0 0 52px;height:52px!important;min-height:0!important;max-height:52px;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:0 10px 8px}
+.touch-mode .popup-settings .opt-pager[hidden]{display:none!important}
+.touch-mode .game-popup.popup-settings .opt-pager button{width:44px;height:44px;min-width:44px!important;min-height:44px!important;padding:0!important;display:grid;place-items:center}
+.touch-mode .popup-settings .opt-pager b{min-width:44px;text-align:center;font:800 13px/1 var(--read,'Nunito',sans-serif);color:#f1e4c4}
+.touch-mode .popup-settings .popup-titlebar .opt-reset{flex:none;margin-left:auto}
+.touch-mode .popup-settings .popup-titlebar .opt-reset .ui-glyph{width:22px;height:22px}
+.touch-mode .popup-settings .popup-titlebar strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.popup-settings .opt-tip{position:absolute;z-index:6;max-width:min(280px,calc(100% - 12px));padding:8px 10px;pointer-events:none}
+.popup-settings .opt-tip strong{display:block;margin-bottom:3px}
+.popup-settings .opt-tip p{margin:0;font:500 13px/1.35 var(--read,'Nunito',sans-serif)}
+@media (orientation:landscape){
+ .touch-mode .popup-settings .opt-window{grid-template-columns:auto minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+ .touch-mode .popup-settings .opt-nav{flex-direction:column;padding:8px 8px;border-bottom:0;border-right:2px solid #6b5a36}
+ .touch-mode .popup-settings .opt-scroll{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .touch-mode .popup-settings .opt-range input[type=range]{width:92px}
+ .touch-mode .game-popup.popup-settings .opt-select{max-width:118px}
+}
+
+/* ---------- Punkt 4: Tastenbelegung in drei Spalten (≈ 1180 px), kurze Kappen, Fenster endet über der Aktionsleiste ---------- */
+
+body:not(.touch-mode) .game-popup[data-window=settings]:has(.opt-cat-keys){width:min(1180px,calc(100vw - 40px))!important;left:max(20px,calc(50vw - 590px))!important}
+body:not(.touch-mode) .opt-cat-keys .opt-scroll{columns:3;column-gap:18px}
+body:not(.touch-mode) .opt-cat-keys .opt-keyrow{grid-template-columns:minmax(0,1fr) 64px 64px;min-height:21px;gap:5px;padding-block:0!important}
+body:not(.touch-mode) .game-popup .opt-cat-keys .opt-key{min-height:20px!important;height:20px;text-transform:none!important;padding:0 4px!important;font:800 12.5px/1 var(--read,'Nunito',sans-serif)!important;display:inline-flex;align-items:center;justify-content:center;gap:3px}
+body:not(.touch-mode) .opt-cat-keys .opt-section h4{margin-bottom:1px}
+.opt-key.is-conflict,.game-popup .opt-key.is-conflict{border-color:#e0703a!important;color:#ffd2a8!important;box-shadow:0 0 0 1px #e0703a66!important}
+.opt-key .ui-glyph{width:13px;height:13px;flex:none;color:#ff9a5a}
+.opt-note.is-conflict{display:inline-flex;align-items:center;gap:6px;color:#ffc48a}
+.opt-note .ui-glyph{width:16px;height:16px;color:#ff9a5a}
+
+/* ---------- Hilfe (Spielerbericht R5): Tastenkappen in klarer Schrift – U und V nicht verwechselbar ---------- */
+.hk-list .hk-cap{font:800 12.5px/1 var(--read,'Nunito',sans-serif)!important;letter-spacing:0}
+.hk-list .hk-cap.hk-wide{font-size:11.5px!important}
+.hk-list .hk-keys{gap:3px}
+
+/* ---------- Punkt 2: Handy-HUD – Wegmarke als kompakte Pille, kein „Neuer Kniff!“-Balken, Meldung oben statt auf dem Helden ---------- */
+.touch-mode #touchLesson{display:none!important}
+.touch-mode #touchWaypoint{display:inline-flex;align-items:center;gap:6px;flex:0 1 auto!important;width:auto;max-width:60%!important;height:44px;min-height:44px;padding:0 12px 0 8px!important;white-space:nowrap;overflow:hidden;text-transform:none!important;letter-spacing:0!important;font:800 13px/1 var(--read,'Nunito',sans-serif)!important;border-radius:22px!important;background:#10221bdd!important;border:1px solid #c5a26888!important;box-shadow:0 2px 6px #0007!important;color:#f3e6c4!important}
+.touch-mode #touchWaypoint[hidden]{display:none!important}
+.touch-mode #touchWaypoint canvas{width:20px;height:20px;flex:none;image-rendering:pixelated}
+.touch-mode #touchWaypoint b{font:inherit;color:#fff0c9}
+.touch-mode #touchWaypoint i{font-style:normal;color:#c5a268}
+.touch-mode #touchWaypoint em{font:inherit;font-style:normal;color:#e7c87b;text-transform:none!important}
+.touch-mode .touch-topline{max-width:calc(100% - 104px - var(--safe-left) - var(--safe-right))}
+.touch-mode .game-menu-windows [data-shell="book"].has-lesson{position:relative}
+.touch-mode .game-menu-windows [data-shell="book"].has-lesson::after{content:"!";position:absolute;top:2px;right:2px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;background:#f3cf7a;color:#1b140a;font:900 12px/1 var(--read,'Nunito',sans-serif);box-shadow:0 0 0 2px #1b140a}
+@media (orientation:portrait){
+ .touch-mode:not(:has(.game-popup)) #toast{top:calc(116px + var(--safe-top))!important;bottom:auto!important;left:calc(12px + var(--safe-left))!important;right:auto!important;width:auto!important;max-width:calc(100% - 104px - var(--safe-left) - var(--safe-right))!important;padding:7px 12px!important;background:#0b1510e0!important;border:1px solid #c5a26855!important;border-image:none!important;box-shadow:0 2px 6px #0008!important;color:#f3e6c4!important;font:700 13px/1.25 var(--read,'Nunito',sans-serif)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .touch-mode:not(:has(.game-popup)):has(#targetPanel:not(.hidden)) #toast{top:calc(196px + var(--safe-top))!important}
+ /* Die Meldung steht dort, wo sonst die Wegmarke steht – solange sie sichtbar ist, ruht die Pille (WoW: eine Meldungszeile oben) */
+ .touch-mode:not(:has(.game-popup)):has(#toast.visible) #touchWaypoint{visibility:hidden}
+ .touch-mode[data-touch-hand=left]:not(:has(.game-popup)) #toast{left:calc(12px + var(--safe-left))!important;right:auto!important}
+}
+
+/* ---------- Punkt 3: Aufträge – Höhe nach Inhalt, Detail direkt unter der Liste ---------- */
+body:not(.touch-mode) .game-popup.popup-quest{min-height:360px}
+.popup-quest .ql-list{flex:0 1 auto}
+body:not(.touch-mode) .popup-quest .quest-log,body:not(.touch-mode) .popup-quest .ql{flex:0 1 auto}
+
+/* ---------- Punkt 5: Weltkarte-Seitenleiste – Gruppenkopf mit Symbol, Wort und Anzahl (WoW-Questlog) ---------- */
+.popup-map .wk-sep{height:20px;margin:6px 2px 2px;gap:6px}
+.popup-map .wk-sep canvas{width:16px;height:16px}
+.popup-map .wk-sep-word{font:400 13px/1 var(--display,'Jersey 15',sans-serif);letter-spacing:.06em;text-transform:uppercase;color:#d7b571cc;white-space:nowrap}
+.popup-map .wk-sep-count{font:800 11px/1 var(--read,'Nunito',sans-serif);color:#c9d2b4;min-width:12px}
+
+/* ---------- Punkt 8: Kampfstatistik – Höhe nach Zeilen, Kampf als ‹ › in der Fußzeile statt Auswahlfeld ---------- */
+#combatMeter #meterSegment{display:none!important}
+#combatMeter .meter-toolbar:has([data-meter-back][hidden]){display:none!important}
+#combatMeter .meter-scroll{flex:1 1 auto;min-height:0}
+#combatMeter .meter-rows{display:flex;flex-direction:column;gap:2px}
+body:not(.touch-mode) #combatMeter .meter-rows{max-height:calc(8 * 28px + 7 * 2px);overflow:hidden}
+body:not(.touch-mode) #combatMeter .meter-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;column-gap:8px;min-height:28px!important;height:28px;padding:0 8px!important}
+body:not(.touch-mode) #combatMeter .meter-row small{grid-column:auto!important;font-size:11px;opacity:.85}
+body:not(.touch-mode) #combatMeter .meter-empty{margin:4px 0!important;min-height:28px}
+#combatMeter .meter-summary{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+#combatMeter .meter-seg{width:24px;height:24px;min-width:0!important;min-height:0!important;padding:0!important;display:grid;place-items:center;background:#10221b!important;border:1px solid #c5a26866!important;border-radius:5px!important;color:#e7c87b;cursor:pointer}
+#combatMeter .meter-seg:disabled{opacity:.3;cursor:default}
+#combatMeter .meter-seg .ui-glyph{width:14px;height:14px}
+.touch-mode #combatMeter .meter-seg{width:44px;height:44px}
+.touch-mode #combatMeter .meter-summary{gap:8px;padding:4px 6px!important;justify-content:space-between!important;min-width:0}
+.touch-mode #combatMeter .meter-time{min-width:0;overflow:hidden;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.touch-mode .popup-settings .opt-scroll{flex:0 0 auto}
+.touch-mode .popup-settings .opt-nav{padding-top:12px}
+.touch-mode .game-popup.popup-settings .opt-select{height:44px;min-height:44px;max-width:150px;padding:0 8px;background:#10231a;color:#f1e4c4;border:1px solid #6b5a36;border-radius:4px;font:700 13px var(--read,'Nunito',sans-serif)}
+/* Kleine Hochkant-Schirme (≤ 600 px) mit Zielrahmen: unter dem Zielrahmen läge die Meldung auf dem Helden – sie steht dann oben über dem Spielerrahmen (3 s) */
+@media (orientation:portrait) and (max-height:600px){
+ .touch-mode:not(:has(.game-popup)):has(#targetPanel:not(.hidden)) #toast{top:calc(6px + var(--safe-top))!important;max-width:calc(100% - 112px - var(--safe-left) - var(--safe-right))!important}
+}
+
+/* ---------- hud-check (Punkt 13): Spielmenü auf 320 px mit seitlichen Safe Areas – 5 Kacheln passen ohne waagerechten Überlauf ---------- */
+@media (max-width:340px) and (orientation:portrait){
+ .touch-mode .game-popup.popup-menu>.popup-body{padding-left:2px!important;padding-right:2px!important}
+ .touch-mode .game-popup.popup-menu .game-menu-windows{gap:8px!important}
+}
+/* Sehr flach quer (≤ 340 px hoch, 568×320): das Spielmenü ist modal über die ganze Breite – Kacheln 5 × 2 ohne Wort, Einträge in vier Spalten */
+@media (orientation:landscape) and (max-height:340px){
+ .touch-mode:has(.popup-menu) #mobileControls>:not(.game-popup),.touch-mode:has(.popup-menu) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+ .touch-mode .game-popup.popup-menu .game-menu-windows{grid-template-columns:repeat(5,minmax(44px,1fr))!important;gap:8px!important;margin:0 0 8px!important}
+ .touch-mode .game-popup.popup-menu .game-menu-windows button{height:44px!important;min-height:44px!important;padding:0!important;justify-content:center;align-items:center}
+ .touch-mode .game-popup.popup-menu .game-menu-windows button canvas{width:30px;height:30px}
+ .touch-mode .game-popup.popup-menu .game-menu-windows button span{display:none!important}
+ .touch-mode .game-popup.popup-menu .game-menu-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+ .touch-mode .game-popup.popup-menu .game-menu-actions>[data-close]{grid-column:auto!important}
+ .touch-mode .game-popup.popup-menu>.popup-body{padding-top:6px!important}
+}
+/* meter-check: sehr schmale Statistik am Handy quer (568×320, 220 px zwischen den Knöpfen) – der Kopf bricht um statt überzulaufen */
+.touch-mode #combatMeter .meter-header{flex-wrap:wrap;height:auto!important;row-gap:8px;min-width:0}
+.touch-mode #combatMeter .meter-header>strong{display:none}

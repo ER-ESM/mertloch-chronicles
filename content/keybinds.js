@@ -22,7 +22,7 @@ export const KEYBIND_ACTIONS=[
  {id:'interrupt',group:'combat',name:'Unterbrechen',keys:['KeyQ','']},
  {id:'aggro',group:'combat',name:'Aggro-Radius zeigen',keys:['KeyR','']},
  // Zielmarkierungen (target-marks.js): ohne Standardtaste, frei belegbar; dieselbe Taste noch einmal nimmt die Markierung weg.
- {id:'assist',group:'combat',name:'Ziel übernehmen (Gruppe)',keys:['','']},
+ {id:'assist',group:'combat',name:'Ziel übernehmen',keys:['','']},
  {id:'markSkull',group:'combat',name:'Ziel: Totenkopf',keys:['','']},
  {id:'markCross',group:'combat',name:'Ziel: Kreuz',keys:['','']},
  {id:'markStar',group:'combat',name:'Ziel: Stern',keys:['','']},
@@ -31,7 +31,7 @@ export const KEYBIND_ACTIONS=[
  {id:'bag',group:'windows',name:'Rucksack',keys:['KeyI','']},
  {id:'book',group:'windows',name:'Kniffe',keys:['KeyP','KeyK']},
  {id:'talents',group:'windows',name:'Talente',keys:['KeyN','']},
- {id:'quest',group:'windows',name:'Aufträge',keys:['KeyL','KeyJ']},
+ {id:'quest',group:'windows',name:'Aufträge',keys:['KeyJ','KeyL']},
  {id:'map',group:'windows',name:'Karte',keys:['KeyM','']},
  {id:'base',group:'windows',name:'Bude',keys:['KeyB','']},
  {id:'professions',group:'windows',name:'Berufe',keys:['Shift+KeyB','']},
@@ -56,5 +56,8 @@ export const KEYBIND_UI={
  blocked:key=>key+' ist im Browser fest vergeben. Nimm eine andere Taste.',
  fixedNote:'Esc bleibt immer Spielmenü und Abbrechen.',
  reset:'Standard wiederherstellen',resetDone:'Alle Tasten stehen wieder auf Standard.',
- search:'Aktion suchen …'
+ search:'Aktion suchen …',
+ /* Runde 5b: Doppelbelegung als Warnung (Tastenkappe und Fußzeile) */
+ conflict:'Doppelt belegt',conflictNote:(key,names)=>key+' löst mehrere Aktionen aus: '+names.join(' · ')+'. Belege eine davon neu.',
+ conflictFoot:(key,names)=>'Doppelt: '+key+' · '+names.join(' / ')
 };

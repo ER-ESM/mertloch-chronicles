@@ -3,6 +3,7 @@ export const METER_RULES={history:10,minSeconds:1,refreshMs:250,openByDefault:fa
 export const METER_TEXT={
  title:'Kampfstatistik',open:'Kampfstatistik öffnen',close:'Einklappen',damage:'Schaden',healing:'Heilung',
  shortcut:'Kampfstatistik [V]',options:'Optionen',resize:'Fenstergröße ändern (ziehen oder Pfeiltasten)',drag:'Zum Verschieben ziehen',ranking:'Rangliste',
+ prevFight:'Vorheriger Kampf',nextFight:'Nächster Kampf',
  current:'Aktueller / letzter Kampf',overall:'Gesamte Sitzung',fight:'Kampf',training:'Training',active:'Im Kampf',finished:'Abgeschlossen',
  empty:'Noch kein Kampf erfasst.',noDamage:'Noch kein Schaden verursacht.',noHealing:'Noch keine Heilung im Kampf.',
  total:'Gesamt',dps:'DPS',hps:'HPS',seconds:'Kampfzeit',abilities:'Fähigkeiten',actors:'Figuren',back:'Zurück',

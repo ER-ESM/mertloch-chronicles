@@ -55,6 +55,10 @@ export const WORLD_MAP_UI={
  ],
  // Seitenleiste: Gruppentrenner (Symbol + Linie, Wort im Tooltip).
  sections:{tracked:'Verfolgt',quest:'Aufträge',hub:'Treffpunkte',camp:'Lager',shop:'Händler & Berufe'},
+ /** Runde 5b: Gruppenköpfe der Seitenleiste wie im WoW-Questlog – Symbol, EIN Wort, Anzahl („LAGER 11“). */
+ sectionWords:{quest:'Aufträge',hub:'Treffpunkte',camp:'Lager',shop:'Händler'},
+ /** Runde 5b: Ortsnamen der freien Lager (Titel aus world-layout.js setCampApproaches) für die Kartenliste. */
+ campShort:{'Geplünderter Grillplatz':'Grillplatz','Beschlagnahmte Bollerboxen':'Bollerboxen-Lager','Besetzter Pfandplatz':'Pfandplatz','Horsts Ruhezone':'Horsts Ruhezone'},
  walk:'Hinlaufen',walkNote:'Läuft los und schließt die Karte',
  you:'Dein Standort',tracked:'Verfolgtes Ziel',cluster:n=>n+' Orte hier',clusterNote:'Klick zoomt hinein',
  area:'Zielgebiet',areaActive:'Verfolgtes Zielgebiet',spawnArea:'Tiergebiet',progress:(d,n)=>d+'/'+n,

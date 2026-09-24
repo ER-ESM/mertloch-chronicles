@@ -1,68 +1,57 @@
 // Browserprüfung Runde B: Klamottenwahl → Hofprobe mit Wegmarke → EIN Fenster → Angriffshinweis →
 // Sprechblase → Kapitel-2-Lager mit Kulissen → Bude mit Ausbaustufe. Desktop 2024×900 und mobil 400 px.
 //
-// Aufruf:  PORT=4184 node server.mjs   (in einem zweiten Fenster)
-//          node scripts/akt1b-check.mjs [url] [ordner] [cdp-port]
-// Der Browser ist ein eigenes Chrome mit Fernsteuerung, z. B.
-//   chrome --remote-debugging-port=9333 --user-data-dir=<temp> http://localhost:4184/
-// Der Port lässt sich über CDP_PORT oder das dritte Argument setzen (Vorgabe 9333), damit die Prüfung
-// neben einem belegten 9222 läuft. Kein npm-Paket, nur Node.
+// Aufruf:  node scripts/akt1b-check.mjs [url] [ordner] [cdp-port]
+// Seit Runde 5b (2026-09-24) startet die Prüfung ihren eigenen Chrome und Server (browserSession); ohne url dient server.mjs
+// auf SERVER_PORT (Vorgabe 4189). CDP-Port über CDP_PORT oder das dritte Argument (Vorgabe 9333). Kein npm-Paket, nur Node.
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {RARITIES,BUILDINGS,MEMORY_FRAGMENTS,PANEL_UI,COMBAT_TEXT,CLAN_MEMBERS} from '../content/index.js';
 import {PROP_KINDS} from '../world-prop-kinds.js';
+import {browserSession} from './browser-session.mjs';
 
-const url=process.argv[2]||'http://localhost:4184/',dir=process.argv[3]||'akt1b-review';
+const url=process.argv[2]&&process.argv[2].startsWith('http')?process.argv[2]:undefined,dir=process.argv[3]||'akt1b-review';
 const port=Number(process.argv[4]||process.env.CDP_PORT||9333);
 mkdirSync(dir,{recursive:true});
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
-/** Kleiner CDP-Treiber mit frei wählbarem Port (scripts/browser-polish.mjs hängt fest an 9222). */
+/** Runde 5b (Punkt 13): eigener Browser über browserSession (scripts/browser-session.mjs) statt eines von Hand gestarteten Chrome.
+ *  Gleiche Schnittstelle wie der frühere Treiber; goto() geht wie alle Prüfskripte über den Anmeldebildschirm „Ins Dorf“ und überspringt den Film. */
 async function browser(){
- const targets=await (await fetch('http://127.0.0.1:'+port+'/json')).json();
- const target=targets.find(t=>t.type==='page');if(!target)throw Error('Keine Browserseite auf Port '+port);
- const ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j;});
- let serial=0;const pending=new Map(),errors=[];
- ws.onclose=ev=>{for(const cb of pending.values())cb.reject(Error('CDP-Verbindung zu: '+ev.code));pending.clear();};
- ws.onmessage=ev=>{const d=JSON.parse(ev.data);if(d.method==='Runtime.exceptionThrown')errors.push(d.params.exceptionDetails);
-  if(d.id){const cb=pending.get(d.id);pending.delete(d.id);d.error?cb.reject(Error(JSON.stringify(d.error))):cb.resolve(d.result);}};
- const send=(method,params={})=>new Promise((res,rej)=>{if(ws.readyState!==1){rej(Error('CDP-Verbindung geschlossen'));return;}
-  const id=++serial;pending.set(id,{resolve:res,reject:rej});ws.send(JSON.stringify({id,method,params}));});
- await send('Runtime.enable');await send('Page.enable');await send('Page.bringToFront');await send('Emulation.setFocusEmulationEnabled',{enabled:true});
- const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});
-  if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
- const key=(k,type='keyDown')=>send('Input.dispatchKeyEvent',{type,key:k,
-  code:k===' '?'Space':/^\d$/.test(k)?'Digit'+k:k.length===1?'Key'+k.toUpperCase():k,
-  windowsVirtualKeyCode:k==='Tab'?9:k==='Escape'?27:k===' '?32:k.toUpperCase().charCodeAt(0)});
- return {send,evaluate,errors,close:()=>ws.close(),
-  press:async k=>{await key(k);await key(k,'keyUp');},
-  click:s=>evaluate(`document.querySelector(${JSON.stringify(s)}).click()`),
-  async mouse(x,y,button='left'){await send('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button,clickCount:1});
-   await send('Input.dispatchMouseEvent',{type:'mouseReleased',x,y,button,clickCount:1});},
-  async goto(){await send('Page.navigate',{url});for(let i=0;i<180;i++){await wait(100);if(await evaluate('!!window.mertloch'))return;}throw Error('Spiel startete nicht');},
-  async screenshot(path){const r=await send('Page.captureScreenshot',{format:'jpeg',quality:88});writeFileSync(path,Buffer.from(r.data,'base64'));},
-  resize:(width,height)=>send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false})};
+ const s=await browserSession({url,port,serverPort:Number(process.env.SERVER_PORT||4189)});
+ await s.send('Emulation.setFocusEmulationEnabled',{enabled:true});
+ return {...s,close:()=>s.close(),
+  async mouse(x,y,button='left'){await s.send('Input.dispatchMouseEvent',{type:'mousePressed',x,y,button,clickCount:1});
+   await s.send('Input.dispatchMouseEvent',{type:'mouseReleased',x,y,button,clickCount:1});},
+  async goto(){await s.goto(s.url);for(let i=0;i<180;i++){await wait(100);if(await s.evaluate('!!window.mertloch')){
+   for(let j=0;j<30;j++){if(!await s.evaluate("!!document.querySelector('.intro-skip')"))break;await s.evaluate("document.querySelector('.intro-skip')?.click()");await wait(200);}return;}}throw Error('Spiel startete nicht');},
+  async screenshot(path){const r=await s.send('Page.captureScreenshot',{format:'jpeg',quality:88});writeFileSync(path,Buffer.from(r.data,'base64'));}};
 }
 
 const b=await browser(),checks=[];let backup,shot=0;
 const screenshot=async name=>b.screenshot(dir+'/'+String(++shot).padStart(2,'0')+'-'+name+'.jpg');
-const text=sel=>b.evaluate(`document.querySelector(${JSON.stringify(sel)})?.innerText||''`);
+/* Runde 5b: #autoState ist seit dem Feinschliff (frei schwebende Pille entfallen) nur noch Live-Region – ohne sichtbaren Text zählt textContent */
+const text=sel=>b.evaluate(`(e=>e?.innerText||e?.textContent||'')(document.querySelector(${JSON.stringify(sel)}))`);
 const exists=sel=>b.evaluate(`!!document.querySelector(${JSON.stringify(sel)})`);
 const state=()=>b.evaluate('window.mertloch.state()');
 /** Offene Fenster – Kern der Prüfung „EIN Fenster“. */
 const windows=()=>b.evaluate(`[...document.querySelectorAll('.game-popup')].map(e=>e.dataset.window)`);
-/** Buchfenster, Gespräch, Beute, Erinnerung und Tod dürfen nie zu zweit offen sein. */
-const SOLO=['person','bag','book','quest','base','map','guide','dialog','loot','memory','death','activity'];
+/** Gespräch, Erinnerung, Tod und Anlage dürfen nie zu zweit offen sein. Seit Runde 2 (2026-09-24, WoW-Raster) stehen die Seitenfenster
+ *  (Figur, Aufträge, Kniffe, Rucksack, Talente, Hilfe) nebeneinander – sie zählen hier nicht; ein Overlay steht aber nie neben einem zweiten Overlay,
+ *  Beute darf neben dem Rucksack stehen (WoW). */
+const SOLO=['dialog','memory','death','activity'];
 async function assertSingleWindow(where){
  const open=await windows();
- assert.ok(open.filter(id=>SOLO.includes(id)).length<=1,where+': mehr als ein Fenster offen ('+open.join(', ')+')');
+ assert.ok(open.filter(id=>SOLO.includes(id)).length<=1,where+': mehr als ein Overlay offen ('+open.join(', ')+')');
+
  return open;
 }
 async function loadWith(source){
  const clean=`(()=>{try{for(const k of Object.keys(localStorage))if(k.startsWith('mertloch'))localStorage.removeItem(k);}catch{}
   navigator.serviceWorker?.getRegistrations?.().then(rs=>rs.forEach(r=>r.unregister()));
   if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));})();`;
- const {identifier}=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:clean+source});
+ /* Runde 5b: nur beim ersten Laden – das Anlegen des Prüfhelden auf dem Anmeldebildschirm lädt die Seite neu und darf ihn nicht wieder löschen */
+ const once='akt1b-'+Date.now();const {identifier}=await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`if(!sessionStorage.getItem('${once}')){sessionStorage.setItem('${once}','1');${clean}${source}}`});
  await b.goto();await wait(1000);
  await b.send('Page.removeScriptToEvaluateOnNewDocument',{identifier});
 }
@@ -84,34 +73,30 @@ try{
  backup=await b.evaluate('Object.fromEntries(Object.entries(localStorage).filter(([k])=>k.startsWith("mertloch")))');
  await b.resize(2024,900);await loadWith('');
 
- // 1 · Klamottenwahl: drei Karten, Auswahl per Klick, dann Bestätigen (P7)
- await b.press('c');await wait(500);
+ // 1 · Figur (früher Klamottenwahl, P7)
+ await clearOverlays();await b.press('c');for(let i=0;i<20&&!await exists('.popup-person');i++)await wait(150);
+ if(!await exists('.popup-person'))console.log('Fenster vor C:',await windows(),await b.evaluate('document.activeElement?.tagName+" "+document.activeElement?.className'));
  await assertSingleWindow('Figur geöffnet');
  assert.equal(await b.evaluate(`document.querySelectorAll('.popup-person .panel-tabs').length`),0,'Reiter „Figur“ hat keine Unterseiten mehr (E-13)');
- const sections=await b.evaluate(`[...document.querySelectorAll('.popup-person .panel-section-title')].map(e=>e.textContent)`);
- for(const label of [PANEL_UI.equipment,PANEL_UI.stats,PANEL_UI.manage,PANEL_UI.talents,PANEL_UI.band])
-  assert.ok(sections.includes(label),'Abschnitt „'+label+'“ steht untereinander');
- const picks=await b.evaluate(`[...document.querySelectorAll('[data-member-pick]')].map(e=>e.dataset.memberPick)`);
- assert.equal(picks.length,CLAN_MEMBERS.length,'Drei Klamotten-Karten zur Auswahl');
- const before=(await state()).classId;
- const other=CLAN_MEMBERS.find(m=>m.id!==before);
- // Stil C: Die Karte trägt ihre Primäraktion selbst; der getragene Zustand ist ein Stempel.
- const worn=await b.evaluate(`[...document.querySelectorAll('.clan-card')].filter(c=>c.classList.contains('worn')).length`);
- assert.equal(worn,1,'Genau eine Karte trägt den Stempel „gerade an“');
- const wear=await b.evaluate(`[...document.querySelectorAll('[data-member-wear]')].map(e=>e.dataset.memberWear)`);
- assert.equal(wear.length,CLAN_MEMBERS.length-1,'Jede nicht getragene Karte hat ihre eigene Primäraktion');
- assert.ok(wear.includes(other.id),'Die Primäraktion nennt die Figur');
- assert.ok((await text(`[data-member-wear="${other.id}"]`)).includes(other.name),'Der Knopf nennt die Figur beim Namen');
+ // Runde 5b (Punkt 13): Seit Runde 3b/4c ist die Figur eine Puppe nach WoW – Ausrüstung im festen Raster (Platz + 8 px), Randspalten links/rechts,
+ // Waffenzeile unten, Werte kompakt darunter. Die Klamotten-Karten der Mentoren sind mit den Mentoren entfallen (Stammgäste, E-61).
+ const doll=await b.evaluate("(()=>{const p=document.querySelector('.popup-person'),parts=[...p.querySelector('.popup-body').children].map(e=>e.className.split(' ')[0]),slots=[...p.querySelectorAll('.equipment-grid .item-slot')].map(e=>{const r=e.getBoundingClientRect();return {x:Math.round(r.left),y:Math.round(r.top),w:Math.round(r.width)};});return {parts,slots};})()");
+ for(const part of ['equipment-grid','compact-stats'])assert.ok(doll.parts.includes(part),'Figur zeigt „'+part+'“ ohne Unterseite');
+ assert.ok(doll.slots.length>=10,'Ausrüstungsplätze der Puppe: '+doll.slots.length);
+ const col=doll.slots.filter(q=>q.x===doll.slots[0].x).map(q=>q.y).sort((a,b)=>a-b),steps=col.slice(1).map((y,i)=>y-col[i]);
+ assert.ok(new Set(doll.slots.map(q=>q.x)).size>=3,'Plätze links, rechts und in der Waffenzeile');
+ assert.ok(steps.length>=3&&steps.every(d=>d-doll.slots[0].w>=7.5&&d===steps[0]),'Ausrüstung untereinander im festen Raster (Platz + ≥ 8 px): '+steps.join(','));
  await screenshot('klamottenwahl');
- checks.push('P7: Klamottenwahl zeigt drei Karten, wählt ohne zu wechseln und bestätigt mit einem Knopf; „Figur“ hat Abschnitte statt Unterseiten');
+ checks.push('P7: „Figur“ ohne Unterseiten – Ausrüstung als Puppe im festen Raster, Werte kompakt (Runde 4c)');
 
  // 2 · EIN Fenster: Buch, Gespräch, Beute und Erinnerung schließen einander (P4)
  for(const key of ['i','k','j','b','m','h','c']){await b.press(key);await wait(320);await assertSingleWindow('Reiterwechsel über ['+key+']');}
  await b.press('Escape');await wait(250);
  await b.press('f');await wait(400);
  assert.deepEqual(await windows(),['dialog'],'Hofprobe-Gespräch steht allein');
- await b.press('b');await wait(400);
- assert.deepEqual(await windows(),['base'],'Der Reiter „Bude“ ersetzt das Gespräch');
+ // Die Bude ist in der Hofprobe noch gesperrt (body[data-locked~=bude]); ein Seitenfenster (Aufträge, J) schließt das Gespräch wie der frühere Reiter.
+ await b.press('j');await wait(400);
+ assert.deepEqual(await windows(),['quest'],'Das Auftragsfenster ersetzt das Gespräch');
  await b.press('Escape');await wait(250);
  // Kein unsichtbares Fenster fängt Klicks: Linksklick mitten ins Spielfeld öffnet nichts.
  for(const [x,y] of [[1000,500],[1400,320],[700,700],[1700,660]]){await b.mouse(x,y);await wait(150);}
@@ -122,10 +107,10 @@ try{
  // 3 · Wegmarke je Hofproben-Schritt (P5)
  for(const step of [1,5]){
   await b.evaluate(`(()=>{const g=window.game;g.tutorial.step=${step};g.emit('tutorialStep');})()`);await wait(350);
-  const hud=await text('#questTasks');
+  /* Runde 4b: Die Hofprobe steht als Auftrag in der Verfolgung – Titel = Schrittziel, darunter Tasten und Meter */const hud=await text('.quest-panel');
   assert.match(hud,/\d+\s*m/,'Hofprobe-Schritt '+step+': Wegmarke mit Metern im HUD');
   const waypoint=(await state()).destination;
-  assert.ok(waypoint&&hud.includes(waypoint.label),'Hofprobe-Schritt '+step+': Wegmarke trägt das Schrittziel');
+  assert.ok(waypoint&&hud.includes(waypoint.label),'Hofprobe-Schritt '+step+': Wegmarke trägt das Schrittziel '+JSON.stringify({hud,label:waypoint?.label}));
  }
  await screenshot('wegmarke-hofprobe');
  checks.push('P5: jeder Hofproben-Schritt zeigt Pfeil, Ziel und Entfernung in Metern im HUD');
@@ -136,11 +121,13 @@ try{
 
  // 5 · Autoangriff-Zustand und Angriffshinweis (P1/P2)
  await b.evaluate(`(()=>{const g=window.game;g.tutorial.completed=true;g.autoAttack.enabled=false;})()`);await wait(350);
- assert.equal(await text('#autoState'),COMBAT_TEXT.autoOff,'Kampfleiste zeigt „Autoangriff aus“');
+ await clearOverlays();for(let i=0;i<10&&await b.evaluate("document.querySelector('#autoState')?.textContent||''")!==COMBAT_TEXT.autoOff;i++)await wait(200);
+ assert.equal(await b.evaluate("document.querySelector('#autoState')?.textContent||''"),COMBAT_TEXT.autoOff,'Kampfleiste zeigt „Autoangriff aus“');
  assert.ok(await b.evaluate(`document.querySelector('#autoState').classList.contains('is-off')`));
- await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace);
+ await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&e.behavior!=='neutral'/* Runde 5b: keine neutralen Tiere (Autoangriff meidet sie) */);
   Object.assign(g.player,{x:e.x+20,y:e.y+20});g.target=e;g.autoAttack.enabled=true;return e.name;})()`);await wait(350);
- assert.equal(await text('#autoState'),COMBAT_TEXT.autoOn,'Kampfleiste zeigt „Autoangriff an“');
+ const why=await b.evaluate("(()=>{const g=window.game,t=g.target;return JSON.stringify({auto:g.autoAttack.enabled,paused:g.paused,t:t&&{n:t.name,hp:t.hp,ai:t.ai,b:t.behavior,d:Math.round(Math.hypot(t.x-g.player.x,t.y-g.player.y))},tut:g.tutorial?.completed})})()");
+ assert.equal(await b.evaluate("document.querySelector('#autoState')?.textContent||''"),COMBAT_TEXT.autoOn,'Kampfleiste zeigt „Autoangriff an“ '+why);
  assert.ok(await b.evaluate(`document.querySelector('#autoState').classList.contains('is-on')`));
  // Angriffshinweis: erst über das Ereignis `attacked`, sonst über den Wechsel inCombat 0→1.
  const attack=await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0);
@@ -149,8 +136,9 @@ try{
   g.player.inCombat=4;e.aggro=true;g.target=e;return e.name;})()`);
  await wait(500);
  assert.ok(attack,'Ein Gegner zum Angriffshinweis vorhanden');
- assert.ok(await b.evaluate(`!document.querySelector('#attackWarning').classList.contains('hidden')`),'Großer Hinweis „Du wirst angegriffen“ erscheint');
- assert.ok((await text('#attackWarning')).length>5);
+ // Das große Banner „Du wirst angegriffen“ ist seit ed2525f aus (WoW: kein Banner) – der Angriff zeigt sich am Spielerrahmen (Kampfzustand) und am Ziel.
+ assert.ok(await b.evaluate(`document.querySelector('#attackWarning').classList.contains('hidden')`),'kein großes Banner über der Welt');
+ assert.ok(await b.evaluate(`document.querySelector('.player-panel').classList.contains('in-combat')&&/KAMPF/.test(document.querySelector('#combatState').textContent)`),'Spielerrahmen zeigt den Kampfzustand');
  await screenshot('angriffshinweis');
  // Trefferzahlen am Gegner: die Engine schiebt sie als Fließtext in die Welt.
  const floats=await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0);g.float(e.x,e.y-27,'123','#fff0bf');return g.texts.filter(t=>/^[0-9]+!?$/.test(t.text)).length;})()`);
@@ -159,32 +147,33 @@ try{
 
  // 5b · Esc wählt den Autoangriff ab (P2) – Taste 1 schaltet nur noch ein.
  await clearOverlays();
- await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace);
+ await b.evaluate(`(()=>{const g=window.game,e=g.enemies.find(e=>e.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&e.behavior!=='neutral'/* Runde 5b: keine neutralen Tiere (Autoangriff meidet sie) */);
   Object.assign(g.player,{x:e.x+20,y:e.y+20});g.target=e;g.dead=false;g.autoAttack.enabled=false;return true;})()`);
  await b.press('1');await wait(400);
  assert.equal((await state()).autoAttack.enabled,true,'Taste 1 schaltet den Autoangriff ein (startAuto)');
- assert.equal(await text('#autoState'),COMBAT_TEXT.autoOn,'Chip zeigt „Autoangriff an“');
+ assert.equal(await b.evaluate("document.querySelector('#autoState')?.textContent||''"),COMBAT_TEXT.autoOn,'Chip zeigt „Autoangriff an“');
  await b.press('Escape');await wait(400);
  assert.equal((await state()).autoAttack.enabled,false,'Esc ruft game.stopAuto() und schaltet den Autoangriff aus');
  assert.deepEqual(await windows(),[],'Esc hat dabei kein Fenster geöffnet');
- assert.equal(await text('#autoState'),COMBAT_TEXT.autoOff,'Chip #autoState steht wieder auf „aus“');
+ assert.equal(await b.evaluate("document.querySelector('#autoState')?.textContent||''"),COMBAT_TEXT.autoOff,'Chip #autoState steht wieder auf „aus“');
  assert.ok(await b.evaluate(`document.querySelector('#autoState').classList.contains('is-off')`));
  await screenshot('esc-autoangriff-aus');
  checks.push('P2: Taste 1 schaltet den Autoangriff ein, Esc ohne offenes Fenster ruft game.stopAuto() – der Chip #autoState folgt');
 
  // 5c · Aktionstaste über game.interaction(): das Auftragsziel schlägt den Mentor daneben (P3/P5)
  await clearOverlays();
- const rank=await b.evaluate(`(()=>{const g=window.game,npc=g.world.npc,m=(g.world.mentors||[])[0];if(!m)return null;
+ /* Runde 5b: Die Helden-Mentoren sind entfallen (Stammgäste, E-61) – gibt es keinen, prüft der Schritt Ida allein (Auftragsziel auf der Taste, F trifft Ida). */
+ const rank=await b.evaluate(`(()=>{const g=window.game,npc=g.world.npc,m=(g.world.mentors||[])[0]||null;
   g.tutorial.completed=true;g.dead=false;g.player.inCombat=0;g.target=null;g.moveTo=null;g.path=[];
   Object.assign(g.player,{x:npc.x,y:npc.y+8});
-  m.x=g.player.x+6;m.y=g.player.y+6;                         // Mentor steht näher als Ida
-  const it=g.interaction();return {npc:npc.name,mentor:m.name,kind:it&&it.kind,priority:it&&it.priority};})()`);
- assert.ok(rank,'Ein Mentor für die Rangfolge vorhanden');
+  if(m){m.x=g.player.x+6;m.y=g.player.y+6;}                  // Mentor steht näher als Ida
+  const it=g.interaction();return {npc:npc.name,mentor:m?.name||null,kind:it&&it.kind,priority:it&&it.priority};})()`);
+ assert.ok(rank,'Ida steht für die Rangfolge bereit');
  assert.equal(rank.kind,'npc','game.interaction() nennt das Auftragsziel, nicht den näheren Mentor');
  await wait(350);
- const label=await text('#interact');
- assert.ok(label.includes(rank.npc),'Die Aktionstaste beschriftet das Auftragsziel ('+rank.npc+')');
- assert.ok(!label.includes(rank.mentor),'Der Mentor daneben steht nicht auf der Aktionstaste');
+ const label=(await text('#interact')).toLowerCase();/* Versalien per CSS */
+ assert.ok(label.includes(rank.npc.toLowerCase()),'Die Aktionstaste beschriftet das Auftragsziel ('+rank.npc+'): '+JSON.stringify({label,rank}));
+ if(rank.mentor)assert.ok(!label.includes(rank.mentor.toLowerCase()),'Der Mentor daneben steht nicht auf der Aktionstaste');
  await b.press('f');await wait(500);
  assert.deepEqual(await windows(),['dialog'],'F öffnet genau ein Gespräch');
  assert.ok(await exists('#acceptQuest'),'F trifft Ida (Auftragsgespräch), nicht den Mentor');
@@ -282,7 +271,7 @@ try{
  await b.evaluate(`(()=>{const g=window.game;Object.assign(g.player,{x:g.world.spawn.x+900,y:g.world.spawn.y+900});})()`);
  await wait(300);await b.press('b');await wait(450);
  assert.ok(await b.evaluate(`[...document.querySelectorAll('[data-build]')].every(el=>el.disabled)`),'Außerhalb der Bude ist „Ausbauen“ gesperrt');
- assert.ok((await text('.popup-base')).includes('Treffpunkt'),'Der Grund steht am Gebäude');
+ /* Runde 2: Die Bude ist ein Reiter der Aufträge (.popup-quest); kompakte Baukarten tragen den Grund im Tooltip (data-tooltip-note) */assert.ok(await b.evaluate("[...document.querySelectorAll('.game-popup [data-build]')].every(el=>(el.closest('[data-tooltip-note]')?.dataset.tooltipNote||el.closest('.build-next,.build-card')?.textContent||'').includes('Treffpunkt'))"),'Der Grund steht am Gebäude');
  await clearOverlays();
  const built=await b.evaluate(`(()=>{const g=window.game,b=g.world.base;
   Object.assign(g.player,{x:b.x,y:b.maxY+40});g.moveTo=null;g.path=[];
@@ -299,13 +288,13 @@ try{
   g.events.push({type:'memory',fragment:frag});return true;})()`);
  await wait(600);
  assert.ok(!await exists('.popup-memory'),'Erinnerung wartet, solange ein Fenster offen ist (P9)');
- await b.press('Escape');await wait(500);
- assert.ok(await exists('.popup-memory'),'Erinnerung erscheint, sobald kein Fenster mehr offen ist');
+ await b.press('Escape');for(let i=0;i<30&&!await exists('.popup-memory');i++)await wait(200);/* Freischalt-Meldung (Erinnerungen) läuft vorher ab */
+ assert.ok(await exists('.popup-memory'),'Erinnerung erscheint, sobald kein Fenster mehr offen ist '+JSON.stringify(await windows()));
  await screenshot('erinnerung-wartet');
  await b.click('[data-memory-next]');await wait(350);
- await b.press('b');await wait(450);
- const memories=await text('.memory-panel');
- assert.ok(memories.includes(PANEL_UI.tabMemories),'Überschrift kommt aus PANEL_UI.tabMemories');
+ /* Runde 2: Erinnerungen sind ein Reiter der Aufträge (Symbolreiter unten, Name als aria-label/Tooltip) */await b.press('j');await wait(450);await b.evaluate("document.querySelector('[data-ql-tab=\"memories\"]')?.click()");await wait(350);
+ const memories=await b.evaluate("(document.querySelector('[data-ql-tab=\"memories\"]')?.getAttribute('aria-label')||'')+' | '+(document.querySelector('.memory-panel')?.textContent||'')+' | '+[...document.querySelectorAll('.memory-panel [data-tooltip-label],.memory-panel [aria-label]')].map(e=>(e.dataset.tooltipLabel||'')+' '+(e.dataset.tooltipNote||'')+' '+(e.getAttribute('aria-label')||'')).join(' ')");
+ assert.ok(await b.evaluate(`[...document.querySelectorAll('.popup-quest [data-ql-tab]')].some(t=>t.getAttribute('aria-label')===${JSON.stringify(PANEL_UI.tabMemories)})`),'Reitername kommt aus PANEL_UI.tabMemories');
  assert.ok(memories.includes(PANEL_UI.memoryHidden||'Noch nicht erinnert'),'Verdeckte Fetzen tragen Text statt „…“');
  assert.ok(!memories.includes('…'),'Keine „…“-Zeilen mehr');
  await screenshot('erinnerungsliste');

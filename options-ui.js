@@ -3,7 +3,7 @@
 // Schalter von game.settings laufen über den bestehenden Klick-Weg (data-setting-toggle in app.js); kontoweite Einstellungen
 // (UI-Skalierung, Lautstärke) und die Tastenbelegung verwaltet dieses Modul selbst.
 import {OPTIONS_UI as T,OPTIONS_DEFAULTS,SETTING_DEFAULTS,KEYBIND_GROUPS,KEYBIND_ACTIONS,KEYBIND_UI as K} from './content/index.js';
-import {keysOf,assignKey,actionFor,saveKeymap,liveKeymap,setLiveKeymap,isBrowserKey} from './keymap.js';
+import {keysOf,assignKey,actionFor,saveKeymap,liveKeymap,setLiveKeymap,isBrowserKey,keyConflicts} from './keymap.js';
 import {bindingLabel,bindingFromKey,bindingFromMouse,bindingAt,assignBinding,BAR_SIZE,MAX_BARS} from './bar-keys.js';
 import {glyph} from './ui-glyphs.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -17,6 +17,28 @@ export function savePrefs(prefs,storage=globalThis.localStorage){try{storage?.se
 /** Welche Grafik-Voreinstellung passt zu den Schaltern? → id oder null (eigene). */
 export const settingOn=(settings,k)=>k==='fullRes'||k==='fps'||k==='lowRes'?settings?.[k]===true:settings?.[k]!==false;
 export function presetOf(settings){return T.presets.find(p=>Object.entries(p.values).every(([k,v])=>settingOn(settings,k)===v))?.id||null;}
+/** Runde 5b (Grafik-Endliste 4): kurze Tastenkappe wie in WoW („⇧1“, „⇧Tab“, „Strg+E“, „Leer“) – die lange Form steht im Tooltip. */
+const SHORT_MODS={Ctrl:'Strg+',Alt:'Alt+',Shift:'⇧'};
+export function keyCap(binding){if(!binding)return '';const parts=binding.split('+'),base=parts.pop();return parts.map(m=>SHORT_MODS[m]||m+'+').join('')+(base==='Space'?'Leer':base==='Escape'?'Esc':bindingLabel(base));}
+/**
+ * Runde 5b (Grafik-Endliste 1): Einstellungen am Handy ohne Scrollen. Nach jedem Aufbau (panel-pages.js → decoratePanel):
+ * „Standard“ als ↺ in die Titelzeile, Zeilen seitenweise (‹ 1/2 ›) statt blätternd – so viele, wie in die Höhe passen (quer zwei Spalten).
+ */
+export function settingsWindow(w){const bar=w?.el?.querySelector('.popup-titlebar');if(!bar)return;bar.querySelectorAll('.opt-reset').forEach(b=>b.remove());
+ if(!document.body.classList.contains('touch-mode'))return;const reset=w.body.querySelector('.opt-reset');if(reset)bar.querySelector('.popup-close')?.before(reset);
+ const sc=w.body.querySelector('.opt-scroll');if(!sc)return;if(!w.el._optPager){w.el._optPager=true;let last='';if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{const r=w.body.getBoundingClientRect(),k=Math.round(r.width)+'x'+Math.round(r.height);if(k!==last){last=k;paginateSettings(w);}}).observe(w.body);}
+ paginateSettings(w);}
+function paginateSettings(w){const sc=w.body.querySelector('.opt-scroll'),pager=w.body.querySelector('.opt-pager'),cat=w.body.querySelector('.opt-window')?.dataset.optCurrent;if(!sc||!pager)return;
+ if(!document.body.classList.contains('touch-mode')){sc.style.height='';return;}
+ const rows=[...sc.querySelectorAll('.opt-row')].filter(r=>r.innerHTML.trim());rows.forEach(r=>r.hidden=true);pager.hidden=true;sc.style.height='0px';
+ /* verfügbare Höhe aus dem Fensterkörper, nicht aus dem Inhalt: Unterkante des Körpers minus Oberkante der Zeilenfläche */
+ const cs=getComputedStyle(sc),gap=parseFloat(cs.rowGap)||8,pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom),cols=Math.max(1,cs.gridTemplateColumns.split(' ').filter(Boolean).length),pitch=44+gap;
+ const room=Math.floor(w.body.getBoundingClientRect().bottom-sc.getBoundingClientRect().top),fit=h=>Math.max(1,Math.floor((h-pad+gap)/pitch))*cols;let per=fit(room);
+ if(rows.length>per)per=fit(room-52);sc.style.height=Math.max(0,rows.length>fit(room)?room-52:room)+'px';
+ const pages=Math.max(1,Math.ceil(rows.length/per)),page=Math.max(0,Math.min(w.optPage?.[cat]||0,pages-1));
+ (w.optPage??={})[cat]=page;rows.forEach((r,i)=>r.hidden=Math.floor(i/per)!==page);pager.hidden=pages<2;
+ pager.querySelector('b').textContent=(page+1)+' / '+pages;pager.querySelector('[data-opt-page="-1"]').disabled=page===0;pager.querySelector('[data-opt-page="1"]').disabled=page>=pages-1;
+ if(!pager._wired){pager._wired=true;pager.addEventListener('click',e=>{const b=e.target.closest('[data-opt-page]');if(!b)return;const c=w.body.querySelector('.opt-window')?.dataset.optCurrent;(w.optPage??={})[c]=(w.optPage[c]||0)+Number(b.dataset.optPage);paginateSettings(w);});}}
 
 /** api: game(), prefs(), setPrefs(p), toast(t), rebuild(), events(), rerender(), extras:{bars(),meter(),hud()}, touch(), admin() */
 export function mountOptions(api){
@@ -31,11 +53,14 @@ export function mountOptions(api){
  const open=(label,attrs)=>`<button type="button" class="outline-button opt-open" ${attrs}>${esc(label||T.open)}</button>`;
  /** Erklärung als Tooltip an der ganzen Zeile (WoW-Optionen, Regel „Tooltips statt Text“); nur auf Touch bleibt sie als Zeile sichtbar. */
  const tip=(label,hint)=>hint?` data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(hint)}"`:'';
- const row=(label,hint,control,cls="")=>`<div class="opt-row${cls?" "+cls:""}"${tip(label,hint)}><span class="opt-label">${esc(label)}${hint?`<small>${esc(hint)}</small>`:''}</span><span class="opt-control">${control}</span></div>`;
+ /* Runde 5b (Handy): einzeilige Zeilen; die Erklärung steht hinter ⓘ (Tippen = Tooltip), nicht mehr als Textzeile darunter. */
+ const row=(label,hint,control,cls="")=>api.touch?.()?`<div class="opt-row${cls?" "+cls:""}">${hint?`<button type="button" class="opt-label opt-info" data-opt-info="${esc(hint)}" aria-label="${esc(label)}: ${esc(T.info)}"><span>${esc(label)}</span>${glyph('info')}</button>`:`<span class="opt-label"><span>${esc(label)}</span></span>`}<span class="opt-control">${control}</span></div>`:`<div class="opt-row${cls?" "+cls:""}"${tip(label,hint)}><span class="opt-label">${esc(label)}${hint?`<small>${esc(hint)}</small>`:''}</span><span class="opt-control">${control}</span></div>`;
  function slot(id){
-  if(id==='bars')return `<div class="opt-row opt-wide">${api.extras.bars()}</div>`;
+  /* Runde 5b: die Aktionsleisten gibt es am Handy nicht (eigene Kniff-Knöpfe) – dort keine Zeile */
+  if(id==='bars')return api.touch?.()?'':`<div class="opt-row opt-wide">${api.extras.bars()}</div>`;
   if(id==='meter')return row(T.meter,T.meterHint,open(T.open,'data-meter-open'));
   if(id==='hud')return row(T.hud,T.hudHint,open(T.open,'data-hud-open'));
+  if(id==='preset'&&api.touch?.()){const cur=presetOf(S());/* Runde 5b (Handy): Auswahl statt vier Segmenten – ein 44-px-Ziel, passt in eine Zeile */return row(T.presetLabel,T.presetHint,`<select class="opt-select" data-opt-preset-select aria-label="${esc(T.presetLabel)}">${cur?'':`<option value="" selected>${esc(T.presetCustom)}</option>`}${T.presets.map(p=>`<option value="${p.id}"${cur===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</select>`);}
   if(id==='preset'){const cur=presetOf(S());return row(T.presetLabel,T.presetHint,`<span class="opt-segment" role="group" aria-label="${esc(T.presetLabel)}">${T.presets.map(p=>`<button type="button" data-opt-preset="${p.id}" aria-pressed="${cur===p.id}">${esc(p.name)}</button>`).join('')}<span class="opt-custom"${cur?' hidden':''}>${esc(T.presetCustom)}</span></span>`);}
   if(id==='zoom'){const r=api.zoomRange(),v=Math.round(api.zoom()*100);return row(T.zoom,T.zoomHint,`<span class="opt-range"><small>${esc(T.zoomFar)}</small><input type="range" min="${Math.round(r.min*100)}" max="${Math.round(r.max*100)}" step="5" value="${v}" data-opt-zoom aria-label="${esc(T.zoom)}"><small>${esc(T.zoomNear)}</small><output>${v} %</output></span>`);}
   if(id==='fullscreen')return row(T.fullscreen,T.fullscreenHint,open(T.open,'data-settings="fullscreen"'));
@@ -45,28 +70,38 @@ export function mountOptions(api){
   if(id==='admin')return api.admin()?row(T.admin,T.adminHint,open(T.open,'data-shell="admin"')):'';
   return '';
  }
- const choice=r=>{const v=api.prefs()[r.pref];return `<span class="opt-segment" role="group" aria-label="${esc(r.label)}">${r.choices.map(c=>`<button type="button" data-opt-choice="${r.pref}:${c.id}" aria-pressed="${v===c.id}">${esc(c.name)}</button>`).join('')}</span>`;};
+ const choice=r=>{const v=api.prefs()[r.pref];if(api.touch?.())return `<select class="opt-select" data-opt-choice-select="${r.pref}" aria-label="${esc(r.label)}">${r.choices.map(c=>`<option value="${c.id}"${v===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}</select>`;return `<span class="opt-segment" role="group" aria-label="${esc(r.label)}">${r.choices.map(c=>`<button type="button" data-opt-choice="${r.pref}:${c.id}" aria-pressed="${v===c.id}">${esc(c.name)}</button>`).join('')}</span>`;};
  const prefSwitch=r=>{const on=api.prefs()[r.pref]!==false;return `<button type="button" class="opt-switch" data-opt-toggle="${r.pref}" aria-pressed="${on}" aria-label="${esc(r.label)}"><span class="setting-switch" aria-hidden="true"><i></i></span><span class="setting-state">${on?T.on:T.off}</span></button>`;};
  const rowHtml=r=>r.slot?slot(r.slot):r.setting?row(r.label,r.hint,toggle(r),r.parent?'opt-sub'+(settingOn(S(),r.parent)?'':' is-off'):''):r.pref?row(r.label,r.hint,r.kind==='switch'?prefSwitch(r):r.kind==='choice'?choice(r):range(r)):'';
  /** Tastenknopf einer Aktion bzw. eines Leistenplatzes; im Erfassungsmodus „Neue Taste drücken …“. */
- const keyButton=(attrs,binding,capturing,fixed)=>`<button type="button" class="opt-key${capturing?' is-capturing':''}${binding?'':' is-empty'}" ${attrs}${fixed?' disabled':''}>${capturing?esc(K.capture):binding?esc(bindingLabel(binding,true)):esc(K.none)}</button>`;
+ /* Runde 5b: kurze Kappe, lange Form im Tooltip; Doppelbelegung mit Warnsymbol und Tooltip */
+ const keyButton=(attrs,binding,capturing,fixed,clash=null)=>{const long=binding?bindingLabel(binding,true):'',short=keyCap(binding),tipAttr=clash?` data-tooltip-label="${esc(K.conflict)}" data-tooltip-note="${esc(K.conflictNote(long,clash))}"`:binding&&long!==short?` data-tooltip-label="${esc(long)}" data-tooltip-note=""`:'';
+  return `<button type="button" class="opt-key${capturing?' is-capturing':''}${binding?'':' is-empty'}${clash?' is-conflict':''}" ${attrs}${fixed?' disabled':''}${tipAttr} aria-label="${esc(capturing?K.capture:binding?long:K.none)}">${capturing?esc(K.capture):binding?(clash?glyph('warn'):'')+esc(short):esc(K.none)}</button>`;};
  /** Einklappbare Gruppe der Tastenbelegung (WoW): Kopf ist ein Knopf, beim Suchen ist alles offen. */
  const section=(id,name,rows)=>{const shut=!state.filter.trim()&&state.folded.has(id);return `<section class="opt-section"><h4><button type="button" class="opt-fold" data-opt-fold="${id}" aria-expanded="${!shut}">${esc(name)}</button></h4>${shut?'':rows}</section>`;};
  function keysHtml(){
   const g=api.game(),map=liveKeymap(),f=state.filter.trim().toLowerCase(),hit=n=>!f||n.toLowerCase().includes(f),cap=state.capture;
+  const bars=Math.max(1,Math.min(MAX_BARS,g.rpg?.barCount||1)),barRows=[],barNames=[];
+  for(let i=0;i<bars*BAR_SIZE;i++)barNames.push({name:K.barSlot(Math.floor(i/BAR_SIZE)+1,i%BAR_SIZE+1),binding:bindingAt(g.rpg,i)});
+  const clash=keyConflicts(map,barNames),others=b=>(b&&clash.get(b))||null;
   const groups=KEYBIND_GROUPS.map(gr=>{const rows=KEYBIND_ACTIONS.filter(a=>a.group===gr.id&&hit(a.name)).map(a=>{const k=keysOf(map,a.id);
-   return `<div class="opt-keyrow"${a.fixed?tip(a.name,K.fixedNote):''}><span class="opt-label">${esc(a.name)}${a.fixed?`<small>${esc(K.fixedNote)}</small>`:''}</span>${[0,1].map(i=>keyButton(`data-opt-key="${a.id}:${i}"`,k[i],cap?.id===a.id&&cap.slot===i,a.fixed)).join('')}</div>`;}).join('');
+   return `<div class="opt-keyrow"${a.fixed?tip(a.name,K.fixedNote):''}><span class="opt-label">${esc(a.name)}${a.fixed?`<small>${esc(K.fixedNote)}</small>`:''}</span>${[0,1].map(i=>keyButton(`data-opt-key="${a.id}:${i}"`,k[i],cap?.id===a.id&&cap.slot===i,a.fixed,others(k[i]))).join('')}</div>`;}).join('');
    return rows?section(gr.id,gr.name,rows):'';}).join('');
-  const bars=Math.max(1,Math.min(MAX_BARS,g.rpg?.barCount||1)),barRows=[];
-  for(let i=0;i<bars*BAR_SIZE;i++){const name=K.barSlot(Math.floor(i/BAR_SIZE)+1,i%BAR_SIZE+1);if(!hit(name)&&!hit(K.bars))continue;barRows.push(`<div class="opt-keyrow"><span class="opt-label">${esc(name)}</span>${keyButton(`data-opt-bar="${i}"`,bindingAt(g.rpg,i),cap?.bar===i)}<span class="opt-key-pad" aria-hidden="true"></span></div>`);}
+  for(let i=0;i<bars*BAR_SIZE;i++){const {name,binding}=barNames[i];if(!hit(name)&&!hit(K.bars))continue;barRows.push(`<div class="opt-keyrow"><span class="opt-label">${esc(name)}</span>${keyButton(`data-opt-bar="${i}"`,binding,cap?.bar===i,false,others(binding))}<span class="opt-key-pad" aria-hidden="true"></span></div>`);}
+  state.conflicts=[...clash].map(([b,l])=>K.conflictFoot(keyCap(b),l));
   return `<label class="opt-search"><input type="search" data-opt-filter placeholder="${esc(K.search)}" value="${esc(state.filter)}" aria-label="${esc(K.search)}"></label><div class="opt-keyhead"${tip(K.title,K.intro)}><span>${esc(K.action)}</span><span>${esc(K.key1)}</span><span>${esc(K.key2)}</span></div>${groups}${barRows.length?section('bars',K.bars,barRows.join('')):''}`;
  }
  function html(){
   // Touch hat keine Tastatur: dort entfällt die Tastenbelegung (Knöpfe ordnet System → Touchbuttons).
   const cats=T.categories.filter(c=>c.id!=='keys'||!api.touch?.()),cat=cats.find(c=>c.id===state.cat)||cats[0];
-  const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${cats.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}">${c.glyph?glyph(c.glyph):`<canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas>`}<span>${esc(c.name)}</span></button>`).join('')}</nav>`;
-  const body=cat.id==='keys'?keysHtml():(T.sections[cat.id]||[]).map(s=>{const rows=s.rows.map(rowHtml).join('');return rows?`<section class="opt-section"><h4>${esc(s.title)}</h4>${rows}</section>`:'';}).join('');
-  return `<div class="opt-window opt-cat-${cat.id}" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note${state.note?'':' is-hint'}" role="status" aria-live="polite">${esc(state.note||(cat.id==='keys'?K.footHint:''))}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
+  const touch=!!api.touch?.();
+  const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${cats.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}" aria-label="${esc(c.name)}"${touch?` data-tooltip-label="${esc(c.name)}" data-tooltip-note=""`:''}>${c.glyph?glyph(c.glyph):`<canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas>`}<span>${esc(c.name)}</span></button>`).join('')}</nav>`;
+  state.conflicts=[];const body=cat.id==='keys'?keysHtml():(T.sections[cat.id]||[]).map(s=>{const rows=s.rows.map(rowHtml).join('');return rows?`<section class="opt-section"><h4>${esc(s.title)}</h4>${rows}</section>`:'';}).join('');
+  const conflictNote=cat.id==='keys'&&state.conflicts.length?state.conflicts.join(' · '):'';
+  /* Runde 5b (Handy): Kategorie im Titel, „Standard“ als ↺ in der Titelzeile (settingsWindow), keine Fußzeile – × schließt; Seiten statt Scrollen */
+  const foot=touch?`<button type="button" class="ql-tool opt-reset" data-opt-defaults aria-label="${esc(T.defaults)}" data-tooltip-label="${esc(T.defaults)}" data-tooltip-note="">${glyph('reset')}</button><nav class="opt-pager" hidden><button type="button" data-opt-page="-1" aria-label="${esc(T.prevPage)}">${glyph('back')}</button><b></b><button type="button" data-opt-page="1" aria-label="${esc(T.nextPage)}">${glyph('next')}</button></nav>`
+   :`<footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note${state.note||conflictNote?'':' is-hint'}${conflictNote&&!state.note?' is-conflict':''}" role="status" aria-live="polite">${conflictNote&&!state.note?glyph('warn'):''}${esc(state.note||conflictNote||(cat.id==='keys'?K.footHint:''))}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer>`;
+  return `<div class="opt-window opt-cat-${cat.id}" data-opt-current="${cat.id}" data-ui-window-title="${esc(touch?(innerWidth<=360?cat.name:T.titleWith(cat.name)):T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div>${foot}</div></div>`;
  }
  function commitAction(id,slot,binding){
   const g=api.game(),r=assignKey(liveKeymap(),id,slot,binding),name=KEYBIND_ACTIONS.find(a=>a.id===id)?.name||id;
@@ -97,8 +132,14 @@ export function mountOptions(api){
  // Rechtsklick auf eine Taste löscht sie sofort (ohne erst die Erfassung zu öffnen).
  document.addEventListener('contextmenu',e=>{if(state.capture)return;const k=e.target.closest?.('[data-opt-key]:not(:disabled),[data-opt-bar]');if(!k)return;e.preventDefault();
   if(k.dataset.optBar!==undefined)commitBar(Number(k.dataset.optBar),'');else{const [id,slot]=k.dataset.optKey.split(':');commitAction(id,Number(slot),'');}api.rerender();});
+ /** Runde 5b (Handy): ⓘ zeigt die Erklärung als kleinen Tooltip unter der Beschriftung; der nächste Tipp schließt ihn. */
+ function infoTip(btn){const win=btn.closest('.game-popup');win?.querySelectorAll('.opt-tip').forEach(t=>t.remove());if(!win)return;const tipEl=document.createElement('div');tipEl.className='item-tooltip opt-tip';tipEl.setAttribute('role','tooltip');
+  tipEl.innerHTML='<strong>'+esc(btn.querySelector('span')?.textContent||'')+'</strong><p>'+esc(btn.dataset.optInfo)+'</p>';win.append(tipEl);const w=win.getBoundingClientRect(),r=btn.getBoundingClientRect(),h=tipEl.offsetHeight;
+  const left=Math.max(6,Math.min(r.left-w.left,w.width-tipEl.offsetWidth-6)),below=r.bottom-w.top+4,top=below+h<=w.height-6?below:Math.max(6,r.top-w.top-h-4);tipEl.style.left=left+'px';tipEl.style.top=top+'px';}
  function click(e){
-  const cat=e.target.closest('[data-opt-cat]');if(cat){state.cat=cat.dataset.optCat;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}state.capture=null;api.rerender();return true;}
+  document.querySelectorAll('.popup-settings .opt-tip').forEach(t=>{if(!t.contains(e.target))t.remove();});
+  const info=e.target.closest('[data-opt-info]');if(info){infoTip(info);return true;}
+  const cat=e.target.closest('button[data-opt-cat]');if(cat){state.cat=cat.dataset.optCat;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}state.capture=null;api.rerender();return true;}
   const key=e.target.closest('[data-opt-key]');if(key){const [id,slot]=key.dataset.optKey.split(':');state.capture={id,slot:Number(slot)};api.game().keys?.clear?.();api.rerender();return true;}
   const bar=e.target.closest('[data-opt-bar]');if(bar){state.capture={bar:Number(bar.dataset.optBar)};api.game().keys?.clear?.();api.rerender();return true;}
   const preset=e.target.closest('[data-opt-preset]');if(preset){const p=T.presets.find(x=>x.id===preset.dataset.optPreset);for(const [k,v] of Object.entries(p.values))if(settingOn(api.game().settings,k)!==v)api.game().setSetting(k,v);api.events();api.rerender();return true;}
@@ -115,6 +156,8 @@ export function mountOptions(api){
   for(const r of rows){if(r.setting&&SETTING_DEFAULTS[r.setting]!==undefined)g.setSetting(r.setting,SETTING_DEFAULTS[r.setting]);if(r.pref)prefs[r.pref]=OPTIONS_DEFAULTS[r.pref];if(r.slot==='preset')for(const [k,v] of Object.entries(SETTING_DEFAULTS))if(['light','fx','autoRes','fullRes'].includes(k))g.setSetting(k,v);}
   api.setPrefs(prefs);api.events();say(T.defaultsDone(cat.name));api.rerender();}
  function input(e){const z=e.target.closest('[data-opt-zoom]');if(z){api.setZoom(Number(z.value)/100);const out=z.parentElement.querySelector('output');if(out)out.textContent=z.value+' %';return true;}const el=e.target.closest('[data-opt-pref]');if(el){const p={...api.prefs(),[el.dataset.optPref]:Number(el.value)};api.setPrefs(cleanPrefs(p));const out=el.parentElement.querySelector('output'),r=Object.values(T.sections).flat().flatMap(s=>s.rows).find(x=>x.pref===el.dataset.optPref);if(out)out.textContent=el.value+(r?.unit||'');return true;}
+  const cs=e.target.closest('[data-opt-choice-select]');if(cs){api.setPrefs(cleanPrefs({...api.prefs(),[cs.dataset.optChoiceSelect]:cs.value}));api.rerender();return true;}
+  const ps=e.target.closest('[data-opt-preset-select]');if(ps){const p=T.presets.find(x=>x.id===ps.value);if(p){for(const [k,v] of Object.entries(p.values))if(settingOn(api.game().settings,k)!==v)api.game().setSetting(k,v);api.events();}api.rerender();return true;}
   const f=e.target.closest('[data-opt-filter]');if(f){state.filter=f.value;api.rerender({keepFocus:'[data-opt-filter]'});return true;}return false;}
  return {html,click,input,open(cat){if(cat)state.cat=cat;state.capture=null;},get capturing(){return !!state.capture;},get category(){return state.cat;},stop(){state.capture=null;}};
 }

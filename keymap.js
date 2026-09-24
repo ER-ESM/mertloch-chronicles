@@ -40,4 +40,11 @@ export function saveKeymap(map,storage=globalThis.localStorage){try{if(Object.ke
 /** Die im Spiel wirksame Belegung (app.js setzt sie beim Start und nach jeder Änderung); bar-keys.js fragt sie für gesperrte Tasten. */
 let live={};
 export const liveKeymap=()=>live;
-export function setLiveKeymap(map){live=cleanKeymap(map);}
+export function setLiveKeymap(map){live=cleanKeymap(map);try{globalThis.document?.dispatchEvent(new CustomEvent('keymap-change'));}catch{}}
+/**
+ * Runde 5b (Spielerbericht R5): Doppelbelegungen finden – dieselbe Taste an mehreren Aktionen oder an Aktion und Leistenplatz.
+ * extra: [{name, binding}] (z. B. Leistenplätze). → Map Belegung → [Namen] (nur Einträge mit ≥ 2 Namen).
+ */
+export function keyConflicts(map,extra=[]){const by=new Map(),add=(b,name)=>{if(!b)return;const l=by.get(b)||[];if(!l.includes(name))l.push(name);by.set(b,l);};
+ for(const a of KEYBIND_ACTIONS)for(const b of keysOf(map,a.id))add(b,a.name);for(const e of extra)add(e.binding,e.name);
+ return new Map([...by].filter(([,l])=>l.length>1));}

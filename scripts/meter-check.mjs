@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 const dir='visual-review/meter';mkdirSync(dir,{recursive:true});
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9375),serverPort:4187}),checks=[];
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9375),serverPort:Number(process.env.SERVER_PORT||4187)}),checks=[];
 const read=s=>b.evaluate(s),pass=s=>{checks.push(s);console.log('PASS '+s);};
 async function click(selector,touch=false){
  await read(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'nearest'})`);await wait(150);
@@ -36,9 +36,11 @@ try{
  await b.press('V');await wait(300);
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);
  await read(`document.querySelector('#meterSegment').focus();`);await b.press('v');assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await b.press('v');
+ // Esc nach WoW (Runde 3a): das erste Esc beendet nur den Autoangriff (und wählt ab), erst das nächste öffnet das Spielmenü – die Statistik bleibt offen.
  await read(`game.paused=false;game.startAttack();game.paused=true;document.activeElement.blur();`);assert.equal(await read('game.autoAttack.enabled'),true);await b.press('Escape');
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);assert.equal(await read('game.autoAttack.enabled'),false);
- assert.equal((await b.state()).popups[0].id,'menu');await b.press('Escape');assert.equal((await b.state()).popups.length,0);
+ for(let i=0;i<3&&!(await b.state()).popups.length;i++)await b.press('Escape');
+ assert.equal((await b.state()).popups[0].id,'menu');assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);await b.press('Escape');assert.equal((await b.state()).popups.length,0);
  pass('compact meter visible by default; V/Shift+V toggle; combat Escape keeps the HUD open');
  await click('[data-meter-actor="dieter"]');assert.ok(await read(`document.querySelectorAll('[data-meter-ability]').length>=3`));
  await click('[data-meter-ability="strike"]');assert.match(await read(`document.querySelector('.meter-detail').textContent`),/Kritisch/);
@@ -63,16 +65,20 @@ try{
  await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:handle.x+60,y:handle.y+80,button:'left',buttons:1});
  await b.send('Input.dispatchMouseEvent',{type:'mouseReleased',x:handle.x+60,y:handle.y+80,button:'left',clickCount:1});
  const geometry=await read(`(()=>{const r=document.querySelector('#combatMeter').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()`);
- assert.ok(geometry.width>=379&&geometry.height>=299,JSON.stringify(geometry));
+ // Runde 5b (Grafik-Endliste 8): Die Höhe folgt den Zeilen (1–8 à 28 px, keine Leerfläche) – Ziehen am Griff ändert die Breite; die Höhe bleibt nach Inhalt.
+ const fits=()=>read(`(()=>{const p=document.querySelector('#combatMeter'),rows=p.querySelector('.meter-rows'),foot=p.querySelector('.meter-summary').getBoundingClientRect(),last=[...rows.children].at(-1)?.getBoundingClientRect(),empty=p.querySelector('.meter-empty:not([hidden])')?.getBoundingClientRect();const end=Math.max(last?.bottom||0,empty?.bottom||0);return foot.top-end})()`);
+ assert.ok(geometry.width>=379&&await fits()<=16,JSON.stringify(geometry));
  await fixture(false,true);assert.equal(await read(`document.querySelector('#combatMeter').hidden`),false);
- assert.deepEqual(await read(`(()=>{const r=document.querySelector('#combatMeter').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()`),geometry);
+ const after=await read(`(()=>{const r=document.querySelector('#combatMeter').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()`);
+ assert.deepEqual({x:after.x,width:after.width},{x:geometry.x,width:geometry.width});assert.ok(Math.abs(after.y+after.height-(geometry.y+geometry.height))<=1||Math.abs(after.y-geometry.y)<=1,JSON.stringify({after,geometry}));assert.ok(await fits()<=16,'Höhe nach Inhalt nach dem Neuladen');
  pass('physical drag/resize and mode, visibility, position and size persist across reloads');
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await b.resize(390,844);await fixture(true);
  assert.equal(await read(`document.querySelector('#combatMeter').hidden`),true);await click('#meterToggle',true);
  await bounds();await click('[data-meter-close]',true);
- await click('#touchMenu',true);await click('.game-menu-windows [data-shell="person"]',true);
- await read(`[...document.querySelectorAll('.popup-person .panel-tabs button')].find(b=>/Werte/.test(b.textContent))?.click()`);/* E-43: Figur hat die Unterreiter Ausrüstung | Werte */
- await click('.meter-entry',true);assert.equal((await b.state()).popups.length,0);
+ // Seit Runde 3b steht „Kampfstatistik öffnen“ nicht mehr in der Figur, sondern unter Einstellungen → Interface (am Handy seitenweise, Runde 5b).
+ await click('#touchMenu',true);await click('.popup-menu [data-shell="settings"]',true);await click('button[data-opt-cat="interface"]',true);
+ for(let i=0;i<4&&!await read(`!!document.querySelector('.popup-settings [data-meter-open]')?.offsetParent`);i++)await click('.popup-settings .opt-pager [data-opt-page="1"]',true);
+ await click('.popup-settings [data-meter-open]',true);assert.equal((await b.state()).popups.length,0);
  await click('[data-meter-actor="dieter"]',true);await bounds();await b.screenshot(dir+'/mobile-portrait.png');
  await click('[data-meter-mode="healing"]',true);await click('[data-meter-ability="heal"]',true);await bounds();pass('touch opens from Clanbook and supports both modes and ability details');
  await read('game.paused=false;');const beforeTouch=(await b.state()).player;

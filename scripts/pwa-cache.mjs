@@ -5,6 +5,8 @@ const root=new URL('../',import.meta.url);
 export async function writePrecache(){const files=(await readdir(root)).filter(n=>/\.(js|css|html|webmanifest)$/.test(n)&&!['sw.js','precache-manifest.js'].includes(n));files.push('data/mertloch.json');for(const file of await readdir(new URL('content/',root),{recursive:true}))if(file.endsWith('.js'))files.push('content/'+file.replaceAll('\\','/'));// Nur die tatsächlich verwendeten Exporte der Grafiklieferung: sources/, review/, generation-*.json
 // und PROMPTS.md sind Herkunftsdaten und gehören nicht in den Spiel-Cache.
 files.push('assets/content-art/handoff-catalog.json');
+// Runde 5b: Katalog der gezeichneten Heldenebenen (hero-layers.js) – leer ausgeliefert, damit der Start ohne 404 läuft; die Sprite-Pipeline füllt ihn.
+try{await readFile(new URL('assets/heroes/catalog.json',root));files.push('assets/heroes/catalog.json');}catch{}
 for(const folder of ['mounts','ui-kit','ui-chrome','class-visuals','class-mechanics','content-art/e32','content-art/locomotion'])for(const file of await readdir(new URL('assets/'+folder+'/runtime/',root)))if(/\.(png|json)$/.test(file))files.push('assets/'+folder+'/runtime/'+file);
 // Lokal vendorte Schriften (OFL): Jersey 15 und Nunito, damit die Oberfläche offline im Stil bleibt.
 for(const file of await readdir(new URL('assets/fonts/',root)))if(file.endsWith('.woff2'))files.push('assets/fonts/'+file);
