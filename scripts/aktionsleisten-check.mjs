@@ -1,6 +1,6 @@
 // Aktionsleisten (2026-09-23): zwei Leisten ab Start, Kniff aus dem Clanbuch auf Leiste 2 ziehen (Hervorhebung während des Ziehens),
 // Gegenstand aus dem Rucksack ziehen, Umsortieren, Herausziehen entfernt, Taste per Hover + B belegen, Tastenkonflikt,
-// Maustaste 4 belegen und auslösen, Rechtsklickmenü, dritte Leiste über Hilfe → Einstellungen. Vollbild 2024×900.
+// Maustaste 4 belegen und auslösen, Rechtsklickmenü, dritte Leiste über Spielmenü → Einstellungen. Vollbild 2024×900.
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
@@ -81,15 +81,15 @@ try{
   const items=await read(`[...document.querySelectorAll('.context-menu button')].map(b=>b.textContent)`);assert.ok(items.some(t=>t.startsWith('Taste belegen'))&&items.some(t=>t.startsWith('Platz leeren')),JSON.stringify(items));await shot('10-rechtsklick');
   await read(`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent.startsWith('Taste belegen')).click()`);await wait(150);assert.equal(await read(`!!document.querySelector('${slot(11)}.key-capture')`),true);await key('Delete','Delete',46);await wait(150);assert.equal(await read(`game.rpg.barKeys[11]`),'');assert.equal(await keyOf(11),'');}
  checks.push('right-click menu offers Taste belegen / Taste löschen / Platz leeren; Entf clears the key');
- // 11 Dritte Leiste über Hilfe → Einstellungen.
- await read(`document.querySelector('#guideButton').click()`);await wait(600);
- await read(`[...document.querySelectorAll('.popup-guide [role=tab],.game-popup [role=tab]')].find(t=>/Einstellungen/.test(t.textContent))?.click()`);await wait(300);
+ // 11 Dritte Leiste über Spielmenü → Einstellungen.
+ /* Runde 2a: Einstellungen sind ein eigenes Fenster aus dem Spielmenü */await read(`document.querySelector('#gameMenuButton').click()`);await wait(500);
+ await read(`document.querySelector('.popup-menu [data-shell="settings"]')?.click()`);await wait(400);
  assert.ok(await center('[data-bar-settings]'),'Einstellung Aktionsleisten fehlt');await shot('11-einstellungen');
  await read(`document.querySelector('[data-bar-count="1"]').click()`);await wait(300);
  assert.equal(await read('game.rpg.barCount'),3);assert.equal(await read(`document.querySelectorAll('.action-area .action-bar').length`),3);assert.equal(await read(`document.querySelector('[data-bar-settings] output').textContent`),'3');
  await read(`document.querySelectorAll('[data-window-close]').forEach(b=>b.click())`);await wait(300);
  during=await drag(slot(11),slot(22),{shotName:'12-drei-leisten-ziehen'});assert.equal((await bar())[22],'strike');assert.equal(await keyOf(22),'','Leiste 3 startet ohne Tasten');
- await shot('13-drei-leisten');checks.push('third bar added in Hilfe → Einstellungen, starts without keys, accepts drops');
+ await shot('13-drei-leisten');checks.push('third bar added in Spielmenü → Einstellungen, starts without keys, accepts drops');
  // 12 Speichern und neu laden: Leisten, Tasten und Belegung bleiben.
  const before={bar:await bar(),keys:await read('game.rpg.barKeys'),count:await read('game.rpg.barCount')};
  await read('window.mertloch.save?.()');await read(`dispatchEvent(new Event('pagehide'))`);await wait(300);

@@ -335,3 +335,6 @@ body:not(.touch-mode) .popup-map.dock-full #atlasSelection p{margin:2px 0 6px!im
 .popup-quest .build-badge{min-width:22px;height:22px;display:grid;place-items:center;border:1px solid #c5a268;border-radius:50%;font:800 12px/1 var(--read,sans-serif);color:#f3cf7a}
 .popup-quest .build-go{height:28px!important;min-height:0!important;padding:0 10px!important;font-size:12px!important}
 .popup-quest .compact-effects{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0 0 6px!important;padding:0!important;list-style:none;font:600 12px/1.2 var(--read,sans-serif);color:#c9d2b4}
+/* Handy: „Mehr“ als Tippziel mit 44 × 32 px */
+.touch-mode .dlg-more{width:44px;height:32px;bottom:-6px;border-radius:12px}
+.touch-mode .dlg-more .ui-glyph{width:22px;height:22px}
