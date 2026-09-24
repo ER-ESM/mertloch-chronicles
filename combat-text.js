@@ -22,8 +22,10 @@ export function mountCombatText(shell,api){
   return companions.get(id).areas;
  }
  let enabled=true;
+ /** Feinschalter aus Einstellungen → Spiel → Kampf (WoW „Kampftext“): eingehend, Meldungen, Söldner; ausgehend hängt nur am Hauptschalter. */
+ const hidden=e=>{const s=api.game()?.settings;if(!s)return false;if(e.actor)return s.sctCompanions===false;const a=e.area==='in'||e.area==='out'?e.area:'note';return a==='in'?s.sctIn===false:a==='note'&&s.sctNotes===false;};
  function push(e){
-  if(!enabled)return;const group=e.actor?companionAreas(e.actor):areas;if(!group)return;const area=group[e.area]||group.note,now=performance.now();
+  if(!enabled||hidden(e))return;const group=e.actor?companionAreas(e.actor):areas;if(!group)return;const area=group[e.area]||group.note,now=performance.now();
   // Zusammenfassen: gleiche Art + gleicher Kniff kurz nacheinander → eine Zeile mit Summe
   const twin=e.value!==undefined&&area.rows.find(r=>r.e.kind===e.kind&&r.e.skill===e.skill&&r.e.ability===e.ability&&r.e.text===e.text&&now-r.at<MERGE*1000);
   if(twin){twin.e.value+=e.value;twin.e.crit=twin.e.crit||e.crit;twin.node.querySelector('b').textContent=fmt(twin.e);twin.node.classList.toggle('sct-crit',!!twin.e.crit);return;}

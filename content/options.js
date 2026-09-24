@@ -14,7 +14,10 @@ export const OPTIONS_UI={
   game:[
    {title:'Kampf',rows:[
     {setting:'autoLoot',label:'Auto-Loot',hint:'Beute wandert nach dem Kampf von selbst in den Rucksack.'},
-    {setting:'sct',label:'Kampftext',hint:'Schadens- und Heilzahlen über Held und Ziel.'}]}
+    {setting:'sct',label:'Kampftext',hint:'Schadens- und Heilzahlen über Held und Ziel.'},
+    {setting:'sctIn',parent:'sct',label:'Eingehend',hint:'Schaden, Heilung und Ausweichen am eigenen Helden (links).'},
+    {setting:'sctNotes',parent:'sct',label:'Meldungen',hint:'Procs, Schwung, Unterbrechen und Erfahrung über dem Helden.'},
+    {setting:'sctCompanions',parent:'sct',label:'Söldner',hint:'Zahlen an deinen Söldnern.'}]}
   ],
   interface:[
    {title:'Darstellung',rows:[
@@ -66,4 +69,4 @@ export const OPTIONS_UI={
 /** Standardwerte der kontoweiten Einstellungen (options-ui.js). */
 export const OPTIONS_DEFAULTS={uiScale:100,volume:0,showTracker:true,showMinimap:true,showXp:true};
 /** Standard der Spielschalter (game.settings) für „Standard“ je Kategorie. */
-export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false};
+export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false,sctIn:true,sctNotes:true,sctCompanions:true};
