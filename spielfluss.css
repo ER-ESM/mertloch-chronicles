@@ -72,3 +72,7 @@ body.touch-mode.zone-announcing #touchPlace{opacity:1;visibility:visible;transit
 .touch-mode .chat-line.toast-twin{display:none}
 #itemTooltip.tip-compact{width:240px;padding:9px 11px}
 .milestone-unlock .milestone-title{white-space:nowrap}.milestone-unlock .milestone-title.is-many{font-size:32px;letter-spacing:.03em}
+
+/* 3 · Ein Zonentitel: a470c75 hat parallel einen zweiten Ortswechsel-Schriftzug (#zoneSplash, 22 %, 46 px) eingeführt. Er lag genau
+   über dem Zonentitel aus zone-announce.js (18 %, Runde 1/2b) – zwei Titel übereinander. Es bleibt der eine Zonentitel. */
+#zoneSplash{display:none!important}
