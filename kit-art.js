@@ -110,7 +110,7 @@ function drawPaper(c,{x0,x1,paper:P},top,h){const w=x1-x0,a=c.globalAlpha;if(w<=
 /** Wandschmuck an der Front seiner Wand: unten auf Aufhängehöhe über dem Wandfuß. */
 export function drawWallDecor(c,it,wall){
  const def=it.def,top=wall.maxY-(def.mount||0)-(it.height||8),s=sprite(it.sprite);
- if(s){const [sx,sy,sw,sh]=frameOf(s,seedOf(it)),hh=sh/sw*it.w;c.drawImage(s.img,sx,sy,sw,sh,it.minX,top+(it.height-hh),it.w,hh);return;}
+ if(s){const [sx,sy,sw,sh]=frameOf(s,seedOf(it)),hh=sh/sw*it.w;if(!(s.m.frames>1)){const o=outlined(s,it.sprite),k=it.w/sw,pp=o.pad*k;c.drawImage(o.canvas,sx,sy,sw+o.pad*2,sh+o.pad*2,it.minX-pp,top+(it.height-hh)-pp,it.w+pp*2,hh+pp*2);return;}c.drawImage(s.img,sx,sy,sw,sh,it.minX,top+(it.height-hh),it.w,hh);return;}
  const color=def.color||'#888';fill(c,INK,it.minX-.5,top-.5,it.w+1,it.height+1);fill(c,color,it.minX,top,it.w,it.height);fill(c,shade(color,1.3),it.minX+1,top+1,it.w-2,1);
 }
 /** Stehendes Teil (Möbel, Draußen, Tischdeko): unten mittig auf der Vorderkante der Standfläche, tiefensortiert. */
