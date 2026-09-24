@@ -334,3 +334,9 @@ body[data-locked~=talents] .book-tabs [data-book-tab=talents]::after{content:'';
 .item-tooltip:has(.rarity-uncommon) .tooltip-heading canvas{border-color:#4fae4a}
 .item-tooltip:has(.rarity-rare) .tooltip-heading canvas{border-color:#3d86e0}
 .item-tooltip:has(.rarity-epic) .tooltip-heading canvas{border-color:#a45ce0}
+/* Abklingzeit vorbei (app.js .cd-done): Symbol blitzt hell auf, ein goldener Ring läuft nach außen – man sieht ohne Hinschauen, dass der Kniff wieder bereit ist. */
+.action-area .skill.cd-done{animation:cd-done-pop .5s ease-out}
+.action-area .skill.cd-done::after{content:'';position:absolute;inset:-2px;border:2px solid #ffe08a;border-radius:4px;pointer-events:none;z-index:5;animation:cd-done-ring .55s ease-out forwards}
+@keyframes cd-done-pop{0%{filter:brightness(2.1)}100%{filter:none}}
+@keyframes cd-done-ring{0%{opacity:1;transform:scale(.9);box-shadow:0 0 10px #ffe08a}100%{opacity:0;transform:scale(1.35);box-shadow:0 0 0 #ffe08a00}}
+@media (prefers-reduced-motion:reduce){.action-area .skill.cd-done,.action-area .skill.cd-done::after{animation:none}}
