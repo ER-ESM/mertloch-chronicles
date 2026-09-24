@@ -8,6 +8,7 @@ import {restoreRolls,rollDrop,questChoices,registerRoll} from './itemization.js'
 import {available,LESSONS,skillLevel} from './progression.js';
 import {classBuffValue} from './class-buffs.js';
 import {BAR_SIZE,MAX_BARS,DEFAULT_BARS,bindingAt,bindingLabel,cleanBarKeys} from './bar-keys.js';
+import {keysOf,liveKeymap} from './keymap.js';
 import {ACTION_BAR_TEXT,BALANCE,ITEM_CATALOG,rating,ratingK,powerRate,SYSTEM_LINES,STAT_NAMES,GEAR_COMPARE,WEAPON_TYPES,BAG_UI,RARITIES} from './content/index.js';
 export const BAG_SIZE=24;
 /** Standardtasten der ersten Leiste (Touch-Übersetzung). Die wirksame Taste je Platz liefert slotKey() (bar-keys.js). */
@@ -107,7 +108,7 @@ export function placeUsables(game,ids){const bar=actionBar(game),seen=game.rpg.b
   let slot=bar.slice(0,BAR_SIZE).lastIndexOf(null);if(slot<0)slot=firstFree(bar,BAR_SIZE);if(slot<0){noteBarItem(game,id);continue;}bar[slot]=entry;noteBarItem(game,id);touched=true;}
  if(touched){game.emit('barChanged');game.emit('save');}
  return touched;}
-export function keyFor(game,id){if(SPECIAL_KEYS[id]!==undefined)return id==='dash'?'LEER':'Q';const i=actionBar(game).indexOf(id);return i<0?'Skillbuch':slotKey(game,i)||ACTION_BAR_TEXT.noKey;}
+export function keyFor(game,id){if(SPECIAL_KEYS[id]!==undefined){/* Sonderaktionen folgen der Tastenbelegung (keymap.js) */const b=keysOf(liveKeymap(),id)[0];return b==='Space'?'LEER':bindingLabel(b)||ACTION_BAR_TEXT.noKey;}const i=actionBar(game).indexOf(id);return i<0?'Skillbuch':slotKey(game,i)||ACTION_BAR_TEXT.noKey;}
 /** Beute als Ereignis – gleich, ob sie automatisch oder von Hand eingesammelt wurde. */
 function lootEvent(game,items,coins,source){game.emit('loot',{items:items.map(e=>({id:e.id,count:e.count,rarity:ITEMS[e.id]?.rarity||'common',rolled:e.id.startsWith('roll-')})),coins,source:{name:source?.name||'',kind:source?.kind||'bag'}});}
 /** Wirkungen einer Ausrüstung (E-53): Leben, Schaden, Glückstreffer, Tempo, Waffe je Sekunde, Heilung, Deckung, Randale, Schutz. */
