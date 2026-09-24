@@ -1070,3 +1070,56 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 6. **NPC-Porträts:** 13 Codex-Porträts nach Puppen-Vorlage in „Puppenfarben“ (Spielpalette + Puppenpalette) eingebaut; Clan-Mitglieder unter `portrait-mentor-*`, damit Helden- und Söldnerrahmen ihre Bilder behalten. Freigabe: https://claude.ai/artifact/EgU5cZC8tewiSaaM1brm8h.
 
 **Offen.** 26 Porträts, Hedwig (zu jung, Schürze fehlt) und Ron (neu nach Bibel) nach dem Codex-Reset (Sa 26.09., 21:21). Echte Messung auf Nutzergeräten mit Grafikkarte steht aus.
+
+## E-70 · Fünf Optimierungsrunden „wie WoW“: Grafikdesigner und Spieler als Abnahme (24.09.2026, verfeinert E-67)
+
+**Anlass.** Der Nutzer wollte „5 Optimierungsrunden, aus Sicht Grafikdesigner und aus Sicht Spieler“ mit WoW als Vorbild. Jede Runde hatte zwei unabhängige Prüfer: eine Spieler-Persona, die live spielte (Kenner, Neuling oder Prüfer), und ein Grafikdesign-Review mit Screenshots, Messungen und Zielbildern. Danach setzten ein bis drei Umsetzer die Befunde um, prüften sie und stellten sie live. Belege: `docs/PLAYTEST-2026-09-24-r1…r5-*.md`, `docs/REVIEW-GRAFIK-2026-09-24-r1…r5.md`, `docs/OPTIMIERUNG-2026-09-24-runde-1…5b.md`, Prüfskripte `scripts/optimierung-r1…r5b-check.mjs`.
+
+**Entscheidungen, die jetzt gelten.**
+1. **Fenster:**
+   - Einzelfenster an festen Plätzen mit gemeinsamer Oberkante; die Höhe richtet sich nach dem Inhalt.
+   - Esc schließt alle Fenster auf einmal.
+   - Die Menüleiste zeigt alle Fenster; gesperrte sind ausgegraut und nennen ihre Bedingung im Tooltip.
+   - Aufträge immer mit J (zusätzlich L), als WoW-Questlog.
+   - Hilfe als Tastenliste „Kappe + ein Wort“; eine reine Piktogramm-Hilfe war zu weit getrieben.
+   - Gespräch kompakt mit „Annehmen/Später“ immer sichtbar.
+2. **Nirgends scrollen:** `ui:check` meldet jede scrollende `.popup-body` am Desktop und am Handy als Fehler.
+3. **Held nie verdeckt:**
+   - Bei offenen Fenstern legt die Kamera den Helden in die freie Lücke (`hero-frame.js`).
+   - Ohne Lücke klappen Fenster über ihm auf die Titelzeile ein.
+   - Modale Fenster (Einstellungen, Spielmenü) zählen nicht als Hindernis; die Welt läuft dahinter weiter.
+4. **Weltschrift:**
+   - NPC-Namen stehen dauerhaft (WoW-Standard).
+   - Orte, Stationen, Sammelobjekte und neutrale Tiere zeigen ihren Namen nur beim Überfahren, als Ziel oder im Kampf.
+   - Während der Zonentitel eingeblendet ist, tritt die Weltschrift zurück.
+   - Name und Balken eines Schilds sind eine Einheit und stapeln sich.
+5. **Kampf und Laufen:**
+   - Der Angreifer wird Ziel; Tab wählt zuerst Feinde, Angreifer vorn.
+   - Ein Rechtsklick wählt genau das angeklickte Ziel, läuft hin und greift an bzw. spricht an.
+   - Jeder Laufweg (Karte, Minikarte, Auftragskasten, Rechtsklick) stoppt beim ersten Angriff.
+   - Zauber-Puffer von 0,4 s.
+   - Ablehnungen erscheinen sofort als rote Zeile.
+   - Der Todesbildschirm liegt über allen Fenstern.
+   - Nur auf dem Einstiegsweg und bis Stufe 3 ist die Aggro der Feldgegner entschärft (Messwerte in 3a); das globale Balancing ist unverändert.
+6. **Aufträge:**
+   - Die Verfolgung zeigt je Auftrag Titel, nächsten Schritt und Entfernung, auch für die Hofprobe.
+   - Auftragsgegner tragen ein „!“; der Gegner-Tooltip zeigt Fortschritt, Gebietsregel und Drop-Chance.
+   - Zielgebiete stehen als Fläche auf Karte und Minikarte.
+   - Abschluss groß mittig mit Belohnung.
+7. **Weltkarte:**
+   - Gemeinsame Symbolsprache mit der Minikarte (`map-symbols.js`).
+   - POI-Tooltip, Bündel ab weniger als 24 px, kombinierbarer Filter in der Titelzeile, Seitenleiste mit Gruppenkopf „Wort + Anzahl“.
+   - Keine Legende; die OSM-Nennung bleibt.
+8. **Handy:** dieselben verdichteten Fenster; Tipp-Ziele mindestens 44 px, Abstände mindestens 8 px (`mobile-check` 0/0); Spielmenü bis 320 px Breite nutzbar.
+
+**Endabnahme (Runde 5).**
+- Grafik (5 = WoW-Niveau): Welt 4,5 · HUD, Hauptfenster und Karte je 4 · Handy und Nebenfenster je 3, danach in 5b verbessert.
+- Spieler: „Die Oberfläche fühlt sich jetzt wie ein MMO an.“
+- Die Schutzliste in `docs/REVIEW-GRAFIK-2026-09-24-r5.md` gilt für spätere Arbeiten.
+
+**Offen.**
+- Weltkarte: Bude, Verlies-Eingang und Verfolgen-Nadel; Symbole für Sammel- und Redeziele; eigenes Symbol für den Auftragsfilter „Im Dorf“.
+- Handy: Karte quer.
+- Die lose ⇧1-Leiste über der Aktionsleiste.
+- Weltruf gegen Zonentitel ist nur im Code geprüft.
+- Die Entschärfung des Einstiegswegs gilt nur für Kapitel 1.
