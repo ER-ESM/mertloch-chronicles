@@ -9,7 +9,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 export const PREFS_KEY='mertloch-options-v1';
 /** Kontoweite Einstellungen lesen (Speicher darf fehlen); Werte auf ihre Grenzen gezwungen. */
 export function loadPrefs(storage=globalThis.localStorage){let raw={};try{raw=JSON.parse(storage?.getItem(PREFS_KEY)||'{}')||{};}catch{}return cleanPrefs(raw);}
-export function cleanPrefs(raw){const out={...OPTIONS_DEFAULTS};for(const s of Object.values(T.sections).flat())for(const r of s.rows)if(r.pref&&Number.isFinite(Number(raw?.[r.pref])))out[r.pref]=Math.max(r.min,Math.min(r.max,Math.round(Number(raw[r.pref])/r.step)*r.step));return out;}
+export function cleanPrefs(raw){const out={...OPTIONS_DEFAULTS};for(const s of Object.values(T.sections).flat())for(const r of s.rows)if(r.pref&&r.kind==='switch'){if(typeof raw?.[r.pref]==='boolean')out[r.pref]=raw[r.pref];}else if(r.pref&&Number.isFinite(Number(raw?.[r.pref])))out[r.pref]=Math.max(r.min,Math.min(r.max,Math.round(Number(raw[r.pref])/r.step)*r.step));return out;}
 export function savePrefs(prefs,storage=globalThis.localStorage){try{storage?.setItem(PREFS_KEY,JSON.stringify(prefs));}catch{}}
 /** Welche Grafik-Voreinstellung passt zu den Schaltern? → id oder null (eigene). */
 export const settingOn=(settings,k)=>k==='fullRes'||k==='fps'?settings?.[k]===true:settings?.[k]!==false;
@@ -40,7 +40,8 @@ export function mountOptions(api){
   if(id==='admin')return api.admin()?row(T.admin,T.adminHint,open(T.open,'data-shell="admin"')):'';
   return '';
  }
- const rowHtml=r=>r.slot?slot(r.slot):r.setting?row(r.label,r.hint,toggle(r)):r.pref?row(r.label,r.hint,range(r)):'';
+ const prefSwitch=r=>{const on=api.prefs()[r.pref]!==false;return `<button type="button" class="opt-switch" data-opt-toggle="${r.pref}" aria-pressed="${on}" aria-label="${esc(r.label)}"><span class="setting-switch" aria-hidden="true"><i></i></span><span class="setting-state">${on?T.on:T.off}</span></button>`;};
+ const rowHtml=r=>r.slot?slot(r.slot):r.setting?row(r.label,r.hint,toggle(r)):r.pref?row(r.label,r.hint,r.kind==='switch'?prefSwitch(r):range(r)):'';
  /** Tastenknopf einer Aktion bzw. eines Leistenplatzes; im Erfassungsmodus „Neue Taste drücken …“. */
  const keyButton=(attrs,binding,capturing,fixed)=>`<button type="button" class="opt-key${capturing?' is-capturing':''}${binding?'':' is-empty'}" ${attrs}${fixed?' disabled':''}>${capturing?esc(K.capture):binding?esc(bindingLabel(binding,true)):esc(K.none)}</button>`;
  function keysHtml(){
@@ -89,6 +90,7 @@ export function mountOptions(api){
   const key=e.target.closest('[data-opt-key]');if(key){const [id,slot]=key.dataset.optKey.split(':');state.capture={id,slot:Number(slot)};api.game().keys?.clear?.();api.rerender();return true;}
   const bar=e.target.closest('[data-opt-bar]');if(bar){state.capture={bar:Number(bar.dataset.optBar)};api.game().keys?.clear?.();api.rerender();return true;}
   const preset=e.target.closest('[data-opt-preset]');if(preset){const p=T.presets.find(x=>x.id===preset.dataset.optPreset);for(const [k,v] of Object.entries(p.values))if(settingOn(api.game().settings,k)!==v)api.game().setSetting(k,v);api.events();api.rerender();return true;}
+  const pt=e.target.closest('[data-opt-toggle]');if(pt){const k=pt.dataset.optToggle;api.setPrefs(cleanPrefs({...api.prefs(),[k]:api.prefs()[k]===false}));api.rerender();return true;}
   if(e.target.closest('[data-opt-defaults]')){defaults();return true;}
   if(e.target.closest('[data-opt-close]')){api.close();return true;}
   return false;

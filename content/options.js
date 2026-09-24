@@ -24,6 +24,10 @@ export const OPTIONS_UI={
     {setting:'namesFriendly',label:'Freundliche Figuren',hint:'Namen von Dorfbewohnern, Händlern und Auftraggebern.'},
     {setting:'namesEnemy',label:'Gegner',hint:'Namen über Gegnern in der Nähe; das Ziel zeigt seinen Namen immer.'},
     {setting:'namesPlayers',label:'Andere Spieler',hint:'Namen und Stufe anderer Helden (online).'}]},
+   {title:'Bildschirm',rows:[
+    {pref:'showTracker',kind:'switch',label:'Auftragsverfolgung',hint:'Aktuelle Aufträge rechts unter der Minikarte.'},
+    {pref:'showMinimap',kind:'switch',label:'Minikarte',hint:'Runde Umgebungskarte oben rechts (Karte bleibt auf M).'},
+    {pref:'showXp',kind:'switch',label:'EP-Leiste',hint:'Erfahrung am unteren Bildschirmrand.'}]},
    {title:'Leisten & Anzeigen',rows:[{slot:'bars'},{slot:'meter'},{slot:'hud'}]}
   ],
   graphics:[
@@ -60,6 +64,6 @@ export const OPTIONS_UI={
  volumeOff:'Klänge ausgeschaltet.'
 };
 /** Standardwerte der kontoweiten Einstellungen (options-ui.js). */
-export const OPTIONS_DEFAULTS={uiScale:100,volume:0};
+export const OPTIONS_DEFAULTS={uiScale:100,volume:0,showTracker:true,showMinimap:true,showXp:true};
 /** Standard der Spielschalter (game.settings) für „Standard“ je Kategorie. */
 export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false};

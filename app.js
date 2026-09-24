@@ -34,7 +34,7 @@ setLiveKeymap(loadKeymap());
 import {mountOptions,loadPrefs,savePrefs} from './options-ui.js';
 // Einstellungsfenster (options-ui.js): kontoweite Einstellungen – UI-Skalierung als CSS-Variable, Lautstärke für sound().
 let uiPrefs=loadPrefs();
-const applyUiScale=p=>document.documentElement.style.setProperty('--ui-scale',String(p.uiScale/100));applyUiScale(uiPrefs);
+const applyUiScale=p=>{document.documentElement.style.setProperty('--ui-scale',String(p.uiScale/100));for(const [k,cls] of [['showTracker','hide-tracker'],['showMinimap','hide-minimap'],['showXp','hide-xp']])document.documentElement.classList.toggle(cls,p[k]===false);};applyUiScale(uiPrefs);
 const options=mountOptions({game:()=>game,prefs:()=>uiPrefs,setPrefs:p=>{uiPrefs=p;savePrefs(p);applyUiScale(p);muted=p.volume<=0;},toast:t=>toast(t),rebuild:()=>game&&buildActions(),events:()=>game&&events(),
  rerender:o=>{if(popups.isOpen('settings'))showSettings(null,o);},close:()=>popups.close('settings'),extras:{bars:()=>barSettings(game),meter:()=>meterEntry(),hud:()=>hudEntry()},touch:()=>!!mobile?.active,admin:()=>true,zoom:()=>renderer?.zoomFactor||1,startOpen:()=>!!startScreen?.isOpen,zoomRange:()=>ZOOM_RANGE,setZoom:f=>{if(!renderer)return;const v=renderer.setZoomFactor(f);try{localStorage.setItem(ZOOM_KEY,v.toFixed(3));}catch{}}});
 import {decoratePanel,adaptPanel} from './panel-pages.js';
