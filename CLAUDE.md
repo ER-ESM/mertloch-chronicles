@@ -14,6 +14,8 @@ Aktiver Grafikstandard: [Präzisionspixel](docs/PRAEZISIONSPIXEL-2026-09-17.md),
 
 **Ladeschirm:** `loading-screen.js` (Modul vor `app.js`, Schritte `boot.phase/track/finish/fail`), Texte/Motive/Tipps in `content/loading-screen.js`, Export `npm run loading:build`, Browserprüfung `npm run loading:check`. Details: [docs/GRAFIK-LIEFERUNG-2026-09-23-ladeschirm.md](docs/GRAFIK-LIEFERUNG-2026-09-23-ladeschirm.md).
 
+**Gruppenspiel (2026-09-24):** fremde Söldner, Zielmarkierungen, Assist, Bereitschaftscheck, Folgen, Anführer, Karte – Übersicht und Protokoll in [docs/GRUPPENSPIEL-2026-09-24.md](docs/GRUPPENSPIEL-2026-09-24.md). Zwei-Spieler-Prüfung mit eigenem Server: `node scripts/party-online-check.mjs` (16 Prüfungen, `TOUCH_B=1` für Handy).
+
 ## Modulgrenzen
 
 | Bereich | Dateien | Wer arbeitet dort |
