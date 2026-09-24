@@ -24,7 +24,7 @@ Regeln für dieses Dokument:
 | E-10 | Grafikstil: Maifeld-Detailpixel | 2026-09-16 | gilt |
 | E-11 | Weltmaßstab über registrierte Türöffnungen | 2026-09-17 | gilt |
 | E-12 | Kampffluss nach `GAMEPLAY-KONZEPT-FLUSS.md` | 2026-09-17 | gilt |
-| E-13 | Clanbuch: ein Fenster mit Reitern, kein Einklappen | 2026-09-17 | gilt |
+| E-13 | Clanbuch: ein Fenster mit Reitern, kein Einklappen | 2026-09-17 | aufgehoben durch E-67 |
 | E-14 | Gemeinsame Engine-Bausteine mit TicketTower erst später | 2026-09-17 | gilt |
 | E-15 | Mertloch folgt der studio-weiten Pipeline | 2026-09-17 | gilt |
 | E-16 | Akt 1 „Filmriss“ ist die Story-Basis | 2026-09-17 | gilt |
@@ -38,7 +38,7 @@ Regeln für dieses Dokument:
 | E-24 | UI-Stil „Bierdeckel" für die gesamte Oberfläche | 2026-09-17 | gilt, Kanten geändert durch E-28 |
 | E-25 | Autoangriff auf Desktop und Touch | 2026-09-17 | gilt |
 | E-26 | Erst die technische Basis stabilisieren | 2026-09-17 | gilt |
-| E-27 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | gilt, verfeinert E-13 |
+| E-27 | Clanbuch auf vier Reiter plus Hilfe, Abschnitte mit Sprungleiste | 2026-09-17 | aufgehoben durch E-67 |
 | E-28 | Runde, einfache Linien statt Radius 0 | 2026-09-18 | gilt, ändert E-24 |
 | E-29 | Jeder Kniff hat zu jeder Zeit einen Nutzen (frühe Eskalation) | 2026-09-18 | gilt |
 | E-30 | Sichtbare Ausrüstung über Pre-Render aus 3D | 2026-09-18 | gilt |
@@ -1025,3 +1025,15 @@ Balance-Bericht:
 5. `scripts/sweep-temp-profiles.ps1 -Register` trägt eine stündliche Windows-Aufgabe ein (SYSTEM). Sie räumt auch die Reste alter Worktrees in `%TEMP%` weg, die nie auf `chrome-profile.mjs` umgestellt werden.
 
 **Regel.** Neue Prüfskripte starten Chrome nur über `makeProfile` und `...LEAN_ARGS` und beenden es mit `disposeChrome`.
+
+## E-67 · Einzelfenster statt Clanbuch; HUD nach WoW-Vorbild mit Tooltips statt Text (23./24.09.2026, hebt E-13 und E-27 auf)
+
+**Befund.** Der Nutzer fand das Clanbuch mit Reitern unpraktisch und das HUD zu textlastig: „Löse das auf und baue die Menüs einzeln aufrufbar“, „spare dir so viele Texte und arbeite mehr mit Tooltips“, „Scrollen sollten wir generell vermeiden“. World of Warcraft ist das Vorbild.
+
+**Entscheidung.**
+1. **Einzelfenster** (7cfac5d, Build #389): Jede Seite ist ein eigenes Fenster mit eigener Taste, die es auch wieder schließt. Links liegen Figur (C) und Aufträge (J, darin Bude und Erinnerungen), rechts Rucksack (I) und Kniffe (P/K). Talente (N) und Hilfe (H) liegen in der Mitte, die Karte (M) fast bildschirmfüllend. Mehrere Fenster dürfen gleichzeitig offen sein, ohne sich zu überlappen. Esc schließt das oberste Fenster. Am Handy ist immer nur ein Fenster offen, erreichbar über ein Symbolraster im Spielmenü. Umsetzung: .
+2. **Tooltips statt Text:** Beschriftungen und Erklärsätze in Fenstern und HUD werden zu Symbolen (Bildpipeline) mit Hover-Tooltip. Namen von Sammelobjekten erscheinen nur beim Mouse-Over. Die Clan-Schule unten links ist entfallen (c7c6565).
+3. **Auftragsverfolgung** (0737397, 17e4cea): ohne Kasten und ohne Kopf. Je Auftrag stehen ein Titel und nur der nächste offene Schritt da; die übrigen Schritte, die Belohnung und die Klickwirkung stehen im Tooltip. Die Verfolgung scrollt nicht, was nicht passt, fasst „+N“ zusammen. Sie sitzt unter der Minikarte ().
+4. **Minikarte** (7376216): Messingring rund oder eckig, Zoom, Lupe für Symbolgruppen, Optionen, Tooltips. Umsetzung: .
+
+**Offen.** Das Aufträge-Fenster endet über der doppelten Aktionsleiste und scrollt deshalb früher. Die Karte verdeckt die Menüleiste. Die linken Fenster verdecken den Chat. Die Hilfe hat noch Unterreiter. Das Aufträge-Fenster zeigt noch Erklärsätze und Knöpfe mit langem Text. Das Ortsschild der Minikarte doppelt den Ortsnamen oben mittig. Kiosk und Verlies haben noch die alte Innenraum-Minikarte.
