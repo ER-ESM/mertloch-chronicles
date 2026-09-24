@@ -92,6 +92,12 @@ try{
  await run(b,`const f=[...document.querySelectorAll('form')].find(f=>f.closest('#chatWindow,.chat-window'));const i=f.querySelector('input');i.value='/s Hallo Rudi, auf geht es!';f.requestSubmit();`);
  await until(a,`M.renderer.bossSpeech.barks.some(b=>b.kind==='player'&&b.id==='Moni'&&b.text.startsWith('Hallo Rudi'))`,4000,'Blase bei Rudi');ok('Chat „sagen“ erscheint als Sprechblase über dem Mitspieler');
  await wait(300);await shot(a,'bubble-a');
+ // Runde 14: Anführer übertragen über das Menü am Gruppenrahmen; Krone wandert zu Moni
+ await run(a,`const t=document.querySelector('[data-party-name=Moni]');const r=t.getBoundingClientRect();t.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+30,clientY:r.y+20}));`);
+ await until(a,`[...document.querySelectorAll('.context-menu button')].some(b=>b.textContent==='Zum Anführer machen')`,3000,'Menüpunkt Anführer');
+ await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent==='Zum Anführer machen').click();`);
+ await until(b,`on.social.isLeader()&&document.querySelector('.player-panel.is-party-leader')`,4000,'Moni führt, Krone am eigenen Rahmen');
+ await until(a,`on.state.party.leader==='Moni'&&!document.querySelector('.player-panel.is-party-leader')&&document.querySelector('[data-party-name=Moni] .party-name').textContent.startsWith('♛')`,4000,'Rudi sieht Moni als Anführerin');ok('Anführer übertragen: Krone wandert, Rechte wechseln');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

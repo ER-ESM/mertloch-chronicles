@@ -75,6 +75,8 @@ export function createSharedWorld({clients,send,now=Date.now,random=Math.random,
    if(q.members.length>=SHARED_RULES.partySize)return notice(c,SHARED_TEXT.full);q.members.push(c.id);c.party=q.id;partySay(q,SHARED_TEXT.joined(c.name));partyPush(q);
   }else if(op==='leave'){if(!p)return notice(c,SHARED_TEXT.noParty);leave(c);}
   else if(op==='kick'){if(!p)return notice(c,SHARED_TEXT.noParty);if(p.leader!==c.id)return notice(c,SHARED_TEXT.notLeader);const o=byName(msg.name);if(o&&o!==c&&o.party===p.id)leave(o,'kicked');}
+  // Anführer übertragen (2026-09-24, WoW „Zum Anführer machen“)
+  else if(op==='promote'){if(!p)return notice(c,SHARED_TEXT.noParty);if(p.leader!==c.id)return notice(c,SHARED_TEXT.notLeader);const o=byName(msg.name);if(o&&o!==c&&o.party===p.id){p.leader=o.id;partySay(p,SHARED_TEXT.leader(o.name));partyPush(p);}}
  }
  const partyMembers=c=>(parties.get(c.party)?.members||[]).map(byId).filter(Boolean);
  const who=c=>send(c,{t:'who',list:all().map(o=>({n:o.name,l:o.l,c:o.c,sp:o.sp,here:o.placed&&o.world===c.world,party:!!o.party,me:o===c}))});

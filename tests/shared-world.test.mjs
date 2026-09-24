@@ -91,3 +91,12 @@ test('Chat-Befehle',()=>{
  assert.equal(parseChatCommand('/f Kevin').kind,'error');assert.deepEqual(parseChatCommand('/einladen Kevin'),{kind:'party',op:'invite',name:'Kevin'});
  assert.deepEqual(parseChatCommand('/verlassen'),{kind:'party',op:'leave'});assert.equal(parseChatCommand('/wer').kind,'who');assert.equal(parseChatCommand('/tanzen').kind,'error');assert.equal(parseChatCommand('/hilfe').kind,'help');
 });
+
+test('Gruppe: Anführer übertragen (nur der Anführer, nur an Mitglieder) und Chatbefehl /anführer',()=>{
+ const {world,join,last}=server(),a=join(1,'Anni'),b=join(2,'Kevin'),c=join(3,'Fremd');
+ world.party(a,{op:'invite',name:'Kevin'});world.party(b,{op:'accept'});assert.equal(last(a,'party').leader,'Anni');
+ world.party(b,{op:'promote',name:'Anni'});assert.equal(last(b,'party').leader,'Anni','Nicht-Anführer darf nicht');
+ world.party(a,{op:'promote',name:'Fremd'});assert.equal(last(a,'party').leader,'Anni','Fremde nicht');
+ world.party(a,{op:'promote',name:'Kevin'});assert.equal(last(a,'party').leader,'Kevin');assert.equal(world.isLeader(b),true);assert.equal(world.isLeader(a),false);
+ assert.deepEqual(parseChatCommand('/anführer "Kevin"'),{kind:'party',op:'promote',name:'Kevin'});assert.equal(parseChatCommand('/anführer').kind,'error');
+});

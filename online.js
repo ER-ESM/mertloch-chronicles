@@ -50,6 +50,7 @@ export function parseChatCommand(raw,channel='say'){
  if(['einladen','invite','inv'].includes(cmd))return rest?{kind:'party',op:'invite',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/einladen Name'};
  if(['entfernen','kick'].includes(cmd))return rest?{kind:'party',op:'kick',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/entfernen Name'};
  if(['verlassen','leave'].includes(cmd))return {kind:'party',op:'leave'};
+ if(['anführer','anfuehrer','promote','lead'].includes(cmd))return rest?{kind:'party',op:'promote',name:rest.replace(/"/g,'')}:{kind:'error',text:ONLINE_UI.needName+'/anführer Name'};
  if(['wer','who'].includes(cmd))return {kind:'who'};
  if(['bereit','ready','rc'].includes(cmd))return {kind:'ready'};
  // Begleiter (E-45): wirken lokal im Spiel, nichts davon geht an den Server
@@ -254,7 +255,7 @@ export function mountOnline(host){
  function leaveWorld(){state.hold=true;stopPresence();}
  const quoted=n=>/\s/.test(n)?'"'+n+'"':n;
  async function profession(body){if(!state.account||!state.connected)return {error:'Berufsserver nicht erreichbar.'};if(body.op!=='state'){clearTimeout(state.pending);while(state.syncing)await new Promise(r=>setTimeout(r,50));state.syncing=true;}try{sendPosition();return await api('professions',{...body,room:host.roomKey||g().world.id,hero:g().hero?.id},undefined,AbortSignal.timeout(15000));}finally{if(body.op!=='state')state.syncing=false;}}
- return {profession,reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),selected:()=>mate.selected(),selectTarget:n=>{const r=mate.selectTarget(n);renderParty();return r;},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'}),
+ return {profession,reserveName,releaseName,syncRoster,afterRoster,social:{connected:()=>state.connected,me:()=>myName()||null,party:()=>state.party,isLeader:()=>!state.party.members.length||state.party.leader===myName(),invite:n=>wsSend({t:'party',op:'invite',name:n}),kick:n=>wsSend({t:'party',op:'kick',name:n}),promote:n=>wsSend({t:'party',op:'promote',name:n}),leave:()=>wsSend({t:'party',op:'leave'}),selected:()=>mate.selected(),selectTarget:n=>{const r=mate.selectTarget(n);renderParty();return r;},canRevive:n=>mate.canRevive(n),revive:n=>mate.revive(n),trade:n=>mate.tradeAsk(n),whisper:n=>host.chat?.prefill('/f '+quoted(n)+' '),who:()=>wsSend({t:'who'}),
   /** Eigene Zielmarkierung an die Gruppe (Endzustand), mit Zeile im Chat. */
   /** Assist (WoW): Ziel eines Gruppenmitglieds übernehmen → Gegner oder null. */
   readyCheck:()=>{if(state.party.members.length&&state.party.leader===myName())ready.start();},
