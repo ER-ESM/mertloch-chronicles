@@ -594,6 +594,7 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .online-form{display:grid;gap:6px}.online-form label{display:grid;gap:3px;font-size:12px;color:var(--kraft)}
 .online-form input{padding:7px 9px;border:1px solid var(--kraft-2);border-radius:8px;background:#0b1216b0;color:var(--cream);font:inherit}
 .online-form .online-only-register{display:none}.online-form.registering .online-only-register{display:grid}
+.online-form:not(.registering) .online-register-note{display:none}
 .online-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.online-actions .danger{border-color:#c2583f;color:#f0b0a0}
 .online-message{min-height:1em;font-size:12px;margin:6px 0 0}.online-message.bad{color:#f0b0a0}
 .online-board{padding-left:20px;margin:4px 0 10px}.online-board li{margin:2px 0}

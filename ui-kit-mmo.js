@@ -2,7 +2,9 @@ import {escapeUi,uiIcon} from './ui-kit.js';
 
 /** The real account form and showroom share this markup and its existing server hooks. */
 export function uiLoginCard(labels,{preview=false}={}){
- const field=(name,label,type,autocomplete,extra='')=>`<label class="ui-field${name==='name'?' online-only-register':''}">${escapeUi(label)}<input name="${name}" type="${type}" autocomplete="${autocomplete}" ${extra}></label>`;
+ // Klammerzusatz (z. B. Passwortlänge) nur beim Registrieren zeigen – beim Anmelden reicht „Passwort“ (WoW-Login).
+ const text=label=>escapeUi(label).replace(/ \((.+)\)$/,' <span class="online-register-note">($1)</span>');
+ const field=(name,label,type,autocomplete,extra='')=>`<label class="ui-field${name==='name'?' online-only-register':''}">${text(label)}<input name="${name}" type="${type}" autocomplete="${autocomplete}" ${extra}></label>`;
  return `<div class="online-card ui-panel mmo-login-card" data-ui-window-title="${escapeUi(labels.title)}"><div class="ui-row">${uiIcon('account',{size:40})}<h3>${escapeUi(labels.title)}</h3></div><p>${escapeUi(labels.intro)}</p><form data-online-form="login" class="online-form ui-stack"${preview?' data-ui-preview-form':''}>${field('email',labels.email,'email','email','required')}${field('password',labels.password,'password','current-password','required minlength="10"')}${field('name',labels.name,'text','nickname','minlength="3" maxlength="20"')}<div class="online-actions ui-row"><button type="submit" class="gold-button ui-button" data-ui-variant="primary" data-online-submit="login">${escapeUi(labels.login)}</button><button type="submit" class="outline-button ui-button" data-online-submit="register">${escapeUi(labels.register)}</button></div><p class="online-message" data-online-message role="status" aria-live="polite"></p></form>${preview?'<small class="mmo-preview-note">Designvorschau · keine Kontodaten eingeben. Es werden keine Daten gesendet.</small>':''}</div>`;
 }
 

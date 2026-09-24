@@ -37,7 +37,7 @@ export function mountStartScreen(host){
   if(!host.enabled)return card(T.noServerTitle,`<p>${esc(T.noServer)}</p><div class="online-actions ui-row"><button type="button" class="gold-button ui-button" data-ui-variant="primary" data-start="guest">${esc(T.enter)}</button><a class="outline-button ui-button" href="${esc(T.serverUrl)}">${esc(T.serverLink)}</a></div>`);
   if(state.busy)return card(T.loginTitle,`<p role="status">${esc(state.busy)}</p>`);
   if(o&&!o.state.reachable)return card(T.loginTitle,`<p class="disabled-note">${esc(T.offline)}</p><div class="online-actions ui-row"><button type="button" class="gold-button ui-button" data-start="retry">${esc(T.retry)}</button><button type="button" class="outline-button ui-button" data-start="guest">${esc(T.guest)}</button></div>`);
-  return uiLoginCard({...ONLINE_UI,title:T.loginTitle,intro:T.loginIntro})+`<div class="start-guest"><button type="button" class="outline-button ui-button" data-start="guest">${esc(T.guest)}</button><small>${esc(T.guestHint)}</small></div>`;
+  return uiLoginCard({...ONLINE_UI,title:T.loginTitle,intro:T.loginIntro})+`<div class="start-guest"><button type="button" class="outline-button ui-button" data-start="guest" data-tooltip-label="${esc(T.guest)}" data-tooltip-note="${esc(T.guestHint)}">${esc(T.guest)}</button><small>${esc(T.guestHint)}</small></div>`;
  }
  const heroes=()=>host.roster?.().list||[];
  const classOf=id=>CLAN_MEMBERS.find(m=>m.id===id)||CLAN_MEMBERS[0];
@@ -102,7 +102,16 @@ export function mountStartScreen(host){
  /** „E-Mail merken“ (WoW: Kontoname merken): nur die Adresse, nie das Passwort; kontoweit in diesem Browser. */
  const REMEMBER='mertloch-login-email';
  function rememberField(){const form=el.querySelector('[data-online-form]');if(!form||form.querySelector('[data-remember]'))return;let saved='';try{saved=localStorage.getItem(REMEMBER)||'';}catch{}const mail=form.querySelector('[name=email]');if(saved&&mail&&!mail.value)mail.value=saved;
+  passwordHelp(form);
   const box=document.createElement('label');box.className='lg-remember';box.innerHTML='<input type="checkbox" data-remember'+(saved?' checked':'')+'><span>'+esc(T.remember)+'</span>';form.querySelector('.online-actions')?.before(box);if(saved)requestAnimationFrame(()=>requestAnimationFrame(()=>form.querySelector('[name=password]')?.focus({preventScroll:true})));}
+ /** Passwortfeld wie im WoW-Login: Warnung bei Feststelltaste, dazu „Zeigen/Verbergen“. */
+ function passwordHelp(form){const pw=form.querySelector('[name=password]');if(!pw)return;
+  const eye=document.createElement('button');eye.type='button';eye.className='lg-eye';eye.textContent=T.showPassword;eye.setAttribute('aria-pressed','false');
+  eye.onclick=()=>{const show=pw.type==='password';pw.type=show?'text':'password';eye.textContent=show?T.hidePassword:T.showPassword;eye.setAttribute('aria-pressed',String(show));pw.focus({preventScroll:true});};
+  const caps=document.createElement('p');caps.className='lg-caps';caps.hidden=true;caps.setAttribute('role','status');caps.textContent=T.capsOn;
+  pw.after(eye);(pw.closest('label')||eye).after(caps);pw.parentElement?.classList.add('lg-password');
+  const check=e=>{if(typeof e.getModifierState==='function')caps.hidden=!e.getModifierState('CapsLock');};
+  for(const t of ['keydown','keyup'])pw.addEventListener(t,check);pw.addEventListener('blur',()=>{caps.hidden=true;});}
  function rememberSubmit(form){const on=form.querySelector('[data-remember]')?.checked,mail=form.querySelector('[name=email]')?.value||'';try{if(on&&mail)localStorage.setItem(REMEMBER,mail);else localStorage.removeItem(REMEMBER);}catch{}}
  /** Ohne Helden gibt es nichts zu wählen: gleich in die Erstellung (WoW: erster Login öffnet die Charaktererstellung). */
  function go(step){if(step==='roster'&&!heroes().length){if(!state.draft)state.draft=newDraft();step='create';}state.step=step;render();}
