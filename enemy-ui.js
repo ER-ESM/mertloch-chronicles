@@ -13,8 +13,8 @@ export function updateTargetIdentity(root,e){
  // Zielrahmen mit höchstens zwei Textzeilen (Runde 2b): Stufe als Zahl im Ring (Elite = goldener Ring, kein Text), Beiname,
  // Verhalten und Entfernung im Tooltip des Namens.
  const lvl=root.querySelector('#targetLevel');lvl.dataset.level=e.level;
- const row=root.querySelector('#targetPanel .unit-name'),extra=[root.querySelector('#targetEffect')?.textContent,root.querySelector('#targetDistance')?.textContent].filter(Boolean).join(' · ');
- row.dataset.tooltipLabel=e.name;row.dataset.tooltipNote=[identity.title,(isElite(e)?'Elite · ':'')+'Stufe '+e.level,extra].filter(Boolean).join(' · ');
+ const row=root.querySelector('#targetPanel .unit-name'),effect=root.querySelector('#targetEffect')?.textContent||'',extra=/\d m\b/.test(effect)?effect:[effect,root.querySelector('#targetDistance')?.textContent].filter(Boolean).join(' · ');
+ const nick=String(identity.title||'').replace(/^Elite\s*·\s*/i,'');row.dataset.tooltipLabel=e.name;row.dataset.tooltipNote=[(isElite(e)?'Elite · ':'')+'Stufe '+e.level,nick,extra].filter(Boolean).join(' · ');
 }
 
 /** Sprechblasen. Bevorzugt das Ereignis `bark` der Engine (Gegner, Boss, Phase, Bewohner) – ohne Textparsen.
