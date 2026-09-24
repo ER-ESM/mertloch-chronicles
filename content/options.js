@@ -22,6 +22,7 @@ export const OPTIONS_UI={
   interface:[
    {title:'Darstellung',rows:[
     {pref:'uiScale',label:'UI-Skalierung',kind:'range',min:80,max:130,step:5,unit:' %',hint:'Größe von Leisten, Rahmen und Fenstern.'},
+    {pref:'statusText',kind:'choice',label:'Statustext',hint:'Lebenspunkte an Heldenrahmen und Ziel: als Zahl, in Prozent, beides oder ausgeblendet (WoW „Statustext“).',choices:[{id:'number',name:'Zahl'},{id:'percent',name:'Prozent'},{id:'both',name:'Beides'},{id:'none',name:'Aus'}]},
     {setting:'fps',label:'FPS-Anzeige',hint:'Bilder pro Sekunde oben links.'}]},
    {title:'Namen',rows:[
     {setting:'namesFriendly',label:'Freundliche Figuren',hint:'Namen von Dorfbewohnern, Händlern und Auftraggebern.'},
@@ -67,6 +68,6 @@ export const OPTIONS_UI={
  volumeOff:'Klänge ausgeschaltet.'
 };
 /** Standardwerte der kontoweiten Einstellungen (options-ui.js). */
-export const OPTIONS_DEFAULTS={uiScale:100,volume:0,showTracker:true,showMinimap:true,showXp:true};
+export const OPTIONS_DEFAULTS={uiScale:100,statusText:'number',volume:0,showTracker:true,showMinimap:true,showXp:true};
 /** Standard der Spielschalter (game.settings) für „Standard“ je Kategorie. */
 export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false,sctIn:true,sctNotes:true,sctCompanions:true};
