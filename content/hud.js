@@ -78,5 +78,5 @@ export const ACTION_BAR_TEXT={
  placed:(name,key)=>name+' liegt jetzt auf ['+key+'].',
  modifiers:{Ctrl:{short:'^',long:'Strg'},Alt:{short:'A',long:'Alt'},Shift:{short:'⇧',long:'Umschalt'}},
  mouse:n=>'Maustaste '+n,mouseShort:n=>'M'+n,wheel:'Mausrad-Klick',
- keyNames:{Space:'Leertaste',Backquote:'^',Minus:'ß',Equal:'´',BracketLeft:'Ü',BracketRight:'+',Semicolon:'Ö',Quote:'Ä',Backslash:'#',Comma:',',Period:'.',Slash:'-',IntlBackslash:'<',Insert:'Einfg',Home:'Pos1',End:'Ende',PageUp:'Bild↑',PageDown:'Bild↓',CapsLock:'Feststell',ContextMenu:'Menü',NumpadAdd:'N+',NumpadSubtract:'N-',NumpadMultiply:'N*',NumpadDivide:'N/',NumpadDecimal:'N,',NumpadEnter:'NEnter'},
+ keyNames:{Space:'Leertaste',Tab:'Tab',Escape:'Esc',Enter:'Enter',Backspace:'Rück',Delete:'Entf',Backquote:'^',Minus:'ß',Equal:'´',BracketLeft:'Ü',BracketRight:'+',Semicolon:'Ö',Quote:'Ä',Backslash:'#',Comma:',',Period:'.',Slash:'-',IntlBackslash:'<',Insert:'Einfg',Home:'Pos1',End:'Ende',PageUp:'Bild↑',PageDown:'Bild↓',CapsLock:'Feststell',ContextMenu:'Menü',NumpadAdd:'N+',NumpadSubtract:'N-',NumpadMultiply:'N*',NumpadDivide:'N/',NumpadDecimal:'N,',NumpadEnter:'NEnter'},
 };

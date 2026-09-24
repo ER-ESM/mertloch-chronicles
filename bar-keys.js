@@ -3,16 +3,16 @@
 // oder „Mouse<n>" mit n = MouseEvent.button. Beispiele: „Digit3", „Shift+Digit2", „Ctrl+KeyE", „Mouse1" (Mausrad), „Mouse3" (Seitentaste zurück).
 // Gespeichert werden nur Abweichungen vom Standard in rpg.barKeys ({Platzindex: Belegung}, '' = bewusst ohne Taste).
 import {ACTION_BAR_TEXT as T} from './content/index.js';
+import {takenByAction,liveKeymap} from './keymap.js';
 export const BAR_SIZE=10,MAX_BARS=4,DEFAULT_BARS=2;
 const MODS=['Ctrl','Alt','Shift'];
 const DIGITS=['1','2','3','4','5','6','7','8','9','0'];
 /** Standard: Leiste 1 = 1…0, Leiste 2 = Umschalt+1…0, weitere Leisten ohne Taste. */
 export function defaultBinding(index){const bar=Math.floor(index/BAR_SIZE),digit='Digit'+DIGITS[index%BAR_SIZE];return bar===0?digit:bar===1?'Shift+'+digit:'';}
-/** Fest im Spiel vergebene Tasten (Bewegen, Ziel, Menüs, Sonderaktionen, Browser). Bewegungstasten sind mit jedem Modifikator gesperrt. */
-const MOVE=new Set(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
-const RESERVED=new Set(['Tab','Space','Enter','Escape','KeyQ','KeyF','KeyV','KeyU','KeyX','KeyN','KeyM','KeyC','KeyI','KeyP','KeyK','KeyJ','KeyB','KeyR','KeyH','F5','F11','F12',
- 'Shift+KeyB','Shift+KeyP','Shift+KeyF','Shift+Tab','Shift+Escape','Shift+Space','Ctrl+KeyW','Ctrl+KeyT','Ctrl+KeyN','Ctrl+Tab','Ctrl+KeyR','Ctrl+F5','Alt+F4','Alt+Tab','Ctrl+Shift+KeyT','Ctrl+Shift+KeyN','Ctrl+Shift+KeyI']);
-export function isReserved(binding){if(!binding)return false;const base=binding.split('+').pop();return MOVE.has(base)||RESERVED.has(binding)||base==='Mouse0'||base==='Mouse2';}
+/** Fest vergebene Tasten: alles, was in der Tastenbelegung (keymap.js) auf einer Spielaktion liegt – Bewegungstasten mit jedem
+ *  Modifikator –, dazu Browser-Tasten, Enter (Chat) und Links-/Rechtsklick. */
+const STATIC=new Set(['Enter','Shift+Escape','Shift+Space']);
+export function isReserved(binding){if(!binding)return false;const base=binding.split('+').pop();return STATIC.has(binding)||base==='Mouse0'||base==='Mouse2'||takenByAction(liveKeymap(),binding);}
 const MODIFIER_KEYS=new Set(['ShiftLeft','ShiftRight','ControlLeft','ControlRight','AltLeft','AltRight','MetaLeft','MetaRight','AltGraph','OSLeft','OSRight']);
 const withMods=(e,base)=>[e.ctrlKey&&'Ctrl',e.altKey&&'Alt',e.shiftKey&&'Shift'].filter(Boolean).concat(base).join('+');
 /** Tastendruck → Belegung. Reine Modifikatortasten und die Windows-/Befehlstaste ergeben null (weiter warten bzw. nicht belegbar). */
