@@ -71,8 +71,34 @@ export function drawKitWall(c,wall,cut){
   if(h>0)fill(c,shade(color,.62),wall.minX,wall.maxY-2,w,2);
   if(wall.kind==='zaun'&&h>0){c.fillStyle=shade(color,.6);for(let x=wall.minX+2;x<wall.maxX;x+=5)c.fillRect(x,wall.maxY-h,1,h);}
  }
+ if(flat&&h>12)for(const seg of wall.papers||[])drawPaper(c,seg,wall.maxY-h,h);
  for(const it of wall.decor||[])drawWallDecor(c,it,wall);
 }
+/** Rückwand-Bild eines Raums (content/bude-house.js rooms[].paper) auf der Front einer waagerechten Wand, Stardew-Stil:
+ *  Schatten unter der Krone, Tapete mit Muster, Zierleiste, Sockel (Holzvertäfelung/Fliesen), Fußleiste, dazu abgerissene Stellen.
+ *  Deterministisch aus der Weltposition – jedes Bild gleich. */
+const hash=n=>{const v=Math.sin(n*127.1)*43758.5453;return v-Math.floor(v);};
+function drawPaper(c,{x0,x1,paper:P},top,h){const w=x1-x0,a=c.globalAlpha;if(w<=0)return;
+ const lower=P.lower?Math.round(h*.38):0,base=top+h,upperH=h-lower-2;
+ fill(c,P.base,x0,top,w,h);
+ // Muster der Tapete (obere Fläche)
+ c.fillStyle=P.accent;
+ if(P.pattern==='streifen')for(let x=x0+2;x<x1;x+=6)c.fillRect(x,top,2,upperH);
+ else if(P.pattern==='damast')for(let y=top+3,row=0;y<top+upperH-3;y+=7,row++)for(let x=x0+(row%2?5:1);x<x1-2;x+=8){c.fillRect(x+1,y,1,1);c.fillRect(x,y+1,3,1);c.fillRect(x+1,y+2,1,1);}
+ else if(P.pattern==='lilien')for(let y=top+2,row=0;y<top+upperH-4;y+=6,row++)for(let x=x0+(row%2?4:0);x<x1-3;x+=8){c.fillRect(x+1,y,1,1);c.fillRect(x,y+1,1,1);c.fillRect(x+2,y+1,1,1);c.fillRect(x+1,y+2,1,1);}
+ else if(P.pattern==='ziegel'){for(let y=top,row=0;y<base-2;y+=4,row++){c.fillRect(x0,y,w,1);for(let x=x0+(row%2?4:0);x<x1;x+=8)c.fillRect(x,y,1,4);}c.fillStyle=shade(P.base,1.1);for(let y=top+1,row=0;y<base-2;y+=4,row++)for(let x=x0+(row%2?5:1);x<x1-3;x+=8)if(hash(x*3.1+y)>.6)c.fillRect(x,y,5,1);}
+ else if(P.pattern==='bretter'){for(let x=x0;x<x1;x+=7){c.fillRect(x,top,1,h-2);if(hash(x+top)>.5)c.fillRect(x+3,top+Math.round(hash(x)*h*.6),1,1);}}
+ // Lichtverlauf: oben dunkler (Schatten unter der Krone), unten Streiflicht
+ if(typeof c.createLinearGradient==='function'){const g=c.createLinearGradient(0,top,0,base);g.addColorStop(0,'#0c0806aa');g.addColorStop(.18,'#0c080626');g.addColorStop(.6,'#ffffff00');g.addColorStop(1,'#0c080633');c.fillStyle=g;c.fillRect(x0,top,w,h);}
+ // Sockel: Holzvertäfelung oder Fliesen, darüber die Zierleiste
+ if(lower){const y=base-lower-2;
+  if(P.lower==='fliesen'){fill(c,P.tile||'#e6e8e2',x0,y,w,lower);c.fillStyle=shade(P.tile||'#e6e8e2',.8);for(let yy=y+4;yy<base-2;yy+=4)c.fillRect(x0,yy,w,1);for(let yy=y,row=0;yy<base-2;yy+=4,row++)for(let x=x0+(row%2?2:0);x<x1;x+=4)c.fillRect(x,yy,1,4);}
+  else{const wood=P.wood||'#5a3a22';fill(c,wood,x0,y,w,lower);c.fillStyle=shade(wood,1.25);for(let x=x0+1;x<x1;x+=6)c.fillRect(x,y+2,4,lower-3);c.fillStyle=shade(wood,.7);for(let x=x0+5;x<x1;x+=6)c.fillRect(x,y+1,1,lower-1);}
+  fill(c,shade(P.wood||'#6b4a2f',1.35),x0,y-1,w,1);fill(c,shade(P.wood||'#6b4a2f',.85),x0,y,w,1);}
+ fill(c,'#1e140d',x0,base-2,w,2);
+ // Abgerissene Tapete: helle Putzflecken mit dunkler Rissnase
+ const n=Math.floor((P.tear||0)*w/22);for(let i=0;i<n;i++){const r=hash(x0*1.3+i*7.7),x=x0+2+r*(w-10),y=top+3+hash(x*1.9)*(upperH-8),tw=3+Math.round(hash(x)*5),th=2+Math.round(hash(y)*4);fill(c,'#cdbf9e',x,y,tw,th);fill(c,'#8f7f62',x,y+th,tw,1);fill(c,shade(P.base,.6),x+tw,y,1,th);}
+ c.globalAlpha=a;}
 /** Wandschmuck an der Front seiner Wand: unten auf Aufhängehöhe über dem Wandfuß. */
 export function drawWallDecor(c,it,wall){
  const def=it.def,top=wall.maxY-(def.mount||0)-(it.height||8),s=sprite(it.sprite);

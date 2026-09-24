@@ -15,7 +15,10 @@ function buildFloor(def,f,o,prefix){
   // Sichtbare Front: waagerechte Innen- und Nordwände zeigen die volle Wandhöhe der Art, die südliche Außenwand nur den Sockel.
   const south=flat&&l.kind==='outer'&&l.y1===def.depth,style=def.wallStyle?.[l.kind],face=south?def.heights.front:flat?(style?resolveSprite(style).cut:def.heights.cut):0;
   return {id:prefix+'wall-'+i,kind:l.kind,style,face,outdoor:l.kind==='zaun',houseWall:true,minX:Math.min(a.x,b.x)-px,maxX:Math.max(a.x,b.x)+px,minY:Math.min(a.y,b.y)-py,maxY:Math.max(a.y,b.y)+py,x:(a.x+b.x)/2,y:(a.y+b.y)/2};});
- const rooms=f.rooms.map(r=>({id:r.id,name:r.name,belag:r.belag,tags:r.tags||[],outdoor:!!r.outdoor,rects:r.rects.map(q=>({x:o.x+q.x,y:o.y+q.y,w:q.w,h:q.h}))}));
+ const rooms=f.rooms.map(r=>({id:r.id,name:r.name,belag:r.belag,paper:r.paper||null,tags:r.tags||[],outdoor:!!r.outdoor,rects:r.rects.map(q=>({x:o.x+q.x,y:o.y+q.y,w:q.w,h:q.h}))}));
+ // Rückwand-Bild: eine waagerechte Wand zeigt die Tapete des Raums südlich von ihr.
+ //   Eine Wand über mehreren Räumen bekommt je Abschnitt die Tapete des jeweiligen Raums (papers: [{x0,x1,paper}]).
+ for(const wl of walls){if(!(wl.face>12))continue;const segs=[];for(const r of rooms){if(r.outdoor||!r.paper)continue;for(const q of r.rects){if(Math.abs(q.y-wl.maxY)>6)continue;const x0=Math.max(q.x,wl.minX),x1=Math.min(q.x+q.w,wl.maxX);if(x1>x0)segs.push({x0,x1,paper:r.paper});}}if(segs.length)wl.papers=segs;}
  const doors=(f.doors||[]).map(d=>({id:d.id,name:d.name,s:d.s,...at(o,d),...(d.outside?{outside:at(o,d.outside)}:{})}));
  // Einrichtung aus dem Sprite-Baukasten; was nicht begehbar ist und steht, sperrt mit seiner Standfläche (Kollision).
  const items=placeKitItems(f.items,o,prefix);

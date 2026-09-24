@@ -16,7 +16,7 @@ export const KIT_CLASSES={
  sprite:{name:'Sprite',layer:'standing',surface:'floor',walkable:false,shadow:true,w:16,h:12,height:12,color:'#8a6a48'},
  belag:{is:'sprite',name:'Bodenbelag',layer:'ground',surface:'room',walkable:true,shadow:false,tile:true},
  bodendeko:{is:'sprite',name:'Bodendeko',layer:'decal',surface:'floor',walkable:true,shadow:false,height:0,overlap:true},
- wand:{is:'sprite',name:'Wand',layer:'wall',surface:'wall-line',walkable:false,shadow:false,tile:true,cut:22},
+ wand:{is:'sprite',name:'Wand',layer:'wall',surface:'wall-line',walkable:false,shadow:false,tile:true,cut:28},
  tuer:{is:'sprite',name:'Tür',layer:'wall',surface:'wall-gap',walkable:true,shadow:false,clearance:20},
  wandschmuck:{is:'sprite',name:'Wandschmuck',layer:'wall-decor',surface:'wall-face',walkable:true,shadow:false,h:2,height:8,mount:8},
  moebel:{is:'sprite',name:'Möbel',surface:'floor',walkable:false,keepDoors:true,indoor:true},

@@ -10,7 +10,7 @@ export const BUDE_HOUSE={
  width:230,depth:173,yard:{width:100},
  // Außenansicht: zwei Geschosse (2 × 2,8 m) und Satteldach. Innen zeigen waagerechte Wände ihre Front bis 22 E (1,5 m) –
  // Platz für Wandschmuck –, die südliche Außenwand nur einen Sockel (front), damit man in die Räume sieht; senkrechte Wände nur ihre Krone.
- heights:{wall:81,roof:50,cut:22,front:8},
+ heights:{wall:81,roof:50,cut:28,front:8},
  thickness:{outer:8,inner:6,zaun:4},
  // Wand-Arten je Wandtyp und Tür-Arten je Tür (Sprite-Baukasten).
  wallStyle:{outer:'wand-aussen',inner:'wand-putz',zaun:'zaun-latten'},
@@ -37,12 +37,14 @@ export const BUDE_HOUSE={
   {id:'hoftor',name:'Hoftor',s:'tor-hof',x:328,y:87}
  ],
  // Räume als Bodenflächen mit Belag (Sprite-Art) und Merkmalen; der Schankraum ist ein L (zwei Rechtecke).
+ // paper = Wandbild der Rückwand (Front der waagerechten Wand nördlich des Raums): Grundfarbe, Muster (damast/lilien/streifen/ziegel/bretter/glatt),
+ // lower = Sockel (holz = Vertäfelung, fliesen), tear = Anteil abgerissener Stellen (die Bude ist halb kaputt).
  rooms:[
-  {id:'schankraum',name:'Schankraum',belag:'dielen-dunkel',rects:[{x:0,y:72,w:186,h:101},{x:186,y:118,w:44,h:55}]},
-  {id:'hinterzimmer',name:'Clan-Hinterzimmer',belag:'teppichboden-rot',rects:[{x:0,y:0,w:92,h:72}]},
-  {id:'pfandlager',name:'Pfandlager',belag:'estrich',rects:[{x:92,y:0,w:58,h:72}]},
-  {id:'kueche',name:'Küche',belag:'fliesen-weiss',tags:['nass'],rects:[{x:150,y:0,w:80,h:72}]},
-  {id:'klo',name:'Klo',belag:'fliesen-weiss',tags:['nass'],rects:[{x:186,y:72,w:44,h:46}]},
+  {id:'schankraum',name:'Schankraum',belag:'dielen-dunkel',paper:{base:'#34503a',accent:'#4d6d4e',pattern:'damast',lower:'holz',wood:'#5a3a22',tear:.5},rects:[{x:0,y:72,w:186,h:101},{x:186,y:118,w:44,h:55}]},
+  {id:'hinterzimmer',name:'Clan-Hinterzimmer',belag:'teppichboden-rot',paper:{base:'#5b2a2a',accent:'#b08a4a',pattern:'lilien',lower:'holz',wood:'#4a2e1c',tear:.3},rects:[{x:0,y:0,w:92,h:72}]},
+  {id:'pfandlager',name:'Pfandlager',belag:'estrich',paper:{base:'#8a4a34',accent:'#6e3a28',pattern:'ziegel'},rects:[{x:92,y:0,w:58,h:72}]},
+  {id:'kueche',name:'Küche',belag:'fliesen-weiss',tags:['nass'],paper:{base:'#d9cf9e',accent:'#c4b886',pattern:'glatt',lower:'fliesen',tile:'#e8ece6',tear:.2},rects:[{x:150,y:0,w:80,h:72}]},
+  {id:'klo',name:'Klo',belag:'fliesen-weiss',tags:['nass'],paper:{base:'#9fb6a8',accent:'#8aa293',pattern:'glatt',lower:'fliesen',tile:'#cfe0d6'},rects:[{x:186,y:72,w:44,h:46}]},
   {id:'hof',name:'Hof',belag:'kies-hof',outdoor:true,rects:[{x:230,y:0,w:100,h:173}]}
  ],
  // Einrichtung des Erdgeschosses (Sprite-Baukasten).
@@ -97,10 +99,10 @@ export const BUDE_HOUSE={
    {id:'flur-dachboden',name:'Dachboden',s:'tuer-holz',x:187,y:110},{id:'flur-lager',name:'Matratzenlager',s:'tuer-holz',x:130,y:142}
   ],
   rooms:[
-   {id:'flur',name:'Flur',belag:'dielen-hell',rects:[{x:130,y:110,w:100,h:63}]},
-   {id:'matratzenlager',name:'Matratzenlager',belag:'dielen-hell',rects:[{x:0,y:90,w:100,h:83},{x:100,y:110,w:30,h:63}]},
-   {id:'baubuero',name:'Idas Baubüro',belag:'teppichboden-rot',rects:[{x:0,y:0,w:100,h:90}]},
-   {id:'dachboden',name:'Dachboden',belag:'bretter-grau',rects:[{x:100,y:0,w:130,h:110}]}
+   {id:'flur',name:'Flur',belag:'dielen-hell',paper:{base:'#7a6a44',accent:'#9a8656',pattern:'streifen',lower:'holz',wood:'#5a3a22'},rects:[{x:130,y:110,w:100,h:63}]},
+   {id:'matratzenlager',name:'Matratzenlager',belag:'dielen-hell',paper:{base:'#b9a57a',accent:'#a48f64',pattern:'streifen',tear:.8},rects:[{x:0,y:90,w:100,h:83},{x:100,y:110,w:30,h:63}]},
+   {id:'baubuero',name:'Idas Baubüro',belag:'teppichboden-rot',paper:{base:'#6e4a2c',accent:'#5a3a22',pattern:'bretter'},rects:[{x:0,y:0,w:100,h:90}]},
+   {id:'dachboden',name:'Dachboden',belag:'bretter-grau',paper:{base:'#6e675c',accent:'#5a544a',pattern:'bretter',tear:.4},rects:[{x:100,y:0,w:130,h:110}]}
   ],
   items:[
    // Idas Baubüro
