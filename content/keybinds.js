@@ -21,6 +21,11 @@ export const KEYBIND_ACTIONS=[
  {id:'loot',group:'combat',name:'Beute aufheben',keys:['Shift+KeyF','']},
  {id:'interrupt',group:'combat',name:'Unterbrechen',keys:['KeyQ','']},
  {id:'aggro',group:'combat',name:'Aggro-Radius zeigen',keys:['KeyR','']},
+ // Zielmarkierungen (target-marks.js): ohne Standardtaste, frei belegbar; dieselbe Taste noch einmal nimmt die Markierung weg.
+ {id:'markSkull',group:'combat',name:'Ziel: Totenkopf',keys:['','']},
+ {id:'markCross',group:'combat',name:'Ziel: Kreuz',keys:['','']},
+ {id:'markStar',group:'combat',name:'Ziel: Stern',keys:['','']},
+ {id:'markCircle',group:'combat',name:'Ziel: Kreis',keys:['','']},
  {id:'person',group:'windows',name:'Figur',keys:['KeyC','']},
  {id:'bag',group:'windows',name:'Rucksack',keys:['KeyI','']},
  {id:'book',group:'windows',name:'Kniffe',keys:['KeyP','KeyK']},

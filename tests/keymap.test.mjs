@@ -37,3 +37,7 @@ test('Aktionsleisten sperren genau die Tasten der wirksamen Belegung',()=>{
  setLiveKeymap(assignKey({},'interact',0,'KeyE').map);assert.equal(isReserved('KeyE'),true);assert.equal(isReserved('KeyF'),false,'F ist jetzt frei');
  setLiveKeymap({});
 });
+
+test('Zielmarkierungen sind frei belegbar (ohne Standardtaste)',()=>{
+ assert.deepEqual(keysOf({},'markSkull'),['','']);const r=assignKey({},'markSkull',0,'Alt+Digit1');assert.equal(r.ok,true);assert.equal(actionFor(r.map,'Alt+Digit1'),'markSkull');
+});

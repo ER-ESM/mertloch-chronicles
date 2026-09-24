@@ -142,3 +142,12 @@ test('Chat-Befehle: Brett zeigen, anheuern, befehlen, entlassen',async()=>{
  assert.deepEqual(companionCommand(g,parseChatCommand('/befehl tanzen')),[COMPANION_TEXT.chat.needOrder]);
  companionCommand(g,parseChatCommand('/entlassen'));assert.equal(g.companions.length,0);
 });
+
+test('Zielmarkierung: Schadens-Söldner greift den Totenkopf an, nicht das Ziel des Spielers; Angriffsbefehl geht vor',async()=>{
+ const {setMark}=await import('../target-marks.js');
+ const g=game(12);g.hireCompanion(BRAWLER);const e=engage(g,'wolf',70,{alone:false}),other=g.enemies.find(o=>o!==e&&o.campId===e.campId&&o.hp>0);assert.ok(other,'zweiter Lagergegner');
+ other.spawnGrace=0;other.aggro=true;other.ai='combat';const c=g.companions[0];
+ setMark(g,other,'skull');run(g,.6);assert.equal(c.target,other,'Totenkopf vor Spielerziel');
+ setMark(g,other,'');setMark(g,e,'cross');c.retarget=0;run(g,.6);assert.equal(c.target,e);
+ c.order='attack';g.target=other;c.retarget=0;run(g,.6);assert.equal(c.target,other,'ausdrücklicher Befehl geht vor');
+});

@@ -545,6 +545,7 @@ document.addEventListener('keydown',e=>{if(!game||startScreen?.isOpen||menuKey(e
    // Ein Ziel (E-65): Esc wählt zuerst das Ziel ab (Gegner oder Freund), erst danach öffnet es das Spielmenü.
    if(clearSelection(game)){events();updateUI();return;}
    showGameMenu();events();updateUI();return;}
+  if(/^mark[A-Z]/.test(act||'')){markEnemy(game.target,act.slice(4).toLowerCase());events();return;}
   if(act==='meter'){meterUI.opened?meterUI.close():meterUI.open({focus:false});return;}if(act==='options'){showPanel('settings');return;}if(act==='mount'){game.toggleMount();events();return;}
   if(PANEL_ACTIONS[act]){showPanel(PANEL_ACTIONS[act],true);return;}if(act==='targetNext'||act==='targetPrev'){game.selectNext(act==='targetPrev');return;}
   if(act==='aggro'){game.showAggro=!game.showAggro;toast(game.showAggro?'Aggro-Radius des gewählten aggressiven Ziels sichtbar.':'Aggro-Radius ausgeblendet.');return;}

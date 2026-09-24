@@ -17,6 +17,7 @@ import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
 import {walkFacing} from './maifeld-locomotion.js';
 import {classBuffValue,savedClassBuffs,restoreClassBuffs} from './class-buffs.js';
+import {MARK_IDS} from './target-marks.js';
 
 const PLAYER='player';
 const alive=c=>c.state!=='down'&&c.hp>0;
@@ -128,6 +129,8 @@ function chooseTarget(g,c){
  const list=g.enemies.filter(e=>fighting(e)&&near(e));if(!list.length)return null;
  const role=COMPANION_ROLES[c.def.role];
  if(role.picksUpLoose){const loose=list.filter(e=>(e.focus||PLAYER)!==c.id).sort((a,b)=>distance(a,c)-distance(b,c))[0];if(loose)return loose;}
+ // Zielmarkierungen der Gruppe (target-marks.js): Totenkopf vor Kreuz vor Stern vor Kreis, dann das Ziel des Spielers.
+ const marked=list.filter(e=>e.groupMark).sort((a,b)=>MARK_IDS.indexOf(a.groupMark)-MARK_IDS.indexOf(b.groupMark))[0];if(marked)return marked;
  if(g.target&&list.includes(g.target))return g.target;
  return list.sort((a,b)=>distance(a,c)-distance(b,c))[0];
 }
