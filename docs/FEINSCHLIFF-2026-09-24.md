@@ -4,7 +4,9 @@ Nutzerauftrag: „visueller Feinschliff mit Live-Bewertung … Bude in allen Inh
 Arbeitsweise: je Runde Aufnahme (Headless oder Playwright), Vergleich mit WoW/Diablo IV/Hades/Stardew/Eastward, gezielte Änderung, `npm test` grün, Fast-Forward nach `main`, `server-refresh`.
 Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- und NPC-Grafik wurde bewusst **nicht** angefasst (Freigabe-Regel).
 
-## Runden (live ab #329 bis #375)
+## Runden (live #329 bis #420)
+
+**Nutzerentscheidungen 2026-09-24:** Kamera näher (statt größere Figuren), Rückwände mit Tapete, Karte handgemalt im Code, Talente als ausgegraute Vorschau.
 
 | # | Bereich | Änderung | Dateien |
 |---|---|---|---|
@@ -42,6 +44,26 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 | 32 | Bude | Pfandlager mit Bodendeko | `content/bude-house.js` |
 | 33 | Persona 2 | Leichen 6 s, Held hinter der Bude als heller Umriss, Schilder über dem Helden 60 % | `renderer.js` (`ghost`, `CORPSE_TIME`) |
 | 34 | Clanbuch | Auswahlfelder im Spielstil, Kniff-Namen zweizeilig, `icon-fit` ohne Canvas-Warnungen | `ui-chrome.css`, `icon-fit.js` |
+| 35 | Kamera | Grundzoom am Desktop 2,6 statt 2 (Entscheidung) |  () |
+| 36 | Bude | Rückwände mit Tapete je Raum (Damast, Lilien, Backstein, Fliesen, Bretter, Streifen), Vertäfelung, Zierleiste, abgerissene Stellen; Wandfront 28 E (Entscheidung) |  (),  (),  (),  |
+| 37 | Bude | Held hinter einer Rückwand als Umriss |  |
+| 38 | Karte | Handgemalt im Code: Muster für Wiese/Acker/Wald/Dorf, Dächer mit First und Schatten, Baumkronen, Wasser mit Ufer, Erdwege (Entscheidung) |  (, ) |
+| 39 | Talente | Vor Stufe 5 ausgegraute Vorschau mit Hinweis, Reiter mit Schloss (Entscheidung) |  (),  |
+| 40 | HUD | Sonderaktionen und Autoangriff als Ablage an der Leiste |  |
+| 41 | Bude | Möbel mit feinem Umriss, Innenraum heller |  () |
+| 42 | Bude | Seitenwände mit Mauerwerk-Krone (Entscheidung) |  |
+| 43 | Bude | Wandschmuck mit Umriss |  |
+| 44 | Mobil | Abstand zur Bildschirmecke, Touch-Abstände ≥ 8 px, große Auswahlfelder/Häkchen – mobile-check 1 statt 3 Problemschritte | , ,  |
+| 45 | Welt | Namen freundlicher Figuren kräftig grün-gelb, dickere Kontur |  () |
+| 46 | Kampf | Beute fliegt sichtbar zum Helden (auch Auto-Loot) |  (),  |
+| 47 | Tooltips | Symbol 36 px im Messing-/Qualitätsrahmen |  |
+| 48 | HUD | Abklingzeit vorbei: Aufblitzen + goldener Ring |  (),  |
+| 49 | Kampf | Eigener Schaden steigt über dem Ziel auf, oberhalb des Namensschilds |  |
+| 50 | Karte | Beschriftung als Tinte, Ziegelreihen; Häkchen im Spielstil | ,  |
+| 51 | HUD | Meldungen unter der Rahmenzeile, geschlossene Kontur |  |
+| 52 | Bude | Pfützen mit Wasserglanz |  |
+| 53 | Welt | Held hinter Baumkronen als Umriss |  |
+| 54 | Gespräch | Porträt 128 px |  |
 
 ## Werkzeuge
 
@@ -51,6 +73,9 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 ## Persona-Bewertungen
 
 Zweite Kenner-Runde auf #375: **6,5/10** (Bude außen 7,5, Clanbuch 7, Gespräch 6,5, HUD 6,5, Bude innen 5,5, Kampf 4,5). Achtung: Personas laufen im gedrosselten Playwright-Fenster – Kampftext/EP (CSS-Animationen) sehen sie nicht, die Kampfnote ist dadurch zu niedrig. Offen laut Runde 2: Innenwände ohne Wandflächen, drei Schriftarten, Karte nicht gemalt, frei schwebende HUD-Teile (F-Hinweis, LEER/Q, Autoangriff-Pille).
+
+Dritte Kenner-Runde auf #406: **6,5/10** – Außenwelt auf Stardew-Niveau; Kritik an Tod/Beute (im gedrosselten Fenster nicht sichtbar, headless geprüft: Leichen und fliegende Beute funktionieren), Kampfzahlen auf Namensschild (Runde 49), Held hinter Bäumen (53), Meldungslage (51), Porträtgröße (54).
+Offen: erster Kill ruckelt ~650 ms (auch vor dieser Arbeit, headless gemessen), Dialog als Textblock statt Sprechblase, Innenräume könnten voller/kaputter sein.
 
 ### Kenner, Build #360
 
