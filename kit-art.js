@@ -72,7 +72,10 @@ export function drawKitWall(c,wall,cut){
   fill(c,shade(color,1.12),wall.minX,wall.minY-h,w,d);
   // Senkrechte Wandkrone mit Körper: Licht von links (light-convention), Schatten rechts, Lichtkante und feine Putzfugen.
   if(!flat&&w>=3&&typeof c.createLinearGradient==='function'){const g=c.createLinearGradient(wall.minX,0,wall.maxX,0);g.addColorStop(0,shade(color,1.24));g.addColorStop(.45,shade(color,1.1));g.addColorStop(1,shade(color,.86));c.fillStyle=g;c.fillRect(wall.minX,wall.minY-h,w,d);
-   c.fillStyle=shade(color,1.02);for(let y=wall.minY-h+6;y<wall.maxY-h-1;y+=11)c.fillRect(wall.minX+1,y,w-2,1);fill(c,shade(color,1.34),wall.minX,wall.minY-h,1,d);fill(c,shade(color,.7),wall.maxX-1,wall.minY-h,1,d);}
+   // Mauerwerk-Krone (Nutzerentscheidung 2026-09-24): Ziegelverband alle 4 E, versetzte Stoßfugen, Tintenrand; einen Hauch breiter als die Kollision.
+   fill(c,INK,wall.minX-1.5,wall.minY-h,1,d);fill(c,INK,wall.maxX+.5,wall.minY-h,1,d);fill(c,shade(color,1.2),wall.minX-.5,wall.minY-h,1,d);fill(c,shade(color,.8),wall.maxX-.5,wall.minY-h,1,d);
+   c.fillStyle=shade(color,.82);for(let y=wall.minY-h+4,row=0;y<wall.maxY-h-1;y+=4,row++){c.fillRect(wall.minX,y,w,.6);c.fillRect(wall.minX+(row%2?w*.5:w*.2),y-4,.6,4);}
+   fill(c,shade(color,1.34),wall.minX,wall.minY-h,1,d);fill(c,shade(color,.7),wall.maxX-1,wall.minY-h,1,d);}
   if(h>0)fill(c,shade(color,.62),wall.minX,wall.maxY-2,w,2);
   if(wall.kind==='zaun'&&h>0){c.fillStyle=shade(color,.6);for(let x=wall.minX+2;x<wall.maxX;x+=5)c.fillRect(x,wall.maxY-h,1,h);}
  }
