@@ -78,6 +78,14 @@ try{
  await run(a,`window.__fight=setInterval(()=>{g.player.inCombat=7;for(const c of g.companions)c.inCombat=6;},100);`);
  await until(b,`g.player.hp>${before}`,8000,'Moni wird von Rudis Söldnerin geheilt');await run(a,'clearInterval(window.__fight);');
  ok('Heil-Söldnerin heilt einen verletzten Mitspieler (Hilfsweg)');await shot(b,'heal-b');
+ // Runde 11: Folgen über das Menü am Gruppenrahmen; Moni läuft weg, Rudi schließt auf; eigene Bewegung beendet das Folgen
+ await run(b,`const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x+40,n.y+60,9));`);await run(a,`const n=g.world.npc;Object.assign(g.player,g.world.findClear(n.x-20,n.y+60,9));`);await wait(800);
+ await run(a,`const t=document.querySelector('[data-party-name=Moni]');const r=t.getBoundingClientRect();t.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+30,clientY:r.y+20}));`);
+ await until(a,`[...document.querySelectorAll('.context-menu button')].some(b=>b.textContent==='Folgen')`,3000,'Menüpunkt Folgen');
+ await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent==='Folgen').click();`);
+ await run(b,`const p=g.world.findClear(g.player.x+300,g.player.y+40,9);Object.assign(g.player,p);`);
+ await until(a,`(()=>{const o=g.others.find(x=>x.name==='Moni');return o&&Math.hypot(o.x-g.player.x,o.y-g.player.y)<110;})()`,12000,'Rudi schließt zu Moni auf');ok('Folgen: Rudi läuft Moni hinterher');
+ await a.press('d');await wait(400);assert.equal(await run(a,`return !g.routeGoal&&!g.path?.length;`),true,'eigene Bewegung beendet das Folgen');ok('Eigene Bewegung beendet das Folgen');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

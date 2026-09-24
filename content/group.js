@@ -6,3 +6,6 @@ export const READY_UI={
  allReady:'Alle sind bereit.',notReady:names=>'Nicht bereit: '+names.join(', ')+'.',noAnswer:names=>'Keine Antwort: '+names.join(', ')+'.',
  started:n=>n+' startet einen Bereitschaftscheck.'
 };
+/** Folgen (WoW „Folgen“): Abstände in Welt-Einheiten, Neuplanung in ms. */
+export const FOLLOW_RULES={start:70,stop:45,repathMs:450,maxRange:1400};
+export const FOLLOW_UI={menu:'Folgen',menuStop:'Folgen beenden',start:n=>'Du folgst '+n+'. Eigene Bewegung beendet das.',stop:n=>'Du folgst '+n+' nicht mehr.',lost:n=>n+' ist außer Sicht – Folgen beendet.'};

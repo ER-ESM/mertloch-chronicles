@@ -49,7 +49,7 @@ import {layoutUnitFrames} from './unit-layout.js';
 import {updateTargetIdentity} from './enemy-ui.js';
 import {selectUnitAt,unitAt,syncFriend,friendUnit,friendPanel} from './target-ui.js';
 import {clearSelection} from './help-target.js';
-import {TARGET_UI,READY_UI} from './content/index.js';
+import {TARGET_UI,READY_UI,FOLLOW_UI} from './content/index.js';
 import {questProgress,escapeQuest} from './quest-status-ui.js';
 import {BALANCE,COMBAT_RULES,COMBAT_TEXT,GLOSSARY} from './content/index.js';
 import {sideQuestDialogue,rewardConversationHeader,mountConversationPortraits} from './dialogue-ui.js';
@@ -118,6 +118,7 @@ import {BUILD,buildLabel} from './build-info.js';
 import {mountFpsMeter} from './fps-meter.js';
 import {worldDensity} from './art-quality.js';
 import {partyOverflow} from './companions.js';
+import {createFollow} from './follow.js';
 import {setMark,TARGET_MARK_MENU} from './target-marks.js';
 import {companionPanel,updateCompanionPanel,mountCompanionHud,companionBoardPoint} from './companion-ui.js';
 import {COMPANION_TEXT,MEMORY_FRAGMENTS,BASE_SITE_UI,INTRO_UI} from './content/index.js';
@@ -367,7 +368,7 @@ function worldInteraction(){
     default:return null;
   }
 }
-function playerMenu(name,level){const so=online?.social,inParty=so?.party().members.some(m=>m.n===name);return {title:name+(level?' · Stufe '+level:''),items:[so?.canRevive?.(name)?{label:'Aufhelfen',action:()=>so.revive(name)}:null,so?.selected?.()!==name?{label:TARGET_UI.menuSelect,action:()=>{so.selectTarget(name);events();}}:null,inParty&&so?.assistTarget?.(name)?{label:'Ziel übernehmen · '+so.assistTarget(name).name,action:()=>{assist(name);}}:null,{label:'Handeln',action:()=>so?.trade(name)},{label:'Flüstern',action:()=>so?.whisper(name)},!inParty&&so?.isLeader()?{label:'In Gruppe einladen',action:()=>so.invite(name)}:null,inParty&&so?.isLeader()?{label:'Aus Gruppe entfernen',danger:true,action:()=>so.kick(name)}:null,{separator:true},{label:'Spielerliste',action:()=>so?.who()}]};}
+function playerMenu(name,level){const so=online?.social,inParty=so?.party().members.some(m=>m.n===name);return {title:name+(level?' · Stufe '+level:''),items:[so?.canRevive?.(name)?{label:'Aufhelfen',action:()=>so.revive(name)}:null,so?.selected?.()!==name?{label:TARGET_UI.menuSelect,action:()=>{so.selectTarget(name);events();}}:null,inParty&&so?.assistTarget?.(name)?{label:'Ziel übernehmen · '+so.assistTarget(name).name,action:()=>{assist(name);}}:null,game?.others?.some(o=>o.name===name)?{label:follow.target===name?FOLLOW_UI.menuStop:FOLLOW_UI.menu,action:()=>follow.target===name?follow.stop():follow.start(name)}:null,{label:'Handeln',action:()=>so?.trade(name)},{label:'Flüstern',action:()=>so?.whisper(name)},!inParty&&so?.isLeader()?{label:'In Gruppe einladen',action:()=>so.invite(name)}:null,inParty&&so?.isLeader()?{label:'Aus Gruppe entfernen',danger:true,action:()=>so.kick(name)}:null,{separator:true},{label:'Spielerliste',action:()=>so?.who()}]};}
 let lastPointer={x:0,y:0};addEventListener('pointerdown',e=>{lastPointer={x:e.clientX,y:e.clientY};},true);
 function friendAction(u){
   if(u.kind==='companion'){openCompanions('team',u.ref.id);return;}
@@ -431,6 +432,7 @@ function updateUI(){
   // Söldner der Mitspieler zählen mit; wird die Gruppe zu groß (Beitritt), macht der passende eigene Söldner Platz (partyOverflow).
   const mates=humans.map(m=>({name:m.n,ids:(game.others.find(o=>o.name===m.n)?.companions||[]).map(c=>c.companion)}));game.partyCompanions=mates.reduce((n,m)=>n+m.ids.length,0);
   if(humans.length&&me)for(const id of partyOverflow(me,game.companions.map(c=>c.id),mates))game.dismissCompanion?.(id,'party');}
+  follow.tick(performance.now());
  companionHud?.update();
  if(popups.isOpen('companions')){
   const body=popups.get('companions').body,key=game.companions.map(c=>c.id).join('|');
@@ -535,7 +537,7 @@ const keyCode=e=>e.code||KEY_FALLBACK[e.key]||(/^\d$/.test(e.key||'')?'Digit'+e.
 const PANEL_ACTIONS={person:'person',bag:'bag',book:'book',talents:'talents',quest:'quest',map:'map',base:'base',professions:'professions',mounts:'mounts',companions:'companions',guide:'guide'};
 document.addEventListener('keydown',e=>{if(!game||startScreen?.isOpen||menuKey(e)||options?.capturing)return;if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){if(e.key==='Escape'){e.preventDefault();e.target.blur();closeModal();}return;}const key=e.key.toLowerCase(),code=keyCode(e);
   const binding=bindingFromKey({code,key:e.key,ctrlKey:e.ctrlKey,altKey:e.altKey,shiftKey:e.shiftKey,metaKey:e.metaKey}),act=actionFor(liveKeymap(),binding),move=act?KEYBIND_MOVE[act]:moveFor(liveKeymap(),code);
-  if(move||act||/^Digit\d$/.test(code))e.preventDefault();if(move){game.keys.add(move);heldMoves.set(code,move);}if(e.repeat)return;
+  if(move||act||/^Digit\d$/.test(code))e.preventDefault();if(move){if(follow.target)follow.stop();game.keys.add(move);heldMoves.set(code,move);}if(e.repeat)return;
   if(e.key==='Escape'){e.preventDefault();if(cancelProfession(game))return;if(game.mountCast){game.dismount();return;}if(game.casting){game.casting=null;return;}if(game.aiming){game.aiming=null;game.aimPoint=null;return;}
    // Esc schließt zuerst offene Fenster; aus der Welt öffnet es das Spielmenü und beendet den Autoangriff.
    if(e.shiftKey){popups.closeAll();return;}
@@ -560,6 +562,7 @@ $('#world').addEventListener('pointerdown',e=>{if(!game||game.paused||game.dead)
 /** Zielmarkierung setzen/entfernen (Zielrahmen-Menü, Tasten): lokal sofort, in der Gruppe an alle. */
 /** Assist (WoW): Ziel eines Gruppenmitglieds übernehmen (Menü am Gruppenrahmen, Taste „Ziel übernehmen“). */
 function assist(name){const so=online?.social;const who=name||so?.selected?.()||so?.party?.().leader;const e=who&&who!==so?.me?.()?so?.assistTarget?.(who):null;if(!e)return false;game.friend=null;game.target=e;events();updateUI();return true;}
+const follow=createFollow({game:()=>game,toast:t=>toast(t)});
 function markEnemy(e,id){if(!e||e.hp<=0)return;const r=setMark(game,e,id);if(r.changed)online?.social?.mark?.(e,r.mark);}
 const markMenu=e=>e&&e.hp>0?[{separator:true},...TARGET_MARK_MENU(e).map(x=>({...x,action:()=>markEnemy(e,x.id)}))]:[];
 mountContextMenu(target=>{
