@@ -5,7 +5,11 @@ export function spaceQuestGivers(w){const placed=[w.npc],report={moved:0,unchang
 export function nearestSpeaker(g,p){return [g.world.npc,...(g.tutorial&&!g.tutorial.completed?[]:g.world.quests.map(q=>q.giver))].filter(n=>distance(g.player,n)<70).sort((a,b)=>distance(g.player,a)-distance(g.player,b))[0]===p;}
 export class FootfallTrail{
  constructor(){this.points=[];this.lastStep=0;}
- draw(c,g){const p=g.player,step=Math.floor((p.walkDistance||0)/12);if(step!==this.lastStep&&p.moving){this.lastStep=step;this.points.push({x:p.x+(step%2?2:-2),y:p.y+1,time:g.time});}this.points=this.points.filter(f=>g.time-f.time<.45&&g.time>=f.time).slice(-8);c.save();for(const f of this.points){const age=(g.time-f.time)/.45;c.globalAlpha=(1-age)*.22;c.fillStyle=g.world.onRoad(f.x,f.y)?'#cfc4a1':'#a5bc79';c.fillRect(Math.round(f.x-age*2),Math.round(f.y-age*3),2+age*2,1);}c.restore();}
+ // Staubwölkchen je Schritt (Stardew/Eastward): gehen auf, steigen leicht und verblassen; auf Wegen und Dielen deutlicher als im Gras.
+ draw(c,g){const p=g.player,last=this.last||=({x:p.x,y:p.y}),moved=Math.hypot(p.x-last.x,p.y-last.y);if(moved>40)this.last={x:p.x,y:p.y};else if(moved>=11&&p.moving){this.last={x:p.x,y:p.y};const step=++this.lastStep;const road=g.world.onRoad?.(p.x,p.y);this.points.push({x:p.x+(step%2?3:-3),y:p.y+1,time:g.time,road,mounted:!!p.mount});}
+  this.points=this.points.filter(f=>g.time-f.time<.6&&g.time>=f.time).slice(-10);c.save();
+  for(const f of this.points){const age=(g.time-f.time)/.6,r=(f.mounted?3:2)+age*(f.mounted?6:4);c.globalAlpha=(1-age)*(f.road?.5:.32);c.fillStyle=f.road?'#e3d6b4':'#d6dfa8';c.beginPath();c.ellipse(f.x,f.y-age*4,r,r*.55,0,0,Math.PI*2);c.fill();c.globalAlpha*=.6;c.beginPath();c.ellipse(f.x+(f.x%2?2:-2)*age*2,f.y-1-age*6,r*.6,r*.35,0,0,Math.PI*2);c.fill();}
+  c.restore();}
 }
 /** Fade the whole tree, including its lower branches and trunk, while a focus is behind it. */
 export function drawTreeOcclusion(c,tree,focus,draw){
