@@ -475,7 +475,7 @@ function events(){for(const ev of game.events.splice(0)){
   if(ev.type==='discovery')toast(ev.name+' entdeckt · +20 EP');
   if(ev.type==='questDone')milestones?.quest(ev);
   if(ev.type==='revived'){if(popups.isOpen('death'))closeModal();deathScreen?.hide();}
-  if(ev.type==='death'){/* Todesbildschirm statt Fenster (death-screen.js, Runde 5a): Esc/F schlossen das Fenster und weckten den Helden */popups.close('death');deathScreen?.show(ev);}
+  if(ev.type==='death'){/* Todesbildschirm statt Fenster (death-screen.js, Runde 5a): Esc/F schlossen das Fenster und weckten den Helden */popups.close('death');/* Handy: ein Fenster zur Zeit – der Todesbildschirm ersetzt es (wie vorher das Tod-Fenster) */if(mobile?.active)popups.closeAll();deathScreen?.show(ev);}
   if(ev.type==='bossVictory'&&BOSS_LINES[ev.boss])toast('„'+BOSS_LINES[ev.boss].defeat+'“');
   // Death memories remain saved in Aufträge → Erinnerungen; the existing toast announces them without another modal.
   if(ev.type==='memory'&&!game.dead){memoryQueue.push(ev.fragment);showMemory();}
