@@ -92,6 +92,9 @@ export function mountOptions(api){
  document.addEventListener('keydown',e=>{if(state.capture)return;const nav=e.target.closest?.('.opt-nav');if(nav&&/^Arrow(Up|Down)$/.test(e.key)){e.preventDefault();const i=T.categories.findIndex(c=>c.id===state.cat),n=T.categories.length,next=T.categories[(i+(e.key==='ArrowDown'?1:-1)+n)%n];state.cat=next.id;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}api.rerender();requestAnimationFrame(()=>document.querySelector('[data-opt-cat="'+next.id+'"]')?.focus());return;}
   if(e.key==='Escape'&&api.startOpen?.()&&document.querySelector('.popup-settings')){e.preventDefault();e.stopPropagation();api.close();}},true);
  addEventListener('pointerdown',e=>{if(!state.capture)return;if(e.target.closest?.('[data-opt-key],[data-opt-bar]')&&e.button===0)return;const b=bindingFromMouse(e);e.preventDefault();e.stopImmediatePropagation();finish(b||null);},true);
+ // Rechtsklick auf eine Taste löscht sie sofort (ohne erst die Erfassung zu öffnen).
+ document.addEventListener('contextmenu',e=>{if(state.capture)return;const k=e.target.closest?.('[data-opt-key]:not(:disabled),[data-opt-bar]');if(!k)return;e.preventDefault();
+  if(k.dataset.optBar!==undefined)commitBar(Number(k.dataset.optBar),'');else{const [id,slot]=k.dataset.optKey.split(':');commitAction(id,Number(slot),'');}api.rerender();});
  function click(e){
   const cat=e.target.closest('[data-opt-cat]');if(cat){state.cat=cat.dataset.optCat;state.note='';try{localStorage.setItem(CAT_KEY,state.cat);}catch{}state.capture=null;api.rerender();return true;}
   const key=e.target.closest('[data-opt-key]');if(key){const [id,slot]=key.dataset.optKey.split(':');state.capture={id,slot:Number(slot)};api.game().keys?.clear?.();api.rerender();return true;}
