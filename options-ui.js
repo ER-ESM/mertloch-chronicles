@@ -15,7 +15,7 @@ export function cleanPrefs(raw){const out={...OPTIONS_DEFAULTS};for(const s of O
 export function statusText(mode,cur,max,fmt=n=>String(Math.ceil(n))){const pct=Math.round(max>0?Math.max(0,cur)/max*100:0)+' %',num=fmt(cur)+' / '+fmt(max);return mode==='percent'?pct:mode==='both'?pct+' · '+num:mode==='none'?'':num;}
 export function savePrefs(prefs,storage=globalThis.localStorage){try{storage?.setItem(PREFS_KEY,JSON.stringify(prefs));}catch{}}
 /** Welche Grafik-Voreinstellung passt zu den Schaltern? → id oder null (eigene). */
-export const settingOn=(settings,k)=>k==='fullRes'||k==='fps'?settings?.[k]===true:settings?.[k]!==false;
+export const settingOn=(settings,k)=>k==='fullRes'||k==='fps'||k==='lowRes'?settings?.[k]===true:settings?.[k]!==false;
 export function presetOf(settings){return T.presets.find(p=>Object.entries(p.values).every(([k,v])=>settingOn(settings,k)===v))?.id||null;}
 
 /** api: game(), prefs(), setPrefs(p), toast(t), rebuild(), events(), rerender(), extras:{bars(),meter(),hud()}, touch(), admin() */

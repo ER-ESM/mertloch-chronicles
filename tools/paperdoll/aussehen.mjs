@@ -11,7 +11,7 @@
 const FIG={schwungvoll:'ida',kraeftig:'dieter',drahtig:'kevin'};
 // Landmarken je Figur/Ansicht, vermessen bei Versatz ref=[dx,dy] (teile.json). eye=[oben,unten], eyeL/eyeR=[links,rechts] (nahes/fernes
 // Auge), brow = ab dieser Zeile bleibt das Gesicht beim Irokesen unangetastet, hair = Haaransatz Stirnmitte, mouth=[x0,x1,y0,y1],
-// skull=[cx,cy,rx,ry] kahler Schädel, jaw/mund = rasierter Kiefer (Polygon) und Mundzeilen [y,x0,x1] (Dieter), ear=[x,y] (nahes Ohr; hinten beide), beard = Oberkante des gezeichneten Barts (Dieter), stub = Haarstufe der Stoppeln.
+// skull=[cx,cy,rx,ry] kahler Schädel, jaw/mund = rasierter Kiefer (Polygon) und Mundzeilen [y,x0,x1] (Dieter), ear=[x,y] (nahes Ohr; hinten beide), beard = Oberkante des gezeichneten Barts (Dieter), stub = Haarstufe der Stoppeln auf der rasierten Kopfhaut (Irokese).
 const GEO={
  ida:{se:{ref:[-27,-38],eye:[-5,-1],eyeL:[-10,-2],eyeR:[7,12],brow:-8,hair:-11,mouth:[1,5,10,13],skull:[-.5,-3,16.5,17.5],ear:[-15,1],stub:2},
       nw:{ref:[-26,-38],hair:-11,skull:[.5,-2,17,17.5],ear:[[-17,1],[17,1]],stub:2}},
@@ -133,17 +133,19 @@ export function aussehen(K){
  const inMouth=(g,x,y,pad=0)=>x>=g.mouth[0]-pad&&x<=g.mouth[1]+pad&&y>=g.mouth[2]-pad&&y<=g.mouth[3]+pad;
  /** Mundform: genaue Zeilen (g.mund, Dieter) statt Kasten, falls vermessen. */
  const mouthAt=(g,x,y,pad=0)=>g.mund?g.mund.some(([my,a,b])=>Math.abs(my-y)<=pad&&x>=a-pad&&x<=b+pad):inMouth(g,x,y,pad);
- /** Stoppeln: Bartschatten (Haut eine Stufe dunkler, Schattierung des Kopfbildes bleibt) und locker gestreute Haarpunkte. */
- function stoppeln(L,p){if(p.back)return;const k=kopf(p,p.blink);if(!k)return;const g=k.g,r=p.look.hair,S=K.PAL.skin,[hx,hy]=anchor(p,k),sk=S.map(key);
-  const sh=rasur(L,p,k,[hx,hy]),face=sh?new Set([...k.face,...sh.face]):k.face,skin=(x,y)=>sh?.face.has(x+','+y)||k.at(x,y)===2,chinY=sh?sh.chin:x=>k.cols.get(x);
-  const colAt=(x,y)=>L.col[(hy+y)*K.W+hx+x]||k.rgb(x,y);
-  const s=L.piece(S);L.ramps[s].keep=true;const dots=new Set();
+ /** Stoppeln als Bartschatten in der Hauttreppe (färbt mit dem Hautton um, unabhängig von der Haarfarbe): Gesicht unter der Bartlinie eine
+  *  Stufe dunkler (Schattierung des Kopfbildes bleibt, glatte Kante), darin ein lockerer Tupfen eine weitere Stufe dunkler (höchstens S3).
+  *  Keine Haarfarbpunkte: helle Haarfarben auf dunkler Haut ergaben in Weltgröße (Flächenmittel → Palette) helle Flecken und Fremdfarben.
+  *  Tupfen mit Mindestabstand 3 (Tschebyschow): in jedem Weltpixel (Block ≤ 3×3 bei Maßstab ≥ 0,5) höchstens ein Tupfen, also ≤ 25 % –
+  *  S2 mit bis zu 30 % S3 rastet noch auf S2 ein, der Schatten bleibt in Weltgröße eine ruhige Fläche. */
+ function stoppeln(L,p){if(p.back)return;const k=kopf(p,p.blink);if(!k)return;const g=k.g,S=K.PAL.skin,[hx,hy]=anchor(p,k),sk=S.map(key);
+  const sh=rasur(L,p,k,[hx,hy]),face=sh?new Set([...k.face,...sh.face]):k.face,skin=(x,y)=>sh?.face.has(x+','+y)||k.at(x,y)===2;
+  const colAt=(x,y)=>L.col[(hy+y)*K.W+hx+x]||k.rgb(x,y),stufe=(x,y)=>sk.indexOf(key(colAt(x,y)));
+  const s=L.piece(S);L.ramps[s].keep=true;const cand=[];
   for(const key2 of face){const [x,y]=key2.split(',').map(Number),z=beardLine(k,x,false);if(y<z||!skin(x,y)||mouthAt(g,x,y,1))continue;
-   const deep=y-z;if(deep<1&&(x+y)%2)continue;const i=sk.indexOf(key(colAt(x,y)));L.px(hx+x,hy+y,S[Math.min(3,(i<0?1:i)+1)]);}
-  for(const key2 of face){const [x,y]=key2.split(',').map(Number),z=beardLine(k,x,false);if(y<z+1||!skin(x,y)||mouthAt(g,x,y,1))continue;
-   if(hs(x,y)>.3||dots.has((x-1)+','+y)||dots.has(x+','+(y-1))||dots.has((x-1)+','+(y-1))||dots.has((x+1)+','+(y-1)))continue;dots.add(x+','+y);L.px(hx+x,hy+y,r[g.stub+(hs(y,x)<.25?0:1)]);}
-  // Kinnkante: Stoppeln stehen über die Kontur leicht hinaus
-  for(const x of new Set([...face].map(q=>+q.split(',')[0]))){const yb=chinY(x);if(yb==null||yb<beardLine(k,x,false)+2||(x+yb)%2)continue;L.px(hx+x,hy+yb+1,r[g.stub+1]);}}
+   const i=stufe(x,y);L.px(hx+x,hy+y,S[Math.min(3,(i<0?1:i)+1)]);if(y>=z+1)cand.push([hs(x,y),x,y]);}
+  const dots=new Set(),near=(x,y)=>{for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(dots.has((x+dx)+','+(y+dy)))return true;return false;};
+  for(const [h,x,y] of cand.sort((a,b)=>a[0]-b[0])){if(h>.55||near(x,y))continue;const i=stufe(x,y);if(i<1||i>2)continue;dots.add(x+','+y);L.px(hx+x,hy+y,S[i+1]);}}
  function kinnbart(L,p){if(p.back)return;const k=kopf(p,p.blink);if(!k)return;const g=k.g,m=g.mouth,r=p.look.hair,[hx,hy]=anchor(p,k),X=v=>hx+v+.5,Y=v=>hy+v+.5;
   const sh=rasur(L,p,k,[hx,hy]),chinY=sh?sh.chin:x=>k.cols.get(x);
   const cx=(m[0]+m[1])/2,chin=Math.max(...[-1,0,1].map(d=>chinY(Math.round(cx)+d)??m[3]+6)),w=(m[1]-m[0])/2+2;
@@ -157,6 +159,15 @@ export function aussehen(K){
   K.light(L,b,{base:2,hi:1,lo:3,dark:1});
   for(let y=m[3]+2;y<=chin+2;y+=2)L.on(b,hx+Math.round(cx)+(y%4?1:-1),hy+y,r[3]);// Strähnen
   L.on(b,hx+Math.round(cx-w+1),hy+m[3]+1,r[1]);}
+ /** Schnauzer („Pornobalken“, Racing Ron): dicker Balken über der Oberlippe, Enden über die Mundwinkel hinab; Dieter wird vorher rasiert. */
+ function schnauzer(L,p){if(p.back)return;const k=kopf(p,p.blink);if(!k)return;const g=k.g,m=g.mouth,r=p.look.hair,[hx,hy]=anchor(p,k),X=v=>hx+v+.5,Y=v=>hy+v+.5;
+  rasur(L,p,k,[hx,hy]);const cx=(m[0]+m[1])/2,a=m[0]-3,e=m[1]+3,t=m[2]-3.6,b=L.piece(r);
+  K.poly(L,[[X(a),Y(m[2]+1.6)],[X(a+.8),Y(t+1.4)],[X(m[0]),Y(t+.2)],[X(cx),Y(t)],[X(m[1]),Y(t+.2)],[X(e-.8),Y(t+1.4)],[X(e),Y(m[2]+1.6)],[X(e-1.6),Y(m[2]+1.8)],
+   [X(m[1]+.5),Y(m[2]-.2)],[X(cx),Y(m[2]-.7)],[X(m[0]-.5),Y(m[2]-.2)],[X(a+1.6),Y(m[2]+1.8)]],r[2]);
+  for(let y=m[2]-1;y<=m[3]+1;y++)for(let x=m[0]-1;x<=m[1]+1;x++)if(g.mund?mouthAt(g,x,y):inMouth(g,x,y)&&(k.at(x,y)===4||y>=m[2]))L.del(hx+x,hy+y);// Mund frei
+  K.light(L,b,{base:2,hi:1,lo:3,dark:1});
+  for(let x=Math.ceil(a+1);x<=e-1;x+=2)L.on(b,hx+x,hy+Math.round(m[2]-1),r[3]);// Haarstriche
+  L.on(b,hx+Math.round(cx),hy+Math.round(t+1),r[3]);}
  function vollbart(L,p){if(p.back)return;const k=kopf(p,p.blink);if(!k)return;const g=k.g,m=g.mouth,r=p.look.hair,[hx,hy]=anchor(p,k);
   const lower=[...k.face].map(s=>s.split(',').map(Number)).filter(([x,y])=>y>=beardLine(k,x,true)),set=new Set(lower.map(([x,y])=>x+','+y));
   // Fülle: Gesicht unterhalb der Bartlinie, dazu ein Saum über Kiefer und Kinn hinaus (unten breiter als seitlich)
@@ -260,6 +271,7 @@ export function aussehen(K){
   gear:{
    'bart-stoppeln':{slot:'look',name:'Stoppeln',kopf(L,p){raw(L,p,q=>stoppeln(L,q));}},
    'bart-kinnbart':{slot:'look',name:'Kinnbart',kopf(L,p){raw(L,p,q=>kinnbart(L,q));}},
+   'bart-schnauzer':{slot:'look',name:'Schnauzer',kopf(L,p){raw(L,p,q=>schnauzer(L,q));}},
    'bart-vollbart':{slot:'look',name:'Vollbart',kopf(L,p){raw(L,p,q=>vollbart(L,q));}},
    'brille':{slot:'look',name:'Brille',kopf(L,p){raw(L,p,q=>brille(L,q,false));}},
    'sonnenbrille':{slot:'look',name:'Sonnenbrille',kopf(L,p){raw(L,p,q=>brille(L,q,true));}},

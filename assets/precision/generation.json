@@ -1745,6 +1745,214 @@
       "date": "2026-09-23",
       "originalFile": "exec-97f85d92-117a-473e-aba6-e5c7b15f6b55.png",
       "sourceHash": "394685b2e7117ea26c971d1aee29184fd0771bc66c5d0c780993d833afa0946e"
+    },
+    {
+      "id": "portrait-ida",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-ida.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: an adult WOMAN with a soft, curvy build and fair light peach skin; big voluminous fiery copper-red curly hair falling to the shoulders, with a round spiral bun on top of the head held by an orange hair band. Wearing a light-blue collared button shirt; blue denim bib overalls with shoulder straps and metal buttons. Expression: late forties, resolute boss energy, confident crooked grin.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/ida-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-9fb056a2-b5b4-4f44-a7a1-4951c077833b.png",
+      "sourceHash": "f5b0ce3e9c1e1dde6b8febf566e8e4a88d10e62505623ba1faf320bb95c74cbd"
+    },
+    {
+      "id": "portrait-mentor-dieter",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-mentor-dieter.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a stocky, broad-shouldered, heavy-set MAN with a round face and fair light peach skin; short chestnut brown hair and a thick bushy chestnut brown full beard. Wearing a sleeveless armour vest made of laced-together cream beer coasters with red and blue printed circles, bare muscular arms. Expression: big hearty laugh, friendly bear of a man.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/dieter-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-03dc3f9c-9e36-4dcb-a0de-3a6c30940c0f.png",
+      "sourceHash": "32dea71262f6d4267ca2175f1985fdaa898dba01e9f80f62b1d1c653dfb0d7c3"
+    },
+    {
+      "id": "portrait-mentor-baerbel",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-mentor-baerbel.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: an adult WOMAN with a soft, curvy build and fair light peach skin; big voluminous golden blonde curly hair falling to the shoulders, with a round spiral bun on top of the head held by an orange hair band. Wearing a bright yellow festival rain jacket with a high collar and buttons. Expression: warm caring smile, rosy cheeks.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/baerbel-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-75a3483e-b319-46b6-85f8-8955caff7b24.png",
+      "sourceHash": "65ed36d5d65028ac320a7cb1cf6ef86aa8af5160f7bd42d1f78ca9606a17ad2e"
+    },
+    {
+      "id": "portrait-mentor-kevin",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-mentor-kevin.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a lean, wiry, slim MAN with a narrow face and fair light peach skin; short spiky messy black hair, clean-shaven, no beard, no moustache. Wearing a worn brown clan jacket with a round orange patch and a small red-white checkered patch, open over a white T-shirt; a lanyard around the neck with a laminated intern ID badge. Expression: early twenties, cheeky know-it-all smirk.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/kevin-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-3c0977c3-b736-4053-9bc0-1a27c09c15a8.png",
+      "sourceHash": "695167f3e6aeba63c29a599d7b1573fd373294e40cab06300bf0e75be1a621d7"
+    },
+    {
+      "id": "portrait-nyalol",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-nyalol.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a stocky, broad-shouldered, heavy-set MAN with a round face and fair light peach skin; short golden blonde hair; short golden blonde stubble on cheeks and chin (not a full beard). Wearing a purple hoodie with white drawstrings; big black over-ear studio headphones with red ear cups worn on the head. Expression: early thirties gamer, tired eyes with dark circles, lopsided grin.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/nyalol-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-af9627ed-194f-45cf-bf50-c71dda143d82.png",
+      "sourceHash": "44845f886357a959db85e9d71565318f9094627ed19b8833e8ce9a7790a5fe79"
+    },
+    {
+      "id": "portrait-olli",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-olli.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a lean, wiry, slim MAN with a narrow face and medium olive-tan skin; short spiky messy chestnut brown hair; short dark stubble on cheeks and chin (not a full beard); thin dark rectangular eyeglasses. Wearing a light-blue collared button shirt; an orange high-visibility safety vest. Expression: mid thirties startup founder, over-confident smile.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/olli-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-46c4c464-27d9-4995-83e5-9da0907572b9.png",
+      "sourceHash": "e0427e7962cd3b541e606217bd65a97f57f23aa0ab25587354a33d19f0aca74b"
+    },
+    {
+      "id": "portrait-mara",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-mara.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: an adult WOMAN with a soft, curvy build and medium olive-tan skin; big voluminous black curly hair falling to the shoulders, with a round spiral bun on top of the head held by an orange hair band; a red headband across the forehead. Wearing a mint-green shopkeeper work smock with collar. Expression: young herbal witch, sly knowing smile, slightly tired eyes.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/mara-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-ff72f417-6ef1-4e3b-af2e-f73070844228.png",
+      "sourceHash": "34d176df81957429de4f7a88d755c797c0ed668736fe257abe1434fc98eb93fe"
+    },
+    {
+      "id": "portrait-leander",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-leander.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a lean, wiry, slim MAN with a narrow face and fair light peach skin; short spiky messy bright sky-blue hair, clean-shaven, no beard, no moustache; his hair is a tall bright sky-blue MOHAWK with shaved sides. Wearing a light-blue collared button shirt; big black over-ear studio headphones with red ear cups worn on the head. Expression: dreamy sound engineer, half-deaf puzzled grin.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/leander-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-3630dd93-05a6-4657-bdeb-cd8197e11cb3.png",
+      "sourceHash": "ef0438d1d227d794121b4e16aa5f08fde44158438323bb24508ee5552103246c"
+    },
+    {
+      "id": "portrait-oskar",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-oskar.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a stocky, broad-shouldered, heavy-set MAN with a round face and tanned warm brown skin; short chestnut brown hair and a thick bushy chestnut brown full beard. Wearing a white sleeveless ribbed tank top (undershirt); a cream-coloured bib apron. Expression: jolly grill master, proud grin.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/oskar-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-dad8e533-fd85-42e2-ace9-edd2d610299f.png",
+      "sourceHash": "1bd4c9a55fe0c763380b2d4c5247478dfc7092660ee0835e2a7aac4e99c4d85a"
+    },
+    {
+      "id": "portrait-fenja",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-fenja.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: an adult WOMAN with a soft, curvy build and fair light peach skin; big voluminous chestnut brown curly hair falling to the shoulders, with a round spiral bun on top of the head held by an orange hair band. Wearing a dirndl: cream blouse with puffed sleeves and a green bodice with white criss-cross lacing. Expression: friendly barkeeper, bright smile.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/fenja-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-6baecc18-04d9-4818-9d22-b4d3548c60ee.png",
+      "sourceHash": "fce0e0d3531e1dc3ac1aef910ac81f06f7391965fab11567dcb007f508522f12"
+    },
+    {
+      "id": "portrait-tilo",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-tilo.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a lean, wiry, slim MAN with a narrow face and fair light peach skin; short spiky messy golden blonde hair, clean-shaven, no beard, no moustache; opaque black sunglasses covering the eyes. Wearing a purple hoodie with white drawstrings; big black over-ear studio headphones with red ear cups worn on the head. Expression: laid-back cassette nerd, relaxed smile.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/tilo-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-45be8131-e369-43de-ba75-084b45b116ef.png",
+      "sourceHash": "d90072eed3b04d868795c53d83e26c3348641407d30769b64d71da69a8a1052a"
+    },
+    {
+      "id": "portrait-jonna",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-jonna.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: an adult WOMAN with a soft, curvy build and fair light peach skin; big voluminous black curly hair falling to the shoulders, with a round spiral bun on top of the head held by an orange hair band; thin dark rectangular eyeglasses. Wearing an olive-green knitted cardigan with buttons over a cream top. Expression: strict deposit supervisor, raised eyebrow, stern look.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/jonna-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-96875e1d-aefc-4f71-9f11-f44e59fc72de.png",
+      "sourceHash": "0f8a40a39b531fa0562b6afcdf12640d60ee4fd7402844f0a4a910885c7ac92e"
+    },
+    {
+      "id": "portrait-kurt",
+      "kind": "portraits",
+      "output": "assets/precision/sources/2026-09-24/portrait-kurt.png",
+      "prompt": "Use case: identity-preserve. ONE dialogue portrait for the humorous rural German pixel-art RPG \"Mertloch Chronicles\" (village pub humour, Westerwald).\nImage 1 is the CHARACTER reference: a small in-game paper-doll bust of this exact person. Keep its identity exactly: gender, body build, skin tone, hair colour and hairstyle, facial hair, glasses, headwear and clothing colours. Redraw it as a detailed, expressive portrait (do not copy the chunky low-res look).\nImage 2 is a STYLE reference only (the existing portrait of police officer Pit): match its rendering style, detail level, lighting and framing. Do NOT copy Pit's face, grey hair, moustache or police uniform.\nFraming: head-and-shoulders bust, three-quarter view turned toward the viewer's right (front-right), looking slightly right, head large in the upper half with a small margin above the hair, bust cut off flat at mid-chest at the bottom edge of the image, centred.\nStyle: detailed warm comic pixel art, crisp visible square pixel clusters, dark slate outline, warm amber light from the upper left, muted earthy palette (olive, terracotta, cream, slate), friendly slightly caricatured adult face with a readable expression.\nBackground: GENUINELY TRANSPARENT alpha background, no backdrop colour, no frame, no vignette, no shadow, no text, no signature, no watermark. No props in the hands.\nCharacter: a stocky, broad-shouldered, heavy-set MAN with a round face and fair light peach skin; short black hair and a thick bushy black full beard. Wearing a light-blue collared button shirt; a khaki-olive flat cap (Schiebermütze) on the head. Expression: good-natured bowling club member, sheepish smile.",
+      "references": [
+        "assets/precision/sources/2026-09-24/referenz/kurt-brust.png",
+        "assets/precision/sources/2026-09-24/referenz/_stil-pit.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-24",
+      "originalFile": "exec-ba493b6f-25ff-40bf-b81a-08f1dca3be5c.png",
+      "sourceHash": "b4be219b7153bc8f8aa5af4a8aa90fc1f308dba9c1856e69bb746065273ccd3c"
     }
   ]
 }

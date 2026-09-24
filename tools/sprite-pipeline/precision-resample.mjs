@@ -3,6 +3,11 @@
 import {PRECISION_PALETTE} from '../../art-quality.js';
 const cache=new Map();
 export function precisionColor(rgb){const key=rgb.map(v=>v>>2).join(',');let p=cache.get(key);if(p)return p;let score=Infinity;for(const q of PRECISION_PALETTE){const d=rgb.reduce((s,v,k)=>s+(v-q[k])**2*[.8,1,.7][k],0);if(d<score){score=d;p=q;}}cache.set(key,p);return p;}
+// Eigene Palette als Feld (z. B. NPC-Porträts: PRECISION_PALETTE + Farben der Anziehpuppe, tools/sprite-pipeline/portraet-palette.json).
+// Gleiche Gewichtung wie precisionColor; Cache je Palette und exakter Farbe, damit das Ergebnis nicht von der Bildreihenfolge abhängt.
+const own=new WeakMap();
+export function paletteColor(rgb,pal){let c=own.get(pal);if(!c)own.set(pal,c=new Map());const key=rgb.join(',');let p=c.get(key);if(p)return p;let score=Infinity;for(const q of pal){const d=rgb.reduce((s,v,k)=>s+(v-q[k])**2*[.8,1,.7][k],0);if(d<score){score=d;p=q;}}c.set(key,p);return p;}
+/** palette: true = PRECISION_PALETTE, false = Originalfarben, Feld von [r,g,b] = diese Palette. */
 export function resample(src,dst,b,at,scale,{palette=true}={}){
  const w=Math.max(1,Math.round(b.w*scale)),h=Math.max(1,Math.round(b.h*scale));
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
@@ -14,6 +19,6 @@ export function resample(src,dst,b,at,scale,{palette=true}={}){
    const i=(sy*src.width+sx)*4,a=src.data[i+3]/255*weight;total+=weight;alpha+=a;r+=src.data[i]*a;g+=src.data[i+1]*a;blue+=src.data[i+2]*a;
   }
   if(alpha<total*.5)continue;
-  const rgb=[r,g,blue].map(v=>Math.round(v/alpha));dst.data.set([...(palette?precisionColor(rgb):rgb),255],(dy*dst.width+dx)*4);
+  const rgb=[r,g,blue].map(v=>Math.round(v/alpha));dst.data.set([...(Array.isArray(palette)?paletteColor(rgb,palette):palette?precisionColor(rgb):rgb),255],(dy*dst.width+dx)*4);
  }
 }

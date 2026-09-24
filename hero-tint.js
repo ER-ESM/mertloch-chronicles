@@ -10,7 +10,7 @@ export const FACE_ITEMS=[{id:'ohne',name:'Ohne'},{id:'brille',name:'Brille'},{id
 const FACE_GEOMETRY={dieter:{eye:13,brow:8,half:9,crown:1},anni:{eye:21,brow:15,half:8,crown:9},baerbel:{eye:21,brow:15,half:8,crown:9},kevin:{eye:16,brow:10,half:8,crown:2}}; // crown = Scheitel unter der Bild-Oberkante (beim Dutt deutlich tiefer)
 /** Gezeichnete Ebenen (geformte Pixel, keine umgedeuteten): Bart folgt dem Kiefer und bleibt auf der Figur; der Irokese sitzt auf dem Scheitel. */
 /** bodies: nur für diese Körper angeboten (dort überzeugt das Ergebnis am Bild); ohne Angabe für alle. */
-export const BEARDS=[{id:'natur',name:'Wie gezeichnet'},{id:'stoppeln',name:'Stoppeln'},{id:'kinnbart',name:'Kinnbart'},{id:'vollbart',name:'Vollbart'}];
+export const BEARDS=[{id:'natur',name:'Wie gezeichnet'},{id:'stoppeln',name:'Stoppeln'},{id:'kinnbart',name:'Kinnbart'},{id:'schnauzer',name:'Schnauzer'},{id:'vollbart',name:'Vollbart'}];
 export const HAIR_STYLES=[{id:'natur',name:'Wie gezeichnet'},{id:'irokese',name:'Irokese'}];
 export const offeredFor=(list,body)=>list.filter(o=>!o.bodies||o.bodies.includes(body));
 const NATURAL_HAIR={dieter:[62,44,38],anni:[196,120,56],baerbel:[196,120,56],kevin:[58,42,34]};
@@ -35,6 +35,7 @@ export function drawBeard(c,frame,bodyId,tint,q=1){
  c.save();c.scale(q,q);c.globalCompositeOperation='source-atop';
  const row=(y,from,to,k)=>{c.fillStyle=tone(rgb,k);c.fillRect(cx+from,ey+y,to-from+1,1);};
  if(kind==='stoppeln'){c.globalAlpha=.42;for(let y=5;y<=10;y++)for(let x=-g.half+2;x<=g.half-2;x++)if((x+y)%2===0&&!(y<=7&&Math.abs(x)<=1)){c.fillStyle=tone(rgb,.9);c.fillRect(cx+x,ey+y,1,1);}}
+ else if(kind==='schnauzer'){row(4,-4,4,1.1);row(5,-5,-2,1);row(5,2,5,1);row(6,-5,-4,.9);row(6,4,5,.9);}
  else if(kind==='kinnbart'){row(7,-2,2,1.05);row(8,-3,3,1);row(9,-3,3,.9);row(10,-2,2,.8);row(11,-1,1,.7);c.clearRect?0:0;c.fillStyle=tone(rgb,1.1);c.fillRect(cx-3,ey+5,2,1);c.fillRect(cx+2,ey+5,2,1);}
  else{const w=g.half-2;row(4,-w-1,-w+1,1.1);row(4,w-1,w+1,1.1);row(5,-w-1,-2,1.1);row(5,2,w+1,1.1);row(6,-w-1,w+1,1.05);row(7,-w,-2,1);row(7,2,w,1);row(8,-w,w,.95);row(9,-w+1,w-1,.88);row(10,-w+2,w-2,.8);row(11,-w+3,w-3,.72);row(12,-2,2,.64);}
  c.restore();return true;

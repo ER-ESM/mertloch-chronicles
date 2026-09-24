@@ -4,13 +4,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {ITEM_CATALOG} from '../content/index.js';
 import {compatibleSlots} from '../equipment.js';
 import {equipmentAppearance} from '../equipment-appearance.js';
 import {paperdollSources,paperdoll} from '../paperdoll-art.js';
 import {ORDER,sources} from '../paperdoll-kern.js';
+import {HAND_F} from '../tools/paperdoll/puppe.mjs';
 
-const RT=new URL('../assets/paperdoll/runtime/',import.meta.url);
+// PAPERDOLL_RT (oder PAPERDOLL_RUNTIME)=<ordner> prüft einen Probebau statt assets/paperdoll/runtime
+const PROBE=process.env.PAPERDOLL_RT||process.env.PAPERDOLL_RUNTIME,RT=PROBE?pathToFileURL(resolve(PROBE)+'/'):new URL('../assets/paperdoll/runtime/',import.meta.url);
 const cat=JSON.parse(readFileSync(new URL('catalog.json',RT),'utf8'));
 /** Familien-Tabellen aus equipment-appearance.js (nicht exportiert): special/weapons/slots als Objektliteral lesen. */
 const TABLES=(()=>{const src=readFileSync(new URL('../equipment-appearance.js',import.meta.url),'utf8'),out={};
@@ -45,7 +49,7 @@ test('Fernwaffen und Rüstungsplätze haben eigene Ebenen in der Schichtreihenfo
  const used=new Set([...fams.map(f=>cat.families[f]),...Object.keys(ITEM_CATALOG).map(id=>cat.items[id])].filter(Boolean));
  for(const id of used)assert.ok(ORDER.includes(cat.sources[id].slot),`${id}: Platz ${cat.sources[id].slot} fehlt in ORDER`);
  assert.ok(at('waist')>at('body'),'Gürtel über der Jacke');assert.ok(at('hands')>at('offhand')&&at('hands')>at('weapon'),'Handschuh über der Faust der Waffe');
- for(const id of ['pfandschleuder','megafon','ruhepfeife']){assert.equal(cat.sources[id].slot,'ranged');assert.ok(cat.sources[id].bands.includes('armVorn')&&cat.sources[id].bands.includes('armHinten'),id);
+ for(const id of ['pfandschleuder','megafon','ruhepfeife']){assert.equal(cat.sources[id].slot,'ranged');assert.ok(cat.sources[id].bands.includes('armVorn')&&cat.sources[id].bands.includes(HAND_F),id+': nahe Hand vorn, ferne Hand im Band '+HAND_F);
   assert.ok(cat.own.sw.includes(id)&&cat.own.ne.includes(id),`${id} seitengebunden (Waffenhand rechts)`);}
 });
 

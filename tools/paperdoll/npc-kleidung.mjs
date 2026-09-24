@@ -29,6 +29,7 @@ const RAMPS={
  nkPappe:R(['#d2a474','#aa7a4e','#825836','#5a3a24','#382214']),
  nkKasten:R(['#f07a5e','#cc4632','#982c24','#661a18','#3c0e0e']),
  nkBraun:R(['#c89a5a','#9a6a34','#6e4822','#4a2e16','#2a1a0c']),
+ nkRenn:R(['#ff8c7a','#dc3a32','#a82626','#701a1e','#420e12']),// Rennjacke (rotes Leder)
 };
 
 export function npc_kleidung(K){
@@ -68,8 +69,8 @@ export function npc_kleidung(K){
  /** Schürzen-Umriss: Rock vorn, an Hüfte und Beinen des Archetyps ausgerichtet (Drahtig bekommt Mindestbreite). */
  function schurz(p,y0,y1,inset=3){const A=p.A,[cx,cy]=p.C,t=K.row(A,y0),b=K.row(A,Math.min(46,y1)),sw=p.ride?0:(p.sway||0)*1.6;
   return [[cx+Math.min(t[1]+inset,-13),cy+y0],[cx+Math.max(t[2]-inset,12),cy+y0],[cx+Math.max(b[2]+1,15)+sw,cy+y1],[cx+Math.min(b[1]-1,-16)+sw,cy+y1]];}
- /** Senkrechte Stofffalten in einem Teil. */
- function falten(L,part,x0,x1,y0,y1,c,step=6){for(let x=x0;x<=x1;x+=step){const k=hs(x,y0);K.line(L,[[x,y0+4+k*6],[x+(k>.5?1:-1),y1-2]],c[k>.55?3:2],part);}}
+ /** Senkrechte Stofffalten in einem Teil (Rauschen an Leinwandstellen: K.hsA, am Rauschursprung verankert). */
+ function falten(L,part,x0,x1,y0,y1,c,step=6){for(let x=x0;x<=x1;x+=step){const k=K.hsA(x,y0);K.line(L,[[x,y0+4+k*6],[x+(k>.5?1:-1),y1-2]],c[k>.55?3:2],part);}}
 
  const gear={
   // ===== Oberteile (body) =====
@@ -130,6 +131,16 @@ export function npc_kleidung(K){
     if(!p.ride){const s=L.piece(V);K.poly(L,[[cx-9,cy+28],[cx+11,cy+28],[cx+15+(p.sway||0)*1.6,cy+74],[cx-13+(p.sway||0)*1.6,cy+74]],V[1]);K.light(L,s,{base:1,hi:0,lo:2,dark:2});falten(L,s,cx-6,cx+10,cy+30,cy+74,V,7);}// Vorbinder
     const bd=L.piece(V);K.poly(L,K.torso(p,1.9,27,30),V[2]);K.light(L,bd,{base:2,hi:1,lo:3,dark:1});
     const sl=L.piece(V);K.ell(L,cx-14,cy+30,3.2,2.2,V[1]);K.ell(L,cx-8,cy+30,3.2,2.2,V[1]);K.limb(L,[[cx-11,cy+31],[cx-13,cy+40]],[1.3,1],V[2]);K.limb(L,[[cx-10,cy+31],[cx-8,cy+39]],[1.3,1],V[1]);K.light(L,sl,{base:1,hi:0,lo:2,dark:1});}},// Schleife vorn links
+  rennjacke:{slot:'body',name:'Rote Rennjacke',
+   armHinten(L,p){rennArm(L,p,p.armF,true);},armVorn(L,p){rennArm(L,p,p.armN,false);},
+   rumpf(L,p){const c=P.nkRenn,[cx,cy]=p.C,j=rennRumpf(L,p);
+    K.poly(L,[[cx-3,cy-15],[cx+6,cy-15],[cx+1.5,cy-6]],null,'del');// oben offen: weißes Shirt im kleinen V
+    const r=L.piece(P.black);K.limb(L,[[cx-neck(p)-4,cy-15.5],[cx-2.5,cy-14]],[1.9,1.7],P.black[2]);K.limb(L,[[cx+5.5,cy-14],[cx+neck(p)+5,cy-15.5]],[1.7,1.9],P.black[3]);K.light(L,r,{base:2,hi:1,lo:3,dark:1});// Stehkragen
+    L.piece(P.metal,1);K.line(L,[[cx+1.5,cy-6],[cx+1.5,cy+40]],P.metal[2]);for(let y=cy-4;y<cy+40;y+=3)px(L,cx+2.5,y,P.metal[1]);// Reißverschluss über den Streifen
+    const b=L.piece(P.gold);K.ell(L,cx-12,cy+19,3.6,3.6,P.gold[1]);K.light(L,b,{base:1,hi:0,lo:2,dark:1});K.ell(L,cx-12,cy+19,1.6,1.6,P.black[2],b);on(L,b,cx-13,cy+17,P.gold[0]);// Sponsor-Aufnäher
+    const f=L.piece(P.white);K.poly(L,[[cx+8,cy+16],[cx+16,cy+16],[cx+16,cy+22],[cx+8,cy+22]],P.white[1]);// Zielflagge
+    for(let y=0;y<6;y++)for(let x=0;x<8;x++)if(((x>>1)+(y>>1))&1)on(L,f,cx+8+x,cy+16+y,P.black[2]);
+    K.line(L,[[cx-18,cy+30],[cx-7,cy+30]],c[3],j);K.line(L,[[cx+9,cy+30],[cx+18,cy+30]],c[3],j);}},// Taschenschlitze
   // ===== Überzieher (charm: über Hemd/Pulli) =====
   schuerze:{slot:'charm',name:'Latzschürze',
    rumpf(L,p){const c=P.white,[cx,cy]=p.C,nr=neck(p),long=p.ride?44:62;
@@ -191,8 +202,17 @@ export function npc_kleidung(K){
  function anzugArm(L,p,arm,far){return K.sleeve(L,p,arm,P.nkAnzug,.9,1.8,far,{roll:false});}
  /** Puffärmel der Dirndlbluse: kurz, gebauscht, Gummizug mit Rüschenkante. */
  function puff(L,p,arm,far){const s=K.sleeve(L,p,arm,P.white,.3,3.6,far,{roll:true});const a=K.lerp(arm[0],arm[1],.12);K.line(L,[[a[0]-3,a[1]],[a[0],a[1]+4]],P.white[2],s);}
+ /** Linie parallel zu einem Glied (Abstand d quer zur Laufrichtung je Punkt) – Streifen folgen dem gebeugten Arm. */
+ const quer=(pts,d)=>pts.map((q,i)=>{const a=pts[Math.max(0,i-1)],b=pts[Math.min(pts.length-1,i+1)],l=Math.hypot(b[0]-a[0],b[1]-a[1])||1;return [q[0]-(b[1]-a[1])/l*d,q[1]+(b[0]-a[0])/l*d];});
+ /** Rennjackenärmel: lang, schwarzes Bündchen, zwei weiße Längsstreifen bis kurz vor das Bündchen. */
+ function rennArm(L,p,arm,far){const s=K.sleeve(L,p,arm,P.nkRenn,.9,2.2,far,{roll:false,cuff:P.black}),g=K.seg(arm,.1,.8),w=P.white[far?1:0];
+  for(const d of [-1.2,1.2])K.line(L,quer(g,d),w,s);return s;}
+ /** Rumpf der Rennjacke: rotes Leder bis zur Hüfte, zwei weiße Querstreifen über Brust/Rücken, schwarzes Rippbündchen. */
+ function rennRumpf(L,p){const j=coat(L,p,P.nkRenn,2.6,-14,40,1.2);
+  for(const y of [3,8]){const w=L.piece(P.white);K.poly(L,K.torso(p,2.9,y,y+2.6,{sway:!p.ride}),P.white[1]);K.light(L,w,{base:1,hi:0,lo:2,dark:1});}
+  saum(L,p,P.black,2.9,37,41);return j;}
  /** Tweed: helle und dunkle Flecken im Fischgrat-Raster. */
- function tweed(L,part,x0,x1,y0,y1,c){for(let y=y0;y<=y1;y+=2)for(let x=x0+(y%4?1:0);x<=x1;x+=3){const k=hs(x,y);if(!L.is(part,x,y)||!same(colAt(L,x,y),c[1]))continue;if(k>.72)L.on(part,x,y,c[0]);else if(k<.3)L.on(part,x,y,c[2]);}}
+ function tweed(L,part,x0,x1,y0,y1,c){for(let y=y0;y<=y1;y+=2)for(let x=x0+((y-K.NZ[1])%4?1:0);x<=x1;x+=3){const k=K.hsA(x,y);if(!L.is(part,x,y)||!same(colAt(L,x,y),c[1]))continue;if(k>.72)L.on(part,x,y,c[0]);else if(k<.3)L.on(part,x,y,c[2]);}}
  /** Hörmuschel mit Polster (nahe Seite). */
  function muschel(L,x,y,dunkel){const m=L.piece(P.black);K.ell(L,x,y,5.4,7.6,P.black[dunkel?3:2]);K.light(L,m,{base:dunkel?3:2,hi:1,lo:3,dark:2});
   const r=L.piece(P.red);K.ell(L,x-.5,y,3,4.6,P.red[1]);K.light(L,r,{base:1,hi:0,lo:2,dark:1});on(L,r,x-1,y-1,P.red[0]);}
@@ -251,6 +271,10 @@ export function npc_kleidung(K){
    const s=L.piece(P.black);K.limb(L,[[x-19,y-3],[x-17,y-15],[x-8,y-23],[x+2,y-25],[x+12,y-23],[x+19,y-15],[x+20,y-3]],[2,2,2,2,2,2,2],P.black[2]);K.light(L,s,{base:2,hi:1,lo:3,dark:1});
    for(const dx of [-20,21]){const m=L.piece(P.black);K.ell(L,x+dx,y+2,4.4,7.2,P.black[dx<0?2:3]);K.light(L,m,{base:dx<0?2:3,hi:1,lo:3,dark:2});}}},
   klemmbrett:{armVorn(L,p){const [hx,hy]=K.handPos(p.armF);brett(L,hx,hy,false);K.handOver(L,p.armF,true);}},
+  rennjacke:{rumpf(L,p){const [cx,cy]=p.C,nr=neck(p);rennRumpf(L,p);
+   const k=L.piece(P.black);K.poly(L,[[cx-nr-3,cy-17],[cx+nr+4,cy-17],[cx+nr+3,cy-12.5],[cx-nr-2,cy-12.5]],P.black[2]);K.light(L,k,{base:2,hi:1,lo:3,dark:1});// Stehkragen hinten
+   const t=L.piece(P.black);K.poly(L,[[cx-8,cy-9],[cx+10,cy-9],[cx+10,cy],[cx-8,cy]],P.black[2]);K.light(L,t,{base:2,hi:1,lo:3,dark:1});// Namensfeld über den Schulterblättern
+   K.text(L,t,cx-5,cy-7,'RON',P.white[0],0);}},
  };
  return {gear,back,families:{},sided:[]};
 }

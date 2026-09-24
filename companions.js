@@ -24,10 +24,10 @@ const alive=c=>c.state!=='down'&&c.hp>0;
 const fighting=e=>e.hp>0&&e.aggro&&e.ai!=='returning'&&!e.dummy&&!e.tutorial;
 const ratio=x=>x.hp/x.maxHp;
 const abilitySource=id=>({id,name:COMPANION_ABILITIES[id].name});
-/** Aussehen des Söldners als Anziehpuppe (content/figuren.js): Tönung und sichtbare Kleidung für den Heldenweg im Renderer.
- *  Nur wenn der Archetyp zum look passt (der Heldenweg zeichnet den Körper des look). */
-function mercLook(def){const f=FIGUREN[def.id];if(!f?.arch||f.arch!==def.look)return {};
- return {tint:f.tint,visualEquipment:f.gear.map(id=>{const h=FIGUR_HANDSTUECKE[id];return {slot:h?.slot||'figur',id,asset:h?.asset||id,rarity:'common',hands:h?.hands??null};})};}
+/** Aussehen des Söldners als Anziehpuppe (content/figuren.js): Körper über die Figur (paperdollId npc:<id>, Archetyp darf vom look
+ *  abweichen – look bleibt für Klasseneffekte und Kampftextfarbe), Tönung und sichtbare Kleidung für den Heldenweg im Renderer. */
+function mercLook(def){const f=FIGUREN[def.id];if(!f?.arch)return {};
+ return {paperdollId:'npc:'+def.id,tint:f.tint,visualEquipment:f.gear.map(id=>{const h=FIGUR_HANDSTUECKE[id];return {slot:h?.slot||'figur',id,asset:h?.asset||id,rarity:'common',hands:h?.hands??null};})};}
 const companionFx=(g,c,kind,at,data={})=>emitCombatFx(g,kind,at,{...data,companion:c.id,classId:c.def.look});
 const companionText=(g,c,data)=>g.sct({actor:c.id,member:c.def.look,text:c.name,...data});
 const face=(c,target)=>{c.facing=target.x<c.x?-1:1;c.direction=walkFacing(target.x-c.x,target.y-c.y,c.direction||'se');};
@@ -232,7 +232,7 @@ export function tickCompanions(g,dt){
  if(tutorialActive(g))return;
  for(const e of g.enemies){if(e.hp<=0||!e.aggro||e.ai==='returning'){if(e.threat)clearThreat(e);continue;}if(!e.threat)addThreat(e,PLAYER,1);}
  for(const c of [...g.companions]){try{tickOne(g,c,dt);}catch(err){c.target=null;c.path=[];g.emit('companion',{type:'error',id:c.id,message:String(err?.message||err)});}}
- for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment});
+ for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment,paperdollId:c.figure?.paperdollId});
 }
 /** Nach dem Tod des Besitzers: Begleiter stehen geheilt neben ihm, alle Kämpfe sind vergessen. */
 export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;place(g,c,slot(g,c));}}

@@ -3,8 +3,11 @@ import {readFileSync} from 'node:fs';
 import {surface,bounds} from './png.mjs';
 import {resample} from './precision-resample.mjs';
 // Both sheets of the day: props/intro/ui first, then the 22 inventory and tab icons.
-const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json']
+// 2026-09-24: NPC-Gesprächsporträts (eigene Brustbilder, 128 px). palette:'portraet' = PRECISION_PALETTE + Farben der Anziehpuppe,
+// eingefroren in portraet-palette.json, damit Porträt und Figur dieselben Kleidungsfarben tragen (Lila, Mint, Hellblau, Gelb).
+const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json']
  .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))));
+const PALETTES={portraet:JSON.parse(readFileSync(new URL('./portraet-palette.json',import.meta.url)))};
 export function buildSeptemberDelivery({catalog,put,read,hashSource}){
  for(const job of jobs){
   const {id,output:source,width,height,kind,padding=0,worldProp,tileSize}=job;
@@ -18,9 +21,10 @@ export function buildSeptemberDelivery({catalog,put,read,hashSource}){
   }
   const scale=Math.min((width-padding*2)/b.w,(height-padding*2)/b.h);
   const x=Math.floor((width-Math.round(b.w*scale))/2),h=Math.round(b.h*scale);
-  resample(im,out,b,{x,y:worldProp?height-padding-h:Math.floor((height-h)/2)},scale);
-  put(id,out,{kind,source,sourceHash:hashSource(source),padding,
-   ...(worldProp?{worldProp,pivot:{x:width/2,y:height-padding}}:{}),...(tileSize?{tileSize}:{}),delivery:'2026-09-23'});
+  if(job.palette&&!PALETTES[job.palette])throw Error(id+': unbekannte Palette '+job.palette);
+  resample(im,out,b,{x,y:worldProp?height-padding-h:Math.floor((height-h)/2)},scale,job.palette?{palette:PALETTES[job.palette]}:undefined);
+  put(id,out,{kind,source,sourceHash:hashSource(source),padding,...(job.palette?{palette:job.palette}:{}),
+   ...(worldProp?{worldProp,pivot:{x:width/2,y:height-padding}}:{}),...(tileSize?{tileSize}:{}),delivery:job.delivery||'2026-09-23'});
   if(worldProp)catalog.aliases[worldProp.id]=id;
  }
 }

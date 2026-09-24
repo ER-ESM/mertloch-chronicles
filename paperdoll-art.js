@@ -133,18 +133,33 @@ export function lookSources(tint,items=[]){if(!tint)return [];const cat=paperdol
 
 // ---------- Zusammensetzen ----------
 const tileCanvas=typeof document!=='undefined'?document.createElement('canvas'):null,tctx=tileCanvas?.getContext('2d',{willReadFrequently:true});
+// Kachelspeicher: jede Kachel (Bogen × Band × Bild × Spiegelung) wird einmal ausgelesen und auf ihren Inhalt zugeschnitten; viele Figuren
+// teilen sich Körper-, Hosen- und Schuhkacheln. Grenze nach Bytes (LRU), leere Kacheln merken sich nur „leer“.
+const tileCache=new Map(),TILE_BYTES=48e6;let tileBytes=0;
 function tile(arch,src,dir,band,f){const cat=paperdoll.catalog,{W,H}=cat,split=cat.split??cat.frames.length,part=f>=split?1:0,base=baseDir(src,dir,part),mirror=base!==dir;
- const img=paperdoll.images.get(sheetKey(src,arch,base,part));if(!img)return null;const rows=cat.layout==='bands'?(cat.sources[src]?.bands||cat.bands):cat.bands,row=rows.indexOf(band);if(row<0)return null;
- if(tileCanvas.width!==W){tileCanvas.width=W;tileCanvas.height=H;}tctx.clearRect(0,0,W,H);tctx.save();if(mirror){tctx.translate(W,0);tctx.scale(-1,1);}
- tctx.drawImage(img,(part?f-split:f)*W,row*H,W,H,0,0,W,H);tctx.restore();const d=tctx.getImageData(0,0,W,H).data;for(let i=3;i<d.length;i+=4)if(d[i])return d;return null;}
-const frameCache=new Map(),FRAME_LIMIT=120;// je Eintrag Pixelfeld (138 KB) + höchstens 2 Vollbilder; Weltbilder liegen in worldCache
+ const sk=sheetKey(src,arch,base,part),img=paperdoll.images.get(sk);if(!img)return null;const rows=cat.layout==='bands'?(cat.sources[src]?.bands||cat.bands):cat.bands,row=rows.indexOf(band);if(row<0)return null;
+ const key=sk+'|'+row+'|'+f+(mirror?'|m':''),hit=tileCache.get(key);if(hit!==undefined){tileCache.delete(key);tileCache.set(key,hit);return hit;}
+ // Zelle der Quelle (Katalog ab version 3: Bögen nur so groß wie der Inhalt der Quelle); ältere Bögen = volle Leinwand
+ const cell=cat.sources[src]?.cell||{x:0,y:0,w:W,h:H},cw=cell.w,ch=cell.h;
+ if(tileCanvas.width<cw||tileCanvas.height<ch){tileCanvas.width=Math.max(tileCanvas.width,cw);tileCanvas.height=Math.max(tileCanvas.height,ch);}
+ tctx.clearRect(0,0,cw,ch);tctx.save();if(mirror){tctx.translate(cw,0);tctx.scale(-1,1);}
+ tctx.drawImage(img,(part?f-split:f)*cw,row*ch,cw,ch,0,0,cw,ch);tctx.restore();const d=tctx.getImageData(0,0,cw,ch).data;
+ let x0=cw,y0=ch,x1=-1,y1=-1;for(let y=0;y<ch;y++)for(let x=0;x<cw;x++)if(d[(y*cw+x)*4+3]){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;y1=y;}
+ // Lage auf der Leinwand: gespiegelt liegt die Zelle bei W-cell.x-cell.w
+ const cx=mirror?W-cell.x-cw:cell.x,cy=cell.y;
+ let t=null;if(x1>=0){const w=x1-x0+1,h=y1-y0+1,data=new Uint8ClampedArray(w*h*4);for(let y=0;y<h;y++)data.set(d.subarray(((y+y0)*cw+x0)*4,((y+y0)*cw+x0+w)*4),y*w*4);t={data,x:cx+x0,y:cy+y0,w,h};tileBytes+=data.length;}
+ tileCache.set(key,t);while(tileBytes>TILE_BYTES&&tileCache.size){const [k,v]=tileCache.entries().next().value;tileCache.delete(k);if(v)tileBytes-=v.data.length;}
+ return t;}
+// Diagnose (Konsole): (await import('./paperdoll-art.js')).paperdoll.debug.compose('dieter','se',5,['kutte','jeans']) setzt ohne Speicher zusammen und misst.
+paperdoll.debug={compose:(arch,dir,f,srcs)=>{const t0=performance.now();composed(arch,dir,f,new Set(['koerper',...srcs]),'debug|'+Math.random());return performance.now()-t0;},clearTiles:()=>{tileCache.clear();tileBytes=0;},tiles:()=>({count:tileCache.size,mb:+(tileBytes/1e6).toFixed(1)})};
+const frameCache=new Map(),FRAME_LIMIT=60;// je Eintrag Pixelfeld (138 KB) + höchstens 2 Vollbilder; Weltbilder liegen in worldCache
 function remember(map,key,val,limit){map.set(key,val);if(map.size>limit)map.delete(map.keys().next().value);return val;}
 /** Zeichenfolge der Quellen (Kern) ohne doppelten Körper; Dutt nur bei Archetypen mit Dutt. */
 function layers(arch,srcs){const cat=paperdoll.catalog,rest=new Set(srcs);rest.delete('koerper');return orderSources(rest,cat.sources).filter(s=>s!=='dutt'||cat.archetypes[arch].dutt);}
 function composed(arch,dir,f,srcs,key){const hit=frameCache.get(key);if(hit){frameCache.delete(key);frameCache.set(key,hit);return hit;}
  const cat=paperdoll.catalog,{W,H}=cat;
  paperdoll.stats.composed++;const px=composeCore(W,H,cat.bands,layers(arch,srcs),(s,band)=>{if(s==='dutt'&&band!=='kopf')return null;if(cat.sources[s]&&!cat.sources[s].bands.includes(band))return null;return tile(arch,s,dir,band,f);});
- return remember(frameCache,key,{px,full:new Map()},FRAME_LIMIT);}
+ return remember(frameCache,key,{px,box:px.box,full:new Map()},FRAME_LIMIT);}
 /** Farbtreppen ersetzen (Haut/Haar); nur exakte Palettenfarben, daher vor der Kontur. */
 export function recolor(px,m){if(m.size)for(let i=0;i<px.length;i+=4){if(!px[i+3])continue;const c=m.get(px[i]<<16|px[i+1]<<8|px[i+2]);if(c){px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];}}return px;}
 /** Vollbild nur für UI/Nahansicht (Editor, Porträt, starker Zoom). */
@@ -154,15 +169,22 @@ function full(fr,m,tk){let cv=fr.full.get(tk);if(cv)return cv;const {W,H}=paperd
 // ---------- Weltgröße: Flächenmittel → nächste Palettenfarbe → Kontur (wie die Codex-Einpassung) ----------
 let PALETTE=[];const snapCache=new Map();
 function buildPalette(cat){PALETTE=cat.palette.map(k=>[k>>16,k>>8&255,k&255]);}
+/** Einrasten gegen die umgefärbte Palette (Haut/Haar des Editors), je Farbtabelle ein eigener Zwischenspeicher. */
+const tintedSnaps=new WeakMap();
+function tintedSnap(m){let f=tintedSnaps.get(m);if(f)return f;const pal=PALETTE.map(q=>m.get(q[0]<<16|q[1]<<8|q[2])||q),cache=new Map();
+ f=(r,g,b)=>{const key=(r>>2)<<12|(g>>2)<<6|(b>>2);let c=cache.get(key);if(c)return c;let bd=1e18;for(const q of pal){const dr=r-q[0],dg=g-q[1],db=b-q[2],rm=(r+q[0])/2,d=(2+rm/256)*dr*dr+4*dg*dg+(2+(255-rm)/256)*db*db;if(d<bd){bd=d;c=q;}}cache.set(key,c);return c;};
+ tintedSnaps.set(m,f);return f;}
 export function snap(r,g,b){const key=(r>>2)<<12|(g>>2)<<6|(b>>2);let c=snapCache.get(key);if(c)return c;let bd=1e18;
  for(const q of PALETTE){const dr=r-q[0],dg=g-q[1],db=b-q[2],rm=(r+q[0])/2,d=(2+rm/256)*dr*dr+4*dg*dg+(2+(255-rm)/256)*db*db;if(d<bd){bd=d;c=q;}}snapCache.set(key,c);return c;}
-function shrunk(fr,k,m){let s;
+function shrunk(fr,k,m){let s;const pick=m.size?tintedSnap(m):snap;
  const {W,H}=paperdoll.catalog,px=fr.px,w=Math.max(1,Math.round(W*k)),h=Math.max(1,Math.round(H*k)),o=new Uint8ClampedArray(w*h*4);
- for(let y=0;y<h;y++){const y0=Math.floor(y/k),y1=Math.min(H,Math.ceil((y+1)/k));for(let x=0;x<w;x++){const x0=Math.floor(x/k),x1=Math.min(W,Math.ceil((x+1)/k));let r=0,g=0,b=0,a=0,n=0;
-  for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++){const i=(yy*W+xx)*4,al=px[i+3]/255;r+=px[i]*al;g+=px[i+1]*al;b+=px[i+2]*al;a+=al;n++;}
-  if(!n||a/n<.42)continue;const c=snap(r/a,g/a,b/a),j=(y*w+x)*4;o[j]=c[0];o[j+1]=c[1];o[j+2]=c[2];o[j+3]=255;}}
- recolor(o,m);
- const edge=[];for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4;if(!o[i+3])continue;const open=(X,Y)=>X<0||Y<0||X>=w||Y>=h||!o[(Y*w+X)*4+3];
+ // nur Ausgabepixel über der Inhaltshülle (fr.box) – bei großer Leinwand bleibt der Rest leer
+ const bx=fr.box||{x0:0,y0:0,x1:W-1,y1:H-1},oy0=Math.max(0,Math.floor(bx.y0*k)),oy1=Math.min(h,Math.ceil((bx.y1+1)*k)),ox0=Math.max(0,Math.floor(bx.x0*k)),ox1=Math.min(w,Math.ceil((bx.x1+1)*k));
+ for(let y=oy0;y<oy1;y++){const y0=Math.floor(y/k),y1=Math.min(H,Math.ceil((y+1)/k));for(let x=ox0;x<ox1;x++){const x0=Math.floor(x/k),x1=Math.min(W,Math.ceil((x+1)/k));let r=0,g=0,b=0,a=0,n=0;
+  for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++){const i=(yy*W+xx)*4;if(!px[i+3])continue;const al=px[i+3]/255,rc=m.size?m.get(px[i]<<16|px[i+1]<<8|px[i+2]):null;
+   if(rc){r+=rc[0]*al;g+=rc[1]*al;b+=rc[2]*al;}else{r+=px[i]*al;g+=px[i+1]*al;b+=px[i+2]*al;}a+=al;n++;}
+  if(!a||a/Math.max(1,(y1-y0)*(x1-x0))<.42)continue;const c=pick(r/a,g/a,b/a),j=(y*w+x)*4;o[j]=c[0];o[j+1]=c[1];o[j+2]=c[2];o[j+3]=255;}}
+ const edge=[];for(let y=oy0;y<oy1;y++)for(let x=ox0;x<ox1;x++){const i=(y*w+x)*4;if(!o[i+3])continue;const open=(X,Y)=>X<0||Y<0||X>=w||Y>=h||!o[(Y*w+X)*4+3];
   if(open(x+1,y)||open(x,y+1))edge.push([i,.45]);else if(open(x-1,y)||open(x,y-1))edge.push([i,.62]);}
  for(const [i,f] of edge)for(let c=0;c<3;c++)o[i+c]=o[i+c]*f+[44,32,34][c]*(1-f)*.55;
  s=document.createElement('canvas');s.width=w;s.height=h;s.getContext('2d').putImageData(new ImageData(o,w,h),0,0);return s;}
@@ -211,7 +233,7 @@ export function drawPaperdoll(c,id,x,y,p={},magnify=1){
 function blit(c,x,y,p,magnify,arch,dir,dead,bmp){const cat=paperdoll.catalog,u=unitScale(arch)*magnify;
  c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
  c.fillStyle='#24384144';c.beginPath();c.ellipse(0,1,5.2*magnify,1.56*magnify,0,0,7);c.fill();
- if(dead){c.rotate(dir.endsWith('w')?Math.PI/2:-Math.PI/2);c.translate(0,-cat.W*u*.18);}
+ if(dead){c.rotate(dir.endsWith('w')?Math.PI/2:-Math.PI/2);c.translate(0,-28.8*u);}// 28,8 Bogenpixel (= 0,18 × frühere Bogenbreite 160): Liegende hängt am Körper, nicht an der Leinwandbreite
  c.drawImage(bmp,0,0,bmp.width,bmp.height,-cat.pivot.x*u,-cat.pivot.y*u,cat.W*u,cat.H*u);
  if(p.parry>0&&!dead){c.strokeStyle='#f3b84b';c.lineWidth=1.2;c.lineCap='round';const r=13*magnify;c.beginPath();c.arc(0,-13*magnify,r,dir.endsWith('w')?2:-1.3,dir.endsWith('w')?4.5:1.1);c.stroke();}
  c.restore();return true;}

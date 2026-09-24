@@ -11,7 +11,7 @@ export const FIGUREN={
  baerbel:{arch:'baerbel',tint:{skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur'},gear:['regenjacke','jeans','festivalstiefel','flasche']},
  kevin:{arch:'kevin',tint:{skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur'},gear:['kutte','jeans','kabelbinderstiefel','praktikantenausweis']},
  // --- Stammgäste der Bude (E-61) ---
- ron:{arch:'kevin',tint:{skin:'gebraeunt',hair:'schwarz',face:'sonnenbrille',style:'natur',beard:'natur'},gear:['kutte','jeans','schuhe']},
+ ron:{arch:'kevin',tint:{skin:'gebraeunt',hair:'schwarz',face:'sonnenbrille',style:'natur',beard:'schnauzer'},gear:['rennjacke','jeans','schuhe']},
  nyalol:{arch:'dieter',tint:{skin:'hell',hair:'blond',face:'ohne',style:'natur',beard:'stoppeln'},gear:['kapuzenpulli','stoffhose','schuhe','kopfhoerer','flasche']},
  olli:{arch:'kevin',tint:{skin:'mittel',hair:'braun',face:'brille',style:'natur',beard:'stoppeln'},gear:['hemd','warnweste','stoffhose','schuhe','klemmbrett']},
  // --- Dorf und Clan-Umfeld ---
@@ -54,7 +54,7 @@ export const FIGUREN={
  // --- Söldner (companions.js; Archetyp = look des Söldners, gezeichnet über den Heldenweg) ---
  'merc-pils-peter':{arch:'dieter',tint:{skin:'hell',hair:'schwarz',face:'ohne',style:'natur',beard:'natur'},gear:['kutte','stoffhose','kabelbinderstiefel','topfdeckel']},
  'merc-schorle-susi':{arch:'baerbel',tint:{skin:'hell',hair:'rot',face:'ohne',style:'natur',beard:'natur'},gear:['dirndl','schuhe','flasche']},
- 'merc-radler-rita':{arch:'kevin',tint:{skin:'mittel',hair:'blond',face:'sonnenbrille',style:'natur',beard:'natur'},gear:['hemd','warnweste','jeans','schuhe']},
+ 'merc-radler-rita':{arch:'baerbel',tint:{skin:'mittel',hair:'blond',face:'sonnenbrille',style:'natur',beard:'natur'},gear:['hemd','warnweste','jeans','schuhe']},
  'merc-hopfen-horst':{arch:'dieter',tint:{skin:'gebraeunt',hair:'grau',face:'ohne',style:'natur',beard:'natur'},gear:['hemd','latzhose','festivalstiefel','tresenhammer']},
  'merc-zapf-hannes':{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'kinnbart'},gear:['hemd','schuerze','stoffhose','schuhe','topfdeckel']},
  'merc-tresen-tina':{arch:'baerbel',tint:{skin:'dunkel',hair:'schwarz',face:'ohne',style:'natur',beard:'natur'},gear:['strickjacke','jeans','festivalstiefel','flasche']},

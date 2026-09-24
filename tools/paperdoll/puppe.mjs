@@ -11,8 +11,19 @@ import {familien} from './familien.mjs';
 import {aussehen,kopfEinrasten} from './aussehen.mjs';
 import {npc_kleidung} from './npc-kleidung.mjs';
 
-export let W=160,H=216;export const GROUND=206;// W/H veränderlich: Reittiere liegen auf größerer Leinwand
+// Leinwand der Figurenbögen W×H, Fußpunkt (W/2, GROUND); Maße begründet in docs/ANZIEHPUPPE.md (Bildfläche). W/H veränderlich: Reittiere
+// liegen auf größerer Leinwand (canvas). PUPPE_LEINWAND="breite,höhe,boden" überschreibt die Maße (Hüllenmessung mit großer Leinwand).
+const LW=(process.env.PUPPE_LEINWAND||'').split(',').map(Number);
+export let W=LW[0]||296,H=LW[1]||328;export const GROUND=LW[2]||300;
+if(W%2)throw new Error('PUPPE_LEINWAND: Breite muss gerade sein (Fußpunkt W/2 = Spiegelachse)');
+/** Rauschursprung (Fell, Stoffkörnung, Falten): die frühere 160×216-Leinwand mit Fußpunkt (80, 206). Muster hängen daran statt am
+ *  Leinwandrand, damit eine größere Leinwand die Figuren pixelgleich lässt; auf der Reittier-Leinwand 0,0 (canvas). */
+let NZ=[W/2-80,GROUND-206];
 export const BANDS=['haarHinten','armHinten','beinHinten','beinVorn','rumpf','kopf','armVorn'];
+/** Band der fernen Hand samt Handstück (Waffe/Fernwaffe/Nebenhandwaffe mit Faust, Handschuh, Ring): nach dem fernen Bein und seiner
+ *  Kleidung (Quellenfolge im Band: Beine/Füße vor Waffe/Ring/Handschuh), aber vor nahem Bein und Rumpf – so verschwinden schmale Waffen
+ *  in sw/nw nicht mehr hinter dem Bein und liegen trotzdem hinter dem Rumpf. Der Arm selbst bleibt in armHinten. Beim Reiten gilt armHinten. */
+export const HAND_F='beinHinten';
 export const FRAMES=[...[0,1,2,3].map(i=>({anim:'stehen',i})),{anim:'blinzeln',i:0},...[0,1,2,3,4,5,6,7].map(i=>({anim:'laufen',i})),
  // Kampf/Aktion (E-58): nur hinten anhängen – die Spalte ist die Bildnummer im Bogen (Anker, Laufzeit)
  ...[0,1,2].map(i=>({anim:'hieb',i})),...[0,1,2].map(i=>({anim:'hieb2',i})),...['getroffen','parade','parade2','zaubern','rasten','sprint','zielen','schuss'].map(anim=>({anim,i:0}))];
@@ -69,14 +80,15 @@ export const LOOK={
 };
 
 // ---------- Leinwand mit Teilen (für Formlicht, Innenlinien, gefärbte Kanten) ----------
-function layer(dir='se'){const col=new Array(W*H).fill(null),part=new Int16Array(W*H).fill(-1),ramps=[];let cur=-1;
- const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
- return {col,part,ramps,dir,texts:[],T:null,rot:0,
-  piece(ramp,soft=0){ramps.push(Object.assign([...ramp],{soft}));cur=ramps.length-1;return cur;},
-  px(x,y,c){x=Math.floor(x);y=Math.floor(y);if(inb(x,y)){col[y*W+x]=c;part[y*W+x]=cur;}},
+// bb = Hüllrechteck je Teil, U = aller Teile (wachsen nur): light/edges rechnen nur dort – gleiches Ergebnis, weniger Arbeit auf großer Leinwand
+function layer(dir='se'){const col=new Array(W*H).fill(null),part=new Int16Array(W*H).fill(-1),ramps=[],bb=[],U=[W,H,-1,-1];let cur=-1;
+ const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H,grow=(p,x,y)=>{if(p<0)return;for(const b of [bb[p],U]){if(x<b[0])b[0]=x;if(y<b[1])b[1]=y;if(x>b[2])b[2]=x;if(y>b[3])b[3]=y;}};
+ return {col,part,ramps,bb,U,dir,texts:[],T:null,rot:0,
+  piece(ramp,soft=0){ramps.push(Object.assign([...ramp],{soft}));bb.push([W,H,-1,-1]);cur=ramps.length-1;return cur;},
+  px(x,y,c){x=Math.floor(x);y=Math.floor(y);if(inb(x,y)){col[y*W+x]=c;part[y*W+x]=cur;grow(cur,x,y);}},
   on(p,x,y,c){x=Math.floor(x);y=Math.floor(y);if(inb(x,y)&&part[y*W+x]===p)col[y*W+x]=c;},
   del(x,y){x=Math.floor(x);y=Math.floor(y);if(inb(x,y)){col[y*W+x]=null;part[y*W+x]=-1;}},
-  give(p,q,x,y,c){x=Math.floor(x);y=Math.floor(y);if(inb(x,y)&&part[y*W+x]===p){col[y*W+x]=c;part[y*W+x]=q;}},
+  give(p,q,x,y,c){x=Math.floor(x);y=Math.floor(y);if(inb(x,y)&&part[y*W+x]===p){col[y*W+x]=c;part[y*W+x]=q;grow(q,x,y);}},
   is(p,x,y){x=Math.floor(x);y=Math.floor(y);return inb(x,y)&&part[y*W+x]===p;}};}
 
 // ---------- Formen (Pixelmitten, keine Kantenglättung); clip = nur auf Pixel dieses Teils malen, 'del' = ausschneiden ----------
@@ -101,21 +113,23 @@ function line(L,pts,c,clip=null){pts=pts.map(q=>tp(L,q));for(let i=0;i+1<pts.len
 function stamp(L,clip,x0,y0,rows,map){[x0,y0]=tp(L,[x0,y0]);x0=Math.round(x0);y0=Math.round(y0);rows.forEach((row,r)=>[...row].forEach((ch,c)=>{if(map[ch])put(L,x0+c,y0+r,map[ch],clip);}));}
 const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
 const hs=(x,y)=>((Math.sin(x*12.9898+y*78.233)*43758.5453)%1+1)%1;
+/** Rauschen an Leinwandstellen (nicht relativ zu einem Anker): am Rauschursprung NZ verankert. */
+const hsA=(x,y)=>hs(x-NZ[0],y-NZ[1]);
 /** Teilstück eines Glieds zwischen Anteil t0 und t1 (für Ärmel, Hosenbeine, Schäfte). */
 const seg=(pts,t0,t1)=>{const n=pts.length-1,at=t=>{const f=Math.min(n-1e-6,Math.max(0,t*n)),i=Math.floor(f);return lerp(pts[i],pts[i+1],f-i);};const out=[at(t0)];for(let i=1;i<n;i++)if(i/n>t0&&i/n<t1)out.push(pts[i]);out.push(at(t1));return out;};
 const segR=(rs,t0,t1)=>{const n=rs.length-1,at=t=>{const f=Math.min(n-1e-6,Math.max(0,t*n)),i=Math.floor(f);return rs[i]+(rs[i+1]-rs[i])*(f-i);};const out=[at(t0)];for(let i=1;i<n;i++)if(i/n>t0&&i/n<t1)out.push(rs[i]);out.push(at(t1));return out;};
 
 /** Formlicht: linke/obere Randpixel hell, rechte/untere dunkel; Stufen der Farbtreppe. */
 /** Formlicht zylindrisch je Zeile: linkes Achtel Licht, rechtes knappes Drittel Schatten, Ober-/Unterkante wie Licht/Schatten. */
-function light(L,p,{base=1,hi=0,lo=2,dark=2,lit=1,share=.3,hiShare=.12}={}){const r=L.ramps[p],out=[];
- for(let y=0;y<H;y++){let x=0;while(x<W){if(!L.is(p,x,y)){x++;continue;}let xr=x;while(xr+1<W&&L.is(p,xr+1,y))xr++;
+function light(L,p,{base=1,hi=0,lo=2,dark=2,lit=1,share=.3,hiShare=.12}={}){const r=L.ramps[p],out=[],b=L.bb[p];
+ for(let y=b[1];y<=b[3];y++){let x=b[0];while(x<=b[2]){if(!L.is(p,x,y)){x++;continue;}let xr=x;while(xr+1<W&&L.is(p,xr+1,y))xr++;
   const w=xr-x+1,nh=Math.max(lit,Math.round(w*hiShare)),deep=Math.min(lo+1,r.length-2),soft=w>=12&&deep>lo;
   const nl=Math.max(dark,Math.round(w*(soft?share*.62:share))),nm=soft?Math.round(w*share*.72):0;
   // breite Formen: Zwischenstufe zwischen Grundton und Schatten (rundere Volumen), schmale Details bleiben dreistufig
   for(let k=x;k<=xr;k++){const i=k-x;let c=r[base];if(soft&&i>=w-nl-nm)c=r[lo];if(i>=w-nl||!L.is(p,k,y+dark))c=r[soft?deep:lo];if(i<nh||!L.is(p,k,y-lit))c=r[hi];out.push([k,y,c]);}x=xr+1;}}
  for(const [x,y,c] of out)L.on(p,x,y,c);}
 /** Kanten: Außenkante der Ebene und Grenze zu einem später gezeichneten Teil bekommen die dunkelste Stufe. */
-function edges(L){const set=[];for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x,p=L.part[i];if(p<0||L.ramps[p].keep)continue;
+function edges(L){const set=[],U=L.U;for(let y=U[1];y<=U[3];y++)for(let x=U[0];x<=U[2];x++){const i=y*W+x,p=L.part[i];if(p<0||L.ramps[p].keep)continue;
   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const X=x+dx,Y=y+dy,q=X>=0&&Y>=0&&X<W&&Y<H?L.part[Y*W+X]:-1;
    if(q<0||(q>p&&!L.ramps[q].soft)){{const r=L.ramps[p];set.push([i,r[r.length>3?r.length-2:r.length-1]]);}break;}}}
  const E=new Set(set.map(e=>e[0])),isE=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&E.has(y*W+x);
@@ -127,8 +141,9 @@ function ringlet(L,p,cx,cy,rx,ry,r){const m=Math.max(rx,ry)+1;
  for(let y=Math.floor(cy-m);y<=Math.ceil(cy+m);y++)for(let x=Math.floor(cx-m);x<=Math.ceil(cx+m);x++){const u=(x+.5-cx)/rx,v=(y+.5-cy)/ry,d=u*u+v*v;if(d>1)continue;
   let c=r[1];if(d>.4&&u*.7+v<-.2)c=r[0];else if(d>.45&&u*.5+v>.3)c=r[3];else if(d<.14)c=r[2];L.on(p,x,y,c);}}
 /** Fell/Borsten: kurze Striche in Licht- und Schattenstufe auf versetztem Raster. */
-function fur(L,p,r,step=3,len=2){for(let y=0;y<H;y+=step)for(let x=(y/step%2)*Math.ceil(step/2);x<W;x+=step){if(!L.is(p,x,y))continue;const k=hs(x,y);
- line(L,[[x,y],[x+(k>.5?1:-1),y+len]],k>.55?r[0]:r[3],p);}}
+function fur(L,p,r,step=3,len=2){const [ox,oy]=NZ,c=Math.ceil(step/2);// Raster und Rauschen am Rauschursprung (u, v = Rasterlage dort)
+ for(let v=Math.ceil(-oy/step)*step;v+oy<H;v+=step){const s=((v/step)%2+2)%2*c;for(let u=s+Math.ceil((-ox-s)/step)*step;u+ox<W;u+=step){const x=u+ox,y=v+oy;if(!L.is(p,x,y))continue;const k=hs(u,v);
+  line(L,[[x,y],[x+(k>.5?1:-1),y+len]],k>.55?r[0]:r[3],p);}}}
 const FONT={C:['.##','#..','#..','#..','.##'],L:['#..','#..','#..','#..','###'],D:['##.','#.#','#.#','#.#','##.'],'?':['##.','..#','.#.','...','.#.'],O:['.#.','#.#','#.#','#.#','.#.'],T:['###','.#.','.#.','.#.','.#.'],R:['##.','#.#','##.','#.#','#.#'],A:['.#.','#.#','###','#.#','#.#'],U:['#.#','#.#','#.#','#.#','###'],Z:['###','..#','.#.','#..','###'],
  E:['###','#..','##.','#..','###'],G:['.##','#..','#.#','#.#','.##'],N:['#..#','##.#','#.##','#..#','#..#'],I:['#','#','#','#','#'],P:['##.','#.#','##.','#..','#..'],
  '2':['##.','..#','.#.','#..','###'],'0':['.#.','#.#','#.#','#.#','.#.'],'1':['.#','##','.#','.#','.#']};
@@ -200,7 +215,7 @@ function poseAct(fr,A,look,back,swap){const K0=ACTS[fr.anim][fr.i]||ACTS[fr.anim
  if(back&&!swap&&typeof K.f==='object'&&!K.f.knee&&!K0.ne?.f)K.f={...K.f,v:(K.f.v||0)*.5,o:(K.f.o||0)+14};// ne: Gegenhand vor dem Körper läge hinter dem Rumpf – nach außen
  const Fd=back?[-F[0],-F[1]]:F,WN=!swap,sW=WN?-1:1,sO=-sW,FW=back?[-.55,-.45]:[.55,.45],la=A.leg[0]>36?[29,27]:[27,25],LL=A.leg[0]+A.leg[1];
  const twist=-sW*(K.wb||0),ht=sW*(K.hf||0);// twist>0: nahe Schulter zurück; ht>0: nahe Hüfte vor
- const adv=K.adv||0,P=[80+Fd[0]*adv,GROUND-8-LL+1+(K.drop||0)+Fd[1]*adv];
+ const adv=K.adv||0,P=[W/2+Fd[0]*adv,GROUND-8-LL+1+(K.drop||0)+Fd[1]*adv];
  const hipN=[P[0]+A.hip[0]+Fd[0]*1.8*ht,P[1]+Fd[1]*1.8*ht],hipF=[P[0]+A.hip[1]-Fd[0]*1.8*ht,P[1]-3-Fd[1]*1.8*ht];
  const trk=Math.max(0,9-(A.hip[1]-A.hip[0])/2),leadN=!WN,qN=(leadN?K.lead:K.rear)||{},qF=(leadN?K.rear:K.lead)||{};
  const ank=(hip,q,near)=>{const dy=(near?0:-5)-(q.lift||0)-2.5*Math.max(0,q.pit||0);let v=q.v||0;const my=back?3:5.5;if(dy+FW[1]*v*STRIDE>my)v=(my-dy)/(FW[1]*STRIDE);// Fuß zur Kamera hin höchstens so tief wie im Lauf (Leinwand unten; von hinten kippt der Fuß nach unten)
@@ -233,7 +248,7 @@ export function pose(fr,A,look,back=false,swap=false){if(ACTS[fr.anim])return po
  if(anim!=='laufen'){breath=anim==='stehen'?[0,1,1,0][i]:0;thip=back?-1.5:1.5;tsh=back?-1.2:1.2;relax=1;}// Kontrapost: Gewicht auf dem nahen Bein
  else{const j=(i+4)%8;posN=WALK.pos[i];posF=WALK.pos[j];liftN=WALK.lift[i];liftF=WALK.lift[j];pitN=WALK.pitch[i];pitF=WALK.pitch[j];
   bob=WALK.bob[i];thip=WALK.tilt[i];const tw=k=>(WALK.pos[(k+8)%8]-WALK.pos[(k+12)%8])/2;swing=.03*9.4*(tw(i-1)-tw(i-2));tsh=.8*thip;twist=(posN-posF)/2;lag=Math.round((WALK.bob[(i+7)%8]-bob)*.7);}
- const P=[80,GROUND-8-(A.leg[0]+A.leg[1])+1+bob];
+ const P=[W/2,GROUND-8-(A.leg[0]+A.leg[1])+1+bob];
  const hipN=[P[0]+A.hip[0]+Fd[0]*1.8*twist,P[1]-thip+Fd[1]*1.8*twist],hipF=[P[0]+A.hip[1]-Fd[0]*1.8*twist,P[1]-3+thip-Fd[1]*1.8*twist];
  const FW=back?[-.55,-.45]:[.55,.45],ank=(hip,pos,lift,pit,dx,dy)=>[hip[0]+dx+FW[0]*pos*STRIDE,GROUND-8+dy+FW[1]*pos*STRIDE-lift-2.5*Math.max(0,pit)];
  const trk=Math.max(0,9-(A.hip[1]-A.hip[0])/2),rN=back?relax:0,rF=back?0:relax,ankN=ank(hipN,posN+rN*.25,liftN+rN,pitN,-2-trk-rN*2,0),ankF=ank(hipF,posF+rF*.25,liftF+rF,pitF,2+trk+rF*2,-5);// Kontrapost: von hinten lockert das vordere Bein (Knie zeigt sonst ins andere Bein)// schmale Hüfte: Spuren auseinander
@@ -450,7 +465,7 @@ export const GEAR={
    stamp(L,a,cx-14,cy+11,['.ww.','wwww','wwwk','wwwk','.ww.'],{w:PAL.white[0],k:PAL.white[2]});
    const k=L.piece(PAL.red);poly(L,[[cx+9,cy+10],[cx+17,cy+10],[cx+17,cy+16],[cx+9,cy+16]],PAL.red[1]);for(let yy=0;yy<6;yy++)for(let xx=0;xx<8;xx++)if((xx>>1)+(yy>>1)&1)L.on(k,cx+9+xx,cy+10+yy,PAL.white[1]);
    for(const [x0,x1] of [[cx-17,cx-7],[cx+7,cx+18]]){line(L,[[x0,cy+28],[x1,cy+28]],c[3],j);line(L,[[x0,cy+29],[x1,cy+29]],c[0],j);L.on(j,(x0+x1)/2,cy+30,PAL.metal[1]);}
-   for(let k2=0;k2<40;k2++){const xx=cx-20+hs(k2,3)*40,yy=cy-10+hs(3,k2)*50;if(hs(xx,yy)>.45)L.on(j,xx,yy,c[0]);}}},
+   for(let k2=0;k2<40;k2++){const xx=cx-20+hs(k2,3)*40,yy=cy-10+hs(3,k2)*50;if(hsA(xx,yy)>.45)L.on(j,xx,yy,c[0]);}}},
  regenjacke:{slot:'body',name:'Festival-Regenjacke',
   haarHinten(L,p){const [cx,cy]=p.C,c=PAL.rain,h=L.piece(c);ell(L,cx+1,cy-16,17,8,c[2]);light(L,h,{base:2,hi:1,lo:3});line(L,[[cx-12,cy-15],[cx+14,cy-15]],c[3],h);},
   armHinten(L,p){sleeve(L,p,p.armF,PAL.rain,.93,2.6,true,{roll:false});if(p.swap)festivalBand(L,p.armF);},
@@ -638,14 +653,23 @@ function texVorlage(src,p){const fig=figOf(p),key=src+'|'+fig+'|'+(p.back?'nw':'
   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){const i=gy*GW+gx;if(seg[i]<0)continue;isSkin[i]=kind(((gx+.5)/SS-best.ox)/best.s,((gy+.5)/SS-best.oy)/best.s)==='skin'?1:0;}
   for(let it=0;it<48;it++){let ch=0;const nx=seg.slice();for(let gy=1;gy<GH-1;gy++)for(let gx=1;gx<GW-1;gx++){const i=gy*GW+gx;if(seg[i]!==rumpfId||!isSkin[i]||torsoM[i])continue;
    for(const j of [i-1,i+1,i-GW,i+GW])if(seg[j]>=0&&seg[j]!==rumpfId){nx[i]=seg[j];ch++;break;}}seg.set(nx);if(!ch)break;}}
- return texFit[key]={img,fit:best,seg,segs,p0,GW,GH,bands,ramps};}
+ // Hüllrechteck je Stück (Unterpixel) – texBilder rechnet nur, wo ein Stück hinfallen kann
+ const box=segs.map(()=>[GW,GH,-1,-1]);for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){const b=box[seg[gy*GW+gx]];if(!b)continue;if(gx<b[0])b[0]=gx;if(gy<b[1])b[1]=gy;if(gx>b[2])b[2]=gx;if(gy>b[3])b[3]=gy;}
+ return texFit[key]={img,fit:best,seg,segs,box,p0,GW,GH,bands,ramps};}
 /** Bänder eines Bildes aus der Vorlage (gecacht): Farben auf die Material-Treppen gerechnet. */
 function texBilder(src,p){const V=texVorlage(src,p);if(!V)return null;const key=src+'|'+figOf(p)+'|'+(p.back?'nw':'se')+'|'+p.fi;if(texFrames[key])return texFrames[key];
- const {img,fit,seg,segs,p0,GW,GH,bands,ramps}=V,out={},pal=ramps.flat();
+ const {img,fit,seg,segs,box,p0,GW,GH,bands,ramps}=V,out={},pal=ramps.flat();
+ // Zielbereich: Ecken der Stück-Hüllen vorwärts abgebildet (starr je Knochen bzw. verschoben/geschert), 1 px Rand – außerhalb trifft kein Stück
+ const reach=tr=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const T of tr)for(const id of [T.id,T.prev]){const b=box[id];if(!b||b[2]<0)continue;
+  for(const [cx,cy] of [[b[0],b[1]],[b[2]+1,b[1]],[b[0],b[3]+1],[b[2]+1,b[3]+1]]){const u=cx/SS,v=cy/SS;let x,y;
+   if(T.shift){y=v+T.shift[1];x=u+T.shift[0]+T.k*(T.py-y);}else{const du=u-T.a0[0],dv=v-T.a0[1],t=du*T.u0[0]+dv*T.u0[1],q=-du*T.u0[1]+dv*T.u0[0];x=T.af[0]+t*T.uf[0]-q*T.uf[1];y=T.af[1]+t*T.uf[1]+q*T.uf[0];}
+   if(x<x0)x0=x;if(y<y0)y0=y;if(x>x1)x1=x;if(y>y1)y1=y;}}
+  return [Math.max(0,Math.floor((x0-1)*SS)),Math.max(0,Math.floor((y0-1)*SS)),Math.min(GW-1,Math.ceil((x1+1)*SS)),Math.min(GH-1,Math.ceil((y1+1)*SS))];};
  for(const band of bands){const b0=bones(band,p0),bf=bones(band,p),acc=new Float32Array(W*H*4),tr=[];
   if(b0)b0.forEach((k,j)=>{const a0=k[0],e0=k[1],af=bf[j][0],ef=bf[j][1];tr.push({id:segs.findIndex(s=>s.band===band&&s.j===j),prev:j>0?segs.findIndex(s=>s.band===band&&s.j===j-1):-2,joint:a0,jr:k[2]*1.15,a0,af,u0:norm([e0[0]-a0[0],e0[1]-a0[1]]),uf:norm([ef[0]-af[0],ef[1]-af[1]])});});
   else tr.push({id:segs.findIndex(s=>s.band===band),shift:[p.C[0]-p0.C[0],p.C[1]-p0.C[1]],k:(band==='rumpf'||band==='haarHinten')&&p.lean||0,py:p.P[1]});// k: Rumpfneigung (leanT)
-  for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){const x=(gx+.5)/SS,y=(gy+.5)/SS;
+  const [bx0,by0,bx1,by1]=reach(tr);
+  for(let gy=by0;gy<=by1;gy++)for(let gx=bx0;gx<=bx1;gx++){const x=(gx+.5)/SS,y=(gy+.5)/SS;
    for(let k=tr.length-1;k>=0;k--){const T=tr[k];let x0,y0;if(T.shift){x0=x-T.shift[0]-T.k*(T.py-y);y0=y-T.shift[1];}else{const dx=x-T.af[0],dy=y-T.af[1],t=dx*T.uf[0]+dy*T.uf[1],s=-dx*T.uf[1]+dy*T.uf[0];x0=T.a0[0]+t*T.u0[0]-s*T.u0[1];y0=T.a0[1]+t*T.u0[1]+s*T.u0[0];}
     const g0x=Math.floor(x0*SS),g0y=Math.floor(y0*SS);if(g0x<0||g0y<0||g0x>=GW||g0y>=GH)continue;const sg=seg[g0y*GW+g0x];if(sg!==T.id&&!(sg===T.prev&&Math.hypot(x0-T.joint[0],y0-T.joint[1])<=T.jr))continue;
     const sx=Math.floor((x0-fit.ox)/fit.s),sy=Math.floor((y0-fit.oy)/fit.s),si=(sy*img.width+sx)*4,i=(Math.floor(y)*W+Math.floor(x))*4;
@@ -720,7 +744,7 @@ export const GEAR_BACK={
   const a=L.piece(PAL.patch);ell(L,cx-1,cy+16,11,11,PAL.patch[1]);light(L,a,{base:1,hi:0,lo:2,dark:2});ell(L,cx-1,cy+16,8.4,8.4,PAL.patch[2],a);ell(L,cx-1.5,cy+15.5,7.4,7.4,PAL.patch[1],a);
   stamp(L,a,cx-6,cy+10,['..wwwww..','.wwwwwww.','wwwwwwwkk','wwwwwww.k','wwwwwww.k','wwwwwwwkk','wwwwwww..','.wwwww...'],{w:PAL.white[0],k:PAL.white[2]});
   line(L,[[cx-1,cy+28],[cx-1,cy+44]],c[3],j);
-  for(let k2=0;k2<50;k2++){const xx=cx-22+hs(k2,7)*44,yy=cy-10+hs(7,k2)*52;if(hs(xx,yy)>.5)L.on(j,xx,yy,c[0]);}}},
+  for(let k2=0;k2<50;k2++){const xx=cx-22+hs(k2,7)*44,yy=cy-10+hs(7,k2)*52;if(hsA(xx,yy)>.5)L.on(j,xx,yy,c[0]);}}},
  regenjacke:{haarHinten:null,rumpf(L,p){const c=PAL.rain,[cx,cy]=p.C,j=L.piece(c);poly(L,torso(p,3,-13,p.ride?44:58,{flare:p.ride?2:5,sway:!p.ride,extend:p.ride?0:12}),c[1]);light(L,j,{base:1,hi:0,lo:2,dark:3});
   line(L,[[cx-18,cy+4],[cx+15,cy+4]],c[3],j);for(const [dx,dy] of [[-15,22],[-12,40],[10,30],[13,46]])line(L,[[cx+dx,cy+dy],[cx+dx+5,cy+dy+1]],c[3],j);
   const h=L.piece(c);ell(L,cx-1,cy-5,15,10.5,c[1]);light(L,h,{base:1,hi:0,lo:2,dark:2});line(L,[[cx-1,cy-14],[cx-1,cy+4]],c[3],h);line(L,[[cx-13,cy-8],[cx-8,cy-2]],c[0],h);
@@ -744,7 +768,7 @@ export const GEAR_BACK={
 // ---------- Ausgabe: je Quelle ein Bogen – Spalten = Bilder, Zeilen = Tiefenbänder ----------
 /** Seitengebundene Teile: Ärmel-Aufnäher am rechten Arm, Fuchspfote am rechten Stiefel, Bierbong an der linken Hüfte. */
 // ---------- Erweiterungsmodule: weitere Gegenstände (familien.mjs), Editor-Aussehen (aussehen.mjs), NPC-Kleidung (npc-kleidung.mjs) ----------
-export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;}};
+export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F};
 const MOD_FAMILIES={},MOD_SIDED=[];
 for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
 const SIDE={
@@ -757,7 +781,7 @@ const SIDED=new Set([...MOD_SIDED,'kutte','fuchspfote','bierbong','schaerpe','ga
 const TEXABLE=new Set(['kutte','regenjacke','jeans','festivalstiefel','kabelbinderstiefel','fuchspfote']);
 export const DIRS={se:'',sw:'-sw',nw:'-nw',ne:'-ne'};
 /** Quellen: Körper, Dutt und je Gegenstand ein Zeichner mit Seitenregel, Codex-Teilen und Stofffüllung. */
-let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...Object.fromEntries(Object.entries(GEAR).map(([id,g])=>[id,(L,band,p0)=>{let p=p0,bd=band;if(p0.swap&&(g.slot==='weapon'||g.slot==='offhand')){p={...p0,armN:p0.armF,armF:p0.armN,swingN:p0.swingF,swingF:p0.swingN};if(g.slot==='weapon'){if(band==='armVorn'){if(g.hands===2&&p0.grip2)handOver(L,p0.armN);return;}if(band==='armHinten')bd='armVorn';}}
+let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...Object.fromEntries(Object.entries(GEAR).map(([id,g])=>[id,(L,band,p0)=>{let p=p0,bd=band;if(p0.swap&&(g.slot==='weapon'||g.slot==='offhand')){p={...p0,armN:p0.armF,armF:p0.armN,swingN:p0.swingF,swingF:p0.swingN};if(g.slot==='weapon'){if(band==='armVorn'){if(g.hands===2&&p0.grip2)handOver(L,p0.armN);return;}if(band===HAND_F)bd='armVorn';}}
    {const cat=g.slot==='charm'?'talisman':'teil',hdir=g.slot==='head'?(p.back?'nw':'se'):'se',t=HYB.has(cat)&&!(p.back&&g.slot==='charm')&&id!=='gansorden'?hyb(`teil-${id}-${g.slot==='offhand'&&p.back?'nw':hdir}`):null;
     if(t){if((g.slot==='weapon'||g.slot==='offhand')&&bd==='armVorn'){const arm=g.slot==='weapon'?p.armN:p.armF,[hx,hy]=handPos(arm);blitRot(L,t,hx,hy,g.slot==='weapon'?p.swingN:p.swingF);handOver(L,arm);if(g.hands===2&&p.grip2)handOver(L,p.armF);return;}// Zweihand-Posen: zweite Faust am Schaft
      if(g.slot==='head'&&bd==='kopf'){blit(L,t,p.head[0],p.head[1]);return;}if(g.slot==='head'&&bd==='haarHinten')return;
@@ -773,9 +797,9 @@ Object.assign(PAL,{horse:R(['#dc9a5c','#b06a38','#824a2a','#58301e','#341a14']),
  donkey:R(['#d0c8c0','#a49c96','#7a7270','#524c4c','#2e2a2a']),rust:R(['#eaa66e','#c0703e','#90482a','#60301e','#381a14']),
  mint:R(['#d2eedc','#9ccdb4','#70a28c','#4a766e','#2c464a']),mower:R(['#ff7a5a','#e0402e','#aa2a24','#741c1c','#461014'])});
 export const MW=288,MH=330,MGROUND=286;// MH mit Rand unter dem Fußpunkt: nahe Hufe/Räder liegen in se bis ~35 px tiefer (vorher bei 300 abgeschnitten)
-const SX3=[.55,-.38],RP=[80,118];// ferne Seite auf dem Bildschirm; Beckenlage des Reiters in seiner 160×216-Kachel
+const SX3=[.55,-.38],RP=[W/2,GROUND-88];// ferne Seite auf dem Bildschirm; Beckenlage des Reiters in seiner Kachel (Figurenleinwand W×H)
 /** Leinwand vorübergehend wechseln (Reittier auf größerer Fläche). */
-function canvas(w,h,fn){const a=W,b=H;W=w;H=h;try{return fn();}finally{W=a;H=b;}}
+function canvas(w,h,fn){const a=W,b=H,n=NZ;W=w;H=h;NZ=[0,0];try{return fn();}finally{W=a;H=b;NZ=n;}}
 /** Pseudo-3D der Reittiere: f vorwärts, s zur fernen Seite (+) bzw. nahen Seite (−), u aufwärts. */
 const mp=(q,f,s,u)=>[q.ox+(f*q.Fd[0]+s*SX3[0])*q.sc,q.oy+(f*q.Fd[1]+s*SX3[1]-u)*q.sc];
 /** Gefüllte Ellipse aus zwei Halbachsen U,V (Rad in der Fahrtebene); r0..r1 = Ring. */
@@ -1006,7 +1030,7 @@ function rideSetup(mountId,dir,k){const M=MOUNTS[mountId],back=dir==='nw'||dir==
 export const rideKey=(mountId,dir,k)=>rideSetup(mountId,dir,k).key;
 /** Ebene → RGBA-Feld (aktuelle Leinwand) oder null, wenn leer. */
 function rgbaOf(L){let any=false;const px=new Uint8ClampedArray(W*H*4);for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;px.set([...c,255],i*4);any=true;}return any?px:null;}
-/** Reiter eines Reitbilds: Kacheln (160×216) je Quelle und Band, Versatz in die Reittier-Leinwand; text = Quellen mit Schrift (nur in sw/ne erkennbar). */
+/** Reiter eines Reitbilds: Kacheln (Figurenleinwand W×H) je Quelle und Band, Versatz in die Reittier-Leinwand; text = Quellen mit Schrift (nur in sw/ne erkennbar). */
 export function rideRider(lid,mountId,ids,dir,k){const look=LOOK[lid],A=ARCH[look.arch],S=rideSetup(mountId,dir,k);
  const p=poseRide(A,look,S.back,S.R);p.fi=1000+MOUNT_IDS.indexOf(mountId)*40+['se','sw','nw','ne'].indexOf(dir)*10+k;HW=handW(A);p.lefty=S.mir;p.swap=S.back!==S.mir;
  const srcs=makeSrcs(),rider={},text=new Set();for(const id of ids){rider[id]={};for(const band of BANDS){const L=layer(S.mir?'sw':'se');srcs[id](L,band,p);edges(L);if(L.texts.length)text.add(id);if(S.mir)mirror(L);const px=rgbaOf(L);if(px)rider[id][band]=px;}}
@@ -1014,12 +1038,15 @@ export function rideRider(lid,mountId,ids,dir,k){const look=LOOK[lid],A=ARCH[loo
 /** Reittier eines Reitbilds: Kacheln (MW×MH) je Band. */
 export function rideMount(mountId,dir,k){const S=rideSetup(mountId,dir,k);
  return canvas(MW,MH,()=>{RS=S.q.sc;const out={};try{for(const band of BANDS){const L=layer(S.mir?'sw':'se');S.M.draw(L,band,S.q);edges(L);if(S.mir)mirror(L);const px=rgbaOf(L);if(px)out[band]=px;}}finally{RS=1;}return out;});}
-/** Ein Reitbild: Reiter-Kacheln (160×216) je Quelle und Band, Versatz in die Reittier-Leinwand, Reittier-Kacheln (MW×MH). Bild 0 = Stand, 1–8 = Bewegung. */
+/** Ein Reitbild: Reiter-Kacheln (Figurenleinwand W×H) je Quelle und Band, Versatz in die Reittier-Leinwand, Reittier-Kacheln (MW×MH). Bild 0 = Stand, 1–8 = Bewegung. */
 export function renderRide(lid,mountId,ids,dir,k){const r=rideRider(lid,mountId,ids,dir,k);return {rider:r.rider,mount:rideMount(mountId,dir,k),off:r.off};}
 
-function renderSource(draw,A,look,dir='se'){const sheet=surface(W*FRAMES.length,H*BANDS.length),back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';let text=false;
+/** Hülle aller gezeichneten Pixel relativ zum Fußpunkt (Pixelversatz, inklusive): Katalog cat.huelle, Randprüfung in tests/paperdoll-posen. */
+const HUELLE={x0:1e9,x1:-1e9,y0:1e9,y1:-1e9};
+function renderSource(draw,A,look,dir='se'){const sheet=surface(W*FRAMES.length,H*BANDS.length),boxes=sheet.boxes=[],back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';let text=false;
  FRAMES.forEach((fr,col)=>{const sw=back!==mir,p=pose(fr,A,look,back,sw);p.fi=col+(p.sided&&sw?500:0);HW=handW(A);p.lefty=mir;p.swap=sw;BANDS.forEach((band,row)=>{const L=layer(mir?'sw':'se');L.T=leanT(p,band);draw(L,band,p);L.T=null;edges(L);if(L.texts.length)text=true;if(mir)mirror(L);
-  for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;const x=i%W,y=i/W|0;sheet.data.set([...c,255],((row*H+y)*sheet.width+col*W+x)*4);}});});
+  let x0=W,x1=-1,y0=H,y1=-1;for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;const x=i%W,y=i/W|0;sheet.data.set([...c,255],((row*H+y)*sheet.width+col*W+x)*4);if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  if(x1>=0){boxes[row*FRAMES.length+col]=[x0,y0,x1,y1];const h=HUELLE;h.x0=Math.min(h.x0,x0-W/2);h.x1=Math.max(h.x1,x1-W/2);h.y0=Math.min(h.y0,y0-GROUND);h.y1=Math.max(h.y1,y1-GROUND);}});});
  sheet.text=text;return sheet;}
 // ---------- Laufzeit-Ausgabe fürs Spiel: assets/paperdoll/runtime (node tools/paperdoll/puppe.mjs --runtime) ----------
 /** Spiel-Kennungen der Körperbauten (characters.js LOOKS): Werkzeug-Figur → Archetyp. */
@@ -1031,33 +1058,55 @@ export const FAMILY_SOURCE={trouser:'jeans',jacket:'kutte',raincoat:'regenjacke'
 // Spalten geteilt in Grundbilder (Stehen/Blinzeln/Laufen, <id>-<arch><dir>.png) und Aktionsbilder ab cat.split (…-akt.png).
 // So lädt paperdoll-art.js nach Bedarf, und entpackt belegt ein Bogen nur, was die Quelle wirklich zeichnet.
 const bandsOf=id=>{if(id==='koerper')return BANDS;if(id==='dutt')return ['kopf'];const g=GEAR[id];if(!g)return BANDS;
- return BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b==='armHinten'));};
+ return BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b===HAND_F));};
 export const RUNTIME_SPLIT=(i=>i<0?FRAMES.length:i)(FRAMES.findIndex(f=>!['stehen','blinzeln','laufen'].includes(f.anim)));
 // Aktionsposen hängen an der Seitenregel (Waffenarm = armF bei swap): gespiegeltes se ist dort nicht sw. Deshalb bekommt jede Quelle für
 // sw/ne einen eigenen Aktionsbogen (cat.ownAkt), nur Grundbilder dürfen weiter gespiegelt werden (cat.own).
 const OWN_AKT=RUNTIME_SPLIT<FRAMES.length;
-function cutSheet(sh,rows,f0,f1){const w=(f1-f0)*W,h=Math.max(1,rows.length)*H,o=new Uint8Array(w*h*4);
- rows.forEach((b,r)=>{const src=BANDS.indexOf(b);for(let y=0;y<H;y++){const si=((src*H+y)*sh.width+f0*W)*4;o.set(sh.data.subarray(si,si+w*4),(r*H+y)*w*4);}});return {width:w,height:h,data:o};}
+// Zellen (Katalog version 3): je Quelle eine Zelle cat.sources[id].cell={x,y,w,h} = Vereinigung der Inhaltshüllen über alle ihre Bögen
+// (Archetypen, eigene Richtungen samt sw/ne-Eigenbögen, Grund- und Aktionsteil, Bänder, Bilder) in Leinwandkoordinaten der gezeichneten
+// Bögen, 1 px Rand, auf die Leinwand begrenzt; leere Quelle {x:0,y:0,w:1,h:1}. Bogen: Spalte je Bild cell.w, Zeile je Band cell.h –
+// Pixel (x,y) von Bild f/Band b liegt bei (col*cell.w + x-cell.x, row*cell.h + y-cell.y). So belegt ein Bogen dekodiert nur seinen Inhalt.
+/** Bogenteil (Bilder f0…f1, Zeilen rows) auf seine eigene Inhaltshülle zugeschnitten: {box,data} bzw. {box:null}. */
+function cropPart(sh,rows,f0,f1){let x0=W,y0=H,x1=-1,y1=-1;// Hüllen je Band/Bild aus renderSource (sheet.boxes)
+ for(const b of rows){const r=BANDS.indexOf(b);for(let f=f0;f<f1;f++){const q=sh.boxes[r*FRAMES.length+f];if(!q)continue;x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[2]);y1=Math.max(y1,q[3]);}}
+ const part={rows,n:f1-f0,box:null};if(x1<0)return part;const box=part.box={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};part.data=cellSheet(sh,W,H,rows,f0,f1,box,{x:0,y:0});return part;}
+/** Zellenbogen aus einem Quellbogen (Kachel tw×th, Ursprung o) für Zelle c: Spalte je Bild c.w, Zeile je Band c.h. */
+function cellSheet(sh,tw,th,rows,f0,f1,c,o){const w=(f1-f0)*c.w,h=Math.max(1,rows.length)*c.h,d=new Uint8Array(w*h*4);
+ rows.forEach((b,r)=>{const src=sh.rowOf?sh.rowOf(b):BANDS.indexOf(b);for(let f=f0;f<f1;f++)for(let y=0;y<c.h;y++){const sy=c.y-o.y+y;if(sy<0||sy>=th)continue;const sx0=Math.max(0,c.x-o.x),sx1=Math.min(tw,c.x-o.x+c.w);if(sx1<=sx0)continue;
+  const si=((src*th+sy)*sh.width+f*tw+sx0)*4;d.set(sh.data.subarray(si,si+(sx1-sx0)*4),((r*c.h+y)*w+(f-f0)*c.w+sx0-(c.x-o.x))*4);}});return {width:w,height:h,data:d};}
+/** Zugeschnittenen Bogenteil in die Zelle der Quelle setzen. */
+function placePart(p,cell){if(!p.box)return {width:p.n*cell.w,height:Math.max(1,p.rows.length)*cell.h,data:new Uint8Array(p.n*cell.w*Math.max(1,p.rows.length)*cell.h*4)};
+ const src={width:p.data.width,data:p.data.data,rowOf:b=>p.rows.indexOf(b)};return cellSheet(src,p.box.w,p.box.h,p.rows,0,p.n,cell,p.box);}
 export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of readdirSync(out))if(f.endsWith('.png'))unlinkSync(out+'/'+f);
- const t0=Date.now(),srcs=makeSrcs(),cat={version:2,layout:'bands',split:RUNTIME_SPLIT,W,H,ground:GROUND,pivot:{x:W/2,y:GROUND},worldHeight:26,bands:BANDS,dirs:DIRS,own:{sw:[],ne:[]},ownAkt:{sw:[],ne:[]},
+ const t0=Date.now(),srcs=makeSrcs(),cat={version:3,layout:'bands',split:RUNTIME_SPLIT,W,H,ground:GROUND,pivot:{x:W/2,y:GROUND},worldHeight:26,bands:BANDS,dirs:DIRS,own:{sw:[],ne:[]},ownAkt:{sw:[],ne:[]},
   frames:FRAMES.map(fr=>({...fr,bob:pose(fr,ARCH.schwungvoll,LOOK.ida).bob})),archetypes:{},sources:{},items:{},families:{...FAMILY_SOURCE,...MOD_FAMILIES},anchors:{},ramps:{}};
- for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];cat.archetypes[gid]={name:A.name,dutt:look.style==='locken',hair:Object.keys(PAL).find(k=>PAL[k]===look.hair)};
-  for(const dir of Object.keys(DIRS))for(const [id,fn] of Object.entries(srcs)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne',rows=bandsOf(id),name=`${out}/${id}-${gid}${DIRS[dir]}`;
-   if(mir&&OWN_AKT&&!cat.ownAkt[dir].includes(id))cat.ownAkt[dir].push(id);
-   if(mir&&!sh.text&&!SIDED.has(id)){if(OWN_AKT)writeFileSync(name+'-akt.png',encodePng(cutSheet(sh,rows,RUNTIME_SPLIT,FRAMES.length)));continue;}if(mir&&!cat.own[dir].includes(id))cat.own[dir].push(id);
-   writeFileSync(name+'.png',encodePng(cutSheet(sh,rows,0,RUNTIME_SPLIT)));
-   if(RUNTIME_SPLIT<FRAMES.length)writeFileSync(name+'-akt.png',encodePng(cutSheet(sh,rows,RUNTIME_SPLIT,FRAMES.length)));
-   // Figurenhöhe (Kopf bis Fuß, Deckkraft ab 50 %) inklusive Dutt – paperdoll-art.js unitScale gleicht darüber auf 26 E an
-   if((id==='koerper'||id==='dutt'&&look.style==='locken')&&dir==='se'){let top=H;for(let y=0;y<H&&top===H;y++)for(let b=0;b<BANDS.length;b++){for(let x=0;x<W;x++)if(sh.data[((b*H+y)*sh.width+x)*4+3]>=128){top=y;break;}if(top<H)break;}cat.archetypes[gid].height=Math.max(cat.archetypes[gid].height||0,GROUND-top);}}
+ for(const [lid,look] of Object.entries(LOOK))cat.archetypes[GAME_ARCH[lid]]={name:ARCH[look.arch].name,dutt:look.style==='locken',hair:Object.keys(PAL).find(k=>PAL[k]===look.hair)};
+ // je Quelle alle Archetypen × Richtungen zeichnen, Teile auf ihre Hülle zuschneiden, dann in die gemeinsame Zelle setzen und schreiben
+ const cells={};
+ for(const [id,fn] of Object.entries(srcs)){const rows=bandsOf(id),parts=[];
+  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];
+   for(const dir of Object.keys(DIRS)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne',name=`${out}/${id}-${gid}${DIRS[dir]}`;
+    if(mir&&OWN_AKT&&!cat.ownAkt[dir].includes(id))cat.ownAkt[dir].push(id);
+    const ownBase=!(mir&&!sh.text&&!SIDED.has(id));if(mir&&ownBase&&!cat.own[dir].includes(id))cat.own[dir].push(id);
+    if(ownBase)parts.push([name+'.png',cropPart(sh,rows,0,RUNTIME_SPLIT)]);
+    if(RUNTIME_SPLIT<FRAMES.length&&(ownBase||OWN_AKT))parts.push([name+'-akt.png',cropPart(sh,rows,RUNTIME_SPLIT,FRAMES.length)]);
+    // Figurenhöhe (Kopf bis Fuß, Deckkraft ab 50 %) inklusive Dutt – paperdoll-art.js unitScale gleicht darüber auf 26 E an
+    if((id==='koerper'||id==='dutt'&&look.style==='locken')&&dir==='se'){let top=H;for(let y=0;y<H&&top===H;y++)for(let b=0;b<BANDS.length;b++){for(let x=0;x<W;x++)if(sh.data[((b*H+y)*sh.width+x)*4+3]>=128){top=y;break;}if(top<H)break;}cat.archetypes[gid].height=Math.max(cat.archetypes[gid].height||0,GROUND-top);}}}
+  let x0=W,y0=H,x1=-1,y1=-1;for(const [,p] of parts)if(p.box){x0=Math.min(x0,p.box.x);y0=Math.min(y0,p.box.y);x1=Math.max(x1,p.box.x+p.box.w-1);y1=Math.max(y1,p.box.y+p.box.h-1);}
+  const cell=cells[id]=x1<0?{x:0,y:0,w:1,h:1}:{x:Math.max(0,x0-1),y:Math.max(0,y0-1),w:Math.min(W-1,x1+1)-Math.max(0,x0-1)+1,h:Math.min(H-1,y1+1)-Math.max(0,y0-1)+1};
+  for(const [file,p] of parts)writeFileSync(file,encodePng(placePart(p,cell)));}
+ for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];
   cat.anchors[gid]={};for(const dir of Object.keys(DIRS)){const back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne',sw=back!==mir,mx=q=>[+(mir?W-q[0]:q[0]).toFixed(1),+q[1].toFixed(1)];
    cat.anchors[gid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back,sw);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(leanPt(p,p.C)),h:mx(leanPt(p,p.head)),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
- for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id)};cat.items[id]=id;}
- cat.sources.koerper={slot:'body-base',bands:BANDS};cat.sources.dutt={slot:'hair',bands:['kopf']};
+ for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:cells[id]};cat.items[id]=id;}
+ cat.sources.koerper={slot:'body-base',bands:BANDS,cell:cells.koerper};cat.sources.dutt={slot:'hair',bands:['kopf'],cell:cells.dutt};
  // Kopfteile, die den Scheitel frei lassen (offen:true, z. B. Kopfhörer), und Aussehen-Quellen am Scheitel (scheitel:true: Irokese, Stirnband) – paperdoll-art.js lookSources
  cat.openHead=Object.keys(GEAR).filter(id=>GEAR[id].slot==='head'&&GEAR[id].offen);cat.crownLooks=Object.keys(GEAR).filter(id=>GEAR[id].scheitel);
  for(const k of ['skin','blush','lip','hair','hairBrown','hairBlack'])cat.ramps[k]=Array.isArray(PAL[k][0])?PAL[k]:[PAL[k]];
  cat.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in cat.shade))cat.shade[key]=v[k+1];}}
  cat.palette=[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))];
+ const h=cat.huelle={...HUELLE};console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px (Leinwand ${W}×${H}, Boden ${GROUND})`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Laufzeit-Bögen fertig',(Date.now()-t0)+' ms',out);}
 // Schalter: --runtime [ziel] = Laufzeit-Bögen fürs Spiel; --reiten [ziel] = Reit-Bögen (tools/paperdoll/reiten.mjs, dauert Minuten);
 // ohne Schalter = Prototyp-Ausgabe. In Arbeits-Threads (Reit-Build) nie ausführen: dort ist argv[1] ebenfalls puppe.mjs.
@@ -1078,5 +1127,5 @@ else if(CLI){const out=process.argv[2]||'.';mkdirSync(out,{recursive:true});cons
  meta.shiny=[...new Set(['metal','gold','tin','glass'].flatMap(k=>PAL[k].map(c=>c[0]<<16|c[1]<<8|c[2])))];meta.gold=PAL.gold;meta.body=[...new Set(['skin','blush','lip','eye','iris','lash','hair','hairBrown','hairBlack'].flatMap(k=>{const v=PAL[k];return (Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2]);}))];
  meta.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in meta.shade))meta.shade[key]=v[k+1];}}
  meta.frames=FRAMES.map(fr=>({...fr,bob:pose(fr,ARCH.schwungvoll,LOOK.ida).bob}));
- for(const [id,g] of Object.entries(GEAR))meta.gear[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b==='armHinten'))};
+ for(const [id,g] of Object.entries(GEAR))meta.gear[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b===HAND_F))};
  writeFileSync(out+'/puppe.json',JSON.stringify(meta));console.log('fertig',(Date.now()-t0)+' ms');}

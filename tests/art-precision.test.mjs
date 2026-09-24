@@ -21,10 +21,12 @@ test('precision covers every present person, mob, boss, item icon, skill and tal
 });
 test('precision exports have hard alpha, registered scale, unclipped margins and source hashes',()=>{
  const palette=new Set(PRECISION_PALETTE.map(p=>p.join(','))),sourceHashes=new Map();
+ // Eigene Paletten (a.palette): NPC-Porträts tragen die Farben der Anziehpuppe, eingefroren in portraet-palette.json
+ const own={portraet:new Set(JSON.parse(read('tools/sprite-pipeline/portraet-palette.json')).map(p=>p.join(',')))};
  for(const [id,a]of Object.entries(catalog.assets)){
-  const bytes=read(a.path),im=decodePng(bytes);assert.equal(hash(bytes),a.hash,id);assert.equal(im.width,a.width);assert.equal(im.height,a.height);
+  const bytes=read(a.path),im=decodePng(bytes),pal=a.palette?own[a.palette]:palette;assert.ok(pal,id+' Palette '+a.palette);assert.equal(hash(bytes),a.hash,id);assert.equal(im.width,a.width);assert.equal(im.height,a.height);
   if(!sourceHashes.has(a.source))sourceHashes.set(a.source,hash(read(a.source)));assert.equal(sourceHashes.get(a.source),a.sourceHash,id);
-  for(let i=0;i<im.data.length;i+=4){assert.ok(im.data[i+3]===0||im.data[i+3]===255,id+' alpha');if(im.data[i+3])assert.ok(palette.has([...im.data.subarray(i,i+3)].join(',')),id+' palette');}
+  for(let i=0;i<im.data.length;i+=4){assert.ok(im.data[i+3]===0||im.data[i+3]===255,id+' alpha');if(im.data[i+3])assert.ok(pal.has([...im.data.subarray(i,i+3)].join(',')),id+' palette');}
   if(a.columns){assert.equal(a.nativeHeight/a.worldHeight,WORLD_ART_DENSITY,id);for(const f of a.frames){assert.ok(f.bounds.x>=2&&f.bounds.y>=2,id);assert.ok(f.bounds.x+f.bounds.w<=a.frameSize-2&&f.bounds.y+f.bounds.h<=a.frameSize-2,id);}}
  }
 });

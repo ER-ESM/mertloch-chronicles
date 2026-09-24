@@ -40,6 +40,7 @@ export const OPTIONS_UI={
    {title:'Details',rows:[
     {setting:'light',label:'Licht & Schatten',hint:'Tageslicht, Innenlicht, Lampen und Schattenwurf.'},
     {setting:'fx',label:'Wetter & Effekte',hint:'Regen, Staub, Funken und Zauberglanz.'},
+    {setting:'lowRes',label:'Niedrige Auflösung',hint:'Welt im groben Pixelraster (2 Bildpunkte je Welteinheit) – etwa doppelt so schnell, vor allem auf Handys und hochauflösenden Bildschirmen.'},
     {setting:'autoRes',label:'Auflösung automatisch anpassen',hint:'Senkt die Auflösung der Welt von selbst, wenn der Rechner die 60 Bilder nicht hält.'},
     {setting:'fullRes',label:'Volle Grafikauflösung',hint:'Vierfache Dichte – schärfer auf hochauflösenden Bildschirmen, kostet deutlich Leistung.'}]},
    {title:'Kamera',rows:[{slot:'zoom'}]},
@@ -55,7 +56,7 @@ export const OPTIONS_UI={
    {title:'Entwicklung',rows:[{slot:'admin'}]}
   ]
  },
- presets:[{id:'low',name:'Niedrig',values:{light:false,fx:false,autoRes:true,fullRes:false}},{id:'mid',name:'Mittel',values:{light:true,fx:false,autoRes:true,fullRes:false}},{id:'high',name:'Hoch',values:{light:true,fx:true,autoRes:true,fullRes:false}},{id:'ultra',name:'Ultra',values:{light:true,fx:true,autoRes:false,fullRes:true}}],
+ presets:[{id:'low',name:'Niedrig',values:{light:false,fx:false,lowRes:true,autoRes:true,fullRes:false}},{id:'mid',name:'Mittel',values:{light:true,fx:false,lowRes:false,autoRes:true,fullRes:false}},{id:'high',name:'Hoch',values:{light:true,fx:true,lowRes:false,autoRes:true,fullRes:false}},{id:'ultra',name:'Ultra',values:{light:true,fx:true,lowRes:false,autoRes:false,fullRes:true}}],
  presetLabel:'Grafikqualität',presetCustom:'Eigene',presetHint:'Setzt die Details darunter auf einmal.',
  zoom:'Kameraabstand',zoomHint:'Wie nah die Kamera am Helden ist (auch per Mausrad).',zoomNear:'nah',zoomFar:'weit',
  fullscreen:'Vollbild',fullscreenHint:'Spiel ohne Browserleisten (Esc beendet).',
@@ -71,4 +72,4 @@ export const OPTIONS_UI={
 /** Standardwerte der kontoweiten Einstellungen (options-ui.js). */
 export const OPTIONS_DEFAULTS={uiScale:100,statusText:'number',volume:0,showTracker:true,showMinimap:true,showXp:true};
 /** Standard der Spielschalter (game.settings) für „Standard“ je Kategorie. */
-export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false,sctIn:true,sctNotes:true,sctCompanions:true};
+export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,lowRes:false,fps:false,sctIn:true,sctNotes:true,sctCompanions:true};

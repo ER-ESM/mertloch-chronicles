@@ -58,12 +58,12 @@ test('Laufzeitkatalog führt offene Kopfteile und Scheitel-Quellen (Daten statt 
  for(const id of cat.openHead)assert.equal(cat.sources[id]?.slot,'head');
 });
 
-test('Dieter rasiert: Stoppeln und Kinnbart übermalen den gezeichneten Vollbart mit Haut (umfärbbar)',()=>{
+test('Dieter rasiert: Stoppeln, Kinnbart und Schnauzer übermalen den gezeichneten Vollbart mit Haut (umfärbbar)',()=>{
  const skin=new Set(cat.ramps.skin.map(key)),hair=new Set(cat.ramps[cat.archetypes.dieter.hair].map(key)),[hx,hy]=cat.anchors.dieter.se[0].h.map(Math.round);
- for(const src of ['bart-stoppeln','bart-kinnbart']){let sk=0,ha=0;
+ for(const src of ['bart-stoppeln','bart-kinnbart','bart-schnauzer']){let sk=0,ha=0;
   // Kieferfläche unter dem Mund (dort war vorher nur Bart)
   for(const p of S.pixels(src,'dieter','se','kopf',0)){const [x,y]=p;if(y<hy+13||y>hy+16||Math.abs(x-hx)>9)continue;const c=key(rgb(p));if(skin.has(c))sk++;else if(hair.has(c))ha++;}
-  if(src==='bart-stoppeln')assert.ok(sk>=45,`${src}: Kiefer nicht rasiert (${sk} Hautpixel)`);else assert.ok(ha>=12&&sk>=12,`${src}: Kinnbart auf rasiertem Kiefer fehlt (${sk}/${ha})`);}
+  if(src!=='bart-kinnbart')assert.ok(sk>=45,`${src}: Kiefer nicht rasiert (${sk} Hautpixel)`);else assert.ok(ha>=12&&sk>=12,`${src}: Kinnbart auf rasiertem Kiefer fehlt (${sk}/${ha})`);}
  // Kevin und Bärbel werden nicht rasiert: dort bleibt die Ebene licht
  assert.ok(S.pixels('bart-stoppeln','dieter','se','kopf',0).length>S.pixels('bart-stoppeln','kevin','se','kopf',0).length,'Rasur-Ebene fehlt');
 });
@@ -81,7 +81,7 @@ test('Frisur ersetzt Körperkopf und Dutt beim Zusammensetzen (paperdoll-kern)',
 test('Bart und Kamm in der Haartreppe des Archetyps (Laufzeit-Umfärbung greift), Kopfhaut in der Hauttreppe; Bart hinten unsichtbar',()=>{
  const skin=new Set(cat.ramps.skin.map(key));
  for(const [arch,a] of Object.entries(cat.archetypes)){const hair=new Set(cat.ramps[a.hair].map(key));
-  for(const src of ['bart-kinnbart','bart-vollbart']){const px=S.pixels(src,arch,'se','kopf',0).map(rgb);assert.ok(px.length>20,`${src}-${arch} leer`);
+  for(const src of ['bart-kinnbart','bart-vollbart','bart-schnauzer']){const px=S.pixels(src,arch,'se','kopf',0).map(rgb);assert.ok(px.length>20,`${src}-${arch} leer`);
    const beard=px.filter(c=>!skin.has(key(c)));// Dieter: die Rasur darunter ist Haut
    assert.ok(beard.filter(c=>hair.has(key(c))).length/beard.length>.9,`${src}-${arch}: Bart nicht in der Haartreppe`);
    assert.equal(S.pixels(src,arch,'nw','kopf',0).length,0,`${src}-${arch}: Bart von hinten sichtbar`);}
@@ -90,7 +90,7 @@ test('Bart und Kamm in der Haartreppe des Archetyps (Laufzeit-Umfärbung greift)
 });
 
 test('Aussehen folgt dem Kopf in jedem Bild (Atmen, Blinzeln, Laufen, Aktionen): fester Versatz zum Kopfanker',()=>{
- for(const arch of Object.keys(cat.archetypes))for(const src of ['brille','frisur-irokese','stirnband','bart-vollbart']){const dx=[],dy=[];
+ for(const arch of Object.keys(cat.archetypes))for(const src of ['brille','frisur-irokese','stirnband','bart-vollbart','bart-schnauzer']){const dx=[],dy=[];
   cat.frames.forEach((fr,f)=>{const px=S.pixels(src,arch,'se','kopf',f);assert.ok(px.length>0,`${src}-${arch} Bild ${f} leer`);
    const [hx,hy]=cat.anchors[arch].se[f].h;dx.push(px.reduce((a,p)=>a+p[0],0)/px.length-hx);dy.push(px.reduce((a,p)=>a+p[1],0)/px.length-hy);});
   const spread=v=>Math.max(...v)-Math.min(...v);assert.ok(spread(dx)<=1.5&&spread(dy)<=1.5,`${src}-${arch}: Versatz zum Kopf schwankt (${dx.map(v=>v.toFixed(1))} / ${dy.map(v=>v.toFixed(1))})`);}

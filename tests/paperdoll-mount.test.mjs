@@ -2,11 +2,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,statSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {decodePng} from '../tools/sprite-pipeline/png.mjs';
 import {MOUNTS,MOUNT_RULES} from '../content/index.js';
 import {paperdoll} from '../paperdoll-art.js';
 import {rideFrameIndex,rideSourceSet} from '../paperdoll-mount.js';
-const dir=new URL('../assets/paperdoll/reiten/',import.meta.url),read=f=>readFileSync(new URL(f,dir));
+// REITEN_DIR=<ordner> prüft einen Probebau statt assets/paperdoll/reiten (Offline-Cache-Prüfung nur für die ausgelieferten Bögen)
+const PROBE=process.env.REITEN_DIR,dir=PROBE?pathToFileURL(resolve(PROBE)+'/'):new URL('../assets/paperdoll/reiten/',import.meta.url),read=f=>readFileSync(new URL(f,dir));
 const cat=JSON.parse(read('catalog.json')),ARCHS=['baerbel','dieter','kevin'],DIRS=['se','sw','nw','ne'],STOWED=['weapon','offhand','ranged'];
 const mounts=Object.fromEntries(Object.keys(cat.mounts).map(id=>[id,JSON.parse(read(cat.mounts[id].file))]));
 const pngSize=f=>{const b=read(f);return [b.readUInt32BE(16),b.readUInt32BE(20)];};
@@ -42,6 +45,7 @@ test('Atlas-Kacheln tragen Inhalt (Packen und Beschneiden stimmen)',()=>{
 
 test('Reit-Bögen: < 12 MB, nur optional im Offline-Cache (Laden bei Bedarf)',()=>{
  const files=readdirSync(dir),bytes=files.reduce((n,f)=>n+statSync(new URL(f,dir)).size,0);assert.ok(bytes<12*1048576,(bytes/1048576).toFixed(2)+' MB');
+ if(PROBE)return;// Probebau: Offline-Cache gilt nur für assets/paperdoll/reiten
  const manifest=JSON.parse(readFileSync(new URL('../precache-manifest.js',import.meta.url),'utf8').match(/self.PRECACHE=(.*);/s)[1]);
  assert.equal(manifest.urls.some(u=>u.startsWith('assets/paperdoll/reiten/')),false);
  for(const f of files.filter(f=>/\.(png|json)$/.test(f)))assert.ok(manifest.optional['assets/paperdoll/reiten/'+f],f+' fehlt im optionalen Cache');

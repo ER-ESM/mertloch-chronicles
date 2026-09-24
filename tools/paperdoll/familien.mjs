@@ -47,8 +47,11 @@ export function familien(K){
  function inHand(L,p,draw){const [ox,oy]=handPos(p.armN),a=p.swingN||0;
   if(a){const co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}
   try{draw(L,p);}finally{L.T=null;L.rot=0;}}
+ // ferne Hand im Band K.HAND_F (vor dem fernen Bein, hinter Rumpf und nahem Bein) – wie die Nahkampfwaffen
  const held=draw=>({armVorn(L,p){if(!p.swap)inHand(L,p,draw);},
-  armHinten(L,p){if(p.swap)inHand(L,{...p,armN:p.armF,armF:p.armN,swingN:p.swingF,swingF:p.swingN},draw);}});
+  [K.HAND_F](L,p){if(p.swap)inHand(L,{...p,armN:p.armF,armF:p.armN,swingN:p.swingF,swingF:p.swingN},draw);}});
+ /** Handstück an der fernen Hand (Ring, Handschuh): zu Fuß im Band K.HAND_F über der Waffenfaust, beim Reiten in armHinten wie der Arm. */
+ const fern=draw=>({armHinten(L,p){if(p.ride)draw(L,p);},[K.HAND_F](L,p){if(!p.ride)draw(L,p);}});
 
  // ---------- Waffen ----------
  /** Entgratete Dosenklinge: Dosenlasche als Knauf, Ledergriff, Blechklinge mit grünem Dosendruck. */
@@ -110,9 +113,9 @@ export function familien(K){
   L.piece(PAL.gold);poly(L,[[hx-2.5,hy-9],[hx+2.5,hy-9],[hx+2.5,hy-6],[hx-2.5,hy-6]],PAL.gold[2]);handOver(L,p.armN);}
  /** Einhandwaffe in der Nebenhand (Beidhändig, Kennung_nh): linke Hand des Trägers. puppe.mjs tauscht bei slot 'offhand'
   *  und p.swap die Arme bereits (Drehpunkt = Nebenhand); hier zurücktauschen, damit der Waffenzeichner armN nutzt.
-  *  Ohne Tausch liegt die Hand hinten (armHinten, hinter dem Körper), mit Tausch vorn (armVorn). */
+  *  Ohne Tausch liegt die Hand hinten (Band K.HAND_F: vor dem fernen Bein, hinter dem Rumpf), mit Tausch vorn (armVorn). */
  const nebenhand=(name,draw)=>{const sw=p=>({...p,armN:p.armF,armF:p.armN,swingN:p.swingF,swingF:p.swingN});
-  return {slot:'offhand',hands:1,name,armHinten(L,p){if(!p.swap)draw(L,sw(p));},armVorn(L,p){if(p.swap)draw(L,sw(p));}};};
+  return {slot:'offhand',hands:1,name,[K.HAND_F](L,p){if(!p.swap)draw(L,sw(p));},armVorn(L,p){if(p.swap)draw(L,sw(p));}};};
 
  // ---------- Nebenhand ----------
  /** Zeltplatz-Schild als Schild: blaues Verkehrsschild mit Zelt-Piktogramm, Schrauben; Rückseite verzinkt mit Rohrschellen. */
@@ -306,13 +309,13 @@ export function familien(K){
   boxenschultern:{slot:'shoulders',name:'Boxenträger-Schultern',armHinten(L,p){schulterbox(L,p,p.armF,true);},armVorn(L,p){schulterbox(L,p,p.armN,false);}},
   kronkorkenkette:{slot:'neck',name:'Kronkorkenkette',rumpf:kronkorkenkette},
   kabelmanschetten:{slot:'wrists',name:'Kabelbinder-Manschetten',armHinten(L,p){manschette(L,p,p.armF,true);},armVorn(L,p){manschette(L,p,p.armN,false);}},
-  grillhandschuhe:{slot:'hands',name:'Grillhandschuhe',armHinten(L,p){handschuh(L,p,p.armF,true);},armVorn(L,p){handschuh(L,p,p.armN,false);}},
+  grillhandschuhe:{slot:'hands',name:'Grillhandschuhe',...fern((L,p)=>handschuh(L,p,p.armF,true)),armVorn(L,p){handschuh(L,p,p.armN,false);}},
   grillhandschuhe_faust:{slot:'hands',name:'Grillhandschuhe (Schildfaust)',armVorn:handschuhFaust},
   zapfhahnguertel:{slot:'waist',name:'Zapfhahn-Gürtel',rumpf:zapfhahnguertel},
   maifeldtreter:{slot:'feet',name:'Maifeldtreter',beinHinten(L,p){treter(L,p,p.legF,p.toeF,true);},beinVorn(L,p){treter(L,p,p.legN,p.toeN,false);}},
   // Ringe: fester Ring an der Waffenhand (rechts), Siegelring der Zufallsringe an der Nebenhand (links)
-  pfandring:{slot:'ring',name:'Ring der ewigen Rückgabe',armVorn(L,p){if(!p.swap)ringAt(L,p.armN,false,PAL.gold,PAL.can);},armHinten(L,p){if(p.swap)ringAt(L,p.armF,true,PAL.gold,PAL.can);}},
-  pfandsiegel:{slot:'ring',name:'Pfandsiegel',armVorn(L,p){if(p.swap)ringAt(L,p.armN,false,PAL.metal,PAL.stamp);},armHinten(L,p){if(!p.swap)ringAt(L,p.armF,true,PAL.metal,PAL.stamp);}},
+  pfandring:{slot:'ring',name:'Ring der ewigen Rückgabe',armVorn(L,p){if(!p.swap)ringAt(L,p.armN,false,PAL.gold,PAL.can);},...fern((L,p)=>{if(p.swap)ringAt(L,p.armF,true,PAL.gold,PAL.can);})},
+  pfandsiegel:{slot:'ring',name:'Pfandsiegel',armVorn(L,p){if(p.swap)ringAt(L,p.armN,false,PAL.metal,PAL.stamp);},...fern((L,p)=>{if(!p.swap)ringAt(L,p.armF,true,PAL.metal,PAL.stamp);})},
   // Talismane und Glücksbringer
   keilerzahn:{slot:'charm',name:'Hauers letzter Zahn',rumpf:keilerzahn},
   kabeltalisman:{slot:'charm',name:'Kabelbinder-Talisman',rumpf:kabeltalisman},

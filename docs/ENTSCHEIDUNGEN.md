@@ -1053,3 +1053,20 @@ Balance-Bericht:
 Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 
 **Offen.** Lange Waffen (Greifzange, Gießkanne) stoßen in Aktionsbildern an den Bildrand. Waffen in der fernen Hand verschwinden in sw/nw teils hinter dem Bein. Blonde Stoppeln auf dunkler Haut wirken in Weltgröße fleckig. Radler-Rita wirkt auf dem drahtigen Körper männlich. Porträts von NPCs ohne eigenes Porträtbild zeigen noch die alte Figur. Das Vorwärmen braucht nach dem Laden rund 15 Sekunden.
+
+## E-69 · Leistung auch auf „Niedrig“, größere Bildfläche der Anziehpuppe, NPC-Porträts (24.09.2026)
+
+**Befund.** Der Nutzer meldete schwache Bildraten auf Handy und Desktop, „selbst auf niedrigen Grafikeinstellungen“. Messung auf dem Server ohne Grafikkarte, Grafik „Niedrig“, Zoom 1, 6 Keiler bzw. Dorfplatz mit Bewohnern:
+- Die Anziehpuppe ist im eingeschwungenen Zustand kein Rückschritt (gleichauf mit dem Stand davor, weniger Skriptzeit als die alte Figurengrafik); beim ersten Anblick kostete ein Zusammensetzen aber bis 9 ms.
+- Der Hauptposten ist das Rastern der Welt (`restore` 7–10 ms je Bild). „Niedrig“ senkte die Dichte nicht: hochauflösende Handys liefen fest mit Dichte 4, der Desktop mit 3; die Automatik geht bewusst nie unter die Bildschirmauflösung.
+- Die Auftragsverfolgung erzwang zehnmal pro Sekunde ein volles Layout (`getBoundingClientRect` direkt nach den HUD-Schreibvorgängen, 1,6 ms je Aufruf).
+
+**Entscheidung.**
+1. **Einstellung „Niedrige Auflösung“** (Grafik → Details, von „Niedrig“ eingeschaltet): Welt fest mit Dichte 2, auch unter der Bildschirmauflösung. Gemessen: Handy Dorf 30 → 57 FPS, Kampf 25 → 53; Desktop Dorf 22 → 38, Kampf 18 → 33. Die Automatik bleibt unverändert (nie unter Bildschirmauflösung). Wer Licht und Effekte schon aus hatte, bekommt die Einstellung beim Laden mit.
+2. **Anziehpuppe schneller:** Kachelspeicher mit Zuschnitt, Kern nur über deckende Pixel und die Inhaltshülle (Zusammensetzen 9 → 1,3 ms), Bögen je Quelle auf ihre Zelle zugeschnitten, Umfärben vor dem Verkleinern.
+3. **Auftragsverfolgung** misst den Platz höchstens alle 1,5 s bzw. nach Größenänderung.
+4. **Bildfläche der Anziehpuppe 296 × 328** (vorher 160 × 216, Nutzerentscheidung: Platz für breitere Heldenanimationen); lange Waffen und Kochmütze werden nicht mehr abgeschnitten. Waffe in der fernen Hand liegt vor dem fernen Bein.
+5. **Radler-Rita** schwungvoll; Söldner zeichnen ihre Figur über `paperdollId`, das Klassenaussehen (`look`) bleibt für Effekte. **Racing Ron** nach Figurenbibel: Schnauzer (neue Editor-Option) und rote Rennjacke.
+6. **NPC-Porträts:** 13 Codex-Porträts nach Puppen-Vorlage in „Puppenfarben“ (Spielpalette + Puppenpalette) eingebaut; Clan-Mitglieder unter `portrait-mentor-*`, damit Helden- und Söldnerrahmen ihre Bilder behalten. Freigabe: https://claude.ai/artifact/EgU5cZC8tewiSaaM1brm8h.
+
+**Offen.** 26 Porträts, Hedwig (zu jung, Schürze fehlt) und Ron (neu nach Bibel) nach dem Codex-Reset (Sa 26.09., 21:21). Echte Messung auf Nutzergeräten mit Grafikkarte steht aus.

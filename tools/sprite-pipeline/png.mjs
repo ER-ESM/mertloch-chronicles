@@ -8,8 +8,14 @@ export function decodePng(bytes){if(!bytes.subarray(0,8).equals(signature))throw
  for(let p=8;p<bytes.length;){const n=bytes.readUInt32BE(p),tag=bytes.toString('ascii',p+4,p+8),d=bytes.subarray(p+8,p+8+n);if(tag==='IHDR'){width=d.readUInt32BE(0);height=d.readUInt32BE(4);depth=d[8];type=d[9];if(d[12])throw Error('Interlaced PNG is unsupported');}if(tag==='PLTE')palette=d;if(tag==='tRNS')alpha=d;if(tag==='IDAT')compressed.push(d);p+=n+12;}
  if(depth!==8||![2,3,6].includes(type)||width*height>40e6)throw Error('Expected non-interlaced 8-bit RGB/RGBA/indexed PNG');const channels={2:3,3:1,6:4}[type],stride=width*channels,raw=inflateSync(Buffer.concat(compressed));if(raw.length!==height*(stride+1))throw Error('Invalid PNG scanline length');const scan=Buffer.alloc(height*stride);
  const paeth=(a,b,c)=>{const p=a+b-c,pa=Math.abs(p-a),pb=Math.abs(p-b),pc=Math.abs(p-c);return pa<=pb&&pa<=pc?a:pb<=pc?b:c;};
- for(let y=0;y<height;y++){const filter=raw[y*(stride+1)];if(filter>4)throw Error('Invalid PNG filter');for(let x=0;x<stride;x++){const i=y*stride+x,a=x>=channels?scan[i-channels]:0,b=y?scan[i-stride]:0,c=y&&x>=channels?scan[i-stride-channels]:0;scan[i]=(raw[y*(stride+1)+1+x]+[0,a,b,Math.floor((a+b)/2),paeth(a,b,c)][filter])&255;}}
- const data=new Uint8Array(width*height*4);for(let i=0;i<width*height;i++){if(type===3){const n=scan[i];data.set([palette[n*3],palette[n*3+1],palette[n*3+2],alpha?.[n]??255],i*4);}else{data.set(scan.subarray(i*channels,i*channels+3),i*4);data[i*4+3]=type===6?scan[i*channels+3]:255;}}return{width,height,data};
+ // Filter je Zeile ohne Hilfsfelder je Byte, Pixel direkt kopieren (große Bögen: Tests und Werkzeuge dekodieren Hunderte davon)
+ for(let y=0;y<height;y++){const filter=raw[y*(stride+1)];if(filter>4)throw Error('Invalid PNG filter');const r0=y*(stride+1)+1,o=y*stride;
+  for(let x=0;x<stride;x++){const i=o+x,a=x>=channels?scan[i-channels]:0,b=y?scan[i-stride]:0;
+   const pr=filter===0?0:filter===1?a:filter===2?b:filter===3?(a+b)>>1:paeth(a,b,y&&x>=channels?scan[i-stride-channels]:0);scan[i]=(raw[r0+x]+pr)&255;}}
+ const data=new Uint8Array(width*height*4);
+ if(type===3)for(let i=0,j=0;i<width*height;i++,j+=4){const n=scan[i];data[j]=palette[n*3];data[j+1]=palette[n*3+1];data[j+2]=palette[n*3+2];data[j+3]=alpha?.[n]??255;}
+ else for(let i=0,j=0,k=0;i<width*height;i++,j+=4,k+=channels){data[j]=scan[k];data[j+1]=scan[k+1];data[j+2]=scan[k+2];data[j+3]=type===6?scan[k+3]:255;}
+ return{width,height,data};
 }
 export const surface=(width,height)=>({width,height,data:new Uint8Array(width*height*4)});
 export function bounds(image,rect={x:0,y:0,w:image.width,h:image.height}){let minX=rect.x+rect.w,minY=rect.y+rect.h,maxX=-1,maxY=-1,count=0;for(let y=rect.y;y<rect.y+rect.h;y++)for(let x=rect.x;x<rect.x+rect.w;x++)if(image.data[(y*image.width+x)*4+3]>=128){minX=Math.min(x,minX);maxX=Math.max(x,maxX);minY=Math.min(y,minY);maxY=Math.max(y,maxY);count++;}if(!count)throw Error('Empty sprite cell');return{x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1,count};}

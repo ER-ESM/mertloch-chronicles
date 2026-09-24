@@ -4,6 +4,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {FIGUREN,FIGUR_HANDSTUECKE,NPCS,VILLAGERS,PROFESSIONS,COMPANIONS} from '../content/index.js';
 import {SKIN_TONES,HAIR_COLORS,FACE_ITEMS,HAIR_STYLES,BEARDS,normalizeTint} from '../hero-tint.js';
 import {GEAR} from '../tools/paperdoll/puppe.mjs';
@@ -11,7 +13,9 @@ import {figureDef,figureEquipment,FIGURE_PREFIX} from '../paperdoll-figuren.js';
 import {paperdoll,paperdollArch,paperdollSources} from '../paperdoll-art.js';
 
 const ARCHS=['dieter','baerbel','kevin'];
-const CAT_FILE=new URL('../assets/paperdoll/runtime/catalog.json',import.meta.url);
+// PAPERDOLL_RT (oder PAPERDOLL_RUNTIME)=<ordner> prüft einen Probebau statt assets/paperdoll/runtime
+const PROBE=process.env.PAPERDOLL_RT||process.env.PAPERDOLL_RUNTIME,RT=PROBE?pathToFileURL(resolve(PROBE)+'/'):new URL('../assets/paperdoll/runtime/',import.meta.url);
+const CAT_FILE=new URL('catalog.json',RT);
 const source=f=>readFileSync(new URL('../'+f,import.meta.url),'utf8');
 const own=Object.entries(FIGUREN).filter(([,f])=>!f.wie);
 
@@ -19,7 +23,9 @@ test('jede NPC-ID, jeder Dorfbewohner, jeder Berufslehrer und jeder Söldner hat
  for(const id of Object.keys(NPCS))assert.ok(figureDef(id),'NPC ohne Figur: '+id);
  for(const v of VILLAGERS)assert.ok(figureDef('villager'+v.variant),'Dorfbewohner ohne Figur: '+v.name);
  for(const id of Object.keys(PROFESSIONS))assert.ok(figureDef('beruf-'+id),'Berufslehrer ohne Figur: '+id);
- for(const c of COMPANIONS){const f=FIGUREN[c.id];assert.ok(f?.arch,'Söldner ohne Figur: '+c.id);assert.equal(f.arch,c.look,c.id+': Archetyp muss zum look passen (Heldenweg)');}
+ // Söldner zeichnen ihre Figur über paperdollId (npc:<id>) – der Archetyp darf vom look abweichen (Radler-Rita: Schwungvoll, look kevin für Klasseneffekte)
+ for(const c of COMPANIONS){const f=FIGUREN[c.id];assert.ok(f?.arch,'Söldner ohne Figur: '+c.id);assert.ok(['dieter','baerbel','kevin'].includes(f.arch),c.id+': Archetyp');}
+ assert.equal(FIGUREN['merc-radler-rita'].arch,'baerbel','Nutzerentscheidung 2026-09-24: Radler-Rita schwungvoll');
  for(const [id,f] of Object.entries(FIGUREN))if(f.wie)assert.ok(FIGUREN[f.wie]?.arch,id+': Verweis auf '+f.wie+' führt ins Leere');
 });
 
@@ -37,7 +43,7 @@ test('alle Kleidungsstücke existieren als Quelle im Werkzeug und im Laufzeitkat
  for(const [id,f] of own)for(const g of f.gear){assert.ok(GEAR[g],`${id}: ${g} fehlt in GEAR (puppe.mjs/npc-kleidung.mjs)`);
   assert.ok(cat.sources[g],`${id}: ${g} fehlt im Laufzeitkatalog – node tools/paperdoll/puppe.mjs --runtime`);assert.equal(cat.sources[g].slot,GEAR[g].slot,g+': Platz im Katalog veraltet');}
  for(const g of new Set(own.flatMap(([,f])=>f.gear)))for(const [dir,d] of Object.entries(cat.dirs))if(!(dir in cat.own)||cat.own[dir].includes(g))for(const a of ARCHS)
-  assert.ok(existsSync(new URL(`../assets/paperdoll/runtime/${g}-${a}${d}.png`,import.meta.url)),`Bogen fehlt: ${g}-${a}${d}.png`);
+  assert.ok(existsSync(new URL(`${g}-${a}${d}.png`,RT)),`Bogen fehlt: ${g}-${a}${d}.png`);
 });
 
 test('Laufzeit: die angemeldete Ausrüstung ergibt genau die Figurteile (Fernkampf blendet Handstücke aus)',()=>{
@@ -81,7 +87,7 @@ test('Söldner tragen Tönung und Kleidung ihrer Figur in der Renderer-Ansicht',
  const g=new Game(world,{level:6},{});g.rpg.coins=5000;g.toast=()=>{};
  for(const c of COMPANIONS.slice(0,2))assert.equal(g.hireCompanion(c.id).ok,true);
  for(let t=0;t<.5;t+=.05)g.tick(.05);
- for(const c of g.companions){const f=FIGUREN[c.id];assert.deepEqual(c.view.tint,f.tint,c.id);assert.deepEqual(c.view.visualEquipment.map(e=>e.id),f.gear,c.id);
+ for(const c of g.companions){const f=FIGUREN[c.id];assert.equal(c.view.paperdollId,'npc:'+c.id,c.id+': Körper aus der Figur');assert.deepEqual(c.view.tint,f.tint,c.id);assert.deepEqual(c.view.visualEquipment.map(e=>e.id),f.gear,c.id);
   for(const e of c.view.visualEquipment)if(FIGUR_HANDSTUECKE[e.id])assert.equal(e.slot,FIGUR_HANDSTUECKE[e.id].slot,e.id);}
 });
 

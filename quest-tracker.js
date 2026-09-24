@@ -75,6 +75,9 @@ export function trackerHtml(g,{metres,waypoint,room=4}={}){
 export function renderTracker(panel,g,opts){
  const body=panel?.querySelector('.qt-body');if(!body)return;
  // Ohne Scrollen: so viele weitere Aufträge, wie zwischen Verfolgung und Aktionsleiste passen (~44 px je Auftrag).
- const room=Math.max(1,Math.min(6,Math.floor((innerHeight-panel.getBoundingClientRect().top-230)/44)-1));
+ // Platz nach unten nur alle 1,5 s bzw. nach Größenänderung messen: getBoundingClientRect erzwingt direkt nach den HUD-Schreibvorgängen
+ // ein volles Layout (gemessen 1,6 ms je Aufruf, zehnmal pro Sekunde; auf dem Handy ein Mehrfaches).
+ const now=performance.now();if(!panel.roomAt||now-panel.roomAt>1500||panel.roomH!==innerHeight){panel.roomAt=now;panel.roomH=innerHeight;panel.room=Math.max(1,Math.min(6,Math.floor((innerHeight-panel.getBoundingClientRect().top-230)/44)-1));}
+ const room=panel.room;
  const html=trackerHtml(g,{...opts,room});if(body.dataset.sig===html)return;body.dataset.sig=html;body.innerHTML=html;
 }

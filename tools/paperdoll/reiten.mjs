@@ -14,10 +14,10 @@ import {createHash} from 'node:crypto';
 import {deflateSync} from 'node:zlib';
 import {fileURLToPath} from 'node:url';
 import {encodePng,decodePng,surface} from '../sprite-pipeline/png.mjs';
-import {renderRide,rideRider,rideMount,rideKey,rideSided,rideSources,MOUNT_IDS,MOUNT_INFO,MW,MH,MGROUND,BANDS,PAL,GEAR,LOOK,GAME_ARCH} from './puppe.mjs';
+import {renderRide,rideRider,rideMount,rideKey,rideSided,rideSources,MOUNT_IDS,MOUNT_INFO,MW,MH,MGROUND,BANDS,PAL,GEAR,LOOK,GAME_ARCH,W as TW,H as TH} from './puppe.mjs';
 import {composeCore,sources,useShade} from '../../paperdoll-kern.js';
 const here=fileURLToPath(new URL('.',import.meta.url));
-const TW=160,TH=216,FRAMES=9,PW=1024,PH=2048;
+const FRAMES=9,PW=1024,PH=2048;// TW×TH = Reiterkachel (Figurenleinwand aus puppe.mjs)
 /** Beispiel-Ausrüstung je Figur für Vorschauen. */
 export const REITER={ida:['dienstmuetze','kutte','jeans','kabelbinderstiefel','praktikantenausweis'],dieter:['regenjacke','jeans','festivalstiefel','bierbong'],kevin:['dachsdeckel','kutte','jeans','fuchspfote','gansorden']};
 const shadeTable=()=>{const shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in shade))shade[key]=v[k+1];}}return shade;};
