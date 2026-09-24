@@ -475,3 +475,4 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 .party-frames header.party-head .party-count{flex:1;color:#b9ad8a}
 .game-shell .party-frames header.party-head button{min-height:24px!important;padding:2px 8px!important;font:600 11px var(--read)!important;text-decoration:none}
 .player-panel.is-party-leader #playerName::before{content:'♛ ';color:#f3cf7a}
+.party-member .unit-status .unit-target{font-weight:700;color:#f0b0a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;max-width:100%}

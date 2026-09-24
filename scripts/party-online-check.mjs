@@ -54,6 +54,14 @@ try{
  await until(b,`g.netEnemy(${JSON.stringify(foe)})?.groupMark==='skull'`,4000,'Moni sieht den Totenkopf');ok('Zielmarkierung über das Zielrahmen-Menü erreicht den Mitspieler');
  await run(b,`const e=g.netEnemy(${JSON.stringify(foe)});Object.assign(g.player,g.world.findClear(e.x-40,e.y+30,9));`);await run(a,`const e=g.target;Object.assign(g.player,g.world.findClear(e.x-70,e.y+40,9));g.target=null;`);await wait(900);
  await shot(a,'mark-a');await shot(b,'mark-b');
+ // Runde 7: Assist – Moni visiert den Totenkopf an, Rudis Gruppenrahmen zeigt es, Rudi übernimmt ihr Ziel über das Menü am Rahmen
+ await run(b,`g.target=g.netEnemy(${JSON.stringify(foe)});`)
+ await until(a,`document.querySelector('[data-party-name=Moni] .unit-target')?.textContent.includes(g.netEnemy(${JSON.stringify(foe)}).name)`,5000,'Rahmen zeigt Monis Ziel');
+ await run(a,`g.target=null;const t=document.querySelector('[data-party-name=Moni]');const r=t.getBoundingClientRect();t.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+30,clientY:r.y+20}));`);
+ await until(a,`[...document.querySelectorAll('.context-menu button')].some(b=>b.textContent.startsWith('Ziel übernehmen'))`,3000,'Menüpunkt Ziel übernehmen');
+ await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent.startsWith('Ziel übernehmen')).click();`);
+ assert.equal(await run(a,`return g.target?.netId;`),foe,'Rudi hat Monis Ziel');ok('Assist: Gruppenrahmen zeigt das Ziel, „Ziel übernehmen“ wählt es');
+ await wait(400);await shot(a,'assist-a');if(process.env.CLIP_ASSIST){process.env.CLIP=process.env.CLIP_ASSIST;await shot(a,'assist-frame');delete process.env.CLIP;}
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

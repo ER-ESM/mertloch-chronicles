@@ -22,6 +22,7 @@ export const KEYBIND_ACTIONS=[
  {id:'interrupt',group:'combat',name:'Unterbrechen',keys:['KeyQ','']},
  {id:'aggro',group:'combat',name:'Aggro-Radius zeigen',keys:['KeyR','']},
  // Zielmarkierungen (target-marks.js): ohne Standardtaste, frei belegbar; dieselbe Taste noch einmal nimmt die Markierung weg.
+ {id:'assist',group:'combat',name:'Ziel übernehmen (Gruppe)',keys:['','']},
  {id:'markSkull',group:'combat',name:'Ziel: Totenkopf',keys:['','']},
  {id:'markCross',group:'combat',name:'Ziel: Kreuz',keys:['','']},
  {id:'markStar',group:'combat',name:'Ziel: Stern',keys:['','']},

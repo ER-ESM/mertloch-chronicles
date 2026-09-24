@@ -52,7 +52,7 @@ export function createSharedWorld({clients,send,now=Date.now,random=Math.random,
  }
 
  // ── Gruppen ──
- function partyWire(p){return {t:'party',leader:byId(p.leader)?.name||null,members:p.members.map(byId).filter(Boolean).map(o=>({n:o.name,c:o.c,l:o.l,sp:o.sp,h:o.h??100,w:o.world,x:Math.round(o.x),y:Math.round(o.y),s:o.s}))};}
+ function partyWire(p){return {t:'party',leader:byId(p.leader)?.name||null,members:p.members.map(byId).filter(Boolean).map(o=>({n:o.name,c:o.c,l:o.l,sp:o.sp,h:o.h??100,w:o.world,x:Math.round(o.x),y:Math.round(o.y),s:o.s,...(o.tg?{tg:o.tg}:{})}))};}
  function partyPush(p){const wire=partyWire(p);for(const id of p.members){const o=byId(id);if(o)send(o,wire);}}
  function partySay(p,text){for(const id of p.members){const o=byId(id);if(o)notice(o,text);}}
  function leave(c,reason='left'){
