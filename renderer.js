@@ -93,10 +93,10 @@ const FURNITURE=['bench','cart','lantern'];
 /** Treffer-Blitz (Hades/Diablo-Vorbild): solange ein Gegner getroffen ist (e.hurt, 0,15 s), wird er einmal in eine kleine Ebene gezeichnet,
  *  hell übertüncht und mit leichtem Rückstoß vom Helden weg eingesetzt. Sonst zeichnet `draw` direkt – ohne Mehrkosten. */
 let flashLayer=null;
-function hitFlash(c,e,from,draw){const k=Math.min(1,(e.hurt||0)/.15);if(!(k>0)||typeof document==='undefined'||typeof c.getTransform!=='function'){draw(c);return;}
+function hitFlash(c,e,from,draw,tint='255,246,228',strength=1){const k=Math.min(1,(e.hurt||0)/.15);if(!(k>0)||typeof document==='undefined'||typeof c.getTransform!=='function'){draw(c);return;}
  const S=128,ax=64,ay=108,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=flashLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
  const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=false;f.setTransform(d,0,0,d,(ax-e.x)*d,(ay-e.y)*d);draw(f);
- f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-atop';f.fillStyle=`rgba(255,246,228,${(.35+.55*k).toFixed(2)})`;f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';
+ f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-atop';f.fillStyle=`rgba(${tint},${((.35+.55*k)*strength).toFixed(2)})`;f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';
  const dx=e.x-(from?.x??e.x),dy=e.y-(from?.y??e.y),n=Math.hypot(dx,dy)||1,push=Math.sin(k*Math.PI)*2.5;c.drawImage(L,e.x-ax+dx/n*push,e.y-ay+dy/n*push*.5,S,S);}
 /** Auftragszeichen über einer Figur wie in den großen Rollenspielen: goldenes „!“ (neu) bzw. „?“ (abgeben) mit dunkler Kontur
  *  und warmem, atmendem Schein, ohne Kasten; „…“ (läuft noch) grau und ohne Schein. `framed` (Story) ist größer und leuchtet stärker.
@@ -233,7 +233,7 @@ export class Renderer {
       else if(item.type==='mountStation'){for(const [i,id]of ['klappermofa','blechroller','hofpferd'].entries())drawMount(c,e.x+(i-1)*33,e.y-12,{mount:id,direction:'se'},time,.85,false);label(c,MOUNT_UI.station,e.x,e.y-54,'#f0d293',8);if(distance(p,e)<90)label(c,'F · '+MOUNT_UI.open,e.x,e.y+13,'#f0d293',7);}
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
-      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;const heroArgs=[p.x,p.y-(g.stairLift?.()||0),time,{...p,classId:p.look||p.classId,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'}];drawHero(c,...heroArgs,false,PERSON_SCALE);heroGhost=cc=>drawHero(cc,...heroArgs,false,PERSON_SCALE);}
+      else if(item.type==='player'){if(p.invulnerable>0)c.globalAlpha=.55;const heroArgs=[p.x,p.y-(g.stairLift?.()||0),time,{...p,classId:p.look||p.classId,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'}];/* eigener Treffer: kurz rot (Hades) */if(p.hurt>0&&!g.dead&&!p.mount)hitFlash(c,p,null,cc=>drawHero(cc,...heroArgs,false,PERSON_SCALE),'230,40,30',.7);else drawHero(c,...heroArgs,false,PERSON_SCALE);heroGhost=cc=>drawHero(cc,...heroArgs,false,PERSON_SCALE);}
       else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,PERSON_SCALE);const named=nearestSpeaker(g,e);if(named)label(c,w.npc.name,e.x,e.y-34,NPC_NAME,8);if(!g.quest.actDone){const ready=g.questReady(),busy=g.quest.accepted&&!ready;questBadge(c,e.x,e.y-(named?45:36),ready?'?':busy?'…':'!',!busy,time);}}
       // Mentoren an der Bude tragen dieselbe Figurengrafik wie der Held (classId aus clan.js).
       else if(item.type==='mentor'){// Mentoren in ihrer Tracht aus der Sprite-Schmiede (E-58); ohne Bogen der alte Heldenkörper.
