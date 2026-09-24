@@ -35,3 +35,12 @@ test('Gruppe über fünf Köpfen: alle rechnen gleich, der alphabetisch letzte B
  assert.equal(companionSlots({partyHumans:1,partyCompanions:3,companions:[]}),0,'Anheuern zählt fremde Söldner mit');
  assert.equal(companionSlots({partyHumans:1,partyCompanions:1,companions:[{}]}),1);
 });
+
+test('Kampfpose reist mit: Schlag/Zauber/Fernkampf für Helden und Söldner',async()=>{
+ const {applySnapshot,poseCode}=await import('../online.js');
+ assert.equal(poseCode({attack:.1}),1);assert.equal(poseCode({castPose:.2}),2);assert.equal(poseCode({}),undefined);
+ const [o]=applySnapshot([],[{n:'Moni',x:0,y:0,a:1,r:1}],0);assert.equal(o.attack,.2);assert.equal(o.usingRanged,true);assert.equal(o.castPose,0);
+ const [w]=companionWire({companions:[{def:{id:'merc-radler-rita'},x:0,y:0,facing:1,state:'combat',hp:1,maxHp:1,level:3,castPose:.2,usingRanged:true}]});assert.equal(w.a,2);assert.equal(w.r,1);
+ assert.equal(cleanCompanionWire([{...w}])[0].a,2);assert.equal(cleanCompanionWire([{...w,a:9}])[0].a,undefined);
+ const [v]=remoteCompanionViews([w],[],{name:'Rudi',party:true},0);assert.equal(v.castPose,.2);assert.equal(v.usingRanged,true);
+});
