@@ -49,7 +49,10 @@ export function drawBelag(c,room,origin){
  }
 }
 /** Flach liegende Teile (Bodendeko): unter allen Figuren, keine Höhe. */
-export function drawDecal(c,it){
+export function drawDecal(c,it){drawDecalBody(c,it);if(it.sprite==='pfuetze')glint(c,it);}
+/** Wasserglanz auf Pfützen: zwei helle Striche, die langsam über die Fläche wandern und atmen. */
+function glint(c,it){const t=clock()*.6+seedOf(it),a=c.globalAlpha,k=.5+.5*Math.sin(t*2.1);c.globalAlpha=a*(.35+.4*k);c.fillStyle='#e8f6ff';const w=Math.max(2,it.w*.28),x=it.minX+it.w*(.2+.5*((t*.15)%1)),y=it.minY+it.h*.35;c.fillRect(x,y,w,.8);c.globalAlpha=a*(.25+.3*(1-k));c.fillRect(it.minX+it.w*.55,it.minY+it.h*.62,w*.6,.7);c.globalAlpha=a;}
+function drawDecalBody(c,it){
  const s=sprite(it.sprite);
  if(s){const [sx,sy,sw,sh]=frameOf(s,seedOf(it));// Längs gezeichnete Bodendeko darf quer liegen: dann um 90° gedreht statt verzerrt.
   if((it.w>it.h)!==(sw>sh)&&Math.abs(it.w-it.h)>2){c.save();c.translate(it.x,it.y);c.rotate(Math.PI/2);c.drawImage(s.img,sx,sy,sw,sh,-it.h/2,-it.w/2,it.h,it.w);c.restore();return;}
