@@ -245,6 +245,8 @@ export class Renderer {
     hideLabels=false;
     // Held hinter der Bude (Dach/Fassade verdecken ihn): heller Umriss durch den Verdecker, wie in Stardew/Diablo.
     if(heroGhost&&house&&houseFade<.9&&!insideHouse(house,p.x,p.y)&&p.x>house.minX-10&&p.x<house.maxX+10&&p.y<house.maxY-2&&p.y>house.minY-house.heights.wall-house.heights.roof)ghost(c,p,heroGhost);
+    // …und drinnen hinter einer Rückwand: die Front einer waagerechten Wand südlich des Helden reicht über seine Figur.
+    else if(heroGhost&&house&&houseFade>.5&&insideHouse(house,p.x,p.y)&&houseLevel(house,level).walls.some(wl=>wl.face>12&&p.x>wl.minX-6&&p.x<wl.maxX+6&&wl.maxY>p.y+1&&wl.maxY-wl.face<p.y+2))ghost(c,p,heroGhost);
     // Lichterketten über dem Hof hängen über allen Figuren.
     if(houseSeen&&!g.floor)drawGarlands(c,house,time);
     // Räume erkennen (E-52): drinnen steht der eigene Raumname in Gold oben im Raum; andere Räume nennen ihren Namen erst,
