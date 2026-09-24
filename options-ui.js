@@ -23,10 +23,12 @@ export function mountOptions(api){
  const say=t=>{state.note=t;const n=document.querySelector('.opt-note');if(n)n.textContent=t;};
  const S=()=>api.game().settings;
  const toggle=r=>{const on=settingOn(S(),r.setting);
-  return `<button type="button" class="opt-switch" data-setting-toggle="${r.setting}" aria-pressed="${on}" aria-label="${esc(r.label)}"><span class="setting-switch" aria-hidden="true"><i></i></span><span class="setting-state">${on?T.on:T.off}</span></button>`;};
+  return `<button type="button" class="opt-switch" data-setting-toggle="${r.setting}" aria-pressed="${on}"${r.parent&&!settingOn(S(),r.parent)?" disabled":""} aria-label="${esc(r.label)}"><span class="setting-switch" aria-hidden="true"><i></i></span><span class="setting-state">${on?T.on:T.off}</span></button>`;};
  const range=r=>{const v=api.prefs()[r.pref];return `<span class="opt-range"><input type="range" min="${r.min}" max="${r.max}" step="${r.step}" value="${v}" data-opt-pref="${r.pref}" aria-label="${esc(r.label)}"><output>${v}${esc(r.unit||'')}</output></span>`;};
  const open=(label,attrs)=>`<button type="button" class="outline-button opt-open" ${attrs}>${esc(label||T.open)}</button>`;
- const row=(label,hint,control)=>`<div class="opt-row"><span class="opt-label">${esc(label)}${hint?`<small>${esc(hint)}</small>`:''}</span><span class="opt-control">${control}</span></div>`;
+ /** Erklärung als Tooltip an der ganzen Zeile (WoW-Optionen, Regel „Tooltips statt Text“); nur auf Touch bleibt sie als Zeile sichtbar. */
+ const tip=(label,hint)=>hint?` data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(hint)}"`:'';
+ const row=(label,hint,control,cls="")=>`<div class="opt-row${cls?" "+cls:""}"${tip(label,hint)}><span class="opt-label">${esc(label)}${hint?`<small>${esc(hint)}</small>`:''}</span><span class="opt-control">${control}</span></div>`;
  function slot(id){
   if(id==='bars')return `<div class="opt-row opt-wide">${api.extras.bars()}</div>`;
   if(id==='meter')return row(T.meter,T.meterHint,open(T.open,'data-meter-open'));
@@ -41,13 +43,13 @@ export function mountOptions(api){
   return '';
  }
  const prefSwitch=r=>{const on=api.prefs()[r.pref]!==false;return `<button type="button" class="opt-switch" data-opt-toggle="${r.pref}" aria-pressed="${on}" aria-label="${esc(r.label)}"><span class="setting-switch" aria-hidden="true"><i></i></span><span class="setting-state">${on?T.on:T.off}</span></button>`;};
- const rowHtml=r=>r.slot?slot(r.slot):r.setting?row(r.label,r.hint,toggle(r)):r.pref?row(r.label,r.hint,r.kind==='switch'?prefSwitch(r):range(r)):'';
+ const rowHtml=r=>r.slot?slot(r.slot):r.setting?row(r.label,r.hint,toggle(r),r.parent?'opt-sub'+(settingOn(S(),r.parent)?'':' is-off'):''):r.pref?row(r.label,r.hint,r.kind==='switch'?prefSwitch(r):range(r)):'';
  /** Tastenknopf einer Aktion bzw. eines Leistenplatzes; im Erfassungsmodus „Neue Taste drücken …“. */
  const keyButton=(attrs,binding,capturing,fixed)=>`<button type="button" class="opt-key${capturing?' is-capturing':''}${binding?'':' is-empty'}" ${attrs}${fixed?' disabled':''}>${capturing?esc(K.capture):binding?esc(bindingLabel(binding,true)):esc(K.none)}</button>`;
  function keysHtml(){
   const g=api.game(),map=liveKeymap(),f=state.filter.trim().toLowerCase(),hit=n=>!f||n.toLowerCase().includes(f),cap=state.capture;
   const groups=KEYBIND_GROUPS.map(gr=>{const rows=KEYBIND_ACTIONS.filter(a=>a.group===gr.id&&hit(a.name)).map(a=>{const k=keysOf(map,a.id);
-   return `<div class="opt-keyrow"><span class="opt-label">${esc(a.name)}${a.fixed?`<small>${esc(K.fixedNote)}</small>`:''}</span>${[0,1].map(i=>keyButton(`data-opt-key="${a.id}:${i}"`,k[i],cap?.id===a.id&&cap.slot===i,a.fixed)).join('')}</div>`;}).join('');
+   return `<div class="opt-keyrow"${a.fixed?tip(a.name,K.fixedNote):''}><span class="opt-label">${esc(a.name)}${a.fixed?`<small>${esc(K.fixedNote)}</small>`:''}</span>${[0,1].map(i=>keyButton(`data-opt-key="${a.id}:${i}"`,k[i],cap?.id===a.id&&cap.slot===i,a.fixed)).join('')}</div>`;}).join('');
    return rows?`<section class="opt-section"><h4>${esc(gr.name)}</h4>${rows}</section>`:'';}).join('');
   const bars=Math.max(1,Math.min(MAX_BARS,g.rpg?.barCount||1)),barRows=[];
   for(let i=0;i<bars*BAR_SIZE;i++){const name=K.barSlot(Math.floor(i/BAR_SIZE)+1,i%BAR_SIZE+1);if(!hit(name)&&!hit(K.bars))continue;barRows.push(`<div class="opt-keyrow"><span class="opt-label">${esc(name)}</span>${keyButton(`data-opt-bar="${i}"`,bindingAt(g.rpg,i),cap?.bar===i)}<span class="opt-key-pad" aria-hidden="true"></span></div>`);}

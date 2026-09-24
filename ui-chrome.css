@@ -402,10 +402,15 @@ body:has(.player-panel.is-low-health) .game-shell::after{opacity:.55;animation:l
 .opt-row:hover{background:#ffffff08}
 .opt-label{display:flex;flex-direction:column;gap:2px;color:#f1e4c4;font:600 14px/1.25 var(--read)}
 .opt-label small{font:400 12px/1.3 var(--read);color:#a9a58f}
+body:not(.touch-mode) .opt-label small{display:none}
+.opt-row.opt-sub{min-height:36px;margin-left:18px;padding-left:14px;border-left:2px solid #d7b57133;border-radius:0 3px 3px 0}
+.opt-sub .opt-label{font-weight:500;color:#d9cfae}
+.opt-sub.is-off{opacity:.45}.opt-sub.is-off .opt-switch{cursor:not-allowed}
+.opt-row[data-tooltip-note]:hover,.opt-keyrow[data-tooltip-note]:hover{background:#ffffff0d}
 .opt-control{flex:none;display:flex;align-items:center;gap:8px}
 .opt-switch{display:flex;align-items:center;gap:8px;min-height:36px;padding:2px 4px;background:none!important;border:0!important;box-shadow:none!important;color:#d9cfae;cursor:pointer}
 .opt-switch[aria-pressed=true] .setting-switch{background:#3f6b36;border-color:#d7b571}.opt-switch[aria-pressed=true] .setting-switch i{transform:translateX(18px);background:#ffe3a3}
-.opt-switch .setting-state{min-width:24px;font:700 12px var(--read);color:#c9bfa2}
+.opt-switch .setting-state{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .opt-range{display:flex;align-items:center;gap:10px}
 .opt-range input[type=range]{width:180px;accent-color:#e0c070}
 .opt-range output{min-width:48px;text-align:right;font:700 13px var(--read);color:#f3cf7a}
