@@ -8,7 +8,7 @@ Teil B (Handy, Aufträge-Leerfläche, Tastenbelegung, Kartenseitenleiste, `hero-
 
 - **Prüfskript:** `node scripts/optimierung-r5a-check.mjs` mit 23 Prüfungen, echter Maus und Tastatur (CDP 9550, Server 4350; `CDP_PORT`/`SERVER_PORT`, `ONLY=1,…`). Bilder liegen in `visual-review/optimierung-r5a/` (lokal).
 - **Unit-Tests:** `tests/optimierung-r5a.test.mjs` (10 Tests).
-- **Live:** Build #543 (d8b2e82).
+- **Live:** Build #543 (d8b2e82), Nachtrag Handy-Tod und Bericht Build #544 (7c67124).
 
 ## Neue Bausteine
 
