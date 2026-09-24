@@ -496,3 +496,4 @@ html.hide-tracker #gameShell>.quest-panel,html.hide-minimap #gameShell>#miniButt
 .roll-card>.roll-item canvas{width:48px;height:48px;image-rendering:pixelated;display:block}
 .roll-card>.roll-item.rarity-rare{border-color:#4f8fe0;box-shadow:0 0 8px #4f8fe066}.roll-card>.roll-item.rarity-epic{border-color:#a45ce0;box-shadow:0 0 8px #a45ce066}
 .roll-card>header,.roll-card>.roll-actions,.roll-card>.roll-picks{grid-column:2}
+.party-member.out-of-range .unit-select{opacity:.5;filter:saturate(.6)}.party-member.out-of-range .party-pets{opacity:.5}

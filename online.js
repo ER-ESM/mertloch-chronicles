@@ -11,7 +11,7 @@ import {partyMemberFrame,paintUnitPortraits} from './unit-frame.js';
 import {createNetWorld} from './net-world.js';
 import {companionCommand,companionWire,remoteCompanionViews} from './companions.js';
 import {createNetParty,mountRollUi} from './net-party.js';
-import {createNetSocial,mountTradeUi,SOCIAL_UI} from './net-social.js';
+import {createNetSocial,mountTradeUi,SOCIAL_UI,SOCIAL_RANGE} from './net-social.js';
 import {RARITIES,TARGET_MARK_UI} from './content/index.js';
 import {applyNetMark,markDef} from './target-marks.js';
 import {createReadyCheck} from './party-ready.js';
@@ -149,7 +149,7 @@ export function mountOnline(host){
   else if(m.t==='you'){state.netName=m.name;}
   else if(m.t==='welcome'){state.netName=m.name;for(const h of m.history||[])pushChat(h);pushChat({system:true,text:ONLINE_UI.welcome.replace('{n}',m.online)});}
   else if(net.receive(m)||play.receive(m)||mate.receive(m)){}
-  else if(m.t==='tradeask')host.openModal('<div class="online-card"><h3>'+esc(SOCIAL_UI.askTitle)+'</h3><p>'+esc(SOCIAL_UI.askText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="trade-accept">'+esc(SOCIAL_UI.accept)+'</button><button type="button" class="outline-button" data-online="trade-decline">'+esc(SOCIAL_UI.decline)+'</button></div></div>',false,'touchhelp');
+  else if(m.t==='tradeask')host.openModal('<div class="online-card" data-ui-window-title="'+esc(SOCIAL_UI.askTitle)+'"><p>'+esc(SOCIAL_UI.askText.replace('{n}',m.from))+'</p><div class="online-actions"><button type="button" class="gold-button" data-online="trade-accept">'+esc(SOCIAL_UI.accept)+'</button><button type="button" class="outline-button" data-online="trade-decline">'+esc(SOCIAL_UI.decline)+'</button></div></div>',false,'touchhelp');
   else if(m.t==='party')setParty(m);
   else if(m.t==='ready'){ready.receive(m);renderParty();}
   else if(m.t==='mark'){const e=applyNetMark(g(),m.e,m.m);if(e)pushChat({system:true,text:m.m?TARGET_MARK_UI.set(m.from,markDef(m.m).name,e.name):TARGET_MARK_UI.cleared(m.from,e.name)});}
@@ -197,7 +197,7 @@ export function mountOnline(host){
   if(!list.length)return;
   const heads=1+list.length+(g()?.companions?.length||0)+(g()?.others||[]).filter(o=>o.party).reduce((n,o)=>n+(o.companions?.length||0),0);
   // Kopfleiste wie „Deine Truppe“: Gruppe, Köpfe (Menschen + Söldner) von fünf, Verlassen als kleiner Knopf mit Tooltip.
-  const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive,targetName:x.tg?(g()?.netEnemy?.(x.tg)?.hp>0?g().netEnemy(x.tg).name:''):'',ready:ready.status(x.n),pets:(g()?.others||[]).find(o=>o.name===x.n)?.companions||[]})).join('');
+  const html='<header class="party-head"><b>'+esc(ONLINE_UI.party)+'</b><small class="party-count">'+heads+'/5</small><button type="button" data-party-leave aria-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-label="'+esc(ONLINE_UI.leaveParty)+'" data-tooltip-note="">'+esc(ONLINE_UI.leaveShort)+'</button></header>'+list.map(x=>partyMemberFrame(x,{world:host.roomKey||host.worldKey,leader:state.party.leader,selected:mate.selected(),targetHint:ONLINE_UI.targetHint,revive:ONLINE_UI.revive,targetName:x.tg?(g()?.netEnemy?.(x.tg)?.hp>0?g().netEnemy(x.tg).name:''):'',ready:ready.status(x.n),pets:(g()?.others||[]).find(o=>o.name===x.n)?.companions||[],outOfRange:!!g()?.player&&Math.hypot((x.x??0)-g().player.x,(x.y??0)-g().player.y)>SOCIAL_RANGE.aid})).join('');
   if(html!==state.partyHtml){
    const focus=document.activeElement,name=focus?.closest('[data-party-name]')?.dataset.partyName,action=focus?.hasAttribute('data-party-revive')?'[data-party-revive]':'[data-party-select]';
    state.partyHtml=html;el.innerHTML=html;paintUnitPortraits(el);

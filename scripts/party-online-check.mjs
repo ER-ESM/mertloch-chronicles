@@ -98,6 +98,11 @@ try{
  await run(a,`[...document.querySelectorAll('.context-menu button')].find(b=>b.textContent==='Zum Anführer machen').click();`);
  await until(b,`on.social.isLeader()&&document.querySelector('.player-panel.is-party-leader')`,4000,'Moni führt, Krone am eigenen Rahmen');
  await until(a,`on.state.party.leader==='Moni'&&!document.querySelector('.player-panel.is-party-leader')&&document.querySelector('[data-party-name=Moni] .party-name').textContent.startsWith('♛')`,4000,'Rudi sieht Moni als Anführerin');ok('Anführer übertragen: Krone wandert, Rechte wechseln');
+ // Runde 16: Mitglied außer Reichweite wird im Rahmen blass; zurück in Reichweite wieder voll
+ await run(b,`Object.assign(g.player,g.world.findClear(g.player.x+700,g.player.y,9));`);
+ await until(a,`document.querySelector('[data-party-name=Moni].out-of-range')`,5000,'Moni blass außer Reichweite');
+ await run(b,`const p=g.others.find(o=>o.name==='Rudi');Object.assign(g.player,g.world.findClear(p.x+40,p.y,9));`);
+ await until(a,`document.querySelector('[data-party-name=Moni]:not(.out-of-range)')`,5000,'Moni wieder in Reichweite');ok('Rahmen zeigt, wer außer Reichweite ist');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}
