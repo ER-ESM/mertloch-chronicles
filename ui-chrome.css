@@ -374,3 +374,10 @@ body:has(.player-panel.is-low-health) .game-shell::after{opacity:.55;animation:l
 @keyframes zone-splash{0%{opacity:0;transform:translate(-50%,6px)}12%{opacity:1;transform:translate(-50%,0)}75%{opacity:1}100%{opacity:0}}
 .touch-mode #zoneSplash b{font-size:30px}
 @media (prefers-reduced-motion:reduce){#zoneSplash.show{animation-duration:2s}}
+/* Neu angelegt (app.js equipFlash): Platz blitzt auf, ein Ring in Qualitätsfarbe läuft nach außen. */
+.game-popup .gear-cell.gear-new{position:relative;animation:gear-new-pop .6s ease-out}
+.game-popup .gear-cell.gear-new::after{content:'';position:absolute;inset:-3px;border:3px solid #ffe08a;border-radius:6px;pointer-events:none;animation:gear-new-ring .9s ease-out forwards}
+.game-popup .gear-cell.gear-new:has(.uncommon)::after{border-color:#5fd35a}.game-popup .gear-cell.gear-new:has(.rare)::after{border-color:#4fa0ff}.game-popup .gear-cell.gear-new:has(.epic)::after{border-color:#c77dff}
+@keyframes gear-new-pop{0%{filter:brightness(2)}100%{filter:none}}
+@keyframes gear-new-ring{0%{opacity:1;transform:scale(.92)}100%{opacity:0;transform:scale(1.35)}}
+@media (prefers-reduced-motion:reduce){.game-popup .gear-cell.gear-new,.game-popup .gear-cell.gear-new::after{animation:none}}
