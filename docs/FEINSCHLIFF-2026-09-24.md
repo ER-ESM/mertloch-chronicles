@@ -44,26 +44,26 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 | 32 | Bude | Pfandlager mit Bodendeko | `content/bude-house.js` |
 | 33 | Persona 2 | Leichen 6 s, Held hinter der Bude als heller Umriss, Schilder über dem Helden 60 % | `renderer.js` (`ghost`, `CORPSE_TIME`) |
 | 34 | Clanbuch | Auswahlfelder im Spielstil, Kniff-Namen zweizeilig, `icon-fit` ohne Canvas-Warnungen | `ui-chrome.css`, `icon-fit.js` |
-| 35 | Kamera | Grundzoom am Desktop 2,6 statt 2 (Entscheidung) |  () |
-| 36 | Bude | Rückwände mit Tapete je Raum (Damast, Lilien, Backstein, Fliesen, Bretter, Streifen), Vertäfelung, Zierleiste, abgerissene Stellen; Wandfront 28 E (Entscheidung) |  (),  (),  (),  |
-| 37 | Bude | Held hinter einer Rückwand als Umriss |  |
-| 38 | Karte | Handgemalt im Code: Muster für Wiese/Acker/Wald/Dorf, Dächer mit First und Schatten, Baumkronen, Wasser mit Ufer, Erdwege (Entscheidung) |  (, ) |
-| 39 | Talente | Vor Stufe 5 ausgegraute Vorschau mit Hinweis, Reiter mit Schloss (Entscheidung) |  (),  |
-| 40 | HUD | Sonderaktionen und Autoangriff als Ablage an der Leiste |  |
-| 41 | Bude | Möbel mit feinem Umriss, Innenraum heller |  () |
-| 42 | Bude | Seitenwände mit Mauerwerk-Krone (Entscheidung) |  |
-| 43 | Bude | Wandschmuck mit Umriss |  |
-| 44 | Mobil | Abstand zur Bildschirmecke, Touch-Abstände ≥ 8 px, große Auswahlfelder/Häkchen – mobile-check 1 statt 3 Problemschritte | , ,  |
-| 45 | Welt | Namen freundlicher Figuren kräftig grün-gelb, dickere Kontur |  () |
-| 46 | Kampf | Beute fliegt sichtbar zum Helden (auch Auto-Loot) |  (),  |
-| 47 | Tooltips | Symbol 36 px im Messing-/Qualitätsrahmen |  |
-| 48 | HUD | Abklingzeit vorbei: Aufblitzen + goldener Ring |  (),  |
-| 49 | Kampf | Eigener Schaden steigt über dem Ziel auf, oberhalb des Namensschilds |  |
-| 50 | Karte | Beschriftung als Tinte, Ziegelreihen; Häkchen im Spielstil | ,  |
-| 51 | HUD | Meldungen unter der Rahmenzeile, geschlossene Kontur |  |
-| 52 | Bude | Pfützen mit Wasserglanz |  |
-| 53 | Welt | Held hinter Baumkronen als Umriss |  |
-| 54 | Gespräch | Porträt 128 px |  |
+| 35 | Kamera | Grundzoom am Desktop 2,6 statt 2 (Entscheidung) | `renderer.js` (`DESKTOP_ZOOM`) |
+| 36 | Bude | Rückwände mit Tapete je Raum (Damast, Lilien, Backstein, Fliesen, Bretter, Streifen), Vertäfelung, Zierleiste, abgerissene Stellen; Wandfront 28 E (Entscheidung) | `content/bude-house.js` (`rooms[].paper`), `world-house.js` (`papers`), `kit-art.js` (`drawPaper`), `content/sprite-kit.js` |
+| 37 | Bude | Held hinter einer Rückwand als Umriss | `renderer.js` (`ghost`) |
+| 38 | Karte | Handgemalt im Code: Muster für Wiese/Acker/Wald/Dorf, Dächer mit First und Schatten, Baumkronen, Wasser mit Ufer, Erdwege (Entscheidung) | `cartography.js` (`mapPattern`, `drawRoof`) |
+| 39 | Talente | Vor Stufe 5 ausgegraute Vorschau mit Hinweis, Reiter mit Schloss (Entscheidung) | `app.js` (`showTalents`), `ui-chrome.css` |
+| 40 | HUD | Sonderaktionen und Autoangriff als Ablage an der Leiste | `ui-chrome.css` |
+| 41 | Bude | Möbel mit feinem Umriss, Innenraum heller | `kit-art.js` (`outlined`), `content/lighting.js` |
+| 42 | Bude | Seitenwände mit Mauerwerk-Krone (Entscheidung) | `kit-art.js` |
+| 43 | Bude | Wandschmuck mit Umriss | `kit-art.js` |
+| 44 | Mobil | Abstand zur Bildschirmecke, Touch-Abstände ≥ 8 px, große Auswahlfelder/Häkchen – mobile-check 1 statt 3 Problemschritte | `talent-tree.css`, `popup-windows.js`, `ui-chrome.css` |
+| 45 | Welt | Namen freundlicher Figuren kräftig grün-gelb, dickere Kontur | `renderer.js` (`NPC_NAME`) |
+| 46 | Kampf | Beute fliegt sichtbar zum Helden (auch Auto-Loot) | `renderer.js` (`lootFly`), `app.js` |
+| 47 | Tooltips | Symbol 36 px im Messing-/Qualitätsrahmen | `ui-chrome.css` |
+| 48 | HUD | Abklingzeit vorbei: Aufblitzen + goldener Ring | `app.js` (`cd-done`), `ui-chrome.css` |
+| 49 | Kampf | Eigener Schaden steigt über dem Ziel auf, oberhalb des Namensschilds | `combat-text.js` |
+| 50 | Karte | Beschriftung als Tinte, Ziegelreihen; Häkchen im Spielstil | `cartography.js`, `ui-chrome.css` |
+| 51 | HUD | Meldungen unter der Rahmenzeile, geschlossene Kontur | `ui-chrome.css` |
+| 52 | Bude | Pfützen mit Wasserglanz | `kit-art.js` (`glint`) |
+| 53 | Welt | Held hinter Baumkronen als Umriss | `renderer.js` |
+| 54 | Gespräch | Porträt 128 px | `ui-chrome.css` |
 
 ## Werkzeuge
 
