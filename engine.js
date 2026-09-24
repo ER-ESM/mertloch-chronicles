@@ -82,7 +82,7 @@ export class Game{
     this.classBuffs=restoreClassBuffs(saved.classBuffs);
     this.quest=restoreQuest(saved.quest||{},saved.worldKey===world.id);
     // Spieleinstellungen. Auto-Loot ist der Standard; die UI schaltet ihn über setSetting('autoLoot', …) ab.
-    this.settings={autoLoot:saved.settings?.autoLoot!==false,prerender:saved.settings?.prerender===true,sct:saved.settings?.sct!==false,light:saved.settings?.light!==false,fx:saved.settings?.fx!==false,fps:saved.settings?.fps===true,fullRes:saved.settings?.fullRes===true,autoRes:saved.settings?.autoRes!==false};
+    this.settings={autoLoot:saved.settings?.autoLoot!==false,prerender:saved.settings?.prerender===true,sct:saved.settings?.sct!==false,light:saved.settings?.light!==false,fx:saved.settings?.fx!==false,fps:saved.settings?.fps===true,fullRes:saved.settings?.fullRes===true,autoRes:saved.settings?.autoRes!==false,namesFriendly:saved.settings?.namesFriendly!==false,namesEnemy:saved.settings?.namesEnemy!==false,namesPlayers:saved.settings?.namesPlayers!==false};
     this.memories={seen:Array.isArray(saved.memories?.seen)?saved.memories.seen.filter(id=>typeof id==='string'):[]};
     this.buildings=Object.fromEntries(BUILDING_IDS.map(id=>[id,clampInt(saved.buildings?.[id],0,BUILDINGS[id].stages.length,0)]).filter(([,stage])=>stage>0));
     this.mentorTalks=saved.mentorTalks&&typeof saved.mentorTalks==='object'?Object.fromEntries(Object.entries(saved.mentorTalks).map(([id,n])=>[id,clampInt(n,0,1e6,0)])):{};

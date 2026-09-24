@@ -20,6 +20,10 @@ export const OPTIONS_UI={
    {title:'Darstellung',rows:[
     {pref:'uiScale',label:'UI-Skalierung',kind:'range',min:80,max:130,step:5,unit:' %',hint:'Größe von Leisten, Rahmen und Fenstern.'},
     {setting:'fps',label:'FPS-Anzeige',hint:'Bilder pro Sekunde oben links.'}]},
+   {title:'Namen',rows:[
+    {setting:'namesFriendly',label:'Freundliche Figuren',hint:'Namen von Dorfbewohnern, Händlern und Auftraggebern.'},
+    {setting:'namesEnemy',label:'Gegner',hint:'Namen über Gegnern in der Nähe; das Ziel zeigt seinen Namen immer.'},
+    {setting:'namesPlayers',label:'Andere Spieler',hint:'Namen und Stufe anderer Helden (online).'}]},
    {title:'Leisten & Anzeigen',rows:[{slot:'bars'},{slot:'meter'},{slot:'hud'}]}
   ],
   graphics:[
@@ -56,4 +60,4 @@ export const OPTIONS_UI={
 /** Standardwerte der kontoweiten Einstellungen (options-ui.js). */
 export const OPTIONS_DEFAULTS={uiScale:100,volume:0};
 /** Standard der Spielschalter (game.settings) für „Standard“ je Kategorie. */
-export const SETTING_DEFAULTS={autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false};
+export const SETTING_DEFAULTS={namesFriendly:true,namesEnemy:true,namesPlayers:true,autoLoot:true,sct:true,light:true,fx:true,autoRes:true,fullRes:false,fps:false};
