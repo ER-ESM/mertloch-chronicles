@@ -58,7 +58,7 @@ try{
  // 7 Konflikt: Taste 1 auf Leiste 2, Platz 5 – Platz 1 von Leiste 1 verliert sie.
  await hoverBind(14,()=>key('Digit1','1',49));
  assert.equal(await read(`game.rpg.barKeys[14]`),'Digit1');assert.equal(await read(`game.rpg.barKeys[0]`),'');assert.equal(await keyOf(0),'');
- const toast=await read(`[...document.querySelectorAll('.toast,#toast,[class*=toast]')].map(t=>t.textContent).join(' | ')`);assert.match(toast,/lag vorher auf Leiste 1 · Platz 1/,'Hinweis auf gelöste Belegung: '+toast);
+ /* Runde 2b: Kurzmeldungen laufen nacheinander (toast-queue.js) – die Meldung kann kurz hinter der vorigen warten */let toast='';for(let i=0;i<30&&!/lag vorher/.test(toast);i++){toast=await read(`[...document.querySelectorAll('.toast,#toast,[class*=toast]')].map(t=>t.textContent).join(' | ')`);if(!/lag vorher/.test(toast))await wait(100);}assert.match(toast,/lag vorher auf Leiste 1 · Platz 1/,'Hinweis auf gelöste Belegung: '+toast);
  await shot('07-konflikt');checks.push('conflict: binding 1 to bar 2 slot 5 clears it from bar 1 slot 1 with a hint');
  // 8 Gesperrte Taste (W) bleibt im Belegungsmodus mit Grund, Esc bricht ab.
  await hoverBind(16,async()=>{await key('KeyW','w',87);});assert.equal(await read(`!document.querySelector('.bind-capture').hidden&&/fest vergeben/.test(document.querySelector('.bind-capture').textContent)`),true);

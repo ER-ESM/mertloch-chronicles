@@ -122,7 +122,7 @@ HOTSPOTS.push(
   ]},
  {id:'bude-nyalol',name:'Nyalols Raidzentrale',anchor:'bude:nyalol',givers:['nyalol'],level:1,
   quests:[
-   {id:'st-nyalol-1',title:'Daily: Kabelsalat',minLevel:1,objective:{kind:'drop',species:'badger',item:'lankabel',chance:.5,count:5},
+   {id:'st-nyalol-1',title:'Kabelsalat',daily:true,/* täglich: Kalendersymbol statt „Daily:“ (daily-mark.js) */minLevel:1,objective:{kind:'drop',species:'badger',item:'lankabel',chance:.5,count:5},
     text:'Die Pfanddachse haben das LAN-Kabel zur Bude ausgegraben und in Stücke gebissen. {giver} braucht fünf Stücke zurück, damit er wieder unter 900 Ping kommt.',
     lines:{offer:'Das ist eine Daily. Heute holst du fünf Kabelstücke, und morgen fragst du dich, warum du das jeden Tag machst.',progress:'Mein Ping steht immer noch bei 900. Ich habe gerade einen Boss gelegt, der schon seit gestern tot ist.',done:'Kabel da, Ping bei 30, Welt in Ordnung. Das Kabel hält jetzt mit Isolierband und Hoffnung.'},
     reward:{xp:110,coins:6}},

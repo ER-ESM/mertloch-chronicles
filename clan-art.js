@@ -21,6 +21,15 @@ export function drawClanEnemy(c,e,time){
   if(e.skin==='goose'){for(let i=0;i<4;i++)line(c,i%2?'#f0dfae':'#929f8f',[[-8+i*3,-8],[-5+i*3,-5],[-7+i*3,-4]],.5);}
   c.restore();}
 
-const CLAN_SIGN_TITLE='POO-TANG · MERTLOCH';
-export function clanSignBounds(c,w){c.save();c.font="800 7px Nunito,'Trebuchet MS',sans-serif";const width=Math.max(78,Math.ceil(c.measureText(CLAN_SIGN_TITLE).width)+12);c.restore();return{x:w.church.x+1-width/2,y:w.church.maxY+7,w:width,h:14};}
-export function drawClanCamp(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.save();line(c,'#6e5367',[[x-72,y-3],[x,y+6],[x+76,y-3]],1);for(let i=0;i<12;i++){const px=x-69+i*12,py=y+Math.sin(i/11*Math.PI)*8;shape(c,['#d68289','#e7bd7b','#75b6a2'][i%3],[[px,py],[px+9,py+1],[px+4,py+10+Math.sin(time*2+i)]],P.ink,.5);}const sign=clanSignBounds(c,w);framed(c,'#2d4145',sign.x,sign.y,sign.w,sign.h,P.gold,1);c.font="800 7px Nunito,'Trebuchet MS',sans-serif";c.fillStyle='#f4d7a0';c.textAlign='center';c.fillText(CLAN_SIGN_TITLE,x+1,y+19,sign.w-12);c.restore();}
+// Clan-Schild (Runde 2b, 2026-09-24, Grafikbefund 3): gemaltes Holzbrett an zwei Seilen unter der Wimpelkette, eingebrannte Schrift in
+// gemischter Schreibung – bewusst anders als die HUD-Schilder (Creme-Versalien auf Grün mit Goldrand), damit Zonentitel und Weltschild
+// nie als ein Schild gelesen werden.
+const CLAN_SIGN_TITLE='Poo-Tang · Mertloch',SIGN_FONT="bold 9px 'Jersey 15','Trebuchet MS',sans-serif";
+export function clanSignBounds(c,w){c.save();c.font=SIGN_FONT;const width=Math.max(70,Math.ceil(c.measureText(CLAN_SIGN_TITLE).width)+14);c.restore();return{x:w.church.x+1-width/2,y:w.church.maxY+9,w:width,h:15};}
+export function drawClanCamp(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.save();line(c,'#6e5367',[[x-72,y-3],[x,y+6],[x+76,y-3]],1);for(let i=0;i<12;i++){const px=x-69+i*12,py=y+Math.sin(i/11*Math.PI)*8;shape(c,['#d68289','#e7bd7b','#75b6a2'][i%3],[[px,py],[px+9,py+1],[px+4,py+10+Math.sin(time*2+i)]],P.ink,.5);}
+ const s=clanSignBounds(c,w),x0=s.x,x1=s.x+s.w,y0=s.y,y1=s.y+s.h,sway=Math.sin(time*1.3)*.4;
+ for(const [ax,bx] of [[x0+7,x-30],[x1-7,x+30]])line(c,'#5b4630',[[bx,y+3],[ax+sway,y0+.5]],.7);
+ shape(c,'#a36b3b',[[x0+1,y0+1.5],[x0+3,y0],[x1-2,y0+.5],[x1,y0+2],[x1-.5,y1-1.5],[x1-3,y1],[x0+2,y1-.5],[x0,y1-2]],'#3b2414',.9);
+ r(c,'#c58c55',x0+3,y0+1,s.w-6,1);r(c,'#7d4d27',x0+2,y0+s.h/2,s.w-4,.7);for(let i=0;i<5;i++)r(c,'#8a5a30',x0+6+i*(s.w-12)/4,y0+3+(i%2)*6,5,.5);
+ for(const [nx,ny] of [[x0+3.5,y0+3],[x1-4.5,y0+3],[x0+3.5,y1-3.5],[x1-4.5,y1-3.5]])r(c,'#e6cf98',nx,ny,1,1);
+ c.font=SIGN_FONT;c.textAlign='center';c.fillStyle='#e7b877';c.fillText(CLAN_SIGN_TITLE,x+1.4,y0+11.5,s.w-12);c.fillStyle='#2e1a0d';c.fillText(CLAN_SIGN_TITLE,x+1,y0+11,s.w-12);c.restore();}

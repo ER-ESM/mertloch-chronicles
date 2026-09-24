@@ -1,4 +1,5 @@
 import {drawProp} from './world-prop-ui.js';
+import {hoverNear} from './world-labels.js';
 import {drawVectorSprite} from './art-quality.js';
 import {drawWorldPerson} from './person-art.js';
 import {WORLD_SCALE,PERSON_SCALE} from './world-scale.js';
@@ -16,7 +17,7 @@ export function drawProfession(c,e,g,time){const near=Math.hypot(g.player.x-e.x,
  if(e.type==='professionStation'){const smith=e.id==='werkhof';drawProp(c,{kind:smith?'bude-werkstatt':'bude-grill',x:e.x-16,y:e.y-4,w:38,h:22});if(!smith){herb(c,e.x-30,e.y+8,true);c.fillStyle='#92b386';c.fillRect(e.x-10,e.y-28,5,12);c.fillStyle='#c3ad7f';c.fillRect(e.x-9,e.y-31,3,4);}
   // Je Beruf ein Lehrer an der Station (Nutzerauftrag 2026-09-23): ansprechen = Beruf und Rezepte lernen. Name über dem Kopf, sobald man in der Nähe ist.
   for(const t of professionWorld(g.world).teachers.filter(t=>t.station===e.id)){const look=P[t.id].look;drawWorldPerson(c,look,t.x,t.y,time,PERSON_SCALE,{facing:t.x<e.x?1:-1,artMagnify:WORLD_SCALE.npc/(liveActorHeight(look)||WORLD_SCALE.npc)});if(near)label(c,P[t.id].teacher,t.x,t.y-WORLD_SCALE.npc-2,g.hoverTeacher===t.id?'#fff1c2':'#d9e6c8');}
-  label(c,ST[e.id].name,e.x,e.y-WORLD_SCALE.npc-(near?16:12));}
+  /* Stationsname (Willis Werkhof, Bärbels Braugarten) wie ein Ortsname nur unter der Maus (Runde 2b) */if(hoverNear(g,e,44,-12))label(c,ST[e.id].name,e.x,e.y-WORLD_SCALE.npc-(near?16:12));}
  else drawNode(c,e,g,time);
  c.restore();
 }

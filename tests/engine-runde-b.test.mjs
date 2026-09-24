@@ -158,11 +158,11 @@ test('P8 · Kein Hofproben-Schritt erledigt sich ohne Eingabe, Zähler starten b
  assert.ok(e.cast);
  g.events.length=0;e.cast.remaining=.01;Object.assign(g.player,{x:e.cast.x,y:e.cast.y});
  tickTutorial(g,.05);
- assert.ok(!toasts(g).includes(TUTORIAL.retry),'beim ersten Versuch gibt es keinen Nochmal-Hinweis');
+ assert.ok(!toasts(g).includes(TUTORIAL.retry),'beim ersten Versuch gibt es keinen Nochmal-Hinweis');assert.ok(toasts(g).includes(TUTORIAL.late),'Runde 2b: klare Rückmeldung „Zu spät“ schon beim ersten Versuch');
  t.clock=0;tickTutorial(g,.05);
  assert.ok(e.cast);e.cast.remaining=.01;g.events.length=0;
  tickTutorial(g,.05);
- assert.ok(toasts(g).includes(TUTORIAL.retry),'ab dem zweiten Fehlversuch schon');
+ assert.ok(toasts(g).includes(TUTORIAL.late),'ab dem zweiten Fehlversuch wieder „Zu spät“ (Runde 2b statt des langen Nochmal-Hinweises)');
 });
 
 test('P8 · Die Abklingzeit-Meldung nennt die Restzeit',()=>{

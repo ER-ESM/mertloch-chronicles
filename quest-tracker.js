@@ -7,6 +7,7 @@ import {questProgress} from './quest-status-ui.js';
 import {chapterState,rewardLine} from './chapter-ui.js';
 import {hotspotTracker} from './hotspot-ui.js';
 import {QUEST_TRACKER_UI as T,ACTS,STORY_CHAPTERS} from './content/index.js';
+import {isDailyTitle} from './daily-mark.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /** Welche Quest die Wegmarke hat: Nebenauftrag, sonst Startreihe/Stammgast/Aushang, sonst die Hauptquest. */
@@ -46,13 +47,14 @@ export function focusQuest(g,key){
 }
 /** Tooltip-Inhalt (HTML, landet über data-tooltip-note im Tooltip aus popup-controls.js). */
 function tipNote(e,focus){
- const steps=(e.steps?.length?e.steps:[{text:e.task,done:e.done}]).map(s=>`<span class="qt-tip-step${s.done?' done':''}">${s.done?'✓':'◇'} ${esc(s.text)}</span>`).join('<br>');
- return steps+(e.reward?`<br><small>${esc(T.reward)}: ${esc(e.reward)}</small>`:'')+`<br><small>${esc(focus?T.run:T.track)}</small>`;
+ /* klein (Runde 2b): ein einzelner Schritt steht schon im Kasten – der Tooltip nennt dann nur Belohnung und Klick */
+ const steps=(e.steps?.length>1?e.steps:[]).map(s=>`<span class="qt-tip-step${s.done?' done':''}">${s.done?'✓':'◇'} ${esc(s.text)}</span>`).join('<br>');
+ return [steps,e.reward?`<small>${esc(T.reward)}: ${esc(e.reward)}</small>`:'',`<small>${esc(focus?T.run:T.track)}</small>`].filter(Boolean).join('<br>');
 }
 /** Runde 1 (2026-09-24, Grafikbefund Quick Win 8): „Daily:“ wird ein Symbol vor dem Titel, der Zähler „0/3“ steht in der
  *  Distanzspalte statt auf einer eigenen Zeile. */
 const DAILY=/^Daily:\s*/i,COUNT=/^(.*?)[\s·:]+(\d+\s*\/\s*\d+)$/;
-const titleHtml=t=>DAILY.test(t)?`<i class="qt-daily" aria-label="Täglich"></i>${esc(t.replace(DAILY,''))}`:esc(t);
+const titleHtml=t=>DAILY.test(t)||isDailyTitle(t)?`<i class="qt-daily" aria-label="Täglich"></i>${esc(t.replace(DAILY,''))}`:esc(t);
 function row(e,{focus,dist}){
  const count=COUNT.exec(e.task||''),text=count?count[1]:e.task;
  const tip=`data-tooltip-label="${esc(e.title)}" data-tooltip-note="${esc(tipNote(e,focus))}"`,task=`<div class="quest-task${focus&&dist!=null?' waypoint':''}${e.done?' done':''}"><i aria-hidden="true"></i><span>${esc(text)}</span>${count?`<b class="qt-count">${esc(count[2].replace(/\s+/g,''))}</b>`:''}${dist!=null?`<em>${dist} m</em>`:''}</div>`;

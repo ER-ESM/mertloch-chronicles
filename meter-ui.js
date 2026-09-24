@@ -13,7 +13,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  let device=touch()?'touch':'desktop',mode=prefs.mode==='healing'?'healing':'damage',selection='current',actorId=null,abilityId=null,last=0,lastOptions='',rowKeys='',drag=null;
  let position=finitePair(prefs.position,'x','y'),size=finitePair(prefs.size,'width','height'),previousGame=null,previousSegment=null;
  const visible={desktop:prefs.desktop===undefined?METER_RULES.openByDefault:prefs.desktop!==false,touch:prefs.touch===true};
- const toggle=document.createElement('button');toggle.id='meterToggle';toggle.type='button';toggle.setAttribute('aria-controls','combatMeter');toggle.title=T.shortcut;toggle.setAttribute('aria-label',T.shortcut);
+ const toggle=document.createElement('button');toggle.id='meterToggle';toggle.type='button';toggle.setAttribute('aria-controls','combatMeter');toggle.setAttribute('aria-label',T.shortcut);/* Symbolknopf mit Tooltip statt Textpille (Runde 2b) */toggle.dataset.tooltipLabel=T.shortcut;toggle.dataset.tooltipNote='';
  toggle.innerHTML=`<span aria-hidden="true">▥</span><span class="meter-toggle-label">${T.title}</span><kbd>V</kbd>`;
  const panel=document.createElement('aside');panel.id='combatMeter';panel.hidden=!visible[device];panel.setAttribute('aria-label',T.title);
  panel.innerHTML=`<header class="meter-header"><strong title="${T.drag}">${T.title}</strong><button type="button" data-meter-options aria-label="${T.options}" aria-expanded="false">⚙</button><button type="button" data-meter-close aria-label="${T.close}">×</button></header>
@@ -26,7 +26,7 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  root.append(toggle,panel);
  const $=s=>panel.querySelector(s),select=$('#meterSegment'),rows=$('.meter-rows');
  function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify({...visible,mode,position,size}));}catch{}}
- function syncToggle(){toggle.setAttribute('aria-expanded',String(!panel.hidden));toggle.classList.toggle('meter-is-open',!panel.hidden);toggle.title=touch()?T.open:T.shortcut;toggle.setAttribute('aria-label',toggle.title);}
+ function syncToggle(){toggle.setAttribute('aria-expanded',String(!panel.hidden));toggle.classList.toggle('meter-is-open',!panel.hidden);const label=touch()?T.open:T.shortcut;toggle.removeAttribute('title');toggle.setAttribute('aria-label',label);toggle.dataset.tooltipLabel=label;}
  function layout(){
   // Auch geschlossen bekommt die Statistik ihren Platz: Der HUD-Editor misst sie sonst bei 0/0 und legt sie nach oben links (E-39, standardmäßig zu).
   const base=root.getBoundingClientRect(),r={x:base.x+root.clientLeft,y:base.y+root.clientTop,left:base.left+root.clientLeft,top:base.top+root.clientTop,width:root.clientWidth,height:root.clientHeight},style=getComputedStyle(document.body),safe=side=>parseFloat(style.getPropertyValue('--safe-'+side))||0;

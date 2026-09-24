@@ -1,0 +1,74 @@
+/* Runde 2b (2026-09-24): Spielerfluss & HUD. Wird nach wow-feinschliff.css geladen; Belege in docs/OPTIMIERUNG-2026-09-24-runde-2b.md. */
+
+/* 3 · Zonentitel wie in WoW: groß im oberen Fünftel (18 % Bildhöhe), Gold mit Umriss, ohne Platte. So liegt er zwischen dem
+   Weltschild am Clan-Treff (≈60 px) und dem Helden (Bildmitte) und trifft keins von beiden. Unterzeile Nunito 15 px. */
+body:not(.touch-mode) #gameShell .region-label{top:18vh;left:50%;transform:translateX(-50%);padding:0 12px;max-width:min(820px,70vw);background:none;text-align:center}
+body:not(.touch-mode) #gameShell .region-label h2{font-size:40px;line-height:1.05;letter-spacing:.05em;color:var(--gold,#e8c170);max-width:none;
+ -webkit-text-stroke:1px #0b1216;paint-order:stroke fill;text-shadow:0 2px 0 #0b1216,2px 2px 0 #0b1216,-1px 1px 0 #0b1216,0 0 14px #0b1216aa}
+body:not(.touch-mode) #gameShell .region-label>div{margin-top:4px}
+body:not(.touch-mode) #gameShell .region-label #zoneType{font:800 15px Nunito,'Trebuchet MS',sans-serif;letter-spacing:.02em;text-transform:none;color:var(--cream,#ecdbac);
+ text-shadow:0 1px 0 #0b1216,1px 1px 0 #0b1216,-1px 1px 0 #0b1216,0 0 8px #0b1216}
+
+/* 4 · Kurzmeldungen als feste Zeile oben (WoW-UIErrorsFrame): über dem Zonentitel, über dem aufsteigenden Kampftext um den Helden.
+   Große Einblendungen (Aufstieg, Freischaltung) stehen darunter an der Stelle des Zonentitels, nie gleichzeitig mit ihm. */
+@media(min-width:761px){body:not(.touch-mode) #toast{top:11vh!important}}
+.milestone-unlock .milestone-title{pointer-events:auto;cursor:help}
+
+/* 5 · Update-Hinweis: klein, links oben neben den Symbolknöpfen – verdeckt keine Titelzeile eines Fensters; × oder nach 25 s weg. */
+#gameShell .update-hint{top:16px;left:118px;transform:none;padding:4px 6px 4px 10px;gap:6px;font:700 12px/1 Nunito,'Trebuchet MS',sans-serif;box-shadow:1px 2px 0 #1d3022cc}
+#gameShell .update-hint button{min-height:26px;font-size:11px;padding:3px 8px}
+#gameShell .update-hint .update-hint-close{min-height:24px;width:24px;padding:0;border:0;background:none;color:var(--cream,#ecdbac);font:700 16px/1 Nunito,sans-serif;cursor:pointer}
+#gameShell .update-hint .update-hint-close:hover{color:#fff}
+.touch-mode #gameShell .update-hint{top:calc(8px + var(--safe-top,0px));left:50%;transform:translateX(-50%)}
+
+/* 7 · Leisten-Stapel: die zweite Leiste zeigt nur belegte Plätze – an ihrem festen Platz über der Hauptleiste (wie die WoW-Zusatzleiste),
+   jeder mit eigenem kleinen Rahmen; die leere Platte verschwindet. Leere Plätze und Platte erscheinen nur beim Ziehen (nichts springt). Die Lasche „Autoangriff an/aus“ entfällt – der Zustand steht am Autoangriff-Platz
+   (goldener, pulsierender Rand; Tooltip am Platz). Die Ansage bleibt für Bildschirmleser erhalten. */
+@media(min-width:761px){
+ body:not(.touch-mode):not(.bar-drop) .action-area .extra-bar:has(.skill:not(.empty-slot)){background:none;border-image:none;border-color:transparent;box-shadow:none}
+ body:not(.touch-mode):not(.bar-drop) .action-area .extra-bar:has(.skill:not(.empty-slot)) .skill.empty-slot{opacity:0;transition:opacity .15s}
+ /* unsichtbar, aber erreichbar: Maus darüber zeigt den leeren Platz (Taste per Hover + B belegen) */
+ body:not(.touch-mode):not(.bar-drop) .action-area .extra-bar:has(.skill:not(.empty-slot)) .skill.empty-slot:is(:hover,.key-capture){opacity:.6}
+ body:not(.touch-mode):not(.bar-drop) .action-area .extra-bar .skill:not(.empty-slot){box-shadow:0 0 0 3px #152d23f0,0 0 0 4px #8a7445,0 3px 6px #000b}
+ body:not(.touch-mode) .action-area>.auto-state{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0!important;margin:0!important;border:0!important}
+}
+.action-area .skill.auto-active{outline:2px solid #f3cf6a;outline-offset:-2px;animation:r2b-auto-pulse 1.1s ease-in-out infinite alternate}
+.action-area .skill.auto-active:before{display:none}
+@keyframes r2b-auto-pulse{from{box-shadow:inset 0 0 0 2px #f3cf6a44,0 0 4px #f3cf6a66}to{box-shadow:inset 0 0 10px 2px #f3cf6a99,0 0 12px 3px #f3cf6acc}}
+.action-area .skill .key.key-space{font-size:0!important;width:22px;height:14px;padding:0!important}
+.action-area .skill .key.key-space::before{content:'';position:absolute;left:3px;right:3px;top:4px;height:6px;border:2px solid #fff;border-top:0;border-radius:0 0 2px 2px;filter:drop-shadow(1px 0 0 #0b1216) drop-shadow(-1px 0 0 #0b1216) drop-shadow(0 1px 0 #0b1216)}
+
+/* 8 · HUD links oben: Spielmenü und Kampfstatistik als kompakte Symbolknöpfe (Name im Tooltip), kein 8-px-Status „Auf Erkundung“;
+   im Kampf zeigen gekreuzte Schwerter am Porträt den Zustand. */
+@media(min-width:761px){
+ body:not(.touch-mode) #gameShell .world-menu-brand{left:22px;top:16px;width:40px;height:40px;min-height:0;padding:3px;gap:0;justify-content:center}
+ body:not(.touch-mode) #gameShell .world-menu-brand>:is(b,span,.build-tag){display:none}
+ body:not(.touch-mode) #gameShell .world-menu-brand canvas{width:30px;height:30px}
+ body:not(.touch-mode) #meterToggle{left:68px;top:16px;width:40px;height:40px;min-height:0;padding:0;gap:0;justify-content:center}
+ body:not(.touch-mode) #meterToggle :is(.meter-toggle-label,kbd){display:none}
+ body:not(.touch-mode) #meterToggle>span:first-child{font-size:0;width:22px;height:22px;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Cpath d='M2 14h12' stroke='%23e0c070' stroke-width='1.5'/%3E%3Crect x='3' y='8' width='2.5' height='5' fill='%23f5e4bf'/%3E%3Crect x='6.8' y='4' width='2.5' height='9' fill='%23e0c070'/%3E%3Crect x='10.6' y='6' width='2.5' height='7' fill='%23f5e4bf'/%3E%3C/svg%3E")}
+}
+.player-panel #combatState{display:none!important}
+.player-panel.in-combat .portrait::after{content:'';position:absolute;right:-6px;top:-6px;width:20px;height:20px;z-index:5;border-radius:50%;background:#16261d no-repeat center/15px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cg stroke-linecap='round'%3E%3Cpath d='M2.5 2.5l8 8M13.5 2.5l-8 8' stroke='%23f6e7c4' stroke-width='1.8'/%3E%3Cpath d='M8.8 12.2l3.4-3.4M7.2 12.2l-3.4-3.4' stroke='%23e0c070' stroke-width='1.6'/%3E%3Cpath d='M11.2 11.2l2.3 2.3M4.8 11.2l-2.3 2.3' stroke='%238a5a30' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E");box-shadow:0 0 0 1.5px #b8404a,0 0 7px #d0505acc;animation:r2b-combat 1.2s ease-in-out infinite alternate}
+@keyframes r2b-combat{to{box-shadow:0 0 0 1.5px #e06a70,0 0 11px #e06a70}}
+
+/* 8 · Zielrahmen: höchstens zwei Textzeilen – Name mit Stufenring (Elite = goldener Ring statt Wort), darunter der Lebensbalken.
+   Beiname, Verhalten und Entfernung stehen im Tooltip des Namens (enemy-ui.js). */
+body:not(.touch-mode) #targetPanel .target-title,body:not(.touch-mode) #targetPanel .target-detail{display:none!important}
+#targetPanel #targetLevel{font-size:0!important;letter-spacing:0;padding:0!important;background:none!important;border:0!important}
+#targetPanel #targetLevel::after{content:attr(data-level);display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 3px;border-radius:50%;font:800 12px/1 Nunito,'Trebuchet MS',sans-serif;color:#f6e7c4;background:#1b2d24;box-shadow:0 0 0 1.5px #9d8a5c}
+#targetPanel.elite-target #targetLevel::after{color:#ffe39a;background:#3a2a10;box-shadow:0 0 0 2px #e8c170,0 0 6px #e8c17099}
+#targetPanel .unit-name{cursor:help}
+
+/* 9 · Kalendersymbol für tägliche Aufträge auch im Chat und in Kurzmeldungen (daily-mark.js) */
+:is(.chat-line,#toast,.touch-quest) .qt-daily{display:inline-block;width:12px;height:12px;margin:0 5px -1px 0;vertical-align:baseline;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Crect x='1' y='2' width='10' height='9' rx='1.5' fill='%23213a2e' stroke='%23f3cf7a' stroke-width='1.2'/%3E%3Cpath d='M1.6 4.6h8.8' stroke='%23f3cf7a' stroke-width='1.2'/%3E%3Cpath d='M3.5 1v2.2M8.5 1v2.2' stroke='%23f3cf7a' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M4 8.2a2 2 0 1 0 1.1-2' fill='none' stroke='%239fe08a' stroke-width='1.1' stroke-linecap='round'/%3E%3Cpath d='M4.9 5.2l.4 1-1 .3' fill='none' stroke='%239fe08a' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E");filter:drop-shadow(0 1px 0 #000)}
+#toast .qt-daily{width:18px;height:18px;margin-right:7px}
+/* 9 · Handy-Wegmarke: „m“ klein wie überall (mobile-controls.js behält das <em>) */
+#touchWaypoint em{text-transform:none!important;font-style:normal}
+
+/* 3 · Handy: der Ortsname unter dem Spielerrahmen stand dauerhaft da; wie am Desktop nur kurz beim Betreten (zone-announce.js). */
+body.touch-mode:not(.zone-announcing):not(.hud-editing) #touchPlace{opacity:0;visibility:hidden;transition:opacity .9s ease,visibility 0s linear .9s}
+body.touch-mode.zone-announcing #touchPlace{opacity:1;visibility:visible;transition:opacity .35s ease}
+.touch-mode .chat-line.toast-twin{display:none}
+#itemTooltip.tip-compact{width:240px;padding:9px 11px}
+.milestone-unlock .milestone-title{white-space:nowrap}.milestone-unlock .milestone-title.is-many{font-size:32px;letter-spacing:.03em}

@@ -27,6 +27,9 @@ import {talentPoints,talentState} from './talents.js';
 import {freshClassState,classSkills,healPlayer,healerEffects,addGuard,beforeSkill,skillCost,performTalent,afterSkill,afterDamage,onParry,onKill,modifyHit,tickClass} from './class-mechanics.js';
 import {VillageLife} from './village-life.js';
 import {pathNear} from './path-near.js';
+import {adoptAttacker,preferAttacker} from './attacker-target.js';
+import {tickApproach} from './attack-approach.js';
+import {deNum} from './number-format.js';
 const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
 import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons} from './dungeon.js';
@@ -138,7 +141,7 @@ export class Game{
   }
   float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
-  selectNext(reverse=false){if(inKiosk(this)||this.floor)return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>fighting?(e.aggro&&distance(e,p)<260||e.behavior==='aggressive'&&distance(e,p)<65):distance(e,p)<240);if(fighting&&choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.friend=null;this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
+  selectNext(reverse=false){if(inKiosk(this)||this.floor)return false;const p=this.player,fighting=p.inCombat>0,all=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&this.world.lineClear(p,e));let choices=all.filter(e=>e.aggro&&!e.remoteTarget&&distance(e,p)<260||(fighting?e.behavior==='aggressive'&&distance(e,p)<65:distance(e,p)<240));/* Wer dich angreift, kommt zuerst dran – auch vor dem ersten Treffer (Runde 2b) */if(choices.some(e=>e.aggro))choices=choices.filter(e=>e.aggro);choices.sort((a,b)=>distance(a,p)-distance(b,p));if(!choices.length){this.target=null;this.toast('Kein passendes Ziel in direkter Nähe.');return;}const nearest=distance(choices[0],p);choices=choices.filter(e=>distance(e,p)<=nearest+85);const i=choices.indexOf(this.target);this.friend=null;this.target=i<0?choices[0]:choices[(i+(reverse?-1:1)+choices.length)%choices.length];this.emit('target');}
   selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.friend=null;this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false,friend=this.friend){
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
@@ -151,7 +154,7 @@ export class Game{
     const s=this.skills.find(s=>s.id===id);if(!s)return false;if(!available(this,id)){this.toast('Diesen Kniff lernst du später. Dein Fortschritt steht unter der Spielwelt.');return false;}
     dismount(this);
     if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){this.toast(COMBAT_TEXT.busy);return false;}}
-    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCostMech(this,s,skillCost(this,s,cs)),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,this.cooldowns[id].toFixed(1))||`${s.name} ist noch nicht bereit · ${this.cooldowns[id].toFixed(1)} s.`);return false;}
+    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:skillCostMech(this,s,skillCost(this,s,cs)),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs);if(failure){this.toast(failure);return false;}if(this.cooldowns[id]>.01){this.toast(COMBAT_TEXT.cooldown?.(s.name,deNum(this.cooldowns[id],1))||`${s.name} ist noch nicht bereit · ${deNum(this.cooldowns[id],1)} s.`);return false;}
     if(!completing&&!s.offGcd&&this.gcd>0)return false;
     if(p.energy<cost){this.toast(COMBAT_TEXT.needResources);return false;}
     // Ein Ziel (E-65, help-target.js): Heilung, Schutz und Buffs wirken auf den gewählten Freund, sonst auf dich selbst.
@@ -162,6 +165,7 @@ export class Game{
     let e=this.target;
     if(s.ground){if(!point){this.aiming=id;this.aimPoint={...p};this.toast('Boden wählen · Rechtsklick / Esc abbrechen.');return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
     if(s.range&&!s.ground){
+      if(preferAttacker(this))e=this.target;
       if(!e||e.hp<=0){this.selectNext();e=this.target;}
       if(!e){return false;}if(e.ai==='returning'||e.spawnGrace>0){this.toast('Dieses Ziel zieht gerade ab oder kommt erst an.');return false;}
       if(distance(p,e)>s.range+(cs.range||0)){this.toast(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m. Bewege dich näher zum Ziel.`);return false;}
@@ -498,7 +502,7 @@ export class Game{
     const set=this.attackers||(this.attackers=new Set());
     if(!fresh&&set.has(e.id))return false;
     set.add(e.id);
-    /* Ein Ziel (E-65): ein gewählter Söldner oder Mitspieler bleibt Ziel, damit der Heiler nicht umgelenkt wird */if(!this.target?.hp&&helpTarget(this).kind==='self'){this.friend=null;this.target=e;this.emit('target');}
+    /* Angreifer wird Ziel, auch statt eines neutralen Tiers; ein Söldner oder Mitspieler bleibt Ziel (E-65, attacker-target.js) */adoptAttacker(this,e);
     this.emit('attacked',{enemyId:e.id,damage,first:true});
     return true;
   }
@@ -530,7 +534,7 @@ export class Game{
     if(p.inCombat===0||resting)p.hp=Math.min(p.maxHp,p.hp+dt*(resting?BALANCE.momentum.restRegen:BALANCE.player.outOfCombatRegen)*(tickStats.procs.includes('hops')?PROCS.hops.regen:1)*(1+(this.baseEffects().restRegen||0)));
     let dx=(this.keys.has('d')||this.keys.has('arrowright')?1:0)-(this.keys.has('a')||this.keys.has('arrowleft')?1:0),dy=(this.keys.has('s')||this.keys.has('arrowdown')?1:0)-(this.keys.has('w')||this.keys.has('arrowup')?1:0);
     if(this.touchMove){dx=this.touchMove.x;dy=this.touchMove.y;}if(dx||dy){this.moveTo=null;this.path=[];this.routeGoal=null;}else if(this.moveTo){dx=this.moveTo.x-p.x;dy=this.moveTo.y-p.y;if(Math.hypot(dx,dy)<5){this.moveTo=this.path.shift()||null;if(!this.moveTo)this.routeGoal=null;dx=dy=0;}}
-    const routed=!!this.moveTo;tickMount(this,dt);stepPlayer(this,dx,dy,dt);this.walkStairs(dx,dy,routed,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);tickCompanions(this,dt);
+    const routed=!!this.moveTo;tickMount(this,dt);stepPlayer(this,dx,dy,dt);this.walkStairs(dx,dy,routed,dt);tickTutorial(this,dt);tickCasting(this,dt);tickAuto(this,dt);tickApproach(this,dt);tickCompanions(this,dt);
     for(const e of this.enemies){
       if((tutorialActive(this)&&!e.arena)||e.tutorial)continue;
       e.attack=Math.max(0,e.attack-dt);e.hurt=Math.max(0,(e.hurt||0)-dt);e.moving=false;e.spawnGrace=Math.max(0,e.spawnGrace-dt);
@@ -542,7 +546,7 @@ export class Game{
       if(e.aggro&&e.ai==='combat'&&!e.dummy){const companion=companionFocus(this,e);if(companion){tickEnemyOnCompanion(this,e,companion,dt);if(this.dead)break;continue;}}
       const d=distance(e,p);
       if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&!e.dummy){const buddy=this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange);if(buddy&&e.joinAt==null)e.joinAt=this.time+BALANCE.procs.chainJoinDelay;else if(e.joinAt!=null&&this.time>=e.joinAt){e.joinAt=null;if(!this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange*3))continue;e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;this.float(e.x,e.y-30,'KUMPEL KOMMT','#f0b070');}}
-      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;if(!this.target||this.target.hp<=0)this.target=e;}
+      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<e.aggroRange&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;adoptAttacker(this,e);}
       if(!e.aggro){if(!e.dummy)idleEnemy(this,e,dt);continue;}
       if(e.dummy){e.facing=e.x<p.x?1:-1;continue;}
       if(!e.arena&&(distance(e,e.home)>e.leash||d>620||inSanctuary(this.world,p))){beginReturn(this,e);continue;}
