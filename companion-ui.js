@@ -29,7 +29,7 @@ export function updateCompanionPanel(root,g){
  if(!root)return;
  const team=root.querySelector('[data-companion-tab="team"]');if(team)team.textContent=UI.team+' · '+g.companions.length;
  const wallet=root.querySelector('[data-companion-wallet]');if(wallet)wallet.textContent=UI.coins(g.rpg.coins);
- const slots=root.querySelector('[data-companion-slots]');if(slots)slots.textContent=UI.slots(1+(g.partyHumans||0)+g.companions.length,R.maxActive+1);
+ const slots=root.querySelector('[data-companion-slots]');if(slots)slots.textContent=UI.slots(1+(g.partyHumans||0)+(g.partyCompanions||0)+g.companions.length,R.maxActive+1);
  for(const o of g.companionOffers()){
   const row=root.querySelector(`[data-offer="${o.def.id}"]`);if(!row)continue;
   row.querySelector('footer strong').textContent=UI.coins(o.cost);row.querySelector('header span').textContent=COMPANION_ROLES[o.def.role].name+' · '+UI.level(g.player.level);

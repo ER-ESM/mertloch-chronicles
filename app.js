@@ -116,6 +116,7 @@ import {createTranslator} from './mobile-translate.js';
 import {BUILD,buildLabel} from './build-info.js';
 import {mountFpsMeter} from './fps-meter.js';
 import {worldDensity} from './art-quality.js';
+import {partyOverflow} from './companions.js';
 import {companionPanel,updateCompanionPanel,mountCompanionHud,companionBoardPoint} from './companion-ui.js';
 import {COMPANION_TEXT,MEMORY_FRAGMENTS,BASE_SITE_UI,INTRO_UI} from './content/index.js';
 import {mountUnlocks,PANEL_FEATURE,lockedMessage} from './unlocks.js';
@@ -426,7 +427,10 @@ function updateUI(){
  updateMountButtons(document,game);if(popups.isOpen('mounts')&&performance.now()-mountUiAt>150){mountUiAt=performance.now();updateMountPanel(popups.get('mounts').body,game,mountDirection);}
   layoutUnitFrames(document.querySelector('#gameShell'));
   updatePlayerVitals(document,game);
- if(online?.social){const so=online.social;game.partyHumans=so.party().members.filter(m=>m.n!==so.me()).length;}
+ if(online?.social){const so=online.social,me=so.me(),humans=so.party().members.filter(m=>m.n!==me);game.partyHumans=humans.length;
+  // Söldner der Mitspieler zählen mit; wird die Gruppe zu groß (Beitritt), macht der passende eigene Söldner Platz (partyOverflow).
+  const mates=humans.map(m=>({name:m.n,ids:(game.others.find(o=>o.name===m.n)?.companions||[]).map(c=>c.companion)}));game.partyCompanions=mates.reduce((n,m)=>n+m.ids.length,0);
+  if(humans.length&&me)for(const id of partyOverflow(me,game.companions.map(c=>c.id),mates))game.dismissCompanion?.(id,'party');}
  companionHud?.update();
  if(popups.isOpen('companions')){
   const body=popups.get('companions').body,key=game.companions.map(c=>c.id).join('|');

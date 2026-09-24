@@ -36,6 +36,16 @@ try{
  await until(b,`g.others.find(o=>o.name==='Rudi')?.companions?.some(c=>c.name==='Pils-Peter'&&c.party&&c.visualEquipment)`,5000,'B sieht Rudis Söldner');
  await until(b,`document.querySelector('.party-count')?.textContent==='3/5'`,4000,'Kopfzahl bei B zählt Rudis Söldner');ok('Mitspieler sieht fremde Söldner, Kopfzahl 3/5');
  await run(a,`g.dismissCompanion('merc-pils-peter');`);await until(b,`!g.others.find(o=>o.name==='Rudi')?.companions?.length`,5000,'Entlassen kommt an');ok('Entlassen verschwindet beim Mitspieler');
+ // Runde 4: höchstens fünf Köpfe – Anheuern zählt fremde Söldner mit, ein Beitritt über fünf lässt Söldner Platz machen
+ await run(a,`for(const id of ['merc-pils-peter','merc-schorle-susi','merc-radler-rita'])g.hireCompanion(id,{free:true});`);
+ await until(b,`g.others.find(o=>o.name==='Rudi')?.companions?.length===3&&g.partyCompanions===3`,5000,'B kennt drei fremde Söldner');
+ assert.equal(await run(b,`g.hireCompanion('merc-tresen-tina',{free:true});return g.companions.length;`),0,'Gruppe voll: B kann nicht anheuern');ok('Volle Gruppe (2 Menschen + 3 Söldner) sperrt weiteres Anheuern');
+ await run(b,`on.social.leave();`);await until(b,`!on.state.party.members.length`,4000,'B verlässt');await until(a,`!on.state.party.members.length`,4000,'A allein');
+ await run(b,`g.hireCompanion('merc-tresen-tina',{free:true});g.hireCompanion('merc-hopfen-horst',{free:true});`);await wait(600);
+ await run(a,`on.social.invite('Moni');`);await until(b,`document.querySelector('[data-online=party-accept]')`,5000,'zweite Einladung');await run(b,`document.querySelector('[data-online=party-accept]').click();`);
+ await until(a,`g.companions.length===1`,6000,'Rudi (alphabetisch später) gibt zwei Söldner ab');await wait(800);
+ assert.equal(await run(b,`return g.companions.length;`),2,'Moni behält ihre Söldner');assert.deepEqual(await run(a,`return g.companions.map(c=>c.id);`),['merc-pils-peter'],'die zuletzt angeheuerten gehen');
+ await until(a,`document.querySelector('.party-count')?.textContent==='5/5'`,4000,'Kopfzahl 5/5');ok('Beitritt über fünf: passende Söldner machen Platz, 5/5');
  const scene=process.argv[2]||'basis';
  if(process.env.EVAL_A)await run(a,process.env.EVAL_A);if(process.env.EVAL_B)await run(b,process.env.EVAL_B);
  if(process.env.EVAL_A||process.env.EVAL_B){await wait(Number(process.env.WAIT||1500));await shot(a,scene+'-a');await shot(b,scene+'-b');}

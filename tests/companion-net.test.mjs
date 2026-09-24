@@ -25,3 +25,13 @@ test('Empfänger baut Name und Aussehen aus dem Katalog, unbekannte IDs fallen w
  const [w]=remoteCompanionViews([{i:'merc-pils-peter',x:200,y:0,f:1,s:'walk',h:90,l:5}],[v],owner,1080,160);
  assert.equal(w.fromX,100,'startet am letzten Punkt');assert.equal(w.moving,true);
 });
+
+test('Gruppe über fünf Köpfen: alle rechnen gleich, der alphabetisch letzte Besitzer gibt zuerst den neuesten ab',async()=>{
+ const {partyOverflow,companionSlots}=await import('../companions.js');
+ assert.deepEqual(partyOverflow('Rudi',['a','b','c'],[{name:'Moni',ids:['x','y']}]),['c','b']);
+ assert.deepEqual(partyOverflow('Moni',['x','y'],[{name:'Rudi',ids:['a','b','c']}]),[]);
+ assert.deepEqual(partyOverflow('Anna',['a'],[{name:'Bert',ids:[]},{name:'Carl',ids:[]},{name:'Dora',ids:[]},{name:'Emil',ids:[]}]),['a'],'fünf Menschen: kein Platz mehr für Söldner');
+ assert.deepEqual(partyOverflow('Rudi',['a','b'],[{name:'Moni',ids:['x']}]),[],'genau fünf bleibt');
+ assert.equal(companionSlots({partyHumans:1,partyCompanions:3,companions:[]}),0,'Anheuern zählt fremde Söldner mit');
+ assert.equal(companionSlots({partyHumans:1,partyCompanions:1,companions:[{}]}),1);
+});

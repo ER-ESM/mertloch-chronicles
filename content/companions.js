@@ -82,7 +82,7 @@ export const COMPANION_TEXT=Object.freeze({
  title:'Söldner',board:'Schwarzes Brett am Clan-Treff',hire:'Anheuern',dismiss:'Entlassen',
  full:'Mehr als vier Begleiter passen nicht in die Gruppe.',partyFull:'Die Gruppe ist voll – erst jemanden entlassen.',
  money:'Das reicht nicht für den Vertrag.',already:'Der ist schon bei dir.',unknown:'Den kennt hier keiner.',
- hired:n=>n+' ist jetzt bei dir.',dismissed:n=>n+' ist wieder frei.',expired:n=>'Der Vertrag mit '+n+' ist abgelaufen.',
+ hired:n=>n+' ist jetzt bei dir.',dismissed:n=>n+' ist wieder frei.',partyLeave:n=>n+' macht Platz – mehr als fünf passen nicht in die Gruppe.',expired:n=>'Der Vertrag mit '+n+' ist abgelaufen.',
  down:n=>n+' ist am Boden.',revived:n=>n+' steht wieder.',interrupted:'UNTERBROCHEN',taunted:'SPOTT',
  orders:{follow:'Folgen',stay:'Warten',attack:'Mein Ziel angreifen'},
  stances:{assist:'Unterstützen',defend:'Verteidigen',passive:'Passiv'},

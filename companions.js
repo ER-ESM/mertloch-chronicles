@@ -236,7 +236,12 @@ function create(g,def,saved={}){
  refreshStats(g,c);c.hp=Math.round(c.maxHp*Math.max(.1,Math.min(1,Number(saved.hp)||1)));place(g,c,slot({...g,companions:[...(g.companions||[]),c]},c));return c;
 }
 /** Freie Plätze: vier Begleiter, zusammen mit echten Gruppenmitgliedern (g.partyHumans, setzt die Netzschicht) höchstens fünf Köpfe. */
-export const companionSlots=g=>Math.max(0,Math.min(R.maxActive,4-(g.partyHumans||0))-(g.companions?.length||0));
+export const companionSlots=g=>Math.max(0,Math.min(R.maxActive,4-(g.partyHumans||0)-(g.partyCompanions||0))-(g.companions?.length||0));
+/** Gruppe über fünf Köpfen (Menschen + alle Söldner, z. B. nach einem Beitritt): welche MEINER Söldner gehen?
+ *  Alle Clients rechnen gleich: zuerst die Söldner des alphabetisch letzten Besitzers, je Besitzer der zuletzt angeheuerte. */
+export function partyOverflow(me,mine,others){const all=[{name:me,ids:mine},...others].flatMap(o=>o.ids.map((id,i)=>({owner:o.name,id,i})));
+ const over=1+others.length+all.length-5;if(over<=0)return [];
+ return all.sort((a,b)=>b.owner.localeCompare(a.owner)||b.i-a.i).slice(0,over).filter(x=>x.owner===me).map(x=>x.id);}
 /** Liste fürs Schwarze Brett: [{def,cost,hired,affordable,free}] */
 export function companionOffers(g){const cost=companionCost(g.player.level);return COMPANIONS.filter(d=>d.kind==='merc').map(def=>({def,cost,hired:g.companions.some(c=>c.id===def.id),affordable:(g.rpg.coins||0)>=cost,free:companionSlots(g)>0}));}
 const fail=(g,text)=>{g.toast(text);return {ok:false,message:text};};
@@ -252,7 +257,7 @@ export function hireCompanion(g,id,{free=false}={}){
 export function dismissCompanion(g,id,reason='dismissed'){
  const c=g.companions.find(x=>x.id===id);if(!c)return {ok:false};
  if(g.friend?.ref===c)g.friend=null;g.companions=g.companions.filter(x=>x!==c);for(const e of g.enemies)clearThreat(e,id);
- g.toast((reason==='expired'?T.expired:T.dismissed)(c.name));if(reason!=='expired'&&c.def.lines?.dismiss)g.bark?.(c,c.def.lines.dismiss,'companion');g.emit('companion',{type:reason,id});g.emit('save');return {ok:true};
+ g.toast((reason==='expired'?T.expired:reason==='party'?T.partyLeave:T.dismissed)(c.name));if(reason!=='expired'&&c.def.lines?.dismiss)g.bark?.(c,c.def.lines.dismiss,'companion');g.emit('companion',{type:reason,id});g.emit('save');return {ok:true};
 }
 /** Befehl an einen (id) oder alle: 'follow' | 'stay' | 'attack' (= aktuelles Ziel des Spielers, auch ohne dass es schon kämpft). */
 export function orderCompanions(g,order,id){if(!T.orders[order])return false;for(const c of g.companions)if(!id||c.id===id){c.order=order;c.target=null;c.retarget=0;}g.toast(T.orderSet(T.orders[order]));g.emit('companion',{type:'order',order,id:id||null});return true;}

@@ -245,7 +245,7 @@ export class Game{
   // Begleiter (E-45) – Schnittstelle für die Oberfläche, Regeln in companions.js
   companionOffers(){return companionOffers(this);}
   hireCompanion(id,options){return hireCompanion(this,id,options);}
-  dismissCompanion(id){return dismissCompanion(this,id);}
+  dismissCompanion(id,reason){return dismissCompanion(this,id,reason);}
   orderCompanions(order,id){return orderCompanions(this,order,id);}
   setCompanionStance(stance,id){return setCompanionStance(this,stance,id);}
   netEnemy(netId){return this.enemies.find(e=>e.netId===netId)||null;}
