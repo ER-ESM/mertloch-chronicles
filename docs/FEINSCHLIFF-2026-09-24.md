@@ -4,7 +4,7 @@ Nutzerauftrag: „visueller Feinschliff mit Live-Bewertung … Bude in allen Inh
 Arbeitsweise: je Runde Aufnahme (Headless oder Playwright), Vergleich mit WoW/Diablo IV/Hades/Stardew/Eastward, gezielte Änderung, `npm test` grün, Fast-Forward nach `main`, `server-refresh`.
 Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- und NPC-Grafik wurde bewusst **nicht** angefasst (Freigabe-Regel).
 
-## Runden (live #329 bis #440)
+## Runden (live #329 bis #453)
 
 **Nutzerentscheidungen 2026-09-24:** Kamera näher (statt größere Figuren), Rückwände mit Tapete, Karte handgemalt im Code, Talente als ausgegraute Vorschau.
 
@@ -74,6 +74,11 @@ Branch `visual-polish`, Worktree `D:\Dev\MertlochChronicles-polish`. Figuren- un
 | 62 | HUD | Tastendruck: Knopf gibt nach und leuchtet | `app.js` (`triggerSlot`), `ui-chrome.css` |
 | 63 | Zielrahmen | Gegnerporträt als Brustbild im Medaillon | `app.js` (`paintTargetPortrait`), `ui-chrome.css` |
 | 64 | Beute | Lichtsäule in Qualitätsfarbe über Beuteln, Schild nur am nächsten | `renderer.js` (`lootBeam`) |
+| 65 | Kampf | Trefferfunken vom Angreifer weg | `renderer.js` (`hitFlash`) |
+| 66 | Welt | Ortswechsel groß eingeblendet; in der Bude „Die Bude · Raum“ | `app.js` (`zoneSplash`), `ui-chrome.css` |
+| 67 | Talente | Gelerntes Talent blitzt golden, Ring nach außen | `app.js` (`celebrateTalent`), `talent-tree.css` |
+| 68 | Figur | Neu angelegter Gegenstand: Platz blitzt in Qualitätsfarbe | `app.js` (`equipFlash`), `ui-chrome.css` |
+| 69 | Fenster | Weiches Einblenden beim Öffnen (140 ms, nur Deckkraft) | `ui-chrome.css` |
 
 ## Werkzeuge
 
