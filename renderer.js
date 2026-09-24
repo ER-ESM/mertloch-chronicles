@@ -83,7 +83,7 @@ function drawCorpse(c,e,age,p,time){const k=Math.max(0,age)/CORPSE_TIME,fall=Mat
  drawComicEnemy(c,{...e,hp:e.maxHp||1,hurt:0,attack:0,cast:null,moving:false,gaitWeight:0},time);c.restore();
  if(fall>=1&&age<.75){const t=(age-.28)/.47;c.save();c.globalAlpha=(1-t)*.5;c.fillStyle='#d8c8a8';for(let i=0;i<7;i++){const a=i/7*Math.PI*2;c.beginPath();c.ellipse(e.x+side*14+Math.cos(a)*(6+t*14),e.y+Math.sin(a)*(2+t*5),3+t*4,2+t*2,0,0,Math.PI*2);c.fill();}c.restore();}}
 /** Umriss einer verdeckten Figur: einmal in eine Ebene gezeichnet, per source-in eingefärbt, halbdurchsichtig obenauf. */
-let heroGhost=null,ghostLayer=null;
+let heroGhost=null,ghostLayer=null,lastCorpse=null;
 function ghost(c,p,draw){if(typeof document==='undefined'||typeof c.getTransform!=='function')return;const S=96,ax=48,ay=84,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=ghostLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
  const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=false;f.setTransform(d,0,0,d,(ax-p.x)*d,(ay-p.y)*d);draw(f);
  f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-in';f.fillStyle='#f3e2b0';f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';c.save();c.globalAlpha=.68;c.drawImage(L,p.x-ax,p.y-ay,S,S);c.restore();}
@@ -212,7 +212,7 @@ export class Renderer {
     for(const bag of g.rpg.loot)if(visible(bag,25))sorted.push({type:'loot',obj:bag,y:bag.y});
     const merchant=merchantActorPoint(g);if(merchant&&visible(merchant,80))sorted.push({type:'merchant',obj:merchant,y:merchant.y});
     for(const m of w.mentors||[])if(visible(m)&&(!g.tutorial||g.tutorial.completed))sorted.push({type:'mentor',obj:m,y:m.y});
-    for(const e of g.enemies){if(e.hp>0){e.seenAlive=true;e.corpseAt=null;if(visible(e))sorted.push({type:e.type,obj:e,y:e.y});}else if(e.seenAlive){e.corpseAt??=g.time;if(g.time-e.corpseAt<CORPSE_TIME&&visible(e))sorted.push({type:'corpse',obj:e,y:e.y-1});}};sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});
+    for(const e of g.enemies){if(e.hp>0){e.seenAlive=true;e.corpseAt=null;if(visible(e))sorted.push({type:e.type,obj:e,y:e.y});}else if(e.seenAlive){if(e.corpseAt==null)lastCorpse={x:e.x,y:e.y,at:performance.now()};e.corpseAt??=g.time;if(g.time-e.corpseAt<CORPSE_TIME&&visible(e))sorted.push({type:'corpse',obj:e,y:e.y-1});}};sorted.push({type:'player',obj:p,y:p.y});if(visible(w.npc))sorted.push({type:'npc',obj:w.npc,y:w.npc.y});
     for(const q of w.quests||[])if((!g.tutorial||g.tutorial.completed)&&visible(q.giver))sorted.push({type:'questgiver',obj:q,y:q.giver.y});
     // Startreihe (E-55): Geber am Hotspot und Aushänge, die noch niemand gefunden hat.
     if(g.hotspots&&(!g.tutorial||g.tutorial.completed)){const L=hotspotLayout(w);for(const h of L.hotspots)if(visible(h.giver))sorted.push({type:'hotspotgiver',obj:h,y:h.giver.y});for(const n of L.notices)if(!g.hotspots.found.includes(n.id)&&visible(n))sorted.push({type:'notice',obj:n,y:n.y});}
@@ -245,6 +245,7 @@ export class Renderer {
       else if(e.tutorial||e.dummy){drawTrainingDummy(c,e);}
       else {if(e.spawnGrace>0)c.globalAlpha=.4+Math.sin(time*7)*.15;hitFlash(c,e,p,cc=>drawComicEnemy(cc,e,time));}c.restore();}
     hideLabels=false;
+    this.drawFlying(c,p);
     // Held hinter der Bude (Dach/Fassade verdecken ihn): heller Umriss durch den Verdecker, wie in Stardew/Diablo.
     if(heroGhost&&house&&houseFade<.9&&!insideHouse(house,p.x,p.y)&&p.x>house.minX-10&&p.x<house.maxX+10&&p.y<house.maxY-2&&p.y>house.minY-house.heights.wall-house.heights.roof)ghost(c,p,heroGhost);
     // …und drinnen hinter einer Rückwand: die Front einer waagerechten Wand südlich des Helden reicht über seine Figur.
@@ -280,6 +281,9 @@ export class Renderer {
     // Effektschicht (E-47) zuletzt: Sie nimmt das fertige Weltbild als Textur.
     if(effects)this.fx.render({ox,oy,W,H},g,w,time,this.light);
   }
+  /** Eingesammelte Beute fliegt sichtbar von der letzten Leiche (oder dem Beutel) zum Helden – Diablo-Vorbild, auch bei Auto-Loot. */
+  lootFly(ev){const g=this.game,p=g.player,dead=g.enemies.filter(e=>e.hp<=0&&!e.corpseSeen&&Math.hypot(e.x-p.x,e.y-p.y)<260).sort((a,b)=>(b.respawnAt||0)-(a.respawnAt||0))[0],from=dead?{x:dead.x,y:dead.y}:lastCorpse&&performance.now()-lastCorpse.at<2500?lastCorpse:null;if(!from)return;const now=performance.now();(this.flying||=[]).push(...(ev.items||[]).slice(0,6).map((it,i)=>({id:it.id,rarity:it.rarity,x:from.x,y:from.y,at:now+i*110})));if(ev.coins)this.flying.push({coins:true,x:from.x,y:from.y,at:now});}
+  drawFlying(c,p){const now=performance.now();this.flying=(this.flying||[]).filter(f=>now-f.at<900);for(const f of this.flying){const t=(now-f.at)/900;if(t<0)continue;const e=1-(1-t)**2,x=f.x+(p.x-f.x)*e,y=f.y+(p.y-18-f.y)*e-Math.sin(t*Math.PI)*34;c.save();c.globalAlpha=t>.85?(1-t)/.15:1;const col={uncommon:'#5fd35a',rare:'#4fa0ff',epic:'#c77dff'}[f.rarity]||'#f3d48a';const g=c.createRadialGradient(x,y,0,x,y,11);g.addColorStop(0,col+'aa');g.addColorStop(1,col+'00');c.fillStyle=g;c.fillRect(x-11,y-11,22,22);if(f.coins){c.fillStyle='#f3c44e';c.beginPath();c.arc(x,y,3,0,7);c.fill();c.fillStyle='#fff0b0';c.fillRect(x-1,y-2,1,1);}else drawItem(c,f.id,Math.round(x-7),Math.round(y-7),.55);c.restore();}}
   drawEffect(c,f,time){if(f.type==='levelup'){drawLevelUp(c,f,time);return;}if(drawCombatEffect(c,f))return;const t=1-f.life/f.max;if(drawAssetEffect(c,f))return;c.save();c.globalAlpha=Math.min(1,f.life*3);if(f.type==='slash'){c.strokeStyle='#f4e3ae';c.lineWidth=3;c.beginPath();c.arc(f.x,f.y-12,18+t*7,-1.5+t,1+t);c.stroke();c.strokeStyle='#acded4';c.lineWidth=1;c.stroke();}
     else if(f.type==='projectile'){const x=f.from.x+(f.x-f.from.x)*t,y=f.from.y+(f.y-f.from.y)*t-15-Math.sin(t*Math.PI)*12;rect(c,'#293b44',x-2,y-5,5,9);rect(c,f.classId==='baerbel'?'#efaa64':'#91b698',x-1,y-4,3,7);rect(c,'#f4d394',x-1,y-1,3,2);}
     else if(f.type==='trail'){ellipse(c,'#b1d9c15c',f.x,f.y-9,5,10);}
