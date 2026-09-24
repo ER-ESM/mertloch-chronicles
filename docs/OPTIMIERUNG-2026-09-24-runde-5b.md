@@ -5,6 +5,7 @@ Vorbild WoW: Symbole und Tooltips statt Fließtext, nirgends scrollen, kompakt. 
 Teil A (Laufwege, Tod, Auftragszählung, Kampffluss, Figur, Tiere, `renderer.js`) ist nicht angefasst.
 
 - Prüfskript: `node scripts/optimierung-r5b-check.mjs` (CDP 9560, Server 4360, `CDP_PORT`/`SERVER_PORT`, `ONLY=1,2,…,K,T`), Helfer `scripts/r5b-lib.mjs`. Bilder in `visual-review/optimierung-r5b/` (lokal, nicht im Repo).
+- Live seit Build #547 (9f59a49), Punkt 14 und Bericht #548 (dcd3552).
 - Neue Datei `fenster-r5b.css` (zuletzt geladen). Sonst nur gezielte Stellen in den genannten Modulen; `app.js` unverändert.
 
 ## Punkte
