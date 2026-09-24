@@ -2,13 +2,14 @@
 // Nur Texte und Werte; die Logik steht in options-ui.js. Schalter-Schlüssel (`setting`) = game.settings, `pref` = kontoweite Einstellung (options-ui.js).
 export const OPTIONS_UI={
  title:'Einstellungen',
+ // Runde 4c: eigene Kategoriesymbole (glyph, Strich-Symbole aus ui-glyphs.js) statt wiederverwendeter Fenstersymbole (Rucksack, Karte …).
  categories:[
-  {id:'game',name:'Spiel',icon:'reward'},
-  {id:'interface',name:'Interface',icon:'bag'},
-  {id:'graphics',name:'Grafik',icon:'map'},
-  {id:'audio',name:'Ton',icon:'sound'},
-  {id:'keys',name:'Tastenbelegung',icon:'book'},
-  {id:'system',name:'System',icon:'fullscreen'}
+  {id:'game',name:'Spiel',icon:'reward',glyph:'gear'},
+  {id:'interface',name:'Interface',icon:'bag',glyph:'frame'},
+  {id:'graphics',name:'Grafik',icon:'map',glyph:'brush'},
+  {id:'audio',name:'Ton',icon:'sound',glyph:'speaker'},
+  {id:'keys',name:'Tastenbelegung',icon:'book',glyph:'keycap'},
+  {id:'system',name:'System',icon:'fullscreen',glyph:'monitor'}
  ],
  sections:{
   game:[

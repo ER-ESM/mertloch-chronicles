@@ -27,6 +27,8 @@ function person(b,touch){
  const chip=(row,id)=>{const label=row.querySelector('small');if(!label||row.dataset.compact)return;row.dataset.compact='1';tip(row,label.textContent.trim(),'');row.tabIndex=0;label.replaceWith(icon(id));};
  const [melee,ranged]=b.querySelectorAll('.weapon-summary>div');chip(melee,'ui-stat-nahkampf');chip(ranged,'ui-stat-fernkampf');
  const [hp,coins]=b.querySelectorAll('.character-stats>div');chip(hp,'ui-stat-leben');chip(coins,'coins');
+ // Runde 4c: Handy quer hat nur Platz für die aktuelle Lebenszahl – „/ Höchstwert“ steht in eigener Spanne (quer ausgeblendet, fenster-r4c.css) und im Tooltip.
+ {const v=hp?.querySelector('b'),m=v&&!v.querySelector('.hp-max')&&v.textContent.match(/^(.*?)\s*\/\s*(.+)$/);if(m){tip(hp,hp.dataset.tooltipLabel||'',v.textContent.trim());v.replaceChildren(m[1],Object.assign(document.createElement('span'),{className:'hp-max',textContent:' / '+m[2]}));}}
  for(const row of b.querySelectorAll('.secondary-stats>[data-stat-tip]')){const name=row.querySelector('span');if(!name||row.dataset.compact)continue;row.dataset.compact='1';row.setAttribute('aria-label',name.textContent);name.replaceWith(icon(C.statIcons[row.dataset.statTip]||'person'));}
  // Alles in eine Werteleiste: Waffen, Leben, Geld, Zweitwerte.
  const stats=document.createElement('div');stats.className='compact-stats';for(const row of b.querySelectorAll('.weapon-summary>div,.character-stats>div,.secondary-stats>[data-stat-tip]'))stats.append(row);

@@ -1,10 +1,11 @@
 import {BOSSES,BOSS_LINES} from './content/index.js';
 import {drawNineSlice} from './content-art.js';
+import {REACTION_COLORS,reactionOf,levelDifficulty,DIFFICULTY_NAMES,DIFFICULTY_COLORS} from './unit-colors.js';
 
 export const isElite=e=>!!(e?.elite||e?.type==='boss');
 const bossDefinition=e=>e.type==='boss'?(BOSSES[e.bossId]||BOSSES[e.family]):undefined;
 export function targetIdentity(e){return {level:(isElite(e)?'ELITE · ':'')+'ST. '+e.level,title:e.title||bossDefinition(e)?.title||''};}
-export function updateTargetIdentity(root,e){
+export function updateTargetIdentity(root,e,playerLevel){
  const identity=targetIdentity(e),title=root.querySelector('#targetTitle');
  root.querySelector('#targetName').textContent=e.name;
  root.querySelector('#targetLevel').textContent=identity.level;
@@ -13,8 +14,10 @@ export function updateTargetIdentity(root,e){
  // Zielrahmen mit höchstens zwei Textzeilen (Runde 2b): Stufe als Zahl im Ring (Elite = goldener Ring, kein Text), Beiname,
  // Verhalten und Entfernung im Tooltip des Namens.
  const lvl=root.querySelector('#targetLevel');lvl.dataset.level=e.level;
+ // Runde 4c (WoW): Stufe als Plakette am Porträt in Schwierigkeitsfarbe; Balken in derselben Reaktionsfarbe wie das Namensschild (unit-colors.js).
+ const diff=playerLevel==null?'yellow':levelDifficulty(playerLevel,e.level),reaction=reactionOf(e),panel=root.querySelector('#targetPanel');lvl.dataset.difficulty=diff;lvl.style.setProperty('--level-color',DIFFICULTY_COLORS[diff]);panel.dataset.reaction=reaction;panel.style.setProperty('--target-hp',REACTION_COLORS[reaction].fill);panel.style.setProperty('--target-hp-shine',REACTION_COLORS[reaction].shine);
  const row=root.querySelector('#targetPanel .unit-name'),effect=root.querySelector('#targetEffect')?.textContent||'',extra=/\d m\b/.test(effect)?effect:[effect,root.querySelector('#targetDistance')?.textContent].filter(Boolean).join(' · ');
- const nick=String(identity.title||'').replace(/^Elite\s*·\s*/i,'');row.dataset.tooltipLabel=e.name;row.dataset.tooltipNote=[(isElite(e)?'Elite · ':'')+'Stufe '+e.level,nick,extra].filter(Boolean).join(' · ');
+ const nick=String(identity.title||'').replace(/^Elite\s*·\s*/i,'');row.dataset.tooltipLabel=e.name;row.dataset.tooltipNote=[(isElite(e)?'Elite · ':'')+'Stufe '+e.level+(playerLevel==null?'':' ('+DIFFICULTY_NAMES[diff]+')'),nick,extra].filter(Boolean).join(' · ');
 }
 
 /** Sprechblasen. Bevorzugt das Ereignis `bark` der Engine (Gegner, Boss, Phase, Bewohner) – ohne Textparsen.

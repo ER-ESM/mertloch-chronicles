@@ -5,6 +5,7 @@
 import {OPTIONS_UI as T,OPTIONS_DEFAULTS,SETTING_DEFAULTS,KEYBIND_GROUPS,KEYBIND_ACTIONS,KEYBIND_UI as K} from './content/index.js';
 import {keysOf,assignKey,actionFor,saveKeymap,liveKeymap,setLiveKeymap,isBrowserKey} from './keymap.js';
 import {bindingLabel,bindingFromKey,bindingFromMouse,bindingAt,assignBinding,BAR_SIZE,MAX_BARS} from './bar-keys.js';
+import {glyph} from './ui-glyphs.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const PREFS_KEY='mertloch-options-v1';
 /** Kontoweite Einstellungen lesen (Speicher darf fehlen); Werte auf ihre Grenzen gezwungen. */
@@ -63,9 +64,9 @@ export function mountOptions(api){
  function html(){
   // Touch hat keine Tastatur: dort entfällt die Tastenbelegung (Knöpfe ordnet System → Touchbuttons).
   const cats=T.categories.filter(c=>c.id!=='keys'||!api.touch?.()),cat=cats.find(c=>c.id===state.cat)||cats[0];
-  const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${cats.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}"><canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas><span>${esc(c.name)}</span></button>`).join('')}</nav>`;
+  const nav=`<nav class="opt-nav" role="tablist" aria-label="${esc(T.title)}">${cats.map(c=>`<button type="button" role="tab" data-opt-cat="${c.id}" aria-selected="${c.id===cat.id}">${c.glyph?glyph(c.glyph):`<canvas width="48" height="48" data-ui-icon="${c.icon}" aria-hidden="true"></canvas>`}<span>${esc(c.name)}</span></button>`).join('')}</nav>`;
   const body=cat.id==='keys'?keysHtml():(T.sections[cat.id]||[]).map(s=>{const rows=s.rows.map(rowHtml).join('');return rows?`<section class="opt-section"><h4>${esc(s.title)}</h4>${rows}</section>`:'';}).join('');
-  return `<div class="opt-window" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note${state.note?'':' is-hint'}" role="status" aria-live="polite">${esc(state.note||(cat.id==='keys'?K.footHint:''))}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
+  return `<div class="opt-window opt-cat-${cat.id}" data-ui-window-title="${esc(T.title)}">${nav}<div class="opt-page" role="tabpanel"><h3>${esc(cat.name)}</h3><div class="opt-scroll">${body}</div><footer class="opt-footer"><button type="button" class="outline-button" data-opt-defaults>${esc(T.defaults)}</button><span class="opt-note${state.note?'':' is-hint'}" role="status" aria-live="polite">${esc(state.note||(cat.id==='keys'?K.footHint:''))}</span><button type="button" class="gold-button" data-opt-close>${esc(T.close)}</button></footer></div></div>`;
  }
  function commitAction(id,slot,binding){
   const g=api.game(),r=assignKey(liveKeymap(),id,slot,binding),name=KEYBIND_ACTIONS.find(a=>a.id===id)?.name||id;

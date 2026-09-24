@@ -42,8 +42,12 @@ try{
  const desk={};
  for(const k of ['c','j','p','i','n','h','m']){await closeAll();await b.press(k);await wait(800);desk[k]={win:await read(`const p=document.querySelector('.game-popup');if(!p)return null;const r=p.getBoundingClientRect();return {id:p.dataset.window,t:Math.round(r.top),h:Math.round(r.height)}`),scroll:await scrolling()};assert.ok(desk[k].win,'Fenster '+k+' fehlt');assert.deepEqual(desk[k].scroll,[],'Desktop: '+k+' scrollt');}
  await closeAll();await b.press('Escape');await wait(600);assert.deepEqual(await scrolling(),[],'Spielmenü scrollt');
- await read(`document.querySelector('.popup-menu [data-shell="settings"]')?.click()`);await wait(600);assert.ok(await popup('settings'),'Einstellungen');assert.deepEqual(await scrolling(),[],'Einstellungen scrollen');await closeAll();
- report.desktop=desk;ok('Desktop: kein Fenster scrollt (Figur, Aufträge, Kniffe, Rucksack, Talente, Hilfe, Karte, Spielmenü, Einstellungen)');
+ await read(`document.querySelector('.popup-menu [data-shell="settings"]')?.click()`);await wait(600);assert.ok(await popup('settings'),'Einstellungen');
+ // Runde 4c: ALLE Kategorien messen, nicht nur die zuletzt gewählte (Spiel, Interface, Grafik, Ton, Tastenbelegung, System); auch waagerecht (Spalten).
+ const cats=await read(`return [...document.querySelectorAll('[data-opt-cat]')].map(b=>b.dataset.optCat)`);assert.ok(cats.length>=6,'sechs Kategorien '+cats);desk.settings={};
+ for(const cat of cats){await read(`document.querySelector('[data-opt-cat="${cat}"]').click()`);await wait(350);const sc=await scrolling(),wide=await read(`const s=document.querySelector('.opt-scroll');return s.scrollWidth>s.clientWidth+2?s.scrollWidth+'/'+s.clientWidth:''`);desk.settings[cat]={scroll:sc,wide};assert.deepEqual(sc,[],'Einstellungen „'+cat+'“ scrollen');assert.equal(wide,'','Einstellungen „'+cat+'“ laufen seitlich über');}
+ await closeAll();
+ report.desktop=desk;ok('Desktop: kein Fenster scrollt (Figur, Aufträge, Kniffe, Rucksack, Talente, Hilfe, Karte, Spielmenü, Einstellungen in allen '+Object.keys(desk.settings).length+' Kategorien)');
  // ---------- 2 Fensterhöhe nach Inhalt, gemeinsame Oberkante ----------
  await b.press('c');await wait(400);await b.press('j');await wait(400);await b.press('p');await wait(600);
  const book=await read(`const p=document.querySelector('.game-popup[data-window="book"]'),body=p.querySelector('.popup-body'),r=p.getBoundingClientRect(),last=[...body.querySelectorAll('.book-skill')].reduce((m,e)=>Math.max(m,e.getBoundingClientRect().bottom),0);return {t:Math.round(r.top),h:Math.round(r.height),b:Math.round(r.bottom),empty:Math.round(r.bottom-last)}`);

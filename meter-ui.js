@@ -1,5 +1,6 @@
 import {METER_TEXT as T,METER_RULES} from './content/index.js';
 import {meterReport,resetCombatMeter} from './combat-meter.js';
+import {glyph} from './ui-glyphs.js';
 const number=new Intl.NumberFormat('de-DE',{maximumFractionDigits:1});
 const fmt=n=>number.format(n||0);
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -16,13 +17,14 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
  const toggle=document.createElement('button');toggle.id='meterToggle';toggle.type='button';toggle.setAttribute('aria-controls','combatMeter');toggle.setAttribute('aria-label',T.shortcut);/* Symbolknopf mit Tooltip statt Textpille (Runde 2b) */toggle.dataset.tooltipLabel=T.shortcut;toggle.dataset.tooltipNote='';
  toggle.innerHTML=`<span aria-hidden="true">▥</span><span class="meter-toggle-label">${T.title}</span><kbd>V</kbd>`;
  const panel=document.createElement('aside');panel.id='combatMeter';panel.hidden=!visible[device];panel.setAttribute('aria-label',T.title);
- panel.innerHTML=`<header class="meter-header"><strong title="${T.drag}">${T.title}</strong><button type="button" data-meter-options aria-label="${T.options}" aria-expanded="false">⚙</button><button type="button" data-meter-close aria-label="${T.close}">×</button></header>
- <div class="meter-modes" role="group" aria-label="${T.title}"><button type="button" data-meter-mode="damage">${T.damage}</button><button type="button" data-meter-mode="healing">${T.healing}</button></div>
+ // Runde 4c (2026-09-24): Titelzeile wie alle Spielfenster – Symbol + Versaltitel, Schaden/Heilung als Symbolreiter, Optionen als Zahnrad.
+ const tipAttr=(label,note='')=>`data-tooltip-label="${label}" data-tooltip-note="${note}"`;
+ panel.innerHTML=`<header class="meter-header"><span class="meter-title-icon" aria-hidden="true">${glyph('chart')}</span><strong title="${T.drag}">${T.title}</strong><span class="meter-modes" role="group" aria-label="${T.title}"><button type="button" data-meter-mode="damage" aria-label="${T.damage}" ${tipAttr(T.damage)}>${glyph('swords')}</button><button type="button" data-meter-mode="healing" aria-label="${T.healing}" ${tipAttr(T.healing)}>${glyph('heal')}</button></span><button type="button" data-meter-options aria-label="${T.options}" aria-expanded="false" ${tipAttr(T.options)}>${glyph('gear')}</button><button type="button" data-meter-close aria-label="${T.close}">×</button></header>
  <div class="meter-toolbar"><button type="button" data-meter-back hidden aria-label="${T.back}">←</button><select id="meterSegment" aria-label="${T.fight}"></select></div>
- <div class="meter-scroll"><h3 class="meter-list-title" hidden></h3><div class="meter-rows" aria-label="${T.ranking}"></div><p class="meter-empty"></p>
+ <div class="meter-scroll"><h3 class="meter-list-title" hidden></h3><div class="meter-rows" aria-label="${T.ranking}"></div><p class="meter-empty" tabindex="0"></p>
  <section class="meter-detail" hidden></section><section class="meter-options" hidden><details class="meter-info"><summary>${T.info}</summary><p>${T.hint}</p><p>${T.session}</p></details>
  <button type="button" class="meter-reset" data-meter-reset>${T.reset}</button><div class="meter-confirm" hidden><p>${T.resetQuestion}</p><button type="button" data-meter-confirm>${T.confirmReset}</button><button type="button" data-meter-cancel>${T.cancel}</button></div></section></div>
- <footer class="meter-summary"><span><b data-meter-total>0</b> ${T.total}</span><span><b data-meter-rate>0</b> <span data-meter-rate-label></span></span><span data-meter-time>0 s</span></footer><p class="meter-status"></p><button type="button" class="meter-resize" data-meter-resize aria-label="${T.resize}" title="${T.resize}">◢</button>`;
+ <footer class="meter-summary"><span class="meter-time" tabindex="0" ${tipAttr(T.seconds)}>${glyph('clock')}<span data-meter-time>0 s</span></span></footer><button type="button" class="meter-resize" data-meter-resize aria-label="${T.resize}" title="${T.resize}">◢</button>`;
  root.append(toggle,panel);
  const $=s=>panel.querySelector(s),select=$('#meterSegment'),rows=$('.meter-rows');
  function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify({...visible,mode,position,size}));}catch{}}
@@ -86,11 +88,13 @@ export function mountMeterUI(root,getGame,beforeOpen=()=>{}){
   const report=meterReport(g,selection,mode);
   if(previousSegment!==report.id){abilityId=null;previousSegment=report.id;}
   for(const b of panel.querySelectorAll('[data-meter-mode]'))b.setAttribute('aria-pressed',String(b.dataset.meterMode===mode));
-  panel.dataset.mode=mode;$('[data-meter-rate-label]').textContent=mode==='healing'?T.hps:T.dps;$('[data-meter-rate]').textContent=fmt(report.rate);$('[data-meter-total]').textContent=fmt(report.total);$('[data-meter-time]').textContent=fmt(report.seconds)+' s';
-  $('.meter-status').textContent=selection==='overall'?T.overall:report.id===null?T.empty:(report.live?T.active:T.finished)+' · '+(report.training?T.training+' · ':'')+(report.title||T.fight);
+  panel.dataset.mode=mode;$('[data-meter-time]').textContent=fmt(report.seconds)+' s';
+  // Die Fußzeile wiederholt die Balkenzeile nicht mehr: nur die Kampfdauer, Zustand und Kampf im Tooltip.
+  const status=selection==='overall'?T.overall:report.id===null?T.empty:(report.live?T.active:T.finished)+' · '+(report.training?T.training+' · ':'')+(report.title||T.fight),time=$('.meter-time');time.dataset.tooltipNote=status;time.setAttribute('aria-label',T.seconds+' '+fmt(report.seconds)+' s · '+status);
   const actor=report.actors.find(a=>a.id===actorId),items=actor?actor.abilities:report.actors;
   $('[data-meter-back]').hidden=!actor;$('.meter-list-title').hidden=!actor;$('.meter-list-title').textContent=actor?actor.name+' · '+T.abilities:T.actors;
-  $('.meter-empty').hidden=items.length>0;$('.meter-empty').textContent=mode==='healing'?T.noHealing:T.noDamage;
+  // Leerzustand als Symbol (ausgegraut) mit Tooltip statt Satz.
+  const empty=$('.meter-empty'),emptyText=report.id===null?T.empty:mode==='healing'?T.noHealing:T.noDamage;empty.hidden=items.length>0;if(empty.dataset.tooltipNote!==emptyText){empty.innerHTML=glyph(mode==='healing'?'heal':'sword');empty.dataset.tooltipLabel=T.title;empty.dataset.tooltipNote=emptyText;empty.setAttribute('aria-label',emptyText);}
   const keys=(actor?'abilities:':'actors:')+items.map(a=>a.id).join('|');
   if(rowKeys!==keys){rowKeys=keys;rows.innerHTML=items.map(a=>`<button type="button" class="meter-row" data-meter-${actor?'ability':'actor'}="${escape(a.id)}"><i aria-hidden="true"></i><span class="meter-row-name"></span><b></b><small></small></button>`).join('');}
   for(const [i,item] of items.entries()){

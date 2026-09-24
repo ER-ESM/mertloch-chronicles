@@ -54,6 +54,7 @@ import {prerenderArt,prerenderHasBakedShadow} from './prerender-art.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
 import {hotspotLayout,giverGlyph} from './hotspots.js';
 import {questMob,chapterAreas,idaMark} from './quest-mobs.js';
+import {REACTION_COLORS,reactionOf,isNeutralUnit} from './unit-colors.js';
 const poly=(c,p)=>{c.beginPath();p.forEach((v,i)=>i?c.lineTo(Math.round(v.x),Math.round(v.y)):c.moveTo(Math.round(v.x),Math.round(v.y)));c.closePath();};
 const rect=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x*2)/2,Math.round(y*2)/2,Math.round(w*2)/2,Math.round(h*2)/2);};
 const ellipse=(c,color,x,y,rx,ry)=>{c.fillStyle=color;c.beginPath();c.ellipse(Math.round(x),Math.round(y),rx,ry,0,0,Math.PI*2);c.fill();};
@@ -70,7 +71,7 @@ function nameplate(c,e,y,neutral,cx=e.x){const k=Math.max(0,Math.min(1,e.hp/e.ma
  if(now-e.plateHit>380)e.plateChip=Math.max(k,e.plateChip-Math.min(50,now-(e.plateTick||now))/1000*.9);e.plateTick=now;
  const x=cx-19;rect(c,'#150d0b',x-1,y-1,40,6);rect(c,'#3a2521',x,y,38,4);
  if(e.plateChip>k)rect(c,'#f6e3b4',x+38*k,y,38*(e.plateChip-k),4);
- rect(c,neutral?'#c9a55a':'#b8404a',x,y,38*k,4);rect(c,neutral?'#f1d894':'#ea7d7c',x,y,38*k,1);
+ const tone=REACTION_COLORS[neutral?'neutral':'hostile'];rect(c,tone.fill,x,y,38*k,4);rect(c,tone.shine,x,y,38*k,1);
  if(e.elite||e.type==='boss'){c.strokeStyle='#e8c170';c.lineWidth=.6;c.strokeRect(x-1.3,y-1.3,40.6,6.6);}}
 /** Stufenaufstieg in der Welt (WoW-Vorbild): goldene Lichtsäule, Bodenring, der sich ausbreitet, und aufsteigende Funken – 1,8 s. */
 function drawLevelUp(c,f,time){const t=1-f.life/f.max,fade=t<.15?t/.15:Math.max(0,1-(t-.15)/.85),x=f.x,y=f.y;c.save();
@@ -284,7 +285,7 @@ export class Renderer {
     for(const f of g.fx)if(visible(f,(f.radius||60)+40)||f.from&&visible(f.from,100))this.drawEffect(c,f,time);
     drawCombatStates(c,g,visible);
     // Namen und Lebensbalken sitzen über dem gelieferten Bogen; die Weltposition selbst bleibt unverändert.
-    for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const dummy=(e.tutorial||e.dummy)&&hasContentAsset('ui-arena-dummy')?37:0;const art=e.tutorial||e.dummy?0:liveActorHeight(e.variant||e.bossId||e.skin,e.variant);const y=e.y-(dummy||(art?art+11:e.tutorial?58:e.type==='boss'?(e.variant==='automat'?56:41):e.type==='cultist'?36:e.elite?37:29));e.spriteTop=y+6;/* Oberkante des Bilds für den Treffertest (target-ui.js) */if(e===g.target||e.aggro||distance(e,p)<160){/* Schild über dem Gegner, nie auf der eigenen Figur (Runde 2b, Kenner-Befund 9) */const at=liftOffHero(g,e.x,y,20);/* Trefferfläche des Namensschilds für die Maus (target-ui.js, Runde 3a) */e.plateAt={x:at.x,y,t:performance.now()};if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))(g.settings?.namesEnemy!==false||e===g.target)&&label(c,e.name,at.x,y,e.behavior==='neutral'&&!e.aggro?'#f2d487':'#f0b0a0',7);nameplate(c,e,y+4,e.behavior==='neutral'&&!e.aggro,at.x);if(questMob(g,e))questMobMark(c,at.x-25,y+6);if(e.elite)drawContentIcon(c,'ui-elite-badge',Math.round(at.x-29),Math.round(y-9),16);}/* Zielmarkierung der Gruppe über dem Kopf, auch aus der Ferne (target-marks.js) */if(e.groupMark){const fresh=e.plateAt&&performance.now()-e.plateAt.t<200;drawMark(c,e.groupMark,fresh?e.plateAt.x:e.x,y-15,6);}
+    for(const e of g.enemies){if(!visible(e)||e.hp<=0)continue;const dummy=(e.tutorial||e.dummy)&&hasContentAsset('ui-arena-dummy')?37:0;const art=e.tutorial||e.dummy?0:liveActorHeight(e.variant||e.bossId||e.skin,e.variant);const y=e.y-(dummy||(art?art+11:e.tutorial?58:e.type==='boss'?(e.variant==='automat'?56:41):e.type==='cultist'?36:e.elite?37:29));e.spriteTop=y+6;/* Oberkante des Bilds für den Treffertest (target-ui.js) */if(e===g.target||e.aggro||distance(e,p)<160){/* Schild über dem Gegner, nie auf der eigenen Figur (Runde 2b, Kenner-Befund 9) */const at=liftOffHero(g,e.x,y,20);/* Trefferfläche des Namensschilds für die Maus (target-ui.js, Runde 3a) */e.plateAt={x:at.x,y,t:performance.now()};if(e===g.target||e.type==='boss'||!g.enemies.some(o=>o.id<e.id&&o.hp>0&&distance(o,e)<80))(g.settings?.namesEnemy!==false||e===g.target)&&label(c,e.name,at.x,y,REACTION_COLORS[reactionOf(e)].name,7);nameplate(c,e,y+4,isNeutralUnit(e),at.x);if(questMob(g,e))questMobMark(c,at.x-25,y+6);if(e.elite)drawContentIcon(c,'ui-elite-badge',Math.round(at.x-29),Math.round(y-9),16);}/* Zielmarkierung der Gruppe über dem Kopf, auch aus der Ferne (target-marks.js) */if(e.groupMark){const fresh=e.plateAt&&performance.now()-e.plateAt.t<200;drawMark(c,e.groupMark,fresh?e.plateAt.x:e.x,y-15,6);}
       if(e.spawnGrace>0&&distance(e,p)<100)label(c,'Taucht auf …',e.x,y-9,'#d6c5de',7);if(e.ai==='returning')label(c,'Zieht ab',e.x,y-9,'#b3c5dc',7);if(e.mark>0){label(c,'!',e.x,y-10,'#bce3d6',11);}
       if(e.cast){const yy=y+11;rect(c,'#282b23',e.x-23,yy,46,4);rect(c,e.cast.interruptible?'#dbb967':'#d99071',e.x-22,yy+1,44*(1-e.cast.remaining/e.cast.total),2);}
     }

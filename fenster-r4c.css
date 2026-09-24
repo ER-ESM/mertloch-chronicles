@@ -1,0 +1,157 @@
+/* ===== Optimierung Runde 4, Teil C „Handy & Nebenfenster“ (2026-09-24) =====
+   Zuletzt geladen. Belege in docs/OPTIMIERUNG-2026-09-24-runde-4c.md, Zielbild 3 und Befunde 5, 7, 8, 9, 11, 12 im Grafikbericht R4.
+   Regeln wie Runde 3b: nirgends scrollen, Tipp-Ziele ≥ 44 px mit ≥ 8 px Abstand (9 px, weil Bruchteile 8 zu 7,9 machen). */
+
+/* ---------- 1 · Spielmenü hochkant: modal, reicht über die ruhende Touch-Steuerung (popup-windows.js), nichts abgeschnitten ---------- */
+@media (orientation:portrait){
+ .touch-mode:has(.popup-menu) #mobileControls>:not(.game-popup){visibility:hidden!important}
+ .touch-mode:has(.popup-menu) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+}
+/* Sehr kleine Schirme (≤ 600 px hoch): jedes Fenster ist modal und reicht bis zur Unterkante; die Steuerung ruht, solange es offen ist */
+@media (orientation:portrait) and (max-height:600px){
+ .touch-mode:has(.game-popup) #mobileControls>:not(.game-popup){visibility:hidden!important}
+ .touch-mode:has(.game-popup) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+}
+/* Kleine Schirme (≤ 700 px hoch, iPhone SE 320×568): die zehn Fensterkacheln als 5 × 2 Symbole ohne Wort (Name im Tooltip/aria-label) */
+@media (orientation:portrait) and (max-height:700px){
+ .touch-mode .popup-menu .game-menu-windows{grid-template-columns:repeat(5,minmax(44px,1fr))!important;gap:9px!important;margin:0 0 9px!important}
+ .touch-mode .popup-menu .game-menu-windows button{height:48px!important;min-height:48px!important;padding:0!important;justify-content:center;align-items:center}
+ .touch-mode .popup-menu .game-menu-windows button canvas{width:32px;height:32px}
+ .touch-mode .popup-menu .game-menu-windows button span{display:none!important}
+ .touch-mode .popup-menu .game-menu-actions{gap:9px!important}
+}
+
+/* ---------- 2 · Hochkant: Spielerrahmen verborgen, solange ein Fenster offen ist (kein 16-px-Geist über der Titelzeile) ---------- */
+@media (orientation:portrait){
+ .touch-mode:has(.game-popup) #gameShell>.player-panel{visibility:hidden!important}
+}
+
+/* ---------- 3 · Figur am Handy: Puppenplätze 44 px im festen 52-px-Schritt (8 px Abstand), unabhängig von der Puppenhöhe ---------- */
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=head]{--slot-y:0px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=shoulders]{--slot-y:52px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=wrists]{--slot-y:104px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=waist]{--slot-y:156px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=feet]{--slot-y:208px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=neck]{--slot-y:26px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=body]{--slot-y:78px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=hands]{--slot-y:130px}
+.touch-mode .popup-person .body-equipment>[data-equipment-slot=legs]{--slot-y:182px}
+.touch-mode .popup-person .gear-footer{gap:9px 8px!important}
+/* Hochkant (ohne Reiter): sieben Plätze passen nicht mit 8 px in eine Zeile (356 > 342 px). Ringe und Glücksbringer stehen darum als zweite
+   Spalte rechts, versetzt zu Hals/Brust/Hände/Beine (WoW-Randspalten); unten bleibt nur die Waffenzeile, die Puppe rückt 22 px nach links. */
+@media (orientation:portrait){
+ .touch-mode .popup-person .equipment-grid{--body-height:max(252px,min(272px,calc(100cqh - 132px)))!important}
+ .touch-mode .popup-person .popup-body:has(>.panel-tabs) .equipment-grid{--body-height:max(252px,min(280px,calc(100cqh - 56px)))!important}
+ .touch-mode .game-popup.popup-person>.popup-body:not(:has(>.panel-tabs)){position:relative}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .gear-footer{grid-template-columns:repeat(3,44px)!important;justify-content:center;gap:8px!important}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .gear-footer .gear-cell:is([data-equipment-slot=ring1],[data-equipment-slot=ring2],[data-equipment-slot=trinket1],[data-equipment-slot=trinket2]){position:absolute!important;right:57px;z-index:2}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .gear-footer [data-equipment-slot=ring1]{top:9px}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .gear-footer [data-equipment-slot=ring2]{top:61px}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .gear-footer [data-equipment-slot=trinket1]{top:113px}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .gear-footer [data-equipment-slot=trinket2]{top:165px}
+ .touch-mode .popup-person .popup-body:not(:has(>.panel-tabs)) .equipment-grid .gear-doll canvas{left:calc(50% - 22px)}
+}
+@media (orientation:landscape){
+ .touch-mode .popup-person .equipment-grid{--body-height:252px!important}
+ .touch-mode .popup-person .compact-stats .hp-max{display:none}
+ .touch-mode .game-popup.popup-person>.popup-body{padding-bottom:3px!important}
+}
+
+/* ---------- 3 · Talente am Handy: fünf Reihen im 52-px-Schritt (Brett 264 px mit 1-px-Rand, Knoten bei 10 … 90 % der Innenhöhe; quer genau 262 px, die Körperhöhe reicht nicht für mehr), Wappen und Pfade neben dem Baum,
+   wo die Höhe nicht reicht (341–370 px breit hochkant; darunter ist das Fenster modal und hoch genug). Quer bekommt der Baum die volle Körperhöhe: 8 px unter der Titelzeile beginnt Reihe 1. */
+.touch-mode .tt-compact .tt-board{min-height:264px!important;height:264px!important;max-height:none!important}
+.touch-mode .tt-compact .tt-tree{margin-top:0!important}
+@media (orientation:landscape){
+ .touch-mode .game-popup.popup-talents>.popup-body.tt-compact.tt-compact{padding-top:1px!important;padding-bottom:0!important}
+ .touch-mode .tt-compact .tt-tree{border-bottom-width:0!important}
+ .touch-mode .tt-compact .tt-board{height:262px!important;min-height:262px!important}
+ .touch-mode .tt-compact .tt-bonuses{padding-top:4px!important}
+ .touch-mode .tt-compact .person-talents{margin-top:0!important}
+}
+@media (orientation:portrait) and (max-width:370px) and (min-width:341px){
+ .touch-mode .game-popup.popup-talents>.popup-body.tt-compact.tt-compact{padding-left:4px!important;padding-right:4px!important}
+ .touch-mode .tt-compact .tt-tree{flex-direction:row!important;gap:9px}
+ .touch-mode .tt-compact .tt-board{flex:1 1 auto;min-width:0}
+ .touch-mode .tt-compact .tt-bonuses{flex:none;width:97px;grid-template-columns:44px 44px!important;grid-auto-rows:auto;align-content:start;justify-content:start!important;gap:9px!important;margin:0!important}
+ .touch-mode .tt-compact .tt-spec-body,.touch-mode .tt-compact .tt-path-tabs{flex-direction:column;gap:9px!important}
+ .touch-mode .tt-compact .tt-bonuses .tt-track,.touch-mode .tt-compact .tt-bonus-buttons{grid-column:1/-1}
+ .touch-mode .tt-compact .tt-bonus-buttons{flex-direction:column;gap:9px}
+}
+@media (orientation:portrait) and (max-width:340px){.touch-mode .tt-compact .tt-bonuses{margin-top:4px!important}}
+
+/* ---------- 4 · Rucksack-Kopf bei ≤ 370 px: sechs Knöpfe 44 × 44 statt 40 × 40 ---------- */
+@media (max-width:370px){
+ .touch-mode .popup-bag .bag-head :is(button,.ql-tool){width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important}
+ .touch-mode .popup-bag .bag-head,.touch-mode .popup-bag .bag-head .bag-filters{gap:9px!important}
+}
+
+/* ---------- 5 · Zielrahmen (WoW): Stufe als Plakette unten am Porträt (Spiegel des Spielerrahmens) in Schwierigkeitsfarbe,
+   Lebensbalken in der Reaktionsfarbe des Namensschilds (feindlich rot, neutral gelb) – beide Werte aus unit-colors.js ---------- */
+.target-panel:not(.friendly-target):has(#targetPortrait) #targetLevel{position:absolute!important;right:35px;top:calc(50% + 12px);transform:translateX(50%);z-index:3;margin:0!important}
+.touch-mode .target-panel:not(.friendly-target):has(#targetPortrait) #targetLevel{right:6px;top:calc(50% + 17px)}
+#targetPanel #targetLevel::after{min-width:24px;height:18px;padding:0 4px;border-radius:3px;font:400 16px/1 var(--display,'Jersey 15',sans-serif);letter-spacing:0;color:var(--level-color,#ffd84a);background:#1b2d24;border:1px solid #c09d58;box-shadow:0 1px 2px #071610;box-sizing:border-box}
+#targetPanel.elite-target #targetLevel::after{background:#3a2a10;border-color:#e8c170;box-shadow:0 0 0 1px #e8c17066,0 0 6px #e8c17099}
+#targetPanel:not(.friendly-target) .bar.enemy-hp i{background:linear-gradient(var(--target-hp-shine,#ea7d7c) 0 2px,var(--target-hp,#b8404a) 2px 55%,color-mix(in srgb,var(--target-hp,#b8404a) 72%,#000) 100%)!important}
+
+/* ---------- 6 · Kampfstatistik im Fensterstil: Titelzeile mit Symbol und Versaltitel, Schaden/Heilung als Symbolreiter in der Titelzeile,
+   Fuß nur die Kampfdauer (Zustand im Tooltip), Leerzustand als ausgegrautes Symbol mit Tooltip (meter-ui.js) ---------- */
+#combatMeter .meter-header{display:flex;align-items:center;gap:4px;height:38px;padding:0 4px 0 8px!important;background:linear-gradient(90deg,#10221bed,#2e4533c9)!important;border-bottom:1px solid #9f874855!important}
+#combatMeter .meter-title-icon{flex:none;display:grid;place-items:center;width:22px;height:22px;color:#e7c87b}
+#combatMeter .meter-title-icon .ui-glyph{width:20px;height:20px}
+#combatMeter .meter-header strong{flex:1 1 auto;min-width:0;font:400 18px/1 var(--display,'Jersey 15',sans-serif)!important;letter-spacing:.025em!important;text-transform:uppercase;color:var(--chrome-text,#f3dfae)!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#combatMeter .meter-header .meter-modes{display:flex;flex:none;gap:4px;padding:0!important;margin:0 4px 0 0;background:none!important}
+#combatMeter .meter-header button{flex:none!important;display:grid;place-items:center;width:28px!important;height:28px;min-height:28px!important;padding:0!important;font-size:17px;line-height:1;color:#e7c87b;background:#0f1f19!important;border:1px solid #c5a26877!important;border-radius:5px!important;box-shadow:none!important}
+#combatMeter .meter-header button .ui-glyph{width:17px;height:17px}
+#combatMeter .meter-header button:hover{border-color:#f3cf7a!important;color:#fff0c8}
+#combatMeter .meter-header .meter-modes button[aria-pressed=true]{color:#fff0c9;background:linear-gradient(#7a5528,#4d3418)!important;border-color:#f0c46a!important;box-shadow:0 0 6px #f0c46a55!important}
+#combatMeter[data-mode=healing] .meter-header .meter-modes button[aria-pressed=true]{background:linear-gradient(#3d7449,#23472d)!important;border-color:#a4db9d!important;box-shadow:0 0 6px #a4db9d55!important}
+#combatMeter .meter-summary{justify-content:flex-end!important;padding:3px 20px 3px 6px!important;background:none!important;border-top:1px solid #c5a26844!important;font:700 12px/1 var(--read,'Nunito',sans-serif)!important;color:#efe4c6}
+#combatMeter .meter-time{display:inline-flex;align-items:center;gap:4px;cursor:help;font-variant-numeric:tabular-nums}
+#combatMeter .meter-time .ui-glyph{width:14px;height:14px;color:#c9a55a}
+#combatMeter .meter-empty{display:grid;place-items:center;margin:10px auto!important;width:48px;height:48px;color:#8f927f;opacity:.55;cursor:help}
+#combatMeter .meter-empty .ui-glyph{width:36px;height:36px}
+.touch-mode #combatMeter .meter-header{height:auto;min-height:52px;gap:8px;padding:4px 8px!important}
+.touch-mode #combatMeter .meter-header .meter-modes{gap:8px}
+.touch-mode #combatMeter .meter-header button{width:44px!important;height:44px;min-height:44px!important}
+.touch-mode #combatMeter .meter-header button .ui-glyph{width:22px;height:22px}
+.touch-mode #combatMeter .meter-summary{padding:6px 8px!important}
+
+/* ---------- 7 · Einstellungen ohne Blättern (Desktop): Zeilen 28 px wie im WoW-Optionsfenster, Seitentitel entfällt (die Kategorie ist links
+   markiert), eigene Kategoriesymbole; die Tastenbelegung steht in vier Spalten in einem breiteren Fenster ---------- */
+.opt-nav button .ui-glyph{width:22px;height:22px;flex:none;color:#e7c87b}
+.opt-nav button[aria-selected=true] .ui-glyph{color:#fff0c9}
+body:not(.touch-mode) .opt-page>h3{display:none}
+body:not(.touch-mode) .opt-scroll{padding:6px 16px 6px!important}
+body:not(.touch-mode) .opt-section{margin-top:8px}
+body:not(.touch-mode) .opt-section:first-child{margin-top:0}
+body:not(.touch-mode) .opt-section h4{margin:0 0 2px;padding-bottom:2px;font-size:14px}
+body:not(.touch-mode) .opt-row{min-height:28px;padding:1px 6px}
+body:not(.touch-mode) .opt-row.opt-sub{min-height:26px}
+body:not(.touch-mode) .opt-label{font-size:13.5px}
+body:not(.touch-mode) .game-popup .opt-switch{min-height:24px!important;height:24px}
+body:not(.touch-mode) .game-popup .opt-segment button{min-height:24px!important;height:24px;padding:0 10px!important}
+body:not(.touch-mode) .game-popup .opt-open{min-height:24px!important;height:24px;padding:0 12px!important}
+body:not(.touch-mode) .opt-wide{padding:1px 6px}
+body:not(.touch-mode) .opt-wide .bar-settings{min-height:26px;gap:8px}
+body:not(.touch-mode) .opt-wide .bar-settings :is(button,select){min-height:24px!important;height:24px}
+body:not(.touch-mode) .opt-footer{padding:6px 16px}
+body:not(.touch-mode) .game-popup .opt-footer button{min-height:30px!important;height:30px}
+/* Tastenbelegung: vier Spalten (Gruppen laufen weiter), Suche über die volle Breite, Kopfzeile „Aktion/Taste 1/Taste 2“ entfällt
+   (Hinweis steht in der Fußzeile); das Fenster wird dafür breiter (bis 1480 px), bleibt aber mittig. */
+body:not(.touch-mode) .game-popup[data-window=settings]:has(.opt-cat-keys){width:min(1480px,calc(100vw - 40px))!important;max-width:none!important;left:max(20px,calc(50vw - 740px))!important}
+body:not(.touch-mode) .opt-cat-keys .opt-scroll{columns:4;column-gap:16px;column-fill:balance}
+body:not(.touch-mode) .opt-cat-keys .opt-search{column-span:all;display:block;margin:0 0 6px}
+body:not(.touch-mode) .opt-cat-keys .opt-search input{min-height:28px!important;height:28px;margin:0;max-width:420px}
+body:not(.touch-mode) .opt-cat-keys .opt-keyhead{display:none}
+body:not(.touch-mode) .opt-cat-keys .opt-section{margin-top:6px}
+body:not(.touch-mode) .opt-cat-keys .opt-section:first-of-type{margin-top:0}
+body:not(.touch-mode) .opt-cat-keys .opt-section h4{break-after:avoid}
+body:not(.touch-mode) .opt-cat-keys .opt-keyrow{grid-template-columns:minmax(0,1fr) 80px 80px;gap:5px;min-height:24px;padding:1px 4px;break-inside:avoid}
+body:not(.touch-mode) .opt-cat-keys .opt-keyrow .opt-label{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+body:not(.touch-mode) .game-popup .opt-cat-keys .opt-key{min-height:22px;height:22px;font-size:12px}
+/* ≤ 340 px (iPhone SE): sechs Kopfknöpfe passen nicht mit 44 px in eine Zeile – die Lupe rückt in eine zweite Zeile, nichts wird kleiner */
+@media (max-width:340px){
+ .touch-mode .popup-bag .bag-head{flex-wrap:wrap!important;row-gap:9px!important}
+ .touch-mode .popup-bag .bag-head-tools{margin-left:0}
+}
+.touch-mode #combatMeter select{height:44px!important;min-height:44px!important}
