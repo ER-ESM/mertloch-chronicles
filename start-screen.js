@@ -12,7 +12,7 @@ import {ITEMS} from './rpg.js';
 import {SKIN_TONES,HAIR_COLORS,FACE_ITEMS,HAIR_STYLES,BEARDS,offeredFor,DEFAULT_TINT,lookKey as tintKey,parseTintKey,hslToRgb} from './hero-tint.js';
 
 /** Helden-Slots (E-38): Texte der Heldenhalle und der Erstellung. */
-export const HERO_UI={eyebrow:'Deine Helden',title:'Wer zieht heute los?',text:'Jeder Held hat seinen eigenen Spielstand, seine eigene Geschichte und seinen eigenen Rucksack.',empty:'Noch kein Held. Erstelle deinen ersten.',create:'Neuer Held',level:'Stufe',fresh:'Neu',enter:'Ins Dorf',remove:'Held löschen',removeAsk:name=>'„'+name+'“ mit Spielstand wirklich löschen? Das lässt sich nicht rückgängig machen.',
+export const HERO_UI={eyebrow:'Deine Helden',title:'Wer zieht heute los?',text:'Jeder Held hat seinen eigenen Spielstand, seine eigene Geschichte und seinen eigenen Rucksack.',empty:'Noch kein Held. Erstelle deinen ersten.',create:'Neuer Held',level:'Stufe',fresh:'Neu',enter:'Ins Dorf',remove:'Held löschen',removeAsk:name=>'„'+name+'“ mit Spielstand wirklich löschen? Das lässt sich nicht rückgängig machen.',removeType:name=>'Zum Bestätigen „'+name+'“ eintippen',removeWrong:'Der Name stimmt nicht.',
  body:'Körperbau',stepClass:'1 · Klasse',skin:'Hautton',hair:'Haarfarbe',face:'Am Kopf',style:'Frisur',beard:'Bart',stepLook:'2 · Aussehen',stepName:'3 · Name',classTitle:'Welche Klasse?',lookTitle:'Wie siehst du aus?',lookText:'Das Aussehen ist frei wählbar und hat keinen Einfluss auf Werte. Ausrüstung siehst du später am Körper.',nameTitle:'Wie heißt dein Held?',nameLabel:'Name',next:'Weiter',back:'Zurück',cancel:'Abbrechen',finish:'Held erstellen',busy:'Name wird geprüft …',
  classes:{dieter:['Tresenbrecher','Nahkampf · hält aus und teilt aus'],baerbel:['Landhaus-Lady','Fernkampf und Heilung · im Takt am stärksten'],kevin:['Pfandingenieur','Fernkampf · Basteln, Zünden, Glück']}};
 
@@ -61,6 +61,7 @@ export function mountStartScreen(host){
     <div class="cs-name"><b>${esc(picked.name)}</b><span>${picked.summary?esc(HERO_UI.level)+' '+picked.summary.level+' · ':''}${esc(HERO_UI.classes[picked.classId][0])}</span><small title="${esc(m.rotation||'')}">${esc(HERO_UI.classes[picked.classId][1])}</small>${blocked?`<p class="start-note bad">${esc(T.combatNote)}</p>`:''}</div></div>
    <aside class="cs-list" aria-label="${esc(HERO_UI.title)}"><h3>${esc(HERO_UI.eyebrow)}</h3><div class="cs-cards" role="group">${listCards}</div>${addCard}</aside>
    <div class="cs-enter"><button type="button" class="gold-button ui-button cs-enter-button" data-ui-variant="primary" data-start="enter"${blocked?' disabled':''}>${esc(HERO_UI.enter)}</button></div>
+   ${state.removing===picked.id?`<div class="cs-remove" role="dialog" aria-modal="true" aria-label="${esc(HERO_UI.remove)}"><div class="cs-remove-box"><h3>${esc(HERO_UI.remove)}</h3><p>${esc(HERO_UI.removeAsk(picked.name))}</p><label>${esc(HERO_UI.removeType(picked.name))}<input name="removeName" type="text" autocomplete="off"></label><p class="online-message" role="status"></p><div class="ui-row"><button type="button" class="outline-button ui-button" data-start="remove-cancel">${esc(HERO_UI.cancel)}</button><button type="button" class="gold-button ui-button cs-remove-ok" data-start="remove-confirm">${esc(HERO_UI.remove)}</button></div></div></div>`:''}
    <div class="cs-corner"><button type="button" class="outline-button ui-button" data-start="options">${esc(T.options)}</button><button type="button" class="outline-button ui-button cs-delete" data-start="remove">${esc(HERO_UI.remove)}</button></div></div>`;
  }
  const swatches=(title,key,list,current,natural)=>`<div class="hero-swatches" role="group" aria-label="${esc(title)}"><b>${esc(title)}</b><span class="hero-swatch-list">${list.map(o=>{const rgb=o.h==null||!['skin','hair'].includes(key)?null:hslToRgb(o.h,o.s,key==='skin'?.68*o.m:o.l);return `<button type="button" class="hero-swatch" data-draft-tint="${key}:${o.id}" aria-pressed="${current===o.id}" title="${esc(o.name)}" aria-label="${esc(title)} ${esc(o.name)}" style="--swatch:${rgb?'rgb('+rgb.join(',')+')':natural||'repeating-linear-gradient(45deg,#c9b98a 0 4px,#8a7a52 4px 8px)'}"><span>${esc(o.name)}</span></button>`;}).join('')}</span></div>`;
@@ -89,6 +90,7 @@ export function mountStartScreen(host){
   el.dataset.step=state.step;el.dataset.heroes=String(heroes().length);
   const hall=state.step==='roster'||state.step==='create';el.innerHTML=`<div class="mmo-scene ${hall?'mmo-roster':'mmo-gate'}">${hall?'<div class="online-card start-stage">'+(state.step==='create'?createHtml():rosterHtml())+'</div>':loginHtml()}</div>`;
   if(hall)paintHeroCards().catch(()=>{});else rememberField();
+  if(state.removing){requestAnimationFrame(()=>el.querySelector('[name=removeName]')?.focus());return;}
   requestAnimationFrame(()=>(el.querySelector(state.step==='create'?'input[name=heroName],[aria-pressed=true],[data-draft-class]':state.step==='roster'?'[data-start=enter],[data-start=create]':'input[name=email],[data-start]')||el).focus({preventScroll:true}));
  }
  /** „E-Mail merken“ (WoW: Kontoname merken): nur die Adresse, nie das Passwort; kontoweit in diesem Browser. */
@@ -129,7 +131,9 @@ export function mountStartScreen(host){
   else if(what==='draft-cancel'){state.draft=null;go('roster');}
   else if(what==='draft-back'){state.draft.name=el.querySelector('[name=heroName]')?.value||state.draft.name;state.draft.step--;state.draft.error='';render();}
   else if(what==='draft-next')await draftNext();
-  else if(what==='remove'){const c=heroes().find(x=>x.id===state.pick);if(c&&confirm(HERO_UI.removeAsk(c.name))){if(c.id===host.activeId?.()){host.deleteHero(c.id);location.reload();}else{host.deleteHero(c.id);state.pick=null;render();}}}
+  else if(what==='remove'){const c=heroes().find(x=>x.id===state.pick);if(c){state.removing=c.id;render();}}
+  else if(what==='remove-cancel'){state.removing=null;render();}
+  else if(what==='remove-confirm'){const c=heroes().find(x=>x.id===state.removing),typed=(el.querySelector('[name=removeName]')?.value||'').trim();if(!c)return;if(typed.toLowerCase()!==c.name.toLowerCase()){const m=el.querySelector('.cs-remove .online-message');if(m){m.textContent=HERO_UI.removeWrong;m.classList.add('bad');}return;}state.removing=null;if(c.id===host.activeId?.()){host.deleteHero(c.id);location.reload();}else{host.deleteHero(c.id);state.pick=null;render();}}
  });
  async function draftNext(){const d=state.draft;if(d.step<2){d.step++;render();return;}
   d.name=(el.querySelector('[name=heroName]')?.value||'').trim();if(!validHeroName(d.name)){d.error=HERO_TEXT.nameRule;render();return;}
@@ -138,7 +142,7 @@ export function mountStartScreen(host){
  el.addEventListener('submit',e=>{if(e.target.closest('[data-hero-form]')){e.preventDefault();draftNext();}});
  el.addEventListener('dblclick',e=>{if(e.target.closest('[data-hero]'))el.querySelector('[data-start=enter]:not([disabled])')?.click();});
  // Tasten bleiben im Schirm: das Spiel darunter darf weder laufen noch Fenster öffnen.
- el.addEventListener('keydown',e=>{e.stopPropagation();if(state.step!=='roster'||!/^Arrow(Left|Right)$/.test(e.key)||e.target.matches?.('input'))return;const list=heroes();if(!list.length)return;e.preventDefault();const i=list.findIndex(c=>c.id===state.pick),n=list.length;state.pick=list[(i+(e.key==='ArrowRight'?1:-1)+n)%n].id;render();});
+ el.addEventListener('keydown',e=>{e.stopPropagation();if(state.removing){if(e.key==='Enter'){e.preventDefault();el.querySelector('[data-start=remove-confirm]')?.click();}else if(e.key==='Escape'){e.preventDefault();state.removing=null;render();}return;}if(state.step==='roster'&&e.key==='Enter'&&!e.target.matches?.('input,button')){e.preventDefault();el.querySelector('[data-start=enter]:not([disabled])')?.click();return;}if(state.step!=='roster'||!/^Arrow(Left|Right)$/.test(e.key)||e.target.matches?.('input'))return;const list=heroes();if(!list.length)return;e.preventDefault();const i=list.findIndex(c=>c.id===state.pick),n=list.length;state.pick=list[(i+(e.key==='ArrowRight'?1:-1)+n)%n].id;render();});
  el.addEventListener('keyup',e=>e.stopPropagation());
  return {boot,open,close,logout,get isOpen(){return state.open;},get step(){return state.step;},get guest(){return state.guest;}};
 }

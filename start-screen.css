@@ -204,3 +204,14 @@ body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 }
 .start-screen .cc-look .hero-swatches{display:grid;grid-template-columns:1fr}.start-screen .cc-look .hero-swatches b{font:400 14px/1 var(--display)!important;letter-spacing:.06em;color:#d7b571;margin-top:4px}.start-screen .cc-look .hero-swatch-list{display:flex;flex-wrap:wrap;gap:6px}
 .start-screen .cc-panel>*{flex-shrink:0}
+/* Held löschen (WoW): eigenes Fenster, Name eintippen */
+.start-screen .cs-remove{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:#0008}
+.start-screen .cs-remove-box{width:min(420px,92vw);padding:18px 22px;background:linear-gradient(180deg,#2a1512f2,#160c0af2);border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;box-shadow:0 12px 40px #000c;text-align:center}
+.start-screen .cs-remove-box h3{margin:0 0 8px;font:400 24px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:#f08a74}
+.start-screen .cs-remove-box p{margin:0 0 10px;font:400 14px/1.45 var(--read);color:#f1e4c4}
+.start-screen .cs-remove-box label{display:grid;gap:6px;font:600 13px var(--read);color:#d9cfae}
+.start-screen .cs-remove-box input{min-height:40px;text-align:center;font:700 16px var(--read)}
+.start-screen .cs-remove-box .online-message:empty{display:none}
+.start-screen .cs-remove-box .ui-row{justify-content:center;gap:10px;margin-top:8px}
+.start-screen .cs-remove-ok{background:linear-gradient(#b0463a,#6e2420)!important;border-color:#f08a74!important;color:#fff0e8!important}
+.start-screen .cs-remove-box .online-message.bad{color:#f08a74;font-weight:700}
