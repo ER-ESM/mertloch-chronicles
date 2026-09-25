@@ -142,14 +142,26 @@ try{
   const ap=await read(`const g=window.game;return {approach:!!g.approach,moving:!!g.moveTo}`);const tt=await toastText();
   assert.ok(ap.approach&&ap.moving&&!/Zu weit/.test(tt.text),'Tab + Kniff läuft an statt „Zu weit entfernt“ '+JSON.stringify({ap,tt}));
   ok(`Tab auf ein Tier in ${t.d} m + Taste 2: Held läuft hin (kein „Zu weit entfernt“)`);
-  // Rechtsklick auf einen laufenden Gegner: Klick auf die Lage von vor 200 ms trifft
-  await read(CLEAR+`const e=window.__clone('Pfanddachs',120,0,{behavior:'neutral'});e.roamGoal=null;window.__run=e;`);await settle();
-  const old=await read(TO_SCREEN+`const e=window.__run;return toS({x:e.x,y:e.y-8})`);
-  await read(`const e=window.__run;let n=0;window.__mv=setInterval(()=>{e.x+=3;n++;if(n>40)clearInterval(window.__mv);},16);`);await wait(220);
-  const moved=await read(`const e=window.__run;return e.x`);await click(old.x,old.y,'right');await wait(250);
-  const hit=await read(`const g=window.game;clearInterval(window.__mv);return {target:g.target===window.__run}`);
-  assert.ok(hit.target,'Rechtsklick auf die eben gezeichnete Lage trifft den laufenden Gegner '+JSON.stringify({hit,moved}));
-  ok('Rechtsklick auf einen laufenden Gegner (Klick auf seine Lage von vor ≈200 ms): Treffer');
+  // Rechtsklick auf einen laufenden Gegner: Klick auf seine gezeichnete Lage von vor ≈ 200–250 ms trifft – bei jeder Bildrate. Bis 2026-09-25
+  // hielt die Spur nur 8 Bilder (bei 60 Bildern/s ≈ 130 ms) und datierte eine Lage auf das erste Bild dort; der Klick traf nur bei
+  // 20–30 Bildern/s. Zwei Fälle: Lage kurz vor dem Loslaufen und Lage mitten im Lauf. Ein Anlauf zählt nur, wenn der Klick innerhalb
+  // des Fensters (TRAIL.ms) kam und der Dachs schon ≥ 28 E weiter war (weiter als die halbe Figurbreite 16 E und der Trefferkreis 27 E); sonst hing der Rechner → neuer Anlauf.
+  // Die alte Spur fällt hier nur ab ≈ 40 Bildern/s auf; die Bildraten-Unabhängigkeit (4/60/144) hält tests/optimierung-r5a.test.mjs fest.
+  const win=await ev(`return (await import('./target-ui.js')).TRAIL.ms`);
+  async function runningClick(during){let hit=null;
+   for(let attempt=0;attempt<3;attempt++){
+    await read(CLEAR+`const e=window.__clone('Pfanddachs',120,0,{behavior:'neutral'});e.roamGoal=null;window.__run=e;`);await settle();
+    /* 3 E je 16 ms nach der Uhr, nicht nach Taktschlägen: unter Last fallen Takte aus, die Strecke bleibt gleich */const go=`const e=window.__run,x0=e.x,t0=performance.now();window.__mv=setInterval(()=>{const k=performance.now()-t0;e.x=x0+3*Math.floor(Math.min(k,1100)/16);if(k>1100)clearInterval(window.__mv);},16);`;
+    const mark=TO_SCREEN+`const e=window.__run;window.__seen={x:e.x,t:performance.now()};window.__down=null;window.__frames=0;const f=()=>{if(window.__down)return;window.__frames++;requestAnimationFrame(f);};requestAnimationFrame(f);addEventListener('pointerdown',()=>{window.__down={t:performance.now(),x:e.x};},{capture:true,once:true});return toS({x:e.x,y:e.y-8})`;
+    let old;if(during){await read(go);await wait(150);old=await read(mark);}else{old=await read(mark);await read(go);}
+    await wait(200);await click(old.x,old.y,'right');await wait(250);
+    hit=await read(`const g=window.game,d=window.__down,s=window.__seen;clearInterval(window.__mv);return {target:g.target===window.__run,ms:d?Math.round(d.t-s.t):null,ahead:d?Math.round(d.x-s.x):null,fps:d?Math.round(window.__frames*1000/(d.t-s.t)):null}`);
+    if(hit.ms!=null&&hit.ms<=win&&hit.ahead>=28)return hit;console.log('(Anlauf zählt nicht: '+JSON.stringify(hit)+', Fenster '+win+' ms – Rechner ausgelastet, neuer Anlauf)');
+   }
+   return {...hit,invalid:true};}
+  const still=await runningClick(false),moving=await runningClick(true);
+  for(const [name,h] of [['kurz vor dem Loslaufen',still],['mitten im Lauf',moving]])assert.ok(h.target&&!h.invalid,'Rechtsklick auf die eben gezeichnete Lage trifft den laufenden Gegner ('+name+') '+JSON.stringify({hit:h,win}));
+  ok(`Rechtsklick auf einen laufenden Gegner trifft seine gezeichnete Lage – kurz vor dem Loslaufen (vor ${still.ms} ms, er war ${still.ahead} E weiter) und mitten im Lauf (vor ${moving.ms} ms, ${moving.ahead} E weiter), bei ≈ ${still.fps}/${moving.fps} Bildern/s`);
  }
  // ---------- 5) Zauber-Puffer ----------
  if(run(5)){

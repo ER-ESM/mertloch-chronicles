@@ -34,8 +34,15 @@ const spriteTopOf=e=>e.spriteTop??e.y-(e.type==='boss'?35:e.type==='cultist'?30:
 export function spriteHit(e,pt){const top=spriteTopOf(e),h=Math.max(10,e.y+4-top),half=Math.max(8,Math.min(22,h*(e.type==='wolf'?.62:.36)));return pt.x>=e.x-half&&pt.x<=e.x+half&&pt.y>=top&&pt.y<=e.y+4;}
 /** Runde 5a (Kenner: Rechtsklick auf einen laufenden Dachs traf daneben): Bei gedrosselter Darstellung liegt zwischen gezeichnetem
  *  Bild und Klick bis zu ein Bild (250 ms bei 4 Bildern/s). Der Treffer zählt deshalb auch auf den Lagen der letzten TRAIL ms
- *  (e.seenAt aus dem Renderer) und mit Vorhalt 150 ms in Laufrichtung. */
-export const TRAIL={ms:350,lead:.15};
+ *  (e.seenAt aus dem Renderer) und mit Vorhalt 150 ms in Laufrichtung. keep = so lange hält der Renderer eine Lage, step = Abstand neuer Lagen. */
+export const TRAIL={ms:350,lead:.15,keep:400,step:25};
+/** Spur der gezeichneten Lagen, je Bild vom Renderer für jeden gezeichneten Gegner aufgerufen (top = Oberkante des Bilds).
+ *  Nachgeschärft 2026-09-25: Das Fenster zählt Zeit, nicht Bilder – vorher hielt die Spur höchstens 8 Lagen, bei 60 Bildern/s also
+ *  nur ≈ 130 ms statt 400 ms, und ein Klick auf die Lage von vor 200 ms ging daneben. Eine Lage gilt bis zum letzten Bild, in dem der
+ *  Gegner dort stand (ein Stehender ist bis zum Loslaufen „eben gezeichnet“); neue Lagen höchstens alle TRAIL.step ms (≤ 17 Lagen). */
+export function noteDrawn(e,top,now=performance.now()){const tr=e.seenAt||(e.seenAt=[]),last=tr[tr.length-1];
+ if(last&&last.x===e.x&&last.y===e.y){last.t=now;last.top=top;}else if(!last||now-last.t>=TRAIL.step)tr.push({x:e.x,y:e.y,top,t:now});
+ while(tr.length&&now-tr[0].t>TRAIL.keep)tr.shift();}
 export function trailHit(e,pt,now=performance.now()){const tr=e.seenAt;if(!tr?.length)return false;const top=spriteTopOf(e)-e.y;
  const recent=tr.filter(s=>now-s.t<=TRAIL.ms);for(const s of recent)if(spriteHit({...e,x:s.x,y:s.y,spriteTop:s.y+top},pt))return true;
  const old=recent[0];if(old&&now-old.t>30){const k=TRAIL.lead*1000/(now-old.t),lx=e.x+(e.x-old.x)*k,ly=e.y+(e.y-old.y)*k;if(spriteHit({...e,x:lx,y:ly,spriteTop:ly+top},pt))return true;}

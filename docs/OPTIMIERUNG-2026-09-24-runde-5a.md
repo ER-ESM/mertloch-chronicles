@@ -75,3 +75,10 @@ Eigene Ports 9550–9559 / 4350–4359, `BOOT_TRIES=300…400`.
 3. Der Gegner-Tooltip gilt nur für Gegner. NPCs und Mitspieler zeigen weiter ihren Rahmen und den Mauszeiger.
 4. Den Todesbildschirm am Handy prüft `mobile-check` (Tod, Drehen, ein Tipp zurück); angesehen habe ich ihn nicht.
 5. `optimierung-r1-check` passt nicht mehr zur Weltkarte aus 4a (Legende); das Skript sollte Teil B nachziehen.
+
+## Nachtrag 2026-09-25: Rechtsklick auf laufende Gegner (Punkt 4d)
+
+- **Befund:** `optimierung-r5a-check` Teil 4 war rot („Rechtsklick auf die eben gezeichnete Lage trifft den laufenden Gegner“). Das lag nicht an Dungeon-Etappe 2: `382ac5d` scheiterte mit demselben Skript auf demselben Rechner (3 von 3 Läufen rot).
+- **Ursache im Spiel:** Die Spur der gezeichneten Lagen (`renderer.js`, seit `d8b2e820`) hielt höchstens **8 Lagen**. Bei 60 Bildern pro Sekunde sind das nur ≈ 130 ms statt der versprochenen 400 ms. Außerdem galt eine Lage ab dem ersten Bild dort: Ein Dachs, der schon länger stand, konnte seine Standlage beim Loslaufen sofort verlieren. Der Klick traf nur bei 20–30 Bildern pro Sekunde, also früher unter Rechnerlast.
+- **Lösung:** `noteDrawn()` in `target-ui.js` führt die Spur jetzt nach Zeit (400 ms, höchstens alle 25 ms eine neue Lage, also höchstens 17). Eine Lage gilt bis zum letzten Bild, in dem der Gegner dort stand. Der Renderer ruft nur noch diese Funktion auf.
+- **Prüfung:** Das Skript prüft jetzt zwei Fälle: die Lage kurz vor dem Loslaufen und die Lage mitten im Lauf. Es misst den Abstand zwischen gemerkter Lage und Klick sowie die Bildrate. Ein Anlauf, bei dem der Rechner hing, wird wiederholt. Der Unit-Test (`tests/optimierung-r5a.test.mjs`) spielt beide Fälle bei 4, 60 und 144 Bildern pro Sekunde durch. Mit der alten Spur scheitert er bei 60 und 144 Bildern pro Sekunde, im Fall „vor dem Loslaufen“ auch bei 4.

@@ -8,7 +8,7 @@ import {questLines} from '../quest-mobs.js';
 import {dodgeDirection,inMark} from '../dodge-out.js';
 import {waypointPlace} from '../world-labels.js';
 import {deathHtml,deathCause} from '../death-screen.js';
-import {friendBoxHit,trailHit,enemyAt} from '../target-ui.js';
+import {friendBoxHit,trailHit,enemyAt,noteDrawn,TRAIL} from '../target-ui.js';
 import {tipAnchor} from '../unit-tooltip.js';
 import {hubLine} from '../content/index.js';
 
@@ -93,6 +93,26 @@ test('Treffer: Figur samt Auftragszeichen; laufender Gegner auch auf der eben ge
  const now=1000,e={x:30,y:0,type:'wolf',spriteTop:-20,seenAt:[{x:0,y:0,t:800},{x:15,y:0,t:900},{x:30,y:0,t:1000}]};
  assert.ok(trailHit(e,{x:1,y:-5},now),'Lage vor 200 ms');assert.ok(!trailHit(e,{x:1,y:-5},now+400),'zu alt');
  const g={enemies:[{...e,hp:5,ai:'roaming'}],tutorial:null};assert.ok(enemyAt(g,1,-5,now));
+});
+
+// Nachgeschärft 2026-09-25 (optimierung-r5a-check Teil 4 rot): Die Spur hielt höchstens 8 Lagen – bei 60 Bildern/s nur ≈ 130 ms.
+// Nachgestellt wie im Prüfskript: Dachs steht, läuft dann mit 3 E je 16 ms los; Rechtsklick dorthin, wo er vor dem Loslaufen stand.
+test('Spur der gezeichneten Lagen: Zeitfenster statt Bildzahl – Klick auf die Lage von vor 250 ms trifft bei 4, 60 und 144 Bildern/s',()=>{
+ for(const fps of [4,60,144]){
+  const dt=1000/fps,e={x:0,y:0,type:'wolf',hp:5,ai:'roaming',spriteTop:-22};let now=0;
+  /* steht 1 s (länger als das Fenster), wird in jedem Bild gezeichnet */for(;now<1000;now+=dt)noteDrawn(e,e.y-22,now);
+  const start=now,xAt=t=>Math.floor((t-start)/16)*3;for(;now<start+250;now+=dt){e.x=xAt(now);noteDrawn(e,e.y-22,now);}
+  /* geklickt wird zwischen zwei Bildern: der Dachs ist schon weiter, als zuletzt gezeichnet */const click={x:0,y:-8},at=start+250;e.x=xAt(at);
+  assert.ok(e.x>=40,fps+' Bilder/s: Dachs ist über die Figurbreite weitergelaufen ('+e.x+' E)');
+  assert.ok(trailHit(e,click,at),fps+' Bilder/s: Lage vor dem Loslaufen (vor 250 ms) trifft');
+  assert.ok(enemyAt({enemies:[e],tutorial:null},click.x,click.y,at)===e,fps+' Bilder/s: Rechtsklick wählt den Dachs');
+  assert.ok(e.seenAt.length<=Math.ceil(TRAIL.keep/TRAIL.step)+1,fps+' Bilder/s: Spur bleibt klein ('+e.seenAt.length+' Lagen)');
+  const late=start+250+TRAIL.ms;e.x=xAt(late);assert.ok(!trailHit(e,click,late)&&enemyAt({enemies:[e],tutorial:null},click.x,click.y,late)!==e,fps+' Bilder/s: nach dem Fenster zählt die alte Lage nicht mehr');
+  /* mitten im Lauf: die Lage aus dem letzten Bild vor 100 ms Lauf, Rechtsklick 250 ms danach */
+  const r={x:0,y:0,type:'wolf',hp:5,ai:'roaming',spriteTop:-22},xr=t=>Math.floor(t/16)*3,seenT=Math.floor(100/dt)*dt,seen=xr(seenT),hitAt=seenT+250;
+  for(let t=0;t<hitAt;t+=dt){r.x=xr(t);noteDrawn(r,-22,t);}r.x=xr(hitAt);
+  assert.ok(r.x-seen>=28&&trailHit(r,{x:seen,y:-8},hitAt),fps+' Bilder/s: Lage mitten im Lauf von vor 250 ms trifft ('+seen+' → '+r.x+' E)');
+ }
 });
 
 test('Gegner-Tooltip unten rechts über der Menüleiste; Nyalol begrüßt Stufe 4 ohne „Stufe 1“',()=>{
