@@ -29,7 +29,7 @@ test('target debuffs follow real marking and control state and clear on target l
 test('proc expiration, consuming charges and respawn leave no stale aura icons',()=>{
  const g=game();g.procState.free.strike=g.time+3;g.procState.empower.strike=g.time+5;g.classState.empowered=2;
  assert.equal(collectAuras(g).buffs.filter(a=>a.id.startsWith('proc:strike')).length,2);consumeProc(g,'free','strike');assert.equal(collectAuras(g).buffs.filter(a=>a.id.startsWith('proc:strike')).length,1);
- g.time+=6;assert.equal(collectAuras(g).buffs.filter(a=>a.id.startsWith('proc:strike')).length,0);g.dead=true;assert.deepEqual(collectAuras(g),{buffs:[],debuffs:[],targetDebuffs:[]});g.respawn();assert.equal(collectAuras(g).buffs.length,0);
+ g.time+=6;assert.equal(collectAuras(g).buffs.filter(a=>a.id.startsWith('proc:strike')).length,0);g.dead=true;assert.deepEqual(collectAuras(g),{buffs:[],debuffs:[],targetDebuffs:[]});g.respawn();/* E-72 R4: nach dem Aufwachen steht nur der frische „kurze Schutz“ (foe-rules.js) */assert.deepEqual(collectAuras(g).buffs.map(b=>b.id),['wakeGuard']);
 });
 test('all nine class mechanisms expose active states without creating state during a read',()=>{
  for(const [id,spec] of [['dieter','dieter-wall'],['dieter','dieter-brawl'],['dieter','dieter-brew'],['baerbel','baerbel-care'],['baerbel','baerbel-feedback'],['baerbel','baerbel-stage'],['kevin','kevin-fuse'],['kevin','kevin-iron'],['kevin','kevin-hunt']]){

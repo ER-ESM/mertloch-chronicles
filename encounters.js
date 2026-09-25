@@ -1,6 +1,7 @@
 import {rng,distance,inside,segmentDistance} from './world.js';
 import {residential} from './world-layout.js';
 import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES,enemyScale,pickElite} from './content/index.js';
+import {inStartArea} from './foe-rules.js';
 
 export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2});
 export {ARCHETYPES,ELITES};
@@ -13,8 +14,10 @@ export function pickSpawn(rows,random,far){const pool=rows.filter(r=>far||r.tier
  * bleibt auf den Werten aus content/enemies.js, damit der Anfang unverändert bleibt. */
 export function scaledStats(def,playerLevel,far){
   if(!far)return {};
-  const lead=BALANCE.enemies.playerLead??2,{hp,damage}=enemyScale(Math.max(1,(playerLevel|0)-lead),def.level||1);
-  return {hp:Math.round((def.hp||1)*hp),damage:(def.damage||1)*damage};
+  const lead=BALANCE.enemies.playerLead??2,at=Math.max(1,(playerLevel|0)-lead),{hp,damage}=enemyScale(at,def.level||1);
+  // E-72 R4: die Stufe wächst mit – ein Keiler mit den Werten der Stufe 10 hieß im Zielrahmen „Stufe 2“ (Kenner: „1.085 → 300 Leben für
+  // einen Stufe-2-Keiler“). Stufenabstand (foe-rules.js), Beutestufe und Zielrahmen sehen jetzt die echte Stufe.
+  return {hp:Math.round((def.hp||1)*hp),damage:(def.damage||1)*damage,level:Math.max(def.level||1,at)};
 }
 export const walkClear=(w,a,b,r=7)=>w.walkClear?w.walkClear(a,b,r):w.lineClear(a,b);
 // Die Bude (E-52) ist Clanhaus: kein Wildtier darin oder direkt davor, drinnen herrscht Frieden wie im Dorfkern.
@@ -45,14 +48,14 @@ export class EncounterDirector{
       const field=!residential(w,p);
       const S=SPAWN_TABLES,town=distance(p,w.spawn),far=town>S.tierDistance,aggressive=field&&town>S.aggressiveMinDistance&&random()>1-S.aggressiveChance;let kind=pickSpawn(aggressive?S.aggressive:S.neutral,random,far),def=ARCHETYPES[kind];
       // Elite-Auswahl gewichtet aus ELITE_TABLE (content/enemies.js): auch Oberpraktikant Olaf kann erscheinen.
-      const elite=aggressive?pickElite(town,random):null;
+      const elite=aggressive?pickElite(town,random):null;const grow=far&&!inStartArea(w,p);/* Startreihe wächst nicht mit (foe-rules.js, E-72 R4) */
       if(elite&&random()<S.eliteChance){kind=elite.kind;def=elite.def;}
-      const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,...scaledStats(def,g.player.level,far),campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
+      const slot=list.length,id=10000+(cy*Math.ceil(w.width/C)+cx)*2+slot,e=makeEnemy(p,id,{...def,...scaledStats(def,g.player.level,grow),campId:'field-'+key,ambient:true,cellKey:key,archetype:kind,anchor:{x:anchor.x,y:anchor.y},roamWait:random()*4});
       e.spawnPoints=[{...p}];for(let i=0;i<8&&e.spawnPoints.length<4;i++){const dest={x:Math.round(p.x+(random()-.5)*155),y:Math.round(p.y+(random()-.5)*155)};if(inhabitable(w,dest)&&walkClear(w,p,dest,9)&&walkClear(w,anchor,dest,9)&&(!aggressive||!residential(w,dest)))e.spawnPoints.push(dest);/* Ausweichstelle auch vom Anker aus frei: sonst läuft die Heimkehr gegen ein Hindernis */}
       if(distance(p,g.player)<ENCOUNTER_RULES.spawnDistance){e.hp=0;e.respawnAt=g.time;e.dead=0;e.ai='waiting';}else{e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.ai='appearing';}
       list.push(e);
       // Gruppen: im Umland ziehen aggressive Arten zu zweit oder zu dritt herum (Kettenzug statt Laufwege).
-      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9)||!walkClear(w,e.anchor,dest,9)||residential(w,dest))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,far),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
+      if(aggressive&&far&&!def.elite&&S.groupSize){const extra=random()<S.groupSize.chance?1+Math.floor(random()*(S.groupSize.max-1)):0;for(let k=0;k<extra;k++){const dest={x:Math.round(p.x+(random()-.5)*90),y:Math.round(p.y+(random()-.5)*90)};if(!inhabitable(w,dest)||!walkClear(w,p,dest,9)||!walkClear(w,e.anchor,dest,9)||residential(w,dest))continue;const buddy=makeEnemy(dest,30000+(cy*Math.ceil(w.width/C)+cx)*10+slot*4+k,{...def,...scaledStats(def,g.player.level,grow),campId:e.campId,ambient:true,cellKey:key,archetype:kind,anchor:e.anchor,roamWait:random()*4,roamRadius:Math.round(def.roamRadius*.6),companion:true});buddy.spawnPoints=e.spawnPoints;if(e.hp<=0){buddy.hp=0;buddy.respawnAt=g.time;buddy.ai='waiting';}else{buddy.spawnGrace=ENCOUNTER_RULES.spawnGrace;buddy.ai='appearing';}companions.push(buddy);}}
     }list.push(...companions);this.cells.set(key,list);return list;
   }
   tick(dt){if(!this.enabled)return;const g=this.game,w=this.world,C=ENCOUNTER_RULES.cellSize,cx=Math.floor(g.player.x/C),cy=Math.floor(g.player.y/C),key=cx+','+cy;this.clock-=dt;

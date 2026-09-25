@@ -26,6 +26,7 @@ export const HUD_ELEMENTS=[
 export const AURA_TEXT={
  momentum:{name:'Schwung',text:'Kills geben kurzzeitig mehr Tempo und Nachschub für deine Klassenressource.',icon:'auto'},
  guard:{name:'Deckung',text:'Fängt Schaden ab, bevor er dein Leben erreicht.',icon:'parry'},
+ wakeGuard:{name:'Kurzer Schutz',text:'Frisch aufgewacht: Kein Gegner bemerkt dich, bis die Zeit um ist oder du selbst angreifst.',icon:'parry'},
  parry:{name:'Parade bereit',text:'Fängt den nächsten vermeidbaren Treffer ab. Verbleibende Paraden stehen als Stapel am Icon.',icon:'parry'},
  hot:{name:'Hauspflege',text:'Stellt regelmäßig Leben wieder her.',icon:'heal'},
  'proc-haste':{name:'Tempo',text:'Kurzzeitiger Tempobonus durch einen Talent-Effekt.',icon:'buff'},

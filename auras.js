@@ -1,7 +1,7 @@
 import {mechanicHelp,skillHelp} from './mechanic-help.js';
 // Read-only projection of real combat state. No synthetic combat statuses or extra timers.
 import {mountSpeedBonus} from './mounts.js';
-import {MOUNTS,MOUNT_UI,AURA_TEXT,AURA_FIELD_SORTS,SPEC_MECHANICS,PROC_RULES} from './content/index.js';
+import {MOUNTS,MOUNT_UI,AURA_TEXT,AURA_FIELD_SORTS,SPEC_MECHANICS,PROC_RULES,BALANCE} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {classBuffAuras} from './class-buffs.js';
 export function collectAuras(g){
@@ -14,6 +14,7 @@ export function collectAuras(g){
   const rule=b.mode==='count'?PROC_RULES[b.id]:null,icon=b.kind==='proc'?(skill(b.id)?b.id:rule?.skill||'buff'):{guard:'parry',hot:'heal',momentum:'auto','proc-haste':'buff'}[b.id]||'buff';
   out.buffs.push({...b,id:b.kind+':'+b.id+':'+(b.mode||''),icon,text:rule?.text||AURA_TEXT[b.id]?.text||skill(b.describe?.id)?.text||skill(icon)?.text||'',duration:b.id==='buff'?g.buffs?.duration:undefined,stacks:b.stacks||b.count||0});
  }
+ if(g.player.wakeGuard>0&&!(g.player.inCombat>0))add('buffs','wakeGuard',g.player.wakeGuard,{duration:BALANCE.foes.wakeGuard});/* „kurzer Schutz“ nach dem Aufwachen (foe-rules.js) */
  if(g.player.parry>0)add('buffs','parry',g.player.parry,{stacks:g.player.parryCharges||1});
  if(st.empowered>0)add('buffs','empowered',null,{stacks:st.empowered});
  for(const id of ['freeStrike','freeThrow'])if(st[id])add('buffs',id);
