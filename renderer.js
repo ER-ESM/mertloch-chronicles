@@ -57,7 +57,7 @@ import {WorldFx} from './world-fx.js';
 import {prerenderArt,prerenderHasBakedShadow} from './prerender-art.js';
 import {buildingVisualBounds} from './tiny-architecture.js';
 import {hotspotLayout,giverGlyph} from './hotspots.js';
-import {questMob,chapterAreas,idaMark} from './quest-mobs.js';
+import {questMob,chapterAreas,idaMark,idaShowsName} from './quest-mobs.js';
 import {REACTION_COLORS,reactionOf,isNeutralUnit} from './unit-colors.js';
 import {drawBigBGround} from './dungeon-bigb-art.js';/* Dungeon Etappe 3: Bahnen, Stellen, Trümmer, Endtruhe */
 const poly=(c,p)=>{c.beginPath();p.forEach((v,i)=>i?c.lineTo(Math.round(v.x),Math.round(v.y)):c.moveTo(Math.round(v.x),Math.round(v.y)));c.closePath();};
@@ -287,7 +287,7 @@ export class Renderer {
       else if(item.type==='resident'){drawResident(c,e,time);}
       else if(item.type==='furniture'){drawFurniture(c,e,time);}
       else if(item.type==='player'){const heroArgs=[p.x,p.y-(g.stairLift?.()||0),time,{...p,classId:p.look||p.classId,dead:g.dead,casting:!!g.casting,resting:!p.moving&&p.inCombat<=0&&p.hp<p.maxHp,visualEquipment:equipmentAppearance(g.rpg.equipment,ITEMS),usingRanged:g.casting?g.skills.find(s=>s.id===g.casting.id)?.weaponSource==='ranged':(p.attack>0||p.inCombat>0)&&p.attackSource==='ranged'}];/* eigener Treffer: kurz rot (Hades) */if(p.hurt>0&&!g.dead&&!p.mount)hitFlash(c,p,null,cc=>drawHero(cc,...heroArgs,false,PERSON_SCALE),'230,40,30',.7);else drawHero(c,...heroArgs,false,PERSON_SCALE);heroGhost=cc=>drawHero(cc,...heroArgs,false,PERSON_SCALE);}
-      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,PERSON_SCALE);const named=nearestSpeaker(g,e);/* Ida ist kleiner als die Helden: Name und Auftragszeichen direkt über ihrem Kopf, nicht über dem Stuhl dahinter (Runde 2b) */if(named)(g.settings?.namesFriendly!==false)&&label(c,w.npc.name,e.x,e.y-27,NPC_NAME,8);{/* „?“ bei Abgabe, auch nach der Hofprobe (quest-mobs.js idaMark, Runde 3a) */const mark=idaMark(g);if(mark)questBadge(c,e.x,e.y-(named?34:26),mark,mark!=='…',time);}}
+      else if(item.type==='npc'){drawHero(c,e.x,e.y,time,{facing:1},true,PERSON_SCALE);/* E-72 Runde 3 (Kenner-Befund 10): wartet Ida mit „!“ oder „?“, steht ihr Name wie in WoW schon aus der Ferne über ihr, nicht erst ab 70 E */const idaWaits=idaMark(g),named=idaShowsName(g,idaWaits);/* Ida ist kleiner als die Helden: Name und Auftragszeichen direkt über ihrem Kopf, nicht über dem Stuhl dahinter (Runde 2b) */if(named)(g.settings?.namesFriendly!==false)&&label(c,w.npc.name,e.x,e.y-27,NPC_NAME,8);{/* „?“ bei Abgabe, auch nach der Hofprobe (quest-mobs.js idaMark, Runde 3a) */const mark=idaWaits;if(mark)questBadge(c,e.x,e.y-(named?34:26),mark,mark!=='…',time);}}
       // Mentoren an der Bude tragen dieselbe Figurengrafik wie der Held (classId aus clan.js).
       else if(item.type==='mentor'){// Mentoren in ihrer Tracht aus der Sprite-Schmiede (E-58); ohne Bogen der alte Heldenkörper.
        if(!drawLivePerson(c,'mentor-'+e.classId,e.x,e.y,time,{facing:-1},PERSON_SCALE))drawHero(c,e.x,e.y,time,{facing:-1,classId:e.classId},false,PERSON_SCALE);if(distance(e,p)<70)(g.settings?.namesFriendly!==false)&&label(c,e.name,e.x,e.y-34,NPC_NAME,8);}

@@ -43,7 +43,7 @@ const options=mountOptions({game:()=>game,prefs:()=>uiPrefs,setPrefs:p=>{uiPrefs
 import {touchKeys} from './fenster-r3.js';
 import {decoratePanel,adaptPanel} from './panel-pages.js';
 import {APEROL_TEXT} from './content/index.js';
-import {tutorialActive,tutorialConfirm,tutorialSignal,lessonHints} from './tutorial.js';
+import {tutorialActive,tutorialConfirm,tutorialSignal,lessonHints,tutorialIdaReach} from './tutorial.js';
 import {mountTutorialUI,tutorialDialogue} from './tutorial-ui.js';
 import {loadTalentArt,paintTalentIcons,paintTalentIcon} from './talent-art.js';
 import {paintPersonPortrait} from './person-art.js';
@@ -110,6 +110,7 @@ const ZOOM_KEY='mertloch.zoom';
 import {PopupWindows} from './popup-windows.js';
 import {approachTarget} from './attack-approach.js';
 import {walkToTalk,arrivedToTalk,inTalkReach} from './talk-target.js';
+import {mountMemoryCard} from './memory-card.js';
 import {createCombatCues} from './combat-cues.js';
 import {hotspotLayout} from './hotspots.js';
 import {createToastQueue,hideChatTwin,chatTwins} from './toast-queue.js';
@@ -171,8 +172,12 @@ let memoryQueue=[];
 // Erinnerungen reihen sich hinten an (Runde 3a, Kenner-Befund 10): nie zwischen Gespräch, Einblendung, Kurzmeldung, Kampf oder
 // Laufen – erst wenn der Held 1,5 s ruhig steht und nichts anderes offen ist.
 let memoryCalmAt=0,memoryTimer=0;
-function memoryReady(){const p=game?.player;if(!p)return false;if(popups.windows.size||hudEditor?.editing||milestones?.busy||toasts.waiting()||p.inCombat>0||game.moveTo||game.keys.size||game.dead||game.paused){memoryCalmAt=performance.now();return false;}return performance.now()-memoryCalmAt>1500;}
-function showMemory(){if(!memoryQueue.length)return;clearTimeout(memoryTimer);if(!memoryReady()){memoryTimer=setTimeout(showMemory,500);return;}openModal(memoryOverlay(memoryQueue[0]),false,'memory');}
+// E-72 Runde 3 (Kenner-Befund 10): Am Desktop kommt die Erinnerung als Randkarte (memory-card.js), die nichts blockiert – sie wartet nur
+// auf Einblendung, Kurzmeldungen, Kampf, Tod und Spielmenü, nicht mehr auf Stillstehen oder offene Fenster. Am Handy bleibt das Fenster.
+function memoryReady(card=false){const p=game?.player;if(!p)return false;const busy=hudEditor?.editing||milestones?.busy||toasts.waiting()||p.inCombat>0||game.dead||game.paused||(card?['death','activity','menu'].some(id=>popups.isOpen(id)):popups.windows.size||game.moveTo||game.keys.size);if(busy){memoryCalmAt=performance.now();return false;}return performance.now()-memoryCalmAt>1500;}
+let memoryCard=null;
+const memoryCardUI=()=>memoryCard||=mountMemoryCard($('#gameShell'),{paint:el=>paintIcons(el),onClose:()=>{memoryQueue.shift();setTimeout(showMemory,0);},onZoom:f=>{if(game?.memories.seen.includes(f.id))openModal(memoryArtPanel(f),false,'memoryart');}});
+function showMemory(){if(!memoryQueue.length)return;clearTimeout(memoryTimer);const card=!mobile?.active;if(memoryCard?.open){if(card)return;memoryCard.close('touch');return;}if(!memoryReady(card)){memoryTimer=setTimeout(showMemory,500);return;}if(card)memoryCardUI().show(memoryQueue[0]);else openModal(memoryOverlay(memoryQueue[0]),false,'memory');}
 popups.onClose=id=>{popupControls?.hide();if(id==='memory')memoryQueue.shift();setTimeout(showMemory,0);if(id==='loot')selectedLootId=null;if(id==='activity'&&game)game.activity=null;if(id==='book'){pendingSlot=null;if(game)buildActions();}if(id==='death'&&game?.dead)game.respawn();};
 
 let hudEditor,auraUI,meterUI,mobile,pwa,combatText=null,fpsMeter=null,chatWindow=null,online=null,startScreen=null,lessonShown=null,lessonSince=0;
@@ -331,10 +336,20 @@ function showJournal(tab){if(tab===PANEL_UI.tabBase&&unlocks&&!unlocks.unlocked(
 /** Ein Verweis aus einem Tooltip: Reiter „Kniffe“ öffnen und zur Kachel mit dieser Element-ID springen. */
 function showDescribe(anchor){showGuide(PANEL_UI.skills);popups.focus('guide');requestAnimationFrame(()=>{const el=document.getElementById(anchor);if(!el)return;el.scrollIntoView({block:'center'});el.classList.add('kniff-jumped');el.focus?.({preventScroll:true});setTimeout(()=>el.classList.remove('kniff-jumped'),1600);});}
 function restAtShrine(){const p=game.player;if(p.inCombat>0){toast('Der Konterbrunnen kann nur außerhalb des Kampfes genutzt werden.');return;}p.hp=p.maxHp;resetResource(game,'full');game.effect('heal',p.x,p.y,{life:1,max:1});toast('Die Quelle erfrischt dich. Leben und Randale wiederhergestellt.');}
+/** Hofprobe (E-72 Runde 3, Kenner-Befund 10): Hinweis und F sind hier dasselbe – Beute nehmen, im Obergeschoss die Treppe, sonst in
+ *  den Ida-Schritten zu Ida gehen und sie ansprechen, aus jeder Entfernung (tutorialIdaReach, talk-target.js). Vorher zeigte der
+ *  Hinweis „Bude ansehen“ oder die Treppe, während F zu Ida lief, und „Mit Ida sprechen“ erst ab 50 E; dort blieb der Held stumm stehen. */
+function tutorialInteraction(){
+ const bag=nearestLoot(game);if(bag)return {kind:'loot',label:'Beutel durchsuchen',run:()=>showLoot(bag.id)};
+ if(game.floor){const stairs=game.stairsInteraction?.();return stairs?{kind:'stairs',label:stairs.label,run:()=>{game.useStairs();events();}}:null;}
+ const reach=tutorialIdaReach(game);if(!reach)return null;
+ return {kind:'npc',label:'Mit '+world.npc.name+' sprechen',run:()=>{if(reach==='talk'||walkToTalk(game,{kind:'npc',ref:world.npc})==='now')showTutorial();}};
+}
 /** Ein Ort für die Aktionstaste. Die Rangfolge kommt vollständig aus `game.interaction()`
  *  (Auftragsziel vor Mentor vor Nebenquest vor Ida vor Konterbrunnen, P3/P5) – die UI baut nur
  *  die Beschriftungen aus dem Spielzustand (Sammelgut, Mentor, Nebenquest, Ida). */
 function worldInteraction(){
+ if(tutorialActive(game))return tutorialInteraction();
  // Runde 3a (Kenner-Befund 4): das gewählte Ziel in Gesprächsweite und Beute zu Füßen gehen vor Treppe, Bude und Schwarzem Brett.
  {const f=friendUnit(game);if(f&&inTalkReach(game,f))return {kind:'npc',label:'Mit '+f.name+' sprechen',run:()=>talkWith(f)};const bag=!tutorialActive(game)&&nearestLoot(game);if(bag)return {kind:'loot',label:'Beutel durchsuchen',run:()=>showLoot(bag.id)};}
  // Treppe der Bude (E-52): nur direkt am Treppenfuß beziehungsweise am oberen Absatz.
@@ -396,12 +411,12 @@ function enterWorld(id){
 }
 /** Welt → Anmeldebildschirm: speichern, aus dem Dorf verschwinden; step 'logout' meldet zusätzlich das Konto ab. */
 function leaveToStart(step){
-  clearSelection(game);save();online?.leaveWorld();
+  clearSelection(game);memoryCard?.close('leave');save();online?.leaveWorld();
   if(step==='logout')Promise.resolve(online?.account?online.syncNow?.(true):null).finally(()=>startScreen.logout());else startScreen.open(step);
 }
 function speak(){
   if(game.dead)return;
-  if(tutorialActive(game)){const bag=nearestLoot(game);if(bag)showLoot(bag.id);else if((game.tutorial.step===0||game.tutorial.step===7)&&distance(game.player,world.npc)>=50)game.navigate(world.npc);else showTutorial();return;}
+  if(tutorialActive(game)){const it=tutorialInteraction();if(it)it.run();else showTutorial();return;}
   worldInteraction()?.run();
 }
 function showSideQuest(q){openModal(sideQuestDialogue(q,game.sideQuests[q.id]));}
@@ -429,6 +444,7 @@ function momentumChip(g){const stacks=Math.min(3,g.momentum.stacks),src=contentP
  return 'Schwung '+(src?`<img class="momentum-mark" src="${src}" width="20" height="20" alt="${g.momentum.stacks} Stufen">`:'▲'.repeat(g.momentum.stacks))+rest;}
 let mountUiAt=0;
 function updateUI(){
+ memoryCard?.place();
  updateMountButtons(document,game);if(popups.isOpen('mounts')&&performance.now()-mountUiAt>150){mountUiAt=performance.now();updateMountPanel(popups.get('mounts').body,game,mountDirection);}
   layoutUnitFrames(document.querySelector('#gameShell'));
   updatePlayerVitals(document,game);
@@ -547,11 +563,15 @@ document.addEventListener('keydown',e=>{if(!game||startScreen?.isOpen||menuKey(e
   if(move||act||/^Digit\d$/.test(code))e.preventDefault();if(move){if(follow.target)follow.stop();game.keys.add(move);heldMoves.set(code,move);}if(e.repeat)return;
   if(e.key==='Escape'){e.preventDefault();if(cancelProfession(game))return;if(game.mountCast){game.dismount();return;}if(game.casting){game.casting=null;return;}if(game.aiming){game.aiming=null;game.aimPoint=null;return;}
    // Esc schließt zuerst offene Fenster; aus der Welt öffnet es das Spielmenü und beendet den Autoangriff.
-   if(e.shiftKey){popups.closeAll();return;}
+   if(e.shiftKey){popups.closeAll();memoryCard?.close('esc');return;}
    // Runde 2 (2026-09-24, WoW): Esc schließt ALLE offenen Fenster auf einmal; das Spielmenü kommt erst, wenn keines mehr offen ist.
-   if(popups.top()){popups.closeAll();$("#world").focus({preventScroll:true});return;}
+   if(popups.top()){popups.closeAll();memoryCard?.close('esc');$("#world").focus({preventScroll:true});return;}
+   // E-72 Runde 3: Esc nimmt die Erinnerungs-Randkarte mit, ohne dass sie Esc schluckt – Ziel abwählen und Autoangriff beenden
+   // wirken im selben Druck; nur das Spielmenü öffnet sich dann erst beim nächsten Esc.
+   const memoryClosed=!!memoryCard?.close('esc');
    // Ein Ziel (E-65): Esc wählt zuerst das Ziel ab (Gegner oder Freund), erst danach öffnet es das Spielmenü.
    if(clearSelection(game)){events();updateUI();return;}
+   if(memoryClosed)return;
    showGameMenu();events();updateUI();return;}
   if(act==='assist'){assist();return;}
   if(/^mark[A-Z]/.test(act||'')){markEnemy(game.target,act.slice(4).toLowerCase());events();return;}
