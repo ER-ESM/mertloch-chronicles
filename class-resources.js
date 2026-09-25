@@ -210,7 +210,7 @@ function serve(g,st,cs,e,context){
  if(d.perfect)note(g,def.name.toUpperCase()+' · '+r.hud.gar,'#f2c14e','burst');else if(d.state==='verkohlt')note(g,r.hud.burnt,'#8a7a6a','burst');
  fireProcs(g,'serve',cs,{item:it.item});if(d.perfect)fireProcs(g,'perfectServe',cs,{item:it.item});fireProcs(g,'burst',cs,{damage:0});
 }
-function cleave(g,target,n,cs,flambe){const m=mech(g);const extra=[];if(cs.serveCleave)extra.push(...foes(g,target,70,target).slice(0,2).map(o=>[o,.5]));if(flambe)extra.push(...foes(g,target,m.flamme.splash.radius,target).map(o=>[o,m.flamme.splash.share]));const seen=new Set();for(const [o,share] of extra){if(seen.has(o))continue;seen.add(o);g.damage(o,Math.round(n*share),flambe?'Flambiert':'Servieren');}}
+function cleave(g,target,n,cs,flambe){const m=mech(g),c=R(g).cleave;const extra=[];if(cs.serveCleave)extra.push(...foes(g,target,c.radius,target).slice(0,c.targets).map(o=>[o,c.share]));if(flambe)extra.push(...foes(g,target,m.flamme.splash.radius,target).map(o=>[o,m.flamme.splash.share]));const seen=new Set();for(const [o,share] of extra){if(seen.has(o))continue;seen.add(o);g.damage(o,Math.round(n*share),flambe?'Flambiert':'Servieren');}}
 
 // ---------------------------------------------------------------------------------------------------------------
 // Käthe · Blatt und Augen
@@ -242,7 +242,7 @@ function cardEffect(g,st,card,cs,{target=null,point=null,share=1}={}){
  if(card.suit==='karo'){const at=point||target;if(at)for(const e of foes(g,at,ef.control.radius)){g.damage(e,Math.round(skillDamage(g,{damageModel:{flat:ef.control.flat,weapon:ef.control.weapon},weaponSource:'ranged'},0,ITEMS)*power),'Karo');e.controlSlow=Math.max(e.controlSlow||0,ef.control.duration);if(['10','A'].includes(card.rank))e.stun=Math.max(e.stun||0,ef.control.stun+num(cs,'karoStun'));}}
  if(card.suit==='herz'){const amount=p.maxHp*ef.heal*power,help=point?{kind:'self'}:helpTarget(g),mate=help.kind==='companion'?help.ref:null;if(mate)healCompanionByPlayer(g,mate,Math.round(amount),'Herz');else healPlayer(g,amount,cs,false,'heal',true);
   if(cs.herzChain||mech(g)?.herz?.chain){const other=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<240).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(other)healCompanionByPlayer(g,other,Math.round(amount*.5),'Herz');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
-  if(st.readHand>0)st.readHand+=2;}
+  if(st.readHand>0)st.readHand+=r.handlesen.extend;}
  if(card.suit==='pik'){const amount=p.maxHp*ef.shield*power;addGuard(g,amount,cs,true);if(cs.pikTaunt)for(const e of foes(g,p,80)){addThreat(e,'player',300);e.aggro=true;e.ai='combat';}if(cs.pikReflect)st.pikReflect={share:cs.pikReflect,until:g.time+6};}
  return rk;
 }
@@ -276,7 +276,7 @@ function abrechnen(g,st,cs,e,context={}){
 function tickCards(g,st,r,dt,cs,inCombat){
  draw(g,st,cs);
  if(inCombat)st.forget=0;else{st.forget+=dt;if(st.forget>r.forget&&st.augen>0){st.augen=0;st.bubes=0;st.chain={suit:null,n:0};}}
- if(st.readHand>0){st.readHand=Math.max(0,st.readHand-dt);st.tick-=dt;if(st.tick<=0){st.tick=1;const t=st.readHandTarget,amount=Math.round(g.player.maxHp*.02);if(t?.hp>0&&t!==g.player)healCompanionByPlayer(g,t,amount,'Handlesen');else healPlayer(g,amount,cs,false,'hot',true);}}
+ if(st.readHand>0){st.readHand=Math.max(0,st.readHand-dt);st.tick-=dt;if(st.tick<=0){st.tick=1;const t=st.readHandTarget,amount=Math.round(g.player.maxHp*r.handlesen.perSecond);if(t?.hp>0&&t!==g.player)healCompanionByPlayer(g,t,amount,'Handlesen');else healPlayer(g,amount,cs,false,'hot',true);}}
 }
 /** Käthe: Karte auf einem Leistenplatz (1–3) – für Leiste, Tooltip und Anzeige. */
 export function handCard(g,id){const st=g.res;if(resourceKind(g)!=='cards'||!st)return null;const i={strike:0,mark:1,burst:2}[id];return i===undefined?null:st.hand[i]||null;}
