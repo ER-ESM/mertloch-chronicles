@@ -1,3 +1,4 @@
+import {RESOURCES} from '../content/index.js';
 // E-32: jede Spezialisierung hat ab Stufe 5 eine eigene Kernmechanik (spec-mechanics.js, content/mechanics.js).
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -49,7 +50,7 @@ test('Filter-Furie: 100 Randale im Kampf zünden Putzwut, Kniffe sind darin kost
  const g=game('baerbel','baerbel-stage');enemy(g);g.player.inCombat=5;g.player.energy=100;step(g,.1);
  assert.ok(M(g).state>0,'Putzwut');g.keys.add('d');cast(g,'strike');g.keys.delete('d');
  assert.equal(mechVariant(g,'strike')?.name,'PUTZWUT');
- g.player.energy=50;cast(g,'burst');assert.equal(M(g).state,0);assert.equal(g.player.energy,0);
+ g.player.energy=50;cast(g,'burst');assert.equal(M(g).state,0);/* E-71: Auswringen leert die Likes, der Kniff selbst bringt neue */assert.ok(g.player.energy<=RESOURCES.baerbel.trend.likes.at(-1));
 });
 
 test('Zündmeister: Kurzschluss springt nur auf kämpfende Nachbarn, Lunten zünden, drei Zündungen lösen die Kettenreaktion',()=>{

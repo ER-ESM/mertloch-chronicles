@@ -1,3 +1,4 @@
+import {RESOURCES} from '../content/index.js';
 import {learnCoreBuild} from './talent-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -60,7 +61,7 @@ for(const [spec,id] of [['dieter-brew','ruecklaufleitung'],['baerbel-feedback','
 
 test('beat and own live keg zone dispatch their talent rules once per matching strike',()=>{
  const {g}=setup('baerbel-stage');g.time=10;g.lastStrike=8;cast(g,'strike');assert.equal(fired(g,'perfekter-upload'),0);
- g.time=11;cast(g,'strike');assert.equal(fired(g,'perfekter-upload'),1);assert.equal(g.player.energy,91);
+ g.time=11;const likes0=g.player.energy;cast(g,'strike');assert.equal(fired(g,'perfekter-upload'),1);/* E-71: Takt gibt Likes obendrauf */assert.ok(g.player.energy>=Math.min(100,likes0+RESOURCES.baerbel.beat.likes));
  const {g:h}=setup('dieter-brew');h.fields=[{kind:'keg',x:0,y:0,radius:50,remaining:5}];cast(h,'strike');assert.equal(fired(h,'letzter-ausschank'),1);
  h.fields[0].remaining=0;cast(h,'strike');assert.equal(fired(h,'letzter-ausschank'),1);
  h.fields[0].remaining=5;h.fields[0].x=500;cast(h,'strike');assert.equal(fired(h,'letzter-ausschank'),1);
@@ -83,9 +84,9 @@ test('class passives drive runtime skill values, damage reduction, parry, beat a
  const {g,e}=setup();g.member={...g.member,passives:{...g.member.passives,strikeCd:2.7,dashCd:8,damageTaken:.5,parryHeal:17}};g.refreshStats();
  assert.equal(g.skills.find(s=>s.id==='strike').cd,2.7);assert.equal(g.skills.find(s=>s.id==='dash').cd,8);g.classState.guard=0;assert.equal(modifyHit(g,100,combatStats(g)),50);
  g.player.hp=100;g.player.parry=1;g.hitPlayer(e,10);assert.equal(g.player.hp,117);
- const {g:a}=setup('baerbel-stage');a.member={...a.member,passives:{...a.member.passives,beatWindow:[2,3],beatEnergy:17}};a.time=10;a.lastStrike=7.5;cast(a,'strike');assert.equal('runes' in a.player,false);assert.equal(a.player.energy,98);assert.equal(fired(a,'perfekter-upload'),1);
+ const {g:a}=setup('baerbel-stage');a.member={...a.member,passives:{...a.member.passives,beatWindow:[2,3],beatEnergy:17}};a.time=10;a.lastStrike=7.5;a.player.energy=40;cast(a,'strike');assert.equal('runes' in a.player,false);/* E-71: der Takt-Bonus kommt aus beatEnergy der Klamotten */assert.ok(a.player.energy>=40+17);assert.equal(fired(a,'perfekter-upload'),1);
  const {g:k,e:ke}=setup('kevin-fuse');k.member={...k.member,passives:{strikeRange:240,strikeGain:23,dashCd:7,interruptBurstCd:5}};k.refreshStats();
- assert.equal(k.skills.find(s=>s.id==='strike').range,240);cast(k,'strike');assert.equal(k.player.energy,73);
+ assert.equal(k.skills.find(s=>s.id==='strike').range,240);const bottles=k.res.bottles;cast(k,'strike');/* E-71: Kevin wirft eine Flasche */assert.equal(k.res.bottles,bottles-1);
  k.cooldowns.burst=10;ke.cast={interruptible:true};cast(k,'interrupt');assert.equal('runes' in k.player,false);assert.equal(k.cooldowns.burst,5);
 });
 

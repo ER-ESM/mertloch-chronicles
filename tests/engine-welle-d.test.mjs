@@ -69,8 +69,9 @@ test('Kniffe haben Vorrang: neu gelernte Kniffe schieben den letzten Gegenstand 
  g.gainXp(40000);
  const bar=actionBar(g),first=bar.slice(0,10);
  assert.equal(first.filter(Boolean).length,10,'Leiste 1 ist voll');
- assert.equal(first.filter(e=>e.startsWith('item:')).length,1,'neun Kniffe verdrängen einen der beiden Gegenstände von Leiste 1');
- assert.equal(bar.slice(10).filter(e=>e&&e.startsWith('item:')).length,1,'der verdrängte Gegenstand liegt jetzt auf Leiste 2');
+ /* E-71: mit „Zeche prellen“ lernt Dieter zehn Kniffe – die Gegenstände weichen auf Leiste 2, keiner geht verloren */
+ const onFirst=first.filter(e=>e.startsWith('item:')).length;assert.ok(onFirst<=1,'neu gelernte Kniffe verdrängen die Gegenstände von Leiste 1');
+ assert.equal(bar.slice(10).filter(e=>e&&e.startsWith('item:')).length,2-onFirst,'der verdrängte Gegenstand liegt jetzt auf Leiste 2');
  assert.ok(g.skills.filter(s=>bar.includes(s.id)).length>=9);
 });
 
@@ -181,7 +182,7 @@ test('game.describe liefert Info und Laufzeitwerte für jede Art',()=>{
 });
 
 test('game.activeBuffs zeigt laufende Stärkungen mit Restzeit und Zugriff auf describe',()=>{
- const g=new Game(arena());g.gainXp(40000);
+ const g=new Game(arena());g.gainXp(40000);g.player.energy=100;/* E-71 */
  assert.deepEqual(g.activeBuffs(),[]);
  assert.equal(g.action('buff'),true);
  const running=g.activeBuffs();

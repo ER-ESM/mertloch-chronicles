@@ -36,7 +36,7 @@ const NEW_MEMBERS=[
   bio:'Gewinnt seit 1974 jeden Freitag am Stammtisch. Keiner weiß, wie. Alle wissen, dass man ihr nicht in die Karten schaut.',
   passive:'Blatt statt Randale: Du spielst Karten aus der Hand – Kreuz trifft, Pik schützt, Herz heilt, Karo bremst. Jede Karte gibt 5 Augen plus ihren Wert; ab 61 Augen rechnest du ab. Sieben bis Neun gehen nach 1 s raus.',
   rotation:'Karten spielen, Farbe bedienen, Gegnerzauber stechen → ab 61 Augen abrechnen oder auf Schneider (90) zocken.',
-  passives:{strikeCd:0,strikeRange:170,strikeGain:5,dashCd:4.5},
+  passives:{strikeCd:0,strikeGain:5,dashCd:4.5},
   look:'Rüstige Rentnerin mit grauer Dauerwelle, Lesebrille an der Kette, lila Strickjacke, Kartenblatt in der Hand'}
 ];
 const ready=t=>Object.keys(t||{}).length===3;
@@ -53,6 +53,6 @@ export const PASSIVE_INFO={
  baerbel:{effect:'Abwechslung als Ressource: neue Kniffe heben den Trend und bringen Likes, Wiederholungen senken ihn; im Rhythmusfenster getroffen gibt der Grundangriff zusätzliche Likes. Dafür lernt Anni ihre Heilung besonders früh.',why:'Anni lebt von Reichweite: Wer seine ganze Leiste benutzt, heilt und trifft stärker als jemand, der eine Taste hämmert.',links:['skill:baerbel/strike','skill:baerbel/heal'],terms:['likes','trend','takt','grundangriff','heilung','klamotten']},
  kevin:{effect:'Leergut statt Vorrat: jeder Wurf kostet eine Flasche aus dem Kasten, heile Flaschen liegen danach zum Aufsammeln herum. Dazu die größte Grundangriffs-Reichweite, das häufigste Ausweichen und kürzere Abklingzeit der Rakete auf jede geglückte Unterbrechung.',why:'Kevin gewinnt über Entfernung und Nachschub: Wer seine Flaschen wieder einsammelt und im richtigen Moment nachlädt, wirft nie ins Leere.',links:['skill:kevin/strike','skill:kevin/dash','skill:kevin/interrupt'],terms:['reichweite','leergut','ausweichen','unterbrechen','klamotten']},
  schorsch:{effect:'Temperatur statt Vorrat: die Grillzange heizt die Glut, im goldenen Bereich trifft alles härter, zu heiß kommt die Stichflamme. Ab der zweiten Stufe gart Grillgut auf dem Rost und wird serviert.',why:'Schorsch spielt gegen die Uhr und das Thermometer: heizen, halten, ablöschen – und drei Garzeiten im Blick behalten.',links:['skill:schorsch/strike','skill:schorsch/mark','skill:schorsch/burst'],terms:['glut','grillrost','stichflamme','grundangriff','klamotten']},
- kaethe:{effect:'Karten statt Vorrat: die Hand liegt auf den ersten Leistenplätzen, jede Farbe wirkt anders, jede Karte zählt Augen für das Abrechnen. Luschen sind schwach, aber schnell.',why:'Käthe entscheidet bei jedem Druck neu: welche Karte jetzt, ob sie die Farbe bedient, ob sie einen Gegnerzauber sticht – und wann sie abrechnet.',links:['skill:kaethe/strike','skill:kaethe/throw','skill:kaethe/interrupt'],terms:['blatt','augen','stich','abrechnen','klamotten']}
+ kaethe:{effect:'Karten statt Vorrat: die Hand liegt auf den ersten Leistenplätzen, jede Farbe wirkt anders, jede Karte zählt Augen für das Abrechnen. Luschen sind schwach, aber schnell.',why:'Käthe entscheidet bei jedem Druck neu: welche Karte jetzt, ob sie die Farbe bedient, ob sie einen Gegnerzauber sticht – und wann sie abrechnet.',links:['skill:kaethe/strike','throw:kaethe','skill:kaethe/interrupt'],terms:['blatt','augen','stich','abrechnen','grundangriff','klamotten']}
 };
 for(const m of ALL_MEMBERS)m.passiveInfo=PASSIVE_INFO[m.id];

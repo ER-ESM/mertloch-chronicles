@@ -7,7 +7,7 @@ import {TUNING,applyTuning} from './tuning.js';
 export const RESOURCES={
  dieter:{kind:'rage',name:'Randale',unit:'Randale',max:100,start:0,color:'#e2563d',
   // Wut: kein Nachfluss im Kampf, nach dem Kampf verraucht sie.
-  decay:{delay:5,perSecond:6},hitGain:1.2,surgeAt:80,
+  decay:{delay:5,perSecond:6},hitGain:1.2,surgeAt:80,throwGain:12,combatStart:30,
   // Zeche: ein Anteil jedes Treffers wird angeschrieben und abgestottert; ausgegebene Randale bezahlt Leben der Zeche.
   tab:{share:.3,payRate:.12,payPerRandale:2,cap:.4},
   prellen:{radius:90,share:1,surgeBonus:.25},

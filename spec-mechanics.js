@@ -7,6 +7,7 @@ import {distance} from './world.js';
 import {applyMark,healPlayer,addGuard,markedEnemies} from './class-mechanics.js';
 import {procGlow,fireProcs} from './procs.js';
 import {combatStats} from './rpg.js';
+import {grantResource} from './class-resources.js';
 
 export const mechanic=g=>SPEC_MECHANICS[g.rpg?.talents?.spec]||null;
 /** Mechanik-Zustand; lazily angelegt, Teil von classState (resetClassState leert ihn mit). */
@@ -60,7 +61,7 @@ function spreadDot(g,from,count,cs){const m=mechanic(g);if(!m?.dot||count<=0)ret
 /** Dosen-Robbi zieht die Schläge auf sich: ein Gegner in seinem Kreis trifft Robbi statt den Helden, bis Robbis Leben aufgebraucht ist. */
 export function robbiTaunt(g,e,n){const m=mechanic(g);if(!m?.field||m.field.kind!=='robbi'||!m.field.taunt||!e||n<=0)return false;const z=g.fields.find(z=>z.kind==='robbi'&&z.hp>0&&distance(e,z)<=z.radius);if(!z)return false;z.hp-=n;if(z.hp<=0){z.remaining=0;g.fields=g.fields.filter(x=>x.remaining>0);note(g,'ROBBI KAPUTT','#c9c2b4');}else if(!g.sct?.({area:'note',kind:'avoid',text:'ROBBI '+Math.round(n),iconKey:'reinforced',color:'#7fa6c4'}))g.float?.(z.x,z.y-20,'−'+Math.round(n),'#7fa6c4');return true;}
 /** Geglückte Parade: Ansage/Antwort – Parade während eines angesagten Zaubers gibt Randale (Filter-Furie). */
-export function onParryMech(g,e,cs){const m=mechanic(g);if(!m?.prost||!e?.cast)return;g.player.energy=Math.min(100,g.player.energy+m.prost.energy);emitClassVisual(g,'prost',g.player.x,g.player.y,{offsetY:-37,size:26,life:1,max:1});note(g,'PROST!','#ecc3fc','parry');}
+export function onParryMech(g,e,cs){const m=mechanic(g);if(!m?.prost||!e?.cast)return;grantResource(g,m.prost.energy,'mech');emitClassVisual(g,'prost',g.player.x,g.player.y,{offsetY:-37,size:26,life:1,max:1});note(g,'PROST!','#ecc3fc','parry');}
 /** Held kassiert einen Treffer: Pegelstrich (Kneipenschläger). */
 export function onHitTakenMech(g,n,cs){const m=mechanic(g);if(!m?.stack||n<=0)return;const s=M(g);s.stack=Math.min(m.stack.max,s.stack+m.stack.gainOnHit);s.stackUntil=g.time+num(cs,'stackDecay',m.stack.decay);}
 /** Spezialkniff vor dem Schaden: Faktor aus Pegel/Zustand, Nebenwirkungen (Fässer anstechen, Robbi überlasten, Schimmel platzen, Deckung als Welle). */

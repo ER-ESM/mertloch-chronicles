@@ -97,7 +97,7 @@ test('real damage and dodge set bounded animation timers and respawn clears them
  g.hitPlayer({damage:1,name:'Test'},20,false);assert.equal(redesignPose(g.player),'hit');g.tick(.05);assert.ok(g.player.hurt>0&&g.player.hurt<.16);
  g.action('dash');assert.equal(redesignPose(g.player),'dash');for(let i=0;i<8;i++)g.tick(.05);assert.equal(g.player.dash,0);assert.equal(g.player.hurt,0);
  g.hitPlayer({damage:1,name:'Test'},10000,false);assert.equal(redesignPose(g.player),'dead');g.respawn();assert.equal(redesignPose(g.player),'idle');
- const caster=new Game(world,{level:6});assert.ok(caster.action('buff'));assert.equal(redesignPose(caster.player),'cast');for(let i=0;i<7;i++)caster.tick(.05);assert.equal(caster.player.castPose,0);
+ const caster=new Game(world,{level:6});caster.player.energy=100;/* E-71 */assert.ok(caster.action('buff'));assert.equal(redesignPose(caster.player),'cast');for(let i=0;i<7;i++)caster.tick(.05);assert.equal(caster.player.castPose,0);
 });
 test('active sources have exact prompts and provenance; garment runs exclude the head area',()=>{
  const generation=JSON.parse(read('assets/redesign/generation.json'));
