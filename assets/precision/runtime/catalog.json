@@ -47970,14 +47970,14 @@
     "bierdeckelweste": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/bierdeckelweste.png",
-      "sourceHash": "4eddf4856069704fd2fc67fcde830d3192c1c0e82a7166c4a699b2d7c3995ebf",
+      "sourceHash": "48edde059ddae4d2428ce3a519dc84b14a0173f16b10806a8367ae5fc2cf54b2",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/bierdeckelweste.png",
       "width": 64,
       "height": 64,
-      "hash": "4eddf4856069704fd2fc67fcde830d3192c1c0e82a7166c4a699b2d7c3995ebf",
+      "hash": "48edde059ddae4d2428ce3a519dc84b14a0173f16b10806a8367ae5fc2cf54b2",
       "revision": "precision-v1"
     },
     "kabelbinderstiefel": {
@@ -64125,14 +64125,14 @@
     "koenigskette": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/koenigskette.png",
-      "sourceHash": "eefdf1c7073a34e7c0b707c6c8348666479b5622cf461552d40354bdc58c7715",
+      "sourceHash": "22fda62500a2fc1442eea8f960903d7a42ada87395663bd251a024535486ed01",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/koenigskette.png",
       "width": 64,
       "height": 64,
-      "hash": "eefdf1c7073a34e7c0b707c6c8348666479b5622cf461552d40354bdc58c7715",
+      "hash": "22fda62500a2fc1442eea8f960903d7a42ada87395663bd251a024535486ed01",
       "revision": "precision-v1"
     },
     "schaerpe": {
@@ -65098,6 +65098,19 @@
       "hash": "c3f47f8c2f8ed1663de64598786b7b39c55dd3230dd7736acf86527ad30aa464",
       "revision": "precision-v1"
     },
+    "dosenbrecher": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/dosenbrecher.png",
+      "sourceHash": "39d70e54d114ffcd2b6a617d6c40beef63e5c276144fa87bb6b72b61530c8e16",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/dosenbrecher.png",
+      "width": 64,
+      "height": 64,
+      "hash": "39d70e54d114ffcd2b6a617d6c40beef63e5c276144fa87bb6b72b61530c8e16",
+      "revision": "precision-v1"
+    },
     "festivalstiefel": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/festivalstiefel.png",
@@ -65122,6 +65135,19 @@
       "width": 64,
       "height": 64,
       "hash": "f7f1db3141de92419e33545613a1d38a9ce83030324992322bb52743a82c6c52",
+      "revision": "precision-v1"
+    },
+    "pfandring": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/pfandring.png",
+      "sourceHash": "b67ec70470c88cefb21b31879806380d9ebf5f1eac800684c74317704124da2a",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/pfandring.png",
+      "width": 64,
+      "height": 64,
+      "hash": "b67ec70470c88cefb21b31879806380d9ebf5f1eac800684c74317704124da2a",
       "revision": "precision-v1"
     },
     "regenjacke": {
@@ -65189,6 +65215,19 @@
       "hash": "6c2a31ccee7d5d7049bb06479717ac52a234e6508213594704e0de7413526f14",
       "revision": "precision-v1"
     },
+    "hochglanz-expose": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/hochglanz-expose.png",
+      "sourceHash": "356591c468561a8a51e136126769d8046ab86d5f7ebb0f37500fc5cf82bac1a8",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/hochglanz-expose.png",
+      "width": 64,
+      "height": 64,
+      "hash": "356591c468561a8a51e136126769d8046ab86d5f7ebb0f37500fc5cf82bac1a8",
+      "revision": "precision-v1"
+    },
     "kegelkugel": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/kegelkugel.png",
@@ -65202,6 +65241,19 @@
       "hash": "6e30b232981509167abc0a09b46031ddd0768655bc7597c1abb1b3fffc5e676d",
       "revision": "precision-v1"
     },
+    "korkenzieher-kellermeister": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/korkenzieher-kellermeister.png",
+      "sourceHash": "c09290dd046c5dd030681b54b4d5d6ccb173945b2855325975be4387c7d3cdac",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/korkenzieher-kellermeister.png",
+      "width": 64,
+      "height": 64,
+      "hash": "c09290dd046c5dd030681b54b4d5d6ccb173945b2855325975be4387c7d3cdac",
+      "revision": "precision-v1"
+    },
     "pelzmantel-baron": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/pelzmantel-baron.png",
@@ -65213,6 +65265,19 @@
       "width": 64,
       "height": 64,
       "hash": "7a82fb89a20f49f57abe4a0f6cef6d2e1a87f06e8510fd19ea08b4d1b9a34c30",
+      "revision": "precision-v1"
+    },
+    "ringlicht-reichweite": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/ringlicht-reichweite.png",
+      "sourceHash": "54a876b69f421a3b3118ebc5bcc7ff0b693f6ce2c9079544aee9bc8607feeeec",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/ringlicht-reichweite.png",
+      "width": 64,
+      "height": 64,
+      "hash": "54a876b69f421a3b3118ebc5bcc7ff0b693f6ce2c9079544aee9bc8607feeeec",
       "revision": "precision-v1"
     },
     "siegelring-echtgold": {
@@ -65296,14 +65361,14 @@
     "halbes-hufeisen": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/halbes-hufeisen.png",
-      "sourceHash": "7b08ff36627d0b5ca05c1c2680a8895217689f30f932844afa31bad772626720",
+      "sourceHash": "fb824d42e2a65cde72867280d2f3b01a18618164ee87eab60dd765306d50afc5",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/halbes-hufeisen.png",
       "width": 64,
       "height": 64,
-      "hash": "7b08ff36627d0b5ca05c1c2680a8895217689f30f932844afa31bad772626720",
+      "hash": "fb824d42e2a65cde72867280d2f3b01a18618164ee87eab60dd765306d50afc5",
       "revision": "precision-v1"
     },
     "kollektefeder": {
