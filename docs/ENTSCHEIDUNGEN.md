@@ -1182,3 +1182,19 @@ Zentrale Messwerte:
 **Verworfen.** Randale für alle mit neuen Namen (ändert nichts am Spielgefühl); fünf komplett neue Klassen statt Umbau (Spielstände und 270 Talente); Rhythmus-/Musikklasse (Touch- und Tonabhängigkeit).
 
 **Konsequenzen.** Tests, die für Dieter volle Randale voraussetzten, geben ihm diese jetzt ausdrücklich; eigene Prüfungen in `tests/class-resources.test.mjs`. Sichtbare Seite (Ressourcen-HUD, Effekte, Klassenwahl mit fünf Klassen, Kniff-Bilder) folgt in eigenen Arbeitspaketen. Talentbilder der 18 getauschten Talente und der 180 neuen Talente fehlen noch (Icon aus dem ICONS-Vokabular als Ersatz).
+## E-73 · Waffenkammer: acht gemalte Waffen als normale Beute, Sondereffekte später (25.09.2026)
+
+**Anlass.** Der Nutzer hat nach der Waffenkammer-Galerie (acht präzise gemalte 64-px-Waffensymbole im Stil der Kneifzange) alle acht Waffen fürs Spiel gewählt. Dazu kam der Auftrag „optisch iterieren, thematisch prüfen“. Die Rohrzange tropft deshalb Wasser statt Öl, und aus der Zapfhahn-Keule wurde die Fasskeule mit dem Bierfass als Kopf.
+
+**Entscheidungen.**
+1. **Erst normale Waffen** (Nutzerentscheidung): Werte, Symbol, Fundort und Zeichnung an der Figur, aber noch keine Sondereffekte. Die acht Effekt-Ideen stehen in `docs/backlog/loot.md` und kommen in einer eigenen Runde, damit die Balance nicht kippt.
+2. **Kennungen = Speicherschlüssel:** rohrzange, fasskeule, kronkorkenstern, gartenzwerg (Zweihand), grillzange (Klinge), masskrugschild (Schild), schorlenspritze (Sprühwerfer), blitzschrauber (Werfer).
+3. **Werte = Mittel der gewürfelten Kurve** gleicher Bauart, Stufe und Güte, ohne Affixe. Damit ist keine feste Waffe stärker als gewürfelte Beute derselben Stufe. Die Stufen liegen zwischen 3 und 12, die Güte ist ungewöhnlich oder selten.
+4. **Fundorte ohne Händler**, weil Marken keine Ausrüstung kaufen:
+   - Beute über das neue Feld `extra` in `drops.js`: Rohrzange von Horst, Fasskeule von der Kegelbahn. `extra` wird als letzter Wurf gezogen; die Wurffolge der übrigen Beute bleibt gleich, und das Schema begrenzt es auf höchstens 20 %.
+   - Aufträge: Grillzange, Gartenzwerg, Maßkrug-Schild.
+   - Rezepte: Schorlen-Spritze (Brauerei), Kronkorken-Morgenstern und Blitzschrauber (Schrauberei).
+5. **Eigenes Tooltip-Etikett:** `weapon.label` überschreibt den Namen der Bauart („Fernkampf · Akkuschrauber“ statt „Pfandschleuder“).
+6. **Symbole unverändert** über die Präzisions-Pipeline (`waffen-20260925-jobs.json`, eigene eingefrorene Palette `waffen-palette.json`); die Laufzeitbilder sind byte-gleich mit den Originalen.
+7. **Zeichnung an der Figur** in `familien.mjs` (Präfix `wf`), alle 3 Archetypen × 4 Richtungen × 27 Bilder; Einhandwaffen auch als `_nh`. Neu ist der Teilneubau `puppe.mjs --runtime --nur <quelle>`.
+8. **Figurengrafik erst nach Freigabe live** (Regel vom 23.09.): Die Galerie mit den Weltgrößen-Streifen geht vorher an den Nutzer.

@@ -4,6 +4,17 @@ Inbox der Rolle Gegenstände & Loot (docs/ROLLEN.md).
 
 ## Offen
 
+- [ ] **Waffenkammer 2026-09-25: Sondereffekte der acht Waffen** (eigene Runde, Nutzerentscheidung: erst Werte, dann Effekte, damit die Balance nicht kippt). Heute sind die acht Waffen normale Gegenstände (`content/items.js`, Abschnitt Waffenkammer). Ideen aus der Waffenkammer-Vorlage, jeweils neue Engine-Logik:
+  - `rohrzange`: Treffer hinterlassen eine Ölpfütze; Gegner darin rutschen und werden kurz langsamer.
+  - `fasskeule`: jeder dritte Treffer zapft ein Frisches – heilt ein wenig und gibt Randale.
+  - `kronkorkenstern`: Glückstreffer lassen einen Kronkorken abspringen – kleiner Flächenschaden ums Ziel.
+  - `gartenzwerg`: nach einer Parade grinst Gerd – der Gegner ist kurz eingeschüchtert und macht weniger Schaden.
+  - `grillzange`: Treffer setzen Glut (Nachbrennen); die Wurst einmal je Kampf als Wurfgeschoss.
+  - `masskrugschild`: geblockte Treffer füllen den Krug; voll gibt er einen Schluck Leben zurück.
+  - `schorlenspritze`: der Strahl heilt Verbündete; auf Gegnern wird er klebrig und verlangsamt.
+  - `blitzschrauber`: schraubt Fallen in den Boden; jeder Treffer lädt den Akku für einen Überlast-Stoß.
+  Wenn die Effekte kommen: Werte neu gegen die gewürfelte Kurve prüfen (tests/waffen-2026-09.test.mjs), ggf. Güte oder Wertpunkte senken.
+
 - [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D11): Beutetabellen je Boss und Trash, sieben Dorflegenden, Materialien, Instanz-Gegenstände (Siegel, Beweise, Aufzugschlüssel), Reittier „Das halbe Pferd". Entwurf: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitt 11.
 - [ ] Ideen aus content/IDEEN-LANDJUNGS.md (Kabelbinder-Gürtel, Diagnose-Dongle, Headset …) erst nach Freigabe der Themen durch den Lead.
 - [ ] Verpflegung je Kapitel-Familie prüfen (kegler, jga, sigi, klaus, timo nutzen vorhandene Sorten); eigene Sorte für den Bus (z. B. „Bierbong-Rest“) nur, wenn Gameplay einen Zweck nennt.

@@ -8,9 +8,11 @@ import {resample} from './precision-resample.mjs';
 // 2026-09-25 (E-72): Kniff-Icons der Klassen-Ressourcen, 64 × 64 mit 3 px Rand wie die übrigen Kniffe. Die Originale unter
 // assets/precision/sources/2026-09-25/e71-kniffe/ zeichnet vorerst e71-kniffe-draw.mjs (Herkunft: herkunft.json daneben);
 // ein späterer Imagegen-Lauf mit demselben Auftragsblatt (--force) ersetzt sie an Ort und Stelle.
-const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json','./e71-kniffe-jobs.json']
+// 2026-09-25: acht Waffensymbole (64 px), fertig gemalt vom Pixelmaler der Waffenkammer. palette:'waffen' = Porträtpalette + dessen
+// Materialtreppen und Kontur, eingefroren in waffen-palette.json; Export 1:1 ohne Rand, jedes Pixel bleibt, wie es gemalt ist.
+const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json','./e71-kniffe-jobs.json','./waffen-20260925-jobs.json']
  .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))));
-const PALETTES={portraet:JSON.parse(readFileSync(new URL('./portraet-palette.json',import.meta.url)))};
+const PALETTES=Object.fromEntries(['portraet','waffen'].map(name=>[name,JSON.parse(readFileSync(new URL('./'+name+'-palette.json',import.meta.url)))]));
 export function buildSeptemberDelivery({catalog,put,read,hashSource}){
  for(const job of jobs){
   const {id,output:source,width,height,kind,padding=0,worldProp,tileSize}=job;

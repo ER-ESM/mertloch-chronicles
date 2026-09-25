@@ -1,12 +1,15 @@
 // Beutetabellen je Gegnerfamilie (Feld `family` des Gegners, siehe enemies.js).
 // Jede Zeile ist eine eigene Wahrscheinlichkeit; ein Gegner kann auch nichts fallen lassen.
 // material: Material-ID aus items.js · gearChance: gewürfelte Ausrüstung (slots) · unique: Dorflegende · coinsChance: Pfandmarken.
+// extra (optional): feste Ausrüstung ohne Einzigartigkeit, je Zeile {item, chance} ein eigener Wurf nach allen anderen –
+// so bleibt die Wurffolge der übrigen Beute unverändert. Dorflegenden gehören weiter nach unique.
 export const DROP_TABLES={
  boar:{material:'borste',materialChance:.42,gearChance:.08,unique:'keilerzahn',uniqueChance:.008,coinsChance:0,slots:['charm']},
  goose:{material:'feder',materialChance:.38,gearChance:.04,unique:'gansorden',uniqueChance:.006,coinsChance:0,slots:['charm']},
  badger:{material:'dachsfell',materialChance:.4,gearChance:.06,unique:'dachsdeckel',uniqueChance:.008,coinsChance:0,slots:['charm']},
  warden:{material:'kabel',materialChance:.32,gearChance:.2,unique:'ruhepfeife',uniqueChance:.012,coinsChance:.7,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
- horst:{material:'hausordnung',materialChance:.5,gearChance:.85,unique:'horststempel',uniqueChance:.12,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
+ horst:{material:'hausordnung',materialChance:.5,gearChance:.85,unique:'horststempel',uniqueChance:.12,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket'],
+  extra:[{item:'rohrzange',chance:.15}]},// Waffenkammer 2026-09: Horst regelt auch den Wasserhahn
  // --- neue Familien ---
  raven:{material:'kronkorken',materialChance:.5,gearChance:.03,unique:'gansorden',uniqueChance:.004,coinsChance:.25,slots:['charm']},
  fox:{material:'fuchsschwanz',materialChance:.4,gearChance:.07,unique:'fuchspfote',uniqueChance:.008,coinsChance:0,slots:['feet','charm']},
@@ -18,10 +21,12 @@ export const DROP_TABLES={
  // Elite Oberpraktikant Olaf: menschlich, deshalb Marken statt Tiermaterial; lohnt sich spürbar mehr als ein Ruhewart.
  oberpraktikant:{material:'kabelbinder',materialChance:.7,gearChance:.5,unique:'dienstmuetze',uniqueChance:.05,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
  // --- Akt 1 ---
- kegler:{material:'kabel',materialChance:.4,gearChance:.18,unique:'kegelkugel',uniqueChance:.012,coinsChance:.6,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
+ kegler:{material:'kabel',materialChance:.4,gearChance:.18,unique:'kegelkugel',uniqueChance:.012,coinsChance:.6,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket'],
+  extra:[{item:'fasskeule',chance:.03}]},// Waffenkammer 2026-09: die Fasskeule kommt von der Kegelbahn
  jga:{material:'jga-shirt',materialChance:.55,gearChance:.2,unique:'bierbong',uniqueChance:.012,coinsChance:.5,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
  sigi:{material:'palettenholz',materialChance:.6,gearChance:.85,unique:'sigizange',uniqueChance:.14,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
- klaus:{material:'kabel',materialChance:.5,gearChance:.85,unique:'koenigskette',uniqueChance:.14,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
+ klaus:{material:'kabel',materialChance:.5,gearChance:.85,unique:'koenigskette',uniqueChance:.14,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket'],
+  extra:[{item:'fasskeule',chance:.15}]},
  timo:{material:'jga-shirt',materialChance:.6,gearChance:.85,unique:'schaerpe',uniqueChance:.16,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
  // --- Dungeon „Schloss Big B" (E-71, Etappe 1): eigene Tabellen statt der geliehenen Sigi- und Praktikanten-Beute ---
  // Gerd: Boss-Beute mit hoher Güte (rareChance) und Dorflegende „Die Gästeliste" (Plan Abschnitt 11: 15 %). Fällt dabei kein

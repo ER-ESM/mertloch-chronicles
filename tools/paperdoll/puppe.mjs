@@ -768,7 +768,7 @@ export const GEAR_BACK={
 // ---------- Ausgabe: je Quelle ein Bogen – Spalten = Bilder, Zeilen = Tiefenbänder ----------
 /** Seitengebundene Teile: Ärmel-Aufnäher am rechten Arm, Fuchspfote am rechten Stiefel, Bierbong an der linken Hüfte. */
 // ---------- Erweiterungsmodule: weitere Gegenstände (familien.mjs), Editor-Aussehen (aussehen.mjs), NPC-Kleidung (npc-kleidung.mjs) ----------
-export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F};
+export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F,FRAMES};
 const MOD_FAMILIES={},MOD_SIDED=[];
 for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
 const SIDE={
@@ -788,6 +788,8 @@ let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...
      if(g.slot==='charm'&&bd==='rumpf'){blit(L,t,p.C[0],p.C[1],{mirror:p.swap});return;}if(g.slot==='weapon'||g.slot==='offhand')return;}}
    const SD=SIDE[id],B=p.back?GEAR_BACK[id]:null,fn=SD&&bd in SD.normal?(p.swap?SD.swapped:SD.normal)[bd]:B&&bd in B?B[bd]:g[bd];if(!fn)return;const piv=g.slot==='weapon'?[handPos(p.armN),p.swingN]:g.slot==='offhand'?[handPos(p.armF),p.swingF]:null;
    if(piv&&piv[1]){const [[ox,oy],a]=piv,co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}fn(L,p);L.T=null;L.rot=0;if(g.hands===2&&p.grip2&&bd==='armVorn')handOver(L,p.armF);if(TEXABLE.has(id))texOverlay(L,band,p0,id);}]))};}
+/** Bogen einer Quelle (alle Bilder × Bänder, Richtung dir) für die Werkzeug-Figur lid – für Vorschau-Werkzeuge (waffen-vorschau.mjs) ohne Laufzeitbau. */
+export const renderQuelle=(id,lid,dir='se')=>{const look=LOOK[lid];return renderSource(makeSrcs()[id],ARCH[look.arch],look,dir);};
 // ---------- Reiten: Reittiere mit eigenen Sitzformen, Reiterpose aus dem Skelett ----------
 // Statt ein Stehbild zu zerschneiden und zu verzerren, stellt das Skelett je Sitzform eine echte Pose: Becken auf dem Sitz,
 // Füße an Steigbügel/Pedal/Trittbrett, Hände an Zügel/Lenker/Lenkrad. Alle Kleidungsebenen folgen, weil sie am Skelett hängen.
@@ -1078,24 +1080,39 @@ function cellSheet(sh,tw,th,rows,f0,f1,c,o){const w=(f1-f0)*c.w,h=Math.max(1,row
 /** Zugeschnittenen Bogenteil in die Zelle der Quelle setzen. */
 function placePart(p,cell){if(!p.box)return {width:p.n*cell.w,height:Math.max(1,p.rows.length)*cell.h,data:new Uint8Array(p.n*cell.w*Math.max(1,p.rows.length)*cell.h*4)};
  const src={width:p.data.width,data:p.data.data,rowOf:b=>p.rows.indexOf(b)};return cellSheet(src,p.box.w,p.box.h,p.rows,0,p.n,cell,p.box);}
+/** Eine Quelle für alle Archetypen × Richtungen zeichnen, Grund- und Aktionsbögen auf die Zelle der Quelle zugeschnitten schreiben;
+ *  trägt eigene sw/ne-Bögen (cat.own/ownAkt) und die Figurenhöhe (Körper, Dutt) in cat ein. Rückgabe: Zelle. */
+function quelleBauen(id,fn,out,cat){const rows=bandsOf(id),parts=[];
+ for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];
+  for(const dir of Object.keys(DIRS)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne',name=`${out}/${id}-${gid}${DIRS[dir]}`;
+   if(mir&&OWN_AKT&&!cat.ownAkt[dir].includes(id))cat.ownAkt[dir].push(id);
+   const ownBase=!(mir&&!sh.text&&!SIDED.has(id));if(mir&&ownBase&&!cat.own[dir].includes(id))cat.own[dir].push(id);
+   if(ownBase)parts.push([name+'.png',cropPart(sh,rows,0,RUNTIME_SPLIT)]);
+   if(RUNTIME_SPLIT<FRAMES.length&&(ownBase||OWN_AKT))parts.push([name+'-akt.png',cropPart(sh,rows,RUNTIME_SPLIT,FRAMES.length)]);
+   // Figurenhöhe (Kopf bis Fuß, Deckkraft ab 50 %) inklusive Dutt – paperdoll-art.js unitScale gleicht darüber auf 26 E an
+   if((id==='koerper'||id==='dutt'&&look.style==='locken')&&dir==='se'){let top=H;for(let y=0;y<H&&top===H;y++)for(let b=0;b<BANDS.length;b++){for(let x=0;x<W;x++)if(sh.data[((b*H+y)*sh.width+x)*4+3]>=128){top=y;break;}if(top<H)break;}cat.archetypes[gid].height=Math.max(cat.archetypes[gid].height||0,GROUND-top);}}}
+ let x0=W,y0=H,x1=-1,y1=-1;for(const [,p] of parts)if(p.box){x0=Math.min(x0,p.box.x);y0=Math.min(y0,p.box.y);x1=Math.max(x1,p.box.x+p.box.w-1);y1=Math.max(y1,p.box.y+p.box.h-1);}
+ const cell=x1<0?{x:0,y:0,w:1,h:1}:{x:Math.max(0,x0-1),y:Math.max(0,y0-1),w:Math.min(W-1,x1+1)-Math.max(0,x0-1)+1,h:Math.min(H-1,y1+1)-Math.max(0,y0-1)+1};
+ for(const [file,p] of parts)writeFileSync(file,encodePng(placePart(p,cell)));return cell;}
+/** Teilneubau: nur die genannten Gegenstands-Quellen neu zeichnen, in einen fertigen Laufzeitordner schreiben und ihre Katalogeinträge
+ *  ersetzen (Zelle, Bänder, eigene sw/ne-Bögen). Die Hülle cat.huelle wird nur erweitert. Nur für geänderte Zeichnungen bestehender oder neuer
+ *  Gegenstände – ändern sich Leinwand, Bilder, Palette oder Anker, gilt der volle Neubau (--runtime). */
+export function buildRuntimeTeil(out,ids){const t0=Date.now(),cat=JSON.parse(readFileSync(out+'/catalog.json','utf8')),srcs=makeSrcs();
+ if(cat.W!==W||cat.H!==H||cat.ground!==GROUND||cat.split!==RUNTIME_SPLIT||cat.frames.map(f=>f.anim+f.i).join()!==FRAMES.map(f=>f.anim+f.i).join())throw new Error('Katalog passt nicht zum Werkzeug (Leinwand/Bilder) – voller Neubau: --runtime');
+ const pal=new Set(cat.palette);for(const v of Object.values(PAL))for(const c of (Array.isArray(v[0])?v:[v]))if(!pal.has(c[0]<<16|c[1]<<8|c[2]))throw new Error('neue Palettenfarben – voller Neubau: --runtime');
+ for(const id of ids){const g=GEAR[id];if(!g)throw new Error('keine Gegenstands-Quelle: '+id);
+  for(const f of readdirSync(out))if(Object.values(GAME_ARCH).some(a=>Object.values(DIRS).some(d=>f===`${id}-${a}${d}.png`||f===`${id}-${a}${d}-akt.png`)))unlinkSync(out+'/'+f);
+  cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:quelleBauen(id,srcs[id],out,cat)};cat.items[id]=id;console.log('Quelle',id,JSON.stringify(cat.sources[id].cell));}
+ const o=cat.huelle||{...HUELLE},h=cat.huelle={x0:Math.min(o.x0,HUELLE.x0),x1:Math.max(o.x1,HUELLE.x1),y0:Math.min(o.y0,HUELLE.y0),y1:Math.max(o.y1,HUELLE.y1)};
+ console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px`);
+ writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Teilneubau fertig',(Date.now()-t0)+' ms',out);}
 export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of readdirSync(out))if(f.endsWith('.png'))unlinkSync(out+'/'+f);
  const t0=Date.now(),srcs=makeSrcs(),cat={version:3,layout:'bands',split:RUNTIME_SPLIT,W,H,ground:GROUND,pivot:{x:W/2,y:GROUND},worldHeight:26,bands:BANDS,dirs:DIRS,own:{sw:[],ne:[]},ownAkt:{sw:[],ne:[]},
   frames:FRAMES.map(fr=>({...fr,bob:pose(fr,ARCH.schwungvoll,LOOK.ida).bob})),archetypes:{},sources:{},items:{},families:{...FAMILY_SOURCE,...MOD_FAMILIES},anchors:{},ramps:{}};
  for(const [lid,look] of Object.entries(LOOK))cat.archetypes[GAME_ARCH[lid]]={name:ARCH[look.arch].name,dutt:look.style==='locken',hair:Object.keys(PAL).find(k=>PAL[k]===look.hair)};
  // je Quelle alle Archetypen × Richtungen zeichnen, Teile auf ihre Hülle zuschneiden, dann in die gemeinsame Zelle setzen und schreiben
  const cells={};
- for(const [id,fn] of Object.entries(srcs)){const rows=bandsOf(id),parts=[];
-  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];
-   for(const dir of Object.keys(DIRS)){const sh=renderSource(fn,A,look,dir),mir=dir==='sw'||dir==='ne',name=`${out}/${id}-${gid}${DIRS[dir]}`;
-    if(mir&&OWN_AKT&&!cat.ownAkt[dir].includes(id))cat.ownAkt[dir].push(id);
-    const ownBase=!(mir&&!sh.text&&!SIDED.has(id));if(mir&&ownBase&&!cat.own[dir].includes(id))cat.own[dir].push(id);
-    if(ownBase)parts.push([name+'.png',cropPart(sh,rows,0,RUNTIME_SPLIT)]);
-    if(RUNTIME_SPLIT<FRAMES.length&&(ownBase||OWN_AKT))parts.push([name+'-akt.png',cropPart(sh,rows,RUNTIME_SPLIT,FRAMES.length)]);
-    // Figurenhöhe (Kopf bis Fuß, Deckkraft ab 50 %) inklusive Dutt – paperdoll-art.js unitScale gleicht darüber auf 26 E an
-    if((id==='koerper'||id==='dutt'&&look.style==='locken')&&dir==='se'){let top=H;for(let y=0;y<H&&top===H;y++)for(let b=0;b<BANDS.length;b++){for(let x=0;x<W;x++)if(sh.data[((b*H+y)*sh.width+x)*4+3]>=128){top=y;break;}if(top<H)break;}cat.archetypes[gid].height=Math.max(cat.archetypes[gid].height||0,GROUND-top);}}}
-  let x0=W,y0=H,x1=-1,y1=-1;for(const [,p] of parts)if(p.box){x0=Math.min(x0,p.box.x);y0=Math.min(y0,p.box.y);x1=Math.max(x1,p.box.x+p.box.w-1);y1=Math.max(y1,p.box.y+p.box.h-1);}
-  const cell=cells[id]=x1<0?{x:0,y:0,w:1,h:1}:{x:Math.max(0,x0-1),y:Math.max(0,y0-1),w:Math.min(W-1,x1+1)-Math.max(0,x0-1)+1,h:Math.min(H-1,y1+1)-Math.max(0,y0-1)+1};
-  for(const [file,p] of parts)writeFileSync(file,encodePng(placePart(p,cell)));}
+ for(const [id,fn] of Object.entries(srcs))cells[id]=quelleBauen(id,fn,out,cat);
  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];
   cat.anchors[gid]={};for(const dir of Object.keys(DIRS)){const back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne',sw=back!==mir,mx=q=>[+(mir?W-q[0]:q[0]).toFixed(1),+q[1].toFixed(1)];
    cat.anchors[gid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back,sw);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(leanPt(p,p.C)),h:mx(leanPt(p,p.head)),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
@@ -1108,11 +1125,13 @@ export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of
  cat.palette=[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))];
  const h=cat.huelle={...HUELLE};console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px (Leinwand ${W}×${H}, Boden ${GROUND})`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Laufzeit-Bögen fertig',(Date.now()-t0)+' ms',out);}
-// Schalter: --runtime [ziel] = Laufzeit-Bögen fürs Spiel; --reiten [ziel] = Reit-Bögen (tools/paperdoll/reiten.mjs, dauert Minuten);
+// Schalter: --runtime [ziel] = Laufzeit-Bögen fürs Spiel; --runtime [ziel] --nur id,id = Teilneubau einzelner Gegenstände in einen fertigen
+// Laufzeitordner; --reiten [ziel] = Reit-Bögen (tools/paperdoll/reiten.mjs, dauert Minuten);
 // ohne Schalter = Prototyp-Ausgabe. In Arbeits-Threads (Reit-Build) nie ausführen: dort ist argv[1] ebenfalls puppe.mjs.
 import {isMainThread} from 'node:worker_threads';
 const CLI=isMainThread&&process.argv[1]&&process.argv[1].endsWith('puppe.mjs');
-if(CLI&&process.argv[2]==='--runtime')buildRuntime(process.argv[3]||HERE('../../assets/paperdoll/runtime'));
+if(CLI&&process.argv[2]==='--runtime'){const a=process.argv.slice(3),nur=a.indexOf('--nur'),ziel=a.find((x,i)=>!x.startsWith('--')&&(nur<0||i!==nur+1))||HERE('../../assets/paperdoll/runtime');
+ if(nur>=0){if(!a[nur+1])throw new Error('--nur braucht Kennungen (id,id)');buildRuntimeTeil(ziel,a[nur+1].split(',').filter(Boolean));}else buildRuntime(ziel);}
 else if(CLI&&process.argv[2]==='--reiten')import('./reiten.mjs').then(m=>m.buildRideRuntime(process.argv[3]||HERE('../../assets/paperdoll/reiten')));
 else if(CLI){const out=process.argv[2]||'.';mkdirSync(out,{recursive:true});const t0=Date.now();
  const meta={W,H,ground:GROUND,bands:BANDS,frames:FRAMES,figures:{},gear:{},dirs:DIRS,own:{sw:[],ne:[]}};

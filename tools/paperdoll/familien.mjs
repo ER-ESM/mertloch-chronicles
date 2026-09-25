@@ -20,6 +20,14 @@ export function familien(K){
   faZahn:R(['#fffef6','#f6f0dc','#e0d0a0','#a8905a','#5c4424']),// Keilerhauer (Elfenbein, Wurzel vergilbt)
   faSchild:R(['#78aee8','#3c78c4','#285496','#1a3464','#10203c']),// Zeltplatz-Schild
   faBier:R(['#fff2a0','#f8c83c','#d8962a','#9a6420']),// Bier im Becher
+  // Waffenkammer 2026-09-25 (Präfix wf)
+  wfZange:R(['#eef4ea','#b8c8b6','#8a9e90','#5e7068','#3a4644']),// Rohrzange: grüngrauer Stahlkopf
+  wfKugel:R(['#b4bebc','#86928f','#626e6c','#434c4c','#272e30']),// dunkler Stahl (Stachelkugel, Fassreifen)
+  wfHaut:R(['#fff0dc','#f6caa6','#dca07e','#aa6a58','#6a3a3c']),// Gartenzwerg-Gesicht (eigene Treppe: färbt nicht mit der Heldenhaut um)
+  wfWurst:R(['#f6c49a','#d88c5a','#aa5e3a','#723a26','#44221a']),// Bratwurst
+  wfRosa:R(['#ffd6e2','#f89ab2','#dc6a88','#a2405e','#62243a']),// Wasserpistole
+  wfOrange:R(['#ffcf96','#f89440','#d0661e','#904014','#52220a']),// Akkuschrauber
+  wfSchiefer:R(['#94a4bc','#66788f','#4c5a72','#343f54','#1f2636']),// Akkuschrauber-Griff
  });
  const hs=(x,y)=>((Math.sin(x*12.9898+y*78.233)*43758.5453)%1+1)%1;
  /** Einzelpixel über L.T (Schwung der Waffe, Rumpfneigung der Aktionsposen) setzen/prüfen – L.on/L.is arbeiten ungedreht. */
@@ -289,6 +297,125 @@ export function familien(K){
    try{const st=L.piece(PAL.black);limb(L,[[sx,cy-12],a],[1.6,1.6],PAL.black[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});
     greifarm(L,p,a[0],a[1],sx+s*3,cy-24);}finally{L.T=null;}}};
 
+ // ---------- Waffenkammer 2026-09-25 (Vorlage: 64-px-Symbole in _prototypen/waffen-2026-09-25/ids) ----------
+ // Zeichenrahmen wie alle Waffen: Griffpunkt = handPos, Waffenachse +y (hängend nach unten, im Hieb geschwungen), Kopf am Achsenende.
+ // Koordinaten relativ zum Griffpunkt über P(dx,dy). Kräftige Köpfe, damit die Waffe in Weltgröße (0,3–0,6) erkennbar bleibt; hängend
+ // höchstens ~45 px unter der Hand (Boden). Seitliche Merkmale (Maul, Zapfhahn) liegen auf der Außenseite der Hand (o: nahe Hand links im
+ // Bild, ferne Hand rechts; die Nebenhand-Fassung nh hält die Waffe in der anderen Hand). Fernwaffen: Oberseite f über oben(p).
+ const outer=(p,nh)=>p.swap!==!!nh?1:-1;
+ const rel=(hx,hy,sx=1,k=1)=>(dx,dy)=>[hx+dx*sx*k,hy+dy*k];
+ /** Fernwaffen: Seite der Oberseite. Aktionsbilder oben beim Zielen (+x von vorn, −x von hinten); Stand/Laufen nach außen, sonst läge das Gehäuse
+  *  in nw/sw hinter Bein und Rumpf (Sichtbarkeitsprüfung der fernen Hand). */
+ const oben=p=>p.sided?(p.back?-1:1):outer(p,false);
+ /** Klempner-Rohrzange: roter Gummi-Tauchgriff in der Faust, Stahl-Doppel-T-Griff, Messing-Rändelmutter, Hakenbacke mit Zähnen, Maul nach außen. */
+ function rohrzange(L,p,nh){const [hx,hy]=handPos(p.armN),z=PAL.wfZange,m=PAL.metal,r=PAL.faMitt,P=rel(hx,hy,outer(p,nh));
+  const g=L.piece(r);limb(L,[P(0,-11),P(0,6)],[3.3,3.5],r[1]);light(L,g,{base:1,hi:0,lo:2,dark:1});on(L,g,...P(0,-10),r[3]);// Aufhängeloch
+  const s=L.piece(m);limb(L,[P(0,6),P(0,17)],[2.6,2.9],m[2]);light(L,s,{base:2,hi:1,lo:3,dark:1});line(L,[P(0,7),P(0,16)],m[0],s);// Doppel-T: heller Steg
+  const sh=L.piece(z);limb(L,[P(-3.8,13),P(-3.8,31)],[2.3,2.3],z[2]);light(L,sh,{base:2,hi:1,lo:3,dark:1});// Schaft der Hakenbacke
+  const n=L.piece(PAL.gold);poly(L,[P(-6.2,15.5),P(5.6,15.5),P(5.6,21.5),P(-6.2,21.5)],PAL.gold[1]);light(L,n,{base:1,hi:0,lo:2,dark:1});
+  for(const dx of [-3,.5,3.5])line(L,[P(dx,16.2),P(dx,20.8)],PAL.gold[3],n);// Rändelung
+  const lo=L.piece(z);poly(L,[P(-6,21.5),P(10,21.5),P(10.6,26),P(-6,26)],z[1]);light(L,lo,{base:1,hi:0,lo:2,dark:1});
+  const up=L.piece(z);poly(L,[P(-7.8,30),P(11.6,30),P(12.6,35),P(10,41),P(-4,41),P(-8.2,37)],z[1]);light(L,up,{base:1,hi:0,lo:2,dark:2,share:.3});
+  for(let i=0;i<4;i++){const dx=9.4-i*2.6;on(L,lo,...P(dx,25.4),PAL.white[1]);on(L,up,...P(dx,30.6),PAL.white[1]);}// Zähne an beiden Backen
+  handOver(L,p.armN);}
+ /** Fasskeule: Holzstiel mit Griffband und Knauf, Kopf = kleines Bierfass (Dauben, zwei Eisenreifen, Boden) mit Messing-Zapfhahn und Porzellangriff. */
+ function fasskeule(L,p,nh){const [hx,hy]=handPos(p.armN),w=PAL.wood,k=PAL.wfKugel,P=rel(hx,hy,outer(p,nh));
+  const s=L.piece(w);limb(L,[P(0,-9),P(0,13)],[2.7,3],w[2]);light(L,s,{base:2,hi:1,lo:3,dark:1});
+  const kn=L.piece(w);ell(L,...P(0,-10.5),3.9,3.2,w[2]);light(L,kn,{base:2,hi:1,lo:3,dark:1});// Knauf
+  for(const yy of [-7.5,6])line(L,[P(-2.9,yy),P(2.9,yy+1)],PAL.black[2],s);// Griffband
+  const b=L.piece(w);poly(L,[P(-8,11),P(-10,16.5),P(-10.6,24),P(-10,31.5),P(-8,37),P(8,37),P(10,31.5),P(10.6,24),P(10,16.5),P(8,11)],w[1]);
+  light(L,b,{base:1,hi:0,lo:2,dark:2,share:.3});for(const dx of [-4.5,0,4.5])line(L,[P(dx*.8,12),P(dx,24),P(dx*.8,36)],w[3],b);// Daubenfugen
+  for(const yy of [15.5,32.5]){const h=L.piece(k);poly(L,[P(-10.2,yy-1.4),P(10.2,yy-1.4),P(10.2,yy+1.4),P(-10.2,yy+1.4)],k[2]);light(L,h,{base:2,hi:1,lo:3,dark:1});}
+  const d=L.piece(PAL.leather);ell(L,...P(0,37.3),8.2,2.8,PAL.leather[2]);light(L,d,{base:2,hi:1,lo:3,dark:1});ell(L,...P(.4,37.6),5,1.3,PAL.leather[1],d);// Boden
+  const t=L.piece(PAL.gold);poly(L,[P(9.5,21.5),P(15.5,21.5),P(15.5,26),P(9.5,26)],PAL.gold[1]);limb(L,[P(14.2,25.5),P(14.2,30.5)],[1.6,1.3],PAL.gold[1]);light(L,t,{base:1,hi:0,lo:2,dark:1});
+  const pz=L.piece(PAL.white);limb(L,[P(12.8,21),P(12.8,14.5)],[1.5,2],PAL.white[0]);light(L,pz,{base:0,hi:0,lo:1,dark:1});// Porzellangriff
+  handOver(L,p.armN);}
+ /** Kronkorkenstern: Flaschenöffner als Griff, kurze Kette, Stachelkugel mit roten, goldenen und grünen Kronkorken. Die Kette hängt je nach
+  *  Bild mehr oder weniger mit der Schwerkraft (Stand/Laufen/Rasten), im Treffer fliegt die Kugel entlang der Schlagachse. */
+ const SCHWERE={stehen:.85,blinzeln:.85,laufen:.8,hieb:[.35,0,.2],hieb2:[.35,0,.2],getroffen:.6,parade:.5,parade2:.5,zaubern:.6,rasten:.9,sprint:.45,zielen:.8,schuss:.8};
+ function kronkorkenstern(L,p){const [hx,hy]=handPos(p.armN),m=PAL.metal,k=PAL.wfKugel,P=rel(hx,hy);
+  const fr=K.FRAMES[(p.fi??0)%500]||{anim:'stehen',i:0},sw=SCHWERE[fr.anim],kk=Array.isArray(sw)?sw[fr.i]:sw??.8;
+  const a=Math.atan2(Math.sin(L.rot||0),Math.cos(L.rot||0)),th=Math.max(-1.9,Math.min(1.9,kk*a)),d=[Math.sin(th),Math.cos(th)];// Schwerkraft im Waffenrahmen = (sin a, cos a)
+  const g=L.piece(m);poly(L,[P(-3.4,-11),P(3.4,-11),P(3.6,6),P(-3.6,6)],m[1]);ell(L,...P(0,9),4.8,4.2,m[1]);light(L,g,{base:1,hi:0,lo:2,dark:1});
+  ell(L,...P(0,-8.2),1.5,1.5,null,'del');ell(L,...P(0,8.8),2.4,1.6,null,'del');// Loch am Ende, Öffnermaul
+  const c0=P(0,13.5),R0=8.3,cc=[c0[0]+d[0]*(10+R0),c0[1]+d[1]*(10+R0)];
+  const ch=L.piece(m);for(let i=0;i<3;i++){const t=1+i*3.4;ell(L,c0[0]+d[0]*t,c0[1]+d[1]*t,i%2?1.3:2.3,2.9,m[i%2?2:1],null,-th);}light(L,ch,{base:1,hi:0,lo:2,dark:1});
+  const sp=L.piece(m);for(let i=0;i<8;i++){const b=i*Math.PI/4+.2,u=[Math.cos(b),Math.sin(b)],v=[-u[1],u[0]],A=(r,q)=>[cc[0]+u[0]*r+v[0]*q,cc[1]+u[1]*r+v[1]*q];poly(L,[A(6.2,2.6),A(13.4,0),A(6.2,-2.6)],m[2]);}
+  light(L,sp,{base:2,hi:1,lo:3,dark:1});
+  const bl=L.piece(k);ell(L,cc[0],cc[1],R0,R0,k[2]);light(L,bl,{base:2,hi:1,lo:3,dark:2,share:.34});
+  for(const [dx,dy,col] of [[-3.3,-2.3,PAL.red],[3.5,-1.3,PAL.gold],[.1,3.6,PAL.can]]){const x=cc[0]+dx,y=cc[1]+dy,c=L.piece(col);ell(L,x,y,2.9,2.7,col[1]);
+   for(let t=0;t<6.28;t+=.7)on(L,c,x+Math.cos(t)*2.4,y+Math.sin(t)*2.2,col[2]);on(L,c,x-1,y-1,col[0]);on(L,c,x,y-1,col[0]);}// Kronkorken mit Zackenrand
+  handOver(L,p.armN);}
+ /** Gartenzwerg am Besenstiel (Zweihand) als gedrungener Keulenkopf, breiter als hoch: kurze rote Zipfelmütze mit seitlich geknickter Spitze,
+  *  breites Gesicht als hellste Fläche (dicke runde Nase, rosa Backen, zwei Augenpunkte), breiter weißer Dreiecksbart, kurzer blauer
+  *  Kittelbauch mit brauner Stiefelkante; von hinten Mütze, Bartränder links und rechts und Kittelrücken.
+  *  In der Ruhe (Stand/Laufen) aufrecht wie ein Wanderstab, leicht nach außen gekippt, Zwerg oben; im Kampf die übliche Waffenachse.
+  *  Zielen/Schuss (Nahkampfwaffen zeigt das Spiel dort nie) ebenfalls aufrecht – der lange Stab bliebe sonst weit vor der Figur (Hülle). */
+ function gartenzwerg(L,p){const [hx,hy]=handPos(p.armN),w=PAL.wood,T0=L.T,r0=L.rot||0,gk=1.7,back=!!p.back;
+  const an=(K.FRAMES[(p.fi??0)%500]||{}).anim;
+  if(!p.sided||an==='zielen'||an==='schuss'){const ex=Math.PI+outer(p,false)*.32,co=Math.cos(ex),si=Math.sin(ex),Rt=([x,y])=>[hx+(x-hx)*co-(y-hy)*si,hy+(x-hx)*si+(y-hy)*co];L.T=T0?q=>T0(Rt(q)):Rt;L.rot=r0+ex;}
+  // G(s,u): s quer (rechts im aufrecht gehaltenen Zwerg), u entlang des Zwergs (Stiefelsohle 0 → Mützenspitze 25,8), Maßstab gk; Stiel kurz (Kopf größer)
+  try{const G=(s,u)=>[hx-s*gk,hy+22+u*gk],GP=pts=>pts.map(([s,u])=>G(s,u)),E=(s,u,rx,ry,c,clip=null)=>ell(L,...G(s,u),rx*gk,ry*gk,c,clip),c=PAL.faMitt,sk=PAL.wfHaut;
+   const st=L.piece(w);limb(L,[[hx,hy-9],[hx,hy+24]],[2.3,2.5],w[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});
+   const bo=L.piece(PAL.boot);for(const s of [-3.9,3.9])E(s,1.3,3.7,2,PAL.boot[2]);light(L,bo,{base:2,hi:1,lo:3,dark:1});// Stiefelkante
+   const bart=[[-8.4,12.4],[8.4,12.4],[7,8.6],[0,4.2],[-7,8.6]];// breiter Dreiecksbart
+   if(back){const bt=L.piece(PAL.white);poly(L,GP([[-9.2,13.4],[9.2,13.4],[8.6,8.8],[0,6],[-8.6,8.8]]),PAL.white[1]);light(L,bt,{base:1,hi:0,lo:2,dark:1});}// von hinten: Bartränder neben Kittel und Mütze
+   const kt=L.piece(PAL.blue);E(0,5.6,8.4,4.8,PAL.blue[1]);for(const s of [-8.2,8.2])E(s,6.6,2.4,2.9,PAL.blue[1]);light(L,kt,{base:1,hi:0,lo:2,dark:2});// Kittelbauch, Arme
+   line(L,GP([[-8,2.9],[8,2.9]]),PAL.black[2],kt);if(!back){on(L,kt,...G(0,2.9),PAL.gold[1]);on(L,kt,...G(-.6,2.9),PAL.gold[1]);}// Gürtel, Schnalle
+   if(back)line(L,GP([[0,3.4],[0,10.2]]),PAL.blue[2],kt);// Rückennaht
+   else{const fa=L.piece(sk);E(0,14.8,7.4,3.9,sk[1]);light(L,fa,{base:1,hi:0,lo:2,dark:1,share:.22});// breites Gesicht: hellste Fläche
+    for(const s of [-4.9,4.9])E(s,13.8,1.6,1.2,PAL.wfRosa[1],fa);// rosa Backen
+    for(const s of [-2.8,2.8])E(s,16.1,.8,.9,PAL.lash,fa);// Augenpunkte
+    const bt=L.piece(PAL.white);poly(L,GP(bart),PAL.white[1]);light(L,bt,{base:1,hi:0,lo:2,dark:1});
+    const ns=L.piece(PAL.satin);E(0,13,2.6,2.3,PAL.satin[1]);light(L,ns,{base:1,hi:0,lo:2,dark:1});}// dicke runde Nase über dem Bart
+   const top=[[7.2,20.6],[7.8,22.8],[10.6,24.4],[8.2,25.8],[3.4,24],[-3.8,21]],cap=back?[[-7.4,13.8],[7.4,13.8],...top]:[[-8.6,17.8],[8.6,17.8],...top];// kurze Zipfelmütze, Spitze zur Seite geknickt
+   const mt=L.piece(c);poly(L,GP(cap),c[back?2:1]);light(L,mt,{base:back?2:1,hi:back?1:0,lo:back?3:2,dark:1});if(!back)line(L,GP([[-8.3,18.3],[8.3,18.3]]),c[2],mt);
+  }finally{L.T=T0;L.rot=r0;}
+  handOver(L,p.armN);}
+ /** Edelstahl-Grillzange: Federöse, zwei Holzgriffe in der Faust, zwei Zangenarme, Bratwurst mit Grillstreifen zwischen den Greifschalen. */
+ function grillzange(L,p){const [hx,hy]=handPos(p.armN),m=PAL.metal,w=PAL.wood,s=PAL.wfWurst,P=rel(hx,hy);
+  const lp=L.piece(m);ell(L,...P(0,-11),3.2,2.5,m[2]);light(L,lp,{base:2,hi:1,lo:3,dark:1});ell(L,...P(0,-11),1.2,1,null,'del');// Federöse
+  const g=L.piece(w);for(const dx of [-2.3,2.3])limb(L,[P(dx*.7,-9.5),P(dx,6)],[2,2.1],w[dx<0?1:2]);light(L,g,{base:1,hi:0,lo:2,dark:1});line(L,[P(0,-9),P(0,6)],w[3],g);
+  const a=L.piece(m);limb(L,[P(2,6),P(6.6,33)],[1.6,1.6],m[1]);limb(L,[P(-2,6),P(-6.8,33)],[1.6,1.6],m[1]);light(L,a,{base:1,hi:0,lo:2,dark:1});
+  const b=L.piece(s);limb(L,[P(-.5,17),P(.3,26.5),P(0,37)],[3.7,4.1,3.7],s[1]);light(L,b,{base:1,hi:0,lo:2,dark:1,share:.34});
+  for(const yy of [21,25.5,30,34])line(L,[P(-3,yy),P(2.8,yy-2)],s[3],b);// Grillstreifen
+  const tp=L.piece(m);for(const dx of [-6.5,6.3])ell(L,...P(dx,32.5),2.2,3.4,m[1]);light(L,tp,{base:1,hi:0,lo:2,dark:1});// Greifschalen
+  handOver(L,p.armN);}
+ /** Maßkrug-Schild: gläserner Maßkrug am Henkel gehalten, Front zum Betrachter – helle Glaswände, goldenes Bier mit Noppen, Schaumkrone;
+  *  von hinten dunkler durchs Glas, der Henkel mit der Faust auf der Betrachterseite. */
+ function masskrugschild(L,p){const [hx,hy]=handPos(p.armF),t=PAL.tube,b=PAL.faBier,wh=PAL.white,back=!!p.back,k=1.25,sh=back?1:0;
+  const P=back?(dx,dy)=>[hx+1+dx*k,hy-2+dy*k]:(dx,dy)=>[hx+(dx-14.5)*k,hy+dy*k],E=(dx,dy,rx,ry,c,clip=null)=>ell(L,...P(dx,dy),rx*k,ry*k,c,clip);
+  if(!back){const h=L.piece(t);limb(L,[P(8,-7),P(13.5,-6),P(14.5,0),P(13.5,6),P(8,7)],[2.3,2.3,2.4,2.3,2.3].map(r=>r*k),t[1]);light(L,h,{base:1,hi:0,lo:2,dark:1});}// Henkel zur Faust
+  const g=L.piece(t);poly(L,[P(-9.5,-11),P(9.5,-11),P(9.8,12),P(-9.8,12)],t[1+sh]);light(L,g,{base:1+sh,hi:sh,lo:2+sh,dark:1,share:.2});
+  const be=L.piece(b);poly(L,[P(-7.6,-8.5),P(7.6,-8.5),P(7.8,8.8),P(-7.8,8.8)],b[1+sh]);light(L,be,{base:1+sh,hi:sh,lo:2,dark:1,share:.24});
+  for(let r=0;r<5;r++)for(let q=0;q<4;q++){const x=-5.2+q*3.6+(r%2?1.8:0),y=-6+r*3.4;if(x<6.5){on(L,be,...P(x,y),b[sh]);on(L,be,...P(x+.8,y),b[sh]);}}// Noppen
+  line(L,[P(-8.7,-9),P(-8.7,10.5)],t[sh],g);line(L,[P(8.7,-9),P(8.7,10.5)],t[2+sh],g);// Glanzkante links, Schatten rechts
+  const f=L.piece(wh);for(const [dx,dy,r] of [[-7.4,-11.6,3.4],[-2.8,-13,3.8],[2.2,-12.8,3.6],[6.6,-11.6,3.4],[9.4,-10,2.2]])E(dx,dy,r,r*.85,wh[sh]);
+  poly(L,[P(-9.6,-11.5),P(9.6,-11.5),P(9.6,-8.5),P(-9.6,-8.5)],wh[sh]);light(L,f,{base:sh,hi:0,lo:1+sh,dark:1,share:.24});
+  if(back){const h=L.piece(t);limb(L,[P(0,-8),P(-.6,-4),P(-.6,4),P(0,8)],[2.2,2.4,2.4,2.2].map(r=>r*k),t[1]);light(L,h,{base:1,hi:0,lo:2,dark:1});}
+  handOver(L,p.armF);}
+ /** Schorlenspritze: rosa Wasserpistole, grüne Weinflasche als Tank schräg oben drauf (Hals nach vorn oben, rote Kapsel), blaue Düse. */
+ function schorlenspritze(L,p){const [hx,hy]=handPos(p.armN),f=oben(p),r=PAL.wfRosa,gl=PAL.glass,k=1.45,P=rel(hx,hy,f,k),E=(dx,dy,rx,ry,c,clip=null)=>ell(L,...P(dx,dy),rx*k,ry*k,c,clip),Lm=(pts,rs,c)=>limb(L,pts.map(q=>P(...q)),rs.map(v=>v*k),c);
+  const bt=L.piece(gl);Lm([[11.5,-5],[14.8,3.5]],[3.3,3.3],gl[2]);Lm([[14.8,3.5],[17.6,9.5]],[1.7,1.3],gl[2]);light(L,bt,{base:2,hi:1,lo:3,dark:1});line(L,[P(10,-4),P(12.8,3)],gl[0],bt);
+  const lb=L.piece(PAL.label);E(13.2,-.4,2.4,2.2,PAL.label[0]);light(L,lb,{base:0,hi:0,lo:1,dark:1});on(L,lb,...P(13.2,-.4),PAL.band[1]);on(L,lb,...P(14,.4),PAL.band[1]);// Etikett mit Trauben
+  const kp=L.piece(PAL.red);E(17.9,10.3,1.6,1.5,PAL.red[1]);light(L,kp,{base:1,hi:0,lo:2,dark:1});
+  const bd=L.piece(r);poly(L,[P(3,-7),P(9.4,-7),P(9.4,15),P(3.8,15)],r[1]);light(L,bd,{base:1,hi:0,lo:2,dark:1,share:.28});
+  const gr=L.piece(r);Lm([[-3.5,-3.5],[4,-1]],[2.6,2.9],r[2]);light(L,gr,{base:2,hi:1,lo:3,dark:1});
+  L.piece(r,1);line(L,[P(3,2.5),P(.2,4.5),P(.4,7.5),P(3,8.5)],r[3]);// Abzugsbügel
+  const nz=L.piece(PAL.blue);Lm([[6.4,15],[6.4,21]],[1.7,1.2],PAL.blue[1]);E(10.3,11,1.4,1.3,PAL.blue[0]);light(L,nz,{base:1,hi:0,lo:2,dark:1});
+  handOver(L,p.armN);}
+ /** Blitzschrauber: orangefarbener Akkuschrauber (Lüftungsschlitze), dunkler Griff in der Faust, grüner Akku unten, Bohrfutter und Bohrer vorn. */
+ function blitzschrauber(L,p){const [hx,hy]=handPos(p.armN),f=oben(p),o=PAL.wfOrange,sl=PAL.wfSchiefer,k=1.45,P=rel(hx,hy,f,k),E=(dx,dy,rx,ry,c,clip=null)=>ell(L,...P(dx,dy),rx*k,ry*k,c,clip),Lm=(pts,rs,c)=>limb(L,pts.map(q=>P(...q)),rs.map(v=>v*k),c);
+  const ak=L.piece(PAL.rubber);poly(L,[P(-4.5,-5.5),P(-9.5,-5.5),P(-9.5,6),P(-4.5,6)],PAL.rubber[1]);light(L,ak,{base:1,hi:0,lo:2,dark:1});
+  for(const yy of [-2.5,.5,3.5])line(L,[P(-5.5,yy),P(-8.5,yy)],PAL.rubber[3],ak);// Rillen
+  const gr=L.piece(sl);Lm([[-4.5,-.5],[4,.8]],[2.8,3],sl[1]);light(L,gr,{base:1,hi:0,lo:2,dark:1});
+  const bd=L.piece(o);poly(L,[P(4.5,-5),P(6.2,-7.5),P(10,-7.5),P(11.6,-5),P(11.6,9.5),P(3.6,9.5),P(3.6,-3)],o[1]);light(L,bd,{base:1,hi:0,lo:2,dark:1,share:.28});
+  for(const yy of [-4.5,-2.5,-.5])line(L,[P(7.2,yy),P(10.2,yy)],o[4],bd);// Lüftungsschlitze
+  const ab=L.piece(PAL.black);E(3,4.2,1.3,1.3,PAL.black[2]);light(L,ab,{base:2,hi:1,lo:3,dark:1});// Abzug
+  const ch=L.piece(PAL.metal);Lm([[7.6,9.5],[7.6,14.5]],[3.2,1.9],PAL.metal[2]);light(L,ch,{base:2,hi:1,lo:3,dark:1});
+  const bi=L.piece(PAL.metal,1);Lm([[7.6,14],[7.6,22.5]],[.7,.55],PAL.metal[1]);for(let yy=15;yy<22;yy+=2)on(L,bi,...P(7.6,yy),PAL.metal[3]);// Bohrer mit Wendel
+  handOver(L,p.armN);}
+
  // ---------- Quellen ----------
  const gear={
   // Waffen und Nebenhand (Seitenregel und Schwung übernimmt puppe.mjs für weapon/offhand)
@@ -303,6 +430,19 @@ export function familien(K){
   pfandschleuder:{slot:'ranged',hands:0,name:'Kabelbinder-Pfandschleuder',...held(pfandschleuder)},
   megafon:{slot:'ranged',hands:0,name:'Annis Hygiene-Hochdruckspray',...held(hochdruckspray)},
   ruhepfeife:{slot:'ranged',hands:0,name:'Trillerpfeife der Ruhestörung',...held(trillerpfeife)},
+  // Waffenkammer 2026-09-25 (Kennungen = Item-IDs aus content/items.js)
+  rohrzange:{slot:'weapon',hands:1,name:'Klempner-Rohrzange',armVorn:(L,p)=>rohrzange(L,p,false)},
+  fasskeule:{slot:'weapon',hands:1,name:'Fasskeule',armVorn:(L,p)=>fasskeule(L,p,false)},
+  kronkorkenstern:{slot:'weapon',hands:1,name:'Kronkorkenstern',armVorn:kronkorkenstern},
+  gartenzwerg:{slot:'weapon',hands:2,name:'Gartenzwerg am Besenstiel',armVorn:gartenzwerg},
+  grillzange:{slot:'weapon',hands:1,name:'Grillzange mit Bratwurst',armVorn:grillzange},
+  masskrugschild:{slot:'offhand',name:'Maßkrug-Schild',armVorn:masskrugschild},
+  rohrzange_nh:nebenhand('Klempner-Rohrzange (Nebenhand)',(L,p)=>rohrzange(L,p,true)),
+  fasskeule_nh:nebenhand('Fasskeule (Nebenhand)',(L,p)=>fasskeule(L,p,true)),
+  kronkorkenstern_nh:nebenhand('Kronkorkenstern (Nebenhand)',kronkorkenstern),
+  grillzange_nh:nebenhand('Grillzange mit Bratwurst (Nebenhand)',grillzange),
+  schorlenspritze:{slot:'ranged',hands:0,name:'Schorlenspritze',...held(schorlenspritze)},
+  blitzschrauber:{slot:'ranged',hands:0,name:'Blitzschrauber',...held(blitzschrauber)},
   // Rüstung (Grundteile der Zufallsgegenstände)
   festivalhelm:{slot:'head',name:'Festivalhelm',kopf:festivalhelm},
   festtagsjacke,
@@ -331,6 +471,6 @@ export function familien(K){
   belt:'zapfhahnguertel',trouser:'jeans',boot:'maifeldtreter',ring:'pfandsiegel',pendant:'clanandenken',shield:'zeltplatzschild',
   club:'dosenbrecher',blade:'dosenklinge',maul:'tresenhammer',slingshot:'pfandschleuder',sprayer:'megafon',
   whistle:'ruhepfeife',tusk:'keilerzahn',cup:'schnorrerbecher',robotclaw:'automatenarm'};
- const sided=['pfandschleuder','megafon','ruhepfeife','festtagsjacke','grillhandschuhe_faust','pfandring','pfandsiegel','clanandenken','hausordnung','schnorrerbecher','kegelkugel','automatenarm'];
+ const sided=['pfandschleuder','megafon','ruhepfeife','schorlenspritze','blitzschrauber','festtagsjacke','grillhandschuhe_faust','pfandring','pfandsiegel','clanandenken','hausordnung','schnorrerbecher','kegelkugel','automatenarm'];
  return {gear,back:{},families,sided};
 }

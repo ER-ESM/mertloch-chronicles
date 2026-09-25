@@ -56,7 +56,7 @@ export const HOTSPOTS=[
    {id:'hs-grillwiese-1',title:'Keiler am Grillrost',minLevel:2,requires:['hs-kirchhof-3'],objective:{kind:'kill',species:'boar',count:5},
     text:'Die Pfandkeiler haben die Grillwiese am Pfandhof umgepflügt, als Gegenleistung für Würstchen, die sie nie bekommen haben.',
     lines:{offer:'Fünf Keiler. Danach reden wir über Grillgut. Nicht über die Keiler, keine Sorge.',progress:'Da wühlt noch einer. Ich hör das Grunzen bis hier.',done:'Die Wiese gehört wieder dem Grill. Wie Gott es wollte.'},
-    reward:{xp:120,coins:8}},
+    reward:{xp:120,coins:8,item:'grillzange'}},
    {id:'hs-grillwiese-2',title:'Borsten für den Grillbesen',minLevel:2,requires:['hs-kirchhof-3'],objective:{kind:'drop',species:'boar',item:'grillborste',chance:.45,count:6},
     text:'Der Grillbesen vom Pfandhof ist abgebrannt. Ersatz wächst auf den Pfandkeilern, man muss ihn nur überzeugen.',
     lines:{offer:'Sechs Borsten, schön fettig. Die guten sitzen am Nacken.',progress:'Noch zu wenig Borste für einen ganzen Besen.',done:'Ein Besen wie vom Metzger geküsst. Danke.'},
@@ -86,9 +86,9 @@ export const HOTSPOTS=[
   area:{distance:[260,620],radius:105,spawns:[{kind:'fox',count:4},{kind:'scrounger',count:3}]},
   quests:[
    {id:'hs-wegestube-1',title:'Füchse im Hopfengarten',minLevel:4,requires:['hs-kioskhof-3'],objective:{kind:'kill',species:'fox',count:5},
-    text:'Pfandfüchse schlafen in den Hopfenranken an der Wegestube und beißen jeden, der erntet.',
+    text:'Pfandfüchse schlafen in den Hopfenranken an der Wegestube und beißen jeden, der erntet. Einer hat Nachbarin Nellis Gartenzwerg in den Bau geschleppt.',
     lines:{offer:'Fünf Füchse. Die Ranken sind empfindlich, die Füchse leider nicht.',progress:'Der Garten raschelt noch.',done:'Jetzt kann der Hopfen in Ruhe wachsen. Bitter, wie er soll.'},
-    reward:{xp:140,coins:10}},
+    reward:{xp:140,coins:10,item:'gartenzwerg'}},
    {id:'hs-wegestube-2',title:'Schnorrer-Beute',minLevel:4,requires:['hs-kioskhof-3'],objective:{kind:'drop',species:'scrounger',item:'schnorrbon',chance:.5,count:5},
     text:'Festzelt-Schnorrer haben die Verzehrbons der Wegestube eingesackt und trinken damit auf ihre Kosten.',
     lines:{offer:'Fünf Bons zurück. Wer schnorrt, rückt die auch wieder raus. Irgendwie.',progress:'Da trinkt noch einer auf meinen Deckel.',done:'Alle Bons da. Ich lad dich ein. Mit einem davon.'},
@@ -133,7 +133,7 @@ HOTSPOTS.push(
    {id:'st-nyalol-3',title:'Rare-Spawn: Borsten-Bruno',minLevel:5,requires:['st-nyalol-2'],objective:{kind:'kill',species:'alphaBoar',count:1},
     text:'{giver} hat im Dorf-Chat gelesen, dass Borsten-Bruno wieder auf den Weiden unterwegs ist, ein Rare-Spawn mit eigenem Steckbrief. Er will den Kill unbedingt im Log haben und selbst auf keinen Fall mitkommen.',
     lines:{offer:'Ein Rare! Der spawnt nur alle paar Tage, und dann campt ihn halb Mertloch. Du legst ihn, ich schneide das Video.',progress:'Bruno läuft noch. Ich habe den Timer im Blick, du hoffentlich deine Heiltränke.',done:'Bruno liegt, der Kill ist im Log, und ich habe alles aufgenommen. Das Video heißt „Rare-Kill ohne Raidleiter (echt)“.'},
-    reward:{xp:240,coins:20}}
+    reward:{xp:240,coins:20,item:'masskrugschild'}}
   ]},
  {id:'bude-ron',name:'Rons Boxengasse',anchor:'bude:ron',givers:['ron'],level:2,
   quests:[

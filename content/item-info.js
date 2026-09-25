@@ -188,7 +188,32 @@ export const ITEM_INFO={
   links:['hops','tresen','brezel'],terms:['dorflegende','proc','leben','wit','verpflegung']},
  automatenarm:{effect:'Stärkste Dorflegende des ersten Aktes: Wumms, Taktgefühl und Bastelgrips gleich hoch, dazu Standfestigkeit und das meiste Taktgefühl im Spiel; ihr Proc füllt bei jedem Kill deine Klassenressource.',
   why:'Abschlussbelohnung – der Arm trägt jede Klasse und jeden Bau, weil er keinen Primärwert bevorzugt.',
-  links:['thirst','schnorrerbecher','bierbong'],terms:['dorflegende','proc','ressource','glueckstreffer']}
+  links:['thirst','schnorrerbecher','bierbong'],terms:['dorflegende','proc','ressource','glueckstreffer']},
+ // --- Waffenkammer 2026-09-25 (ohne Sondereffekt; Effekte folgen in eigener Runde) ---
+ grillzange:{effect:'Einhandklinge für jede Klasse: schneller Takt, dazu Taktgefühl, Wumms und etwas Standfestigkeit.',
+  why:'Der erste Waffenzuwachs aus der Startreihe. In der Nebenhand steuert sie wie jede Einhandwaffe anteilig Schaden zu Nahkampfkniffen bei.',
+  links:['dosenklinge','grill','rohrzange'],terms:['waffenschaden','finesse','tempo']},
+ rohrzange:{effect:'Seltener Einhandprügel mit viel Wumms und Standfestigkeit; die Nebenhand bleibt frei für einen Schild.',
+  why:'Für Tresenbrecher, die vor Sigi mehr Schlagkraft wollen, ohne den Schild und damit die Parade aufzugeben.',
+  links:['dosenbrecher','horststempel','masskrugschild'],terms:['waffenschaden','might','stamina']},
+ masskrugschild:{effect:'Seltener Schild für die Nebenhand mit viel Dicker Haut und Standfestigkeit; schaltet wie jeder Schild die Schildparade frei.',
+  why:'Der Tank-Schild aus der Bude: Rüstung wirkt gegen jeden Treffer, die Parade gegen jeden angesagten Nahkampfzauber.',
+  links:['topfdeckel','rohrzange','bierdeckelweste'],terms:['parade','deckung','armorRating','stamina']},
+ gartenzwerg:{effect:'Zweihandknüppel mit hohem Grundschaden je Schlag, dazu Wumms und Standfestigkeit; belegt beide Hände.',
+  why:'Zählt allein als „schwere Waffe“ und löst den Tresenhammer ab. Gegen Zauber mit „Parade“ im Namen bleibt der Schild die bessere Wahl.',
+  links:['tresenhammer','sigizange','masskrugschild'],terms:['waffenschaden','might','parade']},
+ fasskeule:{effect:'Ungewöhnlicher Einhandprügel mit Wumms und Standfestigkeit, dazu etwas Taktgefühl.',
+  why:'Beute von der Kegelbahn für die Kapitel 3 und 4: in der Haupthand neben einem Schild oder als Paar für die schweren Kniffe.',
+  links:['rohrzange','kronkorkenstern','kegelkugel'],terms:['waffenschaden','might','stamina']},
+ schorlenspritze:{effect:'Seltene Fernkampfwaffe mit viel Bastelgrips, dazu Taktgefühl und Standfestigkeit.',
+  why:'Für die Landhaus-Lady: Bastelgrips verstärkt Heilung und Deckung, die Waffe versorgt Grundangriff und Salve aus dem Fernkampfplatz.',
+  links:['megafon','hopfenschorle','landhausecke'],terms:['waffenschaden','wit','heilung']},
+ kronkorkenstern:{effect:'Seltener Einhandprügel aus der Schrauberei: viel Wumms, dazu Taktgefühl und Standfestigkeit.',
+  why:'Die planbare Nahkampfwaffe nach Akt 1 – wer genug Kronkorken und Blech sammelt, muss nicht auf gewürfelte Beute hoffen.',
+  links:['fasskeule','dosenbrecher','kronkorken'],terms:['waffenschaden','might','glueckstreffer']},
+ blitzschrauber:{effect:'Seltene Fernkampfwaffe aus der Meister-Schrauberei: viel Bastelgrips und Taktgefühl, dazu Wumms und Standfestigkeit.',
+  why:'Für den Pfandingenieur nach Akt 1: Bastelgrips speist Deckung und Randale-Nachschub, der Fernkampfplatz Grundangriff und Salve.',
+  links:['pfandschleuder','kronkorkenstern','dosenblech'],terms:['waffenschaden','wit','finesse']}
 };
 
 /** Von Hand: effect/why/links/terms der Procs. Die Zahlen kommen aus PROCS. */

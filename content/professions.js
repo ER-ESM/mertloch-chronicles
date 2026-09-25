@@ -20,9 +20,13 @@ export const PROFESSION_RECIPES={
  blechklinge:{name:'Dosenklinge entgraten',profession:'smith',required:1,starter:true,cost:0,grey:20,materials:{dosenblech:4,kabel:1},output:'dosenklinge',count:1},
  blechbrecher:{name:'Dosenbrecher bauen',profession:'smith',required:15,cost:15,grey:45,materials:{dosenblech:8,kabel:3},output:'dosenbrecher',count:1},
  panzerweste:{name:'Bierdeckel-Panzerweste vernieten',profession:'smith',required:30,cost:30,grey:75,materials:{dosenblech:16,kabel:8},output:'bierdeckelweste',count:1},
+ // Waffenkammer 2026-09-25: Waffen für Gesellen und Meister (feste Werte, noch ohne Sondereffekt, siehe items.js)
+ morgenstern:{name:'Kronkorken-Morgenstern vernieten',profession:'smith',required:45,cost:45,grey:70,materials:{kronkorken:15,dosenblech:12,kabel:6},output:'kronkorkenstern',count:1},
+ akkuschrauber:{name:'Blitzschrauber zusammenlöten',profession:'smith',required:60,cost:60,grey:75,materials:{dosenblech:18,kabel:12,kabelbinder:6},output:'blitzschrauber',count:1},
  kraeutersud:{name:'Kräuter-Kontersud',profession:'brew',required:1,starter:true,cost:0,grey:20,materials:{feldkraut:2,brauwasser:1,leerflasche:1},output:'kraeutersud',count:1},
  hopfenschorle:{name:'Alkoholfreie Hopfenschorle',profession:'brew',required:15,cost:12,grey:45,materials:{hopfen:2,brauwasser:1,leerflasche:1},output:'hopfenschorle',count:1},
- feldtee:{name:'Kräftiger Feldtee',profession:'brew',required:30,cost:25,grey:75,materials:{feldkraut:4,hopfen:2,brauwasser:2,leerflasche:1},output:'feldtee',count:1}
+ feldtee:{name:'Kräftiger Feldtee',profession:'brew',required:30,cost:25,grey:75,materials:{feldkraut:4,hopfen:2,brauwasser:2,leerflasche:1},output:'feldtee',count:1},
+ schorlenfuellung:{name:'Schorlen-Spritze befüllen',profession:'brew',required:40,cost:40,grey:70,materials:{hopfen:4,feldkraut:4,brauwasser:3,leerflasche:2},output:'schorlenspritze',count:1}
 };
 export const PROFESSION_ITEMS={
  feldkraut:{name:'Frisches Feldkraut',kind:'material',rarity:'common',icon:'hops',stack:99,value:2,description:'Am Feldrand gesammelt. Grundlage für Kontersud und Feldtee.'},

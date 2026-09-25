@@ -21,8 +21,9 @@ test('precision covers every present person, mob, boss, item icon, skill and tal
 });
 test('precision exports have hard alpha, registered scale, unclipped margins and source hashes',()=>{
  const palette=new Set(PRECISION_PALETTE.map(p=>p.join(','))),sourceHashes=new Map();
- // Eigene Paletten (a.palette): NPC-Porträts tragen die Farben der Anziehpuppe, eingefroren in portraet-palette.json
- const own={portraet:new Set(JSON.parse(read('tools/sprite-pipeline/portraet-palette.json')).map(p=>p.join(',')))};
+ // Eigene Paletten (a.palette): NPC-Porträts tragen die Farben der Anziehpuppe, eingefroren in portraet-palette.json;
+ // die Waffensymbole vom 2026-09-25 zusätzlich die Materialtreppen ihres Pixelmalers (waffen-palette.json).
+ const own=Object.fromEntries(['portraet','waffen'].map(name=>[name,new Set(JSON.parse(read('tools/sprite-pipeline/'+name+'-palette.json')).map(p=>p.join(',')))]));
  for(const [id,a]of Object.entries(catalog.assets)){
   const bytes=read(a.path),im=decodePng(bytes),pal=a.palette?own[a.palette]:palette;assert.ok(pal,id+' Palette '+a.palette);assert.equal(hash(bytes),a.hash,id);assert.equal(im.width,a.width);assert.equal(im.height,a.height);
   if(!sourceHashes.has(a.source))sourceHashes.set(a.source,hash(read(a.source)));assert.equal(sourceHashes.get(a.source),a.sourceHash,id);
