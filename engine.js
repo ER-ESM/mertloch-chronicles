@@ -128,7 +128,8 @@ export class Game{
   log(text){this.messages.push({text,time:this.time});this.messages=this.messages.slice(-5);}
   toast(text){this.events.push({type:'toast',text});}
   /** Ablehnung (WoW: rote Fehlerzeile): wie toast, aber als Fehler markiert. */
-  fail(text){this.events.push({type:'toast',text,error:true});}
+  /** Ablehnung als rote Zeile. meta.early (E-72 R5): „zu früh gedrückt“ (Abklingzeit, GCD, wirkt schon) – die Oberfläche zeigt sie leise und je Kniff höchstens alle 2 s (error-line.js). */
+  fail(text,meta){this.events.push(meta?{type:'toast',text,error:true,...meta}:{type:'toast',text,error:true});}
   emit(type,data={}){this.events.push({type,...data});}
   /** Am Treffpunkt und nicht im Kampf? Gilt für Clanwechsel und Basisbau. */
   /** Figurenwahl am Anmeldebildschirm: außerhalb des Clan-Treffs startet die neue Figur dort; mitten im Kampf oder am Boden geht kein Wechsel. */
@@ -175,9 +176,9 @@ export class Game{
     dismount(this);
     /* Schnellzauber (Einstellung „Bodenkniffe sofort an der Maus“, Standard aus): Bodenkniff ohne Zielkreis an der Mausposition; Maus nicht über der Welt → Zielkreis wie bisher */
     if(s.ground&&!point&&!completing&&this.settings?.groundAtCursor&&Number.isFinite(this.hover?.x)&&Number.isFinite(this.hover?.y))point={x:this.hover.x,y:this.hover.y};
-    if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){/* Zauber-Puffer (spell-queue.js, Runde 5a): in den letzten 0,4 s vormerken */if(tryQueue(this,s,{point,friend})!=='queued'&&!quiet)this.fail(COMBAT_TEXT.busy);return false;}}
-    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:resourceCost(this,s,cs,skillCostMech(this,s,skillCost(this,s,cs))),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs)||resourcePrecheck(this,id,s,cs);if(failure){this.fail(failure);return false;}if(this.cooldowns[id]>.01&&!completing&&tryQueue(this,s,{point,friend})==='queued')return false;if(this.cooldowns[id]>.01){const left=completing?this.cooldowns[id]:blocker(this,s).left;/* E-72 R4: echte Restzeit – vorher stand die eigene Abklingzeit (0,1 s) da, obwohl die GCD noch 0,5 s sperrte */if(!quiet)this.fail(COMBAT_TEXT.cooldown?.(s.name,deNum(left,1))||`${s.name} ist noch nicht bereit · ${deNum(left,1)} s.`);return false;}
-    if(!completing&&!s.offGcd&&!resourceOffGcd(this,id)&&this.gcd>0&&!(s.ground&&!point)){/* Zauber-Puffer statt stumm verschlucken (Runde 5a, Kenner-Befund 6): in den letzten 0,4 s der GCD vormerken, vorher rote Zeile */if(tryQueue(this,s,{point,friend})!=='queued'&&!quiet)this.fail(COMBAT_TEXT.notReady||'Noch nicht bereit.');return false;}
+    if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){/* Zauber-Puffer (spell-queue.js, Runde 5a): in den letzten 0,4 s vormerken */if(tryQueue(this,s,{point,friend})!=='queued'&&!quiet)this.fail(COMBAT_TEXT.busy,{early:id});return false;}}
+    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:resourceCost(this,s,cs,skillCostMech(this,s,skillCost(this,s,cs))),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs)||resourcePrecheck(this,id,s,cs);if(failure){this.fail(failure);return false;}if(this.cooldowns[id]>.01&&!completing&&tryQueue(this,s,{point,friend})==='queued')return false;if(this.cooldowns[id]>.01){const left=completing?this.cooldowns[id]:blocker(this,s).left;/* E-72 R4: echte Restzeit – vorher stand die eigene Abklingzeit (0,1 s) da, obwohl die GCD noch 0,5 s sperrte */if(!quiet)this.fail(COMBAT_TEXT.cooldown?.(s.name,deNum(left,1))||`${s.name} ist noch nicht bereit · ${deNum(left,1)} s.`,{early:id});return false;}
+    if(!completing&&!s.offGcd&&!resourceOffGcd(this,id)&&this.gcd>0&&!(s.ground&&!point)){/* Zauber-Puffer statt stumm verschlucken (Runde 5a, Kenner-Befund 6): in den letzten 0,4 s der GCD vormerken, vorher rote Zeile */if(tryQueue(this,s,{point,friend})!=='queued'&&!quiet)this.fail(COMBAT_TEXT.notReady||'Noch nicht bereit.',{early:id});return false;}
     {const lack=resourceFailure(this,s,cs,cost);if(lack){this.fail(lack);return false;}}
     // Ein Ziel (E-65, help-target.js): Heilung, Schutz und Buffs wirken auf den gewählten Freund, sonst auf dich selbst.
     const help=['heal','buff'].includes(id)||s.classBuff?helpTarget(this,friend):null,aid=help?.kind==='companion'?help.ref:null,mate=help?.kind==='party'?help.name:null;

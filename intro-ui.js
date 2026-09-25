@@ -5,6 +5,8 @@
 // gehören die Tasten schon ihm (Esc überspringt ihn auch jetzt). Szenen mit Standbild haben von Anfang an einen deckenden Grund – vorher
 // schien bis zum Laden des Bildes der Ladeschirm durch, die Texte lagen übereinander. Die Tasten hört der Film als ERSTER (window, Capture),
 // damit keine Leistentaste (Leertaste, Ziffern) sie ihm wegnimmt.
+// E-72 Runde 5 (Kenner-Befund klicks 3): Esc VOR dem Film (alte Seite nach „Held erstellen“, Ladeschirm, Spielstart) merkt sich der
+// Ladeschirm; start({skip:true}) zeigt den Film dann gar nicht. Im laufenden Film wirkte Esc schon immer beim ersten Druck.
 import {INTRO_SCENES,INTRO_UI as T} from './content/index.js';
 import {contentPath} from './content-art.js';
 
@@ -55,8 +57,10 @@ export function mountIntro(host){
   if(!s.final){const ms=Math.max(s.seconds*1000,(s.text.length/T.readingSpeed)*1000+1500);el.style.setProperty('--scene-ms',ms+'ms');progress.querySelector('.on')?.style.setProperty('animation-duration',ms+'ms');timer=setTimeout(()=>show(i+1),ms);}
  }
  const ready=()=>!host.ready||!!host.ready();
- /** Film anfordern: läuft der Ladeschirm noch, wartet der Film (und hält schon die Tasten), sonst beginnt er sofort. */
- function start(){if(running||waiting)return;const g=host.game();if(!g)return;
+ /** Film anfordern: läuft der Ladeschirm noch, wartet der Film (und hält schon die Tasten), sonst beginnt er sofort.
+  *  skip (E-72 R5): Esc kam schon vorher (nach „Held erstellen“, auf dem Ladeschirm – loading-screen.js bootEscaped) → Film gar nicht zeigen. */
+ function start({skip=false}={}){if(running||waiting)return;const g=host.game();if(!g)return;
+  if(skip){markIntroSeen(host.heroId());host.onEnd?.();return;}
   // Erstes Standbild schon vorladen, damit es beim Abblenden des Ladeschirms bereitliegt.
   const first=INTRO_SCENES[0]?.image&&contentPath(INTRO_SCENES[0].image);if(first&&typeof Image==='function')new Image().src=first;
   g.keys?.clear?.();if(ready()){begin();return;}waiting=true;waitSince=Date.now();poll();}

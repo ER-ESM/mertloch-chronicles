@@ -124,6 +124,7 @@ test('Hofprobe-Ende: Kampfstatistik öffnet sich beim Freischalten nicht selbst,
  assert.match(app,/mountMeterUI\(\$\('#gameShell'\),\(\)=>game,\(\)=>\{popups\.closeAll\(\);unlocks\?\.opened\('meter'\);\}\)/,'Öffnen nimmt „Neu“ weg');
  assert.match(css,/body\[data-novel~=meter\] #meterToggle::before\{content:'Neu'/);
  assert.match(app,/function queueMemory\(fragment\)\{if\(!fragment\|\|memoryShown\.has\(fragment\.id\)\|\|memoryQueue\.some\(f=>f\.id===fragment\.id\)\)return false;/,'jeder Fetzen höchstens einmal');
- assert.match(app,/if\(ev\.type==='memory'\)\{queueMemory\(ev\.fragment\);/,'auch im Tod in die Schlange (gezeigt wird nach dem Aufwachen)');
+ /* E-72 R5 (klicks 4): schon in diesem Browser gezeigte Fetzen schalten nur still frei – alle anderen kommen wie bisher in die Schlange */
+ assert.match(app,/if\(ev\.type==='memory'\)\{[^}]*const known=memoryKnown\(ev\.fragment\.id\);if\(!known\)queueMemory\(ev\.fragment\);/,'auch im Tod in die Schlange (gezeigt wird nach dem Aufwachen)');
  assert.match(app,/milestones\?\.due\?\.\(\)/,'Karte wartet auf fällige Einblendungen');
 });

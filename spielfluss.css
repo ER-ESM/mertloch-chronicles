@@ -32,6 +32,28 @@ body:not(.touch-mode) #gameShell .region-label #zoneType{font:800 15px Nunito,'T
  body:not(.touch-mode):not(.bar-drop) .action-area .extra-bar .skill:not(.empty-slot){box-shadow:0 0 0 3px #152d23f0,0 0 0 4px #8a7445,0 3px 6px #000b}
  body:not(.touch-mode) .action-area>.auto-state{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0!important;margin:0!important;border:0!important}
 }
+/* E-72 Runde 5 (Kenner-Befund klicks 1, 26.09.): Unsichtbares fängt keine Klicks mehr. Ein Linksklick ins Spielfeld rechts neben der Leiste
+   traf den unsichtbaren Platz ⇧0 der zweiten Leiste und öffnete das Kniffe-Buch; die leere Fläche der Leistenzone (Gitter, leere
+   Zusatzleiste) schluckte Klicks ganz. Jetzt fangen nur sichtbare Knöpfe: leere Plätze der Zusatzleisten erst beim Ziehen (bar-drop), bei
+   offenem Kniffe-Buch (bar-edit, dann schwach sichtbar) oder beim Tastenbelegen (key-capture) – wie die leeren Plätze der WoW-Zusatzleisten.
+   Nur Maus/Desktop; am Handy bleibt die Leistenplatte tippbar (ein Tipp zwischen zwei Knöpfen soll den Helden nicht laufen lassen). */
+@media(min-width:761px){
+ body:not(.touch-mode) .action-area{pointer-events:none}
+ body:not(.touch-mode) .action-area>*{pointer-events:auto}
+ body:not(.touch-mode):not(.bar-drop) .action-area>.extra-bar{pointer-events:none}
+ body:not(.touch-mode) .action-area>.extra-bar>.skill{pointer-events:auto}
+ body:not(.touch-mode):not(.bar-drop):not(.bar-edit) .action-area>.extra-bar>.skill.empty-slot:not(.key-capture){pointer-events:none}
+ body.bar-edit:not(.touch-mode):not(.bar-drop) .action-area .extra-bar:has(.skill:not(.empty-slot)) .skill.empty-slot{opacity:.45}
+ body.bar-edit:not(.touch-mode):not(.bar-drop) .action-area .extra-bar:has(.skill:not(.empty-slot)) .skill.empty-slot:hover{opacity:.8}
+}
+/* E-72 Runde 5 (Kenner-Befund klicks 5): „… muss noch verschnaufen“ ist eine leise Fehlerzeile wie der WoW-Fehlertext – klein, gedämpftes
+   Rot, ohne Kasten, blendet von selbst aus; je Kniff höchstens alle 2 s (error-line.js), nie im Chat, verdrängt keine goldene Meldung. */
+#gameShell .error-line{position:absolute;left:50%;top:150px;z-index:32;transform:translateX(-50%);max-width:min(520px,60vw);margin:0;padding:0 10px;
+ font:700 16px/1.25 Nunito,sans-serif;letter-spacing:.01em;color:#f0907a;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ text-shadow:1px 0 0 #1a120a,-1px 0 0 #1a120a,0 1px 0 #1a120a,0 -1px 0 #1a120a,0 0 6px #000a;pointer-events:none;opacity:0;transition:opacity .45s ease}
+#gameShell .error-line.show{opacity:.95;transition:opacity .08s ease}
+body.touch-mode #gameShell .error-line{top:calc(84px + var(--safe-top,0px));font-size:13px}
+@media(prefers-reduced-motion:reduce){#gameShell .error-line,#gameShell .error-line.show{transition:none}}
 .action-area .skill.auto-active{outline:2px solid #f3cf6a;outline-offset:-2px;animation:r2b-auto-pulse 1.1s ease-in-out infinite alternate}
 .action-area .skill.auto-active:before{display:none}
 @keyframes r2b-auto-pulse{from{box-shadow:inset 0 0 0 2px #f3cf6a44,0 0 4px #f3cf6a66}to{box-shadow:inset 0 0 10px 2px #f3cf6a99,0 0 12px 3px #f3cf6acc}}
