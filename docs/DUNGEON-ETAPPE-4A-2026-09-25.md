@@ -4,6 +4,8 @@ Grundlage: E-71 und E-70 (`docs/ENTSCHEIDUNGEN.md`), Ton E-20, Bauplan Etappe 4 
 6, 8, 9 und 11 aus `docs/DUNGEON-SCHLOSS-BIG-B-2026-09-23.md`, Berichte der Etappen 1–3 und des Arenatür-Hotfixes.
 Zweig `dungeon-e4a`, Worktree `D:\Dev\MertlochChronicles-dg-e4a`, zuletzt auf `main` e340597f aufgesetzt (Hotfix Build #623, E-72 mit Runde 3, Etappe 4 Teil B (1)).
 
+Live: Build #641 (f7e08742) seit 2026-09-25, Commits 9e166040 (Etappe 4 Teil A), 3dd76fdf (Bericht) und f7e08742 (Prüfung, Bericht nach Rebase).
+
 ## Kurzfassung
 
 - **Alle Siegelträger stehen:** Frau Dr. Exposé (Siegel 2, Rittergeschoss) und Kellermeister Korken-Kurt (Siegel 3, Basaltgewölbe).
