@@ -18,7 +18,7 @@ export const RESOURCES={
   trend:{max:5,names:['Flop','Nische','Läuft','Viral','Trending','Aperol-Hype'],likes:[3,5,7,9,11,14],bonusPerLevel:.04,decayAfter:3.5,shitstorm:.12,viralFree:1,viewers:[12,180,1400,9800,64000,480000]},
   beat:{likes:10},
   grantRate:1,
-  hud:{up:'NEUER CONTENT',down:'WIEDERHOLUNG',viral:'VIRAL!',shitstorm:'SHITSTORM',forgotten:'VERGESSEN'}},
+  hud:{up:'NEUER CONTENT',down:'WIEDERHOLUNG',viral:'VIRAL!',shitstorm:'SHITSTORM',forgotten:'VERGESSEN',viralTip:'Viral: Der nächste Kniff mit Likes-Kosten ist gratis.'}},
  kevin:{kind:'ammo',name:'Leergut',unit:'Flaschen',max:12,start:12,color:'#7fb069',
   restRefill:1.5,
   costs:{strike:1,mark:1,throw:1,snare:1,burst:3,ground:3,detonate:2},

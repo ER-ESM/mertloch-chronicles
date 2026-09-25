@@ -26,6 +26,8 @@ export function createToastQueue(el,{hold=()=>false,now=()=>performance.now(),re
   /** Warten Meldungen? (Die große Einblendung kürzt sich dann.) */
   waiting:()=>queue.length>0,
   state:()=>({current:visible()?current:'',queue:[...queue]}),
+  /** E-72 R4: Meldung zurückziehen (stehend oder wartend), z. B. „Boden wählen“, sobald der Zielmodus zu ist. → true, wenn etwas wegfiel. */
+  drop(text){const key=same(text);let hit=false;for(let i=queue.length-1;i>=0;i--)if(same(queue[i])===key){queue.splice(i,1);hit=true;}if(visible()&&same(current)===key){hide();hit=true;}return hit;},
  };
 }
 /** Handy (Runde 2b, Neuling-/Grafikbefund): dieselbe Meldung stand als Kurzmeldung UND als Chatzeile übereinander. Solange die
