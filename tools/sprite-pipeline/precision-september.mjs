@@ -12,8 +12,11 @@ import {inkFrame} from '../../ability-tile.js';
 // ein späterer Imagegen-Lauf mit demselben Auftragsblatt (--force) ersetzt sie an Ort und Stelle.
 // 2026-09-25: acht Waffensymbole (64 px), fertig gemalt vom Pixelmaler der Waffenkammer. palette:'waffen' = Porträtpalette + dessen
 // Materialtreppen und Kontur, eingefroren in waffen-palette.json; Export 1:1 ohne Rand, jedes Pixel bleibt, wie es gemalt ist.
-const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json','./e71-kniffe-jobs.json','./waffen-20260925-jobs.json']
- .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))));
+// 2026-09-25 (Icon-Review R0): Freistellungen aus dem semantischen Atlas (freistellen.mjs, 64 px, Export 1:1) und die neu gemalten
+// 64er-Symbole der Maler (icons-uebernehmen.mjs, palette:'waffen', Export 1:1). Spätere Aufträge gewinnen: trägt ein Bogen weiter unten
+// dieselbe Kennung (z. B. sigizange neu gemalt), fällt der ältere Auftrag beim Export weg; seine Quelle bleibt als Herkunft liegen.
+const jobs=[...new Map(['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json','./e71-kniffe-jobs.json','./waffen-20260925-jobs.json','./freigestellt-20260925-jobs.json','./icons-20260925-jobs.json']
+ .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url)))).map(j=>[j.id,j])).values()];
 // 2026-09-26 (Codex-Lauf Sa 23:00, docs/ICONS-CODEX-2026-09-26.md): Spez-Symbole Schorsch/Käthe und die vier vereinfachten
 // Dieter-Kniffe. Sie gelten erst, wenn ihr Original vorliegt; bis dahin bleibt der bisherige Export. Danach gewinnt dieser
 // Auftrag, weil er nach der älteren Quelle exportiert wird (put überschreibt Katalogeintrag und Laufzeitbild derselben ID).

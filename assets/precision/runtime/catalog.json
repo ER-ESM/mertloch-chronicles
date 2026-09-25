@@ -103,7 +103,52 @@
     "bude-truemmer-anlage": "prop-bude-truemmer-anlage",
     "bude-truemmer-landhausecke": "prop-bude-truemmer-landhausecke",
     "bude-truemmer-pfandlager": "prop-bude-truemmer-pfandlager",
-    "bude-schild": "prop-bude-schild"
+    "bude-schild": "prop-bude-schild",
+    "dachsdeckel": "gear-badgercharm",
+    "automatenarm": "gear-robotclaw",
+    "horststempel": "gear-stamp",
+    "giesskanne": "gear-wateringcan",
+    "ruhepfeife": "gear-whistle",
+    "keilerzahn": "gear-tusk",
+    "gansorden": "gear-medal",
+    "bierdeckelweste": "gear-vest",
+    "praktikantenausweis": "gear-badge",
+    "koenigskette": "gear-chain",
+    "topfdeckel": "gear-potlid",
+    "pfandschleuder": "gear-slingshot",
+    "tresenhammer": "gear-maul",
+    "megaphone": "megafon",
+    "potlid": "gear-potlid",
+    "stamp": "gear-stamp",
+    "tusk": "gear-tusk",
+    "whistle": "gear-whistle",
+    "wateringcan": "gear-wateringcan",
+    "robotclaw": "gear-robotclaw",
+    "vest": "gear-vest",
+    "badgercharm": "gear-badgercharm",
+    "medal": "gear-medal",
+    "foxboots": "fuchspfote",
+    "can": "kaltgetraenk",
+    "cup": "schnorrerbecher",
+    "hops": "hopfen",
+    "foxtail": "fuchsschwanz",
+    "badge": "gear-badge",
+    "club": "gear-club",
+    "sprayer": "gear-sprayer",
+    "cap": "gear-cap",
+    "jacket": "gear-jacket",
+    "raincoat": "gear-raincoat",
+    "pauldron": "gear-pauldron",
+    "glove": "gear-glove",
+    "bracer": "gear-bracer",
+    "boot": "gear-boot",
+    "trouser": "gear-trouser",
+    "chain": "gear-chain",
+    "leatherboot": "gear-leatherboot",
+    "furboot": "gear-furboot",
+    "shoulderpad": "gear-shoulderpad",
+    "pendant": "gear-pendant",
+    "pouch": "gear-pouch"
   },
   "assets": {
     "ui-tab-figur": {
@@ -47848,176 +47893,142 @@
     },
     "currywurst": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 0,
+      "source": "assets/precision/sources/2026-09-25/icons/currywurst.png",
+      "sourceHash": "be35215ddfb4f1ae7559f2de6fb7e311052eeab4af1aa6bd5aa0c451684afe92",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/currywurst.png",
-      "hash": "dc33c4e3bf94885ee8e5fb036a94f68ef78eae89135bef359e149d5ed97ab136"
+      "width": 64,
+      "height": 64,
+      "hash": "be35215ddfb4f1ae7559f2de6fb7e311052eeab4af1aa6bd5aa0c451684afe92",
+      "revision": "precision-v1"
     },
     "kaltgetraenk": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 1,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/kaltgetraenk.png",
+      "sourceHash": "c54c03768e17209d80de9f266d3c41eb2b4e8cd22976a28503f4d1e1f5a47ccc",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/kaltgetraenk.png",
-      "hash": "a763b3f98b3bb28cdc75fb21e5c867590b35b4b4b065b7bc2f3f1a604d455da3"
+      "width": 64,
+      "height": 64,
+      "hash": "c54c03768e17209d80de9f266d3c41eb2b4e8cd22976a28503f4d1e1f5a47ccc",
+      "revision": "precision-v1"
     },
     "fuchsschwanz": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 2,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/fuchsschwanz.png",
+      "sourceHash": "a024cadccf5891cbb0188f28ce2888acfe814d3b6de48d8c09da27a67dbe849f",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/fuchsschwanz.png",
-      "hash": "47e7346216209288a232629652ef430a4418439d4af89bd73e2f831d8a841813"
+      "width": 64,
+      "height": 64,
+      "hash": "a024cadccf5891cbb0188f28ce2888acfe814d3b6de48d8c09da27a67dbe849f",
+      "revision": "precision-v1"
     },
     "flugblatt": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 3,
+      "source": "assets/precision/sources/2026-09-25/icons/flugblatt.png",
+      "sourceHash": "b429280d623e6097d666f70fb1aa82d9ff9486966044749ca9b71ad010c0e990",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/flugblatt.png",
-      "hash": "4b0782aaa2029d4a7fd0009ed5ddbb19d21663b5d10c3e7282b978cc6a2b654c"
+      "width": 64,
+      "height": 64,
+      "hash": "b429280d623e6097d666f70fb1aa82d9ff9486966044749ca9b71ad010c0e990",
+      "revision": "precision-v1"
     },
     "hopfen": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 4,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/hopfen.png",
+      "sourceHash": "1612d29b9f638c828c525ad109b57aa461a01b9a3d2632ad2e126e41990bca01",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/hopfen.png",
-      "hash": "9c107da5c0c76d7ccf7d2f02073e8621f621abf131c23130bb54a18726f9fec8"
+      "width": 64,
+      "height": 64,
+      "hash": "1612d29b9f638c828c525ad109b57aa461a01b9a3d2632ad2e126e41990bca01",
+      "revision": "precision-v1"
     },
     "dosenblech": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 5,
+      "source": "assets/precision/sources/2026-09-25/icons/dosenblech.png",
+      "sourceHash": "2dadb8d22b226067992839e4d341dbc9d7c570edcc05dca16da95bd5c8aa4efa",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/dosenblech.png",
-      "hash": "91659c0c2b7d65a5e78ced63f87647905938643364936c887c6ad3a443903410"
-    },
-    "bierdeckelweste": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 6,
-      "path": "assets/precision/runtime/items/bierdeckelweste.png",
-      "hash": "4f833cc289fb8d5e8c0a30ba3c0428187fa28ec021b5cb4b3e8559095a21c37e"
+      "width": 64,
+      "height": 64,
+      "hash": "2dadb8d22b226067992839e4d341dbc9d7c570edcc05dca16da95bd5c8aa4efa",
+      "revision": "precision-v1"
     },
     "kabelbinderstiefel": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 7,
+      "source": "assets/precision/sources/2026-09-25/icons/kabelbinderstiefel.png",
+      "sourceHash": "19fb6be2bd84b73e32bbc39dbe60e34f695161888923ce425722e21c6d5fa407",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/kabelbinderstiefel.png",
-      "hash": "d4a37efe307b8a4f19e2e3491b73d9a0a8ec87e4b10f2ddcf0edbcccd81c9be0"
+      "width": 64,
+      "height": 64,
+      "hash": "19fb6be2bd84b73e32bbc39dbe60e34f695161888923ce425722e21c6d5fa407",
+      "revision": "precision-v1"
     },
     "megafon": {
       "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 504,
-        "y": 737,
-        "w": 243,
-        "h": 228
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/megafon.png",
+      "sourceHash": "b71251dff3cd800d545bba9e3ab4285aabe29e2e822fc08783166506efc2bf16",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/megafon.png",
       "width": 64,
       "height": 64,
-      "hash": "44b17a654885e25493d019da37bd6cdb6e363edc520bc5d5c0c06847c2e20818",
+      "hash": "b71251dff3cd800d545bba9e3ab4285aabe29e2e822fc08783166506efc2bf16",
       "revision": "precision-v1"
     },
     "fuchspfote": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 9,
+      "source": "assets/maifeld-live/sources/equipment.png",
+      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
+      "sourceBounds": {
+        "x": 819,
+        "y": 799,
+        "w": 165,
+        "h": 175,
+        "count": 19577,
+        "pieces": 1
+      },
+      "padding": 3,
+      "base": "gear-furboot",
+      "overlay": "pfotenabzeichen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/fuchspfote.png",
-      "hash": "f513e44c7e84fcb683c4cca0b8697f2889f8dca0ed2e1d6788a3a416d58f9bb5"
+      "width": 64,
+      "height": 64,
+      "hash": "8de725883a4c05898675d25eea5d11e8b09fba96ba6fbd6059d9221b1ca7d2b3",
+      "revision": "precision-v1"
     },
     "schnorrerbecher": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 10,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/schnorrerbecher.png",
+      "sourceHash": "3c8be31932b22dd3abcf97cc71d469018a69c3f59d554ae097dcb84670dbbeed",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/schnorrerbecher.png",
-      "hash": "345e6adaa6e5256282be33916a5f52ce0721d8a8688af9f297bec4220154c107"
-    },
-    "praktikantenausweis": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 11,
-      "path": "assets/precision/runtime/items/praktikantenausweis.png",
-      "hash": "0fcb48235128701ecf16e63cf3ed3975224dc461d446b44b6a64e0c69f506640"
-    },
-    "giesskanne": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 12,
-      "path": "assets/precision/runtime/items/giesskanne.png",
-      "hash": "16db26b1647008cc440cdef2513f91fd31c264405012515cdfaa55a511ea8d54"
-    },
-    "automatenarm": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 13,
-      "path": "assets/precision/runtime/items/automatenarm.png",
-      "hash": "5f183ca7b8806ceb6dfad980b7598c29eaf226045047b26ea680197fcd318923"
+      "width": 64,
+      "height": 64,
+      "hash": "3c8be31932b22dd3abcf97cc71d469018a69c3f59d554ae097dcb84670dbbeed",
+      "revision": "precision-v1"
     },
     "ui-momentum-1": {
       "kind": "ui",
@@ -48108,53 +48119,18 @@
       "hash": "65713580649f7bc90c8e9c4b674e4cbe08c6ad03e1112a599bab4211de1cad97",
       "revision": "precision-v1"
     },
-    "topfdeckel": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 14,
-      "path": "assets/precision/runtime/items/topfdeckel.png",
-      "hash": "6e144e7386f0b6f09b552d9f8aef13502f722fa16be0859cdb34ec54f2b926c8"
-    },
-    "pfandschleuder": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 15,
-      "path": "assets/precision/runtime/items/pfandschleuder.png",
-      "hash": "8b1adb97d190830c323b3f9d283d06f45e17b3dbf262aa00142b58ad2fad40b9"
-    },
     "dosenklinge": {
       "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 16,
+      "source": "assets/precision/sources/2026-09-25/icons/dosenklinge.png",
+      "sourceHash": "35a02af09dabe4c7581829443a19d26ab99538e0bfb717965dfa9f16484cea97",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/dosenklinge.png",
-      "hash": "66d37f9bdd6453c534e01ee7ebb4aeee03836ebda23ac700e37ec64f1a7fc08c"
-    },
-    "tresenhammer": {
-      "kind": "items",
-      "width": 48,
-      "height": 48,
-      "padding": 4,
-      "source": "assets/content-art/refinement/sources/review-items-v2.png",
-      "sourceHash": "bbd1a93d7e72c8436872b2ff7b17d3e2c937b51cde9689feb4ee0b67b9fb6dfd",
-      "revision": "precision-v1",
-      "sourceCell": 17,
-      "path": "assets/precision/runtime/items/tresenhammer.png",
-      "hash": "087f2d85df6c15dac1b12993799bded11660ce9f227d59c7b394bf39c2bc9ee7"
+      "width": 64,
+      "height": 64,
+      "hash": "35a02af09dabe4c7581829443a19d26ab99538e0bfb717965dfa9f16484cea97",
+      "revision": "precision-v1"
     },
     "horst": {
       "kind": "bosses",
@@ -48422,258 +48398,6 @@
       "gearScale": 2,
       "path": "assets/precision/runtime/bosses/horst.png",
       "hash": "8a46e50614b50e35520ee6303b4876c641ed0000f44a6022323a5e59565682a6",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-dieter.png",
-      "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20",
-      "job": "proc-dieter",
-      "member": "dieter",
-      "talentIndex": 1,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/dieter-wall-1.png",
-      "hash": "69b6cbc4be9e2fd08d474a7cc6dc4d2267a7c9923706ee5a48e7d1f5954c99fd",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-dieter.png",
-      "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20",
-      "job": "proc-dieter",
-      "member": "dieter",
-      "talentIndex": 5,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/dieter-wall-5.png",
-      "hash": "1924c3ab29567f8f3512fd0006f29cae2b921333ac47054208caf897527a16bc",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-dieter.png",
-      "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20",
-      "job": "proc-dieter",
-      "member": "dieter",
-      "talentIndex": 11,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/dieter-brawl-1.png",
-      "hash": "7985bc82f18b0696dbe49f0ee9909df7920d4bf0f5f7c30204f750d1579686b3",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-dieter.png",
-      "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20",
-      "job": "proc-dieter",
-      "member": "dieter",
-      "talentIndex": 15,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/dieter-brawl-5.png",
-      "hash": "2ca60cb77a048046bfc2834d063eecd18565780e158b4a28e3c9863ec221b0a0",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-dieter.png",
-      "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20",
-      "job": "proc-dieter",
-      "member": "dieter",
-      "talentIndex": 21,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/dieter-brew-1.png",
-      "hash": "97c7d4ded0cc20b1332be44b473724099b4dcd634f5f8a32f5d0c68146d0063d",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-dieter.png",
-      "sourceHash": "cbc5fd08c363836a6cfb58c6bf4dda292331d5159a8d48f1908571b63c4b8a20",
-      "job": "proc-dieter",
-      "member": "dieter",
-      "talentIndex": 25,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/dieter-brew-5.png",
-      "hash": "22e4ee74327b24ada3dfb31dde5c17100e4ef55eabc5277798df184af72a723c",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
-      "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776",
-      "job": "proc-baerbel",
-      "member": "baerbel",
-      "talentIndex": 1,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/baerbel-care-1.png",
-      "hash": "5401fd48811945ecdd7ec134b199846319d8103e0b252828f6fbb19b2cf0f34d",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
-      "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776",
-      "job": "proc-baerbel",
-      "member": "baerbel",
-      "talentIndex": 5,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/baerbel-care-5.png",
-      "hash": "cb876c73305f04164801bf02b104c906c9351d737b17abf618548eb966e68c21",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
-      "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776",
-      "job": "proc-baerbel",
-      "member": "baerbel",
-      "talentIndex": 11,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-1.png",
-      "hash": "47beafbc208ca9e88893405b7a4c774ab6da65deae68bc7f542ea3cf5ce38393",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
-      "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776",
-      "job": "proc-baerbel",
-      "member": "baerbel",
-      "talentIndex": 15,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-5.png",
-      "hash": "2c73964436f59ef5e6376b07f1cc7fc74ddb466e97fc9ae319c3761a9b5e206c",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
-      "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776",
-      "job": "proc-baerbel",
-      "member": "baerbel",
-      "talentIndex": 21,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/baerbel-stage-1.png",
-      "hash": "cfadba195a550e1cf7e67d5f25856675862617b46394d02522895b4827db27d8",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-baerbel.png",
-      "sourceHash": "70c9443692eed7577a7ad06abf5c5b4eb4af1ed0cee830d38d68cef57804f776",
-      "job": "proc-baerbel",
-      "member": "baerbel",
-      "talentIndex": 25,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/baerbel-stage-5.png",
-      "hash": "3ae93ab396fa7fc920d0fc87e791373ba2a83dc82805eac3ce4de38c0e7fa255",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-kevin.png",
-      "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73",
-      "job": "proc-kevin",
-      "member": "kevin",
-      "talentIndex": 1,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/kevin-fuse-1.png",
-      "hash": "d7aff51dcb1cf1ae931e885f8e41721c53bafef4d091b1506002948851e6b056",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-kevin.png",
-      "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73",
-      "job": "proc-kevin",
-      "member": "kevin",
-      "talentIndex": 5,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/kevin-fuse-5.png",
-      "hash": "60ca313f74850150e47c565e6d33b7b981e1bb0b4f98cb09b215186a21b98c30",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-kevin.png",
-      "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73",
-      "job": "proc-kevin",
-      "member": "kevin",
-      "talentIndex": 11,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/kevin-iron-1.png",
-      "hash": "a743d3e3c2161e08fa8c3bd0eeba024aaf27f4e3ae5b56acd3e17bec883f3c5b",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-kevin.png",
-      "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73",
-      "job": "proc-kevin",
-      "member": "kevin",
-      "talentIndex": 15,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/kevin-iron-5.png",
-      "hash": "77f887a97fe0dc99a67d916716e9ee4159f3f4b352883ce8b4112f4267398a25",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-1": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-kevin.png",
-      "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73",
-      "job": "proc-kevin",
-      "member": "kevin",
-      "talentIndex": 21,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/kevin-hunt-1.png",
-      "hash": "6ad1fd8247381a1068b39c1be49bbd3d4688b92d176fc4438cdd19474c265b27",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-5": {
-      "kind": "talents",
-      "width": 96,
-      "height": 96,
-      "source": "assets/content-art/sources/2026-09-17/proc-kevin.png",
-      "sourceHash": "51c8b50af8d4a0f5dc104d0dc5e72a1cfa1dc8af00b931eb3ad260856e9d8a73",
-      "job": "proc-kevin",
-      "member": "kevin",
-      "talentIndex": 25,
-      "padding": 4,
-      "path": "assets/precision/runtime/talents/kevin-hunt-5.png",
-      "hash": "1fe6a2e5b1bdd49a85e289ac9ed76b6ec30cc1431c9f8acde8a07959cf8ba698",
       "revision": "precision-v1"
     },
     "ui-tab-bude": {
@@ -62403,438 +62127,6 @@
       "hash": "4dfdbd5c53db79da7525eef6286edbde6d8ecefeddd41024a71115a4a0e6c7a6",
       "revision": "precision-v1"
     },
-    "dieter-wall-0": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 17,
-        "y": 10,
-        "w": 200,
-        "h": 198,
-        "count": 23658
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "bde1bbbe95f354164fef92675134beb561cad0918b144f22fc923b2f370346e8",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-2": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 468,
-        "y": 17,
-        "w": 211,
-        "h": 191,
-        "count": 27348
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "2060ba8ab9bb7f6261e301ec77bc76bdb331df54c660e4f87348712e6128098a",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-3": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 698,
-        "y": 3,
-        "w": 211,
-        "h": 204,
-        "count": 34466
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "98632fccaa555b0bd0ecb949dafa308993a70450ebcf20c586c9e4f551835703",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-4": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 931,
-        "y": 20,
-        "w": 203,
-        "h": 183,
-        "count": 23152
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "9585d97d331365a97e075bc60e28e4cddeac973c6fcc7e7f31b6282c08bb2c59",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-6": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 242,
-        "y": 219,
-        "w": 201,
-        "h": 203,
-        "count": 37885
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "77e63c3764d854735b8505fc20d0bcdf06b1004d808fc111f5cfaa6a1c5349e6",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-7": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 469,
-        "y": 234,
-        "w": 202,
-        "h": 188,
-        "count": 22542
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "f15ddd38f2164895c37ff7b7c0d29561991f66a895d7226ea684b02998bb4524",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-8": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 698,
-        "y": 243,
-        "w": 211,
-        "h": 179,
-        "count": 25443
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a6f0a3984a18cb9419d4c8e50b2ea8c3cdbcc29b3cb3c8b10199d6deef9afbbd",
-      "revision": "precision-v1"
-    },
-    "dieter-wall-9": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 934,
-        "y": 225,
-        "w": 201,
-        "h": 197,
-        "count": 38698
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-wall-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "3c192befa153811d96ec0fc9e0649fa97657ce91e38007b2ecdc154bcfb4ddd1",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-0": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 10,
-        "y": 430,
-        "w": 209,
-        "h": 202,
-        "count": 35059
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "004b6717ac31956ded32fab671dc7f73bd4b70d9e472140d560e33b4c7bf8218",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-2": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 471,
-        "y": 433,
-        "w": 204,
-        "h": 196,
-        "count": 24550
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "d530245ad7cf05a520b2d1fbecac3fd34247c66eee4c7c6e6ca6782725479760",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-3": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 699,
-        "y": 450,
-        "w": 206,
-        "h": 183,
-        "count": 22910
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "c740ce9e2219352d27b15fe7c0dc0f3b344b5f8fc821e99234356acfcc46b16e",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-4": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 927,
-        "y": 435,
-        "w": 210,
-        "h": 198,
-        "count": 30201
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "4a91bc4ed77d2dcbb1b5bd7640f2672fe0949d227e9077f07ac89f9e271cdfe6",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-6": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 246,
-        "y": 646,
-        "w": 192,
-        "h": 204,
-        "count": 20299
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "c3cb2d4648975834db3208c3a99c33c90929261386aaecd1bf879cff6a165368",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-7": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 467,
-        "y": 647,
-        "w": 213,
-        "h": 194,
-        "count": 29834
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "1b5e6bd3ff76783a5926a44069ddc6bb9ad66e593655cc879a51f41da8216b62",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-8": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 698,
-        "y": 646,
-        "w": 208,
-        "h": 198,
-        "count": 27020
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "92075bb68a4a58ec05e18550b403f6f61f566f3c26a6a4215dffddca006cec8d",
-      "revision": "precision-v1"
-    },
-    "dieter-brawl-9": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 927,
-        "y": 649,
-        "w": 210,
-        "h": 197,
-        "count": 37532
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brawl-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "0d3b518fee934820219022a7a8340b456cb874c9c61ba092cd80044a142e267f",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-0": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 15,
-        "y": 855,
-        "w": 196,
-        "h": 210,
-        "count": 19851
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "558da9822416c5b0c6b2771b6522a25f3b5f8838c386a0b94560d3a88dbbceff",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-2": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 467,
-        "y": 860,
-        "w": 212,
-        "h": 209,
-        "count": 29948
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "8bf31e6db025cd77ef9cb98c659478785db90da5b84a8a62c40dec5e218f866f",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-3": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 702,
-        "y": 855,
-        "w": 205,
-        "h": 211,
-        "count": 23798
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "5c9ccd69f30b30fc87cc5670dd712afbbd64e60a677e7183c617d3c14ff9a13a",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-4": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 928,
-        "y": 867,
-        "w": 206,
-        "h": 198,
-        "count": 32676
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "ab7d175bfac7e3ace9d1a5e1b8af4c945553b79a24b15960b7e15944ad71473d",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-6": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 237,
-        "y": 1082,
-        "w": 215,
-        "h": 252,
-        "count": 31462
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "b900e011a519b4ca6fc9df65f92680465494e13bab65893e4c8c9926c14cd464",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-7": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 467,
-        "y": 1090,
-        "w": 217,
-        "h": 235,
-        "count": 35594
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "6ddede6cd1bd549f560db8fb758ea46636308c6e2c098ba49475d0dff0c2b06d",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-8": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 696,
-        "y": 1080,
-        "w": 214,
-        "h": 245,
-        "count": 46900
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "0224a73d100f32bc6d22bb2842f1702e22f9cc6788b945535ea7135fc02b8b96",
-      "revision": "precision-v1"
-    },
-    "dieter-brew-9": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/dieter.png",
-      "sourceHash": "56891bb2a108395394492781f59dc9af8983b12d5823608c87cedf2ad872f84c",
-      "sourceBounds": {
-        "x": 942,
-        "y": 1079,
-        "w": 193,
-        "h": 255,
-        "count": 27261
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/dieter-brew-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "10fed6102cffedfb38d8375e3d3633d361c048601d33fee36e86ff0677da2785",
-      "revision": "precision-v1"
-    },
     "skill-baerbel-strike": {
       "kind": "skills",
       "source": "assets/content-art/aperol-anni/skills.png",
@@ -63139,438 +62431,6 @@
       "hash": "b511787ef4a2a5bb700e4f7a49120663301bcf6cce83a7475daa21f0af24e241",
       "revision": "precision-v1"
     },
-    "baerbel-care-0": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 19,
-        "y": 42,
-        "w": 177,
-        "h": 201,
-        "count": 19226
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "65ccbbb8c598a5010e427f32b8f91af1baec238adb3e0063d5661476114d7e6b",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-2": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 470,
-        "y": 20,
-        "w": 209,
-        "h": 230,
-        "count": 20203
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "724c2ae867af60b2d878daa425c825d7f010b00f2ec451cdae3586032c5b0990",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-3": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 700,
-        "y": 36,
-        "w": 195,
-        "h": 209,
-        "count": 25356
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "69723927506617dabbb4ef62dbc19f1469c5a962b776a6f82442f4cfdb88dae9",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-4": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 921,
-        "y": 38,
-        "w": 207,
-        "h": 207,
-        "count": 33448
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "6bf7b45c012bc76672179cb89ff65ab765cbf98a786135044909530488a51a4a",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-6": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 265,
-        "y": 271,
-        "w": 158,
-        "h": 191,
-        "count": 11397
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "5d456f5c9366175b4aa916db2ab1b8376977051635962d027895359469e1629f",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-7": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 481,
-        "y": 282,
-        "w": 180,
-        "h": 176,
-        "count": 22291
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "4262ea237050706b7c4578d3c7b88b97a45700972db4b566eca3677c6c43b8c8",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-8": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 684,
-        "y": 257,
-        "w": 211,
-        "h": 217,
-        "count": 36024
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a1404f6a931a72f37c4458d9f1345969d2039ba3d3b5c91086b59efba5e4f041",
-      "revision": "precision-v1"
-    },
-    "baerbel-care-9": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 911,
-        "y": 280,
-        "w": 217,
-        "h": 189,
-        "count": 22169
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-care-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "49f589df1c0ed6be2d183918688cae845a5610e40485ef5da615be1134710858",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-0": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 19,
-        "y": 500,
-        "w": 206,
-        "h": 180,
-        "count": 20382
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "6a7a4aca7f9d34329c3100a327d4b4ad39daace264cbcb57c18572d9c1c68a9e",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-2": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 485,
-        "y": 483,
-        "w": 170,
-        "h": 209,
-        "count": 19330
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "c0eb617e0a0c21d6cb8f14890ef828565020e7b523987c2b3025009f1528ff12",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-3": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 697,
-        "y": 520,
-        "w": 188,
-        "h": 147,
-        "count": 20872
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "5475e282ce3e52a0aa5baf91b87ae819e91f98a388a9d223cd2901e711ef9723",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-4": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 922,
-        "y": 496,
-        "w": 198,
-        "h": 184,
-        "count": 20272
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "cfe851f67c6d332360f802fd57b05746fc29cb13a1c39b435b605d84673f8308",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-6": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 231,
-        "y": 703,
-        "w": 200,
-        "h": 198,
-        "count": 23239
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "8e7681bdffe17a27287836b262c59acad429ac577f21d8467b2d034c9f70a81e",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-7": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 451,
-        "y": 733,
-        "w": 226,
-        "h": 169,
-        "count": 19483
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "1653846ad13c2d5c68c950daa753eded804916bf2c6b4af6d8c061567147ad57",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-8": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 697,
-        "y": 705,
-        "w": 194,
-        "h": 188,
-        "count": 22032
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "96f1683cbe609d334fbc7dfaaa2bebdea8e2ae2706e53806f2d09f5515951b7e",
-      "revision": "precision-v1"
-    },
-    "baerbel-feedback-9": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 920,
-        "y": 694,
-        "w": 195,
-        "h": 214,
-        "count": 18675
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-feedback-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "94a89637106f33cd17466ff7d1e8e77152c99f05539f1ef4eb0f172d24b0e043",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-0": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 41,
-        "y": 920,
-        "w": 158,
-        "h": 198,
-        "count": 21633
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "012d16b1177877a55cbbb9919a489a07e2281a9698cd4b530af7f284d5206be8",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-2": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 465,
-        "y": 922,
-        "w": 194,
-        "h": 198,
-        "count": 27513
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "43a0fae083154c18e7928dc534bea669a52dc88b99e384a402ff855cf14957e4",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-3": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 705,
-        "y": 913,
-        "w": 177,
-        "h": 213,
-        "count": 26017
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "dcbbce3e78d669056a45efde2c2816e154741e5926d0bf76f8a9dc96e11febda",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-4": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 936,
-        "y": 924,
-        "w": 173,
-        "h": 196,
-        "count": 21545
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "51c5023c5d63c0ae42b4d5bec0615acf59e9dcfd76943701b30d9f5de366dbd2",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-6": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 245,
-        "y": 1136,
-        "w": 184,
-        "h": 211,
-        "count": 34460
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "e210b989fd70dd0ddc69056ff41e807cf21a70fd567b5f8a5546b482689a65d1",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-7": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 461,
-        "y": 1142,
-        "w": 215,
-        "h": 173,
-        "count": 27655
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "e787cc3bd2d6400c4261591dd91fb83a4ae5f7aa1010718014f2e008450b3f96",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-8": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 691,
-        "y": 1137,
-        "w": 202,
-        "h": 213,
-        "count": 24965
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "e0875ac9d21a5ecc8e8928f7cd8926f2ba28fe4e9c6a22031594c4ddb2f022ff",
-      "revision": "precision-v1"
-    },
-    "baerbel-stage-9": {
-      "kind": "talents",
-      "source": "assets/content-art/aperol-anni/talents.png",
-      "sourceHash": "ff1c89cf8168763202ec8a75e9aaeea995ddae2cb7735988203d12aa0f674bc1",
-      "sourceBounds": {
-        "x": 910,
-        "y": 1135,
-        "w": 218,
-        "h": 214,
-        "count": 38142
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/baerbel-stage-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "5ff21a1a57bf318b2911f5aebe70864453bc88413909ca7b7b9efb9d7d4b53dc",
-      "revision": "precision-v1"
-    },
     "skill-kevin-strike": {
       "kind": "skills",
       "source": "assets/clan-skills-013/kevin.png",
@@ -63859,438 +62719,6 @@
       "hash": "374177b1b6b6e14618111b159c6d5c0a6e2a7a3a2820602c185b19623104ce61",
       "revision": "precision-v1"
     },
-    "kevin-fuse-0": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 9,
-        "y": 10,
-        "w": 195,
-        "h": 195,
-        "count": 18337
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "63d8b324062b9762912a01e969e8d813d15da63f4d02d246e4feb7883f9f6025",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-2": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 478,
-        "y": 9,
-        "w": 198,
-        "h": 189,
-        "count": 18964
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "d5d6654b286f9024439626fedf305c98f56832b61149c86c80f520e42819c6e2",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-3": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 692,
-        "y": 11,
-        "w": 217,
-        "h": 191,
-        "count": 17304
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "3556abd49b4d373d9947c31b0b070673021c0c7ed0e6f6446c2d25aaff84fea2",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-4": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 921,
-        "y": 18,
-        "w": 217,
-        "h": 180,
-        "count": 22290
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "3b1b9d74e899270e5880d3f427e879252d9d2b98fd6debfe25c7ee066dd24668",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-6": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 232,
-        "y": 220,
-        "w": 211,
-        "h": 192,
-        "count": 24334
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "176a67afebcbb04d4477afa66009ae2cd5507115bb3e51035e4ca9c652c3c465",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-7": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 479,
-        "y": 229,
-        "w": 185,
-        "h": 178,
-        "count": 17306
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "8a5b9d936323f4e3fdcc0d19bae995299f7ab9403d620b2631be80fa4b3676af",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-8": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 702,
-        "y": 222,
-        "w": 196,
-        "h": 180,
-        "count": 18499
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "da4d9c3e63b43a50266a0ecf213c9dbb397522a20cb9a49be3a397dec5703a75",
-      "revision": "precision-v1"
-    },
-    "kevin-fuse-9": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 920,
-        "y": 236,
-        "w": 218,
-        "h": 172,
-        "count": 16489
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-fuse-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "1649064312398af62a80c4fadeeeacbaf5dcfbae11344f45fc66dbb73d787bfb",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-0": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 14,
-        "y": 421,
-        "w": 209,
-        "h": 201,
-        "count": 30992
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a1e21aae6b000cc2fbdbd918176e4296ff19410ad9babc4b440eca924c06e2fc",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-2": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 461,
-        "y": 426,
-        "w": 219,
-        "h": 196,
-        "count": 26089
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "8191b93dab98f709deb09b5c2513b625f21f4718acb646040fabbf8a44b8de69",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-3": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 705,
-        "y": 430,
-        "w": 194,
-        "h": 188,
-        "count": 31612
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "859dfaea6617036e70e642388ed7cee6582cd1aa480e0b2597a505226ff0e27a",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-4": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 928,
-        "y": 424,
-        "w": 200,
-        "h": 197,
-        "count": 24244
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "fc65209827d27296ca0138e0c181ad4a3bc363f0bd10c7b77dac1fdf6144ea1b",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-6": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 231,
-        "y": 644,
-        "w": 222,
-        "h": 193,
-        "count": 35288
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "4743b45b460c61b03add22212323b01658e90236e985429bef61dd7de650a303",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-7": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 461,
-        "y": 630,
-        "w": 212,
-        "h": 206,
-        "count": 28754
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "93e076807f236428bf1eb9f9cce8afa65b39c214224e25c5fce44eecbfaa815c",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-8": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 694,
-        "y": 629,
-        "w": 215,
-        "h": 209,
-        "count": 32466
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "e1a36b8a6893af0848a354f61900c2fbd047b3e0ab79d740fc2aabc0b55a5c6d",
-      "revision": "precision-v1"
-    },
-    "kevin-iron-9": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 925,
-        "y": 632,
-        "w": 208,
-        "h": 200,
-        "count": 39965
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-iron-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "dc34572b48ad0dd6151ec9f3d7e3813deced40e0fc3783f1705bf5b7d1e66f52",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-0": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 4,
-        "y": 846,
-        "w": 219,
-        "h": 195,
-        "count": 23927
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-0.png",
-      "width": 64,
-      "height": 64,
-      "hash": "0257bf0c866fadbece6d45f16526a1aa6c6516e387e72ad3c727bf720062fdfd",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-2": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 463,
-        "y": 853,
-        "w": 214,
-        "h": 199,
-        "count": 24250
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-2.png",
-      "width": 64,
-      "height": 64,
-      "hash": "cb2ebfef9e4af82ddb790c2c73dc0948fb5d7ff5135401d81b4c0ed6aa7436b1",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-3": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 691,
-        "y": 854,
-        "w": 218,
-        "h": 200,
-        "count": 33907
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-3.png",
-      "width": 64,
-      "height": 64,
-      "hash": "de822f9fdb3cbecca18e4f6f2f63f87b7378608bcd6be3d1c36ea1bdc43754e1",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-4": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 921,
-        "y": 857,
-        "w": 217,
-        "h": 196,
-        "count": 21093
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-4.png",
-      "width": 64,
-      "height": 64,
-      "hash": "8c1cf94b2c5e6abd1599372284528dc92fb3850e695d7a93817ec26491f291e5",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-6": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 236,
-        "y": 1090,
-        "w": 217,
-        "h": 174,
-        "count": 19174
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-6.png",
-      "width": 64,
-      "height": 64,
-      "hash": "63f723f928a231ff52823f80db9e4b0272148b463694bf95491defd186df5ac6",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-7": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 468,
-        "y": 1062,
-        "w": 208,
-        "h": 251,
-        "count": 33845
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-7.png",
-      "width": 64,
-      "height": 64,
-      "hash": "8fe6037069b941ff28ad2f359f64126f39e321dee786c4333dbafd72e8544d5a",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-8": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 691,
-        "y": 1074,
-        "w": 219,
-        "h": 249,
-        "count": 27301
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-8.png",
-      "width": 64,
-      "height": 64,
-      "hash": "410c52f5dcfabdb28db229d9fd8cb41b0525b0e786635c4968d093f7baefcbdf",
-      "revision": "precision-v1"
-    },
-    "kevin-hunt-9": {
-      "kind": "talents",
-      "source": "assets/content-art/talents/kevin.png",
-      "sourceHash": "74aada5335fe406f57daacaa741c2aa1853661e560792a49aab385697b98bdf8",
-      "sourceBounds": {
-        "x": 924,
-        "y": 1080,
-        "w": 210,
-        "h": 261,
-        "count": 22071
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/talents/kevin-hunt-9.png",
-      "width": 64,
-      "height": 64,
-      "hash": "008b563ac2d0be6ab3e5868f0e4941b8cb82dd10a4650c2db7ecd57fc4367520",
-      "revision": "precision-v1"
-    },
     "auto-dieter": {
       "kind": "skills",
       "source": "assets/content-art/items/semantic-atlas.png",
@@ -64348,359 +62776,67 @@
     },
     "pelt": {
       "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 4,
-        "y": 4,
-        "w": 243,
-        "h": 242
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/pelt.png",
+      "sourceHash": "d30b19312bf82a30e3f7761ca4c2caac80875583c053f05e24ced5a780cff637",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/pelt.png",
       "width": 64,
       "height": 64,
-      "hash": "3b15eeb8d0d97b6e900474b007c9c8a50ed11c64d3596df03fa9a988e1b1cf73",
-      "revision": "precision-v1"
-    },
-    "foxtail": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 255,
-        "y": 4,
-        "w": 241,
-        "h": 242
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/foxtail.png",
-      "width": 64,
-      "height": 64,
-      "hash": "123626a13bb45c5300963751e6ebe7c232558f2ea663dc8d3223f8eb7c729e0f",
+      "hash": "d30b19312bf82a30e3f7761ca4c2caac80875583c053f05e24ced5a780cff637",
       "revision": "precision-v1"
     },
     "bristle": {
       "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 504,
-        "y": 4,
-        "w": 243,
-        "h": 242
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/bristle.png",
+      "sourceHash": "310f9a91b9ae4e84ac78294879b99bfd2675ba6cc0a9329a4db8fcbc3679fdf8",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/bristle.png",
       "width": 64,
       "height": 64,
-      "hash": "5c61ccb32f576acdbf0707dae2d8217a41cb9461c58b31c7a942642dc3d67b5d",
+      "hash": "310f9a91b9ae4e84ac78294879b99bfd2675ba6cc0a9329a4db8fcbc3679fdf8",
       "revision": "precision-v1"
     },
     "feather": {
       "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 755,
-        "y": 4,
-        "w": 243,
-        "h": 242
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/feather.png",
+      "sourceHash": "bc59caf3e5175d9756ae00a46c9561473150d8c67332bd3081a8bc5e2bf302c7",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/feather.png",
       "width": 64,
       "height": 64,
-      "hash": "760291ab987e059be4fd01dc79019f6424b2bd6d584a37ea06b98e8d0c1bc349",
-      "revision": "precision-v1"
-    },
-    "hops": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 1006,
-        "y": 4,
-        "w": 244,
-        "h": 242
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/hops.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a7658eb34fa77a9fa2c14e5089df2bacf578f7fac06adcb04b77d0f347171275",
+      "hash": "bc59caf3e5175d9756ae00a46c9561473150d8c67332bd3081a8bc5e2bf302c7",
       "revision": "precision-v1"
     },
     "metal": {
       "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 4,
-        "y": 254,
-        "w": 243,
-        "h": 235
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/metal.png",
+      "sourceHash": "1ab5707e778c44713a6589d40499de52d6eaf7a318f1b325501141cfa06b01db",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/metal.png",
       "width": 64,
       "height": 64,
-      "hash": "447e1e46baf5443d9f94bf1d6e57b6c2214297e731809f50f1c54fb4e7059f88",
-      "revision": "precision-v1"
-    },
-    "can": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 504,
-        "y": 254,
-        "w": 243,
-        "h": 235
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/can.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a480f6b2963a1233601e7ae1f47cbb967abbd13c6cc0bafb159b52e81f0914f6",
-      "revision": "precision-v1"
-    },
-    "tusk": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 755,
-        "y": 254,
-        "w": 243,
-        "h": 235
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/tusk.png",
-      "width": 64,
-      "height": 64,
-      "hash": "19d605d8befa341ceb99243bb6bd77301eb9e1ea3008c15cbf25b2f451d27406",
-      "revision": "precision-v1"
-    },
-    "medal": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 1006,
-        "y": 254,
-        "w": 244,
-        "h": 235
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/medal.png",
-      "width": 64,
-      "height": 64,
-      "hash": "93a2d8e278049bcb8886642cd0254062467f33428ca351ed622f7c14153cbfb5",
-      "revision": "precision-v1"
-    },
-    "badgercharm": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 4,
-        "y": 497,
-        "w": 243,
-        "h": 232
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/badgercharm.png",
-      "width": 64,
-      "height": 64,
-      "hash": "34204cac30e4f71a73976b1ad74d03438d35434316d9d171a800a0251ecdce61",
-      "revision": "precision-v1"
-    },
-    "whistle": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 255,
-        "y": 497,
-        "w": 241,
-        "h": 232
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/whistle.png",
-      "width": 64,
-      "height": 64,
-      "hash": "fb45ce9ceabe42756e280578a75f636d0bf06a2da78e3758f4d9d314113d2b87",
-      "revision": "precision-v1"
-    },
-    "stamp": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 504,
-        "y": 497,
-        "w": 243,
-        "h": 232
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/stamp.png",
-      "width": 64,
-      "height": 64,
-      "hash": "3952d3d12ad6313450ac89056eafae2f36f972fed0344a2660de26af360d32b2",
-      "revision": "precision-v1"
-    },
-    "cup": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 755,
-        "y": 497,
-        "w": 243,
-        "h": 232
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/cup.png",
-      "width": 64,
-      "height": 64,
-      "hash": "16f4436968a1332fdb8e345f64ccf4edcd48504eff6806b383c53cf35f594ef0",
-      "revision": "precision-v1"
-    },
-    "badge": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 1006,
-        "y": 497,
-        "w": 244,
-        "h": 232
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/badge.png",
-      "width": 64,
-      "height": 64,
-      "hash": "338e2a6293a5afdb25c7800440be448cd977ff65f42706061306abacc4030414",
-      "revision": "precision-v1"
-    },
-    "wateringcan": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 4,
-        "y": 737,
-        "w": 243,
-        "h": 228
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/wateringcan.png",
-      "width": 64,
-      "height": 64,
-      "hash": "396cc8f9ac112e3f836e9851297519d7903455dd2280391c3872e38478b1a85f",
-      "revision": "precision-v1"
-    },
-    "robotclaw": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 255,
-        "y": 737,
-        "w": 241,
-        "h": 228
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/robotclaw.png",
-      "width": 64,
-      "height": 64,
-      "hash": "d65eb908c86633b8e14e227346af4880abcdd4e266937326d418cd75e3ddd909",
-      "revision": "precision-v1"
-    },
-    "megaphone": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 504,
-        "y": 737,
-        "w": 243,
-        "h": 228
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/megaphone.png",
-      "width": 64,
-      "height": 64,
-      "hash": "44b17a654885e25493d019da37bd6cdb6e363edc520bc5d5c0c06847c2e20818",
-      "revision": "precision-v1"
-    },
-    "vest": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 755,
-        "y": 737,
-        "w": 243,
-        "h": 228
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/vest.png",
-      "width": 64,
-      "height": 64,
-      "hash": "bedd0be3097148b27436b3bff39a0d56671d927e8e6ededecf92e4041150899c",
-      "revision": "precision-v1"
-    },
-    "potlid": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 1006,
-        "y": 737,
-        "w": 244,
-        "h": 228
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/potlid.png",
-      "width": 64,
-      "height": 64,
-      "hash": "169dc7ffd53d3ab3ad3c908b111b36d329391ebca115823daacfe879d66e9a07",
+      "hash": "1ab5707e778c44713a6589d40499de52d6eaf7a318f1b325501141cfa06b01db",
       "revision": "precision-v1"
     },
     "claw": {
       "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 755,
-        "y": 973,
-        "w": 243,
-        "h": 277
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/freigestellt/claw.png",
+      "sourceHash": "45aedae29b40d5326a6176e488d63cb91263122b0a140e58a42d7201b18854ee",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/claw.png",
       "width": 64,
       "height": 64,
-      "hash": "d38bfb5c140640b85ebc30ad86825648943c606aa4e0e4549be785f32aa90eae",
-      "revision": "precision-v1"
-    },
-    "foxboots": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 1006,
-        "y": 973,
-        "w": 244,
-        "h": 277
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/foxboots.png",
-      "width": 64,
-      "height": 64,
-      "hash": "fc41ec97a975b2ef522431228b72aca304a5fb3a4504d0f3959e376860d4dc49",
+      "hash": "45aedae29b40d5326a6176e488d63cb91263122b0a140e58a42d7201b18854ee",
       "revision": "precision-v1"
     },
     "gear-bottle": {
@@ -64724,40 +62860,28 @@
     },
     "gear-club": {
       "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 236,
-        "y": 10,
-        "w": 117,
-        "h": 217,
-        "count": 11752,
-        "pieces": 1
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/icons/gear-club.png",
+      "sourceHash": "affaebc86c02fa5d8783834e6f77fb513175da5078bbabcb1f9772bad8329970",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/gear-club.png",
       "width": 64,
       "height": 64,
-      "hash": "96379ad23aebce99537fa2059fe8e8064818c141d3d9085838b8f03ee90a26d5",
+      "hash": "affaebc86c02fa5d8783834e6f77fb513175da5078bbabcb1f9772bad8329970",
       "revision": "precision-v1"
     },
     "gear-blade": {
       "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 434,
-        "y": 21,
-        "w": 109,
-        "h": 201,
-        "count": 8982,
-        "pieces": 1
-      },
-      "padding": 3,
+      "source": "assets/precision/sources/2026-09-25/icons/gear-blade.png",
+      "sourceHash": "0108ad183410a4b2081d20232cee789e031fbafc5fa80be2583310fa9a360dce",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/gear-blade.png",
       "width": 64,
       "height": 64,
-      "hash": "1741e601c41f2303b66e113fa8ddbc1fcb796ac458a70d61ad602605a17b0b6f",
+      "hash": "0108ad183410a4b2081d20232cee789e031fbafc5fa80be2583310fa9a360dce",
       "revision": "precision-v1"
     },
     "gear-maul": {
@@ -64931,25 +63055,6 @@
       "hash": "4f0f00c8d2c86e5be849e20ab7fcb299c373148983afe42038393b23749cd6e9",
       "revision": "precision-v1"
     },
-    "gear-helmetBack": {
-      "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 807,
-        "y": 241,
-        "w": 155,
-        "h": 168,
-        "count": 17943,
-        "pieces": 1
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/gear-helmetBack.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a09f19b1589c4b06d302c7a38f7613a1a80b185a355ab227279ab636a2adfe63",
-      "revision": "precision-v1"
-    },
     "gear-cap": {
       "kind": "items",
       "source": "assets/maifeld-live/sources/equipment.png",
@@ -64967,25 +63072,6 @@
       "width": 64,
       "height": 64,
       "hash": "a8f0f66a9531e8171b44f0ae7b75c5eff792a91cf177a3d5e6db6b043e91af20",
-      "revision": "precision-v1"
-    },
-    "gear-capBack": {
-      "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 1218,
-        "y": 270,
-        "w": 169,
-        "h": 117,
-        "count": 14108,
-        "pieces": 1
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/gear-capBack.png",
-      "width": 64,
-      "height": 64,
-      "hash": "eaf1d95ddfaee7c9dd45c83d22b1f5c5e5bbc8f63a046de88b018b3347d66063",
       "revision": "precision-v1"
     },
     "gear-jacket": {
@@ -65007,25 +63093,6 @@
       "hash": "568af706c0f36f2d2546a2f2dca4e8d6ae4537d0d8dec6ca2fa5199985836e52",
       "revision": "precision-v1"
     },
-    "gear-jacketBack": {
-      "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 19,
-        "y": 432,
-        "w": 152,
-        "h": 173,
-        "count": 22123,
-        "pieces": 1
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/gear-jacketBack.png",
-      "width": 64,
-      "height": 64,
-      "hash": "47c86d48fa7f34efaf984e708d77bb6327f57dec5b04ce2a798623a66011c020",
-      "revision": "precision-v1"
-    },
     "gear-raincoat": {
       "kind": "items",
       "source": "assets/maifeld-live/sources/equipment.png",
@@ -65045,25 +63112,6 @@
       "hash": "10ca10e94c8544d8b7785e827bb6ec7de4f70668681bd3c72d675c9036425f75",
       "revision": "precision-v1"
     },
-    "gear-raincoatBack": {
-      "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 413,
-        "y": 426,
-        "w": 153,
-        "h": 183,
-        "count": 23079,
-        "pieces": 1
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/gear-raincoatBack.png",
-      "width": 64,
-      "height": 64,
-      "hash": "a5ba6ec834d0414a6be69201a3f109186c085fc0561690bf30f529825b8ddf92",
-      "revision": "precision-v1"
-    },
     "gear-vest": {
       "kind": "items",
       "source": "assets/maifeld-live/sources/equipment.png",
@@ -65081,25 +63129,6 @@
       "width": 64,
       "height": 64,
       "hash": "118f2849cea3eb20cef8c2bcbea5b59c60e6319d697862f61da5d7d8f72749d9",
-      "revision": "precision-v1"
-    },
-    "gear-vestBack": {
-      "kind": "items",
-      "source": "assets/maifeld-live/sources/equipment.png",
-      "sourceHash": "0285a177b25424fb0e9a7132741325f9a3870bcc49dc7655b46bdab426cc798b",
-      "sourceBounds": {
-        "x": 809,
-        "y": 438,
-        "w": 164,
-        "h": 166,
-        "count": 23442,
-        "pieces": 1
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/gear-vestBack.png",
-      "width": 64,
-      "height": 64,
-      "hash": "dd402e9c2974fb81a51dd1bfe422073dc3dead9f652dca52e91a02f6694b15ea",
       "revision": "precision-v1"
     },
     "gear-pauldron": {
@@ -65992,242 +64021,184 @@
     },
     "kabelbinder": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/kabelbinder.png",
-      "sourceHash": "42a1764508af3cc8b09f86f2929e7006627627714f36081db1ec1aa64d38d197",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/kabelbinder.png",
+      "sourceHash": "8a9907ca654db13bbcb0737a0c059a0fa323bd24ca9cb2471b21e80f83f24d6f",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/kabelbinder.png",
-      "width": 48,
-      "height": 48,
-      "hash": "f1c14bbc62d2ceb495d61795a9819cd46c7ec115201fc09d3b875f3918aefc43",
+      "width": 64,
+      "height": 64,
+      "hash": "8a9907ca654db13bbcb0737a0c059a0fa323bd24ca9cb2471b21e80f83f24d6f",
       "revision": "precision-v1"
     },
     "palettenholz": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/palettenholz.png",
-      "sourceHash": "418aba3de178721c87c686c2361e942ba9cd3413f4a39a649e6a43c03c24fe2e",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/palettenholz.png",
+      "sourceHash": "572ae589c394709969f9aea32d187fab2ee3a57698ec562b302ec113d4d93475",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/palettenholz.png",
-      "width": 48,
-      "height": 48,
-      "hash": "51cbff9d1d5cb1d45545965db26f7c1fe859f4ae27efc9989f5c60d26987569c",
+      "width": 64,
+      "height": 64,
+      "hash": "572ae589c394709969f9aea32d187fab2ee3a57698ec562b302ec113d4d93475",
       "revision": "precision-v1"
     },
     "jga-shirt": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/jga-shirt.png",
-      "sourceHash": "f87e31a7d73ada56136cd86fab9a61b8906760b2be36665630e78badf2c742bf",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/jga-shirt.png",
+      "sourceHash": "9e4c1a86f1713d93ad2ec912cb281cc82ee1b5d5b4b57053de901a4867774f22",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/jga-shirt.png",
-      "width": 48,
-      "height": 48,
-      "hash": "f301433296d70a6a6e332f506792a6d92e309bb84e01c508f3e95ddf80a2d619",
+      "width": 64,
+      "height": 64,
+      "hash": "9e4c1a86f1713d93ad2ec912cb281cc82ee1b5d5b4b57053de901a4867774f22",
       "revision": "precision-v1"
     },
     "kabeltalisman": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/kabeltalisman.png",
-      "sourceHash": "e545e6b84b4af056be97748844bf0e0c26e8751004393b1f776e62e12c86b27c",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/kabeltalisman.png",
+      "sourceHash": "f4516ad32e0d17d9e9fa55fbf0d473a97a23021afa248e2c7dc16d7d91a57ba6",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/kabeltalisman.png",
-      "width": 48,
-      "height": 48,
-      "hash": "94ece310fe977744a2fa36346bba5b0f150eb87c8f128ba74a7361a8d3b11e35",
+      "width": 64,
+      "height": 64,
+      "hash": "f4516ad32e0d17d9e9fa55fbf0d473a97a23021afa248e2c7dc16d7d91a57ba6",
       "revision": "precision-v1"
     },
     "blechtalisman": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/blechtalisman.png",
-      "sourceHash": "1ae49157639493e2454d6287d37895de3c949ce773251aa13f383fc0e0da0ac0",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/blechtalisman.png",
+      "sourceHash": "010e223ef778ab77d021f868b6fc722008546afe1166e241bd7ad21390ca988b",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/blechtalisman.png",
-      "width": 48,
-      "height": 48,
-      "hash": "f237d40f6dd13bd131e1310c45100066eecf1381bd1a949d54c64a01f5bcf878",
-      "revision": "precision-v1"
-    },
-    "keilerzahn": {
-      "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/keilerzahn.png",
-      "sourceHash": "e3fe5e58cefde982444aedc63bdfcc9286e3a9bb38ec581ca1d8c0c262438810",
-      "padding": 4,
-      "delivery": "2026-09-23",
-      "path": "assets/precision/runtime/items/keilerzahn.png",
-      "width": 48,
-      "height": 48,
-      "hash": "cb27d3ea40d5467bd49b59bbb4e5f488a14bc73e5c38d333d0e068ab96c7c80b",
-      "revision": "precision-v1"
-    },
-    "gansorden": {
-      "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/gansorden.png",
-      "sourceHash": "d446901fa41ba5afb7a8c0ba0bd353c7a477cf5ebe646cfdb5b3fdf1753e7f06",
-      "padding": 4,
-      "delivery": "2026-09-23",
-      "path": "assets/precision/runtime/items/gansorden.png",
-      "width": 48,
-      "height": 48,
-      "hash": "4396f414fe0f3e3c122edabf2a1aed12545be1d6800a9c00dbd7996b75c53c20",
-      "revision": "precision-v1"
-    },
-    "dachsdeckel": {
-      "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/dachsdeckel.png",
-      "sourceHash": "80cec3c9f6324fd2c178b10784e374679a77498d6ddc56b46127e3b87666259b",
-      "padding": 4,
-      "delivery": "2026-09-23",
-      "path": "assets/precision/runtime/items/dachsdeckel.png",
-      "width": 48,
-      "height": 48,
-      "hash": "662125e5f7e89eeaa5038e944b3fd3513c359feea033e58863a1233b6907a30a",
-      "revision": "precision-v1"
-    },
-    "ruhepfeife": {
-      "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/ruhepfeife.png",
-      "sourceHash": "52702697c1a5309b3233d96b59844df7a93bab619e45d276459fa7241373a8bb",
-      "padding": 4,
-      "delivery": "2026-09-23",
-      "path": "assets/precision/runtime/items/ruhepfeife.png",
-      "width": 48,
-      "height": 48,
-      "hash": "2f4c998e0f9dfe6355c04be42cea63a25aadc6bf5e3db1b13668a864b11051f1",
-      "revision": "precision-v1"
-    },
-    "horststempel": {
-      "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/horststempel.png",
-      "sourceHash": "30adfaed5ee31254a4f9e778a32060159e24915b536aa92a1943961fdbd6d571",
-      "padding": 4,
-      "delivery": "2026-09-23",
-      "path": "assets/precision/runtime/items/horststempel.png",
-      "width": 48,
-      "height": 48,
-      "hash": "fe8723daa20c0d6dd7f54b32ef8c8d28a6237d951eabd2f15a1d62d5c52743c5",
+      "width": 64,
+      "height": 64,
+      "hash": "010e223ef778ab77d021f868b6fc722008546afe1166e241bd7ad21390ca988b",
       "revision": "precision-v1"
     },
     "dienstmuetze": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/dienstmuetze.png",
-      "sourceHash": "655d6b4f75605d6c580f42b2a1a3e0f36411e4d05426cc43a90e51a8c5af35c7",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/dienstmuetze.png",
+      "sourceHash": "91128405adb4502c445d2bf5b3a9f3aed168ed1bfd291dc88e1609d59fc48345",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/dienstmuetze.png",
-      "width": 48,
-      "height": 48,
-      "hash": "cbcab7b2f519c32c5e4feebe8a59023808b98b40dc1871dd422bc0bb05befbe1",
+      "width": 64,
+      "height": 64,
+      "hash": "91128405adb4502c445d2bf5b3a9f3aed168ed1bfd291dc88e1609d59fc48345",
       "revision": "precision-v1"
     },
     "sigizange": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/sigizange.png",
-      "sourceHash": "26e9e3b3c383d68d75e56ac9dce07b51fb02bd88eb3623581ce834f110ebacb7",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/sigizange.png",
+      "sourceHash": "2ecf70191588e9768881c94de31a6a9f040793d8e620c973ac0a393d99077ec8",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/sigizange.png",
-      "width": 48,
-      "height": 48,
-      "hash": "af249a453dd3384cf7ac7d9be6e503cc635ba4e48bcc09ee215c217b3ff6fff0",
-      "revision": "precision-v1"
-    },
-    "koenigskette": {
-      "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/koenigskette.png",
-      "sourceHash": "a4fcc591ed12da6998b711635a98b3e2a851802adfbacb8bef18b6ce96a3849e",
-      "padding": 4,
-      "delivery": "2026-09-23",
-      "path": "assets/precision/runtime/items/koenigskette.png",
-      "width": 48,
-      "height": 48,
-      "hash": "56fbe4de11681b0b07703b2812095a0d6e74bfb10873d8d6e52b4027831b9a6d",
+      "width": 64,
+      "height": 64,
+      "hash": "2ecf70191588e9768881c94de31a6a9f040793d8e620c973ac0a393d99077ec8",
       "revision": "precision-v1"
     },
     "schaerpe": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/schaerpe.png",
-      "sourceHash": "b49989ecb6ae14e144d972c060413c56a9d44cf633812a01a58ad0498e97d17a",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/schaerpe.png",
+      "sourceHash": "604ee767342933fa1ecd0ae9f954f0ed0eb1672db9118f22caec8be19609652c",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/schaerpe.png",
-      "width": 48,
-      "height": 48,
-      "hash": "a3a85cd4883edc544c45ab72111bfd1cf2060ba857d9e527eb7156c37e94695f",
+      "width": 64,
+      "height": 64,
+      "hash": "604ee767342933fa1ecd0ae9f954f0ed0eb1672db9118f22caec8be19609652c",
       "revision": "precision-v1"
     },
     "feldkraut": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/feldkraut.png",
-      "sourceHash": "ff9d1f3cb33a7aba3023a18b732a9204b682022672638b2225b497f47d4d6df4",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/feldkraut.png",
+      "sourceHash": "e27c601966373c6aa7b09d694b65b008c8d0a4bc476ef816a0a1acee89436db6",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/feldkraut.png",
-      "width": 48,
-      "height": 48,
-      "hash": "5db7bdf53b766f62df0a52679d8a1b62ccc2aece0085a11eb706169fadf9ffee",
+      "width": 64,
+      "height": 64,
+      "hash": "e27c601966373c6aa7b09d694b65b008c8d0a4bc476ef816a0a1acee89436db6",
       "revision": "precision-v1"
     },
     "brauwasser": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/brauwasser.png",
-      "sourceHash": "e31621c1bbc18a34196c260cdcdb5895ed931586e39995025b00832b8495aa97",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/brauwasser.png",
+      "sourceHash": "33fa925441db2cca1e8ab7a97eb0c01cef0b751c852ae42157c3cadef781e2bd",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/brauwasser.png",
-      "width": 48,
-      "height": 48,
-      "hash": "f4f5707c174231322bb930a00bbbdeb17ebe3b5b5ad738720802ce38574e747d",
+      "width": 64,
+      "height": 64,
+      "hash": "33fa925441db2cca1e8ab7a97eb0c01cef0b751c852ae42157c3cadef781e2bd",
       "revision": "precision-v1"
     },
     "leerflasche": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/leerflasche.png",
-      "sourceHash": "cddf5b9e89a815a02b61e14c4c5ed055dc0643a9226333904f6214fed12f7db6",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/leerflasche.png",
+      "sourceHash": "6d8a115762672f8ddbf75b56ff53024227c9f6bccad0cf1efee6abe0985d97d7",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/leerflasche.png",
-      "width": 48,
-      "height": 48,
-      "hash": "c1a40cd4f9f3c7b52556390df39ec0c0202f6b70c06a79f800b01b9b50288e54",
+      "width": 64,
+      "height": 64,
+      "hash": "6d8a115762672f8ddbf75b56ff53024227c9f6bccad0cf1efee6abe0985d97d7",
       "revision": "precision-v1"
     },
     "kraeutersud": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/kraeutersud.png",
-      "sourceHash": "3b6f881763126921f619f7066ee11cbdd57163f1321bd5115d4721430c1bf3ba",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/kraeutersud.png",
+      "sourceHash": "5b75a89138e0c182efe0ff40d5530d893e0e0ac6465a2f2b3e49b98d61ce16a7",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/kraeutersud.png",
-      "width": 48,
-      "height": 48,
-      "hash": "1719717ffbd237a9107a1c598ac360564d6669424d948221c9e46adce52a1389",
+      "width": 64,
+      "height": 64,
+      "hash": "5b75a89138e0c182efe0ff40d5530d893e0e0ac6465a2f2b3e49b98d61ce16a7",
       "revision": "precision-v1"
     },
     "hopfenschorle": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/hopfenschorle.png",
-      "sourceHash": "42a42e54b2fd68ff47ce4388671cf7d122b6e2a6d972a83684e9015d764e2bf8",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/hopfenschorle.png",
+      "sourceHash": "473583976b10ee86f3549bf5f19ce521376148985dfdf2a56ec5648be0a857a1",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/hopfenschorle.png",
-      "width": 48,
-      "height": 48,
-      "hash": "cfb818bb7b09d66722367b74b83e771ed5668386d85636753f3aeeac9530d1a3",
+      "width": 64,
+      "height": 64,
+      "hash": "473583976b10ee86f3549bf5f19ce521376148985dfdf2a56ec5648be0a857a1",
       "revision": "precision-v1"
     },
     "feldtee": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-23/feldtee.png",
-      "sourceHash": "ceb829b03a10c036267d48fd409793b7f5ce325471d5b726a024b475b948f0b8",
-      "padding": 4,
-      "delivery": "2026-09-23",
+      "source": "assets/precision/sources/2026-09-25/icons/feldtee.png",
+      "sourceHash": "39853c6d339394c24764d1a7b3be34682eb85a877076f1c34dd1f3560e998c57",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/feldtee.png",
-      "width": 48,
-      "height": 48,
-      "hash": "73dbea67dbfc4c0d10e03fce391aea5a7153532f6915cf406c11b0db6c02472e",
+      "width": 64,
+      "height": 64,
+      "hash": "39853c6d339394c24764d1a7b3be34682eb85a877076f1c34dd1f3560e998c57",
       "revision": "precision-v1"
     },
     "ui-tab-talente": {
@@ -67039,28 +65010,28 @@
     },
     "gartenzwerg": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-25/gartenzwerg.png",
-      "sourceHash": "f849873e08acacfcdf0311d0328b0222bfc9aebb5a6ff14176be240fb42239c8",
+      "source": "assets/precision/sources/2026-09-25/icons/gartenzwerg.png",
+      "sourceHash": "762f906b6c9fe76e673ae28d2dbcc21f0f4ff2b9d9cabf1f3ee9cd7b6d8287b3",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/gartenzwerg.png",
       "width": 64,
       "height": 64,
-      "hash": "f849873e08acacfcdf0311d0328b0222bfc9aebb5a6ff14176be240fb42239c8",
+      "hash": "762f906b6c9fe76e673ae28d2dbcc21f0f4ff2b9d9cabf1f3ee9cd7b6d8287b3",
       "revision": "precision-v1"
     },
     "grillzange": {
       "kind": "items",
-      "source": "assets/precision/sources/2026-09-25/grillzange.png",
-      "sourceHash": "4980d5234320cdadccc3aefa91a6a6d234376d0305bb725fb770591af562c42f",
+      "source": "assets/precision/sources/2026-09-25/icons/grillzange.png",
+      "sourceHash": "b13664b0291a936c7ce7b7e3f5fa13d90d04de9961c756281c941537f240530a",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/grillzange.png",
       "width": 64,
       "height": 64,
-      "hash": "4980d5234320cdadccc3aefa91a6a6d234376d0305bb725fb770591af562c42f",
+      "hash": "b13664b0291a936c7ce7b7e3f5fa13d90d04de9961c756281c941537f240530a",
       "revision": "precision-v1"
     },
     "masskrugschild": {
@@ -67100,6 +65071,240 @@
       "width": 64,
       "height": 64,
       "hash": "c3f47f8c2f8ed1663de64598786b7b39c55dd3230dd7736acf86527ad30aa464",
+      "revision": "precision-v1"
+    },
+    "festivalstiefel": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/festivalstiefel.png",
+      "sourceHash": "a7ae347e6f1e81936c50689e63e721a4f4457f0591f868f757b8430fe2e4209f",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/festivalstiefel.png",
+      "width": 64,
+      "height": 64,
+      "hash": "a7ae347e6f1e81936c50689e63e721a4f4457f0591f868f757b8430fe2e4209f",
+      "revision": "precision-v1"
+    },
+    "kutte": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kutte.png",
+      "sourceHash": "e943373e61ef7a19254d46bcfe7319d517bf1f34212d51062a0d9cbb37df388c",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kutte.png",
+      "width": 64,
+      "height": 64,
+      "hash": "e943373e61ef7a19254d46bcfe7319d517bf1f34212d51062a0d9cbb37df388c",
+      "revision": "precision-v1"
+    },
+    "regenjacke": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/regenjacke.png",
+      "sourceHash": "42483f760e9832bf1fc75d3d6384a9721aa7fe7897296de9e3f49b670cf5b4dc",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/regenjacke.png",
+      "width": 64,
+      "height": 64,
+      "hash": "42483f760e9832bf1fc75d3d6384a9721aa7fe7897296de9e3f49b670cf5b4dc",
+      "revision": "precision-v1"
+    },
+    "bierbong": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/bierbong.png",
+      "sourceHash": "171aa2babc78b0806aad17ac88c503e9a8e4838a2b751a9be29100073482741c",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/bierbong.png",
+      "width": 64,
+      "height": 64,
+      "hash": "171aa2babc78b0806aad17ac88c503e9a8e4838a2b751a9be29100073482741c",
+      "revision": "precision-v1"
+    },
+    "gaesteliste": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/gaesteliste.png",
+      "sourceHash": "40f3c5d676cab46860f97860f27913c7cf7d0034e0126352a45a08140d0f3b04",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/gaesteliste.png",
+      "width": 64,
+      "height": 64,
+      "hash": "40f3c5d676cab46860f97860f27913c7cf7d0034e0126352a45a08140d0f3b04",
+      "revision": "precision-v1"
+    },
+    "hausordnung": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/hausordnung.png",
+      "sourceHash": "ffa755e091965e63513631cb080a21ba19ce7734abf59c91ce8f2343ee2c6de6",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/hausordnung.png",
+      "width": 64,
+      "height": 64,
+      "hash": "ffa755e091965e63513631cb080a21ba19ce7734abf59c91ce8f2343ee2c6de6",
+      "revision": "precision-v1"
+    },
+    "kegelkugel": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kegelkugel.png",
+      "sourceHash": "e6d7290abd0245671f09db0097805ea4030ad70c1cc30f2cd46b8926c50b42c1",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kegelkugel.png",
+      "width": 64,
+      "height": 64,
+      "hash": "e6d7290abd0245671f09db0097805ea4030ad70c1cc30f2cd46b8926c50b42c1",
+      "revision": "precision-v1"
+    },
+    "pelzmantel-baron": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/pelzmantel-baron.png",
+      "sourceHash": "794110c6bb76a081da614deccba3317bd6a0f157b87f6c79090543b87c887570",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/pelzmantel-baron.png",
+      "width": 64,
+      "height": 64,
+      "hash": "794110c6bb76a081da614deccba3317bd6a0f157b87f6c79090543b87c887570",
+      "revision": "precision-v1"
+    },
+    "siegelring-echtgold": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/siegelring-echtgold.png",
+      "sourceHash": "48cb5aa9d532e3f207019d5e0696f68cb6c9ad319acb29225616efa71a7c0adc",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/siegelring-echtgold.png",
+      "width": 64,
+      "height": 64,
+      "hash": "48cb5aa9d532e3f207019d5e0696f68cb6c9ad319acb29225616efa71a7c0adc",
+      "revision": "precision-v1"
+    },
+    "absperrband": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/absperrband.png",
+      "sourceHash": "47d3faee704ad2bcd89d05f7cbf74ff591d1ce2fef30e32d973e18d0c8eeb489",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/absperrband.png",
+      "width": 64,
+      "height": 64,
+      "hash": "47d3faee704ad2bcd89d05f7cbf74ff591d1ce2fef30e32d973e18d0c8eeb489",
+      "revision": "precision-v1"
+    },
+    "durchschlag": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/durchschlag.png",
+      "sourceHash": "c68a7c277017dcc6125720d31d7bea50c1b1e67f3ac4f1e1382239d1eed1e413",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/durchschlag.png",
+      "width": 64,
+      "height": 64,
+      "hash": "c68a7c277017dcc6125720d31d7bea50c1b1e67f3ac4f1e1382239d1eed1e413",
+      "revision": "precision-v1"
+    },
+    "grillborste": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/grillborste.png",
+      "sourceHash": "7e75fe53e7a4a2749fd482dce7de2d823b54173fcc5bf0fc63a0239e2fef7b39",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/grillborste.png",
+      "width": 64,
+      "height": 64,
+      "hash": "7e75fe53e7a4a2749fd482dce7de2d823b54173fcc5bf0fc63a0239e2fef7b39",
+      "revision": "precision-v1"
+    },
+    "kollektefeder": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kollektefeder.png",
+      "sourceHash": "af3f61c31f85b4938ede675490d578be2381ef315f14f84be6db5fdd2f89ed02",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kollektefeder.png",
+      "width": 64,
+      "height": 64,
+      "hash": "af3f61c31f85b4938ede675490d578be2381ef315f14f84be6db5fdd2f89ed02",
+      "revision": "precision-v1"
+    },
+    "lankabel": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/lankabel.png",
+      "sourceHash": "6ed7c47d81050088a4fe091c0269ab8e7aeb1d78925334036ab313413eefdde4",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/lankabel.png",
+      "width": 64,
+      "height": 64,
+      "hash": "6ed7c47d81050088a4fe091c0269ab8e7aeb1d78925334036ab313413eefdde4",
+      "revision": "precision-v1"
+    },
+    "rabenkronkorken": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/rabenkronkorken.png",
+      "sourceHash": "55505a128c2b666ae8f292cdd68034ac7f64a1c3d6c8cf4f6baefc941d3839c0",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/rabenkronkorken.png",
+      "width": 64,
+      "height": 64,
+      "hash": "55505a128c2b666ae8f292cdd68034ac7f64a1c3d6c8cf4f6baefc941d3839c0",
+      "revision": "precision-v1"
+    },
+    "schaltknauf": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/schaltknauf.png",
+      "sourceHash": "d8bc02284f70d59918b8eb789a7f2f592e5458ee5e7e11d58f8c788a7aef608d",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/schaltknauf.png",
+      "width": 64,
+      "height": 64,
+      "hash": "d8bc02284f70d59918b8eb789a7f2f592e5458ee5e7e11d58f8c788a7aef608d",
+      "revision": "precision-v1"
+    },
+    "schnorrbon": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/schnorrbon.png",
+      "sourceHash": "0675cf7d6d08f3ed73376a3ad3aeedeb8366462659193f2bc3a6b809b58a09d7",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/schnorrbon.png",
+      "width": 64,
+      "height": 64,
+      "hash": "0675cf7d6d08f3ed73376a3ad3aeedeb8366462659193f2bc3a6b809b58a09d7",
+      "revision": "precision-v1"
+    },
+    "zuendkerze": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/zuendkerze.png",
+      "sourceHash": "6d55e37515cf430057266a092c69b77dbf833894318261feb83196f1effbc05e",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/zuendkerze.png",
+      "width": 64,
+      "height": 64,
+      "hash": "6d55e37515cf430057266a092c69b77dbf833894318261feb83196f1effbc05e",
       "revision": "precision-v1"
     }
   },
@@ -67354,7 +65559,7 @@
       },
       {
         "id": "foxtail",
-        "asset": "foxtail"
+        "asset": "fuchsschwanz"
       },
       {
         "id": "bristle",
@@ -67366,7 +65571,7 @@
       },
       {
         "id": "hops",
-        "asset": "hops"
+        "asset": "hopfen"
       },
       {
         "id": "metal",
@@ -67378,55 +65583,55 @@
       },
       {
         "id": "can",
-        "asset": "can"
+        "asset": "kaltgetraenk"
       },
       {
         "id": "tusk",
-        "asset": "tusk"
+        "asset": "gear-tusk"
       },
       {
         "id": "medal",
-        "asset": "medal"
+        "asset": "gear-medal"
       },
       {
         "id": "badgercharm",
-        "asset": "badgercharm"
+        "asset": "gear-badgercharm"
       },
       {
         "id": "whistle",
-        "asset": "whistle"
+        "asset": "gear-whistle"
       },
       {
         "id": "stamp",
-        "asset": "stamp"
+        "asset": "gear-stamp"
       },
       {
         "id": "cup",
-        "asset": "cup"
+        "asset": "schnorrerbecher"
       },
       {
         "id": "badge",
-        "asset": "badge"
+        "asset": "gear-badge"
       },
       {
         "id": "wateringcan",
-        "asset": "wateringcan"
+        "asset": "gear-wateringcan"
       },
       {
         "id": "robotclaw",
-        "asset": "robotclaw"
+        "asset": "gear-robotclaw"
       },
       {
         "id": "megaphone",
-        "asset": "megaphone"
+        "asset": "megafon"
       },
       {
         "id": "vest",
-        "asset": "vest"
+        "asset": "gear-vest"
       },
       {
         "id": "potlid",
-        "asset": "potlid"
+        "asset": "gear-potlid"
       },
       {
         "id": "auto-dieter",
@@ -67446,7 +65651,7 @@
       },
       {
         "id": "foxboots",
-        "asset": "foxboots"
+        "asset": "fuchspfote"
       },
       {
         "id": "anni-spray",
@@ -67615,97 +65820,6 @@
       "skill-kevin-kevin-iron",
       "skill-kevin-kevin-hunt"
     ],
-    "talents": [
-      "dieter-wall-0",
-      "dieter-wall-1",
-      "dieter-wall-2",
-      "dieter-wall-3",
-      "dieter-wall-4",
-      "dieter-wall-5",
-      "dieter-wall-6",
-      "dieter-wall-7",
-      "dieter-wall-8",
-      "dieter-wall-9",
-      "dieter-brawl-0",
-      "dieter-brawl-1",
-      "dieter-brawl-2",
-      "dieter-brawl-3",
-      "dieter-brawl-4",
-      "dieter-brawl-5",
-      "dieter-brawl-6",
-      "dieter-brawl-7",
-      "dieter-brawl-8",
-      "dieter-brawl-9",
-      "dieter-brew-0",
-      "dieter-brew-1",
-      "dieter-brew-2",
-      "dieter-brew-3",
-      "dieter-brew-4",
-      "dieter-brew-5",
-      "dieter-brew-6",
-      "dieter-brew-7",
-      "dieter-brew-8",
-      "dieter-brew-9",
-      "baerbel-care-0",
-      "baerbel-care-1",
-      "baerbel-care-2",
-      "baerbel-care-3",
-      "baerbel-care-4",
-      "baerbel-care-5",
-      "baerbel-care-6",
-      "baerbel-care-7",
-      "baerbel-care-8",
-      "baerbel-care-9",
-      "baerbel-feedback-0",
-      "baerbel-feedback-1",
-      "baerbel-feedback-2",
-      "baerbel-feedback-3",
-      "baerbel-feedback-4",
-      "baerbel-feedback-5",
-      "baerbel-feedback-6",
-      "baerbel-feedback-7",
-      "baerbel-feedback-8",
-      "baerbel-feedback-9",
-      "baerbel-stage-0",
-      "baerbel-stage-1",
-      "baerbel-stage-2",
-      "baerbel-stage-3",
-      "baerbel-stage-4",
-      "baerbel-stage-5",
-      "baerbel-stage-6",
-      "baerbel-stage-7",
-      "baerbel-stage-8",
-      "baerbel-stage-9",
-      "kevin-fuse-0",
-      "kevin-fuse-1",
-      "kevin-fuse-2",
-      "kevin-fuse-3",
-      "kevin-fuse-4",
-      "kevin-fuse-5",
-      "kevin-fuse-6",
-      "kevin-fuse-7",
-      "kevin-fuse-8",
-      "kevin-fuse-9",
-      "kevin-iron-0",
-      "kevin-iron-1",
-      "kevin-iron-2",
-      "kevin-iron-3",
-      "kevin-iron-4",
-      "kevin-iron-5",
-      "kevin-iron-6",
-      "kevin-iron-7",
-      "kevin-iron-8",
-      "kevin-iron-9",
-      "kevin-hunt-0",
-      "kevin-hunt-1",
-      "kevin-hunt-2",
-      "kevin-hunt-3",
-      "kevin-hunt-4",
-      "kevin-hunt-5",
-      "kevin-hunt-6",
-      "kevin-hunt-7",
-      "kevin-hunt-8",
-      "kevin-hunt-9"
-    ]
+    "talentAtlas": "assets/content-art/e32/runtime/catalog.json"
   }
 }
