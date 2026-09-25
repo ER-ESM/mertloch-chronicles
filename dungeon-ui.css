@@ -225,3 +225,5 @@ button.dg-chip{cursor:pointer}
 .boss-alerts.ba-right .ba-row small{display:none}
 .boss-alerts.ba-right .ba-row{grid-template-columns:26px minmax(0,1fr) auto auto}
 .boss-alerts.ba-right .ba-row b{overflow:hidden;text-overflow:ellipsis}
+.touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-frame strong{display:none!important}
+.touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-life{height:14px!important;margin-top:0}

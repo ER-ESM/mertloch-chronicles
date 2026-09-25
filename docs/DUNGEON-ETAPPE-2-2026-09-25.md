@@ -24,22 +24,48 @@ Söldner-Faktor, Tod als Geist, Laufstand, Beute und `dungeon-check`-Fix sind do
 | 7 | erledigt | **Licht im Keller:** `renderer.js` nimmt jetzt auch den Dungeon aus Weltlicht und Effektschicht aus; Pollen/Staub nur draußen. Eigene Stimmung je Ebene (`drawDungeonLight` in dungeon-art.js): Garage kaltes Neon an der Nordwand, Partykeller warme Birnen an den Wänden, Basalt dunkel mit Fackeln. Eine Alpha-Ebene in halber Auflösung, Lichter stanzen aus (`destination-out`), Schein obenauf, jedes zweite Bild neu; keine Blend-Modi. | Weltlicht- und Effekt-Leinwand im Keller `display:none`, draußen wieder an; Themen garage/partykeller/basalt mit 6/57/22 Lichtern im Bild. `70-licht-*`, `71-minikarte` |
 | – | erledigt (ohne neue Figuren) | **Gegner unterscheidbar:** Boss ×1,35 (Gerd in Bossgröße), Elite ×1,15; Rollenzeichen am Namensschild (Kreuz = heilt, Funk = ruft Hilfe, Schild = Elite, Schädel = Boss); Sammelschild je ruhendem Schwarm („Pfandratte ×8“), Einzelschilder erst bei Ziel oder Kampf. **Nicht:** Tönung je Art (hätte je Gegner und Bild eine Zwischenfläche gekostet). | Unit-Test: zwei Schwärme à 8, Rollen boss/heal/elite. `dbg-siegeltuer` (Schwärme) |
 
+## Zusammenführung mit Etappe 1 (382ac5d)
+
+- Die an Wänden abgeschnittene Kegelfläche (`coneReach`) läuft jetzt durch den gemeinsamen Baustein: `drawConeHazard(…,{reach,rays})`;
+  Randmarken und Rückstoß-Pfeile folgen den Strahlen. Die Warnlinie der Treppenkante ab Phase 2 bleibt, wie Etappe 1 sie gebaut hat.
+- Die Warnleiste rechnet eigene Abstände im Zyklus mit (`gaps`/`cast.next`, doppelter Rausschmiss in Phase 2).
+- `describeCast` kennt die neuen Merkmale: `pct` (Anteil am Leben), `target:'random'` („Trifft Nicht-Schutz“), `brand`
+  („Hausverbot“, +60 % für 20 s) – mit Symbol, Tooltip und Rollenhinweis. Das Journal und die Eingangskarte zeigen Gerds drei
+  Vorschau-Teile aus `DROP_TABLES.gerd.items`.
+- `tickDungeon`: Arena-Rücksetzen und Geist bleiben von Etappe 1; aus Etappe 2 nur Log statt Kurzmeldung und Durchsage am Lautsprecher.
+
 ## Nebenbefunde
 
-- **Gerd bleibt stehen:** Wirft der Rausschmiss den Helden bis an die Nordwand der Zugbrücke, findet Gerd keinen Weg mehr
-  (`findPath` bricht ab, weil das Ziel mit Radius 7 „blockiert“ ist) und zaubert nie wieder. An Etappe 1 gemeldet; das
-  Prüfskript stellt den Helden in diesem Fall zurück.
+- **Gerd blieb stehen:** Warf der Rausschmiss den Helden bis an die Nordwand der Zugbrücke, fand Gerd keinen Weg mehr
+  (`findPath` brach ab, weil das Ziel mit Radius 7 „blockiert“ war). An Etappe 1 gemeldet, dort behoben (nächster freier Punkt);
+  das Prüfskript stellt den Helden zur Sicherheit weiter zurück.
 - **Kopfloses Chrome meldet „reduzierte Bewegung“:** Der Übergang ist dann 60 ms statt 260 ms dunkel, ohne CSS-Übergang.
 - Unter Last lief das Spiel im Prüfbrowser mit ≈ 0,4 s Spielzeit je Sekunde; die Warnleisten-Messung rechnet in Spielzeit.
 
 ## Prüfungen
 
-Vor dem Push grün (Prüfstand-Worktree, Ports 9610–9619 / 4410–4419, `BOOT_TRIES=450`): siehe Tabelle unten.
+Vor dem Push (Prüfstand-Worktree auf dem Stand nach Etappe 1, Ports 9610–9619 / 4410–4419, `BOOT_TRIES=450`):
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm test` | 953/953 grün (dazu 11 neue Tests in `tests/dungeon-e2.test.mjs`; `tests/dungeon.test.mjs` prüft die Durchsage jetzt als Chatzeile statt Kurzmeldung, `tests/admin-atlas.test.mjs` sucht den Kiosk unter den Treffern, weil der Dungeon-Eingang jetzt auch auf der Karte steht) |
+| `npm run content:check` | 57/57 grün |
+| `npm run build` | grün |
+| `npm run ui:check` | grün |
+| `dungeon-check` | grün (Desktop und Handy; geht jetzt über die Eingangskarte und wartet den Übergang ab) |
+| `dungeon-e2-check` | 17 × PASS (Teile 1–7, Desktop, Handy hoch und quer) |
+| `optimierung-r4a-check` | grün |
+| `optimierung-r5b-check` | grün (18 Prüfungen) |
+| `minimap-check` | grün (13 Prüfungen) |
+| `mobile-check` | Geräte-Teile nicht schlechter: vorher 2 von 98 (hoch Unterbrechung M-15, klein Kampf-Kniff), nachher 1–2 derselben Art (M-15 wandert zwischen hoch und quer, Kampf-Kniff M-04). Der Sitzungsteil „Beute“ meldet in manchen Läufen „Reden statt Beute“ – **vorbestehender Wackler des Prüfskripts**: Die Vorbereitung schreibt den Beutel in den ersten passenden Speicherschlüssel (`Object.keys(localStorage).find(…)`), das Spiel lädt aber den Schlüssel des Helden; welcher zuerst steht, hängt von der Reihenfolge der Speicherungen ab. Nachgewiesen mit einem Diagnoselauf auf `origin/main` (382ac5d): dort derselbe Befund (Beutel fehlt, Auto-Loot an). |
+
+Leistung (kopfloses Chrome ohne Grafikkarte, unter Last): Bildabstand im Weinkeller mit 16 Pfandratten, Kellerlicht und
+Warnleiste Median 16,7 ms, p90 16,7 ms – wie draußen.
 
 ## Rest
 
-1. **Beutevorschau** zeigt leere Plätze, bis Etappe 1 die Tabellen `DROP_TABLES.gerd` usw. liefert (`bossLoot` liest `uniques`,
-   `items`, `loot`, `pool`, `drops`, `choices`, `unique`, `mount`, `material`).
+1. **Beutevorschau** zeigt für Gerd die drei Teile aus Etappe 1; weitere Bosse bekommen ihre Vorschau, sobald ihre Tabellen da
+   sind (`bossLoot` liest `uniques`, `items`, `loot`, `pool`, `drops`, `choices`, `unique`, `mount`, `material`).
 2. **Bestzeit** auf der Eingangskarte zeigt „–“: Es gibt noch keinen Abschluss (Big B fehlt); gelesen wird `dungeons[id].best`.
 3. **Beweise** (Lupen) sind überall vorbereitet und bleiben 0/3, bis Etappe 4 sie baut (`run.evidence`).
 4. **Hinweis-Auftrag** unter Stufe 8: nicht gebaut – in `content/` gibt es keinen passenden NPC vor Ort (Vermieter Volker sitzt
