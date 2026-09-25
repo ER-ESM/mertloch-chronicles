@@ -5,7 +5,7 @@ import {PROC_RULES,METER_TEXT,TALENT_ROWS} from './content/index.js';
 import {addGuard,healPlayer} from './class-mechanics.js';
 import {M,mechanic} from './spec-mechanics.js';
 import {grantResource,resourceProcEffect} from './class-resources.js';
-import {RESOURCES} from './content/index.js';
+import {RESOURCES,COMBAT_FLOW_TUNING} from './content/index.js';
 export const freshProcState=()=>({free:{},empower:{},glow:{},counts:{},haste:0,hasteUntil:0,fired:0});
 /** Zählstand eines Zählauslösers ("jede dritte Kelle") – für die Anzeige auf der Leiste. */
 export const procCount=(g,id)=>g.procState?.counts?.[id]||0;
@@ -22,10 +22,15 @@ export function fireProcs(g,trigger,cs,info={}){const st=g.procState||(g.procSta
   if(r.glow&&(!ef.cdReduce||g.cooldowns[r.glow]<=0))st.glow[r.glow]=until;
     {const line=procVisual(r,g).label;if(!g.sct?.({area:'note',kind:'proc',text:line,icon:{set:'talents',spec:(id.match(/^(.*)-\d+$/)||[])[1]||'',index:Number((id.match(/-(\d+)$/)||[])[1]||0)},iconKey:'burst',color:'#ffd77a',procId:id}))g.float(p.x,p.y-44,line,'#ffd77a');}g.log('Proc · '+r.text);g.emit('proc',{id});emitCombatFx(g,'proc',p,{procId:id,...procVisual(r,g)});}
  return fired;}
+/** E-72 Runde 4 (Kenner-Befund „Proc-Flut“): „Fällt dein Leben unter 35 %“ zündete bei JEDEM Treffer unter der Schwelle – fünfmal Deckung,
+ *  fünf Chatzeilen. Jetzt einmal beim Unterschreiten; scharf wird die Regel erst wieder über der Schwelle (tickProcs) und frühestens nach
+ *  der internen Abklingzeit (COMBAT_FLOW_TUNING.lowHealth.icd). → true = jetzt auslösen (und damit verbraucht). */
+export function lowHealthReady(g){const p=g.player,T=COMBAT_FLOW_TUNING.lowHealth;if(!(p?.hp>0)||p.hp>=p.maxHp*T.below)return false;const st=g.procState||(g.procState=freshProcState());
+ if(st.lowArmed===false||(g.time||0)<(st.lowNext||0))return false;st.lowArmed=false;st.lowNext=(g.time||0)+T.icd;return true;}
 export const procFree=(g,id)=>(g.procState?.free[id]||0)>g.time;
 export const procEmpowered=(g,id)=>(g.procState?.empower[id]||0)>g.time;
 export const procGlow=(g,id)=>procFree(g,id)||procEmpowered(g,id)||(g.procState?.glow[id]||0)>g.time;
 export function consumeProc(g,kind,id){const st=g.procState;if(!st||!(st[kind][id]>g.time))return false;delete st[kind][id];if(kind!=='glow')emitCombatFx(g,'proc-use',g.player,{skillId:id,signal:kind});return true;}
-export function tickProcs(g){const st=g.procState;if(!st)return;st.counts||(st.counts={});for(const kind of ['free','empower','glow'])for(const k of Object.keys(st[kind]))if(st[kind][k]<=g.time)delete st[kind][k];if(st.hasteUntil<=g.time)st.haste=0;}
+export function tickProcs(g){const st=g.procState;if(!st)return;st.counts||(st.counts={});/* Unter-35-%-Procs: wieder scharf, sobald das Leben über der Schwelle steht */if(!st.lowArmed&&g.player&&g.player.hp>=g.player.maxHp*COMBAT_FLOW_TUNING.lowHealth.below)st.lowArmed=true;for(const kind of ['free','empower','glow'])for(const k of Object.keys(st[kind]))if(st[kind][k]<=g.time)delete st[kind][k];if(st.hasteUntil<=g.time)st.haste=0;}
 export const procHaste=g=>g.procState&&g.procState.hasteUntil>g.time?g.procState.haste:0;
 export const activeProcChips=g=>{const st=g.procState;if(!st)return [];const names=id=>g.skills.find(s=>s.id===id)?.name||id;return [...Object.entries(st.free).filter(([,t])=>t>g.time).map(([id,t])=>names(id)+' gratis '+Math.ceil(t-g.time)+' s'),...Object.entries(st.empower).filter(([,t])=>t>g.time).map(([id,t])=>names(id)+' ×2 '+Math.ceil(t-g.time)+' s')];};

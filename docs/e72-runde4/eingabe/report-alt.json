@@ -1,0 +1,114 @@
+{
+ "label": "alt",
+ "rotation": {
+  "dieter": {
+   "keys": "2:strike 4:throw 6:mark 7:burst",
+   "presses": 32,
+   "blocked": 1,
+   "errors": 1,
+   "texts": {
+    "Du schuldest mir Pfand! muss noch verschnaufen · 0,0 s.": 1
+   }
+  },
+  "baerbel": {
+   "keys": "2:strike 4:throw 6:mark 7:burst",
+   "presses": 30,
+   "blocked": 4,
+   "errors": 4,
+   "texts": {
+    "Puderdose ins Gesicht muss noch verschnaufen · 0,1 s.": 2,
+    "Noch nicht bereit.": 2
+   }
+  },
+  "kevin": {
+   "keys": "2:strike 3:reload 5:throw 7:mark",
+   "presses": 35,
+   "blocked": 0,
+   "errors": 0,
+   "texts": {}
+  },
+  "schorsch": {
+   "keys": "2:strike 3:mark 4:burst 5:throw",
+   "presses": 64,
+   "blocked": 6,
+   "errors": 25,
+   "texts": {
+    "Zu wenig Glut – erst mit der Zange anheizen.": 13,
+    "Auflegen muss noch verschnaufen · 0,2 s.": 5,
+    "Rost leer – erst auflegen.": 6,
+    "Auflegen muss noch verschnaufen · 0,1 s.": 1
+   }
+  },
+  "kaethe": {
+   "keys": "2:strike 3:mark 4:burst 5:throw",
+   "presses": 43,
+   "blocked": 0,
+   "errors": 6,
+   "texts": {
+    "Abrechnen erst ab 61 Augen – noch 33.": 1,
+    "Abrechnen erst ab 61 Augen – noch 6.": 1,
+    "Abrechnen erst ab 61 Augen – noch 29.": 1,
+    "Abrechnen erst ab 61 Augen – noch 44.": 1,
+    "Abrechnen erst ab 61 Augen – noch 22.": 1,
+    "Abrechnen erst ab 61 Augen – noch 24.": 1
+   }
+  }
+ },
+ "chat": {
+  "series": {
+   "procs": 4,
+   "guard": 239,
+   "chatLines": 4
+  },
+  "merge": {
+   "lines": 5,
+   "count": ""
+  }
+ },
+ "aperol": {
+  "fired": 3,
+  "viral": 1,
+  "variantLabels": [
+   "VIRAL",
+   "VIRAL",
+   "VIRAL",
+   "VIRAL",
+   "VIRAL",
+   "VIRAL",
+   "Bereit"
+  ],
+  "sctRows": [
+   "BEREIT",
+   "BEREIT",
+   "BEREIT"
+  ],
+  "viralFrames": 0
+ },
+ "ground": {
+  "open": "ground",
+  "after": {
+   "aiming": "ground",
+   "strikeCd": 1.0392857142857144
+  }
+ },
+ "checks": [
+  "dieter: 32 Drücke (2-4-6-7), Sperr-Fehler 1, alle Fehlerzeilen 1",
+  "baerbel: 30 Drücke (2-4-6-7), Sperr-Fehler 4, alle Fehlerzeilen 4",
+  "kevin: 35 Drücke (2-3-5-7), Sperr-Fehler 0, alle Fehlerzeilen 0",
+  "schorsch: 64 Drücke (2-3-4-5), Sperr-Fehler 6, alle Fehlerzeilen 25",
+  "kaethe: 43 Drücke (2-3-4-5), Sperr-Fehler 0, alle Fehlerzeilen 6",
+  "Proc-Serie (5 Treffer unter 35 %): 4× gezündet, 4 Chatzeile(n), Deckung 239",
+  "Chat: 5 gleiche Zeilen → 5 Zeile(n) ",
+  "Aperol-Hype: Knopf-Beschriftungen [VIRAL, VIRAL, VIRAL, VIRAL, VIRAL, VIRAL, Bereit] · Viral-Rahmen 0 · Kampftext [BEREIT | BEREIT | BEREIT]",
+  "Bodenziel: offen=ground → anderer Kniff: aiming=ground, Kelle ausgeführt=true"
+ ],
+ "shots": [
+  "docs/e72-runde4/eingabe/alt-chat-procserie.jpg",
+  "docs/e72-runde4/eingabe/alt-chat-procserie-voll.jpg",
+  "docs/e72-runde4/eingabe/alt-aperol-hype.jpg",
+  "docs/e72-runde4/eingabe/alt-aperol-leiste.jpg",
+  "docs/e72-runde4/eingabe/alt-bodenziel-anderer-kniff.jpg"
+ ],
+ "errors": [],
+ "seconds": 45
+}

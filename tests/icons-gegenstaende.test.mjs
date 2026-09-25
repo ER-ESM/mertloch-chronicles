@@ -34,7 +34,7 @@ const ITEM_ASSETS=Object.entries(catalog.assets).filter(([id,a])=>a.kind==='item
  *  darf es nicht geben; wer einen Auftrag offen lässt, trägt die Gruppe hier ein. */
 // Hafersack und Halbes Hufeisen kamen mit E-72 Runde 3 (main, Das halbe Pferd) nach der Übernahme; bis zum Malerbild zeigen sie ihr
 // Symbolwort (scrap wie der Kronkorken, metal wie die Ringlicht-Reichweite).
-const OFFEN=[['kronkorken','hafersack'],['ringlicht-reichweite','halbes-hufeisen']];
+const OFFEN=[];/* hafersack und halbes-hufeisen sind gemalt (Runde 2) */
 
 test('jede Katalog-Kennung zeigt über itemArt ein vorhandenes Präzisionsbild ohne Kachelgrund',()=>withCatalog(()=>{
  for(const id of Object.keys(ITEM_CATALOG)){const a=contentAsset(itemArt(id));

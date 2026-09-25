@@ -1,5 +1,5 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
-import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName,ventGlut} from './class-resources.js';
+import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName,ventGlut,resourceViral} from './class-resources.js';
 import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
@@ -164,7 +164,9 @@ function resourceSkillHelp(g,id,s){
  if(cls==='dieter'&&id==='zeche')return s.text+` Auf dem Bon stehen gerade ${Math.round(h.tab)} Leben.`;
  return null;
 }
-export function skillHelp(g,id){
+/** E-72 R4: Annis Viral-Ladung steht als Zeile im Tooltip (der Knopf zeigt nur einen ruhigen Rahmen). */
+export function skillHelp(g,id){const t=skillHelpText(g,id);return t&&resourceViral(g,id)?t+' '+(RESOURCES[g.member.id]?.hud?.viralTip||''):t;}
+function skillHelpText(g,id){
  const s=g.skills.find(s=>s.id===id);if(!s)return '';
  {const r=resourceSkillHelp(g,id,s);if(r)return r;}
  const spec=g.rpg.talents.spec,m=SPEC_MECHANICS[spec],h=mechanicHelp(g,spec);

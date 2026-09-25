@@ -12,8 +12,8 @@ import {decodePng} from './png.mjs';
 /** Neu gemalte Symbole (icons-uebernehmen.mjs) gewinnen: ihre Kennung wird weder Alias noch entfernt. */
 export const GEMALT=()=>new Set(JSON.parse(readFileSync(new URL('./icons-20260925-jobs.json',import.meta.url))).map(j=>j.id));
 export const ZWILLINGE={dachsdeckel:'gear-badgercharm',automatenarm:'gear-robotclaw',horststempel:'gear-stamp',giesskanne:'gear-wateringcan',
- ruhepfeife:'gear-whistle',keilerzahn:'gear-tusk',gansorden:'gear-medal',bierdeckelweste:'gear-vest',praktikantenausweis:'gear-badge',
- koenigskette:'gear-chain',topfdeckel:'gear-potlid',pfandschleuder:'gear-slingshot',tresenhammer:'gear-maul'};
+ ruhepfeife:'gear-whistle',keilerzahn:'gear-tusk',gansorden:'gear-medal',praktikantenausweis:'gear-badge',
+ topfdeckel:'gear-potlid',pfandschleuder:'gear-slingshot',tresenhammer:'gear-maul'};
 export const DOPPEL={megaphone:'megafon',potlid:'gear-potlid',stamp:'gear-stamp',tusk:'gear-tusk',whistle:'gear-whistle',wateringcan:'gear-wateringcan',
  robotclaw:'gear-robotclaw',vest:'gear-vest',badgercharm:'gear-badgercharm',medal:'gear-medal',foxboots:'fuchspfote',can:'kaltgetraenk',
  cup:'schnorrerbecher',hops:'hopfen',foxtail:'fuchsschwanz',badge:'gear-badge'};
