@@ -9,6 +9,8 @@ Unverändert bleiben: Kollision und Wege, Logik (`dungeon.js` nur Darstellung), 
 Journal und Karte. Etappe 3 (Big B, Truhe, Tresortür-Logik) lief parallel und wurde nicht angefasst; in der Schatzkammer bleibt
 die Mitte für ihre Endtruhe frei.
 
+- **Live:** Räume seit Build #615 (f8742502), Garage im Häuserstil seit Build #616 (4739465a).
+- Commits auf `main`: e2b1042b bis f8742502 (Räume, Prüfskript, Doku, Offline-Liste), 4739465a (Garage).
 - Worktree `D:\Dev\MertlochChronicles-dg-raeume`, Zweig `dungeon-raeume`. Die Prüfungen liefen aus einem zweiten Worktree
   (`-dg-raeume-gate`), damit Änderungen während der Läufe sie nicht treffen.
 - Prüfskript `scripts/dungeon-raeume-check.mjs` (CDP 9630, Server 4430; `TAG=vorher|nachher`, `ONLY=1…7`, `DENS=2,3,4`),
@@ -148,8 +150,10 @@ Teil 1/4 des Raum-Prüfskripts.
 
 ## Rest
 
-1. **Garage im Häuserstil** (Rückmeldung Orchestrator: flach und grau wie ein Karton): Folge-Commit mit Satteldach aus Schindeln,
-   Papp-Ecktürmchen, höheren Zinnen, Holztoren, Putz in Creme-Ocker, Bruchsteinsockel und Schlagschatten wie die Häuser.
+1. **Garage im Häuserstil – erledigt** (Rückmeldung Orchestrator: flach und grau wie ein Karton): Folge-Commit 4739465a mit Satteldach
+   aus Schindeln, Papp-Ecktürmchen, höheren Zinnen, Holztoren, Putz in Creme-Ocker, Bruchsteinsockel und Schlagschatten nach der
+   Lichtrichtung der Häuser. Vorher/Nachher: `visual-review/dungeon-raeume/garage-vorher/` und `…/garage-nachher/` (`e-01`, `e-03`).
+   Offen: Die gemalten Häuser haben gröbere Ziegel und dickere Konturen als die Schmiede-Garage.
 2. **Rittersaal ohne Wandschmuck:** Alle Wände dort sind geschnittene Innenwände (1-m-Lücken zur Galerie), eine Dartscheibe hätte keine
    Front. Wirkung kommt über Lichterketten, Musikbox und Möbel. Größere Lücken hießen: Grundriss ändern (Logik, nicht angefasst).
 3. **Ahnenbilder:** Schattenriss mit Perücke, kein Gesicht; laut Orchestrator als Wandschmuck in Ordnung.
