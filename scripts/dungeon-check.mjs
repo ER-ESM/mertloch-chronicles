@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 const dir='visual-review/dungeon';mkdirSync(dir,{recursive:true});
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9384),serverPort:4194}),read=s=>b.evaluate(s),checks=[];
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9384),serverPort:Number(process.env.SERVER_PORT||4194)}),read=s=>b.evaluate(s),checks=[];
 async function tap(sel){await read(`document.querySelector(${JSON.stringify(sel)}).scrollIntoView({block:'nearest'})`);await wait(100);const p=await read(`(()=>{const r=document.querySelector(${JSON.stringify(sel)}).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await wait(70);await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
 async function interact(touch){if(touch&&await read(`!!document.querySelector('#touchInteract')?.offsetParent`))await tap('#touchInteract');else await b.press('f');await wait(350);}
 try{

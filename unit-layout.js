@@ -23,7 +23,7 @@ export function layoutUnitFrames(root,force=false){
  if(dock.hidden)return;
  if(landscape){left=player.right-base.left+8;if(base.height<360){left=12+safe('left');for(const r of controls)if((r.left+r.right)/2<base.left+base.width/2)left=Math.max(left,r.right-base.left+8);}let right=base.width-12-safe('right');for(const r of controls)if(r.left-base.left>left)right=Math.min(right,r.left-base.left-8);width=Math.max(100,right-left);}
  width=Math.min(width,base.width-left-8);const band={left:base.left+left,right:base.left+left+width};
- const obstacles=['.player-panel','#targetPanel','#buffStrip','#debuffStrip','#targetDebuffStrip','.touch-topline','#tutorialGuide'].map(s=>root.querySelector(s)).filter(visible).map(e=>e.getBoundingClientRect()).filter(r=>overlapsX(band,r));
+ const obstacles=['.player-panel','#targetPanel','#buffStrip','#debuffStrip','#targetDebuffStrip','.touch-topline','#tutorialGuide',/* Etappe 2: Bossrahmen im Dungeon */'.boss-frame:not([hidden])'].map(s=>root.querySelector(s)).filter(visible).map(e=>e.getBoundingClientRect()).filter(r=>overlapsX(band,r));
  const top=Math.max(12+safe('top'),...obstacles.map(r=>r.bottom-base.top+8));let bottom=base.height-20-safe('bottom');
  if(touch){for(const r of controls)if(overlapsX(band,r)&&r.top-base.top>top)bottom=Math.min(bottom,r.top-base.top-8);if(visible(chat)&&chat.dataset.autoLayout==='true'&&!chat.hasAttribute('data-hud-custom')){if(landscape)bottom=Math.min(bottom,base.height-52);else if(!chat.classList.contains('active'))bottom=Math.min(bottom,chat.getBoundingClientRect().top-base.top-8);}}
  else{

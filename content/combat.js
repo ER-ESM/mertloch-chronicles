@@ -58,9 +58,9 @@ export function describeAuto(id){
 }
 for(const id of Object.keys(ENEMY_AUTOS))ENEMY_AUTOS[id].info=describeAuto(id);
 /** Merkmale eines Gegnerzaubers in Vorrang-Reihenfolge (der gefährlichste Teil zuerst). Etappe 2 Dungeon (E-71). */
-export const CAST_TRAITS=['lie','cone','line','ground','stack','spread','interrupt','call','heal','summon','guard','knockback','tank','hit'];
+export const CAST_TRAITS=['lie','cone','line','ground','stack','spread','interrupt','call','heal','summon','guard','random','knockback','brand','tank','hit'];
 export function castTraits(c){const t=[];if(!c)return t;if(c.lie)t.push('lie');if(c.cone)t.push('cone');if(c.line)t.push('line');if(c.ground)t.push('ground');if(c.stack)t.push('stack');if(c.spread)t.push('spread');
- if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');
+ if(c.target==='random')t.push('random');if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.brand)t.push('brand');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');
  if(!t.length)t.push('hit');return t.sort((a,b)=>CAST_TRAITS.indexOf(a)-CAST_TRAITS.indexOf(b));}
 /**
  * Etappe 2 (E-71, Analyse Verbesserung 5): Symbol, Merkmale, Antwort und Kurzzahlen eines Gegnerzaubers – vollständig aus seinen
@@ -81,6 +81,7 @@ export function castSymbols(c,{interrupt=true}={}){
  if(c.healAllies)numbers.push({label:N.heal,value:Math.round(c.healAllies.share*100),unit:'%'});
  if(c.frontGuard)numbers.push({label:N.guard,value:'−'+Math.round((1-c.frontGuard.factor)*100),unit:'%'});
  if(c.callHelp)numbers.push({label:N.callRange,value:m(c.callHelp.range),unit:'m'});
+ if(c.brand)numbers.push({label:c.brand.name||N.brand,value:'+'+Math.round((c.brand.bonus||0)*100),unit:'%'},{label:N.duration,value:c.brand.duration,unit:'s'});
  return {icon:icon(main),main,hint,traits,facts:numbers};
 }
 /** Jede Kampfregel mit einer Zahl als Glossareintrag: name/short/long plus die Zahlen und ihre Quelle.
@@ -125,6 +126,10 @@ export const DEATH_UI={
  title:'Du bist umgekippt',wake:'Aufwachen bei St. Gangolf',wakeNote:'Volle Leben, kurzer Schutz. Aufträge und Erfahrung bleiben.',
  by:'Umgehauen von',ground:'Rote Fläche',groundNote:'Aus roten Flächen herauslaufen oder mit Ausweichen herausspringen.',
  others:n=>'+'+n+' weitere Angreifer',othersNote:'Mehrere Gegner zugleich. Einzeln anlocken, Brezel früh essen.',
+ // Dungeon (E-71): Der Tod des Helden ist kein Wipe. Er liegt als Geist, die Söldner kämpfen weiter und helfen ihm auf.
+ dungeon:{wake:'Am Kontrollpunkt aufstehen',wakeNote:r=>'Gibt den Kampf auf: Die Gegner setzen zurück, du stehst am Kontrollpunkt '+r+' auf.',checkpoint:r=>'Kontrollpunkt '+r,
+  checkpointNote:'Hier stehst du auf. Gelegter Trash bleibt liegen.',ghost:'Söldner kämpfen weiter',ghostNote:'Ein Heil-Söldner hilft dir auf: 8 Sekunden, einmal je Kampf. Erst wenn alle liegen, ist der Kampf verloren.',
+  reviving:n=>n+' hilft dir auf',allDown:'Alle am Boden'},
  tips:{interrupt:['Unterbrechen','Gelbe Zauberbalken im Zielrahmen damit abbrechen.'],dash:['Ausweichen','Rote Bodenmarken verlassen: Sprung in Laufrichtung.'],parry:['Parieren','Angekündigte Nahkampfhiebe abfangen.'],food:['Brezel','Heilt auch im Kampf – früh essen, nicht erst bei 10 %.']},
 };
 export const UNIT_TIP={
@@ -133,5 +138,5 @@ export const UNIT_TIP={
  outside:'Zählt hier nicht – erst im Zielgebiet',
 };
 export const DODGE_UI={dodged:'Ausgewichen!',hit:'Getroffen'};
-export const AUTOPILOT_UI={stopped:'Angegriffen – Laufweg angehalten.'};
+export const AUTOPILOT_UI={stopped:'Angegriffen – Laufweg angehalten.',resumed:n=>n?'Weiter zu '+n+'.':'Weiter auf dem Laufweg.'};
 export const QUEST_DONE_UI={eyebrow:'Auftrag abgeschlossen',xp:n=>'+'+n+' EP',coins:n=>'+'+n+' Pfandmarken'};

@@ -80,6 +80,6 @@ export const rating=(value,k)=>value/(value+k);
 /** E-60: Beitrag je Punkt Wumms/Bastelgrips auf dieser Stufe (key: might, healWit, shieldWit, energyRegenWit). */
 export const powerRate=(key,level=1)=>BALANCE.power[key]/(1+Math.max(0,level-1)*(BALANCE.power.perLevel||0));
 export const ratingK=(r,level=1)=>r.k+(r.perLevel||0)*Math.max(1,level);
-export const killXp=e=>e.type==='boss'?BALANCE.xp.kill.boss:e.elite?BALANCE.xp.kill.elite:e.type==='cultist'?BALANCE.xp.kill.human:BALANCE.xp.kill.creature;
+export const killXp=e=>Number.isFinite(e.xp)?e.xp/* eigene EP (Dungeon, E-71) */:e.type==='boss'?BALANCE.xp.kill.boss:e.elite?BALANCE.xp.kill.elite:e.type==='cultist'?BALANCE.xp.kill.human:BALANCE.xp.kill.creature;
 /** Multiplikatoren für Gegner, deren Stufe über der Grundstufe ihres Archetyps liegt. */
 export const enemyScale=(level,base=1,elite=false)=>({hp:(1+Math.max(0,level-base)*BALANCE.enemies.hpPerLevel)*(elite?BALANCE.enemies.eliteHp:1),damage:(1+Math.max(0,level-base)*BALANCE.enemies.damagePerLevel)*(elite?BALANCE.enemies.eliteDamage:1)});

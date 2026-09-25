@@ -28,9 +28,9 @@ const CORE_MEMBERS=[
 const NEW_MEMBERS=[
  {id:'schorsch',name:'Schwenker-Schorsch',role:'Grillmeister · Glutwächter',age:52,color:'#e0843a',
   bio:'Seit 1989 Grillwart der Mertlocher Grillhütte. Hat den Schwenkgrill vom Opa geerbt und die Kette nie geölt – das Quietschen gehört zum Aroma.',
-  passive:'Glut statt Randale: Deine Grillzange heizt um 12 Glut, alle 1,2 s. Zwischen 60 und 85 Glut triffst du 20 % härter, bei 100 kommt die Stichflamme. Ab Stufe 2 legst du Grillgut auf den Rost und servierst es gar.',
+  passive:'Glut statt Randale: Deine Grillzange heizt um 12 Glut, alle 1,2 s. Zwischen 60 und 85 Glut triffst du 20 % härter, bei 100 kommt die Stichflamme. Ab Stufe 2 legst du Grillgut auf den Rost und servierst es gar. Die dicke Schürze schluckt 8 % jedes Treffers.',
   rotation:'Zange heizt → Auflegen → Glut im goldenen Bereich halten → gar servieren. Ablöschen, bevor die Stichflamme kommt.',
-  passives:{strikeCd:1.2,strikeRange:50,strikeGain:12,dashCd:4},
+  passives:{strikeCd:1.2,strikeRange:50,strikeGain:12,dashCd:4,damageTaken:.92},
   look:'Stämmiger Mann mit Schiebermütze, Schnauzer und Grillschürze, Grillzange in der Hand, Schwenkgrill-Kette über der Schulter'},
  {id:'kaethe',name:'Kreuz-Käthe',role:'Stammtisch-Zockerin · Kartenlegerin',age:71,color:'#b89ad0',
   bio:'Gewinnt seit 1974 jeden Freitag am Stammtisch. Keiner weiß, wie. Alle wissen, dass man ihr nicht in die Karten schaut.',

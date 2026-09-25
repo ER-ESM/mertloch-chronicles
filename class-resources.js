@@ -93,11 +93,11 @@ function selfDamage(g,n,label){const p=g.player;if(!(n>0)||g.dead)return;const b
 
 // ---------------------------------------------------------------------------------------------------------------
 // Treffer am Helden: Rückgabe = Schaden, der jetzt ankommt
-export function resourceHit(g,n,e,cs){
+export function resourceHit(g,n,e,cs,{noTab=false}={}){
  const r=R(g),st=S(g),p=g.player;if(!r||!(n>0))return n;
  if(r.kind==='rage'){
   const gain=r.hitGain*(n/p.maxHp*100)*(1+num(cs,'hitRage'));p.energy=Math.min(r.max,p.energy+gain);
-  const cap=p.maxHp*(r.tab.cap+num(cs,'zecheCap')),room=Math.max(0,cap-st.tab),deferred=Math.min(room,n*(r.tab.share+num(cs,'zecheShare')));
+  const cap=p.maxHp*(r.tab.cap+num(cs,'zecheCap')),room=noTab?0:Math.max(0,cap-st.tab),deferred=Math.min(room,n*(r.tab.share+num(cs,'zecheShare')));
   if(deferred>0){st.tab+=deferred;emitCombatFx(g,'tab-write',p,{amount:Math.round(deferred)});}
   return n-deferred;
  }
@@ -163,7 +163,8 @@ function reloadPress(g,st,r,cs){
 // ---------------------------------------------------------------------------------------------------------------
 // Schorsch · Glut und Grillrost
 export function zoneOf(g,glut,cs=g.cs||{}){const r=R(g),z=r.zones,lo=z[1].to+num(cs,'perfectLow'),hi=z[2].to+num(cs,'perfectHigh');if(glut<z[0].to)return z[0];if(glut<lo)return z[1];if(glut<hi)return z[2];return z[3];}
-function addGlut(g,st,n,cs){const r=R(g),before=st.glut;st.glut=clamp(st.glut+n,0,st.cool>0?r.max-1:r.max);/* nach einer Stichflamme erholt sich der Grill: 8 s keine zweite */const was=zoneOf(g,before,cs).id,now=zoneOf(g,st.glut,cs).id;if(now==='perfekt'&&was!=='perfekt'&&st.perfectCd<=0){st.perfectCd=3;fireProcs(g,'glutPerfect',cs);emitCombatFx(g,'glut',g.player,{zone:now});}if(st.glut>=r.max)overheat(g,st,cs);}
+function addGlut(g,st,n,cs){const r=R(g),before=st.glut;const wasHot=zoneOf(g,before,cs).id==='heiss';st.glut=clamp(st.glut+n,0,st.cool>0?r.max-1:r.max);/* nach einer Stichflamme erholt sich der Grill: 8 s keine zweite */const was=zoneOf(g,before,cs).id,now=zoneOf(g,st.glut,cs).id;if(now==='perfekt'&&was!=='perfekt'&&st.perfectCd<=0){st.perfectCd=3;fireProcs(g,'glutPerfect',cs);emitCombatFx(g,'glut',g.player,{zone:now});}
+ if(now==='heiss'&&!wasHot&&st.glut<r.max){emitCombatFx(g,'glut',g.player,{zone:'heiss'});note(g,r.hud.hot,'#ff6a3a','heal');}if(st.glut>=r.max)overheat(g,st,cs);}
 function overheat(g,st,cs){
  const r=R(g),o=r.overheat,p=g.player,m=mech(g),flamme=!!m?.flamme,factor=(1+num(cs,'overheatDamage'))*(flamme?m.flamme.overheatFactor:1),dmg=Math.round(o.damage*(cs.flatScale||1)*factor);
  for(const e of foes(g,p,o.radius))g.damage(e,dmg,'Stichflamme');
@@ -215,7 +216,8 @@ const SUITS=['kreuz','pik','herz','karo'],RANKS=['7','8','9','10','B','D','K','A
 function fullDeck(){const d=[];for(const suit of SUITS)for(const rank of RANKS)d.push({suit,rank});return d;}
 function shuffleInto(g,st,cards){const d=[...cards];for(let i=d.length-1;i>0;i--){const j=Math.floor(g.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}st.deck.push(...d);}
 const handSize=(g,cs=g.cs||{})=>Math.min(5,['strike','mark','burst'].filter(id=>available(g,id)).length+num(cs,'handSize'));
-function draw(g,st,cs){const want=handSize(g,cs);while(st.hand.length<want){if(!st.deck.length){if(!st.discard.length)break;shuffleInto(g,st,st.discard);st.discard=[];emitCombatFx(g,'shuffle',g.player,{});fireProcs(g,'shuffle',cs||g.cs||{});}st.hand.push(st.deck.shift());}}
+function drawOne(g,st,cs){if(!st.deck.length){if(!st.discard.length)return null;shuffleInto(g,st,st.discard);st.discard=[];emitCombatFx(g,'shuffle',g.player,{});fireProcs(g,'shuffle',cs||g.cs||{});}return st.deck.shift()||null;}
+function draw(g,st,cs){const want=handSize(g,cs);while(st.hand.length<want){const c=drawOne(g,st,cs);if(!c)break;st.hand.push(c);}}
 function addAugen(g,st,n){const r=R(g),cs=g.cs||{},win=r.win+num(cs,'augenWin'),before=st.augen;st.augen=Math.min(r.max,st.augen+n);for(const [at,text] of [[win,r.hud.won],[r.schneider,r.hud.schneider],[r.schwarz,r.hud.schwarz]])if(before<at&&st.augen>=at){note(g,text,'#e8d27a','throw');emitCombatFx(g,'augen',g.player,{at,text});}}
 export const cardName=c=>c?RESOURCES.kaethe.suits[c.suit].name+'-'+RESOURCES.kaethe.ranks[c.rank].name:'';
 const beats=(mine,theirs)=>{const ranks=RESOURCES.kaethe.ranks;if(ranks[mine.rank].trump)return !ranks[theirs.rank].trump||ranks[mine.rank].order>ranks[theirs.rank].order;return mine.suit===theirs.suit&&!ranks[theirs.rank].trump&&ranks[mine.rank].order>ranks[theirs.rank].order;};
@@ -244,7 +246,8 @@ function cardEffect(g,st,card,cs,{target=null,point=null,share=1}={}){
 }
 function playCard(g,st,index,cs,context){
  const r=R(g),card=index==='sleeve'?st.sleeve:st.hand[index];if(!card)return false;
- if(index==='sleeve')st.sleeve=null;else st.hand.splice(index,1);
+ /* Kenner-Befund: die Hand rückt nicht nach – die neue Karte landet auf dem Platz der gespielten (feste Tasten). */
+ if(index==='sleeve')st.sleeve=null;else{const next=drawOne(g,st,cs);if(next)st.hand[index]=next;else st.hand.splice(index,1);}
  const rk=r.ranks[card.rank],e=['kreuz','karo'].includes(card.suit)?g.target:null;
  const follow=st.chain.suit&&(card.suit===st.chain.suit||rk.trump);st.chain=follow?{suit:st.chain.suit,n:Math.min(r.follow.max+num(cs,'followMax'),st.chain.n+1)}:{suit:card.suit,n:0};
  tryStich(g,st,card,cs);
@@ -287,7 +290,7 @@ export function resourcePrecheck(g,id,s,cs){
  }
  if(r.kind==='cards'){
   const i={strike:0,mark:1,burst:2}[id];
-  if(i!==undefined){const c=st.hand[i];if(!c)return 'Keine Karte auf diesem Platz.';if(['kreuz','karo'].includes(c.suit)&&!validTarget(g,200+(cs.range||0)))return 'Kein Ziel für '+cardName(c)+'.';}
+  if(i!==undefined){const c=st.hand[i];if(!c)return 'Keine Karte auf diesem Platz.';if(['kreuz','karo'].includes(c.suit)&&!validTarget(g,200+(cs.range||0)))return live(g,g.target)?'Zu weit für '+cardName(c)+' · '+Math.ceil(distance(p,g.target)/8)+' m (höchstens '+Math.round((200+(cs.range||0))/8)+' m).':'Kein Ziel für '+cardName(c)+'.';}
   if(id==='throw'){const win=r.win+num(cs,'augenWin');if(st.augen<win)return 'Abrechnen erst ab '+win+' Augen – noch '+(win-st.augen)+'.';if(!validTarget(g,200+(cs.range||0)))return 'Kein Ziel zum Abrechnen.';}
   if(id==='aermel'&&!st.sleeve&&!st.hand.length)return 'Keine Karte auf der Hand.';
   if(id==='aermel'&&st.sleeve&&['kreuz','karo'].includes(st.sleeve.suit)&&!validTarget(g,200+(cs.range||0)))return 'Kein Ziel für '+cardName(st.sleeve)+'.';

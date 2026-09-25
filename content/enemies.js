@@ -240,7 +240,7 @@ export function describeCast(setId,castId,{interrupt=true}={}){
  if(c.radius)numbers.push({label:c.ground?'Flächenradius':'Trefferradius',value:c.radius,unit:'Einheiten (≈ '+(Math.round(c.radius/8*10)/10)+' m)',source:src+'.radius'});
  const terms=[...new Set([a?.term,...(base.terms||[]),'zauberzeit',...(c.interruptible?['unterbrechen']:[]),...(c.ground?['flaeche']:[])].filter(Boolean))];
  const sym=castSymbols(c,{interrupt});if(sym.main!=='noInterrupt'&&answer)sym.hint=answer;
- return {answer,effect:base.effect||'',numbers,why:[base.why,a?.rule].filter(Boolean).join(' '),links:[...(base.links||[])],terms,...sym};
+ return {name:c.name,answer,effect:base.effect||'',numbers,why:[base.why,a?.rule].filter(Boolean).join(' '),links:[...(base.links||[])],terms,...sym};
 }
 // Erklärung einmal ableiten und am Zauber ablegen – die UI liest `cast.info`, ohne selbst zu rechnen.
 for(const sets of [CAST_SETS,DUNGEON_CASTS])for(const [setId,set] of Object.entries(sets))for(const castId of Object.keys(set.casts))set.casts[castId].info=describeCast(setId,castId);

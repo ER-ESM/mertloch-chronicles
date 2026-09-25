@@ -7,10 +7,17 @@ import {iconBook} from './combat-ui.js';
 import {kniffeReference} from './describe-ui.js';
 import {STAT_NAMES} from './itemization.js';
 import {SPECS} from './talents.js';
-import {ITEMS,BAG_SIZE,upgradeVerdict,equipmentStats,combatStats,actionBar,SLOT_KEYS,keyFor,usableItem,gearProfile} from './rpg.js';
+import {ITEMS,BAG_SIZE,upgradeVerdict,equipmentStats,combatStats,actionBar,SLOT_KEYS,keyFor,usableItem,gearProfile,lootReach} from './rpg.js';
 import {available,LESSONS} from './progression.js';
 import {hasContentAsset} from './content-art.js';
-import {RARITIES,PANEL_UI as UI,BAG_UI,GEAR_COMPARE,STAT_EFFECTS,statYield} from './content/index.js';
+import {RARITIES,PANEL_UI as UI,BAG_UI,GEAR_COMPARE,STAT_EFFECTS,statYield,DUNGEON_TEXT} from './content/index.js';
+import {glyph} from './ui-glyphs.js';
+/** Beute-Moment eines Dungeon-Bosses (E-71): Kopf mit Boss, Siegelmarken, Erfahrung und Tagesbonus; Erklärung nur im Tooltip. */
+function lootMomentHead(bag){const r=bag.reward;if(!r)return '';const T=DUNGEON_TEXT.lootMoment,tip=(l,n)=>`data-tooltip-label="${l}" data-tooltip-note="${n}"`;
+ return `<div class="loot-moment" data-loot-moment ${tip(T.title(bag.source?.name||''),T.keep)}><b class="loot-moment-title">${T.title(bag.source?.name||'')}</b><div class="loot-moment-chips">`
+  +(r.marks?`<span class="loot-chip" tabindex="0" ${tip(T.marks+' +'+r.marks,T.marksNote)}><canvas width="24" height="24" data-item-art="stamp"></canvas><b>+${r.marks}</b></span>`:'')
+  +(r.xp?`<span class="loot-chip" tabindex="0" ${tip(T.xp,'+'+r.xp+' EP')}>${glyph('spark')}<b>+${r.xp} EP</b></span>`:'')
+  +(r.daily?`<span class="loot-chip loot-daily" tabindex="0" ${tip(T.daily,T.dailyNote)}>${glyph('clock')}</span>`:'')+'</div></div>';}
 export const slots=EQUIPMENT_SLOTS;
 // Güte-Namen kommen aus content/items.js, damit „Dorflegende“ (epic) überall gleich heißt.
 const rarity=RARITIES;
@@ -59,7 +66,7 @@ export function characterPanel(game){const p=game.player,s=combatStats(game),mel
 export const skillbookPanel=(game,selected,pending)=>iconBook(game,selected,pending)+passiveBook(game);
 /** Polish 1 (2026-09-18): das Nachschlagewerk aller Kniffe/Talente/Procs lebt in Hilfe → Kniffe, nicht mehr in der Figur. */
 export const kniffeBook=game=>kniffeReference(game);
-export function lootPanel(bag,game){const near=Math.hypot(bag.x-game.player.x,bag.y-game.player.y)<=43;return `<p class="loot-distance" data-loot-distance>${near?'Beute in Reichweite.':'Zu weit weg. Geh wieder an den Beutel.'}</p><div class="loot-icon-grid">${bag.coins?`<button class="item-slot coin-slot" data-tooltip-item="coins" data-item-context="loot" data-loot-coins="${bag.id}" aria-label="${bag.coins} Pfandmarken einpacken" title="${bag.coins} Pfandmarken">${itemIcon('coins')}<span>${bag.coins}</span></button>`:''}${bag.items.map(e=>`<button class="item-slot ${ITEMS[e.id].rarity}" data-loot-item="${e.id}" data-loot-bag="${bag.id}" data-tooltip-item="${e.id}" data-item-context="loot" aria-label="${ITEMS[e.id].name} × ${e.count} einpacken">${itemIcon(e.id)}<span>${e.count>1?e.count:''}</span></button>`).join('')}</div><div class="dialog-actions"><button class="gold-button" data-take-loot="${bag.id}">Alles einpacken</button><button class="outline-button" data-rpg-panel="bag">Rucksack</button></div><small>Bei vollem Rucksack bleibt der Rest liegen.</small>`;}
+export function lootPanel(bag,game){const near=Math.hypot(bag.x-game.player.x,bag.y-game.player.y)<=lootReach(bag);return lootMomentHead(bag)+`<p class="loot-distance" data-loot-distance>${near?'Beute in Reichweite.':'Zu weit weg. Geh wieder an den Beutel.'}</p><div class="loot-icon-grid">${bag.coins?`<button class="item-slot coin-slot" data-tooltip-item="coins" data-item-context="loot" data-loot-coins="${bag.id}" aria-label="${bag.coins} Pfandmarken einpacken" title="${bag.coins} Pfandmarken">${itemIcon('coins')}<span>${bag.coins}</span></button>`:''}${bag.items.map(e=>`<button class="item-slot ${ITEMS[e.id].rarity}" data-loot-item="${e.id}" data-loot-bag="${bag.id}" data-tooltip-item="${e.id}" data-item-context="loot" aria-label="${ITEMS[e.id].name} × ${e.count} einpacken">${itemIcon(e.id)}<span>${e.count>1?e.count:''}</span></button>`).join('')}</div><div class="dialog-actions"><button class="gold-button" data-take-loot="${bag.id}">Alles einpacken</button><button class="outline-button" data-rpg-panel="bag">Rucksack</button></div><small>Bei vollem Rucksack bleibt der Rest liegen.</small>`;}
 /** Runde 3b (2026-09-24, Zielbild 2 aus docs/REVIEW-GRAFIK-2026-09-24-r3.md): Gegenstands-Tooltip wie in WoW – Name in Seltenheitsfarbe,
  *  je Wert eine Zeile, abgeleitete Wirkungen nur mit Shift, höchstens drei Delta-Zeilen (▲/▼) statt Chips und Satz. Das angelegte Teil
  *  steht als eigener Vergleichs-Tooltip daneben (WoW ShoppingTooltip). Liefert {main,compare}. */
