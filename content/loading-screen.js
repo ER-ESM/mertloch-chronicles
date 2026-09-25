@@ -37,6 +37,12 @@ export const LOADING_UI={
   'Ruhe ist in Mertloch ab 22:01 Uhr. Nicht ab 22:00. Das ist wichtig.',
   'Wer nichts mehr weiß, fragt im Dorf. Irgendwer hat immer etwas gesehen.',
   'Pfand ist Währung, Ehre und Munition zugleich.',
+  // E-72: je Klasse ein Satz zur eigenen Ressource
+  'Dosen-Dieter will getroffen werden: Randale kommt aus Treffern, und jede ausgegebene Randale bezahlt die Zeche.',
+  'Aperol-Anni lebt von Abwechslung. Zweimal derselbe Kniff, und der Trend kippt.',
+  'Klo-Kevin wirft mit Leergut. Heile Flaschen bleiben liegen – drüberlaufen, einsammeln, weiterwerfen.',
+  'Schwenker-Schorsch hält die Glut im goldenen Bereich. Zu kalt gart nix, zu heiß kommt die Stichflamme.',
+  'Kreuz-Käthe: Kreuz trifft, Pik schützt, Herz heilt, Karo bremst. Ab 61 Augen wird abgerechnet.',
   'Ein Strich auf dem Bierdeckel heißt: bezahlt wird später. Das gilt auch für Schulden beim Clan.'
  ],
  fail:{title:'Die Welt konnte nicht starten.',text:'Prüfe deine Internetverbindung und lade die Seite neu.',retry:'Erneut versuchen'}

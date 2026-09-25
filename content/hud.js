@@ -23,7 +23,7 @@ export const HUD_ELEMENTS=[
  {id:'utility',selector:'#touchUtility',name:'Ziel und Aktion',touch:true},
 ];
 export const AURA_TEXT={
- momentum:{name:'Schwung',text:'Kills geben kurzzeitig mehr Tempo und Randale.',icon:'auto'},
+ momentum:{name:'Schwung',text:'Kills geben kurzzeitig mehr Tempo und Nachschub für deine Klassenressource.',icon:'auto'},
  guard:{name:'Deckung',text:'Fängt Schaden ab, bevor er dein Leben erreicht.',icon:'parry'},
  parry:{name:'Parade bereit',text:'Fängt den nächsten vermeidbaren Treffer ab. Verbleibende Paraden stehen als Stapel am Icon.',icon:'parry'},
  hot:{name:'Hauspflege',text:'Stellt regelmäßig Leben wieder her.',icon:'heal'},

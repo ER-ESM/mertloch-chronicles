@@ -1,11 +1,14 @@
 import {TUTORIAL as D} from './content/index.js';
-import {tutorialActive,tutorialDestination} from './tutorial.js';
+import {tutorialActive,tutorialDestination,tutorialStepFor} from './tutorial.js';
+import {classEmblem} from './class-emblem.js';
 import {conversationHeader} from './dialogue-ui.js';
 import {contentAsset} from './content-art.js';
-export function tutorialDialogue(g,touch=false){const t=g.tutorial,s=D.steps[t.step],dressed=['body','legs','feet'].some(slot=>g.rpg.equipment[slot]),early=(g.player?.level||1)<5,welcome=(dressed?D.welcomeDressed:D.welcome)+' '+(early?D.welcomeToolsEarly:D.welcomeTools);return `${conversationHeader('ida')}<span class="eyebrow">${D.title} · ${t.step+1}/${D.steps.length}</span><h2>${s.title}</h2><p>${t.step===0?welcome:s.text}</p>${t.step===0||t.step===7?'':`<p class="dialog-keyhint">${touch?s.touch:s.desktop}</p>`}<div class="dialog-actions">${t.step===0&&!early?`<button class="outline-button" data-shell="talents">${D.clan}</button>`:''}${t.step===0||t.step===7?`<button class="gold-button" data-tutorial-next>${t.step===0?D.start:D.finish}</button>`:('<button class="outline-button" data-close>'+D.continue+'</button>')}</div>`;}
+/** E-72: eine Zeile zur Klassenressource mit dem Klassen-Symbol (Hofprobe-Gespräch, Handyleiste). */
+const hintLine=(g,text,cls='tutorial-res-hint')=>text?`<p class="${cls}">${classEmblem(g.member?.id)}<span>${text}</span></p>`:'';
+export function tutorialDialogue(g,touch=false){const t=g.tutorial,s=tutorialStepFor(g),dressed=['body','legs','feet'].some(slot=>g.rpg.equipment[slot]),early=(g.player?.level||1)<5,welcome=(dressed?D.welcomeDressed:D.welcome)+' '+(early?D.welcomeToolsEarly:D.welcomeTools);return `${conversationHeader('ida')}<span class="eyebrow">${D.title} · ${t.step+1}/${D.steps.length}</span><h2>${s.title}</h2><p>${t.step===0?welcome:s.text}</p>${t.step===0?hintLine(g,s.clothes,'tutorial-clothes'):hintLine(g,s.hint)}${t.step===0||t.step===7?'':`<p class="dialog-keyhint">${touch?s.touch:s.desktop}</p>`}<div class="dialog-actions">${t.step===0&&!early?`<button class="outline-button" data-shell="talents">${D.clan}</button>`:''}${t.step===0||t.step===7?`<button class="gold-button" data-tutorial-next>${t.step===0?D.start:D.finish}</button>`:('<button class="outline-button" data-close>'+D.continue+'</button>')}</div>`;}
 export function mountTutorialUI(root,game,touch,show){
  const box=document.createElement('aside');box.id='tutorialGuide';
- box.innerHTML='<button type="button" class="outline-button" data-tutorial-collapse aria-controls="tutorialHint" aria-expanded="true" aria-label="Hofprobe einklappen">⌃</button><span class="eyebrow"></span><strong></strong><div id="tutorialHint"><p></p><small></small></div><button type="button" class="outline-button" data-tutorial-help aria-label="'+D.guide+'">?</button>';
+ box.innerHTML='<button type="button" class="outline-button" data-tutorial-collapse aria-controls="tutorialHint" aria-expanded="true" aria-label="Hofprobe einklappen">⌃</button><span class="eyebrow"></span><strong></strong><div id="tutorialHint"><p></p><small></small></div><div class="tutorial-res-hint" hidden></div><button type="button" class="outline-button" data-tutorial-help aria-label="'+D.guide+'">?</button>';
  root.append(box);box.querySelector('[data-tutorial-help]').onclick=show;let last='',device=null,collapsed=false;
  const fold=()=>{box.classList.toggle('collapsed',collapsed);box.querySelector('#tutorialHint').hidden=collapsed;const b=box.querySelector('[data-tutorial-collapse]');b.setAttribute('aria-expanded',String(!collapsed));b.setAttribute('aria-label',collapsed?'Hofprobe ausklappen':'Hofprobe einklappen');b.textContent=collapsed?'⌄':'⌃';};
  box.querySelector('[data-tutorial-collapse]').onclick=()=>{collapsed=!collapsed;fold();};
@@ -15,7 +18,8 @@ export function mountTutorialUI(root,game,touch,show){
   if(device!==touch()){device=touch();collapsed=device;fold();last='';}
   box.hidden=!on||!device;root.classList.toggle('in-tutorial',on&&device);if(!on||!device)return;
   if(device){const own=box.getBoundingClientRect(),panels=[...root.querySelectorAll('.player-panel,#targetPanel:not(.hidden)')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.left<own.right&&r.right>own.left);if(panels.length)box.style.top=(Math.max(...panels.map(r=>r.bottom))+6-root.getBoundingClientRect().top)+'px';else box.style.removeProperty('top');}else box.style.removeProperty('top');
-  const t=g.tutorial,s=D.steps[t.step],key=[t.step,t.hits,t.autos,device].join(':');if(key===last)return;last=key;
+  const t=g.tutorial,s=tutorialStepFor(g),key=[t.step,t.hits,t.autos,device,s.hint].join(':');if(key===last)return;last=key;
+  {const h=box.querySelector('.tutorial-res-hint');h.hidden=!s.hint;h.innerHTML=s.hint?classEmblem(g.member?.id)+'<span></span>':'';if(s.hint)h.querySelector('span').textContent=s.hint;}
   box.querySelector('.eyebrow').textContent='Hofprobe · '+(t.step+1)+'/'+D.steps.length;box.querySelector('strong').textContent=s.title;box.querySelector('p').textContent=s.text;
   box.querySelector('small').textContent=(device?s.touch:s.desktop)+(t.step===3?' · '+D.hitsLabel+' '+t.hits+'/'+D.hits+' · '+D.autoLabel+' '+t.autos+'/'+D.autos:'');
  }};

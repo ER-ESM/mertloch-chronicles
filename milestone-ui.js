@@ -7,6 +7,7 @@
 import {MILESTONE_UI as T,QUEST_DONE_UI as Q} from './content/index.js';
 import {rewardTiles} from './reward-tiles.js';
 import {contentPath} from './content-art.js';
+import {classEmblem} from './class-emblem.js';
 
 export const UNLOCK_BUNDLE_MS=1500,UNLOCK_GAP=45000,UNLOCK_MS=3600,HURRY_MS=1600;
 export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,now=()=>performance.now()}={}){
@@ -33,12 +34,14 @@ export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,
  }
  /* klickdurchlässig: die Einblendung blockiert nie das Spiel, sie läuft über die Zeit ab (nur der Name trägt einen Tooltip) */
  return {
-  level({level,hpGain=0,points=0,skills=[]}){
+  level({level,hpGain=0,points=0,skills=[],hints=[],classId=null}){
    // Mehrere Aufstiege auf einmal (Kapitelbelohnung) zu EINER Einblendung zusammenfassen: höchste Stufe, Zugewinne addiert.
-   const prev=queue.find(m=>m.kind==='level');if(prev){queue.splice(queue.indexOf(prev),1);hpGain+=prev.hpGain;points+=prev.points;skills=[...prev.skills,...skills];}
+   const prev=queue.find(m=>m.kind==='level');if(prev){queue.splice(queue.indexOf(prev),1);hpGain+=prev.hpGain;points+=prev.points;skills=[...prev.skills,...skills];hints=[...(prev.hints||[]),...hints].slice(-2);}
+   // E-72: „Neuer Kniff“ mit einer Zeile zur Klassenressource (content/tutorial.js lessons), Klassen-Symbol davor.
+   const tips=hints.map(h=>`<p class="milestone-hint">${classId?classEmblem(classId):''}<span>${esc(h)}</span></p>`).join('');
    const gains=[hpGain>0?T.hp(hpGain):'',points>0?T.points(points):'',...skills.map(T.skill)].filter(Boolean);
    // Aufstieg vor Freischaltungen derselben Stufe (Ursache vor Wirkung).
-   queue.unshift({kind:'level',ms:4200,hpGain,points,skills,html:`<span class="milestone-eyebrow">${esc(T.levelEyebrow)}</span><strong class="milestone-title">${esc(T.level(level))}</strong>${gains.length?`<ul class="milestone-gains">${gains.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`:''}`});next();},
+   queue.unshift({kind:'level',ms:hints.length?5600:4200,hpGain,points,skills,hints,html:`<span class="milestone-eyebrow">${esc(T.levelEyebrow)}</span><strong class="milestone-title">${esc(T.level(level))}</strong>${gains.length?`<ul class="milestone-gains">${gains.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`:''}${tips}`});next();},
   unlock(def){
    // Bündeln: Was innerhalb von UNLOCK_BUNDLE_MS fällig wird, oder was noch wartet, landet in derselben Einblendung.
    const waiting=queue.find(m=>m.kind==='unlock');

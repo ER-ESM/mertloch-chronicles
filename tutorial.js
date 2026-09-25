@@ -3,7 +3,17 @@ import {makeEnemy} from './encounters.js';
 import {distance} from './world.js';
 import {ITEMS} from './rpg.js';
 import {equipmentPlan} from './equipment.js';
+import {available} from './progression.js';
 export const tutorialActive=g=>!!g.tutorial&&!g.tutorial.completed;
+/** E-72: Schritt der Hofprobe für die Klasse des Helden – Titel/Text/Tasten aus content/tutorial.js byClass, dazu `hint`
+ *  (eine Zeile zur eigenen Ressource) und beim ersten Schritt `clothes` (Idas Satz zur Klamotte vom Kleiderhaufen). */
+export function tutorialStepFor(g,index=g.tutorial?.step??0){
+ const base=D.steps[index];if(!base)return null;const cls=g.member?.id,own=D.byClass?.[cls]?.[base.id]||{};
+ const hint=(D.hints?.[cls]?.[base.id]||[]).map(h=>typeof h==='string'?{text:h}:h).find(h=>!h.skill||available(g,h.skill))?.text||'';
+ return {...base,...own,hint,clothes:index===0?D.clothes?.[cls]||'':''};
+}
+/** E-72: Zeilen „Neuer Kniff“ beim Stufenaufstieg (content/tutorial.js lessons), höchstens zwei, ohne Dopplung. */
+export function lessonHints(g,ids=[]){const own=D.lessons?.[g.member?.id]||{};return [...new Set(ids.map(id=>own[id]).filter(Boolean))].slice(0,2);}
 export function savedTutorial(g){const t=g.tutorial;return t?{version:D.version,completed:t.completed,step:t.step,hits:t.hits,autos:t.autos,bagSpawned:t.bagSpawned}:undefined;}
 /** P8 (Playtest Akt 1): Kein Schritt darf sich ohne Eingabe erledigen. `gate` sperrt den Tick, in dem ein Schritt
  *  beginnt – erst der nächste Tick darf ihn abschließen. Damit kann keine Bedingung aus dem vorigen Schritt
@@ -39,14 +49,18 @@ export function initTutorial(g,saved,enabled=false){
 function ensureProps(g){const t=g.tutorial;if(t.step>=2&&t.step<=4&&!g.enemies.some(e=>e.tutorial)){g.enemies.push(makeEnemy(t.dummy,D.enemy.id,D.enemy));}
  if(t.step===5&&!t.bagSpawned){g.rpg.loot.push({...structuredClone(D.loot),...t.dummy});t.bagSpawned=true;}
 }
-function advance(g){const t=g.tutorial;t.step++;t.clock=D.castPause;t.dash=false;t.gate=GATE;t.tries=0;t.hits=0;t.autos=0;g.autoAttack.enabled=false;g.player.inCombat=0;g.target=null;for(const e of g.enemies)if(e.tutorial){e.aggro=false;e.ai='roaming';e.cast=null;}if(t.step>4)g.enemies=g.enemies.filter(e=>!e.tutorial);ensureProps(g);g.emit('tutorialStep');g.emit('save');}
+function advance(g){const t=g.tutorial;t.hitMark=false;t.step++;t.clock=D.castPause;t.dash=false;t.gate=GATE;t.tries=0;t.hits=0;t.autos=0;g.autoAttack.enabled=false;g.player.inCombat=0;g.target=null;for(const e of g.enemies)if(e.tutorial){e.aggro=false;e.ai='roaming';e.cast=null;}if(t.step>4)g.enemies=g.enemies.filter(e=>!e.tutorial);ensureProps(g);g.emit('tutorialStep');g.emit('save');}
 export function tutorialConfirm(g){if(!tutorialActive(g)||g.dead||g.paused||distance(g.player,g.world.npc)>=D.talkRange)return false;const t=g.tutorial;if(t.step===0){
  for(const [slot,id]of Object.entries(D.starterEquipment))if(!g.rpg.equipment[slot]){const plan=equipmentPlan(g.rpg.equipment,ITEMS,id,slot);if(!plan.error&&!plan.displaced.length)g.rpg.equipment=plan.next;}
  g.refreshStats();advance(g);return true;
  }if(t.step===7){t.completed=true;g.player.inCombat=0;g.gainXp(D.rewardXp);g.toast(D.done);g.emit('tutorialStep');g.emit('save');return true;}return false;}
-export function tutorialSignal(g,type){if(!tutorialActive(g))return;const t=g.tutorial;if(type==='inventory'&&t.step===6)advance(g);if(type==='dash'&&t.step===4&&g.enemies.find(e=>e.tutorial)?.cast)t.dash=true;}
-export function tutorialDamage(g,e,n,label){if(!tutorialActive(g)||!e.tutorial)return 0;const t=g.tutorial;if(t.step!==3)return 0;const amount=Math.max(0,Math.round(n));e.hp=Math.max(1,e.hp-amount);g.float(e.x,e.y-30,String(amount),'#f4d993');if(label==='Autoangriff')t.autos=Math.min(D.autos,t.autos+1);else if(label==='Kelle')t.hits=Math.min(D.hits,t.hits+1);g.emit('save');return amount;}
-export function tutorialDestination(g){if(!tutorialActive(g))return null;const t=g.tutorial;return {point:t.step===0||t.step===7?g.world.npc:t.step===1?t.course:t.dummy,label:D.steps[t.step].title};}
+export function tutorialSignal(g,type){if(!tutorialActive(g))return;const t=g.tutorial;
+ /* E-72: Der erste Kniff zählt, sobald er mit Papp-Horst im Visier gelingt – auch Käthes Herz- und Pik-Karten (treffen nicht) und
+    Kevins Pömpel. Hat derselbe Kniff schon über tutorialDamage gezählt („Kelle“), zählt er nicht doppelt. */
+ if(type==='strike'&&t.step===3&&g.target?.tutorial){if(t.hitMark)t.hitMark=false;else t.hits=Math.min(D.hits,t.hits+1);g.emit('save');}
+if(type==='inventory'&&t.step===6)advance(g);if(type==='dash'&&t.step===4&&g.enemies.find(e=>e.tutorial)?.cast)t.dash=true;}
+export function tutorialDamage(g,e,n,label){if(!tutorialActive(g)||!e.tutorial)return 0;const t=g.tutorial;if(t.step!==3)return 0;const amount=Math.max(0,Math.round(n));e.hp=Math.max(1,e.hp-amount);g.float(e.x,e.y-30,String(amount),'#f4d993');if(label==='Autoangriff')t.autos=Math.min(D.autos,t.autos+1);else if(label==='Kelle'){t.hits=Math.min(D.hits,t.hits+1);t.hitMark=true;}g.emit('save');return amount;}
+export function tutorialDestination(g){if(!tutorialActive(g))return null;const t=g.tutorial;return {point:t.step===0||t.step===7?g.world.npc:t.step===1?t.course:t.dummy,label:tutorialStepFor(g).title};}
 export function tutorialAllowsTravel(g,p){if(!tutorialActive(g)||distance(p,tutorialCenter(g.world))<=D.radius)return true;if(!g.tutorial.warnAt||g.time>g.tutorial.warnAt){g.toast(D.boundary);g.tutorial.warnAt=g.time+D.warningPause;}return false;}
 export function tickTutorial(g,dt){if(!tutorialActive(g))return;const t=g.tutorial,p=g.player;
  if(!tutorialAllowsTravel(g,p)){Object.assign(p,t.last,{vx:0,vy:0,moving:false});g.moveTo=null;g.path=[];g.routeGoal=null;}else t.last={x:p.x,y:p.y};
