@@ -13,7 +13,7 @@ test('every specialization has a transparent emblem and two distinct resource st
   let transparent=0;for(let i=3;i<im.data.length;i+=4)if(im.data[i]===0)transparent++;
   assert.ok(transparent>im.width*im.height*.3,path+' genuine transparent background');return[path,im];
  }));
- for(const spec of Object.keys(SPEC_MECHANICS)){
+ for(const spec of Object.keys(SPEC_MECHANICS).filter(s=>['dieter','baerbel','kevin'].includes(s.split('-')[0]))){/* E-71: Embleme der neuen Klassen folgen mit der Grafiklieferung */
   for(const variant of ['emblem','empty','full']){
    const a=cat.sprites[spec+'/'+variant];assert.ok(a,spec+'/'+variant);const im=images[a.atlas];
    assert.ok(a.x>=0&&a.y>=0&&a.w>0&&a.h>0&&a.x+a.w<=im.width&&a.y+a.h<=im.height);

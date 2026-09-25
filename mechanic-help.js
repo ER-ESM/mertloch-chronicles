@@ -1,5 +1,5 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
-import {SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
+import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
 import {effectAt} from './talent-ranks.js';
@@ -34,8 +34,20 @@ export function mechanicHelp(g,spec=g.rpg?.talents?.spec){
  if(m.kind==='turret')lines=[`${skill('ground')} stellt Dosen-Robbi für ${add('fieldDuration',m.field.duration)} s auf. Er feuert alle ${m.field.interval} s auf einen nahen Gegner, bremst Gegner in seinem Kreis und fängt ihre Schläge auf dich mit seinem eigenen Leben ab.`,`${skill('burst')} lässt Robbi explodieren und entfernt ihn. Erneutes ${skill('ground')} ersetzt den bisherigen Robbi. Die Anzeige zeigt seine Restlaufzeit.`];
  if(m.chain)lines=[`${skill('mark')} legt eine Lunte. Sie verursacht regelmäßig Schaden und explodiert beim Ablaufen oder wenn ${skill('burst')} sie trifft.`,`${m.reaction.count} explodierte Lunten innerhalb von ${add('reactionWindow',m.reaction.window)} s starten ${add('reactionDuration',m.reaction.duration)} s Kettenreaktion und setzen die Abklingzeit von ${skill('burst')} zurück. Der nächste Einsatz springt auf bis zu ${m.reaction.jumps} weitere Gegner und verbraucht die Kettenreaktion. Die Leiste zählt die Zündungen, der Ring zeigt das aktive Zeitfenster.`];
  if(m.gamble)lines=[`Nur ${skill('strike')} und ${skill('throw')} würfeln Bastler-Glück: ${pct(m.gamble.misfire)} Fehlzündung (${pct(add('gambleMisfireMult',m.gamble.misfireMult))} des normalen Schadens), ${pct(add('gambleOver',m.gamble.overcharge))} Überzündung (${pct(m.gamble.overMult)} plus Schaden an Nachbarn), sonst normal.`,`Nach ${add('gamblePity',m.gamble.pity)} Fehlzündungen seit der letzten Überzündung ist der nächste passende Treffer garantiert eine Überzündung. ${add('jackpotStreak',m.gamble.jackpot.streak)} Überzündungen in Folge starten ${add('jackpotDuration',m.gamble.jackpot.duration)} s Jackpot: Diese beiden Kniffe überzünden dann immer. Andere Kniffe würfeln nicht mit.`];
+ if(m.kind==='resource')lines=resourceLines(g,spec,m,cs,skill,add);
  if(m.kind==='guard')lines=[`${skill('strike')} baut Deckung auf; Deckung fängt Schaden vor deinen Lebenspunkten ab. Die maximale Deckung beträgt 38 % deines Maximallebens.`,`${skill('burst')} setzt vorhandene Deckung gegen Gegner in deiner Nähe ein. Ab ${pct(m.hausverbot.threshold)} der maximalen Deckung startet automatisch ${add('hausverbotDuration',m.hausverbot.duration)} s Hausverbot: Paraden reflektieren den ${m.hausverbot.reflect}-fachen Schaden. Hausverbot kann frühestens alle 20 s neu starten.`];
  return {name:m.name,lines,scope:`Kernmechanik des Hauptbaums ${SPECS[spec].name}. Talente aus diesem Baum allein schalten sie in anderen Hauptbäumen nicht frei.`};
+}
+/** E-71: Hauptbäume der neuen Klassen drehen an der Klassenressource (class-resources.js). */
+function resourceLines(g,spec,m,cs,skill,add){
+ const R=RESOURCES[spec.split('-')[0]];
+ if(m.chef)return [`Der Grillplan legt ${m.chef.plan.map(i=>R.items[i].name).join(', ')} in dieser Reihenfolge auf. ${skill('burst')} mit einer Bratwurst heilt ${pct(m.chef.wurstBonus)} stärker, und die Hälfte der Heilung geht an einen zweiten Verletzten in der Nähe.`,`${skill('ground')} baut ein Grillbuffet auf: ${m.chef.buffet.duration} s lang heilt es alle im Umkreis jede Sekunde.`];
+ if(m.flamme)return [`Ab ${m.flamme.at} Glut wird Servieren zum Flambieren: ${pct(m.flamme.bonus)} mehr Wirkung und Feuerspritzer mit ${pct(m.flamme.splash.share)} an allen Nachbarn des Ziels.`,`Die Stichflamme verletzt dich als Flambierer nicht und trifft ${m.flamme.overheatFactor}-mal so hart. Zu heiß bleibt trotzdem gefährlich: die Hitze brennt, und danach ist der Grill kurz aus.`];
+ if(m.rauch)return [`Unter ${m.rauch.below} Glut gart Grillgut halb so schnell und wird dabei geräuchert. Geräuchertes Grillgut hinterlässt beim Servieren Rauch: Gegner darin greifen dich an und treffen ${pct(m.rauch.smoke.weaken)} schwächer.`,`Der Grillplan legt ${m.rauch.plan.map(i=>R.items[i].name).join(', ')} auf. ${skill('ground')} stellt einen Räucherofen, der ${m.rauch.oven.duration} s lang qualmt.`];
+ if(m.grand)return [`Spielst du in einem Spiel ${m.grand.bubes} Buben aus, ist es ein Grand: ${skill('throw')} trifft dann ${m.grand.factor}-fach und alle Gegner im Umkreis.`,`Die Buben zählen bis zum Abrechnen; danach beginnt das nächste Spiel wieder bei null.`];
+ if(m.herz)return [`Herz-Karten heilen ${pct(m.herz.bonus)} stärker, und die Hälfte der Heilung geht an einen zweiten Verletzten. Die nächste Karte des Stapels ist über deiner Hand zu sehen.`,`${skill('ground')} legt die Hand als Legekreis aus: ${m.herz.circle.duration} s lang heilt er alle darin.`];
+ if(m.falsch)return [`„Ass im Ärmel“ hält eine Karte außerhalb der Hand fest und spielt sie später gezielt aus. Jeder Stich zwingt den Gegner, dich anzugreifen.`,`Pik-Karten geben ${pct(m.falsch.pikBonus)} mehr Schild.`];
+ return [SPECS[spec].text];
 }
 const scoped={
  'dieter-brawl':['stackDecay','hangoverShort','stackBonus','stackBurstAt','stackSpread','stackWave','rageGain','rageBurst'],

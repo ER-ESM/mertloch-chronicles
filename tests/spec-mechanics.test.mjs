@@ -1,3 +1,4 @@
+import {CLASS_SPECS} from '../content/index.js';
 import {RESOURCES} from '../content/index.js';
 // E-32: jede Spezialisierung hat ab Stufe 5 eine eigene Kernmechanik (spec-mechanics.js, content/mechanics.js).
 import test from 'node:test';
@@ -18,7 +19,7 @@ function cast(g,id,point){g.cooldowns[id]=0;g.gcd=0;g.player.energy=100;const ok
 const step=(g,s)=>{for(let i=0;i<Math.round(s/.05);i++)g.tick(.05);};
 
 test('alle neun Spezialisierungen haben eine Kernmechanik mit Kit-Texten, die sagen, wann man drückt',()=>{
- assert.equal(Object.keys(SPEC_MECHANICS).length,9);
+ assert.equal(Object.keys(SPEC_MECHANICS).length,Object.values(CLASS_SPECS).flat().length);/* E-71: drei je Klasse */
  for(const [spec,m] of Object.entries(SPEC_MECHANICS)){assert.ok(m.kind&&m.name,spec);assert.equal(m.paths.length,3,spec+' drei Pfade');
   for(const [id,k] of Object.entries(m.kit))assert.ok(/drück|Drück|zünde|Zünde|stell|Stell|wirf|Wirf|sobald|bevor|wenn/i.test(k.use||k.text),spec+'/'+id+' Einsatzmoment');}
 });
