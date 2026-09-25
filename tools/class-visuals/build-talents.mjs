@@ -46,35 +46,42 @@ export function checkTalentIcon(bytes){
  *  (talent-art.js paintVocabTalent); gemalt geht immer vor gezeichnet, weil paintE32Talent zuerst fragt.
  *  exists/read nur für Tests (andere Quellen unterschieben). */
 export function buildTalentArt({exists=fsExists,read=fsRead}={}){
- const files=new Map(),catalog={version:1,density:4,talents:{},sources:[],atlases:{}},sheets=new Map();
- for(const [member,specs] of Object.entries(CLASS_SPECS)){
-  const painted=specs.filter(spec=>exists(talentSheetPath(spec)));
-  if(E32_CLASSES.includes(member)&&painted.length<specs.length)throw Error('E-32-Raster fehlt: '+specs.filter(s=>!painted.includes(s)).join(', '));
-  if(!painted.length)continue;
-  const atlas=surface(640,576),path=base+'runtime/talents-'+member+'.png';
-  for(const [specIndex,spec] of specs.entries()){
-   if(!painted.includes(spec))continue;
-   const source=talentSheetPath(spec),bytes=read(source),im=hardAlpha(decodePng(bytes)),{xs,ys,frames}=cutSheet(im,spec);
-   catalog.sources.push({source,sha256:hash(bytes),x:xs,y:ys});
-   const size=medianSize(frames);
-   for(const [i,t] of TALENT_ROWS[spec].entries()){
-    const id=spec+'-'+i,cell=TALENT_CELLS[spec][i],x=cell.row*64,y=(specIndex*3+cell.path)*64,override=talentOverridePath(id);
-    let {frame,b,sourceRect}=frames[i],entrySource=source,extra={};
-    if(exists(override)){const ob=read(override);({frame,b,sourceRect}=cutSingle(hardAlpha(decodePng(ob)),size,id));entrySource=override;extra={sheet:source};catalog.sources.push({source:override,sha256:hash(ob),talent:id});}
-    blit(frame,atlas,{x:0,y:0,w:64,h:64},{x,y});sheets.set(id,frame);
-    catalog.talents[id]={atlas:path,x,y,cell:64,name:t.name,effect:t.info.effect,spec,...cell,source:entrySource,...extra,sourceRect,bounds:b,sha256:hash(frame.data)};
-   }
-  }
-  const bytes=encodePng(atlas);files.set(path,bytes);catalog.atlases[path]={sha256:hash(bytes)};
- }
- const signatures=JSON.parse(read('assets/class-visuals/runtime/catalog.json')),precision=JSON.parse(read('assets/precision/runtime/catalog.json')),icons=decodePng(read('assets/class-visuals/runtime/icons.png')),skillAtlas=surface(240,432),skillPath=base+'runtime/skills.png';catalog.skills={};
+ const files=new Map(),catalog={version:1,density:4,talents:{},sources:[],atlases:{}},sheets=new Map(),cut=new Map(),overrides=new Map();
+ const members=Object.entries(CLASS_SPECS).map(([member,specs])=>({member,specs,painted:specs.filter(spec=>exists(talentSheetPath(spec)))}));
+ for(const {member,specs,painted} of members)if(E32_CLASSES.includes(member)&&painted.length<specs.length)throw Error('E-32-Raster fehlt: '+specs.filter(s=>!painted.includes(s)).join(', '));
+ // Reihenfolge zählt: precisionColor merkt sich je Farbton die erste Palettenfarbe (Cache über den ganzen Lauf). Darum erst die
+ // E-32-Raster und ihre Kniff-Motive in der alten Reihenfolge, dann neue Klassen, zuletzt Einzelbilder – so bleibt alles
+ // Vorhandene byte-gleich, wenn Neues dazukommt (tests/e72-bilder.test.mjs prüft das in einem frischen Prozess).
+ const cutSpec=spec=>{const source=talentSheetPath(spec),bytes=read(source);cut.set(spec,{source,bytes,...cutSheet(hardAlpha(decodePng(bytes)),spec)});};
+ for(const {member,painted} of members)if(E32_CLASSES.includes(member))painted.forEach(cutSpec);
+ for(const [spec,c] of cut)c.frames.forEach((f,i)=>sheets.set(spec+'-'+i,f.frame));
+ // Kniff-Motive der E-32-Klassen (skills.png) kommen immer aus dem Raster bzw. der Signatur, nie aus einem Einzelbild.
+ const signatures=JSON.parse(read('assets/class-visuals/runtime/catalog.json')),precision=JSON.parse(read('assets/precision/runtime/catalog.json')),icons=decodePng(read('assets/class-visuals/runtime/icons.png')),skillAtlas=surface(240,432),skillPath=base+'runtime/skills.png',skills={};
  for(const [row,spec]of Object.keys(TALENT_ROWS).filter(s=>E32_CLASSES.includes(s.split('-')[0])).entries())for(const [col,slot]of ['mark','burst','ground','buff','variant'].entries()){
   const id=E32_SKILL_MOTIFS[spec][slot],member=spec.split('-')[0];let source;
   if(id?.startsWith('signature:')){const a=signatures.icons[id.slice(10)];source=surface(64,64);blit(icons,source,{x:a.x,y:a.y,w:64,h:64},{x:0,y:0});}
   else if(id)source=sheets.get(id);
   else{const a=precision.assets['skill-'+member+'-'+slot];if(!a)throw Error('Missing base skill '+member+'/'+slot);source=decodePng(read(a.path));}
-  const frame=surface(48,48);resample(source,frame,{x:0,y:0,w:source.width,h:source.height},{x:0,y:0},48/source.width);blit(frame,skillAtlas,{x:0,y:0,w:48,h:48},{x:col*48,y:row*48});catalog.skills[spec+'/'+slot]={atlas:skillPath,x:col*48,y:row*48,cell:48,motif:id||'skill-'+member+'-'+slot,sha256:hash(frame.data)};
+  const frame=surface(48,48);resample(source,frame,{x:0,y:0,w:source.width,h:source.height},{x:0,y:0},48/source.width);blit(frame,skillAtlas,{x:0,y:0,w:48,h:48},{x:col*48,y:row*48});skills[spec+'/'+slot]={atlas:skillPath,x:col*48,y:row*48,cell:48,motif:id||'skill-'+member+'-'+slot,sha256:hash(frame.data)};
  }
+ for(const {member,painted} of members)if(!E32_CLASSES.includes(member))painted.forEach(cutSpec);
+ for(const [spec,c] of cut){const size=medianSize(c.frames);for(let i=0;i<c.frames.length;i++){const id=spec+'-'+i,source=talentOverridePath(id);if(!exists(source))continue;const bytes=read(source);overrides.set(id,{source,bytes,...cutSingle(hardAlpha(decodePng(bytes)),size,id)});}}
+ for(const {member,specs,painted} of members){
+  if(!painted.length)continue;
+  const atlas=surface(640,576),path=base+'runtime/talents-'+member+'.png';
+  for(const [specIndex,spec] of specs.entries()){
+   if(!painted.includes(spec))continue;
+   const {source,bytes,xs,ys,frames}=cut.get(spec);catalog.sources.push({source,sha256:hash(bytes),x:xs,y:ys});
+   for(const [i,t] of TALENT_ROWS[spec].entries()){
+    const id=spec+'-'+i,cell=TALENT_CELLS[spec][i],x=cell.row*64,y=(specIndex*3+cell.path)*64,o=overrides.get(id),{frame,b,sourceRect}=o||frames[i];
+    if(o)catalog.sources.push({source:o.source,sha256:hash(o.bytes),talent:id});
+    blit(frame,atlas,{x:0,y:0,w:64,h:64},{x,y});sheets.set(id,frame);
+    catalog.talents[id]={atlas:path,x,y,cell:64,name:t.name,effect:t.info.effect,spec,...cell,source:o?o.source:source,...(o?{sheet:source}:{}),sourceRect,bounds:b,sha256:hash(frame.data)};
+   }
+  }
+  const atlasBytes=encodePng(atlas);files.set(path,atlasBytes);catalog.atlases[path]={sha256:hash(atlasBytes)};
+ }
+ catalog.skills=skills;
  const skillBytes=encodePng(skillAtlas);files.set(skillPath,skillBytes);catalog.atlases[skillPath]={sha256:hash(skillBytes)};
  files.set(base+'runtime/catalog.json',Buffer.from(JSON.stringify(catalog,null,2)+'\n'));
  return {files,catalog,sheets};

@@ -4,6 +4,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {CLASS_SPECS,TALENT_ROWS,TALENT_CELLS} from '../content/talents.js';
 import {buildTalentArt,talentSheetPath,talentOverridePath,checkTalentSheet,checkTalentIcon} from '../tools/class-visuals/build-talents.mjs';
 import {sheetJobs,singleJobs,SINGLES,SHEET_JOBS,SINGLE_JOBS,E32_HEAD,NEW_CLASSES} from '../tools/sprite-pipeline/e72-talente-auftraege.mjs';
@@ -31,18 +33,33 @@ test('ohne gemaltes Raster: build-talents läuft durch, Schorsch und Käthe blei
  assert.ok(motif.indexOf('paintE32Talent(canvas,id)')<motif.indexOf('paintVocabTalent('),'gemalt (Katalog) vor gezeichnet (Vokabular)');
 });
 
-test('gemaltes Raster einer neuen Klasse und Einzelbild eines alten Talents werden eingebaut',()=>{
- const sheet=talentSheetPath('schorsch-chef'),single=talentOverridePath('dieter-wall-12'),icon=fakeIcon();
- const {files,catalog}=buildTalentArt({exists:p=>p===sheet||p===single||before.exists(p),read:p=>p===sheet?read(talentSheetPath('dieter-wall')):p===single?icon:read(p)});
- const b=base().catalog,atlas='assets/content-art/e32/runtime/talents-schorsch.png';
- assert.ok(files.has(atlas));assert.equal(Object.keys(catalog.talents).length,300);
+// Frischer Prozess: precisionColor hat einen prozessweiten Farbcache – nur so zeigt sich, ob Neues (neue Klasse, Einzelbild)
+// die Farben der vorhandenen Bilder verschiebt. Das Kind baut mit untergeschobenen Quellen und meldet Katalog + Datei-Hashes.
+function buildInFreshProcess(){
+ const code=`import {buildTalentArt,talentSheetPath,talentOverridePath} from './tools/class-visuals/build-talents.mjs';
+import {encodePng,surface} from './tools/sprite-pipeline/png.mjs';import {readFileSync,existsSync} from 'node:fs';import {createHash} from 'node:crypto';
+const size=600,im=surface(size,size),c=size/2,r=size*.3;for(let y=0;y<size;y++)for(let x=0;x<size;x++){const d=Math.hypot(x-c,y-c);if(d<r)im.data.set(d>r-18?[23,31,41,255]:[211,168,86,255],(y*size+x)*4);}
+const icon=encodePng(im),sheet=talentSheetPath('schorsch-chef'),single=talentOverridePath('dieter-wall-12');
+const hidden=p=>/\\/(schorsch|kaethe)-|talents-(schorsch|kaethe)|\\/einzeln\\//.test(p);
+const {files,catalog}=buildTalentArt({exists:p=>p===sheet||p===single||(existsSync(p)&&!hidden(p)),read:p=>p===sheet?readFileSync(talentSheetPath('dieter-wall')):p===single?icon:readFileSync(p)});
+console.log(JSON.stringify({catalog,files:Object.fromEntries([...files].map(([p,b])=>[p,createHash('sha256').update(b).digest('hex')])),icon:createHash('sha256').update(icon).digest('hex')}));`;
+ const r=spawnSync(process.execPath,['--input-type=module','-e',code],{cwd:fileURLToPath(root),encoding:'utf8',maxBuffer:64*1024*1024});
+ assert.equal(r.status,0,r.stderr);return JSON.parse(r.stdout);
+}
+
+test('gemaltes Raster einer neuen Klasse und Einzelbild eines alten Talents werden eingebaut, Vorhandenes bleibt byte-gleich',()=>{
+ const sheet=talentSheetPath('schorsch-chef'),single=talentOverridePath('dieter-wall-12'),{catalog,files,icon}=buildInFreshProcess();
+ const b=json('assets/content-art/e32/runtime/catalog.json'),atlas='assets/content-art/e32/runtime/talents-schorsch.png';
+ assert.ok(files[atlas]);assert.equal(Object.keys(catalog.talents).length,300);
+ assert.deepEqual(catalog.skills,b.skills,'Kniff-Motive (skills.png) unverändert');assert.equal(files['assets/content-art/e32/runtime/skills.png'],sha(read('assets/content-art/e32/runtime/skills.png')));
+ for(const m of ['baerbel','kevin']){const p='assets/content-art/e32/runtime/talents-'+m+'.png';assert.equal(files[p],sha(read(p)),p+' unverändert');}
  for(const [i,t] of TALENT_ROWS['schorsch-chef'].entries()){const a=catalog.talents['schorsch-chef-'+i],cell=TALENT_CELLS['schorsch-chef'][i];
   assert.equal(a.atlas,atlas);assert.equal(a.name,t.name);assert.equal(a.x,cell.row*64);assert.equal(a.y,cell.path*64);assert.equal(a.source,sheet);}
  assert.ok(!catalog.talents['schorsch-flamme-0']&&!catalog.talents['kaethe-grand-0'],'Spezialisierungen ohne Raster bleiben beim Ersatz-Icon');
  const o=catalog.talents['dieter-wall-12'];assert.equal(o.source,single);assert.equal(o.sheet,talentSheetPath('dieter-wall'));assert.notEqual(o.sha256,b.talents['dieter-wall-12'].sha256);
  assert.ok(o.bounds.x>=2&&o.bounds.y>=2&&o.bounds.x+o.bounds.w<=62&&o.bounds.y+o.bounds.h<=62);
- assert.ok(catalog.sources.some(s=>s.source===single&&s.talent==='dieter-wall-12'&&s.sha256===sha(icon)));
- for(const [id,a] of Object.entries(b.talents))if(id!=='dieter-wall-12')assert.equal(catalog.talents[id].sha256,a.sha256,id);
+ assert.ok(catalog.sources.some(s=>s.source===single&&s.talent==='dieter-wall-12'&&s.sha256===icon));
+ for(const [id,a] of Object.entries(b.talents))if(id!=='dieter-wall-12')assert.equal(catalog.talents[id].sha256,a.sha256,id+' darf sich durch Neues nicht verfärben');
  // Laufzeit: sobald der Katalog das Talent kennt, malt paintE32Talent es (vor jedem Ersatz).
  const drawn=[],canvas={width:48,height:48,dataset:{},getContext:()=>({clearRect(){},drawImage:(...a)=>drawn.push(a)})};
  const keep={catalog:e32Art.catalog,images:e32Art.images};e32Art.catalog=catalog;e32Art.images=new Map([[atlas,{}]]);
