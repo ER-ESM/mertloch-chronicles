@@ -52,17 +52,22 @@ async function boot({cls='schorsch',level=6,seen=['stempel'],popups=null}={}){
 /** Held auf eine freie Wiese (keine Figuren, kein Weg), Kamera hart auf ihn. */
 const meadow=()=>read(`(()=>{const W=game.world,s=W.spawn;let spot=null;for(let r=260;r<900&&!spot;r+=40)for(let k=0;k<24&&!spot;k++){const a=k/24*Math.PI*2,x=s.x+Math.cos(a)*r,y=s.y+Math.sin(a)*r;if(W.onRoad?.(x,y,70)||W.blocked(x,y,40)||W.nearby?.(x,y,90)?.length)continue;let ok=true;for(let dx=-120;dx<=120&&ok;dx+=20)for(let dy=-90;dy<=90&&ok;dy+=20)if(W.blocked(x+dx,y+dy,6))ok=false;if(ok)spot={x,y};}spot||={x:s.x-150,y:s.y+230};
  const p=game.player;Object.assign(p,{x:spot.x,y:spot.y,vx:0,vy:0,moving:false,inCombat:0,hp:p.maxHp});game.moveTo=null;game.path=[];game.routeGoal=null;game.target=null;const R=globalThis.__mertloch?.renderer;if(R){R.cameraFocus=null;R.camera={...R.camera,x:p.x,y:p.y};}return spot;})()`).then(async s=>{await wait(500);return s;});
-const walkState=()=>read(`JSON.stringify({to:game.moveTo?{x:Math.round(game.moveTo.x),y:Math.round(game.moveTo.y)}:null,path:game.path?.length||0,nav:game.__nav||0})`).then(JSON.parse);
-const stopWalk=()=>read(`(()=>{game.moveTo=null;game.path=[];game.routeGoal=null;Object.assign(game.player,{vx:0,vy:0,moving:false});if(!game.__navWrap){const o=game.navigate.bind(game);game.navigate=(...a)=>{game.__nav=(game.__nav||0)+1;return o(...a);};game.__navWrap=true;}game.__nav=0;})()`);
+/* bedient = Laufen (navigate) ODER die Figur unter dem Punkt gewählt (Rechtsklick auf Gegner = hinlaufen und angreifen, auf Freund = ansprechen) */
+const walkState=()=>read(`JSON.stringify({to:game.moveTo?{x:Math.round(game.moveTo.x),y:Math.round(game.moveTo.y)}:null,path:game.path?.length||0,nav:game.__nav||0,sel:game.target?'greift an: '+game.target.name:game.friend?'spricht an: '+(game.friend.ref?.name||game.friend.kind):''})`).then(s=>{const v=JSON.parse(s);v.ok=v.nav>0||!!v.sel;return v;});
+const stopWalk=()=>read(`(()=>{game.moveTo=null;game.path=[];game.routeGoal=null;game.target=null;game.friend=null;game.stopAuto?.();Object.assign(game.player,{vx:0,vy:0,moving:false});if(!game.__navWrap){const o=game.navigate.bind(game);game.navigate=(...a)=>{game.__nav=(game.__nav||0)+1;return o(...a);};game.__navWrap=true;}game.__nav=0;})()`);
 const at=(x,y)=>read(`(()=>{const e=document.elementFromPoint(${x},${y});if(!e)return '';const s=e.closest('[data-action-slot]');return (e.id?'#'+e.id:e.tagName)+'.'+String(e.className?.baseVal??e.className??'').split(' ').filter(Boolean).slice(0,3).join('.')+(s?'[slot '+s.dataset.actionSlot+(s.classList.contains('empty-slot')?' leer':'')+']':'');})()`);
 /** Bildschirmpunkt ohne Figur darunter (Rechtsklick = Laufen, nicht Ansprechen). */
+/** Zeigerprotokoll im Spiel (Capture auf window): letzte Ereignisse mit Ziel – zur Diagnose nicht bedienter Rechtsklicks. */
+const armLog=()=>read(`(()=>{if(window.__pl)return;window.__pl=[];const d=t=>t?(t.id?'#'+t.id:t.tagName)+'.'+String(t.className?.baseVal??t.className??'').split(' ').filter(Boolean).slice(0,2).join('.'):'-';for(const ty of ['pointerdown','contextmenu'])addEventListener(ty,e=>{__pl.push([Math.round(performance.now()),ty,e.button,Math.round(e.clientX),Math.round(e.clientY),d(e.target),e.isTrusted?'echt':'weitergereicht']);if(__pl.length>12)__pl.shift();},true);})()`);
+/** Warum lief ein Rechtsklick nicht? Zustand, Ziel unter dem Punkt, letzte Zeigerereignisse. */
+const why=(x,y)=>read(`(async()=>{const R=globalThis.__mertloch.renderer,p=R.screenToWorld(${Math.round(x)},${Math.round(y)}),P=await import('./professions.js'),u=__k.tui.unitAt(game,p.x,p.y),pn=P.professionTarget(game,p);const e=document.elementFromPoint(${Math.round(x)},${Math.round(y)});return JSON.stringify({at:e?(e.id||e.className):'',paused:game.paused,dead:game.dead,aiming:game.aiming||null,unit:u?u.kind+':'+(u.name||''):'',beruf:pn?pn.id+' '+Math.round(Math.hypot(pn.x-game.player.x,pn.y-game.player.y))+'m':'',tip:!document.querySelector('#itemTooltip').classList.contains('hidden'),log:(window.__pl||[]).slice(-6)});})()`);
 const freeAt=(x,y)=>read(`(()=>{const R=globalThis.__mertloch.renderer,p=R.screenToWorld(${x},${y});return !__k.tui.unitAt(game,p.x,p.y)&&document.elementFromPoint(${x},${y})?.id==='world';})()`);
 
 const PARTS={
  async leiste(){
   const results=[];
   for(const [cls,level] of [['schorsch',6],['dieter',12],['baerbel',12],['kevin',12],['kaethe',12]]){
-   await boot({cls,level});
+   await boot({cls,level});await armLog();
    for(const bars of [2,3,4]){
     // Wie beim Kenner: in jeder Zusatzleiste nur der erste Platz belegt (⇧1), der Rest leer; Leiste 4 bleibt ganz leer.
     await read(`(()=>{const {rpg}=__k;rpg.setBarCount(game,${bars});const known=game.skills.filter(s=>__k.prog.available(game,s.id)&&!(s.id in rpg.SPECIAL_KEYS)).map(s=>s.id);const bar=rpg.actionBar(game);for(let i=10;i<bar.length;i++)if(bar[i])rpg.bindSkill(game,null,i);for(let r=1;r<${bars};r++)if(r<3)rpg.bindSkill(game,known[r%known.length],r*10);game.emit('barChanged');game.emit('save');})()`);await wait(500);
@@ -74,17 +79,15 @@ const PARTS={
      if(hit&&(hit.container||hit.empty||hit.op<.2))bad.push({x,row:row.id,...hit});}
     // Die Kenner-Stelle: rechts neben dem letzten belegten Platz der Zusatzleiste, Mitte des unsichtbaren Platzes ⇧0 (Index 19).
     const p0=await rect('.action-area [data-action-slot="19"]');
-    await read(`game.target=null`);
-    // Ziel wählen, dann Linksklick an die Stelle – geht er in die Welt, hebt er die Zielwahl auf (wie ein Klick ins Leere).
-    await read(`(()=>{const e=game.enemies.find(e=>e.hp>0);if(e)game.target=e;})()`);
-    const hadTarget=await read('!!game.target');
+    // Linksklick an die Stelle – das Zeigerprotokoll zeigt, wer ihn bekam (vorher: der leere Platz ⇧0)
     await click(p0.x+p0.w/2,p0.y+p0.h/2,'left');await wait(300);
+    const got=await read(`(()=>{const l=(window.__pl||[]).filter(x=>x[1]==='pointerdown').at(-1);return l?l[5]:'';})()`);
     const after=JSON.parse(await read(`JSON.stringify({book:!!document.querySelector('.game-popup.popup-book, .game-popup[data-window-id=book]')||(window.mertloch.state().popups||[]).some(p=>p.id==='book'),text:document.querySelector('.book-instruction')?.textContent||'',target:!!game.target,hit:(()=>{const e=document.elementFromPoint(${Math.round(p0.x+p0.w/2)},${Math.round(p0.y+p0.h/2)});return e?.id||e?.className||'';})()})`));
-    results.push({cls,bars,samples,bad:bad.length,after});
+    results.push({cls,bars,samples,bad:bad.length,after,got});
     if(bad.length)console.error(cls,bars,'Fänger:',JSON.stringify(bad.slice(0,6)));
     ok(!bad.length,`${cls}, ${bars} Leisten: ${samples} Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)`);
     ok(!after.book&&!/gewählt/.test(after.text),`${cls}, ${bars} Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: ${after.hit})`);
-    ok(after.hit==='world'&&(!hadTarget||!after.target),`${cls}, ${bars} Leisten: der Klick geht in die Welt${hadTarget?' (Zielwahl aufgehoben)':''}`);
+    ok(after.hit==='world'&&got==='#world.',`${cls}, ${bars} Leisten: der Klick geht in die Welt (Empfänger ${got})`);
     if(cls==='schorsch'&&bars===2){await read(`document.head.insertAdjacentHTML('beforeend','<style id=kl-mark>#kl-mark-dot{position:fixed;z-index:99999;width:18px;height:18px;margin:-9px 0 0 -9px;border:3px solid #ff3b30;border-radius:50%;pointer-events:none}</style>');const d=document.createElement('div');d.id='kl-mark-dot';d.style.left='${Math.round(p0.x+p0.w/2)}px';d.style.top='${Math.round(p0.y+p0.h/2)}px';document.body.append(d);`);
      await shot('01-leiste-klick-ins-feld-geht-in-die-welt',clipOf({x:area.x-160,y:area.y-120,w:area.w+320,h:H-area.y+120},0,1));await read(`document.getElementById('kl-mark-dot')?.remove()`);}
    }
@@ -105,16 +108,17 @@ const PARTS={
   notes.leiste=results;
  },
  async karte(){
-  await boot({cls:'schorsch',level:6,seen:['stempel']});
+  await boot({cls:'schorsch',level:6,seen:['stempel']});await armLog();notes.karteNicht=[];
+  const miss=async(tag,x,y)=>{const d=await why(x,y);notes.karteNicht.push(tag+' '+d);console.log('  NICHT BEDIENT '+tag+': '+d);};
   const show=async id=>{await read(`game.events.push({type:'memory',fragment:__k.mem.memoryFor(${JSON.stringify(id)})})`);return until(`!!document.querySelector('.memory-card:not([hidden]).show')`,8000);};
   ok(await show('pizzeria'),'Erinnerungskarte „22:01“ offen');await wait(500);
   const card=await rect('.memory-card'),pic=await rect('.memory-card [data-memory-card-art]');
   // Rechtsklick in die Welt (freie Stellen) läuft, solange die Karte offen ist
-  let n=0,walked=0;for(const [x,y] of [[W*.2,H*.35],[W*.3,H*.6],[W*.55,H*.3],[card.x-60,card.y+80],[card.x+card.w/2,card.y-30]]){if(!(await freeAt(x,y)))continue;n++;await stopWalk();await click(x,y,'right');await wait(200);const s=await walkState();if(s.nav>0&&(s.to||s.path))walked++;}
-  ok(n>=3&&walked===n,`Karte offen: ${walked}/${n} Rechtsklicks in die Welt laufen`);
+  let n=0,walked=0;for(const [x,y] of [[W*.2,H*.35],[W*.3,H*.6],[W*.55,H*.3],[card.x-60,card.y+80],[card.x+card.w/2,card.y-30]]){if(!(await freeAt(x,y)))continue;n++;await stopWalk();await click(x,y,'right');await wait(200);const s=await walkState();if(s.ok)walked++;else await miss('Karte offen',x,y);}
+  ok(n>=3&&walked===n,`Karte offen: ${walked}/${n} Rechtsklicks in die Welt bedient (laufen bzw. Figur angreifen)`);
   // Rechtsklick AUF die Karte (Bild, Text) läuft wie in die Welt – die Karte schluckt ihn nicht mehr
-  let onCard=0;for(const [x,y] of [[pic.x+pic.w/2,pic.y+pic.h/2],[card.x+card.w/2,card.y+card.h-40]]){await stopWalk();await click(x,y,'right');await wait(200);const s=await walkState();if(s.nav>0&&(s.to||s.path))onCard++;}
-  ok(onCard===2,'Rechtsklick auf die Karte (Bild und Text) läuft wie ein Rechtsklick in die Welt ('+onCard+'/2)');
+  let onCard=0;for(const [x,y] of [[pic.x+pic.w/2,pic.y+pic.h/2],[card.x+card.w/2,card.y+card.h-40]]){await stopWalk();await click(x,y,'right');await wait(200);const s=await walkState();if(s.ok)onCard++;else await miss('auf Karte',x,y);}
+  ok(onCard===2,'Rechtsklick auf die Karte (Bild und Text) wirkt wie ein Rechtsklick in die Welt ('+onCard+'/2)');
   ok(await read(`!!document.querySelector('.memory-card:not([hidden])')&&!document.querySelector('.context-menu')`),'Karte bleibt dabei offen, kein Kontextmenü');
   // Bild-Tooltip erscheint beim Darüberfahren …
   await move(pic.x+pic.w/2,pic.y+pic.h/2);await wait(250);
@@ -130,15 +134,19 @@ const PARTS={
   // Tooltip über der Karte, dann schließen per Kreuz (echter Klick): Tooltip weg, Rechtsklick an derselben Stelle läuft sofort
   await move(pic.x+pic.w/2,pic.y+pic.h/2);await wait(200);
   await read(`game.events.push({type:'memory',fragment:__k.mem.memoryFor('kastenturm')})`);await wait(200);
+  /* Zeitmarken im Spiel: Karte zu → nächste Karte sichtbar (der Prüftakt spielt keine Rolle) */await read(`(()=>{const c=document.querySelector('.memory-card'),m=window.__gap={closed:0,shown:0};new MutationObserver(()=>{const t=performance.now();if(c.hidden&&!m.closed)m.closed=t;else if(!c.hidden&&m.closed&&!m.shown)m.shown=t;}).observe(c,{attributes:true,attributeFilter:['hidden']});})()`);
   const x=await rect('.memory-card [data-memory-next]');await click(x.x+x.w/2,x.y+x.h/2);await wait(120);
   const closed=JSON.parse(await read(`JSON.stringify({card:!!document.querySelector('.memory-card:not([hidden])'),tip:!document.querySelector('#itemTooltip').classList.contains('hidden')})`));
   ok(!closed.card&&!closed.tip,'Kreuz schließt die Karte, kein Tooltip bleibt stehen');
-  let right=0,spots=[[pic.x+pic.w/2,pic.y+pic.h/2],[card.x+40,card.y+60],[W*.3,H*.5]];for(const [px,py] of spots){await stopWalk();await click(px,py,'right');await wait(150);const s=await walkState();if(s.nav>0)right++;}
-  ok(right===3,'direkt nach dem Schließen: Rechtsklicks an der Kartenstelle und daneben laufen ('+right+'/3)');
-  const early=await read(`!!document.querySelector('.memory-card:not([hidden])')`);ok(!early,'die nächste Karte („Statik“) springt nicht sofort unter die Maus');
-  // Maus ruht dort, wo gleich die Karte erscheint (wie nach dem Aufwachen): Karte kommt OHNE Bild-Tooltip; erst echte Bewegung zeigt ihn
-  await move(pic.x+pic.w/2,pic.y+pic.h/2);
-  ok(await until(`document.querySelector('.memory-card:not([hidden]) strong')?.textContent==='Statik'`,8000),'„Statik“ kommt nach der Ruhezeit');
+  let right=0,spots=[[pic.x+pic.w/2,pic.y+pic.h/2],[card.x+40,card.y+60],[W*.3,H*.5]];for(const [px,py] of spots){await stopWalk();await click(px,py,'right');await wait(150);const s=await walkState();if(s.ok)right++;else await miss('nach Schließen',px,py);}
+  ok(right===3,'direkt nach dem Schließen: Rechtsklicks an der Kartenstelle und daneben bedient ('+right+'/3)');
+  ok(await until(`document.querySelector('.memory-card:not([hidden]) strong')?.textContent==='Statik'`,10000),'„Statik“ kommt nach der Ruhezeit');
+  const gap=await read(`Math.round(window.__gap.shown-window.__gap.closed)`);ok(gap>=1400,'die nächste Karte springt nicht sofort unter die Maus (Abstand '+gap+' ms)');
+  await read(`document.querySelector('.memory-card [data-memory-next]')?.click()`);await wait(300);
+  // Maus ruht dort, wo gleich die Karte erscheint (wie nach dem Aufwachen): Karte kommt OHNE Bild-Tooltip; erst echte Bewegung zeigt ihn.
+  // Die Karte wird festgehalten (Kampf), bis die Maus liegt – sonst hinge das Ergebnis am Prüftakt.
+  await read(`game.player.inCombat=8;game.events.push({type:'memory',fragment:__k.mem.memoryFor('shirt-zu-klein')})`);await move(pic.x+pic.w/2,pic.y+pic.h/2);await wait(300);await read(`game.player.inCombat=0;game.attackers?.clear?.()`);
+  ok(await until(`(game.player.inCombat=0,document.querySelector('.memory-card:not([hidden]) strong')?.textContent==='Größe S')`,10000),'„Größe S“ erscheint unter der ruhenden Maus');
   await wait(700);ok(await read(`document.querySelector('#itemTooltip').classList.contains('hidden')`),'Karte erscheint unter der ruhenden Maus – kein Bild-Tooltip dazu (nichts stapelt sich)');
   await shot('11-karte-naechste-nach-ruhezeit');
   await move(pic.x+pic.w/2+8,pic.y+pic.h/2+4);await wait(200);ok(await read(`!document.querySelector('#itemTooltip').classList.contains('hidden')`),'erst eine echte Mausbewegung über dem Bild zeigt „Bild vergrößern“');
@@ -156,15 +164,25 @@ const PARTS={
    await stopWalk();if(!cr&&!(await freeAt(px,py))){await wait(250);continue;}
    await click(px,py,'right');await wait(150);const s=await walkState();
    /* Liegt unter dem Punkt eine Figur, ist Angreifen/Ansprechen die richtige Antwort (kein Laufen) – das zählt als bedient, nicht als verschluckt */
-   const unit=s.nav>0?'':await read(`(()=>{const R=globalThis.__mertloch.renderer,p=R.screenToWorld(${Math.round(px)},${Math.round(py)}),u=__k.tui.unitAt(game,p.x,p.y);return u?(u.kind||'figur')+(game.target===u.ref||game.target===u?' (Ziel)':''):'';})()`);
+   if(!s.ok)await miss('nach Tod k='+k+(cr&&k%2?' Karte':' Welt'),px,py);
    const st=JSON.parse(await read(`JSON.stringify({card:document.querySelector('.memory-card:not([hidden]) strong')?.textContent||'',tip:(()=>{const t=document.querySelector('#itemTooltip');return t.classList.contains('hidden')?'':t.textContent.slice(0,30);})()})`));
    if(st.card)cardSeen=true;if(st.card&&st.tip&&!(await read(`!!document.querySelector('.memory-card:hover')`)))stacked=true;
-   log.push(((Date.now()-t0)/1000).toFixed(1)+' s '+(cr&&k%2?'auf Karte':'Welt')+' → '+(s.nav>0?'läuft':unit?'Figur: '+unit:'NICHT')+(st.card?' · Karte '+st.card:'')+(st.tip?' · Tooltip '+st.tip:''));
+   log.push(((Date.now()-t0)/1000).toFixed(1)+' s '+(cr&&k%2?'auf Karte':'Welt')+' → '+(s.nav>0?'läuft':s.sel?s.sel:'NICHT')+(st.card?' · Karte '+st.card:'')+(st.tip?' · Tooltip '+st.tip:''));
    if(k===7)await shot('12-nach-aufwachen-karte-rechtsklick-laeuft');await wait(250);}
   notes.nachTod=log;console.log('  '+log.join('\n  '));
   ok(cardSeen,'nach dem Aufwachen erscheint die Karte „Wurst Case“');
-  ok(log.every(l=>/läuft|Figur/.test(l))&&log.filter(l=>/läuft/.test(l)).length>=log.length-2,'nach Tod/Aufwachen: jeder Rechtsklick (Welt und Karte) wird bedient – '+log.filter(l=>/läuft/.test(l)).length+'/'+log.length+' laufen, Rest trifft eine Figur');
+  ok(log.length>=12&&!log.some(l=>/NICHT/.test(l)),'nach Tod/Aufwachen: jeder Rechtsklick (Welt und Karte) wird bedient – '+log.filter(l=>/läuft/.test(l)).length+'/'+log.length+' laufen, '+log.filter(l=>/greift an|spricht an/.test(l)).length+' treffen eine Figur (angreifen/ansprechen)');
   ok(!stacked,'kein Bild-Tooltip neben der Karte, solange die Maus nicht auf ihr ist');
+  // Belastung (Befund aus dem Orchestratorlauf: Welt-Rechtsklick direkt nach Rechtsklick auf die Karte mit offenem Bild-Tooltip): 20× im Wechsel
+  // Karte ↔ freie Welt, ohne Gegner im Umkreis (die wählten sich sonst per Rechtsklick selbst) – jeder einzelne muss LAUFEN.
+  await read(`(()=>{game.__foes=game.enemies;game.enemies=[];})()`);
+  let alt=0,altN=0;const altLog=[];
+  for(let k=0;k<20;k++){const cr=await rect('.memory-card:not([hidden])');if(!cr){await read(`game.events.push({type:'memory',fragment:__k.mem.memoryFor(['pizzeria','kastenturm','shirt-zu-klein','der-bus'][k%4])})`);await until(`!!document.querySelector('.memory-card:not([hidden])')`,6000);continue;}
+   const onCardNow=k%2===0,[px,py]=onCardNow?[cr.x+cr.w/2,cr.y+Math.min(cr.h-30,cr.h/2)]:[W*(.2+(k%3)*.08),H*(.35+(k%2)*.1)];
+   await stopWalk();if(!onCardNow&&!(await freeAt(px,py)))continue;altN++;await click(px,py,'right');await wait(120);const s=await walkState();
+   if(s.nav>0)alt++;else{await miss('Wechsel k='+k+(onCardNow?' Karte':' Welt'),px,py);}altLog.push((onCardNow?'Karte':'Welt')+(s.nav>0?' läuft':' NICHT')+(await read(`!document.querySelector('#itemTooltip').classList.contains('hidden')`)?' (Tooltip offen)':''));}
+  await read(`(()=>{game.enemies=game.__foes||game.enemies;delete game.__foes;})()`);
+  notes.wechsel=altLog;ok(altN>=12&&alt===altN,`Wechsel Karte ↔ Welt ohne Gegner: ${alt}/${altN} Rechtsklicks laufen (${altLog.filter(l=>/Tooltip/.test(l)).length}× mit offenem Bild-Tooltip)`);
  },
  async intro(){
   const runs=[];
@@ -208,7 +226,7 @@ const PARTS={
    await read(`(()=>{const t=game.tutorial;t.step=7;t.gate=0;game.enemies=game.enemies.filter(e=>!e.tutorial);game.rpg.loot=[];const n=game.world.npc;Object.assign(game.player,{x:n.x+14,y:n.y+10,inCombat:0});game.moveTo=null;game.path=[];game.emit('tutorialStep');})()`);await wait(700);
    await press('f');await until(`!!document.querySelector('[data-tutorial-next]')`,5000);await read(`document.querySelector('[data-tutorial-next]').click()`);
    const cards=new Set(),toasts=new Set();const t=Date.now();
-   while(Date.now()-t<14000){const s=JSON.parse(await read(`JSON.stringify({c:document.querySelector('.memory-card:not([hidden]) strong')?.textContent||'',t:document.querySelector('#toast.visible')?.textContent||''})`));if(s.c)cards.add(s.c);if(s.t)toasts.add(s.t);if(first&&s.c==='Der Stempel')break;await wait(200);}
+   while(Date.now()-t<20000){const s=JSON.parse(await read(`JSON.stringify({c:document.querySelector('.memory-card:not([hidden]) strong')?.textContent||'',t:document.querySelector('#toast.visible')?.textContent||''})`));if(s.c)cards.add(s.c);if(s.t)toasts.add(s.t);if(first&&s.c==='Der Stempel')break;await wait(200);}
    ok(await read('game.tutorial.completed&&game.memories.seen.includes("stempel")'),(first?'Held 1':'Held 2')+': Hofprobe bestanden, „Der Stempel“ freigeschaltet');
    if(first){ok(cards.has('Der Stempel'),'Held 1: „Der Stempel“ erscheint als Karte');await shot('30-held1-stempel-karte');await read(`document.querySelector('.memory-card [data-memory-next]')?.click()`);}
    else{ok(!cards.has('Der Stempel')&&![...toasts].some(x=>/Erinnerung/.test(x)),'Held 2: „Der Stempel“ still freigeschaltet – keine Karte, keine Kurzmeldung (gesehen: '+([...cards].join(', ')||'nichts')+')');}
@@ -232,6 +250,26 @@ const PARTS={
   await read(`(()=>{const t=[...document.querySelectorAll('.game-popup [role=tab],.game-popup [data-tab]')].find(b=>/Erinnerung/.test(b.textContent));t?.click();})()`);await wait(500);
   await shot('31-held2-erinnerungen-nachlesbar');
  },
+ async chat(){
+  // Nebenbefund: die in Ruhe unsichtbare Kopfleiste des Chatfensters (opacity 0) fing Klicks links unten.
+  await boot({cls:'dieter',level:6});await move(W*.5,H*.3);
+  await read(`game.log('Prüfzeile für das Chatfenster')`);await wait(400);
+  const tabs=await rect('#chatWindow .chat-tabs');ok(!!tabs,'Kopfleiste des Chatfensters vorhanden');
+  const cx=tabs.x+tabs.w*.4,cy=tabs.y+tabs.h/2;
+  const state=()=>read(`JSON.stringify({active:document.querySelector('#chatWindow').classList.contains('active'),op:getComputedStyle(document.querySelector('#chatWindow .chat-tabs')).opacity,at:(document.elementFromPoint(${Math.round(cx)},${Math.round(cy)})?.id||document.elementFromPoint(${Math.round(cx)},${Math.round(cy)})?.className||'')})`).then(JSON.parse);
+  let st=await state();ok(!st.active&&st.op==='0'&&st.at==='world','in Ruhe: Kopfleiste unsichtbar und durchlässig (unter dem Punkt liegt die Welt)');
+  await shot('50-chat-ruhe',clipOf({x:0,y:tabs.y-120,w:tabs.w+120,h:tabs.h+260},0,1));
+  // Linksklick direkt auf die Stelle (Maus kommt gerade erst an): geht in die Welt, Fenster bleibt zu
+  await read(`(()=>{const e=game.enemies.find(e=>e.hp>0);if(e)game.target=e;})()`);const had=await read('!!game.target');
+  await click(cx,cy);await wait(600);st=await state();
+  ok(!st.active&&(!had||await read('!game.target')),'Linksklick auf die unsichtbare Leiste geht in die Welt'+(had?' (Zielwahl aufgehoben)':'')+', Fenster bleibt zu');
+  await stopWalk();await click(cx+30,cy,'right');await wait(200);const w=await walkState();ok(w.ok,'Rechtsklick an derselben Stelle läuft ('+(w.nav>0?'läuft':w.sel)+')');
+  // Maus weg und wieder drauf, verweilen: Fenster geht auf (wie WoW die Chatreiter einblendet), Maus weg: wieder Ruhe
+  await move(W*.5,H*.3);await move(cx,cy);await move(cx+6,cy+1);await wait(700);st=await state();
+  ok(st.active&&Number(st.op)>.9,'Maus verweilt über der Leiste → Chatfenster mit Reitern geht auf');
+  await shot('51-chat-aktiv-nach-verweilen',clipOf({x:0,y:tabs.y-120,w:tabs.w+120,h:tabs.h+260},0,1));
+  await move(W*.55,H*.35);await move(W*.56,H*.36);await wait(400);st=await state();ok(!st.active,'Maus weg → Chatfenster wieder in Ruhe');
+ },
  async meldung(){
   await boot({cls:'dieter',level:12});
   await read(`(()=>{const {arena}=__k;arena.setArenaLevel(game,12);game.refreshStats?.();const list=arena.spawnArena(game,{count:1,dummy:true});list.forEach(e=>Object.assign(e,{x:game.player.x+60,y:game.player.y+4}));game.target=list[0];game.player.direction='e';game.player.facing=1;})()`);await wait(600);
@@ -242,12 +280,13 @@ const PARTS={
   await press(pick.key);await wait(250);
   ok(await read(`(game.cooldowns[${JSON.stringify(pick.id)}]||0)>1.5`),`${pick.name} [${pick.key}] gewirkt (Abklingzeit ${pick.cd} s)`);
   // 3 s lang alle 150 ms die Taste hämmern (echte Tastenereignisse)
-  const t0=await read('performance.now()');for(let i=0;i<20;i++){await press(pick.key);await wait(150);}
+  const t0=await read('performance.now()');for(let i=0;i<20;i++){await press(pick.key);await wait(150);}const t1=await read('performance.now()');
   await wait(100);await shot('40-meldung-leise-zeile');
   const lines=JSON.parse(await read('JSON.stringify(window.__el)')).filter(l=>l[0]>=t0);
   const shows=lines.filter((l,i)=>!i||l[0]-lines[i-1][0]>50);
   console.log('  Fehlerzeile:',JSON.stringify(shows));
-  ok(shows.length>=1&&shows.length<=2&&shows.every((l,i)=>!i||l[0]-shows[i-1][0]>=1950),`20 Drücke in 3 s → ${shows.length}× „${shows[0]?.[1]}“ (höchstens einmal je 2 s)`);
+  /* Höchstzahl aus der echten Dauer (unter Last dauern 20 Drücke länger als 3 s) */const most=Math.floor((t1-t0)/2000)+1;
+  ok(shows.length>=1&&shows.length<=most&&shows.every((l,i)=>!i||l[0]-shows[i-1][0]>=1950),`20 Drücke in ${((t1-t0)/1000).toFixed(1)} s → ${shows.length}× „${shows[0]?.[1]}“ (höchstens einmal je 2 s, also ≤ ${most})`);
   const bad=JSON.parse(await read('JSON.stringify(window.__toastBad)'));if(bad.length)console.log('  Kurzmeldungen:',JSON.stringify([...new Set(bad)]));
   ok(!bad.length,'keine große rote Kurzmeldung „verschnaufen“');
   ok(await read(`![...document.querySelectorAll('.chat-line')].some(l=>/verschnaufen/.test(l.textContent))`),'nicht im Chat');

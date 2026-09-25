@@ -121,3 +121,14 @@ test('Fehlerzeile: je Kniff höchstens einmal in repeat s (content/tuning.js), a
  assert.match(app,/if\(ev\.early!==undefined&&errorLine\)errorLine\.push\(ev\.text,ev\.early\);else toast\(ev\.text,ev\.error\);/,'statt Kurzmeldung (die nie in den Chat ging)');
  const css=src('spielfluss.css');const m=css.match(/#gameShell \.error-line\{[^}]*font:700 (\d+)px/);assert.ok(m&&Number(m[1])<=16,'klein');assert.doesNotMatch(css.match(/#gameShell \.error-line\{[^}]*\}/)[0],/background:(?!none)/,'kein Kasten');
 });
+
+// Nebenbefund (Runde 5, zweite Lieferung): unsichtbare Kopfleiste des Chatfensters
+test('Chatfenster: in Ruhe fängt die unsichtbare Kopfleiste keine Klicks; es öffnet sich erst nach kurzem Verweilen der Maus',async()=>{
+ const css=src('bierdeckel.css'),chat=src('chat-window.js');
+ assert.match(css,/\.chat-tabs\{[^}]*opacity:0/,'in Ruhe unsichtbar');
+ assert.match(css,/\.chat-window:not\(\.active\) \.chat-tabs\{pointer-events:none\}/,'… und durchlässig');
+ const {HOVER_REVEAL_MS}=await import('../chat-window.js');assert.ok(HOVER_REVEAL_MS>=250&&HOVER_REVEAL_MS<=600,'Verweilzeit '+HOVER_REVEAL_MS+' ms');
+ assert.match(chat,/const on=opened\|\|settings\.pinned\|\|configuring\|\|hoverOn\|\|/,'Verweilen öffnet');
+ assert.match(chat,/document\.addEventListener\('pointerdown',e=>\{if\(overStrip\(e\.clientX,e\.clientY\)\)\{clearTimeout\(hoverTimer\);hoverTimer=0;hoverBlocked=true;\}\},true\);/,'ein Klick in die Welt dort bricht das Öffnen ab');
+ assert.match(chat,/if\(hoverOn\)\{if\(!inside\(el\.getBoundingClientRect\(\),e\.clientX,e\.clientY\)\)\{hoverOn=false;/,'Maus verlässt das Fenster → Ruhe');
+});

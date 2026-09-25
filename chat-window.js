@@ -8,6 +8,8 @@ export const CHAT_CHANNELS=['chat','events','loot'];
 export const CHAT_UI={tabs:{all:'Alles',chat:'Chat',events:'Ereignisse',loot:'Beute'},settings:'Chatfenster einrichten',showTabs:'Reiter anzeigen',inAll:'Im Gesamtlog „Alles“ zeigen',fade:'Zeilen verblassen nach',fadeNever:'nie',size:'Schrift',sizes:{s:'klein',m:'mittel',l:'groß'},pinned:'Fenster immer sichtbar',reset:'Lage und Größe zurücksetzen',done:'Fertig',login:'Online spielen: anmelden',/* Runde 4b: Symbol mit Tooltip statt dauerhafter Textzeile */loginTitle:'Online spielen',loginNote:'Anmelden: Chat, Gruppe und Mitspieler im Dorf.',connecting:'Verbindung zum Dorf wird aufgebaut …',placeholder:'Nachricht … (/hilfe zeigt Befehle)',say:'Umkreis',world:'Welt',party:'Gruppe',whisperTag:'Flüstern',people:'Spieler',peopleHint:'Wer ist online? Einladen und flüstern',channelHint:'Kanal wechseln: Umkreis oder ganze Welt',move:'Ziehen verschiebt das Fenster',empty:'Noch nichts passiert.'};
 export const CHAT_DEFAULTS={x:null,y:null,w:360,h:230,tab:'all',tabs:{all:true,chat:true,events:true,loot:true},all:{chat:true,events:true,loot:true},fade:20,size:'m',pinned:false};
 const KEY='mertloch-chat-window',MAX_LINES=250;
+/** Verweilzeit der Maus über der (in Ruhe unsichtbaren) Kopfleiste, bis das Fenster aufgeht (E-72 R5). */
+export const HOVER_REVEAL_MS=350;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /** Gespeicherte Einstellungen bereinigen: unbekannte Werte fallen auf den Standard, mindestens ein Reiter bleibt. Reine Funktion (Tests). */
@@ -88,8 +90,24 @@ export function mountChatWindow(root,options={}){
  // ── Aktiv / Ruhe ──
  // opened: über Menü → Chat geöffnet (Touch, ohne Hover); der nächste Tipp außerhalb schließt wieder.
  let opened=false;document.addEventListener('pointerdown',e=>{if(opened&&!el.contains(e.target)){opened=false;setTimeout(refreshActive,0);}},true);
- const refreshActive=()=>{const on=opened||settings.pinned||configuring||el.matches(':hover')||el.contains(document.activeElement);if(on!==el.classList.contains('active')){el.classList.toggle('active',on);log.scrollTop=log.scrollHeight;}};
+ const refreshActive=()=>{const on=opened||settings.pinned||configuring||hoverOn||el.matches(':hover')||el.contains(document.activeElement);if(on!==el.classList.contains('active')){el.classList.toggle('active',on);log.scrollTop=log.scrollHeight;}};
  for(const ev of ['pointerenter','pointerleave','focusin','focusout'])el.addEventListener(ev,()=>setTimeout(refreshActive,0));
+ // E-72 R5 (klicks, Nebenbefund): In Ruhe ist die Kopfleiste unsichtbar (opacity 0), fing aber Klicks – ein Klick in die Welt links unten
+ // blieb an ihr hängen (und klappte das Fenster auf). Jetzt fängt sie in Ruhe nichts (bierdeckel.css). Die Maus darüber zeigt das Fenster
+ // nach kurzem Verweilen (wie WoW die Chatreiter einblendet); ein Klick in dieser Zeit geht in die Welt, das Fenster bleibt zu, bis die Maus
+ // die Leiste verlassen hat. Verlässt die Maus das offene Fenster, geht es wieder in Ruhe.
+ let hoverOn=false,hoverTimer=0,hoverBlocked=false;const tabs=el.querySelector('.chat-tabs');
+ const inside=(r,x,y)=>r.width>0&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+ const overStrip=(x,y)=>!el.classList.contains('active')&&!el.hidden&&inside(tabs.getBoundingClientRect(),x,y);
+ document.addEventListener('pointermove',e=>{
+  if(e.pointerType==='touch')return;
+  if(hoverOn){if(!inside(el.getBoundingClientRect(),e.clientX,e.clientY)){hoverOn=false;setTimeout(refreshActive,0);}return;}
+  if(!overStrip(e.clientX,e.clientY)){clearTimeout(hoverTimer);hoverTimer=0;hoverBlocked=false;return;}
+  if(hoverBlocked||hoverTimer)return;
+  hoverTimer=setTimeout(()=>{hoverTimer=0;hoverOn=true;refreshActive();},HOVER_REVEAL_MS);
+ },{passive:true});
+ document.addEventListener('pointerdown',e=>{if(overStrip(e.clientX,e.clientY)){clearTimeout(hoverTimer);hoverTimer=0;hoverBlocked=true;}},true);
+ el.addEventListener('pointerleave',()=>{hoverOn=false;});
 
  // ── Eingabe (nur online) ──
  function renderFoot(){
