@@ -65141,14 +65141,14 @@
     "glueckspfennig": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/glueckspfennig.png",
-      "sourceHash": "93591131dcf87266a09836c930213174f78a48dd336266f6f044c342e9f68211",
+      "sourceHash": "0dc0d11b7f9e54ce89ee9f93e4669a595fa6c117d42e120f75c869a82181263b",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/glueckspfennig.png",
       "width": 64,
       "height": 64,
-      "hash": "93591131dcf87266a09836c930213174f78a48dd336266f6f044c342e9f68211",
+      "hash": "0dc0d11b7f9e54ce89ee9f93e4669a595fa6c117d42e120f75c869a82181263b",
       "revision": "precision-v1"
     },
     "hausordnung": {
@@ -65206,14 +65206,14 @@
     "strickschal": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/strickschal.png",
-      "sourceHash": "30d99e42967263137094dfcb4b652ff78bde530ea70ccc72f0aa9b255fc7104a",
+      "sourceHash": "e2ef9d0a880596ac540f4c006ded4c5a6af41c293f357e6c5eda868ac9a26166",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/strickschal.png",
       "width": 64,
       "height": 64,
-      "hash": "30d99e42967263137094dfcb4b652ff78bde530ea70ccc72f0aa9b255fc7104a",
+      "hash": "e2ef9d0a880596ac540f4c006ded4c5a6af41c293f357e6c5eda868ac9a26166",
       "revision": "precision-v1"
     },
     "absperrband": {
@@ -65331,6 +65331,32 @@
       "width": 64,
       "height": 64,
       "hash": "6d55e37515cf430057266a092c69b77dbf833894318261feb83196f1effbc05e",
+      "revision": "precision-v1"
+    },
+    "aperolspritz": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/aperolspritz.png",
+      "sourceHash": "8a5cd6f1bca6f090541eb1229020026941a396837424427a26fbb22b019591d2",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/aperolspritz.png",
+      "width": 64,
+      "height": 64,
+      "hash": "8a5cd6f1bca6f090541eb1229020026941a396837424427a26fbb22b019591d2",
+      "revision": "precision-v1"
+    },
+    "wurstbroetchen": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/wurstbroetchen.png",
+      "sourceHash": "d14286f188699eb4d2e82a6f13d10c4b41dd73e6ea5a1c21edab1608b126b5bb",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/wurstbroetchen.png",
+      "width": 64,
+      "height": 64,
+      "hash": "d14286f188699eb4d2e82a6f13d10c4b41dd73e6ea5a1c21edab1608b126b5bb",
       "revision": "precision-v1"
     }
   },

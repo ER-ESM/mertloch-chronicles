@@ -510,6 +510,21 @@
     "motif": "Uschis Zündkerze: Zündkerze mit weißem Keramikkörper und Schnabelkratzern am Gewinde"
   },
   {
+    "id": "aperolspritz",
+    "output": "assets/precision/sources/2026-09-25/icons/aperolspritz.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/verbrauch/verbrauch.mjs · aperolspritz",
+    "gruppe": "verbrauch",
+    "motif": "Buff-Motiv „Aperol-Spritz“ (Klassen-Buff aperolSpritz)"
+  },
+  {
     "id": "blechtalisman",
     "output": "assets/precision/sources/2026-09-25/icons/blechtalisman.png",
     "width": 64,
@@ -643,5 +658,20 @@
     "painter": "D:/Dev/_prototypen/icons-2026-09-25/verbrauch/verbrauch.mjs · leerflasche",
     "gruppe": "verbrauch",
     "motif": "Gereinigte Leerflasche: Zum Abfüllen selbst gebrauter Getränke. Kalle hat Nachschub."
+  },
+  {
+    "id": "wurstbroetchen",
+    "output": "assets/precision/sources/2026-09-25/icons/wurstbroetchen.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/verbrauch/verbrauch.mjs · wurstbroetchen",
+    "gruppe": "verbrauch",
+    "motif": "Buff-Motiv „Wurstbrötchen“ (Klassen-Buff wurstbroetchen)"
   }
 ]
