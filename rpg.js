@@ -17,6 +17,13 @@ export const SLOT_KEYS=['1','2','3','4','5','6','7','8','9','0'];
 export {BAR_SIZE,MAX_BARS};
 export const SPECIAL_KEYS={dash:' ',interrupt:'q'};
 export const DEFAULT_BAR=['auto','strike','buff','throw','parry','mark','burst','ground','heal',null];
+/** E-72: Leisten-Vorschlag der neuen Klassen – Käthes Karten nebeneinander (2–4) mit Abrechnen daneben, Schorschs Auflegen und Servieren
+ *  neben der Zange. Neue Kniffe dieser Klassen nehmen ihren Vorschlagsplatz, wenn er frei ist; die drei alten Klassen füllen wie bisher der Reihe nach. */
+export const CLASS_DEFAULT_BAR={
+ schorsch:['auto','strike','mark','burst','throw','heal','parry','ground','buff',null],
+ kaethe:['auto','strike','mark','burst','throw','parry','ground','heal','buff',null]
+};
+const defaultBar=cls=>CLASS_DEFAULT_BAR[cls]||DEFAULT_BAR;
 /** Leistenplätze halten Kniffe (Id) oder benutzbare Gegenstände ('item:<id>'). Beide Formen sind Speicherschlüssel. */
 export const BAR_ITEM_PREFIX='item:';
 export const barItemEntry=id=>BAR_ITEM_PREFIX+id;
@@ -64,7 +71,7 @@ export function useItem(game,id){const def=ITEMS[id],p=game.player;if(game.pause
 /** Belegung aller sichtbaren Leisten als eine Liste: Platz 0–9 = Leiste 1, 10–19 = Leiste 2 usw. (rpg.barCount, Standard 2).
  *  Gegenstandsplätze bleiben auch bei leerem Stapel reserviert – die UI graut sie aus. Alte Spielstände (eine Leiste mit 10 Plätzen) werden aufgefüllt. */
 const barLength=game=>BAR_SIZE*(Number.isInteger(game.rpg.barCount)&&game.rpg.barCount>=1&&game.rpg.barCount<=MAX_BARS?game.rpg.barCount:1);
-export function actionBar(game){const key=game.member.id,bar=game.rpg.actionBars[key],length=barLength(game);if(!Array.isArray(bar)){game.rpg.actionBars[key]=Array.from({length},(_,i)=>{const id=DEFAULT_BAR[i];return id&&available(game,id)?id:null;});return game.rpg.actionBars[key];}const seen=new Set();game.rpg.actionBars[key]=Array.from({length},(_,i)=>{const id=bar[i],item=barItemId(id);if(id==='mount')return game.mounts?.owned.length&&!seen.has(id)?(seen.add(id),id):null;if(item)return !usableItem(item)||seen.has(id)?null:(seen.add(id),id);if(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id)||!available(game,id)||seen.has(id))return null;seen.add(id);return id;});return game.rpg.actionBars[key];}
+export function actionBar(game){const key=game.member.id,bar=game.rpg.actionBars[key],length=barLength(game);if(!Array.isArray(bar)){game.rpg.actionBars[key]=Array.from({length},(_,i)=>{const id=defaultBar(key)[i];return id&&SPECIAL_KEYS[id]===undefined&&available(game,id)?id:null;});return game.rpg.actionBars[key];}const seen=new Set();game.rpg.actionBars[key]=Array.from({length},(_,i)=>{const id=bar[i],item=barItemId(id);if(id==='mount')return game.mounts?.owned.length&&!seen.has(id)?(seen.add(id),id):null;if(item)return !usableItem(item)||seen.has(id)?null:(seen.add(id),id);if(SPECIAL_KEYS[id]!==undefined||!game.skills.some(s=>s.id===id)||!available(game,id)||seen.has(id))return null;seen.add(id);return id;});return game.rpg.actionBars[key];}
 /** Anzahl sichtbarer Leisten ändern (UI-Einstellung). Plätze einer entfernten Leiste werden geräumt; Gegenstände darauf kehren nicht von allein zurück. */
 export function setBarCount(game,count){if(!Number.isInteger(count)||count<1||count>MAX_BARS)return false;const bar=actionBar(game);for(const entry of bar.slice(count*BAR_SIZE)){const item=barItemId(entry);if(item)noteBarItem(game,item);}game.rpg.barCount=count;actionBar(game);changed(game);game.emit('barChanged');return true;}
 /** Wirksame Taste eines Platzes, kurz beschriftet („3", „⇧2", „M4"); '' = ohne Taste. */
@@ -96,7 +103,8 @@ const firstFree=(bar,from=0)=>{for(let i=from;i<bar.length;i++)if(!bar[i])return
 export function unlockOnBar(game,ids){const bar=actionBar(game);let touched=false;
  for(const id of ids.slice().sort((a,b)=>skillLevel(game,a)-skillLevel(game,b))){if(SPECIAL_KEYS[id]!==undefined||bar.includes(id))continue;
   if(game.skills.find(s=>s.id===id)?.classBuff){const slot=firstFree(bar,BAR_SIZE);if(slot>=0){bar[slot]=id;touched=true;}continue;}
-  let slot=bar.slice(0,BAR_SIZE).indexOf(null);
+  const preferred=CLASS_DEFAULT_BAR[game.member.id]?CLASS_DEFAULT_BAR[game.member.id].indexOf(id):-1;/* E-72: Vorschlagsplatz der Klasse, wenn frei */
+  let slot=preferred>=0&&preferred<BAR_SIZE&&bar[preferred]==null?preferred:bar.slice(0,BAR_SIZE).indexOf(null);
   if(slot<0){slot=bar.slice(0,BAR_SIZE).map(barItemId).findLastIndex(Boolean);const spare=firstFree(bar,BAR_SIZE);
    if(slot>=0){if(spare>=0)bar[spare]=bar[slot];else noteBarItem(game,barItemId(bar[slot]));}else slot=spare;
    if(slot<0)continue;}

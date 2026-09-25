@@ -9,6 +9,7 @@ import {RESOURCES,CLASS_SPECS} from '../content/index.js';
 import {resourceHud,resourceVariant,handCard,zoneOf} from '../class-resources.js';
 import {skillStatus} from '../combat-ui.js';
 import {rotate} from '../scripts/balance-rotation.mjs';
+import {actionBar} from '../rpg.js';
 
 const world=()=>({id:'res',seed:1,spawn:{x:-5000,y:-5000},npc:{x:-5000,y:-5000},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 function hero(classId,level=30,spec=CLASS_SPECS[classId]?.[0]){const g=new Game(world(),{classId,level,rpg:{talents:{spec,learned:[]}}});g.random=()=>.5;g.player.x=g.player.y=0;g.player.hp=g.player.maxHp;return g;}
@@ -118,4 +119,9 @@ test('alle fünf Klassen überstehen einen echten Kampf mit ihrer Rotation',()=>
   while(e.hp>0&&!g.dead&&t<90){if(g.gcd<=0&&!g.casting)rotate(g,{ground:{x:e.x,y:e.y}});g.tick(.05);t+=.05;}
   assert.equal(e.hp,0,spec+' erledigt den Gegner ('+Math.round(t)+' s)');assert.equal(g.dead,false,spec);
  }
+});
+
+test('Leiste: Käthes Karten liegen nebeneinander (Tasten 2–4), Abrechnen daneben; Schorsch legt Auflegen/Servieren neben die Zange',()=>{
+ const k=new Game(world(),{classId:'kaethe'});actionBar(k);k.gainXp(1200);assert.deepEqual(actionBar(k).slice(0,5),['auto','strike','mark','burst','throw']);
+ const s=new Game(world(),{classId:'schorsch'});actionBar(s);s.gainXp(1200);assert.deepEqual(actionBar(s).slice(0,5),['auto','strike','mark','burst','throw']);
 });
