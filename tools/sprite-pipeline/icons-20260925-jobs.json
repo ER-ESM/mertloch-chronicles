@@ -1,5 +1,20 @@
 [
   {
+    "id": "bierdeckelweste",
+    "output": "assets/precision/sources/2026-09-25/icons/bierdeckelweste.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/ausruestung/ausruestung.mjs · bierdeckelweste",
+    "gruppe": "ausruestung",
+    "motif": "Bierdeckel-Panzerweste: Weste aus lauter Bierdeckeln, Klebeband an den Nähten"
+  },
+  {
     "id": "dosenklinge",
     "output": "assets/precision/sources/2026-09-25/icons/dosenklinge.png",
     "width": 64,
@@ -13,6 +28,21 @@
     "painter": "D:/Dev/_prototypen/icons-2026-09-25/ausruestung/ausruestung.mjs · dosenklinge",
     "gruppe": "ausruestung",
     "motif": "Entgratete Dosenklinge: Entgratete silbergrüne Dosenklinge mit kurzem Ledergriff"
+  },
+  {
+    "id": "fasskeule",
+    "output": "assets/precision/sources/2026-09-25/icons/fasskeule.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/ausruestung/ausruestung.mjs · fasskeule",
+    "gruppe": "ausruestung",
+    "motif": "Fasskeule „Frisch Gezapft“: Holzstiel mit Griffband, Kopf aus einem Bierfässchen mit Eisenreifen und Messing-Zapfhahn, Schaum tropft"
   },
   {
     "id": "festivalstiefel",
@@ -118,6 +148,36 @@
     "painter": "D:/Dev/_prototypen/icons-2026-09-25/ausruestung/ausruestung.mjs · kabelbinderstiefel",
     "gruppe": "ausruestung",
     "motif": "Kabelbinder-Stiefel: Gummistiefel mit bunten Kabelbindern"
+  },
+  {
+    "id": "koenigskette",
+    "output": "assets/precision/sources/2026-09-25/icons/koenigskette.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/ausruestung/ausruestung.mjs · koenigskette",
+    "gruppe": "ausruestung",
+    "motif": "Die Kegelkönig-Kette: Goldene Kette mit Kegel-Anhänger und kleiner Plakette, ein Glied geflickt"
+  },
+  {
+    "id": "kronkorkenstern",
+    "output": "assets/precision/sources/2026-09-25/icons/kronkorkenstern.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/ausruestung/ausruestung.mjs · kronkorkenstern",
+    "gruppe": "ausruestung",
+    "motif": "Kronkorken-Morgenstern: Flaschenöffner als Griff, kurze Kette, Stachelkugel mit roten, grünen und goldenen Kronkorken"
   },
   {
     "id": "kutte",
@@ -390,6 +450,36 @@
     "motif": "Grillbesen-Borste: Büschel schwarzer Keilerborsten mit Grillfett"
   },
   {
+    "id": "hafersack",
+    "output": "assets/precision/sources/2026-09-25/icons/hafersack.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/materialien/materialien.mjs · hafersack",
+    "gruppe": "materialien",
+    "motif": "Hafersack: Jutesack mit Hafer, Kordel oben, ein Hufabdruck auf der Seite"
+  },
+  {
+    "id": "halbes-hufeisen",
+    "output": "assets/precision/sources/2026-09-25/icons/halbes-hufeisen.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/materialien/materialien.mjs · halbes-hufeisen",
+    "gruppe": "materialien",
+    "motif": "Das vordere Hufeisen: Blank geputztes Hufeisen an einer Kordel, nur die vordere Hälfte ist abgelaufen"
+  },
+  {
     "id": "kabelbinder",
     "output": "assets/precision/sources/2026-09-25/icons/kabelbinder.png",
     "width": 64,
@@ -448,6 +538,21 @@
     "painter": "D:/Dev/_prototypen/icons-2026-09-25/materialien/materialien.mjs · palettenholz",
     "gruppe": "materialien",
     "motif": "Trockenes Palettenholz: Zerbrochenes Palettenbrett mit rostigem Nagel und EUR-Stempel"
+  },
+  {
+    "id": "pfandbon",
+    "output": "assets/precision/sources/2026-09-25/icons/pfandbon.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/materialien/materialien.mjs · pfandbon",
+    "gruppe": "materialien",
+    "motif": "Pfandbon-Bündel: Bündel zerknitterter Pfandbons mit Gummiband, oberster Bon zeigt „3×“"
   },
   {
     "id": "rabenkronkorken",
