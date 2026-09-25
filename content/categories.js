@@ -23,7 +23,7 @@ const KIND_OF={skill:'skill',throw:'skill',ground:'skill',talentSkill:'talentSki
 
 /** Funktion: wofür ist es da? Reihenfolge = Anzeigereihenfolge. `term` verweist auf die genaue Regel im Glossar. */
 export const FUNCTIONS={
- aufbau:{name:'Aufbau',short:'Grundangriff, der Randale gibt.',term:'randale'},
+ aufbau:{name:'Aufbau',short:'Grundangriff und Kniffe, mit denen du deine Rotation in Gang hältst.',term:'grundangriff'},
  markierung:{name:'Markierung',short:'Schaden über Zeit am Ziel; macht den Spezialkniff stärker.',term:'markierung'},
  spezialkniff:{name:'Spezialkniff',short:'Starker Kniff mit Zusatzwirkung des Hauptbaums.',term:'spezialkniff'},
  unterbrechung:{name:'Unterbrechung',short:'Bricht gelbe Zauber ab.',term:'unterbrechen'},
@@ -34,7 +34,8 @@ export const FUNCTIONS={
  wurf:{name:'Wurf',short:'Fernangriff aus der Bewegung.',term:'wurf'},
  flaeche:{name:'Fläche',short:'Wirkt auf einen Bereich am Boden oder auf mehrere Gegner.',term:'flaeche'},
  kontrolle:{name:'Kontrolle',short:'Betäubt, hält fest, verlangsamt oder macht verwundbar.',term:'betaeubung'},
- randale:{name:'Randale',short:'Gibt Randale zurück oder spart sie.',term:'randale'},
+ // E-71: die Funktions-ID bleibt 'randale' (Filter, Spielstände der Oberfläche); gemeint ist die Klassenressource jeder Klasse.
+ randale:{name:'Ressource',short:'Füllt deine Klassenressource oder spart sie.',term:'ressource'},
  tempo:{name:'Tempo',short:'Verkürzt Abklingzeiten oder beschleunigt dich.',term:'abklingzeit'},
  begleiter:{name:'Begleiter',short:'Ruft oder stärkt einen Helfer.',term:'robbi'},
  autoangriff:{name:'Autoangriff',short:'Verändert die Schläge, die von selbst laufen.',term:'autoangriff'},
@@ -61,7 +62,7 @@ export const TERM_FUNCTION={
  wurf:'wurf',bastlerglueck:'wurf',ueberzuendung:'wurf',fehlzuendung:'wurf',
  flaeche:'flaeche',bodenangriff:'flaeche',fass:'flaeche',nest:'flaeche',sporenwolke:'flaeche',kettenreaktion:'flaeche',
  betaeubung:'kontrolle',festhalten:'kontrolle',verlangsamung:'kontrolle',rueckstoss:'kontrolle',verwundbar:'kontrolle',hausverbot:'kontrolle',
- randale:'randale',
+ randale:'randale',ressource:'randale',likes:'randale',trend:'randale',leergut:'randale',pfandbon:'randale',glut:'randale',augen:'randale',zeche:'abwehr',
  abklingzeit:'tempo',tempo:'tempo',schwung:'tempo',
  robbi:'begleiter'
 };
@@ -132,9 +133,12 @@ export {describableIds as categorizableIds};
 /** Veränderter Kniff → Begriff, der dann am Element stehen muss (bei Listen: einer davon). */
 export const SKILL_TERM={strike:['grundangriff'],mark:['markierung','schimmel','lunte'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],interrupt:['unterbrechen'],parry:['parade'],dash:['ausweichen'],heal:['heilung','hauspflege','vorrat','grossreinemachen'],throw:['wurf','bastlerglueck'],ground:['bodenangriff','flaeche','fass','nest','sporenwolke']};
 /** Proc-Auslöser → Pflichtbegriff. */
-export const TRIGGER_TERM={markedHit:['markierung','schimmel','lunte'],markTick:['markierung','schimmel','lunte'],inZone:['flaeche','fass','nest'],parry:['parade'],dash:['ausweichen'],dodge:['ausweichen'],crit:['glueckstreffer'],heal:['heilung'],autoHit:['autoangriff'],interrupt:['unterbrechen'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],beat:['takt']};
+export const TRIGGER_TERM={markedHit:['markierung','schimmel','lunte'],markTick:['markierung','schimmel','lunte'],inZone:['flaeche','fass','nest'],parry:['parade'],dash:['ausweichen'],dodge:['ausweichen'],crit:['glueckstreffer'],heal:['heilung'],autoHit:['autoangriff'],interrupt:['unterbrechen'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],beat:['takt'],
+ // E-71: Auslöser der Klassenressourcen Dieter, Anni, Kevin
+ tabPaid:['zeche'],prellen:['zeche'],trendUp:['trend'],viral:['trend'],shitstorm:['trend'],pickup:['leergut'],perfectReload:['pfandbon'],bonUsed:['pfandbon']};
 /** Proc-Wirkung → Pflichtbegriff. */
-export const EFFECT_TERM={heal:['heilung','lebensraub'],energy:['randale'],shield:['deckung'],cdReduce:['abklingzeit','tempo'],reset:['abklingzeit','tempo'],haste:['tempo']};
+/** E-71: energy ist eine Gutschrift in Ressourcenpunkten – belegt ist sie mit dem Namen der jeweiligen Klassenressource. */
+export const EFFECT_TERM={heal:['heilung','lebensraub'],energy:['randale','likes','leergut','glut','augen','ressource'],bottles:['leergut'],trend:['trend'],tab:['zeche'],shield:['deckung'],cdReduce:['abklingzeit','tempo'],reset:['abklingzeit','tempo'],haste:['tempo']};
 /**
  * Stimmen die Begriffe eines Talents/Auslösers mit seinen Daten überein?
  * @returns {{missing:string[],unfounded:string[]}} missing = Pflichtbegriff fehlt; unfounded = Begriff ohne Beleg (Autoangriff statt Grundangriff).
