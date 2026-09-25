@@ -428,6 +428,10 @@ export function resourceLine(g){const h=resourceHud(g);if(!h)return '';const n=v
  if(h.kind==='grill')return 'Glut '+n(h.value)+' · '+h.zoneName;
  if(h.kind==='cards')return n(h.value)+'/'+h.win+' Augen';
  return '';}
+/** Gutschrift als Text in der Einheit der Klasse (Hilfe, Tooltips): 10 → „10 Randale“, „1 Flasche“, „4 Glut“, „2 Augen“. */
+export function resourceGrantText(cls,n){const r=RESOURCES[cls];if(!r)return n+' Randale';const v=r.kind==='ammo'?Math.max(1,Math.ceil(n*r.grantRate)):r.kind==='grill'||r.kind==='cards'?Math.max(1,Math.round(n*r.grantRate)):n;return v+' '+(r.kind==='ammo'?(v===1?'Flasche':'Flaschen'):r.unit);}
+/** Name der Ressource einer Klasse („Randale“, „Likes“, „Flaschen“, „Glut“, „Augen“). */
+export const resourceUnit=cls=>RESOURCES[cls]?.unit||'Randale';
 /** Verfügbarkeit der Ressourcen-Kniffe (Lernstufe, Hauptbaum). */
 export function resourceSkillLevel(id){return RESOURCE_SKILLS[id]?.level;}
 export function resourceSkillAllowed(g,id){const d=RESOURCE_SKILLS[id];if(!d)return true;return d.cls===g.member?.id&&(!d.spec||spec(g)===d.spec);}

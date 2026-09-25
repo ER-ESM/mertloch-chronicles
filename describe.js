@@ -1,4 +1,5 @@
 import {mechanicHelp,talentHelp,passiveHelp,skillHelp,kitSwaps} from './mechanic-help.js';
+import {resourceCost,resourceUnit,resourceGrantText} from './class-resources.js';
 // Beschreibungs-API der Engine. Texte und Zahlen kommen aus content/ (Feld `info` bzw. die Helfer
 // describe()/describeItem()/describeStage(), sobald es sie gibt – Rückfall auf die Rohfelder text/description/passive).
 // Die Engine legt nur `live` obendrauf: was der Wert HEUTE ist, mit Ausrüstung, Talenten, Procs und Basisbau.
@@ -50,18 +51,18 @@ export function skillDamageRange(game,s,base){
 
 function describeSkill(game,id){
  const s=game.skills.find(s=>s.id===id);if(!s)return null;
- const cs=combatStats(game),cd=skillCooldown(game,s,cs),cost=skillCost(game,s,cs);
+ const cs=combatStats(game),cd=skillCooldown(game,s,cs),cost=resourceCost(game,s,cs,skillCost(game,s,cs));/* E-71: Kosten in der Ressource der Klasse */
  const damage=s.damage!==undefined?skillDamageRange(game,s,s.damage):s.base!==undefined?skillDamageRange(game,s,s.base):null;
  const numbers=[];
  if(damage)numbers.push(num('Schaden',damage.min===damage.max?damage.min:damage.min+'–'+damage.max,'','Waffe + Wertungen'));
  if(s.heal)numbers.push(num('Heilung',Math.round(s.heal*(cs.flatScale||1)*(1+cs.healPower+(cs.healBonus||0))),'','Bastelgrips'));
  if(s.cd)numbers.push(num('Abklingzeit',round(cd,1),'s','Tempo'));
- if(s.cost)numbers.push(num('Kosten',cost,'Randale',''));
+ if(cost)numbers.push(num('Kosten',cost,resourceUnit(game.member.id),''));
  if(s.range)numbers.push(num('Reichweite',Math.round((s.range+(cs.range||0))/8),'m',''));
  return {icon:s.icon||null,name:s.name,
   info:{...infoFor(s,{effect:s.text||'',numbers},'skill',id),effect:skillHelp(game,id)},
   live:{available:available(game,id),level:skillLevel(game,id),cooldown:round(cd,2),baseCooldown:s.cd||0,remaining:round(Math.max(0,game.cooldowns[id]||0),2),
-   ready:available(game,id)&&(game.cooldowns[id]||0)<=.01,cost,baseCost:s.cost||0,damage,
+   ready:available(game,id)&&(game.cooldowns[id]||0)<=.01,cost,baseCost:s.cost||cost||0,costUnit:resourceUnit(game.member.id),damage,
    heal:s.heal?Math.round(s.heal*(cs.flatScale||1)*(1+cs.healPower+(cs.healBonus||0))):0,
    range:s.range?s.range+(cs.range||0):0,castTime:s.castTime||0,gcd:round(cs.gcd,2),crit:round(cs.crit,3),onBar:actionBar(game).indexOf(id)}};
 }
@@ -118,7 +119,7 @@ function describeItem(game,id){
  const d=ITEMS[id];if(!d)return null;
  const base=game.baseEffects?.()||{},count=countItem(game.rpg,id),slot=Object.entries(game.rpg.equipment).find(([,v])=>v===id)?.[0]||null;
  const heal=d.heal?Math.round(d.heal*(1+(base.foodHeal||0))):0,energy=d.energy?Math.round(d.energy*(1+(base.foodHeal||0))):0;
- const numbers=[...(heal?[num('Heilung',heal,'Leben','Grill')]:[]),...(energy?[num('Randale',energy,'','Grill')]:[]),
+ const numbers=[...(heal?[num('Heilung',heal,'Leben','Grill')]:[]),...(energy?[num(resourceUnit(game.member.id),resourceGrantText(game.member.id,energy).split(' ')[0],'','Grill')]:[]),
   ...Object.entries(d.stats||{}).map(([k,v])=>num(k,Math.round(v))),...(d.affixes?CONTENT.affixNumbers(d.affixes):[])];
  const info=normalizeInfo(d.info||fromContent(CONTENT.describeItem,id)||fromContent(CONTENT.describe,'item',id),{effect:d.description||'',numbers});
  const cd=Math.max(0,(BAL(game).consumableCooldown||0)-(base.consumableCd||0));

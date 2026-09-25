@@ -112,7 +112,7 @@ function liveRows(kind,live={}){
   if(d)out.push(row(DESCRIBE_UI.damage,d.min===d.max?d.min:d.min+'–'+d.max),row(DESCRIBE_UI.crit,d.critMin===d.critMax?d.critMin:d.critMin+'–'+d.critMax));
   if(live.heal)out.push(row(DESCRIBE_UI.heal,live.heal,'Leben'));
   if(live.cooldown!==undefined&&live.baseCooldown)out.push(row('Abklingzeit',live.cooldown,'s'));
-  if(live.cost!==undefined&&live.baseCost)out.push(row('Kosten',live.cost,'Randale'));
+  if(live.cost!==undefined&&live.baseCost)out.push(row('Kosten',live.cost,live.costUnit||'Randale'));
   if(live.range)out.push(row('Reichweite',Math.round(live.range/8),'m'));
   if(live.remaining>0)out.push(row(DESCRIBE_UI.ready,live.remaining,'s'));
   if(live.stacks)out.push(row(DESCRIBE_UI.stack,live.stacks));
@@ -124,7 +124,7 @@ function liveRows(kind,live={}){
  }
  if(kind==='item'){
   if(live.heal)out.push(row(DESCRIBE_UI.heal,live.heal,'Leben'));
-  if(live.energy)out.push(row('Randale',live.energy));
+  if(live.energy)out.push(row(live.energyUnit||'Randale',live.energy));
   out.push(row(DESCRIBE_UI.stack,live.count??0));
   if(live.cooldown)out.push(row('Abklingzeit',live.cooldown,'s'));
   if(live.remaining>0)out.push(row(DESCRIBE_UI.ready,live.remaining,'s'));
