@@ -90,6 +90,13 @@ export const MAP_PAINT={
  'trait-brand':c=>{badge(c,'#8f2f2c','#ffb9a4');c.strokeStyle='#ffe2d6';c.lineWidth=1.6;c.beginPath();c.arc(8,8,3.6,0,TAU);c.stroke();c.beginPath();c.moveTo(5.4,10.6);c.lineTo(10.6,5.4);c.stroke();},
  'trait-tank':c=>{badge(c,'#23456b','#9cc3ee');shieldGlyph(c,'#eef5fc');},
  'trait-guard':c=>{badge(c,'#4a4f58','#d6dbe2');shieldGlyph(c,'#e8ecf0');c.fillStyle='#4a4f58';c.fillRect(7.4,4.4,1.2,7);},
+ // Etappe 3 „Big B“: Zertifikat (Siegelring), Nebenher (eigener Takt), Trümmer, zweimal unterbrechen, Wut, Reichweite
+ 'trait-tankDebuff':c=>{badge(c,'#23456b','#9cc3ee');c.strokeStyle='#f3c44e';c.lineWidth=1.6;c.beginPath();c.arc(8,9.2,3.2,0,TAU);c.stroke();c.fillStyle='#f3c44e';c.fillRect(6.2,3.4,3.6,2.6);},
+ 'trait-track':c=>{badge(c,'#3a3f4a','#d6dbe2');c.strokeStyle='#f2efe6';c.lineWidth=1.3;c.lineCap='round';c.beginPath();c.arc(8,8,4,-.3,TAU-1.2);c.stroke();c.fillStyle='#f2efe6';c.beginPath();c.moveTo(11.8,4.2);c.lineTo(12.6,7.6);c.lineTo(9.4,6.8);c.closePath();c.fill();},
+ 'trait-persist':c=>{badge(c,'#8f2f2c','#ffb9a4');c.fillStyle='#e8d2a8';for(const [x,y,a] of [[5.6,6.4,.3],[10,7.2,-.4],[7.6,10.6,.8]]){c.save();c.translate(x,y);c.rotate(a);c.fillRect(-2,-1.2,4,2.4);c.restore();}},
+ 'trait-interrupts':c=>{badge(c,'#6b4a14','#f3cf7a');c.fillStyle='#ffe6a0';for(const dx of [-2.4,2.4]){c.beginPath();c.moveTo(9.2+dx,3);c.lineTo(5.6+dx,8.8);c.lineTo(7.8+dx,8.8);c.lineTo(6.8+dx,13);c.lineTo(10.6+dx,7);c.lineTo(8.4+dx,7);c.closePath();c.fill();}},
+ 'trait-enrage':c=>{badge(c,'#8f2f2c','#ffb9a4');c.fillStyle='#ffe2d6';c.beginPath();c.moveTo(8,2.8);c.quadraticCurveTo(12.4,7,10.8,11);c.quadraticCurveTo(9.6,13.4,8,13.2);c.quadraticCurveTo(5,13,4.8,10.2);c.quadraticCurveTo(4.8,7.6,7,6.4);c.quadraticCurveTo(6.8,8.6,8.2,9);c.quadraticCurveTo(8.6,5.6,8,2.8);c.fill();},
+ 'trait-reach':c=>{badge(c,'#4d2f5e','#d7b6f2');c.fillStyle='#f6ecff';c.fillRect(6,4,4,8);c.fillStyle='#4d2f5e';c.fillRect(6.8,5,2.4,5);c.strokeStyle='#f6ecff';c.lineWidth=1;c.lineCap='round';for(const r of [2.4,4]){c.beginPath();c.arc(11.4,4.6,r,-1.2,.2);c.stroke();}},
  'trait-hit':c=>{badge(c,'#8f2f2c','#ffb9a4');c.beginPath();for(let i=0;i<12;i++){const r=i%2?2:4.8,a=i/12*TAU;c.lineTo(8+Math.cos(a)*r,8+Math.sin(a)*r);}c.closePath();c.fillStyle='#ffe2d6';c.fill();}
 };
 function skull(c,bone){c.fillStyle=OUT;c.beginPath();c.arc(8,6.8,5.6,0,TAU);c.fill();c.fillRect(4.2,9,7.6,5.6);c.fillStyle=bone;c.beginPath();c.arc(8,6.8,4.4,0,TAU);c.fill();c.fillRect(5.3,9.6,5.4,3.8);c.fillStyle=OUT;c.beginPath();c.arc(6.2,7,1.4,0,TAU);c.arc(9.8,7,1.4,0,TAU);c.fill();c.beginPath();c.moveTo(8,8.6);c.lineTo(7.1,10.2);c.lineTo(8.9,10.2);c.closePath();c.fill();c.fillRect(6.6,11.8,.7,1.6);c.fillRect(8.7,11.8,.7,1.6);}

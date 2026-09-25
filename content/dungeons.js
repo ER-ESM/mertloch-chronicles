@@ -52,6 +52,10 @@ export const DUNGEONS={
    {id:'thronsaal',floor:'k2',rects:[[46,4,16,32]],sign:'Thronsaal',truth:'echter Basaltdom, verkleidet mit Pappe',prospect:'Thronsaal',arena:'bigb'},
    {id:'schatz',floor:'k2',rects:[[48,38,12,8]],sign:'Schatzkammer',truth:'Abstellraum',prospect:'Schatzkammer'}
   ],
+  // Etappe 3 (E-71): Ende des Dungeons. Die Endtruhe steht in der Schatzkammer und öffnet sich nach Big B einmal je Durchgang
+  // (Wahl aus drei seltenen Teilen plus Siegelmarken, DUNGEON_REWARDS.chest); der Hinterausgang daneben führt zurück auf die Burgstraße.
+  chest:{floor:'k2',x:54,y:40.5,range:4,boss:'bigb'},
+  backExit:{floor:'k2',x:58,y:44,range:3.5},
   // Türen verbinden Räume; `lock` hält sie zu: boss = offen, wenn der Boss liegt; seals = braucht die Siegel;
   // arena = zu, solange der Boss dieses Raums kämpft.
   doors:[
@@ -69,6 +73,8 @@ export const DUNGEONS={
    {id:'wein-gang-west',floor:'k2',rect:[6,17.5,4,2]},
    {id:'gang-kelter-west',floor:'k2',rect:[11.5,26,3,4],arena:'kelterhalle'},
    {id:'gang-kelter-sued',floor:'k2',rect:[21,35.5,4,5],arena:'kelterhalle'},
+   // Tresortür (Plan 4.3): drei Siegel. Etappe 3 (E-71): verlangt vorläufig nur die Siegel gebauter Bosse (dungeon.js requiredSeals –
+   // lock.seals gegen DUNGEON_BOSSES gefiltert); mit Exposé und Kurt (Etappe 4) greifen alle drei ohne Datenänderung.
    {id:'tresor',floor:'k2',rect:[41.5,20,5,8],lock:{seals:['siegel-gerd','siegel-expose','siegel-kurt']},arena:'thronsaal'},
    {id:'thron-schatz',floor:'k2',rect:[52,35.5,4,3],lock:{boss:'bigb'}}
   ],
@@ -122,7 +128,19 @@ export const DUNGEONS={
    {id:'halbespferd',room:'stall',at:[28,2.5],rare:.3},
    {id:'korkenkurt',room:'kelterhalle',at:[23,28],seal:'siegel-kurt'},
    {id:'bigb',room:'thronsaal',at:[54,12]}
-  ]
+  ],
+  // Beweise (Plan 4.5; V-D11 geändert: jeder Beweis mit sichtbarer Wirkung im Big-B-Kampf). Etappe 3 legt Feld und Wirkung an
+  // (Laufstand `evidence`, dungeon.js bigbModifiers); verteilt werden sie erst in Etappe 4 (Vermieter, Wehrgang, Rita).
+  // noLie: diese Fähigkeit lügt nicht mehr (Nachsatz sofort) · taken: Big B nimmt mehr Schaden · all: alle drei zusammen.
+  // icon = Symbol im Bossrahmen (boss-alerts.js), note = Tooltip.
+  evidence:{ids:['mietvertrag','leihschein','kirmesurkunde'],
+   effects:{
+    mietvertrag:{noLie:'parkett',icon:'lens',note:'Mietvertrag: Das Parkett lügt nicht mehr.'},
+    leihschein:{noLie:'kulisse',icon:'lens',note:'Leihschein: Die Pappkulisse lügt nicht mehr.'},
+    kirmesurkunde:{taken:.1,icon:'lens',note:'Kirmes-Urkunde: Big B nimmt 10 % mehr Schaden.'}},
+   all:{confessAt:.3,note:'Alle drei Beweise: Geständnis schon bei 30 %.'}},
+  // Reichweiten-Rita (optional, Etappe 4): liegt sie, ruft Big Bs Live-Schalte nur einen Follower, und „Reichweite" wirkt nicht.
+  optional:{rita:{bigb:{summon:1,noReach:true}}}
  }
 };
 
@@ -143,7 +161,11 @@ export const DUNGEON_ENEMIES={
  maklerpraktikant:{name:'Makler-Praktikant',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:9,hp:12000,damage:3,xp:50,speed:54,aggroRange:100,roamRadius:10,castSet:'d-makler',auto:'inspector',
   look:'Anzug von der Konfirmation, Tablet, Visitenkarten in beiden Hosentaschen'},
  kellerratte:{name:'Pfandratte',type:'wolf',skin:'badger',family:'schlosstrash',level:9,hp:2600,damage:2,xp:12,speed:82,aggroRange:90,roamRadius:22,castSet:'d-ratte',auto:'badger',
-  look:'Kellerratte mit Kronkorken im Maul, kommt nie allein'}
+  look:'Kellerratte mit Kronkorken im Maul, kommt nie allein'},
+ // Etappe 3 (E-71): Big Bs Live-Schalte (Plan 7.6, Phase 2). priority = Söldner mit Schadensrolle nehmen sie vor dem Boss („Adds zuerst");
+ // reach = jeder lebende Follower gibt Big B „Reichweite" (mehr Schaden, DUNGEON_BOSSES.bigb.reach). noLoot = Helfer lassen keine Beute fallen.
+ follower:{name:'Follower',type:'cultist',skin:'warden',art:'scrounger',family:'schlosstrash',level:10,hp:3600,damage:1.2,xp:15,speed:62,aggroRange:0,roamRadius:0,castSet:'d-follower',auto:'scrounger',priority:true,reach:true,noLoot:true,
+  look:'Handy im Querformat vor dem Gesicht, Ringlicht am Gürtel, filmt alles außer sich selbst'}
 };
 
 // Bosse des Dungeons. phases: at = Lebensanteil; castSet wechselt den Zyklus, summon ruft Adds (DUNGEON_ENEMIES; hp = Anteil am Leben der Art).
@@ -155,7 +177,18 @@ export const DUNGEON_BOSSES={
   level:8,hp:65000,damage:3.5,xp:600,lootMoment:true,speed:46,aggroRange:84,roamRadius:6,leash:220,castSet:'d-gerd',auto:'horst',
   look:'Breiter Mann im zu kleinen schwarzen Anzug, Klemmbrett, Kinder-Headset, Sonnenbrille im Keller',
   phases:[{at:.5,summon:{kind:'securityazubi',count:2,hp:.35}},{at:.25,summon:{kind:'securityazubi',count:2,hp:.35},castSet:'d-gerd2'},{at:.15}],
-  fall:{rect:[2,20,5,6],to:{floor:'k1',x:12,y:9},below:.5}}
+  fall:{rect:[2,20,5,6],to:{floor:'k1',x:12,y:9},below:.5}},
+ // Etappe 3 „Big B" (E-71, Plan 7.6): Endboss im Thronsaal mit Behauptung und Nachsatz (lie). Zahlen gegen die gemessene Gruppe gesetzt
+ // (scripts/dungeon-sim.mjs, Korridor 150–200 s mit Held und vier Söldnern). Grafik: vorhandene Katalogfigur (Kegelkönig Klaus) mit
+ // Tönung (tint), keine neue Figur – eigene Bossgrafik erst nach Freigabe. final = Abschluss des Dungeons (Endtruhe, Bestzeit, Erfolg).
+ // enrage (Plan: „Die ganze Wahrheit") = Zeitgrenze: nach `after` Sekunden Kampf +damage Schaden, alle `every` Sekunden erneut.
+ // reach = +Anteil Schaden je lebendem Follower („Reichweite"). confess = Geständnis: ab `at` (mit allen Beweisen evidence.all.confessAt)
+ // lügt er nicht mehr, mit allen drei Beweisen nimmt er dann taken mehr Schaden. Phasen: 70 % Follower, 40 % Das Schloss bröckelt, 15 % Geständnis (nur Anzeige; ausgelöst über confess).
+ bigb:{name:'Big B',title:'Freiherr von und zu Burgstraße · selbsternannt',type:'boss',skin:'horst',art:'klaus',family:'bigb',tint:{color:'#5b2d86',alpha:.34},
+  level:10,hp:146000,damage:2.2,xp:1500,lootMoment:true,final:true,speed:44,aggroRange:92,roamRadius:4,leash:300,castSet:'d-bigb',auto:'horst',
+  look:'Mann um die 45, Pelzmantel aus dem Kostümverleih, Perücke mit Zopf, Goldkette aus goldlackierten Kronkorken, Siegelring aus Messing, Handy am Selfie-Stick mit Ringlicht',
+  enrage:{after:360,every:30,damage:.5},reach:.08,confess:{at:.15,taken:.1},
+  phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]}
 };
 
 // Zaubermuster der Dungeon-Gegner. Neue Merkmale (Plan Abschnitt 9): cone {angle (Grad), range (Einheiten)},
@@ -191,13 +224,63 @@ export const DUNGEON_CASTS={
  'd-gerd2':{cycle:['rausschmiss','rausschmiss','liste','dresscode'],gaps:{0:1},casts:{
   liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
   rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
-  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,pct:.35,target:'random',radius:48,ground:true}}}
+  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,pct:.35,target:'random',radius:48,ground:true}}},
+ // ── Etappe 3 „Big B" (E-71, Plan 7.6 und Abschnitt 9). Neue Merkmale, alle in dungeon.js ausgewertet:
+ // lie {claim,truth,tell,mirror}: Behauptung und Nachsatz. Zauberleiste und Big Bs Sprechblase zeigen erst `claim` (gelogen); nach `tell`
+ //   Sekunden (Grundwert 1,0 s; Beweise und Geständnis streichen die Lüge) kommt der Nachsatz mit Ton, erst dann liegt die echte Markierung
+ //   am Boden. mirror: Seite zufällig, Wortlaut gespiegelt (mirrorClaim/mirrorTruth). Söldner folgen dem Nachsatz, nicht der Behauptung –
+ //   mit Fehlerquote (COMPANION_RULES.lieError).
+ // line {lanes,claim,truth}: Bahnen über die ganze Länge der Arena (Anteile der Raumbreite, West → Ost). claim = Bahn, die die Behauptung
+ //   nennt; truth = Bahnen, die wirklich getroffen werden. Getroffen wird, wer beim Zauberende darin steht.
+ // circles n: Bodenflächen auf n Stellen (je Nicht-Schutz in der Arena eine, der Rest zufällig). persist {duration,radius,pct}: Trümmer
+ //   bleiben als kleine Gefahrenfelder liegen (pct = Anteil am Leben je Sekunde darin).
+ // tracks [{cast,every,first}]: parallele Timer neben dem Hauptzyklus (Siegelring alle 12 s auf den, der Big B hält).
+ // tankDebuff {id,name,stack,taken,duration}: stapelnde Schwäche auf dem Getroffenen (+taken erlittener Schaden je Stapel, höchstens stack);
+ //   eine Parade des Helden bzw. „Deckel hoch" des Schutz-Söldners beim Treffer löscht alle Stapel.
+ // interrupts n: bricht erst nach n Unterbrechungen · selfHeal: Anteil Leben, wenn der Zauber durchkommt · summon: Adds am Zauberende ·
+ // say: Spruch beim Zauberbeginn (keine Lüge).
+ 'd-bigb':{cycle:['kanone','anwalt'],tracks:[{cast:'siegelring',every:12,first:6}],casts:{
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:2.6,damage:700,pct:.6,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+   lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
+  anwalt:{name:'Mein Anwalt ruft gleich an',hint:'Unterbrechen',total:2.4,damage:480,pct:.3,target:'random',interruptible:true,say:'Das ist nur ein Anruf.'},
+  siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
+ // Phase 2 „Follower" (70–40 %): Live-Schalte ruft Follower, Kanonenkugel zweimal hintereinander (1 s dazwischen), das Parkett.
+ 'd-bigb2':{cycle:['live','kanone','kanone','parkett'],gaps:{1:1},tracks:[{cast:'siegelring',every:12,first:4}],casts:{
+  live:{name:'Live-Schalte',hint:'Adds zuerst',total:2.2,damage:0,summon:{kind:'follower',count:3},lie:{claim:'Ich mach nur ein Foto!',truth:'… mit Follower.',tell:1}},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:2.6,damage:700,pct:.6,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+   lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
+  parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:2.8,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
+  siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
+ // Phase 3 „Das Schloss bröckelt" (40–0 %): Pappkulisse mit Trümmern, zwei Kanonenkugel-Bahnen zugleich (nur die Mitte ist sicher),
+ // Am eigenen Schopf (zweimal unterbrechen, sonst heilt er 5 %). Ab dem Geständnis lügt er nicht mehr.
+ 'd-bigb3':{cycle:['kulisse','kanone3','schopf'],tracks:[{cast:'siegelring',every:12,first:4}],casts:{
+  kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:2.6,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
+  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:2.6,damage:700,pct:.6,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
+   lie:{claim:'Ich reite nach LINKS!',truth:'… und rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… und links.'}},
+  schopf:{name:'Am eigenen Schopf',hint:'Zweimal unterbrechen',total:3.5,damage:0,interruptible:true,interrupts:2,selfHeal:.05,say:'Ich zieh mich hier selbst raus!'},
+  siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
+ // Follower (Live-Schalte): Selfie mit Blitz auf einen zufälligen Nicht-Schutz.
+ 'd-follower':{cycle:['selfie'],casts:{
+  selfie:{name:'Selfie mit Blitz',hint:'Fläche verlassen',total:1.6,damage:140,pct:.12,radius:28,ground:true,target:'random'}}}
 };
 
 // Belohnungen (E-71, Etappe 1): Siegelmarken als Währung gegen Beutepech (Händler Vermieter Volker folgt in Etappe 4), Tagesbonus beim
 // ersten Abschluss eines Flügels am Tag (Anteil auf die Boss-EP plus Marken). Boss-EP stehen am Boss (xp). Zählerstand im Spielstand
 // unter dungeons[id].marks.
-export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2}};
+// Etappe 3 (E-71): repeatXp = Anteil der Boss-EP für jeden weiteren Sieg über denselben Boss am selben Tag (wie Instanz-Limits in WoW:
+// der erste Sieg des Tages voll, jede Wiederholung ein Drittel; Beute und Siegelmarken bleiben). Schließt die Farm-Lücke aus Etappe 1.
+// chest = Endtruhe in der Schatzkammer: Wahl aus `choices` Teilen der Güte `quality` (Stufe = Big Bs Stufe + 1) plus Siegelmarken,
+// einmal je Durchgang. Der Abschluss (final) zählt Abschlüsse und Bestzeit im Spielstand (dungeons[id].clears/best).
+export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,chest:{choices:3,quality:'rare',marks:3,
+ slots:['weapon','head','shoulders','body','hands','waist','legs','feet','ring','trinket','neck','wrists']}};
+
+// Erfolge des Dungeons (Etappe 3): stehen im Spielstand unter dungeons[id].feats. check = Bedingung beim Sieg über `boss`
+// (dungeon.js grantFeats). Weitere Erfolge aus Plan 11 („Beweislast", „Schlossführung" …) folgen mit Etappe 4.
+export const DUNGEON_FEATS={
+ nachsatz:{name:'Der Nachsatz zählt',boss:'bigb',check:'noLieHits',icon:'trait-lie',
+  note:'Big B besiegt, ohne dass dich eine gelogene Kanonenkugel getroffen hat.'}
+};
+
 
 // Texte (Story nimmt ab oder ersetzt; Ton E-20: erst die Behauptung, dann der Nachsatz).
 export const DUNGEON_TEXT={
@@ -212,7 +295,7 @@ export const DUNGEON_TEXT={
  ladder:{a:'hoch aufs Carport-Dach',b:'runter in den Hof'},
  locked:{gate:'Die Kette hängt noch. Gerd hat den Schlüssel. Und das Klemmbrett.',oneWay:'Da kommt man nur runter. Rauf braucht man Flügel oder eine Leiter.',
   lift:'Der Getränkeaufzug ist abgeschlossen. „Nur für Lieferanten." Von unten gibt es einen Hebel.',secret:'Da ist nur eine Wand. Sieht jedenfalls so aus.',
-  seals:n=>'Die Tresortür hat drei Siegelfelder. '+n+' von 3 sind belegt.',boss:'Zu. Erst Big B.'},
+  seals:(n,m=3)=>'Die Tresortür hat '+m+' Siegelfelder. '+n+' von '+m+' sind belegt.',boss:'Zu. Erst Big B.'},
  unlocked:{lift:'Hebel umgelegt. Der Getränkeaufzug fährt jetzt in beide Richtungen.',pappwand:'Die Wand ist aus Pappe. Dahinter: eine Wendeltreppe. Natürlich.'},
  secretUse:{pappwand:'Pappwand eindrücken'},
  arenaClosed:'Die Tür fällt zu. Klemmbrett sagt: kein Durchgang.',arenaOpen:'Die Tür geht wieder auf.',
@@ -237,7 +320,27 @@ export const DUNGEON_TEXT={
    phases:{'0.5':'VERSTÄRKUNG! … Das ist mein Neffe. Und der Kumpel vom Neffen. Der ist eigentlich nur zum Fahren da.',
     '0.25':'Noch mehr Verstärkung! … Das ist der Neffe nochmal. Er hat sich umgezogen.',
     '0.15':'Gut. Ihr steht drauf. Ich hab euch draufgeschrieben. Auf meinen Arm. Mit Edding.'},
-   defeat:'Der Stempel … nehmt ihn. Ich stempel sowieso nur Luft.'}},
+   defeat:'Der Stempel … nehmt ihn. Ich stempel sowieso nur Luft.'},
+  // Etappe 3: Sprüche aus Plan 7.6 (Story nimmt ab). ritaDown = 70 %, wenn Reichweiten-Rita schon liegt (Etappe 4).
+  bigb:{engage:'Willkommen auf Schloss Big B! Erbaut 1648 von meinem Opa. Also, der Carport. Das Schloss kommt noch.',
+   phases:{'0.7':'Meine Follower! Zwei Millionen! Die hier sind die, die heute Zeit hatten.',
+    '0.4':'Ich bin mal auf einer Kanonenkugel nach Mayen geritten. Und zurück. Den Schlüssel hatte ich vergessen.'},
+   ritaDown:'Rita? RITA! … Ich mach das Live selbst.',
+   confess:'Okay. Das Schloss ist eine Garage. Die Garage ist gemietet. Die Kette ist Kronkorken. Und den Titel hab ich auf der Kirmes geschossen.',
+   defeat:'Schnitt. Das nehmen wir nochmal.',
+   // Ausreden beim Vorlegen der Beweise am Thron (Etappe 4 baut das Vorlegen)
+   excuses:{mietvertrag:'Das ist ein Pachtvertrag. Bis zur Schlossübernahme.',leihschein:'Der Mantel ist geleast. Das ist wie gekauft, nur ehrlicher.',
+    kirmesurkunde:'Adelstitel werden heute eben anders verliehen. Mit Luftgewehr.'}}},
+ // Etappe 3: Kampftexte der neuen Merkmale (kurz, Großbuchstaben wie HAUSVERBOT) und das Ende des Dungeons.
+ bigb:{enrage:'DIE GANZE WAHRHEIT',interrupts:(n,m)=>'UNTERBROCHEN '+n+'/'+m,selfHeal:'SELBST RAUSGEZOGEN',reach:'REICHWEITE',
+  confess:'GESTÄNDNIS',lieHit:'GELOGEN'},
+ chest:{name:'Endtruhe öffnen',title:'Endtruhe · Schatzkammer',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
+  pickNote:'Ein Teil nach Wahl, dazu Siegelmarken. Einmal je Durchgang.',empty:'Die Truhe ist leer. Big B hat den Deckel mitgenommen.',
+  locked:'Zu. Erst Big B.'},
+ backExit:'Hinterausgang · zurück auf die Burgstraße',
+ feat:n=>'Erfolg: '+n,
+ cleared:(t)=>'Schloss Big B abgeschlossen in '+t+'. Das Schloss war eine Garage. Die Garage bleibt.',
+ repeatXp:'Heute schon besiegt: ein Drittel der Erfahrung.',
  map:{title:'Big Bs Schlossplan',prospect:'laut Prospekt',visited:'erkundet',you:'du',seals:'Siegel',checkpoint:'Kontrollpunkt',floors:'Ebenen',
   hint:'Unerkundete Räume zeigt die Karte, wie Big B sie beschreibt. Wer hingeht, sieht die Wahrheit.'}
 };

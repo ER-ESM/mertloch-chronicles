@@ -14,6 +14,7 @@ export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){c
  if(npc&&drawFigure(c,p.npcId||'ida',x,y,scale,p))return;drawTinyPerson(c,x,y,time,p,npc,scale);}
 
 export function drawClanEnemy(c,e,time){
+ /* Dungeon Etappe 3: Tönung einer geliehenen Figur (Big B = Kegelkönig Klaus, getönt) – keine neue Figurengrafik */if(e.tint&&!e.tinting&&typeof document!=='undefined'&&typeof c.getTransform==='function'){drawTinted(c,e,time);return;}
  // Gelieferte Bögen (Gegner, Bosse) bringen ihre Welthöhe selbst mit: artMagnify 1, kein Weltmaßstab darüber.
  const artId=e.variant||e.bossId||e.skin;
  if(hasLiveContent(artId,e.variant)&&drawLivePerson(c,artId,e.x,e.y,time,{...e,phase:e.saidPhases?.size>0,artMagnify:1}))return;
@@ -38,3 +39,12 @@ export function drawClanCamp(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.sa
  r(c,'#c58c55',x0+3,y0+1,s.w-6,1);r(c,'#7d4d27',x0+2,y0+s.h/2,s.w-4,.7);for(let i=0;i<5;i++)r(c,'#8a5a30',x0+6+i*(s.w-12)/4,y0+3+(i%2)*6,5,.5);
  for(const [nx,ny] of [[x0+3.5,y0+3],[x1-4.5,y0+3],[x0+3.5,y1-3.5],[x1-4.5,y1-3.5]])r(c,'#e6cf98',nx,ny,1,1);
  c.font=SIGN_FONT;c.textAlign='center';c.fillStyle='#e7b877';c.fillText(CLAN_SIGN_TITLE,x+1.4,y0+11.5,s.w-12);c.fillStyle='#2e1a0d';c.fillText(CLAN_SIGN_TITLE,x+1,y0+11,s.w-12);c.restore();}
+
+// Dungeon Etappe 3 (E-71): Tönung über eine kleine Ebene wie drawCorpse im Renderer (kein Canvas-Filter – der rastert in Chrome ohne
+// Grafikkarte jeden Zeichenbefehl über die ganze Fläche). Figur einmal in die Ebene, per source-atop eingefärbt, ein drawImage.
+let tintLayer=null;
+function drawTinted(c,e,time){const S=260,ax=130,ay=210,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=tintLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
+ const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.globalAlpha=1;f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=c.imageSmoothingEnabled;f.setTransform(d,0,0,d,(ax-e.x)*d,(ay-e.y)*d);
+ e.tinting=true;try{drawClanEnemy(f,e,time);}finally{e.tinting=false;}
+ f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-atop';f.globalAlpha=e.tint.alpha??.3;f.fillStyle=e.tint.color;f.fillRect(0,0,L.width,L.height);f.globalAlpha=1;f.globalCompositeOperation='source-over';
+ c.drawImage(L,e.x-ax,e.y-ay,S,S);}

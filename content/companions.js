@@ -14,6 +14,13 @@ export const COMPANION_RULES=Object.freeze({
  // Messung: scripts/dungeon-sim.mjs, Bericht docs/DUNGEON-ETAPPE-1-2026-09-25.md.
  instanceFactor:{damage:4.8,heal:2.5,health:1.8},
  reaction:.35,                // Sekunden, bis ein Begleiter auf eine Ansage (Fläche, Zauber) reagiert
+ // Dungeon Etappe 3 (E-71): Behauptung und Nachsatz. Söldner warten den Nachsatz ab und reagieren dann auf die Wahrheit. lieError =
+ // Anteil der Lügen, auf die ein Söldner doch hereinfällt: Er läuft nach der Behauptung und bleibt lieConfusion Sekunden nach dem
+ // Nachsatz noch dabei (Schreckmoment) – damit es nicht trivial wird.
+ lieError:.05,lieConfusion:.8,
+ // Aufstellung nach Rolle im Dungeon gegen Bosse und Eliten (COMPANION_ROLES.position): Abstand der Fernkämpfer vom Boss und Fächer
+ // (Grad) links und rechts hinter ihm; formationSlack = so weit darf ein Söldner vom Platz abweichen, bevor er nachrückt.
+ spreadDistance:112,spreadFan:[40,72],formationSlack:14,
  followDistance:70,           // Wunschabstand zum Besitzer außerhalb des Kampfs
  formation:[[-46,34],[46,34],[-82,-10],[82,-10]], // Plätze um den Besitzer (x,y), in Laufrichtung gespiegelt
  catchUp:260,                 // ab hier rennt der Begleiter (catchUpSpeed)
@@ -40,11 +47,13 @@ export const COMPANION_RULES=Object.freeze({
  lootRolls:false              // Begleiter würfeln nie um Beute (E-42)
 });
 
-/** Rollen: Grundwerte je Stufe und Verhalten. `threat` multipliziert erzeugte Bedrohung (Schutz-Specs am Server: 3). */
+/** Rollen: Grundwerte je Stufe und Verhalten. `threat` multipliziert erzeugte Bedrohung (Schutz-Specs am Server: 3).
+ *  position (Dungeon Etappe 3, E-71; Analyse Verbesserung 10): Platz gegen Bosse und Eliten – 'tank' dreht den Gegner von der Gruppe weg,
+ *  'behind' steht hinter ihm, 'spread' verteilt sich im Fächer hinter ihm. Ein Söldner kann den Platz überschreiben (Fernkampf: spread). */
 export const COMPANION_ROLES=Object.freeze({
- tank:  {name:'Schutz',  health:[760,58],damage:[15,2.6],threat:3, range:44, stance:'defend', picksUpLoose:true},
- heal:  {name:'Heilung', health:[520,40],damage:[9,1.6], threat:.6,range:170,stance:'assist', keepsDistance:150},
- damage:{name:'Schaden', health:[560,43],damage:[24,4.2],threat:1, range:48, stance:'assist'}
+ tank:  {name:'Schutz',  health:[760,58],damage:[15,2.6],threat:3, range:44, stance:'defend', picksUpLoose:true, position:'tank'},
+ heal:  {name:'Heilung', health:[520,40],damage:[9,1.6], threat:.6,range:170,stance:'assist', keepsDistance:150, position:'spread'},
+ damage:{name:'Schaden', health:[560,43],damage:[24,4.2],threat:1, range:48, stance:'assist', position:'behind'}
 });
 
 /** Fähigkeiten. kind: strike (Schlag) · taunt (Spott) · guard (Schadensminderung auf sich) · heal (Ziel mit wenig Leben)
@@ -71,7 +80,7 @@ export const COMPANIONS=Object.freeze([
  {id:'merc-schorle-susi', kind:'merc',name:'Schorle-Susi',   role:'heal',  look:'baerbel',spec:'baerbel-care', abilities:['shot','round','bigRound','revive'],
   description:'Hält Abstand und die Gruppe am Leben. Schenkt nach, bevor es eng wird.',
   lines:{hire:'Trinkt genug. Den Rest mach ich.',down:'Mir ist schwindelig.',revive:'So. Wer braucht was?',dismiss:'Passt auf euch auf.'}},
- {id:'merc-radler-rita',  kind:'merc',name:'Radler-Rita',    role:'damage',look:'kevin',  spec:'kevin-hunt',   abilities:['shot','shush'],
+ {id:'merc-radler-rita',  kind:'merc',name:'Radler-Rita',    role:'damage',look:'kevin',  spec:'kevin-hunt',   abilities:['shot','shush'],position:'spread',
   description:'Schießt aus der zweiten Reihe und bringt Zauberer zum Schweigen.',
   lines:{hire:'Zeig mir, wer nervt.',down:'Treffer… bei mir.',revive:'Nachgeladen.',dismiss:'Ruf an, wenn\'s wieder knallt.'}},
  {id:'merc-hopfen-horst', kind:'merc',name:'Hopfen-Horst',   role:'damage',look:'dieter', spec:'dieter-brawl', abilities:['swing','sweep'],

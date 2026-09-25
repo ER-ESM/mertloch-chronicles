@@ -15,7 +15,7 @@ import {AFFIX_TUNING} from '../tuning.js';
 import {BALANCE} from '../balance.js';
 export function check(bad){
  // Jede Dorflegende fällt irgendwo (Beutetabelle) oder ist ausdrücklich Questbelohnung (reward:true).
- const dropped=new Set(Object.values(DROP_TABLES).map(t=>t.unique));
+ const dropped=new Set(Object.values(DROP_TABLES).flatMap(t=>[t.unique,...(t.uniques||[]).map(u=>u.id)])/* weitere Dorflegenden je Tabelle (Big B, Etappe 3) */);
  for(const [id,d] of Object.entries(ITEM_CATALOG))if(d.unique&&!d.retired&&!dropped.has(id)&&!d.reward)bad('item '+id,'Dorflegende ohne Beutetabelle und ohne reward:true');
  // Jedes Material wird irgendwo fallen gelassen oder ist Sammelgut (gather:true).
  const materials=new Set([...[...HOTSPOTS.flatMap(h=>h.quests),...WORLD_NOTICES].map(q=>q.objective.item).filter(Boolean),...Object.values(DROP_TABLES).map(t=>t.material),...Object.values(PROFESSION_SOURCES).flatMap(s=>Object.keys(s.items)),...SHOP_STOCK]);

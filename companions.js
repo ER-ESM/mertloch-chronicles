@@ -10,7 +10,7 @@
 import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMPANION_TEXT as T,companionById,companionCost,companionStats,CAST_SETS,COMBAT_RULES} from './content/index.js';
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
-import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot} from './dungeon.js';
+import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt} from './dungeon.js';
 import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
@@ -68,7 +68,7 @@ export function companionFocus(g,e){
 }
 
 export function hitCompanion(g,e,c,n){
- if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))));
+ if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))*(c.cert?.until>g.time?1+c.cert.stacks*c.cert.taken:1)/* Dungeon Etappe 3: Zertifikat */));
  const b=c.aidBuff;if(b?.remaining>0){n=Math.round(n*(1-(b.reduction||0)));const absorbed=Math.min(n,b.shield||0);b.shield=Math.max(0,(b.shield||0)-absorbed);n-=absorbed;if(absorbed>0)companionFx(g,c,'guard',c,{amount:absorbed,absorbed:true});}
  c.hp=Math.max(0,c.hp-n);if(n>0)c.hurt=.16;c.inCombat=6;
  companionFx(g,c,'hurt',c,{amount:n,from:{x:e.x,y:e.y}});if(!companionText(g,c,{area:'in',kind:'damage',value:n}))g.float(c.x,c.y-18,'−'+n,'#e9b48c');
@@ -134,6 +134,7 @@ function chooseTarget(g,c){
  if(c.order==='attack'&&g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial)return g.target;
  const list=g.enemies.filter(e=>fighting(e)&&near(e));if(!list.length)return null;
  const role=COMPANION_ROLES[c.def.role];
+ /* Dungeon Etappe 3 (Plan 7.6): Schadens-Söldner wechseln auf Adds mit Vorrang (Big Bs Follower: „Adds zuerst“) */if(c.def.role==='damage'){const adds=list.filter(e=>e.priority);if(adds.length)return adds.sort((a,b)=>a.hp-b.hp||distance(a,c)-distance(b,c))[0];}
  if(role.picksUpLoose){const loose=list.filter(e=>(e.focus||PLAYER)!==c.id).sort((a,b)=>distance(a,c)-distance(b,c))[0];if(loose)return loose;}
  // Zielmarkierungen der Gruppe (target-marks.js): Totenkopf vor Kreuz vor Stern vor Kreis, dann das Ziel des Spielers.
  const marked=list.filter(e=>e.groupMark).sort((a,b)=>MARK_IDS.indexOf(a.groupMark)-MARK_IDS.indexOf(b.groupMark))[0];if(marked)return marked;
@@ -143,7 +144,7 @@ function chooseTarget(g,c){
 
 function damageEnemy(g,c,e,n,id){
  if(!e||e.hp<=0||e.ai==='returning'||e.tutorial)return 0;
- const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1))),dealt=Math.min(e.hp,amount);
+ const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */)),dealt=Math.min(e.hp,amount);
  e.aggro=true;e.ai='combat';g.player.inCombat=7;c.inCombat=6;e.hp=Math.max(0,e.hp-amount);e.hurt=.15;
  addThreat(e,c.id,dealt*COMPANION_ROLES[c.def.role].threat);
  recordMeterDamage(g,e,amount,dealt,abilitySource(id),crit,c);
@@ -171,20 +172,28 @@ function heal(g,c,target,amount,id){
 function use(g,c,id,target){
  const a=COMPANION_ABILITIES[id];if(!a||(c.cooldowns[id]||0)>0)return false;
  const range=a.range||COMPANION_ROLES[c.def.role].range,done=()=>{c.cooldowns[id]=a.cooldown;c.gcd=R.pause;c.attack=.3;c.castPose=a.kind==='heal'?.3:0;c.usingRanged=!!a.ranged;return true;};
- if(a.kind==='guard'){if(ratio(c)>a.below||c.inCombat<=0)return false;c.guard=a.duration;c.guardReduction=a.reduction;companionFx(g,c,'guard',c,{amount:0});return done();}
+ if(a.kind==='guard'){if((ratio(c)>a.below&&!certIncoming(g,c))||c.inCombat<=0)return false;c.guard=a.duration;c.guardReduction=a.reduction;companionFx(g,c,'guard',c,{amount:0});return done();}
  if(a.kind==='heal'){const allies=[...(g.dead?[]:[g.player]),...g.companions.filter(alive)].filter(x=>ratio(x)<a.below&&distance(x,c)<=range).sort((x,y)=>ratio(x)-ratio(y));
   // Gruppe (2026-09-24): Heil-Söldner kümmern sich auch um Mitspieler in Reichweite; die Heilung reist über den Hilfsweg (net-social aidHeal).
   const mate=partyPatient(g,c,a,range);if(mate&&(!allies.length||mate.hp/100<ratio(allies[0]))){healMate(g,c,mate,(c.heal??c.damage)*a.power,id);return done();}
   if(!allies.length)return false;heal(g,c,allies[0],(c.heal??c.damage)*a.power,id);return done();}
  if(a.kind==='taunt'){const e=g.enemies.filter(e=>fighting(e)&&(e.focus||PLAYER)!==c.id&&distance(e,c)<=range).sort((x,y)=>distance(x,c)-distance(y,c))[0];if(!e)return false;
   const top=Math.max(0,...Object.values(e.threat||{}));e.threat={...(e.threat||{}),[c.id]:top*R.threatSwitch+R.tauntLead};e.focus=c.id;if(!companionText(g,c,{area:'note',kind:'proc',text:T.taunted,ability:id}))g.float(e.x,e.y-38,T.taunted,'#f0c987');return done();}
- if(a.kind==='interrupt'){const e=g.enemies.find(e=>fighting(e)&&e.cast?.interruptible&&distance(e,c)<=range&&(!e.cast.claimed||e.cast.claimed===c.id));if(!e)return false;
-  e.cast.claimed=c.id;if(!reacted(g,c,e.cast))return false;e.cast=null;e.attackTimer=COMBAT_RULES.specialInterval;e.stun=Math.max(e.stun||0,R.interruptStun);if(!companionText(g,c,{area:'note',kind:'proc',text:T.interrupted,ability:id}))g.float(e.x,e.y-38,T.interrupted,'#f2da92');companionFx(g,c,'interrupt',e);addThreat(e,c.id,R.interruptThreat);return done();}
+ if(a.kind==='interrupt'){const e=g.enemies.find(e=>fighting(e)&&e.cast?.interruptible&&distance(e,c)<=range&&claimable(e.cast,c));if(!e)return false;
+  claim(e.cast,c);if(!reacted(g,c,e.cast))return false;
+  /* Dungeon Etappe 3: „Am eigenen Schopf“ bricht erst nach zwei Unterbrechungen – die erste zählt, der Zauber läuft weiter */
+  if(e.dungeon&&interruptHolds(g,e)){(e.cast.done||(e.cast.done=[])).push(c.id);companionFx(g,c,'interrupt',e);addThreat(e,c.id,R.interruptThreat);return done();}
+  e.cast=null;e.attackTimer=COMBAT_RULES.specialInterval;e.stun=Math.max(e.stun||0,R.interruptStun);if(!companionText(g,c,{area:'note',kind:'proc',text:T.interrupted,ability:id}))g.float(e.x,e.y-38,T.interrupted,'#f2da92');companionFx(g,c,'interrupt',e);addThreat(e,c.id,R.interruptThreat);return done();}
  if(!target)return false;
  if(a.kind==='cleave'){const hits=g.enemies.filter(e=>fighting(e)&&distance(e,c)<=a.radius);if(hits.length<(a.minTargets||1))return false;companionFx(g,c,'attack',target,{from:{x:c.x,y:c.y},radius:a.radius});for(const e of hits)damageEnemy(g,c,e,c.damage*a.power,id);return done();}
  if(a.kind==='strike'){if(distance(target,c)>range||!g.world.lineClear(c,target))return false;face(c,target);companionFx(g,c,'attack',target,{from:{x:c.x,y:c.y},ranged:!!a.ranged,duration:.3});damageEnemy(g,c,target,c.damage*a.power*a.cooldown,id);return done();}
  return false;
 }
+/** Unterbrechen beanspruchen (Dungeon Etappe 3): interrupts n → bis zu n Söldner gleichzeitig; wer schon unterbrochen hat, nicht nochmal. */
+const claimable=(k,c)=>{const cl=k.claims||(k.claims=k.claimed?[k.claimed]:[]);return !(k.done||[]).includes(c.id)&&(cl.includes(c.id)||cl.length<(k.interrupts||1));};
+function claim(k,c){const cl=k.claims||(k.claims=[]);if(!cl.includes(c.id))cl.push(c.id);k.claimed=cl[0];}
+/** Siegelring unterwegs auf diesen Schutz-Söldner, der schon ein Zertifikat trägt (Dungeon Etappe 3)? Dann „pariert“ er mit Deckel hoch. */
+const certIncoming=(g,c)=>c.cert?.until>g.time&&g.enemies.some(e=>e.hp>0&&e.sideCast?.tankDebuff&&e.sideCast.focus===c.id);
 /** Reaktionszeit: eine Ansage zählt erst, wenn der Begleiter sie `reaction` Sekunden gesehen hat. */
 function reacted(g,c,cast){const seen=c.seen||(c.seen=new WeakMap());if(!seen.has(cast))seen.set(cast,g.time);return g.time-seen.get(cast)>=R.reaction;}
 
@@ -196,12 +205,67 @@ function coneExit(g,c){
  return null;
 }
 function dangerExit(g,c){
+ const mech=mechExit(g,c);if(mech)return mech;
  const cone=coneExit(g,c);if(cone)return cone;
  for(const e of g.enemies){const k=e.cast;if(!k?.ground||e.hp<=0||!inEllipse(c,k,R.avoidMargin*.5)||!reacted(g,c,k))continue;
   const base=Math.atan2(c.y-k.y,c.x-k.x)||0;for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:k.x+Math.cos(a)*(k.radius+R.avoidMargin),y:k.y+Math.sin(a)*(k.radius+R.avoidMargin)*.75};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
  return null;
 }
 
+// ── Dungeon Etappe 3 (E-71): Behauptung und Nachsatz, Bahnen, Bodenstellen, Trümmer, Aufstellung nach Rolle ─────────────────────────
+/** Fällt dieser Söldner auf diese Lüge herein? Einmal je Zauber gewürfelt (COMPANION_RULES.lieError). */
+function fooledBy(g,c,k){if(!k.lie)return false;const m=c.fooled||(c.fooled=new WeakMap());if(!m.has(k))m.set(k,g.random()<R.lieError);return m.get(k);}
+/** Nachsatz gesehen: reagiert erst `reaction` Sekunden nach dem Nachsatz (bzw. dem Zauberbeginn ohne Lüge). */
+function truthSeen(g,c,k){const m=c.truthSeen||(c.truthSeen=new WeakMap());if(!m.has(k))m.set(k,g.time);return g.time-m.get(k)>=R.reaction;}
+/** Freier Punkt nahe q in der Arena des Gegners (begehbar, selber Raum), sonst null. */
+function arenaPoint(g,e,q){const run=dungeonRun(g);let p=q;try{p=g.world.findClear(q.x,q.y,9);}catch{}if(!p||g.world.blocked(p.x,p.y,9))return null;if(run&&e.dungeonBoss&&roomAt(run.def,p.x,p.y)?.id!==e.dungeonBoss.room)return null;return p;}
+/** Aus den getroffenen Bahnen heraus: nächste Kante außerhalb aller Bahnen, gleiche Höhe. */
+function laneExit(g,c,e,bad){const xs=[];for(const r of bad)xs.push(r.x-14,r.x+r.w+14);xs.sort((a,b)=>Math.abs(a-c.x)-Math.abs(b-c.x));
+ for(const x of xs){const q={x,y:c.y};if(bad.some(r=>inLane(r,q,8)))continue;const p=arenaPoint(g,e,q);if(p&&!bad.some(r=>inLane(r,p,8)))return p;}return null;}
+/** Aus einer Fläche (Ellipse wie am Boden) heraus, nicht in eine andere hinein. */
+function spotExit(g,c,e,spot,radius,others=[]){const base=Math.atan2(c.y-spot.y,c.x-spot.x)||0;
+ for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:spot.x+Math.cos(a)*(radius+R.avoidMargin),y:spot.y+Math.sin(a)*(radius+R.avoidMargin)*.75};if(others.some(o=>o!==spot&&inEllipse(q,{...o,radius})))continue;const p=arenaPoint(g,e,q);if(p&&walkClear(g.world,c,p,8))return p;}return null;}
+/** Big Bs Merkmale: Söldner folgen dem Nachsatz, nicht der Behauptung. Wer auf die Lüge hereinfällt (lieError), läuft nach der
+ *  Behauptung in die Gegenbahn und bleibt nach dem Nachsatz noch lieConfusion Sekunden dabei. Danach raus aus Bahn, Fläche, Trümmern. */
+function mechExit(g,c){
+ const run=dungeonRun(g);if(!run)return null;
+ for(const e of g.enemies){const k=e.cast;if(!k||!(e.hp>0)||!(k.lanes||k.circles))continue;const fooled=fooledBy(g,c,k);
+  if(k.lie&&!k.told){if(!fooled||!k.lanes)continue;const claim=k.lanes[k.claimLane],opp=k.lanes[k.lanes.length-1-k.claimLane];
+   if(claim&&opp&&inLane(claim,c)&&!inLane(opp,c,-6)){const p=arenaPoint(g,e,{x:opp.x+opp.w/2,y:c.y});if(p)return p;}continue;}
+  if(fooled&&g.time<(k.toldAt??-Infinity)+R.lieConfusion)continue;
+  if(!truthSeen(g,c,k))continue;
+  if(k.lanes){const bad=(k.truthLanes||[]).map(i=>k.lanes[i]).filter(Boolean);if(bad.some(r=>inLane(r,c,8))){const p=laneExit(g,c,e,bad);if(p)return p;}}
+  if(k.spots){const s=k.spots.find(s=>inEllipse(c,{...s,radius:k.radius},R.avoidMargin*.5));if(s){const p=spotExit(g,c,e,s,k.radius,k.spots);if(p)return p;}}
+ }
+ for(const h of run.hazards||[])if(Math.hypot(c.x-h.x,c.y-h.y)<h.radius+6){const p=spotExit(g,c,h.boss,h,h.radius);if(p)return p;}
+ return null;
+}
+const inHazard=(g,q)=>(dungeonRun(g)?.hazards||[]).some(h=>Math.hypot(q.x-h.x,q.y-h.y)<h.radius+10);
+/** Liegt q in einer schon angesagten Gefahr (Nachsatz heraus: echte Bahnen, Stellen) oder in Trümmern? Dort stellt sich niemand hin. */
+function unsafe(g,q){for(const e of g.enemies){const k=e.cast;if(!k||!(e.hp>0)||k.told===false)continue;if(k.lanes&&(k.truthLanes||[]).some(i=>inLane(k.lanes[i],q,14)))return true;if(k.spots&&k.spots.some(s=>inEllipse(q,{...s,radius:k.radius},R.avoidMargin*.5)))return true;}return inHazard(g,q);}
+const dangerOpen=g=>g.enemies.some(e=>e.cast&&e.cast.told!==false&&(e.cast.lanes||e.cast.spots));
+/** Aufstellung nach Rolle (Analyse Verbesserung 10, wie die Follower-Dungeons in WoW) gegen Dungeon-Bosse und -Eliten:
+ *  tank: steht auf der Gegenseite der Gruppe, dreht den Gegner damit von ihr weg · behind: hinter dem Gegner (von dem aus, den er angreift)
+ *  · spread: im Fächer hinter ihm (COMPANION_RULES.spreadFan), mit Abstand spreadDistance und Sichtlinie. → Platz oder null (normal kämpfen). */
+function formationSpot(g,c,e,role){
+ if(!e.dungeon||!(e.dungeonBoss||e.elite)||c.order==='stay'||!inDungeon(g))return null;const pos=c.def.position||role.position;if(!pos)return null;
+ const risky=dangerOpen(g);if(!risky&&c.formation&&c.formation.e===e&&c.formation.until>g.time)return c.formation.goal;
+ const p=g.player,holder=e.focus&&e.focus!==PLAYER?g.companions.find(o=>o.id===e.focus&&alive(o)):null,faced=holder||(g.dead?null:p);if(!faced)return null;
+ const reach=(role.range||44)*.8;let fx=faced.x-e.x,fy=faced.y-e.y;const fl=Math.hypot(fx,fy)||1;fx/=fl;fy/=fl;let goal=null;
+ const ok=q=>{const r=arenaPoint(g,e,q);return r&&g.world.lineClear(r,e)&&!unsafe(g,r)?r:null;};
+ if(pos==='tank'&&holder!==c){/* hält ihn noch nicht (Held hat die Bedrohung): von der Seite heran, nie durch den Kegel, bis der Spott sitzt */const side=(fx*(c.y-e.y)-fy*(c.x-e.x))>=0?1:-1;goal=ok({x:e.x-fy*side*reach*.9,y:e.y+fx*side*reach*.9});}
+ else if(pos==='tank'){const others=[...(g.dead?[]:[p]),...g.companions.filter(o=>o!==c&&alive(o))];if(!others.length)return null;
+  const cx=others.reduce((n,o)=>n+o.x,0)/others.length,cy=others.reduce((n,o)=>n+o.y,0)/others.length;let ax=e.x-cx,ay=e.y-cy;const al=Math.hypot(ax,ay);
+  if(al<18){ax=fx;ay=fy;}else{ax/=al;ay/=al;}goal=ok({x:e.x+ax*reach*.9,y:e.y+ay*reach*.9});}
+ else if(holder===c)return null;
+ else if(pos==='behind'){const i=g.companions.filter(o=>(o.def.position||COMPANION_ROLES[o.def.role].position)==='behind').indexOf(c),side=(i%2?1:-1)*(6+5*Math.max(0,i));
+  for(const d of [0,18,-18,34,-34]){goal=ok({x:e.x-fx*reach*.85-fy*(side+d),y:e.y-fy*reach*.85+fx*(side+d)});if(goal)break;}/* Trümmer oder Wand hinter ihm: seitlich ausweichen */}
+ else{const i=Math.max(0,g.companions.filter(o=>(o.def.position||COMPANION_ROLES[o.def.role].position)==='spread').indexOf(c)),fan=R.spreadFan[Math.floor(i/2)%R.spreadFan.length]*Math.PI/180*(i%2?1:-1),a=Math.atan2(-fy,-fx)+fan;
+  const rs=c.def.abilities.map(id=>COMPANION_ABILITIES[id]).filter(x=>x&&(x.kind==='strike'||x.kind==='heal')).map(x=>(x.range||role.range||48)*.85),range=Math.min(R.spreadDistance,rs.length?Math.max(...rs):(role.range||48)*.85);
+  for(const f of [1,.75,.5,.3]){goal=ok({x:e.x+Math.cos(a)*range*f,y:e.y+Math.sin(a)*range*f});if(goal)break;}}
+ /* kein sicherer Platz: stehen bleiben, solange es dort sicher ist */if(!goal&&risky&&!unsafe(g,c))goal={x:c.x,y:c.y};
+ c.formation={e,goal,until:g.time+.3};return goal;
+}
 /** Aufhelfen (Dungeon Etappe 1, E-71): Liegt der Held als Geist im Dungeon, geht ein Heil-Söldner mit `revive` an den Körper und wirkt
  *  8 s lang. Einmal je Kampf; ein Ausweichschritt oder das eigene Umfallen bricht ab, dann beginnt er von vorn. true = Takt versorgt. */
 function tickRevive(g,c,dt){
@@ -232,8 +296,9 @@ function tickOne(g,c,dt){
  if(c.gcd<=0)for(const id of c.def.abilities){const a=COMPANION_ABILITIES[id];if(a&&a.kind!=='strike'&&a.kind!=='cleave'&&use(g,c,id,e))break;}
  if(e){
   c.state='combat';c.inCombat=6;face(c,e);
-  const reach=(role.range||44)*.8,d=distance(c,e);
-  if(c.order!=='stay'&&(d>reach||!g.world.lineClear(c,e)))walkTo(g,c,e,R.speed,dt,reach);
+  const reach=(role.range||44)*.8,d=distance(c,e),spot=formationSpot(g,c,e,role);/* Dungeon Etappe 3: Platz nach Rolle */
+  if(spot){if(distance(c,spot)>R.formationSlack)walkTo(g,c,spot,R.speed,dt,4);}
+  else if(c.order!=='stay'&&(d>reach||!g.world.lineClear(c,e)))walkTo(g,c,e,R.speed,dt,reach);
   if(c.gcd<=0)for(const id of c.def.abilities){const a=COMPANION_ABILITIES[id];if(a&&(a.kind==='strike'||a.kind==='cleave')&&use(g,c,id,e))break;}
   return;
  }

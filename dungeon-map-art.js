@@ -6,7 +6,7 @@
 // Söldner als Punkte, Wegmarke als Nadel mit Route. Treffer (für Tooltip und Klick) liegen danach in canvas.dungeonHits (CSS-Pixel).
 // Dazu die Minikarte im Dungeon: Ausschnitt um den Helden, Gegner als rote Punkte (drawDungeonMini).
 import {DUNGEON_BOSSES,DUNGEON_SCALE as U,DUNGEON_UI as DU} from './content/index.js';
-import {dungeonRun,floorAt,doorOpen,toWorld,concealed} from './dungeon.js';
+import {dungeonRun,floorAt,doorOpen,toWorld,concealed,requiredSeals} from './dungeon.js';
 import {mapIcon} from './map-symbols.js';
 
 const TAU=Math.PI*2,FLOORS=['e0','k1','k2'];
@@ -69,7 +69,7 @@ export function drawDungeonMapFull(canvas,g,opts={}){
  c.save();c.strokeStyle=INK;c.lineWidth=3*k;for(const room of rooms){if(!seen(room))continue;for(const q of room.rects){const r=R(q);c.strokeRect(r.x,r.y,r.w,r.h);}}c.restore();
  for(const room of rooms){if(!seen(room))continue;for(const q of room.rects){const r=R(q);c.fillStyle=KRAFT;c.fillRect(r.x+1.5*k,r.y+1.5*k,r.w-3*k,r.h-3*k);}}
  for(const d of def.doors.filter(d=>d.floor===f)){const r=R(d.rect),open=doorOpen(run,d),known=rooms.some(room=>seen(room)&&room.rects.some(q=>{const b=R(q);return r.x<b.x+b.w+2&&r.x+r.w>b.x-2&&r.y<b.y+b.h+2&&r.y+r.h>b.y-2;}));if(!known)continue;
-  if(d.lock?.seals){c.fillStyle='#7d8a96';c.fillRect(r.x,r.y,r.w,r.h);c.strokeStyle=INK;c.lineWidth=2*k;c.strokeRect(r.x,r.y,r.w,r.h);const n=d.lock.seals.length,vertical=r.h>r.w;for(let i=0;i<n;i++){const cx=vertical?r.x+r.w/2:r.x+(i+1)*r.w/(n+1),cy=vertical?r.y+(i+1)*r.h/(n+1):r.y+r.h/2;icon(c,run.seals.has(d.lock.seals[i])?'seal':'seal-empty',cx,cy,Math.min(18*k,Math.max(10*k,(vertical?r.w:r.h)*.8)));}
+  if(d.lock?.seals){c.fillStyle='#7d8a96';c.fillRect(r.x,r.y,r.w,r.h);c.strokeStyle=INK;c.lineWidth=2*k;c.strokeRect(r.x,r.y,r.w,r.h);const need=requiredSeals(run.def,d.lock.seals)/* Etappe 3: nur die verlangten Siegel */,n=need.length,vertical=r.h>r.w;for(let i=0;i<n;i++){const cx=vertical?r.x+r.w/2:r.x+(i+1)*r.w/(n+1),cy=vertical?r.y+(i+1)*r.h/(n+1):r.y+r.h/2;icon(c,run.seals.has(need[i])?'seal':'seal-empty',cx,cy,Math.min(18*k,Math.max(10*k,(vertical?r.w:r.h)*.8)));}
    hits.push({kind:'vault',x:css(r.x+r.w/2),y:css(r.y+r.h/2),r:css(Math.max(r.w,r.h)/2+4*k),label:DU.map.vault,note:DU.map.vaultNote(run.seals.size,n)});continue;}
   if(open){c.fillStyle=KRAFT;c.fillRect(r.x-1,r.y-1,r.w+2,r.h+2);c.strokeStyle=KRAFT_EDGE;c.lineWidth=k;c.beginPath();if(r.h>r.w){c.moveTo(r.x+r.w/2,r.y+2*k);c.lineTo(r.x+r.w/2,r.y+r.h-2*k);}else{c.moveTo(r.x+2*k,r.y+r.h/2);c.lineTo(r.x+r.w-2*k,r.y+r.h/2);}c.stroke();}
   else{c.fillStyle=d.arena?'#8f2f2c':'#4a3a2a';c.fillRect(r.x,r.y,r.w,r.h);c.strokeStyle=INK;c.lineWidth=1.5*k;c.strokeRect(r.x,r.y,r.w,r.h);hits.push({kind:'door',x:css(r.x+r.w/2),y:css(r.y+r.h/2),r:css(Math.max(r.w,r.h)/2+3*k),label:DU.map.door,note:DU.map.doorLocked});}}

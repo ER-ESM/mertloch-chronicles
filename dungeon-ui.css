@@ -118,6 +118,17 @@ button.dg-chip{cursor:pointer}
 .bf-cast.bf-int{border-color:#f3cf7a;background:#2a2412}.bf-cast.bf-int>i{background:#ecb95c55}.bf-cast.bf-int b{color:#ffe6a0}
 .bf-cast kbd{font:800 11px/1 var(--read);padding:2px 5px;border-radius:5px;background:#f3cf7a;color:#1c1712}
 .bf-cast-time{font:800 12px/1 var(--read);color:var(--cream)}
+/* Etappe 3: Journal am Handy mit vielen Fähigkeiten (Big B: 7) – Symbolkacheln, Name und Antwort im Tooltip (Tippen zeigt ihn) */
+@media (orientation:landscape){.touch-mode .dj-big .dj-chip{padding:0 5px 0 2px;gap:2px}.touch-mode .dj-big .dj-phase{padding:0 4px;gap:2px}.touch-mode .dj-big .dj-row.dj-phases{gap:3px}.touch-mode .dj-big .dj-phases .dj-label{display:none}}
+.touch-mode .dj-abilities.dj-many{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px}.touch-mode .dj-abilities.dj-many .dj-ability{grid-template-columns:1fr;justify-items:center;padding:6px 4px;min-height:48px}.touch-mode .dj-abilities.dj-many .dj-ability span,.touch-mode .dj-abilities.dj-many .dj-ability i{display:none}
+/* Etappe 3 „Big B“: Behauptung (blass, kursiv, gestrichelt) → Nachsatz (hell, rot); Nebenher-Zeilen; Statuszeile im Bossrahmen */
+.bf-cast.bf-claim{border-style:dashed;border-color:#d7b6f2aa;background:#231a2a}.bf-cast.bf-claim b{color:#e6d8f2;font-style:italic;text-transform:none}.bf-cast.bf-claim>i{background:#d7b6f233}
+.bf-cast.bf-truth{border-color:#ff7a5c;box-shadow:0 0 0 1px #ff7a5c55}.bf-cast.bf-truth b{color:#fff0e8;text-transform:none}
+.ba-row.ba-lie-c b{font-style:italic;text-transform:none;color:#e6d8f2}.ba-row.ba-lie-c{border-style:dashed}.ba-row.ba-lie-t b{text-transform:none;color:#fff0e8}
+.ba-row.ba-track small::before{content:'\21bb  '}
+.bf-status{display:flex;flex-wrap:wrap;gap:4px;min-width:0}.bf-status[hidden]{display:none}
+.bf-chip{display:inline-flex;align-items:center;gap:3px;height:18px;padding:0 6px 0 2px;border-radius:999px;background:#1c1712cc;border:1px solid #6b5a3a;font:800 11px/1 var(--read);color:var(--cream)}
+.bf-chip.bf-warn{border-color:#f3cf7a;color:#ffe6a0}.bf-chip.bf-hot{border-color:#ff7a5c;color:#ffd2c4}.bf-chip.bf-good{border-color:#9ed17a;color:#dff5cf}
 /* ── Warnleiste über der Aktionsleiste (am Handy über den Kampfknöpfen): Symbol, Antwort, Name, Timer */
 .boss-alerts{position:absolute;left:50%;transform:translateX(-50%);bottom:180px;width:380px;max-width:calc(100% - 16px);display:flex;flex-direction:column-reverse;gap:4px}
 .boss-alerts.ba-right{left:auto;transform:none;width:min(300px,calc(100% - 16px))}

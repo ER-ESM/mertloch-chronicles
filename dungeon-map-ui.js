@@ -5,7 +5,7 @@
 // (Raum: Schild, Wirklichkeit, geräumt/Gegner übrig; Boss; Übergang), Klick auf einen Boss öffnet das Journal, Klick auf die Karte
 // setzt eine Wegmarke (auch über Ebenen, der Pfeil am Helden führt zum nächsten Übergang), Umschalt+Klick läuft hin.
 import {DUNGEON_BOSSES,DUNGEON_UI as DU,PANEL_UI} from './content/index.js';
-import {dungeonRun,floorAt,dungeonDestination,setDungeonWaypoint} from './dungeon.js';
+import {dungeonRun,floorAt,dungeonDestination,setDungeonWaypoint,requiredSeals} from './dungeon.js';
 import {drawDungeonMapFull,mapToWorld} from './dungeon-map-art.js';
 import {dicon,paintDungeonIcons} from './dungeon-journal.js';
 
@@ -20,7 +20,7 @@ export function mountDungeonMap({game,popups,openModal,openJournal}){
   const tabs=Object.entries(def.floors).map(([id,f])=>`<button type="button" class="dm-floor ${id===cur?'gold-button':'outline-button'}" data-dungeon-floor="${id}" aria-pressed="${id===cur}" ${tip(f.name,id===here?DU.map.you:'')}>${dicon(id==='e0'?'exit':'stairs',16)}<b>${esc(DU.map.floorShort[id]||id)}</b></button>`).join('');
   const tools=`<div class="dm-tools" role="toolbar">${tabs}<button type="button" class="ql-tool dm-tool" data-dm-prospect aria-pressed="${prospect}" ${tip(DU.map.prospect,DU.map.prospectNote)}>${dicon('eye',18)}</button><span class="dm-tool dm-info" tabindex="0" ${tip(DU.map.info,DU.map.infoNote)}>${dicon('info',18)}</span></div>`;
   return `<span hidden data-ui-window-title="${esc(def.name)}"></span><div class="dm" data-dm>${tools}<div class="dm-body"><div class="dm-paper"><canvas class="dungeon-map" width="640" height="480"></canvas></div><aside class="dm-side" aria-label="${esc(def.name)}"></aside></div></div>`;}
- function side(){const r=run();if(!w?.body)return;const el=w.body.querySelector('.dm-side');if(!el)return;const def=r.def,seals=def.doors.find(d=>d.lock?.seals)?.lock.seals||[];
+ function side(){const r=run();if(!w?.body)return;const el=w.body.querySelector('.dm-side');if(!el)return;const def=r.def,seals=requiredSeals(def,def.doors.find(d=>d.lock?.seals)?.lock.seals)/* Etappe 3: nur gebaute Siegelträger */;
   const html=`<div class="dm-row" ${tip(DU.tracker.seals,DU.tracker.sealNote)}>${seals.map(s=>dicon(r.seals.has(s)?'seal':'seal-empty',22)).join('')}<b>${r.seals.size}/${seals.length}</b></div>`
    +`<div class="dm-row" ${tip(DU.tracker.proofs,DU.tracker.proofNote)}>${[0,1,2].map(i=>dicon((r.evidence?.size||0)>i?'lens':'lens-empty',22)).join('')}<b>${r.evidence?.size||0}/3</b></div>`
    +`<div class="dm-bosses">${def.bosses.filter(b=>DUNGEON_BOSSES[b.id]).map(b=>{const dead=r.killed.has(b.id);return `<button type="button" class="dm-boss${dead?' dead':''}" data-dm-boss="${b.id}" ${tip(DUNGEON_BOSSES[b.id].name,(dead?DU.map.bossDead:DU.map.boss)+' · '+DU.map.bossNote)}>${dicon(dead?'skull-dead':b.id==='bigb'?'crown':'skull',22)}<span>${esc(DUNGEON_BOSSES[b.id].name)}</span></button>`;}).join('')}</div>`;

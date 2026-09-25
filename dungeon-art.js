@@ -1,7 +1,7 @@
 // Zeichnen des Dungeons (Plan Abschnitte 5 und 14): Boden, Wände, Türen, Übergänge, Schilder und Warnflächen in der Welt,
 // dazu die Dungeon-Karte (Prospekt gegen Wirklichkeit). Grundriss aus content/dungeons.js, Zustand aus dungeon.js.
 import {DUNGEON_TEXT as T,DUNGEON_BOSSES,DUNGEON_SCALE as U,DUNGEON_UI as DU} from './content/index.js';
-import {dungeonRun,floorAt,rectWorld,toWorld,doorOpen,coneReach,CONE_RAYS,fallActive,speakerPoint} from './dungeon.js';
+import {dungeonRun,floorAt,rectWorld,toWorld,doorOpen,coneReach,CONE_RAYS,fallActive,speakerPoint,requiredSeals} from './dungeon.js';
 import {drawConeHazard} from './hazard-art.js';
 
 const THEMES={
@@ -41,7 +41,7 @@ function groundBody(c,g,view,run,def,floor,theme){
  c.save();c.strokeStyle=theme.wall;c.lineWidth=5;for(const room of rooms)for(const q of room.rects){const r=rectWorld(def,floor,q);c.strokeRect(r.x-2,r.y-2,r.w+4,r.h+4);}c.restore();
  for(const d of doors){const r=rectWorld(def,floor,d.rect),open=doorOpen(run,d);
   if(open){box(c,theme.floor,r.x,r.y,r.w,r.h);continue;}
-  if(d.lock?.seals){drawVault(c,r,d.lock.seals.map(s=>run.seals.has(s)));continue;}
+  if(d.lock?.seals){drawVault(c,r,requiredSeals(def,d.lock.seals).map(s=>run.seals.has(s))/* Etappe 3: nur die verlangten Siegel */);continue;}
   box(c,'#2a1f18',r.x,r.y,r.w,r.h);c.strokeStyle=d.arena?'#e18569':'#8a6a4a';c.lineWidth=2;const vertical=r.h>r.w;c.beginPath();
   for(let i=1;i<4;i++){if(vertical){c.moveTo(r.x,r.y+r.h*i/4);c.lineTo(r.x+r.w,r.y+r.h*i/4);}else{c.moveTo(r.x+r.w*i/4,r.y);c.lineTo(r.x+r.w*i/4,r.y+r.h);}}c.stroke();
   if(d.arena){/* Absperrband quer über die Arena-Tür */c.save();c.strokeStyle='#f3c44e';c.lineWidth=2;c.setLineDash([4,4]);c.beginPath();if(vertical){c.moveTo(r.x-2,r.y+2);c.lineTo(r.x+r.w+2,r.y+r.h-2);}else{c.moveTo(r.x+2,r.y-2);c.lineTo(r.x+r.w-2,r.y+r.h+2);}c.stroke();c.restore();}}
@@ -137,7 +137,7 @@ export function drawDungeonMap(canvas,g,{floor=null,full=false}={}){
     if(full&&room2){const m=fitSize(c,room.truth,maxW,small,'normal');if(m)text(c,room.truth,cx,cy+m*.75,{size:m,weight:'normal',color:'#5b4a35',outline:null});}}
    else if(full){const label=T.map.prospect+': '+room.prospect,m=fitSize(c,label,maxW,small,'normal')||fitSize(c,room.prospect,maxW,small,'normal');if(m)text(c,c.measureText(label).width<=maxW?label:room.prospect,cx,cy,{size:m,weight:'normal',color:'#e0c48e',outline:'#1b2f25'});}}
  }
- for(const d of def.doors.filter(d=>d.floor===f&&d.lock?.seals)){const r=R(d.rect);box(c,STAMP,r.x,r.y,r.w,r.h);if(full)text(c,T.map.seals+' '+run.seals.size+'/'+d.lock.seals.length,r.x+r.w/2,r.y-9*k,{size:small,color:CREAM});}
+ for(const d of def.doors.filter(d=>d.floor===f&&d.lock?.seals)){const r=R(d.rect);box(c,STAMP,r.x,r.y,r.w,r.h);if(full)text(c,T.map.seals+' '+requiredSeals(def,d.lock.seals).filter(s=>run.seals.has(s)).length+'/'+requiredSeals(def,d.lock.seals).length,r.x+r.w/2,r.y-9*k,{size:small,color:CREAM});}
  const m4=4*k;
  for(const t of def.transitions)for(const side of ['a','b']){const e=t[side];if(e.floor!==f)continue;if(t.secret&&!run.secrets.has(t.secret))continue;const room=def.rooms.find(r=>r.floor===f&&r.rects.some(q=>e.x>=q[0]&&e.x<=q[0]+q[2]&&e.y>=q[1]&&e.y<=q[1]+q[3]));if(room&&!run.visited.has(room.id))continue;const p=P(e.x,e.y);box(c,'#78a865',p.x-m4,p.y-m4,m4*2,m4*2);c.strokeStyle=INK;c.lineWidth=k;c.strokeRect(p.x-m4,p.y-m4,m4*2,m4*2);}
  for(const room of def.rooms.filter(r=>r.floor===f&&r.checkpoint&&run.visited.has(r.id))){const p=P(room.checkpoint.x,room.checkpoint.y);c.fillStyle='#78a865';c.beginPath();c.moveTo(p.x-2*k,p.y+6*k);c.lineTo(p.x-2*k,p.y-6*k);c.lineTo(p.x+6*k,p.y-3*k);c.lineTo(p.x-2*k,p.y);c.fill();}

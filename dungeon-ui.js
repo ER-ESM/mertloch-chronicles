@@ -2,6 +2,7 @@
 // app.js ruft nur mountDungeonUI() und an drei Stellen openEntry/leave/openJournal – alles andere bleibt hier.
 // Fenster im Einzelfenster-System (E-67): „dungeonEntry“ und „journal“ stehen mittig (popup-windows.js GRID_OVERLAY),
 // das Journal darf neben offenen Fenstern (Karte) stehen. Am Handy zeigt Tippen auf ein Symbol seinen Tooltip als Detail.
+import {requiredSeals} from './dungeon.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_UI as U} from './content/index.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 import {entryCard,dungeonTransition} from './dungeon-entry.js';
@@ -44,7 +45,7 @@ export function mountDungeonUI(api){
  /** Nach Anheuern/Entlassen: offene Karte nachziehen. */
  function refresh(){if(entryId&&api.popups.isOpen('dungeonEntry')){const w=api.popups.get('dungeonEntry'),key=(api.game().companions||[]).map(c=>c.id).join('|');if(w.body.dataset.party!==key){renderEntry(entryId);api.popups.get('dungeonEntry').body.dataset.party=key;}}}
  /** Verfolgung im Dungeon (statt Weltauftrag): Siegel und Beweise als Felder, dazu der nächste lebende Boss; Klick öffnet dessen Journal. */
- function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(!body||!run)return;const def=run.def,seals=def.doors.find(d=>d.lock?.seals)?.lock.seals||[],ev=run.evidence?.size||0,boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
+ function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(!body||!run)return;const def=run.def,seals=requiredSeals(def,def.doors.find(d=>d.lock?.seals)?.lock.seals)/* Etappe 3: nur gebaute Siegelträger */,ev=run.evidence?.size||0,boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
   const html=`<div class="qt-quest is-focus dg-track" data-tooltip-label="${esc(def.name)}" data-tooltip-note="${esc(U.tracker.sealNote)}"><b id="questTitle" class="qt-title">${esc(def.name)}</b><div id="questTasks">`
    +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(U.tracker.seals)}" data-tooltip-note="${esc(U.tracker.sealNote)}"><span class="dg-track-icons">${seals.map(s=>dicon(run.seals.has(s)?'seal':'seal-empty',18)).join('')}</span><b class="qt-count">${run.seals.size}/${seals.length}</b></div>`
    +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(U.tracker.proofs)}" data-tooltip-note="${esc(U.tracker.proofNote)}"><span class="dg-track-icons">${[0,1,2].map(i=>dicon(ev>i?'lens':'lens-empty',18)).join('')}</span><b class="qt-count">${ev}/3</b></div>`
