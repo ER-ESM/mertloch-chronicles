@@ -5,7 +5,7 @@ Generatoren und Spendern und ganz innovativen, neuen Klassendesigns, die gänzli
 Jeder Held soll sich einzigartig anfühlen. Entwickle passende Skills und Talentbäume und effektreiche Animationen.
 Ziel: 5 unterschiedliche Klassendesigns mit unterschiedlichem Ressourcenmanagement, vollständig, Talente entsprechend."
 
-Dieses Papier ist zugleich der **Vertrag** für alle Umsetzer (Engine, Inhalt, UI/Effekte). Zahlen sind Startwerte für
+Stand nach Umsetzung und Erstabgleich: [E-71](ENTSCHEIDUNGEN.md). Dieses Papier ist zugleich der **Vertrag** für alle Umsetzer (Engine, Inhalt, UI/Effekte). Zahlen sind Startwerte für
 `content/resources.js`; Balancing dreht über `content/tuning.js` (Block `resources`).
 
 ## 1 · Befund: warum sich heute alle gleich spielen (schwächster Punkt zuerst)
@@ -55,6 +55,8 @@ verraucht außerhalb (5 s nach dem Kampf −6/s).
 | kassierter Treffer | +1,2 Randale je 1 % Maximalleben Schaden (vor Deckung) |
 | Kronkorken-Kelle | +11 (wie bisher, `passives.strikeGain`) |
 | Parade | +20 · Unterbrechen +15 · Kill +Schwung (wie bisher) |
+| Kampfbeginn („Kampfeslust“) | +30 (Balancing-Abgleich 25.09.: ohne Startwert brauchte Dieter auf Stufe 6 länger als auf Stufe 1) |
+| Pfand auf die Zwölf (Wurf) | kostenlos, +12 – der Wurf eröffnet den Streit |
 
 **Zeche (Kassenbon):** 30 % jedes Treffers, der nach Deckung übrig bleibt, wird **angeschrieben** statt sofort
 abgezogen. Die Zeche wird mit 12 % ihres Stands je Sekunde als Schaden „abgestottert". **Jede Randale, die Dieter
@@ -88,8 +90,8 @@ Kampfes +5/s bis 100 („Stammfollower"). **Kein** Nachfluss im Kampf, der Pinse
 | **derselbe** Kniff wie gerade eben („Wiederholung") | Trend −1 |
 | 3,5 s kein Kniff | Trend −1 (der Algorithmus vergisst dich) |
 | Treffer über 12 % Maximalleben („Shitstorm") | Trend −1 |
-| jeder Kniff (nicht Autoangriff) | +Likes je Trend: 4 · 7 · 10 · 13 · 16 · 20 |
-| Trend | +6 % Schaden und Heilung je Stufe (bis +30 %) |
+| jeder Kniff (nicht Autoangriff) | +Likes je Trend: 3 · 5 · 7 · 9 · 11 · 14 |
+| Trend | +4 % Schaden und Heilung je Stufe (bis +20 %) |
 | Trend erreicht 5 („Viral!") | nächster Kniff mit Kosten ist gratis |
 
 Annis Takt bleibt: Piekser 1–1,9 s nach dem letzten Piekser gilt nie als Wiederholung und gibt +10 Likes.
@@ -119,7 +121,7 @@ Flaschen liegen, jeder Kill wirft eine Flasche ab („der hatte noch Pfand dabei
 **Neuer Kniff `reload` · „Pfandautomat"** (Stufe 2, keine GCD-Sperre für Bewegung, Abklingzeit 0): 2 s Nachladen mit
 Balken. Die **Bon-Zone** liegt bei 55–72 % des Balkens. Taste in der Zone erneut drücken = **Pfandbon**: Kasten sofort
 voll + 1 Pfandbon (höchstens 3). Außerhalb = **Klemmt!** (+1 s). Nichts drücken = +6 Flaschen nach 2 s.
-**Pfandbon:** Der nächste Flaschenkniff trifft 50 % härter (ein Bon je Kniff).
+**Pfandbon:** Der nächste Flaschenkniff trifft 35 % härter (ein Bon je Kniff).
 
 **Leerer Kasten:** Die Taste 1 wird zum Pömpel-Schlag (Nahkampf, kostenlos, 60 % Schaden) – Variante „PÖMPEL".
 Schrottkoloss: Robbi sammelt Leergut in seinem Kreis automatisch ein. Pfandjäger: Fehlzündungen bleiben immer heil liegen.
@@ -159,7 +161,7 @@ Kit (Leistenplätze der Engine, Namen Schorsch):
 |---|---|---|---|
 | auto | Zangenklapper | Nahkampf-Autoangriff | – |
 | 1 strike | **Grillzange** | Nahkampftreffer, Schaden nach Bereich | +12 |
-| 2 mark | **Auflegen** | nächstes Grillgut auf den Rost (Abklingzeit 3 s) | – |
+| 2 mark | **Auflegen** | nächstes Grillgut auf den Rost (Abklingzeit 3 s, ohne globale Abklingzeit) | – |
 | 3 burst | **Servieren** | garstes Grillgut (s. o.); Variante zeigt Stück und Garstufe | – |
 | 4 interrupt | **Zange zu!** | unterbricht, kneift | – |
 | E parry | **Grilldeckel** | Parade | +15 bei Erfolg |
@@ -177,7 +179,7 @@ Blasebalg 6 · Schwenkgrill 7.
 | Spec | Rolle | Kernmechanik (Hauptbaum) | Pfade (0 · 1 · 2) |
 |---|---|---|---|
 | **Grillhütten-Chef** | Heilung | Grillplan Wurst → Wurst → Braten; Servierte Wurst heilt +50 % und springt auf einen zweiten Verbündeten; Schwenkgrill wird **Grillbuffet** (Tisch, heilt 10 s alle im Kreis) | Wurstbude · Beilagen · Stammkundschaft |
-| **Flambierer** | Schaden | Stichflamme verletzt Schorsch nicht und trifft doppelt; ab 85 Glut wird Servieren zu **FLAMBIEREN** (+50 %, Feuerspritzer an Nachbarn) | Stichflamme · Schwenkbraten · Spiritus |
+| **Flambierer** | Schaden | Grillplan Braten → Mais → Braten; Stichflamme verletzt Schorsch nicht und trifft doppelt; ab 85 Glut wird Servieren zu **FLAMBIEREN** (+50 %, Feuerspritzer an Nachbarn) | Stichflamme · Schwenkbraten · Spiritus |
 | **Räuchermeister** | Tank | Unter 45 Glut wird Grillgut **geräuchert** (gart halb so schnell, hinterlässt beim Servieren Rauch, der Gegner verspottet und ihren Schaden −25 % senkt); Grillplan Käse → Braten → Käse; Schwenkgrill wird **Räucherofen** | Buchenrauch · Halloumi · Glutnest |
 
 **HUD:** Thermometer mit farbigen Bereichen und Nadel · Grillrost mit drei runden Plätzen (Stück + Garring rosa → gold →
