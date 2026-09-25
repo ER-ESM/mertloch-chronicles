@@ -111,7 +111,7 @@ test('nach einem Kill wechselt das Ziel auf den nächsten kämpfenden Gegner',()
 test('Schlusssteine (Reihe 9) ändern in jedem Baum den Finisher',()=>{
  const finisher=new Set(['guardBurst','waveRadius','stackWave','tapDamage','burstHot','cleanDuration','burstSpread','dotExplodeTicks','stateDamage','chainJumps','overloadStun','hunterFinish','gambleOver']);
  for(const [spec,m] of Object.entries(SPEC_MECHANICS)){void m;}
- for(const spec of Object.keys(SPEC_MECHANICS)){const {TALENT_ROWS,TALENT_CELLS}=CONTENT;const rows=TALENT_ROWS[spec];for(let i=0;i<rows.length;i++){if(TALENT_CELLS[spec][i].row!==9)continue;assert.ok(rows[i].skills.includes('burst')||Object.keys(rows[i].effects).some(k=>finisher.has(k)),spec+'-'+i+' '+rows[i].name);}}
+ for(const spec of Object.keys(SPEC_MECHANICS)){const {TALENT_ROWS,TALENT_CELLS}=CONTENT;const rows=TALENT_ROWS[spec];for(let i=0;i<rows.length;i++){if(TALENT_CELLS[spec][i].row!==9)continue;/* E-71: Käthes Finisher ist Abrechnen (Wurfplatz) */const fin=spec.startsWith('kaethe-')?'throw':'burst';assert.ok(rows[i].skills.includes(fin)||Object.keys(rows[i].effects).some(k=>finisher.has(k)),spec+'-'+i+' '+rows[i].name);}}
 });
 
 test('laufende Begleiter: mit Pfadkrone folgt Robbi dem Helden',()=>{

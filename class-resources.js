@@ -190,7 +190,7 @@ export function rostState(g){const st=g.res,r=R(g);if(!st||r?.kind!=='grill')ret
 
 function serve(g,st,cs,e,context){
  const r=R(g),p=g.player,m=mech(g),it=ripest(g,st,cs);if(!it)return;st.rost.splice(st.rost.indexOf(it),1);
- const def=r.items[it.item],d=doneness(g,it,cs),flambe=!!m?.flamme&&st.glut>=m.flamme.at,fl=flambe?1+m.flamme.bonus:1;
+ const def=r.items[it.item],d=doneness(g,it,cs),flambe=!!m?.flamme&&st.glut>=m.flamme.at,fl=(flambe?1+m.flamme.bonus:1)*(context.pm||1);
  const target=['braten','mais'].includes(it.item)?e:null;
  if(it.item==='wurst'){
   const chef=!!m?.chef,amount=p.maxHp*def.value*d.factor*(1+num(cs,'wurstHeal'))*(chef?1+m.chef.wurstBonus:1)*fl;
@@ -233,7 +233,7 @@ function tryStich(g,st,card,cs,viaKontra=false){
 function cardPower(g,st,card,cs){const r=R(g),rk=r.ranks[card.rank],m=mech(g);let p=rk.power*(1+num(cs,card.suit+'Power'));if(rk.trump)p*=1+num(cs,'bubePower');if(rk.quick)p*=1+num(cs,'luschenPower');if(card.suit==='herz'&&m?.herz)p*=1+m.herz.bonus;if(card.suit==='pik'&&m?.falsch)p*=1+m.falsch.pikBonus;return p*(1+st.chain.n*(r.follow.bonus+num(cs,'followBonus')));}
 /** Wirkung einer Karte am Ziel (Einzelkarte) oder im Kreis (Kartenregen, share < 1). */
 function cardEffect(g,st,card,cs,{target=null,point=null,share=1}={}){
- const r=R(g),p=g.player,power=cardPower(g,st,card,cs)*share,rk=r.ranks[card.rank],ef=r.effects;
+ const r=R(g),p=g.player,power=cardPower(g,st,card,cs)*share*(st.pmNow||1),rk=r.ranks[card.rank],ef=r.effects;
  if(card.suit==='kreuz'){const list=point?foes(g,point,70):target?[target]:[];for(const e of list)g.damage(e,Math.round(skillDamage(g,{damageModel:ef.damage,weaponSource:'ranged'},0,ITEMS)*power),'Kreuz');}
  if(card.suit==='karo'){const at=point||target;if(at)for(const e of foes(g,at,ef.control.radius)){g.damage(e,Math.round(skillDamage(g,{damageModel:{flat:ef.control.flat,weapon:ef.control.weapon},weaponSource:'ranged'},0,ITEMS)*power),'Karo');e.controlSlow=Math.max(e.controlSlow||0,ef.control.duration);if(['10','A'].includes(card.rank))e.stun=Math.max(e.stun||0,ef.control.stun+num(cs,'karoStun'));}}
  if(card.suit==='herz'){const amount=p.maxHp*ef.heal*power,help=point?{kind:'self'}:helpTarget(g),mate=help.kind==='companion'?help.ref:null;if(mate)healCompanionByPlayer(g,mate,Math.round(amount),'Herz');else healPlayer(g,amount,cs,false,'heal',true);
@@ -248,7 +248,7 @@ function playCard(g,st,index,cs,context){
  const rk=r.ranks[card.rank],e=['kreuz','karo'].includes(card.suit)?g.target:null;
  const follow=st.chain.suit&&(card.suit===st.chain.suit||rk.trump);st.chain=follow?{suit:st.chain.suit,n:Math.min(r.follow.max+num(cs,'followMax'),st.chain.n+1)}:{suit:card.suit,n:0};
  tryStich(g,st,card,cs);
- cardEffect(g,st,card,cs,{target:e});
+ st.pmNow=context.pm||1;cardEffect(g,st,card,cs,{target:e});st.pmNow=1;
  if(!st.noAugen)addAugen(g,st,r.augenPerCard+rk.augen+num(cs,'augenGain'));st.noAugen=false;
  if(rk.trump){st.bubes++;fireProcs(g,'bubePlayed',cs);}
  if(follow)fireProcs(g,'follow',cs,{suit:card.suit});
@@ -258,9 +258,9 @@ function playCard(g,st,index,cs,context){
  if(e){g.autoAttack.enabled=true;e.aggro=true;e.ai='combat';g.player.inCombat=7;}
  return true;
 }
-function abrechnen(g,st,cs,e){
+function abrechnen(g,st,cs,e,context={}){
  const r=R(g),a=r.abrechnen,p=g.player,m=mech(g),grand=!!m?.grand&&st.bubes>=m.grand.bubes;
- let mult=(1+num(cs,'abrechnenPower'))*(st.augen>=r.schwarz?a.schwarz:st.augen>=r.schneider?a.schneider:1)*(grand?m.grand.factor:1);
+ let mult=(context.pm||1)*(1+num(cs,'abrechnenPower'))*(st.augen>=r.schwarz?a.schwarz:st.augen>=r.schneider?a.schneider:1)*(grand?m.grand.factor:1);
  const n=skillDamage(g,{damageModel:{flat:st.augen*a.perAuge,weapon:st.augen/20},weaponSource:'ranged'},0,ITEMS)*mult;
  const list=st.augen>=r.schwarz||grand?[e,...foes(g,e,grand?m.grand.radius:a.radius,e)]:[e];
  for(const o of list)g.damage(o,Math.round(o===e?n:n*.6),'Abrechnen');
@@ -337,7 +337,7 @@ export function performClassSkill(g,id,s,e,point,cs,context){
   const i={strike:0,mark:1,burst:2}[id];
   if(i!==undefined)return playCard(g,st,i,cs,context);
   if(id==='aermel'){if(st.sleeve)return playCard(g,st,'sleeve',cs,context);st.sleeve=st.hand.shift();draw(g,st,cs);emitCombatFx(g,'shuffle',p,{sleeve:true});return true;}
-  if(id==='throw'&&e){abrechnen(g,st,cs,e);return true;}
+  if(id==='throw'&&e){abrechnen(g,st,cs,e,context);return true;}
   if(id==='buff'){st.discard.push(...st.hand);st.hand=[];draw(g,st,cs);if(!st.hand.some(c=>c.rank==='B')){const from=[st.deck,st.discard].find(list=>list.some(c=>c.rank==='B'));if(from){const k=from.findIndex(c=>c.rank==='B'),bube=from.splice(k,1)[0];if(st.hand.length)st.discard.push(st.hand.pop());st.hand.push(bube);}}emitCombatFx(g,'shuffle',p,{redeal:true});fireProcs(g,'shuffle',cs);return true;}
   if(id==='ground'&&point){
    const m=mech(g),cards=[...st.hand];st.hand=[];

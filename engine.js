@@ -190,7 +190,7 @@ export class Game{
     if(!['dash','parry'].includes(id)&&!(s.range&&!s.ground))p.castPose=.28;
     if(s.range&&!s.ground){this.autoAttack.enabled=true;e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.direction=walkFacing(e.x-p.x,e.y-p.y,p.direction||'se');p.attack=.25;p.attackSource=s.weaponSource||'melee';}
     if((s.ground&&s.damage||id==='detonate'||id==='snare')&&this.target?.hp>0)startAuto(this);
-    context.castCard=e?.cast?.card||null;context.castEnemy=e||null;const handled=performClassSkill(this,id,s,e,point,cs,context);if(handled&&s.ground){this.aiming=null;this.aimPoint=null;}
+    context.castCard=e?.cast?.card||null;context.castEnemy=e||null;context.pm=pm;const handled=performClassSkill(this,id,s,e,point,cs,context);if(handled&&s.ground){this.aiming=null;this.aimPoint=null;}
     if(!handled&&s.talent){performTalent(this,s,point,cs);if(s.ground){this.aiming=null;this.aimPoint=null;}}
     if(!handled&&id==='strike'){const empowered=this.classState.empowered>0;if(empowered)this.classState.empowered--;this.damage(e,skillDamage(this,s,s.damage,ITEMS)*(empowered||this.classState.freeStrike?2:1)*pm,'Kelle');onStrikeMech(this,e,cs);const passives=this.member.passives||{},window=passives.beatWindow,beat=!!window&&this.time-this.lastStrike>=window[0]&&this.time-this.lastStrike<=window[1];this.lastStrike=this.time;context.beat=beat;if(beat)this.float(p.x,p.y-35,APEROL_TEXT.combo,this.member.color);/* E-71: Aufbau je Ressource – Dieters Kelle gibt Randale, Annis Takt Likes (resourceCast), Kevin/Schorsch/Käthe eigenes Modell */if(resourceKind(this)==='rage')grantResource(this,s.gain,'strike');}
     if(!handled&&id==='throw'){this.damage(e,skillDamage(this,s,s.damage,ITEMS)*pm,'Pfandwurf');}
