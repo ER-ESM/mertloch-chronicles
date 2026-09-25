@@ -1,6 +1,8 @@
 // Fähigkeiten. Stabile IDs (strike, mark, burst, interrupt, parry, dash, heal, buff, throw, ground + Talentfähigkeiten)
 // sind Speicherschlüssel und Icon-Schlüssel (skill-art.js SKILL_ICON_ORDER). Neue aktive Fähigkeiten brauchen dort ein Icon.
 // BASE = gemeinsames Gerüst je Slot, KITS = klassenspezifische Überschreibungen in derselben Reihenfolge.
+import {TALENTS_SCHORSCH} from './talents/schorsch.js';
+import {TALENTS_KAETHE} from './talents/kaethe.js';
 export const BASE_SKILLS=[
  {id:'strike',key:'1',cd:.85,cost:0,range:55,damage:65,gain:11,color:'#ecdca3',bg:'#655d35',icon:'bottle'},
  {id:'mark',key:'2',cd:6,cost:20,range:155,dot:12,duration:10,color:'#a7dacf',bg:'#306359',icon:'tag'},
@@ -91,8 +93,20 @@ export const TALENT_SKILLS={
  encore:{name:'Noch ein Reel, ihr Opfer!',cd:25,cost:10,text:'Setzt die Abklingzeit von Auswringen zurück.',use:'Zünde es direkt nach Auswringen: Fleckentest, Schätzchen! erneuern, dann Auswringen noch einmal zünden.'},
  detonate:{name:'Kettenzündung',radius:210,cd:14,cost:25,text:'Sprengt mehrere markierte Ziele in Sicht und Reichweite. Verbraucht deren Markierungen.',use:'Erst verteilen, dann zünden.'},
  magnet:{name:'Magnetpanzer',radius:120,cd:22,cost:25,text:'Gibt Deckung, zieht nahe Gegner an und hält sie kurz fest. Das zieht auch bislang neutrale Ziele in den Kampf.',use:'Zünde ihn, wenn Fernkämpfer dich einzeln beharken.'},
- snare:{name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling erleidet Schaden und wird kurz festgehalten. Du kannst währenddessen weiterkämpfen.',use:'Leg sie auf den Weg, bevor du den nächsten Gegner ziehst.'}
+ snare:null
 };
+// E-71: aktive Talentfähigkeiten der neuen Klassen (je Baum eine; Regeln in class-resources.js). Erst mit den Talentbäumen aktiv.
+const NEW_TALENT_SKILLS={
+ senf:{name:'Senf drauf!',cd:20,cost:0,range:0,duration:8,text:'Ein Klecks scharfer Senf auf dich oder den gewählten Freund heilt 10 % des Maximallebens; 8 s lang gart dein Grillgut 50 % schneller.',use:'Drück es, wenn jemand angeschlagen ist und auf dem Rost noch alles roh liegt.'},
+ spiritus:{name:'Spiritus-Schwall',cd:16,cost:0,range:0,radius:95,text:'Ein Schwall Spiritus in die Glut: Glut +30, und eine Stichflamme schießt vor dir in einem Kegel auf alle Gegner.',use:'Drück ihn, wenn mehrere Gegner vor dir stehen und die Glut noch Luft nach oben hat.'},
+ deckelzu:{name:'Deckel zu!',cd:22,cost:0,range:0,radius:100,duration:6,text:'Klappt den Grilldeckel zu und lässt den Rauch raus: alle Gegner im Umkreis greifen 6 s lang nur dich an und treffen 25 % schwächer.',use:'Drück ihn, wenn Gegner auf Söldner oder Mitspieler gehen.'},
+ reizen:{name:'Reizen',cd:25,cost:0,range:0,text:'„Achtzehn, zwanzig, zwo …“: sofort 25 Augen, dafür zählt die nächste Karte keine Augen.',use:'Drück es, wenn dir wenige Augen zum Gewinn oder zum Schneider fehlen.'},
+ handlesen:{name:'Handlesen',cd:18,cost:0,range:0,duration:10,text:'Liest dir oder dem gewählten Freund aus der Hand: 10 s lang heilt es jede Sekunde 2 % des Maximallebens; jede Herz-Karte verlängert es um 2 s.',use:'Drück es auf den, der gleich Schaden nimmt.'},
+ gezinkt:{name:'Gezinkte Karten',cd:24,cost:0,range:0,text:'Zinkt die Hand: alle Karten nehmen die Farbe der ersten Karte an – die Farbkette ist dir sicher.',use:'Drück es, wenn die erste Karte die Farbe hat, die du gleich dreimal brauchst.'}
+};
+TALENT_SKILLS.snare={name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling erleidet Schaden und wird kurz festgehalten. Du kannst währenddessen weiterkämpfen.',use:'Leg sie auf den Weg, bevor du den nächsten Gegner ziehst.'};
+const NEW_TALENT_CLASS={senf:'schorsch',spiritus:'schorsch',deckelzu:'schorsch',reizen:'kaethe',handlesen:'kaethe',gezinkt:'kaethe'};
+for(const [id,def] of Object.entries(NEW_TALENT_SKILLS))if(Object.keys({schorsch:TALENTS_SCHORSCH,kaethe:TALENTS_KAETHE}[NEW_TALENT_CLASS[id]]).length===3)TALENT_SKILLS[id]=def;
 /** Stufen, auf denen Kernfähigkeiten gelernt werden. Klassen überschreiben einzelne Einträge. */
 // Stufe 1–4 = Grundrotation (Aufbau, Markieren, Finisher, Antwort). Danach Erweiterungen. Siehe docs/GAMEPLAY-KONZEPT-FLUSS.md.
 // E-60: Wurf auf 5, Stärkung auf 6 – Talente der ersten Reihen (ab Stufe 5 lernbar) hängen am Wurf, keins vor Stufe 10 an der Stärkung.
@@ -176,6 +190,12 @@ const TALENT_SKILL_META={
  encore:{icon:'speaker',info:{effect:'Macht Auswringen sofort wieder bereit, statt die Abklingzeit abzuwarten.',why:'Erlaubt zweimal Auswringen hintereinander – Fleckentest, Schätzchen! vorher erneuern, sonst verschenkst du den Markierungsbonus.',links:['talent:baerbel-stage-4','talent:baerbel-stage-8','skill:baerbel/burst'],terms:['spezialkniff','randale','abklingzeit']}},
  detonate:{icon:'burst',info:{effect:'Sprengt alle Markierungen in Sicht und Reichweite gleichzeitig und verbraucht sie dabei.',why:'Belohnt das Verteilen der Klebemarke: erst mit dem Marken-Sprung auf Nachbarn lohnt der Knopf – danach sind alle Marken weg.',links:['talent:kevin-fuse-4','talent:kevin-fuse-2','talent:kevin-fuse-8'],terms:['markierung','flaeche','talentfaehigkeit']}},
  magnet:{icon:'metal',info:{effect:'Legt Deckung auf und zieht nahe Gegner an dich heran, wo sie kurz festhängen.',why:'Der Schrottkoloss holt sich die Fernkämpfer in den Nahkampf – er zieht dabei aber auch bislang neutrale Gegner mit hinein.',links:['talent:kevin-iron-4','talent:kevin-iron-8'],terms:['deckung','festhalten','kettenzug']}},
+ senf:{icon:'cup',info:{effect:'Heilt das gewählte Ziel sofort und lässt kurz alles auf dem Grillrost schneller garen.',why:'Der Chef hilft dem, der es braucht, und bringt nebenbei den Rost auf Trab – danach ist mehr gar, was er servieren kann.',links:['skill:schorsch/burst','skill:schorsch/mark'],terms:['heilung','grillrost','garstufe','talentfaehigkeit']}},
+ spiritus:{icon:'burst',info:{effect:'Heizt die Glut sprunghaft an und verbrennt alle Gegner in einem Kegel vor dir.',why:'Der Flambierer spielt am Rand der Stichflamme: der Schwall bringt Schaden und Glut zugleich – zu viel davon, und der Grill geht hoch.',links:['skill:schorsch/strike','skill:schorsch/heal'],terms:['glut','stichflamme','flaeche','talentfaehigkeit']}},
+ deckelzu:{icon:'potlid',info:{effect:'Zwingt alle Gegner im Umkreis, eine Zeit lang nur dich anzugreifen, und schwächt ihre Treffer.',why:'Der Räuchermeister hält die Gruppe zusammen: wer im Rauch steht, prügelt auf den Tank statt auf die Söldner.',links:['skill:schorsch/parry','skill:schorsch/burst'],terms:['schadensminderung','flaeche','talentfaehigkeit']}},
+ reizen:{icon:'megaphone',info:{effect:'Gibt sofort einen Stoß Augen, dafür zählt die nächste Karte nichts.',why:'Die Grand-Spielerin kauft sich den Gewinn: kurz vor 61 oder 90 macht Reizen aus einem langen Spiel ein schnelles Abrechnen.',links:['skill:kaethe/throw','skill:kaethe/strike'],terms:['augen','abrechnen','talentfaehigkeit']}},
+ handlesen:{icon:'ring',info:{effect:'Legt eine Heilung über Zeit auf dich oder den gewählten Freund, die jede Herz-Karte verlängert.',why:'Die Kartenlegerin heilt vorausschauend: erst lesen, dann mit Herz verlängern, statt hinterher zu retten.',links:['skill:kaethe/strike','skill:kaethe/heal'],terms:['heilung','hauspflege','talentfaehigkeit']}},
+ gezinkt:{icon:'paper',info:{effect:'Färbt alle Karten der Hand auf die Farbe der ersten Karte um.',why:'Die Falschspielerin erzwingt die Farbkette – und hält damit die passende Farbe für den nächsten Stich bereit.',links:['skill:kaethe/strike','skill:kaethe/interrupt'],terms:['blatt','farbebedienen','stich','talentfaehigkeit']}},
  snare:{icon:'cable',info:{effect:'Legt eine Falle aus; der erste Gegner, der hineinläuft, nimmt Schaden und wird festgehalten.',why:'Sie liegt scharf, während du weiterkämpfst – auf den Anlaufweg legen, bevor du den nächsten Gegner ziehst.',links:['talent:kevin-hunt-4','talent:kevin-hunt-8'],terms:['festhalten','flaeche','talentfaehigkeit']}}
 };
 for(const [id,m] of Object.entries(TALENT_SKILL_META)){if(!TALENT_SKILLS[id])continue;TALENT_SKILLS[id].icon=m.icon;TALENT_SKILLS[id].info=m.info;}

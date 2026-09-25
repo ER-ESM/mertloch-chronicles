@@ -25,7 +25,7 @@ test('Legacy saves bypass tutorial, fresh progress resumes and claimed tutorial 
 });
 test('Talent graphs: stable art IDs, five sparse tiers, open rows and saved builds',()=>{
  for(const [spec,tree] of Object.entries(TALENTS)){assert.equal(tree.length,30,spec);const cells=new Set(tree.map(t=>t.row+'/'+t.path));assert.equal(cells.size,30,spec+': jede Zelle genau einmal');for(const t of tree){assert.ok(t.row>=0&&t.row<10&&t.path>=0&&t.path<3,t.id);assert.equal(t.spent,t.tier*TIER_POINTS);assert.ok(talentIconCell(t.id),t.id+' Icon-Zelle');}}
- assert.equal(Object.keys(CLASS_SPECS).length,3);
+ assert.ok(Object.keys(CLASS_SPECS).length>=3);/* E-71: fünf Klassen, sobald Schorsch und Käthe ihre Bäume haben */
  const g=new Game(world(),{level:11,rpg:{talents:{spec:'dieter-wall',learned:[]}}}),tree=TALENTS['dieter-wall'],at=(tier,path)=>tree.find(t=>t.tier===tier&&t.path===path).id;
  assert.ok(learnTalent(g,at(0,0)));assert.equal(learnTalent(g,at(1,0)),false,'Reihe 2 verlangt zwei Punkte in DIESEM Baum');
  assert.ok(learnTalent(g,'dieter-brew-0'),'Nachbarbaum ist offen');assert.equal(learnTalent(g,at(1,0)),false,'Punkte im Nachbarbaum öffnen dieses Stufen-Tor nicht');

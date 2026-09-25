@@ -10,7 +10,9 @@ const root=new URL('../../',import.meta.url),base='assets/content-art/e32/',hash
 function cuts(im,axis,count){const length=axis==='x'?im.width:im.height,other=axis==='x'?im.height:im.width,values=new Uint32Array(length);for(let a=0;a<length;a++)for(let b=0;b<other;b++){const x=axis==='x'?a:b,y=axis==='x'?b:a;if(im.data[(y*im.width+x)*4+3]>=128)values[a]++;}const result=[0];for(let n=1;n<count;n++){const center=length*n/count,reach=length/count*.14;let best=Math.round(center),score=Infinity;for(let a=Math.round(center-reach);a<=center+reach;a++){const cost=values[a]+Math.abs(a-center)*.03;if(cost<score){score=cost;best=a;}}result.push(best);}return [...result,length];}
 export function buildTalentArt(){
  const files=new Map(),catalog={version:1,density:4,talents:{},sources:[],atlases:{}},sheets=new Map();
- for(const [member,specs] of Object.entries(CLASS_SPECS)){
+ // E-71: Die Astra-Talentbilder gibt es nur für die drei E-32-Klassen; neue Klassen zeichnen ihr Talent-Icon (content/talents/<klasse>.js icon).
+ const E32_CLASSES=['dieter','baerbel','kevin'];
+ for(const [member,specs] of Object.entries(CLASS_SPECS).filter(([m])=>E32_CLASSES.includes(m))){
   const atlas=surface(640,576),path=base+'runtime/talents-'+member+'.png';
   for(const [specIndex,spec] of specs.entries()){
    const source=base+'sources/'+spec+'-v1.png',bytes=readFileSync(new URL(source,root)),im=decodePng(bytes);
@@ -29,7 +31,7 @@ export function buildTalentArt(){
   const bytes=encodePng(atlas);files.set(path,bytes);catalog.atlases[path]={sha256:hash(bytes)};
  }
  const signatures=JSON.parse(readFileSync(new URL('assets/class-visuals/runtime/catalog.json',root))),precision=JSON.parse(readFileSync(new URL('assets/precision/runtime/catalog.json',root))),icons=decodePng(readFileSync(new URL('assets/class-visuals/runtime/icons.png',root))),skillAtlas=surface(240,432),skillPath=base+'runtime/skills.png';catalog.skills={};
- for(const [row,spec]of Object.keys(TALENT_ROWS).entries())for(const [col,slot]of ['mark','burst','ground','buff','variant'].entries()){
+ for(const [row,spec]of Object.keys(TALENT_ROWS).filter(s=>E32_CLASSES.includes(s.split('-')[0])).entries())for(const [col,slot]of ['mark','burst','ground','buff','variant'].entries()){
   const id=E32_SKILL_MOTIFS[spec][slot],member=spec.split('-')[0];let source;
   if(id?.startsWith('signature:')){const a=signatures.icons[id.slice(10)];source=surface(64,64);blit(icons,source,{x:a.x,y:a.y,w:64,h:64},{x:0,y:0});}
   else if(id)source=sheets.get(id);
