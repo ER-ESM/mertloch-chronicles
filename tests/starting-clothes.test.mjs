@@ -27,3 +27,15 @@ test('Ida acknowledges existing clothes and never replaces saved equipment',()=>
  assert.ok(!tutorialDialogue(loaded).includes(TUTORIAL.welcome));
  assert.ok(tutorialConfirm(loaded));assert.equal(loaded.rpg.equipment.weapon,'tresenhammer');assert.equal(loaded.rpg.equipment.offhand,null);assert.equal(loaded.rpg.equipment.body,'kutte');
 });
+test('E-72: Schorsch und Käthe holen sich ihre Klassenkleidung vom Kleiderhaufen statt der Kutte',()=>{
+ const want={schorsch:{body:'grillschuerze',head:'schorschmuetze'},kaethe:{body:'kaethestrickjacke',neck:'kaethebrille'},dieter:{body:'kutte'}};
+ for(const [member,slots] of Object.entries(want)){
+  const g=new Game(world,{},{guidedStart:true});g.switchMember(member);assert.equal(g.member.id,member);
+  assert.ok(Object.values(g.rpg.equipment).every(v=>v===null),member+': startet in Unterwäsche');
+  assert.equal(tutorialConfirm(g),true);
+  for(const [slot,id] of Object.entries(slots))assert.equal(g.rpg.equipment[slot],id,member+': '+slot);
+  for(const slot of ['weapon','offhand','ranged'])assert.equal(g.rpg.equipment[slot],TUTORIAL.starterEquipment[slot],member+': Werkzeug aus der Clankiste');
+  if(member!=='dieter')assert.ok(!Object.values(g.rpg.equipment).includes('kutte'),member+': keine Kutte');
+  assert.equal(g.rpg.equipment.legs,null);assert.equal(g.rpg.equipment.feet,null);
+ }
+});

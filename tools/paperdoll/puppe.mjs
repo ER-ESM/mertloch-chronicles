@@ -10,6 +10,7 @@ const HERE=p=>fileURLToPath(new URL(p,import.meta.url));
 import {familien} from './familien.mjs';
 import {aussehen,kopfEinrasten} from './aussehen.mjs';
 import {npc_kleidung} from './npc-kleidung.mjs';
+import {klassen_kleidung} from './klassen-kleidung.mjs';
 
 // Leinwand der Figurenbögen W×H, Fußpunkt (W/2, GROUND); Maße begründet in docs/ANZIEHPUPPE.md (Bildfläche). W/H veränderlich: Reittiere
 // liegen auf größerer Leinwand (canvas). PUPPE_LEINWAND="breite,höhe,boden" überschreibt die Maße (Hüllenmessung mit großer Leinwand).
@@ -770,7 +771,7 @@ export const GEAR_BACK={
 // ---------- Erweiterungsmodule: weitere Gegenstände (familien.mjs), Editor-Aussehen (aussehen.mjs), NPC-Kleidung (npc-kleidung.mjs) ----------
 export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F};
 const MOD_FAMILIES={},MOD_SIDED=[];
-for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
+for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT),klassen_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
 const SIDE={
  kutte:{normal:{armVorn:GEAR.kutte.armVorn,armHinten:GEAR.kutte.armHinten},swapped:{armVorn:GEAR_BACK.kutte.armVorn,armHinten:GEAR_BACK.kutte.armHinten}},
  fuchspfote:{normal:{beinVorn:GEAR.fuchspfote.beinVorn,beinHinten:GEAR.fuchspfote.beinHinten},swapped:GEAR_BACK.fuchspfote},

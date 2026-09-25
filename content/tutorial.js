@@ -40,3 +40,7 @@ export const TUTORIAL={starterEquipment:{weapon:'flasche',offhand:'topfdeckel',r
   {id:'inventory',title:'Dein erster eigener Kram',text:'Öffne deinen Rucksack. Das Konterwasser liegt jetzt darin. Über einem Icon erfährst du, was der Gegenstand kann.',desktop:'I: Rucksack · Maus aufs Icon',touch:'Menü → Rucksack · Icon für Details antippen'},
   {id:'return',title:'Ida hat den echten Auftrag',text:'Kehre zu Ida zurück. Nach der Hofprobe schickt sie dich zu den Trümmern der Bude, zu den Ruhewärtern und dann zu Horst, der deine Hose hat.',desktop:'F: mit Ida sprechen',touch:'Aktion: mit Ida sprechen'}
  ]};
+/** E-72 (Entwurf Figuren): Klassenkleidung vom Kleiderhaufen – ersetzt beim ersten Gespräch mit Ida je Klasse Plätze der Startausrüstung
+ *  (TUTORIAL.starterEquipment): Schorsch trägt Grillschürze statt Kutte und dazu die Schiebermütze, Käthe Strickjacke statt Kutte und dazu
+ *  die Lesebrille an der Kette. Klassen ohne Eintrag behalten die Kutte. */
+export const CLASS_CLOTHES={schorsch:{body:'grillschuerze',head:'schorschmuetze'},kaethe:{body:'kaethestrickjacke',neck:'kaethebrille'}};
