@@ -39,7 +39,8 @@ export function recordMeterDamage(g,enemy,actual,dealt,label,critical=false,acto
  if(!(actual>0)||!Number.isFinite(actual)||!Number.isFinite(dealt))return;
  beginMeterCombat(g,enemy);
  const id=METER_TEXT.damageSources[label]||(label===APEROL_TEXT.splash?'burst':null),skill=g.skills.find(s=>s.id===id);
- const source=typeof label==='object'?label:{id:id||'other',name:skill?.name||label||METER_TEXT.unknown};
+ /* E-72 Runde 3: jede Schadensquelle ohne Kniff-Zuordnung bekommt eine eigene Zeile (Kreuz, Karo, Stichflamme, Glutbrand …) – vorher fielen alle in einen Topf „other“ mit dem Namen der ersten Quelle */
+ const source=typeof label==='object'?label:{id:id||(label?'src:'+label:'other'),name:skill?.name||label||METER_TEXT.unknown};
  record(g,'damage',Math.max(0,dealt),Math.max(0,actual-dealt),source,critical,actor);
 }
 export function recordMeterHealing(g,amount,actual,source='heal',actor=g.member){

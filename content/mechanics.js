@@ -73,7 +73,7 @@ export const SPEC_MECHANICS={
   paths:[{name:'Glückssträhne',bonus4:{gambleOver:.1},bonus7:{gamblePity:-1}},{name:'Fangschuss',bonus4:{dashFreeThrow:1},bonus7:{gambleMisfireMult:.3}},{name:'Jackpot',bonus4:{jackpotDuration:4},bonus7:{jackpotStreak:-1}}]}
 };
 // E-72 Runde 3 (Balance-Sheet): Pfadboni der neuen Klassen nachgezogen – Beilagen +50 % Bratwurst (der Grillplan mit Käse und Mais bringt
-// weniger Würste), Stammkundschaft/Stichflamme/Halloumi/Grand/Wahrsagen kleiner, Herzdame Nachheilung statt Herzstärke, Schwenkbraten Garfenster statt Bratenschaden.
+// weniger Würste), Stammkundschaft/Stichflamme/Halloumi/Grand/Wahrsagen kleiner, Herzdame Nachheilung statt Herzstärke, Pik-Schutz zusätzlich Herz +30 % (Pik-Schilde zählen in keiner Heilung), Schwenkbraten Garfenster statt Bratenschaden.
 // --- E-72: Hauptbäume der neuen Klassen (erst aktiv, wenn ihre Talentbäume im Inhalt stehen). kind 'resource' = die Regel liegt in class-resources.js und dreht an der
 // Klassenressource (Grillplan, Flambieren, Räuchern, Grand, Herz, Ärmel). resVariant = Leistenvariante der Ressource.
 export const NEW_SPEC_MECHANICS={
@@ -103,7 +103,7 @@ export const NEW_SPEC_MECHANICS={
   herz:{bonus:.4,chain:1,seeNext:1,circle:{duration:8,radius:85,heal:12}},
   kit:{ground:{name:'Legekreis',text:'Legt die ganze Hand im Kreis auf einen freien Bodenpunkt: acht Sekunden lang heilt der Kreis alle darin, jede Karte wirkt einmal nach ihrer Farbe, danach ziehst du neu.',use:'Leg ihn unter die Gruppe, wenn mehrere Leben verlieren.'}},
   resVariant:{},
-  paths:[{name:'Herzdame',bonus4:{hotHeal:2},bonus7:{herzChain:1}},{name:'Pik-Schutz',bonus4:{pikPower:.15},bonus7:{pikReflect:.2}},{name:'Wahrsagen',bonus4:{followBonus:.03},bonus7:{redealCd:-6}}]},
+  paths:[{name:'Herzdame',bonus4:{hotHeal:2},bonus7:{herzChain:1}},{name:'Pik-Schutz',bonus4:{pikPower:.15,herzPower:.3},bonus7:{pikReflect:.2}},{name:'Wahrsagen',bonus4:{followBonus:.03},bonus7:{redealCd:-6}}]},
  'kaethe-falsch':{kind:'resource',name:'Ass im Ärmel',output:{damage:0.9},
   falsch:{sleeve:1,stichTaunt:3,pikBonus:.3},
   kit:{},
