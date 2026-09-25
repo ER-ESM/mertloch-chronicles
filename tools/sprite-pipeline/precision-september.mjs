@@ -5,7 +5,10 @@ import {resample} from './precision-resample.mjs';
 // Both sheets of the day: props/intro/ui first, then the 22 inventory and tab icons.
 // 2026-09-24: NPC-Gesprächsporträts (eigene Brustbilder, 128 px). palette:'portraet' = PRECISION_PALETTE + Farben der Anziehpuppe,
 // eingefroren in portraet-palette.json, damit Porträt und Figur dieselben Kleidungsfarben tragen (Lila, Mint, Hellblau, Gelb).
-const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json']
+// 2026-09-25 (E-72): Kniff-Icons der Klassen-Ressourcen, 64 × 64 mit 3 px Rand wie die übrigen Kniffe. Die Originale unter
+// assets/precision/sources/2026-09-25/e71-kniffe/ zeichnet vorerst e71-kniffe-draw.mjs (Herkunft: herkunft.json daneben);
+// ein späterer Imagegen-Lauf mit demselben Auftragsblatt (--force) ersetzt sie an Ort und Stelle.
+const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json','./e71-kniffe-jobs.json']
  .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))));
 const PALETTES={portraet:JSON.parse(readFileSync(new URL('./portraet-palette.json',import.meta.url)))};
 export function buildSeptemberDelivery({catalog,put,read,hashSource}){

@@ -1,0 +1,286 @@
+{
+ "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+ "kind": "code",
+ "records": [
+  {
+   "id": "skill-schorsch-auto",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-auto.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "8531060ff9d54f5aa2bf2795b70bd4fafeaca2aa2bfc15215a4ff8d495ce2450"
+  },
+  {
+   "id": "skill-schorsch-strike",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-strike.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "2c7b5f7719046b2ca28ac74748044637d2a560e0cedf30b47a2b13381091a99c"
+  },
+  {
+   "id": "skill-schorsch-mark",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-mark.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "8545f89ae4aa50358c184efb7b9e0d60243b422a6df1c10256d0abb8da75f65f"
+  },
+  {
+   "id": "skill-schorsch-burst",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-burst.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "45bb6315322b5e00d251e2cd97793239ec22abaa61af6fe486aa0e68045d5a38"
+  },
+  {
+   "id": "skill-schorsch-interrupt",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-interrupt.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "2c278c9ad60d19b9e320037ed373d249658af45e9f708cacf1ed11e80c835694"
+  },
+  {
+   "id": "skill-schorsch-parry",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-parry.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "893694ebbc7363b0d1f3fd572e6fc4ce0548dc346418138acc682220e82f6f89"
+  },
+  {
+   "id": "skill-schorsch-dash",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-dash.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "1b1af7ced8d1462de6c914ab4cbda264c35a7dfd941567fc10cdf545d34b2440"
+  },
+  {
+   "id": "skill-schorsch-heal",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-heal.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "03204650aa5c77ed295e623d99ef86e545fe677fb1424bd8c900ca201129a2c1"
+  },
+  {
+   "id": "skill-schorsch-buff",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-buff.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "54b7e9f53cc9e8a1b1c3400ac8d35f84757508d3a856d4d925086ed8ac6663dc"
+  },
+  {
+   "id": "skill-schorsch-throw",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-throw.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "e91e2fde95deef668798f7fe862d3750a159e22087d4ad266a82dde0748df847"
+  },
+  {
+   "id": "skill-schorsch-ground",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-ground.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "bfb2586268bcf1ddffcef443cd0895c978c3ec47b0b97a5a9b83c835f42b6f58"
+  },
+  {
+   "id": "skill-schorsch-senf",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-senf.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "7061589e950a8e7ea3ffe24c6293b41f7bf404ab054ad1efc99a96bfc3129985"
+  },
+  {
+   "id": "skill-schorsch-spiritus",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-spiritus.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "27606a2429a5f4b64ad958a500c45e9f5c291c815032701d8de49711e14c90ed"
+  },
+  {
+   "id": "skill-schorsch-deckelzu",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-deckelzu.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "dab7c3b4a583d85569eb36d6d4513f87e0e0fa3ccc8a33a83a1d56d09b684d5f"
+  },
+  {
+   "id": "skill-kaethe-auto",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-auto.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "8cf99a322d04b4485d7fc427066295df230e042c049ed8f5c73eff305556c105"
+  },
+  {
+   "id": "skill-kaethe-interrupt",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-interrupt.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "e81578083c4a46dea25615fcbeef43eb2e6b75f3046b4817fd1d8f72d64ecdeb"
+  },
+  {
+   "id": "skill-kaethe-parry",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-parry.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "1d33e39769906d62f3cd415feb30e81d78b37e695cae559295fb710b84ba7d62"
+  },
+  {
+   "id": "skill-kaethe-dash",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-dash.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "73a584b5bf402ea6e04f693a84d02b860917f7d31631ebf6de9b0344c36d333b"
+  },
+  {
+   "id": "skill-kaethe-heal",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-heal.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "0637415bdcf14c44e87cf72ab869f7da6674ff2f343bac158f677fbc7e4681a3"
+  },
+  {
+   "id": "skill-kaethe-buff",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-buff.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "a357d6c5edc8c3c8cae7a66e676e8eec6e6198b01a580bba425ff09cbed88284"
+  },
+  {
+   "id": "skill-kaethe-throw",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-throw.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "7297e20e56c6d25ebb98641e936e84aead1d08bb895e000a7dbf01dbbb319dba"
+  },
+  {
+   "id": "skill-kaethe-ground",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-ground.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "1b899a5c105a365a06f08251bf15b0f42cc2544578ae286117d6486e57b2b078"
+  },
+  {
+   "id": "skill-kaethe-reizen",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-reizen.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "80ee6b0f55425604a652685de856f54ccd14cf59816f654c6dba9968eb7a6dfa"
+  },
+  {
+   "id": "skill-kaethe-handlesen",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-handlesen.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "ab462e38a517486d57e1aec5c2456a3d36ed27e17b21f6ce49f699dd4612f4a5"
+  },
+  {
+   "id": "skill-kaethe-gezinkt",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-gezinkt.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "4820738442801fe822b678cffbfec0274355e2cdc544d25165b9cdbbb3ee7842"
+  },
+  {
+   "id": "skill-kaethe-aermel",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-aermel.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "6c33de496f083e6273ffd3c6fd06ed7e5ed64157aca3ccdedd77c2b739765bf8"
+  },
+  {
+   "id": "skill-dieter-zeche",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-dieter-zeche.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "79d75d459d036b7d2180253a8c02baaa2434eeec4815df2d1f1eebb2a4c44306"
+  },
+  {
+   "id": "skill-kevin-reload",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kevin-reload.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "287dd3f486aca29a69c8243148e80b5b7325800055d7dae5c20f97a4983fb10e"
+  }
+ ]
+}
