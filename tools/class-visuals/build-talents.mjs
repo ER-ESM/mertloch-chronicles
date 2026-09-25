@@ -25,7 +25,9 @@ function cutSheet(im,label){
  return {xs,ys,frames:cells.map((sourceRect,i)=>{const {frame,b}=crop(im,sourceRect,scale);if(unusable(b))throw Error('Unusable talent crop '+label+'-'+i);return {frame,b,sourceRect};})};
 }
 // Einzelbild: Motiv auf die typische Motivgröße seines Rasters bringen (Median der 30 Zellen), damit es zwischen den Nachbarn nicht auffällt.
-function cutSingle(im,size,label){const motif=bounds(im),{frame,b}=crop(im,motif,size/Math.max(motif.w,motif.h));if(unusable(b))throw Error('Unusable talent icon '+label);return {frame,b,sourceRect:motif};}
+// Vereinzelte Sprenkel weit draußen (Imagegen-Staub) sollen das Motiv nicht verkleinern: je Seite höchstens 0,5 % der Deckpixel abschneiden.
+function motifBounds(im){const cols=new Uint32Array(im.width),rows=new Uint32Array(im.height);let total=0;for(let y=0;y<im.height;y++)for(let x=0;x<im.width;x++)if(im.data[(y*im.width+x)*4+3]>=128){cols[x]++;rows[y]++;total++;}if(!total)throw Error('Empty sprite cell');const cut=total*.005,trim=a=>{let lo=0,hi=a.length-1,s=0;while(s+a[lo]<=cut)s+=a[lo++];s=0;while(s+a[hi]<=cut)s+=a[hi--];return [lo,hi];},[x0,x1]=trim(cols),[y0,y1]=trim(rows);return {x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};}
+function cutSingle(im,size,label){const motif=motifBounds(im),{frame,b}=crop(im,motif,size/Math.max(motif.w,motif.h));if(unusable(b))throw Error('Unusable talent icon '+label);return {frame,b,sourceRect:motif};}
 const medianSize=frames=>{const s=frames.map(f=>Math.max(f.b.w,f.b.h)).sort((a,b)=>a-b);return s[Math.floor(s.length/2)];};
 const problemOf=e=>String(e?.message||e);
 /** Prüft ein frisch gemaltes Talentraster, ohne etwas zu schreiben: [] = brauchbar, sonst Gründe. */
@@ -37,7 +39,7 @@ export function checkTalentSheet(bytes){
 }
 /** Prüft ein frisch gemaltes Einzel-Icon (freigestellt, Motiv nicht am Rand). */
 export function checkTalentIcon(bytes){
- try{const im=hardAlpha(decodePng(bytes)),b=bounds(im),problems=[];let clear=0;for(let i=3;i<im.data.length;i+=4)if(!im.data[i])clear++;
+ try{const im=hardAlpha(decodePng(bytes)),b=motifBounds(im),problems=[];let clear=0;for(let i=3;i<im.data.length;i+=4)if(!im.data[i])clear++;
   if(clear/(im.width*im.height)<.3)problems.push('kaum durchsichtiger Grund – Hintergrund gemalt?');
   if(b.x<2||b.y<2||b.x+b.w>im.width-2||b.y+b.h>im.height-2)problems.push('Motiv stößt an den Bildrand');
   if(!problems.length)cutSingle(im,44,'icon');return problems;}catch(e){return [problemOf(e)];}
