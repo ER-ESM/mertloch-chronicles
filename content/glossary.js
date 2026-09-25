@@ -13,6 +13,7 @@ import {SPEC_MECHANICS} from './mechanics.js';
 import {CLAN_MEMBERS} from './classes.js';
 import {CLASS_BUFFS,CLASS_BUFF_STATS,CLASS_BUFF_GLOSSARY,classBuffValueText} from './class-buffs.js';
 import {CLASS_BUFF_TUNING} from './tuning.js';
+import {RESOURCE_GLOSSARY,RESOURCE_EFFECT_INFO,RESOURCE_PROC_EFFECT_INFO} from './resources.js';
 
 const P=BALANCE.player,R=BALANCE.ratings,W=BALANCE.power,MO=BALANCE.momentum,PR=BALANCE.procs;
 /** Zahl mit deutschem Dezimalkomma. */
@@ -142,6 +143,7 @@ export const GLOSSARY={
 };
 for(const [k,v] of Object.entries(TALENT_GLOSSARY))if(!GLOSSARY[k])GLOSSARY[k]=v;
 for(const [k,v] of Object.entries(CLASS_BUFF_GLOSSARY))if(!GLOSSARY[k])GLOSSARY[k]=v;
+for(const [k,v] of Object.entries(RESOURCE_GLOSSARY))if(!GLOSSARY[k])GLOSSARY[k]=v;
 export const GLOSSARY_IDS=Object.keys(GLOSSARY);
 export const hasTerm=id=>Object.prototype.hasOwnProperty.call(GLOSSARY,id);
 
@@ -253,15 +255,19 @@ const EFFECT_INFO={
  fuseDamage:{label:'Mehr Lunten-Schaden',unit:''},fuseSpread:{label:'Lunte springt beim Zünden weiter',fixed:1,unit:'Nachbar',source:MECH},chainJumps:{label:'Zusätzliche Blitzsprünge',unit:''},chainFalloff:{label:'Weniger Verlust je Sprung',unit:'%',scale:v=>v*100},reactionWindow:{label:'Längeres Fenster für die Kettenreaktion',unit:'s'},reactionDuration:{label:'Kettenreaktion hält länger',unit:'s'},
  robbiDamage:{label:'Mehr Robbi-Schaden je Schuss',unit:''},robbiGuard:{label:'Deckung je Robbi-Schuss',fixed:4,unit:'Punkte',source:MECH},overloadDamage:{label:'Mehr Überlast-Schaden',unit:''},overloadStun:{label:'Überlast betäubt',unit:'s'},
  gambleOver:{label:'Höhere Überzündungs-Chance',unit:'%',scale:v=>v*100},gamblePity:{label:'Garantierte Überzündung früher',unit:'Fehlzündungen'},gambleMisfireMult:{label:'Fehlzündung weniger schwach',unit:'%',scale:v=>v*100},jackpotDuration:{label:'Jackpot hält länger',unit:'s'},jackpotStreak:{label:'Jackpot früher',unit:'Überzündungen'},hausverbotDuration:{label:'Hausverbot hält länger',unit:'s'},mobileCast:{label:'Wirken im Laufen',fixed:1,unit:'',source:MECH},mobileMark:{label:'{mark} im Laufen',fixed:1,unit:'',source:MECH},mobileGround:{label:'{ground} im Laufen',fixed:1,unit:'',source:MECH},overloadRadius:{label:'Größerer Überlast-Kreis',unit:'Welteinheiten'},chainRadius:{label:'Kurzschluss springt weiter',unit:'Welteinheiten'},overSplashShare:{label:'Überzündung trifft Nachbarn stärker',unit:'%',scale:v=>v*100},tapDamage:{label:'Mehr Bock-Explosionsschaden beim Fassanstich',unit:''},fieldHeal:{label:'Mehr Heilung je Sekunde vom Nest',unit:''},robbiHp:{label:'Robbi hält mehr Schläge aus',unit:'Leben'},robbiFollows:{label:'Robbi läuft mit',fixed:1,unit:'',source:MECH},nestFollows:{label:'Gisela läuft mit',fixed:1,unit:'',source:MECH},
- aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Schaden von {mark}',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Schaden von {burst}',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''}
+ aoe:{label:'Mehr Flächenschaden',unit:'%',scale:v=>v*100},critDamage:{label:'Mehr Glückstreffer-Schaden',unit:'%',scale:v=>v*100},reflect:{label:'Parade wirft mehr zurück',unit:'%',scale:v=>v*100},parryWindow:{label:'Längeres Paradefenster',unit:'s'},lastStand:{label:'Weniger Schaden unter 35 % Leben',unit:'%',scale:v=>v*100},execute:{label:'Mehr Schaden gegen Ziele unter 30 % Leben',unit:'%',scale:v=>v*100},markBonus:{label:'Mehr Schaden von {mark}',unit:'%',scale:v=>v*100},burstBonus:{label:'Mehr Schaden von {burst}',unit:'%',scale:v=>v*100},energyRegen:{label:'Mehr Randale je Sekunde',unit:''},
+ ...RESOURCE_EFFECT_INFO
 };
 /** Wirkungen einer Proc-Regel → Zahlenzeilen. */
 const PROC_EFFECT_INFO={
  free:{label:'Kostenlos danach'},reset:{label:'Sofort bereit'},empower:{label:'Doppelter Schaden beim nächsten Einsatz'},
  energy:{label:'Randale sofort'},shield:{label:'Deckung sofort',unit:'Punkte'},
- heal:{label:'Heilung sofort',unit:'Leben'},haste:{label:'Tempo im Fenster',unit:'%',scale:v=>v*100},supply:{label:'Vorratsgläser sofort',unit:''},clean:{label:'Großreinemachen sofort',unit:'s'}
+ heal:{label:'Heilung sofort',unit:'Leben'},haste:{label:'Tempo im Fenster',unit:'%',scale:v=>v*100},supply:{label:'Vorratsgläser sofort',unit:''},clean:{label:'Großreinemachen sofort',unit:'s'},
+ ...RESOURCE_PROC_EFFECT_INFO
 };
-const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am Ziel mit {mark}',beat:'{strike} im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick von {mark}',autoHit:'Treffer des Autoangriffs',heal:'{heal}',burst:'{burst}',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt'};
+const TRIGGER_TEXT={dash:'Ausweichschritt eingesetzt',skillHit:'Erfolgreicher Kniff',markedHit:'Treffer am Ziel mit {mark}',beat:'{strike} im Takt',inZone:'Kniff in eigener Fläche',crit:'Glückstreffer',kill:'Gegner erledigt',parry:'Geglückte Parade',interrupt:'Geglückte Unterbrechung',dodge:'Treffer ausgewichen',markTick:'Tick von {mark}',autoHit:'Treffer des Autoangriffs',heal:'{heal}',burst:'{burst}',lowHealth:'Unter 35 % Leben',overcharge:'Überzündung (Bastler-Glück)',misfire:'Fehlzündung (Bastler-Glück)',jackpotStart:'Jackpot beginnt',reactionStart:'Kettenreaktion beginnt',
+ tabPaid:'Zeche bezahlt',prellen:'Zeche geprellt',trendUp:'Trend steigt',viral:'Viral!',shitstorm:'Shitstorm',pickup:'Leergut aufgesammelt',perfectReload:'Pfandbon beim Nachladen',bonUsed:'Pfandbon eingelöst',
+ serve:'Grillgut serviert',perfectServe:'Gar serviert',overheat:'Stichflamme',vent:'Abgelöscht',glutPerfect:'Glut erreicht den goldenen Bereich',cardPlayed:'Karte ausgespielt',follow:'Farbe bedient',stich:'Stich',gameWon:'Abgerechnet',bubePlayed:'Bube ausgespielt',shuffle:'Neu gemischt'};
 /** Gattungsnamen der Leistenplätze – nur Rückfall, wenn weder Klasse noch Hauptbaum bekannt sind. */
 export const GENERIC_SKILL_NAMES={strike:'Grundangriff',mark:'Markierung',burst:'Spezialkniff',interrupt:'Unterbrechen',parry:'Parade',dash:'Ausweichen',heal:'Heilung',throw:'Wurf',ground:'Bodenangriff',buff:'Stärkung'};
 /**

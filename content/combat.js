@@ -1,6 +1,6 @@
 // Seconds between attacks; ranges are world units (8 units = 1 metre).
 export const AUTO_ATTACK={id:'auto',name:'Autoangriff · Leergut läuft',text:'Ein-/ausschalten: Greift dein Ziel selbstständig im Waffentempo an. Nahkampf trifft auch in Bewegung. Fernkampf nutzt den Fernkampfplatz. Während du zauberst, pausieren die Schläge. Ein offensiver Kniff startet den Autoangriff ebenfalls; ein Ziel nur anzuwählen greift es nicht an.',cd:0,cost:0,offGcd:true,auto:true,icon:'auto',color:'#eac981',bg:'#425e37'};
-export const AUTO_KITS={dieter:{name:'Autoangriff · Flasche kreist',weaponSource:'melee',range:45},baerbel:{name:'Autoangriff · Dauersprühen',weaponSource:'ranged',range:155},kevin:{name:'Autoangriff · Pfand im Takt',weaponSource:'ranged',range:195}};
+export const AUTO_KITS={dieter:{name:'Autoangriff · Flasche kreist',weaponSource:'melee',range:45},baerbel:{name:'Autoangriff · Dauersprühen',weaponSource:'ranged',range:155},kevin:{name:'Autoangriff · Pfand im Takt',weaponSource:'ranged',range:195},schorsch:{name:'Autoangriff · Zangenklapper',weaponSource:'melee',range:45},kaethe:{name:'Autoangriff · Kartenschnipsen',weaponSource:'ranged',range:170}};
 export const ENEMY_AUTOS={
  boar:{name:'Hauer',min:32,max:44,speed:2.1,range:38},badger:{name:'Dachsbiss',min:22,max:32,speed:1.8,range:35},goose:{name:'Wadenkneifer',min:15,max:23,speed:1.35,range:34},raven:{name:'Schnabelhieb',min:13,max:20,speed:1.2,range:34},fox:{name:'Fuchsbiss',min:24,max:34,speed:1.6,range:36},
  warden:{name:'Aktenklammerwurf',min:26,max:38,speed:2.4,range:145,ranged:true},scrounger:{name:'Becherwurf',min:22,max:32,speed:2.2,range:130,ranged:true},inspector:{name:'Stempelwurf',min:30,max:42,speed:2.3,range:150,ranged:true},
@@ -17,10 +17,13 @@ export const SKILL_DAMAGE={
  dieter:{strike:{flat:14,weapon:2.6},burst:{flat:30,weapon:5.2}},
  baerbel:{strike:{flat:14,weapon:2.6},burst:{flat:40,weapon:5.2}},
  kevin:{strike:{flat:8,weapon:2.6},burst:{flat:34,weapon:5.2}},
+ // E-71: Schorsch serviert den Schwenkbraten mit Finisher-Faktor; Käthes Kreuz-Karte rechnet mit strike (Rang × Stärke), Karo mit control.
+ schorsch:{strike:{flat:16,weapon:2.6},burst:{flat:36,weapon:5.2}},
+ kaethe:{strike:{flat:30,weapon:2.2},burst:{flat:30,weapon:2.2}},
  shared:{throw:{flat:24,weapon:3},ground:{flat:125},interrupt:{flat:35},slam:{flat:44,weapon:3}}
 };
 // Markierung und Wurf gehen in Bewegung; nur Finisher, Heilung und Bodenzauber brauchen den Stand.
-export const CAST_TIMES={dieter:{ground:.8},baerbel:{burst:1.1,heal:1.25,ground:1,sanctuary:1},kevin:{burst:1.1,ground:1,detonate:.8}};
+export const CAST_TIMES={schorsch:{ground:.5},kaethe:{ground:.6},dieter:{ground:.8},baerbel:{burst:1.1,heal:1.25,ground:1,sanctuary:1},kevin:{burst:1.1,ground:1,detonate:.8}};
 
 // --- Beschreibungs-Standard (docs/backlog/klassen.md, Welle D) -----------------------------------------------------
 // Zwei Erklärschichten: AUTO_INFO/describeAuto erklärt den Autoangriff jedes Gegners (was er tut, Zahlen, was du

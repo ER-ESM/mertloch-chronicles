@@ -28,7 +28,7 @@ export const GEAR_COMPARE={
 };
 export const ROLLED_BASES={weapon:['Pfandprügel','reinforced','m'],offhand:['Zeltplatz-Schild','shield','m'],ranged:['Pfandschleuder','slingshot','f'],head:['Festivalhelm','helmet','m'],neck:['Kronkorkenkette','necklace','f'],shoulders:['Boxenträger-Schultern','shoulders','p'],body:['Festtagsjacke','coat','f'],wrists:['Kabelbinder-Manschetten','bracers','p'],hands:['Grillhandschuhe','gloves','p'],waist:['Zapfhahn-Gürtel','belt','m'],legs:['Abrisshose','trousers','f'],feet:['Maifeldtreter','boots','p'],ring:['Pfandsiegel','ring','n'],trinket:['Clan-Andenken','trinket','n'],charm:['Clan-Andenken','trinket','n']};
 export const WEAPON_REQUIREMENT_NAMES={melee:'Nahkampfwaffe in der Haupthand',shield:'Schild in der Nebenhand',ranged:'Waffe im Fernkampfplatz',heavy:'Zweihandwaffe oder zwei Einhandwaffen'};
-export const WEAPON_SKILL_RULES={dieter:{strike:'melee',burst:'melee'},baerbel:{strike:'ranged',burst:'ranged'},kevin:{strike:'ranged',burst:'ranged'},'kevin-iron':{burst:'melee'},shared:{throw:'ranged',parry:'shield',barricade:'shield',magnet:'shield',slam:'heavy'}};
+export const WEAPON_SKILL_RULES={dieter:{strike:'melee',burst:'melee'},baerbel:{strike:'ranged',burst:'ranged'},kevin:{strike:'ranged',burst:'ranged'},schorsch:{strike:'melee'},kaethe:{},'kevin-iron':{burst:'melee'},shared:{throw:'ranged',parry:'shield',barricade:'shield',magnet:'shield',slam:'heavy'}};
 export const WEAPON_BASE_NAMES={club:'Pfandprügel',blade:'Dosenklinge',maul:'Tresenhammer',speaker:'Sprühwerfer',launcher:'Pfandschleuder'};
 /** Genus der Waffen-Grundteile (m/f/n/p) für deklinierte Vorsilben, siehe content/affixes.js. */
 export const WEAPON_BASE_GENUS={club:'m',blade:'f',maul:'m',speaker:'m',launcher:'f'};

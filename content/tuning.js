@@ -54,8 +54,14 @@ export const TUNING={
   aperolSpritz:{effects:{energyRegen:.3,healTaken:.08},why:'Startwert: +0,3 Randale/s = 10 % der Kampf-Regeneration (3/s) und +8 % erhaltene Heilung; zwei kleine Hebel statt eines großen, weil beide allein kaum spürbar wären',since:'2026-09-23'},
   vorherNachher:{effects:{haste:.05},why:'Startwert: +5 % Tempo ≈ +5 % Schaden und kürzere globale Abklingzeit; das stärkste Schadenspaket der sechs, deshalb am unteren Rand',since:'2026-09-23'},
   kabelbinderSohlen:{effects:{speed:.1},why:'Startwert: +10 % Laufgeschwindigkeit zu Fuß; kein Kampfwert, deshalb am oberen Rand. Reittiere haben ihr eigenes Tempo',since:'2026-09-23'},
-  pfandradar:{effects:{crit:.04},why:'Startwert: +4 Prozentpunkte Glückstreffer-Chance ≈ +2,5 % Schaden (Faktor 1,6); ergänzt Tempo statt es zu verdoppeln',since:'2026-09-23'}
+  pfandradar:{effects:{crit:.04},why:'Startwert: +4 Prozentpunkte Glückstreffer-Chance ≈ +2,5 % Schaden (Faktor 1,6); ergänzt Tempo statt es zu verdoppeln',since:'2026-09-23'},
+  grillteller:{effects:{damage:.04},why:'E-71 Startwert: +4 % Schaden – etwas unter dem Tempo-Filter (+5 % Tempo), weil er ohne Umweg über die Abklingzeiten wirkt',since:'2026-09-25'},
+  wurstbroetchen:{effects:{healPower:.06},why:'E-71 Startwert: +6 % verursachte Heilung – spiegelt den Aperol-Spritz (erhaltene Heilung) auf der Geberseite',since:'2026-09-25'},
+  glueckspfennig:{effects:{critDamage:.1},why:'E-71 Startwert: +10 % Glückstreffer-Schaden ≈ +1 % Schaden bei 15 % Chance; ergänzt das Pfandradar (Chance), statt es zu verdoppeln',since:'2026-09-25'},
+  strickschal:{effects:{shieldPower:.1},why:'E-71 Startwert: +10 % stärkere Deckung und Schilde – nur wer Deckung bekommt, profitiert; darum höher als die Schadensbuffs',since:'2026-09-25'}
  },
+ // E-71: Zahlen der Klassenressourcen (content/resources.js). Leer = Startwerte aus dem Design.
+ resources:{},
 };
 /** Rahmen der Klassen-Buffs: Dauer in Sekunden, Verstärkung je Talentstufe (`classBuff:<id>`), Obergrenze der Stärke beim Empfang. */
 export const CLASS_BUFF_TUNING={duration:1800,talentStep:.5,maxPower:2,

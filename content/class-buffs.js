@@ -22,7 +22,11 @@ export const CLASS_BUFF_STATS={
  healTaken:{label:'Erhaltene Heilung',pct:true},
  haste:{label:'Tempo',pct:true},
  speed:{label:'Laufgeschwindigkeit zu Fuß',pct:true},
- crit:{label:'Glückstreffer-Chance',pct:true,points:true}
+ crit:{label:'Glückstreffer-Chance',pct:true,points:true},
+ damage:{label:'Verursachter Schaden',pct:true},
+ healPower:{label:'Verursachte Heilung',pct:true},
+ critDamage:{label:'Glückstreffer-Schaden',pct:true},
+ shieldPower:{label:'Stärke von Deckung und Schilden',pct:true}
 };
 
 const DEF={
@@ -51,6 +55,25 @@ const DEF={
   use:'Häng es um, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Es erkennt Pfand auf dreißig Meter. Und Gegner. Meistens Pfand.“',
   info:{effect:'Erhöht eine halbe Stunde lang die Chance auf Glückstreffer um feste Prozentpunkte.',why:'Ergänzt den Tempo-Buff, statt ihn zu verdoppeln: Glückstreffer lösen bei vielen Talenten Procs aus.',links:['classBuff:kabelbinderSohlen','talent:kevin-hunt-27'],terms:['klassenbuff','staerkung','glueckstreffer','proc']}}
 };
+// E-71: Buffs der neuen Klassen (erscheinen mit der Klasse, content/classes.js).
+Object.assign(DEF,{
+ grillteller:{cls:'schorsch',slot:0,level:4,name:'Grillteller',icon:'currywurst',effects:{damage:0},
+  text:v=>`Schorsch packt dir einen Teller voll: ${v.damage} mehr Schaden für ${M} Minuten. Mit Senf. Ohne Senf gibt's nichts.`,
+  use:'Reich ihn, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Du siehst aus, als hättest du Hunger. Und Feinde.“',
+  info:{effect:'Hebt eine halbe Stunde lang den verursachten Schaden des Ziels um einen festen Anteil.',why:'Schorschs Beitrag für alle: jeder Angriff profitiert, auch der Autoangriff eines Söldners.',links:['classBuff:wurstbroetchen'],terms:['klassenbuff','staerkung']}},
+ wurstbroetchen:{cls:'schorsch',slot:1,level:8,name:'Wurstbrötchen',icon:'food',effects:{healPower:0},
+  text:v=>`Ein Brötchen mit Bratwurst, noch warm: ${v.healPower} mehr verursachte Heilung für ${M} Minuten. Wer satt ist, pflegt besser.`,
+  use:'Reich es, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Heilung beginnt im Magen.“',
+  info:{effect:'Verstärkt eine halbe Stunde lang jede Heilung, die das Ziel selbst wirkt.',why:'Das Gegenstück zu Annis Spritz: der Spritz stärkt, was ankommt, das Brötchen, was der Heiler gibt.',links:['classBuff:grillteller'],terms:['klassenbuff','staerkung','heilung']}},
+ glueckspfennig:{cls:'kaethe',slot:0,level:4,name:'Glückspfennig',icon:'medal',effects:{critDamage:0},
+  text:v=>`Käthe drückt dir ihren Glückspfennig von 1974 in die Hand: ${v.critDamage} mehr Glückstreffer-Schaden für ${M} Minuten. Zurückgeben nicht vergessen.`,
+  use:'Gib ihn, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Der hat mir drei Grand ohne Vieren gebracht.“',
+  info:{effect:'Erhöht eine halbe Stunde lang den Schaden jedes Glückstreffers.',why:'Ergänzt Kevins Pfandradar: das Radar macht Glückstreffer häufiger, der Pfennig macht sie härter.',links:['classBuff:strickschal'],terms:['klassenbuff','staerkung','glueckstreffer']}},
+ strickschal:{cls:'kaethe',slot:1,level:8,name:'Strickschal',icon:'coat',effects:{shieldPower:0},
+  text:v=>`Selbst gestrickt, kratzt fürchterlich: ${v.shieldPower} stärkere Deckung und Schilde für ${M} Minuten. Ausziehen ist Beleidigung.`,
+  use:'Leg ihn um, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Zieh den an, du holst dir sonst den Tod.“',
+  info:{effect:'Verstärkt eine halbe Stunde lang jede Deckung und jeden Schild, den das Ziel erhält.',why:'Macht Tanks und Schildwirker gleichermaßen stärker – und kein anderer Klassen-Buff hebt Deckung.',links:['classBuff:glueckspfennig'],terms:['klassenbuff','staerkung','deckung']}}
+});
 applyTuning(DEF,TUNING.classBuffs);
 
 /** Anzeige eines Werts: 0,08 → „8 %“, Prozentpunkte → „4 Prozentpunkte“, sonst „+0,3“. */
