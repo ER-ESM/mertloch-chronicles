@@ -39,6 +39,8 @@ const roadBoxes=new WeakMap();
 function namedRoads(w){let list=roadBoxes.get(w);if(list)return list;list=(w.roads||[]).filter(r=>!r.entrance&&r.tags?.name&&r.points?.length>1).map(r=>{let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;for(const p of r.points){if(p.x<minX)minX=p.x;if(p.x>maxX)maxX=p.x;if(p.y<minY)minY=p.y;if(p.y>maxY)maxY=p.y;}return {name:r.tags.name,points:r.points,width:r.width,minX,minY,maxX,maxY};});roadBoxes.set(w,list);return list;}
 function segDist(x,y,a,b){const dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,((x-a.x)*dx+(y-a.y)*dy)/l)):0;return Math.hypot(x-a.x-t*dx,y-a.y-t*dy);}
 const detailOf=h=>h.group==='quest'?h.quest:h.group==='camp'?'':h.group==='hub'?'':h.low&&h.group==='dungeon'?DU.from(h.enter)+' · '+h.detail:h.detail||'';
+/** Standzeit der Kartenmeldung (ms). */
+export const NOTICE_MS=3400;
 export function mountAtlas(root,renderer,navigate,initial=null){
  const g=renderer.game,canvas=root.querySelector('#largeMap'),paper=root.querySelector('.wk-paper'),list=root.querySelector('#atlasPlaces'),menu=root.querySelector('.wk-filter'),popup=root.closest('.game-popup'),touch=()=>document.body.classList.contains('touch-mode');
  const places=mapPlaces(g),options={show:loadShow(),zoom:1,openedAt:performance.now()};
@@ -78,6 +80,10 @@ export function mountAtlas(root,renderer,navigate,initial=null){
  pager.addEventListener('click',e=>{const b=e.target.closest('[data-wk-page]');if(!b)return;listPage+=Number(b.dataset.wkPage);pageList();});
  function select(place){place=adopt(place)||place;chosen=place||null;options.selected=place?.id;if(options.zoom>1&&place)options.center=place.point;if(touch())side(false);render();}
  const walk=place=>{if(!place)return;hideTip();navigate(place.route||place.point);};
+ // E-72 Runde 4 (Kenner-Befund 5): Verweigerter Weg (z. B. während der Hofprobe) bekommt eine kurze Zeile oben auf der Karte – wie die
+ // rote Fehlerzeile in WoW. Die Kurzmeldung (#toast) läge unter dem Kartenfenster und blieb unsichtbar.
+ const note=document.createElement('p');note.className='wk-notice';note.setAttribute('role','alert');note.hidden=true;paper.append(note);let noteTimer=0;
+ function notice(text){if(!text)return;note.textContent=text;note.hidden=false;note.classList.remove('show');void note.offsetWidth;note.classList.add('show');clearTimeout(noteTimer);noteTimer=setTimeout(()=>{note.classList.remove('show');note.hidden=true;},NOTICE_MS);}
  // ---------------- Filterliste (kombinierbar, wie die Lupe der Minikarte)
  function renderMenu(){menu.innerHTML=`<strong>${esc(T.filter)}</strong>`+T.groups.map(x=>`<button type="button" role="menuitemcheckbox" data-wk-show="${x.id}" aria-checked="${!!options.show[x.id]}"><canvas width="32" height="32" data-wk-icon="${x.icon}" aria-hidden="true"></canvas><span>${esc(x.name)}</span><i>${options.show[x.id]?glyph('check'):''}</i></button>`).join('');menu.querySelectorAll('[data-wk-icon]').forEach(cv=>paintMapIcon(cv,cv.dataset.wkIcon));}
  const filterBtn=tools.querySelector('[data-wk-filter]');
@@ -148,6 +154,6 @@ export function mountAtlas(root,renderer,navigate,initial=null){
  const resize=()=>{const width=Math.max(1,Math.round(canvas.clientWidth)),height=Math.max(1,Math.round(canvas.clientHeight));if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}draw();};
  chosen=adopt(initial);options.selected=chosen?.id;
  render();resize();raf=requestAnimationFrame(pulse);const observer=new ResizeObserver(resize);observer.observe(canvas);/* Handy: Seiten der Ortsliste nach der echten Höhe neu schneiden */const listObserver=new ResizeObserver(()=>pageList());listObserver.observe(list);
- return{select,refresh:()=>{draw();list.querySelectorAll('[data-row]').forEach(el=>{const place=placeOf(el.dataset.row);if(place)el.querySelector('em').textContent=dist(place.point)+' m';});/* Entfernungen im offenen Tooltip mitlaufen lassen, ohne ihn zu verschieben */if(tipFor&&!tip.hidden){const html=tipHtml(tipFor);if(html){tip.innerHTML=html;tip.querySelectorAll('[data-wk-icon]').forEach(cv=>paintMapIcon(cv,cv.dataset.wkIcon));}}},
-  destroy:()=>{observer.disconnect();listObserver.disconnect();cancelAnimationFrame(raf);tip.remove();menu.remove();document.removeEventListener('pointerdown',outside,true);document.removeEventListener('keydown',escKey,true);popup?.classList.remove('wk-window');}};
+ return{select,notice,refresh:()=>{draw();list.querySelectorAll('[data-row]').forEach(el=>{const place=placeOf(el.dataset.row);if(place)el.querySelector('em').textContent=dist(place.point)+' m';});/* Entfernungen im offenen Tooltip mitlaufen lassen, ohne ihn zu verschieben */if(tipFor&&!tip.hidden){const html=tipHtml(tipFor);if(html){tip.innerHTML=html;tip.querySelectorAll('[data-wk-icon]').forEach(cv=>paintMapIcon(cv,cv.dataset.wkIcon));}}},
+  destroy:()=>{clearTimeout(noteTimer);observer.disconnect();listObserver.disconnect();cancelAnimationFrame(raf);tip.remove();menu.remove();document.removeEventListener('pointerdown',outside,true);document.removeEventListener('keydown',escKey,true);popup?.classList.remove('wk-window');}};
 }

@@ -62,7 +62,9 @@ export function tutorialSignal(g,type){if(!tutorialActive(g))return;const t=g.tu
 if(type==='inventory'&&t.step===6)advance(g);if(type==='dash'&&t.step===4&&g.enemies.find(e=>e.tutorial)?.cast)t.dash=true;}
 export function tutorialDamage(g,e,n,label){if(!tutorialActive(g)||!e.tutorial)return 0;const t=g.tutorial;if(t.step!==3)return 0;const amount=Math.max(0,Math.round(n));e.hp=Math.max(1,e.hp-amount);g.float(e.x,e.y-30,String(amount),'#f4d993');if(label==='Autoangriff')t.autos=Math.min(D.autos,t.autos+1);else if(label==='Kelle'){t.hits=Math.min(D.hits,t.hits+1);t.hitMark=true;}g.emit('save');return amount;}
 export function tutorialDestination(g){if(!tutorialActive(g))return null;const t=g.tutorial;return {point:t.step===0||t.step===7?g.world.npc:t.step===1?t.course:t.dummy,label:tutorialStepFor(g).title};}
-export function tutorialAllowsTravel(g,p){if(!tutorialActive(g)||distance(p,tutorialCenter(g.world))<=D.radius)return true;if(!g.tutorial.warnAt||g.time>g.tutorial.warnAt){g.toast(D.boundary);g.tutorial.warnAt=g.time+D.warningPause;}return false;}
+/** E-72 Runde 4 (Kenner-Befund 5): Liegt ein Ziel außerhalb der Hofprobe? Rein, ohne Meldung (die Weltkarte sagt es selbst). */
+export const tutorialBlocksTravel=(g,p)=>tutorialActive(g)&&!!p&&distance(p,tutorialCenter(g.world))>D.radius;
+export function tutorialAllowsTravel(g,p){if(!tutorialBlocksTravel(g,p))return true;if(!g.tutorial.warnAt||g.time>g.tutorial.warnAt){g.toast(D.boundary);g.tutorial.warnAt=g.time+D.warningPause;}return false;}
 export function tickTutorial(g,dt){if(!tutorialActive(g))return;const t=g.tutorial,p=g.player;
  if(!tutorialAllowsTravel(g,p)){Object.assign(p,t.last,{vx:0,vy:0,moving:false});g.moveTo=null;g.path=[];g.routeGoal=null;}else t.last={x:p.x,y:p.y};
  if(t.gate>0){t.gate--;return;}
