@@ -13,7 +13,6 @@ import {paintSkillIcon} from './skill-art.js';
 import {paintTalentIcon} from './talent-art.js';
 import {paintItem} from './item-art.js';
 import {paintPersonPortrait} from './person-art.js';
-import {styleIcon} from './art-style.js';
 
 /** Beschriftungen der UI-Schicht (keine Inhaltstexte, keine Zahlen). */
 export const DESCRIBE_UI={
@@ -74,8 +73,8 @@ export function resolve(game,kind,id){
 
 // --- Icon ---------------------------------------------------------------------------------------
 /** `describe().icon` sagt nur, wo das Bild liegt; gezeichnet wird mit den vorhandenen Malern (§7.4). */
-export function iconMarkup(icon,fallbackId){
- const size=' width="48" height="48" aria-hidden="true"';
+export function iconMarkup(icon,fallbackId,px=48){
+ const size=' width="'+px+'" height="'+px+'" aria-hidden="true"';
  if(icon&&typeof icon==='object'){
   if(icon.set==='skills')return `<canvas${size} data-describe-icon="skills" data-skill-art="${esc(icon.skill)}" data-skill-member="${esc(icon.member||'')}"></canvas>`;
   if(icon.set==='talents')return `<canvas${size} data-describe-icon="talents" data-talent-art="${esc(icon.spec+'-'+icon.index)}"></canvas>`;
@@ -96,7 +95,7 @@ export function paintDescribeIcons(root,game){
    else if(set==='clan')paintPersonPortrait(canvas,canvas.dataset.personArt);
    else paintItem(canvas,canvas.dataset.itemArt);
   }catch{/* fehlende Lieferung: das Icon bleibt leer, der Text steht trotzdem */}
-  styleIcon(canvas);
+  /* kein styleIcon mehr (Stilbibel A4): Katalogbilder kommen per Flächenmittel in Canvas-Größe, 32 px/40 Farben entfallen */
  }
 }
 
