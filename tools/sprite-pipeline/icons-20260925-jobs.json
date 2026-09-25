@@ -195,6 +195,21 @@
     "motif": "Die Gästeliste: Klemmbrett mit leerer Gästeliste, Kugelschreiber an einer Schnur, Aufkleber „VIP“ halb abgekratzt"
   },
   {
+    "id": "glueckspfennig",
+    "output": "assets/precision/sources/2026-09-25/icons/glueckspfennig.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/legenden/legenden.mjs · glueckspfennig",
+    "gruppe": "legenden",
+    "motif": "Buff-Motiv „Glückspfennig“ (Klassen-Buff glueckspfennig)"
+  },
+  {
     "id": "hausordnung",
     "output": "assets/precision/sources/2026-09-25/icons/hausordnung.png",
     "width": 64,
@@ -283,6 +298,21 @@
     "painter": "D:/Dev/_prototypen/icons-2026-09-25/legenden/legenden.mjs · sigizange",
     "gruppe": "legenden",
     "motif": "Sigis Greifzange: Verrostete Schrott-Greifzange mit Holzgriff und Kette, ölige Backen"
+  },
+  {
+    "id": "strickschal",
+    "output": "assets/precision/sources/2026-09-25/icons/strickschal.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/legenden/legenden.mjs · strickschal",
+    "gruppe": "legenden",
+    "motif": "Buff-Motiv „Strickschal“ (Klassen-Buff strickschal)"
   },
   {
     "id": "absperrband",

@@ -9,7 +9,8 @@
 // Zusatzkennungen: gemalte Buff-Motive (motif in content/class-buffs.js), z. B. strickschal, glueckspfennig, wurstbroetchen, aperolspritz.
 // Ein neu gemaltes Bild gewinnt immer: über ältere Aufträge derselben Kennung (precision-september.mjs) und über Zwilling-Aliase
 // (items-20260925.mjs). Bereits übernommene Kennungen bleiben im Auftragsbogen, auch wenn der Gruppenordner sie nicht mehr enthält.
-// Aufruf: node tools/sprite-pipeline/icons-uebernehmen.mjs [--quelle <ordner>] [--gruppe <name>] [--ohne-build] [--trocken]
+// Aufruf: node tools/sprite-pipeline/icons-uebernehmen.mjs [--quelle <ordner>] [--gruppe <name>] [--nur <id,id>] [--ohne-build] [--trocken]
+// --nur: nur diese Kennungen übernehmen (z. B. die Buff-Motive), die übrigen Malerbilder bleiben auf ihrem übernommenen Stand.
 import {readFileSync,writeFileSync,readdirSync,existsSync,mkdirSync,copyFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
@@ -41,12 +42,12 @@ export function checkIcon(im){
 }
 const painterOf=dir=>{const own=readdirSync(dir).filter(f=>f.endsWith('.mjs'));const main=own.find(f=>f===basename(dir)+'.mjs')||own.find(f=>!HILFSSKRIPTE.test(f))||own.find(f=>/^maler/.test(f))||'';return main?join(dir,main).replace(/\\/g,'/'):dir.replace(/\\/g,'/');};
 
-export function uebernehmen({quelle='D:/Dev/_prototypen/icons-2026-09-25',gruppe=null,trocken=false}={}){
+export function uebernehmen({quelle='D:/Dev/_prototypen/icons-2026-09-25',gruppe=null,nur=null,trocken=false}={}){
  const catalog=JSON.parse(readFileSync(new URL('assets/precision/runtime/catalog.json',root)));
  const jobs=new Map(JSON.parse(readFileSync(JOBS)).map(j=>[j.id,j])),seen=new Map(),taken=[],rejected=[];
  const groups=existsSync(quelle)?readdirSync(quelle,{withFileTypes:true}).filter(d=>d.isDirectory()&&(!gruppe||d.name===gruppe)&&existsSync(join(quelle,d.name,'ids'))).map(d=>d.name).sort():[];
  for(const g of groups){const dir=join(quelle,g),ids=join(dir,'ids'),painter=painterOf(dir);
-  for(const file of readdirSync(ids).filter(f=>f.endsWith('.png')).sort()){const id=file.slice(0,-4),path=join(ids,file);
+  for(const file of readdirSync(ids).filter(f=>f.endsWith('.png')&&(!nur||nur.includes(f.slice(0,-4)))).sort()){const id=file.slice(0,-4),path=join(ids,file);
    if(seen.has(id)){rejected.push({id,gruppe:g,grund:'doppelt (auch in '+seen.get(id)+')'});continue;}seen.set(id,g);
    const art=knownId(id,catalog);if(!art){rejected.push({id,gruppe:g,grund:'unbekannte Kennung'});continue;}
    let bad;try{bad=checkIcon(decodePng(readFileSync(path)));}catch(e){bad=['kein lesbares PNG: '+e.message];}
@@ -65,7 +66,7 @@ export function uebernehmen({quelle='D:/Dev/_prototypen/icons-2026-09-25',gruppe
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  const arg=n=>{const i=process.argv.indexOf(n);return i>0?process.argv[i+1]:undefined;},flag=n=>process.argv.includes(n);
- const r=uebernehmen({quelle:arg('--quelle'),gruppe:arg('--gruppe'),trocken:flag('--trocken')});
+ const r=uebernehmen({quelle:arg('--quelle'),gruppe:arg('--gruppe'),nur:arg('--nur')?.split(','),trocken:flag('--trocken')});
  console.log('Gruppen: '+(r.groups.join(', ')||'keine'));
  for(const t of r.taken)console.log('  übernommen  '+t.gruppe.padEnd(12)+t.id+(t.art==='gegenstand'?'':' ('+t.art+')'));
  for(const x of r.rejected)console.log('  ABGELEHNT   '+x.gruppe.padEnd(12)+x.id+': '+x.grund);

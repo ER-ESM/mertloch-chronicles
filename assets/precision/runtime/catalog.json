@@ -65138,6 +65138,19 @@
       "hash": "c01f6d09fe93bf3691e264fb08730c85dcca285d642a8029a206cf9ed5b25b85",
       "revision": "precision-v1"
     },
+    "glueckspfennig": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/glueckspfennig.png",
+      "sourceHash": "93591131dcf87266a09836c930213174f78a48dd336266f6f044c342e9f68211",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/glueckspfennig.png",
+      "width": 64,
+      "height": 64,
+      "hash": "93591131dcf87266a09836c930213174f78a48dd336266f6f044c342e9f68211",
+      "revision": "precision-v1"
+    },
     "hausordnung": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/hausordnung.png",
@@ -65188,6 +65201,19 @@
       "width": 64,
       "height": 64,
       "hash": "719b07a6f65a3c6ff7a61349be3afba9a4ded61f20df8e7d681625517e92e342",
+      "revision": "precision-v1"
+    },
+    "strickschal": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/strickschal.png",
+      "sourceHash": "30d99e42967263137094dfcb4b652ff78bde530ea70ccc72f0aa9b255fc7104a",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/strickschal.png",
+      "width": 64,
+      "height": 64,
+      "hash": "30d99e42967263137094dfcb4b652ff78bde530ea70ccc72f0aa9b255fc7104a",
       "revision": "precision-v1"
     },
     "absperrband": {
