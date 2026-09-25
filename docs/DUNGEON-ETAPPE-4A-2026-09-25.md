@@ -2,7 +2,7 @@
 
 Grundlage: E-71 und E-70 (`docs/ENTSCHEIDUNGEN.md`), Ton E-20, Bauplan Etappe 4 aus `docs/DUNGEON-ANALYSE-2026-09-24.md`, Planung 7.2–7.5,
 6, 8, 9 und 11 aus `docs/DUNGEON-SCHLOSS-BIG-B-2026-09-23.md`, Berichte der Etappen 1–3 und des Arenatür-Hotfixes.
-Zweig `dungeon-e4a`, Worktree `D:\Dev\MertlochChronicles-dg-e4a`, zuletzt auf `main` 45625e4a (Hotfix Build #623, E-72, Etappe 4 Teil B (1)) aufgesetzt.
+Zweig `dungeon-e4a`, Worktree `D:\Dev\MertlochChronicles-dg-e4a`, zuletzt auf `main` e340597f aufgesetzt (Hotfix Build #623, E-72 mit Runde 3, Etappe 4 Teil B (1)).
 
 ## Kurzfassung
 
@@ -80,7 +80,7 @@ Wie bei Gerd legt der Dungeon ein seltenes Teil nach, wenn keines fällt.
 Held Stufe 10, voller Satz ungewöhnlich, vier Söldner Stufe 10, Seeds 7/8/9, Helden spielen die geübte E-72-Rotation
 (`scripts/balance-rotation.mjs`). Kernklassen Dieter (Kneipenschläger), Bärbel (Putzpyramide), Kevin (Pfandjäger). Schorsch
 (Flambierer) und Käthe (Grand-Spielerin) sind spielbar und laufen als Info-Zeilen mit.
-„vorher“ = `origin/main` 45625e4a mit dem Messskript von `main`.
+„vorher“ = `origin/main` 45625e4a (vor E-72 Runde 3) mit dem Messskript von `main`; „nachher“ = dieser Stand auf e340597f (mit E-72 Runde 3).
 
 | Lauf | vorher | nachher |
 |---|---:|---:|
@@ -100,22 +100,23 @@ Held Stufe 10, voller Satz ungewöhnlich, vier Söldner Stufe 10, Seeds 7/8/9, H
 | Das halbe Pferd, spielt richtig (D / B / K) | – | 81/81/83 · 77/77/77 · 71/72/71 s, 0 Tode |
 | Pferd, ignoriert Mechanik, Tode | – | 2/2/1/2/2/2/2/2/2 |
 | Held allein (unsterblich, Kernklassen) | 287–406 s | 249–351 s |
-| Flügel Burghof am Stück | mind. 107 EP/min (Kevin verlor Gerd) | mind. 395 EP/min |
+| Flügel Burghof am Stück (Kernklassen) | mind. 107 EP/min (Kevin verlor Gerd) | 395–417 EP/min |
 | Farm Flügel, 60 min mit 30-min-Sperre | 105 EP/min | 110 EP/min (Feld 86) |
 
 Info (Schorsch / Käthe, nicht Teil der Kriterien):
 
 | Lauf | Schorsch | Käthe |
 |---|---|---|
-| Gerd | 77–85 s, 0 Tode | 72–80 s, 0 Tode |
-| Big B (Nachsatz) | 160–162 s, 0 Tode | 149–156 s, 0 Tode |
-| Exposé / Kurt / Rita / Pferd, spielt richtig | 76–80 / 84–86 / 78–80 / 76–78 s, 0 Tode | 75–79 / 77–82 / 76–89 / 68–73 s, 0 Tode |
-| ignoriert Mechanik, Tode | 2 bei allen vier Bossen | Exposé 2, Kurt 1/0/1, Rita 1/2/2, **Pferd 0/0/0** |
-| Held allein | 267 s | **182 s** (unter 240 s) |
+| Gerd | 75–81 s, 0 Tode | 75–77 s, 0 Tode |
+| Big B (Nachsatz) | 168–170 s, 0 Tode | 153–156 s, 0 Tode |
+| Exposé / Kurt / Rita / Pferd, spielt richtig | 82–86 / 88–91 / 81–84 / 76–79 s, Kurt einmal 1 Tod | 75–84 / 78–80 / 71–82 / 70–74 s, 0 Tode |
+| ignoriert Mechanik, Tode | Exposé 0/2/2, sonst 2 | Exposé 1/2/2, Kurt 1/1/1, Rita 2, **Pferd 0/0/0** |
+| Held allein | 280 s | **211 s** (unter 240 s) |
+| Flügel Burghof am Stück | **173 EP/min**: erster Pack (Hof West) 392 s | 427 EP/min |
 
 ## Prüfkriterien
 
-Ausgabe von `node scripts/dungeon-sim.mjs`: **alle 24 Kriterien grün**, dazu 7 Info-Zeilen für Schorsch und Käthe.
+Ausgabe von `node scripts/dungeon-sim.mjs` auf e340597f (mit E-72 Runde 3): **alle 24 Kriterien grün**, dazu 7 Info-Zeilen für Schorsch und Käthe.
 
 | Kriterium | Wert |
 |---|---|
@@ -124,7 +125,7 @@ Ausgabe von `node scripts/dungeon-sim.mjs`: **alle 24 Kriterien grün**, dazu 7 
 | „weicht aus“ stirbt höchstens einmal | 0 in allen 9 |
 | Gerd: im Mittel höchstens ein Nicht-Tank im Kegel | 0,37 |
 | Held allein über 240 s | 249–351 s |
-| EP je Minute Flügel Burghof ≥ Feld Stufe 10 | Flügel mind. 395 · Feld höchstens 86 |
+| EP je Minute Flügel Burghof ≥ Feld Stufe 10 | Flügel mind. 173 (Schorsch, sonst ≥ 395) · Feld höchstens 86 |
 | Trash-Pack zieht keine Kette | hof-ost 0/2 |
 | Big B mit Held und 4 Söldnern 150–200 s | 162–189 s |
 | „folgt der Behauptung“ stirbt mindestens einmal | 1/2/2/2/2/2/2/2/1 |
@@ -160,11 +161,11 @@ Grenzen der Simulation:
 
 ## Prüfungen vor dem Push
 
-Nach dem letzten Rebase auf `main` 45625e4a:
+Nach dem letzten Rebase auf `main` e340597f (E-72 Runde 3):
 
 | Prüfung | Ergebnis |
 |---|---|
-| `npm test` | 1062 von 1062 grün (neu: 19 Tests in `tests/dungeon-e4a.test.mjs`) |
+| `npm test` | 1091 von 1091 grün (neu: 19 Tests in `tests/dungeon-e4a.test.mjs`) |
 | `npm run content:check` | grün (57) |
 | `npm run build` | grün |
 | `scripts/dungeon-check.mjs` | grün, Desktop und Handy |
@@ -174,7 +175,7 @@ Nach dem letzten Rebase auf `main` 45625e4a:
 | `scripts/dungeon-e4a-check.mjs` (neu) | 36 von 36 grün |
 | `scripts/dungeon-e4b-check.mjs` (Teil B, zur Sicherheit auf diesem Stand) | 4 von 4 grün |
 | `scripts/dungeon-sim.mjs` | alle 24 Kriterien grün |
-| `scripts/optimierung-r5a-check.mjs` | 23 von 23 grün (war vorbestehend rot, auf diesem Stand grün) |
+| `scripts/optimierung-r5a-check.mjs` | 23 von 23 grün auf 45625e4a (war vorbestehend rot) |
 
 `scripts/dungeon-e4a-check.mjs` nutzt CDP 9650 und Server 4450. Teile mit `ONLY=1,…`, `SEED=n` wählt die Reihenfolge. Es prüft:
 1. **Exposé:**
@@ -264,6 +265,8 @@ Nach dem letzten Rebase auf `main` 45625e4a:
    - Allein braucht sie 182 s gegen 240 s Ziel.
    - Als „ignoriert Mechanik“ stirbt sie am Pferd nie.
    - „Allein“ hängt an E-72 (Klassenwerte), nicht an Dungeon-Zahlen; E-72 ist nicht angefasst. Das Pferd-Profil ist nicht untersucht.
+   - Schorsch (Info) braucht im Flügel Burghof für den ersten Pack (Hof West) 392 s, danach normal. Das ist neu mit E-72 Runde 3 und nicht
+     untersucht; der Etappe-4-Block wirkt dort nicht (keine Deckung, keine neuen Bosse).
 7. **„ignoriert Mechanik“ bei Exposé** verliert fast immer durch VERKAUFT (Rücksetzen). Das ist gewollt, aber hart. Beim Playtest prüfen, ob
    Erstspieler die Tisch-Mechanik ohne Hilfe verstehen.
 8. **Teil B:** `--only=wings` (Flügel-Simulation aus Teil B) ist auf `main` noch nicht vorhanden. Nach dem Merge von Teil B erneut laufen
