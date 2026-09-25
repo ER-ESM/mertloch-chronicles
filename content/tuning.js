@@ -48,11 +48,11 @@ export const TUNING={
   'baerbel-care':{output:{damage:1.0,healing:1.15},why:'E-72: Annis Trend (+4 % je Stufe) hob den Schaden um 19 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
   'baerbel-feedback':{output:{damage:1.0},why:'E-72: Trend +21 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
   'kevin-iron':{output:{damage:1.0},why:'E-72: Pfandbon +8 % – Faktor 1,08 → 1,0',since:'2026-09-25'},
-  'schorsch-chef':{output:{damage:1.2,healing:.8},chef:{wurstBonus:.25},why:'E-72: der Grillplan des Chefs bringt zwei Würste je Braten – Schaden ×1,2 für den Heiler-Korridor; Balance-Sheet: Heilung +70 bis +108 % über dem Median → Wurst-Bonus 50 → 25 %, Heilfaktor 1,15 → 0,9',since:'2026-09-25'},
-  'schorsch-flamme':{output:{damage:.78},flamme:{bonus:.3,splash:{share:.25},overheatFactor:1.3},why:'E-72 Balance-Sheet: Flambierer +60 bis +125 % in Gruppen (Feuerspritzer, Stichflamme ×2, Popcorn) – Flambieren +50 → +30 %, Spritzer 40 → 25 %, Stichflamme ×2 → ×1,4, Faktor 0,85',since:'2026-09-25'},
-  'schorsch-rauch':{output:{damage:1.05},rauch:{smoke:{weaken:.15}},why:'E-72 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82)',since:'2026-09-25'},
+  'schorsch-chef':{output:{damage:1.2,healing:1},chef:{wurstBonus:.15,buffet:{duration:10,radius:85,heal:10}},why:'E-72: der Grillplan des Chefs bringt zwei Würste je Braten – Schaden ×1,2 für den Heiler-Korridor. E-72 R3: das Buffet steht jetzt auf Abklingzeit (Rotation), die Wurst heilt mit dem Maximalleben und wuchs mit der Ausrüstung (Wurst gar ×4,4 von Start- zu epischer Ausrüstung) – Wurst-Bonus 25 → 15 %, Buffet 14 → 10 je Sekunde, Heilfaktor 0,8 → 1 (wirkt nur aufs Buffet)',since:'2026-09-25'},
+  'schorsch-flamme':{output:{damage:.74},flamme:{bonus:.3,splash:{radius:70,share:.25},overheatFactor:1.2},why:'E-72 Balance-Sheet: Flambierer +60 bis +125 % in Gruppen (Feuerspritzer, Stichflamme ×2, Popcorn) – Flambieren +50 → +30 %, Spritzer 40 → 25 %, Stichflamme ×2 → ×1,4, Faktor 0,85. E-72 R3: splash wieder mit Radius (applyTuning mischt nur eine Ebene – ohne radius trafen die Spritzer nie); Stichflamme ×1,3 → ×1,2 und Faktor 0,78 → 0,74, weil Pfad Stichflamme ab Stufe 10 bei +30 % lag',since:'2026-09-25'},
+  'schorsch-rauch':{output:{damage:1.05},rauch:{smoke:{radius:80,duration:6,weaken:.3},oven:{duration:12,radius:90,damage:10}},why:'E-72 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82). E-72 R3: smoke wieder vollständig (ohne radius/duration fiel der Rauch beim Servieren nie – applyTuning mischt nur eine Ebene); die Rotation hält jetzt die Glut unter 45 (Räuchern). Schwächung 15 → 30 %, Räucherofen 10 → 12 s: Mit Ausrüstung schluckt der Käse-Schild jeden Treffer, Schutz/s zählt das doppelt (verhindert + Deckung) – mehr Rauch senkt diesen Deckel, ohne Ausrüstung hebt er den Schutz',since:'2026-09-25'},
   'kaethe-grand':{output:{damage:1},why:'E-72: nach dem Kartenschaden-Abgleich (Kreuz/Karo +50 %) Faktor 1',since:'2026-09-25'},
-  'kaethe-herz':{output:{healing:1.3},herz:{bonus:.6},why:'E-72 Balance-Sheet: Kartenlegerin heilte 25–56 % unter dem Median – Herz-Bonus 40 → 60 %, Heilfaktor 1,2',since:'2026-09-25'},
+  'kaethe-herz':{output:{healing:1},herz:{bonus:.2},why:'E-72 Balance-Sheet: Kartenlegerin heilte 25–56 % unter dem Median – Herz-Bonus 40 → 60 %, Heilfaktor 1,2. E-72 R3: die Rotation spielt jetzt Herz zuerst, Eierlikörchen, Legekreis und Handlesen – Pfad 0 lag danach bei +60 bis +90 %: Herz-Bonus 60 → 20 %, Heilfaktor 1,3 → 1',since:'2026-09-25'},
   'kaethe-falsch':{output:{damage:1.1},why:'E-72 Balance-Sheet: Falschspielerin lag 25–50 % unter dem Median – Faktor 0,95 nach dem Kartenschaden-Abgleich',since:'2026-09-25'}
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
  },
@@ -71,7 +71,11 @@ export const TUNING={
   strickschal:{effects:{shieldPower:.1},why:'E-72 Startwert: +10 % stärkere Deckung und Schilde – nur wer Deckung bekommt, profitiert; darum höher als die Schadensbuffs',since:'2026-09-25'}
  },
  // E-72: Zahlen der Klassenressourcen (content/resources.js). Leer = Startwerte aus dem Design.
- resources:{},
+ resources:{
+  // E-72 Runde 3 (Balance-Sheet): verschachtelte Werte (Grillgut, Glutbereiche) stehen direkt in content/resources.js, weil applyTuning nur eine Ebene mischt.
+  schorsch:{gain:{strike:14,parry:15,buff:35},cleave:{radius:70,targets:2,share:.2},why:'E-72 R3: Grillzange +12 → +14 Glut – ohne Ausrüstung und ohne Blasebalg (bis Stufe 5) kam der Grillhütten-Chef nie in den goldenen Bereich und lag 35–48 % unter dem Heiler-Median. Spanferkel-Wurf: Nachbarn 50 → 20 % Wucht, Pfad Schwenkbraten sprang auf Stufe 15 von +10 auf +40 %',since:'2026-09-25'},
+  kaethe:{abrechnen:{perAuge:1.4,perAugeWeapon:.095,schneider:1.5,schwarz:2,radius:90},luschenGcd:.85,follow:{bonus:.2,max:3},effects:{damage:{flat:45,weapon:3.2},shield:.09,heal:.11,control:{flat:24,weapon:1.5,radius:60,slow:.4,duration:3,stun:1}},handlesen:{perSecond:.01,extend:2},why:'E-72 R3: Abrechnen hing zu 90 % am festen Anteil (2,7 je Auge) und wuchs kaum mit der Waffe – ohne Ausrüstung +25 bis +30 % über dem Median, 1,4 je Auge + 0,095 Waffe je Auge. Luschen mit „Flinke Finger“ 0,5 → 0,85 s, Farbkette +25 → +20 % je Glied: die Rotation spielt jetzt Kartenregen und Gezinkte Karten, Pfade Null ouvert/Ärmel lagen bei +35 bis +70 %. Herz heilt 13 → 11 % und Handlesen 2 → 1 % je Sekunde (Heiler-Median)',since:'2026-09-25'}
+ },
 };
 /** Rahmen der Klassen-Buffs: Dauer in Sekunden, Verstärkung je Talentstufe (`classBuff:<id>`), Obergrenze der Stärke beim Empfang. */
 export const CLASS_BUFF_TUNING={duration:1800,talentStep:.5,maxPower:2,
