@@ -10,7 +10,7 @@ Journal und Karte. Etappe 3 (Big B, Truhe, Tresortür-Logik) lief parallel und w
 die Mitte für ihre Endtruhe frei.
 
 - **Live:** Räume seit Build #615 (f8742502), Garage im Häuserstil seit Build #616 (4739465a).
-- Commits auf `main`: e2b1042b bis f8742502 (Räume, Prüfskript, Doku, Offline-Liste), 4739465a (Garage).
+- Commits auf `main`: ce969a77, 5b5deb73, bdd4cd2c, 884c742b, 1e661177, f8742502 (Räume, Prüfskript, Doku, Offline-Liste), 4739465a (Garage), c9eee748 (Doku).
 - Worktree `D:\Dev\MertlochChronicles-dg-raeume`, Zweig `dungeon-raeume`. Die Prüfungen liefen aus einem zweiten Worktree
   (`-dg-raeume-gate`), damit Änderungen während der Läufe sie nicht treffen.
 - Prüfskript `scripts/dungeon-raeume-check.mjs` (CDP 9630, Server 4430; `TAG=vorher|nachher`, `ONLY=1…7`, `DENS=2,3,4`),
