@@ -11,6 +11,7 @@ import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMP
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
 import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt} from './dungeon.js';
+import {bossOutOfReach,arenaAhead} from './dungeon.js';
 import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
@@ -131,8 +132,9 @@ function walkTo(g,c,goal,speed,dt,stopAt=6){
 function chooseTarget(g,c){
  if(c.stance==='passive')return null;
  const p=g.player,near=e=>distance(e,c.order==='stay'||holdFight(g,c)?c:p)<=R.assistRange;
- if(c.order==='attack'&&g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial)return g.target;
- const list=g.enemies.filter(e=>fighting(e)&&near(e));if(!list.length)return null;
+ /* Hotfix Arenatür (2026-09-25): ein Söldner zieht nie allein einen Boss – solange der Held nicht in dessen Arena steht, ist er kein Ziel */
+ if(c.order==='attack'&&g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial&&!bossOutOfReach(g,g.target))return g.target;
+ const list=g.enemies.filter(e=>fighting(e)&&near(e)&&!bossOutOfReach(g,e));if(!list.length)return null;
  const role=COMPANION_ROLES[c.def.role];
  /* Dungeon Etappe 3 (Plan 7.6): Schadens-Söldner wechseln auf Adds mit Vorrang (Big Bs Follower: „Adds zuerst“) */if(c.def.role==='damage'){const adds=list.filter(e=>e.priority);if(adds.length)return adds.sort((a,b)=>a.hp-b.hp||distance(a,c)-distance(b,c))[0];}
  if(role.picksUpLoose){const loose=list.filter(e=>(e.focus||PLAYER)!==c.id).sort((a,b)=>distance(a,c)-distance(b,c))[0];if(loose)return loose;}
@@ -290,7 +292,7 @@ function tickOne(g,c,dt){
  const exit=dangerExit(g,c);
  if(exit){c.channel=null;walkTo(g,c,exit,R.catchUpSpeed,dt,3);return;}                     // erst raus aus der Fläche, dann alles andere
  if(tickRevive(g,c,dt))return;                                                               // Held liegt im Dungeon: aufhelfen geht vor
- if(c.target&&(!(c.target.hp>0)||c.target.ai==='returning'||(c.order!=='stay'&&far>R.leashToOwner&&!holdFight(g,c)))){if(c.order==='attack')c.order='follow';c.target=null;}
+ if(c.target&&(!(c.target.hp>0)||c.target.ai==='returning'||bossOutOfReach(g,c.target)/* Hotfix Arenatür: nie allein am Boss */||(c.order!=='stay'&&far>R.leashToOwner&&!holdFight(g,c)))){if(c.order==='attack')c.order='follow';c.target=null;}
  if(!c.target||c.retarget<=g.time){c.target=chooseTarget(g,c);c.retarget=g.time+.5;}
  const role=COMPANION_ROLES[c.def.role],e=c.target;
  if(c.gcd<=0)for(const id of c.def.abilities){const a=COMPANION_ABILITIES[id];if(a&&a.kind!=='strike'&&a.kind!=='cleave'&&use(g,c,id,e))break;}
@@ -305,7 +307,9 @@ function tickOne(g,c,dt){
  c.state=c.order==='stay'?'stay':'follow';
  if(c.inCombat<=0)c.hp=Math.min(c.maxHp,c.hp+c.maxHp*R.outOfCombatRegen*dt);
  if(c.order==='stay')return;
- const goal=slot(g,c);if(distance(c,goal)>(p.moving?10:R.followDistance*.4))walkTo(g,c,goal,far>R.catchUp?R.catchUpSpeed:R.speed,dt,8);
+ /* Hotfix Arenatür: läge der Platz in einer Boss-Arena, in der der Held (noch) nicht steht, wartet der Söldner am Rand beim Helden */
+ const ahead=arenaAhead(g,slot(g,c)),goal=ahead?{x:p.x,y:p.y}:slot(g,c);
+ if(distance(c,goal)>(ahead?30:p.moving?10:R.followDistance*.4))walkTo(g,c,goal,far>R.catchUp?R.catchUpSpeed:R.speed,dt,ahead?26:8);
  else c.facing=p.facing||c.facing;
 }
 

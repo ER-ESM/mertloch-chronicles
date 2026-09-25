@@ -255,9 +255,37 @@ function announce(g,a,line){if(!line)return;const run=dungeonRun(g),p=run&&speak
 /** Etappe 2: Geheimnisse sind von außen nicht zu sehen – ein Raum mit `secret`, den noch keiner betreten hat, und wer darin steht. */
 export const concealedRoom=(run,room)=>!!room?.secret&&!run.visited.has(room.id);
 export function concealed(g,e){const run=dungeonRun(g);return !!run&&concealedRoom(run,roomAt(run.def,e.x,e.y));}
-function nudgeInto(g,run,roomId){
- const room=run.def.rooms.find(r=>r.id===roomId);if(!room)return;const r=rectWorld(run.def,room.floor,room.rects[0]);
- for(const u of [g.player,...(g.companions||[])]){if(!u||!g.world.blocked(u.x,u.y,5))continue;const x=Math.min(r.x+r.w-12,Math.max(r.x+12,u.x)),y=Math.min(r.y+r.h-12,Math.max(r.y+12,u.y));u.x=x;u.y=y;}
+// ── Arenatür (Hotfix 2026-09-25, Prüfer-Befund 8, WoW-Vorbild) ──────────────────────────────────────────────────
+// Eine Arena schließt nur, wenn der HELD in ihr steht. Wer beim Schließen draußen steht, kommt an den Eingang innen (wie Beschwören
+// an den Boss) – niemand bleibt allein drin oder draußen. Kein Treffer von außen, kein Söldner zieht einen Boss allein.
+// Datengetrieben über `room.arena` (Boss) und `door.arena` (Raum): gilt für Gerd, Big B und jede Arena, die Etappe 4 dazubaut.
+/** Türregel je Boss im Kampf → 'close' (Tür fällt zu, Gruppe herein), 'hold' (bleibt zu) oder 'reset' (Boss setzt zurück).
+ *  closed: Tür schon zu · hero: Held lebt und steht in der Arena · party: jemand der Gruppe steht noch darin (Geist, Sturz, E-71). */
+export function arenaRule({closed,hero,party}){if(closed)return party?'hold':'reset';return hero?'close':'reset';}
+const heroIn=(g,def,room)=>!g.dead&&roomAt(def,g.player.x,g.player.y)?.id===room;
+/** Boss hinter offener Arenatür, der Held steht nicht drin: nicht angreifbar (Autoangriff, Kniffe, Söldner). Der Rechtsklick läuft
+ *  per Wegsuche bis in die Arena, dann beginnt der Kampf. Ist die Tür zu, gilt die normale Sicht (die Tür verdeckt). */
+export function bossOutOfReach(g,e){const room=e?.dungeonBoss?.room;if(!room||!(e.hp>0))return false;const run=dungeonRun(g);if(!run||run.arena===room)return false;return !heroIn(g,run.def,room);}
+/** Söldner warten am Arenarand: liegt `pt` in der Arena eines lebenden Bosses, deren Tür offen ist und in der der Held nicht steht? */
+export function arenaAhead(g,pt){
+ const run=dungeonRun(g);if(!run||!pt)return false;const room=roomAt(run.def,pt.x,pt.y);if(!room?.arena||run.arena===room.id||heroIn(g,run.def,room.id))return false;
+ return (g.enemies||[]).some(e=>e.dungeonBoss?.room===room.id&&e.hp>0);
+}
+/** Eingang innen: Mitte der Arenatür (der nächsten zu `from`), 2 m in den Raum hinein. */
+export function arenaEntrance(run,roomId,from){
+ const room=run.def.rooms.find(r=>r.id===roomId);if(!room)return null;let best=null;
+ for(const d of run.def.doors){if(d.arena!==roomId||d.floor!==room.floor)continue;const [x,y,w,h]=d.rect;
+  for(const [dx,dy] of [[w/2+2,0],[-w/2-2,0],[0,h/2+2],[0,-h/2-2]]){const q=toWorld(run.def,d.floor,x+w/2+dx,y+h/2+dy);if(roomAt(run.def,q.x,q.y)?.id!==roomId)continue;const k=from?dist(from,q):0;if(!best||k<best.k)best={x:q.x,y:q.y,k};break;}}
+ return best&&{x:best.x,y:best.y};
+}
+/** Tür fällt zu: alle Söldner außerhalb der Arena an den Eingang innen (leicht gefächert); der Held, falls er nicht drin steht, ebenso. */
+export function pullIntoArena(g,run,roomId){
+ const inside=u=>roomAt(run.def,u.x,u.y)?.id===roomId,p=g.player;let n=0;
+ const into=(u,i)=>{const q=arenaEntrance(run,roomId,u);if(!q)return false;const a=i/4*Math.PI*2;let at=g.world.findClear(q.x+Math.cos(a)*14,q.y+Math.sin(a)*14,9);
+  if(roomAt(run.def,at.x,at.y)?.id!==roomId)at=g.world.findClear(q.x,q.y,9);u.x=at.x;u.y=at.y;return true;};
+ if(!g.dead&&!inside(p)&&into(p,0)){g.moveTo=null;g.path=[];}
+ (g.companions||[]).forEach((c,i)=>{if(inside(c)||!into(c,i+1))return;c.path=[];c.pathTimer=0;n++;});
+ if(n)g.emit?.('arenaPulled',{room:roomId,count:n});return n;
 }
 function walkPatrol(g,e,dt){
  const pt=e.patrol.points[e.patrol.i],goal={x:pt.x+e.patrol.dx,y:pt.y+e.patrol.dy},d=dist(e,goal);
@@ -282,11 +310,12 @@ export function tickDungeon(g,dt){
   /* Etappe 2 Text-Diät: der Raum nennt sich nur im Zonentitel (Schild groß, Wirklichkeit klein), keine Kurzmeldung */g.emit?.('dungeonRoom',{room,first});if(first)g.log?.(room.sign+' · '+room.truth);}
  const floor=floorAt(def,p.x,p.y);
  if(!g.dead)for(const a of def.announcements){if(run.heard.has(a.id))continue;const hit=a.room?run.room===a.room:floor===a.floor&&dist(p,toWorld(def,a.floor,a.x,a.y))<a.range*U;if(hit){run.heard.add(a.id);announce(g,a,T.announce[a.id]);}}
- // Arena: Türen zu, solange ein Boss kämpft
- // Boss ohne Gegner in seinem Raum (vom Hof aus angeschossen, alle draußen) setzt zurück, statt hinter geschlossener Tür ewig im Kampf
- // zu stehen (E-71, gefunden mit scripts/dungeon-sim.mjs). Liegt der Held drin als Geist oder ist er gestürzt, zählen die Söldner.
- let arena=null;for(const e of g.enemies)if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'){if(!partyIn(g,def,e.dungeonBoss.room)){clearThreat(e);g.resetEnemy?.(e);continue;}arena=e.dungeonBoss.room;break;}
- /* Etappe 2 Text-Diät: Tür zu/auf nur im Chat, die Tür selbst zeigt es */if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){nudgeInto(g,run,arena);g.log?.(T.arenaClosed);}else if(was)g.log?.(T.arenaOpen);}
+ // Arena: Türen zu, solange ein Boss kämpft – aber nur, wenn der Held beim Zufallen drin steht (Hotfix 2026-09-25, arenaRule).
+ // Ein Boss, den ein vorgelaufener Söldner oder ein Treffer von außen angestoßen hat, setzt sofort zurück. Ist die Tür schon zu, hält
+ // sie, solange jemand der Gruppe drin ist (Held als Geist oder über die Kante gestürzt: die Söldner kämpfen weiter, E-71).
+ let arena=null;for(const e of g.enemies)if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'){const room=e.dungeonBoss.room;
+  if(arenaRule({closed:run.arena===room,hero:heroIn(g,def,room),party:partyIn(g,def,room)})==='reset'){clearThreat(e);g.resetEnemy?.(e);continue;}arena=room;break;}
+ /* Etappe 2 Text-Diät: Tür zu/auf nur im Chat, die Tür selbst zeigt es */if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){pullIntoArena(g,run,arena);g.log?.(T.arenaClosed);}else if(was)g.log?.(T.arenaOpen);}
  for(const e of g.enemies){
   if(e.frontGuard>0)e.frontGuard=Math.max(0,e.frontGuard-dt);
   if(e.patrol&&e.hp>0&&!e.aggro&&e.ai==='roaming')walkPatrol(g,e,dt);

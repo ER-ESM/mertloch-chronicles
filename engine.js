@@ -40,6 +40,7 @@ import {deNum} from './number-format.js';
 const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
 import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest} from './dungeon.js';
+import {bossOutOfReach} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
 import {healCompanionByPlayer,buffCompanionByPlayer} from './companions.js';
@@ -181,7 +182,7 @@ export class Game{
     if(s.range&&!s.ground){
       if(preferAttacker(this))e=this.target;
       /* Kein Auto-Ziel (Runde 5a, WoW): ohne Ziel rote Zeile „Kein Ziel“; wer dich angreift, ist über preferAttacker schon Ziel */if(!e||e.hp<=0){this.fail(COMBAT_TEXT.noTarget||'Kein Ziel.');return false;}if(e.ai==='returning'||e.spawnGrace>0){/* Symbol mit Tooltip am Zielrahmen statt Satz (Runde 3a) */this.emit('targetState',{state:e.ai==='returning'?'leaving':'arriving'});return false;}
-      if(distance(p,e)>s.range+(cs.range||0)){/* Feind außer Reichweite: hinlaufen wie in WoW mit Klick-zum-Bewegen (Runde 3a) *//* Runde 5a: auch neutrale Tiere – wer Tab + Kniff drückt, will genau dieses Ziel angreifen */if(!this.approach&&startAuto(this)&&this.target===e&&approachTarget(this,e))return false;if(this.approach?.e===e)return false;this.fail(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m.`);return false;}
+      if(distance(p,e)>s.range+(cs.range||0)||bossOutOfReach(this,e)/* Hotfix Arenatür: Boss erst in seiner Arena */){/* Feind außer Reichweite: hinlaufen wie in WoW mit Klick-zum-Bewegen (Runde 3a) *//* Runde 5a: auch neutrale Tiere – wer Tab + Kniff drückt, will genau dieses Ziel angreifen */if(!this.approach&&startAuto(this)&&this.target===e&&approachTarget(this,e))return false;if(this.approach?.e===e)return false;this.fail(`Zu weit entfernt · ${Math.ceil(distance(p,e)/SCALE)} m.`);return false;}
       if(!this.world.lineClear(p,e)){this.fail('Ein Gebäude oder Hindernis versperrt die Sicht.');return false;}
     }
     if(id==='heal'&&!mate&&!resourceHealAlways(this,id)&&(aid?aid.hp>=aid.maxHp:p.hp>=p.maxHp)&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast(aid?TARGET_HELP.full(aid.name):'Deine Gesundheit ist bereits vollständig.');return false;}

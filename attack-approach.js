@@ -5,14 +5,16 @@
 import {autoWeapons} from './auto-combat.js';
 import {pathNear} from './path-near.js';
 import {distance} from './world.js';
+import {bossOutOfReach} from './dungeon.js';
 
 export const REPATH=.35;
 const NO_PATH='Kein Weg dorthin.';
 const keyMoving=g=>!!(g.touchMove?.x||g.touchMove?.y)||['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].some(k=>g.keys.has(k));
 /** Reichweite des Autoangriffs (ohne Waffe Faustkampf). */
 export function autoReach(g){const unarmed=!autoWeapons(g)[0].type;return unarmed?35:(g.skills.find(s=>s.id==='auto')?.range||35);}
-/** Trifft der Autoangriff das Ziel von hier? */
-export const inStrike=(g,e)=>distance(g.player,e)<=autoReach(g)-4&&g.world.lineClear(g.player,e);
+/** Trifft der Autoangriff das Ziel von hier? Einen Dungeon-Boss erst, wenn der Held in seiner Arena steht (Hotfix 2026-09-25): der
+ *  Rechtsklick aus dem Nachbarraum läuft per Wegsuche hinein, dann beginnt der Kampf. */
+export const inStrike=(g,e)=>distance(g.player,e)<=autoReach(g)-4&&g.world.lineClear(g.player,e)&&!bossOutOfReach(g,e);
 
 function stopHere(g){if(g.routeGoal===g.approach?.goal){g.moveTo=null;g.path=[];g.routeGoal=null;}g.approach=null;}
 function route(g,a,first){
