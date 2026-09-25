@@ -48,7 +48,7 @@ export const KITS={
   {name:'Zange zu!',cd:9,text:"Unterbricht gelbe Zauber, kneift, betäubt und macht das Ziel kurz verwundbar.",use:"Drück sie, sobald ein gelber Zauberbalken auftaucht; sie ist unabhängig von der globalen Abklingzeit."},
   {name:'Grilldeckel',window:.85,reflect:65,text:"Pariert einen kommenden Treffer mit dem Grilldeckel und gibt Schaden zurück; ein Erfolg heizt die Glut.",use:"Drück ihn kurz vor dem angekündigten Treffer."},
   {name:'Kohlen-Sprint',cd:4,steps:20,text:"Ein kurzer Sprint mit kurzem Schutz vor Treffern; die Sohlen glühen noch.",use:"Drück ihn raus aus roten Flächen und weg vom Rudel."},
-  {name:'Ablöschen',cd:14,heal:60,text:"Kippt Bier über den Rost: die Glut fällt deutlich, eine Dampfwolke trifft und bremst Gegner ringsum, und der Dampf heilt dich ein wenig.",use:"Drück es, bevor die Glut die Stichflamme erreicht – oder wenn du Luft brauchst.",flavor:"„Pils zum Löschen, Export zum Trinken.“"}
+  {name:'Ablöschen',cd:14,heal:60,text:"Kippt Bier über den Rost: die Glut fällt zurück in die gute Glut – aus „zu heiß“ genau an den Anfang der perfekten –, eine Dampfwolke trifft und bremst Gegner ringsum, und der Dampf heilt dich ein wenig.",use:"Drück es, bevor die Glut die Stichflamme erreicht – oder wenn du Luft brauchst.",flavor:"„Pils zum Löschen, Export zum Trinken.“"}
  ],
  // E-72 · Kreuz-Käthe: Blatt + Augen. Die Plätze 1–3 spielen die Karten der Hand; Name und Bild kommen aus der Karte.
  kaethe:[

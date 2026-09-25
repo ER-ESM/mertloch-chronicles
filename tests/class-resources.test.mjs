@@ -89,7 +89,7 @@ test('Schorsch · Grillrost: Auflegen, garen, gar servieren wirkt stärker als r
 });
 
 test('Schorsch · Ablöschen kühlt, heilt und hüllt Gegner in Dampf – auch bei vollem Leben',()=>{
- const g=hero('schorsch'),e=foe(g,30);g.res.glut=90;const hp=e.hp;assert.ok(cast(g,'heal'));assert.equal(g.res.glut,50);assert.ok(e.hp<hp);assert.ok(e.controlSlow>0);
+ const g=hero('schorsch'),e=foe(g,30);g.res.glut=90;const hp=e.hp;assert.ok(cast(g,'heal'));assert.equal(g.res.glut,RESOURCES.schorsch.zones[1].to,'aus „zu heiß“ an den Anfang der perfekten Glut');assert.ok(e.hp<hp);assert.ok(e.controlSlow>0);
 });
 
 test('Käthe · Blatt: Karten liegen auf den Plätzen 1–3, jede Karte gibt Augen, Farbe bedienen verstärkt',()=>{

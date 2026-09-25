@@ -6,25 +6,25 @@ Branch `e72-balance2` (von e340597f). Umgesetzt wurden die fünf Entscheidungen 
 
 | Klasse | ⚑ vorher (Build #638) | ⚑ nachher |
 |---|---:|---:|
-| Dieter | 97 / 180 | 87 / 180 |
+| Dieter | 97 / 180 | 86 / 180 |
 | Bärbel | 71 / 180 | 66 / 180 |
 | Kevin | 23 / 180 | 21 / 180 |
-| Schorsch | 36 / 180 | 26 / 180 |
-| Käthe | 46 / 180 | 27 / 180 |
-| **gesamt** | **273 / 900** | **227 / 900** |
-| Anteil ⚑ alte Klassen | 35,4 % | 32,2 % |
-| Anteil ⚑ neue Klassen | 22,8 % | 14,7 % |
+| Schorsch | 36 / 180 | 21 / 180 |
+| Käthe | 46 / 180 | 26 / 180 |
+| **gesamt** | **273 / 900** | **220 / 900** |
+| Anteil ⚑ alte Klassen | 35,4 % | 32,0 % |
+| Anteil ⚑ neue Klassen | 22,8 % | 13,1 % |
 
 | Spezialisierung | ⚑ vorher | über ±25 % vorher | ⚑ nachher | über ±25 % nachher | größter Ausreißer nachher |
 |---|---:|---:|---:|---:|---|
-| schorsch-chef | 20 | 5 | 8 | 0 | +22,7 % (Pfad 0, St. 10, ungew.) |
-| schorsch-flamme | 10 | 0 | 12 | 0 | +23,8 % (Pfad 0, St. 30, episch) |
-| schorsch-rauch | 6 | 0 | 6 | 0 | +18,7 % (Pfad 1, St. 10, ungew.) |
-| kaethe-grand | 10 | 0 | 10 | 0 | +24,1 % (Pfad 2, St. 30, Start) |
-| kaethe-herz | 28 | 5 | 11 | 0 | +23,8 % (Pfad 0, St. 10, Start) |
+| schorsch-chef | 20 | 5 | 8 | 0 | +24,8 % (Pfad 0, St. 10, selten) |
+| schorsch-flamme | 10 | 0 | 7 | 0 | +20,3 % (Pfad 0, St. 30, episch) |
+| schorsch-rauch | 6 | 0 | 6 | 0 | +18,2 % (Pfad 1, St. 10, ungew.) |
+| kaethe-grand | 10 | 0 | 8 | 0 | +24,8 % (Pfad 2, St. 30, Start) |
+| kaethe-herz | 28 | 5 | 12 | 0 | +23,8 % (Pfad 0, St. 10, Start) |
 | kaethe-falsch | 8 | 1 | 6 | 0 | +23,0 % (Pfad 1, St. 30, episch) |
 
-**Ziel erreicht:** Keine Zelle der neuen Spezialisierungen liegt über ±25 %. Ihr ⚑-Anteil (14,7 %) liegt unter dem der alten Klassen (32,2 %).
+**Ziel erreicht:** Keine Zelle der neuen Spezialisierungen liegt über ±25 %. Ihr ⚑-Anteil (13,1 %) liegt unter dem der alten Klassen (32,0 %).
 Die Ausstoß-Zahlen der alten Zeilen sind unverändert, mit Ausnahme von kevin-fuse (Punkt 3); geprüft wurden alle 540 alten Zeilen.
 
 ## Schwächster Punkt
@@ -45,6 +45,7 @@ sprunghaft auf die Zahlen: Mit Faktor 0,78 statt 0,74 stieg er auf +48 %. Ohne U
 | 3 · kevin-fuse | Tuning `fuse.explode` trägt wieder `radius:70`. Das Tuning hatte ihn gelöscht, deshalb traf die Lunten-Explosion nie. Explosion 70 → **20**, Faktor 0,8 → **0,74**. | Mit Radius lag Pfad Kettenreaktion bei bis zu +64 %, Kevin gesamt bei 43 ⚑. |
 | 4 · Schadensmeter | `combat-meter.js`: Jede Quelle ohne Kniff-Zuordnung bekommt eine eigene Zeile (`src:<Name>`) statt des Topfs „other“. `content/meter.js` ordnet Servieren, Glutbrocken, Schwenkgrill, Spiritus, Abrechnen und Zeche prellen ihrem Kniff zu. | Vorher standen alle Karten, Abrechnen, Stichflamme usw. in einer Zeile namens „Kreuz“ bzw. „Schwenkgrill“, im Sheet wie im Spiel. |
 | 5 · Feinschliff | Kreuz-Dame 10 → 5 % | Falschspielerin Pfad 1 lag auf Stufe 30 episch bei +25,3 % |
+| Kenner-Befund (Zusatz) · Ablöschen | `ventGlut` (class-resources.js): Ablöschen kühlt um 40, aus „zu heiß“ **genau auf den Anfang der perfekten Glut** (60, mit Stammplatz 55). Es fällt **nie unter den Anfang der guten Glut** (30); wer schon kälter ist, bleibt kalt (Räuchermeister). Kein Auslöser „steigt in den goldenen Bereich“ beim Kühlen. Texte: Kniff, Glossar Ablöschen, Tooltip (`mechanic-help.js`: „Danach: Glut 60 · Perfekte Glut“). Flambierer-Faktor 0,74 → **0,7**, weil er danach heißer bleibt. | Playtest: 95 → 26 schoss von „zu heiß“ nach „kalt“ |
 
 Die Pfandautomat-Nachladung verursacht keinen Schaden und erscheint deshalb nicht im Schadensmeter.
 
@@ -55,18 +56,19 @@ Kampfstatistik mit V geöffnet und die Figur angeklickt. Ergebnis **PASS**:
 - Schorsch: Grillzange, Servieren, Popcorn, Autoangriff, Glutbrand, Glutbrocken (`balance2/meter-schorsch-flambierer.jpg`).
 - Käthe: Kreuz, Abrechnen, Karo, Autoangriff (`balance2/meter-kaethe-grand.jpg`).
 
-Beide Bilder habe ich angesehen: eine Zeile je Quelle, keine doppelten Namen.
+Beide Bilder habe ich angesehen: eine Zeile je Quelle, keine doppelten Namen. Außerdem Ablöschen bei Glut 95: Tooltip „Danach: Glut 60 · Perfekte Glut“, danach Glut 60 – das Thermometer im Bild steht am Anfang des goldenen Bereichs (`balance2/abloeschen-95-auf-60.jpg`).
 
 Nebenbefund: Die Erinnerungs-Randkarte (memory-card.js) legte sich bei 1600×900 über die erst später geöffnete Kampfstatistik. Für die Bilder habe ich sie
 ausgeblendet; im Spiel ist das nicht behoben. Die Autoangriff-Zeile heißt „Autoangriff · Zangenklapper“ und wird im schmalen Fenster abgeschnitten (bestand schon vorher).
 
 ## Tests
 
-`npm test`: **1076 / 1076 grün**. Neu in `tests/e72-balance.test.mjs`:
+`npm test`: **1077 / 1077 grün**. Neu in `tests/e72-balance.test.mjs`:
 - Heilung und Schilde bleiben bei dreifachem Maximalleben gleich groß.
 - Das Sheet liefert die effektive Heilung, und sie ist nie größer als der Ausstoß.
 - Das Meter trennt Kreuz, Karo, Pik und die Grill-Quellen, und Abrechnen zählt auf den Kniff.
 - Die Lunten-Explosion trifft Nachbarn im Radius 70 und keinen weiter entfernten Gegner.
+- Ablöschen: 95 → 60, aus der perfekten Glut −40, 66 → 30 (vorher 26), 20 bleibt 20. Die bestehende Prüfung in tests/class-resources.test.mjs erwartet jetzt 60 statt 50.
 
 ## Offen
 
