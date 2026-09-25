@@ -58,6 +58,7 @@ import {buildingVisualBounds} from './tiny-architecture.js';
 import {hotspotLayout,giverGlyph} from './hotspots.js';
 import {questMob,chapterAreas,idaMark} from './quest-mobs.js';
 import {REACTION_COLORS,reactionOf,isNeutralUnit} from './unit-colors.js';
+import {drawBigBGround} from './dungeon-bigb-art.js';/* Dungeon Etappe 3: Bahnen, Stellen, Trümmer, Endtruhe */
 const poly=(c,p)=>{c.beginPath();p.forEach((v,i)=>i?c.lineTo(Math.round(v.x),Math.round(v.y)):c.moveTo(Math.round(v.x),Math.round(v.y)));c.closePath();};
 const rect=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x*2)/2,Math.round(y*2)/2,Math.round(w*2)/2,Math.round(h*2)/2);};
 const ellipse=(c,color,x,y,rx,ry)=>{c.fillStyle=color;c.beginPath();c.ellipse(Math.round(x),Math.round(y),rx,ry,0,0,Math.PI*2);c.fill();};
@@ -224,7 +225,7 @@ export class Renderer {
     // Ruhende Weltobjekte kommen aus dem Raster-Index (spatial-index.js), nicht mehr aus der ganzen Karte; Rand 100 deckt jede Sichtprüfung unten ab.
     const index=this.index||=new SpatialIndex(),near=(name,list,box)=>index.query(name,list,ox-100,oy-100,ox+W+100,oy+H+100,box),props=near('props',w.props);
     // Boden, Steine und Schatten stehender Objekte kommen aus dem Zwischenspeicher (ground-cache.js); je Bild bleiben nur die wiegenden Blumen.
-    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();if(inDungeon(g))drawDungeonGround(c,g,view);else ground.draw(c,view,this.density,(lit?'licht':'ohne')+bakedGrade.filter+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
+    const view={ox,oy,W,H},ground=this.ground||=new GroundCache();if(inDungeon(g)){drawDungeonGround(c,g,view);drawBigBGround(c,g);}else ground.draw(c,view,this.density,(lit?'licht':'ohne')+bakedGrade.filter+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
     for(const prop of props)if(visible(prop,10)&&prop.type!=='rock'&&!FURNITURE.includes(prop.type))this.prop(c,prop);
     if(!g.instance){const door=dungeonEntrance(g);if(door&&visible(door,80))drawDungeonEntrance(c,door,g,time);}
     // Begehbares Haus (E-52): drinnen blendet das Dach aus, Böden und geschnittene Wände erscheinen.

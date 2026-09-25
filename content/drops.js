@@ -30,7 +30,12 @@ export const DROP_TABLES={
  gerd:{items:['gaesteliste','kabelbinder','currywurst'],material:'kabelbinder',materialChance:.6,gearChance:.85,rareChance:.6,unique:'gaesteliste',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
  // Trash im Schloss: Security-Azubis, Makler-Praktikanten, Baumarkt-Ritter, Pappschützen, Pfandratten. Flugblätter (Exposés)
  // als Material; die Dorflegende ist der Praktikantenausweis, den die Azubis am Band tragen (selten).
- schlosstrash:{material:'flugblatt',materialChance:.35,gearChance:.16,unique:'praktikantenausweis',uniqueChance:.01,coinsChance:.6,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']}
+ schlosstrash:{material:'flugblatt',materialChance:.35,gearChance:.16,unique:'praktikantenausweis',uniqueChance:.01,coinsChance:.6,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
+ // Big B (Etappe 3, Plan 11): zwei Dorflegenden je 12 % – Siegelring „Echt Gold" (unique) und Pelzmantel des Barons (uniques, eigene
+ // Chance je Eintrag, itemization.js rollDrop). Kronkorken als Material (die Goldkette ist daraus). Fällt kein Teil, legt der Dungeon ein
+ // seltenes nach (wie bei Gerd); dazu kommt die Endtruhe mit Wahl in der Schatzkammer.
+ bigb:{items:['siegelring-echtgold','pelzmantel-baron','kronkorken'],material:'kronkorken',materialChance:.7,gearChance:.9,rareChance:.7,unique:'siegelring-echtgold',uniqueChance:.12,
+  uniques:[{id:'pelzmantel-baron',chance:.12}],coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']}
 };
 /** Verpflegung, die menschliche Gegner und Bosse zusätzlich fallen lassen können. */
-export const FOOD_DROPS={warden:'brezel',scrounger:'kaltgetraenk',inspector:'brezel',oberpraktikant:'brezel',horst:'brezel',gisela:'currywurst',automat:'kaltgetraenk',kegler:'brezel',jga:'kaltgetraenk',sigi:'currywurst',klaus:'brezel',timo:'kaltgetraenk',gerd:'currywurst',schlosstrash:'brezel'};
+export const FOOD_DROPS={warden:'brezel',scrounger:'kaltgetraenk',inspector:'brezel',oberpraktikant:'brezel',horst:'brezel',gisela:'currywurst',automat:'kaltgetraenk',kegler:'brezel',jga:'kaltgetraenk',sigi:'currywurst',klaus:'brezel',timo:'kaltgetraenk',gerd:'currywurst',schlosstrash:'brezel',bigb:'kaltgetraenk'};
