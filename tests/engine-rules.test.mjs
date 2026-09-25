@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs';
 import {World,rng} from '../world.js';
 import {Game,HUB_RADIUS} from '../engine.js';
 import {makeEnemy,scaledStats,ENCOUNTER_RULES} from '../encounters.js';
+import {inStartArea} from '../foe-rules.js';
 import {rolledDefinition,restoreRolls,QUALITIES} from '../itemization.js';
 import {ITEMS,addItem,equipItem,rewardOptions,countItem} from '../rpg.js';
 import {ARCHETYPES,BOSSES,BOSS_LINES,ENEMY_BARKS,VILLAGERS,SPAWN_TABLES,BALANCE,BUILDINGS,enemyScale} from '../content/index.js';
@@ -109,7 +110,8 @@ test('Feldgegner im Umland wachsen mit der Spielerstufe, der Dorfkern bleibt fes
  const scaled=scaledStats(fox,10,true),factor=enemyScale(10-(BALANCE.enemies.playerLead??2),fox.level);
  assert.equal(scaled.hp,Math.round(fox.hp*factor.hp));
  assert.ok(scaled.hp>fox.hp&&scaled.damage>1,'Umland wächst mit');
- assert.deepEqual(scaledStats(fox,1,true),{hp:fox.hp,damage:1},'Stufe 1 ändert nichts');
+ assert.deepEqual(scaledStats(fox,1,true),{hp:fox.hp,damage:1,level:fox.level},'Stufe 1 ändert nichts');
+ assert.equal(scaled.level,10-(BALANCE.enemies.playerLead??2),'E-72 R4: die Stufe wächst mit (Zielrahmen, Stufenabstand, Beute)');
 
  // Echte Welt: Dorfkern auf Stufe 1 unverändert, Umland auf Stufe 10 skaliert.
  const C=ENCOUNTER_RULES.cellSize;
@@ -120,7 +122,10 @@ test('Feldgegner im Umland wachsen mit der Spielerstufe, der Dorfkern bleibt fes
  const core=e=>Math.hypot(e.home.x-realWorld.spawn.x,e.home.y-realWorld.spawn.y)<=SPAWN_TABLES.tierDistance;
  for(const e of low.filter(core))assert.equal(e.hp,ARCHETYPES[e.archetype].hp,e.archetype+' im Dorfkern verändert');
  for(const e of high.filter(core))assert.equal(e.hp,ARCHETYPES[e.archetype].hp,e.archetype+' im Dorfkern verändert (Stufe 10)');
- const far=high.filter(e=>!core(e)&&ARCHETYPES[e.archetype]&&!e.elite);
+ // E-72 R4: rund um die Startreihe (Tiergebiete, Treffpunkte) wächst nichts mit – dort stand am Pfandhof sonst Stufe 10 neben Stufe 2.
+ const start=e=>inStartArea(realWorld,e.home);
+ for(const e of high.filter(e=>!core(e)&&start(e)&&ARCHETYPES[e.archetype]&&!e.elite))assert.equal(e.level,ARCHETYPES[e.archetype].level,e.archetype+' an der Startreihe mitgewachsen');
+ const far=high.filter(e=>!core(e)&&!start(e)&&ARCHETYPES[e.archetype]&&!e.elite);
  assert.ok(far.length,'es gibt Umland-Gegner');
  for(const e of far)assert.ok(e.hp>ARCHETYPES[e.archetype].hp,e.archetype+' im Umland nicht skaliert');
 });

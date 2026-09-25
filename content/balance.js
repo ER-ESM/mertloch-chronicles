@@ -56,6 +56,20 @@ export const BALANCE=Object.freeze({
   eliteHp:2.2,eliteDamage:1.3,
   spawnGrace:1.8
  },
+ // Weltgegner (E-72 Runde 4, Kenner-Befund „Stufe-12-Held stirbt an Stufe-2-Keilern“, foe-rules.js): Stufenunterschied wie in WoW,
+ // Rudel ohne Gleichschlag, Schutz nach dem Aufwachen, Laufwege mit Wegkosten. Gilt für Feld, Tiergebiete, Lager und Arena –
+ // Dungeon (E-71) und Weltbosse behalten ihre eigenen Regeln.
+ foes:{
+  // Stufenabstand wie die Farben am Zielrahmen (unit-colors.js): ±2 gelb unverändert; ab 3 Stufen unter dem Helden je weitere Stufe
+  // −10 % Schaden (mindestens 25 %) und −15 % Aggro-Reichweite; ab 5 darunter (grau, „kaum der Rede wert“) kein Angriff von sich aus, kein Kumpel.
+  gap:{grace:2,damagePerLevel:.1,damageFloor:.25,aggroPerLevel:.15,grey:5},
+  pack:{max:3,specialGap:1.2},         // Kettenzug holt höchstens max Gegner zugleich in den Kampf; Spezialangriffe eines Rudels liegen ≥ specialGap s auseinander
+  wakeGuard:10,                        // „kurzer Schutz“ nach dem Aufwachen: so lange bemerkt dich kein Gegner, bis du selbst angreifst
+  startPad:450,                        // Startreihe (E-55): Feldgegner so nah an einem Tiergebiet oder Treffpunkt wachsen nicht mit der Spielerstufe (encounters.scaledStats)
+  // Laufwege (safe-route.js): jede Einheit Weg durch ein Gegnerrevier kostet penalty Einheiten extra; Revier = Heim + roamShare × Streifradius
+  // + Aggro-Reichweite + margin. Ein Umweg darf höchstens detour × kürzester Weg + slack lang sein (sonst mit halber, viertel Strafe erneut).
+  route:{penalty:4,margin:16,roamShare:.8,detour:1.6,slack:400}
+ },
  // Gruppenspiel (E-42): EP-Bonus je Gruppenmitglied in Reichweite, Würfeln ab Seltenheit, Anteil fremder Buffs
  party:{reviveHp:.35,worldBossHp:4,worldBossLevel:2,xpPerMember:.05,range:1600,rollRarities:['rare','epic'],buffShare:.5},
  loot:{coinsBoss:25,coinsHuman:2,coinsSpread:6,foodChanceHuman:.15},

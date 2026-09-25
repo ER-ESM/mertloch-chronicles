@@ -6,6 +6,7 @@ import {SHOP_UI} from './content/index.js';
 import {isElite} from './enemy-ui.js';
 import {SCALE,distance} from './world.js';
 import {hotspotMapMarks} from './hotspots.js';
+import {safeRoute} from './safe-route.js';
 import {chapterAreas} from './quest-mobs.js';
 import {HOTSPOT_UI,WORLD_MAP_UI,STORY_CHAPTERS} from './content/index.js';
 import {mapIcon} from './map-symbols.js';
@@ -181,7 +182,7 @@ export function drawAtlas(renderer,canvas,full=false,highlight=null,options={}){
  for(const b of w.buildings){if(b.maxX<ox||b.minX>ox+W/scale||b.maxY<oy||b.minY>oy+H/scale)continue;drawRoof(c,b,pos,scale);}
  for(const t of w.trees){const a=pos(t);if(!inside(a))continue;const r=Math.max(1.6,5.5*t.size*scale);c.fillStyle='#10241699';c.beginPath();c.arc(a.x+r*.35,a.y+r*.35,r,0,7);c.fill();c.fillStyle=t.type==='pine'||t.variant%3===0?'#2d5a34':'#3f6e36';c.beginPath();c.arc(a.x,a.y,r,0,7);c.fill();c.fillStyle='#6f9a4a';c.beginPath();c.arc(a.x-r*.3,a.y-r*.35,r*.45,0,7);c.fill();}
  const dest=highlight||g.moveTo||g.destination()?.point;
- if(dest){let route;if(full){const key=[p.x,p.y,dest.x,dest.y].map(Math.round).join(',');if(renderer.atlasRoute?.key!==key)renderer.atlasRoute={key,path:w.findPath(p,dest)};route=renderer.atlasRoute.path;}else route=g.path?.length?g.path:[dest];path([p,...route]);c.strokeStyle='#242c35';c.lineWidth=4;c.stroke();c.strokeStyle='#f1cd77';c.lineWidth=2;c.setLineDash([5,4]);c.stroke();c.setLineDash([]);}
+ if(dest){let route;if(full){const key=[p.x,p.y,dest.x,dest.y].map(Math.round).join(',');if(renderer.atlasRoute?.key!==key)renderer.atlasRoute={key,path:safeRoute(g,w,{x:p.x,y:p.y},dest)/* dieselbe Strecke wie „Hinlaufen“ (E-72 R4) */};route=renderer.atlasRoute.path;}else route=g.path?.length?g.path:[dest];path([p,...route]);c.strokeStyle='#242c35';c.lineWidth=4;c.stroke();c.strokeStyle='#f1cd77';c.lineWidth=2;c.setLineDash([5,4]);c.stroke();c.setLineDash([]);}
  // Weltkarte (Runde 4a): eigene Beschriftungsschicht; die Umgebungskarte (full=false, nur noch Tests/Altpfad) zeichnet wie bisher.
  if(full){canvas.atlasView={scale,ox,oy};drawWorldLayer(c,canvas,g,W,H,pos,inside,options);return;}
  const occupiedLabels=[],areaLabels=[];
