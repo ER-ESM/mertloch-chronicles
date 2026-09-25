@@ -7,7 +7,9 @@ Söldner-Faktor, Tod als Geist, Laufstand, Beute und `dungeon-check`-Fix sind do
 
 - Worktree `D:\Dev\MertlochChronicles-dg-e2`, Zweig `dungeon-e2`, Prüfstand aus einem zweiten Worktree (`-dg-e2-gate`),
   damit laufende Prüfungen nicht die Arbeitskopie sehen.
-- Live: Teil 1 seit Build #553 (7feb15b), Teil 2 siehe „Commits“.
+- Live: Teil 1 seit Build #553 (7feb15b); Teil 2 (9910d55) und Nachtrag (075a948) seit Build #558.
+- Commits auf `main`: 7feb15b (Eingang sichtbar), 9910d55 (Warnleiste, Bossrahmen, Journal, Karte, Text-Diät, Handy-Kampf,
+  Kellerlicht, nach Etappe 1 rebased), 075a948 (Truppe quer, Bericht).
 - Prüfskript `scripts/dungeon-e2-check.mjs` (CDP 9610, Server 4410, `ONLY=1…7`), Unit-Tests `tests/dungeon-e2.test.mjs`.
   Bilder in `visual-review/dungeon-e2/` (lokal, nicht im Repo).
 
