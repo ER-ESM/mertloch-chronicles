@@ -10,7 +10,7 @@
 import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMPANION_TEXT as T,companionById,companionCost,companionStats,CAST_SETS,COMBAT_RULES} from './content/index.js';
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
-import {resolveDungeonCast,dungeonBossCast,coneHits} from './dungeon.js';
+import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot} from './dungeon.js';
 import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
@@ -21,6 +21,9 @@ import {MARK_IDS} from './target-marks.js';
 
 const PLAYER='player';
 const alive=c=>c.state!=='down'&&c.hp>0;
+/** Dungeon-Arena (E-71): Solange ein Boss hinter geschlossener Tür kämpft, bleiben Söldner im Kampf – auch wenn der Held als Geist
+ *  liegt oder über die Treppenkante gefallen ist. Kein Heranspringen zum Helden, kein Abbruch wegen Abstand. */
+const holdFight=(g,c)=>c.inCombat>0&&!!dungeonRun(g)?.arena;
 const fighting=e=>e.hp>0&&e.aggro&&e.ai!=='returning'&&!e.dummy&&!e.tutorial;
 const ratio=x=>x.hp/x.maxHp;
 const abilitySource=id=>({id,name:COMPANION_ABILITIES[id].name});
@@ -55,7 +58,9 @@ export function clearThreat(e,who){if(!e?.threat)return;if(who===undefined){e.th
 /** Wen greift dieser Gegner an? → Begleiter oder null (= Spieler). Zielwechsel erst bei 10 % mehr Bedrohung. */
 export function companionFocus(g,e){
  if(!g.companions?.length||!e.threat)return null;
- const value=who=>who===PLAYER?(e.threat[PLAYER]||0):(g.companions.find(c=>c.id===who&&alive(c))?e.threat[who]||0:-1);
+ // Dungeon (E-71): Der gefallene Held ist Geist und kein Ziel mehr – die Gegner wenden sich den stehenden Söldnern zu.
+ const ghost=g.dead&&inDungeon(g);
+ const value=who=>who===PLAYER?(ghost?-1:e.threat[PLAYER]||0):(g.companions.find(c=>c.id===who&&alive(c))?e.threat[who]||0:-1);
  let top=PLAYER,best=value(PLAYER);for(const c of g.companions){const v=value(c.id);if(v>best){best=v;top=c.id;}}
  const current=e.focus&&value(e.focus)>=0?e.focus:null;
  if(!current||(top!==current&&best>value(current)*R.threatSwitch))e.focus=top;
@@ -70,7 +75,7 @@ export function hitCompanion(g,e,c,n){
  if(c.hp<=0)down(g,c);
 }
 function down(g,c){
- c.state='down';c.aidBuff=null;c.aidHot=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
+ c.channel=null;c.state='down';c.aidBuff=null;c.aidHot=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
  for(const e of g.enemies)clearThreat(e,c.id);
  g.toast(T.down(c.name));if(c.def.lines?.down)g.bark?.(c,c.def.lines.down,'companion');g.emit('companion',{type:'down',id:c.id});
 }
@@ -78,13 +83,13 @@ function down(g,c){
 /** Gegner-KI gegen einen Begleiter – Gegenstück zum Spieler-Zweig in Game.tick(). true = Gegner ist für diesen Takt versorgt. */
 export function tickEnemyOnCompanion(g,e,c,dt){
  const p=g.player,d=distance(e,c);
- if(!e.arena&&(distance(e,e.home)>e.leash||distance(e,p)>760)){clearThreat(e);beginReturn(g,e);return true;}
+ if(!e.arena&&(distance(e,e.home)>e.leash||!e.dungeon&&distance(e,p)>760)){clearThreat(e);beginReturn(g,e);return true;}/* Dungeon (E-71): Gegner halten an ihrer Leine, nicht am Abstand zum Helden – fällt er über die Kante oder liegt er, kämpfen die Söldner weiter */
  p.inCombat=7;c.inCombat=6;e.facing=e.x<c.x?1:-1;
  if(e.stun>0){e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);return true;}
  if(e.cast){
   e.cast.remaining-=dt;
   if(e.cast.remaining<=0){
-   const k=e.cast;e.cast=null;e.attackTimer=COMBAT_RULES.specialInterval;e.attack=.3;
+   const k=e.cast;e.cast=null;e.attackTimer=k.next??COMBAT_RULES.specialInterval;e.attack=.3;
    if(e.dungeon&&resolveDungeonCast(g,e,k,c))return true;
    if(k.ground){emitCombatFx(g,'impact',k,{radius:k.radius,hostile:true});for(const o of g.companions)if(alive(o)&&inEllipse(o,k))hitCompanion(g,e,o,k.damage);if(inEllipse(p,k))g.hitPlayer(e,k.damage);}
    else if(k.interruptible){if(d<R.castSight&&g.world.lineClear(e,c))hitCompanion(g,e,c,k.damage);}
@@ -104,13 +109,14 @@ export function tickEnemyOnCompanion(g,e,c,dt){
  e.attackTimer=Math.max(0,e.attackTimer-dt);
  if(alive(c)&&distance(e,c)<=reach&&e.attackTimer<=0&&g.world.lineClear(e,c)){
   if(e.dungeon&&e.bossId)dungeonBossCast(g,e);const set=CAST_SETS[e.castSet]||DUNGEON_CASTS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length],k={...set.casts[type]};
-  e.cycle++;e.cast={...k,type,remaining:k.total,x:k.ground?c.x:e.x,y:k.ground?c.y:e.y,focus:c.id,angle:Math.atan2(c.y-e.y,c.x-e.x)};
+  e.cycle++;e.cast={...k,type,remaining:k.total,x:k.ground?c.x:e.x,y:k.ground?c.y:e.y,focus:c.id,angle:Math.atan2(c.y-e.y,c.x-e.x)};if(e.dungeon)dungeonCastSpot(g,e,e.cast,c);
  }
  return true;
 }
 
 // ── 2. Begleiter-KI ───────────────────────────────────────────────────────────────────────────────────────────
-function refreshStats(g,c){const level=g.player.level,pct=classBuffValue(c,'health');if(c.level===level&&c.maxHp&&c.hpPct===pct)return;const before=c.maxHp?ratio(c):1,s=companionStats(c.def.role,level);c.level=level;c.hpPct=pct;c.maxHp=Math.round(s.maxHp*(1+pct));c.damage=s.damage;c.hp=Math.round(c.maxHp*before);}
+/** Werte nach Stufe; im Dungeon mit dem Instanzfaktor (E-71, COMPANION_RULES.instanceFactor) – die offene Welt bleibt unverändert. */
+function refreshStats(g,c){const level=g.player.level,pct=classBuffValue(c,'health'),inst=inDungeon(g);if(c.level===level&&c.maxHp&&c.hpPct===pct&&c.inst===inst)return;const before=c.maxHp?ratio(c):1,s=companionStats(c.def.role,level),f=inst?R.instanceFactor:{};c.level=level;c.hpPct=pct;c.inst=inst;c.maxHp=Math.round(s.maxHp*(f.health||1)*(1+pct));c.damage=s.damage*(f.damage||1);c.heal=s.damage*(f.heal||1);c.hp=Math.round(c.maxHp*before);}
 function slot(g,c){const i=Math.max(0,g.companions.indexOf(c))%R.formation.length,[fx,fy]=R.formation[i],side=g.player.facing<0?-1:1;return {x:g.player.x+fx*side,y:g.player.y+fy};}
 function place(g,c,at){let p=at;try{p=g.world.findClear(at.x,at.y,9);}catch{}c.x=p.x;c.y=p.y;c.path=[];}
 
@@ -124,7 +130,7 @@ function walkTo(g,c,goal,speed,dt,stopAt=6){
 /** Ziel nach Haltung und Rolle. Schutz-Begleiter sammeln zuerst Gegner ein, die jemand anderen angreifen. */
 function chooseTarget(g,c){
  if(c.stance==='passive')return null;
- const p=g.player,near=e=>distance(e,c.order==='stay'?c:p)<=R.assistRange;
+ const p=g.player,near=e=>distance(e,c.order==='stay'||holdFight(g,c)?c:p)<=R.assistRange;
  if(c.order==='attack'&&g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial)return g.target;
  const list=g.enemies.filter(e=>fighting(e)&&near(e));if(!list.length)return null;
  const role=COMPANION_ROLES[c.def.role];
@@ -166,10 +172,10 @@ function use(g,c,id,target){
  const a=COMPANION_ABILITIES[id];if(!a||(c.cooldowns[id]||0)>0)return false;
  const range=a.range||COMPANION_ROLES[c.def.role].range,done=()=>{c.cooldowns[id]=a.cooldown;c.gcd=R.pause;c.attack=.3;c.castPose=a.kind==='heal'?.3:0;c.usingRanged=!!a.ranged;return true;};
  if(a.kind==='guard'){if(ratio(c)>a.below||c.inCombat<=0)return false;c.guard=a.duration;c.guardReduction=a.reduction;companionFx(g,c,'guard',c,{amount:0});return done();}
- if(a.kind==='heal'){const allies=[g.player,...g.companions.filter(alive)].filter(x=>ratio(x)<a.below&&distance(x,c)<=range).sort((x,y)=>ratio(x)-ratio(y));
+ if(a.kind==='heal'){const allies=[...(g.dead?[]:[g.player]),...g.companions.filter(alive)].filter(x=>ratio(x)<a.below&&distance(x,c)<=range).sort((x,y)=>ratio(x)-ratio(y));
   // Gruppe (2026-09-24): Heil-Söldner kümmern sich auch um Mitspieler in Reichweite; die Heilung reist über den Hilfsweg (net-social aidHeal).
-  const mate=partyPatient(g,c,a,range);if(mate&&(!allies.length||mate.hp/100<ratio(allies[0]))){healMate(g,c,mate,c.damage*a.power,id);return done();}
-  if(!allies.length)return false;heal(g,c,allies[0],c.damage*a.power,id);return done();}
+  const mate=partyPatient(g,c,a,range);if(mate&&(!allies.length||mate.hp/100<ratio(allies[0]))){healMate(g,c,mate,(c.heal??c.damage)*a.power,id);return done();}
+  if(!allies.length)return false;heal(g,c,allies[0],(c.heal??c.damage)*a.power,id);return done();}
  if(a.kind==='taunt'){const e=g.enemies.filter(e=>fighting(e)&&(e.focus||PLAYER)!==c.id&&distance(e,c)<=range).sort((x,y)=>distance(x,c)-distance(y,c))[0];if(!e)return false;
   const top=Math.max(0,...Object.values(e.threat||{}));e.threat={...(e.threat||{}),[c.id]:top*R.threatSwitch+R.tauntLead};e.focus=c.id;if(!companionText(g,c,{area:'note',kind:'proc',text:T.taunted,ability:id}))g.float(e.x,e.y-38,T.taunted,'#f0c987');return done();}
  if(a.kind==='interrupt'){const e=g.enemies.find(e=>fighting(e)&&e.cast?.interruptible&&distance(e,c)<=range&&(!e.cast.claimed||e.cast.claimed===c.id));if(!e)return false;
@@ -185,7 +191,7 @@ function reacted(g,c,cast){const seen=c.seen||(c.seen=new WeakMap());if(!seen.ha
 /** Steht der Begleiter in einer angesagten Fläche? → Fluchtpunkt knapp außerhalb, sonst null. */
 /** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. */
 function coneExit(g,c){
- for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id||!coneHits(e,k,c)||!reacted(g,c,k))continue;
+ for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id||!coneHits(e,k,c,g)||!reacted(g,c,k))continue;
   for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+.5),r=Math.max(30,Math.min(k.cone.range*.8,distance(e,c))),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
  return null;
 }
@@ -196,6 +202,17 @@ function dangerExit(g,c){
  return null;
 }
 
+/** Aufhelfen (Dungeon Etappe 1, E-71): Liegt der Held als Geist im Dungeon, geht ein Heil-Söldner mit `revive` an den Körper und wirkt
+ *  8 s lang. Einmal je Kampf; ein Ausweichschritt oder das eigene Umfallen bricht ab, dann beginnt er von vorn. true = Takt versorgt. */
+function tickRevive(g,c,dt){
+ if(!g.dead||!inDungeon(g)){c.channel=null;if(c.inCombat<=0)c.reviveUsed=false;return false;}
+ const id=c.def.abilities.find(x=>COMPANION_ABILITIES[x]?.kind==='revive');if(!id||c.reviveUsed||g.companions.some(o=>o!==c&&o.channel&&alive(o)))return false;
+ const a=COMPANION_ABILITIES[id],p=g.player;
+ if(!c.channel){if(distance(c,p)>a.range){walkTo(g,c,p,R.catchUpSpeed,dt,a.range*.6);return true;}c.channel={id,start:g.time,until:g.time+a.cast,total:a.cast};g.toast(T.reviving(c.name));g.emit('companion',{type:'reviving',id:c.id});}
+ face(c,p);c.castPose=.3;c.state='combat';c.inCombat=6;c.moving=false;
+ if(g.time<c.channel.until)return true;
+ c.channel=null;c.reviveUsed=true;reviveHero(g,c,a.share);companionFx(g,c,'heal',p,{amount:Math.round(p.hp),direct:true,from:{x:c.x,y:c.y}});return true;
+}
 function tickOne(g,c,dt){
  refreshStats(g,c);
  const quick=dt*(1+classBuffValue(c,'haste'));for(const id in c.cooldowns)c.cooldowns[id]=Math.max(0,c.cooldowns[id]-quick);c.gcd=Math.max(0,(c.gcd||0)-quick);
@@ -205,10 +222,11 @@ function tickOne(g,c,dt){
  if(c.state==='down'){if(g.time>=c.downUntil&&!g.enemies.some(e=>fighting(e)&&distance(e,g.player)<R.assistRange)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));g.toast(T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
  for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
  const p=g.player,far=distance(c,p);
- if(far>R.teleport){place(g,c,slot(g,c));c.target=null;return;}
+ if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}
  const exit=dangerExit(g,c);
- if(exit){walkTo(g,c,exit,R.catchUpSpeed,dt,3);return;}                                   // erst raus aus der Fläche, dann alles andere
- if(c.target&&(!(c.target.hp>0)||c.target.ai==='returning'||(c.order!=='stay'&&far>R.leashToOwner))){if(c.order==='attack')c.order='follow';c.target=null;}
+ if(exit){c.channel=null;walkTo(g,c,exit,R.catchUpSpeed,dt,3);return;}                     // erst raus aus der Fläche, dann alles andere
+ if(tickRevive(g,c,dt))return;                                                               // Held liegt im Dungeon: aufhelfen geht vor
+ if(c.target&&(!(c.target.hp>0)||c.target.ai==='returning'||(c.order!=='stay'&&far>R.leashToOwner&&!holdFight(g,c)))){if(c.order==='attack')c.order='follow';c.target=null;}
  if(!c.target||c.retarget<=g.time){c.target=chooseTarget(g,c);c.retarget=g.time+.5;}
  const role=COMPANION_ROLES[c.def.role],e=c.target;
  if(c.gcd<=0)for(const id of c.def.abilities){const a=COMPANION_ABILITIES[id];if(a&&a.kind!=='strike'&&a.kind!=='cleave'&&use(g,c,id,e))break;}
@@ -232,7 +250,7 @@ export function tickCompanions(g,dt){
  if(tutorialActive(g))return;
  for(const e of g.enemies){if(e.hp<=0||!e.aggro||e.ai==='returning'){if(e.threat)clearThreat(e);continue;}if(!e.threat)addThreat(e,PLAYER,1);}
  for(const c of [...g.companions]){try{tickOne(g,c,dt);}catch(err){c.target=null;c.path=[];g.emit('companion',{type:'error',id:c.id,message:String(err?.message||err)});}}
- for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment,paperdollId:c.figure?.paperdollId});
+ for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,reviving:c.channel?Math.min(1,(g.time-c.channel.start)/c.channel.total):0,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment,paperdollId:c.figure?.paperdollId});
 }
 /** Nach dem Tod des Besitzers: Begleiter stehen geheilt neben ihm, alle Kämpfe sind vergessen. */
 export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;place(g,c,slot(g,c));}}

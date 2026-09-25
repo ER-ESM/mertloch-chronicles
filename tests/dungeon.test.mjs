@@ -5,8 +5,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {World} from '../world.js';
 import {Game} from '../engine.js';
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT} from '../content/index.js';
-import {toWorld,rectWorld,floorAt,roomAt,dungeonEntrance,resolveDungeonCast,dungeonDamageFactor} from '../dungeon.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT,DUNGEON_REWARDS,COMPANION_RULES,DROP_TABLES} from '../content/index.js';
+import {toWorld,rectWorld,floorAt,roomAt,dungeonEntrance,resolveDungeonCast,dungeonDamageFactor,dungeonCastSpot,coneReach,coneHits,restoreDungeonRun,dungeonDay} from '../dungeon.js';
+import {hitCompanion} from '../companions.js';
+import {takeLoot} from '../rpg.js';
+import {startAuto} from '../auto-combat.js';
+import {rotate} from '../scripts/balance-rotation.mjs';
 
 const world=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')),{});
 const DEF=DUNGEONS['schloss-bigb'];
@@ -122,10 +126,12 @@ test('Kegel: vorn trifft, hinten nicht; Schutz-Spec nimmt wenig; Rückstoß übe
  // Schutz-Spec: gedämpft, kein Rückstoß
  g.player.hp=g.player.maxHp;at(g,'e0',8.5,27);g.rpg.talents.spec='dieter-wall';const x0=g.player.y;before=g.player.hp;resolveDungeonCast(g,gerd,cast(-Math.PI/2),'player');
  assert.ok(before-g.player.hp<DUNGEON_CASTS['d-gerd'].casts.rausschmiss.damage*.5,'Schutz nimmt wenig');assert.equal(g.player.y,x0,'kein Rückstoß');
- // Rückstoß Richtung Treppe: Spieler fliegt ins Rittergeschoss
- g.rpg.talents.spec=null;g.player.hp=g.player.maxHp;at(g,'e0',6,26.5);const toStairs=Math.atan2(toWorld(DEF,'e0',4,23).y-gerd.y,toWorld(DEF,'e0',4,23).x-gerd.x);
- Object.assign(gerd,toWorld(DEF,'e0',8.5,30));resolveDungeonCast(g,gerd,{...cast(Math.atan2(g.player.y-gerd.y,g.player.x-gerd.x)),damage:1},'player');
- assert.equal(floorAt(DEF,g.player.x,g.player.y),'k1','über die Kante gefallen');assert.equal(g.toasts.at(-1),DUNGEON_TEXT.fell);
+ // Rückstoß Richtung Treppe: in Phase 1 bleibt der Held oben (E-71: kein Rauswurf schon beim Pull), ab Phase 2 fliegt er ins Rittergeschoss
+ g.rpg.talents.spec=null;g.player.hp=g.player.maxHp;at(g,'e0',6,26.5);
+ Object.assign(gerd,toWorld(DEF,'e0',8.5,30));resolveDungeonCast(g,gerd,{...cast(Math.atan2(g.player.y-gerd.y,g.player.x-gerd.x)),pct:.01},'player');
+ assert.equal(floorAt(DEF,g.player.x,g.player.y),'e0','Phase 1: die Kante wirft niemanden hinaus');
+ gerd.hp=gerd.maxHp*.45;g.player.hp=g.player.maxHp;at(g,'e0',6,26.5);resolveDungeonCast(g,gerd,{...cast(Math.atan2(g.player.y-gerd.y,g.player.x-gerd.x)),pct:.01},'player');
+ assert.equal(floorAt(DEF,g.player.x,g.player.y),'k1','Phase 2: über die Kante gefallen');assert.equal(g.toasts.at(-1),DUNGEON_TEXT.fell);
 });
 
 test('Schildwall dämpft Treffer von vorn, Provision heilt Verbündete, Funkspruch ruft die Nachbarn',()=>{
@@ -155,4 +161,111 @@ test('Verlassen sammelt liegengebliebene Beute ein; Wiederkehr innerhalb von 30 
  g.leaveDungeon({force:true});assert.equal(g.rpg.loot.filter(b=>floorAt(DEF,b.x,b.y)).length,0,'keine Beutel im Keller zurück');if(inDungeonBags.length)assert.ok(g.toasts.some(t=>t.includes('Beutebeutel')));
  const door=dungeonEntrance(g);Object.assign(g.player,{x:door.x,y:door.y});g.player.inCombat=0;assert.ok(g.enterDungeon());assert.equal(g.dungeonRun,r,'derselbe Durchgang');assert.ok(g.dungeonRun.killed.has('gerd'));
  g.leaveDungeon({force:true});g.time+=DEF.resetAfter+1;Object.assign(g.player,{x:door.x,y:door.y});assert.ok(g.enterDungeon());assert.notEqual(g.dungeonRun,r,'nach 30 Minuten frisch');
+});
+
+// ── Etappe 1 „Gerd richtig" (E-71, docs/DUNGEON-ETAPPE-1-2026-09-25.md) ─────────────────────────────────────────
+const MERCS=['merc-pils-peter','merc-schorle-susi','merc-radler-rita','merc-hopfen-horst'];
+const DAY=Date.UTC(2026,8,25,12),clockAt=(g,ms)=>{g.clock=()=>ms;return g;};
+function party(g){for(const id of MERCS)g.hireCompanion(id,{free:true});for(const c of g.companions){const q=g.world.findClear(g.player.x+12,g.player.y+12,9);c.x=q.x;c.y=q.y;}return g;}
+const gerdOf=g=>g.enemies.find(e=>e.bossId==='gerd');
+function pullGerd(g,x=8.5,y=26){quiet(g);at(g,'e0',x,y);party(g);const gerd=gerdOf(g);gerd.aggro=true;gerd.ai='combat';g.target=gerd;g.player.inCombat=7;return gerd;}
+
+test('Söldner: Instanzfaktor nur im Dungeon, draußen unverändert',()=>{
+ const g=game();g.rpg.coins=999;assert.ok(g.hireCompanion('merc-radler-rita',{free:true}).ok);const c=g.companions[0];run(g,.1);const out={hp:c.maxHp,dmg:c.damage};
+ inside(g);run(g,.1);const F=COMPANION_RULES.instanceFactor;assert.ok(Math.abs(c.damage-out.dmg*F.damage)<1e-6,'Schaden × '+F.damage);assert.equal(c.maxHp,Math.round(out.hp*F.health));
+ g.leaveDungeon({force:true});run(g,.1);assert.equal(c.damage,out.dmg,'draußen wieder Weltwerte');assert.equal(c.maxHp,out.hp);
+});
+
+test('Schaden als Anteil am Leben; Hausverbot stapelt nur bei dem, der vorn stehen bleibt',()=>{
+ const g=game(),r=inside(g);quiet(g);const gerd=gerdOf(g),k=DUNGEON_CASTS['d-gerd'].casts.rausschmiss;gerd.aggro=true;gerd.ai='combat';
+ at(g,'e0',8.5,27.5);const cast=()=>({...k,knockback:0,angle:Math.atan2(g.player.y-gerd.y,g.player.x-gerd.x)});
+ let before=g.player.hp;resolveDungeonCast(g,gerd,cast(),'merc');const first=before-g.player.hp;
+ assert.ok(first>=g.player.maxHp*k.pct*.8&&first<=g.player.maxHp*k.pct+2,'erster Treffer ≈ pct × Höchstleben, nur Deckung und Klassenschutz mindern ('+first+')');
+ g.player.hp=g.player.maxHp;before=g.player.hp;resolveDungeonCast(g,gerd,cast(),'merc');const second=before-g.player.hp;
+ assert.ok(second>first*1.5,'zweiter Treffer mit Hausverbot deutlich stärker ('+second+' gegen '+first+')');
+ g.time+=k.brand.duration+1;g.player.hp=g.player.maxHp;before=g.player.hp;resolveDungeonCast(g,gerd,cast(),'merc');assert.ok(Math.abs(before-g.player.hp-first)<=2,'nach Ablauf wieder normal');
+});
+
+test('Flächen und Liste treffen einen zufälligen Nicht-Tank, nie den Schutz-Söldner, der Gerd hält',()=>{
+ const g=game(),r=inside(g),gerd=pullGerd(g),tank=g.companions.find(c=>c.def.role==='tank');const seen=new Set();
+ for(let i=0;i<24;i++){g.random=()=>i/24;for(const type of ['dresscode','liste']){const k={...DUNGEON_CASTS['d-gerd'].casts[type],x:tank.x,y:tank.y};dungeonCastSpot(g,gerd,k,tank);assert.notEqual(k.victim,tank.id,type+' nie auf den Tank');seen.add(k.victim);
+  if(k.ground){const u=k.victim==='player'?g.player:g.companions.find(c=>c.id===k.victim);assert.ok(Math.hypot(k.x-u.x,k.y-u.y)<1,'Fläche liegt unter dem Ziel');}}}
+ assert.ok(seen.has('player')&&seen.size>=3,'Held und mehrere Söldner kommen dran: '+[...seen]);
+});
+
+test('Kegel trifft nicht durch Wände: Warnfläche und Treffer enden an der Wand',()=>{
+ const g=game(),r=inside(g);quiet(g);const gerd=gerdOf(g);Object.assign(gerd,toWorld(DEF,'e0',13,28.5));gerd.aggro=true;
+ // Hof hinter der Wand (nördlich der Türöffnung), in Reichweite und im Winkel
+ at(g,'e0',17.5,22.5);const angle=Math.atan2(g.player.y-gerd.y,g.player.x-gerd.x),k={...DUNGEON_CASTS['d-gerd'].casts.rausschmiss,angle};
+ assert.ok(Math.hypot(g.player.x-gerd.x,g.player.y-gerd.y)<k.cone.range,'Held stünde in Reichweite');assert.equal(g.world.lineClear(gerd,g.player),false,'Wand dazwischen');
+ const before=g.player.hp;resolveDungeonCast(g,gerd,k,'merc');assert.equal(g.player.hp,before,'kein Treffer durch die Wand');
+ const reach=coneReach(g.world,gerd,k);assert.ok(Math.min(...reach)<k.cone.range,'Strahlen sind an der Wand gekürzt');assert.equal(coneHits(gerd,k,g.player,g),false);
+});
+
+test('Trash in festen Gruppen: der eigene Pack kommt sofort, der Nachbarpack bleibt stehen (keine Kette)',()=>{
+ const g=game(),r=inside(g);quiet(g);for(const e of g.enemies)if(e.pack==='hof-west'||e.pack==='hof-ost'){e.hp=e.maxHp;e.ai='roaming';e.respawnAt=0;}
+ assert.ok(DEF.packs.every(p=>p.id)&&new Set(DEF.packs.map(p=>p.id)).size===DEF.packs.length,'Packs tragen eindeutige IDs');
+ const west=g.enemies.filter(e=>e.pack==='hof-west'&&!e.cardboard),east=g.enemies.filter(e=>e.pack==='hof-ost'&&!e.cardboard);
+ Object.assign(g.player,g.world.findClear(west[0].x,west[0].y+26,9));g.adminGod=true;west[0].aggro=true;west[0].ai='combat';
+ for(let t=0;t<8;t+=.05){g.tick(.05);for(const e of g.enemies)if(e.cast?.callHelp)e.cast=null;}
+ assert.ok(west.every(e=>e.aggro||e.hp<=0),'eigener Pack kämpft mit');assert.ok(east.every(e=>!e.aggro),'Nachbarpack bleibt stehen');
+});
+
+test('Tod des Helden ist kein Wipe: Geist, Söldner kämpfen weiter, Heil-Söldner hilft auf, Sieg über Gerd',()=>{
+ const g=game(),r=inside(g),gerd=pullGerd(g,12,34);g.random=()=>.35;for(const c of g.companions)c.hp=c.maxHp;run(g,4);
+ g.hitPlayer(gerd,1e6,false);assert.equal(g.dead,true);const events=[];
+ // Nach dem Aufhelfen kämpft der Held wieder mit: hinter Gerd (vom Söldner aus, der ihn hält), Autoangriff und Rotation.
+ for(let t=0;t<260&&gerd.hp>0;t+=.05){if(!g.dead){const foe=gerd.hp>0?gerd:null,holder=g.companions.find(c=>c.id===gerd.focus);if(foe&&g.target!==foe){g.target=foe;startAuto(g);}
+   if(holder){const d=Math.hypot(gerd.x-holder.x,gerd.y-holder.y)||1,spot=g.world.findClear(gerd.x+(gerd.x-holder.x)/d*26,gerd.y+(gerd.y-holder.y)/d*26,7);g.moveTo=Math.hypot(spot.x-g.player.x,spot.y-g.player.y)>6?spot:null;}
+   if(!g.casting&&g.gcd<=0)rotate(g);}
+  g.tick(.05);for(const ev of g.events)events.push(ev);g.events.length=0;}
+ assert.ok(events.some(e=>e.type==='dungeonGhost'),'Geist statt Weltstillstand');assert.ok(events.some(e=>e.type==='revived'&&e.from==='Schorle-Susi'),'Schorle-Susi hilft auf');
+ assert.ok(!events.some(e=>e.type==='dungeonWipe'),'kein Wipe');assert.equal(gerd.hp,0,'Gerd liegt');assert.ok(r.killed.has('gerd'));assert.ok(g.instance,'noch im Dungeon');
+});
+
+test('Aufhelfen: 8 s Wirkzeit, 35 % Leben, einmal je Kampf; Wipe erst, wenn alle liegen, dann Kontrollpunkt',()=>{
+ const g=game(),r=inside(g),gerd=pullGerd(g,12,34);run(g,1);g.hitPlayer(gerd,1e6,false);run(g,.1);
+ const susi=g.companions.find(c=>c.def.id==='merc-schorle-susi');susi.x=g.player.x+20;susi.y=g.player.y;gerd.cast=null;
+ for(let t=0;t<7&&g.dead;t+=.05){g.tick(.05);for(const c of g.companions)c.hp=c.maxHp;}assert.equal(g.dead,true,'nach 7 s liegt er noch');
+ for(let t=0;t<3&&g.dead;t+=.05){g.tick(.05);for(const c of g.companions)c.hp=c.maxHp;}assert.equal(g.dead,false,'nach 8 s steht er');
+ assert.ok(Math.abs(g.player.hp/g.player.maxHp-.35)<.05,'mit 35 % Leben');
+ g.hitPlayer(gerd,1e6,false);run(g,.2);for(const c of g.companions)hitCompanion(g,gerd,c,1e7);g.events.length=0;run(g,9);
+ assert.equal(g.dead,true,'kein zweites Aufhelfen (alle liegen, einmal je Kampf)');assert.ok(!gerd.aggro&&gerd.hp===gerd.maxHp,'alle am Boden: Gerd setzt zurück');
+ g.respawn();assert.equal(g.dead,false);assert.equal(roomAt(DEF,g.player.x,g.player.y).id,'hof','Am Kontrollpunkt aufstehen');
+});
+
+test('Laufstand überlebt Neuladen: Gerd liegt, Kette offen, geräumter Pack bleibt liegen, Kontrollpunkt',()=>{
+ const g=clockAt(game(),DAY),r=inside(g);for(const e of g.enemies.filter(e=>e.pack==='hof-west'))g.kill(e);quiet(g);const gerd=gerdOf(g);g.kill(gerd);at(g,'e0',31,34);run(g,.2);
+ const save=JSON.parse(JSON.stringify(g.save()));assert.equal(save.dungeonRun.inside,true);assert.deepEqual(save.dungeonRun.killed,['gerd']);assert.ok(save.dungeonRun.trash.includes('hof-west'));
+ const resumed=(()=>{const h=new Game(world,{...save,dungeonRun:null},{});h.clock=()=>DAY+60e3;restoreDungeonRun(h,save.dungeonRun);return h;})();const r2=resumed.dungeonRun;
+ assert.ok(r2&&r2!==r,'wieder im Dungeon');assert.ok(r2.killed.has('gerd')&&r2.seals.has('siegel-gerd'));assert.equal(gerdOf(resumed).hp,0,'Gerd bleibt liegen');
+ assert.ok(resumed.enemies.filter(e=>e.pack==='hof-west').every(e=>e.hp<=0),'Pack bleibt geräumt');assert.equal(roomAt(DEF,resumed.player.x,resumed.player.y).id,'hof');
+ at(resumed,'e0',5,23);assert.ok(resumed.dungeonStep('treppe-zugbruecke','a'),'Kette ist offen');
+ const late=new Game(world,{...save,dungeonRun:null},{});late.clock=()=>DAY+(DEF.resetAfter+60)*1000;assert.equal(restoreDungeonRun(late,save.dungeonRun),false,'nach resetAfter verfallen');assert.ok(!late.instance,'vor dem Tor');
+});
+
+test('Tagesstand: Siegelmarken je Boss, Tagesbonus einmal je Flügel und Tag, Siegel bis zum Tagesreset',()=>{
+ const g=clockAt(game(),DAY),r=inside(g);quiet(g);let gerd=gerdOf(g);const xp0=g.trainingXp;g.kill(gerd);
+ const rec=g.dungeons['schloss-bigb'];assert.equal(rec.marks,DUNGEON_REWARDS.marksPerBoss+DUNGEON_REWARDS.daily.marks);assert.deepEqual(rec.daily.wings,['burghof']);
+ assert.equal(gerd.dungeonReward.daily,true);assert.equal(gerd.dungeonReward.xp,Math.round(DUNGEON_BOSSES.gerd.xp*(1+DUNGEON_REWARDS.daily.xp)));assert.ok(g.trainingXp-xp0>=DUNGEON_BOSSES.gerd.xp,'Boss-EP nach Zielzeit');
+ g.leaveDungeon({force:true});g.time+=DEF.resetAfter+1;Object.assign(g.player,dungeonEntrance(g));g.player.inCombat=0;assert.ok(g.enterDungeon());
+ assert.notEqual(g.dungeonRun,r,'neuer Durchgang');assert.ok(g.dungeonRun.seals.has('siegel-gerd'),'Siegel bleibt bis zum Tagesreset');quiet(g);gerd=gerdOf(g);assert.ok(gerd.hp>0,'Gerd steht wieder (keine Sperre)');
+ g.kill(gerd);assert.equal(rec.marks,2*DUNGEON_REWARDS.marksPerBoss+DUNGEON_REWARDS.daily.marks,'zweiter Sieg am Tag: nur Marken');assert.equal(gerd.dungeonReward.daily,false);
+ g.leaveDungeon({force:true});g.time+=DEF.resetAfter+1;clockAt(g,DAY+864e5);Object.assign(g.player,dungeonEntrance(g));assert.ok(g.enterDungeon());assert.equal(g.dungeonRun.seals.size,0,'neuer Tag: Siegel von vorn');
+});
+
+test('Beute von Gerd: eigene Tabelle, Beute-Moment als Beutel, nichts wird ungefragt angelegt',()=>{
+ assert.equal(DUNGEON_BOSSES.gerd.family,'gerd');assert.ok(DROP_TABLES.gerd&&DROP_TABLES.schlosstrash);for(const d of Object.values(DUNGEON_ENEMIES))assert.equal(d.family,'schlosstrash',d.name);
+ const g=game(),r=inside(g);quiet(g);for(const k of Object.keys(g.rpg.equipment))g.rpg.equipment[k]=null;g.refreshStats();g.settings.autoLoot=true;
+ const gerd=gerdOf(g);g.events.length=0;g.kill(gerd);const bag=g.rpg.loot.find(b=>b.moment);
+ assert.ok(bag,'Beutel bleibt liegen');assert.ok(g.events.some(e=>e.type==='lootMoment'&&e.bagId===bag.id),'Beute-Moment');assert.ok(bag.items.some(e=>e.id.startsWith('roll-')),'mindestens ein Ausrüstungsteil');
+ assert.equal(bag.reward.marks,DUNGEON_REWARDS.marksPerBoss+DUNGEON_REWARDS.daily.marks);
+ at(g,'e0',14,34);assert.ok(Math.hypot(bag.x-g.player.x,bag.y-g.player.y)>43,'weiter weg als ein normaler Beutel');assert.ok(takeLoot(g,bag.id),'in der Arena erreichbar');
+ assert.ok(Object.values(g.rpg.equipment).every(v=>!v),'nichts angelegt');
+});
+
+test('Schwierigkeit: Datenfeld mit Faktor je Stufe, heute nur Normal',()=>{
+ assert.deepEqual(Object.keys(DEF.difficulty),['normal']);const g=clockAt(game(),DAY);inside(g);assert.equal(g.dungeonRun.difficulty,'normal');const base=gerdOf(g).maxHp;g.leaveDungeon({force:true});
+ DEF.difficulty.probe={name:'Probe',hp:2,damage:1.5};try{const h=clockAt(game(),DAY);restoreDungeonRun(h,{id:'schloss-bigb',inside:true,difficulty:'probe',day:dungeonDay(h),savedAt:DAY,killed:[],seals:[]});
+  assert.equal(h.dungeonRun.difficulty,'probe');assert.equal(gerdOf(h).maxHp,base*2);assert.equal(gerdOf(h).damage,DUNGEON_BOSSES.gerd.damage*1.5);}finally{delete DEF.difficulty.probe;}
 });

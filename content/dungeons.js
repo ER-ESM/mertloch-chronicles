@@ -13,6 +13,19 @@ export const DUNGEONS={
   // Eingang draußen: an der ersten gefundenen Straße, seitlich versetzt (Welt sucht eine freie Stelle).
   entrance:{streets:['Burgstraße','Am Bahnhof'],offset:46,range:60},
   resetAfter:1800,
+  // Etappe 1 (E-71): Grundgerüst für Flügel und Tagesreset. Der Laufstand (Trash, Bosse, Kontrollpunkt) überlebt das Neuladen und
+  // verfällt resetAfter Sekunden nach dem Verlassen. Siegel, Abkürzungen und der Tagesbonus hängen am Tag, der um resetHour Uhr
+  // (Ortszeit) wechselt – Etappe 4 („Voller Durchgang") baut die Flügel darauf auf.
+  resetAt:'daily',resetHour:4,
+  // Schwierigkeit (E-71): jetzt nur Normal. Jede Stufe setzt Faktoren auf Leben und Schaden aller Gegner des Durchgangs;
+  // Heldenmodus und „Lüge der Woche" (Etappe 5) kommen als weitere Einträge dazu.
+  difficulty:{normal:{name:'Normal',hp:1,damage:1}},
+  // Flügel (E-71): je ein Siegelträger, 10–15 Minuten mit Söldnern. Der erste Abschluss eines Flügels am Tag gibt den Tagesbonus.
+  wings:[
+   {id:'burghof',name:'Burghof',boss:'gerd',rooms:['hof','zugbruecke','verwaltung','wehrgang']},
+   {id:'rittergeschoss',name:'Rittergeschoss',boss:'expose',rooms:['galerie','rittersaal','stall','verlies','studio','musterwohnung']},
+   {id:'basaltgewoelbe',name:'Basaltgewölbe',boss:'korkenkurt',rooms:['weinkeller','gewoelbe','kelterhalle']}
+  ],
   floors:{
    e0:{name:'Erdgeschoss · Burghof',origin:{x:32000,y:4000},size:[64,48],theme:'garage'},
    k1:{name:'Keller 1 · Rittergeschoss',origin:{x:36000,y:4000},size:[64,48],theme:'partykeller'},
@@ -80,24 +93,26 @@ export const DUNGEONS={
    {id:'sprinkler',room:'weinkeller'},
    {id:'tresor',floor:'k2',x:40,y:24,range:6}
   ],
-  // Gegner: kind = DUNGEON_ENEMIES, Position in Metern. patrol = Wegpunkte (Meter), Runde wird abgelaufen.
+  // Gegner in festen Gruppen (Packs, E-71): id = Speicherschlüssel (geräumte Packs bleiben im Laufstand liegen), kind = DUNGEON_ENEMIES,
+  // Position in Metern. Soziale Aggro gilt nur innerhalb des Packs (dungeon.js dungeonPackAggro) – keine Kette über den Raum.
+  // patrol = Wegpunkte (Meter), Runde wird abgelaufen.
   packs:[
-   {room:'hof',at:[22,25],members:['securityazubi','securityazubi','pappwache']},
-   {room:'hof',at:[40,25],members:['securityazubi','securityazubi','pappwache']},
-   {room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi']},
-   {room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi']},
-   {room:'wehrgang',at:[25,10],members:['pappschuetze']},
-   {room:'wehrgang',at:[32,9],members:['pappschuetze']},
-   {room:'wehrgang',at:[39,11],members:['pappschuetze']},
-   {room:'galerie',at:[20,8],members:['pappwache']},
-   {room:'galerie',at:[44,36],members:['pappwache']},
-   {room:'galerie',at:[30,36],members:['baumarktritter','baumarktritter','maklerpraktikant'],patrol:[[30,36],[54,36],[54,8],[10,8],[10,36]]},
-   {room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant']},
-   {room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant']},
-   {room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant']},
-   {room:'verlies',at:[3.5,22],members:['securityazubi','securityazubi','securityazubi']},
-   {room:'weinkeller',at:[13,10],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
-   {room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']}
+   {id:'hof-west',room:'hof',at:[22,25],members:['securityazubi','securityazubi','pappwache']},
+   {id:'hof-ost',room:'hof',at:[40,25],members:['securityazubi','securityazubi','pappwache']},
+   {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi']},
+   {id:'kanzlei-sued',room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi']},
+   {id:'wehrgang-west',room:'wehrgang',at:[25,10],members:['pappschuetze']},
+   {id:'wehrgang-mitte',room:'wehrgang',at:[32,9],members:['pappschuetze']},
+   {id:'wehrgang-ost',room:'wehrgang',at:[39,11],members:['pappschuetze']},
+   {id:'galerie-nord',room:'galerie',at:[20,8],members:['pappwache']},
+   {id:'galerie-sued',room:'galerie',at:[44,36],members:['pappwache']},
+   {id:'galerie-streife',room:'galerie',at:[30,36],members:['baumarktritter','baumarktritter','maklerpraktikant'],patrol:[[30,36],[54,36],[54,8],[10,8],[10,36]]},
+   {id:'rittersaal-west',room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant']},
+   {id:'rittersaal-ost',room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant']},
+   {id:'rittersaal-sued',room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant']},
+   {id:'verlies',room:'verlies',at:[3.5,22],members:['securityazubi','securityazubi','securityazubi']},
+   {id:'weinkeller-west',room:'weinkeller',at:[13,10],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
+   {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']}
   ],
   // Bosse: gebaut wird, was in DUNGEON_BOSSES steht; die übrigen Plätze sind reserviert (Plan Abschnitt 7).
   bosses:[
@@ -111,60 +126,78 @@ export const DUNGEONS={
  }
 };
 
-// Dungeon-Gegner (nicht in ARCHETYPES: die Präzisions-Prüfung verlangt dort fertige Bögen). `art` = vorhandene Zeichnung
-// als Platzhalter, `family` = vorhandene Beutetabelle als Platzhalter, bis Grafik und Loot liefern (Plan Abschnitte 11 und 15).
+// Dungeon-Gegner (nicht in ARCHETYPES: die Präzisions-Prüfung verlangt dort fertige Bögen). `art` = vorhandene Zeichnung als
+// Platzhalter, bis die Grafik liefert (Plan Abschnitt 15). `family` = Beutetabelle in content/drops.js (E-71: eigene Tabelle
+// `schlosstrash` für den Trash). `xp` = Erfahrung je Kill. `damage` = Faktor auf Autoangriff und feste Zauberschäden.
+// Etappe 1 (E-71): Leben und Schaden gegen die gemessene Gruppe mit Instanz-Söldnern gesetzt (scripts/dungeon-sim.mjs): ein Pack
+// dauert mit Held und vier Söldnern 20–40 s und kostet den Heiler spürbar Arbeit, ohne die Gruppe umzuwerfen.
 export const DUNGEON_ENEMIES={
- securityazubi:{name:'Security-Azubi',type:'cultist',skin:'warden',art:'inspector',family:'inspector',level:8,hp:5500,speed:56,aggroRange:96,roamRadius:14,castSet:'d-azubi',auto:'warden',
+ securityazubi:{name:'Security-Azubi',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:8,hp:13000,damage:3.5,xp:45,speed:56,aggroRange:96,roamRadius:14,castSet:'d-azubi',auto:'warden',
   look:'Junger Mann in zu großem schwarzem Polo „SECURITY", Funkgerät aus dem Spielzeugladen, Kaugummi'},
- pappwache:{name:'Pappwache',type:'cultist',skin:'warden',art:'kegler',family:'warden',level:8,hp:1,speed:1,aggroRange:0,roamRadius:0,behavior:'neutral',cardboard:true,castSet:'d-azubi',auto:'warden',
+ pappwache:{name:'Pappwache',type:'cultist',skin:'warden',art:'kegler',family:'schlosstrash',level:8,hp:1,xp:5,speed:1,aggroRange:0,roamRadius:0,behavior:'neutral',cardboard:true,castSet:'d-azubi',auto:'warden',
   look:'Ritter in voller Rüstung. Aus Pappe. Mit Klebeband am Boden befestigt'},
- pappschuetze:{name:'Pappschütze',type:'cultist',skin:'warden',art:'scrounger',family:'scrounger',level:8,hp:4500,speed:48,aggroRange:140,roamRadius:8,castSet:'d-schuetze',auto:'scrounger',
+ pappschuetze:{name:'Pappschütze',type:'cultist',skin:'warden',art:'scrounger',family:'schlosstrash',level:8,hp:8500,damage:3,xp:45,speed:48,aggroRange:140,roamRadius:8,castSet:'d-schuetze',auto:'scrounger',
   look:'Security-Azubi hinter einer Pappzinne, Wasserpistole in Neonfarben'},
- baumarktritter:{name:'Baumarkt-Ritter',type:'cultist',skin:'warden',art:'jga',family:'warden',level:9,hp:16000,elite:true,damage:1.2,speed:50,aggroRange:100,roamRadius:10,castSet:'d-ritter',auto:'oberpraktikant',
+ baumarktritter:{name:'Baumarkt-Ritter',type:'cultist',skin:'warden',art:'jga',family:'schlosstrash',level:9,hp:26000,elite:true,damage:2.6,xp:90,speed:50,aggroRange:100,roamRadius:10,castSet:'d-ritter',auto:'oberpraktikant',
   look:'Rüstung aus Regenrinne und Lüftungsrohr, Helm aus einem Eimer, Schild aus einer Mülltonnendeckel'},
- maklerpraktikant:{name:'Makler-Praktikant',type:'cultist',skin:'warden',art:'inspector',family:'inspector',level:9,hp:6000,speed:54,aggroRange:100,roamRadius:10,castSet:'d-makler',auto:'inspector',
+ maklerpraktikant:{name:'Makler-Praktikant',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:9,hp:12000,damage:3,xp:50,speed:54,aggroRange:100,roamRadius:10,castSet:'d-makler',auto:'inspector',
   look:'Anzug von der Konfirmation, Tablet, Visitenkarten in beiden Hosentaschen'},
- kellerratte:{name:'Pfandratte',type:'wolf',skin:'badger',family:'badger',level:9,hp:1200,speed:82,aggroRange:90,roamRadius:22,castSet:'d-ratte',auto:'badger',
+ kellerratte:{name:'Pfandratte',type:'wolf',skin:'badger',family:'schlosstrash',level:9,hp:2600,damage:2,xp:12,speed:82,aggroRange:90,roamRadius:22,castSet:'d-ratte',auto:'badger',
   look:'Kellerratte mit Kronkorken im Maul, kommt nie allein'}
 };
 
-// Bosse des Dungeons. phases: at = Lebensanteil; castSet wechselt den Zyklus, summon ruft Adds (DUNGEON_ENEMIES).
+// Bosse des Dungeons. phases: at = Lebensanteil; castSet wechselt den Zyklus, summon ruft Adds (DUNGEON_ENEMIES; hp = Anteil am Leben der Art).
+// Etappe 1 (E-71): family = eigene Beutetabelle (content/drops.js), xp = Boss-EP nach Zielzeit (Gerd ≈ 60–100 s → 600),
+// lootMoment = Beute bleibt als Beutel liegen und öffnet sich als Beute-Moment, statt ungefragt angelegt zu werden.
+// fall.below: die Treppenkante wirft erst ab diesem Lebensanteil (Phase 2) hinaus, die Kante zeigt dann eine Warnlinie.
 export const DUNGEON_BOSSES={
- gerd:{name:'Gästeliste-Gerd',title:'Sicherheitschef · Big B Protection (Ein-Mann-Betrieb)',type:'boss',skin:'horst',art:'sigi',family:'sigi',
-  level:8,hp:90000,speed:46,aggroRange:84,roamRadius:6,leash:220,castSet:'d-gerd',auto:'horst',
+ gerd:{name:'Gästeliste-Gerd',title:'Sicherheitschef · Big B Protection (Ein-Mann-Betrieb)',type:'boss',skin:'horst',art:'sigi',family:'gerd',
+  level:8,hp:65000,damage:3.5,xp:600,lootMoment:true,speed:46,aggroRange:84,roamRadius:6,leash:220,castSet:'d-gerd',auto:'horst',
   look:'Breiter Mann im zu kleinen schwarzen Anzug, Klemmbrett, Kinder-Headset, Sonnenbrille im Keller',
-  phases:[{at:.5,summon:{kind:'securityazubi',count:2}},{at:.25,summon:{kind:'securityazubi',count:2},castSet:'d-gerd2'},{at:.15}],
-  fall:{rect:[2,20,5,6],to:{floor:'k1',x:12,y:9}}}
+  phases:[{at:.5,summon:{kind:'securityazubi',count:2,hp:.35}},{at:.25,summon:{kind:'securityazubi',count:2,hp:.35},castSet:'d-gerd2'},{at:.15}],
+  fall:{rect:[2,20,5,6],to:{floor:'k1',x:12,y:9},below:.5}}
 };
 
 // Zaubermuster der Dungeon-Gegner. Neue Merkmale (Plan Abschnitt 9): cone {angle (Grad), range (Einheiten)},
 // tankSafe (Anteil für Schutz-Specs und Parade), knockback (Einheiten), callHelp (Nachbargruppe kommt), healAllies,
 // frontGuard (Schildwall: Treffer von vorn gedämpft). `hint` (Etappe 2): die Antwort in 2–3 Wörtern für Warnleiste und Journal –
 // sie stand früher hinter „ · “ im Namen und wurde im Zielrahmen abgeschnitten. Symbol und Tooltip kommen aus den Merkmalen (describeCast).
+// Etappe 1 (E-71): pct = Schaden als Anteil am Höchstleben des Getroffenen (ohne Rüstung, Deckung und Schutz wirken) statt der festen
+// Zahl in damage; target:'random' = Fläche bzw. Ziel auf einem zufälligen Nicht-Schutz (Held oder Söldner, nie der Tank).
+// Kegel enden an Wänden (dungeon.js coneReach): Warnfläche und Treffer lesen dieselben Strahlen. brand = Mal auf jedem Getroffenen außer
+// dem Ziel (Hausverbot): jeder weitere Treffer desselben Zaubers innerhalb von duration Sekunden kostet bonus × Stapel mehr – wer
+// stehen bleibt, fliegt beim dritten Mal; wer ausweicht, merkt nichts davon. next = Abstand zum folgenden Zauber statt specialInterval.
 export const DUNGEON_CASTS={
  'd-azubi':{cycle:['funk','schubser'],casts:{
-  funk:{name:'Funkspruch',hint:'Unterbrechen',total:2.2,damage:120,interruptible:true,callHelp:{range:240}},
-  schubser:{name:'Schubser',hint:'Ausweichen',total:1.3,damage:180,radius:30,ground:true}}},
+  funk:{name:'Funkspruch',hint:'Unterbrechen',total:2.2,damage:120,pct:.15,interruptible:true,callHelp:{range:240}},
+  schubser:{name:'Schubser',hint:'Ausweichen',total:1.3,damage:180,pct:.25,radius:30,ground:true}}},
  'd-schuetze':{cycle:['wasser','wasser','spritzer'],casts:{
-  wasser:{name:'Wasserpistole',hint:'Ausweichen',total:1.4,damage:160,radius:28,ground:true},
-  spritzer:{name:'Dauerspritzer',hint:'Unterbrechen',total:2.4,damage:240,interruptible:true}}},
+  wasser:{name:'Wasserpistole',hint:'Ausweichen',total:1.4,damage:160,pct:.2,radius:28,ground:true},
+  spritzer:{name:'Dauerspritzer',hint:'Unterbrechen',total:2.4,damage:240,pct:.25,interruptible:true}}},
  'd-ritter':{cycle:['hieb','schild','hieb'],casts:{
-  hieb:{name:'Regenrinnen-Hieb',hint:'Nicht davor stehen',total:1.6,damage:420,cone:{angle:80,range:60},tankSafe:.35},
+  hieb:{name:'Regenrinnen-Hieb',hint:'Nicht davor stehen',total:1.6,damage:420,pct:.45,cone:{angle:80,range:60},tankSafe:.35},
   schild:{name:'Schildwall',hint:'Von hinten treffen',total:1,damage:0,frontGuard:{duration:5,factor:.2}}}},
  'd-makler':{cycle:['provision','expose'],casts:{
   provision:{name:'Provision',hint:'Unterbrechen',total:2.4,damage:0,interruptible:true,healAllies:{share:.12,range:140}},
-  expose:{name:'Exposé verteilen',hint:'Fläche verlassen',total:2,damage:220,radius:40,ground:true}}},
+  expose:{name:'Exposé verteilen',hint:'Fläche verlassen',total:2,damage:220,pct:.3,radius:40,ground:true}}},
  'd-ratte':{cycle:['knabbern'],casts:{
   knabbern:{name:'Knabbern',total:.8,damage:60,radius:26}}},
  'd-gerd':{cycle:['liste','rausschmiss','dresscode','rausschmiss'],casts:{
-  liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,interruptible:true},
-  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.8,damage:650,cone:{angle:70,range:88},tankSafe:.25,knockback:64},
-  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,radius:48,ground:true}}},
- 'd-gerd2':{cycle:['rausschmiss','rausschmiss','liste','dresscode'],casts:{
-  liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,interruptible:true},
-  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,cone:{angle:70,range:88},tankSafe:.25,knockback:64},
-  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,radius:48,ground:true}}}
+  liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
+  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.8,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
+  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,pct:.35,target:'random',radius:48,ground:true}}},
+ // Phase 2 (Plan 7.1): Rausschmiss zweimal hintereinander, dazwischen 1 s; der Nachschlag trifft härter.
+ 'd-gerd2':{cycle:['rausschmiss','nachschlag','liste','dresscode'],casts:{
+  liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
+  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6},next:1},
+  nachschlag:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,pct:.8,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
+  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,pct:.35,target:'random',radius:48,ground:true}}}
 };
+
+// Belohnungen (E-71, Etappe 1): Siegelmarken als Währung gegen Beutepech (Händler Vermieter Volker folgt in Etappe 4), Tagesbonus beim
+// ersten Abschluss eines Flügels am Tag (Anteil auf die Boss-EP plus Marken). Boss-EP stehen am Boss (xp). Zählerstand im Spielstand
+// unter dungeons[id].marks.
+export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2}};
 
 // Texte (Story nimmt ab oder ersetzt; Ton E-20: erst die Behauptung, dann der Nachsatz).
 export const DUNGEON_TEXT={
@@ -184,6 +217,10 @@ export const DUNGEON_TEXT={
  secretUse:{pappwand:'Pappwand eindrücken'},
  arenaClosed:'Die Tür fällt zu. Klemmbrett sagt: kein Durchgang.',arenaOpen:'Die Tür geht wieder auf.',
  wipe:room=>'Alle am Boden. Zurück zum Kontrollpunkt '+room+'. Der Trash bleibt liegen.',
+ ghost:'Du liegst. Deine Söldner kämpfen weiter.',wipeAll:'Alle am Boden. Die Gegner gehen zurück auf ihre Plätze.',
+ revived:n=>n+' hat dir aufgeholfen.',resumed:'Der Durchgang läuft weiter. Du stehst am letzten Kontrollpunkt.',
+ lootMoment:{title:n=>'Beute · '+n,marks:'Siegelmarken',marksNote:'Währung des Schlosses gegen Beutepech. Vermieter Volker tauscht sie später gegen Beute.',
+  xp:'Erfahrung',daily:'Tagesbonus',dailyNote:'Erster Abschluss dieses Flügels heute: mehr Erfahrung und Siegelmarken.',keep:'Nichts wird angelegt: vergleichen und selbst anlegen.'},
  fell:'Rausgeschmissen. Du bist die Kellertreppe runtergeflogen und liegst im Rittergeschoss.',
  cardboard:['Das war Pappe.','Pappe. Mit Klebeband.','Die Rüstung war hohl. Ganz hohl.'],
  seal:{'siegel-gerd':'Siegel „Gästelisten-Stempel" erhalten.','siegel-expose':'Siegel „Notarsiegel (Kartoffeldruck)" erhalten.','siegel-kurt':'Siegel „Weinsiegel (Korken mit Kerzenwachs)" erhalten.'},

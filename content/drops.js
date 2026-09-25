@@ -22,7 +22,14 @@ export const DROP_TABLES={
  jga:{material:'jga-shirt',materialChance:.55,gearChance:.2,unique:'bierbong',uniqueChance:.012,coinsChance:.5,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
  sigi:{material:'palettenholz',materialChance:.6,gearChance:.85,unique:'sigizange',uniqueChance:.14,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
  klaus:{material:'kabel',materialChance:.5,gearChance:.85,unique:'koenigskette',uniqueChance:.14,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
- timo:{material:'jga-shirt',materialChance:.6,gearChance:.85,unique:'schaerpe',uniqueChance:.16,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']}
+ timo:{material:'jga-shirt',materialChance:.6,gearChance:.85,unique:'schaerpe',uniqueChance:.16,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']},
+ // --- Dungeon „Schloss Big B" (E-71, Etappe 1): eigene Tabellen statt der geliehenen Sigi- und Praktikanten-Beute ---
+ // Gerd: Boss-Beute mit hoher Güte (rareChance) und Dorflegende „Die Gästeliste" (Plan Abschnitt 11: 15 %). Fällt dabei kein
+ // Ausrüstungsteil, legt der Dungeon ein seltenes nach (rpg.js dungeonBossBonus) – ein Boss geht nie leer aus.
+ gerd:{material:'kabelbinder',materialChance:.6,gearChance:.85,rareChance:.6,unique:'gaesteliste',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
+ // Trash im Schloss: Security-Azubis, Makler-Praktikanten, Baumarkt-Ritter, Pappschützen, Pfandratten. Flugblätter (Exposés)
+ // als Material; die Dorflegende ist der Praktikantenausweis, den die Azubis am Band tragen (selten).
+ schlosstrash:{material:'flugblatt',materialChance:.35,gearChance:.16,unique:'praktikantenausweis',uniqueChance:.01,coinsChance:.6,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']}
 };
 /** Verpflegung, die menschliche Gegner und Bosse zusätzlich fallen lassen können. */
-export const FOOD_DROPS={warden:'brezel',scrounger:'kaltgetraenk',inspector:'brezel',oberpraktikant:'brezel',horst:'brezel',gisela:'currywurst',automat:'kaltgetraenk',kegler:'brezel',jga:'kaltgetraenk',sigi:'currywurst',klaus:'brezel',timo:'kaltgetraenk'};
+export const FOOD_DROPS={warden:'brezel',scrounger:'kaltgetraenk',inspector:'brezel',oberpraktikant:'brezel',horst:'brezel',gisela:'currywurst',automat:'kaltgetraenk',kegler:'brezel',jga:'kaltgetraenk',sigi:'currywurst',klaus:'brezel',timo:'kaltgetraenk',gerd:'currywurst',schlosstrash:'brezel'};

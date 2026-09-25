@@ -82,9 +82,18 @@ function drawLevelUp(c,f,time){const t=1-f.life/f.max,fade=t<.15?t/.15:Math.max(
  c.restore();}
 /** Gegner sterben sichtbar (WoW/Diablo): kippen vom Helden weg um, liegen kurz entsättigt da und verblassen; beim Aufschlag Staub. */
 const CORPSE_TIME=6;
-function drawCorpse(c,e,age,p,time){const k=Math.max(0,age)/CORPSE_TIME,fall=Math.min(1,age/.28),ease=1-(1-fall)**3,side=e.x>=p.x?1:-1;c.save();
- c.globalAlpha=Math.min(1,Math.max(0,(CORPSE_TIME-age)/1));c.translate(e.x,e.y);c.rotate(side*ease*Math.PI*.46);c.translate(-e.x,-e.y+ease*3);if('filter' in c)c.filter='grayscale(.55) brightness(.82)';
- drawComicEnemy(c,{...e,hp:e.maxHp||1,hurt:0,attack:0,cast:null,moving:false,gaitWeight:0},time);c.restore();
+/* Entsättigt über eine kleine Ebene statt `c.filter` (2026-09-25, Dungeon Etappe 1): Ein Canvas-Filter rastert in Chrome ohne Grafikkarte
+   jeden einzelnen Zeichenbefehl der Figur über die ganze Bildfläche. Sechs frische Leichen im Burghof drückten die Bildrate von 60 auf 5
+   (dungeon-check „Laufen im Hof“ rot). Jetzt: Figur einmal in die Ebene, per source-atop abgedunkelt und entsättigt, ein drawImage. */
+let corpseLayer=null;
+function drawCorpse(c,e,age,p,time){const fall=Math.min(1,age/.28),ease=1-(1-fall)**3,side=e.x>=p.x?1:-1,body={...e,hp:e.maxHp||1,hurt:0,attack:0,cast:null,moving:false,gaitWeight:0};c.save();
+ c.globalAlpha=Math.min(1,Math.max(0,(CORPSE_TIME-age)/1));c.translate(e.x,e.y);c.rotate(side*ease*Math.PI*.46);c.translate(-e.x,-e.y+ease*3);
+ if(typeof document==='undefined'||typeof c.getTransform!=='function')drawComicEnemy(c,body,time);
+ else{const S=200,ax=100,ay=160,d=Math.max(1,Math.min(4,Math.abs(c.getTransform().a)||1)),L=corpseLayer||=document.createElement('canvas');if(L.width!==Math.ceil(S*d)){L.width=L.height=Math.ceil(S*d);}
+  const f=L.getContext('2d');f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-over';f.clearRect(0,0,L.width,L.height);f.imageSmoothingEnabled=c.imageSmoothingEnabled;f.setTransform(d,0,0,d,(ax-e.x)*d,(ay-e.y)*d);drawComicEnemy(f,body,time);
+  f.setTransform(1,0,0,1,0,0);f.globalCompositeOperation='source-atop';f.fillStyle='rgba(70,66,60,.5)';f.fillRect(0,0,L.width,L.height);f.globalCompositeOperation='source-over';
+  c.drawImage(L,e.x-ax,e.y-ay,S,S);}
+ c.restore();
  if(fall>=1&&age<.75){const t=(age-.28)/.47;c.save();c.globalAlpha=(1-t)*.5;c.fillStyle='#d8c8a8';for(let i=0;i<7;i++){const a=i/7*Math.PI*2;c.beginPath();c.ellipse(e.x+side*14+Math.cos(a)*(6+t*14),e.y+Math.sin(a)*(2+t*5),3+t*4,2+t*2,0,0,Math.PI*2);c.fill();}c.restore();}}
 /** Umriss einer verdeckten Figur: einmal in eine Ebene gezeichnet, per source-in eingefärbt, halbdurchsichtig obenauf. */
 const TRAIL_MS=400;let heroGhost=null,ghostLayer=null,outlineLayer=null,lastCorpse=null,heroTree=false;

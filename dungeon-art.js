@@ -1,7 +1,7 @@
 // Zeichnen des Dungeons (Plan Abschnitte 5 und 14): Boden, Wände, Türen, Übergänge, Schilder und Warnflächen in der Welt,
 // dazu die Dungeon-Karte (Prospekt gegen Wirklichkeit). Grundriss aus content/dungeons.js, Zustand aus dungeon.js.
 import {DUNGEON_TEXT as T,DUNGEON_BOSSES,DUNGEON_SCALE as U,DUNGEON_UI as DU} from './content/index.js';
-import {dungeonRun,floorAt,rectWorld,toWorld,doorOpen} from './dungeon.js';
+import {dungeonRun,floorAt,rectWorld,toWorld,doorOpen,coneReach,CONE_RAYS,fallActive} from './dungeon.js';
 
 const THEMES={
  garage:{void:'#15130f',floor:'#8d8778',tile:'#7d776a',wall:'#3b3830',trim:'#c9c2ad'},
@@ -45,9 +45,23 @@ export function drawDungeonGround(c,g,view){
  for(const room of rooms){if(room.secret&&!run.visited.has(room.id))continue;const r=rectWorld(def,floor,room.rects[0]);text(c,room.sign,r.x+r.w/2,r.y+11,{size:8,color:run.room===room.id?GOLD:CREAM});text(c,room.truth,r.x+r.w/2,r.y+21,{size:6,weight:'normal',color:'#d8ccb0'});}
  // Warnflächen der Kegel, Schildwall
  for(const e of g.enemies){if(e.hp<=0)continue;const k=e.cast;
-  if(k?.cone){const progress=1-k.remaining/k.total,half=k.cone.angle*Math.PI/360,a=k.angle??0;c.save();c.fillStyle='#c4302640';c.beginPath();c.moveTo(e.x,e.y);c.arc(e.x,e.y,k.cone.range,a-half,a+half);c.closePath();c.fill();
-   c.fillStyle='#e2432f70';c.beginPath();c.moveTo(e.x,e.y);c.arc(e.x,e.y,k.cone.range*progress,a-half,a+half);c.closePath();c.fill();c.strokeStyle=progress>.75&&Math.sin(g.time*28)>0?'#fff0c8':'#ff5a3c';c.lineWidth=2;c.beginPath();c.moveTo(e.x,e.y);c.arc(e.x,e.y,k.cone.range,a-half,a+half);c.closePath();c.stroke();c.restore();}
+  if(k?.cone)drawConeWarning(c,g,e,k);
+  if(e.dungeonBoss)drawFallEdge(c,g,run,floor,e);
   if(e.frontGuard>0){const a=e.frontAngle??0;c.save();c.strokeStyle='#e8dcc0';c.lineWidth=3;c.beginPath();c.arc(e.x,e.y-10,22,a-Math.PI/3,a+Math.PI/3);c.stroke();c.restore();}}
+}
+/** Kegel-Warnfläche (E-71): dieselben Strahlen wie der Treffer (dungeon.js coneReach) – endet an Wänden, ragt nicht in den Nachbarraum.
+ *  Grundfläche, wachsende Füllung, Rand blitzt im letzten Viertel. */
+function drawConeWarning(c,g,e,k){
+ const progress=1-k.remaining/k.total,half=k.cone.angle*Math.PI/360,a0=k.angle??0,reach=coneReach(g.world,e,k);
+ const poly=limit=>{c.beginPath();c.moveTo(e.x,e.y);for(let i=0;i<=CONE_RAYS;i++){const a=a0-half+2*half*i/CONE_RAYS,r=Math.min(reach[i],limit);c.lineTo(e.x+Math.cos(a)*r,e.y+Math.sin(a)*r);}c.closePath();};
+ c.save();c.fillStyle='#c4302640';poly(Infinity);c.fill();c.fillStyle='#e2432f70';poly(k.cone.range*progress);c.fill();
+ c.strokeStyle=progress>.75&&Math.sin(g.time*28)>0?'#fff0c8':'#ff5a3c';c.lineWidth=2;poly(Infinity);c.stroke();c.restore();
+}
+/** Treppenkante (E-71): erst ab Phase 2 gefährlich – dann liegt eine gestrichelte Warnlinie auf der Kante. */
+function drawFallEdge(c,g,run,floor,e){
+ {const fall=DUNGEON_BOSSES[e.bossId]?.fall;if(!fall||!(e.hp>0)||!e.aggro||!fallActive(e,fall))return;const room=run.def.rooms.find(r=>r.id===e.dungeonBoss?.room);if(!room||room.floor!==floor)return;
+  const r=rectWorld(run.def,floor,fall.rect),pulse=.55+.45*Math.sin(g.time*6);c.save();c.fillStyle='rgba(226,67,47,'+(.12+.1*pulse).toFixed(3)+')';c.fillRect(r.x,r.y,r.w,r.h);
+  c.strokeStyle='#ff5a3c';c.lineWidth=2.5;c.setLineDash([7,5]);c.lineDashOffset=-g.time*12;c.strokeRect(r.x+1,r.y+1,r.w-2,r.h-2);c.restore();}
 }
 function drawStep(c,kind,p){
  c.save();c.translate(p.x,p.y);

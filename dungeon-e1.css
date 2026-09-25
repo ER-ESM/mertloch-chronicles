@@ -1,0 +1,26 @@
+/* Dungeon Etappe 1 „Gerd richtig“ (E-71, 2026-09-25): Beute-Moment im Beutefenster (Boss, Siegelmarken, Erfahrung, Tagesbonus),
+   Todesbildschirm im Dungeon (Söldner kämpfen weiter, Aufhelfen mit Fortschritt, Fahne des Kontrollpunkts). Text nur im Tooltip. */
+.loot-moment{display:flex;flex-direction:column;gap:6px;margin:0 0 8px;padding:6px 8px;border:1px solid #8a6a2e;border-radius:4px;background:linear-gradient(#3a2a14,#24190c)}
+.loot-moment-title{font:800 15px/1.2 Nunito,sans-serif;color:#f4c56a}
+.loot-moment-chips{display:flex;gap:6px;flex-wrap:wrap}
+.loot-chip{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:2px 8px;border:1px solid #6b5230;border-radius:4px;background:#1e150b;color:#f3e2c0;cursor:help}
+.loot-chip b{font:800 13px/1 Nunito,sans-serif}
+.loot-chip .ui-glyph{width:18px;height:18px;color:#f0c46c}
+.loot-chip canvas{width:22px;height:22px}
+.loot-chip.loot-daily .ui-glyph{color:#9fd67a}
+.death-screen .ds-ghost{display:flex;align-items:center;gap:8px;min-width:240px;max-width:340px;min-height:34px;padding:4px 10px;border:1px solid #3d5a2c;border-radius:4px;background:#14200f;color:#dcebc8;font:700 14px/1.2 Nunito,sans-serif;cursor:help}
+.death-screen .ds-ghost .ui-glyph{width:20px;height:20px;flex:none;color:#9fd67a}
+.death-screen .ds-ghost .ds-revive-bar{display:block;flex:1;min-width:50px;height:6px;border:1px solid #2f4524;border-radius:3px;background:#0b1208;overflow:hidden}
+.death-screen .ds-ghost .ds-revive-bar i{display:block;width:0;height:100%;background:linear-gradient(90deg,#6fbf4a,#c9f29a);transition:width .25s linear}
+.death-screen .ds-ghost:not(.reviving) .ds-revive-bar{opacity:.35}
+.death-screen .ds-ghost.lost{border-color:#6b3024;background:#2a1511;color:#f3dfc0}
+.death-screen .ds-ghost.lost .ui-glyph{color:#ff8a6e}
+.death-screen .ds-wake-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.death-screen .ds-flag{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:4px 12px;border:1px solid #3d5a2c;border-radius:4px;background:#14200f;color:#dcebc8;cursor:help}
+.death-screen .ds-flag .ui-glyph{width:22px;height:22px;color:#78a865}
+.death-screen .ds-flag b{font:800 14px/1 Nunito,sans-serif}
+/* Im Dungeon schmal und oben: Der Held liegt, der Kampf läuft weiter und soll sichtbar bleiben. Tipps und Schädel entfallen. */
+.death-screen.ds-dungeon{top:2%;gap:6px;min-width:min(360px,92vw);padding:8px 16px 10px}
+.death-screen.ds-dungeon .ds-skull,.death-screen.ds-dungeon .ds-tips{display:none}
+.death-screen.ds-dungeon h2{font-size:30px}
+body.touch-mode .death-screen.ds-dungeon{top:11%}

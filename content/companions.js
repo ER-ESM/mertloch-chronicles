@@ -8,6 +8,11 @@
 export const COMPANION_RULES=Object.freeze({
  maxActive:4,                 // zusammen mit echten Gruppenmitgliedern nie mehr als 5 (SHARED_RULES.partySize)
  gearShare:.85,               // Anteil an der Stärke eines gleichstufig ausgerüsteten Spielers
+ // Dungeon Etappe 1 (E-71, 2026-09-25): In Instanzen sind Söldner fast vollwertig wie die Follower-Dungeons in WoW. Gemessen lagen sie
+ // dort bei rund 15 % eines Helden (40 Schaden/s je Söldner gegen 240–270), Ziel sind rund 85 %. Gilt NUR im Dungeon (companions.js
+ // refreshStats über inDungeon); die offene Welt bleibt unverändert. Schaden trägt Angriffe, heal die Heilung, health das Leben.
+ // Messung: scripts/dungeon-sim.mjs, Bericht docs/DUNGEON-ETAPPE-1-2026-09-25.md.
+ instanceFactor:{damage:4.8,heal:2.5,health:1.8},
  reaction:.35,                // Sekunden, bis ein Begleiter auf eine Ansage (Fläche, Zauber) reagiert
  followDistance:70,           // Wunschabstand zum Besitzer außerhalb des Kampfs
  formation:[[-46,34],[46,34],[-82,-10],[82,-10]], // Plätze um den Besitzer (x,y), in Laufrichtung gespiegelt
@@ -52,7 +57,10 @@ export const COMPANION_ABILITIES=Object.freeze({
  round:     {name:'Runde aufs Haus',   kind:'heal',     cooldown:3.2, power:5.5, below:.78, range:260},
  bigRound:  {name:'Große Runde',       kind:'heal',     cooldown:14,  power:13,  below:.4,  range:260},
  shush:     {name:'Ruhe jetzt!',       kind:'interrupt',cooldown:12,  range:230},
- sweep:     {name:'Rundumschlag',      kind:'cleave',   cooldown:7,   power:.8, radius:70, minTargets:2}
+ sweep:     {name:'Rundumschlag',      kind:'cleave',   cooldown:7,   power:.8, radius:70, minTargets:2},
+ // Dungeon Etappe 1 (E-71): Heil-Söldner helfen dem gefallenen Helden auf – einmal je Kampf, 8 s Wirkzeit, 35 % Leben wie das
+ // Aufhelfen unter Mitspielern (E-44, reviveHere). Nur im Dungeon: nur dort läuft die Welt weiter, wenn der Held fällt.
+ revive:    {name:'Aufhelfen',         kind:'revive',   cooldown:0,   cast:8,    share:.35, range:90}
 });
 
 /** Anheuerbare Söldner. `look` = Klassen-ID für die Heldengrafik (bis eigene Sprites kommen). */
@@ -60,7 +68,7 @@ export const COMPANIONS=Object.freeze([
  {id:'merc-pils-peter',   kind:'merc',name:'Pils-Peter',     role:'tank',  look:'dieter', spec:'dieter-wall',  abilities:['swing','taunt','lid','shush'],
   description:'Steht vorne, hält den Deckel hoch und nimmt alles persönlich. Zieht Gegner auf sich und unterbricht Zauber.',
   lines:{hire:'Wo brennt\'s? Ich stell mich davor.',down:'Ich… leg mich kurz hin.',revive:'Geht wieder. Wo waren wir?',dismiss:'Man sieht sich am Tresen.'}},
- {id:'merc-schorle-susi', kind:'merc',name:'Schorle-Susi',   role:'heal',  look:'baerbel',spec:'baerbel-care', abilities:['shot','round','bigRound'],
+ {id:'merc-schorle-susi', kind:'merc',name:'Schorle-Susi',   role:'heal',  look:'baerbel',spec:'baerbel-care', abilities:['shot','round','bigRound','revive'],
   description:'Hält Abstand und die Gruppe am Leben. Schenkt nach, bevor es eng wird.',
   lines:{hire:'Trinkt genug. Den Rest mach ich.',down:'Mir ist schwindelig.',revive:'So. Wer braucht was?',dismiss:'Passt auf euch auf.'}},
  {id:'merc-radler-rita',  kind:'merc',name:'Radler-Rita',    role:'damage',look:'kevin',  spec:'kevin-hunt',   abilities:['shot','shush'],
@@ -72,7 +80,7 @@ export const COMPANIONS=Object.freeze([
  {id:'merc-zapf-hannes',  kind:'merc',name:'Zapf-Hannes',    role:'tank',  look:'kevin',  spec:'kevin-iron',   abilities:['swing','taunt','lid'],
   description:'Langsam, schwer, zuverlässig. Hält auch Bosse bei sich.',
   lines:{hire:'Ich halt das schon.',down:'Schrottreif.',revive:'Läuft wieder rund.',dismiss:'Bis zur nächsten Schicht.'}},
- {id:'merc-tresen-tina',  kind:'merc',name:'Tresen-Tina',    role:'heal',  look:'baerbel',spec:'baerbel-stage',abilities:['shot','round','bigRound','shush'],
+ {id:'merc-tresen-tina',  kind:'merc',name:'Tresen-Tina',    role:'heal',  look:'baerbel',spec:'baerbel-stage',abilities:['shot','round','bigRound','shush','revive'],
   description:'Heilt und ruft dazwischen, wenn jemand zu lange redet.',
   lines:{hire:'Bühne frei, ich pass auf.',down:'Licht aus.',revive:'Zugabe!',dismiss:'Danke fürs Publikum.'}}
 ]);
@@ -83,7 +91,7 @@ export const COMPANION_TEXT=Object.freeze({
  full:'Mehr als vier Begleiter passen nicht in die Gruppe.',partyFull:'Die Gruppe ist voll – erst jemanden entlassen.',
  money:'Das reicht nicht für den Vertrag.',already:'Der ist schon bei dir.',unknown:'Den kennt hier keiner.',
  hired:n=>n+' ist jetzt bei dir.',dismissed:n=>n+' ist wieder frei.',partyLeave:n=>n+' macht Platz – mehr als fünf passen nicht in die Gruppe.',expired:n=>'Der Vertrag mit '+n+' ist abgelaufen.',
- down:n=>n+' ist am Boden.',revived:n=>n+' steht wieder.',interrupted:'UNTERBROCHEN',taunted:'SPOTT',
+ down:n=>n+' ist am Boden.',revived:n=>n+' steht wieder.',reviving:n=>n+' hilft dir auf.',revivedHero:n=>n+' hat dir aufgeholfen.',interrupted:'UNTERBROCHEN',taunted:'SPOTT',
  orders:{follow:'Folgen',stay:'Warten',attack:'Mein Ziel angreifen'},
  stances:{assist:'Unterstützen',defend:'Verteidigen',passive:'Passiv'},
  orderSet:o=>'Befehl: '+o,stanceSet:s=>'Haltung: '+s,
