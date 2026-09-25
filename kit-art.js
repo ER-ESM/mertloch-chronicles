@@ -15,6 +15,11 @@ function meta(){
   Promise.all([load(BASE,'kit.json'),load(FORGE,'kit-forge.json')]).then(([a,b])=>{if(a||b)KIT.meta={pxPerUnit:4,sprites:{...a,...b}};});}
  return KIT.meta;
 }
+/** Sind die Bilder dieser Arten geladen (oder gibt es für sie keins, dann bleibt der Platzhalter)? Für Zwischenspeicher, die erst
+ *  mit fertigen Bildern backen (Dungeon-Räume, dungeon-scenery-art.js). Stößt das Laden an. */
+export function kitReady(ids){const m=meta();if(!m)return false;let ok=true;for(const id of ids)if(m.sprites[id]&&!sprite(id))ok=false;return ok;}
+/** Bildfolge? Zahl der Bilder einer Art (1 = Standbild oder noch unbekannt). */
+export const kitFrames=id=>meta()?.sprites?.[id]?.frames||1;
 /** Geladenes Bild einer Sprite-Art samt Registrierung, sonst null. */
 function sprite(id){const m=meta()?.sprites?.[id];if(!m)return null;let img=KIT.images.get(id);if(!img){img=new Image();img.src=m.base+m.file;KIT.images.set(id,img);}return img.complete&&img.naturalWidth?{img,m,k:KIT.meta.pxPerUnit}:null;}
 /** Stehende Teile mit feinem dunklem Umriss (Stardew-Lesbarkeit): einmal je Sprite erzeugt – Silhouette in Tinte, 8 Richtungen versetzt, Bild darüber. */

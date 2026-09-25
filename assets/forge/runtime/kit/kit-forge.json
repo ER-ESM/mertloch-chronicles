@@ -3,6 +3,21 @@
  "pxPerUnit": 4,
  "source": "sprite-forge",
  "sprites": {
+  "ahnenbild": {
+   "file": "kit-ahnenbild.png",
+   "width": 40,
+   "height": 64
+  },
+  "ahnenbild-toupet": {
+   "file": "kit-ahnenbild-toupet.png",
+   "width": 40,
+   "height": 64
+  },
+  "ahnenbild-zopf": {
+   "file": "kit-ahnenbild-zopf.png",
+   "width": 40,
+   "height": 64
+  },
   "aktenschrank": {
    "file": "kit-aktenschrank.png",
    "width": 64,
@@ -19,6 +34,23 @@
    "file": "kit-barhocker.png",
    "width": 24,
    "height": 65
+  },
+  "basalt-pflaster": {
+   "file": "kit-basalt-pflaster.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "basalt-quader": {
+   "file": "kit-basalt-quader.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
+  "basaltsaeule": {
+   "file": "kit-basaltsaeule.png",
+   "width": 40,
+   "height": 211
   },
   "bauplaene": {
    "file": "kit-bauplaene.png",
@@ -39,6 +71,11 @@
    "file": "kit-bierbank.png",
    "width": 120,
    "height": 65
+  },
+  "bierkisten-thron": {
+   "file": "kit-bierkisten-thron.png",
+   "width": 112,
+   "height": 180
   },
   "bierkrug": {
    "file": "kit-bierkrug.png",
@@ -79,6 +116,11 @@
    "height": 256,
    "tile": 64
   },
+  "duftstaebchen": {
+   "file": "kit-duftstaebchen.png",
+   "width": 12,
+   "height": 35
+  },
   "eimer": {
    "file": "kit-eimer.png",
    "width": 24,
@@ -95,6 +137,13 @@
    "width": 136,
    "height": 175
   },
+  "fackel": {
+   "file": "kit-fackel.png",
+   "width": 24,
+   "height": 57,
+   "frames": 6,
+   "fps": 8
+  },
   "fahrrad": {
    "file": "kit-fahrrad.png",
    "width": 88,
@@ -104,6 +153,11 @@
    "file": "kit-fass.png",
    "width": 40,
    "height": 83
+  },
+  "faxgeraet": {
+   "file": "kit-faxgeraet.png",
+   "width": 28,
+   "height": 31
   },
   "flasche": {
    "file": "kit-flasche.png",
@@ -121,6 +175,11 @@
    "height": 256,
    "tile": 64
   },
+  "garage-schloss": {
+   "file": "kit-garage-schloss.png",
+   "width": 400,
+   "height": 284
+  },
   "gartenstuhl": {
    "file": "kit-gartenstuhl.png",
    "width": 32,
@@ -131,10 +190,25 @@
    "width": 48,
    "height": 45
   },
+  "greenscreen": {
+   "file": "kit-greenscreen.png",
+   "width": 176,
+   "height": 150
+  },
   "hakenleiste": {
    "file": "kit-hakenleiste.png",
    "width": 64,
    "height": 52
+  },
+  "heizkessel": {
+   "file": "kit-heizkessel.png",
+   "width": 72,
+   "height": 186
+  },
+  "kaffeemaschine": {
+   "file": "kit-kaffeemaschine.png",
+   "width": 20,
+   "height": 40
   },
   "kanonenofen": {
    "file": "kit-kanonenofen.png",
@@ -169,6 +243,11 @@
    "width": 112,
    "height": 101
   },
+  "kronkorken-gold": {
+   "file": "kit-kronkorken-gold.png",
+   "width": 48,
+   "height": 32
+  },
   "kuechenzeile": {
    "file": "kit-kuechenzeile.png",
    "width": 240,
@@ -186,6 +265,12 @@
    "width": 56,
    "height": 160
   },
+  "laminat": {
+   "file": "kit-laminat.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
   "luftschlangen": {
    "file": "kit-luftschlangen.png",
    "width": 32,
@@ -195,6 +280,51 @@
    "file": "kit-matratze.png",
    "width": 56,
    "height": 112
+  },
+  "musikbox": {
+   "file": "kit-musikbox.png",
+   "width": 56,
+   "height": 118,
+   "frames": 4,
+   "fps": 4
+  },
+  "neonroehre": {
+   "file": "kit-neonroehre.png",
+   "width": 104,
+   "height": 19,
+   "frames": 4,
+   "fps": 6
+  },
+  "oelfleck": {
+   "file": "kit-oelfleck.png",
+   "width": 88,
+   "height": 48
+  },
+  "ordnerregal": {
+   "file": "kit-ordnerregal.png",
+   "width": 96,
+   "height": 49
+  },
+  "palettensofa": {
+   "file": "kit-palettensofa.png",
+   "width": 144,
+   "height": 81
+  },
+  "pappkulisse": {
+   "file": "kit-pappkulisse.png",
+   "width": 160,
+   "height": 166
+  },
+  "pappsaeule": {
+   "file": "kit-pappsaeule.png",
+   "width": 40,
+   "height": 211
+  },
+  "partykeller-fliesen": {
+   "file": "kit-partykeller-fliesen.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
   },
   "pflaster-stein": {
    "file": "kit-pflaster-stein.png",
@@ -226,10 +356,25 @@
    "frames": 6,
    "fps": 6
   },
+  "reifenstapel": {
+   "file": "kit-reifenstapel.png",
+   "width": 56,
+   "height": 102
+  },
+  "ringlicht": {
+   "file": "kit-ringlicht.png",
+   "width": 40,
+   "height": 137
+  },
   "sackkarre": {
    "file": "kit-sackkarre.png",
    "width": 32,
    "height": 90
+  },
+  "schaukelpferd": {
+   "file": "kit-schaukelpferd.png",
+   "width": 80,
+   "height": 79
   },
   "scherben": {
    "file": "kit-scherben.png",
@@ -271,11 +416,22 @@
    "width": 32,
    "height": 71
   },
+  "teppich-buero": {
+   "file": "kit-teppich-buero.png",
+   "width": 256,
+   "height": 256,
+   "tile": 64
+  },
   "teppichboden-rot": {
    "file": "kit-teppichboden-rot.png",
    "width": 256,
    "height": 256,
    "tile": 64
+  },
+  "tetrapak-kiste": {
+   "file": "kit-tetrapak-kiste.png",
+   "width": 64,
+   "height": 64
   },
   "tisch-rund": {
    "file": "kit-tisch-rund.png",
@@ -328,6 +484,21 @@
    "width": 40,
    "height": 69
   },
+  "waschmaschine": {
+   "file": "kit-waschmaschine.png",
+   "width": 48,
+   "height": 106
+  },
+  "weinfass": {
+   "file": "kit-weinfass.png",
+   "width": 72,
+   "height": 87
+  },
+  "werkbank": {
+   "file": "kit-werkbank.png",
+   "width": 144,
+   "height": 97
+  },
   "wimpelkette": {
    "file": "kit-wimpelkette.png",
    "width": 160,
@@ -340,6 +511,11 @@
    "width": 256,
    "height": 64,
    "cap": 16
+  },
+  "zimmerpflanze": {
+   "file": "kit-zimmerpflanze.png",
+   "width": 32,
+   "height": 93
   }
  }
 }
