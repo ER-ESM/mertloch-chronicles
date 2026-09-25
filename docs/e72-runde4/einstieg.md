@@ -1,0 +1,17 @@
+# E-72 Runde 4 · Einstieg (Branch `e72-einstieg`)
+
+Kenner-Playtest 25.09. abends, Befunde 1–6 (neuer Held → Film → Hofprobe → Dorf).
+
+| # | Befund | Ursache | Änderung |
+|---|---|---|---|
+| 1 | Esc überspringt den Film nicht | Headless mit dem alten Stand **nicht nachstellbar** (Esc wirkte per CDP). Schwachstellen: Film hörte erst ab Spielstart auf `document`; Leistentasten (`window`, Capture) kamen vorher und schluckten gebundene Tasten (Leertaste/Ziffern) auch im Film; vor dem Filmstart (Ladeschirm) ging Esc ans Spiel. | `intro-ui.js`: Tastenhörer auf `window` (Capture) schon beim Laden des Moduls; `introKey()` erkennt Escape/„Esc“/Code 27, Enter/Leertaste blättern; Esc wirkt auch, solange der Film noch auf den Ladeschirm wartet. `app.js`: Leistentasten ruhen während des Films (`canAct … !intro.busy`). |
+| 2 | Film über dem Ladeschirm, Texte übereinander | `enterWorld` startete den Film sofort, der Ladeschirm blendete erst danach aus; die erste Szene war bis zum Laden des Standbilds durchsichtig. | Film wartet auf `#loading.boot-out/hidden` (`host.ready`, Sicherung 10 s) und lädt Bild 1 vor; Szenen mit Standbild decken sofort (`.intro-has-still`, `bierdeckel.css`). |
+| 3 | Nach der Hofprobe alles auf einmal | Karte wartete nur auf eine *laufende* Einblendung, nicht auf die gebündelte (1,5 s) – und die Einblendung nicht auf die Karte. Statistik: gemerkte Einstellung eines früheren Helden (`mertloch-meter-ui-v1`) öffnete sie beim Freischalten. | `milestone-ui.js due()`; Karte wartet auf Kurzmeldung → Einblendung → Ruhe. Die Kurzmeldung „Erinnerungsfetzen: …“ entfällt am Desktop (die Karte sagt es selbst). Freischalten schließt die Statistik (`remember:false`), ihr Knopf trägt das „Neu“-Siegel bis zum ersten Öffnen. |
+| 4 | Erinnerung doppelt / zur Unzeit | Keine zweite Auslösung in der Engine gefunden (`memories.seen` schützt). Die Karte blieb aber unbegrenzt stehen – unter Fenstern (Weltkarte), im Kampf, neben dem Todesschirm – und war danach „wieder da“. | `memory-card.js`: `cardTiming` – tritt bei Einblendung, Kampf, Tod, Menü, Film, HUD-Editor zurück, kommt nach 1,5 s Ruhe wieder; geht nach Lesedauer (12–40 s, Maus darüber hält an, verdeckt zählt nicht); war sie schon zu 60 % gelesen, gilt sie als gelesen. `app.js`: jeder Fetzen höchstens einmal je Sitzung (`queueMemory`), Erinnerungen aus dem Tod kommen nach dem Aufwachen. Esc schließt nur eine sichtbare Karte. |
+| – | Karte über der Kampfstatistik (Nachtrag Orchestrator) | Statistik zählte nur als „Boden“, wenn ihre Oberkante unter der Bildmitte lag. | `cardPlace({avoid})`: größter freier Streifen darüber/darunter (≥ 180 px), sonst links neben die Statistik. |
+| 5 | „Hinlaufen: Grillplatz“ in der Hofprobe stumm | Die Kurzmeldung kam, lag aber unter dem Kartenfenster. | `atlas-ui.js notice()`: rote Zeile oben auf der Karte („Erst die Hofprobe fertig machen …“), Kurzmeldung entfällt; `tutorialBlocksTravel()` rein. |
+| 6 | 2 Konsolenfehler beim Laden | 404 auf `assets/content-art/talents/schorsch.png` und `kaethe.png` (Klassen ohne Talentatlas). | `talent-art.js talentSheetMembers()`: nur Klassen mit `TALENT_ART.edges` laden einen Bogen. |
+
+Prüfen: `npm test` · `node --test tests/e72-einstieg.test.mjs` (9) · `node scripts/e72-einstieg-check.mjs [klasse]` (Ports 9783/4383,
+32 Prüfungen, Bilder `docs/e72-runde4/einstieg/`). Alte Prüfung `scripts/e72-hofprobe-check.mjs` weiter 76/76.
+Debug: `window.mertloch.memory()` zeigt Schlange, gezeigte Fetzen, Haltegrund und Kartenzustand.

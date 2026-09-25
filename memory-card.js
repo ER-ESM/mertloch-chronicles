@@ -3,15 +3,26 @@
 // unter Minikarte und Auftragsverfolgung, über den Menüknöpfen; Laufen, Kampf, F und Klicks in die Welt gehen weiter. Schließen: Esc,
 // Kreuz oder Klick aufs Bild (dann öffnet sich das große Bild mit Text). Nachlesbar bleibt alles unter Aufträge → Erinnerungen.
 // Am Handy bleibt das bisherige Fenster (memoryOverlay in chapter-ui.js).
+// E-72 Runde 4 (Kenner-Befunde 3/4, Zeitsteuerung – das Aussehen bleibt): Die Karte tritt zurück, solange eine große Einblendung, Kampf,
+// Tod, Spielmenü, Einführungsfilm oder HUD-Editor dran sind (hold), und kommt danach wieder. Sie geht nach ihrer Lesedauer von selbst
+// (Maus darüber hält sie an); war sie schon größtenteils gelesen, wenn etwas dazwischenkommt, gilt sie als gelesen statt wiederzukommen.
+// Die Kampfstatistik überdeckt sie nie: Sie dockt darüber oder darunter an oder weicht links neben sie aus (avoid).
 import {memoryArtFor} from './memory-art.js';
 import {MEMORY_CARD as T} from './content/index.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const CARD_WIDTH=300,CARD_GAP=10;
+export const CARD_WIDTH=300,CARD_GAP=10,CARD_MIN_HEIGHT=180;
+/** Lesedauer: Grundzeit plus Zeichen je Sekunde, begrenzt. Danach geht die Karte von selbst. */
+export const READ_CPS=14,READ_BASE_MS=5000,READ_MIN_MS=12000,READ_MAX_MS=40000;
+/** Ruhe, bevor eine zurückgehaltene Karte wiederkommt; Anteil der Lesedauer, ab dem sie beim Zurückhalten als gelesen gilt. */
+export const HOLD_CALM_MS=1500,READ_DONE=.6;
+export function readingMs(fragment){const n=String(fragment?.title||'').length+String(fragment?.text||'').length;return Math.round(Math.min(READ_MAX_MS,Math.max(READ_MIN_MS,READ_BASE_MS+n/READ_CPS*1000)));}
 
 /** Platz der Karte aus den sichtbaren HUD-Rechtecken (Viewport-Pixel): rechts bündig mit der Spalte aus Minikarte und Verfolgung,
- *  oben unter ihr, unten über Menüleiste/EP-Leiste. `column` und `floor` sind Rechtecke {left,right,top,bottom}. Rein, getestet. */
-export function cardPlace({width,height,column=[],floor=[]}){
+ *  oben unter ihr, unten über Menüleiste/EP-Leiste. `column`, `floor` und `avoid` sind Rechtecke {left,right,top,bottom}; `avoid`
+ *  (Kampfstatistik) darf nie verdeckt werden: Die Karte nimmt den größten freien Streifen der Spalte (darüber/darunter) oder – wenn
+ *  der zu niedrig ist – rückt sie links neben das Hindernis. Rein, getestet. */
+export function cardPlace({width,height,column=[],floor=[],avoid=[]}){
  const col=column.filter(r=>r&&r.left>width*.55);
  const edge=col.length?Math.max(...col.map(r=>r.right)):width-14;
  const right=Math.max(8,Math.round(width-edge));
@@ -19,7 +30,29 @@ export function cardPlace({width,height,column=[],floor=[]}){
  const left=width-right-CARD_WIDTH;
  const low=floor.filter(r=>r&&r.top>height*.5&&r.right>left&&r.left<width-right);
  const bottom=Math.round((low.length?Math.min(...low.map(r=>r.top)):height)-CARD_GAP);
- return {right,top,maxHeight:Math.max(0,bottom-top)};
+ const plain={right,top,maxHeight:Math.max(0,bottom-top)};
+ const hit=avoid.filter(r=>r&&r.right>left&&r.left<width-right&&r.bottom>top&&r.top<bottom);
+ if(!hit.length)return plain;
+ // Freie Streifen der Spalte zwischen den Hindernissen.
+ let slots=[[top,bottom]];
+ for(const r of hit)slots=slots.flatMap(([a,b])=>[[a,Math.min(b,Math.round(r.top)-CARD_GAP)],[Math.max(a,Math.round(r.bottom)+CARD_GAP),b]]).filter(([a,b])=>b-a>0);
+ const best=slots.sort((x,y)=>(y[1]-y[0])-(x[1]-x[0]))[0];
+ if(best&&best[1]-best[0]>=CARD_MIN_HEIGHT)return {right,top:best[0],maxHeight:best[1]-best[0]};
+ // Zu wenig Platz über/unter der Statistik: links daneben, volle Spaltenhöhe.
+ const aside=Math.round(width-(Math.min(...hit.map(r=>r.left))-CARD_GAP));
+ if(width-aside-CARD_WIDTH>=8)return {right:aside,top,maxHeight:plain.maxHeight};
+ return best?{right,top:best[0],maxHeight:best[1]-best[0]}:plain;
+}
+
+/** Zeitsteuerung einer offenen Karte je UI-Takt (rein, getestet). s = {held,heldAt,visibleMs,lastTick}. Liefert den neuen Zustand und
+ *  was zu tun ist: 'hide' (zurückhalten), 'show' (nach Ruhe wiederkommen), 'close' (gelesen) oder null. Verdeckt ein Fenster die Karte
+ *  (covered), läuft ihre Lesezeit nicht weiter – sie bleibt aber stehen. */
+export function cardTiming(s,{hold=false,covered=false,hover=false,now,readMs}){
+ const dt=Math.max(0,Math.min(500,now-(s.lastTick??now))),n={...s,lastTick:now};
+ if(hold){n.heldAt=now;if(s.held)return {state:n,act:null};if((s.visibleMs||0)>=READ_DONE*readMs)return {state:n,act:'close'};n.held=true;return {state:n,act:'hide'};}
+ if(s.held){if(now-(s.heldAt??now)<HOLD_CALM_MS)return {state:n,act:null};n.held=false;return {state:n,act:'show'};}
+ if(!hover&&!covered)n.visibleMs=(s.visibleMs||0)+dt;
+ return {state:n,act:n.visibleMs>=readMs?'close':null};
 }
 
 export function memoryCardHtml(fragment){
@@ -31,27 +64,34 @@ export function memoryCardHtml(fragment){
 }
 
 /** Karte in `shell` einhängen. onClose(fragment, grund) nach jedem Schließen, onZoom(fragment) beim Klick aufs Bild. */
-export function mountMemoryCard(shell,{onClose,onZoom,paint}={}){
+export function mountMemoryCard(shell,{onClose,onZoom,paint,now=()=>performance.now()}={}){
  const el=document.createElement('aside');el.className='memory-card';el.hidden=true;el.setAttribute('role','status');el.setAttribute('aria-live','polite');
- shell.append(el);let current=null;
+ shell.append(el);let current=null,timing={},hover=false,lastRect=null;
  const rect=sel=>{const e=document.querySelector(sel);if(!e||e.hidden)return null;const r=e.getBoundingClientRect();return r.width&&r.height?r:null;};
  function place(){
-  if(!current)return;
-  const p=cardPlace({width:innerWidth,height:innerHeight,column:['.minimap','#miniButton','.quest-panel'].map(rect),floor:['.game-menu-rail','.xp-track','#combatMeter'].map(rect)});
+  if(!current||timing.held)return;
+  const p=cardPlace({width:innerWidth,height:innerHeight,column:['.minimap','#miniButton','.quest-panel'].map(rect),floor:['.game-menu-rail','.xp-track'].map(rect),avoid:['#combatMeter'].map(rect)});
   const s=el.style;for(const [k,v] of [['right',p.right],['top',p.top],['maxHeight',p.maxHeight]])if(s[k]!==v+'px')s[k]=v+'px';
   // Reicht die Höhe nicht (lange Verfolgung, kleiner Schirm), wird zuerst das Bild flacher, zuletzt fällt es weg – der Text bleibt.
   // Läuft alle 100 ms mit (updateUI): nur schreiben, was sich ändert.
-  const pic=el.querySelector('.memory-card-picture');if(!pic)return;
-  const shown=pic.hidden?0:pic.offsetHeight,rest=el.scrollHeight-shown,natural=Math.round((pic.hidden?el.clientWidth:pic.offsetWidth)*2/3),frame=el.offsetHeight-el.clientHeight,h=Math.min(natural,p.maxHeight-frame-rest),hide=h<56;
-  if(pic.hidden!==hide)pic.hidden=hide;if(!hide&&pic.style.height!==h+'px')pic.style.height=h+'px';
+  const pic=el.querySelector('.memory-card-picture');
+  if(pic){const shown=pic.hidden?0:pic.offsetHeight,rest=el.scrollHeight-shown,natural=Math.round((pic.hidden?el.clientWidth:pic.offsetWidth)*2/3),frame=el.offsetHeight-el.clientHeight,h=Math.min(natural,p.maxHeight-frame-rest),hide=h<56;
+   if(pic.hidden!==hide)pic.hidden=hide;if(!hide&&pic.style.height!==h+'px')pic.style.height=h+'px';}
+  const r=el.getBoundingClientRect();if(r.width&&r.height)lastRect={left:r.left,right:r.right,top:r.top,bottom:r.bottom};
  }
+ function reveal(){el.hidden=false;place();el.classList.remove('show');requestAnimationFrame(()=>el.classList.add('show'));}
  function show(fragment){
-  current=fragment;el.innerHTML=memoryCardHtml(fragment);el.setAttribute('aria-label',T.label+': '+fragment.title);el.hidden=false;paint?.(el);place();
-  el.querySelector('img')?.addEventListener('load',place,{once:true});
-  el.classList.remove('show');requestAnimationFrame(()=>el.classList.add('show'));
+  current=fragment;timing={held:false,visibleMs:0,lastTick:now()};hover=false;el.innerHTML=memoryCardHtml(fragment);el.setAttribute('aria-label',T.label+': '+fragment.title);paint?.(el);
+  el.querySelector('img')?.addEventListener('load',place,{once:true});reveal();
  }
- function close(reason='close'){if(!current)return false;const f=current;current=null;el.classList.remove('show');el.hidden=true;el.innerHTML='';onClose?.(f,reason);return true;}
+ function close(reason='close'){if(!current)return false;const f=current;current=null;timing={};el.classList.remove('show');el.hidden=true;el.innerHTML='';onClose?.(f,reason);return true;}
+ /** Je UI-Takt: hold = große Einblendung, Kampf, Tod … (Karte tritt zurück); covered = Fenster liegt über ihr (Lesezeit hält an). */
+ function update({hold=false,covered=false}={}){
+  if(!current)return;const r=cardTiming(timing,{hold,covered,hover,now:now(),readMs:readingMs(current)});timing=r.state;
+  if(r.act==='hide'){el.classList.remove('show');el.hidden=true;}else if(r.act==='show')reveal();else if(r.act==='close')close(hold?'hold':'read');
+ }
  el.addEventListener('click',e=>{if(e.target.closest('[data-memory-next]')){close('close');return;}if(e.target.closest('[data-memory-card-art]')){const f=current;close('zoom');onZoom?.(f);}});
+ el.addEventListener('pointerenter',()=>{hover=true;});el.addEventListener('pointerleave',()=>{hover=false;});
  addEventListener('resize',place);
- return {show,close,place,el,get open(){return !!current;},get fragment(){return current;}};
+ return {show,close,place,update,el,get open(){return !!current;},get held(){return !!timing.held;},get fragment(){return current;},get rect(){return current?lastRect:null;},state:()=>({open:!!current,id:current?.id||null,held:!!timing.held,visibleMs:Math.round(timing.visibleMs||0),readMs:current?readingMs(current):0,hidden:el.hidden})};
 }

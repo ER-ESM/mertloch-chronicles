@@ -124,3 +124,7 @@ body:not(.touch-mode) .popup-map .wk-pager{display:none!important}
 .touch-mode .popup-map .wk-side .grid-pager{margin-top:auto;padding-top:6px}
 .touch-mode .game-popup.popup-map .wk-list .wk-row.atlas-place em{display:block!important}
 .game-popup.popup-map .wk-list .atlas-place.wk-row[hidden],.game-popup.popup-map .wk-list .wk-sep[hidden]{display:none!important}
+/* E-72 Runde 4 (Kenner-Befund 5): verweigerter Weg (Hofprobe) – kurze Zeile oben auf der Karte, wie die rote Fehlerzeile in WoW (atlas-ui.js notice) */
+.wk-notice{position:absolute;z-index:4;top:14px;left:50%;width:max-content;max-width:calc(100% - 24px);margin:0;transform:translate(-50%,-4px);padding:0 10px;box-sizing:border-box;text-align:center;pointer-events:none;font:400 22px/1.2 var(--display);letter-spacing:.03em;color:#ff5040;text-shadow:2px 0 0 #1a120a,-2px 0 0 #1a120a,0 2px 0 #1a120a,0 -2px 0 #1a120a,2px 2px 0 #1a120a,-2px 2px 0 #1a120a,2px -2px 0 #1a120a,-2px -2px 0 #1a120a,0 0 12px #000c;opacity:0;transition:opacity .18s ease,transform .18s ease}
+.wk-notice.show{opacity:1;transform:translate(-50%,0)}.wk-notice[hidden]{display:none}
+.touch-mode .wk-notice{font-size:17px;top:8px}

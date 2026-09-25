@@ -51,6 +51,9 @@ export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,
   quest({title,xp=0,coins=0,item=null}={}){const tiles=rewardTiles({xp,coins,items:item?[item]:[]},[xp?Q.xp(xp):'',coins?Q.coins(coins):''].filter(Boolean).join(' · '));
    queue.push({kind:'quest',ms:3400,html:`<span class="milestone-eyebrow">${esc(Q.eyebrow)}</span><strong class="milestone-title">${esc(title||'')}</strong>${tiles}`});next();},
   get busy(){return busy;},
+  /** E-72 Runde 4 (Kenner-Befund 3): Läuft eine Einblendung oder ist eine fällig (auch während der Bündelzeit einer Freischaltung)?
+   *  Die Erinnerungskarte wartet dann bzw. tritt zurück. Eine Freischaltung, die noch den Abstand UNLOCK_GAP abwartet, zählt nicht. */
+  due(){if(busy)return true;const head=queue[0];return !!head&&!(head.kind==='unlock'&&now()-lastUnlock<UNLOCK_GAP);},
   state:()=>({busy,queued:queue.map(m=>m.kind==='unlock'?m.defs.map(d=>d.id||d.name).join('+'):m.kind)}),
  };
 }
