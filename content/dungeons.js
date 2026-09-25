@@ -128,16 +128,14 @@ export const DUNGEONS={
    {id:'rittersaal-west',room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant']},
    {id:'rittersaal-ost',room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant']},
    {id:'rittersaal-sued',room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant']},
-   {id:'rittersaal-bar',room:'rittersaal',at:[45,27],members:['securityazubi','maklerpraktikant']},
-   {id:'galerie-west',room:'galerie',at:[10,26],members:['baumarktritter','maklerpraktikant']},
    {id:'verlies',room:'verlies',at:[3.5,22],members:['securityazubi','securityazubi','securityazubi']},
    {id:'weinkeller-west',room:'weinkeller',at:[13,10],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
    {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
    {id:'gewoelbe-west',room:'gewoelbe',at:[19.5,42],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
    {id:'gewoelbe-sued',room:'gewoelbe',at:[30,42],members:['maklerpraktikant','securityazubi','securityazubi','baumarktritter']},
    {id:'gewoelbe-ost',room:'gewoelbe',at:[38,16],members:['baumarktritter','baumarktritter']},
-   {id:'gewoelbe-tresor',room:'gewoelbe',at:[38,31],members:['securityazubi','securityazubi','maklerpraktikant']},
-   {id:'gewoelbe-keller',room:'gewoelbe',at:[9.5,38.5],members:['securityazubi','securityazubi','maklerpraktikant']},
+   {id:'gewoelbe-tresor',room:'gewoelbe',at:[38,31],members:['securityazubi','securityazubi','maklerpraktikant','baumarktritter']},
+   {id:'gewoelbe-keller',room:'gewoelbe',at:[9.5,38.5],members:['securityazubi','securityazubi','maklerpraktikant','baumarktritter']},
    // Etappe 4 Teil B: Schlossgespenst läuft die Schleife der Gewölbegänge ab (Plan 4.4, Streife), solange der Beamer läuft, ist es nur ein Bild
    {id:'gewoelbe-gespenst',room:'gewoelbe',at:[36.5,30],members:['schlossgespenst'],patrol:[[36.5,8],[36.5,41],[24,41],[36.5,41]]}
   ],

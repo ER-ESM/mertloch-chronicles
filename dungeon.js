@@ -950,7 +950,10 @@ function sealsFeat(g,run){const today=dungeonToday(g,run.id),need=requiredSeals(
 function tickE4B(g,run,dt){
  if(g.dead&&!run.deadNow){run.deadNow=true;run.deaths=(run.deaths|0)+1;}else if(!g.dead)run.deadNow=false;
  for(const e of g.enemies){const ill=DUNGEON_ENEMIES[e.dungeonKind]?.illusion;if(!ill||!(e.hp>0))continue;
-  if(run.beamer){e.takenFactor=1;continue;}e.takenFactor=1e-4;if(e.hp<e.maxHp){e.hp=e.maxHp;if(!(e.immuneShown>g.time-2)){e.immuneShown=g.time;g.float?.(e.x,e.y-46,E4B.events.beamer.immune,'#dfeaff');}}}
+  if(run.beamer){e.takenFactor=1;continue;}e.takenFactor=1e-4;if(e.hp<e.maxHp){e.hp=e.maxHp;if(!(e.immuneShown>g.time-2)){e.immuneShown=g.time;g.float?.(e.x,e.y-46,E4B.events.beamer.immune,'#dfeaff');}}
+  /* Eine Projektion hält niemanden fest: steht kein echter Gegner mehr im Kampf daneben, verblasst sie nach 4 s und läuft ihre Runde weiter */
+  const company=e.aggro&&e.ai==='combat'&&g.enemies.some(o=>o!==e&&o.hp>0&&o.aggro&&o.ai==='combat'&&!DUNGEON_ENEMIES[o.dungeonKind]?.illusion&&Math.hypot(o.x-e.x,o.y-e.y)<400);
+  if(e.aggro&&e.ai==='combat'&&!company){e.fadeIn=(e.fadeIn||0)+dt;if(e.fadeIn>=4){e.fadeIn=0;clearThreat(e);g.resetEnemy?.(e);}}else e.fadeIn=0;}
  if(run.lines?.length){const due=run.lines.filter(l=>l.at<=g.time);run.lines=run.lines.filter(l=>l.at>g.time);for(const l of due)g.bark?.({id:'volker',name:E4B.vendor.name,x:l.x,y:l.y},l.line,'speaker');}
  const pr=run.presenting;if(pr&&g.time>=pr.at+pr.next*pr.gap){const id=pr.ids[pr.next],line=T.bossLines.bigb?.excuses?.[id];if(line&&pr.boss?.hp>0)g.bark?.(pr.boss,line,'boss');pr.next++;if(pr.next>=pr.ids.length)run.presenting=null;}
  const seenFeat=Object.entries(FEATS).find(([,f])=>f.check==='seen');if(seenFeat&&!record(g,run.id).feats?.includes(seenFeat[0])){const b=seenFeat[1].seen,e=g.enemies.find(x=>x.bossId===b&&x.hp>0);if(e&&!g.dead&&run.room===e.dungeonBoss?.room)awardFeat(g,seenFeat[0],run.id);}

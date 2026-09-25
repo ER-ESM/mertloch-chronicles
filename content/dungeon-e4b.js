@@ -51,8 +51,10 @@ export const DUNGEON_E4B={
   stock:'Ware',emptyNote:'Noch nichts zu tauschen.',buyNote:n=>'Tauschen gegen '+n+' Siegelmarken.',poorNote:n=>'Es fehlen noch '+n+' Siegelmarken.',
   ownedNote:'Hast du schon. Dorflegenden gibt es nur einmal.',lockedNote:'Kommt später ins Sortiment.',
   bought:(item,n)=>'Getauscht: '+item+' gegen '+n+' Siegelmarken.',poor:'Das reicht nicht. Volker nimmt keine Anzahlung.',full:'Kein Platz im Rucksack.',owned:'Die hast du schon.'},
- // Preise in Siegelmarken je Quelle (Wunschteil nach etwa 4–6 Läufen sicher; Bericht rechnet es vor). Hafersack für das halbe Pferd (Teil A).
- prices:{gerd:24,expose:24,korkenkurt:24,rita:20,halbespferd:24,bigb:32,hafersack:3},
+ // Preise in Siegelmarken. Ein Lauf ist ein voller Durchgang ohne das seltene halbe Pferd: 26 Marken als erster des Tages, 16 als Wiederholung.
+ // Damit ist ein Wunschteil nach 4–6 Läufen sicher (Unit-Test rechnet es aus den Daten nach). Hafersack: zehn Stück tauscht der Fahrstall
+ // gegen das halbe Pferd (Teil A), also 100 Marken; jeder Sack aus einem Pferde-Sieg spart zehn.
+ prices:{gerd:90,expose:90,korkenkurt:90,rita:80,halbespferd:90,bigb:100,hafersack:10},
  // ── Erfolge und Titel: Figur-Fenster (Symbol am Namen) und Eingangskarte (Zähler mit Tooltip)
  feats:{title:'Erfolge · Schloss Big B',count:(n,m)=>n+'/'+m,have:'erreicht',missing:'offen',unlocked:n=>'Erfolg: '+n,titleGot:n=>'Neuer Titel: '+n},
  bestNote:t=>'Schnellster Abschluss: '+t+' vom ersten Schritt bis Big B.'

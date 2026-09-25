@@ -16,6 +16,7 @@
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {session,wait} from './r5b-lib.mjs';
+import {DUNGEON_E4B} from '../content/index.js';
 const dir='visual-review/dungeon-e4b';mkdirSync(dir,{recursive:true});
 const only=(process.env.ONLY||'').split(',').filter(Boolean),want=n=>!only.length||only.includes(String(n));
 const s=await session({port:9661,serverPort:4461});const {b,read,start,closeAll}=s;
@@ -180,15 +181,15 @@ try{
  }
  // ───────────────────────────────── 7 · Händler Vermieter Volker: Fenster ohne Scrollen, Tausch
  if(want(7)){
-  await start({w:1600,h:900});await setup();await read(`g.dungeons['schloss-bigb'].volker=true;g.dungeons['schloss-bigb'].marks=60;return 1`);const v=await read(`return g.dungeonRun.def.vendor`);await place(v.floor,v.x+1.2,v.y);await wait(900);
+  await start({w:1600,h:900});await setup();await read(`g.dungeons['schloss-bigb'].volker=true;g.dungeons['schloss-bigb'].marks=160;return 1`);const v=await read(`return g.dungeonRun.def.vendor`);await place(v.floor,v.x+1.2,v.y);await wait(900);
   const it=await interaction();assert.equal(it?.act,'vendor','Händler im Hof '+JSON.stringify(it));await b.press('f');await wait(900);
   const win=await read(`const w=document.querySelector('.game-popup[data-window="volker"]');return w?{offers:[...w.querySelectorAll('[data-dv-offer]')].map(o=>o.dataset.dvOffer),marks:w.querySelector('.dv-marks b')?.textContent}:null`);assert.ok(win&&win.offers.includes('gaesteliste'),'Fenster mit Ware '+JSON.stringify(win));
   const au=await s.audit('volker');assert.equal(au.over,'','Händlerfenster scrollt nicht '+JSON.stringify(au));assert.deepEqual(au.scrollers,[]);
   await s.hover('.game-popup[data-window="volker"] [data-dv-offer="gaesteliste"] .dv-item');await wait(300);const tipText=await read(`return document.querySelector('#itemTooltip')?.textContent||''`);await shot('20-haendler');await s.hover({x:5,y:5});
   await s.click('.game-popup[data-window="volker"] [data-dv-buy="gaesteliste"]');await wait(600);
   const after=await read(`return {marks:g.dungeons['schloss-bigb'].marks,inv:g.rpg.inventory.some(x=>x.id==='gaesteliste'),owned:document.querySelector('.game-popup[data-window="volker"] [data-dv-offer="gaesteliste"]')?.className||''}`);
-  assert.ok(after.inv&&after.marks===60-24&&/owned/.test(after.owned),'Tausch '+JSON.stringify(after));await shot('21-haendler-getauscht');await closeAll();
-  ok('Händler Vermieter Volker im Hof: Fenster ohne Scrollen, '+win.offers.length+' Waren ('+win.offers.join(', ')+'), Gegenstands-Tooltip „'+tipText.slice(0,30)+'…“, Tausch Gästeliste gegen 24 Siegelmarken');
+  assert.ok(after.inv&&after.marks===160-DUNGEON_E4B.prices.gerd&&/owned/.test(after.owned),'Tausch '+JSON.stringify(after));await shot('21-haendler-getauscht');await closeAll();
+  ok('Händler Vermieter Volker im Hof: Fenster ohne Scrollen, '+win.offers.length+' Waren ('+win.offers.join(', ')+'), Gegenstands-Tooltip „'+tipText.slice(0,30)+'…“, Tausch Gästeliste gegen '+DUNGEON_E4B.prices.gerd+' Siegelmarken');
  }
  // ───────────────────────────────── 8 · Erfolge und Titel: Figur-Fenster, Bestzeit auf der Eingangskarte
  if(want(8)){

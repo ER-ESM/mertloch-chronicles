@@ -522,7 +522,7 @@ function events(){for(const ev of game.events.splice(0)){
   if(ev.type==='bossVictory'&&BOSS_LINES[ev.boss])toast('„'+BOSS_LINES[ev.boss].defeat+'“');
   // E-72 Runde 4 (Kenner-Befund 4): Auch Erinnerungen aus Tod oder Kampf kommen in die Schlange und erscheinen erst danach (memoryHeld).
   // Am Desktop sagt die Karte selbst „Erinnerung · Titel“ – die Kurzmeldung dazu entfällt (sie stand sonst vor der zurückgehaltenen Karte).
-  if(ev.type==='memory'){rememberSeen(hero?.id,ev.fragment?.id);/* Etappe 4 Teil B: gesehene Erinnerung je Held auch auf dem Gerät merken */queueMemory(ev.fragment);if(!mobile?.active)memoryToastSkip.add(SYSTEM_LINES.memory(ev.fragment.title));}
+  if(ev.type==='memory'){queueMemory(ev.fragment);rememberSeen(hero?.id,ev.fragment?.id);/* Etappe 4 Teil B: gesehene Erinnerung je Held auch auf dem Gerät merken */if(!mobile?.active)memoryToastSkip.add(SYSTEM_LINES.memory(ev.fragment.title));}
   if(ev.type==='mentorTalk')openModal(mentorDialogue(ev),false,'dialog');
   if(ev.type==='buildingsChanged'&&popups.isOpen('quest'))showJournal();
   if(ev.type==='chapterChanged'){popups.close('dialog');lastQuestState='';if(popups.isOpen('quest'))showJournal();updateUI();renderer.map($('#minimap'));}

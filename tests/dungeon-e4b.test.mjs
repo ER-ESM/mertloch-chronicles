@@ -101,17 +101,28 @@ test('Ereignis Beamer: solange er läuft, ist das Gespenst nur ein Bild; ausgest
  at(g,'k2',38,30);ghost.aggro=true;ghost.ai='combat';g.target=ghost;run(g,.1);g.damage(ghost,5000,'Schlag');run(g,.1);assert.equal(ghost.hp,ghost.maxHp,'unverwundbar');
  const ev=DEF.events.find(e=>e.id==='beamer');at(g,ev.floor,ev.x,ev.y);const xp=g.trainingXp;const res=act(g,'event');assert.ok(res.ok&&r.beamer);assert.ok(!(ghost.hp>0),'Gespenst weg');assert.ok(g.trainingXp>xp,'EP');
 });
+test('Ereignis Beamer: die Projektion hält niemanden fest – ohne echten Gegner daneben verblasst sie nach 4 s',()=>{
+ const g=game();inside(g);quiet(g);const ghost=g.enemies.find(e=>e.dungeonKind==='schlossgespenst');ghost.hp=ghost.maxHp;ghost.ai='roaming';
+ const mate=g.enemies.find(e=>e.pack==='gewoelbe-tresor');Object.assign(mate,{hp:mate.maxHp,aggro:true,ai:'combat',respawnAt:0});
+ at(g,'k2',38,30);Object.assign(mate,{x:g.player.x+20,y:g.player.y});ghost.aggro=true;ghost.ai='combat';ghost.x=g.player.x-20;ghost.y=g.player.y;
+ g.adminGod=true;run(g,5);assert.ok(ghost.aggro,'mit echtem Gegner daneben bleibt sie im Kampf');
+ g.kill(mate);run(g,5);assert.equal(ghost.aggro,false,'allein verblasst sie');assert.ok(ghost.hp>0,'und läuft ihre Runde weiter');
+});
 test('Händler: Dorflegenden der gebauten Bosse gegen Siegelmarken, Hafersack vorgemerkt; Einzelstücke nur einmal',()=>{
  const g=game();inside(g);const stock=vendorStock(g),ids=stock.map(o=>o.id);assert.ok(ids.includes('gaesteliste')&&ids.includes('siegelring-echtgold')&&ids.includes('pelzmantel-baron'),JSON.stringify(ids));
  const oat=stock.find(o=>o.id==='hafersack');assert.ok(oat,'Platz für den Hafersack');if(!ITEMS.hafersack)assert.equal(oat.locked,true);
- assert.equal(vendorBuy(g,'gaesteliste').ok,false,'ohne Marken nicht');g.dungeons['schloss-bigb'].marks=60;const res=vendorBuy(g,'gaesteliste');assert.ok(res.ok,res.message);
- assert.ok(g.rpg.inventory.some(x=>x.id==='gaesteliste'));assert.equal(g.dungeons['schloss-bigb'].marks,60-DUNGEON_E4B.prices.gerd);assert.equal(vendorBuy(g,'gaesteliste').ok,false,'Einzelstück nur einmal');
+ assert.equal(vendorBuy(g,'gaesteliste').ok,false,'ohne Marken nicht');g.dungeons['schloss-bigb'].marks=160;const res=vendorBuy(g,'gaesteliste');assert.ok(res.ok,res.message);
+ assert.ok(g.rpg.inventory.some(x=>x.id==='gaesteliste'));assert.equal(g.dungeons['schloss-bigb'].marks,160-DUNGEON_E4B.prices.gerd);assert.equal(vendorBuy(g,'gaesteliste').ok,false,'Einzelstück nur einmal');
 });
-test('Händler-Preise: ein Wunschteil nach 4–6 Läufen seiner Quelle sicher',()=>{
- const R=DUNGEON_REWARDS,wingFirst=R.marksPerBoss+R.daily.marks+R.wingChest.marks,wingRepeat=R.marksPerBoss+R.wingChest.marks,finalFirst=R.marksPerBoss+R.daily.marks+R.chest.marks,finalRepeat=R.marksPerBoss+R.chest.marks;
- const P=DUNGEON_E4B.prices,runs=(price,first,repeat)=>{let m=0,n=0;while(m<price){m+=n===0?first:repeat;n++;}return n;};
- for(const b of ['gerd','expose','korkenkurt']){const n=runs(P[b],wingFirst,wingRepeat),best=Math.ceil(P[b]/wingFirst);assert.ok(best>=4&&n<=8,b+': '+best+'–'+n+' Läufe');}
- const n=runs(P.bigb,finalFirst,finalRepeat),best=Math.ceil(P.bigb/finalFirst);assert.ok(best>=4&&n<=6,'Big B: '+best+'–'+n+' Läufe');
+test('Händler-Preise: ein Wunschteil nach 4–6 vollen Durchgängen sicher, nie schon nach ein, zwei',()=>{
+ // Ein Lauf = voller Durchgang aller gebauten Bosse ohne den seltenen (halbes Pferd): 2 je Boss, 2 Tagesbonus je Boss beim ersten des Tages,
+ // 1 je kleiner Truhe, 3 aus der Endtruhe.
+ const R=DUNGEON_REWARDS,bosses=DEF.bosses.filter(b=>DUNGEON_BOSSES[b.id]&&!b.rare),chests=DEF.wings.filter(w=>w.chest&&DUNGEON_BOSSES[w.boss]).length;
+ const repeat=bosses.length*R.marksPerBoss+chests*R.wingChest.marks+R.chest.marks,first=repeat+bosses.length*R.daily.marks;
+ const P=DUNGEON_E4B.prices,runs=price=>{let m=0,n=0;while(m<price){m+=n===0?first:repeat;n++;}return n;};
+ for(const [id,price] of Object.entries(P)){if(id==='hafersack')continue;const n=runs(price),daily=Math.ceil(price/first);
+  assert.ok(n>=4&&n<=6,id+': '+n+' Läufe (erster des Tages '+first+', danach '+repeat+' Marken)');assert.ok(daily>=3,id+': schon nach '+daily+' Läufen mit lauter ersten des Tages');}
+ assert.ok(runs(10*P.hafersack)<=6,'zehn Hafersäcke für das halbe Pferd nach höchstens 6 Läufen');
 });
 test('Erfolge: Beweislast mit Titel „Mieterschützer“, Stempelkarte, Zeit und „ohne Kratzer“ nur im vollen Durchgang',()=>{
  const g=game(),r=inside(g);quiet(g);const sealers=DEF.bosses.filter(b=>b.seal&&DUNGEON_BOSSES[b.id]).map(b=>g.enemies.find(e=>e.bossId===b.id));for(const e of sealers.slice(0,-1))g.kill(e);

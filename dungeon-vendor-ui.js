@@ -6,6 +6,7 @@ import {vendorStock,vendorBuy,dungeonMarks} from './dungeon.js';
 import {DUNGEON_E4B as U} from './content/index.js';
 import {dicon,paintDungeonIcons} from './dungeon-journal.js';
 import {ITEMS} from './rpg.js';
+import {itemArt} from './rpg-ui.js';
 import {paintPersonPortraits} from './person-art.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -15,7 +16,7 @@ const tip=(label,note='')=>`data-tooltip-label="${esc(label)}" data-tooltip-note
 export function vendorPanel(g){
  const V=U.vendor,marks=dungeonMarks(g),stock=vendorStock(g);
  const tiles=stock.map(o=>{const state=o.locked?'locked':o.owned?'owned':o.affordable?'':'poor',note=o.locked?V.lockedNote:o.owned?V.ownedNote:o.affordable?V.buyNote(o.price):V.poorNote(o.price-marks);
-  return `<div class="dv-offer ${state}" data-dv-offer="${esc(o.id)}"><button type="button" class="dv-item" ${o.item&&ITEMS[o.item]?`data-tooltip-item="${esc(o.item)}"`:tip(o.name,V.lockedNote)} aria-label="${esc(o.name)}"><canvas width="48" height="48" data-item-art="${esc(ITEMS[o.item]?.icon||o.item||'bag')}" aria-hidden="true"></canvas>${o.owned?dicon('skull-dead',14,'dv-owned'):''}${o.count>1?`<small>×${o.count}</small>`:''}</button>`
+  return `<div class="dv-offer ${state}" data-dv-offer="${esc(o.id)}"><button type="button" class="dv-item" ${o.item&&ITEMS[o.item]?`data-tooltip-item="${esc(o.item)}"`:tip(o.name,V.lockedNote)} aria-label="${esc(o.name)}"><canvas width="48" height="48" data-item-art="${esc((o.item&&itemArt(o.item))||'bag')}" aria-hidden="true"></canvas>${o.owned?dicon('skull-dead',14,'dv-owned'):''}${o.count>1?`<small>×${o.count}</small>`:''}</button>`
    +`<button type="button" class="dv-buy" data-dv-buy="${esc(o.id)}" ${o.locked||o.owned||!o.affordable?'aria-disabled="true"':''} ${tip(o.name+' · '+o.price+' '+V.marks,note)}>${dicon('seal',14)}<b>${o.price}</b></button></div>`;}).join('');
  return `<span hidden data-ui-window-title="${esc(V.name)}"></span><div class="dv-vendor" data-dv-vendor>
 <div class="dv-head"><span class="dv-face" ${tip(V.name,V.hello)}><canvas width="96" height="96" data-person-art="${esc(V.look)}" aria-hidden="true"></canvas></span><span class="dv-marks" ${tip(V.marks,V.marksNote)}>${dicon('seal',20)}<b>${marks}</b></span></div>

@@ -42,7 +42,7 @@ function equipSet(g,quality,level){g.rpg.inventory=[];for(const k of Object.keys
 function learnBuild(g,spec,path=0){const budget=Math.max(0,talentPoints(g));for(const id of pathBuild(spec,path,budget))learnTalent(g,id);
  for(const tree of [spec,...Object.values(CLASS_SPECS).find(l=>l.includes(spec)).filter(x=>x!==spec)])for(const t of TALENTS[tree].slice().sort((a,b)=>a.row-b.row))if(g.rpg.talents.learned.length<budget)learnTalent(g,t.id);}
 function hero(g,{classId,spec,gear='uncommon',seed}){g.random=rng(seed);g.lootRandom=()=>.99;g.toast=()=>{};changeSpec(g,spec);equipSet(g,gear,10);g.refreshStats();learnBuild(g,spec);g.refreshStats();g.player.hp=g.player.maxHp;g.rpg.coins=9999;return g;}
-function setup({classId='dieter',spec='dieter-brawl',gear='uncommon',mercs=['tank','heal','dps1','dps2'],seed=7}){
+export function setup({classId='dieter',spec='dieter-brawl',gear='uncommon',mercs=['tank','heal','dps1','dps2'],seed=7}){
  const g=hero(new Game(world,{classId,level:10,tutorial:{version:1,step:8,completed:true}},{}),{classId,spec,gear,seed});
  g.enterDungeon('schloss-bigb',{force:true});for(const m of mercs)g.hireCompanion(MERCS[m],{free:true});return g;
 }
@@ -84,7 +84,7 @@ function e4Goal(g,p){const run=g.dungeonRun;if(!run)return null;const mates=g.co
 function escape(g,p,c,r){const base=Math.atan2(p.y-c.y,p.x-c.x)||0;let first=null;for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:c.x+Math.cos(a)*r,y:c.y+Math.sin(a)*r*.75};first||=q;if(!g.world.blocked(q.x,q.y,9))return q;}return first;}
 /** Nicht-Tanks im Kegel beim Zauberbeginn (Etappe 3, Aufstellung nach Rolle): Held und Söldner außer dem, den der Gegner angeht. */
 function coneCount(g,e,k){const holder=k.focus||(e.focus&&e.focus!=='player'?e.focus:'player');let n=0;if(!g.dead&&holder!=='player'&&coneHits(e,k,g.player,g))n++;for(const c of g.companions)if(c.state!=='down'&&c.hp>0&&c.id!==holder&&coneHits(e,k,c,g))n++;return n;}
-function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immortal=false,lie='truth'}={}){
+export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immortal=false,lie='truth'}={}){
  const dt=.05,p=g.player,stats={time:0,deaths:0,revives:0,wipes:0,mercDowns:0,mechHits:0,fell:0,taken:0,healed:0,minHpPct:100,minPartyPct:100,cones:0,coneNonTanks:0,lieHits:0,signed:0,sold:0,tankDowns:0},seenCones=new WeakSet();
  const primary=foes[0];g.target=primary;primary.aggro=true;primary.ai='combat';p.inCombat=7;startAuto(g);g.adminGod=immortal;
  for(let t=0;t<limit;t+=dt){
@@ -95,6 +95,10 @@ function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immortal=fal
    /* Etappe 4 Teil A: wer richtig spielt, nimmt den Interessenten am nächsten zum Tisch; unsichtbare Ziele fallen weg */if(dodge&&lie!=='none'){const add=g.enemies.filter(e=>e.goalAt&&e.hp>0&&!e.signedOff).sort((a,b)=>Math.hypot(a.x-a.goalAt.x,a.y-a.goalAt.y)-Math.hypot(b.x-b.goalAt.x,b.y-b.goalAt.y))[0];if(add&&g.target!==add){g.target=add;startAuto(g);}}
    if(g.target?.hidden)g.target=null;
    /* nach einem Rücksetzen (VERKAUFT) zieht der Held den Boss wieder */if(!(g.target?.hp>0)&&primary.hp>0&&!primary.aggro&&!g.enemies.some(e=>e.hp>0&&e.aggro&&!e.hidden)){g.target=primary;startAuto(g);}
+   /* Etappe 4 Teil B: geflohene Ratten, die auf dem Rückweg hängen, setzt das Spiel zurück, sobald der Held sich abwendet (encounters.js) –
+      hier nach 10 s ohne Kampf; danach zieht der Held sie wieder */if(!g.enemies.some(e=>e.hp>0&&e.aggro&&e.ai==='combat'))for(const e of foes)if(e.hp>0&&e.ai==='returning'&&e.returnTime>10)g.resetEnemy(e);
+   /* Etappe 4 Teil B: ist der erste schon tot und der Rest des Packs zurückgelaufen, zieht der Held den nächsten Rest wieder (sonst 600 s Stillstand) */if(
+!(g.target?.hp>0)&&!(primary.hp>0)&&!g.enemies.some(e=>e.hp>0&&e.aggro&&!e.hidden)){const rest=foes.filter(e=>e.hp>0&&!e.hidden).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0];if(rest){g.target=rest;startAuto(g);}}
    if(!(g.target?.hp>0)){g.target=g.enemies.filter(e=>e.hp>0&&e.aggro&&!e.hidden).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0]||null;if(g.target)startAuto(g);}
    const tgt=g.target;let goal=null;
    goal=(dodge&&lie==='truth'?e4Goal(g,p):null)||mechGoal(g,p,dodge?lie:lie==='none'?'none':'claim');
@@ -133,7 +137,8 @@ function gerdRun(opts,fightOpts){const g=setup(opts);quiet(g);onlyBoss(g,'gerd')
  for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
  return fight(g,[gerd],fightOpts);}
 const packAt=id=>{const pack=DEF.packs.find(p=>p.id===id),room=DEF.rooms.find(r=>r.id===pack.room);return {pack,floor:room.floor,center:toWorld(DEF,room.floor,...pack.at),stand:toWorld(DEF,room.floor,pack.at[0],pack.at[1]+3)};};
-function pull(g,id,fightOpts){const {pack,stand:at}=packAt(id),members=g.enemies.filter(e=>e.pack===pack.id&&e.hp>0);/* Etappe 4 Teil B: Streifen dort ziehen, wo sie gerade laufen */const lead=pack.patrol&&members.find(e=>!e.cardboard),stand=lead?{x:lead.x,y:lead.y+24}:at;Object.assign(g.player,g.world.findClear(stand.x,stand.y,9));g.player.inCombat=0;
+const ambush=(pack,floor)=>{const others=[...DEF.packs.filter(p=>p.id!==pack.id&&!p.patrol&&DEF.rooms.find(r=>r.id===p.room)?.floor===floor).map(p=>p.at),...DEF.bosses.filter(b=>DEF.rooms.find(r=>r.id===b.room)?.floor===floor).map(b=>b.at),...(DEF.doors||[]).filter(d=>d.floor===floor&&d.arena).map(d=>[d.rect[0]+d.rect[2]/2,d.rect[1]+d.rect[3]/2])];let best=pack.patrol[0],bd=-1;for(const w of pack.patrol){const d=Math.min(...others.map(o=>Math.hypot(o[0]-w[0],o[1]-w[1])));if(d>bd){bd=d;best=w;}}return toWorld(DEF,floor,best[0],best[1]);};
+export function pull(g,id,fightOpts){const {pack,stand:at,floor}=packAt(id),members=g.enemies.filter(e=>e.pack===pack.id&&e.hp>0);/* Etappe 4 Teil B: Streifen wartet der Held an der Ecke ihres Wegs ab, die am weitesten von anderen Packs und Bosstüren liegt */let stand=at;if(pack.patrol){stand=ambush(pack,floor);for(const e of members){const q=g.world.findClear(stand.x+(g.random()-.5)*20,stand.y+(g.random()-.5)*20,9);e.x=q.x;e.y=q.y;}}Object.assign(g.player,g.world.findClear(stand.x,stand.y,9));g.player.inCombat=0;
  for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
  const foes=members.filter(e=>!e.cardboard),label=pack.id+' ('+pack.members.join('+')+')';if(!foes.length)return {pack:label,time:0,deaths:0,note:'schon gelegt'};for(const e of foes){e.aggro=true;e.ai='combat';}return {pack:label,...fight(g,foes,fightOpts)};}
 function trashRun(opts,id,fightOpts){const g=setup(opts),members=new Set(g.enemies.filter(e=>e.pack===id));quiet(g,e=>members.has(e));return pull(g,id,fightOpts);}
@@ -212,11 +217,11 @@ function legSeconds(g,from,to){
 }
 const roomPoint=(room,x,y)=>toWorld(DEF,room.floor,x,y);
 /** Ziele eines Flügels: Packs, Funde, Ereignisse und Nebenbosse der Flügelräume (der Siegelträger kommt zuletzt). */
-function wingStops(g,wing){
+export function wingStops(g,wing){
  const rooms=new Set(wing.rooms),stops=[];
  for(const p of DEF.packs){if(!rooms.has(p.room)||g.dungeonRun.trash.has(p.id))continue;const room=DEF.rooms.find(r=>r.id===p.room);if(!g.enemies.some(e=>e.pack===p.id&&e.hp>0&&!e.cardboard))continue;if(p.members.every(k=>DUNGEON_ENEMIES[k]?.illusion))continue;/* das Gespenst geht mit dem Beamer */stops.push({kind:'pack',id:p.id,at:roomPoint(room,p.at[0],p.at[1]+3)});}
  for(const [id,f] of Object.entries(DEF.evidence?.finds||{}))if(f.room&&rooms.has(f.room)&&f.floor)stops.push({kind:'find',id,at:toWorld(DEF,f.floor,f.x,f.y)});
- for(const ev of DEF.events||[])if(rooms.has(ev.room)&&ev.floor)stops.push({kind:'event',id:ev.id,at:toWorld(DEF,ev.floor,ev.x,ev.y)});
+ for(const ev of DEF.events||[])if(rooms.has(ev.room)&&ev.floor)stops.push({kind:'event',id:ev.id,at:toWorld(DEF,ev.floor,ev.x,ev.y),first:!!ev.ghost});/* das Gespenst zeigt PROJEKTION: erst den Beamer ausstecken, sonst endet kein Kampf daneben */
  for(const b of DEF.bosses){if(!rooms.has(b.room)||b.id===wing.boss)continue;const room=DEF.rooms.find(r=>r.id===b.room);if(DUNGEON_BOSSES[b.id]&&!g.enemies.some(x=>x.bossId===b.id&&x.hp>0))continue;if(b.rare&&!DUNGEON_BOSSES[b.id])continue;stops.push({kind:'boss',id:b.id,at:roomPoint(room,b.at[0],b.at[1]+4)});}
  return stops;
 }
@@ -227,8 +232,8 @@ function wingsRun(opts,{careful=false}={}){
  const bossFight=(id,at)=>{const e=g.enemies.find(x=>x.bossId===id&&x.hp>0);if(!e)return {time:DUNGEON_BOSSES[id]?0:PLAN_TIME[id]||90,placeholder:!DUNGEON_BOSSES[id]};
   Object.assign(g.player,g.world.findClear(at.x,at.y,9));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}const r=fight(g,[e],{limit:600});if(process.env.SIM_DEBUG)console.log('  Boss',id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes,left:r.bossLeft}));return {time:r.time,deaths:r.deaths,won:r.won};};
  for(const wing of DEF.wings){const t0=total,x0=g.trainingXp,placeholders=[];let bossXp=0,bossBase=0;const stops=wingStops(g,wing);
-  while(stops.length){let bi=0,bt=Infinity;stops.forEach((s,i)=>{const t=legSeconds(g,pos,s.at);if(t<bt){bt=t;bi=i;}});const s=stops.splice(bi,1)[0];total+=bt;pos=s.at;
-   if(s.kind==='pack'){const held=careful?g.enemies.filter(e=>e.pack!==s.id&&e.hp>0&&!e.aggro).map(e=>[e,e.aggroRange]):[];for(const [e] of held)e.aggroRange=0;const r=pull(g,s.id,{});for(const [e,a] of held)e.aggroRange=a;if(process.env.SIM_DEBUG)console.log('  Pack',s.id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes}));total+=r.time+recover();deaths+=r.deaths||0;total+=STOP_TIME.loot;}
+  while(stops.length){let bi=0,bt=Infinity;const firstIdx=stops.findIndex(x=>x.first);stops.forEach((s,i)=>{const t=legSeconds(g,pos,s.at);if(firstIdx<0?t<bt:i===firstIdx){bt=t;bi=i;}});const s=stops.splice(bi,1)[0];total+=bt;pos=s.at;
+   if(s.kind==='pack'){const held=careful?g.enemies.filter(e=>e.pack!==s.id&&e.hp>0&&!e.aggro).map(e=>[e,e.aggroRange]):[];for(const [e] of held)e.aggroRange=0;const r=pull(g,s.id,{});for(const [e,a] of held)e.aggroRange=a;if(process.env.SIM_DEBUG)console.log('  Pack',s.id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes}));if(process.env.SIM_DEBUG&&r.time>=590)for(const e of g.enemies)if(e.hp>0&&((e.aggro&&e.ai==='combat')||e.pack===s.id)){const f=floorAt(DEF,e.x,e.y),o=DEF.floors[f]?.origin||{x:0,y:0};console.log('    hängt',e.name,e.pack||e.bossId,f,((e.x-o.x)/8).toFixed(1),((e.y-o.y)/8).toFixed(1),Math.round(e.hp/e.maxHp*100)+'%','ai='+e.ai,e.aggro?'aggro':'',e.hidden?'versteckt':'',e.stun?'betäubt':'',e.fear?'Furcht':'',e.path?.length??'',g.world.lineClear?.(e,g.player)?'Sicht':'keine Sicht');}total+=r.time+recover();deaths+=r.deaths||0;total+=STOP_TIME.loot;}
  else if(s.kind==='boss'){const xb=g.trainingXp,r=bossFight(s.id,s.at);bossXp+=g.trainingXp-xb;bossBase+=DUNGEON_BOSSES[s.id]&&!r.placeholder?DUNGEON_BOSSES[s.id].xp||0:0;total+=r.time+(r.placeholder?0:recover());if(r.placeholder)placeholders.push(s.id);deaths+=r.deaths||0;}
    else{if(s.kind==='event'||s.kind==='find'){Object.assign(g.player,g.world.findClear(s.at.x,s.at.y,9));const res=dungeonAct(g,{act:s.kind,id:s.id});if(!res.ok&&!s.retried){s.retried=true;stops.push(s);continue;}}total+=STOP_TIME[s.kind]||4;}}
   const b=DEF.bosses.find(x=>x.id===wing.boss),room=DEF.rooms.find(r=>r.id===b.room),at=roomPoint(room,b.at[0],b.at[1]+5);total+=legSeconds(g,pos,at);pos=at;
@@ -261,7 +266,7 @@ const E4_PARTS={expose:'expose',korkenkurt:'kurt',rita:'rita',halbespferd:'pferd
 for(const [id,key] of Object.entries(E4_PARTS))if(part(key)||part('e4'))for(const c of CLASSES)for(const seed of SEEDS){log('e4',E4_NAMES[id]+' · spielt richtig · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,...bossRun(id,{...c,seed},{})});
  log('e4Ignore',E4_NAMES[id]+' · ignoriert Mechanik · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,...bossRun(id,{...c,seed},{dodge:false,lie:'none'})});}
 // Etappe 4 Teil B: drei Flügel und der volle Durchgang (Held mit vier Söldnern); ohne --only=wings nur Dieter
-if(part('wings'))for(const careful of [true,false])for(const c of (ONLY.includes('wings')?CLASSES:CLASSES.slice(0,1))){const r=wingsRun({...c,seed:7},{careful}),how=careful?' · ein Pack je Zug':' · Nachbarn ziehen mit';for(const w of r.wings)if(!process.env.WING||w.wing===process.env.WING)log('wings','Flügel '+w.wing+' · '+c.label+how,{...w,careful});log('wings','Voller Durchgang · '+c.label+how,{full:true,careful,minutes:r.totalMinutes,xp:r.xp,xpPerMin:r.xpPerMin,deaths:r.deaths,wipes:r.wipes});}
+if(part('wings'))for(const careful of [true,false].filter(x=>!process.env.SIM_MODE||(process.env.SIM_MODE==='careful')===x))for(const c of (ONLY.includes('wings')?CLASSES:CLASSES.slice(0,1))){const r=wingsRun({...c,seed:7},{careful}),how=careful?' · ein Pack je Zug':' · Nachbarn ziehen mit';for(const w of r.wings)if(!process.env.WING||w.wing===process.env.WING)log('wings','Flügel '+w.wing+' · '+c.label+how,{...w,careful});log('wings','Voller Durchgang · '+c.label+how,{full:true,careful,minutes:r.totalMinutes,xp:r.xp,xpPerMin:r.xpPerMin,deaths:r.deaths,wipes:r.wipes});}
 if(part('farm')){const fieldRate=Math.max(...out.field.map(r=>r.xpPerMin));
  for(const [route,lockout] of [['gerd',false],['gerd',true],['wing',false],['wing',true]])log('farm','Farm-Schleife '+(route==='gerd'?'Hof West + Gerd':'Flügel Burghof')+(lockout?' · mit 30-min-Sperre, Rest Feld':' · ohne Sperre')+' · Dieter · 60 min',farmHour({seed:7},{route,lockout,fieldRate}));}
 
@@ -291,7 +296,7 @@ const checks=[
  ...(part('gerd')?[['Gerd: Schutz-Söldner überlebt die meisten Läufe',out.gerd.filter(r=>r.tankDowns>0).length<=Math.floor(out.gerd.length/3),'Schutz fällt in '+out.gerd.filter(r=>r.tankDowns>0).length+' von '+out.gerd.length+' Läufen']]:[]),
 ...(part('wings')?(()=>{const wr=out.wings.filter(w=>w.careful&&w.wing&&w.wing!=='bigb'),full=out.wings.filter(w=>w.full),bf=Math.max(...out.field.map(r=>r.xpPerMin)),built=wr.filter(w=>w.placeholder==='–'),rep=built.map(w=>w.xpPerMinRepeat),first=built.map(w=>w.xpPerMin),open=[...new Set(wr.filter(w=>w.placeholder!=='–').map(w=>w.wing))];
   return [['Jeder Flügel 10–15 min (ein Pack je Zug, Held + 4 Söldner)',wr.every(w=>w.minutes>=10&&w.minutes<=15),wr.map(w=>w.wing.slice(0,4)+' '+w.minutes).join(' · ')+' min'+(wr.some(w=>w.placeholder!=='–')?' (ungebaute Bosse mit Zielzeit)':'')],
-   ['Voller Durchgang mit Söldnern unter 50 min',full.every(w=>w.minutes<50),full.map(w=>w.minutes).join(' / ')+' min'],
+   ['Voller Durchgang mit Söldnern unter 50 min (ein Pack je Zug)',full.filter(w=>w.careful).every(w=>w.minutes<50),full.filter(w=>w.careful).map(w=>w.minutes).join(' / ')+' min · Nachbarn ziehen mit (nur Angabe): '+full.filter(w=>!w.careful).map(w=>w.minutes).join(' / ')+' min'],
    ['EP je Minute je Flügel 1–2× Feld (Wiederholung am selben Tag, Flügel mit gebautem Siegelträger)',rep.every(x=>x>=bf&&x<=2*bf),'Wiederholung '+Math.min(...rep)+'–'+Math.max(...rep)+' · erster Lauf des Tages (Tagesbonus) '+Math.min(...first)+'–'+Math.max(...first)+' · Feld '+bf+' EP/min'+(open.length?' · ohne Boss-EP gemessen: '+open.join(', '):'')]];})():[]),
  ...(part('farm')?[['Farm-Schleife über eine Stunde ≤ 2× Feld (30-min-Sperre wie im Spiel)',Math.max(farmGerd.xpPerMin,farmWing.xpPerMin)<=2*bestField,'Gerd '+farmGerd.xpPerMin+' · Flügel '+farmWing.xpPerMin+' EP/min · Feld '+bestField+' (ohne Sperre, nur Info: Gerd '+farmFree.xpPerMin+')']]:[])
 ];
