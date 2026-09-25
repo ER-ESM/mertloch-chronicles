@@ -104,7 +104,7 @@ body.start-open #mobileControls,body.start-open #meterToggle{visibility:hidden}
 .start-screen .cs-hero canvas{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 8px #0008)}
 .start-screen .cs-name{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:-6px;text-align:center}
 .start-screen .cs-name b{font:400 40px/1 var(--display);letter-spacing:.05em;color:#ffe39a;text-shadow:0 3px 0 #3a2410,0 0 14px #000c,2px 2px 0 #1a120a,-2px -2px 0 #1a120a}
-.start-screen .cs-name span{font:700 16px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 6px #000}
+.start-screen .cs-name>span{font:700 16px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 6px #000}
 .start-screen .cs-name small{font:400 13px/1.3 var(--read);color:#d9cfae;text-shadow:0 1px 0 #000,0 0 6px #000;cursor:help}
 .start-screen .cs-list{grid-area:list;display:flex;flex-direction:column;gap:8px;min-height:0;padding:14px;background:linear-gradient(180deg,#132a20f2,#0c1c15f2);border:8px solid transparent;border-image:var(--chrome-frame) 22% / 16px / 0 stretch;box-shadow:0 8px 24px #000a}
 .start-screen .cs-list{align-self:start;max-height:calc(100dvh - 130px)}.start-screen .cs-cards{overflow:auto;min-height:0}
@@ -190,7 +190,7 @@ body:not(.touch-mode) .start-screen .lg-box .start-guest small{display:none}
 .start-screen .cc-hero canvas{position:relative;z-index:1;width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 8px 8px #0008)}
 .start-screen .cc-role{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
 .start-screen .cc-role b{font:400 30px/1 var(--display);letter-spacing:.05em;color:#ffe39a;text-shadow:0 3px 0 #3a2410,0 0 12px #000c}
-.start-screen .cc-role span{font:600 14px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 6px #000}
+.start-screen .cc-role>span{font:600 14px/1.3 var(--read);color:#f4e8c4;text-shadow:0 1px 0 #000,0 0 6px #000}
 .start-screen .cc-look{grid-area:look}
 .start-screen .cc-bodies{display:inline-flex;border:2px solid #6b5a36;border-radius:4px;overflow:hidden;align-self:flex-start}
 .start-screen .cc-bodies button{min-height:34px;padding:4px 12px;border:0;border-right:1px solid #6b5a36;border-radius:0;background:#10231a;color:#d9cfae;font:700 12px var(--read);cursor:pointer;box-shadow:none}
@@ -233,3 +233,130 @@ body:not(.touch-mode) .start-screen .lg-box .start-guest small{display:none}
 @keyframes cs-breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.008,1.018)}}
 @keyframes cs-fade-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
 @media (prefers-reduced-motion:reduce){.start-screen .cs-hero canvas,.start-screen .cc-hero canvas{animation:none}}
+
+/* ===== E-72 · Fünf Klassen: Karte = Ressourcen-Symbol (class-emblem.js), Klassenname, Rolle, Ressource; Kurzfassung im Tooltip ===== */
+.start-screen .cc-classes{gap:6px}
+.start-screen .cc-class{grid-template-columns:48px minmax(0,1fr);gap:10px;padding:6px 10px 6px 8px;min-height:64px}
+.start-screen .cc-class .class-emblem{width:48px;height:48px;filter:drop-shadow(0 2px 2px #0009);transition:transform .15s ease-out}
+.start-screen .cc-class:hover .class-emblem,.start-screen .cc-class[aria-pressed=true] .class-emblem{transform:rotate(-8deg) scale(1.06)}
+.start-screen .cc-class>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.start-screen .cc-class small{margin-top:1px}
+.start-screen .cc-class em{font:700 11px/1.1 var(--read);font-style:normal;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--class-color,#d7b571) 62%,#fff4dc)}
+.start-screen .cc-tabs{display:none}
+.start-screen .cc-back .ui-glyph{display:none}
+.start-screen .cc-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.start-screen .cc-classes:focus{outline:none}
+@media (min-width:981px) and (min-height:561px){.start-screen .cc{grid-template-columns:minmax(260px,330px) minmax(0,1fr) minmax(300px,380px)}}
+/* Unter der Figur: Klamotte vom Kleiderhaufen, Klasse, Rolle, Ressource (Tooltip; ohne Hover stehen „Kommt aus“ / „Geht drauf für“ darunter) */
+.start-screen .cc-clothes{font:700 11px/1 var(--read);letter-spacing:.12em;text-transform:uppercase;color:#e4c47c;text-shadow:0 1px 0 #000,0 0 6px #000}
+.start-screen .cc-resource{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:6px;cursor:help}
+.start-screen .cc-resource-name{display:inline-flex;align-items:center;gap:7px;padding:3px 14px 3px 3px;background:#0c1c15e0;border:1px solid var(--class-color,#b8955a);border-radius:999px;box-shadow:0 2px 8px #0008}
+.start-screen .cc-resource-name .class-emblem{width:26px;height:26px;flex:none}
+.start-screen .cc-resource-name strong{font:400 16px/1 var(--display);letter-spacing:.05em;color:#ffe39a}
+.start-screen .cc-resource-how{display:none;flex-direction:column;align-items:flex-start;gap:2px;padding:4px 10px;background:#0c1c15d9;border-radius:4px;font:600 12px/1.3 var(--read);color:#f1e4c4;text-align:left}
+.start-screen .cc-resource-how>span{display:flex;align-items:center;gap:6px}
+.start-screen .cc-resource-how .ui-glyph{width:13px;height:13px;flex:none;fill:none;stroke:var(--class-color,#d7b571);stroke-width:3;stroke-linecap:round}
+body.touch-mode .start-screen .cc-resource-how{display:flex}
+@media (hover:none){.start-screen .cc-resource-how{display:flex}}
+/* Heldenhalle: Klassen-Symbol vor „Stufe · Klasse“, Ressource unter dem Namen (nur Symbol + Name; Kurzfassung im Tooltip) */
+.start-screen .cs-card-class{display:inline-flex;align-items:center;gap:5px}
+.start-screen .cs-card .class-emblem.is-mini{width:18px;height:18px;flex:none}
+.start-screen .cs-name .cc-resource{margin-top:4px}
+.start-screen .cs-name .cc-resource-how{display:none!important}
+
+/* ===== Handy quer (E-72, M-09): Erstellung und Halle ohne Scrollen. Erstellung: links Reiter Klasse/Aussehen, rechts Figur,
+   darunter Name und „Held erstellen“ in einer Zeile. Halle: links Figur, rechts die Heldenliste, „Ins Dorf“ unten mittig. ===== */
+@media (orientation:landscape) and (max-height:560px){
+ .start-screen[data-step=create] .start-stage,.start-screen[data-step=roster]:not([data-heroes="0"]) .start-stage{min-height:0;height:100%}
+ .start-screen .cc{height:100%;min-height:0;overflow:hidden;grid-template-columns:minmax(300px,42%) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"tabs stage" "panel stage" "panel bottom";gap:6px 12px;padding:8px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+ .start-screen .cc[data-tab=look]{grid-template-columns:minmax(360px,56%) minmax(0,1fr)}
+ .start-screen .cc-title,.start-screen .cc-panel h3{display:none}
+ .start-screen .cc-tabs{grid-area:tabs;display:flex;gap:8px}
+ .start-screen .cc-tabs button{flex:1;min-height:44px;padding:0 10px;border:1px solid #6b5a36;border-radius:4px;background:#10231a;color:#d9cfae;font:400 16px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;box-shadow:none}
+ .start-screen .cc-tabs button[aria-selected=true]{background:linear-gradient(#77562b,#40301d);border-color:#f0c46a;color:#fff0c9;box-shadow:inset 0 -3px 0 #f0c46a}
+ .start-screen .cc-panel{grid-area:panel;max-height:none;min-height:0;overflow:hidden;padding:6px;border-width:6px;gap:6px}
+ .start-screen .cc[data-tab=class] .cc-look,.start-screen .cc[data-tab=look] .cc-classes{display:none}
+ .start-screen .cc-classes{gap:6px;justify-content:space-between}
+ .start-screen .cc-class{grid-template-columns:38px minmax(0,1fr);gap:8px;min-height:44px;padding:3px 8px 3px 5px}
+ .start-screen .cc-class .class-emblem{width:38px;height:38px}
+ .start-screen .cc-class>span{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;row-gap:1px;align-items:baseline}
+ .start-screen .cc-class strong{font-size:17px}
+ .start-screen .cc-class em{grid-column:2;grid-row:1;font-size:10px;text-align:right;white-space:nowrap}
+ .start-screen .cc-class small{grid-column:1 / -1;margin:0;font-size:11.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .start-screen .cc-look h4{display:none}
+ .start-screen .cc-look .hero-swatches{grid-template-columns:62px minmax(0,1fr);align-items:center;gap:6px;margin:0}
+ .start-screen .cc-look .hero-swatches b{font-size:12px!important;margin:0;padding:0;letter-spacing:.04em}
+ .start-screen .cc-look .hero-swatch-list{gap:6px}
+ .start-screen .cc-look .hero-swatch{min-height:36px;padding:2px 8px 2px 3px;font-size:11px;gap:4px}
+ .start-screen .cc-look .hero-swatch::before{width:26px;height:26px}
+ .start-screen .cc-look :is([data-draft-tint^="style:"],[data-draft-tint^="beard:"],[data-draft-tint^="face:"]){padding:2px 9px}
+ .start-screen .cc-look :is([data-draft-tint^="style:"],[data-draft-tint^="beard:"],[data-draft-tint^="face:"])::before{display:none}
+ .start-screen .cc-look [data-draft-tint^="skin:"],.start-screen .cc-look [data-draft-tint^="hair:"]{padding:3px;min-width:36px;justify-content:center}
+ .start-screen .cc-look [data-draft-tint^="skin:"] span,.start-screen .cc-look [data-draft-tint^="hair:"] span{display:none}
+ .start-screen .cc-look .cc-bodies{align-self:stretch;display:grid;grid-template-columns:repeat(3,1fr)}
+ .start-screen .cc-look .cc-bodies button{min-height:36px}
+ .start-screen .cc-stage{grid-area:stage;justify-content:flex-end;min-height:0}
+ .start-screen .cc-hero{flex:1 1 auto;width:auto;height:auto;max-width:100%;max-height:none;min-height:0;aspect-ratio:1}
+ .start-screen .cc-role{gap:1px}
+ .start-screen .cc-role b{font-size:22px}
+ .start-screen .cc-role>span{font-size:12px}
+ .start-screen .cc-clothes{font-size:10px}
+ .start-screen .cc-resource{margin-top:3px;gap:3px}
+ .start-screen .cc-resource-name{padding:2px 10px 2px 2px}
+ .start-screen .cc-resource-name .class-emblem{width:22px;height:22px}
+ .start-screen .cc-resource-name strong{font-size:14px}
+ .start-screen .cc-resource-how{font-size:11.5px;padding:3px 8px;gap:1px}
+ .start-screen .cc-bottom{grid-area:bottom;display:flex;align-items:center;gap:8px}
+ .start-screen .cc-bottom>.outline-button{min-height:44px;min-width:44px;padding:0 10px;font-size:13px}
+ .start-screen .cc-back{justify-content:center;padding:0!important}
+ .start-screen .cc-back span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .start-screen .cc-back .ui-glyph{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+ .start-screen .cc-name{flex:1;min-width:0;padding:0;background:none;border:0;gap:2px}
+ .start-screen .cc-name label{font-size:0;gap:0}
+ .start-screen .cc-name input{min-height:44px;font-size:15px}
+ .start-screen .cc-name small{display:none}
+ .start-screen .cc-name .online-message{margin:0;font-size:11px}
+ .start-screen .cc-create{min-width:0;min-height:48px;padding:0 14px;font-size:16px!important;white-space:nowrap}
+ /* Halle */
+ .start-screen .cs{height:100%;min-height:0;overflow:hidden;grid-template-columns:minmax(0,1fr) minmax(260px,38%);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"top list" "stage list" "enter list";gap:6px 12px;padding:8px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+ .start-screen .cs-top{padding:4px 10px;gap:8px;max-width:100%;box-sizing:border-box}
+ .start-screen .cs-top .start-account{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+ .start-screen .cs-top .ui-button{min-height:36px;padding:0 10px;font-size:12px;white-space:nowrap}
+ .start-screen .cs-stage{padding-bottom:0}
+ .start-screen .cs-hero{flex:1 1 auto;width:auto;height:auto;max-width:100%;max-height:none;min-height:0;aspect-ratio:1}
+ .start-screen .cs-name{margin-top:-4px;gap:1px}
+ .start-screen .cs-name b{font-size:26px}
+ .start-screen .cs-name>span{font-size:13px}
+ .start-screen .cs-name>small{font-size:11.5px}
+ .start-screen .cs-name .cc-resource-name .class-emblem{width:22px;height:22px}
+ .start-screen .cs-name .cc-resource-name strong{font-size:14px}
+ .start-screen .cs-list{grid-area:list;align-self:stretch;max-height:none;min-height:0;padding:6px;border-width:6px;gap:6px}
+ .start-screen .cs-list h3{display:none}
+ .start-screen .cs-cards{gap:6px}
+ .start-screen .cs-card{grid-template-columns:40px minmax(0,1fr);min-height:44px;padding:2px 8px 2px 3px;gap:8px}
+ .start-screen .cs-card canvas{width:40px;height:40px}
+ .start-screen .cs-card strong{font-size:16px}
+ .start-screen .cs-card-text>span{font-size:11px}
+ .start-screen .cs-card small{display:none}
+ .start-screen .cs-new{min-height:44px}
+ .start-screen .cs-enter{grid-area:enter;padding-top:0;z-index:1;pointer-events:none}
+ .start-screen .cs-enter-button{pointer-events:auto;min-width:180px;min-height:48px;font-size:19px!important}
+ .start-screen .cs-list~.cs-corner{grid-area:enter;align-self:center;display:flex;justify-content:space-between;margin:0;gap:8px}
+ .start-screen .cs-corner .ui-button{min-height:44px;padding:0 10px;font-size:12px}
+}
+/* E-72: Halle und Erstellung füllen genau den Spielrahmen (100 % statt 100dvh – der Rahmen ist ein paar Pixel kleiner als das
+   Fenster, sonst ließ sich der Schirm um 4 px scrollen). */
+.start-screen[data-step=create] .mmo-scene,.start-screen[data-step=roster]:not([data-heroes="0"]) .mmo-scene{height:100%;min-height:0}
+.start-screen[data-step=create] .start-stage,.start-screen[data-step=roster]:not([data-heroes="0"]) .start-stage{min-height:100%}
+.start-screen .cc,.start-screen .cs{min-height:100%}
+@media (orientation:landscape) and (max-height:560px){.start-screen .cc,.start-screen .cs{min-height:0}}
+/* Sehr flache Handys (≤ 380 px hoch, z. B. 740×360): Aussehen etwas dichter, damit alle Zeilen ohne Scrollen passen. */
+@media (orientation:landscape) and (max-height:380px){
+ .start-screen .cc-look{gap:4px}
+ .start-screen .cc-look .hero-swatches{gap:4px}
+ .start-screen .cc-look .hero-swatch-list{gap:4px}
+ .start-screen .cc-look .hero-swatch,.start-screen .cc-look .cc-bodies button{min-height:34px}
+ .start-screen .cc-look .hero-swatch::before{width:24px;height:24px}
+ .start-screen .cc-look [data-draft-tint^="skin:"],.start-screen .cc-look [data-draft-tint^="hair:"]{min-width:34px}
+ .start-screen .cc-class strong{font-size:15px}
+}

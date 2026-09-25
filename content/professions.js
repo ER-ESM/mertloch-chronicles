@@ -29,7 +29,7 @@ export const PROFESSION_ITEMS={
  brauwasser:{name:'Sauberes Brauwasser',kind:'material',rarity:'common',icon:'water',stack:99,value:1,price:3,description:'Eine abgemessene Portion aus Kalles Kiosk. Zum Brauen, nicht direkt benutzbar.'},
  leerflasche:{name:'Gereinigte Leerflasche',kind:'material',rarity:'common',icon:'bottle',stack:99,value:1,price:3,description:'Zum Abfüllen selbst gebrauter Getränke. Kalle hat Nachschub.'},
  kraeutersud:{name:'Kräuter-Kontersud',kind:'consumable',usable:true,rarity:'common',icon:'water',stack:10,value:4,heal:150,description:'Stellt 150 Leben wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.'},
- hopfenschorle:{name:'Alkoholfreie Hopfenschorle',kind:'consumable',usable:true,rarity:'uncommon',icon:'bottle',stack:10,value:6,energy:25,level:2,description:'Stellt 25 Randale wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.'},
+ hopfenschorle:{name:'Alkoholfreie Hopfenschorle',kind:'consumable',usable:true,rarity:'uncommon',icon:'bottle',stack:10,value:6,energy:25,level:2,description:'Stellt 25 Ressourcenpunkte wieder her – Randale, Likes, Leergut, Glut oder Augen. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.'},
  feldtee:{name:'Kräftiger Feldtee',kind:'consumable',usable:true,rarity:'uncommon',icon:'water',stack:10,value:8,heal:300,level:3,description:'Stellt 300 Leben wieder her. Teilt die Verpflegungs-Abklingzeit mit allen anderen Getränken.'}
 };
 /** Berufefenster (Shift + B) nach MMO-Vorbild: Reiter Berufe · Rezepte · Materialien. Gelernt wird nur beim Lehrer (Gespräch). */

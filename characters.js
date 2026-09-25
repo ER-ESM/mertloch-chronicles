@@ -4,14 +4,19 @@ import {normalizeTint} from './hero-tint.js';
 // Speicher-Schlüssel; Anzeige: start-screen.js, Abgleich mit dem Server: online.js.
 export const CHARACTER_LIMIT=8;
 export const ROSTER_KEY='mertloch-characters';
-export const CLASSES=['dieter','baerbel','kevin'];
+/** Wählbare Klassen (E-72: fünf Klassen mit eigener Ressource). IDs sind Speicherschlüssel. */
+export const CLASSES=['dieter','baerbel','kevin','schorsch','kaethe'];
 /** Aussehen = eine der gezeichneten Richtungen; frei zur Klasse wählbar. */
 export const LOOKS=[{id:'dieter',name:'Kräftig'},{id:'baerbel',name:'Schwungvoll'},{id:'kevin',name:'Drahtig'}];
+/** Vorschlag beim Klassenwechsel in der Erstellung (solange Körper und Farben unberührt sind). Schorsch und Käthe haben
+ *  keinen eigenen Körper: Schorsch schlägt den kräftigen mit Schnauzer vor, Käthe den schwungvollen mit grauem Haar und Lesebrille. */
+export const CLASS_LOOKS={dieter:{look:'dieter'},baerbel:{look:'baerbel'},kevin:{look:'kevin'},schorsch:{look:'dieter',tint:{beard:'schnauzer'}},kaethe:{look:'baerbel',tint:{hair:'grau',face:'brille'}}};
+export const defaultLook=classId=>CLASS_LOOKS[classId]?.look||'dieter';
 const NAME=/^[\p{L}\p{N}][\p{L}\p{N} \-]{1,18}[\p{L}\p{N}]$/u;
 export const validHeroName=n=>typeof n==='string'&&NAME.test(n)&&!/ {2}/.test(n);
 export const HERO_TEXT={nameRule:'3 bis 20 Zeichen: Buchstaben, Ziffern, Leerzeichen, Bindestrich.',nameTaken:'So heißt schon einer deiner Helden.',full:'Mehr als '+CHARACTER_LIMIT+' Helden passen nicht in die Halle.',badClass:'Diese Klasse gibt es nicht.'};
 
-const clean=c=>c&&typeof c==='object'&&typeof c.id==='string'&&validHeroName(c.name)&&CLASSES.includes(c.classId)?{id:c.id.slice(0,24),name:c.name,classId:c.classId,look:LOOKS.some(l=>l.id===c.look)?c.look:c.classId,tint:normalizeTint(c.tint),createdAt:Number(c.createdAt)||0,legacy:c.legacy===true,...(c.summary&&typeof c.summary==='object'?{summary:{level:Number(c.summary.level)||1,equipment:c.summary.equipment&&typeof c.summary.equipment==='object'?c.summary.equipment:{},spec:c.summary.spec||null,playedAt:Number(c.summary.playedAt)||0}}:{})}:null;
+const clean=c=>c&&typeof c==='object'&&typeof c.id==='string'&&validHeroName(c.name)&&CLASSES.includes(c.classId)?{id:c.id.slice(0,24),name:c.name,classId:c.classId,look:LOOKS.some(l=>l.id===c.look)?c.look:defaultLook(c.classId),tint:normalizeTint(c.tint),createdAt:Number(c.createdAt)||0,legacy:c.legacy===true,...(c.summary&&typeof c.summary==='object'?{summary:{level:Number(c.summary.level)||1,equipment:c.summary.equipment&&typeof c.summary.equipment==='object'?c.summary.equipment:{},spec:c.summary.spec||null,playedAt:Number(c.summary.playedAt)||0}}:{})}:null;
 /** → {version:1, active, list, deleted[], savedAt} – immer gültig, auch aus kaputten Daten. */
 export function normalizeRoster(raw){
  const list=[],seen=new Set();for(const c of Array.isArray(raw?.list)?raw.list:[]){const ok=clean(c);if(ok&&!seen.has(ok.id)&&list.length<CHARACTER_LIMIT){seen.add(ok.id);list.push(ok);}}
@@ -31,7 +36,7 @@ export function createCharacter(roster,{name,classId,look,tint},random){
  const r=normalizeRoster(roster),n=String(name||'').trim();
  if(r.list.length>=CHARACTER_LIMIT)return {error:HERO_TEXT.full};if(!CLASSES.includes(classId))return {error:HERO_TEXT.badClass};
  if(!validHeroName(n))return {error:HERO_TEXT.nameRule};if(r.list.some(c=>c.name.toLowerCase()===n.toLowerCase()))return {error:HERO_TEXT.nameTaken};
- const character={id:newId(random),name:n,classId,look:LOOKS.some(l=>l.id===look)?look:classId,tint:normalizeTint(tint),createdAt:Date.now(),legacy:false};
+ const character={id:newId(random),name:n,classId,look:LOOKS.some(l=>l.id===look)?look:defaultLook(classId),tint:normalizeTint(tint),createdAt:Date.now(),legacy:false};
  return {roster:{...r,list:[...r.list,character],active:character.id},character};
 }
 export function deleteCharacter(roster,id){const r=normalizeRoster(roster);if(!r.list.some(c=>c.id===id))return r;const list=r.list.filter(c=>c.id!==id);return {...r,list,deleted:[...r.deleted,id].slice(-40),active:r.active===id?list[0]?.id||null:r.active};}
@@ -43,8 +48,8 @@ export function withSummary(roster,id,save){const r=normalizeRoster(roster);retu
 /** Ein vorhandener Alt-Spielstand wird zum ersten Helden (Name: Kontoname oder Klassenfigur). */
 export function adoptLegacy(roster,save,fallbackName){
  const r=normalizeRoster(roster);if(r.list.length||!save||typeof save!=='object'||!(save.level||save.rpg||save.position))return r;
- const classId=CLASSES.includes(save.classId)?save.classId:'dieter',name=validHeroName(fallbackName)?fallbackName:{dieter:'Dieter',baerbel:'Anni',kevin:'Kevin'}[classId];
- const c={id:'h-alt',name,classId,look:classId,createdAt:Date.now(),legacy:true,summary:summarize(save)};return {...r,list:[c],active:c.id};
+ const classId=CLASSES.includes(save.classId)?save.classId:'dieter',name=validHeroName(fallbackName)?fallbackName:{dieter:'Dieter',baerbel:'Anni',kevin:'Kevin',schorsch:'Schorsch',kaethe:'Käthe'}[classId];
+ const c={id:'h-alt',name,classId,look:defaultLook(classId),createdAt:Date.now(),legacy:true,summary:summarize(save)};return {...r,list:[c],active:c.id};
 }
 /** Zwei Listen zusammenführen (dieses Gerät + Cloud): Vereinigung nach id, Gelöschtes bleibt gelöscht, neuere Kurzfassung gewinnt. */
 export function mergeRosters(a,b){

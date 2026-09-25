@@ -104,7 +104,7 @@ export const COMBAT_RULE_INFO={
   long:'Dieselbe Entfernung gilt für das Aufheben von Hand und für das automatische Einsammeln. Wer im Kampf wegläuft, lässt Beute liegen, bis er zurückkommt – Beute verschwindet nicht, aber sie läuft dir auch nicht nach.',
   numbers:[{label:'Reichweite',value:COMBAT_RULES.lootRange,unit:'Einheiten (≈ '+m(COMBAT_RULES.lootRange)+' m)',source:'COMBAT_RULES.lootRange'}]},
  autoRange:{name:'Reichweite des eigenen Autoangriffs',rules:[],terms:['autoangriff','reichweite'],
-  short:'Dieter schlägt bis 45 Einheiten zu, Anni sprüht bis 155, Kevin wirft bis 195.',
+  short:'Dieter und Schorsch schlagen bis 45 Einheiten zu, Anni sprüht bis 155, Käthe schnipst Karten bis 170, Kevin wirft bis 195.',
   long:'Die Reichweite entscheidet, wie viel eines Kampfes du überhaupt bestreiten kannst: Nahkämpfer müssen nach jeder Fläche zurücklaufen, Fernkämpfer nutzen den Fernkampfplatz und verlieren kaum Schläge. Der Autoangriff pausiert, solange du zauberst.',
   numbers:Object.entries(AUTO_KITS).map(([k,v])=>({label:'Reichweite '+k,value:v.range,unit:'Einheiten (≈ '+m(v.range)+' m)',source:'AUTO_KITS.'+k+'.range'}))},
  castTime:{name:'Eigene Zauberzeit',rules:[],terms:['zauberzeit','ausweichen'],

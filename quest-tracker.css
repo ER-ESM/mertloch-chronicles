@@ -47,3 +47,7 @@ body:not(.touch-mode) .quest-panel.quest-tracker:hover{border:0}
 .quest-tracker .quest-task kbd+kbd{margin-left:-1px}
 .quest-tracker .quest-task .qt-sep{display:inline;width:auto;height:auto;margin:0 3px;transform:none;background:none;color:var(--qt-dim);font-style:normal}
 .quest-tracker .quest-task span:has(kbd){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* E-72: Hofprobe – eine Zeile zur eigenen Klassenressource mit dem Klassen-Symbol (class-emblem.js) unter der Tastenzeile */
+.quest-tracker .qt-hint{display:flex;align-items:center;gap:6px;margin:4px 0 0;font:600 12px/1.3 var(--read,'Nunito',sans-serif);color:var(--qt-text)}
+.quest-tracker .qt-hint .class-emblem{flex:none;width:20px;height:20px;filter:drop-shadow(0 1px 1px #000a)}
+.quest-tracker .qt-hint span{flex:1;min-width:0}

@@ -90,7 +90,7 @@ function describePassive(game,id){
 
 function describeBuff(game,id){
  const t=game.time;
- if(id==='momentum')return {icon:'auto',name:'Schwung',info:infoFor(null,{effect:'Kills geben Schwung: mehr Tempo, Randale und ein Pegel.'},'buff','momentum'),
+ if(id==='momentum')return {icon:'auto',name:'Schwung',info:infoFor(null,{effect:'Kills geben Schwung: mehr Tempo und Nachschub für deine Klassenressource.'},'buff','momentum'),
   live:{active:game.momentum.stacks>0&&game.momentum.until>t,stacks:game.momentum.stacks,remaining:round(Math.max(0,game.momentum.until-t),2)}};
  if(id==='guard')return {icon:'shield',name:'Deckung',info:infoFor(null,{effect:'Deckung fängt Schaden ab, bevor er auf dein Leben geht.'},'buff','guard'),
   live:{active:game.classState.guard>0,value:Math.round(game.classState.guard),remaining:null}};
