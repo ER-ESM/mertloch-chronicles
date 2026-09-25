@@ -6,6 +6,7 @@
 //  3. trägt es in tools/sprite-pipeline/icons-20260925-jobs.json ein (kind items, padding 0, palette waffen, painter-Verweis),
 //  4. baut den Präzisionskatalog neu (build-precision.mjs) und den Offline-Cache (scripts/pwa-cache.mjs).
 // Die Kennung ist die Gegenstandskennung (content/items.js); gear-blade/gear-club u. a. ersetzen die gleichnamigen Familienbilder.
+// Zusatzkennungen: gemalte Buff-Motive (motif in content/class-buffs.js), z. B. strickschal, glueckspfennig, wurstbroetchen, aperolspritz.
 // Ein neu gemaltes Bild gewinnt immer: über ältere Aufträge derselben Kennung (precision-september.mjs) und über Zwilling-Aliase
 // (items-20260925.mjs). Bereits übernommene Kennungen bleiben im Auftragsbogen, auch wenn der Gruppenordner sie nicht mehr enthält.
 // Aufruf: node tools/sprite-pipeline/icons-uebernehmen.mjs [--quelle <ordner>] [--gruppe <name>] [--ohne-build] [--trocken]
@@ -14,14 +15,17 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {basename,join} from 'node:path';
 import {decodePng} from './png.mjs';
-import {ITEM_CATALOG,ICONS} from '../../content/index.js';
+import {ITEM_CATALOG,ICONS,CLASS_BUFFS} from '../../content/index.js';
 const root=new URL('../../',import.meta.url),JOBS=new URL('./icons-20260925-jobs.json',import.meta.url),TARGET='assets/precision/sources/2026-09-25/icons/';
 const PALETTE=new Set(JSON.parse(readFileSync(new URL('./waffen-palette.json',import.meta.url))).map(p=>p.join(',')));
 const HILFSSKRIPTE=/^(maler\d*|messen|analyse|zeige|vorschau|lib|pruefen|werkzeug)\.mjs$/;
 
-/** Bekannte Kennung: Gegenstand aus dem Katalog, gear-Familienbild oder Symbolwort mit eigenem Präzisionsbild. */
+/** Erlaubte Zusatzkennungen ohne Gegenstand: gemalte Buff-Motive (content/class-buffs.js motif, z. B. strickschal, glueckspfennig). */
+export const BUFF_MOTIFS=new Map(Object.values(CLASS_BUFFS).filter(b=>b.motif).map(b=>[b.motif,b]));
+/** Bekannte Kennung: Gegenstand aus dem Katalog, gear-Familienbild, Symbolwort mit eigenem Präzisionsbild oder Buff-Motiv. */
 export function knownId(id,catalog){
  if(ITEM_CATALOG[id])return 'gegenstand';
+ if(BUFF_MOTIFS.has(id))return 'buff-motiv';
  if(/^gear-[a-z]+$/.test(id)&&catalog.assets[id])return 'familie';
  if(ICONS.includes(id)&&catalog.assets[id])return 'symbolwort';
  return null;
@@ -51,7 +55,7 @@ export function uebernehmen({quelle='D:/Dev/_prototypen/icons-2026-09-25',gruppe
    if(!trocken){mkdirSync(new URL(TARGET,root),{recursive:true});copyFileSync(path,new URL(output,root));}
    jobs.set(id,{id,output,width:64,height:64,padding:0,kind:'items',palette:'waffen',delivery:'2026-09-25',date:'2026-09-25',
     tool:'Pixelmaler (Code, kein Imagegen)',painter:painter+' · '+id,gruppe:g,
-    motif:item?item.name+(item.look?': '+item.look:''):art==='familie'?'Familienbild '+id.slice(5)+' (ersetzt das gleichnamige gear-Bild)':'Symbolwort '+id});
+    motif:item?item.name+(item.look?': '+item.look:''):art==='buff-motiv'?'Buff-Motiv „'+BUFF_MOTIFS.get(id).name+'“ (Klassen-Buff '+BUFF_MOTIFS.get(id).id+')':art==='familie'?'Familienbild '+id.slice(5)+' (ersetzt das gleichnamige gear-Bild)':'Symbolwort '+id});
    taken.push({id,gruppe:g,art});
   }
  }

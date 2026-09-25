@@ -35,7 +35,7 @@ export function paintSkillIcon(canvas,id,member='dieter',context={}){if(context.
 const NEW_CLASS_ICONS={schorsch:{auto:'potlid',strike:'metal',mark:'currywurst',burst:'food',interrupt:'claw',parry:'potlid',dash:'boots',heal:'water',buff:'sound',throw:'burst',ground:'scrap',senf:'cup',spiritus:'burst',deckelzu:'potlid'},kaethe:{auto:'paper',interrupt:'megaphone',parry:'shield',dash:'boots',heal:'cup',buff:'book',throw:'medal',ground:'paper',reizen:'megaphone',handlesen:'ring',gezinkt:'paper',aermel:'book'}};
 function paintResourceIcon(canvas,id,member){const icon=RESOURCE_SKILLS[id]?.icon||(!SKILL_ICON_ORDER[member]&&(NEW_CLASS_ICONS[member]?.[id]||TALENT_SKILLS[id]?.icon));if(!icon)return false;paintIconTile(canvas,'skill:'+member+':'+id,icon);canvas.dataset.resourceIcon=id;return true;}
 /** Gegenstandsbild als Fähigkeit: Motiv frei auf den Motiv-Canvas, dann Moos-Kachel (ability-tile.js; Atlaskacheln stellt sie frei). */
-function paintIconTile(canvas,seed,icon){return paintAbilityTile(canvas,seed,m=>{if(icon&&!drawDetailIcon(m.getContext('2d'),icon,0,0,m.width))paintItem(m,icon);},'icon:'+icon);}
+function paintIconTile(canvas,seed,icon){paintAbilityTile(canvas,seed,m=>{if(icon&&!drawDetailIcon(m.getContext('2d'),icon,0,0,m.width))paintItem(m,icon);},'icon:'+icon);if(icon)canvas.dataset.icon=icon;return true;}
 /** Käthes Handkarte als Kartenbild im Pixelstil (E-72, Runde 3 „Lernen über das Bild“): Karte auf grünem Stammtischfilz, die Wirkung
  *  groß (Klinge, Schild, Heilung, Knall), Farbe und Rang klein oben rechts, Tempo-Abzeichen unten rechts; Bube mit Goldrand (Trumpf),
  *  `glow` = STICH möglich (Goldrand und warmer Schein; das Stich-Abzeichen setzt resource-hud.js an den Knopf).
@@ -50,6 +50,6 @@ function paintFelt(canvas,glow=false){const c=canvas.getContext('2d'),w=canvas.w
  *  (context.card, bei leerem Handplatz der leere Filz) – eine Beispielkarte dort sähe aus wie eine gezogene Karte. */
 const HAND_EXAMPLES={strike:{suit:'kreuz',rank:'A'},mark:{suit:'herz',rank:'10'},burst:{suit:'pik',rank:'B'}};
 function paintHandSlot(canvas,id,member,context={}){const example=RESOURCES[member]?.kind==='cards'&&HAND_EXAMPLES[id];if(!example)return false;if('card' in context||canvas.closest?.('.action-area')||canvas.dataset?.touchArt!==undefined){delete canvas.dataset.card;return paintFelt(canvas);}return paintCard(canvas,example);}
-/** Klassen-Buffs (content/class-buffs.js) haben noch keine eigene Kniff-Grafik: sie zeigen ihr Gegenstands-Icon (Dose, Kutte, Glas …) auf der
- *  Fähigkeitskachel, klassenunabhängig – auch auf fremden Helden. */
-function paintClassBuffIcon(canvas,id){const b=CLASS_BUFFS[id];if(!b)return false;paintIconTile(canvas,'classBuff:'+id,b.icon);canvas.dataset.classBuff=id;return true;}
+/** Klassen-Buffs (content/class-buffs.js) auf der Fähigkeitskachel, klassenunabhängig – auch auf fremden Helden: ihr gemaltes Motiv
+ *  (motif, z. B. Strickschal, Glückspfennig), solange es fehlt ihr Gegenstands-Icon (icon). */
+function paintClassBuffIcon(canvas,id){const b=CLASS_BUFFS[id];if(!b)return false;paintIconTile(canvas,'classBuff:'+id,b.motif&&contentAsset(b.motif)?b.motif:b.icon);canvas.dataset.classBuff=id;return true;}

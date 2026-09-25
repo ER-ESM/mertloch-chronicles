@@ -55,7 +55,7 @@ test('Export: jede Kniff-Datei (kind skills, auch Autoangriffe) ist eine randlos
  const atlases=new Map();
  for(const [key,a] of Object.entries(e32.skills)){const im=atlases.get(a.atlas)||decodePng(read(a.atlas));atlases.set(a.atlas,im);
   const cell={width:a.cell,height:a.cell,data:new Uint8ClampedArray(a.cell*a.cell*4)};for(let y=0;y<a.cell;y++)cell.data.set(im.data.subarray(((a.y+y)*im.width+a.x)*4,((a.y+y)*im.width+a.x+a.cell)*4),y*a.cell*4);
-  assert.deepEqual(tileProblems(cell),[],key);}
+  assert.deepEqual(tileProblems(cell),[],key);let blue=0;for(let i=0;i<cell.data.length;i+=4)if(cell.data[i]===30&&cell.data[i+1]===44&&cell.data[i+2]===53)blue++;assert.equal(blue,0,key+': #1e2c35 im Kachelgrund');}
  assert.equal(Object.keys(e32.skills).length,45);
 });
 
@@ -90,4 +90,30 @@ test('Laufzeit: jede Fähigkeitsquelle hat eine Kachel – Leiste, Kniff-Buch, S
  // Gegenstände auf der Leiste (Wasser, Brezel …) auf der Kachel, im Rucksack frei
  const bar=fakeCanvas(48,48,'.bar-item');paintItem(bar,'food');assert.equal(bar.dataset.tile,'item:food');
  const bag=fakeCanvas();paintItem(bag,'food');assert.equal(bag.dataset.tile,undefined);
+});
+
+test('Talente der Kernklassen: jedes Motiv mit 92 % Langseite (59 von 64 px, im 48er-Knoten ≥ 44), mittig, ohne Rand am Zellenrand',()=>{
+ const atlases=new Map();
+ for(const [id,a] of Object.entries(e32.talents)){const im=atlases.get(a.atlas)||decodePng(read(a.atlas));atlases.set(a.atlas,im);let x0=64,y0=64,x1=-1,y1=-1;
+  for(let y=0;y<64;y++)for(let x=0;x<64;x++)if(im.data[((a.y+y)*im.width+a.x+x)*4+3]>=128){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+  assert.equal(Math.max(x1-x0+1,y1-y0+1),59,id);assert.ok(x0>=2&&y0>=2&&x1<=61&&y1<=61,id+' Rand');}
+});
+
+test('Käthe-Karte nach Stilbibel: Papier-Treppe statt Reinweiß, Tintenrahmen mit Eckrundung, Schlagschatten 2 px auf den Filz',async()=>{
+ const {paintEffectCardCanvas}=await import('../resource-art.js');
+ const px=new Map(),ctx={fillStyle:'',globalAlpha:1,save(){},restore(){},translate(){},rotate(){},drawImage(){},clearRect(){},fillRect(x,y,w,h){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)px.set(xx+','+yy,this.fillStyle);}};
+ paintEffectCardCanvas({width:48,height:48,getContext:()=>ctx},{suit:'herz',rank:'10'},{keep:true});
+ const used=new Set(px.values());for(const c of ['#f8f0d5','#e4dcc3','#c8c5af','#171f29'])assert.ok(used.has(c),c);
+ for(const c of ['#ffffff','#f6efdc','#2e2420'])assert.ok(!used.has(c),c+' (alt)');
+ // Karte 38 × 46 ab (4,0): Ecke gerundet (2 px frei), Kante Tinte, Schatten rechts unten
+ assert.equal(px.get('4,0'),undefined);assert.equal(px.get('5,0'),undefined);assert.equal(px.get('6,0'),'#171f29');assert.equal(px.get('5,1'),'#171f29');assert.equal(px.get('4,2'),'#171f29');
+ assert.equal(px.get('42,40'),'#171f29','Schatten rechts');assert.equal(px.get('20,47'),'#171f29','Schatten unten');
+});
+
+test('Klassen-Buffs: gemaltes Motiv (motif) vor dem Gegenstandsbild, solange es fehlt das alte; Kutte drüber zeigt die neue Kutte',()=>{
+ const cv=id=>{const c=fakeCanvas();paintSkillIcon(c,id,'dieter');return c.dataset.icon;};
+ assert.equal(cv('kutteDrueber'),'kutte');
+ for(const [id,b] of Object.entries(CLASS_BUFFS))if(b.motif&&!catalog.assets[b.motif])assert.equal(cv(id),b.icon,id+': Motiv fehlt noch → altes Bild');
+ contentArt.catalog.assets.strickschal={path:'x',width:64,height:64};contentArt.images.set('strickschal',{width:64,height:64});
+ try{assert.equal(cv('strickschal'),'strickschal');}finally{if(!catalog.assets.strickschal){delete contentArt.catalog.assets.strickschal;contentArt.images.delete('strickschal');}}
 });

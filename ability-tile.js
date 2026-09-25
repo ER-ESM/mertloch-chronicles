@@ -43,14 +43,17 @@ export function tileShadowMask(occ,size=TILE_SIZE){const out=new Uint8Array(size
 /** Äußeren Ring auf Tinte setzen (gemalte Kacheln aus den alten Atlanten: Rahmen bleibt 1 px, auch nach dem Verkleinern). */
 export function inkFrame(img){const {width:w,height:h,data}=img;for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(x===0||y===0||x===w-1||y===h-1)data.set([...TILE_COLORS.ink,255],(y*w+x)*4);return img;}
 
+/** Palette aller Kniff-Kacheln: PRECISION_PALETTE ohne das bläuliche #1e2c35 (Stilbibel B „kein #1e2c35“). Beim Verkleinern mischen
+ *  sich Tinte und Basis sonst genau zu diesem Ton (Review R1: 2–4 % in den e32-Zellen). */
+export const TILE_PALETTE=PRECISION_PALETTE.filter(q=>q.join(',')!=='30,44,53');
 // Palettenfarbe je exakter Farbe: das Ergebnis hängt nicht von der Reihenfolge ab (Export und Laufzeit gleich).
 const snaps=new Map();
-function snap(r,g,b){const key=r<<16|g<<8|b;let p=snaps.get(key);if(p)return p;let score=Infinity;for(const q of PRECISION_PALETTE){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}snaps.set(key,p);return p;}
+function snap(r,g,b){const key=r<<16|g<<8|b;let p=snaps.get(key);if(p)return p;let score=Infinity;for(const q of TILE_PALETTE){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}snaps.set(key,p);return p;}
 /** Deckende Hülle (Alpha ≥ 128) innerhalb von rect oder null. */
 export function motifBounds(src,rect={x:0,y:0,w:src.width,h:src.height}){let x0=Infinity,y0=Infinity,x1=-1,y1=-1;
  for(let y=rect.y;y<rect.y+rect.h;y++)for(let x=rect.x;x<rect.x+rect.w;x++)if(src.data[(y*src.width+x)*4+3]>=128){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
  return x1<0?null:{x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};}
-/** Flächenmittel wie precision-resample/shrinkPixels: deckend ab 50 % Deckung, Farbe auf PRECISION_PALETTE. */
+/** Flächenmittel wie precision-resample/shrinkPixels: deckend ab 50 % Deckung, Farbe auf TILE_PALETTE. */
 export function areaMean(src,b,dw,dh){const out=new Uint8ClampedArray(dw*dh*4),d=src.data;
  for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){const left=b.x+x*b.w/dw,right=b.x+(x+1)*b.w/dw,top=b.y+y*b.h/dh,bottom=b.y+(y+1)*b.h/dh;let alpha=0,total=0,r=0,g=0,bl=0;
   for(let sy=Math.floor(top);sy<Math.ceil(bottom);sy++)for(let sx=Math.floor(left);sx<Math.ceil(right);sx++){const wt=(Math.min(right,sx+1)-Math.max(left,sx))*(Math.min(bottom,sy+1)-Math.max(top,sy)),i=(sy*src.width+sx)*4,a=d[i+3]/255*wt;total+=wt;alpha+=a;r+=d[i]*a;g+=d[i+1]*a;bl+=d[i+2]*a;}

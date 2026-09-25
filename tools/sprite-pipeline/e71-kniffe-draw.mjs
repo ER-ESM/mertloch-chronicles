@@ -2,7 +2,7 @@
 // Zeichnet jedes Motiv aus Grundformen (Rechteck, Kreis/Ellipse, Polygon, Linie) als Pixelkunst auf der Fähigkeitskachel
 // (ability-tile.js, Stilbibel B): Moos-Kachel randlos 64 × 64 mit Vignette und 1 px Tintenrahmen, ein konturiertes Motiv, Licht
 // von oben links, Schlagschatten 2 px nach unten rechts. Motivkoordinaten laufen wie bisher 0..57 (Kachelmitte); die Kachel reicht
-// 3 px darüber hinaus, Anschnitt-Formen (Unterarm, Tisch) laufen bis an den Rand. Alle Farben liegen in PRECISION_PALETTE; der
+// 3 px darüber hinaus, Anschnitt-Formen (Unterarm, Tisch) laufen bis an den Rand. Alle Farben liegen in PRECISION_PALETTE (ohne #1e2c35, TILE_PALETTE); der
 // Export (`precision-september.mjs`, Auftragsblatt `e71-kniffe-jobs.json`) übernimmt das Bild 1 : 1 (Maßstab 1, kein Rand).
 //
 //   node tools/sprite-pipeline/e71-kniffe-draw.mjs [--only=id,id]   → Originale + herkunft.json
@@ -17,8 +17,7 @@ import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {encodePng} from './png.mjs';
-import {PRECISION_PALETTE} from '../../art-quality.js';
-import {tileGround,tileShadowMask,TILE_COLORS} from '../../ability-tile.js';
+import {tileGround,tileShadowMask,TILE_COLORS,TILE_PALETTE} from '../../ability-tile.js';
 import {shrinkPixels} from '../../content-art.js';
 
 export const TOOL='tools/sprite-pipeline/e71-kniffe-draw.mjs';
@@ -30,7 +29,7 @@ const N=58,OFF=3,SIZE=64,LO=-OFF,HI=N+OFF,TAU=Math.PI*2,rad=d=>d*Math.PI/180,at=
 // ------------------------------------------------------------------ Farben
 const snapCache=new Map();
 function snap(rgb){const k=rgb.join(',');let p=snapCache.get(k);if(p)return p;let best=Infinity;
- for(const q of PRECISION_PALETTE){const d=(rgb[0]-q[0])**2*.8+(rgb[1]-q[1])**2+(rgb[2]-q[2])**2*.7;if(d<best){best=d;p=q;}}snapCache.set(k,p);return p;}
+ for(const q of TILE_PALETTE){const d=(rgb[0]-q[0])**2*.8+(rgb[1]-q[1])**2+(rgb[2]-q[2])**2*.7;if(d<best){best=d;p=q;}}snapCache.set(k,p);return p;}
 const INK=[23,31,41];
 // Rampen: [tief, dunkel, grund, hell, glanz]
 const R={

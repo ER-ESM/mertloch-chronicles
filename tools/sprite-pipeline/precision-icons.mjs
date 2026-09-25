@@ -3,8 +3,7 @@ import {APEROL_ART,TALENT_ART,CLASS_SPECS,DETAIL_ICONS,ICONS} from '../../conten
 import {surface,bounds,gridCell,blit} from './png.mjs';
 import {segment,components} from './segment.mjs';
 import {resample} from './precision-resample.mjs';
-import {abilityTile,inkFrame} from '../../ability-tile.js';
-import {PRECISION_PALETTE} from '../../art-quality.js';
+import {abilityTile,inkFrame,TILE_PALETTE} from '../../ability-tile.js';
 const root=new URL('../../',import.meta.url);
 const skillOrder=['strike','buff','throw','parry','mark','burst','ground','heal','interrupt','dash'];
 const extras={dieter:['barricade','slam','keg'],baerbel:['sanctuary','infusion','encore'],kevin:['detonate','magnet','snare']};
@@ -18,9 +17,9 @@ export function buildPrecisionIcons({catalog,put,read,hashSource}){
  // stehen auf der Moos-Kachel aus ability-tile.js – derselbe Kachelmaler wie zur Laufzeit.
  // Der Palettencache von precisionColor hängt an der Aufrufreihenfolge (Schlüssel gerundet, erste Farbe entscheidet). Damit alle
  // übrigen Exporte bytegleich bleiben, läuft die frühere 58er-Verkleinerung der Kniffe weiter ins Leere (legacy); die Kacheln
- // selbst runden über eine eigene, reihenfolgefeste Palettentabelle (palette: PRECISION_PALETTE bzw. ability-tile.js).
+ // selbst runden über eine eigene, reihenfolgefeste Palettentabelle (TILE_PALETTE aus ability-tile.js, ohne #1e2c35).
  const legacy=(source,b)=>{const s=Math.min(58/b.w,58/b.h);resample(read(source),surface(64,64),b,{x:Math.floor((64-Math.round(b.w*s))/2),y:Math.floor((64-Math.round(b.h*s))/2)},s);};
- const paintedTile=(id,source,b)=>{const out=surface(64,64);resample(read(source),out,b,{x:0,y:0},Math.min(64/b.w,64/b.h),{palette:PRECISION_PALETTE});put(id,inkFrame(out),{kind:'skills',source,sourceHash:hashSource(source),sourceBounds:b,padding:0,tile:'gemalt'});};
+ const paintedTile=(id,source,b)=>{const out=surface(64,64);resample(read(source),out,b,{x:0,y:0},Math.min(64/b.w,64/b.h),{palette:TILE_PALETTE});put(id,inkFrame(out),{kind:'skills',source,sourceHash:hashSource(source),sourceBounds:b,padding:0,tile:'gemalt'});};
  const mossTile=(id,source,b)=>put(id,abilityTile(id,read(source),{rect:b}),{kind:'skills',source,sourceHash:hashSource(source),sourceBounds:b,padding:0,tile:'moos'});
  // Skills retain all established IDs and motifs, exported at their actual action-button resolution.
  for(const member of ['dieter','baerbel','kevin']){

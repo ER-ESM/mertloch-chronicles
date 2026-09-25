@@ -86,7 +86,8 @@ export function suitGlyph(c,suit,x,y,s,color){const m=SUIT_MAPS[suit];if(!m)retu
 
 // ---------------------------------------------------------------------------------------------------------------
 // Karten
-const CARD={face:'#f6efdc',faceShade:'#e4d8b8',edge:'#2e2420',back:'#7a2e3a',backDark:'#4e1a24',backGold:'#d8b25a',trump:'#e8b84a'};
+// Papier aus der Treppe der Stilbibel (Icon-Review R1: #f8f0d5 / #e4dcc3 / #c8c5af, nie Reinweiß), Rand in Tinte #171f29.
+const CARD={face:'#f8f0d5',faceShade:'#e4dcc3',paperDark:'#c8c5af',edge:'#171f29',trumpDark:'#d06828',back:'#7a2e3a',backDark:'#4e1a24',backGold:'#d8b25a',trump:'#e8b84a'};
 export const suitColor=suit=>RESOURCES.kaethe?.suits[suit]?.color||'#333';
 /** Kartenbild im Pixelstil auf ein Raster: w × h in Kartenpixeln (mind. 7 × 10), `s` Zielpixel je Kartenpixel.
  *  Optionen: back (Rückseite), glow (Goldrand für STICH/Trumpf), dim (abgedunkelt), big (großes Mittelzeichen). */
@@ -140,13 +141,20 @@ const BADGE={quick:{map:'badgeQuick',ring:'#6ab8ea',plate:'#12304a'},strong:{map
 export function drawBadge(c,kind,cx,cy,r,s=1){const b=BADGE[kind];if(!b)return;c.save();c.imageSmoothingEnabled=false;
  for(let y=-r-1;y<=r;y++)for(let x=-r-1;x<=r;x++){const d=Math.hypot(x+.5,y+.5);if(d>r+.35)continue;c.fillStyle=d>r-.9?(d>r-.2?'#0c0a08':b.ring):b.plate;c.fillRect(Math.round(cx+x),Math.round(cy+y),1,1);}
  const {w,h}=spriteSize(b.map);drawSprite(c,b.map,Math.round(cx-(w*s)/2)+(w*s)/2,Math.round(cy-(h*s)/2)+h*s,s);c.restore();}
+/** Rechteck mit Eckrundung r (Pixel) in einer Farbe. */
+function roundRect(c,x,y,w,h,r,color){c.fillStyle=color;for(let yy=0;yy<h;yy++){const k=Math.max(0,r-Math.min(yy,h-1-yy));c.fillRect(x+k,y+yy,w-2*k,1);}}
+/** Kartenpapier in Zielpixeln: 1 px Tintenrahmen mit 2-px-Eckrundung, Innenrand eine Stufe dunkler (oben/links #e4dcc3, unten/rechts
+ *  #c8c5af, Licht oben links), Fläche #f8f0d5; Trumpf mit Goldrand in Kartenbreite u. */
+function paperCard(c,x,y,W,H,u,trump){const ring=trump?Math.max(1,u):1;
+ roundRect(c,x,y,W,H,2,CARD.edge);roundRect(c,x+1,y+1,W-2,H-2,1,trump?CARD.trumpDark:CARD.paperDark);roundRect(c,x+1,y+1,W-3,H-3,1,trump?CARD.trump:CARD.faceShade);
+ c.fillStyle=CARD.face;c.fillRect(x+1+ring,y+1+ring,W-2-2*ring,H-2-2*ring);}
 /** Handkarte für Leiste und Hofprobe: Rang und kleines Farbzeichen oben rechts (oben links liegt auf der Leiste die Taste),
  *  die Wirkung als großes Symbol in der Mitte, das Tempo-Abzeichen unten links. Grundmaß 19u × 23u. */
 export function drawEffectCard(c,x,y,u,card,{glow=false,dim=false,badge=true}={}){
  const rk=RESOURCES.kaethe?.ranks[card.rank]||{short:card.rank},trump=!!rk.trump,col=suitColor(card.suit),short=String(rk.short),w=19,h=23;
  const px=(a,b,ww,hh,color)=>{c.fillStyle=color;c.fillRect(Math.round(x+a*u),Math.round(y+b*u),Math.ceil(ww*u),Math.ceil(hh*u));};
  if(glow){px(0,-1,w,h+2,'#ffe38a');px(-1,0,w+2,h,'#ffe38a');}
- px(1,0,w-2,h,CARD.edge);px(0,1,w,h-2,CARD.edge);px(1,1,w-2,h-2,trump?CARD.trump:CARD.face);px(2,2,w-4,h-4,CARD.face);px(2,h-3,w-4,1,CARD.faceShade);
+ paperCard(c,Math.round(x),Math.round(y),w*u,h*u,u,trump);px(2,h-3,w-4,1,CARD.faceShade);
  // Index oben rechts: kleines Farbzeichen, dann Rang (Schrift 1u); je nach Platz schrumpft das Farbzeichen auf halbe Größe
  const fs=u,tw=pixelTextWidth(short,fs),gs=Math.max(1,Math.floor(u*5/7)),gw=7*gs,right=Math.round(x+(w-2)*u),ry=Math.round(y+2*u);
  pixelText(c,short,right-tw,ry,fs,col);suitGlyph(c,card.suit,right-tw-u-gw,ry+Math.round((5*fs-gw)/2),gs,col);
@@ -156,8 +164,10 @@ export function drawEffectCard(c,x,y,u,card,{glow=false,dim=false,badge=true}={}
  if(badge){const t=cardTempo(card);if(t){const r=Math.max(3,Math.round(u*3));drawBadge(c,t,Math.round(x+(w-1)*u-r),Math.round(y+(h-1)*u-r),r,Math.max(1,Math.floor(u/2)));}}
  if(dim){c.save();c.globalAlpha*=.45;px(0,0,w,h,'#10120f');c.restore();}
 }
-/** Wirkungskarte auf eine ganze Leinwand (Leiste, Handyknopf): u so groß, dass sie die Leinwand füllt. */
-export function paintEffectCardCanvas(canvas,card,{glow=false,dim=false,keep=false}={}){const c=canvas.getContext('2d'),W=canvas.width,H=canvas.height;if(!keep)c.clearRect(0,0,W,H);c.imageSmoothingEnabled=false;const u=Math.max(1,Math.floor(Math.min((W-2)/19,(H-2)/23)));drawEffectCard(c,Math.round((W-19*u)/2),Math.round((H-23*u)/2),u,card,{glow,dim});}
+/** Wirkungskarte auf eine ganze Leinwand (Leiste, Handyknopf): u so groß, dass sie die Leinwand füllt. Ohne STICH-Schein wirft sie
+ *  2 px Schlagschatten in Tinte nach rechts unten (Stilbibel B); Karte und Schatten stehen dann gemeinsam mittig. */
+export function paintEffectCardCanvas(canvas,card,{glow=false,dim=false,keep=false}={}){const c=canvas.getContext('2d'),W=canvas.width,H=canvas.height;if(!keep)c.clearRect(0,0,W,H);c.imageSmoothingEnabled=false;const u=Math.max(1,Math.floor(Math.min((W-2)/19,(H-2)/23))),cw=19*u,ch=23*u,shadow=!glow&&!dim?2:0,x=Math.max(0,Math.round((W-cw-shadow)/2)),y=Math.max(0,Math.round((H-ch-shadow)/2));
+ if(shadow)roundRect(c,x+shadow,y+shadow,cw,ch,2,CARD.edge);drawEffectCard(c,x,y,u,card,{glow,dim});}
 /** Karte als kleines Bild für die Welt (drehend geworfen, Strudel, Stich): zwischengespeichert je Karte. */
 export function cardSprite(card,{back=false,glow=false}={}){const key='card|'+(back?'back':card.suit+card.rank)+'|'+(glow?1:0);let cv=cache.get(key);if(cv)return cv;const w=11,h=16;cv=canvasOf(w+2,h+2);const c=cv.getContext('2d');if(back)drawCard(c,1,1,w,h,1,null,{back:true});else drawBigCard(c,1,1,1,card||{suit:'herz',rank:'A'},{w,h,rankScale:1});if(glow){c.globalCompositeOperation='destination-over';c.fillStyle='#ffe38a';c.fillRect(0,1,w+2,h);c.fillRect(1,0,w,h+2);c.globalCompositeOperation='source-over';}cache.set(key,cv);return cv;}
 /** Prüfhilfe (tests/resource-fx.test.mjs): unbekannte Palettenzeichen oder leere Bildkarten. */
