@@ -1,5 +1,5 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
-import {resourceGrantText,resourceUnit} from './class-resources.js';
+import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName} from './class-resources.js';
 import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
@@ -132,8 +132,39 @@ export function talentHelp(g,t){
  const required=skills.filter(id=>TALENT_SKILLS[id]&&id!==t.grants);if(required.length)context.push('Benötigt zusätzlich die erlernte Talentfähigkeit '+required.map(id=>'„'+skillName(g,id)+'“').join(', ')+'.');
  return {effect,context,origin};
 }
+/** E-72: Kniffe, die eine Klassenressource ausführt, erklären ihren aktuellen Zustand (Karte, Grillgut, Glut, Bon-Zone, Zeche). */
+const SUIT_EFFECT={kreuz:'trifft dein Ziel',pik:'gibt dir Deckung',herz:'heilt dich oder deinen gewählten Freund',karo:'trifft alle Gegner um dein Ziel und bremst sie'};
+function resourceSkillHelp(g,id,s){
+ const cls=g.member?.id,R=RESOURCES[cls],h=resourceHud(g);if(!R||!h)return null;
+ if(cls==='kaethe'){
+  const legend='♣ Kreuz trifft · ♠ Pik schützt · ♥ Herz heilt · ♦ Karo trifft im Umkreis und bremst. Sieben bis Neun sind schnell, Zehn und Ass stark, Buben sind Trumpf.';
+  const c=handCard(g,id);
+  if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card;let line=`${cardName(c)}: ${SUIT_EFFECT[c.suit]}${['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}. Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
+   if(h.chain?.suit&&(h.chain.suit===c.suit||rk.trump))line+=' Bedient die Farbe: '+pct(R.follow.bonus)+' mehr je Kettenglied.';
+   if(theirs){const tr=R.ranks[theirs.rank],beats=rk.trump?!tr.trump:c.suit===theirs.suit&&rk.order>tr.order;line+=beats?` Sticht den Zauber des Ziels (${cardName(theirs)}) – ${e.cast.interruptible?'bricht ihn ab und ':''}bringt ${tr.augen+R.stich.bonus} Augen.`:` Der Zauber des Ziels zeigt ${cardName(theirs)}: stechen kannst du mit ${R.suits[theirs.suit].name} höher als ${tr.name} oder einem Buben.`;}
+   return line+' '+legend;}
+  if(id==='throw')return s.text+` Du hast ${Math.floor(h.value)} Augen; gewonnen ab ${h.win}, Schneider ab ${h.schneider}, Schwarz bei ${h.schwarz}.`;
+  if(['strike','mark','burst'].includes(id))return s.text+' '+legend;
+  if(id==='interrupt')return s.text+' Stich: Zeigt der Zauber eine Karte, deren Farbe du auf der Hand hast, bringt Kontra zusätzlich Augen.';
+  return null;
+ }
+ if(cls==='schorsch'){
+  const z=zoneOf(g,h.value),zoneLine=`Glut ${Math.floor(h.value)} · ${z.name}${z.damage?' ('+(z.damage>0?'+':'')+pct(z.damage)+' Schaden)':''}.`;
+  if(id==='strike')return s.text+' '+zoneLine+` Perfekt ist ${h.perfect[0]}–${h.perfect[1]}; darüber wird es zu heiß (du verbrennst dich), bei 100 kommt die Stichflamme.`;
+  if(id==='mark'){const plan=(g.res?.plan??0);return s.text+` Belegt: ${h.rost.length}/${h.slots} Plätze. Gar wird ein Stück nach etwa ${Math.round(R.rost.cookTime*R.rost.gar[0])} s bei guter Glut, in der perfekten Glut schneller.`+(plan>=0?'':'');}
+  if(id==='burst'){const it=[...h.rost].sort((a,b)=>b.done-a.done).find(x=>x.done<R.rost.charcoal);return (it?`Serviert jetzt: ${it.name} – ${it.state==='gar'?'gar, volle Wirkung':it.state==='durch'?'durch, volle Wirkung':it.state==='roh'?'noch roh, halbe Wirkung':'verkohlt, halbe Wirkung'} (${Math.round(it.done*100)} %). `:'Der Rost ist leer – erst auflegen. ')+s.text;}
+  if(id==='heal')return s.text+' '+zoneLine;
+  if(id==='throw'||id==='ground')return s.text+' '+zoneLine;
+  if(id==='buff')return s.text+' '+zoneLine;
+  return null;
+ }
+ if(cls==='kevin'&&id==='reload')return s.text+` Die goldene Bon-Zone liegt bei ${pct(R.reload.zone[0])} bis ${pct(R.reload.zone[1])} des Balkens; daneben gedrückt klemmt der Automat ${R.reload.jam} s länger. Im Kasten: ${h.value}/${h.max}.`;
+ if(cls==='dieter'&&id==='zeche')return s.text+` Auf dem Bon stehen gerade ${Math.round(h.tab)} Leben.`;
+ return null;
+}
 export function skillHelp(g,id){
  const s=g.skills.find(s=>s.id===id);if(!s)return '';
+ {const r=resourceSkillHelp(g,id,s);if(r)return r;}
  const spec=g.rpg.talents.spec,m=SPEC_MECHANICS[spec],h=mechanicHelp(g,spec);
  if(id==='mark')return `„${s.name}“ markiert das Ziel für ${s.duration} s und verursacht einmal pro Sekunde Schaden. Dein Spezialkniff trifft markierte Ziele stärker und entfernt danach die Markierung.${m?.dot?' '+h.lines[0]+' '+h.lines[1]:m?.chain?' '+h.lines[0]:''}`;
  if(id==='ground'&&m?.supply){const cs=combatStats(g);return `Stellt Giselas Nest für ${m.field.duration+(cs.fieldDuration||0)} s auf. Es heilt dich einmal pro Sekunde, solange du im Umkreis stehst; diese Heilung füllt keine Vorratsgläser. Beim Ablauf betäubt Giselas Schnattern nahe Gegner für ${m.field.honk.stun+(cs.nestHonk||0)} s. Ein neues Nest ersetzt das vorherige.`;}
