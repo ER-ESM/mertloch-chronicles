@@ -22,7 +22,8 @@ export const QUOTA_RESET='26.09.2026, 21:21';
 export const KNIFF_FIRST=['skill-schorsch-parry','skill-kaethe-dash','skill-kevin-reload'];
 const PENDING=new Set(['fehlt','gezeichnet']);
 const TALENT_BUILD=[['tools/class-visuals/build-talents.mjs']];
-const KNIFF_BUILD=[['tools/sprite-pipeline/build-precision.mjs'],['tools/sprite-pipeline/e71-kniffe-draw.mjs','--kontaktbogen']];
+const KNIFF_DRAW='tools/sprite-pipeline/e71-kniffe-draw.mjs';
+const KNIFF_BUILD=[['tools/sprite-pipeline/build-precision.mjs'],[KNIFF_DRAW,'--kontaktbogen']];
 
 /** Codex meldet ein erschöpftes Abo z. B. mit „You've hit your usage limit … try again at Sep 26th, 2026 9:21 PM“. */
 export const isQuotaError=text=>/usage limit|rate.?limit|limit reached|try again (at|in|later)|quota|kontingent|nutzungslimit|too many requests|\b429\b/i.test(String(text||''));
@@ -128,9 +129,26 @@ function printReport(r){
  if(r.rejected.length)console.log(`Abgelehnte Originale liegen unter ${REJECTED} (git-ignoriert).`);
 }
 
+/** --neu=id,id: gemaltes Original verwerfen, damit der Lauf es neu anfordert (nach dem Ansehen: falsches Motiv, falsche
+ *  Reihenfolge im Raster …). Talent: Original nach generated/e72-abgelehnt/, Herkunft weg. Kniff: Code-Original zurück
+ *  (e71-kniffe-draw --force, schreibt auch herkunft.json und nimmt die Imagegen-Herkunft zurück). dry = nur beschreiben. */
+export function discard(ids,{dry=false,io=fsIO}={}){
+ const known=new Map([...(io.json(SHEET_JOBS)||[]),...(io.json(SINGLE_JOBS)||[])].map(j=>[j.id,j])),kniffe=new Set((io.json(KNIFF_JOBS)||[]).map(j=>j.id)),actions=[];
+ for(const id of ids){
+  if(kniffe.has(id)){actions.push(`${id}: Code-Original zurück (node tools/sprite-pipeline/e71-kniffe-draw.mjs --only=${id} --force)`);if(!dry&&!node([KNIFF_DRAW,'--only='+id,'--force']))throw Error('Zeichnen fehlgeschlagen: '+id);continue;}
+  const job=known.get(id);if(!job)throw Error('Unbekannter Auftrag: '+id);
+  if(!io.exists(job.output)){actions.push(`${id}: nichts zu verwerfen`);continue;}
+  actions.push(`${id}: ${job.output} → ${REJECTED}, Herkunft entfernt`);
+  if(!dry){const dir=new URL(REJECTED,root);mkdirSync(dir,{recursive:true});renameSync(new URL(job.output,root),new URL(id+'-verworfen-'+Date.now()+'.png',dir));removeRecord(job.output);}
+ }
+ return actions;
+}
+
 /** Ganzer Befehl. generate ist nur für die Generalprobe austauschbar (Platzhalterbilder statt Imagegen). Liefert den Exit-Code. */
 export function main(argv=process.argv.slice(2),{generate=imagegenStep}={}){
- if(argv.includes('--dry')||argv.includes('--dry-run')){
+ const dry=argv.includes('--dry')||argv.includes('--dry-run'),neu=(argv.find(a=>a.startsWith('--neu='))||'').slice(6).split(',').filter(Boolean);
+ if(neu.length)for(const line of discard(neu,{dry}))console.log((dry?'würde verworfen: ':'verworfen: ')+line);
+ if(dry){
   const stale=refreshJobSheets({write:false});
   printPlan(planBlocks({sheets:{[SHEET_JOBS]:sheetJobs(),[SINGLE_JOBS]:singleJobs()}}),stale);return 0;
  }

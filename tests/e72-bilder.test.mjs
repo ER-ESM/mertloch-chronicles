@@ -9,7 +9,7 @@ import {fileURLToPath} from 'node:url';
 import {CLASS_SPECS,TALENT_ROWS,TALENT_CELLS} from '../content/talents.js';
 import {buildTalentArt,talentSheetPath,talentOverridePath,checkTalentSheet,checkTalentIcon} from '../tools/class-visuals/build-talents.mjs';
 import {sheetJobs,singleJobs,SINGLES,SHEET_JOBS,SINGLE_JOBS,E32_HEAD,NEW_CLASSES} from '../tools/sprite-pipeline/e72-talente-auftraege.mjs';
-import {planBlocks,runPlan,isQuotaError,quotaHint,checkKniffTile,main,KNIFF_FIRST,KNIFF_JOBS,GENERATION} from '../tools/sprite-pipeline/e72-bilder.mjs';
+import {planBlocks,runPlan,isQuotaError,quotaHint,checkKniffTile,main,discard,KNIFF_FIRST,KNIFF_JOBS,GENERATION} from '../tools/sprite-pipeline/e72-bilder.mjs';
 import {paintedIds,IDS,DIR,iconPng} from '../tools/sprite-pipeline/e71-kniffe-draw.mjs';
 import {encodePng,decodePng,surface} from '../tools/sprite-pipeline/png.mjs';
 import {e32Art,paintE32Talent} from '../e32-art.js';
@@ -135,6 +135,13 @@ test('Lauf: abgelehntes Original wird nicht eingebaut, fehlende Voraussetzung st
  assert.deepEqual(rejected,['r1']);assert.deepEqual(built,['raster','einzeln','kniffe']);assert.equal(r.made.length,4);assert.deepEqual(r.missing.map(m=>m.id),['r1']);
  const calls=[];r=runPlan(fakeBlocks(),{generate:(b,j)=>{calls.push(j.id);throw Error('Kein vollständiger Codex gefunden');},check:()=>[],reject:()=>{},accept:()=>{},build:()=>true,log:quiet});
  assert.deepEqual(calls,['r1']);assert.equal(r.missing.length,5);assert.match(r.stopped,/Voraussetzung/);
+});
+
+test('--neu verwirft ein gemaltes Original gezielt (Trockenlauf beschreibt nur)',()=>{
+ const sheets={[SHEET_JOBS]:sheetJobs(),[SINGLE_JOBS]:singleJobs(),[KNIFF_JOBS]:json(KNIFF_JOBS)},io={json:p=>sheets[p],exists:p=>p===talentSheetPath('kaethe-herz')};
+ const a=discard(['talente-kaethe-herz','talent-dieter-wall-12','skill-kaethe-dash'],{dry:true,io});
+ assert.match(a[0],/kaethe-herz-v1\.png → generated\/e72-abgelehnt\//);assert.match(a[1],/nichts zu verwerfen/);assert.match(a[2],/e71-kniffe-draw\.mjs --only=skill-kaethe-dash --force/);
+ assert.throws(()=>discard(['gibt-es-nicht'],{dry:true,io}),/Unbekannter Auftrag/);
 });
 
 test('Kontingent-Erkennung und Trockenlauf ohne Imagegen',()=>{
