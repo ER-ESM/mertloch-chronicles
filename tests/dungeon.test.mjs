@@ -66,7 +66,7 @@ test('Betreten und Verlassen tauschen Welt und Gegner; Speichern hält die Posit
  assert.equal(floorAt(DEF,g.player.x,g.player.y),'e0');assert.equal(roomAt(DEF,g.player.x,g.player.y).id,'hof');assert.equal(g.world.blocked(g.player.x,g.player.y,5),false);
  assert.ok(g.enemies.every(e=>e.dungeon==='schloss-bigb'));assert.ok(g.enemies.some(e=>e.bossId==='gerd'));assert.notEqual(g.enemies,outsideEnemies);
  const saved=g.save();assert.ok(Math.hypot(saved.position.x-door.x,saved.position.y-door.y)<1,'Spielstand steht vor dem Tor');assert.ok(saved.dungeons['schloss-bigb']);
- run(g,.5);assert.equal(r.room,'hof');assert.ok(g.toasts.some(t=>t.includes('Einsturzgefahr')),'Durchsage kommt');
+ run(g,.5);assert.equal(r.room,'hof');/* Etappe 2: Durchsage als Sprechblase am Lautsprecher (Chatzeile), keine Kurzmeldung */assert.ok(g.messages.some(m=>m.text.includes('Einsturzgefahr')),'Durchsage kommt');assert.ok(!g.toasts.some(t=>t.includes('Einsturzgefahr')),'nicht als Kurzmeldung');
  assert.equal(g.interaction()?.kind,'dungeonLeave');assert.ok(g.leaveDungeon());assert.equal(g.instance,null);assert.equal(g.enemies,outsideEnemies);assert.equal(g.world,world);
 });
 

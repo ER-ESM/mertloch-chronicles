@@ -94,7 +94,7 @@ export function attachMinimap(renderer,canvas){
  if(!api){const root=canvas.closest('#miniButton');if(!root)return false;api=mountMinimap(root,canvas);}
  api.bind(renderer);const g=renderer.game;if(!g)return true;
  // Kiosk/Verlies: alter Innenraum-Zeichner auf ein Nebenbild, verkleinert in den Ring (rund würde er sonst an den Ecken abgeschnitten).
- if(inKiosk(g)||inDungeon(g)){api.indoor(true);const off=api.offscreen();renderer.map(off);api.paintIndoor(off);return true;}api.indoor(false);return true;
+ if(inKiosk(g)||inDungeon(g)){api.indoor(true);const off=api.offscreen();renderer.map(off);api.paintIndoor(off,{fill:inDungeon(g)/* Etappe 2: der Dungeon-Ausschnitt füllt den Ring */});return true;}api.indoor(false);return true;
 }
 
 function svg(d){return '<svg viewBox="0 0 16 16" aria-hidden="true">'+d+'</svg>';}
@@ -238,7 +238,7 @@ function mountMinimap(root,canvas){
  apply();raf=requestAnimationFrame(loop);
  let spare=null;
  const self={offscreen:()=>{spare||=document.createElement('canvas');if(spare.width!==canvas.width){spare.width=spare.height=canvas.width;}return spare;},
-  paintIndoor:off=>{const c=canvas.getContext('2d'),W=canvas.width,f=s.shape==='round'?.8:1,w=W*f;c.setTransform(1,0,0,1,0,0);c.fillStyle='#1d2a22';c.fillRect(0,0,W,W);c.imageSmoothingEnabled=true;c.drawImage(off,(W-w)/2,(W-w)/2,w,w);},
+  paintIndoor:(off,{fill=false}={})=>{const c=canvas.getContext('2d'),W=canvas.width,f=s.shape==='round'&&!fill?.8:1,w=W*f;c.setTransform(1,0,0,1,0,0);c.fillStyle='#1d2a22';c.fillRect(0,0,W,W);c.save();if(fill&&s.shape==='round'){c.beginPath();c.arc(W/2,W/2,W/2,0,TAU);c.clip();}c.imageSmoothingEnabled=true;c.drawImage(off,(W-w)/2,(W-w)/2,w,w);c.restore();},
   bind:r=>{if(renderer!==r){renderer=r;base.key='';places=[];}},indoor:v=>{if(indoor!==v){indoor=v;if(v)hits=[];}},settings:()=>({...s,track:{...s.track}}),stats:()=>({...stats,hits:hits.length,disc:minimapDisc(s)}),hits:()=>hits.map(h=>({...h})),set:patch=>change(x=>Object.assign(x,patch)),close:closeMenu};
  root.minimap=self;return self;
 }

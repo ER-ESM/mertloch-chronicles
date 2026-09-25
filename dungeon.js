@@ -232,7 +232,14 @@ export function dungeonSecret(g,id){
 }
 
 // ── Takt ──────────────────────────────────────────────────────────────────────────────────────────────────────
-function announce(g,line){if(!line)return;g.toast?.(T.speaker+': „'+line+'"');g.log?.(T.speaker+': „'+line+'"');g.emit?.('dungeonAnnounce',{line});}
+/** Durchsage-Punkt: Lautsprecher an der Nordwand des Raums (rechts vom Schild) oder der Punkt aus den Daten. */
+export function speakerPoint(def,a){if(a.room){const room=def.rooms.find(r=>r.id===a.room);if(!room)return null;const r=rectWorld(def,room.floor,room.rects[0]);return {floor:room.floor,x:r.x+r.w/2+30,y:r.y+4};}if(a.floor==null)return null;const p=toWorld(def,a.floor,a.x,a.y);return {floor:a.floor,x:p.x,y:p.y};}
+/** Etappe 2 Text-Diät: Durchsage als Sprechblase am Lautsprecher (Chatzeile kommt mit der Blase), keine Kurzmeldung. */
+function announce(g,a,line){if(!line)return;const run=dungeonRun(g),p=run&&speakerPoint(run.def,a);if(run)run.speaking={id:a.id,until:g.time+4};
+ if(p&&g.bark)g.bark({id:'speaker-'+a.id,name:T.speaker,x:p.x,y:p.y},line,'speaker');else g.log?.(T.speaker+': „'+line+'"');g.emit?.('dungeonAnnounce',{line});}
+/** Etappe 2: Geheimnisse sind von außen nicht zu sehen – ein Raum mit `secret`, den noch keiner betreten hat, und wer darin steht. */
+export const concealedRoom=(run,room)=>!!room?.secret&&!run.visited.has(room.id);
+export function concealed(g,e){const run=dungeonRun(g);return !!run&&concealedRoom(run,roomAt(run.def,e.x,e.y));}
 function nudgeInto(g,run,roomId){
  const room=run.def.rooms.find(r=>r.id===roomId);if(!room)return;const r=rectWorld(run.def,room.floor,room.rects[0]);
  for(const u of [g.player,...(g.companions||[])]){if(!u||!g.world.blocked(u.x,u.y,5))continue;const x=Math.min(r.x+r.w-12,Math.max(r.x+12,u.x)),y=Math.min(r.y+r.h-12,Math.max(r.y+12,u.y));u.x=x;u.y=y;}
@@ -257,14 +264,14 @@ export function tickDungeon(g,dt){
  const room=g.dead?null:roomAt(def,p.x,p.y);
  if(room&&room.id!==run.room){run.room=room.id;const first=!run.visited.has(room.id);run.visited.add(room.id);
   if(room.checkpoint)run.checkpoint={floor:room.floor,x:room.checkpoint.x,y:room.checkpoint.y,room:room.id};
-  g.emit?.('dungeonRoom',{room,first});if(first)g.toast?.(room.sign+' · '+room.truth);}
+  /* Etappe 2 Text-Diät: der Raum nennt sich nur im Zonentitel (Schild groß, Wirklichkeit klein), keine Kurzmeldung */g.emit?.('dungeonRoom',{room,first});if(first)g.log?.(room.sign+' · '+room.truth);}
  const floor=floorAt(def,p.x,p.y);
- if(!g.dead)for(const a of def.announcements){if(run.heard.has(a.id))continue;const hit=a.room?run.room===a.room:floor===a.floor&&dist(p,toWorld(def,a.floor,a.x,a.y))<a.range*U;if(hit){run.heard.add(a.id);announce(g,T.announce[a.id]);}}
+ if(!g.dead)for(const a of def.announcements){if(run.heard.has(a.id))continue;const hit=a.room?run.room===a.room:floor===a.floor&&dist(p,toWorld(def,a.floor,a.x,a.y))<a.range*U;if(hit){run.heard.add(a.id);announce(g,a,T.announce[a.id]);}}
  // Arena: Türen zu, solange ein Boss kämpft
  // Boss ohne Gegner in seinem Raum (vom Hof aus angeschossen, alle draußen) setzt zurück, statt hinter geschlossener Tür ewig im Kampf
  // zu stehen (E-71, gefunden mit scripts/dungeon-sim.mjs). Liegt der Held drin als Geist oder ist er gestürzt, zählen die Söldner.
  let arena=null;for(const e of g.enemies)if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'){if(!partyIn(g,def,e.dungeonBoss.room)){clearThreat(e);g.resetEnemy?.(e);continue;}arena=e.dungeonBoss.room;break;}
- if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){nudgeInto(g,run,arena);g.toast?.(T.arenaClosed);}else if(was)g.toast?.(T.arenaOpen);}
+ /* Etappe 2 Text-Diät: Tür zu/auf nur im Chat, die Tür selbst zeigt es */if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){nudgeInto(g,run,arena);g.log?.(T.arenaClosed);}else if(was)g.log?.(T.arenaOpen);}
  for(const e of g.enemies){
   if(e.frontGuard>0)e.frontGuard=Math.max(0,e.frontGuard-dt);
   if(e.patrol&&e.hp>0&&!e.aggro&&e.ai==='roaming')walkPatrol(g,e,dt);
@@ -427,3 +434,17 @@ export function onDungeonKill(g,e){
  e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null};if(bonus)g.gainXp?.(bonus);
  const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('dungeonReward',{...e.dungeonReward});g.emit?.('save');
 }
+
+// ── Wegmarke auf der Dungeon-Karte (Etappe 2, Plan §5.3) ──────────────────────────────────────────────────────
+/** Ist ein Übergang von dieser Seite aus gerade benutzbar? (dieselben Regeln wie dungeonStep, ohne Kampf) */
+function stepUsable(run,t,side){if(t.oneWay&&t.oneWay!==side)return false;if(t.secret&&!run.secrets.has(t.secret))return false;if(t.gate?.boss&&t.gate.side===side&&!run.killed.has(t.gate.boss))return false;if(t.unlock&&!run.unlocked.has(t.id)&&side!==t.unlock)return false;return true;}
+/** Erster Übergang auf dem Weg von Ebene `from` nach `to` (Breitensuche über die Übergänge) → {t,side} oder null. */
+export function floorRoute(run,from,to){if(from===to)return null;const seen=new Set([from]),queue=[{floor:from,first:null}];
+ while(queue.length){const cur=queue.shift();for(const t of run.def.transitions)for(const side of ['a','b']){const s=t[side],o=t[side==='a'?'b':'a'];if(s.floor!==cur.floor||o.floor===cur.floor||seen.has(o.floor)||!stepUsable(run,t,side))continue;const first=cur.first||{t,side};if(o.floor===to)return first;seen.add(o.floor);queue.push({floor:o.floor,first});}}
+ return null;}
+/** Wegmarke setzen ({floor,x,y} in Weltpunkten); nur auf begehbarem Boden. false = kein Platz dort. */
+export function setDungeonWaypoint(g,pt){const run=dungeonRun(g);if(!run||!pt)return false;const f=floorAt(run.def,pt.x,pt.y);if(!f||f!==pt.floor)return false;const c=g.world.findClear(pt.x,pt.y,7);if(!c||Math.hypot(c.x-pt.x,c.y-pt.y)>40)return false;run.waypoint={floor:f,x:c.x,y:c.y};return true;}
+/** Ziel für den Pfeil am Helden: die Wegmarke auf dieser Ebene, sonst der nächste Übergang dorthin. Erreicht → Marke fällt weg. */
+export function dungeonDestination(g){const run=dungeonRun(g),wp=run?.waypoint;if(!wp)return null;const p=g.player,here=floorAt(run.def,p.x,p.y);
+ if(here===wp.floor){if(dist(p,wp)<24){run.waypoint=null;return null;}return {point:{x:wp.x,y:wp.y},label:T.map?.waypoint||'Wegmarke'};}
+ const step=floorRoute(run,here,wp.floor);if(!step)return {point:{x:wp.x,y:wp.y},label:'',unreachable:true};const s=step.t[step.side];return {point:toWorld(run.def,s.floor,s.x,s.y),label:stepLabel(step.t,step.side),step:step.t.id};}

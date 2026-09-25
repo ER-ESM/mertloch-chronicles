@@ -5,7 +5,7 @@
 // derselbe Umriss wie hinter Dächern). Fenster werden nie geschlossen.
 // Runde 4b (Prüfer-Bruch 7): Zuerst sucht hero-frame.js eine freie Lücke zwischen den offenen Fenstern; die Kamera legt den Helden
 // weich dorthin (renderer.heroShift). Nur ohne Lücke klappen Fenster ein – dann auch beim manuellen Laufen (WASD, Stick).
-import {heroBox,findHeroSpot,frameObstacles,isModalWindow,heroFloor} from './hero-frame.js';
+import {heroBox,findHeroSpot,frameObstacles,isModalWindow,heroFloor,unionBox} from './hero-frame.js';
 const PAD=18,TICK=120,GRACE=2000;
 /** Runde 5b: letztes Bildschirmrechteck des Helden (Füße bis Kopf) – Tooltips der Leiste weichen ihm aus (fenster-r3.js placeTooltip). */
 let lastHero=null;
@@ -17,15 +17,20 @@ export function mountHeroReveal({renderer,game,root=document}){
  function heroRect(r,g){const cv=r.canvas;if(!cv||!r.viewWidth)return null;const b=cv.getBoundingClientRect(),sx=b.width/r.viewWidth,sy=b.height/r.viewHeight,p=g.player;
   const x=b.left+(p.x-r.camera.x+r.viewWidth/2)*sx,y=b.top+(p.y-r.camera.y+r.viewHeight/2)*sy;return{left:x-14*sx-PAD,right:x+14*sx+PAD,top:y-40*sy-PAD,bottom:y+6*sy+PAD};}
  const hit=(a,b)=>a.left<b.right&&b.left<a.right&&a.top<b.bottom&&b.top<a.bottom;
+ /** Feste Flächen am Handy im Bosskampf (Rahmen, Truppe, Warnleiste, Steuerung). */
+ const touchHud=()=>['.player-panel','.boss-frame:not([hidden])','#targetPanel:not(.hidden)','#unitGroupDock','.boss-alerts','#touchStick','#touchActions','#touchUtility','#touchMenu','.touch-topline','#miniButton'].flatMap(s=>[...document.querySelectorAll(s)]).map(e=>{const s=getComputedStyle(e);if(s.display==='none'||s.visibility==='hidden')return null;const b=e.getBoundingClientRect();return b.width>1&&b.height>1?{left:b.left,top:b.top,right:b.right,bottom:b.bottom}:null;}).filter(Boolean);
  const inside=(b,x,y)=>x>=b.left&&x<=b.right&&y>=b.top&&y<=b.bottom;
  /** Runde 4b: freie Lücke suchen und der Kamera als Versatz (Welteinheiten) geben. → Rechteck der Figur am Zielpunkt oder null. */
  function frame(r,g){const cv=r.canvas;if(!cv||!r.viewWidth){spot=null;return null;}
   const b=cv.getBoundingClientRect(),sx=b.width/r.viewWidth,sy=b.height/r.viewHeight,view={left:b.left,top:b.top,right:b.right,bottom:b.bottom};
-  /* body[data-hero-frame=off] schaltet die Lückensuche ab (Prüfskripte, die das Einklappen allein prüfen) */const {wins,hud}=touch()||r.cameraFocus||document.body.dataset.heroFrame==='off'?{wins:[],hud:[]}:frameObstacles(root,view);
-  if(!wins.length){spot=null;r.heroShift={x:0,y:0,on:false};return null;}
+  /* Etappe 2 (Dungeon, Handy-Kampfansicht): im Bosskampf am Handy sucht die Kamera eine Lücke zwischen Rahmen, Warnleiste und Knöpfen für Held UND Boss */const touchFight=touch()&&document.body.classList.contains('boss-fight')&&!r.cameraFocus&&document.body.dataset.heroFrame!=='off';
+  /* body[data-hero-frame=off] schaltet die Lückensuche ab (Prüfskripte, die das Einklappen allein prüfen) */const {wins,hud}=touchFight?{wins:[],hud:touchHud()}:touch()||r.cameraFocus||document.body.dataset.heroFrame==='off'?{wins:[],hud:[]}:frameObstacles(root,view);
+  if(!wins.length&&!touchFight){spot=null;r.heroShift={x:0,y:0,on:false};return null;}
   /* Runde 5b (Punkt 7): nie neben oder dicht über der Aktionsleiste – der Fußpunkt bleibt eine Figurhöhe über ihrer Oberkante, höchstens +25 % unter der Mitte */
-  const box=heroBox(sx,sy,PAD-4),bar=document.querySelector('.action-area')?.getBoundingClientRect(),figure=box.up+box.down;
-  const before=spot;spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:spot,maxY:heroFloor(view,bar&&bar.height?bar.top:NaN,figure)});
+  const hbox=heroBox(sx,sy,PAD-4),bar=document.querySelector('.action-area')?.getBoundingClientRect(),figure=hbox.up+hbox.down;
+  /* Etappe 2: im Kampf umfasst die Lücke Held und Ziel (Boss), solange das Ziel nah genug ist; sonst nur den Helden */const t=g.target,fight=t&&t.hp>0&&(g.player.inCombat||0)>0&&Math.abs(t.x-g.player.x)*sx<(view.right-view.left)*.4&&Math.abs(t.y-g.player.y)*sy<(view.bottom-view.top)*.35;
+  const both=fight?unionBox(hbox,(t.x-g.player.x)*sx,(t.y-g.player.y)*sy,heroBox(sx*(t.type==='boss'?1.35:1),sy*(t.type==='boss'?1.35:1),PAD-4)):null;
+  const before=spot;const maxY=heroFloor(view,bar&&bar.height?bar.top:NaN,figure);let box=both||hbox;spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:spot,maxY});if(!spot&&both){box=hbox;spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:before,maxY});}
   if(!spot){r.heroShift={x:0,y:0,on:false};return null;}
   {const off=Math.hypot(spot.x-(view.left+view.right)/2,spot.y-(view.top+view.bottom)/2)>24,was=before&&Math.hypot(before.x-(view.left+view.right)/2,before.y-(view.top+view.bottom)/2)>24;if(off&&!was)pulse(spot,box);}
   const cx=(view.left+view.right)/2,cy=(view.top+view.bottom)/2;r.heroShift={x:(spot.x-cx)/sx,y:(spot.y-cy)/sy,on:true};

@@ -6,6 +6,9 @@
 
 /** Ausmaße der Figur um den Fußpunkt (Pixel), wie hero-reveal.js: 14 E zur Seite, 40 E hoch, 6 E unter die Füße, dazu Luft. */
 export function heroBox(sx,sy,pad=14){return {left:14*sx+pad,right:14*sx+pad,up:40*sy+pad,down:6*sy+pad};}
+/** Etappe 2 (Dungeon, Handy-Kampfansicht): die Lücke umfasst Held UND Ziel. dx/dy = Fußpunkt des Ziels relativ zum Helden (Pixel),
+ *  tbox = Ausmaße des Ziels um seinen Fußpunkt (wie heroBox). Liefert die Hülle beider Kästen um den Fußpunkt des Helden. */
+export function unionBox(box,dx,dy,tbox){return {left:Math.max(box.left,tbox.left-dx),right:Math.max(box.right,dx+tbox.right),up:Math.max(box.up,tbox.up-dy),down:Math.max(box.down,dy+tbox.down)};}
 const hit=(a,b)=>a.left<b.right&&b.left<a.right&&a.top<b.bottom&&b.top<a.bottom;
 const rectAt=(x,y,box)=>({left:x-box.left,right:x+box.right,top:y-box.up,bottom:y+box.down});
 

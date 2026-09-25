@@ -76,7 +76,7 @@ button.dg-chip{cursor:pointer}
 .dj-label{display:grid;place-items:center;width:24px}
 .dj-phase{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 8px;border:1px solid #d7b6f255;border-radius:8px;background:#1f1628;color:#f0e2ff;font:800 13px/1 var(--read);cursor:default}
 .dj-abilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.dj-ability{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:44px;padding:5px 8px;border:1px solid #c5a26855;border-radius:10px;background:#122019;color:var(--cream);cursor:default}
+.dj-ability{box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:44px;padding:5px 8px;border:1px solid #c5a26855;border-radius:10px;background:#122019;color:var(--cream);cursor:default}
 .dj-ability:hover,.dj-ability:focus-visible{border-color:#f3cf7a;background:#1a2c22;outline:none}
 .dj-ability span{display:flex;flex-direction:column;min-width:0}
 .dj-ability b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 13px/1.15 var(--read)}
@@ -84,7 +84,7 @@ button.dg-chip{cursor:pointer}
 .dj-ability i{display:flex;gap:2px}
 .dj-foot{justify-content:space-between}
 .dj-roles{display:flex;gap:6px}
-.dj-role{display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 8px 0 4px;border:1px solid #c5a26855;border-radius:999px;background:#15261e;color:var(--cream);font:800 13px/1 var(--read);cursor:default}
+.dj-role{display:inline-grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid #c5a26855;border-radius:999px;background:#15261e;color:var(--cream);font:800 13px/1 var(--read);cursor:default}
 .dj-role:focus-visible{outline:2px solid #f3cf7a}
 .dj-loots{display:flex;align-items:center;gap:6px}
 .dj-loot{display:grid;place-items:center;width:40px;height:40px;border:1px solid #c5a26877;border-radius:8px;background:#0f1a15}
@@ -209,3 +209,19 @@ button.dg-chip{cursor:pointer}
 .touch-mode.boss-fight #unitGroupDock .companion-life>span{font-size:9px!important;line-height:12px!important}
 .touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-frames{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 .touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-life>span{display:none!important}
+/* Journal am Handy: ohne Unterzeile, kleineres Porträt – eine Seite ohne Scrollen */
+.touch-mode .dj{gap:8px}.touch-mode .dj-title{display:none}.touch-mode .dj-portrait{width:48px;height:48px}.touch-mode .dj-head h3{font-size:20px}
+.touch-mode .dj-ability{min-height:44px;padding:4px 6px;gap:6px}.touch-mode .dj-ability b{font-size:12px}.touch-mode .dj-ability small{font-size:11px}
+.touch-mode .dj-role{width:44px;height:44px}.touch-mode .dj-loot{width:44px;height:44px}
+@media (orientation:landscape){
+ .touch-mode .dj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-areas:"tabs tabs" "head abil" "phases abil" "foot abil";column-gap:10px;row-gap:8px;align-items:start}
+ .touch-mode .dj-tabs{grid-area:tabs}.touch-mode .dj-head{grid-area:head}.touch-mode .dj-phases{grid-area:phases}.touch-mode .dj-foot{grid-area:foot;flex-wrap:wrap;gap:6px}
+ .touch-mode .dj-abilities{grid-area:abil;grid-template-columns:minmax(0,1fr)}
+}
+.dj-head>div{flex:1;min-width:0}
+.touch-mode .dj-phase{height:28px;padding:0 6px;font-size:12px;gap:3px}.touch-mode .dj-phase .dicon{width:14px!important;height:14px!important}
+@media (orientation:landscape){.touch-mode .dj-foot{flex-wrap:nowrap!important;justify-content:space-between}.touch-mode .dj-loots{gap:4px}.touch-mode .dj-roles{gap:4px}.touch-mode .dj-row.dj-phases{gap:5px}}
+@media (orientation:landscape){.touch-mode .dj{row-gap:5px}.touch-mode .dj-portrait{width:44px;height:44px}.touch-mode .game-popup.popup-journal .popup-body{padding:8px 10px 8px!important}}
+.boss-alerts.ba-right .ba-row small{display:none}
+.boss-alerts.ba-right .ba-row{grid-template-columns:26px minmax(0,1fr) auto auto}
+.boss-alerts.ba-right .ba-row b{overflow:hidden;text-overflow:ellipsis}

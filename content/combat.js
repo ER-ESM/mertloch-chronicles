@@ -55,9 +55,9 @@ export function describeAuto(id){
 }
 for(const id of Object.keys(ENEMY_AUTOS))ENEMY_AUTOS[id].info=describeAuto(id);
 /** Merkmale eines Gegnerzaubers in Vorrang-Reihenfolge (der gefährlichste Teil zuerst). Etappe 2 Dungeon (E-71). */
-export const CAST_TRAITS=['lie','cone','line','ground','stack','spread','interrupt','call','heal','summon','guard','knockback','tank','hit'];
+export const CAST_TRAITS=['lie','cone','line','ground','stack','spread','interrupt','call','heal','summon','guard','random','knockback','brand','tank','hit'];
 export function castTraits(c){const t=[];if(!c)return t;if(c.lie)t.push('lie');if(c.cone)t.push('cone');if(c.line)t.push('line');if(c.ground)t.push('ground');if(c.stack)t.push('stack');if(c.spread)t.push('spread');
- if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');
+ if(c.target==='random')t.push('random');if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.brand)t.push('brand');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');
  if(!t.length)t.push('hit');return t.sort((a,b)=>CAST_TRAITS.indexOf(a)-CAST_TRAITS.indexOf(b));}
 /**
  * Etappe 2 (E-71, Analyse Verbesserung 5): Symbol, Merkmale, Antwort und Kurzzahlen eines Gegnerzaubers – vollständig aus seinen
@@ -78,6 +78,7 @@ export function castSymbols(c,{interrupt=true}={}){
  if(c.healAllies)numbers.push({label:N.heal,value:Math.round(c.healAllies.share*100),unit:'%'});
  if(c.frontGuard)numbers.push({label:N.guard,value:'−'+Math.round((1-c.frontGuard.factor)*100),unit:'%'});
  if(c.callHelp)numbers.push({label:N.callRange,value:m(c.callHelp.range),unit:'m'});
+ if(c.brand)numbers.push({label:c.brand.name||N.brand,value:'+'+Math.round((c.brand.bonus||0)*100),unit:'%'},{label:N.duration,value:c.brand.duration,unit:'s'});
  return {icon:icon(main),main,hint,traits,facts:numbers};
 }
 /** Jede Kampfregel mit einer Zahl als Glossareintrag: name/short/long plus die Zahlen und ihre Quelle.
