@@ -1,4 +1,5 @@
 import {SHOP_UI} from './content/index.js';
+import {resourceGrantText} from './class-resources.js';
 import {deNum} from './number-format.js';
 import {passiveBook} from './passive-book.js';
 import {equipmentAppearance} from './equipment-appearance.js';
@@ -77,7 +78,7 @@ export function lootPanel(bag,game){const near=Math.hypot(bag.x-game.player.x,ba
 const wSpeed=w=>w.speed||WEAPON_TYPES[w.type]?.speed||2,wDps=w=>(w.min+w.max)/2/wSpeed(w),de1=n=>(Math.round(n*10)/10).toFixed(1).replace('.',',');
 function tipBody(game,d,shift){const lines=[];
  if(d.weapon){lines.push(`${d.weapon.min}–${d.weapon.max} ${BAG_UI.tipDamage} · ${de1(wSpeed(d.weapon))} s`,`${de1(wDps(d.weapon))} ${BAG_UI.tipDps}`);}
- else{if(d.heal)lines.push('+'+d.heal+' Leben');if(d.energy)lines.push('+'+d.energy+' Randale');}
+ else{if(d.heal)lines.push('+'+d.heal+' Leben');if(d.energy)lines.push('+'+resourceGrantText(game?.member?.id,d.energy));/* E-72: in der Ressource der Klasse */}
  const stats=Object.entries(d.stats||{}).map(([k,v])=>'<p class="tip-stat">+'+v+' '+STAT_NAMES[k]+(shift?'<small>'+statYield(k,v,game.player.level).map(y=>y.label+' '+signed(y.value)+(y.unit==='%'?' %':y.unit==='je s'?'/s':'')).join(' · ')+'</small>':'')+'</p>');
  if(!d.stats){if(d.health)lines.push('+'+d.health+' Leben');if(d.power)lines.push('+'+Math.round(d.power*100)+' % Schaden');if(d.armor)lines.push('−'+Math.round(d.armor*100)+' % erlittener Schaden');}
  return '<div class="tip-lines">'+lines.map(l=>'<p>'+l+'</p>').join('')+stats.join('')+'</div>'+(d.level?`<p class="tip-req${game.player.level<d.level?' requirements-failed':''}">Benötigt Stufe ${d.level}</p>`:'')+(d.affixText?.length?'<p class="tooltip-affixes">'+d.affixText.join('<br>')+'</p>':'')+(shift&&(d.unique||d.rarity==='epic'||d.rarity==='legendary')&&d.description?'<p class="tooltip-flavor">„'+d.description+'“</p>':'');}
