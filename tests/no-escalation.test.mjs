@@ -17,7 +17,7 @@ function fight(cls,spec=CLASS_SPECS[cls][0]){const g=new Game(world(),{classId:c
 const finish=g=>{if(g.casting)tickCasting(g,g.casting.total);};
 
 test('all nine specializations can cast their special skill immediately with no shared build-up',()=>{
- /* E-71: die drei E-32-Klassen; Schorsch und Käthe haben eigene Prüfungen (tests/class-resources.test.mjs) */
+ /* E-72: die drei E-32-Klassen; Schorsch und Käthe haben eigene Prüfungen (tests/class-resources.test.mjs) */
  for(const [cls,specs] of Object.entries(CLASS_SPECS).filter(([c])=>['dieter','baerbel','kevin'].includes(c)))for(const spec of specs){
   const {g,e}=fight(cls,spec),before=e.hp;g.player.energy=70;const bottles=g.res.bottles;
   assert.equal('runes' in g.player,false,spec);assert.equal(skillStatus(g,'burst').usable,true,spec);assert.equal(g.action('burst'),true,spec);finish(g);
@@ -35,8 +35,8 @@ test('legacy point values cannot change damage; early strikes no longer auto-esc
  }
 });
 test('converted talents provide energy and burst procs no longer need a three-point condition',()=>{
- const {g}=fight('baerbel','baerbel-care');learnCoreBuild(g,'baerbel-care');g.player.energy=20;g.player.hp-=100;assert.ok(g.action('heal'));finish(g);/* E-71: dazu kommen Likes für neuen Content */assert.ok(g.player.energy>=30);assert.equal('runes' in g.player,false);
- const {g:k}=fight('kevin');k.res.bottles=2;assert.equal(fireProcs(k,'burst',{'proc:rueckstrom':1}),1);/* E-71: Kevin bekommt Flaschen */assert.ok(k.res.bottles>2);
+ const {g}=fight('baerbel','baerbel-care');learnCoreBuild(g,'baerbel-care');g.player.energy=20;g.player.hp-=100;assert.ok(g.action('heal'));finish(g);/* E-72: dazu kommen Likes für neuen Content */assert.ok(g.player.energy>=30);assert.equal('runes' in g.player,false);
+ const {g:k}=fight('kevin');k.res.bottles=2;assert.equal(fireProcs(k,'burst',{'proc:rueckstrom':1}),1);/* E-72: Kevin bekommt Flaschen */assert.ok(k.res.bottles>2);
  for(const r of Object.values(PROC_RULES)){assert.notEqual(r.trigger,'burst3');assert.equal('points' in r.effect,false);}
  for(const rows of Object.values(TALENTS))for(const t of rows){const a=fight(t.spec.split('-')[0],t.spec).g,h=talentHelp(a,t);assert.doesNotMatch(h.effect+' '+h.context.join(' '),/Aufbaupunkt|Glanzpunkt|Druckpunkt|mit (?:3|drei) (?:Pegel|Glanz|Druck)|Eskalation|undefined|NaN/,t.id);}
 });

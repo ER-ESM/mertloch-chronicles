@@ -12,7 +12,7 @@ import {STORY_CHAPTERS,SPAWN_TABLES,MEMORY_FRAGMENTS,BUILDINGS,SIDE_QUESTS,NPCS,
 const realWorld=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')));
 const arena=()=>({id:'arena',seed:1,spawn:{x:0,y:0},npc:{x:10,y:0},shrine:{x:40,y:0},mentors:[],landmarks:[],camps:[],quests:[],hubs:[],
  findClear:(x,y)=>({x,y}),blocked:()=>false,lineClear:()=>true,walkClear:()=>true,findPath:(a,b)=>[b]});
-const lab=(saved={})=>{const g=new Game(arena(),{level:9,trainingXp:5000,...saved});g.player.energy=100;/* E-71: Dieter startet sonst bei 0 Randale */return g;};
+const lab=(saved={})=>{const g=new Game(arena(),{level:9,trainingXp:5000,...saved});g.player.energy=100;/* E-72: Dieter startet sonst bei 0 Randale */return g;};
 const memoryOf=id=>MEMORY_FRAGMENTS.find(m=>m.id===id);
 /** Erfüllt alle Ziele des laufenden Kapitels und holt die Belohnung bei Ida ab. */
 function playChapter(g){

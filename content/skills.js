@@ -40,7 +40,7 @@ export const KITS={
   {name:'Kabelbrand-Flucht',cd:3,steps:22,text:"Aus dem Gefahrenbereich flitzen, mit kurzem Schutz vor Treffern.",use:"Drück sie, wenn jemand in Nahkampfreichweite kommt oder der Boden raucht.",flavor:"„Das hat vorhin noch nicht geraucht.“"},
   {name:'Notfall-Laugengebäck',heal:225,text:"Heilt dich mit Laugengebäck. Die Serviette ist gleichzeitig Garantieschein und Brandschutzkonzept.",use:"Drück es bei fehlendem Leben, am besten hinter Deckung."}
  ],
- // E-71 · Schwenker-Schorsch: Glut + Grillrost (content/resources.js). Die Plätze 2 und 3 sind Auflegen und Servieren.
+ // E-72 · Schwenker-Schorsch: Glut + Grillrost (content/resources.js). Die Plätze 2 und 3 sind Auflegen und Servieren.
  schorsch:[
   {name:'Grillzange',cd:1.2,range:50,damage:60,gain:12,icon:'bottle',text:"Ein Griff mit der Grillzange im Nahkampf; heizt die Glut. Im goldenen Bereich der Glut trifft die Zange härter.",use:"Drück sie, sobald sie bereit ist – damit hältst du die Glut oben.",flavor:"„Nicht pieksen. Wenden.“"},
   {name:'Auflegen',cd:3,cost:0,range:0,dot:0,duration:0,text:"Legt das nächste Stück aus dem Grillplan auf einen freien Platz des Grillrosts; dort gart es mit der Glut.",use:"Leg auf, sobald ein Platz frei ist – gar wird es von allein."},
@@ -50,7 +50,7 @@ export const KITS={
   {name:'Kohlen-Sprint',cd:4,steps:20,text:"Ein kurzer Sprint mit kurzem Schutz vor Treffern; die Sohlen glühen noch.",use:"Drück ihn raus aus roten Flächen und weg vom Rudel."},
   {name:'Ablöschen',cd:14,heal:60,text:"Kippt Bier über den Rost: die Glut fällt deutlich, eine Dampfwolke trifft und bremst Gegner ringsum, und der Dampf heilt dich ein wenig.",use:"Drück es, bevor die Glut die Stichflamme erreicht – oder wenn du Luft brauchst.",flavor:"„Pils zum Löschen, Export zum Trinken.“"}
  ],
- // E-71 · Kreuz-Käthe: Blatt + Augen. Die Plätze 1–3 spielen die Karten der Hand; Name und Bild kommen aus der Karte.
+ // E-72 · Kreuz-Käthe: Blatt + Augen. Die Plätze 1–3 spielen die Karten der Hand; Name und Bild kommen aus der Karte.
  kaethe:[
   {name:'Karte 1',cd:0,range:0,damage:50,gain:5,icon:'paper',text:"Spielt die erste Karte deiner Hand aus. Die Farbe bestimmt die Wirkung, der Rang die Stärke; jede Karte zählt Augen.",use:"Drück sie, wenn die Karte zur Lage passt – Herz bei wenig Leben, Kreuz aufs Ziel, Pik vor dem Treffer."},
   {name:'Karte 2',cd:0,cost:0,range:0,dot:0,duration:0,text:"Spielt die zweite Karte deiner Hand aus. Gleiche Farbe wie die letzte Karte verlängert die Farbkette.",use:"Drück sie, wenn sie die Farbe der letzten Karte bedient oder einen Gegnerzauber sticht."},
@@ -74,7 +74,7 @@ export const BUFF_SKILLS={
 export const THROW_SKILL={id:'throw',key:'3',cd:6,cost:18,range:235,damage:75,icon:'bottle',color:'#dbc083',bg:'#5b6036',
  names:{dieter:'Pfand auf die Zwölf',baerbel:'Puderdose ins Gesicht',kevin:'Dosen-Drohne',schorsch:'Glutbrocken',kaethe:'Abrechnen'},
  flavor:{dieter:'Eine gezielt geworfene Mehrwegflasche',baerbel:'Eine fliegende Puderdose',kevin:'Eine ferngesteuerte Pfanddose',schorsch:'Ein glühender Brocken Holzkohle',kaethe:'Das ganze Spiel'},
- // E-71: Klassen, deren Wurfplatz etwas anderes tut, überschreiben Felder und Text ganz.
+ // E-72: Klassen, deren Wurfplatz etwas anderes tut, überschreiben Felder und Text ganz.
  overrides:{schorsch:{cost:15,range:180,text:'Ein glühender Brocken Holzkohle trifft ein einzelnes Ziel und setzt es in Brand; kostet Glut.',use:'Wirf ihn, wenn die Glut zu heiß wird oder ein Gegner auf Abstand bleibt.'},
   kaethe:{cd:2,cost:0,range:200,damage:0,text:'Rechnet das Spiel ab: Schaden je Auge am Ziel, ab 90 Augen Schneider, bei 120 Schwarz mit Umkreis. Danach beginnt ein neues Spiel bei null.',use:'Drück es, sobald du 61 Augen hast – oder zock weiter bis Schneider.'}},
  text:' trifft ein einzelnes Ziel. Ideal, um einen Gegner aus der Gruppe zu ziehen.',use:'Wirf ihn aus der Entfernung, bevor der Gegner dich erreicht.'};
@@ -95,7 +95,7 @@ export const TALENT_SKILLS={
  magnet:{name:'Magnetpanzer',radius:120,cd:22,cost:25,text:'Gibt Deckung, zieht nahe Gegner an und hält sie kurz fest. Das zieht auch bislang neutrale Ziele in den Kampf.',use:'Zünde ihn, wenn Fernkämpfer dich einzeln beharken.'},
  snare:null
 };
-// E-71: aktive Talentfähigkeiten der neuen Klassen (je Baum eine; Regeln in class-resources.js). Erst mit den Talentbäumen aktiv.
+// E-72: aktive Talentfähigkeiten der neuen Klassen (je Baum eine; Regeln in class-resources.js). Erst mit den Talentbäumen aktiv.
 const NEW_TALENT_SKILLS={
  senf:{name:'Senf drauf!',cd:20,cost:0,range:0,duration:8,text:'Ein Klecks scharfer Senf auf dich oder den gewählten Freund heilt 10 % des Maximallebens; 8 s lang gart dein Grillgut 50 % schneller.',use:'Drück es, wenn jemand angeschlagen ist und auf dem Rost noch alles roh liegt.'},
  spiritus:{name:'Spiritus-Schwall',cd:16,cost:0,range:0,radius:95,text:'Ein Schwall Spiritus in die Glut: Glut +30, und eine Stichflamme schießt vor dir in einem Kegel auf alle Gegner.',use:'Drück ihn, wenn mehrere Gegner vor dir stehen und die Glut noch Luft nach oben hat.'},

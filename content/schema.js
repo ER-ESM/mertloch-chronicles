@@ -58,7 +58,7 @@ export function validateContent(){const problems=[];const bad=(where,msg)=>probl
   if(r.trigger==='inZone'&&!r.zone)bad(w,'inZone braucht zone');
   if(!Object.keys(ef).length)bad(w,'effect leer');
   for(const k of Object.keys(ef))if(!['free','reset','empower','energy','shield','haste','heal','cdReduce','supply','clean',...RESOURCE_PROC_EFFECTS].includes(k))bad(w,'Effektart unbekannt: '+k);
-  /* E-71: Ressourcen-Wirkungen (glut darf kühlen, also negativ sein) */for(const k of RESOURCE_PROC_EFFECTS)if(k in ef&&!(typeof ef[k]==='number'&&ef[k]!==0&&Number.isFinite(ef[k])))bad(w,k+' braucht eine Zahl ungleich 0');
+  /* E-72: Ressourcen-Wirkungen (glut darf kühlen, also negativ sein) */for(const k of RESOURCE_PROC_EFFECTS)if(k in ef&&!(typeof ef[k]==='number'&&ef[k]!==0&&Number.isFinite(ef[k])))bad(w,k+' braucht eine Zahl ungleich 0');
   for(const k of ['free','reset','empower'])if(ef[k]&&!procSkills.has(ef[k]))bad(w,k+' zeigt auf unbekannten Kniff');
   for(const k of ['energy','shield','haste'])if(ef[k]!==undefined&&!(Number.isFinite(ef[k])&&ef[k]>0))bad(w,k+' muss positiv sein');
   if(ef.heal!==undefined&&!(typeof ef.heal==='number'?Number.isFinite(ef.heal)&&ef.heal>0:ef.heal&&Number.isFinite(ef.heal.damage)&&ef.heal.damage>0&&ef.heal.damage<=1))bad(w,'heal braucht Leben oder einen Schadensanteil > 0 bis 1');

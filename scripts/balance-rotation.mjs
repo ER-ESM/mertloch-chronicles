@@ -1,6 +1,6 @@
 // Gemeinsame Prioritäten-Rotation für Balance-Bericht und Balance-Sheet (E-59): beide messen dasselbe Spielerverhalten.
 // Der erste Kniff, der wirklich auslöst, gewinnt – gesperrte oder fehlende Kniffe blockieren nichts.
-// E-71: Jede Klasse spielt ihre Ressource so, wie ein geübter Spieler es täte: Dieter prellt die Zeche, Anni wechselt die
+// E-72: Jede Klasse spielt ihre Ressource so, wie ein geübter Spieler es täte: Dieter prellt die Zeche, Anni wechselt die
 // Kniffe, Kevin lädt in der Bon-Zone nach, Schorsch hält die Glut im goldenen Bereich und serviert gar, Käthe sticht,
 // bedient die Farbe und rechnet ab. Ob ein Kniff bezahlbar ist, entscheidet die Engine (action() liefert false).
 import {mechanic,mechVariant,M} from '../spec-mechanics.js';

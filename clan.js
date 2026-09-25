@@ -7,7 +7,7 @@ import {CLAN_MEMBERS,ALL_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALEN
 export const MENTOR_IDS=Object.keys(NPCS).filter(id=>NPCS[id].member);
 export {CLAN_MEMBERS,STORY};
 export function member(id){return CLAN_MEMBERS.find(m=>m.id===id)||CLAN_MEMBERS[0];}
-/** E-71: Kniffe der Klassenressource (Zeche prellen, Pfandautomat, Ass im Ärmel). */
+/** E-72: Kniffe der Klassenressource (Zeche prellen, Pfandautomat, Ass im Ärmel). */
 const resourceSkills=cls=>Object.entries(RESOURCE_SKILLS).filter(([,d])=>d.cls===cls).map(([id,d])=>({id,name:d.name,text:d.text,use:d.use,flavor:d.flavor,info:d.info,icon:id,cd:d.cd,cost:d.cost||0,color:d.color,bg:d.bg,offGcd:!!d.offGcd,mobile:!!d.mobile,...(d.spec?{resourceSpec:d.spec}:{})}));
 /** Klassen-Buffs (content/class-buffs.js) als Kniffe: im Kniffe-Menü, auf die Leiste legbar. icon = eigene ID wie bei Talentkniffen. */
 const classBuffSkills=cls=>classBuffsFor(cls).map(b=>({...CLASS_BUFF_SKILL,id:b.id,name:b.name,text:b.text,use:b.use,flavor:b.flavor,info:b.info,icon:b.id,duration:b.duration,effects:{...b.effects},...(b.talent?{talent:b.talent,spec:b.talent.replace(/-\d+$/,'')}:{})}));

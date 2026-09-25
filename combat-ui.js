@@ -19,7 +19,7 @@ const art=id=>id==='mount'?'<canvas width="48" height="48" data-mount-icon></can
 const DEFENSIVE_SKILLS=new Set(['parry','dash','interrupt','heal','buff','infusion','sanctuary','keg','barricade']);
 /** Zustandswechsel eines Kniffs (wie Icon-Overlays im Vorbild): Name der Variante aus den Kampfregeln (Spezialkniff, RESONANZ) oder Proc-Zustand. */
 function skillVariant(g,id,st,e,usable){
- /* E-71: Ressourcen-Variante – Käthes Karte steht immer auf dem Knopf, sonst nur, wenn der Kniff geht */const rv=resourceVariant(g,id);if(rv?.card)return rv;
+ /* E-72: Ressourcen-Variante – Käthes Karte steht immer auf dem Knopf, sonst nur, wenn der Kniff geht */const rv=resourceVariant(g,id);if(rv?.card)return rv;
  if(!usable)return null;if(rv)return rv;
  const mv=mechVariant(g,id);if(mv)return mv;
  if(id==='strike'){if(st.empowered>0)return {name:'Verstärkt',tone:'gold'};if(st.freeStrike)return {name:'Gratis',tone:'free'};}

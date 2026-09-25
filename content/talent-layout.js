@@ -18,7 +18,7 @@ export const PATH_FOCUS={
  'kevin-fuse':['Einzelziel über Zeit: dicke Lunten, die hart explodieren.','Kettenblitz: Der Kurzschluss springt weiter und verliert weniger.','Flächenzündung: viele Markierungen auf einmal sprengen.'],
  'kevin-iron':['Begleiter: Dosen-Robbi hält länger, schießt härter und folgt dir.','Paraden und Deckung: Nieten halten, was Robbi nicht abfängt.','Explosion: Robbis Überlast als großer Schlag mit Betäubung.'],
  'kevin-hunt':['Glücksspiel: mehr Überzündungen und kräftigere Fehlzündungen.','Bewegung: Ausweichen lädt Würfe, du schießt aus dem Lauf.','Fallen und Serien: Das Pfandseil fängt, der Jackpot zahlt aus.'],
- // E-71: neue Klassen
+ // E-72: neue Klassen
  'schorsch-chef':['Bratwurst heilt: gar servierte Würste pflegen dich und deine Leute.','Beilagen: mehr Platz auf dem Rost, schnelleres Garen, Buffs zum Essen.','Stammkundschaft: Buffet und Dampf versorgen die ganze Gruppe.'],
  'schorsch-flamme':['Stichflamme als Waffe: überhitzen, ohne dich zu verbrennen.','Schwenkbraten: der schwere Einzeltreffer, gar serviert.','Spiritus: Glutbrocken und Brand auf alles, was sich nähert.'],
  'schorsch-rauch':['Buchenrauch: Rauch bindet die Gegner an dich und schwächt sie.','Halloumi: Grillkäse wird zum Schild, der alles abhält.','Glutnest: Paraden heizen, nichts verkohlt, der Grill hält durch.'],

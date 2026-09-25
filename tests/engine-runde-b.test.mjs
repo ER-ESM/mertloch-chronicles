@@ -170,7 +170,7 @@ test('P8 · Kein Hofproben-Schritt erledigt sich ohne Eingabe, Zähler starten b
 test('P8 · Die Abklingzeit-Meldung nennt die Restzeit',()=>{
  const g=new Game(arena(),{level:10,trainingXp:20000});
  const e=makeEnemy({x:20,y:0},21,{hp:9000,behavior:'neutral',roamWait:100,attackTimer:100});
- g.enemies=[e];g.target=e;g.player.energy=100;/* E-71 */
+ g.enemies=[e];g.target=e;g.player.energy=100;/* E-72 */
  assert.ok(g.action('mark'));
  g.gcd=0;g.events.length=0;
  assert.equal(g.action('mark'),false);

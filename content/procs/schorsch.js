@@ -1,5 +1,5 @@
 // Proc-Regeln der Klasse schorsch: Auslöser → Wirkung mit Zeitfenster (Format siehe content/procs.js). Talente verweisen über proc:<id>.
-// E-71 Auslöser: serve / perfectServe (optional item:'wurst'|'braten'|'mais'|'kaese'), overheat (Stichflamme), vent (Ablöschen),
+// E-72 Auslöser: serve / perfectServe (optional item:'wurst'|'braten'|'mais'|'kaese'), overheat (Stichflamme), vent (Ablöschen),
 // glutPerfect (Glut steigt in den goldenen Bereich, höchstens alle 3 s). Wirkungen glut:n (negativ kühlt) und cook:Anteil (alles
 // auf dem Rost gart weiter) aus content/resources.js; dazu free/reset/empower/shield/heal/cdReduce. IDs mit Präfix grill- (klassenweit eindeutig).
 import {BALANCE} from '../balance.js';

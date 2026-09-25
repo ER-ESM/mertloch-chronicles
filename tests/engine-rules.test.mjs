@@ -133,7 +133,7 @@ test('Umland-Tiere halten auf Spielerstufe 10 mindestens 2,5 Sekunden durch',()=
   const g=new Game(arena(),{level,classId:'dieter',trainingXp:level*level*70});g.random=rng(7);g.player.x=g.player.y=0;
   for(const slot of ['weapon','body','feet','charm']){const id=Object.keys(ITEMS).find(k=>ITEMS[k].slot===slot&&(ITEMS[k].level||1)<=level&&!ITEMS[k].unique);if(id){addItem(g.rpg,id);equipItem(g,id);}}
   const e=makeEnemy({x:30,y:0},1,{...ARCHETYPES.boar,hp:1e9,aggro:true,ai:'combat',behavior:'aggressive'});g.enemies=[e];g.target=e;g.player.inCombat=7;
-  while(g.time<WINDOW&&!g.dead){if(g.gcd===0){/* E-71: erster Kniff, der wirklich auslöst */(g.cooldowns.burst===0&&g.action('burst'))||(!e.mark&&g.cooldowns.mark===0&&g.action('mark'))||g.action('strike');}g.tick(.05);}
+  while(g.time<WINDOW&&!g.dead){if(g.gcd===0){/* E-72: erster Kniff, der wirklich auslöst */(g.cooldowns.burst===0&&g.action('burst'))||(!e.mark&&g.cooldowns.mark===0&&g.action('mark'))||g.action('strike');}g.tick(.05);}
   assert.ok(!g.dead,'Puppe hat den Spieler auf Stufe '+level+' umgebracht');
   return g.stats.damage/g.time;
  };

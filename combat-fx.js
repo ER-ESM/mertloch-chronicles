@@ -3,7 +3,7 @@ import {classBuffsFor,RESOURCES} from './content/index.js';
 export const FX_THEMES={dieter:{sprite:'beer',color:'#efb94f',light:'#fff0bd'},baerbel:{sprite:'citrus',color:'#ff9b45',light:'#ffe4b0'},kevin:{sprite:'electric',color:'#50d4e7',light:'#caffef'},schorsch:{sprite:'citrus',color:'#f07a2a',light:'#ffd9a0'},kaethe:{sprite:'electric',color:'#b89ad0',light:'#f1e6ff'}};
 const common={auto:'attack',strike:'attack',throw:'throw',mark:'mark',burst:'burst',interrupt:'interrupt',parry:'ready',dash:'dash',heal:'heal',buff:'buff',ground:'deploy'};
 export const SKILL_FX={dieter:{...common,barricade:'barricade',slam:'slam',keg:'keg',zeche:'burst'},baerbel:{...common,sanctuary:'sanctuary',infusion:'infusion',encore:'encore'},kevin:{...common,detonate:'detonate',magnet:'magnet',snare:'snare',reload:'buff'},
- // E-71: Schorsch und Käthe – die Ressourcen-Effekte (serve, steam, overheat, card-throw …) kommen aus class-resources.js; hier nur die Grundbilder.
+ // E-72: Schorsch und Käthe – die Ressourcen-Effekte (serve, steam, overheat, card-throw …) kommen aus class-resources.js; hier nur die Grundbilder.
  schorsch:{...common,mark:'buff',burst:'throw',heal:'heal',ground:'deploy',senf:'heal',spiritus:'burst',deckelzu:'barricade'},kaethe:{...common,strike:'throw',mark:'throw',burst:'throw',throw:'burst',ground:'deploy',reizen:'buff',handlesen:'heal',gezinkt:'buff',aermel:'buff'}};
 // Klassen-Buffs (class-buffs.js) nutzen das Bild der Stärkung; es erscheint am Ziel (Held oder Söldner).
 for(const cls of Object.keys(SKILL_FX))for(const b of classBuffsFor(cls))SKILL_FX[cls][b.id]='buff';

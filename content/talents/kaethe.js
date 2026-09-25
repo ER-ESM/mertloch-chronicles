@@ -1,4 +1,4 @@
-// Talentbäume der Klasse kaethe (E-71, docs/KLASSEN-RESSOURCEN-2026-09-25.md §3.5): drei offene Bäume (E-37) mit je
+// Talentbäume der Klasse kaethe (E-72, docs/KLASSEN-RESSOURCEN-2026-09-25.md §3.5): drei offene Bäume (E-37) mit je
 // 30 Talenten in 10 Reihen × 3 Pfaden. Speicherschlüssel <spec>-<index>: Reihenfolge nie ändern, neue Talente hinten anhängen.
 // Solange TALENTS_KAETHE leer ist, ist die Klasse nicht wählbar (content/classes.js).
 // Reihenfolge: Index = Reihe × 3 + Pfad (Reihe 0–9, Pfad 0–2). Reihe 0–3 Gemeingut, ab Reihe 4 Handschrift, Reihe 9 Schlussstein

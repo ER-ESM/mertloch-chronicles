@@ -1,4 +1,4 @@
-// Klassenressourcen (E-71, docs/KLASSEN-RESSOURCEN-2026-09-25.md). Jede Klasse hat ein eigenes Ressourcenmodell:
+// Klassenressourcen (E-72, docs/KLASSEN-RESSOURCEN-2026-09-25.md). Jede Klasse hat ein eigenes Ressourcenmodell:
 // rage (Dieter: Randale als Wut + Zeche), trend (Anni: Likes + Trend), ammo (Kevin: Leergut-Kasten), grill (Schorsch:
 // Glut + Grillrost), cards (Käthe: Blatt + Augen). Nur Daten und Texte; die Regeln stehen in class-resources.js.
 // Zahlen gehören Balancing: tuning.js legt über `TUNING.resources` Werte drüber.

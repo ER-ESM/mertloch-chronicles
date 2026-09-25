@@ -51,7 +51,7 @@ export function skillDamageRange(game,s,base){
 
 function describeSkill(game,id){
  const s=game.skills.find(s=>s.id===id);if(!s)return null;
- const cs=combatStats(game),cd=skillCooldown(game,s,cs),cost=resourceCost(game,s,cs,skillCost(game,s,cs));/* E-71: Kosten in der Ressource der Klasse */
+ const cs=combatStats(game),cd=skillCooldown(game,s,cs),cost=resourceCost(game,s,cs,skillCost(game,s,cs));/* E-72: Kosten in der Ressource der Klasse */
  const damage=s.damage!==undefined?skillDamageRange(game,s,s.damage):s.base!==undefined?skillDamageRange(game,s,s.base):null;
  const numbers=[];
  if(damage)numbers.push(num('Schaden',damage.min===damage.max?damage.min:damage.min+'–'+damage.max,'','Waffe + Wertungen'));

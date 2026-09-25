@@ -47,7 +47,7 @@ export const SPEC_MECHANICS={
   paths:[{name:'Sporen',bonus4:{dotSpread:1},bonus7:{dotRadius:40}},{name:'Provision',bonus4:{markedLeech:.05},bonus7:{dotHeal:1}},{name:'Downline',bonus4:{spreadMark:1},bonus7:{dotExplodeTicks:3}}]},
  'baerbel-stage':{kind:'state',name:'Putzwut',output:{damage:0.89},
   state:{trigger:100,duration:10,damage:1.25,drain:10,finisherPerEnergy:2,mobile:['strike','throw','burst']},
-  // Trinkspiel als Ansage/Antwort (E-32 Nr. 8): Parade, während der Gegner einen Zauber ansagt, = „Prost!“ mit Likes-Bonus (E-71: Annis Ressource)
+  // Trinkspiel als Ansage/Antwort (E-32 Nr. 8): Parade, während der Gegner einen Zauber ansagt, = „Prost!“ mit Likes-Bonus (E-72: Annis Ressource)
   prost:{energy:30},
   kit:{burst:{name:'Auswringen',text:'Ein starker Einschlag. Bei 100 Likes beginnt 10 s Putzwut: alle Kniffe kostenlos, 25 % härter, im Laufen wirkbar. In der Putzwut beendet Auswringen den Zustand mit Bonusschaden aus den Rest-Likes.',use:'Zünde es kurz vor Ablauf der Putzwut.'},
    buff:{name:'Ringlicht',text:'Kurz mehr Schaden.',use:'Drück es, sobald die Likes über 80 liegen – die Putzwut kommt dann sicher.'}},
@@ -72,7 +72,7 @@ export const SPEC_MECHANICS={
   variant:{throw:{when:'jackpot',name:'JACKPOT',tone:'gold'},strike:{when:'jackpot',name:'JACKPOT',tone:'gold'}},
   paths:[{name:'Glückssträhne',bonus4:{gambleOver:.1},bonus7:{gamblePity:-1}},{name:'Fangschuss',bonus4:{dashFreeThrow:1},bonus7:{gambleMisfireMult:.3}},{name:'Jackpot',bonus4:{jackpotDuration:4},bonus7:{jackpotStreak:-1}}]}
 };
-// --- E-71: Hauptbäume der neuen Klassen (erst aktiv, wenn ihre Talentbäume im Inhalt stehen). kind 'resource' = die Regel liegt in class-resources.js und dreht an der
+// --- E-72: Hauptbäume der neuen Klassen (erst aktiv, wenn ihre Talentbäume im Inhalt stehen). kind 'resource' = die Regel liegt in class-resources.js und dreht an der
 // Klassenressource (Grillplan, Flambieren, Räuchern, Grand, Herz, Ärmel). resVariant = Leistenvariante der Ressource.
 export const NEW_SPEC_MECHANICS={
  'schorsch-chef':{kind:'resource',name:'Grillbuffet',output:{damage:0.8,healing:1.15},

@@ -4,7 +4,7 @@ import {HOTSPOT_ITEMS} from './hotspots.js';
 // Felder: name, slot (Ausrüstungskategorie aus SLOTS) ODER kind (consumable|material), rarity, icon (siehe ICONS),
 // level (Mindeststufe), stats {stamina,might,finesse,wit,armorRating} (E-53),
 // weapon {type,hands,min,max}: Hände 0 = Fernkampf, 1 = Einhand, 2 = Zweihand; shield:true = Nebenhandschild.
-// heal/energy (Verpflegung; energy = Ressourcenpunkte, die Engine rechnet sie je Klasse um – E-71, content/resources.js), stack, value (Pfandmarken), unique, proc (Effekt-ID aus PROCS), description, look (Bildhinweis).
+// heal/energy (Verpflegung; energy = Ressourcenpunkte, die Engine rechnet sie je Klasse um – E-72, content/resources.js), stack, value (Pfandmarken), unique, proc (Effekt-ID aus PROCS), description, look (Bildhinweis).
 // usable:true = benutzbar und damit für die Aktionsleiste zugelassen (heute genau die Verpflegung; Engine/UI setzen es um).
 // Erweiterte Beschreibungen (info: effect/numbers/why/links/terms) stehen in content/item-info.js und hängen sich dort an.
 import {ITEM_ICON_OVERRIDES,DETAIL_ICONS} from './item-icons.js';

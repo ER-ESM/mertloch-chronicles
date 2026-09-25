@@ -1,7 +1,7 @@
 // Spielbare Figuren des Poo-Tang-Clans. IDs sind Speicherschlüssel und Grafikschlüssel (assets/clan-skills-013/<id>.png).
 // `passive` ist der Kurztext auf der Klamottenkarte (clan-ui.js) und muss sagen, was sich schon auf Stufe 1 anders anfühlt.
 // `passives` ist die gemeinsame Quelle für Klassenbeschreibung und Laufzeitwerte.
-// E-71: jede Klasse hat ihre eigene Ressource (content/resources.js). Schorsch und Käthe sind wählbar, sobald ihre drei
+// E-72: jede Klasse hat ihre eigene Ressource (content/resources.js). Schorsch und Käthe sind wählbar, sobald ihre drei
 // Talentbäume im Inhalt stehen (content/talents/<klasse>.js) – vorher würde die Klasse ohne Talente erscheinen.
 import {TALENTS_SCHORSCH} from './talents/schorsch.js';
 import {TALENTS_KAETHE} from './talents/kaethe.js';

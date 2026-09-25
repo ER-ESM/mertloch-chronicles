@@ -14,7 +14,7 @@ export const procIds=cs=>Object.keys(cs).filter(k=>k.startsWith('proc:')&&cs[k]>
 export function fireProcs(g,trigger,cs,info={}){const st=g.procState||(g.procState=freshProcState());st.counts||(st.counts={});let fired=0;const p=g.player;
  for(const id of procIds(cs)){const r=PROC_RULES[id];if(!r||r.trigger!==trigger)continue;
   // Auslöser mit Kniff-Bindung (skillHit) zünden nur beim genannten Kniff; `every` zählt deterministisch mit.
-  if(r.skill&&r.skill!==info.skill)continue;if(r.suit&&r.suit!==info.suit)continue;if(r.item&&r.item!==info.item)continue;/* E-71: Filter Kartenfarbe / Grillgut */if(r.zone&&![].concat(r.zone).some(z=>info.zones?.includes(z)))continue;/* zone: eine Art oder eine Liste (E-60) */
+  if(r.skill&&r.skill!==info.skill)continue;if(r.suit&&r.suit!==info.suit)continue;if(r.item&&r.item!==info.item)continue;/* E-72: Filter Kartenfarbe / Grillgut */if(r.zone&&![].concat(r.zone).some(z=>info.zones?.includes(z)))continue;/* zone: eine Art oder eine Liste (E-60) */
   if(r.every>1){const n=st.counts[id]=(st.counts[id]||0)+1;if(n%r.every)continue;}
   const chance=cs['talentProcChance:'+id]??r.chance;
   if(chance<1&&g.random()>=chance)continue;fired++;st.fired++;const until=g.time+r.window,leech=cs['talentProcLeech:'+id],ef=leech===undefined?r.effect:{...r.effect,heal:{damage:leech}};

@@ -41,19 +41,19 @@ export const TUNING={
  // Kernmechaniken (E-32, content/mechanics.js): spec → verschachtelte Zahlen, z. B. 'dieter-brawl':{stack:{decay:9},why,since}
  mechanics:{
   // Messlauf scripts/spec-sim.mjs (45 s, drei Puppen, naive Rotation, Stufe 11, ohne Talente): Median 142 DPS. Ziel: Schadens-Specs ±15 %, Tank/Heilung darunter.
-  'kevin-fuse':{chain:{falloff:.45},fuse:{explode:{damage:70}},output:{damage:0.8},why:'E-71: Pfandbon +8 % – Faktor 0,85 → 0,8. Kurzschluss + Lunten lagen bei +44 % (mit Lunten-Pfad +151 %): drei Sprünge mit 30 % Verlust plus 90er-Explosionen stapeln sich gegen Gruppen; Verlust 45 %, Explosion 70',since:'2026-09-19'},
-  'baerbel-stage':{state:{damage:1.2,drain:12},output:{damage:0.72},why:'E-71: Trend und häufigere Putzwut hoben die Filter-Furie um 30 % – Faktor 0,89 → 0,72. Putzwut lag bei +29 %: 25 % Bonus bei 10 s Dauer war zu viel; 20 % und schnellerer Randale-Verbrauch (12/s) verkürzen den Zustand',since:'2026-09-19'},
-  'kevin-hunt':{gamble:{misfire:.15,overMult:2},output:{damage:1.16},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8. E-71: Pfandbon und volle Nachladungen hoben Kevin um 8 % – Faktor 1,25 → 1,16',since:'2026-09-25'},
-  // E-71 (Messlauf Stufe 12, 60 s, Puppe, scripts/balance-rotation.mjs): Vorher-Werte aus dem Stand vor E-71, Ziel: alte Klassen ±5 %, neue Klassen im Korridor (Schaden ≈ 100, Tank ≈ 82, Heilung ≈ 80).
-  'baerbel-care':{output:{damage:1.0,healing:1.15},why:'E-71: Annis Trend (+4 % je Stufe) hob den Schaden um 19 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
-  'baerbel-feedback':{output:{damage:1.0},why:'E-71: Trend +21 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
-  'kevin-iron':{output:{damage:1.0},why:'E-71: Pfandbon +8 % – Faktor 1,08 → 1,0',since:'2026-09-25'},
-  'schorsch-chef':{output:{damage:1.2,healing:.8},chef:{wurstBonus:.25},why:'E-71: der Grillplan des Chefs bringt zwei Würste je Braten – Schaden ×1,2 für den Heiler-Korridor; Balance-Sheet: Heilung +70 bis +108 % über dem Median → Wurst-Bonus 50 → 25 %, Heilfaktor 1,15 → 0,9',since:'2026-09-25'},
-  'schorsch-flamme':{output:{damage:.78},flamme:{bonus:.3,splash:{share:.25},overheatFactor:1.3},why:'E-71 Balance-Sheet: Flambierer +60 bis +125 % in Gruppen (Feuerspritzer, Stichflamme ×2, Popcorn) – Flambieren +50 → +30 %, Spritzer 40 → 25 %, Stichflamme ×2 → ×1,4, Faktor 0,85',since:'2026-09-25'},
-  'schorsch-rauch':{output:{damage:1.05},rauch:{smoke:{weaken:.15}},why:'E-71 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82)',since:'2026-09-25'},
-  'kaethe-grand':{output:{damage:1},why:'E-71: nach dem Kartenschaden-Abgleich (Kreuz/Karo +50 %) Faktor 1',since:'2026-09-25'},
-  'kaethe-herz':{output:{healing:1.3},herz:{bonus:.6},why:'E-71 Balance-Sheet: Kartenlegerin heilte 25–56 % unter dem Median – Herz-Bonus 40 → 60 %, Heilfaktor 1,2',since:'2026-09-25'},
-  'kaethe-falsch':{output:{damage:1.1},why:'E-71 Balance-Sheet: Falschspielerin lag 25–50 % unter dem Median – Faktor 0,95 nach dem Kartenschaden-Abgleich',since:'2026-09-25'}
+  'kevin-fuse':{chain:{falloff:.45},fuse:{explode:{damage:70}},output:{damage:0.8},why:'E-72: Pfandbon +8 % – Faktor 0,85 → 0,8. Kurzschluss + Lunten lagen bei +44 % (mit Lunten-Pfad +151 %): drei Sprünge mit 30 % Verlust plus 90er-Explosionen stapeln sich gegen Gruppen; Verlust 45 %, Explosion 70',since:'2026-09-19'},
+  'baerbel-stage':{state:{damage:1.2,drain:12},output:{damage:0.72},why:'E-72: Trend und häufigere Putzwut hoben die Filter-Furie um 30 % – Faktor 0,89 → 0,72. Putzwut lag bei +29 %: 25 % Bonus bei 10 s Dauer war zu viel; 20 % und schnellerer Randale-Verbrauch (12/s) verkürzen den Zustand',since:'2026-09-19'},
+  'kevin-hunt':{gamble:{misfire:.15,overMult:2},output:{damage:1.16},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8. E-72: Pfandbon und volle Nachladungen hoben Kevin um 8 % – Faktor 1,25 → 1,16',since:'2026-09-25'},
+  // E-72 (Messlauf Stufe 12, 60 s, Puppe, scripts/balance-rotation.mjs): Vorher-Werte aus dem Stand vor E-72, Ziel: alte Klassen ±5 %, neue Klassen im Korridor (Schaden ≈ 100, Tank ≈ 82, Heilung ≈ 80).
+  'baerbel-care':{output:{damage:1.0,healing:1.15},why:'E-72: Annis Trend (+4 % je Stufe) hob den Schaden um 19 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
+  'baerbel-feedback':{output:{damage:1.0},why:'E-72: Trend +21 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
+  'kevin-iron':{output:{damage:1.0},why:'E-72: Pfandbon +8 % – Faktor 1,08 → 1,0',since:'2026-09-25'},
+  'schorsch-chef':{output:{damage:1.2,healing:.8},chef:{wurstBonus:.25},why:'E-72: der Grillplan des Chefs bringt zwei Würste je Braten – Schaden ×1,2 für den Heiler-Korridor; Balance-Sheet: Heilung +70 bis +108 % über dem Median → Wurst-Bonus 50 → 25 %, Heilfaktor 1,15 → 0,9',since:'2026-09-25'},
+  'schorsch-flamme':{output:{damage:.78},flamme:{bonus:.3,splash:{share:.25},overheatFactor:1.3},why:'E-72 Balance-Sheet: Flambierer +60 bis +125 % in Gruppen (Feuerspritzer, Stichflamme ×2, Popcorn) – Flambieren +50 → +30 %, Spritzer 40 → 25 %, Stichflamme ×2 → ×1,4, Faktor 0,85',since:'2026-09-25'},
+  'schorsch-rauch':{output:{damage:1.05},rauch:{smoke:{weaken:.15}},why:'E-72 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82)',since:'2026-09-25'},
+  'kaethe-grand':{output:{damage:1},why:'E-72: nach dem Kartenschaden-Abgleich (Kreuz/Karo +50 %) Faktor 1',since:'2026-09-25'},
+  'kaethe-herz':{output:{healing:1.3},herz:{bonus:.6},why:'E-72 Balance-Sheet: Kartenlegerin heilte 25–56 % unter dem Median – Herz-Bonus 40 → 60 %, Heilfaktor 1,2',since:'2026-09-25'},
+  'kaethe-falsch':{output:{damage:1.1},why:'E-72 Balance-Sheet: Falschspielerin lag 25–50 % unter dem Median – Faktor 0,95 nach dem Kartenschaden-Abgleich',since:'2026-09-25'}
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
  },
  // Klassen-Buffs (content/class-buffs.js, docs/KLASSEN-BUFFS-2026-09-23.md): Wirkung je Buff und Wert. Jeder Buff hebt einen anderen Wert,
@@ -65,12 +65,12 @@ export const TUNING={
   vorherNachher:{effects:{haste:.05},why:'Startwert: +5 % Tempo ≈ +5 % Schaden und kürzere globale Abklingzeit; das stärkste Schadenspaket der sechs, deshalb am unteren Rand',since:'2026-09-23'},
   kabelbinderSohlen:{effects:{speed:.1},why:'Startwert: +10 % Laufgeschwindigkeit zu Fuß; kein Kampfwert, deshalb am oberen Rand. Reittiere haben ihr eigenes Tempo',since:'2026-09-23'},
   pfandradar:{effects:{crit:.04},why:'Startwert: +4 Prozentpunkte Glückstreffer-Chance ≈ +2,5 % Schaden (Faktor 1,6); ergänzt Tempo statt es zu verdoppeln',since:'2026-09-23'},
-  grillteller:{effects:{damage:.04},why:'E-71 Startwert: +4 % Schaden – etwas unter dem Tempo-Filter (+5 % Tempo), weil er ohne Umweg über die Abklingzeiten wirkt',since:'2026-09-25'},
-  wurstbroetchen:{effects:{healPower:.06},why:'E-71 Startwert: +6 % verursachte Heilung – spiegelt den Aperol-Spritz (erhaltene Heilung) auf der Geberseite',since:'2026-09-25'},
-  glueckspfennig:{effects:{critDamage:.1},why:'E-71 Startwert: +10 % Glückstreffer-Schaden ≈ +1 % Schaden bei 15 % Chance; ergänzt das Pfandradar (Chance), statt es zu verdoppeln',since:'2026-09-25'},
-  strickschal:{effects:{shieldPower:.1},why:'E-71 Startwert: +10 % stärkere Deckung und Schilde – nur wer Deckung bekommt, profitiert; darum höher als die Schadensbuffs',since:'2026-09-25'}
+  grillteller:{effects:{damage:.04},why:'E-72 Startwert: +4 % Schaden – etwas unter dem Tempo-Filter (+5 % Tempo), weil er ohne Umweg über die Abklingzeiten wirkt',since:'2026-09-25'},
+  wurstbroetchen:{effects:{healPower:.06},why:'E-72 Startwert: +6 % verursachte Heilung – spiegelt den Aperol-Spritz (erhaltene Heilung) auf der Geberseite',since:'2026-09-25'},
+  glueckspfennig:{effects:{critDamage:.1},why:'E-72 Startwert: +10 % Glückstreffer-Schaden ≈ +1 % Schaden bei 15 % Chance; ergänzt das Pfandradar (Chance), statt es zu verdoppeln',since:'2026-09-25'},
+  strickschal:{effects:{shieldPower:.1},why:'E-72 Startwert: +10 % stärkere Deckung und Schilde – nur wer Deckung bekommt, profitiert; darum höher als die Schadensbuffs',since:'2026-09-25'}
  },
- // E-71: Zahlen der Klassenressourcen (content/resources.js). Leer = Startwerte aus dem Design.
+ // E-72: Zahlen der Klassenressourcen (content/resources.js). Leer = Startwerte aus dem Design.
  resources:{},
 };
 /** Rahmen der Klassen-Buffs: Dauer in Sekunden, Verstärkung je Talentstufe (`classBuff:<id>`), Obergrenze der Stärke beim Empfang. */

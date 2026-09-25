@@ -1,4 +1,4 @@
-// E-71 · Fünf Klassen, fünf Ressourcen (docs/KLASSEN-RESSOURCEN-2026-09-25.md). Jede Prüfung spielt die Regel im echten
+// E-72 · Fünf Klassen, fünf Ressourcen (docs/KLASSEN-RESSOURCEN-2026-09-25.md). Jede Prüfung spielt die Regel im echten
 // Spiel durch: Treffer, Kniffe, Takte – keine Einzelfunktionen.
 import test from 'node:test';
 import assert from 'node:assert/strict';

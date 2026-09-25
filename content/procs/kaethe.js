@@ -1,5 +1,5 @@
 // Proc-Regeln der Klasse kaethe: Auslöser → Wirkung mit Zeitfenster (Format siehe content/procs.js). Talente verweisen über proc:<id>.
-// E-71: neue Auslöser cardPlayed (Filter suit), follow (Farbe bedient, Filter suit), stich, gameWon (Abrechnen), bubePlayed,
+// E-72: neue Auslöser cardPlayed (Filter suit), follow (Farbe bedient, Filter suit), stich, gameWon (Abrechnen), bubePlayed,
 // shuffle (Stapel neu gemischt oder Neu geben); neue Wirkungen augen:n, draw:1 (neue Hand). skillHit braucht skill und every.
 import {BALANCE} from '../balance.js';
 const W=BALANCE.procs.defaultWindow;

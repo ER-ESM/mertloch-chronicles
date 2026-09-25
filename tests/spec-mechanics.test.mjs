@@ -19,7 +19,7 @@ function cast(g,id,point){g.cooldowns[id]=0;g.gcd=0;g.player.energy=100;const ok
 const step=(g,s)=>{for(let i=0;i<Math.round(s/.05);i++)g.tick(.05);};
 
 test('alle neun Spezialisierungen haben eine Kernmechanik mit Kit-Texten, die sagen, wann man drückt',()=>{
- assert.equal(Object.keys(SPEC_MECHANICS).length,Object.values(CLASS_SPECS).flat().length);/* E-71: drei je Klasse */
+ assert.equal(Object.keys(SPEC_MECHANICS).length,Object.values(CLASS_SPECS).flat().length);/* E-72: drei je Klasse */
  for(const [spec,m] of Object.entries(SPEC_MECHANICS)){assert.ok(m.kind&&m.name,spec);assert.equal(m.paths.length,3,spec+' drei Pfade');
   for(const [id,k] of Object.entries(m.kit))assert.ok(/drück|Drück|zünde|Zünde|stell|Stell|wirf|Wirf|sobald|bevor|wenn/i.test(k.use||k.text),spec+'/'+id+' Einsatzmoment');}
 });
@@ -51,7 +51,7 @@ test('Filter-Furie: 100 Randale im Kampf zünden Putzwut, Kniffe sind darin kost
  const g=game('baerbel','baerbel-stage');enemy(g);g.player.inCombat=5;g.player.energy=100;step(g,.1);
  assert.ok(M(g).state>0,'Putzwut');g.keys.add('d');cast(g,'strike');g.keys.delete('d');
  assert.equal(mechVariant(g,'strike')?.name,'PUTZWUT');
- g.player.energy=50;cast(g,'burst');assert.equal(M(g).state,0);/* E-71: Auswringen leert die Likes, der Kniff selbst bringt neue */assert.ok(g.player.energy<=RESOURCES.baerbel.trend.likes.at(-1));
+ g.player.energy=50;cast(g,'burst');assert.equal(M(g).state,0);/* E-72: Auswringen leert die Likes, der Kniff selbst bringt neue */assert.ok(g.player.energy<=RESOURCES.baerbel.trend.likes.at(-1));
 });
 
 test('Zündmeister: Kurzschluss springt nur auf kämpfende Nachbarn, Lunten zünden, drei Zündungen lösen die Kettenreaktion',()=>{
@@ -111,7 +111,7 @@ test('nach einem Kill wechselt das Ziel auf den nächsten kämpfenden Gegner',()
 test('Schlusssteine (Reihe 9) ändern in jedem Baum den Finisher',()=>{
  const finisher=new Set(['guardBurst','waveRadius','stackWave','tapDamage','burstHot','cleanDuration','burstSpread','dotExplodeTicks','stateDamage','chainJumps','overloadStun','hunterFinish','gambleOver']);
  for(const [spec,m] of Object.entries(SPEC_MECHANICS)){void m;}
- for(const spec of Object.keys(SPEC_MECHANICS)){const {TALENT_ROWS,TALENT_CELLS}=CONTENT;const rows=TALENT_ROWS[spec];for(let i=0;i<rows.length;i++){if(TALENT_CELLS[spec][i].row!==9)continue;/* E-71: Käthes Finisher ist Abrechnen (Wurfplatz) */const fin=spec.startsWith('kaethe-')?'throw':'burst';assert.ok(rows[i].skills.includes(fin)||Object.keys(rows[i].effects).some(k=>finisher.has(k)),spec+'-'+i+' '+rows[i].name);}}
+ for(const spec of Object.keys(SPEC_MECHANICS)){const {TALENT_ROWS,TALENT_CELLS}=CONTENT;const rows=TALENT_ROWS[spec];for(let i=0;i<rows.length;i++){if(TALENT_CELLS[spec][i].row!==9)continue;/* E-72: Käthes Finisher ist Abrechnen (Wurfplatz) */const fin=spec.startsWith('kaethe-')?'throw':'burst';assert.ok(rows[i].skills.includes(fin)||Object.keys(rows[i].effects).some(k=>finisher.has(k)),spec+'-'+i+' '+rows[i].name);}}
 });
 
 test('laufende Begleiter: mit Pfadkrone folgt Robbi dem Helden',()=>{

@@ -1124,7 +1124,7 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 - Weltruf gegen Zonentitel ist nur im Code geprüft.
 - Die Entschärfung des Einstiegswegs gilt nur für Kapitel 1.
 
-## E-71 · Fünf Klassen, fünf Ressourcen: eigene Erzeuger, Verbraucher und Risiken je Held (25.09.2026, ergänzt E-32 und E-36)
+## E-72 · Fünf Klassen, fünf Ressourcen: eigene Erzeuger, Verbraucher und Risiken je Held (25.09.2026, ergänzt E-32 und E-36)
 
 **Anlass.** Nutzerauftrag 25.09.2026: „Mit der Randale sind alle Helden gleich … jeder Held soll sich einzigartig anfühlen … 5 unterschiedliche Klassendesigns mit unterschiedlichem Ressourcenmanagement, vollständig und Talente entsprechend.“ Befund: E-32 gab jeder Spec eine Kernmechanik, aber Erzeuger (Grundangriff + Nachfluss), Verbraucher (Markierung 20, Finisher 35 …) und die Entscheidung („über 80 halten“) waren für alle drei Klassen identisch. Design und Vertrag: [KLASSEN-RESSOURCEN-2026-09-25.md](KLASSEN-RESSOURCEN-2026-09-25.md).
 
@@ -1138,7 +1138,7 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 2. **Zwei neue Klassen** (`schorsch`, `kaethe`) mit je drei offenen Bäumen nach E-37 (Grillhütten-Chef/Flambierer/Räuchermeister; Grand-Spielerin/Kartenlegerin/Falschspielerin), je 90 Talente, je Baum eine aktive Talentfähigkeit (Senf drauf!, Spiritus-Schwall, Deckel zu!, Reizen, Handlesen, Gezinkte Karten), zwei Klassen-Buffs je Klasse (Grillteller, Wurstbrötchen, Glückspfennig, Strickschal). Die Klassen schalten sich erst frei, wenn ihre Bäume vollständig im Inhalt stehen.
 3. **Alte Bäume bleiben** (Speicherschlüssel); je Baum wurden zwei Talente der Reihen 0–3 gegen Ressourcen-Talente getauscht (Index, Reihe, Pfad bleiben). Anni-Texte sprechen von Likes, Kevin-Texte von Flaschen (Umrechnung 10 : 1).
 4. **Gutschriften** aus klassenfremden Quellen (Proc `energy`, Verpflegung, Kill-Schwung, Parade, Bastelgrips) rechnet `grantResource` je Klasse um. Neue Proc-Auslöser und -Wirkungen (bottles, glut, cook, augen, draw, trend, tab) gelten für die Talente.
-5. **Balance-Rotation** (`scripts/balance-rotation.mjs`) spielt jede Ressource wie ein geübter Spieler (nachladen in der Bon-Zone, gar servieren, stechen, abrechnen). Erstabgleich Stufe 12 gegen eine Puppe: alte Klassen innerhalb von ±6 % ihres Werts vor E-71, neue Klassen im Korridor (Schaden ≈ 100, Tank ≈ 82, Heilung ≈ 75–85).
+5. **Balance-Rotation** (`scripts/balance-rotation.mjs`) spielt jede Ressource wie ein geübter Spieler (nachladen in der Bon-Zone, gar servieren, stechen, abrechnen). Erstabgleich Stufe 12 gegen eine Puppe: alte Klassen innerhalb von ±6 % ihres Werts vor E-72, neue Klassen im Korridor (Schaden ≈ 100, Tank ≈ 82, Heilung ≈ 75–85).
 
 **Verworfen.** Randale für alle mit neuen Namen (ändert nichts am Spielgefühl); fünf komplett neue Klassen statt Umbau (Spielstände und 270 Talente); Rhythmus-/Musikklasse (Touch- und Tonabhängigkeit).
 

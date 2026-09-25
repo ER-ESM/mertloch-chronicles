@@ -23,7 +23,7 @@ export const pc=v=>nice(v*100)+' %';
 /** Welteinheiten → Meter (8 Einheiten = 1 m, siehe content/combat.js). */
 export const metres=u=>Math.round(u/8*10)/10;
 
-// --- E-71: Klassenressourcen in Texten und Zahlenzeilen ---------------------------------------
+// --- E-72: Klassenressourcen in Texten und Zahlenzeilen ---------------------------------------
 // Gutschriften aus Talenten, Procs, Gegenständen, Kills und Paraden stehen als Randale-Werte in den Daten. Die Engine rechnet sie
 // je Klasse um (content/resources.js grantRate): Randale und Likes 1 : 1, Kevin 10 : 1 in Flaschen, Schorsch/Käthe anteilig.
 const SINGULAR={Flaschen:'Flasche',Likes:'Like',Augen:'Auge'};
@@ -51,10 +51,10 @@ function classUnits(label,value,unit,cls){
 }
 
 export const GLOSSARY={
- // E-71: Randale ist nur noch Dieters Ressource – Wut statt Vorrat. Zahlen aus RESOURCES.dieter, BALANCE und seinem Grundangriff.
+ // E-72: Randale ist nur noch Dieters Ressource – Wut statt Vorrat. Zahlen aus RESOURCES.dieter, BALANCE und seinem Grundangriff.
  randale:{name:'Randale',short:`Dieters Wut: startet bei ${RESOURCES.dieter.start}, kommt aus Treffern – eingesteckten wie ausgeteilten – und verraucht nach dem Kampf. Ab ${RESOURCES.dieter.surgeAt} ist er in Fahrt.`,
   long:`Skala 0 bis ${RESOURCES.dieter.max}, jeder Kampf beginnt bei ${RESOURCES.dieter.start}. Im Kampf fließt nichts von selbst nach: Jeder kassierte Treffer gibt ${nice(RESOURCES.dieter.hitGain)} Randale je 1 % deines Maximallebens (gezählt vor der Deckung), die Kronkorken-Kelle ${CLAN_MEMBERS.find(m=>m.id==='dieter')?.passives.strikeGain}, eine geglückte Parade 20, jeder Kill ${MO.energyOnKill}. ${RESOURCES.dieter.decay.delay} s nach dem Kampf verraucht sie mit ${RESOURCES.dieter.decay.perSecond} je Sekunde. Jede ausgegebene Randale bezahlt ${RESOURCES.dieter.tab.payPerRandale} Leben deiner Zeche. Ab ${RESOURCES.dieter.surgeAt} bist du „in Fahrt“ – der Spezialkniff schlägt ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug seiner Kosten). Fehlt Randale, zündet der Kniff nicht. Die anderen Klassen zahlen mit ihrer eigenen Klassenressource.`},
- // E-71: Oberbegriff für die fünf Ressourcen; Gutschriften, die für alle gleich sind, rechnen in Ressourcenpunkten.
+ // E-72: Oberbegriff für die fünf Ressourcen; Gutschriften, die für alle gleich sind, rechnen in Ressourcenpunkten.
  ressource:{name:'Klassenressource',short:'Jede Klasse kämpft mit ihrer eigenen Ressource – '+CLAN_MEMBERS.map(m=>firstName(m)+' mit '+RESOURCES[m.id].name).join(', ')+'.',
   long:`${CLAN_MEMBERS.map(m=>firstName(m)+': '+RESOURCES[m.id].name+' (0 bis '+RESOURCES[m.id].max+')').join(' · ')}. Gutschriften, die für alle gleich sind – Verpflegung, Dorflegenden, Kills, Paraden, Bastelgrips und manche Talente –, rechnen in Ressourcenpunkten. Ein Ressourcenpunkt ist ${CLAN_MEMBERS.map(m=>'bei '+firstName(m)+' '+resourceText(m.id,1)).join(', ')}; Bruchteile sammeln sich, bis eine ganze Einheit voll ist.`},
  spezialkniff:{name:'Spezialkniff',short:'Ein starker Kniff mit Kosten und Abklingzeit; seine Zusatzwirkung bestimmt dein Hauptbaum.',
@@ -210,7 +210,7 @@ const SKILL_FIELDS=[
 function skillNumbers(def,cls,id){
  const out=[],r=RESOURCES[cls];
  for(const [key,label,unit,scale] of SKILL_FIELDS){
-  // E-71: Kosten und Ertrag in der Ressource der Klasse. Kevin zahlt Flaschen je Leistenplatz, sein Grundangriff gibt nichts;
+  // E-72: Kosten und Ertrag in der Ressource der Klasse. Kevin zahlt Flaschen je Leistenplatz, sein Grundangriff gibt nichts;
   // Annis Likes kommen aus jedem Kniff nach Trend, nicht aus einem festen Ertrag des Grundangriffs.
   if(key==='cost'){const c=skillCost(def,cls,id);if(c)out.push(n(label,c.value,c.unit,c.source));continue;}
   if(key==='gain'&&typeof def.gain==='number'){
@@ -369,7 +369,7 @@ export function element(kind,id){
  if(kind==='buff'){const c=BUFF_SKILLS[id];if(!c||id==='common')return null;
   return {def:{...BUFF_SKILLS.common,...c},cls:id,skillId:'buff',name:c.name,text:c.text,use:c.use,flavor:c.flavor,info:c.info,icon:{set:'skills',member:id,skill:'buff',fallback:BUFF_SKILLS.common.icon}};}
  if(kind==='throw'||kind==='ground'){const s=kind==='throw'?THROW_SKILL:GROUND_SKILL;if(!memberOf(id))return null;
-  // E-71: Klassen, deren Wurf-/Bodenplatz etwas anderes tut (Schorsch, Käthe), überschreiben Zahlen und Text über `overrides`.
+  // E-72: Klassen, deren Wurf-/Bodenplatz etwas anderes tut (Schorsch, Käthe), überschreiben Zahlen und Text über `overrides`.
   const o=s.overrides?.[id]||{};
   return {def:{...s,...o},cls:id,skillId:s.id,name:s.names[id],text:o.text||(s.flavor?.[id]||'')+s.text,use:o.use||s.use,info:s.info?.[id],icon:{set:'skills',member:id,skill:s.id,fallback:s.icon}};}
  if(kind==='talentSkill'){const s=TALENT_SKILLS[id];if(!s)return null;
@@ -399,7 +399,7 @@ export function describe(kind,id){
  else if(kind==='proc')numbers=procNumbers(e.def,procContext(id));
  else if(kind==='classBuff')numbers=[...Object.entries(e.def.effects).map(([k,v])=>n(CLASS_BUFF_STATS[k].label,classBuffValueText(k,v),'',TU)),n('Dauer',Math.round(e.def.duration/60),'min',TU),n('Kosten','keine','',TU),n('Gelernt auf Stufe',e.def.level,'','content/class-buffs.js')];
  else if(kind==='passive'){const L={strikeCd:['Grundangriff alle','s'],strikeRange:['Reichweite des Grundangriffs','m'],strikeGain:['Randale je Grundangriff',''],dashCd:['Ausweichen alle','s'],parryHeal:['Heilung je geglückter Parade','Leben'],damageTaken:['Eingehender Schaden','%'],beatEnergy:['Zusätzliche Randale im Takt',''],interruptBurstCd:['Spezialkniff nach Unterbrechung','s kürzer']};
-  // E-71: Ertrag des Grundangriffs in der Einheit der Klasse; Anni (Likes je Kniff nach Trend) und Kevin (Flaschen kosten) haben keinen.
+  // E-72: Ertrag des Grundangriffs in der Einheit der Klasse; Anni (Likes je Kniff nach Trend) und Kevin (Flaschen kosten) haben keinen.
   const r=RESOURCES[id],unitWord=s=>r?s.replace('Randale',r.unit):s;
   for(const [k,v] of Object.entries(e.def)){const d=L[k];if(!d)continue;
    if(k==='strikeGain'&&(r?.kind==='trend'||r?.kind==='ammo'))continue;

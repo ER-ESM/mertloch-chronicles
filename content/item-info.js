@@ -54,7 +54,7 @@ export function itemNumbers(id){const d=ITEM_CATALOG[id];if(!d)return [];const l
  for(const k of Object.keys(STAT_NAMES))if(s[k]){out.push({label:STAT_NAMES[k],value:s[k],unit:'Punkte',source:'stats.'+k});
   for(const y of statYield(k,s[k],level))out.push({...y,label:y.label+' daraus'});}
  if(d.heal)out.push({label:'Leben sofort',value:d.heal,unit:'Leben',source:'heal'});
- // E-71: Beschriftung bleibt „Randale sofort“ (tests/content-loot.test.mjs liest sie); die Menge sind Ressourcenpunkte, je Klasse umgerechnet.
+ // E-72: Beschriftung bleibt „Randale sofort“ (tests/content-loot.test.mjs liest sie); die Menge sind Ressourcenpunkte, je Klasse umgerechnet.
  if(d.energy)out.push({label:'Randale sofort',value:d.energy,unit:'Ressourcenpunkte',source:'energy'});
  if(d.kind==='consumable'){out.push({label:'Gemeinsame Abklingzeit',value:BALANCE.player.consumableCooldown,unit:'s',source:'BALANCE.player.consumableCooldown'});
   if(d.stack)out.push({label:'Stapel',value:d.stack,unit:'Stück',source:'stack'});

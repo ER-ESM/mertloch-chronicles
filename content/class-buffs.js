@@ -18,7 +18,7 @@ const M=Math.round(CLASS_BUFF_TUNING.duration/60);
 export const CLASS_BUFF_STATS={
  health:{label:'Maximales Leben',pct:true},
  armor:{label:'Schadensminderung',pct:true},
- // E-71: Nachschub für die Klassenressource in Ressourcenpunkten (Dieter Randale, Anni Likes, Kevin Flaschen 10 : 1 – content/resources.js grantRate).
+ // E-72: Nachschub für die Klassenressource in Ressourcenpunkten (Dieter Randale, Anni Likes, Kevin Flaschen 10 : 1 – content/resources.js grantRate).
  energyRegen:{label:'Ressourcenpunkte je Sekunde',pct:false,unit:'/s'},
  healTaken:{label:'Erhaltene Heilung',pct:true},
  haste:{label:'Tempo',pct:true},
@@ -56,7 +56,7 @@ const DEF={
   use:'Häng es um, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Es erkennt Pfand auf dreißig Meter. Und Gegner. Meistens Pfand.“',
   info:{effect:'Erhöht eine halbe Stunde lang die Chance auf Glückstreffer um feste Prozentpunkte.',why:'Ergänzt den Tempo-Buff, statt ihn zu verdoppeln: Glückstreffer lösen bei vielen Talenten Procs aus.',links:['classBuff:kabelbinderSohlen','talent:kevin-hunt-27'],terms:['klassenbuff','staerkung','glueckstreffer','proc']}}
 };
-// E-71: Buffs der neuen Klassen (erscheinen mit der Klasse, content/classes.js).
+// E-72: Buffs der neuen Klassen (erscheinen mit der Klasse, content/classes.js).
 Object.assign(DEF,{
  grillteller:{cls:'schorsch',slot:0,level:4,name:'Grillteller',icon:'currywurst',effects:{damage:0},
   text:v=>`Schorsch packt dir einen Teller voll: ${v.damage} mehr Schaden für ${M} Minuten. Mit Senf. Ohne Senf gibt's nichts.`,

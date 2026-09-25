@@ -4,7 +4,7 @@
 // Ohne Browser-APIs: game(), me(), send(), others() kommen von außen (Tests mit Attrappen).
 
 import {SPECS} from './content/index.js';
-/** Schutz-Specs (Türsteher, Schrottkoloss, E-71 Räuchermeister) ziehen dreifache Bedrohung: sie sollen das Ziel halten können. */
+/** Schutz-Specs (Türsteher, Schrottkoloss, E-72 Räuchermeister) ziehen dreifache Bedrohung: sie sollen das Ziel halten können. */
 export const TANK_SPECS=Object.keys(SPECS).filter(s=>SPECS[s].role==='Tank');
 
 /** options: {game:()=>Game, me:()=>Spielername, send:(msg)=>void, others:()=>[{name,x,y}]} */

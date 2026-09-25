@@ -2,7 +2,7 @@
 // Die Regeln liegen je Klasse in content/procs/<klasse>.js (E-32). Format je Regel:
 // trigger: siehe PROC_TRIGGERS; skill und zone filtern, every zählt passende Ereignisse.
 // effect: free/reset/empower, energy/points/shield/haste, heal (Leben oder {damage: Anteil}), cdReduce ({skill,seconds}).
-// E-71: Ressourcen-Wirkungen bottles/glut/cook/augen/draw/trend/tab (content/resources.js RESOURCE_PROC_EFFECTS).
+// E-72: Ressourcen-Wirkungen bottles/glut/cook/augen/draw/trend/tab (content/resources.js RESOURCE_PROC_EFFECTS).
 // glow: dieser Kniff leuchtet auf der Leiste, solange das Fenster offen ist. chance 1 = immer.
 // Beschreibung (Welle D): name, icon (Vokabular content/items.js ICONS), look (Bildwunsch) und info:{effect,why,links,terms};
 // Zahlen kommen aus der Regel selbst: describe('proc',id) baut daraus Auslöser, Chance, Zeitfenster und jede Wirkung.

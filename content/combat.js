@@ -17,7 +17,7 @@ export const SKILL_DAMAGE={
  dieter:{strike:{flat:14,weapon:2.6},burst:{flat:30,weapon:5.2}},
  baerbel:{strike:{flat:14,weapon:2.6},burst:{flat:40,weapon:5.2}},
  kevin:{strike:{flat:8,weapon:2.6},burst:{flat:34,weapon:5.2}},
- // E-71: Schorsch serviert den Schwenkbraten mit Finisher-Faktor; Käthes Kreuz-Karte rechnet mit strike (Rang × Stärke), Karo mit control.
+ // E-72: Schorsch serviert den Schwenkbraten mit Finisher-Faktor; Käthes Kreuz-Karte rechnet mit strike (Rang × Stärke), Karo mit control.
  schorsch:{strike:{flat:16,weapon:2.6},burst:{flat:36,weapon:5.2}},
  kaethe:{strike:{flat:30,weapon:2.2},burst:{flat:30,weapon:2.2}},
  shared:{throw:{flat:24,weapon:3},ground:{flat:125},interrupt:{flat:35},slam:{flat:44,weapon:3}}

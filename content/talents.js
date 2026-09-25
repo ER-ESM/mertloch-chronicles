@@ -9,7 +9,7 @@ import {RESOURCE_EFFECTS} from './resources.js';
 // 30 Talente je Spezialisierung in 10 Reihen × 3 Pfaden, je Reihe genau eines wählbar. Talent-IDs entstehen aus
 // <spec>-<index>; Reihenfolge nie ändern (Speicherschlüssel). Pfadnamen und Pfadboni: content/mechanics.js (paths).
 // effects: Schlüssel, die combatStats()/class-mechanics.js/spec-mechanics.js auswerten. grants: aktive Talentfähigkeit (skills.js TALENT_SKILLS).
-// E-71: Schorsch und Käthe erscheinen erst, wenn ihre drei Bäume im Inhalt stehen (content/classes.js schaltet sie gleich).
+// E-72: Schorsch und Käthe erscheinen erst, wenn ihre drei Bäume im Inhalt stehen (content/classes.js schaltet sie gleich).
 const NEW_CLASS_SPECS={schorsch:['schorsch-chef','schorsch-flamme','schorsch-rauch'],kaethe:['kaethe-grand','kaethe-herz','kaethe-falsch']};
 const NEW_TALENTS={schorsch:TALENTS_SCHORSCH,kaethe:TALENTS_KAETHE};
 export const CLASS_SPECS={dieter:['dieter-wall','dieter-brawl','dieter-brew'],baerbel:['baerbel-care','baerbel-feedback','baerbel-stage'],kevin:['kevin-fuse','kevin-iron','kevin-hunt'],...Object.fromEntries(Object.entries(NEW_CLASS_SPECS).filter(([cls,specs])=>specs.every(s=>NEW_TALENTS[cls][s]?.length)))};
@@ -24,7 +24,7 @@ export const SPECS={
  'kevin-iron':{name:'Schrottkoloss',classId:'kevin',role:'Tank',icon:'reinforced',text:'Pfandgeschosse bauen auch auf Distanz Deckung auf. Dosen-Robbi steht, feuert und bremst; die Überlast lässt ihn explodieren.'},
  'kevin-hunt':{name:'Pfandjäger',classId:'kevin',role:'Fernkampf-Schaden',icon:'boots',text:'Bastler-Glück: jeder Schuss zündet fehl, normal oder über. Drei Fehlzündungen garantieren die Überzündung, drei Überzündungen den Jackpot. Ausweichen lädt einen kostenlosen Wurf.'}
 };
-// E-71: Spezialisierungen der neuen Klassen, freigeschaltet mit ihren Talentbäumen (CLASS_SPECS oben).
+// E-72: Spezialisierungen der neuen Klassen, freigeschaltet mit ihren Talentbäumen (CLASS_SPECS oben).
 const NEW_SPECS={
  'schorsch-chef':{name:'Grillhütten-Chef',classId:'schorsch',role:'Heilung',icon:'currywurst',text:'Der Grillplan liefert zwei Bratwürste je Braten. Gar servierte Wurst heilt stärker und reicht für einen zweiten Verbündeten; der Schwenkgrill wird zum Grillbuffet, das alle im Kreis heilt.'},
  'schorsch-flamme':{name:'Flambierer',classId:'schorsch',role:'Nahkampf-Schaden',icon:'burst',text:'Spielt am oberen Rand der Glut: die Stichflamme verletzt dich nicht mehr und trifft doppelt. Ab 85 Glut wird Servieren zum Flambieren mit Feuerspritzern an den Nachbarn.'},

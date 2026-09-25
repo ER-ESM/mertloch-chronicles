@@ -1,4 +1,4 @@
-// Klassenressourcen (E-71, docs/KLASSEN-RESSOURCEN-2026-09-25.md). Jede Klasse hat ein eigenes Modell:
+// Klassenressourcen (E-72, docs/KLASSEN-RESSOURCEN-2026-09-25.md). Jede Klasse hat ein eigenes Modell:
 //   rage  · Dieter   Randale als Wut (0 → aus Treffern) + Zeche (angeschriebener Schaden, Ausgaben bezahlen ihn)
 //   trend · Anni     Likes (Währung) + Trend (Abwechslung hebt, Wiederholung senkt)
 //   ammo  · Kevin    Leergut-Kasten, Flaschen am Boden aufsammeln, Pfandautomat mit Bon-Zone

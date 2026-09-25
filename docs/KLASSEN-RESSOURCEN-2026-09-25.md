@@ -1,11 +1,11 @@
-# Fünf Klassen, fünf Ressourcen · Design 2026-09-25 (E-71)
+# Fünf Klassen, fünf Ressourcen · Design 2026-09-25 (E-72)
 
 Nutzerauftrag 25.09.2026: „Mit der Randale sind alle Helden gleich. Mach dir Gedanken zu unterschiedlichen Ressourcen,
 Generatoren und Spendern und ganz innovativen, neuen Klassendesigns, die gänzlich unterschiedliche Spielweisen ermöglichen.
 Jeder Held soll sich einzigartig anfühlen. Entwickle passende Skills und Talentbäume und effektreiche Animationen.
 Ziel: 5 unterschiedliche Klassendesigns mit unterschiedlichem Ressourcenmanagement, vollständig, Talente entsprechend."
 
-Stand nach Umsetzung und Erstabgleich: [E-71](ENTSCHEIDUNGEN.md). Dieses Papier ist zugleich der **Vertrag** für alle Umsetzer (Engine, Inhalt, UI/Effekte). Zahlen sind Startwerte für
+Stand nach Umsetzung und Erstabgleich: [E-72](ENTSCHEIDUNGEN.md). Dieses Papier ist zugleich der **Vertrag** für alle Umsetzer (Engine, Inhalt, UI/Effekte). Zahlen sind Startwerte für
 `content/resources.js`; Balancing dreht über `content/tuning.js` (Block `resources`).
 
 ## 1 · Befund: warum sich heute alle gleich spielen (schwächster Punkt zuerst)

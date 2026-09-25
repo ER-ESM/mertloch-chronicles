@@ -86,7 +86,7 @@ export class Game{
     const level=Number.isInteger(saved.level)?Math.max(1,Math.min(30,saved.level)):1;
     const baseHp=BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel;
     this.player={...restorePosition(world,saved),classId:this.member.id,hp:baseHp,maxHp:baseHp,energy:100,level,xp:Math.max(0,Number(saved.xp)||0),parry:0,invulnerable:0,moving:false,attack:0,inCombat:0};
-    this.res=freshResource(this);/* E-71: Klassenressource (Randale, Likes, Leergut, Glut, Blatt) */
+    this.res=freshResource(this);/* E-72: Klassenressource (Randale, Likes, Leergut, Glut, Blatt) */
     this.classBuffs=restoreClassBuffs(saved.classBuffs);
     this.quest=restoreQuest(saved.quest||{},saved.worldKey===world.id);
     // Spieleinstellungen. Auto-Loot ist der Standard; die UI schaltet ihn über setSetting('autoLoot', …) ab.
@@ -192,7 +192,7 @@ export class Game{
     if((s.ground&&s.damage||id==='detonate'||id==='snare')&&this.target?.hp>0)startAuto(this);
     context.castCard=e?.cast?.card||null;context.castEnemy=e||null;context.pm=pm;const handled=performClassSkill(this,id,s,e,point,cs,context);if(handled&&s.ground){this.aiming=null;this.aimPoint=null;}
     if(!handled&&s.talent){performTalent(this,s,point,cs);if(s.ground){this.aiming=null;this.aimPoint=null;}}
-    if(!handled&&id==='strike'){const empowered=this.classState.empowered>0;if(empowered)this.classState.empowered--;this.damage(e,skillDamage(this,s,s.damage,ITEMS)*(empowered||this.classState.freeStrike?2:1)*pm,'Kelle');onStrikeMech(this,e,cs);const passives=this.member.passives||{},window=passives.beatWindow,beat=!!window&&this.time-this.lastStrike>=window[0]&&this.time-this.lastStrike<=window[1];this.lastStrike=this.time;context.beat=beat;if(beat)this.float(p.x,p.y-35,APEROL_TEXT.combo,this.member.color);/* E-71: Aufbau je Ressource – Dieters Kelle gibt Randale, Annis Takt Likes (resourceCast), Kevin/Schorsch/Käthe eigenes Modell */if(resourceKind(this)==='rage')grantResource(this,s.gain,'strike');}
+    if(!handled&&id==='strike'){const empowered=this.classState.empowered>0;if(empowered)this.classState.empowered--;this.damage(e,skillDamage(this,s,s.damage,ITEMS)*(empowered||this.classState.freeStrike?2:1)*pm,'Kelle');onStrikeMech(this,e,cs);const passives=this.member.passives||{},window=passives.beatWindow,beat=!!window&&this.time-this.lastStrike>=window[0]&&this.time-this.lastStrike<=window[1];this.lastStrike=this.time;context.beat=beat;if(beat)this.float(p.x,p.y-35,APEROL_TEXT.combo,this.member.color);/* E-72: Aufbau je Ressource – Dieters Kelle gibt Randale, Annis Takt Likes (resourceCast), Kevin/Schorsch/Käthe eigenes Modell */if(resourceKind(this)==='rage')grantResource(this,s.gain,'strike');}
     if(!handled&&id==='throw'){this.damage(e,skillDamage(this,s,s.damage,ITEMS)*pm,'Pfandwurf');}
     if(!handled&&id==='ground'){this.aiming=null;this.aimPoint=null;if(!onGroundMech(this,s,point,cs))this.zones.push({...point,remaining:s.delay,radius:s.radius,damage:skillDamage(this,s,s.damage,ITEMS)});}
     if(!handled&&id==='mark'){e.mark=s.duration;e.dotTimer=1;e.dotDamage=s.dot;e.slow=s.slow||1;this.float(e.x,e.y-23,'MARKIERT!','#9fdacb');this.log(s.name+' · '+s.duration+' s markiert.');}

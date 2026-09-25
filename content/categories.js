@@ -34,7 +34,7 @@ export const FUNCTIONS={
  wurf:{name:'Wurf',short:'Fernangriff aus der Bewegung.',term:'wurf'},
  flaeche:{name:'Fläche',short:'Wirkt auf einen Bereich am Boden oder auf mehrere Gegner.',term:'flaeche'},
  kontrolle:{name:'Kontrolle',short:'Betäubt, hält fest, verlangsamt oder macht verwundbar.',term:'betaeubung'},
- // E-71: die Funktions-ID bleibt 'randale' (Filter, Spielstände der Oberfläche); gemeint ist die Klassenressource jeder Klasse.
+ // E-72: die Funktions-ID bleibt 'randale' (Filter, Spielstände der Oberfläche); gemeint ist die Klassenressource jeder Klasse.
  randale:{name:'Ressource',short:'Füllt deine Klassenressource oder spart sie.',term:'ressource'},
  tempo:{name:'Tempo',short:'Verkürzt Abklingzeiten oder beschleunigt dich.',term:'abklingzeit'},
  begleiter:{name:'Begleiter',short:'Ruft oder stärkt einen Helfer.',term:'robbi'},
@@ -134,10 +134,10 @@ export {describableIds as categorizableIds};
 export const SKILL_TERM={strike:['grundangriff'],mark:['markierung','schimmel','lunte'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],interrupt:['unterbrechen'],parry:['parade'],dash:['ausweichen'],heal:['heilung','hauspflege','vorrat','grossreinemachen'],throw:['wurf','bastlerglueck'],ground:['bodenangriff','flaeche','fass','nest','sporenwolke']};
 /** Proc-Auslöser → Pflichtbegriff. */
 export const TRIGGER_TERM={markedHit:['markierung','schimmel','lunte'],markTick:['markierung','schimmel','lunte'],inZone:['flaeche','fass','nest'],parry:['parade'],dash:['ausweichen'],dodge:['ausweichen'],crit:['glueckstreffer'],heal:['heilung'],autoHit:['autoangriff'],interrupt:['unterbrechen'],burst:['spezialkniff','durchputzen','auswringen','kurzschluss','ueberlast'],beat:['takt'],
- // E-71: Auslöser der Klassenressourcen Dieter, Anni, Kevin
+ // E-72: Auslöser der Klassenressourcen Dieter, Anni, Kevin
  tabPaid:['zeche'],prellen:['zeche'],trendUp:['trend'],viral:['trend'],shitstorm:['trend'],pickup:['leergut'],perfectReload:['pfandbon'],bonUsed:['pfandbon']};
 /** Proc-Wirkung → Pflichtbegriff. */
-/** E-71: energy ist eine Gutschrift in Ressourcenpunkten – belegt ist sie mit dem Namen der jeweiligen Klassenressource. */
+/** E-72: energy ist eine Gutschrift in Ressourcenpunkten – belegt ist sie mit dem Namen der jeweiligen Klassenressource. */
 export const EFFECT_TERM={heal:['heilung','lebensraub'],energy:['randale','likes','leergut','glut','augen','ressource'],bottles:['leergut'],trend:['trend'],tab:['zeche'],shield:['deckung'],cdReduce:['abklingzeit','tempo'],reset:['abklingzeit','tempo'],haste:['tempo']};
 /**
  * Stimmen die Begriffe eines Talents/Auslösers mit seinen Daten überein?
