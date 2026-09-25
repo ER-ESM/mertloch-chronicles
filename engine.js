@@ -35,7 +35,7 @@ import {tryQueue,tickQueue,clearQueue,blocker,alignCooldowns} from './spell-queu
 import {dodgeDirection} from './dodge-out.js';
 import {tabTarget} from './tab-target.js';
 import {entryCalm,entryAggroRange} from './entry-path.js';
-import {gapDamage,noticeFactor,chainAllowed,specialSlot,startWakeGuard,tickWakeGuard} from './foe-rules.js';/* Weltgegner: Stufenabstand, Rudel, Aufwach-Schutz (E-72 R4) */
+import {gapDamage,noticeFactor,chainAllowed,specialSlot,startWakeGuard,tickWakeGuard,announce,alertState,barkedOnNotice} from './foe-rules.js';/* Weltgegner: Stufenabstand, Rudel, Aufwach-Schutz (E-72 R4), Ankündigung (E-72 R5) */
 import {safeRoute} from './safe-route.js';/* Laufwege meiden Gegnerreviere (E-72 R4) */
 import {chapterCredit} from './quest-mobs.js';
 import {deNum} from './number-format.js';
@@ -542,7 +542,7 @@ export class Game{
     e.cycle++;if(e.type==='boss'&&e.cycle===1&&BOSS_LINES[e.bossId])this.bark(e,BOSS_LINES[e.bossId].engage,'boss');
     const phases=BOSSES[e.bossId]?.phases||[];for(const ph of phases)if(ph.at<1&&e.hp/e.maxHp<=ph.at&&!(e.saidPhases||=new Set()).has(ph.at)){e.saidPhases.add(ph.at);this.bark(e,ph.line,'phase');}
     // Menschliche Feldgegner rufen beim ersten Spezialangriff eines Kampfes; die Zeile wechselt je Auftritt.
-    const barks=ENEMY_BARKS[e.archetype];if(barks?.length&&e.cycle===1)this.bark(e,barks[((e.id|0)+(e.spawnCount|0))%barks.length],'enemy');
+    const barks=ENEMY_BARKS[e.archetype];if(barks?.length&&e.cycle===1&&!barkedOnNotice(this,e)/* schon beim Bemerken gerufen (E-72 R5) */)this.bark(e,barks[((e.id|0)+(e.spawnCount|0))%barks.length],'enemy');
     const d={...set.casts[type]};if(!available(this,'parry'))d.name=d.name.replace('Parade','Abstand halten');if(!available(this,'interrupt'))d.name=d.name.replace('Q unterbricht','Sichtlinie verlassen');e.cast={...d,type,remaining:d.total,x:d.ground?p.x:e.x,y:d.ground?p.y:e.y,angle:Math.atan2(p.y-e.y,p.x-e.x)};resourceEnemyCast(this,e);if(e.dungeon)dungeonCastSpot(this,e,e.cast,'player');
   }
   resetEnemy(e){e.x=e.home.x;e.y=e.home.y;e.ai='roaming';e.roamGoal=null;e.returnPath=[];e.chasePath=[];e.slow=1;e.cycle=0;e.hp=e.maxHp;e.aggro=false;e.cast=null;e.mark=0;e.vulnerable=0;e.stun=0;e.attackTimer=COMBAT_RULES.firstSpecial;e.autoTimer=0;e.spawnGrace=2;}
@@ -580,10 +580,11 @@ export class Game{
       if(e.dungeon&&!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&dungeonPackAggro(this,e))continue;
       const d=distance(e,p);
       if(!e.dungeon&&!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&!e.dummy&&!entryCalm(this,e)/* Einstiegsweg ohne Kettenzug (entry-path.js) */&&chainAllowed(this,e)/* grau, Aufwach-Schutz, Rudelgrenze (foe-rules.js) */){const buddy=this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange);if(buddy&&e.joinAt==null)e.joinAt=this.time+BALANCE.procs.chainJoinDelay;else if(e.joinAt!=null&&this.time>=e.joinAt){e.joinAt=null;if(!this.enemies.some(o=>o!==e&&o.aggro&&o.hp>0&&!o.dummy&&distance(o,e)<BALANCE.procs.chainJoinRange*3))continue;e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;this.texts.push({x:e.x,y:e.y-30,text:'KUMPEL KOMMT',color:'#f0b070',life:1.25,max:1.25,shout:true});autopilotThreat(this,e,'aggro');}}
-      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<entryAggroRange(this,e)*noticeFactor(this,e)&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)&&(!e.dungeon||dungeonNotices(this,e))){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;adoptAttacker(this,e);autopilotThreat(this,e,'aggro');}
+      if(!e.aggro&&e.ai!=='returning'&&e.behavior==='aggressive'&&e.spawnGrace<=0&&d<entryAggroRange(this,e)*noticeFactor(this,e)&&!inSanctuary(this.world,p)&&this.world.lineClear(e,p)&&(!e.dungeon||dungeonNotices(this,e))){e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;adoptAttacker(this,e);autopilotThreat(this,e,'aggro');announce(this,e,entryAggroRange(this,e)*noticeFactor(this,e))/* „!“, Fernkämpfer zücken erst den Block (foe-rules.js, E-72 R5) */;}
       if(!e.aggro){if(!e.dummy)idleEnemy(this,e,dt);continue;}
       if(e.dummy){e.facing=e.x<p.x?1:-1;continue;}
       if(!e.arena&&(distance(e,e.home)>e.leash||d>620||inSanctuary(this.world,p))){beginReturn(this,e);continue;}
+      {const a=alertState(this,e,d);/* Ankündigung (foe-rules.js, E-72 R5): Block zücken, bei Abstand ablassen */if(a==='calm'){beginReturn(this,e);continue;}if(a){e.facing=e.x<p.x?1:-1;e.direction=walkFacing(p.x-e.x,p.y-e.y,e.direction||'se');continue;}}
       p.inCombat=7;e.facing=e.x<p.x?1:-1;e.direction=walkFacing(p.x-e.x,p.y-e.y,e.direction||'se');
       if(e.stun>0){e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);continue;}
       if(e.cast){e.cast.remaining-=dt;if(e.cast.remaining<=0){const c=e.cast;e.cast=null;e.attackTimer=c.next??COMBAT_RULES.specialInterval/* next: eigener Abstand zum folgenden Zauber (Dungeon, E-71) */;let hit=false;if(e.dungeon&&resolveDungeonCast(this,e,c,'player')){e.attack=.3;if(this.dead)break;continue;}if(c.ground){hit=Math.hypot((p.x-c.x)/c.radius,(p.y-c.y)/(c.radius*.75))<1;emitCombatFx(this,'impact',c,{radius:c.radius,hostile:true});if(!hit){this.stats.dodges++;/* Rückmeldung wie in der Hofprobe (Runde 5a) */const t=DODGE_UI.dodged.toUpperCase();if(!this.sct({area:'in',kind:'avoid',text:t,skill:'dash'}))this.float(p.x,p.y-24,t,'#aed4bd');}else this.float(p.x,p.y-44,DODGE_UI.hit.toUpperCase(),'#ff7a5c');}else if(c.interruptible)hit=d<230&&this.world.lineClear(e,p);else hit=d<c.radius;
