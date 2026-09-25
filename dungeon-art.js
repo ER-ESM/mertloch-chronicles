@@ -1,6 +1,6 @@
 // Zeichnen des Dungeons (Plan Abschnitte 5 und 14): Boden, Wände, Türen, Übergänge, Schilder und Warnflächen in der Welt,
 // dazu die Dungeon-Karte (Prospekt gegen Wirklichkeit). Grundriss aus content/dungeons.js, Zustand aus dungeon.js.
-import {DUNGEON_TEXT as T,DUNGEON_BOSSES,DUNGEON_SCALE as U} from './content/index.js';
+import {DUNGEON_TEXT as T,DUNGEON_BOSSES,DUNGEON_SCALE as U,DUNGEON_UI as DU} from './content/index.js';
 import {dungeonRun,floorAt,rectWorld,toWorld,doorOpen} from './dungeon.js';
 
 const THEMES={
@@ -58,10 +58,20 @@ function drawStep(c,kind,p){
  c.restore();
 }
 
-/** Rolltor draußen an der Burgstraße. */
-export function drawDungeonEntrance(c,door){
+/** Rolltor draußen an der Burgstraße. Etappe 2 (E-70 Punkt 4, Zielbild C): der Name steht nur beim Überfahren da, das Schild
+ *  „PRIVATBESITZ“ hängt neben dem Tor, und unter dem Tor flimmert ein Portal (Canvas ohne Blend-Modi; Licht und Hitzeflimmern
+ *  kommen aus world-light.js/world-fx.js, Quelle „portal“). Die Garage selbst bleibt, wie sie ist (Welt-Grafik nur nach Freigabe). */
+export function drawDungeonEntrance(c,door,g=null,time=0){
  if(!door)return;const x=door.x,y=door.y;box(c,'#3b3830',x-22,y-34,44,34);box(c,'#8d8778',x-19,y-31,38,31);c.fillStyle='#6f695c';for(let i=0;i<6;i++)c.fillRect(x-19,y-29+i*5,38,1);
- box(c,'#b69a6c',x-24,y-40,48,6);for(let i=0;i<5;i++)box(c,'#b69a6c',x-24+i*11,y-45,6,5);text(c,T.entranceName,x,y-50,{size:7,color:GOLD});
+ box(c,'#b69a6c',x-24,y-40,48,6);for(let i=0;i<5;i++)box(c,'#b69a6c',x-24+i*11,y-45,6,5);
+ // Portal: Lichtspalt unter dem halb offenen Tor, darüber wirbelnde Funken (deterministisch aus der Zeit)
+ c.save();const pulse=.55+.25*Math.sin(time*2.6);c.globalAlpha=pulse;box(c,'#6b3fa0',x-19,y-9,38,9);c.globalAlpha=pulse*.8;box(c,'#b58cf0',x-17,y-6,34,4);c.globalAlpha=pulse*.6;box(c,'#f0e2ff',x-14,y-4,28,1.5);
+ for(let i=0;i<12;i++){const k=(time*.45+i/12)%1,a=i*2.4+time*1.3,px=x+Math.sin(a)*(9+i%4*3)*(1-k*.4),py=y-3-k*30;c.globalAlpha=(1-k)*.85;c.fillStyle=i%3?'#d9c2ff':'#fff3c4';c.fillRect(Math.round(px),Math.round(py),i%4?1.5:2,i%4?1.5:2);}
+ c.restore();
+ // Schild „PRIVATBESITZ“ rechts neben dem Tor auf einem Pfosten
+ box(c,'#4a3a2a',x+31,y-18,2,18);box(c,'#1c1712',x+17,y-27,30,10);box(c,'#f3efe4',x+18,y-26,28,8);box(c,'#b8322c',x+18,y-26,28,1.3);box(c,'#b8322c',x+18,y-19.3,28,1.3);text(c,DU.plate,x+32,y-22,{size:3.6,color:'#1c1712',outline:null});
+ // Name nur unter der Maus (oder in F-Nähe steht er ohnehin im Aktionsknopf)
+ const h=g?.hover;if(h&&h.x>x-28&&h.x<x+40&&h.y>y-52&&h.y<y+6)text(c,T.entranceName,x,y-52,{size:7,color:GOLD});
 }
 
 // ── Dungeon-Karte ────────────────────────────────────────────────────────────────────────────────────────────

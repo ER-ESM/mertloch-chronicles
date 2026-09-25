@@ -1071,6 +1071,8 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 
 **Offen.** 26 Porträts, Hedwig (zu jung, Schürze fehlt) und Ron (neu nach Bibel) nach dem Codex-Reset (Sa 26.09., 21:21). Echte Messung auf Nutzergeräten mit Grafikkarte steht aus.
 
+**Nachtrag 25.09.2026 (Nutzerentscheidungen).** Touchgeräte (grober Zeiger) starten mit „Niedrige Auflösung“, bis der Spieler selbst wählt. Die Auflösungs-Automatik darf bei Überlast bis Dichte 2 gehen, auch unter die Bildschirmauflösung (hebt die frühere Regel „nie unter CSS-Auflösung“ auf). Der alte Frisuren-Weg `hero-layers.js` ist abgeschaltet (Anziehpuppe übernimmt, kein 404 mehr beim Start). Die fehlenden 28 Porträts malt die geplante Windows-Aufgabe `MertlochPortraets` am 26.09. um 21:40 (nach dem Codex-Reset); ins Spiel erst nach Freigabe.
+
 ## E-70 · Fünf Optimierungsrunden „wie WoW“: Grafikdesigner und Spieler als Abnahme (24.09.2026, verfeinert E-67)
 
 **Anlass.** Der Nutzer wollte „5 Optimierungsrunden, aus Sicht Grafikdesigner und aus Sicht Spieler“ mit WoW als Vorbild. Jede Runde hatte zwei unabhängige Prüfer: eine Spieler-Persona, die live spielte (Kenner, Neuling oder Prüfer), und ein Grafikdesign-Review mit Screenshots, Messungen und Zielbildern. Danach setzten ein bis drei Umsetzer die Befunde um, prüften sie und stellten sie live. Belege: `docs/PLAYTEST-2026-09-24-r1…r5-*.md`, `docs/REVIEW-GRAFIK-2026-09-24-r1…r5.md`, `docs/OPTIMIERUNG-2026-09-24-runde-1…5b.md`, Prüfskripte `scripts/optimierung-r1…r5b-check.mjs`.
@@ -1123,6 +1125,43 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 - Die lose ⇧1-Leiste über der Aktionsleiste.
 - Weltruf gegen Zonentitel ist nur im Code geprüft.
 - Die Entschärfung des Einstiegswegs gilt nur für Kapitel 1.
+
+## E-71 · Dungeon „Schloss Big B“ nach WoW-Vorbild: drei Flügel, Söldner fast vollwertig, Normal zuerst, Beute mit Siegelmarken (25.09.2026)
+
+**Anlass.** Der Nutzer will den gebauten ersten Dungeon „deutlich optimieren“, und zwar Eingang, Inhalte, Mechaniken, Schwierigkeit, Belohnungen und Karte, alles im WoW-Vergleich. Drei Prüfungen liefen am 24.09.:
+- Kenner-Playtest (`docs/PLAYTEST-2026-09-24-dungeon-kenner-*.md`)
+- Game-Design-Analyse mit Kampfsimulation (`docs/DUNGEON-ANALYSE-2026-09-24.md`)
+- Grafik-Review (`docs/REVIEW-GRAFIK-DUNGEON-2026-09-24.md`)
+
+Zentrale Messwerte:
+- Söldner leisten in Instanzen rund 15 % eines Helden statt der 85 % aus E-45.
+- Gerd dauert 261–294 s statt 60–75 s und ist ungefährlich, auch ohne Ausweichen.
+- Der Tod des Helden beendet den Versuch, obwohl die Söldner noch stehen.
+- Die Beute ist Platzhalter.
+- Big B fehlt, der Dungeon hat kein Ende.
+- Unter Stufe 8 ist der Dungeon nirgends sichtbar.
+
+**Entscheidungen.** Der Orchestrator hat sie nach der Empfehlung der Analyse getroffen; der Nutzer wollte den Fragebogen nicht und hat „weitermachen“ gesagt.
+1. **Länge:** drei Flügel à 10–15 Minuten mit je einem Siegelträger. Siegel und Abkürzungen bleiben bis zum Tagesreset. Big B im Thronsaal ist der Abschluss. Der Grundriss bleibt.
+2. **Solo oder Gruppe:** Söldner sind in Instanzen fast vollwertig (Ziel ≈ 85 % eines Helden, Instanzfaktor nur im Dungeon), wie die Follower-Dungeons in WoW. Die Online-Gruppe ist ein Zusatz (Etappe 5). Der Tod des Helden ist kein Wipe: Er wird Geist, die Söldner kämpfen weiter und helfen ihm auf.
+3. **Schwierigkeit:** jetzt nur Normal. Das Feld `difficulty` kommt aber sofort ins Datenmodell. Die Richtung für später ist ein Heldenmodus und eine „Lüge der Woche“ als Affix-Stufe nach Art von Mythic+.
+4. **Belohnung:**
+   - eigene Beutetabellen je Boss und für den Trash
+   - Siegelmarken als Pech-Ausgleich beim Vermieter
+   - Tagesbonus beim ersten Abschluss
+   - Endtruhe mit Wahl
+   - Boss-EP nach Zielzeit
+   - EP je Minute im Dungeon ≥ Feld gleicher Stufe
+5. **V-D1 bis V-D11 aus der Planung:**
+   - Angenommen: V-D1, 3, 4, 5, 6, 7, 9, 10.
+   - Geändert: V-D2 (Zahlen gegen gemessene Gruppe neu setzen), V-D8 (3 % halbes Pferd plus 10 Hafersäcke als sichere Alternative), V-D11 (jeder Beweis mit sichtbarer Wirkung).
+6. **Bauplan:**
+   - Etappe 1 „Gerd richtig“: Zahlen, Mechanik mit Folgen, Tod als Geist, Laufstand, Beute Gerd.
+   - Etappe 2 „Lesbar wie WoW“: Warnleiste mit Timer, Journal, Eingangskarte und Weltkarten-Marke, Text-Diät, Handy-Kampfansicht, Karte.
+   - Etappe 3 „Big B“ vorziehen.
+   - Etappe 4 „Voller Durchgang“.
+   - Etappe 5 „Zusammen und schwerer“.
+   - Figuren- und Bossgrafik geht erst nach Freigabe des Nutzers live.
 
 ## E-72 · Fünf Klassen, fünf Ressourcen: eigene Erzeuger, Verbraucher und Risiken je Held (25.09.2026, ergänzt E-32 und E-36)
 

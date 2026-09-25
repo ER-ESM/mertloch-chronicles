@@ -3,7 +3,7 @@
 // Leistung (E-46–E-50): Die Grundkarte (Flächen, Wasser, Wege, Häuser, Bäume) liegt in einem Zwischenspeicher je Zoomstufe
 // und Größe, etwas größer als der Ausschnitt; je Bild wird er nur kopiert, darüber liegen die Symbole. Keine Blend-Modi.
 // Einstellungen je Browser in localStorage (`mertloch-minimap-v1`). Kiosk und Verlies zeichnet weiter renderer.map.
-import {MINIMAP as M,MINIMAP_GROUPS as GROUPS,MINIMAP_UI as T,PROFESSIONS,PROFESSION_SOURCES as SRC,PROFESSION_STATIONS as PST,MOUNT_UI,SHOP_UI,DUNGEONS,DUNGEON_TEXT} from './content/index.js';
+import {MINIMAP as M,MINIMAP_GROUPS as GROUPS,MINIMAP_UI as T,PROFESSIONS,PROFESSION_SOURCES as SRC,PROFESSION_STATIONS as PST,MOUNT_UI,SHOP_UI,DUNGEONS,DUNGEON_UI as DU} from './content/index.js';
 import {hotspotMapMarks} from './hotspots.js';
 import {chapterAreas} from './quest-mobs.js';
 import {professionWorld} from './profession-world.js';
@@ -41,7 +41,7 @@ const OUT=MAP_OUTLINE;
 const icon=key=>mapIcon(key,16);
 /** Kleines Symbol in ein Menü-Canvas malen (Lupe, Legende). */
 export const paintMinimapIcon=paintMapIcon;
-const GROUP_ICON={quest:'quest',trade:'trade',trainer:'trainer-werkhof',places:'base',nodes:'node-herbs',people:'party',enemies:'camp',route:'waypoint'};
+const GROUP_ICON={quest:'quest',dungeon:'dungeon',trade:'trade',trainer:'trainer-werkhof',places:'base',nodes:'node-herbs',people:'party',enemies:'camp',route:'waypoint'};
 
 // ------------------------------------------------------------------ Grundkarte (Zwischenspeicher)
 const boxes=new WeakMap();
@@ -80,7 +80,8 @@ function collectPlaces(g){
   const st=mountStation(w);if(st)track('places',{x:st.x,y:st.y,icon:'stable',name:MOUNT_UI.station,kind:T.kinds.stable,detail:MOUNT_UI.title,prio:2});}
  if(w.base?.x!=null)track('places',{x:w.base.x,y:w.base.y,icon:'base',name:w.base.name||T.kinds.base,kind:T.kinds.base,prio:2});
  for(const h of w.hubs||[]){const n=(w.quests||[]).filter(q=>q.giver?.hubId===h.id&&!g.sideQuests?.[q.id]?.claimed).length;track('places',{x:h.x,y:h.y,icon:'hub',name:h.name.split(' · ')[0],kind:T.kinds.hub,detail:n?T.quests(n):'',prio:2});}
- try{const door=dungeonEntrance(g);const def=DUNGEONS['schloss-bigb'];if(door)track('places',{x:door.x,y:door.y,icon:'dungeon',name:DUNGEON_TEXT.entranceName,kind:T.kinds.dungeon,detail:def?T.levels(def.level.min,def.level.max):'',prio:2});}catch{}
+ /* Etappe 2 (E-71): Dungeon-Eingänge als eigene Gruppe „Dungeons“, unter der Einlassstufe grau; Tooltip „Name · Stufe 8–10 · 5 Köpfe“ */
+ for(const [id,def] of Object.entries(DUNGEONS)){let door=null;try{door=dungeonEntrance(g,id);}catch{}if(!door)continue;const low=(g.player?.level||1)<def.level.enter;track('dungeon',{x:door.x,y:door.y,icon:low?'dungeon-low':'dungeon',name:def.name,kind:DU.kind+' · '+DU.band(def.level.min,def.level.max)+' · '+DU.heads(def.group.size),detail:low?DU.from(def.level.enter):DU.where,prio:3});}
  for(const camp of w.camps){const busy=g.enemies.some(e=>e.campId===camp.id&&e.hp>0),p=camp.approach||camp;track('enemies',{x:camp.x,y:camp.y,icon:busy?'camp':'camp-free',name:camp.title,kind:busy?T.kinds.campBusy:T.kinds.campFree,prio:1,approach:p});}
  // Wichtiges zuletzt zeichnen (liegt oben): Aufträge über Treffpunkten, Treffpunkte über Fundstellen.
  return list.sort((a,b)=>a.prio-b.prio);
@@ -151,7 +152,8 @@ function mountMinimap(root,canvas){
   else if(b.dataset.mmToggle)change(x=>{x[b.dataset.mmToggle]=!x[b.dataset.mmToggle];});
   else if('mmReset' in b.dataset)change(x=>{Object.assign(x,readMinimapSettings(null));});});
  document.addEventListener('pointerdown',e=>{if(menu&&!root.contains(e.target))closeMenu();},true);
- document.addEventListener('keydown',e=>{if(menu&&e.key==='Escape'){closeMenu();}},true);
+ /* Etappe 2 (Kenner-Playtest 2, Befund 6): Esc schließt zuerst das Menü und geht nicht weiter an das Spiel (sonst öffnete es das Spielmenü) */
+ document.addEventListener('keydown',e=>{if(menu&&e.key==='Escape'){closeMenu();e.stopPropagation();e.preventDefault();}},true);
  // Knöpfe nehmen dem Spiel den Fokus nicht weg (Leertaste würde sonst den Knopf drücken) und öffnen die Weltkarte nicht.
  root.addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault();});
  body.addEventListener('click',e=>{const b=e.target.closest('.mm-knob');if(!b||b.dataset.mm==='map')return;e.stopPropagation();const a=b.dataset.mm;if(a==='in')zoomBy(1);else if(a==='out')zoomBy(-1);else openMenu(a==='track'?'track':'options');});

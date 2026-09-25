@@ -22,19 +22,23 @@ test('hoch geht es erst nach langer guter Phase mit wenig Rechenzeit – und nac
  for(let n=0;n<R.maxUpTries;n++){assert.deepEqual(run(g,16.7,2,R.upAfterMs+2000),['up']);let i=0;assert.deepEqual(run(g,()=>i++%2?16.7:33.4,2,3000).slice(0,1),['down'],'Versuch scheitert');}
  assert.deepEqual(run(g,16.7,2,R.upAfterMs*3),[],'bleibt unten');
 });
-test('Dichte: Automatik schützt CSS-Pixel auch beim Zoomen; volle Auflösung gewinnt',()=>{
+test('Dichte: Automatik geht bei Überlast bis 2 (Nutzerentscheidung 2026-09-25), nie darunter; volle Auflösung gewinnt',()=>{
  assert.equal(worldDensity(2,false,1,1),2);assert.equal(worldDensity(2,false,1,3),2);assert.equal(worldDensity(2,false,2,2),2);assert.equal(worldDensity(2,true,1,1),4);assert.equal(worldDensity(2,false,1,null),2);
+ assert.equal(worldDensity(2.6,false,1,2),2,'Desktop-Zoom 2,6: bis 2, auch unter CSS-Auflösung');assert.equal(worldDensity(3.6,false,2,1),2,'nie unter 2');
 });
 
-test('Legacy caps and slow frames never reduce world density below CSS resolution',async()=>{
+test('Überlast senkt die Dichte bis 2 (auch unter CSS-Auflösung), nie darunter und nie über die native Dichte',async()=>{
  const {Renderer}=await import('../renderer.js');
  for(const zoom of [1.2,1.6,2,2.2,3.6])for(const ratio of [1,1.5,2]){
   const native=worldDensity(zoom,false,ratio);
-  assert.ok(worldDensity(zoom,false,ratio,1)>=zoom);
+  assert.equal(worldDensity(zoom,false,ratio,1),2);
+  // pace() rechnet die native Dichte mit devicePixelRatio – im Test dieselbe Pixeldichte wie die Attrappe
+  globalThis.devicePixelRatio=ratio;
   const r={game:{settings:{}},zoom,density:native,resize(){this.density=worldDensity(zoom,false,ratio,this.densityCap);}};
   for(let i=0;i<1000;i++)Renderer.prototype.pace.call(r,35,25);
-  assert.ok(r.gradeOff);assert.ok(r.density>=zoom);assert.ok(r.density<=native);
+  assert.ok(r.gradeOff);assert.equal(r.density,2,`Zoom ${zoom} × ${ratio}`);assert.ok(r.density<=native);
  }
+ delete globalThis.devicePixelRatio;
 });
 
 test('einzelne Hänger (erste Sicht, neue Bodenkachel) senken die Auflösung nicht',()=>{

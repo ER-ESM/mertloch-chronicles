@@ -1,0 +1,211 @@
+/* Dungeon-Oberfläche, Etappe 2 „Lesbar wie WoW“ (E-71): Ortsliste, Eingangskarte, Übergang, Journal, Warnleiste, Bossrahmen,
+   Dungeon-Karte, Verfolgung und Handy-Kampfansicht. Zuletzt geladen; nur eigene Klassen, keine Blend-Modi (E-46 ff.). */
+.dicon{display:block;flex:none;image-rendering:auto}
+.dicon.dim{opacity:.45}
+
+/* ── Weltkarte: Ortsliste „Schloss Big B · Stufe 8–10 · 5 Köpfe“ zweizeilig, unter der Stufe grau */
+.game-popup.popup-map .wk-list .wk-row.atlas-place .wk-one{display:flex;align-items:baseline;gap:6px;min-width:0}
+.game-popup.popup-map .wk-list .wk-row.atlas-place .wk-one b{flex:none}
+.game-popup.popup-map .wk-list .wk-row.atlas-place .wk-sub{display:block!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 11px/1.1 var(--read);color:#d7c19a}
+.game-popup.popup-map .wk-list .wk-row.atlas-place.dungeon b{color:#e6d4ff!important}
+.game-popup.popup-map .wk-list .wk-row.atlas-place.dungeon.low b,.game-popup.popup-map .wk-list .wk-row.atlas-place.dungeon.low .wk-sub{color:#bdb8a4!important}
+.wk-tip.item-tooltip .wk-tip-road strong{font:800 14px/1.2 var(--read)}
+
+/* ── Eingangskarte */
+.game-popup.popup-dungeonEntry .popup-body{padding:10px 12px 12px!important;overflow:hidden!important}
+.dg-entry{display:flex;flex-direction:column;gap:10px}
+.dg-facts{display:flex;gap:8px;flex-wrap:wrap}
+.dg-chip{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 6px;border:1px solid #c5a26866;border-radius:999px;background:#15261e;color:var(--cream);font:800 14px/1 var(--read);cursor:default}
+.dg-chip b{font:800 14px/1 var(--read)}
+button.dg-chip{cursor:pointer}
+.dg-chip.dg-talents{border-color:#f3cf7a;background:#3a2e12;box-shadow:0 0 0 1px #f3cf7a55,0 0 10px #f3cf7a44}
+.dg-chip.dg-talents:hover,.dg-chip.dg-talents:focus-visible{background:#4d3c16;outline:none}
+.dg-party{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.dg-slot{position:relative;display:grid;place-items:center;aspect-ratio:1;border:2px solid #c5a26888;border-radius:10px;background:#101d17;overflow:hidden}
+.dg-slot .unit-portrait{width:100%;height:100%;display:block}
+.dg-slot .unit-portrait canvas{width:100%;height:100%;display:block}
+.dg-slot .unit-level{position:absolute;left:3px;bottom:3px;font:800 11px/1 var(--read);color:#fff3cf;background:#1c1712cc;border-radius:6px;padding:2px 4px}
+.dg-slot .dg-role{position:absolute;right:2px;top:2px}
+.dg-slot.dg-you{border-color:var(--gold)}
+.dg-slot.dg-empty{border-style:dashed;border-color:#c5a26855;background:#0c1612}
+.dg-slot[data-role=tank]{box-shadow:inset 0 -3px 0 #4c86c8}.dg-slot[data-role=heal]{box-shadow:inset 0 -3px 0 #6fbf5c}.dg-slot[data-role=damage]{box-shadow:inset 0 -3px 0 #d0655e}
+.dg-hire{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.dg-offer{all:unset;box-sizing:border-box;position:relative;display:grid;place-items:center;height:48px;border:1px solid #c5a26866;border-radius:8px;background:#14231c;cursor:pointer;overflow:hidden}
+.dg-offer .unit-portrait{width:40px;height:40px;display:block}.dg-offer .unit-portrait canvas{width:40px;height:40px;display:block}
+.dg-offer .dg-role{position:absolute;right:2px;top:2px}
+.dg-offer[data-role=tank]{box-shadow:inset 0 -3px 0 #4c86c8}.dg-offer[data-role=heal]{box-shadow:inset 0 -3px 0 #6fbf5c}.dg-offer[data-role=damage]{box-shadow:inset 0 -3px 0 #d0655e}
+.dg-offer:hover,.dg-offer:focus-visible{border-color:var(--gold);background:#1f3328;outline:none}
+.dg-offer[aria-disabled=true]{opacity:.45}
+.dg-foot{display:flex;align-items:center;gap:8px}
+.dg-loots{display:flex;gap:6px;margin-right:auto}
+.dg-loot{display:grid;place-items:center;width:40px;height:40px;border:1px solid #c5a26877;border-radius:8px;background:#0f1a15}
+.dg-loot canvas{width:34px;height:34px}
+.dg-loot.empty{border-style:dashed;border-color:#c5a26844}
+.dg-journal{min-width:44px;min-height:40px;padding:0 8px!important;display:grid!important;place-items:center}
+.dg-enter{min-height:40px;padding:0 20px!important;font:800 15px/1 var(--read)!important;letter-spacing:.02em}
+.dg-enter[aria-disabled=true]{filter:grayscale(.85);opacity:.6}
+.touch-mode .dg-chip{height:44px}.touch-mode .dg-offer{height:48px}.touch-mode .dg-loot{width:44px;height:44px}.touch-mode .dg-journal,.touch-mode .dg-enter{min-height:44px}
+
+/* ── Übergang Rolltor ↔ Hof (nur Deckkraft, keine Blend-Modi) */
+.dg-transition{position:fixed;inset:0;z-index:4000;display:grid;place-items:center;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 55%,#2a1a3a 0%,#0e0a12 62%,#050407 100%);transition:opacity .26s ease-in}
+.dg-transition.show{opacity:1;pointer-events:auto}
+.dg-transition.out{transition:opacity .4s ease-out}
+.dg-tr-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:0 16px}
+.dg-tr-card b{font:400 clamp(34px,7vw,64px)/1 var(--display);letter-spacing:.06em;color:#f3cf7a;text-shadow:0 3px 0 #1c1712,0 0 24px #b58cf055;text-transform:uppercase}
+.dg-tr-card small{font:600 clamp(13px,2vw,16px)/1.3 var(--read);color:#e6d4ff;max-width:36em}
+.dg-transition[data-kind=leave] .dg-tr-card b{color:#f4e8c4}
+@media (prefers-reduced-motion:reduce){.dg-transition,.dg-transition.out{transition:none}}
+
+/* ── Journal */
+.game-popup.popup-journal .popup-body{padding:10px 12px 12px!important;overflow:hidden!important}
+.dj{display:flex;flex-direction:column;gap:10px}
+.dj-tabs{display:flex;gap:6px}
+.dj-tab{all:unset;box-sizing:border-box;position:relative;display:grid;place-items:center;width:44px;height:44px;border:2px solid #c5a26855;border-radius:10px;background:#101d17;cursor:pointer}
+.dj-tab.on{border-color:var(--gold);box-shadow:0 0 0 1px #f3cf7a55}
+.dj-tab:hover:not([disabled]),.dj-tab:focus-visible{border-color:#f3cf7a;outline:none}
+.dj-tab.dj-unknown{cursor:default;opacity:.7}
+.dj-tab .dj-face{width:40px;height:40px;border-radius:8px}
+.dj-tab .dj-star{position:absolute;right:-3px;top:-3px}
+.dj-head{display:flex;gap:12px;align-items:center}
+.dj-portrait{width:64px;height:64px;border:2px solid #c5a268;border-radius:12px;flex:none}
+.dj-head h3{margin:0;font:400 26px/1 var(--display);letter-spacing:.03em;color:#f3cf7a;text-transform:uppercase}
+.dj-title{display:block;margin:3px 0 6px;font:600 12px/1.2 var(--read);color:#d7c19a;cursor:default}
+.dj-facts{display:flex;gap:6px;flex-wrap:wrap}
+.dj-chip{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px 0 4px;border:1px solid #c5a26855;border-radius:999px;background:#15261e;color:var(--cream);font:800 12px/1 var(--read);cursor:default}
+.dj-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dj-label{display:grid;place-items:center;width:24px}
+.dj-phase{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 8px;border:1px solid #d7b6f255;border-radius:8px;background:#1f1628;color:#f0e2ff;font:800 13px/1 var(--read);cursor:default}
+.dj-abilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.dj-ability{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:44px;padding:5px 8px;border:1px solid #c5a26855;border-radius:10px;background:#122019;color:var(--cream);cursor:default}
+.dj-ability:hover,.dj-ability:focus-visible{border-color:#f3cf7a;background:#1a2c22;outline:none}
+.dj-ability span{display:flex;flex-direction:column;min-width:0}
+.dj-ability b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 13px/1.15 var(--read)}
+.dj-ability small{font:700 12px/1.15 var(--read);color:#ffc4a8}
+.dj-ability i{display:flex;gap:2px}
+.dj-foot{justify-content:space-between}
+.dj-roles{display:flex;gap:6px}
+.dj-role{display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 8px 0 4px;border:1px solid #c5a26855;border-radius:999px;background:#15261e;color:var(--cream);font:800 13px/1 var(--read);cursor:default}
+.dj-role:focus-visible{outline:2px solid #f3cf7a}
+.dj-loots{display:flex;align-items:center;gap:6px}
+.dj-loot{display:grid;place-items:center;width:40px;height:40px;border:1px solid #c5a26877;border-radius:8px;background:#0f1a15}
+.dj-loot canvas{width:34px;height:34px}
+.dj-loot.empty{border-style:dashed;border-color:#c5a26844}
+.touch-mode .dj-abilities{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:520px){.dj-abilities{grid-template-columns:minmax(0,1fr)}.dj-head h3{font-size:22px}}
+
+/* ── Bossrahmen oben mittig (Zielbild B): Name, Leben mit Phasenmarken, Zauberleiste mit Symbol und Antwort */
+.boss-hud{position:absolute;inset:0;pointer-events:none;z-index:32}
+.boss-hud[hidden]{display:none}
+.boss-frame{position:absolute;top:calc(6px + var(--safe-top,0px));left:50%;transform:translateX(-50%);width:440px;max-width:calc(100% - 24px);display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:start;padding:5px 8px 6px 5px;border:2px solid #c5a268;border-radius:12px;background:#101d17ee;box-shadow:0 3px 0 #0b1216,0 6px 18px #0008;pointer-events:auto}
+.boss-frame[hidden]{display:none}
+.bf-face{all:unset;box-sizing:border-box;display:grid;place-items:center;width:44px;height:44px;border:2px solid #8f2f2c;border-radius:50%;background:radial-gradient(circle,#4a2e2a,#1c1210);cursor:pointer}
+.bf-face:hover,.bf-face:focus-visible{border-color:#f3cf7a;outline:none}
+.bf-main{display:flex;flex-direction:column;gap:3px;min-width:0}
+.bf-name{display:flex;align-items:baseline;gap:8px;min-width:0}
+.bf-name b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 18px/1 var(--display);letter-spacing:.04em;color:#f3cf7a;text-transform:uppercase}
+.bf-pct{font:800 12px/1 var(--read);color:var(--cream)}
+.bf-bar{position:relative;height:13px;border:1px solid #0b1216;border-radius:999px;background:#3a2521;overflow:hidden}
+.bf-bar i{position:absolute;inset:0;background:linear-gradient(#e2574a,#a3322a);transform-origin:left center}
+.bf-bar em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:#f3cf7a;box-shadow:0 0 0 1px #1c1712}
+.bf-bar em.passed{background:#6b5a3a}
+.boss-frame.bf-phase .bf-bar em{animation:bf-phase .9s ease-out}
+@keyframes bf-phase{0%,40%{background:#fff3c4;box-shadow:0 0 6px 2px #f3cf7a}100%{}}
+.bf-cast{position:relative;display:flex;align-items:center;gap:6px;height:24px;padding:0 8px 0 3px;border:1px solid #e1856988;border-radius:7px;background:#2a1714;overflow:hidden}
+.bf-cast[hidden]{display:none}
+.bf-cast>i{position:absolute;inset:0;background:#e1856944;transform-origin:left center;z-index:0}
+.bf-cast>*{position:relative;z-index:1}
+.bf-cast b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 13px/1 var(--read);color:#ffe2d6;text-transform:uppercase;letter-spacing:.03em}
+.bf-cast.bf-int{border-color:#f3cf7a;background:#2a2412}.bf-cast.bf-int>i{background:#ecb95c55}.bf-cast.bf-int b{color:#ffe6a0}
+.bf-cast kbd{font:800 11px/1 var(--read);padding:2px 5px;border-radius:5px;background:#f3cf7a;color:#1c1712}
+.bf-cast-time{font:800 12px/1 var(--read);color:var(--cream)}
+/* ── Warnleiste über der Aktionsleiste (am Handy über den Kampfknöpfen): Symbol, Antwort, Name, Timer */
+.boss-alerts{position:absolute;left:50%;transform:translateX(-50%);bottom:180px;width:380px;max-width:calc(100% - 16px);display:flex;flex-direction:column-reverse;gap:4px}
+.boss-alerts.ba-right{left:auto;transform:none;width:min(300px,calc(100% - 16px))}
+.ba-row{position:relative;display:grid;grid-template-columns:26px auto minmax(0,1fr) auto auto;align-items:center;gap:7px;height:32px;padding:0 9px 0 4px;border:1px solid #c5a26877;border-radius:8px;background:#0f1a15e6;overflow:hidden;box-shadow:0 2px 0 #0b1216}
+.ba-row>*{position:relative;z-index:1}
+.ba-row .ba-fill{position:absolute;inset:0;z-index:0;background:#c5a26830;transform-origin:left center;transform:scaleX(0)}
+.ba-row b{font:800 14px/1 var(--read);color:#fff0e0;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.ba-row small{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 12px/1 var(--read);color:#cbb98f}
+.ba-row .ba-time{font:800 13px/1 var(--read);color:var(--cream);min-width:34px;text-align:right}
+.ba-row kbd{font:800 11px/1 var(--read);padding:2px 5px;border-radius:5px;background:#f3cf7a;color:#1c1712}
+.ba-row.ba-now{border-color:#ff7a5c;background:#2a1411ee}.ba-row.ba-now .ba-fill{background:#e1856966}
+.ba-row.ba-int{border-color:#f3cf7a}.ba-row.ba-int.ba-now{background:#2a2412ee}.ba-row.ba-int.ba-now .ba-fill{background:#ecb95c66}
+.ba-row.ba-soon b{color:#fff}
+.ba-row.ba-now.ba-soon{animation:ba-soon .25s steps(2) infinite}
+@keyframes ba-soon{50%{border-color:#fff0c8}}
+.ba-row.ba-trash{opacity:.92}
+@media (prefers-reduced-motion:reduce){.ba-row.ba-now.ba-soon{animation:none}.boss-frame.bf-phase .bf-bar em{animation:none}}
+/* ── Ansage mittig: nur bei neuen Mechaniken und Phasen, 1,5 s */
+.boss-announce{position:absolute;left:50%;top:24%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;pointer-events:none;white-space:nowrap}
+.boss-announce[hidden]{display:none}
+.boss-announce b{font:400 30px/1 var(--display);letter-spacing:.05em;color:#ff5a3c;text-shadow:0 2px 0 #1c1712,2px 0 0 #1c1712,-2px 0 0 #1c1712,0 -2px 0 #1c1712,0 0 14px #0009}
+.boss-announce.pop{animation:ba-pop 1.5s ease-out both}
+@keyframes ba-pop{0%{opacity:0;transform:translateX(-50%) scale(1.25)}12%{opacity:1;transform:translateX(-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.boss-announce.pop{animation:none}}
+.touch-mode .boss-frame{width:300px;grid-template-columns:34px minmax(0,1fr);gap:6px;padding:3px 6px 4px 3px}
+.touch-mode .bf-face{width:34px;height:34px}.touch-mode .bf-face .dicon{width:20px!important;height:20px!important}
+.touch-mode .bf-name b{font-size:15px}.touch-mode .bf-bar{height:10px}.touch-mode .bf-cast{height:22px}.touch-mode .bf-cast b{font-size:12px}
+.touch-mode .boss-announce{display:none!important}/* am Handy reicht die Warnleiste über den Knöpfen */
+.touch-mode .ba-row{height:30px}.touch-mode .ba-row b{font-size:13px}
+.bf-face canvas{width:40px;height:40px;border-radius:50%}
+.touch-mode .bf-face canvas{width:30px;height:30px}
+
+/* ── Verfolgung im Dungeon: Siegel und Beweise statt Weltauftrag */
+.quest-panel .dg-track-row{display:flex!important;align-items:center;gap:8px}
+.quest-panel .dg-track-icons{display:inline-flex;gap:3px}
+.quest-panel .dg-track-boss{cursor:pointer}
+.quest-panel .dg-track-boss span:last-child{font:700 12px/1.1 var(--read);color:#f0d9b0}
+
+/* ── Dungeon-Karte (Zielbild A): Leinwand füllt das Fenster, Symbolreiter in der Titelzeile, schmale Seitenleiste */
+.game-popup.popup-map.dm-window .popup-body{padding:0!important;overflow:hidden!important;display:flex;flex-direction:column}
+.dm{display:flex;flex-direction:column;flex:1;min-height:0;height:100%}
+.dm-tools{display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:8px}
+.dm-tools .dm-floor{display:inline-flex!important;align-items:center;gap:4px;height:30px;min-width:48px;padding:0 8px!important;font:800 13px/1 var(--read)!important}
+.dm-tools .dm-tool{display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid #c5a26877;border-radius:8px;background:#14231c;cursor:pointer}
+.dm-tools .dm-tool[aria-pressed=true],.dm-tools .dm-tool.on{border-color:var(--gold);background:#3a2e12}
+.dm-tools .dm-info{cursor:help}
+.dm-body{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 220px}
+.dm-paper{position:relative;min-width:0;min-height:0}
+.dm-paper canvas.dungeon-map{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:auto!important;display:block;margin:0!important}
+.dm-paper canvas.dm-over{cursor:pointer}
+.dm-side{display:flex;flex-direction:column;gap:8px;padding:10px;border-left:1px solid #c5a26844;background:#0f1a15}
+.dm-row{display:flex;align-items:center;gap:4px;height:32px;padding:0 8px;border:1px solid #c5a26844;border-radius:8px;background:#14231c;color:var(--cream);font:800 13px/1 var(--read)}
+.dm-row b{margin-left:auto}
+.dm-bosses{display:flex;flex-direction:column;gap:4px}
+.dm-boss{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;min-height:34px;padding:2px 8px;border:1px solid #c5a26844;border-radius:8px;background:#14231c;color:var(--cream);font:700 13px/1.1 var(--read);cursor:pointer}
+.dm-boss:hover,.dm-boss:focus-visible{border-color:#f3cf7a;outline:none}
+.dm-boss.dead span{color:#a4a29a;text-decoration:line-through}
+.dm-tip.item-tooltip{position:fixed;z-index:60;max-width:260px}
+/* Handy: Leiste oben statt rechts, Reiter 44 px, nichts scrollt */
+.touch-mode .dm-body{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.touch-mode .dm-side{order:-1;flex-direction:row;align-items:center;gap:6px;padding:4px 6px;border-left:0;border-bottom:1px solid #c5a26844;overflow:hidden}
+.touch-mode .dm-row{height:36px;padding:0 6px}
+.touch-mode .dm-bosses{flex-direction:row;margin-left:auto}
+.touch-mode .dm-boss{min-height:44px;min-width:44px;padding:0 6px}.touch-mode .dm-boss span{display:none}
+.touch-mode .dm-tools .dm-floor{height:44px;min-width:44px}.touch-mode .dm-tools .dm-tool{width:44px;height:44px}
+.touch-mode .dm-tools{gap:8px}
+
+/* ── Handy-Kampfansicht im Bosskampf (Grafik-Review Dungeon Befund 1): Bossrahmen am Platz des Zielrahmens, Zielrahmen eine Zeile
+   (Ziel = Boss: ganz weg, der Bossrahmen zeigt es), Truppe als kompakte Leiste (44 px je Söldner, Name im Balken). */
+@media (orientation:portrait){
+ .touch-mode .boss-frame{top:calc(102px + var(--safe-top,0px));left:calc(12px + var(--safe-left,0px));transform:none;width:min(300px,calc(100% - 96px - var(--safe-left,0px)))}
+ .touch-mode.boss-fight #targetPanel{top:calc(166px + var(--safe-top,0px))!important}
+ .touch-mode.boss-fight #unitGroupDock{width:150px!important}
+}
+@media (orientation:landscape){
+ .touch-mode .boss-frame{top:calc(10px + var(--safe-top,0px));left:calc(232px + var(--safe-left,0px));transform:none;width:300px}
+ .touch-mode.boss-fight #targetPanel{left:calc(542px + var(--safe-left,0px))!important;top:calc(10px + var(--safe-top,0px))!important;width:180px!important}
+}
+.touch-mode.boss-target #targetPanel{display:none!important}
+.touch-mode.boss-fight #targetPanel{min-height:0!important;height:auto!important;padding:4px 8px!important}
+.touch-mode.boss-fight #targetPanel :is(#targetTitle,#targetEffect,#targetDistance,#targetPortrait,#enemyCast){display:none!important}
+.touch-mode.boss-fight #unitGroupDock .companion-frames>header{display:none!important}
+.touch-mode.boss-fight #unitGroupDock .companion-frame{min-height:44px!important;height:44px;padding:2px 5px!important;grid-template-columns:28px minmax(0,1fr)!important;gap:5px!important;align-items:center}
+.touch-mode.boss-fight #unitGroupDock .companion-frame .unit-portrait{width:28px!important;height:28px!important}
+.touch-mode.boss-fight #unitGroupDock .companion-frame .unit-portrait canvas{width:28px!important;height:28px!important}
+.touch-mode.boss-fight #unitGroupDock .companion-frame :is(.unit-level,.companion-frame-meta,strong small){display:none!important}
+.touch-mode.boss-fight #unitGroupDock .companion-frame strong{font-size:11px!important;line-height:1.05!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.touch-mode.boss-fight #unitGroupDock .companion-life{height:12px!important;margin-top:2px}
+.touch-mode.boss-fight #unitGroupDock .companion-life>span{font-size:9px!important;line-height:12px!important}
+.touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-frames{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-life>span{display:none!important}

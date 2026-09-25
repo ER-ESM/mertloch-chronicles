@@ -16,7 +16,7 @@ try{
   await b.goto(b.url);await b.send('Page.removeScriptToEvaluateOnNewDocument',script);
   await read(`import('/dungeon.js').then(m=>{window.D=m;const d=m.dungeonEntrance(game);game.enemies=[];Object.assign(game.player,{x:d.x,y:d.y+8});game.player.inCombat=0;for(const w of document.querySelectorAll('.popup-close,[data-close]'))w.click();return d.street;})`);
   await wait(500);assert.equal(await read(`game.interaction()?.kind`),'dungeonEnter','Eingang bietet sich an');await b.screenshot(dir+'/'+name+'-eingang.png');
-  await interact(touch);assert.equal(await read('game.instance?.kind'),'dungeon','über F/Aktion betreten');
+  /* Etappe 2: F öffnet die Eingangskarte, ein zweites F (bzw. Tippen) betritt – hinter dem Übergang */await interact(touch);assert.ok(await read(`!!document.querySelector('.popup-dungeonEntry')`),'Eingangskarte vor dem Betreten');await interact(touch);await wait(1300);assert.equal(await read('game.instance?.kind'),'dungeon','über F/Aktion betreten');
   await read(`(()=>{for(const e of game.enemies)if(!e.dungeonBoss){e.hp=0;e.aggro=false;e.ai='dead';e.respawnAt=Infinity;}})()`);
   const y=await read('game.player.y');
   if(!touch){await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'w',code:'KeyW'});await wait(600);await b.send('Input.dispatchKeyEvent',{type:'keyUp',key:'w',code:'KeyW'});await wait(200);assert.ok(await read('game.player.y')<y-15,'Laufen im Hof');}
@@ -34,7 +34,7 @@ try{
   await read(`document.querySelector('[data-dungeon-floor="e0"]')?.click()`);await wait(300);assert.ok(await read(`document.querySelector('[data-dungeon-floor="e0"]').classList.contains('gold-button')`),'Reiter Erdgeschoss aktiv');await wait(500);assert.ok(await read(`document.querySelector('[data-dungeon-floor="e0"]').classList.contains('gold-button')`),'Wahl bleibt beim Mitlaufen');await b.screenshot(dir+'/'+name+'-karte-e0.png');await b.press('Escape');await wait(200);
   // Zurück und raus
   await read(`(()=>{const r=game.dungeonRun;Object.assign(game.player,D.toWorld(r.def,'k1',10.5,8));game.player.inCombat=0;game.dungeonStep('treppe-zugbruecke','b');Object.assign(game.player,D.toWorld(r.def,'e0',31,36.4));})()`);await wait(300);
-  assert.equal(await read(`game.interaction()?.kind`),'dungeonLeave');await interact(touch);assert.equal(await read('game.instance'),null,'am Rolltor verlassen');
+  assert.equal(await read(`game.interaction()?.kind`),'dungeonLeave');await interact(touch);await wait(1300);assert.equal(await read('game.instance'),null,'am Rolltor verlassen');
   const result=name+': Eingang an der Burgstraße, Betreten, Laufen, Gerds Kegel, Siegel, Treppe, Dungeon-Karte, Verlassen';checks.push(result);console.log('PASS '+result);
  }
  assert.deepEqual(b.errors,[]);writeFileSync(dir+'/result.json',JSON.stringify({checks,errors:b.errors},null,2));

@@ -9,9 +9,10 @@ import {loadMountArt,paintMountIcon,mountArt} from './mount-art.js';
 import {mountStation} from './mounts.js';
 import {MOUNT_UI,MOUNT_RULES} from './content/index.js';
 import {inKiosk,kioskEntrance} from './kiosk-instance.js';
-import {inDungeon,dungeonRun,floorAt as dungeonFloorAt,roomAt as dungeonRoomAt} from './dungeon.js';
+import {inDungeon,dungeonRun,floorAt as dungeonFloorAt,roomAt as dungeonRoomAt,dungeonEntrance} from './dungeon.js';
 import {drawDungeonMap} from './dungeon-art.js';
-import {DUNGEON_TEXT} from './content/index.js';
+import {mountDungeonUI} from './dungeon-ui.js';
+import {DUNGEON_TEXT,DUNGEONS,DUNGEON_UI} from './content/index.js';
 import {KIOSK_ROOM,KIOSK_TEXT,PERFORMANCE} from './content/index.js';
 import {shopPanel} from './shop-ui.js';
 import {shopUnavailable,merchantPoint,merchantActorPoint,sellableCount} from './shop.js';
@@ -158,7 +159,8 @@ modal.addEventListener('click',e=>{
  if(d.companionStance){game.setCompanionStance(d.companionStance,companionState.selected||undefined);events();}
 });
 // Mobile Übersetzungsschicht: übersetzt Fenster, Toasts und Clan-Schule in Touch-Begriffe, sobald der Touch-Modus aktiv ist.
-const translator=createTranslator({getGame:()=>game,getMobile:()=>mobile?.state(),actionBar});let atlasUI=null,popupControls=null,actionBarUI=null,selectedLootId=null;
+const translator=createTranslator({getGame:()=>game,getMobile:()=>mobile?.state(),actionBar});
+/* Etappe 2 Dungeon (E-71): Eingangskarte, Übergang und Journal (dungeon-ui.js) */const dungeonUI=mountDungeonUI({game:()=>game,popups,openModal:(...a)=>openModal(...a),paint:()=>paintRpg(),events:()=>events(),save:()=>save(),toast:(t,e)=>toast(t,e),showPanel:id=>showPanel(id),unlocked:f=>!unlocks||unlocks.unlocked(f)});let atlasUI=null,popupControls=null,actionBarUI=null,selectedLootId=null;
 // Erinnerungsfetzen blenden sich nacheinander ein und halten das Spiel nicht an.
 let memoryQueue=[];
 // Die Warteschlange leert sich erst, wenn kein anderes Fenster offen ist: nie über Tod-Fenster oder Gespräch.
@@ -354,8 +356,8 @@ function worldInteraction(){
     case 'loot':return offer({label:'Beutel durchsuchen',run:()=>showLoot(it.id)});
     case 'gather':return offer({label:(ITEMS[it.item]?.name||'Material')+' sammeln',run:()=>{game.collectGather(it.id);events();}});
     case 'enterKiosk':return offer({label:KIOSK_TEXT.enter,run:()=>{game.enterKiosk();events();}});
-    case 'dungeonEnter':return offer({label:DUNGEON_TEXT.enter,run:()=>{game.enterDungeon(it.id);events();}});
-    case 'dungeonLeave':return offer({label:DUNGEON_TEXT.leave,run:()=>{game.leaveDungeon();events();save();}});
+    case 'dungeonEnter':return offer({label:DUNGEON_TEXT.enter,run:()=>dungeonUI.openEntry(it.id)});
+    case 'dungeonLeave':return offer({label:DUNGEON_TEXT.leave,run:()=>dungeonUI.leave()});
     case 'dungeonStep':return offer({label:it.name,run:()=>{game.dungeonStep(it.id,it.side);events();}});
     case 'dungeonSecret':return offer({label:it.name,run:()=>{game.dungeonSecret(it.id);events();}});
     case 'leaveKiosk':return offer({label:KIOSK_TEXT.leave,run:()=>{game.leaveKiosk();events();}});
@@ -457,7 +459,7 @@ const st=game.classState;const p=game.player,e=game.target,q=game.quest;$('#play
   // Auftragsverfolgung (quest-tracker.js): verfolgter Auftrag mit nur dem nächsten Schritt, darunter die übrigen; Details im Tooltip.
   renderTracker($('.quest-panel'),game,{waypoint,metres:inDungeon(game)?null:pt=>distance(p,pt)/SCALE});
   const next=worldInteraction();$('#interact').classList.toggle('hidden',!next||game.dead);if(next)$('#interact span').textContent=next.label;/* Hofprobe: speak() nimmt nahe Beute zuerst, sonst führt es zu Ida – der Knopf sagt, was der Tipp tut */mobile?.setAction?.(game.dead?null:tutorialActive(game)?(nearestLoot(game)?'loot':'npc'):next?.kind||null);
-  if(inDungeon(game)){const run=dungeonRun(game),room=dungeonRoomAt(run.def,p.x,p.y);$('#zoneName').textContent=room?room.sign:run.def.name;$('#zoneType').textContent=run.def.floors[dungeonFloorAt(run.def,p.x,p.y)]?.name||run.def.subtitle;$('#coordinates').textContent='';}else{const road=world.nearestRoad(p.x,p.y),hub=(world.hubs||[]).find(h=>distance(p,h)<125),camp=world.camps.find(c=>distance(p,c)<240),approach=world.camps.find(c=>c.approach&&distance(p,c.approach)<85);$('#zoneName').textContent=hub?hub.name.split(' · ')[0]:camp?camp.title:approach?'Lagerrand':distance(p,world.church)<190?'St. Gangolf':road.distance<60&&road.road?.tags.name?road.road.tags.name:'Mertlocher Fluren';$('#zoneType').textContent=hub||approach||distance(p,world.spawn)<100?'Geschützter Rastplatz':camp?(game.enemies.some(e=>e.campId===camp.id&&e.hp>0)?'Besetztes Außenlager':'Lager freigeräumt'):'Mertloch · Maifeld';const gps=world.unproject(p.x,p.y);$('#coordinates').textContent=gps.lat.toFixed(4)+'° N · '+gps.lon.toFixed(4)+'° O';}{const house=world.base?.house;if(house&&!inDungeon(game)&&!inKiosk(game)&&insideHouse(house,p.x,p.y)){const room=houseRoomAt(house,p.x,p.y,game.floor?1:0);$('#zoneName').textContent=BUDE_HOUSE_TEXT.inside;$('#zoneType').textContent=(room?.name||'')+(game.floor?' · '+BUDE_HOUSE_TEXT.upper:'');}}if(inKiosk(game)){$('#zoneName').textContent=KIOSK_TEXT.inside;$('#zoneType').textContent=KIOSK_TEXT.zone;$('#coordinates').textContent='';}
+  if(inDungeon(game)){const run=dungeonRun(game),room=dungeonRoomAt(run.def,p.x,p.y);$('#zoneName').textContent=room?room.sign:run.def.name;$('#zoneType').textContent=run.def.floors[dungeonFloorAt(run.def,p.x,p.y)]?.name||run.def.subtitle;$('#coordinates').textContent='';}else{const road=world.nearestRoad(p.x,p.y),hub=(world.hubs||[]).find(h=>distance(p,h)<125),camp=world.camps.find(c=>distance(p,c)<240),approach=world.camps.find(c=>c.approach&&distance(p,c.approach)<85);const dgDoor=dungeonEntrance(game),atDoor=dgDoor&&distance(p,dgDoor)<110;/* Etappe 2: am Rolltor heißt der Ort wie der Dungeon (WoW) */$('#zoneName').textContent=atDoor?DUNGEONS[dgDoor.id].name:hub?hub.name.split(' · ')[0]:camp?camp.title:approach?'Lagerrand':distance(p,world.church)<190?'St. Gangolf':road.distance<60&&road.road?.tags.name?road.road.tags.name:'Mertlocher Fluren';$('#zoneType').textContent=atDoor?DUNGEON_UI.kind+' · '+DUNGEON_UI.band(DUNGEONS[dgDoor.id].level.min,DUNGEONS[dgDoor.id].level.max):hub||approach||distance(p,world.spawn)<100?'Geschützter Rastplatz':camp?(game.enemies.some(e=>e.campId===camp.id&&e.hp>0)?'Besetztes Außenlager':'Lager freigeräumt'):'Mertloch · Maifeld';const gps=world.unproject(p.x,p.y);$('#coordinates').textContent=gps.lat.toFixed(4)+'° N · '+gps.lon.toFixed(4)+'° O';}{const house=world.base?.house;if(house&&!inDungeon(game)&&!inKiosk(game)&&insideHouse(house,p.x,p.y)){const room=houseRoomAt(house,p.x,p.y,game.floor?1:0);$('#zoneName').textContent=BUDE_HOUSE_TEXT.inside;$('#zoneType').textContent=(room?.name||'')+(game.floor?' · '+BUDE_HOUSE_TEXT.upper:'');}}if(inKiosk(game)){$('#zoneName').textContent=KIOSK_TEXT.inside;$('#zoneType').textContent=KIOSK_TEXT.zone;$('#coordinates').textContent='';}
   $('#rotationTip').innerHTML='<span>PTC</span> '+(!available(game,'mark')?'Tab → Ziel wählen · [1] angreifen · [LEER] ausweichen'+(available(game,'buff')?' · [5] Buff':''):e?.cast?.interruptible&&available(game,'interrupt')?'Jetzt '+game.skills[3].name+' [4] – Klappe zu, Schaden hoch.':e?.cast?.ground?'Raus aus der Fläche! '+game.skills[5].name+' [LEER].':available(game,'burst')&&game.cooldowns.burst<=0&&e?.mark>0?'Bereit: '+game.skills[2].name+' [3]!':game.member.id==='baerbel'?'Im Takt treffen: 1–1,9 s zwischen zwei Pinsel-Pieksern.':'Punkte mit [1]. Markieren mit [2]. Komplett ausrasten mit [3].');
 
   $('#rotationTip').innerHTML=remapHint($('#rotationTip').innerHTML);
@@ -465,7 +467,7 @@ const st=game.classState;const p=game.player,e=game.target,q=game.quest;$('#play
 }
 let deathScreen=null;
 function events(){for(const ev of game.events.splice(0)){
-  if(['companion','hired','dismissed','expired','down','revived','order','stance'].includes(ev.type)){companionHud?.update();updateCompanionPanel(popups.get('companions')?.body,game);}
+  if(['companion','hired','dismissed','expired','down','revived','order','stance'].includes(ev.type)){companionHud?.update();updateCompanionPanel(popups.get('companions')?.body,game);dungeonUI.refresh();}
   if(ev.type==='instanceChanged'){popups.closeAll();mobile?.stop();renderer.camera={...game.player};document.body.dataset.instance=game.instance?.id||'';}
   if(ev.type==='levelUp'){/* Lichtsäule am Helden (renderer.js drawLevelUp) */game.effect?.('levelup',game.player.x,game.player.y,{life:1.8,max:1.8,radius:70});const skills=[];pendingLevel={level:ev.level,hpGain:ev.hpGain,points:pointsAtLevel(ev.level)-pointsAtLevel(ev.level-1),skills};queueMicrotask(()=>{if(pendingLevel){milestones?milestones.level(pendingLevel):toast(ev.text);pendingLevel=null;}});}if(ev.type==='tutorialStep')tutorialUI?.update();if(ev.type==='activity')showActivity();if(ev.type==='rpgChanged'){equipFlash();syncPreviewArt();buildActions();refreshPanels();paintPortrait();}if(ev.type==='skillsUnlocked'){buildActions();refreshPanels();if(pendingLevel)for(const id of ev.ids||[]){const s=game.skills.find(k=>k.id===id);if(s)pendingLevel.skills.push(s.name);}if(!pendingLevel)toast('Neuer Kniff gelernt. Erklärung im Skillbuch [K].');}if(ev.type==='classChanged'){syncPreviewArt();buildActions();refreshPanels();paintPortrait();toast(game.member.name+' ist am Start.');}if(ev.type==='toast')toast(ev.text,ev.error);if(ev.type==='targetState')cues.flashState();if(ev.type==='autopilotStop')cues.attacked();if(ev.type==='settingsChanged'){syncPreviewArt();if(combatText)combatText.enabled=game.settings.sct!==false;if(fpsMeter)fpsMeter.enabled=game.settings.fps===true;if(ev.key==='fullRes'||ev.key==='autoRes'||ev.key==='lowRes')renderer.resize();}if(ev.type==='save')save();if(ev.type==='sound')sound(ev.id);if(ev.type==='target')sound('target');if(ev.type==='shake')renderer.shake=ev.strength;
   if(ev.type==='attacked'){sawAttackEvent=true;warnAttacked(ev.name);cues.attacked();}

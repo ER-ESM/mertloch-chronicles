@@ -19,13 +19,13 @@ export const MINIMAP={
  // Kartenmaßstab unten links (Meter).
  scaleMeters:[100,50,50,20,20]
 };
-export const MINIMAP_GROUPS=['quest','trade','trainer','places','nodes','people','enemies','route'];
+export const MINIMAP_GROUPS=['quest','dungeon','trade','trainer','places','nodes','people','enemies','route'];
 export const MINIMAP_UI={
  label:'Minikarte',openMap:'Weltkarte öffnen',openMapKey:'M',walkHint:'Umschalt + Klick: hinlaufen',
  zoomIn:'Näher heran',zoomOut:'Weiter weg',zoomLevel:n=>'Zoom '+n+'/5',wheel:'Mausrad zoomt',
  tracking:'Kartensymbole',options:'Kartenoptionen',north:'N',northTip:'Norden',
  groups:{
-  quest:'Aufträge',trade:'Händler',trainer:'Lehrer & Werkstätten',places:'Orte & Dienste',
+  quest:'Aufträge',dungeon:'Dungeons',trade:'Händler',trainer:'Lehrer & Werkstätten',places:'Orte & Dienste',
   nodes:'Fundstellen',people:'Mitspieler & Gruppe',enemies:'Gegner & Lager',route:'Laufweg'
  },
  shape:'Form',round:'Rund',square:'Eckig',size:'Größe',sizes:{s:'Klein',m:'Mittel',l:'Groß'},
@@ -34,7 +34,7 @@ export const MINIMAP_UI={
  kinds:{
   destination:'Auftragsziel',waypoint:'Wegmarke',questGiver:'Auftrag verfügbar',questLow:'Auftrag (niedrige Stufe)',questReady:'Auftrag abgeben',
   area:'Auftragsgebiet',trader:'Händler',trainer:'Lehrer & Werkstatt',stable:'Fahrstall',base:'Deine Bude',hub:'Geschützter Treffpunkt',
-  dungeon:'Verlies',campBusy:'Besetztes Lager',campFree:'Lager freigeräumt',player:'Mitspieler',party:'Gruppe',companion:'Begleiter',
+  dungeon:'Dungeon',campBusy:'Besetztes Lager',campFree:'Lager freigeräumt',player:'Mitspieler',party:'Gruppe',companion:'Begleiter',
   enemy:'Gegner',elite:'Elite',boss:'Weltboss',node:'Fundstelle'
  },
  level:n=>'Stufe '+n,levels:(a,b)=>'Stufe '+a+'–'+b,quests:n=>n+(n===1?' Auftrag':' Aufträge'),
@@ -49,20 +49,23 @@ export const WORLD_MAP_UI={
  // Filtergruppen in Reihenfolge der Liste; `on` = Standard.
  groups:[
   {id:'quest',name:'Aufträge',icon:'quest',on:true},{id:'area',name:'Zielgebiete',icon:'claw',on:true},
+  /* Etappe 2 Dungeon (E-71): Eingänge immer auf der Karte, auch unter der Stufe (grau) – wie in WoW */{id:'dungeon',name:'Dungeons',icon:'dungeon',on:true},
   {id:'hub',name:'Treffpunkte',icon:'hub',on:true},{id:'camp',name:'Lager',icon:'camp',on:true},
   {id:'shop',name:'Händler',icon:'trade',on:true},{id:'trainer',name:'Berufe',icon:'trainer-werkhof',on:true},
   {id:'spawn',name:'Tiergebiete',icon:'neutral',on:false},{id:'creatures',name:'Lebewesen',icon:'enemy',on:false}
  ],
  // Seitenleiste: Gruppentrenner (Symbol + Linie, Wort im Tooltip).
- sections:{tracked:'Verfolgt',quest:'Aufträge',hub:'Treffpunkte',camp:'Lager',shop:'Händler & Berufe'},
+ sections:{tracked:'Verfolgt',quest:'Aufträge',dungeon:'Dungeons',hub:'Treffpunkte',camp:'Lager',shop:'Händler & Berufe'},
  /** Runde 5b: Gruppenköpfe der Seitenleiste wie im WoW-Questlog – Symbol, EIN Wort, Anzahl („LAGER 11“). */
- sectionWords:{quest:'Aufträge',hub:'Treffpunkte',camp:'Lager',shop:'Händler'},
+ sectionWords:{quest:'Aufträge',dungeon:'Dungeons',hub:'Treffpunkte',camp:'Lager',shop:'Händler'},
  /** Runde 5b: Ortsnamen der freien Lager (Titel aus world-layout.js setCampApproaches) für die Kartenliste. */
  campShort:{'Geplünderter Grillplatz':'Grillplatz','Beschlagnahmte Bollerboxen':'Bollerboxen-Lager','Besetzter Pfandplatz':'Pfandplatz','Horsts Ruhezone':'Horsts Ruhezone'},
  walk:'Hinlaufen',walkNote:'Läuft los und schließt die Karte',
  you:'Dein Standort',tracked:'Verfolgtes Ziel',cluster:n=>n+' Orte hier',clusterNote:'Klick zoomt hinein',
  area:'Zielgebiet',areaActive:'Verfolgtes Zielgebiet',spawnArea:'Tiergebiet',progress:(d,n)=>d+'/'+n,
  camp:'Gegnerlager',hub:'Geschützter Treffpunkt',meters:m=>m+' m',
+ /** Etappe 2 (Kenner-Playtest 2): Aufträge nennen Straßen – beim Überfahren einer Straße steht ihr Name im Tooltip. */
+ road:'Straße',
  click:'Route zeigen',shiftClick:'hinlaufen',tapWalk:'Hinlaufen',
  osm:'© OpenStreetMap',osmNote:'Kartendaten © OpenStreetMap-Mitwirkende, ODbL'
 };

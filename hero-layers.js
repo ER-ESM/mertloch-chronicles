@@ -21,8 +21,11 @@ export const hasDrawn=(body,kind,id)=>drawnStyles(body,kind).some(o=>o.id===id);
 /** Wo die Kachel im Körperbild liegt (192er-Raum). Reine Funktion (Tests). */
 export function layerPlacement(frame){const head=frame?.sockets?.head;if(!head)return null;const dir=LAYER_DIRECTIONS.includes(frame.direction)?frame.direction:'se';return {sx:LAYER_DIRECTIONS.indexOf(dir)*LAYER_TILE,dx:Math.round(head.x)-LAYER_TILE/2,dy:Math.round(head.y)-ANCHOR_TOP,dir};}
 const image=src=>new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});
-/** Beim Start laden; fehlt der Katalog (404), bleibt alles aus. */
+/** Beim Start laden; fehlt der Katalog (404), bleibt alles aus. Seit der Anziehpuppe (E-68: Frisuren/Bärte als Ebenen) abgeschaltet
+ *  (Nutzerentscheidung 2026-09-25) – kein Abruf mehr, damit die Konsole beim Start sauber bleibt. Wieder einschalten: HERO_LAYERS_ON. */
+const HERO_LAYERS_ON=false;
 export async function loadHeroLayers(){
+ if(!HERO_LAYERS_ON)return false;
  if(heroLayers.ready||typeof fetch==='undefined')return heroLayers.ready;
  try{const r=await fetch('./assets/heroes/catalog.json',{cache:'no-cache'});if(!r.ok)return false;heroLayers.catalog=normalizeLayerCatalog(await r.json());
   const jobs=[];for(const [body,e] of Object.entries(heroLayers.catalog.bodies)){jobs.push(['head-bald',body]);for(const o of e.hair)jobs.push(['hair-'+o.id,body]);for(const o of e.beard)jobs.push(['beard-'+o.id,body]);}

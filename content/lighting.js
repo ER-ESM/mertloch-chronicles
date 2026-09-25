@@ -18,6 +18,8 @@ export const LIGHTING={
   door:{color:'#ffc06a',radius:46,flicker:.02,dx:0,dy:-14},
   church:{color:'#ffd58a',radius:64,flicker:.04,dx:0,dy:-34},
   shrine:{color:'#86dfe6',radius:60,flicker:.08,dx:0,dy:-8},
+  // Etappe 2 Dungeon: Portal-Schein unter dem Rolltor von Schloss Big B (dazu Hitzeflimmern in world-fx.js)
+  portal:{color:'#b58cf0',radius:66,flicker:.14,dx:0,dy:-6},
   kiosk:{color:'#ffd27a',radius:85,flicker:.03,dx:0,dy:-20},
   burn:{color:'#ff8a3a',radius:70,flicker:.2,dx:0,dy:0},
   flash:{color:'#fff0c0',radius:60,flicker:0,dx:0,dy:-8},

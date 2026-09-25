@@ -10,10 +10,10 @@ import {PANEL_UI as UI,GAME_MENU_UI as MENU,SHOP_UI,MOUNT_UI,WINDOW_UI} from './
 import {touchPopupBounds} from './popup-layout.js';
 import {keysOf,liveKeymap} from './keymap.js';
 import {bindingLabel} from './bar-keys.js';
-const titles={professions:'Berufe',trainer:'Lehrer',mounts:MOUNT_UI.title,shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',settings:MENU.settings,install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:UI.talents,activity:'Anlagenprüfung',bag:UI.tabBag,person:UI.tabFigure,book:UI.tabSkills,quest:UI.tabQuests,base:UI.tabBase,map:UI.tabMap,menu:MENU.title,clan:UI.tabFigure,guide:UI.tabHelp,admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine'};
+const titles={professions:'Berufe',trainer:'Lehrer',mounts:MOUNT_UI.title,shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',settings:MENU.settings,install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:UI.talents,activity:'Anlagenprüfung',bag:UI.tabBag,person:UI.tabFigure,book:UI.tabSkills,quest:UI.tabQuests,base:UI.tabBase,map:UI.tabMap,menu:MENU.title,clan:UI.tabFigure,guide:UI.tabHelp,admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine',dungeonEntry:'Dungeon',journal:'Dungeon-Journal'};
 const widths={
 professions:900,trainer:520,mounts:820,companions:780,
-shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:760,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:220,settings:820,clan:470,guide:720,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420};
+shop:920,inspection:360,detail:390,mobile:390,install:360,touchhelp:340,talents:760,activity:430,bag:400,person:440,book:400,quest:420,base:420,map:760,menu:220,settings:820,clan:470,guide:720,admin:620,loot:296,dialog:440,memory:600,memoryart:800,death:420,dungeonEntry:430,journal:560};
 /** Die Fenster mit eigener Taste: [id, Name, Symbol, Taste, Andockseite, Zweittaste]. Reihenfolge = Menüleiste. */
 export const WINDOWS=WINDOW_UI.windows;
 export const DOCK=Object.fromEntries(WINDOWS.map(w=>[w[0],w[4]]));
@@ -23,7 +23,8 @@ export const SLOTS={left:WINDOWS.filter(w=>w[4]==='left').map(w=>w[0]),right:WIN
 export const WINDOW_OF={...Object.fromEntries(WINDOWS.map(w=>[w[0],w[0]])),clan:'person',base:'quest'};
 const CHILD=new Set(['inspection','detail','touchhelp']);
 /** Beute darf neben offenen Fenstern stehen (Rucksack + Beutel wie im Vorbild). */
-const BESIDE=new Set(['loot']);
+/* Etappe 2 Dungeon: das Journal steht neben der Karte (Klick auf die Boss-Krone), wie das Encounter-Journal in WoW */
+const BESIDE=new Set(['loot','journal']);
 export const isDocked=id=>DOCK[id]!==undefined;
 /** Alter Name, bleibt für Aufrufer, die „ist ein Buchfenster“ fragen. */
 export const isBook=isDocked;
@@ -43,7 +44,8 @@ export function visibleBars(height=innerHeight){const out=[];const seen=el=>{if(
  const area=document.querySelector('.action-area');if(area&&!area.hidden&&getComputedStyle(area).display!=='none')for(const el of area.children){if(el.matches(NOT_BARS))continue;const r=seen(el);if(r)out.push(r);}
  const rail=seen(document.querySelector('.game-menu-rail'));if(rail)out.push(rail);return out;}
 /** Overlays mit festem Platz im Raster (Runde 2): das Gespräch steht wie im Vorbild links, wo sonst die Figur steht. */
-const GRID_OVERLAY={dialog:'person',settings:'center'};
+/* Etappe 2 Dungeon: Eingangskarte und Journal mittig unter der gemeinsamen Oberkante, nicht verschiebbar */
+const GRID_OVERLAY={dialog:'person',settings:'center',dungeonEntry:'center',journal:'center'};
 /** Fenster, deren Höhe dem Inhalt folgt (Runde 3b): gemeinsame Oberkante, eigene Unterkante (höchstens die gemeinsame). */
 /* Runde 5b (Grafik-Endliste 3): auch die Aufträge – das Detail folgt direkt unter der Liste, kein Leerband; viele Aufträge blättern (ql-pager). */
 const CONTENT_HEIGHT=new Set(['book','bag','dialog','person','quest']);
@@ -65,7 +67,7 @@ export class PopupWindows{
   if(!CHILD.has(id))for(const other of [...this.windows.keys()]){if(other===id||CHILD.has(other))continue;
    const keep=!touch()&&(docked?isDocked(other)||BESIDE.has(other):BESIDE.has(id)&&isDocked(other));if(!keep)this.close(other);}
   const parent=CHILD.has(id)?this.book():null;
-  const win=WINDOWS.find(x=>x[0]===id),icon=win?.[2]||({base:'base',menu:'menu',clan:'person',admin:'menu',loot:'bag',dialog:'quest',memory:'paper',memoryart:'paper',death:'food'})[id]||'menu';
+  const win=WINDOWS.find(x=>x[0]===id),icon=win?.[2]||({base:'base',menu:'menu',clan:'person',admin:'menu',loot:'bag',dialog:'quest',memory:'paper',memoryart:'paper',death:'food',dungeonEntry:'map',journal:'book'})[id]||'menu';
   const el=document.createElement('section');el.className='game-popup popup-'+id+(docked?' popup-book popup-dock dock-'+DOCK[id]:'');el.dataset.window=id;el.setAttribute('role','dialog');el.setAttribute('aria-modal','false');el.setAttribute('aria-label',titles[id]||id);el.tabIndex=-1;el.innerHTML=`<header class="popup-titlebar"><canvas class="popup-emblem" width="48" height="48" data-ui-icon="${icon}" aria-hidden="true"></canvas><strong>${titles[id]||id}</strong>${win&&!touch()?(k=>`<kbd class="popup-key" title="${WINDOW_UI.keyHint(k)}">${k}</kbd>`)(bindingLabel(keysOf(liveKeymap(),id).find(Boolean)||'')||win[3]):''}<button class="popup-close" data-window-close aria-label="${titles[id]} schließen" title="${WINDOW_UI.close}">×</button></header><div class="popup-body"></div>`;
   const body=el.querySelector('.popup-body');body.innerHTML=html;this.root.append(el);w={id,el,body,z:0,minimized:false,cleanup:null,opened:++this.opened,parent};this.windows.set(id,w);this.label(w);
   if(docked){this.focus(id);if(!later)this.clamp(w);return w;}
