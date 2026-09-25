@@ -61,3 +61,40 @@ test('Balance-Rotation: der Räuchermeister räuchert (Glut niedrig), der Flambi
  assert.ok(rauch.glut<below+10,'Räuchermeister hält die Glut nahe der Räuchergrenze '+below+', Mittel '+Math.round(rauch.glut));assert.equal(flamme.served.filter(Boolean).length,0,'der Flambierer räuchert nicht');
  assert.ok(flamme.glut>rauch.glut,'Flambierer spielt heißer ('+Math.round(flamme.glut)+' gegen '+Math.round(rauch.glut)+')');
 });
+
+// --- Runde 2 (Orchestrator-Entscheidungen 1–4) ---
+import {meterReport,recordMeterDamage} from '../combat-meter.js';
+import {simulate} from '../scripts/balance-sheet.mjs';
+import {onMarkExpire} from '../spec-mechanics.js';
+
+test('E-53: Heilung und Schilde der neuen Klassen wachsen nicht mit Standfestigkeit (Grundleben der Stufe statt Maximalleben)',()=>{
+ const heal=(cls,spec,more,act)=>{const g=hero(cls,spec,20);foe(g,120);g.target=g.enemies[0];g.player.inCombat=7;g.player.maxHp=Math.round(g.player.maxHp*more);g.player.hp=100;const guard=g.classState.guard||0;act(g);return {hp:g.player.hp-100,guard:(g.classState.guard||0)-guard};};
+ const vent=g=>{g.res.glut=80;cast(g,'heal');};
+ assert.deepEqual(heal('schorsch','schorsch-chef',3,vent),heal('schorsch','schorsch-chef',1,vent),'Ablöschen: dreifaches Maximalleben heilt gleich viel');
+ const herz=g=>{g.res.hand=[{suit:'herz',rank:'A'},{suit:'kreuz',rank:'7'},{suit:'kreuz',rank:'8'}];cast(g,'strike');};
+ assert.deepEqual(heal('kaethe','kaethe-herz',3,herz),heal('kaethe','kaethe-herz',1,herz),'Herz-Karte heilt gleich viel');
+ const pik=g=>{g.res.hand=[{suit:'pik',rank:'A'},{suit:'kreuz',rank:'7'},{suit:'kreuz',rank:'8'}];cast(g,'strike');};
+ const a=heal('kaethe','kaethe-herz',3,pik),b=heal('kaethe','kaethe-herz',1,pik);assert.ok(b.guard>0);assert.equal(a.guard,b.guard,'Pik-Schild gleich groß');
+});
+
+test('Balance-Sheet: Heilung zeigt neben dem Ausstoß die effektive Heilung ohne Überheilung',()=>{
+ const r=simulate({classId:'kaethe',spec:'kaethe-herz',path:0,level:10,gear:'rare',targets:1,seed:7,seconds:20});
+ assert.ok(r.hps>0&&r.hpsEff>0,'beide Werte gemessen');assert.ok(r.hpsEff<=r.hps+1e-9,'effektiv ist nie mehr als der Ausstoß');
+});
+
+test('Schadensmeter: jede Quelle ohne Kniff-Zuordnung bekommt eine eigene Zeile, Kniff-Quellen tragen den Kniffnamen',()=>{
+ const g=hero('kaethe','kaethe-grand',12),e={name:'Puppe',arena:true};g.player.inCombat=7;
+ for(const label of ['Kreuz','Karo','Kreuz','Pik'])recordMeterDamage(g,e,10,10,label);recordMeterDamage(g,e,50,50,'Abrechnen');
+ const rows=meterReport(g,'current','damage').actors[0].abilities,by=n=>rows.find(a=>a.name===n);
+ assert.equal(by('Kreuz').amount,20);assert.equal(by('Karo').amount,10);assert.equal(by('Pik').amount,10);assert.equal(new Set(rows.map(a=>a.id)).size,rows.length,'keine zusammengelegten Zeilen');
+ assert.equal(by(g.skills.find(s=>s.id==='throw').name).amount,50,'Abrechnen zählt auf den Kniff');
+ const s=hero('schorsch','schorsch-flamme',12);s.player.inCombat=7;for(const label of ['Servieren','Stichflamme','Glutbrand','Popcorn'])recordMeterDamage(s,e,10,10,label);
+ const names=meterReport(s,'current','damage').actors[0].abilities.map(a=>a.name).sort();
+ assert.deepEqual(names,['Glutbrand','Popcorn','Servieren','Stichflamme']);
+});
+
+test('Kurzschluss: die Lunten-Explosion trifft Nachbarn im Entwurfsradius (tuning mischt nur eine Ebene)',()=>{
+ assert.equal(SPEC_MECHANICS['kevin-fuse'].fuse.explode.radius,70);assert.ok(SPEC_MECHANICS['kevin-fuse'].fuse.explode.damage>0);
+ const g=hero('kevin','kevin-fuse',20),e=foe(g,120),n=foe(g,150,20),far=foe(g,400);g.player.inCombat=7;const hn=n.hp,hf=far.hp;e.mark=3;onMarkExpire(g,e);
+ assert.ok(n.hp<hn,'Nachbar in 70 Einheiten getroffen');assert.equal(far.hp,hf,'weit entfernter Gegner nicht');
+});

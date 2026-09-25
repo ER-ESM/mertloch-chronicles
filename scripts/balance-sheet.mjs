@@ -75,7 +75,7 @@ export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,dr
  }
  if(extra)delete ITEMS.__probe;
  const dealt=killed*foeHp+foes.reduce((a,e)=>a+(foeHp-Math.max(0,e.hp)),0),report=meterReport(g,'current','damage'),me=report.actors?.[0],heal=meterReport(g,'current','healing');
- return {dropped,kills:killed,dps:dealt/seconds,hps:Math.max(healed,(heal.total||0)+(heal.excess||0))/seconds,mitigated:(raw-taken)/seconds,shield:shield/seconds,energy:energySum/ticks,talents,
+ return {dropped,kills:killed,dps:dealt/seconds,hps:Math.max(healed,(heal.total||0)+(heal.excess||0))/seconds,hpsEff:(heal.total||0)/seconds,/* E-72 R3: effektiv = ohne Überheilung */mitigated:(raw-taken)/seconds,shield:shield/seconds,energy:energySum/ticks,talents,
   skills:(me?.abilities||[]).map(a=>({name:a.name,share:a.share}))};
 }
 
@@ -86,7 +86,7 @@ export const METRIC={dps:{key:'dps',label:'Schaden/s'},heal:{key:'hps',label:'He
 const talentName=id=>Object.values(TALENTS).flat().find(t=>t.id===id)?.name||id;
 const specsOf=()=>Object.entries(CLASS_SPECS).flatMap(([classId,specs])=>specs.map(spec=>({classId,spec})));
 const mean=(runs,keys)=>Object.fromEntries(keys.map(k=>[k,runs.reduce((n,r)=>n+r[k],0)/runs.length]));
-const KEYS=['dps','hps','mitigated','shield','energy','kills'];
+const KEYS=['dps','hps','hpsEff','mitigated','shield','energy','kills'];
 /** Kennzahl einer Zelle: je Zielzahl (Boss, Feldgruppe) Mittel über SHEET.seeds, dann Mittel beider Lagen. Tabelle und Zerlegung nutzen dasselbe. */
 export function blend(o){
  const runs=SHEET.targets.map(targets=>{const rs=SHEET.seeds.map(seed=>simulate({...o,targets,seed}));return {...rs[0],...mean(rs,KEYS)};});
@@ -97,7 +97,7 @@ export function specPart({classId,spec},{quick=false,attribution:withAttribution
  const levels=quick?[1,10]:SHEET.levels,gear=quick?['none','rare']:SHEET.gear,paths=quick?[0]:SHEET.paths,rows=[],attribution=[];
  for(const level of levels)for(const path of level>=BALANCE.player.specLevel?paths:[null])for(const g of gear){
   const b=blend({classId,spec,path,level,gear:g,buffs}),role=SPEC_DEFS[spec]?.role||'';
-  rows.push({classId,spec,role,group:roleGroup(role),path,level,gear:g,dps:round(b.dps),dpsSingle:round(b.single.dps),dpsGroup:round(b.group.dps),hps:round(b.hps),mitigated:round(b.mitigated),shield:round(b.shield),protection:round(b.mitigated+b.shield),energy:round(b.energy),skills:b.group.skills.slice(0,6).map(s=>({name:s.name,share:round(s.share)}))});}
+  rows.push({classId,spec,role,group:roleGroup(role),path,level,gear:g,dps:round(b.dps),dpsSingle:round(b.single.dps),dpsGroup:round(b.group.dps),hps:round(b.hps),hpsEff:round(b.hpsEff),mitigated:round(b.mitigated),shield:round(b.shield),protection:round(b.mitigated+b.shield),energy:round(b.energy),skills:b.group.skills.slice(0,6).map(s=>({name:s.name,share:round(s.share)}))});}
  if(withAttribution)for(const level of quick?[10]:SHEET.attributionLevels)for(const path of quick?[0]:SHEET.paths){
   const at={classId,spec,path,level,gear:SHEET.attributionGear},base=blend(at),bare=blend({...at,gear:'none'}),probe0=blend({...at,extra:{}});
   const talents=base.talents.map(id=>{const r=blend({...at,drop:id});return r.dropped?{id,name:talentName(id),dps:pct(base.dps/Math.max(1,r.dps)-1),hps:pct(base.hps/Math.max(1,r.hps)-1)}:{id,name:talentName(id),bound:true};}).sort((a,b)=>(b.dps??-1e9)-(a.dps??-1e9));
@@ -122,13 +122,13 @@ if(!isMainThread&&workerData?.spec)parentPort.postMessage(specPart(workerData.sp
 
 function markdown(sheet){const L=[],gearName={none:'Startausrüstung',uncommon:'ungewöhnlich',rare:'selten',epic:'episch'},groupName={dps:'Schaden',heal:'Heilung',tank:'Tank'};
  L.push('# Balance-Sheet','',`Automatisch erzeugt von \`npm run balance:sheet\` · ${sheet.date} · ${SHEET.seconds} s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (${SHEET.foe.boss}× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit ${SHEET.seeds.length} festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit ${pct(SHEET.incoming)} % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über \`pathBuild\`, Stufe 1 ohne Spezialisierung.`,'',
-  'Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** → Heilung/s (Ausstoß inkl. Überheilung), **Tank** → Schutz/s (verhinderter Schaden + Deckung). Zelle: Kennzahl (Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung). ⚑ = mehr als '+pct(SHEET.flag)+' % daneben (ab Stufe '+BALANCE.player.specLevel+').','');
+  'Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** → Heilung/s (Ausstoß inkl. Überheilung; dahinter „eff.“ = tatsächlich geheilt, ohne Überheilung – ⚑ und Median bleiben am Ausstoß), **Tank** → Schutz/s (verhinderter Schaden + Deckung). Zelle: Kennzahl (Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung). ⚑ = mehr als '+pct(SHEET.flag)+' % daneben (ab Stufe '+BALANCE.player.specLevel+').','');
  const levels=[...new Set(sheet.rows.map(r=>r.level))],gears=[...new Set(sheet.rows.map(r=>r.gear))];
  const flags=sheet.rows.filter(r=>r.flag);L.push('## Überblick','',`${flags.length} von ${sheet.rows.filter(r=>r.level>=BALANCE.player.specLevel).length} Messungen liegen mehr als ${pct(SHEET.flag)} % neben dem Median ihrer Rolle.`,'');
  for(const g of gears){L.push('## Ausrüstung: '+gearName[g],'');
   for(const group of Object.keys(METRIC)){const specs=[...new Set(sheet.rows.filter(r=>r.group===group).map(r=>r.spec))];if(!specs.length)continue;
    L.push('### '+groupName[group]+' · '+METRIC[group].label,'','| Spezialisierung | Pfad | '+levels.map(l=>'Stufe '+l).join(' | ')+' |','|---|---|'+levels.map(()=>'---:').join('|')+'|');
-   for(const spec of specs)for(const path of SHEET.paths.filter(p=>sheet.rows.some(r=>r.spec===spec&&r.path===p))){const cells=levels.map(l=>{const r=sheet.rows.find(x=>x.gear===g&&x.spec===spec&&x.level===l&&(x.path===path||x.path==null));return r?`${Math.round(r.metric)} (${r.vsMedian>0?'+':''}${r.vsMedian} %)${r.flag?' ⚑':''}`:'–';});
+   for(const spec of specs)for(const path of SHEET.paths.filter(p=>sheet.rows.some(r=>r.spec===spec&&r.path===p))){const cells=levels.map(l=>{const r=sheet.rows.find(x=>x.gear===g&&x.spec===spec&&x.level===l&&(x.path===path||x.path==null));return r?`${Math.round(r.metric)} (${r.vsMedian>0?'+':''}${r.vsMedian} %)${r.flag?' ⚑':''}${group==='heal'&&r.hpsEff!=null?' · eff. '+Math.round(r.hpsEff):''}`:'–';});
     L.push(`| ${spec} | ${path} | ${cells.join(' | ')} |`);}
    L.push('');}}
  L.push('## Zerlegung (je Pfad, Ausrüstung '+gearName[SHEET.attributionGear]+')','');
@@ -137,8 +137,8 @@ function markdown(sheet){const L=[],gearName={none:'Startausrüstung',uncommon:'
   '**Kniffe (Anteil am Schaden):** '+a.skills.map(s=>`${s.name} ${s.share} %`).join(' · '),'',
   '**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** '+a.talents.map(t=>t.bound?`${t.name} gebunden`:`${t.name} ${t.dps>0?'+':''}${t.dps} %`).join(' · '),'');}
  return L.join('\n');}
-function csv(sheet){const head=['klasse','spec','rolle','gruppe','pfad','stufe','ausruestung','schaden_s','schaden_einzelziel_s','schaden_drei_ziele_s','heilung_s','verhindert_s','deckung_s','schutz_s','kennzahl','abweichung_median_pct','randale_avg'];
- return [head.join(';'),...sheet.rows.map(r=>[r.classId,r.spec,r.role,r.group,r.path??'kern',r.level,r.gear,r.dps,r.dpsSingle,r.dpsGroup,r.hps,r.mitigated,r.shield,r.protection,r.metric,r.vsMedian,r.energy].join(';'))].join('\n')+'\n';}
+function csv(sheet){const head=['klasse','spec','rolle','gruppe','pfad','stufe','ausruestung','schaden_s','schaden_einzelziel_s','schaden_drei_ziele_s','heilung_s','verhindert_s','deckung_s','schutz_s','kennzahl','abweichung_median_pct','randale_avg','heilung_effektiv_s'];
+ return [head.join(';'),...sheet.rows.map(r=>[r.classId,r.spec,r.role,r.group,r.path??'kern',r.level,r.gear,r.dps,r.dpsSingle,r.dpsGroup,r.hps,r.mitigated,r.shield,r.protection,r.metric,r.vsMedian,r.energy,r.hpsEff].join(';'))].join('\n')+'\n';}
 
 if(isMainThread&&process.argv[1]===fileURLToPath(import.meta.url)){
  const quick=process.argv.includes('--quick'),buffs=process.argv.includes('--buffs'),attribution=!buffs&&!process.argv.includes('--rows'),t0=Date.now(),sheet=await buildSheetParallel({quick,attribution,buffs});
