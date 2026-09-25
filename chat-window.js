@@ -18,6 +18,10 @@ export function normalizeChatSettings(raw){
  s.tab=s.tabs[r.tab]?r.tab:Object.keys(s.tabs).find(k=>s.tabs[k]);
  return s;
 }
+/** E-72 Runde 4 (Kenner-Befund „Proc-Flut“): gleiche aufeinanderfolgende Zeilen werden eine Zeile mit „×N“. Schlüssel = Kanal, Bereich,
+ *  Absender und Wortlaut (bzw. fertiges HTML). Reine Funktionen (Tests). */
+export const chatLineKey=(ch,entry={})=>[ch,entry.scope||'',entry.from||'',entry.player||'',entry.html!=null?'h:'+entry.html:'t:'+String(entry.text??'')].join('|');
+export const chatCountLabel=n=>n>1?'×'+n:'';
 /** Gehört eine Zeile des Kanals in den Reiter? Reine Funktion (Tests). */
 export const lineInTab=(settings,tab,channel)=>tab==='all'?settings.all[channel]!==false:tab===channel;
 
@@ -63,11 +67,17 @@ export function mountChatWindow(root,options={}){
  /** channel: 'chat'|'events'|'loot'. entry: {text, from?, scope?:'say'|'world'|'system', html? (vom Aufrufer gebaut und maskiert)} */
  function push(ch,entry){
   if(!CHAT_CHANNELS.includes(ch))ch='events';
+  const key=chatLineKey(ch,entry),last=lines[lines.length-1];
+  if(last&&last.key===key){/* dieselbe Zeile noch einmal: zählen statt stapeln, Zeile wird wieder frisch */
+   last.count++;last.at=Date.now();if(last.old){last.old=false;last.node.classList.remove('old');}
+   let badge=last.node.querySelector(':scope>.chat-count');if(!badge){badge=document.createElement('span');badge.className='chat-count';last.node.append(badge);}badge.textContent=chatCountLabel(last.count);
+   if(!lineInTab(settings,settings.tab,ch))for(const b of nav.querySelectorAll('[data-chat-tab]'))if(lineInTab(settings,b.dataset.chatTab,ch)&&b.dataset.chatTab!=='all')b.querySelector('.chat-unread').hidden=false;
+   if(!el.classList.contains('active')||log.scrollHeight-log.scrollTop-log.clientHeight<30)log.scrollTop=log.scrollHeight;return;}
   const node=document.createElement('div');node.className='chat-line chat-'+ch+(entry.scope?' scope-'+entry.scope:'');if(entry.player)node.dataset.chatPlayer=entry.player;
   if(entry.html!=null)node.innerHTML=entry.html;
   else node.innerHTML=(entry.from?'<b>'+({world:'['+esc(CHAT_UI.world)+'] ',party:'['+esc(CHAT_UI.party)+'] ',whisper:'['+esc(CHAT_UI.whisperTag)+'] '}[entry.scope]||'')+esc(entry.from)+':</b> ':'')+esc(entry.text);
   const stick=log.scrollHeight-log.scrollTop-log.clientHeight<30;
-  const line={channel:ch,at:Date.now(),node,old:false};lines.push(line);log.appendChild(node);options.decorate?.(node);
+  const line={channel:ch,at:Date.now(),node,old:false,key,count:1};lines.push(line);log.appendChild(node);options.decorate?.(node);
   while(lines.length>MAX_LINES)lines.shift().node.remove();
   const on=lineInTab(settings,settings.tab,ch);node.hidden=!on;if(on)log.classList.remove('empty');
   else for(const b of nav.querySelectorAll('[data-chat-tab]'))if(lineInTab(settings,b.dataset.chatTab,ch)&&b.dataset.chatTab!=='all')b.querySelector('.chat-unread').hidden=false;

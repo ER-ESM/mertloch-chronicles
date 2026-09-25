@@ -6,7 +6,7 @@ import {Game} from '../engine.js';
 import {makeEnemy} from '../encounters.js';
 import {tickCasting} from '../auto-combat.js';
 import {RESOURCES,CLASS_SPECS} from '../content/index.js';
-import {resourceHud,resourceVariant,handCard,zoneOf} from '../class-resources.js';
+import {resourceHud,resourceVariant,handCard,zoneOf,resourceViral} from '../class-resources.js';
 import {skillStatus} from '../combat-ui.js';
 import {rotate} from '../scripts/balance-rotation.mjs';
 import {actionBar} from '../rpg.js';
@@ -46,7 +46,7 @@ test('Anni · Trend: neue Kniffe heben ihn, Wiederholung senkt ihn, Viral macht 
  cast(g,'strike');assert.equal(g.res.trend,1);g.time+=3;g.lastStrike=-100;g.cooldowns.strike=0;cast(g,'strike');assert.equal(g.res.trend,0,'Wiederholung ohne Takt senkt');
  for(const id of ['mark','strike','throw','interrupt','parry'])cast(g,id);
  assert.ok(g.res.trend>=4,'Abwechslung hebt den Trend: '+g.res.trend);
- cast(g,'dash');if(g.res.trend===RESOURCES.baerbel.trend.max){assert.ok(g.res.viral>0);assert.equal(resourceVariant(g,'burst')?.name,'VIRAL');const likes=g.player.energy;g.cooldowns.burst=0;cast(g,'burst');assert.ok(g.player.energy>=likes,'gratis');}
+ cast(g,'dash');if(g.res.trend===RESOURCES.baerbel.trend.max){assert.ok(g.res.viral>0);assert.equal(resourceViral(g,'burst'),true,'Viral-Rahmen (E-72 R4: statt Beschriftung)');const likes=g.player.energy;g.cooldowns.burst=0;cast(g,'burst');assert.ok(g.player.energy>=likes,'gratis');}
  void e;
 });
 

@@ -12,7 +12,7 @@ import {PROC_RULES,PROC_TRIGGERS} from './procs.js';
 import {SPEC_MECHANICS} from './mechanics.js';
 import {CLAN_MEMBERS} from './classes.js';
 import {CLASS_BUFFS,CLASS_BUFF_STATS,CLASS_BUFF_GLOSSARY,classBuffValueText} from './class-buffs.js';
-import {CLASS_BUFF_TUNING} from './tuning.js';
+import {CLASS_BUFF_TUNING,COMBAT_FLOW_TUNING} from './tuning.js';
 import {RESOURCES,RESOURCE_GLOSSARY,RESOURCE_EFFECT_INFO,RESOURCE_PROC_EFFECT_INFO} from './resources.js';
 
 const P=BALANCE.player,R=BALANCE.ratings,W=BALANCE.power,MO=BALANCE.momentum,PR=BALANCE.procs;
@@ -345,6 +345,7 @@ function procNumbers(r,ctx={}){
  const skillName=id=>kitName(id,ctx);
  const out=[n('Auslöser',fill(TRIGGER_TEXT[r.trigger]||r.trigger,ctx),'',PRC),n('Chance',r.chance*100,'%',PRC),n('Zeitfenster',r.window,'s',r.window===BALANCE.procs.defaultWindow?BL:PRC)];
  if(r.skill)out.push(n('Kniff',skillName(r.skill),'',PRC));
+ if(r.trigger==='lowHealth')out.push(n('Höchstens alle',COMBAT_FLOW_TUNING.lowHealth.icd,'s',TU));/* E-72 R4: einmal beim Unterschreiten, interne Abklingzeit */
  if(r.zone)out.push(n('Eigene Fläche',({keg:'Fasskreis',sanctuary:'Heilkreis',barricade:'Barrikade',snare:'Falle',burn:'Brandfläche',fass:'Fass',robbi:'Robbi',nest:'Nest',spores:'Sporenwolke'})[r.zone]||r.zone,'',PRC));
  if(r.every>1)out.push(n('Zündet jedes',r.every,'. Mal',PRC));
  for(const [key,value] of Object.entries(r.effect||{})){

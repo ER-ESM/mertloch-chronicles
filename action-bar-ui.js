@@ -48,7 +48,8 @@ export function mountActionBars(api){
   if(!api.canAct()||typing(e.target))return;
   if(e.code==='KeyB'&&plain(e)){const el=hovered();if(el){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)start(Number(el.dataset.actionSlot));return;}}
   const b=bindingFromKey(e),i=b?slotForBinding(api.game().rpg,b):-1;if(i<0)return;
-  e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)api.trigger(i);
+  /* E-72 R4: Taste gedrückt halten wirkt wie in WoW („Gedrückt halten zum Wirken“): Wiederholungen versuchen es still weiter */
+  e.preventDefault();e.stopImmediatePropagation();api.trigger(i,e.repeat?{hold:true}:undefined);
  },true);
  addEventListener('pointerdown',e=>{
   if(capture){e.preventDefault();e.stopImmediatePropagation();swallowClick=true;setTimeout(()=>swallowClick=false,400);

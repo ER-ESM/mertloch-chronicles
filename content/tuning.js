@@ -80,6 +80,11 @@ export const TUNING={
 /** Rahmen der Klassen-Buffs: Dauer in Sekunden, Verstärkung je Talentstufe (`classBuff:<id>`), Obergrenze der Stärke beim Empfang. */
 export const CLASS_BUFF_TUNING={duration:1800,talentStep:.5,maxPower:2,
  why:'30 Minuten: einmal vor dem Losziehen zaubern, nicht im Kampf nachhalten. Talentstufe +50 %: sichtbar im Tooltip, bleibt im 5–15-%-Rahmen. maxPower begrenzt, was ein fremder Client per Netz schicken darf',since:'2026-09-23'};
+/** Kampffluss (E-72 Runde 4, Kenner-Befund „keine Tastenvorwahl“, „Proc-Flut“): Eigener Block wie CLASS_BUFF_TUNING, weil TUNING nur Korrekturen je ID trägt.
+ *  queueWindow: so viele Sekunden vor Ende von GCD, Abklingzeit oder laufendem Zauber wird ein Tastendruck vorgemerkt (WoW: 400 ms).
+ *  queueKeep: so lange wartet eine Vormerkung höchstens. lowHealth: Schwelle (Anteil Leben) und interne Abklingzeit der Unter-35-%-Procs. */
+export const COMBAT_FLOW_TUNING={queueWindow:.4,queueKeep:1.2,lowHealth:{below:.35,icd:15},
+ why:'Vorwahlfenster wie WoW (0,4 s): Wer knapp zu früh drückt, verliert den Druck nicht. Unter-35-%-Procs zündeten bei JEDEM Treffer unter der Schwelle (5× Deckung, 5× Chatzeile) – jetzt einmal beim Unterschreiten, danach frühestens nach 15 s wieder (ein Kampf dauert 10–25 s)',since:'2026-09-25'};
 // Zusätze gewürfelter Beute (E-40, content/affixes.js). Eigener Block statt TUNING-Zeile, weil TUNING nur Korrekturen je ID trägt: Budgetanteil je Zusatz, Punkte je Budgetpunkt, Chance bei Ungewöhnlich.
 // Zusätze kommen OBEN AUF das Grundbudget (BALANCE.items) – ein Fundstück wird dadurch nie schwächer, gespeicherte Teile gewinnen höchstens maxGain.
 export const AFFIX_TUNING={

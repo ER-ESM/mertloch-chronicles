@@ -402,10 +402,12 @@ export function resourceAbsorbed(g,e,absorbed){const st=g.res;if(resourceKind(g)
 
 // ---------------------------------------------------------------------------------------------------------------
 // Leiste und Anzeige
+/** Annis Viral-Ladung: dieser Kniff kostet gerade keine Likes (Rahmen am Knopf, Zeile im Tooltip). */
+export function resourceViral(g,id){const r=R(g),st=g.res;if(r?.kind!=='trend'||!(st?.viral>0))return false;return (g.skills.find(x=>x.id===id)?.cost||0)>0;}
 export function resourceVariant(g,id){
  const r=R(g),st=g.res;if(!r||!st)return null;const cs=g.cs||{};
  if(r.kind==='rage'&&id==='zeche'&&st.tab>g.player.maxHp*.1)return {name:'PRELLEN '+Math.round(st.tab),tone:'burst'};
- if(r.kind==='trend'&&st.viral>0){const s=g.skills.find(x=>x.id===id);if(s?.cost>0)return {name:'VIRAL',tone:'gold'};}
+ /* E-72 R4 (Kenner-Befund): VIRAL stand als Beschriftung auf allen Knöpfen und tauschte jedes Icon gegen dasselbe Varianten-Bild – jetzt ruhiger Rahmen (resourceViral) */
  if(r.kind==='ammo'){if(id==='strike'&&st.bottles<=0)return {name:r.hud.empty,tone:'burst'};if(id==='reload'&&st.reload)return {name:'JETZT!',tone:'gold'};if(st.bons>0&&(r.costs[id]||0)>0)return {name:'BON',tone:'gold'};}
  if(r.kind==='grill'){
   if(id==='burst'){const it=ripest(g,st,cs);if(!it)return null;const d=doneness(g,it,cs),m=mech(g),name=r.items[it.item].name.toUpperCase();if(m?.flamme&&st.glut>=m.flamme.at)return {name:'FLAMBIEREN',tone:'burst'};if(it.smoked&&m?.rauch)return {name:'GERÄUCHERT',tone:'gold'};return d.perfect?{name:name+' GAR',tone:'gold',item:it.item}:d.state==='verkohlt'?{name:name+' VERKOHLT',tone:'free',item:it.item}:null;}
