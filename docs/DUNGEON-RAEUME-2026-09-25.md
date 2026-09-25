@@ -91,7 +91,70 @@ Schrägmuster), Säulen für den Basaltdom nachbestellt.
    Leinwand je nach sichtbaren Räumen anders groß war. → Ausdehnung immer die ganze Ebene.
 3. **Runde 3** (`r3`, `r4`): Beläge im Spiel; Thronsaal leer und mit Schrägmuster im Boden. → Basaltplatten neu, sieben Säulen
    (Pappe/Basalt) an den Seiten, Wandlampen zwischen den Ahnenbildern, Tischlampen, Grundlicht für große Hallen.
-4. **Runde 4** (`r5`, `nachher`): Garage wirkte blass neben den Häusern → mit eingebackener Farbabstimmung wie die Häuser, Portal in den
+4. **Runde 4** (`r5`, `nachher`, `rebase`): Garage wirkte blass neben den Häusern → mit eingebackener Farbabstimmung wie die Häuser, Portal in den
    Torspalt; Plaketten lagen bei geschnittenen Wänden wie Fußmatten auf dem Boden → auf die Wand.
 
-(Bildzeit, Prüfungen und Rest folgen.)
+## Bildzeit (kopfloses Chrome ohne Grafikkarte, 2024×900)
+
+Gemessen mit `scripts/dungeon-raeume-check.mjs` Teil 6: je Ebene 3,2 s, der Held läuft 60 E hin und her; Bildabstand (rAF) und
+Zeichenzeit (`renderer.draw`) als Median/90 %. Mit `AB_URL` misst das Skript abwechselnd gegen `origin/main` in einem zweiten
+Browser, die jeweils andere Seite ist eingefroren.
+
+**Ruhiger Rechner, vorher** (`origin/main`, eigener Lauf): draußen und in allen drei Ebenen 16,7 ms Median bei Dichte 2 und 3,
+Zeichnen 1,6–2,2 ms; bei Dichte 4 schon vorher 33,3 ms (auch draußen 33 ms).
+
+**Nachher, mäßige Last** (Runde 2b, nach dem Fix der Randstreifen): Dichte 3 in allen Ebenen **16,7 ms** Median, Zeichnen 1,6–2,1 ms.
+
+**A/B unter Last gemessen** (Rechner 88–99 % belegt durch parallele Sitzungen; beide Seiten litten gleich):
+
+| Ebene | Dichte | nachher Median / p90 | vorher Median / p90 | Zeichnen nachher / vorher (Median) |
+|---|---|---|---|---|
+| Erdgeschoss | 2 | 33,3 / 183 ms | 33,3 / 117 ms | 5,2 / 3,7 ms |
+| Keller 1 | 2 | 33,4 / 117 ms | 16,7 / 33 ms | 3,8 / 2,7 ms |
+| Keller 2 | 2 | 16,7 / 33 ms | 16,7 / 33 ms | 3,5 / 3,3 ms |
+| Erdgeschoss | 3 | 16,7 / 33 ms | 16,7 / 17 ms | 2,6 / 2,3 ms |
+| Keller 1 und 2 | 3 | – | – | beide Seiten ausgehungert (4–7 Bilder in 3 s), nicht auswertbar |
+| draußen | 3 | 16,7 / 33 ms | 33,2 / 50 ms | 2,1 / 2,0 ms |
+
+- **Belastbar ist die Zeichenzeit:** nachher je Bild **+0,2 bis +1,5 ms** gegenüber vorher (Kopie des Ausschnitts, Requisiten, Lichterketten).
+  Das Bildbudget von 16,7 ms bleibt weit frei.
+- Der Bildabstand schwankt unter dieser Last in beide Richtungen; wo beide Seiten Bilder bekamen, liegt nachher gleichauf mit vorher.
+- **Neubau der Ebenen-Leinwand:** 5–25 ms bei ruhigem Rechner (unter Last einmal 140 ms), nur beim Ebenenwechsel, nach einem
+  entdeckten Raum oder bei anderer Dichte. Größe 1,8 / 4,0 / 7,2 Mio. Pixel bei Dichte 2 / 3 / 4.
+- **Dichte 4:** vorher wie nachher 33 ms (die Automatik geht ohne Grafikkarte ohnehin auf Dichte 2–3); nachher zeichnet das Erdgeschoss
+  bei Dichte 4 bis zu 13 ms, weil die Kopie aus der 7-Mio.-Pixel-Leinwand teurer ist.
+- Nicht gemessen: echtes Handy, echte Grafikkarte, Dauerlauf.
+
+## Prüfungen
+
+Prüfstand-Worktree auf dem rebasten Stand (a1419e24, Basis `origin/main` ed1d182c mit Etappe 3 und E-72), `BOOT_TRIES=450`,
+Ports 9633–9638 / 4433–4438:
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm test` | 1011/1011 grün (darunter 7 neue in `tests/dungeon-raeume.test.mjs`) |
+| `npm run content:check` | grün |
+| `npm run build` | grün |
+| `npm run kit:check` | grün – Bude wie bisher, dazu „Dungeon Schloss Big B · 121 Requisiten, 43 Wege“ |
+| `dungeon-check` | grün (Desktop und Handy) |
+| `dungeon-e1-check` | grün (7 Prüfungen) |
+| `dungeon-e2-check` | grün (17 Prüfungen) |
+| `dungeon-e3-check` | grün (Big B, Tresortür, Endtruhe, Handy, Journal) |
+| `dungeon-raeume-check` Teile 1–5 | grün: 15 Räume, Eingang ohne Baumkrone, Handy quer/hoch, Geheimnisse pixelgleich, 43 Wege und 121 Requisiten ohne Konflikt |
+| `dungeon-raeume-check` Teil 7 | Vergleichsbilder je Raum unter `visual-review/dungeon-raeume/nachher/vergleich/` |
+
+Nach dem letzten Rebase (Renderer-Korrektur „Rechtsklick auf laufende Gegner“) zusätzlich `npm test`, `build`, `dungeon-check` und
+Teil 1/4 des Raum-Prüfskripts.
+
+## Rest
+
+1. **Garage im Häuserstil** (Rückmeldung Orchestrator: flach und grau wie ein Karton): Folge-Commit mit Satteldach aus Schindeln,
+   Papp-Ecktürmchen, höheren Zinnen, Holztoren, Putz in Creme-Ocker, Bruchsteinsockel und Schlagschatten wie die Häuser.
+2. **Rittersaal ohne Wandschmuck:** Alle Wände dort sind geschnittene Innenwände (1-m-Lücken zur Galerie), eine Dartscheibe hätte keine
+   Front. Wirkung kommt über Lichterketten, Musikbox und Möbel. Größere Lücken hießen: Grundriss ändern (Logik, nicht angefasst).
+3. **Ahnenbilder:** Schattenriss mit Perücke, kein Gesicht; laut Orchestrator als Wandschmuck in Ordnung.
+4. **Bildzeit bei ruhigem Rechner** einmal als A/B wiederholen (`AB_URL=… ONLY=6`), die Last lag diesmal durchgehend über 88 %.
+5. **Dichte 4 ohne Grafikkarte:** Kopie aus der großen Leinwand kostet im Erdgeschoss bis 13 ms; bei Bedarf die Leinwand auf Dichte 3
+   begrenzen und skaliert kopieren.
+6. **Basaltplatten** wiederholen sich im 64-E-Raster sichtbar in großen Hallen; eine zweite Kachel, abwechselnd gelegt, würde das brechen.
+7. **Grafik Gegner/Bosse** (Grafik-Review Befund 5) bleibt freigabepflichtig und ist hier nicht angefasst.
