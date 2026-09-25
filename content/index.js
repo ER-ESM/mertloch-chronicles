@@ -58,6 +58,7 @@ export * from './resources.js';
 export * from './dungeons.js';
 export * from './dungeon-ui.js';
 export * from './dungeon-scenery.js';
+export * from './dungeon-e4b.js';
 export * from './minimap.js';
 export * from './keybinds.js';
 export * from './options.js';

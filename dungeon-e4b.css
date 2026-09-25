@@ -1,0 +1,33 @@
+/* Dungeon „Schloss Big B“ · Etappe 4 Teil B (E-71): Kampf-Klarheit, Flügelstand, Beweise, Händler Vermieter Volker, Erfolge.
+   Kampf-Klarheit nach dem Befund am Screenshot dungeon-e3/03-behauptung und dem Prüfer-Playtest #562: Im Kampf stapelten sich Raumtitel,
+   Söldner-Sprechblasen, „NACHSATZ ABWARTEN!“, „IN FAHRT“, Zahlen und Namen in der Bildmitte. Vorbild WoW: Zonentitel nicht im Kampf,
+   Raid-Warnung oben unter dem Bossrahmen, Procs als kleines Symbol am Helden, kein zweiter Rahmen für denselben Boss. */
+
+/* 1 · Zonentitel wartet im Dungeon-Kampf (zone-announce.js wartet, bis der Kampf vorbei ist; ein schon laufender Titel verschwindet) */
+body.dg-fight #gameShell .region-label.zone-show{opacity:0!important;visibility:hidden!important;transition:none!important}
+body.dg-fight #gameShell #miniButton.zone-show .mm-plate{opacity:0}
+
+/* 2 · Kampfrufe (IN FAHRT, SCHWUNG, UNTERBROCHEN, +EP) sitzen im Dungeon-Kampf rechts neben dem Helden, kleiner – nicht über ihm im
+   Titelbereich. Im Bosskampf nur noch das Symbol (EP-Zahlen bleiben): der Bossbereich trägt dann nur Namen, Zahlen und Big Bs Blase. */
+body.dg-fight #sct>.sct-note{left:34px;bottom:34px;width:170px;align-items:flex-start}
+body.dg-fight #sct>.sct-note .sct-row{font-size:16px}
+body.dg-fight #sct>.sct-note .sct-row canvas{width:16px;height:16px}
+body.boss-fight #sct .sct-note .sct-row:not(.sct-xp)>:is(b,small){display:none}
+body.boss-fight #sct .sct-note .sct-row:not(.sct-xp) canvas{width:20px;height:20px;filter:drop-shadow(0 0 3px #ffd77a) drop-shadow(0 1px 0 #1c1712)}
+
+/* 3 · Zielrahmen weg, wenn der Boss das Ziel ist – der Bossrahmen zeigt ihn schon (am Handy seit Etappe 2, jetzt auch am Desktop) */
+body.boss-target #targetPanel{display:none!important}
+
+/* 4 · Große Kampfansage wie eine Raid-Warnung oben mittig unter dem Bossrahmen (boss-alerts.js setzt top), etwas kleiner */
+.boss-announce{top:118px}
+.boss-announce b{font-size:24px}
+.boss-announce .dicon{width:24px!important;height:24px!important}
+
+/* 5 · „Unterbrochen!“ – kurze grüne Rückmeldung auf der Warnleiste und in der Zauberleiste des Bossrahmens, dann erlischt sie */
+.ba-row.ba-done{border-color:#8fe08a;background:#15301bee;animation:ba-done 1.3s ease-out both}
+.ba-row.ba-done b{color:#d9f7cf}.ba-row.ba-done .ba-fill{background:#8fe08a33}
+@keyframes ba-done{0%{opacity:0;transform:scale(1.04)}10%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0}}
+.bf-cast.bf-done{border-color:#8fe08a;background:#15301b}.bf-cast.bf-done b{color:#d9f7cf}.bf-cast.bf-done>i{background:#8fe08a33}
+@media (prefers-reduced-motion:reduce){.ba-row.ba-done{animation:none}}
+/* Kurzmeldungen (Ablehnungen, Aufhelfen) stehen im Bosskampf unter der Ansage statt auf dem Bossrahmen (WoW: Fehlerzeile unter der Raid-Warnung) */
+@media(min-width:761px){body.boss-fight:not(.touch-mode) #toast{top:152px!important}}
