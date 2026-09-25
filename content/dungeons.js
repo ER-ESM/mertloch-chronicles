@@ -21,10 +21,11 @@ export const DUNGEONS={
   // Heldenmodus und „Lüge der Woche" (Etappe 5) kommen als weitere Einträge dazu.
   difficulty:{normal:{name:'Normal',hp:1,damage:1}},
   // Flügel (E-71): je ein Siegelträger, 10–15 Minuten mit Söldnern. Der erste Abschluss eines Flügels am Tag gibt den Tagesbonus.
+  // Etappe 4 Teil B: chest = kleine Truhe im Raum des Siegelträgers, öffnet sich nach seinem Sieg einmal je Durchgang (DUNGEON_REWARDS.wingChest).
   wings:[
-   {id:'burghof',name:'Burghof',boss:'gerd',rooms:['hof','zugbruecke','verwaltung','wehrgang']},
-   {id:'rittergeschoss',name:'Rittergeschoss',boss:'expose',rooms:['galerie','rittersaal','stall','verlies','studio','musterwohnung']},
-   {id:'basaltgewoelbe',name:'Basaltgewölbe',boss:'korkenkurt',rooms:['weinkeller','gewoelbe','kelterhalle']}
+   {id:'burghof',name:'Burghof',boss:'gerd',rooms:['hof','zugbruecke','verwaltung','wehrgang'],chest:{floor:'e0',x:8.5,y:36.5}},
+   {id:'rittergeschoss',name:'Rittergeschoss',boss:'expose',rooms:['galerie','rittersaal','stall','verlies','studio','musterwohnung'],chest:{floor:'k1',x:36.5,y:46.5}},
+   {id:'basaltgewoelbe',name:'Basaltgewölbe',boss:'korkenkurt',rooms:['weinkeller','gewoelbe','kelterhalle'],chest:{floor:'k2',x:27,y:33}}
   ],
   floors:{
    e0:{name:'Erdgeschoss · Burghof',origin:{x:32000,y:4000},size:[64,48],theme:'garage'},
@@ -81,13 +82,17 @@ export const DUNGEONS={
   ],
   // Übergänge zwischen Ebenen (F an der Stelle). oneWay: nur in Pfeilrichtung. secret: erst nach Fund benutzbar.
   // gate.boss: von oben erst offen, wenn der Boss liegt (von unten immer). unlock: erste Benutzung von dieser Seite öffnet beide.
+  // Etappe 4 Teil B: shortcut.boss = Abkürzung zum Hof, die der Siegelträger nach seinem Sieg öffnet (beide Richtungen, bis zum Tagesreset);
+  // only = reine Abkürzung, vorher zu. Sperren und Abkürzungen nicht gebauter Bosse greifen nicht (dungeon.js gateShut/shortcutState).
+  // label = eigenes Wort im Hinweis (DUNGEON_TEXT.step).
   transitions:[
-   {id:'treppe-zugbruecke',kind:'stairs',a:{floor:'e0',x:5,y:23},b:{floor:'k1',x:10.5,y:8},gate:{boss:'gerd',side:'a'}},
+   {id:'treppe-zugbruecke',kind:'stairs',a:{floor:'e0',x:5,y:23},b:{floor:'k1',x:10.5,y:8},gate:{boss:'gerd',side:'a'},shortcut:{boss:'gerd'}},
    {id:'leiter',kind:'ladder',a:{floor:'e0',x:18.5,y:21.5},b:{floor:'e0',x:18.5,y:14.5}},
    {id:'lichtschacht',kind:'shaft',a:{floor:'e0',x:42,y:10},b:{floor:'k1',x:53.5,y:8},oneWay:'a'},
    {id:'treppe-k2',kind:'stairs',a:{floor:'k1',x:53.5,y:36},b:{floor:'k2',x:38,y:42}},
    {id:'wendeltreppe',kind:'spiral',a:{floor:'k1',x:10,y:36},b:{floor:'k2',x:8,y:42},secret:'pappwand'},
-   {id:'aufzug',kind:'lift',a:{floor:'e0',x:44,y:35.5},b:{floor:'k2',x:6.5,y:6.5},unlock:'b'}
+   {id:'aufzug',kind:'lift',a:{floor:'e0',x:44,y:35.5},b:{floor:'k2',x:6.5,y:6.5},unlock:'b',gate:{boss:'korkenkurt',side:'b'},shortcut:{boss:'korkenkurt'}},
+   {id:'pappwand-hof',kind:'stairs',label:'pappwand',a:{floor:'e0',x:20,y:36.5},b:{floor:'k1',x:28,y:46.8},shortcut:{boss:'expose',only:true}}
   ],
   // Entdeckbares: F an der Stelle deckt auf (Pappwand eindrücken usw.).
   secrets:[{id:'pappwand',floor:'k1',x:10,y:36,range:4}],
@@ -107,22 +112,34 @@ export const DUNGEONS={
   // mit Sichtlinie (tests/dungeon-hotfix.test.mjs). Dafür: Hof-Kontrollpunkt am Rolltor, Hof-Packs 1 m nach außen, Weinkeller-Kontrollpunkt im
   // Gang vor der Westtür (außer Sicht der Ratten, frei von den Laufwegen der Requisiten, dungeon-scenery.js auditScenery), die Galerie-Streife läuft nur noch die Ost- und Südseite (vorher lief sie über den Kontrollpunkt an der Treppe).
   packs:[
+   // Etappe 4 Teil B (E-71, Flügel à 10–15 min): Packs dichter besetzt und ergänzt – nur Anzahl und Verteilung, Werte je Gegner unverändert.
+   // Gemessen mit node scripts/dungeon-sim.mjs --only=wings (Bericht docs/DUNGEON-ETAPPE-4B-2026-09-25.md).
    {id:'hof-west',room:'hof',at:[21,24],members:['securityazubi','securityazubi','pappwache']},
    {id:'hof-ost',room:'hof',at:[41,24],members:['securityazubi','securityazubi','pappwache']},
-   {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi']},
-   {id:'kanzlei-sued',room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi']},
-   {id:'wehrgang-west',room:'wehrgang',at:[25,10],members:['pappschuetze']},
-   {id:'wehrgang-mitte',room:'wehrgang',at:[32,9],members:['pappschuetze']},
-   {id:'wehrgang-ost',room:'wehrgang',at:[39,11],members:['pappschuetze']},
+   {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi','securityazubi']},
+   {id:'kanzlei-sued',room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi','securityazubi']},
+   {id:'kanzlei-archiv',room:'verwaltung',at:[50,36.5],members:['baumarktritter','maklerpraktikant']},
+   {id:'wehrgang-west',room:'wehrgang',at:[20,10],members:['pappschuetze','pappschuetze','securityazubi']},
+   {id:'wehrgang-mitte',room:'wehrgang',at:[31,9],members:['pappschuetze','pappschuetze','securityazubi']},
+   {id:'wehrgang-ost',room:'wehrgang',at:[40,13],members:['pappschuetze','pappschuetze','securityazubi']},
    {id:'galerie-nord',room:'galerie',at:[20,8],members:['pappwache']},
    {id:'galerie-sued',room:'galerie',at:[44,36],members:['pappwache']},
    {id:'galerie-streife',room:'galerie',at:[30,36],members:['baumarktritter','baumarktritter','maklerpraktikant'],patrol:[[30,36],[54,36],[54,8],[34,8],[54,8],[54,36]]},
    {id:'rittersaal-west',room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant']},
    {id:'rittersaal-ost',room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant']},
    {id:'rittersaal-sued',room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant']},
+   {id:'rittersaal-bar',room:'rittersaal',at:[45,27],members:['securityazubi','maklerpraktikant']},
+   {id:'galerie-west',room:'galerie',at:[10,26],members:['baumarktritter','maklerpraktikant']},
    {id:'verlies',room:'verlies',at:[3.5,22],members:['securityazubi','securityazubi','securityazubi']},
    {id:'weinkeller-west',room:'weinkeller',at:[13,10],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
-   {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']}
+   {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
+   {id:'gewoelbe-west',room:'gewoelbe',at:[19.5,42],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
+   {id:'gewoelbe-sued',room:'gewoelbe',at:[30,42],members:['maklerpraktikant','securityazubi','securityazubi','baumarktritter']},
+   {id:'gewoelbe-ost',room:'gewoelbe',at:[38,16],members:['baumarktritter','baumarktritter']},
+   {id:'gewoelbe-tresor',room:'gewoelbe',at:[38,31],members:['securityazubi','securityazubi','maklerpraktikant']},
+   {id:'gewoelbe-keller',room:'gewoelbe',at:[9.5,38.5],members:['securityazubi','securityazubi','maklerpraktikant']},
+   // Etappe 4 Teil B: Schlossgespenst läuft die Schleife der Gewölbegänge ab (Plan 4.4, Streife), solange der Beamer läuft, ist es nur ein Bild
+   {id:'gewoelbe-gespenst',room:'gewoelbe',at:[36.5,30],members:['schlossgespenst'],patrol:[[36.5,8],[36.5,41],[24,41],[36.5,41]]}
   ],
   // Bosse: gebaut wird, was in DUNGEON_BOSSES steht; die übrigen Plätze sind reserviert (Plan Abschnitt 7).
   bosses:[
@@ -142,7 +159,22 @@ export const DUNGEONS={
     mietvertrag:{noLie:'parkett',icon:'lens',note:'Mietvertrag: Das Parkett lügt nicht mehr.'},
     leihschein:{noLie:'kulisse',icon:'lens',note:'Leihschein: Die Pappkulisse lügt nicht mehr.'},
     kirmesurkunde:{taken:.1,icon:'lens',note:'Kirmes-Urkunde: Big B nimmt 10 % mehr Schaden.'}},
-   all:{confessAt:.3,note:'Alle drei Beweise: Geständnis schon bei 30 %.'}},
+   all:{confessAt:.3,note:'Alle drei Beweise: Geständnis schon bei 30 %.'},
+   // Etappe 4 Teil B: Fundstellen (Plan 4.5). Leihschein in der Pelzmanteltasche auf dem Carport-Dach („Das Dach ist nur Deko.“),
+   // Mietvertrag von Vermieter Volker (Ereignis im Burgverlies), Kirmes-Urkunde im Presseamt – erst nach Reichweiten-Rita, sobald sie gebaut ist.
+   // Gefunden ist noch nicht vorgelegt: Die Wirkung greift erst, wenn der Held die Beweise im Thronsaal vorlegt (present, vor dem Kampf).
+   finds:{leihschein:{room:'wehrgang',floor:'e0',x:45,y:15,range:3.5,kind:'coat'},mietvertrag:{event:'volker'},
+    kirmesurkunde:{room:'studio',floor:'k1',x:58.5,y:23,range:3.5,kind:'desk',after:'rita'}},
+   present:{floor:'k2',x:49,y:26,range:4.5,gap:2}},
+  // Etappe 4 Teil B: Ereignisse unterwegs (Plan 4.4). volker: hinter dem Fahrradschloss der Waschküche, frei, sobald der Pack guards liegt;
+  // gibt den Mietvertrag und den Aufzugschlüssel (öffnet den Getränkeaufzug für heute) und steht danach als Händler im Hof.
+  // beamer: Beamer auf Bierkiste im Weinkeller; ausgesteckt ist das Schlossgespenst weg (es war nur ein Film).
+  events:[
+   {id:'volker',room:'verlies',floor:'k1',x:5,y:26.5,range:3.5,guards:'verlies',gives:{evidence:'mietvertrag',unlock:'aufzug'}},
+   {id:'beamer',room:'weinkeller',floor:'k2',x:30,y:10.5,range:3.5,ghost:'schlossgespenst'}
+  ],
+  // Händler Vermieter Volker (nach der Befreiung, dauerhaft): steht im Hof neben dem Rolltor. Ware in content/dungeon-e4b.js.
+  vendor:{floor:'e0',x:25,y:35.5,range:3.5,after:'volker'},
   // Reichweiten-Rita (optional, Etappe 4): liegt sie, ruft Big Bs Live-Schalte nur einen Follower, und „Reichweite" wirkt nicht.
   optional:{rita:{bigb:{summon:1,noReach:true}}}
  }
@@ -177,7 +209,12 @@ export const DUNGEON_ENEMIES={
   look:'Jacke überm Arm, Zollstock in der Hand, fragt nach dem Keller. Es ist der Keller'},
  // Etappe 4 Teil A (Plan 7.3): Reichweiten-Ritas Kommentatoren (Story posten, nicht unterbrochen). Fernkampf-Sticheleien, fallen schnell.
  kommentator:{name:'Kommentator',type:'cultist',skin:'warden',art:'villager5',family:'schlosstrash',level:9,hp:1400,damage:1.2,xp:10,speed:58,aggroRange:0,roamRadius:0,castSet:'d-kommentator',auto:'scrounger',priority:true,noLoot:true,
-  look:'Daumen über dem Handy, schreibt „Erster!“ unter alles, auch unter Beerdigungen'}
+  look:'Daumen über dem Handy, schreibt „Erster!“ unter alles, auch unter Beerdigungen'},
+ // Etappe 4 Teil B (Plan 6): Schlossgespenst als Streife in den Gewölbegängen. illusion = unverwundbar, solange der Beamer läuft (dungeon.js);
+ // ist er ausgesteckt, verschwindet es. Figur: vorhandene Katalogfigur, keine neue Grafik und keine Tönung (die Tönungsebene kostete im Keller
+ // ohne Grafikkarte 4 ms je Bild, dungeon-raeume-check).
+ schlossgespenst:{name:'Schlossgespenst',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:10,hp:18000,damage:2,xp:60,speed:44,aggroRange:80,roamRadius:0,castSet:'d-gespenst',auto:'warden',illusion:'beamer',
+  look:'Bettlaken mit zwei Löchern, flackert am Rand wie ein schlecht eingestellter Beamer, macht „Buhuu“ mit Nachhall'}
 };
 
 // Bosse des Dungeons. phases: at = Lebensanteil; castSet wechselt den Zyklus, summon ruft Adds (DUNGEON_ENEMIES; hp = Anteil am Leben der Art).
@@ -261,6 +298,9 @@ export const DUNGEON_CASTS={
   expose:{name:'Exposé verteilen',hint:'Fläche verlassen',total:2,damage:220,pct:.3,radius:40,ground:true}}},
  'd-ratte':{cycle:['knabbern'],casts:{
   knabbern:{name:'Knabbern',total:.8,damage:60,radius:26}}},
+ // Etappe 4 Teil B: Schlossgespenst (Plan 6: „Buhuu · Fläche verlassen“)
+ 'd-gespenst':{cycle:['buhuu'],casts:{
+  buhuu:{name:'Buhuu',hint:'Fläche verlassen',total:1.8,damage:200,pct:.25,radius:34,ground:true,target:'random'}}},
  'd-gerd':{cycle:['liste','rausschmiss','dresscode','rausschmiss'],casts:{
   liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
   rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.8,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
@@ -381,14 +421,24 @@ export const DUNGEON_CASTS={
 // der erste Sieg des Tages voll, jede Wiederholung ein Drittel; Beute und Siegelmarken bleiben). Schließt die Farm-Lücke aus Etappe 1.
 // chest = Endtruhe in der Schatzkammer: Wahl aus `choices` Teilen der Güte `quality` (Stufe = Big Bs Stufe + 1) plus Siegelmarken,
 // einmal je Durchgang. Der Abschluss (final) zählt Abschlüsse und Bestzeit im Spielstand (dungeons[id].clears/best).
-export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,chest:{choices:3,quality:'rare',marks:3,
+// Etappe 4 Teil B: wingChest = kleine Truhe je Flügel: ein Teil (Güte ungewöhnlich, mit rareChance selten, Stufe = Boss + 1) und Siegelmarken.
+export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,wingChest:{marks:1,quality:'uncommon',rareChance:.35},chest:{choices:3,quality:'rare',marks:3,
  slots:['weapon','head','shoulders','body','hands','waist','legs','feet','ring','trinket','neck','wrists']}};
 
 // Erfolge des Dungeons (Etappe 3): stehen im Spielstand unter dungeons[id].feats. check = Bedingung beim Sieg über `boss`
 // (dungeon.js grantFeats). Weitere Erfolge aus Plan 11 („Beweislast", „Schlossführung" …) folgen mit Etappe 4.
+// Etappe 4 Teil B: weitere Erfolge (Plan 11). check: allEvidence = alle Beweise vorgelegt (und Rita besiegt, sobald gebaut) · fast = Abschluss
+// unter seconds Sekunden Durchgangszeit · noDeath = der Held ist im Durchgang nie gefallen. Ohne boss vergibt sie dungeon.js awardFeat:
+// seals = alle Siegel an einem Tag, seen = der seltene Boss stand im Durchgang. title = Titel (DUNGEON_TITLES in content/dungeon-e4b.js).
 export const DUNGEON_FEATS={
  nachsatz:{name:'Der Nachsatz zählt',boss:'bigb',check:'noLieHits',icon:'trait-lie',
-  note:'Big B besiegt, ohne dass dich eine gelogene Kanonenkugel getroffen hat.'}
+  note:'Big B besiegt, ohne dass dich eine gelogene Kanonenkugel getroffen hat.'},
+ beweislast:{name:'Beweislast',boss:'bigb',check:'allEvidence',icon:'lens',title:'mieterschuetzer',
+  note:'Big B mit allen drei Beweisen am Thron besiegt. Unterschrieben hat er trotzdem nichts.'},
+ stempelkarte:{name:'Stempelkarte voll',check:'seals',icon:'seal',note:'Alle Siegel an einem Tag. Der Stempel ist aus Kartoffel, zählt aber.'},
+ termin:{name:'Termin eingehalten',boss:'bigb',check:'fast',seconds:2700,icon:'clock',note:'Schloss Big B in unter 45 Minuten abgeschlossen. Big B kommt sonst zu spät zu seinem eigenen Termin.'},
+ kratzer:{name:'Ohne Kratzer',boss:'bigb',check:'noDeath',icon:'role-heal',note:'Schloss Big B abgeschlossen, ohne einmal am Boden zu liegen. Die Söldner zählen nicht, die sind versichert.'},
+ halbgesehen:{name:'Halb gesehen',check:'seen',seen:'halbespferd',icon:'star',note:'Das halbe Pferd im Stall gesehen. Die andere Hälfte auch. Glaubt dir nur keiner.'}
 };
 
 
@@ -400,7 +450,7 @@ export const DUNGEON_TEXT={
  welcome:'Schloss Big B. Die Garage riecht nach Laminat und Größenwahn.',
  outside:'Zurück auf der Burgstraße. Die Burg ist immer noch eine Garage.',
  lootGathered:n=>n+' liegengebliebene Beutebeutel eingesammelt.',
- step:{stairs:'Treppe',ladder:'Leiter',shaft:'Lichtschacht',spiral:'Wendeltreppe',lift:'Getränkeaufzug'},
+ step:{stairs:'Treppe',ladder:'Leiter',shaft:'Lichtschacht',spiral:'Wendeltreppe',lift:'Getränkeaufzug',pappwand:'Pappwand'},
  floorTo:{e0:'zum Burghof',k1:'ins Rittergeschoss',k2:'ins Basaltgewölbe'},up:'hoch',down:'runter',
  ladder:{a:'hoch aufs Carport-Dach',b:'runter in den Hof'},
  locked:{gate:'Die Kette hängt noch. Gerd hat den Schlüssel. Und das Klemmbrett.',oneWay:'Da kommt man nur runter. Rauf braucht man Flügel oder eine Leiter.',

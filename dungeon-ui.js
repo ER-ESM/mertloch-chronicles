@@ -2,8 +2,9 @@
 // app.js ruft nur mountDungeonUI() und an drei Stellen openEntry/leave/openJournal – alles andere bleibt hier.
 // Fenster im Einzelfenster-System (E-67): „dungeonEntry“ und „journal“ stehen mittig (popup-windows.js GRID_OVERLAY),
 // das Journal darf neben offenen Fenstern (Karte) stehen. Am Handy zeigt Tippen auf ein Symbol seinen Tooltip als Detail.
-import {requiredSeals} from './dungeon.js';
-import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_UI as U} from './content/index.js';
+import {requiredSeals,dungeonAct,e4bState,dungeonToday} from './dungeon.js';
+import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_UI as U,DUNGEON_E4B as U4} from './content/index.js';
+import {mountVendor} from './dungeon-vendor-ui.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 import {entryCard,dungeonTransition} from './dungeon-entry.js';
 import {journalPanel,paintDungeonIcons,paintBossPortraits,dicon} from './dungeon-journal.js';
@@ -14,6 +15,9 @@ const touch=()=>document.body.classList.contains('touch-mode');
 export function mountDungeonUI(api){
  // api: {game, popups, openModal, paint, events, save, toast, showPanel, unlocked}
  let entryId=null,journalBoss=null,journalBack=null,busy=false;
+ /* Etappe 4 Teil B: Händler Vermieter Volker (eigenes Fenster) und die F-Ziele Truhe, Beweis, Ereignis, Vorlegen */
+ const vendor=mountVendor({game:api.game,openModal:api.openModal,paint:api.paint,toast:api.toast,save:api.save,events:api.events});
+ function act(it){const g=api.game();if(!g)return null;const r=dungeonAct(g,it);if(r?.vendor&&r.ok)vendor.open();return r;}
  function paintAll(w){if(!w?.body)return;paintDungeonIcons(w.body);paintBossPortraits(w.body,api.game()?.time||0);paintUnitPortraits(w.body);api.paint?.();}
  /** Handy: Tippen auf ein Symbol mit Tooltip zeigt dessen Text als Detail (die Maus-Tooltips gibt es dort nicht). */
  function touchTip(e){if(!touch())return false;const el=e.target.closest('[data-tooltip-label]');if(!el)return false;showPanelDetail('<p>'+(el.dataset.tooltipNote||'')+'</p>',el.dataset.tooltipLabel);return true;}
@@ -49,13 +53,18 @@ export function mountDungeonUI(api){
  /** Nach Anheuern/Entlassen: offene Karte nachziehen. */
  function refresh(){if(entryId&&api.popups.isOpen('dungeonEntry')){const w=api.popups.get('dungeonEntry'),key=(api.game().companions||[]).map(c=>c.id).join('|');if(w.body.dataset.party!==key){renderEntry(entryId);api.popups.get('dungeonEntry').body.dataset.party=key;}}}
  /** Verfolgung im Dungeon (statt Weltauftrag): Siegel und Beweise als Felder, dazu der nächste lebende Boss; Klick öffnet dessen Journal. */
- function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(!body||!run)return;const def=run.def,seals=requiredSeals(def,def.doors.find(d=>d.lock?.seals)?.lock.seals)/* Etappe 3: nur gebaute Siegelträger */,ev=run.evidence?.size||0,boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
-  const html=`<div class="qt-quest is-focus dg-track" data-tooltip-label="${esc(def.name)}" data-tooltip-note="${esc(U.tracker.sealNote)}"><b id="questTitle" class="qt-title">${esc(def.name)}</b><div id="questTasks">`
-   +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(U.tracker.seals)}" data-tooltip-note="${esc(U.tracker.sealNote)}"><span class="dg-track-icons">${seals.map(s=>dicon(run.seals.has(s)?'seal':'seal-empty',18)).join('')}</span><b class="qt-count">${run.seals.size}/${seals.length}</b></div>`
-   +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(U.tracker.proofs)}" data-tooltip-note="${esc(U.tracker.proofNote)}"><span class="dg-track-icons">${[0,1,2].map(i=>dicon(ev>i?'lens':'lens-empty',18)).join('')}</span><b class="qt-count">${ev}/3</b></div>`
+ /** Verfolgung im Dungeon (Etappe 2, Etappe 4 Teil B): Flügel heute (je Flügel das Siegel seines Trägers), Beweise gegen Big B (gefunden
+  *  bzw. im Thronsaal vorgelegt) und der nächste lebende Boss (Klick: Journal). Jede Zeile hat ein Wort, jedes Symbol einen Tooltip. */
+ function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(!body||!run)return;const def=run.def,W=U4.tracker,st=e4bState(g),today=dungeonToday(g,run.id),boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
+  const wings=(def.wings||[]).map(w=>{const b=DUNGEON_BOSSES[w.boss],seal=def.bosses.find(x=>x.id===w.boss)?.seal,done=!!b&&(today.wings.includes(w.id)||run.seals.has(seal));return {w,name:b?.name||'',done,missing:!b};}),built=wings.filter(x=>!x.missing),done=built.filter(x=>x.done).length;
+  const ev=st.evidence,got=ev.filter(x=>x.state!=='missing').length,names=U4.evidence;
+  const span=(icon,label,note)=>`<span class="dg-track-ico" tabindex="0" data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}">${dicon(icon,18)}</span>`;
+  const html=`<div class="qt-quest is-focus dg-track"><b id="questTitle" class="qt-title">${esc(def.name)}</b><div id="questTasks">`
+   +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(W.wings)}" data-tooltip-note="${esc(W.wingsNote)}"><span class="dg-track-icons">${wings.map(x=>span(x.done?'seal':x.missing?'seal-empty:dim':'seal-empty',W.wingTip(x.w.name,x.name),x.missing?W.wingMissing:x.done?W.wingDone:W.wingOpen)).join('')}</span><span class="dg-track-word">${esc(U.tracker.seals)}</span><b class="qt-count">${done}/${built.length}</b></div>`
+   +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(W.proofs)}" data-tooltip-note="${esc(W.proofsNote)}"><span class="dg-track-icons">${ev.map(x=>span(x.state==='shown'?'lens':x.state==='found'?'lens-found':'lens-empty',names[x.id]?.name||x.id,x.state==='shown'?W.proofShown+' · '+(def.evidence.effects[x.id]?.note||''):x.state==='found'?W.proofFound:W.proofMissing+' · '+(names[x.id]?.hint||''))).join('')}</span><span class="dg-track-word">${esc(U.tracker.proofs)}</span><b class="qt-count">${got}/${ev.length}</b></div>`
    +(boss?`<div class="quest-task dg-track-row dg-track-boss" role="button" tabindex="0" data-dg-track-boss="${esc(boss.id)}" data-tooltip-label="${esc(DUNGEON_BOSSES[boss.id].name)}" data-tooltip-note="${esc(U.map.bossNote)}"><span class="dg-track-icons">${dicon('skull',18)}</span><span>${esc(DUNGEON_BOSSES[boss.id].name)}</span></div>`:'')
    +`</div></div><div id="questOthers" class="quest-others"></div>`;
   if(body.dataset.sig===html)return;body.dataset.sig=html;body.innerHTML=html;paintDungeonIcons(body);
-  if(!body.dataset.dgBound){body.dataset.dgBound='1';body.addEventListener('click',e=>{const b=e.target.closest('[data-dg-track-boss]');if(b){e.stopPropagation();openJournal(b.dataset.dgTrackBoss);}});}}
- return {openEntry,enter,leave,openJournal,refresh,tracker,busy:()=>busy,journalOpen:()=>api.popups.isOpen('journal')?journalBoss:null};
+  if(!body.dataset.dgBound){body.dataset.dgBound='1';body.addEventListener('click',e=>{const b=e.target.closest('[data-dg-track-boss]');if(b){e.stopPropagation();openJournal(b.dataset.dgTrackBoss);return;}if(touchTip(e))e.stopPropagation();});}}
+ return {openEntry,enter,leave,openJournal,refresh,tracker,act,openVendor:()=>vendor.open(),busy:()=>busy,journalOpen:()=>api.popups.isOpen('journal')?journalBoss:null};
 }

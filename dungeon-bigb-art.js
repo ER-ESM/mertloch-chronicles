@@ -5,6 +5,7 @@
 // Erst der Nachsatz legt die echte, rote Fläche mit wachsender Füllung; im letzten Viertel blitzt der Rand. Die widerlegte Behauptung
 // bleibt durchgestrichen stehen, damit man sieht, dass sie gelogen war.
 import {dungeonRun,floorAt,toWorld} from './dungeon.js';
+import {drawE4BGround} from './dungeon-e4b-art.js';
 
 const RED='#e2432f',RED_FILL='rgba(226,67,47,.22)',CREAM='#f3e6cc',INK='#1c1712',GOLD='#ecb95c';
 const box=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
@@ -19,6 +20,7 @@ export function drawBigBGround(c,g){
   if(k?.lanes)drawLanes(c,k,t);
   if(k?.spots&&k.told!==false)drawSpots(c,k,t);
   if(e.lastLine&&t-e.lastLine.at<.4)for(const r of e.lastLine.lanes)impact(c,r,1-(t-e.lastLine.at)/.4);}
+ drawE4BGround(c,g);/* Etappe 4 Teil B: kleine Truhen, Fundstellen, Volker, Beamer */
 }
 /** Bahnen: Behauptung gestrichelt mit „?“, nach dem Nachsatz die echten Bahnen rot mit Füllung von Norden (Big Bs Ritt). */
 function drawLanes(c,k,t){

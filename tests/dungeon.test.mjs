@@ -144,7 +144,7 @@ test('Schildwall dämpft Treffer von vorn, Provision heilt Verbündete, Funkspru
 });
 
 test('Streife läuft den Ringflur ab, solange sie nicht kämpft',()=>{
- const g=game(),r=inside(g);at(g,'e0',31,36);const patrol=g.enemies.filter(e=>e.patrol);assert.equal(patrol.length,3);
+ const g=game(),r=inside(g);at(g,'e0',31,36);const patrol=g.enemies.filter(e=>e.patrol&&e.pack==='galerie-streife')/* Etappe 4 Teil B: dazu die Gespenst-Streife im Keller */;assert.equal(patrol.length,3);
  const start=patrol.map(e=>({x:e.x,y:e.y}));run(g,3);assert.ok(patrol.every((e,i)=>Math.hypot(e.x-start[i].x,e.y-start[i].y)>20),'Streife bewegt sich');
  assert.ok(patrol.every(e=>roomAt(DEF,e.x,e.y)?.id==='galerie'),'bleibt im Ringflur');
 });

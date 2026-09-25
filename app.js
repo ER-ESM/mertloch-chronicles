@@ -392,6 +392,7 @@ function worldInteraction(){
     case 'dungeonStep':return offer({label:it.name,run:()=>{game.dungeonStep(it.id,it.side);events();}});
     case 'dungeonSecret':return offer({label:it.name,run:()=>{game.dungeonSecret(it.id);events();}});
     case 'dungeonChest':return offer({label:it.name,run:()=>{const bag=game.dungeonChest();events();if(bag)showLoot(bag.id);}});
+    case 'dungeonAct':return offer({label:it.name,run:()=>{const r=dungeonUI.act(it);events();if(r?.bag)showLoot(r.bag.id);}});/* Etappe 4 Teil B: Händler, Truhe, Beweise, Ereignisse */
     case 'leaveKiosk':return offer({label:KIOSK_TEXT.leave,run:()=>{game.leaveKiosk();events();}});
     case 'mounts':return offer({label:MOUNT_UI.open,run:showMounts});
     case 'shop':return offer({label:SHOP_UI.interact,run:showShop});

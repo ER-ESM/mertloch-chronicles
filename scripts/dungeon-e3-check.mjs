@@ -76,7 +76,7 @@ try{
   const p3=await read(`const k=${bigb}.cast;return {n:k?.truthLanes?.length,hazards:g.dungeonRun.hazards.length}`);assert.equal(p3.n,2,'Phase 3: zwei Bahnen');await shot('07-phase3-zwei-bahnen');ok('Phase 3: Kanonenkugel auf zwei Bahnen, Mitte frei');await pause(false);
   // Sieg, Beute-Moment mit Erfolg
   const t=await fast(400,`${bigb}.hp<=0`);const won=await read(`const r=g.dungeonRun,rec=g.dungeons['schloss-bigb'];return {killed:r.killed.has('bigb'),lie:${bigb}.lieHits||0,feats:rec.feats,clears:rec.clears,best:rec.best,reward:${bigb}.dungeonReward}`);
-  assert.ok(won.killed,'Big B besiegt');assert.equal(won.lie,0,'kein Treffer durch eine gelogene Kanonenkugel');assert.deepEqual(won.feats,['nachsatz'],'Erfolg vergeben');assert.equal(won.clears,1);
+  assert.ok(won.killed,'Big B besiegt');assert.equal(won.lie,0,'kein Treffer durch eine gelogene Kanonenkugel');assert.ok(won.feats.includes('nachsatz'),'Erfolg vergeben '+JSON.stringify(won.feats))/* Etappe 4 Teil B: weitere Erfolge (Stempelkarte, Termin, ohne Kratzer) dürfen dazukommen */;assert.equal(won.clears,1);
   await read(`g.adminGod=false;g.player.inCombat=0;return 1`);for(let i=0;i<16&&!(await read(`return !!document.querySelector('.game-popup[data-window="loot"] [data-loot-feat]')`));i++)await wait(250);
   const moment=await read(`const w=document.querySelector('.game-popup[data-window="loot"]');return {open:!!w,head:w?.querySelector('.loot-moment-title')?.textContent||'',feat:!!w?.querySelector('[data-loot-feat="nachsatz"]')}`);
   assert.ok(moment.open&&/Big B/.test(moment.head)&&moment.feat,'Beute-Moment mit Erfolg '+JSON.stringify(moment));await shot('08-sieg-erfolg');

@@ -15,7 +15,7 @@ function person(b,touch){
  b.querySelector('.meter-entry-wrap')?.remove();
  const head=b.querySelector('.rpg-heading');if(head){const sub=head.querySelector('p');if(sub){head.dataset.sub=sub.textContent;sub.classList.add('sub-line');}}
  // Name nur einmal (Runde 1, 2026-09-24): der Heldenname wandert in die Titelzeile wie im Charakterfenster des Vorbilds, die Überschrift entfällt.
- const name=head?.querySelector('h2'),bar=b.closest('.game-popup')?.querySelector('.popup-titlebar strong');if(name&&bar){bar.textContent=name.textContent.trim();name.remove();}
+ const name=head?.querySelector('h2'),bar=b.closest('.game-popup')?.querySelector('.popup-titlebar strong');if(name&&bar){const badge=name.querySelector('.dg-title-badge')/* Dungeon Etappe 4 Teil B: Titel als Medaille neben dem Namen */;bar.textContent=name.textContent.trim();if(badge)bar.append(badge);name.remove();}
  b.querySelectorAll('.gear-cell>small').forEach(e=>e.remove());b.querySelectorAll('.gear-footer h4').forEach(e=>e.remove());
  const [turn,roster]=b.querySelectorAll('.armory-controls button');iconButton(turn,'ui-reset');iconButton(roster,'person');
  const starter=b.querySelector('.starter-armory');if(starter){const note=starter.querySelector('small');tip(starter.querySelector('button'),text(starter.querySelector('button')),text(note));note?.remove();}

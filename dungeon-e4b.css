@@ -31,3 +31,37 @@ body.boss-target #targetPanel{display:none!important}
 @media (prefers-reduced-motion:reduce){.ba-row.ba-done{animation:none}}
 /* Kurzmeldungen (Ablehnungen, Aufhelfen) stehen im Bosskampf unter der Ansage statt auf dem Bossrahmen (WoW: Fehlerzeile unter der Raid-Warnung) */
 @media(min-width:761px){body.boss-fight:not(.touch-mode) #toast{top:152px!important}}
+
+/* ── Verfolgung im Dungeon: je Zeile Symbole, ein Wort, Zähler; jedes Symbol mit Tooltip (Prüfer-Playtest #562) */
+.quest-panel .dg-track-ico{display:inline-grid;place-items:center;border-radius:5px;cursor:help}
+.quest-panel .dg-track-ico:hover,.quest-panel .dg-track-ico:focus-visible{background:#f3cf7a22;outline:1px solid #f3cf7a66}
+.quest-panel .dg-track-word{font:700 12px/1.1 var(--read);color:#d8c89a}
+.quest-panel .dg-track-row .qt-count{margin-left:auto}
+/* ── Eingangskarte: Flügel heute und Erfolge */
+/* eine Zeile auch mit Talentpunkte-Chip: Chips der Eingangskarte etwas enger */
+.dg-entry .dg-facts{gap:6px}.dg-entry .dg-facts .dg-chip{padding:0 8px 0 5px;gap:5px}
+.dg-chip.dg-wings{gap:1px!important}.dg-chip.dg-wings b{margin-left:4px}
+.dg-chip.dg-feats{gap:3px!important}
+/* ── Figur-Fenster: Titel als Medaille am Namen */
+.dg-title-badge{display:inline-grid;place-items:center;vertical-align:middle;margin-left:4px;cursor:help;border-radius:6px}
+.dg-title-badge:hover,.dg-title-badge:focus-visible{background:#f3cf7a22;outline:1px solid #f3cf7a88}
+/* ── Händler Vermieter Volker: Einzelfenster ohne Scrollen, Waren als Felder mit Symbol und Preis */
+.dv-vendor{display:flex;flex-direction:column;gap:10px}
+.dv-head{display:flex;align-items:center;gap:10px}
+.dv-face{width:52px;height:52px;border:2px solid #c5a268;border-radius:10px;overflow:hidden;background:#31493f;cursor:help}
+.dv-face canvas{width:48px;height:48px;display:block}
+.dv-marks{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 8px;border:1px solid #c5a26888;border-radius:999px;background:#15261e;cursor:help}
+.dv-marks b{font:800 18px/1 var(--read);color:#ffe6a0}
+.dv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.dv-offer{display:grid;grid-template-rows:auto auto;gap:4px;justify-items:center;padding:6px 4px;border:1px solid #c5a26855;border-radius:10px;background:#0f1a15}
+.dv-item{all:unset;position:relative;display:grid;place-items:center;width:52px;height:52px;border:1px solid #c5a26877;border-radius:8px;background:#15261e;cursor:help}
+.dv-item canvas{width:44px;height:44px}
+.dv-item small{position:absolute;right:3px;bottom:1px;font:800 11px/1 var(--read);color:var(--cream)}
+.dv-item .dv-owned{position:absolute;right:-4px;top:-4px}
+.dv-buy{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:64px;height:30px;padding:0 8px;border:1px solid #f3cf7a;border-radius:999px;background:#2a2412;cursor:pointer}
+.dv-buy b{font:800 14px/1 var(--read);color:#ffe6a0}
+.dv-buy:hover,.dv-buy:focus-visible{background:#3a3218;box-shadow:0 0 0 2px #f3cf7a55}
+.dv-buy[aria-disabled=true]{border-color:#6b5a3a;background:#1c1712;cursor:default}.dv-buy[aria-disabled=true] b{color:#a4a29a}
+.dv-offer.owned{opacity:.6}.dv-offer.locked{opacity:.45}
+.dv-empty{display:grid;place-items:center;height:60px;grid-column:1/-1}
+.touch-mode .dv-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.touch-mode .dv-offer{gap:8px;padding:6px 2px}.touch-mode .dv-buy{height:44px;min-width:0;width:100%;padding:0 4px}.touch-mode .dv-item{width:48px;height:48px}

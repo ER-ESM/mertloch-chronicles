@@ -10,6 +10,7 @@ import {companionSlots} from './companions.js';
 import {itemArt} from './rpg-ui.js';
 import {ICON_STEP} from './icon-steps.js';
 import {dicon,bossLoot} from './dungeon-journal.js';
+import {entryChips} from './dungeon-e4b-ui.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const tip=(label,note='')=>`data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}"`;
@@ -32,7 +33,7 @@ export function entryCard(g,id='schloss-bigb',{talents=true}={}){
  const points=talents?Math.max(0,talentPoints(g)-spentPoints(g.rpg.talents)):0;
  const best=rec.best>0?mmss(rec.best):'–';
  return `<span hidden data-ui-window-title="${esc(def.name)}"></span><div class="dg-entry" data-dg-entry="${esc(id)}">
-<div class="dg-facts"><span class="dg-chip" ${tip(E.band,low?U.from(def.level.enter):U.line(def.name,def.level.min,def.level.max,size))}>${dicon(low?'dungeon-low':'dungeon',20)}<b style="color:${tone}">${esc(U.band(def.level.min,def.level.max))}</b></span><span class="dg-chip" ${tip(E.group,U.heads(size))}>${dicon('group',20)}<b>${size}</b></span><span class="dg-chip" ${tip(E.best,rec.best>0?best:E.bestNone)}>${dicon('clock',20)}<b>${best}</b></span>${points>0?`<button type="button" class="dg-chip dg-talents" data-dg-talents aria-label="${esc(E.talents(points))}" ${tip(E.talents(points),E.talentsNote)}>${dicon('talent',20)}<b>${points}</b></button>`:''}</div>
+<div class="dg-facts"><span class="dg-chip" ${tip(E.band,low?U.from(def.level.enter):U.line(def.name,def.level.min,def.level.max,size))}>${dicon(low?'dungeon-low':'dungeon',20)}<b style="color:${tone}">${esc(U.band(def.level.min,def.level.max))}</b></span><span class="dg-chip" ${tip(E.group,U.heads(size))}>${dicon('group',20)}<b>${size}</b></span><span class="dg-chip" ${tip(E.best,rec.best>0?best:E.bestNone)}>${dicon('clock',20)}<b>${best}</b></span>${entryChips(g,id)/* Etappe 4 Teil B: Flügel heute, Erfolge */}${points>0?`<button type="button" class="dg-chip dg-talents" data-dg-talents aria-label="${esc(E.talents(points))}" ${tip(E.talents(points),E.talentsNote)}>${dicon('talent',20)}<b>${points}</b></button>`:''}</div>
 <div class="dg-party" aria-label="${esc(E.group)}">${slots.join('')}</div>
 ${hire}
 <div class="dg-foot"><div class="dg-loots" aria-label="${esc(E.loot)}">${lootHtml}</div><button type="button" class="outline-button dg-journal" data-dg-journal aria-label="${esc(E.journal+' · '+E.journalNote)}" ${tip(E.journal,E.journalNote)}>${dicon('book',26)}</button><button type="button" class="gold-button dg-enter" data-dg-enter ${low?'aria-disabled="true" '+tip(E.low(def.level.enter),E.lowNote):tip(E.enter,E.enterNote)}>${esc(E.enter)}</button></div>

@@ -5,9 +5,9 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
 import {makeEnemy,walkClear as walkable,moveAlong} from './encounters.js';
-import {autoLootBag,ITEMS} from './rpg.js';
+import {autoLootBag,addItem,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
 import {hitCompanion,clearThreat} from './companions.js';
 import {emitCombatFx} from './combat-fx.js';
@@ -79,7 +79,7 @@ export function normalizeDungeons(raw){
  const out={};for(const id of Object.keys(DUNGEONS)){const r=raw?.[id]||{};const def=DUNGEONS[id],arr=v=>Array.isArray(v)?v:[],d=r.daily||{};
   out[id]={clears:Math.max(0,r.clears|0),bosses:arr(r.bosses).filter(b=>def.bosses.some(x=>x.id===b)),
    secrets:arr(r.secrets).filter(s=>def.secrets.some(x=>x.id===s)),firstClear:Number(r.firstClear)||0,marks:Math.max(0,r.marks|0),
-   /* Etappe 3: Bestzeit in Sekunden (Abschluss mit Big B) und Erfolge */best:Math.max(0,Math.round(Number(r.best)||0)),feats:arr(r.feats).filter(f=>FEATS[f]),
+   /* Etappe 3: Bestzeit in Sekunden (Abschluss mit Big B) und Erfolge */best:Math.max(0,Math.round(Number(r.best)||0)),feats:arr(r.feats).filter(f=>FEATS[f]),/* Etappe 4 Teil B: Volker befreit → Händler im Hof */volker:!!r.volker,
    daily:{day:typeof d.day==='string'?d.day:'',wings:arr(d.wings).filter(w=>(def.wings||[]).some(x=>x.id===w)),seals:arr(d.seals).filter(s=>def.bosses.some(b=>b.seal===s)),
     shortcuts:arr(d.shortcuts).filter(t=>def.transitions.some(x=>x.id===t)),
     /* Etappe 3: Siege je Boss am Tag (Farm-Lücke: Wiederholungen geben weniger EP) und erster Abschluss des Tages */
@@ -151,7 +151,7 @@ function createRun(g,id,saved=null){
   room:null,arena:null,checkpoint:validCheckpoint(def,saved?.checkpoint)||{floor:def.start.floor,x:def.start.x,y:def.start.y,room:null},startedAt:Number(saved?.startedAt)||clock(g),ghost:null,
   /* Etappe 3: Beweise (Wirkung bei Big B, verteilt ab Etappe 4), Endtruhe geöffnet, liegende Trümmerfelder */evidence:new Set(list('evidence',x=>def.evidence?.ids?.includes(x))),chest:!!saved?.chest,hazards:[],elapsed:Math.max(0,Number(saved?.elapsed)||0)/* Spielzeit im Durchgang (Bestzeit) */,
   /* Etappe 4 Teil A: seltene Bosse dieses Durchgangs (das halbe Pferd, 30 %) – einmal gewürfelt, im Laufstand gespeichert */rare:new Set(Array.isArray(saved?.rare)?list('rare',b=>def.bosses.some(x=>x.id===b&&x.rare)):def.bosses.filter(b=>b.rare&&g.random()<=b.rare).map(b=>b.id))};
- run.enemies=spawnEnemies(g,run);return run;
+ restoreE4B(run,saved);/* Etappe 4 Teil B: Funde, Volker, Beamer, kleine Truhen, Tode */run.enemies=spawnEnemies(g,run);return run;
 }
 function stop(g){g.stopAuto?.();g.keys?.clear();g.touchMove=null;g.moveTo=null;g.path=[];g.routeGoal=null;g.target=null;g.aiming=null;g.aimPoint=null;g.casting=null;
  const p=g.player;p.vx=p.vy=0;p.moving=false;p.attack=p.dash=p.hurt=p.castPose=0;}
@@ -193,7 +193,7 @@ export function savedDungeonRun(g){
  const inside=dungeonRun(g),kept=inside?null:Object.values(g.dungeonRuns||{}).sort((a,b)=>b.leftAt-a.leftAt)[0],run=inside||kept?.run;if(!run)return null;
  return {id:run.id,inside:!!inside,difficulty:run.difficulty,day:run.day,startedAt:run.startedAt,savedAt:clock(g),leftAgo:inside?0:Math.max(0,Math.round(g.time-kept.leftAt)),
   killed:[...run.killed],seals:[...run.seals],secrets:[...run.secrets],visited:[...run.visited],unlocked:[...run.unlocked],trash:[...run.trash],heard:[...run.heard],checkpoint:{...run.checkpoint},
-  evidence:[...(run.evidence||[])],chest:!!run.chest,elapsed:Math.round(run.elapsed||0),rare:[...(run.rare||[])]};
+  evidence:[...(run.evidence||[])],chest:!!run.chest,elapsed:Math.round(run.elapsed||0),rare:[...(run.rare||[])],...saveE4B(run)};
 }
 /** Laufstand beim Laden: verfallen (resetAfter nach dem Verlassen bzw. Speichern, Tageswechsel) → nichts; lief er beim Speichern,
  *  steht der Held wieder am letzten Kontrollpunkt im Dungeon (enterDungeon setzt fort). */
@@ -220,6 +220,7 @@ export function dungeonInteraction(g){
  /* Etappe 3: Endtruhe (nach Big B, einmal je Durchgang) und Hinterausgang in der Schatzkammer */
  const chest=def.chest;if(chest&&f===chest.floor&&run.killed.has(chest.boss)&&!run.chest){const pt=toWorld(def,chest.floor,chest.x,chest.y);if(near(pt,chest.range))return {kind:'dungeonChest',point:pt,name:T.chest.name,priority:0};}
  const back=def.backExit;if(back&&f===back.floor){const pt=toWorld(def,back.floor,back.x,back.y);if(near(pt,back.range))return {kind:'dungeonLeave',point:pt,name:T.backExit,priority:0};}
+ {const act=e4bInteraction(g,run,f);if(act)return act;}/* Etappe 4 Teil B: Händler, kleine Truhe, Beweise, Ereignisse */
  for(const s of def.secrets){if(s.floor!==f||run.secrets.has(s.id))continue;const pt=toWorld(def,s.floor,s.x,s.y);if(near(pt,s.range))return {kind:'dungeonSecret',id:s.id,point:pt,name:T.secretUse[s.id],priority:0};}
  for(const t of def.transitions)for(const side of ['a','b']){const s=t[side];if(s.floor!==f)continue;const pt=toWorld(def,s.floor,s.x,s.y);if(!near(pt,3))continue;
   if(t.secret&&!run.secrets.has(t.secret))continue;if(t.oneWay&&t.oneWay!==side)continue;
@@ -334,6 +335,7 @@ export function tickDungeon(g,dt){
  // Adds verschwinden, wenn ihr Boss zurückgesetzt wurde
  for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.gone||e.signedOff||e.summoner&&e.summoner.hp>0&&!e.summoner.aggro)g.enemies.splice(i,1);}/* Etappe 4 Teil A: Interessenten, die unterschrieben haben, gehen */
  tickBossMechanics(g,run,dt);/* Etappe 3: Nachsatz, Geständnis, Wut, Reichweite, parallele Timer, Trümmer */
+ tickE4B(g,run,dt);/* Etappe 4 Teil B: Tode, Gespenst, Volker, Ausreden, Pferd gesehen */
 }
 /** Aufstehen am Kontrollpunkt (Freilassen oder Gruppentod; engine.respawn setzt vorher die Gegner zurück). */
 export function dungeonRespawn(g){
@@ -619,8 +621,8 @@ export function openDungeonChest(g){
 /** Erfolge beim Sieg über einen Boss (DUNGEON_FEATS): „Der Nachsatz zählt" = Big B ohne einen Treffer durch eine gelogene Kanonenkugel. */
 function grantFeats(g,run,e,bossId){
  const rec=record(g,run.id),out=[];rec.feats||=[];
- for(const [id,f] of Object.entries(FEATS)){if(f.boss!==bossId||rec.feats.includes(id))continue;if(f.check==='noLieHits'&&(e.lieHits||0)>0)continue;
-  rec.feats.push(id);out.push(id);g.toast?.(T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name});}
+ for(const [id,f] of Object.entries(FEATS)){if(f.boss!==bossId||rec.feats.includes(id))continue;if(f.check==='noLieHits'&&(e.lieHits||0)>0)continue;if(!featOk(g,run,e,f))continue;/* Etappe 4 Teil B: Beweise, Zeit, ohne Tod */
+  rec.feats.push(id);out.push(id);g.toast?.(T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name});titleFor(g,id);}
  return out;
 }
 /** Schadensfaktor gegen Dungeon-Gegner (Schildwall: Treffer von vorn gedämpft). */
@@ -653,7 +655,7 @@ export function onDungeonKill(g,e){
  const final=!!DUNGEON_BOSSES[b.id]?.final,firstFinal=final&&!today.final;let secs=0;if(final){today.final=true;rec.clears++;secs=Math.max(1,Math.round(run.elapsed||0));if(!rec.best||secs<rec.best)rec.best=secs;if(!rec.firstClear)rec.firstClear=clock(g);}
  const wing=(run.def.wings||[]).find(w=>w.boss===b.id),first=!!wing&&!today.wings.includes(wing.id)||firstFinal;if(wing&&first)today.wings.push(wing.id);
  const marks=REWARDS.marksPerBoss+(first?REWARDS.daily.marks:0),bonus=first?Math.round((e.xp||0)*REWARDS.daily.xp):0;rec.marks+=marks;
- openShortcuts(g,run,b.id);/* Etappe 4 Teil B: der Siegelträger öffnet seine Abkürzung zum Hof, bis zum Tagesreset */
+ openShortcuts(g,run,b.id);/* Etappe 4 Teil B: der Siegelträger öffnet seine Abkürzung zum Hof, bis zum Tagesreset */if(b.seal)sealsFeat(g,run);
  const feats=grantFeats(g,run,e,b.id),mount=grantMount(g,e,b.id)/* Etappe 4 Teil A: Reittier vom halben Pferd */;
  e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null,repeat,final,feats,...(mount?{mount}:{})};if(bonus)g.gainXp?.(bonus);
  const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('dungeonReward',{...e.dungeonReward});g.emit?.('save');
@@ -822,3 +824,134 @@ export function sightSpot(g,e,from){const run=dungeonRun(g);if(!run)return null;
 export function hideSpots(g,e,k=e?.cast){const run=dungeonRun(g);if(!run||!k)return [];if(k.hideSpots)return k.hideSpots;const room=run.def.rooms.find(r=>r.id===e.dungeonBoss?.room),out=[];
  if(room)for(const q of room.rects){const r=rectWorld(run.def,room.floor,q);const hid=(x,y)=>!g.world.lineClear(e,{x,y});for(let x=r.x+8;x<=r.x+r.w-8;x+=U)for(let y=r.y+8;y<=r.y+r.h-8;y+=U)if(!g.world.blocked(x,y,7)&&hid(x,y)&&hid(x-5,y)&&hid(x+5,y)&&hid(x,y-5)&&hid(x,y+5)/* mit Rand: auch knapp daneben verdeckt */)out.push({x,y});}
  return k.hideSpots=out;}
+// ── Etappe 4 Teil B: Laufstand, Funde, Ereignisse, Truhen, Händler, Erfolge ───────────────────────────────────────────────────────────
+/** Laufstand der Etappe 4 Teil B: gefundene Beweise (found; vorgelegte stehen in evidence), Volker befreit, Beamer aus, geöffnete kleine
+ *  Truhen, Tode des Helden im Durchgang. Aus dem Spielstand (saved) oder frisch. */
+function restoreE4B(run,saved){
+ const def=run.def,ids=def.evidence?.ids||[],arr=k=>Array.isArray(saved?.[k])?saved[k]:[];
+ run.found=new Set(arr('found').filter(x=>ids.includes(x)));run.freed=!!saved?.freed;run.beamer=!!saved?.beamer;
+ run.wingChests=new Set(arr('wingChests').filter(w=>(def.wings||[]).some(x=>x.id===w)));run.deaths=Math.max(0,saved?.deaths|0);run.presenting=null;
+}
+const saveE4B=run=>({found:[...(run.found||[])],freed:!!run.freed,beamer:!!run.beamer,wingChests:[...(run.wingChests||[])],deaths:run.deaths|0});
+/** Siegelmarken des Helden (Spielstand). */
+export const dungeonMarks=(g,id='schloss-bigb')=>record(g,id).marks|0;
+const afterOk=(run,boss)=>!boss||!built(boss)||run.killed.has(boss);
+const nearPt=(g,def,pt,range)=>floorAt(def,g.player.x,g.player.y)===pt.floor&&dist(g.player,toWorld(def,pt.floor,pt.x,pt.y))<=range*U;
+/** Zustand für Zeichnung und Oberfläche: Truhen, Fundstellen, Ereignisse, Händler (dungeon-e4b-art.js, dungeon-ui.js). */
+export function e4bState(g){
+ const run=dungeonRun(g);if(!run)return null;const def=run.def,rec=record(g,run.id);
+ return {
+  chests:(def.wings||[]).filter(w=>w.chest).map(w=>({wing:w.id,...w.chest,ready:run.killed.has(w.boss),opened:run.wingChests.has(w.id)})),
+  finds:Object.entries(def.evidence?.finds||{}).filter(([,f])=>f.floor).map(([id,f])=>({id,...f,taken:run.found.has(id)||run.evidence.has(id),ready:afterOk(run,f.after)})),
+  events:(def.events||[]).map(ev=>({...ev,done:ev.id==='volker'?run.freed:ev.id==='beamer'?run.beamer:false,ready:!ev.guards||run.trash.has(ev.guards)})),
+  vendor:def.vendor&&(rec.volker||run.freed)?def.vendor:null,
+  evidence:(def.evidence?.ids||[]).map(id=>({id,state:run.evidence.has(id)?'shown':run.found.has(id)?'found':'missing'}))
+ };
+}
+/** F-Ziele der Etappe 4 Teil B (aus dungeonInteraction): Händler, kleine Truhe, Beweis, Ereignis, Beweise vorlegen. */
+function e4bInteraction(g,run,f){
+ const def=run.def,W=E4B,act=(a,pt,name,extra={})=>({kind:'dungeonAct',act:a,point:toWorld(def,pt.floor,pt.x,pt.y),name,priority:0,...extra});
+ const s=e4bState(g);
+ if(s.vendor&&nearPt(g,def,s.vendor,s.vendor.range))return act('vendor',s.vendor,W.vendor.open);
+ for(const c of s.chests)if(c.ready&&!c.opened&&nearPt(g,def,c,3))return act('wingChest',c,W.wingChest.name,{id:c.wing});
+ for(const x of s.finds)if(!x.taken&&nearPt(g,def,x,x.range)){if(!x.ready){return act('guarded',x,W.evidence[x.id].use,{id:x.id});}return act('find',x,W.evidence[x.id].use,{id:x.id});}
+ for(const ev of s.events)if(!ev.done&&nearPt(g,def,ev,ev.range))return act(ev.ready?'event':'guarded',ev,W.events[ev.id].use,{id:ev.id});
+ const pr=def.evidence?.present,big=g.enemies.find(e=>e.bossId==='bigb'&&e.hp>0);
+ if(pr&&big&&!big.aggro&&!run.presenting&&nearPt(g,def,pr,pr.range)){const n=[...run.found].filter(id=>!run.evidence.has(id)).length;if(n)return act('present',pr,W.evidence.present(n));}
+ return null;
+}
+/** F auf einem Ziel der Etappe 4 Teil B. → {ok, bag?, vendor?} (die Oberfläche öffnet Beute-Moment bzw. Händlerfenster). */
+export function dungeonAct(g,it){
+ const run=dungeonRun(g);if(!run||!it)return {ok:false};const def=run.def,W=E4B,rec=record(g,run.id);
+ if(heroBusy(g)&&it.act!=='vendor'&&!(it.act==='event'&&it.id==='beamer')/* den Beamer steckt man gerade im Kampf aus */){g.toast?.(T.busy);return {ok:false};}
+ if(it.act==='vendor')return {ok:!!(rec.volker||run.freed),vendor:true};
+ if(it.act==='guarded'){const f=def.evidence?.finds?.[it.id];g.toast?.(f?W.evidence[it.id]?.guarded||'':W.events[it.id]?.guarded||'');return {ok:false};}
+ if(it.act==='wingChest')return openWingChest(g,it.id);
+ if(it.act==='find')return findEvidence(g,it.id);
+ if(it.act==='present')return presentEvidence(g);
+ if(it.act==='event'&&it.id==='volker')return freeVolker(g);
+ if(it.act==='event'&&it.id==='beamer')return unplugBeamer(g);
+ return {ok:false};
+}
+function findEvidence(g,id,{quiet=false}={}){
+ const run=dungeonRun(g);if(!run||run.found.has(id)||run.evidence.has(id)||!run.def.evidence?.ids?.includes(id))return {ok:false};
+ run.found.add(id);if(!quiet)g.toast?.(E4B.evidence[id]?.found||'');g.emit?.('dungeonEvidence',{id,state:'found'});g.emit?.('save');return {ok:true};
+}
+/** Vermieter Volker befreien (Plan 4.4): Mietvertrag, Aufzugschlüssel (Getränkeaufzug heute offen), danach Händler im Hof – dauerhaft. */
+function freeVolker(g){
+ const run=dungeonRun(g),ev=run?.def.events?.find(e=>e.id==='volker');if(!ev||run.freed)return {ok:false};if(ev.guards&&!run.trash.has(ev.guards)){g.toast?.(E4B.events.volker.guarded);return {ok:false};}
+ run.freed=true;record(g,run.id).volker=true;const W=E4B.events.volker,pt=toWorld(run.def,ev.floor,ev.x,ev.y);
+ W.lines.forEach((line,i)=>(run.lines||(run.lines=[])).push({at:g.time+i*2.6,line,x:pt.x,y:pt.y}));
+ if(ev.gives?.evidence)findEvidence(g,ev.gives.evidence,{quiet:true});
+ const t=ev.gives?.unlock&&run.def.transitions.find(x=>x.id===ev.gives.unlock);if(t){run.unlocked.add(t.id);const today=dungeonToday(g,run.id);if(!today.shortcuts.includes(t.id))today.shortcuts.push(t.id);}
+ g.toast?.(W.freed);g.emit?.('dungeonEvent',{id:'volker'});g.emit?.('save');return {ok:true};
+}
+/** Beamer ausstecken: das Schlossgespenst war nur ein Film und verschwindet (zählt als besiegt, gibt seine EP). */
+function unplugBeamer(g){
+ const run=dungeonRun(g),ev=run?.def.events?.find(e=>e.id==='beamer');if(!ev||run.beamer)return {ok:false};run.beamer=true;const W=E4B.events.beamer;
+ for(const e of g.enemies)if(e.hp>0&&DUNGEON_ENEMIES[e.dungeonKind]?.illusion===ev.id){e.takenFactor=1;g.float?.(e.x,e.y-44,W.ghostGone,'#dfeaff');g.kill?.(e);}
+ g.toast?.(W.done);g.emit?.('dungeonEvent',{id:'beamer'});g.emit?.('save');return {ok:true};
+}
+/** Beweise im Thronsaal vorlegen (Plan 4.5, V-D11): alle gefundenen gelten ab sofort (Wirkung aus Etappe 3, Symbol im Bossrahmen);
+ *  Big B antwortet mit einer Ausrede je Beweis, im Abstand von present.gap Sekunden. */
+function presentEvidence(g){
+ const run=dungeonRun(g);if(!run)return {ok:false};const list=[...run.found].filter(id=>!run.evidence.has(id));if(!list.length)return {ok:false};
+ const big=g.enemies.find(e=>e.bossId==='bigb'&&e.hp>0),gap=run.def.evidence.present.gap||2;
+ for(const id of list){run.evidence.add(id);run.found.delete(id);}
+ run.presenting={ids:list,next:0,at:g.time,boss:big||null,gap};g.toast?.(E4B.evidence.presented(run.evidence.size));
+ g.emit?.('dungeonEvidence',{ids:list,state:'shown'});g.emit?.('save');return {ok:true,count:list.length};
+}
+/** Kleine Truhe eines Flügels (nach seinem Siegelträger, einmal je Durchgang): ein Teil und Siegelmarken als Beute-Moment. */
+export function openWingChest(g,wingId){
+ const run=dungeonRun(g),wing=run?.def.wings?.find(w=>w.id===wingId);if(!wing?.chest)return {ok:false};
+ if(!run.killed.has(wing.boss)){g.toast?.(T.chest.locked);return {ok:false};}if(run.wingChests.has(wing.id)){g.toast?.(E4B.wingChest.empty);return {ok:false};}
+ const R=REWARDS.wingChest,boss=DUNGEON_BOSSES[wing.boss]||{},rnd=()=>g.lootRandom?g.lootRandom():g.random(),slots=REWARDS.chest.slots,level=Math.max(1,Math.min(g.player.level+1,(boss.level||9)+1));
+ const quality=rnd()<R.rareChance?'rare':R.quality,slot=slots[Math.floor(rnd()*slots.length)],spec=['tresen','bass','pfand'][Math.floor(rnd()*3)];
+ const items=[{id:registerRoll(g.rpg,ITEMS,{slot,spec,level,quality,family:boss.family||'schlosstrash',roll:Math.floor(rnd()*1000)}),count:1}];
+ run.wingChests.add(wing.id);record(g,run.id).marks+=R.marks;const pt=toWorld(run.def,wing.chest.floor,wing.chest.x,wing.chest.y);
+ const bag={id:'wingchest-'+(++g.rpg.sequence),x:pt.x,y:pt.y,coins:0,items,source:{name:E4B.wingChest.title(wing.name),kind:'chest'},moment:true,noEquip:true,reach:3*U+40,reward:{boss:wing.boss,marks:R.marks,xp:0,chest:true}};
+ g.rpg.loot.push(bag);g.emit?.('rpgChanged');g.emit?.('dungeonChest',{bagId:bag.id,wing:wing.id});g.emit?.('save');return {ok:true,bag};
+}
+// ── Händler Vermieter Volker: Siegelmarken gegen gezielte Teile der Beutetabellen (Pech-Ausgleich, E-71 Punkt 4)
+/** Ware: je Boss des Dungeons (gebaut) seine Dorflegenden (unique/uniques der Beutetabelle), dazu der Hafersack, sobald es ihn gibt. */
+export function vendorStock(g,id='schloss-bigb'){
+ const def=DUNGEONS[id],P=E4B.prices,marks=dungeonMarks(g,id),out=[],owned=item=>g.rpg.inventory.some(x=>x.id===item)||Object.values(g.rpg.equipment||{}).includes(item);
+ for(const b of def.bosses){if(!DUNGEON_BOSSES[b.id])continue;const t=DROP_TABLES[b.id]||DROP_TABLES[DUNGEON_BOSSES[b.id].family];if(!t)continue;
+  for(const item of [...new Set([t.unique,...(t.uniques||[]).map(u=>typeof u==='string'?u:u?.id)].filter(Boolean))]){if(!ITEMS[item]||out.some(o=>o.item===item))continue;const price=P[b.id]??24;
+   out.push({id:item,item,name:ITEMS[item].name,price,source:b.id,count:1,owned:owned(item),affordable:marks>=price,locked:false});}}
+ const oat=P.hafersack;out.push(ITEMS.hafersack?{id:'hafersack',item:'hafersack',name:ITEMS.hafersack.name,price:oat,source:'halbespferd',count:1,owned:false,affordable:marks>=oat,locked:false}:{id:'hafersack',item:null,name:'Hafersack',price:oat,source:'halbespferd',count:1,owned:false,affordable:false,locked:true});
+ return out;
+}
+/** Tausch: Siegelmarken ab, Ware in den Rucksack. → {ok, message} */
+export function vendorBuy(g,offerId,id='schloss-bigb'){
+ const V=E4B.vendor,o=vendorStock(g,id).find(x=>x.id===offerId);if(!o||o.locked)return {ok:false,message:V.lockedNote};
+ if(o.owned)return {ok:false,message:V.owned};const rec=record(g,id);if(rec.marks<o.price)return {ok:false,message:V.poor};
+ if(addItem(g.rpg,o.item,o.count)>0)return {ok:false,message:V.full};rec.marks-=o.price;g.emit?.('rpgChanged');g.emit?.('save');return {ok:true,message:V.bought(o.name,o.price)};
+}
+// ── Erfolge (DUNGEON_FEATS) und Titel
+/** Bedingung eines Erfolgs beim Bosssieg (grantFeats). */
+function featOk(g,run,e,f){
+ if(f.check==='allEvidence'){const ids=run.def.evidence?.ids||[];return ids.every(id=>run.evidence.has(id))&&afterOk(run,'rita');}
+ /* Zeit und „ohne Tod“ zählen nur für einen vollen Durchgang: alle gebauten Siegelträger in diesem Durchgang besiegt (Siegel halten den Tag über) */
+ const full=run.def.bosses.filter(b=>b.seal&&built(b.id)).every(b=>run.killed.has(b.id));
+ if(f.check==='fast')return full&&(run.elapsed||0)<=(f.seconds||2700);
+ if(f.check==='noDeath')return full&&!(run.deaths>0);
+ if(f.check==='seals'||f.check==='seen')return false;/* ohne Boss, über awardFeat */
+ return true;
+}
+/** Erfolg ohne Bosssieg vergeben (alle Siegel an einem Tag, das halbe Pferd gesehen). */
+export function awardFeat(g,id,runId='schloss-bigb'){const f=FEATS[id],rec=record(g,runId);rec.feats||=[];if(!f||rec.feats.includes(id))return false;rec.feats.push(id);g.toast?.(T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name});titleFor(g,id);g.emit?.('save');return true;}
+function titleFor(g,featId){for(const [id,t] of Object.entries(DUNGEON_TITLES))if(t.feat===featId){g.toast?.(E4B.feats.titleGot(t.name));g.emit?.('dungeonTitle',{id,name:t.name});}}
+/** Titel des Helden aus seinen Erfolgen (alle Dungeons). */
+export function dungeonTitles(g){const out=[];for(const [id,t] of Object.entries(DUNGEON_TITLES))if(Object.values(g.dungeons||{}).some(r=>r.feats?.includes(t.feat)))out.push({id,...t});return out;}
+/** Alle Siegel an einem Tag (nur gebaute Siegelträger zählen). */
+function sealsFeat(g,run){const today=dungeonToday(g,run.id),need=requiredSeals(run.def,run.def.bosses.map(b=>b.seal).filter(Boolean));if(need.length&&need.every(s=>today.seals.includes(s)))awardFeat(g,'stempelkarte',run.id);}
+/** Je Takt: Tode des Helden zählen, Gespenst unverwundbar, solange der Beamer läuft, Volkers Zeilen, Ausreden beim Vorlegen, Pferd gesehen. */
+function tickE4B(g,run,dt){
+ if(g.dead&&!run.deadNow){run.deadNow=true;run.deaths=(run.deaths|0)+1;}else if(!g.dead)run.deadNow=false;
+ for(const e of g.enemies){const ill=DUNGEON_ENEMIES[e.dungeonKind]?.illusion;if(!ill||!(e.hp>0))continue;
+  if(run.beamer){e.takenFactor=1;continue;}e.takenFactor=1e-4;if(e.hp<e.maxHp){e.hp=e.maxHp;if(!(e.immuneShown>g.time-2)){e.immuneShown=g.time;g.float?.(e.x,e.y-46,E4B.events.beamer.immune,'#dfeaff');}}}
+ if(run.lines?.length){const due=run.lines.filter(l=>l.at<=g.time);run.lines=run.lines.filter(l=>l.at>g.time);for(const l of due)g.bark?.({id:'volker',name:E4B.vendor.name,x:l.x,y:l.y},l.line,'speaker');}
+ const pr=run.presenting;if(pr&&g.time>=pr.at+pr.next*pr.gap){const id=pr.ids[pr.next],line=T.bossLines.bigb?.excuses?.[id];if(line&&pr.boss?.hp>0)g.bark?.(pr.boss,line,'boss');pr.next++;if(pr.next>=pr.ids.length)run.presenting=null;}
+ const seenFeat=Object.entries(FEATS).find(([,f])=>f.check==='seen');if(seenFeat&&!record(g,run.id).feats?.includes(seenFeat[0])){const b=seenFeat[1].seen,e=g.enemies.find(x=>x.bossId===b&&x.hp>0);if(e&&!g.dead&&run.room===e.dungeonBoss?.room)awardFeat(g,seenFeat[0],run.id);}
+}

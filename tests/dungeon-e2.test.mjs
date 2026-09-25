@@ -71,7 +71,7 @@ test('Wegmarke über Ebenen: der Pfeil führt zum nächsten benutzbaren Übergan
 });
 test('Schwarm-Sammelschild: ruhende Pfandratten zeigen ein Schild je Schwarm',async()=>{
  const {swarmPlates,inIdleSwarm,dungeonScale,dungeonRole}=await import('../dungeon-actors.js');const g=game(10);g.enterDungeon('schloss-bigb',{force:true});
- const plates=swarmPlates(g,()=>true);assert.equal(plates.length,2,'zwei Schwärme im Weinkeller');assert.deepEqual(plates.map(p=>p.count),[8,8]);
+ const plates=swarmPlates(g,()=>true),swarms=DUNGEONS['schloss-bigb'].packs.filter(p=>p.members.filter(k=>k==='kellerratte').length>=3)/* Etappe 4 Teil B: dritter Schwarm im Gewölbe */;assert.equal(plates.length,swarms.length,'ein Schild je Schwarm');assert.deepEqual(plates.map(p=>p.count),swarms.map(p=>p.members.length));
  const rat=g.enemies.find(e=>e.dungeonKind==='kellerratte');assert.ok(inIdleSwarm(g,rat));rat.aggro=true;assert.equal(inIdleSwarm(g,rat),false,'im Kampf eigenes Schild');
  const gerd=g.enemies.find(e=>e.bossId==='gerd');assert.equal(dungeonScale(gerd),1.35);assert.equal(dungeonRole(gerd),'boss');
  assert.equal(dungeonRole(g.enemies.find(e=>e.dungeonKind==='maklerpraktikant')),'heal');assert.equal(dungeonRole(g.enemies.find(e=>e.dungeonKind==='baumarktritter')),'elite');

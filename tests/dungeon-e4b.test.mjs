@@ -5,8 +5,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {World} from '../world.js';
 import {Game} from '../engine.js';
-import {DUNGEONS,DUNGEON_E4B} from '../content/index.js';
-import {toWorld,quietFloat} from '../dungeon.js';
+import {DUNGEONS,DUNGEON_E4B,DUNGEON_BOSSES,DUNGEON_REWARDS,DUNGEON_TEXT} from '../content/index.js';
+import {ITEMS} from '../rpg.js';
+import {toWorld,quietFloat,roomAt,dungeonAct,evidenceEffects,vendorStock,vendorBuy,dungeonTitles,normalizeDungeons,restoreDungeonRun} from '../dungeon.js';
 import {dungeonFight,dungeonBossFight,BOSS_FIGHT_BARKS} from '../dungeon-clarity.js';
 import {BossSpeech} from '../enemy-ui.js';
 
@@ -17,6 +18,7 @@ function inside(g){assert.ok(g.enterDungeon('schloss-bigb',{force:true}),'Dungeo
 const at=(g,floor,x,y)=>{Object.assign(g.player,toWorld(DEF,floor,x,y));g.player.inCombat=0;};
 const quiet=g=>{for(const e of g.enemies)if(!e.dungeonBoss){e.hp=0;e.aggro=false;e.ai='dead';e.respawnAt=Infinity;}};
 const bigbOf=g=>g.enemies.find(e=>e.bossId==='bigb');
+const run=(g,seconds)=>{for(let t=0;t<seconds;t+=.05)g.tick(.05);};
 
 test('Kampf-Klarheit: Kampf im Dungeon und Bosskampf werden erkannt',()=>{
  const g=game();inside(g);quiet(g);at(g,'k2',52,20);assert.equal(dungeonFight(g),false);assert.equal(dungeonBossFight(g),false);
@@ -43,4 +45,83 @@ test('Kampf-Klarheit: Welt-Worte, die der Bossrahmen zeigt, entstehen im Bosskam
  g.float(g.player.x,g.player.y-58,'ZERTIFIKAT ×1');g.float(g.player.x,g.player.y-62,'GELOGEN');g.float(b.x,b.y-40,'1234');
  assert.deepEqual(g.texts.map(t=>t.text),['ZERTIFIKAT ×1','GELOGEN','1234'],'am Helden bleibt die eigene Schwäche, Treffer-Rückmeldung und Zahlen');
  assert.equal(quietFloat(g,'REICHWEITE +8 %',b.x,b.y),true);assert.ok(DUNGEON_E4B.clarity.hudFloats.length>=5);
+});
+
+// ── Flügel, Abkürzungen, Truhen, Beweise, Ereignisse, Händler, Erfolge ─────────────────────────────────────────────────────────────
+const gerdOf=g=>g.enemies.find(e=>e.bossId==='gerd');
+const act=(g,kind)=>{const it=g.interaction();assert.equal(it?.kind,'dungeonAct','F-Ziel da ('+kind+'): '+JSON.stringify(it));assert.equal(it.act,kind);return dungeonAct(g,it);};
+/** Probe-Boss, solange Teil A ihn nicht gebaut hat (wie tests/dungeon-e3: Siegel greifen ohne Datenänderung). */
+function probe(id,fn){const had=DUNGEON_BOSSES[id];if(!had)DUNGEON_BOSSES[id]={...DUNGEON_BOSSES.gerd,name:'Probe '+id,phases:[],fall:null};try{return fn();}finally{if(!had)delete DUNGEON_BOSSES[id];}}
+
+test('Flügel: jeder Siegelträger öffnet seine Abkürzung zum Hof, sie hält bis zum Tagesreset – auch im nächsten Durchgang',()=>{
+ const g=game(),r=inside(g);quiet(g);at(g,'e0',5,23);assert.equal(g.dungeonStep('treppe-zugbruecke','a'),false,'Kette vor Gerd zu');
+ g.kill(gerdOf(g));assert.ok(r.unlocked.has('treppe-zugbruecke'),'Kette ist Abkürzung');assert.ok(g.toasts.some(t=>/Abkürzung offen/.test(t)));
+ assert.ok(g.dungeons['schloss-bigb'].daily.shortcuts.includes('treppe-zugbruecke'),'im Tagesstand');
+ g.leaveDungeon({force:true});g.time+=DEF.resetAfter+5;assert.ok(g.enterDungeon('schloss-bigb',{force:true}));const r2=g.dungeonRun;assert.notEqual(r2,r);
+ assert.ok(gerdOf(g).hp>0,'Gerd steht im neuen Durchgang wieder');at(g,'e0',5,23);assert.ok(g.dungeonStep('treppe-zugbruecke','a'),'Kette bleibt offen');
+ g.leaveDungeon({force:true});g.time+=DEF.resetAfter+5;g.clock=()=>DAY+86400e3;assert.ok(g.enterDungeon('schloss-bigb',{force:true}));at(g,'e0',5,23);assert.equal(g.dungeonStep('treppe-zugbruecke','a'),false,'am nächsten Tag wieder zu');
+});
+test('Flügel: Pappwand aus der Musterwohnung ist zu, bis Exposé liegt; der Aufzug öffnet mit Kurt – ungebaute Bosse ändern nichts',()=>{
+ const t=DEF.transitions.find(x=>x.id==='pappwand-hof');assert.equal(t.shortcut.boss,'expose');assert.equal(t.label,'pappwand');
+ {const g=game();inside(g);quiet(g);at(g,'e0',20,36.5);assert.equal(g.dungeonStep('pappwand-hof','a'),false,'ohne Exposé zu');at(g,'k2',6.5,6.5);if(!DUNGEON_BOSSES.korkenkurt)assert.ok(g.dungeonStep('aufzug','b'),'Aufzug von unten wie bisher, solange Kurt nicht gebaut ist');}
+ probe('expose',()=>probe('korkenkurt',()=>{const g=game(),r=inside(g);quiet(g);at(g,'k2',6.5,6.5);assert.equal(g.dungeonStep('aufzug','b'),false,'mit Kurt: Hebel klemmt vor ihm');
+  const ex=g.enemies.find(e=>e.bossId==='expose'),ku=g.enemies.find(e=>e.bossId==='korkenkurt');assert.ok(ex&&ku,'Probe-Bosse stehen');g.kill(ex);g.kill(ku);
+  assert.ok(r.unlocked.has('pappwand-hof')&&r.unlocked.has('aufzug'));at(g,'e0',20,36.5);assert.ok(g.dungeonStep('pappwand-hof','a'),'Pappwand offen');
+  assert.equal(roomAt(DEF,g.player.x,g.player.y)?.id,'musterwohnung');at(g,'k2',6.5,6.5);assert.ok(g.dungeonStep('aufzug','b'),'Aufzug offen');}));
+});
+test('Kleine Truhe je Flügel: nach dem Siegelträger einmal je Durchgang ein Teil und eine Siegelmarke, nichts wird angelegt',()=>{
+ const g=game(),r=inside(g);quiet(g);const w=DEF.wings.find(x=>x.id==='burghof');at(g,'e0',w.chest.x,w.chest.y);assert.notEqual(g.interaction()?.act,'wingChest','vor Gerd nichts');
+ g.kill(gerdOf(g));at(g,'e0',w.chest.x,w.chest.y);const m0=g.dungeons['schloss-bigb'].marks;const res=act(g,'wingChest');
+ assert.ok(res.ok&&res.bag,'Beutel');assert.equal(res.bag.items.length,1);assert.equal(res.bag.noEquip,true);assert.equal(g.dungeons['schloss-bigb'].marks,m0+DUNGEON_REWARDS.wingChest.marks);
+ assert.ok(r.wingChests.has('burghof'));assert.notEqual(g.interaction()?.act,'wingChest','zweites Mal nicht');
+});
+test('Beweise: Leihschein auf dem Carport-Dach finden, im Thronsaal vorlegen – erst dann greift die Wirkung (Etappe 3), Big B redet sich raus',()=>{
+ const g=game(),r=inside(g);quiet(g);const f=DEF.evidence.finds.leihschein;at(g,f.floor,f.x,f.y);assert.equal(act(g,'find').ok,true);
+ assert.ok(r.found.has('leihschein')&&!r.evidence.has('leihschein'),'gefunden, nicht vorgelegt');assert.equal(evidenceEffects(r).noLie.size,0,'noch keine Wirkung');
+ r.seals.add('siegel-gerd');r.version++;const pr=DEF.evidence.present;at(g,pr.floor,pr.x,pr.y);const it=g.interaction();assert.match(it.name,/Beweise vorlegen \(1\)/);
+ assert.ok(dungeonAct(g,it).ok);assert.ok(r.evidence.has('leihschein'));assert.ok(evidenceEffects(r).noLie.has('kulisse'),'Pappkulisse lügt nicht mehr');
+ g.events.length=0;run(g,.2);assert.ok(g.events.some(e=>e.type==='bark'&&e.text===DUNGEON_TEXT.bossLines.bigb.excuses.leihschein),'Ausrede');
+ assert.equal(g.save().dungeonRun.evidence.includes('leihschein'),true,'im Laufstand');
+});
+test('Kirmes-Urkunde liegt bei Rita: erst nach ihr, solange sie steht, ist sie bewacht',()=>{
+ const f=DEF.evidence.finds.kirmesurkunde;assert.equal(f.after,'rita');
+ probe('rita',()=>{const g=game(),r=inside(g);quiet(g);at(g,f.floor,f.x,f.y);assert.equal(g.interaction()?.act,'guarded');assert.equal(dungeonAct(g,g.interaction()).ok,false);
+  g.kill(g.enemies.find(e=>e.bossId==='rita'));assert.equal(act(g,'find').ok,true);assert.ok(r.found.has('kirmesurkunde'));});
+});
+test('Ereignis Vermieter Volker: erst die Wachen, dann das Fahrradschloss – Mietvertrag, Aufzug offen, danach Händler im Hof',()=>{
+ const g=game(),r=inside(g);quiet(g);const ev=DEF.events.find(e=>e.id==='volker');r.trash.delete(ev.guards);at(g,ev.floor,ev.x,ev.y);assert.equal(g.interaction()?.act,'guarded','Wachen stehen');
+ r.trash.add(ev.guards);const res=act(g,'event');assert.ok(res.ok&&r.freed);assert.ok(r.found.has('mietvertrag'),'Mietvertrag');assert.ok(r.unlocked.has('aufzug'),'Aufzugschlüssel');
+ assert.equal(g.dungeons['schloss-bigb'].volker,true);g.events.length=0;run(g,3);assert.ok(g.events.some(e=>e.type==='bark'&&/Tetrapak/.test(e.text)),'Volker erzählt');
+ at(g,'e0',DEF.vendor.x,DEF.vendor.y);assert.equal(g.interaction()?.act,'vendor','Händler im Hof');
+ const saved=normalizeDungeons(JSON.parse(JSON.stringify(g.save().dungeons)));assert.equal(saved['schloss-bigb'].volker,true,'bleibt im Spielstand');
+});
+test('Ereignis Beamer: solange er läuft, ist das Gespenst nur ein Bild; ausgesteckt verschwindet es mit seinen EP',()=>{
+ const g=game(),r=inside(g);quiet(g);const ghost=g.enemies.find(e=>e.dungeonKind==='schlossgespenst');assert.ok(ghost&&ghost.patrol,'Gespenst-Streife');ghost.hp=ghost.maxHp;ghost.ai='roaming';
+ at(g,'k2',38,30);ghost.aggro=true;ghost.ai='combat';g.target=ghost;run(g,.1);g.damage(ghost,5000,'Schlag');run(g,.1);assert.equal(ghost.hp,ghost.maxHp,'unverwundbar');
+ const ev=DEF.events.find(e=>e.id==='beamer');at(g,ev.floor,ev.x,ev.y);const xp=g.trainingXp;const res=act(g,'event');assert.ok(res.ok&&r.beamer);assert.ok(!(ghost.hp>0),'Gespenst weg');assert.ok(g.trainingXp>xp,'EP');
+});
+test('Händler: Dorflegenden der gebauten Bosse gegen Siegelmarken, Hafersack vorgemerkt; Einzelstücke nur einmal',()=>{
+ const g=game();inside(g);const stock=vendorStock(g),ids=stock.map(o=>o.id);assert.ok(ids.includes('gaesteliste')&&ids.includes('siegelring-echtgold')&&ids.includes('pelzmantel-baron'),JSON.stringify(ids));
+ const oat=stock.find(o=>o.id==='hafersack');assert.ok(oat,'Platz für den Hafersack');if(!ITEMS.hafersack)assert.equal(oat.locked,true);
+ assert.equal(vendorBuy(g,'gaesteliste').ok,false,'ohne Marken nicht');g.dungeons['schloss-bigb'].marks=60;const res=vendorBuy(g,'gaesteliste');assert.ok(res.ok,res.message);
+ assert.ok(g.rpg.inventory.some(x=>x.id==='gaesteliste'));assert.equal(g.dungeons['schloss-bigb'].marks,60-DUNGEON_E4B.prices.gerd);assert.equal(vendorBuy(g,'gaesteliste').ok,false,'Einzelstück nur einmal');
+});
+test('Händler-Preise: ein Wunschteil nach 4–6 Läufen seiner Quelle sicher',()=>{
+ const R=DUNGEON_REWARDS,wingFirst=R.marksPerBoss+R.daily.marks+R.wingChest.marks,wingRepeat=R.marksPerBoss+R.wingChest.marks,finalFirst=R.marksPerBoss+R.daily.marks+R.chest.marks,finalRepeat=R.marksPerBoss+R.chest.marks;
+ const P=DUNGEON_E4B.prices,runs=(price,first,repeat)=>{let m=0,n=0;while(m<price){m+=n===0?first:repeat;n++;}return n;};
+ for(const b of ['gerd','expose','korkenkurt']){const n=runs(P[b],wingFirst,wingRepeat),best=Math.ceil(P[b]/wingFirst);assert.ok(best>=4&&n<=8,b+': '+best+'–'+n+' Läufe');}
+ const n=runs(P.bigb,finalFirst,finalRepeat),best=Math.ceil(P.bigb/finalFirst);assert.ok(best>=4&&n<=6,'Big B: '+best+'–'+n+' Läufe');
+});
+test('Erfolge: Beweislast mit Titel „Mieterschützer“, Stempelkarte, Zeit und „ohne Kratzer“ nur im vollen Durchgang',()=>{
+ const g=game(),r=inside(g);quiet(g);g.kill(gerdOf(g));assert.ok(g.dungeons['schloss-bigb'].feats.includes('stempelkarte'),'alle gebauten Siegel an einem Tag');
+ for(const id of DEF.evidence.ids)r.evidence.add(id);const b=bigbOf(g);b.aggro=true;b.ai='combat';g.adminGod=true;run(g,2);g.kill(b);const feats=g.dungeons['schloss-bigb'].feats;
+ assert.ok(feats.includes('beweislast'),'Beweislast '+feats);assert.ok(feats.includes('termin')&&feats.includes('kratzer'),'voller Durchgang schnell und ohne Tod '+feats);
+ assert.deepEqual(dungeonTitles(g).map(t=>t.name),['Mieterschützer']);assert.ok(g.toasts.some(t=>/Mieterschützer/.test(t)));
+ const h=game(),r2=inside(h);quiet(h);r2.seals.add('siegel-gerd');r2.version++;r2.deaths=1;const b2=bigbOf(h);b2.aggro=true;b2.ai='combat';h.adminGod=true;run(h,2);h.kill(b2);
+ assert.ok(!h.dungeons['schloss-bigb'].feats.includes('termin')&&!h.dungeons['schloss-bigb'].feats.includes('kratzer'),'ohne Gerd im Durchgang kein voller Durchgang');
+});
+test('Laufstand: Funde, Volker, Beamer, kleine Truhen und Tode überleben das Neuladen',()=>{
+ const g=game(),r=inside(g);quiet(g);r.found.add('leihschein');r.freed=true;r.beamer=true;r.wingChests.add('burghof');r.deaths=2;
+ const save=JSON.parse(JSON.stringify(g.save()));const h=new Game(world,{...save,dungeonRun:null},{});h.clock=()=>DAY+60e3;restoreDungeonRun(h,save.dungeonRun);const r2=h.dungeonRun;
+ assert.ok(r2.found.has('leihschein')&&r2.freed&&r2.beamer&&r2.wingChests.has('burghof'));assert.equal(r2.deaths,2);
 });
