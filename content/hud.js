@@ -86,22 +86,31 @@ export const ACTION_BAR_TEXT={
 export const RESOURCE_HUD_TEXT={
  rage:{label:'Randale',note:(v,at)=>v+' / 100'+(v>=at?' · In Fahrt':' · In Fahrt ab '+at)},
  tab:{label:'Zeche',note:(tab,max)=>tab>0?tab+' Leben angeschrieben · höchstens '+max:'Nichts angeschrieben'},
- likes:{label:'Likes',note:v=>v+' / 100'},
+ likes:{label:'Likes',note:v=>v+' / 100 · Kniffe kosten Likes, jeder Kniff bringt neue'},
  trend:{note:(viewers,bonus,viral)=>viewers+' Zuschauer · +'+bonus+' % Wirkung'+(viral?' · nächster Kniff gratis':'')},
+ /* E-72 Runde 4 (hud4): der Trend steht sichtbar getrennt von den Likes – fünf Herzen unter dem Porträt, daneben der Stufenname */
+ trendLabel:(name,n,max)=>'Trend · '+name+' ('+n+'/'+max+' Herzen)',
  /* Runde 3: was den Trend hebt und was ihn bricht – eine Zeile unter dem Trend-Tooltip */
  trendRule:'Hebt: neuer Kniff · Senkt: derselbe Kniff, Pause, harter Treffer',
  algo:{label:'Algorithmus',note:s=>s>0?'Ohne neuen Kniff sinkt der Trend in '+s+' s':'Trend hält'},
  repeat:'Wiederholung – senkt den Trend',
  crate:{label:'Bierkasten',note:(v,max)=>v+' / '+max+' Flaschen'},
  bons:{label:'Pfandbons',note:(n,max,power)=>n+' / '+max+' · nächster Flaschenkniff +'+power+' %'},
- pickups:{label:'Leergut am Boden',note:n=>n+(n===1?' Flasche':' Flaschen')+' · drüberlaufen'},
+ pickups:{label:'Leergut am Boden',note:n=>(n===1?'1 Flasche liegt':n+' Flaschen liegen')+' neben dir – drüberlaufen sammelt ein (+1 je Flasche)'},
  reload:{label:'Pfandautomat',note:'Im goldenen Feld noch einmal drücken: Kasten voll und ein Bon.'},
  glut:{note:(v,dmg)=>'Glut '+v+(dmg?' · '+(dmg>0?'+':'')+dmg+' % Schaden':'')},
  locked:{label:'Grill aus',note:s=>'Grillkniffe wieder in '+s+' s'},
  rost:{label:'Grillrost',empty:'Freier Platz',note:(state,pct)=>state+' · '+pct+' %'},
  states:{roh:'Roh',gar:'Gar – jetzt servieren',durch:'Durch',verkohlt:'Verkohlt'},
  smoked:'geräuchert',
- augen:{label:'Augen',note:(v,win,sch,schw)=>v+' Augen · gewonnen ab '+win+' · Schneider '+sch+' · Schwarz '+schw},
+ /* Runde 4 (hud4): die Leiste nennt die nächste Schwelle – die Marken selbst sind nur noch schmale Kerben mit eigenem Tooltip */
+ augen:{label:'Augen',note:(v,win,sch,schw)=>v<win?v+' Augen · Abrechnen ab '+win+' (noch '+(win-v)+') · Schneider '+sch+' · Schwarz '+schw:v<sch?v+' Augen · Abrechnen bereit · Schneider ab '+sch+' (noch '+(sch-v)+')':v<schw?v+' Augen · Schneider – Abrechnen ×'+String(RESOURCES.kaethe.abrechnen.schneider).replace('.',',')+' · Schwarz bei '+schw:v+' Augen · Schwarz – Abrechnen ×'+String(RESOURCES.kaethe.abrechnen.schwarz).replace('.',',')},
+ /* Runde 4 (hud4): Käthes Kartenknöpfe heißen nach ihrer Karte („Kreuz-Dame – trifft“), auch für Hilfstechnik */
+ cardVerb:{kreuz:'trifft',pik:'schützt',herz:'heilt',karo:'trifft im Umkreis'},
+ /* Runde 4 (hud4): Abrechnen zahlt aus – Stempel bei Schneider, Schwarz und Grand, darunter die Augen */
+ payout:{stamp:{schneider:'SCHNEIDER!',schwarz:'SCHWARZ!',grand:'GRAND!'},caption:(augen,mult)=>augen+' Augen'+(mult>1?' ×'+String(mult).replace('.',','):'')},
+ /* Runde 4 (hud4): Klassen-Mechanik über der Leiste – ein Satz (was füllt sie, was passiert voll), dann der Glossar-Verweis */
+ mechanicGloss:name=>'Glossar: '+name+' · Klick: alle Regeln',
  deck:{label:'Stapel',note:n=>n+(n===1?' Karte':' Karten')+' bis zum Mischen'},
  chain:{label:'Farbe bedienen',note:(suit,n,bonus)=>suit+(n>0?' ×'+(n+1)+' · +'+bonus+' %':' · gleiche Farbe verstärkt')},
  next:{label:'Nächste Karte'},

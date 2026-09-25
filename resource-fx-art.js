@@ -81,6 +81,7 @@ const DRAW={
  // --- Kevin · Leergut ---------------------------------------------------------------------------------------------
  'bottle-drop'(c,f,t){const from=f.from||f,p=arc({x:from.x,y:from.y-10},{x:f.x,y:f.y},clamp(t/.7),18);if(t<.7)spr(c,'bottle',p.x,p.y+5,1,{outline:'#10200e',angle:t*14,anchor:'center'});else{const d=(t-.7)/.3;puff(c,f.x,f.y,3+d*4,'#b8a888',.5*(1-d));star(c,f.x+2,f.y-6,3.5*(1-d),'#ffffff',1-d);}},
  pickup(c,f,t){const to=f.to||f,p=arc({x:f.x,y:f.y-3},{x:to.x,y:to.y-12},outCubic(t),18);spr(c,'bottle',p.x,p.y+4,1*(1-t*.4),{outline:'#10200e',angle:-t*8,anchor:'center'});
+  /* Runde 4 (Kenner-Befund 7): „+1“ steigt an der Fundstelle auf, ein Lichtring zeigt, dass Drüberlaufen gereicht hat */spr(c,'plusOne',f.x,f.y-10-outCubic(t)*14,1.25,{outline:'#10200e',alpha:1-t*t});if(t<.35)ring(c,f.x,f.y,4+t*24,'#d8ffc0',1.4,(1-t/.35)*.9,.55);
   if(t>.75){const d=(t-.75)/.25;star(c,to.x,to.y-14,6*(1-d),'#d8ffc0',1-d);ring(c,to.x,to.y-12,3+d*9,'#b9d98b',1.2,1-d,1);}},
  reload(c,f,t){if(f.start){const shake=Math.sin(t*50)*1.2;spr(c,'crate',f.x+shake,f.y-24,1.6,{outline:'#16240f',alpha:t<.15?t/.15:t>.8?(1-t)/.2:1});for(let i=0;i<3;i++){const d=(t*3+i/3)%1;c.save();c.globalAlpha*=(1-d)*.7;c.strokeStyle='#e8e0cc';c.lineWidth=.8;const a=i*2.1;c.beginPath();c.moveTo(f.x+Math.cos(a)*(9+d*4),f.y-28+Math.sin(a)*(4+d*2));c.lineTo(f.x+Math.cos(a)*(12+d*4),f.y-28+Math.sin(a)*(5+d*2));c.stroke();c.restore();}return;}
   for(let i=0;i<3;i++){const d=clamp((t-i*.1)/.7);if(d<=0)continue;spr(c,'bottle',f.x+(i-1)*7,f.y-20-Math.sin(Math.PI*d)*10,.95,{outline:'#10200e',alpha:1-Math.max(0,d-.7)/.3});}star(c,f.x,f.y-24,5*(1-t),'#d8ffc0',1-t);},
@@ -150,12 +151,20 @@ const DRAW={
   if(theirs){const off=t<.35?0:outCubic((t-.35)/.65);cardAt(c,theirs,cx+off*26,cy+off*20,1.05,off*4,1-off);}
   const k=clamp(t/.3),slam=k<1?lerp(-30,0,k*k):0,scale=k<1?lerp(2.4,1.35,k*k):1.35;cardAt(c,mine,cx,cy+slam,scale,k<1?(1-k)*.6:0,t>.8?(1-t)/.2:1,{glow:true});
   if(t>=.3&&t<.6){const d=(t-.3)/.3;glow(c,cx,cy,26,'#ffe38a',(1-d)*.8);star(c,cx,cy,20*(1-d),'#ffe38a',1-d,4);ring(c,cx,cy+10,8+d*26,'#ffe38a',2,1-d,.5);for(let i=0;i<6;i++){const a=i/6*TAU;star(c,cx+Math.cos(a)*(8+d*12),cy+Math.sin(a)*(5+d*8),1.8*(1-d),'#fff6c8',1-d);}}},
- abrechnen(c,f,t){const gold=f.grand||f.schwarz,count=Math.max(3,Math.min(n(12,6),f.cards||6)),spin=.62,col=gold?'#ffd35a':'#f6efdc';
-  if(t<spin){const k=t/spin,r=lerp(40,5,k*k),rot=k*k*9;for(let i=0;i<count;i++){const a=i/count*TAU+rot,card={suit:['kreuz','pik','herz','karo'][i%4],rank:['A','10','K','B'][i%4]};cardAt(c,card,f.x+Math.cos(a)*r,f.y-14+Math.sin(a)*r*.55,.7,a+Math.PI/2,.35+k*.65,{back:i%2===1});}glow(c,f.x,f.y-14,10+k*10,gold?'#ffd35a':'#e8d9a8',k*.6);return;}
-  const d=(t-spin)/(1-spin),k=outCubic(d);if(d<.25)glow(c,f.x,f.y-14,44,gold?'#ffe08a':'#fff6e0',1-d/.25);
-  ring(c,f.x,f.y,8+k*(gold?70:48),col,2.4*(1-d)+.4,1-d);if(gold)ring(c,f.x,f.y,6+k*52,'#e2963d',1.2,(1-d)*.7);
-  for(let i=0;i<count;i++){const a=i/count*TAU+noise(i,f.id),r=6+k*(34+noise(i+2,f.id)*20);cardAt(c,{suit:['kreuz','pik','herz','karo'][i%4],rank:'A'},f.x+Math.cos(a)*r,f.y-14+Math.sin(a)*r*.6+d*d*14,.7,a*3+d*8,1-d,{back:i%2===1});}
-  for(let i=0;i<n(10,4);i++){const a=i/n(10,4)*TAU;star(c,f.x+Math.cos(a)*k*30,f.y-14+Math.sin(a)*k*18,2.6*(1-d),gold?'#fff3b0':'#ffffff',1-d);}},
+ /* Runde 4 (hud4, Kenner-Befund 4 „Abrechnen kaum sichtbar“): Auszahlung in drei Takten, abgestimmt auf die fliegenden Augen der
+    Anzeige (resource-hud.js PAYOUT_MS ≈ 0,29 der Dauer): Karten sammeln sich wirbelnd am Ziel → Fächer über dem Ziel mit Blitz →
+    der Fächer platzt, Karten fliegen weg und fallen, Ringe und Funken. Gold bei Schneider, Schwarz und Grand. */
+ abrechnen(c,f,t){const C=RESOURCES.kaethe||{},gold=!!(f.grand||f.schwarz||(f.augen||0)>=(C.schneider||90)),count=Math.max(5,Math.min(n(14,8),(f.cards||6)+3)),g0=.29,fanEnd=.42,col=gold?'#ffd35a':'#f6efdc',cx=f.x,cy=f.y-16;
+  const card=i=>({suit:['kreuz','pik','herz','karo'][i%4],rank:['A','10','K','B','D','9'][i%6]});
+  if(t<g0){const k=t/g0,r=lerp(46,8,k*k),rot=k*k*8;for(let i=0;i<count;i++){const a=i/count*TAU+rot;cardAt(c,card(i),cx+Math.cos(a)*r,cy+Math.sin(a)*r*.55,.75+k*.2,a+Math.PI/2,.3+k*.7,{back:i%3===1});}glow(c,cx,cy,10+k*16,gold?'#ffd35a':'#e8d9a8',k*.7);return;}
+  const fanK=clamp((t-g0)/(fanEnd-g0)),d=clamp((t-fanEnd)/(1-fanEnd)),k=outCubic(d);
+  if(t<fanEnd+.1){const e=clamp((t-g0)/.22);glow(c,cx,cy,56,gold?'#ffe08a':'#fff6e0',(1-e)*.95);star(c,cx,cy,30*(1-clamp((t-g0)/.16)),'#fffbe0',1,4);}
+  ring(c,f.x,f.y,8+k*(gold?88:62),col,3.2*(1-d)+.5,1-d);if(gold)ring(c,f.x,f.y,6+k*66,'#e2963d',1.8,(1-d)*.8);
+  for(let i=0;i<count;i++){const spread=(i/(count-1)-.5)*2.3,base=-Math.PI/2+spread,fr=lerp(4,26,outBack(fanK)),x0=cx+Math.cos(base)*fr,y0=cy+Math.sin(base)*fr*.9;
+   if(d<=0){cardAt(c,card(i),x0,y0,1.05,spread*.9,1,{glow:gold});continue;}
+   const dist=k*(42+noise(i,f.id)*36),x=x0+Math.cos(base)*dist,y=y0+Math.sin(base)*dist*.8+d*d*48;
+   cardAt(c,card(i),x,y,1.05-d*.3,spread*.9+d*(6+noise(i+3,f.id)*6)*(i%2?1:-1),1-Math.max(0,d-.55)/.45,{back:d>.5&&i%2===1,glow:gold&&d<.3});}
+  for(let i=0;i<n(14,6);i++){const a=i/n(14,6)*TAU+noise(i,f.id);star(c,cx+Math.cos(a)*k*46,cy+Math.sin(a)*k*28-d*10,3.2*(1-d),gold?'#fff3b0':'#ffffff',1-d);}},
  shuffle(c,f,t){const cx=f.x,cy=f.y-30,a=t<.15?t/.15:t>.8?(1-t)/.2:1;
   if(f.sleeve){const k=outCubic(t);cardAt(c,{suit:'pik',rank:'A'},cx+lerp(0,8,k),lerp(cy,f.y-14,k),lerp(.8,.3,k),lerp(0,1.2,k),1-k*.8,{back:true});return;}
   const fan=Math.sin(Math.PI*clamp(t/.8)),count=5;for(let i=0;i<count;i++){const ang=(i-(count-1)/2)*.32*fan;cardAt(c,{suit:'herz',rank:'A'},cx+Math.sin(ang)*8,cy-Math.cos(ang)*6+6,.75,ang,a,{back:true});}
@@ -190,11 +199,16 @@ export function drawResourceField(c,g,z){if(!FIELD_KINDS.has(z.kind))return fals
   glow(c,x,y-2,R*.5,'#ff9ab0',.18+.06*Math.sin(time*2.4));}
  c.restore();return true;}
 /** Leergut am Boden (Kevin): glitzert, wippt, verblasst in den letzten Sekunden. Frisch geworfenes zeigt der Wurfbogen. */
-export function drawPickups(c,g,visible=()=>true){const list=g.res?.pickups;if(!list?.length||RESOURCES[g.member?.id]?.kind!=='ammo')return;const time=g.time;
- for(const b of list){if(!visible(b,20))continue;const age=(b.max||14)-b.life;if(age<.34)continue;const late=b.life<3?(Math.sin(time*14)>0?.45:.95):1,bob=Math.sin(time*3+b.id)*1.2;
-  c.save();c.globalAlpha*=late*Math.min(1,(age-.34)/.2);c.fillStyle='#10180e55';c.beginPath();c.ellipse(b.x,b.y+1,4,1.6,0,0,TAU);c.fill();
-  spr(c,'bottle',b.x,b.y-bob*.4+.5,.72,{outline:'#10200e',angle:Math.sin(time*2+b.id)*.12});
-  const ph=(time*.9+b.id*.37)%1;if(ph<.25)star(c,b.x+2,b.y-7,3.2*Math.sin(Math.PI*ph/.25),'#ffffff',1);if(fxQuality.rich)glow(c,b.x,b.y-4,7,'#b9f09a',.18+.1*Math.sin(time*4+b.id));c.restore();}}
+export function drawPickups(c,g,visible=()=>true){const list=g.res?.pickups;if(!list?.length||RESOURCES[g.member?.id]?.kind!=='ammo')return;const time=g.time,pr=RESOURCES[g.member.id].pickupRadius||14;
+ /* Runde 4 (Kenner-Befund 7): deutlicher – größere Flasche, gestrichelter Aufsammelkreis am Boden (hier drüberlaufen), Lichthof auch
+    ohne Effektschicht, Glanzstern häufiger. */
+ for(const b of list){if(!visible(b,24))continue;const age=(b.max||14)-b.life;if(age<.34)continue;const late=b.life<3?(Math.sin(time*14)>0?.45:.95):1,bob=Math.sin(time*3+b.id)*1.2,pulse=.5+.5*Math.sin(time*4+b.id);
+  c.save();c.globalAlpha*=late*Math.min(1,(age-.34)/.2);
+  c.save();c.globalAlpha*=.4+.35*pulse;c.strokeStyle='#d8ffc0';c.lineWidth=.9;c.setLineDash?.([2.4,2]);c.lineDashOffset=-time*6;c.beginPath();c.ellipse(b.x,b.y+1,pr*(.88+.12*pulse),pr*.5*(.88+.12*pulse),0,0,TAU);c.stroke();c.restore();
+  glow(c,b.x,b.y-5,fxQuality.rich?9:7,'#b9f09a',fxQuality.rich?.3+.12*Math.sin(time*4+b.id):.5);
+  c.fillStyle='#10180e66';c.beginPath();c.ellipse(b.x,b.y+1,5,2,0,0,TAU);c.fill();
+  spr(c,'bottle',b.x,b.y-bob*.4+.5,.95,{outline:'#10200e',angle:Math.sin(time*2+b.id)*.12});
+  const ph=(time*1.3+b.id*.37)%1;if(ph<.3)star(c,b.x+2.5,b.y-10,4*Math.sin(Math.PI*ph/.3),'#ffffff',1);c.restore();}}
 
 // ---------------------------------------------------------------------------------------------------------------
 // Dauerzustände an Held und Gegnern

@@ -1,6 +1,6 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
 import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName,ventGlut,resourceViral} from './class-resources.js';
-import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
+import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,RESOURCE_HUD_TEXT,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
 import {effectAt} from './talent-ranks.js';
@@ -39,6 +39,36 @@ export function mechanicHelp(g,spec=g.rpg?.talents?.spec){
  if(m.kind==='guard')lines=[`${skill('strike')} baut Deckung auf; Deckung fängt Schaden vor deinen Lebenspunkten ab. Die maximale Deckung beträgt 38 % deines Maximallebens.`,`${skill('burst')} setzt vorhandene Deckung gegen Gegner in deiner Nähe ein. Ab ${pct(m.hausverbot.threshold)} der maximalen Deckung startet automatisch ${add('hausverbotDuration',m.hausverbot.duration)} s Hausverbot: Paraden reflektieren den ${m.hausverbot.reflect}-fachen Schaden. Hausverbot kann frühestens alle 20 s neu starten.`];
  return {name:m.name,lines,scope:`Kernmechanik des Hauptbaums ${SPECS[spec].name}. Talente aus diesem Baum allein schalten sie in anderen Hauptbäumen nicht frei.`};
 }
+/** E-72 Runde 4 (hud4, Kenner-Befund 5): Kurz-Tooltip der Mechanik-Anzeige über der Aktionsleiste – EIN Satz (was füllt sie,
+ *  was passiert voll) und der Glossarbegriff dazu. Die ausführlichen Regeln bleiben in mechanicHelp (Klick, Shift, Zauberbuch).
+ *  → {text, term} oder null. Zahlen live (Talente), Kniffnamen des Hauptbaums. */
+export function mechanicTip(g,spec=g.rpg?.talents?.spec){
+ const m=SPEC_MECHANICS[spec];if(!m)return null;const cs=combatStats(g),add=(key,base)=>base+(cs[key]||0),sk=id=>'„'+skillName(g,id,spec)+'“';
+ const tip=(term,text)=>({term,text});
+ if(m.kind==='resource'){
+  if(m.grand)return tip('grand',`Jeder ausgespielte Bube zählt – beim ${m.grand.bubes}. ist es ein Grand: ${sk('throw')} trifft ×${n(m.grand.factor)} und alle Gegner ringsum.`);
+  if(m.falsch)return tip('aermel',`${sk('aermel')} legt eine Karte in den Ärmel – liegt dort eine, spielst du sie mit derselben Taste gezielt aus.`);
+  if(m.flamme)return tip('flambieren',`Die Leiste zeigt deine Glut bis ${m.flamme.at} – ist sie voll, wird ${sk('burst')} zum Flambieren: ${pct(m.flamme.bonus)} mehr Wirkung und Feuerspritzer an den Nachbarn.`);
+  if(m.rauch)return tip('raeucherware',`Unter ${m.rauch.below} Glut wird Grillgut geräuchert und hier gezählt – serviert hinterlässt es Rauch, in dem Gegner dich angreifen und ${pct(m.rauch.smoke.weaken)} schwächer treffen.`);
+  if(m.chef)return tip('grillbuffet',`${sk('ground')} stellt den Grilltisch auf – ${m.chef.buffet.duration} s lang heilt er jede Sekunde alle im Kreis; der Ring zeigt die Restzeit.`);
+  if(m.herz)return tip('legekreis',`${sk('ground')} legt deine Hand im Kreis aus – ${m.herz.circle.duration} s lang heilt er jede Sekunde alle darin; der Ring zeigt die Restzeit.`);
+  return null;}
+ if(m.stack)return tip('pegeluhr',`${sk('strike')} und kassierte Treffer geben je einen Deckelstrich (höchstens ${m.stack.max}) – ${sk('burst')} verbraucht alle für ${pct(add('stackBonus',m.stack.bonusPerStack))} mehr Schaden je Strich, ${add('stackDecay',m.stack.decay)} s ohne neuen Strich geben Kater.`);
+ if(m.supply)return tip('vorrat',`Jede ${sk('heal')} füllt ein Vorratsglas – sind alle ${add('supplyMax',m.supply.max)} voll, macht ${sk('burst')} ${add('cleanDuration',m.supply.cleanDuration)} s lang aus jeder Heilung zusätzlich Schaden am Ziel.`);
+ if(m.state)return tip('putzwut',`Die Leiste zeigt deine Likes bis ${add('stateTrigger',m.state.trigger)} – ist sie voll, startet im Kampf von selbst ${add('stateDuration',m.state.duration)} s Putzwut: Kniffe kostenlos und ${pct(add('stateDamage',m.state.damage)-1)} stärker.`);
+ if(m.dot)return tip('schimmel',`Die Anzeige zählt Gegner mit deinem Schimmel aus ${sk('mark')} – ${sk('burst')} lässt ihn auf allen in deiner Nähe auf einmal platzen.`);
+ if(m.kind==='fields')return tip('fass',`${sk('ground')} stellt bis zu ${add('fieldCount',m.field.max)} Fässer auf – ${sk('burst')} zapft alle an: Weizen heilt, Pils macht schneller, Bock explodiert.`);
+ if(m.kind==='turret')return tip('robbi',`${sk('ground')} stellt Dosen-Robbi für ${add('fieldDuration',m.field.duration)} s auf – er schießt, bremst und fängt Schläge ab; ${sk('burst')} sprengt ihn.`);
+ if(m.chain)return tip('kettenreaktion',`Jede explodierte ${skillName(g,'mark',spec)==='Lunte'?'„Lunte“':'Lunte aus '+sk('mark')} zählt – ${m.reaction.count} in ${add('reactionWindow',m.reaction.window)} s starten die Kettenreaktion: ${sk('burst')} ist sofort bereit und springt weiter.`);
+ if(m.gamble)return tip('bastlerglueck',`Jede Fehlzündung zählt – nach ${add('gamblePity',m.gamble.pity)} ist die nächste Überzündung sicher, ${add('jackpotStreak',m.gamble.jackpot.streak)} Überzündungen in Folge starten ${add('jackpotDuration',m.gamble.jackpot.duration)} s Jackpot.`);
+ if(m.kind==='guard')return tip('hausverbot',`${sk('strike')} baut Deckung auf, die Schaden vor deinem Leben abfängt – ab ${pct(m.hausverbot.threshold)} voll startet ${add('hausverbotDuration',m.hausverbot.duration)} s Hausverbot: Paraden werfen ${m.hausverbot.reflect}-fach zurück.`);
+ return null;
+}
+/** Käthe: Name eines Kartenknopfs nach seiner Karte („Kreuz-Dame – trifft“) – Tooltip-Kopf und aria-label (Runde 4, Kenner-Befund 3). */
+export function cardSlotName(g,id){const c=id==='aermel'?(resourceKindOf(g)==='cards'?g.res?.sleeve:null):handCard(g,id);return c?cardName(c)+' – '+(RESOURCE_HUD_TEXT.cardVerb?.[c.suit]||''):null;}
+const resourceKindOf=g=>RESOURCES[g.member?.id]?.kind||null;
+/** RESONANZ auf dem Spezialkniff (combat-ui skillVariant): Ziel trägt deine Markierung – ein Satz, was das heißt. */
+function resonanceLine(g,s){const e=g.target;if(s.id!=='burst'||!(e?.hp>0)||!(e.mark>0)||['cards','grill'].includes(resourceKindOf(g)))return '';return `RESONANZ: Dein Ziel trägt deine Markierung („${skillName(g,'mark')}“) – dieser Kniff trifft jetzt ×${n(s.multiplier||1)} und verbraucht sie. `;}
 /** E-72: Hauptbäume der neuen Klassen drehen an der Klassenressource (class-resources.js). */
 function resourceLines(g,spec,m,cs,skill,add){
  const R=RESOURCES[spec.split('-')[0]];
@@ -138,7 +168,7 @@ function resourceSkillHelp(g,id,s){
  const cls=g.member?.id,R=RESOURCES[cls],h=resourceHud(g);if(!R||!h)return null;
  if(cls==='kaethe'){
   /* Runde 3 „Lernen über das Bild“: das Kartenbild zeigt die Wirkung (Klinge, Schild, Plus, Knall) und das Tempo als Abzeichen – der Tooltip nennt es beim Namen */
-  const legend='Bild = Wirkung: Klinge trifft · Schild schützt · grünes Plus heilt · Knall trifft im Umkreis und bremst. Abzeichen: » schnell (7–9) · Stern stark (10, Ass) · Krone Trumpf (Bube).';
+  const legend='Bild = Wirkung: Klinge trifft · Schild schützt · Herz mit Plus heilt · Knall mit Ring trifft im Umkreis und bremst. Abzeichen: » schnell (7–9) · Stern stark (10, Ass) · Krone Trumpf (Bube).';
   const tempo=rk=>rk.trump?' Trumpf (Krone): bedient jede Farbe und sticht jeden Zauber.':rk.quick?' Schnell (»): sperrt die globale Abklingzeit nur kurz.':rk.power>=1.3?' Stark (Stern): '+String(rk.power).replace('.',',')+'-fache Wirkung.':'';
   const c=handCard(g,id);
   if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card;let line=`${cardName(c)}: ${SUIT_EFFECT[c.suit]}${['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}.${tempo(rk)} Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
@@ -169,6 +199,10 @@ export function skillHelp(g,id){const t=skillHelpText(g,id);return t&&resourceVi
 function skillHelpText(g,id){
  const s=g.skills.find(s=>s.id===id);if(!s)return '';
  {const r=resourceSkillHelp(g,id,s);if(r)return r;}
+ /* Runde 4 (hud4, Kenner-Befund 5): der Aufdruck RESONANZ auf der Taste bekommt seinen Satz ganz vorn */const reso=resonanceLine(g,s);if(reso)return reso+skillHelpBase(g,id,s);
+ return skillHelpBase(g,id,s);
+}
+function skillHelpBase(g,id,s){
  const spec=g.rpg.talents.spec,m=SPEC_MECHANICS[spec],h=mechanicHelp(g,spec);
  if(id==='mark')return `„${s.name}“ markiert das Ziel für ${s.duration} s und verursacht einmal pro Sekunde Schaden. Dein Spezialkniff trifft markierte Ziele stärker und entfernt danach die Markierung.${m?.dot?' '+h.lines[0]+' '+h.lines[1]:m?.chain?' '+h.lines[0]:''}`;
  if(id==='ground'&&m?.supply){const cs=combatStats(g);return `Stellt Giselas Nest für ${m.field.duration+(cs.fieldDuration||0)} s auf. Es heilt dich einmal pro Sekunde, solange du im Umkreis stehst; diese Heilung füllt keine Vorratsgläser. Beim Ablauf betäubt Giselas Schnattern nahe Gegner für ${m.field.honk.stun+(cs.nestHonk||0)} s. Ein neues Nest ersetzt das vorherige.`;}
