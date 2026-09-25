@@ -123,6 +123,9 @@ test('Kein Kontrollpunkt (und nicht der Eingang) in Aggro-Reichweite eines Kämp
  for(const s of spots){const P=toWorld(DEF,s.floor,s.x,s.y);
   for(const e of g.enemies){if(!e.pack||e.cardboard||e.behavior!=='aggressive'||roomAt(DEF,e.home.x,e.home.y)?.floor!==s.floor)continue;
    if(e.patrol){const pts=e.patrol.points;let m=Infinity;for(let i=0;i<pts.length;i++)m=Math.min(m,seg(P,pts[i],pts[(i+1)%pts.length]));assert.ok(m>e.aggroRange,s.id+': Streife '+e.pack+' kommt auf '+Math.round(m)+' heran (Aggro '+e.aggroRange+')');continue;}
+   /* auch beim Umherstreifen: von keinem Punkt des Streifkreises mit Sicht näher als die Aggro-Reichweite */
+   for(let i=0;i<24;i++){const q={x:e.home.x+Math.cos(i/24*Math.PI*2)*e.roamRadius,y:e.home.y+Math.sin(i/24*Math.PI*2)*e.roamRadius};if(g.world.blocked(q.x,q.y,5)||!g.world.lineClear(q,P))continue;
+    assert.ok(Math.hypot(q.x-P.x,q.y-P.y)>e.aggroRange,s.id+': '+e.name+' aus '+e.pack+' sieht ihn beim Umherstreifen');}
    if(!g.world.lineClear(P,e.home))continue;const d=Math.hypot(P.x-e.home.x,P.y-e.home.y);
    assert.ok(d>e.aggroRange+e.roamRadius,s.id+': '+e.name+' aus '+e.pack+' steht '+Math.round(d)+' weg (Aggro '+e.aggroRange+' + Streifen '+e.roamRadius+')');}}
 });

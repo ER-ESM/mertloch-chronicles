@@ -46,7 +46,7 @@ export const DUNGEONS={
    {id:'studio',floor:'k1',rects:[[57,12,7,14]],sign:'Presseamt',truth:'Content-Studio mit Greenscreen',prospect:'Spiegelsaal'},
    {id:'musterwohnung',floor:'k1',rects:[[21,39,22,9]],sign:'Musterwohnung · Besichtigung',truth:'Kellerabteil mit Laminat',prospect:'Gästeflügel',arena:'expose'},
    // --- Keller 2 ---
-   {id:'weinkeller',floor:'k2',rects:[[4,4,29,14]],sign:'Weinkeller',truth:'echter Basaltkeller',prospect:'Weinkeller',checkpoint:{x:38,y:16}},
+   {id:'weinkeller',floor:'k2',rects:[[4,4,29,14]],sign:'Weinkeller',truth:'echter Basaltkeller',prospect:'Weinkeller',checkpoint:{x:10.5,y:20.5}},
    {id:'gewoelbe',floor:'k2',rects:[[34,4,8,40],[4,19,8,25],[12,40,22,4]],sign:'Gewölbegänge',truth:'alte Basaltgänge',prospect:'Katakomben'},
    {id:'kelterhalle',floor:'k2',rects:[[14,20,18,16]],sign:'Kelterhalle',truth:'Gewölbe mit Fassrinnen',prospect:'Kelterhaus',arena:'korkenkurt'},
    {id:'thronsaal',floor:'k2',rects:[[46,4,16,32]],sign:'Thronsaal',truth:'echter Basaltdom, verkleidet mit Pappe',prospect:'Thronsaal',arena:'bigb'},
@@ -104,7 +104,7 @@ export const DUNGEONS={
   // patrol = Wegpunkte (Meter), Runde wird abgelaufen.
   // Hotfix 2026-09-25: Kein Kontrollpunkt liegt in Aggro-Reichweite (aggroRange + roamRadius, bei Streifen der ganze Weg) eines Kämpfers
   // mit Sichtlinie (tests/dungeon-hotfix.test.mjs). Dafür: Hof-Kontrollpunkt am Rolltor, Hof-Packs 1 m nach außen, Weinkeller-Kontrollpunkt im
-  // Gang vor der Tür, die Galerie-Streife läuft nur noch die Ost- und Südseite (vorher lief sie über den Kontrollpunkt an der Treppe).
+  // Gang vor der Westtür (außer Sicht der Ratten, frei von den Laufwegen der Requisiten, dungeon-scenery.js auditScenery), die Galerie-Streife läuft nur noch die Ost- und Südseite (vorher lief sie über den Kontrollpunkt an der Treppe).
   packs:[
    {id:'hof-west',room:'hof',at:[21,24],members:['securityazubi','securityazubi','pappwache']},
    {id:'hof-ost',room:'hof',at:[41,24],members:['securityazubi','securityazubi','pappwache']},
