@@ -92,6 +92,7 @@ import {ARENA_KINDS,spawnArena,clearArena,arenaSummary,setArenaLevel,arenaReport
 import {procFree,procEmpowered,procGlow} from './procs.js';
 import {clearQueue} from './spell-queue.js';
 import {resourceViral} from './class-resources.js';
+let aimPrompt=false;
 import {loadContentArt,contentPath} from './content-art.js';
 import {atlasPanel,mountAtlas} from './atlas-ui.js';
 import {loadWorldArt} from './asset-art.js';
@@ -292,7 +293,7 @@ const fmt=n=>Math.ceil(n).toLocaleString('de-DE');
 /** Statustext (Einstellungen → Interface); im schmalen Handy-Rahmen passt nur Prozent. */
 const hudStatusMode=()=>mobile?.active&&uiPrefs.statusText!=='none'?'percent':uiPrefs.statusText;
 /** Kurzmeldung über die Warteschlange (toast-queue.js): nacheinander, nie doppelt, nicht unter einer großen Einblendung. */
-function toast(text,error=false){const t=translator.text(text);if(error)cues.markError(t);toasts.push(t,{urgent:cues.isError(t)});}
+function toast(text,error=false){const t=translator.text(text);if(error)cues.markError(t);toasts.push(t,{urgent:cues.isError(t)||text===COMBAT_TEXT.aimGround/* E-72 R4: Zielaufforderung sofort, nicht hinter anderen Meldungen */});}
 const toasts=createToastQueue($('#toast'),{hold:()=>!!milestones?.busy,render:(el,t)=>{el.textContent=t;el.classList.toggle('toast-error',cues.isError(t));markDaily(el);chatTwins(t).forEach(l=>hideChatTwin(l));}});
 /* Prüfzugang (scripts/optimierung-r2b-check.mjs): Zustand der Meldungen, Update-Hinweis zum Ansehen */globalThis.__mertlochMessages={toasts,milestones:()=>milestones?.state?.(),updateHint:()=>showUpdateHint(()=>{})};
 let cloudPulled=false;
@@ -475,6 +476,7 @@ const st=game.classState;const p=game.player,e=game.target,q=game.quest;$('#play
   {const el=$('#attackWarning');if(el)el.classList.toggle('hidden',game.time>attackWarnUntil||game.dead);}if(game.activity){const a=game.activity,elapsed=game.time-a.start,score=modal.querySelector('[data-activity-score]');if(score)score.textContent=a.score+' / '+(a.mode==='rhythm'?3:4)+' richtig · '+a.mistakes+' / 3 Patzer';const cursor=modal.querySelector('[data-rhythm-cursor]');if(cursor)cursor.style.left=(elapsed%1.6/1.6*100)+'%';const wires=modal.querySelector('[data-wire-sequence]');if(wires)wires.textContent=elapsed<3?a.sequence.map(i=>['Flasche','Box','Blitz','Ring'][i]).join(' → '):'Jetzt du: '+a.input.length+' / 4';modal.querySelectorAll('[data-wire]').forEach(b=>b.disabled=elapsed<3);}
   const waypoint=inDungeon(game)?null:game.destination();
    $('.quest-panel').classList.toggle('has-waypoint',!!waypoint&&!game.dead);
+   /* E-72 R4 (Kenner-Befund Bodenziel): Zielmodus zu → „Boden wählen“ verschwindet mit ihm (stand sonst noch Sekunden danach da) */if(!game.aiming&&aimPrompt)toasts.drop(translator.text(COMBAT_TEXT.aimGround));aimPrompt=!!game.aiming;
    /* E-72 R4 (Kenner-Befund): Annis Viral-Ladung als ruhiger Rahmen an den Knöpfen statt „VIRAL“-Beschriftung; Wortlaut im Tooltip */document.querySelectorAll('[data-skill]').forEach(b=>b.classList.toggle('viral-free',resourceViral(game,b.dataset.skill)));
   // Auftragsverfolgung (quest-tracker.js): verfolgter Auftrag mit nur dem nächsten Schritt, darunter die übrigen; Details im Tooltip.
   /* Etappe 2: im Dungeon zeigt die Verfolgung Siegel und Beweise statt eines Weltauftrags */if(inDungeon(game))dungeonUI.tracker($('.quest-panel'));else renderTracker($('.quest-panel'),game,{waypoint,metres:pt=>distance(p,pt)/SCALE});

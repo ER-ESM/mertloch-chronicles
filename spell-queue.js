@@ -21,7 +21,7 @@ export function blocker(g,s){
  *  dieselbe (die GCD sperrt ohnehin), aber die Zahl auf dem Knopf stimmt: vorher zeigte er „0,1“, während die GCD noch 1,3 s lief, und der
  *  Spieler drückte viel zu früh („muss noch verschnaufen · 0,1 s“). Wie in WoW zeigt der Knopf die längere der beiden Sperren.
  *  Kniffe ohne GCD (Autoangriff, Pfandautomat, Schorschs Auflegen) behalten ihre eigene Zeit. */
-export function alignCooldowns(g){const gcd=g.gcd||0;if(!(gcd>0))return;for(const id in g.cooldowns){const cd=g.cooldowns[id];if(!(cd>0&&cd<gcd))continue;const s=g.skills?.find(x=>x.id===id);if(s&&!offGcd(g,s))g.cooldowns[id]=gcd;}}
+export function alignCooldowns(g){const gcd=g.gcd||0;if(!(gcd>0))return;for(const id in g.cooldowns){const cd=g.cooldowns[id];if(!(cd>.01&&cd<gcd))continue;/* Reste unter 0,01 s zählen überall als bereit – nie hochziehen (sonst sperrt der eigene Zauber seinen Abschluss) */const s=g.skills?.find(x=>x.id===id);if(s&&!offGcd(g,s))g.cooldowns[id]=gcd;}}
 /** Restzeit, bis der Kniff frühestens geht (GCD, eigene Abklingzeit, laufender Zauber). */
 export const blockedFor=(g,s)=>blocker(g,s).left;
 /** Vormerken, wenn die Sperre gleich endet. → 'queued' | 'early' (noch zu früh, Fehlerzeile) | null (nicht gesperrt). */

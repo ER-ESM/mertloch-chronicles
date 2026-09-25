@@ -183,7 +183,7 @@ export class Game{
     // Klassen-Buff (class-buffs.js): kostenlos, nur globale Abklingzeit.
     if(s.classBuff){if(!castClassBuff(this,s,help))return false;this.cooldowns[id]=skillCooldown(this,s,cs);if(!s.offGcd&&!completing)this.gcd=cs.gcd;resourceCast(this,id,s,cs,{});p.castPose=.28;tutorialSignal(this,id);this.emit('sound',{id:'buff'});this.emit('save');return true;}
     let e=this.target;
-    if(s.ground){if(!point){clearQueue(this);/* neuer Druck ersetzt die Vormerkung */this.aiming=id;this.aimPoint={...p};this.toast('Boden wählen · Rechtsklick / Esc abbrechen.');return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
+    if(s.ground){if(!point){clearQueue(this);/* neuer Druck ersetzt die Vormerkung */this.aiming=id;this.aimPoint={...p};this.toast(COMBAT_TEXT.aimGround||'Boden wählen · Rechtsklick / Esc abbrechen.');return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
     if(s.range&&!s.ground){
       if(preferAttacker(this))e=this.target;
       /* Kein Auto-Ziel (Runde 5a, WoW): ohne Ziel rote Zeile „Kein Ziel“; wer dich angreift, ist über preferAttacker schon Ziel */if(!e||e.hp<=0){this.fail(COMBAT_TEXT.noTarget||'Kein Ziel.');return false;}if(e.ai==='returning'||e.spawnGrace>0){/* Symbol mit Tooltip am Zielrahmen statt Satz (Runde 3a) */this.emit('targetState',{state:e.ai==='returning'?'leaving':'arriving'});return false;}

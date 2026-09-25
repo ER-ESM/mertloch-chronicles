@@ -1,0 +1,120 @@
+{
+ "label": "neu",
+ "rotation": {
+  "dieter": {
+   "keys": "2:strike 4:throw 6:mark 7:burst",
+   "presses": 33,
+   "blocked": 0,
+   "errors": 0,
+   "texts": {}
+  },
+  "baerbel": {
+   "keys": "2:strike 4:throw 6:mark 7:burst",
+   "presses": 29,
+   "blocked": 0,
+   "errors": 0,
+   "texts": {}
+  },
+  "kevin": {
+   "keys": "2:strike 3:reload 5:throw 7:mark",
+   "presses": 35,
+   "blocked": 0,
+   "errors": 0,
+   "texts": {}
+  },
+  "queuedShot": "throw",
+  "schorsch": {
+   "keys": "2:strike 3:mark 4:burst 5:throw",
+   "presses": 59,
+   "blocked": 0,
+   "errors": 13,
+   "texts": {
+    "Zu wenig Glut – erst mit der Zange anheizen.": 13
+   }
+  },
+  "kaethe": {
+   "keys": "2:strike 3:mark 4:burst 5:throw",
+   "presses": 45,
+   "blocked": 0,
+   "errors": 8,
+   "texts": {
+    "Abrechnen erst ab 61 Augen – noch 39.": 1,
+    "Abrechnen erst ab 61 Augen – noch 12.": 2,
+    "Abrechnen erst ab 61 Augen – noch 31.": 1,
+    "Abrechnen erst ab 61 Augen – noch 27.": 1,
+    "Abrechnen erst ab 61 Augen – noch 1.": 1,
+    "Abrechnen erst ab 61 Augen – noch 41.": 1,
+    "Abrechnen erst ab 61 Augen – noch 26.": 1
+   }
+  }
+ },
+ "chat": {
+  "series": {
+   "procs": 1,
+   "guard": 0,
+   "chatLines": 1
+  },
+  "merge": {
+   "lines": 1,
+   "count": "×5"
+  }
+ },
+ "aperol": {
+  "fired": 3,
+  "viral": 1,
+  "variantLabels": [
+   "Bereit"
+  ],
+  "sctRows": [
+   "BEREIT ×3"
+  ],
+  "viralFrames": 6,
+  "tooltip": true
+ },
+ "ground": {
+  "open": "ground",
+  "after": {
+   "aiming": null,
+   "strikeCd": 1.0058857142857198
+  },
+  "quick": {
+   "aiming": null,
+   "casting": "ground",
+   "point": {
+    "x": 8634.600409189487,
+    "y": 8516.572978962395
+   },
+   "hover": {
+    "x": 8634.600409189487,
+    "y": 8516.572978962395
+   }
+  }
+ },
+ "checks": [
+  "dieter: 33 Drücke (2-4-6-7), Sperr-Fehler 0, alle Fehlerzeilen 0",
+  "baerbel: 29 Drücke (2-4-6-7), Sperr-Fehler 0, alle Fehlerzeilen 0",
+  "kevin: 35 Drücke (2-3-5-7), Sperr-Fehler 0, alle Fehlerzeilen 0",
+  "schorsch: 59 Drücke (2-3-4-5), Sperr-Fehler 0, alle Fehlerzeilen 13",
+  "kaethe: 45 Drücke (2-3-4-5), Sperr-Fehler 0, alle Fehlerzeilen 8",
+  "Proc-Serie (5 Treffer unter 35 %): 1× gezündet, 1 Chatzeile(n), Deckung 0",
+  "Chat: 5 gleiche Zeilen → 1 Zeile(n) ×5",
+  "Aperol-Hype: Knopf-Beschriftungen [Bereit] · Viral-Rahmen 6 · Kampftext [BEREIT ×3]",
+  "Tooltip am Viral-Knopf nennt Viral: ja",
+  "Bodenziel: offen=ground → anderer Kniff: aiming=null, Kelle ausgeführt=true",
+  "Schnellzauber an der Maus: aiming=null, wirkt=ground"
+ ],
+ "shots": [
+  "docs/e72-runde4/eingabe/neu-vormerkung-schorsch.jpg",
+  "docs/e72-runde4/eingabe/neu-chat-procserie.jpg",
+  "docs/e72-runde4/eingabe/neu-chat-procserie-voll.jpg",
+  "docs/e72-runde4/eingabe/neu-aperol-hype.jpg",
+  "docs/e72-runde4/eingabe/neu-aperol-leiste.jpg",
+  "docs/e72-runde4/eingabe/neu-aperol-tooltip.jpg",
+  "docs/e72-runde4/eingabe/neu-bodenziel-offen.jpg",
+  "docs/e72-runde4/eingabe/neu-bodenziel-anderer-kniff.jpg",
+  "docs/e72-runde4/eingabe/neu-einstellung-bodenkniffe.jpg",
+  "docs/e72-runde4/eingabe/neu-bodenkniff-an-der-maus.jpg"
+ ],
+ "errors": [],
+ "seconds": 45
+}

@@ -12,7 +12,8 @@ import {resourceVariant,resourceViral} from '../class-resources.js';
 import {skillHelp} from '../mechanic-help.js';
 import {chatLineKey,chatCountLabel} from '../chat-window.js';
 import {settingOn} from '../options-ui.js';
-import {COMBAT_FLOW_TUNING,TALENT_ROWS,RESOURCES,OPTIONS_UI,SETTING_DEFAULTS,describe} from '../content/index.js';
+import {createToastQueue} from '../toast-queue.js';
+import {COMBAT_FLOW_TUNING,TALENT_ROWS,RESOURCES,OPTIONS_UI,SETTING_DEFAULTS,COMBAT_TEXT,describe} from '../content/index.js';
 
 const world=()=>({id:'eingabe',seed:1,spawn:{x:-5000,y:-5000},npc:{x:-5000,y:-5000},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,walkClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
 function hero(classId,level=12){const g=new Game(world(),{classId,level});g.random=()=>.5;g.player.x=g.player.y=0;g.player.hp=g.player.maxHp;return g;}
@@ -153,4 +154,20 @@ test('Taste gedrückt halten (WoW „Gedrückt halten zum Wirken“): Wiederholu
  assert.ok(tries>5,'viele Wiederholungen');assert.deepEqual(fails(g),[],'keine Fehlerzeile beim Halten');assert.equal(g.queued?.id,other,'im Fenster vorgemerkt');
  const src=readFileSync(new URL('../action-bar-ui.js',import.meta.url),'utf8'),app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
  assert.match(src,/api\.trigger\(i,e\.repeat\?\{hold:true\}:undefined\)/);assert.match(app,/if\(hold\)\{if\(entry!=='auto'&&game\.skills\.some/,'nur Kniffe, keine Umschalter oder Gegenstände');
+});
+
+test('„Boden wählen“ verschwindet mit dem Zielmodus: Meldung lässt sich zurückziehen (stehend und wartend)',()=>{
+ const cls=new Set(),el={textContent:'',classList:{add:c=>cls.add(c),remove:c=>cls.delete(c),contains:c=>cls.has(c)}};let t=0;const q=createToastQueue(el,{now:()=>t});
+ q.push('Dosen-Dieter ist am Start.');q.push(COMBAT_TEXT.aimGround);assert.deepEqual(q.state().queue,[COMBAT_TEXT.aimGround]);
+ assert.equal(q.drop(COMBAT_TEXT.aimGround),true);assert.deepEqual(q.state().queue,[],'wartend entfernt');
+ q.push(COMBAT_TEXT.aimGround,{urgent:true});assert.equal(q.state().current,COMBAT_TEXT.aimGround,'Zielaufforderung sofort');
+ assert.equal(q.drop(COMBAT_TEXT.aimGround),true);assert.equal(q.state().current,'','stehend ausgeblendet');assert.equal(q.drop('x'),false);
+ const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');assert.match(app,/if\(!game\.aiming&&aimPrompt\)toasts\.drop/);
+});
+
+test('Abklingzeit-Reste unter 0,01 s zählen als bereit: ein Zauber mit Zauberzeit sperrt seinen eigenen Abschluss nicht',()=>{
+ const g=hero('baerbel');foe(g);g.player.energy=100;const s=g.skills.find(x=>x.castTime>0&&x.range&&!x.ground);assert.ok(s);
+ g.cooldowns[s.id]=.005;g.cooldowns.strike=.5;g.gcd=0;g.events.length=0;assert.equal(g.action(s.id),true);assert.ok(g.casting);
+ assert.equal(g.cooldowns[s.id],.005,'Rest nicht auf die GCD hochgezogen');assert.ok(Math.abs(g.cooldowns.strike-g.gcd)<1e-9,'laufende Abklingzeit läuft mit der GCD ab');
+ run(g,s.castTime+.1);assert.deepEqual(fails(g),[],'Abschluss ohne „muss noch verschnaufen“');assert.ok(g.cooldowns[s.id]>1,'Zauber gewirkt');
 });
