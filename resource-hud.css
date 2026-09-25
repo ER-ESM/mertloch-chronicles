@@ -18,12 +18,31 @@
  background:linear-gradient(90deg,#0c1914e6 0%,#0c1914d0 55%,#0c191400 100%);box-shadow:inset 0 1px #d7b57122}
 .player-panel .rh-tray .rh-tray-art{position:absolute;left:0;top:-16px;width:100%;height:calc(100% + 16px);image-rendering:pixelated;pointer-events:none}
 .touch-mode .player-panel .rh-tray{left:4px;right:4px;height:36px}
+/* Schorsch: großer Grillrost – Garzustand auf einen Blick */
+.player-panel .rh-tray[data-kind=grill]{height:60px}
+.touch-mode .player-panel .rh-tray[data-kind=grill]{height:56px}
 .touch-mode:has(.game-popup) .player-panel .rh-tray{display:none}
 /* Unter dem Band: Buffs rücken nach unten (nur Desktop; am Handy liegen sie ohnehin tiefer). */
 body:not(.touch-mode):has(#resourceTray) #buffStrip:not([data-hud-custom]){top:236px}
 body:not(.touch-mode):has(#resourceTray) #debuffStrip:not([data-hud-custom]){top:312px}
+body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #buffStrip:not([data-hud-custom]){top:256px}
+body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #debuffStrip:not([data-hud-custom]){top:332px}
 /* Handy hochkant: das Zielfenster liegt unter dem Spielerfenster – es rückt um das Band nach unten. */
-@media (orientation:portrait){body.touch-mode:not(:has(.game-popup)):has(#resourceTray) #targetPanel:not([data-hud-custom]){margin-top:40px}}
+@media (orientation:portrait){body.touch-mode:not(:has(.game-popup)):has(#resourceTray) #targetPanel:not([data-hud-custom]){margin-top:40px}
+ body.touch-mode:not(:has(.game-popup)):has(#resourceTray[data-kind=grill]) #targetPanel:not([data-hud-custom]){margin-top:60px}}
+/* Schorsch „Zu heiß“: Thermometer glüht rot, beim Eintritt kurz Alarm (Blinken und Zittern) */
+.player-panel .bar.energy.rh-hot{box-shadow:0 0 6px #ff3a2a,0 0 0 1px #ff6a4a!important}
+.player-panel .bar.energy.rh-alarm{animation:rh-alarm .22s linear infinite}
+@keyframes rh-alarm{0%,100%{transform:translateX(0);box-shadow:0 0 10px #ff3a2a,0 0 0 2px #ff6a4a}50%{transform:translateX(-1px);box-shadow:0 0 3px #ff3a2a,0 0 0 1px #ff6a4a}}
+/* Käthe: Stand und Schwellen stehen im Skatblock selbst */
+.player-panel .bar.energy[data-rh-kind=cards]>span{visibility:hidden}
+.player-panel .rh-tray .rh-stamp{position:absolute;right:10px;top:50%;transform:translateY(-50%) rotate(-6deg);padding:1px 7px;border:2px solid currentColor;border-radius:4px;font:400 15px/1.1 var(--display,sans-serif);letter-spacing:.06em;pointer-events:none;color:#e8453a;background:#f6efdcee;box-shadow:0 1px 3px #000a}
+.player-panel .rh-tray .rh-stamp[hidden]{display:none}
+.player-panel .rh-tray .rh-stamp[data-level='2']{color:#a86a08;background:#fff3c8f0}
+.player-panel .rh-tray .rh-stamp[data-level='3']{color:#f2c14e;background:#1a1418f0}
+.player-panel .rh-tray .rh-stamp.pop{animation:rh-stamp .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes rh-stamp{from{transform:translateY(-50%) rotate(-18deg) scale(2.2);opacity:0}to{transform:translateY(-50%) rotate(-6deg) scale(1);opacity:1}}
+.touch-mode .player-panel .rh-tray .rh-stamp{font-size:11px;padding:0 4px;right:4px}
 /* Pfandautomat (Kevin) über der Leiste, wie ein Zauberbalken */
 .rh-reload{position:absolute;left:50%;top:calc(96px + var(--safe-top,0px));transform:translateX(-50%);width:300px;height:30px;z-index:26;pointer-events:none;filter:drop-shadow(0 2px 3px #000a)}
 .action-area>.rh-reload{top:auto;bottom:calc(100% + 12px)}
@@ -36,16 +55,16 @@ body:not(.touch-mode):has(#resourceTray) #debuffStrip:not([data-hud-custom]){top
 @media (orientation:portrait){.touch-mode .rh-reload{top:auto;left:50%;bottom:calc(300px + var(--safe-bottom,0px));width:min(260px,70vw)}}
 /* Käthe: Gegnerkarte am Zauberbalken des Ziels */
 #enemyCast{overflow:visible!important}
-#enemyCast .rh-enemy-card{position:absolute;left:-14px;top:50%;transform:translateY(-50%) rotate(-7deg);width:22px;height:30px;image-rendering:pixelated;z-index:5;pointer-events:auto;filter:drop-shadow(0 1px 2px #000c)}
+#enemyCast .rh-enemy-card{position:absolute;left:-24px;top:50%;transform:translateY(-50%) rotate(-6deg);width:42px;height:50px;image-rendering:pixelated;z-index:5;pointer-events:auto;filter:drop-shadow(0 1px 2px #000c)}
 #enemyCast .rh-enemy-card[hidden]{display:none}
 #enemyCast .rh-enemy-card.beatable{animation:rh-beat .7s ease-in-out infinite alternate}
 @keyframes rh-beat{from{filter:drop-shadow(0 0 2px #ffd35a) drop-shadow(0 1px 2px #000c)}to{filter:drop-shadow(0 0 7px #ffe38a) drop-shadow(0 1px 2px #000c)}}
-#enemyCast:has(.rh-enemy-card:not([hidden])) #enemyCastText{padding-left:12px}
+#enemyCast:has(.rh-enemy-card:not([hidden])) #enemyCastText{padding-left:20px}
 /* Käthes Hand auf der Leiste: Kartenbild ohne Varianten-Filter, Name nur bei STICH */
 .skill[data-card] canvas,#touchActions .touch-skill[data-card] canvas{filter:none!important;animation:none!important}
 .skill.variant[data-card]:not([data-variant-tone=gold]):before,#touchActions .touch-skill.variant[data-card]:not([data-variant-tone=gold]):before{display:none}
 .skill.variant[data-card][data-variant-tone=gold]{box-shadow:0 0 0 2px #ffd35a,0 0 12px #ffd35acc!important;animation:rh-stich .6s ease-in-out infinite alternate}
-.skill.variant[data-card][data-variant-tone=gold]:before{color:#2a1a08!important;background:linear-gradient(#ffe38a,#e8b84a)!important;text-shadow:none!important;font-weight:700}
+.skill.variant[data-card][data-variant-tone=gold]:before{top:auto;bottom:calc(100% + 3px);left:-6px;right:-6px;border-radius:3px;color:#2a1a08!important;background:linear-gradient(#ffe38a,#e8b84a)!important;text-shadow:none!important;font-weight:700;box-shadow:0 1px 3px #000a}
 @keyframes rh-stich{from{box-shadow:0 0 0 2px #ffd35a,0 0 6px #ffd35a99}to{box-shadow:0 0 0 2px #fff3b0,0 0 14px #ffe38a}}
 /* Anni: die Taste, die jetzt eine Wiederholung wäre – dezent gedämpft, mit kleinem Kreispfeil */
 .skill.rh-repeat canvas{filter:saturate(.45) brightness(.8)!important}

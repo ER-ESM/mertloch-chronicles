@@ -91,7 +91,8 @@ const DRAW={
   if(t<.35){c.save();c.globalAlpha*=1-t/.35;c.strokeStyle='#ff9a3a';c.lineWidth=1.4;c.beginPath();c.moveTo(cx-6,cy-12);c.lineTo(cx,cy-7);c.lineTo(cx-3,cy-5);c.lineTo(cx+5,cy+1);c.stroke();c.restore();}
   puff(c,cx+t*3,cy-4-t*10,3+t*6,'#8a8a82',(1-t)*.6);},
  // --- Schorsch · Glut und Grillrost --------------------------------------------------------------------------------
- glut(c,f,t){if(f.bellows){for(let i=0;i<3;i++){const a0=i*TAU/3+t*6,r=10+t*8;c.save();c.globalAlpha*=(1-t)*.8;c.strokeStyle='#f6f0e0';c.lineWidth=1.1;c.beginPath();c.ellipse(f.x,f.y-10,r,r*.55,0,a0,a0+1.4);c.stroke();c.restore();}
+ glut(c,f,t){if(f.zone==='heiss'){/* Warnung „Zu heiß“: roter Ring, Flammenzeichen über dem Kopf blinkt */const throb=1.35+.35*Math.abs(Math.sin(t*Math.PI*5));ring(c,f.x,f.y,8+t*20,'#ff3a2a',2*(1-t)+.6,(1-t)*.9);glow(c,f.x,f.y-8,18,'#ff4a2a',(1-t)*.5);glow(c,f.x,f.y-32,12,'#ff6a2a',(1-t)*.6);spr(c,'flame',f.x,f.y-27,throb,{outline:'#2a0a04',alpha:1-Math.max(0,t-.7)/.3});return;}
+  if(f.bellows){for(let i=0;i<3;i++){const a0=i*TAU/3+t*6,r=10+t*8;c.save();c.globalAlpha*=(1-t)*.8;c.strokeStyle='#f6f0e0';c.lineWidth=1.1;c.beginPath();c.ellipse(f.x,f.y-10,r,r*.55,0,a0,a0+1.4);c.stroke();c.restore();}
    for(let i=0;i<n(10,5);i++){const x=f.x+(noise(i,f.id)-.5)*18,y=f.y-4-t*(18+noise(i+4,f.id)*20);star(c,x,y,1.4,i%2?'#ffd35a':'#ff8a2a',1-t,4);}return;}
   glow(c,f.x,f.y-4,22,'#ffb040',(1-t)*.7);for(let i=0;i<n(8,5);i++){const a=i/n(8,5)*TAU,x=f.x+Math.cos(a)*11,y=f.y+Math.sin(a)*5;flame(c,x,y+2,.9*(t<.3?t/.3:1-(t-.3)/.7)+.2,t+i,i);}
   for(let i=0;i<5;i++)star(c,f.x+(noise(i,f.id)-.5)*20,f.y-10-t*20-noise(i+2,f.id)*8,2*(1-t),'#fff3b0',1-t);},
