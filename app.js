@@ -241,7 +241,7 @@ function paintIconCanvas(c,inPopup){
   else if(d.uiIcon!==undefined)paintOnce(c,'ui:'+d.uiIcon,()=>{paintUiIcon(c,d.uiIcon);styleIcon(c);});
   else if(d.specArt!==undefined)paintOnce(c,'spec:'+d.specArt,()=>paintSpecIcon(c,d.specArt));
   else if(d.talentArt!==undefined)paintOnce(c,'talent:'+d.talentArt,()=>paintTalentIcon(c,d.talentArt));
-  else if(d.itemArt!==undefined)paintOnce(c,'item:'+d.itemArt,()=>paintItem(c,d.itemArt));
+  else if(d.itemArt!==undefined)paintOnce(c,'item:'+d.itemArt+(c.closest?.('.bar-item')?':kachel':''),()=>paintItem(c,d.itemArt));/* Leiste = Kachel, Rucksack = frei: eigener Cache-Schlüssel je Ort */
   else if(inPopup)paintOnce(c,'skill:'+d.skillArt+':'+member+':'+spec,()=>paintSkillIcon(c,d.skillArt,member,{spec}));
   // Aktionsleiste: gemalt von buildActions. Kein styleIcon-Nachlauf mehr (Stilbibel A4) – er drückte jedes Symbol auf 32 px und 40 Farben.
  }
