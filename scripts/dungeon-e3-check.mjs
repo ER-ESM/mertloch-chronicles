@@ -32,7 +32,7 @@ const fast=(seconds,stop='false')=>read(`const b=g.enemies.find(e=>e.bossId==='b
   g.tick(.05);if(${stop})break;}return Math.round(t*10)/10;`);
 const bigb=`g.enemies.find(e=>e.bossId==='bigb')`;
 /** Big B ziehen: Tresortür mit Gerds Siegel offen, Held im Thronsaal, Söldner dabei. */
-async function pull(){await read(`const r=g.dungeonRun;r.seals.add('siegel-gerd');r.version++;return 1`);await place('k2',52,24);
+async function pull(){await read(`const r=g.dungeonRun;for(const s of ['siegel-gerd','siegel-expose','siegel-kurt'])r.seals.add(s);r.version++;return 1`);await place('k2',52,24);
  await read(`const b=${bigb};b.aggro=true;b.ai='combat';g.target=b;g.player.inCombat=7;A.startAuto(g);g.adminGod=true;return 1`);}
 const pause=async(on=true)=>{await read(`g.paused=${on};return 1`);if(on)await wait(450);};
 const alerts=()=>read(`const s=window.__bossAlerts?.state?.()||{};const f=document.querySelector('.boss-frame');const rows=[...document.querySelectorAll('.boss-alerts .ba-row')].map(r=>{const q=r.getBoundingClientRect();return {text:r.textContent.trim(),cls:r.className,inView:q.top>=0&&q.bottom<=innerHeight&&q.left>=0&&q.right<=innerWidth};});
@@ -44,10 +44,10 @@ try{
   // Tresortür: vor Gerd zu, nach Gerd (nur sein Siegel wird verlangt) offen
   await place('k2',39.5,24);await wait(900);
   const doorAt=`D.toWorld(g.dungeonRun.def,'k2',44,24)`;const closed=await read(`const p=${doorAt};return g.world.blocked(p.x,p.y,3)`);assert.equal(closed,true,'Tresortür zu');await shot('01-tresortuer-zu');
-  await read(`const gerd=g.enemies.find(e=>e.bossId==='gerd');g.kill(gerd);return g.dungeonRun.seals.has('siegel-gerd')`);await wait(600);
+  /* Etappe 4 Teil A: Exposé und Kurt sind gebaut – die Tür verlangt jetzt alle drei Siegel */await read(`for(const id of ['gerd','expose','korkenkurt']){const e=g.enemies.find(x=>x.bossId===id);if(e&&e.hp>0)g.kill(e);}return g.dungeonRun.seals.size`);await wait(600);
   const open=await read(`const p=${doorAt};return {open:!g.world.blocked(p.x,p.y,3),need:D.requiredSeals(g.dungeonRun.def,['siegel-gerd','siegel-expose','siegel-kurt'])}`);
-  assert.ok(open.open,'Tresortür offen nach Gerd '+JSON.stringify(open));assert.deepEqual(open.need,['siegel-gerd']);await read(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click());return 1`);await wait(300);await shot('02-tresortuer-offen');
-  ok('Tresortür: vor Gerd zu, nach Gerd offen (verlangt heute nur das Siegel „'+open.need.join(', ')+'“)');
+  assert.ok(open.open,'Tresortür offen nach den drei Siegelträgern '+JSON.stringify(open));assert.deepEqual(open.need,['siegel-gerd','siegel-expose','siegel-kurt']);await read(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click());return 1`);await wait(300);await shot('02-tresortuer-offen');
+  ok('Tresortür: vor den Siegelträgern zu, danach offen (verlangt „'+open.need.join(', ')+'“)');
   // Durch die Tür in den Thronsaal laufen
   await read(`const b=${bigb};b.aggroRange=0;g.moveTo=D.toWorld(g.dungeonRun.def,'k2',49,24);return 1`);let room='';for(let i=0;i<40&&room!=='thronsaal';i++){await wait(250);room=await read(`return D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id||''`);}
   assert.equal(room,'thronsaal','Held läuft durch die Tresortür in den Thronsaal');await read(`${bigb}.aggroRange=92;return 1`);ok('Thronsaal betretbar: der Held läuft durch die offene Tresortür');

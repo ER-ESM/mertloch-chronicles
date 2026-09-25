@@ -9,6 +9,8 @@
 // Etappe 3 „Big B“: Behauptung und Nachsatz in Zauberleiste und Warnleiste (erst die Behauptung in Anführungszeichen, dann der Nachsatz),
 // parallele Timer (tracks, z. B. Siegelring alle 12 s) als eigene Zeilen mit Timer, Wut-Uhr, Reichweite, Geständnis und Beweise als
 // Chips im Bossrahmen; Ansage mittig beim Eintritt der Wut und beim Geständnis.
+// Etappe 4 Teil A: Chips für Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd) und nasse Streifen (Kurt); Lüge und Attrappen teilen
+// sich die zweistufige Anzeige (erst gestrichelt, dann Stempel bzw. Nachsatz).
 import {DUNGEON_BOSSES,DUNGEON_ENEMIES,DUNGEON_CASTS,COMBAT_RULES,DUNGEON_UI as U,DUNGEON_E4B as U4,describeCast} from './content/index.js';
 import {inDungeon,dungeonRun} from './dungeon.js';
 import {available} from './progression.js';
@@ -65,6 +67,11 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
   const reach=def?.reach?g.enemies.filter(o=>o.summoner===b&&o.hp>0&&DUNGEON_ENEMIES[o.dungeonKind]?.reach).length:0;if(reach&&(b.mechBoost||1)>(b.rageFactor||1))chips.push(['trait-reach',U.alerts.reach(Math.round(reach*def.reach*100)),U.traits.reach.tip,'bf-hot']);
   if(b.confessed){chips.push(['trait-lie',U.alerts.confessed,U.alerts.confessedNote,'bf-good']);if(!confessedShown){confessedShown=true;announce('trait-lie',U.alerts.confessed.toUpperCase());}}
   for(const id of run?.evidence||[]){const f=run.def.evidence?.effects?.[id];if(f)chips.push([f.icon||'lens','',f.note,'bf-good']);}
+  /* Etappe 4 Teil A: Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd), nasser Boden (Kurt) */
+  if(b.provision>0){const sign=def?.viewing?.sign;chips.push(['trait-provision',U.alerts.provision(b.provision,Math.round(b.provision*(sign?.damage||0)*100)),U.traits.provision.tip,b.provision>=(sign?.stack||5)-1?'bf-hot':'bf-warn']);}
+  if(b.hidden)chips.push(['trait-hidden',U.alerts.hidden,U.alerts.hiddenNote,'bf-warn']);
+  if(b.drinking)chips.push(['trait-feeds',U.alerts.drinking,U.alerts.drinkingNote,'bf-warn']);
+  if(b.wet>0)chips.push(['trait-wet',U.alerts.wet(b.wet),U.alerts.wetNote,b.wet>=6?'bf-hot':'bf-warn']);
   const key=chips.map(c=>c.join('|')).join(',');if(key===statusKey)return;statusKey=key;el.hidden=!chips.length;
   el.innerHTML=chips.map(([icon,text,note,cls])=>`<span class="bf-chip ${cls}" tabindex="0" data-tooltip-label="${esc(text||U.alerts.evidence)}" data-tooltip-note="${esc(note)}">${dicon(icon,14)}${text?`<b>${esc(text)}</b>`:''}</span>`).join('');paintDungeonIcons(el);}
  function announce(icon,text){/* Etappe 4 Teil B: wie eine Raid-Warnung oben mittig unter dem Bossrahmen, nicht auf dem Boss */const fr=frame.hidden?null:frame.getBoundingClientRect();announceEl.style.top=fr&&fr.height?Math.round(fr.bottom+8)+'px':'';announceEl.hidden=false;announceEl.querySelector('span').innerHTML=dicon(icon,30);announceEl.querySelector('b').textContent=text;paintDungeonIcons(announceEl);announceEl.classList.remove('pop');void announceEl.offsetWidth;announceEl.classList.add('pop');announceUntil=performance.now()+1500;}

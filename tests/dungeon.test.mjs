@@ -35,7 +35,7 @@ test('Grundriss: Räume liegen in ihrer Ebene, überlappen nicht, Türen verbind
 });
 
 test('Inhalt: jeder Zauber trägt ein Merkmal, Phasen und Adds zeigen auf vorhandene Daten',()=>{
- const features=['ground','interruptible','cone','frontGuard','healAllies','callHelp','radius','line','lie','summon','tankDebuff'];
+ const features=['ground','interruptible','cone','frontGuard','healAllies','callHelp','radius','line','lie','summon','tankDebuff',/* Etappe 4 Teil A */'goal','stack','spread','los','hidden','retreat','persist','decoy'];
  for(const [id,set] of Object.entries(DUNGEON_CASTS))for(const type of set.cycle){const c=set.casts[type];assert.ok(c,id+'/'+type);assert.ok(c.total>0,id+'/'+type+' Zauberzeit');assert.ok(features.some(f=>c[f]),id+'/'+type+' ohne Merkmal');}
  for(const d of [...Object.values(DUNGEON_ENEMIES),...Object.values(DUNGEON_BOSSES)])assert.ok(DUNGEON_CASTS[d.castSet],d.name+' Zaubermuster');
  for(const [id,b] of Object.entries(DUNGEON_BOSSES)){for(const ph of b.phases||[]){if(ph.castSet)assert.ok(DUNGEON_CASTS[ph.castSet],id+' Phase');if(ph.summon)assert.ok(DUNGEON_ENEMIES[ph.summon.kind],id+' Adds');}assert.ok(DUNGEON_TEXT.bossLines[id]?.engage,id+' Spruch');}

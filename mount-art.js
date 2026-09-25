@@ -32,7 +32,7 @@ function riderLayers(p,f){const source=riderSource(p,f.direction);if(!source)ret
   limb(out[3+side].getContext('2d'),parts[3+side],[shoulder,elbow,hand,{x:hand.x,y:hand.y+7}],[start,bend,grip,{x:grip.x,y:grip.y+6}],side?s.waist.x:0,side?192:s.waist.x);
  }const near=f.feet[sorted[0]].y>f.feet[sorted[1]].y?0:1,value=canvas(),ctx=value.getContext('2d'),meta=mountArt.catalog.assets[p.mount],row=meta.directions.indexOf(f.direction);ctx.drawImage(out[1+(1-near)],0,0);ctx.drawImage(mountArt.images.get(p.mount),f.column*256,row*256,256,256,0,0,256,256);for(const i of [3+(1-near),0,1+near,3+near])ctx.drawImage(out[i],0,0);riders.set(key,value);if(riders.size>96)riders.delete(riders.keys().next().value);return value;
 }
-export function drawMount(c,x,y,p={},time=0,magnify=1,rider=true){const id=p.mount,meta=mountArt.catalog?.assets[id],img=mountArt.images.get(id);if(!meta||!img)return false;
+export function drawMount(c,x,y,p={},time=0,magnify=1,rider=true){const id=MOUNTS[p.mount]?.art||p.mount/* Etappe 4 Teil A: Platzhalter-Bogen */,meta=mountArt.catalog?.assets[id],img=mountArt.images.get(id);if(!meta||!img)return false;if(id!==p.mount)p={...p,mount:id};
  const direction=p.direction||((p.facing||1)>0?'se':'sw'),row=Math.max(0,meta.directions.indexOf(direction)),col=p.moving?1+(Math.floor((p.walkDistance??time*70)/MOUNT_RULES.stride*8)%8+8)%8:0,f=meta.frames[row*9+col],layers=rider?riderLayers(p,f):null;
  if(rider&&!layers)return false;
  c.save();c.imageSmoothingEnabled=false;c.translate(x,y);c.fillStyle='#182b2948';c.beginPath();c.ellipse(0,2*magnify,13*magnify,4*magnify,0,0,Math.PI*2);c.fill();c.scale(magnify/4,magnify/4);c.translate(-meta.pivot.x,-meta.pivot.y);

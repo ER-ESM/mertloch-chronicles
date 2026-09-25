@@ -41,9 +41,9 @@ export const DUNGEONS={
    // --- Keller 1 ---
    {id:'galerie',floor:'k1',rects:[[8,6,48,4],[8,34,48,4],[8,10,4,24],[52,10,4,24]],sign:'Ahnengalerie',truth:'Ringflur mit zwölf Big-B-Porträts',prospect:'Galerie der Ahnen',checkpoint:{x:12,y:8}},
    {id:'rittersaal',floor:'k1',rects:[[13,11,38,22]],sign:'Rittersaal',truth:'Partykeller mit Styropor-Stuck',prospect:'Rittersaal mit Kamin'},
-   {id:'stall',floor:'k1',rects:[[22,0,12,5]],sign:'Stallungen',truth:'Heizungskeller mit Schaukelpferd',prospect:'Marstall'},
+   {id:'stall',floor:'k1',rects:[[22,0,12,5]],sign:'Stallungen',truth:'Heizungskeller mit Schaukelpferd',prospect:'Marstall',arena:'halbespferd'},
    {id:'verlies',floor:'k1',rects:[[0,16,7,12]],sign:'Burgverlies',truth:'Waschküche',prospect:'Rosengarten'},
-   {id:'studio',floor:'k1',rects:[[57,12,7,14]],sign:'Presseamt',truth:'Content-Studio mit Greenscreen',prospect:'Spiegelsaal'},
+   {id:'studio',floor:'k1',rects:[[57,12,7,14]],sign:'Presseamt',truth:'Content-Studio mit Greenscreen',prospect:'Spiegelsaal',arena:'rita'},
    {id:'musterwohnung',floor:'k1',rects:[[21,39,22,9]],sign:'Musterwohnung · Besichtigung',truth:'Kellerabteil mit Laminat',prospect:'Gästeflügel',arena:'expose'},
    // --- Keller 2 ---
    {id:'weinkeller',floor:'k2',rects:[[4,4,29,14]],sign:'Weinkeller',truth:'echter Basaltkeller',prospect:'Weinkeller',checkpoint:{x:10.5,y:20.5}},
@@ -65,16 +65,17 @@ export const DUNGEONS={
    {id:'galerie-saal-sued',floor:'k1',rect:[30,32.5,4,2]},
    {id:'galerie-saal-west',floor:'k1',rect:[11.5,20,2,4]},
    {id:'galerie-saal-ost',floor:'k1',rect:[50.5,20,2,4]},
-   {id:'galerie-stall',floor:'k1',rect:[26,4.5,4,2]},
+   // Etappe 4 Teil A: Stallungen und Presseamt sind Arenen (halbes Pferd, Reichweiten-Rita) – Tür zu, solange ihr Boss kämpft.
+   {id:'galerie-stall',floor:'k1',rect:[26,4.5,4,2],arena:'stall'},
    {id:'galerie-verlies',floor:'k1',rect:[6.5,20,2,4]},
-   {id:'galerie-studio',floor:'k1',rect:[55.5,17,2,4]},
+   {id:'galerie-studio',floor:'k1',rect:[55.5,17,2,4],arena:'studio'},
    {id:'galerie-muster',floor:'k1',rect:[30,37.5,4,2],arena:'musterwohnung'},
    {id:'wein-gang-ost',floor:'k2',rect:[32.5,8,2,4]},
    {id:'wein-gang-west',floor:'k2',rect:[6,17.5,4,2]},
    {id:'gang-kelter-west',floor:'k2',rect:[11.5,26,3,4],arena:'kelterhalle'},
    {id:'gang-kelter-sued',floor:'k2',rect:[21,35.5,4,5],arena:'kelterhalle'},
-   // Tresortür (Plan 4.3): drei Siegel. Etappe 3 (E-71): verlangt vorläufig nur die Siegel gebauter Bosse (dungeon.js requiredSeals –
-   // lock.seals gegen DUNGEON_BOSSES gefiltert); mit Exposé und Kurt (Etappe 4) greifen alle drei ohne Datenänderung.
+   // Tresortür (Plan 4.3): drei Siegel. Etappe 3 (E-71): verlangt nur die Siegel gebauter Bosse (dungeon.js requiredSeals –
+   // lock.seals gegen DUNGEON_BOSSES gefiltert). Seit Etappe 4 Teil A sind Exposé und Kurt gebaut: die Tür verlangt alle drei.
    {id:'tresor',floor:'k2',rect:[41.5,20,5,8],lock:{seals:['siegel-gerd','siegel-expose','siegel-kurt']},arena:'thronsaal'},
    {id:'thron-schatz',floor:'k2',rect:[52,35.5,4,3],lock:{boss:'bigb'}}
   ],
@@ -127,7 +128,7 @@ export const DUNGEONS={
   bosses:[
    {id:'gerd',room:'zugbruecke',at:[8.5,31],seal:'siegel-gerd'},
    {id:'expose',room:'musterwohnung',at:[32,43],seal:'siegel-expose'},
-   {id:'rita',room:'studio',at:[60,19],optional:true},
+   {id:'rita',room:'studio',at:[60,19.6],optional:true},
    {id:'halbespferd',room:'stall',at:[28,2.5],rare:.3},
    {id:'korkenkurt',room:'kelterhalle',at:[23,28],seal:'siegel-kurt'},
    {id:'bigb',room:'thronsaal',at:[54,12]}
@@ -168,7 +169,15 @@ export const DUNGEON_ENEMIES={
  // Etappe 3 (E-71): Big Bs Live-Schalte (Plan 7.6, Phase 2). priority = Söldner mit Schadensrolle nehmen sie vor dem Boss („Adds zuerst");
  // reach = jeder lebende Follower gibt Big B „Reichweite" (mehr Schaden, DUNGEON_BOSSES.bigb.reach). noLoot = Helfer lassen keine Beute fallen.
  follower:{name:'Follower',type:'cultist',skin:'warden',art:'scrounger',family:'schlosstrash',level:10,hp:3600,damage:1.2,xp:15,speed:62,aggroRange:0,roamRadius:0,castSet:'d-follower',auto:'scrounger',priority:true,reach:true,noLoot:true,
-  look:'Handy im Querformat vor dem Gesicht, Ringlicht am Gürtel, filmt alles außer sich selbst'}
+  look:'Handy im Querformat vor dem Gesicht, Ringlicht am Gürtel, filmt alles außer sich selbst'},
+ // Etappe 4 Teil A (E-71, Plan 7.2): Interessenten der Besichtigung. goal = sie kämpfen nicht, sondern schlurfen zum Vertragstisch
+ // (DUNGEON_BOSSES.expose.viewing.goal) und unterschreiben dort: Frau Dr. Exposé bekommt Provision (+Schaden, stapelt). Söldner mit
+ // Schadensrolle nehmen das Add, das dem Tisch am nächsten ist (priority); der Schutz spottet sie nicht (sie greifen niemanden an).
+ interessent:{name:'Interessent',type:'cultist',skin:'warden',art:'villager3',family:'schlosstrash',level:9,hp:1600,damage:0,xp:10,speed:12,aggroRange:0,roamRadius:0,castSet:'d-interessent',auto:'scrounger',priority:true,goal:true,noLoot:true,
+  look:'Jacke überm Arm, Zollstock in der Hand, fragt nach dem Keller. Es ist der Keller'},
+ // Etappe 4 Teil A (Plan 7.3): Reichweiten-Ritas Kommentatoren (Story posten, nicht unterbrochen). Fernkampf-Sticheleien, fallen schnell.
+ kommentator:{name:'Kommentator',type:'cultist',skin:'warden',art:'villager5',family:'schlosstrash',level:9,hp:1400,damage:1.2,xp:10,speed:58,aggroRange:0,roamRadius:0,castSet:'d-kommentator',auto:'scrounger',priority:true,noLoot:true,
+  look:'Daumen über dem Handy, schreibt „Erster!“ unter alles, auch unter Beerdigungen'}
 };
 
 // Bosse des Dungeons. phases: at = Lebensanteil; castSet wechselt den Zyklus, summon ruft Adds (DUNGEON_ENEMIES; hp = Anteil am Leben der Art).
@@ -191,7 +200,41 @@ export const DUNGEON_BOSSES={
   level:10,hp:146000,damage:2.2,xp:1500,lootMoment:true,final:true,speed:44,aggroRange:92,roamRadius:4,leash:300,castSet:'d-bigb',auto:'horst',
   look:'Mann um die 45, Pelzmantel aus dem Kostümverleih, Perücke mit Zopf, Goldkette aus goldlackierten Kronkorken, Siegelring aus Messing, Handy am Selfie-Stick mit Ringlicht',
   enrage:{after:360,every:30,damage:.5},reach:.08,confess:{at:.15,taken:.1},
-  phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]}
+  phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]},
+ // ── Etappe 4 Teil A „Die restlichen Bosse“ (E-71, Plan 7.2–7.5). Zahlen gegen die gemessene Gruppe gesetzt (scripts/dungeon-sim.mjs,
+ // Korridor 70–110 s mit Held und vier Söldnern). Figuren: vorhandene Katalogfiguren mit Tönung (tint) in Bossgröße, keine neue
+ // Figurengrafik – eigene Bossgrafik erst nach Freigabe. Merkmale in dungeon.js (Block „Etappe 4 Teil A“), Söldner in companions.js.
+ // Frau Dr. Exposé (Plan 7.2), Siegel 2 im Rittergeschoss. viewing = Besichtigung: Interessenten kommen aus den Besichtigungseingängen
+ // (doors, Meter) und schlurfen zum Vertragstisch (goal); wer ihn erreicht, unterschreibt: +sign.damage Schaden je Unterschrift, höchstens
+ // sign.stack – beim letzten Stapel „VERKAUFT!“: alle fliegen aus der Wohnung, der Kampf setzt zurück. via = je Eingang ein Punkt, den sie
+ // vorher besichtigen (Laminat bewundern), bevor sie zum Tisch gehen.
+ expose:{name:'Frau Dr. Exposé',title:'Immobilienberaterin · Dr. (nicht gefragt)',type:'boss',skin:'horst',art:'gisela',family:'expose',tint:{color:'#f0826c',alpha:.32},
+  level:9,hp:66000,damage:2.8,xp:800,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-expose',auto:'tablet',
+  look:'Hosenanzug in Lachsrosa, Tablet, Schlüsselbund mit dreißig Schlüsseln für drei Türen, Duftstäbchen im Dutt',
+  viewing:{goal:[32,47.2],reach:2.2,doors:[[21.9,43.6],[42.1,43.6]],via:[[26,40.3],[38,40.3]],sign:{damage:.15,stack:5},out:{floor:'k1',x:32,y:36}},
+  phases:[{at:.5,castSet:'d-expose2'},{at:.2,castSet:'d-expose3'},{at:.15}]},
+ // Kellermeister Korken-Kurt (Plan 7.5), Siegel 3 im Basaltgewölbe: Sammeln, Verteilen, Fass in der Rinne; ab 20 % die Sprinkleranlage
+ // (Zeitgrenze: vom Rand her werden Streifen nass und rutschig).
+ korkenkurt:{name:'Kellermeister Korken-Kurt',title:'Sommelier · Jahrgang: gestern',type:'boss',skin:'horst',art:'horst',family:'korkenkurt',tint:{color:'#8c1f45',alpha:.3},
+  level:9,hp:86000,damage:3,xp:900,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-kurt',auto:'korkenzieher',
+  look:'Weste, Korkenzieher am Gürtel wie ein Colt, Probierlöffel an einer Kette, rote Nase, Tastglas in jeder Hand',
+  phases:[{at:.5,castSet:'d-kurt2'},{at:.2,castSet:'d-kurt3'},{at:.15}]},
+ // Reichweiten-Rita (Plan 7.3), optional im Presseamt: Blitzlicht mit Sichtlinie (hinter Deckung), Story posten (unterbrechen, sonst
+ // Kommentatoren), Greenscreen (vor der grünen Wand unsichtbar, der Schutz zieht sie weg). hidden = Zone vor der Wand (Meter),
+ // cover = Deckung im Raum (Meter; sperrt Laufen und Sichtlinie, dungeon.js coverRects). Liegt sie, ruft Big B nur einen Follower.
+ rita:{name:'Reichweiten-Rita',title:'Social-Media-Managerin · Reichweite auf Rechnung',type:'boss',skin:'horst',art:'elke',family:'rita',tint:{color:'#35b25a',alpha:.3},
+  level:9,hp:68000,damage:2.6,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
+  look:'Frau Mitte zwanzig, Ringlicht auf dem Rücken wie ein Heiligenschein, drei Handys am Gürtel, Greenscreen-Tuch als Umhang, Ansteckmikrofon',
+  hidden:{rect:[57.2,12.2,6.6,2.6]},
+  cover:[{id:'kuehlschrank',rect:[59.6,16.6,1.3,1.3]},{id:'palettenwand',rect:[58.4,21.8,2.6,.7]}],
+  phases:[{at:.5,castSet:'d-rita2'},{at:.15}]},
+ // Das halbe Pferd (Plan 7.4), selten (30 % der Durchgänge) in den Stallungen. feeds = Trog (Meter): in range Metern heilt es heal
+ // Anteil Leben je Sekunde; „Säuft am Trog“ läuft es hin (retreat), der Schutz zieht es weg. mountArt = das Reittier „Das halbe Pferd“
+ // als Figur (MOUNTS.halbespferd: Bogen des Hofpferds, getönt zum Schimmel), bis eigene Grafik freigegeben ist. Beute: Hafersack, 3 % Reittier (DROP_TABLES.halbespferd).
+ halbespferd:{name:'Das halbe Pferd',title:'Vorderhälfte eines Schimmels · frisch gestriegelt',type:'boss',skin:'boar',mountArt:'halbespferd',family:'halbespferd',
+  level:9,hp:74000,damage:3,xp:500,lootMoment:true,speed:58,aggroRange:92,roamRadius:4,leash:160,castSet:'d-pferd',auto:'huf',
+  look:'Die vordere Hälfte eines Schimmels, frisch gestriegelt, hinten ein sauberer Schnitt mit Pflaster. Es säuft',
+  feeds:{at:[23.6,3.8],range:3.5,heal:.02}}
 };
 
 // Zaubermuster der Dungeon-Gegner. Neue Merkmale (Plan Abschnitt 9): cone {angle (Grad), range (Einheiten)},
@@ -264,7 +307,71 @@ export const DUNGEON_CASTS={
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Follower (Live-Schalte): Selfie mit Blitz auf einen zufälligen Nicht-Schutz.
  'd-follower':{cycle:['selfie'],casts:{
-  selfie:{name:'Selfie mit Blitz',hint:'Fläche verlassen',total:1.6,damage:140,pct:.12,radius:28,ground:true,target:'random'}}}
+  selfie:{name:'Selfie mit Blitz',hint:'Fläche verlassen',total:1.6,damage:140,pct:.12,radius:28,ground:true,target:'random'}}},
+ // ── Etappe 4 Teil A (E-71, Plan 7.2–7.5 und Abschnitt 9). Neue Merkmale, alle in dungeon.js (Block „Etappe 4 Teil A“) ausgewertet:
+ // summon.goal: Adds laufen zum Ziel des Bosses (viewing.goal) statt zu kämpfen; doors = aus wie vielen Besichtigungseingängen.
+ // decoy {count,tell}: von den Bodenstellen (circles) sind count Attrappen; erst nach tell Sekunden bekommen die echten ihren Stempel –
+ //   vorher sehen alle gleich aus. Nur die echten treffen. Söldner warten den Stempel ab und meiden nur echte Stellen.
+ // signAll: kommt der Zauber durch, unterschreiben alle lebenden Interessenten sofort (Notartermin).
+ // stack {radius,share}: um den Markierten (target:'random'); share = Anteil Leben, geteilt durch alle im Kreis (allein tödlich).
+ // spread {radius}: um jeden ein eigener Kreis; wer in fremden Kreisen steht, nimmt pct je Kreis dazu (Überlappung addiert).
+ // line.axis 'y': waagrechte Bahnen (Rinnen quer durch die Kelterhalle, Anteile der Raumhöhe); pick = wie viele Rinnen rollen, aim =
+ //   die erste liegt unter einem zufälligen Nicht-Schutz (wer schon in einer Rinne steht, zuerst). persist.edge: Streifen vom Rand her (Sprinkler), bleiben bis Kampfende,
+ //   pct je Sekunde und slow (langsamer laufen). los {blind,miss}: trifft nur, wer beim Zauberende Sichtlinie hat; geblendet = halber
+ //   Schaden für blind Sekunden; mit brand wie Gerds Hausverbot: wer in duration Sekunden wieder im Blitz steht, nimmt bonus je Stapel mehr. hidden: läuft zur Zone vor der Wand (DUNGEON_BOSSES.rita.hidden) und ist dort unsichtbar. retreat:
+ //   läuft zum Trog (feeds) und säuft; Spott des Schutzes beendet beides. center:'self' = Fläche um den Boss selbst.
+ 'd-interessent':{cycle:['unterschrift'],casts:{
+  unterschrift:{name:'Unterschrift',hint:'Vorher legen',total:1,damage:0,goal:true}}},
+ 'd-expose':{cycle:['verkauft','forderung'],tracks:[{cast:'termin',every:30,first:5}],casts:{
+  termin:{name:'Besichtigungstermin',hint:'Interessenten legen',total:1.6,damage:0,summon:{kind:'interessent',count:3,goal:true,doors:1}},
+  verkauft:{name:'Grundstück verkauft',hint:'Stempel abwarten',total:2.6,damage:380,pct:.55,ground:true,radius:30,circles:4,decoy:{count:2,tell:.8},brand:{name:'Grundbuchsperre',duration:25,bonus:.8}},
+  forderung:{name:'Provisionsforderung',hint:'Unterbrechen',total:2.4,damage:520,pct:.4,interruptible:true}}},
+ // Phase 2 „Tag der offenen Tür“ (50–20 %): Besichtigung alle 20 s aus beiden Eingängen.
+ 'd-expose2':{cycle:['verkauft','forderung','verkauft'],tracks:[{cast:'offen',every:20,first:3}],casts:{
+  offen:{name:'Tag der offenen Tür',hint:'Je Eingang einer',total:1.6,damage:0,summon:{kind:'interessent',count:4,goal:true,doors:2}},
+  verkauft:{name:'Grundstück verkauft',hint:'Stempel abwarten',total:2.6,damage:380,pct:.55,ground:true,radius:30,circles:4,decoy:{count:2,tell:.8},brand:{name:'Grundbuchsperre',duration:25,bonus:.8}},
+  forderung:{name:'Provisionsforderung',hint:'Unterbrechen',total:2.4,damage:520,pct:.4,interruptible:true}}},
+ // Phase 3 „Notartermin“ (20–0 %): zweimal unterbrechen, sonst heilt sie 10 % und alle Interessenten unterschreiben.
+ 'd-expose3':{cycle:['notar','verkauft','forderung'],tracks:[{cast:'offen',every:20,first:9}],casts:{
+  notar:{name:'Notartermin',hint:'Zweimal unterbrechen',total:3.5,damage:0,interruptible:true,interrupts:2,selfHeal:.1,signAll:true,say:'Der Notar ist mein Cousin. Er ist Notar für Kleingärten.'},
+  offen:{name:'Tag der offenen Tür',hint:'Je Eingang einer',total:1.6,damage:0,summon:{kind:'interessent',count:4,goal:true,doors:2}},
+  verkauft:{name:'Grundstück verkauft',hint:'Stempel abwarten',total:2.6,damage:380,pct:.55,ground:true,radius:30,circles:4,decoy:{count:2,tell:.8},brand:{name:'Grundbuchsperre',duration:25,bonus:.8}},
+  forderung:{name:'Provisionsforderung',hint:'Unterbrechen',total:2.4,damage:520,pct:.4,interruptible:true}}},
+ // Korken-Kurt: Rinnen wie in der Kelterhalle gezeichnet (Anteile .26/.52/.78 der Raumhöhe, je 2,6 m breit).
+ 'd-kurt':{cycle:['runde','fass','zahlen','fass'],casts:{
+  runde:{name:'Runde auf mich!',hint:'Zusammen stehen',total:3.2,damage:1500,target:'random',stack:{radius:40,share:1.2}},
+  zahlen:{name:'Jeder zahlt selbst',hint:'Auseinander',total:3,damage:350,pct:.25,spread:{radius:34}},
+  fass:{name:'Fass rollt',hint:'Aus der Rinne',total:2.4,damage:600,pct:.8,line:{axis:'y',lanes:[[.18,.34],[.44,.6],[.7,.86]],pick:1,aim:true}}}},
+ // Phase 2 „Verkostung“ (50–20 %): 20 % schneller (gaps), zwei Rinnen, Korken knallen.
+ 'd-kurt2':{cycle:['runde','fass2','korken','zahlen','fass2'],gaps:{0:4.4,1:4.4,2:4.4,3:4.4,4:4.4},casts:{
+  runde:{name:'Runde auf mich!',hint:'Zusammen stehen',total:3.2,damage:1500,target:'random',stack:{radius:40,share:1.2}},
+  zahlen:{name:'Jeder zahlt selbst',hint:'Auseinander',total:3,damage:350,pct:.25,spread:{radius:34}},
+  fass2:{name:'Fass rollt',hint:'Aus der Rinne',total:2.4,damage:600,pct:.8,line:{axis:'y',lanes:[[.18,.34],[.44,.6],[.7,.86]],pick:2,aim:true}},
+  korken:{name:'Korken knallen',hint:'Fläche verlassen',total:2,damage:200,pct:.5,ground:true,radius:22,circles:4,brand:{name:'Sektdusche',duration:30,bonus:.8}}}},
+ // Phase 3 „Sprinkleranlage“ (20–0 %): alle 10 s ein nasser Streifen mehr vom Rand her (Zeitgrenze), dazu der Rest.
+ 'd-kurt3':{cycle:['runde','korken','fass2','zahlen','korken'],gaps:{0:4.4,1:4.4,2:4.4,3:4.4,4:4.4},tracks:[{cast:'sprinkler',every:10,first:1}],casts:{
+  sprinkler:{name:'Sprinkleranlage',hint:'Mitte halten',total:1,damage:60,persist:{edge:true,width:2,pct:.04,slow:.4}},
+  runde:{name:'Runde auf mich!',hint:'Zusammen stehen',total:3.2,damage:1500,target:'random',stack:{radius:40,share:1.2}},
+  zahlen:{name:'Jeder zahlt selbst',hint:'Auseinander',total:3,damage:350,pct:.25,spread:{radius:34}},
+  fass2:{name:'Fass rollt',hint:'Aus der Rinne',total:2.4,damage:600,pct:.8,line:{axis:'y',lanes:[[.18,.34],[.44,.6],[.7,.86]],pick:2,aim:true}},
+  korken:{name:'Korken knallen',hint:'Fläche verlassen',total:2,damage:200,pct:.5,ground:true,radius:22,circles:4,brand:{name:'Sektdusche',duration:30,bonus:.8}}}},
+ // Reichweiten-Rita: Blitzlicht (Sichtlinie), Story posten (unterbrechen), Greenscreen als Nebentakt.
+ 'd-rita':{cycle:['blitz','story'],tracks:[{cast:'greenscreen',every:22,first:12}],casts:{
+  blitz:{name:'Blitzlicht',hint:'Hinter Deckung',total:2.5,damage:300,pct:.5,los:{blind:4,miss:.5},brand:{name:'Überbelichtet',duration:30,bonus:.8}},
+  story:{name:'Story posten',hint:'Unterbrechen',total:2.2,damage:0,interruptible:true,summon:{kind:'kommentator',count:2}},
+  greenscreen:{name:'Greenscreen',hint:'Weg vom Greenscreen',total:1,damage:0,hidden:{duration:6}}}},
+ // Phase 2 (50–0 %): Big B feuert sie per Sprachnachricht – Blitzlicht öfter, alles 20 % schneller.
+ 'd-rita2':{cycle:['blitz','story','blitz'],gaps:{0:4.4,1:4.4,2:4.4},tracks:[{cast:'greenscreen',every:18,first:6}],casts:{
+  blitz:{name:'Blitzlicht',hint:'Hinter Deckung',total:2.5,damage:300,pct:.5,los:{blind:4,miss:.5},brand:{name:'Überbelichtet',duration:30,bonus:.8}},
+  story:{name:'Story posten',hint:'Unterbrechen',total:2.2,damage:0,interruptible:true,summon:{kind:'kommentator',count:2}},
+  greenscreen:{name:'Greenscreen',hint:'Weg vom Greenscreen',total:1,damage:0,hidden:{duration:6}}}},
+ 'd-kommentator':{cycle:['stichelei'],casts:{
+  stichelei:{name:'Hate-Kommentar',hint:'Fläche verlassen',total:1.6,damage:120,pct:.1,radius:26,ground:true,target:'random'}}},
+ // Das halbe Pferd: Huftritt nach vorn, Wiehern um sich selbst, Säuft am Trog als Nebentakt.
+ 'd-pferd':{cycle:['huftritt','wiehern','huftritt'],tracks:[{cast:'saufen',every:15,first:8}],casts:{
+  huftritt:{name:'Huftritt',hint:'Nicht davor stehen',total:1.6,damage:300,pct:.45,cone:{angle:60,range:38},tankSafe:.25},
+  wiehern:{name:'Wiehern',hint:'Kurz raus',total:2.2,damage:250,pct:.55,ground:true,radius:28,center:'self',brand:{name:'Ohrensausen',duration:30,bonus:1}},
+  saufen:{name:'Säuft am Trog',hint:'Vom Trog wegziehen',total:1,damage:0,retreat:{duration:6},feeds:true}}}
 };
 
 // Belohnungen (E-71, Etappe 1): Siegelmarken als Währung gegen Beutepech (Händler Vermieter Volker folgt in Etappe 4), Tagesbonus beim
@@ -333,7 +440,28 @@ export const DUNGEON_TEXT={
    defeat:'Schnitt. Das nehmen wir nochmal.',
    // Ausreden beim Vorlegen der Beweise am Thron (Etappe 4 baut das Vorlegen)
    excuses:{mietvertrag:'Das ist ein Pachtvertrag. Bis zur Schlossübernahme.',leihschein:'Der Mantel ist geleast. Das ist wie gekauft, nur ehrlicher.',
-    kirmesurkunde:'Adelstitel werden heute eben anders verliehen. Mit Luftgewehr.'}}},
+    kirmesurkunde:'Adelstitel werden heute eben anders verliehen. Mit Luftgewehr.'}},
+  // Etappe 4 Teil A: Sprüche aus Plan 7.2–7.5 (Entwurf im Ton E-20, Story nimmt ab). Neu von Teil A: defeat-Zeilen und Pferd/Rita-Kleinkram.
+  expose:{engage:'Traumlage! Südhang! Also, Südkeller. Mit Tageslicht, wenn man die Tür aufmacht.',
+   phases:{'0.5':'Tag der offenen Tür! Die Interessenten sind nicht bestellt. Die sind nur zufällig alle hier.',
+    '0.2':'Notartermin! Der Notar ist mein Cousin. Er ist Notar für Kleingärten.',
+    '0.15':'Provision ist trotzdem fällig. Steht im Kleingedruckten. Das Kleingedruckte hab ich heute Morgen geschrieben.'},
+   sold:'VERKAUFT! Die Wohnung ist weg. Ihr auch. Raus.',
+   defeat:'Das Siegel … nehmt es. Es ist aus Kartoffel. Die Unterschrift gilt trotzdem.'},
+  korkenkurt:{engage:'Das ist ein 1998er. Der Karton ist von 1998. Der Wein ist von Dienstag.',
+   phases:{'0.5':'Verkostung! Spucken ist erlaubt. Schlucken ist schneller.',
+    '0.2':'Die Sprinkler sind nur Deko! … Hat Big B gesagt.',
+    '0.15':'Ist Tetrapak. Aus der Pfalz. Ich hab’s nur umgefüllt. Mit Liebe.'},
+   defeat:'Das Siegel … aus Korken. Mit Kerzenwachs. Der Aufzug geht jetzt auch von unten.'},
+  rita:{engage:'Ihr seid live! … Vor drei Leuten. Zwei davon sind meine Mutter.',
+   phases:{'0.5':'Big B sagt, ich bin gefeuert. Per Sprachnachricht. Aus dem Nebenraum.',
+    '0.15':'Okay. Hier ist seine Pressemappe. Die Urkunde ist von der Kirmes. Ich hab sie gerahmt.'},
+   defeat:'Offline. Endlich. Das erste Wochenende seit 2019.'},
+  halbespferd:{engage:'Es säuft und säuft. Es kommt hinten alles wieder raus. Es gibt kein Hinten.',
+   defeat:'Das halbe Pferd legt sich hin. Die andere Hälfte hat es nie gegeben.'}},
+ // Etappe 4 Teil A: Kampftexte der neuen Merkmale (kurz, Großbuchstaben wie HAUSVERBOT).
+ e4a:{signed:n=>'UNTERSCHRIEBEN ×'+n,sold:'VERKAUFT!',stamp:'STEMPEL',blind:'GEBLENDET',hidden:'GREENSCREEN',drink:'SÄUFT',wet:'NASS',
+  shared:n=>'GETEILT /'+n,fled:'FLIEHT',soldOut:'Frau Dr. Exposé hat verkauft. Ihr steht wieder in der Ahnengalerie.',mount:n=>'Reittier: '+n+'!'},
  // Etappe 3: Kampftexte der neuen Merkmale (kurz, Großbuchstaben wie HAUSVERBOT) und das Ende des Dungeons.
  bigb:{enrage:'DIE GANZE WAHRHEIT',interrupts:(n,m)=>'UNTERBROCHEN '+n+'/'+m,selfHeal:'SELBST RAUSGEZOGEN',reach:'REICHWEITE',
   confess:'GESTÄNDNIS',lieHit:'GELOGEN'},

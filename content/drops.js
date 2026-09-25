@@ -40,7 +40,14 @@ export const DROP_TABLES={
  // Chance je Eintrag, itemization.js rollDrop). Kronkorken als Material (die Goldkette ist daraus). Fällt kein Teil, legt der Dungeon ein
  // seltenes nach (wie bei Gerd); dazu kommt die Endtruhe mit Wahl in der Schatzkammer.
  bigb:{items:['siegelring-echtgold','pelzmantel-baron','kronkorken'],material:'kronkorken',materialChance:.7,gearChance:.9,rareChance:.7,unique:'siegelring-echtgold',uniqueChance:.12,
-  uniques:[{id:'pelzmantel-baron',chance:.12}],coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']}
+  uniques:[{id:'pelzmantel-baron',chance:.12}],coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
+ // Etappe 4 Teil A (E-71, Plan 11): eigene Tabellen der restlichen Schlossbosse, je eine Dorflegende zu 15 %. Fällt kein Teil, legt der
+ // Dungeon ein seltenes nach (wie bei Gerd). Das halbe Pferd: immer Hafersäcke (Material, zehn ergeben am Fahrstall das Reittier) und
+ // zu mountChance das Reittier selbst (dungeon.js grantMount; V-D8 geändert: 3 % plus Hafersack-Garantie).
+ expose:{items:['hochglanz-expose','flugblatt','currywurst'],material:'flugblatt',materialChance:.6,gearChance:.85,rareChance:.6,unique:'hochglanz-expose',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
+ korkenkurt:{items:['korkenzieher-kellermeister','kronkorken','kaltgetraenk'],material:'kronkorken',materialChance:.6,gearChance:.85,rareChance:.6,unique:'korkenzieher-kellermeister',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
+ rita:{items:['ringlicht-reichweite','kabel','kaltgetraenk'],material:'kabel',materialChance:.6,gearChance:.85,rareChance:.6,unique:'ringlicht-reichweite',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
+ halbespferd:{items:['hafersack','halbes-hufeisen'],material:'hafersack',materialChance:.95,mount:'halbespferd',mountChance:.03,gearChance:.6,rareChance:.5,unique:'halbes-hufeisen',uniqueChance:.08,coinsChance:.5,slots:['weapon','head','shoulders','body','hands','waist','legs','feet','ring','trinket','charm']}
 };
 /** Verpflegung, die menschliche Gegner und Bosse zusätzlich fallen lassen können. */
-export const FOOD_DROPS={warden:'brezel',scrounger:'kaltgetraenk',inspector:'brezel',oberpraktikant:'brezel',horst:'brezel',gisela:'currywurst',automat:'kaltgetraenk',kegler:'brezel',jga:'kaltgetraenk',sigi:'currywurst',klaus:'brezel',timo:'kaltgetraenk',gerd:'currywurst',schlosstrash:'brezel',bigb:'kaltgetraenk'};
+export const FOOD_DROPS={warden:'brezel',scrounger:'kaltgetraenk',inspector:'brezel',oberpraktikant:'brezel',horst:'brezel',gisela:'currywurst',automat:'kaltgetraenk',kegler:'brezel',jga:'kaltgetraenk',sigi:'currywurst',klaus:'brezel',timo:'kaltgetraenk',gerd:'currywurst',schlosstrash:'brezel',bigb:'kaltgetraenk',expose:'currywurst',korkenkurt:'kaltgetraenk',rita:'kaltgetraenk'};

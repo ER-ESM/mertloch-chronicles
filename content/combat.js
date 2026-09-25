@@ -5,7 +5,9 @@ export const ENEMY_AUTOS={
  boar:{name:'Hauer',min:32,max:44,speed:2.1,range:38},badger:{name:'Dachsbiss',min:22,max:32,speed:1.8,range:35},goose:{name:'Wadenkneifer',min:15,max:23,speed:1.35,range:34},raven:{name:'Schnabelhieb',min:13,max:20,speed:1.2,range:34},fox:{name:'Fuchsbiss',min:24,max:34,speed:1.6,range:36},
  warden:{name:'Aktenklammerwurf',min:26,max:38,speed:2.4,range:145,ranged:true},scrounger:{name:'Becherwurf',min:22,max:32,speed:2.2,range:130,ranged:true},inspector:{name:'Stempelwurf',min:30,max:42,speed:2.3,range:150,ranged:true},
  oberpraktikant:{name:'Dienstmützen-Wurf',min:34,max:46,speed:2.3,range:150,ranged:true},
- horst:{name:'Ordnerkante',min:46,max:64,speed:2.6,range:58},elite:{name:'Alphahauer',min:40,max:54,speed:2.1,range:43},gisela:{name:'Kannenschlag',min:55,max:72,speed:2.7,range:60},automat:{name:'Greifarm',min:60,max:85,speed:2.9,range:65}
+ horst:{name:'Ordnerkante',min:46,max:64,speed:2.6,range:58},elite:{name:'Alphahauer',min:40,max:54,speed:2.1,range:43},gisela:{name:'Kannenschlag',min:55,max:72,speed:2.7,range:60},automat:{name:'Greifarm',min:60,max:85,speed:2.9,range:65},
+ // Dungeon Etappe 4 Teil A (E-71): Autoangriffe der restlichen Schlossbosse (Faktor damage am Boss)
+ tablet:{name:'Tabletkante',min:44,max:60,speed:2.5,range:56},korkenzieher:{name:'Korkenzieher',min:46,max:62,speed:2.5,range:56},ringlicht:{name:'Ringlicht-Schwinger',min:40,max:56,speed:2.4,range:58},huf:{name:'Hufschlag',min:48,max:64,speed:2.6,range:40}
 };
 export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43};
 export const COMBAT_TEXT={surge:'In Fahrt',surgeHint:'In Fahrt: Spezialkniff +20 %',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',notReady:'Noch nicht bereit.',noTarget:'Kein Ziel.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
@@ -45,7 +47,12 @@ export const AUTO_INFO={
  horst:{effect:'Horst schlägt mit der Ordnerkante zu, sobald du in Reichweite stehst.',why:'Erster Boss-Autoangriff, der wehtut: zwischen seinen Zaubern gehört die Parade bereit.'},
  elite:{effect:'Der Alphahauer trifft schwerer und etwas weiter als der Feldkeiler.',why:'Elite-Kämpfe dauern doppelt so lange – über die Zeit ist der Autoangriff der größere Teil des Schadens.',terms:['elite']},
  gisela:{effect:'Gisela schlägt mit der vollen Gießkanne zu.',why:'Ihre Nahkampfreichweite ist größer, als sie aussieht – zwei Schritte Abstand sind keine Deckung.'},
- automat:{effect:'Der Greifarm fährt aus und packt zu – härtester Autoangriff im Spiel.',why:'Bei diesem Takt zählt jede Sekunde im Nahbereich: Fernkämpfer bleiben draußen, Dieter pariert.'}
+ automat:{effect:'Der Greifarm fährt aus und packt zu – härtester Autoangriff im Spiel.',why:'Bei diesem Takt zählt jede Sekunde im Nahbereich: Fernkämpfer bleiben draußen, Dieter pariert.'},
+ // Dungeon Etappe 4 Teil A (E-71)
+ tablet:{effect:'Frau Dr. Exposé schlägt mit der Tabletkante zu. Das Exposé ist noch offen.',why:'Sie hält still, solange der Schutz sie hält: Der Schaden läuft auf ihn, die Gruppe kümmert sich um die Interessenten.'},
+ korkenzieher:{effect:'Korken-Kurt sticht mit dem Korkenzieher zu, als wär’s ein Tetrapak.',why:'Zwischen Sammeln, Verteilen und Fässern bleibt der Schaden beim Schutz, wenn der ihn in der Mitte hält.'},
+ ringlicht:{effect:'Rita schwingt das Ringlicht wie eine Handtasche.',why:'Schwach je Treffer. Gefährlich ist ihr Blitzlicht, nicht der Schlag.'},
+ huf:{effect:'Das halbe Pferd tritt mit dem Vorderhuf zu. Hinten ist ja nichts.',why:'Nahkampf in engen Stallungen: Der Schutz hält es vom Trog weg, alle anderen stehen seitlich.'}
 };
 /** Vollständige Erklärung eines Gegner-Autoangriffs: geschriebener Teil plus abgeleitete Zahlen. */
 export function describeAuto(id){
@@ -58,9 +65,9 @@ export function describeAuto(id){
 }
 for(const id of Object.keys(ENEMY_AUTOS))ENEMY_AUTOS[id].info=describeAuto(id);
 /** Merkmale eines Gegnerzaubers in Vorrang-Reihenfolge (der gefährlichste Teil zuerst). Etappe 2 Dungeon (E-71). */
-export const CAST_TRAITS=['lie','tankDebuff','cone','line','ground','stack','spread','interrupt','interrupts','call','heal','summon','guard','random','knockback','brand','persist','tank','hit'];
+export const CAST_TRAITS=['lie','decoy','tankDebuff','cone','line','los','ground','stack','spread','interrupt','interrupts','call','heal','goal','summon','hidden','feeds','guard','random','knockback','brand','persist','wet','tank','hit'];
 export function castTraits(c){const t=[];if(!c)return t;if(c.lie)t.push('lie');if(c.cone)t.push('cone');if(c.line)t.push('line');if(c.ground)t.push('ground');if(c.stack)t.push('stack');if(c.spread)t.push('spread');
- if(c.target==='random')t.push('random');if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.brand)t.push('brand');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');/* Etappe 3 */if(c.tankDebuff)t.push('tankDebuff');if(c.persist)t.push('persist');if(c.interrupts>1)t.push('interrupts');
+ if(c.target==='random')t.push('random');if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.brand)t.push('brand');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');/* Etappe 3 */if(c.tankDebuff)t.push('tankDebuff');if(c.persist)t.push('persist');if(c.interrupts>1)t.push('interrupts');/* Etappe 4 Teil A */if(c.decoy)t.push('decoy');if(c.los)t.push('los');if(c.summon?.goal||c.goal||c.signAll)t.push('goal');if(c.hidden)t.push('hidden');if(c.retreat||c.feeds)t.push('feeds');if(c.persist?.slow)t.push('wet');
  if(!t.length)t.push('hit');return t.sort((a,b)=>CAST_TRAITS.indexOf(a)-CAST_TRAITS.indexOf(b));}
 /**
  * Etappe 2 (E-71, Analyse Verbesserung 5): Symbol, Merkmale, Antwort und Kurzzahlen eines Gegnerzaubers – vollständig aus seinen
@@ -82,9 +89,13 @@ export function castSymbols(c,{interrupt=true}={}){
  if(c.frontGuard)numbers.push({label:N.guard,value:'−'+Math.round((1-c.frontGuard.factor)*100),unit:'%'});
  if(c.callHelp)numbers.push({label:N.callRange,value:m(c.callHelp.range),unit:'m'});
  if(c.brand)numbers.push({label:c.brand.name||N.brand,value:'+'+Math.round((c.brand.bonus||0)*100),unit:'%'},{label:N.duration,value:c.brand.duration,unit:'s'});
- /* Etappe 3 „Big B“ */if(c.lie)numbers.push({label:N.tell,value:String(c.lie.tell??1).replace('.',','),unit:'s'});if(c.line)numbers.push({label:N.lanes,value:(c.line.truth||[]).length+' / '+c.line.lanes.length,unit:''});
+ /* Etappe 3 „Big B“ */if(c.lie)numbers.push({label:N.tell,value:String(c.lie.tell??1).replace('.',','),unit:'s'});if(c.line)numbers.push({label:N.lanes,value:(c.line.pick||(c.line.truth||[]).length)+' / '+c.line.lanes.length,unit:''});
  if(c.tankDebuff)numbers.push({label:c.tankDebuff.name,value:'+'+Math.round(c.tankDebuff.taken*100),unit:'%'},{label:N.stacks,value:c.tankDebuff.stack,unit:''});
- if(c.persist)numbers.push({label:N.persist,value:c.persist.duration,unit:'s'});if(c.interrupts>1)numbers.push({label:N.interrupts,value:c.interrupts,unit:''});
+ if(c.persist&&!c.persist.edge)numbers.push({label:N.persist,value:c.persist.duration,unit:'s'});if(c.interrupts>1)numbers.push({label:N.interrupts,value:c.interrupts,unit:''});
+ /* Etappe 4 Teil A */if(c.decoy)numbers.push({label:N.decoy,value:c.decoy.count+' / '+c.circles,unit:''},{label:N.stamp,value:String(c.decoy.tell).replace('.',','),unit:'s'});
+ if(c.stack)numbers.push({label:N.radius,value:m(c.stack.radius),unit:'m'},{label:N.share,value:Math.round(c.stack.share*100),unit:'%'});if(c.spread)numbers.push({label:N.radius,value:m(c.spread.radius),unit:'m'});
+ if(c.los)numbers.push({label:N.blind,value:c.los.blind,unit:'s'});if(c.persist?.edge)numbers.push({label:N.stripe,value:c.persist.width,unit:'m'},{label:N.slow,value:'−'+Math.round((c.persist.slow||0)*100),unit:'%'});if(c.retreat)numbers.push({label:N.duration,value:c.retreat.duration,unit:'s'});if(c.hidden)numbers.push({label:N.duration,value:c.hidden.duration,unit:'s'});
+ if(c.selfHeal)numbers.push({label:N.heal,value:Math.round(c.selfHeal*100),unit:'%'});
  return {icon:icon(main),main,hint,traits,facts:numbers};
 }
 /** Jede Kampfregel mit einer Zahl als Glossareintrag: name/short/long plus die Zahlen und ihre Quelle.

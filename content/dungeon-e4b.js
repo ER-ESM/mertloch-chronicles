@@ -9,7 +9,8 @@ export const DUNGEON_E4B={
  alerts:{interrupted:'Unterbrochen!',again:(n,m)=>'Unterbrochen '+n+'/'+m+' · nochmal!'},
  // ── Kampf-Klarheit (dungeon.js quietFloat): Welt-Worte, die im Bosskampf nicht entstehen, weil Bossrahmen und Warnleiste sie zeigen.
  // heroFloats bleiben am Helden (eigene Schwäche), nur auf Söldnern entfallen sie.
- clarity:{hudFloats:['GESTÄNDNIS','DIE GANZE WAHRHEIT','REICHWEITE','UNTERBROCHEN','SELBST RAUSGEZOGEN','ZERTIFIKAT','HAUSVERBOT'],heroFloats:['ZERTIFIKAT','HAUSVERBOT']},
+ clarity:{hudFloats:['GESTÄNDNIS','DIE GANZE WAHRHEIT','REICHWEITE','UNTERBROCHEN','SELBST RAUSGEZOGEN','ZERTIFIKAT','HAUSVERBOT',
+  /* Etappe 4 Teil A: Provision, Unsichtbar, Säuft und Nass stehen als Chip im Bossrahmen */'UNTERSCHRIEBEN','GREENSCREEN','SÄUFT','NASS','GEBLENDET'],heroFloats:['ZERTIFIKAT','HAUSVERBOT','NASS','GEBLENDET']},
  // ── Verfolgung im Dungeon: je Zeile Name und Bedeutung im Tooltip, je Symbol der einzelne Stand
  tracker:{
   wings:'Flügel heute',wingsNote:'Jeder Flügel endet mit einem Siegelträger. Siegel und Abkürzungen bleiben bis zum Tagesreset um 4 Uhr.',
