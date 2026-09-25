@@ -97,7 +97,22 @@ export function paintCardCanvas(canvas,card,{back=false,glow=false,dim=false,bg=
  const s=Math.max(1,Math.floor(H/24)),h=Math.floor(H/s)-1,w=Math.min(Math.floor(W/s)-2,Math.round(h*.74));
  c.imageSmoothingEnabled=false;drawCard(c,Math.round((W-w*s)/2),Math.round((H-h*s)/2),w,h,s,card,{back,glow,dim,rankRight});
 }
+/** Karte mit großem Rang (E-72, Kenner-Befund „Rang zu klein, von der Taste verdeckt“): Farbzeichen oben mittig, Rang groß darunter.
+ *  Grundmaß 19u × 23u (u = Zielpixel je Einheit); w/h/rankScale überschreiben es für die kleine Weltkarte. */
+export function drawBigCard(c,x,y,u,card,{glow=false,dim=false,w=19,h=23,rankScale=2}={}){
+ const rk=RESOURCES.kaethe?.ranks[card.rank]||{short:card.rank},trump=!!rk.trump,col=suitColor(card.suit),short=String(rk.short);
+ const px=(a,b,ww,hh,color)=>{c.fillStyle=color;c.fillRect(Math.round(x+a*u),Math.round(y+b*u),Math.ceil(ww*u),Math.ceil(hh*u));};
+ if(glow){px(0,-1,w,h+2,'#ffe38a');px(-1,0,w+2,h,'#ffe38a');}
+ px(1,0,w-2,h,CARD.edge);px(0,1,w,h-2,CARD.edge);px(1,1,w-2,h-2,trump?CARD.trump:CARD.face);px(2,2,w-4,h-4,CARD.face);px(2,h-3,w-4,1,CARD.faceShade);
+ const big=rankScale>1,gs=u,gw=7*gs,fs=u*rankScale,tw=pixelTextWidth(short,fs),gy=big?2:1.5,ry=big?10:9;
+ suitGlyph(c,card.suit,Math.round(x+(w*u-gw)/2),Math.round(y+gy*u),gs,col);
+ pixelText(c,short,Math.round(x+(w*u-tw)/2),Math.round(y+ry*u),fs,col);
+ if(trump&&big){/* Trumpf: Krone in den unteren Ecken */for(const cx of [2,w-5]){px(cx,h-4,3,1,'#c8961e');px(cx,h-5,1,1,'#c8961e');px(cx+2,h-5,1,1,'#c8961e');}}
+ if(dim){c.save();c.globalAlpha*=.45;px(0,0,w,h,'#10120f');c.restore();}
+}
+/** Großkarte auf eine ganze Leinwand; u so groß, dass sie die Leinwand füllt. */
+export function paintBigCardCanvas(canvas,card,{glow=false,dim=false,keep=false}={}){const c=canvas.getContext('2d'),W=canvas.width,H=canvas.height;if(!keep)c.clearRect(0,0,W,H);c.imageSmoothingEnabled=false;const u=Math.max(1,Math.floor(Math.min((W-2)/19,(H-2)/23)));drawBigCard(c,Math.round((W-19*u)/2),Math.round((H-23*u)/2),u,card,{glow,dim});}
 /** Karte als kleines Bild für die Welt (drehend geworfen, Strudel, Stich): zwischengespeichert je Karte. */
-export function cardSprite(card,{back=false,glow=false}={}){const key='card|'+(back?'back':card.suit+card.rank)+'|'+(glow?1:0);let cv=cache.get(key);if(cv)return cv;const w=11,h=15;cv=canvasOf(w+2,h+2);const c=cv.getContext('2d');drawCard(c,1,1,w,h,1,card||{suit:'herz',rank:'A'},{back,rank:false});if(glow){c.globalCompositeOperation='destination-over';c.fillStyle='#ffe38a';c.fillRect(0,1,w+2,h);c.fillRect(1,0,w,h+2);c.globalCompositeOperation='source-over';}cache.set(key,cv);return cv;}
+export function cardSprite(card,{back=false,glow=false}={}){const key='card|'+(back?'back':card.suit+card.rank)+'|'+(glow?1:0);let cv=cache.get(key);if(cv)return cv;const w=11,h=16;cv=canvasOf(w+2,h+2);const c=cv.getContext('2d');if(back)drawCard(c,1,1,w,h,1,null,{back:true});else drawBigCard(c,1,1,1,card||{suit:'herz',rank:'A'},{w,h,rankScale:1});if(glow){c.globalCompositeOperation='destination-over';c.fillStyle='#ffe38a';c.fillRect(0,1,w+2,h);c.fillRect(1,0,w,h+2);c.globalCompositeOperation='source-over';}cache.set(key,cv);return cv;}
 /** Prüfhilfe (tests/resource-fx.test.mjs): unbekannte Palettenzeichen oder leere Bildkarten. */
 export function spriteProblems(){const out=[];for(const [name,def] of Object.entries(MAPS)){if(!def.m.length)out.push(name+': leer');for(const row of def.m)for(const ch of row)if(ch!=='.'&&!def.p[ch])out.push(name+': Farbe '+ch);}for(const [suit,m] of Object.entries(SUIT_MAPS))if(m.some(r=>r.length!==7))out.push(suit+': Breite');for(const [ch,g] of Object.entries(FONT))if(g.length!==5||g.some(r=>r.length!==3))out.push('Schrift '+ch);return out;}
