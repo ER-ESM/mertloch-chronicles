@@ -28,7 +28,7 @@ export const slots=EQUIPMENT_SLOTS;
 // Güte-Namen kommen aus content/items.js, damit „Dorflegende“ (epic) überall gleich heißt.
 const rarity=RARITIES;
 // Gelieferte Einzelbilder gewinnen über die Ausrüstungsfamilie: die Datei heißt wie die Gegenstands-ID.
-export const itemArt=id=>{if(hasContentAsset(id))return id;const item=ITEMS[id];if(!item?.slot)return item?.icon||id;const slot={ring:'ring1',trinket:'trinket1',charm:'trinket1'}[item.slot]||item.slot;return equipmentAppearance({[slot]:id},ITEMS)[0]?.asset||item.icon;};
+export const itemArt=id=>{if(hasContentAsset(id))return id;const item=ITEMS[id];if(!item?.slot)return item?.icon||id;/* Glücksbringer zeigen ihr Motiv (Trophäe: Hauer, Feder, Kralle …), nicht den Familien-Anhänger */if((item.slot==='trinket'||item.slot==='charm')&&item.icon&&hasContentAsset(item.icon))return item.icon;const slot={ring:'ring1',trinket:'trinket1',charm:'trinket1'}[item.slot]||item.slot;return equipmentAppearance({[slot]:id},ITEMS)[0]?.asset||item.icon;};
 export const itemIcon=id=>`<canvas width="48" height="48" data-item-art="${itemArt(id)}" aria-hidden="true"></canvas>`;
 /** Gegenstandssymbol in einer Anzeigestufe (48/32/24, icon-steps.js), immer über itemArt – derselbe Weg wie im Rucksack. */
 export const itemSymbol=(id,size=ICON_STEP.bag)=>`<canvas width="${size}" height="${size}" data-item-art="${itemArt(id)}" aria-hidden="true"></canvas>`;
