@@ -33,7 +33,8 @@ async function boot(touch){
 const module=()=>read(`import('/dungeon.js').then(m=>{window.D=m;for(const w of document.querySelectorAll('.popup-close,[data-close]'))w.click();return 1;})`);
 async function enter(){
  await read(`(()=>{const d=D.dungeonEntrance(game);game.enemies=game.enemies.filter(e=>Math.hypot(e.x-d.x,e.y-d.y)>500);Object.assign(game.player,{x:d.x,y:d.y+8});game.player.inCombat=0;})()`);await wait(400);
- assert.equal(await read('game.interaction()?.kind'),'dungeonEnter','Eingang bietet sich an');await b.press('f');await wait(500);
+ assert.equal(await read('game.interaction()?.kind'),'dungeonEnter','Eingang bietet sich an');
+ /* Etappe 2: F öffnet die Eingangskarte, ein zweites F betritt – hinter dem Übergang */await b.press('f');await wait(500);assert.ok(await read(`!!document.querySelector('.popup-dungeonEntry')`),'Eingangskarte');await b.press('f');await wait(1500);
  assert.equal(await read('game.instance?.kind'),'dungeon','über F betreten');
  await read(`(()=>{for(const id of ${MERCS})game.hireCompanion(id,{free:true});})()`);await wait(300);
 }

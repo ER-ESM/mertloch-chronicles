@@ -5,7 +5,7 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI} from './content/index.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI} from './content/index.js';
 import {makeEnemy} from './encounters.js';
 import {autoLootBag} from './rpg.js';
 import {hitCompanion,clearThreat} from './companions.js';
@@ -316,6 +316,8 @@ export function dungeonPackAggro(g,e){
 /** Zauberort beim Zauberbeginn (E-71): target:'random' legt Fläche bzw. Ziel auf einen zufälligen Nicht-Schutz in Sichtweite –
  *  den Helden (außer als Schutz-Spec oder wenn er den Gegner hält) oder einen Söldner ohne Schutz-Rolle. */
 export function dungeonCastSpot(g,e,k,victim='player'){
+ // Abstand zum nächsten Zauber je Stelle im Zyklus (gaps, E-71: Gerds doppelter Rausschmiss in Phase 2)
+ const set=DUNGEON_CASTS[e.castSet],gap=set?.gaps?.[((e.cycle||1)-1)%set.cycle.length];if(k&&gap!=null)k.next=gap;
  if(!k||k.target!=='random')return;
  const holder=victim==='player'?g.player:victim,tankHero=TANK_SPECS.includes(g.rpg?.talents?.spec),seen=u=>dist(u,e)<600&&g.world.lineClear(e,u);
  const pool=[...(!g.dead&&!tankHero&&holder!==g.player&&seen(g.player)?[g.player]:[]),...(g.companions||[]).filter(c=>c!==holder&&c.state!=='down'&&c.hp>0&&c.def?.role!=='tank'&&seen(c))];

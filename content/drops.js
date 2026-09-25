@@ -26,7 +26,8 @@ export const DROP_TABLES={
  // --- Dungeon „Schloss Big B" (E-71, Etappe 1): eigene Tabellen statt der geliehenen Sigi- und Praktikanten-Beute ---
  // Gerd: Boss-Beute mit hoher Güte (rareChance) und Dorflegende „Die Gästeliste" (Plan Abschnitt 11: 15 %). Fällt dabei kein
  // Ausrüstungsteil, legt der Dungeon ein seltenes nach (rpg.js dungeonBossBonus) – ein Boss geht nie leer aus.
- gerd:{material:'kabelbinder',materialChance:.6,gearChance:.85,rareChance:.6,unique:'gaesteliste',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
+ // items = Vorschau für Journal und Eingangskarte (Etappe 2 liest sie über bossLoot); gewürfelt wird nur über die Felder daneben.
+ gerd:{items:['gaesteliste','kabelbinder','currywurst'],material:'kabelbinder',materialChance:.6,gearChance:.85,rareChance:.6,unique:'gaesteliste',uniqueChance:.15,coinsChance:.9,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket','charm']},
  // Trash im Schloss: Security-Azubis, Makler-Praktikanten, Baumarkt-Ritter, Pappschützen, Pfandratten. Flugblätter (Exposés)
  // als Material; die Dorflegende ist der Praktikantenausweis, den die Azubis am Band tragen (selten).
  schlosstrash:{material:'flugblatt',materialChance:.35,gearChance:.16,unique:'praktikantenausweis',uniqueChance:.01,coinsChance:.6,slots:['weapon','offhand','ranged','head','neck','shoulders','body','wrists','hands','waist','legs','feet','ring','trinket']}

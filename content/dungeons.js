@@ -166,7 +166,7 @@ export const DUNGEON_BOSSES={
 // Zahl in damage; target:'random' = Fläche bzw. Ziel auf einem zufälligen Nicht-Schutz (Held oder Söldner, nie der Tank).
 // Kegel enden an Wänden (dungeon.js coneReach): Warnfläche und Treffer lesen dieselben Strahlen. brand = Mal auf jedem Getroffenen außer
 // dem Ziel (Hausverbot): jeder weitere Treffer desselben Zaubers innerhalb von duration Sekunden kostet bonus × Stapel mehr – wer
-// stehen bleibt, fliegt beim dritten Mal; wer ausweicht, merkt nichts davon. next = Abstand zum folgenden Zauber statt specialInterval.
+// stehen bleibt, fliegt beim dritten Mal; wer ausweicht, merkt nichts davon.
 export const DUNGEON_CASTS={
  'd-azubi':{cycle:['funk','schubser'],casts:{
   funk:{name:'Funkspruch',hint:'Unterbrechen',total:2.2,damage:120,pct:.15,interruptible:true,callHelp:{range:240}},
@@ -186,11 +186,11 @@ export const DUNGEON_CASTS={
   liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
   rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.8,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
   dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,pct:.35,target:'random',radius:48,ground:true}}},
- // Phase 2 (Plan 7.1): Rausschmiss zweimal hintereinander, dazwischen 1 s; der Nachschlag trifft härter.
- 'd-gerd2':{cycle:['rausschmiss','nachschlag','liste','dresscode'],casts:{
+ // Phase 2 (Plan 7.1): Rausschmiss zweimal hintereinander, dazwischen 1 s. gaps = Abstand nach dem Zauber an dieser Stelle des Zyklus
+ // statt specialInterval; wer nach dem ersten vorn bleibt, trägt dann schon Hausverbot.
+ 'd-gerd2':{cycle:['rausschmiss','rausschmiss','liste','dresscode'],gaps:{0:1},casts:{
   liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
-  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6},next:1},
-  nachschlag:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,pct:.8,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
+  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
   dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,pct:.35,target:'random',radius:48,ground:true}}}
 };
 
