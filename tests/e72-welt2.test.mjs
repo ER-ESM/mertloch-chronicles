@@ -2,6 +2,8 @@
 // Anlass: Kenner-Nachtest 26.09. nachts – Käthe (Stufe 4) starb an einem Pfanddachs der Stufe 1 und an einem Ruhewart,
 // Schorsch (Stufe 6) an einem Ruhewart der Stufe 3 („Unter Stufe 7 ist das Dorf tödlich“). Messwege: scripts/e72-welt2-messung.mjs.
 import test from 'node:test';
+/* Reproduzierbar: Kämpfe mit knappen Grenzen (−25 %) dürfen nicht an Math.random hängen (Beute, Zufallsrollen) – 1 von 40 Läufen kippte sonst */
+{let x=0x9e3779b9;Math.random=()=>{x|=0;x=x+0x6D2B79F5|0;let t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Game} from '../engine.js';
