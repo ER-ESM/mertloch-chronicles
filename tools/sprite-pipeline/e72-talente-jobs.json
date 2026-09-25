@@ -1,0 +1,1477 @@
+[
+ {
+  "id": "talente-schorsch-chef",
+  "spec": "schorsch-chef",
+  "output": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "kind": "talent-sheet",
+  "grid": {
+   "columns": 6,
+   "rows": 5
+  },
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. Class: Schwenker-Schorsch, a burly 52-year-old grill master of a German village grill hut (apron, long grill tongs, a swing grill hanging from a tripod chain over charcoal, bratwurst, pork neck steak, grilled halloumi, corn cob, mustard squeeze bottle, beer bottle for dousing the embers, bellows, grill lid used as a shield). His resource is the glowing ember heat (Glut) and the grill grate where food cooks to a golden point. This sheet is schorsch-chef (Grillhütten-Chef, Heilung): Der Grillplan liefert zwei Bratwürste je Braten. Gar servierte Wurst heilt stärker und reicht für einen zweiten Verbündeten; der Schwenkgrill wird zum Grillbuffet, das alle im Kreis heilt. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. In strict row-major order (left to right, top to bottom):\n1. Probierhäppchen: Wer eine Bratwurst reicht, facht dabei den Rost wieder an. Motiv: Bratwurstscheibe auf einem Zahnstocher über glühender Holzkohle.\n2. Zweite Wurst: Der Grillplan bekommt in jeder Runde ein weiteres Heilstück.\n3. Satt ist satt: Heilung über das volle Leben hinaus bleibt zur Hälfte als Polster liegen.\n4. Notwurst: In der Not springt der ganze Rost auf einmal Richtung gar. Motiv: Halb verkohlte Bratwurst, hastig mit der Zange vom Rost gerissen.\n5. Hausmacher: Eine goldene Wurst stärkt nebenbei den Koch, auch wenn sie an einen Freund geht. Motiv: Dicke Hausmacher-Bratwurst mit Goldrand, ein Bissen fehlt schon.\n6. Goldbraun: Der goldene Garpunkt hält länger, bevor ein Stück durch ist.\n7. Metzgerqualität: Die Wurst vom Metzger des Vertrauens heilt mit jedem Bissen kräftiger.\n8. Wurstkette: Eine goldene Wurst treibt den Rest des Rosts gleich mit voran. Motiv: Eine Kette aneinanderhängender Bratwürste quer über den Grillrost.\n9. Auf Vorrat gegrillt: Vergessene Stücke bleiben länger genießbar, bevor sie schwarz werden.\n10. Meisterwurst: Die goldene Wurst heilt kräftiger und wird zugleich zum Polster für den Koch. Motiv: Goldglänzende Bratwurst mit Siegerschleife auf einem Pappteller.\n11. Grillkäse dazu: Der Grillplan bekommt in jeder Runde ein Schutzstück dazu.\n12. Schnell gewendet: Ein frei gewordener Rostplatz lässt sich ohne Wartezeit neu belegen. Motiv: Grillhandschuh, der ein Stück vom Rost nimmt und das nächste schon hält.\n13. Heißer Rost: Der Sprung in die perfekte Glut schiebt jedes Stück auf dem Rost Richtung gar. Motiv: Grillrost, dessen Stäbe golden aufglühen, darüber flimmernde Luft.\n14. Maiskolben dazu: Der Grillplan bekommt in jeder Runde ein Popcorn-Stück, das Gegner zurückstößt.\n15. Senf drauf!: Schaltet einen Heilklecks frei, der nebenbei den Rost auf Trab bringt.\n16. Wenden!: Die Zange zählt mit und dreht bei jedem dritten Griff das Grillgut um. Motiv: Grillzange dreht eine Bratwurst, drei Kerben im Griff.\n17. Belegtes Brötchen: Das Brötchen für die Gruppe wird dicker belegt, und der Käse vom Rost hält mehr aus.\n18. Popcorn für alle: Der platzende Maiskolben erwischt Gegner in einem größeren Kreis.\n19. Scharfer Senf: Goldenes Grillgut verkürzt die Wartezeit auf den nächsten Heilklecks. Motiv: Quetschflasche mit scharfem Senf, ein gelber Klecks auf goldbraunem Grillgut.\n20. Volle Platte: Servieren schiebt alles Übrige auf dem Rost an, und nichts wird so schnell schwarz. Motiv: Überladene Grillplatte mit Wurst, Käse und Mais, dahinter ein voller Rost.\n21. Löschbier: Das Bier über dem Rost stärkt den Koch beim Löschen ein Stück mehr.\n22. Dampfgaren: Der Dampf beim Löschen gart das Grillgut weiter, statt es abzuwürgen. Motiv: Bierdampf steigt vom Rost, darin brutzeln Würste weiter.\n23. Stammplatz: Die perfekte Glut ist früher erreicht, ihr Fenster wird breiter.\n24. Feuerfeste Schürze: Der Feuerring bei voller Glut trifft nur noch die Gegner und wärmt den Koch. Motiv: Angesengte Grillschürze mit Aufdruck „Küss den Koch“, unversehrt im Feuerring.\n25. Ruhige Glut: Der Rost hält seine Hitze länger, auch wenn niemand zur Zange greift.\n26. Tischdienst: Wer einen Zauber abklemmt, darf gleich wieder löschen und heilen.\n27. Buffet nachlegen: Jedes Löschen bringt das nächste Buffet für die Runde näher. Motiv: Klapptisch mit Pappteller-Stapel vor dampfendem Schwenkgrill.\n28. Dicke Luft: Der Dampf aus dem gelöschten Rost verbrüht Gegner kräftiger und hält sie länger auf.\n29. Frische Luft: Die perfekte Glut reicht weiter nach oben, bevor es zu heiß wird.\n30. Lokalrunde: Die Wurst am Tisch holt das nächste Löschbier heran, und das heilt kräftiger. Motiv: Tablett mit Bierflaschen und Bratwurstbrötchen für die ganze Theke.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brew-v1.png"
+  ],
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "schorsch-chef-0",
+    "name": "Probierhäppchen",
+    "effect": "Wer eine Bratwurst reicht, facht dabei den Rost wieder an.",
+    "look": "Bratwurstscheibe auf einem Zahnstocher über glühender Holzkohle",
+    "row": 0,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-1",
+    "name": "Zweite Wurst",
+    "effect": "Der Grillplan bekommt in jeder Runde ein weiteres Heilstück.",
+    "row": 1,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-2",
+    "name": "Satt ist satt",
+    "effect": "Heilung über das volle Leben hinaus bleibt zur Hälfte als Polster liegen.",
+    "row": 2,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-3",
+    "name": "Notwurst",
+    "effect": "In der Not springt der ganze Rost auf einmal Richtung gar.",
+    "look": "Halb verkohlte Bratwurst, hastig mit der Zange vom Rost gerissen",
+    "row": 3,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-4",
+    "name": "Hausmacher",
+    "effect": "Eine goldene Wurst stärkt nebenbei den Koch, auch wenn sie an einen Freund geht.",
+    "look": "Dicke Hausmacher-Bratwurst mit Goldrand, ein Bissen fehlt schon",
+    "row": 4,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-5",
+    "name": "Goldbraun",
+    "effect": "Der goldene Garpunkt hält länger, bevor ein Stück durch ist.",
+    "row": 5,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-6",
+    "name": "Metzgerqualität",
+    "effect": "Die Wurst vom Metzger des Vertrauens heilt mit jedem Bissen kräftiger.",
+    "row": 6,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-7",
+    "name": "Wurstkette",
+    "effect": "Eine goldene Wurst treibt den Rest des Rosts gleich mit voran.",
+    "look": "Eine Kette aneinanderhängender Bratwürste quer über den Grillrost",
+    "row": 7,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-8",
+    "name": "Auf Vorrat gegrillt",
+    "effect": "Vergessene Stücke bleiben länger genießbar, bevor sie schwarz werden.",
+    "row": 8,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-9",
+    "name": "Meisterwurst",
+    "effect": "Die goldene Wurst heilt kräftiger und wird zugleich zum Polster für den Koch.",
+    "look": "Goldglänzende Bratwurst mit Siegerschleife auf einem Pappteller",
+    "row": 9,
+    "path": 0
+   },
+   {
+    "id": "schorsch-chef-10",
+    "name": "Grillkäse dazu",
+    "effect": "Der Grillplan bekommt in jeder Runde ein Schutzstück dazu.",
+    "row": 0,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-11",
+    "name": "Schnell gewendet",
+    "effect": "Ein frei gewordener Rostplatz lässt sich ohne Wartezeit neu belegen.",
+    "look": "Grillhandschuh, der ein Stück vom Rost nimmt und das nächste schon hält",
+    "row": 1,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-12",
+    "name": "Heißer Rost",
+    "effect": "Der Sprung in die perfekte Glut schiebt jedes Stück auf dem Rost Richtung gar.",
+    "look": "Grillrost, dessen Stäbe golden aufglühen, darüber flimmernde Luft",
+    "row": 2,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-13",
+    "name": "Maiskolben dazu",
+    "effect": "Der Grillplan bekommt in jeder Runde ein Popcorn-Stück, das Gegner zurückstößt.",
+    "row": 3,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-14",
+    "name": "Senf drauf!",
+    "effect": "Schaltet einen Heilklecks frei, der nebenbei den Rost auf Trab bringt.",
+    "row": 4,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-15",
+    "name": "Wenden!",
+    "effect": "Die Zange zählt mit und dreht bei jedem dritten Griff das Grillgut um.",
+    "look": "Grillzange dreht eine Bratwurst, drei Kerben im Griff",
+    "row": 5,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-16",
+    "name": "Belegtes Brötchen",
+    "effect": "Das Brötchen für die Gruppe wird dicker belegt, und der Käse vom Rost hält mehr aus.",
+    "row": 6,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-17",
+    "name": "Popcorn für alle",
+    "effect": "Der platzende Maiskolben erwischt Gegner in einem größeren Kreis.",
+    "row": 7,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-18",
+    "name": "Scharfer Senf",
+    "effect": "Goldenes Grillgut verkürzt die Wartezeit auf den nächsten Heilklecks.",
+    "look": "Quetschflasche mit scharfem Senf, ein gelber Klecks auf goldbraunem Grillgut",
+    "row": 8,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-19",
+    "name": "Volle Platte",
+    "effect": "Servieren schiebt alles Übrige auf dem Rost an, und nichts wird so schnell schwarz.",
+    "look": "Überladene Grillplatte mit Wurst, Käse und Mais, dahinter ein voller Rost",
+    "row": 9,
+    "path": 1
+   },
+   {
+    "id": "schorsch-chef-20",
+    "name": "Löschbier",
+    "effect": "Das Bier über dem Rost stärkt den Koch beim Löschen ein Stück mehr.",
+    "row": 0,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-21",
+    "name": "Dampfgaren",
+    "effect": "Der Dampf beim Löschen gart das Grillgut weiter, statt es abzuwürgen.",
+    "look": "Bierdampf steigt vom Rost, darin brutzeln Würste weiter",
+    "row": 1,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-22",
+    "name": "Stammplatz",
+    "effect": "Die perfekte Glut ist früher erreicht, ihr Fenster wird breiter.",
+    "row": 2,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-23",
+    "name": "Feuerfeste Schürze",
+    "effect": "Der Feuerring bei voller Glut trifft nur noch die Gegner und wärmt den Koch.",
+    "look": "Angesengte Grillschürze mit Aufdruck „Küss den Koch“, unversehrt im Feuerring",
+    "row": 3,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-24",
+    "name": "Ruhige Glut",
+    "effect": "Der Rost hält seine Hitze länger, auch wenn niemand zur Zange greift.",
+    "row": 4,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-25",
+    "name": "Tischdienst",
+    "effect": "Wer einen Zauber abklemmt, darf gleich wieder löschen und heilen.",
+    "row": 5,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-26",
+    "name": "Buffet nachlegen",
+    "effect": "Jedes Löschen bringt das nächste Buffet für die Runde näher.",
+    "look": "Klapptisch mit Pappteller-Stapel vor dampfendem Schwenkgrill",
+    "row": 6,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-27",
+    "name": "Dicke Luft",
+    "effect": "Der Dampf aus dem gelöschten Rost verbrüht Gegner kräftiger und hält sie länger auf.",
+    "row": 7,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-28",
+    "name": "Frische Luft",
+    "effect": "Die perfekte Glut reicht weiter nach oben, bevor es zu heiß wird.",
+    "row": 8,
+    "path": 2
+   },
+   {
+    "id": "schorsch-chef-29",
+    "name": "Lokalrunde",
+    "effect": "Die Wurst am Tisch holt das nächste Löschbier heran, und das heilt kräftiger.",
+    "look": "Tablett mit Bierflaschen und Bratwurstbrötchen für die ganze Theke",
+    "row": 9,
+    "path": 2
+   }
+  ]
+ },
+ {
+  "id": "talente-schorsch-flamme",
+  "spec": "schorsch-flamme",
+  "output": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "kind": "talent-sheet",
+  "grid": {
+   "columns": 6,
+   "rows": 5
+  },
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. Class: Schwenker-Schorsch, a burly 52-year-old grill master of a German village grill hut (apron, long grill tongs, a swing grill hanging from a tripod chain over charcoal, bratwurst, pork neck steak, grilled halloumi, corn cob, mustard squeeze bottle, beer bottle for dousing the embers, bellows, grill lid used as a shield). His resource is the glowing ember heat (Glut) and the grill grate where food cooks to a golden point. This sheet is schorsch-flamme (Flambierer, Nahkampf-Schaden): Spielt am oberen Rand der Glut: die Stichflamme verletzt dich nicht mehr und trifft doppelt. Ab 85 Glut wird Servieren zum Flambieren mit Feuerspritzern an den Nachbarn. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. In strict row-major order (left to right, top to bottom):\n1. Gut angefacht: Wer die Glut auf Temperatur bringt, bekommt einen doppelten Zangengriff geschenkt. Motiv: Grillzange, an deren Spitze goldene Funken tanzen.\n2. Kurze Zündschnur: Die Sperre nach dem Überhitzen dauert kürzer, die Grillkniffe sind früher zurück.\n3. Zunder: Kritische Treffer werfen Funken in den Grill. Motiv: Funkenregen von einer Zange, die auf einen Grillrost schlägt.\n4. Hitzewelle: Ein erledigter Gegner facht den Grill kräftig an. Motiv: Flimmernde Hitzewand über einem umgekippten Gartenstuhl.\n5. Nach dem Knall: Auf den Feuerring folgt ein doppelt so wuchtiger Teller. Motiv: Rauchender Grill nach einer Stichflamme, davor ein dampfender Braten.\n6. Nachglühen: Nach dem Feuerring bleibt der Grill heiß, statt tief abzusacken. Motiv: Rot nachglühende Holzkohle unter einer frischen Rußwolke.\n7. Blasebalg-Profi: Der Feuerring lädt den Blasebalg ohne Wartezeit neu. Motiv: Lederner Blasebalg, dessen Düse noch glüht.\n8. Feuerring: Die Explosion beim Überhitzen verbrennt Gegner ringsum heftiger.\n9. Heißer Draht: Die perfekte Glut reicht höher, der eigene Brand setzt später ein.\n10. Feuerteufel: Goldenes Grillgut facht den Grill an und treibt dich in den Flambierbereich. Motiv: Grinsendes Teufelchen aus Flammen, das auf einem Schwenkbraten reitet.\n11. Anbraten: Ein goldener Braten macht sofort Platz für den nächsten. Motiv: Frisches Nackensteak zischt auf den Rost, wo eben noch ein Braten lag.\n12. Fleischermesser: Angeschlagene Gegner nehmen von jedem Griff und jedem Braten mehr.\n13. Auf den Punkt: Das goldene Fenster auf dem Rost bleibt länger offen, auch bei großer Hitze.\n14. Abschrecken: Nach dem Löschen wartet ein doppelt wuchtiger Teller, selbst bei kaltem Rost. Motiv: Zischender Bierstrahl auf glühendem Braten, dichter Dampf.\n15. Der Nächste, bitte: Ein erledigter Gegner lässt den nächsten Braten schlagartig nachrücken. Motiv: Wartenummer-Zettel auf einem Grillspieß.\n16. Fleischklopfer: Der geworfene Braten schlägt mit mehr Wucht ein.\n17. Grillteller mit Braten: Der Teller für die Gruppe wird voller, und der eigene Braten sitzt fester.\n18. Knusprig: Ein Stück, das über den Punkt ist, bleibt länger knusprig statt schwarz.\n19. Zweiter Gang: Ein goldener Braten lässt den nächsten Gang sofort nachziehen. Motiv: Zwei Pappteller übereinander, der obere mit dampfendem Braten.\n20. Spanferkel-Wurf: Der geworfene Braten reißt die Nachbarn des Ziels mit und schlägt härter ein.\n21. Kohlenschaufel: Wer über die Kohlen sprintet, wirbelt die Glut auf. Motiv: Glühende Kohlen, die unter Arbeitsschuhen aufstieben.\n22. Zangenklapper im Takt: Das Klappern der Zange zählt mit und facht regelmäßig den Grill an. Motiv: Klappernde Grillzange mit vier Strichen im Griff.\n23. Brandbeschleuniger: Der geworfene Brocken lässt sein Ziel heftiger brennen.\n24. Heiße Kohlen: Ein erledigter Gegner gibt den nächsten Brocken sofort frei.\n25. Spiritus-Schwall: Schaltet einen Schwall frei, der die Glut hochjagt und nach vorn Feuer spuckt.\n26. Funkensprung: Ein kritischer Treffer kann den nächsten Brocken ohne Glutkosten laden. Motiv: Funke springt von der Zange auf einen glühenden Kohlebrocken.\n27. Zangentakt: Die Zange zählt mit und bringt den nächsten Brocken schneller in die Hand. Motiv: Grillzange hält einen glühenden Brocken, drei Kerben im Griff.\n28. Doppelpack: Die Brocken fliegen paarweise: nach jedem zweiten kommt gleich der nächste. Motiv: Zwei glühende Kohlebrocken im Flug nebeneinander.\n29. Nachgießen: Nach jedem zweiten Schwall steht die Flasche sofort wieder bereit. Motiv: Spiritusflasche, aus der ein zweiter Strahl nachläuft.\n30. Flambé mit Schuss: Goldenes Grillgut lädt sofort einen Brocken ohne Glutkosten nach, der heftiger brennt. Motiv: Flambierter Braten, aus dessen Flamme ein Kohlebrocken springt.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brew-v1.png"
+  ],
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "schorsch-flamme-0",
+    "name": "Gut angefacht",
+    "effect": "Wer die Glut auf Temperatur bringt, bekommt einen doppelten Zangengriff geschenkt.",
+    "look": "Grillzange, an deren Spitze goldene Funken tanzen",
+    "row": 0,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-1",
+    "name": "Kurze Zündschnur",
+    "effect": "Die Sperre nach dem Überhitzen dauert kürzer, die Grillkniffe sind früher zurück.",
+    "row": 1,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-2",
+    "name": "Zunder",
+    "effect": "Kritische Treffer werfen Funken in den Grill.",
+    "look": "Funkenregen von einer Zange, die auf einen Grillrost schlägt",
+    "row": 2,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-3",
+    "name": "Hitzewelle",
+    "effect": "Ein erledigter Gegner facht den Grill kräftig an.",
+    "look": "Flimmernde Hitzewand über einem umgekippten Gartenstuhl",
+    "row": 3,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-4",
+    "name": "Nach dem Knall",
+    "effect": "Auf den Feuerring folgt ein doppelt so wuchtiger Teller.",
+    "look": "Rauchender Grill nach einer Stichflamme, davor ein dampfender Braten",
+    "row": 4,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-5",
+    "name": "Nachglühen",
+    "effect": "Nach dem Feuerring bleibt der Grill heiß, statt tief abzusacken.",
+    "look": "Rot nachglühende Holzkohle unter einer frischen Rußwolke",
+    "row": 5,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-6",
+    "name": "Blasebalg-Profi",
+    "effect": "Der Feuerring lädt den Blasebalg ohne Wartezeit neu.",
+    "look": "Lederner Blasebalg, dessen Düse noch glüht",
+    "row": 6,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-7",
+    "name": "Feuerring",
+    "effect": "Die Explosion beim Überhitzen verbrennt Gegner ringsum heftiger.",
+    "row": 7,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-8",
+    "name": "Heißer Draht",
+    "effect": "Die perfekte Glut reicht höher, der eigene Brand setzt später ein.",
+    "row": 8,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-9",
+    "name": "Feuerteufel",
+    "effect": "Goldenes Grillgut facht den Grill an und treibt dich in den Flambierbereich.",
+    "look": "Grinsendes Teufelchen aus Flammen, das auf einem Schwenkbraten reitet",
+    "row": 9,
+    "path": 0
+   },
+   {
+    "id": "schorsch-flamme-10",
+    "name": "Anbraten",
+    "effect": "Ein goldener Braten macht sofort Platz für den nächsten.",
+    "look": "Frisches Nackensteak zischt auf den Rost, wo eben noch ein Braten lag",
+    "row": 0,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-11",
+    "name": "Fleischermesser",
+    "effect": "Angeschlagene Gegner nehmen von jedem Griff und jedem Braten mehr.",
+    "row": 1,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-12",
+    "name": "Auf den Punkt",
+    "effect": "Das goldene Fenster auf dem Rost bleibt länger offen, auch bei großer Hitze.",
+    "row": 2,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-13",
+    "name": "Abschrecken",
+    "effect": "Nach dem Löschen wartet ein doppelt wuchtiger Teller, selbst bei kaltem Rost.",
+    "look": "Zischender Bierstrahl auf glühendem Braten, dichter Dampf",
+    "row": 3,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-14",
+    "name": "Der Nächste, bitte",
+    "effect": "Ein erledigter Gegner lässt den nächsten Braten schlagartig nachrücken.",
+    "look": "Wartenummer-Zettel auf einem Grillspieß",
+    "row": 4,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-15",
+    "name": "Fleischklopfer",
+    "effect": "Der geworfene Braten schlägt mit mehr Wucht ein.",
+    "row": 5,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-16",
+    "name": "Grillteller mit Braten",
+    "effect": "Der Teller für die Gruppe wird voller, und der eigene Braten sitzt fester.",
+    "row": 6,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-17",
+    "name": "Knusprig",
+    "effect": "Ein Stück, das über den Punkt ist, bleibt länger knusprig statt schwarz.",
+    "row": 7,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-18",
+    "name": "Zweiter Gang",
+    "effect": "Ein goldener Braten lässt den nächsten Gang sofort nachziehen.",
+    "look": "Zwei Pappteller übereinander, der obere mit dampfendem Braten",
+    "row": 8,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-19",
+    "name": "Spanferkel-Wurf",
+    "effect": "Der geworfene Braten reißt die Nachbarn des Ziels mit und schlägt härter ein.",
+    "row": 9,
+    "path": 1
+   },
+   {
+    "id": "schorsch-flamme-20",
+    "name": "Kohlenschaufel",
+    "effect": "Wer über die Kohlen sprintet, wirbelt die Glut auf.",
+    "look": "Glühende Kohlen, die unter Arbeitsschuhen aufstieben",
+    "row": 0,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-21",
+    "name": "Zangenklapper im Takt",
+    "effect": "Das Klappern der Zange zählt mit und facht regelmäßig den Grill an.",
+    "look": "Klappernde Grillzange mit vier Strichen im Griff",
+    "row": 1,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-22",
+    "name": "Brandbeschleuniger",
+    "effect": "Der geworfene Brocken lässt sein Ziel heftiger brennen.",
+    "row": 2,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-23",
+    "name": "Heiße Kohlen",
+    "effect": "Ein erledigter Gegner gibt den nächsten Brocken sofort frei.",
+    "row": 3,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-24",
+    "name": "Spiritus-Schwall",
+    "effect": "Schaltet einen Schwall frei, der die Glut hochjagt und nach vorn Feuer spuckt.",
+    "row": 4,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-25",
+    "name": "Funkensprung",
+    "effect": "Ein kritischer Treffer kann den nächsten Brocken ohne Glutkosten laden.",
+    "look": "Funke springt von der Zange auf einen glühenden Kohlebrocken",
+    "row": 5,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-26",
+    "name": "Zangentakt",
+    "effect": "Die Zange zählt mit und bringt den nächsten Brocken schneller in die Hand.",
+    "look": "Grillzange hält einen glühenden Brocken, drei Kerben im Griff",
+    "row": 6,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-27",
+    "name": "Doppelpack",
+    "effect": "Die Brocken fliegen paarweise: nach jedem zweiten kommt gleich der nächste.",
+    "look": "Zwei glühende Kohlebrocken im Flug nebeneinander",
+    "row": 7,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-28",
+    "name": "Nachgießen",
+    "effect": "Nach jedem zweiten Schwall steht die Flasche sofort wieder bereit.",
+    "look": "Spiritusflasche, aus der ein zweiter Strahl nachläuft",
+    "row": 8,
+    "path": 2
+   },
+   {
+    "id": "schorsch-flamme-29",
+    "name": "Flambé mit Schuss",
+    "effect": "Goldenes Grillgut lädt sofort einen Brocken ohne Glutkosten nach, der heftiger brennt.",
+    "look": "Flambierter Braten, aus dessen Flamme ein Kohlebrocken springt",
+    "row": 9,
+    "path": 2
+   }
+  ]
+ },
+ {
+  "id": "talente-schorsch-rauch",
+  "spec": "schorsch-rauch",
+  "output": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "kind": "talent-sheet",
+  "grid": {
+   "columns": 6,
+   "rows": 5
+  },
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. Class: Schwenker-Schorsch, a burly 52-year-old grill master of a German village grill hut (apron, long grill tongs, a swing grill hanging from a tripod chain over charcoal, bratwurst, pork neck steak, grilled halloumi, corn cob, mustard squeeze bottle, beer bottle for dousing the embers, bellows, grill lid used as a shield). His resource is the glowing ember heat (Glut) and the grill grate where food cooks to a golden point. This sheet is schorsch-rauch (Räuchermeister, Tank): Low and slow: unter 45 Glut wird Grillgut geräuchert. Servierter Rauch verspottet Gegner und senkt ihren Schaden; Grillkäse schützt, der Schwenkgrill wird zum Räucherofen. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. In strict row-major order (left to right, top to bottom):\n1. Kalt anräuchern: Das Löschbier hinterlässt neben Dampf auch ein Polster. Motiv: Nasses Buchenholz qualmt auf gelöschter Glut, davor ein Grilldeckel.\n2. Feuerlöscher: In der Not steht das Löschbier ohne Wartezeit bereit. Motiv: Roter Feuerlöscher, in den jemand eine Bierflasche geklemmt hat.\n3. Dicker Qualm: Die Wolke aus dem gelöschten Rost hüllt Gegner dichter ein und bremst sie mehr.\n4. Kalte Schulter: Wer gegen den Grilldeckel schlägt, bewegt sich danach zäh wie kalter Rauch.\n5. Deckel zu!: Schaltet eine Rauchwolke frei, die alle Gegner ringsum an den Koch bindet.\n6. Räucherwurst: Eine geräucherte Wurst wandert zusätzlich über den Rost und polstert den Tank. Motiv: Dunkel geräucherte Bratwurst an einer Schnur im Qualm.\n7. Nachräuchern: Jeder Teller bringt den nächsten Qualm auf dem Boden näher. Motiv: Qualmender Räucherofen aus einer alten Milchkanne.\n8. Nasses Buchenholz: Der Rost verliert von allein schneller Hitze und bleibt so im Räucherbereich.\n9. Nebelmaschine: Dampf und Rauch gehen Hand in Hand: jedes Löschen bringt den nächsten Spott näher. Motiv: Grilldeckel, unter dem Dampf und Rauch wie aus einer Diskonebelmaschine quellen.\n10. Räucherkammer: Servieren hält den Rost kalt genug zum Räuchern und polstert den Tank. Motiv: Holzverschlag voller Rauch, darin hängen Würste und Käse.\n11. Garen mit Deckel: Zugeklappt staut sich die Hitze: jeder abgefangene Schlag gart das Grillgut weiter. Motiv: Zugeklappter Kugelgrill, aus dem seitlich Hitze flimmert.\n12. Deckelpolster: Der Grilldeckel lässt nach jedem abgefangenen Schlag ein Polster zurück.\n13. Doppelter Deckel: Das Parierfenster des Grilldeckels schluckt einen zweiten Schlag gleich mit.\n14. Käsekruste: Der servierte Grillkäse hält als Schild mehr aus.\n15. Halloumi-Happen: Ein Bissen vom eigenen Käse flickt den Tank neben dem Schild. Motiv: Gegrillter Halloumi mit Grillstreifen, ein Stück abgebissen.\n16. Längerer Deckel: Der Grilldeckel bleibt beim Parieren einen Moment länger oben.\n17. Deckelkonter: Auf den abgefangenen Schlag folgt ein doppelter Zangengriff. Motiv: Grilldeckel als Schild, dahinter schnellt eine Grillzange hervor.\n18. Zurück an den Absender: Jede Parade schleudert einen größeren Teil des Schlags zurück.\n19. Notkäse: In der Not springt ein dickes Polster vor den Tank. Motiv: Dicker Laib Grillkäse, als Helm aufgesetzt.\n20. Halloumi-Panzer: Goldener Käse lädt den Grilldeckel sofort nach und hält als Schild mehr aus. Motiv: Grilldeckel, mit goldbraunen Halloumischeiben gepanzert.\n21. Zwicken heizt: Wer einen Zauber abklemmt, bekommt Hitze für den Rost zurück. Motiv: Grillzange kneift in einen Zauberfunken, der in die Kohle fällt.\n22. Nestwärme: Jede Parade facht den Grill stärker an.\n23. Schwelbrand: Die geworfene Kohle brennt am Ziel heißer.\n24. Heißer Stein: Nach jedem abgefangenen Schlag liegt der nächste Brocken schneller bereit. Motiv: Glühender Pflasterstein auf einem verbeulten Grilldeckel.\n25. Heiße Asche: Die Brocken zählen mit; jeder zweite lässt ein Polster aus warmer Asche zurück. Motiv: Warme Aschewolke, die sich wie eine Weste um den Koch legt.\n26. Glutwächter: Hält der Tank den Grill auf Temperatur, klappt der Deckel schneller wieder hoch. Motiv: Thermometer mit Nadel im goldenen Feld, daneben ein Grilldeckel.\n27. Brandmauer: Der Feuerring beim Überhitzen hinterlässt eine Mauer aus Hitze um den Tank. Motiv: Mauer aus Schamottsteinen, hinter der eine Stichflamme hochschießt.\n28. Aufgeheizt: Die Paraden zählen mit; nach der dritten ist der Blasebalg ohne Wartezeit zurück. Motiv: Blasebalg mit drei Brandflecken, daneben ein verbeulter Grilldeckel.\n29. Glut unterm Deckel: Jeder abgefangene Schlag flickt den Tank ein Stück. Motiv: Grilldeckel, unter dessen Rand warmes Glühen hervorscheint.\n30. Glutherz: Servieren hält den Grill warm und legt den nächsten Brandwurf in die Hand. Motiv: Herzförmiges Stück Holzkohle, innen rot glühend.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brew-v1.png"
+  ],
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "schorsch-rauch-0",
+    "name": "Kalt anräuchern",
+    "effect": "Das Löschbier hinterlässt neben Dampf auch ein Polster.",
+    "look": "Nasses Buchenholz qualmt auf gelöschter Glut, davor ein Grilldeckel",
+    "row": 0,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-1",
+    "name": "Feuerlöscher",
+    "effect": "In der Not steht das Löschbier ohne Wartezeit bereit.",
+    "look": "Roter Feuerlöscher, in den jemand eine Bierflasche geklemmt hat",
+    "row": 1,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-2",
+    "name": "Dicker Qualm",
+    "effect": "Die Wolke aus dem gelöschten Rost hüllt Gegner dichter ein und bremst sie mehr.",
+    "row": 2,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-3",
+    "name": "Kalte Schulter",
+    "effect": "Wer gegen den Grilldeckel schlägt, bewegt sich danach zäh wie kalter Rauch.",
+    "row": 3,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-4",
+    "name": "Deckel zu!",
+    "effect": "Schaltet eine Rauchwolke frei, die alle Gegner ringsum an den Koch bindet.",
+    "row": 4,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-5",
+    "name": "Räucherwurst",
+    "effect": "Eine geräucherte Wurst wandert zusätzlich über den Rost und polstert den Tank.",
+    "look": "Dunkel geräucherte Bratwurst an einer Schnur im Qualm",
+    "row": 5,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-6",
+    "name": "Nachräuchern",
+    "effect": "Jeder Teller bringt den nächsten Qualm auf dem Boden näher.",
+    "look": "Qualmender Räucherofen aus einer alten Milchkanne",
+    "row": 6,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-7",
+    "name": "Nasses Buchenholz",
+    "effect": "Der Rost verliert von allein schneller Hitze und bleibt so im Räucherbereich.",
+    "row": 7,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-8",
+    "name": "Nebelmaschine",
+    "effect": "Dampf und Rauch gehen Hand in Hand: jedes Löschen bringt den nächsten Spott näher.",
+    "look": "Grilldeckel, unter dem Dampf und Rauch wie aus einer Diskonebelmaschine quellen",
+    "row": 8,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-9",
+    "name": "Räucherkammer",
+    "effect": "Servieren hält den Rost kalt genug zum Räuchern und polstert den Tank.",
+    "look": "Holzverschlag voller Rauch, darin hängen Würste und Käse",
+    "row": 9,
+    "path": 0
+   },
+   {
+    "id": "schorsch-rauch-10",
+    "name": "Garen mit Deckel",
+    "effect": "Zugeklappt staut sich die Hitze: jeder abgefangene Schlag gart das Grillgut weiter.",
+    "look": "Zugeklappter Kugelgrill, aus dem seitlich Hitze flimmert",
+    "row": 0,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-11",
+    "name": "Deckelpolster",
+    "effect": "Der Grilldeckel lässt nach jedem abgefangenen Schlag ein Polster zurück.",
+    "row": 1,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-12",
+    "name": "Doppelter Deckel",
+    "effect": "Das Parierfenster des Grilldeckels schluckt einen zweiten Schlag gleich mit.",
+    "row": 2,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-13",
+    "name": "Käsekruste",
+    "effect": "Der servierte Grillkäse hält als Schild mehr aus.",
+    "row": 3,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-14",
+    "name": "Halloumi-Happen",
+    "effect": "Ein Bissen vom eigenen Käse flickt den Tank neben dem Schild.",
+    "look": "Gegrillter Halloumi mit Grillstreifen, ein Stück abgebissen",
+    "row": 4,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-15",
+    "name": "Längerer Deckel",
+    "effect": "Der Grilldeckel bleibt beim Parieren einen Moment länger oben.",
+    "row": 5,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-16",
+    "name": "Deckelkonter",
+    "effect": "Auf den abgefangenen Schlag folgt ein doppelter Zangengriff.",
+    "look": "Grilldeckel als Schild, dahinter schnellt eine Grillzange hervor",
+    "row": 6,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-17",
+    "name": "Zurück an den Absender",
+    "effect": "Jede Parade schleudert einen größeren Teil des Schlags zurück.",
+    "row": 7,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-18",
+    "name": "Notkäse",
+    "effect": "In der Not springt ein dickes Polster vor den Tank.",
+    "look": "Dicker Laib Grillkäse, als Helm aufgesetzt",
+    "row": 8,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-19",
+    "name": "Halloumi-Panzer",
+    "effect": "Goldener Käse lädt den Grilldeckel sofort nach und hält als Schild mehr aus.",
+    "look": "Grilldeckel, mit goldbraunen Halloumischeiben gepanzert",
+    "row": 9,
+    "path": 1
+   },
+   {
+    "id": "schorsch-rauch-20",
+    "name": "Zwicken heizt",
+    "effect": "Wer einen Zauber abklemmt, bekommt Hitze für den Rost zurück.",
+    "look": "Grillzange kneift in einen Zauberfunken, der in die Kohle fällt",
+    "row": 0,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-21",
+    "name": "Nestwärme",
+    "effect": "Jede Parade facht den Grill stärker an.",
+    "row": 1,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-22",
+    "name": "Schwelbrand",
+    "effect": "Die geworfene Kohle brennt am Ziel heißer.",
+    "row": 2,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-23",
+    "name": "Heißer Stein",
+    "effect": "Nach jedem abgefangenen Schlag liegt der nächste Brocken schneller bereit.",
+    "look": "Glühender Pflasterstein auf einem verbeulten Grilldeckel",
+    "row": 3,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-24",
+    "name": "Heiße Asche",
+    "effect": "Die Brocken zählen mit; jeder zweite lässt ein Polster aus warmer Asche zurück.",
+    "look": "Warme Aschewolke, die sich wie eine Weste um den Koch legt",
+    "row": 4,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-25",
+    "name": "Glutwächter",
+    "effect": "Hält der Tank den Grill auf Temperatur, klappt der Deckel schneller wieder hoch.",
+    "look": "Thermometer mit Nadel im goldenen Feld, daneben ein Grilldeckel",
+    "row": 5,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-26",
+    "name": "Brandmauer",
+    "effect": "Der Feuerring beim Überhitzen hinterlässt eine Mauer aus Hitze um den Tank.",
+    "look": "Mauer aus Schamottsteinen, hinter der eine Stichflamme hochschießt",
+    "row": 6,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-27",
+    "name": "Aufgeheizt",
+    "effect": "Die Paraden zählen mit; nach der dritten ist der Blasebalg ohne Wartezeit zurück.",
+    "look": "Blasebalg mit drei Brandflecken, daneben ein verbeulter Grilldeckel",
+    "row": 7,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-28",
+    "name": "Glut unterm Deckel",
+    "effect": "Jeder abgefangene Schlag flickt den Tank ein Stück.",
+    "look": "Grilldeckel, unter dessen Rand warmes Glühen hervorscheint",
+    "row": 8,
+    "path": 2
+   },
+   {
+    "id": "schorsch-rauch-29",
+    "name": "Glutherz",
+    "effect": "Servieren hält den Grill warm und legt den nächsten Brandwurf in die Hand.",
+    "look": "Herzförmiges Stück Holzkohle, innen rot glühend",
+    "row": 9,
+    "path": 2
+   }
+  ]
+ },
+ {
+  "id": "talente-kaethe-grand",
+  "spec": "kaethe-grand",
+  "output": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "kind": "talent-sheet",
+  "grid": {
+   "columns": 6,
+   "rows": 5
+  },
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. Class: Kreuz-Kaethe, a 71-year-old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain, French-suited playing cards (clubs, spades, hearts, diamonds), a Skat score pad with pencil tally marks, eggnog in a small stemmed glass, knitting needles and wool. Vary the objects: not every icon may be a playing card. This sheet is kaethe-grand (Grand-Spielerin, Fernkampf-Schaden): Sammelt Buben und Augen: vier Buben in einem Spiel sind ein Grand – Abrechnen trifft dann anderthalbfach und alle Gegner ringsum. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. In strict row-major order (left to right, top to bottom):\n1. Wenzel: Jeder Bube wirkt nach seiner Farbe spürbar kräftiger als bisher.\n2. Mitzählen: Wer die Farbe der letzten Karte hält, bekommt auf dem Skatblock gleich ein paar Augen mehr angeschrieben. Motiv: Skatblock mit Bleistift, drei frische Striche.\n3. Kleinvieh: Die ausgespielten Karten zählen mit; jede dritte beschleunigt kurz alles, was danach kommt. Motiv: Drei kleine Luschen im Fächer mit Tempostrichen.\n4. Kreuz-Bube: Die Schadensfarbe des Blatts schlägt kräftiger zu, von der Kreuz-Sieben bis zum Kreuz-Ass.\n5. Pfennigfuchserin: Kritische Treffer schreiben Augen an, und der Glückspfennig macht die Glückstreffer der ganzen Runde deutlich härter. Motiv: Kupferner Glückspfennig mit Jahreszahl auf einem Skatblock.\n6. Kleine Fische: Die schwächsten Karten des Blatts holen gegenüber Dame, König und Zehn auf.\n7. Bube zieht nach: Ein gespielter Bube wirft die übrigen Handkarten ab und legt dir neue hin. Motiv: Bube, der einen frischen Kartenfächer hinter sich herzieht.\n8. Knapp gewonnen: Die Schwelle, ab der das Spiel als gewonnen gilt und Abrechnen frei wird, sinkt.\n9. Schnipp, schnapp: Die Autoangriffe zählen mit und schreiben regelmäßig ein paar Augen an. Motiv: Spielkarte, die zwischen zwei Fingern weggeschnippt wird.\n10. Der letzte Stich: Angeschlagene Gegner kassieren von jeder Karte und jedem Abrechnen mehr.\n11. Gestochen scharf: Ein Stich gegen einen Gegnerzauber schreibt zusätzlich zur Gegnerkarte noch mehr Augen an.\n12. Ouvert: Über der Hand zeigt sich, welche Karte als Nächstes nachrückt.\n13. Mit Vieren: Die Buben zählen mit; der vierte lädt ein Abrechnen mit doppelter Wucht. Motiv: Vier Buben im Fächer auf grünem Filz, goldener Schimmer.\n14. Reizen: Schaltet einen Kniff frei, der sich Augen im Voraus holt und die nächste Karte dafür leer ausgehen lässt.\n15. Blatt aufgefächert: Die Hand wird größer; zusätzliche Karten warten verdeckt hinter den drei Leistenplätzen.\n16. Der Alte: Buben verkürzen die laufende Abklingzeit von Neu geben, das dir wiederum sicher einen Buben bringt. Motiv: Kreuz-Bube mit Schnauzbart und abgegriffenen Ecken, daneben ein Bierdeckel voller Striche.\n17. Skat drücken: Jedes Mischen und jedes Neu geben schreibt Augen an, als hättest du die abgelegten Karten gedrückt. Motiv: Zwei verdeckte Karten, die unter den Skatblock geschoben werden.\n18. Bis zum Anschlag: Farbe bedienen darf öfter hintereinander aufschlagen, bevor der Bonus deckelt.\n19. Auf die Hand: Die Abklingzeit von Neu geben sinkt dauerhaft – öfter eine frische Hand mit sicherem Buben.\n20. Volle Augen: Der Grundwert, den jede ausgespielte Karte auf den Block schreibt, steigt.\n21. Unter der Hand: Die Karten zählen mit; jede fünfte zieht Zeit von der Abklingzeit des Kartenregens ab. Motiv: Karten, die unter der Tischkante in eine Schürzentasche wandern.\n22. Trumpf nachziehen: Jeder gestochene Gegnerzauber verkürzt die Wartezeit auf die nächste Hand mit sicherem Buben. Motiv: Hand, die eine Karte vom Stapel zieht, darunter ein gestochener Stich.\n23. Buchführung: Jeder erledigte Gegner wird auf dem Skatblock gutgeschrieben. Motiv: Aufgeschlagenes Kassenbuch mit Skatstrichen statt Zahlen.\n24. Durchmarsch: Die Kartenregen zählen mit; jeder zweite treibt dich kurz zu schnellerem Spiel an. Motiv: Kartenregen, durch den ein Paar Hausschuhe marschiert.\n25. Spitzen: Kritische Treffer, ob Karte oder Abrechnen, richten deutlich mehr an.\n26. Strich auf dem Block: Nach dem Abrechnen steht das nächste Reizen deutlich früher wieder bereit. Motiv: Dicker Bleistiftstrich unter einer Spalte Zahlen.\n27. Nullspiel: Die Ausweichschritte zählen mit; jeder zweite tauscht die ganze Hand aus. Motiv: Leere Hand über einem Tisch ohne Stiche, daneben Staubwolke.\n28. Grand Hand: Das Abrechnen schlägt kräftiger zu und gibt sofort den Weg zu einer frischen Hand mit sicherem Buben frei. Motiv: Goldener Kartenstrudel, aus dem ein Kreuz-Bube auftaucht.\n29. Revanche: Nach dem Abrechnen bleibt ein Grundstock an Augen auf dem Block stehen. Motiv: Frisch gemischter Stapel, auf dem schon ein Skatblock mit Strichen liegt.\n30. Null ouvert Hand: Das Abrechnen räumt die Hand ab und macht den Kartenregen ohne Wartezeit wieder frei. Motiv: Offen ausgelegte Hand, darüber schwebend der nächste Kartenregen.",
+  "references": [
+   "assets/content-art/e32/sources/baerbel-care-v1.png"
+  ],
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "kaethe-grand-0",
+    "name": "Wenzel",
+    "effect": "Jeder Bube wirkt nach seiner Farbe spürbar kräftiger als bisher.",
+    "row": 0,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-1",
+    "name": "Mitzählen",
+    "effect": "Wer die Farbe der letzten Karte hält, bekommt auf dem Skatblock gleich ein paar Augen mehr angeschrieben.",
+    "look": "Skatblock mit Bleistift, drei frische Striche",
+    "row": 0,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-2",
+    "name": "Kleinvieh",
+    "effect": "Die ausgespielten Karten zählen mit; jede dritte beschleunigt kurz alles, was danach kommt.",
+    "look": "Drei kleine Luschen im Fächer mit Tempostrichen",
+    "row": 0,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-3",
+    "name": "Kreuz-Bube",
+    "effect": "Die Schadensfarbe des Blatts schlägt kräftiger zu, von der Kreuz-Sieben bis zum Kreuz-Ass.",
+    "row": 1,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-4",
+    "name": "Pfennigfuchserin",
+    "effect": "Kritische Treffer schreiben Augen an, und der Glückspfennig macht die Glückstreffer der ganzen Runde deutlich härter.",
+    "look": "Kupferner Glückspfennig mit Jahreszahl auf einem Skatblock",
+    "row": 1,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-5",
+    "name": "Kleine Fische",
+    "effect": "Die schwächsten Karten des Blatts holen gegenüber Dame, König und Zehn auf.",
+    "row": 1,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-6",
+    "name": "Bube zieht nach",
+    "effect": "Ein gespielter Bube wirft die übrigen Handkarten ab und legt dir neue hin.",
+    "look": "Bube, der einen frischen Kartenfächer hinter sich herzieht",
+    "row": 2,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-7",
+    "name": "Knapp gewonnen",
+    "effect": "Die Schwelle, ab der das Spiel als gewonnen gilt und Abrechnen frei wird, sinkt.",
+    "row": 2,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-8",
+    "name": "Schnipp, schnapp",
+    "effect": "Die Autoangriffe zählen mit und schreiben regelmäßig ein paar Augen an.",
+    "look": "Spielkarte, die zwischen zwei Fingern weggeschnippt wird",
+    "row": 2,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-9",
+    "name": "Der letzte Stich",
+    "effect": "Angeschlagene Gegner kassieren von jeder Karte und jedem Abrechnen mehr.",
+    "row": 3,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-10",
+    "name": "Gestochen scharf",
+    "effect": "Ein Stich gegen einen Gegnerzauber schreibt zusätzlich zur Gegnerkarte noch mehr Augen an.",
+    "row": 3,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-11",
+    "name": "Ouvert",
+    "effect": "Über der Hand zeigt sich, welche Karte als Nächstes nachrückt.",
+    "row": 3,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-12",
+    "name": "Mit Vieren",
+    "effect": "Die Buben zählen mit; der vierte lädt ein Abrechnen mit doppelter Wucht.",
+    "look": "Vier Buben im Fächer auf grünem Filz, goldener Schimmer",
+    "row": 4,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-13",
+    "name": "Reizen",
+    "effect": "Schaltet einen Kniff frei, der sich Augen im Voraus holt und die nächste Karte dafür leer ausgehen lässt.",
+    "row": 4,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-14",
+    "name": "Blatt aufgefächert",
+    "effect": "Die Hand wird größer; zusätzliche Karten warten verdeckt hinter den drei Leistenplätzen.",
+    "row": 4,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-15",
+    "name": "Der Alte",
+    "effect": "Buben verkürzen die laufende Abklingzeit von Neu geben, das dir wiederum sicher einen Buben bringt.",
+    "look": "Kreuz-Bube mit Schnauzbart und abgegriffenen Ecken, daneben ein Bierdeckel voller Striche",
+    "row": 5,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-16",
+    "name": "Skat drücken",
+    "effect": "Jedes Mischen und jedes Neu geben schreibt Augen an, als hättest du die abgelegten Karten gedrückt.",
+    "look": "Zwei verdeckte Karten, die unter den Skatblock geschoben werden",
+    "row": 5,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-17",
+    "name": "Bis zum Anschlag",
+    "effect": "Farbe bedienen darf öfter hintereinander aufschlagen, bevor der Bonus deckelt.",
+    "row": 5,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-18",
+    "name": "Auf die Hand",
+    "effect": "Die Abklingzeit von Neu geben sinkt dauerhaft – öfter eine frische Hand mit sicherem Buben.",
+    "row": 6,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-19",
+    "name": "Volle Augen",
+    "effect": "Der Grundwert, den jede ausgespielte Karte auf den Block schreibt, steigt.",
+    "row": 6,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-20",
+    "name": "Unter der Hand",
+    "effect": "Die Karten zählen mit; jede fünfte zieht Zeit von der Abklingzeit des Kartenregens ab.",
+    "look": "Karten, die unter der Tischkante in eine Schürzentasche wandern",
+    "row": 6,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-21",
+    "name": "Trumpf nachziehen",
+    "effect": "Jeder gestochene Gegnerzauber verkürzt die Wartezeit auf die nächste Hand mit sicherem Buben.",
+    "look": "Hand, die eine Karte vom Stapel zieht, darunter ein gestochener Stich",
+    "row": 7,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-22",
+    "name": "Buchführung",
+    "effect": "Jeder erledigte Gegner wird auf dem Skatblock gutgeschrieben.",
+    "look": "Aufgeschlagenes Kassenbuch mit Skatstrichen statt Zahlen",
+    "row": 7,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-23",
+    "name": "Durchmarsch",
+    "effect": "Die Kartenregen zählen mit; jeder zweite treibt dich kurz zu schnellerem Spiel an.",
+    "look": "Kartenregen, durch den ein Paar Hausschuhe marschiert",
+    "row": 7,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-24",
+    "name": "Spitzen",
+    "effect": "Kritische Treffer, ob Karte oder Abrechnen, richten deutlich mehr an.",
+    "row": 8,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-25",
+    "name": "Strich auf dem Block",
+    "effect": "Nach dem Abrechnen steht das nächste Reizen deutlich früher wieder bereit.",
+    "look": "Dicker Bleistiftstrich unter einer Spalte Zahlen",
+    "row": 8,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-26",
+    "name": "Nullspiel",
+    "effect": "Die Ausweichschritte zählen mit; jeder zweite tauscht die ganze Hand aus.",
+    "look": "Leere Hand über einem Tisch ohne Stiche, daneben Staubwolke",
+    "row": 8,
+    "path": 2
+   },
+   {
+    "id": "kaethe-grand-27",
+    "name": "Grand Hand",
+    "effect": "Das Abrechnen schlägt kräftiger zu und gibt sofort den Weg zu einer frischen Hand mit sicherem Buben frei.",
+    "look": "Goldener Kartenstrudel, aus dem ein Kreuz-Bube auftaucht",
+    "row": 9,
+    "path": 0
+   },
+   {
+    "id": "kaethe-grand-28",
+    "name": "Revanche",
+    "effect": "Nach dem Abrechnen bleibt ein Grundstock an Augen auf dem Block stehen.",
+    "look": "Frisch gemischter Stapel, auf dem schon ein Skatblock mit Strichen liegt",
+    "row": 9,
+    "path": 1
+   },
+   {
+    "id": "kaethe-grand-29",
+    "name": "Null ouvert Hand",
+    "effect": "Das Abrechnen räumt die Hand ab und macht den Kartenregen ohne Wartezeit wieder frei.",
+    "look": "Offen ausgelegte Hand, darüber schwebend der nächste Kartenregen",
+    "row": 9,
+    "path": 2
+   }
+  ]
+ },
+ {
+  "id": "talente-kaethe-herz",
+  "spec": "kaethe-herz",
+  "output": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "kind": "talent-sheet",
+  "grid": {
+   "columns": 6,
+   "rows": 5
+  },
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. Class: Kreuz-Kaethe, a 71-year-old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain, French-suited playing cards (clubs, spades, hearts, diamonds), a Skat score pad with pencil tally marks, eggnog in a small stemmed glass, knitting needles and wool. Vary the objects: not every icon may be a playing card. This sheet is kaethe-herz (Kartenlegerin, Heilung): Herz-Karten heilen stärker und reichen für einen zweiten Verbündeten. Sie sieht die nächste Karte voraus; der Kartenregen wird zum Legekreis, der heilt. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. In strict row-major order (left to right, top to bottom):\n1. Das Herz am rechten Fleck: Herz-Karten wirken wie gewohnt auf ihr Ziel und lassen ein wenig Heilung bei dir selbst. Motiv: Herz-Karte mit einem kleinen Pflaster in der Ecke.\n2. Pik auf die Brust: Pik-Karten schützen ihr Ziel wie gewohnt und legen zusätzlich ein kleines Polster bei dir an. Motiv: Pik-Karte als Brustschild an einer Strickjacke.\n3. Sterne lesen: Jedes Glied der Farbkette verstärkt die nächste Karte noch ein Stück mehr.\n4. Rote Dame: Die Heilfarbe des Blatts pflegt kräftiger, von der Herz-Sieben bis zum Herz-Ass.\n5. Letzte Masche: In der Not legt eine geglückte Parade ein besonders dickes Polster an.\n6. Farbe halten: Wer die Farbe der letzten Karte nachlegt, bekommt jedes Mal einen kleinen Schluck Leben. Motiv: Kartenfächer in einer Farbe, darüber ein kleines Herz.\n7. Nachschenken: Die Herz-Karten zählen mit; jede dritte verkürzt die Wartezeit aufs nächste Gläschen. Motiv: Eierlikörflasche, die ein kleines Stielglas nachfüllt.\n8. Pik-Ass: Die Schutzfarbe des Blatts legt dickere Schilde auf dich oder den gewählten Freund.\n9. Wahrsagekugel: Eine lange Farbkette wächst noch ein Glied weiter, bevor ihr Aufschlag endet.\n10. Herzklopfen: In der Not steht das nächste Gläschen ohne Wartezeit bereit. Motiv: Pochendes rotes Herz neben einem vollen Gläschen.\n11. Mauern: Gemauert fängt Treffer über eine längere Zeitspanne ab.\n12. Blick über die Schulter: Jeder gestochene Gegnerzauber gibt dir einen Teil deines Lebens zurück.\n13. Handlesen: Schaltet eine Heilung über Zeit frei, die jede Herz-Karte länger laufen lässt.\n14. Pik mit Stachel: Wer auf einen Pik-Schild einprügelt, bekommt einen Teil davon zurück.\n15. Hab ich kommen sehen: Ein Treffer, der während des Abgangs ins Leere geht, bringt die nächste frische Hand näher. Motiv: Glaskugel, in der sich ein vorbeifliegender Schlag spiegelt.\n16. Lebenslinie: Jede Herz-Karte auf Herz verkürzt die Wartezeit bis zum nächsten Handlesen. Motiv: Handfläche mit leuchtender Lebenslinie, darauf eine Herz-Karte.\n17. Pik-Kette: Jede Pik-Karte, die auf Pik folgt, legt dir ein Polster an. Motiv: Drei Pik-Karten, zu einer Kette verbunden.\n18. Kaffeefahrt: Jede frische Hand bringt einen kurzen Schub, die neuen Karten zügig auszuspielen. Motiv: Reisebus mit Heizdecken-Werbung, auf dem Dach ein Kartenstapel.\n19. Warmer Eierlikör: Nach dem Gläschen wirkt die Heilung noch eine Weile als Hauspflege weiter.\n20. Masche für Masche: Geglückte Paraden legen ein Polster an, und der Strickschal verstärkt Deckung und Schilde der ganzen Runde spürbar. Motiv: Stricknadeln, die einen Schild aus Wolle stricken.\n21. Legekreis im Gehen: Die kurze Wirkzeit beim Legen des Kreises bricht nicht mehr ab, wenn du dich bewegst.\n22. Herzensangelegenheit: Die Herz-Karten zählen mit; jede vierte schreibt zusätzliche Augen aufs nächste Abrechnen an. Motiv: Vier Herz-Karten, auf der obersten ein Skatstrich.\n23. Nichts verschenken: Was beim Heilen über dein volles Leben hinausgeht, bleibt teilweise als Polster liegen.\n24. Zukunft gesehen: Bediente Farben zählen mit; nach der dritten steht die nächste frische Hand ohne Wartezeit bereit. Motiv: Aufgeschlagenes Traumdeutungsbuch mit drei Karten gleicher Farbe.\n25. Noch eins, dann neu: Das Gläschen spült die alte Hand weg und legt dir neue Karten hin. Motiv: Leeres Stielglas neben einem frisch gemischten Stapel.\n26. Doppelt gemauert: Das Parierfenster von Gemauert schluckt einen weiteren Treffer, bevor es sich schließt.\n27. Kartenlegen: Die Würfe der ganzen Hand zählen mit; jeder zweite schreibt zusätzliche Augen an. Motiv: Karten im Kreis auf einem Häkeldeckchen, in der Mitte ein Skatblock.\n28. Rote Rechnung: Das Abrechnen wird zur großen Heilung und legt sofort das nächste Handlesen bereit. Motiv: Rote Quittung, die sich in ein Herz faltet.\n29. Schutzbrief: Nach dem Abrechnen stehst du hinter einem dicken Polster, und die Parade ist sofort wieder da. Motiv: Gesiegelter Brief mit Pik-Stempel vor einer Mauer.\n30. Die Karten lügen nie: Das Abrechnen legt dir neue Karten hin und bringt den Kreis auf dem Boden deutlich früher zurück. Motiv: Wahrsagekarten, die sich von selbst zu einem Kreis legen.",
+  "references": [
+   "assets/content-art/e32/sources/baerbel-care-v1.png"
+  ],
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "kaethe-herz-0",
+    "name": "Das Herz am rechten Fleck",
+    "effect": "Herz-Karten wirken wie gewohnt auf ihr Ziel und lassen ein wenig Heilung bei dir selbst.",
+    "look": "Herz-Karte mit einem kleinen Pflaster in der Ecke",
+    "row": 0,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-1",
+    "name": "Pik auf die Brust",
+    "effect": "Pik-Karten schützen ihr Ziel wie gewohnt und legen zusätzlich ein kleines Polster bei dir an.",
+    "look": "Pik-Karte als Brustschild an einer Strickjacke",
+    "row": 0,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-2",
+    "name": "Sterne lesen",
+    "effect": "Jedes Glied der Farbkette verstärkt die nächste Karte noch ein Stück mehr.",
+    "row": 0,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-3",
+    "name": "Rote Dame",
+    "effect": "Die Heilfarbe des Blatts pflegt kräftiger, von der Herz-Sieben bis zum Herz-Ass.",
+    "row": 1,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-4",
+    "name": "Letzte Masche",
+    "effect": "In der Not legt eine geglückte Parade ein besonders dickes Polster an.",
+    "row": 1,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-5",
+    "name": "Farbe halten",
+    "effect": "Wer die Farbe der letzten Karte nachlegt, bekommt jedes Mal einen kleinen Schluck Leben.",
+    "look": "Kartenfächer in einer Farbe, darüber ein kleines Herz",
+    "row": 1,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-6",
+    "name": "Nachschenken",
+    "effect": "Die Herz-Karten zählen mit; jede dritte verkürzt die Wartezeit aufs nächste Gläschen.",
+    "look": "Eierlikörflasche, die ein kleines Stielglas nachfüllt",
+    "row": 2,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-7",
+    "name": "Pik-Ass",
+    "effect": "Die Schutzfarbe des Blatts legt dickere Schilde auf dich oder den gewählten Freund.",
+    "row": 2,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-8",
+    "name": "Wahrsagekugel",
+    "effect": "Eine lange Farbkette wächst noch ein Glied weiter, bevor ihr Aufschlag endet.",
+    "row": 2,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-9",
+    "name": "Herzklopfen",
+    "effect": "In der Not steht das nächste Gläschen ohne Wartezeit bereit.",
+    "look": "Pochendes rotes Herz neben einem vollen Gläschen",
+    "row": 3,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-10",
+    "name": "Mauern",
+    "effect": "Gemauert fängt Treffer über eine längere Zeitspanne ab.",
+    "row": 3,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-11",
+    "name": "Blick über die Schulter",
+    "effect": "Jeder gestochene Gegnerzauber gibt dir einen Teil deines Lebens zurück.",
+    "row": 3,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-12",
+    "name": "Handlesen",
+    "effect": "Schaltet eine Heilung über Zeit frei, die jede Herz-Karte länger laufen lässt.",
+    "row": 4,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-13",
+    "name": "Pik mit Stachel",
+    "effect": "Wer auf einen Pik-Schild einprügelt, bekommt einen Teil davon zurück.",
+    "row": 4,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-14",
+    "name": "Hab ich kommen sehen",
+    "effect": "Ein Treffer, der während des Abgangs ins Leere geht, bringt die nächste frische Hand näher.",
+    "look": "Glaskugel, in der sich ein vorbeifliegender Schlag spiegelt",
+    "row": 4,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-15",
+    "name": "Lebenslinie",
+    "effect": "Jede Herz-Karte auf Herz verkürzt die Wartezeit bis zum nächsten Handlesen.",
+    "look": "Handfläche mit leuchtender Lebenslinie, darauf eine Herz-Karte",
+    "row": 5,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-16",
+    "name": "Pik-Kette",
+    "effect": "Jede Pik-Karte, die auf Pik folgt, legt dir ein Polster an.",
+    "look": "Drei Pik-Karten, zu einer Kette verbunden",
+    "row": 5,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-17",
+    "name": "Kaffeefahrt",
+    "effect": "Jede frische Hand bringt einen kurzen Schub, die neuen Karten zügig auszuspielen.",
+    "look": "Reisebus mit Heizdecken-Werbung, auf dem Dach ein Kartenstapel",
+    "row": 5,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-18",
+    "name": "Warmer Eierlikör",
+    "effect": "Nach dem Gläschen wirkt die Heilung noch eine Weile als Hauspflege weiter.",
+    "row": 6,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-19",
+    "name": "Masche für Masche",
+    "effect": "Geglückte Paraden legen ein Polster an, und der Strickschal verstärkt Deckung und Schilde der ganzen Runde spürbar.",
+    "look": "Stricknadeln, die einen Schild aus Wolle stricken",
+    "row": 6,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-20",
+    "name": "Legekreis im Gehen",
+    "effect": "Die kurze Wirkzeit beim Legen des Kreises bricht nicht mehr ab, wenn du dich bewegst.",
+    "row": 6,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-21",
+    "name": "Herzensangelegenheit",
+    "effect": "Die Herz-Karten zählen mit; jede vierte schreibt zusätzliche Augen aufs nächste Abrechnen an.",
+    "look": "Vier Herz-Karten, auf der obersten ein Skatstrich",
+    "row": 7,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-22",
+    "name": "Nichts verschenken",
+    "effect": "Was beim Heilen über dein volles Leben hinausgeht, bleibt teilweise als Polster liegen.",
+    "row": 7,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-23",
+    "name": "Zukunft gesehen",
+    "effect": "Bediente Farben zählen mit; nach der dritten steht die nächste frische Hand ohne Wartezeit bereit.",
+    "look": "Aufgeschlagenes Traumdeutungsbuch mit drei Karten gleicher Farbe",
+    "row": 7,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-24",
+    "name": "Noch eins, dann neu",
+    "effect": "Das Gläschen spült die alte Hand weg und legt dir neue Karten hin.",
+    "look": "Leeres Stielglas neben einem frisch gemischten Stapel",
+    "row": 8,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-25",
+    "name": "Doppelt gemauert",
+    "effect": "Das Parierfenster von Gemauert schluckt einen weiteren Treffer, bevor es sich schließt.",
+    "row": 8,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-26",
+    "name": "Kartenlegen",
+    "effect": "Die Würfe der ganzen Hand zählen mit; jeder zweite schreibt zusätzliche Augen an.",
+    "look": "Karten im Kreis auf einem Häkeldeckchen, in der Mitte ein Skatblock",
+    "row": 8,
+    "path": 2
+   },
+   {
+    "id": "kaethe-herz-27",
+    "name": "Rote Rechnung",
+    "effect": "Das Abrechnen wird zur großen Heilung und legt sofort das nächste Handlesen bereit.",
+    "look": "Rote Quittung, die sich in ein Herz faltet",
+    "row": 9,
+    "path": 0
+   },
+   {
+    "id": "kaethe-herz-28",
+    "name": "Schutzbrief",
+    "effect": "Nach dem Abrechnen stehst du hinter einem dicken Polster, und die Parade ist sofort wieder da.",
+    "look": "Gesiegelter Brief mit Pik-Stempel vor einer Mauer",
+    "row": 9,
+    "path": 1
+   },
+   {
+    "id": "kaethe-herz-29",
+    "name": "Die Karten lügen nie",
+    "effect": "Das Abrechnen legt dir neue Karten hin und bringt den Kreis auf dem Boden deutlich früher zurück.",
+    "look": "Wahrsagekarten, die sich von selbst zu einem Kreis legen",
+    "row": 9,
+    "path": 2
+   }
+  ]
+ },
+ {
+  "id": "talente-kaethe-falsch",
+  "spec": "kaethe-falsch",
+  "output": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "kind": "talent-sheet",
+  "grid": {
+   "columns": 6,
+   "rows": 5
+  },
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icons, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 64px, detailed like our reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Do not repeat the same silhouette: show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is style only. Read the German names and gameplay effects below to design their visual meaning. Class: Kreuz-Kaethe, a 71-year-old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain, French-suited playing cards (clubs, spades, hearts, diamonds), a Skat score pad with pencil tally marks, eggnog in a small stemmed glass, knitting needles and wool. Vary the objects: not every icon may be a playing card. This sheet is kaethe-falsch (Falschspielerin, Kontrolle): Ass im Ärmel: eine Karte außerhalb der Hand festhalten. Jeder Stich verspottet den Gegner, Pik-Karten schützen stärker. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. In strict row-major order (left to right, top to bottom):\n1. Hab ich doch gesagt: Ein gestochener Gegnerzauber legt dir sofort ein Polster an. Motiv: Erhobener Zeigefinger über einem gestochenen Stich.\n2. Aus dem Ärmel: Wer einen Treffer abfängt, tauscht dabei unauffällig die ganze Hand aus. Motiv: Strickärmel, aus dem ein frischer Kartenfächer rutscht.\n3. Re!: Eine geglückte Unterbrechung verdoppelt die Wirkung der Karte auf dem ersten Platz. Motiv: Zwei übereinandergelegte Karten mit doppeltem Rand, Ausruf „Re!“.\n4. Kontra zahlt: Eine geglückte Unterbrechung schreibt Augen an, ob sie als Stich zählt oder nicht. Motiv: Skatblock mit dick unterstrichenem „Kontra“.\n5. Notblatt: In der Not werden die Handkarten gegen frische getauscht – vielleicht ist Herz oder Pik dabei. Motiv: Strickärmel, aus dem in letzter Sekunde ein ganzer Kartenfächer rutscht.\n6. Karo-Zehn: Die hohen Karo-Karten halten ihr Ziel ein Stück länger in der Betäubung fest.\n7. Hochgestochen: Gestochene Gegnerzauber bringen über die Gegnerkarte hinaus weitere Augen.\n8. Bubentrick: Buben verkürzen die Wartezeit auf das nächste Kontra. Motiv: Bube, der aus einem Strickärmel lugt.\n9. Kreuz-Dame: Auch bei der Falschspielerin schlägt die Schadensfarbe kräftiger zu.\n10. Stichfest: Gestochene Gegnerzauber flicken dich jedes Mal ein Stück zusammen.\n11. Ärmel voll: Die Hand der Falschspielerin fasst mehr Karten, als die Leiste zeigt.\n12. Karo bedient: Eine Karo-Karte auf Karo bremst die Gegner und polstert dich zugleich. Motiv: Karo-Splitter, die sich zu einem Schild fügen.\n13. Da guckst du: Ein Pik-Schild zieht die Aufmerksamkeit aller Gegner in der Nähe auf dich.\n14. Gezinkte Karten: Schaltet einen Kniff frei, der die ganze Hand auf eine Farbe umfärbt.\n15. Karo-Ass: Die Kontrollfarbe trifft die Gruppe härter und bremst sie kräftiger.\n16. Kontra im Takt: Die Stiche zählen mit; nach dem dritten steht die Unterbrechung ohne Wartezeit bereit. Motiv: Drei gestochene Karten, darüber ein Megafon mit „Kontra!“.\n17. Falsch gemischt: Die Falschspielerin darf ihre Hand öfter abwerfen und neu ziehen.\n18. Kreuz-Kette: Kreuz auf Kreuz beschleunigt kurz alles, was du danach spielst. Motiv: Kreuz-Karten, die wie Dominosteine umfallen.\n19. Kontra mit Ansage: Nach einer geglückten Unterbrechung ist das nächste Gläschen ohne Wartezeit da.\n20. Nachgesteckt: Lange Farbketten bringen das nächste Umfärben der Hand näher. Motiv: Markierte Kartenrückseiten, eine davon mit frischem Fingernagel-Knick.\n21. Karo satt: Alles, was im Umkreis trifft, richtet mehr an – vom Karo-Splitter bis zum Kartenregen.\n22. Dicke Strickjacke: Bei niedrigem Leben kommt von jedem Treffer weniger durch die Strickjacke.\n23. Mischen ist Silber: Jede frische Hand kommt mit einem Polster, das die Mischpause überbrückt. Motiv: Zwei Hände, die blitzschnell mischen, dahinter ein silberner Schild.\n24. Bockrunde: Gestochene Gegnerzauber können das nächste Abrechnen verdoppeln. Motiv: Ziegenbock mit Skatblock unter dem Arm, auf dem Block doppelte Striche.\n25. Mauer nach dem Stich: Nach jedem gestochenen Gegnerzauber ist die Parade ohne Wartezeit wieder da. Motiv: Kartenmauer hinter einem gestochenen Stich.\n26. Flinke Finger: Luschen fliegen fast ohne Sperre hinterher – kurz danach ist schon die nächste Karte dran.\n27. Hier geblieben!: Ein abgefangener Angreifer wird danach eine Weile ausgebremst.\n28. Kontra gewonnen: Das Abrechnen macht die Unterbrechung sofort frei und treibt dich kurz zu schnellerem Spiel an. Motiv: Gewonnenes Spiel auf dem Skatblock, daneben ein Megafon.\n29. Falsch abgerechnet: Das Abrechnen legt neue Karten hin und macht das Umfärben der Hand ohne Wartezeit frei. Motiv: Skatblock mit radierten Strichen, daneben ein gezinktes Blatt.\n30. Re und Bock: Das Abrechnen schlägt kräftiger zu und verdoppelt gleich danach die Karte auf dem ersten Platz. Motiv: Doppelt umrandeter Skatblock, darauf eine leuchtende erste Karte.",
+  "references": [
+   "assets/content-art/e32/sources/baerbel-care-v1.png"
+  ],
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "kaethe-falsch-0",
+    "name": "Hab ich doch gesagt",
+    "effect": "Ein gestochener Gegnerzauber legt dir sofort ein Polster an.",
+    "look": "Erhobener Zeigefinger über einem gestochenen Stich",
+    "row": 0,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-1",
+    "name": "Aus dem Ärmel",
+    "effect": "Wer einen Treffer abfängt, tauscht dabei unauffällig die ganze Hand aus.",
+    "look": "Strickärmel, aus dem ein frischer Kartenfächer rutscht",
+    "row": 0,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-2",
+    "name": "Re!",
+    "effect": "Eine geglückte Unterbrechung verdoppelt die Wirkung der Karte auf dem ersten Platz.",
+    "look": "Zwei übereinandergelegte Karten mit doppeltem Rand, Ausruf „Re!“",
+    "row": 0,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-3",
+    "name": "Kontra zahlt",
+    "effect": "Eine geglückte Unterbrechung schreibt Augen an, ob sie als Stich zählt oder nicht.",
+    "look": "Skatblock mit dick unterstrichenem „Kontra“",
+    "row": 1,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-4",
+    "name": "Notblatt",
+    "effect": "In der Not werden die Handkarten gegen frische getauscht – vielleicht ist Herz oder Pik dabei.",
+    "look": "Strickärmel, aus dem in letzter Sekunde ein ganzer Kartenfächer rutscht",
+    "row": 1,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-5",
+    "name": "Karo-Zehn",
+    "effect": "Die hohen Karo-Karten halten ihr Ziel ein Stück länger in der Betäubung fest.",
+    "row": 1,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-6",
+    "name": "Hochgestochen",
+    "effect": "Gestochene Gegnerzauber bringen über die Gegnerkarte hinaus weitere Augen.",
+    "row": 2,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-7",
+    "name": "Bubentrick",
+    "effect": "Buben verkürzen die Wartezeit auf das nächste Kontra.",
+    "look": "Bube, der aus einem Strickärmel lugt",
+    "row": 2,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-8",
+    "name": "Kreuz-Dame",
+    "effect": "Auch bei der Falschspielerin schlägt die Schadensfarbe kräftiger zu.",
+    "row": 2,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-9",
+    "name": "Stichfest",
+    "effect": "Gestochene Gegnerzauber flicken dich jedes Mal ein Stück zusammen.",
+    "row": 3,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-10",
+    "name": "Ärmel voll",
+    "effect": "Die Hand der Falschspielerin fasst mehr Karten, als die Leiste zeigt.",
+    "row": 3,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-11",
+    "name": "Karo bedient",
+    "effect": "Eine Karo-Karte auf Karo bremst die Gegner und polstert dich zugleich.",
+    "look": "Karo-Splitter, die sich zu einem Schild fügen",
+    "row": 3,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-12",
+    "name": "Da guckst du",
+    "effect": "Ein Pik-Schild zieht die Aufmerksamkeit aller Gegner in der Nähe auf dich.",
+    "row": 4,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-13",
+    "name": "Gezinkte Karten",
+    "effect": "Schaltet einen Kniff frei, der die ganze Hand auf eine Farbe umfärbt.",
+    "row": 4,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-14",
+    "name": "Karo-Ass",
+    "effect": "Die Kontrollfarbe trifft die Gruppe härter und bremst sie kräftiger.",
+    "row": 4,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-15",
+    "name": "Kontra im Takt",
+    "effect": "Die Stiche zählen mit; nach dem dritten steht die Unterbrechung ohne Wartezeit bereit.",
+    "look": "Drei gestochene Karten, darüber ein Megafon mit „Kontra!“",
+    "row": 5,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-16",
+    "name": "Falsch gemischt",
+    "effect": "Die Falschspielerin darf ihre Hand öfter abwerfen und neu ziehen.",
+    "row": 5,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-17",
+    "name": "Kreuz-Kette",
+    "effect": "Kreuz auf Kreuz beschleunigt kurz alles, was du danach spielst.",
+    "look": "Kreuz-Karten, die wie Dominosteine umfallen",
+    "row": 5,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-18",
+    "name": "Kontra mit Ansage",
+    "effect": "Nach einer geglückten Unterbrechung ist das nächste Gläschen ohne Wartezeit da.",
+    "row": 6,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-19",
+    "name": "Nachgesteckt",
+    "effect": "Lange Farbketten bringen das nächste Umfärben der Hand näher.",
+    "look": "Markierte Kartenrückseiten, eine davon mit frischem Fingernagel-Knick",
+    "row": 6,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-20",
+    "name": "Karo satt",
+    "effect": "Alles, was im Umkreis trifft, richtet mehr an – vom Karo-Splitter bis zum Kartenregen.",
+    "row": 6,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-21",
+    "name": "Dicke Strickjacke",
+    "effect": "Bei niedrigem Leben kommt von jedem Treffer weniger durch die Strickjacke.",
+    "row": 7,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-22",
+    "name": "Mischen ist Silber",
+    "effect": "Jede frische Hand kommt mit einem Polster, das die Mischpause überbrückt.",
+    "look": "Zwei Hände, die blitzschnell mischen, dahinter ein silberner Schild",
+    "row": 7,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-23",
+    "name": "Bockrunde",
+    "effect": "Gestochene Gegnerzauber können das nächste Abrechnen verdoppeln.",
+    "look": "Ziegenbock mit Skatblock unter dem Arm, auf dem Block doppelte Striche",
+    "row": 7,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-24",
+    "name": "Mauer nach dem Stich",
+    "effect": "Nach jedem gestochenen Gegnerzauber ist die Parade ohne Wartezeit wieder da.",
+    "look": "Kartenmauer hinter einem gestochenen Stich",
+    "row": 8,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-25",
+    "name": "Flinke Finger",
+    "effect": "Luschen fliegen fast ohne Sperre hinterher – kurz danach ist schon die nächste Karte dran.",
+    "row": 8,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-26",
+    "name": "Hier geblieben!",
+    "effect": "Ein abgefangener Angreifer wird danach eine Weile ausgebremst.",
+    "row": 8,
+    "path": 2
+   },
+   {
+    "id": "kaethe-falsch-27",
+    "name": "Kontra gewonnen",
+    "effect": "Das Abrechnen macht die Unterbrechung sofort frei und treibt dich kurz zu schnellerem Spiel an.",
+    "look": "Gewonnenes Spiel auf dem Skatblock, daneben ein Megafon",
+    "row": 9,
+    "path": 0
+   },
+   {
+    "id": "kaethe-falsch-28",
+    "name": "Falsch abgerechnet",
+    "effect": "Das Abrechnen legt neue Karten hin und macht das Umfärben der Hand ohne Wartezeit frei.",
+    "look": "Skatblock mit radierten Strichen, daneben ein gezinktes Blatt",
+    "row": 9,
+    "path": 1
+   },
+   {
+    "id": "kaethe-falsch-29",
+    "name": "Re und Bock",
+    "effect": "Das Abrechnen schlägt kräftiger zu und verdoppelt gleich danach die Karte auf dem ersten Platz.",
+    "look": "Doppelt umrandeter Skatblock, darauf eine leuchtende erste Karte",
+    "row": 9,
+    "path": 2
+   }
+  ]
+ }
+]

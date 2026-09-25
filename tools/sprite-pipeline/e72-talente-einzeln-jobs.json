@@ -1,0 +1,200 @@
+[
+ {
+  "id": "talent-dieter-wall-12",
+  "talent": "dieter-wall-12",
+  "spec": "dieter-wall",
+  "index": 12,
+  "name": "Deckel beim Wirt",
+  "effect": "Ein größerer Teil jedes Treffers wird angeschrieben statt sofort abgezogen, und der Bon darf länger werden.",
+  "replaces": "Kronkorken-Panzer (a chainmail shirt of bottle caps)",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-wall-12-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-wall): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Deckel beim Wirt: Ein größerer Teil jedes Treffers wird angeschrieben statt sofort abgezogen, und der Bon darf länger werden. Motif: a round cardboard beer mat covered in pencil tally marks with an extra-long curling cream cash receipt hanging from it on a wooden bar counter, a small upward arrow for a bigger tab. It replaces an older picture of a different talent, Kronkorken-Panzer (a chainmail shirt of bottle caps), so no armour, no chainmail shirt, no bottle caps.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-wall-26",
+  "talent": "dieter-wall-26",
+  "spec": "dieter-wall",
+  "index": 26,
+  "name": "Ohne zu zahlen raus",
+  "effect": "Die Druckwelle aus der geprellten Zeche schlägt härter und kommt öfter.",
+  "replaces": "Hausbier-Nachschub (a beer mug with a flame swirl)",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-wall-26-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-wall): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Ohne zu zahlen raus: Die Druckwelle aus der geprellten Zeche schlägt härter und kommt öfter. Motif: a torn cream cash receipt bursting apart into a bold golden shockwave ring with coins flying outward, a pub swing door flung open behind it. It replaces an older picture of a different talent, Hausbier-Nachschub (a beer mug with a flame swirl), so no beer mug, no flames.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-brawl-25",
+  "talent": "dieter-brawl-25",
+  "spec": "dieter-brawl",
+  "index": 25,
+  "name": "Zechprellerrunde",
+  "effect": "Die geprellte Zeche lädt einen kostenlosen Abriss direkt hinterher.",
+  "replaces": "Anlauf nehmen (a dashing boot)",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-25-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Zechprellerrunde: Die geprellte Zeche lädt einen kostenlosen Abriss direkt hinterher. Motif: a torn cash receipt in front of a knocked-over wooden beer-tent table, a small golden circular arrow meaning the smash is instantly ready again. It replaces an older picture of a different talent, Anlauf nehmen (a dashing boot), so no boot, no running figure, no dash trail.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brawl-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-brew-2",
+  "talent": "dieter-brew-2",
+  "spec": "dieter-brew",
+  "index": 2,
+  "name": "Weizen gegen die Zeche",
+  "effect": "Die Heilpause wischt einen Teil des angeschriebenen Schadens vom Bon.",
+  "replaces": "Nichts wegkippen (beer pouring onto a shield)",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-brew-2-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brew): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Weizen gegen die Zeche: Die Heilpause wischt einen Teil des angeschriebenen Schadens vom Bon. Motif: a tall foaming wheat-beer glass standing on a long cash receipt whose pencil tally marks are crossed out and washed away by the spilling foam, a small green plus. It replaces an older picture of a different talent, Nichts wegkippen (beer pouring onto a shield), so no shield, no second mug.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brew-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-baerbel-care-15",
+  "talent": "baerbel-care-15",
+  "spec": "baerbel-care",
+  "index": 15,
+  "name": "Dickes Fell",
+  "effect": "Ein harter Treffer drückt die Reichweite nicht mehr, er polstert dich stattdessen ab.",
+  "replaces": "Freilaufgans (a goose in a green circle)",
+  "output": "assets/content-art/e32/sources/einzeln/baerbel-care-15-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (baerbel-care): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Aperol-Anni, a 34-year-old country-house influencer and healer (Aperol spritz, cleaning brush, jam jars, goose Gisela, smartphone on a ring light); her resource is Likes (pink hearts and thumbs-up) and her Trend (a badge with five hearts, going viral, brown shitstorm clouds). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Dickes Fell: Ein harter Treffer drückt die Reichweite nicht mehr, er polstert dich stattdessen ab. Motif: a thick fluffy sheepskin fur stole shrugging off a small brown storm cloud that rains brown splats, a pink heart badge underneath stays intact and glowing. It replaces an older picture of a different talent, Freilaufgans (a goose in a green circle), so no goose, no circle on the ground.",
+  "references": [
+   "assets/content-art/e32/sources/baerbel-care-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-baerbel-care-17",
+  "talent": "baerbel-care-17",
+  "spec": "baerbel-care",
+  "index": 17,
+  "name": "Stammpublikum",
+  "effect": "Jeder Kampf beginnt eine Trendstufe höher, die ersten Kniffe wirken dadurch sofort stärker.",
+  "replaces": "Schrubben heilt (a scrub brush with a plus)",
+  "output": "assets/content-art/e32/sources/einzeln/baerbel-care-17-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (baerbel-care): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Aperol-Anni, a 34-year-old country-house influencer and healer (Aperol spritz, cleaning brush, jam jars, goose Gisela, smartphone on a ring light); her resource is Likes (pink hearts and thumbs-up) and her Trend (a badge with five hearts, going viral, brown shitstorm clouds). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Stammpublikum: Jeder Kampf beginnt eine Trendstufe höher, die ersten Kniffe wirken dadurch sofort stärker. Motif: three loyal fans as dark silhouettes on a small wooden bench raising glowing pink hearts toward a smartphone on a ring light, the first of five small heart pips already lit. It replaces an older picture of a different talent, Schrubben heilt (a scrub brush with a plus), so no scrub brush, no sword.",
+  "references": [
+   "assets/content-art/e32/sources/baerbel-care-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-baerbel-stage-21",
+  "talent": "baerbel-stage-21",
+  "spec": "baerbel-stage",
+  "index": 21,
+  "name": "Hype-Zug",
+  "effect": "Jede neue Trendstufe schüttet einen Schwung Likes aus.",
+  "replaces": "Like-Welle (a four-leaf clover with coins)",
+  "output": "assets/content-art/e32/sources/einzeln/baerbel-stage-21-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (baerbel-stage): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Aperol-Anni, a 34-year-old country-house influencer and healer (Aperol spritz, cleaning brush, jam jars, goose Gisela, smartphone on a ring light); her resource is Likes (pink hearts and thumbs-up) and her Trend (a badge with five hearts, going viral, brown shitstorm clouds). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Hype-Zug: Jede neue Trendstufe schüttet einen Schwung Likes aus. Motif: a brass megaphone blasting a rising wave of pink hearts and thumbs-up signs, one bold upward arrow for the rising trend. It replaces an older picture of a different talent, Like-Welle (a four-leaf clover with coins), so no four-leaf clover, no coins.",
+  "references": [
+   "assets/content-art/e32/sources/baerbel-stage-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-kevin-fuse-25",
+  "talent": "kevin-fuse-25",
+  "spec": "kevin-fuse",
+  "index": 25,
+  "name": "Starkstrom-Bon",
+  "effect": "Wer am Pfandautomaten den goldenen Moment trifft, legt einen dickeren Bon auf den nächsten Blitz – und darf mehr davon sparen.",
+  "replaces": "Warmlaufen (a burning gear with an hourglass)",
+  "output": "assets/content-art/e32/sources/einzeln/kevin-fuse-25-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-fuse): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Starkstrom-Bon: Wer am Pfandautomaten den goldenen Moment trifft, legt einen dickeren Bon auf den nächsten Blitz – und darf mehr davon sparen. Motif: a golden paper deposit ticket with a red stamp crackling with blue-white lightning, three more tickets fanned behind it. It replaces an older picture of a different talent, Warmlaufen (a burning gear with an hourglass), so no gear, no hourglass, no flames.",
+  "references": [
+   "assets/content-art/e32/sources/kevin-fuse-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-kevin-iron-11",
+  "talent": "kevin-iron-11",
+  "spec": "kevin-iron",
+  "index": 11,
+  "name": "Robbi räumt auf",
+  "effect": "Flaschen, die in Robbis Kreis liegen, landen ohne Umweg in deinem Kasten.",
+  "replaces": "Weiter Bremsweg (the robot in a frost circle with ghostly enemies)",
+  "output": "assets/content-art/e32/sources/einzeln/kevin-iron-11-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-iron): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Robbi räumt auf: Flaschen, die in Robbis Kreis liegen, landen ohne Umweg in deinem Kasten. Motif: Dosen-Robbi, the small robot built from tin cans (drawn like in the reference sheet), standing in a faint ring on the ground and pulling empty green deposit bottles into a beer crate with a magnet claw. It replaces an older picture of a different talent, Weiter Bremsweg (the robot in a frost circle with ghostly enemies), so no frost swirl, no ghostly enemies.",
+  "references": [
+   "assets/content-art/e32/sources/kevin-iron-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-kevin-iron-23",
+  "talent": "kevin-iron-23",
+  "spec": "kevin-iron",
+  "index": 23,
+  "name": "Volle Ladung",
+  "effect": "Sauberes Nachladen trifft die goldene Zone leichter und spart danach die Flaschen der nächsten Überlast.",
+  "replaces": "Zusatzladung (the robot exploding)",
+  "output": "assets/content-art/e32/sources/einzeln/kevin-iron-23-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-iron): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Volle Ladung: Sauberes Nachladen trifft die goldene Zone leichter und spart danach die Flaschen der nächsten Überlast. Motif: a tin bottle crate filled with twelve shiny green bottles, a golden deposit ticket with a red stamp lying on top, a small bright spark meaning the next overload is free. It replaces an older picture of a different talent, Zusatzladung (the robot exploding), so no explosion as the main object, no robot.",
+  "references": [
+   "assets/content-art/e32/sources/kevin-iron-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-kevin-hunt-25",
+  "talent": "kevin-hunt-25",
+  "spec": "kevin-hunt",
+  "index": 25,
+  "name": "Pfandregen",
+  "effect": "Erledigte Gegner und daneben gegangene Würfe lassen mehr heiles Leergut zum Aufsammeln liegen.",
+  "replaces": "Gewinnausschüttung (a skull with a heart and coins)",
+  "output": "assets/content-art/e32/sources/einzeln/kevin-hunt-25-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-hunt): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Pfandregen: Erledigte Gegner und daneben gegangene Würfe lassen mehr heiles Leergut zum Aufsammeln liegen. Motif: a shower of glittering intact green deposit bottles raining down and landing upright around a knocked-over enemy cap, small sparkles where they land. It replaces an older picture of a different talent, Gewinnausschüttung (a skull with a heart and coins), so no skull, no heart, no coins.",
+  "references": [
+   "assets/content-art/e32/sources/kevin-hunt-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ }
+]
