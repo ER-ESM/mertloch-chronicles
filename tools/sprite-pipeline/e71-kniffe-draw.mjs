@@ -6,7 +6,10 @@
 // Export (`precision-september.mjs`, Auftragsblatt `e71-kniffe-jobs.json`) übernimmt das Bild 1 : 1 (Maßstab 1, kein Rand).
 //
 //   node tools/sprite-pipeline/e71-kniffe-draw.mjs [--only=id,id]   → Originale + herkunft.json
+//                                                     [--force]     → auch gemalte (Imagegen-)Originale überschreiben
 //   npm run sprites:precision && node scripts/pwa-cache.mjs          → Laufzeit-Assets skill-<klasse>-<kniff>
+// Vorrang gemalt vor gezeichnet: Ein Original, das Imagegen ersetzt hat (Eintrag in assets/precision/generation.json mit
+// passendem Hash, z. B. über `npm run e72:bilder`), zeichnet dieses Werkzeug ohne --force nicht wieder zu.
 //   node tools/sprite-pipeline/e71-kniffe-draw.mjs --kontaktbogen    → docs/e71-abnahme/kniffe/kontaktbogen.png (aus dem Laufzeitkatalog)
 //
 // Deterministisch (eigener Zufallsgenerator je ID), damit tests/e71-kniffe.test.mjs die Originale byte-genau nachzeichnen kann.
@@ -477,6 +480,8 @@ export const IDS=Object.keys(MOTIFS);
 export function drawIcon(id){const f=MOTIFS[id];if(!f)throw Error('Unbekanntes Motiv: '+id);const k=new Icon(id);f(k);return k.render();}
 export function iconPng(id){return encodePng(drawIcon(id));}
 const sha=b=>createHash('sha256').update(b).digest('hex');
+/** Kniff-IDs, deren Original gemalt ist: Imagegen-Herkunft (generation.json) mit demselben Hash wie die Datei. */
+export function paintedIds(records,readFile){const out=new Set();for(const id of IDS){const output=DIR+id+'.png',r=records.find(r=>r.output===output);if(!r)continue;let bytes;try{bytes=readFile(output);}catch{continue;}if(sha(bytes)===r.sourceHash)out.add(id);}return out;}
 
 // Kontaktbogen: Laufzeit-Assets bei 48 px wie im Spiel (drawContentIcon: Flächenmittel shrinkPixels, 64 → 48), zweifach vergrößert.
 // Spalte 1 = alte Kniffe zum Vergleich, dann je Zeile sieben neue; letzte Zeile nur alte (Dieter, Kevin, Anni).
@@ -502,7 +507,10 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]&&process.ar
  const out='docs/e71-abnahme/kniffe/kontaktbogen.png';mkdirSync(new URL('docs/e71-abnahme/kniffe/',root),{recursive:true});
  writeFileSync(new URL(out,root),encodePng(contactSheet(catalog,p=>readFileSync(new URL(p,root)),decodePng)));console.log('Kontaktbogen →',out);
 }else if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]){
- const root=new URL('../../',import.meta.url),onlyArg=process.argv.find(a=>a.startsWith('--only=')),only=onlyArg?onlyArg.slice(7).split(','):IDS;
+ const root=new URL('../../',import.meta.url),onlyArg=process.argv.find(a=>a.startsWith('--only=')),wanted=onlyArg?onlyArg.slice(7).split(','):IDS;
+ const genFile=new URL('assets/precision/generation.json',root),records=existsSync(genFile)?JSON.parse(readFileSync(genFile,'utf8')).records:[];
+ const painted=process.argv.includes('--force')?new Set():paintedIds(records,p=>readFileSync(new URL(p,root))),only=wanted.filter(id=>!painted.has(id));
+ for(const id of wanted.filter(id=>painted.has(id)))console.log('-',id,'gemalt (Imagegen) – bleibt, --force zeichnet es neu');
  mkdirSync(new URL(DIR,root),{recursive:true});
  const file=new URL(PROVENANCE,root),prov=existsSync(file)?JSON.parse(readFileSync(file,'utf8')):{tool:TOOL,kind:'code',records:[]};
  for(const id of only){const bytes=iconPng(id),output=DIR+id+'.png';writeFileSync(new URL(output,root),bytes);
@@ -510,4 +518,7 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]&&process.ar
   const at=prov.records.findIndex(r=>r.id===id);if(at>=0)prov.records[at]=rec;else prov.records.push(rec);console.log('-',id,rec.sha256.slice(0,12));}
  prov.records.sort((a,b)=>IDS.indexOf(a.id)-IDS.indexOf(b.id));
  writeFileSync(file,JSON.stringify(prov,null,1)+'\n');console.log(`${only.length} Motive gezeichnet → ${DIR}`);
+ // --force über ein gemaltes Original: dessen Imagegen-Herkunft stimmt nicht mehr, sie fällt weg (sonst meldet art-precision den Hash).
+ const drawnOutputs=new Set(only.map(id=>DIR+id+'.png'));
+ if(records.some(r=>drawnOutputs.has(r.output))){const g=JSON.parse(readFileSync(genFile,'utf8'));g.records=g.records.filter(r=>!drawnOutputs.has(r.output));writeFileSync(genFile,JSON.stringify(g,null,2)+'\n');console.log('Imagegen-Herkunft der neu gezeichneten Originale entfernt.');}
 }

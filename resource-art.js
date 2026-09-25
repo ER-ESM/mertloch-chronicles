@@ -29,7 +29,24 @@ const MAPS={
  crate:{p:{g:'#4f7f3f',G:'#77a860',d:'#2f4f27',h:'#a8d08a'},m:['GGGGGGGG','gddddddg','gddddddg','gGGGGGGg']},
  bottleSmall:{p:{c:'#e3bd4f',n:'#2f6a2c',g:'#3f8a3a',h:'#a6e08c',L:'#efe2b4',l:'#c9543a'},m:['.c.','.n.','.h.','ggh','gLL','glL','ggh','ggh','ggg']},
  spark:{p:{w:'#ffffff',y:'#ffe38a'},m:['.y.','ywy','.y.']},
- lock:{p:{m:'#b8b0a0',M:'#e8e0cc',d:'#5a5448',k:'#2a2620'},m:['.mmm.','m...m','m...m','ddddd','dMMMd','dMkMd','ddddd']}
+ lock:{p:{m:'#b8b0a0',M:'#e8e0cc',d:'#5a5448',k:'#2a2620'},m:['.mmm.','m...m','m...m','ddddd','dMMMd','dMkMd','ddddd']},
+ // E-72 Runde 3 („Lernen über das Bild“): Wirkung der Kartenfarbe als großes Symbol – Kreuz Klinge, Pik Schild, Herz Heilung, Karo Knall.
+ fxBlade:{p:{W:'#f4f8fa',S:'#98a8b6',G:'#f2c14e',g:'#a8741f',h:'#7a4a24',o:'#d8a23a'},m:[
+  '............W','...........WS','..........WS.','.........WS..','........WS...','.......WS....','...G..WS.....','....GWS......','....hG.......','...h..G......','.oo..........','.oo..........']},
+ fxShield:{p:{r:'#dfe7ee',R:'#8a9aa8',B:'#7aaee8',b:'#3a6ab0',Y:'#fff3b0',y:'#f2c14e'},m:[
+  'rrrrrrrrrrr','rBBBBBbbbbR','rBBBBBbbbbR','rBBByyybbbR','rBBByYybbbR','rBBByyybbbR','.rBBBBbbbR.','.rBBBBbbbR.','..rBBbbbR..','...rBbbR...','....rbR....','.....R.....']},
+ fxHeal:{p:{G:'#5cc85a',L:'#c8f7b0',g:'#2e8a3a'},m:[
+  '....GGGG....','....GLLg....','....GLLg....','....GLLg....','GGGGGLLGGGGg','GLLLLLLLLLLg','GLLLLLLLLLLg','gggggLLggggg','....GLLg....','....GLLg....','....GLLg....','....gggg....']},
+ fxBoom:{p:{W:'#fff6c8',y:'#ffd35a',o:'#ff8a2a',r:'#d8452a'},m:[
+  '......r......','.r....o....r.','..o...o...o..','...o.ooo.o...','....oyyyo....','...oyyWyyo...','rooyyWWWyyoor','...oyyWyyo...','....oyyyo....','...o.ooo.o...','..o...o...o..','.r....o....r.','......r......']},
+ // Tempo-Abzeichen (klein, auf dunklem Plättchen): » schnell (7–9, kurze globale Abklingzeit), Stern stark (10, Ass), Krone Trumpf (Bube)
+ badgeQuick:{p:{q:'#9ad8ff',Q:'#e8f6ff'},m:['Q..Q...','.q..q..','..q..q.','...q..q','..q..q.','.q..q..','q..q...']},
+ badgeStrong:{p:{s:'#ffd35a',S:'#fff3b0'},m:['...S...','...s...','sssssss','.sssss.','..sss..','.ss.ss.','s.....s']},
+ badgeTrump:{p:{c:'#f2c14e',C:'#e8453a'},m:['c..c..c','cc.c.cc','ccccccc','cCcCcCc','ccccccc']},
+ // Stich: eine Gegnerkarte, die zerschlagen wird
+ badgeStich:{p:{k:'#2e2420',w:'#f6efdc',x:'#e8453a'},m:['kkkk..x','kwwwkx.','kwwwx..','kwwxk..','kwxwk..','kxwwk..','xkkkk..']},
+ // Skatblock (Augen) für die Hofprobe-Schritte
+ skatblock:{p:{p:'#f2ead2',l:'#b8c4d8',r:'#c8323a',k:'#2a2430',t:'#6a6070'},m:['kkkkkkk','prpppp.','prtpt..','prppppp','prtttpp','prppppp','prtpp..','ppppppp']}
 };
 // Farbzeichen der Karten (7 × 7) und eine 3 × 5-Pixelschrift für Ränge, Zahlen und kleine Zeichen.
 const SUIT_MAPS={
@@ -112,6 +129,35 @@ export function drawBigCard(c,x,y,u,card,{glow=false,dim=false,w=19,h=23,rankSca
 }
 /** Großkarte auf eine ganze Leinwand; u so groß, dass sie die Leinwand füllt. */
 export function paintBigCardCanvas(canvas,card,{glow=false,dim=false,keep=false}={}){const c=canvas.getContext('2d'),W=canvas.width,H=canvas.height;if(!keep)c.clearRect(0,0,W,H);c.imageSmoothingEnabled=false;const u=Math.max(1,Math.floor(Math.min((W-2)/19,(H-2)/23)));drawBigCard(c,Math.round((W-19*u)/2),Math.round((H-23*u)/2),u,card,{glow,dim});}
+// ---------------------------------------------------------------------------------------------------------------
+// E-72 Runde 3 · Lernen über das Bild: Wirkung groß, Farbe und Rang klein, Tempo als Abzeichen.
+/** Wirkung je Farbe als Bildkarte: ♣ Klinge (Treffer), ♠ Schild, ♥ Heilung, ♦ Flächenknall. */
+export const CARD_EFFECT_ICON={kreuz:'fxBlade',pik:'fxShield',herz:'fxHeal',karo:'fxBoom'};
+/** Tempo-Abzeichen einer Karte: quick (7–9, kurze globale Abklingzeit), strong (10, Ass), trump (Bube) – Dame/König ohne. */
+export function cardTempo(card){const rk=RESOURCES.kaethe?.ranks[card?.rank];if(!rk)return null;return rk.trump?'trump':rk.quick?'quick':['10','A'].includes(String(card.rank))?'strong':null;}
+const BADGE={quick:{map:'badgeQuick',ring:'#6ab8ea',plate:'#12304a'},strong:{map:'badgeStrong',ring:'#ffd35a',plate:'#8a2418'},trump:{map:'badgeTrump',ring:'#f2c14e',plate:'#3a1a4a'},stich:{map:'badgeStich',ring:'#fff3b0',plate:'#e8b84a'}};
+/** Rundes Plättchen mit Abzeichen; (cx, cy) = Mitte, r = Radius, s = Zielpixel je Kartenpixel des Zeichens. */
+export function drawBadge(c,kind,cx,cy,r,s=1){const b=BADGE[kind];if(!b)return;c.save();c.imageSmoothingEnabled=false;
+ for(let y=-r-1;y<=r;y++)for(let x=-r-1;x<=r;x++){const d=Math.hypot(x+.5,y+.5);if(d>r+.35)continue;c.fillStyle=d>r-.9?(d>r-.2?'#0c0a08':b.ring):b.plate;c.fillRect(Math.round(cx+x),Math.round(cy+y),1,1);}
+ const {w,h}=spriteSize(b.map);drawSprite(c,b.map,Math.round(cx-(w*s)/2)+(w*s)/2,Math.round(cy-(h*s)/2)+h*s,s);c.restore();}
+/** Handkarte für Leiste und Hofprobe: Rang und kleines Farbzeichen oben rechts (oben links liegt auf der Leiste die Taste),
+ *  die Wirkung als großes Symbol in der Mitte, das Tempo-Abzeichen unten links. Grundmaß 19u × 23u. */
+export function drawEffectCard(c,x,y,u,card,{glow=false,dim=false,badge=true}={}){
+ const rk=RESOURCES.kaethe?.ranks[card.rank]||{short:card.rank},trump=!!rk.trump,col=suitColor(card.suit),short=String(rk.short),w=19,h=23;
+ const px=(a,b,ww,hh,color)=>{c.fillStyle=color;c.fillRect(Math.round(x+a*u),Math.round(y+b*u),Math.ceil(ww*u),Math.ceil(hh*u));};
+ if(glow){px(0,-1,w,h+2,'#ffe38a');px(-1,0,w+2,h,'#ffe38a');}
+ px(1,0,w-2,h,CARD.edge);px(0,1,w,h-2,CARD.edge);px(1,1,w-2,h-2,trump?CARD.trump:CARD.face);px(2,2,w-4,h-4,CARD.face);px(2,h-3,w-4,1,CARD.faceShade);
+ // Index oben rechts: kleines Farbzeichen, dann Rang (Schrift 1u); je nach Platz schrumpft das Farbzeichen auf halbe Größe
+ const fs=u,tw=pixelTextWidth(short,fs),gs=Math.max(1,Math.floor(u*5/7)),gw=7*gs,right=Math.round(x+(w-2)*u),ry=Math.round(y+2*u);
+ pixelText(c,short,right-tw,ry,fs,col);suitGlyph(c,card.suit,right-tw-u-gw,ry+Math.round((5*fs-gw)/2),gs,col);
+ // Wirkung groß unter dem Index: ein Symbolpixel = eine Karteneinheit (bleibt scharf), unten bündig, waagerecht mittig
+ const icon=CARD_EFFECT_ICON[card.suit];if(icon)drawSprite(c,icon,Math.round(x+w*u/2),Math.round(y+(h-2)*u),u,{outline:'#1a1410'});
+ // Tempo-Abzeichen unten rechts (dort ist jedes Wirkungssymbol leer)
+ if(badge){const t=cardTempo(card);if(t){const r=Math.max(3,Math.round(u*3));drawBadge(c,t,Math.round(x+(w-1)*u-r),Math.round(y+(h-1)*u-r),r,Math.max(1,Math.floor(u/2)));}}
+ if(dim){c.save();c.globalAlpha*=.45;px(0,0,w,h,'#10120f');c.restore();}
+}
+/** Wirkungskarte auf eine ganze Leinwand (Leiste, Handyknopf): u so groß, dass sie die Leinwand füllt. */
+export function paintEffectCardCanvas(canvas,card,{glow=false,dim=false,keep=false}={}){const c=canvas.getContext('2d'),W=canvas.width,H=canvas.height;if(!keep)c.clearRect(0,0,W,H);c.imageSmoothingEnabled=false;const u=Math.max(1,Math.floor(Math.min((W-2)/19,(H-2)/23)));drawEffectCard(c,Math.round((W-19*u)/2),Math.round((H-23*u)/2),u,card,{glow,dim});}
 /** Karte als kleines Bild für die Welt (drehend geworfen, Strudel, Stich): zwischengespeichert je Karte. */
 export function cardSprite(card,{back=false,glow=false}={}){const key='card|'+(back?'back':card.suit+card.rank)+'|'+(glow?1:0);let cv=cache.get(key);if(cv)return cv;const w=11,h=16;cv=canvasOf(w+2,h+2);const c=cv.getContext('2d');if(back)drawCard(c,1,1,w,h,1,null,{back:true});else drawBigCard(c,1,1,1,card||{suit:'herz',rank:'A'},{w,h,rankScale:1});if(glow){c.globalCompositeOperation='destination-over';c.fillStyle='#ffe38a';c.fillRect(0,1,w+2,h);c.fillRect(1,0,w,h+2);c.globalCompositeOperation='source-over';}cache.set(key,cv);return cv;}
 /** Prüfhilfe (tests/resource-fx.test.mjs): unbekannte Palettenzeichen oder leere Bildkarten. */

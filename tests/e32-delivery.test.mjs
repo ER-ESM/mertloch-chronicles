@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {TALENT_ROWS,TALENT_CELLS} from '../content/talents.js';
-import {buildTalentArt} from '../tools/class-visuals/build-talents.mjs';
+import {TALENT_ROWS,TALENT_CELLS,CLASS_SPECS} from '../content/talents.js';
+import {buildTalentArt,talentSheetPath} from '../tools/class-visuals/build-talents.mjs';
 import {buildLocomotion} from '../tools/class-visuals/build-locomotion.mjs';
 import {E32_SKILL_MOTIFS} from '../e32-art.js';
 import {decodePng} from '../tools/sprite-pipeline/png.mjs';
@@ -12,13 +12,13 @@ import {changeSpec} from '../talents.js';
 import {onGroundMech,burstMultiplier,onParryMech} from '../spec-mechanics.js';
 import {combatStats} from '../rpg.js';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url)),json=p=>JSON.parse(read(p));
-// 270 Talente der E-32-Klassen; Schorsch/Käthe kommen je Spezialisierung dazu, sobald ihr Codex-Bogen vorliegt (+30 je Bogen).
-test('270 immutable talent IDs (plus delivered Schorsch/Käthe sheets) map to their own reproducible authored cells',()=>{
+// E-32: 270 Talente der drei alten Klassen. E-72: Schorsch und Käthe kommen hinzu, sobald ihr Raster gemalt ist (npm run e72:bilder).
+test('immutable talent IDs map to their own reproducible authored cells (270 + gemalte neue Klassen)',()=>{
  const {files,catalog}=buildTalentArt();for(const [p,b]of files)assert.deepEqual(b,read(p),p);
- const specs=new Set(Object.values(catalog.talents).map(t=>t.spec)),n=30*specs.size;
- for(const s of Object.keys(TALENT_ROWS).filter(s=>['dieter','baerbel','kevin'].includes(s.split('-')[0])))assert.ok(specs.has(s),s);
- assert.ok(n>=270);assert.equal(Object.keys(catalog.talents).length,n);assert.equal(new Set(Object.values(catalog.talents).map(t=>t.sha256)).size,n);
- for(const [spec,list]of Object.entries(TALENT_ROWS).filter(([s])=>specs.has(s)))for(const [i,t]of list.entries()){const a=catalog.talents[spec+'-'+i];assert.equal(a.name,t.name);assert.equal(a.effect,t.info.effect);assert.equal(a.row,TALENT_CELLS[spec][i].row);assert.equal(a.path,TALENT_CELLS[spec][i].path);}
+ const painted=Object.keys(TALENT_ROWS).filter(s=>existsSync(new URL('../'+talentSheetPath(s),import.meta.url)));
+ for(const m of ['dieter','baerbel','kevin'])for(const s of CLASS_SPECS[m])assert.ok(painted.includes(s),'E-32-Raster fehlt: '+s);
+ assert.equal(Object.keys(catalog.talents).length,painted.length*30);assert.equal(new Set(Object.values(catalog.talents).map(t=>t.sha256)).size,painted.length*30);
+ for(const [spec,list]of Object.entries(TALENT_ROWS).filter(([s])=>painted.includes(s)))for(const [i,t]of list.entries()){const a=catalog.talents[spec+'-'+i];assert.equal(a.name,t.name);assert.equal(a.effect,t.info.effect);assert.equal(a.row,TALENT_CELLS[spec][i].row);assert.equal(a.path,TALENT_CELLS[spec][i].path);}
  for(const m of Object.values(E32_SKILL_MOTIFS))for(const id of Object.values(m))assert.ok(id.startsWith('signature:')||catalog.talents[id],id);assert.equal(Object.keys(catalog.skills).length,45);
 });
 test('all generated E32 sources retain exact prompts and verified originals',()=>{for(const j of json('assets/content-art/e32/generation.json').jobs){assert.ok(j.original&&j.prompt);assert.equal(createHash('sha256').update(read(j.source)).digest('hex'),j.sha256);}});

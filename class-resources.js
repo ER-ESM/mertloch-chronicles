@@ -24,6 +24,11 @@ const mech=g=>SPEC_MECHANICS[spec(g)]||null;
 const num=(cs,k)=>cs?.[k]||0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const note=(g,text,color='#ffd77a',skill=null)=>{const p=g.player;if(!g.sct?.({area:'note',kind:'momentum',text,color,skill}))g.float?.(p.x,p.y-48,text,color);};
+// E-72 Runde 3 (E-53): Heil- und Schildmengen der neuen Klassen bemessen sich am Grundleben der Stufe (ohne Standfestigkeit) und
+// wachsen dann nur über Heil-/Schildstärke (Bastelgrips) – wie die alten Heiler (fester Wert × Stufe × Heilstärke), nicht über das Maximalleben.
+const lifeBase=g=>BALANCE.player.baseHp+(Math.max(1,g.player.level|0)-1)*BALANCE.player.hpPerLevel;
+/** Heilung auf einen Freund wie die Heiltaste der Engine: Menge × Heilstärke. */
+const mateHeal=(cs,n)=>Math.round(n*(1+(cs.healPower||0)+(cs.healBonus||0)));
 const live=(g,e)=>e&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0);
 const foes=(g,point,radius,except=null)=>g.enemies.filter(e=>e!==except&&live(g,e)&&distance(e,point)<=radius&&g.world.lineClear(point,e)).sort((a,b)=>distance(a,point)-distance(b,point));
 const validTarget=(g,range)=>{const e=g.target,p=g.player;return live(g,e)&&distance(p,e)<=range&&g.world.lineClear(p,e)?e:null;};
@@ -165,6 +170,9 @@ function reloadPress(g,st,r,cs){
 export function zoneOf(g,glut,cs=g.cs||{}){const r=R(g),z=r.zones,lo=z[1].to+num(cs,'perfectLow'),hi=z[2].to+num(cs,'perfectHigh');if(glut<z[0].to)return z[0];if(glut<lo)return z[1];if(glut<hi)return z[2];return z[3];}
 function addGlut(g,st,n,cs){const r=R(g),before=st.glut;const wasHot=zoneOf(g,before,cs).id==='heiss';st.glut=clamp(st.glut+n,0,st.cool>0?r.max-1:r.max);/* nach einer Stichflamme erholt sich der Grill: 8 s keine zweite */const was=zoneOf(g,before,cs).id,now=zoneOf(g,st.glut,cs).id;if(now==='perfekt'&&was!=='perfekt'&&st.perfectCd<=0){st.perfectCd=3;fireProcs(g,'glutPerfect',cs);emitCombatFx(g,'glut',g.player,{zone:now});}
  if(now==='heiss'&&!wasHot&&st.glut<r.max){emitCombatFx(g,'glut',g.player,{zone:'heiss'});note(g,r.hud.hot,'#ff6a3a','heal');}if(st.glut>=r.max)overheat(g,st,cs);}
+/** Glut nach dem Ablöschen (Kenner-Playtest Runde 4: 95 → 26 schoss aus „zu heiß“ direkt nach „kalt“): kühlt um spend.heal, aus „zu heiß“
+ *  genau auf den Anfang der perfekten Glut, nie unter den Anfang der guten Glut – wer schon kälter ist, bleibt, wo er ist (Räuchermeister hält kalt). */
+export function ventGlut(g,glut,cs=g.cs||{}){const r=R(g),z=r.zones,lo=z[1].to+num(cs,'perfectLow'),hi=z[2].to+num(cs,'perfectHigh'),floor=Math.min(glut,z[0].to);return glut>=hi?Math.max(floor,lo):Math.max(floor,glut-r.spend.heal);}
 function overheat(g,st,cs){
  const r=R(g),o=r.overheat,p=g.player,m=mech(g),flamme=!!m?.flamme,factor=(1+num(cs,'overheatDamage'))*(flamme?m.flamme.overheatFactor:1),dmg=Math.round(o.damage*(cs.flatScale||1)*factor);
  for(const e of foes(g,p,o.radius))g.damage(e,dmg,'Stichflamme');
@@ -185,6 +193,8 @@ function tickGrill(g,st,r,dt,cs,inCombat){
 }
 function planOf(g,cs){const r=R(g),m=mech(g),base=[...(m?.chef?.plan||m?.rauch?.plan||m?.flamme?.plan||r.plan)];for(const [k,item] of [['planWurst','wurst'],['planBraten','braten'],['planMais','mais'],['planKaese','kaese']])if(cs[k])base.push(item);return base;}
 const rostSlots=(g,cs)=>R(g).rost.slots+num(cs,'rostSlots');
+/** Was „Auflegen“ als Nächstes auf den Rost legt (Anzeige am Knopf, E-72 Runde 3). */
+const nextItem=(g,st,cs)=>{const plan=planOf(g,cs);return plan.length?plan[(st.plan||0)%plan.length]:null;};
 function ripest(g,st,cs){const r=R(g),charcoal=r.rost.charcoal+num(cs,'burntGrace');return st.rost.filter(it=>it.done<charcoal).sort((a,b)=>b.done-a.done)[0]||null;}
 function doneness(g,it,cs){const r=R(g),garHi=r.rost.gar[1]+num(cs,'garWindow'),burnt=r.rost.burnt+num(cs,'burntGrace');if(it.done<r.rost.gar[0])return {state:'roh',factor:r.burntFactor};if(it.done<=garHi)return {state:'gar',factor:1,perfect:true};if(it.done<burnt)return {state:'durch',factor:1};return {state:'verkohlt',factor:r.burntFactor};}
 export function rostState(g){const st=g.res,r=R(g);if(!st||r?.kind!=='grill')return [];const cs=g.cs||{};return st.rost.map(it=>({item:it.item,name:r.items[it.item].name,done:it.done,state:doneness(g,it,cs).state,smoked:!!it.smoked}));}
@@ -194,21 +204,21 @@ function serve(g,st,cs,e,context){
  const def=r.items[it.item],d=doneness(g,it,cs),flambe=!!m?.flamme&&st.glut>=m.flamme.at,fl=(flambe?1+m.flamme.bonus:1)*(context.pm||1);
  const target=['braten','mais'].includes(it.item)?e:null;
  if(it.item==='wurst'){
-  const chef=!!m?.chef,amount=p.maxHp*def.value*d.factor*(1+num(cs,'wurstHeal'))*(chef?1+m.chef.wurstBonus:1)*fl;
+  const chef=!!m?.chef,amount=lifeBase(g)*def.value*d.factor*(1+num(cs,'wurstHeal'))*(chef?1+m.chef.wurstBonus:1)*fl;
   const help=helpTarget(g),mate=help.kind==='companion'?help.ref:null;
-  if(mate)healCompanionByPlayer(g,mate,Math.round(amount),'Bratwurst');else healPlayer(g,amount,cs,true,'heal',true);
-  if(d.perfect){g.classState.hot=Math.max(g.classState.hot||0,def.perfect.hot);g.classState.hotPower=Math.max(g.classState.hotPower||0,Math.round(p.maxHp*.02));}
-  if(chef&&m.chef.wurstChain){const second=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<220).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(second)healCompanionByPlayer(g,second,Math.round(amount*.5),'Bratwurst');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
+  if(mate)healCompanionByPlayer(g,mate,mateHeal(cs,amount),'Bratwurst');else healPlayer(g,amount,cs,true,'heal',true);
+  if(d.perfect){g.classState.hot=Math.max(g.classState.hot||0,def.perfect.hot);g.classState.hotPower=Math.max(g.classState.hotPower||0,Math.round(BALANCE.player.baseHp*.02));}
+  if(chef&&m.chef.wurstChain){const second=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<220).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(second)healCompanionByPlayer(g,second,mateHeal(cs,amount*.5),'Bratwurst');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
  }
  if(it.item==='braten'&&target){const n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.burst,weaponSource:'melee'},0,ITEMS)*d.factor*(d.perfect?def.perfect.factor:1)*(1+num(cs,'bratenDamage'))*fl;g.damage(target,Math.round(n),'Servieren');cleave(g,target,n,cs,flambe);}
  if(it.item==='mais'&&target){const n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.burst,weaponSource:'melee'},0,ITEMS)*def.value*d.factor*(1+num(cs,'bratenDamage')*0)*fl,radius=def.radius+num(cs,'maisRadius');for(const o of foes(g,target,radius)){g.damage(o,Math.round(n),'Popcorn');if(d.perfect&&o.hp>0){const dd=distance(target,o)||1;for(let i=0;i<6;i++)g.move(o,(o.x-target.x)/dd*def.perfect.knockback/6,(o.y-target.y)/dd*def.perfect.knockback/6);}}}
- if(it.item==='kaese'){addGuard(g,p.maxHp*def.value*d.factor*(1+num(cs,'kaeseShield'))*fl*(d.perfect?1.3:1),cs,true);if(d.perfect)st.parryBonus=8;}
+ if(it.item==='kaese'){addGuard(g,lifeBase(g)*def.value*d.factor*(1+num(cs,'kaeseShield'))*fl*(d.perfect?1.3:1),cs,true);if(d.perfect)st.parryBonus=8;}
  if(it.smoked||cs.smokeTaunt){const at=target||p,sm=m?.rauch?.smoke||{radius:80,duration:6,weaken:.25};g.fields.push({x:at.x,y:at.y,kind:'rauch',radius:sm.radius,remaining:sm.duration,weaken:sm.weaken,taunt:true,tick:1,pulse:0});}
  emitCombatFx(g,'serve',target||p,{item:it.item,state:d.state,from:{x:p.x,y:p.y},flambe,smoked:!!it.smoked});
  if(d.perfect)note(g,def.name.toUpperCase()+' · '+r.hud.gar,'#f2c14e','burst');else if(d.state==='verkohlt')note(g,r.hud.burnt,'#8a7a6a','burst');
  fireProcs(g,'serve',cs,{item:it.item});if(d.perfect)fireProcs(g,'perfectServe',cs,{item:it.item});fireProcs(g,'burst',cs,{damage:0});
 }
-function cleave(g,target,n,cs,flambe){const m=mech(g);const extra=[];if(cs.serveCleave)extra.push(...foes(g,target,70,target).slice(0,2).map(o=>[o,.5]));if(flambe)extra.push(...foes(g,target,m.flamme.splash.radius,target).map(o=>[o,m.flamme.splash.share]));const seen=new Set();for(const [o,share] of extra){if(seen.has(o))continue;seen.add(o);g.damage(o,Math.round(n*share),flambe?'Flambiert':'Servieren');}}
+function cleave(g,target,n,cs,flambe){const m=mech(g),c=R(g).cleave;const extra=[];if(cs.serveCleave)extra.push(...foes(g,target,c.radius,target).slice(0,c.targets).map(o=>[o,c.share]));if(flambe)extra.push(...foes(g,target,m.flamme.splash.radius,target).map(o=>[o,m.flamme.splash.share]));const seen=new Set();for(const [o,share] of extra){if(seen.has(o))continue;seen.add(o);g.damage(o,Math.round(n*share),flambe?'Flambiert':'Servieren');}}
 
 // ---------------------------------------------------------------------------------------------------------------
 // Käthe · Blatt und Augen
@@ -228,7 +238,7 @@ function tryStich(g,st,card,cs,viaKontra=false){
  const interrupt=e.cast.interruptible,any=cs.stichAny;if(!interrupt&&!any&&!viaKontra)return false;
  const theirs=e.cast.card,augen=r.ranks[theirs.rank].augen+r.stich.bonus+num(cs,'stichAugen');
  if(interrupt&&!viaKontra){e.cast=null;e.stun=Math.max(e.stun||0,2);e.attackTimer=3;e.vulnerable=4;g.stats.interrupts++;fireProcs(g,'interrupt',cs);}
- addAugen(g,st,augen);if(cs.stichHeal)healPlayer(g,g.player.maxHp*cs.stichHeal,cs,false,'stich',true);
+ addAugen(g,st,augen);if(cs.stichHeal)healPlayer(g,lifeBase(g)*cs.stichHeal,cs,false,'stich',true);
  const m=mech(g);if(m?.falsch){addThreat(e,'player',600);e.aggro=true;e.ai='combat';}
  emitCombatFx(g,'stich',e,{card,theirs});note(g,r.hud.stich+' +'+augen,'#f4e3a0','strike');fireProcs(g,'stich',cs);return true;
 }
@@ -238,10 +248,10 @@ function cardEffect(g,st,card,cs,{target=null,point=null,share=1}={}){
  const r=R(g),p=g.player,power=cardPower(g,st,card,cs)*share*(st.pmNow||1),rk=r.ranks[card.rank],ef=r.effects;
  if(card.suit==='kreuz'){const list=point?foes(g,point,70):target?[target]:[];for(const e of list)g.damage(e,Math.round(skillDamage(g,{damageModel:ef.damage,weaponSource:'ranged'},0,ITEMS)*power),'Kreuz');}
  if(card.suit==='karo'){const at=point||target;if(at)for(const e of foes(g,at,ef.control.radius)){g.damage(e,Math.round(skillDamage(g,{damageModel:{flat:ef.control.flat,weapon:ef.control.weapon},weaponSource:'ranged'},0,ITEMS)*power),'Karo');e.controlSlow=Math.max(e.controlSlow||0,ef.control.duration);if(['10','A'].includes(card.rank))e.stun=Math.max(e.stun||0,ef.control.stun+num(cs,'karoStun'));}}
- if(card.suit==='herz'){const amount=p.maxHp*ef.heal*power,help=point?{kind:'self'}:helpTarget(g),mate=help.kind==='companion'?help.ref:null;if(mate)healCompanionByPlayer(g,mate,Math.round(amount),'Herz');else healPlayer(g,amount,cs,false,'heal',true);
-  if(cs.herzChain||mech(g)?.herz?.chain){const other=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<240).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(other)healCompanionByPlayer(g,other,Math.round(amount*.5),'Herz');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
-  if(st.readHand>0)st.readHand+=2;}
- if(card.suit==='pik'){const amount=p.maxHp*ef.shield*power;addGuard(g,amount,cs,true);if(cs.pikTaunt)for(const e of foes(g,p,80)){addThreat(e,'player',300);e.aggro=true;e.ai='combat';}if(cs.pikReflect)st.pikReflect={share:cs.pikReflect,until:g.time+6};}
+ if(card.suit==='herz'){const amount=lifeBase(g)*ef.heal*power,help=point?{kind:'self'}:helpTarget(g),mate=help.kind==='companion'?help.ref:null;if(mate)healCompanionByPlayer(g,mate,mateHeal(cs,amount),'Herz');else healPlayer(g,amount,cs,false,'heal',true);
+  if(cs.herzChain||mech(g)?.herz?.chain){const other=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<240).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(other)healCompanionByPlayer(g,other,mateHeal(cs,amount*.5),'Herz');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
+  if(st.readHand>0)st.readHand+=r.handlesen.extend;}
+ if(card.suit==='pik'){const amount=lifeBase(g)*ef.shield*power;addGuard(g,amount,cs,true);if(cs.pikTaunt)for(const e of foes(g,p,80)){addThreat(e,'player',300);e.aggro=true;e.ai='combat';}if(cs.pikReflect)st.pikReflect={share:cs.pikReflect,until:g.time+6};}
  return rk;
 }
 function playCard(g,st,index,cs,context){
@@ -274,7 +284,7 @@ function abrechnen(g,st,cs,e,context={}){
 function tickCards(g,st,r,dt,cs,inCombat){
  draw(g,st,cs);
  if(inCombat)st.forget=0;else{st.forget+=dt;if(st.forget>r.forget&&st.augen>0){st.augen=0;st.bubes=0;st.chain={suit:null,n:0};}}
- if(st.readHand>0){st.readHand=Math.max(0,st.readHand-dt);st.tick-=dt;if(st.tick<=0){st.tick=1;const t=st.readHandTarget,amount=Math.round(g.player.maxHp*.02);if(t?.hp>0&&t!==g.player)healCompanionByPlayer(g,t,amount,'Handlesen');else healPlayer(g,amount,cs,false,'hot',true);}}
+ if(st.readHand>0){st.readHand=Math.max(0,st.readHand-dt);st.tick-=dt;if(st.tick<=0){st.tick=1;const t=st.readHandTarget,amount=Math.round(lifeBase(g)*r.handlesen.perSecond);if(t?.hp>0&&t!==g.player)healCompanionByPlayer(g,t,mateHeal(cs,amount),'Handlesen');else healPlayer(g,amount,cs,false,'hot',true);}}
 }
 /** Käthe: Karte auf einem Leistenplatz (1–3) – für Leiste, Tooltip und Anzeige. */
 export function handCard(g,id){const st=g.res;if(resourceKind(g)!=='cards'||!st)return null;const i={strike:0,mark:1,burst:2}[id];return i===undefined?null:st.hand[i]||null;}
@@ -323,17 +333,17 @@ export function performClassSkill(g,id,s,e,point,cs,context){
  if(r.kind==='grill'){
   if(id==='mark'){const plan=planOf(g,cs),item=plan[st.plan%plan.length];st.plan++;st.rost.push({item,done:0,smoked:false});emitCombatFx(g,'serve',p,{item,lay:true});return true;}
   if(id==='burst'){serve(g,st,cs,validTarget(g,175+(cs.range||0)),context);return true;}
-  if(id==='heal'){const v=r.vent;addGlut(g,st,-r.spend.heal,cs);healPlayer(g,p.maxHp*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
+  if(id==='heal'){const v=r.vent;st.glut=ventGlut(g,st.glut,cs);/* nur kühlen: kein „steigt in den goldenen Bereich“ */healPlayer(g,lifeBase(g)*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
   if(id==='buff'){st.noDecay=s.duration||6;addGlut(g,st,s.glut||r.gain.buff,cs);emitCombatFx(g,'glut',p,{bellows:true});return true;}
   if(id==='throw'&&e){const z=zoneOf(g,st.glut+s.cost,cs);g.damage(e,Math.round(skillDamage(g,s,s.damage,ITEMS)),'Glutbrocken');e.burn={t:r.ember.duration,tick:1,dps:Math.round(r.ember.dot*(cs.flatScale||1)*(1+num(cs,'emberDot'))*(1+z.damage))};emitCombatFx(g,'ember',e,{from:{x:p.x,y:p.y}});return true;}
   if(id==='ground'&&point){
    const m=mech(g),z=zoneOf(g,st.glut+(s.cost||0),cs);for(const it of st.rost)it.done+=r.swing.cook+num(cs,'swingCook');
-   if(m?.chef){const b=m.chef.buffet;g.fields.push({x:point.x,y:point.y,kind:'buffet',radius:b.radius,remaining:b.duration,tick:1,power:Math.round(b.heal*(cs.flatScale||1))});}
+   if(m?.chef){const b=m.chef.buffet;g.fields.push({x:point.x,y:point.y,kind:'buffet',radius:b.radius,remaining:b.duration,tick:1,power:b.heal});}
    else if(m?.rauch){const o=m.rauch.oven;g.fields.push({x:point.x,y:point.y,kind:'oven',radius:o.radius,remaining:o.duration,weaken:m.rauch.smoke.weaken,taunt:true,damage:Math.round(o.damage*(cs.flatScale||1)),tick:1,pulse:0});}
    else{const n=skillDamage(g,{damageModel:{flat:125},weaponSource:'melee'},0,ITEMS)*(1+z.damage);for(const o of foes(g,point,s.radius))g.damage(o,Math.round(n),'Schwenkgrill');}
    emitCombatFx(g,'grill-swing',point,{from:{x:p.x,y:p.y},radius:s.radius,kind:m?.chef?'buffet':m?.rauch?'oven':'swing'});return true;
   }
-  if(id==='senf'){const help=helpTarget(g),mate=help.kind==='companion'?help.ref:null,amount=p.maxHp*.1;if(mate)healCompanionByPlayer(g,mate,Math.round(amount),'Senf');else healPlayer(g,amount,cs,true,'heal',true);st.cookBoost=s.duration||8;emitCombatFx(g,'heal',mate||p,{amount:Math.round(amount),direct:true});return true;}
+  if(id==='senf'){const help=helpTarget(g),mate=help.kind==='companion'?help.ref:null,amount=lifeBase(g)*.1;if(mate)healCompanionByPlayer(g,mate,mateHeal(cs,amount),'Senf');else healPlayer(g,amount,cs,true,'heal',true);st.cookBoost=s.duration||8;emitCombatFx(g,'heal',mate||p,{amount:Math.round(amount),direct:true});return true;}
   if(id==='spiritus'){addGlut(g,st,30,cs);const face=p.facing||1,n=skillDamage(g,{damageModel:{flat:70,weapon:2},weaponSource:'melee'},0,ITEMS)*(1+zoneOf(g,st.glut,cs).damage);for(const o of foes(g,p,s.radius||95))if((o.x-p.x)*face>-8)g.damage(o,Math.round(n),'Spiritus');emitCombatFx(g,'overheat',p,{radius:s.radius||95,cone:face});return true;}
   if(id==='deckelzu'){g.fields.push({x:p.x,y:p.y,kind:'deckelzu',radius:s.radius||100,remaining:s.duration||6,weaken:.25,taunt:true,tick:1,pulse:0});for(const o of foes(g,p,s.radius||100)){addThreat(o,'player',800);o.aggro=true;o.ai='combat';}emitCombatFx(g,'steam',p,{radius:s.radius||100,smoke:true});return true;}
   return false;
@@ -347,7 +357,7 @@ export function performClassSkill(g,id,s,e,point,cs,context){
   if(id==='ground'&&point){
    const m=mech(g),cards=[...st.hand];st.hand=[];
    for(const c of cards){cardEffect(g,st,c,cs,{point,share:.6});addAugen(g,st,r.augenPerCard+r.ranks[c.rank].augen+num(cs,'augenGain'));if(r.ranks[c.rank].trump)st.bubes++;fireProcs(g,'cardPlayed',cs,{suit:c.suit});st.discard.push(c);}
-   if(m?.herz){const c=m.herz.circle;g.fields.push({x:point.x,y:point.y,kind:'legekreis',radius:c.radius,remaining:c.duration,tick:1,power:Math.round(c.heal*(cs.flatScale||1))});}
+   if(m?.herz){const c=m.herz.circle;g.fields.push({x:point.x,y:point.y,kind:'legekreis',radius:c.radius,remaining:c.duration,tick:1,power:c.heal});}
    draw(g,st,cs);emitCombatFx(g,'card-burst',point,{cards,radius:s.radius||70});return true;
   }
   if(id==='reizen'){addAugen(g,st,25);st.noAugen=true;note(g,'Achtzehn, zwanzig, zwo …','#e8d27a','reizen');return true;}
@@ -406,7 +416,7 @@ export function resourceVariant(g,id){
  if(r.kind==='trend'&&st.viral>0){const s=g.skills.find(x=>x.id===id);if(s?.cost>0)return {name:'VIRAL',tone:'gold'};}
  if(r.kind==='ammo'){if(id==='strike'&&st.bottles<=0)return {name:r.hud.empty,tone:'burst'};if(id==='reload'&&st.reload)return {name:'JETZT!',tone:'gold'};if(st.bons>0&&(r.costs[id]||0)>0)return {name:'BON',tone:'gold'};}
  if(r.kind==='grill'){
-  if(id==='burst'){const it=ripest(g,st,cs);if(!it)return null;const d=doneness(g,it,cs),m=mech(g),name=r.items[it.item].name.toUpperCase();if(m?.flamme&&st.glut>=m.flamme.at)return {name:'FLAMBIEREN',tone:'burst'};if(it.smoked&&m?.rauch)return {name:'GERÄUCHERT',tone:'gold'};return d.perfect?{name:name+' GAR',tone:'gold'}:d.state==='verkohlt'?{name:name+' VERKOHLT',tone:'free'}:null;}
+  if(id==='burst'){const it=ripest(g,st,cs);if(!it)return null;const d=doneness(g,it,cs),m=mech(g),name=r.items[it.item].name.toUpperCase();if(m?.flamme&&st.glut>=m.flamme.at)return {name:'FLAMBIEREN',tone:'burst'};if(it.smoked&&m?.rauch)return {name:'GERÄUCHERT',tone:'gold'};return d.perfect?{name:name+' GAR',tone:'gold',item:it.item}:d.state==='verkohlt'?{name:name+' VERKOHLT',tone:'free',item:it.item}:null;}
   if(id==='heal'&&st.glut>=85)return {name:'ABLÖSCHEN!',tone:'burst'};
  }
  if(r.kind==='cards'){const c=handCard(g,id);if(c){const rk=r.ranks[c.rank],beat=live(g,g.target)&&g.target.cast?.card&&(g.target.cast.interruptible||cs.stichAny)&&beats(c,g.target.cast.card);return {name:beat?'STICH '+rk.short:(r.suits[c.suit].symbol+' '+rk.short),tone:beat?'gold':c.suit==='herz'||c.suit==='karo'?'burst':'free',card:c};}
@@ -419,7 +429,7 @@ export function resourceHud(g){
  if(r.kind==='rage')return {...base,value:p.energy,max:r.max,surgeAt:r.surgeAt,tab:st.tab,tabMax:p.maxHp*(r.tab.cap+num(cs,'zecheCap')),paid:st.paid};
  if(r.kind==='trend')return {...base,value:p.energy,max:r.max,trend:st.trend,trendMax:r.trend.max,trendName:r.trend.names[st.trend],viewers:r.trend.viewers[st.trend],viral:st.viral,last:st.last[0]||null,idle:st.idle,decayAfter:r.trend.decayAfter+num(cs,'trendDecay')};
  if(r.kind==='ammo')return {...base,value:st.bottles,max:crateMax(g,cs),bons:st.bons,bonMax:r.bon.max+num(cs,'bonMax'),reload:st.reload?{t:st.reload.t,total:st.reload.total,zone:st.reload.zone,jam:st.reload.jam,tried:st.reload.tried}:null,pickups:st.pickups.length};
- if(r.kind==='grill'){const z=zoneOf(g,st.glut,cs);return {...base,value:st.glut,max:r.max,zone:z.id,zoneName:z.name,zones:r.zones.map(x=>({...x})),perfect:[r.zones[1].to+num(cs,'perfectLow'),r.zones[2].to+num(cs,'perfectHigh')],locked:st.lock,noDecay:st.noDecay,slots:rostSlots(g,cs),rost:rostState(g)};}
+ if(r.kind==='grill'){const z=zoneOf(g,st.glut,cs);return {...base,value:st.glut,max:r.max,zone:z.id,zoneName:z.name,zones:r.zones.map(x=>({...x})),perfect:[r.zones[1].to+num(cs,'perfectLow'),r.zones[2].to+num(cs,'perfectHigh')],locked:st.lock,noDecay:st.noDecay,slots:rostSlots(g,cs),rost:rostState(g),nextItem:nextItem(g,st,cs)};}
  if(r.kind==='cards')return {...base,value:st.augen,max:r.max,win:r.win+num(cs,'augenWin'),schneider:r.schneider,schwarz:r.schwarz,hand:st.hand.map(c=>({...c})),sleeve:st.sleeve?{...st.sleeve}:null,deck:st.deck.length,chain:{...st.chain},bubes:st.bubes,next:(cs.seeNext||mech(g)?.herz?.seeNext)&&st.deck[0]?{...st.deck[0]}:null};
  return null;
 }

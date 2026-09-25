@@ -4,6 +4,7 @@ import {distance} from './world.js';
 import {ITEMS} from './rpg.js';
 import {equipmentPlan} from './equipment.js';
 import {available} from './progression.js';
+import {sameRoom} from './talk-target.js';
 export const tutorialActive=g=>!!g.tutorial&&!g.tutorial.completed;
 /** E-72: Schritt der Hofprobe für die Klasse des Helden – Titel/Text/Tasten aus content/tutorial.js byClass, dazu `hint`
  *  (eine Zeile zur eigenen Ressource) und beim ersten Schritt `clothes` (Idas Satz zur Klamotte vom Kleiderhaufen). */
@@ -71,3 +72,8 @@ export function tickTutorial(g,dt){if(!tutorialActive(g))return;const t=g.tutori
  else if(t.step===4){const e=g.enemies.find(e=>e.tutorial);if(!e)return;if(e.cast){e.cast.remaining-=dt;if(e.cast.remaining<=0){const avoided=distance(p,e.cast)>=e.cast.radius||p.invulnerable>0;e.cast=null;/* klare Rückmeldung je Versuch (Runde 2b, Neuling-Befund 6) */if(avoided&&t.dash){g.toast(D.dodged);advance(g);return;}t.tries=(t.tries||0)+1;const why=avoided?D.walked:D.late;t.dash=false;t.clock=D.castPause;if(t.tries>=D.maxDodgeTries){g.toast(D.giveUp);advance(g);return;}g.toast(why);}}else if((t.clock-=dt)<=0){/* der erste Kreis steht länger (Runde 2b); der zweite Versuch ebenso und zeigt dazu einen Wirkzeit-Balken am Kreis (Runde 3a, Kenner-Befund 9) */const cast=D.firstCastTime||D.castTime;e.cast={name:D.cast,total:cast,remaining:cast,ground:true,x:p.x,y:p.y,radius:D.radiusAttack,bar:(t.tries||0)>0};t.dash=false;}}
  else if(t.step===5&&t.bagSpawned&&!g.rpg.loot.some(b=>b.id===D.loot.id))advance(g);
 }
+/** E-72 Runde 3 (Kenner-Befund 10): Wartet Ida in diesem Schritt auf den Helden (Anfang, Rückkehr)? → 'talk' in Gesprächsweite,
+ *  'walk' weiter weg, sonst null. In beiden Fällen gelten F und der Hinweis „Mit Ida sprechen“ – weiter weg läuft der Held zu ihr
+ *  und spricht sie an (talk-target.js), steht sie in der Bude, erst drinnen. Vorher lief F nur hin (bis in Ida hinein) und blieb stumm;
+ *  der Hinweis kam erst ab 50 E. */
+export function tutorialIdaReach(g){const goal=tutorialDestination(g),ida=g.world?.npc;if(!goal||!ida||goal.point!==ida)return null;return distance(g.player,ida)<D.talkRange&&sameRoom(g,ida)?'talk':'walk';}

@@ -10,8 +10,8 @@
 import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMPANION_TEXT as T,companionById,companionCost,companionStats,CAST_SETS,COMBAT_RULES} from './content/index.js';
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
-import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt} from './dungeon.js';
-import {bossOutOfReach,arenaAhead} from './dungeon.js';
+import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt,partyUnits,inHazard,bossZones,endRetreat,hideSpots} from './dungeon.js';
+import {bossOutOfReach,arenaAhead,rectWorld,lostSight,sightSpot} from './dungeon.js';
 import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
@@ -99,7 +99,7 @@ export function tickEnemyOnCompanion(g,e,c,dt){
   return true;
  }
  const reach=e.autoAttack.range*.8;
- if(d>reach){
+ if(d>reach||lostSight(g,e,c)/* Dungeon Etappe 4 Teil A: um Deckung herum */){
   const speed=e.speed*(e.mark>0?e.slow:1)*(e.controlSlow>0?.5:1);e.pathTimer=(e.pathTimer||0)-dt;
   if(walkClear(g.world,e,c,7)){const step=Math.min(speed*dt,d-reach+1);g.move(e,(c.x-e.x)/d*step,(c.y-e.y)/d*step);e.moving=true;e.chasePath=[];}
   else{if(e.pathTimer<=0){e.pathTimer=1.1;e.chasePath=g.world.findPath(e,c);}moveAlong(g,e,e.chasePath,speed,dt);}
@@ -122,7 +122,7 @@ function slot(g,c){const i=Math.max(0,g.companions.indexOf(c))%R.formation.lengt
 function place(g,c,at){let p=at;try{p=g.world.findClear(at.x,at.y,9);}catch{}c.x=p.x;c.y=p.y;c.path=[];}
 
 function walkTo(g,c,goal,speed,dt,stopAt=6){
- speed*=1+classBuffValue(c,'speed');const d=distance(c,goal);if(d<=stopAt){c.moving=false;return true;}
+ speed*=(1+classBuffValue(c,'speed'))*(c.slowed>0?1-c.slowed:1)/* Dungeon Etappe 4 Teil A: nasser Boden */;const d=distance(c,goal);if(d<=stopAt){c.moving=false;return true;}
  if(walkClear(g.world,c,goal,8)){const step=Math.min(speed*dt,d-stopAt+1);g.move(c,(goal.x-c.x)/d*step,(goal.y-c.y)/d*step);c.path=[];}
  else{c.pathTimer=(c.pathTimer||0)-dt;if(c.pathTimer<=0||!c.path?.length){c.pathTimer=.9;try{c.path=g.world.findPath(c,goal);}catch{c.path=[];}}moveAlong(g,c,c.path,speed,dt);}
  c.moving=true;if(Math.abs(goal.x-c.x)>2)c.facing=goal.x<c.x?-1:1;return false;
@@ -134,10 +134,12 @@ function chooseTarget(g,c){
  const p=g.player,near=e=>distance(e,c.order==='stay'||holdFight(g,c)?c:p)<=R.assistRange;
  /* Hotfix Arenatür (2026-09-25): ein Söldner zieht nie allein einen Boss – solange der Held nicht in dessen Arena steht, ist er kein Ziel */
  if(c.order==='attack'&&g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial&&!bossOutOfReach(g,g.target))return g.target;
- const list=g.enemies.filter(e=>fighting(e)&&near(e)&&!bossOutOfReach(g,e));if(!list.length)return null;
+ const list=g.enemies.filter(e=>fighting(e)&&near(e)&&!bossOutOfReach(g,e)&&(!e.hidden||c.def.role==='tank')/* Dungeon Etappe 4 Teil A: Greenscreen – nur der Schutz hält sie weiter und zieht sie weg */);if(!list.length)return null;
  const role=COMPANION_ROLES[c.def.role];
- /* Dungeon Etappe 3 (Plan 7.6): Schadens-Söldner wechseln auf Adds mit Vorrang (Big Bs Follower: „Adds zuerst“) */if(c.def.role==='damage'){const adds=list.filter(e=>e.priority);if(adds.length)return adds.sort((a,b)=>a.hp-b.hp||distance(a,c)-distance(b,c))[0];}
- if(role.picksUpLoose){const loose=list.filter(e=>(e.focus||PLAYER)!==c.id).sort((a,b)=>distance(a,c)-distance(b,c))[0];if(loose)return loose;}
+ /* Dungeon Etappe 3 (Plan 7.6): Schadens-Söldner wechseln auf Adds mit Vorrang (Big Bs Follower: „Adds zuerst“). Etappe 4 Teil A: auch
+    gerufene Helfer eines Dungeon-Bosses (addsFirst); Interessenten mit Ziel – das Add am nächsten zum Tisch zuerst. */
+ if(c.def.role==='damage'){const adds=list.filter(e=>e.priority||R.addsFirst&&e.dungeon&&e.summoner?.dungeonBoss);if(adds.length){const goal=adds.filter(e=>e.goalAt);if(goal.length)return goal.sort((a,b)=>distance(a,a.goalAt)-distance(b,b.goalAt))[0];return adds.sort((a,b)=>a.hp-b.hp||distance(a,c)-distance(b,c))[0];}}
+ if(role.picksUpLoose){const loose=list.filter(e=>(e.focus||PLAYER)!==c.id&&!e.goalAt/* Interessenten greifen niemanden an */).sort((a,b)=>distance(a,c)-distance(b,c))[0];if(loose)return loose;}
  // Zielmarkierungen der Gruppe (target-marks.js): Totenkopf vor Kreuz vor Stern vor Kreis, dann das Ziel des Spielers.
  const marked=list.filter(e=>e.groupMark).sort((a,b)=>MARK_IDS.indexOf(a.groupMark)-MARK_IDS.indexOf(b.groupMark))[0];if(marked)return marked;
  if(g.target&&list.includes(g.target))return g.target;
@@ -146,7 +148,7 @@ function chooseTarget(g,c){
 
 function damageEnemy(g,c,e,n,id){
  if(!e||e.hp<=0||e.ai==='returning'||e.tutorial)return 0;
- const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */)),dealt=Math.min(e.hp,amount);
+ const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */*(e.hidden?0:1)*(c.blindUntil>g.time?.5:1)/* Etappe 4 Teil A: Greenscreen, geblendet */)),dealt=Math.min(e.hp,amount);
  e.aggro=true;e.ai='combat';g.player.inCombat=7;c.inCombat=6;e.hp=Math.max(0,e.hp-amount);e.hurt=.15;
  addThreat(e,c.id,dealt*COMPANION_ROLES[c.def.role].threat);
  recordMeterDamage(g,e,amount,dealt,abilitySource(id),crit,c);
@@ -179,7 +181,7 @@ function use(g,c,id,target){
   // Gruppe (2026-09-24): Heil-Söldner kümmern sich auch um Mitspieler in Reichweite; die Heilung reist über den Hilfsweg (net-social aidHeal).
   const mate=partyPatient(g,c,a,range);if(mate&&(!allies.length||mate.hp/100<ratio(allies[0]))){healMate(g,c,mate,(c.heal??c.damage)*a.power,id);return done();}
   if(!allies.length)return false;heal(g,c,allies[0],(c.heal??c.damage)*a.power,id);return done();}
- if(a.kind==='taunt'){const e=g.enemies.filter(e=>fighting(e)&&(e.focus||PLAYER)!==c.id&&distance(e,c)<=range).sort((x,y)=>distance(x,c)-distance(y,c))[0];if(!e)return false;
+ if(a.kind==='taunt'){const back=g.enemies.find(e=>fighting(e)&&(e.retreat||e.hidden)&&distance(e,c)<=range)/* Dungeon Etappe 4 Teil A: Greenscreen, Trog */,e=back||g.enemies.filter(e=>fighting(e)&&!e.goalAt&&(e.focus||PLAYER)!==c.id&&distance(e,c)<=range).sort((x,y)=>distance(x,c)-distance(y,c))[0];if(!e)return false;if(back)endRetreat(g,back);
   const top=Math.max(0,...Object.values(e.threat||{}));e.threat={...(e.threat||{}),[c.id]:top*R.threatSwitch+R.tauntLead};e.focus=c.id;if(!companionText(g,c,{area:'note',kind:'proc',text:T.taunted,ability:id}))g.float(e.x,e.y-38,T.taunted,'#f0c987');return done();}
  if(a.kind==='interrupt'){const e=g.enemies.find(e=>fighting(e)&&e.cast?.interruptible&&distance(e,c)<=range&&claimable(e.cast,c));if(!e)return false;
   claim(e.cast,c);if(!reacted(g,c,e.cast))return false;
@@ -203,14 +205,17 @@ function reacted(g,c,cast){const seen=c.seen||(c.seen=new WeakMap());if(!seen.ha
 /** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. */
 function coneExit(g,c){
  for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id||!coneHits(e,k,c,g)||!reacted(g,c,k))continue;
-  for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+.5),r=Math.max(30,Math.min(k.cone.range*.8,distance(e,c))),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
+  for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+.5),r=Math.max(30,Math.min(k.cone.range*.8,distance(e,c))),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}
+  /* Etappe 4 Teil A: an Wand oder Ecke (Gerds Zugbrücke, Stallungen) liegt die Seite oft in der Wand – dann weiter seitlich, näher oder hinter den Boss */
+  for(const [da,r] of [[.9,34],[.9,22],[1.4,30],[Math.PI-(k.cone.angle*Math.PI/360),26],[Math.PI,30]])for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+da)*(da>=Math.PI-1?0:1)+(da>=Math.PI-1?da*turn:0),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&!coneHits(e,k,q,g)&&walkClear(g.world,c,q,8))return q;}}
  return null;
 }
 function dangerExit(g,c){
+ const e4=e4Exit(g,c);if(e4)return e4;/* Dungeon Etappe 4 Teil A: Deckung, nasser Boden */
  const mech=mechExit(g,c);if(mech)return mech;
  const cone=coneExit(g,c);if(cone)return cone;
  for(const e of g.enemies){const k=e.cast;if(!k?.ground||e.hp<=0||!inEllipse(c,k,R.avoidMargin*.5)||!reacted(g,c,k))continue;
-  const base=Math.atan2(c.y-k.y,c.x-k.x)||0;for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:k.x+Math.cos(a)*(k.radius+R.avoidMargin),y:k.y+Math.sin(a)*(k.radius+R.avoidMargin)*.75};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
+  const base=Math.atan2(c.y-k.y,c.x-k.x)||0;for(const m of [R.avoidMargin,14,8]/* Etappe 4 Teil A: in engen Räumen (Stallungen) auch knapper außerhalb, dazu waagrecht und senkrecht */)for(const a of [...[0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI].map(t=>base+t),0,Math.PI,Math.PI/2,-Math.PI/2]){const q={x:k.x+Math.cos(a)*(k.radius+m),y:k.y+Math.sin(a)*(k.radius+m)*.75};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}}
  return null;
 }
 
@@ -222,8 +227,8 @@ function truthSeen(g,c,k){const m=c.truthSeen||(c.truthSeen=new WeakMap());if(!m
 /** Freier Punkt nahe q in der Arena des Gegners (begehbar, selber Raum), sonst null. */
 function arenaPoint(g,e,q){const run=dungeonRun(g);let p=q;try{p=g.world.findClear(q.x,q.y,9);}catch{}if(!p||g.world.blocked(p.x,p.y,9))return null;if(run&&e.dungeonBoss&&roomAt(run.def,p.x,p.y)?.id!==e.dungeonBoss.room)return null;return p;}
 /** Aus den getroffenen Bahnen heraus: nächste Kante außerhalb aller Bahnen, gleiche Höhe. */
-function laneExit(g,c,e,bad){const xs=[];for(const r of bad)xs.push(r.x-14,r.x+r.w+14);xs.sort((a,b)=>Math.abs(a-c.x)-Math.abs(b-c.x));
- for(const x of xs){const q={x,y:c.y};if(bad.some(r=>inLane(r,q,8)))continue;const p=arenaPoint(g,e,q);if(p&&!bad.some(r=>inLane(r,p,8)))return p;}return null;}
+function laneExit(g,c,e,bad){const yAxis=bad[0]?.axis==='y'/* Etappe 4 Teil A: Kurts Rinnen liegen waagrecht */,vs=[];for(const r of bad)yAxis?vs.push(r.y-14,r.y+r.h+14):vs.push(r.x-14,r.x+r.w+14);const cur=yAxis?c.y:c.x;vs.sort((a,b)=>Math.abs(a-cur)-Math.abs(b-cur));
+ for(const v of vs){const q=yAxis?{x:c.x,y:v}:{x:v,y:c.y};if(bad.some(r=>inLane(r,q,8)))continue;const p=arenaPoint(g,e,q);if(p&&!bad.some(r=>inLane(r,p,8)))return p;}return null;}
 /** Aus einer Fläche (Ellipse wie am Boden) heraus, nicht in eine andere hinein. */
 function spotExit(g,c,e,spot,radius,others=[]){const base=Math.atan2(c.y-spot.y,c.x-spot.x)||0;
  for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:spot.x+Math.cos(a)*(radius+R.avoidMargin),y:spot.y+Math.sin(a)*(radius+R.avoidMargin)*.75};if(others.some(o=>o!==spot&&inEllipse(q,{...o,radius})))continue;const p=arenaPoint(g,e,q);if(p&&walkClear(g.world,c,p,8))return p;}return null;}
@@ -235,22 +240,24 @@ function mechExit(g,c){
   if(k.lie&&!k.told){if(!fooled||!k.lanes)continue;const claim=k.lanes[k.claimLane],opp=k.lanes[k.lanes.length-1-k.claimLane];
    if(claim&&opp&&inLane(claim,c)&&!inLane(opp,c,-6)){const p=arenaPoint(g,e,{x:opp.x+opp.w/2,y:c.y});if(p)return p;}continue;}
   if(fooled&&g.time<(k.toldAt??-Infinity)+R.lieConfusion)continue;
+  if(k.decoy&&k.told===false)continue;/* Etappe 4 Teil A: auf den Stempel warten */
   if(!truthSeen(g,c,k))continue;
   if(k.lanes){const bad=(k.truthLanes||[]).map(i=>k.lanes[i]).filter(Boolean);if(bad.some(r=>inLane(r,c,8))){const p=laneExit(g,c,e,bad);if(p)return p;}}
-  if(k.spots){const s=k.spots.find(s=>inEllipse(c,{...s,radius:k.radius},R.avoidMargin*.5));if(s){const p=spotExit(g,c,e,s,k.radius,k.spots);if(p)return p;}}
+  if(k.spots){const real=k.spots.filter(s=>!s.decoy)/* Etappe 4 Teil A: nur echte Stellen */,s=real.find(s=>inEllipse(c,{...s,radius:k.radius},R.avoidMargin*.5));if(s){const p=spotExit(g,c,e,s,k.radius,real);if(p)return p;}}
  }
- for(const h of run.hazards||[])if(Math.hypot(c.x-h.x,c.y-h.y)<h.radius+6){const p=spotExit(g,c,h.boss,h,h.radius);if(p)return p;}
+ for(const h of run.hazards||[])if(!h.rect&&Math.hypot(c.x-h.x,c.y-h.y)<h.radius+6){const p=spotExit(g,c,h.boss,h,h.radius);if(p)return p;}
  return null;
 }
-const inHazard=(g,q)=>(dungeonRun(g)?.hazards||[]).some(h=>Math.hypot(q.x-h.x,q.y-h.y)<h.radius+10);
+const inAnyHazard=(g,q)=>(dungeonRun(g)?.hazards||[]).some(h=>inHazard(h,q,10))/* Etappe 4 Teil A: auch nasse Streifen */;
 /** Liegt q in einer schon angesagten Gefahr (Nachsatz heraus: echte Bahnen, Stellen) oder in Trümmern? Dort stellt sich niemand hin. */
-function unsafe(g,q){for(const e of g.enemies){const k=e.cast;if(!k||!(e.hp>0)||k.told===false)continue;if(k.lanes&&(k.truthLanes||[]).some(i=>inLane(k.lanes[i],q,14)))return true;if(k.spots&&k.spots.some(s=>inEllipse(q,{...s,radius:k.radius},R.avoidMargin*.5)))return true;}return inHazard(g,q);}
+function unsafe(g,q){for(const e of g.enemies){const k=e.cast;if(!k||!(e.hp>0)||k.told===false)continue;if(k.lanes&&(k.truthLanes||[]).some(i=>inLane(k.lanes[i],q,14)))return true;if(k.spots&&k.spots.some(s=>!s.decoy&&inEllipse(q,{...s,radius:k.radius},R.avoidMargin*.5)))return true;}return inAnyHazard(g,q);}
 const dangerOpen=g=>g.enemies.some(e=>e.cast&&e.cast.told!==false&&(e.cast.lanes||e.cast.spots));
 /** Aufstellung nach Rolle (Analyse Verbesserung 10, wie die Follower-Dungeons in WoW) gegen Dungeon-Bosse und -Eliten:
  *  tank: steht auf der Gegenseite der Gruppe, dreht den Gegner damit von ihr weg · behind: hinter dem Gegner (von dem aus, den er angreift)
  *  · spread: im Fächer hinter ihm (COMPANION_RULES.spreadFan), mit Abstand spreadDistance und Sichtlinie. → Platz oder null (normal kämpfen). */
 function formationSpot(g,c,e,role){
  if(!e.dungeon||!(e.dungeonBoss||e.elite)||c.order==='stay'||!inDungeon(g))return null;const pos=c.def.position||role.position;if(!pos)return null;
+ const e4=e4Spot(g,c,e,role);if(e4)return e4;/* Dungeon Etappe 4 Teil A: Sammeln, Verteilen */
  const risky=dangerOpen(g);if(!risky&&c.formation&&c.formation.e===e&&c.formation.until>g.time)return c.formation.goal;
  const p=g.player,holder=e.focus&&e.focus!==PLAYER?g.companions.find(o=>o.id===e.focus&&alive(o)):null,faced=holder||(g.dead?null:p);if(!faced)return null;
  const reach=(role.range||44)*.8;let fx=faced.x-e.x,fy=faced.y-e.y;const fl=Math.hypot(fx,fy)||1;fx/=fl;fy/=fl;let goal=null;
@@ -258,13 +265,25 @@ function formationSpot(g,c,e,role){
  if(pos==='tank'&&holder!==c){/* hält ihn noch nicht (Held hat die Bedrohung): von der Seite heran, nie durch den Kegel, bis der Spott sitzt */const side=(fx*(c.y-e.y)-fy*(c.x-e.x))>=0?1:-1;goal=ok({x:e.x-fy*side*reach*.9,y:e.y+fx*side*reach*.9});}
  else if(pos==='tank'){const others=[...(g.dead?[]:[p]),...g.companions.filter(o=>o!==c&&alive(o))];if(!others.length)return null;
   const cx=others.reduce((n,o)=>n+o.x,0)/others.length,cy=others.reduce((n,o)=>n+o.y,0)/others.length;let ax=e.x-cx,ay=e.y-cy;const al=Math.hypot(ax,ay);
-  if(al<18){ax=fx;ay=fy;}else{ax/=al;ay/=al;}goal=ok({x:e.x+ax*reach*.9,y:e.y+ay*reach*.9});}
+  if(al<18){ax=fx;ay=fy;}else{ax/=al;ay/=al;}
+  /* Etappe 4 Teil A: Trog und Greenscreen – nahe daran steht der Schutz so, dass der Boss von dort weg zu ihm kommt; steht er schon dort
+     (unsichtbar, säuft), tritt der Schutz über dessen Reichweite hinaus zurück, damit er ihm folgen muss */const away=keepAway(g,e);let far=reach*.9;if(away){ax=away.x;ay=away.y;if(e.hidden||e.drinking||e.retreat)far=Math.max(far,(e.autoAttack?.range||50)*1.25);}
+  /* Etappe 4 Teil A, enge Arena (schmaler als 6 m, Stallungen): nur ein Platz auf der gewollten Seite zählt (findClear rückt Punkte hinter
+     der Wand sonst neben den Boss), und steht der Boss an der Wand, zieht ihn der Schutz erst zur Raummitte */const tight=tightArena(g,e),side=q=>!tight||q&&((q.x-e.x)*ax+(q.y-e.y)*ay)>reach*.45?q:null;
+  goal=side(ok({x:e.x+ax*far,y:e.y+ay*far}))||(away&&side(ok({x:e.x+ax*reach*.9,y:e.y+ay*reach*.9})));
+  /* weit zurücktreten (Greenscreen, Trog): Sichtlinie ist dafür nicht nötig, er soll ja kommen – Deckung im Weg? seitlich daneben */
+  if(!goal&&far>reach*.9)for(const [f,l] of [[1,0],[1,24],[1,-24],[.8,24],[.8,-24],[1.2,0]]){const q={x:e.x+ax*far*f-ay*l,y:e.y+ay*far*f+ax*l},r=arenaPoint(g,e,q);if(r&&!unsafe(g,r)){goal=r;break;}}
+  if(!goal&&tight){const run=dungeonRun(g),room=run?.def.rooms.find(r=>r.id===e.dungeonBoss.room),r0=room&&rectWorld(run.def,room.floor,room.rects[0]);if(r0){const mx=r0.x+r0.w/2-e.x,my=r0.y+r0.h/2-e.y,ml=Math.hypot(mx,my)||1;goal=ok({x:e.x+mx/ml*reach*.9,y:e.y+my/ml*reach*.9});}}
+  /* Etappe 4 Teil A: Boss nahe an Wand oder Ecke (Gerds Zugbrücke) – der Schutz sucht die Seite, die von der Gruppe weg zeigt UND hinter ihm
+     Platz lässt; sonst zieht er den Boss Schritt für Schritt in die Ecke, und dort trifft der Kegel alle */
+  if(!away&&!tight&&e.dungeonBoss&&globalThis.WALLAWARE!==false&&g.world.blocked(e.x,e.y,30)){let best=null,bs=-9;for(let i=0;i<16;i++){const t=i/16*Math.PI*2,dx=Math.cos(t),dy=Math.sin(t),q=ok({x:e.x+dx*reach*.9,y:e.y+dy*reach*.9});if(!q)continue;const sc=dx*ax+dy*ay-(g.world.blocked(e.x+dx*(reach*.9+34),e.y+dy*(reach*.9+34),9)?1.2:0);if(sc>bs){bs=sc;best=q;}}if(best)goal=best;}}
  else if(holder===c)return null;
  else if(pos==='behind'){const i=g.companions.filter(o=>(o.def.position||COMPANION_ROLES[o.def.role].position)==='behind').indexOf(c),side=(i%2?1:-1)*(6+5*Math.max(0,i));
   for(const d of [0,18,-18,34,-34]){goal=ok({x:e.x-fx*reach*.85-fy*(side+d),y:e.y-fy*reach*.85+fx*(side+d)});if(goal)break;}/* Trümmer oder Wand hinter ihm: seitlich ausweichen */}
  else{const i=Math.max(0,g.companions.filter(o=>(o.def.position||COMPANION_ROLES[o.def.role].position)==='spread').indexOf(c)),fan=R.spreadFan[Math.floor(i/2)%R.spreadFan.length]*Math.PI/180*(i%2?1:-1),a=Math.atan2(-fy,-fx)+fan;
   const rs=c.def.abilities.map(id=>COMPANION_ABILITIES[id]).filter(x=>x&&(x.kind==='strike'||x.kind==='heal')).map(x=>(x.range||role.range||48)*.85),range=Math.min(R.spreadDistance,rs.length?Math.max(...rs):(role.range||48)*.85);
-  for(const f of [1,.75,.5,.3]){goal=ok({x:e.x+Math.cos(a)*range*f,y:e.y+Math.sin(a)*range*f});if(goal)break;}}
+  for(const f of [1,.75,.5,.3]){goal=ok({x:e.x+Math.cos(a)*range*f,y:e.y+Math.sin(a)*range*f});if(goal)break;}
+  /* Etappe 4 Teil A: enge Arena (Stallungen) – kein Fächerplatz frei: gerade hinter ihn, knapp außerhalb der Nahkampfreichweite */if(!goal)for(const d of [48,36,60,28]){goal=ok({x:e.x-fx*d,y:e.y-fy*d});if(goal)break;}}
  /* kein sicherer Platz: stehen bleiben, solange es dort sicher ist */if(!goal&&risky&&!unsafe(g,c))goal={x:c.x,y:c.y};
  c.formation={e,goal,until:g.time+.3};return goal;
 }
@@ -289,6 +308,7 @@ function tickOne(g,c,dt){
  for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
  const p=g.player,far=distance(c,p);
  if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}
+ /* Dungeon Etappe 4 Teil A: eingeklemmt (Arenatür fiel zu, während er auf der Schwelle stand) – auf den nächsten freien Punkt */if(inDungeon(g)&&g.world.blocked(c.x,c.y,5)){const q=g.world.findClear(c.x,c.y,6);c.x=q.x;c.y=q.y;c.path=[];}/* Laufradius 5: wer darin nirgends hin kann, steckt; dünne Wände (1 m) täuschen größere Radien */
  const exit=dangerExit(g,c);
  if(exit){c.channel=null;walkTo(g,c,exit,R.catchUpSpeed,dt,3);return;}                     // erst raus aus der Fläche, dann alles andere
  if(tickRevive(g,c,dt))return;                                                               // Held liegt im Dungeon: aufhelfen geht vor
@@ -298,9 +318,10 @@ function tickOne(g,c,dt){
  if(c.gcd<=0)for(const id of c.def.abilities){const a=COMPANION_ABILITIES[id];if(a&&a.kind!=='strike'&&a.kind!=='cleave'&&use(g,c,id,e))break;}
  if(e){
   c.state='combat';c.inCombat=6;face(c,e);
-  const reach=(role.range||44)*.8,d=distance(c,e),spot=formationSpot(g,c,e,role);/* Dungeon Etappe 3: Platz nach Rolle */
+  const reach=(role.range||44)*.8,d=distance(c,e);let spot=formationSpot(g,c,e,role);/* Dungeon Etappe 3: Platz nach Rolle */
+  /* Etappe 4 Teil A: Platz hinter Deckung ohne Blitzlicht → nächster Platz mit Sicht (sonst steht er dort und trifft nie) */if(spot&&!e.cast?.los&&lostSight(g,e,spot))spot=sightSpot(g,e,spot)||spot;
   if(spot){if(distance(c,spot)>R.formationSlack)walkTo(g,c,spot,R.speed,dt,4);}
-  else if(c.order!=='stay'&&(d>reach||!g.world.lineClear(c,e)))walkTo(g,c,e,R.speed,dt,reach);
+  else if(c.order!=='stay'&&(d>reach||!g.world.lineClear(c,e)))walkTo(g,c,e,R.speed,dt,lostSight(g,e,c)?4:reach/* Etappe 4 Teil A: ohne Sicht hinter Deckung näher heran */);
   if(c.gcd<=0)for(const id of c.def.abilities){const a=COMPANION_ABILITIES[id];if(a&&(a.kind==='strike'||a.kind==='cleave')&&use(g,c,id,e))break;}
   return;
  }
@@ -382,3 +403,37 @@ export function remoteCompanionViews(list,prev,owner,now,lerp=160){
   const f=mercLook(def);return {name:def.name,owner:owner.name,x:w.x,y:w.y,fromX,fromY,at:now,lerp,facing:w.f,classId:def.look,look:def.look,spec:def.spec,level:w.l,state:w.s==='down'?'dead':w.s,hp:w.h,party:owner.party,floor:owner.floor,
    moving:w.s==='walk'||Math.abs(fromX-w.x)+Math.abs(fromY-w.y)>1,companion:w.i,role:def.role,down:w.s==='down',remote:true,attack:w.a===1?.2:0,castPose:w.a===2?.2:0,usingRanged:!!w.r,tint:f.tint,visualEquipment:f.visualEquipment,paperdollId:f.paperdollId};}).filter(Boolean);
 }
+
+// ── Dungeon Etappe 4 Teil A (E-71, Plan 7.2–7.5): Söldner sammeln sich beim Markierten, verteilen sich, gehen hinter Deckung, raus aus
+// nassen Streifen; der Schutz hält Rita von der grünen Wand und das halbe Pferd vom Trog weg (keepAway). Interessenten: Adds zuerst
+// (chooseTarget), nie spotten; Greenscreen/Trog: Spott holt den Boss zurück (use → endRetreat). ────────────────────────────────────────
+/** Sammeln und Verteilen (nach der Reaktionszeit): Platz, an dem der Söldner weiterkämpft – beim Markierten bzw. mit Abstand zu allen.
+ *  Der Schutz bleibt beim Sammeln am Boss. Wer schon richtig steht, bleibt stehen. → Platz oder null. */
+function e4Spot(g,c,e,role){
+ for(const b of g.enemies){const k=b.cast;if(!k||!(b.hp>0)||!(k.stack||k.spread)||!reacted(g,c,k))continue;
+  if(k.stack){if(c.def.role==='tank')return null;const m=k.victim==='player'?(g.dead?null:g.player):g.companions.find(o=>o.id===k.victim&&alive(o));if(!m)return null;if(m===c)return {x:c.x,y:c.y};
+   const d=distance(c,m);if(d<=k.stack.radius-R.stackSlack)return {x:c.x,y:c.y};const q=arenaPoint(g,b,{x:m.x+(c.x-m.x)/(d||1)*R.stackSlack,y:m.y+(c.y-m.y)/(d||1)*R.stackSlack});return q||{x:m.x,y:m.y};}
+  const r=k.spread.radius+R.spreadGap,others=partyUnits(g).filter(o=>o!==c);if(others.every(o=>distance(o,c)>=r))return {x:c.x,y:c.y};
+  let best=null,bd=1e9;for(let i=0;i<16;i++){const a=i/16*Math.PI*2;for(const f of [.9,1.3,1.8]){const q=arenaPoint(g,b,{x:c.x+Math.cos(a)*r*f,y:c.y+Math.sin(a)*r*f});if(!q||unsafe(g,q)||others.some(o=>distance(o,q)<r))continue;const d=distance(q,c)+distance(q,b)*.3;if(d<bd){bd=d;best=q;}}}
+  return best;}
+ return null;
+}
+/** Deckung beim Blitzlicht (los) und raus aus nassen Streifen (Sprinkler). Wer schon hinter Deckung steht, bleibt dort. → Punkt oder null. */
+function e4Exit(g,c){
+ const run=dungeonRun(g);if(!run)return null;
+ for(const e of g.enemies){const k=e.cast;if(!k?.los||!(e.hp>0)||!reacted(g,c,k)||roomAt(run.def,c.x,c.y)?.id!==e.dungeonBoss?.room)continue;
+  if(!g.world.lineClear(e,c))return {x:c.x,y:c.y};const q=hideSpot(g,run,e,c);if(q)return q;}
+ const wet=(run.hazards||[]).filter(h=>h.rect&&h.slow),h=wet.find(w=>inHazard(w,c,4));
+ if(h)for(let d=8;d<400;d+=8)for(const sgn of [1,-1]){const q={x:c.x+sgn*d,y:c.y};if(wet.some(w=>inHazard(w,q,10)))continue;const p=arenaPoint(g,h.boss,q);if(p&&!wet.some(w=>inHazard(w,p,10)))return p;}
+ return null;
+}
+/** Nächster Platz neben einer Deckung, von dem aus Rita keine Sichtlinie hat (im selben Raum, begehbar). */
+function hideSpot(g,run,e,c){let best=null,bd=1e9;for(const q of hideSpots(g,e)){const d=distance(c,q);if(d<bd&&walkClear(g.world,c,q,6)){bd=d;best=q;}}if(best)return best;for(const q of hideSpots(g,e)){const d=distance(c,q);if(d<bd){bd=d;best=q;}}return best;}
+/** Enge Arena (kürzere Seite höchstens 6 m, z. B. die Stallungen): dort gelten Seitenprüfung und Zug zur Mitte für den Schutz. */
+function tightArena(g,e){const run=dungeonRun(g),room=e.dungeonBoss&&run?.def.rooms.find(r=>r.id===e.dungeonBoss.room);return !!room&&Math.min(room.rects[0][2],room.rects[0][3])<=6;}
+/** Richtung, in die der Schutz einen Boss zieht, damit er von Trog bzw. Greenscreen weg zu ihm kommt (Einheitsvektor) oder null. */
+function keepAway(g,e){const run=dungeonRun(g);if(!run||!e.dungeonBoss)return null;const z=bossZones(run,e),from=z.trough?z.trough:z.hidden?{x:z.hidden.x+z.hidden.w/2,y:z.hidden.y+z.hidden.h/2}:null;if(!from)return null;
+ /* nur nahe an Trog bzw. Wand (oder auf dem Weg dorthin); weiter weg steht der Schutz wie sonst der Gruppe gegenüber */if(!e.retreat&&!e.hidden&&!e.drinking&&distance(e,from)>(z.trough?z.trough.r+48:(z.hidden?.h||0)+56))return null;
+ const room=run.def.rooms.find(r=>r.id===e.dungeonBoss.room),r0=room&&rectWorld(run.def,room.floor,room.rects[0]),mid=r0?{x:r0.x+r0.w/2,y:r0.y+r0.h/2}:from;
+ /* Greenscreen: immer zur Raummitte hin (weg von der Wand); Trog: vom Trog weg, steht der Boss darauf, zur Raummitte */const to=z.hidden||distance(e,from)<16?mid:e;
+ const ax=to.x-from.x,ay=to.y-from.y,l=Math.hypot(ax,ay)||1;return {x:ax/l,y:ay/l};}

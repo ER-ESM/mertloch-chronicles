@@ -15,9 +15,10 @@ const mounts=Object.fromEntries(Object.keys(cat.mounts).map(id=>[id,JSON.parse(r
 const pngSize=f=>{const b=read(f);return [b.readUInt32BE(16),b.readUInt32BE(20)];};
 
 test('Reittier-IDs im Inhalt entsprechen dem Reit-Katalog (inkl. Esel, Drahtesel, Aufsitzmäher)',()=>{
- assert.deepEqual(Object.keys(cat.mounts).sort(),Object.keys(MOUNTS).sort());
+ /* Dungeon Etappe 4 Teil A: Reittiere mit art (Platzhalter: vorhandener Bogen, getönt) haben keine eigenen Bögen */const own=Object.keys(MOUNTS).filter(id=>!MOUNTS[id].art);
+ assert.deepEqual(Object.keys(cat.mounts).sort(),own.sort());for(const [id,d] of Object.entries(MOUNTS))if(d.art)assert.ok(cat.mounts[d.art],id+' → '+d.art);
  for(const id of ['packesel','drahtesel','rasenkoenig'])assert.ok(cat.mounts[id]?.name&&cat.mounts[id].sitz,id);
- assert.equal(Object.keys(MOUNTS).length,6);
+ assert.equal(own.length,6);
 });
 
 test('Katalog vollständig: 6 Reittiere × 3 Archetypen × 4 Richtungen × 9 Bilder, jede Kachel gültig',()=>{

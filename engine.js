@@ -39,7 +39,8 @@ import {chapterCredit} from './quest-mobs.js';
 import {deNum} from './number-format.js';
 const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
-import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest,quietFloat} from './dungeon.js';
+import {lostSight} from './dungeon.js';/* Dungeon Etappe 4 Teil A */
+import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest,quietFloat,dungeonMove} from './dungeon.js';
 import {bossOutOfReach,concealed} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
@@ -564,6 +565,7 @@ export class Game{
       if(e.mark>0){e.mark-=dt;if(e.mark<=0)onMarkExpire(this,e);e.dotTimer-=dt;if(e.dotTimer<=0){this.damage(e,e.dotDamage||12,'Markierung');e.dotTimer=1;}if(e.hp<=0)continue;}
       e.vulnerable=Math.max(0,e.vulnerable-dt);e.stun=Math.max(0,e.stun-dt);
       if(e.remoteTarget){if(this.time>e.remoteTarget.until){e.remoteTarget=null;if(!e.aggro||e.ai!=='combat')beginReturn(this,e);}else{followRemote(this,e,dt);continue;}}
+      /* Dungeon Etappe 4 Teil A: Interessenten laufen zum Vertragstisch, Bosse mit retreat zu Greenscreen bzw. Trog – statt Kampf-KI */if(e.dungeon&&(e.goalAt||e.retreat||e.hidden)&&e.aggro&&dungeonMove(this,e,dt))continue;
       // Begleiter (E-45): hält ein Begleiter die höchste Bedrohung, kämpft der Gegner gegen ihn statt gegen den Spieler.
       if(e.aggro&&e.ai==='combat'&&!e.dummy){const companion=companionFocus(this,e);if(companion){tickEnemyOnCompanion(this,e,companion,dt);if(this.dead&&!inDungeon(this))break;continue;}}
       if(this.dead)continue;/* Geist im Dungeon (E-71): niemand greift den Körper an, niemand bemerkt ihn */
@@ -581,7 +583,7 @@ export class Game{
           if(hit){e.lastCast=c;this.hitPlayer(e,c.damage);e.lastCast=null;}e.attack=.3;if(this.dead)break;
         }continue;}
       const reach=e.autoAttack.range*.8;
-      if(d>reach){const speed=e.speed*(e.mark>0?e.slow:1)*(e.controlSlow>0?.5:1);e.pathTimer-=dt;if(walkClear(this.world,e,p,7)){const step=Math.min(speed*dt,d-reach+1);this.move(e,(p.x-e.x)/d*step,(p.y-e.y)/d*step);e.moving=true;e.chasePath=[];}else{if(e.pathTimer<=0){e.pathTimer=1.1;e.chasePath=this.world.findPath(e,p);}moveAlong(this,e,e.chasePath,speed,dt);}}
+      if(d>reach||lostSight(this,e,p)/* Dungeon Etappe 4 Teil A: um Deckung herum */){const speed=e.speed*(e.mark>0?e.slow:1)*(e.controlSlow>0?.5:1);e.pathTimer-=dt;if(walkClear(this.world,e,p,7)){const step=Math.min(speed*dt,d-reach+1);this.move(e,(p.x-e.x)/d*step,(p.y-e.y)/d*step);e.moving=true;e.chasePath=[];}else{if(e.pathTimer<=0){e.pathTimer=1.1;e.chasePath=this.world.findPath(e,p);}moveAlong(this,e,e.chasePath,speed,dt);}}
 
       e.attackTimer=Math.max(0,e.attackTimer-dt);enemyAuto(this,e,dt);if(this.dead)break;if(distance(e,p)<=reach&&e.attackTimer<=0&&this.world.lineClear(e,p))this.startCast(e);
     }

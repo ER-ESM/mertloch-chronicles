@@ -23,16 +23,17 @@ const quiet=g=>{for(const e of g.enemies)if(!e.dungeonBoss){e.hp=0;e.aggro=false
 const bigbOf=g=>g.enemies.find(e=>e.bossId==='bigb'),gerdOf=g=>g.enemies.find(e=>e.bossId==='gerd');
 function party(g){for(const id of MERCS)g.hireCompanion(id,{free:true});for(const c of g.companions){const q=g.world.findClear(g.player.x+12,g.player.y+12,9);c.x=q.x;c.y=q.y;}return g;}
 /** Thronsaal mit offener Tresortür, Big B zieht. */
-function pullBigB(g,{mercs=true}={}){const r=inside(g);quiet(g);r.seals.add('siegel-gerd');r.version++;at(g,'k2',52,20);if(mercs)party(g);const b=bigbOf(g);b.aggro=true;b.ai='combat';g.target=b;g.player.inCombat=7;return {r,b};}
+function pullBigB(g,{mercs=true}={}){const r=inside(g);quiet(g);for(const s of ['siegel-gerd','siegel-expose','siegel-kurt'])r.seals.add(s);r.version++;at(g,'k2',52,20);if(mercs)party(g);const b=bigbOf(g);b.aggro=true;b.ai='combat';g.target=b;g.player.inCombat=7;return {r,b};}
 /** Zauber `type` aus dem Zaubermuster setId an Big B starten (wie engine.startCast). */
 function castNow(g,b,setId,type){b.engaged=true;b.saidPhases=new Set((DUNGEON_BOSSES[b.bossId].phases||[]).filter(p=>b.hp/b.maxHp<=p.at).map(p=>p.at));b.castSet=setId;const set=DUNGEON_CASTS[setId];b.cycle=set.cycle.indexOf(type);b.attackTimer=0;g.startCast(b);assert.equal(b.cast.type,type);return b.cast;}
 
-test('Tresortür verlangt nur die Siegel gebauter Bosse; mit Gerds Siegel geht sie auf',()=>{
+test('Tresortür verlangt nur die Siegel gebauter Bosse; seit Etappe 4 Teil A alle drei',()=>{
  const door=DEF.doors.find(d=>d.lock?.seals);assert.deepEqual(door.lock.seals,['siegel-gerd','siegel-expose','siegel-kurt'],'Daten bleiben vollständig');
- assert.deepEqual(requiredSeals(DEF,door.lock.seals),['siegel-gerd'],'heute nur Gerd gebaut');
- const g=game(),r=inside(g);assert.equal(doorOpen(r,door),false,'ohne Siegel zu');r.seals.add('siegel-gerd');r.version++;assert.equal(doorOpen(r,door),true,'mit Gerds Siegel offen');
- // Sobald ein weiterer Siegelträger gebaut ist, greift sein Siegel ohne Datenänderung.
- DUNGEON_BOSSES.expose={...DUNGEON_BOSSES.gerd,name:'Probe'};try{assert.deepEqual(requiredSeals(DEF,door.lock.seals),['siegel-gerd','siegel-expose']);assert.equal(doorOpen(r,door),false);}finally{delete DUNGEON_BOSSES.expose;}
+ assert.deepEqual(requiredSeals(DEF,door.lock.seals),['siegel-gerd','siegel-expose','siegel-kurt'],'Gerd, Exposé und Kurt sind gebaut');
+ const g=game(),r=inside(g);assert.equal(doorOpen(r,door),false,'ohne Siegel zu');r.seals.add('siegel-gerd');r.version++;assert.equal(doorOpen(r,door),false,'Gerds Siegel allein reicht nicht mehr');
+ r.seals.add('siegel-expose');r.seals.add('siegel-kurt');r.version++;assert.equal(doorOpen(r,door),true,'mit allen drei Siegeln offen');
+ // Die Filterung bleibt: fehlt ein Siegelträger in DUNGEON_BOSSES, verlangt die Tür sein Siegel nicht.
+ const kurt=DUNGEON_BOSSES.korkenkurt;delete DUNGEON_BOSSES.korkenkurt;try{assert.deepEqual(requiredSeals(DEF,door.lock.seals),['siegel-gerd','siegel-expose']);}finally{DUNGEON_BOSSES.korkenkurt=kurt;}
  const pt=toWorld(DEF,'k2',44,24);assert.equal(g.world.blocked(pt.x,pt.y,3),false,'Held kommt durch die Tür');
 });
 

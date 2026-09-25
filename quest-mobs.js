@@ -6,6 +6,7 @@
 import {distance} from './world.js';
 import {ARCHETYPES,CAMP_ENEMIES,TUTORIAL,ITEM_CATALOG} from './content/index.js';
 import {speciesOf,hotspotQuest,questProgress,giverOffers,questTitle} from './hotspots.js';
+import {nearestSpeaker} from './world-presence.js';
 
 /** Halbmesser des Zielgebiets um ein Kapitel-Lager (Welteinheiten, 8 = 1 m). Reicht bis über den Lagerrand (camp.approach). */
 export const QUEST_AREA=330;
@@ -49,6 +50,9 @@ export function idaMark(g){
  if(g.quest.actDone)return null;
  return g.quest.accepted?'…':'!';
 }
+/** Name über Ida (E-72 Runde 3, Kenner-Befund 10, WoW): wartet sie mit „!“ oder „?“ auf den Helden, steht ihr Name schon aus der
+ *  Ferne über ihr – sonst wie bei allen Sprechern nur beim nächsten in 70 E (nearestSpeaker). */
+export const idaShowsName=(g,mark=idaMark(g))=>mark==='!'||mark==='?'||nearestSpeaker(g,g.world.npc);
 /** Auftragszeilen am Gegner für Tooltip und Zielrahmen (Runde 5a, 2026-09-24, Kenner-Befund 2, WoW: „Pfandkeiler jagen 0/3“).
  *  → [{title,done,need,chance?,outside?}]. chance = Dropchance 0…1 bei Sammelzielen; outside = gleiche Art, zählt aber hier nicht
  *  (Feldgegner außerhalb des Zielgebiets) – so sieht man, WELCHER Keiler zählt. Fertige Ziele stehen nicht mehr drin. */

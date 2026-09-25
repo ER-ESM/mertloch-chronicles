@@ -3,14 +3,14 @@
 .player-panel .bar.energy.has-rh{position:relative;overflow:hidden;background:#120e0c}
 .player-panel .bar.energy.has-rh>i,.player-panel .bar.energy.has-rh>.energy-mark{visibility:hidden}
 .player-panel .bar.energy .rh-meter{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;z-index:1;pointer-events:none}
-.player-panel .bar.energy.has-rh>span{z-index:3;pointer-events:none}
+.player-panel .bar.energy.has-rh>span:not(.rh-hit){z-index:3;pointer-events:none}
 .player-panel .bar.energy[data-rh-kind=ammo]{height:22px}
-.player-panel .bar.energy[data-rh-kind=ammo]>span,.player-panel .bar.energy[data-rh-kind=grill]>span{visibility:hidden}
-.player-panel .bar.energy[data-rh-kind=cards]>span{color:#2a2430!important;text-shadow:0 1px 0 #fff6e0!important}
+.player-panel .bar.energy[data-rh-kind=ammo]>span:not(.rh-hit),.player-panel .bar.energy[data-rh-kind=grill]>span:not(.rh-hit){visibility:hidden}
+.player-panel .bar.energy[data-rh-kind=cards]>span:not(.rh-hit){color:#2a2430!important;text-shadow:0 1px 0 #fff6e0!important}
 .player-panel .bar.energy[data-rh-kind=rage].surge{border-color:#ff8a5a!important;box-shadow:0 0 6px #e2563d99}
-.player-panel .bar.energy[data-rh-kind=trend]>span{text-shadow:1px 1px 0 #4a1030!important}
+.player-panel .bar.energy[data-rh-kind=trend]>span:not(.rh-hit){text-shadow:1px 1px 0 #4a1030!important}
 .touch-mode .player-panel .bar.energy[data-rh-kind=ammo]{height:20px}
-/* Tooltip-Flächen über den Leinwänden */
+/* Tooltip-Flächen über den Leinwänden (Runde 3: die Regeln für den Leistentext oben galten auch für sie – dort ausgenommen, sonst kam kein Tooltip an) */
 .rh-hit{position:absolute;z-index:4;display:block;pointer-events:auto;cursor:help}
 .rh-hit[hidden]{display:none}
 /* Band unter dem Spielerfenster (WoW: Klassenleiste unter dem Porträt) – bewegt sich mit dem Fenster (UI bearbeiten). */
@@ -35,7 +35,7 @@ body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #debuffStrip:not([data
 .player-panel .bar.energy.rh-alarm{animation:rh-alarm .22s linear infinite}
 @keyframes rh-alarm{0%,100%{transform:translateX(0);box-shadow:0 0 10px #ff3a2a,0 0 0 2px #ff6a4a}50%{transform:translateX(-1px);box-shadow:0 0 3px #ff3a2a,0 0 0 1px #ff6a4a}}
 /* Käthe: Stand und Schwellen stehen im Skatblock selbst */
-.player-panel .bar.energy[data-rh-kind=cards]>span{visibility:hidden}
+.player-panel .bar.energy[data-rh-kind=cards]>span:not(.rh-hit){visibility:hidden}
 .player-panel .rh-tray .rh-stamp{position:absolute;right:10px;top:50%;transform:translateY(-50%) rotate(-6deg);padding:1px 7px;border:2px solid currentColor;border-radius:4px;font:400 15px/1.1 var(--display,sans-serif);letter-spacing:.06em;pointer-events:none;color:#e8453a;background:#f6efdcee;box-shadow:0 1px 3px #000a}
 .player-panel .rh-tray .rh-stamp[hidden]{display:none}
 .player-panel .rh-tray .rh-stamp[data-level='2']{color:#a86a08;background:#fff3c8f0}
@@ -61,7 +61,7 @@ body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #debuffStrip:not([data
 @keyframes rh-beat{from{filter:drop-shadow(0 0 2px #ffd35a) drop-shadow(0 1px 2px #000c)}to{filter:drop-shadow(0 0 7px #ffe38a) drop-shadow(0 1px 2px #000c)}}
 #enemyCast:has(.rh-enemy-card:not([hidden])) #enemyCastText{padding-left:20px}
 /* Käthes Hand auf der Leiste: Kartenbild ohne Varianten-Filter, Name nur bei STICH */
-.skill[data-card] canvas,#touchActions .touch-skill[data-card] canvas{filter:none!important;animation:none!important}
+.skill[data-card] canvas,#touchActions .touch-skill[data-card] canvas,.skill.variant[data-card][data-variant-tone] canvas,#touchActions .touch-skill.variant[data-card][data-variant-tone] canvas{filter:none!important;animation:none!important}
 .skill.variant[data-card]:not([data-variant-tone=gold]):before,#touchActions .touch-skill.variant[data-card]:not([data-variant-tone=gold]):before{display:none}
 .skill.variant[data-card][data-variant-tone=gold]{box-shadow:0 0 0 2px #ffd35a,0 0 12px #ffd35acc!important;animation:rh-stich .6s ease-in-out infinite alternate}
 .skill.variant[data-card][data-variant-tone=gold]:before{top:auto;bottom:calc(100% + 3px);left:-6px;right:-6px;border-radius:3px;color:#2a1a08!important;background:linear-gradient(#ffe38a,#e8b84a)!important;text-shadow:none!important;font-weight:700;box-shadow:0 1px 3px #000a}
@@ -70,3 +70,43 @@ body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #debuffStrip:not([data
 .skill.rh-repeat canvas{filter:saturate(.45) brightness(.8)!important}
 .skill.rh-repeat:not(.proc-free):not(.proc-empower):not(.cd-done):not(.weapon-missing):after{content:'';position:absolute;right:2px;top:2px;width:13px;height:13px;z-index:7;pointer-events:none;border-radius:50%;background:#2a1a24e6 no-repeat center/11px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M12.5 5.5A5 5 0 1 0 13 9' fill='none' stroke='%23ff9a7a' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M13.5 2v4h-4' fill='none' stroke='%23ff9a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");box-shadow:0 0 0 1px #ff9a7a88}
 @media (prefers-reduced-motion:reduce){.skill.variant[data-card][data-variant-tone=gold],#enemyCast .rh-enemy-card.beatable,.rh-reload.jam{animation:none}}
+/* E-72 Runde 3 · Lernen über das Bild: eigene Leinwand je Knopf (Kettenrahmen, Stich-Abzeichen, Abrechnen-Marken, Grillgut).
+   Liegt über dem Kniffbild und unter Abklingzeit, Taste und Varianten-Schild; ragt 8 px über den Rand (Abzeichen an der Ecke). */
+button.skill>canvas.rh-slot[data-rh-slot],#touchActions button.touch-skill>canvas.rh-slot[data-rh-slot]{position:absolute;left:-8px;top:-8px;width:calc(100% + 16px)!important;height:calc(100% + 16px)!important;max-width:none;margin:0;padding:0;z-index:1;pointer-events:none;image-rendering:pixelated;filter:none!important;animation:none!important;transform:none!important;opacity:1!important}
+/* Karten, Abrechnen, Grillgut: das Bild sagt es – kein Wortschild auf dem Knopf (Name und Zustand im Tooltip) */
+.skill.variant[data-rh-label=hide]:before,#touchActions .touch-skill.variant[data-rh-label=hide]:before{display:none!important}
+/* Käthe · Abrechnen leuchtet ab 61 (gewonnen), stärker ab 90 (Schneider) und 120 (Schwarz) */
+.skill[data-rh-settle='1']{border-color:#ffd35a!important;box-shadow:0 0 0 1px #ffd35a,0 0 7px #ffd35a88!important}
+.skill[data-rh-settle='2']{border-color:#ffe38a!important;animation:rh-settle-2 .8s ease-in-out infinite alternate!important}
+.skill[data-rh-settle='3']{border-color:#1a1418!important;background:#2a2024!important;animation:rh-settle-3 .45s ease-in-out infinite alternate!important}
+@keyframes rh-settle-2{from{box-shadow:0 0 0 2px #f2c14e,0 0 8px #ffd35a99}to{box-shadow:0 0 0 3px #ffe38a,0 0 18px #ffd35a}}
+@keyframes rh-settle-3{from{box-shadow:0 0 0 3px #f2c14e,0 0 0 5px #1a1418,0 0 14px #ffe38a}to{box-shadow:0 0 0 3px #fff3b0,0 0 0 6px #1a1418,0 0 30px #ffd35a}}
+/* Schorsch · Servieren leuchtet in der Farbe der Garstufe: gar golden (pulsiert), durch kupfern, verkohlt rauchig */
+.skill[data-rh-serve=gar]{border-color:#ffe38a!important;animation:rh-serve-gar .6s ease-in-out infinite alternate!important}
+.skill[data-rh-serve=durch]{border-color:#e0782a!important;box-shadow:0 0 0 2px #b85a1e,0 0 10px #e07a2acc!important}
+.skill[data-rh-serve=verkohlt]{border-color:#6a5a52!important;box-shadow:0 0 0 2px #3a2a24,0 0 8px #000c!important}
+@keyframes rh-serve-gar{from{box-shadow:0 0 0 2px #f2c14e,0 0 6px #ffd35a88}to{box-shadow:0 0 0 3px #fff3b0,0 0 18px #ffd35a}}
+/* Hofprobe · Käthe: die Kartentaste pulsiert, bis die erste Karte liegt */
+.skill[data-rh-teach]{border-color:#ffe38a!important;animation:rh-teach .9s ease-in-out infinite!important}
+@keyframes rh-teach{0%,100%{box-shadow:0 0 0 2px #ffe38a,0 0 4px #ffd35a66}50%{box-shadow:0 0 0 4px #fff3b0,0 0 18px #ffd35a}}
+@media (prefers-reduced-motion:reduce){.skill[data-rh-settle],.skill[data-rh-serve],.skill[data-rh-teach]{animation:none!important;box-shadow:0 0 0 3px #ffe38a,0 0 10px #ffd35a!important}}
+/* Hofprobe · Bild-Schritte (tutorial-guide.js): Symbol, Taste, eine kurze Zeile, Stand rechts; Erklärung im Tooltip */
+.tut-guide{list-style:none;margin:5px 0 0;padding:0;display:grid;gap:3px}
+.tut-guide .tg-step{display:flex;align-items:center;gap:6px;min-height:26px;font:600 12px/1.2 var(--read,'Nunito',sans-serif);color:#e8dcbc;opacity:.78;cursor:help;pointer-events:auto;text-shadow:0 1px 2px #000,0 0 4px #000c}
+.tut-guide .tg-step.is-now{opacity:1;color:#fff3cf}
+.tut-guide .tg-step.is-done{opacity:.78}
+.tut-guide .tg-step.is-locked{opacity:.62}
+.tut-guide .tg-icon{position:relative;flex:none;width:26px;height:28px;display:grid;place-items:center;border-radius:5px;background:#0b1216b8;box-shadow:inset 0 0 0 1px #d7b57144}
+.tut-guide .tg-step.is-now .tg-icon{box-shadow:0 0 0 1px #ffe38a,0 0 8px #ffd35a99;animation:tg-now 1s ease-in-out infinite alternate}
+@keyframes tg-now{from{box-shadow:0 0 0 1px #ffe38a,0 0 3px #ffd35a66}to{box-shadow:0 0 0 2px #fff3b0,0 0 10px #ffd35acc}}
+.tut-guide .tg-icon img{display:block;image-rendering:pixelated;max-width:24px;max-height:26px}
+.tut-guide .tg-lock{position:absolute;right:-4px;bottom:-4px;width:12px;height:13px;background:no-repeat center/12px 13px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 13'%3E%3Cpath d='M3 6V4a3 3 0 0 1 6 0v2' fill='none' stroke='%23e8e0cc' stroke-width='1.6'/%3E%3Crect x='1.5' y='6' width='9' height='6.5' rx='1' fill='%23b8b0a0' stroke='%232a2620'/%3E%3C/svg%3E")}
+.tut-guide kbd{flex:none;display:inline-block;min-width:16px;padding:1px 3px 0;border:1px solid #d7b571aa;border-bottom-width:2px;border-radius:4px;background:#1c2b22;color:#fff0c9;font:400 12px/15px var(--display,'Jersey 10',sans-serif);letter-spacing:.04em;text-align:center}
+.tut-guide span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tut-guide em{flex:none;min-width:20px;font:800 12px/1 var(--read,'Nunito',sans-serif);font-style:normal;color:#ffd77a;text-align:right}
+.tut-guide .is-done em{color:#9fe08a}
+#tutorialGuide .tutorial-res-hint:has(.tut-guide){display:block}
+#tutorialGuide .tut-guide .tg-step{min-height:22px;font-size:11px}
+#tutorialGuide .tut-guide .tg-icon{width:22px;height:24px}
+#tutorialGuide .tut-guide .tg-icon img{max-width:20px;max-height:22px}
+@media (prefers-reduced-motion:reduce){.tut-guide .tg-step.is-now .tg-icon{animation:none}}

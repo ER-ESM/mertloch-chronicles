@@ -18,6 +18,10 @@ export const COMPANION_RULES=Object.freeze({
  // Anteil der Lügen, auf die ein Söldner doch hereinfällt: Er läuft nach der Behauptung und bleibt lieConfusion Sekunden nach dem
  // Nachsatz noch dabei (Schreckmoment) – damit es nicht trivial wird.
  lieError:.05,lieConfusion:.8,
+ // Dungeon Etappe 4 Teil A (E-71): addsFirst = Schadens-Söldner nehmen gerufene Helfer eines Dungeon-Bosses vor dem Boss (Gerds Neffen
+ // wie Big Bs Follower; Interessenten: das Add am nächsten zum Tisch zuerst). stackSlack/spreadGap = so nah an den Markierten bzw. so weit
+ // voneinander (zusätzlich zum Radius) stellen sie sich bei „Runde auf mich!“ und „Jeder zahlt selbst“. coverGap = Abstand zur Deckung.
+ addsFirst:true,stackSlack:14,spreadGap:12,coverGap:14,
  // Aufstellung nach Rolle im Dungeon gegen Bosse und Eliten (COMPANION_ROLES.position): Abstand der Fernkämpfer vom Boss und Fächer
  // (Grad) links und rechts hinter ihm; formationSlack = so weit darf ein Söldner vom Platz abweichen, bevor er nachrückt.
  spreadDistance:112,spreadFan:[40,72],formationSlack:14,

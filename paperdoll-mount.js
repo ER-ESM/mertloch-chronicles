@@ -5,7 +5,11 @@
 // für die Welt verkleinert wie paperdoll-art.js. Fällt etwas aus (noch nicht geladen, unbekannte Figur), liefert jede Funktion false.
 import {composeCore,sources as orderSources} from './paperdoll-kern.js';
 import {paperdoll,loadPaperdoll,paperdollArch,paperdollSources,lookSources,recolorMap,recolor,snap,unitScale,contextScale} from './paperdoll-art.js';
-import {MOUNT_RULES} from './content/index.js';
+import {MOUNT_RULES,MOUNTS} from './content/index.js';
+/** Dungeon Etappe 4 Teil A: Reittier ohne eigene Bögen (art = vorhandenes Reittier) mit Tönung nur auf dem Tier (nicht dem Reiter) –
+ *  Platzhalter für „Das halbe Pferd“, bis eigene Grafik freigegeben ist. → {id (Bogen), tint} */
+export const mountArtOf=id=>{const d=MOUNTS[id];return d?.art?{id:d.art,tint:d.tint||null}:{id,tint:null};};
+const hex=c=>[1,3,5].map(i=>parseInt(String(c).slice(i,i+2),16)||0);
 
 const BASE='./assets/paperdoll/reiten/',DIRS=['se','sw','nw','ne'],STOWED=['weapon','offhand','ranged'];
 export const ride={catalog:null,mounts:new Map(),failed:false};
@@ -43,7 +47,7 @@ let shadeMerged=false;
 function mergeShade(){if(shadeMerged||!paperdoll.catalog?.shade||!ride.catalog?.shade)return;const s=paperdoll.catalog.shade;for(const [k,v] of Object.entries(ride.catalog.shade))if(!(k in s))s[k]=v;shadeMerged=true;}
 const frameCache=new Map(),FRAME_LIMIT=90;
 /** Ein Reitbild (Richtung, Bild k) im Ausschnitt seines Inhalts: {px,x0,y0,w,h} in Reittier-Leinwand-Koordinaten. */
-function composed(id,arch,dir,k,srcs){const order=arch?orderSources(srcs,ride.catalog.sources):[],key=[id,arch||'@',dir,k,order.join(',')].join('|');
+function composed(id,arch,dir,k,srcs,mt=null){const order=arch?orderSources(srcs,ride.catalog.sources):[],key=[id,arch||'@',dir,k,order.join(','),mt?mt.color+mt.alpha:''].join('|'),tc=mt?hex(mt.color):null,ta=mt?.alpha||0;
  const hit=frameCache.get(key);if(hit){frameCache.delete(key);frameCache.set(key,hit);return hit;}
  mergeShade();const M=ride.mounts.get(id),bands=ride.catalog.bands,groups=new Map();let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
  const add=(s,atlas,e)=>{const [b,t,X,Y,flip]=e,T=M.tiles[atlas][t],g=s+'|'+b;if(!groups.has(g))groups.set(g,[]);groups.get(g).push({atlas,t,X,Y,flip,w:T[3],h:T[4]});x0=Math.min(x0,X);y0=Math.min(y0,Y);x1=Math.max(x1,X+T[3]);y1=Math.max(y1,Y+T[4]);};
@@ -52,7 +56,8 @@ function composed(id,arch,dir,k,srcs){const order=arch?orderSources(srcs,ride.ca
  const w=Math.max(1,x1-x0),h=Math.max(1,y1-y0),buf=new Uint8ClampedArray(w*h*4);let dirty=[];
  const px=composeCore(w,h,bands,[...order,'@'],(s,band)=>{const list=groups.get(s+'|'+bands.indexOf(band));if(!list)return null;
   for(const r of dirty)for(let y=0;y<r.h;y++)buf.fill(0,((r.Y-y0+y)*w+r.X-x0)*4,((r.Y-y0+y)*w+r.X-x0+r.w)*4);dirty=list;
-  for(const r of list){const d=tileData(M,r.atlas,r.t);for(let y=0;y<r.h;y++)for(let x=0;x<r.w;x++){const si=(y*r.w+(r.flip?r.w-1-x:x))*4;if(!d[si+3])continue;const di=((r.Y-y0+y)*w+r.X-x0+x)*4;buf[di]=d[si];buf[di+1]=d[si+1];buf[di+2]=d[si+2];buf[di+3]=255;}}
+  const tint=s==='@'&&tc;/* Etappe 4 Teil A: nur das Tier tönen */
+  for(const r of list){const d=tileData(M,r.atlas,r.t);for(let y=0;y<r.h;y++)for(let x=0;x<r.w;x++){const si=(y*r.w+(r.flip?r.w-1-x:x))*4;if(!d[si+3])continue;const di=((r.Y-y0+y)*w+r.X-x0+x)*4;if(tint){buf[di]=d[si]*(1-ta)+tc[0]*ta;buf[di+1]=d[si+1]*(1-ta)+tc[1]*ta;buf[di+2]=d[si+2]*(1-ta)+tc[2]*ta;}else{buf[di]=d[si];buf[di+1]=d[si+1];buf[di+2]=d[si+2];}buf[di+3]=255;}}
   return buf;});
  const fr={px,x0,y0,w,h,full:new Map(),small:new Map()};frameCache.set(key,fr);if(frameCache.size>FRAME_LIMIT)frameCache.delete(frameCache.keys().next().value);return fr;}
 function canvasOf(px,w,h){const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').putImageData(new ImageData(px,w,h),0,0);return cv;}
@@ -77,11 +82,11 @@ const archOf=p=>paperdollArch(p.look)||paperdollArch(p.classId);
 /** Wartet, bis Reittier (und Reiter) zeichenbar sind; false bei fehlenden Bögen. */
 export async function whenPaperdollMount(p={},rider=true){await loadPaperdoll();if(!paperdoll.ready||!p.mount)return false;const arch=rider?archOf(p):null;if(rider&&!arch)return false;return loadPaperdollMount(p.mount,arch);}
 /** Bereitmachen: false (und Nachladen anstoßen), solange Puppe, Katalog oder Seiten fehlen. */
-function prepare(p,rider){if(!paperdoll.ready){loadPaperdoll();return null;}const id=p.mount;if(!id)return null;
+function prepare(p,rider){if(!paperdoll.ready){loadPaperdoll();return null;}if(!p.mount)return null;const art=mountArtOf(p.mount),id=art.id;
  const arch=rider?archOf(p):null;if(rider&&!arch)return null;
  if(!ride.catalog||!drawable(id,arch)){loadPaperdollMount(id,arch);return null;}if(!ride.catalog.mounts[id]||(arch&&!ride.mounts.get(id).riders[arch]))return null;
  const tint=rider?p.tint||null:null,srcs=rider?rideSourceSet(p.visualEquipment||[],tint):new Set(),dir=directionOf(p);
- return {id,arch,dir,tint,srcs,M:ride.mounts.get(id)};}
+ return {id,arch,dir,tint,srcs,M:ride.mounts.get(id),mt:art.tint};}
 function paint(c,s,fr,u,x,y,magnify,shadow=true){const cat=ride.catalog,dev=u*contextScale(c),k=Math.min(1,Math.round(dev*50)/50),m=s.arch?recolorMap(s.arch,s.tint):NO_TINT,tk=(s.tint?.skin||'')+'.'+(s.tint?.hair||'');
  const bmp=k<.82?small(fr,k,m,tk):full(fr,m,tk),sh=s.M.shadow[s.arch||'@'][s.dir];
  c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x*2)/2,Math.round(y*2)/2);
@@ -89,10 +94,10 @@ function paint(c,s,fr,u,x,y,magnify,shadow=true){const cat=ride.catalog,dev=u*co
  c.drawImage(bmp,0,0,bmp.width,bmp.height,(fr.x0-cat.pivot.x)*u,(fr.y0-cat.pivot.y)*u,fr.w*u,fr.h*u);c.restore();}
 /** Reittier mit (rider) oder ohne Reiter an Fußpunkt x/y zeichnen; Bild nach Wegstrecke. */
 export function drawPaperdollMount(c,x,y,p={},time=0,magnify=1,rider=true){const s=prepare(p,rider);if(!s)return false;
- const fr=composed(s.id,s.arch,s.dir,rideFrameIndex(p,time),s.srcs),u=(s.arch?unitScale(s.arch):meanScale())*magnify;paint(c,s,fr,u,x,y,magnify);return true;}
+ const fr=composed(s.id,s.arch,s.dir,rideFrameIndex(p,time),s.srcs,s.mt),u=(s.arch?unitScale(s.arch):meanScale())*magnify;paint(c,s,fr,u,x,y,magnify);return true;}
 /** In ein Rechteck einpassen (Vorschau, Symbol): unten bündig, waagrecht mittig; scale ≤ max (Bogenpixel → Leinwandpixel). */
 export function drawPaperdollMountFit(c,box,p={},time=0,rider=true,max=1){const s=prepare(p,rider);if(!s)return false;
- const fr=composed(s.id,s.arch,s.dir,rideFrameIndex(p,time),s.srcs),u=Math.min(max,box.w/fr.w,box.h/fr.h),cat=ride.catalog;
+ const fr=composed(s.id,s.arch,s.dir,rideFrameIndex(p,time),s.srcs,s.mt),u=Math.min(max,box.w/fr.w,box.h/fr.h),cat=ride.catalog;
  paint(c,s,fr,u,box.x+box.w/2-(fr.x0+fr.w/2-cat.pivot.x)*u,box.y+box.h-(fr.y0+fr.h-cat.pivot.y)*u,u/((s.arch?unitScale(s.arch):meanScale())),false);return true;}
 /** Aktionsleisten-/Sammlungssymbol; malt nach dem Nachladen selbst nach. */
 export function paintPaperdollMountIcon(cv,id){const c=cv.getContext('2d'),box={x:cv.width*.04,y:cv.height*.08,w:cv.width*.92,h:cv.height*.84},p={mount:id,direction:'se'};

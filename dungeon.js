@@ -5,8 +5,8 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI} from './content/index.js';
-import {makeEnemy} from './encounters.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
+import {makeEnemy,walkClear as walkable,moveAlong} from './encounters.js';
 import {autoLootBag,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
 import {hitCompanion,clearThreat} from './companions.js';
@@ -50,7 +50,8 @@ export function walkRects(run,floor){
 export function dungeonWorld(outside,run){
  const w=Object.create(outside),def=run.def;
  const ok=(rects,x,y)=>{for(const r of rects)if(inRect(r,x,y))return true;return false;};
- w.blocked=(x,y,r=5)=>{const f=floorAt(def,x,y);if(!f||!Number.isFinite(x)||!Number.isFinite(y))return true;const rs=walkRects(run,f);return !(ok(rs,x,y)&&ok(rs,x-r,y)&&ok(rs,x+r,y)&&ok(rs,x,y-r)&&ok(rs,x,y+r));};
+ w.blocked=(x,y,r=5)=>{const f=floorAt(def,x,y);if(!f||!Number.isFinite(x)||!Number.isFinite(y))return true;const rs=walkRects(run,f);if(!(ok(rs,x,y)&&ok(rs,x-r,y)&&ok(rs,x+r,y)&&ok(rs,x,y-r)&&ok(rs,x,y+r)))return true;
+  /* Etappe 4 Teil A: Deckung (Ritas Presseamt) sperrt Laufen und Sichtlinie */for(const q of coverRects(run,f))if(x+r>q.x&&x-r<q.x+q.w&&y+r>q.y&&y-r<q.y+q.h)return true;return false;};
  w.walkClear=(a,b,r=7)=>{const f=floorAt(def,a.x,a.y);if(!f||floorAt(def,b.x,b.y)!==f)return false;const n=Math.max(1,Math.ceil(dist(a,b)/5));for(let i=0;i<=n;i++)if(w.blocked(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,r))return false;return true;};
  w.lineClear=(a,b)=>w.walkClear(a,b,0);
  w.findClear=(x,y,r=9)=>{if(!w.blocked(x,y,r))return {x,y};for(let d=6;d<=240;d+=6)for(let i=0;i<16;i++){const a=i/16*Math.PI*2,q={x:x+Math.cos(a)*d,y:y+Math.sin(a)*d};if(!w.blocked(q.x,q.y,r))return q;}return {x,y};};
@@ -120,7 +121,8 @@ function createEnemy(g,run,kind,def,at){
  if(def.auto&&ENEMY_AUTOS[def.auto])e.autoAttack=ENEMY_AUTOS[def.auto];
  return Object.assign(e,{variant:def.art,dungeon:run.id,dungeonKind:kind,baseCastSet:def.castSet,title:def.title,cardboard:!!def.cardboard,spawnGrace:0,
   ...(def.xp!=null?{xp:def.xp}:{}),lootMoment:!!def.lootMoment,pctFactor:diff.damage,
-  /* Etappe 3: Grundschaden (Wut und Reichweite rechnen darauf), Vorrang für Söldner („Adds zuerst“), Tönung der geliehenen Figur */baseDamage:e.damage,priority:!!def.priority,noLoot:!!def.noLoot,...(def.tint?{tint:def.tint}:{})});
+  /* Etappe 3: Grundschaden (Wut und Reichweite rechnen darauf), Vorrang für Söldner („Adds zuerst“), Tönung der geliehenen Figur */baseDamage:e.damage,priority:!!def.priority,noLoot:!!def.noLoot,...(def.tint?{tint:def.tint}:{}),
+  /* Etappe 4 Teil A: Interessenten laufen zum Ziel (goal), das halbe Pferd zeichnet ein vorhandenes Reittier (mountArt) */...(def.goal?{goalAdd:true}:{}),...(def.mountArt?{mountArt:def.mountArt}:{})});
 }
 /** Im Laufstand schon gelegt (Neuladen, E-71): liegt von Anfang an, ohne Leiche und ohne Beute. */
 const laid=e=>Object.assign(e,{hp:0,aggro:false,ai:'dead',respawnAt:Infinity,dead:Infinity});
@@ -133,7 +135,7 @@ function spawnEnemies(g,run){
    if(pack.patrol){e.patrol={points:pack.patrol.map(([x,y])=>toWorld(def,room.floor,x,y)),i:1,dx:at.x-center.x,dy:at.y-center.y};e.roamRadius=0;}
    if(cleared)laid(e);list.push(e);});
  }
- for(const b of def.bosses){const d=DUNGEON_BOSSES[b.id];if(!d)continue;if(b.rare&&!run.killed.has(b.id)&&g.random()>b.rare)continue;
+ for(const b of def.bosses){const d=DUNGEON_BOSSES[b.id];if(!d)continue;if(b.rare&&!run.killed.has(b.id)&&!run.rare?.has(b.id))continue;/* Etappe 4 Teil A: gewürfelt beim Anlegen des Durchgangs (run.rare), Neuladen würfelt nicht neu */
   const room=def.rooms.find(r=>r.id===b.room),spot=toWorld(def,room.floor,...b.at),e=createEnemy(g,run,b.id,d,geo.findClear(spot.x,spot.y,9));
   Object.assign(e,{type:'boss',bossId:b.id,dungeonBoss:b});if(run.killed.has(b.id))laid(e);list.push(e);}
  return list;
@@ -147,7 +149,8 @@ function createRun(g,id,saved=null){
   secrets:new Set(record(g,id).secrets),unlocked:new Set([...list('unlocked',t=>def.transitions.some(x=>x.id===t)),...today.shortcuts]),
   trash:new Set(list('trash',p=>def.packs.some(x=>x.id===p))),heard:new Set(list('heard',a=>def.announcements.some(x=>x.id===a))),visited:new Set(list('visited',r=>def.rooms.some(x=>x.id===r))),
   room:null,arena:null,checkpoint:validCheckpoint(def,saved?.checkpoint)||{floor:def.start.floor,x:def.start.x,y:def.start.y,room:null},startedAt:Number(saved?.startedAt)||clock(g),ghost:null,
-  /* Etappe 3: Beweise (Wirkung bei Big B, verteilt ab Etappe 4), Endtruhe geöffnet, liegende Trümmerfelder */evidence:new Set(list('evidence',x=>def.evidence?.ids?.includes(x))),chest:!!saved?.chest,hazards:[],elapsed:Math.max(0,Number(saved?.elapsed)||0)/* Spielzeit im Durchgang (Bestzeit) */};
+  /* Etappe 3: Beweise (Wirkung bei Big B, verteilt ab Etappe 4), Endtruhe geöffnet, liegende Trümmerfelder */evidence:new Set(list('evidence',x=>def.evidence?.ids?.includes(x))),chest:!!saved?.chest,hazards:[],elapsed:Math.max(0,Number(saved?.elapsed)||0)/* Spielzeit im Durchgang (Bestzeit) */,
+  /* Etappe 4 Teil A: seltene Bosse dieses Durchgangs (das halbe Pferd, 30 %) – einmal gewürfelt, im Laufstand gespeichert */rare:new Set(Array.isArray(saved?.rare)?list('rare',b=>def.bosses.some(x=>x.id===b&&x.rare)):def.bosses.filter(b=>b.rare&&g.random()<=b.rare).map(b=>b.id))};
  run.enemies=spawnEnemies(g,run);return run;
 }
 function stop(g){g.stopAuto?.();g.keys?.clear();g.touchMove=null;g.moveTo=null;g.path=[];g.routeGoal=null;g.target=null;g.aiming=null;g.aimPoint=null;g.casting=null;
@@ -190,7 +193,7 @@ export function savedDungeonRun(g){
  const inside=dungeonRun(g),kept=inside?null:Object.values(g.dungeonRuns||{}).sort((a,b)=>b.leftAt-a.leftAt)[0],run=inside||kept?.run;if(!run)return null;
  return {id:run.id,inside:!!inside,difficulty:run.difficulty,day:run.day,startedAt:run.startedAt,savedAt:clock(g),leftAgo:inside?0:Math.max(0,Math.round(g.time-kept.leftAt)),
   killed:[...run.killed],seals:[...run.seals],secrets:[...run.secrets],visited:[...run.visited],unlocked:[...run.unlocked],trash:[...run.trash],heard:[...run.heard],checkpoint:{...run.checkpoint},
-  evidence:[...(run.evidence||[])],chest:!!run.chest,elapsed:Math.round(run.elapsed||0)};
+  evidence:[...(run.evidence||[])],chest:!!run.chest,elapsed:Math.round(run.elapsed||0),rare:[...(run.rare||[])]};
 }
 /** Laufstand beim Laden: verfallen (resetAfter nach dem Verlassen bzw. Speichern, Tageswechsel) → nichts; lief er beim Speichern,
  *  steht der Held wieder am letzten Kontrollpunkt im Dungeon (enterDungeon setzt fort). */
@@ -282,7 +285,8 @@ export function arenaEntrance(run,roomId,from){
 }
 /** Tür fällt zu: alle Söldner außerhalb der Arena an den Eingang innen (leicht gefächert); der Held, falls er nicht drin steht, ebenso. */
 export function pullIntoArena(g,run,roomId){
- const inside=u=>roomAt(run.def,u.x,u.y)?.id===roomId,p=g.player;let n=0;
+ /* Etappe 4 Teil A: wer genau auf der Schwelle steht, ist nach dem Zufallen eingeklemmt (Tür zu, Wand im Radius) – auch ihn an den Eingang */
+ const inside=u=>roomAt(run.def,u.x,u.y)?.id===roomId&&!g.world.blocked(u.x,u.y,5)/* Laufradius 5: nur wer wirklich klemmt */,p=g.player;let n=0;
  const into=(u,i)=>{const q=arenaEntrance(run,roomId,u);if(!q)return false;const a=i/4*Math.PI*2;let at=g.world.findClear(q.x+Math.cos(a)*14,q.y+Math.sin(a)*14,9);
   if(roomAt(run.def,at.x,at.y)?.id!==roomId)at=g.world.findClear(q.x,q.y,9);u.x=at.x;u.y=at.y;return true;};
  if(!g.dead&&!inside(p)&&into(p,0)){g.moveTo=null;g.path=[];}
@@ -328,7 +332,7 @@ export function tickDungeon(g,dt){
   if(e.dungeonBoss&&!e.aggro&&e.hp>=e.maxHp&&(e.saidPhases?.size||e.engaged)){e.saidPhases=null;e.engaged=false;e.castSet=e.baseCastSet;e.cycle=0;}
  }
  // Adds verschwinden, wenn ihr Boss zurückgesetzt wurde
- for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.summoner&&e.summoner.hp>0&&!e.summoner.aggro)g.enemies.splice(i,1);}
+ for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.gone||e.signedOff||e.summoner&&e.summoner.hp>0&&!e.summoner.aggro)g.enemies.splice(i,1);}/* Etappe 4 Teil A: Interessenten, die unterschrieben haben, gehen */
  tickBossMechanics(g,run,dt);/* Etappe 3: Nachsatz, Geständnis, Wut, Reichweite, parallele Timer, Trümmer */
 }
 /** Aufstehen am Kontrollpunkt (Freilassen oder Gruppentod; engine.respawn setzt vorher die Gegner zurück). */
@@ -434,6 +438,7 @@ export function resolveDungeonCast(g,e,c,victim='player'){
  if(c.frontGuard){e.frontGuard=c.frontGuard.duration;e.frontFactor=c.frontGuard.factor;e.frontAngle=Math.atan2(target.y-e.y,target.x-e.x);g.float?.(e.x,e.y-44,'SCHILDWALL','#e8dcc0');return true;}
  if(c.healAllies){for(const o of g.enemies)if(o.hp>0&&dist(o,e)<=c.healAllies.range){const n=Math.round(o.maxHp*c.healAllies.share);o.hp=Math.min(o.maxHp,o.hp+n);g.float?.(o.x,o.y-36,'+'+n,'#9ed17a');}return true;}
  e.lastCast=c;try{
+  if(resolveE4Cast(g,e,c,victim))return true;/* Etappe 4 Teil A: stack, spread, los, summon mit Ziel, Greenscreen, Trog, Sprinkler, signAll */
   if(resolveBigBCast(g,e,c,victim))return true;/* Etappe 3: line, circles, summon, tankDebuff, selfHeal */
   if(c.cone){
    const guard=victim==='player'&&(TANK_SPECS.includes(g.rpg?.talents?.spec)||p.parry>0);
@@ -445,8 +450,9 @@ export function resolveDungeonCast(g,e,c,victim='player'){
   if(c.ground){
    const inside=u=>Math.hypot((u.x-c.x)/c.radius,(u.y-c.y)/(c.radius*.75))<1,aimed=(c.victim||(victim==='player'?'player':null))==='player';
    emitCombatFx(g,'impact',c,{radius:c.radius,hostile:true});
-   if(!g.dead){const hit=inside(p);if(hit)strike(g,e,c,p);if(aimed||hit)groundFeedback(g,hit);}
-   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,e,c,o);
+   /* Etappe 4 Teil A: Flächen mit brand (Wiehern: Ohrensausen) stapeln wie Hausverbot */
+   if(!g.dead){const hit=inside(p);if(hit)strike(g,e,c,p,branded(g,c,p,false));if(aimed||hit)groundFeedback(g,hit);}
+   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,e,c,o,branded(g,c,o,false));
    return true;
   }
   // Gezielter Zauber auf einen zufälligen Nicht-Schutz (target:'random'): trifft das gewählte Ziel, wenn es ihn noch sieht.
@@ -478,7 +484,9 @@ export function evidenceEffects(run){
 /** Arena des Bosses als Weltrechteck (erstes Rechteck seines Raums). */
 function arenaRect(run,e){const room=run.def.rooms.find(r=>r.id===e.dungeonBoss?.room);return room?rectWorld(run.def,room.floor,room.rects[0]):null;}
 /** Bahnen eines line-Zaubers als Weltrechtecke: Anteile der Raumbreite (West → Ost), über die ganze Länge der Arena. */
-export function laneRects(run,e,k){const r=arenaRect(run,e);if(!r||!k.line)return [];return k.line.lanes.map(([a,b])=>({x:r.x+a*r.w,y:r.y,w:(b-a)*r.w,h:r.h}));}
+export function laneRects(run,e,k){const r=arenaRect(run,e);if(!r||!k.line)return [];
+ /* Etappe 4 Teil A: axis 'y' = waagrechte Bahnen (Kurts Rinnen), Anteile der Raumhöhe */if(k.line.axis==='y')return k.line.lanes.map(([a,b])=>({x:r.x,y:r.y+a*r.h,w:r.w,h:(b-a)*r.h,axis:'y'}));
+ return k.line.lanes.map(([a,b])=>({x:r.x+a*r.w,y:r.y,w:(b-a)*r.w,h:r.h}));}
 /** Steht u in der Bahn? margin = halbe Körperbreite. */
 export const inLane=(r,u,margin=4)=>!!r&&!!u&&u.x>=r.x-margin&&u.x<=r.x+r.w+margin&&u.y>=r.y-margin&&u.y<=r.y+r.h+margin;
 /** Vorlauf der Lüge: Grundwert tell (1,0 s); 0 nach dem Geständnis oder wenn ein Beweis diese Lüge streicht (noLie). */
@@ -496,18 +504,21 @@ function placeSpots(g,run,e,k){
 /** Nachsatz: Leiste und Sprechblase wechseln auf die Wahrheit, erst jetzt liegen die echten Markierungen (Stellen) am Boden. */
 function reveal(g,e,k,quiet=false){
  k.told=true;k.toldAt=g.time;if(k.truthText)k.name=k.truthText;const run=dungeonRun(g);if(k.circles&&!k.spots&&run)placeSpots(g,run,e,k);
- if(quiet)return;g.bark?.(e,k.truthText,'boss');g.emit?.('sound',{id:'nachsatz'});g.emit?.('dungeonLie',{phase:'truth',boss:e.bossId,type:k.type,text:k.truthText});
+ if(quiet)return;
+ /* Etappe 4 Teil A: Attrappen – der Stempel kommt, keine Sprechblase */if(k.decoy&&!k.lie){g.emit?.('sound',{id:'nachsatz'});g.emit?.('dungeonDecoy',{boss:e.bossId,type:k.type});return;}g.bark?.(e,k.truthText,'boss');g.emit?.('sound',{id:'nachsatz'});g.emit?.('dungeonLie',{phase:'truth',boss:e.bossId,type:k.type,text:k.truthText});
 }
 /** Zauberbeginn (aus dungeonCastSpot, Spieler- und Söldner-Zweig): Spruch, Bahnen mit Seite, Behauptung. Stellen ohne Lüge sofort. */
 function prepareCast(g,e,k){
  const run=dungeonRun(g);if(!run||k.prepared)return;k.prepared=true;k.startedAt=g.time;
  if(k.say)g.bark?.(e,k.say,'boss');
  if(k.circles)k.ground=false;/* die Stellen zeichnet dungeon-bigb-art.js; der Einzelkreis des Renderers bleibt aus */
- if(k.line){k.lanes=laneRects(run,e,k);const flip=!!k.lie?.mirror&&g.random()<.5,n=k.lanes.length,m=i=>flip?n-1-i:i;k.flip=flip;k.claimLane=m(k.line.claim??0);k.truthLanes=(k.line.truth||[]).map(m);}
+ if(k.line){k.lanes=laneRects(run,e,k);const flip=!!k.lie?.mirror&&g.random()<.5,n=k.lanes.length,m=i=>flip?n-1-i:i;k.flip=flip;k.claimLane=m(k.line.claim??0);k.truthLanes=(k.line.truth||[]).map(m);
+  /* Etappe 4 Teil A: pick = so viele Rinnen rollen (ohne Behauptung), aim = die erste unter einem zufälligen Nicht-Schutz */if(k.line.pick){k.claimLane=-1;k.truthLanes=pickLanes(g,run,e,k);}}
+ if(k.center==='self'){k.x=e.x;k.y=e.y;}/* Etappe 4 Teil A: Fläche um den Boss selbst (Wiehern) */
  if(k.lie){k.claimText=k.flip&&k.lie.mirrorClaim||k.lie.claim;k.truthText=k.flip&&k.lie.mirrorTruth||k.lie.truth;k.tell=lieTell(run,e,k);
   if(k.tell>0){k.told=false;k.name=k.claimText;g.bark?.(e,k.claimText,'boss');g.emit?.('dungeonLie',{phase:'claim',boss:e.bossId,type:k.type,text:k.claimText});}
   else reveal(g,e,k);/* ohne Lüge (Geständnis, Beweis): gleich die Wahrheit */}
- else if(k.circles)placeSpots(g,run,e,k);
+ else if(k.circles){placeSpots(g,run,e,k);/* Etappe 4 Teil A: Attrappen – alle Stellen sehen gleich aus, erst nach tell bekommen die echten den Stempel */if(k.decoy)markDecoys(g,k);}
 }
 /** Zauberende der neuen Merkmale. true = abgehandelt. */
 function resolveBigBCast(g,e,c,victim){
@@ -521,16 +532,17 @@ function resolveBigBCast(g,e,c,victim){
  }
  if(c.line&&c.lanes){
   const bad=(c.truthLanes||[]).map(i=>c.lanes[i]).filter(Boolean),hit=u=>bad.some(r=>inLane(r,u));e.lastLine={lanes:bad,at:g.time};
-  if(!g.dead&&hit(p)){strike(g,e,c,p);if(c.lie){e.lieHits=(e.lieHits||0)+1;g.float?.(p.x,p.y-62,T.bigb.lieHit,'#ff7a5c');}}
-  for(const o of g.companions||[])if(alive(o)&&hit(o))strike(g,e,c,o);
+  if(!g.dead&&hit(p)){strike(g,e,c,p);e.laneHits=(e.laneHits||0)+1;if(c.lie){e.lieHits=(e.lieHits||0)+1;g.float?.(p.x,p.y-62,T.bigb.lieHit,'#ff7a5c');}}
+  for(const o of g.companions||[])if(alive(o)&&hit(o)){strike(g,e,c,o);e.laneHits=(e.laneHits||0)+1;}
   return true;
  }
  if(c.circles){
-  if(!c.spots)placeSpots(g,run,e,c);const inside=(u,s)=>Math.hypot((u.x-s.x)/c.radius,(u.y-s.y)/(c.radius*.75))<1;
-  for(const s of c.spots)emitCombatFx(g,'impact',s,{radius:c.radius,hostile:true});
-  if(!g.dead){const n=c.spots.filter(s=>inside(p,s)).length;if(n)strike(g,e,c,p,1+.5*(n-1));groundFeedback(g,n>0);}
-  for(const o of g.companions||[]){if(!alive(o))continue;const n=c.spots.filter(s=>inside(o,s)).length;if(n)strike(g,e,c,o,1+.5*(n-1));}
-  if(c.persist)for(const s of c.spots)run.hazards.push({x:s.x,y:s.y,radius:c.persist.radius,pct:c.persist.pct,until:g.time+c.persist.duration,boss:e,tick:.5});
+  if(!c.spots)placeSpots(g,run,e,c);const inside=(u,s)=>Math.hypot((u.x-s.x)/c.radius,(u.y-s.y)/(c.radius*.75))<1,spots=c.spots.filter(s=>!s.decoy)/* Etappe 4 Teil A: Attrappen treffen nicht */;
+  for(const s of spots)emitCombatFx(g,'impact',s,{radius:c.radius,hostile:true});
+  /* Etappe 4 Teil A: Stellen mit brand (Grundbuchsperre, Sektdusche) stapeln wie Hausverbot */
+  if(!g.dead){const n=spots.filter(s=>inside(p,s)).length;if(n)strike(g,e,c,p,(1+.5*(n-1))*branded(g,c,p,false));groundFeedback(g,n>0);}
+  for(const o of g.companions||[]){if(!alive(o))continue;const n=spots.filter(s=>inside(o,s)).length;if(n)strike(g,e,c,o,(1+.5*(n-1))*branded(g,c,o,false));}
+  if(c.persist)for(const s of spots)run.hazards.push({x:s.x,y:s.y,radius:c.persist.radius,pct:c.persist.pct,until:g.time+c.persist.duration,boss:e,tick:.5});
   return true;
  }
  if(c.summon){const rita=run.killed.has('rita'),opt=run.def.optional?.rita?.[e.bossId];summon(g,e,{...c.summon,count:rita&&opt?.summon||c.summon.count});
@@ -546,6 +558,7 @@ export function interruptHolds(g,e){
 }
 /** Zustand eines Bosses nach Rückzug oder Wipe zurück: Wut, Reichweite, Timer, Geständnis, Lügen-Treffer (Erfolg), Trümmer. */
 function resetBossState(g,run,e){e.fightTime=0;e.rageFactor=1;e.mechBoost=1;if(e.baseDamage!=null)e.damage=e.baseDamage;e.trackTimers=null;e.sideCast=null;e.confessed=false;e.lieHits=0;e.takenFactor=1;e.lastLine=null;
+ /* Etappe 4 Teil A */e.provision=0;e.signed=0;e.retreat=null;e.hidden=false;e.drinking=false;e.drank=0;e.laneHits=0;e.blinded=0;e.viewDoor=0;e.wet=0;
  run.hazards=(run.hazards||[]).filter(h=>h.boss!==e);}
 /** Parallele Timer (tracks): eigener Zauber neben dem Hauptzyklus, z. B. der Siegelring alle 12 s auf den, der Big B hält. */
 function tickTracks(g,e,dt){
@@ -558,8 +571,10 @@ function tickTracks(g,e,dt){
 }
 /** Trümmerfelder (persist): Schaden je Sekunde als Anteil am Leben, solange jemand drinsteht; verschwinden mit dem Kampf. */
 function tickHazards(g,run,dt){
+ /* Etappe 4 Teil A: nasser Boden bremst (slow), gilt jeden Takt */for(const u of [g.player,...(g.companions||[])])if(u)u.slowed=0;
  if(!run.hazards?.length)return;run.hazards=run.hazards.filter(h=>h.until>g.time&&h.boss?.hp>0&&h.boss.aggro);
- for(const h of run.hazards){h.tick-=dt;if(h.tick>0)continue;h.tick=1;const inside=u=>dist(u,h)<h.radius,c={pct:h.pct,damage:0};
+ for(const h of run.hazards)if(h.slow)for(const u of [g.player,...(g.companions||[])])if(u&&inHazard(h,u))u.slowed=Math.max(u.slowed||0,h.slow);
+ for(const h of run.hazards){h.tick-=dt;if(h.tick>0)continue;h.tick=1;const inside=u=>inHazard(h,u),c={pct:h.pct,damage:0};
   if(!g.dead&&inside(g.player))strike(g,h.boss,c,g.player);
   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,h.boss,c,o);}
 }
@@ -576,14 +591,15 @@ function tickBossMechanics(g,run,dt){
   if(!e.dungeonBoss||!(e.hp>0))continue;const def=DUNGEON_BOSSES[e.bossId];if(!def)continue;
   if(!(e.aggro&&e.ai==='combat')){if(e.fightTime||e.sideCast||e.confessed)resetBossState(g,run,e);continue;}
   e.fightTime=(e.fightTime||0)+dt;
-  const k=e.cast;if(k?.lie&&!k.told&&k.total-k.remaining>=k.tell)reveal(g,e,k);
+  const k=e.cast;if((k?.lie||k?.decoy)&&k.told===false&&k.total-k.remaining>=k.tell)reveal(g,e,k);/* Etappe 4 Teil A: auch der Stempel der Attrappen */
   confessCheck(g,run,e,def);
   const ev=evidenceEffects(run);e.takenFactor=(1+ev.taken)*(e.confessed&&ev.confessAt!=null?1+(def.confess?.taken||0):1);
   const noReach=run.killed.has('rita')&&run.def.optional?.rita?.[e.bossId]?.noReach,followers=def.reach&&!noReach?g.enemies.filter(o=>o.summoner===e&&o.hp>0&&DUNGEON_ENEMIES[o.dungeonKind]?.reach).length:0;
   const en=def.enrage,rage=en&&e.fightTime>=en.after?1+en.damage*(1+Math.floor((e.fightTime-en.after)/en.every)):1;
   if(rage>(e.rageFactor||1)){g.float?.(e.x,e.y-70,T.bigb.enrage,'#ff6a4a');g.emit?.('dungeonEnrage',{boss:e.bossId,factor:rage});}
   if(followers>(e.reachShown||0))g.float?.(e.x,e.y-60,T.bigb.reach+' +'+Math.round(followers*def.reach*100)+' %','#e9a0ff');e.reachShown=followers;
-  e.rageFactor=rage;e.mechBoost=(1+followers*(def.reach||0))*rage;if(e.baseDamage!=null)e.damage=e.baseDamage*e.mechBoost;
+  e.rageFactor=rage;e.mechBoost=(1+followers*(def.reach||0))*rage*(1+(e.provision||0)*(def.viewing?.sign?.damage||0))/* Etappe 4 Teil A: Provision */;if(e.baseDamage!=null)e.damage=e.baseDamage*e.mechBoost;
+  tickE4Boss(g,run,e,def,dt);/* Etappe 4 Teil A: Greenscreen, Trog */
   tickTracks(g,e,dt);
  }
  tickHazards(g,run,dt);
@@ -609,6 +625,9 @@ function grantFeats(g,run,e,bossId){
 }
 /** Schadensfaktor gegen Dungeon-Gegner (Schildwall: Treffer von vorn gedämpft). */
 export function dungeonDamageFactor(g,e){
+ /* Etappe 4 Teil A: vor dem Greenscreen nicht zu treffen; geblendet (Blitzlicht) halber Schaden */if(e.hidden)return 0;return (g.player.blindUntil>g.time?.5:1)*dungeonDamageFactorBase(g,e);
+}
+function dungeonDamageFactorBase(g,e){
  if(!(e.frontGuard>0))return e.takenFactor||1;/* Etappe 3: Beweise und Geständnis (takenFactor) */const a=Math.atan2(g.player.y-e.y,g.player.x-e.x);return Math.abs(norm(a-(e.frontAngle??0)))<Math.PI/3?e.frontFactor??1:1;
 }
 /** Kill eines Dungeon-Gegners: kein Wiederkommen, Pappe fällt, geräumte Packs bleiben im Laufstand liegen, Boss gibt Siegel,
@@ -621,6 +640,9 @@ export function onDungeonKill(g,e){
  if(run&&e.pack&&!g.enemies.some(o=>o!==e&&o.pack===e.pack&&o.hp>0&&!o.cardboard))run.trash.add(e.pack);
  /* Farm-Lücke (Etappe 3): Helfer eines Bosses, der heute schon lag (Stand beim Rufen), geben wie er nur repeatXp */if(e.repeatAdd&&e.xp)e.xp=Math.round(e.xp*REWARDS.repeatXp);
  if(!e.dungeonBoss||!run)return;const b=e.dungeonBoss;run.killed.add(b.id);run.version++;
+ /* Etappe 4 Teil A (Orchestrator-Befund nach dem Arenatür-Hotfix): mit dem Boss fliehen seine Helfer (wie in WoW) – sonst ginge die
+    Arenatür auf, während sie noch kämpfen. Keine EP, keine Beute; sie verschwinden im nächsten Takt. */
+ for(const o of g.enemies)if(o.summoner===e&&o.hp>0&&!o.signedOff){Object.assign(o,{gone:true,hp:0,ai:'dead',aggro:false,respawnAt:Infinity,cast:null});g.float?.(o.x,o.y-30,T.e4a.fled,'#e8dcc0');}
  const rec=record(g,run.id),today=dungeonToday(g,run.id);
  if(b.seal){run.seals.add(b.seal);if(!today.seals.includes(b.seal))today.seals.push(b.seal);g.toast?.(T.seal[b.seal]);}
  if(!rec.bosses.includes(b.id))rec.bosses.push(b.id);
@@ -632,8 +654,8 @@ export function onDungeonKill(g,e){
  const wing=(run.def.wings||[]).find(w=>w.boss===b.id),first=!!wing&&!today.wings.includes(wing.id)||firstFinal;if(wing&&first)today.wings.push(wing.id);
  const marks=REWARDS.marksPerBoss+(first?REWARDS.daily.marks:0),bonus=first?Math.round((e.xp||0)*REWARDS.daily.xp):0;rec.marks+=marks;
  openShortcuts(g,run,b.id);/* Etappe 4 Teil B: der Siegelträger öffnet seine Abkürzung zum Hof, bis zum Tagesreset */
- const feats=grantFeats(g,run,e,b.id);
- e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null,repeat,final,feats};if(bonus)g.gainXp?.(bonus);
+ const feats=grantFeats(g,run,e,b.id),mount=grantMount(g,e,b.id)/* Etappe 4 Teil A: Reittier vom halben Pferd */;
+ e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null,repeat,final,feats,...(mount?{mount}:{})};if(bonus)g.gainXp?.(bonus);
  const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('dungeonReward',{...e.dungeonReward});g.emit?.('save');
  if(final){run.hazards=[];g.log?.(T.cleared(clockText(secs)));}
 }
@@ -679,3 +701,124 @@ export function openShortcuts(g,run,bossId){
 }
 /** Übergang von dieser Seite aus benutzbar (Wegmarke, Simulation): dieselben Regeln wie dungeonStep, ohne Kampf. */
 export const transitionUsable=(run,t,side)=>stepUsable(run,t,side);
+
+// ── Etappe 4 Teil A „Die restlichen Bosse“ (E-71, Plan 7.2–7.5 und Abschnitt 9): Frau Dr. Exposé (Interessenten mit Ziel, Attrappen,
+// zweimal unterbrechen), Korken-Kurt (Sammeln, Verteilen, Rinnen, Sprinkler), Reichweiten-Rita (Sichtlinie hinter Deckung, Greenscreen,
+// Kommentatoren) und das halbe Pferd (Trog). Daten: content/dungeons.js (DUNGEON_BOSSES expose/korkenkurt/rita/halbespferd, DUNGEON_CASTS
+// d-expose…, d-kurt…, d-rita…, d-pferd). Söldner-Reaktionen in companions.js, Zeichnung in dungeon-e4a-art.js. ─────────────────────────
+const roomFloor=(run,e)=>run.def.rooms.find(r=>r.id===(e.dungeonBoss||e.summoner?.dungeonBoss)?.room)?.floor||null;
+/** Held (wenn er steht) und stehende Söldner. */
+export const partyUnits=g=>[...(g.dead?[]:[g.player]),...(g.companions||[]).filter(c=>c.state!=='down'&&c.hp>0)];
+/** Steht u in einem Gefahrenfeld? Kreis (Trümmer) oder Rechteck (nasse Streifen der Sprinkleranlage). */
+export const inHazard=(h,u,margin=0)=>h.rect?u.x>=h.rect.x-margin&&u.x<=h.rect.x+h.rect.w+margin&&u.y>=h.rect.y-margin&&u.y<=h.rect.y+h.rect.h+margin:Math.hypot(u.x-h.x,u.y-h.y)<h.radius+margin;
+/** Deckung auf einer Ebene als Weltrechtecke (DUNGEON_BOSSES[..].cover gebauter Bosse): sperrt Laufen und Sichtlinie. */
+export function coverRects(run,floor){const cache=run.coverCache||(run.coverCache={});if(cache[floor])return cache[floor];const out=[];
+ for(const b of run.def.bosses){const d=DUNGEON_BOSSES[b.id],room=run.def.rooms.find(r=>r.id===b.room);if(!d?.cover||room?.floor!==floor)continue;for(const q of d.cover)out.push({...rectWorld(run.def,floor,q.rect),id:q.id,boss:b.id});}
+ return cache[floor]=out;}
+/** Zonen eines Bosses als Weltpunkte: Greenscreen (hidden, Rechteck), Trog (feeds, Punkt mit Reichweite), Vertragstisch und Eingänge (viewing). */
+export function bossZones(run,e){const d=DUNGEON_BOSSES[e?.bossId],f=e&&roomFloor(run,e);if(!d||!f)return {doors:[],via:[]};
+ return {hidden:d.hidden?rectWorld(run.def,f,d.hidden.rect):null,trough:d.feeds?{...toWorld(run.def,f,...d.feeds.at),r:d.feeds.range*U}:null,goal:d.viewing?toWorld(run.def,f,...d.viewing.goal):null,doors:d.viewing?d.viewing.doors.map(q=>toWorld(run.def,f,...q)):[],via:(d.viewing?.via||[]).map(q=>toWorld(run.def,f,...q))};}
+/** Rinnen, die rollen (line.pick): aim = die erste unter (bzw. am nächsten bei) einem zufälligen Nicht-Schutz, der Rest zufällig. */
+function pickLanes(g,run,e,k){const n=k.lanes.length,want=Math.min(n,k.line.pick),out=[];
+ if(k.line.aim){const all=arenaTargets(g,run,e),wet=all.filter(u=>k.lanes.some(r=>inLane(r,u,0))),pool=wet.length?wet:all/* wer in einer Rinne steht, zuerst */,u=pool.length?pool[Math.floor(g.random()*pool.length)]:null;
+  if(u){const off=r=>r.axis==='y'?Math.abs(u.y-(r.y+r.h/2)):Math.abs(u.x-(r.x+r.w/2));let best=0;k.lanes.forEach((r,i)=>{if(off(r)<off(k.lanes[best]))best=i;});out.push(best);}}
+ for(let i=0;out.length<want&&i<40;i++){const j=Math.floor(g.random()*n);if(!out.includes(j))out.push(j);}
+ return out;}
+/** Attrappen: count der Bodenstellen tragen keinen Stempel und treffen nicht; bis tell sehen alle gleich aus (k.told=false). */
+function markDecoys(g,k){const spots=k.spots||[],idx=spots.map((_,i)=>i),n=Math.min(k.decoy.count,Math.max(0,spots.length-1));
+ for(let i=0;i<n;i++){const j=Math.floor(g.random()*idx.length);spots[idx.splice(j,1)[0]].decoy=true;}k.told=false;k.tell=k.decoy.tell??.8;}
+/** Zauberende der neuen Merkmale (vor resolveBigBCast). true = abgehandelt. */
+function resolveE4Cast(g,e,c,victim){
+ const run=dungeonRun(g),p=g.player;if(!run)return false;
+ if(c.summon?.goal){summonGoal(g,run,e,c.summon);return true;}
+ // Sammeln: Schaden share (Anteil Leben) geteilt durch alle im Kreis um den Markierten – allein tödlich, zu viert ein Viertel.
+ if(c.stack){const m=unitOf(g,c.victim)||(victim==='player'?p:victim);if(!m||m===p&&g.dead||m.state==='down')return true;
+  const inside=partyUnits(g).filter(u=>dist(u,m)<=c.stack.radius),n=Math.max(1,inside.length),share={pct:c.stack.share/n,damage:Math.round((c.damage||0)/n)};
+  emitCombatFx(g,'impact',m,{radius:c.stack.radius,hostile:true});for(const u of inside)strike(g,e,share,u);
+  g.float?.(m.x,m.y-62,T.e4a.shared(n),n>=3?'#aed4bd':'#ff7a5c');(e.stackShares||(e.stackShares=[])).push(n);return true;}
+ // Verteilen: jeder hat einen eigenen Kreis; wer in fremden Kreisen steht, nimmt je Kreis dazu.
+ if(c.spread){const units=partyUnits(g),r=c.spread.radius;
+  for(const u of units){const n=units.filter(o=>o!==u&&dist(o,u)<r).length;emitCombatFx(g,'impact',u,{radius:r,hostile:true});strike(g,e,c,u,1+n);if(n){e.spreadOverlaps=(e.spreadOverlaps||0)+1;g.float?.(u.x,u.y-56,'×'+(1+n),'#ff7a5c');}}
+  return true;}
+ // Blitzlicht: trifft und blendet, wer Sichtlinie zu Rita hat (Deckung bricht sie).
+ if(c.los){const room=e.dungeonBoss?.room;let n=0;
+  for(const u of partyUnits(g)){if(roomAt(run.def,u.x,u.y)?.id!==room)continue;if(!g.world.lineClear(e,u)){if(u===p)groundFeedback(g,false);continue;}
+   strike(g,e,c,u,branded(g,c,u,false)/* Überbelichtet: wer stehen bleibt, nimmt beim nächsten Blitz mehr */);u.blindUntil=g.time+(c.los.blind||4);n++;g.float?.(u.x,u.y-58,T.e4a.blind,'#f6f0c8');}
+  e.blinded=(e.blinded||0)+n;emitCombatFx(g,'impact',e,{radius:36,hostile:true});return true;}
+ // Greenscreen: Rita läuft vor die grüne Wand (dort unsichtbar); Säuft am Trog: das Pferd läuft zum Trog. Spott beendet beides.
+ if(c.hidden||c.retreat){const z=bossZones(run,e),to=c.hidden?z.hidden&&{x:z.hidden.x+z.hidden.w/2,y:z.hidden.y+z.hidden.h/2}:z.trough;if(!to)return true;
+  e.retreat={to:{x:to.x,y:to.y},until:g.time+(c.hidden||c.retreat).duration,kind:c.hidden?'hidden':'feeds'};g.float?.(e.x,e.y-60,c.hidden?T.e4a.hidden:T.e4a.drink,c.hidden?'#7fe39a':'#9ed17a');return true;}
+ // Sprinkleranlage: ein nasser Streifen mehr vom Rand her (abwechselnd West und Ost), bleibt bis Kampfende.
+ if(c.persist?.edge){addStripe(g,run,e,c);return true;}
+ // Notartermin durchgekommen: alle Interessenten unterschreiben, dann heilt sie sich (selfHeal in resolveBigBCast).
+ if(c.signAll){for(const o of [...g.enemies])if(o.summoner===e&&o.goalAt&&o.hp>0&&!o.signedOff)signOff(g,run,o);return false;}
+ return false;
+}
+function addStripe(g,run,e,c){const r=arenaRect(run,e);if(!r)return;const w=c.persist.width*U,n=e.wet||0,side=n%2,k=Math.floor(n/2);if((k+1)*w>r.w/2+w/2)return;
+ const x=side?r.x+r.w-(k+1)*w:r.x+k*w;e.wet=n+1;
+ run.hazards.push({rect:{x,y:r.y,w,h:r.h},x:x+w/2,y:r.y+r.h/2,radius:0,pct:c.persist.pct,slow:c.persist.slow||0,until:Infinity,boss:e,tick:1,wet:true});g.float?.(e.x,e.y-60,T.e4a.wet+' ×'+e.wet,'#9fd3f0');}
+/** Besichtigung: Interessenten kommen aus einem (doors 1, abwechselnd) oder beiden Eingängen und schlurfen zum Vertragstisch. */
+function summonGoal(g,run,e,s){const kind=DUNGEON_ENEMIES[s.kind],z=bossZones(run,e),v=DUNGEON_BOSSES[e.bossId]?.viewing;if(!kind||!z.goal||!z.doors.length)return;
+ const pick=s.doors>=2?z.doors.map((_,i)=>i):[(e.viewDoor=(e.viewDoor||0)+1)%z.doors.length],repeat=(dungeonToday(g,run.id).kills?.[e.bossId]||0)>0;
+ for(let i=0;i<s.count;i++){const di=pick[i%pick.length],door=z.doors[di],via=z.via[di],j=Math.floor(i/pick.length),dy=[0,14,-14,28][j%4],dx=(door.x<z.goal.x?-1:1)*j*6,at=g.world.findClear(door.x+dx,door.y+dy,7),a=createEnemy(g,run,s.kind,kind,at);
+  Object.assign(a,{summoner:e,goalAt:{x:z.goal.x,y:z.goal.y},goalVia:via?[{x:via.x+dx,y:via.y}]:[],goalReach:(v?.reach||2)*U,repeatAdd:repeat,calledIn:true,aggro:true,ai:'combat',attackTimer:1e9,spawnGrace:.4});g.enemies.push(a);}
+ g.emit?.('dungeonViewing',{boss:e.bossId,count:s.count});}
+/** Bewegung, die die Engine-KI ersetzt (engine.js ruft das vor der Zielwahl): Interessenten laufen zum Tisch, Bosse mit retreat zur Zone
+ *  bzw. zum Trog und stehen dort, bis die Zeit um ist oder der Schutz spottet. true = Gegner ist für diesen Takt versorgt. */
+export function dungeonMove(g,e,dt){
+ if(!e.dungeon||!(e.hp>0))return false;
+ if(e.goalAt){e.moving=false;if(e.signedOff||e.stun>0)return true;if(dist(e,e.goalAt)<=e.goalReach){const run=dungeonRun(g);if(run)signOff(g,run,e);return true;}
+  const via=e.goalVia?.[0];if(via&&dist(e,via)<10)e.goalVia.shift();/* erst besichtigen, dann zum Tisch */
+  walkToward(g,e,e.goalVia?.[0]||e.goalAt,e.speed*(e.mark>0?(e.slow||1):1)*(e.controlSlow>0?.5:1),dt,e.goalVia?.length?4:e.goalReach*.5);return true;}
+ if(e.retreat&&!e.cast){if(g.time>=e.retreat.until||!e.aggro){e.retreat=null;return false;}e.moving=false;if(e.stun>0)return true;
+  if(dist(e,e.retreat.to)>8)walkToward(g,e,e.retreat.to,e.speed*(e.mark>0?(e.slow||1):1),dt,6);return true;}
+ /* Greenscreen vorbei: Rita kommt von selbst wieder heraus, zu dem, den sie angreift (Spott holt sie früher); in der Zone zaubert sie nicht */
+ if(e.hidden&&!e.retreat&&!e.cast&&e.aggro){const u=e.focus&&e.focus!=='player'?(g.companions||[]).find(c=>c.id===e.focus&&c.state!=='down'&&c.hp>0):(g.dead?null:g.player);if(!u)return false;walkToward(g,e,u,e.speed,dt,12);return true;}
+ return false;
+}
+function walkToward(g,e,goal,speed,dt,stopAt){const d=dist(e,goal);if(d<=stopAt){e.moving=false;return;}
+ if(walkable(g.world,e,goal,7)){const step=Math.min(speed*dt,d-stopAt+1);g.move(e,(goal.x-e.x)/d*step,(goal.y-e.y)/d*step);e.chasePath=[];}
+ else{e.pathTimer=(e.pathTimer||0)-dt;if(e.pathTimer<=0||!e.chasePath?.length){e.pathTimer=1.1;e.chasePath=g.world.findPath(e,goal);}moveAlong(g,e,e.chasePath,speed,dt);}
+ e.moving=true;e.facing=goal.x<e.x?-1:1;}
+/** Spott (Söldner oder Held) holt einen Boss aus Greenscreen bzw. vom Trog zurück in den Kampf. */
+export function endRetreat(g,e){if(!e?.retreat)return false;e.retreat=null;return true;}
+/** Ein Interessent erreicht den Tisch: Provision +1 (mehr Schaden für Exposé), bei viewing.sign.stack „VERKAUFT!“. */
+function signOff(g,run,e){if(e.signedOff)return;Object.assign(e,{signedOff:true,hp:0,ai:'dead',aggro:false,respawnAt:Infinity,moving:false});
+ const boss=e.summoner,v=DUNGEON_BOSSES[boss?.bossId]?.viewing;if(!boss||!(boss.hp>0)||!v)return;
+ boss.provision=Math.min(v.sign.stack,(boss.provision||0)+1);boss.signed=(boss.signed||0)+1;g.float?.(e.x,e.y-40,T.e4a.signed(boss.provision),'#f0a08c');
+ g.emit?.('dungeonSigned',{boss:boss.bossId,stacks:boss.provision});if(boss.provision>=v.sign.stack)sellOut(g,run,boss,v);}
+/** „VERKAUFT!“: alle fliegen aus der Wohnung (vor die Tür in der Ahnengalerie), der Kampf setzt zurück. */
+function sellOut(g,run,boss,v){const line=T.bossLines[boss.bossId]?.sold;if(line)g.bark?.(boss,line,'boss');g.float?.(boss.x,boss.y-70,T.e4a.sold,'#ff6a4a');
+ for(const o of g.enemies)if(o.summoner===boss&&!o.signedOff)Object.assign(o,{signedOff:true,hp:0,ai:'dead',aggro:false,respawnAt:Infinity});
+ clearThreat(boss);g.resetEnemy?.(boss);resetBossState(g,run,boss);Object.assign(boss,{saidPhases:null,engaged:false,castSet:boss.baseCastSet,cycle:0});
+ const out=toWorld(run.def,v.out.floor,v.out.x,v.out.y);if(!g.dead){stop(g);place(g,out);}
+ (g.companions||[]).forEach((c,i)=>{const q=g.world.findClear(out.x+(i%2?1:-1)*(16+i*6),out.y-6,9);Object.assign(c,{x:q.x,y:q.y,path:[],target:null});});
+ g.player.inCombat=0;g.toast?.(T.e4a.soldOut);g.emit?.('dungeonSold',{boss:boss.bossId});}
+/** Je Takt für einen kämpfenden Boss: Greenscreen (in der Zone unsichtbar, nicht anwählbar) und Trog (säuft und heilt). */
+function tickE4Boss(g,run,e,def,dt){
+ if(!def.hidden&&!def.feeds)return;const z=bossZones(run,e);
+ if(z.hidden){const h=z.hidden,inside=e.x>=h.x&&e.x<=h.x+h.w&&e.y>=h.y&&e.y<=h.y+h.h;if(inside!==!!e.hidden){e.hidden=inside;if(inside)e.hides=(e.hides||0)+1;}if(e.hidden&&g.target===e)g.target=null;}
+ if(z.trough){const on=dist(e,z.trough)<=z.trough.r;if(on){e.hp=Math.min(e.maxHp,e.hp+e.maxHp*def.feeds.heal*dt);e.drinkTick=(e.drinkTick||0)+dt;if(!e.drinking)e.drank=(e.drank||0)+1;
+   if(e.drinkTick>=1){e.drinkTick=0;g.float?.(e.x,e.y-44,'+'+Math.round(e.maxHp*def.feeds.heal),'#9ed17a');}}e.drinking=on;}
+}
+/** Reittier vom halben Pferd (V-D8 geändert): zu mountChance direkt freigeschaltet; zehn Hafersäcke tauscht der Fahrstall (mounts.js). */
+function grantMount(g,e,bossId){const t=DROP_TABLES[e.family]||DROP_TABLES[bossId];if(!t?.mount||!MOUNTS[t.mount]||!g.mounts)return null;if(g.mounts.owned.includes(t.mount))return null;
+ const r=g.lootRandom?g.lootRandom():g.random();if(r>=(t.mountChance||0))return null;
+ g.mounts.owned.push(t.mount);if(!g.mounts.selected)g.mounts.selected=t.mount;g.toast?.(T.e4a.mount(MOUNTS[t.mount].name));g.emit?.('mountChanged');g.emit?.('barChanged');return t.mount;}
+/** Seltenen Boss in diesem Durchgang erzwingen (Prüfungen, Simulation, Admin): würfelt nicht, legt ihn an seinen Platz. → Gegner oder null. */
+export function spawnRareBoss(g,id){const run=dungeonRun(g),b=run?.def.bosses.find(x=>x.id===id&&x.rare),d=DUNGEON_BOSSES[id];if(!b||!d)return null;
+ const have=g.enemies.find(e=>e.bossId===id);if(have)return have;run.rare.add(id);const room=run.def.rooms.find(r=>r.id===b.room),spot=toWorld(run.def,room.floor,...b.at),e=createEnemy(g,run,b.id,d,g.world.findClear(spot.x,spot.y,9));
+ Object.assign(e,{type:'boss',bossId:b.id,dungeonBoss:b});g.enemies.push(e);return e;}
+/** Blitzlicht (los): Plätze im Raster (1 m) der Arena, von denen aus der Boss keine Sichtlinie hat (hinter Deckung), einmal je Zauber
+ *  berechnet (Boss steht beim Zaubern still). Söldner und die Simulation wählen den nächsten. → [{x,y}] */
+/** Etappe 4 Teil A: Gegner in einem Raum mit Deckung (Rita im Studio), die ihr Ziel nicht sehen, laufen um die Deckung herum – sonst
+ *  stünden Boss und Söldner beiderseits von Kühlschrank und Palettenwand, und keiner träfe den anderen. */
+export function lostSight(g,e,u){const run=dungeonRun(g);if(!e?.dungeon||!run||!u)return false;const f=floorAt(run.def,e.x,e.y);if(!f||!coverRects(run,f).length)return false;const room=roomAt(run.def,e.x,e.y)?.id;
+ if(!room||!run.def.bosses.some(b=>b.room===room&&DUNGEON_BOSSES[b.id]?.cover))return false;return !g.world.lineClear(e,u);}
+/** Nächster freier Punkt im Raum von e mit Sicht auf e (Ring um e), von from aus gesehen – für Söldnerplätze, die hinter Deckung lägen. */
+export function sightSpot(g,e,from){const run=dungeonRun(g);if(!run)return null;const room=roomAt(run.def,e.x,e.y)?.id;let best=null,bd=1e9;
+ for(const r of [26,18,36])for(let i=0;i<16;i++){const a=i/16*Math.PI*2,q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(g.world.blocked(q.x,q.y,9)||!g.world.lineClear(q,e)||roomAt(run.def,q.x,q.y)?.id!==room)continue;const v=Math.hypot(q.x-from.x,q.y-from.y);if(v<bd){bd=v;best=q;}}
+ return best;}
+export function hideSpots(g,e,k=e?.cast){const run=dungeonRun(g);if(!run||!k)return [];if(k.hideSpots)return k.hideSpots;const room=run.def.rooms.find(r=>r.id===e.dungeonBoss?.room),out=[];
+ if(room)for(const q of room.rects){const r=rectWorld(run.def,room.floor,q);const hid=(x,y)=>!g.world.lineClear(e,{x,y});for(let x=r.x+8;x<=r.x+r.w-8;x+=U)for(let y=r.y+8;y<=r.y+r.h-8;y+=U)if(!g.world.blocked(x,y,7)&&hid(x,y)&&hid(x-5,y)&&hid(x+5,y)&&hid(x,y-5)&&hid(x,y+5)/* mit Rand: auch knapp daneben verdeckt */)out.push({x,y});}
+ return k.hideSpots=out;}

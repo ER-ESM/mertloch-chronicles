@@ -48,7 +48,7 @@ export const KITS={
   {name:'Zange zu!',cd:9,text:"Unterbricht gelbe Zauber, kneift, betäubt und macht das Ziel kurz verwundbar.",use:"Drück sie, sobald ein gelber Zauberbalken auftaucht; sie ist unabhängig von der globalen Abklingzeit."},
   {name:'Grilldeckel',window:.85,reflect:65,text:"Pariert einen kommenden Treffer mit dem Grilldeckel und gibt Schaden zurück; ein Erfolg heizt die Glut.",use:"Drück ihn kurz vor dem angekündigten Treffer."},
   {name:'Kohlen-Sprint',cd:4,steps:20,text:"Ein kurzer Sprint mit kurzem Schutz vor Treffern; die Sohlen glühen noch.",use:"Drück ihn raus aus roten Flächen und weg vom Rudel."},
-  {name:'Ablöschen',cd:14,heal:60,text:"Kippt Bier über den Rost: die Glut fällt deutlich, eine Dampfwolke trifft und bremst Gegner ringsum, und der Dampf heilt dich ein wenig.",use:"Drück es, bevor die Glut die Stichflamme erreicht – oder wenn du Luft brauchst.",flavor:"„Pils zum Löschen, Export zum Trinken.“"}
+  {name:'Ablöschen',cd:14,heal:60,text:"Kippt Bier über den Rost: die Glut fällt zurück in die gute Glut – aus „zu heiß“ genau an den Anfang der perfekten –, eine Dampfwolke trifft und bremst Gegner ringsum, und der Dampf heilt dich ein wenig.",use:"Drück es, bevor die Glut die Stichflamme erreicht – oder wenn du Luft brauchst.",flavor:"„Pils zum Löschen, Export zum Trinken.“"}
  ],
  // E-72 · Kreuz-Käthe: Blatt + Augen. Die Plätze 1–3 spielen die Karten der Hand; Name und Bild kommen aus der Karte.
  kaethe:[
@@ -81,7 +81,7 @@ export const THROW_SKILL={id:'throw',key:'3',cd:6,cost:18,range:235,damage:75,ic
 export const GROUND_SKILL={id:'ground',key:'7',cd:12,cost:35,ground:true,range:210,radius:70,damage:125,delay:1.1,icon:'burst',color:'#e6b769',bg:'#79633e',
  names:{dieter:'Böller unterm Biertisch',baerbel:'Grundreinigung auf eigene Gefahr',kevin:'Restmüll mit Zündschnur',schorsch:'Schwenkgrill',kaethe:'Kartenregen'},
  overrides:{schorsch:{cost:30,cd:12,range:150,radius:80,delay:.45,text:'Schwingt den Schwenkgrill an der Kette auf einen freien Bodenpunkt: Flächenschaden nach Glut, und das Grillgut auf dem Rost gart dabei weiter. Kostet Glut.',use:'Wirf ihn mitten in die Gruppe, sobald die Glut hoch genug ist.'},
-  kaethe:{cost:0,cd:16,range:200,radius:70,delay:.6,text:'Die ganze Hand fliegt auf einen freien Bodenpunkt: jede Karte wirkt dort nach ihrer Farbe, danach ziehst du neu.',use:'Wirf ihn mitten in die Gruppe, wenn deine Hand voller Kreuz und Karo ist.'}},
+  kaethe:{cost:0,cd:24/* E-72 R3: 16 → 24 s – Kartenregen fiel bis dahin im Balance-Sheet nie, mit ihm lagen die Karten-Pfade +20 bis +70 % */,range:200,radius:70,delay:.6,text:'Die ganze Hand fliegt auf einen freien Bodenpunkt: jede Karte wirkt dort nach ihrer Farbe, danach ziehst du neu.',use:'Wirf ihn mitten in die Gruppe, wenn deine Hand voller Kreuz und Karo ist.'}},
  text:'Mit der Maus einen freien Bodenpunkt wählen. Nach kurzer Verzögerung trifft der Einschlag mehrere Gegner im Umkreis – auch neutrale. Rechtsklick oder Esc bricht das Zielen ab.',use:'Wirf ihn dorthin, wo die Gruppe gleich steht, nicht dorthin, wo sie gerade steht.'};
 /** Aktive Talentfähigkeiten (Schlüssel = grants in talents.js). */
 export const TALENT_SKILLS={
@@ -97,12 +97,12 @@ export const TALENT_SKILLS={
 };
 // E-72: aktive Talentfähigkeiten der neuen Klassen (je Baum eine; Regeln in class-resources.js). Erst mit den Talentbäumen aktiv.
 const NEW_TALENT_SKILLS={
- senf:{name:'Senf drauf!',cd:20,cost:0,range:0,duration:8,text:'Ein Klecks scharfer Senf auf dich oder den gewählten Freund heilt 10 % des Maximallebens; 8 s lang gart dein Grillgut 50 % schneller.',use:'Drück es, wenn jemand angeschlagen ist und auf dem Rost noch alles roh liegt.'},
+ senf:{name:'Senf drauf!',cd:24/* E-72 R3: 20 → 24 s (Senf heilt 10 % Grundleben, Pfad Beilagen +26 % mit epischer Ausrüstung) */,cost:0,range:0,duration:8,text:'Ein Klecks scharfer Senf auf dich oder den gewählten Freund heilt 10 % des Grundlebens; 8 s lang gart dein Grillgut 50 % schneller.',use:'Drück es, wenn jemand angeschlagen ist und auf dem Rost noch alles roh liegt.'},
  spiritus:{name:'Spiritus-Schwall',cd:16,cost:0,range:0,radius:95,text:'Ein Schwall Spiritus in die Glut: Glut +30, und eine Stichflamme schießt vor dir in einem Kegel auf alle Gegner.',use:'Drück ihn, wenn mehrere Gegner vor dir stehen und die Glut noch Luft nach oben hat.'},
  deckelzu:{name:'Deckel zu!',cd:22,cost:0,range:0,radius:100,duration:6,text:'Klappt den Grilldeckel zu und lässt den Rauch raus: alle Gegner im Umkreis greifen 6 s lang nur dich an und treffen 25 % schwächer.',use:'Drück ihn, wenn Gegner auf Söldner oder Mitspieler gehen.'},
  reizen:{name:'Reizen',cd:25,cost:0,range:0,text:'„Achtzehn, zwanzig, zwo …“: sofort 25 Augen, dafür zählt die nächste Karte keine Augen.',use:'Drück es, wenn dir wenige Augen zum Gewinn oder zum Schneider fehlen.'},
- handlesen:{name:'Handlesen',cd:18,cost:0,range:0,duration:10,text:'Liest dir oder dem gewählten Freund aus der Hand: 10 s lang heilt es jede Sekunde 2 % des Maximallebens; jede Herz-Karte verlängert es um 2 s.',use:'Drück es auf den, der gleich Schaden nimmt.'},
- gezinkt:{name:'Gezinkte Karten',cd:24,cost:0,range:0,text:'Zinkt die Hand: alle Karten nehmen die Farbe der ersten Karte an – die Farbkette ist dir sicher.',use:'Drück es, wenn die erste Karte die Farbe hat, die du gleich dreimal brauchst.'}
+ handlesen:{name:'Handlesen',cd:18,cost:0,range:0,duration:10,text:'Liest dir oder dem gewählten Freund aus der Hand: 10 s lang heilt es jede Sekunde 1 % des Grundlebens; jede Herz-Karte verlängert es um 2 s.',use:'Drück es auf den, der gleich Schaden nimmt.'},
+ gezinkt:{name:'Gezinkte Karten',cd:32/* E-72 R3: 24 → 32 s (Pfad Ärmel +35 %) */,cost:0,range:0,text:'Zinkt die Hand: alle Karten nehmen die Farbe der ersten Karte an – die Farbkette ist dir sicher.',use:'Drück es, wenn die erste Karte die Farbe hat, die du gleich dreimal brauchst.'}
 };
 TALENT_SKILLS.snare={name:'Pfandseil',ground:true,range:220,radius:48,duration:14,cd:16,cost:20,text:'Legt eine Falle aus. Der erste Eindringling erleidet Schaden und wird kurz festgehalten. Du kannst währenddessen weiterkämpfen.',use:'Leg sie auf den Weg, bevor du den nächsten Gegner ziehst.'};
 const NEW_TALENT_CLASS={senf:'schorsch',spiritus:'schorsch',deckelzu:'schorsch',reizen:'kaethe',handlesen:'kaethe',gezinkt:'kaethe'};

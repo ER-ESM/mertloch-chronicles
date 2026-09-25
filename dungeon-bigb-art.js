@@ -14,7 +14,7 @@ export function drawBigBGround(c,g){
  const run=dungeonRun(g);if(!run)return;const def=run.def,floor=floorAt(def,g.player.x,g.player.y)||run.checkpoint.floor,t=g.time||0;
  if(def.chest?.floor===floor)drawChest(c,toWorld(def,floor,def.chest.x,def.chest.y),run.chest,run.killed.has(def.chest.boss),t);
  if(def.backExit?.floor===floor)drawBackExit(c,toWorld(def,floor,def.backExit.x,def.backExit.y));
- for(const h of run.hazards||[])drawDebris(c,h,t);
+ for(const h of run.hazards||[])if(!h.rect)drawDebris(c,h,t);/* Etappe 4 Teil A: nasse Streifen zeichnet dungeon-e4a-art.js */
  for(const e of g.enemies){if(!(e.hp>0))continue;const k=e.cast;
   if(k?.lanes)drawLanes(c,k,t);
   if(k?.spots&&k.told!==false)drawSpots(c,k,t);
@@ -22,7 +22,7 @@ export function drawBigBGround(c,g){
 }
 /** Bahnen: Behauptung gestrichelt mit „?“, nach dem Nachsatz die echten Bahnen rot mit Füllung von Norden (Big Bs Ritt). */
 function drawLanes(c,k,t){
- const claim=k.lanes[k.claimLane],told=k.told!==false,progress=Math.max(0,Math.min(1,1-k.remaining/k.total));
+ const claim=k.lie?k.lanes[k.claimLane]:null/* Etappe 4 Teil A: Rinnen ohne Behauptung */,told=k.told!==false,progress=Math.max(0,Math.min(1,1-k.remaining/k.total));
  if(claim){c.save();c.setLineDash([8,6]);c.lineDashOffset=-t*18;c.strokeStyle=told?'rgba(243,230,204,.35)':'rgba(243,230,204,.85)';c.lineWidth=2;c.strokeRect(claim.x+2,claim.y+2,claim.w-4,claim.h-4);c.setLineDash([]);
   if(!told){c.fillStyle='rgba(243,230,204,.13)';c.fillRect(claim.x,claim.y,claim.w,claim.h);mark(c,claim.x+claim.w/2,claim.y+claim.h*.5,'?',CREAM);}
   else{c.strokeStyle='rgba(243,230,204,.45)';c.lineWidth=2;c.beginPath();c.moveTo(claim.x+6,claim.y+6);c.lineTo(claim.x+claim.w-6,claim.y+claim.h-6);c.stroke();}
@@ -32,6 +32,8 @@ function drawLanes(c,k,t){
  for(const i of k.truthLanes||[]){const r=k.lanes[i];if(!r)continue;c.save();c.fillStyle=RED_FILL;c.fillRect(r.x,r.y,r.w,r.h);
   c.fillStyle='rgba(226,67,47,.34)';c.fillRect(r.x,r.y,r.w,r.h*since);
   c.strokeStyle=blink?'#fff0c8':RED;c.lineWidth=2.5;c.strokeRect(r.x+1,r.y+1,r.w-2,r.h-2);
+  if(r.axis==='y'){/* Etappe 4 Teil A: Kurts Rinnen – das Fass rollt von West nach Ost */c.fillStyle='rgba(255,240,200,.75)';for(let x=r.x+26;x<r.x+r.w-10;x+=46){const y=r.y+r.h/2;c.beginPath();c.moveTo(x-6,y-7);c.lineTo(x-6,y+7);c.lineTo(x+4,y);c.closePath();c.fill();}
+   const bx=r.x+r.w*since,y=r.y+r.h/2;c.fillStyle=INK;c.beginPath();c.ellipse(bx,y,9,7,0,0,Math.PI*2);c.fill();c.fillStyle='#8a5a34';c.beginPath();c.ellipse(bx,y,7.5,5.5,0,0,Math.PI*2);c.fill();c.fillStyle='#5b3a22';c.fillRect(bx-7,y-1,14,2);c.restore();continue;}
   // Pfeile in Reitrichtung (Nord → Süd)
   c.fillStyle='rgba(255,240,200,.75)';for(let y=r.y+26;y<r.y+r.h-10;y+=46){const x=r.x+r.w/2;c.beginPath();c.moveTo(x-7,y-6);c.lineTo(x+7,y-6);c.lineTo(x,y+4);c.closePath();c.fill();}
   // die Kugel rollt an
@@ -43,7 +45,7 @@ function impact(c,r,a){c.save();c.globalAlpha=Math.max(0,a);c.fillStyle='rgba(25
 /** Bodenstellen (Parkett, Pappkulisse): wie die Bodenkreise, je Stelle eine Ellipse mit wachsender Füllung. */
 function drawSpots(c,k,t){
  const progress=Math.max(0,Math.min(1,1-k.remaining/k.total)),blink=progress>.75&&Math.sin(t*28)>0,r=k.radius;
- for(const s of k.spots){c.save();c.fillStyle=RED_FILL;c.beginPath();c.ellipse(s.x,s.y,r,r*.75,0,0,Math.PI*2);c.fill();
+ for(const s of k.spots){if(s.decoy)continue;/* Etappe 4 Teil A: Attrappen zeichnet dungeon-e4a-art.js */c.save();c.fillStyle=RED_FILL;c.beginPath();c.ellipse(s.x,s.y,r,r*.75,0,0,Math.PI*2);c.fill();
   c.fillStyle='rgba(226,67,47,.34)';c.beginPath();c.ellipse(s.x,s.y,r*progress,r*.75*progress,0,0,Math.PI*2);c.fill();
   c.strokeStyle=blink?'#fff0c8':RED;c.lineWidth=2;c.beginPath();c.ellipse(s.x,s.y,r,r*.75,0,0,Math.PI*2);c.stroke();
   if(k.persist){c.strokeStyle='rgba(182,154,108,.9)';c.lineWidth=1.5;for(let i=0;i<3;i++){const a=i*2.1+.4;c.strokeRect(s.x+Math.cos(a)*r*.4-4,s.y+Math.sin(a)*r*.3-3,8,6);}}

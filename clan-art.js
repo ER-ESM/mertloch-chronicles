@@ -15,6 +15,7 @@ export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){c
 
 export function drawClanEnemy(c,e,time){
  /* Dungeon Etappe 3: Tönung einer geliehenen Figur (Big B = Kegelkönig Klaus, getönt) – keine neue Figurengrafik */if(e.tint&&!e.tinting&&typeof document!=='undefined'&&typeof c.getTransform==='function'){drawTinted(c,e,time);return;}
+ /* Dungeon Etappe 4 Teil A: das halbe Pferd zeichnet ein vorhandenes Reittier ohne Reiter (mountArt, Tönung am Reittier) */if(e.mountArt){const p={mount:e.mountArt,direction:e.direction||((e.facing||1)>0?'se':'sw'),moving:!!e.moving,walkDistance:e.walkDistance??time*40};if(drawPaperdollMount(c,e.x,e.y,p,time,1,false))return;if(!mountArt.ready)loadMountArt();if(drawMount(c,e.x,e.y,p,time,1,false))return;}
  // Gelieferte Bögen (Gegner, Bosse) bringen ihre Welthöhe selbst mit: artMagnify 1, kein Weltmaßstab darüber.
  const artId=e.variant||e.bossId||e.skin;
  if(hasLiveContent(artId,e.variant)&&drawLivePerson(c,artId,e.x,e.y,time,{...e,phase:e.saidPhases?.size>0,artMagnify:1}))return;

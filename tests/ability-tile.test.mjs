@@ -82,9 +82,9 @@ test('Laufzeit: jede Fähigkeitsquelle hat eine Kachel – Leiste, Kniff-Buch, S
   for(const id of Object.keys(CLASS_BUFFS)){const cv=fakeCanvas();paintSkillIcon(cv,id,member);if(tileSource(cv)!=='kachel')missing.push('buff '+id);}
  }
  assert.deepEqual(missing,[]);
- // Käthe: Plätze 1–3 zeigen im Kniff-Buch eine Karte; auf der Leiste nur die echte Hand; die Aura „mark“ ihr eigenes Symbol
+ // Käthe: Plätze 1–3 zeigen im Kniff-Buch eine Karte; auf der Leiste nur die echte Hand (leer: Filz); die Aura „mark“ ihr eigenes Symbol
  for(const id of ['strike','mark','burst']){const book=fakeCanvas();paintSkillIcon(book,id,'kaethe',{spec:'kaethe-grand'});assert.ok(book.dataset.card,'Buch '+id);
-  const bar=fakeCanvas(48,48,'.action-area');paintSkillIcon(bar,id,'kaethe',{spec:'kaethe-grand',card:undefined});assert.equal(bar.dataset.card,undefined,'leerer Handplatz '+id);assert.ok(bar.dataset.tile);
+  const bar=fakeCanvas(48,48,'.action-area');paintSkillIcon(bar,id,'kaethe',{spec:'kaethe-grand',card:undefined});assert.equal(bar.dataset.card,undefined,'leerer Handplatz '+id);assert.equal(bar.dataset.precision,'true');
   const hand=fakeCanvas(48,48,'.action-area');paintSkillIcon(hand,id,'kaethe',{card:{suit:'kreuz',rank:'7'}});assert.equal(hand.dataset.card,'kreuz:7');}
  const aura=fakeCanvas();paintSkillIcon(aura,'mark','kaethe',{aura:true});assert.equal(aura.dataset.skillAsset,'skill-kaethe-mark');
  // Gegenstände auf der Leiste (Wasser, Brezel …) auf der Kachel, im Rucksack frei

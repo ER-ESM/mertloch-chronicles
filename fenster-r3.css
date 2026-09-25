@@ -260,9 +260,13 @@ body:not(.touch-mode) #combatMeter .meter-header strong{font:400 15px/1 var(--di
 .touch-mode .popup-bag .bag-foot>button{width:44px!important;min-width:44px!important}
 .popup-bag .bag-foot .bag-mode{flex:0 1 auto;min-width:0}
 .popup-bag .bag-foot .bag-mode select{width:100%;max-width:130px}
-/* Tastenspalte je Spalte so breit wie ihre längste Kappenfolge (Bewegen/Kampf: W A S D, Fenster: eine Taste, Beute/Dorf: ⇧ + B) */
-.hk-list .hk-col:nth-child(2) .hk-item{grid-template-columns:30px minmax(0,1fr)}
-.hk-list .hk-col:nth-child(3) .hk-item{grid-template-columns:52px minmax(0,1fr)}
+/* Tastenspalte je Spalte so breit wie ihre längste Kappenfolge. E-72 Runde 3 (Kenner-Befund 10): vorher feste 92/30/52 px – seit die
+   Hilfe beide belegten Tasten zeigt („J L“, „P K“, Runde 5b) und bei W A S D ragten die Kappen ins Wort. Jetzt misst die Spalte selbst
+   (max-content), Themen und Zeilen teilen ihre Spuren (subgrid), die Wörter stehen je Spalte bündig. */
+body:not(.touch-mode) .hk-list .hk-col{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:8px;row-gap:6px;align-content:start}
+body:not(.touch-mode) .hk-list :is(.hk-group,.hk-item){grid-column:1/-1;grid-template-columns:subgrid}
+body:not(.touch-mode) .hk-list .hk-group{display:grid;row-gap:0}
+body:not(.touch-mode) .hk-list .hk-head{grid-column:1/-1}
 .touch-mode .hk-list .hk-col .hk-item{grid-template-columns:auto minmax(0,1fr)}
 .touch-mode .popup-menu .game-menu-actions kbd{display:none}
 @media (orientation:portrait){.touch-mode .tt-compact .tt-board{min-height:300px!important}}

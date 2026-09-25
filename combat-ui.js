@@ -13,13 +13,17 @@ import {AFFIXES} from './itemization.js';
 import {skillCost,markedEnemies,beforeSkill} from './class-mechanics.js';
 import {procGlow,procFree,procEmpowered} from './procs.js';
 import {mechVariant,isMobile} from './spec-mechanics.js';
-import {resourceVariant,resourceSurge,resourceFailure,resourceCost,resourcePrecheck,resourceHealAlways} from './class-resources.js';
+import {resourceVariant,resourceSurge,resourceFailure,resourceCost,resourcePrecheck,resourceHealAlways,resourceKind} from './class-resources.js';
 import {RESOURCES} from './content/index.js';
 import {ICON_STEP,iconStep} from './icon-steps.js';
 import {itemArt} from './rpg-ui.js';
 /** Kniffsymbol in einer Anzeigestufe (icon-steps.js): Kniff-Buch 48 (Handy 32), Tooltip-Kopf 32. */
 const art=(id,size=iconStep('book'))=>id==='mount'?'<canvas width="'+size+'" height="'+size+'" data-mount-icon></canvas>':'<canvas width="'+size+'" height="'+size+'" data-skill-art="'+id+'"></canvas>';
 const DEFENSIVE_SKILLS=new Set(['parry','dash','interrupt','heal','buff','infusion','sanctuary','keg','barricade']);
+/** E-72 Runde 3: Käthes Kartenplätze und Schorschs Auflegen/Servieren sind keine Markierung/kein Spezialkniff – das allgemeine
+ *  „Ideales Zeitfenster“-Leuchten wäre dort Zufall. Ihr Leuchten kommt aus dem Zustand (Stich, Garstufe; resource-hud.js). */
+const RESOURCE_SLOTS={cards:['strike','mark','burst'],grill:['mark','burst']};
+const resourceSlot=(g,id)=>!!RESOURCE_SLOTS[resourceKind(g)]?.includes(id);
 /** Zustandswechsel eines Kniffs (wie Icon-Overlays im Vorbild): Name der Variante aus den Kampfregeln (Spezialkniff, RESONANZ) oder Proc-Zustand. */
 function skillVariant(g,id,st,e,usable){
  /* E-72: Ressourcen-Variante – Käthes Karte steht immer auf dem Knopf, sonst nur, wenn der Kniff geht */const rv=resourceVariant(g,id);if(rv?.card)return rv;
@@ -40,7 +44,7 @@ export function skillStatus(g,id){const s=g.skills.find(s=>s.id===id);if(!s)retu
  const requirement=weaponRequirement(g,s,ITEMS);
  // Leiste: nur offensive Kombos leuchten (Abwehr, Heilung, Stärkung bleiben ruhig); Variante = Kniff wechselt Name/Icon-Zustand, solange die Bedingung gilt
  const defensive=DEFENSIVE_SKILLS.has(id),variant=skillVariant(g,id,st,e,usable);
- return {weaponMissing:!!requirement&&!requirement.met,ideal:usable&&(procGlow(g,id)||(ideal&&!defensive)),defensive,variant,usable,cooldown:g.cooldowns[id]||0,gcd:s.offGcd?0:g.gcd,gcdTotal:cs.gcd};
+ return {weaponMissing:!!requirement&&!requirement.met,ideal:usable&&(procGlow(g,id)||(ideal&&!defensive&&!resourceSlot(g,id))),defensive,variant,usable,cooldown:g.cooldowns[id]||0,gcd:s.offGcd?0:g.gcd,gcdTotal:cs.gcd};
 }
 export function skillTooltip(g,id,touch=false){if(id==='mount')return '<strong>'+MOUNT_UI.barName+'</strong><p>'+MOUNT_UI.barHint+'</p><p>'+MOUNT_UI.rules+'</p>';const s=g.skills.find(s=>s.id===id);if(!s)return '';const cs=combatStats(g),requirement=weaponRequirement(g,s,ITEMS),range=s.weaponSource&&weaponRange(g,ITEMS,s.weaponSource),bound=actionBar(g).includes(id)||SPECIAL_KEYS[id]!==undefined,unlocked=available(g,id),origin=s.talent?'Talent: '+SPECS[s.spec].name:'Erlernt auf Stufe '+skillLevel(g,id);const cdSeconds=deNum(s.cd*(id==='dash'?(1-(cs.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste),1),cost=resourceCost(g,s,cs,skillCost(g,s,cs));
  // Iteration 4 (MMO-Vorbilder): Kopfzeilen wie im Vorbild – Kosten links, Reichweite rechts; Zauberzeit links, Abklingzeit rechts. Danach erst der Text.

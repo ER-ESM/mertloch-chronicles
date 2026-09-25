@@ -19,7 +19,7 @@ test('Mount saves migrate safely, reject unknown IDs, and remain character-speci
  const g=owner();assert.ok(bindSkill(g,'mount',9));g.player.mount='klappermofa';const next=game(g.save());assert.deepEqual(next.mounts,g.mounts);assert.equal(next.player.mount,null);assert.equal(actionBar(next)[9],'mount');assert.deepEqual(game().mounts.owned,[]);
 });
 test('Acquisition charges exactly once, and all blocked transactions are atomic',()=>{
- for(const id of Object.keys(MOUNTS)){const g=game(),d=MOUNTS[id];for(const [item,n] of Object.entries(d.materials))addItem(g.rpg,item,n);const coins=g.rpg.coins,before=Object.fromEntries(Object.keys(d.materials).map(i=>[i,countItem(g.rpg,i)]));assert.ok(g.acquireMount(id));assert.equal(g.rpg.coins,coins-d.coins);for(const [i,n]of Object.entries(d.materials))assert.equal(countItem(g.rpg,i),before[i]-n);const after=assets(g);assert.ok(g.acquireMount(id));assert.deepEqual(assets(g),after);}
+ for(const id of Object.keys(MOUNTS)){const g=game(),d=MOUNTS[id];g.player.level=Math.max(g.player.level,d.level)/* Etappe 4 Teil A: Reittier aus dem Dungeon ab Stufe 8 */;for(const [item,n] of Object.entries(d.materials))addItem(g.rpg,item,n);const coins=g.rpg.coins,before=Object.fromEntries(Object.keys(d.materials).map(i=>[i,countItem(g.rpg,i)]));assert.ok(g.acquireMount(id));assert.equal(g.rpg.coins,coins-d.coins);for(const [i,n]of Object.entries(d.materials))assert.equal(countItem(g.rpg,i),before[i]-n);const after=assets(g);assert.ok(g.acquireMount(id));assert.deepEqual(assets(g),after);}
  for(const change of [g=>g.player.level=1,g=>g.player.x+=100,g=>g.world.lineClear=()=>false,g=>g.player.inCombat=1,g=>g.dead=true,g=>g.paused=true,g=>g.instance={},g=>g.tutorial.completed=false,g=>g.rpg.coins=0,g=>g.mountCast={}]){const g=game();change(g);const before=assets(g);assert.ok(acquisitionReason(g,'blechroller'));assert.equal(g.acquireMount('blechroller'),false);assert.deepEqual(assets(g),before);}
  const g=game(),before=assets(g);assert.equal(g.acquireMount('unknown'),false);assert.equal(g.acquireMount('klappermofa'),false);assert.deepEqual(assets(g),before);
 });
@@ -67,10 +67,10 @@ test('Cosmetic network presence validates mount, direction and gear; old clients
 });
 
 test('Paperdoll mounts: donkey, bicycle and mower are complete content with fitting mount sounds',()=>{
- assert.deepEqual(Object.keys(MOUNTS),['klappermofa','blechroller','hofpferd','packesel','drahtesel','rasenkoenig']);
- assert.deepEqual(Object.fromEntries(Object.values(MOUNTS).map(d=>[d.id,d.kind])),{klappermofa:'mofa',blechroller:'scooter',hofpferd:'horse',packesel:'donkey',drahtesel:'bicycle',rasenkoenig:'mower'});
- for(const d of Object.values(MOUNTS)){assert.equal(d.id,Object.keys(MOUNTS).find(k=>MOUNTS[k]===d));assert.ok(d.name&&d.description&&d.source&&d.acquire&&d.color);assert.ok(d.level>=3&&d.level<=6);for(const item of Object.keys(d.materials))assert.ok(ITEMS[item],item);}
- assert.deepEqual(Object.keys(MOUNTS).map(mountSound),['mount-motor','mount-motor','mount-horse','mount-horse','mount-bell','mount-motor']);assert.equal(mountSound('unknown'),'mount-motor');
+ assert.deepEqual(Object.keys(MOUNTS),['klappermofa','blechroller','hofpferd','packesel','drahtesel','rasenkoenig','halbespferd']/* Etappe 4 Teil A: das halbe Pferd aus dem Dungeon */);
+ assert.deepEqual(Object.fromEntries(Object.values(MOUNTS).map(d=>[d.id,d.kind])),{klappermofa:'mofa',blechroller:'scooter',hofpferd:'horse',packesel:'donkey',drahtesel:'bicycle',rasenkoenig:'mower',halbespferd:'horse'});
+ for(const d of Object.values(MOUNTS)){assert.equal(d.id,Object.keys(MOUNTS).find(k=>MOUNTS[k]===d));assert.ok(d.name&&d.description&&d.source&&d.acquire&&d.color);assert.ok(d.level>=3&&d.level<=(d.art?10:6));for(const item of Object.keys(d.materials))assert.ok(ITEMS[item],item);}
+ assert.deepEqual(Object.keys(MOUNTS).map(mountSound),['mount-motor','mount-motor','mount-horse','mount-horse','mount-bell','mount-motor','mount-horse']);assert.equal(mountSound('unknown'),'mount-motor');
  for(const [id,sound] of [['packesel','mount-horse'],['drahtesel','mount-bell'],['rasenkoenig','mount-motor']]){const g=owner();assert.ok(g.toggleMount(id));g.events=[];tickMount(g,2);assert.equal(g.player.mount,id);assert.deepEqual(g.events.filter(e=>e.type==='sound').map(e=>e.id),[sound]);}
  assert.deepEqual(restoreMounts({owned:['rasenkoenig','packesel','drahtesel','unknown'],selected:'drahtesel'}),{version:1,ridingSkill:false,owned:['rasenkoenig','packesel','drahtesel'],selected:'drahtesel'});
  const low=game({level:4});low.player.level=4;assert.match(acquisitionReason(low,'rasenkoenig'),/Stufe 5/);

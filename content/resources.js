@@ -31,19 +31,24 @@ export const RESOURCES={
   hud:{bon:'BON!',jam:'KLEMMT! +1 s',pickup:'+1 Flasche',empty:'PÖMPEL',full:'Kasten voll'}},
  schorsch:{kind:'grill',name:'Glut',unit:'Glut',max:100,start:25,color:'#f07a2a',
   decay:5,rest:35,
-  zones:[{id:'kalt',name:'Kalt',to:30,damage:-.15,cook:.5,color:'#6fa8d6'},{id:'gut',name:'Gute Glut',to:60,damage:0,cook:1,color:'#9ccf6a'},{id:'perfekt',name:'Perfekte Glut',to:85,damage:.2,cook:1.4,color:'#f2c14e'},{id:'heiss',name:'Zu heiß',to:100,damage:.35,cook:2,burn:.01,color:'#e2563d'}],
+  zones:[{id:'kalt',name:'Kalt',to:30,damage:-.15,cook:.5,color:'#6fa8d6'},{id:'gut',name:'Gute Glut',to:60,damage:0,cook:1.25,color:'#9ccf6a'},{id:'perfekt',name:'Perfekte Glut',to:85,damage:.2,cook:1.4,color:'#f2c14e'},{id:'heiss',name:'Zu heiß',to:100,damage:.35,cook:2,burn:.01,color:'#e2563d'}],
   overheat:{damage:80,radius:80,self:.08,dropTo:20,lock:3,cook:.4,cooldown:8},
   gain:{strike:12,parry:15,buff:35},
   spend:{throw:15,ground:30,heal:40},
+  // E-72 R3 (Balance-Sheet, hier statt in tuning.js, weil applyTuning nur eine Ebene mischt): Gute Glut gart ×1 → ×1,25 (ohne Ausrüstung
+  // erreicht der Chef den goldenen Bereich kaum); Grillkäse 8 → 6 %. Runde 2 (E-53): Wurst, Käse & Co. bemessen sich am Grundleben der Stufe
+  // statt am Maximalleben (class-resources.js lifeBase) – damit passen die Entwurfswerte wieder: Bratwurst 12 %, Nachheilung 6 s.
   rost:{slots:3,cookTime:9,gar:[.55,.95],burnt:1.2,charcoal:1.4},
   plan:['wurst','braten','mais'],
   items:{
    wurst:{name:'Bratwurst',effect:'heal',value:.12,perfect:{hot:6},icon:'currywurst'},
    braten:{name:'Schwenkbraten',effect:'damage',value:1,perfect:{factor:1.6},icon:'food'},
    mais:{name:'Maiskolben',effect:'aoe',value:.7,radius:70,perfect:{knockback:24},icon:'hops'},
-   kaese:{name:'Grillkäse',effect:'shield',value:.08,perfect:{parry:.3},icon:'cup'}
+   kaese:{name:'Grillkäse',effect:'shield',value:.06,perfect:{parry:.3},icon:'cup'}
   },
   burntFactor:.5,
+  // Talent „Spanferkel-Wurf“ (serveCleave): Braten trifft zusätzlich bis zu `targets` Nachbarn im Umkreis mit `share` der Wucht.
+  cleave:{radius:70,targets:2,share:.5},
   vent:{heal:.08,steam:{radius:70,damage:.6,slow:.5,duration:3}},
   ember:{dot:12,duration:6},
   swing:{cook:.2},
@@ -64,6 +69,8 @@ export const RESOURCES={
   effects:{damage:{flat:45,weapon:3.2},shield:.09,heal:.13,control:{flat:24,weapon:1.5,radius:60,slow:.4,duration:3,stun:1}},
   castSuits:{damage:'kreuz',heal:'herz',shield:'pik',buff:'pik',control:'karo'},
   forget:8,redealTrump:true,
+  // Talentfähigkeit „Handlesen“ (Kartenlegerin): Heilung je Sekunde (Anteil Grundleben), Verlängerung je Herz-Karte (s).
+  handlesen:{perSecond:.02,extend:2},
   grantRate:.2,
   hud:{won:'GEWONNEN',schneider:'SCHNEIDER',schwarz:'SCHWARZ',stich:'STICH!',follow:'FARBE!',shuffle:'GEMISCHT',grand:'GRAND'}}
 };
@@ -115,10 +122,10 @@ export const RESOURCE_EFFECT_INFO={
  swingCook:{label:'Schwenkgrill gart mehr',unit:'%',scale:v=>v*100},smokeTaunt:{label:'Rauch verspottet Gegner',fixed:1,unit:''},
  handSize:{label:'Mehr Karten auf der Hand',unit:'Karten'},redealCd:{label:'Abklingzeit von Neu geben',unit:'s'},followBonus:{label:'Mehr Bonus fürs Farbe-Bedienen',unit:'%',scale:v=>v*100},followMax:{label:'Längere Farbkette',unit:'Glieder'},
  bubePower:{label:'Stärkere Buben',unit:'%',scale:v=>v*100},luschenPower:{label:'Stärkere Luschen (7, 8, 9)',unit:'%',scale:v=>v*100},augenWin:{label:'Spiel früher gewonnen',unit:'Augen'},augenGain:{label:'Mehr Augen je Karte',unit:'Augen'},
- abrechnenPower:{label:'Stärkeres Abrechnen',unit:'%',scale:v=>v*100},stichAugen:{label:'Mehr Augen je Stich',unit:'Augen'},stichAny:{label:'Stich auch gegen nicht unterbrechbare Zauber',fixed:1,unit:''},stichHeal:{label:'Stich heilt dich',unit:'% Maximalleben',scale:v=>v*100},
+ abrechnenPower:{label:'Stärkeres Abrechnen',unit:'%',scale:v=>v*100},stichAugen:{label:'Mehr Augen je Stich',unit:'Augen'},stichAny:{label:'Stich auch gegen nicht unterbrechbare Zauber',fixed:1,unit:''},stichHeal:{label:'Stich heilt dich',unit:'% Grundleben',scale:v=>v*100},
  kreuzPower:{label:'Stärkere Kreuz-Karten',unit:'%',scale:v=>v*100},pikPower:{label:'Stärkere Pik-Karten',unit:'%',scale:v=>v*100},herzPower:{label:'Stärkere Herz-Karten',unit:'%',scale:v=>v*100},karoPower:{label:'Stärkere Karo-Karten',unit:'%',scale:v=>v*100},
  karoStun:{label:'Längere Karo-Betäubung',unit:'s'},herzChain:{label:'Herz springt auf einen zweiten Verbündeten',fixed:1,unit:''},pikTaunt:{label:'Pik verspottet Gegner ringsum',fixed:1,unit:''},pikReflect:{label:'Pik-Schild wirft Schaden zurück',unit:'%',scale:v=>v*100},
- seeNext:{label:'Nächste Karte sichtbar',fixed:1,unit:''},luschenGcd:{label:'Globale Abklingzeit nach Luschen',fixed:.5,unit:'s statt 1'}
+ seeNext:{label:'Nächste Karte sichtbar',fixed:1,unit:''},luschenGcd:{label:'Globale Abklingzeit nach Luschen',fixed:RESOURCES.kaethe.luschenGcd,unit:'s statt 1'}
 };
 export const RESOURCE_PROC_EFFECT_INFO={
  bottles:{label:'Flaschen in den Kasten',unit:'Flaschen'},glut:{label:'Glut',unit:'Glut'},cook:{label:'Grillgut gart weiter',unit:'%',scale:v=>v*100},
