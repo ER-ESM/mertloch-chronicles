@@ -93,11 +93,11 @@ function selfDamage(g,n,label){const p=g.player;if(!(n>0)||g.dead)return;const b
 
 // ---------------------------------------------------------------------------------------------------------------
 // Treffer am Helden: Rückgabe = Schaden, der jetzt ankommt
-export function resourceHit(g,n,e,cs){
+export function resourceHit(g,n,e,cs,{noTab=false}={}){
  const r=R(g),st=S(g),p=g.player;if(!r||!(n>0))return n;
  if(r.kind==='rage'){
   const gain=r.hitGain*(n/p.maxHp*100)*(1+num(cs,'hitRage'));p.energy=Math.min(r.max,p.energy+gain);
-  const cap=p.maxHp*(r.tab.cap+num(cs,'zecheCap')),room=Math.max(0,cap-st.tab),deferred=Math.min(room,n*(r.tab.share+num(cs,'zecheShare')));
+  const cap=p.maxHp*(r.tab.cap+num(cs,'zecheCap')),room=noTab?0:Math.max(0,cap-st.tab),deferred=Math.min(room,n*(r.tab.share+num(cs,'zecheShare')));
   if(deferred>0){st.tab+=deferred;emitCombatFx(g,'tab-write',p,{amount:Math.round(deferred)});}
   return n-deferred;
  }
