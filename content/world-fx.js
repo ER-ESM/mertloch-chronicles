@@ -6,7 +6,9 @@ export const WORLD_FX={
  // Druckwellen verzerren das Bild ringförmig. Je Auslöser: Reichweite in Weltpixeln und Stärke der Verzerrung.
  shock:{max:6,width:20,
   types:{impact:{radius:70,power:5},burst:{radius:95,power:7},interrupt:{radius:60,power:5},death:{radius:80,power:5}},
-  kinds:{slam:{radius:130,power:10},detonate:{radius:120,power:10},keg:{radius:110,power:9},burst:{radius:95,power:7},interrupt:{radius:60,power:5},death:{radius:80,power:5}}},
+  kinds:{slam:{radius:130,power:10},detonate:{radius:120,power:10},keg:{radius:110,power:9},burst:{radius:95,power:7},interrupt:{radius:60,power:5},death:{radius:80,power:5},
+  // E-72: Ressourcen-Momente, die sofort einschlagen (Zeche prellen, Stichflamme). Wurf-Effekte mit Flugzeit bekommen keine Welle.
+  prellen:{radius:110,power:10},overheat:{radius:100,power:9}}},
  // Hitzeflimmern über Feuerstellen und Brandflächen (Lichtquellen-Arten aus content/lighting.js).
  heat:{sources:['campfire','burn'],radius:34,rise:20,power:1.2,max:8},
  // Bodennebel wächst mit dem Dunkelanteil des Gebiets (E-39): darunter keiner, darüber voll.

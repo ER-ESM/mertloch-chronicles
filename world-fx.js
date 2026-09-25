@@ -5,6 +5,7 @@
 // Diagnose: ?fx=debug blendet Stufe und Kosten ein, ?fx=voll|leicht|aus erzwingt eine Stufe (kombinierbar: ?fx=voll,debug); Zustand unter window.mertloch.state().fx.
 import {WORLD_FX as F,LIGHTING} from './content/index.js';
 import {softwareRendering} from './gpu-info.js';
+import {resourceHeat} from './resource-fx-art.js';/* E-72: Schorschs Hitzeflimmern ab „Zu heiß“ */
 
 const clamp01=v=>Math.max(0,Math.min(1,v)),smooth=(a,b,v)=>{const t=clamp01((v-a)/(b-a));return t*t*(3-2*t);};
 const hash=n=>{const s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s);};
@@ -92,7 +93,7 @@ export class WorldFx{
   const rect=src.getBoundingClientRect(),dpr=Math.min(2,globalThis.devicePixelRatio||1),w=Math.max(1,Math.round(rect.width*dpr*this.scale)),h=Math.max(1,Math.round(rect.height*dpr*this.scale));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
   if(cv.style.filter!==src.style.filter)cv.style.filter=src.style.filter;
   const dark=light?.dark??0,{rain,flash}=weatherAt(time),fog=fogAt(dark,rain),shocks=full?shocksFrom(game.fx):[],visible=(o,pad)=>o.x>ox-pad&&o.x<ox+W+pad&&o.y>oy-pad&&o.y<oy+H+pad;
-  const fires=(light?.sources(game,world,visible,time)||[]).filter(s=>F.heat.sources.some(k=>LIGHTING.sources[k]===s.s)).slice(0,MAXH),flies=firefliesAt(dark);
+  const fires=[...resourceHeat(game).filter(s=>visible(s,40)),...(light?.sources(game,world,visible,time)||[]).filter(s=>F.heat.sources.some(k=>LIGHTING.sources[k]===s.s))].slice(0,MAXH),flies=firefliesAt(dark);
   // Leichte Stufe ohne Nebel, Regen, Blitz, Glühwürmchen und Funken: nichts zu zeigen – Leinwand verbergen statt ein leeres Vollbild zu zeichnen und zu mischen (E-50).
   const blank=!full&&rain<.001&&fog<.001&&flash<.001&&!flies&&!fires.length,vis=blank?'hidden':'';if(cv.style.visibility!==vis)cv.style.visibility=vis;
   if(blank){Object.assign(this.stats,{mode:this.mode,ms:0,uploadMs:0,shocks:0,heat:0,rain:0,fog:0,fireflies:0,reason:this.reason,blank:true});if(this.panel)this.panel.textContent=`Effekte ${this.mode} · nichts zu zeigen${this.reason?' · '+this.reason:''}`;return;}this.stats.blank=false;

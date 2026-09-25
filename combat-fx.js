@@ -2,20 +2,23 @@
 import {classBuffsFor,RESOURCES} from './content/index.js';
 export const FX_THEMES={dieter:{sprite:'beer',color:'#efb94f',light:'#fff0bd'},baerbel:{sprite:'citrus',color:'#ff9b45',light:'#ffe4b0'},kevin:{sprite:'electric',color:'#50d4e7',light:'#caffef'},schorsch:{sprite:'citrus',color:'#f07a2a',light:'#ffd9a0'},kaethe:{sprite:'electric',color:'#b89ad0',light:'#f1e6ff'}};
 const common={auto:'attack',strike:'attack',throw:'throw',mark:'mark',burst:'burst',interrupt:'interrupt',parry:'ready',dash:'dash',heal:'heal',buff:'buff',ground:'deploy'};
-export const SKILL_FX={dieter:{...common,barricade:'barricade',slam:'slam',keg:'keg',zeche:'burst'},baerbel:{...common,sanctuary:'sanctuary',infusion:'infusion',encore:'encore'},kevin:{...common,detonate:'detonate',magnet:'magnet',snare:'snare',reload:'buff'},
+export const SKILL_FX={dieter:{...common,barricade:'barricade',slam:'slam',keg:'keg',zeche:'resource'},baerbel:{...common,sanctuary:'sanctuary',infusion:'infusion',encore:'encore'},kevin:{...common,detonate:'detonate',magnet:'magnet',snare:'snare',reload:'resource'},
  // E-71: Schorsch und Käthe – die Ressourcen-Effekte (serve, steam, overheat, card-throw …) kommen aus class-resources.js; hier nur die Grundbilder.
- schorsch:{...common,mark:'buff',burst:'throw',heal:'heal',ground:'deploy',senf:'heal',spiritus:'burst',deckelzu:'barricade'},kaethe:{...common,strike:'throw',mark:'throw',burst:'throw',throw:'burst',ground:'deploy',reizen:'buff',handlesen:'heal',gezinkt:'buff',aermel:'buff'}};
+ // E-72: Kniffe mit eigenem Ressourcen-Effekt (Zeche prellen, Pfandautomat, Grillgut, Glutbrocken, Schwenkgrill, Karten, Abrechnen, Mischen) zeigen nur ihn (Art 'resource' = kein Grundbild) – sonst läge eine zweite Explosion darüber.
+ schorsch:{...common,mark:'resource',burst:'resource',throw:'resource',heal:'heal',ground:'resource',buff:'resource',senf:'heal',spiritus:'resource',deckelzu:'resource'},kaethe:{...common,strike:'resource',mark:'resource',burst:'resource',throw:'resource',ground:'resource',buff:'resource',reizen:'buff',handlesen:'heal',gezinkt:'resource',aermel:'resource'}};
 // Klassen-Buffs (class-buffs.js) nutzen das Bild der Stärkung; es erscheint am Ziel (Held oder Söldner).
 for(const cls of Object.keys(SKILL_FX))for(const b of classBuffsFor(cls))SKILL_FX[cls][b.id]='buff';
+/** E-72: Anzeigedauer der Ressourcen-Effekte (resource-fx-art.js) in Sekunden – reine Darstellung. */
+export const RESOURCE_FX_DURATION={'tab-write':.8,'tab-pay':.9,prellen:.95,likes:1,'trend-up':.8,'trend-down':.8,viral:1.4,shitstorm:1.6,'bottle-drop':.55,pickup:.5,reload:.6,'reload-perfect':1,'reload-jam':.7,glut:.9,serve:.8,overheat:1.1,steam:1.4,'grill-swing':.85,ember:.6,'card-throw':.6,'card-burst':1.2,stich:1.1,abrechnen:1.35,shuffle:.9,augen:1};
 export function emitCombatFx(g,kind,at,data={}){
  if(!g.effect||!Number.isFinite(at?.x)||!Number.isFinite(at?.y))return;
- const duration=data.duration??({hit:.36,heal:.75,guard:.6,proc:1.05,'proc-use':.45,burst:.85,detonate:.7,dash:.42,interrupt:.6,parry:.6,hurt:.4,dodge:.45,deploy:.45,death:.85}[kind]||.65);
+ const duration=data.duration??({hit:.36,heal:.75,guard:.6,proc:1.05,'proc-use':.45,burst:.85,detonate:.7,dash:.42,interrupt:.6,parry:.6,hurt:.4,dodge:.45,deploy:.45,death:.85,...RESOURCE_FX_DURATION}[kind]||.65);
  g.effect('combat',at.x,at.y,{classId:g.member.id,kind,life:duration,max:duration,...data});
 }
 export function emitSkillFx(g,s,origin,target,context={}){
  const kind=SKILL_FX[g.member.id]?.[s.id];if(!kind)return;
  // These effects originate in the actual heal, detonation or trap-trigger operation instead.
- if(['heal','detonate'].includes(kind))return;
+ if(['heal','detonate','resource'].includes(kind))return;
  const at=['dash','slam'].includes(kind)?g.player:(s.ground?target:s.range?target:g.player);
  emitCombatFx(g,kind==='interrupt'&&!context.interrupted?'attack':kind,at,{skillId:s.id,from:origin,ranged:s.weaponSource==='ranged'||s.range>60,radius:s.splash||s.radius||0,strong:s.id==='burst'&&context.marked,successful:kind!=='interrupt'||context.interrupted});
 }
