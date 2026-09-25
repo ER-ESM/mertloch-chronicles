@@ -2,10 +2,12 @@
 import {readFileSync} from 'node:fs';
 import {surface,bounds} from './png.mjs';
 import {resample} from './precision-resample.mjs';
+import {inkFrame} from '../../ability-tile.js';
 // Both sheets of the day: props/intro/ui first, then the 22 inventory and tab icons.
 // 2026-09-24: NPC-Gesprächsporträts (eigene Brustbilder, 128 px). palette:'portraet' = PRECISION_PALETTE + Farben der Anziehpuppe,
 // eingefroren in portraet-palette.json, damit Porträt und Figur dieselben Kleidungsfarben tragen (Lila, Mint, Hellblau, Gelb).
-// 2026-09-25 (E-72): Kniff-Icons der Klassen-Ressourcen, 64 × 64 mit 3 px Rand wie die übrigen Kniffe. Die Originale unter
+// 2026-09-25 (E-72): Kniff-Icons der Klassen-Ressourcen, 64 × 64 randlos wie alle Kniffe (Kachel bis an den Rand, 1 px Tintenrahmen
+// erzwingt der Export für kind 'skills' ohne Rand, damit auch Imagegen-Ersatz ihn trägt). Die Originale unter
 // assets/precision/sources/2026-09-25/e71-kniffe/ zeichnet vorerst e71-kniffe-draw.mjs (Herkunft: herkunft.json daneben);
 // ein späterer Imagegen-Lauf mit demselben Auftragsblatt (--force) ersetzt sie an Ort und Stelle.
 // 2026-09-25: acht Waffensymbole (64 px), fertig gemalt vom Pixelmaler der Waffenkammer. palette:'waffen' = Porträtpalette + dessen
@@ -28,6 +30,7 @@ export function buildSeptemberDelivery({catalog,put,read,hashSource}){
   const x=Math.floor((width-Math.round(b.w*scale))/2),h=Math.round(b.h*scale);
   if(job.palette&&!PALETTES[job.palette])throw Error(id+': unbekannte Palette '+job.palette);
   resample(im,out,b,{x,y:worldProp?height-padding-h:Math.floor((height-h)/2)},scale,job.palette?{palette:PALETTES[job.palette]}:undefined);
+  if(kind==='skills'&&!padding)inkFrame(out);
   put(id,out,{kind,source,sourceHash:hashSource(source),padding,...(job.palette?{palette:job.palette}:{}),
    ...(worldProp?{worldProp,pivot:{x:width/2,y:height-padding}}:{}),...(tileSize?{tileSize}:{}),delivery:job.delivery||'2026-09-23'});
   if(worldProp)catalog.aliases[worldProp.id]=id;

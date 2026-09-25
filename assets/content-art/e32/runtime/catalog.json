@@ -7225,7 +7225,7 @@
       "sha256": "8a7d55cf73395863c4dbb468538c8f44e082303750ce0e1e3eb8713e63396910"
     },
     "assets/content-art/e32/runtime/skills.png": {
-      "sha256": "deade1a2235de8868bdf1fff41ecc0e8653140e6e5bf47e3a38a968c64e5b072"
+      "sha256": "33c69fe7dea165c4e79be38d2bb64e0f2fa4a02f5c6013b362b600ca25e958ff"
     }
   },
   "skills": {
@@ -7235,7 +7235,7 @@
       "y": 0,
       "cell": 48,
       "motif": "skill-dieter-mark",
-      "sha256": "97d05a5138e837690b5413743df95777844d3cb887ff89af2d28b85bdf0f0a5c"
+      "sha256": "c78e18145d815b38e3809b63774caeb1358f97794a22c8dcb74fa1b9a542aa96"
     },
     "dieter-wall/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7243,7 +7243,7 @@
       "y": 0,
       "cell": 48,
       "motif": "signature:rausschmiss",
-      "sha256": "19fedfc670d04566637e6f56fc4b91adeeaa777ece909c700cc1a8c6733fb9b1"
+      "sha256": "11142a32ee4e48b0bdd169fd117374e498e1e84fd4e6219b3528f34b7a0c2406"
     },
     "dieter-wall/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7251,7 +7251,7 @@
       "y": 0,
       "cell": 48,
       "motif": "dieter-wall-4",
-      "sha256": "4f93d8824422de9b65161a3919629b25c80875436f59684a9768b4990b91504b"
+      "sha256": "cd94329340ae699a7669fde5d1f0d1eb33145e1775fb75c5c9468ef100d95c35"
     },
     "dieter-wall/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7259,7 +7259,7 @@
       "y": 0,
       "cell": 48,
       "motif": "skill-dieter-buff",
-      "sha256": "574ad301680abcbc6f66c6c1d8ca6e38a63e6a3b831381ca9a49d083d7bcfd44"
+      "sha256": "5ec736f3581d8816ee52534f96cc93ae4a00dff5154012540696cd169091c59b"
     },
     "dieter-wall/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7267,7 +7267,7 @@
       "y": 0,
       "cell": 48,
       "motif": "dieter-wall-15",
-      "sha256": "6310cd45ad15427fa0c4dd3220886040b458d3097f0e02721778e9cdc69f0b4c"
+      "sha256": "d48f7d9488500520b7922a3152727b7b92828d0515edc8168657866baecc9f9c"
     },
     "dieter-brawl/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7275,7 +7275,7 @@
       "y": 48,
       "cell": 48,
       "motif": "skill-dieter-mark",
-      "sha256": "97d05a5138e837690b5413743df95777844d3cb887ff89af2d28b85bdf0f0a5c"
+      "sha256": "c78e18145d815b38e3809b63774caeb1358f97794a22c8dcb74fa1b9a542aa96"
     },
     "dieter-brawl/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7283,7 +7283,7 @@
       "y": 48,
       "cell": 48,
       "motif": "signature:abriss",
-      "sha256": "bbf84a52697ed905040b7177785db213ddb3e839d34401b845e371c0607e5c54"
+      "sha256": "ec3b9c400440ead18807926c0aed20bc786b869dfcf949745639e7031842f87e"
     },
     "dieter-brawl/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7291,7 +7291,7 @@
       "y": 48,
       "cell": 48,
       "motif": "skill-dieter-ground",
-      "sha256": "eccd1cee75c23a64ee884c9267c3c8512305e903cc4ae4730e35c356e5e6e945"
+      "sha256": "32fd52b4000f444a5b69adcdc6883ec4282cfa3d74ca3c19bfe60daca6b3c02b"
     },
     "dieter-brawl/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7299,7 +7299,7 @@
       "y": 48,
       "cell": 48,
       "motif": "skill-dieter-buff",
-      "sha256": "574ad301680abcbc6f66c6c1d8ca6e38a63e6a3b831381ca9a49d083d7bcfd44"
+      "sha256": "5ec736f3581d8816ee52534f96cc93ae4a00dff5154012540696cd169091c59b"
     },
     "dieter-brawl/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7307,7 +7307,7 @@
       "y": 48,
       "cell": 48,
       "motif": "dieter-brawl-9",
-      "sha256": "a98d8d891acb7db8ab64a778b9c6ee9e0b4a2fa952ac0566e9bde4f275bca1be"
+      "sha256": "cde5c5e689c759d8159f52dac4c207694181b3d502e5912f4e5c050690248e63"
     },
     "dieter-brew/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7315,7 +7315,7 @@
       "y": 96,
       "cell": 48,
       "motif": "skill-dieter-mark",
-      "sha256": "97d05a5138e837690b5413743df95777844d3cb887ff89af2d28b85bdf0f0a5c"
+      "sha256": "c78e18145d815b38e3809b63774caeb1358f97794a22c8dcb74fa1b9a542aa96"
     },
     "dieter-brew/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7323,7 +7323,7 @@
       "y": 96,
       "cell": 48,
       "motif": "signature:fassanstich",
-      "sha256": "ddce40f76799bd716dbdabcf7b4d1cec7675dd8fbbf1bdff08ebe6a3f713a3b5"
+      "sha256": "e2cf116c4dd0b6790764557cff4278ddcb52e69b101020e6a6f6b7b2d50f5416"
     },
     "dieter-brew/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7331,7 +7331,7 @@
       "y": 96,
       "cell": 48,
       "motif": "dieter-brew-8",
-      "sha256": "4becd72d604e93ddde3fef43bd4f68528619e7c917719c9ced3f026e3bd12512"
+      "sha256": "fd0d0369589b421e60df1fa435226f45098d6d67d8812fcf2cb0c0aaa0f13eeb"
     },
     "dieter-brew/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7339,7 +7339,7 @@
       "y": 96,
       "cell": 48,
       "motif": "skill-dieter-buff",
-      "sha256": "574ad301680abcbc6f66c6c1d8ca6e38a63e6a3b831381ca9a49d083d7bcfd44"
+      "sha256": "5ec736f3581d8816ee52534f96cc93ae4a00dff5154012540696cd169091c59b"
     },
     "dieter-brew/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7347,7 +7347,7 @@
       "y": 96,
       "cell": 48,
       "motif": "dieter-brew-29",
-      "sha256": "271686a7603e66e7aa49065574cc06ea73df829b1324f172e6be8ef3aadba551"
+      "sha256": "46c22cbdb971a4fc1aa2f90e16c9c46a73accec92c9c3d7a3c43ef29ae87e37c"
     },
     "baerbel-care/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7355,7 +7355,7 @@
       "y": 144,
       "cell": 48,
       "motif": "skill-baerbel-mark",
-      "sha256": "cd90315a26af89d1c5de510b1b59ac6be3a60d23f28cb1db0cbf244bbf0c927d"
+      "sha256": "cdc4238007cb5db41f08064badb01aac4b8c53b3df5e801d93431f62d956f617"
     },
     "baerbel-care/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7363,7 +7363,7 @@
       "y": 144,
       "cell": 48,
       "motif": "baerbel-care-29",
-      "sha256": "dd45aff400b4aea0ea060240f4f939fa952bfcd487bc0008ebaad4bde6a06d9e"
+      "sha256": "bf21e0af6649860d225bda0675765fed871d3639c141c3904674bb00b0189904"
     },
     "baerbel-care/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7371,7 +7371,7 @@
       "y": 144,
       "cell": 48,
       "motif": "signature:gisela",
-      "sha256": "0dd1361f8c25ae3d87f8eeca9eb55214302d87b42d4da08730e67ef382bdb883"
+      "sha256": "306e7487c79f1cad67de2a8d69b2f83683d1b70c0c40e2fc1c246264543f9ab9"
     },
     "baerbel-care/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7379,7 +7379,7 @@
       "y": 144,
       "cell": 48,
       "motif": "skill-baerbel-buff",
-      "sha256": "cc4ae13e3c2276f01e8d48a64d2bf57fa7664325fb7c7c55b401aa7151f9487c"
+      "sha256": "004e9219b99a170fcad5512827e5da41adffb9c2a9c3acdffbf717617c740c32"
     },
     "baerbel-care/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7387,7 +7387,7 @@
       "y": 144,
       "cell": 48,
       "motif": "baerbel-care-28",
-      "sha256": "53e5af6a066442633ff7e45a973af98530b1bd9d727250dac5dc41e541518fde"
+      "sha256": "bac0f3211ba2d1d5953a732e1885248033ae9934fff63ef90adb4da4a91f25e6"
     },
     "baerbel-feedback/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7395,7 +7395,7 @@
       "y": 192,
       "cell": 48,
       "motif": "baerbel-feedback-10",
-      "sha256": "3570a69cbc09da70e3a730b12fc54a28d9f22fdf7b97cfdd8e24f80005b2f0c6"
+      "sha256": "c263dbc84c916917fcdc9c14538842cf77ca1fdf2bf593ea7c679723485d0ffd"
     },
     "baerbel-feedback/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7403,7 +7403,7 @@
       "y": 192,
       "cell": 48,
       "motif": "baerbel-feedback-9",
-      "sha256": "f8f46c2cc001bcc4d5f0b121ecec1ebfadf5b1e37c2c03044c3519232ce07b63"
+      "sha256": "bb1b7c37f0b5d14f88c4925ddf238c04609acde3287036487efbda269441db7c"
     },
     "baerbel-feedback/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7411,7 +7411,7 @@
       "y": 192,
       "cell": 48,
       "motif": "baerbel-feedback-14",
-      "sha256": "86dbeec89cf1ac307033c4e3b4033dda96e37144e258517e109fd61421adbba3"
+      "sha256": "f001c7f5d975a9e3f425dfda2e56aa8b4f486cb59404d0c65c6ab95087682710"
     },
     "baerbel-feedback/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7419,7 +7419,7 @@
       "y": 192,
       "cell": 48,
       "motif": "skill-baerbel-buff",
-      "sha256": "cc4ae13e3c2276f01e8d48a64d2bf57fa7664325fb7c7c55b401aa7151f9487c"
+      "sha256": "004e9219b99a170fcad5512827e5da41adffb9c2a9c3acdffbf717617c740c32"
     },
     "baerbel-feedback/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7427,7 +7427,7 @@
       "y": 192,
       "cell": 48,
       "motif": "baerbel-feedback-29",
-      "sha256": "10e33e7e7aa9f239394f54901b73f7ef95145784af66077ebaff27791ff8c459"
+      "sha256": "d63116b85993acd1b39346d07e9f07028408f73e4e02014d00bfdb4149517e39"
     },
     "baerbel-stage/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7435,7 +7435,7 @@
       "y": 240,
       "cell": 48,
       "motif": "skill-baerbel-mark",
-      "sha256": "cd90315a26af89d1c5de510b1b59ac6be3a60d23f28cb1db0cbf244bbf0c927d"
+      "sha256": "cdc4238007cb5db41f08064badb01aac4b8c53b3df5e801d93431f62d956f617"
     },
     "baerbel-stage/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7443,7 +7443,7 @@
       "y": 240,
       "cell": 48,
       "motif": "signature:auswringen",
-      "sha256": "89be80f00449e08663d9b4be07c4298be4bd00cbe8139c1fba690524ca54e1e9"
+      "sha256": "ce1fa9ecd94ee89614054e706d0c2f0653524225f25aca7302b3a060f84854b1"
     },
     "baerbel-stage/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7451,7 +7451,7 @@
       "y": 240,
       "cell": 48,
       "motif": "skill-baerbel-ground",
-      "sha256": "1ac4120bfc86f119282b016c164bde046eaeed801a42297f1811b7b606d18f70"
+      "sha256": "a05a84f2ca9dbd2b4971a429ba0c4e3bc61a583c4d2939b11c2d07535e5ee22a"
     },
     "baerbel-stage/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7459,7 +7459,7 @@
       "y": 240,
       "cell": 48,
       "motif": "baerbel-stage-12",
-      "sha256": "f53b02b232c0b906284ecb38c3c30e92ae70498751051d917e09fb32081dd8ae"
+      "sha256": "219e221231c6508e87c71deb75554eb4435c5d279d9873b594bb502890667de3"
     },
     "baerbel-stage/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7467,7 +7467,7 @@
       "y": 240,
       "cell": 48,
       "motif": "baerbel-stage-18",
-      "sha256": "5fe40dd924c6ccd567d3d61af216e1a1d54d6b563dab8889b04b788c3d3c89a6"
+      "sha256": "716119e39a9ddce0f0c2704336062544725459fdfc520153035c732b361783b8"
     },
     "kevin-fuse/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7475,7 +7475,7 @@
       "y": 288,
       "cell": 48,
       "motif": "signature:lunte",
-      "sha256": "f1c286da3d5840b9c86c1ceadbfdb5ffe89a8d82409c613b6b53e02aa19d011e"
+      "sha256": "73f82d800e7ba6341a173ddc4f079e50f045ad602d031cc436204d701962d5a8"
     },
     "kevin-fuse/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7483,7 +7483,7 @@
       "y": 288,
       "cell": 48,
       "motif": "signature:kurzschluss",
-      "sha256": "d411334a085e1b897de23f641ac86c423fda02d077e9d345e37e72654bbf53cc"
+      "sha256": "d8b4b940cf1d64a6bea30eb7f5d53c0ca00a03808ed1824e4cac847df9584eea"
     },
     "kevin-fuse/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7491,7 +7491,7 @@
       "y": 288,
       "cell": 48,
       "motif": "skill-kevin-ground",
-      "sha256": "6878f8b253cc568f057366c3753fe2e3f09e9a589b5bf1859f9e705dd8009faa"
+      "sha256": "75789f7415ade2498a8904da5c77bae31fd0607085b7b062d77ee52f91054edc"
     },
     "kevin-fuse/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7499,7 +7499,7 @@
       "y": 288,
       "cell": 48,
       "motif": "skill-kevin-buff",
-      "sha256": "5c2906165c403e9b8a6de22753a21efb0bb9207498c5a6db2e54f631cfa7a0c6"
+      "sha256": "990b49a5d812b1e52ae2ca551441c366a664b4a42b23891d79304f469c86864b"
     },
     "kevin-fuse/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7507,7 +7507,7 @@
       "y": 288,
       "cell": 48,
       "motif": "kevin-fuse-29",
-      "sha256": "2cefb31cb5320a7226917ce2cd7fa38f1dcb63d12f23d5421f4b586763f6a271"
+      "sha256": "9f5247dd0bcafc13cc4602a580da6e2aa978c227ef34c2ba066d4782f4069e8e"
     },
     "kevin-iron/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7515,7 +7515,7 @@
       "y": 336,
       "cell": 48,
       "motif": "skill-kevin-mark",
-      "sha256": "25c866bd5af62bbccd99e777058dbe56ed38f586e37699e8dd7e0c722dd2dead"
+      "sha256": "f53554b9c5ba5eb45958c24ea913062beb22346d64e25795841e0aaf5a0d35a4"
     },
     "kevin-iron/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7523,7 +7523,7 @@
       "y": 336,
       "cell": 48,
       "motif": "signature:ueberlast",
-      "sha256": "e5d2f79f5f4d61be83a12560052e7964f641a5377c04e34b1031fec9cf037e9a"
+      "sha256": "b46a51e9e4c2bd8300ebd24c716a56d52a74ca982fb4d603885a28e4efde0242"
     },
     "kevin-iron/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7531,7 +7531,7 @@
       "y": 336,
       "cell": 48,
       "motif": "kevin-iron-10",
-      "sha256": "513cd921da80779d972d6a1391860d12c95e48f6ba7f2e1d657163b1f6fa72c4"
+      "sha256": "ffac6ae54ec0c064e6a897cebc414a753ced1428b7e151ac8fbcc45bc8e45e43"
     },
     "kevin-iron/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7539,7 +7539,7 @@
       "y": 336,
       "cell": 48,
       "motif": "skill-kevin-buff",
-      "sha256": "5c2906165c403e9b8a6de22753a21efb0bb9207498c5a6db2e54f631cfa7a0c6"
+      "sha256": "990b49a5d812b1e52ae2ca551441c366a664b4a42b23891d79304f469c86864b"
     },
     "kevin-iron/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7547,7 +7547,7 @@
       "y": 336,
       "cell": 48,
       "motif": "kevin-iron-29",
-      "sha256": "4ae7b67cf62eb194fb4d56c617ea5eb71491abcecb2bf56e08c44b08ed04070d"
+      "sha256": "c0ae7427d8e659a76686940706a8a28ba9b7d1fd545b878b91b99ea8e3ccb329"
     },
     "kevin-hunt/mark": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7555,7 +7555,7 @@
       "y": 384,
       "cell": 48,
       "motif": "skill-kevin-mark",
-      "sha256": "25c866bd5af62bbccd99e777058dbe56ed38f586e37699e8dd7e0c722dd2dead"
+      "sha256": "f53554b9c5ba5eb45958c24ea913062beb22346d64e25795841e0aaf5a0d35a4"
     },
     "kevin-hunt/burst": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7563,7 +7563,7 @@
       "y": 384,
       "cell": 48,
       "motif": "skill-kevin-burst",
-      "sha256": "560290dc4e7e8c8ae417aefb06e31fe5d0989e0d270abb4de0cc2284f52c9f18"
+      "sha256": "cf23b90ee2be884b14148405188cfdae694ccf7a8a02269298590b0ec3ea8982"
     },
     "kevin-hunt/ground": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7571,7 +7571,7 @@
       "y": 384,
       "cell": 48,
       "motif": "skill-kevin-ground",
-      "sha256": "6878f8b253cc568f057366c3753fe2e3f09e9a589b5bf1859f9e705dd8009faa"
+      "sha256": "75789f7415ade2498a8904da5c77bae31fd0607085b7b062d77ee52f91054edc"
     },
     "kevin-hunt/buff": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7579,7 +7579,7 @@
       "y": 384,
       "cell": 48,
       "motif": "skill-kevin-buff",
-      "sha256": "5c2906165c403e9b8a6de22753a21efb0bb9207498c5a6db2e54f631cfa7a0c6"
+      "sha256": "990b49a5d812b1e52ae2ca551441c366a664b4a42b23891d79304f469c86864b"
     },
     "kevin-hunt/variant": {
       "atlas": "assets/content-art/e32/runtime/skills.png",
@@ -7587,7 +7587,7 @@
       "y": 384,
       "cell": 48,
       "motif": "signature:jackpot",
-      "sha256": "abe2eda691c8a0c2075d1e48a1c53dd419b8b93d7e73d15c92a1dfab57d32bdd"
+      "sha256": "fa4c705359e97ae33b46d847e054f51059bc3fdb8f7ef06736a2d38bd756aa96"
     }
   }
 }

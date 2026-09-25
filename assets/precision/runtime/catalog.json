@@ -62125,11 +62125,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-strike.png",
       "width": 64,
       "height": 64,
-      "hash": "bfc1dc9cc24f7f35b3c261efde2dff644f3ad619d1564894d01f296dae4de737",
+      "hash": "298a9719d3c9da8e4bb46054532744675d5fc6eb07c0c488e46f8d649a8a94c4",
       "revision": "precision-v1"
     },
     "skill-dieter-buff": {
@@ -62142,11 +62143,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-buff.png",
       "width": 64,
       "height": 64,
-      "hash": "0bf9199c742d26bcbc0d9b8ab2f31b4b7258bfb3fe8a7fea2ba31f29b2d705c3",
+      "hash": "c1e054fb8464b0187e76720604bcefa4b32ae40bee273d6353f352e92ad7f335",
       "revision": "precision-v1"
     },
     "skill-dieter-throw": {
@@ -62159,11 +62161,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-throw.png",
       "width": 64,
       "height": 64,
-      "hash": "a19734c6cfb59576979efb92a44050a52850f931fac873ddae0943402b4a5314",
+      "hash": "d4a52a34f4fa2f089641fcae17cb65e6b03c86c3aacdbbc93eaad4ede9690fa8",
       "revision": "precision-v1"
     },
     "skill-dieter-parry": {
@@ -62176,11 +62179,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-parry.png",
       "width": 64,
       "height": 64,
-      "hash": "7ac6ef93b0bce39df89555ac653e581b934cd1e2051a9d7965beb0346b268e84",
+      "hash": "63bc74f02bd5acd69b848fe1fccadb32fc16e51270e2b29f20f437bebf9a7132",
       "revision": "precision-v1"
     },
     "skill-dieter-mark": {
@@ -62193,11 +62197,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-mark.png",
       "width": 64,
       "height": 64,
-      "hash": "34e9935cfd13b29af34b17d740a7c6d1deeb7c901835e2a3aac4991891c073c1",
+      "hash": "4252c361188a912e892c39bed95929f0a67ccffc4c477706767be576460e82e3",
       "revision": "precision-v1"
     },
     "skill-dieter-burst": {
@@ -62210,11 +62215,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-burst.png",
       "width": 64,
       "height": 64,
-      "hash": "f2ac0bf20baafc16fdf26294cbf2ec5c9d9cf984aec6689ca4994e548a12cf10",
+      "hash": "a898af53b244575413de6d68754043ff0bf98cbe197ed75091a1bfe6219ea18f",
       "revision": "precision-v1"
     },
     "skill-dieter-ground": {
@@ -62227,11 +62233,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-ground.png",
       "width": 64,
       "height": 64,
-      "hash": "b5512fcaf5a98ea9078fc1b20a28f0a22be1fe375ed3aa01aa9a7fbe43bf7537",
+      "hash": "5bb310411abdf97ecb8a21eb9af544afc8cba2477508f1457439eae3bdaeb509",
       "revision": "precision-v1"
     },
     "skill-dieter-heal": {
@@ -62244,11 +62251,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-heal.png",
       "width": 64,
       "height": 64,
-      "hash": "6495a8b5c271e78c018b22fd8a8f546690c7ac3e1663a2b2e673780c32078add",
+      "hash": "ebcb4b86af5df00d51391a581792a620ca6fdb69cf946efb2a73b79daa1178dc",
       "revision": "precision-v1"
     },
     "skill-dieter-interrupt": {
@@ -62261,11 +62269,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-interrupt.png",
       "width": 64,
       "height": 64,
-      "hash": "3a0d040fd7866c2a58eceb6859cfd32849cae6f79a3bfa96c95f3260719ecd95",
+      "hash": "d3e43cf4ccfd528cffe5c982e8d434b4a416b1aecc4f94ba77a950c64df377ea",
       "revision": "precision-v1"
     },
     "skill-dieter-dash": {
@@ -62278,11 +62287,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-dash.png",
       "width": 64,
       "height": 64,
-      "hash": "e8ecf2d40cdf9cce0ff985f81a67b51125c838da60597de670a0c99f73285430",
+      "hash": "8d5a4363af6e5ad4c22b987c4824d4dd9e83b2989dc10c32c8bacc124771af52",
       "revision": "precision-v1"
     },
     "skill-dieter-barricade": {
@@ -62295,11 +62305,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-barricade.png",
       "width": 64,
       "height": 64,
-      "hash": "8537da0a374cb593a2e531073e46246d648b222b1abffe139e56b89bf480472d",
+      "hash": "5abe620f9f805f927fa2fbc49a7890b24007b0d07820c70bdaeed20eb174ae21",
       "revision": "precision-v1"
     },
     "skill-dieter-slam": {
@@ -62312,11 +62323,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-slam.png",
       "width": 64,
       "height": 64,
-      "hash": "19a8005e3eaff496bcd70875b75bbaab0e090cfaa055cf9714b070fba8c3572b",
+      "hash": "df7cadb0770437c1f7a1f92e94700d7ec410b37bf826505340b547c74ad9b6fe",
       "revision": "precision-v1"
     },
     "skill-dieter-keg": {
@@ -62329,11 +62341,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-keg.png",
       "width": 64,
       "height": 64,
-      "hash": "c3805ac22c1efca5a24d3c2b83fb6bc27863dab31c5522c6dc663ec640de6a54",
+      "hash": "49463a1b10d249e6059f577d0ac7b1e2ed31ea256d265bb4c30faa6dfbf40d93",
       "revision": "precision-v1"
     },
     "skill-dieter-dieter-wall": {
@@ -62346,11 +62359,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-dieter-wall.png",
       "width": 64,
       "height": 64,
-      "hash": "606199cd3976459fbe2b9409598820b52a2e6b20de433482b972ffb9b0de0c33",
+      "hash": "9473a5ae0be110474eb433d882d9bb9adb4eea6a9a8c89244f9fb2616ddd5859",
       "revision": "precision-v1"
     },
     "skill-dieter-dieter-brawl": {
@@ -62363,11 +62377,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-dieter-brawl.png",
       "width": 64,
       "height": 64,
-      "hash": "ef5f03efaa8a1ec239482d03cba7b6bc68d84833e4adb8290010211e483e2437",
+      "hash": "de7153d7b0dc47ca91ca963acaa30e0e3f19658306b15e034d247177b231834f",
       "revision": "precision-v1"
     },
     "skill-dieter-dieter-brew": {
@@ -62380,11 +62395,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-dieter-dieter-brew.png",
       "width": 64,
       "height": 64,
-      "hash": "8b12ce1dde0cb1986724171f4913751bccd6dc90d8b9aff900f63b715929e830",
+      "hash": "4dfdbd5c53db79da7525eef6286edbde6d8ecefeddd41024a71115a4a0e6c7a6",
       "revision": "precision-v1"
     },
     "dieter-wall-0": {
@@ -62830,11 +62846,12 @@
         "h": 209,
         "count": 23171
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-strike.png",
       "width": 64,
       "height": 64,
-      "hash": "0616f87be8d75889f28329755fdf260988915581b2a7735bfa397485c20e1ff7",
+      "hash": "c0084452f29c0f78c703270494a3de8ddb23ad0ebd379ed7789ca7af4d649b75",
       "revision": "precision-v1"
     },
     "skill-baerbel-buff": {
@@ -62848,11 +62865,12 @@
         "h": 215,
         "count": 28479
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-buff.png",
       "width": 64,
       "height": 64,
-      "hash": "0f609845028165bbd761b481e95b48faddc14d48ddc9274d8a924c7f3a43b491",
+      "hash": "5af40bf98bd1411a1eec3c97c94e0c46cd62bbc4c8a3484da42cb6ed1753a0e7",
       "revision": "precision-v1"
     },
     "skill-baerbel-throw": {
@@ -62866,11 +62884,12 @@
         "h": 201,
         "count": 28537
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-throw.png",
       "width": 64,
       "height": 64,
-      "hash": "45bdee3114e5ae2c9f32ebb2960dc8d528d7c72d53ff18f683ebfdf219c065c8",
+      "hash": "ba9e5087a2f95f9e2cbf366bfb6ea621957abc34e7253dde7883d8177876dd33",
       "revision": "precision-v1"
     },
     "skill-baerbel-parry": {
@@ -62884,11 +62903,12 @@
         "h": 216,
         "count": 25015
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-parry.png",
       "width": 64,
       "height": 64,
-      "hash": "a68a4b2c3369a75e85706e1044315e3a7ed5f62ab090a5cb6c467f19ec3ca094",
+      "hash": "8cf725426ae0dda5914b488ee5e8c91a213f8bdeba2bee43a8bfcf1430dfe6e3",
       "revision": "precision-v1"
     },
     "skill-baerbel-mark": {
@@ -62902,11 +62922,12 @@
         "h": 201,
         "count": 22779
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-mark.png",
       "width": 64,
       "height": 64,
-      "hash": "770b820f2e1fd70e4da8dea50feb7cd03176b6ab971b0d851412045689ffe162",
+      "hash": "b4607b4e406accb734a0fd3a269310f3e65060d68bb7d5257f575bc3f8019e9b",
       "revision": "precision-v1"
     },
     "skill-baerbel-burst": {
@@ -62920,11 +62941,12 @@
         "h": 230,
         "count": 36069
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-burst.png",
       "width": 64,
       "height": 64,
-      "hash": "49052c9118b94a05261cc9897aba7c3e3dec1add2194aded2fc504ce071bbe85",
+      "hash": "897661857c6053150db5209c4469d6df513d12236846297b774b8859f5103cfa",
       "revision": "precision-v1"
     },
     "skill-baerbel-ground": {
@@ -62938,11 +62960,12 @@
         "h": 218,
         "count": 27233
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-ground.png",
       "width": 64,
       "height": 64,
-      "hash": "8f66967f4af0c000b217c9ebf7a82430bec51b9b5e633616ab756cc4fbb29be9",
+      "hash": "cbb3983e2cd03623d93f63acbe4911bf4128498437f7319f03f96c3f8877e3be",
       "revision": "precision-v1"
     },
     "skill-baerbel-heal": {
@@ -62956,11 +62979,12 @@
         "h": 231,
         "count": 33328
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-heal.png",
       "width": 64,
       "height": 64,
-      "hash": "7f65fe61c1960c2f1e3ff1657247fa23393147025a2d1522882ae88849b5e913",
+      "hash": "0fdf3bf2089711c29e75274dca3b7a450ba141022eff8304a151c09e35e8d191",
       "revision": "precision-v1"
     },
     "skill-baerbel-interrupt": {
@@ -62974,11 +62998,12 @@
         "h": 218,
         "count": 28360
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-interrupt.png",
       "width": 64,
       "height": 64,
-      "hash": "31bfb9d9490da7087d85c37b6f55a693a0667898357b7a313ff2c95399dbc58c",
+      "hash": "8e55b53d731cfbaec186a20e9d7cac656df6ef5384264535d9550fd5140141c8",
       "revision": "precision-v1"
     },
     "skill-baerbel-dash": {
@@ -62992,11 +63017,12 @@
         "h": 203,
         "count": 24703
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-dash.png",
       "width": 64,
       "height": 64,
-      "hash": "85799f6a455936698a75c84bbd3d9ad23d7d5f6b906d5284b693d55621b3445d",
+      "hash": "aeb4fcbf77f23afaeaa9bcf282d55ef0b902b9e9ae76d03150ad8fbb5fadca88",
       "revision": "precision-v1"
     },
     "skill-baerbel-sanctuary": {
@@ -63010,11 +63036,12 @@
         "h": 213,
         "count": 35957
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-sanctuary.png",
       "width": 64,
       "height": 64,
-      "hash": "89938d78a99e09dfd608a6a3ac4a103c013f683d37fa014ca780bd114c57974a",
+      "hash": "0440e7dd553f746981f529fe4c79ec178c69b9ab1c1f500c400ffc45364426b5",
       "revision": "precision-v1"
     },
     "skill-baerbel-infusion": {
@@ -63028,11 +63055,12 @@
         "h": 223,
         "count": 29810
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-infusion.png",
       "width": 64,
       "height": 64,
-      "hash": "06775200f46136cda7698fd4a2ea315f4befcb3328501aa52fb6ffb400a47735",
+      "hash": "e868ea989c7d8b7554cdb91a39bc6081e50984b2b46b526042a4d3ac263528d6",
       "revision": "precision-v1"
     },
     "skill-baerbel-encore": {
@@ -63046,11 +63074,12 @@
         "h": 216,
         "count": 24572
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-encore.png",
       "width": 64,
       "height": 64,
-      "hash": "8b6ff1238c4b0424ef0d1ab57d1e1f172ff60f3e3c2637d759bcf83c476f98d1",
+      "hash": "2ffe7a19ef9ef7a46a4d6df88511816f95fd55088428ccdd70b3c712168605c2",
       "revision": "precision-v1"
     },
     "skill-baerbel-baerbel-care": {
@@ -63064,11 +63093,12 @@
         "h": 225,
         "count": 41946
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-baerbel-care.png",
       "width": 64,
       "height": 64,
-      "hash": "495f776a6ad11287bbfafb6cc83e565c2446d78bca0d4da6af4e01e7a0315f9f",
+      "hash": "6d1a4cd45649033cdc9e007a3fbc3ca5c57cd0c75e5d6d945b43849a7eab325e",
       "revision": "precision-v1"
     },
     "skill-baerbel-baerbel-feedback": {
@@ -63082,11 +63112,12 @@
         "h": 224,
         "count": 33327
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-baerbel-feedback.png",
       "width": 64,
       "height": 64,
-      "hash": "4dd06164bb87db74c819573a99992510804d06b555e1099462bffdb37f317314",
+      "hash": "089fde6f32ad1d8d5ef6687fb860aaeebf8cf5381c7aac44a0786b2676d78186",
       "revision": "precision-v1"
     },
     "skill-baerbel-baerbel-stage": {
@@ -63100,11 +63131,12 @@
         "h": 235,
         "count": 26952
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "moos",
       "path": "assets/precision/runtime/skills/skill-baerbel-baerbel-stage.png",
       "width": 64,
       "height": 64,
-      "hash": "771a3e373a60af1fa5b469676ce0b55b9d917880bb072884bf48cf7a11bd1b0a",
+      "hash": "b511787ef4a2a5bb700e4f7a49120663301bcf6cce83a7475daa21f0af24e241",
       "revision": "precision-v1"
     },
     "baerbel-care-0": {
@@ -63549,11 +63581,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-strike.png",
       "width": 64,
       "height": 64,
-      "hash": "fee6ec13f7b236bb2b5359c73fb64c942832a6651810da68df539e7d4a3d0fb0",
+      "hash": "0985ae8817e00a2fa4a8f3d00c6cbcdf5d6598071b6b7580fc698ff9c703ad3f",
       "revision": "precision-v1"
     },
     "skill-kevin-buff": {
@@ -63566,11 +63599,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-buff.png",
       "width": 64,
       "height": 64,
-      "hash": "c62535177066a22727d397c3ec0f1d92286599c383b2b7771e10385b60d49222",
+      "hash": "5da99f4144fd541a643591848b34ff0d5dcc282aa7bc4208241e5d11da0b3e5e",
       "revision": "precision-v1"
     },
     "skill-kevin-throw": {
@@ -63583,11 +63617,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-throw.png",
       "width": 64,
       "height": 64,
-      "hash": "e4462e8d92c50bfb26da36cc78a58b4498749dc9f7815abafae1cd5dd756fb55",
+      "hash": "517e9520a4ddf4eb6b8e427582fb730534e9683c3b12b4505df8b56a4db6a1fe",
       "revision": "precision-v1"
     },
     "skill-kevin-parry": {
@@ -63600,11 +63635,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-parry.png",
       "width": 64,
       "height": 64,
-      "hash": "704d9af490a23a6130e029ca8a3ad5b880f49316d4c1b35da4a721d937890581",
+      "hash": "584eb6b590e4bb15ee985b1ca5e75253b0681a2ffab4abb881124cd33cb35c90",
       "revision": "precision-v1"
     },
     "skill-kevin-mark": {
@@ -63617,11 +63653,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-mark.png",
       "width": 64,
       "height": 64,
-      "hash": "31a22bdba7f6e32759611d211485b866faea68d4514f0f07ea602216b6ee69ad",
+      "hash": "96a90ae732b3a35b113746084bb674778830be0bc3180f30226d90410351677e",
       "revision": "precision-v1"
     },
     "skill-kevin-burst": {
@@ -63634,11 +63671,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-burst.png",
       "width": 64,
       "height": 64,
-      "hash": "e3b6b3acf46a69982837cd5f05c94e38d6a43892a4b9551b874239eba7c98025",
+      "hash": "8dcc1c270bd12f2f3d096055c3ddafc5036ebe82da16dd9cb32d23c6c0338f12",
       "revision": "precision-v1"
     },
     "skill-kevin-ground": {
@@ -63651,11 +63689,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-ground.png",
       "width": 64,
       "height": 64,
-      "hash": "f1b852c54f345ee52930672e2de2c5f26989a64b77e34b740302ea95b6a5a1a1",
+      "hash": "949302f5c24b34e86a3348cf34aea2bbcdc67c20cc6537c52c952219b9d95c78",
       "revision": "precision-v1"
     },
     "skill-kevin-heal": {
@@ -63668,11 +63707,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-heal.png",
       "width": 64,
       "height": 64,
-      "hash": "5ad4d44fab050ce5cf303e381759d1e7e731b9fcf476cf7e5bf0d03e7eb24b59",
+      "hash": "593085a7b69c639d8cc2a18eccb803203f21e537bb828043299fcfc7d2d38316",
       "revision": "precision-v1"
     },
     "skill-kevin-interrupt": {
@@ -63685,11 +63725,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-interrupt.png",
       "width": 64,
       "height": 64,
-      "hash": "769c8f4ccbdd8c9f17442e5ce659ea0d31dc8d85185a80b6140b6b9d11d5e98b",
+      "hash": "01a1a4bc034f192203128faa99e25005e9a17b8476379c57f913901f18f63c45",
       "revision": "precision-v1"
     },
     "skill-kevin-dash": {
@@ -63702,11 +63743,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-dash.png",
       "width": 64,
       "height": 64,
-      "hash": "adac0d2fc35652484bd734ece560be85a653013aca6b43942a37d9bdcfdc424c",
+      "hash": "829c83ff852ac873d3f35056054f9846de3b69c53c32711a064598782a4f9a35",
       "revision": "precision-v1"
     },
     "skill-kevin-detonate": {
@@ -63719,11 +63761,12 @@
         "w": 314,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-detonate.png",
       "width": 64,
       "height": 64,
-      "hash": "7231d9f16f3510e29d5e3dae379abb65712adc8fdc063c3d8b740f591fe2264f",
+      "hash": "60edb98df5b65235cc1a18c37bb28719ecd96369eeb556c9edd6486c4214d095",
       "revision": "precision-v1"
     },
     "skill-kevin-magnet": {
@@ -63736,11 +63779,12 @@
         "w": 313,
         "h": 314
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-magnet.png",
       "width": 64,
       "height": 64,
-      "hash": "2e50642e7fe86b759a101668533ff73b91a3d172e3ff57ef8b45d619014587d0",
+      "hash": "fc64c796b02840bdfef2856796225d6b65653449b56ef7d3079ee90cc835cf2e",
       "revision": "precision-v1"
     },
     "skill-kevin-snare": {
@@ -63753,11 +63797,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-snare.png",
       "width": 64,
       "height": 64,
-      "hash": "00b382773a71e7b8e048049b5b5fc3e1008d300a865416dc7353704ba94abd95",
+      "hash": "15f9be3da13354c1c85b9e2b6d71824295992969382a5dd6b2bc2c6f1b9abdd0",
       "revision": "precision-v1"
     },
     "skill-kevin-kevin-fuse": {
@@ -63770,11 +63815,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-kevin-fuse.png",
       "width": 64,
       "height": 64,
-      "hash": "65bae05075d3248d81ceae1e9f1c3eb9483a503bd3c63cb2a88a1f51b25bcf4b",
+      "hash": "b7cf196713108f8de23a45e33c46944d6b7f76477e69177e911fadacfc2cd544",
       "revision": "precision-v1"
     },
     "skill-kevin-kevin-iron": {
@@ -63787,11 +63833,12 @@
         "w": 314,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-kevin-iron.png",
       "width": 64,
       "height": 64,
-      "hash": "d317e61e32b5018c1e027f5bac1b24a1168159b7b12ea7cab363b0bf1c1d89ae",
+      "hash": "10acb00851eab260af10cce99bc3744573ec4d6ff0be8dd196ba91339ee9ff4f",
       "revision": "precision-v1"
     },
     "skill-kevin-kevin-hunt": {
@@ -63804,11 +63851,12 @@
         "w": 313,
         "h": 313
       },
-      "padding": 3,
+      "padding": 0,
+      "tile": "gemalt",
       "path": "assets/precision/runtime/skills/skill-kevin-kevin-hunt.png",
       "width": 64,
       "height": 64,
-      "hash": "3af8aecee054c7fc0730d2fc91e4ed133c3bec7705e4ab64c28e4c578969277b",
+      "hash": "374177b1b6b6e14618111b159c6d5c0a6e2a7a3a2820602c185b19623104ce61",
       "revision": "precision-v1"
     },
     "kevin-fuse-0": {
@@ -64243,6 +64291,61 @@
       "hash": "008b563ac2d0be6ab3e5868f0e4941b8cb82dd10a4650c2db7ecd57fc4367520",
       "revision": "precision-v1"
     },
+    "auto-dieter": {
+      "kind": "skills",
+      "source": "assets/content-art/items/semantic-atlas.png",
+      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
+      "sourceBounds": {
+        "x": 4,
+        "y": 983,
+        "w": 243,
+        "h": 243
+      },
+      "padding": 0,
+      "tile": "gemalt",
+      "path": "assets/precision/runtime/skills/auto-dieter.png",
+      "width": 64,
+      "height": 64,
+      "hash": "22b1d04c451fddb24b1b9d644d97877e09562c5ba731d25d0b9b133db4acb9af",
+      "revision": "precision-v1"
+    },
+    "auto-kevin": {
+      "kind": "skills",
+      "source": "assets/content-art/items/semantic-atlas.png",
+      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
+      "sourceBounds": {
+        "x": 504,
+        "y": 983,
+        "w": 243,
+        "h": 243
+      },
+      "padding": 0,
+      "tile": "gemalt",
+      "path": "assets/precision/runtime/skills/auto-kevin.png",
+      "width": 64,
+      "height": 64,
+      "hash": "d205fe3ac6aafe985d827e6abe1be207abb075f84b9bda07dcb671cf5764f98f",
+      "revision": "precision-v1"
+    },
+    "auto-baerbel": {
+      "kind": "skills",
+      "source": "assets/content-art/aperol-anni/skills.png",
+      "sourceHash": "9af5863cfb9fc31bf66286ca34c2b22bd87c232d6160d59c5d3d633676bff855",
+      "sourceBounds": {
+        "x": 316,
+        "y": 837,
+        "w": 218,
+        "h": 222,
+        "count": 23677
+      },
+      "padding": 0,
+      "tile": "moos",
+      "path": "assets/precision/runtime/skills/auto-baerbel.png",
+      "width": 64,
+      "height": 64,
+      "hash": "94dbdd71e03b095499b078c80a2806e6c05944c88fe2d09afdeb3ff377d15da6",
+      "revision": "precision-v1"
+    },
     "pelt": {
       "kind": "items",
       "source": "assets/content-art/items/semantic-atlas.png",
@@ -64564,58 +64667,6 @@
       "width": 64,
       "height": 64,
       "hash": "169dc7ffd53d3ab3ad3c908b111b36d329391ebca115823daacfe879d66e9a07",
-      "revision": "precision-v1"
-    },
-    "auto-dieter": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 4,
-        "y": 973,
-        "w": 243,
-        "h": 277
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/auto-dieter.png",
-      "width": 64,
-      "height": 64,
-      "hash": "46a180b67c99a961ea960e3a9e99ad48014fe2042213e62966b924a086e48f90",
-      "revision": "precision-v1"
-    },
-    "auto-baerbel": {
-      "kind": "items",
-      "source": "assets/content-art/aperol-anni/skills.png",
-      "sourceHash": "9af5863cfb9fc31bf66286ca34c2b22bd87c232d6160d59c5d3d633676bff855",
-      "sourceBounds": {
-        "x": 316,
-        "y": 837,
-        "w": 218,
-        "h": 222,
-        "count": 23677
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/auto-baerbel.png",
-      "width": 64,
-      "height": 64,
-      "hash": "9c1b2001517d06beba684ea3c20c13c4feb6dd0781092d22ac9065a3849af6a1",
-      "revision": "precision-v1"
-    },
-    "auto-kevin": {
-      "kind": "items",
-      "source": "assets/content-art/items/semantic-atlas.png",
-      "sourceHash": "9258b6581d41aee6bee1742e7028d1471e5c7f6586bbecbd645aa861d0f3ef60",
-      "sourceBounds": {
-        "x": 504,
-        "y": 973,
-        "w": 243,
-        "h": 277
-      },
-      "padding": 3,
-      "path": "assets/precision/runtime/items/auto-kevin.png",
-      "width": 64,
-      "height": 64,
-      "hash": "1392658e5c5ae91d7005f4291e514fdd37d5e12b1c1180e35c46ec68e3ea3c55",
       "revision": "precision-v1"
     },
     "claw": {
@@ -66602,337 +66653,349 @@
     "skill-schorsch-auto": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-auto.png",
-      "sourceHash": "8531060ff9d54f5aa2bf2795b70bd4fafeaca2aa2bfc15215a4ff8d495ce2450",
-      "padding": 3,
+      "sourceHash": "7656e85ddd5c00da613a4672a185d6a38c9e9ea61c0d20fb6b3fdd8653979f1f",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-auto.png",
       "width": 64,
       "height": 64,
-      "hash": "2585cfcc4e921e454eeeb61fa6bd51e233a8f4e7f483c4b47fe93f98c3255092",
+      "hash": "5e7301705be581349e60b5c848901b30b6e99ecece271eb406e47c9966bd5fb5",
       "revision": "precision-v1"
     },
     "skill-schorsch-strike": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-strike.png",
-      "sourceHash": "2c7b5f7719046b2ca28ac74748044637d2a560e0cedf30b47a2b13381091a99c",
-      "padding": 3,
+      "sourceHash": "efc25f2aa90bcd48b3873164039ac725bd4947b938918125f833828ecc9107b8",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-strike.png",
       "width": 64,
       "height": 64,
-      "hash": "adc200fa905bb56bab4721f5dbea63a0c643c6ec1f3e70a4b59f443e0f1be51a",
+      "hash": "de9e689e19c65fea6ca0cfe6d81c97e9d31c50f8345d68c2509e51a4f03660d2",
       "revision": "precision-v1"
     },
     "skill-schorsch-mark": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-mark.png",
-      "sourceHash": "8545f89ae4aa50358c184efb7b9e0d60243b422a6df1c10256d0abb8da75f65f",
-      "padding": 3,
+      "sourceHash": "ba73465f4095ae552cd2ef66fc368e65806fd6fa436cb005e3d30930489f9dd4",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-mark.png",
       "width": 64,
       "height": 64,
-      "hash": "aed4943128477e634fd3c2d5834d027bc14f6dbbf7157845b065bb2e34fd64a7",
+      "hash": "3adc7c4b18de3318718e5c8734c3943ca1a2cb39c3769ea016be6d5816e55cb6",
       "revision": "precision-v1"
     },
     "skill-schorsch-burst": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-burst.png",
-      "sourceHash": "45bb6315322b5e00d251e2cd97793239ec22abaa61af6fe486aa0e68045d5a38",
-      "padding": 3,
+      "sourceHash": "68d3d019f305bba391f74467ba5b897f4c389c002ff31f6e2343965e66e30627",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-burst.png",
       "width": 64,
       "height": 64,
-      "hash": "c8c43e432fe24fd81c80e00614e38999d6506c623915550d0aed38bda71122dd",
+      "hash": "3197fd5ef18a1f5a31c71128a92cfb068683d5d0cba420a636858a2f6b9de7eb",
       "revision": "precision-v1"
     },
     "skill-schorsch-interrupt": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-interrupt.png",
-      "sourceHash": "2c278c9ad60d19b9e320037ed373d249658af45e9f708cacf1ed11e80c835694",
-      "padding": 3,
+      "sourceHash": "5b89aaa7820101c92a4ff8a1de472d1116e383d1697a83f3553fe2b12472d2c4",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-interrupt.png",
       "width": 64,
       "height": 64,
-      "hash": "956611d03940db9ae8986adf21e3b2efaa33da408ea615b85c6eaf3e5b00231f",
+      "hash": "cb81cefb0a877c74853b1f66acbe02bf0b9f44f8d723785fc10f9baabef0bb3d",
       "revision": "precision-v1"
     },
     "skill-schorsch-parry": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-parry.png",
-      "sourceHash": "893694ebbc7363b0d1f3fd572e6fc4ce0548dc346418138acc682220e82f6f89",
-      "padding": 3,
+      "sourceHash": "e7dc726a0e2f9c83fadae5febefc960b79312f3e36b3303ab3d58f737ac8c937",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-parry.png",
       "width": 64,
       "height": 64,
-      "hash": "8ce47fb579efb44ebf7d47bc7a267804b72b0b3b9ff39b4956d3a7a91209be8b",
+      "hash": "e857c6dd1a7247b20287b0093e08d7c2759de73fd505451c0d292eb3941a0671",
       "revision": "precision-v1"
     },
     "skill-schorsch-dash": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-dash.png",
-      "sourceHash": "1b1af7ced8d1462de6c914ab4cbda264c35a7dfd941567fc10cdf545d34b2440",
-      "padding": 3,
+      "sourceHash": "9d96fb6bcdd1d45ded40433715ba8241fef4944a7d775baf1820c93136cb0d9a",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-dash.png",
       "width": 64,
       "height": 64,
-      "hash": "41be577c00ef75b6b52312e04bbe50679ceeb50cbf3c9717e52cbdfcda89c6ed",
+      "hash": "26dc47e8daa0148c7d1d170fa2e3fbd17ead05d155b77e331f7fa321ed18a7cf",
       "revision": "precision-v1"
     },
     "skill-schorsch-heal": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-heal.png",
-      "sourceHash": "03204650aa5c77ed295e623d99ef86e545fe677fb1424bd8c900ca201129a2c1",
-      "padding": 3,
+      "sourceHash": "c66464ff5841436f1cc222b7b2bc9c3cf2fe04f4798c927fb504116fdf5b8fec",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-heal.png",
       "width": 64,
       "height": 64,
-      "hash": "895884bcfebc8b1e48a74ca8f47ef944e2e8b1252753678351321e5b6c45c878",
+      "hash": "1a9d7ad7982886fde0c45bcb48abebd0bf3ba72c013995cb8b6adc052f6e7b1a",
       "revision": "precision-v1"
     },
     "skill-schorsch-buff": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-buff.png",
-      "sourceHash": "54b7e9f53cc9e8a1b1c3400ac8d35f84757508d3a856d4d925086ed8ac6663dc",
-      "padding": 3,
+      "sourceHash": "ccda982a2260ee0af1012225379ee7df229d72031cf6d958b3a04f7c271755a5",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-buff.png",
       "width": 64,
       "height": 64,
-      "hash": "7cb67ca334b6e439cd57fe58c93842ca44d0e1bd392c593d45c9ea8c2cbffe34",
+      "hash": "7b0d56fa78ae4f8936f48f4ee9fd2715cc82958b2a1b4bae8668cc7bd9fdb035",
       "revision": "precision-v1"
     },
     "skill-schorsch-throw": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-throw.png",
-      "sourceHash": "e91e2fde95deef668798f7fe862d3750a159e22087d4ad266a82dde0748df847",
-      "padding": 3,
+      "sourceHash": "9d542cb2bc47dbfb2b3d7e7ca0ecdfb0c8703ed7c1421a5d6471aa54f0dca319",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-throw.png",
       "width": 64,
       "height": 64,
-      "hash": "83315105ce7c6addaea8da9d7ebdf548283644babebddfbd38a1948dbadc5847",
+      "hash": "717f4d199fa2b3826bbaed9636cacfa825b73171e39c55ef1fd3e7454dc25370",
       "revision": "precision-v1"
     },
     "skill-schorsch-ground": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-ground.png",
-      "sourceHash": "bfb2586268bcf1ddffcef443cd0895c978c3ec47b0b97a5a9b83c835f42b6f58",
-      "padding": 3,
+      "sourceHash": "3303133da3b3d4fea36575339c52e8d840da65c282eb36b7c45517ff0e060f15",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-ground.png",
       "width": 64,
       "height": 64,
-      "hash": "4e7f867faf185c29fc50e0509cd5fb43c5c0ff089e81a7483fe84647138fd8b3",
+      "hash": "7322c26f58ae56acf2bd61a3010f82a5fe67d0122d4ff70a6a22f9f36f44fc4d",
       "revision": "precision-v1"
     },
     "skill-schorsch-senf": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-senf.png",
-      "sourceHash": "7061589e950a8e7ea3ffe24c6293b41f7bf404ab054ad1efc99a96bfc3129985",
-      "padding": 3,
+      "sourceHash": "c8ecfe6efa199ac96499b1bdef993a980f7f7fe02e5d298e2e50a7ae26111a89",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-senf.png",
       "width": 64,
       "height": 64,
-      "hash": "12e2eba52bbe1909c198634ed8c4e2a4b2d885ada0cb24a318f45f3ceaaf367e",
+      "hash": "587aa5c400280a8eba9fc8582fc537aaaaa5cac7fd02cfa3b91ea9812416adce",
       "revision": "precision-v1"
     },
     "skill-schorsch-spiritus": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-spiritus.png",
-      "sourceHash": "27606a2429a5f4b64ad958a500c45e9f5c291c815032701d8de49711e14c90ed",
-      "padding": 3,
+      "sourceHash": "96f3900cdaacf3123a8ef772be38dd1868a46907bae06e248aa9ab5711a10437",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-spiritus.png",
       "width": 64,
       "height": 64,
-      "hash": "5ad86238685e783fce08fa7504dde06f4d78687bdb8338971a0af38642d4911a",
+      "hash": "42802fd65e4240e90bf9d76731ccee7bf44df7c9f6d224ce35e146cc03bf4a8d",
       "revision": "precision-v1"
     },
     "skill-schorsch-deckelzu": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-schorsch-deckelzu.png",
-      "sourceHash": "dab7c3b4a583d85569eb36d6d4513f87e0e0fa3ccc8a33a83a1d56d09b684d5f",
-      "padding": 3,
+      "sourceHash": "91fcbb94f88e07b98866f2ae4c0d63cc0d10edb403d9d70cdd3b51051f7a65d5",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-schorsch-deckelzu.png",
       "width": 64,
       "height": 64,
-      "hash": "773c5a011e01aa78b985e1445f18c04e078c7dfca70588872b68adde7cf27db1",
+      "hash": "c1c1cd543652d23fe8a5d536f1be99ad6b14eaac5cc5a0affe3fc6090ec42bc8",
       "revision": "precision-v1"
     },
     "skill-kaethe-auto": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-auto.png",
-      "sourceHash": "8cf99a322d04b4485d7fc427066295df230e042c049ed8f5c73eff305556c105",
-      "padding": 3,
+      "sourceHash": "44ea71a03c510f92b63bfdbe59144f01aa32f2164d334c14258e8b47986ce5ff",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-auto.png",
       "width": 64,
       "height": 64,
-      "hash": "9f6fc8fd5357f8a8b394cce7c51ee721272609b2657875fb9fc09dda7556e9e3",
+      "hash": "22a4cabfe299eb2adb1d158c5d13f1eedf56fa9d3f1ea7fcb81c753c3472c25d",
       "revision": "precision-v1"
     },
     "skill-kaethe-interrupt": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-interrupt.png",
-      "sourceHash": "e81578083c4a46dea25615fcbeef43eb2e6b75f3046b4817fd1d8f72d64ecdeb",
-      "padding": 3,
+      "sourceHash": "e3628020389b1afd52af81dba498e22fbdd5f359257d31ae546a67d1d57f04a7",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-interrupt.png",
       "width": 64,
       "height": 64,
-      "hash": "5cad97ab152482ec15c9fe481b9b238ea42f343321f0264dc8dd26622692121f",
+      "hash": "a11809e26f189dab1a4511a9d36f6364d77140f40865c58df8403ea74257ee6f",
       "revision": "precision-v1"
     },
     "skill-kaethe-parry": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-parry.png",
-      "sourceHash": "1d33e39769906d62f3cd415feb30e81d78b37e695cae559295fb710b84ba7d62",
-      "padding": 3,
+      "sourceHash": "26d54b0bd6c6d06633f3f7733f4c00062413d0601d630859613796a83eca6ab4",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-parry.png",
       "width": 64,
       "height": 64,
-      "hash": "fb1896338164cf06d887d003f8c039b7793a12e017dbd1d53b66ab08ad291b0a",
+      "hash": "7c1e023fd7e909bb51dcf1a6a704dd56a4c994f8bd294bf8b663534ba367e25f",
       "revision": "precision-v1"
     },
     "skill-kaethe-dash": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-dash.png",
-      "sourceHash": "73a584b5bf402ea6e04f693a84d02b860917f7d31631ebf6de9b0344c36d333b",
-      "padding": 3,
+      "sourceHash": "ffa257158f0e68c863606abbadcea715e5d846ad97e1f6c65caf78bf7f15d57e",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-dash.png",
       "width": 64,
       "height": 64,
-      "hash": "a2b0d1069d331b8d93fee312d71605c212c18b7be766980b0f7e5e11a0ac4277",
+      "hash": "30ce6f08e9a0169aec16b18bdec8e48bdec21ed76ebb210ab27ba4d5d3dc5725",
       "revision": "precision-v1"
     },
     "skill-kaethe-heal": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-heal.png",
-      "sourceHash": "0637415bdcf14c44e87cf72ab869f7da6674ff2f343bac158f677fbc7e4681a3",
-      "padding": 3,
+      "sourceHash": "cd18403205b3192f98148cb625622f08cd7c64f0b4ae9605cb8969d88e5e4616",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-heal.png",
       "width": 64,
       "height": 64,
-      "hash": "5e449f70f370eea066dc48bbc6aeda10a448e3354ef043f78a7bc83feff1f95a",
+      "hash": "ef88af9f5d50712fc7d176fe128eccaa90da4c4fb93aa5d258e1124f876b1942",
       "revision": "precision-v1"
     },
     "skill-kaethe-buff": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-buff.png",
-      "sourceHash": "a357d6c5edc8c3c8cae7a66e676e8eec6e6198b01a580bba425ff09cbed88284",
-      "padding": 3,
+      "sourceHash": "faf032cc0206439e46b616386752b97b4953dc93b91e6f3038999648dd57db06",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-buff.png",
       "width": 64,
       "height": 64,
-      "hash": "6bf8ee8a7afd90ae561ad50e046c5bb1a833e87ec04466ac1dbdcd02b30472f7",
+      "hash": "b9cea3f384ee553b872f3be7039fa3ee17d13fdacc2b84e574ba69b4a16c0186",
       "revision": "precision-v1"
     },
     "skill-kaethe-throw": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-throw.png",
-      "sourceHash": "7297e20e56c6d25ebb98641e936e84aead1d08bb895e000a7dbf01dbbb319dba",
-      "padding": 3,
+      "sourceHash": "e37b19597bda20958ed55b19978fdbb06d8caa07cb60697bf3939630326814c1",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-throw.png",
       "width": 64,
       "height": 64,
-      "hash": "9f227464f2bc2ef3f582582e2f091f9c314ab0e1a18ca47f2512929956e22dee",
+      "hash": "44c78b33da8e776636d8c51d19ce2b2756b098459f8f554996234648a1ae3efe",
       "revision": "precision-v1"
     },
     "skill-kaethe-ground": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-ground.png",
-      "sourceHash": "1b899a5c105a365a06f08251bf15b0f42cc2544578ae286117d6486e57b2b078",
-      "padding": 3,
+      "sourceHash": "650ccf19ff82064f37a341d181b07857e1cbfa9b399d6dfb048b06c6cf4d6ca9",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-ground.png",
       "width": 64,
       "height": 64,
-      "hash": "976f4930429b828bb0d0ffdf43cfd710489cd556a4985ecc48162cbae10f70f2",
+      "hash": "fb661bd4e1958816cd5000ffec55092e52199b8ac72d4d6ed93b94cb4319aae8",
       "revision": "precision-v1"
     },
     "skill-kaethe-reizen": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-reizen.png",
-      "sourceHash": "80ee6b0f55425604a652685de856f54ccd14cf59816f654c6dba9968eb7a6dfa",
-      "padding": 3,
+      "sourceHash": "686db1a61fcdac1faf026fa99378c72b2f0b8c6df2868389a2d3d4f0bbe0a5a7",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-reizen.png",
       "width": 64,
       "height": 64,
-      "hash": "5110b61e9783b5dc19d99805b897a117945a4bc966e236c485cd026bc6111ba3",
+      "hash": "43fef395375eb8bf39da75037416d962bc77fa03b25294bec40880eb83be916e",
       "revision": "precision-v1"
     },
     "skill-kaethe-handlesen": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-handlesen.png",
-      "sourceHash": "ab462e38a517486d57e1aec5c2456a3d36ed27e17b21f6ce49f699dd4612f4a5",
-      "padding": 3,
+      "sourceHash": "31805478405fe93c44e43eb9ea292ac80faa8cce303e1e49f22d6976dd36eb54",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-handlesen.png",
       "width": 64,
       "height": 64,
-      "hash": "ab462e38a517486d57e1aec5c2456a3d36ed27e17b21f6ce49f699dd4612f4a5",
+      "hash": "31805478405fe93c44e43eb9ea292ac80faa8cce303e1e49f22d6976dd36eb54",
       "revision": "precision-v1"
     },
     "skill-kaethe-gezinkt": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-gezinkt.png",
-      "sourceHash": "4820738442801fe822b678cffbfec0274355e2cdc544d25165b9cdbbb3ee7842",
-      "padding": 3,
+      "sourceHash": "1ac602c46b859596e4a5abda33d791e55b710e4994321d994bc1dd3e5186cc99",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-gezinkt.png",
       "width": 64,
       "height": 64,
-      "hash": "7fc83abd858d9bc0b609c0c0693225890b6aa5612f35731967be8bea294a1cd1",
+      "hash": "98ad4e8be1f6588c93576673cb994b0c7aeb2a005afe53d75fa2fbfcc921e97d",
       "revision": "precision-v1"
     },
     "skill-kaethe-aermel": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-aermel.png",
-      "sourceHash": "6c33de496f083e6273ffd3c6fd06ed7e5ed64157aca3ccdedd77c2b739765bf8",
-      "padding": 3,
+      "sourceHash": "3e00955b636896cb44fe7cc2c2d863de4a714be356583d5d10fec1f942cb678a",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kaethe-aermel.png",
       "width": 64,
       "height": 64,
-      "hash": "caa8c31486742b5363872db1f3c7e523acb3fbf8b84822bd532d5a815a262a88",
+      "hash": "ed1943b5ace5db28421768e8e5a443c92ceb136458f1b1c2e8b9d897e551dcf1",
       "revision": "precision-v1"
     },
     "skill-dieter-zeche": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-dieter-zeche.png",
-      "sourceHash": "79d75d459d036b7d2180253a8c02baaa2434eeec4815df2d1f1eebb2a4c44306",
-      "padding": 3,
+      "sourceHash": "4c9217a4b9433d1339ff14398cb15c54a411cbd7fc75035d6bd924a4a92ef675",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-dieter-zeche.png",
       "width": 64,
       "height": 64,
-      "hash": "58616fd1c1dc6fc747795610225a6ddbdc97f7e64bb3fde539600ae667217bf7",
+      "hash": "2bfdd78bee10af31c3b1a37ae8bb584a078e9f15c8c6db1b070121a4a62ea407",
       "revision": "precision-v1"
     },
     "skill-kevin-reload": {
       "kind": "skills",
       "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kevin-reload.png",
-      "sourceHash": "287dd3f486aca29a69c8243148e80b5b7325800055d7dae5c20f97a4983fb10e",
-      "padding": 3,
+      "sourceHash": "bd2374a61ae21973416be0a425c97734957648d540d9d9e4cdc54a40169ebdae",
+      "padding": 0,
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/skills/skill-kevin-reload.png",
       "width": 64,
       "height": 64,
-      "hash": "5364c8ed3497cdbadfb502165fb167f9e722f32c482c5cab778b81337a954e05",
+      "hash": "fec8a48a6be41d70e26b8402325741e4f2da5219a3811c9d85d638894fe7e43a",
+      "revision": "precision-v1"
+    },
+    "skill-kaethe-mark": {
+      "kind": "skills",
+      "source": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-mark.png",
+      "sourceHash": "36a557f791bd7ffc82de2003d3074724eced900ea272de41974cda837a55c7f6",
+      "padding": 0,
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/skills/skill-kaethe-mark.png",
+      "width": 64,
+      "height": 64,
+      "hash": "0c49bb9850aff8caa7ef921bf6731f27f1a7d352675c18e883701552543d34b0",
       "revision": "precision-v1"
     },
     "rohrzange": {
