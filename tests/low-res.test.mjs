@@ -21,7 +21,9 @@ test('Renderer: niedrige Auflösung = Dichte 2 unabhängig von Zoom und Pixeldic
  }
 });
 
-test('Spielstand: wer Licht und Effekte schon aus hatte (bisher „Niedrig“), bekommt die niedrige Auflösung mit',async()=>{
+test('Spielstand: Touchgeräte und wer Licht und Effekte schon aus hatte (bisher „Niedrig“) starten mit niedriger Auflösung; eigene Wahl gewinnt',async()=>{
  const {Game}=await import('../engine.js');const src=Game.toString();
- assert.match(src,/lowRes:saved\.settings\?\.lowRes===undefined\?saved\.settings\?\.light===false&&saved\.settings\?\.fx===false:saved\.settings\.lowRes===true/);
+ assert.match(src,/lowRes:saved\.settings\?\.lowRes===undefined\?\(saved\.settings\?\.light===false&&saved\.settings\?\.fx===false\)\|\|touchDevice\(\):saved\.settings\.lowRes===true/);
+ const eng=(await import('node:fs')).readFileSync(new URL('../engine.js',import.meta.url),'utf8');
+ assert.match(eng,/const touchDevice=\(\)=>typeof matchMedia==='function'&&matchMedia\('\(pointer:coarse\)'\)\.matches;/,'Touch = grober Zeiger (Handy/Tablet)');
 });

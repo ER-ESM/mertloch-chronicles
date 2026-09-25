@@ -1071,6 +1071,8 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
 
 **Offen.** 26 Porträts, Hedwig (zu jung, Schürze fehlt) und Ron (neu nach Bibel) nach dem Codex-Reset (Sa 26.09., 21:21). Echte Messung auf Nutzergeräten mit Grafikkarte steht aus.
 
+**Nachtrag 25.09.2026 (Nutzerentscheidungen).** Touchgeräte (grober Zeiger) starten mit „Niedrige Auflösung“, bis der Spieler selbst wählt. Die Auflösungs-Automatik darf bei Überlast bis Dichte 2 gehen, auch unter die Bildschirmauflösung (hebt die frühere Regel „nie unter CSS-Auflösung“ auf). Der alte Frisuren-Weg `hero-layers.js` ist abgeschaltet (Anziehpuppe übernimmt, kein 404 mehr beim Start). Die fehlenden 28 Porträts malt die geplante Windows-Aufgabe `MertlochPortraets` am 26.09. um 21:40 (nach dem Codex-Reset); ins Spiel erst nach Freigabe.
+
 ## E-70 · Fünf Optimierungsrunden „wie WoW“: Grafikdesigner und Spieler als Abnahme (24.09.2026, verfeinert E-67)
 
 **Anlass.** Der Nutzer wollte „5 Optimierungsrunden, aus Sicht Grafikdesigner und aus Sicht Spieler“ mit WoW als Vorbild. Jede Runde hatte zwei unabhängige Prüfer: eine Spieler-Persona, die live spielte (Kenner, Neuling oder Prüfer), und ein Grafikdesign-Review mit Screenshots, Messungen und Zielbildern. Danach setzten ein bis drei Umsetzer die Befunde um, prüften sie und stellten sie live. Belege: `docs/PLAYTEST-2026-09-24-r1…r5-*.md`, `docs/REVIEW-GRAFIK-2026-09-24-r1…r5.md`, `docs/OPTIMIERUNG-2026-09-24-runde-1…5b.md`, Prüfskripte `scripts/optimierung-r1…r5b-check.mjs`.
