@@ -9,7 +9,7 @@
 // Etappe 3 „Big B“: Behauptung und Nachsatz in Zauberleiste und Warnleiste (erst die Behauptung in Anführungszeichen, dann der Nachsatz),
 // parallele Timer (tracks, z. B. Siegelring alle 12 s) als eigene Zeilen mit Timer, Wut-Uhr, Reichweite, Geständnis und Beweise als
 // Chips im Bossrahmen; Ansage mittig beim Eintritt der Wut und beim Geständnis.
-import {DUNGEON_BOSSES,DUNGEON_ENEMIES,DUNGEON_CASTS,COMBAT_RULES,DUNGEON_UI as U,describeCast} from './content/index.js';
+import {DUNGEON_BOSSES,DUNGEON_ENEMIES,DUNGEON_CASTS,COMBAT_RULES,DUNGEON_UI as U,DUNGEON_E4B as U4,describeCast} from './content/index.js';
 import {inDungeon,dungeonRun} from './dungeon.js';
 import {available} from './progression.js';
 import {keyFor} from './rpg.js';
@@ -67,15 +67,15 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
   for(const id of run?.evidence||[]){const f=run.def.evidence?.effects?.[id];if(f)chips.push([f.icon||'lens','',f.note,'bf-good']);}
   const key=chips.map(c=>c.join('|')).join(',');if(key===statusKey)return;statusKey=key;el.hidden=!chips.length;
   el.innerHTML=chips.map(([icon,text,note,cls])=>`<span class="bf-chip ${cls}" tabindex="0" data-tooltip-label="${esc(text||U.alerts.evidence)}" data-tooltip-note="${esc(note)}">${dicon(icon,14)}${text?`<b>${esc(text)}</b>`:''}</span>`).join('');paintDungeonIcons(el);}
- function announce(icon,text){announceEl.hidden=false;announceEl.querySelector('span').innerHTML=dicon(icon,30);announceEl.querySelector('b').textContent=text;paintDungeonIcons(announceEl);announceEl.classList.remove('pop');void announceEl.offsetWidth;announceEl.classList.add('pop');announceUntil=performance.now()+1500;}
+ function announce(icon,text){/* Etappe 4 Teil B: wie eine Raid-Warnung oben mittig unter dem Bossrahmen, nicht auf dem Boss */const fr=frame.hidden?null:frame.getBoundingClientRect();announceEl.style.top=fr&&fr.height?Math.round(fr.bottom+8)+'px':'';announceEl.hidden=false;announceEl.querySelector('span').innerHTML=dicon(icon,30);announceEl.querySelector('b').textContent=text;paintDungeonIcons(announceEl);announceEl.classList.remove('pop');void announceEl.offsetWidth;announceEl.classList.add('pop');announceUntil=performance.now()+1500;}
  function row(r,g,now){const d=describeCast(r.set,r.type,{interrupt:available(g,'interrupt')})||{icon:'trait-hit',hint:'',name:r.cast?.name||''};
   /* Etappe 3: Lüge – erst die Behauptung (in Anführungszeichen), nach tell der Nachsatz; Nebenher-Zeilen mit eigenem Takt */const lie=r.active&&r.live?.lie?(r.live.told===false?'c':'t'):'';
   const key=(r.e?.id??'b')+':'+r.type+':'+(r.active?'a':'n')+(r.track?':t':'')+(lie?':'+lie:'');if(!shownAt.has(key))shownAt.set(key,now);
   const span=r.active?r.total:r.track?Math.max(r.total,(r.every||12)+r.total):Math.max(r.total,COMBAT_RULES.specialInterval+r.total),fill=Math.max(0,Math.min(1,1-r.hit/span));
-  const hint=lie==='c'?'„'+r.live.claimText+'“':lie==='t'?r.live.truthText:d.hint,name=lie==='c'?U.alerts.claim:(d.name||r.cast?.name||'');
+  const again=r.active&&r.live?.interrupts>1&&r.live.broken>0/* Etappe 4 Teil B: „Am eigenen Schopf“ – eine Unterbrechung sitzt, noch eine */,hint=again?U4.alerts.again(r.live.broken,r.live.interrupts):lie==='c'?'„'+r.live.claimText+'“':lie==='t'?r.live.truthText:d.hint,name=lie==='c'?U.alerts.claim:(d.name||r.cast?.name||'');
   return {key,icon:d.icon,hint,name,time:r.hit,fill,active:r.active,interrupt:!!r.cast?.interruptible,trash:!!r.e,lie,track:!!r.track};}
- function paintRows(rows,g){const k=rows.map(r=>r.key+'|'+r.icon).join(',');if(k!==rowsKey){rowsKey=k;list.innerHTML=rows.map(r=>`<div class="ba-row${r.active?' ba-now':''}${r.interrupt?' ba-int':''}${r.trash?' ba-trash':''}${r.lie?' ba-lie ba-lie-'+r.lie:''}${r.track?' ba-track':''}" data-ba="${esc(r.key)}">${dicon(r.icon,26)}<b>${esc(r.hint)}</b><small>${esc(r.name)}</small>${r.interrupt&&r.active?`<kbd>${esc(interruptKey(g))}</kbd>`:''}<span class="ba-time"></span><i class="ba-fill"></i></div>`).join('');paintDungeonIcons(list);}
-  rows.forEach((r,i)=>{const el=list.children[i];if(!el)return;el.querySelector('.ba-time').textContent=r.active&&r.time<.05?U.alerts.now:secs(r.time);el.querySelector('.ba-fill').style.transform='scaleX('+r.fill.toFixed(3)+')';el.classList.toggle('ba-soon',r.time<=1.2);});}
+ function paintRows(rows,g){const k=rows.map(r=>r.key+'|'+r.icon).join(',');if(k!==rowsKey){rowsKey=k;list.innerHTML=rows.map(r=>`<div class="ba-row${r.done?' ba-done':''}${r.active?' ba-now':''}${r.interrupt?' ba-int':''}${r.trash?' ba-trash':''}${r.lie?' ba-lie ba-lie-'+r.lie:''}${r.track?' ba-track':''}" data-ba="${esc(r.key)}">${dicon(r.icon,26)}<b>${esc(r.hint)}</b><small>${esc(r.name)}</small>${r.interrupt&&r.active?`<kbd>${esc(interruptKey(g))}</kbd>`:''}<span class="ba-time"></span><i class="ba-fill"></i></div>`).join('');paintDungeonIcons(list);}
+  rows.forEach((r,i)=>{const el=list.children[i];if(!el)return;el.querySelector('.ba-time').textContent=r.done?'':r.active&&r.time<.05?U.alerts.now:secs(r.time);el.querySelector('.ba-fill').style.transform='scaleX('+r.fill.toFixed(3)+')';el.classList.toggle('ba-soon',r.time<=1.2);});}
  function place(){/* über der höchsten sichtbaren Leiste der Aktionsfläche; am Handy über den Kampfknöpfen (hochkant) bzw. unten mittig zwischen Stick und Knöpfen (quer) */const touch=document.body.classList.contains('touch-mode'),H=innerHeight,Wd=innerWidth;let bottom=8,right=null,left=null,width=null;
   if(touch){const box=s=>{const r=document.querySelector(s)?.getBoundingClientRect();return r&&r.width&&r.height?r:null;},a=box('#touchActions'),st=box('#touchStick'),u=box('#touchUtility'),xp=box('.xp-track');
    if(Wd>H){const l=(st?.right||0)+8,r=(a?.left||Wd)-8;left=l;width=Math.max(200,r-l);bottom=H-(xp&&xp.top>H*.8?xp.top:H)+6;}
@@ -83,8 +83,21 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
   else{let top=H;for(const el of document.querySelectorAll('.action-area>*:not(#interact):not(.interact):not(.rotation-tip):not([role=tooltip]),#interact:not(.hidden)')){const r=el.getBoundingClientRect(),cs=getComputedStyle(el);if(r.height>2&&r.top>H*.5&&cs.visibility!=='hidden'&&cs.display!=='none')top=Math.min(top,r.top);}bottom=H-top+8;}
   list.style.bottom=Math.round(bottom)+'px';list.style.right=right==null?'':Math.round(right)+'px';list.classList.toggle('ba-right',right!=null);if(right!=null&&width)list.style.width=Math.round(width)+'px';
   if(left!=null){list.style.left=Math.round(left+Math.max(0,width-Math.min(width,340))/2)+'px';list.style.width=Math.round(Math.min(width,340))+'px';list.style.transform='none';}else{list.style.left='';if(right==null)list.style.width='';list.style.transform='';}}
+ /* Etappe 4 Teil B (Prüfer-Playtest #562): Nach Q war nicht zu sehen, ob es gewirkt hat. Jetzt steht „Unterbrochen!“ 1,3 s grün auf der
+    Leiste (und in der Zauberleiste des Bossrahmens), dann erlischt es. Unterbrochen = der unterbrechbare Zauber ist weg, bevor er fertig
+    war, und der Gegner ist betäubt (Held und Söldner). Bei „zweimal unterbrechen“ zeigt die Zeile den Zwischenstand. */
+ let watch=new Map(),flashes=[];
+ function watchInterrupts(g,now){
+  flashes=flashes.filter(f=>f.until>now);
+  for(const [e,w] of watch){if(e.cast===w.cast)continue;watch.delete(e);
+   if(e.hp>0&&w.cast.remaining>.12&&e.stun>0)flashes.push({e,until:now+1300,row:{key:'x:'+(e.id??'b')+':'+w.type+':'+Math.round(now),icon:'trait-interrupt',hint:U4.alerts.interrupted,name:w.name,time:0,fill:1,active:true,done:true,interrupt:false,trash:!e.dungeonBoss,lie:'',track:false}});}
+  if(!inDungeon(g))return;for(const e of g.enemies)if(e.cast?.interruptible&&e.hp>0&&e.aggro&&!watch.has(e)){const d=describeCast(e.castSet,e.cast.type,{interrupt:true});watch.set(e,{cast:e.cast,type:e.cast.type,name:d?.name||e.cast.name||''});}
+ }
+ /** Prüfzugang: aktuelle „Unterbrochen!“-Zeilen. */
+ const interruptFlashes=()=>flashes.map(f=>({boss:!!f.e.dungeonBoss,name:f.row.name}));
  function tick(now){raf=requestAnimationFrame(tick);if(now-last<50)return;last=now;const g=game();if(!g){return;}
-  const boss=activeBoss(g),trash=inDungeon(g)?trashCasts(g,boss):[],on=!!boss||trash.length>0;
+  watchInterrupts(g,now);
+  const boss=activeBoss(g),trash=inDungeon(g)?trashCasts(g,boss):[],on=!!boss||trash.length>0||flashes.length>0;
   if(!on){if(!root.hidden){root.hidden=true;document.body.classList.remove('boss-fight','boss-target');setBoss(g,null);rowsKey='';list.innerHTML='';}state={visible:false,rows:[],boss:null};return;}
   if(root.hidden){root.hidden=false;}document.body.classList.toggle('boss-fight',!!boss);document.body.classList.toggle('boss-target',!!boss&&g.target===boss);
   if(boss!==bossRef)setBoss(g,boss);
@@ -99,12 +112,13 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
     cast.querySelector('.bf-cast-time').textContent=secs(boss.cast.remaining);cast.querySelector('i').style.transform='scaleX('+(1-boss.cast.remaining/boss.cast.total).toFixed(3)+')';
     // Ansage nur beim ersten Mal je Kampf (neue Mechanik)
     if(!seen.has(boss.cast.type)){seen.add(boss.cast.type);if(seen.size>0)announce(d?.icon||'trait-hit',(d?.hint||boss.cast.name).toUpperCase()+'!');g.emit?.('sound',{id:'target'});}}
-   else cast.hidden=true;
+   else{/* Etappe 4 Teil B: eben unterbrochen → „Unterbrochen!“ in der Zauberleiste, dann leer */const hit=flashes.find(f=>f.e===boss);cast.hidden=!hit;cast.classList.toggle('bf-done',!!hit);
+    if(hit){cast.classList.remove('bf-claim','bf-truth','bf-int');cast.querySelector('b').textContent=U4.alerts.interrupted;cast.querySelector('kbd').hidden=true;cast.querySelector('.bf-cast-time').textContent='';cast.querySelector('i').style.transform='scaleX(1)';const ico=cast.querySelector('.bf-cast-ico');if(ico.dataset.icon!=='trait-interrupt'){ico.dataset.icon='trait-interrupt';ico.innerHTML=dicon('trait-interrupt',20);paintDungeonIcons(ico);}}}
    const said=boss.saidPhases?.size||0;if(said>phases){phases=said;const def=DUNGEON_BOSSES[boss.bossId],ph=[...(def?.phases||[])].sort((a,b)=>b.at-a.at)[said-1];announce(ph?.summon?'trait-summon':'boss',U.alerts.phase(said+1).toUpperCase()+(ph?.summon?' · '+U.traits.summon.name.toUpperCase():''));frame.classList.remove('bf-phase');void frame.offsetWidth;frame.classList.add('bf-phase');}}
   for(const t of trash)rows.push(row(t,g,now));
-  paintRows(rows.slice(0,3),g);place();
+  paintRows([...flashes.map(f=>f.row),...rows].slice(0,3),g);place();
   if(announceUntil&&now>announceUntil){announceEl.hidden=true;announceUntil=0;}
-  state={visible:true,boss:boss?.bossId||null,rows:rows.map(r=>({key:r.key,hint:r.hint,name:r.name,time:+r.time.toFixed(2),active:r.active,lie:r.lie||'',track:r.track,firstSeen:shownAt.get(r.key)})),frame:!frame.hidden,cast:frame.querySelector('.bf-cast b')?.textContent||'',status:statusKey};
+  state={visible:true,boss:boss?.bossId||null,rows:rows.map(r=>({key:r.key,hint:r.hint,name:r.name,time:+r.time.toFixed(2),active:r.active,lie:r.lie||'',track:r.track,firstSeen:shownAt.get(r.key)})),frame:!frame.hidden,cast:frame.querySelector('.bf-cast b')?.textContent||'',status:statusKey,interrupted:interruptFlashes()};
  }
  raf=requestAnimationFrame(tick);
  const api={state:()=>state,stop:()=>cancelAnimationFrame(raf),root};globalThis.__bossAlerts=api;return api;

@@ -1,0 +1,24 @@
+// Kampf-Klarheit im Dungeon (Etappe 4 Teil B, E-71; Befund Orchestrator am Screenshot dungeon-e3/03-behauptung und Prüfer-Playtest
+// Build #562): Im Kampf stapelten sich Raumtitel, Söldner-Sprechblasen, Ansagen, Proc-Texte und ein doppelter Boss-Rahmen in der Bildmitte.
+// Vorbild WoW: Der Zonentitel kommt nicht, solange gekämpft wird; Raid-Warnungen stehen oben mittig unter dem Bossrahmen; Procs sind
+// kleine Symbole am Helden; der Zielrahmen verschwindet, wenn der Boss das Ziel ist (Bossrahmen reicht).
+// Dieses Modul setzt nur Körperklassen, die CSS (dungeon-e4b.css) und die Einblendungen lesen:
+//   dg-fight   – im Dungeon wird gekämpft (ein Gegner mit Aggro in Kampfnähe): Zonentitel wartet, Kampfrufe rücken seitlich an den Helden
+//   boss-fight – setzt boss-alerts.js (Etappe 2) wie bisher
+import {inDungeon} from './dungeon.js';
+
+const NEAR=560;
+/** Wird im Dungeon gerade gekämpft? Ein lebender Gegner mit Aggro im Kampf in Kampfnähe des Helden (auch als Geist). */
+export function dungeonFight(g){if(!inDungeon(g))return false;const p=g.player;for(const e of g.enemies||[])if(e.hp>0&&e.aggro&&e.ai==='combat'&&Math.hypot(e.x-p.x,e.y-p.y)<NEAR)return true;return false;}
+/** Läuft ein Kampf gegen einen Dungeon-Boss? */
+export function dungeonBossFight(g){if(!inDungeon(g))return false;for(const e of g.enemies||[])if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat')return true;return false;}
+/** Welche Sprechblasen dürfen im Bosskampf stehen? Nur der Boss selbst (Behauptung, Nachsatz, Phasen) und Mitspieler; Söldner, Trash,
+ *  Lautsprecher und Bewohner stehen dann nur im Chat (engine.bark schreibt jede Zeile ins Kampflog). */
+export const BOSS_FIGHT_BARKS=new Set(['boss','phase','player']);
+
+export function mountDungeonClarity({game}){
+ let raf=0,last=0;const body=document.body;
+ function tick(now){raf=requestAnimationFrame(tick);if(now-last<100)return;last=now;const g=game();const on=!!g&&dungeonFight(g);if(body.classList.contains('dg-fight')!==on)body.classList.toggle('dg-fight',on);}
+ raf=requestAnimationFrame(tick);
+ return {stop:()=>cancelAnimationFrame(raf),fight:()=>body.classList.contains('dg-fight')};
+}

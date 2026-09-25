@@ -39,7 +39,7 @@ import {chapterCredit} from './quest-mobs.js';
 import {deNum} from './number-format.js';
 const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
-import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest} from './dungeon.js';
+import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest,quietFloat} from './dungeon.js';
 import {bossOutOfReach,concealed} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
@@ -153,7 +153,7 @@ export class Game{
       seen.open=a.bubble>0;state.set(a.id,seen);
     }
   }
-  float(x,y,text,color='#f3dfaa'){this.texts.push({x,y,text,color,life:1.25,max:1.25});}
+  float(x,y,text,color='#f3dfaa'){if(this.instance&&quietFloat(this,text,x,y))return;/* Dungeon Etappe 4 Teil B: im Bosskampf keine Welt-Worte, die der Bossrahmen schon zeigt */this.texts.push({x,y,text,color,life:1.25,max:1.25});}
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
   /** Tab wie in WoW: Angreifer, dann Feinde, neutrale Tiere nur ohne Feind in Reichweite (tab-target.js). */
   selectNext(reverse=false){return tabTarget(this,reverse);}

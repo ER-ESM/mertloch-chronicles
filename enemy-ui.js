@@ -1,6 +1,7 @@
 import {BOSSES,BOSS_LINES} from './content/index.js';
 import {drawNineSlice} from './content-art.js';
 import {REACTION_COLORS,reactionOf,levelDifficulty,DIFFICULTY_NAMES,DIFFICULTY_COLORS} from './unit-colors.js';
+import {dungeonBossFight,BOSS_FIGHT_BARKS} from './dungeon-clarity.js';
 
 export const isElite=e=>!!(e?.elite||e?.type==='boss');
 const bossDefinition=e=>e.type==='boss'?(BOSSES[e.bossId]||BOSSES[e.family]):undefined;
@@ -40,9 +41,11 @@ export class BossSpeech {
   return game.enemies?.find(e=>e.id===bark.id&&e.hp>0)||game.life?.actors?.find(a=>a.id===bark.id)||{id:bark.id,x:bark.x,y:bark.y};}
  activeBarks(game){
   this.barks=this.barks.filter(b=>game.time<b.until);
+  // Etappe 4 Teil B (Kampf-Klarheit): im Bosskampf spricht in der Welt nur der Boss – Söldner, Trash, Lautsprecher und Bewohner stehen im Chat.
+  const pool=dungeonBossFight(game)?this.barks.filter(b=>BOSS_FIGHT_BARKS.has(b.kind)):this.barks;
   // Höchstens zwei Blasen gleichzeitig: Boss und Phase zuerst, dann Gegner, zuletzt Bewohner; die jüngste je Stufe gewinnt.
   const rank={boss:0,phase:0,chapter:0,player:1,enemy:1,villager:2};
-  const shown=[...this.barks].sort((a,b)=>(rank[a.kind]??1)-(rank[b.kind]??1)||b.until-a.until).slice(0,2);
+  const shown=[...pool].sort((a,b)=>(rank[a.kind]??1)-(rank[b.kind]??1)||b.until-a.until).slice(0,2);
   return shown.map(b=>({enemy:this.barkAnchor(game,b),text:b.text,until:b.until,kind:b.kind}));}
  update(game){
   if(this.game!==game){this.game=game;this.seen=new WeakSet();this.bubbles.clear();this.observed.clear();this.barks=[];}

@@ -5,7 +5,7 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI} from './content/index.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI} from './content/index.js';
 import {makeEnemy} from './encounters.js';
 import {autoLootBag,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
@@ -208,7 +208,7 @@ const floorIndex=f=>FLOOR_ORDER.indexOf(f);
 export function stepLabel(t,side){
  const from=t[side],to=t[side==='a'?'b':'a'];
  if(t.kind==='ladder')return T.step.ladder+' · '+T.ladder[side];
- return T.step[t.kind]+' · '+(floorIndex(to.floor)<floorIndex(from.floor)?T.up:T.down)+' '+T.floorTo[to.floor];
+ return (T.step[t.label]||T.step[t.kind])+' · '+(floorIndex(to.floor)<floorIndex(from.floor)?T.up:T.down)+' '+T.floorTo[to.floor];
 }
 export function dungeonInteraction(g){
  const run=dungeonRun(g);if(!run)return null;const def=run.def,p=g.player,f=floorAt(def,p.x,p.y),near=(pt,r)=>dist(p,pt)<=r*U;
@@ -236,8 +236,10 @@ export function dungeonStep(g,id,side){
  if(heroBusy(g)){g.toast?.(T.busy);return false;}
  if(t.oneWay&&t.oneWay!==side){g.toast?.(T.locked.oneWay);return false;}
  if(t.secret&&!run.secrets.has(t.secret)){g.toast?.(T.locked.secret);return false;}
- if(t.gate?.boss&&t.gate.side===side&&!run.killed.has(t.gate.boss)){g.toast?.(T.locked.gate);return false;}
- if(t.unlock&&!run.unlocked.has(t.id)){if(side!==t.unlock){g.toast?.(T.locked.lift);return false;}run.unlocked.add(t.id);const today=dungeonToday(g,run.id);if(!today.shortcuts.includes(t.id))today.shortcuts.push(t.id);g.toast?.(T.unlocked.lift);g.emit?.('save');}
+ const sc=shortcutState(run,t);/* Etappe 4 Teil B: Abkürzung offen (Boss liegt oder heute schon geöffnet) bzw. zu, bis ihr Boss liegt */
+ if(sc==='closed'){g.toast?.(E4B.shortcuts?.locked?.[t.id]||T.locked.gate);return false;}
+ if(sc!=='open'&&gateShut(run,t,side)){g.toast?.(E4B.shortcuts?.locked?.[t.id]||T.locked.gate);return false;}
+ if(sc!=='open'&&t.unlock&&!run.unlocked.has(t.id)){if(side!==t.unlock){g.toast?.(T.locked.lift);return false;}run.unlocked.add(t.id);const today=dungeonToday(g,run.id);if(!today.shortcuts.includes(t.id))today.shortcuts.push(t.id);g.toast?.(T.unlocked.lift);g.emit?.('save');}
  stop(g);place(g,toWorld(run.def,to.floor,to.x,to.y));g.emit?.('dungeonFloor',{floor:to.floor});return true;
 }
 export function dungeonSecret(g,id){
@@ -629,6 +631,7 @@ export function onDungeonKill(g,e){
  const final=!!DUNGEON_BOSSES[b.id]?.final,firstFinal=final&&!today.final;let secs=0;if(final){today.final=true;rec.clears++;secs=Math.max(1,Math.round(run.elapsed||0));if(!rec.best||secs<rec.best)rec.best=secs;if(!rec.firstClear)rec.firstClear=clock(g);}
  const wing=(run.def.wings||[]).find(w=>w.boss===b.id),first=!!wing&&!today.wings.includes(wing.id)||firstFinal;if(wing&&first)today.wings.push(wing.id);
  const marks=REWARDS.marksPerBoss+(first?REWARDS.daily.marks:0),bonus=first?Math.round((e.xp||0)*REWARDS.daily.xp):0;rec.marks+=marks;
+ openShortcuts(g,run,b.id);/* Etappe 4 Teil B: der Siegelträger öffnet seine Abkürzung zum Hof, bis zum Tagesreset */
  const feats=grantFeats(g,run,e,b.id);
  e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null,repeat,final,feats};if(bonus)g.gainXp?.(bonus);
  const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('dungeonReward',{...e.dungeonReward});g.emit?.('save');
@@ -638,7 +641,7 @@ const clockText=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+' min';
 
 // ── Wegmarke auf der Dungeon-Karte (Etappe 2, Plan §5.3) ──────────────────────────────────────────────────────
 /** Ist ein Übergang von dieser Seite aus gerade benutzbar? (dieselben Regeln wie dungeonStep, ohne Kampf) */
-function stepUsable(run,t,side){if(t.oneWay&&t.oneWay!==side)return false;if(t.secret&&!run.secrets.has(t.secret))return false;if(t.gate?.boss&&t.gate.side===side&&!run.killed.has(t.gate.boss))return false;if(t.unlock&&!run.unlocked.has(t.id)&&side!==t.unlock)return false;return true;}
+function stepUsable(run,t,side){if(t.oneWay&&t.oneWay!==side)return false;if(t.secret&&!run.secrets.has(t.secret))return false;const sc=shortcutState(run,t);if(sc)return sc==='open';if(gateShut(run,t,side))return false;if(t.unlock&&!run.unlocked.has(t.id)&&side!==t.unlock)return false;return true;}
 /** Erster Übergang auf dem Weg von Ebene `from` nach `to` (Breitensuche über die Übergänge) → {t,side} oder null. */
 export function floorRoute(run,from,to){if(from===to)return null;const seen=new Set([from]),queue=[{floor:from,first:null}];
  while(queue.length){const cur=queue.shift();for(const t of run.def.transitions)for(const side of ['a','b']){const s=t[side],o=t[side==='a'?'b':'a'];if(s.floor!==cur.floor||o.floor===cur.floor||seen.has(o.floor)||!stepUsable(run,t,side))continue;const first=cur.first||{t,side};if(o.floor===to)return first;seen.add(o.floor);queue.push({floor:o.floor,first});}}
@@ -649,3 +652,30 @@ export function setDungeonWaypoint(g,pt){const run=dungeonRun(g);if(!run||!pt)re
 export function dungeonDestination(g){const run=dungeonRun(g),wp=run?.waypoint;if(!wp)return null;const p=g.player,here=floorAt(run.def,p.x,p.y);
  if(here===wp.floor){if(dist(p,wp)<24){run.waypoint=null;return null;}return {point:{x:wp.x,y:wp.y},label:T.map?.waypoint||'Wegmarke'};}
  const step=floorRoute(run,here,wp.floor);if(!step)return {point:{x:wp.x,y:wp.y},label:'',unreachable:true};const s=step.t[step.side];return {point:toWorld(run.def,s.floor,s.x,s.y),label:stepLabel(step.t,step.side),step:step.t.id};}
+
+// ── Etappe 4 Teil B (E-71): Kampf-Klarheit, Flügel, Abkürzungen, Truhen, Beweise, Ereignisse, Händler, Erfolge ─────────────────────────
+// Bericht: docs/DUNGEON-ETAPPE-4B-2026-09-25.md. Daten: content/dungeons.js (Grundriss, Packs, Übergänge, Funde) und content/dungeon-e4b.js.
+/** Kampf-Klarheit: Welt-Worte, die im Bosskampf nur doppeln, was Bossrahmen und Warnleiste schon zeigen (Geständnis, Wut, Reichweite,
+ *  Unterbrechen n/m …), entstehen gar nicht erst. Schwächen auf Söldnern (Zertifikat, Hausverbot) auch nicht – am Helden bleiben sie. */
+export function quietFloat(g,text,x,y){
+ if(!inDungeon(g)||typeof text!=='string')return false;const C=E4B.clarity;if(!C||!C.hudFloats.some(w=>text.includes(w)))return false;
+ if(!g.enemies.some(e=>e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'))return false;
+ if(C.heroFloats.some(w=>text.includes(w))&&Math.abs(x-g.player.x)<12&&Math.abs(y-g.player.y)<90)return false;return true;
+}
+/** Ist der Boss gebaut (steht in DUNGEON_BOSSES)? Sperren und Abkürzungen ungebauter Bosse greifen nicht (wie requiredSeals, Etappe 3). */
+const built=id=>!!DUNGEON_BOSSES[id];
+/** Sperre `gate:{boss,side}` am Übergang: zu, solange der (gebaute) Boss steht – nur von `side` aus, ohne side von beiden Seiten.
+ *  Eine heute geöffnete Abkürzung (run.unlocked) hebt sie auf. */
+export function gateShut(run,t,side){const b=t.gate?.boss;if(!b||!built(b))return false;if(t.gate.side&&t.gate.side!==side)return false;return !run.killed.has(b)&&!run.unlocked.has(t.id);}
+/** Abkürzung `shortcut:{boss,only}` (E-71 Flügel: Kette, Aufzug, Pappwand): 'open', sobald ihr Boss liegt oder sie heute schon offen war
+ *  (bleibt bis zum Tagesreset, dungeonToday.shortcuts); 'closed' für reine Abkürzungen (only), solange sie zu ist; sonst null = alte Regeln. */
+export function shortcutState(run,t){const sc=t.shortcut;if(!sc)return null;if(run.unlocked.has(t.id)||built(sc.boss)&&run.killed.has(sc.boss))return 'open';return sc.only?'closed':null;}
+/** Nach dem Sieg über einen Siegelträger: seine Abkürzungen öffnen – für diesen Durchgang und für den Rest des Tages. → geöffnete Ids */
+export function openShortcuts(g,run,bossId){
+ const out=[];const today=dungeonToday(g,run.id);
+ for(const t of run.def.transitions){if(t.shortcut?.boss!==bossId)continue;const fresh=!run.unlocked.has(t.id);run.unlocked.add(t.id);if(!today.shortcuts.includes(t.id))today.shortcuts.push(t.id);if(fresh)out.push(t.id);}
+ if(out.length){run.version++;const w=E4B.shortcuts?.opened;if(w)for(const id of out)g.toast?.(w[id]||w.any);g.emit?.('dungeonShortcut',{ids:out,boss:bossId});}
+ return out;
+}
+/** Übergang von dieser Seite aus benutzbar (Wegmarke, Simulation): dieselben Regeln wie dungeonStep, ohne Kampf. */
+export const transitionUsable=(run,t,side)=>stepUsable(run,t,side);
