@@ -1,9 +1,10 @@
 // Aktionsleisten-Bedienung (2026-09-23): Taste am Platz belegen (Maus darüber + B oder Rechtsklick → „Taste belegen"),
 // Tastatur inkl. Modifikatoren und Maus-Sonderknöpfe (Mausrad-Klick, Seitentasten, weitere – nie Links-/Rechtsklick) lösen den Platz aus,
 // Anzahl der Leisten in Hilfe → Einstellungen. Belegungslogik: bar-keys.js, Speicher: rpg.barKeys / rpg.barCount.
-import {ACTION_BAR_TEXT as T} from './content/index.js';
+import {ACTION_BAR_TEXT as T,describe as contentDescribe,SLOT_FUNCTION,TALENT_SKILLS,RESOURCES} from './content/index.js';
 import {actionBar,bindSkill,setBarCount,BAR_SIZE,MAX_BARS} from './rpg.js';
 import {bindingAt,assignBinding,bindingFromKey,bindingFromMouse,bindingLabel,slotForBinding,slotName} from './bar-keys.js';
+import {handCard,rostState,resourceKind} from './class-resources.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const typing=t=>!!t&&(/INPUT|TEXTAREA|SELECT/.test(t.tagName||'')||t.isContentEditable);
 const plain=e=>!e.shiftKey&&!e.ctrlKey&&!e.altKey&&!e.metaKey;
@@ -11,6 +12,27 @@ const plain=e=>!e.shiftKey&&!e.ctrlKey&&!e.altKey&&!e.metaKey;
 /** Zeile für Hilfe → Einstellungen: Anzahl der Aktionsleisten (1–4). */
 export function barSettings(game){const n=game.rpg.barCount||1;
  return `<div class="bar-settings" data-bar-settings><span class="setting-label">${T.settingsLabel}</span><span class="bar-count-control"><button type="button" class="outline-button" data-bar-count="-1" aria-label="${T.remove}"${n<=1?' disabled':''}>−</button><output aria-live="polite">${n}</output><button type="button" class="outline-button" data-bar-count="1" aria-label="${T.add}"${n>=MAX_BARS?' disabled':''}>+</button></span><small>${T.settingsHint}</small></div>`;}
+
+// --- Eckzeichen „heilt / schützt“ (E-72 R5, Kenner-Nachtest: „auf der Leiste sieht man nicht, was heilt und was Schaden macht“) ---
+// Grünes Plus = Heilung, Schild = Schutz (Parade, Deckung, Schild); Schaden ist der Normalfall und bleibt ohne Zeichen. Quelle sind die
+// Kategorien der Kniffe (content/categories.js: Leistenplatz + Glossarbegriffe). Lebensraub zählt nicht als Heilung (Nebenwirkung).
+const HEAL_TERMS=new Set(['heilung','hauspflege','vorrat','grossreinemachen']),GUARD_TERMS=new Set(['deckung','parade','schadensminderung']);
+const SLOT_IDS=new Set(['strike','mark','burst','interrupt','parry','dash','heal']),CARD_IDS=new Set(['strike','mark','burst','aermel']),roleCache=new Map();
+/** Rolle eines Kniffs laut seinen Kategorien: 'heal', 'guard' oder null. */
+export function staticSkillRole(cls,id){
+ const key=cls+'/'+id;if(roleCache.has(key))return roleCache.get(key);
+ const ref=SLOT_IDS.has(id)?['skill',cls+'/'+id]:id==='throw'||id==='ground'?[id,cls]:id==='buff'?['buff',cls]:TALENT_SKILLS[id]?['talentSkill',id]:null,terms=(ref&&contentDescribe(...ref)?.terms)||[],slot=ref?SLOT_FUNCTION[id]:null;
+ const role=slot==='heilung'||terms.some(t=>HEAL_TERMS.has(t))?'heal':slot==='abwehr'||terms.some(t=>GUARD_TERMS.has(t))?'guard':null;roleCache.set(key,role);return role;}
+/** Laufende Rolle: Käthes Karten nach Farbe (Herz heilt, Pik schützt), Schorschs Servieren nach dem garsten Stück (Wurst heilt, Käse schützt). */
+export function skillRole(game,id){const kind=resourceKind(game);
+ if(kind==='cards'&&CARD_IDS.has(id)){const c=id==='aermel'?game.res?.sleeve:handCard(game,id);return c?.suit==='herz'?'heal':c?.suit==='pik'?'guard':null;}
+ if(kind==='grill'&&id==='burst'){const charcoal=RESOURCES.schorsch?.rost?.charcoal||1.4,it=rostState(game).filter(x=>x.done<charcoal).sort((a,b)=>b.done-a.done)[0];return it?.item==='wurst'?'heal':it?.item==='kaese'?'guard':null;}
+ return staticSkillRole(game.member?.id,id);}
+/** Eckzeichen an allen Kniff-Knöpfen (nach jedem Leistenaufbau über paint(), laufend aus resource-hud.js für Karten und Grillgut). */
+export function syncSkillRoles(game,root=globalThis.document){if(!game?.member||!root)return;
+ for(const b of root.querySelectorAll('.action-area .skill[data-skill],#touchActions .touch-skill[data-skill]')){const role=skillRole(game,b.dataset.skill);let i=b.querySelector(':scope>.skill-role');
+  if(!role){if(i)i.remove();if('skillRole' in b.dataset)delete b.dataset.skillRole;continue;}
+  if(b.dataset.skillRole!==role)b.dataset.skillRole=role;if(!i){i=document.createElement('i');i.className='skill-role';i.setAttribute('aria-hidden','true');b.append(i);}}}
 
 /** api: game(), canAct(), trigger(index), rebuild(), events(), toast(text) */
 export function mountActionBars(api){
@@ -20,6 +42,7 @@ export function mountActionBars(api){
  const slotEl=i=>document.querySelector('.action-area .action-bar [data-action-slot="'+i+'"]');
  const hovered=()=>document.querySelector('.action-area .action-bar [data-action-slot]:hover');
  function paint(){
+  /* E-72 R5: buildActions ruft paint() nach jedem Aufbau – Eckzeichen „heilt/schützt“ gleich mitsetzen */try{syncSkillRoles(api.game());}catch{}
   document.querySelectorAll('.action-bar .key-capture').forEach(el=>el.classList.remove('key-capture'));
   if(!capture){hint.hidden=true;return;}
   const el=slotEl(capture.index);if(!el){stop();return;}

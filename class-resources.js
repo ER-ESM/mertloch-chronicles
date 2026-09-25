@@ -181,11 +181,18 @@ function overheat(g,st,cs){
  emitCombatFx(g,'overheat',p,{radius:o.radius});g.emit?.('shake',{strength:5});note(g,r.hud.overheat,'#ff7a3a');fireProcs(g,'overheat',cs);
 }
 function cookStep(g,st,dt,cs){const r=R(g),z=zoneOf(g,st.glut,cs),m=mech(g),smoke=!!m?.rauch&&st.glut<m.rauch.below;let rate=dt/r.rost.cookTime*z.cook*(1+num(cs,'cookSpeed'))*(st.cookBoost>0?1.5:1);if(smoke)rate*=m.rauch.cook;for(const it of st.rost){it.done+=rate;if(smoke&&it.done<.6)it.smoked=true;}}
+/** E-72 R5 (Kenner-Nachtest 26.09.): Am Grill zählt als Kampf nur, solange ein Gegner wirklich dran ist. Der Nachlauf von p.inCombat
+ *  (7 s nach dem letzten Treffer, engine.js) ist Ruhe – vorher kühlte die Glut darin mit voller Rate weiter (40 → 5 in 7 s), und der
+ *  nächste Kampf begann „kalt“ (−15 %, Garen ×0,5). */
+export const grillEngaged=g=>g.player.inCombat>0&&g.enemies.some(e=>e.hp>0&&e.aggro&&e.ai!=='returning');
+/** Ruhe am Grill: Glut läuft zur Ruheglut (`rest`) und nie darunter – kalt wärmt mit `decay` je s auf, heiß kühlt langsam (`restCool`) ab. */
+export function restGlut(r,glut,dt){const d=r.rest-glut;return d>0?glut+Math.min(d,r.decay*dt):glut-Math.min(-d,(r.restCool??r.decay)*dt);}
 function tickGrill(g,st,r,dt,cs,inCombat){
- const p=g.player;st.cool=Math.max(0,(st.cool||0)-dt);st.lock=Math.max(0,st.lock-dt);st.perfectCd=Math.max(0,st.perfectCd-dt);st.noDecay=Math.max(0,st.noDecay-dt);st.cookBoost=Math.max(0,st.cookBoost-dt);st.parryBonus=Math.max(0,st.parryBonus-dt);
- if(inCombat){if(st.noDecay<=0)st.glut=Math.max(0,st.glut-(r.decay+num(cs,'glutDecay'))*dt);}
- else{const d=r.rest-st.glut;st.glut+=Math.sign(d)*Math.min(Math.abs(d),r.decay*dt);}
- const z=zoneOf(g,st.glut,cs);if(inCombat&&z.burn)selfDamage(g,p.maxHp*z.burn*dt,'Hitze');
+ const p=g.player,fight=inCombat&&grillEngaged(g);st.cool=Math.max(0,(st.cool||0)-dt);st.lock=Math.max(0,st.lock-dt);st.perfectCd=Math.max(0,st.perfectCd-dt);st.noDecay=Math.max(0,st.noDecay-dt);st.cookBoost=Math.max(0,st.cookBoost-dt);st.parryBonus=Math.max(0,st.parryBonus-dt);
+ if(fight){if(st.noDecay<=0)st.glut=Math.max(0,st.glut-(r.decay+num(cs,'glutDecay'))*dt);}
+ else st.glut=restGlut(r,st.glut,dt);
+ if(fight&&!st.fight)grillStart(g,st,cs);st.fight=fight;
+ const z=zoneOf(g,st.glut,cs);if(fight&&z.burn)selfDamage(g,p.maxHp*z.burn*dt,'Hitze');
  cookStep(g,st,dt,cs);
  const charcoal=r.rost.charcoal+num(cs,'burntGrace');for(const it of st.rost)if(it.done>=charcoal){it.gone=true;emitCombatFx(g,'serve',p,{item:it.item,charcoal:true});}st.rost=st.rost.filter(it=>!it.gone);
  for(const e of g.enemies){if(!(e.burn?.t>0))continue;e.burn.t-=dt;e.burn.tick-=dt;if(e.burn.tick<=0&&e.hp>0){e.burn.tick=1;g.damage(e,e.burn.dps,'Glutbrand');}}
@@ -195,6 +202,13 @@ function planOf(g,cs){const r=R(g),m=mech(g),base=[...(m?.chef?.plan||m?.rauch?.
 const rostSlots=(g,cs)=>R(g).rost.slots+num(cs,'rostSlots');
 /** Was „Auflegen“ als Nächstes auf den Rost legt (Anzeige am Knopf, E-72 Runde 3). */
 const nextItem=(g,st,cs)=>{const plan=planOf(g,cs);return plan.length?plan[(st.plan||0)%plan.length]:null;};
+/** Auflegen: nächstes Stück aus dem Grillplan roh auf den Rost. */
+function layItem(g,st,cs){const plan=planOf(g,cs),item=plan[(st.plan||0)%plan.length];st.plan=(st.plan||0)+1;st.rost.push({item,done:0,smoked:false});emitCombatFx(g,'serve',g.player,{item,lay:true});return item;}
+/** Kampfbeginn am Grill (E-72 R5, Kenner: „Auflegen → warten → Servieren wirkt zäh“): Liegt nichts auf dem Rost, legt Schorsch das erste
+ *  Stück von selbst auf – genau wie ein Druck auf Auflegen in der ersten Sekunde, darum läuft auch dessen Abklingzeit an. Auflegen ist frei
+ *  und ohne globale Abklingzeit, wer gut spielt, drückt es ohnehin sofort: Rotation und Zahlen bleiben gleich, nur die leeren ersten Sekunden
+ *  (erst Zange, dann merken, dass nichts gart) fallen weg. Nicht in der Hofprobe – dort lernt man Auflegen selbst. */
+function grillStart(g,st,cs){if(st.rost.length||!available(g,'mark')||(g.tutorial&&!g.tutorial.completed))return;layItem(g,st,cs);const s=g.skills.find(x=>x.id==='mark');g.cooldowns.mark=Math.max(g.cooldowns.mark||0,(s?.cd??3)*(1-(cs.haste||0)));}
 function ripest(g,st,cs){const r=R(g),charcoal=r.rost.charcoal+num(cs,'burntGrace');return st.rost.filter(it=>it.done<charcoal).sort((a,b)=>b.done-a.done)[0]||null;}
 function doneness(g,it,cs){const r=R(g),garHi=r.rost.gar[1]+num(cs,'garWindow'),burnt=r.rost.burnt+num(cs,'burntGrace');if(it.done<r.rost.gar[0])return {state:'roh',factor:r.burntFactor};if(it.done<=garHi)return {state:'gar',factor:1,perfect:true};if(it.done<burnt)return {state:'durch',factor:1};return {state:'verkohlt',factor:r.burntFactor};}
 export function rostState(g){const st=g.res,r=R(g);if(!st||r?.kind!=='grill')return [];const cs=g.cs||{};return st.rost.map(it=>({item:it.item,name:r.items[it.item].name,done:it.done,state:doneness(g,it,cs).state,smoked:!!it.smoked}));}
@@ -331,7 +345,7 @@ export function performClassSkill(g,id,s,e,point,cs,context){
   return false;
  }
  if(r.kind==='grill'){
-  if(id==='mark'){const plan=planOf(g,cs),item=plan[st.plan%plan.length];st.plan++;st.rost.push({item,done:0,smoked:false});emitCombatFx(g,'serve',p,{item,lay:true});return true;}
+  if(id==='mark'){layItem(g,st,cs);return true;}
   if(id==='burst'){serve(g,st,cs,validTarget(g,175+(cs.range||0)),context);return true;}
   if(id==='heal'){const v=r.vent;st.glut=ventGlut(g,st.glut,cs);/* nur kühlen: kein „steigt in den goldenen Bereich“ */healPlayer(g,lifeBase(g)*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
   if(id==='buff'){st.noDecay=s.duration||6;addGlut(g,st,s.glut||r.gain.buff,cs);emitCombatFx(g,'glut',p,{bellows:true});return true;}

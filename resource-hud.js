@@ -10,6 +10,7 @@ import {resourceHud,resourceVariant,handCard,cardName} from './class-resources.j
 import {RESOURCES,RESOURCE_HUD_TEXT as T} from './content/index.js';
 import {drawSprite,pixelText,pixelTextWidth,suitGlyph,drawCard,paintBigCardCanvas,suitColor,drawBadge,spriteSize,sprite} from './resource-art.js';
 import {cardSlotName} from './mechanic-help.js';
+import {syncSkillRoles} from './action-bar-ui.js';
 // Runde 4 (hud4, Kenner-Playtest 25.09. abends): Tooltip-Flächen werden beim Wiederaufbau übernommen statt neu angehängt (Tod,
 // Wiederbeleben, Klassen-/Heldenwechsel, Schrein), die Augen-Marken sind schmale Kerben, Käthes Kartenknöpfe heißen nach ihrer
 // Karte, Abrechnen zahlt sichtbar aus (Augen fliegen zum Ziel, große Zahl, Stempel), Annis Trend steht getrennt von den Likes,
@@ -19,12 +20,19 @@ import {cardSlotName} from './mechanic-help.js';
 const GLOSSARY={rage:'zeche',trend:'trend',ammo:'pfandbon',grill:'grillrost',cards:'blatt'};
 /** Abrechnen: so lange fliegen die Augen von der Leiste zum Ziel (die Weltkarten sammeln sich solange, dann der Fächer, resource-fx-art.js). */
 export const PAYOUT_MS=500;
+/** Pfandautomat getroffen: so lange steht der goldene Balken mit dem Stempel „BON!“ (R5; vorher 450 ms und sofort ausgeblendet). */
+export const RELOAD_HIT_MS=1100;
 /** Lage des Pfandautomaten (rein, testbar): waagerecht mittig über der Aktionsleiste (rects[0]), senkrecht `gap` px über dem
  *  höchsten sichtbaren Rechteck (Leiste, Mechanik-Anzeige, „Sammeln“, Zauberbalken). Koordinaten relativ zu `shell`. */
 export function reloadSpot(rects,shell,height,gap=12){const bar=rects[0],list=rects.filter(r=>r&&r.width>0&&r.height>0);if(!bar||!list.length)return null;const top=Math.min(...list.map(r=>r.top));return {left:Math.round(bar.left+bar.width/2-shell.left),top:Math.round(top-shell.top-gap-height)};}
 /** Auszahlung beim Abrechnen (rein, testbar): Zahl der fliegenden Augen, Stempel, Multiplikator und die große Zahl. */
 export function payoutPlan({augen=0,grand=false,damage=0}={}){const C=RESOURCES.kaethe||{schneider:90,schwarz:120,abrechnen:{schneider:1.5,schwarz:2}},level=grand?'grand':augen>=C.schwarz?'schwarz':augen>=C.schneider?'schneider':'',mult=augen>=C.schwarz?C.abrechnen.schwarz:augen>=C.schneider?C.abrechnen.schneider:1;
  return {tokens:Math.max(5,Math.min(15,Math.round(augen/8))),level,stamp:level?T.payout.stamp[level]:'',mult,number:damage>0?Math.round(damage).toLocaleString('de-DE'):String(augen),caption:T.payout.caption(augen,mult),gold:!!level};}
+/** Kevins Band (rein, testbar; Kartenpixel des Bands): Bon-Halter links, Leergut-Grasfleck mit Abstand rechts, Zahl-Abzeichen daran.
+ *  gap = Abstand zwischen beiden (mindestens 8 = 16 CSS-Pixel), damit die Leergut-Zahl nie als Bon-Zahl gelesen wird (Kenner-Nachtest R5). */
+export function ammoLayout(h,H=20){const bx=1,bw=4+Math.max(1,h.bonMax|0)*8,y0=2,hh=Math.max(8,H-3),gap=8,px=bx+bw+gap,pw=30,r=5;return {bx,bw,y0,h:hh,gap,px,pw,cx:px+pw-r-2,cy:y0+r+2,r};}
+/** Käthes Farbkette als Plättchen (rein, testbar): Farbe, Kettenlänge (Karten in Folge) und Bonus in Prozent. */
+export function chainChip(chain,bonusPer=RESOURCES.kaethe?.follow?.bonus??.2){if(!chain?.suit)return null;const n=Math.max(0,chain.n|0);return {suit:chain.suit,cards:n+1,bonus:Math.round(n*bonusPer*100),count:'×'+(n+1),pct:n>0?'+'+Math.round(n*bonusPer*100)+'%':''};}
 const noise=(i,s=1)=>{const n=Math.sin(i*127.1+s*311.7)*43758.5453;return n-Math.floor(n);};
 const mix=(a,b,t)=>{const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),A=p(a),B=p(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');};
 const px=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
@@ -63,8 +71,9 @@ export function mountResourceHud(getGame){
  let lastGame=null;
  function events(g){if(g!==lastGame){lastGame=g;lastFx=g.fx.reduce((m,f)=>Math.max(m,f.id||0),0);anims.length=0;abrechnenHits=0;}for(const f of g.fx){if(!(f.id>lastFx))continue;lastFx=f.id;if(f.type!=='combat')continue;
    /* Abrechnen: die Engine meldet erst die Treffer, dann das Ereignis – die Summe ist die große Zahl der Auszahlung */if(f.kind==='hit'&&f.label==='Abrechnen'){abrechnenHits+=f.amount||0;continue;}
-   if(!WATCH.has(f.kind))continue;anims.push({kind:f.kind,at:performance.now(),data:f});dirty=true;if(f.kind==='abrechnen'){payout(g,f,abrechnenHits);abrechnenHits=0;}}
-  const now=performance.now();for(let i=anims.length-1;i>=0;i--)if(now-anims[i].at>900)anims.splice(i,1);}
+   if(!WATCH.has(f.kind))continue;anims.push({kind:f.kind,at:performance.now(),data:f});dirty=true;if(f.kind==='abrechnen'){payout(g,f,abrechnenHits);abrechnenHits=0;}
+   /* R5: Pfandautomat mit Ton – Treffer klingt hell ansteigend, Fehlgriff dumpf (app.js sound) */if(f.kind==='reload-perfect')g.emit?.('sound',{id:'unlock'});if(f.kind==='reload-jam')g.emit?.('sound',{id:'hit'});}
+  const now=performance.now();for(let i=anims.length-1;i>=0;i--)if(now-anims[i].at>Math.max(900,RELOAD_HIT_MS))anims.splice(i,1);}
  const recent=(k,ms=700)=>{const now=performance.now();for(let i=anims.length-1;i>=0;i--){const a=anims[i];if(a.kind===k&&now-a.at<ms)return {...a,t:(now-a.at)/ms};}return null;};
 
  // --- Leisten (in .bar.energy) -------------------------------------------------------------------------------------
@@ -139,11 +148,18 @@ export function mountResourceHud(getGame){
    const cx=5+h.trendMax*9+5,cy=10,r=6,idle=clamp((h.idle||0)/Math.max(.1,h.decayAfter)),active=h.trend>0&&g.player.inCombat>0,left=1-idle,col=left<.3?'#e2463d':'#ff9a4a';
    for(let yy=-r;yy<=r;yy++)for(let xx=-r;xx<=r;xx++){const d=Math.hypot(xx+.5,yy+.5);if(d>r+.2||d<r-2.2)continue;const a=(Math.atan2(xx+.5,-(yy+.5))+TAU)%TAU/TAU;px(c,cx+xx,cy+yy,1,1,!active?'#3a2a32':a<=left?col:'#3a2a32');}
    px(c,cx,cy,1,1,active?col:'#5a4a52');if(h.viral>0){drawSprite(c,'spark',cx+r+5,cy+2,1);pixelText(c,'×'+h.viral,cx+r+8,cy-2,1,'#ffd35a');}},
-  ammo(c,W,H,h,now,g){const gold=recent('reload-perfect',500);for(let i=0;i<h.bonMax;i++){const x=6+i*8,full=i<h.bons;if(full){let dy=0;if(gold&&i===h.bons-1)dy=-Math.round((1-ease(gold.t))*8);drawSprite(c,gold&&i===h.bons-1&&gold.t<.6?'bonGold':'bon',x,15+dy,1,{outline:'#2a2418'});}else{c.globalAlpha=.3;drawSprite(c,'bon',x,15,1,{tint:['#2a3a30',.8]});c.globalAlpha=1;}}
-   if(h.pickups>0){const x=6+h.bonMax*8+8,step=Math.floor(now/320)%2;/* Runde 4 (Kenner-Befund 7): Bild statt „×2“ allein – Flasche liegt im Gras, ein Stiefel tritt drauf (= drüberlaufen sammelt ein), glitzert */
-    const gy=Math.min(19,H-1);/* Grasnarbe; Handy-Band ist niedriger */px(c,x-5,gy,18,1,'#4f8a44');px(c,x-4,gy+1,16,1,'#2a5a26');for(const gx of [x-4,x+1,x+9])px(c,gx,gy-2,1,2,'#6fae5a');drawSprite(c,'bottle',x+4,gy-2,1,{outline:'#0a140a',angle:-Math.PI/2+.18,anchor:'center'});
-    if(Math.sin(now/170)>.35)drawSprite(c,'spark',x+7,gy-6,1);drawSprite(c,'boot',x+4,gy-(step?7:10),1,{outline:'#1a0e06'});
-    pixelText(c,'×'+h.pickups,x+13,gy-8,1,'#d8f0b0');}},
+  ammo(c,W,H,h,now,g){const gold=recent('reload-perfect',500),L=ammoLayout(h,H);
+   /* R5 (Kenner-Nachtest: „×7 neben den Bons wird als Bon-Zahl gelesen“): die Bons stecken in einem eigenen Halter mit Goldrand; das
+      Leergut am Boden steht mit Abstand rechts davon auf einem Grasfleck, die Zahl als grünes Abzeichen AN der Flasche – ohne „×“. */
+   px(c,L.bx,L.y0,L.bw,L.h,'#1c1a12');c.globalAlpha=.85;px(c,L.bx,L.y0,L.bw,1,'#a8841e');px(c,L.bx,L.y0+L.h-1,L.bw,1,'#5a4410');px(c,L.bx,L.y0,1,L.h,'#a8841e');px(c,L.bx+L.bw-1,L.y0,1,L.h,'#5a4410');c.globalAlpha=1;
+   for(let i=0;i<h.bonMax;i++){const x=6+i*8,full=i<h.bons;if(full){let dy=0;if(gold&&i===h.bons-1)dy=-Math.round((1-ease(gold.t))*8);drawSprite(c,gold&&i===h.bons-1&&gold.t<.6?'bonGold':'bon',x,15+dy,1,{outline:'#2a2418'});}else{c.globalAlpha=.3;drawSprite(c,'bon',x,15,1,{tint:['#2a3a30',.8]});c.globalAlpha=1;}}
+   if(h.pickups>0){const x=L.px,step=Math.floor(now/320)%2,gy=L.y0+L.h-2;/* Grasfleck mit hellem Rand: „liegt am Boden“ */
+    px(c,x,L.y0,L.pw,L.h,'#16301a');c.globalAlpha=.9;px(c,x,L.y0,L.pw,1,'#6fae5a');px(c,x,L.y0+L.h-1,L.pw,1,'#2a5a26');px(c,x,L.y0,1,L.h,'#6fae5a');px(c,x+L.pw-1,L.y0,1,L.h,'#2a5a26');c.globalAlpha=1;
+    px(c,x+1,gy,L.pw-2,1,'#4f8a44');for(const gx of [x+3,x+8,x+15])px(c,gx,gy-2,1,2,'#6fae5a');const bx=x+8;drawSprite(c,'bottle',bx,gy-2,1,{outline:'#0a140a',angle:-Math.PI/2+.18,anchor:'center'});
+    if(Math.sin(now/170)>.35)drawSprite(c,'spark',bx+4,gy-6,1);drawSprite(c,'boot',bx-1,gy-(step?7:10),1,{outline:'#1a0e06'});
+    /* Zahl als rundes Abzeichen oben rechts am Grasfleck (wie ein Zähler an der Flasche) */const t=String(h.pickups),tw=pixelTextWidth(t,1),cx=L.cx,cy=L.cy,r=L.r;
+    for(let yy=-r-1;yy<=r;yy++)for(let xx=-r-1;xx<=r;xx++){const d=Math.hypot(xx+.5,yy+.5);if(d>r+.4)continue;px(c,cx+xx,cy+yy,1,1,d>r-.6?'#0a140a':d>r-1.6?'#b9f09a':'#2f6a2c');}
+    pixelText(c,t,cx-Math.floor(tw/2),cy-2,1,'#f2ffe8');}},
   grill(c,W,H,h,now,g){const n=Math.max(1,h.slots),cell=prev.cell=Math.min(CELL,Math.floor((W-14)/n)),x0=1,served=recent('serve',520),charcoal=RESOURCES.schorsch?.rost?.charcoal||1.3,gar=RESOURCES.schorsch?.rost?.gar||[.6,.9],cy=Math.round(H/2),R=Math.min(12,Math.floor(cell/2)-2,Math.floor(H/2)-2);
    // Garring: Spur mit goldenem Zielbereich (gar), darüber der Füllstand in der Farbe der Garstufe; innen der Rost, darauf das Stück (2-fach)
    const COL={roh:'#e8868a',gar:'#f2c14e',durch:'#b06a34',verkohlt:'#5a1a10'};
@@ -166,7 +182,13 @@ export function mountResourceHud(getGame){
    for(let i=0;i<layers;i++){const dx=shuffled?Math.round(Math.sin(shuffled.t*TAU*2+i)*2*(1-shuffled.t)):0;drawCard(c,x+i+dx,y-i+2,cw,ch-2,1,null,{back:true});}
    if(h.deck>0){const t=String(h.deck),tw=pixelTextWidth(t,1),bx=x+layers-1+Math.round((cw-tw)/2),by=y-layers+3+6;px(c,bx-1,by-1,tw+2,7,'#f6efdc');pixelText(c,t,bx,by,1,'#4e1a24');}
    x+=cw+layers+4;
-   if(h.chain?.suit){const col=suitColor(h.chain.suit),pulse=thrown&&h.chain.n>0?1+Math.sin(Math.PI*thrown.t)*.2:1;px(c,x,4,9,9,'#f6efdc');px(c,x,4,9,1,'#d8cfb4');suitGlyph(c,h.chain.suit,x+1,5,pulse>1.05?1:1,col);if(h.chain.n>0)pixelText(c,'×'+(h.chain.n+1),x+11,6,1,h.chain.n>=2?'#ffd35a':'#f6efdc');x+=11+(h.chain.n>0?pixelTextWidth('×'+(h.chain.n+1),1)+3:0);}
+   /* R5 (Kenner-Nachtest: „Farbe bedienen sieht man nur beim Hovern“): die laufende Farbkette als eigenes Plättchen – großes Farbzeichen
+      auf Kartenpapier, daneben groß „×N“ (Karten in Folge) und darunter der Bonus in Gold; wächst die Kette, springt es kurz. */
+   const chip=chainChip(h.chain);if(chip){const col=suitColor(chip.suit),grow=thrown&&chip.cards>1?Math.sin(Math.PI*thrown.t):0,lift=Math.round(grow*2),on=chip.cards>1;
+    px(c,x,1-lift,18,18,'#171f29');px(c,x+1,2-lift,16,16,'#f8f0d5');px(c,x+1,16-lift,16,2,'#e4dcc3');if(on){px(c,x,1-lift,18,1,'#ffd35a');px(c,x,18-lift,18,1,'#c8961e');}suitGlyph(c,chip.suit,x+2,3-lift,2,col);
+    const tx=x+21,big=on?(grow>.3?'#fff3b0':'#ffd35a'):'#e8dcc0';px(c,tx-1,1,pixelTextWidth(chip.count,2)+2,11,'#1a141888');pixelText(c,chip.count,tx,1,2,big);
+    if(chip.pct){const pw=pixelTextWidth(chip.pct,1);px(c,tx-1,12,pw+2,7,'#1a1418');pixelText(c,chip.pct,tx,13,1,'#f2c14e');}
+    x=tx+Math.max(pixelTextWidth(chip.count,2),chip.pct?pixelTextWidth(chip.pct,1):0)+4;}
    if(h.next){x+=2;c.globalAlpha=.9;drawCard(c,x,y,cw,ch,1,h.next,{});c.globalAlpha=1;/* Auge */px(c,x+cw-5,y-1,4,2,'#fff6c8');px(c,x+cw-4,y-1,2,2,'#4a6ad0');x+=cw+3;}
    if(h.sleeve){x+=2;drawCard(c,x,y-1,cw,ch,1,h.sleeve,{});for(let k=0;k<cw+2;k++)px(c,x-1+k,y+ch-6,1,5,(k%2?'#7a3a6a':'#5a2a52'));px(c,x-1,y+ch-6,cw+2,1,'#a86a98');x+=cw+3;}}
  };
@@ -176,19 +198,19 @@ export function mountResourceHud(getGame){
   const M=(key,x,y,w,hh,label,note)=>{keepM.add(key);hit('meter',key,bar,x,y,w,hh,MW,MH,label,note);},Tr=(key,x,y,w,hh,label,note)=>{keepT.add(key);hit('tray',key,tray,x,y,w,hh,TW,TH,label,note);};
   if(h.kind==='rage'){M('bar',0,0,MW,MH,T.rage.label,T.rage.note(Math.floor(h.value),h.surgeAt));Tr('bon',0,0,Math.min(TW,prev.bonLen+6||TW),TH,T.tab.label,T.tab.note(Math.round(h.tab),Math.round(h.tabMax)));}
   if(h.kind==='trend'){const bonus=Math.round(h.trend*((RESOURCES.baerbel?.trend?.bonusPerLevel)||.04)*100*100)/100;M('bar',0,0,MW,MH,T.likes.label,T.likes.note(Math.floor(h.value)));Tr('hearts',0,0,5+h.trendMax*9,TH,T.trendLabel(h.trendName,h.trend,h.trendMax),T.trend.note(h.viewers.toLocaleString('de-DE'),Math.round(bonus),h.viral>0)+'<br>'+T.trendRule);const left=Math.max(0,h.decayAfter-(h.idle||0));Tr('algo',5+h.trendMax*9-2,0,16,TH,T.algo.label,T.algo.note(g.player.inCombat>0&&h.trend>0?fmt(left.toFixed(1)):0));}
-  if(h.kind==='ammo'){M('bar',0,0,MW,MH,T.crate.label,T.crate.note(h.value,h.max));Tr('bons',0,0,4+h.bonMax*8,TH,T.bons.label,T.bons.note(h.bons,h.bonMax,Math.round(((RESOURCES.kevin?.bon?.power)||.35)*100)));if(h.pickups>0)Tr('pickups',4+h.bonMax*8,0,36,TH,T.pickups.label,T.pickups.note(h.pickups));}
+  if(h.kind==='ammo'){const L=ammoLayout(h,TH);M('bar',0,0,MW,MH,T.crate.label,T.crate.note(h.value,h.max));Tr('bons',0,0,L.bx+L.bw+2,TH,T.bons.label,T.bons.note(h.bons,h.bonMax,Math.round(((RESOURCES.kevin?.bon?.power)||.35)*100)));if(h.pickups>0)Tr('pickups',L.px-2,0,L.pw+4,TH,T.pickups.label,T.pickups.note(h.pickups));}
   if(h.kind==='grill'){const z=h.zones.find(z=>z.id===h.zone)||h.zones[0];M('bar',0,0,MW,MH,h.zoneName,T.glut.note(Math.floor(h.value),Math.round((z.damage||0)*100)));{const x0=Math.min(8,MH),tw=MW-x0-1,xv=v=>x0+Math.round(tw*clamp(v/h.max)),pz=h.zones.find(z=>z.id==='perfekt')||{};M('perfect',xv(h.perfect[0])-1,0,xv(h.perfect[1])-xv(h.perfect[0])+2,MH,T.perfect.label,T.perfect.note(h.perfect[0],h.perfect[1],Math.round((pz.damage||0)*100)));}if(h.locked>0)M('lock',0,0,MW,MH,T.locked.label,T.locked.note(fmt(h.locked.toFixed(1))));
    for(let i=0;i<h.slots;i++){const it=h.rost[i],cw=prev.cell||CELL;Tr('slot'+i,1+i*cw,0,cw,TH,it?it.name:T.rost.label,it?T.rost.note(T.states[it.state]+(it.smoked?' · '+T.smoked:''),Math.round(it.done*100)):T.rost.empty);}}
   if(h.kind==='cards'){M('bar',0,0,MW,MH,T.augen.label,T.augen.note(Math.floor(h.value),h.win,h.schneider,h.schwarz));/* Runde 4 (Kenner-Befund 2): die Marken sind schmale Kerben (4 Kartenpixel = 8 px) – der Rest der Leiste gehört dem Augen-Tooltip, der alle Schwellen nennt */for(const [k,v] of [['win',h.win],['schneider',h.schneider],['schwarz',h.schwarz]]){const x=Math.min(MW-1,Math.round(MW*v/h.max)),x0=Math.max(0,Math.min(MW-4,k==='win'?x-3:x-2));M('mark-'+k,x0,0,4,MH,T.marks[k].label,T.marks[k].note(v,h.value>=v));}const layers=h.deck<=0?0:h.deck<8?1:h.deck<16?2:3;Tr('deck',0,0,16+layers,TH,T.deck.label,T.deck.note(h.deck));let x=18+layers;
-   if(h.chain?.suit){const w=11+(h.chain.n>0?pixelTextWidth('×'+(h.chain.n+1),1)+3:0),bonus=Math.round(h.chain.n*((RESOURCES.kaethe?.follow?.bonus)||.25)*100);Tr('chain',x,0,w,TH,T.chain.label,T.chain.note(RESOURCES.kaethe.suits[h.chain.suit].name,h.chain.n,bonus));x+=w;}
+   if(h.chain?.suit){const chip=chainChip(h.chain),w=21+Math.max(pixelTextWidth(chip.count,2),chip.pct?pixelTextWidth(chip.pct,1):0)+4,bonus=Math.round(h.chain.n*((RESOURCES.kaethe?.follow?.bonus)||.25)*100);Tr('chain',x,0,w,TH,T.chain.label,T.chain.note(RESOURCES.kaethe.suits[h.chain.suit].name,h.chain.n,bonus));x+=w;}
    if(h.next){Tr('next',x,0,17,TH,T.next.label,cardName(h.next));x+=17;}if(h.sleeve)Tr('sleeve',x,0,17,TH,T.sleeve.label,cardName(h.sleeve));}
   hideHits('meter',keepM);hideHits('tray',keepT);}
 
  // --- Pfandautomat (Kevin): Balken über der Leiste --------------------------------------------------------------------
  function placeReload(host){const shell=host.getBoundingClientRect(),vis=e=>{if(!e||e.hidden||e.classList.contains('hidden'))return null;const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden'||Number(cs.opacity)===0)return null;const r=e.getBoundingClientRect();return r.width&&r.height?r:null;};
   const rects=['.action-area','#interact','#classMechanicArt','#playerCast','#rotationTip'].map(s=>vis(document.querySelector(s)));if(!rects[0])return;const spot=reloadSpot(rects,shell,reload.offsetHeight||30);if(!spot)return;reload.style.left=spot.left+'px';reload.style.top=Math.max(8,spot.top)+'px';}
- function drawReload(g,h,now){const r=h?.reload,perfect=recent('reload-perfect',450),jam=recent('reload-jam',700);const show=!!r||!!perfect;
-  if(!show){if(reload)reload.hidden=true;return false;}
+ function drawReload(g,h,now){const r=h?.reload,perfect=recent('reload-perfect',RELOAD_HIT_MS),jam=recent('reload-jam',700);const show=!!r||!!perfect;
+  if(!show){if(reload){reload.hidden=true;syncReloadStamp('');}return false;}
   /* Runde 4 (Kenner-Befund 7): über allem, was über der Leiste steht (Aktionsleiste, Mechanik-Anzeige, „Sammeln“, Zauberbalken) –
      nie darauf. Desktop: Lage aus den Rechtecken (höchstens alle 250 ms gemessen); Handy: feste Lage aus resource-hud.css. */const touch=document.body.classList.contains('touch-mode'),host=document.querySelector('#gameShell')||document.querySelector('.action-area');if(!host)return false;
   if(!reload){reload=el('div','rh-reload',host);reload.setAttribute('role','timer');reloadArt=el('canvas','',reload);reload.dataset.tooltipLabel=T.reload.label;reload.dataset.tooltipNote=T.reload.note;reloadPlace=0;}else if(reload.parentNode!==host){host.append(reload);reloadPlace=0;}
@@ -202,8 +224,18 @@ export function mountResourceHud(getGame){
   const nx=Math.min(W-4,xv(t)),shake=jam&&jam.t<.5?Math.round(Math.sin(now/20)*1):0;px(c,nx-1+shake,1,3,H-2,'#1a1410');px(c,nx+shake,1,1,H-2,r?.jam>0?'#ff8a5a':'#ffffff');
   if(jam&&jam.t<1){for(let i=0;i<5;i++){const a=noise(i,Math.floor(now/60))*TAU,d=2+jam.t*6;c.globalAlpha=1-jam.t;px(c,nx+Math.round(Math.cos(a)*d),Math.round(H/2+Math.sin(a)*d*.6),1,1,i%2?'#ffd35a':'#ffffff');}c.globalAlpha=1;}
   if(r?.jam>0){/* Klemmer: „+1 s“ neben der Nadel */const txt='+'+fmt(r.jam)+' s',tw=pixelTextWidth(txt,1),bx=nx+4+tw+3<W?nx+4:nx-tw-5,by=Math.round(H/2)-3;px(c,bx-1,by-1,tw+3,8,'#3a0a06');pixelText(c,txt,bx+1,by+1,1,Math.floor(now/120)%2?'#ffd35a':'#ff8a5a');}
-  if(perfect){c.globalAlpha=(1-perfect.t)*.7;px(c,0,0,W,H,'#ffe08a');c.globalAlpha=1;}
-  reload.classList.toggle('now',inZone);reload.classList.toggle('jam',!!(r?.jam>0));reload.style.opacity=!r&&perfect?String(1-perfect.t):'';return true;}
+  /* R5 (Kenner-Nachtest: „nicht erkennbar, ob der goldene Moment getroffen wurde“): Treffer = der ganze Balken läuft golden voll, Glanz
+     wandert durch, Goldblitz; darüber springt der Stempel „BON!“ mit Münzen. Fehlgriff = Stempel „KLEMMT!“ in Rost, solange der Automat hakt. */
+  if(perfect&&!r){const k=perfect.t;px(c,x0,3,tw,H-6,'#e8b84a');px(c,x0,3,tw,1,'#fff3b0');px(c,x0,H-4,tw,1,'#a8741f');const gx=x0+Math.round(tw*clamp(k*1.6));c.globalAlpha=.8;px(c,gx-3,3,3,H-6,'#fffbe0');c.globalAlpha=1;}
+  if(perfect){c.globalAlpha=Math.max(0,1-perfect.t*2.2)*.8;px(c,0,0,W,H,'#fff6c0');c.globalAlpha=1;}
+  syncReloadStamp(perfect?'bon':(r?.jam>0||jam)?'jam':'');
+  reload.classList.toggle('now',inZone);reload.classList.toggle('jam',!!(r?.jam>0));reload.classList.toggle('hit',!!perfect&&!r);reload.style.opacity=!r&&perfect?String(perfect.t<.7?1:Math.max(0,1-(perfect.t-.7)/.3)):'';return true;}
+ /** Stempel über dem Pfandautomaten: „BON!“ (golden, Münzen springen) oder „KLEMMT!“ (Rost, zittert). Nur bei Wechsel neu aufgebaut. */
+ let coinUrl=null;const coinImage=()=>{if(coinUrl===null){try{coinUrl=sprite('coin',{outline:'#3a2a10'})?.toDataURL?.()||'';}catch{coinUrl='';}}return coinUrl;};
+ function syncReloadStamp(mode){let st=reload.querySelector(':scope>.rh-reload-stamp');if(!mode){if(st)st.hidden=true;if(st)st.dataset.mode='';return;}
+  if(!st){st=el('b','rh-reload-stamp',reload);st.setAttribute('aria-live','polite');}if(st.dataset.mode===mode&&!st.hidden)return;
+  st.dataset.mode=mode;st.hidden=false;st.textContent=mode==='bon'?(RESOURCES.kevin?.hud?.bon||'BON!'):T.reload.jam;st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop');
+  if(mode==='bon'&&!globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches){const url=coinImage();for(let i=0;i<5;i++){const coin=el('i','rh-reload-coin',reload);if(url)coin.style.backgroundImage='url('+url+')';coin.style.setProperty('--dx',Math.round((i-2)*26+(noise(i,7)-.5)*14)+'px');coin.style.setProperty('--dy',Math.round(-34-noise(i,3)*26)+'px');coin.style.animationDelay=(i*35)+'ms';coin.addEventListener?.('animationend',()=>coin.remove());setTimeout(()=>coin.remove(),1600);}}}
 
  // --- Käthe: Gegnerkarte am Zauberbalken des Ziels --------------------------------------------------------------------
  function syncEnemyCard(g,h){const e=g.target,card=h?.kind==='cards'&&e?.hp>0?e.cast?.card:null,host=document.querySelector('#enemyCast');
@@ -335,7 +367,7 @@ export function mountResourceHud(getGame){
    if(h.kind==='grill'){const ripe=h.rost.reduce((b,it,i)=>it.done<(RESOURCES.schorsch?.rost?.charcoal||1.3)&&(b<0||it.done>h.rost[b].done)?i:b,-1);if(!recent('serve',520))prev.servedSlot=ripe>=0?ripe:undefined;}
    if(h.kind==='rage'){const strokes=Math.min(24,Math.ceil(clamp(h.tab/Math.max(1,h.tabMax))*24));if(!recent('tab-pay',650))prev.strokesBefore=strokes;}
    const sig=signature(h);if(sig!==lastSig){lastSig=sig;dirty=true;}
-   tooltips(g,h);syncEnemyCard(g,h);syncRepeat(g,h);syncStamp(h);syncTrendName(g,h);syncSlots(g,h);if(needHover)rehover();
+   tooltips(g,h);syncEnemyCard(g,h);syncRepeat(g,h);syncStamp(h);syncTrendName(g,h);syncSlots(g,h);/* R5: Eckzeichen heilt/schützt (Karten und Grillgut wechseln laufend) */syncSkillRoles(g);if(needHover)rehover();
    tray.classList.toggle('in-combat',g.player.inCombat>0);},
   /** Jedes Bild: Ereignisse lesen, bei Bedarf zeichnen. */
   frame(now=performance.now()){const g=getGame();if(!g||!kind||!meter)return;events(g);const h=resourceHud(g);
