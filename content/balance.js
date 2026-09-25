@@ -65,6 +65,10 @@ export const BALANCE=Object.freeze({
   gap:{grace:2,damagePerLevel:.1,damageFloor:.25,aggroPerLevel:.15,grey:5},
   pack:{max:3,specialGap:1.2},         // Kettenzug holt höchstens max Gegner zugleich in den Kampf; Spezialangriffe eines Rudels liegen ≥ specialGap s auseinander
   wakeGuard:10,                        // „kurzer Schutz“ nach dem Aufwachen: so lange bemerkt dich kein Gegner, bis du selbst angreifst
+  // Ankündigung (E-72 Runde 5, Kenner-Nachtest: Ruhewart warf im Augenblick des Bemerkens aus 18 m): wer dich von sich aus bemerkt, zeigt
+  // show s ein „!“; Fernkämpfer zücken ranged s den Block, bevor sie werfen. Bist du dann weiter als calm × Bemerk-Reichweite weg, lassen
+  // sie ab. barkKeep: so lange nach dem Ruf beim Bemerken entfällt die Angriffszeile beim ersten Spezialangriff (eine Blase je Kampf).
+  alert:{ranged:1.5,show:1.2,calm:1.35,barkKeep:20},
   startPad:450,                        // Startreihe (E-55): Feldgegner so nah an einem Tiergebiet oder Treffpunkt wachsen nicht mit der Spielerstufe (encounters.scaledStats)
   // Laufwege (safe-route.js): jede Einheit Weg durch ein Gegnerrevier kostet penalty Einheiten extra; Revier = Heim + roamShare × Streifradius
   // + Aggro-Reichweite + margin. Ein Umweg darf höchstens detour × kürzester Weg + slack lang sein (sonst mit halber, viertel Strafe erneut).

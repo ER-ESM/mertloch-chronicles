@@ -1,7 +1,7 @@
 import {rng,distance,inside,segmentDistance} from './world.js';
 import {residential} from './world-layout.js';
 import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES,enemyScale,pickElite} from './content/index.js';
-import {inStartArea} from './foe-rules.js';
+import {inStartArea,nearEntry} from './foe-rules.js';
 
 export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2});
 export {ARCHETYPES,ELITES};
@@ -46,7 +46,7 @@ export class EncounterDirector{
       // Bebauungsmaske aus den Häusern (world-layout.js) – die alte Flächensuche hielt Lücken zwischen den
       // Polygonen für Feld und ließ aggressive Reviere mitten im Ort entstehen.
       const field=!residential(w,p);
-      const S=SPAWN_TABLES,town=distance(p,w.spawn),far=town>S.tierDistance,aggressive=field&&town>S.aggressiveMinDistance&&random()>1-S.aggressiveChance;let kind=pickSpawn(aggressive?S.aggressive:S.neutral,random,far),def=ARCHETYPES[kind];
+      const S=SPAWN_TABLES,town=distance(p,w.spawn),far=town>S.tierDistance,aggressive=field&&town>S.aggressiveMinDistance&&random()>1-S.aggressiveChance&&!nearEntry(w,p)/* Einstieg an Kisten-Ida (foe-rules.js, E-72 R5) – nach dem Würfeln, der Zufallsstrom bleibt gleich */;let kind=pickSpawn(aggressive?S.aggressive:S.neutral,random,far),def=ARCHETYPES[kind];
       // Elite-Auswahl gewichtet aus ELITE_TABLE (content/enemies.js): auch Oberpraktikant Olaf kann erscheinen.
       const elite=aggressive?pickElite(town,random):null;const grow=far&&!inStartArea(w,p);/* Startreihe wächst nicht mit (foe-rules.js, E-72 R4) */
       if(elite&&random()<S.eliteChance){kind=elite.kind;def=elite.def;}
