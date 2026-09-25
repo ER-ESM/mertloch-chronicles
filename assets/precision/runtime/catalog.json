@@ -64125,14 +64125,14 @@
     "koenigskette": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/koenigskette.png",
-      "sourceHash": "22fda62500a2fc1442eea8f960903d7a42ada87395663bd251a024535486ed01",
+      "sourceHash": "45e4edc02ad91eab3b0e1b5c76848493668ca8966be5e62787041f4a8e07f870",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/koenigskette.png",
       "width": 64,
       "height": 64,
-      "hash": "22fda62500a2fc1442eea8f960903d7a42ada87395663bd251a024535486ed01",
+      "hash": "45e4edc02ad91eab3b0e1b5c76848493668ca8966be5e62787041f4a8e07f870",
       "revision": "precision-v1"
     },
     "schaerpe": {
@@ -65244,14 +65244,14 @@
     "korkenzieher-kellermeister": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/korkenzieher-kellermeister.png",
-      "sourceHash": "c09290dd046c5dd030681b54b4d5d6ccb173945b2855325975be4387c7d3cdac",
+      "sourceHash": "27060041ba50dd23f95a5d1d8377e7d4827603a35b102e4830a134483fe76e21",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/korkenzieher-kellermeister.png",
       "width": 64,
       "height": 64,
-      "hash": "c09290dd046c5dd030681b54b4d5d6ccb173945b2855325975be4387c7d3cdac",
+      "hash": "27060041ba50dd23f95a5d1d8377e7d4827603a35b102e4830a134483fe76e21",
       "revision": "precision-v1"
     },
     "pelzmantel-baron": {
@@ -65374,14 +65374,14 @@
     "kollektefeder": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/kollektefeder.png",
-      "sourceHash": "b9957e67e6d45348d8127c246fedad1cc2d82eae7d00f756aaf259e330fc684d",
+      "sourceHash": "0e2effd88815b096452c692dd3b8c1f3e1255fe5db717d20e7939a9755b48379",
       "padding": 0,
       "palette": "waffen",
       "delivery": "2026-09-25",
       "path": "assets/precision/runtime/items/kollektefeder.png",
       "width": 64,
       "height": 64,
-      "hash": "b9957e67e6d45348d8127c246fedad1cc2d82eae7d00f756aaf259e330fc684d",
+      "hash": "0e2effd88815b096452c692dd3b8c1f3e1255fe5db717d20e7939a9755b48379",
       "revision": "precision-v1"
     },
     "lankabel": {
