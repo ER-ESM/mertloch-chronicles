@@ -162,24 +162,6 @@
     "motif": "Zerknülltes Dosenblech (Symbolwort metal); Motiv für zuendkerze bleibt Maler-Auftrag."
   },
   {
-    "id": "hausordnung",
-    "output": "assets/precision/sources/2026-09-25/freigestellt/hausordnung.png",
-    "width": 64,
-    "height": 64,
-    "padding": 0,
-    "kind": "items",
-    "palette": "waffen",
-    "delivery": "2026-09-25",
-    "date": "2026-09-25",
-    "tool": "Freistellen (Code, kein Imagegen): tools/sprite-pipeline/freistellen.mjs",
-    "from": "assets/content-art/items/semantic-atlas.png",
-    "cell": 14,
-    "hole": 120,
-    "part": 150,
-    "fuer": "hausordnung (bis ein gemaltes Hausordnungs-Symbol kommt); das Symbolwort badge zeigt gear-badge",
-    "motif": "Ausweis mit Porträt am Clip (Atlas-Motiv badge), freigestellt."
-  },
-  {
     "id": "claw",
     "output": "assets/precision/sources/2026-09-25/freigestellt/claw.png",
     "width": 64,

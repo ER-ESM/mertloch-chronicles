@@ -64,7 +64,8 @@ test('jede Waffe hat ihr gemaltes Symbol (64 px, Katalog, Laufzeitdatei, Offline
  const urls=JSON.parse(read('precache-manifest.js').toString().match(/self.PRECACHE=(.*);/s)[1]).urls;
  for(const [id,want] of Object.entries(WAFFEN)){const a=catalog.assets[id];
   assert.ok(a,id+': Symbol fehlt im Präzisionskatalog');assert.equal(a.kind,'items');assert.equal(a.width,64);assert.equal(a.height,64);
-  assert.equal(a.path,'assets/precision/runtime/items/'+id+'.png');assert.equal(a.source,'assets/precision/sources/2026-09-25/'+id+'.png');
+  // Quelle: Waffenkammer (sources/2026-09-25/<id>.png) oder neu gemalt in der Icon-Runde (sources/2026-09-25/icons/<id>.png, icons-uebernehmen.mjs)
+  assert.equal(a.path,'assets/precision/runtime/items/'+id+'.png');assert.ok(['assets/precision/sources/2026-09-25/'+id+'.png','assets/precision/sources/2026-09-25/icons/'+id+'.png'].includes(a.source),id+': Quelle '+a.source);
   assert.ok(existsSync(new URL('../'+a.path,import.meta.url)),id+': Laufzeitdatei');assert.ok(urls.includes(a.path),id+': nicht im Offline-Cache');
   // unverändert übernommen: Laufzeitbild = gemaltes Original, Pixel für Pixel
   assert.deepEqual(decodePng(read(a.path)).data,decodePng(read(a.source)).data,id+': Symbol verändert');
