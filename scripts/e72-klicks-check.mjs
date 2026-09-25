@@ -153,15 +153,17 @@ const PARTS={
   await meadow();
   const log=[];let stacked=false,cardSeen=false;const t0=Date.now();
   for(let k=0;k<16;k++){const cr=await rect('.memory-card:not([hidden])');const [px,py]=cr&&k%2?[cr.x+cr.w/2,cr.y+cr.h/2]:[W*(.18+(k%4)*.07),H*(.3+(k%3)*.12)];
-   if(!cr&&!(await freeAt(px,py))){await wait(250);continue;}
-   await stopWalk();await click(px,py,'right');await wait(150);const s=await walkState();
+   await stopWalk();if(!cr&&!(await freeAt(px,py))){await wait(250);continue;}
+   await click(px,py,'right');await wait(150);const s=await walkState();
+   /* Liegt unter dem Punkt eine Figur, ist Angreifen/Ansprechen die richtige Antwort (kein Laufen) – das zählt als bedient, nicht als verschluckt */
+   const unit=s.nav>0?'':await read(`(()=>{const R=globalThis.__mertloch.renderer,p=R.screenToWorld(${Math.round(px)},${Math.round(py)}),u=__k.tui.unitAt(game,p.x,p.y);return u?(u.kind||'figur')+(game.target===u.ref||game.target===u?' (Ziel)':''):'';})()`);
    const st=JSON.parse(await read(`JSON.stringify({card:document.querySelector('.memory-card:not([hidden]) strong')?.textContent||'',tip:(()=>{const t=document.querySelector('#itemTooltip');return t.classList.contains('hidden')?'':t.textContent.slice(0,30);})()})`));
    if(st.card)cardSeen=true;if(st.card&&st.tip&&!(await read(`!!document.querySelector('.memory-card:hover')`)))stacked=true;
-   log.push(((Date.now()-t0)/1000).toFixed(1)+' s '+(cr&&k%2?'auf Karte':'Welt')+' → '+(s.nav>0?'läuft':'NICHT')+(st.card?' · Karte '+st.card:'')+(st.tip?' · Tooltip '+st.tip:''));
+   log.push(((Date.now()-t0)/1000).toFixed(1)+' s '+(cr&&k%2?'auf Karte':'Welt')+' → '+(s.nav>0?'läuft':unit?'Figur: '+unit:'NICHT')+(st.card?' · Karte '+st.card:'')+(st.tip?' · Tooltip '+st.tip:''));
    if(k===7)await shot('12-nach-aufwachen-karte-rechtsklick-laeuft');await wait(250);}
   notes.nachTod=log;console.log('  '+log.join('\n  '));
   ok(cardSeen,'nach dem Aufwachen erscheint die Karte „Wurst Case“');
-  ok(log.every(l=>/läuft/.test(l)),'nach Tod/Aufwachen: jeder Rechtsklick (Welt und Karte) läuft ('+log.length+')');
+  ok(log.every(l=>/läuft|Figur/.test(l))&&log.filter(l=>/läuft/.test(l)).length>=log.length-2,'nach Tod/Aufwachen: jeder Rechtsklick (Welt und Karte) wird bedient – '+log.filter(l=>/läuft/.test(l)).length+'/'+log.length+' laufen, Rest trifft eine Figur');
   ok(!stacked,'kein Bild-Tooltip neben der Karte, solange die Maus nicht auf ihr ist');
  },
  async intro(){
@@ -236,7 +238,7 @@ const PARTS={
   // Kniff mit echter Abklingzeit auf der Hauptleiste und seine Taste
   const pick=JSON.parse(await read(`(()=>{const {rpg,prog}=__k,bar=rpg.actionBar(game),c=[];for(let i=0;i<10;i++){const id=bar[i],s=game.skills.find(s=>s.id===id);if(!s||!prog.available(game,id)||s.ground||s.classBuff||!(s.cd>=4))continue;const k=rpg.keyFor(game,id);if(/^\\d$/.test(k))c.push({id,name:s.name,key:k,cd:s.cd});}c.sort((a,b)=>a.cd-b.cd);return JSON.stringify(c[0]||null);})()`));
   assert.ok(pick,'Kniff mit Abklingzeit auf der Leiste');
-  await read(`(()=>{window.__el=[];window.__toastBad=[];const el=document.querySelector('.error-line');new MutationObserver(()=>{if(el.classList.contains('show'))window.__el.push([Math.round(performance.now()),el.textContent]);}).observe(el,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});const t=document.querySelector('#toast');new MutationObserver(()=>{if(/verschnaufen|nicht bereit|bereits einen/.test(t.textContent)&&t.classList.contains('visible'))window.__toastBad.push(t.textContent);}).observe(t,{attributes:true,childList:true,characterData:true,subtree:true});})()`);
+  await read(`(()=>{window.__el=[];window.__toastBad=[];const el=document.querySelector('.error-line');if(el)new MutationObserver(()=>{if(el.classList.contains('show'))window.__el.push([Math.round(performance.now()),el.textContent]);}).observe(el,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});const t=document.querySelector('#toast');new MutationObserver(()=>{if(/verschnaufen|nicht bereit|bereits einen/.test(t.textContent)&&t.classList.contains('visible'))window.__toastBad.push(t.textContent);}).observe(t,{attributes:true,childList:true,characterData:true,subtree:true});})()`);
   await press(pick.key);await wait(250);
   ok(await read(`(game.cooldowns[${JSON.stringify(pick.id)}]||0)>1.5`),`${pick.name} [${pick.key}] gewirkt (Abklingzeit ${pick.cd} s)`);
   // 3 s lang alle 150 ms die Taste hämmern (echte Tastenereignisse)
@@ -246,7 +248,8 @@ const PARTS={
   const shows=lines.filter((l,i)=>!i||l[0]-lines[i-1][0]>50);
   console.log('  Fehlerzeile:',JSON.stringify(shows));
   ok(shows.length>=1&&shows.length<=2&&shows.every((l,i)=>!i||l[0]-shows[i-1][0]>=1950),`20 Drücke in 3 s → ${shows.length}× „${shows[0]?.[1]}“ (höchstens einmal je 2 s)`);
-  ok((await read('JSON.stringify(window.__toastBad)'))==='[]','keine große rote Kurzmeldung „verschnaufen“');
+  const bad=JSON.parse(await read('JSON.stringify(window.__toastBad)'));if(bad.length)console.log('  Kurzmeldungen:',JSON.stringify([...new Set(bad)]));
+  ok(!bad.length,'keine große rote Kurzmeldung „verschnaufen“');
   ok(await read(`![...document.querySelectorAll('.chat-line')].some(l=>/verschnaufen/.test(l.textContent))`),'nicht im Chat');
   const st=JSON.parse(await read(`(()=>{const e=document.querySelector('.error-line'),c=getComputedStyle(e),t=getComputedStyle(document.querySelector('#toast'));return JSON.stringify({size:parseFloat(c.fontSize),color:c.color,bg:c.backgroundColor,toastSize:parseFloat(t.fontSize)});})()`));
   ok(st.size<=16&&st.size<st.toastSize,`leise Zeile: ${st.size} px (Kurzmeldung ${st.toastSize} px), Farbe ${st.color}, kein Kasten`);
