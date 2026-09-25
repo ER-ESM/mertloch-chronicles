@@ -57,8 +57,10 @@ async function openIda(){
  throw Error('Ida öffnet kein Gespräch');
 }
 async function clearMemory(){
- if(!await exists('.popup-memory'))return null;
- const title=await b.evaluate('document.querySelector(".popup-memory h2").textContent');
+ // E-72 Runde 3: am Desktop Randkarte (.memory-card, Titel in der Kopfzeile), am Handy das Fenster
+ for(let i=0;i<40&&!await exists('.popup-memory,.memory-card:not([hidden])');i++)await wait(250);
+ if(!await exists('.popup-memory,.memory-card:not([hidden])'))return null;
+ const title=await b.evaluate('document.querySelector(".popup-memory h2,.memory-card:not([hidden]) .memory-card-head strong").textContent');
  await b.click('[data-memory-next]');await wait(250);return title;
 }
 try{
@@ -78,7 +80,8 @@ try{
  await b.evaluate('(()=>{const g=window.game;g.tutorial.step=7;Object.assign(g.player,{x:g.world.npc.x,y:g.world.npc.y+6});})()');
  await b.press('Escape');await wait(200);if(!await exists('.popup-dialog')){await b.press('f');await wait(300);}await b.click('[data-tutorial-next]');await wait(600);
  assert.ok(!(await state()).tutorial.completed===false,'Hofprobe ist bestanden');
- assert.ok(await exists('.popup-memory'),'Erinnerungsfetzen blendet sich nach der Hofprobe ein');
+ for(let i=0;i<40&&!await exists('.popup-memory,.memory-card:not([hidden])');i++)await wait(250);
+ assert.ok(await exists('.popup-memory,.memory-card:not([hidden])'),'Erinnerungsfetzen blendet sich nach der Hofprobe ein');
  await screenshot('erinnerung-stempel');
  assert.equal(await clearMemory(),MEMORY_FRAGMENTS[0].title);
  checks.push('Erinnerungs-Einblendung (Sepia, eine Schaltfläche) erscheint und lässt sich bestätigen');

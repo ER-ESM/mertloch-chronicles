@@ -287,9 +287,11 @@ try{
   const frag=${JSON.stringify(MEMORY_FRAGMENTS[MEMORY_FRAGMENTS.length-1])};
   g.events.push({type:'memory',fragment:frag});return true;})()`);
  await wait(600);
- assert.ok(!await exists('.popup-memory'),'Erinnerung wartet, solange ein Fenster offen ist (P9)');
- await b.press('Escape');for(let i=0;i<60&&!await exists('.popup-memory');i++){/* Erinnerungen warten auf Ruhe (kein Kampf, kein Laufweg, keine Meldung) – nahe Gegner an der Bude halten den Helden sonst im Kampf */await b.evaluate('(()=>{const g=window.game;g.player.inCombat=0;g.moveTo=null;g.path=[];g.keys.clear();g.enemies.forEach(e=>{if(Math.hypot(e.x-g.player.x,e.y-g.player.y)<500)e.aggro=false;});})()');await wait(200);}/* Freischalt-Meldung (Erinnerungen) läuft vorher ab */
- assert.ok(await exists('.popup-memory'),'Erinnerung erscheint, sobald kein Fenster mehr offen ist '+JSON.stringify(await windows()));
+ // E-72 Runde 3 (Kenner-Befund 10): Am Desktop ist die Erinnerung eine Randkarte (memory-card.js) – sie wartet nicht mehr auf leere
+ // Fenster und schließt keines (das Figurfenster bleibt offen); am Handy bleibt sie ein Fenster, das auf ein leeres Fenster wartet (P9).
+ const MEM='.memory-card:not([hidden])';
+ for(let i=0;i<60&&!await exists(MEM);i++){/* Erinnerungen warten auf Ruhe (kein Kampf, kein Laufweg, keine Meldung) – nahe Gegner an der Bude halten den Helden sonst im Kampf */await b.evaluate('(()=>{const g=window.game;g.player.inCombat=0;g.moveTo=null;g.path=[];g.keys.clear();g.enemies.forEach(e=>{if(Math.hypot(e.x-g.player.x,e.y-g.player.y)<500)e.aggro=false;});})()');await wait(200);}/* Freischalt-Meldung (Erinnerungen) läuft vorher ab */
+ assert.ok(await exists(MEM),'Erinnerung erscheint als Randkarte '+JSON.stringify(await windows()));assert.ok((await windows()).includes('person'),'Figurfenster bleibt neben der Erinnerung offen');
  await screenshot('erinnerung-wartet');
  await b.click('[data-memory-next]');await wait(350);
  /* Runde 2: Erinnerungen sind ein Reiter der Aufträge (Symbolreiter unten, Name als aria-label/Tooltip) */await b.press('j');await wait(450);await b.evaluate("document.querySelector('[data-ql-tab=\"memories\"]')?.click()");await wait(350);
@@ -299,7 +301,7 @@ try{
  assert.ok(!memories.includes('…'),'Keine „…“-Zeilen mehr');
  await screenshot('erinnerungsliste');
  await clearOverlays();
- checks.push('P9/P10: Erinnerungen warten auf ein leeres Fenster; verdeckte Fetzen tragen Text, Überschrift aus PANEL_UI');
+ checks.push('P9/P10: Erinnerung als Randkarte neben offenen Fenstern (E-72 R3), am Handy wartet sie auf ein leeres Fenster; verdeckte Fetzen tragen Text, Überschrift aus PANEL_UI');
 
  // 10 · Mobil 400 px
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
