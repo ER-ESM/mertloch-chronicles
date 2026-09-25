@@ -182,7 +182,7 @@ function tickGrill(g,st,r,dt,cs,inCombat){
  for(const e of g.enemies){if(!(e.burn?.t>0))continue;e.burn.t-=dt;e.burn.tick-=dt;if(e.burn.tick<=0&&e.hp>0){e.burn.tick=1;g.damage(e,e.burn.dps,'Glutbrand');}}
  for(const z of g.fields){if(!['rauch','oven','deckelzu'].includes(z.kind)||z.remaining<=0)continue;z.pulse=(z.pulse||0)-dt;if(z.pulse>0)continue;z.pulse=1;for(const e of foes(g,z,z.radius)){if(z.taunt){addThreat(e,'player',400);e.aggro=true;e.ai='combat';}if(z.damage)g.damage(e,z.damage,'Rauch');}}
 }
-function planOf(g,cs){const r=R(g),m=mech(g),base=[...(m?.chef?.plan||m?.rauch?.plan||r.plan)];for(const [k,item] of [['planWurst','wurst'],['planBraten','braten'],['planMais','mais'],['planKaese','kaese']])if(cs[k])base.push(item);return base;}
+function planOf(g,cs){const r=R(g),m=mech(g),base=[...(m?.chef?.plan||m?.rauch?.plan||m?.flamme?.plan||r.plan)];for(const [k,item] of [['planWurst','wurst'],['planBraten','braten'],['planMais','mais'],['planKaese','kaese']])if(cs[k])base.push(item);return base;}
 const rostSlots=(g,cs)=>R(g).rost.slots+num(cs,'rostSlots');
 function ripest(g,st,cs){const r=R(g),charcoal=r.rost.charcoal+num(cs,'burntGrace');return st.rost.filter(it=>it.done<charcoal).sort((a,b)=>b.done-a.done)[0]||null;}
 function doneness(g,it,cs){const r=R(g),garHi=r.rost.gar[1]+num(cs,'garWindow'),burnt=r.rost.burnt+num(cs,'burntGrace');if(it.done<r.rost.gar[0])return {state:'roh',factor:r.burntFactor};if(it.done<=garHi)return {state:'gar',factor:1,perfect:true};if(it.done<burnt)return {state:'durch',factor:1};return {state:'verkohlt',factor:r.burntFactor};}
@@ -298,7 +298,7 @@ export function resourcePrecheck(g,id,s,cs){
 export const resourceHealAlways=(g,id)=>id==='heal'&&resourceKind(g)==='grill';
 /** Sieben, Acht, Neun gehen schneller (kurzer GCD) oder ganz ohne (Talent luschenGcd). */
 export function resourceQuickGcd(g,id){const c=handCard(g,id);return !!c&&!!RESOURCES.kaethe.ranks[c.rank].quick;}
-export function resourceOffGcd(g,id){const c=handCard(g,id);return !!c&&!!RESOURCES.kaethe.ranks[c.rank].quick&&!!g.cs?.luschenGcd;}
+export function resourceOffGcd(g,id){if(id==='mark'&&resourceKind(g)==='grill')return true;/* Auflegen ist ein Handgriff */const c=handCard(g,id);return !!c&&!!RESOURCES.kaethe.ranks[c.rank].quick&&!!g.cs?.luschenGcd;}
 export function resourceParryBonus(g){return resourceKind(g)==='grill'&&g.res?.parryBonus>0?.3:0;}
 
 // ---------------------------------------------------------------------------------------------------------------

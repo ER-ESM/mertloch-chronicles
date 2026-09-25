@@ -41,9 +41,17 @@ export const TUNING={
  // Kernmechaniken (E-32, content/mechanics.js): spec → verschachtelte Zahlen, z. B. 'dieter-brawl':{stack:{decay:9},why,since}
  mechanics:{
   // Messlauf scripts/spec-sim.mjs (45 s, drei Puppen, naive Rotation, Stufe 11, ohne Talente): Median 142 DPS. Ziel: Schadens-Specs ±15 %, Tank/Heilung darunter.
-  'kevin-fuse':{chain:{falloff:.45},fuse:{explode:{damage:70}},why:'Kurzschluss + Lunten lagen bei +44 % (mit Lunten-Pfad +151 %): drei Sprünge mit 30 % Verlust plus 90er-Explosionen stapeln sich gegen Gruppen; Verlust 45 %, Explosion 70',since:'2026-09-19'},
-  'baerbel-stage':{state:{damage:1.2,drain:12},why:'Putzwut lag bei +29 %: 25 % Bonus bei 10 s Dauer war zu viel; 20 % und schnellerer Randale-Verbrauch (12/s) verkürzen den Zustand',since:'2026-09-19'},
-  'kevin-hunt':{gamble:{misfire:.15,overMult:2},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8',since:'2026-09-19'}
+  'kevin-fuse':{chain:{falloff:.45},fuse:{explode:{damage:70}},output:{damage:0.8},why:'E-71: Pfandbon +8 % – Faktor 0,85 → 0,8. Kurzschluss + Lunten lagen bei +44 % (mit Lunten-Pfad +151 %): drei Sprünge mit 30 % Verlust plus 90er-Explosionen stapeln sich gegen Gruppen; Verlust 45 %, Explosion 70',since:'2026-09-19'},
+  'baerbel-stage':{state:{damage:1.2,drain:12},output:{damage:0.72},why:'E-71: Trend und häufigere Putzwut hoben die Filter-Furie um 30 % – Faktor 0,89 → 0,72. Putzwut lag bei +29 %: 25 % Bonus bei 10 s Dauer war zu viel; 20 % und schnellerer Randale-Verbrauch (12/s) verkürzen den Zustand',since:'2026-09-19'},
+  'kevin-hunt':{gamble:{misfire:.15,overMult:2},output:{damage:1.16},why:'Pfandjäger lag bei −25 % trotz Schadensrolle: Fehlzündung 15 % statt 20 %, Überzündung ×2 statt ×1,8. E-71: Pfandbon und volle Nachladungen hoben Kevin um 8 % – Faktor 1,25 → 1,16',since:'2026-09-25'},
+  // E-71 (Messlauf Stufe 12, 60 s, Puppe, scripts/balance-rotation.mjs): Vorher-Werte aus dem Stand vor E-71, Ziel: alte Klassen ±5 %, neue Klassen im Korridor (Schaden ≈ 100, Tank ≈ 82, Heilung ≈ 80).
+  'baerbel-care':{output:{damage:1.0,healing:1.15},why:'E-71: Annis Trend (+4 % je Stufe) hob den Schaden um 19 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
+  'baerbel-feedback':{output:{damage:1.0},why:'E-71: Trend +21 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
+  'kevin-iron':{output:{damage:1.0},why:'E-71: Pfandbon +8 % – Faktor 1,08 → 1,0',since:'2026-09-25'},
+  'schorsch-chef':{output:{damage:1.2,healing:1.15},why:'E-71 Erstwert: der Grillplan des Chefs bringt zwei Würste je Braten (keine Schadensstücke) – Faktor 1,2 hebt ihn auf den Heiler-Korridor (≈ 75)',since:'2026-09-25'},
+  'schorsch-rauch':{output:{damage:1.25},why:'E-71 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82)',since:'2026-09-25'},
+  'kaethe-grand':{output:{damage:0.92},why:'E-71 Erstwert: Grand-Spielerin lag bei 111 – Faktor 0,92',since:'2026-09-25'},
+  'kaethe-falsch':{output:{damage:0.82},why:'E-71 Erstwert: Kontroll-Spec lag bei 100, Ziel ≈ 90 – Faktor 0,82',since:'2026-09-25'}
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
  },
  // Klassen-Buffs (content/class-buffs.js, docs/KLASSEN-BUFFS-2026-09-23.md): Wirkung je Buff und Wert. Jeder Buff hebt einen anderen Wert,

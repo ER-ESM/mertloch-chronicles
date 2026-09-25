@@ -82,7 +82,7 @@ export const NEW_SPEC_MECHANICS={
   resVariant:{burst:{when:'wurstGar',name:'WURST GAR',tone:'gold'}},
   paths:[{name:'Wurstbude',bonus4:{wurstHeal:.15},bonus7:{garWindow:.1}},{name:'Beilagen',bonus4:{cookSpeed:.1},bonus7:{rostSlots:1}},{name:'Stammkundschaft',bonus4:{ventHeal:.04},bonus7:{serveCleave:1}}]},
  'schorsch-flamme':{kind:'resource',name:'Flambieren',output:{damage:1},
-  flamme:{at:85,bonus:.5,splash:{radius:70,share:.4},overheatFactor:2},
+  flamme:{at:85,bonus:.5,splash:{radius:70,share:.4},overheatFactor:2,plan:['braten','mais','braten']},
   kit:{burst:{name:'Servieren',text:'Serviert das garste Stück vom Rost. Ab 85 Glut wird flambiert: 50 % mehr Wirkung und Feuerspritzer an den Nachbarn des Ziels.',use:'Drück es, wenn die Glut über 85 steht und ein Braten gar ist.'}},
   resVariant:{burst:{when:'flambe',name:'FLAMBIEREN',tone:'burst'}},
   paths:[{name:'Stichflamme',bonus4:{overheatDamage:.25},bonus7:{overheatLock:-2}},{name:'Schwenkbraten',bonus4:{bratenDamage:.15},bonus7:{planBraten:1}},{name:'Spiritus',bonus4:{emberDot:.3},bonus7:{glutStrike:4}}]},
