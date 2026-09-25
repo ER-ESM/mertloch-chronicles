@@ -63,8 +63,18 @@ export function memoryCardHtml(fragment){
   `<p>${esc(fragment.text)}</p>`;
 }
 
-/** Karte in `shell` einhängen. onClose(fragment, grund) nach jedem Schließen, onZoom(fragment) beim Klick aufs Bild. */
-export function mountMemoryCard(shell,{onClose,onZoom,paint,now=()=>performance.now()}={}){
+/** Schon einmal als Karte gezeigte Fetzen, browserweit (E-72 Runde 5, Kenner-Befund klicks 4): Ein weiterer Held schaltet sie nur still frei. */
+export const MEMORY_POPUP_KEY='mertloch-memory-popups';
+const popupIds=storage=>{try{const v=JSON.parse(storage?.getItem(MEMORY_POPUP_KEY)||'[]');return Array.isArray(v)?v:[];}catch{return [];}};
+/** Wurde dieser Fetzen in diesem Browser schon als Karte/Fenster gezeigt (bei irgendeinem Helden)? Rein, getestet. */
+export const memoryPopupSeen=(storage,id)=>!!id&&popupIds(storage).includes(id);
+/** Fetzen als gezeigt merken (höchstens 60 Einträge). */
+export function markMemoryPopup(storage,id){if(!id)return;const l=popupIds(storage);if(l.includes(id))return;try{storage?.setItem(MEMORY_POPUP_KEY,JSON.stringify([...l,id].slice(-60)));}catch{}}
+
+/** Karte in `shell` einhängen. onClose(fragment, grund) nach jedem Schließen, onZoom(fragment) beim Klick aufs Bild.
+ *  E-72 Runde 5 (Kenner-Befund klicks 2): Rechtsklick auf die Karte läuft wie ein Rechtsklick in die Welt (onRightClick) – die Karte liegt
+ *  über der Welt und schluckte das Laufen; ihr Bild-Tooltip geht mit ihr (hideTip beim Zurücktreten und Schließen). */
+export function mountMemoryCard(shell,{onClose,onZoom,onRightClick,hideTip,paint,now=()=>performance.now()}={}){
  const el=document.createElement('aside');el.className='memory-card';el.hidden=true;el.setAttribute('role','status');el.setAttribute('aria-live','polite');
  shell.append(el);let current=null,timing={},hover=false,lastRect=null;
  const rect=sel=>{const e=document.querySelector(sel);if(!e||e.hidden)return null;const r=e.getBoundingClientRect();return r.width&&r.height?r:null;};
@@ -79,18 +89,28 @@ export function mountMemoryCard(shell,{onClose,onZoom,paint,now=()=>performance.
    if(pic.hidden!==hide)pic.hidden=hide;if(!hide&&pic.style.height!==h+'px')pic.style.height=h+'px';}
   const r=el.getBoundingClientRect();if(r.width&&r.height)lastRect={left:r.left,right:r.right,top:r.top,bottom:r.bottom};
  }
- function reveal(){el.hidden=false;place();el.classList.remove('show');requestAnimationFrame(()=>el.classList.add('show'));}
+ /* E-72 R5 (klicks 2, schorsch-03): Erscheint die Karte unter der ruhenden Maus (nach Aufwachen/Teleport, wo man gerade hinklickte), kam ihr
+    Bild-Tooltip gleich mit – zwei Fenster auf einmal. Tooltips der Karte schlafen daher, bis sich die Maus über ihr wirklich bewegt. */
+ const TIP=['label','note'];
+ function quietTips(){for(const n of el.querySelectorAll('[data-tooltip-label]'))for(const k of TIP){const a='data-tooltip-'+k;if(n.hasAttribute(a)){n.setAttribute('data-quiet-'+k,n.getAttribute(a));n.removeAttribute(a);}}}
+ function wakeTips(target){const list=el.querySelectorAll('[data-quiet-label]');if(!list.length)return;for(const n of list)for(const k of TIP){const q='data-quiet-'+k;if(n.hasAttribute(q)){n.setAttribute('data-tooltip-'+k,n.getAttribute(q));n.removeAttribute(q);}}
+  if(typeof PointerEvent==='function')target?.dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse'}));}
+ function reveal(){el.hidden=false;quietTips();place();el.classList.remove('show');requestAnimationFrame(()=>el.classList.add('show'));}
  function show(fragment){
   current=fragment;timing={held:false,visibleMs:0,lastTick:now()};hover=false;el.innerHTML=memoryCardHtml(fragment);el.setAttribute('aria-label',T.label+': '+fragment.title);paint?.(el);
   el.querySelector('img')?.addEventListener('load',place,{once:true});reveal();
  }
- function close(reason='close'){if(!current)return false;const f=current;current=null;timing={};el.classList.remove('show');el.hidden=true;el.innerHTML='';onClose?.(f,reason);return true;}
+ /** Tooltip eines Kartenteils (Bild, Kreuz) weg, bevor die Karte verschwindet – er blieb sonst stehen und lag später neben der wiederkehrenden Karte. */
+ const dropTip=()=>{if(el.querySelector('[aria-describedby]'))hideTip?.();};
+ function close(reason='close'){if(!current)return false;const f=current;dropTip();current=null;timing={};el.classList.remove('show');el.hidden=true;el.innerHTML='';onClose?.(f,reason);return true;}
  /** Je UI-Takt: hold = große Einblendung, Kampf, Tod … (Karte tritt zurück); covered = Fenster liegt über ihr (Lesezeit hält an). */
  function update({hold=false,covered=false}={}){
   if(!current)return;const r=cardTiming(timing,{hold,covered,hover,now:now(),readMs:readingMs(current)});timing=r.state;
-  if(r.act==='hide'){el.classList.remove('show');el.hidden=true;}else if(r.act==='show')reveal();else if(r.act==='close')close(hold?'hold':'read');
+  if(r.act==='hide'){dropTip();el.classList.remove('show');el.hidden=true;}else if(r.act==='show')reveal();else if(r.act==='close')close(hold?'hold':'read');
  }
+ el.addEventListener('pointerdown',e=>{if(e.button!==2||e.pointerType==='touch'||!onRightClick)return;e.preventDefault();e.stopPropagation();onRightClick(e);});
  el.addEventListener('click',e=>{if(e.target.closest('[data-memory-next]')){close('close');return;}if(e.target.closest('[data-memory-card-art]')){const f=current;close('zoom');onZoom?.(f);}});
+ el.addEventListener('pointermove',e=>{if(e.pointerType!=='touch'&&(e.movementX||e.movementY))wakeTips(e.target);});
  el.addEventListener('pointerenter',()=>{hover=true;});el.addEventListener('pointerleave',()=>{hover=false;});
  addEventListener('resize',place);
  return {show,close,place,update,el,get open(){return !!current;},get held(){return !!timing.held;},get fragment(){return current;},get rect(){return current?lastRect:null;},state:()=>({open:!!current,id:current?.id||null,held:!!timing.held,visibleMs:Math.round(timing.visibleMs||0),readMs:current?readingMs(current):0,hidden:el.hidden})};

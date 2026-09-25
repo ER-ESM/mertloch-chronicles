@@ -8,6 +8,30 @@ export const PHASE_WEIGHT={module:40,karte:10,welt:10,grafik:30,start:10};
 const MODULE_KEY='mertloch-boot-modules',BYTES_KEY='mertloch-boot-bytes',SCENE_KEY='mertloch-boot-scene',ROSTER_KEY='mertloch-characters';
 const CAP=.97,MIN_VISIBLE_MS=700,TIP_MS=7000;
 
+// E-72 Runde 5 (Kenner-Befund klicks 3 „erst der zweite Esc überspringt den Film“): Nach „Held erstellen“ lädt die Seite neu, dann laufen
+// Ladeschirm und Spielstart, erst danach hält der Einführungsfilm die Tasten. Ein Esc in dieser Zeit – noch auf der alten Seite, auf dem
+// Ladeschirm oder bevor der Film angefordert ist – ging verloren (gemessen: jeder Druck 0–4,5 s nach dem Klick). Dieses Modul läuft vor
+// app.js und merkt sich so ein Esc (bootEscaped); app.js überspringt damit beim automatischen Betreten den Film (intro-ui.js start({skip})).
+export const ESC_CARRY_KEY='mertloch-boot-esc',CARRY_MS=15000;
+export const isEscape=e=>e?.key==='Escape'||e?.key==='Esc'||e?.code==='Escape'||e?.keyCode===27;
+const session=()=>{try{return globalThis.sessionStorage||null;}catch{return null;}};
+let escaped=false;
+try{const s=session();if(s?.getItem(ESC_CARRY_KEY)==='1')escaped=true;s?.removeItem(ESC_CARRY_KEY);}catch{}
+if(typeof addEventListener==='function')addEventListener('keydown',e=>{if(isEscape(e))escaped=true;},true);
+/** Wurde seit dem Laden dieser Seite (oder kurz vor dem Neuladen, carryEscape) Esc gedrückt? __bootEsc setzt ein Hörer ganz oben in
+ *  index.html – ein Esc in den ersten ~300 ms der neuen Seite kam sonst vor diesem Modul an und ging verloren (gemessen). */
+export const bootEscaped=()=>escaped||!!globalThis.__bootEsc;
+/** Alte Seite, der Held wird angelegt und die Seite gleich neu geladen: Esc bis dahin für die neue Seite merken und schlucken (sonst
+ *  wirkte es noch im Anlegen-Schirm als „Zurück“). Liefert die Aufhebung; hebt sich nach CARRY_MS selbst auf (falls nicht neu geladen wird). */
+export function carryEscape(){
+ if(typeof addEventListener!=='function')return ()=>{};
+ const on=e=>{if(!isEscape(e))return;e.preventDefault();e.stopImmediatePropagation();try{session()?.setItem(ESC_CARRY_KEY,'1');}catch{}};
+ addEventListener('keydown',on,true);let timer=setTimeout(off,CARRY_MS);
+ /* Aufheben (Anlegen gescheitert oder kein Neuladen): das gemerkte Esc gilt dann nicht mehr */
+ function off(){clearTimeout(timer);removeEventListener('keydown',on,true);try{session()?.removeItem(ESC_CARRY_KEY);}catch{}}
+ return off;
+}
+
 /** Gesamtfortschritt 0..1 aus dem aktuellen Schritt und dem Anteil darin. Reine Funktion (Tests). */
 export function bootPercent(phases,index,fraction,weights=PHASE_WEIGHT){
  const w=phases.map(p=>weights[p.id]??0),total=w.reduce((a,b)=>a+b,0)||1;

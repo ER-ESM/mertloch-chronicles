@@ -11,6 +11,7 @@ import {drawnStyles} from './hero-layers.js';
 import {LOOKS,CLASSES,CLASS_LOOKS,defaultLook,CHARACTER_LIMIT,validHeroName,HERO_TEXT} from './characters.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 import {ITEMS} from './rpg.js';
+import {carryEscape} from './loading-screen.js';
 import {SKIN_TONES,HAIR_COLORS,FACE_ITEMS,HAIR_STYLES,BEARDS,offeredFor,DEFAULT_TINT,lookKey as tintKey,parseTintKey,hslToRgb} from './hero-tint.js';
 
 /** Helden-Slots (E-38): Texte der Heldenhalle und der Erstellung. */
@@ -169,8 +170,8 @@ export function mountStartScreen(host){
  });
  async function draftNext(){const d=state.draft;if(d.step<2){d.step++;render();return;}
   d.name=(el.querySelector('[name=heroName]')?.value||'').trim();if(!validHeroName(d.name)){d.error=HERO_TEXT.nameRule;render();return;}
-  d.busy=true;d.error='';render();const r=await host.createHero({name:d.name,classId:d.classId,look:d.look,tint:d.tint});d.busy=false;
-  if(r.error){d.error=r.error;render();return;}state.draft=null;state.pick=r.character.id;host.onEnter(r.character.id);}
+  d.busy=true;d.error='';render();/* E-72 R5 (klicks 3): Esc ab jetzt gilt dem Einführungsfilm nach dem Neuladen (nicht „Zurück“) */const release=carryEscape();const r=await host.createHero({name:d.name,classId:d.classId,look:d.look,tint:d.tint});d.busy=false;
+  if(r.error){release();d.error=r.error;render();return;}state.draft=null;state.pick=r.character.id;host.onEnter(r.character.id);}
  el.addEventListener('submit',e=>{if(e.target.closest('[data-hero-form]')){e.preventDefault();draftNext();}});
  el.addEventListener('dblclick',e=>{if(e.target.closest('[data-hero]'))el.querySelector('[data-start=enter]:not([disabled])')?.click();});
  // Tasten bleiben im Schirm: das Spiel darunter darf weder laufen noch Fenster öffnen.
