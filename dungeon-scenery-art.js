@@ -8,6 +8,8 @@ import {dungeonRun} from './dungeon.js';
 import {floorPlan,hiddenRooms,heroFloor,sceneryOf,garageLot,CELL,FACE,CROWN} from './dungeon-scenery.js';
 import {drawBelag,drawDecal,drawWallDecor,drawKitItem,kitReady,kitFrames} from './kit-art.js';
 import {bakedGrade,withGrade} from './art-quality.js';
+import {LIGHT} from './light-convention.js';
+import {LIGHTING} from './content/index.js';
 
 const INK='#1b1612';
 // ── Kleinwerkzeug ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -192,10 +194,15 @@ export function drawDungeonCeiling(c,g,view,time){const plan=currentPlan(g);if(!
 export function garageScreenBox(door){const lot=garageLot(door);return lot?{l:lot.minX,r:lot.maxX,t:lot.top,b:lot.maxY}:null;}
 /** Die Garage als tiefensortiertes Gebäude (renderer.js „dungeonGarage“), mit Schlagschatten; Portal und Schild zeichnet dungeon-art.js. */
 export function drawGarage(c,door){const lot=garageLot(door);if(!lot)return false;if(layers.size)layers.clear();/* draußen: die Ebenen-Leinwand des Dungeons freigeben */
- c.save();c.fillStyle='rgba(28,42,34,.28)';c.beginPath();c.moveTo(lot.maxX,lot.minY);c.lineTo(lot.maxX+30,lot.minY+14);c.lineTo(lot.maxX+30,lot.maxY+12);c.lineTo(lot.minX+26,lot.maxY+12);c.lineTo(lot.minX,lot.maxY);c.lineTo(lot.maxX,lot.maxY);c.closePath();c.fill();c.restore();
+ garageShadow(c,lot);
  const img=gradedGarage(lot);if(img)c.drawImage(img,lot.minX-2,lot.maxY-GARAGE_TOP,lot.w+4,GARAGE_TOP+2);else drawKitItem(c,{...lot,def:{...lot.def,shadow:false}});return true;}
+/** Schlagschatten wie die Häuser ringsum: Lichtrichtung aus light-convention.js, Länge nach Wandhöhe, eine Lage mit weichem Auslauf. */
+function garageShadow(c,lot){const n=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),k=(LIGHTING.shadow?.building??.5)*(lot.height+6),ox=LIGHT.dir.x/n*k,oy=LIGHT.dir.y/n*k,y0=lot.minY+6;
+ c.save();const g=typeof c.createLinearGradient==='function'?c.createLinearGradient(lot.maxX,lot.maxY,lot.maxX+ox,lot.maxY+oy):null;
+ if(g){g.addColorStop(0,LIGHT.shadow.color+'80');g.addColorStop(.6,LIGHT.shadow.color+'40');g.addColorStop(1,LIGHT.shadow.color+'00');c.fillStyle=g;}else{c.globalAlpha=.3;c.fillStyle=LIGHT.shadow.color;}
+ c.beginPath();c.moveTo(lot.maxX,y0);c.lineTo(lot.maxX+ox,y0+oy);c.lineTo(lot.maxX+ox,lot.maxY+oy);c.lineTo(lot.minX+ox,lot.maxY+oy);c.lineTo(lot.minX,lot.maxY);c.lineTo(lot.maxX,lot.maxY);c.closePath();c.fill();c.restore();}
 /** Garage einmal in ein Zwischenbild (4 px je E) – ohne Grafikkarte mit eingebackener Farbabstimmung wie die Häuser ringsum (E-50). */
-const GARAGE_TOP=78,garageCache={key:'',cv:null};
+const GARAGE_TOP=96,garageCache={key:'',cv:null};
 function gradedGarage(lot){if(typeof document==='undefined'||!kitReady([lot.sprite]))return null;const key=lot.sprite+'|'+bakedGrade.filter;if(garageCache.key===key)return garageCache.cv;
  const k=4,raw=document.createElement('canvas');raw.width=(lot.w+4)*k;raw.height=(GARAGE_TOP+2)*k;const rc=raw.getContext('2d');rc.imageSmoothingEnabled=false;rc.setTransform(k,0,0,k,-(lot.minX-2)*k,-(lot.maxY-GARAGE_TOP)*k);drawKitItem(rc,{...lot,def:{...lot.def,shadow:false}});
  let cv=raw;if(bakedGrade.filter){cv=document.createElement('canvas');cv.width=raw.width;cv.height=raw.height;const g=cv.getContext('2d');withGrade(g,()=>g.drawImage(raw,0,0));}
