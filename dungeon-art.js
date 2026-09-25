@@ -40,7 +40,7 @@ function groundBody(c,g,view,run,def,floor,theme){
  for(const d of doors){const r=rectWorld(def,floor,d.rect);if(doorOpen(run,d))continue;
   if(d.lock?.seals){drawVault(c,r,requiredSeals(def,d.lock.seals).map(s=>run.seals.has(s))/* Etappe 3: nur die verlangten Siegel */);continue;}drawClosedDoor(c,r,!!d.arena);}
  // Messingplaketten an der Nordwand (auf der Wandfront, wo sie hoch genug ist), Schild und Wirklichkeit nur unter der Maus
- for(const room of rooms){const r=rectWorld(def,floor,room.rects[0]),cx=r.x+r.w/2,seg=plan?.segments.find(s=>s.room===room.id&&s.base===r.y&&s.x0<=cx-7&&s.x1>=cx+7),py=seg&&seg.F>=14?r.y-12:r.y+1;
+ for(const room of rooms){const r=rectWorld(def,floor,room.rects[0]),cx=r.x+r.w/2,seg=plan?.segments.find(s=>s.room===room.id&&s.base===r.y&&s.x0<=cx-7&&s.x1>=cx+7),py=!seg?r.y+1:seg.F>=14?r.y-12:r.y-Math.min(7,seg.F+3);
   box(c,'#1c1712',cx-7,py,14,6);box(c,run.room===room.id?'#e6c46a':'#b8913f',cx-6,py+1,12,4);}
  // Lautsprecher an den Durchsage-Punkten (die Sprechblase hängt an ihnen)
  for(const a of def.announcements){const p=speakerPoint(def,a);if(!p||p.floor!==floor)continue;drawSpeaker(c,p,run.speaking?.id===a.id&&time<run.speaking.until,time);}

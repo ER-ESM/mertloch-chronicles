@@ -191,7 +191,7 @@ export function drawDungeonCeiling(c,g,view,time){const plan=currentPlan(g);if(!
 /** Bildrechteck der Garage (Prüfskript: Baumkronen). */
 export function garageScreenBox(door){const lot=garageLot(door);return lot?{l:lot.minX,r:lot.maxX,t:lot.top,b:lot.maxY}:null;}
 /** Die Garage als tiefensortiertes Gebäude (renderer.js „dungeonGarage“), mit Schlagschatten; Portal und Schild zeichnet dungeon-art.js. */
-export function drawGarage(c,door){const lot=garageLot(door);if(!lot)return false;
+export function drawGarage(c,door){const lot=garageLot(door);if(!lot)return false;if(layers.size)layers.clear();/* draußen: die Ebenen-Leinwand des Dungeons freigeben */
  c.save();c.fillStyle='rgba(28,42,34,.28)';c.beginPath();c.moveTo(lot.maxX,lot.minY);c.lineTo(lot.maxX+30,lot.minY+14);c.lineTo(lot.maxX+30,lot.maxY+12);c.lineTo(lot.minX+26,lot.maxY+12);c.lineTo(lot.minX,lot.maxY);c.lineTo(lot.maxX,lot.maxY);c.closePath();c.fill();c.restore();
  const img=gradedGarage(lot);if(img)c.drawImage(img,lot.minX-2,lot.maxY-GARAGE_TOP,lot.w+4,GARAGE_TOP+2);else drawKitItem(c,{...lot,def:{...lot.def,shadow:false}});return true;}
 /** Garage einmal in ein Zwischenbild (4 px je E) – ohne Grafikkarte mit eingebackener Farbabstimmung wie die Häuser ringsum (E-50). */

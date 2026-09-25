@@ -8,11 +8,12 @@
 //    hoch, dass die Mauerkrone (4 E) noch darüber passt – so deckt keine Front begehbaren Boden ab (geschnittene Innenwand).
 //  - Seiten- und Südkanten zeigen nur die Mauerkrone; alles Übrige ist die Masse der Ebene (Mauerwerk, Erdreich, Basalt).
 //  - Verborgene Räume (secret, noch nicht betreten) gehören zur Masse: gleiche Pixel wie gar kein Raum.
-import {DUNGEONS,DUNGEON_SCENERY,DUNGEON_SCALE as U} from './content/index.js';
+import {DUNGEONS,DUNGEON_SCENERY,DUNGEON_SCENERY_RULES as RULES,DUNGEON_SCALE as U} from './content/index.js';
 import {resolveSprite} from './world-kit.js';
 import {rectWorld,toWorld,dungeonRun,dungeonWorld,entranceFor,speakerPoint,floorAt} from './dungeon.js';
 
-export const CELL=2,FACE=22,CROWN=4,MARGIN=112;
+/** Rasterweite (E), Wandfront und Krone (E, aus den Inhaltsdaten), Rand der Ebenen-Leinwand um die Ebene (E). */
+export const CELL=2,FACE=RULES.face,CROWN=RULES.crown,MARGIN=112;
 const idOf=new WeakMap();
 /** Ausstattung eines Dungeons (content/dungeon-scenery.js) zur Definition. */
 export function sceneryOf(def){let id=idOf.get(def);if(id===undefined){id=Object.keys(DUNGEONS).find(k=>DUNGEONS[k]===def)||Object.keys(DUNGEONS).find(k=>DUNGEONS[k].name===def.name)||null;idOf.set(def,id);}return id&&DUNGEON_SCENERY[id]||null;}
@@ -91,7 +92,7 @@ function placeItems(def,floor,plan,sc){
 export function sceneryLights(def,floor,plan){
  if(plan.lights)return plan.lights;const out=[],sc=sceneryOf(def)||{rooms:{}},o=def.floors[floor].origin;
  for(const it of plan.items.decor)if(it.def.light)out.push({x:it.x,y:it.y+(it.sprite==='neonroehre'?10:8),wide:it.sprite==='neonroehre'?2:1,kind:it.sprite,seed:it.x*.37});
- for(const it of plan.items.standing)if(it.def.light)out.push({x:it.x,y:it.y-2,wide:1,kind:it.sprite,seed:it.x*.53,small:true});
+ for(const it of [...plan.items.standing,...plan.items.tops])if(it.def.light)out.push({x:it.x,y:it.y-2,wide:1,kind:it.sprite,seed:it.x*.53,small:true});
  for(const room of plan.rooms){for(const [x1,y1,x2,y2] of sc.rooms[room.id]?.garlands||[]){const a={x:o.x+x1*U,y:o.y+y1*U},b={x:o.x+x2*U,y:o.y+y2*U},n=Math.max(2,Math.round(Math.hypot(b.x-a.x,b.y-a.y)/46));
    for(let i=0;i<=n;i++)out.push({x:a.x+(b.x-a.x)*i/n,y:a.y+(b.y-a.y)*i/n,kind:'bulb',seed:i*7.1+a.y});}
   // Grundlicht: Räume ohne eigene Leuchte und große Hallen (über 300 m²) bekommen ein schwaches, weites Licht in der Mitte

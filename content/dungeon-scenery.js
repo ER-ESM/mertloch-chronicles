@@ -13,6 +13,10 @@
 //  decor  Wandschmuck [Art, x] an der Nordwand des Raums (hängt auf der Wandfront, nur wo sie hoch genug ist)
 //  lines  eingebaute Zeichnung: stellplatz (Garage) · rinnen (Kelterhalle) · sprinkler (Weinkeller)
 // Maße der Requisiten kommen aus dem Baukasten in Welteinheiten (E); die Karte hat 8 E je Meter, die Figur ist 26 E hoch.
+// Wandregel (Baukasten E-54): Wandfront bis face E an der Nordkante, darüber die Mauerkrone (crown E); in schmaleren Lücken wird die
+// Front so niedrig, dass die Krone noch darüber passt (geschnittene Innenwand).
+export const DUNGEON_SCENERY_RULES={face:22,crown:4};
+
 export const DUNGEON_SCENERY={
  'schloss-bigb':{
   floors:{

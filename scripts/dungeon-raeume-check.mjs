@@ -43,7 +43,7 @@ try{
   await start({w:2024,h:900});
   const toDoor=dy=>read(`const m=await import('/dungeon.js');const d=m.dungeonEntrance(g);g.enemies=g.enemies.filter(e=>Math.hypot(e.x-d.x,e.y-d.y)>500);Object.assign(g.player,{x:d.x,y:d.y+${dy}});g.player.inCombat=0;g.moveTo=null;return {x:Math.round(d.x),y:Math.round(d.y)};`);
   const door=await toDoor(70);await wait(900);await settle();await shot('e-01-eingang-nah');await crop('e-03-garage-nah',760,380,-150);
-  await toDoor(260);await wait(900);await settle();await shot('e-02-eingang-weit');
+  await toDoor(165);await wait(900);await settle();await shot('e-02-eingang-weit');
   // Baumkronen über der Garage (Bildrechteck der Garage gegen Kronenrechteck der Bäume, wie renderer.js sie zeichnet)
   const over=await read(`const m=await import('/dungeon.js'),d=m.dungeonEntrance(g);let box={l:d.x-24,r:d.x+24,t:d.y-46,b:d.y};try{const a=await import('/dungeon-scenery-art.js');box=a.garageScreenBox?.(d)||box;}catch{}
    return g.world.trees.filter(t=>{const s=t.size||1,l=t.x-44*s,r=t.x+44*s,top=t.y-96*s,bot=t.y+14*s;return t.y>box.t-20&&l<box.r&&r>box.l&&top<box.b&&bot>box.t;}).map(t=>({x:Math.round(t.x),y:Math.round(t.y)}))`);
@@ -54,7 +54,9 @@ try{
  if(want(3)){
   await start({touch:true,w:844,h:390,safe:true});await inside();
   for(const [f,id,x,y] of [['e0','hof',31,30],['k1','rittersaal',32,22],['k2','weinkeller',18,11]]){await place(f,x,y);await wait(800);await settle();await shot('h-'+f+'-'+id);}
-  pass(3,'Handy quer: drei Ebenen aufgenommen');
+  await start({touch:true,w:390,h:844,safe:true});await inside();
+  for(const [f,id,x,y] of [['k1','galerie',30,8],['k2','thronsaal',54,20]]){await place(f,x,y);await wait(800);await settle();await shot('v-'+f+'-'+id);}
+  pass(3,'Handy quer: drei Ebenen, hoch: Galerie und Thronsaal aufgenommen');
  }
  // ─────────────────────────────────────────────── 4 · Geheimnisse
  if(want(4)&&!before){
@@ -79,25 +81,40 @@ try{
   pass(5,'Wegsuche: '+res.summary.paths+' Wege frei, '+res.summary.total+' Requisiten ohne Konflikt');
  }
  // ─────────────────────────────────────────────── 6 · Bildzeit
+ // AB_URL=http://localhost:<port>/ misst abwechselnd gegen einen zweiten Stand (z. B. origin/main) unter derselben Rechnerlast:
+ // je Messung wird die andere Seite eingefroren (Page.setWebLifecycleState), damit sie keine Bilder rechnet.
  if(want(6)){
-  const out=[];
-  for(const [dens,settings] of [[2,{lowRes:true,fullRes:false}],[3,{lowRes:false,fullRes:false,autoRes:false}],[4,{lowRes:false,fullRes:true}]].filter(([d])=>!process.env.DENS||process.env.DENS.split(',').includes(String(d)))){
-   await start({w:2024,h:900});
-   await read(`Object.assign(g.settings,${JSON.stringify(settings)});g.settings.light=true;globalThis.__mertloch.renderer.resize();return 1`);await inside();
-   for(const [f,x,y] of [['e0',31,30],['k1',30,20],['k2',18,11]]){
-    // Gegner des Raums bleiben stehen (friedlich), Licht an; der Held läuft hin und her, damit der Zwischenspeicher nachzieht.
-    await place(f,x,y);await wait(1200);
-    const m=await read(`const R=globalThis.__mertloch.renderer,orig=R.draw.bind(R),draws=[],gaps=[];R.draw=(...a)=>{const t=performance.now();const v=orig(...a);draws.push(performance.now()-t);return v;};
+  const out=[],sB=process.env.AB_URL?await session({port:9636,url:process.env.AB_URL}):null,sides=[['nachher',s],...(sB?[['vorher',sB]]:[])];
+  const freeze=(x,on)=>x.b.send('Page.setWebLifecycleState',{state:on?'frozen':'active'}).catch(()=>{});
+  const measure=(x,f)=>x.read(`const R=globalThis.__mertloch.renderer,orig=R.draw.bind(R),draws=[],gaps=[];R.draw=(...a)=>{const t=performance.now();const v=orig(...a);draws.push(performance.now()-t);return v;};
      let last=0,stop=false;const loop=t=>{if(last)gaps.push(t-last);last=t;if(!stop)requestAnimationFrame(loop);};requestAnimationFrame(loop);
-     const p=g.player,x0=p.x;const t0=performance.now();while(performance.now()-t0<3200){const k=(performance.now()-t0)/3200;p.x=x0+Math.sin(k*Math.PI*2)*60;await new Promise(r=>setTimeout(r,30));}
-     stop=true;R.draw=orig;const q=(a,f)=>{const s=[...a].sort((x,y)=>x-y);return +s[Math.min(s.length-1,Math.floor(s.length*f))].toFixed(1);};
+     const p=g.player,x0=p.x;const t0=performance.now();while(performance.now()-t0<3200){const k=(performance.now()-t0)/3200;p.x=x0+Math.sin(k*Math.PI*2)*${f==='welt'?0:60};await new Promise(r=>setTimeout(r,30));}
+     stop=true;R.draw=orig;p.x=x0;const q=(a,f)=>{const s=[...a].sort((x,y)=>x-y);return +s[Math.min(s.length-1,Math.floor(s.length*f))].toFixed(1);};
      let st={};try{st=(await import('/dungeon-scenery-art.js')).sceneryStats;}catch{}return {build:st.lastBuildMs,layerMpx:st.layerPx?+(st.layerPx/1e6).toFixed(1):undefined,density:R.density,frames:gaps.length,gapMedian:q(gaps,.5),gapP90:q(gaps,.9),drawMedian:q(draws,.5),drawP90:q(draws,.9),drawMax:+Math.max(...draws).toFixed(1)}`);
-    out.push({floor:f,want:dens,...m});console.log(TAG,f,JSON.stringify(m));}
+  const go=async(x,f,px,py)=>{if(f==='welt'){await x.read(`const m=await import('/dungeon.js');if(g.instance)g.leaveDungeon({force:true});const d=m.dungeonEntrance(g);g.enemies=g.enemies.filter(e=>Math.hypot(e.x-d.x,e.y-d.y)>500);Object.assign(g.player,{x:d.x,y:d.y+${py}});g.player.inCombat=0;return 1`);return 5000;}
+   await x.read(`g.player.level=Math.max(10,g.player.level);g.player.inCombat=0;if(!g.instance)g.enterDungeon('schloss-bigb',{force:true});window.D=await import('/dungeon.js');const r=g.dungeonRun;for(const room of r.def.rooms)r.visited.add(room.id);for(const e of g.enemies){e.aggro=false;e.aggroRange=0;}g.adminGod=true;Object.assign(g.player,D.toWorld(r.def,'${f}',${px},${py}));g.moveTo=null;g.path=[];g.target=null;return 1`);return 1500;};
+  for(const [dens,settings] of [[2,{lowRes:true,fullRes:false}],[3,{lowRes:false,fullRes:false,autoRes:false}],[4,{lowRes:false,fullRes:true}]].filter(([d])=>!process.env.DENS||process.env.DENS.split(',').includes(String(d)))){
+   for(const [,x] of sides){await x.start({w:2024,h:900});await x.read(`Object.assign(g.settings,${JSON.stringify(settings)});g.settings.light=true;globalThis.__mertloch.renderer.resize();return 1`);}
+   // Vergleich draußen am Eingang (gleiche Dichte), dann die drei Ebenen
+   for(const [f,px,py] of [['welt',0,70],['e0',31,30],['k1',30,20],['k2',18,11]]){
+    for(const [tag,x] of sides){for(const [,o] of sides)if(o!==x)await freeze(o,true);await freeze(x,false);await wait(await go(x,f,px,py));
+     const m=await measure(x,f);out.push({side:tag,floor:f,want:dens,...m});console.log(tag,f,JSON.stringify(m));}
+    for(const [,x] of sides)await freeze(x,false);}
   }
+  sB?.b.close();
   writeFileSync(dir+'/bildzeit.json',JSON.stringify(out,null,1));
-  note(6,'Bildzeit '+TAG+': '+out.map(o=>o.floor+'@'+o.density+' '+o.gapMedian+'/'+o.gapP90+' ms (Zeichnen '+o.drawMedian+'/'+o.drawP90+')').join(', '));
-  if(!before)for(const o of out)if(o.density<=3)assert.ok(o.gapMedian<=17.5,'Bildabstand '+o.floor+' Dichte '+o.density+' Median '+o.gapMedian+' ms');
+  note(6,'Bildzeit: '+out.map(o=>o.side+' '+o.floor+'@'+o.density+' '+o.gapMedian+'/'+o.gapP90+' ms (Zeichnen '+o.drawMedian+'/'+o.drawP90+')').join(', '));
+  if(!before)for(const o of out.filter(o=>o.side==='nachher'&&o.density<=3&&o.floor!=='welt')){const ref=out.find(v=>v.side==='vorher'&&v.floor===o.floor&&v.density===o.density);
+   assert.ok(o.gapMedian<=Math.max(17.5,(ref?.gapMedian??0)+1),'Bildabstand '+o.floor+' Dichte '+o.density+' Median '+o.gapMedian+' ms'+(ref?' (vorher '+ref.gapMedian+')':''));}
  }
+ // ─────────────────────────────────────────────── 7 · Vergleichsbilder vorher/nachher je Raum (untereinander, halbe Größe)
+ if(want(7)&&!before&&only.includes('7')){mkdirSync(dir+'/vergleich',{recursive:true});await start({w:1600,h:900});
+  for(const [i,[f,id]] of ROOMS.entries()){const name='d-'+String(i+1).padStart(2,'0')+'-'+f+'-'+id+'.jpg';
+   const data=await read(`const load=src=>new Promise((ok,no)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=src;});const a=await load('/visual-review/dungeon-raeume/vorher/${name}'),b=await load('/${dir}/${name}');
+    const cv=document.createElement('canvas');cv.width=a.width/2;cv.height=a.height/2+b.height/2+6;const c=cv.getContext('2d');c.fillStyle='#111';c.fillRect(0,0,cv.width,cv.height);c.drawImage(a,0,0,a.width/2,a.height/2);c.drawImage(b,0,a.height/2+6,b.width/2,b.height/2);
+    c.font='bold 18px sans-serif';c.fillStyle='#ffd36a';c.fillText('vorher',12,24);c.fillText('nachher',12,a.height/2+30);return cv.toDataURL('image/jpeg',.88).split(',')[1];`);
+   writeFileSync(dir+'/vergleich/'+name,Buffer.from(data,'base64'));}
+  pass(7,'Vergleichsbilder vorher/nachher je Raum');}
  console.log(JSON.stringify(results,null,1));writeFileSync(dir+'/result.json',JSON.stringify({results,errors:b.errors},null,2));
  assert.deepEqual(b.errors,[],'keine Fehler im Browser');
 }catch(e){await shot('failure').catch(()=>{});console.error(JSON.stringify({browserErrors:b.errors}).slice(0,3000));throw e;}finally{b.close();}
