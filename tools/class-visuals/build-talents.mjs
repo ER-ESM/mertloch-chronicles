@@ -5,6 +5,7 @@ import {decodePng,encodePng,surface,bounds,blit} from '../sprite-pipeline/png.mj
 import {resample} from '../sprite-pipeline/precision-resample.mjs';
 import {CLASS_SPECS,TALENT_ROWS,TALENT_CELLS} from '../../content/talents.js';
 import {E32_SKILL_MOTIFS} from '../../e32-art.js';
+import {abilityTile,inkFrame} from '../../ability-tile.js';
 const root=new URL('../../',import.meta.url),base='assets/content-art/e32/',hash=b=>createHash('sha256').update(b).digest('hex');
 // Find transparent gutters near the prompted grid, rather than assuming exact cell borders.
 function cuts(im,axis,count){const length=axis==='x'?im.width:im.height,other=axis==='x'?im.height:im.width,values=new Uint32Array(length);for(let a=0;a<length;a++)for(let b=0;b<other;b++){const x=axis==='x'?a:b,y=axis==='x'?b:a;if(im.data[(y*im.width+x)*4+3]>=128)values[a]++;}const result=[0];for(let n=1;n<count;n++){const center=length*n/count,reach=length/count*.14;let best=Math.round(center),score=Infinity;for(let a=Math.round(center-reach);a<=center+reach;a++){const cost=values[a]+Math.abs(a-center)*.03;if(cost<score){score=cost;best=a;}}result.push(best);}return [...result,length];}
@@ -33,10 +34,11 @@ export function buildTalentArt(){
  const signatures=JSON.parse(readFileSync(new URL('assets/class-visuals/runtime/catalog.json',root))),precision=JSON.parse(readFileSync(new URL('assets/precision/runtime/catalog.json',root))),icons=decodePng(readFileSync(new URL('assets/class-visuals/runtime/icons.png',root))),skillAtlas=surface(240,432),skillPath=base+'runtime/skills.png';catalog.skills={};
  for(const [row,spec]of Object.keys(TALENT_ROWS).filter(s=>E32_CLASSES.includes(s.split('-')[0])).entries())for(const [col,slot]of ['mark','burst','ground','buff','variant'].entries()){
   const id=E32_SKILL_MOTIFS[spec][slot],member=spec.split('-')[0];let source;
-  if(id?.startsWith('signature:')){const a=signatures.icons[id.slice(10)];source=surface(64,64);blit(icons,source,{x:a.x,y:a.y,w:64,h:64},{x:0,y:0});}
-  else if(id)source=sheets.get(id);
+  // Freie Motive (Signatur- und Talentbild) stehen wie jeder Kniff auf der Moos-Kachel (ability-tile.js, geseedet je Motiv).
+  if(id?.startsWith('signature:')){const a=signatures.icons[id.slice(10)],free=surface(64,64);blit(icons,free,{x:a.x,y:a.y,w:64,h:64},{x:0,y:0});source=abilityTile(id,free);}
+  else if(id)source=abilityTile(id,sheets.get(id));
   else{const a=precision.assets['skill-'+member+'-'+slot];if(!a)throw Error('Missing base skill '+member+'/'+slot);source=decodePng(readFileSync(new URL(a.path,root)));}
-  const frame=surface(48,48);resample(source,frame,{x:0,y:0,w:source.width,h:source.height},{x:0,y:0},48/source.width);blit(frame,skillAtlas,{x:0,y:0,w:48,h:48},{x:col*48,y:row*48});catalog.skills[spec+'/'+slot]={atlas:skillPath,x:col*48,y:row*48,cell:48,motif:id||'skill-'+member+'-'+slot,sha256:hash(frame.data)};
+  const frame=surface(48,48);resample(source,frame,{x:0,y:0,w:source.width,h:source.height},{x:0,y:0},48/source.width);inkFrame(frame);/* 1 px Rahmen auch in 48 */blit(frame,skillAtlas,{x:0,y:0,w:48,h:48},{x:col*48,y:row*48});catalog.skills[spec+'/'+slot]={atlas:skillPath,x:col*48,y:row*48,cell:48,motif:id||'skill-'+member+'-'+slot,sha256:hash(frame.data)};
  }
  const skillBytes=encodePng(skillAtlas);files.set(skillPath,skillBytes);catalog.atlases[skillPath]={sha256:hash(skillBytes)};
  files.set(base+'runtime/catalog.json',Buffer.from(JSON.stringify(catalog,null,2)+'\n'));

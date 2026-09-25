@@ -1,9 +1,9 @@
 // E-72 (Klassen-Ressourcen) Kniff-Icons per Code – Ersatz, solange das Imagegen-Kontingent gesperrt ist; Dateinamen e71-* bleiben.
-// Zeichnet jedes Motiv aus Grundformen (Rechteck, Kreis/Ellipse, Polygon, Linie) als Pixelkunst im Kachelstil der
-// Dieter-/Kevin-Kniffe: moosgrüner Vollgrund 58 × 58 mit Tintenrand auf 64 × 64 (3 px Rand, wie der Präzisionsexport
-// ihn setzt), ein konturiertes Motiv, Licht von oben links, Schlagschatten nach unten rechts. Alle Farben liegen in
-// PRECISION_PALETTE; der Export (`precision-september.mjs`, Auftragsblatt `e71-kniffe-jobs.json`) übernimmt Form und Lage
-// 1 : 1 (Maßstab 1) und rundet einzelne Farben über seinen Palettencache auf Nachbartöne (höchstens 3 Stufen).
+// Zeichnet jedes Motiv aus Grundformen (Rechteck, Kreis/Ellipse, Polygon, Linie) als Pixelkunst auf der Fähigkeitskachel
+// (ability-tile.js, Stilbibel B): Moos-Kachel randlos 64 × 64 mit Vignette und 1 px Tintenrahmen, ein konturiertes Motiv, Licht
+// von oben links, Schlagschatten 2 px nach unten rechts. Motivkoordinaten laufen wie bisher 0..57 (Kachelmitte); die Kachel reicht
+// 3 px darüber hinaus, Anschnitt-Formen (Unterarm, Tisch) laufen bis an den Rand. Alle Farben liegen in PRECISION_PALETTE; der
+// Export (`precision-september.mjs`, Auftragsblatt `e71-kniffe-jobs.json`) übernimmt das Bild 1 : 1 (Maßstab 1, kein Rand).
 //
 //   node tools/sprite-pipeline/e71-kniffe-draw.mjs [--only=id,id]   → Originale + herkunft.json
 //   npm run sprites:precision && node scripts/pwa-cache.mjs          → Laufzeit-Assets skill-<klasse>-<kniff>
@@ -15,18 +15,20 @@ import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {encodePng} from './png.mjs';
 import {PRECISION_PALETTE} from '../../art-quality.js';
+import {tileGround,tileShadowMask,TILE_COLORS} from '../../ability-tile.js';
+import {shrinkPixels} from '../../content-art.js';
 
 export const TOOL='tools/sprite-pipeline/e71-kniffe-draw.mjs';
 export const DIR='assets/precision/sources/2026-09-25/e71-kniffe/';
 export const PROVENANCE=DIR+'herkunft.json';
-const N=58,OFF=3,SIZE=64,TAU=Math.PI*2,rad=d=>d*Math.PI/180;
+// N = Motivfeld (Koordinaten 0..N-1), OFF = Überstand der Kachel je Seite: Masken und Bild decken -OFF..N+OFF-1 ab (64 × 64).
+const N=58,OFF=3,SIZE=64,LO=-OFF,HI=N+OFF,TAU=Math.PI*2,rad=d=>d*Math.PI/180,at=(x,y)=>(y+OFF)*SIZE+x+OFF,inside=(x,y)=>x>=LO&&y>=LO&&x<HI&&y<HI;
 
 // ------------------------------------------------------------------ Farben
 const snapCache=new Map();
 function snap(rgb){const k=rgb.join(',');let p=snapCache.get(k);if(p)return p;let best=Infinity;
  for(const q of PRECISION_PALETTE){const d=(rgb[0]-q[0])**2*.8+(rgb[1]-q[1])**2+(rgb[2]-q[2])**2*.7;if(d<best){best=d;p=q;}}snapCache.set(k,p);return p;}
 const INK=[23,31,41];
-const MOSS={deep:[23,31,41],dark:[30,44,53],base:[38,53,48],light:[53,75,54],lighter:[61,84,70],shadow:[23,31,41]};
 // Rampen: [tief, dunkel, grund, hell, glanz]
 const R={
  steel:[[58,65,77],[95,99,104],[136,136,127],[193,197,173],[236,229,204]],
@@ -67,18 +69,18 @@ const R={
 function rng(seedText){let h=2166136261;for(const c of seedText)h=Math.imul(h^c.charCodeAt(0),16777619);let s=h>>>0;
  return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
 
-// ------------------------------------------------------------------ Masken und Grundformen (Kachelkoordinaten 0..57, Pixelmitte)
+// ------------------------------------------------------------------ Masken und Grundformen (Motivkoordinaten, Pixelmitte; Feld -3..60)
 class Mask{
- constructor(){this.a=new Uint8Array(N*N);}
- static from(test){const m=new Mask();for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(test(x+.5,y+.5))m.a[y*N+x]=1;return m;}
- has(x,y){return x>=0&&y>=0&&x<N&&y<N&&this.a[y*N+x]===1;}
+ constructor(){this.a=new Uint8Array(SIZE*SIZE);}
+ static from(test){const m=new Mask();for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++)if(test(x+.5,y+.5))m.a[at(x,y)]=1;return m;}
+ has(x,y){return inside(x,y)&&this.a[at(x,y)]===1;}
  or(...ms){const m=this.copy();for(const o of ms)for(let i=0;i<m.a.length;i++)m.a[i]|=o.a[i];return m;}
  and(o){const m=this.copy();for(let i=0;i<m.a.length;i++)m.a[i]&=o.a[i];return m;}
  minus(o){const m=this.copy();for(let i=0;i<m.a.length;i++)if(o.a[i])m.a[i]=0;return m;}
  copy(){const m=new Mask();m.a.set(this.a);return m;}
- shift(dx,dy){const m=new Mask();for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(this.has(x-dx,y-dy))m.a[y*N+x]=1;return m;}
- shrink(){const m=new Mask();for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(this.has(x,y)&&this.has(x-1,y)&&this.has(x+1,y)&&this.has(x,y-1)&&this.has(x,y+1))m.a[y*N+x]=1;return m;}
- grow(){const m=this.copy();for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!this.has(x,y)&&(this.has(x-1,y)||this.has(x+1,y)||this.has(x,y-1)||this.has(x,y+1)))m.a[y*N+x]=1;return m;}
+ shift(dx,dy){const m=new Mask();for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++)if(this.has(x-dx,y-dy))m.a[at(x,y)]=1;return m;}
+ shrink(){const m=new Mask();for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++)if(this.has(x,y)&&this.has(x-1,y)&&this.has(x+1,y)&&this.has(x,y-1)&&this.has(x,y+1))m.a[at(x,y)]=1;return m;}
+ grow(){const m=this.copy();for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++)if(!this.has(x,y)&&(this.has(x-1,y)||this.has(x+1,y)||this.has(x,y-1)||this.has(x,y+1)))m.a[at(x,y)]=1;return m;}
 }
 const union=(...ms)=>ms.reduce((a,b)=>a.or(b));
 const inPoly=(x,y,p)=>{let c=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const[xi,yi]=p[i],[xj,yj]=p[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}return c;};
@@ -109,40 +111,32 @@ const glyph=(ch,x,y,scale=1)=>Mask.from((px,py)=>{const gx=Math.floor((px-x)/sca
 
 // ------------------------------------------------------------------ Zeichenfläche
 class Icon{
- constructor(id){this.id=id;this.rand=rng(id);this.col=new Array(N*N).fill(null);this.occ=new Uint8Array(N*N);this.fx=[];}
- set(x,y,c,solid=true){if(x<0||y<0||x>=N||y>=N)return;this.col[y*N+x]=c;if(solid)this.occ[y*N+x]=1;}
+ constructor(id){this.id=id;this.rand=rng(id);this.col=new Array(SIZE*SIZE).fill(null);this.occ=new Uint8Array(SIZE*SIZE);this.fx=[];}
+ set(x,y,c,solid=true){if(!inside(x,y))return;this.col[at(x,y)]=c;if(solid)this.occ[at(x,y)]=1;}
  /** Teil mit Außenkontur und Rampenschattierung (hell oben links, dunkel unten rechts). */
  part(mask,ramp,{outline=INK,light=1,dark=2,tex=null,solid=true,gloss=true}={}){
-  if(outline)for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!mask.has(x,y)&&(mask.has(x-1,y)||mask.has(x+1,y)||mask.has(x,y-1)||mask.has(x,y+1)))this.set(x,y,outline,solid);
-  for(let y=0;y<N;y++)for(let x=0;x<N;x++){if(!mask.has(x,y))continue;
+  if(outline)for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++)if(!mask.has(x,y)&&(mask.has(x-1,y)||mask.has(x+1,y)||mask.has(x,y-1)||mask.has(x,y+1)))this.set(x,y,outline,solid);
+  for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++){if(!mask.has(x,y))continue;
    const br=!mask.has(x+1,y+1)||!mask.has(x+1,y)||!mask.has(x,y+1)?1:dark>1&&(!mask.has(x+2,y+2)||!mask.has(x+2,y)||!mask.has(x,y+2))?2:9;
    const tl=!mask.has(x-1,y-1)||!mask.has(x-1,y)||!mask.has(x,y-1)?1:light>1&&(!mask.has(x-2,y-2)||!mask.has(x-2,y)||!mask.has(x,y-2))?2:9;
    let i=br===1?0:tl<=light?3:br===2?1:2;if(i===3&&gloss&&!mask.has(x-1,y)&&!mask.has(x,y-1))i=4;if(tex)i=Math.max(0,Math.min(4,i+tex(x,y,i)));this.set(x,y,ramp[i],solid);}
   return this;}
  /** Fläche in einer Farbe, ohne Kontur (Muster, Glanz, Nähte). */
- flat(mask,color,solid=false){for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(mask.has(x,y))this.set(x,y,color,solid||this.occ[y*N+x]===1);return this;}
- px(x,y,c){this.set(Math.round(x),Math.round(y),c,this.occ[Math.round(y)*N+Math.round(x)]===1);return this;}
+ flat(mask,color,solid=false){for(let y=LO;y<HI;y++)for(let x=LO;x<HI;x++)if(mask.has(x,y))this.set(x,y,color,solid||this.occ[at(x,y)]===1);return this;}
+ px(x,y,c){x=Math.round(x);y=Math.round(y);if(inside(x,y))this.set(x,y,c,this.occ[at(x,y)]===1);return this;}
  /** 1-px-Linie (Bresenham), z. B. Bewegungsstriche. */
  line(x1,y1,x2,y2,c){x1=Math.round(x1);y1=Math.round(y1);x2=Math.round(x2);y2=Math.round(y2);const dx=Math.abs(x2-x1),dy=-Math.abs(y2-y1),sx=x1<x2?1:-1,sy=y1<y2?1:-1;let e=dx+dy;
   for(;;){this.px(x1,y1,c);if(x1===x2&&y1===y2)break;const e2=2*e;if(e2>=dy){e+=dy;x1+=sx;}if(e2<=dx){e+=dx;y1+=sy;}}return this;}
  /** Effekte (Funken, Striche) kommen nach dem Schlagschatten und werfen keinen. */
  later(fn){this.fx.push(fn);return this;}
+ /** Kachel aus ability-tile.js (Moos-Rezept, Vignette, Rahmen), Schatten des Motivs, Effekte, Motiv; Rahmen zuletzt. */
  render(){
-  const out=new Uint8Array(SIZE*SIZE*4),r=this.rand,noise=valueNoise(r);
-  const put=(x,y,c)=>{const q=snap(c),i=((y+OFF)*SIZE+x+OFF)*4;out[i]=q[0];out[i+1]=q[1];out[i+2]=q[2];out[i+3]=255;};
-  const bg=new Array(N*N);
-  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
-   const edge=Math.min(x,y,N-1-x,N-1-y),v=.5+(noise(x,y)-.5)*.75+(r()-.5)*.22-(edge<5?(5-edge)*.06:0);
-   bg[y*N+x]=edge===0?INK:v<.2?MOSS.deep:v<.36?MOSS.dark:v<.76?MOSS.base:v<.9?MOSS.light:MOSS.lighter;}
-  // Schlagschatten nach unten rechts
-  for(let y=1;y<N-1;y++)for(let x=1;x<N-1;x++)if(!this.occ[y*N+x]&&(this.occ[(y-2)*N+x-2]||this.occ[(y-1)*N+x-1]||(y>2&&x>1&&this.occ[(y-2)*N+x-1])))bg[y*N+x]=MOSS.shadow;
+  const out=tileGround(this.id,SIZE).data,shadow=tileShadowMask(this.occ,SIZE);
+  for(let i=0;i<SIZE*SIZE;i++)if(shadow[i])out.set([...TILE_COLORS.ink,255],i*4);
   const fxLayer=this.col.slice();this.col=fxLayer;for(const f of this.fx)f(this);
-  for(let y=0;y<N;y++)for(let x=0;x<N;x++){const edge=Math.min(x,y,N-1-x,N-1-y);put(x,y,edge===0?INK:this.col[y*N+x]||bg[y*N+x]);}
+  for(let i=0;i<SIZE*SIZE;i++){const x=i%SIZE,y=(i/SIZE)|0,c=this.col[i];if(c&&x>0&&y>0&&x<SIZE-1&&y<SIZE-1)out.set([...snap(c),255],i*4);}
   return{width:SIZE,height:SIZE,data:out};}
 }
-function valueNoise(r){const G=11,g=Array.from({length:(G+1)*(G+1)},()=>r());const at=(i,j)=>g[j*(G+1)+i];
- return(x,y)=>{const fx=x/(N-1)*G,fy=y/(N-1)*G,i=Math.min(G-1,Math.floor(fx)),j=Math.min(G-1,Math.floor(fy)),u=fx-i,v=fy-j,s=t=>t*t*(3-2*t);
-  return at(i,j)*(1-s(u))*(1-s(v))+at(i+1,j)*s(u)*(1-s(v))+at(i,j+1)*(1-s(u))*s(v)+at(i+1,j+1)*s(u)*s(v);};}
 
 // ------------------------------------------------------------------ Bausteine
 function sparkle(k,x,y,size=2,c=[255,236,201],core=[255,242,214]){k.later(k=>{for(let d=1;d<=size;d++){k.px(x+d,y,c);k.px(x-d,y,c);k.px(x,y+d,c);k.px(x,y-d,c);}k.px(x,y,core);});}
@@ -447,8 +441,17 @@ const MOTIFS={
   k.part(local(15,43,-35,(u,v)=>u>=7&&u<=14&&Math.abs(v)<=12.8),[R.wine[1],R.wine[2],R.wine[3],R.wine[4],R.wine[4]],{light:1,tex:(x,y)=>((x+y)%2?-1:0)});
   k.flat(local(15,43,-35,(u,v)=>(u+10)**2+(v+5)**2<=2||(u+10)**2+(v-5)**2<=2),R.gold[3],true);
   sparkle(k,53,6,2,[255,236,201]);sparkle(k,27,6,1,R.gold[3],R.gold[4]);},
+ 'skill-kaethe-mark':k=>{
+  // Aura „markiert“: eine Kreuzkarte, von Käthes Hutnadel durchstochen. Die Spitze tritt unten links aus, der Perlenkopf sitzt oben rechts.
+  k.part(seg(21,37,7,52,1.3),R.steel,{light:1});
+  card(k,26,29,25,34,-12,{suit:'club',rank:'A'},{suitScale:.34});
+  k.part(seg(46,10,31,26,1.3),R.steel,{light:1});
+  k.flat(circle(30.5,26.5,1.8),INK,true);
+  k.part(circle(48,8,6),R.red,{light:2});
+  k.flat(rect(45,5,2,2),[255,242,214],true);
+  sparkle(k,53,19,2,R.gold[3],R.gold[4]);},
  'skill-dieter-zeche':k=>{
-  k.part(rect(0,45,58,13),R.wood,{light:1,tex:(x,y,i)=>(y===50||y===54)&&i>=2?-1:0});
+  k.part(rect(-3,45,64,16),R.wood,{light:1,tex:(x,y,i)=>(y===50||y===54)&&i>=2?-1:0});
   k.part(local(26,45,-5,(u,v)=>Math.abs(u)<=19&&Math.abs(v)<=4.4&&!((u>15&&(Math.floor(u)%2===0)&&v<-2))),R.paper,{light:1});
   k.flat(local(26,45,-5,(u,v)=>Math.abs(v+1.2)<=.5&&u>-17&&u<-6||Math.abs(v-1.6)<=.5&&u>-17&&u<-2||Math.abs(v-1.6)<=.5&&u>9&&u<16),[137,140,131]);
   for(const[x,y,r]of[[6,27,4],[51,23,4],[48,36,3.4],[8,38,3.4],[53,9,3],[5,13,2.6]]){k.part(circle(x,y,r),R.gold,{outline:[101,63,61]});k.flat(rect(x-1,y-1,2,1),R.gold[4]);}
@@ -475,20 +478,22 @@ export function drawIcon(id){const f=MOTIFS[id];if(!f)throw Error('Unbekanntes M
 export function iconPng(id){return encodePng(drawIcon(id));}
 const sha=b=>createHash('sha256').update(b).digest('hex');
 
-// Kontaktbogen: Laufzeit-Assets bei 48 px wie im Spiel (drawContentIcon: Nächster Nachbar, 64 → 48), zweifach vergrößert.
+// Kontaktbogen: Laufzeit-Assets bei 48 px wie im Spiel (drawContentIcon: Flächenmittel shrinkPixels, 64 → 48), zweifach vergrößert.
 // Spalte 1 = alte Kniffe zum Vergleich, dann je Zeile sieben neue; letzte Zeile nur alte (Dieter, Kevin, Anni).
 export const CONTACT_ROWS=[
  ['skill-dieter-strike','skill-schorsch-auto','skill-schorsch-strike','skill-schorsch-mark','skill-schorsch-burst','skill-schorsch-interrupt','skill-schorsch-parry','skill-schorsch-dash'],
  ['skill-kevin-throw','skill-schorsch-heal','skill-schorsch-buff','skill-schorsch-throw','skill-schorsch-ground','skill-schorsch-senf','skill-schorsch-spiritus','skill-schorsch-deckelzu'],
  ['skill-dieter-heal','skill-kaethe-auto','skill-kaethe-interrupt','skill-kaethe-parry','skill-kaethe-dash','skill-kaethe-heal','skill-kaethe-buff','skill-kaethe-throw'],
  ['skill-kevin-heal','skill-kaethe-ground','skill-kaethe-reizen','skill-kaethe-handlesen','skill-kaethe-gezinkt','skill-kaethe-aermel','skill-dieter-zeche','skill-kevin-reload'],
- ['skill-dieter-mark','skill-dieter-interrupt','skill-dieter-auto','skill-kevin-strike','skill-kevin-buff','skill-kevin-auto','skill-baerbel-heal','skill-baerbel-buff']];
+ ['skill-dieter-mark','skill-dieter-interrupt','skill-dieter-auto','skill-kevin-strike','skill-kevin-buff','skill-kevin-auto','skill-baerbel-heal','skill-baerbel-buff'],
+ ['skill-kaethe-aermel','skill-kaethe-mark']];
 export function contactSheet(catalog,readFile,decode){
- const zoom=2,cell=48*zoom,gap=8,split=12,cols=8,W=gap*2+split+cols*cell+(cols-1)*gap,H=gap+CONTACT_ROWS.length*(cell+gap),img={width:W,height:H,data:new Uint8Array(W*H*4)};
+ const zoom=2,cell=48*zoom,gap=8,split=12,cols=Math.max(...CONTACT_ROWS.map(r=>r.length)),W=gap*2+split+cols*cell+(cols-1)*gap,H=gap+CONTACT_ROWS.length*(cell+gap),img={width:W,height:H,data:new Uint8Array(W*H*4)};
  for(let i=0;i<W*H;i++)img.data.set([29,36,32,255],i*4);
  CONTACT_ROWS.forEach((row,ry)=>row.forEach((id,cx)=>{const a=catalog.assets[catalog.aliases?.[id]||id],im=decode(readFile(a.path)),ox=gap+cx*(cell+gap)+(cx>0?split:0),oy=gap+ry*(cell+gap);
-  for(let y=0;y<cell;y++)for(let x=0;x<cell;x++){const sx=Math.floor((Math.floor(x/zoom)+.5)*im.width/48),sy=Math.floor((Math.floor(y/zoom)+.5)*im.height/48),i=(sy*im.width+sx)*4;
-   if(im.data[i+3]<128)continue;const k=((oy+y)*W+ox+x)*4;img.data[k]=im.data[i];img.data[k+1]=im.data[i+1];img.data[k+2]=im.data[i+2];}}));
+  const small=shrinkPixels(im.data,im.width,im.height,48,48);
+  for(let y=0;y<cell;y++)for(let x=0;x<cell;x++){const i=(Math.floor(y/zoom)*48+Math.floor(x/zoom))*4;
+   if(small[i+3]<128)continue;const k=((oy+y)*W+ox+x)*4;img.data[k]=small[i];img.data[k+1]=small[i+1];img.data[k+2]=small[i+2];}}));
  for(let y=gap;y<H-gap;y++)for(let x=0;x<2;x++)img.data.set([211,168,86,255],(y*W+gap+cell+gap/2+split/2-1+x)*4);
  return img;}
 
