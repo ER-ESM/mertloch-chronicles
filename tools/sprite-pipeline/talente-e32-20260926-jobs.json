@@ -1,0 +1,1010 @@
+[
+ {
+  "id": "talente-schorsch-chef",
+  "output": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "padding": 0,
+  "kind": "talent-atlas",
+  "spec": "schorsch-chef",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art talent icons, exactly in the style of the attached reference sheet (our existing talent icons): warm kraft copper highlights and dark petrol shadows, rich engraved materials, hand-clustered pixel detail, a closed dark ink outline around every icon, consistent light from the upper left on every single icon (bright highlights upper left, darkest shade lower right). True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 48px, detailed like the reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Each icon is one dominant recognizable object that shows its German talent name literally, as something from a rustic German village; a soft warm ember glow behind the object may cover at most a fifth of the cell. Do not repeat the same silhouette. The reference sheet shows style, density and layout only: do not copy its subjects (no shields, beer mugs, barrels or warning tape unless a line below names them). Glyph rule: a line ending in [glyph: X] gets exactly one small glyph X, about one quarter of the cell width, in the top-right corner of that icon, with a dark ink outline and no background plate: up = a small green upward arrow, hourglass = a small brass hourglass, reset = a small green circular arrow, plus = a small green plus, skull = a small bone-white skull, double = two small golden right-pointing chevrons. Lines without [glyph] get no glyph at all. Never more than one glyph per icon and never anywhere else; keep the bottom-right corner of every cell free. This sheet is schorsch-chef (\"Grillhütten-Chef\", healer: grilled sausages heal the group, a grill plan and a grill buffet) of Schwenker-Schorsch, a burly grill master of a German village grill hut (apron, grill tongs, swing grill on a tripod chain, charcoal, bratwurst, grilled halloumi, a beer to douse the embers). In strict row-major order (left to right, top to bottom):\n1. Probierhäppchen: a bite of grilled bratwurst on a wooden toothpick held above charcoal that flares up.\n2. Zweite Wurst: two golden grilled bratwursts side by side on a white paper plate [glyph: up].\n3. Satt ist satt: a leather belt on a checkered grill apron, its buckle opened one notch wider over a full belly [glyph: plus].\n4. Notwurst: a single bratwurst inside a small red wall-mounted break-glass emergency box.\n5. Hausmacher: a thick coiled homemade sausage tied with butcher's string on a wooden board [glyph: up].\n6. Goldbraun: one perfectly golden-brown bratwurst with dark grill stripes, glowing warmly [glyph: hourglass].\n7. Metzgerqualität: a heavy butcher's cleaver stuck in a wooden block beside a short string of sausages [glyph: plus].\n8. Wurstkette: a long chain of linked sausages hanging in a swag.\n9. Auf Vorrat gegrillt: a dented tin lunch box with its lid open, packed with grilled sausages [glyph: hourglass].\n10. Meisterwurst: a giant golden bratwurst wearing a small gold medal on a ribbon [glyph: plus].\n11. Grillkäse dazu: a thick slab of halloumi grilling cheese with dark grill stripes [glyph: plus].\n12. Schnell gewendet: grill tongs flipping a bratwurst in mid-air [glyph: reset].\n13. Heißer Rost: a glowing red-hot cast-iron grill grate with heat shimmer.\n14. Maiskolben dazu: a grilled corn on the cob with a few kernels popping into white popcorn.\n15. Senf drauf!: a yellow plastic mustard squeeze bottle squirting a fat dollop.\n16. Wenden!: grill tongs turning a bratwurst over, the sausage half rotated.\n17. Belegtes Brötchen: a crusty bread roll stuffed with a bratwurst, lettuce and a slice of grilled cheese [glyph: up].\n18. Popcorn für alle: a striped paper bag bursting with popcorn, kernels flying outward in a ring [glyph: up].\n19. Scharfer Senf: a small glass jar of hot mustard with a red chili pepper tied to its lid [glyph: hourglass].\n20. Volle Platte: a big wooden platter piled high with sausages, a steak, corn and cheese.\n21. Löschbier: a brown beer bottle tipped over, pouring beer onto hot coals [glyph: plus].\n22. Dampfgaren: a bratwurst resting in a thick puff of white steam under a lifted pot lid.\n23. Stammplatz: a worn wooden bar stool with a folded checkered apron on its seat [glyph: up].\n24. Feuerfeste Schürze: a thick leather grill apron with small flames licking harmlessly at its hem.\n25. Ruhige Glut: a calm bed of evenly glowing charcoal briquettes [glyph: hourglass].\n26. Tischdienst: a round waiter's tray with a beer bottle and a folded white towel [glyph: reset].\n27. Buffet nachlegen: a steel buffet tray being refilled with sausages from grill tongs [glyph: hourglass].\n28. Dicke Luft: a huge dense billowing cloud of hot grey steam [glyph: up].\n29. Frische Luft: an opened round grill air vent with a fresh breeze blowing through [glyph: up].\n30. Lokalrunde: a round wooden tray crowded with foaming beer glasses for the whole pub [glyph: plus].",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "schorsch-chef-0",
+    "name": "Probierhäppchen",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-1",
+    "name": "Zweite Wurst",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-2",
+    "name": "Satt ist satt",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-chef-3",
+    "name": "Notwurst",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-4",
+    "name": "Hausmacher",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-5",
+    "name": "Goldbraun",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-chef-6",
+    "name": "Metzgerqualität",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-chef-7",
+    "name": "Wurstkette",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-8",
+    "name": "Auf Vorrat gegrillt",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-chef-9",
+    "name": "Meisterwurst",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-chef-10",
+    "name": "Grillkäse dazu",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-chef-11",
+    "name": "Schnell gewendet",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-chef-12",
+    "name": "Heißer Rost",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-13",
+    "name": "Maiskolben dazu",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-14",
+    "name": "Senf drauf!",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-15",
+    "name": "Wenden!",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-16",
+    "name": "Belegtes Brötchen",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-17",
+    "name": "Popcorn für alle",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-18",
+    "name": "Scharfer Senf",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-chef-19",
+    "name": "Volle Platte",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-20",
+    "name": "Löschbier",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-chef-21",
+    "name": "Dampfgaren",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-22",
+    "name": "Stammplatz",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-23",
+    "name": "Feuerfeste Schürze",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-chef-24",
+    "name": "Ruhige Glut",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-chef-25",
+    "name": "Tischdienst",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-chef-26",
+    "name": "Buffet nachlegen",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-chef-27",
+    "name": "Dicke Luft",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-28",
+    "name": "Frische Luft",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-chef-29",
+    "name": "Lokalrunde",
+    "glyph": "plus"
+   }
+  ]
+ },
+ {
+  "id": "talente-schorsch-flamme",
+  "output": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "padding": 0,
+  "kind": "talent-atlas",
+  "spec": "schorsch-flamme",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art talent icons, exactly in the style of the attached reference sheet (our existing talent icons): warm kraft copper highlights and dark petrol shadows, rich engraved materials, hand-clustered pixel detail, a closed dark ink outline around every icon, consistent light from the upper left on every single icon (bright highlights upper left, darkest shade lower right). True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 48px, detailed like the reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Each icon is one dominant recognizable object that shows its German talent name literally, as something from a rustic German village; a soft warm ember glow behind the object may cover at most a fifth of the cell. Do not repeat the same silhouette. The reference sheet shows style, density and layout only: do not copy its subjects (no shields, beer mugs, barrels or warning tape unless a line below names them). Glyph rule: a line ending in [glyph: X] gets exactly one small glyph X, about one quarter of the cell width, in the top-right corner of that icon, with a dark ink outline and no background plate: up = a small green upward arrow, hourglass = a small brass hourglass, reset = a small green circular arrow, plus = a small green plus, skull = a small bone-white skull, double = two small golden right-pointing chevrons. Lines without [glyph] get no glyph at all. Never more than one glyph per icon and never anywhere else; keep the bottom-right corner of every cell free. This sheet is schorsch-flamme (\"Flambierer\", melee damage: plays at the very top of the ember heat, flames and flambé) of Schwenker-Schorsch, a burly grill master of a German village grill hut (apron, grill tongs, swing grill on a tripod chain, charcoal, bratwurst, grilled halloumi, a beer to douse the embers). In strict row-major order (left to right, top to bottom):\n1. Gut angefacht: charcoal flaring up bright under a waving straw hand fan [glyph: double].\n2. Kurze Zündschnur: a black charcoal briquette with a very short fizzing fuse [glyph: hourglass].\n3. Zunder: a bundle of dry tinder and wood shavings catching a single spark.\n4. Hitzewelle: a rolling wave of heat and flame pouring out of an open grill [glyph: skull].\n5. Nach dem Knall: a heavy enamel plate hurled through a small fiery bang [glyph: double].\n6. Nachglühen: a charcoal briquette still glowing orange inside after the flames died down [glyph: hourglass].\n7. Blasebalg-Profi: a well-worn leather bellows with brass studs [glyph: reset].\n8. Feuerring: a ring of fire bursting outward around a small kettle grill [glyph: up].\n9. Heißer Draht: a glowing red-hot coil of grill wire [glyph: up].\n10. Feuerteufel: a small grinning fire imp made of flames dancing on a grill grate.\n11. Anbraten: a thick steak searing in a black cast-iron pan [glyph: reset].\n12. Fleischermesser: a heavy butcher's knife with a riveted wooden handle [glyph: skull].\n13. Auf den Punkt: a meat thermometer stuck into a perfectly cooked steak [glyph: hourglass].\n14. Abschrecken: a hot steak dunked into a tin bucket of cold water with a hiss of steam [glyph: double].\n15. Der Nächste, bitte: a small brass service bell on a butcher's counter [glyph: reset].\n16. Fleischklopfer: a wooden meat mallet with a studded metal head [glyph: up].\n17. Grillteller mit Braten: a big plate with a roast, a bratwurst and potato salad [glyph: up].\n18. Knusprig: a crackling-crisp roast pork rind on a wooden board [glyph: hourglass].\n19. Zweiter Gang: two stacked plates, a second roast being served on top [glyph: reset].\n20. Spanferkel-Wurf: a whole roast suckling pig flying through the air [glyph: up].\n21. Kohlenschaufel: a small steel coal shovel full of glowing charcoal.\n22. Zangenklapper im Takt: grill tongs clacking beside a small wooden metronome.\n23. Brandbeschleuniger: a small red metal jerry can of fire accelerant [glyph: up].\n24. Heiße Kohlen: a pile of glowing hot coals in an iron scoop [glyph: skull].\n25. Spiritus-Schwall: a lighter-fluid bottle spewing a jet of flame forward.\n26. Funkensprung: a bright spark leaping in an arc from one glowing coal to another.\n27. Zangentakt: grill tongs holding up one glowing charcoal lump [glyph: hourglass].\n28. Doppelpack: two glowing charcoal lumps tied together with wire [glyph: double].\n29. Nachgießen: a lighter-fluid bottle being refilled from a larger tin canister [glyph: reset].\n30. Flambé mit Schuss: a flambé pan with a tall orange flame and a splash of schnapps from a small bottle [glyph: up].",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "schorsch-flamme-0",
+    "name": "Gut angefacht",
+    "glyph": "double"
+   },
+   {
+    "id": "schorsch-flamme-1",
+    "name": "Kurze Zündschnur",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-flamme-2",
+    "name": "Zunder",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-flamme-3",
+    "name": "Hitzewelle",
+    "glyph": "skull"
+   },
+   {
+    "id": "schorsch-flamme-4",
+    "name": "Nach dem Knall",
+    "glyph": "double"
+   },
+   {
+    "id": "schorsch-flamme-5",
+    "name": "Nachglühen",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-flamme-6",
+    "name": "Blasebalg-Profi",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-flamme-7",
+    "name": "Feuerring",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-flamme-8",
+    "name": "Heißer Draht",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-flamme-9",
+    "name": "Feuerteufel",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-flamme-10",
+    "name": "Anbraten",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-flamme-11",
+    "name": "Fleischermesser",
+    "glyph": "skull"
+   },
+   {
+    "id": "schorsch-flamme-12",
+    "name": "Auf den Punkt",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-flamme-13",
+    "name": "Abschrecken",
+    "glyph": "double"
+   },
+   {
+    "id": "schorsch-flamme-14",
+    "name": "Der Nächste, bitte",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-flamme-15",
+    "name": "Fleischklopfer",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-flamme-16",
+    "name": "Grillteller mit Braten",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-flamme-17",
+    "name": "Knusprig",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-flamme-18",
+    "name": "Zweiter Gang",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-flamme-19",
+    "name": "Spanferkel-Wurf",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-flamme-20",
+    "name": "Kohlenschaufel",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-flamme-21",
+    "name": "Zangenklapper im Takt",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-flamme-22",
+    "name": "Brandbeschleuniger",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-flamme-23",
+    "name": "Heiße Kohlen",
+    "glyph": "skull"
+   },
+   {
+    "id": "schorsch-flamme-24",
+    "name": "Spiritus-Schwall",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-flamme-25",
+    "name": "Funkensprung",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-flamme-26",
+    "name": "Zangentakt",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-flamme-27",
+    "name": "Doppelpack",
+    "glyph": "double"
+   },
+   {
+    "id": "schorsch-flamme-28",
+    "name": "Nachgießen",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-flamme-29",
+    "name": "Flambé mit Schuss",
+    "glyph": "up"
+   }
+  ]
+ },
+ {
+  "id": "talente-schorsch-rauch",
+  "output": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "padding": 0,
+  "kind": "talent-atlas",
+  "spec": "schorsch-rauch",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art talent icons, exactly in the style of the attached reference sheet (our existing talent icons): warm kraft copper highlights and dark petrol shadows, rich engraved materials, hand-clustered pixel detail, a closed dark ink outline around every icon, consistent light from the upper left on every single icon (bright highlights upper left, darkest shade lower right). True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 48px, detailed like the reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Each icon is one dominant recognizable object that shows its German talent name literally, as something from a rustic German village; a soft warm ember glow behind the object may cover at most a fifth of the cell. Do not repeat the same silhouette. The reference sheet shows style, density and layout only: do not copy its subjects (no shields, beer mugs, barrels or warning tape unless a line below names them). Glyph rule: a line ending in [glyph: X] gets exactly one small glyph X, about one quarter of the cell width, in the top-right corner of that icon, with a dark ink outline and no background plate: up = a small green upward arrow, hourglass = a small brass hourglass, reset = a small green circular arrow, plus = a small green plus, skull = a small bone-white skull, double = two small golden right-pointing chevrons. Lines without [glyph] get no glyph at all. Never more than one glyph per icon and never anywhere else; keep the bottom-right corner of every cell free. This sheet is schorsch-rauch (\"Räuchermeister\", tank: low and slow smoking, the grill lid as a shield, halloumi cheese shields, smoke that taunts) of Schwenker-Schorsch, a burly grill master of a German village grill hut (apron, grill tongs, swing grill on a tripod chain, charcoal, bratwurst, grilled halloumi, a beer to douse the embers). In strict row-major order (left to right, top to bottom):\n1. Kalt anräuchern: a smoked trout hanging on a hook in thin cold smoke [glyph: plus].\n2. Feuerlöscher: a red fire extinguisher with a black hose [glyph: reset].\n3. Dicker Qualm: a huge dense cloud of thick grey smoke [glyph: up].\n4. Kalte Schulter: a smoked ham shoulder covered in frost crystals.\n5. Deckel zu!: a kettle grill lid slammed shut, thick smoke puffing from its rim.\n6. Räucherwurst: a dark reddish-brown smoked sausage ring hanging from a string [glyph: plus].\n7. Nachräuchern: a smoldering wood-chip smoker box with a thin smoke trail [glyph: hourglass].\n8. Nasses Buchenholz: a split log of wet beech wood dripping water.\n9. Nebelmaschine: an old village-disco fog machine puffing a cloud [glyph: hourglass].\n10. Räucherkammer: a small wooden smokehouse with sausages hanging behind its open door [glyph: plus].\n11. Garen mit Deckel: a closed domed grill lid with heat waves trapped under it.\n12. Deckelpolster: a round grill lid with a padded cushion strapped to its inside [glyph: plus].\n13. Doppelter Deckel: two round grill lids stacked on top of each other [glyph: double].\n14. Käsekruste: a slab of halloumi with a thick golden crispy crust [glyph: up].\n15. Halloumi-Happen: a bite-sized cube of grilled halloumi on a small wooden fork [glyph: plus].\n16. Längerer Deckel: a grill lid propped open on a wooden stick [glyph: hourglass].\n17. Deckelkonter: a grill lid with grill tongs striking out from behind it [glyph: double].\n18. Zurück an den Absender: a brown paper parcel tied with string, a big bent-back arrow stamped on it [glyph: up].\n19. Notkäse: a big wheel of cheese with a red emergency cross band around it [glyph: plus].\n20. Halloumi-Panzer: a breastplate made of overlapping grilled halloumi slabs [glyph: reset].\n21. Zwicken heizt: grill tongs pinching a small crackling spark above flaring coals.\n22. Nestwärme: a cozy bird's nest filled with glowing embers [glyph: up].\n23. Schwelbrand: a smoldering log with glowing cracks and thin smoke [glyph: up].\n24. Heißer Stein: a flat grilling stone glowing hot at its edges [glyph: hourglass].\n25. Heiße Asche: a mound of warm grey ash speckled with glowing embers [glyph: plus].\n26. Glutwächter: a round cast-iron grill thermometer, its needle in the golden zone [glyph: hourglass].\n27. Brandmauer: a short brick firewall with flames licking over its top.\n28. Aufgeheizt: a big leather bellows puffing, three small flames rising in front of it [glyph: reset].\n29. Glut unterm Deckel: glowing embers under a slightly lifted grill lid [glyph: plus].\n30. Glutherz: a heart-shaped lump of glowing charcoal.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "schorsch-rauch-0",
+    "name": "Kalt anräuchern",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-1",
+    "name": "Feuerlöscher",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-rauch-2",
+    "name": "Dicker Qualm",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-rauch-3",
+    "name": "Kalte Schulter",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-rauch-4",
+    "name": "Deckel zu!",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-rauch-5",
+    "name": "Räucherwurst",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-6",
+    "name": "Nachräuchern",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-rauch-7",
+    "name": "Nasses Buchenholz",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-rauch-8",
+    "name": "Nebelmaschine",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-rauch-9",
+    "name": "Räucherkammer",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-10",
+    "name": "Garen mit Deckel",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-rauch-11",
+    "name": "Deckelpolster",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-12",
+    "name": "Doppelter Deckel",
+    "glyph": "double"
+   },
+   {
+    "id": "schorsch-rauch-13",
+    "name": "Käsekruste",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-rauch-14",
+    "name": "Halloumi-Happen",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-15",
+    "name": "Längerer Deckel",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-rauch-16",
+    "name": "Deckelkonter",
+    "glyph": "double"
+   },
+   {
+    "id": "schorsch-rauch-17",
+    "name": "Zurück an den Absender",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-rauch-18",
+    "name": "Notkäse",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-19",
+    "name": "Halloumi-Panzer",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-rauch-20",
+    "name": "Zwicken heizt",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-rauch-21",
+    "name": "Nestwärme",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-rauch-22",
+    "name": "Schwelbrand",
+    "glyph": "up"
+   },
+   {
+    "id": "schorsch-rauch-23",
+    "name": "Heißer Stein",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-rauch-24",
+    "name": "Heiße Asche",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-25",
+    "name": "Glutwächter",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "schorsch-rauch-26",
+    "name": "Brandmauer",
+    "glyph": null
+   },
+   {
+    "id": "schorsch-rauch-27",
+    "name": "Aufgeheizt",
+    "glyph": "reset"
+   },
+   {
+    "id": "schorsch-rauch-28",
+    "name": "Glut unterm Deckel",
+    "glyph": "plus"
+   },
+   {
+    "id": "schorsch-rauch-29",
+    "name": "Glutherz",
+    "glyph": null
+   }
+  ]
+ },
+ {
+  "id": "talente-kaethe-grand",
+  "output": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "padding": 0,
+  "kind": "talent-atlas",
+  "spec": "kaethe-grand",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art talent icons, exactly in the style of the attached reference sheet (our existing talent icons): warm kraft copper highlights and dark petrol shadows, rich engraved materials, hand-clustered pixel detail, a closed dark ink outline around every icon, consistent light from the upper left on every single icon (bright highlights upper left, darkest shade lower right). True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 48px, detailed like the reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Each icon is one dominant recognizable object that shows its German talent name literally, as something from a rustic German village; a soft warm ember glow behind the object may cover at most a fifth of the cell. Do not repeat the same silhouette. The reference sheet shows style, density and layout only: do not copy its subjects (no shields, beer mugs, barrels or warning tape unless a line below names them). Glyph rule: a line ending in [glyph: X] gets exactly one small glyph X, about one quarter of the cell width, in the top-right corner of that icon, with a dark ink outline and no background plate: up = a small green upward arrow, hourglass = a small brass hourglass, reset = a small green circular arrow, plus = a small green plus, skull = a small bone-white skull, double = two small golden right-pointing chevrons. Lines without [glyph] get no glyph at all. Never more than one glyph per icon and never anywhere else; keep the bottom-right corner of every cell free. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. This sheet is kaethe-grand (\"Grand-Spielerin\", ranged damage: collects jacks and card points for a Grand) of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. In strict row-major order (left to right, top to bottom):\n1. Wenzel: a jack playing card with a stern mustached jack portrait and a club symbol [glyph: up].\n2. Mitzählen: a short pencil making tally marks on a small score pad.\n3. Kleinvieh: a small pink piglet sitting on a pile of playing cards.\n4. Kreuz-Bube: the jack of clubs playing card with a big black club symbol and a jack portrait [glyph: up].\n5. Pfennigfuchserin: a copper penny held up between two fingers with a bright glint.\n6. Kleine Fische: three tiny silver fish lying on a playing card [glyph: up].\n7. Bube zieht nach: a jack card pulling a fresh card out of a deck [glyph: reset].\n8. Knapp gewonnen: a small dented golden trophy cup.\n9. Schnipp, schnapp: a pair of scissors snipping the corner off a playing card.\n10. Der letzte Stich: a knitting needle stabbing through a stack of four playing cards [glyph: skull].\n11. Gestochen scharf: a gleaming razor-sharp hatpin with a pearl head [glyph: up].\n12. Ouvert: a playing card lying face up on a table, reading glasses on a chain beside it.\n13. Mit Vieren: four jack cards fanned out, one of each suit [glyph: double].\n14. Reizen: a hand holding a fan of cards up high in a bold bidding gesture.\n15. Blatt aufgefächert: a very wide fan of many playing cards [glyph: up].\n16. Der Alte: the jack of clubs card showing an old grey-bearded jack [glyph: hourglass].\n17. Skat drücken: a thumb pressing two face-down cards onto a table.\n18. Bis zum Anschlag: a tall stack of cards pushed against a wooden end stop [glyph: up].\n19. Auf die Hand: a fresh hand of cards dealt into an open palm [glyph: hourglass].\n20. Volle Augen: a playing card crowded with many big glowing suit pips [glyph: up].\n21. Unter der Hand: a card slipped secretly under the edge of a pub table [glyph: hourglass].\n22. Trumpf nachziehen: a trump card being drawn from the top of a deck [glyph: hourglass].\n23. Buchführung: a small leather ledger book with a pencil tucked in it [glyph: skull].\n24. Durchmarsch: a row of playing cards marching in single file.\n25. Spitzen: a piece of white bobbin lace with sharp pointed edges [glyph: up].\n26. Strich auf dem Block: a bold pencil line struck across a score pad [glyph: hourglass].\n27. Nullspiel: a blank playing card with an empty round hole punched in its middle [glyph: reset].\n28. Grand Hand: four jack cards held high under a small golden crown [glyph: up].\n29. Revanche: two elderly hands shaking over a card table.\n30. Null ouvert Hand: a hand of cards laid face up in a neat row on the table [glyph: reset].",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "kaethe-grand-0",
+    "name": "Wenzel",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-1",
+    "name": "Mitzählen",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-2",
+    "name": "Kleinvieh",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-3",
+    "name": "Kreuz-Bube",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-4",
+    "name": "Pfennigfuchserin",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-5",
+    "name": "Kleine Fische",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-6",
+    "name": "Bube zieht nach",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-grand-7",
+    "name": "Knapp gewonnen",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-8",
+    "name": "Schnipp, schnapp",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-9",
+    "name": "Der letzte Stich",
+    "glyph": "skull"
+   },
+   {
+    "id": "kaethe-grand-10",
+    "name": "Gestochen scharf",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-11",
+    "name": "Ouvert",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-12",
+    "name": "Mit Vieren",
+    "glyph": "double"
+   },
+   {
+    "id": "kaethe-grand-13",
+    "name": "Reizen",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-14",
+    "name": "Blatt aufgefächert",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-15",
+    "name": "Der Alte",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-grand-16",
+    "name": "Skat drücken",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-17",
+    "name": "Bis zum Anschlag",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-18",
+    "name": "Auf die Hand",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-grand-19",
+    "name": "Volle Augen",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-20",
+    "name": "Unter der Hand",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-grand-21",
+    "name": "Trumpf nachziehen",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-grand-22",
+    "name": "Buchführung",
+    "glyph": "skull"
+   },
+   {
+    "id": "kaethe-grand-23",
+    "name": "Durchmarsch",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-24",
+    "name": "Spitzen",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-25",
+    "name": "Strich auf dem Block",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-grand-26",
+    "name": "Nullspiel",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-grand-27",
+    "name": "Grand Hand",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-grand-28",
+    "name": "Revanche",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-grand-29",
+    "name": "Null ouvert Hand",
+    "glyph": "reset"
+   }
+  ]
+ },
+ {
+  "id": "talente-kaethe-herz",
+  "output": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "padding": 0,
+  "kind": "talent-atlas",
+  "spec": "kaethe-herz",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art talent icons, exactly in the style of the attached reference sheet (our existing talent icons): warm kraft copper highlights and dark petrol shadows, rich engraved materials, hand-clustered pixel detail, a closed dark ink outline around every icon, consistent light from the upper left on every single icon (bright highlights upper left, darkest shade lower right). True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 48px, detailed like the reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Each icon is one dominant recognizable object that shows its German talent name literally, as something from a rustic German village; a soft warm ember glow behind the object may cover at most a fifth of the cell. Do not repeat the same silhouette. The reference sheet shows style, density and layout only: do not copy its subjects (no shields, beer mugs, barrels or warning tape unless a line below names them). Glyph rule: a line ending in [glyph: X] gets exactly one small glyph X, about one quarter of the cell width, in the top-right corner of that icon, with a dark ink outline and no background plate: up = a small green upward arrow, hourglass = a small brass hourglass, reset = a small green circular arrow, plus = a small green plus, skull = a small bone-white skull, double = two small golden right-pointing chevrons. Lines without [glyph] get no glyph at all. Never more than one glyph per icon and never anywhere else; keep the bottom-right corner of every cell free. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. This sheet is kaethe-herz (\"Kartenlegerin\", healer: heart cards heal, fortune telling, palm reading, egg liqueur) of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. In strict row-major order (left to right, top to bottom):\n1. Das Herz am rechten Fleck: a red heart playing card with a small heart-shaped patch sewn on it [glyph: plus].\n2. Pik auf die Brust: a spade card pinned like a brooch to a plum knitted cardigan [glyph: plus].\n3. Sterne lesen: a small star chart under a round magnifying glass [glyph: up].\n4. Rote Dame: the queen of hearts card with a red-haired queen portrait [glyph: up].\n5. Letzte Masche: two knitting needles holding the last stitch of a scarf [glyph: plus].\n6. Farbe halten: an elderly hand clutching a red heart card tightly [glyph: plus].\n7. Nachschenken: a bottle of egg liqueur refilling a small stemmed glass [glyph: hourglass].\n8. Pik-Ass: the ace of spades with one giant black spade symbol [glyph: up].\n9. Wahrsagekugel: a glowing crystal ball on a small brass stand [glyph: up].\n10. Herzklopfen: a pounding red heart with small beat marks around it [glyph: reset].\n11. Mauern: a small brick wall built from stacked playing cards [glyph: hourglass].\n12. Blick über die Schulter: reading glasses on a chain peeking over the shoulder of a plum knitted cardigan [glyph: plus].\n13. Handlesen: an open palm with softly glowing lines traced on it.\n14. Pik mit Stachel: a black spade card with sharp thorns growing from its edges.\n15. Hab ich kommen sehen: a crystal ball showing a small incoming fist [glyph: hourglass].\n16. Lebenslinie: an open palm with one long glowing life line [glyph: hourglass].\n17. Pik-Kette: a chain of spade cards linked together [glyph: plus].\n18. Kaffeefahrt: a steaming coffee pot with a flowery pattern [glyph: up].\n19. Warmer Eierlikör: a warm mug of egg liqueur with rising steam [glyph: hourglass].\n20. Masche für Masche: a plum knitted scarf growing on two knitting needles [glyph: plus].\n21. Legekreis im Gehen: a circle of cards laid on the ground, a walking shoe stepping past it.\n22. Herzensangelegenheit: a sealed love letter with a red heart wax seal.\n23. Nichts verschenken: a tightly knotted cloth coin purse [glyph: plus].\n24. Zukunft gesehen: a fortune teller's card showing a rising sun [glyph: reset].\n25. Noch eins, dann neu: a small raised glass of egg liqueur in front of a fresh fan of cards [glyph: reset].\n26. Doppelt gemauert: a double brick wall built from stacked playing cards [glyph: double].\n27. Kartenlegen: cards laid out in a cross pattern on a lace tablecloth.\n28. Rote Rechnung: a red paper bill with a heart-shaped stamp on it [glyph: plus].\n29. Schutzbrief: a folded document with a red wax seal and a small shield emblem [glyph: plus].\n30. Die Karten lügen nie: a fan of cards with a glowing honest eye on the middle card [glyph: reset].",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "kaethe-herz-0",
+    "name": "Das Herz am rechten Fleck",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-1",
+    "name": "Pik auf die Brust",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-2",
+    "name": "Sterne lesen",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-herz-3",
+    "name": "Rote Dame",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-herz-4",
+    "name": "Letzte Masche",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-5",
+    "name": "Farbe halten",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-6",
+    "name": "Nachschenken",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-herz-7",
+    "name": "Pik-Ass",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-herz-8",
+    "name": "Wahrsagekugel",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-herz-9",
+    "name": "Herzklopfen",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-herz-10",
+    "name": "Mauern",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-herz-11",
+    "name": "Blick über die Schulter",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-12",
+    "name": "Handlesen",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-herz-13",
+    "name": "Pik mit Stachel",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-herz-14",
+    "name": "Hab ich kommen sehen",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-herz-15",
+    "name": "Lebenslinie",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-herz-16",
+    "name": "Pik-Kette",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-17",
+    "name": "Kaffeefahrt",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-herz-18",
+    "name": "Warmer Eierlikör",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-herz-19",
+    "name": "Masche für Masche",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-20",
+    "name": "Legekreis im Gehen",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-herz-21",
+    "name": "Herzensangelegenheit",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-herz-22",
+    "name": "Nichts verschenken",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-23",
+    "name": "Zukunft gesehen",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-herz-24",
+    "name": "Noch eins, dann neu",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-herz-25",
+    "name": "Doppelt gemauert",
+    "glyph": "double"
+   },
+   {
+    "id": "kaethe-herz-26",
+    "name": "Kartenlegen",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-herz-27",
+    "name": "Rote Rechnung",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-28",
+    "name": "Schutzbrief",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-herz-29",
+    "name": "Die Karten lügen nie",
+    "glyph": "reset"
+   }
+  ]
+ },
+ {
+  "id": "talente-kaethe-falsch",
+  "output": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+  "width": 1536,
+  "height": 1280,
+  "padding": 0,
+  "kind": "talent-atlas",
+  "spec": "kaethe-falsch",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art talent icons, exactly in the style of the attached reference sheet (our existing talent icons): warm kraft copper highlights and dark petrol shadows, rich engraved materials, hand-clustered pixel detail, a closed dark ink outline around every icon, consistent light from the upper left on every single icon (bright highlights upper left, darkest shade lower right). True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, cell frames or grid lines. Every icon has a bold individual silhouette legible at 48px, detailed like the reference. Exactly 6 columns by 5 rows, 1536x1280 total, evenly spaced cell centers. Each icon fully isolated in its cell with 15% empty margins. Exactly 30 icons. Each icon is one dominant recognizable object that shows its German talent name literally, as something from a rustic German village; a soft warm ember glow behind the object may cover at most a fifth of the cell. Do not repeat the same silhouette. The reference sheet shows style, density and layout only: do not copy its subjects (no shields, beer mugs, barrels or warning tape unless a line below names them). Glyph rule: a line ending in [glyph: X] gets exactly one small glyph X, about one quarter of the cell width, in the top-right corner of that icon, with a dark ink outline and no background plate: up = a small green upward arrow, hourglass = a small brass hourglass, reset = a small green circular arrow, plus = a small green plus, skull = a small bone-white skull, double = two small golden right-pointing chevrons. Lines without [glyph] get no glyph at all. Never more than one glyph per icon and never anywhere else; keep the bottom-right corner of every cell free. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. This sheet is kaethe-falsch (\"Falschspielerin\", control: an ace up the sleeve, marked cards, stabbing enemy spells, spade cards shield) of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. In strict row-major order (left to right, top to bottom):\n1. Hab ich doch gesagt: an elderly raised index finger in a plum knitted cuff [glyph: plus].\n2. Aus dem Ärmel: a plum knitted sleeve with several cards sliding out of it [glyph: reset].\n3. Re!: a hand slamming a card down with a bold white impact burst [glyph: double].\n4. Kontra zahlt: a small coin purse spilling coins onto a playing card.\n5. Notblatt: a hand of cards inside a red first-aid tin [glyph: reset].\n6. Karo-Zehn: a red diamond card with small dizzy stars circling it [glyph: hourglass].\n7. Hochgestochen: a hatpin stabbing a playing card high in the air [glyph: up].\n8. Bubentrick: a jack card doing a sly sleight-of-hand trick with a coin [glyph: hourglass].\n9. Kreuz-Dame: the queen of clubs card with a stern queen portrait [glyph: up].\n10. Stichfest: a round red pincushion bristling with hatpins [glyph: plus].\n11. Ärmel voll: a plum knitted sleeve bulging, stuffed full of cards [glyph: up].\n12. Karo bedient: two red diamond cards overlapping [glyph: plus].\n13. Da guckst du: a spade card with a big staring cartoon eye.\n14. Gezinkte Karten: three cards all showing clubs, one corner bent with a secret notch.\n15. Karo-Ass: the ace of diamonds with one giant red diamond symbol [glyph: up].\n16. Kontra im Takt: a card slammed down beside a small wooden metronome [glyph: reset].\n17. Falsch gemischt: a deck shuffled messily with cards flying out [glyph: hourglass].\n18. Kreuz-Kette: a chain of black club cards linked together [glyph: up].\n19. Kontra mit Ansage: a hand slapping the table next to a small glass of egg liqueur [glyph: reset].\n20. Nachgesteckt: a card being slipped back into a fan of cards from behind [glyph: hourglass].\n21. Karo satt: a burst of red diamond-shaped shards flying outward [glyph: up].\n22. Dicke Strickjacke: a thick chunky plum knitted cardigan [glyph: plus].\n23. Mischen ist Silber: a silver coin resting on top of a shuffled deck [glyph: plus].\n24. Bockrunde: a small billy goat standing on a card table [glyph: double].\n25. Mauer nach dem Stich: a small wall of cards with a hatpin stuck in its top [glyph: reset].\n26. Flinke Finger: nimble fingers flicking a small card away [glyph: hourglass].\n27. Hier geblieben!: a wooden walking cane hooking the ankle of a fleeing boot.\n28. Kontra gewonnen: a slammed-down card wreathed in a golden laurel [glyph: reset].\n29. Falsch abgerechnet: a score pad with a sneaky pencil eraser rubbing out tally marks [glyph: reset].\n30. Re und Bock: a billy goat standing proudly on a slammed-down card [glyph: double].",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26",
+  "entries": [
+   {
+    "id": "kaethe-falsch-0",
+    "name": "Hab ich doch gesagt",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-falsch-1",
+    "name": "Aus dem Ärmel",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-2",
+    "name": "Re!",
+    "glyph": "double"
+   },
+   {
+    "id": "kaethe-falsch-3",
+    "name": "Kontra zahlt",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-falsch-4",
+    "name": "Notblatt",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-5",
+    "name": "Karo-Zehn",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-falsch-6",
+    "name": "Hochgestochen",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-falsch-7",
+    "name": "Bubentrick",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-falsch-8",
+    "name": "Kreuz-Dame",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-falsch-9",
+    "name": "Stichfest",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-falsch-10",
+    "name": "Ärmel voll",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-falsch-11",
+    "name": "Karo bedient",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-falsch-12",
+    "name": "Da guckst du",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-falsch-13",
+    "name": "Gezinkte Karten",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-falsch-14",
+    "name": "Karo-Ass",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-falsch-15",
+    "name": "Kontra im Takt",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-16",
+    "name": "Falsch gemischt",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-falsch-17",
+    "name": "Kreuz-Kette",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-falsch-18",
+    "name": "Kontra mit Ansage",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-19",
+    "name": "Nachgesteckt",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-falsch-20",
+    "name": "Karo satt",
+    "glyph": "up"
+   },
+   {
+    "id": "kaethe-falsch-21",
+    "name": "Dicke Strickjacke",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-falsch-22",
+    "name": "Mischen ist Silber",
+    "glyph": "plus"
+   },
+   {
+    "id": "kaethe-falsch-23",
+    "name": "Bockrunde",
+    "glyph": "double"
+   },
+   {
+    "id": "kaethe-falsch-24",
+    "name": "Mauer nach dem Stich",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-25",
+    "name": "Flinke Finger",
+    "glyph": "hourglass"
+   },
+   {
+    "id": "kaethe-falsch-26",
+    "name": "Hier geblieben!",
+    "glyph": null
+   },
+   {
+    "id": "kaethe-falsch-27",
+    "name": "Kontra gewonnen",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-28",
+    "name": "Falsch abgerechnet",
+    "glyph": "reset"
+   },
+   {
+    "id": "kaethe-falsch-29",
+    "name": "Re und Bock",
+    "glyph": "double"
+   }
+  ]
+ }
+]

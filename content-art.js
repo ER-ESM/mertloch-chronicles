@@ -3,6 +3,7 @@
 // `frameSize`/`pivot`/`columns` und pro Frame Ausschnitt und Sockets.
 // Diese Datei lädt und schlägt nach; gezeichnet wird in live-art.js, ui-art.js und talent-art.js.
 // Fehlt der Katalog oder ein Bild, liefert jede Funktion null/false — die alten Zeichenwege bleiben.
+import {PRECISION_PALETTE} from './art-quality.js';
 const CATALOG='./assets/precision/runtime/catalog.json';
 export const contentArt={ready:false,catalog:null,images:new Map()};
 let pending=null;
@@ -84,15 +85,55 @@ export function contentFrame(actor,row,p={}){
 }
 
 // ------------------------------------------------------------------- Symbole
-/** Einzelbild ganzzahlig vergrößert und mittig in ein Feld der Kantenlänge `size`. */
+// Verkleinern wie die Pipeline (tools/sprite-pipeline/precision-resample.mjs): Flächenmittel, deckend ab 50 %. Vorher nächster Nachbar –
+// 64 → 48 ließ jede vierte Zeile und Spalte weg. Die Farbe rastet auf die Farben des Quellausschnitts ein, nicht auf PRECISION_PALETTE:
+// der fehlen gesättigte Rot- und Lilatöne, Waffenkammer-Bilder (757 Töne) wurden sonst ziegelorange. Ergebnis je Bild, Ausschnitt und Größe im Cache.
+const shrunkIcons=new WeakMap(),motifBounds=new WeakMap();let scratch=null;
+/** Farben der deckenden Pixel eines RGBA-Puffers; ohne deckende Pixel die PRECISION_PALETTE. */
+export function sourcePalette(src){const seen=new Set(),out=[];for(let i=0;i<src.length;i+=4)if(src[i+3]>=128){const k=src[i]<<16|src[i+1]<<8|src[i+2];if(!seen.has(k)){seen.add(k);out.push([src[i],src[i+1],src[i+2]]);}}return out.length?out:PRECISION_PALETTE;}
+export function shrinkPixels(src,w,h,dw,dh,palette=sourcePalette(src)){const out=new Uint8ClampedArray(dw*dh*4),memo=new Map();
+ const snap=(r,g,b)=>{const key=(r>>2)<<12|(g>>2)<<6|b>>2;let p=memo.get(key);if(p)return p;let score=Infinity;for(const q of palette){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}memo.set(key,p);return p;};
+ for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){const left=x*w/dw,right=(x+1)*w/dw,top=y*h/dh,bottom=(y+1)*h/dh;let alpha=0,total=0,r=0,g=0,b=0;
+  for(let sy=Math.floor(top);sy<Math.ceil(bottom);sy++)for(let sx=Math.floor(left);sx<Math.ceil(right);sx++){const wt=(Math.min(right,sx+1)-Math.max(left,sx))*(Math.min(bottom,sy+1)-Math.max(top,sy)),i=(sy*w+sx)*4,a=src[i+3]/255*wt;total+=wt;alpha+=a;r+=src[i]*a;g+=src[i+1]*a;b+=src[i+2]*a;}
+  if(alpha<total*.5)continue;const p=snap(Math.round(r/alpha),Math.round(g/alpha),Math.round(b/alpha)),o=(y*dw+x)*4;out[o]=p[0];out[o+1]=p[1];out[o+2]=p[2];out[o+3]=255;}
+ return out;}
+/** RGBA-Pixel eines Bildausschnitts (gemeinsame Hilfsfläche mit willReadFrequently). */
+function rectPixels(image,sx,sy,sw,sh){const cv=scratch||=document.createElement('canvas');if(cv.width<sw)cv.width=sw;if(cv.height<sh)cv.height=sh;const c=cv.ctx||=cv.getContext('2d',{willReadFrequently:true});
+ c.clearRect(0,0,sw,sh);c.drawImage(image,sx,sy,sw,sh,0,0,sw,sh);return c.getImageData(0,0,sw,sh).data;}
+function shrunkRect(image,sx,sy,sw,sh,dw,dh){let m=shrunkIcons.get(image);if(!m)shrunkIcons.set(image,m=new Map());const k=sx+','+sy+','+sw+','+sh+'>'+dw+'x'+dh;let cv=m.get(k);if(cv)return cv;
+ cv=document.createElement('canvas');cv.width=dw;cv.height=dh;cv.getContext('2d').putImageData(new ImageData(shrinkPixels(rectPixels(image,sx,sy,sw,sh),sw,sh,dw,dh),dw,dh),0,0);m.set(k,cv);return cv;}
+/** Bildausschnitt mittig in ein Feld der Kantenlänge `size`: ganzzahlig vergrößert, 1:1 oder per Flächenmittel verkleinert –
+ *  nie nächster Nachbar beim Verkleinern (Stilbibel A4). Gemeinsamer Weg für Katalogbilder, e32-Zellen und Ausrüstungsteile. */
+export function drawPixelRect(c,image,sx,sy,sw,sh,x,y,size){
+ const natural=Math.max(sw,sh),factor=size>=natural?Math.max(1,Math.floor(size/natural)):size/natural;
+ const dw=Math.max(1,Math.round(sw*factor)),dh=Math.max(1,Math.round(sh*factor)),dx=Math.round(x+(size-dw)/2),dy=Math.round(y+(size-dh)/2);
+ c.save();c.imageSmoothingEnabled=false;
+ if(factor<1&&typeof document!=='undefined')c.drawImage(shrunkRect(image,sx,sy,sw,sh,dw,dh),dx,dy);else c.drawImage(image,sx,sy,sw,sh,dx,dy,dw,dh);
+ c.restore();return true;
+}
+/** Umriss des Motivs im Ausschnitt (Deckkraft ab 50 %), je Bild und Ausschnitt im Cache; null bei leerem Ausschnitt. */
+function opaqueBounds(image,sx,sy,sw,sh){let m=motifBounds.get(image);if(!m)motifBounds.set(image,m=new Map());const k=sx+','+sy+','+sw+','+sh;if(m.has(k))return m.get(k);
+ const d=rectPixels(image,sx,sy,sw,sh);let x0=sw,y0=sh,x1=-1,y1=-1;
+ for(let y=0;y<sh;y++)for(let x=0;x<sw;x++)if(d[(y*sw+x)*4+3]>=128){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+ const b=x1<0?null:{x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};m.set(k,b);return b;}
+/** Freies Motiv (Talente, Symbol auf Grund): auf seinen Umriss beschnitten und mittig ins Feld `size`. 1:1, solange die Langseite in
+ *  `room` px passt, sonst per Flächenmittel verkleinert; nie vergrößert. Ersetzt fitMotif (Stilbibel A4: kein Strecken per nächstem Nachbarn). */
+export function drawMotif(c,image,sx,sy,sw,sh,x,y,size,room=size){
+ if(typeof document==='undefined')return drawPixelRect(c,image,sx,sy,sw,sh,x,y,size);
+ const b=opaqueBounds(image,sx,sy,sw,sh);if(!b)return false;const k=Math.min(1,room/Math.max(b.w,b.h));
+ const dw=Math.max(1,Math.round(b.w*k)),dh=Math.max(1,Math.round(b.h*k)),dx=Math.round(x+(size-dw)/2),dy=Math.round(y+(size-dh)/2);
+ c.save();c.imageSmoothingEnabled=false;
+ if(k<1)c.drawImage(shrunkRect(image,sx+b.x,sy+b.y,b.w,b.h,dw,dh),dx,dy);else c.drawImage(image,sx+b.x,sy+b.y,b.w,b.h,dx,dy,b.w,b.h);
+ c.restore();return true;
+}
+/** Katalogbild als freies Motiv (drawMotif); false, wenn das Asset fehlt. */
+export function drawContentMotif(c,id,x,y,size,room=size){const a=contentAsset(id);if(!a||a.meta.frames)return false;return drawMotif(c,a.image,0,0,a.meta.width,a.meta.height,x,y,size,room);}
+/** Einzelbild mittig in ein Feld der Kantenlänge `size` (drawPixelRect). Füllt das Bild den Canvas, wird er als Präzisionssymbol
+ * markiert – styleIcon (32 px, 40 Farben) lässt ihn dann in Ruhe. */
 export function drawContentIcon(c,id,x,y,size){
  const a=contentAsset(id);if(!a||a.meta.frames)return false;
- const w=a.meta.width,h=a.meta.height,natural=Math.max(w,h);
- const factor=size>=natural?Math.max(1,Math.floor(size/natural)):size/natural;
- const dw=Math.round(w*factor),dh=Math.round(h*factor);
- c.save();c.imageSmoothingEnabled=false;
- c.drawImage(a.image,0,0,w,h,Math.round(x+(size-dw)/2),Math.round(y+(size-dh)/2),dw,dh);
- c.restore();return true;
+ drawPixelRect(c,a.image,0,0,a.meta.width,a.meta.height,x,y,size);
+ if(c.canvas?.dataset&&size>=Math.min(c.canvas.width,c.canvas.height)*.75)c.canvas.dataset.precision='true';return true;
 }
 export function paintContentIcon(canvas,id){
  const c=canvas.getContext('2d');if(!contentAsset(id))return false;

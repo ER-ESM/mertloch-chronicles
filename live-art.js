@@ -1,5 +1,5 @@
 import {drawBoar} from './maifeld-boar-rig.js';
-import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt} from './content-art.js';
+import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt,drawPixelRect} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
 import {contextScale,scaledFrame} from './art-quality.js';
 import {prerenderArt,drawPrerenderPerson} from './prerender-art.js';
@@ -87,5 +87,6 @@ export function drawLiveAnimal(c,e,time,height){
 export function drawEquipmentIcon(c,id,x,y,size){
  const aliases={coat:'jacket',boots:'boot',necklace:'chain',shoulders:'pauldron',bracers:'bracer',gloves:'glove',trousers:'trouser',reinforced:'club','anni-spray':'sprayer',speaker:'sprayer',trinket:'pendant'};
  const asset=aliases[id]||id,precise=contentAsset('equipment-parts'),r=precise?contentArt.catalog.equipment[asset]:liveArt.catalog?.equipment[asset];if(!liveArt.ready||!r)return false;
- const scale=(size-4)/Math.max(r.w,r.h),w=Math.round(r.w*scale),h=Math.round(r.h*scale);c.save();c.imageSmoothingEnabled=false;c.drawImage((precise?.image||liveArt.images['equipment.png']),r.x,r.y,r.w,r.h,Math.round(x+(size-w)/2),Math.round(y+(size-h)/2),w,h);c.restore();return true;
+ // 96er-Teile per Flächenmittel auf das Feld (Stilbibel A4), vorher nächster Nachbar.
+ return drawPixelRect(c,precise?.image||liveArt.images['equipment.png'],r.x,r.y,r.w,r.h,x+2,y+2,size-4);
 }

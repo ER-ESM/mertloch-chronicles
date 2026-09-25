@@ -10,7 +10,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "8531060ff9d54f5aa2bf2795b70bd4fafeaca2aa2bfc15215a4ff8d495ce2450"
+   "sha256": "7656e85ddd5c00da613a4672a185d6a38c9e9ea61c0d20fb6b3fdd8653979f1f"
   },
   {
    "id": "skill-schorsch-strike",
@@ -20,7 +20,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "2c7b5f7719046b2ca28ac74748044637d2a560e0cedf30b47a2b13381091a99c"
+   "sha256": "efc25f2aa90bcd48b3873164039ac725bd4947b938918125f833828ecc9107b8"
   },
   {
    "id": "skill-schorsch-mark",
@@ -30,7 +30,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "8545f89ae4aa50358c184efb7b9e0d60243b422a6df1c10256d0abb8da75f65f"
+   "sha256": "ba73465f4095ae552cd2ef66fc368e65806fd6fa436cb005e3d30930489f9dd4"
   },
   {
    "id": "skill-schorsch-burst",
@@ -40,7 +40,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "45bb6315322b5e00d251e2cd97793239ec22abaa61af6fe486aa0e68045d5a38"
+   "sha256": "68d3d019f305bba391f74467ba5b897f4c389c002ff31f6e2343965e66e30627"
   },
   {
    "id": "skill-schorsch-interrupt",
@@ -50,7 +50,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "2c278c9ad60d19b9e320037ed373d249658af45e9f708cacf1ed11e80c835694"
+   "sha256": "5b89aaa7820101c92a4ff8a1de472d1116e383d1697a83f3553fe2b12472d2c4"
   },
   {
    "id": "skill-schorsch-parry",
@@ -60,7 +60,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "893694ebbc7363b0d1f3fd572e6fc4ce0548dc346418138acc682220e82f6f89"
+   "sha256": "e7dc726a0e2f9c83fadae5febefc960b79312f3e36b3303ab3d58f737ac8c937"
   },
   {
    "id": "skill-schorsch-dash",
@@ -70,7 +70,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "1b1af7ced8d1462de6c914ab4cbda264c35a7dfd941567fc10cdf545d34b2440"
+   "sha256": "9d96fb6bcdd1d45ded40433715ba8241fef4944a7d775baf1820c93136cb0d9a"
   },
   {
    "id": "skill-schorsch-heal",
@@ -80,7 +80,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "03204650aa5c77ed295e623d99ef86e545fe677fb1424bd8c900ca201129a2c1"
+   "sha256": "c66464ff5841436f1cc222b7b2bc9c3cf2fe04f4798c927fb504116fdf5b8fec"
   },
   {
    "id": "skill-schorsch-buff",
@@ -90,7 +90,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "54b7e9f53cc9e8a1b1c3400ac8d35f84757508d3a856d4d925086ed8ac6663dc"
+   "sha256": "ccda982a2260ee0af1012225379ee7df229d72031cf6d958b3a04f7c271755a5"
   },
   {
    "id": "skill-schorsch-throw",
@@ -100,7 +100,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "e91e2fde95deef668798f7fe862d3750a159e22087d4ad266a82dde0748df847"
+   "sha256": "9d542cb2bc47dbfb2b3d7e7ca0ecdfb0c8703ed7c1421a5d6471aa54f0dca319"
   },
   {
    "id": "skill-schorsch-ground",
@@ -110,7 +110,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "bfb2586268bcf1ddffcef443cd0895c978c3ec47b0b97a5a9b83c835f42b6f58"
+   "sha256": "3303133da3b3d4fea36575339c52e8d840da65c282eb36b7c45517ff0e060f15"
   },
   {
    "id": "skill-schorsch-senf",
@@ -120,7 +120,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "7061589e950a8e7ea3ffe24c6293b41f7bf404ab054ad1efc99a96bfc3129985"
+   "sha256": "c8ecfe6efa199ac96499b1bdef993a980f7f7fe02e5d298e2e50a7ae26111a89"
   },
   {
    "id": "skill-schorsch-spiritus",
@@ -130,7 +130,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "27606a2429a5f4b64ad958a500c45e9f5c291c815032701d8de49711e14c90ed"
+   "sha256": "96f3900cdaacf3123a8ef772be38dd1868a46907bae06e248aa9ab5711a10437"
   },
   {
    "id": "skill-schorsch-deckelzu",
@@ -140,7 +140,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "dab7c3b4a583d85569eb36d6d4513f87e0e0fa3ccc8a33a83a1d56d09b684d5f"
+   "sha256": "91fcbb94f88e07b98866f2ae4c0d63cc0d10edb403d9d70cdd3b51051f7a65d5"
   },
   {
    "id": "skill-kaethe-auto",
@@ -150,7 +150,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "8cf99a322d04b4485d7fc427066295df230e042c049ed8f5c73eff305556c105"
+   "sha256": "44ea71a03c510f92b63bfdbe59144f01aa32f2164d334c14258e8b47986ce5ff"
   },
   {
    "id": "skill-kaethe-interrupt",
@@ -160,7 +160,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "e81578083c4a46dea25615fcbeef43eb2e6b75f3046b4817fd1d8f72d64ecdeb"
+   "sha256": "e3628020389b1afd52af81dba498e22fbdd5f359257d31ae546a67d1d57f04a7"
   },
   {
    "id": "skill-kaethe-parry",
@@ -170,7 +170,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "1d33e39769906d62f3cd415feb30e81d78b37e695cae559295fb710b84ba7d62"
+   "sha256": "26d54b0bd6c6d06633f3f7733f4c00062413d0601d630859613796a83eca6ab4"
   },
   {
    "id": "skill-kaethe-dash",
@@ -180,7 +180,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "73a584b5bf402ea6e04f693a84d02b860917f7d31631ebf6de9b0344c36d333b"
+   "sha256": "ffa257158f0e68c863606abbadcea715e5d846ad97e1f6c65caf78bf7f15d57e"
   },
   {
    "id": "skill-kaethe-heal",
@@ -190,7 +190,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "0637415bdcf14c44e87cf72ab869f7da6674ff2f343bac158f677fbc7e4681a3"
+   "sha256": "cd18403205b3192f98148cb625622f08cd7c64f0b4ae9605cb8969d88e5e4616"
   },
   {
    "id": "skill-kaethe-buff",
@@ -200,7 +200,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "a357d6c5edc8c3c8cae7a66e676e8eec6e6198b01a580bba425ff09cbed88284"
+   "sha256": "faf032cc0206439e46b616386752b97b4953dc93b91e6f3038999648dd57db06"
   },
   {
    "id": "skill-kaethe-throw",
@@ -210,7 +210,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "7297e20e56c6d25ebb98641e936e84aead1d08bb895e000a7dbf01dbbb319dba"
+   "sha256": "e37b19597bda20958ed55b19978fdbb06d8caa07cb60697bf3939630326814c1"
   },
   {
    "id": "skill-kaethe-ground",
@@ -220,7 +220,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "1b899a5c105a365a06f08251bf15b0f42cc2544578ae286117d6486e57b2b078"
+   "sha256": "650ccf19ff82064f37a341d181b07857e1cbfa9b399d6dfb048b06c6cf4d6ca9"
   },
   {
    "id": "skill-kaethe-reizen",
@@ -230,7 +230,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "80ee6b0f55425604a652685de856f54ccd14cf59816f654c6dba9968eb7a6dfa"
+   "sha256": "686db1a61fcdac1faf026fa99378c72b2f0b8c6df2868389a2d3d4f0bbe0a5a7"
   },
   {
    "id": "skill-kaethe-handlesen",
@@ -240,7 +240,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "ab462e38a517486d57e1aec5c2456a3d36ed27e17b21f6ce49f699dd4612f4a5"
+   "sha256": "31805478405fe93c44e43eb9ea292ac80faa8cce303e1e49f22d6976dd36eb54"
   },
   {
    "id": "skill-kaethe-gezinkt",
@@ -250,7 +250,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "4820738442801fe822b678cffbfec0274355e2cdc544d25165b9cdbbb3ee7842"
+   "sha256": "1ac602c46b859596e4a5abda33d791e55b710e4994321d994bc1dd3e5186cc99"
   },
   {
    "id": "skill-kaethe-aermel",
@@ -260,7 +260,17 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "6c33de496f083e6273ffd3c6fd06ed7e5ed64157aca3ccdedd77c2b739765bf8"
+   "sha256": "3e00955b636896cb44fe7cc2c2d863de4a714be356583d5d10fec1f942cb678a"
+  },
+  {
+   "id": "skill-kaethe-mark",
+   "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-mark.png",
+   "kind": "code",
+   "tool": "tools/sprite-pipeline/e71-kniffe-draw.mjs",
+   "date": "2026-09-25",
+   "width": 64,
+   "height": 64,
+   "sha256": "36a557f791bd7ffc82de2003d3074724eced900ea272de41974cda837a55c7f6"
   },
   {
    "id": "skill-dieter-zeche",
@@ -270,7 +280,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "79d75d459d036b7d2180253a8c02baaa2434eeec4815df2d1f1eebb2a4c44306"
+   "sha256": "4c9217a4b9433d1339ff14398cb15c54a411cbd7fc75035d6bd924a4a92ef675"
   },
   {
    "id": "skill-kevin-reload",
@@ -280,7 +290,7 @@
    "date": "2026-09-25",
    "width": 64,
    "height": 64,
-   "sha256": "287dd3f486aca29a69c8243148e80b5b7325800055d7dae5c20f97a4983fb10e"
+   "sha256": "bd2374a61ae21973416be0a425c97734957648d540d9d9e4cdc54a40169ebdae"
   }
  ]
 }

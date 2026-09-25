@@ -4,7 +4,6 @@ import {TALENTS,SPECS,classSpecs} from './talents.js';
 import {TALENT_UI as UI,describe as describeContent,SPEC_MECHANICS,categoriesOf,GLOSSARY} from './content/index.js';
 import {keyFor,actionBar,SPECIAL_KEYS} from './rpg.js';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const art=id=>`<canvas width="64" height="64" data-talent-art="${id}"></canvas>`;
 const pathsOf=spec=>SPEC_MECHANICS[spec]?.paths||[{name:UI.path+' 1'},{name:UI.path+' 2'},{name:UI.path+' 3'}];
 export function talentSkillsHtml(g,id,touch=false){
  const t=Object.values(TALENTS).flat().find(t=>t.id===id);if(!t)return '';

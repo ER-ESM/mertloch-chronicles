@@ -1,6 +1,9 @@
 // Berufe nach MMO-Vorbild (Nutzerauftrag 2026-09-23): gelernt wird nur beim Lehrer (trainerPanel), das Berufefenster (Shift + B)
 // zeigt in Reitern die eigenen Berufe, die Rezepte (Liste links, Details rechts, Herstellen an der Station) und die Materialien.
-import {itemIcon,itemStats} from './rpg-ui.js';
+import {itemSymbol,itemStats} from './rpg-ui.js';
+import {ICON_STEP} from './icon-steps.js';
+/** Listen 32 (36er-Rahmen), Rezeptkopf 48 (icon-steps.js). */
+const itemIcon=id=>itemSymbol(id,ICON_STEP.profession);
 import {PROFESSIONS as P,PROFESSION_RECIPES as REC,PROFESSION_STATIONS as ST,PROFESSION_SOURCES as SRC,PROFESSION_RULES as R,PROFESSION_UI as T,PROFESSION_BOOK as B,PROFESSION_TRAINER as TR,SHOP_STOCK,DROP_TABLES,PERSON_APPEARANCE} from './content/index.js';
 import {ITEMS,countItem} from './rpg.js';
 import {professionWorld} from './profession-world.js';
@@ -43,7 +46,7 @@ function recipeDetail(g,id,state,busy){const r=REC[id],p=P[r.profession],d=ITEMS
  const error=learned?professionReason(g,station)||professionPlan(g.save(),{kind:'craft',target:id}).error:'',far=!!station&&!!professionReason(g,station)&&professionReason(g,station)===T.range;
  const mats=Object.entries(r.materials).map(([i,n])=>{const have=countItem(g.rpg,i);return `<li class="${have<n?'missing':''}">${itemIcon(i)}<span>${esc(ITEMS[i].name)}</span><b>${have} / ${n}</b></li>`;}).join('');
  const tone=recipeTone(state,id);
- return `<article class="prof-detail" data-prof-detail="${id}"><header>${itemIcon(r.output)}<div><h3 class="rarity-${d.rarity}">${esc(d.name)}${r.count>1?' × '+r.count:''}</h3><small>${r.name!==d.name?esc(r.name)+' · ':''}${esc(p.name)}</small></div></header><p class="prof-item-text">${esc(itemStats(d)||d.description)}</p>
+ return `<article class="prof-detail" data-prof-detail="${id}"><header>${itemSymbol(r.output,ICON_STEP.professionDetail)}<div><h3 class="rarity-${d.rarity}">${esc(d.name)}${r.count>1?' × '+r.count:''}</h3><small>${r.name!==d.name?esc(r.name)+' · ':''}${esc(p.name)}</small></div></header><p class="prof-item-text">${esc(itemStats(d)||d.description)}</p>
   <h4>${B.reagents}</h4><ul class="prof-reagents">${mats}</ul>
   <ul class="prof-facts"><li class="${far?'missing':''}">${esc(B.station(ST[p.station].name))}</li><li>${esc(B.fee(R.recipeFee))}</li><li class="tone-${tone}">${tone==='grey'?B.grey:tone==='up'?B.gain:esc(TR.need(r.required))}</li></ul>
   ${learned?`<p class="profession-reason" aria-live="polite">${esc(error||'')}</p><div class="prof-actions">${button(T.craft,`data-prof-craft="${id}"`,busy||!!error,'gold-button')}${far?button(B.toStation,`data-prof-route="station:${r.profession}"`):''}</div>`

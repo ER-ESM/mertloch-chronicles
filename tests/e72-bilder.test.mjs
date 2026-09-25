@@ -62,7 +62,7 @@ test('gemaltes Raster einer neuen Klasse und Einzelbild eines alten Talents werd
  assert.ok(catalog.sources.some(s=>s.source===single&&s.talent==='dieter-wall-12'&&s.sha256===icon));
  for(const [id,a] of Object.entries(b.talents))if(id!=='dieter-wall-12')assert.equal(catalog.talents[id].sha256,a.sha256,id+' darf sich durch Neues nicht verfärben');
  // Laufzeit: sobald der Katalog das Talent kennt, malt paintE32Talent es (vor jedem Ersatz).
- const drawn=[],canvas={width:48,height:48,dataset:{},getContext:()=>({clearRect(){},drawImage:(...a)=>drawn.push(a)})};
+ const drawn=[],canvas={width:48,height:48,dataset:{},getContext:()=>({clearRect(){},save(){},restore(){},drawImage:(...a)=>drawn.push(a)})/* drawMotif (Präzisionsweg) sichert den Zustand */};
  const keep={catalog:e32Art.catalog,images:e32Art.images};e32Art.catalog=catalog;e32Art.images=new Map([[atlas,{}]]);
  try{assert.ok(paintE32Talent(canvas,'schorsch-chef-0'));assert.equal(canvas.dataset.talentCell,'e32:schorsch-chef-0');assert.ok(!paintE32Talent(canvas,'kaethe-grand-0'));}
  finally{Object.assign(e32Art,keep);}

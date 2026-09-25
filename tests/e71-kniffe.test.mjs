@@ -11,10 +11,10 @@ import {skillsFor} from '../clan.js';
 const root=new URL('../',import.meta.url),read=p=>readFileSync(new URL(p,root)),sha=b=>createHash('sha256').update(b).digest('hex');
 const jobs=JSON.parse(read('tools/sprite-pipeline/e71-kniffe-jobs.json')),catalog=JSON.parse(read('assets/precision/runtime/catalog.json')),prov=JSON.parse(read(PROVENANCE));
 
-test('Auftragsblatt und Zeichenwerkzeug decken dieselben 28 Kniffe ab',()=>{
- assert.equal(jobs.length,28);
+test('Auftragsblatt und Zeichenwerkzeug decken dieselben 29 Kniffe ab (28 + Käthes Aura „mark“)',()=>{
+ assert.equal(jobs.length,29);assert.ok(IDS.includes('skill-kaethe-mark'));
  assert.deepEqual([...IDS].sort(),jobs.map(j=>j.id).sort());
- for(const j of jobs){assert.equal(j.output,'assets/precision/sources/2026-09-25/e71-kniffe/'+j.id+'.png');assert.equal(j.kind,'skills');assert.equal(j.width,64);assert.equal(j.height,64);assert.equal(j.padding,3);}
+ for(const j of jobs){assert.equal(j.output,'assets/precision/sources/2026-09-25/e71-kniffe/'+j.id+'.png');assert.equal(j.kind,'skills');assert.equal(j.width,64);assert.equal(j.height,64);assert.equal(j.padding,0,j.id+': Kachel randlos');}
 });
 
 test('per Code gezeichnete Originale: Herkunft vollständig und byte-genau nachzeichenbar',()=>{
@@ -30,11 +30,12 @@ test('per Code gezeichnete Originale: Herkunft vollständig und byte-genau nachz
  for(const j of jobs)assert.ok(prov.records.some(r=>r.output===j.output)||generated.has(j.output),j.id+' ohne Herkunft');
 });
 
-test('Kachelform wie die Dieter-/Kevin-Kniffe: 3 px Rand frei, 58 × 58 deckend, Tintenrand',()=>{
- for(const r of prov.records){
-  const im=decodePng(read(r.output));
-  for(let y=0;y<64;y++)for(let x=0;x<64;x++){const inside=x>=3&&y>=3&&x<61&&y<61;assert.equal(im.data[(y*64+x)*4+3],inside?255:0,r.id+' '+x+','+y);}
-  for(const [x,y] of [[3,3],[60,3],[3,60],[60,60],[30,3],[3,30]])assert.equal([...im.data.subarray((y*64+x)*4,(y*64+x)*4+3)].join(','),'23,31,41',r.id+' Rand '+x+','+y);
+test('Kachelform: randlos 64 × 64 deckend, 1 px Tintenrahmen, Moos-Rezept ohne bläuliches #1e2c35 – Original und Export',()=>{
+ for(const r of prov.records)for(const path of [r.output,catalog.assets[r.id].path]){
+  const im=decodePng(read(path));assert.equal(im.width,64);assert.equal(im.height,64);
+  const bad=[];for(let y=0;y<64;y++)for(let x=0;x<64;x++){const i=(y*64+x)*4,d=im.data,ink=d[i]===23&&d[i+1]===31&&d[i+2]===41;
+   if(d[i+3]!==255)bad.push('transparent '+x+','+y);if((x===0||y===0||x===63||y===63)&&!ink)bad.push('Rahmen '+x+','+y);if(d[i]===30&&d[i+1]===44&&d[i+2]===53)bad.push('#1e2c35 '+x+','+y);}
+  assert.deepEqual(bad.slice(0,5),[],path);
  }
 });
 

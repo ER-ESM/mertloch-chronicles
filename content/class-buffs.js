@@ -30,16 +30,18 @@ export const CLASS_BUFF_STATS={
  shieldPower:{label:'Stärke von Deckung und Schilden',pct:true}
 };
 
+// icon = Symbolwort (Gegenstandsbild, immer vorhanden); motif = eigenes gemaltes Buff-Motiv (Präzisionsbild gleicher Kennung, Einbau über
+// tools/sprite-pipeline/icons-uebernehmen.mjs) – das Spiel zeigt es, sobald es im Katalog liegt, sonst das Symbolwort.
 const DEF={
  dosenpfand:{cls:'dieter',slot:0,level:4,name:'Dosenpfand',icon:'can',effects:{health:0},
   text:v=>`Dieter drückt dir eine volle Dose in die Hand: ${v.health} mehr maximales Leben für ${M} Minuten. Das Pfand kriegt er zurück. Die Dose nicht.`,
   use:'Zünde es, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Ich trink die nicht. Ich pass nur drauf auf.“',
   info:{effect:'Hebt eine halbe Stunde lang das maximale Leben des Ziels; das zusätzliche Leben kommt sofort dazu.',why:'Dieters Beitrag für alle: Leben hilft jeder Klasse und jedem Söldner, und kein anderer Klassen-Buff hebt es.',links:['classBuff:kutteDrueber','talent:dieter-wall-10'],terms:['klassenbuff','staerkung','leben']}},
- kutteDrueber:{cls:'dieter',slot:1,level:8,name:'Kutte drüber',icon:'vest',effects:{armor:0},
+ kutteDrueber:{cls:'dieter',slot:1,level:8,name:'Kutte drüber',icon:'vest',motif:'kutte',effects:{armor:0},
   text:v=>`Dieter legt dir seine Lederkutte mit den vierzig Aufnähern um: ${v.armor} weniger erlittener Schaden für ${M} Minuten. Gewaschen wurde sie nie. Deshalb hält sie ja.`,
   use:'Zünde sie, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Die Kutte hat drei Schlägereien und eine Taufe überlebt. Die Taufe war schlimmer.“',
   info:{effect:'Senkt eine halbe Stunde lang den Schaden, den das Ziel nimmt, um einen festen Anteil – zusätzlich zur Dicken Haut.',why:'Schutz, den man nicht drücken muss: wirkt in jedem Kampf, auch auf Söldnern, die sonst keine Rüstung tragen.',links:['classBuff:dosenpfand'],terms:['klassenbuff','staerkung','schadensminderung']}},
- aperolSpritz:{cls:'baerbel',slot:0,level:4,name:'Aperol-Spritz',icon:'cup',effects:{energyRegen:0,healTaken:0},
+ aperolSpritz:{cls:'baerbel',slot:0,level:4,name:'Aperol-Spritz',icon:'cup',motif:'aperolspritz',effects:{energyRegen:0,healTaken:0},
   text:v=>`Ein Glas Orange mit extra Eis: ${v.energyRegen} Ressourcenpunkte je Sekunde für die Klassenressource und ${v.healTaken} mehr erhaltene Heilung für ${M} Minuten. Wellness, sagt Anni. Vorglühen, sagt das Dorf.`,
   use:'Reich ihn aus, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Das ist kein Alkohol. Das ist Selbstfürsorge mit Strohhalm.“',
   info:{effect:'Füllt eine halbe Stunde lang die Klassenressource des Ziels nach – Randale, Likes, Flaschen, Glut oder Augen – und verstärkt jede Heilung, die beim Ziel ankommt.',why:'Annis Buff macht die Gruppe länger kampffähig: Nachschub für Kniffe, egal womit das Ziel bezahlt, und mehr Wirkung aus jeder Heilung – auch aus fremder.',links:['classBuff:vorherNachher','talent:baerbel-care-3'],terms:['klassenbuff','staerkung','ressource','heilung']}},
@@ -62,15 +64,15 @@ Object.assign(DEF,{
   text:v=>`Schorsch packt dir einen Teller voll: ${v.damage} mehr Schaden für ${M} Minuten. Mit Senf. Ohne Senf gibt's nichts.`,
   use:'Reich ihn, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Du siehst aus, als hättest du Hunger. Und Feinde.“',
   info:{effect:'Hebt eine halbe Stunde lang den verursachten Schaden des Ziels um einen festen Anteil.',why:'Schorschs Beitrag für alle: jeder Angriff profitiert, auch der Autoangriff eines Söldners.',links:['classBuff:wurstbroetchen'],terms:['klassenbuff','staerkung']}},
- wurstbroetchen:{cls:'schorsch',slot:1,level:8,name:'Wurstbrötchen',icon:'food',effects:{healPower:0},
+ wurstbroetchen:{cls:'schorsch',slot:1,level:8,name:'Wurstbrötchen',icon:'food',motif:'wurstbroetchen',effects:{healPower:0},
   text:v=>`Ein Brötchen mit Bratwurst, noch warm: ${v.healPower} mehr verursachte Heilung für ${M} Minuten. Wer satt ist, pflegt besser.`,
   use:'Reich es, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Heilung beginnt im Magen.“',
   info:{effect:'Verstärkt eine halbe Stunde lang jede Heilung, die das Ziel selbst wirkt.',why:'Das Gegenstück zu Annis Spritz: der Spritz stärkt, was ankommt, das Brötchen, was der Heiler gibt.',links:['classBuff:grillteller'],terms:['klassenbuff','staerkung','heilung']}},
- glueckspfennig:{cls:'kaethe',slot:0,level:4,name:'Glückspfennig',icon:'medal',effects:{critDamage:0},
+ glueckspfennig:{cls:'kaethe',slot:0,level:4,name:'Glückspfennig',icon:'medal',motif:'glueckspfennig',effects:{critDamage:0},
   text:v=>`Käthe drückt dir ihren Glückspfennig von 1974 in die Hand: ${v.critDamage} mehr Glückstreffer-Schaden für ${M} Minuten. Zurückgeben nicht vergessen.`,
   use:'Gib ihn, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Der hat mir drei Grand ohne Vieren gebracht.“',
   info:{effect:'Erhöht eine halbe Stunde lang den Schaden jedes Glückstreffers.',why:'Ergänzt Kevins Pfandradar: das Radar macht Glückstreffer häufiger, der Pfennig macht sie härter.',links:['classBuff:strickschal'],terms:['klassenbuff','staerkung','glueckstreffer']}},
- strickschal:{cls:'kaethe',slot:1,level:8,name:'Strickschal',icon:'coat',effects:{shieldPower:0},
+ strickschal:{cls:'kaethe',slot:1,level:8,name:'Strickschal',icon:'coat',motif:'strickschal',effects:{shieldPower:0},
   text:v=>`Selbst gestrickt, kratzt fürchterlich: ${v.shieldPower} stärkere Deckung und Schilde für ${M} Minuten. Ausziehen ist Beleidigung.`,
   use:'Leg ihn um, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Zieh den an, du holst dir sonst den Tod.“',
   info:{effect:'Verstärkt eine halbe Stunde lang jede Deckung und jeden Schild, den das Ziel erhält.',why:'Macht Tanks und Schildwirker gleichermaßen stärker – und kein anderer Klassen-Buff hebt Deckung.',links:['classBuff:glueckspfennig'],terms:['klassenbuff','staerkung','deckung']}}
