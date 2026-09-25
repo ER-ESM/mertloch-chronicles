@@ -23,7 +23,8 @@ const js=code=>b.evaluate(`(async()=>{${code}})()`);
 const game=code=>js(`const g=window.game;${code}`);
 let size=null;
 const file=name=>OUT+PHASE+'-'+size.tag+'-'+name+'.jpg';
-const shot=async name=>{const r=await b.send('Page.captureScreenshot',{format:'jpeg',quality:72,clip:{x:0,y:0,width:size.w,height:size.h,scale:1}});writeFileSync(file(name),Buffer.from(r.data,'base64'));};
+/** Vollbild; 1600 × 900 auf 80 % verkleinert (Ordner klein halten), 1280 × 720 in voller Größe. */
+const shot=async name=>{const r=await b.send('Page.captureScreenshot',{format:'jpeg',quality:62,clip:{x:0,y:0,width:size.w,height:size.h,scale:size.w>1400?.8:1}});writeFileSync(file(name),Buffer.from(r.data,'base64'));};
 async function shotOf(sel,name,pad=10){const r=await js(`const e=document.querySelector(${JSON.stringify(sel)});if(!e||!e.getClientRects().length)return null;const b=e.getBoundingClientRect();return {x:Math.max(0,b.left-${pad}),y:Math.max(0,b.top-${pad}),width:Math.min(innerWidth,b.width+${pad*2}),height:Math.min(innerHeight,b.height+${pad*2})};`);if(!r)return false;const img=await b.send('Page.captureScreenshot',{format:'jpeg',quality:85,clip:{...r,scale:1}});writeFileSync(file(name),Buffer.from(img.data,'base64'));return true;}
 async function until(code,ms=15000,step=150){const end=Date.now()+ms;while(Date.now()<end){try{const v=await js(code);if(v)return v;}catch{}await wait(step);}return null;}
 async function center(sel){return js(`const e=document.querySelector(${JSON.stringify(sel)});if(!e||!e.getClientRects().length)return null;const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};`);}
@@ -60,7 +61,7 @@ async function idaApproach(cls){
  await wait(900);
  const opened=await dialogOpen();
  const start=await idaDist();measures[tag+' Start→Ida']=start;
- await shot(cls+'-a0-start');
+ if(cls===size.classes[0])await shot(cls+'-a0-start');
  // Nach dem Film öffnet sich Idas Gespräch sofort (auch aus der Entfernung). „Ausrüstung nehmen“ muss dort auch wirken.
  if(opened){await tap('[data-tutorial-next]');await wait(500);}
  const step0=await game(`return g.tutorial.step`);
@@ -85,7 +86,7 @@ async function idaApproach(cls){
  const talkF=await until(`return document.querySelector('[data-tutorial-next]')?'dialog':null`,6000,150);
  const dF=await idaDist(),rF=await idaRoom();
  check(talkF==='dialog',tag+': F aus 150 E läuft zu Ida und spricht sie an','Gespräch '+(talkF?'offen':'nicht offen')+', Abstand danach '+dF);
- check(rF&&dF<=50,tag+': dabei steht der Held vor Ida im selben Raum (nicht vor der Tür, nicht in ihr)',dF+' E, '+(rF?'drinnen':'draußen'));
+ check(rF&&dF<=50&&dF>=12,tag+': dabei steht der Held vor Ida im selben Raum (nicht vor der Tür, nicht in ihr)',dF+' E, '+(rF?'drinnen':'draußen'));
  if(talkF)await shot(cls+'-a2-f-gespraech');
  await closeAll();await wait(300);
  // Rechtsklick auf Ida aus 200 E: hinlaufen und reden
@@ -157,7 +158,7 @@ async function memory(cls){
  await b.press('f');await wait(700);
  const talk=await js(`return !!document.querySelector('.game-popup[data-window=dialog]')`);
  check(talk,tag+': F spricht Ida an, obwohl die Erinnerung offen ist','Erinnerung vorher '+(stillThere?'offen':'zu'));
- await shot(cls+'-b1-f-bei-erinnerung');
+ if(cls===size.classes[0])await shot(cls+'-b1-f-bei-erinnerung');
  // Esc schließt; die Erinnerung ist unter Aufträge → Erinnerungen nachlesbar
  await b.press('Escape');await wait(400);if(await js(`return !!document.querySelector(${JSON.stringify(sel)})?.getClientRects().length`)){await b.press('Escape');await wait(400);}
  const gone=await js(`return !document.querySelector(${JSON.stringify(sel)})?.getClientRects().length`);

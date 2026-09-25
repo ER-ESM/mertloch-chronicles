@@ -1,0 +1,459 @@
+{
+ "phase": "vorher",
+ "measures": {
+  "1600x900 dieter Start→Ida": 21,
+  "1600x900 dieter F-Hinweis Ida ab": 50,
+  "1600x900 dieter Name ab": 70,
+  "1600x900 dieter Hinweis je Abstand": "200:- | 170:- | 140:FBude ansehen | 120:FBude ansehen | 100:FBude ansehen | 90:FBude ansehen | 80:FBude ansehen | 70:FBude ansehen | 60:FBude ansehen | 50:FMit Kisten-Ida sprechen | 45:FMit Kisten-Ida sprechen | 40:FMit Kisten-Ida sprechen",
+  "1600x900 dieter Erinnerung": {
+   "l": 348,
+   "t": 69,
+   "w": 600,
+   "h": 678,
+   "hero": {
+    "x": 999,
+    "y": 450
+   },
+   "overHero": false,
+   "area": 28
+  },
+  "1600x900 Hilfe": {
+   "items": 25,
+   "problems": [
+    "Kappe ragt aus der Tastenspalte: D (Laufen)",
+    "Kappe×Wort: L / Aufträge",
+    "Kappe ragt aus der Tastenspalte: L (Aufträge)",
+    "Kappe×Wort: K / Kniffe",
+    "Kappe ragt aus der Tastenspalte: K (Kniffe)"
+   ],
+   "scroll": "",
+   "win": "720×366"
+  },
+  "1600x900 kaethe Start→Ida": 21,
+  "1600x900 kaethe F-Hinweis Ida ab": 50,
+  "1600x900 kaethe Name ab": 70,
+  "1600x900 kaethe Hinweis je Abstand": "200:- | 170:- | 140:FBude ansehen | 120:FBude ansehen | 100:FBude ansehen | 90:FBude ansehen | 80:FBude ansehen | 70:FBude ansehen | 60:FBude ansehen | 50:FMit Kisten-Ida sprechen | 45:FMit Kisten-Ida sprechen | 40:FMit Kisten-Ida sprechen",
+  "1600x900 kaethe Erinnerung": {
+   "l": 348,
+   "t": 69,
+   "w": 600,
+   "h": 678,
+   "hero": {
+    "x": 999,
+    "y": 450
+   },
+   "overHero": false,
+   "area": 28
+  },
+  "1280x720 schorsch Start→Ida": 21,
+  "1280x720 schorsch F-Hinweis Ida ab": 50,
+  "1280x720 schorsch Name ab": 70,
+  "1280x720 schorsch Hinweis je Abstand": "200:- | 170:- | 140:FBude ansehen | 120:FBude ansehen | 100:FBude ansehen | 90:FBude ansehen | 80:FBude ansehen | 70:FBude ansehen | 60:FBude ansehen | 50:FMit Kisten-Ida sprechen | 45:FMit Kisten-Ida sprechen | 40:FMit Kisten-Ida sprechen",
+  "1280x720 schorsch Erinnerung": {
+   "l": 348,
+   "t": 69,
+   "w": 600,
+   "h": 530,
+   "hero": {
+    "x": 298,
+    "y": 360
+   },
+   "overHero": false,
+   "area": 35
+  },
+  "1280x720 Hilfe": {
+   "items": 25,
+   "problems": [
+    "Kappe ragt aus der Tastenspalte: D (Laufen)",
+    "Kappe×Wort: L / Aufträge",
+    "Kappe ragt aus der Tastenspalte: L (Aufträge)",
+    "Kappe×Wort: K / Kniffe",
+    "Kappe ragt aus der Tastenspalte: K (Kniffe)"
+   ],
+   "scroll": "",
+   "win": "720×365"
+  }
+ },
+ "results": [
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Held erstellt, Hofprobe läuft",
+   "detail": "{\"cls\":\"dieter\",\"name\":\"Tresen 1600\",\"tut\":true}"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Idas Eröffnungsgespräch lässt sich annehmen",
+   "detail": "Abstand 21, Schritt 1"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: „!“ über Ida vor dem Gespräch",
+   "detail": "!"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: F-Hinweis „Mit Ida sprechen“ erscheint früh genug (≥ 80 E ≈ 5 m)",
+   "detail": "ab 50 E · „FMit Kisten-Ida sprechen“"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: kein irreführender F-Hinweis auf dem Weg zu Ida (F führt in der Hofprobe immer zu Ida)",
+   "detail": "140 E „FBude ansehen“, 120 E „FBude ansehen“, 100 E „FBude ansehen“, 90 E „FBude ansehen“, 80 E „FBude ansehen“, 70 E „FBude ansehen“, 60 E „FBude ansehen“"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Name über Ida mindestens so früh wie der F-Hinweis",
+   "detail": "Name ab 70 E"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: F aus 150 E läuft zu Ida und spricht sie an",
+   "detail": "Gespräch nicht offen, Abstand danach 1"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: dabei steht der Held vor Ida im selben Raum (nicht vor der Tür, nicht in ihr)",
+   "detail": "1 E, drinnen"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Rechtsklick auf Ida aus 200 E läuft hin und spricht",
+   "detail": "Abstand danach 43, im selben Raum"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Hofprobe bis zum Ende",
+   "detail": "19 s"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: Ida mit F ohne Nachhelfen erreicht (Schritt 1 und 8)",
+   "detail": "1× zweites F nötig"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Erinnerung „Der Stempel“ erscheint",
+   "detail": "game-popup popup-memory is-front"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Erinnerung liegt nicht über dem Helden",
+   "detail": "{\"l\":348,\"t\":69,\"w\":600,\"h\":678,\"hero\":{\"x\":999,\"y\":450},\"overHero\":false,\"area\":28}"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: Erinnerung nimmt höchstens 14 % der Fläche ein",
+   "detail": "28 %"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: Erinnerung überdeckt keine HUD-Teile",
+   "detail": ".action-area .action-bar, #interact:not(.hidden)"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Laufen (WASD) bei offener Erinnerung",
+   "detail": "D: 50 E"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Erinnerung bleibt beim Laufen stehen (nicht verloren)",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Rechtsklick-Laufweg bei offener Erinnerung",
+   "detail": "101 E · Ziel unter der Maus: world"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 dieter: F spricht Ida an, obwohl die Erinnerung offen ist",
+   "detail": "Erinnerung vorher offen"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Esc schließt die Erinnerung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: „Der Stempel“ bleibt unter Erinnerungen nachlesbar",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Klick aufs Bild öffnet „Halt mal mein Bier“ groß mit Text",
+   "detail": "{\"img\":true,\"text\":274}"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: Kreuz schließt „Naturtalent“",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 dieter: beide Fetzen stehen unter Erinnerungen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900: Hilfe öffnet mit H",
+   "detail": ""
+  },
+  {
+   "ok": false,
+   "what": "1600x900: Hilfe ohne Überlappung (25 Zeilen, Fenster 720×366)",
+   "detail": "Kappe ragt aus der Tastenspalte: D (Laufen) | Kappe×Wort: L / Aufträge | Kappe ragt aus der Tastenspalte: L (Aufträge) | Kappe×Wort: K / Kniffe | Kappe ragt aus der Tastenspalte: K (Kniffe)"
+  },
+  {
+   "ok": true,
+   "what": "1600x900: Hilfe ohne Scrollen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Held erstellt, Hofprobe läuft",
+   "detail": "{\"cls\":\"kaethe\",\"name\":\"Skat 1600\",\"tut\":true}"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Idas Eröffnungsgespräch lässt sich annehmen",
+   "detail": "Abstand 21, Schritt 1"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: „!“ über Ida vor dem Gespräch",
+   "detail": "!"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: F-Hinweis „Mit Ida sprechen“ erscheint früh genug (≥ 80 E ≈ 5 m)",
+   "detail": "ab 50 E · „FMit Kisten-Ida sprechen“"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: kein irreführender F-Hinweis auf dem Weg zu Ida (F führt in der Hofprobe immer zu Ida)",
+   "detail": "140 E „FBude ansehen“, 120 E „FBude ansehen“, 100 E „FBude ansehen“, 90 E „FBude ansehen“, 80 E „FBude ansehen“, 70 E „FBude ansehen“, 60 E „FBude ansehen“"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Name über Ida mindestens so früh wie der F-Hinweis",
+   "detail": "Name ab 70 E"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: F aus 150 E läuft zu Ida und spricht sie an",
+   "detail": "Gespräch nicht offen, Abstand danach 1"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: dabei steht der Held vor Ida im selben Raum (nicht vor der Tür, nicht in ihr)",
+   "detail": "1 E, drinnen"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Rechtsklick auf Ida aus 200 E läuft hin und spricht",
+   "detail": "Abstand danach 43, im selben Raum"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Hofprobe bis zum Ende",
+   "detail": "18 s"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: Ida mit F ohne Nachhelfen erreicht (Schritt 1 und 8)",
+   "detail": "1× zweites F nötig"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Erinnerung „Der Stempel“ erscheint",
+   "detail": "game-popup popup-memory is-front"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Erinnerung liegt nicht über dem Helden",
+   "detail": "{\"l\":348,\"t\":69,\"w\":600,\"h\":678,\"hero\":{\"x\":999,\"y\":450},\"overHero\":false,\"area\":28}"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: Erinnerung nimmt höchstens 14 % der Fläche ein",
+   "detail": "28 %"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: Erinnerung überdeckt keine HUD-Teile",
+   "detail": ".action-area .action-bar, #interact:not(.hidden)"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Laufen (WASD) bei offener Erinnerung",
+   "detail": "D: 49 E"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Erinnerung bleibt beim Laufen stehen (nicht verloren)",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Rechtsklick-Laufweg bei offener Erinnerung",
+   "detail": "97 E · Ziel unter der Maus: world"
+  },
+  {
+   "ok": false,
+   "what": "1600x900 kaethe: F spricht Ida an, obwohl die Erinnerung offen ist",
+   "detail": "Erinnerung vorher offen"
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: Esc schließt die Erinnerung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1600x900 kaethe: „Der Stempel“ bleibt unter Erinnerungen nachlesbar",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Held erstellt, Hofprobe läuft",
+   "detail": "{\"cls\":\"schorsch\",\"name\":\"Grill 1280\",\"tut\":true}"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Idas Eröffnungsgespräch lässt sich annehmen",
+   "detail": "Abstand 21, Schritt 1"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: „!“ über Ida vor dem Gespräch",
+   "detail": "!"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: F-Hinweis „Mit Ida sprechen“ erscheint früh genug (≥ 80 E ≈ 5 m)",
+   "detail": "ab 50 E · „FMit Kisten-Ida sprechen“"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: kein irreführender F-Hinweis auf dem Weg zu Ida (F führt in der Hofprobe immer zu Ida)",
+   "detail": "140 E „FBude ansehen“, 120 E „FBude ansehen“, 100 E „FBude ansehen“, 90 E „FBude ansehen“, 80 E „FBude ansehen“, 70 E „FBude ansehen“, 60 E „FBude ansehen“"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Name über Ida mindestens so früh wie der F-Hinweis",
+   "detail": "Name ab 70 E"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: F aus 150 E läuft zu Ida und spricht sie an",
+   "detail": "Gespräch nicht offen, Abstand danach 1"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: dabei steht der Held vor Ida im selben Raum (nicht vor der Tür, nicht in ihr)",
+   "detail": "1 E, drinnen"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Rechtsklick auf Ida aus 200 E läuft hin und spricht",
+   "detail": "Abstand danach 39, im selben Raum"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Hofprobe bis zum Ende",
+   "detail": "18 s"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: Ida mit F ohne Nachhelfen erreicht (Schritt 1 und 8)",
+   "detail": "1× zweites F nötig"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Erinnerung „Der Stempel“ erscheint",
+   "detail": "game-popup popup-memory is-front"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Erinnerung liegt nicht über dem Helden",
+   "detail": "{\"l\":348,\"t\":69,\"w\":600,\"h\":530,\"hero\":{\"x\":298,\"y\":360},\"overHero\":false,\"area\":35}"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: Erinnerung nimmt höchstens 14 % der Fläche ein",
+   "detail": "35 %"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: Erinnerung überdeckt keine HUD-Teile",
+   "detail": ".action-area .action-bar, #interact:not(.hidden)"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Laufen (WASD) bei offener Erinnerung",
+   "detail": "D: 48 E"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Erinnerung bleibt beim Laufen stehen (nicht verloren)",
+   "detail": ""
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: Rechtsklick-Laufweg bei offener Erinnerung",
+   "detail": "0 E · Ziel unter der Maus: IMG"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: F spricht Ida an, obwohl die Erinnerung offen ist",
+   "detail": "Erinnerung vorher offen"
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Esc schließt die Erinnerung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: „Der Stempel“ bleibt unter Erinnerungen nachlesbar",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: Klick aufs Bild öffnet „Halt mal mein Bier“ groß mit Text",
+   "detail": "{\"img\":true,\"text\":274}"
+  },
+  {
+   "ok": false,
+   "what": "1280x720 schorsch: Kreuz schließt „Naturtalent“",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1280x720 schorsch: beide Fetzen stehen unter Erinnerungen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "1280x720: Hilfe öffnet mit H",
+   "detail": ""
+  },
+  {
+   "ok": false,
+   "what": "1280x720: Hilfe ohne Überlappung (25 Zeilen, Fenster 720×365)",
+   "detail": "Kappe ragt aus der Tastenspalte: D (Laufen) | Kappe×Wort: L / Aufträge | Kappe ragt aus der Tastenspalte: L (Aufträge) | Kappe×Wort: K / Kniffe | Kappe ragt aus der Tastenspalte: K (Kniffe)"
+  },
+  {
+   "ok": true,
+   "what": "1280x720: Hilfe ohne Scrollen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "keine Laufzeitfehler",
+   "detail": "[]"
+  }
+ ]
+}
