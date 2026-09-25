@@ -36,7 +36,7 @@ const NEW_SPECS={
 for(const [spec,d] of Object.entries(NEW_SPECS))if(CLASS_SPECS[d.classId]?.includes(spec))SPECS[spec]=d;
 const CLASS_TALENTS={...TALENTS_DIETER,...TALENTS_BAERBEL,...TALENTS_KEVIN,...Object.fromEntries(Object.values(CLASS_SPECS).flat().filter(s=>!(s in TALENTS_DIETER||s in TALENTS_BAERBEL||s in TALENTS_KEVIN)).map(s=>[s,TALENTS_SCHORSCH[s]||TALENTS_KAETHE[s]]))};
 /** Reihen je Spec: [{name,text,effects,grants,skills,info}] – Index = Speicherschlüssel. */
-export const TALENT_ROWS=Object.fromEntries(Object.entries(CLASS_TALENTS).map(([spec,list])=>[spec,list.map(t=>({name:t.name,text:t.text,effects:t.effects||{},grants:t.grants||null,skills:t.skills||[],info:t.info}))]));
+export const TALENT_ROWS=Object.fromEntries(Object.entries(CLASS_TALENTS).map(([spec,list])=>[spec,list.map(t=>({name:t.name,text:t.text,effects:t.effects||{},grants:t.grants||null,skills:t.skills||[],info:t.info,...(t.icon?{icon:t.icon}:{}),...(t.requires!==undefined?{requires:t.requires}:{})}))]));
 /** Zelle je Talent: {row 0–9, path 0–2}. */
 export const TALENT_CELLS=Object.fromEntries(Object.entries(CLASS_TALENTS).map(([spec,list])=>[spec,list.map(t=>({row:t.row??0,path:t.path??0}))]));
 export const TALENT_INFO=Object.fromEntries(Object.entries(CLASS_TALENTS).flatMap(([spec,list])=>list.map((t,i)=>[spec+'-'+i,t.info])));
