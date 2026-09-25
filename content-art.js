@@ -86,14 +86,16 @@ export function contentFrame(actor,row,p={}){
 
 // ------------------------------------------------------------------- Symbole
 /** Einzelbild ganzzahlig vergrößert und mittig in ein Feld der Kantenlänge `size`. */
-// Verkleinern wie die Pipeline (tools/sprite-pipeline/precision-resample.mjs): Flächenmittel, deckend ab 50 %, Farbe auf
-// PRECISION_PALETTE. Vorher nächster Nachbar – 64 → 48 ließ jede vierte Zeile und Spalte weg. Ergebnis je Bild und Größe im Cache.
-const shrunkIcons=new WeakMap(),snapped=new Map();
-function paletteSnap(r,g,b){const key=(r>>2)<<12|(g>>2)<<6|b>>2;let p=snapped.get(key);if(p)return p;let score=Infinity;for(const q of PRECISION_PALETTE){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}snapped.set(key,p);return p;}
-export function shrinkPixels(src,w,h,dw,dh){const out=new Uint8ClampedArray(dw*dh*4);
+// Verkleinern wie die Pipeline (tools/sprite-pipeline/precision-resample.mjs): Flächenmittel, deckend ab 50 %, jede Mischfarbe rastet
+// auf die nächste Farbe DES SYMBOLS SELBST ein – keine neuen Zwischentöne, und kein Symbol verliert Farben an eine feste Palette
+// (PRECISION_PALETTE hat kein sattes Blau, Rosa, Lila, helles Grün). Vorher nächster Nachbar: 64 → 48 ließ jede vierte Zeile weg.
+const shrunkIcons=new WeakMap();
+function ownPalette(src){const seen=new Map();for(let i=0;i<src.length;i+=4)if(src[i+3]>=128){const k=src[i]<<16|src[i+1]<<8|src[i+2];if(!seen.has(k))seen.set(k,[src[i],src[i+1],src[i+2]]);}return [...seen.values()];}
+export function shrinkPixels(src,w,h,dw,dh,palette=ownPalette(src)){const out=new Uint8ClampedArray(dw*dh*4),snapped=new Map(),pal=palette.length?palette:PRECISION_PALETTE;
+ const snap=(r,g,b)=>{const key=r<<16|g<<8|b;let p=snapped.get(key);if(p)return p;let score=Infinity;for(const q of pal){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}snapped.set(key,p);return p;};
  for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){const left=x*w/dw,right=(x+1)*w/dw,top=y*h/dh,bottom=(y+1)*h/dh;let alpha=0,total=0,r=0,g=0,b=0;
   for(let sy=Math.floor(top);sy<Math.ceil(bottom);sy++)for(let sx=Math.floor(left);sx<Math.ceil(right);sx++){const wt=(Math.min(right,sx+1)-Math.max(left,sx))*(Math.min(bottom,sy+1)-Math.max(top,sy)),i=(sy*w+sx)*4,a=src[i+3]/255*wt;total+=wt;alpha+=a;r+=src[i]*a;g+=src[i+1]*a;b+=src[i+2]*a;}
-  if(alpha<total*.5)continue;const p=paletteSnap(Math.round(r/alpha),Math.round(g/alpha),Math.round(b/alpha)),o=(y*dw+x)*4;out[o]=p[0];out[o+1]=p[1];out[o+2]=p[2];out[o+3]=255;}
+  if(alpha<total*.5)continue;const p=snap(Math.round(r/alpha),Math.round(g/alpha),Math.round(b/alpha)),o=(y*dw+x)*4;out[o]=p[0];out[o+1]=p[1];out[o+2]=p[2];out[o+3]=255;}
  return out;}
 function shrunkIcon(image,w,h,dw,dh){let m=shrunkIcons.get(image);if(!m)shrunkIcons.set(image,m=new Map());const k=dw+'x'+dh;let cv=m.get(k);if(cv)return cv;
  const src=document.createElement('canvas');src.width=w;src.height=h;const sc=src.getContext('2d',{willReadFrequently:true});sc.drawImage(image,0,0);
