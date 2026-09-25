@@ -36,6 +36,7 @@ export const DUNGEON_UI={
   cone:{name:'Frontalkegel',answer:'Seitlich stehen',tip:'Trifft alles vor ihm im Kegel. Wer daneben oder dahinter steht, bleibt heil.'},
   line:{name:'Linie',answer:'Aus der Linie',tip:'Trifft alles auf einer Geraden.'},
   ground:{name:'Bodenfläche',answer:'Fläche verlassen',tip:'Rote Fläche am Boden. Wenn sie aufblitzt, trifft sie.'},
+  random:{name:'Trifft Nicht-Schutz',answer:'Aus der Fläche',tip:'Landet auf einem zufälligen Gruppenmitglied, nie auf dem, der schützt.'},
   stack:{name:'Sammeln',answer:'Zusammen stehen',tip:'Der Schaden teilt sich auf alle, die zusammen stehen.'},
   spread:{name:'Verteilen',answer:'Auseinander',tip:'Trifft jeden in der Nähe mit. Abstand halten.'},
   interrupt:{name:'Unterbrechbar',answer:'Unterbrechen',tip:'Lässt sich mit deinem Unterbrecher stoppen. Söldner mit Unterbrecher helfen.'},
@@ -45,11 +46,12 @@ export const DUNGEON_UI={
   summon:{name:'Verstärkung',answer:'Adds zuerst',tip:'Ruft Helfer. Die fallen schnell und schlagen sonst in den Rücken.'},
   call:{name:'Hilferuf',answer:'Unterbrechen',tip:'Ruft die Nachbargruppe dazu.'},
   heal:{name:'Heilt Verbündete',answer:'Unterbrechen',tip:'Heilt alle Verbündeten in der Nähe.'},
+  brand:{name:'Hausverbot',answer:'Nicht vorn bleiben',tip:'Wer getroffen wird und nicht schützt, trägt Hausverbot: Der nächste Treffer schmerzt mehr.'},
   guard:{name:'Schildwall',answer:'Von hinten',tip:'Treffer von vorn prallen größtenteils ab. Von hinten trifft es voll.'},
   hit:{name:'Treffer',answer:'Ausweichen',tip:'Ein gezielter Schlag auf das Ziel.'}
  },
  // Zahlen im Tooltip.
- numbers:{damage:'Schaden',pct:'Anteil deines Lebens',cast:'Zauberzeit',range:'Reichweite',angle:'Winkel',radius:'Radius',knockback:'Rückstoß',tankShare:'Schutz nimmt',heal:'Heilt',guard:'Von vorn',callRange:'Ruft bis'},
+ numbers:{brand:'Hausverbot',duration:'Dauer',damage:'Schaden',pct:'Anteil deines Lebens',cast:'Zauberzeit',range:'Reichweite',angle:'Winkel',radius:'Radius',knockback:'Rückstoß',tankShare:'Schutz nimmt',heal:'Heilt',guard:'Von vorn',callRange:'Ruft bis'},
  // ── Journal (dungeon-journal.js): eine Seite je Boss
  journal:{title:'Dungeon-Journal',abilities:'Fähigkeiten',roles:'Rollen',loot:'Beute',phases:'Phasen',
   phaseAt:pct=>'bei '+pct+' %',phaseAdds:n=>n+' Helfer',phaseCycle:'neuer Ablauf',phaseLine:'Spruch',
@@ -59,8 +61,8 @@ export const DUNGEON_UI={
   // Rollenhinweise aus den Merkmalen: je Rolle die Merkmale, die sie angehen, mit ihrer Antwort (steht im Tooltip der Rollensymbole).
   roleHints:{
    tank:{cone:'Boss von der Gruppe wegdrehen',tank:'Du nimmst den Kegel nur zum Teil',knockback:'Rücken zur Wand, nicht zur Kante',guard:'Schildwall: Gruppe hinter den Gegner',summon:'Helfer einsammeln',line:'Linie von der Gruppe weg'},
-   heal:{ground:'Flächen kosten Leben: vorheilen',cone:'Wer im Kegel stand, braucht Heilung',summon:'Helfer erhöhen den Gruppenschaden',stack:'Nach dem Sammeln alle heilen',interrupt:'Nicht unterbrochen: großer Treffer auf das Ziel'},
-   damage:{interrupt:'Unterbrechen',call:'Hilferuf unterbrechen',heal:'Heilung unterbrechen',summon:'Helfer zuerst',ground:'Fläche verlassen',guard:'Von hinten treffen',cone:'Seitlich oder hinter ihm stehen',lie:'Erst den Nachsatz lesen'}},
+   heal:{random:'Flächen treffen auch dich: raus',brand:'Hausverbot heißt mehr Schaden: vorheilen',ground:'Flächen kosten Leben: vorheilen',cone:'Wer im Kegel stand, braucht Heilung',summon:'Helfer erhöhen den Gruppenschaden',stack:'Nach dem Sammeln alle heilen',interrupt:'Nicht unterbrochen: großer Treffer auf das Ziel'},
+   damage:{random:'Aus der Fläche laufen',brand:'Nicht vor ihm bleiben',interrupt:'Unterbrechen',call:'Hilferuf unterbrechen',heal:'Heilung unterbrechen',summon:'Helfer zuerst',ground:'Fläche verlassen',guard:'Von hinten treffen',cone:'Seitlich oder hinter ihm stehen',lie:'Erst den Nachsatz lesen'}},
   roleNone:'Nichts Besonderes'},
  // ── Dungeon-Karte (M): Symbolreiter, Info statt Erklärsatz, Tooltips
  map:{floorShort:{e0:'EG',k1:'K1',k2:'K2'},info:'Big Bs Schlossplan',

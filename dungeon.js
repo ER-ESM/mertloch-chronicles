@@ -2,10 +2,14 @@
 // Für die Dauer des Besuchs ersetzt eine Dungeon-Welt die Dorfwelt: sie überschreibt nur die Geometrie (blocked, lineClear,
 // walkClear, findPath, findClear) und erbt alles andere. Die Gegnerliste wechselt mit. Kampf, Söldner, Zauber und Beute laufen
 // damit unverändert; `g.instance` schaltet wie beim Kiosk Reiten, Berufe und die Online-Anwesenheit ab.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_SCALE as U,ENEMY_AUTOS,COMBAT_RULES} from './content/index.js';
+// Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
+// ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
+// Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI} from './content/index.js';
 import {makeEnemy} from './encounters.js';
 import {autoLootBag} from './rpg.js';
-import {hitCompanion} from './companions.js';
+import {hitCompanion,clearThreat} from './companions.js';
+import {emitCombatFx} from './combat-fx.js';
 import {TANK_SPECS} from './net-world.js';
 
 const FLOOR_ORDER=['e0','k1','k2']; // Schutz-Specs: TANK_SPECS aus net-world.js (E-72: aus der Rolle „Tank“)
@@ -52,7 +56,9 @@ export function dungeonWorld(outside,run){
  return w;
 }
 function findPath(w,start,end){
- if(w.blocked(end.x,end.y,7))return [];
+ // Ziel dicht an der Wand (Held vom Rausschmiss an die Wand gedrückt): nächster freier Punkt statt keinem Weg – sonst blieb Gerd stehen
+ // und zauberte nie wieder (Befund Etappe 2, 2026-09-25).
+ if(w.blocked(end.x,end.y,7)){const c=w.findClear(end.x,end.y,7);if(w.blocked(c.x,c.y,7))return [];end=c;}
  const step=12,key=p=>Math.round(p.x/step)+','+Math.round(p.y/step),seed={x:Math.round(start.x/step)*step,y:Math.round(start.y/step)*step};
  const from=w.walkClear(start,seed,5)?seed:start;const queue=[from],prev=new Map([[key(from),null]]),points=new Map([[key(from),from]]);let last=null;
  for(let i=0;i<queue.length&&i<2600;i++){const p=queue[i];if(w.walkClear(p,end,6)){last=p;break;}
@@ -62,14 +68,23 @@ function findPath(w,start,end){
 }
 
 // ── Spielstand ────────────────────────────────────────────────────────────────────────────────────────────────
-/** Dauerhafte Daten je Dungeon (im Spielstand): Abschlüsse, einmal besiegte Bosse, gefundene Geheimnisse. */
+/** Dauerhafte Daten je Dungeon (im Spielstand): Abschlüsse, einmal besiegte Bosse, gefundene Geheimnisse, Siegelmarken (E-71) und
+ *  der Tagesstand `daily` (Flügel mit Tagesbonus, Siegel und Abkürzungen des Tages – Grundgerüst für die Flügel aus Etappe 4). */
 export function normalizeDungeons(raw){
- const out={};for(const id of Object.keys(DUNGEONS)){const r=raw?.[id]||{};const def=DUNGEONS[id];
-  out[id]={clears:Math.max(0,r.clears|0),bosses:(Array.isArray(r.bosses)?r.bosses:[]).filter(b=>def.bosses.some(x=>x.id===b)),
-   secrets:(Array.isArray(r.secrets)?r.secrets:[]).filter(s=>def.secrets.some(x=>x.id===s)),firstClear:Number(r.firstClear)||0};}
+ const out={};for(const id of Object.keys(DUNGEONS)){const r=raw?.[id]||{};const def=DUNGEONS[id],arr=v=>Array.isArray(v)?v:[],d=r.daily||{};
+  out[id]={clears:Math.max(0,r.clears|0),bosses:arr(r.bosses).filter(b=>def.bosses.some(x=>x.id===b)),
+   secrets:arr(r.secrets).filter(s=>def.secrets.some(x=>x.id===s)),firstClear:Number(r.firstClear)||0,marks:Math.max(0,r.marks|0),
+   daily:{day:typeof d.day==='string'?d.day:'',wings:arr(d.wings).filter(w=>(def.wings||[]).some(x=>x.id===w)),seals:arr(d.seals).filter(s=>def.bosses.some(b=>b.seal===s)),
+    shortcuts:arr(d.shortcuts).filter(t=>def.transitions.some(x=>x.id===t))}};}
  return out;
 }
 const record=(g,id)=>(g.dungeons||(g.dungeons=normalizeDungeons(null)))[id];
+/** Wanduhr in Millisekunden; Tests setzen g.clock. */
+const clock=g=>typeof g.clock==='function'?g.clock():Date.now();
+/** Spieltag des Dungeons (Ortszeit; wechselt um resetHour Uhr, E-71 resetAt:'daily'). */
+export function dungeonDay(g,id='schloss-bigb'){const d=new Date(clock(g)-(DUNGEONS[id].resetHour||0)*3600e3),two=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate());}
+/** Tagesstand eines Dungeons; an einem neuen Tag ist er leer (Siegel, Abkürzungen und Tagesbonus beginnen von vorn). */
+export function dungeonToday(g,id='schloss-bigb'){const rec=record(g,id),day=dungeonDay(g,id);if(rec.daily.day!==day)rec.daily={day,wings:[],seals:[],shortcuts:[]};return rec.daily;}
 
 // ── Eingang draußen ───────────────────────────────────────────────────────────────────────────────────────────
 const entranceCache=new WeakMap();
@@ -89,62 +104,92 @@ export function entranceFor(world,id){
 export const dungeonEntrance=(g,id='schloss-bigb')=>entranceFor(inDungeon(g)?g.instance.outside.world:g.world,id);
 
 // ── Durchgang ─────────────────────────────────────────────────────────────────────────────────────────────────
+/** Faktoren der Schwierigkeitsstufe des Durchgangs (E-71: jetzt nur Normal). */
+export const difficultyOf=run=>run?.def?.difficulty?.[run.difficulty]||{hp:1,damage:1};
 function createEnemy(g,run,kind,def,at){
- const e=makeEnemy(at,++serial,{type:def.type,skin:def.skin,name:def.name,family:def.family,hp:def.hp,level:def.level,behavior:def.behavior||'aggressive',
-  aggroRange:def.aggroRange,roamRadius:def.roamRadius,speed:def.speed,respawn:[1e9,1e9],castSet:def.castSet,damage:def.damage||1,elite:!!def.elite,leash:def.leash||280});
+ const diff=difficultyOf(run);
+ const e=makeEnemy(at,++serial,{type:def.type,skin:def.skin,name:def.name,family:def.family,hp:Math.max(1,Math.round(def.hp*diff.hp)),level:def.level,behavior:def.behavior||'aggressive',
+  aggroRange:def.aggroRange,roamRadius:def.roamRadius,speed:def.speed,respawn:[1e9,1e9],castSet:def.castSet,damage:(def.damage||1)*diff.damage,elite:!!def.elite,leash:def.leash||280});
  if(def.auto&&ENEMY_AUTOS[def.auto])e.autoAttack=ENEMY_AUTOS[def.auto];
- return Object.assign(e,{variant:def.art,dungeon:run.id,dungeonKind:kind,baseCastSet:def.castSet,title:def.title,cardboard:!!def.cardboard,spawnGrace:0});
+ return Object.assign(e,{variant:def.art,dungeon:run.id,dungeonKind:kind,baseCastSet:def.castSet,title:def.title,cardboard:!!def.cardboard,spawnGrace:0,
+  ...(def.xp!=null?{xp:def.xp}:{}),lootMoment:!!def.lootMoment,pctFactor:diff.damage});
 }
+/** Im Laufstand schon gelegt (Neuladen, E-71): liegt von Anfang an, ohne Leiche und ohne Beute. */
+const laid=e=>Object.assign(e,{hp:0,aggro:false,ai:'dead',respawnAt:Infinity,dead:Infinity});
 function spawnEnemies(g,run){
  const def=run.def,list=[],geo=dungeonWorld({},run); // Geometrie zum Freirücken: jede Spawn-Stelle landet auf begehbarem Boden
  for(const pack of def.packs){
-  const room=def.rooms.find(r=>r.id===pack.room),n=pack.members.length,center=toWorld(def,room.floor,...pack.at);
+  const room=def.rooms.find(r=>r.id===pack.room),n=pack.members.length,center=toWorld(def,room.floor,...pack.at),cleared=run.trash.has(pack.id);
   pack.members.forEach((kind,j)=>{const d=DUNGEON_ENEMIES[kind];if(!d)return;const a=j/n*Math.PI*2,rad=n>1?(n>4?2.6:1.7):0;
-   const raw=toWorld(def,room.floor,pack.at[0]+Math.cos(a)*rad,pack.at[1]+Math.sin(a)*rad),at=geo.findClear(raw.x,raw.y,7),e=createEnemy(g,run,kind,d,at);
+   const raw=toWorld(def,room.floor,pack.at[0]+Math.cos(a)*rad,pack.at[1]+Math.sin(a)*rad),at=geo.findClear(raw.x,raw.y,7),e=createEnemy(g,run,kind,d,at);e.pack=pack.id;
    if(pack.patrol){e.patrol={points:pack.patrol.map(([x,y])=>toWorld(def,room.floor,x,y)),i:1,dx:at.x-center.x,dy:at.y-center.y};e.roamRadius=0;}
-   list.push(e);});
+   if(cleared)laid(e);list.push(e);});
  }
- for(const b of def.bosses){const d=DUNGEON_BOSSES[b.id];if(!d)continue;if(b.rare&&g.random()>b.rare)continue;
+ for(const b of def.bosses){const d=DUNGEON_BOSSES[b.id];if(!d)continue;if(b.rare&&!run.killed.has(b.id)&&g.random()>b.rare)continue;
   const room=def.rooms.find(r=>r.id===b.room),spot=toWorld(def,room.floor,...b.at),e=createEnemy(g,run,b.id,d,geo.findClear(spot.x,spot.y,9));
-  Object.assign(e,{type:'boss',bossId:b.id,dungeonBoss:b});list.push(e);}
+  Object.assign(e,{type:'boss',bossId:b.id,dungeonBoss:b});if(run.killed.has(b.id))laid(e);list.push(e);}
  return list;
 }
-function createRun(g,id){
- const def=DUNGEONS[id];
- const run={id,def,version:0,killed:new Set(),seals:new Set(),secrets:new Set(record(g,id).secrets),unlocked:new Set(),heard:new Set(),visited:new Set(),
-  room:null,arena:null,checkpoint:{floor:def.start.floor,x:def.start.x,y:def.start.y,room:null},startedAt:g.time};
+const validCheckpoint=(def,c)=>c&&def.floors[c.floor]&&Number.isFinite(c.x)&&Number.isFinite(c.y)?{floor:c.floor,x:c.x,y:c.y,room:def.rooms.some(r=>r.id===c.room)?c.room:null}:null;
+/** Neuer Durchgang; saved = Laufstand aus dem Spielstand (Neuladen). Siegel und Abkürzungen des Tages kommen immer mit (E-71). */
+function createRun(g,id,saved=null){
+ const def=DUNGEONS[id],today=dungeonToday(g,id),list=(k,ok)=>(Array.isArray(saved?.[k])?saved[k]:[]).filter(ok);
+ const run={id,def,version:0,difficulty:def.difficulty?.[saved?.difficulty]?saved.difficulty:'normal',day:today.day,
+  killed:new Set(list('killed',b=>def.bosses.some(x=>x.id===b))),seals:new Set([...list('seals',s=>def.bosses.some(b=>b.seal===s)),...today.seals]),
+  secrets:new Set(record(g,id).secrets),unlocked:new Set([...list('unlocked',t=>def.transitions.some(x=>x.id===t)),...today.shortcuts]),
+  trash:new Set(list('trash',p=>def.packs.some(x=>x.id===p))),heard:new Set(list('heard',a=>def.announcements.some(x=>x.id===a))),visited:new Set(list('visited',r=>def.rooms.some(x=>x.id===r))),
+  room:null,arena:null,checkpoint:validCheckpoint(def,saved?.checkpoint)||{floor:def.start.floor,x:def.start.x,y:def.start.y,room:null},startedAt:Number(saved?.startedAt)||clock(g),ghost:null};
  run.enemies=spawnEnemies(g,run);return run;
 }
 function stop(g){g.stopAuto?.();g.keys?.clear();g.touchMove=null;g.moveTo=null;g.path=[];g.routeGoal=null;g.target=null;g.aiming=null;g.aimPoint=null;g.casting=null;
  const p=g.player;p.vx=p.vy=0;p.moving=false;p.attack=p.dash=p.hurt=p.castPose=0;}
 function place(g,at){const p=g.player,c=g.world.findClear(at.x,at.y,9);p.x=c.x;p.y=c.y;}
 
-/** Betreten am Rolltor. force: ohne Stufen- und Abstandsprüfung (Admin, Tests). */
-export function enterDungeon(g,id='schloss-bigb',{force=false}={}){
+/** Betreten am Rolltor. force: ohne Stufen- und Abstandsprüfung (Admin, Tests, Neuladen). resume: Laufstand aus dem Spielstand. */
+export function enterDungeon(g,id='schloss-bigb',{force=false,resume=false}={}){
  const def=DUNGEONS[id];if(!def||g.instance)return false;
  if(g.dead||g.paused||g.player.inCombat>0||g.casting){g.toast?.(T.busy);return false;}
  if(!force&&g.player.level<def.level.enter){g.toast?.(T.tooLow(def.level.enter));return false;}
  const door=entranceFor(g.world,id);
  if(!force&&(!door||dist(g.player,door)>def.entrance.range))return false;
  g.dismount?.();stop(g);
- const kept=g.dungeonRuns?.[id],run=kept&&g.time-kept.leftAt<def.resetAfter?kept.run:createRun(g,id);if(g.dungeonRuns)delete g.dungeonRuns[id];
+ const kept=g.dungeonRuns?.[id],run=kept&&g.time-kept.leftAt<def.resetAfter&&kept.run.day===dungeonDay(g,id)?kept.run:createRun(g,id);if(g.dungeonRuns)delete g.dungeonRuns[id];
  const outside={world:g.world,enemies:g.enemies};
  g.instance={id,kind:'dungeon',run,outside,outsidePosition:{x:(door||g.player).x,y:(door||g.player).y,facing:g.player.facing||1},time:0};
  g.world=dungeonWorld(outside.world,run);g.enemies=run.enemies;g.zones=[];g.fields=[];g.fx=[];g.texts=[];run.room=null;
  const at=run.checkpoint;place(g,toWorld(def,at.floor,at.x,at.y));
- /* Etappe 2 Text-Diät: der Willkommenssatz steht im Übergang (dungeon-entry.js) und im Chat, nicht als Kurzmeldung über dem Zonentitel */g.emit?.('instanceChanged');g.log?.(T.welcome);return true;
+ /* Etappe 2 Text-Diät: der Willkommenssatz steht im Übergang (dungeon-entry.js) und im Chat, nicht als Kurzmeldung über dem Zonentitel.
+    Etappe 1: nach dem Neuladen sagt eine Kurzmeldung, dass der Durchgang am Kontrollpunkt weiterläuft. */
+ const resumed=resume&&run===kept?.run;g.emit?.('instanceChanged');if(resumed)g.toast?.(T.resumed);g.log?.(resumed?T.resumed:T.welcome);return true;
 }
-/** Verlassen am Rolltor (force: überall, z. B. Neustart). Liegengebliebene Beute wird eingesammelt. */
+/** Verlassen am Rolltor (force: überall, z. B. Neustart). Liegengebliebene Beute wird eingesammelt (Boss-Beute ohne Anlegen). */
 export function leaveDungeon(g,{force=false}={}){
  const run=dungeonRun(g);if(!run)return false;
  const exit=toWorld(run.def,run.def.exit.floor,run.def.exit.x,run.def.exit.y);
  if(!force&&(floorAt(run.def,g.player.x,g.player.y)!==run.def.exit.floor||dist(g.player,exit)>4*U))return false;
  const bags=g.rpg.loot.filter(b=>floorAt(run.def,b.x,b.y));for(const b of bags)autoLootBag(g,b);if(bags.length)g.toast?.(T.lootGathered(bags.length));
- stop(g);const o=g.instance.outside,pos=g.instance.outsidePosition;
+ stop(g);const o=g.instance.outside,pos=g.instance.outsidePosition;run.ghost=null;
  g.world=o.world;g.enemies=o.enemies;g.zones=[];g.fields=[];g.fx=[];g.texts=[];
  (g.dungeonRuns||(g.dungeonRuns={}))[run.id]={run,leftAt:g.time};
  g.instance=null;Object.assign(g.player,{x:pos.x,y:pos.y,facing:pos.facing||1});
  g.emit?.('instanceChanged');g.emit?.('save');g.log?.(T.outside);return true;
+}
+/** Laufstand für den Spielstand (E-71, Muster savedKiosk): der laufende Durchgang oder einer, der nach dem Verlassen noch nicht
+ *  verfallen ist. Gespeichert werden Listen und Kontrollpunkt; die Gegner entstehen beim Laden neu, Gelegtes bleibt liegen. */
+export function savedDungeonRun(g){
+ const inside=dungeonRun(g),kept=inside?null:Object.values(g.dungeonRuns||{}).sort((a,b)=>b.leftAt-a.leftAt)[0],run=inside||kept?.run;if(!run)return null;
+ return {id:run.id,inside:!!inside,difficulty:run.difficulty,day:run.day,startedAt:run.startedAt,savedAt:clock(g),leftAgo:inside?0:Math.max(0,Math.round(g.time-kept.leftAt)),
+  killed:[...run.killed],seals:[...run.seals],secrets:[...run.secrets],visited:[...run.visited],unlocked:[...run.unlocked],trash:[...run.trash],heard:[...run.heard],checkpoint:{...run.checkpoint}};
+}
+/** Laufstand beim Laden: verfallen (resetAfter nach dem Verlassen bzw. Speichern, Tageswechsel) → nichts; lief er beim Speichern,
+ *  steht der Held wieder am letzten Kontrollpunkt im Dungeon (enterDungeon setzt fort). */
+export function restoreDungeonRun(g,saved){
+ const id=saved?.id,def=DUNGEONS[id];if(!def)return false;
+ const now=clock(g),away=Math.max(0,Number(saved.leftAgo)||0)+Math.max(0,(now-(Number(saved.savedAt)||now))/1000);
+ if(away>=def.resetAfter||saved.day!==dungeonDay(g,id))return false;
+ const run=createRun(g,id,saved);(g.dungeonRuns||(g.dungeonRuns={}))[id]={run,leftAt:g.time-away};
+ if(saved.inside)return enterDungeon(g,id,{force:true,resume:true});
+ return true;
 }
 
 // ── Interaktion: Ausgang, Übergänge, Geheimnisse; draußen der Eingang ─────────────────────────────────────────
@@ -168,14 +213,17 @@ export function dungeonDoorInteraction(g){
  if(g.instance)return null;const door=dungeonEntrance(g);if(!door)return null;
  return dist(g.player,door)<=DUNGEONS[door.id].entrance.range?{kind:'dungeonEnter',id:door.id,point:{x:door.x,y:door.y},name:T.entranceName,priority:3}:null;
 }
+/** Held selbst im Kampf? Nur Gegner, die ihn angehen, zählen – kämpfende Söldner halten ihn nicht an der Treppe fest (E-71: nach dem
+ *  Sturz über die Kante führt die Kellertreppe von unten zurück in die Arena). */
+const heroBusy=g=>g.dead||!!g.casting||(g.enemies||[]).some(e=>e.hp>0&&e.aggro&&e.ai==='combat'&&(e.focus||'player')==='player'&&dist(e,g.player)<400);
 export function dungeonStep(g,id,side){
  const run=dungeonRun(g);if(!run)return false;const t=run.def.transitions.find(x=>x.id===id);if(!t||!t[side])return false;
  const to=t[side==='a'?'b':'a'];
- if(g.player.inCombat>0||g.dead){g.toast?.(T.busy);return false;}
+ if(heroBusy(g)){g.toast?.(T.busy);return false;}
  if(t.oneWay&&t.oneWay!==side){g.toast?.(T.locked.oneWay);return false;}
  if(t.secret&&!run.secrets.has(t.secret)){g.toast?.(T.locked.secret);return false;}
  if(t.gate?.boss&&t.gate.side===side&&!run.killed.has(t.gate.boss)){g.toast?.(T.locked.gate);return false;}
- if(t.unlock&&!run.unlocked.has(t.id)){if(side!==t.unlock){g.toast?.(T.locked.lift);return false;}run.unlocked.add(t.id);g.toast?.(T.unlocked.lift);}
+ if(t.unlock&&!run.unlocked.has(t.id)){if(side!==t.unlock){g.toast?.(T.locked.lift);return false;}run.unlocked.add(t.id);const today=dungeonToday(g,run.id);if(!today.shortcuts.includes(t.id))today.shortcuts.push(t.id);g.toast?.(T.unlocked.lift);g.emit?.('save');}
  stop(g);place(g,toWorld(run.def,to.floor,to.x,to.y));g.emit?.('dungeonFloor',{floor:to.floor});return true;
 }
 export function dungeonSecret(g,id){
@@ -185,7 +233,14 @@ export function dungeonSecret(g,id){
 }
 
 // ── Takt ──────────────────────────────────────────────────────────────────────────────────────────────────────
-function announce(g,line){if(!line)return;g.toast?.(T.speaker+': „'+line+'"');g.log?.(T.speaker+': „'+line+'"');g.emit?.('dungeonAnnounce',{line});}
+/** Durchsage-Punkt: Lautsprecher an der Nordwand des Raums (rechts vom Schild) oder der Punkt aus den Daten. */
+export function speakerPoint(def,a){if(a.room){const room=def.rooms.find(r=>r.id===a.room);if(!room)return null;const r=rectWorld(def,room.floor,room.rects[0]);return {floor:room.floor,x:r.x+r.w/2+30,y:r.y+4};}if(a.floor==null)return null;const p=toWorld(def,a.floor,a.x,a.y);return {floor:a.floor,x:p.x,y:p.y};}
+/** Etappe 2 Text-Diät: Durchsage als Sprechblase am Lautsprecher (Chatzeile kommt mit der Blase), keine Kurzmeldung. */
+function announce(g,a,line){if(!line)return;const run=dungeonRun(g),p=run&&speakerPoint(run.def,a);if(run)run.speaking={id:a.id,until:g.time+4};
+ if(p&&g.bark)g.bark({id:'speaker-'+a.id,name:T.speaker,x:p.x,y:p.y},line,'speaker');else g.log?.(T.speaker+': „'+line+'"');g.emit?.('dungeonAnnounce',{line});}
+/** Etappe 2: Geheimnisse sind von außen nicht zu sehen – ein Raum mit `secret`, den noch keiner betreten hat, und wer darin steht. */
+export const concealedRoom=(run,room)=>!!room?.secret&&!run.visited.has(room.id);
+export function concealed(g,e){const run=dungeonRun(g);return !!run&&concealedRoom(run,roomAt(run.def,e.x,e.y));}
 function nudgeInto(g,run,roomId){
  const room=run.def.rooms.find(r=>r.id===roomId);if(!room)return;const r=rectWorld(run.def,room.floor,room.rects[0]);
  for(const u of [g.player,...(g.companions||[])]){if(!u||!g.world.blocked(u.x,u.y,5))continue;const x=Math.min(r.x+r.w-12,Math.max(r.x+12,u.x)),y=Math.min(r.y+r.h-12,Math.max(r.y+12,u.y));u.x=x;u.y=y;}
@@ -195,17 +250,29 @@ function walkPatrol(g,e,dt){
  if(d<8){e.patrol.i=(e.patrol.i+1)%e.patrol.points.length;return;}
  const step=Math.min(d,e.speed*.45*dt);g.move(e,(goal.x-e.x)/d*step,(goal.y-e.y)/d*step);e.moving=true;e.facing=goal.x<e.x?-1:1;e.home={x:e.x,y:e.y};e.roamGoal=null;
 }
+const standing=g=>(g.companions||[]).some(c=>c.state!=='down'&&c.hp>0);
+const partyIn=(g,def,room)=>[...(g.dead?[]:[g.player]),...(g.companions||[]).filter(c=>c.state!=='down'&&c.hp>0)].some(u=>roomAt(def,u.x,u.y)?.id===room);
+/** Bemerkt dieser Gegner den Helden? Bosse nur, wenn er in ihrem Raum steht – kein Anlocken durch die Tür (E-71). */
+export const dungeonNotices=(g,e)=>{if(!e.dungeonBoss)return true;const run=dungeonRun(g);return !run||roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room;};
+/** Held gefallen (E-71): Geist statt Wipe. Die Bedrohung auf den Helden fällt weg, die Söldner halten die Gegner. */
+function enterGhost(g,run){run.ghost={at:g.time,wiped:false};for(const e of g.enemies)clearThreat(e,'player');g.target=null;g.moveTo=null;g.path=[];g.routeGoal=null;
+ if(standing(g))g.toast?.(T.ghost);g.emit?.('dungeonGhost',{});}
+/** Alle liegen (E-71): Die Gegner setzen zurück, der Held steht erst auf, wenn er „Am Kontrollpunkt aufstehen" wählt. */
+function wipe(g,run){run.ghost.wiped=true;for(const e of g.enemies)if(e.hp>0&&(e.aggro||e.ai==='combat')){clearThreat(e);g.resetEnemy?.(e);}g.toast?.(T.wipeAll);g.emit?.('dungeonWipe',{});}
 export function tickDungeon(g,dt){
  const run=dungeonRun(g);if(!run)return;g.instance.time+=dt;const p=g.player,def=run.def;
- const room=roomAt(def,p.x,p.y);
+ if(g.dead){if(!run.ghost)enterGhost(g,run);if(!run.ghost.wiped&&!standing(g))wipe(g,run);}else if(run.ghost)run.ghost=null;
+ const room=g.dead?null:roomAt(def,p.x,p.y);
  if(room&&room.id!==run.room){run.room=room.id;const first=!run.visited.has(room.id);run.visited.add(room.id);
   if(room.checkpoint)run.checkpoint={floor:room.floor,x:room.checkpoint.x,y:room.checkpoint.y,room:room.id};
-  g.emit?.('dungeonRoom',{room,first});if(first)g.toast?.(room.sign+' · '+room.truth);}
+  /* Etappe 2 Text-Diät: der Raum nennt sich nur im Zonentitel (Schild groß, Wirklichkeit klein), keine Kurzmeldung */g.emit?.('dungeonRoom',{room,first});if(first)g.log?.(room.sign+' · '+room.truth);}
  const floor=floorAt(def,p.x,p.y);
- for(const a of def.announcements){if(run.heard.has(a.id))continue;const hit=a.room?run.room===a.room:floor===a.floor&&dist(p,toWorld(def,a.floor,a.x,a.y))<a.range*U;if(hit){run.heard.add(a.id);announce(g,T.announce[a.id]);}}
+ if(!g.dead)for(const a of def.announcements){if(run.heard.has(a.id))continue;const hit=a.room?run.room===a.room:floor===a.floor&&dist(p,toWorld(def,a.floor,a.x,a.y))<a.range*U;if(hit){run.heard.add(a.id);announce(g,a,T.announce[a.id]);}}
  // Arena: Türen zu, solange ein Boss kämpft
- let arena=null;for(const e of g.enemies)if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'){arena=e.dungeonBoss.room;break;}
- if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){nudgeInto(g,run,arena);g.toast?.(T.arenaClosed);}else if(was)g.toast?.(T.arenaOpen);}
+ // Boss ohne Gegner in seinem Raum (vom Hof aus angeschossen, alle draußen) setzt zurück, statt hinter geschlossener Tür ewig im Kampf
+ // zu stehen (E-71, gefunden mit scripts/dungeon-sim.mjs). Liegt der Held drin als Geist oder ist er gestürzt, zählen die Söldner.
+ let arena=null;for(const e of g.enemies)if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'){if(!partyIn(g,def,e.dungeonBoss.room)){clearThreat(e);g.resetEnemy?.(e);continue;}arena=e.dungeonBoss.room;break;}
+ /* Etappe 2 Text-Diät: Tür zu/auf nur im Chat, die Tür selbst zeigt es */if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){nudgeInto(g,run,arena);g.log?.(T.arenaClosed);}else if(was)g.log?.(T.arenaOpen);}
  for(const e of g.enemies){
   if(e.frontGuard>0)e.frontGuard=Math.max(0,e.frontGuard-dt);
   if(e.patrol&&e.hp>0&&!e.aggro&&e.ai==='roaming')walkPatrol(g,e,dt);
@@ -215,17 +282,30 @@ export function tickDungeon(g,dt){
  // Adds verschwinden, wenn ihr Boss zurückgesetzt wurde
  for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.summoner&&e.summoner.hp>0&&!e.summoner.aggro)g.enemies.splice(i,1);}
 }
-/** Gruppentod im Dungeon: am letzten Kontrollpunkt aufstehen (engine.respawn setzt vorher die Gegner zurück). */
+/** Aufstehen am Kontrollpunkt (Freilassen oder Gruppentod; engine.respawn setzt vorher die Gegner zurück). */
 export function dungeonRespawn(g){
- const run=dungeonRun(g);if(!run)return;const c=run.checkpoint;place(g,toWorld(run.def,c.floor,c.x,c.y));
- const room=run.def.rooms.find(r=>r.id===c.room);g.toast?.(T.wipe(room?.sign||run.def.rooms[0].sign));
+ const run=dungeonRun(g);if(!run)return;run.ghost=null;const c=run.checkpoint;place(g,toWorld(run.def,c.floor,c.x,c.y));
+ g.toast?.(T.wipe(checkpointName(run)));
+}
+/** Name des Kontrollpunkts, an dem der Held aufsteht (Todesbildschirm, E-71). */
+const checkpointName=run=>run.def.rooms.find(r=>r.id===run.checkpoint.room)?.sign||run.def.rooms[0].sign;
+export const dungeonCheckpoint=g=>{const run=dungeonRun(g);return run?{name:checkpointName(run),...run.checkpoint}:null;};
+/** Ein Söldner hat den Helden aufgehoben (E-71, wie reviveHere aus E-44): 35 % Leben, kurzer Schutz, der Kampf läuft weiter. */
+export function reviveHero(g,from,share=BALANCE.party.reviveHp){
+ if(!g.dead)return false;const p=g.player,run=dungeonRun(g);
+ Object.assign(p,{hp:Math.max(1,Math.round(p.maxHp*share)),energy:Math.max(p.energy,30),hurt:0,invulnerable:3,vx:0,vy:0,moving:false,inCombat:7});
+ g.dead=false;if(run)run.ghost=null;g.attackers?.clear();g.effect?.('heal',p.x,p.y,{life:1.5,max:1.5});
+ g.toast?.(T.revived(from?.name||''));g.emit?.('revived',{from:from?.name||''});return true;
 }
 
 // ── Kampf: Boss-Phasen, Adds, neue Zaubermerkmale ─────────────────────────────────────────────────────────────
-function summon(g,boss,{kind,count}){
+function summon(g,boss,{kind,count,hp=1}){
  const d=DUNGEON_ENEMIES[kind];if(!d)return;const run=dungeonRun(g);if(!run)return;
- for(let i=0;i<count;i++){const a=g.random()*Math.PI*2,q=g.world.findClear(boss.x+Math.cos(a)*70,boss.y+Math.sin(a)*70,9),e=createEnemy(g,run,kind,d,q);
-  Object.assign(e,{summoner:boss,aggro:true,ai:'combat',attackTimer:COMBAT_RULES.firstSpecial,spawnGrace:.6});g.enemies.push(e);}
+ const arena=boss.dungeonBoss?.room;
+ for(let i=0;i<count;i++){let q=null;/* Adds erscheinen in der Arena, in Sichtweite des Bosses – nie hinter der Wand im Hof (E-71) */
+  for(let k=0;k<12&&!q;k++){const a=g.random()*Math.PI*2,c=g.world.findClear(boss.x+Math.cos(a)*70,boss.y+Math.sin(a)*70,9);if((!arena||roomAt(run.def,c.x,c.y)?.id===arena)&&g.world.lineClear(boss,c))q=c;}
+  q||=g.world.findClear(boss.x,boss.y,9);const e=createEnemy(g,run,kind,d,q);if(hp!==1)e.hp=e.maxHp=Math.max(1,Math.round(e.maxHp*hp));
+  Object.assign(e,{summoner:boss,calledIn:true/* Adds rufen keine Packs aus dem Hof (E-71) */,aggro:true,ai:'combat',attackTimer:COMBAT_RULES.firstSpecial,spawnGrace:.6});g.enemies.push(e);}
 }
 /** Vor jedem Zauber eines Dungeon-Bosses: Eröffnungsspruch, Phasen (Spruch, neuer Zyklus, Adds). */
 export function dungeonBossCast(g,e){
@@ -234,14 +314,67 @@ export function dungeonBossCast(g,e){
  for(const ph of def.phases||[]){if(e.hp/e.maxHp>ph.at)continue;const said=e.saidPhases||(e.saidPhases=new Set());if(said.has(ph.at))continue;said.add(ph.at);
   const line=lines.phases?.[String(ph.at)];if(line)g.bark?.(e,line,'phase');if(ph.castSet){e.castSet=ph.castSet;e.cycle=0;}if(ph.summon)summon(g,e,ph.summon);}
 }
-const inCone=(e,c,u)=>{if(!u||dist(e,u)>c.cone.range)return false;return Math.abs(norm(Math.atan2(u.y-e.y,u.x-e.x)-(c.angle??0)))<=c.cone.angle*Math.PI/360;};
+/** Soziale Aggro im Dungeon (E-71, Kenner-Befund 7): Kämpft ein Mitglied, kommt der Rest des eigenen Packs sofort mit – nie ein
+ *  Nachbarpack. Ersetzt im Dungeon die Kette „Kumpel kommt" der offenen Welt (engine.js). true = e ist jetzt im Kampf. */
+export function dungeonPackAggro(g,e){
+ if(!e.pack||e.aggro||!(e.hp>0)||e.cardboard)return false;
+ if(!g.enemies.some(o=>o!==e&&o.pack===e.pack&&o.hp>0&&o.aggro&&o.ai==='combat'))return false;
+ e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;return true;
+}
+/** Zauberort beim Zauberbeginn (E-71): target:'random' legt Fläche bzw. Ziel auf einen zufälligen Nicht-Schutz in Sichtweite –
+ *  den Helden (außer als Schutz-Spec oder wenn er den Gegner hält) oder einen Söldner ohne Schutz-Rolle. */
+export function dungeonCastSpot(g,e,k,victim='player'){
+ // Abstand zum nächsten Zauber je Stelle im Zyklus (gaps, E-71: Gerds doppelter Rausschmiss in Phase 2)
+ const set=DUNGEON_CASTS[e.castSet],gap=set?.gaps?.[((e.cycle||1)-1)%set.cycle.length];if(k&&gap!=null)k.next=gap;
+ if(!k||k.target!=='random')return;
+ const holder=victim==='player'?g.player:victim,tankHero=TANK_SPECS.includes(g.rpg?.talents?.spec),seen=u=>dist(u,e)<600&&g.world.lineClear(e,u);
+ const pool=[...(!g.dead&&!tankHero&&holder!==g.player&&seen(g.player)?[g.player]:[]),...(g.companions||[]).filter(c=>c!==holder&&c.state!=='down'&&c.hp>0&&c.def?.role!=='tank'&&seen(c))];
+ const pick=pool.length?pool[Math.floor(g.random()*pool.length)]:holder;if(!pick)return;
+ k.victim=pick===g.player?'player':pick.id;if(k.ground){k.x=pick.x;k.y=pick.y;}
+}
+/** Kegel an Wänden abgeschnitten (E-71): freie Länge je Strahl. Warnfläche (dungeon-art.js) und Treffer lesen dieselben Strahlen,
+ *  damit nichts durch eine Wand trifft und die Fläche nicht in den Nachbarraum ragt. */
+export const CONE_RAYS=14;
+export function coneReach(world,e,k){
+ if(k.reach&&k.reachFrom?.x===e.x&&k.reachFrom?.y===e.y)return k.reach;
+ const half=k.cone.angle*Math.PI/360,a0=k.angle??0,out=[];
+ for(let i=0;i<=CONE_RAYS;i++){const a=a0-half+2*half*i/CONE_RAYS,cx=Math.cos(a),cy=Math.sin(a);let r=k.cone.range;
+  for(let d=4;d<=k.cone.range;d+=4)if(world.blocked(e.x+cx*d,e.y+cy*d,0)){r=Math.max(0,d-4);break;}out.push(r);}
+ k.reach=out;k.reachFrom={x:e.x,y:e.y};return out;
+}
+function inCone(e,c,u,g){
+ if(!u)return false;const d=dist(e,u);if(d>c.cone.range)return false;
+ const half=c.cone.angle*Math.PI/360,diff=norm(Math.atan2(u.y-e.y,u.x-e.x)-(c.angle??0));if(Math.abs(diff)>half)return false;
+ if(!g?.world?.blocked)return true;
+ const reach=coneReach(g.world,e,c),t=(diff+half)/(2*half)*CONE_RAYS,i=Math.min(CONE_RAYS-1,Math.floor(t)),r=reach[i]+(reach[i+1]-reach[i])*(t-i);
+ return d<=r+2;
+}
 export const coneHits=inCone;
+/** Die Treppenkante wirft erst ab Phase 2 hinaus (E-71, fall.below); vorher kostet der Rückstoß nur Position. */
+export const fallActive=(e,fall=DUNGEON_BOSSES[e?.bossId]?.fall)=>!!fall&&e.hp/e.maxHp<=(fall.below??1);
 function knockback(g,e,amount){
  const p=g.player,d=dist(e,p)||1,steps=8;for(let i=0;i<steps;i++)g.move(p,(p.x-e.x)/d*amount/steps,(p.y-e.y)/d*amount/steps);
- const run=dungeonRun(g),fall=DUNGEON_BOSSES[e.bossId]?.fall;if(!run||!fall)return;
+ const run=dungeonRun(g),fall=DUNGEON_BOSSES[e.bossId]?.fall;if(!run||!fall||!fallActive(e,fall))return;
  const room=run.def.rooms.find(r=>r.id===e.dungeonBoss?.room);if(!room)return;
- if(inRect(rectWorld(run.def,room.floor,fall.rect),p.x,p.y)){stop(g);place(g,toWorld(run.def,fall.to.floor,fall.to.x,fall.to.y));g.toast?.(T.fell);}
+ if(inRect(rectWorld(run.def,room.floor,fall.rect),p.x,p.y)){stop(g);place(g,toWorld(run.def,fall.to.floor,fall.to.x,fall.to.y));g.toast?.(T.fell);
+  /* Der Gestürzte ist aus dem Kampf; die Söldner halten den Boss weiter (E-71), die Kellertreppe führt von unten zurück */for(const o of g.enemies)if(o.aggro)clearThreat(o,'player');}
 }
+const unitOf=(g,id)=>id==='player'?g.player:(g.companions||[]).find(c=>c.id===id)||null;
+/** Schaden eines Dungeon-Zaubers an einer Einheit (E-71): pct = Anteil am Höchstleben ohne Rüstung, sonst die feste Zahl.
+ *  factor = z. B. tankSafe. Deckung, Schutzschilde und Schadensminderung wirken wie gewohnt. */
+function strike(g,e,c,u,factor=1){
+ if(!u)return;
+ if(u===g.player){if(g.dead)return;if(c.pct)g.hitPlayer(e,0,true,c.pct*factor*(e.pctFactor||1));else g.hitPlayer(e,Math.round(c.damage*factor));return;}
+ if(u.state==='down'||!(u.hp>0))return;
+ hitCompanion(g,e,u,c.pct?Math.max(1,Math.round(c.pct*factor*(e.pctFactor||1)*u.maxHp/(e.damage||1))):Math.round(c.damage*factor));
+}
+/** Mal eines Zaubers (brand, E-71: „Hausverbot“ bei Gerds Rausschmiss): Wer getroffen wird und nicht das Ziel ist, trägt das Mal
+ *  duration Sekunden; jeder weitere Treffer in der Zeit kostet bonus je Stapel mehr. → Schadensfaktor für diesen Treffer. */
+function branded(g,c,u,target){if(!c.brand||target)return 1;const b=u.brand?.until>g.time?u.brand:null,stacks=b?.stacks||0;
+ u.brand={name:c.brand.name,until:g.time+c.brand.duration,stacks:stacks+1};if(stacks)g.float?.(u.x,u.y-56,c.brand.name.toUpperCase()+' ×'+(stacks+1),'#ff9a6e');return 1+stacks*c.brand.bonus;}
+/** Rückmeldung wie im Spieler-Zweig der Engine: Fläche verlassen → „Ausgewichen", getroffen → „Getroffen". */
+function groundFeedback(g,hit){const p=g.player;if(hit){g.float?.(p.x,p.y-44,DODGE_UI.hit.toUpperCase(),'#ff7a5c');return;}
+ g.stats&&g.stats.dodges++;const t=DODGE_UI.dodged.toUpperCase();if(!g.sct?.({area:'in',kind:'avoid',text:t,skill:'dash'}))g.float?.(p.x,p.y-24,t,'#aed4bd');}
 /**
  * Zauberende mit Dungeon-Merkmalen. victim: 'player' (Ziel ist der Spieler) oder der Söldner, der die Bedrohung hält.
  * Gibt true zurück, wenn der Zauber hier vollständig abgehandelt wurde.
@@ -250,29 +383,69 @@ export function resolveDungeonCast(g,e,c,victim='player'){
  const p=g.player,target=victim==='player'?p:victim;
  if(c.frontGuard){e.frontGuard=c.frontGuard.duration;e.frontFactor=c.frontGuard.factor;e.frontAngle=Math.atan2(target.y-e.y,target.x-e.x);g.float?.(e.x,e.y-44,'SCHILDWALL','#e8dcc0');return true;}
  if(c.healAllies){for(const o of g.enemies)if(o.hp>0&&dist(o,e)<=c.healAllies.range){const n=Math.round(o.maxHp*c.healAllies.share);o.hp=Math.min(o.maxHp,o.hp+n);g.float?.(o.x,o.y-36,'+'+n,'#9ed17a');}return true;}
- if(c.cone){
-  if(!g.dead&&inCone(e,c,p)){const guard=victim==='player'&&(TANK_SPECS.includes(g.rpg?.talents?.spec)||p.parry>0);g.hitPlayer(e,Math.round(c.damage*(guard?c.tankSafe??1:1)));if(c.knockback&&!guard&&!g.dead)knockback(g,e,c.knockback);}
-  for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inCone(e,c,o))hitCompanion(g,e,o,Math.round(c.damage*(o===victim?c.tankSafe??1:1)));
-  return true;
- }
- if(c.callHelp){
-  if(victim==='player'){if(dist(e,p)<230&&g.world.lineClear(e,p))g.hitPlayer(e,c.damage);}else if(dist(e,victim)<230)hitCompanion(g,e,victim,c.damage);
-  let called=0;for(const o of g.enemies)if(o!==e&&o.hp>0&&!o.aggro&&!o.cardboard&&o.behavior==='aggressive'&&dist(o,e)<=c.callHelp.range){o.aggro=true;o.ai='combat';o.attackTimer=COMBAT_RULES.firstSpecial;called++;}
-  if(called)g.float?.(e.x,e.y-44,'VERSTÄRKUNG','#f0b070');
-  return true;
- }
+ e.lastCast=c;try{
+  if(c.cone){
+   const guard=victim==='player'&&(TANK_SPECS.includes(g.rpg?.talents?.spec)||p.parry>0);
+   if(!g.dead&&inCone(e,c,p,g)){strike(g,e,c,p,guard?c.tankSafe??1:branded(g,c,p,victim==='player'));if(c.knockback&&!guard&&!g.dead)knockback(g,e,c.knockback);}
+   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inCone(e,c,o,g))strike(g,e,c,o,o===victim?c.tankSafe??1:branded(g,c,o,false));
+   return true;
+  }
+  // Flächen treffen alle darin – Held und Söldner –, auch wenn sie auf einem Söldner liegen (E-71).
+  if(c.ground){
+   const inside=u=>Math.hypot((u.x-c.x)/c.radius,(u.y-c.y)/(c.radius*.75))<1,aimed=(c.victim||(victim==='player'?'player':null))==='player';
+   emitCombatFx(g,'impact',c,{radius:c.radius,hostile:true});
+   if(!g.dead){const hit=inside(p);if(hit)strike(g,e,c,p);if(aimed||hit)groundFeedback(g,hit);}
+   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,e,c,o);
+   return true;
+  }
+  // Gezielter Zauber auf einen zufälligen Nicht-Schutz (target:'random'): trifft das gewählte Ziel, wenn es ihn noch sieht.
+  if(c.interruptible&&(c.victim||c.pct)&&!c.callHelp){const u=unitOf(g,c.victim)||target;if(u&&dist(e,u)<COMPANION_RULES.castSight&&g.world.lineClear(e,u))strike(g,e,c,u);return true;}
+  if(c.callHelp){
+   if(victim==='player'){if(!g.dead&&dist(e,p)<COMPANION_RULES.castSight&&g.world.lineClear(e,p))strike(g,e,c,p);}else if(dist(e,victim)<COMPANION_RULES.castSight)strike(g,e,c,victim);
+   // Funkspruch (E-71): der eigene Pack und höchstens der nächste fremde Pack im selben Raum kommen. Wer gerufen wurde, ruft nicht
+   // weiter – so entsteht keine Kette über den Raum.
+   let called=0;const wake=o=>{o.aggro=true;o.ai='combat';o.attackTimer=COMBAT_RULES.firstSpecial;o.calledIn=true;called++;};
+   const free=o=>o!==e&&o.hp>0&&!o.aggro&&!o.cardboard&&o.behavior==='aggressive';
+   for(const o of g.enemies)if(free(o)&&e.pack&&o.pack===e.pack)wake(o);
+   if(!e.calledIn){const run=dungeonRun(g),room=run&&roomAt(run.def,e.x,e.y),near=new Map();
+    for(const o of g.enemies)if(free(o)&&o.pack&&o.pack!==e.pack&&dist(o,e)<=c.callHelp.range&&(!run||roomAt(run.def,o.x,o.y)===room)){const d=dist(o,e);if(!near.has(o.pack)||near.get(o.pack)>d)near.set(o.pack,d);}
+    const next=[...near].sort((a,b)=>a[1]-b[1])[0]?.[0];if(next)for(const o of g.enemies)if(free(o)&&o.pack===next)wake(o);}
+   if(called)g.float?.(e.x,e.y-44,'VERSTÄRKUNG','#f0b070');
+   return true;
+  }
+ }finally{e.lastCast=null;}
  return false;
 }
 /** Schadensfaktor gegen Dungeon-Gegner (Schildwall: Treffer von vorn gedämpft). */
 export function dungeonDamageFactor(g,e){
  if(!(e.frontGuard>0))return 1;const a=Math.atan2(g.player.y-e.y,g.player.x-e.x);return Math.abs(norm(a-(e.frontAngle??0)))<Math.PI/3?e.frontFactor??1:1;
 }
-/** Kill eines Dungeon-Gegners: kein Wiederkommen, Pappe fällt, Boss gibt Siegel. */
+/** Kill eines Dungeon-Gegners: kein Wiederkommen, Pappe fällt, geräumte Packs bleiben im Laufstand liegen, Boss gibt Siegel,
+ *  Siegelmarken und beim ersten Abschluss des Flügels am Tag den Tagesbonus (E-71). Die Boss-EP selbst kommen über killXp (xp). */
 export function onDungeonKill(g,e){
  e.respawnAt=Infinity;const run=dungeonRun(g);
  if(e.cardboard){g.float?.(e.x,e.y-30,'PAPPE','#e8dcc0');const lines=T.cardboard;g.toast?.(lines[Math.floor(g.random()*lines.length)]);}
+ if(run&&e.pack&&!g.enemies.some(o=>o!==e&&o.pack===e.pack&&o.hp>0))run.trash.add(e.pack);
  if(!e.dungeonBoss||!run)return;const b=e.dungeonBoss;run.killed.add(b.id);run.version++;
- if(b.seal){run.seals.add(b.seal);g.toast?.(T.seal[b.seal]);}
- const rec=record(g,run.id);if(!rec.bosses.includes(b.id))rec.bosses.push(b.id);
- const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('save');
+ const rec=record(g,run.id),today=dungeonToday(g,run.id);
+ if(b.seal){run.seals.add(b.seal);if(!today.seals.includes(b.seal))today.seals.push(b.seal);g.toast?.(T.seal[b.seal]);}
+ if(!rec.bosses.includes(b.id))rec.bosses.push(b.id);
+ const wing=(run.def.wings||[]).find(w=>w.boss===b.id),first=!!wing&&!today.wings.includes(wing.id);if(first)today.wings.push(wing.id);
+ const marks=REWARDS.marksPerBoss+(first?REWARDS.daily.marks:0),bonus=first?Math.round((e.xp||0)*REWARDS.daily.xp):0;rec.marks+=marks;
+ e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null};if(bonus)g.gainXp?.(bonus);
+ const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('dungeonReward',{...e.dungeonReward});g.emit?.('save');
 }
+
+// ── Wegmarke auf der Dungeon-Karte (Etappe 2, Plan §5.3) ──────────────────────────────────────────────────────
+/** Ist ein Übergang von dieser Seite aus gerade benutzbar? (dieselben Regeln wie dungeonStep, ohne Kampf) */
+function stepUsable(run,t,side){if(t.oneWay&&t.oneWay!==side)return false;if(t.secret&&!run.secrets.has(t.secret))return false;if(t.gate?.boss&&t.gate.side===side&&!run.killed.has(t.gate.boss))return false;if(t.unlock&&!run.unlocked.has(t.id)&&side!==t.unlock)return false;return true;}
+/** Erster Übergang auf dem Weg von Ebene `from` nach `to` (Breitensuche über die Übergänge) → {t,side} oder null. */
+export function floorRoute(run,from,to){if(from===to)return null;const seen=new Set([from]),queue=[{floor:from,first:null}];
+ while(queue.length){const cur=queue.shift();for(const t of run.def.transitions)for(const side of ['a','b']){const s=t[side],o=t[side==='a'?'b':'a'];if(s.floor!==cur.floor||o.floor===cur.floor||seen.has(o.floor)||!stepUsable(run,t,side))continue;const first=cur.first||{t,side};if(o.floor===to)return first;seen.add(o.floor);queue.push({floor:o.floor,first});}}
+ return null;}
+/** Wegmarke setzen ({floor,x,y} in Weltpunkten); nur auf begehbarem Boden. false = kein Platz dort. */
+export function setDungeonWaypoint(g,pt){const run=dungeonRun(g);if(!run||!pt)return false;const f=floorAt(run.def,pt.x,pt.y);if(!f||f!==pt.floor)return false;const c=g.world.findClear(pt.x,pt.y,7);if(!c||Math.hypot(c.x-pt.x,c.y-pt.y)>40)return false;run.waypoint={floor:f,x:c.x,y:c.y};return true;}
+/** Ziel für den Pfeil am Helden: die Wegmarke auf dieser Ebene, sonst der nächste Übergang dorthin. Erreicht → Marke fällt weg. */
+export function dungeonDestination(g){const run=dungeonRun(g),wp=run?.waypoint;if(!wp)return null;const p=g.player,here=floorAt(run.def,p.x,p.y);
+ if(here===wp.floor){if(dist(p,wp)<24){run.waypoint=null;return null;}return {point:{x:wp.x,y:wp.y},label:T.map?.waypoint||'Wegmarke'};}
+ const step=floorRoute(run,here,wp.floor);if(!step)return {point:{x:wp.x,y:wp.y},label:'',unreachable:true};const s=step.t[step.side];return {point:toWorld(run.def,s.floor,s.x,s.y),label:stepLabel(step.t,step.side),step:step.t.id};}
