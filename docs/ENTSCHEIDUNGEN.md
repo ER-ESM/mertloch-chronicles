@@ -1209,3 +1209,31 @@ Zentrale Messwerte:
 6. **Symbole unverändert** über die Präzisions-Pipeline (`waffen-20260925-jobs.json`, eigene eingefrorene Palette `waffen-palette.json`); die Laufzeitbilder sind byte-gleich mit den Originalen.
 7. **Zeichnung an der Figur** in `familien.mjs` (Präfix `wf`), alle 3 Archetypen × 4 Richtungen × 27 Bilder; Einhandwaffen auch als `_nh`. Neu ist der Teilneubau `puppe.mjs --runtime --nur <quelle>`.
 8. **Figurengrafik erst nach Freigabe live** (Regel vom 23.09.): Die Galerie mit den Weltgrößen-Streifen geht vorher an den Nutzer.
+
+## E-74 · Einheitlicher Icon-Look: Stilbibel, verlustfreie Anzeige, Gegenstände auf Bestnote (25./26.09.2026)
+
+**Anlass.** Der Nutzer wollte einen Grafikdesigner-Review über alle Symbole (Gegenstände, Talente, Kniffe) und das Gear-Aussehen. Ziel: ein einheitlicher, wiedererkennbarer Look und mindestens eine Bestnote (5 = WoW-Niveau, E-70). Selbst optimieren oder Codex-Aufträge für die Zeit nach dem Kontingent-Reset schreiben.
+
+**Befund R0:** Gesamt 2.
+- Zehn Stilfamilien, elf Anzeigegrößen.
+- Der größte Einzelhebel war die Anzeige: `styleIcon` rechnete jedes gemalte Symbol auf 32 px und 40 Farben herunter, `drawContentIcon` verkleinerte mit Nächstem Nachbarn.
+
+**Entscheidungen.**
+1. **Anzeige:**
+   - Nur die 1:1-Stufen 48/32/24.
+   - Flächenmittel mit Einrasten auf die eigenen Farben des Symbols.
+   - Kein `styleIcon` für Katalogbilder.
+   - Ein Weg `itemArt` für jeden Gegenstand, überall.
+2. **Rahmenregel:** Leiste = Moos-Kachel (`ability-tile.js`), Rucksack, Figur und Talentbaum = frei.
+3. **Stilbibel** (`docs/ICON-STILBIBEL.md`) für alle künftigen Symbole und Codex-Aufträge. Die Materialregel ist messbar; Lesbarkeit in 48 und 32 px geht vor.
+4. **Gegenstände:**
+   - 14 gear-Zwillinge übernommen, 8 Atlas-Kacheln freigestellt, 124 Doppel und ungenutzte Dateien entfernt.
+   - 57 Symbole in drei Runden per Code gemalt: Legenden, Materialien, Ausrüstung nach der Figur, Verbrauch, Buff-Motive.
+   - Kein Gegenstand teilt sich noch ein Bild, kein Text im Symbol.
+5. **Kniffe und Talente:**
+   - Umgestellt: Kachel randlos, Moos statt Blau, Käthe-Karten auf Papier, Talentmotive 59/64.
+   - Codex: Die Aufgabe „MertlochIcons“ (Sa 26.09., 23:00) erzeugt nur die 6 Spez-Wappen und die 4 dichten Dieter-Kniffe.
+   - Talentraster Schorsch/Käthe, Einzeltalente und die 28 Code-Kniffe erzeugt der E-72-Lauf (`npm run e72:bilder`). So wird das Kontingent nicht doppelt verbraucht.
+6. **Figurengrafik** (Pelzmantel, Exposé, Korkenzieher, Ringlicht und Hufeisen an der Figur, Kegelkugel blau) geht erst nach Freigabe des Nutzers live (Regel vom 23.09.).
+
+**Ergebnis R4:** Gegenstände **5**, Kniffe 4, Talente 3 (Kernklassen 4,5; Schorsch/Käthe warten auf Codex), Gear an der Figur 4, Gesamt 4.
