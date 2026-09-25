@@ -13,7 +13,7 @@ import {SPEC_MECHANICS} from './mechanics.js';
 import {CLAN_MEMBERS} from './classes.js';
 import {CLASS_BUFFS,CLASS_BUFF_STATS,CLASS_BUFF_GLOSSARY,classBuffValueText} from './class-buffs.js';
 import {CLASS_BUFF_TUNING} from './tuning.js';
-import {RESOURCE_GLOSSARY,RESOURCE_EFFECT_INFO,RESOURCE_PROC_EFFECT_INFO} from './resources.js';
+import {RESOURCES,RESOURCE_GLOSSARY,RESOURCE_EFFECT_INFO,RESOURCE_PROC_EFFECT_INFO} from './resources.js';
 
 const P=BALANCE.player,R=BALANCE.ratings,W=BALANCE.power,MO=BALANCE.momentum,PR=BALANCE.procs;
 /** Zahl mit deutschem Dezimalkomma. */
@@ -23,17 +23,48 @@ export const pc=v=>nice(v*100)+' %';
 /** Welteinheiten → Meter (8 Einheiten = 1 m, siehe content/combat.js). */
 export const metres=u=>Math.round(u/8*10)/10;
 
+// --- E-71: Klassenressourcen in Texten und Zahlenzeilen ---------------------------------------
+// Gutschriften aus Talenten, Procs, Gegenständen, Kills und Paraden stehen als Randale-Werte in den Daten. Die Engine rechnet sie
+// je Klasse um (content/resources.js grantRate): Randale und Likes 1 : 1, Kevin 10 : 1 in Flaschen, Schorsch/Käthe anteilig.
+const SINGULAR={Flaschen:'Flasche',Likes:'Like',Augen:'Auge'};
+/** Einheit der Klassenressource, bei genau 1 in der Einzahl („1 Flasche“). Ohne bekannte Klasse: Randale. */
+export const resourceUnit=(cls,amount)=>{const u=RESOURCES[cls]?.unit||'Randale';return (amount===1&&SINGULAR[u])||u;};
+/** Randale-Wert → Menge in der Ressource der Klasse. */
+export const resourceGrant=(cls,v)=>v*(RESOURCES[cls]?.grantRate??1);
+/** Randale-Wert als Text der Klasse: 10 → „10 Likes“ (Anni), „1 Flasche“ (Kevin). */
+export const resourceText=(cls,v)=>{const x=Math.round(resourceGrant(cls,v)*100)/100;return nice(x)+' '+resourceUnit(cls,x);};
+const firstName=m=>m.name.split('-').pop();
+/** Eine Gutschrift für alle spielbaren Klassen: „Dieter 20 Randale, Anni 20 Likes, Kevin 2 Flaschen“. */
+export const grantText=v=>CLAN_MEMBERS.map(m=>firstName(m)+' '+resourceText(m.id,v)).join(', ');
+/** Kosten eines Kniffs in der Klassenressource. Kevin zahlt nach Leistenplatz (RESOURCES.kevin.costs), alle anderen in ihrer Einheit. */
+function skillCost(def,cls,id){const r=RESOURCES[cls];
+ if(r?.kind==='ammo'){const c=r.costs?.[id];if(c===undefined&&typeof def.cost!=='number')return null;const v=c??0;return {value:v,unit:resourceUnit(cls,v),source:'content/resources.js'};}
+ if(typeof def.cost!=='number')return null;
+ return {value:def.cost,unit:r?.unit||'Randale',source:'content/skills.js'};}
+/** Zahlenzeile mit Randale-Werten (Talent-Effekte, Proc-Wirkungen) in die Ressource der Klasse umrechnen: „Randale“ im Label
+ * oder als Einheit skaliert den Wert, „N Randale“ in der Einheit wird einzeln umgerechnet. Dieter bleibt unverändert. */
+function classUnits(label,value,unit,cls){
+ const r=RESOURCES[cls];if(!r||r.unit==='Randale')return {label,value,unit};
+ if(typeof value==='number'&&(String(label).includes('Randale')||unit==='Randale'))value=resourceGrant(cls,value);
+ const swap=s=>String(s).replace(/(\d+(?:,\d+)?) Randale/g,(_,x)=>resourceText(cls,Number(x.replace(',','.')))).replace(/Randale/g,r.unit);
+ return {label:swap(label),value,unit:swap(unit)};
+}
+
 export const GLOSSARY={
- randale:{name:'Randale',short:'Dein Kraftstoff: Kniffe kosten Randale, Treffer und Kills füllen sie nach. Ab '+MO.surgeAt+' bist du in Fahrt: der Spezialkniff schlägt '+Math.round(MO.surgeBonus*100)+' % härter.',
-  long:`Skala 0 bis 100. Außerhalb des Kampfes fließen ${P.energyRegen} Randale je Sekunde nach, im Kampf ${MO.combatEnergyRegen}; jeder Punkt Bastelgrips gibt zusätzlich ${nice(W.energyRegenWit)} je Sekunde (Stufe 1; der Kurs steigt mit der Stufe). Dein Grundangriff zahlt je nach Klasse 9 bis 19 zurück, jeder Kill ${MO.energyOnKill}. Im Kampf reicht das nicht für alles: Wer jeden Kniff auf Abklingzeit drückt, steht ohne Randale da. Wer sie über ${MO.surgeAt} hält, ist „in Fahrt“ – der Spezialkniff schlägt dann ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug ihrer Kosten). Fehlt Randale, zündet der Kniff nicht und die Leiste meldet „Nicht genug Randale“.`},
- spezialkniff:{name:'Spezialkniff',short:'Ein starker Kniff mit Randale-Kosten und Abklingzeit; seine Zusatzwirkung bestimmt dein Hauptbaum.',
-  long:'Gegen markierte Ziele trifft er stärker und entfernt die Markierung. Randale-Kosten, Abklingzeit und Schadenswert stehen beim jeweiligen Kniff. Talente und die eigene Hauptbaum-Mechanik können ihn verstärken.'},
- schwung:{name:'Schwung',short:'Nach jedem Kill kurz schneller, mit Randale obendrauf – der Kill ist die Belohnung.',
-  long:`${MO.duration} s lang, bis zu ${MO.maxStacks} Stapel. Je Stapel ${pc(MO.hastePerStack)} mehr Tempo – das zählt über die Tempo-Kappe von ${pc(R.haste.cap)} hinaus. Jeder Kill gibt zusätzlich ${MO.energyOnKill} Randale. Direkt nach dem letzten Kill heilt Verschnaufen ${MO.restRegen} Leben je Sekunde für ${MO.restSeconds} s.`},
+ // E-71: Randale ist nur noch Dieters Ressource – Wut statt Vorrat. Zahlen aus RESOURCES.dieter, BALANCE und seinem Grundangriff.
+ randale:{name:'Randale',short:`Dieters Wut: startet bei ${RESOURCES.dieter.start}, kommt aus Treffern – eingesteckten wie ausgeteilten – und verraucht nach dem Kampf. Ab ${RESOURCES.dieter.surgeAt} ist er in Fahrt.`,
+  long:`Skala 0 bis ${RESOURCES.dieter.max}, jeder Kampf beginnt bei ${RESOURCES.dieter.start}. Im Kampf fließt nichts von selbst nach: Jeder kassierte Treffer gibt ${nice(RESOURCES.dieter.hitGain)} Randale je 1 % deines Maximallebens (gezählt vor der Deckung), die Kronkorken-Kelle ${CLAN_MEMBERS.find(m=>m.id==='dieter')?.passives.strikeGain}, eine geglückte Parade 20, jeder Kill ${MO.energyOnKill}. ${RESOURCES.dieter.decay.delay} s nach dem Kampf verraucht sie mit ${RESOURCES.dieter.decay.perSecond} je Sekunde. Jede ausgegebene Randale bezahlt ${RESOURCES.dieter.tab.payPerRandale} Leben deiner Zeche. Ab ${RESOURCES.dieter.surgeAt} bist du „in Fahrt“ – der Spezialkniff schlägt ${Math.round(MO.surgeBonus*100)} % härter (gemessen vor dem Abzug seiner Kosten). Fehlt Randale, zündet der Kniff nicht. Die anderen Klassen zahlen mit ihrer eigenen Klassenressource.`},
+ // E-71: Oberbegriff für die fünf Ressourcen; Gutschriften, die für alle gleich sind, rechnen in Ressourcenpunkten.
+ ressource:{name:'Klassenressource',short:'Jede Klasse kämpft mit ihrer eigenen Ressource – '+CLAN_MEMBERS.map(m=>firstName(m)+' mit '+RESOURCES[m.id].name).join(', ')+'.',
+  long:`${CLAN_MEMBERS.map(m=>firstName(m)+': '+RESOURCES[m.id].name+' (0 bis '+RESOURCES[m.id].max+')').join(' · ')}. Gutschriften, die für alle gleich sind – Verpflegung, Dorflegenden, Kills, Paraden, Bastelgrips und manche Talente –, rechnen in Ressourcenpunkten. Ein Ressourcenpunkt ist ${CLAN_MEMBERS.map(m=>'bei '+firstName(m)+' '+resourceText(m.id,1)).join(', ')}; Bruchteile sammeln sich, bis eine ganze Einheit voll ist.`},
+ spezialkniff:{name:'Spezialkniff',short:'Ein starker Kniff mit Kosten und Abklingzeit; seine Zusatzwirkung bestimmt dein Hauptbaum.',
+  long:'Gegen markierte Ziele trifft er stärker und entfernt die Markierung. Was er von deiner Klassenressource kostet, wie lange er abklingt und wie hart er trifft, steht beim jeweiligen Kniff. Talente und die eigene Hauptbaum-Mechanik können ihn verstärken.'},
+ schwung:{name:'Schwung',short:'Nach jedem Kill kurz schneller, mit Nachschub für deine Klassenressource – der Kill ist die Belohnung.',
+  long:`${MO.duration} s lang, bis zu ${MO.maxStacks} Stapel. Je Stapel ${pc(MO.hastePerStack)} mehr Tempo – das zählt über die Tempo-Kappe von ${pc(R.haste.cap)} hinaus. Jeder Kill gibt zusätzlich ${MO.energyOnKill} Ressourcenpunkte (${grantText(MO.energyOnKill)}). Direkt nach dem letzten Kill heilt Verschnaufen ${MO.restRegen} Leben je Sekunde für ${MO.restSeconds} s.`},
  deckung:{name:'Deckung',short:'Ein Schadenspolster vor deinem Leben. Auch „Schild“ genannt.',
   long:`Eingehender Schaden geht zuerst gegen die Deckung, erst der Rest ans Leben. Höchstens ${pc(P.guardCap)} deines Maximallebens. Jeder Punkt Bastelgrips verstärkt neue Deckung um ${pc(W.shieldWit)} (Stufe 1; der Kurs steigt mit der Stufe). Außerhalb des Kampfes zerfällt Deckung mit 5 Punkten je Sekunde.`},
  parade:{name:'Parade',short:'Ein kurzes Fenster, in dem du den nächsten Treffer schluckst und zurückgibst.',
-  long:'Fenster 0,8 s (Dieter), 0,9 s (Anni) oder 1,1 s (Kevin), Abklingzeit 7 s, kostenlos. Ein Treffer im Fenster wird abgefangen, reflektiert 55 bis 75 Schaden, gibt 20 Randale; Dieter heilt zusätzlich 35 Leben. Eine geglückte Parade ist der Proc-Auslöser parry. Sie braucht einen Schild in der Nebenhand.'},
+  long:`Fenster 0,8 s (Dieter), 0,9 s (Anni) oder 1,1 s (Kevin), Abklingzeit 7 s, kostenlos. Ein Treffer im Fenster wird abgefangen, reflektiert 55 bis 75 Schaden und gibt 20 Ressourcenpunkte (${grantText(20)}); Dieter heilt zusätzlich 35 Leben. Eine geglückte Parade ist der Proc-Auslöser parry. Sie braucht einen Schild in der Nebenhand.`},
  ausweichen:{name:'Ausweichen',short:'Ein kurzer Satz zur Seite mit 0,4 s Schutz vor Treffern.',
   long:'Kostenlos, ohne globale Abklingzeit spürbar, Abklingzeit 3 s (Kevin), 4 s (Anni: 6 s) bis 5 s (Dieter). Ohne Eingabe geht es vom Ziel weg, mit Laufrichtung dorthin. Während der 0,4 s gehen Treffer ins Leere. Der Proc-Auslöser dodge hängt daran.'},
  unterbrechen:{name:'Unterbrechen',short:'Bricht einen gelben Zauberbalken ab und macht das Ziel kurz verwundbar.',
@@ -59,24 +90,24 @@ export const GLOSSARY={
   long:`Je Punkt ${pc(W.might)} mehr Schaden auf Stufe 1, ${pc(powerRate('might',20))} auf Stufe 20 – der Kurs steigt mit der Stufe wie bei Taktgefühl. Das gilt für Autoangriff, Kniffe, Markierungen und Flächen gleichermaßen. Wumms wächst mit ${P.primaryPerLevel} Punkten je Stufe. Heilung, Deckung und Rüstung hängen nicht daran.`},
  finesse:{name:STAT_NAMES.finesse,short:'Glückstreffer-Chance und Tempo.',
   long:`Glückstreffer-Chance = ${pc(R.crit.base)} + r ÷ (r + ${R.crit.k} + ${R.crit.perLevel} × Stufe) mit r = ${nice(R.crit.finesseWeight)} × Taktgefühl, Kappe ${pc(R.crit.cap)}. Tempo = r ÷ (r + ${R.haste.k} + ${R.haste.perLevel} × Stufe) mit r = ${nice(R.haste.finesseWeight)} × Taktgefühl, Kappe ${pc(R.haste.cap)}; Tempo beschleunigt den Autoangriff und kürzt die Abklingzeiten samt globaler Abklingzeit. Der Kurs steigt mit deiner Stufe: ein Punkt bringt auf Stufe 1 ${pc(rating(R.crit.finesseWeight,ratingK(R.crit,1)))} Glückstreffer-Chance, auf Stufe 20 noch ${pc(rating(R.crit.finesseWeight,ratingK(R.crit,20)))}.`},
- wit:{name:STAT_NAMES.wit,short:'Heilung, Deckung und Randale-Nachschub.',
-  long:`Je Punkt ${pc(W.healWit)} mehr Heilung, ${pc(W.shieldWit)} mehr Deckung und ${nice(W.energyRegenWit)} Randale je Sekunde zusätzlich – auf Stufe 1. Der Kurs steigt mit der Stufe (Stufe 20: ${pc(powerRate('healWit',20))} Heilung je Punkt). Schaden hängt nicht daran.`},
+ wit:{name:STAT_NAMES.wit,short:'Heilung, Deckung und Nachschub für deine Klassenressource.',
+  long:`Je Punkt ${pc(W.healWit)} mehr Heilung, ${pc(W.shieldWit)} mehr Deckung und ${nice(W.energyRegenWit)} Ressourcenpunkte je Sekunde zusätzlich – auf Stufe 1. Der Kurs steigt mit der Stufe (Stufe 20: ${pc(powerRate('healWit',20))} Heilung je Punkt). Schaden hängt nicht daran.`},
  armorRating:{name:STAT_NAMES.armorRating,short:'Weniger erlittener Schaden – mit abnehmendem Ertrag und Kappe.',
   long:`Minderung = r ÷ (r + ${R.armor.k} + ${R.armor.perLevel} × Stufe), Kappe ${pc(R.armor.cap)}. Beispiel Stufe 10 mit 20 Dicke Haut: ${pc(rating(20,ratingK(R.armor,10)))} weniger Schaden. Weil der Nenner je Stufe wächst, muss Dicke Haut mitwachsen, um gleich stark zu bleiben.`},
  proc:{name:'Proc',short:'Eine Regel „Wenn X, dann Y“ mit Zeitfenster – der Kern jedes Talentbaums.',
-  long:`Auslöser sind ${PROC_TRIGGERS.join(', ')}. Zündet eine Regel, öffnet sie ein Fenster von ${PR.defaultWindow} s: „gratis“ streicht die Kosten des genannten Kniffs, „zurücksetzen“ macht ihn sofort bereit, „×2“ verdoppelt seinen nächsten Einsatz; dazu kommen Randale, Punkte, Deckung oder Heilung sofort. Der genannte Kniff leuchtet auf der Leiste, solange das Fenster offen ist.`},
+  long:`Auslöser sind ${PROC_TRIGGERS.join(', ')}. Zündet eine Regel, öffnet sie ein Fenster von ${PR.defaultWindow} s: „gratis“ streicht die Kosten des genannten Kniffs, „zurücksetzen“ macht ihn sofort bereit, „×2“ verdoppelt seinen nächsten Einsatz; dazu kommen Nachschub für deine Klassenressource, Deckung oder Heilung sofort. Der genannte Kniff leuchtet auf der Leiste, solange das Fenster offen ist.`},
  kettenzug:{name:'Kettenzug',short:'Greifst du einen an, ziehen nahe Artgenossen kurz darauf nach.',
   long:`Nach ${PR.chainJoinDelay} s schließen sich Gegner im Umkreis von ${metres(PR.chainJoinRange)} m dem Kampf an. Deshalb ziehst du einzeln (Wurf) statt in die Gruppe zu laufen – und deshalb sind Flächen und Markierungs-Sprünge erst in der Gruppe stark.`},
  staerkung:{name:'Stärkung',short:'Der Klassenbuff auf Taste 5: ein kurzes Fenster, in dem du mehr aushältst.',
-  long:`${BUFF_SKILLS.common.duration} s Wirkung, ${BUFF_SKILLS.common.cost} Randale, ${BUFF_SKILLS.common.cd} s Abklingzeit. Dieter senkt den Schaden, Anni heilt je Sekunde, Kevin legt Deckung auf. Vor der Gruppe zünden, nicht wenn du schon liegst – die Abklingzeit ist länger als jeder Kampf.`},
+  long:`${BUFF_SKILLS.common.duration} s Wirkung, ${BUFF_SKILLS.common.cd} s Abklingzeit; Kosten ${CLAN_MEMBERS.map(m=>{const c=skillCost({...BUFF_SKILLS.common,...BUFF_SKILLS[m.id]},m.id,'buff');return firstName(m)+' '+(c?.value?nice(c.value)+' '+c.unit:'keine');}).join(', ')}. Dieter senkt den Schaden, Anni heilt je Sekunde, Kevin legt Deckung auf. Vor der Gruppe zünden, nicht wenn du schon liegst – die Abklingzeit ist länger als jeder Kampf.`},
  verpflegung:{name:'Verpflegung',short:'Essen und Trinken aus dem Rucksack, mit gemeinsamer Abklingzeit.',
-  long:`Heilt Leben oder gibt Randale. Alle Verpflegung teilt sich eine Abklingzeit von ${P.consumableCooldown} s – du kannst dich also nicht durch den Rucksack stapeln. Außerhalb des Kampfes regeneriert das Leben ohnehin mit ${P.outOfCombatRegen} je Sekunde.`},
+  long:`Heilt Leben oder füllt deine Klassenressource; 10 Ressourcenpunkte sind ${grantText(10)}. Alle Verpflegung teilt sich eine Abklingzeit von ${P.consumableCooldown} s – du kannst dich also nicht durch den Rucksack stapeln. Außerhalb des Kampfes regeneriert das Leben ohnehin mit ${P.outOfCombatRegen} je Sekunde.`},
  pfandmarken:{name:'Pfandmarken',short:'Das Geld von Mertloch – Leergut, Beute und Händler rechnen in derselben Währung.',
   long:`Fallen aus Beute und Aufträgen: ${BALANCE.loot.coinsHuman} Marken je erledigtem Menschen, ${BALANCE.loot.coinsBoss} je Boss, dazu Streuung bis ${BALANCE.loot.coinsSpread}. Gegenstände werden in Marken bewertet (${BALANCE.items.valuePerBudget} je Punkt Wertebudget).`},
- klamotten:{name:'Klamotten',short:'Die drei spielbaren Figuren – sie entscheiden, wie du kämpfst.',
-  long:'Dosen-Dieter (Tank, Nahkampf), Aperol-Anni (Heilerin, Fernkampf), Klo-Kevin (Fernkämpfer). Jede hat dieselben sieben Kniff-Plätze, aber eigene Zahlen und eigene Spezialisierungen; ab Stufe 1 unterscheiden sich schon Schlagtempo, Reichweite, Randale-Ertrag und Ausweich-Abklingzeit.'},
+ klamotten:{name:'Klamotten',short:'Die spielbaren Figuren – sie entscheiden, wie du kämpfst und womit du bezahlst.',
+  long:`${CLAN_MEMBERS.map(m=>m.name+' ('+m.role.split(' · ')[0]+', '+RESOURCES[m.id].name+')').join(', ')}. Jede hat dieselben Kniff-Plätze, aber eigene Zahlen, eine eigene Klassenressource und eigene Spezialisierungen; ab Stufe 1 unterscheiden sich schon Schlagtempo, Reichweite, Ressource und Ausweich-Abklingzeit.`},
  verwundbar:{name:'Verwundbar',short:'Ein Ziel nimmt für kurze Zeit mehr Schaden.',
-  long:`${pc(P.vulnerableBonus)} mehr Schaden für 4 s. Kommt bei allen drei Klamotten von der geglückten Unterbrechung – deshalb ist das Fenster nach dem gelben Balken dein bestes Schadensfenster.`},
+  long:`${pc(P.vulnerableBonus)} mehr Schaden für 4 s. Kommt bei allen Klamotten von der geglückten Unterbrechung – deshalb ist das Fenster nach dem gelben Balken dein bestes Schadensfenster.`},
  betaeubung:{name:'Betäubung',short:'Das Ziel steht still und handelt nicht.',
   long:'2 s aus der Unterbrechung, 1,5 s aus einer Spezialkniff (Talent), 1 bis 2 s aus Magnetpanzer. Betäubung stapelt nicht, sie setzt nur die längere Dauer.'},
  festhalten:{name:'Festhalten',short:'Das Ziel kann sich nicht bewegen, schlägt aber weiter.',
@@ -88,15 +119,15 @@ export const GLOSSARY={
  hauspflege:{name:'Hauspflege',short:'Heilung über Zeit: heilt jede Sekunde, auch im Laufen.',
   long:'Tickt einmal je Sekunde. Annis Aperol-Nachsorge gibt 12 je Tick für 10 s, das Talent „Warme Schüssel“ 10 je Tick für 6 s nach jeder Heilung, die Spezialisierung Landhaus-Lazarett zusätzlich 8. Neue Hauspflege ersetzt die alte, sie stapelt nicht.'},
  ueberheilung:{name:'Überheilung',short:'Heilung über dein Maximalleben hinaus – normalerweise verloren.',
-  long:'Talente wie „Nichts wegkippen“ wandeln 50 % davon in Deckung um, begrenzt durch das Deckungslimit. Damit lohnt Vorausheilen: was sonst verfällt, wird Polster.'},
+  long:'Talente wie „Nichts wird weggekippt“ wandeln 50 % davon in Deckung um, begrenzt durch das Deckungslimit. Damit lohnt Vorausheilen: was sonst verfällt, wird Polster.'},
  rausch:{name:'Rausch',short:'Nur Kneipenschläger: eine zweite Leiste bis fünf, die den Abriss aufwertet.',
   long:'Jede Kelle und jeder kassierte Treffer geben 1 Rausch (mit „Noch einen auf die Zwölf“ 2), Höchststand 5. Bei 5 Rausch schlägt der Bierzelt-Abriss 25 % härter und verbraucht den Rausch; mit „Volle Kante“ ist er dann zusätzlich kostenlos.'},
  takt:{name:'Takt',short:'Annis Rhythmusfenster: nicht hämmern, sondern im Takt treffen.',
-  long:`Trifft der Pinsel-Piekser ${nice(CLAN_MEMBERS[1].passives.beatWindow[0])} bis ${nice(CLAN_MEMBERS[1].passives.beatWindow[1])} s nach dem letzten Treffer, gibt er ${CLAN_MEMBERS[1].passives.beatEnergy} zusätzliche Randale. Außerhalb des Fensters entfällt nur dieser Bonus.`},
- grundangriff:{name:'Grundangriff',short:'Der Aufbaukniff liefert Punkte und Randale; sein Platz ist frei belegbar.',
-  long:'Billigster Kniff, kurze Abklingzeit, gibt 9 bis 19 Randale je Treffer. Zwischen zwei Grundangriffen arbeitet der Autoangriff weiter – gehämmerte Tasten bringen nichts, die Abklingzeit steht.'},
+  long:`Trifft der Pinsel-Piekser ${nice(CLAN_MEMBERS[1].passives.beatWindow[0])} bis ${nice(CLAN_MEMBERS[1].passives.beatWindow[1])} s nach dem letzten Treffer, gibt er ${CLAN_MEMBERS[1].passives.beatEnergy} zusätzliche Likes und zählt nie als Wiederholung. Außerhalb des Fensters entfällt nur dieser Bonus.`},
+ grundangriff:{name:'Grundangriff',short:'Der Aufbaukniff mit kurzer Abklingzeit: er hält deine Klassenressource in Gang; sein Platz ist frei belegbar.',
+  long:`Billigster Kniff, kurze Abklingzeit. Je Klasse: ${CLAN_MEMBERS.map(m=>{const r=RESOURCES[m.id],g=m.passives?.strikeGain;return firstName(m)+' '+(r.kind==='trend'?'bekommt Likes wie für jeden Kniff (nach Trend)':r.kind==='ammo'?'zahlt '+r.costs.strike+' '+resourceUnit(m.id,r.costs.strike)+' und sammelt sie oft wieder ein':r.kind==='cards'?'spielt eine Karte für '+r.augenPerCard+' Augen plus Kartenwert':'bekommt '+g+' '+r.unit);}).join(', ')}. Zwischen zwei Grundangriffen arbeitet der Autoangriff weiter – gehämmerte Tasten bringen nichts, die Abklingzeit steht.`},
  wurf:{name:'Wurf',short:'Ein gezielter Einzelwurf auf große Entfernung – zum Anziehen eines Gegners.',
-  long:`${metres(THROW_SKILL.range)} m Reichweite, ${THROW_SKILL.cd} s Abklingzeit, ${THROW_SKILL.cost} Randale. Trifft ein einzelnes Ziel, ohne die Nachbarn zu wecken – das Gegenstück zum Kettenzug. Viele Talente setzen ihn nach Ausweichen, Kill oder Glückstreffer zurück oder machen ihn kostenlos.`},
+  long:`${metres(THROW_SKILL.range)} m Reichweite, ${THROW_SKILL.cd} s Abklingzeit, Kosten ${CLAN_MEMBERS.map(m=>{const c=skillCost({...THROW_SKILL,...THROW_SKILL.overrides?.[m.id]},m.id,'throw');return firstName(m)+' '+(c?.value?nice(c.value)+' '+c.unit:'keine');}).join(', ')}. Trifft ein einzelnes Ziel, ohne die Nachbarn zu wecken – das Gegenstück zum Kettenzug. Viele Talente setzen ihn nach Ausweichen, Kill oder Glückstreffer zurück oder machen ihn kostenlos.`},
  bodenangriff:{name:'Bodenangriff',short:'Ein Einschlag auf einen gewählten Bodenpunkt nach kurzer Verzögerung.',
   long:`${metres(GROUND_SKILL.radius)} m Radius, ${GROUND_SKILL.delay} s Verzögerung, bis zu 5 Ziele, ${GROUND_SKILL.damage} Grundschaden, ${GROUND_SKILL.cd} s Abklingzeit. Trifft auch neutrale Gegner. Wirf ihn dorthin, wo die Gruppe gleich steht – die Verzögerung ist Teil der Rechnung.`},
  heilung:{name:'Heilung',short:'Stellt Leben wieder her; Bastelgrips verstärkt sie.',
@@ -108,7 +139,7 @@ export const GLOSSARY={
  zauberbalken:{name:'Zauberbalken',short:'Kündigt einen Gegnerangriff an. Gelb heißt: unterbrechbar.',
   long:'Ein gelber Balken ist deine Einladung, mit Unterbrechen zu reagieren – das spart den Schaden und öffnet 4 s Verwundbarkeit. Ein Balken mit Bodenmarkierung kündigt eine Fläche an; da hilft Ausweichen statt Unterbrechen.'},
  spezialisierung:{name:'Spezialisierung',short:'Einer von drei Talentbäumen je Klamotte – er entscheidet deine Rolle.',
-  long:'Jeder Baum hat genau zehn Talente; in Reihe drei steht immer eine neue aktive Fähigkeit, unten das Abschlusstalent. Die Spezialisierung verändert zusätzlich Kniff-Verhalten direkt (zum Beispiel schlägt der Schrottkoloss automatisch im Nahkampf zu, während das Pfandgeschoss aus der Entfernung Druck aufbaut).'},
+  long:'Jeder Baum hat genau zehn Talente; in Reihe drei steht immer eine neue aktive Fähigkeit, unten das Abschlusstalent. Die Spezialisierung verändert zusätzlich Kniff-Verhalten direkt (zum Beispiel schlägt der Schrottkoloss automatisch im Nahkampf zu, während das Pfandgeschoss aus der Entfernung Deckung aufbaut).'},
  talentfaehigkeit:{name:'Talentfähigkeit',short:'Der aktive Kniff aus der Mitte eines Talentbaums.',
   long:'Genau einer je Spezialisierung, immer an Position 5 (Index 4). Er kommt auf die Leiste wie jeder andere Kniff; das Abschlusstalent des Baums wertet ihn auf. Ohne ihn gibt es die Aufwertung nicht.'},
  rotation:{name:'Rotation',short:'Die Reihenfolge deiner Kniffe im Kampf.',
@@ -177,8 +208,18 @@ const SKILL_FIELDS=[
  ['knockback','Rückstoß','m',metres]
 ];
 function skillNumbers(def,cls,id){
- const out=[];
- for(const [key,label,unit,scale] of SKILL_FIELDS)if(typeof def[key]==='number')out.push(n(label,scale(def[key]),unit,SK));
+ const out=[],r=RESOURCES[cls];
+ for(const [key,label,unit,scale] of SKILL_FIELDS){
+  // E-71: Kosten und Ertrag in der Ressource der Klasse. Kevin zahlt Flaschen je Leistenplatz, sein Grundangriff gibt nichts;
+  // Annis Likes kommen aus jedem Kniff nach Trend, nicht aus einem festen Ertrag des Grundangriffs.
+  if(key==='cost'){const c=skillCost(def,cls,id);if(c)out.push(n(label,c.value,c.unit,c.source));continue;}
+  if(key==='gain'&&typeof def.gain==='number'){
+   if(r?.kind==='trend')out.push(n('Likes je Kniff',r.trend.likes[0]+' bis '+r.trend.likes[r.trend.likes.length-1],'je nach Trend','content/resources.js'));
+   else if(r?.kind==='cards')out.push(n('Augen je Karte',r.augenPerCard,'plus Kartenwert','content/resources.js'));
+   else if(r?.kind!=='ammo')out.push(n((r?.unit||'Randale')+' je Treffer',def.gain,'',SK));
+   continue;}
+  if(typeof def[key]==='number')out.push(n(label,scale(def[key]),unit,SK));
+ }
  const dm=SKILL_DAMAGE[cls]?.[id]||SKILL_DAMAGE.shared[id];
  if(dm){if(dm.flat)out.push(n('Fester Schadensanteil',dm.flat,'',CB));
   if(dm.weapon)out.push(n('Autoschaden',dm.weapon*100,'%',CB));
@@ -295,8 +336,8 @@ export function effectNumbers(effects={},source=TL,ctx={}){
   if(key.startsWith('proc:')){const r=PROC_RULES[key.slice(5)];if(r)out.push(...procNumbers(r,ctx));continue;}
   if(key.startsWith('classBuff:')){const b=CLASS_BUFFS[key.slice(10)];if(b)out.push(n(b.name+' stärker',Math.round(value*CLASS_BUFF_TUNING.talentStep*100),'%',TU));continue;}
   const d=EFFECT_INFO[key];if(!d)continue;
-  const v=d.fixed!==undefined?d.fixed:(d.scale?d.scale(value):value);
-  out.push(n(fill(d.label,ctx),v,fill(d.unit||'',ctx),d.source||source));
+  const v=d.fixed!==undefined?d.fixed:(d.scale?d.scale(value):value),c=classUnits(fill(d.label,ctx),v,fill(d.unit||'',ctx),ctx.cls);
+  out.push(n(c.label,c.value,c.unit,d.source||source));
  }
  return out;
 }
@@ -310,7 +351,8 @@ function procNumbers(r,ctx={}){
   if(key==='cdReduce'){for(const c of [].concat(value))out.push(n(skillName(c.skill)+' früher bereit',c.seconds,'s',PRC));continue;}
   if(key==='heal'&&typeof value==='object'){out.push(n('Heilung vom verursachten Schaden',value.damage*100,'%',PRC));continue;}
   const d=PROC_EFFECT_INFO[key];if(!d)continue;
-  out.push(n(d.label,typeof value==='string'?skillName(value):(d.scale?d.scale(value):value),d.unit||'',PRC));
+  const c=classUnits(d.label,typeof value==='string'?skillName(value):(d.scale?d.scale(value):value),d.unit||'',ctx.cls);
+  out.push(n(c.label,c.value,c.unit,PRC));
  }
  if(r.glow)out.push(n('Leuchtet auf der Leiste',skillName(r.glow),'',PRC));
  return out;
@@ -327,7 +369,9 @@ export function element(kind,id){
  if(kind==='buff'){const c=BUFF_SKILLS[id];if(!c||id==='common')return null;
   return {def:{...BUFF_SKILLS.common,...c},cls:id,skillId:'buff',name:c.name,text:c.text,use:c.use,flavor:c.flavor,info:c.info,icon:{set:'skills',member:id,skill:'buff',fallback:BUFF_SKILLS.common.icon}};}
  if(kind==='throw'||kind==='ground'){const s=kind==='throw'?THROW_SKILL:GROUND_SKILL;if(!memberOf(id))return null;
-  return {def:s,cls:id,skillId:s.id,name:s.names[id],text:(s.flavor?.[id]||'')+s.text,use:s.use,info:s.info?.[id],icon:{set:'skills',member:id,skill:s.id,fallback:s.icon}};}
+  // E-71: Klassen, deren Wurf-/Bodenplatz etwas anderes tut (Schorsch, Käthe), überschreiben Zahlen und Text über `overrides`.
+  const o=s.overrides?.[id]||{};
+  return {def:{...s,...o},cls:id,skillId:s.id,name:s.names[id],text:o.text||(s.flavor?.[id]||'')+s.text,use:o.use||s.use,info:s.info?.[id],icon:{set:'skills',member:id,skill:s.id,fallback:s.icon}};}
  if(kind==='talentSkill'){const s=TALENT_SKILLS[id];if(!s)return null;
   const member=Object.keys(CLASS_SPECS).find(c=>CLASS_SPECS[c].some(spec=>TALENT_ROWS[spec].some(t=>t.grants===id)));
   return {def:s,cls:member,skillId:id,name:s.name,text:s.text,use:s.use,flavor:s.flavor,info:s.info,icon:{set:'skills',member,skill:id,fallback:s.icon}};}
@@ -355,8 +399,11 @@ export function describe(kind,id){
  else if(kind==='proc')numbers=procNumbers(e.def,procContext(id));
  else if(kind==='classBuff')numbers=[...Object.entries(e.def.effects).map(([k,v])=>n(CLASS_BUFF_STATS[k].label,classBuffValueText(k,v),'',TU)),n('Dauer',Math.round(e.def.duration/60),'min',TU),n('Kosten','keine','',TU),n('Gelernt auf Stufe',e.def.level,'','content/class-buffs.js')];
  else if(kind==='passive'){const L={strikeCd:['Grundangriff alle','s'],strikeRange:['Reichweite des Grundangriffs','m'],strikeGain:['Randale je Grundangriff',''],dashCd:['Ausweichen alle','s'],parryHeal:['Heilung je geglückter Parade','Leben'],damageTaken:['Eingehender Schaden','%'],beatEnergy:['Zusätzliche Randale im Takt',''],interruptBurstCd:['Spezialkniff nach Unterbrechung','s kürzer']};
+  // E-71: Ertrag des Grundangriffs in der Einheit der Klasse; Anni (Likes je Kniff nach Trend) und Kevin (Flaschen kosten) haben keinen.
+  const r=RESOURCES[id],unitWord=s=>r?s.replace('Randale',r.unit):s;
   for(const [k,v] of Object.entries(e.def)){const d=L[k];if(!d)continue;
-   numbers.push(n(d[0],k==='strikeRange'?metres(v):k==='damageTaken'?v*100:v,d[1],CL));}
+   if(k==='strikeGain'&&(r?.kind==='trend'||r?.kind==='ammo'))continue;
+   numbers.push(n(unitWord(d[0]),k==='strikeRange'?metres(v):k==='damageTaken'?v*100:v,d[1],CL));}
   const w=e.def.beatWindow;if(w)numbers.push(n('Taktfenster',nice(w[0])+' bis '+nice(w[1]),'s',CL));}
  return {kind,id:String(id),name:e.name,icon:e.icon,text:e.text,use:e.use||'',flavor:e.flavor||'',
   effect:info.effect||'',why:info.why||'',links:info.links||[],terms:info.terms||[],numbers};

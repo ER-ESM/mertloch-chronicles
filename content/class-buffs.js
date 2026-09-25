@@ -18,7 +18,8 @@ const M=Math.round(CLASS_BUFF_TUNING.duration/60);
 export const CLASS_BUFF_STATS={
  health:{label:'Maximales Leben',pct:true},
  armor:{label:'Schadensminderung',pct:true},
- energyRegen:{label:'Randale je Sekunde',pct:false,unit:'/s'},
+ // E-71: Nachschub für die Klassenressource in Ressourcenpunkten (Dieter Randale, Anni Likes, Kevin Flaschen 10 : 1 – content/resources.js grantRate).
+ energyRegen:{label:'Ressourcenpunkte je Sekunde',pct:false,unit:'/s'},
  healTaken:{label:'Erhaltene Heilung',pct:true},
  haste:{label:'Tempo',pct:true},
  speed:{label:'Laufgeschwindigkeit zu Fuß',pct:true},
@@ -39,9 +40,9 @@ const DEF={
   use:'Zünde sie, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Die Kutte hat drei Schlägereien und eine Taufe überlebt. Die Taufe war schlimmer.“',
   info:{effect:'Senkt eine halbe Stunde lang den Schaden, den das Ziel nimmt, um einen festen Anteil – zusätzlich zur Dicken Haut.',why:'Schutz, den man nicht drücken muss: wirkt in jedem Kampf, auch auf Söldnern, die sonst keine Rüstung tragen.',links:['classBuff:dosenpfand'],terms:['klassenbuff','staerkung','schadensminderung']}},
  aperolSpritz:{cls:'baerbel',slot:0,level:4,name:'Aperol-Spritz',icon:'cup',effects:{energyRegen:0,healTaken:0},
-  text:v=>`Ein Glas Orange mit extra Eis: ${v.energyRegen} Randale je Sekunde und ${v.healTaken} mehr erhaltene Heilung für ${M} Minuten. Wellness, sagt Anni. Vorglühen, sagt das Dorf.`,
+  text:v=>`Ein Glas Orange mit extra Eis: ${v.energyRegen} Ressourcenpunkte je Sekunde für die Klassenressource und ${v.healTaken} mehr erhaltene Heilung für ${M} Minuten. Wellness, sagt Anni. Vorglühen, sagt das Dorf.`,
   use:'Reich ihn aus, bevor ihr loszieht: dem gewählten Söldner oder Mitspieler, ohne freundliches Ziel dir selbst.',flavor:'„Das ist kein Alkohol. Das ist Selbstfürsorge mit Strohhalm.“',
-  info:{effect:'Füllt eine halbe Stunde lang zusätzlich Randale nach und verstärkt jede Heilung, die beim Ziel ankommt.',why:'Annis Buff macht die Gruppe länger kampffähig: mehr Randale für Kniffe und mehr Wirkung aus jeder Heilung – auch aus fremder.',links:['classBuff:vorherNachher','talent:baerbel-care-3'],terms:['klassenbuff','staerkung','randale','heilung']}},
+  info:{effect:'Füllt eine halbe Stunde lang die Klassenressource des Ziels nach – Randale, Likes oder Flaschen – und verstärkt jede Heilung, die beim Ziel ankommt.',why:'Annis Buff macht die Gruppe länger kampffähig: Nachschub für Kniffe, egal womit das Ziel bezahlt, und mehr Wirkung aus jeder Heilung – auch aus fremder.',links:['classBuff:vorherNachher','talent:baerbel-care-3'],terms:['klassenbuff','staerkung','ressource','heilung']}},
  vorherNachher:{cls:'baerbel',slot:1,level:8,name:'Vorher-Nachher-Filter',icon:'anni-spray',effects:{haste:0},
   text:v=>`Anni legt ihren Lieblingsfilter über dich: ${v.haste} Tempo für ${M} Minuten. Schneller bist du nicht geworden. Du siehst nur so aus. Wirkt trotzdem.`,
   use:'Leg ihn auf, bevor ihr loszieht: auf den gewählten Söldner oder Mitspieler, ohne freundliches Ziel auf dich.',flavor:'„Vorher: Dorftrottel. Nachher: Dorftrottel mit Weichzeichner.“',
@@ -98,5 +99,5 @@ export const CLASS_BUFF_TEXT={
 /** Glossarbegriff (wird in content/glossary.js GLOSSARY gemischt). */
 export const CLASS_BUFF_GLOSSARY={
  klassenbuff:{name:'Klassen-Buff',short:'Eine lange Stärkung für '+M+' Minuten, die jede Klasse auf sich, ihren Söldner oder ein Gruppenmitglied zaubert.',
-  long:'Jede Klasse bringt zwei Klassen-Buffs mit, jeder hebt einen anderen Wert. Buffs verschiedener Klassen wirken deshalb zusammen; derselbe Buff von zwei Zaubernden nicht – der stärkere gewinnt, bei gleicher Stärke erneuert der neuere die Dauer. Ohne freundliches Ziel landet der Buff auf dir. Er kostet keine Randale, läuft über Ortswechsel und Tod hinweg weiter und bleibt im Spielstand. Einzelne Talente verstärken einen Buff.'}
+  long:'Jede Klasse bringt zwei Klassen-Buffs mit, jeder hebt einen anderen Wert. Buffs verschiedener Klassen wirken deshalb zusammen; derselbe Buff von zwei Zaubernden nicht – der stärkere gewinnt, bei gleicher Stärke erneuert der neuere die Dauer. Ohne freundliches Ziel landet der Buff auf dir. Er kostet nichts von deiner Klassenressource, läuft über Ortswechsel und Tod hinweg weiter und bleibt im Spielstand. Einzelne Talente verstärken einen Buff.'}
 };
