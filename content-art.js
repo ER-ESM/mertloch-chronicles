@@ -3,6 +3,7 @@
 // `frameSize`/`pivot`/`columns` und pro Frame Ausschnitt und Sockets.
 // Diese Datei lädt und schlägt nach; gezeichnet wird in live-art.js, ui-art.js und talent-art.js.
 // Fehlt der Katalog oder ein Bild, liefert jede Funktion null/false — die alten Zeichenwege bleiben.
+import {PRECISION_PALETTE} from './art-quality.js';
 const CATALOG='./assets/precision/runtime/catalog.json';
 export const contentArt={ready:false,catalog:null,images:new Map()};
 let pending=null;
@@ -85,14 +86,28 @@ export function contentFrame(actor,row,p={}){
 
 // ------------------------------------------------------------------- Symbole
 /** Einzelbild ganzzahlig vergrößert und mittig in ein Feld der Kantenlänge `size`. */
+// Verkleinern wie die Pipeline (tools/sprite-pipeline/precision-resample.mjs): Flächenmittel, deckend ab 50 %, Farbe auf
+// PRECISION_PALETTE. Vorher nächster Nachbar – 64 → 48 ließ jede vierte Zeile und Spalte weg. Ergebnis je Bild und Größe im Cache.
+const shrunkIcons=new WeakMap(),snapped=new Map();
+function paletteSnap(r,g,b){const key=(r>>2)<<12|(g>>2)<<6|b>>2;let p=snapped.get(key);if(p)return p;let score=Infinity;for(const q of PRECISION_PALETTE){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}snapped.set(key,p);return p;}
+export function shrinkPixels(src,w,h,dw,dh){const out=new Uint8ClampedArray(dw*dh*4);
+ for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){const left=x*w/dw,right=(x+1)*w/dw,top=y*h/dh,bottom=(y+1)*h/dh;let alpha=0,total=0,r=0,g=0,b=0;
+  for(let sy=Math.floor(top);sy<Math.ceil(bottom);sy++)for(let sx=Math.floor(left);sx<Math.ceil(right);sx++){const wt=(Math.min(right,sx+1)-Math.max(left,sx))*(Math.min(bottom,sy+1)-Math.max(top,sy)),i=(sy*w+sx)*4,a=src[i+3]/255*wt;total+=wt;alpha+=a;r+=src[i]*a;g+=src[i+1]*a;b+=src[i+2]*a;}
+  if(alpha<total*.5)continue;const p=paletteSnap(Math.round(r/alpha),Math.round(g/alpha),Math.round(b/alpha)),o=(y*dw+x)*4;out[o]=p[0];out[o+1]=p[1];out[o+2]=p[2];out[o+3]=255;}
+ return out;}
+function shrunkIcon(image,w,h,dw,dh){let m=shrunkIcons.get(image);if(!m)shrunkIcons.set(image,m=new Map());const k=dw+'x'+dh;let cv=m.get(k);if(cv)return cv;
+ const src=document.createElement('canvas');src.width=w;src.height=h;const sc=src.getContext('2d',{willReadFrequently:true});sc.drawImage(image,0,0);
+ cv=document.createElement('canvas');cv.width=dw;cv.height=dh;const px=shrinkPixels(sc.getImageData(0,0,w,h).data,w,h,dw,dh);cv.getContext('2d').putImageData(new ImageData(px,dw,dh),0,0);m.set(k,cv);return cv;}
+/** Einzelbild mittig in ein Feld der Kantenlänge `size`: ganzzahlig vergrößert oder per Flächenmittel verkleinert. Füllt das Bild den
+ * Canvas, wird er als Präzisionssymbol markiert – styleIcon (32 px, 40 Farben) lässt ihn dann in Ruhe. */
 export function drawContentIcon(c,id,x,y,size){
  const a=contentAsset(id);if(!a||a.meta.frames)return false;
  const w=a.meta.width,h=a.meta.height,natural=Math.max(w,h);
  const factor=size>=natural?Math.max(1,Math.floor(size/natural)):size/natural;
- const dw=Math.round(w*factor),dh=Math.round(h*factor);
+ const dw=Math.max(1,Math.round(w*factor)),dh=Math.max(1,Math.round(h*factor)),dx=Math.round(x+(size-dw)/2),dy=Math.round(y+(size-dh)/2);
  c.save();c.imageSmoothingEnabled=false;
- c.drawImage(a.image,0,0,w,h,Math.round(x+(size-dw)/2),Math.round(y+(size-dh)/2),dw,dh);
- c.restore();return true;
+ if(factor<1&&typeof document!=='undefined')c.drawImage(shrunkIcon(a.image,w,h,dw,dh),dx,dy);else c.drawImage(a.image,0,0,w,h,dx,dy,dw,dh);
+ c.restore();if(c.canvas?.dataset&&size>=Math.min(c.canvas.width,c.canvas.height)*.75)c.canvas.dataset.precision='true';return true;
 }
 export function paintContentIcon(canvas,id){
  const c=canvas.getContext('2d');if(!contentAsset(id))return false;

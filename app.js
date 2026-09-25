@@ -207,7 +207,7 @@ function paintOnce(canvas,key,paint,{cache=true}={}){
  key=artEpoch+'|'+canvas.width+'x'+canvas.height+'|'+key;if(paintedIcons.get(canvas)===key)return;
  const hit=cache&&iconBitmaps.get(key);
  if(hit){const c=canvas.getContext('2d');if(paintedIcons.has(canvas))c.clearRect(0,0,canvas.width,canvas.height);/* frische Canvases sind leer */c.drawImage(hit.bitmap,0,0);if(hit.precision)canvas.dataset.precision=hit.precision;}
- else{paint();if(cache&&canvas.width&&canvas.height){const bitmap=document.createElement('canvas');bitmap.width=canvas.width;bitmap.height=canvas.height;bitmap.getContext('2d').drawImage(canvas,0,0);if(iconBitmaps.size>1500)iconBitmaps.clear();iconBitmaps.set(key,{bitmap,precision:canvas.dataset.precision||''});}}
+ else{delete canvas.dataset.precision;/* Kennzeichen des vorigen Symbols gilt nicht mehr */paint();if(cache&&canvas.width&&canvas.height){const bitmap=document.createElement('canvas');bitmap.width=canvas.width;bitmap.height=canvas.height;bitmap.getContext('2d').drawImage(canvas,0,0);if(iconBitmaps.size>1500)iconBitmaps.clear();iconBitmaps.set(key,{bitmap,precision:canvas.dataset.precision||''});}}
  paintedIcons.set(canvas,key);
 }
 const ICON_SELECTOR='[data-mount-icon],[data-ui-icon],[data-spec-art],[data-talent-art],[data-item-art],[data-skill-art],[data-describe-icon]';
