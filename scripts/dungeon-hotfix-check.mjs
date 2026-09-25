@@ -36,7 +36,7 @@ const place=(floor,x,y,facing=1)=>read(`Object.assign(g.player,D.toWorld(g.dunge
  g.companions.forEach((c,i)=>{const q=g.world.findClear(g.player.x+12+i*10,g.player.y+14,9);c.x=q.x;c.y=q.y;c.target=null;c.order='follow';});`);
 const rooms=()=>read(`const r=u=>D.roomAt(g.dungeonRun.def,u.x,u.y)?.id||'-';return {hero:r(g.player),mercs:Object.fromEntries(g.companions.map(c=>[c.name,r(c)])),arena:g.dungeonRun.arena};`);
 /** Wache im Seitenkontext: hält fest, wer beim Zufallen der Tür wo stand (ein Bild, nicht erst beim nächsten Abfragen). */
-const watchDoor=()=>read(`window.__door=null;const t=g.tick.bind(g);g.tick=dt=>{const was=g.dungeonRun?.arena;t(dt);const r=g.dungeonRun;if(r&&r.arena&&!was&&!window.__door){const room=u=>D.roomAt(r.def,u.x,u.y)?.id||'-';window.__door={arena:r.arena,hero:room(g.player),mercs:Object.fromEntries(g.companions.map(c=>[c.name,room(c)])),time:g.time};}};`);
+const watchDoor=()=>read(`window.__door=null;window.__rk={approach:false,msgs:[],x0:g.player.x};for(const k of ['toast','fail']){const o=g[k].bind(g);g[k]=(m,...r)=>{window.__rk.msgs.push(String(m));return o(m,...r);};}const t=g.tick.bind(g);g.tick=dt=>{const was=g.dungeonRun?.arena;if(g.approach)window.__rk.approach=true;t(dt);const r=g.dungeonRun;if(r&&r.arena&&!was&&!window.__door){const room=u=>D.roomAt(r.def,u.x,u.y)?.id||'-';window.__door={arena:r.arena,hero:room(g.player),mercs:Object.fromEntries(g.companions.map(c=>[c.name,room(c)])),time:g.time};}};`);
 /** Spielzeit vorspulen wie dungeon-e1-check („weicht aus“, Autoangriff, Rotation). */
 const fast=(seconds,stop='false')=>read(`const ready=id=>g.skills.some(s=>s.id===id)&&(g.cooldowns[id]||0)<=0,A=await import('/auto-combat.js');
  const rotate=()=>{const p=g.player,t=g.target;for(const [when,run] of [[ready('heal')&&p.hp/p.maxHp<.6,()=>g.action('heal')],[ready('mark')&&t&&!(t.mark>0)&&p.energy>=20,()=>g.action('mark')],[ready('burst')&&p.energy>=35,()=>g.action('burst')],[ready('buff')&&p.energy>=30,()=>g.action('buff')],[ready('strike'),()=>g.action('strike')],[ready('throw')&&p.energy>=20,()=>g.action('throw')]])if(when&&run())return;};
@@ -63,8 +63,8 @@ try{
   await watchDoor();
   const gerdAt=await read(TO_SCREEN+`const e=g.enemies.find(e=>e.bossId==='gerd');return toS({x:e.x,y:e.y-18});`);
   await mouseAt(gerdAt.x,gerdAt.y,'right');
-  const afterClick=await read(`return {target:g.target?.bossId||null,auto:g.autoAttack.enabled,approach:!!g.approach}`);
-  assert.ok(afterClick.target==='gerd'&&afterClick.auto&&afterClick.approach,'Rechtsklick wählt Gerd und läuft los '+JSON.stringify(afterClick));
+  await wait(700);const afterClick=await read(`return {target:g.target?.bossId||null,auto:g.autoAttack.enabled,approach:window.__rk.approach,west:Math.round(window.__rk.x0-g.player.x),msgs:window.__rk.msgs}`);
+  assert.ok(afterClick.target==='gerd'&&afterClick.auto&&afterClick.approach&&afterClick.west>8&&!afterClick.msgs.some(m=>/Kein Weg/.test(m)),'Rechtsklick wählt Gerd und läuft per Wegsuche los '+JSON.stringify(afterClick));
   const throwBtn=await read(`const r=document.querySelector('[data-skill="throw"]')?.getBoundingClientRect();return r&&r.width?{x:Math.round(r.x+r.width/2),y:Math.round(r.y+r.height/2)}:null`);
   if(throwBtn)await mouseAt(throwBtn.x,throwBtn.y);
   const early=await read(`const gerd=g.enemies.find(e=>e.bossId==='gerd');return {hp:gerd.hp===gerd.maxHp,arena:g.dungeonRun.arena,hero:D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id}`);
