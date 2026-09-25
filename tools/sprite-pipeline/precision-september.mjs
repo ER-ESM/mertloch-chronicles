@@ -1,5 +1,5 @@
 // Graphics handoff 2026-09-23: export directly from preserved imagegen originals.
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {surface,bounds} from './png.mjs';
 import {resample} from './precision-resample.mjs';
 // Both sheets of the day: props/intro/ui first, then the 22 inventory and tab icons.
@@ -12,6 +12,11 @@ import {resample} from './precision-resample.mjs';
 // Materialtreppen und Kontur, eingefroren in waffen-palette.json; Export 1:1 ohne Rand, jedes Pixel bleibt, wie es gemalt ist.
 const jobs=['./grafik-20260923-jobs.json','./items-20260923-jobs.json','./einzelfenster-20260923-jobs.json','./portraets-20260924-jobs.json','./e71-kniffe-jobs.json','./waffen-20260925-jobs.json']
  .flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))));
+// 2026-09-26 (Codex-Lauf Sa 23:00, docs/ICONS-CODEX-2026-09-26.md): Spez-Symbole Schorsch/Käthe und die vier vereinfachten
+// Dieter-Kniffe. Sie gelten erst, wenn ihr Original vorliegt; bis dahin bleibt der bisherige Export. Danach gewinnt dieser
+// Auftrag, weil er nach der älteren Quelle exportiert wird (put überschreibt Katalogeintrag und Laufzeitbild derselben ID).
+jobs.push(...['./spez-symbole-20260926-jobs.json','./kniffe-dicht-20260926-jobs.json'].flatMap(p=>JSON.parse(readFileSync(new URL(p,import.meta.url))))
+ .filter(j=>existsSync(new URL('../../'+j.output,import.meta.url))));
 const PALETTES=Object.fromEntries(['portraet','waffen'].map(name=>[name,JSON.parse(readFileSync(new URL('./'+name+'-palette.json',import.meta.url)))]));
 export function buildSeptemberDelivery({catalog,put,read,hashSource}){
  for(const job of jobs){

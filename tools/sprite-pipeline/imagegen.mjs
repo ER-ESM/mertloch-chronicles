@@ -71,8 +71,17 @@ function generate(bin,job,refs){
  args.push(instruction(job));
  const run=spawnSync(bin,args,{encoding:'utf8',timeout:JOB_TIMEOUT_MS,maxBuffer:64*1024*1024});
  if(run.error)throw new Error(`Codex-Aufruf fehlgeschlagen: ${run.error.message}`);
- const fresh=pngsSince(started).filter(f=>!before.has(f.path));
- if(!fresh.length)throw new Error(`Kein Bild erzeugt.\n${(run.stdout||'').slice(-1500)}\n${(run.stderr||'').slice(-800)}`);
+ // Eigene Sitzung zuerst: Codex legt die Bilder unter generated_images/<Sitzungs-ID>/ ab. So kann eine
+ // gleichzeitig laufende Sitzung (z. B. die Porträt-Aufgabe) kein fremdes Bild unterschieben.
+ const out=(run.stdout||'')+'\n'+(run.stderr||''),session=/session id:\s*([0-9a-f-]{36})/i.exec(out)?.[1];
+ const own=session?pngsSince(started).filter(f=>!before.has(f.path)&&f.path.includes(session)):[];
+ const fresh=own.length?own:pngsSince(started).filter(f=>!before.has(f.path));
+ if(!fresh.length){
+  const err=new Error(`Kein Bild erzeugt.\n${(run.stdout||'').slice(-1500)}\n${(run.stderr||'').slice(-800)}`);
+  // Nutzungslimit erkennbar machen, damit ein Stapellauf aufhört, statt jeden weiteren Auftrag anzustoßen.
+  if(/usage limit|usage_limit_reached|rate_limit_reached/i.test(out)){err.code='USAGE_LIMIT';err.retryAt=(/try again at ([^.\n]+)/i.exec(out)||[])[1]||null;}
+  throw err;
+ }
  if(fresh.length>1)console.warn(`  Hinweis: ${fresh.length} neue Bilder, jüngstes verwendet.`);
  return fresh[0].path;
 }
