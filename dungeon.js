@@ -6,8 +6,9 @@ import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_SCALE 
 import {makeEnemy} from './encounters.js';
 import {autoLootBag} from './rpg.js';
 import {hitCompanion} from './companions.js';
+import {TANK_SPECS} from './net-world.js';
 
-const FLOOR_ORDER=['e0','k1','k2'],TANK_SPECS=['dieter-wall','kevin-iron']; // Schutz-Specs wie net-world.js
+const FLOOR_ORDER=['e0','k1','k2']; // Schutz-Specs: TANK_SPECS aus net-world.js (E-71: aus der Rolle „Tank“)
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const norm=a=>{while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;return a;};
 let serial=900000;

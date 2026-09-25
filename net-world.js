@@ -3,8 +3,9 @@
 // Wert, bestimmt das Ziel (höchste Bedrohung) und meldet Tod, Rücksetzen und Wiederkehr (server/game/shared-world.mjs).
 // Ohne Browser-APIs: game(), me(), send(), others() kommen von außen (Tests mit Attrappen).
 
-/** Schutz-Specs (Dosenwall, Schrottkoloss) ziehen dreifache Bedrohung: sie sollen das Ziel halten können. */
-export const TANK_SPECS=['dieter-wall','kevin-iron'];
+import {SPECS} from './content/index.js';
+/** Schutz-Specs (Türsteher, Schrottkoloss, E-71 Räuchermeister) ziehen dreifache Bedrohung: sie sollen das Ziel halten können. */
+export const TANK_SPECS=Object.keys(SPECS).filter(s=>SPECS[s].role==='Tank');
 
 /** options: {game:()=>Game, me:()=>Spielername, send:(msg)=>void, others:()=>[{name,x,y}]} */
 export function createNetWorld({game,me,send,others}){
