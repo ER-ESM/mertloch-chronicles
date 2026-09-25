@@ -30,6 +30,15 @@ export const TUTORIAL={starterEquipment:{weapon:'flasche',offhand:'topfdeckel',r
   schorsch:{mark:'Auflegen, gar werden lassen, servieren – golden schimmert es.'},
   kaethe:{mark:'Gleiche Farbe hintereinander macht jede Karte stärker.',throw:'Ab 61 Augen: Abrechnen.'}
  },
+ /* E-72 Runde 3 · Lernen über das Bild: Käthes Kampfschritt als drei Bild-Schritte statt Skat-Erklärung (Hofprobe-Verfolgung,
+    Handyleiste; tutorial-guide.js). Eine kurze Zeile je Schritt, Erklärung im Tooltip. {win} = Augen bis „gewonnen“, {level} = Lernstufe. */
+ guide:{
+  kaethe:{attack:[
+   {id:'play',text:'Karte spielen',tip:'Drück die Taste mit der Karte. Das große Bild ist die Wirkung: Klinge trifft, Schild schützt, Plus heilt, Knall trifft im Umkreis.'},
+   {id:'augen',text:'Augen sammeln',tip:'Jede Karte zählt Augen – die Leiste unter deinem Leben füllt sich.'},
+   {id:'settle',text:'Ab {win} abrechnen',tip:'Ab {win} Augen leuchtet Abrechnen: alle Augen auf einmal als Treffer.',locked:'Abrechnen lernst du auf Stufe {level}.'}
+  ]}
+ },
  steps:[
   {id:'welcome',title:'Erst zu Kisten-Ida',text:'Sprich mit Ida und nimm die erste Ausrüstung für die Hofprobe entgegen.',desktop:'F: mit Ida sprechen',touch:'Aktion: mit Ida sprechen'},
   {id:'move',title:'Einmal geradeaus, bitte',text:'Laufe zur goldenen Hofmarkierung. Hier kannst du die Bewegung ohne Gegnerdruck ausprobieren.',desktop:'WASD: bewegen · Rechtsklick: Laufweg',touch:'Linken Joystick halten und in die Laufrichtung ziehen'},

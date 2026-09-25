@@ -137,12 +137,14 @@ const SUIT_EFFECT={kreuz:'trifft dein Ziel',pik:'gibt dir Deckung',herz:'heilt d
 function resourceSkillHelp(g,id,s){
  const cls=g.member?.id,R=RESOURCES[cls],h=resourceHud(g);if(!R||!h)return null;
  if(cls==='kaethe'){
-  const legend='♣ Kreuz trifft · ♠ Pik schützt · ♥ Herz heilt · ♦ Karo trifft im Umkreis und bremst. Sieben bis Neun sind schnell, Zehn und Ass stark, Buben sind Trumpf.';
+  /* Runde 3 „Lernen über das Bild“: das Kartenbild zeigt die Wirkung (Klinge, Schild, Plus, Knall) und das Tempo als Abzeichen – der Tooltip nennt es beim Namen */
+  const legend='Bild = Wirkung: Klinge trifft · Schild schützt · grünes Plus heilt · Knall trifft im Umkreis und bremst. Abzeichen: » schnell (7–9) · Stern stark (10, Ass) · Krone Trumpf (Bube).';
+  const tempo=rk=>rk.trump?' Trumpf (Krone): bedient jede Farbe und sticht jeden Zauber.':rk.quick?' Schnell (»): sperrt die globale Abklingzeit nur kurz.':rk.power>=1.3?' Stark (Stern): '+String(rk.power).replace('.',',')+'-fache Wirkung.':'';
   const c=handCard(g,id);
-  if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card;let line=`${cardName(c)}: ${SUIT_EFFECT[c.suit]}${['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}. Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
-   if(h.chain?.suit&&(h.chain.suit===c.suit||rk.trump))line+=' Bedient die Farbe: '+pct(R.follow.bonus)+' mehr je Kettenglied.';
-   if(theirs){const tr=R.ranks[theirs.rank],beats=rk.trump?!tr.trump:c.suit===theirs.suit&&rk.order>tr.order;line+=beats?` Sticht den Zauber des Ziels (${cardName(theirs)}) – ${e.cast.interruptible?'bricht ihn ab und ':''}bringt ${tr.augen+R.stich.bonus} Augen.`:` Der Zauber des Ziels zeigt ${cardName(theirs)}: stechen kannst du mit ${R.suits[theirs.suit].name} höher als ${tr.name} oder einem Buben.`;}
-   return line+' '+legend;}
+  if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card;let line=`${cardName(c)}: ${SUIT_EFFECT[c.suit]}${['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}.${tempo(rk)} Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
+   if(h.chain?.suit&&(h.chain.suit===c.suit||rk.trump))line+=' Kettenrahmen – bedient die Farbe: '+pct(R.follow.bonus)+' mehr je Kettenglied.';
+   if(theirs){const tr=R.ranks[theirs.rank],beats=rk.trump?!tr.trump:c.suit===theirs.suit&&rk.order>tr.order;line+=beats?` Goldschein – sticht den Zauber des Ziels (${cardName(theirs)}): ${e.cast.interruptible?'bricht ihn ab und ':''}bringt ${tr.augen+R.stich.bonus} Augen.`:` Der Zauber des Ziels zeigt ${cardName(theirs)}: stechen kannst du mit ${R.suits[theirs.suit].name} höher als ${tr.name} oder einem Buben.`;}
+   return line;}
   if(id==='throw')return s.text+` Du hast ${Math.floor(h.value)} Augen; gewonnen ab ${h.win}, Schneider ab ${h.schneider}, Schwarz bei ${h.schwarz}.`;
   if(['strike','mark','burst'].includes(id))return s.text+' '+legend;
   if(id==='interrupt')return s.text+' Stich: Zeigt der Zauber eine Karte, deren Farbe du auf der Hand hast, bringt Kontra zusätzlich Augen.';
@@ -151,7 +153,7 @@ function resourceSkillHelp(g,id,s){
  if(cls==='schorsch'){
   const z=zoneOf(g,h.value),zoneLine=`Glut ${Math.floor(h.value)} · ${z.name}${z.damage?' ('+(z.damage>0?'+':'')+pct(z.damage)+' Schaden)':''}.`;
   if(id==='strike')return s.text+' '+zoneLine+` Perfekt ist ${h.perfect[0]}–${h.perfect[1]}; darüber wird es zu heiß (du verbrennst dich), bei 100 kommt die Stichflamme.`;
-  if(id==='mark'){const plan=(g.res?.plan??0);return s.text+` Belegt: ${h.rost.length}/${h.slots} Plätze. Gar wird ein Stück nach etwa ${Math.round(R.rost.cookTime*R.rost.gar[0])} s bei guter Glut, in der perfekten Glut schneller.`+(plan>=0?'':'');}
+  if(id==='mark'){const plan=(g.res?.plan??0);return s.text+(h.nextItem?` Als Nächstes: ${R.items[h.nextItem]?.name||h.nextItem}.`:'')+` Belegt: ${h.rost.length}/${h.slots} Plätze. Gar wird ein Stück nach etwa ${Math.round(R.rost.cookTime*R.rost.gar[0])} s bei guter Glut, in der perfekten Glut schneller.`+(plan>=0?'':'');}
   if(id==='burst'){const it=[...h.rost].sort((a,b)=>b.done-a.done).find(x=>x.done<R.rost.charcoal);return (it?`Serviert jetzt: ${it.name} – ${it.state==='gar'?'gar, volle Wirkung':it.state==='durch'?'durch, volle Wirkung':it.state==='roh'?'noch roh, halbe Wirkung':'verkohlt, halbe Wirkung'} (${Math.round(it.done*100)} %). `:'Der Rost ist leer – erst auflegen. ')+s.text;}
   if(id==='heal')return s.text+' '+zoneLine;
   if(id==='throw'||id==='ground')return s.text+' '+zoneLine;

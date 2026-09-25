@@ -1,3 +1,4 @@
+import {RESOURCES} from './resources.js';
 export const HUD_TEXT={
  title:'UI bearbeiten',shortcut:'Spielmenü → UI bearbeiten',layout:'Layout',name:'Layoutname',copy:'Als Kopie',remove:'Layout löschen',element:'Element',scale:'Größe',grid:'Raster anzeigen',snap:'Am Raster einrasten',save:'Speichern',cancel:'Abbrechen',options:'Optionen',reset:'Dieses Element zurücksetzen',resetAll:'Alle Elemente zurücksetzen',standard:'Standard',custom:'Mein Layout',copySuffix:'Kopie',desktop:'Desktop',portrait:'Handy hochkant',landscape:'Handy quer',
  hint:'Rahmen ziehen oder auswählen und mit den Pfeiltasten verschieben. Die Welt pausiert beim Bearbeiten.',touchHint:'Rahmen mit dem Finger ziehen. Unter Optionen kannst du Elemente wählen und ihre Größe ändern. Die Welt pausiert.',saved:'UI-Layout gespeichert.',failed:'Layout konnte nicht gespeichert werden. Deine Änderungen bleiben zum erneuten Speichern offen.',limit:'Höchstens zehn Layouts. Lösche zuerst ein eigenes Layout.',preview:'Vorschau',buffs:'Buffs',debuffs:'Debuffs',targetDebuffs:'Ziel-Debuffs',remaining:'Restzeit',stacks:'Stapel',value:'Wert',shield:'Schild',untilUsed:'Bis verbraucht',close:'Schließen',empty:'Keine aktiven Effekte',seconds:'s',player:'Eigene Figur',target:'Gewähltes Ziel',
@@ -87,6 +88,8 @@ export const RESOURCE_HUD_TEXT={
  tab:{label:'Zeche',note:(tab,max)=>tab>0?tab+' Leben angeschrieben · höchstens '+max:'Nichts angeschrieben'},
  likes:{label:'Likes',note:v=>v+' / 100'},
  trend:{note:(viewers,bonus,viral)=>viewers+' Zuschauer · +'+bonus+' % Wirkung'+(viral?' · nächster Kniff gratis':'')},
+ /* Runde 3: was den Trend hebt und was ihn bricht – eine Zeile unter dem Trend-Tooltip */
+ trendRule:'Hebt: neuer Kniff · Senkt: derselbe Kniff, Pause, harter Treffer',
  algo:{label:'Algorithmus',note:s=>s>0?'Ohne neuen Kniff sinkt der Trend in '+s+' s':'Trend hält'},
  repeat:'Wiederholung – senkt den Trend',
  crate:{label:'Bierkasten',note:(v,max)=>v+' / '+max+' Flaschen'},
@@ -103,5 +106,12 @@ export const RESOURCE_HUD_TEXT={
  chain:{label:'Farbe bedienen',note:(suit,n,bonus)=>suit+(n>0?' ×'+(n+1)+' · +'+bonus+' %':' · gleiche Farbe verstärkt')},
  next:{label:'Nächste Karte'},
  sleeve:{label:'Ass im Ärmel'},
- enemyCard:{label:'Gegnerkarte',beat:'Stechbar – gleiche Farbe höher oder ein Bube',note:'Gleiche Farbe höher oder ein Bube sticht'}
+ enemyCard:{label:'Gegnerkarte',beat:'Stechbar – gleiche Farbe höher oder ein Bube',note:'Gleiche Farbe höher oder ein Bube sticht'},
+ /* E-72 Runde 3 · Lernen über das Bild: Namen der Marken und Zielbereiche nur im Tooltip */
+ perfect:{label:'Perfekte Glut',note:(lo,hi,dmg)=>'Glut '+lo+'–'+hi+' · +'+dmg+' % Schaden · Grillgut gart schneller'},
+ marks:{
+  win:{label:'Gewonnen',note:(v,ok)=>'Ab '+v+' Augen: Abrechnen'+(ok?' – jetzt!':' wird frei')},
+  schneider:{label:'Schneider',note:v=>'Ab '+v+' Augen: Abrechnen ×'+String(RESOURCES.kaethe.abrechnen.schneider).replace('.',',')},
+  schwarz:{label:'Schwarz',note:v=>v+' Augen: Abrechnen ×'+String(RESOURCES.kaethe.abrechnen.schwarz).replace('.',',')+', trifft alle ringsum'}
+ }
 };

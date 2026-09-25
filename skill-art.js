@@ -6,7 +6,7 @@ import {loadDetailArt,drawDetailIcon} from './detail-art.js';
 import {CLASS_SPECS} from './talents.js';
 import {CLASS_BUFFS,RESOURCE_SKILLS,RESOURCES,TALENT_SKILLS,SPECS,CLAN_MEMBERS} from './content/index.js';
 import {paintItem} from './item-art.js';
-import {paintBigCardCanvas} from './resource-art.js';
+import {paintEffectCardCanvas} from './resource-art.js';
 export const SKILL_ICON_ORDER={dieter:['strike','buff','throw','parry','mark','burst','ground','heal','interrupt','dash','barricade','slam','keg'],baerbel:['strike','buff','throw','parry','mark','burst','ground','heal','interrupt','dash','sanctuary','infusion','encore'],kevin:['strike','buff','throw','parry','mark','burst','ground','heal','interrupt','dash','detonate','magnet','snare']};
 const sheets=new Map();let pending;
 export function skillIconKey(member,id){if(id==='auto')return member+':auto';if(CLASS_BUFFS[id])return 'classBuff:'+id;if(RESOURCE_SKILLS[id])return 'resource:'+id;const index=SKILL_ICON_ORDER[member]?.indexOf(id);if(index>=0)return member+':'+index;/* E-72: neue Klassen ohne Atlas */return SKILL_ICON_ORDER[member]?null:member+':'+id;}
@@ -23,10 +23,11 @@ export function paintSkillIcon(canvas,id,member='dieter',context={}){if(context.
 const NEW_CLASS_ICONS={schorsch:{auto:'potlid',strike:'metal',mark:'currywurst',burst:'food',interrupt:'claw',parry:'potlid',dash:'boots',heal:'water',buff:'sound',throw:'burst',ground:'scrap',senf:'cup',spiritus:'burst',deckelzu:'potlid'},kaethe:{auto:'paper',interrupt:'megaphone',parry:'shield',dash:'boots',heal:'cup',buff:'book',throw:'medal',ground:'paper',reizen:'megaphone',handlesen:'ring',gezinkt:'paper',aermel:'book'}};
 function paintResourceIcon(canvas,id,member){const icon=RESOURCE_SKILLS[id]?.icon||(!SKILL_ICON_ORDER[member]&&(NEW_CLASS_ICONS[member]?.[id]||TALENT_SKILLS[id]?.icon));if(!icon)return false;const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.fillStyle=RESOURCE_SKILLS[id]?.bg||'#3b3326';c.fillRect(0,0,canvas.width,canvas.height);if(!drawDetailIcon(c,icon,0,0,canvas.width))paintItemOver(canvas,icon);canvas.dataset.resourceIcon=id;styleIcon(canvas);return true;}
 function paintItemOver(canvas,icon){const tmp=document.createElement('canvas');tmp.width=canvas.width;tmp.height=canvas.height;paintItem(tmp,icon);canvas.getContext('2d').drawImage(tmp,0,0);}
-/** Käthes Handkarte als Kartenbild im Pixelstil (E-72): Karte auf grünem Stammtischfilz, Rang oben links, großes Farbzeichen;
- *  Bube mit Goldrand (Trumpf), `glow` = STICH möglich (Goldrand und warmer Schein). */
+/** Käthes Handkarte als Kartenbild im Pixelstil (E-72, Runde 3 „Lernen über das Bild“): Karte auf grünem Stammtischfilz, die Wirkung
+ *  groß (Klinge, Schild, Heilung, Knall), Farbe und Rang klein oben rechts, Tempo-Abzeichen unten rechts; Bube mit Goldrand (Trumpf),
+ *  `glow` = STICH möglich (Goldrand und warmer Schein; das Stich-Abzeichen setzt resource-hud.js an den Knopf). */
 export function paintCard(canvas,card,{glow=false}={}){const r=RESOURCES.kaethe;if(!card||!r?.suits[card.suit])return false;const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
  c.clearRect(0,0,w,h);c.imageSmoothingEnabled=false;c.fillStyle=glow?'#4a3a14':'#1d3a2a';c.fillRect(0,0,w,h);const k=Math.max(1,Math.floor(w/24));c.fillStyle=glow?'#6a5220':'#244632';for(let y=0;y<h;y+=k*2)for(let x=(y/k/2)%2?k:0;x<w;x+=k*2)c.fillRect(x,y,k,k);
- /* Rang groß unter dem Farbzeichen: oben links liegt auf der Leiste die Tastenbeschriftung */paintBigCardCanvas(canvas,card,{glow,keep:true});canvas.dataset.card=card.suit+':'+card.rank;return true;}
+ /* Index oben rechts: oben links liegt auf der Leiste die Tastenbeschriftung */paintEffectCardCanvas(canvas,card,{glow,keep:true});canvas.dataset.card=card.suit+':'+card.rank;return true;}
 /** Klassen-Buffs (content/class-buffs.js) haben noch keine eigene Kniff-Grafik: sie zeigen ihr Gegenstands-Icon (Dose, Kutte, Glas …), klassenunabhängig – auch auf fremden Helden. */
 function paintClassBuffIcon(canvas,id){const b=CLASS_BUFFS[id];if(!b)return false;const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);if(!drawDetailIcon(c,b.icon,0,0,canvas.width))paintItem(canvas,b.icon);canvas.dataset.classBuff=id;styleIcon(canvas);return true;}
