@@ -80,3 +80,28 @@ export const ACTION_BAR_TEXT={
  mouse:n=>'Maustaste '+n,mouseShort:n=>'M'+n,wheel:'Mausrad-Klick',
  keyNames:{Space:'Leertaste',Tab:'Tab',Escape:'Esc',Enter:'Enter',Backspace:'Rück',Delete:'Entf',Backquote:'^',Minus:'ß',Equal:'´',BracketLeft:'Ü',BracketRight:'+',Semicolon:'Ö',Quote:'Ä',Backslash:'#',Comma:',',Period:'.',Slash:'-',IntlBackslash:'<',Insert:'Einfg',Home:'Pos1',End:'Ende',PageUp:'Bild↑',PageDown:'Bild↓',CapsLock:'Feststell',ContextMenu:'Menü',NumpadAdd:'N+',NumpadSubtract:'N-',NumpadMultiply:'N*',NumpadDivide:'N/',NumpadDecimal:'N,',NumpadEnter:'NEnter'},
 };
+/** E-72: Tooltips der Ressourcen-Anzeige am Spielerfenster (resource-hud.js). Kurz halten – Zahlen und Zustand, keine Erklärsätze;
+ *  die ausführliche Erklärung kommt beim Antippen/Klicken aus dem Glossar. */
+export const RESOURCE_HUD_TEXT={
+ rage:{label:'Randale',note:(v,at)=>v+' / 100'+(v>=at?' · In Fahrt':' · In Fahrt ab '+at)},
+ tab:{label:'Zeche',note:(tab,max)=>tab>0?tab+' Leben angeschrieben · höchstens '+max:'Nichts angeschrieben'},
+ likes:{label:'Likes',note:v=>v+' / 100'},
+ trend:{note:(viewers,bonus,viral)=>viewers+' Zuschauer · +'+bonus+' % Wirkung'+(viral?' · nächster Kniff gratis':'')},
+ algo:{label:'Algorithmus',note:s=>s>0?'Ohne neuen Kniff sinkt der Trend in '+s+' s':'Trend hält'},
+ repeat:'Wiederholung – senkt den Trend',
+ crate:{label:'Bierkasten',note:(v,max)=>v+' / '+max+' Flaschen'},
+ bons:{label:'Pfandbons',note:(n,max,power)=>n+' / '+max+' · nächster Flaschenkniff +'+power+' %'},
+ pickups:{label:'Leergut am Boden',note:n=>n+(n===1?' Flasche':' Flaschen')+' · drüberlaufen'},
+ reload:{label:'Pfandautomat',note:'Im goldenen Feld noch einmal drücken: Kasten voll und ein Bon.'},
+ glut:{note:(v,dmg)=>'Glut '+v+(dmg?' · '+(dmg>0?'+':'')+dmg+' % Schaden':'')},
+ locked:{label:'Grill aus',note:s=>'Grillkniffe wieder in '+s+' s'},
+ rost:{label:'Grillrost',empty:'Freier Platz',note:(state,pct)=>state+' · '+pct+' %'},
+ states:{roh:'Roh',gar:'Gar – jetzt servieren',durch:'Durch',verkohlt:'Verkohlt'},
+ smoked:'geräuchert',
+ augen:{label:'Augen',note:(v,win,sch,schw)=>v+' Augen · gewonnen ab '+win+' · Schneider '+sch+' · Schwarz '+schw},
+ deck:{label:'Stapel',note:n=>n+(n===1?' Karte':' Karten')+' bis zum Mischen'},
+ chain:{label:'Farbe bedienen',note:(suit,n,bonus)=>suit+(n>0?' ×'+(n+1)+' · +'+bonus+' %':' · gleiche Farbe verstärkt')},
+ next:{label:'Nächste Karte'},
+ sleeve:{label:'Ass im Ärmel'},
+ enemyCard:{label:'Gegnerkarte',beat:'Stechbar – gleiche Farbe höher oder ein Bube',note:'Gleiche Farbe höher oder ein Bube sticht'}
+};

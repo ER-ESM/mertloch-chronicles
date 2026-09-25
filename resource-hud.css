@@ -1,0 +1,53 @@
+/* E-72 · Ressourcen-Anzeige (resource-hud.js): Leiste im Spielerfenster, Band darunter, Pfandautomat, Gegnerkarte, Käthes Karten. */
+/* Leiste: die Pixel-Leinwand ersetzt die Füllung; der Text bleibt nur, wo er Zahlen trägt (Randale, Likes, Augen). */
+.player-panel .bar.energy.has-rh{position:relative;overflow:hidden;background:#120e0c}
+.player-panel .bar.energy.has-rh>i,.player-panel .bar.energy.has-rh>.energy-mark{visibility:hidden}
+.player-panel .bar.energy .rh-meter{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;z-index:1;pointer-events:none}
+.player-panel .bar.energy.has-rh>span{z-index:3;pointer-events:none}
+.player-panel .bar.energy[data-rh-kind=ammo]{height:22px}
+.player-panel .bar.energy[data-rh-kind=ammo]>span,.player-panel .bar.energy[data-rh-kind=grill]>span{visibility:hidden}
+.player-panel .bar.energy[data-rh-kind=cards]>span{color:#2a2430!important;text-shadow:0 1px 0 #fff6e0!important}
+.player-panel .bar.energy[data-rh-kind=rage].surge{border-color:#ff8a5a!important;box-shadow:0 0 6px #e2563d99}
+.player-panel .bar.energy[data-rh-kind=trend]>span{text-shadow:1px 1px 0 #4a1030!important}
+.touch-mode .player-panel .bar.energy[data-rh-kind=ammo]{height:20px}
+/* Tooltip-Flächen über den Leinwänden */
+.rh-hit{position:absolute;z-index:4;display:block;pointer-events:auto;cursor:help}
+.rh-hit[hidden]{display:none}
+/* Band unter dem Spielerfenster (WoW: Klassenleiste unter dem Porträt) – bewegt sich mit dem Fenster (UI bearbeiten). */
+.player-panel .rh-tray{position:absolute;left:8px;right:8px;top:calc(100% + 3px);height:40px;border-radius:12px;pointer-events:auto;
+ background:linear-gradient(90deg,#0c1914e6 0%,#0c1914d0 55%,#0c191400 100%);box-shadow:inset 0 1px #d7b57122}
+.player-panel .rh-tray .rh-tray-art{position:absolute;left:0;top:-16px;width:100%;height:calc(100% + 16px);image-rendering:pixelated;pointer-events:none}
+.touch-mode .player-panel .rh-tray{left:4px;right:4px;height:36px}
+.touch-mode:has(.game-popup) .player-panel .rh-tray{display:none}
+/* Unter dem Band: Buffs rücken nach unten (nur Desktop; am Handy liegen sie ohnehin tiefer). */
+body:not(.touch-mode):has(#resourceTray) #buffStrip:not([data-hud-custom]){top:236px}
+body:not(.touch-mode):has(#resourceTray) #debuffStrip:not([data-hud-custom]){top:312px}
+/* Handy hochkant: das Zielfenster liegt unter dem Spielerfenster – es rückt um das Band nach unten. */
+@media (orientation:portrait){body.touch-mode:not(:has(.game-popup)):has(#resourceTray) #targetPanel:not([data-hud-custom]){margin-top:40px}}
+/* Pfandautomat (Kevin) über der Leiste, wie ein Zauberbalken */
+.rh-reload{position:absolute;left:50%;top:calc(96px + var(--safe-top,0px));transform:translateX(-50%);width:300px;height:30px;z-index:26;pointer-events:none;filter:drop-shadow(0 2px 3px #000a)}
+.action-area>.rh-reload{top:auto;bottom:calc(100% + 12px)}
+.rh-reload[hidden]{display:none}
+.rh-reload canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.rh-reload.now{filter:drop-shadow(0 0 8px #ffd35a) drop-shadow(0 2px 3px #000a)}
+.rh-reload.jam{animation:rh-jam .18s linear 3}
+@keyframes rh-jam{0%,100%{transform:translateX(-50%)}33%{transform:translateX(calc(-50% - 3px))}66%{transform:translateX(calc(-50% + 3px))}}
+.touch-mode .rh-reload{top:calc(140px + var(--safe-top,0px));left:calc(50% + 40px);width:min(240px,40vw);height:26px}
+@media (orientation:portrait){.touch-mode .rh-reload{top:auto;left:50%;bottom:calc(300px + var(--safe-bottom,0px));width:min(260px,70vw)}}
+/* Käthe: Gegnerkarte am Zauberbalken des Ziels */
+#enemyCast{overflow:visible!important}
+#enemyCast .rh-enemy-card{position:absolute;left:-14px;top:50%;transform:translateY(-50%) rotate(-7deg);width:22px;height:30px;image-rendering:pixelated;z-index:5;pointer-events:auto;filter:drop-shadow(0 1px 2px #000c)}
+#enemyCast .rh-enemy-card[hidden]{display:none}
+#enemyCast .rh-enemy-card.beatable{animation:rh-beat .7s ease-in-out infinite alternate}
+@keyframes rh-beat{from{filter:drop-shadow(0 0 2px #ffd35a) drop-shadow(0 1px 2px #000c)}to{filter:drop-shadow(0 0 7px #ffe38a) drop-shadow(0 1px 2px #000c)}}
+#enemyCast:has(.rh-enemy-card:not([hidden])) #enemyCastText{padding-left:12px}
+/* Käthes Hand auf der Leiste: Kartenbild ohne Varianten-Filter, Name nur bei STICH */
+.skill[data-card] canvas,#touchActions .touch-skill[data-card] canvas{filter:none!important;animation:none!important}
+.skill.variant[data-card]:not([data-variant-tone=gold]):before,#touchActions .touch-skill.variant[data-card]:not([data-variant-tone=gold]):before{display:none}
+.skill.variant[data-card][data-variant-tone=gold]{box-shadow:0 0 0 2px #ffd35a,0 0 12px #ffd35acc!important;animation:rh-stich .6s ease-in-out infinite alternate}
+.skill.variant[data-card][data-variant-tone=gold]:before{color:#2a1a08!important;background:linear-gradient(#ffe38a,#e8b84a)!important;text-shadow:none!important;font-weight:700}
+@keyframes rh-stich{from{box-shadow:0 0 0 2px #ffd35a,0 0 6px #ffd35a99}to{box-shadow:0 0 0 2px #fff3b0,0 0 14px #ffe38a}}
+/* Anni: die Taste, die jetzt eine Wiederholung wäre – dezent gedämpft, mit kleinem Kreispfeil */
+.skill.rh-repeat canvas{filter:saturate(.45) brightness(.8)!important}
+.skill.rh-repeat:not(.proc-free):not(.proc-empower):not(.cd-done):not(.weapon-missing):after{content:'';position:absolute;right:2px;top:2px;width:13px;height:13px;z-index:7;pointer-events:none;border-radius:50%;background:#2a1a24e6 no-repeat center/11px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M12.5 5.5A5 5 0 1 0 13 9' fill='none' stroke='%23ff9a7a' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M13.5 2v4h-4' fill='none' stroke='%23ff9a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");box-shadow:0 0 0 1px #ff9a7a88}
+@media (prefers-reduced-motion:reduce){.skill.variant[data-card][data-variant-tone=gold],#enemyCast .rh-enemy-card.beatable,.rh-reload.jam{animation:none}}

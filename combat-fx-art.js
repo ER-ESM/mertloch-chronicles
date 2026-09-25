@@ -1,4 +1,6 @@
 import {FX_THEMES,activeCombatStates} from './combat-fx.js';
+// E-72: Effekte der Klassenressourcen (Zeche, Trend, Leergut, Glut, Karten) liegen in resource-fx-art.js.
+import {drawResourceEffect,drawResourceField,drawPickups,drawResourceStates} from './resource-fx-art.js';
 let atlas=null,catalog=null,loading=null;
 export function loadCombatFxArt(){return loading||=Promise.all([fetch(new URL('./assets/skill-fx/runtime/catalog.json',import.meta.url)).then(r=>{if(!r.ok)throw Error('Effektkatalog fehlt');return r.json();}),new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=new URL('./assets/skill-fx/runtime/effects.png',import.meta.url);})]).then(([data,im])=>{catalog=data;atlas=im;});}
 const TAU=Math.PI*2,clamp=n=>Math.max(0,Math.min(1,n));
@@ -11,7 +13,7 @@ function star(c,x,y,r,color){c.fillStyle=color;c.beginPath();for(let i=0;i<8;i++
 function shards(c,f,t,r,color,count=12,rise=12){for(let i=0;i<count;i++){const a=i/count*TAU+noise(i,f.id),d=r*Math.sqrt(t)*(.45+noise(i+32,f.id)*.55),x=f.x+Math.cos(a)*d,y=f.y-10+Math.sin(a)*d*.65-rise*t+18*t*t;c.save();c.globalAlpha*=1-t;c.translate(x,y);c.rotate(a+t*4);c.fillStyle=color;c.fillRect(-.6,-1,1.2,2+noise(i+4)*2);c.restore();}}
 // Immediate contact/trace: damage is resolved synchronously by the simulation.
 // A travelling projectile must not imply an impact later than the real HP change.
-export function drawCombatEffect(c,f){if(f.type!=='combat')return false;const t=clamp(1-f.life/f.max),th=theme(f.classId),kind=f.kind,blast=['burst','detonate','slam','trap','impact'].includes(kind),ward=['guard','parry','ready'].includes(kind),healing=kind==='heal',proc=['proc','proc-use','encore'].includes(kind),hostile=f.hostile||kind==='hurt';
+export function drawCombatEffect(c,f){if(f.type!=='combat')return false;if(drawResourceEffect(c,f))return true;/* E-72: Zeche und Hitze zehren je Bild ein paar Lebenspunkte ab – dafür kein Trefferbild (sonst läge es dauerhaft über dem Helden) */if(f.kind==='hurt'&&f.self&&(f.amount||0)<5)return true;const t=clamp(1-f.life/f.max),th=theme(f.classId),kind=f.kind,blast=['burst','detonate','slam','trap','impact'].includes(kind),ward=['guard','parry','ready'].includes(kind),healing=kind==='heal',proc=['proc','proc-use','encore'].includes(kind),hostile=f.hostile||kind==='hurt';
  c.save();c.globalAlpha*=Math.min(1,(1-t)*3);const color=hostile?'#ef8960':healing?'#b1e19b':ward?'#9edce4':proc?'#ffdc86':th.color;
  if(f.from&&['attack','throw','pull','dash','parry','guard','hurt'].includes(kind)){
   const from={x:f.from.x,y:f.from.y-13},to={x:f.x,y:f.y-13},angle=Math.atan2(to.y-from.y,to.x-from.x);
@@ -31,11 +33,11 @@ export function drawCombatEffect(c,f){if(f.type!=='combat')return false;const t=
  else if(['barricade','keg','sanctuary','snare','deploy'].includes(kind)){sprite(c,kind==='sanctuary'?'heal':kind==='barricade'?'ward':th.sprite,f.x,f.y-5,32,t);}
  c.restore();return true;
 }
-export function drawCombatGround(c,g,visible=()=>true){const th=theme(g.member.id);for(const z of [...g.fields,...g.zones]){if(z.remaining<=0||!visible(z,z.radius+15))continue;const kind=z.kind||'pending',color=kind==='burn'?'#ee8b4b':kind==='sanctuary'?'#b3dc95':kind==='barricade'?'#9edce4':th.color;c.save();
+export function drawCombatGround(c,g,visible=()=>true){const th=theme(g.member.id);drawPickups(c,g,visible);for(const z of [...g.fields,...g.zones]){if(z.remaining<=0||!visible(z,z.radius+15))continue;if(drawResourceField(c,g,z))continue;const kind=z.kind||'pending',color=kind==='burn'?'#ee8b4b':kind==='sanctuary'?'#b3dc95':kind==='barricade'?'#9edce4':th.color;c.save();
   for(let i=0;i<12;i++){const a=i/12*TAU,x=z.x+Math.cos(a)*z.radius,y=z.y+Math.sin(a)*z.radius;if(kind==='barricade'){line(c,{x,y},{x,y:y-5},color,1.5);line(c,{x:x-2,y:y-4},{x:x+2,y:y-4},'#ebda99',1);}else if(kind==='snare'){line(c,{x:x-2,y:y+2},{x,y:y-3},z.armedIn>0?'#a69374':color,1);line(c,{x,y:y-3},{x:x+2,y:y+2},color,1);}else{const phase=(g.time*.65+i*.173)%1;sprite(c,kind==='sanctuary'?'heal':kind==='burn'?'hostile':th.sprite,x,y-2,kind==='pending'?10:15,phase);}}
   if(kind==='pending'){const s=g.skills.find(s=>s.id==='ground'),progress=clamp(1-z.remaining/(s?.delay||1));ring(c,z.x,z.y,z.radius,color,.85,1,-Math.PI/2,-Math.PI/2+TAU*progress);sprite(c,th.sprite,z.x,z.y-3,15,(g.time*.6)%1);}
   c.restore();}}
-export function drawCombatStates(c,g,visible=()=>true){const p=g.player,th=theme(g.member.id),states=activeCombatStates(g);c.save();
+export function drawCombatStates(c,g,visible=()=>true){const p=g.player,th=theme(g.member.id),states=activeCombatStates(g);drawResourceStates(c,g,visible);c.save();
  if(visible(p)){for(const s of states){if(s.kind==='guard'||s.kind==='parry'){ring(c,p.x,p.y-12,15,s.kind==='parry'?'#ffdf89':'#9edce4',.8,.92,-1.3,1.3);ring(c,p.x,p.y-12,15,'#9edce4',.5,.92,1.85,4.4);}if(['hot','infusion'].includes(s.kind))sprite(c,'heal',p.x,p.y-13,29,(g.time*.45)%1);if(s.kind==='buff')ring(c,p.x,p.y,13,th.color,.8,.5);if(s.kind==='haste')for(let i=0;i<3;i++){const a=g.time*4+i*TAU/3;star(c,p.x+Math.cos(a)*12,p.y+Math.sin(a)*5,1.2,'#a6e4e9');}if(s.kind==='rage')for(let i=0;i<s.amount;i++)star(c,p.x-6+i*3,p.y+6,1,'#edaa65');}
   const ready=states.filter(s=>['free','empower'].includes(s.kind));ready.forEach((s,i)=>{const x=p.x+(i-(ready.length-1)/2)*7,y=p.y-34;star(c,x,y,2.6,s.kind==='free'?'#b0e6ac':'#ffce74');c.fillStyle='#fff0b9';c.font='bold 4px sans-serif';c.textAlign='center';c.fillText(s.kind==='free'?'0':'×2',x,y-4);});
   if(g.casting){const progress=clamp(1-g.casting.remaining/g.casting.total);ring(c,p.x,p.y,17,th.color,1,.65,-Math.PI/2,-Math.PI/2+progress*TAU);for(let i=0;i<5;i++){const a=i*TAU/5+g.time*2,r=18*(1-progress)+3;sprite(c,th.sprite,p.x+Math.cos(a)*r,p.y-14+Math.sin(a)*r*.6,8,(g.time+i*.11)%1);}}

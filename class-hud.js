@@ -1,13 +1,24 @@
-import {SPEC_MECHANICS} from './content/index.js';
+import {SPEC_MECHANICS,SPECS,CLAN_MEMBERS} from './content/index.js';
+import {drawCard,drawSprite} from './resource-art.js';
+import {drawDetailIcon} from './detail-art.js';
 import {combatStats} from './rpg.js';
 import {e32Art} from './e32-art.js';
 import {loadMechanicArt,paintMechanicSprite} from './class-mechanic-art.js';
 import {loadChromeArt,paintChromeFrame} from './ui-chrome.js';
 const clamp=v=>Math.max(0,Math.min(1,v||0));
-const accents={'dieter-wall':'#e4b96b','dieter-brawl':'#efc468','dieter-brew':'#d8ac62','baerbel-care':'#edc474','baerbel-feedback':'#b5dc64','baerbel-stage':'#f18da2','kevin-fuse':'#77d7df','kevin-iron':'#e5b768','kevin-hunt':'#f1ca6b'};
+const accents={'schorsch-chef':'#f2c14e','schorsch-flamme':'#ff8a3a','schorsch-rauch':'#c8c0b0','kaethe-grand':'#ffd35a','kaethe-herz':'#ff8aa8','kaethe-falsch':'#c8a8e0','dieter-wall':'#e4b96b','dieter-brawl':'#efc468','dieter-brew':'#d8ac62','baerbel-care':'#edc474','baerbel-feedback':'#b5dc64','baerbel-stage':'#f18da2','kevin-fuse':'#77d7df','kevin-iron':'#e5b768','kevin-hunt':'#f1ca6b'};
 /** Reads authoritative resources; painting never advances or consumes a mechanic. */
 export function classHudState(g){const spec=g.rpg?.talents?.spec,m=SPEC_MECHANICS[spec],s=g.classState?.m||{},cs=combatStats(g);if(!m)return null;
  const base={spec};
+ /* E-72: Hauptbäume der neuen Klassen (kind 'resource') zeigen ihre Kernmechanik: Buben bis zum Grand, die Ärmelkarte, Glut bis zum Flambieren,
+    Räucherware auf dem Rost, die Restzeit von Grillbuffet und Legekreis. Liest nur g.res und g.fields. */
+ if(m.kind==='resource'){const r=g.res||{},emblem={emblem:SPECS[spec]?.icon,color:CLAN_MEMBERS.find(c=>spec.startsWith(c.id+'-'))?.color};
+  if(m.grand)return {...base,...emblem,kind:'buben',title:m.name,count:Math.min(r.bubes||0,m.grand.bubes),max:m.grand.bubes};
+  if(m.falsch)return {...base,...emblem,kind:'sleeve',title:m.name,card:r.sleeve||null,count:r.sleeve?1:0,max:1};
+  if(m.flamme)return {...base,...emblem,token:'flame',kind:'state',title:m.name,count:Math.min(r.glut||0,m.flamme.at),max:m.flamme.at,left:0,total:1};
+  if(m.rauch)return {...base,...emblem,token:'kaese',kind:'jars',title:m.name,count:(r.rost||[]).filter(it=>it.smoked).length,max:Math.max(1,3+(cs.rostSlots||0))};
+  if(m.chef||m.herz){const kind=m.chef?'buffet':'legekreis',total=m.chef?m.chef.buffet.duration:m.herz.circle.duration,fields=g.fields.filter(z=>z.kind===kind&&z.remaining>0);return {...base,...emblem,token:m.chef?'wurst':'heart',kind:'fields',title:m.name,max:1,fields,total,left:fields[0]?.remaining||0};}
+  return null;}
  if(m.stack)return {...base,kind:'pegel',title:'Deckelstriche',count:s.stack||0,max:m.stack.max,left:Math.max(0,(s.stackUntil||0)-g.time),total:m.stack.decay+(cs.stackDecay||0),icon:'dieter-brawl-0'};
  if(m.supply)return {...base,kind:'jars',title:'Vorrat',count:s.supply||0,max:m.supply.max+(cs.supplyMax||0),left:s.clean||0,total:m.supply.cleanDuration+(cs.cleanDuration||0),icon:'baerbel-care-0'};
  if(m.state)return {...base,kind:'state',title:'Putzwut',count:g.player.energy,max:m.state.trigger+(cs.stateTrigger||0),left:s.state||0,total:m.state.duration+(cs.stateDuration||0),icon:'baerbel-stage-18'};
@@ -33,18 +44,24 @@ export function drawClassHud(c,state){if(!state)return;
  const sprite=(variant,x,y,w,h)=>paintMechanicSprite(c,state.spec,variant,x,y,w,h);
  if(!sprite('emblem',9,10,87,91)){
   const a=e32Art.catalog?.talents[state.icon],im=a&&e32Art.images.get(a.atlas);if(im)c.drawImage(im,a.x,a.y,64,64,20,24,64,64);
+  else if(state.emblem){const g=c.createRadialGradient(52,50,6,52,56,52);g.addColorStop(0,state.color||accent);g.addColorStop(1,'#0e221d');c.fillStyle=g;round(c,8,8,90,96,10);c.fill();drawDetailIcon(c,state.emblem,20,24,64);}
  }
  c.font='bold 22px Nunito,sans-serif';c.fillStyle='#f1dfb6';c.textAlign='left';c.fillText(state.title,112,30);
- const count=state.count||0,max=Math.max(1,state.max||1),number=state.kind==='spores'?count+' Ziele':state.kind==='fields'?state.fields.length+'/'+max:Math.ceil(count)+'/'+Math.ceil(max);
+ const count=state.count||0,max=Math.max(1,state.max||1),number=state.kind==='spores'?count+' Ziele':state.kind==='fields'?state.fields.length+'/'+max:state.kind==='sleeve'?'':Math.ceil(count)+'/'+Math.ceil(max);
  c.textAlign='right';c.font='bold 21px Nunito,sans-serif';c.fillStyle=accent;
  c.fillText(active&&state.kind!=='pegel'?Math.ceil(state.left)+'s':number,422,30);c.textAlign='left';
- const token=(on,x,y,w,h)=>{if(!sprite(on?'full':'empty',x,y,w,h)){c.fillStyle=on?accent:'#3b5346';round(c,x+4,y+7,w-8,h-14,5);c.fill();}};
+ const token=(on,x,y,w,h)=>{if(sprite(on?'full':'empty',x,y,w,h))return;if(state.token){/* E-72: neue Hauptbäume – Pixelbild der Ressource statt Farbfläche */c.fillStyle=on?'#3a2a18':'#16261e';round(c,x+4,y+7,w-8,h-14,6);c.fill();c.lineWidth=2;c.strokeStyle=on?accent:'#3b5346';c.stroke();c.save();c.globalAlpha=on?1:.3;drawSprite(c,state.token,x+w/2,y+h/2,Math.max(2,Math.floor(Math.min((w-14)/12,(h-18)/7))),{anchor:'center',outline:'#1a0e06'});c.restore();return;}c.fillStyle=on?accent:'#3b5346';round(c,x+4,y+7,w-8,h-14,5);c.fill();};
  if(state.kind==='fields'){
   const n=Math.max(max,state.fields.length),gap=Math.min(90,302/n);
   for(let i=0;i<n;i++){
    const z=state.fields[i],x=116+i*gap;token(!!z,x,38,gap-10,51);
-   if(z){const color=z.sort==='pils'?'#b7d78c':z.sort==='bock'?'#ec9676':accent;timer(c,x+(gap-10)/2,63,28,z.remaining/(z.visualDuration||z.remaining),color);c.font='bold 16px Nunito,sans-serif';c.textAlign='center';c.fillStyle='#ecdfbf';c.fillText(Math.ceil(z.remaining)+'s',x+(gap-10)/2,99);c.textAlign='left';}
+   if(z){const color=z.sort==='pils'?'#b7d78c':z.sort==='bock'?'#ec9676':accent;timer(c,x+(gap-10)/2,63,28,z.remaining/(z.visualDuration||state.total||z.remaining),color);c.font='bold 16px Nunito,sans-serif';c.textAlign='center';c.fillStyle='#ecdfbf';c.fillText(Math.ceil(z.remaining)+'s',x+(gap-10)/2,99);c.textAlign='left';}
   }
+ }else if(state.kind==='buben'){
+  /* Grand: vier Buben – gesammelte liegen offen, fehlende verdeckt */const suits=['kreuz','pik','herz','karo'];for(let i=0;i<max;i++)drawCard(c,114+i*52,38,20,29,2,{suit:suits[i%4],rank:'B'},{back:i>=count,dim:false});
+ }else if(state.kind==='sleeve'){
+  /* Ass im Ärmel: die festgehaltene Karte, sonst ein leerer Ärmel */if(state.card)drawCard(c,114,36,20,30,2,state.card,{glow:true});else{c.globalAlpha=.35;drawCard(c,114,36,20,30,2,null,{back:true});c.globalAlpha=1;}
+  c.fillStyle='#5a2a52';for(let k=0;k<24;k++){c.fillStyle=k%2?'#7a3a6a':'#5a2a52';c.fillRect(110+k*2,86,2,14);}
  }else if(state.kind==='pegel'){
   const gap=30;for(let i=0;i<max;i++)token(i<count,112+i*gap,44,29,45);
  }else if(['jars','chain','luck','spores'].includes(state.kind)){
