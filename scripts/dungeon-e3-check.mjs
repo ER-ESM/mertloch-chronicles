@@ -60,7 +60,7 @@ try{
   await pause(false);await fast(3,`${bigb}.cast?.told===true`);await fast(.3);await pause();
   const truth=await alerts(),truthWorld=await read(`const k=${bigb}.cast;return {truth:k?.truthText,told:k?.told}`);
   assert.equal(truthWorld.told,true);assert.equal(truth.cast,truthWorld.truth,'Zauberleiste zeigt den Nachsatz');assert.match(truth.castCls,/bf-truth/);assert.ok(truth.rows.some(r=>/ba-lie-t/.test(r.cls)),'Warnleiste zeigt den Nachsatz');
-  await shot('04-nachsatz');ok('Lüge sichtbar: „'+claimWorld.claim+'“ in Zauberleiste, Warnleiste und Sprechblase, nach 1 s der Nachsatz „'+truthWorld.truth+'“ mit echter Bahn');
+  await shot('04-nachsatz');ok('Lüge sichtbar: „'+claimWorld.claim+'“ in Zauberleiste, Warnleiste und Sprechzeile im Bossrahmen, nach 1 s der Nachsatz „'+truthWorld.truth+'“ mit echter Bahn');
   await pause(false);
   // Aufstellung: die anderen stehen auf der Gegenseite des Schutzes (Schutz dreht Big B weg)
   await fast(6);await pause();

@@ -141,6 +141,7 @@ export class Game{
    // Sprechblasen-Drossel (Nutzerbefund 2026-09-18: viele Blasen auf einmal): je Art höchstens eine Blase innerhalb der Sperrfrist;
    // Boss-, Phasen- und Kapitelzeilen sind wichtig und nie gedrosselt. Dorfbewohner reden nicht, solange ein Gegner spricht.
    const gap={villager:7,enemy:4}[kind];const last=this.barkClock||(this.barkClock={});if(gap!==undefined){const busy=Object.entries(last).some(([k,t])=>k!=='villager'&&this.time-t<3);if(this.time-(last[kind]??-Infinity)<gap||(kind==='villager'&&busy))return null;}last[kind]=this.time;
+   if((kind==='boss'||kind==='phase')&&source.dungeonBoss)source.lastBark={text,at:this.time};/* Dungeon Etappe 4 Teil B: im Bosskampf steht der Spruch im Bossrahmen */
    if(kind!=='villager')this.log(source.name+': „'+text+'“');this.emit('bark',{enemyId:source.id??null,name:source.name,text,kind,x:source.x,y:source.y});return text;}
   /** Sprechblasen der Dorfbewohner: village-life.js öffnet die Blase, die Zeile kommt aus content/npcs.js. */
   villagerBarks(){

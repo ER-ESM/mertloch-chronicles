@@ -91,8 +91,8 @@ export const DUNGEONS={
    {id:'lichtschacht',kind:'shaft',a:{floor:'e0',x:42,y:10},b:{floor:'k1',x:53.5,y:8},oneWay:'a'},
    {id:'treppe-k2',kind:'stairs',a:{floor:'k1',x:53.5,y:36},b:{floor:'k2',x:38,y:42}},
    {id:'wendeltreppe',kind:'spiral',a:{floor:'k1',x:10,y:36},b:{floor:'k2',x:8,y:42},secret:'pappwand'},
-   {id:'aufzug',kind:'lift',a:{floor:'e0',x:44,y:35.5},b:{floor:'k2',x:6.5,y:6.5},unlock:'b',gate:{boss:'korkenkurt',side:'b'},shortcut:{boss:'korkenkurt'}},
-   {id:'pappwand-hof',kind:'stairs',label:'pappwand',a:{floor:'e0',x:20,y:36.5},b:{floor:'k1',x:28,y:46.8},shortcut:{boss:'expose',only:true}}
+   {id:'aufzug',kind:'lift',a:{floor:'e0',x:44,y:35.5},b:{floor:'k2',x:6.5,y:6.5},unlock:'b',shortcut:{boss:'korkenkurt'}},
+   {id:'pappwand-hof',kind:'stairs',label:'pappwand',a:{floor:'e0',x:20,y:36.5},b:{floor:'k1',x:28,y:46.8},gate:{boss:'expose',side:'a'},shortcut:{boss:'expose',only:true}}
   ],
   // Entdeckbares: F an der Stelle deckt auf (Pappwand eindrücken usw.).
   secrets:[{id:'pappwand',floor:'k1',x:10,y:36,range:4}],

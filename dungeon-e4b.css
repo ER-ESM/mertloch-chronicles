@@ -64,4 +64,14 @@ body.boss-target #targetPanel{display:none!important}
 .dv-buy[aria-disabled=true]{border-color:#6b5a3a;background:#1c1712;cursor:default}.dv-buy[aria-disabled=true] b{color:#a4a29a}
 .dv-offer.owned{opacity:.6}.dv-offer.locked{opacity:.45}
 .dv-empty{display:grid;place-items:center;height:60px;grid-column:1/-1}
-.touch-mode .dv-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.touch-mode .dv-offer{gap:8px;padding:6px 2px}.touch-mode .dv-buy{height:44px;min-width:0;width:100%;padding:0 4px}.touch-mode .dv-item{width:48px;height:48px}
+.touch-mode .dv-vendor{gap:8px}.touch-mode .dv-face{width:44px;height:44px}.touch-mode .dv-face canvas{width:40px;height:40px}
+.touch-mode .dv-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.touch-mode .dv-offer{gap:8px;padding:2px}
+.touch-mode .dv-item{width:44px!important;height:44px!important;min-width:0!important;max-width:44px!important}.touch-mode .dv-item canvas{width:38px;height:38px}
+.touch-mode .dv-buy{height:44px!important;min-width:0!important;width:calc(100% - 4px)!important;padding:0 4px}
+/* Boss spricht im Bossrahmen (Zeile unter der Zauberleiste) statt als Blase in der Welt */
+.bf-say{display:flex;align-items:center;gap:5px;min-width:0;margin-top:3px;padding:1px 6px 1px 2px;border-radius:6px;background:#1c1712aa}
+.bf-say[hidden]{display:none}
+.bf-say q{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:italic 700 12px/1.3 var(--read);color:#f3e6cc;quotes:'„' '“'}
+.touch-mode .bf-say q{font-size:11px}
+/* Erinnerungskarte tritt im Dungeon-Kampf und in der Boss-Arena zurück (kommt danach wieder); neue warten (memory-seen.js) */
+body:is(.dg-fight,.dg-arena) .memory-card{visibility:hidden!important}

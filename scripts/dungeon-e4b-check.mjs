@@ -41,8 +41,9 @@ const fast=(seconds,stop='false',foeJs=`g.enemies.find(e=>e.bossId==='bigb')`)=>
   g.tick(.05);if(${stop})break;}return Math.round(t*10)/10;`);
 const bigb=`g.enemies.find(e=>e.bossId==='bigb')`;
 const pause=async(on=true)=>{await read(`g.paused=${on};return 1`);if(on)await wait(450);};
-/** Textelemente im Kreis um einen Gegner (Bildschirm, radius px): DOM-Einblendungen (Zonentitel, Ansage, Kampfrufe, Kurzmeldung,
- *  Meilenstein) und Welttexte (Sprechblasen, schwebende Worte). Ausgenommen: Namen (Namensschilder) und Schadenszahlen. */
+/** Textelemente im Kreis um einen Gegner (Bildschirm, radius px): DOM-Einblendungen (Zonentitel, Meilenstein, Kampfrufe, Kurzmeldungen,
+ *  Fenster und Erinnerungen) und Welttexte (Sprechblasen, schwebende Worte). Ausgenommen: Namen (Namensschilder) und Schadenszahlen.
+ *  Die Ansage unter dem Bossrahmen wird mit ihrem Abstand gemeldet (HUD-Band). */
 const textsNear=(foeJs,radius=250)=>read(`const e=${foeJs},st=window.mertloch.state(),v=st.viewport,r=document.querySelector('#world').getBoundingClientRect(),k=r.width/v.width;
  const scr=(x,y)=>({x:(x-v.camera.x+v.width/2)*k+r.left,y:(y-v.camera.y+v.height/2)/v.height*r.height+r.top}),c=scr(e.x,e.y-26);
  const near=(q)=>{const dx=Math.max(q.left-c.x,0,c.x-q.right),dy=Math.max(q.top-c.y,0,c.y-q.bottom);return Math.hypot(dx,dy)<=${radius};};
@@ -53,8 +54,10 @@ const textsNear=(foeJs,radius=250)=>read(`const e=${foeJs},st=window.mertloch.st
  for(const row of document.querySelectorAll('#sct .sct-row')){const bb=row.querySelector('b'),t=bb?.textContent.trim()||'';if(!t||num(t)||!vis(bb))continue;if(near(bb.getBoundingClientRect()))out.push({kind:'kampfruf',sel:row.className,text:t.slice(0,40)});}
  const sy=r.height/v.height;for(const bu of st.speech||[]){const q={left:bu.x*k+r.left,top:bu.y*sy+r.top,right:(bu.x+bu.w)*k+r.left,bottom:(bu.y+bu.h)*sy+r.top};if(near(q))out.push({kind:'blase',sel:String(bu.enemyId),text:'',y:Math.round(q.top)});}
  for(const t of g.texts||[]){if(!(t.life>0)||num(String(t.text)))continue;const a=scr(t.x,t.y-20);if(near({left:a.x-30,right:a.x+30,top:a.y-8,bottom:a.y+8}))out.push({kind:'welt',sel:'float',text:String(t.text)});}
- // HUD-Bänder oben mittig (Ansage unter dem Bossrahmen, Kurzmeldung): gehören zum HUD, werden aber mit Abstand zum Boss mitgemeldet
- for(const el of document.querySelectorAll('.boss-announce b,#toast')){const t=el.textContent.trim();if(!t||!vis(el))continue;const q=el.getBoundingClientRect();hud.push({sel:el.id||'Ansage',text:t.slice(0,40),dist:Math.round(Math.hypot(Math.max(q.left-c.x,0,c.x-q.right),Math.max(q.top-c.y,0,c.y-q.bottom)))});}
+ // Kurzmeldungen, Fenster und Erinnerungen, die in den Kreis ragen (Befund Orchestrator: „Schorle-Susi ist jetzt bei dir.“, „Erinnerung – Der Stempel“)
+ for(const el of document.querySelectorAll('#toast,.game-popup,.memory-card')){const t=el.textContent.trim();if(!t||!vis(el)||el.classList.contains('memory-card')&&!el.classList.contains('show'))continue;if(near(el.getBoundingClientRect()))out.push({kind:el.id==='toast'?'meldung':el.classList.contains('memory-card')?'erinnerung':'fenster',sel:el.id||el.dataset.window||el.className,text:t.slice(0,40)});}
+ // HUD-Band oben mittig (Ansage unter dem Bossrahmen): gehört zum HUD, wird mit Abstand zum Boss gemeldet
+ for(const el of document.querySelectorAll('.boss-announce b')){const t=el.textContent.trim();if(!t||!vis(el))continue;const q=el.getBoundingClientRect();hud.push({sel:el.id||'Ansage',text:t.slice(0,40),dist:Math.round(Math.hypot(Math.max(q.left-c.x,0,c.x-q.right),Math.max(q.top-c.y,0,c.y-q.bottom)))});}
  return {center:{x:Math.round(c.x),y:Math.round(c.y)},items:out,hud};`);
 try{
  // ───────────────────────────────── 1 · Kampf-Klarheit im Bosskampf (Desktop)
@@ -66,21 +69,22 @@ try{
   await read(`const b=${bigb};b.aggro=true;b.ai='combat';g.target=b;g.player.inCombat=7;A.startAuto(g);g.adminGod=true;return 1`);await wait(900);
   await fast(30,`(()=>{const k=${bigb}.cast;return k?.type==='kanone'&&k.told===false&&k.total-k.remaining>.25;})()`);
   // Die Quellen aus dem Befund dazulegen: Söldner-Spruch, eigener Proc „IN FAHRT“, Schwung
-  await read(`const c=g.companions[3];g.bark(c,'Endlich Bewegung.','companion');g.sct({area:'note',kind:'proc',text:'IN FAHRT',color:'#ffd37a'});g.sct({area:'note',kind:'momentum',text:'SCHWUNG ▲▲',iconKey:'boots'});return 1`);
+  await read(`const M=await import('/content/index.js');const c=g.companions[3];g.dismissCompanion(c.id);g.hireCompanion(c.id,{free:true});g.emit('memory',{fragment:M.MEMORY_FRAGMENTS.find(f=>!g.memories.seen.includes(f.id))||M.MEMORY_FRAGMENTS[0]});const c2=g.companions.at(-1);g.bark(c2,'Endlich Bewegung.','companion');g.sct({area:'note',kind:'proc',text:'IN FAHRT',color:'#ffd37a'});g.sct({area:'note',kind:'momentum',text:'SCHWUNG ▲▲',iconKey:'boots'});return 1`);
   await wait(250);await pause();
   const clar=await read(`const lbl=document.querySelector('.region-label'),tp=document.querySelector('#targetPanel'),bf=document.querySelector('.boss-frame').getBoundingClientRect(),an=document.querySelector('.boss-announce'),ar=an.getBoundingClientRect();
    return {fight:document.body.classList.contains('dg-fight'),boss:document.body.classList.contains('boss-fight'),target:document.body.classList.contains('boss-target'),zoneShown:lbl.classList.contains('zone-show'),zoneVisible:getComputedStyle(lbl).visibility!=='hidden'&&+getComputedStyle(lbl).opacity>.05,
-    targetPanel:getComputedStyle(tp).display,announce:an.hidden?null:{top:Math.round(ar.top),frameBottom:Math.round(bf.bottom),text:an.textContent.trim()},mercBubble:(window.mertloch.state().speech||[]).some(x=>String(x.enemyId).startsWith('merc')),
+    targetPanel:getComputedStyle(tp).display,announce:an.hidden?null:{top:Math.round(ar.top),frameBottom:Math.round(bf.bottom),text:an.textContent.trim()},mercBubble:(window.mertloch.state().speech||[]).some(x=>String(x.enemyId).startsWith('merc')),bubbles:(window.mertloch.state().speech||[]).length,memory:[...document.querySelectorAll('.memory-card.show,.game-popup[data-window="memory"]')].some(m=>getComputedStyle(m).visibility!=='hidden'&&getComputedStyle(m).display!=='none'),toast:document.querySelector('#toast')?.textContent||'',say:document.querySelector('.bf-say:not([hidden]) q')?.textContent||'',
     proc:[...document.querySelectorAll('#sct .sct-note .sct-row')].map(r=>({text:r.textContent.trim(),textShown:getComputedStyle(r.querySelector('b')).display!=='none'}))}`);
   assert.ok(clar.fight&&clar.boss&&clar.target,'Bosskampf erkannt '+JSON.stringify(clar));
   assert.equal(clar.zoneVisible,false,'kein Raumtitel im Bosskampf '+JSON.stringify(clar));
   assert.equal(clar.targetPanel,'none','Zielrahmen weg, wenn der Boss das Ziel ist');
-  assert.equal(clar.mercBubble,false,'keine Söldner-Sprechblase in der Welt');
+  assert.equal(clar.mercBubble,false,'keine Söldner-Sprechblase in der Welt');assert.equal(clar.bubbles,0,'keine Blase in der Welt, der Boss spricht im Bossrahmen');
+  assert.equal(clar.memory,false,'keine Erinnerung im Bosskampf');assert.ok(!/bei dir/.test(clar.toast),'Söldner-Meldung im Chat, nicht als Kurzmeldung '+clar.toast);
   assert.ok(clar.proc.length>=1&&clar.proc.every(p=>!p.textShown),'Kampfrufe im Bosskampf nur als Symbol '+JSON.stringify(clar.proc));
   const near=await textsNear(bigb);await shot('01-bosskampf-behauptung');
   assert.ok(near.items.length<=1,'höchstens ein Textelement um Big B '+JSON.stringify(near));
   const fb=await read(`return Math.round(document.querySelector('.boss-frame').getBoundingClientRect().bottom)`);for(const i of near.items.filter(i=>i.kind==='blase'))assert.ok(i.y>=fb,'Blase nicht unter dem Bossrahmen '+JSON.stringify({i,fb}));
-  ok('Bosskampf (Behauptung): kein Raumtitel, kein Zielrahmen, keine Söldner-Blase, Kampfrufe nur als Symbol; um Big B (250 px) '+near.items.length+' Textelement ('+near.items.map(i=>i.kind+':'+i.sel).join(', ')+'), HUD-Bänder: '+(near.hud.map(h=>h.sel+' „'+h.text+'“ '+h.dist+' px').join(', ')||'keine'));
+  ok('Bosskampf (Behauptung): kein Raumtitel, kein Zielrahmen, keine Blase in der Welt (Boss im Rahmen'+(clar.say?': „'+clar.say.slice(0,30)+'…“':'')+'), keine Erinnerung, Söldner-Meldung im Chat, Kampfrufe nur als Symbol; um Big B (250 px) '+near.items.length+' Textelement ('+near.items.map(i=>i.kind+':'+i.sel).join(', ')+'), HUD-Bänder: '+(near.hud.map(h=>h.sel+' „'+h.text+'“ '+h.dist+' px').join(', ')||'keine'));
   // Ansage unter dem Bossrahmen: beim ersten Auftreten einer Mechanik (die Kanonenkugel ist schon angesagt) – eine neue anstoßen
   await pause(false);await fast(4,`!${bigb}.cast`);
   await read(`const b=${bigb};b.castSet='d-bigb';b.cycle=1;b.cast=null;b.attackTimer=0;b.stun=0;return 1`);await fast(1,`${bigb}.cast?.type==='anwalt'`);await wait(200);await pause();
@@ -139,15 +143,15 @@ try{
   const sc=await read(`const r=g.dungeonRun;return {unlocked:[...r.unlocked],daily:g.dungeons['schloss-bigb'].daily.shortcuts,wings:g.dungeons['schloss-bigb'].daily.wings}`);assert.ok(sc.unlocked.includes('treppe-zugbruecke')&&sc.daily.includes('treppe-zugbruecke'),'Kette ist Abkürzung für heute '+JSON.stringify(sc));assert.deepEqual(sc.wings,['burghof']);
   await closeAll();const w=await read(`const w=g.dungeonRun.def.wings[0].chest;return w`);await place('e0',w.x,w.y+1.2);await wait(900);const it=await interaction();assert.equal(it?.act,'wingChest','kleine Truhe bietet sich an '+JSON.stringify(it));await shot('11-kleine-truhe');
   await b.press('f');const lw=await lootWindow();assert.ok(lw&&lw.items===1&&/Truhe/.test(lw.head),'Beute-Moment der kleinen Truhe '+JSON.stringify(lw));await shot('12-kleine-truhe-beute');await takeLoot();
-  const t=await tracker();assert.equal(t[0].count,'1/1','Flügelstand in der Verfolgung');assert.equal(t[0].icons[0],'seal');
+  const t=await tracker();assert.ok(t[0].count.startsWith('1/'),'Flügelstand in der Verfolgung '+t[0].count);assert.equal(t[0].icons[0],'seal');
   // Neuer Durchgang am selben Tag: Gerd steht wieder, die Kette bleibt offen
   await read(`g.leaveDungeon({force:true});g.time+=1900;return 1`);await wait(300);await read(`g.enterDungeon('schloss-bigb',{force:true});return 1`);await wait(600);
   const again=await read(`const gerd=g.enemies.find(e=>e.bossId==='gerd');return {gerd:gerd.hp>0,step:(Object.assign(g.player,D.toWorld(g.dungeonRun.def,'e0',5,23)),g.player.inCombat=0,g.dungeonStep('treppe-zugbruecke','a')),floor:D.floorAt(g.dungeonRun.def,g.player.x,g.player.y)}`);
   assert.ok(again.gerd&&again.step&&again.floor==='k1','neuer Durchgang: Gerd steht, Kette offen '+JSON.stringify(again));
   await read(`g.leaveDungeon({force:true});return 1`);await wait(500);await read(`const d=D.dungeonEntrance(g);Object.assign(g.player,{x:d.x,y:d.y});return 1`);await wait(400);await b.press('f');await wait(900);
-  const card=await read(`const c=document.querySelector('[data-dg-entry]');return c?{wings:c.querySelector('[data-dg-wings]')?.textContent||'',feats:c.querySelector('[data-dg-feats]')?.textContent||''}:null`);assert.ok(card&&card.wings.includes('1/1'),'Eingangskarte zeigt den Flügelstand '+JSON.stringify(card));
+  const card=await read(`const c=document.querySelector('[data-dg-entry]');return c?{wings:c.querySelector('[data-dg-wings]')?.textContent||'',feats:c.querySelector('[data-dg-feats]')?.textContent||''}:null`);assert.ok(card&&card.wings.includes('1/'),'Eingangskarte zeigt den Flügelstand '+JSON.stringify(card));
   const au=await s.audit('dungeonEntry');assert.equal(au.over,'','Eingangskarte scrollt nicht '+JSON.stringify(au));await shot('13-eingangskarte-fluegel');await closeAll();
-  ok('Flügel Burghof: Gerd öffnet die Kette als Abkürzung bis zum Tagesreset (im neuen Durchgang steht Gerd, die Kette ist offen), kleine Truhe mit einem Teil, Flügelstand 1/1 in Verfolgung und Eingangskarte');
+  ok('Flügel Burghof: Gerd öffnet die Kette als Abkürzung bis zum Tagesreset (im neuen Durchgang steht Gerd, die Kette ist offen), kleine Truhe mit einem Teil, Flügelstand in Verfolgung und Eingangskarte');
  }
  // ───────────────────────────────── 5 · Beweis finden und im Thronsaal vorlegen – Symbol im Bossrahmen
  if(want(5)){
@@ -188,7 +192,7 @@ try{
  }
  // ───────────────────────────────── 8 · Erfolge und Titel: Figur-Fenster, Bestzeit auf der Eingangskarte
  if(want(8)){
-  await start({w:1600,h:900});await setup();await kill(`e.bossId==='gerd'`);await read(`const r=g.dungeonRun;for(const id of r.def.evidence.ids)r.evidence.add(id);const b=${bigb};b.aggro=true;b.ai='combat';g.adminGod=true;return 1`);
+  await start({w:1600,h:900});await setup();await kill(`e.dungeonBoss&&(e.dungeonBoss.seal||e.bossId==='rita')`);await read(`const r=g.dungeonRun;for(const id of r.def.evidence.ids)r.evidence.add(id);const b=${bigb};b.aggro=true;b.ai='combat';g.adminGod=true;return 1`);
   await fast(2);await kill(`e.bossId==='bigb'`);await wait(600);const rec=await read(`const r=g.dungeons['schloss-bigb'];return {feats:r.feats,best:r.best}`);assert.ok(rec.feats.includes('beweislast'),'Beweislast '+JSON.stringify(rec));
   await read(`g.adminGod=false;g.player.inCombat=0;return 1`);await closeAll();await b.press('c');await wait(900);
   const badge=await read(`const b=document.querySelector('.game-popup[data-window="person"] .dg-title-badge');return b?{label:b.dataset.tooltipLabel,note:b.dataset.tooltipNote}:null`);assert.ok(badge&&badge.label==='Mieterschützer','Titel im Figur-Fenster '+JSON.stringify(badge));

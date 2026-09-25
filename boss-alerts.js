@@ -48,7 +48,7 @@ function trashCasts(g,boss){const p=g.player,out=[];for(const e of g.enemies){if
 export function mountBossAlerts({game,shell=document.querySelector('#gameShell'),openJournal=()=>{}}={}){
  if(!shell)return null;
  const root=document.createElement('div');root.className='boss-hud';root.hidden=true;root.setAttribute('aria-label',U.alerts.label);
- root.innerHTML=`<section class="boss-frame" hidden><button type="button" class="bf-face" data-boss-journal aria-label="${esc(U.alerts.journal)}" data-tooltip-label="${esc(U.alerts.journal)}" data-tooltip-note="">${dicon('skull',26)}</button><div class="bf-main"><div class="bf-name"><b></b><span class="bf-pct"></span></div><div class="bf-bar"><i></i></div><div class="bf-status" hidden></div><div class="bf-cast" hidden><span class="bf-cast-ico"></span><b></b><kbd hidden></kbd><span class="bf-cast-time"></span><i></i></div></div></section>
+ root.innerHTML=`<section class="boss-frame" hidden><button type="button" class="bf-face" data-boss-journal aria-label="${esc(U.alerts.journal)}" data-tooltip-label="${esc(U.alerts.journal)}" data-tooltip-note="">${dicon('skull',26)}</button><div class="bf-main"><div class="bf-name"><b></b><span class="bf-pct"></span></div><div class="bf-bar"><i></i></div><div class="bf-status" hidden></div><div class="bf-cast" hidden><span class="bf-cast-ico"></span><b></b><kbd hidden></kbd><span class="bf-cast-time"></span><i></i></div><div class="bf-say" hidden><span class="bf-say-ico"></span><q></q></div></div></section>
 <section class="boss-alerts" aria-live="polite"></section><div class="boss-announce" hidden><span></span><b></b></div>`;
  shell.append(root);
  const frame=root.querySelector('.boss-frame'),list=root.querySelector('.boss-alerts'),announceEl=root.querySelector('.boss-announce');
@@ -124,6 +124,10 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
    const said=boss.saidPhases?.size||0;if(said>phases){phases=said;const def=DUNGEON_BOSSES[boss.bossId],ph=[...(def?.phases||[])].sort((a,b)=>b.at-a.at)[said-1];announce(ph?.summon?'trait-summon':'boss',U.alerts.phase(said+1).toUpperCase()+(ph?.summon?' · '+U.traits.summon.name.toUpperCase():''));frame.classList.remove('bf-phase');void frame.offsetWidth;frame.classList.add('bf-phase');}}
   for(const t of trash)rows.push(row(t,g,now));
   paintRows([...flashes.map(f=>f.row),...rows].slice(0,3),g);place();
+  /* Etappe 4 Teil B (Befund Orchestrator): Im Bosskampf spricht der Boss im Bossrahmen (Zeile unter der Zauberleiste, 4 s), nicht als Blase in der
+     Welt – so kollidiert sie nie mit der Ansage. Behauptung und Nachsatz stehen schon in der Zauberleiste und doppeln sich hier nicht. */
+  {const say=frame.querySelector('.bf-say'),lb=boss?.lastBark,k=boss?.cast,dup=lb&&(lb.text===k?.claimText||lb.text===k?.truthText),on=!!lb&&g.time-lb.at<4&&!dup;say.hidden=!on;if(on&&say.dataset.text!==lb.text){say.dataset.text=lb.text;say.querySelector('q').textContent=lb.text;const ico=say.querySelector('.bf-say-ico');if(!ico.firstChild){ico.innerHTML=dicon('speaker',16);paintDungeonIcons(ico);}}}
+  if(!announceEl.hidden&&!frame.hidden){const fr=frame.getBoundingClientRect();announceEl.style.top=Math.round(fr.bottom+8)+'px';}/* die Ansage bleibt unter dem Rahmen, auch wenn er wächst */
   if(announceUntil&&now>announceUntil){announceEl.hidden=true;announceUntil=0;}
   state={visible:true,boss:boss?.bossId||null,rows:rows.map(r=>({key:r.key,hint:r.hint,name:r.name,time:+r.time.toFixed(2),active:r.active,lie:r.lie||'',track:r.track,firstSeen:shownAt.get(r.key)})),frame:!frame.hidden,cast:frame.querySelector('.bf-cast b')?.textContent||'',status:statusKey,interrupted:interruptFlashes()};
  }

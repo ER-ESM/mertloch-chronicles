@@ -78,7 +78,7 @@ export function hitCompanion(g,e,c,n){
 function down(g,c){
  c.channel=null;c.state='down';c.aidBuff=null;c.aidHot=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
  for(const e of g.enemies)clearThreat(e,c.id);
- g.toast(T.down(c.name));if(c.def.lines?.down)g.bark?.(c,c.def.lines.down,'companion');g.emit('companion',{type:'down',id:c.id});
+ statusNote(g,T.down(c.name));if(c.def.lines?.down)g.bark?.(c,c.def.lines.down,'companion');g.emit('companion',{type:'down',id:c.id});
 }
 
 /** Gegner-KI gegen einen Begleiter – Gegenstück zum Spieler-Zweig in Game.tick(). true = Gegner ist für diesen Takt versorgt. */
@@ -304,7 +304,7 @@ function tickOne(g,c,dt){
  for(const key of ['guard','hurt','attack','castPose','inCombat'])c[key]=Math.max(0,(c[key]||0)-dt);
  if(c.contract!=null){c.contract-=dt;if(c.contract<=0){dismissCompanion(g,c.id,'expired');return;}}
  c.moving=false;
- if(c.state==='down'){if(g.time>=c.downUntil&&!g.enemies.some(e=>fighting(e)&&distance(e,g.player)<R.assistRange)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));g.toast(T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
+ if(c.state==='down'){if(g.time>=c.downUntil&&!g.enemies.some(e=>fighting(e)&&distance(e,g.player)<R.assistRange)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
  for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
  const p=g.player,far=distance(c,p);
  if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}
@@ -362,6 +362,9 @@ export function partyOverflow(me,mine,others){const all=[{name:me,ids:mine},...o
 /** Liste fürs Schwarze Brett: [{def,cost,hired,affordable,free}] */
 export function companionOffers(g){const cost=companionCost(g.player.level);return COMPANIONS.filter(d=>d.kind==='merc').map(def=>({def,cost,hired:g.companions.some(c=>c.id===def.id),affordable:(g.rpg.coins||0)>=cost,free:companionSlots(g)>0}));}
 const fail=(g,text)=>{g.toast(text);return {ok:false,message:text};};
+/** Dungeon Etappe 4 Teil B (Befund Orchestrator): Söldner-Statusmeldungen (angeheuert, am Boden, wieder auf, entlassen) stehen im Dungeon
+ *  und im Kampf nur im Chat – nicht als Kurzmeldung über der Bildmitte; der Truppenrahmen zeigt den Stand ohnehin. */
+function statusNote(g,text){const p=g.player,busy=inDungeon(g)||p?.inCombat>0||(g.enemies||[]).some(e=>e.hp>0&&e.aggro&&e.ai==='combat'&&distance(e,p)<560);if(busy&&g.log)g.log(text);else g.toast(text);}
 
 export function hireCompanion(g,id,{free=false}={}){
  const def=companionById(id);if(!def)return fail(g,T.unknown);
@@ -369,12 +372,12 @@ export function hireCompanion(g,id,{free=false}={}){
  if(companionSlots(g)<=0)return fail(g,(g.partyHumans||0)>0?T.partyFull:T.full);
  const cost=def.kind==='merc'&&!free?companionCost(g.player.level):0;if((g.rpg.coins||0)<cost)return fail(g,T.money);
  g.rpg.coins-=cost;const c=create(g,def);g.companions.push(c);
- g.toast(T.hired(c.name));if(def.lines?.hire)g.bark?.(c,def.lines.hire,'companion');g.emit('companion',{type:'hired',id});g.emit('save');return {ok:true,companion:c,cost};
+ statusNote(g,T.hired(c.name));if(def.lines?.hire)g.bark?.(c,def.lines.hire,'companion');g.emit('companion',{type:'hired',id});g.emit('save');return {ok:true,companion:c,cost};
 }
 export function dismissCompanion(g,id,reason='dismissed'){
  const c=g.companions.find(x=>x.id===id);if(!c)return {ok:false};
  if(g.friend?.ref===c)g.friend=null;g.companions=g.companions.filter(x=>x!==c);for(const e of g.enemies)clearThreat(e,id);
- g.toast((reason==='expired'?T.expired:reason==='party'?T.partyLeave:T.dismissed)(c.name));if(reason!=='expired'&&c.def.lines?.dismiss)g.bark?.(c,c.def.lines.dismiss,'companion');g.emit('companion',{type:reason,id});g.emit('save');return {ok:true};
+ statusNote(g,(reason==='expired'?T.expired:reason==='party'?T.partyLeave:T.dismissed)(c.name));if(reason!=='expired'&&c.def.lines?.dismiss)g.bark?.(c,c.def.lines.dismiss,'companion');g.emit('companion',{type:reason,id});g.emit('save');return {ok:true};
 }
 /** Befehl an einen (id) oder alle: 'follow' | 'stay' | 'attack' (= aktuelles Ziel des Spielers, auch ohne dass es schon kämpft). */
 export function orderCompanions(g,order,id){if(!T.orders[order])return false;for(const c of g.companions)if(!id||c.id===id){c.order=order;c.target=null;c.retarget=0;}g.toast(T.orderSet(T.orders[order]));g.emit('companion',{type:'order',order,id:id||null});return true;}
