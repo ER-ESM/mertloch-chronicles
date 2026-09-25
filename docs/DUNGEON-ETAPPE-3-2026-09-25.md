@@ -4,6 +4,8 @@ Grundlage: E-71 (`docs/ENTSCHEIDUNGEN.md`), Bauplan Etappe 3 und die Verbesserun
 `docs/DUNGEON-ANALYSE-2026-09-24.md`, Planung 7.6, 8, 9, 11, 13 und 4.3 aus `docs/DUNGEON-SCHLOSS-BIG-B-2026-09-23.md`.
 Zweig `dungeon-e3`, Worktree `D:\Dev\MertlochChronicles-dg-e3`, auf Etappe 1 (Build #556) und Etappe 2 (Build #559, ac87c87) aufgesetzt.
 
+Live: Build #561 (d9c7de9c) seit 2026-09-25, Commits 766058fd (Etappe 3) und d9c7de9c (Bericht).
+
 ## Kurzfassung
 
 - **Der Dungeon hat zum ersten Mal ein Ende:** Eingang → Gerd → Tresortür → Big B → Endtruhe → Hinterausgang.
