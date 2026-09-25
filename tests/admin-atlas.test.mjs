@@ -16,8 +16,8 @@ test('shop filters draw a clickable kiosk marker at its entrance on full and min
  const ctx=new Proxy({measureText:s=>({width:s.length*6})},{get:(o,k)=>o[k]||(()=>{})});
  for(const full of [true,false])for(const filter of ['all','shop']){
   const canvas={width:780,height:580,getContext:()=>ctx};drawAtlas({world:w,game:g},canvas,full,null,{filter});
-  assert.equal(canvas.atlasHits.length,1,'the kiosk must actually be drawn, not only listed');
-  const hit=canvas.atlasHits[0],v=canvas.atlasView;assert.equal(hit.id,'shop:kalle');
+  /* Etappe 2: der Dungeon-Eingang steht jetzt ebenfalls auf der Karte (Ersatzplatz neben dem Start) – geprüft wird der Kiosk selbst */
+  const hit=canvas.atlasHits.find(h=>h.id==='shop:kalle'),v=canvas.atlasView;assert.ok(hit,'the kiosk must actually be drawn, not only listed');
   assert.equal(hit.x,(kiosk.entrance.x-v.ox)*v.scale);assert.equal(hit.y,(kiosk.entrance.y-v.oy)*v.scale);
   assert.ok(Number.isFinite(hit.x)&&Number.isFinite(hit.y));
  }

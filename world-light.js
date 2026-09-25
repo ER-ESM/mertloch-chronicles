@@ -4,6 +4,7 @@ import {LIGHT} from './light-convention.js';
 import {LIGHTING as L} from './content/index.js';
 import {insideHouse} from './world-house.js';
 import {garlandBulbs} from './bude-house-art.js';
+import {dungeonEntrance} from './dungeon.js';
 const canvas=(w,h)=>{const cv=document.createElement('canvas');cv.width=Math.max(1,Math.ceil(w));cv.height=Math.max(1,Math.ceil(h));return cv;};
 const norm=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),DX=LIGHT.dir.x/norm,DY=LIGHT.dir.y/norm,ANGLE=Math.atan2(DY*LIGHT.shadow.squash,DX);
 const rgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255),MID=.45;
@@ -70,6 +71,7 @@ export class WorldLight{
   for(const k of world.camps)if(k.type!=='wolf')add('campfire',k.x+19,k.y+19);
   for(const b of world.buildings)if(b.door)add(b===world.church||b.church?'church':'door',b.door.x,b.maxY);
   if(world.shrine)add('shrine',world.shrine.x,world.shrine.y);
+  /* Etappe 2 Dungeon: Portal unter dem Rolltor von Schloss Big B */if(!game.instance){let d=null;try{d=dungeonEntrance(game);}catch{}if(d)add('portal',d.x,d.y);}
   for(const z of game.fields||[])if(z.kind==='burn'&&z.remaining>0)add('burn',z.x,z.y,Math.max(.6,z.radius/60));
   for(const f of game.fx||[])if(['burst','impact','interrupt','levelup'].includes(f.type)&&f.max)add('flash',f.x,f.y,.5+f.life/f.max);
   // Innenlicht der Bude: Lampen des Baukastens (`light`), Glut im Ofen, Tageslicht durchs Dachloch – nur solange man drinnen ist.

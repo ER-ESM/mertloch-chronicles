@@ -9,6 +9,8 @@ import {hotspotMapMarks} from './hotspots.js';
 import {chapterAreas} from './quest-mobs.js';
 import {HOTSPOT_UI,WORLD_MAP_UI,STORY_CHAPTERS} from './content/index.js';
 import {mapIcon} from './map-symbols.js';
+import {DUNGEONS,DUNGEON_UI} from './content/index.js';
+import {dungeonEntrance} from './dungeon.js';
 
 // Orte der Weltkarte und Ortsliste. Runde 4a (2026-09-24): jede Ortsart hat eine Gruppe (Filter) und ein Symbol aus map-symbols.js –
 // dieselben Symbole wie auf der Minikarte, keine Ziffern (Lager, Treffpunkte) und keine Buchstaben (W/B/R/K) mehr.
@@ -29,10 +31,15 @@ export function mapPlaces(g){
  const quests=g.hotspots?hotspotMapMarks(g).givers.map(m=>({id:m.id,kind:'quest',group:'quest',icon:m.glyph==='?'?'quest-ready':m.glyph==='low'?'quest-low':'quest',number:m.glyph==='low'?'!':m.glyph,low:m.glyph==='low',ready:m.glyph==='?',title:m.name,point:{x:m.x,y:m.y},detail:(m.glyph==='?'?HOTSPOT_UI.mapReady:HOTSPOT_UI.mapGiver)+' · '+m.title,quest:m.title})):[];
  const trainers=g.world.spawn&&g.world.findClear?professionWorld(g.world).stations.map(s=>({id:'shop:profession:'+s.id,kind:'shop',group:'trainer',icon:s.id==='werkhof'?'trainer-werkhof':'trainer-braugarten',title:PST[s.id].name,point:s,detail:PT.teachers})):[];
  const stable=g.world.spawn&&g.world.findClear?[{id:'shop:mounts',kind:'shop',group:'shop',icon:'stable',title:MOUNT_UI.station,point:mountStation(g.world),detail:MOUNT_UI.title}]:[];
- return [...quests,...hubs,...camps,...shops,...trainers,...stable];
+ return [...quests,...dungeonPlaces(g),...hubs,...camps,...shops,...trainers,...stable];
 }
+/** Etappe 2 (E-71, Kenner-Playtests 1 und 2: „Dungeon unsichtbar“): Eingänge stehen immer auf der Karte, unter der Einlassstufe grau
+ *  (WoW: Dungeon-Symbole locken auch zu Niedrige). Titel, Stufenband und Gruppengröße stehen im Tooltip und in der Ortsliste. */
+export function dungeonPlaces(g){const out=[];for(const [id,def] of Object.entries(DUNGEONS)){let door=null;try{door=dungeonEntrance(g,id);}catch{}if(!door)continue;const low=(g.player?.level||1)<def.level.enter;
+ out.push({id:'dungeon:'+id,kind:'dungeon',group:'dungeon',dungeon:id,icon:low?'dungeon-low':'dungeon',title:def.name,point:{x:door.x,y:door.y},low,level:{min:def.level.min,max:def.level.max},enter:def.level.enter,heads:def.group.size,detail:DUNGEON_UI.where});}
+ return out;}
 /** Wichtigkeit beim Bündeln: Aufträge vor Treffpunkten vor Diensten vor Lagern (das wichtigste Symbol steht für das Bündel). */
-export const PLACE_PRIO={quest:4,hub:3,shop:2,trainer:2,camp:1};
+export const PLACE_PRIO={quest:4,dungeon:3.5,hub:3,shop:2,trainer:2,camp:1};
 /** Marker bündeln (WoW-Weltkarte): Symbole näher als `radius` Bildpunkte werden eine Gruppe mit Zahl. Rein, testbar.
  *  items: [{x,y,prio?}] in Bildschirmkoordinaten → [{x,y,members}]; danach liegen alle Gruppenmitten mindestens `radius` auseinander. */
 export function clusterMarkers(items,radius=24){
@@ -106,7 +113,9 @@ function drawWorldLayer(c,canvas,g,W,H,pos,inside,options){
  for(const grp of groups){const lead=grp.members[0].place,one=grp.members.length===1,key=one?lead.id:'cluster:'+grp.members.map(m=>m.place.id).sort().join('|'),near=Math.hypot(grp.x-me.x,grp.y-me.y)<NEAR_PLAYER,alpha=near?.5:1;
   const selected=grp.members.some(m=>m.place.id===options.selected);
   if(options.hover===key||selected)halo(grp.x,grp.y,one?14:15,selected&&options.hover!==key?'#ffe4a2':'#fff3c4');
-  if(one)draw(lead.icon,grp.x,grp.y,ICON,alpha);
+  if(one)draw(lead.icon,grp.x,grp.y,lead.group==='dungeon'?ICON+6:ICON,alpha);
+  /* Etappe 2 (E-71): führt ein Dungeon das Bündel, bleibt sein Symbol groß stehen – die Zahl sitzt klein daneben (Eingang nie im Bündel versteckt) */
+  else if(lead.group==='dungeon'){draw(lead.icon,grp.x,grp.y,ICON+6,alpha);c.save();c.globalAlpha=alpha;c.beginPath();c.arc(grp.x+11,grp.y-11,7,0,TAU);c.fillStyle='#1c1712';c.fill();c.beginPath();c.arc(grp.x+11,grp.y-11,5.8,0,TAU);c.fillStyle='#6b4526';c.fill();c.fillStyle='#fff3d6';c.font='900 9px Nunito,system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(String(grp.members.length),grp.x+11,grp.y-10.5);c.textBaseline='alphabetic';c.restore();}
   else{c.save();c.globalAlpha=alpha;c.beginPath();c.arc(grp.x,grp.y,12,0,TAU);c.fillStyle='#1c1712';c.fill();c.beginPath();c.arc(grp.x,grp.y,10.5,0,TAU);c.fillStyle='#6b4526';c.fill();c.strokeStyle='#f3e2b8';c.lineWidth=1.6;c.stroke();c.fillStyle='#fff3d6';c.font='900 12px Nunito,system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(String(grp.members.length),grp.x,grp.y+.5);c.textBaseline='alphabetic';
    /* Das wichtigste Symbol des Bündels klein oben rechts: man sieht, was drinsteckt */c.restore();draw(lead.icon,grp.x+10,grp.y-10,12,alpha);}
   if(grp.members.some(m=>m.place.quests)){c.save();c.globalAlpha=alpha;c.fillStyle='#f1cd77';c.strokeStyle='#1c1712';c.lineWidth=1.5;c.beginPath();c.arc(grp.x-9,grp.y-9,3.5,0,TAU);c.fill();c.stroke();c.restore();}

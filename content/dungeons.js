@@ -139,30 +139,31 @@ export const DUNGEON_BOSSES={
 
 // Zaubermuster der Dungeon-Gegner. Neue Merkmale (Plan Abschnitt 9): cone {angle (Grad), range (Einheiten)},
 // tankSafe (Anteil für Schutz-Specs und Parade), knockback (Einheiten), callHelp (Nachbargruppe kommt), healAllies,
-// frontGuard (Schildwall: Treffer von vorn gedämpft).
+// frontGuard (Schildwall: Treffer von vorn gedämpft). `hint` (Etappe 2): die Antwort in 2–3 Wörtern für Warnleiste und Journal –
+// sie stand früher hinter „ · “ im Namen und wurde im Zielrahmen abgeschnitten. Symbol und Tooltip kommen aus den Merkmalen (describeCast).
 export const DUNGEON_CASTS={
  'd-azubi':{cycle:['funk','schubser'],casts:{
-  funk:{name:'Funkspruch · Q unterbricht',total:2.2,damage:120,interruptible:true,callHelp:{range:240}},
-  schubser:{name:'Schubser · ausweichen',total:1.3,damage:180,radius:30,ground:true}}},
+  funk:{name:'Funkspruch',hint:'Unterbrechen',total:2.2,damage:120,interruptible:true,callHelp:{range:240}},
+  schubser:{name:'Schubser',hint:'Ausweichen',total:1.3,damage:180,radius:30,ground:true}}},
  'd-schuetze':{cycle:['wasser','wasser','spritzer'],casts:{
-  wasser:{name:'Wasserpistole · ausweichen',total:1.4,damage:160,radius:28,ground:true},
-  spritzer:{name:'Dauerspritzer · Q unterbricht',total:2.4,damage:240,interruptible:true}}},
+  wasser:{name:'Wasserpistole',hint:'Ausweichen',total:1.4,damage:160,radius:28,ground:true},
+  spritzer:{name:'Dauerspritzer',hint:'Unterbrechen',total:2.4,damage:240,interruptible:true}}},
  'd-ritter':{cycle:['hieb','schild','hieb'],casts:{
-  hieb:{name:'Regenrinnen-Hieb · nicht vor ihm stehen',total:1.6,damage:420,cone:{angle:80,range:60},tankSafe:.35},
-  schild:{name:'Schildwall · von hinten treffen',total:1,damage:0,frontGuard:{duration:5,factor:.2}}}},
+  hieb:{name:'Regenrinnen-Hieb',hint:'Nicht davor stehen',total:1.6,damage:420,cone:{angle:80,range:60},tankSafe:.35},
+  schild:{name:'Schildwall',hint:'Von hinten treffen',total:1,damage:0,frontGuard:{duration:5,factor:.2}}}},
  'd-makler':{cycle:['provision','expose'],casts:{
-  provision:{name:'Provision · Q unterbricht',total:2.4,damage:0,interruptible:true,healAllies:{share:.12,range:140}},
-  expose:{name:'Exposé verteilen · Fläche verlassen',total:2,damage:220,radius:40,ground:true}}},
+  provision:{name:'Provision',hint:'Unterbrechen',total:2.4,damage:0,interruptible:true,healAllies:{share:.12,range:140}},
+  expose:{name:'Exposé verteilen',hint:'Fläche verlassen',total:2,damage:220,radius:40,ground:true}}},
  'd-ratte':{cycle:['knabbern'],casts:{
   knabbern:{name:'Knabbern',total:.8,damage:60,radius:26}}},
  'd-gerd':{cycle:['liste','rausschmiss','dresscode','rausschmiss'],casts:{
-  liste:{name:'Du stehst nicht auf der Liste · Q unterbricht',total:2.4,damage:420,interruptible:true},
-  rausschmiss:{name:'Rausschmiss · nicht vor ihm stehen',total:1.8,damage:650,cone:{angle:70,range:88},tankSafe:.25,knockback:64},
-  dresscode:{name:'Dresscode-Kontrolle · Fläche verlassen',total:2.2,damage:380,radius:48,ground:true}}},
+  liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,interruptible:true},
+  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.8,damage:650,cone:{angle:70,range:88},tankSafe:.25,knockback:64},
+  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,radius:48,ground:true}}},
  'd-gerd2':{cycle:['rausschmiss','rausschmiss','liste','dresscode'],casts:{
-  liste:{name:'Du stehst nicht auf der Liste · Q unterbricht',total:2.4,damage:420,interruptible:true},
-  rausschmiss:{name:'Rausschmiss · nicht vor ihm stehen',total:1.4,damage:650,cone:{angle:70,range:88},tankSafe:.25,knockback:64},
-  dresscode:{name:'Dresscode-Kontrolle · Fläche verlassen',total:2.2,damage:380,radius:48,ground:true}}}
+  liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,interruptible:true},
+  rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.4,damage:650,cone:{angle:70,range:88},tankSafe:.25,knockback:64},
+  dresscode:{name:'Dresscode-Kontrolle',hint:'Fläche verlassen',total:2.2,damage:380,radius:48,ground:true}}}
 };
 
 // Texte (Story nimmt ab oder ersetzt; Ton E-20: erst die Behauptung, dann der Nachsatz).

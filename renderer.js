@@ -214,7 +214,7 @@ export class Renderer {
     // Boden, Steine und Schatten stehender Objekte kommen aus dem Zwischenspeicher (ground-cache.js); je Bild bleiben nur die wiegenden Blumen.
     const view={ox,oy,W,H},ground=this.ground||=new GroundCache();if(inDungeon(g))drawDungeonGround(c,g,view);else ground.draw(c,view,this.density,(lit?'licht':'ohne')+bakedGrade.filter+'|'+w.trees.length+'|'+w.props.length+'|'+w.buildings.length,(cc,r)=>this.paintGround(cc,r,lit));
     for(const prop of props)if(visible(prop,10)&&prop.type!=='rock'&&!FURNITURE.includes(prop.type))this.prop(c,prop);
-    if(!g.instance){const door=dungeonEntrance(g);if(door&&visible(door,80))drawDungeonEntrance(c,door);}
+    if(!g.instance){const door=dungeonEntrance(g);if(door&&visible(door,80))drawDungeonEntrance(c,door,g,time);}
     // Begehbares Haus (E-52): drinnen blendet das Dach aus, Böden und geschnittene Wände erscheinen.
     const house=w.base?.house,houseSeen=!!house&&house.maxX+70>ox&&house.minX-70<ox+W&&house.maxY+40>oy&&house.minY-house.heights.wall-house.heights.roof-40<oy+H;
     if(house){const inside=insideHouse(house,p.x,p.y)?1:0;this.houseFade=(this.houseFade??inside)+(inside-(this.houseFade??inside))*(1-Math.exp(-12*elapsed));if(Math.abs(this.houseFade-inside)<.01)this.houseFade=inside;}

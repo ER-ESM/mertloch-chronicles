@@ -131,7 +131,7 @@ export function enterDungeon(g,id='schloss-bigb',{force=false}={}){
  g.instance={id,kind:'dungeon',run,outside,outsidePosition:{x:(door||g.player).x,y:(door||g.player).y,facing:g.player.facing||1},time:0};
  g.world=dungeonWorld(outside.world,run);g.enemies=run.enemies;g.zones=[];g.fields=[];g.fx=[];g.texts=[];run.room=null;
  const at=run.checkpoint;place(g,toWorld(def,at.floor,at.x,at.y));
- g.emit?.('instanceChanged');g.toast?.(T.welcome);g.log?.(T.welcome);return true;
+ /* Etappe 2 Text-Diät: der Willkommenssatz steht im Übergang (dungeon-entry.js) und im Chat, nicht als Kurzmeldung über dem Zonentitel */g.emit?.('instanceChanged');g.log?.(T.welcome);return true;
 }
 /** Verlassen am Rolltor (force: überall, z. B. Neustart). Liegengebliebene Beute wird eingesammelt. */
 export function leaveDungeon(g,{force=false}={}){
@@ -143,7 +143,7 @@ export function leaveDungeon(g,{force=false}={}){
  g.world=o.world;g.enemies=o.enemies;g.zones=[];g.fields=[];g.fx=[];g.texts=[];
  (g.dungeonRuns||(g.dungeonRuns={}))[run.id]={run,leftAt:g.time};
  g.instance=null;Object.assign(g.player,{x:pos.x,y:pos.y,facing:pos.facing||1});
- g.emit?.('instanceChanged');g.emit?.('save');g.toast?.(T.outside);return true;
+ g.emit?.('instanceChanged');g.emit?.('save');g.log?.(T.outside);return true;
 }
 
 // ── Interaktion: Ausgang, Übergänge, Geheimnisse; draußen der Eingang ─────────────────────────────────────────

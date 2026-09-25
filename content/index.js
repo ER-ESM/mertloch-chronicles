@@ -55,6 +55,7 @@ export * from './unlocks.js';
 export * from './intro.js';
 export * from './class-buffs.js';
 export * from './dungeons.js';
+export * from './dungeon-ui.js';
 export * from './minimap.js';
 export * from './keybinds.js';
 export * from './options.js';

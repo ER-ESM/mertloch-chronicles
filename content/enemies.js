@@ -143,6 +143,8 @@ export function pickElite(townDistance,random=Math.random){
 export const familyOf=e=>e.family||(e.type==='boss'?'horst':e.skin==='goose'?'goose':e.skin==='badger'?'badger':e.type==='cultist'?'warden':'boar');
 // Balancing-Korrekturen (content/tuning.js) liegen über den Definitionen; Gameplay ändert hier Struktur, Balancing dort Zahlen.
 import {TUNING,applyTuning} from './tuning.js';
+import {castSymbols} from './combat.js';
+import {DUNGEON_CASTS} from './dungeons.js';
 for(const reg of [ARCHETYPES,ELITES,CAMP_ENEMIES,BOSSES])applyTuning(reg,TUNING.enemies);
 for(const [setId,casts] of Object.entries(TUNING.casts))if(CAST_SETS[setId])applyTuning(CAST_SETS[setId].casts,casts);
 
@@ -153,7 +155,7 @@ for(const [setId,casts] of Object.entries(TUNING.casts))if(CAST_SETS[setId])appl
 // steht schon im Zaubernamen hinter dem „·“ – ANSWER_INFO übersetzt sie in Begriff und Grundregel, CAST_INFO trägt nur
 // den zauberspezifischen Rest. Dieser Block steht bewusst NACH applyTuning: die Zahlen sollen die getunten sein.
 /** Antwort eines Zaubers aus seinem Namen („Hauerhieb · Parade“ → „Parade“). */
-export const answerOf=cast=>String(cast?.name||'').split('·').pop().trim();
+export const answerOf=cast=>cast?.hint||String(cast?.name||'').split('·').pop().trim();
 /** Die vier Antworten und ihre Grundregel – gilt für jeden Zauber, der sie im Namen trägt. */
 export const ANSWER_INFO={
  'Parade':{term:'parade',rule:'Parade: kurzer Schlag aus der Nähe, während der Zauberzeit pariert – das halbiert den Treffer und bringt den Gegner aus dem Takt.'},
@@ -227,16 +229,18 @@ export const CAST_INFO={
   trinkspruch:{effect:'Trinkspruch auf Bastian, fast drei Sekunden lang, dann der Einschlag.',why:'Ohne Unterbrechen sammelt er in jeder Phase 230 Schaden – mehr, als deine Verpflegung nachfüllt.',terms:['verpflegung']},
   pyramide:{effect:'Kotzpyramide XXL: der Radius deckt den halben Busbahnhof ab.',why:'Größte Fläche des Kapitels; sie kommt direkt nach dem Trinkspruch, also Weg schon vorher planen.'}}
 };
-/** Vollständige Erklärung eines Zaubers: Antwort, geschriebener Teil und die Zahlen aus der Definition. */
-export function describeCast(setId,castId){
- const c=CAST_SETS[setId]?.casts?.[castId];if(!c)return null;
+/** Vollständige Erklärung eines Zaubers: Antwort, geschriebener Teil und die Zahlen aus der Definition.
+ *  Etappe 2 (E-71): auch Dungeon-Zauber (DUNGEON_CASTS); dazu Symbol, Merkmale und Kurzzahlen aus den Merkmalen (castSymbols). */
+export function describeCast(setId,castId,{interrupt=true}={}){
+ const c=CAST_SETS[setId]?.casts?.[castId]||DUNGEON_CASTS[setId]?.casts?.[castId];if(!c)return null;
  const answer=answerOf(c);const a=ANSWER_INFO[answer];const base=CAST_INFO[setId]?.[castId]||{};
- const src='CAST_SETS.'+setId+'.'+castId;
+ const src=(CAST_SETS[setId]?'CAST_SETS.':'DUNGEON_CASTS.')+setId+'.'+castId;
  const numbers=[{label:'Zauberzeit',value:c.total,unit:'s',source:src+'.total'},
   {label:'Schaden',value:c.damage,unit:'Punkte',source:src+'.damage'}];
  if(c.radius)numbers.push({label:c.ground?'Flächenradius':'Trefferradius',value:c.radius,unit:'Einheiten (≈ '+(Math.round(c.radius/8*10)/10)+' m)',source:src+'.radius'});
  const terms=[...new Set([a?.term,...(base.terms||[]),'zauberzeit',...(c.interruptible?['unterbrechen']:[]),...(c.ground?['flaeche']:[])].filter(Boolean))];
- return {answer,effect:base.effect||'',numbers,why:[base.why,a?.rule].filter(Boolean).join(' '),links:[...(base.links||[])],terms};
+ const sym=castSymbols(c,{interrupt});if(sym.main!=='noInterrupt'&&answer)sym.hint=answer;
+ return {answer,effect:base.effect||'',numbers,why:[base.why,a?.rule].filter(Boolean).join(' '),links:[...(base.links||[])],terms,...sym};
 }
 // Erklärung einmal ableiten und am Zauber ablegen – die UI liest `cast.info`, ohne selbst zu rechnen.
-for(const [setId,set] of Object.entries(CAST_SETS))for(const castId of Object.keys(set.casts))set.casts[castId].info=describeCast(setId,castId);
+for(const sets of [CAST_SETS,DUNGEON_CASTS])for(const [setId,set] of Object.entries(sets))for(const castId of Object.keys(set.casts))set.casts[castId].info=describeCast(setId,castId);

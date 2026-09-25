@@ -8,7 +8,7 @@ export const WORLD_FX={
   types:{impact:{radius:70,power:5},burst:{radius:95,power:7},interrupt:{radius:60,power:5},death:{radius:80,power:5}},
   kinds:{slam:{radius:130,power:10},detonate:{radius:120,power:10},keg:{radius:110,power:9},burst:{radius:95,power:7},interrupt:{radius:60,power:5},death:{radius:80,power:5}}},
  // Hitzeflimmern über Feuerstellen und Brandflächen (Lichtquellen-Arten aus content/lighting.js).
- heat:{sources:['campfire','burn'],radius:34,rise:20,power:1.2,max:8},
+ heat:{sources:['campfire','burn','portal'],radius:34,rise:20,power:1.2,max:8},
  // Bodennebel wächst mit dem Dunkelanteil des Gebiets (E-39): darunter keiner, darüber voll.
  fog:{from:.14,full:.38,alpha:.3,rainAlpha:.16,scale:.006,wind:{x:.05,y:.018},day:'#a9b6c2',night:'#38456a'},
  // Wetter folgt der Spielzeit: alle `period` Sekunden ein Schauer von `rain` Sekunden, weich ein- und ausgeblendet. Erster Schauer frühestens nach `first`.

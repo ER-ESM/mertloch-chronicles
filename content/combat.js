@@ -26,6 +26,7 @@ export const CAST_TIMES={dieter:{ground:.8},baerbel:{burst:1.1,heal:1.25,ground:
 // Zwei Erklärschichten: AUTO_INFO/describeAuto erklärt den Autoangriff jedes Gegners (was er tut, Zahlen, was du
 // dagegen tust), COMBAT_RULE_INFO erklärt jede Kampfregel mit einer Zahl in einem glossartauglichen Satz. Klassendesign
 // verweist aus content/glossary.js hierher (`rules` nennt die Quelle im Datensatz), statt die Zahlen zu wiederholen.
+import {DUNGEON_UI} from './dungeon-ui.js';
 const m=units=>Math.round(units/8*10)/10;
 /** Geschriebener Teil je Gegner-Autoangriff; die Zahlen kommen aus ENEMY_AUTOS selbst. */
 export const AUTO_INFO={
@@ -53,6 +54,32 @@ export function describeAuto(id){
  return {effect:base.effect||'',numbers,why:base.why||'',links:[],terms:[...new Set(['autoangriff',...(base.terms||[]),...(a.ranged?['reichweite']:['parade'])])]};
 }
 for(const id of Object.keys(ENEMY_AUTOS))ENEMY_AUTOS[id].info=describeAuto(id);
+/** Merkmale eines Gegnerzaubers in Vorrang-Reihenfolge (der gefährlichste Teil zuerst). Etappe 2 Dungeon (E-71). */
+export const CAST_TRAITS=['lie','cone','line','ground','stack','spread','interrupt','call','heal','summon','guard','knockback','tank','hit'];
+export function castTraits(c){const t=[];if(!c)return t;if(c.lie)t.push('lie');if(c.cone)t.push('cone');if(c.line)t.push('line');if(c.ground)t.push('ground');if(c.stack)t.push('stack');if(c.spread)t.push('spread');
+ if(c.interruptible)t.push('interrupt');if(c.callHelp)t.push('call');if(c.healAllies)t.push('heal');if(c.summon)t.push('summon');if(c.frontGuard)t.push('guard');if(c.knockback)t.push('knockback');if(c.tankSafe!=null&&c.tankSafe<1)t.push('tank');
+ if(!t.length)t.push('hit');return t.sort((a,b)=>CAST_TRAITS.indexOf(a)-CAST_TRAITS.indexOf(b));}
+/**
+ * Etappe 2 (E-71, Analyse Verbesserung 5): Symbol, Merkmale, Antwort und Kurzzahlen eines Gegnerzaubers – vollständig aus seinen
+ * Merkmalen. describeCast (content/enemies.js) hängt das an jede Zauberbeschreibung, wie describeAuto beim Autoangriff; Warnleiste
+ * (boss-alerts.js), Journal (dungeon-journal.js) und Bossrahmen lesen dieselbe Beschreibung. interrupt: hat der Spieler schon einen Unterbrecher.
+ * → {icon, main, hint, traits:[{id,icon,name,tip}], facts:[{label,value,unit}]}
+ */
+export function castSymbols(c,{interrupt=true}={}){
+ if(!c)return null;const T=DUNGEON_UI.traits,N=DUNGEON_UI.numbers,ids=castTraits(c).map(id=>id==='interrupt'&&!interrupt?'noInterrupt':id),main=ids[0];
+ const icon=id=>'trait-'+(id==='noInterrupt'?'interrupt':id),traits=ids.map(id=>({id,icon:icon(id),name:T[id]?.name||id,tip:T[id]?.tip||''}));
+ const hint=main==='noInterrupt'?T.noInterrupt.answer:c.hint||T[main]?.answer||'';
+ const numbers=[];if(c.pct)numbers.push({label:N.pct,value:Math.round(c.pct*100),unit:'%'});else if(c.damage)numbers.push({label:N.damage,value:c.damage,unit:''});
+ if(c.total)numbers.push({label:N.cast,value:String(c.total).replace('.',','),unit:'s'});
+ if(c.cone)numbers.push({label:N.angle,value:c.cone.angle,unit:'°'},{label:N.range,value:m(c.cone.range),unit:'m'});
+ if(c.radius&&(c.ground||c.stack||c.spread))numbers.push({label:N.radius,value:m(c.radius),unit:'m'});
+ if(c.knockback)numbers.push({label:N.knockback,value:m(c.knockback),unit:'m'});
+ if(c.tankSafe!=null&&c.tankSafe<1)numbers.push({label:N.tankShare,value:Math.round(c.tankSafe*100),unit:'%'});
+ if(c.healAllies)numbers.push({label:N.heal,value:Math.round(c.healAllies.share*100),unit:'%'});
+ if(c.frontGuard)numbers.push({label:N.guard,value:'−'+Math.round((1-c.frontGuard.factor)*100),unit:'%'});
+ if(c.callHelp)numbers.push({label:N.callRange,value:m(c.callHelp.range),unit:'m'});
+ return {icon:icon(main),main,hint,traits,facts:numbers};
+}
 /** Jede Kampfregel mit einer Zahl als Glossareintrag: name/short/long plus die Zahlen und ihre Quelle.
  *  `rules` nennt die abgedeckten Pfade in COMBAT_RULES – die Prüfung in checks/gameplay.js verlangt Vollständigkeit. */
 export const COMBAT_RULE_INFO={

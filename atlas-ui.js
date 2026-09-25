@@ -4,7 +4,7 @@
 // - Werkzeuge als Symbolknöpfe in der Titelzeile, Filter als kombinierbare Häkchenliste (wie die Lupe der Minikarte);
 // - Seitenleiste mit Gruppentrennern und einzeiligen Einträgen, Stiefel = hinlaufen (schließt die Karte, Runde 3a);
 // - am Handy: Karte füllt das Fenster, die Ortsliste klappt über ein Symbol auf, Tippen zeigt den Tooltip mit Stiefel.
-import {MINIMAP_UI as MT,WORLD_MAP_UI as T} from './content/index.js';
+import {MINIMAP_UI as MT,WORLD_MAP_UI as T,DUNGEON_UI as DU} from './content/index.js';
 import {mapPlaces,mapView,levelTone} from './cartography.js';
 import {distance,SCALE} from './world.js';
 import {glyph} from './ui-glyphs.js';
@@ -27,12 +27,18 @@ function kindLine(h,level){
  if(h.group==='hub')return esc(MT.kinds.hub+(h.quests?' · '+MT.quests(h.quests):''));
  if(h.group==='camp'){const lv=h.level;let s=esc(h.busy?MT.kinds.campBusy:MT.kinds.campFree);if(lv){const txt=lv.min===lv.max?MT.level(lv.min):MT.levels(lv.min,lv.max);s+=' · <span style="color:'+levelTone(Math.round((lv.min+lv.max)/2)-level)+'">'+esc(txt)+'</span>';}return s;}
  if(h.group==='trainer')return esc(MT.kinds.trainer);
+ /* Etappe 2: Dungeon mit Stufenband in Schwierigkeitsfarbe und Gruppengröße; unter der Einlassstufe grau */
+ if(h.group==='dungeon')return esc(DU.kind)+' · <span style="color:'+(h.low?'#a4a29a':levelTone(Math.round((h.level.min+h.level.max)/2)-level))+'">'+esc(DU.band(h.level.min,h.level.max))+'</span> · '+esc(DU.heads(h.heads));
  if(h.icon==='stable')return esc(MT.kinds.stable);
  if(h.kind==='tracked')return esc(T.tracked);
  if(h.kind==='target')return esc(MT.kinds.destination);
  return esc(MT.kinds.trader);
 }
-const detailOf=h=>h.group==='quest'?h.quest:h.group==='camp'?'':h.group==='hub'?'':h.detail||'';
+/** Straßen mit Namen samt Kasten (je Welt einmal). */
+const roadBoxes=new WeakMap();
+function namedRoads(w){let list=roadBoxes.get(w);if(list)return list;list=(w.roads||[]).filter(r=>!r.entrance&&r.tags?.name&&r.points?.length>1).map(r=>{let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;for(const p of r.points){if(p.x<minX)minX=p.x;if(p.x>maxX)maxX=p.x;if(p.y<minY)minY=p.y;if(p.y>maxY)maxY=p.y;}return {name:r.tags.name,points:r.points,width:r.width,minX,minY,maxX,maxY};});roadBoxes.set(w,list);return list;}
+function segDist(x,y,a,b){const dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,((x-a.x)*dx+(y-a.y)*dy)/l)):0;return Math.hypot(x-a.x-t*dx,y-a.y-t*dy);}
+const detailOf=h=>h.group==='quest'?h.quest:h.group==='camp'?'':h.group==='hub'?'':h.low&&h.group==='dungeon'?DU.from(h.enter)+' · '+h.detail:h.detail||'';
 export function mountAtlas(root,renderer,navigate,initial=null){
  const g=renderer.game,canvas=root.querySelector('#largeMap'),paper=root.querySelector('.wk-paper'),list=root.querySelector('#atlasPlaces'),menu=root.querySelector('.wk-filter'),popup=root.closest('.game-popup'),touch=()=>document.body.classList.contains('touch-mode');
  const places=mapPlaces(g),options={show:loadShow(),zoom:1,openedAt:performance.now()};
@@ -53,10 +59,12 @@ export function mountAtlas(root,renderer,navigate,initial=null){
  const dist=pt=>Math.round(distance(g.player,pt)/SCALE);
  const SECTIONS=[['quest',h=>h.group==='quest'],['hub',h=>h.group==='hub'],['camp',h=>h.group==='camp'],['shop',h=>h.group==='shop'||h.group==='trainer']];
  function row(h){const on=h.id===chosen?.id,cls=`atlas-place wk-row ${h.group}${h.tracked?' atlas-tracked':''}${h.group==='target'?' wk-target':''}${h.low?' low':''}`;
-  /* Runde 5b: Lager führen ihren Ortsnamen, der Auftragssatz steht im Tooltip */const name=h.group==='camp'&&h.short?h.short:h.title,tipAttr=name!==h.title?` data-tooltip-label="${esc(h.title)}" data-tooltip-note="${esc(h.short)}"`:'';
-  return `<div class="${cls}" data-row="${esc(h.id)}" aria-pressed="${on}"><button type="button" class="wk-pick" data-place="${esc(h.id)}" aria-label="${esc(h.title)} · ${dist(h.point)} m"${tipAttr}><canvas class="wk-ico" width="40" height="40" data-wk-icon="${h.icon}" aria-hidden="true"></canvas><b>${esc(name)}</b><em>${dist(h.point)} m</em></button><button type="button" class="wk-boot" data-navigate="${esc(h.id)}" aria-label="${esc(T.walk)}: ${esc(h.title)}" data-tooltip-label="${esc(T.walk)}" data-tooltip-note="${esc(T.walkNote)}">${glyph('boot')}</button></div>`;}
+  /* Runde 5b: Lager führen ihren Ortsnamen, der Auftragssatz steht im Tooltip */const name=h.group==='camp'&&h.short?h.short:h.title,tipAttr=h.group==='dungeon'?` data-tooltip-label="${esc(h.title)}" data-tooltip-note="${esc(DU.band(h.level.min,h.level.max)+' · '+DU.heads(h.heads)+(h.low?' · '+DU.from(h.enter):''))}"`:name!==h.title?` data-tooltip-label="${esc(h.title)}" data-tooltip-note="${esc(h.short)}"`:'';
+  /* Etappe 2 (Kenner-Playtest 2): „Schloss Big B · 8–10 · 5 Köpfe“ in einer Zeile, der ganze Satz im Tooltip; unter der Stufe grau */const sub=h.group==='dungeon'?`<small class="wk-sub">${esc(h.level.min+'–'+h.level.max)} · ${esc(DU.heads(h.heads))}</small>`:'',label=h.group==='dungeon'?DU.line(h.title,h.level.min,h.level.max,h.heads):h.title;
+  return `<div class="${cls}" data-row="${esc(h.id)}" aria-pressed="${on}"><button type="button" class="wk-pick" data-place="${esc(h.id)}" aria-label="${esc(label)} · ${dist(h.point)} m"${tipAttr}><canvas class="wk-ico" width="40" height="40" data-wk-icon="${h.icon}" aria-hidden="true"></canvas>${sub?`<span class="wk-one"><b>${esc(name)}</b>${sub}</span>`:`<b>${esc(name)}</b>`}<em>${dist(h.point)} m</em></button><button type="button" class="wk-boot" data-navigate="${esc(h.id)}" aria-label="${esc(T.walk)}: ${esc(h.title)}" data-tooltip-label="${esc(T.walk)}" data-tooltip-note="${esc(T.walkNote)}">${glyph('boot')}</button></div>`;}
  function render(){
   const top=places.filter(h=>h.tracked||h.group==='target');let html=top.map(row).join('');const seps=!touch();
+  /* Etappe 2 (Kenner-Playtest 2): Dungeons stehen gleich unter dem verfolgten Ziel, eine Zeile ohne eigenen Kopf (die Liste blättert nicht) */html+=places.filter(h=>h.group==='dungeon').map(row).join('');
   for(const [id,test] of SECTIONS){const rows=places.filter(h=>!h.tracked&&h.group!=='target'&&test(h)).sort((a,b)=>distance(g.player,a.point)-distance(g.player,b.point));if(!rows.length)continue;
    /* Runde 5b (Entscheidung des Orchestrators): Kopf = Symbol + ein Wort + Anzahl wie im WoW-Questlog */
    const icon=T.groups.find(x=>x.id===id)?.icon||'hub';if(seps)html+=`<div class="wk-sep" role="separator" aria-label="${esc(T.sections[id])} · ${rows.length}" data-tooltip-label="${esc(T.sections[id])}" data-tooltip-note=""><canvas width="32" height="32" data-wk-icon="${icon}" aria-hidden="true"></canvas><span class="wk-sep-word">${esc(T.sectionWords?.[id]||T.sections[id])}</span><b class="wk-sep-count">${rows.length}</b><hr></div>`;html+=rows.map(row).join('');}
@@ -97,6 +105,7 @@ export function mountAtlas(root,renderer,navigate,initial=null){
   const lvl=g.player.level||1,foot=touch()?'':`<footer class="wk-tip-foot"><span><kbd>${glyph('mouse')}</kbd>${esc(T.click)}</span><span><kbd>⇧</kbd>+<kbd>${glyph('mouse')}</kbd>${esc(T.shiftClick)}</span></footer>`,walkBtn=pt=>touch()&&pt?`<button type="button" class="wk-tip-walk" data-tip-walk>${glyph('boot')}<span>${esc(T.tapWalk)}</span></button>`:'';
   const head=(icon,name,cls='')=>`<div class="wk-tip-head"><canvas width="40" height="40" data-wk-icon="${icon}" aria-hidden="true"></canvas><strong class="${cls}">${esc(name)}</strong></div>`;
   if(t.type==='player')return head('player',T.you);
+  if(t.type==='road')return `<div class="wk-tip-head wk-tip-road"><strong>${esc(t.hit.name)}</strong></div><small>${esc(T.road)}</small>`;
   if(t.type==='person')return head(t.hit.party?'party':'player',t.hit.name)+`<small>${esc(t.hit.party?MT.kinds.party:MT.kinds.player)}</small>`;
   if(t.type==='cluster'){const rows=t.hit.ids.map(placeOf).filter(Boolean);return `<div class="wk-tip-title">${esc(T.cluster(rows.length))}</div>`+rows.map(h=>`<div class="wk-tip-row"><canvas width="32" height="32" data-wk-icon="${h.icon}" aria-hidden="true"></canvas><b class="${h.group==='camp'?'hostile':''}">${esc(h.title)}</b><small>${kindLine(h,lvl)}</small><em>${dist(h.point)} m</em></div>`).join('')+(touch()?'':`<footer class="wk-tip-foot"><span><kbd>${glyph('mouse')}</kbd>${esc(T.clusterNote)}</span></footer>`);}
   if(t.type==='area'){const a=t.hit.area;return head(a.spawn?'neutral':'claw',a.title)+`<small>${esc(a.spawn?T.spawnArea:a.tracked?T.areaActive:T.area)}${a.need?' · '+esc(T.progress(a.done,a.need)):''}</small>${a.detail&&a.detail!==a.title?`<em>${esc(a.detail)}</em>`:''}<span class="wk-tip-dist">${dist(a)} m</span>`+walkBtn(a)+foot;}
@@ -113,7 +122,10 @@ export function mountAtlas(root,renderer,navigate,initial=null){
   const pin=canvas.atlasPin;if(pin&&Math.hypot(pin.x-q.x,pin.y-q.y)<=pin.r)return{type:'pin',key:'pin',x:pin.x,y:pin.y+12};
   const mate=(canvas.atlasPeople||[]).find(o=>Math.hypot(o.x-q.x,o.y-q.y)<=o.r);if(mate)return{type:'person',hit:mate,key:'person:'+mate.name,x:mate.x,y:mate.y};
   const me=canvas.atlasPlayer;if(me&&Math.hypot(me.x-q.x,me.y-q.y)<=me.r)return{type:'player',key:'player',x:me.x,y:me.y};
-  const area=(canvas.atlasAreas||[]).filter(a=>Math.hypot(a.x-q.x,a.y-q.y)<=a.r).sort((a,b)=>a.r-b.r)[0];if(area)return{type:'area',hit:area,key:area.id,x:q.x,y:q.y};return null;}
+  const area=(canvas.atlasAreas||[]).filter(a=>Math.hypot(a.x-q.x,a.y-q.y)<=a.r).sort((a,b)=>a.r-b.r)[0];if(area)return{type:'area',hit:area,key:area.id,x:q.x,y:q.y};
+  /* Etappe 2 (Kenner-Playtest 2): Straßenname beim Überfahren – Aufträge nennen Straßen („an der Burgstraße“) */const road=roadAt(q);if(road)return{type:'road',hit:road,key:'road:'+road.name,x:q.x,y:q.y};return null;}
+ /** Nächste benannte Straße unter dem Zeiger (≤ 7 px neben der Linie). Kästen je Straße einmal gerechnet. */
+ function roadAt(q){const v=canvas.atlasView;if(!v)return null;const x=v.ox+q.x/v.scale,y=v.oy+q.y/v.scale,list=namedRoads(g.world);let best=null,bd=Infinity;for(const r of list){const tol=7/v.scale+(r.width||10)/2;if(x<r.minX-tol||x>r.maxX+tol||y<r.minY-tol||y>r.maxY+tol)continue;const p=r.points;for(let i=1;i<p.length;i++){const d=segDist(x,y,p[i-1],p[i]);if(d<=tol&&d<bd){bd=d;best=r;}}}return best&&{name:best.name};}
  function hoverAt(e){const q=local(e),t=hitAt(q);const key=t?.key||null;canvas.classList.toggle('wk-over',!!t);if(key!==options.hover){options.hover=key;draw();}hover=t;if(!t){if(!pinned)hideTip();return;}const at=t.type==='area'?{x:e.clientX,y:e.clientY}:{x:q.r.left+t.x*q.sx,y:q.r.top+t.y*q.sx};showTip(t,at.x,at.y);}
  // Ziehen verschiebt den gezoomten Ausschnitt; zwei Finger zoomen (Handy). Ein Zug zählt nicht als Klick.
  let drag=null,dragged=false;const fingers=new Map();let pinch=null;
