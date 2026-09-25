@@ -34,6 +34,11 @@ try{
  const s=await play('schorsch','schorsch-flamme',['heal','burst','mark','ground','throw','strike']);console.log('Schorsch:',s.join(' · '));
  for(const n of ['Servieren','Grillzange'])assert.ok(s.includes(n),'Schorsch-Zeile '+n);assert.ok(s.some(n=>['Stichflamme','Popcorn','Glutbrand','Flambiert','Dampf'].includes(n)),'eigene Zeile für eine Grill-Quelle');
  assert.equal(new Set(s).size,s.length,'keine doppelten Zeilennamen');await shot('meter-schorsch-flambierer','#combatMeter');
+ // Kenner-Befund Runde 4: Ablöschen aus „zu heiß“ landet am Anfang der perfekten Glut (vorher 95 → kalt); der Tooltip sagt es vorher an.
+ await read(`document.querySelector('#combatMeter [data-meter-close], #combatMeter .meter-close')?.click()`);await b.press('v');await wait(200);
+ const v=await read(`(async()=>{const {skillHelp}=await import('./mechanic-help.js');game.paused=true;game.cooldowns.heal=0;game.gcd=0;game.res.glut=95;game.res.lock=0;game.casting=null;game.player.inCombat=7;const tip=skillHelp(game,'heal');const n=game.events.length;game.paused=false;const ok=game.action('heal');game.paused=true;return {tip,ok,glut:game.res.glut,why:game.events.slice(n).map(e=>e.text||e.type).join(' | ')};})()`);
+ console.log('Ablöschen:',JSON.stringify(v));assert.ok(v.ok);assert.equal(v.glut,60,'95 → Anfang der perfekten Glut');assert.match(v.tip,/Danach: Glut 60 · Perfekte Glut/);
+ await wait(500);await shot('abloeschen-95-auf-60','.player-panel');
  const k=await play('kaethe','kaethe-grand',['throw','ground','strike','mark','burst']);console.log('Käthe:',k.join(' · '));
  assert.ok(k.includes('Kreuz')&&k.includes('Karo'),'Karten je Farbe in eigener Zeile');assert.ok(k.includes('Abrechnen'),'Abrechnen eigene Zeile');
  assert.equal(new Set(k).size,k.length,'keine doppelten Zeilennamen');await shot('meter-kaethe-grand','#combatMeter');

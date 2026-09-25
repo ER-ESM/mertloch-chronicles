@@ -170,6 +170,9 @@ function reloadPress(g,st,r,cs){
 export function zoneOf(g,glut,cs=g.cs||{}){const r=R(g),z=r.zones,lo=z[1].to+num(cs,'perfectLow'),hi=z[2].to+num(cs,'perfectHigh');if(glut<z[0].to)return z[0];if(glut<lo)return z[1];if(glut<hi)return z[2];return z[3];}
 function addGlut(g,st,n,cs){const r=R(g),before=st.glut;const wasHot=zoneOf(g,before,cs).id==='heiss';st.glut=clamp(st.glut+n,0,st.cool>0?r.max-1:r.max);/* nach einer Stichflamme erholt sich der Grill: 8 s keine zweite */const was=zoneOf(g,before,cs).id,now=zoneOf(g,st.glut,cs).id;if(now==='perfekt'&&was!=='perfekt'&&st.perfectCd<=0){st.perfectCd=3;fireProcs(g,'glutPerfect',cs);emitCombatFx(g,'glut',g.player,{zone:now});}
  if(now==='heiss'&&!wasHot&&st.glut<r.max){emitCombatFx(g,'glut',g.player,{zone:'heiss'});note(g,r.hud.hot,'#ff6a3a','heal');}if(st.glut>=r.max)overheat(g,st,cs);}
+/** Glut nach dem Ablöschen (Kenner-Playtest Runde 4: 95 → 26 schoss aus „zu heiß“ direkt nach „kalt“): kühlt um spend.heal, aus „zu heiß“
+ *  genau auf den Anfang der perfekten Glut, nie unter den Anfang der guten Glut – wer schon kälter ist, bleibt, wo er ist (Räuchermeister hält kalt). */
+export function ventGlut(g,glut,cs=g.cs||{}){const r=R(g),z=r.zones,lo=z[1].to+num(cs,'perfectLow'),hi=z[2].to+num(cs,'perfectHigh'),floor=Math.min(glut,z[0].to);return glut>=hi?Math.max(floor,lo):Math.max(floor,glut-r.spend.heal);}
 function overheat(g,st,cs){
  const r=R(g),o=r.overheat,p=g.player,m=mech(g),flamme=!!m?.flamme,factor=(1+num(cs,'overheatDamage'))*(flamme?m.flamme.overheatFactor:1),dmg=Math.round(o.damage*(cs.flatScale||1)*factor);
  for(const e of foes(g,p,o.radius))g.damage(e,dmg,'Stichflamme');
@@ -330,7 +333,7 @@ export function performClassSkill(g,id,s,e,point,cs,context){
  if(r.kind==='grill'){
   if(id==='mark'){const plan=planOf(g,cs),item=plan[st.plan%plan.length];st.plan++;st.rost.push({item,done:0,smoked:false});emitCombatFx(g,'serve',p,{item,lay:true});return true;}
   if(id==='burst'){serve(g,st,cs,validTarget(g,175+(cs.range||0)),context);return true;}
-  if(id==='heal'){const v=r.vent;addGlut(g,st,-r.spend.heal,cs);healPlayer(g,lifeBase(g)*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
+  if(id==='heal'){const v=r.vent;st.glut=ventGlut(g,st.glut,cs);/* nur kühlen: kein „steigt in den goldenen Bereich“ */healPlayer(g,lifeBase(g)*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
   if(id==='buff'){st.noDecay=s.duration||6;addGlut(g,st,s.glut||r.gain.buff,cs);emitCombatFx(g,'glut',p,{bellows:true});return true;}
   if(id==='throw'&&e){const z=zoneOf(g,st.glut+s.cost,cs);g.damage(e,Math.round(skillDamage(g,s,s.damage,ITEMS)),'Glutbrocken');e.burn={t:r.ember.duration,tick:1,dps:Math.round(r.ember.dot*(cs.flatScale||1)*(1+num(cs,'emberDot'))*(1+z.damage))};emitCombatFx(g,'ember',e,{from:{x:p.x,y:p.y}});return true;}
   if(id==='ground'&&point){

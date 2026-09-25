@@ -98,3 +98,12 @@ test('Kurzschluss: die Lunten-Explosion trifft Nachbarn im Entwurfsradius (tunin
  const g=hero('kevin','kevin-fuse',20),e=foe(g,120),n=foe(g,150,20),far=foe(g,400);g.player.inCombat=7;const hn=n.hp,hf=far.hp;e.mark=3;onMarkExpire(g,e);
  assert.ok(n.hp<hn,'Nachbar in 70 Einheiten getroffen');assert.equal(far.hp,hf,'weit entfernter Gegner nicht');
 });
+
+test('Ablöschen führt in die gute/perfekte Glut: aus „zu heiß“ an den Anfang der perfekten, sonst −40, nie unter die gute Glut',()=>{
+ const Z=RESOURCES.schorsch.zones,spend=RESOURCES.schorsch.spend.heal;
+ const vent=glut=>{const g=hero('schorsch','schorsch-flamme',12);foe(g,30);g.target=g.enemies[0];g.player.inCombat=7;g.res.glut=glut;assert.ok(cast(g,'heal'));return g.res.glut;};
+ assert.equal(vent(95),Z[1].to,'95 → Anfang der perfekten Glut');
+ assert.equal(vent(Z[2].to-1),Z[2].to-1-spend,'aus der perfekten Glut um '+spend);
+ assert.equal(vent(66),Z[0].to,'nie unter die gute Glut (vorher 26 = kalt)');
+ assert.equal(vent(20),20,'wer schon kalt ist, bleibt kalt');
+});

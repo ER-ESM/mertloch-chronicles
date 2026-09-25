@@ -1,5 +1,5 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
-import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName} from './class-resources.js';
+import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName,ventGlut} from './class-resources.js';
 import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
@@ -155,7 +155,7 @@ function resourceSkillHelp(g,id,s){
   if(id==='strike')return s.text+' '+zoneLine+` Perfekt ist ${h.perfect[0]}–${h.perfect[1]}; darüber wird es zu heiß (du verbrennst dich), bei 100 kommt die Stichflamme.`;
   if(id==='mark'){const plan=(g.res?.plan??0);return s.text+(h.nextItem?` Als Nächstes: ${R.items[h.nextItem]?.name||h.nextItem}.`:'')+` Belegt: ${h.rost.length}/${h.slots} Plätze. Gar wird ein Stück nach etwa ${Math.round(R.rost.cookTime*R.rost.gar[0])} s bei guter Glut, in der perfekten Glut schneller.`+(plan>=0?'':'');}
   if(id==='burst'){const it=[...h.rost].sort((a,b)=>b.done-a.done).find(x=>x.done<R.rost.charcoal);return (it?`Serviert jetzt: ${it.name} – ${it.state==='gar'?'gar, volle Wirkung':it.state==='durch'?'durch, volle Wirkung':it.state==='roh'?'noch roh, halbe Wirkung':'verkohlt, halbe Wirkung'} (${Math.round(it.done*100)} %). `:'Der Rost ist leer – erst auflegen. ')+s.text;}
-  if(id==='heal')return s.text+' '+zoneLine;
+  if(id==='heal'){const to=ventGlut(g,h.value);return s.text+' '+zoneLine+` Danach: Glut ${Math.floor(to)} · ${zoneOf(g,to).name}.`;}
   if(id==='throw'||id==='ground')return s.text+' '+zoneLine;
   if(id==='buff')return s.text+' '+zoneLine;
   return null;
