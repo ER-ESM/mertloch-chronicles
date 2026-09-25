@@ -8,10 +8,23 @@
 // Reine Anzeige: liest resourceHud(g)/g.fx, ändert nichts am Spiel. Zeichnet nur bei Änderung oder laufender Animation (höchstens 30 Bilder/s).
 import {resourceHud,resourceVariant,handCard,cardName} from './class-resources.js';
 import {RESOURCES,RESOURCE_HUD_TEXT as T} from './content/index.js';
-import {drawSprite,pixelText,pixelTextWidth,suitGlyph,drawCard,paintBigCardCanvas,suitColor,drawBadge,spriteSize} from './resource-art.js';
+import {drawSprite,pixelText,pixelTextWidth,suitGlyph,drawCard,paintBigCardCanvas,suitColor,drawBadge,spriteSize,sprite} from './resource-art.js';
+import {cardSlotName} from './mechanic-help.js';
+// Runde 4 (hud4, Kenner-Playtest 25.09. abends): Tooltip-Flächen werden beim Wiederaufbau übernommen statt neu angehängt (Tod,
+// Wiederbeleben, Klassen-/Heldenwechsel, Schrein), die Augen-Marken sind schmale Kerben, Käthes Kartenknöpfe heißen nach ihrer
+// Karte, Abrechnen zahlt sichtbar aus (Augen fliegen zum Ziel, große Zahl, Stempel), Annis Trend steht getrennt von den Likes,
+// Kevins Leergut-Zähler hat ein Bild, der Pfandautomat weicht Leiste, Mechanik-Anzeige und „Sammeln“ aus.
 
 /* Band-Leinwand ragt TOP Kartenpixel über das Band hinaus (hüpfende Münzen, fliegendes Grillgut) */const P=2,TOP=8,CELL=30,TAU=Math.PI*2,clamp=v=>Math.max(0,Math.min(1,v)),fmt=v=>String(v).replace('.',','),ease=t=>1-Math.pow(1-clamp(t),3);
 const GLOSSARY={rage:'zeche',trend:'trend',ammo:'pfandbon',grill:'grillrost',cards:'blatt'};
+/** Abrechnen: so lange fliegen die Augen von der Leiste zum Ziel (die Weltkarten sammeln sich solange, dann der Fächer, resource-fx-art.js). */
+export const PAYOUT_MS=500;
+/** Lage des Pfandautomaten (rein, testbar): waagerecht mittig über der Aktionsleiste (rects[0]), senkrecht `gap` px über dem
+ *  höchsten sichtbaren Rechteck (Leiste, Mechanik-Anzeige, „Sammeln“, Zauberbalken). Koordinaten relativ zu `shell`. */
+export function reloadSpot(rects,shell,height,gap=12){const bar=rects[0],list=rects.filter(r=>r&&r.width>0&&r.height>0);if(!bar||!list.length)return null;const top=Math.min(...list.map(r=>r.top));return {left:Math.round(bar.left+bar.width/2-shell.left),top:Math.round(top-shell.top-gap-height)};}
+/** Auszahlung beim Abrechnen (rein, testbar): Zahl der fliegenden Augen, Stempel, Multiplikator und die große Zahl. */
+export function payoutPlan({augen=0,grand=false,damage=0}={}){const C=RESOURCES.kaethe||{schneider:90,schwarz:120,abrechnen:{schneider:1.5,schwarz:2}},level=grand?'grand':augen>=C.schwarz?'schwarz':augen>=C.schneider?'schneider':'',mult=augen>=C.schwarz?C.abrechnen.schwarz:augen>=C.schneider?C.abrechnen.schneider:1;
+ return {tokens:Math.max(5,Math.min(15,Math.round(augen/8))),level,stamp:level?T.payout.stamp[level]:'',mult,number:damage>0?Math.round(damage).toLocaleString('de-DE'):String(augen),caption:T.payout.caption(augen,mult),gold:!!level};}
 const noise=(i,s=1)=>{const n=Math.sin(i*127.1+s*311.7)*43758.5453;return n-Math.floor(n);};
 const mix=(a,b,t)=>{const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),A=p(a),B=p(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');};
 const px=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
@@ -20,11 +33,13 @@ const el=(tag,cls,parent)=>{const e=document.createElement(tag);if(cls)e.classNa
 function fit(cv){const w=Math.max(8,Math.round(cv.clientWidth/P)),h=Math.max(4,Math.round(cv.clientHeight/P));if(w>8&&h>4&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;}return [cv.width,cv.height];}
 
 export function mountResourceHud(getGame){
- let kind=null,meter=null,tray=null,trayArt=null,reload=null,reloadArt=null,enemyCard=null,lastFx=0,dirty=true,lastDraw=0,lastSig='',prev={};
- const anims=[],hits={meter:new Map(),tray:new Map()};
- /** Tooltip-Fläche über einem Leinwand-Ausschnitt (Anteile der Leinwand). */
- function hit(scope,key,host,x,y,w,h,W,H,label,note){let s=hits[scope].get(key);if(!s){s=el('span','rh-hit',host);hits[scope].set(key,s);}s.hidden=false;const st=s.style,l=(x/W*100).toFixed(2)+'%',t=(y/H*100).toFixed(2)+'%',ww=(w/W*100).toFixed(2)+'%',hh=(h/H*100).toFixed(2)+'%';if(st.left!==l)st.left=l;if(st.top!==t)st.top=t;if(st.width!==ww)st.width=ww;if(st.height!==hh)st.height=hh;if(s.dataset.tooltipLabel!==label)s.dataset.tooltipLabel=label;if(s.dataset.tooltipNote!==note)s.dataset.tooltipNote=note;s.setAttribute('aria-label',label+(note?': '+String(note).replace(/<br>/g,' · '):''));}
- function hideHits(scope,keep){for(const [k,s] of hits[scope])if(!keep.has(k))s.hidden=true;}
+ let kind=null,meter=null,tray=null,trayArt=null,reload=null,reloadArt=null,enemyCard=null,lastFx=0,dirty=true,lastDraw=0,lastSig='',prev={},needHover=false,pointer=null,payoutLayer=null,abrechnenHits=0,reloadPlace=0;
+ const anims=[],hits={meter:new Map(),tray:new Map()},payouts=[];
+ /* Letzte Mausposition: baut sich eine Tooltip-Fläche unter der Maus neu auf, bekommt die neue sie sofort (sonst erst beim nächsten Bewegen) */
+ if(typeof document!=='undefined')document.addEventListener?.('pointermove',e=>{if(e.pointerType!=='touch')pointer={x:e.clientX,y:e.clientY};},{passive:true});
+ /** Tooltip-Fläche über einem Leinwand-Ausschnitt (Anteile der Leinwand). Jede Fläche trägt ihren Schlüssel (data-rh-key). */
+ function hit(scope,key,host,x,y,w,h,W,H,label,note){let s=hits[scope].get(key);if(!s||s.parentNode!==host){s?.remove();s=el('span','rh-hit',host);s.dataset.rhKey=key;hits[scope].set(key,s);}s.hidden=false;const st=s.style,l=(x/W*100).toFixed(2)+'%',t=(y/H*100).toFixed(2)+'%',ww=(w/W*100).toFixed(2)+'%',hh=(h/H*100).toFixed(2)+'%';if(st.left!==l)st.left=l;if(st.top!==t)st.top=t;if(st.width!==ww)st.width=ww;if(st.height!==hh)st.height=hh;if(s.dataset.tooltipLabel!==label)s.dataset.tooltipLabel=label;if(s.dataset.tooltipNote!==note)s.dataset.tooltipNote=note;s.setAttribute('aria-label',label+(note?': '+String(note).replace(/<br>/g,' · '):''));}
+ /* Runde 4: nicht mehr gebrauchte Flächen verlassen den Seitenbaum ganz (vorher nur versteckt – nach Klassenwechseln sammelten sie sich) */function hideHits(scope,keep){for(const [k,s] of [...hits[scope]])if(!keep.has(k)){s.remove();hits[scope].delete(k);}}
 
  function build(g,h){
   const panel=document.querySelector('.player-panel'),bar=panel?.querySelector('.bar.energy');if(!panel||!bar)return false;
@@ -32,15 +47,23 @@ export function mountResourceHud(getGame){
   meter=bar.querySelector('canvas.rh-meter')||el('canvas','rh-meter',bar);meter.setAttribute('aria-hidden','true');bar.classList.add('has-rh');
   tray=panel.querySelector('#resourceTray')||el('div','rh-tray',panel);tray.id='resourceTray';trayArt=tray.querySelector('canvas')||el('canvas','rh-tray-art',tray);trayArt.setAttribute('aria-hidden','true');
   tray.dataset.kind=kind;bar.dataset.rhKind=kind;tray.dataset.describe='glossary:'+GLOSSARY[kind];tray.setAttribute('role','group');tray.setAttribute('aria-label',h.name);
-  for(const m of Object.values(hits))for(const s of m.values())s.remove();hits.meter.clear();hits.tray.clear();anims.length=0;prev={};dirty=true;
+  /* Runde 4 (hud4, Kenner-Befund 1): vorhandene Flächen übernehmen statt neue anzuhängen – je Schlüssel genau eine, Doppel und
+     Flächen ohne Schlüssel (ältere Aufbauten) fliegen raus. Vorher hing nach jedem Tod ein weiterer Satz „Augen/Gewonnen/…“ im Seitenbaum. */
+  adopt('meter',bar);adopt('tray',tray);for(const s of tray.querySelectorAll(':scope>.rh-trend-name'))if(kind!=='trend')s.remove();
+  anims.length=0;prev={};dirty=true;needHover=true;
   return true;
  }
- function teardown(){document.querySelector('.player-panel .bar.energy')?.classList.remove('has-rh');document.querySelector('.player-panel .bar.energy canvas.rh-meter')?.remove();document.querySelector('#resourceTray')?.remove();reload?.remove();reload=null;enemyCard?.remove();enemyCard=null;kind=null;for(const cv of document.querySelectorAll('canvas.rh-slot'))cv.remove();for(const b of document.querySelectorAll('[data-rh-label],[data-rh-settle],[data-rh-serve],[data-rh-teach]'))for(const k of ['rhLabel','rhSettle','rhServe','rhTeach'])delete b.dataset[k];meter=tray=trayArt=null;hits.meter.clear();hits.tray.clear();}
+ function adopt(scope,host){const m=hits[scope];for(const s of m.values())if(s.parentNode!==host)s.remove();m.clear();for(const s of [...host.querySelectorAll(':scope>.rh-hit')]){const k=s.dataset.rhKey;if(!k||m.has(k)){s.remove();continue;}m.set(k,s);}}
+ function teardown(){const bar=document.querySelector('.player-panel .bar.energy');bar?.classList.remove('has-rh');bar?.querySelector('canvas.rh-meter')?.remove();/* Tooltip-Flächen der Leiste gehen mit – die Leiste selbst bleibt */for(const s of bar?.querySelectorAll('.rh-hit')||[])s.remove();for(const s of hits.meter.values())s.remove();document.querySelector('#resourceTray')?.remove();reload?.remove();reload=null;enemyCard?.remove();enemyCard=null;kind=null;for(const cv of document.querySelectorAll('canvas.rh-slot'))cv.remove();for(const b of document.querySelectorAll('[data-rh-label],[data-rh-settle],[data-rh-serve],[data-rh-teach]'))for(const k of ['rhLabel','rhSettle','rhServe','rhTeach'])delete b.dataset[k];for(const b of document.querySelectorAll('.rh-repeat'))b.classList.remove('rh-repeat');meter=tray=trayArt=null;hits.meter.clear();hits.tray.clear();}
+ /** Nach einem Neuaufbau: steht die Maus auf einer unserer Flächen, bekommt sie ihren Tooltip ohne neues Bewegen. */
+ function rehover(){needHover=false;if(!pointer||typeof PointerEvent==='undefined'||!document.elementFromPoint)return;const at=document.elementFromPoint(pointer.x,pointer.y);if(!at?.classList?.contains('rh-hit')||at.hasAttribute('aria-describedby'))return;at.dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse',clientX:pointer.x,clientY:pointer.y}));}
 
  // --- Ereignisse aus g.fx (Darstellung) ------------------------------------------------------------------------------
  const WATCH=new Set(['tab-write','tab-pay','prellen','trend-up','trend-down','viral','shitstorm','pickup','reload','reload-perfect','reload-jam','serve','overheat','glut','card-throw','shuffle','augen','abrechnen','stich']);
  let lastGame=null;
- function events(g){if(g!==lastGame){lastGame=g;lastFx=g.fx.reduce((m,f)=>Math.max(m,f.id||0),0);anims.length=0;}for(const f of g.fx){if(!(f.id>lastFx))continue;lastFx=f.id;if(f.type!=='combat'||!WATCH.has(f.kind))continue;anims.push({kind:f.kind,at:performance.now(),data:f});dirty=true;}
+ function events(g){if(g!==lastGame){lastGame=g;lastFx=g.fx.reduce((m,f)=>Math.max(m,f.id||0),0);anims.length=0;abrechnenHits=0;}for(const f of g.fx){if(!(f.id>lastFx))continue;lastFx=f.id;if(f.type!=='combat')continue;
+   /* Abrechnen: die Engine meldet erst die Treffer, dann das Ereignis – die Summe ist die große Zahl der Auszahlung */if(f.kind==='hit'&&f.label==='Abrechnen'){abrechnenHits+=f.amount||0;continue;}
+   if(!WATCH.has(f.kind))continue;anims.push({kind:f.kind,at:performance.now(),data:f});dirty=true;if(f.kind==='abrechnen'){payout(g,f,abrechnenHits);abrechnenHits=0;}}
   const now=performance.now();for(let i=anims.length-1;i>=0;i--)if(now-anims[i].at>900)anims.splice(i,1);}
  const recent=(k,ms=700)=>{const now=performance.now();for(let i=anims.length-1;i>=0;i--){const a=anims[i];if(a.kind===k&&now-a.at<ms)return {...a,t:(now-a.at)/ms};}return null;};
 
@@ -79,7 +102,8 @@ export function mountResourceHud(getGame){
    /* Zu heiß: roter Rahmen blinkt (die ersten 1,5 s schnell), Flammenzeichen am Ende */if(h.zone==='heiss'){const since=now-(prev.hotAt||0),fast=since<1500,on=fast?Math.floor(since/110)%2===0:Math.sin(now/260)>0;if(on){px(c,0,0,W,1,'#ff3a2a');px(c,0,H-1,W,1,'#ff3a2a');px(c,0,0,1,H,'#ff3a2a');px(c,W-1,0,1,H,'#ff3a2a');if(fast){c.globalAlpha=.28;px(c,0,0,W,H,'#ff2a1a');c.globalAlpha=1;}}drawSprite(c,'flame',W-5,H,1,{outline:'#2a0a04'});}
    if(h.noDecay>0){for(let k=0;k<3;k++){const ph=(now/400+k/3)%1;c.globalAlpha=(1-ph)*.8;px(c,Math.round(nx-3-ph*10),2+k*2,2,1,'#e8f4ff');}c.globalAlpha=1;}
    if(h.locked>0){c.globalAlpha=.62;px(c,0,0,W,H,'#0a0908');c.globalAlpha=1;const txt=fmt(h.locked.toFixed(1)),tw2=pixelTextWidth(txt,1),cx=Math.round(W/2);drawSprite(c,'lock',cx-tw2/2-4,Math.round(H/2)+4,1);pixelText(c,txt,cx-tw2/2+2,Math.round(H/2)-2,1,'#ffd0a0');}},
-  cards(c,W,H,h,now){const won=h.value>=h.win,fw=Math.round(W*clamp(h.value/h.max));px(c,0,0,W,H,'#f2ead2');
+  cards(c,W,H,h,now){/* Runde 4: beim Abrechnen läuft der Stand sichtbar ab, während die Augen zum Ziel fliegen */const drain=recent('abrechnen',PAYOUT_MS);if(drain)h={...h,value:Math.round((drain.data.augen||0)*(1-ease(drain.t)))};
+   const won=h.value>=h.win,fw=Math.round(W*clamp(h.value/h.max));px(c,0,0,W,H,'#f2ead2');
    for(let a=10;a<h.max;a+=10)px(c,Math.round(W*a/h.max),0,1,H,'#ddd3bc');px(c,0,H-2,W,1,'#b8c4d8');
    const base=h.value>=h.schwarz?'#2a2430':h.value>=h.schneider?'#ecc060':won?'#f2d88a':'#d9d2c0',ink=h.value>=h.schwarz?'#f2c14e':won?'#c89a40':'#9a98a8';
    px(c,0,0,fw,H-2,base);for(let x=0;x<fw;x++)for(let y=0;y<H-2;y++)if((x+y)%4===0)px(c,x,y,1,1,ink);
@@ -116,7 +140,10 @@ export function mountResourceHud(getGame){
    for(let yy=-r;yy<=r;yy++)for(let xx=-r;xx<=r;xx++){const d=Math.hypot(xx+.5,yy+.5);if(d>r+.2||d<r-2.2)continue;const a=(Math.atan2(xx+.5,-(yy+.5))+TAU)%TAU/TAU;px(c,cx+xx,cy+yy,1,1,!active?'#3a2a32':a<=left?col:'#3a2a32');}
    px(c,cx,cy,1,1,active?col:'#5a4a52');if(h.viral>0){drawSprite(c,'spark',cx+r+5,cy+2,1);pixelText(c,'×'+h.viral,cx+r+8,cy-2,1,'#ffd35a');}},
   ammo(c,W,H,h,now,g){const gold=recent('reload-perfect',500);for(let i=0;i<h.bonMax;i++){const x=6+i*8,full=i<h.bons;if(full){let dy=0;if(gold&&i===h.bons-1)dy=-Math.round((1-ease(gold.t))*8);drawSprite(c,gold&&i===h.bons-1&&gold.t<.6?'bonGold':'bon',x,15+dy,1,{outline:'#2a2418'});}else{c.globalAlpha=.3;drawSprite(c,'bon',x,15,1,{tint:['#2a3a30',.8]});c.globalAlpha=1;}}
-   if(h.pickups>0){const x=6+h.bonMax*8+10;/* Leergut am Boden: stehende Flasche auf Grasbüschel, glitzert */px(c,x-4,17,9,1,'#3f7a3a');px(c,x-3,18,7,1,'#2a5a26');drawSprite(c,'bottle',x,17,1,{outline:'#0a140a'});pixelText(c,'×'+h.pickups,x+5,11,1,'#d8f0b0');if(Math.sin(now/180)>.4)drawSprite(c,'spark',x+2,6,1);}},
+   if(h.pickups>0){const x=6+h.bonMax*8+8,step=Math.floor(now/320)%2;/* Runde 4 (Kenner-Befund 7): Bild statt „×2“ allein – Flasche liegt im Gras, ein Stiefel tritt drauf (= drüberlaufen sammelt ein), glitzert */
+    const gy=Math.min(19,H-1);/* Grasnarbe; Handy-Band ist niedriger */px(c,x-5,gy,18,1,'#4f8a44');px(c,x-4,gy+1,16,1,'#2a5a26');for(const gx of [x-4,x+1,x+9])px(c,gx,gy-2,1,2,'#6fae5a');drawSprite(c,'bottle',x+4,gy-2,1,{outline:'#0a140a',angle:-Math.PI/2+.18,anchor:'center'});
+    if(Math.sin(now/170)>.35)drawSprite(c,'spark',x+7,gy-6,1);drawSprite(c,'boot',x+4,gy-(step?7:10),1,{outline:'#1a0e06'});
+    pixelText(c,'×'+h.pickups,x+13,gy-8,1,'#d8f0b0');}},
   grill(c,W,H,h,now,g){const n=Math.max(1,h.slots),cell=prev.cell=Math.min(CELL,Math.floor((W-14)/n)),x0=1,served=recent('serve',520),charcoal=RESOURCES.schorsch?.rost?.charcoal||1.3,gar=RESOURCES.schorsch?.rost?.gar||[.6,.9],cy=Math.round(H/2),R=Math.min(12,Math.floor(cell/2)-2,Math.floor(H/2)-2);
    // Garring: Spur mit goldenem Zielbereich (gar), darüber der Füllstand in der Farbe der Garstufe; innen der Rost, darauf das Stück (2-fach)
    const COL={roh:'#e8868a',gar:'#f2c14e',durch:'#b06a34',verkohlt:'#5a1a10'};
@@ -148,21 +175,25 @@ export function mountResourceHud(getGame){
  function tooltips(g,h){const keepM=new Set(),keepT=new Set(),[MW,MH]=[meter.width,meter.height],[TW,TH]=[trayArt.width,Math.max(1,trayArt.height-TOP)],bar=meter.parentNode;
   const M=(key,x,y,w,hh,label,note)=>{keepM.add(key);hit('meter',key,bar,x,y,w,hh,MW,MH,label,note);},Tr=(key,x,y,w,hh,label,note)=>{keepT.add(key);hit('tray',key,tray,x,y,w,hh,TW,TH,label,note);};
   if(h.kind==='rage'){M('bar',0,0,MW,MH,T.rage.label,T.rage.note(Math.floor(h.value),h.surgeAt));Tr('bon',0,0,Math.min(TW,prev.bonLen+6||TW),TH,T.tab.label,T.tab.note(Math.round(h.tab),Math.round(h.tabMax)));}
-  if(h.kind==='trend'){const bonus=Math.round(h.trend*((RESOURCES.baerbel?.trend?.bonusPerLevel)||.04)*100*100)/100;M('bar',0,0,MW,MH,T.likes.label,T.likes.note(Math.floor(h.value)));Tr('hearts',0,0,5+h.trendMax*9,TH,h.trendName,T.trend.note(h.viewers.toLocaleString('de-DE'),Math.round(bonus),h.viral>0)+'<br>'+T.trendRule);const left=Math.max(0,h.decayAfter-(h.idle||0));Tr('algo',5+h.trendMax*9-2,0,16,TH,T.algo.label,T.algo.note(g.player.inCombat>0&&h.trend>0?fmt(left.toFixed(1)):0));}
-  if(h.kind==='ammo'){M('bar',0,0,MW,MH,T.crate.label,T.crate.note(h.value,h.max));Tr('bons',0,0,4+h.bonMax*8,TH,T.bons.label,T.bons.note(h.bons,h.bonMax,Math.round(((RESOURCES.kevin?.bon?.power)||.35)*100)));if(h.pickups>0)Tr('pickups',4+h.bonMax*8,0,26,TH,T.pickups.label,T.pickups.note(h.pickups));}
+  if(h.kind==='trend'){const bonus=Math.round(h.trend*((RESOURCES.baerbel?.trend?.bonusPerLevel)||.04)*100*100)/100;M('bar',0,0,MW,MH,T.likes.label,T.likes.note(Math.floor(h.value)));Tr('hearts',0,0,5+h.trendMax*9,TH,T.trendLabel(h.trendName,h.trend,h.trendMax),T.trend.note(h.viewers.toLocaleString('de-DE'),Math.round(bonus),h.viral>0)+'<br>'+T.trendRule);const left=Math.max(0,h.decayAfter-(h.idle||0));Tr('algo',5+h.trendMax*9-2,0,16,TH,T.algo.label,T.algo.note(g.player.inCombat>0&&h.trend>0?fmt(left.toFixed(1)):0));}
+  if(h.kind==='ammo'){M('bar',0,0,MW,MH,T.crate.label,T.crate.note(h.value,h.max));Tr('bons',0,0,4+h.bonMax*8,TH,T.bons.label,T.bons.note(h.bons,h.bonMax,Math.round(((RESOURCES.kevin?.bon?.power)||.35)*100)));if(h.pickups>0)Tr('pickups',4+h.bonMax*8,0,36,TH,T.pickups.label,T.pickups.note(h.pickups));}
   if(h.kind==='grill'){const z=h.zones.find(z=>z.id===h.zone)||h.zones[0];M('bar',0,0,MW,MH,h.zoneName,T.glut.note(Math.floor(h.value),Math.round((z.damage||0)*100)));{const x0=Math.min(8,MH),tw=MW-x0-1,xv=v=>x0+Math.round(tw*clamp(v/h.max)),pz=h.zones.find(z=>z.id==='perfekt')||{};M('perfect',xv(h.perfect[0])-1,0,xv(h.perfect[1])-xv(h.perfect[0])+2,MH,T.perfect.label,T.perfect.note(h.perfect[0],h.perfect[1],Math.round((pz.damage||0)*100)));}if(h.locked>0)M('lock',0,0,MW,MH,T.locked.label,T.locked.note(fmt(h.locked.toFixed(1))));
    for(let i=0;i<h.slots;i++){const it=h.rost[i],cw=prev.cell||CELL;Tr('slot'+i,1+i*cw,0,cw,TH,it?it.name:T.rost.label,it?T.rost.note(T.states[it.state]+(it.smoked?' · '+T.smoked:''),Math.round(it.done*100)):T.rost.empty);}}
-  if(h.kind==='cards'){M('bar',0,0,MW,MH,T.augen.label,T.augen.note(Math.floor(h.value),h.win,h.schneider,h.schwarz));for(const [k,v] of [['win',h.win],['schneider',h.schneider],['schwarz',h.schwarz]]){const x=Math.min(MW-1,Math.round(MW*v/h.max)),w=Math.min(10,MW-x+4);M('mark-'+k,x-4,0,w,MH,T.marks[k].label,T.marks[k].note(v,h.value>=v));}const layers=h.deck<=0?0:h.deck<8?1:h.deck<16?2:3;Tr('deck',0,0,16+layers,TH,T.deck.label,T.deck.note(h.deck));let x=18+layers;
+  if(h.kind==='cards'){M('bar',0,0,MW,MH,T.augen.label,T.augen.note(Math.floor(h.value),h.win,h.schneider,h.schwarz));/* Runde 4 (Kenner-Befund 2): die Marken sind schmale Kerben (4 Kartenpixel = 8 px) – der Rest der Leiste gehört dem Augen-Tooltip, der alle Schwellen nennt */for(const [k,v] of [['win',h.win],['schneider',h.schneider],['schwarz',h.schwarz]]){const x=Math.min(MW-1,Math.round(MW*v/h.max)),x0=Math.max(0,Math.min(MW-4,k==='win'?x-3:x-2));M('mark-'+k,x0,0,4,MH,T.marks[k].label,T.marks[k].note(v,h.value>=v));}const layers=h.deck<=0?0:h.deck<8?1:h.deck<16?2:3;Tr('deck',0,0,16+layers,TH,T.deck.label,T.deck.note(h.deck));let x=18+layers;
    if(h.chain?.suit){const w=11+(h.chain.n>0?pixelTextWidth('×'+(h.chain.n+1),1)+3:0),bonus=Math.round(h.chain.n*((RESOURCES.kaethe?.follow?.bonus)||.25)*100);Tr('chain',x,0,w,TH,T.chain.label,T.chain.note(RESOURCES.kaethe.suits[h.chain.suit].name,h.chain.n,bonus));x+=w;}
    if(h.next){Tr('next',x,0,17,TH,T.next.label,cardName(h.next));x+=17;}if(h.sleeve)Tr('sleeve',x,0,17,TH,T.sleeve.label,cardName(h.sleeve));}
   hideHits('meter',keepM);hideHits('tray',keepT);}
 
  // --- Pfandautomat (Kevin): Balken über der Leiste --------------------------------------------------------------------
+ function placeReload(host){const shell=host.getBoundingClientRect(),vis=e=>{if(!e||e.hidden||e.classList.contains('hidden'))return null;const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden'||Number(cs.opacity)===0)return null;const r=e.getBoundingClientRect();return r.width&&r.height?r:null;};
+  const rects=['.action-area','#interact','#classMechanicArt','#playerCast','#rotationTip'].map(s=>vis(document.querySelector(s)));if(!rects[0])return;const spot=reloadSpot(rects,shell,reload.offsetHeight||30);if(!spot)return;reload.style.left=spot.left+'px';reload.style.top=Math.max(8,spot.top)+'px';}
  function drawReload(g,h,now){const r=h?.reload,perfect=recent('reload-perfect',450),jam=recent('reload-jam',700);const show=!!r||!!perfect;
   if(!show){if(reload)reload.hidden=true;return false;}
-  /* über der Aktionsleiste (Desktop) bzw. oben mittig (Handy, dort liegt die Leiste anders) */const host=(!document.body.classList.contains('touch-mode')&&document.querySelector('.action-area'))||document.querySelector('#gameShell');
-  if(!reload){reload=el('div','rh-reload',host);reload.setAttribute('role','timer');reloadArt=el('canvas','',reload);reload.dataset.tooltipLabel=T.reload.label;reload.dataset.tooltipNote=T.reload.note;}else if(reload.parentNode!==host)host.append(reload);
-  reload.hidden=false;const [W,H]=fit(reloadArt),c=reloadArt.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,W,H);
+  /* Runde 4 (Kenner-Befund 7): über allem, was über der Leiste steht (Aktionsleiste, Mechanik-Anzeige, „Sammeln“, Zauberbalken) –
+     nie darauf. Desktop: Lage aus den Rechtecken (höchstens alle 250 ms gemessen); Handy: feste Lage aus resource-hud.css. */const touch=document.body.classList.contains('touch-mode'),host=document.querySelector('#gameShell')||document.querySelector('.action-area');if(!host)return false;
+  if(!reload){reload=el('div','rh-reload',host);reload.setAttribute('role','timer');reloadArt=el('canvas','',reload);reload.dataset.tooltipLabel=T.reload.label;reload.dataset.tooltipNote=T.reload.note;reloadPlace=0;}else if(reload.parentNode!==host){host.append(reload);reloadPlace=0;}
+  const wasHidden=reload.hidden;reload.hidden=false;reload.classList.toggle('placed',!touch);if(touch){reload.style.left=reload.style.top='';}else if(wasHidden||now-reloadPlace>250){reloadPlace=now;placeReload(host);}
+  const [W,H]=fit(reloadArt),c=reloadArt.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,W,H);
   const t=r?Math.min(1,r.t/r.total):1,zone=r?.zone||[.55,.72],inZone=!!r&&!r.tried&&t>=zone[0]&&t<=zone[1],x0=3,tw=W-6,xv=v=>x0+Math.round(tw*v);
   const pulse=Math.sin(now/60)>0;px(c,0,0,W,H,inZone?(pulse?'#fff3b0':'#e8b84a'):'#2a2c2e');px(c,1,1,W-2,H-2,inZone?'#8a6a20':'#4a4e52');px(c,2,2,W-4,H-4,'#101412');for(const x of [1,W-2])for(const y of [1,H-2])px(c,x,y,1,1,'#9aa0a4');
   px(c,x0,3,Math.max(0,xv(t)-x0),H-6,r?.jam>0?'#6a2a1e':'#3f6a3a');px(c,x0,3,Math.max(0,xv(t)-x0),1,r?.jam>0?'#9a4a2e':'#5f9a5a');
@@ -181,6 +212,34 @@ export function mountResourceHud(getGame){
   const beat=['strike','mark','burst'].some(id=>resourceVariant(g,id)?.tone==='gold'&&!!handCard(g,id)),key=card.suit+card.rank+(beat?'!':'');enemyCard.hidden=false;
   if(enemyCard.dataset.card!==key){enemyCard.dataset.card=key;paintBigCardCanvas(enemyCard,card,{glow:beat});enemyCard.dataset.tooltipLabel=T.enemyCard.label+' · '+cardName(card);enemyCard.dataset.tooltipNote=beat?T.enemyCard.beat:T.enemyCard.note;enemyCard.classList.toggle('beatable',beat);}}
 
+ // --- Käthe: Abrechnen zahlt aus (Runde 4, Kenner-Befund 4) ------------------------------------------------------------
+ //   Augen-Marken fliegen von der Leiste im Bogen zum Ziel (PAYOUT_MS), dort platzt die große Zahl (Schaden des Abrechnens) auf,
+ //   darunter „89 Augen ×1,5“; bei Schneider/Schwarz/Grand schlägt ein Stempel ein. Die Weltkarten (resource-fx-art.js) sammeln
+ //   sich solange am Ziel und fächern dann auf. Reine Darstellung: die Wirkung ist beim Druck schon verrechnet.
+ /** Weltpunkt → Bildschirm (Kamera des Renderers wie combat-text.js); null ohne Renderer. */
+ function project(x,y){const R=globalThis.__mertloch?.renderer;if(!R?.canvas?.getBoundingClientRect||!R.viewWidth)return null;const r=R.canvas.getBoundingClientRect(),o=R.viewOrigin||{x:R.camera.x-R.viewWidth/2,y:R.camera.y-R.viewHeight/2};return {x:r.left+(x-o.x)*r.width/R.viewWidth,y:r.top+(y-o.y)*r.height/R.viewHeight};}
+ let eyeUrl=null;const eyeImage=()=>{if(eyeUrl===null){try{eyeUrl=sprite('auge')?.toDataURL?.()||'';}catch{eyeUrl='';}}return eyeUrl;};
+ function payout(g,f,damage){
+  const shell=typeof document!=='undefined'&&document.querySelector('#gameShell');if(!shell?.getBoundingClientRect||!meter?.isConnected)return;const to=project(f.x,f.y-24);if(!to)return;
+  const plan=payoutPlan({augen:f.augen||0,grand:!!f.grand,damage});payouts.push({at:performance.now(),...plan});if(payouts.length>6)payouts.shift();
+  if(!payoutLayer||!payoutLayer.isConnected){payoutLayer=el('div','rh-payout',shell);payoutLayer.setAttribute('aria-hidden','true');}
+  const sr=shell.getBoundingClientRect(),mr=meter.getBoundingClientRect(),X=v=>v-sr.left,Y=v=>v-sr.top,calm=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if(!calm&&typeof Element!=='undefined'&&Element.prototype.animate){const url=eyeImage(),fill=Math.max(.15,Math.min(1,(f.augen||0)/((RESOURCES.kaethe?.max)||120)));
+   for(let i=0;i<plan.tokens;i++){const eye=el('i','rh-eye',payoutLayer);if(url)eye.style.backgroundImage='url('+url+')';
+    const sx=X(mr.left+mr.width*fill*(1-i/plan.tokens)),sy=Y(mr.top+mr.height/2),ex=X(to.x)+(noise(i,3)-.5)*26,ey=Y(to.y)+(noise(i,7)-.5)*16,cx=(sx+ex)/2+(noise(i,9)-.5)*120,cy=Math.min(sy,ey)-90-noise(i,5)*70,frames=[];
+    for(let k=0;k<=10;k++){const t=k/10,u=1-t,x=u*u*sx+2*u*t*cx+t*t*ex,y=u*u*sy+2*u*t*cy+t*t*ey,s=t<.15?.6+t/.15*.6:1.2-t*.35;frames.push({transform:`translate(${Math.round(x)}px,${Math.round(y)}px) scale(${s.toFixed(2)})`,opacity:t>.92?0:1});}
+    const a=eye.animate(frames,{duration:PAYOUT_MS-60,delay:Math.round(i*(60/plan.tokens)*1.2),easing:'cubic-bezier(.45,0,.75,1)',fill:'both'});a.onfinish=()=>eye.remove();setTimeout(()=>eye.remove(),PAYOUT_MS+3000);}}
+  /* Zahl und Stempel stehen sofort im Baum und starten per Animationsverzögerung, wenn die Augen ankommen – so laufen sie im selben Takt wie die Augen
+     (auch angehalten, z. B. in der Bildfolge der Prüfung) und gehen mit dem Ende ihrer Animation. */
+  {const box=el('div','rh-payout-hit'+(plan.gold?' gold':'')+(calm?' calm':''),payoutLayer);box.dataset.level=plan.level||'win';/* links über dem Ziel: rechts davon steigen die Schadenszahlen (combat-text.js) */box.style.left=Math.round(X(to.x)-64)+'px';box.style.top=Math.round(Y(project(f.x,f.y-44)?.y??to.y-40))+'px';const delay=calm?0:PAYOUT_MS;
+   const num=el('b','rh-payout-num',box);num.textContent=plan.number;el('small','rh-payout-cap',box).textContent=plan.caption;if(plan.stamp){const st=el('em','rh-payout-stamp',box);st.textContent=plan.stamp;st.style.animationDelay=(delay+120)+'ms';}
+   box.style.animationDelay=num.style.animationDelay=delay+'ms';box.addEventListener('animationend',e=>{if(e.target===box)box.remove();});setTimeout(()=>box.remove(),calm?1800:delay+6000);}
+ }
+ // --- Anni: Trend als eigener Stufenname neben den Herzen (Runde 4, Kenner-Befund 6) -------------------------------------
+ function syncTrendName(g,h){let nm=tray.querySelector(':scope>.rh-trend-name');if(h.kind!=='trend'){nm?.remove();return;}if(!nm){nm=el('b','rh-trend-name',tray);nm.setAttribute('aria-live','polite');}
+  const cx=5+h.trendMax*9+5,left=(cx+6+5+(h.viral>0?pixelTextWidth('×'+h.viral,1)+9:0))*P,label=T.trendLabel(h.trendName,h.trend,h.trendMax);
+  if(nm.style.left!==left+'px')nm.style.left=left+'px';if(nm.textContent!==h.trendName){const up=h.trend>(prev.trendShown??h.trend);nm.textContent=h.trendName;nm.classList.remove('up','down');void nm.offsetWidth;if(prev.trendShown!==undefined)nm.classList.add(up?'up':'down');}prev.trendShown=h.trend;nm.dataset.level=String(h.trend);
+  if(nm.dataset.tooltipLabel!==label)nm.dataset.tooltipLabel=label;const note=hits.tray.get('hearts')?.dataset.tooltipNote||'';if(nm.dataset.tooltipNote!==note)nm.dataset.tooltipNote=note;}
  // --- Käthe: erreichte Stufe (gewonnen, Schneider, Schwarz) als Stempel im Band
  function syncStamp(h){let st=tray.querySelector('.rh-stamp');if(h.kind!=='cards'){st?.remove();return;}const w=RESOURCES.kaethe?.hud||{},level=h.value>=h.schwarz?3:h.value>=h.schneider?2:h.value>=h.win?1:0;
   if(!st){st=el('b','rh-stamp',tray);st.setAttribute('aria-live','polite');}const word=['',w.won,w.schneider,w.schwarz][level]||'';st.hidden=!level;st.dataset.level=String(level);
@@ -195,7 +254,7 @@ export function mountResourceHud(getGame){
  //   Schorsch: Auflegen zeigt das nächste Grillgut · Servieren zeigt das garste Stück mit Garring, leuchtet in der Farbe der Garstufe
  //   Hofprobe: die Kartentaste pulsiert, bis die erste Karte liegt
  // Eine eigene Leinwand je Knopf (.rh-slot, 1 Rasterpixel = 1 CSS-Pixel, ragt 8 px über den Rand), neu gezeichnet nur bei Zustandswechsel.
- const SLOT_IDS=['strike','mark','burst','throw'];
+ const SLOT_IDS=['strike','mark','burst','throw'],CARD_SLOTS=new Set(['strike','mark','burst','aermel']);
  function slotState(g,h,id){
   if(h.kind==='cards'){
    if(id==='throw'){const lv=h.value>=h.schwarz?3:h.value>=h.schneider?2:h.value>=h.win?1:0;return {art:'settle',lv,label:'hide'};}
@@ -214,6 +273,8 @@ export function mountResourceHud(getGame){
   const teach=h?.kind==='cards'&&TEACH(g);
   for(const b of document.querySelectorAll('.action-area .skill[data-skill],#touchActions .touch-skill[data-skill]')){
    const id=b.dataset.skill,s=h&&SLOT_IDS.includes(id)?slotState(g,h,id):null;
+   /* Runde 4 (Kenner-Befund 3): Kartenknöpfe heißen für Hilfstechnik nach ihrer Karte („Kreuz-Dame – trifft [2]“), neu nach jedem Nachziehen */
+   if(h?.kind==='cards'&&CARD_SLOTS.has(id)){const name=cardSlotName(g,id);if(name){const cur=b.getAttribute('aria-label')||'',key=cur.match(/ \[[^\]]*\]$/)?.[0]||'',want=name+key;if(cur!==want)b.setAttribute('aria-label',want);}}
    const set=(k,v)=>{if(v==null||v===''||v===false){if(k in b.dataset)delete b.dataset[k];}else if(b.dataset[k]!==String(v))b.dataset[k]=String(v);};
    set('rhLabel',s?.label);set('rhSettle',s?.art==='settle'&&s.lv?s.lv:null);set('rhServe',s?.art==='serve'&&s.item?s.state:null);set('rhTeach',teach&&id==='strike'?1:null);
    let cv=b.querySelector(':scope>canvas.rh-slot');if(!s){cv?.remove();continue;}
@@ -274,13 +335,14 @@ export function mountResourceHud(getGame){
    if(h.kind==='grill'){const ripe=h.rost.reduce((b,it,i)=>it.done<(RESOURCES.schorsch?.rost?.charcoal||1.3)&&(b<0||it.done>h.rost[b].done)?i:b,-1);if(!recent('serve',520))prev.servedSlot=ripe>=0?ripe:undefined;}
    if(h.kind==='rage'){const strokes=Math.min(24,Math.ceil(clamp(h.tab/Math.max(1,h.tabMax))*24));if(!recent('tab-pay',650))prev.strokesBefore=strokes;}
    const sig=signature(h);if(sig!==lastSig){lastSig=sig;dirty=true;}
-   tooltips(g,h);syncEnemyCard(g,h);syncRepeat(g,h);syncStamp(h);syncSlots(g,h);
+   tooltips(g,h);syncEnemyCard(g,h);syncRepeat(g,h);syncStamp(h);syncTrendName(g,h);syncSlots(g,h);if(needHover)rehover();
    tray.classList.toggle('in-combat',g.player.inCombat>0);},
   /** Jedes Bild: Ereignisse lesen, bei Bedarf zeichnen. */
   frame(now=performance.now()){const g=getGame();if(!g||!kind||!meter)return;events(g);const h=resourceHud(g);
    if(h?.kind==='rage'&&!recent('tab-pay',650)){prev.strokesBefore=Math.min(24,Math.ceil(clamp(h.tab/Math.max(1,h.tabMax))*24));}
    const live=lively(g,h)||(reload&&!reload.hidden);if(!dirty&&!(live&&now-lastDraw>=33))return;dirty=false;lastDraw=now;draw(g,now);},
   /** Prüfzugang (scripts/e72-hud-fx-check.mjs). */
-  state:()=>({kind,meter:!!meter,tray:!!tray,reload:!!reload&&!reload.hidden,enemyCard:!!enemyCard&&!enemyCard.hidden,anims:anims.map(a=>a.kind),hits:[...hits.meter.keys(),...hits.tray.keys()]})
+  state:()=>({kind,meter:!!meter,tray:!!tray,reload:!!reload&&!reload.hidden,enemyCard:!!enemyCard&&!enemyCard.hidden,anims:anims.map(a=>a.kind),hits:[...hits.meter.keys(),...hits.tray.keys()],
+   /* Runde 4: Flächen im Seitenbaum (muss je Aufbau gleich bleiben) und die letzten Auszahlungen */barHits:document.querySelectorAll('.player-panel .bar.energy .rh-hit').length,trayHits:document.querySelectorAll('#resourceTray .rh-hit').length,payouts:payouts.map(p=>({...p}))})
  };
 }

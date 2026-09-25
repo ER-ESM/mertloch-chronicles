@@ -428,7 +428,7 @@ export function resourceHud(g){
 /** Text für die schmale Leiste am Spielerfenster. */
 export function resourceLine(g){const h=resourceHud(g);if(!h)return '';const n=v=>Math.floor(v);
  if(h.kind==='rage')return n(h.value)+' Randale'+(h.tab>=1?' · Zeche '+n(h.tab):'');
- if(h.kind==='trend')return n(h.value)+' Likes · '+h.trendName;
+ if(h.kind==='trend')return n(h.value)+' Likes';/* Runde 4 (hud4): der Trend steht getrennt als Herzen + Stufenname unter dem Porträt */
  if(h.kind==='ammo')return h.value+'/'+h.max+' Flaschen'+(h.bons?' · '+h.bons+' Bon':'');
  if(h.kind==='grill')return 'Glut '+n(h.value)+' · '+h.zoneName;
  if(h.kind==='cards')return n(h.value)+'/'+h.win+' Augen';

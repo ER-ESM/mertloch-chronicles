@@ -110,3 +110,31 @@ button.skill>canvas.rh-slot[data-rh-slot],#touchActions button.touch-skill>canva
 #tutorialGuide .tut-guide .tg-icon{width:22px;height:24px}
 #tutorialGuide .tut-guide .tg-icon img{max-width:20px;max-height:22px}
 @media (prefers-reduced-motion:reduce){.tut-guide .tg-step.is-now .tg-icon{animation:none}}
+/* E-72 Runde 4 (hud4) · Kenner-Playtest 25.09. abends */
+/* Pfandautomat: Lage aus resource-hud.js (über Leiste, Mechanik-Anzeige und „Sammeln“) */
+.rh-reload.placed{bottom:auto}
+/* Abrechnen zahlt aus: Augen fliegen zum Ziel, große Zahl, Stempel bei Schneider/Schwarz/Grand */
+.rh-payout{position:absolute;inset:0;z-index:950;pointer-events:none;overflow:hidden}
+.rh-payout .rh-eye{position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;background:no-repeat center/100% 100%;image-rendering:pixelated;filter:drop-shadow(0 0 4px #ffd35a) drop-shadow(0 1px 1px #000c);will-change:transform}
+.rh-payout-hit{position:absolute;transform:translate(-50%,-100%);display:grid;justify-items:center;gap:0;animation:rh-payout-rise 1.7s cubic-bezier(.2,.8,.3,1) both;white-space:nowrap}
+.rh-payout-num{font:400 44px/1 var(--display,'Jersey 10',sans-serif);letter-spacing:.02em;color:#fff6e0;text-shadow:0 0 12px #ffd35a,2px 2px 0 #3a2410,-1px -1px 0 #3a2410,1px -1px 0 #3a2410,-1px 1px 0 #3a2410;animation:rh-payout-pop .42s cubic-bezier(.2,1.8,.4,1) both}
+.rh-payout-hit.gold .rh-payout-num{color:#ffe38a;font-size:54px;text-shadow:0 0 16px #ffb02a,3px 3px 0 #3a1a08,-1px -1px 0 #3a1a08,1px -1px 0 #3a1a08,-1px 1px 0 #3a1a08}
+.rh-payout-cap{font:800 13px/1.2 var(--read,'Nunito',sans-serif);color:#f6efdc;text-shadow:1px 1px 0 #000;margin-top:2px;padding:0 6px;border-radius:4px;background:#1a1410c8}
+.rh-payout-stamp{order:-1;margin-bottom:4px;padding:1px 10px 0;border:3px solid currentColor;border-radius:5px;font:400 30px/1.05 var(--display,'Jersey 10',sans-serif);letter-spacing:.06em;font-style:normal;color:#a86a08;background:#fff3c8f2;box-shadow:0 2px 6px #000c;transform:rotate(-8deg);animation:rh-payout-stamp .5s .12s cubic-bezier(.2,1.6,.4,1) both}
+.rh-payout-hit[data-level=schwarz] .rh-payout-stamp{color:#f2c14e;background:#1a1418f2}
+.rh-payout-hit[data-level=grand] .rh-payout-stamp{color:#c8323a;background:#fff6e0f2}
+@keyframes rh-payout-pop{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}
+@keyframes rh-payout-rise{0%{opacity:0;margin-top:0}6%{opacity:1}70%{opacity:1}100%{opacity:0;margin-top:-34px}}
+@keyframes rh-payout-stamp{0%{transform:rotate(-24deg) scale(2.6);opacity:0}100%{transform:rotate(-8deg) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.rh-payout-hit,.rh-payout-num,.rh-payout-stamp{animation:none}}
+/* Anni: Trend-Stufe als Wort neben den Herzen (die Likes stehen allein auf der Leiste) */
+.player-panel .rh-tray .rh-trend-name{position:absolute;top:50%;transform:translateY(-50%);padding:1px 7px 0;border-radius:4px;font:400 16px/1.1 var(--display,'Jersey 10',sans-serif);letter-spacing:.05em;color:#ffd0dc;background:#2a1a24d8;box-shadow:inset 0 0 0 1px #ff8fb044;pointer-events:auto;cursor:help;white-space:nowrap}
+.player-panel .rh-tray .rh-trend-name[data-level='0']{color:#b8a4b0;box-shadow:inset 0 0 0 1px #6a5a6444}
+.player-panel .rh-tray .rh-trend-name[data-level='3'],.player-panel .rh-tray .rh-trend-name[data-level='4']{color:#ffb0d0;box-shadow:inset 0 0 0 1px #ff7ab0aa,0 0 6px #ff5fa266}
+.player-panel .rh-tray .rh-trend-name[data-level='5']{color:#2a1a08;background:linear-gradient(#ffe38a,#ff9a4a);box-shadow:0 0 10px #ff8f5acc}
+.player-panel .rh-tray .rh-trend-name.up{animation:rh-trend-up .5s cubic-bezier(.2,1.6,.4,1)}
+.player-panel .rh-tray .rh-trend-name.down{animation:rh-trend-down .5s ease-out}
+@keyframes rh-trend-up{0%{transform:translateY(-50%) scale(1.6)}100%{transform:translateY(-50%) scale(1)}}
+@keyframes rh-trend-down{0%,100%{transform:translateY(-50%)}25%{transform:translateY(-50%) translateX(-3px)}75%{transform:translateY(-50%) translateX(3px)}}
+.touch-mode .player-panel .rh-tray .rh-trend-name{font-size:12px;padding:0 4px}
+@media (prefers-reduced-motion:reduce){.player-panel .rh-tray .rh-trend-name.up,.player-panel .rh-tray .rh-trend-name.down{animation:none}}

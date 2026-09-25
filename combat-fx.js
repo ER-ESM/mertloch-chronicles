@@ -8,7 +8,7 @@ export const SKILL_FX={dieter:{...common,barricade:'barricade',slam:'slam',keg:'
 // Klassen-Buffs (class-buffs.js) nutzen das Bild der Stärkung; es erscheint am Ziel (Held oder Söldner).
 for(const cls of Object.keys(SKILL_FX))for(const b of classBuffsFor(cls))SKILL_FX[cls][b.id]='buff';
 /** E-72: Anzeigedauer der Ressourcen-Effekte (resource-fx-art.js) in Sekunden – reine Darstellung. */
-export const RESOURCE_FX_DURATION={'tab-write':.8,'tab-pay':.9,prellen:.95,likes:1,'trend-up':.8,'trend-down':.8,viral:1.4,shitstorm:1.6,'bottle-drop':.55,pickup:.5,reload:.6,'reload-perfect':1,'reload-jam':.7,glut:.9,serve:.8,overheat:1.1,steam:1.4,'grill-swing':.85,ember:.6,'card-throw':.6,'card-burst':1.2,stich:1.1,abrechnen:1.35,shuffle:.9,augen:1};
+export const RESOURCE_FX_DURATION={'tab-write':.8,'tab-pay':.9,prellen:.95,likes:1,'trend-up':.8,'trend-down':.8,viral:1.4,shitstorm:1.6,'bottle-drop':.55,pickup:.75,reload:.6,'reload-perfect':1,'reload-jam':.7,glut:.9,serve:.8,overheat:1.1,steam:1.4,'grill-swing':.85,ember:.6,'card-throw':.6,'card-burst':1.2,stich:1.1,abrechnen:1.7,shuffle:.9,augen:1};
 export function emitCombatFx(g,kind,at,data={}){
  if(!g.effect||!Number.isFinite(at?.x)||!Number.isFinite(at?.y))return;
  const duration=data.duration??({hit:.36,heal:.75,guard:.6,proc:1.05,'proc-use':.45,burst:.85,detonate:.7,dash:.42,interrupt:.6,parry:.6,hurt:.4,dodge:.45,deploy:.45,death:.85,...RESOURCE_FX_DURATION}[kind]||.65);

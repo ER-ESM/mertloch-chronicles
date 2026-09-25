@@ -35,8 +35,9 @@ const MAPS={
   '............W','...........WS','..........WS.','.........WS..','........WS...','.......WS....','...G..WS.....','....GWS......','....hG.......','...h..G......','.oo..........','.oo..........']},
  fxShield:{p:{r:'#dfe7ee',R:'#8a9aa8',B:'#7aaee8',b:'#3a6ab0',Y:'#fff3b0',y:'#f2c14e'},m:[
   'rrrrrrrrrrr','rBBBBBbbbbR','rBBBBBbbbbR','rBBByyybbbR','rBBByYybbbR','rBBByyybbbR','.rBBBBbbbR.','.rBBBBbbbR.','..rBBbbbR..','...rBbbR...','....rbR....','.....R.....']},
- fxHeal:{p:{G:'#5cc85a',L:'#c8f7b0',g:'#2e8a3a'},m:[
-  '....GGGG....','....GLLg....','....GLLg....','....GLLg....','GGGGGLLGGGGg','GLLLLLLLLLLg','GLLLLLLLLLLg','gggggLLggggg','....GLLg....','....GLLg....','....GLLg....','....gggg....']},
+ // Runde 4 (hud4, Kenner-Befund 3 „Herz heilt nicht erkannt“): Herz mit grünem Plus – Farbe und Wirkung in einem Bild
+ fxHeal:{p:{r:'#e8455a',R:'#ffc0cc',d:'#a02a40',G:'#8af07a',L:'#eaffe0'},m:[
+  '.rrr....rrr.','rRRrr..rrrrd','rRrrrrrrrrrd','rrrrrGGrrrrd','rrrrrGLrrrrd','rrrGGGLGGrrd','.rrGLLLLGrd.','.rrrrGLrrrd.','..rrrGGrrd..','...rrrrrd...','....rrrd....','.....rd.....']},
  fxBoom:{p:{W:'#fff6c8',y:'#ffd35a',o:'#ff8a2a',r:'#d8452a'},m:[
   '......r......','.r....o....r.','..o...o...o..','...o.ooo.o...','....oyyyo....','...oyyWyyo...','rooyyWWWyyoor','...oyyWyyo...','....oyyyo....','...o.ooo.o...','..o...o...o..','.r....o....r.','......r......']},
  // Tempo-Abzeichen (klein, auf dunklem Plättchen): » schnell (7–9, kurze globale Abklingzeit), Stern stark (10, Ass), Krone Trumpf (Bube)
@@ -46,7 +47,14 @@ const MAPS={
  // Stich: eine Gegnerkarte, die zerschlagen wird
  badgeStich:{p:{k:'#2e2420',w:'#f6efdc',x:'#e8453a'},m:['kkkk..x','kwwwkx.','kwwwx..','kwwxk..','kwxwk..','kxwwk..','xkkkk..']},
  // Skatblock (Augen) für die Hofprobe-Schritte
- skatblock:{p:{p:'#f2ead2',l:'#b8c4d8',r:'#c8323a',k:'#2a2430',t:'#6a6070'},m:['kkkkkkk','prpppp.','prtpt..','prppppp','prtttpp','prppppp','prtpp..','ppppppp']}
+ skatblock:{p:{p:'#f2ead2',l:'#b8c4d8',r:'#c8323a',k:'#2a2430',t:'#6a6070'},m:['kkkkkkk','prpppp.','prtpt..','prppppp','prtttpp','prppppp','prtpp..','ppppppp']},
+ // E-72 Runde 4 (hud4): Abrechnen zahlt aus – die Augen fliegen als goldene Augen-Marken von der Leiste zum Ziel
+ auge:{p:{o:'#8a5a14',Y:'#f2c14e',H:'#fff3b0',w:'#fff6e0',b:'#3a6ab0',k:'#10121a'},m:[
+  '..ooooo..','.oYHHYYo.','oYwwwwwYo','oYwbbbwYo','oYwbkbwYo','oYwbbbwYo','oYwwwwwYo','.oYYYYYo.','..ooooo..']},
+ // Kevin: Stiefel über der Flasche = „drüberlaufen sammelt ein“ (Band unter dem Porträt)
+ boot:{p:{b:'#9a6a3a',B:'#c89a60',d:'#3a2414'},m:['.bB...','.bb...','.bbb..','bbbbbB','dddddd']},
+ // Kevin: „+1“ über aufgesammeltem Leergut
+ plusOne:{p:{g:'#d8ffc0',G:'#8ad86a'},m:['.....g.','.g..gg.','ggg..g.','.g...g.','.....G.']}
 };
 // Farbzeichen der Karten (7 × 7) und eine 3 × 5-Pixelschrift für Ränge, Zahlen und kleine Zeichen.
 const SUIT_MAPS={
@@ -151,7 +159,9 @@ export function drawEffectCard(c,x,y,u,card,{glow=false,dim=false,badge=true}={}
  const fs=u,tw=pixelTextWidth(short,fs),gs=Math.max(1,Math.floor(u*5/7)),gw=7*gs,right=Math.round(x+(w-2)*u),ry=Math.round(y+2*u);
  pixelText(c,short,right-tw,ry,fs,col);suitGlyph(c,card.suit,right-tw-u-gw,ry+Math.round((5*fs-gw)/2),gs,col);
  // Wirkung groß unter dem Index: ein Symbolpixel = eine Karteneinheit (bleibt scharf), unten bündig, waagerecht mittig
+ /* Runde 4 (hud4, Kenner-Befund 3 „Karo = Fläche nicht erkannt“): gestrichelter Ring um den Knall (nach dem Symbol gezeichnet) = trifft im Umkreis */
  const icon=CARD_EFFECT_ICON[card.suit];if(icon)drawSprite(c,icon,Math.round(x+w*u/2),Math.round(y+(h-2)*u),u,{outline:'#1a1410'});
+ if(card.suit==='karo'){const cx=x+w*u/2,cy=y+(h-8.5)*u,rx=8.4*u,ry=4.6*u,dot=Math.max(1,Math.round(u));c.fillStyle='#1a1410';for(let a=0;a<48;a++){if(a%3===2)continue;const t=a/48*Math.PI*2;c.fillRect(Math.round(cx+Math.cos(t)*rx-dot/2)-1,Math.round(cy+Math.sin(t)*ry-dot/2)-1,dot+2,dot+2);}c.fillStyle='#ff8a2a';for(let a=0;a<48;a++){if(a%3===2)continue;const t=a/48*Math.PI*2;c.fillRect(Math.round(cx+Math.cos(t)*rx-dot/2),Math.round(cy+Math.sin(t)*ry-dot/2),dot,dot);}}
  // Tempo-Abzeichen unten rechts (dort ist jedes Wirkungssymbol leer)
  if(badge){const t=cardTempo(card);if(t){const r=Math.max(3,Math.round(u*3));drawBadge(c,t,Math.round(x+(w-1)*u-r),Math.round(y+(h-1)*u-r),r,Math.max(1,Math.floor(u/2)));}}
  if(dim){c.save();c.globalAlpha*=.45;px(0,0,w,h,'#10120f');c.restore();}
