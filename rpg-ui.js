@@ -27,7 +27,7 @@ export const slots=EQUIPMENT_SLOTS;
 // Güte-Namen kommen aus content/items.js, damit „Dorflegende“ (epic) überall gleich heißt.
 const rarity=RARITIES;
 // Gelieferte Einzelbilder gewinnen über die Ausrüstungsfamilie: die Datei heißt wie die Gegenstands-ID.
-const itemArt=id=>{if(hasContentAsset(id))return id;const item=ITEMS[id];if(!item?.slot)return item?.icon||id;const slot={ring:'ring1',trinket:'trinket1',charm:'trinket1'}[item.slot]||item.slot;return equipmentAppearance({[slot]:id},ITEMS)[0]?.asset||item.icon;};
+export const itemArt=id=>{if(hasContentAsset(id))return id;const item=ITEMS[id];if(!item?.slot)return item?.icon||id;const slot={ring:'ring1',trinket:'trinket1',charm:'trinket1'}[item.slot]||item.slot;return equipmentAppearance({[slot]:id},ITEMS)[0]?.asset||item.icon;};
 export const itemIcon=id=>`<canvas width="48" height="48" data-item-art="${itemArt(id)}" aria-hidden="true"></canvas>`;
 const heading=(tag,title,text)=>`<header class="rpg-heading"><span class="eyebrow">${tag}</span><h2>${title}</h2><p>${text}</p></header>`;
 export const itemStats=d=>[d.weapon&&`${d.weapon.min}–${d.weapon.max} Waffenschaden · Tempo ${(d.weapon.speed||WEAPON_TYPES[d.weapon.type]?.speed||2).toFixed(1).replace('.',',')} s · ${((d.weapon.min+d.weapon.max)/2/(d.weapon.speed||WEAPON_TYPES[d.weapon.type]?.speed||2)).toFixed(1).replace('.',',')} Schaden/s`,...Object.entries(d.stats||{}).map(([k,v])=>'+'+v+' '+STAT_NAMES[k]),!d.stats&&d.health&&`+${d.health} Leben`,!d.stats&&d.power&&`+${Math.round(d.power*100)} % Schaden`,!d.stats&&d.armor&&`−${Math.round(d.armor*100)} % erlittener Schaden`,d.heal&&`+${d.heal} Leben`,d.energy&&`+${d.energy} Randale`].filter(Boolean).join(' · ');

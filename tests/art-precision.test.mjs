@@ -16,7 +16,10 @@ test('precision covers every present person, mob, boss, item icon, skill and tal
  for(const id of ICONS)assert.ok(asset(id),id);
  const skillHashes=[];for(const [member,ids] of Object.entries(SKILL_ICON_ORDER))for(const id of [...ids,'auto']){const a=asset('skill-'+member+'-'+id);assert.ok(a,id);assert.ok(a.width>=64,id);skillHashes.push(a.hash);}
  assert.equal(new Set(skillHashes).size,skillHashes.length,'Skills have unique art');
- /* E-72: Präzisions-Talentbilder gibt es für die drei E-32-Klassen; Schorsch und Käthe zeichnen ihr Talent-Icon */for(const [member,specs] of Object.entries(CLASS_SPECS).filter(([m])=>['dieter','baerbel','kevin'].includes(m)))for(const spec of specs)for(let i=0;i<10;i++)assert.ok(asset(spec+'-'+i),spec+':'+i);
+ /* E-72: Talentbilder der drei E-32-Klassen liefert der e32-Atlas (talent-art.js malt ihn zuerst); die früheren Präzisions-Talentbilder
+    waren dahinter nie sichtbar und sind seit 2026-09-25 entfernt (Icon-Review R0). Schorsch und Käthe zeichnen ihr Talent-Icon. */
+ const e32=JSON.parse(read('assets/content-art/e32/runtime/catalog.json')).talents;
+ for(const [member,specs] of Object.entries(CLASS_SPECS).filter(([m])=>['dieter','baerbel','kevin'].includes(m)))for(const spec of specs)for(let i=0;i<10;i++){assert.ok(e32[spec+'-'+i],spec+':'+i);assert.ok(!asset(spec+'-'+i),spec+':'+i+' verdeckt');}
  assert.deepEqual(catalog.missing,[]);
 });
 test('precision exports have hard alpha, registered scale, unclipped margins and source hashes',()=>{

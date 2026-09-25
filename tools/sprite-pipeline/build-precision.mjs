@@ -8,6 +8,7 @@ import {resample} from './precision-resample.mjs';
 import {buildPrecisionActors} from './precision-actors.mjs';
 import {buildPrecisionIcons} from './precision-icons.mjs';
 import {buildSeptemberDelivery} from './precision-september.mjs';
+import {applyItems20260925} from './items-20260925.mjs';
 const root=new URL('../../',import.meta.url),folder='assets/precision/runtime/';
 const json=p=>JSON.parse(readFileSync(new URL(p,root))),sha=b=>createHash('sha256').update(b).digest('hex');
 export function buildPrecision(){
@@ -41,6 +42,8 @@ export function buildPrecision(){
  buildPrecisionActors({catalog,put,read,hashSource:p=>sha(readFileSync(new URL(p,root)))});
  buildPrecisionIcons({catalog,put,read,hashSource:p=>sha(readFileSync(new URL(p,root)))});
  buildSeptemberDelivery({catalog,put,read,hashSource:p=>sha(readFileSync(new URL(p,root)))});
+ // Gegenstände 2026-09-25: gear-Zwillinge, Doppel und Rückansichten als Alias bzw. entfernt (items-20260925.mjs).
+ applyItems20260925({catalog,files,put,drop:id=>{const a=catalog.assets[id];if(!a)return;files.delete(a.path);delete catalog.assets[id];}});
  files.set(folder+'catalog.json',Buffer.from(JSON.stringify(catalog,null,2)+'\n'));return{catalog,files};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){const{files,catalog}=buildPrecision();for(const[path,data]of files){const url=new URL(path,root);mkdirSync(new URL('./',url),{recursive:true});writeFileSync(url,data);}console.log(JSON.stringify({assets:Object.keys(catalog.assets).length,files:files.size,missing:catalog.missing}));}
