@@ -1,102 +1,102 @@
-# Kniff-Icons für E-71 · 25.09.2026 · **abgebrochen, nicht geliefert**
+# Kniff-Icons für E-72 (Klassen-Ressourcen) · 25.09.2026 · geliefert, per Code gezeichnet
 
-**Stand:** Kein einziges Icon erzeugt. Codex hat den ersten Bildauftrag sofort abgelehnt, weil das Nutzungskontingent
-des ChatGPT-Abos erschöpft ist. Vorbereitet sind nur das Auftragsblatt und zwei Stilvorlagen, damit der Lauf ohne
-Nacharbeit starten kann, sobald das Kontingent wieder frei ist. Im Spiel ändert sich nichts: die Leiste zeigt weiter die
-vorläufigen Bilder (Gegenstands-Icons bzw. die gezeichneten Ersatzbilder).
+**Stand:** Alle 28 Kniff-Icons sind im Spiel. Die Laufzeit findet sie selbst über `contentAsset('skill-<klasse>-<kniff>')`
+in `paintSkillIcon` (`skill-art.js`), ohne Codeänderung an Engine oder Oberfläche. Die Icons sind **per Code gezeichnet**,
+nicht mit Imagegen erzeugt: Codex hat den Bildauftrag abgelehnt, weil das Nutzungskontingent des ChatGPT-Abos erschöpft ist
+(„try again at Sep 26th, 2026 9:21 PM"). Das Imagegen-Auftragsblatt bleibt für einen späteren Ersatz liegen (unten).
 
-## Was passiert ist
+(Die Dateinamen tragen noch `e71`, weil die Entscheidung erst nachträglich E-72 heißt; E-71 ist die Dungeon-Sitzung.)
 
-```
-npm run sprites:generate -- tools/sprite-pipeline/e71-kniffe-jobs.json --only=skill-schorsch-strike,skill-kaethe-aermel,skill-dieter-zeche
-Codex: …\openai.chatgpt-26.5917.62051-win32-x64\bin\windows-x86_64\codex.exe (codex-cli 0.155.0-alpha.16.3)
-ERROR: You've hit your usage limit. … try again at Sep 26th, 2026 9:21 PM.
-Error: Kein Bild erzeugt.
-```
+## Was geliefert ist
 
-- Probelauf mit 3 Motiven (Reihenfolge laut Auftrag), abgebrochen beim ersten Motiv nach 7 s.
-- Kosten: keine – die Anfrage wurde abgelehnt, bevor ein Bild entstand. `assets/precision/generation.json` blieb unverändert.
-- Frühester neuer Versuch laut Codex: **26.09.2026, 21:21 Uhr**. Alternative: Kontingent unter
-  https://chatgpt.com/codex/settings/usage aufstocken.
-- Kein Ersatzweg genutzt: keine handgezeichneten oder aus alten Icons zusammengesetzten Bilder. Die Pipeline verlangt
-  Originale aus dem Bildwerkzeug mit Herkunft; alles andere wäre vorgetäuscht.
-
-## Was vorbereitet ist
-
-| Datei | Inhalt |
-|---|---|
-| `tools/sprite-pipeline/e71-kniffe-jobs.json` | 28 Aufträge, 64 × 64, Rand 3, `kind: "skills"`, `delivery: "2026-09-25"`, Ausgabe nach `assets/precision/sources/2026-09-25/e71-kniffe/<id>.png` |
-| `assets/precision/sources/2026-09-25/e71-kniffe/stilvorlage-kniff-kachel.png` | Stilvorlage für 26 Kniffe: eine Zelle (Spalte 3, Zeile 1 = „Wurf", grüne Flasche) aus `assets/clan-skills-013/dieter.png`, Ausschnitt x 630, y 3, 308 × 308 (Zelle ohne die 3-px-Rasterkante, wie `paintCell` sie liest). Unverändert kopierte Pixel. |
-| `assets/precision/sources/2026-09-25/e71-kniffe/stilvorlage-kniff-auto.png` | Stilvorlage für die zwei Autoangriffe: `auto-dieter` aus `assets/content-art/items/semantic-atlas.png`, Ausschnitt x 4, y 973, 243 × 277 (= `sourceBounds` im Katalog). Zeigt die Konvention „zwei goldene Kreispfeile um das Motiv". |
-
-### Stilentscheidung
-
-Die Kniffe von Dieter und Kevin sind **Kacheln**: dunkles, fleckiges Moosgrün als Grund über die ganze Fläche, ein Motiv
-mit Tintenkontur darauf; der Präzisionsexport macht daraus 58 × 58 auf 64 × 64 (3 px Rand). Annis Aperol-Icons sind
-freigestellte Motive ohne Grund. Die neuen Icons folgen den Kacheln, weil `zeche` und `reload` in Dieters und Kevins
-Leiste neben Kacheln stehen und zwei von drei Klassen so aussehen (Kachel = Knopf, wie im WoW-Vorbild). Die
-Autoangriffe folgen `auto-dieter`/`auto-kevin` (Motiv mit zwei goldenen Kreispfeilen).
-
-Jeder Auftrag besteht aus: Klasse und Kniff (Name, Zweck), Motiv, Stilblock („match the attached reference exactly …
-do not copy its subject"), Komposition (Kachel randlos, ein Motiv, ~75 %, lesbar bei 48 px) und Verboten (kein Text,
-keine Zahlen, kein Rahmen, kein Rand, kein Raster). Käthes Aufträge erlauben ausdrücklich Farbsymbole ♣ ♠ ♥ ♦, aber keine
-Buchstaben oder Zahlen auf den Karten.
-
-### Motive (28)
-
-| ID | Kniff | Motiv |
+| Klasse | Kniffe (Asset `skill-<klasse>-<kniff>`) | Motiv bei 48 px |
 |---|---|---|
-| `skill-schorsch-auto` | Zangenklapper | Grillzange schnappt zu, zwei goldene Kreispfeile |
-| `skill-schorsch-strike` | Grillzange | Zange im Schlag, Glutfunken an den Spitzen |
-| `skill-schorsch-mark` | Auflegen | Zange legt rohe Bratwurst auf den Rost über Glut |
-| `skill-schorsch-burst` | Servieren | gare Bratwurst springt vom Pappteller, Dampfspur |
-| `skill-schorsch-interrupt` | Zange zu! | Zange zerquetscht gelben Zauberfunken, Aufprallstern |
-| `skill-schorsch-parry` | Grilldeckel | Kugelgrilldeckel als Schild, Funken prallen ab |
-| `skill-schorsch-dash` | Kohlen-Sprint | Arbeitsstiefel im Sprint, Glut- und Aschespur |
-| `skill-schorsch-heal` | Ablöschen | Bierflasche über roter Glut, Dampfwolke, grünes Plus |
-| `skill-schorsch-buff` | Blasebalg | Blasebalg facht Kohlen an, Funken |
-| `skill-schorsch-throw` | Glutbrocken | glühender Kohlebrocken im Flug, Flammenspur |
-| `skill-schorsch-ground` | Schwenkgrill | Schwenkrost an Ketten am Dreibein, Schwungbogen |
-| `skill-schorsch-senf` | Senf drauf! | Senfflasche spritzt auf Bratwurst, grünes Plus |
-| `skill-schorsch-spiritus` | Spiritus-Schwall | Spiritusflasche (blaues Etikett ohne Text), Stichflammen-Kegel |
-| `skill-schorsch-deckelzu` | Deckel zu! | zugeknallter Kugelgrill, Rauchring quillt heraus |
-| `skill-kaethe-auto` | Kartenschnipsen | drehende Karte (♣), zwei goldene Kreispfeile |
-| `skill-kaethe-interrupt` | Kontra! | Hand im Strickjackenärmel knallt Karte auf den Tisch, Zauberfunke zerspringt |
-| `skill-kaethe-parry` | Gemauert | Mauer aus Spielkarten, Schlag prallt ab |
-| `skill-kaethe-dash` | Abgang | beige Gesundheitsschuhe im Eilschritt, Karten flattern |
-| `skill-kaethe-heal` | Eierlikörchen | Stielglas Eierlikör, grünes Plus |
-| `skill-kaethe-buff` | Neu geben | Karten beim Mischen im Bogen |
-| `skill-kaethe-throw` | Abrechnen | Skatblock mit Strichen und Doppelstrich, Bleistift, Goldschein |
-| `skill-kaethe-ground` | Kartenregen | Karten ♣♠♥♦ regnen in einen Kreis, Aufschlagring |
-| `skill-kaethe-reizen` | Reizen | Kartenfächer, Sprechblase mit drei goldenen Aufwärts-Winkeln |
-| `skill-kaethe-handlesen` | Handlesen | offene Handfläche, leuchtende Linien, rotes ♥, grüne Funken |
-| `skill-kaethe-gezinkt` | Gezinkte Karten | drei Karten, alle ♣, heimliche Kerbe, Glanzstern |
-| `skill-kaethe-aermel` | Ass im Ärmel | Karte (♣) rutscht aus dem Strickjackenärmel |
-| `skill-dieter-zeche` | Zeche prellen | Faust auf den Tresen, Druckwellenring, Kassenbon reißt, Münzen fliegen |
-| `skill-kevin-reload` | Pfandautomat | Rückgabeautomat schluckt grüne Flasche, goldener Pfandbon schießt heraus |
+| Schwenker-Schorsch (14) | `auto` Zangenklapper · `strike` Grillzange · `mark` Auflegen · `burst` Servieren · `interrupt` Zange zu! · `parry` Grilldeckel · `dash` Kohlen-Sprint · `heal` Ablöschen · `buff` Blasebalg · `throw` Glutbrocken · `ground` Schwenkgrill · `senf` Senf drauf! · `spiritus` Spiritus-Schwall · `deckelzu` Deckel zu! | Grillzange in Goldpfeilen · Zange mit Funkenstern · rohe Wurst auf Rost über Glut, Zange · Teller mit Schwenkbraten und Wurst, Dampf · Scherenzange beißt Blitz entzwei · Kugelgrilldeckel als Schild, Funken · Arbeitsstiefel, glühende Fußspur · Bierflasche über Glut, Dampffahnen, grünes Plus · Blasebalg (Brett, Lederfalten, Messingdüse) facht Flamme an · glühender Brocken mit Flammenschweif · Rost an Kette am Dreibein über Feuer · Senftube über Bratwurst, grünes Plus · Spiritusflasche, Strahl, Stichflamme · zugeklappter Kugelgrill, Rauch quillt |
+| Kreuz-Käthe (12) | `auto` Kartenschnipsen · `interrupt` Kontra! · `parry` Gemauert · `dash` Abgang · `heal` Eierlikörchen · `buff` Neu geben · `throw` Abrechnen · `ground` Kartenregen · `reizen` · `handlesen` · `gezinkt` · `aermel` | Karte (Kreuz-Ass) in Goldpfeilen · Faust mit Strickjackenbündchen auf Karte · Mauer aus Karten · Bein in Strumpf, weinroter Schuh, Staub · Stielglas Eierlikör, grünes Plus · gefächerte Karten im Pfeilkreis · Skatblock mit Summendoppelstrich, Bleistift · fallende Karten ♥♣♦♠, Goldring · Sprechblase „18" · Handfläche mit Linien und Herz · Karte unter Lupe mit Markierung · Pik-Ass steckt im Ärmel |
+| Dosen-Dieter (1) | `zeche` Zeche prellen | Faust auf Kassenbon am Tresen, Münzen fliegen |
+| Klo-Kevin (1) | `reload` Pfandautomat | Rückgabeautomat, grüne Flasche im Einwurf, goldener Pfandbon |
 
-Keine Bilder für Käthes Plätze 1–3 (`strike`/`mark`/`burst`) – die Karten zeichnet das Spiel selbst.
+Keine Bilder für Käthes Plätze 1–3 (`strike`/`mark`/`burst`): die Karten zeichnet das Spiel selbst. Die Klassenbuffs
+(`grillteller`, `wurstbroetchen`, `glueckspfennig`, `strickschal`) malt weiterhin `paintClassBuffIcon`.
 
-## Fortsetzen (wenn das Kontingent wieder frei ist)
+**Kontaktbogen:** `docs/e71-abnahme/kniffe/kontaktbogen.png`. Die Icons sind in 48-px-Darstellung wie im Spiel gezeigt
+(`drawContentIcon`: Nächster Nachbar 64 → 48) und zweifach vergrößert. Spalte 1 zeigt alte Kniffe zum Vergleich, rechts
+vom Goldstrich folgen je Zeile sieben neue:
+Schorsch 1–7, Schorsch 8–14, Käthe 1–7, Käthe 8–12 + Zeche + Pfandautomat. Die letzte Zeile zeigt nur alte Kniffe von
+Dieter, Kevin und Anni.
 
-1. **Allein laufen lassen.** `imagegen.mjs` nimmt das jüngste neue PNG aus `~/.codex/generated_images/`. Erzeugt eine
-   andere Sitzung gleichzeitig Bilder, kann ein fremdes Bild unter falscher ID landen. Jedes Original also ansehen.
-2. Probe: `npm run sprites:generate -- tools/sprite-pipeline/e71-kniffe-jobs.json --only=skill-schorsch-strike,skill-kaethe-aermel,skill-dieter-zeche`
-   → Originale mit Read ansehen, gegen `skill-dieter-*`/`skill-kevin-*` halten (Kachel randlos? Motiv ~75 %?
-   Kontur, Palette, Lesbarkeit bei 48 px). Prompts im Auftragsblatt schärfen, schwache Motive mit `--force` neu.
-3. Rest: `npm run sprites:generate -- tools/sprite-pipeline/e71-kniffe-jobs.json` (Vorhandenes wird übersprungen).
-4. **Export anbinden:** In `tools/sprite-pipeline/precision-september.mjs` `'./e71-kniffe-jobs.json'` an die Liste
-   `jobs` anhängen (erst, wenn **alle** 28 Originale da sind – sonst bricht der Export ab). Die Stilvorlagen stehen nicht
-   im Auftragsblatt als Aufträge, sondern nur als `references`, und werden nicht exportiert.
-5. `npm run sprites:precision && node scripts/pwa-cache.mjs` → 28 neue Einträge `skill-<klasse>-<kniff>` unter
-   `assets/precision/runtime/skills/`. Die Laufzeit findet sie über `contentAsset` in `paintSkillIcon`
-   (`skill-art.js`), ohne Codeänderung.
-6. Kontaktbogen `docs/e71-abnahme/kniffe/kontaktbogen.png`: alle neuen Icons bei 48 px (Nächster-Nachbar wie
-   `drawContentIcon`) neben alten Kacheln (`skill-dieter-strike/throw/heal`, `skill-kevin-strike/throw`,
-   `skill-dieter-auto`, `skill-kevin-auto`), ansehen, dann `npm test` (u. a. `tests/art-precision.test.mjs`).
-7. Diesen Bericht auf „geliefert" umschreiben (Liste, Abnahme, Kosten/Laufzeit).
+## Stil
+
+Die neuen Icons folgen den Kacheln der Dieter-/Kevin-Kniffe:
+- moosgrüner, fleckiger Vollgrund 58 × 58 mit 1 px Tintenrand (`23,31,41`) auf 64 × 64, dazu 3 px freier Rand, wie der Export ihn bei allen Kniffen setzt;
+- ein Motiv mit 1 px Tintenkontur und Rampenschattierung: Licht und Glanz oben links, dunkle Kante unten rechts;
+- Schlagschatten 2 px nach unten rechts auf den Grund;
+- Funken und Bewegungsstriche ohne Schatten.
+
+Die Autoangriffe tragen wie `auto-dieter`/`auto-kevin` die zwei goldenen Kreispfeile. Alle Farben stammen aus
+`PRECISION_PALETTE`.
+
+**Ehrlich zur Qualität:** Neben den Imagegen-Kacheln wirken die Code-Icons klarer, aber flacher und weniger gemalt. Die
+Motive füllen oft 65–80 % der Kachel statt 85 %. Lesbar bei 48 px sind alle. Am schwächsten wirken im Vergleich:
+- `schorsch-parry` (Deckel eher flache Halbkugel);
+- `kaethe-dash` (Bein und Schuh blockig);
+- `kevin-reload` (Automat wirkt wie ein Tresor).
+
+Das sind die ersten Kandidaten für den Imagegen-Ersatz.
+
+## Werkzeug, Herkunft, Export
+
+| Datei | Zweck |
+|---|---|
+| `tools/sprite-pipeline/e71-kniffe-draw.mjs` | Zeichenwerkzeug: Masken aus Rechteck, Kreis/Ellipse, Polygon, Linie, Ringstück; Teile mit Außenkontur und Rampenschattierung; deterministischer Moosgrund je ID. `node … [--only=id,id]` schreibt die Originale und `herkunft.json`, `--kontaktbogen` den Abnahmebogen aus dem Laufzeitkatalog. |
+| `assets/precision/sources/2026-09-25/e71-kniffe/<id>.png` | 28 Originale (64 × 64), Ausgabepfade wie im Auftragsblatt |
+| `assets/precision/sources/2026-09-25/e71-kniffe/herkunft.json` | Herkunft je Original: `kind: "code"`, `tool`, `date`, Maße, `sha256`. Nicht in `generation.json`: die ist dem Imagegen-Werkzeug vorbehalten (Test verlangt `tool: "built-in imagegen"` und Prompt). |
+| `tools/sprite-pipeline/e71-kniffe-jobs.json` | Auftragsblatt (id, output, 64 × 64, Rand 3, `kind: "skills"`, `delivery: "2026-09-25"`). Der Export liest es, und Imagegen kann es später unverändert verwenden. |
+| `tools/sprite-pipeline/precision-september.mjs` | Auftragsblatt an die Liste `jobs` angehängt → `npm run sprites:precision` legt `assets/precision/runtime/skills/<id>.png` und die Katalogeinträge (`source`, `sourceHash`, `delivery`) an |
+| `precache-manifest.js` | neu erzeugt (`node scripts/pwa-cache.mjs`), enthält die 28 Laufzeitbilder |
+| `tests/e71-kniffe.test.mjs` | 5 Prüfungen: Auftragsblatt und Zeichenwerkzeug decken dieselben 28 IDs; Herkunft (Hash) stimmt und das Werkzeug zeichnet jedes Original byte-genau nach; Kachelform (Rand frei, 58 × 58 deckend, Tintenrand); Katalogeinträge zeigen aufs Original; jeder Leistenkniff von Schorsch und Käthe und jeder Ressourcen-Kniff (`RESOURCE_SKILLS`) hat ein Bild. |
+
+Der Export übernimmt Form und Lage 1 : 1 (Maßstab 1, weil die Kachel genau 58 × 58 misst). Einzelne Farben rundet sein
+Palettencache (`precisionColor`, Schlüssel `rgb >> 2`) auf Nachbartöne, höchstens 3 Stufen. Der Export bleibt
+byte-reproduzierbar (`tests/art-precision.test.mjs`). Außer den 28 neuen Einträgen hat sich im Katalog nichts geändert.
+
+## Später durch Imagegen ersetzen
+
+Das Auftragsblatt `tools/sprite-pipeline/e71-kniffe-jobs.json` ist unverändert einsatzbereit: 28 Prompts im Kachelstil
+mit den Stilvorlagen `stilvorlage-kniff-kachel.png` (Dieter-Zelle „Wurf") und `stilvorlage-kniff-auto.png`
+(`auto-dieter`). Ab 26.09.2026, 21:21 Uhr (oder nach Aufstocken des Kontingents):
+
+1. **Allein laufen lassen.** `imagegen.mjs` nimmt das jüngste neue PNG aus `~/.codex/generated_images/`; eine parallele
+   Sitzung könnte ein fremdes Bild unterschieben.
+2. Probe: `npm run sprites:generate -- tools/sprite-pipeline/e71-kniffe-jobs.json --only=skill-schorsch-strike,skill-kaethe-aermel,skill-dieter-zeche --force`
+   (ohne `--force` überspringt das Werkzeug die vorhandenen Code-Originale). Originale ansehen, Prompts schärfen.
+3. Rest mit `--force`, gern gezielt die schwächsten zuerst (`schorsch-parry`, `kaethe-dash`, `kevin-reload`).
+4. **Für jedes ersetzte Original den Eintrag aus `herkunft.json` löschen.** Sonst meldet `tests/e71-kniffe.test.mjs`
+   den Hash-Unterschied; das ist gewollt, damit keine falsche Herkunft stehen bleibt. Der Test verlangt für jedes Original
+   eine Herkunft, entweder in `herkunft.json` oder in `generation.json`.
+5. `npm run sprites:precision && node scripts/pwa-cache.mjs`, Kontaktbogen neu
+   (`node tools/sprite-pipeline/e71-kniffe-draw.mjs --kontaktbogen`), ansehen, `npm test`.
+
+Der Export skaliert große Imagegen-Originale selbst auf 58 × 58 (Rand 3), wie bei den übrigen Kniffen.
+
+## Protokoll
+
+- 25.09. 15:31: Imagegen-Probe (3 Motive) nach 7 s abgelehnt, Nutzungslimit. Kosten 0, `generation.json` unverändert.
+- Danach auf Anweisung des Orchestrators per Code gezeichnet. Fünf Sichtungsrunden bei 48 px neben alten Kniffen;
+  nachgebessert wurden:
+  - ruhigerer Grund, größere Motive;
+  - Grillzange mit breiten Greifern, „Zange zu!" als Scherenzange;
+  - Glutbrocken als Komet statt Kegel;
+  - Blasebalg (Seitenansicht verworfen, Schrägansicht mit Lederfalten);
+  - Dampf als Fahnen statt Wolke;
+  - Faust von vorn mit Knöcheln unten;
+  - Ass steckt im Bündchen;
+  - Schuh mit Strumpfbein;
+  - Steak mit Fettrand und Grillstreifen.
+- Laufzeit Export etwa 35 s, Zeichnen aller 28 Motive unter 1 s.
 
 ## Prüfung
 
-`npm test` grün mit den vorbereiteten Dateien (kein Test liest alle Auftragsblätter; der Präzisionsexport ist
-unverändert und bleibt byte-reproduzierbar, weil `e71-kniffe-jobs.json` noch nicht angebunden ist).
+`npm test` grün (siehe Commit). `tests/art-precision.test.mjs` bestätigt Palette, harte Alpha-Kante, Quellen-Hashes,
+Precache und die byte-genaue Reproduzierbarkeit des Präzisionsexports. Ein Browsertest der Leiste mit Schorsch und Käthe
+steht aus: die Anbindung prüft nur der Test über Katalog und `skillsFor`.
