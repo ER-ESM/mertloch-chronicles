@@ -1,6 +1,7 @@
 import {TUTORIAL as D} from './content/index.js';
 import {tutorialActive,tutorialDestination,tutorialStepFor} from './tutorial.js';
 import {classEmblem} from './class-emblem.js';
+import {tutorialGuide,guideHtml,guideKey} from './tutorial-guide.js';
 import {conversationHeader} from './dialogue-ui.js';
 import {contentAsset} from './content-art.js';
 /** E-72: eine Zeile zur Klassenressource mit dem Klassen-Symbol (Hofprobe-Gespräch, Handyleiste). */
@@ -18,8 +19,8 @@ export function mountTutorialUI(root,game,touch,show){
   if(device!==touch()){device=touch();collapsed=device;fold();last='';}
   box.hidden=!on||!device;root.classList.toggle('in-tutorial',on&&device);if(!on||!device)return;
   if(device){const own=box.getBoundingClientRect(),panels=[...root.querySelectorAll('.player-panel,#targetPanel:not(.hidden)')].map(e=>e.getBoundingClientRect()).filter(r=>r.width&&r.left<own.right&&r.right>own.left);if(panels.length)box.style.top=(Math.max(...panels.map(r=>r.bottom))+6-root.getBoundingClientRect().top)+'px';else box.style.removeProperty('top');}else box.style.removeProperty('top');
-  const t=g.tutorial,s=tutorialStepFor(g),key=[t.step,t.hits,t.autos,device,s.hint].join(':');if(key===last)return;last=key;
-  {const h=box.querySelector('.tutorial-res-hint');h.hidden=!s.hint;h.innerHTML=s.hint?classEmblem(g.member?.id)+'<span></span>':'';if(s.hint)h.querySelector('span').textContent=s.hint;}
+  const t=g.tutorial,s=tutorialStepFor(g),guide=tutorialGuide(g),key=[t.step,t.hits,t.autos,device,s.hint,guideKey(guide)].join(':');if(key===last)return;last=key;
+  {const h=box.querySelector('.tutorial-res-hint');/* E-72 Runde 3: Bild-Schritte statt Erklärzeile */if(guide){h.hidden=false;h.innerHTML=guideHtml(guide,{touch:true});}else{h.hidden=!s.hint;h.innerHTML=s.hint?classEmblem(g.member?.id)+'<span></span>':'';if(s.hint)h.querySelector('span').textContent=s.hint;}}
   box.querySelector('.eyebrow').textContent='Hofprobe · '+(t.step+1)+'/'+D.steps.length;box.querySelector('strong').textContent=s.title;box.querySelector('p').textContent=s.text;
   box.querySelector('small').textContent=(device?s.touch:s.desktop)+(t.step===3?' · '+D.hitsLabel+' '+t.hits+'/'+D.hits+' · '+D.autoLabel+' '+t.autos+'/'+D.autos:'');
  }};

@@ -4,6 +4,7 @@
 import {hotspotQuests,questStatus,questTitle,objectiveText,hotspotDestination,trackHotspotQuest,giverPoint,turnInOf} from './hotspots.js';
 import {tutorialActive,tutorialDestination,tutorialStepFor} from './tutorial.js';
 import {classEmblem} from './class-emblem.js';
+import {tutorialGuide,guideHtml} from './tutorial-guide.js';
 import {questProgress} from './quest-status-ui.js';
 import {chapterState,rewardLine} from './chapter-ui.js';
 import {hotspotTracker} from './hotspot-ui.js';
@@ -28,7 +29,7 @@ export function keyLineHtml(line){return String(line||'').split(' · ').map(seg=
 export function tutorialTrackerEntry(g){
  const t=g.tutorial,s=tutorialStepFor(g);if(!s)return null;const hits=t.step===3;
  /* E-72: Schritt je Klasse; `hint` = eine Zeile zur eigenen Ressource mit Klassen-Symbol unter der Tastenzeile */
- return {key:'tutorial',title:s.title,task:s.desktop,taskHtml:keyLineHtml(s.desktop),count:hits?(t.hits+t.autos)+'/'+(TUT.hits+TUT.autos):'',done:false,hint:s.hint,hintClass:g.member?.id,
+ return {key:'tutorial',title:s.title,task:s.desktop,taskHtml:keyLineHtml(s.desktop),count:hits?(t.hits+t.autos)+'/'+(TUT.hits+TUT.autos):'',done:false,hint:s.hint,hintClass:g.member?.id,guide:tutorialGuide(g),
   label:TUT.title+' · '+(t.step+1)+'/'+TUT.steps.length,note:s.text+(hits?' ('+TUT.hitsLabel+' '+t.hits+'/'+TUT.hits+' · '+TUT.autoLabel+' '+t.autos+'/'+TUT.autos+')':''),
   reward:TUT.rewardXp+' EP · '+TUT.loot.coins+' Pfandmarken',dest:tutorialDestination(g)};
 }
@@ -71,7 +72,7 @@ const titleHtml=t=>DAILY.test(t)||isDailyTitle(t)?`<i class="qt-daily" aria-labe
 function row(e,{focus,dist}){
  const count=e.count?[null,e.task,e.count]:e.taskHtml?null:COUNT.exec(e.task||''),text=count?count[1]:e.task;
  const tip=`data-tooltip-label="${esc(e.label||e.title)}" data-tooltip-note="${esc(tipNote(e,focus))}"`,task=`<div class="quest-task${focus&&dist!=null?' waypoint':''}${e.done?' done':''}"><i aria-hidden="true"></i><span>${e.taskHtml||esc(text)}</span>${count?`<b class="qt-count">${esc(count[2].replace(/\s+/g,''))}</b>`:''}${dist!=null?`<em>${dist} m</em>`:''}</div>`;
- const hint=e.hint?`<div class="qt-hint">${classEmblem(e.hintClass)}<span>${esc(e.hint)}</span></div>`:'';
+ /* E-72 Runde 3: Bild-Schritte (tutorial-guide.js) ersetzen die Erklärzeile */const hint=e.guide?guideHtml(e.guide):e.hint?`<div class="qt-hint">${classEmblem(e.hintClass)}<span>${esc(e.hint)}</span></div>`:'';
  return focus?`<div class="qt-quest is-focus${e.done?' is-done':''}" ${tip}><b id="questTitle" class="qt-title">${titleHtml(e.title)}</b><div id="questTasks">${task}${hint}</div></div>`
   :`<div class="qt-quest${e.done?' is-done':''}" role="button" tabindex="0" data-track-quest="${esc(e.key)}" ${tip}><b class="qt-title">${titleHtml(e.title)}</b>${task}</div>`;
 }

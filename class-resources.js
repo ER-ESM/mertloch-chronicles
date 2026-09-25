@@ -185,6 +185,8 @@ function tickGrill(g,st,r,dt,cs,inCombat){
 }
 function planOf(g,cs){const r=R(g),m=mech(g),base=[...(m?.chef?.plan||m?.rauch?.plan||m?.flamme?.plan||r.plan)];for(const [k,item] of [['planWurst','wurst'],['planBraten','braten'],['planMais','mais'],['planKaese','kaese']])if(cs[k])base.push(item);return base;}
 const rostSlots=(g,cs)=>R(g).rost.slots+num(cs,'rostSlots');
+/** Was „Auflegen“ als Nächstes auf den Rost legt (Anzeige am Knopf, E-72 Runde 3). */
+const nextItem=(g,st,cs)=>{const plan=planOf(g,cs);return plan.length?plan[(st.plan||0)%plan.length]:null;};
 function ripest(g,st,cs){const r=R(g),charcoal=r.rost.charcoal+num(cs,'burntGrace');return st.rost.filter(it=>it.done<charcoal).sort((a,b)=>b.done-a.done)[0]||null;}
 function doneness(g,it,cs){const r=R(g),garHi=r.rost.gar[1]+num(cs,'garWindow'),burnt=r.rost.burnt+num(cs,'burntGrace');if(it.done<r.rost.gar[0])return {state:'roh',factor:r.burntFactor};if(it.done<=garHi)return {state:'gar',factor:1,perfect:true};if(it.done<burnt)return {state:'durch',factor:1};return {state:'verkohlt',factor:r.burntFactor};}
 export function rostState(g){const st=g.res,r=R(g);if(!st||r?.kind!=='grill')return [];const cs=g.cs||{};return st.rost.map(it=>({item:it.item,name:r.items[it.item].name,done:it.done,state:doneness(g,it,cs).state,smoked:!!it.smoked}));}
@@ -406,7 +408,7 @@ export function resourceVariant(g,id){
  if(r.kind==='trend'&&st.viral>0){const s=g.skills.find(x=>x.id===id);if(s?.cost>0)return {name:'VIRAL',tone:'gold'};}
  if(r.kind==='ammo'){if(id==='strike'&&st.bottles<=0)return {name:r.hud.empty,tone:'burst'};if(id==='reload'&&st.reload)return {name:'JETZT!',tone:'gold'};if(st.bons>0&&(r.costs[id]||0)>0)return {name:'BON',tone:'gold'};}
  if(r.kind==='grill'){
-  if(id==='burst'){const it=ripest(g,st,cs);if(!it)return null;const d=doneness(g,it,cs),m=mech(g),name=r.items[it.item].name.toUpperCase();if(m?.flamme&&st.glut>=m.flamme.at)return {name:'FLAMBIEREN',tone:'burst'};if(it.smoked&&m?.rauch)return {name:'GERÄUCHERT',tone:'gold'};return d.perfect?{name:name+' GAR',tone:'gold'}:d.state==='verkohlt'?{name:name+' VERKOHLT',tone:'free'}:null;}
+  if(id==='burst'){const it=ripest(g,st,cs);if(!it)return null;const d=doneness(g,it,cs),m=mech(g),name=r.items[it.item].name.toUpperCase();if(m?.flamme&&st.glut>=m.flamme.at)return {name:'FLAMBIEREN',tone:'burst'};if(it.smoked&&m?.rauch)return {name:'GERÄUCHERT',tone:'gold'};return d.perfect?{name:name+' GAR',tone:'gold',item:it.item}:d.state==='verkohlt'?{name:name+' VERKOHLT',tone:'free',item:it.item}:null;}
   if(id==='heal'&&st.glut>=85)return {name:'ABLÖSCHEN!',tone:'burst'};
  }
  if(r.kind==='cards'){const c=handCard(g,id);if(c){const rk=r.ranks[c.rank],beat=live(g,g.target)&&g.target.cast?.card&&(g.target.cast.interruptible||cs.stichAny)&&beats(c,g.target.cast.card);return {name:beat?'STICH '+rk.short:(r.suits[c.suit].symbol+' '+rk.short),tone:beat?'gold':c.suit==='herz'||c.suit==='karo'?'burst':'free',card:c};}
@@ -419,7 +421,7 @@ export function resourceHud(g){
  if(r.kind==='rage')return {...base,value:p.energy,max:r.max,surgeAt:r.surgeAt,tab:st.tab,tabMax:p.maxHp*(r.tab.cap+num(cs,'zecheCap')),paid:st.paid};
  if(r.kind==='trend')return {...base,value:p.energy,max:r.max,trend:st.trend,trendMax:r.trend.max,trendName:r.trend.names[st.trend],viewers:r.trend.viewers[st.trend],viral:st.viral,last:st.last[0]||null,idle:st.idle,decayAfter:r.trend.decayAfter+num(cs,'trendDecay')};
  if(r.kind==='ammo')return {...base,value:st.bottles,max:crateMax(g,cs),bons:st.bons,bonMax:r.bon.max+num(cs,'bonMax'),reload:st.reload?{t:st.reload.t,total:st.reload.total,zone:st.reload.zone,jam:st.reload.jam,tried:st.reload.tried}:null,pickups:st.pickups.length};
- if(r.kind==='grill'){const z=zoneOf(g,st.glut,cs);return {...base,value:st.glut,max:r.max,zone:z.id,zoneName:z.name,zones:r.zones.map(x=>({...x})),perfect:[r.zones[1].to+num(cs,'perfectLow'),r.zones[2].to+num(cs,'perfectHigh')],locked:st.lock,noDecay:st.noDecay,slots:rostSlots(g,cs),rost:rostState(g)};}
+ if(r.kind==='grill'){const z=zoneOf(g,st.glut,cs);return {...base,value:st.glut,max:r.max,zone:z.id,zoneName:z.name,zones:r.zones.map(x=>({...x})),perfect:[r.zones[1].to+num(cs,'perfectLow'),r.zones[2].to+num(cs,'perfectHigh')],locked:st.lock,noDecay:st.noDecay,slots:rostSlots(g,cs),rost:rostState(g),nextItem:nextItem(g,st,cs)};}
  if(r.kind==='cards')return {...base,value:st.augen,max:r.max,win:r.win+num(cs,'augenWin'),schneider:r.schneider,schwarz:r.schwarz,hand:st.hand.map(c=>({...c})),sleeve:st.sleeve?{...st.sleeve}:null,deck:st.deck.length,chain:{...st.chain},bubes:st.bubes,next:(cs.seeNext||mech(g)?.herz?.seeNext)&&st.deck[0]?{...st.deck[0]}:null};
  return null;
 }
