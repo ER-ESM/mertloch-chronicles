@@ -72,7 +72,7 @@ export async function runUI(suites=['navigation','inventory','classes','combat',
     await persist();assert.equal((await state()).rpg.talents.learned.length,10);pass(classId+': three trees, 90 choices with ten learned talents, granted skills and persistence');
    }
    assert.equal(new Set(icons).size,icons.length);
-   await fixture();await b.press('k');await drag('[data-book-skill="buff"]','#actionBar [data-action-slot="8"]');assert.equal((await state()).actionBar[8],'buff');await b.press('9');assert.ok((await state()).buffs.remaining>0);await persist();assert.equal((await state()).actionBar[8],'buff');pass('native skill drag to action bar and persistence');
+   await fixture();await b.press('k');await drag('[data-book-skill="buff"]','#actionBar [data-action-slot="8"]');assert.equal((await state()).actionBar[8],'buff');await read('game.player.energy=100');/* E-72: Dieter startet sonst bei 0 Randale */await b.press('9');assert.ok((await state()).buffs.remaining>0);await persist();assert.equal((await state()).actionBar[8],'buff');pass('native skill drag to action bar and persistence');
   }
   if(suites.includes('combat')){
    await fixture();await read(`(async()=>{const {spawnArena}=await import('./arena.js');spawnArena(game,{kind:'boar',count:1,dummy:true});game.target=game.enemies.find(e=>e.arena)})()`);assert.equal((await state()).autoAttack.enabled,false);await b.press('1');assert.equal((await state()).autoAttack.enabled,true);await wait(1600);assert.ok(await read('game.arenaStats.damage>0'));await b.press('1');assert.equal((await state()).autoAttack.enabled,false);
