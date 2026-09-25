@@ -1,0 +1,125 @@
+/* Anzeigestufen der Symbole (Icon-Review R0, Stilbibel A4) – zuletzt geladen, gewinnt gegen alle älteren Größenregeln.
+   Nur drei Stufen: 48 / 32 / 24 px. Die Canvas-Größe (icon-steps.js ICON_STEP) ist die CSS-Größe: 1:1, kein Verkleinern im Browser.
+   Jede Regel mit „stufe:<ort>“ prüft tests/icon-steps.test.mjs gegen ICON_STEP. content-box: ein Rand liegt außen um das Symbol.
+   Ausnahme bleibt --ui-scale (Einstellung „HUD-Größe“, zoom auf die Leiste): wer dort ≠ 100 % wählt, skaliert bewusst. */
+
+/* ---------------------------------------------------------------- Aktionsleiste (Desktop)
+   WoW-Prinzip: das Symbol füllt den Knopf, der 2-px-Rand des Knopfs ist der Rahmen. 52 = 2 + 48 + 2.
+   Ohne Breitenabfrage, damit keine Lücke zu matchMedia('(max-width:760px)') in icon-steps.js entsteht; der schmale Block unten
+   überschreibt mit denselben Selektoren. */
+body:not(.touch-mode) .action-area{--extra-bar-step:80px}
+body:not(.touch-mode) .action-area .action-bar .skill{width:52px!important;height:52px!important;min-width:0;padding:0!important}
+body:not(.touch-mode) .action-area>.special-actions .skill{width:36px!important;height:36px!important;min-width:0;padding:0!important}
+/* stufe:bar */
+body:not(.touch-mode) .action-area .action-bar .skill canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}
+/* stufe:barSpecial */
+body:not(.touch-mode) .action-area>.special-actions .skill canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}
+/* Schmales Fenster ohne Touch: alle Leistenplätze 24 im 28er-Knopf (10 × 28 + Abstände = 316 px, passt ab 320 px). */
+@media(max-width:760px){
+ body:not(.touch-mode) .action-area .action-bar .skill,body:not(.touch-mode) .action-area>.special-actions .skill,body:not(.touch-mode) #actionBar .skill{width:28px!important;height:28px!important;min-width:0;padding:0!important}
+}
+/* stufe:barNarrow */
+@media(max-width:760px){body:not(.touch-mode) .action-area .action-bar .skill canvas,body:not(.touch-mode) .action-area>.special-actions .skill canvas,body:not(.touch-mode) #actionBar .skill canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}}
+
+/* ---------------------------------------------------------------- Touch-Kniffknöpfe
+   --touch-size 56/64 (Normal/Groß): 48 mit 2-px-Rand, fast randfüllend; 48/50 (Kompakt, flach quer): 32. Leer/Unterbrechen 32. */
+.touch-mode #touchActions .touch-skill{padding:0!important;display:grid;place-items:center}
+/* stufe:touch */
+.touch-mode #touchActions .touch-skill canvas[width="48"]{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:touchSmall */
+.touch-mode #touchActions .touch-skill canvas[width="32"]{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Touchbuttons belegen: Plätze und Kniffwahl, 32 im 48er-Knopf. */
+.game-popup :is(.touch-slot-editor,.touch-skill-picker) button{display:grid;place-items:center}
+/* stufe:touchEditor */
+.game-popup :is(.touch-slot-editor,.touch-skill-picker) canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Rucksack, Beute
+   Desktop: 48 im 56er-Platz (2 Rand + 2 Luft), sechs Spalten = 6 × 56 + 5 × 4 = 356 px (Fenster 412, Inhalt 366).
+   Handy: 32 im 44er-Platz – 24 Plätze müssen quer in 44-px-Reihen passen (fenster-r3.css, window-compact.js). */
+body:not(.touch-mode) .game-popup .bag-grid{grid-template-columns:repeat(6,56px)!important;gap:4px!important;justify-content:center}
+body:not(.touch-mode) .game-popup .bag-grid>.item-slot{width:56px;height:56px;min-height:0;aspect-ratio:auto;padding:0!important;display:grid;place-items:center}
+/* stufe:bag */
+body:not(.touch-mode) .game-popup .bag-grid>.item-slot canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+.touch-mode .game-popup .bag-grid>.item-slot{padding:0!important;display:grid;place-items:center}
+/* stufe:bagTouch */
+.touch-mode .game-popup .bag-grid>.item-slot canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Beute: vier Plätze je Reihe im 296er-Fenster (4 × 56 + 3 × 8 = 248 px, Inhalt 250). */
+.game-popup .loot-icon-grid>.item-slot{width:56px;height:56px;min-height:0;aspect-ratio:auto;padding:0!important;display:grid;place-items:center}
+/* stufe:loot */
+.game-popup .loot-icon-grid>.item-slot canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Figurenplätze: 32 im 42er (Handy 44er) Platz */
+.game-popup .equipment-grid .item-slot{padding:0!important;display:grid;place-items:center}
+/* stufe:gear */
+.game-popup .equipment-grid .item-slot canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Kniff-Buch und Eigenarten
+   Desktop 48 im 52er-Feld, sechs Spalten = 6 × 52 + 5 × 6 = 342 px (Fenster 400, Inhalt 354). Handy 32 im 44er-Feld (Raster bleibt). */
+body:not(.touch-mode) .game-popup .icon-skillbook{grid-template-columns:repeat(6,52px)!important;gap:6px!important}
+body:not(.touch-mode) .game-popup .icon-skillbook>.book-skill{width:52px!important;height:52px!important;padding:0!important}
+/* stufe:book */
+body:not(.touch-mode) .game-popup .icon-skillbook>.book-skill canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:bookTouch */
+.touch-mode .game-popup .icon-skillbook>.book-skill canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Tooltip-Kopf (Gegenstand, Kniff, Talent, Vergleich, Handy-Erklärung) */
+/* stufe:tooltip */
+:is(.item-tooltip,.skill-tooltip,.game-popup) .tooltip-heading canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;flex:none;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Talente
+   Knoten Desktop: 48 im 52er-Knoten, der Rand des Knotens rahmt; Abschlusstalent 54 (3-px-Rand). Handy: 32 im 44er-Knoten
+   (Reihenabstand 52 px bei 262 px Baumhöhe – 52er-Knoten stießen aneinander, M-02). */
+body:not(.touch-mode) .tt-menu .tt-node{width:52px!important;height:52px!important;padding:0!important;display:grid;place-items:center}
+body:not(.touch-mode) .tt-menu .tt-node.capstone{width:54px!important;height:54px!important}
+/* stufe:talent */
+body:not(.touch-mode) .tt-menu .tt-node canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+.touch-mode .tt-menu .tt-node{padding:0!important;display:grid;place-items:center}
+/* stufe:talentTouch */
+.touch-mode .tt-compact .tt-menu .tt-node canvas,.touch-mode .tt-menu .tt-node canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:talentDetail */
+.tt-detail-art canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Spez-Reiter (Titelzeile 34er, Handy 44er Knopf): 24. */
+/* stufe:specTab */
+.game-popup .tt-spec-tabs [data-view-tree] canvas,.touch-mode .tt-compact .tt-spec-body .tt-spec-icon canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Vorschau vor der Freischaltung: drei große Wappen im 72er-Feld, 48. */
+/* stufe:specLocked */
+.game-popup .tt-compact.tt-locked .tt-spec-icon canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Pfadreiter unter dem Baum: 24. */
+/* stufe:pathTab */
+.game-popup .tt-path-tabs canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Chat, Chips */
+/* stufe:chat */
+.chat-line .loot-line canvas,.loot-line canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;flex:none;image-rendering:pixelated}
+/* stufe:chip */
+.loot-chip canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;flex:none;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Belohnungen, Dungeon, Gruppe */
+/* Belohnungskacheln: 32 in der 36er-Kachel (2-px-Rand); am Handy 44er-Kachel als Tippziel (M-01), die Reihe bricht um. */
+.touch-mode .rt-tile{width:44px;height:44px}.touch-mode .reward-tiles{gap:8px}
+/* stufe:reward */
+.rt-tile canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Beute-Symbole der Eingangskarte und des Journals: 32 im 40er (Handy 44er) Feld. */
+/* stufe:dungeonLoot */
+.dg-loot canvas,.dj-loot canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:rewardOption */
+.touch-mode .reward-option canvas,.reward-option canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:roll */
+.roll-card>.roll-item canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Stärkungen am Spielerrahmen: 32 im 44er-Knopf (2 Rand + 4 Luft). */
+.aura-bar .aura-icons button{padding:4px!important}
+/* stufe:aura */
+.aura-bar .aura-icons canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;display:block;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Berufe, Laden */
+/* Listen 32 (mit 2-px-Rand 36), Rezeptkopf 48 (mit Rand 52). */
+/* stufe:profession */
+.profession-panel canvas[data-item-art]{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:professionDetail */
+.profession-panel .prof-detail>header canvas[data-item-art]{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* Laden: Warenkarte und Verkaufsplätze 48 (Plätze ab 56 px: 2 Rand + 2 Luft + 48 + 2 + 2); Handy-Verkaufsplätze 32 im 44er-Raster. */
+body:not(.touch-mode) .popup-shop .shop-bag-grid{grid-template-columns:repeat(auto-fill,minmax(56px,1fr))}
+/* stufe:shop */
+.popup-shop .shop-item canvas,body:not(.touch-mode) .popup-shop .shop-bag-slot canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:shopTouch */
+.touch-mode .popup-shop .shop-bag-slot canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}

@@ -3,6 +3,8 @@
 // Ohne Browser-APIs: game(), me(), send(), others(), ui kommen von außen (Tests mit Attrappen).
 import {ITEMS,grantLoot,upgradeVerdict} from './rpg.js';
 import {rolledDefinition} from './itemization.js';
+import {itemArt} from './rpg-ui.js';
+import {ICON_STEP} from './icon-steps.js';
 import {BALANCE} from './content/index.js';
 
 export const PARTY_UI={need:'Bedarf',greed:'Gier',pass:'Passen',from:'gefunden von {n}',wonBy:'{n} gewinnt',mine:'Du gewinnst!',kept:'bleibt bei {n}',upgrade:'Verbesserung für dich',
@@ -46,7 +48,7 @@ export function mountRollUi(shell,{choose,esc=s=>String(s).replace(/[&<>"']/g,c=
  const drop=(id,ms)=>setTimeout(()=>{cards.get(id)?.remove();cards.delete(id);},ms);
  return {
   roll(m,verdict){const el=document.createElement('section');el.className='roll-card';el.dataset.roll=m.id;
-   el.innerHTML='<span class="roll-item rarity-'+esc(m.item.rarity)+'" tabindex="0" data-tooltip-item="'+esc(m.item.id)+'" data-item-context="loot"><canvas width="48" height="48" data-item-art="'+esc(ITEMS[m.item.id]?.icon||m.item.icon||m.item.id)+'"></canvas></span><header><b class="rarity-'+esc(m.item.rarity)+'">'+esc(m.item.name)+'</b><small>'+esc(rarityName(m.item.rarity))+' · '+esc(PARTY_UI.from.replace('{n}',m.from))+(verdict?.verdict==='upgrade'||verdict?.verdict==='empty'?' · <em>'+esc(PARTY_UI.upgrade)+'</em>':'')+'</small></header>'+
+   el.innerHTML='<span class="roll-item rarity-'+esc(m.item.rarity)+'" tabindex="0" data-tooltip-item="'+esc(m.item.id)+'" data-item-context="loot"><canvas width="'+ICON_STEP.roll+'" height="'+ICON_STEP.roll+'" data-item-art="'+esc(ITEMS[m.item.id]?itemArt(m.item.id):m.item.icon||m.item.id)+'"></canvas></span><header><b class="rarity-'+esc(m.item.rarity)+'">'+esc(m.item.name)+'</b><small>'+esc(rarityName(m.item.rarity))+' · '+esc(PARTY_UI.from.replace('{n}',m.from))+(verdict?.verdict==='upgrade'||verdict?.verdict==='empty'?' · <em>'+esc(PARTY_UI.upgrade)+'</em>':'')+'</small></header>'+
     '<div class="roll-actions">'+['need','greed','pass'].map(c=>'<button type="button" class="'+(c==='need'?'gold-button':'outline-button')+'" data-roll-choice="'+c+'" title="'+esc(PARTY_UI[c+'Hint'])+'">'+esc(PARTY_UI[c])+'</button>').join('')+'</div>'+
     '<ul class="roll-picks"></ul><i class="roll-timer" style="animation-duration:'+Number(m.secs||30)+'s"></i>';
    ensure().appendChild(el);cards.set(m.id,el);paint(el);},

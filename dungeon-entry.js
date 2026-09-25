@@ -7,7 +7,8 @@ import {unitPortrait} from './unit-frame.js';
 import {levelTone} from './cartography.js';
 import {SPECS,talentPoints,spentPoints} from './talents.js';
 import {companionSlots} from './companions.js';
-import {ITEMS} from './rpg.js';
+import {itemArt} from './rpg-ui.js';
+import {ICON_STEP} from './icon-steps.js';
 import {dicon,bossLoot} from './dungeon-journal.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -27,7 +28,7 @@ export function entryCard(g,id='schloss-bigb',{talents=true}={}){
  while(slots.length<size)slots.push(`<span class="dg-slot dg-empty" ${tip(E.empty,E.emptyNote)}>${dicon('group',22,'dim')}</span>`);
  const offers=free>0?g.companionOffers().filter(o=>!o.hired):[];
  const hire=offers.length?`<div class="dg-hire" aria-label="${esc(E.hire)}">${offers.map(o=>`<button type="button" class="dg-offer" data-dg-hire="${esc(o.def.id)}" data-role="${o.def.role}" ${o.affordable?'':'aria-disabled="true"'} aria-label="${esc(E.hire+': '+o.def.name+' · '+E.hireNote(o.cost,COMPANION_ROLES[o.def.role].name)+(o.affordable?'':' · '+E.noMoney))}" ${tip(E.hire+': '+o.def.name,E.hireNote(o.cost,COMPANION_ROLES[o.def.role].name)+(o.affordable?'':' · '+E.noMoney))}>${unitPortrait(o.def.look,null)}${dicon('role-'+o.def.role,16,'dg-role')}</button>`).join('')}</div>`:'';
- const loot=entryLoot(id),lootHtml=(loot.length?loot.map(it=>`<span class="dg-loot" tabindex="0" data-tooltip-item="${esc(it)}"><canvas width="48" height="48" data-item-art="${esc(ITEMS[it]?.icon||it)}" aria-hidden="true"></canvas></span>`):Array.from({length:3},()=>`<span class="dg-loot empty" tabindex="0" ${tip(E.loot,E.lootNone)}>${dicon('loot',20,'dim')}</span>`)).join('');
+ const loot=entryLoot(id),lootHtml=(loot.length?loot.map(it=>`<span class="dg-loot" tabindex="0" data-tooltip-item="${esc(it)}"><canvas width="${ICON_STEP.dungeonLoot}" height="${ICON_STEP.dungeonLoot}" data-item-art="${esc(itemArt(it))}" aria-hidden="true"></canvas></span>`):Array.from({length:3},()=>`<span class="dg-loot empty" tabindex="0" ${tip(E.loot,E.lootNone)}>${dicon('loot',20,'dim')}</span>`)).join('');
  const points=talents?Math.max(0,talentPoints(g)-spentPoints(g.rpg.talents)):0;
  const best=rec.best>0?mmss(rec.best):'–';
  return `<span hidden data-ui-window-title="${esc(def.name)}"></span><div class="dg-entry" data-dg-entry="${esc(id)}">
