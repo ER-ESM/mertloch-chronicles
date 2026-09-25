@@ -6,11 +6,13 @@ import {tutorialActive} from './tutorial.js';
 import {inKiosk} from './kiosk-instance.js';
 import {selectFriend,selectEnemy} from './help-target.js';
 import {hotspotLayout,onPlayerFloor} from './hotspots.js';
+import {concealed} from './dungeon.js';
 
 const hyp=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 /** Mitspieler werden zwischen zwei Schnappschüssen interpoliert – Treffertest und Rahmen brauchen dieselbe Position wie der Renderer. */
 export function remotePosition(o,now=performance.now()){const k=Math.min(1,(now-(o.at||0))/(o.lerp||2000));return {x:(o.fromX??o.x)+(o.x-(o.fromX??o.x))*k,y:(o.fromY??o.y)+(o.y-(o.fromY??o.y))*k};}
-const selectableEnemy=(g,e)=>(!tutorialActive(g)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0);
+/* Hotfix 2026-09-25: Gegner in noch nicht betretenen Geheimräumen zeichnet der Renderer nicht – dann auch kein Hover-Ring und kein Rechtsklick */
+const selectableEnemy=(g,e)=>(!tutorialActive(g)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&!concealed(g,e);
 
 /** Alle freundlichen Einheiten der offenen Welt als {kind,ref,x,y,name,level?,hp?}. */
 export function friendlyUnits(g,now){

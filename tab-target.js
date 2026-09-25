@@ -4,6 +4,7 @@
 import {distance} from './world.js';
 import {tutorialActive} from './tutorial.js';
 import {inKiosk} from './kiosk-instance.js';
+import {concealed} from './dungeon.js';
 
 export const TAB_RULES={range:240,aggroRange:260,fightRange:65,window:85,behind:1.6};
 const DIRS={se:[1,1],sw:[-1,1],ne:[1,-1],nw:[-1,-1]};
@@ -16,7 +17,7 @@ const score=(p,e)=>distance(e,p)*(inFront(p,e)?1:TAB_RULES.behind);
 /** Kandidaten für Tab nach Stufe gefiltert und sortiert (ohne Auswahl zu ändern). */
 export function tabChoices(g){
  const p=g.player,fighting=p.inCombat>0,R=TAB_RULES;
- const all=(g.enemies||[]).filter(e=>(!tutorialActive(g)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&g.world.lineClear(p,e));
+ const all=(g.enemies||[]).filter(e=>(!tutorialActive(g)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&!concealed(g,e)/* Hotfix: verborgene Gegner nicht per Tab */&&g.world.lineClear(p,e));
  const reach=e=>{const t=tabTier(e),d=distance(e,p);return t===0?d<R.aggroRange:fighting?t===1&&d<R.fightRange:d<R.range;};
  const pool=all.filter(reach);if(!pool.length)return [];
  const best=Math.min(...pool.map(tabTier));

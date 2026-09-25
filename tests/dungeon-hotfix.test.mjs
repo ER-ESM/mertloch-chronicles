@@ -1,15 +1,21 @@
 // Hotfix Dungeon „Schloss Big B" 2026-09-25 (Prüfer-Playtest, docs/DUNGEON-HOTFIX-2026-09-25.md):
 // 1 Arenatür nach WoW-Vorbild: schließt nur mit dem Helden drin, zieht Draußenstehende an den Eingang innen, kein Söldner zieht einen
 //   Boss allein, Rechtsklick aus dem Nachbarraum läuft in die Arena. Datengetrieben für alle Arenen (auch die aus Etappe 4).
+// 3 Weltkarte: das Dungeon-Symbol steht nie im Bündel. 4 (Oberfläche) prüft scripts/dungeon-hotfix-check.mjs.
+// 5 Verborgene Gegner (Geheimraum noch nicht betreten) sind weder per Maus noch per Tab wählbar.
+// 2 Neuladen: geräumter Trash bleibt liegen (auch mit stehender Pappwache), Kontrollpunkte außer Aggro-Reichweite, Schutz nach dem Laden.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {World} from '../world.js';
 import {Game} from '../engine.js';
 import {DUNGEONS,DUNGEON_BOSSES} from '../content/index.js';
-import {toWorld,roomAt,arenaRule,arenaEntrance,bossOutOfReach,arenaAhead} from '../dungeon.js';
+import {toWorld,roomAt,arenaRule,arenaEntrance,bossOutOfReach,arenaAhead,restoreDungeonRun,RESUME_CALM,concealed} from '../dungeon.js';
+import {enemyAt,unitAt} from '../target-ui.js';
+import {tabChoices} from '../tab-target.js';
 import {approachTarget,inStrike} from '../attack-approach.js';
 import {startAuto} from '../auto-combat.js';
+import {clusterMarkers,drawAtlas,mapPlaces} from '../cartography.js';
 
 const world=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')),{});
 const DEF=DUNGEONS['schloss-bigb'];
@@ -93,4 +99,67 @@ test('Big B: dieselbe Türregel am Thronsaal (Tresortür), Eingang innen hinter 
  bigb.aggro=true;bigb.ai='combat';bigb.threat={[g.companions[3].id]:500};run(g,.2);assert.equal(r.arena,null,'Held im Gang: Tür bleibt offen');assert.ok(!bigb.aggro,'Big B setzt zurück');
  at(g,'k2',50,24);bigb.aggro=true;bigb.ai='combat';g.target=bigb;g.player.inCombat=7;run(g,.2);
  assert.equal(r.arena,'thronsaal');for(const c of g.companions)assert.equal(roomOf(g,c),'thronsaal',c.name+' im Thronsaal');
+});
+
+// ── 2 · Neuladen ─────────────────────────────────────────────────────────────────────────────────────────────
+const DAY=Date.UTC(2026,8,25,12),clockAt=(g,ms)=>{g.clock=()=>ms;return g;};
+function reload(g,ms=DAY+60e3){const save=JSON.parse(JSON.stringify(g.save()));const h=new Game(world,{...save,dungeonRun:null},{});h.clock=()=>ms;h.random=()=>.5;h.toast=()=>{};assert.ok(restoreDungeonRun(h,save.dungeonRun),'Laufstand geladen');return {h,save};}
+
+test('Geräumter Pack bleibt nach dem Neuladen liegen, auch wenn die Pappwache noch steht (Befund 10)',()=>{
+ const g=clockAt(game(),DAY),r=inside(g),west=g.enemies.filter(e=>e.pack==='hof-west');
+ assert.ok(west.some(e=>e.cardboard)&&west.some(e=>!e.cardboard),'hof-west: Kämpfer und Pappwache');
+ for(const e of west)if(!e.cardboard)g.kill(e);
+ assert.ok(west.find(e=>e.cardboard).hp>0,'die Pappwache steht noch');assert.ok(r.trash.has('hof-west'),'Pack gilt als geräumt');
+ at(g,'e0',31,37);run(g,.2);const {h,save}=reload(g);assert.ok(save.dungeonRun.trash.includes('hof-west'));
+ assert.ok(h.enemies.filter(e=>e.pack==='hof-west').every(e=>e.hp<=0),'nach dem Neuladen liegt der ganze Pack');
+ assert.equal(roomAt(DEF,h.player.x,h.player.y)?.id,'hof','am Kontrollpunkt im Hof');
+ run(h,RESUME_CALM+3);assert.ok(!h.enemies.some(e=>e.hp>0&&e.aggro),'kein Gegner greift an');assert.equal(h.player.inCombat,0,'kein Sofort-Kampf');
+});
+
+test('Kein Kontrollpunkt (und nicht der Eingang) in Aggro-Reichweite eines Kämpfers: Sicht, Umherstreifen, ganzer Streifenweg',()=>{
+ const g=game(),r=inside(g);for(const b of DEF.bosses){r.killed.add(b.id);if(b.seal)r.seals.add(b.seal);}for(const s of DEF.secrets)r.secrets.add(s.id);r.version++;/* alle Türen offen: strengster Fall */
+ const seg=(p,a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/l));return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy);};
+ const spots=[...DEF.rooms.filter(x=>x.checkpoint).map(x=>({id:x.id,floor:x.floor,...x.checkpoint})),{id:'Eingang',...DEF.start}];
+ for(const s of spots){const P=toWorld(DEF,s.floor,s.x,s.y);
+  for(const e of g.enemies){if(!e.pack||e.cardboard||e.behavior!=='aggressive'||roomAt(DEF,e.home.x,e.home.y)?.floor!==s.floor)continue;
+   if(e.patrol){const pts=e.patrol.points;let m=Infinity;for(let i=0;i<pts.length;i++)m=Math.min(m,seg(P,pts[i],pts[(i+1)%pts.length]));assert.ok(m>e.aggroRange,s.id+': Streife '+e.pack+' kommt auf '+Math.round(m)+' heran (Aggro '+e.aggroRange+')');continue;}
+   if(!g.world.lineClear(P,e.home))continue;const d=Math.hypot(P.x-e.home.x,P.y-e.home.y);
+   assert.ok(d>e.aggroRange+e.roamRadius,s.id+': '+e.name+' aus '+e.pack+' steht '+Math.round(d)+' weg (Aggro '+e.aggroRange+' + Streifen '+e.roamRadius+')');}}
+});
+
+test('Schutz nach dem Laden: RESUME_CALM Sekunden bemerkt kein Gegner den Helden, danach wieder',()=>{
+ const g=clockAt(game(),DAY);inside(g);at(g,'e0',31,37);run(g,.2);const {h}=reload(g);
+ Object.assign(h.player,toWorld(DEF,'e0',37.5,24));const east=h.enemies.filter(e=>e.pack==='hof-ost'&&!e.cardboard);
+ run(h,RESUME_CALM-1.5);assert.ok(east.every(e=>!e.aggro),'im Schutz bemerkt ihn niemand');
+ run(h,3);assert.ok(east.some(e=>e.aggro),'danach wie immer');
+});
+
+// ── 3 · Weltkarte ────────────────────────────────────────────────────────────────────────────────────────────
+test('Bündeln: ein solo-Marker (Dungeon) steht nie im Bündel, ein Lager daneben weicht aus',()=>{
+ const out=clusterMarkers([{x:100,y:100,id:'dungeon',solo:true,prio:3.5},{x:104,y:103,id:'lager',prio:1},{x:112,y:96,id:'laden',prio:2},{x:300,y:300,id:'weit'}],24);
+ const dg=out.find(c=>c.members.some(m=>m.id==='dungeon'));assert.equal(dg.members.length,1,'Dungeon allein');assert.deepEqual([dg.x,dg.y],[100,100],'an seinem Ort');
+ for(const c of out)if(c!==dg)assert.ok(Math.hypot(c.x-dg.x,c.y-dg.y)>=24-1e-6,'Abstand zum Dungeon '+c.members.map(m=>m.id));
+ assert.equal(out.reduce((n,c)=>n+c.members.length,0),4,'kein Marker geht verloren');
+ assert.deepEqual(clusterMarkers([{x:0,y:0},{x:5,y:0}],24).map(c=>c.members.length),[2],'ohne solo wie bisher');
+});
+
+test('Weltkarte (echte Welt, mehrere Zoomstufen): das Dungeon-Symbol ist nie Teil eines Bündels',()=>{
+ const g=game();const ctx=new Proxy({measureText:s=>({width:String(s).length*6})},{get:(o,k)=>o[k]||(()=>{})});
+ const door=mapPlaces(g).find(h=>h.id==='dungeon:schloss-bigb');assert.ok(door,'Eingang auf der Karte');
+ for(const zoom of [1,1.5,2,3,4]){const canvas={width:780,height:580,getContext:()=>ctx};drawAtlas({world:g.world,game:g},canvas,true,null,{zoom,center:{...door.point}});
+  const hits=canvas.atlasHits||[],mine=hits.filter(h=>h.ids.includes('dungeon:schloss-bigb'));
+  assert.equal(mine.length,1,'Zoom '+zoom+': genau ein Treffer');assert.equal(mine[0].cluster,false,'Zoom '+zoom+': einzeln, nicht „'+mine[0].ids.length+' Orte hier“ ('+mine[0].ids+')');}
+});
+
+// ── 5 · Verborgene Gegner (Befund vom Rechtsklick-Fix, 15650507) ─────────────────────────────────────────────
+test('Gegner in einem noch nicht betretenen Geheimraum: kein Hover, kein Rechtsklick, kein Tab – nach dem Betreten schon',()=>{
+ const g=game(),r=inside(g);at(g,'e0',20,24);const hidden=g.enemies.filter(e=>e.hp>0&&roomAt(DEF,e.x,e.y)?.id==='wehrgang');assert.ok(hidden.length>=3,'Pappschützen im Wehrgang');
+ assert.ok(hidden.every(e=>concealed(g,e)),'Wehrgang noch nicht betreten');const s=hidden[0];
+ assert.equal(enemyAt(g,s.x,s.y-8),null,'Maus über dem verborgenen Gegner trifft nichts (Hover und Rechtsklick)');
+ assert.equal(unitAt(g,s.x,s.y-8),null,'unitAt ebenso');
+ const los=g.world.lineClear;g.world.lineClear=()=>true;/* Sicht zählt hier nicht – nur der verborgene Raum */
+ for(const e of g.enemies)if(!hidden.includes(e)){e.hp=0;e.aggro=false;e.ai='dead';e.respawnAt=Infinity;}/* nur die Pappschützen stehen */
+ assert.ok(!tabChoices(g).some(e=>hidden.includes(e)),'Tab überspringt verborgene Gegner');
+ r.visited.add('wehrgang');assert.equal(enemyAt(g,s.x,s.y-8),s,'nach dem Betreten wählbar');assert.ok(tabChoices(g).some(e=>hidden.includes(e)),'nach dem Betreten per Tab wählbar');
+ g.world.lineClear=los;
 });

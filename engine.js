@@ -40,7 +40,7 @@ import {deNum} from './number-format.js';
 const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
 import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest} from './dungeon.js';
-import {bossOutOfReach} from './dungeon.js';
+import {bossOutOfReach,concealed} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
 import {healCompanionByPlayer,buffCompanionByPlayer} from './companions.js';
@@ -157,7 +157,7 @@ export class Game{
   effect(type,x,y,data={}){this.fx.push({type,x,y,id:this.fxSerial=(this.fxSerial||0)+1,life:.5,max:.5,...data});if(this.fx.length>256)this.fx.splice(0,this.fx.length-256);}
   /** Tab wie in WoW: Angreifer, dann Feinde, neutrale Tiere nur ohne Feind in Reichweite (tab-target.js). */
   selectNext(reverse=false){return tabTarget(this,reverse);}
-  selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.friend=null;this.target=e;this.emit('target');return true;}return false;}
+  selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&!concealed(this,e)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.friend=null;this.target=e;this.emit('target');return true;}return false;}
   action(id,point=null,completing=false,friend=this.friend){
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
     if(this.paused||this.dead)return false;

@@ -169,7 +169,7 @@ export function enterDungeon(g,id='schloss-bigb',{force=false,resume=false}={}){
  const at=run.checkpoint;place(g,toWorld(def,at.floor,at.x,at.y));
  /* Etappe 2 Text-Diät: der Willkommenssatz steht im Übergang (dungeon-entry.js) und im Chat, nicht als Kurzmeldung über dem Zonentitel.
     Etappe 1: nach dem Neuladen sagt eine Kurzmeldung, dass der Durchgang am Kontrollpunkt weiterläuft. */
- const resumed=resume&&run===kept?.run;g.emit?.('instanceChanged');if(resumed)g.toast?.(T.resumed);g.log?.(resumed?T.resumed:T.welcome);return true;
+ const resumed=resume&&run===kept?.run;if(resumed)run.calmUntil=g.time+RESUME_CALM;/* Hotfix: ein paar Sekunden Schutz nach dem Laden */g.emit?.('instanceChanged');if(resumed)g.toast?.(T.resumed);g.log?.(resumed?T.resumed:T.welcome);return true;
 }
 /** Verlassen am Rolltor (force: überall, z. B. Neustart). Liegengebliebene Beute wird eingesammelt (Boss-Beute ohne Anlegen). */
 export function leaveDungeon(g,{force=false}={}){
@@ -295,7 +295,10 @@ function walkPatrol(g,e,dt){
 const standing=g=>(g.companions||[]).some(c=>c.state!=='down'&&c.hp>0);
 const partyIn=(g,def,room)=>[...(g.dead?[]:[g.player]),...(g.companions||[]).filter(c=>c.state!=='down'&&c.hp>0)].some(u=>roomAt(def,u.x,u.y)?.id===room);
 /** Bemerkt dieser Gegner den Helden? Bosse nur, wenn er in ihrem Raum steht – kein Anlocken durch die Tür (E-71). */
-export const dungeonNotices=(g,e)=>{if(!e.dungeonBoss)return true;const run=dungeonRun(g);return !run||roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room;};
+/** Hotfix 2026-09-25: nach dem Laden bzw. Aufstehen am Kontrollpunkt bemerkt RESUME_CALM Sekunden lang niemand den Helden (Spielzeit;
+ *  während des Startschirms steht die Zeit). Greift der Held selbst an, kämpft der Gegner wie immer. */
+export const RESUME_CALM=5;
+export const dungeonNotices=(g,e)=>{const run=dungeonRun(g);if(run&&run.calmUntil>g.time)return false;if(!e.dungeonBoss)return true;return !run||roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room;};
 /** Held gefallen (E-71): Geist statt Wipe. Die Bedrohung auf den Helden fällt weg, die Söldner halten die Gegner. */
 function enterGhost(g,run){run.ghost={at:g.time,wiped:false};for(const e of g.enemies)clearThreat(e,'player');g.target=null;g.moveTo=null;g.path=[];g.routeGoal=null;
  if(standing(g))g.toast?.(T.ghost);g.emit?.('dungeonGhost',{});}
@@ -328,7 +331,7 @@ export function tickDungeon(g,dt){
 }
 /** Aufstehen am Kontrollpunkt (Freilassen oder Gruppentod; engine.respawn setzt vorher die Gegner zurück). */
 export function dungeonRespawn(g){
- const run=dungeonRun(g);if(!run)return;run.ghost=null;const c=run.checkpoint;place(g,toWorld(run.def,c.floor,c.x,c.y));
+ const run=dungeonRun(g);if(!run)return;run.ghost=null;run.calmUntil=g.time+RESUME_CALM;const c=run.checkpoint;place(g,toWorld(run.def,c.floor,c.x,c.y));
  g.toast?.(T.wipe(checkpointName(run)));
 }
 /** Name des Kontrollpunkts, an dem der Held aufsteht (Todesbildschirm, E-71). */
@@ -611,7 +614,9 @@ export function dungeonDamageFactor(g,e){
 export function onDungeonKill(g,e){
  e.respawnAt=Infinity;const run=dungeonRun(g);
  if(e.cardboard){g.float?.(e.x,e.y-30,'PAPPE','#e8dcc0');const lines=T.cardboard;g.toast?.(lines[Math.floor(g.random()*lines.length)]);}
- if(run&&e.pack&&!g.enemies.some(o=>o!==e&&o.pack===e.pack&&o.hp>0))run.trash.add(e.pack);
+ /* Hotfix 2026-09-25 (Prüfer-Befund 10): geräumt ist ein Pack, wenn kein Kämpfer mehr steht – die neutrale Pappwache (1 Leben, greift nie
+    an) blieb meist stehen, der Pack galt nie als geräumt und stand nach dem Neuladen wieder da. */
+ if(run&&e.pack&&!g.enemies.some(o=>o!==e&&o.pack===e.pack&&o.hp>0&&!o.cardboard))run.trash.add(e.pack);
  /* Farm-Lücke (Etappe 3): Helfer eines Bosses, der heute schon lag (Stand beim Rufen), geben wie er nur repeatXp */if(e.repeatAdd&&e.xp)e.xp=Math.round(e.xp*REWARDS.repeatXp);
  if(!e.dungeonBoss||!run)return;const b=e.dungeonBoss;run.killed.add(b.id);run.version++;
  const rec=record(g,run.id),today=dungeonToday(g,run.id);

@@ -62,7 +62,7 @@ button.dg-chip{cursor:pointer}
 .dj-tabs{display:flex;gap:6px}
 .dj-tab{all:unset;box-sizing:border-box;position:relative;display:grid;place-items:center;width:44px;height:44px;border:2px solid #c5a26855;border-radius:10px;background:#101d17;cursor:pointer}
 .dj-tab.on{border-color:var(--gold);box-shadow:0 0 0 1px #f3cf7a55}
-.dj-tab:hover:not([disabled]),.dj-tab:focus-visible{border-color:#f3cf7a;outline:none}
+.dj-tab:hover:not([disabled]):not([aria-disabled="true"]),.dj-tab:focus-visible{border-color:#f3cf7a;outline:none}
 .dj-tab.dj-unknown{cursor:default;opacity:.7}
 .dj-tab .dj-face{width:40px;height:40px;border-radius:8px}
 .dj-tab .dj-star{position:absolute;right:-3px;top:-3px}

@@ -41,12 +41,20 @@ export function dungeonPlaces(g){const out=[];for(const [id,def] of Object.entri
 /** Wichtigkeit beim Bündeln: Aufträge vor Treffpunkten vor Diensten vor Lagern (das wichtigste Symbol steht für das Bündel). */
 export const PLACE_PRIO={quest:4,dungeon:3.5,hub:3,shop:2,trainer:2,camp:1};
 /** Marker bündeln (WoW-Weltkarte): Symbole näher als `radius` Bildpunkte werden eine Gruppe mit Zahl. Rein, testbar.
- *  items: [{x,y,prio?}] in Bildschirmkoordinaten → [{x,y,members}]; danach liegen alle Gruppenmitten mindestens `radius` auseinander. */
+ *  items: [{x,y,prio?,solo?}] in Bildschirmkoordinaten → [{x,y,members}]; danach liegen alle Gruppenmitten mindestens `radius` auseinander.
+ *  solo (Hotfix 2026-09-25, Prüfer-Befund 1: Dungeon und Lager teilten sich „2 Orte hier“): nie in einem Bündel – solche Marker stehen
+ *  immer einzeln an ihrem Ort, Bündel in ihrer Nähe weichen auf einen Ring im Abstand `radius` aus. */
 export function clusterMarkers(items,radius=24){
+ const solo=items.filter(it=>it.solo);items=items.filter(it=>!it.solo);
  const groups=[];for(const it of [...items].sort((a,b)=>(b.prio||0)-(a.prio||0))){const hit=groups.find(c=>Math.hypot(c.ax-it.x,c.ay-it.y)<radius);if(hit)hit.members.push(it);else groups.push({ax:it.x,ay:it.y,members:[it]});}
  const centre=c=>{c.x=c.members.reduce((s,m)=>s+m.x,0)/c.members.length;c.y=c.members.reduce((s,m)=>s+m.y,0)/c.members.length;};groups.forEach(centre);
  for(let again=true;again;){again=false;search:for(let i=0;i<groups.length;i++)for(let j=i+1;j<groups.length;j++)if(Math.hypot(groups[i].x-groups[j].x,groups[i].y-groups[j].y)<radius){groups[i].members.push(...groups[j].members);groups.splice(j,1);centre(groups[i]);again=true;break search;}}
- return groups.map(({x,y,members})=>({x,y,members}));
+ const out=groups.map(({x,y,members})=>({x,y,members}));if(!solo.length)return out;
+ for(let pass=0;pass<4;pass++){let moved=false;
+  for(const c of out)for(const s of solo){const d=Math.hypot(c.x-s.x,c.y-s.y);if(d>=radius)continue;const a=d>.5?Math.atan2(c.y-s.y,c.x-s.x):-Math.PI/4;c.x=s.x+Math.cos(a)*radius;c.y=s.y+Math.sin(a)*radius;moved=true;}
+  for(let i=0;i<out.length;i++)for(let j=out.length-1;j>i;j--)if(Math.hypot(out[i].x-out[j].x,out[i].y-out[j].y)<radius){out[i].members.push(...out[j].members);out[i].x=(out[i].x+out[j].x)/2;out[i].y=(out[i].y+out[j].y)/2;out.splice(j,1);moved=true;}
+  if(!moved)break;}
+ return [...out,...solo.map(s=>({x:s.x,y:s.y,members:[s]}))];/* einzelne Marker zuletzt: obenauf gezeichnet */
 }
 /** Schwierigkeitsfarbe nach Stufenabstand (WoW): grau ≤ −5, grün −3…−4, gelb ±2, orange +3…+4, rot ≥ +5. */
 export function levelTone(diff){return diff<=-5?'#a4a29a':diff<=-3?'#6fd06a':diff<=2?'#f2d24b':diff<=4?'#ff9a3c':'#ff5f4a';}
@@ -108,7 +116,7 @@ function drawWorldLayer(c,canvas,g,W,H,pos,inside,options){
  // 2) Große Ortsnamen (Treffpunkte, Kirche) als Tinte wie die Gebietsnamen der WoW-Zonenkarte – sie belegen zuerst ihren Platz.
  const bigNames=[...(g.world.hubs||[]).map(h=>({text:h.name.split(' · ')[0],pt:h})),...(g.world.church?[{text:'St. Gangolf',pt:g.world.church}]:[])];
  // 3) Marker filtern und bündeln (< 24 px → ein Bündel mit Zahl).
- const items=[];for(const h of mapPlaces(g)){if(!show[h.group])continue;const a=pos(h.point);if(!inside(a,12))continue;items.push({x:a.x,y:a.y,prio:PLACE_PRIO[h.group]||0,place:h});}
+ const items=[];for(const h of mapPlaces(g)){if(!show[h.group])continue;const a=pos(h.point);if(!inside(a,12))continue;items.push({x:a.x,y:a.y,prio:PLACE_PRIO[h.group]||0,place:h,solo:h.group==='dungeon'/* Dungeon-Eingang nie im Bündel (Hotfix) */});}
  const groups=clusterMarkers(items,24),hits=[];
  for(const grp of groups){const lead=grp.members[0].place,one=grp.members.length===1,key=one?lead.id:'cluster:'+grp.members.map(m=>m.place.id).sort().join('|'),near=Math.hypot(grp.x-me.x,grp.y-me.y)<NEAR_PLAYER,alpha=near?.5:1;
   const selected=grp.members.some(m=>m.place.id===options.selected);

@@ -81,6 +81,75 @@ try{
   assert.ok(won.hp===0&&won.killed,'Gerd besiegt '+JSON.stringify(won));
   pass(1,'Gerd besiegt mit Held und vier Söldnern ('+won.mercs+' Söldner stehen), Tür danach '+(won.arena?'zu':'offen'));
  }
+ // ─────────────────────────────────────────────── 3 · Weltkarte: Dungeon-Symbol einzeln
+ if(want(3)||want(4)||want(2)||want(5)){await start({w:2024,h:900});await read(`g.player.level=10;g.refreshStats?.();`);}
+ if(want(3)){
+  await b.press('m');await wait(900);
+  const probe=()=>read(`const cv=document.querySelector('#largeMap');const h=(cv.atlasHits||[]).find(h=>h.ids.includes('dungeon:schloss-bigb'));if(!h)return null;const r=cv.getBoundingClientRect();return {x:Math.round(r.left+h.x*r.width/cv.width),y:Math.round(r.top+h.y*r.height/cv.height),cluster:h.cluster,ids:h.ids,zoom:Math.round(cv.atlasView.scale*1000)/1000};`);
+  const seen=[];
+  for(let step=0;step<6;step++){const h=await probe();if(h){seen.push(h);assert.equal(h.cluster,false,'Dungeon-Symbol einzeln (Maßstab '+h.zoom+'): '+JSON.stringify(h.ids));
+    if(step===0||step===5){await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:h.x,y:h.y,pointerType:'mouse'});await wait(450);
+     const tip=await read(`const t=document.querySelector('.wk-tip');return t&&!t.hidden?t.textContent:''`);assert.match(tip,/Schloss Big B/,'Tooltip nennt den Dungeon');assert.doesNotMatch(tip,/Orte hier/,'kein Bündel-Tooltip');await shot('10-weltkarte-dungeon-einzeln-'+step);}}
+   const c=await read(`const r=document.querySelector('#largeMap').getBoundingClientRect();return {x:Math.round(r.left+r.width/2),y:Math.round(r.top+r.height/2)}`);
+   await b.send('Input.dispatchMouseEvent',{type:'mouseWheel',x:c.x,y:c.y,deltaX:0,deltaY:-120,pointerType:'mouse'});await wait(350);}
+  assert.ok(seen.length>=3,'Symbol in mehreren Maßstäben geprüft');
+  await closeAll();pass(3,'Weltkarte: Dungeon-Symbol in '+seen.length+' Maßstäben einzeln ('+[...new Set(seen.map(h=>h.zoom))].join(' / ')+'), Tooltip „Schloss Big B“, kein „Orte hier“');
+ }
+ // ─────────────────────────────────────────────── 4 · Eingangskarte und Journal
+ if(want(4)||want(2)||want(5)){await read(`window.D=await import('/dungeon.js');const d=D.dungeonEntrance(g);g.enemies=g.enemies.filter(e=>Math.hypot(e.x-d.x,e.y-d.y)>500);Object.assign(g.player,{x:d.x,y:d.y+8});g.player.inCombat=0;`);await wait(500);}
+ if(want(4)){
+  await b.press('f');await wait(700);assert.ok(await read(`return !!document.querySelector('.popup-dungeonEntry')`),'Eingangskarte offen');
+  const names=await read(`const p=document.querySelector('.popup-dungeonEntry');return {offers:[...p.querySelectorAll('.dg-offer')].map(b=>b.getAttribute('aria-label')||''),journal:p.querySelector('.dg-journal')?.getAttribute('aria-label')||''}`);
+  assert.ok(names.offers.length>0&&names.offers.every(t=>/Anheuern: .+ · /.test(t)),'Söldner-Knöpfe mit zugänglichem Namen '+JSON.stringify(names.offers));assert.match(names.journal,/Journal/,'Journal-Knopf mit zugänglichem Namen');
+  await click('.popup-dungeonEntry .dg-journal');await wait(500);
+  let st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),journal:!!document.querySelector('.popup-journal')}`);assert.ok(st.journal&&!st.entry,'Journal ersetzt die Karte (ein Fenster) '+JSON.stringify(st));
+  const tabs=await read(`return [...document.querySelectorAll('.popup-journal .dj-tab')].map((t,i)=>({i,locked:t.getAttribute('aria-disabled')==='true',star:!!t.querySelector('.dj-star'),label:t.getAttribute('aria-label')||''}))`);
+  const locked=tabs.filter(t=>t.locked);assert.ok(locked.length>=1,'gesperrte Plätze vorhanden '+JSON.stringify(tabs));
+  const tipOf=async i=>{await hover(`.popup-journal .dj-tab:nth-child(${i+1})`);await wait(350);return read(`const t=document.querySelector('#itemTooltip');return t&&!t.classList.contains('hidden')?[...t.children].map(x=>x.textContent).join(' · '):''`);};
+  const plain=locked.find(t=>!t.star),star=locked.find(t=>t.star);
+  const tipPlain=await tipOf(plain.i);assert.match(tipPlain,/Noch nicht entdeckt/,'Tooltip auf gesperrtem Schädel: '+tipPlain);await shot('20-journal-tooltip-gesperrt');
+  let tipStar='';if(star){tipStar=await tipOf(star.i);assert.match(tipStar,/Selten/,'Tooltip auf dem Stern-Platz: '+tipStar);await shot('21-journal-tooltip-selten');}
+  await click('.popup-journal [data-window-close]');await wait(600);
+  st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),journal:!!document.querySelector('.popup-journal')}`);assert.ok(st.entry&&!st.journal,'nach dem Schließen ist die Eingangskarte zurück '+JSON.stringify(st));await shot('22-eingangskarte-zurueck');
+  await click('.popup-dungeonEntry .dg-journal');await wait(500);await b.press('Escape');await wait(600);
+  st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),journal:!!document.querySelector('.popup-journal')}`);assert.ok(st.entry&&!st.journal,'Esc im Journal bringt die Eingangskarte zurück '+JSON.stringify(st));
+  await click('.popup-dungeonEntry .dg-journal');await wait(500);await b.press('m');await wait(700);
+  st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),map:!!document.querySelector('.popup-map,#largeMap:not([hidden])')}`);assert.ok(!st.entry,'öffnet der Spieler ein anderes Fenster, kommt die Karte nicht dazwischen '+JSON.stringify(st));
+  await closeAll();await b.press('Escape');await wait(300);await closeAll();
+  pass(4,'Eingangskarte → Journal → Schließen (X und Esc) bringt die Eingangskarte zurück; Schädelplätze mit Tooltip „'+tipPlain.replace(/\s+/g,' ').trim()+'“'+(star?' / „'+tipStar.replace(/\s+/g,' ').trim()+'“':'')+'; Söldner- und Journal-Knopf mit aria-label');
+ }
+ // ─────────────────────────────────────────────── 2 · Neuladen: geräumter Trash bleibt weg, kein Sofort-Kampf
+ if(want(2)||want(5)){
+  await read(`g.player.inCombat=0;`);await b.press('f');await wait(700);await b.press('f');
+  for(let i=0;i<30&&await read(`return g.instance?.kind`)!=='dungeon';i++)await wait(200);assert.equal(await read('return g.instance?.kind'),'dungeon','betreten');await wait(900);
+  await read(`window.D=await import('/dungeon.js');for(const id of ${MERCS})g.hireCompanion(id,{free:true});`);await wait(400);
+ }
+ if(want(2)){
+  // Wie im Playtest: das Paar im Westen fällt im Kampf, die neutrale Pappwache bleibt stehen
+  const before=await read(`const west=g.enemies.filter(e=>e.pack==='hof-west');for(const e of west)if(!e.cardboard)g.kill(e);g.player.inCombat=0;return {pappe:west.filter(e=>e.cardboard&&e.hp>0).length,cleared:g.dungeonRun.trash.has('hof-west'),cp:g.dungeonRun.checkpoint}`);
+  assert.ok(before.pappe>=1&&before.cleared,'Pappwache steht, Pack gilt als geräumt '+JSON.stringify(before));
+  await read(`g.emit('save')`);await wait(900);await b.goto(b.url);for(let i=0;i<200&&!await b.evaluate('!!window.game');i++)await wait(150);
+  await read(`document.querySelector('.intro-skip')?.click();document.querySelectorAll('[data-window-close]').forEach(x=>x.click());window.D=await import('/dungeon.js');`);await wait(600);
+  const t0=await read(`return g.time`);
+  const after=await read(`const r=g.dungeonRun;return r?{inside:g.instance?.kind,room:D.roomAt(r.def,g.player.x,g.player.y)?.id,west:g.enemies.filter(e=>e.pack==='hof-west'&&e.hp>0).length,trash:[...r.trash],calm:Math.round((r.calmUntil-g.time)*10)/10}:null`);
+  assert.ok(after&&after.inside==='dungeon'&&after.room==='hof','nach dem Neuladen im Hof '+JSON.stringify(after));assert.equal(after.west,0,'geräumtes Paar bleibt weg '+JSON.stringify(after));
+  await shot('30-neuladen-hof');
+  for(let i=0;i<40&&await read(`return g.time`)<t0+7;i++)await wait(250);
+  const later=await read(`return {aggro:g.enemies.filter(e=>e.hp>0&&e.aggro).map(e=>e.name),combat:g.player.inCombat,hp:Math.round(g.player.hp/g.player.maxHp*100),time:Math.round(g.time-${'${t0}'})}`.replace('${t0}',String(t0)));
+  assert.equal(later.aggro.length,0,'kein Gegner im Kampf '+JSON.stringify(later));assert.equal(later.combat,0,'kein Sofort-Kampf');await shot('31-neuladen-ruhig');
+  pass(2,'Neuladen: wieder im Hof am Kontrollpunkt, geräumtes Paar bleibt weg (Pappwache zählt nicht), '+later.time+' s Spielzeit ohne Kampf, Schutz '+after.calm+' s');
+ }
+ // ─────────────────────────────────────────────── 5 · Verborgene Gegner: kein Hover-Ring, kein Rechtsklick
+ if(want(5)){
+  await read(`const r=g.dungeonRun;Object.assign(g.player,D.toWorld(r.def,'e0',24,22));g.player.inCombat=0;g.target=null;`);await settle();await wait(500);
+  const hid=await read(TO_SCREEN+`const e=g.enemies.find(e=>e.hp>0&&D.concealed(g,e));if(!e)return null;const s=toS({x:e.x,y:e.y-14});return {x:s.x,y:s.y,id:e.id,name:e.name,inView:s.x>0&&s.y>0&&s.x<innerWidth&&s.y<innerHeight}`);
+  assert.ok(hid&&hid.inView,'verborgener Gegner im Bildausschnitt '+JSON.stringify(hid));
+  await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:hid.x,y:hid.y,pointerType:'mouse'});await wait(400);
+  const hov=await read(`return g.hoverUnit?.ref?.id??null`);assert.notEqual(hov,hid.id,'kein Hover-Ring auf dem verborgenen Gegner');
+  await mouseAt(hid.x,hid.y,'right');await wait(300);const tgt=await read(`return g.target?.id??null`);assert.notEqual(tgt,hid.id,'Rechtsklick wählt ihn nicht');
+  await b.press('Tab');await wait(250);const tab=await read(`return g.target&&D.concealed(g,g.target)?g.target.name:null`);assert.equal(tab,null,'Tab wählt keinen verborgenen Gegner');
+  await shot('40-verborgen-kein-hover');pass(5,'Verborgener Gegner ('+hid.name+' im Wehrgang): kein Hover-Ring, Rechtsklick und Tab wählen ihn nicht');
+ }
  assert.deepEqual(b.errors,[],'keine Fehler im Browser');
  writeFileSync(dir+'/result.json',JSON.stringify({results,errors:b.errors},null,2));
  console.log('dungeon-hotfix-check: '+results.length+' Prüfungen grün');

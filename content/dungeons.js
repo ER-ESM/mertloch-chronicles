@@ -34,7 +34,7 @@ export const DUNGEONS={
   start:{floor:'e0',x:31,y:36},exit:{floor:'e0',x:31,y:36.8},
   rooms:[
    // --- Erdgeschoss ---
-   {id:'hof',floor:'e0',rects:[[16,20,30,18]],sign:'Schlosshof',truth:'Doppelgarage mit Pappzinnen',prospect:'Ehrenhof mit Brunnen',checkpoint:{x:31,y:34}},
+   {id:'hof',floor:'e0',rects:[[16,20,30,18]],sign:'Schlosshof',truth:'Doppelgarage mit Pappzinnen',prospect:'Ehrenhof mit Brunnen',checkpoint:{x:31,y:37}},
    {id:'zugbruecke',floor:'e0',rects:[[2,20,13,18]],sign:'Zugbrücke',truth:'Kellertreppe mit Kette',prospect:'Zugbrücke über den Burggraben',arena:'gerd'},
    {id:'verwaltung',floor:'e0',rects:[[48,20,14,18]],sign:'Hofkanzlei',truth:'Büro im Anbau',prospect:'Kanzlei des Freiherrn'},
    {id:'wehrgang',floor:'e0',rects:[[16,6,30,10]],sign:'Wehrgang',truth:'Carport-Dach',prospect:'Nordturm',secret:true},
@@ -46,7 +46,7 @@ export const DUNGEONS={
    {id:'studio',floor:'k1',rects:[[57,12,7,14]],sign:'Presseamt',truth:'Content-Studio mit Greenscreen',prospect:'Spiegelsaal'},
    {id:'musterwohnung',floor:'k1',rects:[[21,39,22,9]],sign:'Musterwohnung · Besichtigung',truth:'Kellerabteil mit Laminat',prospect:'Gästeflügel',arena:'expose'},
    // --- Keller 2 ---
-   {id:'weinkeller',floor:'k2',rects:[[4,4,29,14]],sign:'Weinkeller',truth:'echter Basaltkeller',prospect:'Weinkeller',checkpoint:{x:9,y:9}},
+   {id:'weinkeller',floor:'k2',rects:[[4,4,29,14]],sign:'Weinkeller',truth:'echter Basaltkeller',prospect:'Weinkeller',checkpoint:{x:38,y:16}},
    {id:'gewoelbe',floor:'k2',rects:[[34,4,8,40],[4,19,8,25],[12,40,22,4]],sign:'Gewölbegänge',truth:'alte Basaltgänge',prospect:'Katakomben'},
    {id:'kelterhalle',floor:'k2',rects:[[14,20,18,16]],sign:'Kelterhalle',truth:'Gewölbe mit Fassrinnen',prospect:'Kelterhaus',arena:'korkenkurt'},
    {id:'thronsaal',floor:'k2',rects:[[46,4,16,32]],sign:'Thronsaal',truth:'echter Basaltdom, verkleidet mit Pappe',prospect:'Thronsaal',arena:'bigb'},
@@ -102,9 +102,12 @@ export const DUNGEONS={
   // Gegner in festen Gruppen (Packs, E-71): id = Speicherschlüssel (geräumte Packs bleiben im Laufstand liegen), kind = DUNGEON_ENEMIES,
   // Position in Metern. Soziale Aggro gilt nur innerhalb des Packs (dungeon.js dungeonPackAggro) – keine Kette über den Raum.
   // patrol = Wegpunkte (Meter), Runde wird abgelaufen.
+  // Hotfix 2026-09-25: Kein Kontrollpunkt liegt in Aggro-Reichweite (aggroRange + roamRadius, bei Streifen der ganze Weg) eines Kämpfers
+  // mit Sichtlinie (tests/dungeon-hotfix.test.mjs). Dafür: Hof-Kontrollpunkt am Rolltor, Hof-Packs 1 m nach außen, Weinkeller-Kontrollpunkt im
+  // Gang vor der Tür, die Galerie-Streife läuft nur noch die Ost- und Südseite (vorher lief sie über den Kontrollpunkt an der Treppe).
   packs:[
-   {id:'hof-west',room:'hof',at:[22,25],members:['securityazubi','securityazubi','pappwache']},
-   {id:'hof-ost',room:'hof',at:[40,25],members:['securityazubi','securityazubi','pappwache']},
+   {id:'hof-west',room:'hof',at:[21,24],members:['securityazubi','securityazubi','pappwache']},
+   {id:'hof-ost',room:'hof',at:[41,24],members:['securityazubi','securityazubi','pappwache']},
    {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi']},
    {id:'kanzlei-sued',room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi']},
    {id:'wehrgang-west',room:'wehrgang',at:[25,10],members:['pappschuetze']},
@@ -112,7 +115,7 @@ export const DUNGEONS={
    {id:'wehrgang-ost',room:'wehrgang',at:[39,11],members:['pappschuetze']},
    {id:'galerie-nord',room:'galerie',at:[20,8],members:['pappwache']},
    {id:'galerie-sued',room:'galerie',at:[44,36],members:['pappwache']},
-   {id:'galerie-streife',room:'galerie',at:[30,36],members:['baumarktritter','baumarktritter','maklerpraktikant'],patrol:[[30,36],[54,36],[54,8],[10,8],[10,36]]},
+   {id:'galerie-streife',room:'galerie',at:[30,36],members:['baumarktritter','baumarktritter','maklerpraktikant'],patrol:[[30,36],[54,36],[54,8],[34,8],[54,8],[54,36]]},
    {id:'rittersaal-west',room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant']},
    {id:'rittersaal-ost',room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant']},
    {id:'rittersaal-sued',room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant']},

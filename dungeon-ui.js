@@ -13,7 +13,7 @@ import {paintUnitPortraits} from './unit-frame.js';
 const touch=()=>document.body.classList.contains('touch-mode');
 export function mountDungeonUI(api){
  // api: {game, popups, openModal, paint, events, save, toast, showPanel, unlocked}
- let entryId=null,journalBoss=null,busy=false;
+ let entryId=null,journalBoss=null,journalBack=null,busy=false;
  function paintAll(w){if(!w?.body)return;paintDungeonIcons(w.body);paintBossPortraits(w.body,api.game()?.time||0);paintUnitPortraits(w.body);api.paint?.();}
  /** Handy: Tippen auf ein Symbol mit Tooltip zeigt dessen Text als Detail (die Maus-Tooltips gibt es dort nicht). */
  function touchTip(e){if(!touch())return false;const el=e.target.closest('[data-tooltip-label]');if(!el)return false;showPanelDetail('<p>'+(el.dataset.tooltipNote||'')+'</p>',el.dataset.tooltipLabel);return true;}
@@ -21,7 +21,7 @@ export function mountDungeonUI(api){
  function renderEntry(id){const g=api.game();entryId=id;const w=api.openModal(entryCard(g,id,{talents:api.unlocked?.('talents')!==false}),false,'dungeonEntry');w.cleanup=()=>{entryId=null;};paintAll(w);
   w.body.onclick=e=>{const b=e.target.closest('button');if(!b){touchTip(e);return;}
    if('dgEnter' in b.dataset){enter(id);return;}
-   if('dgJournal' in b.dataset){openJournal(null,id);return;}
+   if('dgJournal' in b.dataset){openJournal(null,id,{back:id});return;}
    if('dgTalents' in b.dataset){api.popups.close('dungeonEntry');api.showPanel('talents');return;}
    if(b.dataset.dgHire){if(b.getAttribute('aria-disabled')==='true'){api.toast(U.entry.noMoney,true);return;}const r=g.hireCompanion(b.dataset.dgHire);api.events();if(r?.ok)renderEntry(id);return;}
    touchTip(e);};
@@ -38,8 +38,12 @@ export function mountDungeonUI(api){
  function leave(){const g=api.game();if(busy||!g)return;busy=true;
   dungeonTransition('leave',()=>{const ok=g.leaveDungeon();api.events();if(ok)api.save();return ok;},{caption:T.outside}).finally(()=>{busy=false;});}
  // ── Journal
- function openJournal(bossId=null,dungeonId='schloss-bigb'){const g=api.game();journalBoss=bossId;const w=api.openModal(journalPanel(g,bossId,dungeonId),false,'journal');w.cleanup=()=>{journalBoss=null;};api.popups.focus('journal');paintAll(w);
-  w.body.onclick=e=>{const tab=e.target.closest('[data-dj-boss]');if(tab){if(!tab.disabled)openJournal(tab.dataset.djBoss,dungeonId);return;}touchTip(e);};
+ /** back (Hotfix 2026-09-25, Prüfer): von der Eingangskarte geöffnet – das Journal ersetzt sie im Einzelfenster-System; schließt der Spieler
+  *  das Journal (X, Esc), kommt die Eingangskarte zurück. Öffnet stattdessen ein anderes Fenster oder beginnt der Dungeon, bleibt es dabei. */
+ function openJournal(bossId=null,dungeonId='schloss-bigb',{back=null,keep=false}={}){const g=api.game();journalBoss=bossId;if(!keep)journalBack=back;const w=api.openModal(journalPanel(g,bossId,dungeonId),false,'journal');
+  const before=new Set(api.popups.windows?.keys?.()||[]);w.cleanup=()=>{journalBoss=null;const to=journalBack;journalBack=null;if(!to)return;
+   setTimeout(()=>{const now=[...(api.popups.windows?.keys?.()||[])];if(busy||api.game()?.instance||now.some(k=>!before.has(k)))return;renderEntry(to);},0);};api.popups.focus('journal');paintAll(w);
+  w.body.onclick=e=>{const tab=e.target.closest('[data-dj-boss]');if(tab){if(!tab.disabled&&tab.getAttribute('aria-disabled')!=='true')openJournal(tab.dataset.djBoss,dungeonId,{keep:true});return;}touchTip(e);};
   return w;}
  globalThis.__dgOpenJournal=(id)=>openJournal(id);/* Prüfzugang (scripts/dungeon-e2-check.mjs) */
  /** Nach Anheuern/Entlassen: offene Karte nachziehen. */

@@ -65,7 +65,7 @@ export const DUNGEON_UI={
  // ── Journal (dungeon-journal.js): eine Seite je Boss
  journal:{title:'Dungeon-Journal',abilities:'Fähigkeiten',roles:'Rollen',loot:'Beute',phases:'Phasen',
   phaseAt:pct=>'bei '+pct+' %',phaseAdds:n=>n+' Helfer',phaseCycle:'neuer Ablauf',phaseLine:'Spruch',
-  lootNone:'Beutetabelle folgt',unknown:'Noch nicht gesichtet',level:n=>'Stufe '+n,hp:n=>n.toLocaleString('de-DE')+' Leben',
+  lootNone:'Beutetabelle folgt',unknown:'Noch nicht entdeckt',rare:'Selten',rareNote:'Erscheint nicht in jedem Durchgang.',optional:'Optional',level:n=>'Stufe '+n,hp:n=>n.toLocaleString('de-DE')+' Leben',
   seal:'Trägt ein Siegel',page:(i,n)=>i+' / '+n,
   // Rollenhinweise erzeugen sich aus den Merkmalen: je Rolle die Antworten auf die Merkmale, die diese Rolle angehen.
   // Rollenhinweise aus den Merkmalen: je Rolle die Merkmale, die sie angehen, mit ihrer Antwort (steht im Tooltip der Rollensymbole).
