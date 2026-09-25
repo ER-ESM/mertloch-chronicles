@@ -48,10 +48,12 @@ export const TUNING={
   'baerbel-care':{output:{damage:1.0,healing:1.15},why:'E-71: Annis Trend (+4 % je Stufe) hob den Schaden um 19 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
   'baerbel-feedback':{output:{damage:1.0},why:'E-71: Trend +21 % – Faktor 1,18 → 1,0',since:'2026-09-25'},
   'kevin-iron':{output:{damage:1.0},why:'E-71: Pfandbon +8 % – Faktor 1,08 → 1,0',since:'2026-09-25'},
-  'schorsch-chef':{output:{damage:1.2,healing:1.15},why:'E-71 Erstwert: der Grillplan des Chefs bringt zwei Würste je Braten (keine Schadensstücke) – Faktor 1,2 hebt ihn auf den Heiler-Korridor (≈ 75)',since:'2026-09-25'},
-  'schorsch-rauch':{output:{damage:1.25},why:'E-71 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82)',since:'2026-09-25'},
-  'kaethe-grand':{output:{damage:0.92},why:'E-71 Erstwert: Grand-Spielerin lag bei 111 – Faktor 0,92',since:'2026-09-25'},
-  'kaethe-falsch':{output:{damage:0.82},why:'E-71 Erstwert: Kontroll-Spec lag bei 100, Ziel ≈ 90 – Faktor 0,82',since:'2026-09-25'}
+  'schorsch-chef':{output:{damage:1.2,healing:.8},chef:{wurstBonus:.25},why:'E-71: der Grillplan des Chefs bringt zwei Würste je Braten – Schaden ×1,2 für den Heiler-Korridor; Balance-Sheet: Heilung +70 bis +108 % über dem Median → Wurst-Bonus 50 → 25 %, Heilfaktor 1,15 → 0,9',since:'2026-09-25'},
+  'schorsch-flamme':{output:{damage:.78},flamme:{bonus:.3,splash:{share:.25},overheatFactor:1.3},why:'E-71 Balance-Sheet: Flambierer +60 bis +125 % in Gruppen (Feuerspritzer, Stichflamme ×2, Popcorn) – Flambieren +50 → +30 %, Spritzer 40 → 25 %, Stichflamme ×2 → ×1,4, Faktor 0,85',since:'2026-09-25'},
+  'schorsch-rauch':{output:{damage:1.05},rauch:{smoke:{weaken:.15}},why:'E-71 Erstwert: Käse statt Braten – Faktor 1,25 hebt den Räuchermeister auf den Tank-Korridor (≈ 82)',since:'2026-09-25'},
+  'kaethe-grand':{output:{damage:1},why:'E-71: nach dem Kartenschaden-Abgleich (Kreuz/Karo +50 %) Faktor 1',since:'2026-09-25'},
+  'kaethe-herz':{output:{healing:1.3},herz:{bonus:.6},why:'E-71 Balance-Sheet: Kartenlegerin heilte 25–56 % unter dem Median – Herz-Bonus 40 → 60 %, Heilfaktor 1,2',since:'2026-09-25'},
+  'kaethe-falsch':{output:{damage:1.1},why:'E-71 Balance-Sheet: Falschspielerin lag 25–50 % unter dem Median – Faktor 0,95 nach dem Kartenschaden-Abgleich',since:'2026-09-25'}
   // dieter-brew (−38 %) und dieter-wall (−18 %) bewusst belassen: Schutz-/Heilrollen, Weizenfass heilt statt zu schaden.
  },
  // Klassen-Buffs (content/class-buffs.js, docs/KLASSEN-BUFFS-2026-09-23.md): Wirkung je Buff und Wert. Jeder Buff hebt einen anderen Wert,

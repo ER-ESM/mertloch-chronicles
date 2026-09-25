@@ -24,7 +24,7 @@ import {startActivity,tickActivity} from './activities.js';
 import {stepPlayer} from './movement.js';
 import {available,xpToNext} from './progression.js';
 import {talentPoints,talentState} from './talents.js';
-import {freshResource,resourceKind,resourceCost,resourceFailure,payResource,resourceSurge,grantResource,resourceHit,resourceIncoming,resourceDamageFactor,tickResource,resourcePrecheck,resourceHealAlways,resourceQuickGcd,resourceOffGcd,resourceParryBonus,performClassSkill,resourceAfterSkill,resourceParry,resourceKill,resourceCast,resourceEnemyCast,resourceAbsorbed} from './class-resources.js';
+import {resourceGcd,freshResource,resourceKind,resourceCost,resourceFailure,payResource,resourceSurge,grantResource,resourceHit,resourceIncoming,resourceDamageFactor,tickResource,resourcePrecheck,resourceHealAlways,resourceQuickGcd,resourceOffGcd,resourceParryBonus,performClassSkill,resourceAfterSkill,resourceParry,resourceKill,resourceCast,resourceEnemyCast,resourceAbsorbed} from './class-resources.js';
 import {freshClassState,classSkills,healPlayer,healerEffects,addGuard,beforeSkill,skillCost,performTalent,afterSkill,afterDamage,onParry,onKill,modifyHit,tickClass} from './class-mechanics.js';
 import {VillageLife} from './village-life.js';
 import {pathNear} from './path-near.js';
@@ -186,7 +186,7 @@ export class Game{
     const origin={x:p.x,y:p.y},fxTarget={x:(s.ground?point:e||p).x,y:(s.ground?point:e||p).y};context.marked=e?.mark>0;context.interrupted=!!e?.cast?.interruptible;
     const base=this.baseEffects(),quick=quickGcd(this,id,e)||resourceQuickGcd(this,id),offGcd=s.offGcd||resourceOffGcd(this,id);
     this.cooldowns[id]=skillCooldown(this,s,cs);const surge=id==='burst'&&resourceSurge(this);payResource(this,s,cs,cost);consumeProc(this,'glow',id);consumeProc(this,'free',id);const pm=consumeProc(this,'empower',id)?2:1;
-    if(!offGcd&&!completing)this.gcd=quick?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd;
+    if(!offGcd&&!completing)this.gcd=resourceGcd(this,id,cs)??(quick?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd);
     if(!['dash','parry'].includes(id)&&!(s.range&&!s.ground))p.castPose=.28;
     if(s.range&&!s.ground){this.autoAttack.enabled=true;e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.direction=walkFacing(e.x-p.x,e.y-p.y,p.direction||'se');p.attack=.25;p.attackSource=s.weaponSource||'melee';}
     if((s.ground&&s.damage||id==='detonate'||id==='snare')&&this.target?.hp>0)startAuto(this);

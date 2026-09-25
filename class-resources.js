@@ -163,17 +163,17 @@ function reloadPress(g,st,r,cs){
 // ---------------------------------------------------------------------------------------------------------------
 // Schorsch · Glut und Grillrost
 export function zoneOf(g,glut,cs=g.cs||{}){const r=R(g),z=r.zones,lo=z[1].to+num(cs,'perfectLow'),hi=z[2].to+num(cs,'perfectHigh');if(glut<z[0].to)return z[0];if(glut<lo)return z[1];if(glut<hi)return z[2];return z[3];}
-function addGlut(g,st,n,cs){const r=R(g),before=st.glut;st.glut=clamp(st.glut+n,0,r.max);const was=zoneOf(g,before,cs).id,now=zoneOf(g,st.glut,cs).id;if(now==='perfekt'&&was!=='perfekt'&&st.perfectCd<=0){st.perfectCd=3;fireProcs(g,'glutPerfect',cs);emitCombatFx(g,'glut',g.player,{zone:now});}if(st.glut>=r.max)overheat(g,st,cs);}
+function addGlut(g,st,n,cs){const r=R(g),before=st.glut;st.glut=clamp(st.glut+n,0,st.cool>0?r.max-1:r.max);/* nach einer Stichflamme erholt sich der Grill: 8 s keine zweite */const was=zoneOf(g,before,cs).id,now=zoneOf(g,st.glut,cs).id;if(now==='perfekt'&&was!=='perfekt'&&st.perfectCd<=0){st.perfectCd=3;fireProcs(g,'glutPerfect',cs);emitCombatFx(g,'glut',g.player,{zone:now});}if(st.glut>=r.max)overheat(g,st,cs);}
 function overheat(g,st,cs){
  const r=R(g),o=r.overheat,p=g.player,m=mech(g),flamme=!!m?.flamme,factor=(1+num(cs,'overheatDamage'))*(flamme?m.flamme.overheatFactor:1),dmg=Math.round(o.damage*(cs.flatScale||1)*factor);
  for(const e of foes(g,p,o.radius))g.damage(e,dmg,'Stichflamme');
  if(!cs.overheatSafe&&!flamme)selfDamage(g,Math.round(p.maxHp*o.self),'Stichflamme');
- st.glut=o.dropTo;st.lock=Math.max(0,o.lock+num(cs,'overheatLock'));for(const it of st.rost)it.done+=o.cook;
+ st.glut=o.dropTo;st.cool=o.cooldown;st.lock=Math.max(0,o.lock+num(cs,'overheatLock'));for(const it of st.rost)it.done+=o.cook;
  emitCombatFx(g,'overheat',p,{radius:o.radius});g.emit?.('shake',{strength:5});note(g,r.hud.overheat,'#ff7a3a');fireProcs(g,'overheat',cs);
 }
 function cookStep(g,st,dt,cs){const r=R(g),z=zoneOf(g,st.glut,cs),m=mech(g),smoke=!!m?.rauch&&st.glut<m.rauch.below;let rate=dt/r.rost.cookTime*z.cook*(1+num(cs,'cookSpeed'))*(st.cookBoost>0?1.5:1);if(smoke)rate*=m.rauch.cook;for(const it of st.rost){it.done+=rate;if(smoke&&it.done<.6)it.smoked=true;}}
 function tickGrill(g,st,r,dt,cs,inCombat){
- const p=g.player;st.lock=Math.max(0,st.lock-dt);st.perfectCd=Math.max(0,st.perfectCd-dt);st.noDecay=Math.max(0,st.noDecay-dt);st.cookBoost=Math.max(0,st.cookBoost-dt);st.parryBonus=Math.max(0,st.parryBonus-dt);
+ const p=g.player;st.cool=Math.max(0,(st.cool||0)-dt);st.lock=Math.max(0,st.lock-dt);st.perfectCd=Math.max(0,st.perfectCd-dt);st.noDecay=Math.max(0,st.noDecay-dt);st.cookBoost=Math.max(0,st.cookBoost-dt);st.parryBonus=Math.max(0,st.parryBonus-dt);
  if(inCombat){if(st.noDecay<=0)st.glut=Math.max(0,st.glut-(r.decay+num(cs,'glutDecay'))*dt);}
  else{const d=r.rest-st.glut;st.glut+=Math.sign(d)*Math.min(Math.abs(d),r.decay*dt);}
  const z=zoneOf(g,st.glut,cs);if(inCombat&&z.burn)selfDamage(g,p.maxHp*z.burn*dt,'Hitze');
@@ -261,7 +261,7 @@ function playCard(g,st,index,cs,context){
 function abrechnen(g,st,cs,e,context={}){
  const r=R(g),a=r.abrechnen,p=g.player,m=mech(g),grand=!!m?.grand&&st.bubes>=m.grand.bubes;
  let mult=(context.pm||1)*(1+num(cs,'abrechnenPower'))*(st.augen>=r.schwarz?a.schwarz:st.augen>=r.schneider?a.schneider:1)*(grand?m.grand.factor:1);
- const n=skillDamage(g,{damageModel:{flat:st.augen*a.perAuge,weapon:st.augen/20},weaponSource:'ranged'},0,ITEMS)*mult;
+ const n=skillDamage(g,{damageModel:{flat:st.augen*a.perAuge,weapon:st.augen*a.perAugeWeapon},weaponSource:'ranged'},0,ITEMS)*mult;
  const list=st.augen>=r.schwarz||grand?[e,...foes(g,e,grand?m.grand.radius:a.radius,e)]:[e];
  for(const o of list)g.damage(o,Math.round(o===e?n:n*.6),'Abrechnen');
  emitCombatFx(g,'abrechnen',e,{augen:st.augen,grand,schwarz:st.augen>=r.schwarz,cards:Math.min(12,st.discard.length+st.hand.length)});g.emit?.('shake',{strength:grand?6:4});
@@ -298,7 +298,9 @@ export function resourcePrecheck(g,id,s,cs){
 export const resourceHealAlways=(g,id)=>id==='heal'&&resourceKind(g)==='grill';
 /** Sieben, Acht, Neun gehen schneller (kurzer GCD) oder ganz ohne (Talent luschenGcd). */
 export function resourceQuickGcd(g,id){const c=handCard(g,id);return !!c&&!!RESOURCES.kaethe.ranks[c.rank].quick;}
-export function resourceOffGcd(g,id){if(id==='mark'&&resourceKind(g)==='grill')return true;/* Auflegen ist ein Handgriff */const c=handCard(g,id);return !!c&&!!RESOURCES.kaethe.ranks[c.rank].quick&&!!g.cs?.luschenGcd;}
+export function resourceOffGcd(g,id){return id==='mark'&&resourceKind(g)==='grill';/* Auflegen ist ein Handgriff */}
+/** Eigene Länge der globalen Abklingzeit: Luschen mit „Flinke Finger“ (luschenGcd) sperren nur kurz. */
+export function resourceGcd(g,id,cs){const c=handCard(g,id);return c&&RESOURCES.kaethe.ranks[c.rank].quick&&cs?.luschenGcd?RESOURCES.kaethe.luschenGcd:null;}
 export function resourceParryBonus(g){return resourceKind(g)==='grill'&&g.res?.parryBonus>0?.3:0;}
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -404,7 +406,7 @@ export function resourceVariant(g,id){
   if(id==='burst'){const it=ripest(g,st,cs);if(!it)return null;const d=doneness(g,it,cs),m=mech(g),name=r.items[it.item].name.toUpperCase();if(m?.flamme&&st.glut>=m.flamme.at)return {name:'FLAMBIEREN',tone:'burst'};if(it.smoked&&m?.rauch)return {name:'GERÄUCHERT',tone:'gold'};return d.perfect?{name:name+' GAR',tone:'gold'}:d.state==='verkohlt'?{name:name+' VERKOHLT',tone:'free'}:null;}
   if(id==='heal'&&st.glut>=85)return {name:'ABLÖSCHEN!',tone:'burst'};
  }
- if(r.kind==='cards'){const c=handCard(g,id);if(c){const rk=r.ranks[c.rank],beat=live(g,g.target)&&g.target.cast?.card&&beats(c,g.target.cast.card);return {name:beat?'STICH '+rk.short:(r.suits[c.suit].symbol+' '+rk.short),tone:beat?'gold':c.suit==='herz'||c.suit==='karo'?'burst':'free',card:c};}
+ if(r.kind==='cards'){const c=handCard(g,id);if(c){const rk=r.ranks[c.rank],beat=live(g,g.target)&&g.target.cast?.card&&(g.target.cast.interruptible||cs.stichAny)&&beats(c,g.target.cast.card);return {name:beat?'STICH '+rk.short:(r.suits[c.suit].symbol+' '+rk.short),tone:beat?'gold':c.suit==='herz'||c.suit==='karo'?'burst':'free',card:c};}
   if(id==='throw'&&st.augen>=r.win+num(cs,'augenWin')){const m=mech(g),grand=m?.grand&&st.bubes>=m.grand.bubes;return {name:grand?r.hud.grand:st.augen>=r.schwarz?r.hud.schwarz:st.augen>=r.schneider?r.hud.schneider:r.hud.won,tone:'gold'};}}
  return null;
 }

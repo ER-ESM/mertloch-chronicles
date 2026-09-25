@@ -32,16 +32,16 @@ export const RESOURCES={
  schorsch:{kind:'grill',name:'Glut',unit:'Glut',max:100,start:25,color:'#f07a2a',
   decay:5,rest:25,
   zones:[{id:'kalt',name:'Kalt',to:30,damage:-.15,cook:.5,color:'#6fa8d6'},{id:'gut',name:'Gute Glut',to:60,damage:0,cook:1,color:'#9ccf6a'},{id:'perfekt',name:'Perfekte Glut',to:85,damage:.2,cook:1.4,color:'#f2c14e'},{id:'heiss',name:'Zu heiß',to:100,damage:.35,cook:2,burn:.015,color:'#e2563d'}],
-  overheat:{damage:120,radius:80,self:.08,dropTo:20,lock:3,cook:.4},
+  overheat:{damage:80,radius:80,self:.08,dropTo:20,lock:3,cook:.4,cooldown:8},
   gain:{strike:12,parry:15,buff:35},
   spend:{throw:15,ground:30,heal:40},
   rost:{slots:3,cookTime:8,gar:[.6,.9],burnt:1.1,charcoal:1.3},
   plan:['wurst','braten','mais'],
   items:{
-   wurst:{name:'Bratwurst',effect:'heal',value:.14,perfect:{hot:6},icon:'currywurst'},
+   wurst:{name:'Bratwurst',effect:'heal',value:.12,perfect:{hot:6},icon:'currywurst'},
    braten:{name:'Schwenkbraten',effect:'damage',value:1,perfect:{factor:1.6},icon:'food'},
    mais:{name:'Maiskolben',effect:'aoe',value:.7,radius:70,perfect:{knockback:24},icon:'hops'},
-   kaese:{name:'Grillkäse',effect:'shield',value:.12,perfect:{parry:.3},icon:'cup'}
+   kaese:{name:'Grillkäse',effect:'shield',value:.08,perfect:{parry:.3},icon:'cup'}
   },
   burntFactor:.5,
   vent:{heal:.08,steam:{radius:70,damage:.6,slow:.5,duration:3}},
@@ -57,11 +57,11 @@ export const RESOURCES={
    D:{name:'Dame',short:'D',augen:3,power:1,order:4},K:{name:'König',short:'K',augen:4,power:1.05,order:5},10:{name:'Zehn',short:'10',augen:10,power:1.4,order:6},A:{name:'Ass',short:'A',augen:11,power:1.5,order:7},
    B:{name:'Bube',short:'B',augen:2,power:1.3,trump:true,order:9}
   },
-  augenPerCard:5,win:61,schneider:90,schwarz:120,
-  abrechnen:{perAuge:3.2,schneider:1.5,schwarz:2,radius:90},
+  augenPerCard:5,luschenGcd:.5,win:61,schneider:90,schwarz:120,
+  abrechnen:{perAuge:2.7,perAugeWeapon:.04,schneider:1.5,schwarz:2,radius:90},
   follow:{bonus:.25,max:3},
   stich:{bonus:10},
-  effects:{damage:{flat:30,weapon:2.2},shield:.08,heal:.1,control:{flat:16,weapon:1,radius:60,slow:.4,duration:3,stun:1}},
+  effects:{damage:{flat:45,weapon:3.2},shield:.09,heal:.13,control:{flat:24,weapon:1.5,radius:60,slow:.4,duration:3,stun:1}},
   castSuits:{damage:'kreuz',heal:'herz',shield:'pik',buff:'pik',control:'karo'},
   forget:8,redealTrump:true,
   grantRate:.2,
@@ -75,7 +75,7 @@ export const RESOURCE_SKILLS={
   text:'Löscht die ganze Zeche und teilt sie als Druckwelle an alle Gegner ringsum aus.',
   use:'Drück ihn, wenn die Zeche lang ist und mehrere Gegner an dir kleben.',flavor:'„Schreib’s auf die Rechnung von dem da.“',
   info:{effect:'Alles Angeschriebene verschwindet vom Bon und trifft stattdessen die Gegner im Umkreis.',why:'Die Zeche ist Dieters Risiko und seine Munition: wer sie wachsen lässt, statt sie abzubezahlen, bekommt einen Flächenschlag in Höhe dessen, was er eingesteckt hat.',links:['skill:dieter/strike','passive:dieter'],terms:['zeche','randale','flaeche']}},
- reload:{cls:'kevin',level:2,name:'Pfandautomat',cd:0,cost:0,icon:'bottle',color:'#b9d98b',bg:'#3d5a3a',mobile:true,offGcd:true,
+ reload:{cls:'kevin',level:1,name:'Pfandautomat',cd:0,cost:0,icon:'bottle',color:'#b9d98b',bg:'#3d5a3a',mobile:true,offGcd:true,
   text:'Lädt den Kasten nach: normal sechs Flaschen, in der goldenen Bon-Zone den ganzen Kasten und einen Pfandbon.',
   use:'Drück ihn, wenn der Kasten fast leer ist, und drück ihn noch einmal, sobald der Balken in der goldenen Zone steht.',flavor:'„Der Automat nimmt keine Dosen. Ich schon.“',
   info:{effect:'Füllt den Kasten mit einem kurzen Nachladebalken; ein zweiter Druck im richtigen Moment füllt ihn ganz und legt einen Bon dazu.',why:'Kevins Munition ist endlich. Nachladen kostet Zeit – das Timing entscheidet, ob es sich lohnt oder klemmt.',links:['skill:kevin/strike','passive:kevin'],terms:['leergut','pfandbon']}},
@@ -118,7 +118,7 @@ export const RESOURCE_EFFECT_INFO={
  abrechnenPower:{label:'Stärkeres Abrechnen',unit:'%',scale:v=>v*100},stichAugen:{label:'Mehr Augen je Stich',unit:'Augen'},stichAny:{label:'Stich auch gegen nicht unterbrechbare Zauber',fixed:1,unit:''},stichHeal:{label:'Stich heilt dich',unit:'% Maximalleben',scale:v=>v*100},
  kreuzPower:{label:'Stärkere Kreuz-Karten',unit:'%',scale:v=>v*100},pikPower:{label:'Stärkere Pik-Karten',unit:'%',scale:v=>v*100},herzPower:{label:'Stärkere Herz-Karten',unit:'%',scale:v=>v*100},karoPower:{label:'Stärkere Karo-Karten',unit:'%',scale:v=>v*100},
  karoStun:{label:'Längere Karo-Betäubung',unit:'s'},herzChain:{label:'Herz springt auf einen zweiten Verbündeten',fixed:1,unit:''},pikTaunt:{label:'Pik verspottet Gegner ringsum',fixed:1,unit:''},pikReflect:{label:'Pik-Schild wirft Schaden zurück',unit:'%',scale:v=>v*100},
- seeNext:{label:'Nächste Karte sichtbar',fixed:1,unit:''},luschenGcd:{label:'Luschen ohne globale Abklingzeit',fixed:1,unit:''}
+ seeNext:{label:'Nächste Karte sichtbar',fixed:1,unit:''},luschenGcd:{label:'Globale Abklingzeit nach Luschen',fixed:.5,unit:'s statt 1'}
 };
 export const RESOURCE_PROC_EFFECT_INFO={
  bottles:{label:'Flaschen in den Kasten',unit:'Flaschen'},glut:{label:'Glut',unit:'Glut'},cook:{label:'Grillgut gart weiter',unit:'%',scale:v=>v*100},
