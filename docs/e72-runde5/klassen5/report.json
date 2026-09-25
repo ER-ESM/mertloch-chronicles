@@ -1,0 +1,43 @@
+{
+ "checks": [
+  "Kevin-Band: Bons bis 100 px, Leergut ab 108 px (Abstand 8 px), Tooltip „7 Flaschen liegen neben dir – drüberlaufen sammelt ein (+1 je Flasche)“",
+  "Pfandautomat Treffer: Stempel „BON!“ bei 60 ms (5 Münzen), 220 ms (5 Münzen), 450 ms (5 Münzen), 800 ms (5 Münzen); Bon gutgeschrieben",
+  "Pfandautomat Fehlgriff: Stempel „KLEMMT!“ bei 60 ms, 300 ms, 700 ms, Automat hakt +1 s",
+  "Schorsch Glut nach dem Kampf: 0 s: 40 (Nachlauf) · 2 s: 36 (Nachlauf) · 4 s: 35 (Nachlauf) · 6 s: 35 (Nachlauf) · 8 s: 35 · 10 s: 35 · 12 s: 35 · 15 s: 35 – nie unter 35",
+  "Schorsch Kampfbeginn: Rost [\"wurst\"], Auflegen klingt noch 2.2 s ab, Glut 33",
+  "Käthe Farbkette ohne Hover: {\"suit\":\"herz\",\"n\":0} → {\"suit\":\"herz\",\"n\":1} → {\"suit\":\"herz\",\"n\":2} · Tooltip „Herz ×3 · +40 %“",
+  "Eckzeichen: baerbel: buff:heal parry:guard heal:heal | kaethe: strike:heal mark:guard parry:guard heal:heal | schorsch: burst:heal heal:heal parry:guard | dieter: buff:guard parry:guard heal:heal",
+  "Bodenziel: 1.–3. „Boden wählen · Rechtsklick / Esc abbrechen.\nEinstellung: „Bodenkniffe sofort an der Maus““ · 4. „Boden wählen · Rechtsklick / Esc abbrechen.“ · Zielmodus zu → Hinweis weg; Standard der Einstellung bleibt aus"
+ ],
+ "shots": [
+  "docs/e72-runde5/klassen5/01-kevin-band-bons-und-leergut.jpg",
+  "docs/e72-runde5/klassen5/01b-kevin-band-zoom.jpg",
+  "docs/e72-runde5/klassen5/02-automat-0-im-goldenen-feld.jpg",
+  "docs/e72-runde5/klassen5/02-automat-treffer-60ms.jpg",
+  "docs/e72-runde5/klassen5/02-automat-treffer-220ms.jpg",
+  "docs/e72-runde5/klassen5/02-automat-treffer-450ms.jpg",
+  "docs/e72-runde5/klassen5/02-automat-treffer-800ms.jpg",
+  "docs/e72-runde5/klassen5/03-automat-klemmt-60ms.jpg",
+  "docs/e72-runde5/klassen5/03-automat-klemmt-300ms.jpg",
+  "docs/e72-runde5/klassen5/03-automat-klemmt-700ms.jpg",
+  "docs/e72-runde5/klassen5/04-schorsch-glut-nach-kampf-00s.jpg",
+  "docs/e72-runde5/klassen5/04-schorsch-glut-nach-kampf-05s.jpg",
+  "docs/e72-runde5/klassen5/04-schorsch-glut-nach-kampf-10s.jpg",
+  "docs/e72-runde5/klassen5/04-schorsch-glut-nach-kampf-15s.jpg",
+  "docs/e72-runde5/klassen5/04b-schorsch-glut-verlauf.jpg",
+  "docs/e72-runde5/klassen5/05-schorsch-kampfbeginn-wurst-liegt.jpg",
+  "docs/e72-runde5/klassen5/05b-schorsch-auflegen-klingt-ab.jpg",
+  "docs/e72-runde5/klassen5/06-kaethe-kette-1-karten.jpg",
+  "docs/e72-runde5/klassen5/06-kaethe-kette-2-karten.jpg",
+  "docs/e72-runde5/klassen5/06-kaethe-kette-3-karten.jpg",
+  "docs/e72-runde5/klassen5/06b-kaethe-kette-zoom.jpg",
+  "docs/e72-runde5/klassen5/07-eckzeichen-baerbel.jpg",
+  "docs/e72-runde5/klassen5/07-eckzeichen-kaethe.jpg",
+  "docs/e72-runde5/klassen5/07-eckzeichen-schorsch.jpg",
+  "docs/e72-runde5/klassen5/07-eckzeichen-dieter.jpg",
+  "docs/e72-runde5/klassen5/08-bodenziel-hinweis-mit-einstellung.jpg",
+  "docs/e72-runde5/klassen5/08b-bodenziel-hinweis-gesamt.jpg",
+  "docs/e72-runde5/klassen5/08c-bodenziel-hinweis-ab-dem-vierten-mal.jpg"
+ ],
+ "errors": []
+}

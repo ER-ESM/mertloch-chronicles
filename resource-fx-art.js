@@ -85,12 +85,19 @@ const DRAW={
   if(t>.75){const d=(t-.75)/.25;star(c,to.x,to.y-14,6*(1-d),'#d8ffc0',1-d);ring(c,to.x,to.y-12,3+d*9,'#b9d98b',1.2,1-d,1);}},
  reload(c,f,t){if(f.start){const shake=Math.sin(t*50)*1.2;spr(c,'crate',f.x+shake,f.y-24,1.6,{outline:'#16240f',alpha:t<.15?t/.15:t>.8?(1-t)/.2:1});for(let i=0;i<3;i++){const d=(t*3+i/3)%1;c.save();c.globalAlpha*=(1-d)*.7;c.strokeStyle='#e8e0cc';c.lineWidth=.8;const a=i*2.1;c.beginPath();c.moveTo(f.x+Math.cos(a)*(9+d*4),f.y-28+Math.sin(a)*(4+d*2));c.lineTo(f.x+Math.cos(a)*(12+d*4),f.y-28+Math.sin(a)*(5+d*2));c.stroke();c.restore();}return;}
   for(let i=0;i<3;i++){const d=clamp((t-i*.1)/.7);if(d<=0)continue;spr(c,'bottle',f.x+(i-1)*7,f.y-20-Math.sin(Math.PI*d)*10,.95,{outline:'#10200e',alpha:1-Math.max(0,d-.7)/.3});}star(c,f.x,f.y-24,5*(1-t),'#d8ffc0',1-t);},
- 'reload-perfect'(c,f,t){const cx=f.x,cy=f.y-18;if(t<.25)glow(c,cx,cy,26,'#ffe08a',1-t/.25);ring(c,cx,f.y,6+t*26,'#f2d067',1.6*(1-t)+.4,1-t);
-  for(let i=0;i<n(8,4);i++){const a=i/n(8,4)*TAU+t*2,r=8+t*16;star(c,cx+Math.cos(a)*r,cy+Math.sin(a)*r*.7,2.6*(1-t),'#fff3b0',1-t);}
-  const s=t<.2?outBack(t/.2)*1.6:1.6;spr(c,'bonGold',cx,cy-t*14,s,{outline:'#5a3a10',angle:Math.sin(t*10)*.25,alpha:1-Math.max(0,t-.7)/.3});},
+ /* E-72 R5 (Kenner-Nachtest: „nicht erkennbar, ob der goldene Moment getroffen wurde“): Treffer = Goldblitz,
+    Münzen springen aus dem Automaten, goldener Zettel; Fehlgriff = Kasten wackelt rot, Funken und Qualm. Das Wort („BON!“/„KLEMMT! +1 s“) steht als
+    Kampftext-Meldung schon über dem Kopf (class-resources.js note) – hier kein zweites.
+    Der Balken zeigt dasselbe (resource-hud.js drawReload). */
+ 'reload-perfect'(c,f,t){const cx=f.x,cy=f.y-18;if(t<.3)glow(c,cx,cy,38,'#ffe08a',1-t/.3);if(t<.14)star(c,cx,cy-2,20*(1-t/.14),'#fffbe0',1,4);
+  ring(c,cx,f.y,6+t*34,'#f2d067',2.2*(1-t)+.4,1-t);ring(c,cx,f.y,4+t*20,'#fff3b0',1,(1-t)*.7);
+  for(let i=0;i<n(8,4);i++){const a=i/n(8,4)*TAU+t*2,r=8+t*18;star(c,cx+Math.cos(a)*r,cy+Math.sin(a)*r*.7,2.6*(1-t),'#fff3b0',1-t);}
+  const coins=n(6,4);for(let i=0;i<coins;i++){const k=clamp(t*1.35-i*.04),side=(i/(coins-1)-.5)*2,x=cx+side*(10+noise(i,f.id)*8)*k,y=cy-2-Math.sin(Math.PI*k)*(18+noise(i+3,f.id)*10)+k*12;if(k<=0)continue;c.save();c.translate(x,y);c.scale(Math.max(.25,Math.abs(Math.cos(t*16+i))),1);spr(c,'coin',0,3,1.35,{outline:'#3a2a10',alpha:1-Math.max(0,k-.8)/.2});c.restore();}
+  const s=t<.2?outBack(t/.2)*1.5:1.5;spr(c,'bonGold',cx+13,cy-2-t*10,s,{outline:'#5a3a10',angle:.25+Math.sin(t*10)*.2,alpha:1-Math.max(0,t-.7)/.3});},
  'reload-jam'(c,f,t){const cx=f.x+4,cy=f.y-16;for(let i=0;i<n(9,5);i++){const a=noise(i,f.id)*TAU,d=4+outCubic(t)*(10+noise(i+3,f.id)*8);c.save();c.globalAlpha*=1-t;c.strokeStyle=i%2?'#ffd35a':'#ffffff';c.lineWidth=.9;c.beginPath();c.moveTo(cx+Math.cos(a)*d*.5,cy+Math.sin(a)*d*.5);c.lineTo(cx+Math.cos(a)*d,cy+Math.sin(a)*d);c.stroke();c.restore();}
   if(t<.35){c.save();c.globalAlpha*=1-t/.35;c.strokeStyle='#ff9a3a';c.lineWidth=1.4;c.beginPath();c.moveTo(cx-6,cy-12);c.lineTo(cx,cy-7);c.lineTo(cx-3,cy-5);c.lineTo(cx+5,cy+1);c.stroke();c.restore();}
-  puff(c,cx+t*3,cy-4-t*10,3+t*6,'#8a8a82',(1-t)*.6);},
+  const shake=t<.5?Math.round(Math.sin(t*70)*1.5):0;spr(c,'crate',cx-4+shake,cy-10,1.4,{outline:'#16240f',tint:t<.4?['#e2563d',.35*(1-t/.4)]:null,alpha:1-Math.max(0,t-.7)/.3});
+  puff(c,cx+t*3,cy-4-t*10,3+t*6,'#8a8a82',(1-t)*.6);puff(c,cx-6-t*4,cy-12-t*12,2+t*5,'#6a6660',(1-t)*.5);},
  // --- Schorsch · Glut und Grillrost --------------------------------------------------------------------------------
  glut(c,f,t){if(f.zone==='heiss'){/* Warnung „Zu heiß“: roter Ring, Flammenzeichen über dem Kopf blinkt */const throb=1.35+.35*Math.abs(Math.sin(t*Math.PI*5));ring(c,f.x,f.y,8+t*20,'#ff3a2a',2*(1-t)+.6,(1-t)*.9);glow(c,f.x,f.y-8,18,'#ff4a2a',(1-t)*.5);glow(c,f.x,f.y-32,12,'#ff6a2a',(1-t)*.6);spr(c,'flame',f.x,f.y-27,throb,{outline:'#2a0a04',alpha:1-Math.max(0,t-.7)/.3});return;}
   if(f.bellows){for(let i=0;i<3;i++){const a0=i*TAU/3+t*6,r=10+t*8;c.save();c.globalAlpha*=(1-t)*.8;c.strokeStyle='#f6f0e0';c.lineWidth=1.1;c.beginPath();c.ellipse(f.x,f.y-10,r,r*.55,0,a0,a0+1.4);c.stroke();c.restore();}

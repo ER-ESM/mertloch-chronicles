@@ -98,7 +98,7 @@ export const RESOURCE_HUD_TEXT={
  crate:{label:'Bierkasten',note:(v,max)=>v+' / '+max+' Flaschen'},
  bons:{label:'Pfandbons',note:(n,max,power)=>n+' / '+max+' · nächster Flaschenkniff +'+power+' %'},
  pickups:{label:'Leergut am Boden',note:n=>(n===1?'1 Flasche liegt':n+' Flaschen liegen')+' neben dir – drüberlaufen sammelt ein (+1 je Flasche)'},
- reload:{label:'Pfandautomat',note:'Im goldenen Feld noch einmal drücken: Kasten voll und ein Bon.'},
+ reload:{label:'Pfandautomat',note:'Im goldenen Feld noch einmal drücken: Kasten voll und ein Bon.',jam:'KLEMMT!'},
  glut:{note:(v,dmg)=>'Glut '+v+(dmg?' · '+(dmg>0?'+':'')+dmg+' % Schaden':'')},
  locked:{label:'Grill aus',note:s=>'Grillkniffe wieder in '+s+' s'},
  rost:{label:'Grillrost',empty:'Freier Platz',note:(state,pct)=>state+' · '+pct+' %'},

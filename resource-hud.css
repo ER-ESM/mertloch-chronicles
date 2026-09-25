@@ -138,3 +138,30 @@ button.skill>canvas.rh-slot[data-rh-slot],#touchActions button.touch-skill>canva
 @keyframes rh-trend-down{0%,100%{transform:translateY(-50%)}25%{transform:translateY(-50%) translateX(-3px)}75%{transform:translateY(-50%) translateX(3px)}}
 .touch-mode .player-panel .rh-tray .rh-trend-name{font-size:12px;padding:0 4px}
 @media (prefers-reduced-motion:reduce){.player-panel .rh-tray .rh-trend-name.up,.player-panel .rh-tray .rh-trend-name.down{animation:none}}
+/* E-72 Runde 5 (klassen5) · Kenner-Nachtest 26.09. nachts */
+/* Eckzeichen „heilt / schützt“ an allen Kniff-Knöpfen (action-bar-ui.js syncSkillRoles): grünes Plus = Heilung, Schild = Schutz; Schaden ohne Zeichen.
+   Pixelbild als SVG (crispEdges), unten links – oben links steht die Taste, oben rechts Procs/Wiederholung, unten rechts Käthes Tempo-Abzeichen. */
+.skill>.skill-role,#touchActions .touch-skill>.skill-role{position:absolute;left:1px;bottom:1px;width:14px;height:14px;z-index:7;pointer-events:none;image-rendering:pixelated;background:no-repeat center/100% 100%;filter:drop-shadow(0 1px 0 #0b1216)}
+[data-skill-role=heal]>.skill-role{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath d='M1 0h10v1h1v10h-1v1H1v-1H0V1h1z' fill='%230c1a10'/%3E%3Cpath d='M1 1h10v10H1z' fill='%2316361e'/%3E%3Cpath d='M5 2h2v3h3v2H7v3H5V7H2V5h3z' fill='%236fd05a'/%3E%3Cpath d='M5 2h1v3H3v1H2V5h3z' fill='%23e2ffd6'/%3E%3C/svg%3E")}
+[data-skill-role=guard]>.skill-role{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath d='M1 0h10v1h1v10h-1v1H1v-1H0V1h1z' fill='%230c1420'/%3E%3Cpath d='M1 1h10v10H1z' fill='%2314263a'/%3E%3Cpath d='M2 2h8v4H9v2H8v1H7v1H5V9H4V8H3V6H2z' fill='%238ab4e8'/%3E%3Cpath d='M3 3h3v6H5V8H4V6H3z' fill='%23e6f2ff'/%3E%3Cpath d='M6 3h3v3H8v2H7v1H6z' fill='%235a86c0'/%3E%3C/svg%3E")}
+/* Ein sichtbares Wortschild (Variante) hat Vorrang; gesperrte Kniffe tragen das Zeichen blass */
+.skill.variant:not([data-rh-label=hide])>.skill-role,#touchActions .touch-skill.variant:not([data-rh-label=hide])>.skill-role{display:none}
+.skill.locked>.skill-role{opacity:.6}
+#touchActions .touch-skill>.skill-role{left:2px;bottom:2px;width:12px;height:12px}
+@media(max-width:760px){.action-area .skill>.skill-role{width:10px;height:10px;left:0;bottom:0}}
+/* Kevin · Pfandautomat getroffen oder geklemmt (resource-hud.js syncReloadStamp): Stempel über dem Balken, Münzen springen heraus */
+.rh-reload.hit{filter:drop-shadow(0 0 10px #ffd35a) drop-shadow(0 2px 3px #000a)}
+.rh-reload-stamp{position:absolute;left:50%;bottom:calc(100% + 6px);z-index:2;transform:translateX(-50%) rotate(-5deg);padding:1px 12px 0;border:3px solid currentColor;border-radius:5px;font:400 28px/1.05 var(--display,'Jersey 10',sans-serif);letter-spacing:.06em;white-space:nowrap;pointer-events:none;box-shadow:0 2px 6px #000c}
+.rh-reload-stamp[hidden]{display:none}
+.rh-reload-stamp[data-mode=bon]{color:#7a4a06;background:linear-gradient(#fff6c8,#f2c14e);text-shadow:0 1px 0 #fff3b0;box-shadow:0 0 16px #ffd35a,0 2px 6px #000c}
+.rh-reload-stamp[data-mode=jam]{color:#fff0e0;background:#8a2a1a;border-color:#ff8a5a;text-shadow:1px 1px 0 #3a0a04;transform:translateX(-50%) rotate(4deg)}
+.rh-reload-stamp[data-mode=bon].pop{animation:rh-reload-bon .45s cubic-bezier(.2,1.6,.4,1) both}
+.rh-reload-stamp[data-mode=jam].pop{animation:rh-reload-jam .5s linear both}
+@keyframes rh-reload-bon{0%{transform:translateX(-50%) rotate(-20deg) scale(2.4);opacity:0}100%{transform:translateX(-50%) rotate(-5deg) scale(1);opacity:1}}
+@keyframes rh-reload-jam{0%{transform:translateX(-50%) rotate(4deg) scale(1.8);opacity:0}25%{transform:translateX(-50%) rotate(4deg) scale(1);opacity:1}40%{transform:translateX(calc(-50% - 5px)) rotate(1deg)}55%{transform:translateX(calc(-50% + 5px)) rotate(7deg)}70%{transform:translateX(calc(-50% - 3px)) rotate(2deg)}100%{transform:translateX(-50%) rotate(4deg)}}
+.rh-reload-coin{position:absolute;left:50%;top:2px;width:16px;height:16px;margin-left:-8px;z-index:3;pointer-events:none;background:no-repeat center/100% 100%;image-rendering:pixelated;filter:drop-shadow(0 0 3px #ffd35a);animation:rh-reload-coin .95s cubic-bezier(.25,.8,.5,1) both}
+@keyframes rh-reload-coin{0%{transform:translate(0,0) scale(.5);opacity:0}12%{opacity:1}45%{transform:translate(calc(var(--dx,0px)*.7),var(--dy,-40px)) scale(1.1)}100%{transform:translate(var(--dx,0px),14px) scale(.9);opacity:0}}
+.touch-mode .rh-reload-stamp{font-size:20px;padding:0 8px;border-width:2px}
+@media (prefers-reduced-motion:reduce){.rh-reload-stamp.pop,.rh-reload-coin{animation:none}}
+/* Bodenziel-Hinweis (engine.js groundAimText): der Einstellungs-Tipp steht als zweite Zeile – Kurzmeldungen brechen an „\n“ um (sonst keine Wirkung) */
+body:not(.touch-mode) #toast{white-space:pre-line}

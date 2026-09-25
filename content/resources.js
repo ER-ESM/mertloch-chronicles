@@ -52,6 +52,8 @@ export const RESOURCES={
   vent:{heal:.08,steam:{radius:70,damage:.6,slow:.5,duration:3}},
   ember:{dot:12,duration:6},
   swing:{cook:.2},
+  // E-72 R5 (Kenner-Nachtest 26.09.): außerhalb des Kampfes kühlt heiße Glut nur langsam zur Ruheglut `rest` (nie darunter); kalte wärmt mit `decay` auf.
+  restCool:2,
   grantRate:.4,
   hud:{gar:'GAR!',burnt:'VERKOHLT',hot:'ZU HEISS – ablöschen!',overheat:'STICHFLAMME',locked:'Grill aus',full:'Rost voll',empty:'Rost leer'}},
  kaethe:{kind:'cards',name:'Augen',unit:'Augen',max:120,start:0,color:'#d9c27a',
@@ -147,7 +149,7 @@ export const RESOURCE_GLOSSARY={
  pfandbon:{name:'Pfandbon',short:'Belohnung fürs perfekte Nachladen: der nächste Flaschenkniff trifft härter.',
   long:`Wer beim Pfandautomaten den Balken in der goldenen Zone (${pct(K.reload.zone[0])} bis ${pct(K.reload.zone[1])}) erneut drückt, bekommt den vollen Kasten und einen Bon; höchstens ${K.bon.max} auf Vorrat. Jeder Bon macht einen Flaschenkniff ${pct(K.bon.power)} stärker. Daneben gedrückt klemmt der Automat ${K.reload.jam} s länger.`},
  glut:{name:'Glut',short:'Schorschs Temperatur: im goldenen Bereich stark, zu heiß gefährlich.',
-  long:`Skala 0 bis ${S.max}, kühlt mit ${S.decay} je Sekunde ab. ${S.zones.map(z=>z.name+' bis '+z.to+(z.damage?' ('+(z.damage>0?'+':'')+pct(z.damage)+' Schaden)':'')).join(', ')}. Grillzange, Parade und Blasebalg heizen, Glutbrocken, Schwenkgrill und Ablöschen kühlen. Bei ${S.max} kommt die Stichflamme.`},
+  long:`Skala 0 bis ${S.max}, kühlt im Kampf mit ${S.decay} je Sekunde ab; außerhalb des Kampfes pendelt sie sich bei ${S.rest} ein (Ruheglut). ${S.zones.map(z=>z.name+' bis '+z.to+(z.damage?' ('+(z.damage>0?'+':'')+pct(z.damage)+' Schaden)':'')).join(', ')}. Grillzange, Parade und Blasebalg heizen, Glutbrocken, Schwenkgrill und Ablöschen kühlen. Bei ${S.max} kommt die Stichflamme.`},
  stichflamme:{name:'Stichflamme',short:'Überhitzt: Feuerring um Schorsch, danach ist der Grill kurz aus.',
   long:`Erreicht die Glut ${S.max}, explodiert sie im Umkreis (${S.overheat.radius} Welteinheiten) und trifft auch Schorsch mit ${pct(S.overheat.self)} seines Lebens. Die Glut fällt auf ${S.overheat.dropTo}, Grillkniffe sind ${S.overheat.lock} s gesperrt, und alles Grillgut gart schlagartig ${pct(S.overheat.cook)} weiter.`},
  grillrost:{name:'Grillrost',short:'Drei Plätze für Grillgut, das mit der Zeit gart und serviert wird.',

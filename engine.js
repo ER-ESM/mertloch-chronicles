@@ -86,6 +86,10 @@ function followRemote(g,e,dt){const t=e.remoteTarget,d=distance(e,t),reach=e.aut
 const SKILL_LABEL_KEYS=new Set(['Kelle','Pfandwurf','Parade','Markierung','Sprung']);
 /** Touchgerät (Handy/Tablet): startet mit „Niedrige Auflösung“ (Nutzerentscheidung 2026-09-25), bis der Spieler selbst wählt. */
 const touchDevice=()=>typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches;
+/** E-72 R5 (Kenner-Nachtest: „Boden wählen“ stoppt den Fluss): die ersten GROUND_TIPS Male nennt der Hinweis die Einstellung „Bodenkniffe
+ *  sofort an der Maus“ – der Standard bleibt aus. Zähler im Spielstand (settings.groundTips); ohne Maus (Handy) kein Tipp. */
+export const GROUND_TIPS=3;
+function groundAimText(g){const base=COMBAT_TEXT.aimGround||'Boden wählen · Rechtsklick / Esc abbrechen.',n=g.settings.groundTips|0;if(g.settings.groundAtCursor||touchDevice()||n>=GROUND_TIPS||!COMBAT_TEXT.aimGroundTip)return base;g.settings.groundTips=n+1;g.emit('save');return COMBAT_TEXT.aimGroundTipped||base;}
 export class Game{
   constructor(world,saved={},options={}){
     this.meter=createCombatMeter();this.world=world;this.member=member(saved.classId);this.skills=skillsFor(this.member.id);this.lastStrike=-100;this.trainingXp=Math.max(0,Number(saved.trainingXp) || ((Number(saved.level)||1)*((Number(saved.level)||1)-1)*70+(Number(saved.xp)||0)));this.seenSkills=new Set([...(saved.seenSkills||['strike','dash']),'auto']);this.autoAttack={enabled:false,timers:{}};this.casting=null;this.buffs={};this.classState=freshClassState();this.fields=[];this.aiming=null;this.aimPoint=null;this.zones=[];this.life=new VillageLife(world);this.time=0;this.paused=false;this.keys=new Set();this.target=null;this.fx=[];this.texts=[];this.events=[];this.messages=[];this.cooldowns=Object.fromEntries(this.skills.map(s=>[s.id,0]));this.gcd=0;this.moveTo=null;this.path=[];this.dead=false;this.random=rng(9876);this.momentum={stacks:0,until:0,restUntil:0};this.procState=freshProcState();
@@ -97,6 +101,7 @@ export class Game{
     this.quest=restoreQuest(saved.quest||{},saved.worldKey===world.id);
     // Spieleinstellungen. Auto-Loot ist der Standard; die UI schaltet ihn über setSetting('autoLoot', …) ab.
     this.settings={autoLoot:saved.settings?.autoLoot!==false,prerender:saved.settings?.prerender===true,sct:saved.settings?.sct!==false,light:saved.settings?.light!==false,fx:saved.settings?.fx!==false,fps:saved.settings?.fps===true,fullRes:saved.settings?.fullRes===true,autoRes:saved.settings?.autoRes!==false,lowRes:saved.settings?.lowRes===undefined?(saved.settings?.light===false&&saved.settings?.fx===false)||touchDevice():saved.settings.lowRes===true,namesFriendly:saved.settings?.namesFriendly!==false,namesEnemy:saved.settings?.namesEnemy!==false,namesPlayers:saved.settings?.namesPlayers!==false,sctIn:saved.settings?.sctIn!==false,sctNotes:saved.settings?.sctNotes!==false,sctCompanions:saved.settings?.sctCompanions!==false,groundAtCursor:saved.settings?.groundAtCursor===true/* E-72 R4: Schnellzauber für Bodenkniffe, Standard aus */};
+    this.settings.groundTips=clampInt(saved.settings?.groundTips,0,99,0);/* E-72 R5: wie oft der Bodenziel-Hinweis die Einstellung schon genannt hat */
     this.memories={seen:Array.isArray(saved.memories?.seen)?saved.memories.seen.filter(id=>typeof id==='string'):[]};
     this.buildings=Object.fromEntries(BUILDING_IDS.map(id=>[id,clampInt(saved.buildings?.[id],0,BUILDINGS[id].stages.length,0)]).filter(([,stage])=>stage>0));
     this.mentorTalks=saved.mentorTalks&&typeof saved.mentorTalks==='object'?Object.fromEntries(Object.entries(saved.mentorTalks).map(([id,n])=>[id,clampInt(n,0,1e6,0)])):{};
@@ -186,7 +191,7 @@ export class Game{
     // Klassen-Buff (class-buffs.js): kostenlos, nur globale Abklingzeit.
     if(s.classBuff){if(!castClassBuff(this,s,help))return false;this.cooldowns[id]=skillCooldown(this,s,cs);if(!s.offGcd&&!completing)this.gcd=cs.gcd;resourceCast(this,id,s,cs,{});p.castPose=.28;tutorialSignal(this,id);this.emit('sound',{id:'buff'});this.emit('save');return true;}
     let e=this.target;
-    if(s.ground){if(!point){clearQueue(this);/* neuer Druck ersetzt die Vormerkung */this.aiming=id;this.aimPoint={...p};this.toast(COMBAT_TEXT.aimGround||'Boden wählen · Rechtsklick / Esc abbrechen.');return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
+    if(s.ground){if(!point){clearQueue(this);/* neuer Druck ersetzt die Vormerkung */this.aiming=id;this.aimPoint={...p};this.toast(groundAimText(this));return false;}if(!Number.isFinite(point.x)||!Number.isFinite(point.y)||distance(p,point)>s.range+(cs.range||0)||this.world.blocked(point.x,point.y,3)||!this.world.lineClear(p,point)){this.toast('Freien Boden in Reichweite und Sicht wählen.');return false;}}
     if(s.range&&!s.ground){
       if(preferAttacker(this))e=this.target;
       /* Kein Auto-Ziel (Runde 5a, WoW): ohne Ziel rote Zeile „Kein Ziel“; wer dich angreift, ist über preferAttacker schon Ziel */if(!e||e.hp<=0){this.fail(COMBAT_TEXT.noTarget||'Kein Ziel.');return false;}if(e.ai==='returning'||e.spawnGrace>0){/* Symbol mit Tooltip am Zielrahmen statt Satz (Runde 3a) */this.emit('targetState',{state:e.ai==='returning'?'leaving':'arriving'});return false;}

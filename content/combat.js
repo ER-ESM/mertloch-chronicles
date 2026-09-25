@@ -152,5 +152,9 @@ export const UNIT_TIP={
  outside:'Zählt hier nicht – erst im Zielgebiet',
 };
 export const DODGE_UI={dodged:'Ausgewichen!',hit:'Getroffen'};
+/** E-72 R5 (Kenner-Nachtest): Zusatz zum Bodenziel-Hinweis für die ersten Male (engine.js groundAimText, GROUND_TIPS) – der Standard der Einstellung bleibt aus. */
+COMBAT_TEXT.aimGroundTip='Einstellung: „Bodenkniffe sofort an der Maus“';
+/** Hinweis mit Tipp als zweite Zeile (#toast bricht am Zeilenumbruch um, resource-hud.css) – so bleibt die Meldung schmal. */
+COMBAT_TEXT.aimGroundTipped=COMBAT_TEXT.aimGround+'\n'+COMBAT_TEXT.aimGroundTip;
 export const AUTOPILOT_UI={stopped:'Angegriffen – Laufweg angehalten.',resumed:n=>n?'Weiter zu '+n+'.':'Weiter auf dem Laufweg.'};
 export const QUEST_DONE_UI={eyebrow:'Auftrag abgeschlossen',xp:n=>'+'+n+' EP',coins:n=>'+'+n+' Pfandmarken'};
