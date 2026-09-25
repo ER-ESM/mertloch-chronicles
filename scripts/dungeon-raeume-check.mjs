@@ -77,8 +77,8 @@ try{
   console.log(JSON.stringify(res.summary));
   assert.deepEqual(res.unreachable,[],'jeder Raum und jeder Übergang über die Wegsuche erreichbar');
   assert.deepEqual(res.problems,[],'Requisiten frei von Laufwegen, Arenen, Packs, Übergängen, Türen und Truhenplatz');
-  for(const [room,n] of Object.entries(res.summary.props))assert.ok(n>=3&&n<=8,room+': 3–8 Requisiten ('+n+')');
-  pass(5,'Wegsuche: '+res.summary.paths+' Wege frei, '+res.summary.total+' Requisiten ohne Konflikt');
+  for(const [room,n] of Object.entries(res.summary.kinds))assert.ok(n>=3&&n<=8,room+': 3–8 Requisiten-Arten ('+n+')');
+  pass(5,'Wegsuche: '+res.summary.paths+' Wege frei, '+res.summary.total+' Requisiten ohne Konflikt, je Raum '+Object.entries(res.summary.kinds).map(([k,v])=>k+' '+v).join(', ')+' Arten');
  }
  // ─────────────────────────────────────────────── 6 · Bildzeit
  // AB_URL=http://localhost:<port>/ misst abwechselnd gegen einen zweiten Stand (z. B. origin/main) unter derselben Rechnerlast:
