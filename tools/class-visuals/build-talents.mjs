@@ -1,4 +1,4 @@
-import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {decodePng,encodePng,surface,bounds,blit} from '../sprite-pipeline/png.mjs';
@@ -11,11 +11,15 @@ const root=new URL('../../',import.meta.url),base='assets/content-art/e32/',hash
 function cuts(im,axis,count){const length=axis==='x'?im.width:im.height,other=axis==='x'?im.height:im.width,values=new Uint32Array(length);for(let a=0;a<length;a++)for(let b=0;b<other;b++){const x=axis==='x'?a:b,y=axis==='x'?b:a;if(im.data[(y*im.width+x)*4+3]>=128)values[a]++;}const result=[0];for(let n=1;n<count;n++){const center=length*n/count,reach=length/count*.14;let best=Math.round(center),score=Infinity;for(let a=Math.round(center-reach);a<=center+reach;a++){const cost=values[a]+Math.abs(a-center)*.03;if(cost<score){score=cost;best=a;}}result.push(best);}return [...result,length];}
 export function buildTalentArt(){
  const files=new Map(),catalog={version:1,density:4,talents:{},sources:[],atlases:{}},sheets=new Map();
- // E-72: Die Astra-Talentbilder gibt es nur für die drei E-32-Klassen; neue Klassen zeichnen ihr Talent-Icon (content/talents/<klasse>.js icon).
- const E32_CLASSES=['dieter','baerbel','kevin'];
- for(const [member,specs] of Object.entries(CLASS_SPECS).filter(([m])=>E32_CLASSES.includes(m))){
+ // E-72: Die Astra-Talentbilder gibt es für die drei E-32-Klassen. Schorsch und Käthe kommen je Spezialisierung auf denselben Weg,
+ // sobald ihr Bogen unter sources/<spec>-v1.png liegt (Codex-Lauf 2026-09-26, tools/sprite-pipeline/talente-e32-20260926-jobs.json);
+ // bis dahin zeichnen sie ihr Talent-Icon (talent-art.js paintVocabTalent). Der Skill-Atlas unten bleibt bei den E-32-Klassen.
+ const E32_CLASSES=['dieter','baerbel','kevin'],sheetOf=spec=>base+'sources/'+spec+'-v1.png';
+ for(const [member,specs] of Object.entries(CLASS_SPECS)){
+  const core=E32_CLASSES.includes(member);if(!core&&!specs.some(s=>existsSync(new URL(sheetOf(s),root))))continue;
   const atlas=surface(640,576),path=base+'runtime/talents-'+member+'.png';
   for(const [specIndex,spec] of specs.entries()){
+   if(!core&&!existsSync(new URL(sheetOf(spec),root)))continue;
    const source=base+'sources/'+spec+'-v1.png',bytes=readFileSync(new URL(source,root)),im=decodePng(bytes);
    for(let i=3;i<im.data.length;i+=4)im.data[i]=im.data[i]>=128?255:0;
    const xs=cuts(im,'x',6),ys=cuts(im,'y',5);catalog.sources.push({source,sha256:hash(bytes),x:xs,y:ys});

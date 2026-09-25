@@ -1,0 +1,62 @@
+[
+ {
+  "id": "skill-dieter-strike",
+  "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-strike.png",
+  "width": 64,
+  "height": 64,
+  "padding": 0,
+  "kind": "skills",
+  "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-strike, ability \"Kronkorken-Kelle (heavy melee punch)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE big clenched bare fist with a brown leather wrist wrap, punching diagonally toward the upper right, knuckles lit from the upper left. Effects (small accents, no more than these): a golden bottle cap flying off the knuckles; two bold motion streaks. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+  "references": [
+   "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "skill-dieter-heal",
+  "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-heal.png",
+  "width": 64,
+  "height": 64,
+  "padding": 0,
+  "kind": "skills",
+  "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-heal, ability \"Konterfruehstueck (heal with a very suspicious pretzel)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE big glossy golden-brown Bavarian pretzel with coarse salt crystals, slightly tilted, nothing else on the tile. Effects (small accents, no more than these): a small bright green plus with ink outline in the upper right; one thin wisp of steam. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+  "references": [
+   "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "skill-dieter-parry",
+  "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-parry.png",
+  "width": 64,
+  "height": 64,
+  "padding": 0,
+  "kind": "skills",
+  "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-parry, ability \"Deckel drauf! (parry with a barrel lid)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE round wooden barrel lid with an iron rim and a central iron boss, held like a shield in three-quarter view. Effects (small accents, no more than these): a single bright spark burst where a blow hits the upper right edge. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+  "references": [
+   "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "skill-dieter-dash",
+  "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-dash.png",
+  "width": 64,
+  "height": 64,
+  "padding": 0,
+  "kind": "skills",
+  "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-dash, ability \"Ab durch die Hecke (dash through the hedge)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE brown leather work boot mid-leap diagonally toward the upper right, warm tan leather with a bright highlight so it stands out clearly against the green tile. Effects (small accents, no more than these): a small burst of bright green hedge leaves around the ankle; two speed lines. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+  "references": [
+   "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+  ],
+  "date": "2026-09-26",
+  "tool": "built-in imagegen",
+  "delivery": "2026-09-26"
+ }
+]
