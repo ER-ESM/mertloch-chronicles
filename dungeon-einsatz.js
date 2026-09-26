@@ -49,7 +49,9 @@ export function tickLastStand(g,c){
  const pot=R.lastStand.potion;if(noHeal&&!c.potionUsed&&c.hp/c.maxHp<pot.below){c.potionUsed=true;const n=Math.round(Math.min(c.maxHp-c.hp,c.maxHp*pot.heal));c.hp+=n;
   say(g,c,T.lastStand.potion+' +'+n,'#b7df92');emitCombatFx(g,'heal',c,{amount:n,direct:true,companion:c.id});}
 }
-function say(g,c,text,color){if(!g.sct?.({actor:c.id,member:c.def?.look,area:'note',kind:'proc',text}))g.float?.(c.x,c.y-40,text,color);}
+/* Dungeon-Fix 6 (Prüferin #741 sah „ANGEFEUERT“ nie): Ansagen über den Söldnern sind Ausrufe (callout) – groß, farbig, länger und auch im Bosskampf
+   mit Text (dort zeigen Meldungszeilen sonst nur das Symbol, dungeon-e4b.css). */
+function say(g,c,text,color,iconKey){if(!g.sct?.({actor:c.id,member:c.def?.look,area:'note',kind:'proc',text,callout:true,color,...(iconKey?{iconKey}:{})}))g.float?.(c.x,c.y-40,text,color);}
 
 /** Einblendung beim Wutausbruch eines Bosses (Big B hat seine eigene: „Die ganze Wahrheit“). */
 export function enrageText(e){return T.enrage[e?.bossId]||T.enrage.other;}
@@ -70,7 +72,7 @@ export function tickEinsatz(g,run,dt){
   if(g.dead&&!r.wasDead)r.deaths++;r.wasDead=!!g.dead;
  }
  /* Einblendung „Angefeuert“ über den Söldnern, wenn der Rückenwind (wieder) einsetzt */
- if(on&&!run.rallyShown&&inBossFight(g)){run.rallyShown=true;for(const c of g.companions||[])if(standing(c))say(g,c,T.rally.shout,'#ffcf6a');}
+ if(on&&!run.rallyShown&&inBossFight(g)){run.rallyShown=true;for(const c of g.companions||[])if(standing(c))say(g,c,T.rally.shout,'#ffcf6a','megaphone');}
  if(!on&&run.rallyShown&&(g.dead||run.rallyAt==null||g.time-run.rallyAt>R.rally.hold+R.rally.shout))run.rallyShown=false;
 }
 /** Warnung ausgewertet (resolveDungeonCast): galt die Mechanik dem Helden, und kam er ohne Treffer bzw. richtig durch? */

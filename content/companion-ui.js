@@ -11,6 +11,8 @@ export const COMPANION_UI={
  orderHints:{follow:'Kommt mit dir und folgt deiner Bewegung.',stay:'Bleibt an der aktuellen Position.',attack:'Greift deinen ausgewählten Gegner an. Eine passive Haltung bleibt passiv.'},
  stanceHints:{assist:'Unterstützt die Gruppe im Kampf.',defend:'Verteidigt die Gruppe; Schutz-Söldner binden freie Gegner.',passive:'Greift nicht an. Ein Angriffsbefehl ändert diese Haltung nicht.'},
  open:'Söldner verwalten',shortcut:'Söldner [U]',
+ // Dungeon-Fix 6: Buffs auf den Truppenrahmen (companion-ui.js frameBuffs), Name und Restzeit im Tooltip des Rahmens
+ buffs:{hot:'Deine Heilung über Zeit',shield:'Dein Schild',burst:'Alles oder nichts',evade:'Ausweichen',left:s=>Math.ceil(Math.max(0,s))+' s',absorb:n=>'fängt '+n+' ab'},
  select:'Als Ziel wählen · Heilung, Schutz und Buffs wirken dann auf diesen Söldner',selected:'Dein Ziel',
  targetHint:'Söldner oder Gruppenrahmen anklicken: er wird dein Ziel, deine Heilung, dein Schutz und deine Buffs wirken dann dort. Ist ein Gegner oder nichts gewählt, wirken sie auf dich. Esc oder ein Klick ins Leere wählt ab.',
 };

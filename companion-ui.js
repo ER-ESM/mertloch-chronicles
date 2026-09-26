@@ -2,6 +2,9 @@ import {COMPANION_TEXT as T,COMPANION_UI as UI,COMPANION_ROLES,COMPANION_RULES a
 import {selectFriend,selectedCompanion,helpTarget,helpFailure} from './help-target.js';
 import {unitPortrait,paintUnitPortraits} from './unit-frame.js';
 import {groupFightOn} from './companions.js';
+import {rallyAura} from './dungeon-einsatz.js';
+import {paintItemTile,paintSkillIcon} from './skill-art.js';
+import {ICON_STEP} from './icon-steps.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const roleIcon={tank:'shield',heal:'bottle',damage:'burst'};
@@ -14,6 +17,24 @@ const status=(g,c)=>c.state==='down'?downStatus(g,c):c.state==='combat'?UI.comba
 const hp=c=>Math.max(0,Math.min(100,c.hp/c.maxHp*100));
 const targetReady=g=>g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial;
 const button=(action,value,label,extra='')=>`<button type="button" data-companion-${action}="${esc(value)}" ${extra}>${esc(label)}</button>`;
+
+/** Dungeon-Fix 6 (Prüferin #741: auf den Truppenrahmen nie ein Buff, auch nicht „Angefeuert“): was auf diesem Söldner liegt, wie auf WoW-Gruppenrahmen –
+ *  Angefeuert, deine Heilung über Zeit und dein Schild auf ihm, sein Letztes Aufgebot. Höchstens drei. → [{id,name,remaining,item|skill,member,shield}] */
+export function frameBuffs(g,c){
+ if(!c||c.state==='down'||!(c.hp>0))return [];const out=[],t=g.time||0,B=UI.buffs,me=g.member?.id||'dieter';
+ const ra=rallyAura(g);if(ra)out.push({id:'rally',name:ra.name,remaining:ra.remaining,item:'megaphone'});
+ if(c.aidHot?.remaining>0)out.push({id:'hot',name:B.hot,remaining:c.aidHot.remaining,skill:'heal',member:me});
+ if(c.aidBuff?.remaining>0)out.push({id:'shield',name:c.aidBuff.name||B.shield,remaining:c.aidBuff.remaining,skill:'buff',member:me,shield:Math.round(c.aidBuff.shield||0)});
+ if(c.lastStand?.until>t)out.push({id:'burst',name:B.burst,remaining:c.lastStand.until-t,skill:'burst',member:c.def.look});
+ if(c.evade?.until>t)out.push({id:'evade',name:B.evade,remaining:c.evade.until-t,skill:'dash',member:c.def.look});
+ return out.slice(0,3);
+}
+const buffNote=list=>list.map(b=>b.name+' '+UI.buffs.left(b.remaining)+(b.shield?' · '+UI.buffs.absorb(b.shield):'')).join(' · ');
+/** Symbole im Rahmen nur neu malen, wenn Buffs kommen oder gehen; kurz vor dem Ende blinken sie (cf-expiring). */
+function paintBuffs(row,list){const el=row.querySelector('.cf-buffs');if(!el)return;const sig=list.map(b=>b.id+':'+(b.item||b.member)).join('|');
+ if(el.dataset.sig!==sig){el.dataset.sig=sig;el.innerHTML=list.map(b=>`<canvas width="${ICON_STEP.unitBuff}" height="${ICON_STEP.unitBuff}" data-frame-buff="${b.id}" aria-hidden="true"></canvas>`).join('');
+  el.querySelectorAll('canvas').forEach((cv,i)=>{const b=list[i];if(b.item)paintItemTile(cv,'aura:'+b.id,b.item);else paintSkillIcon(cv,b.skill,b.member,{aura:true});});}
+ el.querySelectorAll('canvas').forEach((cv,i)=>cv.classList.toggle('cf-expiring',list[i]?.remaining<=2));}
 
 export function companionBoardPoint(world){return world.hubs?.find(h=>h.id==='kirchplatz')?.dressing?.find(p=>p.type==='board')||null;}
 
@@ -58,10 +79,10 @@ export function mountCompanionHud(shell,getGame,open){
  const el=document.createElement('aside');el.className='companion-frames';el.setAttribute('aria-label',UI.team);shell.append(el);let signature='';
  el.addEventListener('click',e=>{const b=e.target.closest('[data-companion-select]');if(b){const g=getGame(),c=g.companions.find(x=>x.id===b.dataset.companionSelect);if(c)selectFriend(g,'companion',c);return;}const m=e.target.closest('[data-companion-manage]');if(m)open(m.dataset.companionManage);});
  return {update(){const g=getGame(),list=g.companions||[];el.hidden=!list.length;if(!list.length)return;
-  const key=list.map(c=>c.id+':'+c.level).join('|');if(key!==signature){signature=key;el.innerHTML=`<header>${button('manage','',UI.team)}</header>`+list.map(c=>`<button type="button" class="companion-frame unit-frame" data-companion-select="${c.id}" data-companion-row="${c.id}" data-role="${c.def.role}" aria-pressed="false">${unitPortrait(c.def.look,c.level)}<span class="unit-content"><strong>${esc(c.name)} <small>${COMPANION_ROLES[c.def.role].name}</small></strong><span class="companion-life" role="progressbar" aria-label="${esc(c.name)}"><i></i><span></span></span><span class="companion-frame-meta"><span data-companion-state></span><small data-companion-contract></small></span></span></button>`).join('');paintUnitPortraits(el);}
+  const key=list.map(c=>c.id+':'+c.level).join('|');if(key!==signature){signature=key;el.innerHTML=`<header>${button('manage','',UI.team)}</header>`+list.map(c=>`<button type="button" class="companion-frame unit-frame" data-companion-select="${c.id}" data-companion-row="${c.id}" data-role="${c.def.role}" aria-pressed="false">${unitPortrait(c.def.look,c.level)}<span class="unit-content"><strong>${esc(c.name)} <small>${COMPANION_ROLES[c.def.role].name}</small></strong><span class="companion-life" role="progressbar" aria-label="${esc(c.name)}"><i></i><span></span></span><span class="cf-buffs" aria-hidden="true"></span><span class="companion-frame-meta"><span data-companion-state></span><small data-companion-contract></small></span></span></button>`).join('');paintUnitPortraits(el);}
   const pick=selectedCompanion(g),failure=pick&&helpFailure(g,helpTarget(g));
   for(const c of list){const row=el.querySelector(`[data-companion-row="${c.id}"]`),selected=pick===c;updateRow(row,g,c);row.setAttribute('aria-pressed',String(selected));row.classList.toggle('is-selected',selected);if(selected)row.querySelector('[data-companion-state]').textContent=UI.selected+' \u00b7 '+status(g,c);
    /* Dungeon-Fix 5 (Pr\u00fcfer #728: \u201eDeine Truppe\u201c scrollte, S\u00f6ldner 4 abgeschnitten): am Desktop kompakt wie WoW-Gruppenrahmen \u2013 Befehl und Vertrag stehen
-      im Tooltip statt als eigene Zeile */{const label=c.name+' \u00b7 '+COMPANION_ROLES[c.def.role].name,note=[row.querySelector('[data-companion-state]').textContent,contract(c),selected?(failure||UI.selected):UI.select].filter(Boolean).join(' \u00b7 ');if(row.dataset.tooltipLabel!==label)row.dataset.tooltipLabel=label;if(row.dataset.tooltipNote!==note)row.dataset.tooltipNote=note;}row.classList.toggle('target-unavailable',selected&&!!failure);}
+      im Tooltip statt als eigene Zeile */{const label=c.name+' \u00b7 '+COMPANION_ROLES[c.def.role].name,buffs=frameBuffs(g,c)/* Dungeon-Fix 6 */,note=[row.querySelector('[data-companion-state]').textContent,buffNote(buffs),contract(c),selected?(failure||UI.selected):UI.select].filter(Boolean).join(' \u00b7 ');paintBuffs(row,buffs);if(row.dataset.tooltipLabel!==label)row.dataset.tooltipLabel=label;if(row.dataset.tooltipNote!==note)row.dataset.tooltipNote=note;}row.classList.toggle('target-unavailable',selected&&!!failure);}
  }};
 }

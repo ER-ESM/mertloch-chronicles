@@ -130,5 +130,13 @@ export function drawKitItem(c,it){
  const color=it.def.color||'#8a6a48',h=it.height||8,y0=it.minY-lift,y1=it.maxY-lift;
  fill(c,INK,it.minX-.5,y0-h-.5,it.w+1,it.h+h+1);fill(c,shade(color,.72),it.minX,y1-h,it.w,h);fill(c,shade(color,1.1),it.minX,y0-h,it.w,it.h);
 }
+/** Dungeon-Fix 6 (Prüferin #741: die eigene Figur verschwand fast ganz hinter der rechten Säule im Thronsaal): Verdeckt dieses stehende Teil die Figur?
+ *  Wie bei den Häusern (tiny-architecture.js buildingOccludesActor, dort blendet das Haus auf .38 aus): Die Figur steht hinter der Vorderkante
+ *  (Füße über maxY) und in der sichtbaren Fläche des Teils. Niedrige Teile (unter minHeight) blenden nicht aus – sie verdecken höchstens die Füße. */
+export function kitItemOccludes(it,actor,{half=7,minHeight=16}={}){
+ if(!it||!actor||!Number.isFinite(actor.x)||!Number.isFinite(actor.y))return false;const s=sprite(it.sprite),lift=it.lift||0;
+ let top;if(s){const [,,sw,sh]=frameOf(s,seedOf(it));top=it.maxY-lift-sh/sw*it.w;}else top=it.minY-lift-(it.height||8);
+ return it.maxY-top>=minHeight&&actor.y<it.maxY&&actor.y>top+4&&actor.x>it.minX-half&&actor.x<it.maxX+half;
+}
 /** Ein Sprite in eine feste Fläche einpassen (Treppe, Treppenloch); false, solange das Bild fehlt. */
 export function drawKitFill(c,id,x,y,w,h){const s=sprite(id);if(!s)return false;const [sx,sy,sw,sh]=frameOf(s);c.drawImage(s.img,sx,sy,sw,sh,x,y,w,h);return true;}

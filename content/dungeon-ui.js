@@ -17,6 +17,8 @@ export const DUNGEON_UI={
   enter:'Betreten',enterNote:'Hinein in den Dungeon',low:n=>'Erst ab Stufe '+n,lowNote:'Big B lässt dich noch nicht rein.',
   band:'Stufenband',group:'Gruppe',you:'Du',
   empty:'Freier Platz',emptyNote:'Söldner heuerst du direkt hier an.',
+  // Dungeon-Fix 6: Rollen auffüllen wie im Follower-Dungeon (dungeon-entry.js missingRoles)
+  need:r=>'Fehlt noch: '+r,needNote:'Der passende Söldner steht unten vorn. Du kannst auch anders wählen.',suggest:'fehlt in deiner Gruppe',double:r=>'du bist selbst '+r+', doppelt ist ein Sonderfall',
   hire:'Anheuern',hireNote:(cost,role)=>role+' · '+cost+' Pfandmarken',hired:'In deiner Gruppe',noMoney:'Das reicht nicht für den Vertrag.',
   best:'Bestzeit',bestNone:'Noch kein Abschluss',
   loot:'Beute',lootNone:'Beutetabelle folgt',

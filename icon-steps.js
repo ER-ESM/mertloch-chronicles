@@ -25,6 +25,7 @@ export const ICON_STEP={
  rewardOption:48,    // Questbelohnung zur Wahl
  roll:48,            // Würfelfenster der Gruppe (52er-Rahmen)
  aura:32,            // Stärkungen am Spielerrahmen (44er-Knopf)
+ unitBuff:24,        // Dungeon-Fix 6: Buffs auf den Truppenrahmen der Söldner (54er-Rahmen, drei Plätze)
  profession:32,professionDetail:48, // Berufefenster: Listen 32, Rezeptkopf 48
  shop:48,shopTouch:32 // Laden: Warenkarte und Verkaufsplätze 48, Handy-Verkaufsplätze 32
 };

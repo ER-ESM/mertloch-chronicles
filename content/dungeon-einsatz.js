@@ -41,6 +41,8 @@ const ENRAGE_SOONER={rita:'Rita liegt',kirmesurkunde:'Kirmes-Urkunde'};
 export const EINSATZ_TEXT=Object.freeze({
  rally:{name:'Angefeuert',idle:'Söldner warten',shout:'ANGEFEUERT',
   tip:r=>'Du kämpfst mit: Deine Söldner machen '+pct(r.bonus)+' mehr Schaden. Hält '+r.hold+' s nach deinem letzten Treffer, deiner letzten Heilung, Unterbrechung oder Parade.',
+  // Dungeon-Fix 6: liegt der Held, feuert er nicht an
+  deadTip:r=>'Du liegst: Deine Söldner kämpfen ohne Rückenwind (ohne die '+pct(r.bonus)+' mehr Schaden), bis du wieder mitkämpfst.',
   idleTip:r=>'Seit '+r.hold+' s kein Treffer, keine Heilung, keine Unterbrechung von dir: Deine Söldner kämpfen ohne Rückenwind (ohne die '+pct(r.bonus)+' mehr Schaden). Greif an, heile oder unterbrich.'},
  untanked:{name:'Ungeschützt',tip:n=>n+' hält den Boss ohne Schutz-Rolle: Tank-Buster treffen ihn voll. Ohne Schutz hält das niemand lange.'},
  lastStand:{shout:'ALLES ODER NICHTS',potion:'NOTFALL-SCHORLE',evade:'AUSWEICHEN',evaded:'AUSGEWICHEN',
@@ -55,11 +57,12 @@ export const EINSATZ_TEXT=Object.freeze({
   healingTip:n=>'Dein Anteil an der Heilung der Gruppe in diesem Kampf: '+n+' %.',
   holdTip:n=>'So lange hast du den Boss gehalten: '+n+' % der Kampfzeit.',
   interruptsTip:n=>n+'× unterbrochen. Jede Unterbrechung zählt.',
-  warnTip:(a,b)=>b?a+' von '+b+' Boss-Warnungen rechtzeitig beantwortet: aus Bahn, Fläche und Kegel, verteilt, gesammelt, pariert.':'Keine Boss-Warnung galt dir.',
-  dodgesTip:n=>n+'× ausgewichen.',
+  // Dungeon-Fix 6 (Prüferin #741: Zeile „10/21“, Tooltip „Warnungen 14“): Anzahl und Punkte stehen beide da
+  warnTip:(a,b,pts)=>(b?a+' von '+b+' Boss-Warnungen rechtzeitig beantwortet: aus Bahn, Fläche und Kegel, verteilt, gesammelt, pariert.':'Keine Boss-Warnung galt dir.')+(pts!=null?' Das sind '+pts+' von '+EINSATZ_SCORE.warn.points+' Punkten.':''),
+  dodgesTip:n=>n?n+'× ausgewichen (Ausweichen, Leertaste).':'Nicht ausgewichen (Ausweichen, Leertaste).',
   deathsTip:n=>n?n+'× gefallen. Jeder Tod kostet Einsatz.':'Nicht gefallen.',
   rallyTip:n=>'Deine Söldner waren '+n+' % der Kampfzeit angefeuert.',
-  scoreTip:(s,p)=>'Anteil '+p.share+' · Unterbrechen '+p.interrupt+' · Warnungen '+p.warn+(p.death?' · Tode '+p.death:'')+' = '+s+' von 100.',
+  scoreTip:(s,p,x={})=>'Punkte: Anteil '+p.share+' · Unterbrechen '+p.interrupt+' · Warnungen '+p.warn+(x.warn?' ('+x.warnOk+'/'+x.warn+')':'')+(p.death?' · Tode '+p.death:'')+' = '+s+' von 100.',
   bonus:'Einsatz-Bonus',bonusTip:(n,tier)=>'+'+n+' Siegelmarke'+(n>1?'n':'')+' für '+(tier==='gold'?'vollen':'hohen')+' Einsatz. Ab 60 Punkten eine, ab 85 zwei.',
   noBonus:'Kein Einsatz-Bonus',noBonusTip:'Ab 60 Punkten Einsatz gibt es eine Bonus-Siegelmarke, ab 85 zwei.'}
 });

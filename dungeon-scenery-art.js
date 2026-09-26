@@ -6,7 +6,7 @@
 import {DUNGEON_SCALE as U} from './content/index.js';
 import {dungeonRun} from './dungeon.js';
 import {floorPlan,hiddenRooms,heroFloor,sceneryOf,garageLot,CELL,FACE,CROWN} from './dungeon-scenery.js';
-import {drawBelag,drawDecal,drawWallDecor,drawKitItem,kitReady,kitFrames} from './kit-art.js';
+import {drawBelag,drawDecal,drawWallDecor,drawKitItem,kitReady,kitFrames,kitItemOccludes} from './kit-art.js';
 import {bakedGrade,withGrade} from './art-quality.js';
 import {LIGHT} from './light-convention.js';
 import {LIGHTING} from './content/index.js';
@@ -178,7 +178,10 @@ export function dungeonSortables(g,visible){const plan=currentPlan(g);if(!plan)r
  for(const it of plan.items.standing)if(visible(it,60))out.push({type:'dungeonProp',obj:it,y:it.maxY});
  for(const it of plan.items.tops)if(it.host&&visible(it,60))out.push({type:'dungeonProp',obj:it,y:it.sortY});
  return out;}
-export function drawDungeonProp(c,it){drawKitItem(c,it);}
+/** actors: Figuren, die nicht hinter einem Requisit verschwinden dürfen (Held, Ziel). Dungeon-Fix 6: steht eine dahinter, blendet das Requisit aus
+ *  wie ein Haus (Alpha .38, renderer.js building). */
+export function drawDungeonProp(c,it,actors=[]){const hide=actors.some(u=>kitItemOccludes(it,u));if(hide)c.globalAlpha*=PROP_FADE;drawKitItem(c,it);it.faded=hide;}
+export const PROP_FADE=.38;
 /** Lichterketten über dem Partykeller: hängen über allen Figuren (wie im Hof der Bude), Birnen funkeln sacht. */
 const BULBS=['#ffd36a','#ff8f6a','#8fd6ff','#b8f08a','#ffb0e0'];
 export function drawDungeonCeiling(c,g,view,time){const plan=currentPlan(g);if(!plan)return;const sc=sceneryOf(plan.def),o=plan.def.floors[plan.floor].origin;

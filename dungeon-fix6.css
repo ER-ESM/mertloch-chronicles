@@ -1,0 +1,44 @@
+/* Dungeon-Fix 6 (Prüferin #741, Big B als Heilerin, docs/DUNGEON-FIX6-2026-09-26.md). Nur Ergänzungen, lädt nach dungeon-einsatz.css. */
+
+/* 5 · Einsatz-Zeile: das Wort „Einsatz“ steht klein am Punkte-Chip (dungeon-einsatz-ui.js), die Erklärung im Tooltip */
+.loot-einsatz .einsatz-chip>small{font-size:11px;line-height:1;color:#e8cf95;text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-right:1px}
+
+/* 6 · Buffs auf den Truppenrahmen wie WoW-Gruppenrahmen (companion-ui.js frameBuffs): Angefeuert, deine HoTs und Schilde, Letztes Aufgebot.
+   Am Desktop steht rechts neben dem Lebensbalken Platz für drei 24er-Symbole; der Rahmen bleibt 54 px (dicht: 44 px), nichts scrollt. */
+.companion-frame .cf-buffs{display:flex;gap:2px;justify-content:flex-end;align-items:center;min-width:0;pointer-events:none}
+.companion-frame .cf-buffs:empty{visibility:hidden}
+.companion-frame .cf-buffs canvas{border-radius:3px;box-shadow:0 0 0 1px #0b0a08,0 0 0 2px #c9a55a80;background:#1b1712}
+.companion-frame .cf-buffs canvas[data-frame-buff="rally"]{box-shadow:0 0 0 1px #0b0a08,0 0 0 2px #ffcf6a,0 0 6px #ffcf6a99}
+.companion-frame .cf-buffs canvas.cf-expiring{animation:cf-blink .5s steps(2,jump-none) infinite}
+@keyframes cf-blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.companion-frame .cf-buffs canvas.cf-expiring{animation:none;opacity:.6}}
+body:not(.touch-mode) .companion-frame .unit-content{display:grid;grid-template-columns:minmax(0,1fr) 76px;column-gap:4px;align-items:center}
+body:not(.touch-mode) .companion-frame .unit-content>strong{grid-column:1/-1}
+body:not(.touch-mode) .companion-frame .cf-buffs{height:24px}
+/* Handy: die Symbole liegen oben rechts über dem Namen (die Rahmen sind dort schmal); höchstens zwei */
+.touch-mode .companion-frame{position:relative}
+.touch-mode .companion-frame .cf-buffs{position:absolute;right:2px;top:2px}
+.touch-mode .companion-frame .cf-buffs canvas:nth-child(n+3){display:none}
+
+/* 6 · Ausrufe über den Söldnern („ANGEFEUERT“, „ALLES ODER NICHTS“ …): groß, farbig und auch im Bosskampf mit Text (combat-text.js callout).
+   dungeon-e4b.css blendet im Bosskampf den Text der Meldungszeilen aus – für Ausrufe nicht. */
+#sct .sct-companion .sct-note .sct-row.sct-callout{font-size:19px;letter-spacing:.04em;animation-duration:2.8s}
+#sct .sct-companion .sct-note .sct-row.sct-callout canvas{width:20px;height:20px}
+body.boss-fight #sct .sct-companion .sct-note .sct-row.sct-callout>b{display:inline!important}
+.touch-mode #sct .sct-companion .sct-note .sct-row.sct-callout{font-size:15px}
+
+/* 9 · Zielrahmen eines Freundes: die Plakette zeigt seine Stufe (app.js setzt data-level), ohne Stufe (NPC) keine leere Plakette */
+#targetPanel #targetLevel[data-level=""]::after{display:none}
+
+/* 9 · Eingehender Treffer nennt die Fähigkeit („−955 Ritt auf der Kanonenkugel“ statt „−955 Big B“, engine.js); lange Namen gekürzt */
+#sct>.sct-in .sct-row small{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+
+/* 4 · Eingangskarte: Rollen auffüllen wie im Follower-Dungeon (dungeon-entry.js missingRoles). Freie Plätze zeigen die fehlende Rolle, passende
+   Angebote stehen vorn und leuchten, eine doppelte Heilung bzw. ein doppelter Schutz steht hinten und gedämpft. Die Wahl bleibt beim Spieler. */
+.dg-slot.dg-empty[data-dg-need] .dicon{opacity:.55}
+.dg-slot.dg-empty[data-dg-need]{border-color:#e8c17088}
+.dg-offer.dg-suggest{border-color:#e8c170cc}
+.dg-offer.dg-suggest[data-role=tank]{box-shadow:inset 0 -3px 0 #4c86c8,0 0 0 1px #e8c17055,0 0 8px #e8c17066}
+.dg-offer.dg-suggest[data-role=heal]{box-shadow:inset 0 -3px 0 #6fbf5c,0 0 0 1px #e8c17055,0 0 8px #e8c17066}
+.dg-offer.dg-suggest[data-role=damage]{box-shadow:inset 0 -3px 0 #d0655e,0 0 0 1px #e8c17055,0 0 8px #e8c17066}
+.dg-offer.dg-double:not(:hover):not(:focus-visible){opacity:.55;filter:saturate(.5)}

@@ -16,6 +16,10 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const tip=(label,note='')=>`data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}"`;
 /** Rolle des eigenen Helden aus seiner Spezialisierung (Schutz, Heilung, Schaden). */
 export function heroRole(g){const r=SPECS[g?.rpg?.talents?.spec]?.role||'';return /^Tank/.test(r)?'tank':/^(Heilung|Schutz & Heilung)$/.test(r)?'heal':'damage';}
+/** Dungeon-Fix 6 (WoW-Follower-Dungeon: Söldner füllen die Rollen, die der Held nicht hat): Gruppe aus 1 Schutz, 1 Heilung, 3 Schaden – was fehlt noch,
+ *  wenn Held und Söldner abgezogen sind? → {tank,heal,damage} (negativ = doppelt besetzt). */
+export const GROUP_ROLES={tank:1,heal:1,damage:3};
+export function missingRoles(g,role=heroRole(g)){const need={...GROUP_ROLES};need[role]--;for(const c of g.companions||[])if(need[c.def?.role]!=null)need[c.def.role]--;return need;}
 const mmss=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
 /** Drei Beute-Symbole für die Karte: je Boss das erste eigene Teil, dann weitere. */
 export function entryLoot(id){const out=[];for(const b of DUNGEONS[id].bosses)for(const item of bossLoot(b.id))if(!out.includes(item))out.push(item);return out.slice(0,3);}
@@ -26,9 +30,13 @@ export function entryCard(g,id='schloss-bigb',{talents=true}={}){
  const tone=low?'#a4a29a':levelTone(mid-p.level),free=companionSlots(g),role=heroRole(g),size=def.group.size;
  const slots=[`<span class="dg-slot dg-you" data-role="${role}" ${tip(g.heroName||E.you,E.roles[role]+' · '+U.band(p.level,p.level))}>${unitPortrait(g.member?.id||'dieter',p.level)}${dicon('role-'+role,18,'dg-role')}</span>`,
   ...(g.companions||[]).map(c=>`<span class="dg-slot" data-role="${c.def.role}" data-dg-mate="${esc(c.id)}" ${tip(c.name,E.roles[c.def.role])}>${unitPortrait(c.def.look,c.level||p.level)}${dicon('role-'+c.def.role,18,'dg-role')}</span>`)];
- while(slots.length<size)slots.push(`<span class="dg-slot dg-empty" ${tip(E.empty,E.emptyNote)}>${dicon('group',22,'dim')}</span>`);
- const offers=free>0?g.companionOffers().filter(o=>!o.hired):[];
- const hire=offers.length?`<div class="dg-hire" aria-label="${esc(E.hire)}">${offers.map(o=>`<button type="button" class="dg-offer" data-dg-hire="${esc(o.def.id)}" data-role="${o.def.role}" ${o.affordable?'':'aria-disabled="true"'} aria-label="${esc(E.hire+': '+o.def.name+' · '+E.hireNote(o.cost,COMPANION_ROLES[o.def.role].name)+(o.affordable?'':' · '+E.noMoney))}" ${tip(E.hire+': '+o.def.name,E.hireNote(o.cost,COMPANION_ROLES[o.def.role].name)+(o.affordable?'':' · '+E.noMoney))}>${unitPortrait(o.def.look,null)}${dicon('role-'+o.def.role,16,'dg-role')}</button>`).join('')}</div>`:'';
+ /* Dungeon-Fix 6: freie Plätze zeigen die fehlende Rolle (erst Schutz, dann Heilung, dann Schaden), Angebote dieser Rolle stehen vorn und leuchten,
+    eine zweite Heilung bzw. ein zweiter Schutz neben einem Helden derselben Rolle steht hinten und gedämpft – die Wahl bleibt beim Spieler */
+ const need=missingRoles(g,role),open=['tank','heal','damage'].flatMap(r=>Array(Math.max(0,need[r])).fill(r));
+ while(slots.length<size){const r=open.shift();slots.push(r?`<span class="dg-slot dg-empty" data-role="${r}" data-dg-need="${r}" ${tip(E.need(E.roles[r]),E.needNote)}>${dicon('role-'+r,22,'dim')}</span>`:`<span class="dg-slot dg-empty" ${tip(E.empty,E.emptyNote)}>${dicon('group',22,'dim')}</span>`);}
+ const fit=o=>need[o.def.role]>0?0:o.def.role===role&&role!=='damage'?2:1;
+ const offers=(free>0?g.companionOffers().filter(o=>!o.hired):[]).map((o,i)=>({o,i})).sort((a,b)=>fit(a.o)-fit(b.o)||a.i-b.i).map(x=>x.o);
+ const hire=offers.length?`<div class="dg-hire" aria-label="${esc(E.hire)}">${offers.map(o=>`<button type="button" class="dg-offer${fit(o)===0?' dg-suggest':fit(o)===2?' dg-double':''}" data-dg-hire="${esc(o.def.id)}" data-role="${o.def.role}" ${o.affordable?'':'aria-disabled="true"'} aria-label="${esc(E.hire+': '+o.def.name+' · '+E.hireNote(o.cost,COMPANION_ROLES[o.def.role].name)+(o.affordable?'':' · '+E.noMoney))}" ${tip(E.hire+': '+o.def.name,E.hireNote(o.cost,COMPANION_ROLES[o.def.role].name)+(fit(o)===0?' · '+E.suggest:fit(o)===2?' · '+E.double(E.roles[role]):'')+(o.affordable?'':' · '+E.noMoney))}>${unitPortrait(o.def.look,null)}${dicon('role-'+o.def.role,16,'dg-role')}</button>`).join('')}</div>`:'';
  const loot=entryLoot(id),lootHtml=(loot.length?loot.map(it=>`<span class="dg-loot" tabindex="0" data-tooltip-item="${esc(it)}"><canvas width="${ICON_STEP.dungeonLoot}" height="${ICON_STEP.dungeonLoot}" data-item-art="${esc(itemArt(it))}" aria-hidden="true"></canvas></span>`):Array.from({length:3},()=>`<span class="dg-loot empty" tabindex="0" ${tip(E.loot,E.lootNone)}>${dicon('loot',20,'dim')}</span>`)).join('');
  const points=talents?Math.max(0,talentPoints(g)-spentPoints(g.rpg.talents)):0;
  const best=rec.best>0?mmss(rec.best):'–';
