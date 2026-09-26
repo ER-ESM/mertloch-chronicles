@@ -1,11 +1,11 @@
 // Dungeon-Gegner unterscheidbar ohne neue Figurengrafik (Etappe 2, Grafik-Review Dungeon Befund 5; Figuren erst nach Freigabe):
 // Boss und Elite größer (×1,35 / ×1,15), ein Rollenzeichen am Namensschild (Kreuz = Heiler, Funkwellen = ruft Hilfe, Schild = Elite,
 // Schädel = Boss) und ein Sammelschild je Schwarm („Pfandratte ×8“) statt acht Einzelschildern, solange der Schwarm ruht.
-import {DUNGEON_CASTS} from './content/index.js';
+import {DUNGEON_CASTS,DUNGEON_BOSSES} from './content/index.js';
 import {mapIcon} from './map-symbols.js';
 
-/** Zeichenmaßstab eines Dungeon-Gegners (Boss ×1,35, Elite ×1,15). */
-export const dungeonScale=e=>!e?.dungeon?1:e.dungeonBoss?1.35:e.elite?1.15:1;
+/** Zeichenmaßstab eines Dungeon-Gegners (Boss ×1,35, Elite ×1,15). Dungeon-Fix 7: ein Boss kann eigenen Maßstab haben (DUNGEON_BOSSES.*.drawScale, Big B ×1,5). */
+export const dungeonScale=e=>!e?.dungeon?1:e.dungeonBoss?DUNGEON_BOSSES[e.bossId]?.drawScale??1.35:e.elite?1.15:1;
 /** Rolle am Namensschild aus den Zaubern: Heiler vor Rufer vor Elite; Bosse tragen den Schädel. */
 export function dungeonRole(e){if(!e?.dungeon)return null;if(e.dungeonBoss)return 'boss';const casts=Object.values(DUNGEON_CASTS[e.baseCastSet||e.castSet]?.casts||{});
  if(casts.some(c=>c.healAllies))return 'heal';if(e.elite)return 'elite';if(casts.some(c=>c.callHelp))return 'call';return null;}

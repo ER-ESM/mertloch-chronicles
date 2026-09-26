@@ -266,6 +266,10 @@ export const DUNGEON_BOSSES={
   // Dungeon-Fix 5 (Prüfer #728): keep = Hysterese des F-Hinweises (er geht erst jenseits von talk + keep Kacheln). Nach der Rede wartet Big B
   // (WoW-Muster), bis der Held angreift oder den Nahbereich reach neu betritt; opener zählt ab diesem echten Kampfbeginn.
   intro:{reach:5,talk:13,keep:3,line:3,opener:6},
+  // Dungeon-Fix 7 (Prüferin #770: „Big B hat Spielergröße“): Zeichenmaßstab im Dungeon statt der ×1,35 aller Bosse (dungeon-actors.js). Gemessen vorher
+  // 46 Welteinheiten mit Krone gegen 28–29 der Söldner (1,6×, ohne Krone 1,46×); im Getümmel verdeckten Namensschilder und Zahlen der Söldner seinen Kopf.
+  // Jetzt ×1,5: der größte im Dungeon, ohne Krone gut 1,6× Heldenhöhe. Der Gag bleibt über die Proportionen (Mantel am Boden, Ärmel über den Händen).
+  drawScale:1.5,
   phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]},
  // ── Etappe 4 Teil A „Die restlichen Bosse“ (E-71, Plan 7.2–7.5). Zahlen gegen die gemessene Gruppe gesetzt (scripts/dungeon-sim.mjs,
  // Korridor 70–110 s mit Held und vier Söldnern). Figuren: vorhandene Katalogfiguren mit Tönung (tint) in Bossgröße, keine neue

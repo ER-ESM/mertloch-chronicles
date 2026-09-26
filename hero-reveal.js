@@ -5,6 +5,7 @@
 // derselbe Umriss wie hinter Dächern). Fenster werden nie geschlossen.
 // Runde 4b (Prüfer-Bruch 7): Zuerst sucht hero-frame.js eine freie Lücke zwischen den offenen Fenstern; die Kamera legt den Helden
 // weich dorthin (renderer.heroShift). Nur ohne Lücke klappen Fenster ein – dann auch beim manuellen Laufen (WASD, Stick).
+import {dungeonScale} from './dungeon-actors.js';
 import {heroBox,findHeroSpot,frameObstacles,isModalWindow,heroFloor,unionBox} from './hero-frame.js';
 const PAD=18,TICK=120,GRACE=2000;
 /** Runde 5b: letztes Bildschirmrechteck des Helden (Füße bis Kopf) – Tooltips der Leiste weichen ihm aus (fenster-r3.js placeTooltip). */
@@ -29,7 +30,7 @@ export function mountHeroReveal({renderer,game,root=document}){
   /* Runde 5b (Punkt 7): nie neben oder dicht über der Aktionsleiste – der Fußpunkt bleibt eine Figurhöhe über ihrer Oberkante, höchstens +25 % unter der Mitte */
   const hbox=heroBox(sx,sy,PAD-4),bar=document.querySelector('.action-area')?.getBoundingClientRect(),figure=hbox.up+hbox.down;
   /* Etappe 2: im Kampf umfasst die Lücke Held und Ziel (Boss), solange das Ziel nah genug ist; sonst nur den Helden */const t=g.target,fight=t&&t.hp>0&&(g.player.inCombat||0)>0&&Math.abs(t.x-g.player.x)*sx<(view.right-view.left)*.4&&Math.abs(t.y-g.player.y)*sy<(view.bottom-view.top)*.35;
-  const both=fight?unionBox(hbox,(t.x-g.player.x)*sx,(t.y-g.player.y)*sy,heroBox(sx*(t.type==='boss'?1.35:1),sy*(t.type==='boss'?1.35:1),PAD-4)):null;
+  const both=fight?unionBox(hbox,(t.x-g.player.x)*sx,(t.y-g.player.y)*sy,heroBox(sx*(t.type==='boss'?Math.max(1.35,dungeonScale(t)):1),sy*(t.type==='boss'?Math.max(1.35,dungeonScale(t)):1),PAD-4)/* Dungeon-Fix 7: Big B ×1,5 */):null;
   const before=spot;const maxY=heroFloor(view,bar&&bar.height?bar.top:NaN,figure);let box=both||hbox;spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:spot,maxY});if(!spot&&both){box=hbox;spot=findHeroSpot({view,box,obstacles:[...wins,...hud],prev:before,maxY});}
   if(!spot){r.heroShift={x:0,y:0,on:false};return null;}
   {const off=Math.hypot(spot.x-(view.left+view.right)/2,spot.y-(view.top+view.bottom)/2)>24,was=before&&Math.hypot(before.x-(view.left+view.right)/2,before.y-(view.top+view.bottom)/2)>24;if(off&&!was)pulse(spot,box);}
