@@ -1003,7 +1003,7 @@ function e4bInteraction(g,run,f){
     Dungeon-Fix 5: stabiler Bereich mit Hysterese – der Hinweis kommt bei talk Kacheln und geht erst jenseits von talk + keep (run.talkShown). */
  for(const e of g.enemies){const d=introDef(e),keep=d&&run.talkShown&&run.talkShown.id===e.bossId&&g.time-run.talkShown.at<.6?d.keep||0:0;if(!d||!bossHeld(g,e)||run.intro||roomAt(def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room||dist(g.player,e)>(d.talk+keep)*U)continue;
   run.talkShown={id:e.bossId,at:g.time};return {kind:'dungeonAct',act:'address',boss:e.bossId,point:{x:e.x,y:e.y},name:n?W.evidence.present(n):T.intro.address,priority:0};}
- return null;
+ run.talkShown=null;return null;
 }
 /** F auf einem Ziel der Etappe 4 Teil B. → {ok, bag?, vendor?} (die Oberfläche öffnet Beute-Moment bzw. Händlerfenster). */
 export function dungeonAct(g,it){
