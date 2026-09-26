@@ -1,12 +1,12 @@
 # Balance-Sheet
 
-Automatisch erzeugt von `npm run balance:sheet` · 2026-09-25 · 40 s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (10× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit 3 festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit 3 % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über `pathBuild`, Stufe 1 ohne Spezialisierung.
+Automatisch erzeugt von `npm run balance:sheet` · 2026-09-26 · 40 s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (10× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit 3 festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit 3 % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über `pathBuild`, Stufe 1 ohne Spezialisierung.
 
 Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** → Heilung/s (Ausstoß inkl. Überheilung; dahinter „eff.“ = tatsächlich geheilt, ohne Überheilung – ⚑ und Median bleiben am Ausstoß), **Tank** → Schutz/s (verhinderter Schaden + Deckung). Zelle: Kennzahl (Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung). ⚑ = mehr als 15 % daneben (ab Stufe 5).
 
 ## Überblick
 
-220 von 900 Messungen liegen mehr als 15 % neben dem Median ihrer Rolle.
+255 von 900 Messungen liegen mehr als 15 % neben dem Median ihrer Rolle.
 
 ## Ausrüstung: Startausrüstung
 
@@ -17,7 +17,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | dieter-brawl | 0 | 59 (-2.3 %) | 101 (-10.9 %) | 107 (-21.2 %) ⚑ | 125 (-22.3 %) ⚑ | 143 (-18.8 %) ⚑ | 181 (-15.5 %) ⚑ |
 | dieter-brawl | 1 | 59 (-2.3 %) | 114 (+1 %) | 149 (+9.6 %) | 187 (+16.4 %) ⚑ | 208 (+18.1 %) ⚑ | 246 (+14.6 %) |
 | dieter-brawl | 2 | 59 (-2.3 %) | 110 (-2.2 %) | 126 (-7.7 %) | 133 (-16.9 %) ⚑ | 159 (-9.9 %) | 189 (-11.7 %) |
-| baerbel-feedback | 0 | 61 (0 %) | 131 (+15.8 %) ⚑ | 145 (+6.7 %) | 143 (-11.2 %) | 152 (-13.7 %) | 165 (-23 %) ⚑ |
+| baerbel-feedback | 0 | 61 (0 %) | 131 (+15.8 %) ⚑ | 145 (+6.7 %) | 141 (-12.1 %) | 152 (-13.7 %) | 165 (-23 %) ⚑ |
 | baerbel-feedback | 1 | 61 (0 %) | 141 (+24.7 %) ⚑ | 136 (0 %) | 145 (-9.8 %) | 147 (-16.4 %) ⚑ | 163 (-23.9 %) ⚑ |
 | baerbel-feedback | 2 | 61 (0 %) | 146 (+28.9 %) ⚑ | 180 (+32.5 %) ⚑ | 193 (+20.4 %) ⚑ | 202 (+14.3 %) | 216 (+0.6 %) |
 | baerbel-stage | 0 | 61 (0 %) | 111 (-2.1 %) | 135 (-0.8 %) | 170 (+6 %) | 181 (+2.5 %) | 220 (+2.4 %) |
@@ -34,7 +34,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-5.7 %) | 150 (-6.4 %) | 174 (-1.5 %) | 202 (-6.1 %) |
 | kaethe-grand | 0 | 61 (+0.7 %) | 120 (+6.6 %) | 148 (+8.7 %) | 180 (+11.9 %) | 199 (+12.5 %) | 234 (+8.8 %) |
 | kaethe-grand | 1 | 61 (+0.7 %) | 97 (-13.7 %) | 110 (-19.5 %) ⚑ | 146 (-9.3 %) | 180 (+2.3 %) | 236 (+10 %) |
-| kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-1 %) | 163 (+1.7 %) | 205 (+16.4 %) ⚑ | 268 (+24.8 %) ⚑ |
+| kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-1 %) | 163 (+1.7 %) | 202 (+14.6 %) | 270 (+25.8 %) ⚑ |
 | kaethe-falsch | 0 | 61 (+0.7 %) | 99 (-12.6 %) | 120 (-11.5 %) | 142 (-11.5 %) | 153 (-13.2 %) | 186 (-13.3 %) |
 | kaethe-falsch | 1 | 61 (+0.7 %) | 95 (-15.7 %) ⚑ | 155 (+14 %) | 173 (+7.6 %) | 187 (+6 %) | 215 (0 %) |
 | kaethe-falsch | 2 | 61 (+0.7 %) | 103 (-8.4 %) | 146 (+7.5 %) | 179 (+11.5 %) | 192 (+8.6 %) | 228 (+6.4 %) |
@@ -43,18 +43,18 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 31 (-29 %) ⚑ · eff. 14 | 32 (-50.4 %) ⚑ · eff. 16 | 45 (-46.8 %) ⚑ · eff. 20 | 54 (-44.4 %) ⚑ · eff. 24 | 55 (-56.5 %) ⚑ · eff. 28 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 38 (-12.1 %) · eff. 14 | 64 (-1.1 %) · eff. 17 | 89 (+4.8 %) · eff. 18 | 104 (+6.5 %) · eff. 19 | 128 (+0.4 %) · eff. 26 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 30 (-31.6 %) ⚑ · eff. 14 | 36 (-43.9 %) ⚑ · eff. 14 | 42 (-50.6 %) ⚑ · eff. 17 | 46 (-52.7 %) ⚑ · eff. 21 | 57 (-55.1 %) ⚑ · eff. 27 |
-| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 55 (+28.1 %) ⚑ · eff. 22 | 73 (+14 %) · eff. 28 | 93 (+9.9 %) · eff. 35 | 109 (+12 %) · eff. 42 | 138 (+8.7 %) · eff. 1 |
-| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 39 (-10.4 %) · eff. 20 | 78 (+21.9 %) ⚑ · eff. 21 | 115 (+35.4 %) ⚑ · eff. 27 | 151 (+54.8 %) ⚑ · eff. 33 | 203 (+60.2 %) ⚑ · eff. 1 |
-| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 42 (-2.1 %) · eff. 4 | 59 (-8.2 %) · eff. 1 | 95 (+12.5 %) · eff. 1 | 138 (+41.1 %) ⚑ · eff. 1 | 172 (+35.1 %) ⚑ · eff. 1 |
-| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 47 (+8.6 %) · eff. 4 | 76 (+17.9 %) ⚑ · eff. 2 | 77 (-9.1 %) · eff. 2 | 92 (-5.7 %) · eff. 3 | 120 (-5.4 %) · eff. 3 |
-| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 37 (-13.9 %) · eff. 16 | 58 (-9.6 %) · eff. 22 | 66 (-21.9 %) ⚑ · eff. 28 | 94 (-3.6 %) · eff. 36 | 119 (-6.2 %) · eff. 3 |
-| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 43 (0 %) · eff. 20 | 64 (0 %) · eff. 26 | 77 (-8.8 %) · eff. 33 | 89 (-9.2 %) · eff. 34 | 104 (-18.5 %) ⚑ · eff. 3 |
-| kaethe-herz | 0 | 19 (+1770 %) · eff. 3 | 45 (+3.9 %) · eff. 11 | 80 (+23.8 %) ⚑ · eff. 20 | 98 (+15.3 %) ⚑ · eff. 22 | 118 (+20.9 %) ⚑ · eff. 25 | 153 (+20.6 %) ⚑ · eff. 32 |
-| kaethe-herz | 1 | 19 (+1770 %) · eff. 3 | 47 (+9.7 %) · eff. 7 | 64 (+0.2 %) · eff. 1 | 74 (-12.6 %) · eff. 0 | 90 (-7.3 %) · eff. 0 | 121 (-4.8 %) · eff. 0 |
-| kaethe-herz | 2 | 19 (+1770 %) · eff. 3 | 44 (+1.9 %) · eff. 11 | 62 (-3.7 %) · eff. 14 | 85 (0 %) · eff. 20 | 98 (0 %) · eff. 18 | 127 (0 %) · eff. 25 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 31 (-17.1 %) ⚑ · eff. 14 | 32 (-43.4 %) ⚑ · eff. 16 | 45 (-31 %) ⚑ · eff. 20 | 54 (-32.8 %) ⚑ · eff. 24 | 55 (-42.7 %) ⚑ · eff. 28 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 38 (+2.7 %) · eff. 14 | 64 (+12.8 %) · eff. 17 | 89 (+35.9 %) ⚑ · eff. 18 | 104 (+28.8 %) ⚑ · eff. 19 | 128 (+32.4 %) ⚑ · eff. 26 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 30 (-20.1 %) ⚑ · eff. 14 | 36 (-36 %) ⚑ · eff. 14 | 42 (-35.9 %) ⚑ · eff. 17 | 46 (-42.8 %) ⚑ · eff. 21 | 57 (-40.8 %) ⚑ · eff. 27 |
+| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 49 (+32.5 %) ⚑ · eff. 22 | 88 (+56.7 %) ⚑ · eff. 29 | 119 (+82.1 %) ⚑ · eff. 35 | 138 (+70.7 %) ⚑ · eff. 42 | 100 (+3.6 %) · eff. 9 |
+| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 49 (+31.7 %) ⚑ · eff. 22 | 99 (+75.9 %) ⚑ · eff. 20 | 149 (+128.1 %) ⚑ · eff. 29 | 176 (+118.9 %) ⚑ · eff. 35 | 157 (+62.8 %) ⚑ · eff. 5 |
+| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 33 (-11.4 %) · eff. 9 | 38 (-33.5 %) ⚑ · eff. 2 | 45 (-31.7 %) ⚑ · eff. 3 | 52 (-35.1 %) ⚑ · eff. 4 | 69 (-28.2 %) ⚑ · eff. 5 |
+| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 37 (-0.8 %) · eff. 9 | 58 (+3 %) · eff. 7 | 65 (0 %) · eff. 7 | 81 (0 %) · eff. 8 | 107 (+10.6 %) · eff. 11 |
+| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 37 (0 %) · eff. 17 | 56 (0 %) · eff. 22 | 69 (+4.9 %) · eff. 27 | 109 (+35.4 %) ⚑ · eff. 35 | 95 (-1.2 %) · eff. 9 |
+| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 52 (+41.2 %) ⚑ · eff. 19 | 68 (+20.7 %) ⚑ · eff. 26 | 84 (+28.4 %) ⚑ · eff. 32 | 96 (+19.6 %) ⚑ · eff. 37 | 94 (-2.5 %) · eff. 11 |
+| kaethe-herz | 0 | 19 (+1770 %) · eff. 3 | 30 (-17.6 %) ⚑ · eff. 8 | 44 (-22.5 %) ⚑ · eff. 11 | 57 (-13.3 %) · eff. 12 | 68 (-15.4 %) ⚑ · eff. 14 | 96 (0 %) · eff. 16 |
+| kaethe-herz | 1 | 19 (+1770 %) · eff. 3 | 38 (+2.4 %) · eff. 6 | 52 (-8 %) · eff. 1 | 65 (-1.1 %) · eff. 1 | 77 (-4.3 %) · eff. 1 | 102 (+5.9 %) · eff. 1 |
+| kaethe-herz | 2 | 19 (+1770 %) · eff. 3 | 30 (-18.4 %) ⚑ · eff. 8 | 44 (-22.2 %) ⚑ · eff. 11 | 54 (-17.4 %) ⚑ · eff. 13 | 66 (-18.4 %) ⚑ · eff. 13 | 94 (-2.5 %) · eff. 14 |
 
 ### Tank · Schutz/s
 
@@ -91,9 +91,9 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | kevin-hunt | 0 | 84 (-11.4 %) | 199 (+5.8 %) | 263 (-0.4 %) | 340 (-5 %) | 415 (-3.1 %) | 581 (-0.5 %) |
 | kevin-hunt | 1 | 84 (-11.4 %) | 192 (+2.3 %) | 252 (-4.7 %) | 334 (-6.9 %) | 402 (-6.2 %) | 538 (-7.8 %) |
 | kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.2 %) | 274 (+3.8 %) | 374 (+4.3 %) | 453 (+5.8 %) | 584 (0 %) |
-| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 298 (+12.8 %) | 385 (+7.3 %) | 464 (+8.2 %) | 631 (+8 %) |
-| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.4 %) | 268 (+1.4 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
-| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 265 (+0.4 %) | 367 (+2.3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
+| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+16.6 %) ⚑ | 392 (+9.2 %) | 456 (+6.4 %) | 650 (+11.2 %) |
+| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.3 %) | 268 (+1.4 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
+| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 269 (+1.9 %) | 369 (+3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
 | kaethe-grand | 0 | 95 (0 %) | 198 (+5.3 %) | 296 (+11.8 %) | 348 (-2.8 %) | 452 (+5.6 %) | 572 (-2.1 %) |
 | kaethe-grand | 1 | 95 (0 %) | 160 (-14.5 %) | 232 (-12.3 %) | 295 (-17.7 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
 | kaethe-grand | 2 | 95 (0 %) | 161 (-14.1 %) | 276 (+4.4 %) | 407 (+13.6 %) | 488 (+13.8 %) | 669 (+14.4 %) |
@@ -105,18 +105,18 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 39 (-25 %) ⚑ · eff. 12 | 48 (-42.7 %) ⚑ · eff. 13 | 73 (-31.9 %) ⚑ · eff. 16 | 97 (-26.7 %) ⚑ · eff. 20 | 114 (-34.4 %) ⚑ · eff. 25 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 54 (+4.4 %) · eff. 12 | 92 (+10 %) · eff. 11 | 113 (+5.8 %) · eff. 10 | 132 (0 %) · eff. 9 | 174 (0 %) · eff. 13 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 42 (-18.6 %) ⚑ · eff. 12 | 48 (-42.3 %) ⚑ · eff. 7 | 61 (-42.8 %) ⚑ · eff. 9 | 80 (-39.6 %) ⚑ · eff. 11 | 113 (-35.1 %) ⚑ · eff. 16 |
-| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 62 (+18 %) ⚑ · eff. 17 | 68 (-18.7 %) ⚑ · eff. 20 | 84 (-20.8 %) ⚑ · eff. 25 | 97 (-26.8 %) ⚑ · eff. 30 | 185 (+6.5 %) · eff. 1 |
-| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 52 (-0.2 %) · eff. 17 | 89 (+5.9 %) · eff. 11 | 144 (+34.7 %) ⚑ · eff. 14 | 176 (+33.3 %) ⚑ · eff. 17 | 288 (+65.7 %) ⚑ · eff. 1 |
-| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 52 (+0.6 %) · eff. 0 | 81 (-3.5 %) · eff. 1 | 139 (+30.4 %) ⚑ · eff. 1 | 188 (+42.4 %) ⚑ · eff. 1 | 247 (+42 %) ⚑ · eff. 1 |
-| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 55 (+5.2 %) · eff. 5 | 104 (+24.8 %) ⚑ · eff. 4 | 111 (+3.7 %) · eff. 3 | 135 (+2.3 %) · eff. 4 | 182 (+4.9 %) · eff. 6 |
-| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 44 (-16.1 %) ⚑ · eff. 13 | 85 (+1.4 %) · eff. 13 | 97 (-9.2 %) · eff. 21 | 130 (-1.4 %) · eff. 26 | 173 (-0.5 %) · eff. 5 |
-| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 48 (-7.7 %) · eff. 16 | 84 (0 %) · eff. 19 | 107 (0 %) · eff. 25 | 123 (-7.1 %) · eff. 23 | 153 (-12 %) · eff. 4 |
-| kaethe-herz | 0 | 21 (+1960 %) · eff. 1 | 52 (0 %) · eff. 6 | 92 (+10.3 %) · eff. 11 | 124 (+16.1 %) ⚑ · eff. 13 | 150 (+13.3 %) · eff. 16 | 204 (+17.4 %) ⚑ · eff. 20 |
-| kaethe-herz | 1 | 21 (+1960 %) · eff. 1 | 56 (+6.9 %) · eff. 5 | 75 (-10.8 %) · eff. 0 | 97 (-8.9 %) · eff. 0 | 125 (-5.2 %) · eff. 0 | 158 (-9.2 %) · eff. 0 |
-| kaethe-herz | 2 | 21 (+1960 %) · eff. 1 | 52 (-1 %) · eff. 6 | 80 (-4.4 %) · eff. 7 | 106 (-0.6 %) · eff. 10 | 132 (+0.1 %) · eff. 10 | 157 (-9.8 %) · eff. 11 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 39 (-14.1 %) · eff. 12 | 48 (-23.4 %) ⚑ · eff. 13 | 73 (-18.1 %) ⚑ · eff. 16 | 97 (-8.2 %) · eff. 20 | 114 (-12.7 %) · eff. 25 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 54 (+19.6 %) ⚑ · eff. 12 | 92 (+47.2 %) ⚑ · eff. 11 | 113 (+27.3 %) ⚑ · eff. 10 | 132 (+25.1 %) ⚑ · eff. 9 | 174 (+33.1 %) ⚑ · eff. 13 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 42 (-6.8 %) · eff. 12 | 48 (-22.9 %) ⚑ · eff. 7 | 61 (-31.2 %) ⚑ · eff. 9 | 80 (-24.5 %) ⚑ · eff. 11 | 113 (-13.6 %) · eff. 16 |
+| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 47 (+4.2 %) · eff. 17 | 58 (-6.6 %) · eff. 20 | 89 (0 %) · eff. 26 | 106 (0 %) · eff. 31 | 106 (-18.6 %) ⚑ · eff. 3 |
+| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 46 (0 %) · eff. 17 | 94 (+50.2 %) ⚑ · eff. 5 | 135 (+52.3 %) ⚑ · eff. 9 | 161 (+53 %) ⚑ · eff. 10 | 199 (+51.9 %) ⚑ · eff. 3 |
+| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 29 (-36.3 %) ⚑ · eff. 2 | 39 (-37.6 %) ⚑ · eff. 1 | 47 (-47.1 %) ⚑ · eff. 1 | 55 (-47.7 %) ⚑ · eff. 2 | 71 (-45.7 %) ⚑ · eff. 2 |
+| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 58 (+26.8 %) ⚑ · eff. 10 | 83 (+32.5 %) ⚑ · eff. 11 | 100 (+13 %) · eff. 13 | 115 (+8.6 %) · eff. 17 | 147 (+12.2 %) · eff. 23 |
+| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 42 (-8.8 %) · eff. 13 | 85 (+35.5 %) ⚑ · eff. 17 | 109 (+23 %) ⚑ · eff. 26 | 156 (+47.6 %) ⚑ · eff. 33 | 137 (+4.7 %) · eff. 24 |
+| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 49 (+6.6 %) · eff. 18 | 77 (+23.2 %) ⚑ · eff. 19 | 96 (+8.8 %) · eff. 31 | 105 (-0.7 %) · eff. 32 | 138 (+5.3 %) · eff. 20 |
+| kaethe-herz | 0 | 21 (+1960 %) · eff. 1 | 40 (-11.6 %) · eff. 4 | 59 (-5.9 %) · eff. 4 | 80 (-9.8 %) · eff. 4 | 97 (-8.1 %) · eff. 5 | 128 (-2.4 %) · eff. 7 |
+| kaethe-herz | 1 | 21 (+1960 %) · eff. 1 | 48 (+4.8 %) · eff. 4 | 63 (0 %) · eff. 0 | 75 (-15.2 %) ⚑ · eff. 0 | 94 (-11.2 %) · eff. 0 | 131 (0 %) · eff. 0 |
+| kaethe-herz | 2 | 21 (+1960 %) · eff. 1 | 40 (-11.6 %) · eff. 4 | 60 (-4.5 %) · eff. 4 | 76 (-14.4 %) · eff. 5 | 106 (+0.3 %) · eff. 5 | 130 (-0.2 %) · eff. 7 |
 
 ### Tank · Schutz/s
 
@@ -153,9 +153,9 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | kevin-hunt | 0 | 98 (-12.5 %) | 243 (+5.4 %) | 311 (+1.1 %) | 402 (-6.4 %) | 486 (-7.3 %) | 685 (0 %) |
 | kevin-hunt | 1 | 98 (-12.5 %) | 230 (0 %) | 295 (-4 %) | 411 (-4.5 %) | 485 (-7.4 %) | 641 (-6.4 %) |
 | kevin-hunt | 2 | 98 (-12.5 %) | 227 (-1.5 %) | 308 (0 %) | 430 (0 %) | 516 (-1.4 %) | 667 (-2.6 %) |
-| schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3 %) | 331 (+7.6 %) | 471 (+9.4 %) | 567 (+8.3 %) | 749 (+9.4 %) |
-| schorsch-flamme | 1 | 127 (+14.3 %) | 232 (+0.7 %) | 314 (+2 %) | 465 (+8.1 %) | 537 (+2.6 %) | 791 (+15.6 %) ⚑ |
-| schorsch-flamme | 2 | 127 (+14.3 %) | 230 (-0.3 %) | 321 (+4.4 %) | 440 (+2.3 %) | 528 (+0.8 %) | 751 (+9.7 %) |
+| schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3 %) | 340 (+10.5 %) | 478 (+11.2 %) | 563 (+7.5 %) | 737 (+7.5 %) |
+| schorsch-flamme | 1 | 127 (+14.3 %) | 236 (+2.2 %) | 314 (+2 %) | 459 (+6.8 %) | 537 (+2.6 %) | 791 (+15.4 %) ⚑ |
+| schorsch-flamme | 2 | 127 (+14.3 %) | 230 (-0.3 %) | 321 (+4.4 %) | 439 (+2.2 %) | 528 (+0.8 %) | 751 (+9.7 %) |
 | kaethe-grand | 0 | 101 (-9 %) | 237 (+2.7 %) | 337 (+9.7 %) | 432 (+0.5 %) | 561 (+7.1 %) | 724 (+5.8 %) |
 | kaethe-grand | 1 | 101 (-9 %) | 199 (-13.8 %) | 276 (-10.2 %) | 385 (-10.6 %) | 524 (0 %) | 676 (-1.3 %) |
 | kaethe-grand | 2 | 101 (-9 %) | 197 (-14.6 %) | 325 (+5.6 %) | 458 (+6.6 %) | 571 (+9 %) | 832 (+21.5 %) ⚑ |
@@ -167,18 +167,18 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 37 (-29.6 %) ⚑ · eff. 11 | 54 (-38.8 %) ⚑ · eff. 14 | 79 (-34.2 %) ⚑ · eff. 15 | 105 (-22.4 %) ⚑ · eff. 18 | 131 (-27.4 %) ⚑ · eff. 24 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 55 (+5.6 %) · eff. 11 | 104 (+18.2 %) ⚑ · eff. 10 | 142 (+19.2 %) ⚑ · eff. 8 | 133 (-1.9 %) · eff. 6 | 178 (-1.4 %) · eff. 10 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 47 (-10.7 %) · eff. 11 | 54 (-38.6 %) ⚑ · eff. 7 | 69 (-41.9 %) ⚑ · eff. 8 | 88 (-34.9 %) ⚑ · eff. 9 | 126 (-29.8 %) ⚑ · eff. 13 |
-| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 66 (+27.3 %) ⚑ · eff. 16 | 81 (-8.2 %) · eff. 20 | 92 (-22.7 %) ⚑ · eff. 23 | 116 (-14.5 %) · eff. 26 | 211 (+17.3 %) ⚑ · eff. 1 |
-| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 48 (-8.3 %) · eff. 16 | 91 (+3.4 %) · eff. 10 | 137 (+14.7 %) · eff. 11 | 159 (+17.6 %) ⚑ · eff. 12 | 294 (+63.1 %) ⚑ · eff. 1 |
-| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 53 (+1.3 %) · eff. 0 | 87 (-0.7 %) · eff. 1 | 156 (+30.8 %) ⚑ · eff. 1 | 202 (+49.5 %) ⚑ · eff. 1 | 261 (+45 %) ⚑ · eff. 1 |
-| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 56 (+8.3 %) · eff. 6 | 110 (+24.8 %) ⚑ · eff. 4 | 126 (+5.4 %) · eff. 5 | 145 (+7.4 %) · eff. 5 | 187 (+3.7 %) · eff. 8 |
-| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 46 (-11.5 %) · eff. 12 | 88 (0 %) · eff. 13 | 110 (-7.8 %) · eff. 16 | 145 (+7 %) · eff. 22 | 180 (0 %) · eff. 4 |
-| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 52 (-0.8 %) · eff. 15 | 90 (+2.7 %) · eff. 18 | 119 (0 %) · eff. 22 | 135 (0 %) · eff. 20 | 167 (-7.1 %) · eff. 3 |
-| kaethe-herz | 0 | 24 (+2340 %) · eff. 1 | 52 (0 %) · eff. 5 | 100 (+13.1 %) · eff. 10 | 141 (+18 %) ⚑ · eff. 11 | 163 (+20.4 %) ⚑ · eff. 12 | 220 (+21.9 %) ⚑ · eff. 17 |
-| kaethe-herz | 1 | 24 (+2340 %) · eff. 1 | 56 (+7.3 %) · eff. 4 | 78 (-11.7 %) · eff. 0 | 103 (-13.3 %) · eff. 0 | 134 (-1 %) · eff. 0 | 178 (-0.9 %) · eff. 0 |
-| kaethe-herz | 2 | 24 (+2340 %) · eff. 1 | 50 (-3.3 %) · eff. 5 | 81 (-8.4 %) · eff. 7 | 118 (-1 %) · eff. 9 | 133 (-1.8 %) · eff. 6 | 177 (-1.7 %) · eff. 8 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 37 (-21.1 %) ⚑ · eff. 11 | 54 (-20.5 %) ⚑ · eff. 14 | 79 (-11.4 %) · eff. 15 | 105 (-1.7 %) · eff. 18 | 131 (-4.2 %) · eff. 24 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 55 (+18.3 %) ⚑ · eff. 11 | 104 (+53.4 %) ⚑ · eff. 10 | 142 (+60.5 %) ⚑ · eff. 8 | 133 (+24.2 %) ⚑ · eff. 6 | 178 (+30.2 %) ⚑ · eff. 10 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 47 (0 %) · eff. 11 | 54 (-20.4 %) ⚑ · eff. 7 | 69 (-21.8 %) ⚑ · eff. 8 | 88 (-17.6 %) ⚑ · eff. 9 | 126 (-7.3 %) · eff. 13 |
+| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 39 (-15.3 %) ⚑ · eff. 16 | 56 (-16.8 %) ⚑ · eff. 20 | 87 (-1.6 %) · eff. 23 | 101 (-5.5 %) · eff. 26 | 112 (-18.2 %) ⚑ · eff. 2 |
+| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 39 (-15.3 %) ⚑ · eff. 16 | 100 (+46.8 %) ⚑ · eff. 5 | 147 (+66.3 %) ⚑ · eff. 6 | 171 (+60.4 %) ⚑ · eff. 6 | 214 (+57 %) ⚑ · eff. 2 |
+| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 27 (-42.6 %) ⚑ · eff. 1 | 41 (-40 %) ⚑ · eff. 1 | 49 (-44.6 %) ⚑ · eff. 1 | 57 (-46.6 %) ⚑ · eff. 1 | 73 (-46.4 %) ⚑ · eff. 2 |
+| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 62 (+32.3 %) ⚑ · eff. 11 | 90 (+32.6 %) ⚑ · eff. 13 | 105 (+18.5 %) ⚑ · eff. 16 | 129 (+20.7 %) ⚑ · eff. 24 | 162 (+18.9 %) ⚑ · eff. 34 |
+| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 51 (+8.8 %) · eff. 17 | 88 (+30.1 %) ⚑ · eff. 18 | 118 (+32.6 %) ⚑ · eff. 29 | 153 (+43.1 %) ⚑ · eff. 35 | 152 (+11.1 %) · eff. 32 |
+| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 53 (+14.8 %) · eff. 18 | 86 (+26.5 %) ⚑ · eff. 19 | 109 (+23.3 %) ⚑ · eff. 29 | 116 (+8.9 %) · eff. 22 | 95 (-30.3 %) ⚑ · eff. 7 |
+| kaethe-herz | 0 | 24 (+2340 %) · eff. 1 | 40 (-14.8 %) · eff. 3 | 65 (-4.1 %) · eff. 4 | 84 (-5.4 %) · eff. 4 | 101 (-5.6 %) · eff. 4 | 129 (-5.4 %) · eff. 6 |
+| kaethe-herz | 1 | 24 (+2340 %) · eff. 1 | 47 (+1.1 %) · eff. 3 | 67 (-0.7 %) · eff. 0 | 89 (0 %) · eff. 0 | 107 (0 %) · eff. 0 | 141 (+3.4 %) · eff. 0 |
+| kaethe-herz | 2 | 24 (+2340 %) · eff. 1 | 40 (-14.6 %) · eff. 3 | 68 (0 %) · eff. 4 | 87 (-2.3 %) · eff. 4 | 105 (-1.5 %) · eff. 4 | 136 (0 %) · eff. 6 |
 
 ### Tank · Schutz/s
 
@@ -215,9 +215,9 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | kevin-hunt | 0 | 129 (-10.7 %) | 257 (-0.6 %) | 382 (+2.5 %) | 486 (-5.9 %) | 609 (0 %) | 795 (-1.8 %) |
 | kevin-hunt | 1 | 129 (-10.7 %) | 248 (-4 %) | 345 (-7.5 %) | 456 (-11.6 %) | 557 (-8.7 %) | 763 (-5.8 %) |
 | kevin-hunt | 2 | 129 (-10.7 %) | 268 (+3.4 %) | 379 (+1.6 %) | 505 (-2.1 %) | 626 (+2.8 %) | 810 (0 %) |
-| schorsch-flamme | 0 | 152 (+5.2 %) | 285 (+10 %) | 426 (+14.3 %) | 597 (+15.6 %) ⚑ | 713 (+16.9 %) ⚑ | 974 (+20.3 %) ⚑ |
-| schorsch-flamme | 1 | 152 (+5.2 %) | 274 (+6 %) | 364 (-2.3 %) | 560 (+8.5 %) | 675 (+10.8 %) | 959 (+18.4 %) ⚑ |
-| schorsch-flamme | 2 | 152 (+5.2 %) | 274 (+6 %) | 376 (+0.9 %) | 534 (+3.6 %) | 658 (+7.9 %) | 920 (+13.6 %) |
+| schorsch-flamme | 0 | 152 (+5.2 %) | 286 (+10.5 %) | 421 (+12.8 %) | 604 (+17 %) ⚑ | 716 (+17.5 %) ⚑ | 984 (+21.4 %) ⚑ |
+| schorsch-flamme | 1 | 152 (+5.2 %) | 274 (+6 %) | 364 (-2.3 %) | 560 (+8.5 %) | 676 (+11 %) | 960 (+18.6 %) ⚑ |
+| schorsch-flamme | 2 | 152 (+5.2 %) | 274 (+6 %) | 376 (+0.9 %) | 534 (+3.6 %) | 658 (+7.9 %) | 909 (+12.2 %) |
 | kaethe-grand | 0 | 125 (-13.5 %) | 268 (+3.6 %) | 400 (+7.1 %) | 553 (+7.1 %) | 674 (+10.7 %) | 992 (+22.5 %) ⚑ |
 | kaethe-grand | 1 | 125 (-13.5 %) | 239 (-7.7 %) | 326 (-12.6 %) | 460 (-10.9 %) | 582 (-4.4 %) | 797 (-1.7 %) |
 | kaethe-grand | 2 | 125 (-13.5 %) | 234 (-9.7 %) | 373 (0 %) | 575 (+11.5 %) | 704 (+15.5 %) ⚑ | 1004 (+23.9 %) ⚑ |
@@ -229,18 +229,18 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 46 (-20 %) ⚑ · eff. 9 | 55 (-42.4 %) ⚑ · eff. 12 | 97 (-26.7 %) ⚑ · eff. 15 | 129 (-15.5 %) ⚑ · eff. 16 | 172 (-22.5 %) ⚑ · eff. 22 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 65 (+12.1 %) · eff. 9 | 115 (+20 %) ⚑ · eff. 8 | 152 (+15.5 %) ⚑ · eff. 6 | 150 (-1.6 %) · eff. 5 | 204 (-8.1 %) · eff. 5 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 54 (-6.9 %) · eff. 9 | 61 (-36.7 %) ⚑ · eff. 6 | 80 (-39.5 %) ⚑ · eff. 7 | 104 (-31.9 %) ⚑ · eff. 8 | 137 (-38 %) ⚑ · eff. 11 |
-| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 76 (+30.3 %) ⚑ · eff. 13 | 72 (-25.2 %) ⚑ · eff. 17 | 96 (-27.1 %) ⚑ · eff. 22 | 113 (-26 %) ⚑ · eff. 23 | 248 (+12 %) · eff. 1 |
-| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 55 (-5.5 %) · eff. 13 | 96 (0 %) · eff. 6 | 159 (+20.5 %) ⚑ · eff. 9 | 185 (+21.2 %) ⚑ · eff. 8 | 359 (+62.2 %) ⚑ · eff. 1 |
-| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 63 (+9 %) · eff. 0 | 94 (-2.5 %) · eff. 0 | 175 (+32.7 %) ⚑ · eff. 1 | 236 (+55.2 %) ⚑ · eff. 1 | 317 (+43.1 %) ⚑ · eff. 1 |
-| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 63 (+9 %) · eff. 7 | 117 (+21.7 %) ⚑ · eff. 6 | 137 (+3.9 %) · eff. 9 | 162 (+6.1 %) · eff. 10 | 222 (0 %) · eff. 7 |
-| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 48 (-16.7 %) ⚑ · eff. 10 | 100 (+4.3 %) · eff. 9 | 123 (-6.9 %) · eff. 16 | 153 (+0.7 %) · eff. 23 | 222 (+0.1 %) · eff. 5 |
-| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 58 (0 %) · eff. 13 | 98 (+2.3 %) · eff. 17 | 129 (-2.1 %) · eff. 21 | 143 (-6.2 %) · eff. 15 | 194 (-12.6 %) · eff. 5 |
-| kaethe-herz | 0 | 25 (+2430 %) · eff. 1 | 55 (-5 %) · eff. 3 | 107 (+10.9 %) · eff. 8 | 146 (+10.9 %) · eff. 9 | 170 (+11.6 %) · eff. 9 | 235 (+6 %) · eff. 12 |
-| kaethe-herz | 1 | 25 (+2430 %) · eff. 1 | 62 (+6.2 %) · eff. 3 | 85 (-12.2 %) · eff. 0 | 110 (-16.9 %) ⚑ · eff. 0 | 141 (-7.3 %) · eff. 0 | 187 (-15.6 %) ⚑ · eff. 0 |
-| kaethe-herz | 2 | 25 (+2430 %) · eff. 1 | 53 (-7.9 %) · eff. 3 | 81 (-15.8 %) ⚑ · eff. 5 | 132 (0 %) · eff. 7 | 152 (0 %) · eff. 4 | 203 (-8.5 %) · eff. 7 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 46 (-16.2 %) ⚑ · eff. 9 | 55 (-26.7 %) ⚑ · eff. 12 | 97 (-5.3 %) · eff. 15 | 129 (0 %) · eff. 16 | 172 (-4.7 %) · eff. 22 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 65 (+17.3 %) ⚑ · eff. 9 | 115 (+52.6 %) ⚑ · eff. 8 | 152 (+49.3 %) ⚑ · eff. 6 | 150 (+16.4 %) ⚑ · eff. 5 | 204 (+12.9 %) · eff. 5 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 54 (-2.5 %) · eff. 9 | 61 (-19.4 %) ⚑ · eff. 6 | 80 (-21.8 %) ⚑ · eff. 7 | 104 (-19.4 %) ⚑ · eff. 8 | 137 (-23.8 %) ⚑ · eff. 11 |
+| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 61 (+9.7 %) · eff. 13 | 65 (-13.8 %) · eff. 17 | 102 (0 %) · eff. 22 | 123 (-4.5 %) · eff. 23 | 126 (-30.4 %) ⚑ · eff. 2 |
+| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 61 (+9.7 %) · eff. 13 | 96 (+26.5 %) ⚑ · eff. 2 | 160 (+56.4 %) ⚑ · eff. 3 | 180 (+39.9 %) ⚑ · eff. 3 | 244 (+35.4 %) ⚑ · eff. 2 |
+| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 29 (-48.4 %) ⚑ · eff. 1 | 42 (-44.8 %) ⚑ · eff. 1 | 52 (-49.3 %) ⚑ · eff. 1 | 62 (-51.8 %) ⚑ · eff. 1 | 81 (-55.3 %) ⚑ · eff. 2 |
+| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 71 (+28 %) ⚑ · eff. 14 | 107 (+41.1 %) ⚑ · eff. 19 | 127 (+23.9 %) ⚑ · eff. 21 | 144 (+12.1 %) · eff. 31 | 218 (+20.9 %) ⚑ · eff. 45 |
+| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 55 (0 %) · eff. 17 | 79 (+4.1 %) · eff. 18 | 111 (+8.2 %) · eff. 29 | 165 (+28.6 %) ⚑ · eff. 37 | 182 (+1 %) · eff. 39 |
+| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 64 (+15 %) · eff. 14 | 100 (+32.3 %) ⚑ · eff. 18 | 125 (+22.7 %) ⚑ · eff. 28 | 140 (+8.6 %) · eff. 29 | 181 (+0.2 %) · eff. 32 |
+| kaethe-herz | 0 | 25 (+2430 %) · eff. 1 | 46 (-17.1 %) ⚑ · eff. 3 | 67 (-11.5 %) · eff. 3 | 92 (-10 %) · eff. 3 | 107 (-17 %) ⚑ · eff. 3 | 153 (-15.4 %) ⚑ · eff. 4 |
+| kaethe-herz | 1 | 25 (+2430 %) · eff. 1 | 54 (-1.8 %) · eff. 3 | 76 (0 %) · eff. 0 | 98 (-4 %) · eff. 0 | 122 (-4.8 %) · eff. 0 | 180 (0 %) · eff. 0 |
+| kaethe-herz | 2 | 25 (+2430 %) · eff. 1 | 46 (-17.1 %) ⚑ · eff. 3 | 68 (-9.8 %) · eff. 3 | 89 (-12.7 %) · eff. 4 | 107 (-16.5 %) ⚑ · eff. 3 | 151 (-16.4 %) ⚑ · eff. 4 |
 
 ### Tank · Schutz/s
 
@@ -402,55 +402,55 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Bock auf mehr +6.3 % · Letzter Ausschank +5.8 % · Scherben bringen Glück +5.7 % · Nachfüllen +5 % · Bock drauf +4.1 % · Restbestand +3 % · Pfand mit Zinsen +2.3 % · Bock zuerst 0 % · Breiter Ausschank 0 % · Pils zuerst 0 % · Weizenkur 0 % · Rücklaufleitung gebunden · Gut gekühlt gebunden
 
-### baerbel-care · Pfad 0 · Stufe 10 ·252 Schaden/s · Ausrüstung +155.5 % gegenüber Startausrüstung
+### baerbel-care · Pfad 0 · Stufe 10 ·260 Schaden/s · Ausrüstung +328.9 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.6 Schaden/s · -0.2 Heilung/s · Taktgefühl 0.4 Schaden/s · 0.4 Heilung/s · Bastelgrips 0 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.7 Schaden/s · Taktgefühl -0.3 Schaden/s · 0.6 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Großreinemachen 72.4 % · Autoangriff · Dauersprühen 12.8 % · Pinsel-Piekser 9.3 % · Fleckentest, Schätzchen! 5.6 %
+**Kniffe (Anteil am Schaden):** Großreinemachen 52.4 % · Pinsel-Piekser 35.9 % · Autoangriff · Dauersprühen 11.7 %
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Gründlich, nicht schnell 0 % · Sanfte Versiegelung 0 % · Löffel in der Schürze 0 % · Warme Schüssel gebunden · Nachschlag gebunden · Das sechste Glas gebunden · Ein Schluck, ein Plan gebunden · Notration gebunden · Nebenbei umgerührt gebunden
 
-### baerbel-care · Pfad 1 · Stufe 10 ·223 Schaden/s · Ausrüstung +135.8 % gegenüber Startausrüstung
+### baerbel-care · Pfad 1 · Stufe 10 ·223 Schaden/s · Ausrüstung +214.5 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.7 Schaden/s · 0.1 Heilung/s · Taktgefühl -0.1 Schaden/s · 0.3 Heilung/s · Bastelgrips -0.2 Schaden/s · 0.1 Heilung/s · Dicke Haut -0.2 Schaden/s · -0.4 Heilung/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.5 Schaden/s · 0.1 Heilung/s · Taktgefühl 0.4 Schaden/s · 0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.5 Heilung/s · Dicke Haut 0.5 Schaden/s · -0.6 Heilung/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Großreinemachen 66.9 % · Pinsel-Piekser 13.5 % · Autoangriff · Dauersprühen 12.6 % · Fleckentest, Schätzchen! 7 %
+**Kniffe (Anteil am Schaden):** Großreinemachen 49.4 % · Pinsel-Piekser 36.3 % · Autoangriff · Dauersprühen 14.3 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Vom Herd aus +0.8 % · Anbau mit Fußbodenheilung +0.8 % · Nachgelegt -7.4 % · Giselas Ruf gebunden · Brutpflege gebunden · Dickes Fell gebunden · Gisela, hierher! gebunden · Thermomix-Tafel gebunden · Am Tisch wird gegessen gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Vom Herd aus +0.7 % · Anbau mit Fußbodenheilung +0.7 % · Nachgelegt -8.9 % · Giselas Ruf gebunden · Brutpflege gebunden · Dickes Fell gebunden · Gisela, hierher! gebunden · Thermomix-Tafel gebunden · Am Tisch wird gegessen gebunden
 
-### baerbel-care · Pfad 2 · Stufe 10 ·282 Schaden/s · Ausrüstung +141.1 % gegenüber Startausrüstung
+### baerbel-care · Pfad 2 · Stufe 10 ·278 Schaden/s · Ausrüstung +203 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.2 Schaden/s · 0.3 Heilung/s · Taktgefühl 0 Schaden/s · 0.3 Heilung/s · Bastelgrips 0 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.4 Schaden/s · Taktgefühl 0.7 Schaden/s · -0.1 Heilung/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Großreinemachen 64.6 % · Pinsel-Piekser 18.3 % · Autoangriff · Dauersprühen 11.4 % · Fleckentest, Schätzchen! 5.6 %
+**Kniffe (Anteil am Schaden):** Großreinemachen 48.9 % · Pinsel-Piekser 40.1 % · Autoangriff · Dauersprühen 11 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Frisch aufgetragen +10 % · Restfleck +0.9 % · Blitzblank -1.1 % · Spüli ins Auge gebunden · Frisch gewischt gebunden · Nichts wird weggekippt gebunden · Stammpublikum gebunden · Deckel auf die Schüssel gebunden · Landfrauen-Glanz gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Restfleck +3.1 % · Blitzblank +1.5 % · Frisch aufgetragen 0 % · Spüli ins Auge gebunden · Frisch gewischt gebunden · Nichts wird weggekippt gebunden · Stammpublikum gebunden · Deckel auf die Schüssel gebunden · Landfrauen-Glanz gebunden
 
-### baerbel-care · Pfad 0 · Stufe 20 ·383 Schaden/s · Ausrüstung +234.4 % gegenüber Startausrüstung
+### baerbel-care · Pfad 0 · Stufe 20 ·391 Schaden/s · Ausrüstung +439.2 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.1 Schaden/s · 0.4 Heilung/s · Taktgefühl 1 Schaden/s · -0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.2 Schaden/s · -0.1 Heilung/s · Taktgefühl 0.5 Schaden/s · -0.1 Heilung/s · Bastelgrips 0 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Großreinemachen 71.8 % · Pinsel-Piekser 13.2 % · Autoangriff · Dauersprühen 11 % · Fleckentest, Schätzchen! 4 %
+**Kniffe (Anteil am Schaden):** Großreinemachen 49.3 % · Pinsel-Piekser 38.9 % · Autoangriff · Dauersprühen 11.8 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Frisch gewischt +4.5 % · Nebenbei umgerührt +1.6 % · Nicht ohne meine Mädels +1.4 % · Nachschlag +0.6 % · Das sechste Glas 0 % · Notration 0 % · Gründlich, nicht schnell 0 % · Löffel in der Schürze 0 % · Spüli ins Auge 0 % · Ein Schluck, ein Plan -1.5 % · Giselas Ruf -3.3 % · Warme Schüssel gebunden · Sanfte Versiegelung gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nicht ohne meine Mädels +5.1 % · Nebenbei umgerührt +3.1 % · Nachschlag 0 % · Das sechste Glas 0 % · Ein Schluck, ein Plan 0 % · Notration 0 % · Gründlich, nicht schnell 0 % · Löffel in der Schürze 0 % · Giselas Ruf 0 % · Spüli ins Auge 0 % · Frisch gewischt 0 % · Warme Schüssel gebunden · Sanfte Versiegelung gebunden
 
-### baerbel-care · Pfad 1 · Stufe 20 ·349 Schaden/s · Ausrüstung +191.2 % gegenüber Startausrüstung
+### baerbel-care · Pfad 1 · Stufe 20 ·329 Schaden/s · Ausrüstung +314.2 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.4 Schaden/s · Taktgefühl 0.3 Schaden/s · -0.1 Heilung/s · Bastelgrips -0.9 Schaden/s · 1.6 Heilung/s · -0.1 verhindert/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.6 Schaden/s · Taktgefühl 0.3 Schaden/s · 0.2 Heilung/s · -0.1 verhindert/s · Bastelgrips 0.2 Schaden/s · 0.3 Heilung/s · Dicke Haut 0.8 Schaden/s · -1 Heilung/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Großreinemachen 61.4 % · Pinsel-Piekser 18 % · Autoangriff · Dauersprühen 14.8 % · Fleckentest, Schätzchen! 5.8 %
+**Kniffe (Anteil am Schaden):** Großreinemachen 49.6 % · Pinsel-Piekser 38.6 % · Autoangriff · Dauersprühen 11.8 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Anbau mit Fußbodenheilung +1.9 % · Frisch gewischt +1.1 % · Brutpflege 0 % · Dickes Fell 0 % · Gisela, hierher! 0 % · Am Tisch wird gegessen 0 % · Warme Schüssel 0 % · Spüli ins Auge 0 % · Gänsehaut-Finale -0.2 % · Thermomix-Tafel -3 % · Nachgelegt -3 % · Giselas Ruf gebunden · Vom Herd aus gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Anbau mit Fußbodenheilung +5.4 % · Brutpflege 0 % · Dickes Fell 0 % · Gisela, hierher! 0 % · Am Tisch wird gegessen 0 % · Warme Schüssel 0 % · Spüli ins Auge 0 % · Frisch gewischt 0 % · Gänsehaut-Finale -3.5 % · Nachgelegt -6.3 % · Thermomix-Tafel -7.1 % · Giselas Ruf gebunden · Vom Herd aus gebunden
 
-### baerbel-care · Pfad 2 · Stufe 20 ·352 Schaden/s · Ausrüstung +170.6 % gegenüber Startausrüstung
+### baerbel-care · Pfad 2 · Stufe 20 ·424 Schaden/s · Ausrüstung +315.3 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.9 Schaden/s · Taktgefühl -0.7 Schaden/s · 0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.6 Heilung/s · Dicke Haut 0 Schaden/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.2 Schaden/s · Taktgefühl 0.4 Schaden/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Großreinemachen 66.4 % · Pinsel-Piekser 17 % · Autoangriff · Dauersprühen 12.9 % · Fleckentest, Schätzchen! 3.7 %
+**Kniffe (Anteil am Schaden):** Großreinemachen 47.9 % · Pinsel-Piekser 42 % · Autoangriff · Dauersprühen 10.1 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Frisch gewischt +5.3 % · Frisch aufgetragen +5.3 % · Restfleck +2 % · Nichts wird weggekippt 0 % · Deckel auf die Schüssel 0 % · Landfrauen-Glanz 0 % · Warme Schüssel 0 % · Stammpublikum -1.7 % · Giselas Ruf -6.4 % · Schlussputz -8.6 % · Nachschlag -10 % · Spüli ins Auge gebunden · Blitzblank gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Restfleck +2.1 % · Landfrauen-Glanz +1.5 % · Stammpublikum +0.6 % · Frisch gewischt 0 % · Nichts wird weggekippt 0 % · Deckel auf die Schüssel 0 % · Frisch aufgetragen 0 % · Schlussputz 0 % · Warme Schüssel 0 % · Giselas Ruf 0 % · Nachschlag 0 % · Spüli ins Auge gebunden · Blitzblank gebunden
 
-### baerbel-feedback · Pfad 0 · Stufe 10 ·295 Schaden/s · Ausrüstung +103.6 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 0 · Stufe 10 ·295 Schaden/s · Ausrüstung +103.5 % gegenüber Startausrüstung
 
 **Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.4 Schaden/s · 0.2 Heilung/s · Taktgefühl -0.4 Schaden/s · 0.2 Heilung/s · Bastelgrips -0.7 Schaden/s · 0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
@@ -480,7 +480,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Kniffe (Anteil am Schaden):** Durchputzen 44.7 % · Pinsel-Piekser 23.4 % · Durchputzen 12.5 % · Autoangriff · Dauersprühen 10 % · Schimmel 9.4 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Putzprovision +1.1 % · Schimmel geht viral 0 % · Kurzer Hausbesuch 0 % · Muffige Kammer 0 % · Ruhe im Karton 0 % · Provision vom Schmerz 0 % · Nebenbei gestreut -0.1 % · Einmal mehr drüber -0.2 % · Sporenflug -2.6 % · Sporenregen -3.6 % · Es wächst nach -9.7 % · Feuchte Ecke gebunden · Mundpropaganda gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Putzprovision +1.1 % · Schimmel geht viral 0 % · Kurzer Hausbesuch 0 % · Muffige Kammer 0 % · Ruhe im Karton 0 % · Provision vom Schmerz 0 % · Nebenbei gestreut -0.1 % · Einmal mehr drüber -0.2 % · Sporenregen -2.5 % · Sporenflug -2.6 % · Es wächst nach -9.7 % · Feuchte Ecke gebunden · Mundpropaganda gebunden
 
 ### baerbel-feedback · Pfad 1 · Stufe 20 ·423 Schaden/s · Ausrüstung +186.8 % gegenüber Startausrüstung
 
@@ -690,61 +690,61 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Gewinnrakete +10 % · Glücksrausch +3.9 % · Pfandrückgabe +1.4 % · Pfandregen +0.7 % · Gezinkte Dose +0.7 % · Glücksbringer +0.2 % · Fangprämie 0 % · Stahlseil 0 % · Fangschuss 0 % · Im Vorbeirennen -1.7 % · Pfandseil -4 % · Zweite Serie gebunden · Restgewinn gebunden
 
-### schorsch-chef · Pfad 0 · Stufe 10 ·210 Schaden/s · Ausrüstung +199.3 % gegenüber Startausrüstung
+### schorsch-chef · Pfad 0 · Stufe 10 ·169 Schaden/s · Ausrüstung +182.4 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.4 Schaden/s · Taktgefühl 0.3 Schaden/s · 0.2 Heilung/s · Bastelgrips 0.2 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.1 Schaden/s · -0.3 Heilung/s · Taktgefühl -1 Schaden/s · 0.3 Heilung/s · Bastelgrips -0.3 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Grillzange 27.6 % · Autoangriff · Zangenklapper 23.6 % · Servieren 21.4 % · Dampf 21.3 % · Glutbrocken 4.8 % · Glutbrand 1.3 %
+**Kniffe (Anteil am Schaden):** Autoangriff · Zangenklapper 40.6 % · Grillzange 34.5 % · Servieren 24.9 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Wurstkette +1.8 % · Metzgerqualität 0 % · Auf Vorrat gegrillt 0 % · Probierhäppchen gebunden · Zweite Wurst gebunden · Satt ist satt gebunden · Notwurst gebunden · Hausmacher gebunden · Goldbraun gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Wurstkette +2.2 % · Metzgerqualität 0 % · Auf Vorrat gegrillt -0.4 % · Probierhäppchen gebunden · Zweite Wurst gebunden · Satt ist satt gebunden · Notwurst gebunden · Hausmacher gebunden · Goldbraun gebunden
 
-### schorsch-chef · Pfad 1 · Stufe 10 ·188 Schaden/s · Ausrüstung +199.7 % gegenüber Startausrüstung
+### schorsch-chef · Pfad 1 · Stufe 10 ·176 Schaden/s · Ausrüstung +378 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.2 Schaden/s · Taktgefühl 0.3 Schaden/s · 0.3 Heilung/s · Bastelgrips -0.8 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.2 Schaden/s · 0.3 Heilung/s · -0.1 verhindert/s · Taktgefühl 0.8 Schaden/s · 1.2 Heilung/s · Bastelgrips -0.1 Schaden/s · 0.5 Heilung/s · -0.1 verhindert/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Popcorn 33.6 % · Grillzange 21.5 % · Autoangriff · Zangenklapper 20.3 % · Servieren 14.1 % · Dampf 10.5 %
+**Kniffe (Anteil am Schaden):** Grillzange 25.7 % · Autoangriff · Zangenklapper 25.4 % · Popcorn 23 % · Servieren 16.8 % · Stichflamme 9.1 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Belegtes Brötchen 0 % · Popcorn für alle 0 % · Scharfer Senf -5.5 % · Grillkäse dazu gebunden · Schnell gewendet gebunden · Heißer Rost gebunden · Maiskolben dazu gebunden · Senf drauf! gebunden · Wenden! gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Popcorn für alle 0 % · Belegtes Brötchen -0.1 % · Scharfer Senf -8.7 % · Grillkäse dazu gebunden · Schnell gewendet gebunden · Heißer Rost gebunden · Maiskolben dazu gebunden · Senf drauf! gebunden · Wenden! gebunden
 
-### schorsch-chef · Pfad 2 · Stufe 10 ·233 Schaden/s · Ausrüstung +189.1 % gegenüber Startausrüstung
+### schorsch-chef · Pfad 2 · Stufe 10 ·165 Schaden/s · Ausrüstung +616.7 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.6 Schaden/s · -0.1 Heilung/s · Taktgefühl 2 Schaden/s · 0.3 Heilung/s · Bastelgrips 1 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.4 Schaden/s · -0.2 Heilung/s · Taktgefühl 1.9 Schaden/s · -0.2 Heilung/s · Bastelgrips 0.4 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Servieren 35.4 % · Grillzange 29.3 % · Autoangriff · Zangenklapper 18.7 % · Dampf 10.8 % · Glutbrocken 5.8 %
+**Kniffe (Anteil am Schaden):** Autoangriff · Zangenklapper 30.3 % · Servieren 27.5 % · Grillzange 25.3 % · Stichflamme 16.8 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Dicke Luft +3.7 % · Buffet nachlegen +0.8 % · Frische Luft -2.9 % · Löschbier gebunden · Dampfgaren gebunden · Stammplatz gebunden · Feuerfeste Schürze gebunden · Ruhige Glut gebunden · Tischdienst gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Buffet nachlegen 0 % · Dicke Luft 0 % · Frische Luft -0.3 % · Löschbier gebunden · Dampfgaren gebunden · Stammplatz gebunden · Feuerfeste Schürze gebunden · Ruhige Glut gebunden · Tischdienst gebunden
 
-### schorsch-chef · Pfad 0 · Stufe 20 ·281 Schaden/s · Ausrüstung +255.3 % gegenüber Startausrüstung
+### schorsch-chef · Pfad 0 · Stufe 20 ·246 Schaden/s · Ausrüstung +235.5 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.7 Schaden/s · Taktgefühl -0.7 Schaden/s · 0.3 Heilung/s · Bastelgrips 0.8 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.5 Schaden/s · Taktgefühl 0.7 Schaden/s · -0.4 Heilung/s · Bastelgrips -0.6 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Grillzange 33.4 % · Autoangriff · Zangenklapper 24 % · Servieren 19.1 % · Dampf 18 % · Glutbrocken 4.2 % · Glutbrand 1.3 %
+**Kniffe (Anteil am Schaden):** Autoangriff · Zangenklapper 36.2 % · Grillzange 34.8 % · Stichflamme 19.4 % · Servieren 9.6 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Satt ist satt 0 % · Notwurst 0 % · Hausmacher 0 % · Goldbraun 0 % · Metzgerqualität 0 % · Auf Vorrat gegrillt 0 % · Meisterwurst 0 % · Löschbier 0 % · Schnell gewendet 0 % · Zweite Wurst -8.2 % · Grillkäse dazu -12.2 % · Probierhäppchen gebunden · Wurstkette gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Auf Vorrat gegrillt +7.9 % · Satt ist satt +3.9 % · Goldbraun +0.5 % · Schnell gewendet +0.2 % · Notwurst 0 % · Hausmacher 0 % · Metzgerqualität 0 % · Meisterwurst 0 % · Löschbier 0 % · Grillkäse dazu -3.1 % · Zweite Wurst -4.2 % · Probierhäppchen gebunden · Wurstkette gebunden
 
-### schorsch-chef · Pfad 1 · Stufe 20 ·303 Schaden/s · Ausrüstung +280.7 % gegenüber Startausrüstung
+### schorsch-chef · Pfad 1 · Stufe 20 ·269 Schaden/s · Ausrüstung +570.8 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.8 Schaden/s · Taktgefühl 1.2 Schaden/s · 0.1 Heilung/s · Bastelgrips 1.3 Schaden/s · -0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0.6 Schaden/s · Wumms -0.1 Schaden/s · -0.1 verhindert/s · Taktgefühl -0.7 Schaden/s · -0.3 Heilung/s · -0.1 verhindert/s · Bastelgrips -0.9 Schaden/s · 1.4 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Grillzange 26.1 % · Popcorn 23.3 % · Autoangriff · Zangenklapper 22.1 % · Dampf 15.8 % · Servieren 8.9 % · Glutbrocken 3.8 %
+**Kniffe (Anteil am Schaden):** Grillzange 33.8 % · Stichflamme 30.5 % · Autoangriff · Zangenklapper 21.4 % · Popcorn 10.2 % · Servieren 4.1 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Maiskolben dazu +18.3 % · Probierhäppchen +12.7 % · Belegtes Brötchen 0 % · Löschbier 0 % · Volle Platte -0.4 % · Heißer Rost -0.8 % · Schnell gewendet -1.1 % · Wenden! -3.2 % · Scharfer Senf -3.6 % · Zweite Wurst -6.2 % · Senf drauf! -7 % · Grillkäse dazu gebunden · Popcorn für alle gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Maiskolben dazu +17.9 % · Probierhäppchen +14.2 % · Senf drauf! +10.4 % · Scharfer Senf +7.1 % · Schnell gewendet +1.5 % · Heißer Rost +0.4 % · Wenden! +0.4 % · Belegtes Brötchen +0.3 % · Löschbier 0 % · Volle Platte -1.7 % · Zweite Wurst -5.9 % · Grillkäse dazu gebunden · Popcorn für alle gebunden
 
-### schorsch-chef · Pfad 2 · Stufe 20 ·342 Schaden/s · Ausrüstung +310.7 % gegenüber Startausrüstung
+### schorsch-chef · Pfad 2 · Stufe 20 ·299 Schaden/s · Ausrüstung +1227 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.4 Schaden/s · 0.2 Heilung/s · Taktgefühl 0 Schaden/s · Bastelgrips 0.3 Schaden/s · 0.5 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms -0.1 Schaden/s · -0.2 Heilung/s · Taktgefühl -0.9 Schaden/s · -0.1 Heilung/s · Bastelgrips 0.1 Schaden/s · 0.3 Heilung/s · Dicke Haut 1.8 Schaden/s · 0.3 Heilung/s
 
-**Kniffe (Anteil am Schaden):** Grillzange 29.7 % · Dampf 24.5 % · Servieren 24 % · Autoangriff · Zangenklapper 18.2 % · Glutbrocken 3.4 % · Glutbrand 0.1 %
+**Kniffe (Anteil am Schaden):** Grillzange 52.7 % · Autoangriff · Zangenklapper 22.7 % · Servieren 13.2 % · Stichflamme 11.4 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Ruhige Glut +10.6 % · Probierhäppchen +8.3 % · Dampfgaren +3.8 % · Stammplatz +3.3 % · Buffet nachlegen +1.5 % · Grillkäse dazu +1.3 % · Zweite Wurst +1.1 % · Feuerfeste Schürze 0 % · Tischdienst 0 % · Frische Luft -0.1 % · Lokalrunde -0.7 % · Löschbier gebunden · Dicke Luft gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Frische Luft +28 % · Probierhäppchen +15.4 % · Grillkäse dazu +12.8 % · Ruhige Glut +6.7 % · Feuerfeste Schürze +3.6 % · Stammplatz +0.6 % · Dampfgaren 0 % · Tischdienst 0 % · Buffet nachlegen 0 % · Lokalrunde 0 % · Zweite Wurst -4.5 % · Löschbier gebunden · Dicke Luft gebunden
 
-### schorsch-flamme · Pfad 0 · Stufe 10 ·331 Schaden/s · Ausrüstung +149.4 % gegenüber Startausrüstung
+### schorsch-flamme · Pfad 0 · Stufe 10 ·340 Schaden/s · Ausrüstung +156.1 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.8 Schaden/s · Taktgefühl 1.1 Schaden/s · Bastelgrips -1.4 Schaden/s · -0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.3 Schaden/s · Taktgefühl 0.2 Schaden/s · Bastelgrips -1.8 Schaden/s · -0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
 **Kniffe (Anteil am Schaden):** Schwenkgrill 23.2 % · Servieren 16.7 % · Popcorn 16.5 % · Grillzange 15.8 % · Stichflamme 8.1 % · Autoangriff · Zangenklapper 7 % · Flambiert 4.9 % · Dampf 4.7 % · Glutbrocken 2.3 % · Glutbrand 0.7 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Blasebalg-Profi +2.4 % · Feuerring 0 % · Heißer Draht -4.6 % · Gut angefacht gebunden · Kurze Zündschnur gebunden · Zunder gebunden · Hitzewelle gebunden · Nach dem Knall gebunden · Nachglühen gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Blasebalg-Profi +3.9 % · Feuerring 0 % · Heißer Draht -1.9 % · Gut angefacht gebunden · Kurze Zündschnur gebunden · Zunder gebunden · Hitzewelle gebunden · Nach dem Knall gebunden · Nachglühen gebunden
 
 ### schorsch-flamme · Pfad 1 · Stufe 10 ·314 Schaden/s · Ausrüstung +182 % gegenüber Startausrüstung
 
@@ -752,23 +752,23 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Kniffe (Anteil am Schaden):** Servieren 28.3 % · Schwenkgrill 18.5 % · Grillzange 17.7 % · Popcorn 16.5 % · Autoangriff · Zangenklapper 9.1 % · Stichflamme 7.4 % · Dampf 2.6 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Knusprig +1 % · Grillteller mit Braten +0.9 % · Zweiter Gang -4.5 % · Anbraten gebunden · Fleischermesser gebunden · Auf den Punkt gebunden · Abschrecken gebunden · Der Nächste, bitte gebunden · Fleischklopfer gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Knusprig +1 % · Grillteller mit Braten +0.9 % · Zweiter Gang -4.4 % · Anbraten gebunden · Fleischermesser gebunden · Auf den Punkt gebunden · Abschrecken gebunden · Der Nächste, bitte gebunden · Fleischklopfer gebunden
 
 ### schorsch-flamme · Pfad 2 · Stufe 10 ·321 Schaden/s · Ausrüstung +150.4 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.8 Schaden/s · Taktgefühl 3.8 Schaden/s · 0.2 Heilung/s · Bastelgrips 0.9 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2 Schaden/s · Taktgefühl 4 Schaden/s · 0.2 Heilung/s · Bastelgrips 0.9 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
 **Kniffe (Anteil am Schaden):** Popcorn 20.7 % · Schwenkgrill 20.2 % · Servieren 16.4 % · Spiritus-Schwall 12.4 % · Grillzange 11.6 % · Stichflamme 7.9 % · Autoangriff · Zangenklapper 7.2 % · Dampf 1.9 % · Glutbrocken 1.2 % · Glutbrand 0.4 %
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nachgießen +2.8 % · Zangentakt 0 % · Doppelpack 0 % · Kohlenschaufel gebunden · Zangenklapper im Takt gebunden · Brandbeschleuniger gebunden · Heiße Kohlen gebunden · Spiritus-Schwall gebunden · Funkensprung gebunden
 
-### schorsch-flamme · Pfad 0 · Stufe 20 ·567 Schaden/s · Ausrüstung +240.3 % gegenüber Startausrüstung
+### schorsch-flamme · Pfad 0 · Stufe 20 ·563 Schaden/s · Ausrüstung +237.9 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 3.5 Schaden/s · 0.1 Heilung/s · Taktgefühl 0.7 Schaden/s · -0.1 Heilung/s · Bastelgrips -0.1 Schaden/s · 0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.9 Schaden/s · 0.1 Heilung/s · Taktgefühl -1 Schaden/s · -0.1 Heilung/s · Bastelgrips 0.4 Schaden/s · 0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Schwenkgrill 22.9 % · Servieren 18.2 % · Stichflamme 15.6 % · Popcorn 12.7 % · Grillzange 12.6 % · Autoangriff · Zangenklapper 5.9 % · Dampf 5.3 % · Flambiert 4.7 % · Glutbrocken 1.9 % · Glutbrand 0.2 %
+**Kniffe (Anteil am Schaden):** Schwenkgrill 20 % · Servieren 18.9 % · Stichflamme 16.5 % · Popcorn 13.4 % · Grillzange 12.8 % · Autoangriff · Zangenklapper 5.9 % · Dampf 5.4 % · Flambiert 4.9 % · Glutbrocken 2 % · Glutbrand 0.2 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Feuerteufel +9 % · Nach dem Knall +6.8 % · Hitzewelle +4.8 % · Zunder +3.2 % · Nachglühen +2.6 % · Blasebalg-Profi +2.3 % · Kurze Zündschnur +1.8 % · Fleischermesser +1.1 % · Anbraten 0 % · Kohlenschaufel 0 % · Heißer Draht -3 % · Gut angefacht gebunden · Feuerring gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Feuerteufel +7.7 % · Nach dem Knall +5.1 % · Zunder +4.5 % · Hitzewelle +4.1 % · Kurze Zündschnur +3 % · Fleischermesser +0.5 % · Anbraten 0 % · Kohlenschaufel 0 % · Blasebalg-Profi -1.1 % · Nachglühen -2.1 % · Heißer Draht -2.5 % · Gut angefacht gebunden · Feuerring gebunden
 
 ### schorsch-flamme · Pfad 1 · Stufe 20 ·537 Schaden/s · Ausrüstung +274.1 % gegenüber Startausrüstung
 
@@ -776,15 +776,15 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Kniffe (Anteil am Schaden):** Servieren 39.4 % · Popcorn 19.8 % · Schwenkgrill 18.3 % · Grillzange 9.6 % · Autoangriff · Zangenklapper 6.7 % · Dampf 3.5 % · Glutbrocken 2.6 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Spanferkel-Wurf +11.9 % · Gut angefacht +5.6 % · Fleischklopfer +5.4 % · Abschrecken +3.8 % · Fleischermesser +3.7 % · Grillteller mit Braten +2.8 % · Auf den Punkt 0 % · Kohlenschaufel 0 % · Kurze Zündschnur 0 % · Zweiter Gang -2.2 % · Der Nächste, bitte -2.9 % · Anbraten gebunden · Knusprig gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Spanferkel-Wurf +11.9 % · Fleischklopfer +5.4 % · Gut angefacht +4.5 % · Abschrecken +3.8 % · Fleischermesser +3.7 % · Grillteller mit Braten +2.8 % · Auf den Punkt 0 % · Kohlenschaufel 0 % · Kurze Zündschnur 0 % · Zweiter Gang -2.2 % · Der Nächste, bitte -2.9 % · Anbraten gebunden · Knusprig gebunden
 
-### schorsch-flamme · Pfad 2 · Stufe 20 ·528 Schaden/s · Ausrüstung +203.8 % gegenüber Startausrüstung
+### schorsch-flamme · Pfad 2 · Stufe 20 ·528 Schaden/s · Ausrüstung +203.9 % gegenüber Startausrüstung
 
 **Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 3.4 Schaden/s · 0.2 Heilung/s · Taktgefühl -0.2 Schaden/s · -0.1 Heilung/s · Bastelgrips 0.6 Schaden/s · 0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
 **Kniffe (Anteil am Schaden):** Servieren 25.5 % · Schwenkgrill 19.2 % · Popcorn 18.4 % · Spiritus-Schwall 9.8 % · Grillzange 8.5 % · Autoangriff · Zangenklapper 6.5 % · Glutbrocken 4.1 % · Dampf 3.5 % · Stichflamme 2.5 % · Flambiert 1.7 % · Glutbrand 0.4 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Gut angefacht +11.2 % · Nachgießen +7.1 % · Zangenklapper im Takt +4.6 % · Spiritus-Schwall +2.8 % · Flambé mit Schuss +1.8 % · Anbraten +1.5 % · Brandbeschleuniger +0.1 % · Heiße Kohlen 0 % · Zangentakt 0 % · Kurze Zündschnur 0 % · Funkensprung -3.4 % · Kohlenschaufel gebunden · Doppelpack gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Gut angefacht +11.2 % · Nachgießen +7.3 % · Zangenklapper im Takt +4.7 % · Spiritus-Schwall +2.8 % · Flambé mit Schuss +1.9 % · Anbraten +1.5 % · Brandbeschleuniger +0.1 % · Heiße Kohlen 0 % · Zangentakt 0 % · Kurze Zündschnur 0 % · Funkensprung -3.2 % · Kohlenschaufel gebunden · Doppelpack gebunden
 
 ### schorsch-rauch · Pfad 0 · Stufe 10 ·193 Schaden/s · Ausrüstung +190.1 % gegenüber Startausrüstung
 
@@ -874,7 +874,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Kleinvieh +14.8 % · Revanche +13.1 % · Volle Augen +12.1 % · Kreuz-Bube +10.3 % · Pfennigfuchserin +5.6 % · Wenzel +2.9 % · Skat drücken +2.5 % · Reizen +2.3 % · Knapp gewonnen +0.3 % · Gestochen scharf 0 % · Strich auf dem Block -7.6 % · Mitzählen gebunden · Buchführung gebunden
 
-### kaethe-grand · Pfad 2 · Stufe 20 ·571 Schaden/s · Ausrüstung +177.9 % gegenüber Startausrüstung
+### kaethe-grand · Pfad 2 · Stufe 20 ·571 Schaden/s · Ausrüstung +182.4 % gegenüber Startausrüstung
 
 **Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 3 Schaden/s · -0.1 Heilung/s · Taktgefühl 3.2 Schaden/s · -1.5 Heilung/s · 0.1 verhindert/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
@@ -882,53 +882,53 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Null ouvert Hand +5.4 % · Mitzählen +4.6 % · Blatt aufgefächert +3.7 % · Kreuz-Bube +3.6 % · Schnipp, schnapp +3 % · Wenzel +1.3 % · Ouvert 0 % · Bis zum Anschlag 0 % · Nullspiel 0 % · Unter der Hand -0.9 % · Kleine Fische -1.7 % · Kleinvieh gebunden · Durchmarsch gebunden
 
-### kaethe-herz · Pfad 0 · Stufe 10 ·171 Schaden/s · Ausrüstung +126.8 % gegenüber Startausrüstung
+### kaethe-herz · Pfad 0 · Stufe 10 ·158 Schaden/s · Ausrüstung +148.4 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.5 Schaden/s · -0.5 Heilung/s · Taktgefühl -0.3 Schaden/s · 0.8 Heilung/s · Bastelgrips 0 Schaden/s · 0.5 Heilung/s · Dicke Haut -0.6 Schaden/s · 0.2 Heilung/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.1 Schaden/s · -0.2 Heilung/s · Taktgefühl -0.1 Schaden/s · 0.3 Heilung/s · Bastelgrips 0 Schaden/s · 0.6 Heilung/s · Dicke Haut 0 Schaden/s · 0.3 Heilung/s
 
-**Kniffe (Anteil am Schaden):** Karo 46.3 % · Kreuz 24.4 % · Abrechnen 16.1 % · Autoangriff · Kartenschnipsen 13.2 %
+**Kniffe (Anteil am Schaden):** Karo 59 % · Kreuz 30.5 % · Autoangriff · Kartenschnipsen 10.5 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Noch eins, dann neu +1.8 % · Herzensangelegenheit +1 % · Warmer Eierlikör 0 % · Das Herz am rechten Fleck gebunden · Rote Dame gebunden · Nachschenken gebunden · Herzklopfen gebunden · Handlesen gebunden · Lebenslinie gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Warmer Eierlikör 0 % · Herzensangelegenheit 0 % · Noch eins, dann neu 0 % · Das Herz am rechten Fleck gebunden · Rote Dame gebunden · Nachschenken gebunden · Herzklopfen gebunden · Handlesen gebunden · Lebenslinie gebunden
 
-### kaethe-herz · Pfad 1 · Stufe 10 ·201 Schaden/s · Ausrüstung +131.6 % gegenüber Startausrüstung
+### kaethe-herz · Pfad 1 · Stufe 10 ·169 Schaden/s · Ausrüstung +136.3 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.2 Schaden/s · 0.1 Heilung/s · Taktgefühl 0.5 Schaden/s · 0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.4 Heilung/s · Dicke Haut -0.1 Schaden/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1 Schaden/s · Taktgefühl 0.8 Schaden/s · 0.5 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut -0.3 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Karo 44.9 % · Kreuz 31.7 % · Autoangriff · Kartenschnipsen 14.6 % · Abrechnen 6.1 % · Pik 2.7 %
+**Kniffe (Anteil am Schaden):** Karo 55.2 % · Kreuz 27 % · Autoangriff · Kartenschnipsen 13.2 % · Pik 4.5 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nichts verschenken +2.1 % · Masche für Masche 0 % · Doppelt gemauert 0 % · Pik auf die Brust gebunden · Letzte Masche gebunden · Pik-Ass gebunden · Mauern gebunden · Pik mit Stachel gebunden · Pik-Kette gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Masche für Masche 0 % · Doppelt gemauert 0 % · Nichts verschenken -3.5 % · Pik auf die Brust gebunden · Letzte Masche gebunden · Pik-Ass gebunden · Mauern gebunden · Pik mit Stachel gebunden · Pik-Kette gebunden
 
-### kaethe-herz · Pfad 2 · Stufe 10 ·196 Schaden/s · Ausrüstung +138.6 % gegenüber Startausrüstung
+### kaethe-herz · Pfad 2 · Stufe 10 ·166 Schaden/s · Ausrüstung +152.5 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.8 Schaden/s · Taktgefühl 0.5 Schaden/s · -0.3 Heilung/s · Bastelgrips 0.2 Schaden/s · -0.1 Heilung/s · Dicke Haut 0.2 Schaden/s · -0.5 Heilung/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.3 Schaden/s · -0.2 Heilung/s · Taktgefühl 0.2 Schaden/s · -0.1 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Karo 50.6 % · Kreuz 30.7 % · Autoangriff · Kartenschnipsen 12 % · Abrechnen 6.7 %
+**Kniffe (Anteil am Schaden):** Karo 62.3 % · Kreuz 28 % · Autoangriff · Kartenschnipsen 9.8 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Legekreis im Gehen 0 % · Zukunft gesehen 0 % · Kartenlegen -0.2 % · Sterne lesen gebunden · Farbe halten gebunden · Wahrsagekugel gebunden · Blick über die Schulter gebunden · Hab ich kommen sehen gebunden · Kaffeefahrt gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Legekreis im Gehen 0 % · Zukunft gesehen 0 % · Kartenlegen 0 % · Sterne lesen gebunden · Farbe halten gebunden · Wahrsagekugel gebunden · Blick über die Schulter gebunden · Hab ich kommen sehen gebunden · Kaffeefahrt gebunden
 
-### kaethe-herz · Pfad 0 · Stufe 20 ·263 Schaden/s · Ausrüstung +191.7 % gegenüber Startausrüstung
+### kaethe-herz · Pfad 0 · Stufe 20 ·234 Schaden/s · Ausrüstung +206.1 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.6 Schaden/s · -0.1 Heilung/s · Taktgefühl 0.1 Schaden/s · 0.1 Heilung/s · Bastelgrips 0 Schaden/s · 0.4 Heilung/s · Dicke Haut -0.2 Schaden/s · -0.3 Heilung/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.8 Schaden/s · -0.2 Heilung/s · Taktgefühl 0.5 Schaden/s · -0.3 Heilung/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Karo 42.2 % · Kreuz 26.7 % · Abrechnen 17.6 % · Autoangriff · Kartenschnipsen 13.5 %
+**Kniffe (Anteil am Schaden):** Karo 56.7 % · Kreuz 31.9 % · Autoangriff · Kartenschnipsen 11.4 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Pik auf die Brust +6.3 % · Rote Rechnung +6 % · Nachschenken +1.1 % · Lebenslinie +0.4 % · Sterne lesen +0.4 % · Rote Dame 0 % · Herzklopfen 0 % · Warmer Eierlikör 0 % · Letzte Masche 0 % · Noch eins, dann neu -1 % · Handlesen -13.7 % · Das Herz am rechten Fleck gebunden · Herzensangelegenheit gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Pik auf die Brust +1.6 % · Sterne lesen +0.8 % · Rote Dame 0 % · Nachschenken 0 % · Herzklopfen 0 % · Handlesen 0 % · Lebenslinie 0 % · Warmer Eierlikör 0 % · Noch eins, dann neu 0 % · Rote Rechnung 0 % · Letzte Masche 0 % · Das Herz am rechten Fleck gebunden · Herzensangelegenheit gebunden
 
-### kaethe-herz · Pfad 1 · Stufe 20 ·321 Schaden/s · Ausrüstung +193 % gegenüber Startausrüstung
+### kaethe-herz · Pfad 1 · Stufe 20 ·257 Schaden/s · Ausrüstung +193.7 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.3 Schaden/s · 0.3 Heilung/s · Taktgefühl -0.6 Schaden/s · 0.8 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1 Schaden/s · 0.9 Heilung/s · Taktgefühl 0.9 Schaden/s · 1 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut -0.1 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Karo 40.8 % · Kreuz 33.4 % · Abrechnen 14.9 % · Autoangriff · Kartenschnipsen 9.2 % · Pik 1.7 %
+**Kniffe (Anteil am Schaden):** Karo 55.4 % · Kreuz 28.6 % · Autoangriff · Kartenschnipsen 12.4 % · Pik 3.6 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Pik mit Stachel +2.5 % · Sterne lesen +0.3 % · Letzte Masche 0 % · Pik-Ass 0 % · Mauern 0 % · Pik-Kette 0 % · Masche für Masche 0 % · Doppelt gemauert 0 % · Schutzbrief 0 % · Das Herz am rechten Fleck 0 % · Rote Dame 0 % · Pik auf die Brust gebunden · Nichts verschenken gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Pik mit Stachel +1.5 % · Sterne lesen +0.9 % · Letzte Masche 0 % · Pik-Ass 0 % · Mauern 0 % · Pik-Kette 0 % · Masche für Masche 0 % · Doppelt gemauert 0 % · Schutzbrief 0 % · Das Herz am rechten Fleck 0 % · Rote Dame 0 % · Pik auf die Brust gebunden · Nichts verschenken gebunden
 
-### kaethe-herz · Pfad 2 · Stufe 20 ·320 Schaden/s · Ausrüstung +204.4 % gegenüber Startausrüstung
+### kaethe-herz · Pfad 2 · Stufe 20 ·238 Schaden/s · Ausrüstung +206.9 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 3.5 Schaden/s · -0.2 Heilung/s · 0.2 verhindert/s · Taktgefühl 1.8 Schaden/s · -0.4 Heilung/s · 0.1 verhindert/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1 Schaden/s · Taktgefühl 0.2 Schaden/s · -0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s
 
-**Kniffe (Anteil am Schaden):** Karo 41.9 % · Kreuz 37.8 % · Abrechnen 11.2 % · Autoangriff · Kartenschnipsen 9.1 %
+**Kniffe (Anteil am Schaden):** Karo 57.4 % · Kreuz 31.5 % · Autoangriff · Kartenschnipsen 11.2 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Die Karten lügen nie +8.6 % · Pik auf die Brust +1 % · Kaffeefahrt +0.7 % · Wahrsagekugel +0.2 % · Farbe halten 0 % · Blick über die Schulter 0 % · Hab ich kommen sehen 0 % · Legekreis im Gehen 0 % · Das Herz am rechten Fleck 0 % · Rote Dame 0 % · Kartenlegen -2.3 % · Sterne lesen gebunden · Zukunft gesehen gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Pik auf die Brust +3 % · Kaffeefahrt +1.1 % · Farbe halten 0 % · Wahrsagekugel 0 % · Blick über die Schulter 0 % · Hab ich kommen sehen 0 % · Legekreis im Gehen 0 % · Kartenlegen 0 % · Die Karten lügen nie 0 % · Das Herz am rechten Fleck 0 % · Rote Dame 0 % · Sterne lesen gebunden · Zukunft gesehen gebunden
 
 ### kaethe-falsch · Pfad 0 · Stufe 10 ·276 Schaden/s · Ausrüstung +128.8 % gegenüber Startausrüstung
 

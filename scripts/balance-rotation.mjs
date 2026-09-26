@@ -93,7 +93,7 @@ function classFirst(g,ready,t,ground,healer=false){
  *  wählt den schwächsten), sonst du. Reihenfolge: Notfall unter 30 % · Gruppenheilung, wenn drei (bzw. zwei unter 60 %) Leben verlieren ·
  *  Heilung über Zeit, wenn das Ziel keine hat · großer Heilzauber unter 55 % · Dauer-Heilzauber unter 90 %. Nichts zu heilen → false
  *  (die Schadensrotation läuft weiter; Schorsch legt vorher auf und hält die Glut, Anni holt Likes mit dem Piekser). */
-export function healerFirst(g,ready){
+export function healerFirst(g,ready,healBelow=.9){
  const kit=healerKit(g);if(!kit)return false;const p=g.player,spec=g.rpg.talents.spec,t=helpTarget(g),u=unitOf(g,t)||p,share=u.hp/u.maxHp;
  const units=[p,...(g.companions||[]).filter(c=>c.state!=='down'&&c.hp>0&&Math.hypot(c.x-p.x,c.y-p.y)<260)],hurt=x=>units.filter(v=>v.hp/v.maxHp<x);
  const act=id=>ready(id)&&g.action(id);
@@ -101,7 +101,7 @@ export function healerFirst(g,ready){
  const saveId=Object.keys(kit).find(k=>kit[k].role==='save'),bigId=Object.keys(kit).find(k=>kit[k].role==='big');
  if(saveId&&share<.3&&act(saveId))return true;
  if(ready('ground')&&(hurt(.75).length>=3||hurt(.6).length>=2)){const list=hurt(.75),c=list.reduce((a,v)=>({x:a.x+v.x/list.length,y:a.y+v.y/list.length}),{x:0,y:0}),at=g.world.findClear(c.x,c.y,7);if(g.action('ground',at))return true;}
- if(share>=.9)return false;
+ if(share>=healBelow)return false;
  const hasHot=u===p?(g.classState.hots||[]).length>0:u.aidHot?.remaining>1.5;
  if(kitEntry(g,'buff')?.role==='hot'&&!hasHot&&act('buff'))return true;
  if(bigId&&share<.55&&act(bigId))return true;
@@ -112,9 +112,9 @@ export function healerFirst(g,ready){
  const filler=Object.keys(kit).find(k=>kit[k].role==='filler');if(filler&&act(filler))return true;
  return false;
 }
-export function rotate(g,{healer=false,healAt=.6,ground=null}={}){
+export function rotate(g,{healer=false,healAt=.6,ground=null,healBelow=.9}={}){
  const p=g.player,t=g.target,has=id=>g.skills.some(s=>s.id===id),ready=id=>has(id)&&(g.cooldowns[id]||0)<=0;
- if(healer&&healerFirst(g,ready))return true;
+ if(healer&&healerFirst(g,ready,healBelow))return true;
  if(classFirst(g,ready,t,ground,healer&&!healerKit(g)))return true;
  const kind=resourceKind(g),pool=kind==='rage'||kind==='trend';/* Randale/Likes: Schwellen wie bisher; andere Ressourcen prüft die Engine */
  const enough=n=>!pool||p.energy>=n;
