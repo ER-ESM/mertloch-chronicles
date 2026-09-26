@@ -7,7 +7,13 @@ Grundlage:
 
 Zweig `dungeon-fix2`, Worktree `D:\Dev\MertlochChronicles-dg-fix2`, Basis `main` 048cf1aa (Build #714/#715).
 
-**Live:** siehe Abschnitt „Veröffentlichung“ am Ende.
+**Live:** Build #720 (98bba7c8, 26.09.2026), rebased auf e187379c. Einzelheiten unter „Veröffentlichung“.
+
+| Commit | Inhalt |
+|---|---|
+| b4afd3af | Laufzeit: Punkte 1, 2, 4, 5, 6 und 9 |
+| e03a4029 | Balance und Simulation: Punkte 3 und 7 |
+| 98bba7c8 | Testzugang, Prüfskript, Tests, Bericht |
 
 Nicht angefasst:
 - Söldner-Instanzfaktor (`COMPANION_RULES.instanceFactor`) und E-72
@@ -452,3 +458,12 @@ Bilder `visual-review/dungeon-fix2/*.jpg`, angesehen:
    - Dazu gesehen: Trash-Beute legt freie **Ausrüstungs**plätze weiter selbst an („Angelegt: … der Platz war frei“); nur die Boss-Beute ist davon ausgenommen.
 9. **Testzugang mit Konto:** Nur als Gast geprüft. Angemeldet kann ein Wolkenstand den lokalen überdecken (Doku).
 10. **Playtest:** Ein Prüfer-Durchgang bis Big B mit dem Testzugang (`--preset=bigb`) ist offen.
+
+## Veröffentlichung
+
+- `git fetch && git rebase origin/main` (e187379c). Konflikt nur in `precache-manifest.js`: `main`-Stand genommen, dann `npm run build`.
+- Danach `npm test` (1244) und `content:check` (57) grün.
+- `git push origin dungeon-fix2:main` (e187379c..98bba7c8), `node scripts/server-refresh.mjs` → live **#720 · 98bba7c8**.
+- Gegen die Live-Seite nachgeprüft (`CHECK_URL=https://mertloch.esm-consultant.de/`):
+  - `dungeon-fix2-check` Teil 1 (Raumtitel, 4 grün)
+  - Teil 8 (Testzugang auf `/precache-manifest.js`, alle drei Voreinstellungen, grün)
