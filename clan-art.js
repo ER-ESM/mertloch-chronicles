@@ -7,6 +7,7 @@ import {drawMaifeld,maifeld} from './maifeld-art.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,spark} from './pixel-style.js';
 import {drawComicEnemy,drawComicResident} from './comic-actors.js';
 import {drawFigure} from './paperdoll-figuren.js';
+import {drawDungeonFigure,dungeonFigurenAn} from './dungeon-figuren-art.js';
 
 // Reiten: zuerst die Anziehpuppe auf ihrem Reittier (paperdoll-mount.js), sonst die bisherigen Reittierbögen (mount-art.js), sonst zu Fuß.
 export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){const magnify=p.artMagnify??scale/PERSON_SCALE;if(drawPaperdollMount(c,x,y,p,time,magnify))return;if(!mountArt.ready)loadMountArt();if(drawMount(c,x,y,p,time,magnify))return;}
@@ -14,6 +15,7 @@ export function drawClanHero(c,x,y,time,p,npc=false,scale=1){if(p.mount&&!npc){c
  if(npc&&drawFigure(c,p.npcId||'ida',x,y,scale,p))return;drawTinyPerson(c,x,y,time,p,npc,scale);}
 
 export function drawClanEnemy(c,e,time){
+ /* Dungeon-Figuren (Entwurf 2026-09-26, nur hinter dem Schalter mertloch-dungeon-figuren): eigene Figuren statt Platzhalter */if((e.dungeon||e.bossId)&&dungeonFigurenAn()&&drawDungeonFigure(c,e,time))return;
  /* Dungeon Etappe 3: Tönung einer geliehenen Figur (Big B = Kegelkönig Klaus, getönt) – keine neue Figurengrafik */if(e.tint&&!e.tinting&&typeof document!=='undefined'&&typeof c.getTransform==='function'){drawTinted(c,e,time);return;}
  /* Dungeon Etappe 4 Teil A: das halbe Pferd zeichnet ein vorhandenes Reittier ohne Reiter (mountArt, Tönung am Reittier) */if(e.mountArt){const p={mount:e.mountArt,direction:e.direction||((e.facing||1)>0?'se':'sw'),moving:!!e.moving,walkDistance:e.walkDistance??time*40};if(drawPaperdollMount(c,e.x,e.y,p,time,1,false))return;if(!mountArt.ready)loadMountArt();if(drawMount(c,e.x,e.y,p,time,1,false))return;}
  // Gelieferte Bögen (Gegner, Bosse) bringen ihre Welthöhe selbst mit: artMagnify 1, kein Weltmaßstab darüber.

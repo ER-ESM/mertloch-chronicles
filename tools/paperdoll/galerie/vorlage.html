@@ -1,0 +1,200 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Figurenbuch Schloss Big B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jersey+15&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Einheitlicher Spiel-Look (ui-chrome.css): dunkles Grün, Messing, Pixelschrift. Bewusst nur ein (dunkles) Erscheinungsbild. */
+:root{color-scheme:dark;
+ --grund:#0e201a;--flaeche:#172e27;--flaeche-2:#1e392f;--linie:#2f5242;--tinte:#0b1c17;
+ --messing:#d7b571;--messing-hell:#f3cf7a;--text:#f4e5c5;--leise:#b8c4ab;--stempel:#ad5260;--stempel-hell:#f29aa6;--gruen:#9fe08a;
+ --display:'Jersey 15','Trebuchet MS',Impact,system-ui,sans-serif;--lese:'Nunito','Segoe UI',system-ui,sans-serif;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--grund);color:var(--text);font:15px/1.5 var(--lese);padding-inline:16px;padding-block:0 48px}
+.huelle{max-width:1180px;margin:0 auto}
+h1,h2,h3,.knopf,.marke,.nav a,.zahl{font-family:var(--display);font-weight:400;letter-spacing:.02em}
+h1{font-size:clamp(34px,6vw,58px);line-height:1;margin:0;color:var(--messing-hell);text-wrap:balance}
+h2{font-size:34px;line-height:1.05;margin:0 0 4px;color:var(--messing-hell);text-wrap:balance}
+h3{font-size:28px;line-height:1;margin:0;color:var(--text)}
+p{margin:0}
+.leise{color:var(--leise)}
+a{color:var(--messing-hell)}
+:focus-visible{outline:2px solid var(--messing-hell);outline-offset:2px}
+/* Kopf */
+.kopf{display:grid;gap:14px;padding-block:28px 18px;border-bottom:2px solid var(--linie)}
+.kopfzeile{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;justify-content:space-between}
+.stempel{display:inline-block;font-family:var(--display);font-size:22px;color:var(--stempel-hell);border:2px solid var(--stempel);padding:2px 12px 0;transform:rotate(-3deg);background:#3a1a22}
+.schalter{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:var(--tinte);border:1px solid var(--linie);padding:2px 8px;border-radius:3px;color:var(--messing-hell);overflow-wrap:anywhere}
+.lead{max-width:70ch;color:var(--leise)}
+.schichten{display:flex;flex-wrap:wrap;gap:10px}
+.schicht{flex:1 1 220px;background:var(--flaeche);border:1px solid var(--linie);padding:10px 12px;border-radius:4px}
+.schicht b{font-family:var(--display);font-weight:400;font-size:21px;color:var(--messing)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--grund);padding-block:10px;border-bottom:1px solid var(--linie)}
+.nav a{font-size:20px;text-decoration:none;color:var(--text);background:var(--flaeche);border:1px solid var(--linie);padding:3px 12px 1px;border-radius:3px}
+.nav a:hover{border-color:var(--messing)}
+section{padding-block:30px 6px;display:grid;gap:18px}
+.abschnitt-kopf{display:grid;gap:4px;max-width:78ch}
+/* Steckbrief */
+.brief{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:18px;background:var(--flaeche);border:1px solid var(--linie);border-top:3px solid var(--messing);border-radius:4px;padding:16px}
+.brief.klein{grid-template-columns:minmax(220px,300px) 1fr}
+@media (max-width:760px){.brief,.brief.klein{grid-template-columns:1fr}}
+.buehne{display:grid;gap:10px;align-content:start}
+.leinwand{width:100%;max-width:100%;aspect-ratio:1/1;image-rendering:pixelated;background:radial-gradient(ellipse at 50% 88%,#35584a 0%,#243f35 45%,#1a3129 100%);border:1px solid var(--linie);border-radius:3px;display:block}
+.knoepfe{display:flex;flex-wrap:wrap;gap:6px}
+.knopf{font-size:18px;line-height:1;background:var(--flaeche-2);color:var(--text);border:1px solid var(--linie);border-bottom-width:3px;border-radius:3px;padding:6px 9px 4px;cursor:pointer}
+.knopf:hover{border-color:var(--messing)}
+.knopf[aria-pressed="true"]{background:var(--messing);color:var(--tinte);border-color:var(--messing-hell)}
+.knopf.ansage{border-color:#6e3440}
+.knopf.ansage[aria-pressed="true"]{background:var(--stempel);color:#fff;border-color:var(--stempel-hell)}
+.richtung{font-size:16px;min-width:48px}
+.info{display:grid;gap:12px;align-content:start;min-width:0}
+.titelzeile{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.marke{font-size:17px;color:var(--tinte);background:var(--messing);padding:1px 8px 0;border-radius:2px}
+.marke.boss{background:var(--stempel-hell)}
+.marke.heiler{background:var(--gruen)}
+.zeile{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:baseline}
+.zeile>span:first-child{font-family:var(--display);font-size:18px;color:var(--messing)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:13px;background:var(--tinte);border:1px solid var(--linie);padding:1px 8px;border-radius:10px;color:var(--text)}
+.chip.neu{border-color:var(--messing);color:var(--messing-hell)}
+.ansagen{display:grid;gap:6px}
+.ansage-zeile{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center;background:var(--tinte);border:1px solid var(--linie);border-radius:3px;padding:6px 8px;cursor:pointer;text-align:left;color:var(--text);font:inherit}
+.ansage-zeile:hover,.ansage-zeile[aria-pressed="true"]{border-color:var(--stempel-hell)}
+.ansage-zeile canvas{width:56px;height:56px;image-rendering:pixelated;background:#1a3129;border-radius:2px}
+.ansage-zeile b{font-family:var(--display);font-weight:400;font-size:19px;color:var(--stempel-hell)}
+.ansage-zeile small{display:block;color:var(--leise);font-size:13px;line-height:1.35}
+.richtungen{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.richtungen figure{margin:0;display:grid;gap:2px;justify-items:center}
+.richtungen canvas{width:100%;max-width:100%;image-rendering:pixelated;background:#1a3129;border-radius:2px}
+figcaption{font-size:12.5px;color:var(--leise);line-height:1.35}
+.paar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.paar figure{margin:0;display:grid;gap:4px}
+.paar img{width:100%;border:1px solid var(--linie);border-radius:3px;display:block}
+.welt img{image-rendering:pixelated;width:100%;border:1px solid var(--linie);border-radius:3px;display:block;background:#3b5030}
+.raster{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.raster figure{margin:0;display:grid;gap:4px;background:var(--flaeche);border:1px solid var(--linie);border-radius:4px;padding:8px}
+.raster img{width:100%;border-radius:2px;display:block}
+.raster figcaption b{font-family:var(--display);font-weight:400;font-size:18px;color:var(--messing-hell);display:block}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.tabelle{overflow-x:auto;background:var(--flaeche);border:1px solid var(--linie);border-radius:4px}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--linie);white-space:nowrap}
+th{font-family:var(--display);font-weight:400;font-size:18px;color:var(--messing)}
+td.z{text-align:right}
+.hinweis{background:var(--flaeche);border-left:4px solid var(--messing);padding:10px 14px;border-radius:0 4px 4px 0;max-width:80ch}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="huelle">
+ <header class="kopf">
+  <div class="kopfzeile">
+   <div><p class="leise">Mertloch Chronicles · Dungeon</p><h1>Figurenbuch Schloss Big B</h1></div>
+   <span class="stempel">ENTWURF · NICHT LIVE</span>
+  </div>
+  <p class="lead">Bosse, Trash, Adds und Vermieter Volker aus der Anziehpuppe. Jede Figur läuft hier mit ihren Bildern aus dem Spiel: Richtung wählen, Animation wählen, Ansage anklicken. Im Spiel sichtbar nur mit dem Schalter <span class="schalter">localStorage['mertloch-dungeon-figuren']='1'</span> oder <span class="schalter">?dungeon-figuren=1</span>.</p>
+  <div class="schichten">
+   <div class="schicht"><b>Körper</b><p class="leise">Einer der drei Archetypen: Kräftig, Schwungvoll, Drahtig. Keine Sonderkörper.</p></div>
+   <div class="schicht"><b>Aussehen</b><p class="leise">Aus dem Charaktereditor: Haut, Haar, Bart, Brille, Frisur.</p></div>
+   <div class="schicht"><b>Kleidung</b><p class="leise">Kostüme sind Kleidungsteile, die jeder Archetyp tragen kann. <span style="color:var(--messing-hell)">Goldener Rand</span> = neu gezeichnet.</p></div>
+  </div>
+ </header>
+ <nav class="nav" aria-label="Abschnitte"><a href="#bosse">Bosse</a><a href="#trash">Trash und Adds</a><a href="#motive">Motive</a><a href="#haendler">Händler</a><a href="#spiel">Im Spiel</a><a href="#technik">Technik</a></nav>
+ <section id="bosse"><div class="abschnitt-kopf"><h2>Bosse</h2><p class="leise">Im Spiel in Bossgröße (29 E) und mit dem Dungeon-Faktor ×1,35. Hier alle im gleichen Maßstab, 1 Bildpunkt = 1 Bogenpixel.</p></div><div id="liste-bosse" class="ansagen" style="gap:18px"></div></section>
+ <section id="trash"><div class="abschnitt-kopf"><h2>Trash und Adds</h2><p class="leise">Security, Makler und Ritter sollen sich schon klein unterscheiden: Schwarz mit Kappe, Blau mit leuchtendem Tablet, Eimer mit Deckel. Elite ×1,15 rechnet das Spiel.</p></div>
+  <div class="paar"><figure><img src="" alt="Platzhalter heute: Trash-Reihe im Burghof" id="trash-heute" loading="lazy"><figcaption>Heute (Platzhalter aus dem Präzisionskatalog)</figcaption></figure><figure><img src="" alt="Entwurf: dieselbe Reihe mit Schalter" id="trash-entwurf" loading="lazy"><figcaption>Entwurf mit Schalter, von links: Azubi, Makler, Ritter, Pappwache, Pappschütze, Ratte, Gespenst, Follower, Interessent, Kommentator</figcaption></figure></div>
+  <div id="liste-trash" class="ansagen" style="gap:18px"></div></section>
+ <section id="motive"><div class="abschnitt-kopf"><h2>Motive</h2><p class="leise">Keine Menschen, deshalb keine Anziehpuppe: eigene Bögen im gleichen Pixelstil und Maßstab.</p></div><div id="liste-motive" class="ansagen" style="gap:18px"></div></section>
+ <section id="haendler"><div class="abschnitt-kopf"><h2>Händler</h2></div><div id="liste-haendler" class="ansagen"></div></section>
+ <section id="spiel"><div class="abschnitt-kopf"><h2>Im Spiel</h2><p class="leise">Aufnahmen aus dem lokalen Spiel mit Schalter (Desktop 2024 × 900, Ausschnitt doppelt vergrößert). Die Zauber laufen über den echten Zauberweg, die Welt ist zum Ansehen angehalten; Söldner stehen für die Bossbilder abseits.</p></div><div id="raster-spiel" class="raster"></div></section>
+ <section id="technik"><div class="abschnitt-kopf"><h2>Technik</h2><p class="leise">Neue Bögen liegen im bestehenden Laufzeitkatalog (assets/paperdoll/runtime) und laden nach Bedarf wie alle Figuren: Grundbögen beim ersten Anblick, Aktions- und Sonderbögen vorab, sobald die Figur zum ersten Mal gezeichnet wird.</p></div><div id="technik-inhalt" style="display:grid;gap:12px"></div></section>
+</div>
+
+<script>
+const DATEN=/*__DATEN__*/null;
+const RICHTUNGEN=[['se','↘ SO'],['sw','↙ SW'],['nw','↖ NW'],['ne','↗ NO']];
+const RUHIG=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const bilder=new Map();
+function bild(src){let im=bilder.get(src);if(!im){im=new Image();im.src=src;bilder.set(src,im);}return im;}
+const el=(tag,attrs={},...kids)=>{const e=document.createElement(tag);for(const [k,v] of Object.entries(attrs)){if(k==='class')e.className=v;else if(k==='text')e.textContent=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}for(const k of kids)if(k)e.append(k);return e;};
+const kb=n=>(n/1024).toFixed(0)+' KB',mb=n=>(n/1048576).toFixed(1).replace('.',',')+' MB';
+/** Ein Bild aus dem Atlas (Zeile = Richtung, Spalte = Bildname) auf eine Leinwand, Fußpunkt bei (fx,fy), Maßstab s. */
+function zeichne(c,a,dir,name,fx,fy,s,opt={}){const im=bild(a.file);if(!im.complete||!im.naturalWidth)return false;let col=a.bilder.indexOf(name);if(col<0)col=a.bilder.indexOf('stehen:0');if(col<0)col=0;
+ const row=RICHTUNGEN.findIndex(r=>r[0]===dir);c.save();c.imageSmoothingEnabled=false;c.translate(fx,fy);if(opt.rot)c.rotate(opt.rot);if(opt.alpha!=null)c.globalAlpha=opt.alpha;
+ if(opt.projektion){const n=10,sh=a.h/n,t=performance.now()/1000,ph=Math.floor(t*12);c.globalAlpha=(opt.alpha??1)*(Math.floor(t*9)%17===0?.3:.62+.1*Math.sin(t*23));
+  for(let i=0;i<n;i++){const j=((ph*7+i*13)%11===0)?((ph+i)%2?2:-2):0;c.drawImage(im,col*a.w,row*a.h+i*sh,a.w,sh,(-a.foot[0]+j)*s,(-a.foot[1]+i*sh)*s,a.w*s,sh*s);}}
+ else c.drawImage(im,col*a.w,row*a.h,a.w,a.h,-a.foot[0]*s,-a.foot[1]*s,a.w*s,a.h*s);c.restore();return true;}
+/** Abläufe: [Bildname, Dauer in s, {rot,alpha,dir}]. */
+function ablauf(fig,art,ans){const stand=fig.idle?[[fig.idle,1]]:[['stehen:0',.28],['stehen:1',.28],['stehen:2',.28],['stehen:3',.28],['stehen:0',.28],['stehen:1',.28],['blinzeln:0',.14],['stehen:2',.28]];
+ const has=n=>fig.atlas.bilder.includes(n);
+ if(art==='stehen')return stand;
+ if(art==='laufen')return has('laufen:0')?[0,1,2,3,4,5,6,7].map(i=>['laufen:'+i,.09]):[0,1,2,3].map(i=>['laufen:'+i,.14]);
+ if(art==='angriff')return has('hieb:0')?[['hieb:0',.32],['hieb:1',.16],['hieb:2',.3],...stand.slice(0,3)]:[['angriff:0',.4],['angriff:1',.35],...stand.slice(0,3)];
+ if(art==='treffer')return [['getroffen:0',.4],...stand.slice(0,4)];
+ if(art==='tod'){const f=has('getroffen:0')&&!fig.motiv?'getroffen:0':'stehen:0',out=[[f,.2]];for(let i=1;i<=6;i++)out.push([f,.05,{fall:i/6}]);out.push([f,1.2,{fall:1}],[f,.6,{fall:1,alpha:.35}]);return out;}
+ if(art==='ansage'&&ans){if(ans.lie){const s=ans.seite==='rechts';return [[s?fig.lie.claimRechts:fig.lie.claim,1.1,{dir:s?'se':'sw'}],[fig.lie.truth,1.3,{dir:s?'se':'sw'}],['sprint:0',.45,{dir:s?'se':'sw'}],['stehen:0',.6]];}
+  if(ans.confess)return [[fig.confess,2.4],['stehen:0',.6]];if(ans.drink)return [[fig.drink,2.2],['stehen:0',.5]];
+  let cast=ans.cast;const out=[[cast,1.5,{zeig:true}]];if(ans.end)out.push([ans.end,.45,{zeig:true}]);out.push(...stand.slice(0,3));return out;}
+ return stand;}
+/** Steckbrief mit Bühne (animierte Leinwand), Knöpfen, Schichten, Ansagen, Richtungen und Vergleich. */
+function steckbrief(fig,{klein=false,motiv=false,vergleich=null}={}){
+ const cv=el('canvas',{class:'leinwand',width:320,height:320,role:'img','aria-label':(fig.name||fig.titel)+' – animierte Vorschau'});const ctx=cv.getContext('2d');
+ const st={dir:'se',art:'stehen',ans:null,t0:performance.now(),seq:null};
+ const knoepfeDir=el('div',{class:'knoepfe',role:'group','aria-label':'Richtung'}),knoepfeArt=el('div',{class:'knoepfe',role:'group','aria-label':'Animation'});
+ const setze=(gruppe,knopf)=>{for(const k of gruppe.querySelectorAll('.knopf,.ansage-zeile'))k.setAttribute('aria-pressed','false');if(knopf)knopf.setAttribute('aria-pressed','true');};
+ const spiele=(art,ans=null,knopf=null)=>{st.art=art;st.ans=ans;st.seq=ablauf(fig,art,ans);st.t0=performance.now();setze(infoBox,null);setze(knoepfeArt,null);if(knopf)knopf.setAttribute('aria-pressed','true');};
+ for(const [d,l] of RICHTUNGEN){const k=el('button',{class:'knopf richtung',type:'button','aria-pressed':d===st.dir?'true':'false',text:l,onclick:()=>{st.dir=d;setze(knoepfeDir,k);}});knoepfeDir.append(k);}
+ const arten=[['stehen','Stehen'],['laufen','Laufen'],['angriff','Angriff'],['treffer','Treffer'],['tod','Tod']];
+ for(const [a,l] of arten){const k=el('button',{class:'knopf',type:'button','aria-pressed':a==='stehen'?'true':'false',text:l,onclick:()=>spiele(a,null,k)});knoepfeArt.append(k);}
+ // Info
+ const infoBox=el('div',{class:'info'});
+ const rolle=fig.rolle||'',mk=el('span',{class:'marke'+(/Boss/.test(rolle)?' boss':/Heiler/.test(rolle)?' heiler':''),text:rolle});
+ infoBox.append(el('div',{class:'titelzeile'},el('h3',{text:fig.name||fig.titel}),mk),el('p',{class:'leise',text:fig.name&&fig.titel!==fig.name?fig.titel:''}),el('p',{text:fig.text}));
+ if(!motiv){infoBox.append(el('div',{class:'zeile'},el('span',{text:'Körper'}),el('span',{text:fig.arch})),
+  el('div',{class:'zeile'},el('span',{text:'Aussehen'}),el('div',{class:'chips'},...fig.aussehen.map(a=>el('span',{class:'chip',text:a})))),
+  el('div',{class:'zeile'},el('span',{text:'Kleidung'}),el('div',{class:'chips'},...fig.kleidung.map(k=>el('span',{class:'chip'+(k.neu?' neu':''),text:k.name,title:k.neu?'neu gezeichnet':'wiederverwendet'})))));}
+ // Ansagen
+ const ansagen=[];if(fig.ansagen)for(const a of fig.ansagen)if(!(fig.lie&&a.cast===fig.lie.claim&&/kanone/.test(a.typ)))ansagen.push({...a});
+ if(fig.lie){ansagen.unshift({lie:true,seite:'links',name:'Behauptung „nach LINKS“',hint:'Nachsatz abwarten',text:'zeigt auf die behauptete Seite (Waffenhand, Blick SW), dann Nachsatz: zuckt die Achseln – erst jetzt kommt die echte Bahn',cast:fig.lie.claim},{lie:true,seite:'rechts',name:'Behauptung „nach RECHTS“',hint:'Nachsatz abwarten',text:'zeigt mit der Nebenhand nach rechts (Blick SO), Achselzucken als Nachsatz',cast:fig.lie.claimRechts});}
+ if(fig.confess)ansagen.push({confess:true,name:'Geständnis (15 %)',hint:'keine Lügen mehr',text:'sinkt in sich zusammen',cast:fig.confess});
+ if(fig.drink)ansagen.push({drink:true,name:'Säuft am Trog',hint:'Vom Trog wegziehen',text:'beugt sich tief über den Trog, solange es säuft',cast:fig.drink});
+ if(motiv&&fig.zauber?.length)infoBox.append(el('div',{class:'zeile'},el('span',{text:'Zauber'}),el('div',{class:'chips'},...fig.zauber.map(z=>el('span',{class:'chip',text:z.name+(z.hint?' · '+z.hint:'')})))));
+ if(ansagen.length){const box=el('div',{class:'ansagen'});infoBox.append(el('div',{class:'zeile'},el('span',{text:'Ansagen'}),box));
+  for(const a of ansagen){const mini=el('canvas',{width:112,height:112});const z=el('button',{class:'ansage-zeile',type:'button','aria-pressed':'false'},mini,el('span',{},el('b',{text:a.name}),el('small',{text:(a.hint?a.hint+' · ':'')+(a.text||'')+(a.end&&a.endText?' → '+a.endText:'')})));
+   z.addEventListener('click',()=>spiele('ansage',a,z));box.append(z);
+   const d=a.lie?(a.seite==='rechts'?'se':'sw'):'se',n=a.cast==='zeigen'?'zeigenN':a.cast;const male=()=>{const c=mini.getContext('2d');c.clearRect(0,0,112,112);const s=Math.min(.6,104/fig.atlas.h);zeichne(c,fig.atlas,d,n,56,109,s,{projektion:fig.projektion})||setTimeout(male,200);};male();}}
+ // Richtungen (Stand) und Vergleich
+ const ri=el('div',{class:'richtungen'});for(const [d,l] of RICHTUNGEN){const c=el('canvas',{width:fig.atlas.w,height:fig.atlas.h});const f=el('figure',{},c,el('figcaption',{text:l}));ri.append(f);const male=()=>{const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);zeichne(x,fig.atlas,d,fig.idle||'stehen:0',fig.atlas.foot[0],fig.atlas.foot[1],1,{projektion:fig.projektion})||setTimeout(male,200);};male();}
+ const buehne=el('div',{class:'buehne'},cv,knoepfeDir,knoepfeArt,ri);
+ if(fig.welt)buehne.append(el('figure',{class:'welt',style:'margin:0'},el('img',{src:fig.welt,alt:fig.titel+' in Weltgröße',loading:'lazy'}),el('figcaption',{text:'Weltgröße wie im Spiel (Maßstab 0,3 / 0,45 / 0,6, dreifach vergrößert)'})));
+ if(vergleich?.heute)infoBox.append(el('div',{class:'paar'},el('figure',{},el('img',{src:vergleich.heute,alt:'Platzhalter heute',loading:'lazy'}),el('figcaption',{text:'Heute: Platzhalter im Spiel'})),el('figure',{},el('img',{src:vergleich.entwurf,alt:'Entwurf im Spiel',loading:'lazy'}),el('figcaption',{text:'Entwurf im Spiel (Schalter an)'}))));
+ if(fig.groesse)infoBox.append(el('p',{class:'leise',style:'font-size:13px',text:`Bögen für diese Figur (ihr Archetyp, vier Richtungen): ${fig.groesse.n} Dateien, ${kb(fig.groesse.base)} Grund + ${kb(fig.groesse.akt)} Aktion + ${kb(fig.groesse.son)} Sonder.`}));
+ const brief=el('article',{class:'brief'+(klein?' klein':''),id:'figur-'+(fig.id||fig.mid)},buehne,infoBox);
+ // Animation
+ const s=Math.min(1.1,300/fig.atlas.h)*(fig.scale&&fig.scale>1?1:1);
+ function schritt(now){ctx.clearRect(0,0,320,320);ctx.fillStyle='#0b1c1766';ctx.beginPath();ctx.ellipse(160,296,fig.motiv?46:34,9,0,0,7);ctx.fill();
+  const seq=st.seq||ablauf(fig,st.art,st.ans);st.seq=seq;const total=seq.reduce((a,x)=>a+x[1],0);let t=((now-st.t0)/1000);if(RUHIG&&t>total)t=total-.001;t%=total;let i=0;for(;i<seq.length-1&&t>=seq[i][1];i++)t-=seq[i][1];
+  const [name,,o={}]=seq[i],dir=o.dir||st.dir,n=o.zeig&&name==='zeigen'&&(dir==='se'||dir==='nw')?'zeigenN':name,fall=o.fall||0,side=dir.endsWith('w')?1:-1;
+  zeichne(ctx,fig.atlas,dir,n,160,296,s,{rot:fall?side*(1-(1-fall)**3)*Math.PI*.46:0,alpha:o.alpha,projektion:fig.projektion});requestAnimationFrame(schritt);}
+ requestAnimationFrame(schritt);return brief;}
+// Aufbau
+const bosse=document.getElementById('liste-bosse');for(const f of DATEN.bosse)bosse.append(steckbrief(f,{vergleich:DATEN.vergleich.find(v=>v.id===f.id)}));
+document.getElementById('trash-heute').src=DATEN.trashVergleich.heute;document.getElementById('trash-entwurf').src=DATEN.trashVergleich.entwurf;
+const trash=document.getElementById('liste-trash');for(const f of DATEN.trash)trash.append(steckbrief(f,{klein:true}));
+const mot=document.getElementById('liste-motive');for(const m of DATEN.motive)mot.append(steckbrief({...m,id:m.mid,motiv:true},{klein:true,motiv:true}));
+const hd=document.getElementById('liste-haendler');hd.append(steckbrief(DATEN.haendler,{klein:true}));
+{const h=DATEN.haendler.heute,c=el('canvas',{width:h.w,height:h.h,style:'image-rendering:pixelated;max-width:120px'});const m=()=>zeichne(c.getContext('2d'),h,'se','stehen:0',h.foot[0],h.foot[1],1)||setTimeout(m,200);m();
+ hd.append(el('div',{class:'hinweis'},el('p',{text:'Heute steht an Volkers Platz die Katalogfigur Konrad (Sakko, Brille). Der Entwurf gibt Volker Schnauzer, Hemd, Mietvertrag und Schlüsselbund.'}),c));}
+const NAMEN={gerd:'Gästeliste-Gerd',expose:'Frau Dr. Exposé',korkenkurt:'Korken-Kurt',rita:'Reichweiten-Rita',halbespferd:'Das halbe Pferd',bigb:'Big B',trash:'Trash'};
+const ANSAGE={stand:'steht, wartet',liste:'„Du stehst nicht auf der Liste“ · zeigt auf das Opfer (Unterbrechen)',rausschmiss:'Rausschmiss · holt weit aus (Kegel, Rückstoß)',schubser:'Rausschmiss · der Stoß',dresscode:'Dresscode-Kontrolle · hebt den Stempel',
+ forderung:'Provisionsforderung · hält das Exposé hin (Unterbrechen)',verkauft:'Grundstück verkauft · Stempel',notar:'Notartermin · Zauberhaltung (zweimal unterbrechen)',runde:'„Runde auf mich!“ · Arme hoch (Zusammen stehen)',fass:'Fass rollt · holt aus',
+ 'fass-rollt':'Fass rollt · stößt das Fass an',blitz:'Blitzlicht · Handy hoch (hinter Deckung)',story:'Story posten · hält das Handy hin (Unterbrechen)',huftritt:'Huftritt · bäumt sich auf',tritt:'Huftritt · der Tritt mit dem Turnschuh',wiehern:'Wiehern · Kopf hoch (kurz raus)',saufen:'Säuft am Trog',
+ behauptung:'„Ich reite nach LINKS!“ · zeigt auf die behauptete Seite',nachsatz:'„… sagt man. Rechts.“ · zuckt die Achseln',anwalt:'„Mein Anwalt ruft gleich an“ · Hörer am Ohr (Unterbrechen)',live:'Live-Schalte · Selfie-Stick hoch (Follower kommen)',schopf:'Am eigenen Schopf · zieht sich hoch (zweimal unterbrechen)',gestaendnis:'Geständnis · sinkt zusammen',
+ verwaltung:'Hofkanzlei: Makler, Azubis, Ritter im Kampf',wehrgang:'Wehrgang: Pappschützen',weinkeller:'Weinkeller: Pfandratten',gespenst:'Gewölbegang: Schlossgespenst (Beamer-Projektion)'};
+const raster=document.getElementById('raster-spiel');for(const s of DATEN.szenen)raster.append(el('figure',{},el('img',{src:s.bild,alt:(NAMEN[s.id]||s.id)+': '+(ANSAGE[s.ansage]||s.ansage),loading:'lazy'}),el('figcaption',{},el('b',{text:NAMEN[s.id]||s.id}),document.createTextNode(ANSAGE[s.ansage]||s.ansage))));
+// Technik
+{const t=DATEN.technik,tk=document.getElementById('technik-inhalt');const rows=[...DATEN.bosse,...DATEN.trash,DATEN.haendler];
+ const tab=el('table');tab.append(el('thead',{},el('tr',{},...['Figur','Dateien','Grund','Aktion','Sonder','zusammen','bei 10 Mbit/s','bei 50 Mbit/s'].map(h=>el('th',{text:h})))));const tb=el('tbody');
+ for(const f of rows){const g=f.groesse,sum=g.base+g.akt+g.son;tb.append(el('tr',{},el('td',{text:(f.name||f.titel)+(/Variante/.test(f.titel)?' (Variante)':'')}),el('td',{class:'z',text:g.n}),el('td',{class:'z',text:kb(g.base)}),el('td',{class:'z',text:kb(g.akt)}),el('td',{class:'z',text:kb(g.son)}),el('td',{class:'z',text:kb(sum)}),el('td',{class:'z',text:(sum*8/10e6).toFixed(1).replace('.',',')+' s'}),el('td',{class:'z',text:(sum*8/50e6).toFixed(2).replace('.',',')+' s'})));}
+ tab.append(tb);tk.append(el('div',{class:'hinweis'},el('p',{text:`Neu im Laufzeitkatalog: ${t.neueQuellen} Kleidungsquellen (${mb(t.neuBytes)}), Sonderbögen für ${t.sonderBilder.length} Ansage-Posen (${mb(t.sonBytes)}), vier Motive (${kb(t.motBytes)}). Zusammen ${t.files} Dateien, ${mb(t.neuBytes+t.sonBytes+t.motBytes)} auf dem Server. Geladen wird je Figur nur ihr Archetyp und die Richtungen, in die sie schaut; Figuren teilen sich Körper-, Hosen- und Schuhbögen.`})),el('div',{class:'tabelle'},tab),
+  el('p',{class:'leise',style:'font-size:13px',text:'Zeiten sind reine Übertragungszeit der Bögen einer Figur ohne Zwischenspeicher (vier Richtungen). Körper und Aussehen liegen beim Spielstart meist schon im Speicher.'}));}
+</script>

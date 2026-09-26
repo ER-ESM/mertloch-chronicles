@@ -19,11 +19,16 @@ let pending;
 // Zeilen = nur die Tiefenbänder der Quelle (cat.sources[s].bands). Vorab kommen Körper, Dutt und Aussehen-Ebenen (Grundbögen);
 // NPC-Kleidung lädt danach leise im Hintergrund, Ausrüstung und Aktionsbilder beim ersten Gebrauch.
 const loading=new Map(),listeners=new Set();let notifyTimer=0;
-const sheetKey=(src,arch,dir,part)=>`${src}-${arch}${paperdoll.catalog.dirs[dir]}${part?'-akt':''}`;
+// part 0 Grundbogen, 1 Aktionsbogen (-akt), 2 Sonderbogen (-sonder: Ansagen der Dungeon-Figuren, cat.sonder, Bildnummern ab cat.frames.length)
+const sheetKey=(src,arch,dir,part)=>`${src}-${arch}${paperdoll.catalog.dirs[dir]}${part===2?'-sonder':part?'-akt':''}`;
+/** Teil eines Bilds: 2 = Sonderbild (ab cat.frames.length), 1 = Aktionsbild (ab cat.split), 0 = Grundbild. */
+const partOf=(cat,f)=>f>=cat.frames.length?2:f>=(cat.split??cat.frames.length)?1:0;
 // sw/ne: eigener Bogen nur für seitenabhängige Quellen (cat.own), sonst gespiegeltes se/nw. Aktionsbilder hängen an der Waffenseite und
 // haben für sw/ne eigene Bögen (cat.ownAkt), damit Körper und Kleidung in derselben Pose stehen.
-const baseDir=(src,dir,part=0)=>{if(dir!=='sw'&&dir!=='ne')return dir;const cat=paperdoll.catalog;return cat.own[dir].includes(src)||part&&cat.ownAkt?.[dir]?.includes(src)?dir:dir==='sw'?'se':'nw';};
+const baseDir=(src,dir,part=0)=>{if(dir!=='sw'&&dir!=='ne'||part===2)return dir;const cat=paperdoll.catalog;return cat.own[dir].includes(src)||part&&cat.ownAkt?.[dir]?.includes(src)?dir:dir==='sw'?'se':'nw';};
 /** Meldet, wenn nachgeladene Bögen da sind (Standbilder wie Heldenkarten oder Figurenfenster zeichnen dann neu). */
+/** Einen Bogen des Laufzeitordners nach Bedarf holen (Motive der Dungeon-Figuren, dungeon-figuren-art.js): Promise auf das Bild bzw. null. */
+export function loadPaperdollSheet(key,low=false){return paperdoll.images.has(key)?Promise.resolve(paperdoll.images.get(key)):paperdoll.missing.has(key)?Promise.resolve(null):want(key,low);}
 export function onPaperdollLoad(fn){listeners.add(fn);return ()=>listeners.delete(fn);}
 function notify(){if(notifyTimer)return;notifyTimer=setTimeout(()=>{notifyTimer=0;for(const fn of listeners)try{fn();}catch{}},60);}
 // Fehlgeschlagene Bögen (Netz, Server unter Last) zweimal nachfordern, erst dann gelten sie als fehlend.
@@ -97,6 +102,7 @@ export const PAPERDOLL_POSE_FRAMES={dash:['sprint',0],hit:['getroffen',0],parry:
 const TWO_HAND_FRAMES={hieb:'hieb2',parade:'parade2'},frameIndex=new WeakMap();
 /** Reine Zuordnung (ohne geladene Bögen testbar): Bildnummer für Pose p; fehlt ein Bild im Katalog, gilt Atmen/Blinzeln. */
 export function paperdollFrameFor(frames,p={},time=0,{stride=64,items=[]}={}){
+ if(Number.isInteger(p.artFrame))return p.artFrame;// feste Bildnummer (Dungeon-Figuren: Sonderbilder, dungeon-figuren-art.js)
  let ix=frameIndex.get(frames);if(!ix){ix=new Map(frames.map((f,n)=>[f.anim+':'+(f.i||0),n]));frameIndex.set(frames,ix);}
  const at=(anim,i=0)=>ix.get(anim+':'+i)??-1,pose=paperdollPose(p);
  if(pose==='dead')return 0;// liegt: Drehung in drawPaperdoll
@@ -136,14 +142,14 @@ const tileCanvas=typeof document!=='undefined'?document.createElement('canvas'):
 // Kachelspeicher: jede Kachel (Bogen × Band × Bild × Spiegelung) wird einmal ausgelesen und auf ihren Inhalt zugeschnitten; viele Figuren
 // teilen sich Körper-, Hosen- und Schuhkacheln. Grenze nach Bytes (LRU), leere Kacheln merken sich nur „leer“.
 const tileCache=new Map(),TILE_BYTES=48e6;let tileBytes=0;
-function tile(arch,src,dir,band,f){const cat=paperdoll.catalog,{W,H}=cat,split=cat.split??cat.frames.length,part=f>=split?1:0,base=baseDir(src,dir,part),mirror=base!==dir;
+function tile(arch,src,dir,band,f){const cat=paperdoll.catalog,{W,H}=cat,split=cat.split??cat.frames.length,part=partOf(cat,f),base=baseDir(src,dir,part),mirror=base!==dir;
  const sk=sheetKey(src,arch,base,part),img=paperdoll.images.get(sk);if(!img)return null;const rows=cat.layout==='bands'?(cat.sources[src]?.bands||cat.bands):cat.bands,row=rows.indexOf(band);if(row<0)return null;
  const key=sk+'|'+row+'|'+f+(mirror?'|m':''),hit=tileCache.get(key);if(hit!==undefined){tileCache.delete(key);tileCache.set(key,hit);return hit;}
  // Zelle der Quelle (Katalog ab version 3: Bögen nur so groß wie der Inhalt der Quelle); ältere Bögen = volle Leinwand
- const cell=cat.sources[src]?.cell||{x:0,y:0,w:W,h:H},cw=cell.w,ch=cell.h;
+ const cell=(part===2?cat.sources[src]?.sonder?.cell:cat.sources[src]?.cell)||{x:0,y:0,w:W,h:H},cw=cell.w,ch=cell.h;
  if(tileCanvas.width<cw||tileCanvas.height<ch){tileCanvas.width=Math.max(tileCanvas.width,cw);tileCanvas.height=Math.max(tileCanvas.height,ch);}
  tctx.clearRect(0,0,cw,ch);tctx.save();if(mirror){tctx.translate(cw,0);tctx.scale(-1,1);}
- tctx.drawImage(img,(part?f-split:f)*cw,row*ch,cw,ch,0,0,cw,ch);tctx.restore();const d=tctx.getImageData(0,0,cw,ch).data;
+ tctx.drawImage(img,(part===2?f-cat.frames.length:part?f-split:f)*cw,row*ch,cw,ch,0,0,cw,ch);tctx.restore();const d=tctx.getImageData(0,0,cw,ch).data;
  let x0=cw,y0=ch,x1=-1,y1=-1;for(let y=0;y<ch;y++)for(let x=0;x<cw;x++)if(d[(y*cw+x)*4+3]){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;y1=y;}
  // Lage auf der Leinwand: gespiegelt liegt die Zelle bei W-cell.x-cell.w
  const cx=mirror?W-cell.x-cw:cell.x,cy=cell.y;
@@ -214,9 +220,13 @@ export function drawPaperdoll(c,id,x,y,p={},magnify=1){
  // Rückfallbild je Figur (Kennung + Quellen + Tönung): Mitspieler mit gleichem Archetyp teilen es nie
  const fig=id+'|'+[...srcs].sort().join(',')+'|'+(tint?.skin||'')+'.'+(tint?.hair||''),lastKey=fig+'|'+dir,anyKey=fig+'|*';
  let f=dead?0:paperdollFrame(p,undefined,items);const split=cat.split??cat.frames.length;
- const need=s=>{const part=f>=split?1:0;return sheetKey(s,arch,baseDir(s,dir,part),part);},open=()=>['koerper',...layers(arch,srcs)].filter(s=>!paperdoll.images.has(need(s)));
+ // Sonderbild: nur, wenn jede Ebene einen Sonderbogen hat – sonst das Rückfallbild aus dem Katalog (cat.sonder.frames[k].fb)
+ const sonderFb=()=>{const q=cat.sonder?.frames?.[f-cat.frames.length];return q&&q.fb>=0?q.fb:0;};
+ if(f>=cat.frames.length&&(!cat.sonder||['koerper',...layers(arch,srcs)].some(s=>{const q=cat.sources[s]?.sonder;return !q||q.archs&&!q.archs.includes(arch);})))f=sonderFb();
+ const need=s=>{const part=partOf(cat,f);return sheetKey(s,arch,baseDir(s,dir,part),part);},open=()=>['koerper',...layers(arch,srcs)].filter(s=>!paperdoll.images.has(need(s)));
  let miss=open();
  if(miss.length){for(const s of miss)want(need(s));
+  if(f>=cat.frames.length){f=sonderFb();miss=open();for(const s of miss)want(need(s));}// Sonderbögen laden noch: so lange das Rückfallbild
   if(f>=split){f=Math.floor(performance.now()/300)%4;miss=open();for(const s of miss)want(need(s));}// Aktionsbilder laden noch: so lange Stand
   for(const s of miss)if(paperdoll.missing.has(need(s)))srcs.delete(s);// Bogen fehlt dauerhaft: ohne diese Ebene
   miss=miss.filter(s=>srcs.has(s)||s==='dutt'&&!paperdoll.missing.has(need(s)));

@@ -10,6 +10,7 @@ const HERE=p=>fileURLToPath(new URL(p,import.meta.url));
 import {familien} from './familien.mjs';
 import {aussehen,kopfEinrasten} from './aussehen.mjs';
 import {npc_kleidung} from './npc-kleidung.mjs';
+import {dungeon_kleidung} from './dungeon-kleidung.mjs';
 
 // Leinwand der Figurenbögen W×H, Fußpunkt (W/2, GROUND); Maße begründet in docs/ANZIEHPUPPE.md (Bildfläche). W/H veränderlich: Reittiere
 // liegen auf größerer Leinwand (canvas). PUPPE_LEINWAND="breite,höhe,boden" überschreibt die Maße (Hüllenmessung mit großer Leinwand).
@@ -146,7 +147,10 @@ function fur(L,p,r,step=3,len=2){const [ox,oy]=NZ,c=Math.ceil(step/2);// Raster 
   line(L,[[x,y],[x+(k>.5?1:-1),y+len]],k>.55?r[0]:r[3],p);}}}
 const FONT={C:['.##','#..','#..','#..','.##'],L:['#..','#..','#..','#..','###'],D:['##.','#.#','#.#','#.#','##.'],'?':['##.','..#','.#.','...','.#.'],O:['.#.','#.#','#.#','#.#','.#.'],T:['###','.#.','.#.','.#.','.#.'],R:['##.','#.#','##.','#.#','#.#'],A:['.#.','#.#','###','#.#','#.#'],U:['#.#','#.#','#.#','#.#','###'],Z:['###','..#','.#.','#..','###'],
  E:['###','#..','##.','#..','###'],G:['.##','#..','#.#','#.#','.##'],N:['#..#','##.#','#.##','#..#','#..#'],I:['#','#','#','#','#'],P:['##.','#.#','##.','#..','#..'],
- '2':['##.','..#','.#.','#..','###'],'0':['.#.','#.#','#.#','#.#','.#.'],'1':['.#','##','.#','.#','.#']};
+ '2':['##.','..#','.#.','#..','###'],'0':['.#.','#.#','#.#','#.#','.#.'],'1':['.#','##','.#','.#','.#'],
+ // Dungeon-Figuren 2026-09-26 (SECURITY, VIP, EXPOSÉ, BIG B …)
+ S:['.##','#..','.#.','..#','##.'],Y:['#.#','#.#','.#.','.#.','.#.'],B:['##.','#.#','##.','#.#','##.'],V:['#.#','#.#','#.#','#.#','.#.'],X:['#.#','#.#','.#.','#.#','#.#'],
+ H:['#.#','#.#','###','#.#','#.#'],K:['#.#','#.#','##.','#.#','#.#'],M:['#...#','##.##','#.#.#','#...#','#...#'],F:['###','#..','##.','#..','#..'],W:['#...#','#...#','#.#.#','##.##','#...#']};
 /** Schrift: in sw erst nach dem Spiegeln setzen (Aufdrucke bleiben lesbar). */
 const propW=s=>[...s].reduce((w,ch)=>w+(FONT[ch]?FONT[ch][0].length+1:3),-1);
 function drawText(L,clip,x,y,s,c,dx,dy){if(L.T){const [ax,ay]=L.T([x,y]),T=L.T;L.T=null;drawText(L,clip,ax,ay,s,c,dx,dy);L.T=T;return;}if(dx===0){let xx=x;for(const ch of s){const g=FONT[ch];if(g){stamp(L,clip,xx,y,g,{'#':c});xx+=g[0].length+1;}else xx+=3;}return;}[...s].forEach((ch,i)=>{const g=FONT[ch];if(g)stamp(L,clip,x+i*dx,y+i*dy,g,{'#':c});});}
@@ -203,6 +207,46 @@ export const ACTS={
  zielen:[{drop:3,adv:1,lean:2,wb:-.3,hf:.4,lead:{v:.8,o:4},rear:{v:-.6,o:3},w:{v:44,u:4,o:-2,b:[0,-.3,1]},g:{v:1,u:.25},f:{v:14,u:-10,o:-2,b:[-.4,-.5,.8]},head:[1,0]}],
  schuss:[{drop:3,adv:0,lean:0,wb:-.2,hf:.4,lead:{v:.8,o:4},rear:{v:-.6,o:3},w:{v:40,u:8,o:-2,b:[0,-.3,1]},g:{v:1,u:.45},f:{v:0,u:-14,o:12,b:[-.4,-.5,.8]},head:[0,0]}],
 };
+// ---------- Sonderposen (Dungeon-Figuren 2026-09-26): Ansagen der Boss-Mechaniken, eigener Bogen „-sonder“ ----------
+// Nicht in FRAMES (Grund- und Aktionsbögen bleiben byte-gleich); gebaut nur für die Quellen, die Dungeon-Figuren tragen
+// (buildSonder, --sonder). fb = Bild aus FRAMES als Rückfall, solange der Sonderbogen fehlt. Rezepte wie ACTS (poseAct).
+Object.assign(ACTS,{
+ // beide Arme weit zurück, Oberkörper zurückgelehnt, Gewicht hinten: „gleich kommt ein Stoß“ (Rausschmiss, Fass, Pferd bäumt sich)
+ ausholen:[{drop:15,adv:-3,lean:7,wb:.4,hf:.2,lead:{v:.95,o:7},rear:{v:-.85,o:5,pit:.7},w:{v:12,u:2,o:10,b:[-1,-.4,.6]},g:{v:.5,u:.8},f:{v:12,u:2,o:12,b:[-1,-.4,.6]},head:[2,-4]}],// tief geduckt, Hände vor der Brust angezogen: gleich stößt er
+ // beide Hände nach vorn gestoßen, Ausfallschritt: der Stoß selbst (volle Armlänge, sonst verschwinden die Hände vor dem Rumpf)
+ schubsen:[{drop:7,adv:7,lean:11,wb:-.6,hf:.5,lead:{v:1.3,o:4},rear:{v:-1.2,o:2,pit:.9},w:{v:72,u:10,o:-4,b:[0,-.3,1]},g:{v:1,u:.1},f:{v:72,u:12,o:2,b:[0,-.3,1]},head:[3,0],
+  ne:{f:{v:72,u:12,o:4,b:[0,-.3,1]}}}],
+ // ausgestreckter Zeigearm (Waffenhand) auf Schulterhöhe, andere Hand in der Hüfte, Brust raus: „DA!“ (Behauptung, Liste, Besichtigung)
+ zeigen:[{drop:1,adv:1,lean:-3,wb:-.5,hf:.3,lead:{v:.6,o:5},rear:{v:-.4,o:3},w:{v:72,u:20,o:4,b:[0,-.2,1]},g:{v:1,u:.6},f:{v:-2,u:-22,o:14,b:[-1,.1,.8]},head:[1,2],
+  ne:{f:{v:-2,u:-22,o:18,b:[-1,.1,.8]}}}],
+ // dasselbe mit der Nebenhand (se: zeigt nach rechts aus der Figur heraus; Big Bs Behauptung „rechts“)
+ zeigenN:[{drop:1,adv:1,lean:-3,wb:.4,hf:.3,lead:{v:.6,o:5},rear:{v:-.4,o:3},w:{v:-2,u:-22,o:14,b:[-1,.1,.8]},f:{v:72,u:20,o:4,b:[0,-.2,1]},og:{v:1,u:.6},head:[1,2],
+  ne:{f:{v:72,u:20,o:6,b:[0,-.2,1]}}}],
+ // beide Arme hoch (V): Runde auf mich, Wiehern, Live-Schalte
+ jubeln:[{drop:0,adv:0,lean:-4,wb:0,hf:.2,lead:{v:.5,o:5},rear:{v:-.4,o:4},w:{v:8,u:44,o:14,b:[0,-.3,1]},g:{v:.15,u:-1},f:{v:8,u:44,o:16,b:[0,-.3,1]},og:{v:.15,u:-1},head:[0,3]}],
+ // Gegenstand der Nebenhand vorn auf Brusthöhe hingehalten, Waffenhand zeigt darauf: Unterschreiben lassen, Tablet, Story posten
+ vorhalten:[{drop:2,adv:1,lean:3,wb:-.2,hf:.3,lead:{v:.6,o:4},rear:{v:-.4,o:3},w:{v:26,u:-4,o:-6,b:[0,-1,.6]},g:{v:.6,u:.8},f:{v:34,u:4,o:-4,b:[0,-1,.6]},head:[1,-1],
+  ne:{f:{v:22,u:4,o:14,b:[0,-1,.6]}}}],
+ // zusammengesunken: Knie weich, Rücken rund, Arme hängen, Kopf unten (Geständnis)
+ zusammensinken:[{drop:15,adv:-2,lean:9,wb:0,hf:.1,lead:{v:.5,o:6},rear:{v:-.35,o:5},w:{v:6,u:-40,o:4,b:[-1,-.2,.3]},g:{v:0,u:1},f:{v:6,u:-40,o:6,b:[-1,-.2,.3]},head:[3,-5],blink:true}],
+ // tief nach vorn gebeugt (Saufen am Trog, Fass anschieben)
+ buecken:[{drop:12,adv:-7,lean:20,wb:-.2,hf:.4,lead:{v:.9,o:5},rear:{v:-.8,o:4},w:{v:36,u:-30,o:-2,b:[0,-.4,1]},g:{v:.4,u:.9},f:{v:34,u:-30,o:4,b:[0,-.4,1]},head:[7,-7]}],
+ // Tritt nach vorn mit dem Führungsbein (Huftritt mit Turnschuh)
+ tritt:[{drop:-1,adv:-6,lean:-11,wb:.2,hf:.9,lead:{v:2.1,o:3,lift:34,pit:-1},rear:{v:-.35,o:2},w:{v:-8,u:8,o:14,b:[1,-.2,.5]},g:{v:-.3,u:.9},f:{v:10,u:10,o:18,b:[0,-.3,1]},head:[-2,1]}],
+ // Handy über Kopf nach vorn gereckt (Blitzlicht, Selfie, Follower filmen)
+ selfie:[{drop:0,adv:0,lean:-5,wb:-.2,hf:.3,lead:{v:.5,o:4},rear:{v:-.4,o:3},w:{v:14,u:60,o:0,b:[0,-.4,1]},g:{v:.35,u:-1},f:{v:0,u:-20,o:13,b:[-1,.1,.8]},head:[0,2]}],
+ // Hand am Ohr (Funkspruch, Anwalt ruft an)
+ telefon:[{drop:1,adv:0,lean:-1,wb:.2,hf:.3,lead:{v:.5,o:4},rear:{v:-.4,o:3},w:{v:4,u:30,o:-12,b:[0,-.6,1]},g:{v:0,u:-1},f:{v:22,u:0,o:6,b:[0,-1,.6]},head:[0,0],
+  sw:{w:{v:6,u:28,o:-8,b:[0,-.6,1]}},ne:{w:{v:6,u:28,o:-8,b:[0,-.6,1]}}}],
+ // Achselzucken: beide Hände mit offenen Handflächen seitlich hoch, Kopf zwischen den Schultern – der Nachsatz („… sagt man.“)
+ achselzucken:[{drop:6,adv:-1,lean:4,wb:0,hf:.2,lead:{v:.4,o:4},rear:{v:-.3,o:3},tsh:-3,w:{v:10,u:-18,o:12,b:[0,-1,.5]},g:{v:.3,u:1},f:{v:10,u:-18,o:14,b:[0,-1,.5]},head:[2,-9],
+  ne:{f:{v:10,u:-18,o:16,b:[0,-1,.5]}}}],// klein gemacht: Kopf runter, Schultern hoch, Handflächen dicht am Körper
+ // am eigenen Schopf: beide Hände über dem Kopf, Füße baumeln über dem Boden (Münchhausen)
+ schopf:[{drop:-15,adv:0,lean:-2,wb:0,hf:.1,lead:{v:.25,o:4,pit:1},rear:{v:-.25,o:4,pit:1},w:{v:2,u:44,o:-10,b:[0,-.2,1]},g:{v:0,u:-1},f:{v:2,u:44,o:-8,b:[0,-.2,1]},og:{v:0,u:-1},head:[0,1]}],
+});
+/** Sonderbilder (Reihenfolge = Spalte im Sonderbogen, Laufzeit-Index = cat.frames.length + Spalte); fb = Rückfallbild aus FRAMES. */
+export const SONDER=[['ausholen',['hieb2',0]],['schubsen',['hieb2',1]],['zeigen',['zielen',0]],['jubeln',['zaubern',0]],['vorhalten',['zaubern',0]],['zusammensinken',['getroffen',0]],
+ ['buecken',['rasten',0]],['tritt',['sprint',0]],['selfie',['zielen',0]],['telefon',['zaubern',0]],['achselzucken',['parade',0]],['schopf',['zaubern',0]],['zeigenN',['zielen',0]]].map(([anim,fb])=>({anim,i:0,fb}));
 const nrm=v=>{const l=Math.hypot(v[0],v[1])||1;return [v[0]/l,v[1]/l];};
 const clampTo=(a,b,m)=>{const d=Math.hypot(b[0]-a[0],b[1]-a[1]);return d>m?[a[0]+(b[0]-a[0])*m/d,a[1]+(b[1]-a[1])*m/d]:b;};
 /** Arm so stellen, dass der Griffpunkt (handPos) auf g liegt: Handgelenk 5,2 px davor entlang des Unterarms (iterativ), nie überstreckt. */
@@ -768,9 +812,9 @@ export const GEAR_BACK={
 // ---------- Ausgabe: je Quelle ein Bogen – Spalten = Bilder, Zeilen = Tiefenbänder ----------
 /** Seitengebundene Teile: Ärmel-Aufnäher am rechten Arm, Fuchspfote am rechten Stiefel, Bierbong an der linken Hüfte. */
 // ---------- Erweiterungsmodule: weitere Gegenstände (familien.mjs), Editor-Aussehen (aussehen.mjs), NPC-Kleidung (npc-kleidung.mjs) ----------
-export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F,FRAMES};
+export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F,FRAMES,layer:(...a)=>layer(...a),edges:(...a)=>edges(...a),mirror:(...a)=>mirror(...a),handW:(...a)=>handW(...a),setHW:v=>{HW=v;}};
 const MOD_FAMILIES={},MOD_SIDED=[];
-for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
+for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT),dungeon_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
 const SIDE={
  kutte:{normal:{armVorn:GEAR.kutte.armVorn,armHinten:GEAR.kutte.armHinten},swapped:{armVorn:GEAR_BACK.kutte.armVorn,armHinten:GEAR_BACK.kutte.armHinten}},
  fuchspfote:{normal:{beinVorn:GEAR.fuchspfote.beinVorn,beinHinten:GEAR.fuchspfote.beinHinten},swapped:GEAR_BACK.fuchspfote},
@@ -790,6 +834,8 @@ let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...
    if(piv&&piv[1]){const [[ox,oy],a]=piv,co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}fn(L,p);L.T=null;L.rot=0;if(g.hands===2&&p.grip2&&bd==='armVorn')handOver(L,p.armF);if(TEXABLE.has(id))texOverlay(L,band,p0,id);}]))};}
 /** Bogen einer Quelle (alle Bilder × Bänder, Richtung dir) für die Werkzeug-Figur lid – für Vorschau-Werkzeuge (waffen-vorschau.mjs) ohne Laufzeitbau. */
 export const renderQuelle=(id,lid,dir='se')=>{const look=LOOK[lid];return renderSource(makeSrcs()[id],ARCH[look.arch],look,dir);};
+/** Sonderbilder einer Quelle (SONDER, Spalten = Sonderbilder) – Vorschau-Werkzeuge (dungeon-vorschau.mjs) und buildSonder. */
+export const renderSonder=(id,lid,dir='se')=>{const look=LOOK[lid];return renderSource(makeSrcs()[id],ARCH[look.arch],look,dir,SONDER,300);};
 // ---------- Reiten: Reittiere mit eigenen Sitzformen, Reiterpose aus dem Skelett ----------
 // Statt ein Stehbild zu zerschneiden und zu verzerren, stellt das Skelett je Sitzform eine echte Pose: Becken auf dem Sitz,
 // Füße an Steigbügel/Pedal/Trittbrett, Hände an Zügel/Lenker/Lenkrad. Alle Kleidungsebenen folgen, weil sie am Skelett hängen.
@@ -1045,11 +1091,12 @@ export function renderRide(lid,mountId,ids,dir,k){const r=rideRider(lid,mountId,
 
 /** Hülle aller gezeichneten Pixel relativ zum Fußpunkt (Pixelversatz, inklusive): Katalog cat.huelle, Randprüfung in tests/paperdoll-posen. */
 const HUELLE={x0:1e9,x1:-1e9,y0:1e9,y1:-1e9};
-function renderSource(draw,A,look,dir='se'){const sheet=surface(W*FRAMES.length,H*BANDS.length),boxes=sheet.boxes=[],back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';let text=false;
- FRAMES.forEach((fr,col)=>{const sw=back!==mir,p=pose(fr,A,look,back,sw);p.fi=col+(p.sided&&sw?500:0);HW=handW(A);p.lefty=mir;p.swap=sw;BANDS.forEach((band,row)=>{const L=layer(mir?'sw':'se');L.T=leanT(p,band);draw(L,band,p);L.T=null;edges(L);if(L.texts.length)text=true;if(mir)mirror(L);
+/** frames = Bildliste (FRAMES bzw. SONDER), fi0 = Versatz der Bildnummer p.fi (Zwischenspeicher der Stofffüllung je Bild: Sonderbilder ab 300). */
+function renderSource(draw,A,look,dir='se',frames=FRAMES,fi0=0){const NF=frames.length,sheet=surface(W*NF,H*BANDS.length),boxes=sheet.boxes=[],back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne';let text=false;
+ frames.forEach((fr,col)=>{const sw=back!==mir,p=pose(fr,A,look,back,sw);p.fi=fi0+col+(p.sided&&sw?500:0);HW=handW(A);p.lefty=mir;p.swap=sw;BANDS.forEach((band,row)=>{const L=layer(mir?'sw':'se');L.T=leanT(p,band);draw(L,band,p);L.T=null;edges(L);if(L.texts.length)text=true;if(mir)mirror(L);
   let x0=W,x1=-1,y0=H,y1=-1;for(let i=0;i<W*H;i++){const c=L.col[i];if(!c)continue;const x=i%W,y=i/W|0;sheet.data.set([...c,255],((row*H+y)*sheet.width+col*W+x)*4);if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
-  if(x1>=0){boxes[row*FRAMES.length+col]=[x0,y0,x1,y1];const h=HUELLE;h.x0=Math.min(h.x0,x0-W/2);h.x1=Math.max(h.x1,x1-W/2);h.y0=Math.min(h.y0,y0-GROUND);h.y1=Math.max(h.y1,y1-GROUND);}});});
- sheet.text=text;return sheet;}
+  if(x1>=0){boxes[row*NF+col]=[x0,y0,x1,y1];const h=HUELLE;h.x0=Math.min(h.x0,x0-W/2);h.x1=Math.max(h.x1,x1-W/2);h.y0=Math.min(h.y0,y0-GROUND);h.y1=Math.max(h.y1,y1-GROUND);}});});
+ sheet.text=text;sheet.nf=NF;return sheet;}
 // ---------- Laufzeit-Ausgabe fürs Spiel: assets/paperdoll/runtime (node tools/paperdoll/puppe.mjs --runtime) ----------
 /** Spiel-Kennungen der Körperbauten (characters.js LOOKS): Werkzeug-Figur → Archetyp. */
 export const GAME_ARCH={ida:'baerbel',dieter:'dieter',kevin:'kevin'};
@@ -1071,7 +1118,7 @@ const OWN_AKT=RUNTIME_SPLIT<FRAMES.length;
 // Pixel (x,y) von Bild f/Band b liegt bei (col*cell.w + x-cell.x, row*cell.h + y-cell.y). So belegt ein Bogen dekodiert nur seinen Inhalt.
 /** Bogenteil (Bilder f0…f1, Zeilen rows) auf seine eigene Inhaltshülle zugeschnitten: {box,data} bzw. {box:null}. */
 function cropPart(sh,rows,f0,f1){let x0=W,y0=H,x1=-1,y1=-1;// Hüllen je Band/Bild aus renderSource (sheet.boxes)
- for(const b of rows){const r=BANDS.indexOf(b);for(let f=f0;f<f1;f++){const q=sh.boxes[r*FRAMES.length+f];if(!q)continue;x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[2]);y1=Math.max(y1,q[3]);}}
+ for(const b of rows){const r=BANDS.indexOf(b);for(let f=f0;f<f1;f++){const q=sh.boxes[r*(sh.nf||FRAMES.length)+f];if(!q)continue;x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);x1=Math.max(x1,q[2]);y1=Math.max(y1,q[3]);}}
  const part={rows,n:f1-f0,box:null};if(x1<0)return part;const box=part.box={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};part.data=cellSheet(sh,W,H,rows,f0,f1,box,{x:0,y:0});return part;}
 /** Zellenbogen aus einem Quellbogen (Kachel tw×th, Ursprung o) für Zelle c: Spalte je Bild c.w, Zeile je Band c.h. */
 function cellSheet(sh,tw,th,rows,f0,f1,c,o){const w=(f1-f0)*c.w,h=Math.max(1,rows.length)*c.h,d=new Uint8Array(w*h*4);
@@ -1117,6 +1164,31 @@ export function buildRuntimeTeil(out,ids){const t0=Date.now(),cat=JSON.parse(rea
  const o=cat.huelle||{...HUELLE},h=cat.huelle={x0:Math.min(o.x0,HUELLE.x0),x1:Math.max(o.x1,HUELLE.x1),y0:Math.min(o.y0,HUELLE.y0),y1:Math.max(o.y1,HUELLE.y1)};
  console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Teilneubau fertig',(Date.now()-t0)+' ms',out);}
+/** Quellen aller Dungeon-Figuren (content/dungeon-figuren.js): Körper, Dutt, Editor-Ebenen (wie paperdoll-art.js lookSources) und Kleidung.
+ *  archs = Spiel-Archetypen, die die Quelle in einer Dungeon-Figur tragen: nur für sie entstehen Sonderbögen (Sonderbilder braucht nur der Dungeon). */
+export async function sonderQuellen({archs=false}={}){const {DUNGEON_FIGUREN}=await import('../../content/dungeon-figuren.js');const map=new Map();const add=(id,a)=>{if(!map.has(id))map.set(id,new Set());map.get(id).add(a);};
+ for(const f of Object.values(DUNGEON_FIGUREN)){if(!f.arch)continue;add('koerper',f.arch);if(f.arch==='baerbel')add('dutt',f.arch);for(const g of f.gear)add(g,f.arch);const t=f.tint||{};if(t.style&&t.style!=='natur')add('frisur-'+t.style,f.arch);if(t.beard&&t.beard!=='natur')add('bart-'+t.beard,f.arch);if(t.face&&t.face!=='ohne')add(t.face,f.arch);}
+ const ids=[...map.keys()].filter(id=>id==='koerper'||id==='dutt'||GEAR[id]);return archs?Object.fromEntries(ids.map(id=>[id,[...map.get(id)]])):ids;}
+/** Sonderbögen (SONDER, Dungeon-Figuren 2026-09-26): je Quelle × Archetyp × Richtung ein Bogen `<quelle>-<arch><dir>-sonder.png` in einen
+ *  fertigen Laufzeitordner. sw/ne sind immer eigene Bögen (die Posen hängen an der Waffenseite). Jede Quelle bekommt eine eigene Sonderzelle
+ *  (cat.sources[id].sonder.cell), damit ihre Grund- und Aktionsbögen byte-gleich bleiben. Katalog: cat.sonder={start,frames:[{anim,i,fb}]} –
+ *  Laufzeit-Bildnummer start+k = Sonderbild k, fb = Bildnummer des Rückfalls in cat.frames. Nur für Quellen, die schon im Katalog stehen
+ *  (neue Gegenstände vorher mit --nur); ein späteres --nur derselben Quelle verwirft ihren Sonderbogen (danach --sonder erneut). */
+export function buildSonder(out,ids,archsOf=null){const t0=Date.now(),cat=JSON.parse(readFileSync(out+'/catalog.json','utf8')),srcs=makeSrcs();// archsOf: {id:[Spiel-Archetypen]} – nur für diese; sonst alle drei
+ if(cat.W!==W||cat.H!==H||cat.ground!==GROUND)throw new Error('Katalog passt nicht zum Werkzeug (Leinwand) – voller Neubau: --runtime');
+ cat.sonder={start:cat.frames.length,frames:SONDER.map(({anim,i,fb})=>({anim,i,fb:cat.frames.findIndex(f=>f.anim===fb[0]&&(f.i||0)===fb[1])}))};
+ for(const id of ids){const fn=srcs[id];if(!fn||!cat.sources[id])throw new Error('Quelle fehlt im Katalog (neue Gegenstände erst mit --nur): '+id);
+  const rows=cat.sources[id].bands,parts=[];
+  const archs=archsOf?.[id]||Object.values(GAME_ARCH);for(const f of readdirSync(out))if(f.startsWith(id+'-')&&f.endsWith('-sonder.png')&&Object.values(GAME_ARCH).some(a=>f.startsWith(`${id}-${a}`)))unlinkSync(out+'/'+f);
+  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];if(!archs.includes(gid))continue;
+   for(const dir of Object.keys(DIRS)){const sh=renderSource(fn,A,look,dir,SONDER,300);parts.push([`${out}/${id}-${gid}${DIRS[dir]}-sonder.png`,cropPart(sh,rows,0,SONDER.length)]);}}
+  let x0=W,y0=H,x1=-1,y1=-1;for(const [,p] of parts)if(p.box){x0=Math.min(x0,p.box.x);y0=Math.min(y0,p.box.y);x1=Math.max(x1,p.box.x+p.box.w-1);y1=Math.max(y1,p.box.y+p.box.h-1);}
+  const cell=x1<0?{x:0,y:0,w:1,h:1}:{x:Math.max(0,x0-1),y:Math.max(0,y0-1),w:Math.min(W-1,x1+1)-Math.max(0,x0-1)+1,h:Math.min(H-1,y1+1)-Math.max(0,y0-1)+1};
+  for(const [file,p] of parts)writeFileSync(file,encodePng(placePart(p,cell)));cat.sources[id].sonder={cell,archs};console.log('Sonder',id,archs.join('/'),JSON.stringify(cell));}
+ for(const [id,s] of Object.entries(cat.sources))if(s.sonder&&archsOf&&!(id in archsOf)){delete s.sonder;for(const f of readdirSync(out))if(f.startsWith(id+'-')&&f.endsWith('-sonder.png'))unlinkSync(out+'/'+f);}// nicht mehr gebraucht
+ const o=cat.huelle||{...HUELLE},h=cat.huelle={x0:Math.min(o.x0,HUELLE.x0),x1:Math.max(o.x1,HUELLE.x1),y0:Math.min(o.y0,HUELLE.y0),y1:Math.max(o.y1,HUELLE.y1)};
+ console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px`);
+ writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Sonderbögen fertig',(Date.now()-t0)+' ms',out);}
 export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of readdirSync(out))if(f.endsWith('.png'))unlinkSync(out+'/'+f);
  const t0=Date.now(),srcs=makeSrcs(),cat={version:3,layout:'bands',split:RUNTIME_SPLIT,W,H,ground:GROUND,pivot:{x:W/2,y:GROUND},worldHeight:26,bands:BANDS,dirs:DIRS,own:{sw:[],ne:[]},ownAkt:{sw:[],ne:[]},
   frames:FRAMES.map(fr=>({...fr,bob:pose(fr,ARCH.schwungvoll,LOOK.ida).bob})),archetypes:{},sources:{},items:{},families:{...FAMILY_SOURCE,...MOD_FAMILIES},anchors:{},ramps:{}};
@@ -1137,8 +1209,10 @@ export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of
 // ohne Schalter = Prototyp-Ausgabe. In Arbeits-Threads (Reit-Build) nie ausführen: dort ist argv[1] ebenfalls puppe.mjs.
 import {isMainThread} from 'node:worker_threads';
 const CLI=isMainThread&&process.argv[1]&&process.argv[1].endsWith('puppe.mjs');
-if(CLI&&process.argv[2]==='--runtime'){const a=process.argv.slice(3),nur=a.indexOf('--nur'),ziel=a.find((x,i)=>!x.startsWith('--')&&(nur<0||i!==nur+1))||HERE('../../assets/paperdoll/runtime');
- if(nur>=0){if(!a[nur+1])throw new Error('--nur braucht Kennungen (id,id)');buildRuntimeTeil(ziel,a[nur+1].split(',').filter(Boolean));}else buildRuntime(ziel);}
+if(CLI&&process.argv[2]==='--runtime'){const a=process.argv.slice(3),nur=a.indexOf('--nur'),son=a.indexOf('--sonder'),ziel=a.find((x,i)=>!x.startsWith('--')&&(nur<0||i!==nur+1)&&(son<0||i!==son+1))||HERE('../../assets/paperdoll/runtime');
+ if(nur>=0||son>=0){if(nur>=0){if(!a[nur+1])throw new Error('--nur braucht Kennungen (id,id)');buildRuntimeTeil(ziel,a[nur+1].split(',').filter(Boolean));}
+  if(son>=0){if(!a[son+1])throw new Error('--sonder braucht Kennungen (id,id) oder dungeon');const go=(ids,m)=>buildSonder(ziel,ids,m);if(a[son+1]==='dungeon')sonderQuellen({archs:true}).then(m=>go(Object.keys(m),m));else go(a[son+1].split(',').filter(Boolean));}}
+ else{buildRuntime(ziel);sonderQuellen({archs:true}).then(m=>buildSonder(ziel,Object.keys(m),m)).then(()=>import('./motive.mjs')).then(m=>m.buildMotive(ziel));}}// voller Neubau: danach Sonderbögen der Dungeon-Figuren und Motive (buildRuntime räumt alle Bögen weg)
 else if(CLI&&process.argv[2]==='--reiten')import('./reiten.mjs').then(m=>m.buildRideRuntime(process.argv[3]||HERE('../../assets/paperdoll/reiten')));
 else if(CLI){const out=process.argv[2]||'.';mkdirSync(out,{recursive:true});const t0=Date.now();
  const meta={W,H,ground:GROUND,bands:BANDS,frames:FRAMES,figures:{},gear:{},dirs:DIRS,own:{sw:[],ne:[]}};
