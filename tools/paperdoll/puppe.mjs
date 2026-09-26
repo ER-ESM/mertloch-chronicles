@@ -1185,7 +1185,10 @@ export function buildSonder(out,ids,archsOf=null){const t0=Date.now(),cat=JSON.p
   let x0=W,y0=H,x1=-1,y1=-1;for(const [,p] of parts)if(p.box){x0=Math.min(x0,p.box.x);y0=Math.min(y0,p.box.y);x1=Math.max(x1,p.box.x+p.box.w-1);y1=Math.max(y1,p.box.y+p.box.h-1);}
   const cell=x1<0?{x:0,y:0,w:1,h:1}:{x:Math.max(0,x0-1),y:Math.max(0,y0-1),w:Math.min(W-1,x1+1)-Math.max(0,x0-1)+1,h:Math.min(H-1,y1+1)-Math.max(0,y0-1)+1};
   for(const [file,p] of parts)writeFileSync(file,encodePng(placePart(p,cell)));cat.sources[id].sonder={cell,archs};console.log('Sonder',id,archs.join('/'),JSON.stringify(cell));}
- for(const [id,s] of Object.entries(cat.sources))if(s.sonder&&archsOf&&!(id in archsOf)){delete s.sonder;for(const f of readdirSync(out))if(f.startsWith(id+'-')&&f.endsWith('-sonder.png'))unlinkSync(out+'/'+f);}// nicht mehr gebraucht
+ // genau die Sonderbögen dieser Quelle (nicht pelzmantel-baron-boss-… beim Aufräumen von pelzmantel-baron): Dateiname = id-arch[-dir]-sonder.png
+ const own=(id,f)=>{if(!f.startsWith(id+'-')||!f.endsWith('-sonder.png'))return false;const rest=f.slice(id.length+1,-'-sonder.png'.length).split('-');
+  return Object.values(GAME_ARCH).includes(rest[0])&&(rest.length===1||rest.length===2&&['sw','nw','ne'].includes(rest[1]));};
+ for(const [id,s] of Object.entries(cat.sources))if(s.sonder&&archsOf&&!(id in archsOf)){delete s.sonder;for(const f of readdirSync(out))if(own(id,f))unlinkSync(out+'/'+f);}// nicht mehr gebraucht
  const o=cat.huelle||{...HUELLE},h=cat.huelle={x0:Math.min(o.x0,HUELLE.x0),x1:Math.max(o.x1,HUELLE.x1),y0:Math.min(o.y0,HUELLE.y0),y1:Math.max(o.y1,HUELLE.y1)};
  console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Sonderbögen fertig',(Date.now()-t0)+' ms',out);}

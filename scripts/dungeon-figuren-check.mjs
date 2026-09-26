@@ -1,5 +1,5 @@
-// Browserprüfung Dungeon-Figuren (Entwurf 2026-09-26, freigabepflichtig, nicht live): Schalter an → eigene Figuren statt Platzhalter,
-// Bosse kündigen ihre Mechanik mit Sonderposen an; Schalter aus → alles wie bisher (keine Figurenbögen geladen).
+// Browserprüfung Dungeon-Figuren (live seit 2026-09-26, standardmäßig an): eigene Figuren statt Platzhalter, Bosse kündigen ihre Mechanik
+// mit Sonderposen an; Notschalter (localStorage '0') → alles wie bisher (keine Figurenbögen geladen).
 // Aufruf: CDP_PORT=9730 SERVER_PORT=4530 node scripts/dungeon-figuren-check.mjs   (ONLY=1,2,3,4 einzelne Teile)
 // Bilder: visual-review/dungeon-figuren/szene-*.jpg (lokal, nicht im Repo); Galerie: D:\Dev\_prototypen\dungeon-figuren-2026-09-26.
 import assert from 'node:assert/strict';
@@ -7,9 +7,11 @@ import {mkdirSync} from 'node:fs';
 import {session,wait} from './r5b-lib.mjs';
 const dir=process.env.OUT||'visual-review/dungeon-figuren';mkdirSync(dir,{recursive:true});
 const only=(process.env.ONLY||'').split(',').filter(Boolean),want=n=>!only.length||only.includes(String(n));
-const FLAG='localStorage.setItem("mertloch-dungeon-figuren","1");';
+const FLAG='localStorage.setItem("mertloch-dungeon-figuren","1");',OFF='localStorage.setItem("mertloch-dungeon-figuren","0");';// Standard ist an; OFF = Notschalter
 const MERCS=`['merc-pils-peter','merc-schorle-susi','merc-radler-rita','merc-hopfen-horst']`;
-const s=await session({port:9730,serverPort:4530});const {b,read,start}=s;
+const s=await session({port:9730,serverPort:4530});
+// Teil 0: ohne jede Angabe im Speicher sind die Figuren an (Standard)
+if(want(0)){await s.start({w:2024,h:900});await s.read(`window.DF=await import('/dungeon-figuren-art.js');return 1`);assert.equal(await s.read(`return DF.dungeonFigurenAn()`),true,'Standard: an');console.log('PASS Standard: Figuren an ohne Schalter');}const {b,read,start}=s;
 const ok=t=>console.log('PASS '+t);
 const setup=()=>read(`g.player.level=Math.max(10,g.player.level);g.player.inCombat=0;g.player.hp=g.player.maxHp;g.enterDungeon('schloss-bigb',{force:true});window.D=await import('/dungeon.js');window.A=await import('/auto-combat.js');window.PD=await import('/paperdoll-art.js');window.DF=await import('/dungeon-figuren-art.js');
  for(const id of ${MERCS})g.hireCompanion(id,{free:true});g.adminGod=true;D.spawnRareBoss(g,'halbespferd');return g.instance?.kind;`);
@@ -61,7 +63,7 @@ try{
   await read(`const b=${B('bigb')};b.cast=null;b.hp=b.maxHp*.14;b.confessed=true;g.paused=false;for(let t=0;t<.3;t+=.05)g.tick(.05);g.paused=true;return 1`);await shotBoss('bigb','gestaendnis');ok('bigb: Geständnis');
  }
  // ───────────── 3 · Schalter aus: alles wie bisher
- if(want(3)){await start({w:2024,h:900});assert.equal(await setup(),'dungeon');assert.equal(await read(`return DF.dungeonFigurenAn()`),false,'Schalter aus');
+ if(want(3)){await start({w:2024,h:900,extra:OFF});assert.equal(await setup(),'dungeon');assert.equal(await read(`return DF.dungeonFigurenAn()`),false,'Schalter aus');
   await place('e0',24,30);await wait(3000);await shot('szene-0-hof-ohne-schalter');await crop('szene-0-hof-ohne-schalter-nah',`(()=>{const h=g.enemies.filter(e=>e.dungeonKind&&e.hp>0&&Math.hypot(e.x-g.player.x,e.y-g.player.y)<200);return {x:h.reduce((a,e)=>a+e.x,0)/h.length,y:h.reduce((a,e)=>a+e.y,0)/h.length};})()`,560,300,-30);
   const loaded=await read(`return [...PD.paperdoll.images.keys()].filter(k=>/^(securitypolo|securityanzug|regenrinnenpanzer|eimerhelm|motiv-)/.test(k))`);assert.equal(loaded.length,0,'ohne Schalter keine Figurenbögen: '+loaded.join(','));
   ok('Schalter aus: Platzhalter wie bisher, keine Figurenbögen geladen');}
@@ -69,7 +71,7 @@ try{
  // jeder Boss allein an seinem Platz. Summons (Follower, Interessent, Kommentator) sind Kopien eines Trash-Gegners mit Art und Platzhalter
  // der jeweiligen Gegnerart (nur zum Ansehen, sie kämpfen nicht).
  for(const [part,flag] of [[4,true],[5,false]]){if(!want(part))continue;const tag=flag?'entwurf':'heute';
-  await start({w:2024,h:900,extra:flag?FLAG:''});assert.equal(await setup(),'dungeon');await read(`window.C=await import('/content/index.js');return 1`);
+  await start({w:2024,h:900,extra:flag?FLAG:OFF});assert.equal(await setup(),'dungeon');await read(`window.C=await import('/content/index.js');return 1`);
   const kinds=['securityazubi','maklerpraktikant','baumarktritter','pappwache','pappschuetze','kellerratte','schlossgespenst','follower','interessent','kommentator'];
   await place('e0',31,36);
   await read(`const run=g.dungeonRun,tpl=g.enemies.find(e=>e.dungeonKind==='securityazubi'),mk=(kind,i)=>{const d=C.DUNGEON_ENEMIES[kind];let e=g.enemies.find(o=>o.dungeonKind===kind&&o.hp>0&&!o.lineup);
@@ -86,7 +88,7 @@ try{
   ok(tag+': Bosse einzeln');}
  // ───────────── 6 · Leistung: Bildzeiten im Weinkeller (16 Ratten + Trash) und im Burghof, Schalter an und aus (Server ohne Grafikkarte)
  for(const [part,flag] of [[6,true],[7,false]]){if(!want(part))continue;const tag=flag?'an':'aus';
-  await start({w:2024,h:900,extra:flag?FLAG:''});assert.equal(await setup(),'dungeon');
+  await start({w:2024,h:900,extra:flag?FLAG:OFF});assert.equal(await setup(),'dungeon');
   const messe=async(where)=>{await read(`g.paused=false;return 1`);await place(...where);await read(`g.player.inCombat=0;for(const e of g.enemies)if(e.dungeon&&!e.dungeonBoss){e.aggro=false;e.ai='idle';}return 1`);await wait(4000);
    return read(`const d=[];let last=performance.now();const t0=last;await new Promise(r=>{const f=now=>{d.push(now-last);last=now;if(now-t0<5000)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});
     d.sort((a,b)=>a-b);const q=x=>Math.round(d[Math.floor(d.length*x)]*10)/10;return {bilder:d.length,median:q(.5),p90:q(.9),max:Math.round(d[d.length-1]),fps:Math.round(d.length/5),puppe:{...PD.paperdoll.stats}};`);};

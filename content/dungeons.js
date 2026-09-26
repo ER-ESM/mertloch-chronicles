@@ -303,10 +303,10 @@ export const DUNGEON_BOSSES={
   phases:[{at:.5,castSet:'d-rita2'},{at:.15}]},
  // Das halbe Pferd (Plan 7.4), selten (30 % der Durchgänge) in den Stallungen. feeds = Trog (Meter): in range Metern heilt es heal
  // Anteil Leben je Sekunde; „Säuft am Trog“ läuft es hin (retreat), der Schutz zieht es weg. mountArt = das Reittier „Das halbe Pferd“
- // als Figur (MOUNTS.halbespferd: Bogen des Hofpferds, getönt zum Schimmel), bis eigene Grafik freigegeben ist. Beute: Hafersack, 3 % Reittier (DROP_TABLES.halbespferd).
- halbespferd:{name:'Das halbe Pferd',title:'Vorderhälfte eines Schimmels · frisch gestriegelt',type:'boss',skin:'boar',mountArt:'halbespferd',family:'halbespferd',
+ // als Figur (MOUNTS.halbespferd: Bogen des Hofpferds) – nur noch der Rückfall; seit 2026-09-26 zeichnet die Anziehpuppe das Kostüm (dungeon-figuren-art.js). Beute: Hafersack, 3 % Reittier (DROP_TABLES.halbespferd).
+ halbespferd:{name:'Das halbe Pferd',title:'Vorderhälfte eines Fuchses · frisch gestriegelt',type:'boss',skin:'boar',mountArt:'halbespferd',family:'halbespferd',
   level:9,hp:74000,damage:3,xp:500,lootMoment:true,speed:58,aggroRange:92,roamRadius:4,leash:160,castSet:'d-pferd',auto:'huf',
-  look:'Die vordere Hälfte eines Schimmels, frisch gestriegelt, hinten ein sauberer Schnitt mit Pflaster. Es säuft',
+  look:'Die vordere Hälfte eines Fuchses, frisch gestriegelt, hinten ein sauberer Schnitt mit Pflaster. Darunter Jeans und Turnschuhe. Es säuft',
   feeds:{at:[23.6,3.8],range:3.5,heal:.02}}
 };
 

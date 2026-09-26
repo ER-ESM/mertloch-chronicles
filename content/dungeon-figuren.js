@@ -8,20 +8,22 @@
 //   (SONDER in puppe.mjs, z. B. 'ausholen') oder 'anim:i' aus den Aktionsbildern (z. B. 'hieb:1'). idle: Standbild statt Atmen (Follower filmen).
 // lie: Big Bs Behauptung – zeigt vor dem Nachsatz auf die behauptete Seite (links: Waffenhand nach sw, rechts: Nebenhand nach se), mit dem Nachsatz zuckt er die Achseln. confess: Bild beim Geständnis.
 // drink: Bild, solange das halbe Pferd am Trog säuft. Varianten: Liste von Figuren; der Gegner wählt nach seiner Kennung.
-// Gezeichnet wird nur hinter dem Schalter (dungeon-figuren-art.js): localStorage 'mertloch-dungeon-figuren' = '1' oder ?dungeon-figuren=1.
+// Live seit 2026-09-26 (Nutzerfreigabe), standardmäßig an; Notschalter: ?dungeon-figuren=0 bzw. localStorage 'mertloch-dungeon-figuren' = '0'.
+// plate: Zusatzhöhe über dem Kopf in Welteinheiten (Kopfschmuck, Pferdekopf), damit das Namensschild darüber sitzt.
 export const DUNGEON_FIGUREN={
  // ── Bosse (Boss-Maßstab ×1,35 rechnet renderer.js) ──
  gerd:{arch:'dieter',tint:{skin:'hell',hair:'schwarz',face:'sonnenbrille',style:'natur',beard:'stoppeln'},gear:['securityanzug','stoffhose','schuhe','kinderheadset','absperrpfosten','klemmbrett'],
   posen:{liste:{cast:'zeigen'},rausschmiss:{cast:'ausholen',end:'schubsen'},dresscode:{cast:'vorhalten'}}},
  expose:{arch:'baerbel',tint:{skin:'hell',hair:'blond',face:'ohne',style:'natur',beard:'natur'},gear:['hosenanzug','pumps','haarbrille','verkaufsschild','hochglanz-expose'],
   posen:{termin:{cast:'zeigen'},offen:{cast:'zeigen'},verkauft:{cast:'hieb:0',end:'hieb:1'},forderung:{cast:'vorhalten'},notar:{cast:'zaubern:0'}}},
- korkenkurt:{arch:'dieter',tint:{skin:'hell',hair:'grau',face:'ohne',style:'natur',beard:'schnauzer'},gear:['hemd','weste','kellerschuerze','stoffhose','schuhe','korkenzieher-kellermeister','weinglas'],
+ korkenkurt:{arch:'dieter',tint:{skin:'hell',hair:'grau',face:'ohne',style:'natur',beard:'schnauzer'},gear:['hemd','weste','kellerschuerze','stoffhose','schuhe','korkenzieher-boss','weinglas'],
   posen:{runde:{cast:'jubeln'},zahlen:{cast:'zeigen'},fass:{cast:'ausholen',end:'schubsen'},fass2:{cast:'ausholen',end:'schubsen'},korken:{cast:'hieb:0',end:'hieb:1'},sprinkler:{cast:'zaubern:0'}}},
  rita:{arch:'baerbel',tint:{skin:'mittel',hair:'blau',face:'ohne',style:'natur',beard:'natur'},gear:['bomberjacke','jeans','turnschuhe','greenscreen','ringlicht-halo','handy'],
-  posen:{blitz:{cast:'selfie',fx:'blitz'},story:{cast:'vorhalten'},greenscreen:{cast:'zaubern:0'}}},
- halbespferd:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'natur'},gear:['jeans','turnschuhe','pferdekostuem'],
+  plate:5,posen:{blitz:{cast:'selfie',fx:'blitz'},story:{cast:'vorhalten'},greenscreen:{cast:'zaubern:0'}}},
+ halbespferd:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'natur'},plate:5,gear:['jeans','turnschuhe','pferdekostuem'],
   posen:{huftritt:{cast:'ausholen',end:'tritt'},wiehern:{cast:'jubeln'},saufen:{cast:'buecken'}},drink:'buecken'},
- bigb:{arch:'dieter',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'natur'},gear:['pelzmantel-baron','stoffhose','reitstiefel','kronkorkenkette','peruecke','pappkrone','selfiestick','pfandring'],
+ // Big B (Nutzerentscheidung 2026-09-26): ein drahtiger kleiner Mann im viel zu großen Pelz – wie das Schloss, alles nur Pappe
+ bigb:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'schnauzer'},plate:4,gear:['pelzmantel-baron-boss','stoffhose','reitstiefel','kronkorkenkette','peruecke','pappkrone','selfiestick','pfandring'],
   posen:{kanone:{cast:'zeigen',end:'sprint:0'},kanone3:{cast:'zeigen',end:'sprint:0'},anwalt:{cast:'telefon'},siegelring:{cast:'hieb:0',end:'hieb:1'},live:{cast:'selfie'},
    parkett:{cast:'zeigen'},kulisse:{cast:'zeigen'},schopf:{cast:'schopf'}},lie:{claim:'zeigen',claimRechts:'zeigenN',truth:'achselzucken'},confess:'zusammensinken'},
  // ── Trash und Adds ──
@@ -29,7 +31,7 @@ export const DUNGEON_FIGUREN={
   posen:{funk:{cast:'telefon'},schubser:{cast:'ausholen',end:'schubsen'}}},
  maklerpraktikant:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'brille',style:'natur',beard:'natur'},gear:['konfirmationsanzug','schuhe','praktikantenausweis','thermoskanne','tablet'],
   posen:{provision:{cast:'selfie'},expose:{cast:'hieb:0',end:'hieb:1'}}},
- baumarktritter:{arch:'dieter',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'natur'},gear:['lueftungsbeine','festivalstiefel','regenrinnenpanzer','eimerhelm','regenrinne','muelltonnendeckel'],
+ baumarktritter:{arch:'dieter',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'natur'},plate:3,gear:['lueftungsbeine','festivalstiefel','regenrinnenpanzer','eimerhelm','regenrinne','muelltonnendeckel'],
   posen:{hieb:{cast:'hieb:0',end:'hieb:1'},schild:{cast:'parade:0'}}},
  // Follower (Big Bs Live-Schalte): Handy hoch, filmt alles außer sich selbst – Standbild ist die Selfie-Pose
  follower:{arch:'baerbel',tint:{skin:'hell',hair:'blond',face:'sonnenbrille',style:'natur',beard:'natur'},gear:['fanshirt','jeans','turnschuhe','fischerhut','ringlicht-reichweite','handy'],idle:'selfie',posen:{selfie:{cast:'selfie',end:'zielen:0'}},varianten:['follower','follower2','follower3']},

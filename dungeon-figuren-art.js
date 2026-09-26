@@ -1,7 +1,7 @@
 // Dungeon-Figuren „Schloss Big B“ (Entwurf 2026-09-26, freigabepflichtig – E-71 Punkt 6): Bosse, Trash und Händler aus der Anziehpuppe
 // (Archetyp + Aussehen + Kleidung, content/dungeon-figuren.js) und Motive für Nicht-Menschen (Pappaufsteller, Pfandratte, Beamer-Gespenst,
-// tools/paperdoll/motive.mjs). Nur hinter dem Schalter: localStorage 'mertloch-dungeon-figuren' = '1' oder URL ?dungeon-figuren=1
-// (?dungeon-figuren=0 schaltet für diese Sitzung aus). Ohne Schalter zeichnet alles wie bisher (Platzhalter aus dem Präzisionskatalog).
+// tools/paperdoll/motive.mjs). Live seit 2026-09-26 (Nutzerfreigabe) und standardmäßig an. Notschalter: URL ?dungeon-figuren=0 bzw.
+// localStorage 'mertloch-dungeon-figuren' = '0' – dann zeichnen die bisherigen Platzhalter aus dem Präzisionskatalog.
 // Bögen: derselbe Laufzeitordner und dasselbe Laden nach Bedarf wie die Puppe (assets/paperdoll/runtime, Grund-, Aktions- und Sonderbögen,
 // motiv-<id>[-nw].png). Ansagen: Zauber → Sonderbild (content/dungeon-figuren.js posen), Big Bs Behauptung zeigt auf die behauptete Seite,
 // mit dem Nachsatz zuckt er die Achseln.
@@ -14,10 +14,11 @@ const BOSS_MAGNIFY=WORLD_SCALE.boss/WORLD_SCALE.adult;
 export const DUNGEON_FIGUREN_KEY='mertloch-dungeon-figuren';
 const PREFIX='dg:';
 let an=null;
-/** Schalter (einmal je Sitzung gelesen): URL-Parameter dungeon-figuren vor localStorage. */
-export function dungeonFigurenAn(){if(an!==null)return an;an=false;
- try{const q=new URLSearchParams(globalThis.location?.search||'');if(q.has('dungeon-figuren'))an=q.get('dungeon-figuren')!=='0';else an=globalThis.localStorage?.getItem(DUNGEON_FIGUREN_KEY)==='1';}catch{an=false;}
- return an;}
+/** Schalterregel (rein, testbar): URL-Parameter vor localStorage; an, solange nicht ausdrücklich '0'. */
+export function dungeonFigurenSchalter(search='',stored=null){const q=new URLSearchParams(search||'');if(q.has('dungeon-figuren'))return q.get('dungeon-figuren')!=='0';return stored!=='0';}
+/** Schalter (einmal je Sitzung gelesen). */
+export function dungeonFigurenAn(){if(an!==null)return an;let stored=null;try{stored=globalThis.localStorage?.getItem(DUNGEON_FIGUREN_KEY)??null;}catch{}
+ try{an=dungeonFigurenSchalter(globalThis.location?.search||'',stored);}catch{an=true;}return an;}
 /** Nur für Prüfskripte/Tests: Schalter setzen, ohne neu zu laden. */
 export function setDungeonFiguren(v){an=!!v;}
 
@@ -103,6 +104,10 @@ export function drawDungeonFigure(c,e,time){if(!dungeonFigurenAn())return false;
 /** Blitzlicht-Ansage (Rita): das Ringlicht flammt auf – weiße Ringe um den Kopf, je näher das Zauberende, desto heller (nur Striche, keine Mischmodi). */
 function blitzRing(c,e,mag,time){const k=e.cast,t=Math.max(0,Math.min(1,1-k.remaining/(k.total||1))),x=e.x,y=e.y-29*mag;c.save();c.lineWidth=1.2;
  for(let i=0;i<3;i++){const r=(5.5+i*2.4+Math.sin(time*18+i)*.6)*mag,a=(.25+.6*t)*(1-i*.28);c.strokeStyle='rgba(255,255,255,'+a.toFixed(3)+')';c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();}c.restore();}
+/** Höhe des Namensschilds über dem Fußpunkt in Welteinheiten (ohne Dungeon-Maßstab), wenn eine Figur zeichnet; sonst null (alter Weg). */
+export function dungeonPlateHeight(e){if(!dungeonFigurenAn()||!paperdoll.ready)return null;const fig=dungeonFigurOf(e);if(!fig)return null;const cat=paperdoll.catalog;
+ if(fig.motiv){const M=cat.motive?.[fig.motiv];if(!M)return null;const hs=Object.values(cat.archetypes).map(a=>a.height),u=cat.worldHeight/(hs.reduce((a,b)=>a+b,0)/hs.length)*(M.scale||1);return (cat.pivot.y-M.cell.y)*u+4;}
+ return (e.bossId?WORLD_SCALE.boss:WORLD_SCALE.adult)+(fig.plate||0)+6;}
 /** Dungeon-NPC (Händler Volker) als Figur; false = alter Weg. */
 export function drawDungeonPerson(c,figId,x,y,time,pose={}){if(!dungeonFigurenAn())return false;const f=DUNGEON_FIGUREN[figId];if(!f?.arch)return false;
  if(!paperdoll.ready){if(!paperdoll.failed)loadPaperdoll();return false;}const fig={id:figId,...f};const id=actorId(fig);

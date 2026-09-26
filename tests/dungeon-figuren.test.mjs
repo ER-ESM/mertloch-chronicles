@@ -5,15 +5,16 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {DUNGEON_FIGUREN,dungeonFigur,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS} from '../content/index.js';
 import {paperdoll} from '../paperdoll-art.js';
-import {dungeonFigurenAn,drawDungeonFigure,dungeonPose,dungeonFigurOf,setDungeonFiguren} from '../dungeon-figuren-art.js';
+import {dungeonFigurenSchalter,drawDungeonFigure,dungeonPose,dungeonFigurOf,setDungeonFiguren} from '../dungeon-figuren-art.js';
 
 const RT=new URL('../assets/paperdoll/runtime/',import.meta.url),cat=JSON.parse(readFileSync(new URL('catalog.json',RT),'utf8'));
 const menschen=Object.entries(DUNGEON_FIGUREN).filter(([,f])=>f.arch);
 const bildOk=n=>{const [a,i='0']=n.split(':');return !n.includes(':')&&cat.sonder?.frames.some(f=>f.anim===a)||cat.frames.some(f=>f.anim===a&&(f.i||0)===+i);};
 
-test('Schalter aus: Dungeon-Gegner zeichnen wie bisher', ()=>{
- assert.equal(dungeonFigurenAn(),false,'ohne localStorage/URL-Parameter ist der Schalter aus');
- assert.equal(drawDungeonFigure({},{dungeon:'schloss-bigb',bossId:'gerd',x:0,y:0},0),false);
+test('Schalter: standardmäßig an, Notschalter ?dungeon-figuren=0 bzw. localStorage \'0\'; aus = alter Weg', ()=>{
+ assert.equal(dungeonFigurenSchalter('',null),true,'ohne Angabe an');assert.equal(dungeonFigurenSchalter('',"1"),true);assert.equal(dungeonFigurenSchalter('',"0"),false,'localStorage 0');
+ assert.equal(dungeonFigurenSchalter('?dungeon-figuren=0',null),false,'URL 0');assert.equal(dungeonFigurenSchalter('?dungeon-figuren=1','0'),true,'URL vor localStorage');assert.equal(dungeonFigurenSchalter('?x=1&dungeon-figuren=0',"1"),false);
+ setDungeonFiguren(false);assert.equal(drawDungeonFigure({},{dungeon:'schloss-bigb',bossId:'gerd',x:0,y:0},0),false,'Notschalter: alter Weg');
 });
 
 test('Jede Dungeon-Gegnerart und jeder Boss hat eine Figur', ()=>{

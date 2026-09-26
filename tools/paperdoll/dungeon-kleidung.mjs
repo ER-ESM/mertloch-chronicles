@@ -26,13 +26,16 @@ const RAMPS={
  dgGruen:R(['#86b094','#57866a','#3c644e','#284636','#162a20']),// Kellerschürze (Flaschengrün)
  dgChroma:R(['#b8ecac','#72c67e','#46a05e','#2c7444','#18462a']),// Greenscreen (Chromagrün, gedämpft)
  dgNeon:R(['#ffc8ee','#ff82cc','#e44ea2','#a62c74','#641646']),// Bomberjacke
- dgSchimmel:R(['#ffffff','#f4f4f6','#d4d6de','#9a9eac','#5c6072']),// Pferdekostüm (Schimmel, hell gegen den grauen Stein)
- dgMaehne:R(['#6e6c7c','#484758','#302f3e','#1e1d28','#101016']),// Mähne fast schwarz
+ dgFuchs:R(['#f8c088','#e08c4c','#b0602e','#7a3c1a','#44200c']),// Pferdekostüm: brauner Fuchs (hebt sich vom grauen Stein ab)
+ dgMaehne:R(['#7a5a48','#523a2e','#36241c','#221612','#120a08']),// Mähne und Maul dunkelbraun
  dgHuf:R(['#8a8c9a','#5c5e6c','#40424e','#2a2c36','#16171e']),// Hufe
  dgPuder:R(['#ffffff','#f2f0ea','#d6d0c4','#a69e92','#6c6458']),// Perücke (gepudert)
  dgPappe:R(['#e6c08a','#c49058','#9a6a3a','#6c4626','#402814']),// Pappe (Krone)
  dgLeder:R(['#d2a06a','#a8723e','#7e5028','#56341c','#301c0e']),// Stulpen der Reitstiefel
  dgAnzugRosa:R(['#a8e6ec','#5cb4c2','#34879a','#226072','#123a48']),// Hosenanzug der Maklerin: Petrol (hebt sich vom Holzboden und von Ritas Pink ab)
+ dgPelz:R(['#f0c690','#c0844e','#8a5630','#5a341c','#2e1a0c']),// Boss-Pelz: warmes Nerzbraun mit hellen Spitzen (liest sich als Fell, nicht als Kork)
+ dgHermelin:R(['#ffffff','#f4eee2','#d8ccb8','#a4967e','#62584a']),// Hermelinkragen und -stulpen
+ dgKurtSchurz:R(['#a8d4b0','#62986e','#3e7050','#264a34','#10281a']),// Kellerschürze mit mehr Tonumfang
  dgThermo:R(['#e0ffb4','#96f250','#58c82e','#347e1e','#1c4610']),// Neon-Thermoskanne (Heiler)
  dgMessing:R(['#fff2b4','#ecc660','#c89a34','#8e6a20','#584214']),// Absperrpfosten
  dgSamt:R(['#f07a86','#c83a4c','#962636','#621622','#380c14']),// Samtseil
@@ -113,17 +116,19 @@ export function dungeon_kleidung(K){
   line(L,[[cx+1.5,cy-5],[cx+1.5,cy+4]],c[3],j);knopf(L,j,cx+2,cy-3,c);knopf(L,j,cx+2,cy+2,c);
   const lg=L.piece(P.dgGelb);poly(L,[[cx-15,cy+1],[cx-7,cy+1],[cx-7,cy+6],[cx-11,cy+9],[cx-15,cy+6]],P.dgGelb[1]);light(L,lg,{base:1,hi:0,lo:2,dark:1});line(L,[[cx-13,cy+3],[cx-9,cy+3]],P.dgSchwarz[3],lg);line(L,[[cx-13,cy+5],[cx-10,cy+5]],P.dgSchwarz[3],lg);}
  /** Konfirmationsanzug: blaugrau, eine Nummer zu groß (hängende Schultern, lange Ärmel, Hose staucht sich), bunte Krawatte, Visitenkarten. */
- function konfiArm(L,p,arm,far){const s=sleeve(L,p,arm,P.dgKonfi,.99,2.8,far,{roll:false});const q=lerp(arm[1],arm[2],.55);line(L,[[q[0]-5,q[1]-1],[q[0]+4,q[1]+1]],P.dgKonfi[3],s);
-  const e=lerp(arm[0],arm[1],.12),sh=L.piece(P.dgKonfi);ell(L,e[0]+(far?1:-1),e[1]+1,p.A.armR[0]+4,p.A.armR[0]+2.5,P.dgKonfi[far?2:1]);light(L,sh,{base:far?2:1,hi:far?1:0,lo:3,dark:1});return s;}// hängende Schulterpolster
+ function konfiArm(L,p,arm,far){const s=sleeve(L,p,arm,P.dgKonfi,.99,2.8,far,{roll:false});{const {w,u,n}=handGeo(arm),r=p.A.armR[2]+3.4,e=[w[0]+u[0]*5,w[1]+u[1]*5],x=L.piece(P.dgKonfi);poly(L,[[w[0]-n[0]*r,w[1]-n[1]*r],[w[0]+n[0]*r,w[1]+n[1]*r],[e[0]+n[0]*(r+.8),e[1]+n[1]*(r+.8)],[e[0]-n[0]*(r+.8),e[1]-n[1]*(r+.8)]],P.dgKonfi[far?2:1]);light(L,x,{base:far?2:1,hi:far?1:0,lo:3,dark:1});}// Ärmel bis über die Fingerconst q=lerp(arm[1],arm[2],.55);line(L,[[q[0]-5,q[1]-1],[q[0]+4,q[1]+1]],P.dgKonfi[3],s);
+  const e=lerp(arm[0],arm[1],.1),sh=L.piece(P.dgKonfi),R0=p.A.armR[0];poly(L,[[e[0]-R0-7,e[1]-4],[e[0]+R0+7,e[1]-5],[e[0]+R0+6,e[1]+9],[e[0]-R0-6,e[1]+10]],P.dgKonfi[far?2:1]);light(L,sh,{base:far?2:1,hi:far?1:0,lo:3,dark:2});return s;}// kastige Schulterpolster (80er)
  function konfiRumpf(L,p){const c=P.dgKonfi,[cx,cy]=p.C,nr=neck(p);hosenbund(L,p,c);const j=coat(L,p,c,3,-14,47,2);
   const h=L.piece(P.nkHemd);poly(L,[[cx-nr-1,cy-16],[cx+nr+2,cy-16],[cx+2,cy+15]],P.nkHemd[0]);light(L,h,{base:0,hi:0,lo:1,dark:1});
-  const t=L.piece(P.patch);poly(L,[[cx-.5,cy-14],[cx+4.5,cy-14],[cx+3.5,cy-10],[cx+.5,cy-10]],P.patch[1]);poly(L,[[cx+.5,cy-10],[cx+3.5,cy-10],[cx+6,cy+12],[cx+2.5,cy+16],[cx-1,cy+12]],P.patch[1]);light(L,t,{base:1,hi:0,lo:2,dark:1});
-  on(L,t,cx+2,cy-6,P.patch[3]);on(L,t,cx+3,cy+2,P.patch[3]);// schief gebundene Krawatte
+  const t=L.piece(P.dgThermo);poly(L,[[cx-.5,cy-14],[cx+4.5,cy-14],[cx+3.5,cy-10],[cx+.5,cy-10]],P.dgThermo[1]);poly(L,[[cx+.5,cy-10],[cx+3.5,cy-10],[cx+7,cy+14],[cx+3,cy+18],[cx-1.5,cy+13]],P.dgThermo[1]);light(L,t,{base:1,hi:0,lo:2,dark:1});
+  on(L,t,cx+2,cy-6,P.dgThermo[3]);on(L,t,cx+3,cy+2,P.dgThermo[3]);// breite neongrüne Krawatte, schief gebunden (Heilerfarbe wie die Thermoskanne)
   const rv=L.piece(c);poly(L,[[cx-nr-5,cy-16],[cx-nr-1,cy-16],[cx+2,cy+15],[cx-2,cy+19],[cx-9,cy+3],[cx-15,cy-7]],c[0]);light(L,rv,{base:0,hi:0,lo:1,dark:1});
   const rf=L.piece(c);poly(L,[[cx+nr+6,cy-16],[cx+nr+2,cy-16],[cx+2,cy+15],[cx+6,cy+18],[cx+12,cy+3],[cx+15,cy-7]],c[2]);light(L,rf,{base:2,hi:1,lo:3,dark:1});
-  line(L,[[cx+2,cy+17],[cx+2,cy+47]],c[3],j);knopf(L,j,cx+4,cy+24,P.metal);knopf(L,j,cx+4,cy+33,P.metal);
+  line(L,[[cx+2,cy+17],[cx+2,cy+47]],c[3],j);for(const y of [cy+22,cy+30])for(const x of [cx-4,cx+7]){const b=L.piece(P.black);ell(L,x,y,1.6,1.6,P.black[2]);on(L,b,x-.5,y-.5,P.black[0]);}// zweireihig
   for(const [x0,x1] of [[cx-19,cx-8],[cx+9,cx+20]]){line(L,[[x0,cy+37],[x1,cy+37]],c[3],j);line(L,[[x0,cy+38],[x1,cy+38]],c[0],j);}
   const vk=L.piece(P.card);poly(L,[[cx-15,cy+33],[cx-11,cy+33],[cx-11,cy+37],[cx-15,cy+37]],P.card[0]);light(L,vk,{base:0,hi:0,lo:1,dark:1});// Visitenkarten aus der Tasche
+  const kr=L.piece(P.white);poly(L,[[cx-nr-2,cy-17],[cx,cy-14],[cx-7,cy-3],[cx-12,cy-8]],P.white[0]);poly(L,[[cx+nr+3,cy-17],[cx+3.5,cy-14],[cx+10,cy-3],[cx+14,cy-8]],P.white[1]);light(L,kr,{base:0,hi:0,lo:1,dark:1});// breiter 80er-Kragen über dem Revers
+  const et=L.piece(P.dgThermo);poly(L,[[cx-17,cy+3],[cx-13,cy+1],[cx-10,cy+4],[cx-11,cy+6],[cx-17,cy+6]],P.dgThermo[0]);light(L,et,{base:0,hi:0,lo:1,dark:1});// Einstecktuch
   for(const x of [cx-20,cx+19])line(L,[[x,cy+10],[x+(x<cx?2:-2),cy+44]],c[3],j);}// Stoff wirft Falten (zu weit)
  function konfiRumpfBack(L,p){const c=P.dgKonfi,[cx,cy]=p.C,nr=neck(p);hosenbund(L,p,c);const j=coat(L,p,c,3,-14,47,2);
   const k=L.piece(c);poly(L,[[cx-nr-3,cy-17],[cx+nr+4,cy-17],[cx+nr+2,cy-11],[cx-nr-1,cy-11]],c[2]);light(L,k,{base:2,hi:1,lo:3,dark:1});
@@ -154,12 +159,15 @@ export function dungeon_kleidung(K){
  function westeRumpfBack(L,p){const c=P.faWein,[cx,cy]=p.C,j=coat(L,p,c,2.4,-13,36,.6);
   line(L,[[cx+1,cy-12],[cx+1,cy+36]],c[3],j);const b=L.piece(P.black);poly(L,[[cx-8,cy+24],[cx+10,cy+24],[cx+10,cy+27],[cx-8,cy+27]],P.black[2]);const s=L.piece(P.metal);poly(L,[[cx-1,cy+23.5],[cx+3,cy+23.5],[cx+3,cy+27.5],[cx-1,cy+27.5]],P.metal[1]);light(L,s,{base:1,hi:0,lo:2,dark:1});}
  /** Kellerschürze (Bistroschürze): flaschengrün vom Bund bis übers Schienbein, Band mit Schleife, Geschirrtuch am Bund. */
- function schuerzeRumpf(L,p){const c=P.dgGruen,[cx,cy]=p.C,long=p.ride?44:66,w=schurz(p,31,long,4);w[2][0]+=5;w[3][0]-=5;const hem=[];for(let k=0;k<=6;k++){const t=k/6;hem.push([w[2][0]+(w[3][0]-w[2][0])*t,w[2][1]+(k%2?3:0)]);}
-  const a=L.piece(c);poly(L,[w[0],w[1],...hem],c[1]);light(L,a,{base:1,hi:0,lo:2,dark:2,share:.2});
-  for(let k=0;k<5;k++){const x=w[3][0]+6+k*((w[2][0]-w[3][0]-12)/4),x0=cx-12+k*6;line(L,[[x0,cy+34],[x,cy+long-2]],c[k%2?2:0],a);}// weiche Falten, nach unten auffächernd
-  const bd=L.piece(c);poly(L,torso(p,2.8,29,32),c[2]);light(L,bd,{base:2,hi:1,lo:3,dark:1});
-  const s=L.piece(c);const bx=cx+row(p.A,31)[1]-1;ell(L,bx-2,cy+31,3,2.2,c[2]);limb(L,[[bx-2,cy+33],[bx-4,cy+44]],[1.3,1],c[2]);limb(L,[[bx-1,cy+33],[bx+1,cy+42]],[1.3,1],c[1]);light(L,s,{base:2,hi:1,lo:3,dark:1});// Band mit Schleife
-  const tu=L.piece(P.white);poly(L,[[cx+11,cy+31],[cx+17,cy+31],[cx+18,cy+45],[cx+12,cy+46]],P.white[1]);light(L,tu,{base:1,hi:0,lo:2,dark:1});line(L,[[cx+12,cy+38],[cx+17,cy+38]],P.red[1],tu);line(L,[[cx+12,cy+40],[cx+17,cy+40]],P.red[1],tu);}// Geschirrtuch
+ function schuerzeRumpf(L,p){const c=P.dgKurtSchurz,[cx,cy]=p.C,long=p.ride?44:74,sw=p.ride?0:(p.sway||0)*3,t=row(p.A,32),x0=cx+t[1]+2,x1=cx+t[2]-2,b0=cx+Math.min(t[1]-8,-24)+sw,b1=cx+Math.max(t[2]+8,22)+sw;
+  // Faltenwurf: n Bahnen, jede mit Lichtgrat und Schattental; der Saum folgt den Falten (Spitzen an den Graten)
+  const n=5,hem=[];for(let k=0;k<=n*2;k++){const u=k/(n*2);hem.push([b1+(b0-b1)*u,cy+long+(k%2?-3:2)]);}
+  const a=L.piece(c);poly(L,[[x0,cy+31],[x1,cy+31],...hem],c[2]);light(L,a,{base:2,hi:1,lo:3,dark:2,share:.2});
+  for(let k=0;k<n;k++){const u=(k+.5)/n,top=[x0+(x1-x0)*u,cy+34],bot=[b0+(b1-b0)*(1-((k*2+1)/(n*2))),cy+long-2];
+   line(L,[top,[(top[0]+bot[0])/2,(top[1]+bot[1])/2],bot],c[0],a);line(L,[[top[0]+1,top[1]],[bot[0]+2,bot[1]]],c[1],a);line(L,[[top[0]+3,top[1]+4],[bot[0]+5,bot[1]-1]],c[3],a);line(L,[[top[0]+4,top[1]+6],[bot[0]+6,bot[1]-1]],c[4],a);}
+  const bd=L.piece(c);poly(L,torso(p,2.8,29,32),c[3]);light(L,bd,{base:3,hi:2,lo:4,dark:1});
+  const s=L.piece(c);const bx=cx+t[1]-1;ell(L,bx-2,cy+31,3,2.2,c[2]);limb(L,[[bx-2,cy+33],[bx-5+sw*.5,cy+46]],[1.4,1],c[2]);limb(L,[[bx-1,cy+33],[bx+1+sw*.5,cy+44]],[1.4,1],c[1]);light(L,s,{base:2,hi:1,lo:3,dark:1});// Band mit Schleife
+  const tu=L.piece(P.white);poly(L,[[cx+11,cy+31],[cx+17,cy+31],[cx+18+sw*.3,cy+47],[cx+12+sw*.3,cy+48]],P.white[1]);light(L,tu,{base:1,hi:0,lo:2,dark:1});line(L,[[cx+12,cy+38],[cx+17,cy+38]],P.red[1],tu);line(L,[[cx+12,cy+40],[cx+17,cy+40]],P.red[1],tu);}// Geschirrtuch
  function schuerzeRumpfBack(L,p){const c=P.dgGruen,[cx,cy]=p.C,t=row(p.A,31);L.piece(c,1);line(L,[[cx+t[1]-1,cy+31],[cx+t[2]+1,cy+31]],c[2]);
   const s=L.piece(c);ell(L,cx-3,cy+31,3.4,2.4,c[1]);ell(L,cx+4,cy+31,3.4,2.4,c[1]);limb(L,[[cx,cy+32],[cx-2,cy+44]],[1.3,1],c[2]);limb(L,[[cx+1,cy+32],[cx+3,cy+43]],[1.3,1],c[1]);light(L,s,{base:1,hi:0,lo:2,dark:1});
   for(const sd of [-1,1]){const r=row(p.A,44),x=cx+(sd<0?r[1]-3:r[2]+3),a=L.piece(c);poly(L,[[x,cy+34],[x+sd*2,cy+34],[x+sd*4,cy+74],[x,cy+74]],c[2]);light(L,a,{base:2,hi:1,lo:3,dark:1});}}// Schürzenkanten an den Seiten
@@ -212,7 +220,7 @@ export function dungeon_kleidung(K){
   const st=L.piece(P.black);limb(L,[[cx,cy+25],[cx,y+26]],[2,2],P.black[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});}
  /** Pferdekostüm (vordere Hälfte eines Schimmels): Maske mit langem Kopf über dem Kopf des Trägers, Hals mit Mähne, Rumpf bis zur Hüfte,
   *  hinten ein glatter Schnitt mit Pflaster; die Ärmel enden in Hufen, darunter bleiben die Menschenbeine. */
- function pferdKopf(L,p){const [x,y]=p.head,c=P.dgSchimmel,m=P.dgMaehne,back=!!p.back,s=1;
+ function pferdKopf(L,p){const [x,y]=p.head,c=P.dgFuchs,m=P.dgMaehne,back=!!p.back,s=1;
   const nk=L.piece(c);limb(L,[[x+1,y+16],[x,y-8],[x+2,y-22]],[17,16,14],c[1]);light(L,nk,{base:1,hi:0,lo:2,dark:3});
   if(back){const mn=L.piece(m);limb(L,[[x+1,y-30],[x,y-8],[x+1,y+18]],[6,7,6],m[1]);light(L,mn,{base:1,hi:0,lo:2,dark:2});for(let k=0;k<9;k++)line(L,[[x-5+k*1.3,y-26+k*5],[x-3+k*1.3,y-20+k*5]],m[3],mn);
    for(const sd of [-1,1]){const e=L.piece(c);poly(L,[[x+sd*6,y-26],[x+sd*12,y-42],[x+sd*15,y-24]],c[sd<0?1:2]);light(L,e,{base:sd<0?1:2,hi:1,lo:3,dark:1});}return;}
@@ -223,6 +231,7 @@ export function dungeon_kleidung(K){
   line(L,[[mz[0]-4,mz[1]+6],[mz[0]+6,mz[1]+5]],P.black[3],mu);// Maulspalte
   const ey=L.piece(P.white);ell(L,x+12,y-18,4.6,5.2,P.white[0]);light(L,ey,{base:0,hi:0,lo:1,dark:1});ell(L,x+13.5,y-17,2.4,3.2,P.black[4],ey);on(L,ey,x+12.5,y-18.5,[255,255,255]);// Glubschauge
   line(L,[[x+7,y-24],[x+11,y-25],[x+16,y-23]],P.black[3],hd);// Wimpernbogen
+  const bl=L.piece(P.white);limb(L,[[x+4,y-27],lerp(poll,mz,.5).map((v,i)=>v+(i?-2:0)),[mz[0]-5,mz[1]-4]],[2.8,2.4,1.6],P.white[1]);light(L,bl,{base:1,hi:0,lo:2,dark:1});// Blesse
   for(const [ex,f] of [[x-6,1],[x+6,0]]){const e=L.piece(c);poly(L,[[ex-4,y-30],[ex-1+(f?-2:1),y-46],[ex+4,y-31]],c[f?2:1]);light(L,e,{base:f?2:1,hi:1,lo:3,dark:1});line(L,[[ex,y-32],[ex-.5+(f?-1:.5),y-42]],P.dgRosa[2],e);}
   const mn=L.piece(m);limb(L,[[x-4,y-36],[x-12,y-18],[x-15,y+2],[x-14,y+16]],[5,6.5,6,4.5],m[1]);light(L,mn,{base:1,hi:0,lo:2,dark:2});// Mähne am Hals
   for(let k=0;k<8;k++)line(L,[[x-8-k*.9,y-30+k*6],[x-14-k*.5,y-26+k*6]],m[3],mn);
@@ -230,7 +239,7 @@ export function dungeon_kleidung(K){
   L.piece(P.dgRosa,1);line(L,[[x+19,y-4],[x+24,y-3]],P.dgRosa[1]);// rosa Kostümnaht am Maul
   const sc=L.piece(P.black);poly(L,[[x+2,y+2],[x+9,y+2],[x+8,y+5],[x+3,y+5]],P.black[3]);on(L,sc,x+4,y+3,P.skin[2]);on(L,sc,x+6,y+3,P.skin[2]);}// Sichtgitter (der Träger guckt aus dem Hals)
  /** Kostümrumpf: Hals-Teil über dem Oberkörper, darunter der waagrechte Pferdeleib um die Hüfte, der hinten glatt abgeschnitten endet. */
- function pferdRumpf(L,p){const c=P.dgSchimmel,[cx,cy]=p.C,A=p.A,back=!!p.back,fwd=back?[-.78,-.32]:[.78,.32],P0=[p.P[0],p.P[1]-4],rr=Math.max(19,(row(A,30)[2]-row(A,30)[1])/2+9);
+ function pferdRumpf(L,p){const c=P.dgFuchs,[cx,cy]=p.C,A=p.A,back=!!p.back,fwd=back?[-.78,-.32]:[.78,.32],P0=[p.P[0],p.P[1]-4],rr=Math.max(19,(row(A,30)[2]-row(A,30)[1])/2+9);
   const at=(f,u=0)=>[P0[0]+fwd[0]*f,P0[1]+fwd[1]*f-u],rear=at(-40,4),front=at(16,8);
   // Oberkörper im Halsstück (Mähne liegt hinten auf)
   const j=L.piece(c);poly(L,torso(p,5,-16,24,{flare:1,sway:!p.ride}),c[1]);light(L,j,{base:1,hi:0,lo:2,dark:3});
@@ -238,7 +247,6 @@ export function dungeon_kleidung(K){
   const b=L.piece(c);limb(L,[at(-48,4),at(-12,6),front],[rr,rr+2,rr-1],c[1]);ell(L,...at(10,4),rr-2,rr+2,c[1]);
   {const bb=L.bb[b];for(let y=bb[1];y<=bb[3];y++)for(let x=bb[0];x<=bb[2];x++)if(L.is(b,x,y)&&(x+.5-rear[0])*fwd[0]+(y+.5-rear[1])*fwd[1]<0)L.del(x,y);}// hinten glatt abgeschnitten
   light(L,b,{base:1,hi:0,lo:2,dark:3});
-  for(let k=0;k<7;k++){const q=at(-34+k*8,6+(k%3-1)*8);ell(L,q[0],q[1],2.8,1.9,c[2],b);}// Apfelschimmel
   line(L,[at(-30,-rr+3),at(12,-rr+5)],c[3],b);// Bauchnaht des Kostüms
   if(back){// Schnittfläche zeigt zur Kamera: Futter, Schaumstoff, großes Pflaster
    const cut=L.piece(P.dgPuder);ell(L,rear[0],rear[1],rr*.82,rr+1,P.dgPuder[1]);light(L,cut,{base:1,hi:0,lo:2,dark:2});ell(L,rear[0],rear[1],rr*.82-3,rr-2,P.dgRosa[0],cut);
@@ -249,10 +257,10 @@ export function dungeon_kleidung(K){
   {const cf=L.piece(P.dgRosa);ell(L,rear[0]+2,rear[1],5.6,rr-1,P.dgRosa[1]);ell(L,rear[0]+2.5,rear[1],3.4,rr-4,P.dgRosa[0],cf);light(L,cf,{base:1,hi:0,lo:2,dark:1});}
   {const e=L.piece(c,1),n=[-fwd[1],fwd[0]];for(let t=-rr-1;t<=rr+1;t+=.5)for(const d of [0,1])L.on(b,rear[0]+fwd[0]*d+n[0]*t,rear[1]+fwd[1]*d+n[1]*t,c[d?3:4]);}
   const pf=L.piece(P.skin);poly(L,rect([rear[0]+2,rear[1]],7,rr*1.3,.15),P.skin[1]);light(L,pf,{base:1,hi:0,lo:2,dark:1});poly(L,rect([rear[0]+2,rear[1]],5,7,.15),P.skin[0],pf);}
- function pferdArm(L,p,arm,far){const c=P.dgSchimmel,s=sleeve(L,p,arm,c,1,3.4,far,{roll:false,cuff:c});const q=lerp(arm[1],arm[2],.4);ell(L,q[0],q[1],2.4,1.6,c[3],s);
+ function pferdArm(L,p,arm,far){const c=P.dgFuchs,s=sleeve(L,p,arm,c,1,3.4,far,{roll:false,cuff:c});const q=lerp(arm[1],arm[2],.4);ell(L,q[0],q[1],2.4,1.6,c[3],s);
   const {w,u,n}=handGeo(arm),h=P.dgHuf,b=far?2:1,cen=[w[0]+u[0]*5,w[1]+u[1]*5],hf=L.piece(h);poly(L,[[cen[0]-n[0]*5-u[0]*4,cen[1]-n[1]*5-u[1]*4],[cen[0]+n[0]*5-u[0]*4,cen[1]+n[1]*5-u[1]*4],[cen[0]+n[0]*6.5+u[0]*5,cen[1]+n[1]*6.5+u[1]*5],[cen[0]-n[0]*6.5+u[0]*5,cen[1]-n[1]*6.5+u[1]*5]],h[b]);light(L,hf,{base:b,hi:b-1,lo:b+1,dark:1});
   line(L,[[cen[0]-n[0]*6+u[0]*3,cen[1]-n[1]*6+u[1]*3],[cen[0]+n[0]*6+u[0]*3,cen[1]+n[1]*6+u[1]*3]],P.metal[1],hf);// Hufeisen
-  const fe=L.piece(P.dgMaehne);limb(L,[[cen[0]-u[0]*6-n[0]*5,cen[1]-u[1]*6-n[1]*5],[cen[0]-u[0]*6+n[0]*5,cen[1]-u[1]*6+n[1]*5]],[2,2],P.dgMaehne[far?1:0]);return s;}// Fesselbehang
+  const fe=L.piece(P.white);limb(L,[[cen[0]-u[0]*6-n[0]*5,cen[1]-u[1]*6-n[1]*5],[cen[0]-u[0]*6+n[0]*5,cen[1]-u[1]*6+n[1]*5]],[2.4,2.4],P.white[far?2:1]);light(L,fe,{base:far?2:1,hi:far?1:0,lo:3,dark:1});return s;}// weiße Fesseln
  /** Perücke mit Zopf: gepuderte Haube, zwei Lockenrollen je Seite, hinten Zopf mit schwarzer Schleife. */
  function perueckeKopf(L,p){const [x,y]=p.head,c=P.dgPuder,back=!!p.back,h=L.piece(c);
   if(back)poly(L,[[x-21,y+10],[x-21,y-12],[x-14,y-23],[x-2,y-28],[x+10,y-27],[x+20,y-19],[x+22,y-6],[x+22,y+10],[x+15,y+16],[x-13,y+16]],c[1]);
@@ -364,6 +372,42 @@ export function dungeon_kleidung(K){
  function schluessel(L,p){const [cx,cy]=p.C,x=cx+row(p.A,34)[1]+1,y=cy+34,m=P.metal,rg=L.piece(m);for(let a=0;a<Math.PI*2;a+=.1)K.line(L,[[x+Math.cos(a)*5,y+6+Math.sin(a)*4],[x+Math.cos(a)*5,y+6+Math.sin(a)*4]],m[1]);
   L.piece(P.black,1);line(L,[[x,y-2],[x,y+2]],P.black[2]);
   for(const [a,col] of [[.6,P.gold],[1.2,m],[1.8,P.gold],[2.4,m],[3,m],[.1,P.gold]]){const b=[x+Math.cos(a)*5,y+6+Math.sin(a)*4],e=[b[0]+Math.cos(a+.3)*3,b[1]+8],k=L.piece(col);limb(L,[b,e],[1.4,1],col[1]);ell(L,b[0],b[1],1.8,1.6,col[2]);}}
+ /** Fellbüschel: unregelmäßige Strähnen (2–4 px, schräg nach unten) in drei Tönen, Lage und Länge aus dem Rauschen am Anker a (wandert mit
+  *  dem Mantel), ein Teil ausgelassen; an der Außenkante stehen Zotteln ab. Liest sich in Weltgröße als unruhiges Fell statt als Muster. */
+ function buschel(L,j,c,a){const b=L.bb[j];if(!b||b[2]<0)return;const ax=Math.round(a[0]),ay=Math.round(a[1]),set=[];
+  for(let y=b[1];y<=b[3];y+=3)for(let x=b[0];x<=b[2];x+=3){const k=K.hsA(x-ax,y-ay),k2=K.hsA(y-ay+17,x-ax+5);if(k<.22)continue;
+   const X=x+Math.round((k2-.5)*3),Y=y+Math.round((k-.5)*2);if(!L.is(j,X,Y)||!L.is(j,X,Y+3))continue;set.push([X,Y,k,k2]);}
+  for(const [x,y,k,k2] of set){const len=2+Math.floor(k2*3),dx=k>.6?1:k<.4?-1:0;
+   L.on(j,x,y,k>.75?c[0]:c[1]);for(let i=1;i<=len;i++)L.on(j,x+Math.round(dx*i/2),y+i,i===len?c[3]:c[2]);}
+  for(let y=b[1];y<=b[3];y+=2){let xl=-1,xr=-1;for(let x=b[0];x<=b[2];x++)if(L.is(j,x,y)){if(xl<0)xl=x;xr=x;}if(xl<0)continue;const k=K.hsA(ax+y,ay-y);
+   if(k>.45){L.px(xl-1,y,c[2]);if(k>.7)L.px(xl-2,y+1,c[3]);}if(k<.55){L.px(xr+1,y,c[3]);if(k<.3)L.px(xr+2,y+1,c[3]);}}}
+ /** Big Bs Boss-Pelz (nicht die Dorflegende der Helden): viel zu groß – Glocke bis auf den Boden (staucht sich dort), Ärmel über die Hände,
+  *  riesiger Hermelinkragen, violettes Futter, Leihzettel. Sitzt auf jedem Archetyp, wirkt auf dem drahtigen am lächerlichsten. */
+ function pelzBossArm(L,p,arm,far){const c=P.dgPelz,h=P.dgHermelin,s=sleeve(L,p,arm,c,1,4,far,{roll:false,cuff:c});buschel(L,s,c,arm[0]);
+  const {w,u,n}=handGeo(arm),r=p.A.armR[2]+4.5,e=[w[0]+u[0]*8,w[1]+u[1]*8],st=L.piece(h);poly(L,[[w[0]-n[0]*(r-1),w[1]-n[1]*(r-1)],[w[0]+n[0]*(r-1),w[1]+n[1]*(r-1)],[e[0]+n[0]*(r+2),e[1]+n[1]*(r+2)],[e[0]-n[0]*(r+2),e[1]-n[1]*(r+2)]],h[far?2:1]);light(L,st,{base:far?2:1,hi:far?1:0,lo:3,dark:1});// Stulpe über der Hand
+  for(const t of [-.6,0,.6])on(L,st,e[0]+n[0]*r*t,e[1]+n[1]*r*t,P.black[3]);
+  return s;}
+ function pelzBossRumpf(L,p){const c=P.dgPelz,h=P.dgHermelin,v=P.lgViolett,[cx,cy]=p.C,A=p.A,floor=K.GROUND-1-cy,hem=p.ride?44:Math.min(floor,122),ext=p.ride?0:Math.max(0,hem-46);
+  const pts=torso(p,10,-16,hem,{flare:p.ride?2:5.2,sway:!p.ride,extend:ext}).map(([x,y])=>[x,Math.min(y,K.GROUND-1)]);// Glocke, staucht sich am Boden
+  const j=L.piece(c);poly(L,pts,c[1]);light(L,j,{base:1,hi:0,lo:2,dark:3,share:.26});buschel(L,j,c,p.C);
+  for(const [arm,sd] of [[p.armF,1],[p.armN,-1]]){const sh=arm[0],pd=L.piece(c);ell(L,sh[0]+sd*3,sh[1]+3,A.armR[0]+12,A.armR[0]+8,c[sd>0?2:1]);light(L,pd,{base:sd>0?2:1,hi:sd>0?1:0,lo:3,dark:2});buschel(L,pd,c,sh);}// ausladende Schultern (im Rumpfband: die Ärmel bleiben am Arm)
+  const lo=Math.min(cy+hem,K.GROUND-1);if(!p.ride&&cy+hem>=K.GROUND-3){const pf=L.piece(c);ell(L,cx+(p.sway||0)*2,K.GROUND-2,(pts[pts.length-1][0]-pts[0][0])/2+5,3.2,c[2]);light(L,pf,{base:2,hi:1,lo:3,dark:1});}// Saum liegt auf
+  const sl=cx+A.sh[0]-10,sr=cx+A.sh[1]+10,mx=(sl+sr)/2,rx=(sr-sl)/2+6,nr=neck(p)+2;
+  if(p.back){line(L,[[cx+1,cy-6],[cx+1+(p.sway||0),lo-2]],c[3],j);const k=L.piece(h);ell(L,mx,cy-9,rx+2,11,h[1]);for(const t of [-.8,-.4,0,.4,.8])ell(L,mx+t*rx,cy+2-Math.abs(t)*3,3.6,3,h[1]);light(L,k,{base:1,hi:0,lo:2,dark:1});
+   for(const [t,dy] of [[-.55,-9],[.1,-5],[.6,-10],[-.2,-1]])on(L,k,mx+t*rx,cy+dy,P.black[3]);return;}
+  const f=L.piece(v);poly(L,[[cx-2,cy+1],[cx+5,cy+1],[cx+9+(p.sway||0)*2,lo-2],[cx-6+(p.sway||0)*2,lo-2]],v[2]);light(L,f,{base:2,hi:1,lo:3,dark:1});// Futter im offenen Mantel
+  L.piece(c,1);line(L,[[cx-3,cy+2],[cx-7+(p.sway||0)*2,lo-2]],c[0]);line(L,[[cx+6,cy+2],[cx+10+(p.sway||0)*2,lo-2]],c[3]);
+  const k=L.piece(h);ell(L,mx,cy-6,rx+2,14,h[1]);for(const t of [-.9,-.6,-.3,.3,.6,.9])ell(L,mx+t*rx,cy+7-Math.abs(t)*5,3.8,3.2,h[1]);// riesiger Schalkragen
+  poly(L,[[cx-nr+2.5,cy-21],[cx+nr+.5,cy-21],[cx+2.2,cy+2],[cx+.4,cy+2]],null,'del');light(L,k,{base:1,hi:0,lo:2,dark:1});
+  for(const [t,dy] of [[-.7,-6],[-.4,4],[.65,-7],[.45,5],[0,8]])on(L,k,mx+t*rx,cy+dy,P.black[3]);
+  L.piece(P.label,1);line(L,[[cx+12,cy+30],[cx+14,cy+38]],P.label[2]);const z=L.piece(P.label);poly(L,[[cx+10,cy+38],[cx+27,cy+38],[cx+27,cy+45],[cx+10,cy+45]],P.label[0]);light(L,z,{base:0,hi:0,lo:1,dark:1});K.text(L,z,cx+12,cy+39,'LEIH',P.red[2],0);}// Leihzettel
+ /** Kellnermesser des Bosses: Messinggriff quer in der Faust, lange helle Spirale mit dunklen Gängen, ein Korken steckt auf der Spitze. */
+ function korkenBoss(L,p){const [hx,hy]=handPos(p.armN),m=P.dgMessing,o=p.swap?1:-1;
+  const g=L.piece(m);limb(L,[[hx-o*9,hy-1],[hx+o*9,hy-1]],[2.8,2.8],m[1]);light(L,g,{base:1,hi:0,lo:2,dark:2});for(const d of [-9,9]){const kn=L.piece(m);ell(L,hx+o*d,hy-1,3.4,3.2,m[2]);light(L,kn,{base:2,hi:1,lo:3,dark:1});}
+  const sh=L.piece(P.metal);limb(L,[[hx,hy+2],[hx,hy+8]],[2,2],P.metal[1]);light(L,sh,{base:1,hi:0,lo:2,dark:1});
+  const sp=L.piece(P.metal);for(let t=0;t<=24;t+=.5){const y=hy+8+t,x=hx+Math.sin(t*.9)*3.4;L.px(x,y,Math.cos(t*.9)>0?P.metal[0]:P.black[3]);L.px(x+(Math.cos(t*.9)>0?1:-1),y,Math.cos(t*.9)>0?P.metal[1]:P.black[4]);}
+  const kk=L.piece(P.dgPappe);poly(L,[[hx-5,hy+30],[hx+5,hy+30],[hx+4.5,hy+42],[hx-4.5,hy+42]],P.dgPappe[0]);light(L,kk,{base:0,hi:0,lo:1,dark:2});line(L,[[hx-4,hy+33],[hx+4,hy+33]],P.red[2],kk);line(L,[[hx-4,hy+34],[hx+4,hy+34]],P.red[2],kk);on(L,kk,hx-2,hy+38,P.dgPappe[3]);on(L,kk,hx+2,hy+36,P.dgPappe[3]);// Korken mit Weinrand
+  handOver(L,p.armN);}
  /** Pumps: schwarz lackiert, Absatz, Spann frei. */
  function pumps(L,p,leg,toe,far){const c=P.black;boot(L,p,leg,toe,c,.97,far,'pumps');const a=leg[2],h=L.piece(c);limb(L,[[a[0]-4,a[1]+4],[a[0]-5,a[1]+9]],[1.4,1],c[2]);
   L.piece(c,1);line(L,[[toe[0]-3,toe[1]+1],[toe[0]+1,toe[1]]],c[0]);const sp=L.piece(P.skin);ell(L,(a[0]+toe[0])/2,(a[1]+toe[1])/2+.5,3.4,1.6,P.skin[far?2:1]);}
@@ -384,7 +428,7 @@ export function dungeon_kleidung(K){
    beinHinten(L,p){hosenbein(L,p,p.legF,P.dgAnzugRosa,true,{pad:2.4,to:.95,crease:true});},beinVorn(L,p){hosenbein(L,p,p.legN,P.dgAnzugRosa,false,{pad:2.4,to:.95,crease:true});}},
   bomberjacke:{slot:'body',name:'Bomberjacke in Neonpink',armHinten(L,p){bomberArm(L,p,p.armF,true);},armVorn(L,p){bomberArm(L,p,p.armN,false);},rumpf(L,p){bomberRumpf(L,p,false);}},
   regenrinnenpanzer:{slot:'body',name:'Regenrinnen-Panzer',armHinten(L,p){panzerArm(L,p,p.armF,true);},armVorn(L,p){panzerArm(L,p,p.armN,false);},rumpf(L,p){panzerRumpf(L,p,false);}},
-  pferdekostuem:{slot:'body',name:'Das halbe Pferd (Kostüm)',armHinten(L,p){pferdArm(L,p,p.armF,true);},armVorn(L,p){pferdArm(L,p,p.armN,false);},rumpf:pferdRumpf,kopf:pferdKopf},
+  pferdekostuem:{slot:'body',name:'Das halbe Pferd (Kostüm, Fuchs)',armHinten(L,p){pferdArm(L,p,p.armF,true);},armVorn(L,p){pferdArm(L,p,p.armN,false);},rumpf:pferdRumpf,kopf:pferdKopf},
   lueftungsbeine:{slot:'legs',name:'Lüftungsrohr-Beine',beinHinten(L,p){rohrBein(L,p,p.legF,true);},beinVorn(L,p){rohrBein(L,p,p.legN,false);},
    rumpf(L,p){const c=P.dgAlu,j=L.piece(c);poly(L,torso(p,1.8,28,48),c[2]);light(L,j,{base:2,hi:1,lo:3,dark:2});for(let y=p.C[1]+31;y<p.C[1]+48;y+=4)line(L,[[p.C[0]-26,y],[p.C[0]+26,y+1]],c[3],j);}},
   weste:{slot:'waist',name:'Sommelierweste',rumpf:westeRumpf},
@@ -414,6 +458,8 @@ export function dungeon_kleidung(K){
   jackeueberarm:{slot:'offhand',name:'Jacke überm Arm',armVorn:jacke},
   muelltonnendeckel:{slot:'offhand',name:'Mülltonnendeckel',armVorn:tonnendeckel},
   schluesselbund:{slot:'waist',name:'Schlüsselbund des Vermieters',rumpf(L,p){if(!p.back)schluessel(L,p);}},
+  'pelzmantel-baron-boss':{slot:'body',name:'Pelzmantel des Barons (Boss, viel zu groß)',armHinten(L,p){pelzBossArm(L,p,p.armF,true);},armVorn(L,p){pelzBossArm(L,p,p.armN,false);},rumpf:pelzBossRumpf},
+  'korkenzieher-boss':{slot:'weapon',hands:1,name:'Kellnermesser mit Korken (Boss)',armVorn:korkenBoss},
   pumps:{slot:'feet',name:'Pumps',beinHinten(L,p){pumps(L,p,p.legF,p.toeF,true);},beinVorn(L,p){pumps(L,p,p.legN,p.toeN,false);}},
   turnschuhe:{slot:'feet',name:'Turnschuhe',beinHinten(L,p){sneaker(L,p,p.legF,p.toeF,true);},beinVorn(L,p){sneaker(L,p,p.legN,p.toeN,false);}},
   reitstiefel:{slot:'feet',name:'Reitstiefel mit Stulpe',beinHinten(L,p){reitstiefel(L,p,p.legF,p.toeF,true);},beinVorn(L,p){reitstiefel(L,p,p.legN,p.toeN,false);}},
@@ -432,6 +478,6 @@ export function dungeon_kleidung(K){
   'ringlicht-halo':{haarHinten:null,kopf(L,p){halo(L,p,false);}},
  };
  // Aufdrucke (SECURITY, LIVE, FARBE) und seitliche Zeichen: eigene sw/ne-Bögen statt Spiegelung
- const sided=['absperrpfosten','verkaufsschild','fanshirt','selfiestick','securityanzug','securitypolo','bomberjacke','regenrinnenpanzer','eimerhelm','pferdekostuem','basecap','kinderheadset','kellerschuerze','weste','hosenanzug'];
+ const sided=['pelzmantel-baron-boss','korkenzieher-boss','absperrpfosten','verkaufsschild','fanshirt','selfiestick','securityanzug','securitypolo','bomberjacke','regenrinnenpanzer','eimerhelm','pferdekostuem','basecap','kinderheadset','kellerschuerze','weste','hosenanzug'];
  return {gear,back,families:{},sided};
 }
