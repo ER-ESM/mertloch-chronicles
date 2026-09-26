@@ -35,4 +35,9 @@ export function layoutUnitFrames(root,force=false){
  }
  set(dock,'left',left+'px');set(dock,'top',Math.round(top)+'px');set(dock,'width',Math.round(width)+'px');set(dock,'maxHeight',Math.max(48,Math.floor(bottom-top))+'px');
  dock.classList.toggle('unit-dock-landscape',landscape);
+ /* Dungeon-Fix 5 (Prüfer #728: „Deine Truppe“ bekam einen Scrollbalken): Passt die Truppe am Desktop nicht (Buffs schieben sie hinunter, der Chat begrenzt
+    sie unten), rücken die Rahmen dichter (dungeon-fix5.css) statt zu scrollen; zurück erst mit deutlich mehr Platz. */
+ if(!touch){const room=Math.floor(bottom-top),dense=dock.classList.contains('unit-dock-dense');
+  if(!dense&&dock.scrollHeight>dock.clientHeight+1){dock.classList.add('unit-dock-dense');dock.dataset.denseAt=String(room);}
+  else if(dense&&room>Number(dock.dataset.denseAt||0)+60){dock.classList.remove('unit-dock-dense');}}
 }

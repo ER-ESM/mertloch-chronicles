@@ -23,3 +23,28 @@ body:not(.touch-mode) .death-screen.ds-dungeon .ds-wake{min-height:32px;padding:
 .death-screen .ds-recap-row.is-fatal .ui-glyph{color:#ffd0c0}
 .death-screen .ds-recap-row.ds-recap-rest{color:#a99a86}
 .death-screen .ds-recap-row.ds-recap-rest em{color:#b8a58c}
+
+/* 3 · „Deine Truppe“ kompakt wie WoW-Gruppenrahmen (Prüfer #728: Scrollbalken, Söldner 4 abgeschnitten). Am Desktop 54 px je Söldner statt 82:
+   Porträt, Name mit Rolle, Lebensbalken; Befehl und Vertrag im Tooltip. Reicht der Platz trotzdem nicht (Buffs, Chat), rückt unit-layout.js die
+   Rahmen noch dichter (unit-dock-dense). Nichts scrollt. */
+body:not(.touch-mode) .companion-frame{min-height:0;height:54px;padding:0 4px;grid-template-columns:36px minmax(0,1fr);gap:6px}
+body:not(.touch-mode) .companion-frame .unit-portrait{width:36px;height:36px}
+body:not(.touch-mode) .companion-frame .unit-portrait .unit-level{min-width:16px;height:13px;font-size:12px;bottom:-3px}
+body:not(.touch-mode) .companion-frame strong{font-size:15px;margin:0 0 3px}
+body:not(.touch-mode) .companion-frame .companion-frame-meta{display:none}
+body:not(.touch-mode) #unitGroupDock .companion-frames{gap:4px}
+body:not(.touch-mode) #unitGroupDock.unit-dock-dense .companion-frames>header{display:none}
+body:not(.touch-mode) #unitGroupDock.unit-dock-dense .companion-frame{height:44px}
+body:not(.touch-mode) #unitGroupDock.unit-dock-dense .companion-frame .unit-portrait{width:28px;height:28px}
+body:not(.touch-mode) #unitGroupDock.unit-dock-dense .companion-frame strong{font-size:13px;margin:0 0 2px}
+
+/* 4 · Erinnerung als kompakte Meldung (Prüfer #728: Bild und sieben Zeilen Prosa, ungefragt): eine Zeile mit Symbol, „Erinnerung“ und Titel,
+   Text im Tooltip, Klick öffnet Bild und Text. Auch am Handy (dort vorher ein Fenster), Tipp-Ziele ≥ 44 px. */
+.game-shell .memory-card{width:auto;min-width:210px;max-width:300px}
+.game-shell .memory-card .memory-card-head{border-bottom:0;padding:2px 3px}
+.game-shell .memory-card-open{display:flex;align-items:center;gap:6px;flex:1;min-width:0;min-height:30px;margin:0;padding:0 2px;border:0;border-radius:2px;background:none;color:inherit;text-align:left;cursor:pointer;box-shadow:none}
+.game-shell .memory-card-open:hover strong,.game-shell .memory-card-open:focus-visible strong{color:#fff}
+body.touch-mode .game-shell .memory-card:not([hidden]){display:flex}
+body.touch-mode .game-shell .memory-card{max-width:min(300px,calc(100vw - 32px))}
+body.touch-mode .game-shell .memory-card-open{min-height:44px}
+body.touch-mode .game-shell .memory-card-close{width:44px;height:44px}

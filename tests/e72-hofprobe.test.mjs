@@ -59,7 +59,8 @@ test('Erinnerungskarte: rechts bündig unter Minikarte und Verfolgung, über der
  assert.equal(q.right,14,'linke HUD-Teile zählen nicht zur Spalte');assert.equal(q.top,90);assert.equal(q.maxHeight,800,'Leiste links unten begrenzt die Karte rechts nicht');
  const f=MEMORY_FRAGMENTS[0],html=memoryCardHtml(f);
  assert.match(html,/data-memory-next/);assert.ok(html.includes(f.title)&&html.includes(MEMORY_CARD.label));
- assert.ok(html.indexOf('<img')<html.indexOf('<p>'),'Bild vor dem Text');assert.ok(html.includes('data-memory-card-art'),'Klick aufs Bild vergrößert');
+ /* Dungeon-Fix 5 (Prüfer #728): kompakte Meldung – kein Bild, keine Prosa in der Karte; der Text steht im Tooltip, ein Klick öffnet Bild und Text */
+ assert.ok(!html.includes('<img')&&!html.includes('<p>'),'keine Textwand');assert.ok(html.includes('data-memory-card-art'),'Klick öffnet Bild und Text');assert.ok(html.includes('data-tooltip-note="'+f.text.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;')+'"'),'Text im Tooltip');
  assert.ok(!memoryCardHtml({id:'x',title:'<b>',text:'"a"'}).includes('<b>'),'Titel wird maskiert');
  assert.ok(CARD_WIDTH<=320,'schmal genug für 1280 × 720');
 });

@@ -47,4 +47,6 @@ export const memoryFor=id=>MEMORY_FRAGMENTS.find(m=>m.id===id)||null;
 /** Liefert die Fetzen, die ein Ereignis auslöst und die noch nicht gesehen wurden. Vergleich über alle Trigger-Felder. */
 export function triggeredMemories(event,seen=[]){return MEMORY_FRAGMENTS.filter(m=>!seen.includes(m.id)&&Object.entries(m.trigger).every(([k,v])=>event[k]===v));}
 /** Erinnerung als Randkarte am Desktop (memory-card.js, E-72 Runde 3): Beschriftungen; Titel, Bild und Text kommen aus dem Fetzen. */
-export const MEMORY_CARD={label:'Erinnerung',close:'Erinnerung schließen',closeNote:'Esc schließt sie auch. Nachlesen unter Aufträge → Erinnerungen.',zoom:'Bild vergrößern'};
+// Dungeon-Fix 5 (Prüfer #728: „ERINNERUNG · Wurst Case“ ging ungefragt mit Bild und sieben Zeilen Prosa auf): die Karte ist eine kompakte Meldung –
+// Symbol, „Erinnerung“, Titel; der Text im Tooltip, ein Klick öffnet Bild und Text (open). Sie geht nach showMs von selbst (Maus darüber hält sie an).
+export const MEMORY_CARD={label:'Erinnerung',close:'Erinnerung schließen',closeNote:'Esc schließt sie auch. Nachlesen unter Aufträge → Erinnerungen.',zoom:'Bild vergrößern',open:'Klick: Bild und Text',showMs:9000};
