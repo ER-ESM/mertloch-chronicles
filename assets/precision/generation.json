@@ -2645,6 +2645,162 @@
       "date": "2026-09-26",
       "originalFile": "exec-c0b3648d-c691-4dc8-9e42-39a9d2ecd517.png",
       "sourceHash": "aa86f0e5fc94db0037544c222b86818fb9df778351f8b6272261fbd0d6da4e90"
+    },
+    {
+      "id": "skill-schorsch-schorsch-chef",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/spez-symbole/skill-schorsch-schorsch-chef.png",
+      "prompt": "Use case: stylized-concept. Production RPG specialization emblem for Mertloch Chronicles (shown on the spec tab and above the talent tree), ID skill-schorsch-schorsch-chef, specialization \"Grillhütten-Chef\" (healer) of Schwenker-Schorsch, a burly grill master of a German village grill hut (apron, grill tongs, swing grill on a tripod chain, charcoal, bratwurst, grilled halloumi, a beer to douse the embers). Main object: a black cast-iron grill grate loaded with four golden grilled bratwursts in a row, seen in three-quarter view from above. Effects (small accents, no more than these): soft white steam wisps; a small green plus with ink outline in the upper right. Style: match the attached reference images exactly; they show existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The references only show style and tile; do not copy their subjects (no wooden door, no crossed fists, no beer tap; no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-spez-dieter.png",
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-b2d91dd9-a75b-4650-bf50-8ba51418c7dd.png",
+      "sourceHash": "8ef427f8010ed149170ce84ad561b021a8f9f6fc09a5316b987d70dc003f32e3"
+    },
+    {
+      "id": "skill-schorsch-schorsch-flamme",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/spez-symbole/skill-schorsch-schorsch-flamme.png",
+      "prompt": "Use case: stylized-concept. Production RPG specialization emblem for Mertloch Chronicles (shown on the spec tab and above the talent tree), ID skill-schorsch-schorsch-flamme, specialization \"Flambierer\" (melee damage) of Schwenker-Schorsch, a burly grill master of a German village grill hut (apron, grill tongs, swing grill on a tripod chain, charcoal, bratwurst, grilled halloumi, a beer to douse the embers). Main object: a steel grill fork holding a thick steak engulfed in a tall burst of orange flambé flame. Effects (small accents, no more than these): a few flying sparks. Style: match the attached reference images exactly; they show existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The references only show style and tile; do not copy their subjects (no wooden door, no crossed fists, no beer tap; no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-spez-dieter.png",
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-3753e9e4-449d-4a07-b9b8-cc1f63649ea2.png",
+      "sourceHash": "989848214d6c0093daafba48c2638b821dc2ede864af3e347c3aba22e5bf6cfe"
+    },
+    {
+      "id": "skill-schorsch-schorsch-rauch",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/spez-symbole/skill-schorsch-schorsch-rauch.png",
+      "prompt": "Use case: stylized-concept. Production RPG specialization emblem for Mertloch Chronicles (shown on the spec tab and above the talent tree), ID skill-schorsch-schorsch-rauch, specialization \"Räuchermeister\" (tank) of Schwenker-Schorsch, a burly grill master of a German village grill hut (apron, grill tongs, swing grill on a tripod chain, charcoal, bratwurst, grilled halloumi, a beer to douse the embers). Main object: a black steel barrel smoker on short legs with a tin chimney pipe. Effects (small accents, no more than these): thick grey smoke coiling out of the chimney; a faint blue-steel glint on the lid. Style: match the attached reference images exactly; they show existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The references only show style and tile; do not copy their subjects (no wooden door, no crossed fists, no beer tap; no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-spez-dieter.png",
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-1c9a3f80-405f-4518-86da-a555eb77fbd0.png",
+      "sourceHash": "3db9b39da27bdf6e3c0267a8d891023c9f5352cbb29ceaf61eff7d6ee0044adf"
+    },
+    {
+      "id": "skill-kaethe-kaethe-grand",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/spez-symbole/skill-kaethe-kaethe-grand.png",
+      "prompt": "Use case: stylized-concept. Production RPG specialization emblem for Mertloch Chronicles (shown on the spec tab and above the talent tree), ID skill-kaethe-kaethe-grand, specialization \"Grand-Spielerin\" (ranged damage) of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: four jack playing cards fanned out in one hand, one of each suit (club, spade, heart, diamond), each with a small stern jack portrait. Effects (small accents, no more than these): a bright golden burst behind the cards. Style: match the attached reference images exactly; they show existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The references only show style and tile; do not copy their subjects (no wooden door, no crossed fists, no beer tap; no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-spez-dieter.png",
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-a5782c28-da21-451f-8893-8575bb65e1a2.png",
+      "sourceHash": "284e71d41628cbdedc3e3f078e9e95897fad35b4f1fcae4d4305854d1985713e"
+    },
+    {
+      "id": "skill-kaethe-kaethe-herz",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/spez-symbole/skill-kaethe-kaethe-herz.png",
+      "prompt": "Use case: stylized-concept. Production RPG specialization emblem for Mertloch Chronicles (shown on the spec tab and above the talent tree), ID skill-kaethe-kaethe-herz, specialization \"Kartenlegerin\" (healer) of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: a fortune teller's crystal ball on a small brass stand, a red heart suit symbol glowing inside the ball. Effects (small accents, no more than these): soft green healing sparkles. Style: match the attached reference images exactly; they show existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The references only show style and tile; do not copy their subjects (no wooden door, no crossed fists, no beer tap; no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-spez-dieter.png",
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-9c229b78-7769-46a0-999f-00df33521515.png",
+      "sourceHash": "e51557c4f9e0d159bd8d0537989f8290d7f70827055e44c121ed81ea7a1f7d0c"
+    },
+    {
+      "id": "skill-kaethe-kaethe-falsch",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/spez-symbole/skill-kaethe-kaethe-falsch.png",
+      "prompt": "Use case: stylized-concept. Production RPG specialization emblem for Mertloch Chronicles (shown on the spec tab and above the talent tree), ID skill-kaethe-kaethe-falsch, specialization \"Falschspielerin\" (control) of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: an upright black spade playing card standing like a shield, one corner bent with a secret pencil notch. Effects (small accents, no more than these): a faint blue-steel glint on the card edge; a sly white glint star. Style: match the attached reference images exactly; they show existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The references only show style and tile; do not copy their subjects (no wooden door, no crossed fists, no beer tap; no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-spez-dieter.png",
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-2b88514b-a841-4995-b688-904c758f4be5.png",
+      "sourceHash": "97399a3543bd4366131d1eab3b08b2c405ff95920007497d3211eedb21bc248b"
+    },
+    {
+      "id": "skill-dieter-strike",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-strike.png",
+      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-strike, ability \"Kronkorken-Kelle (heavy melee punch)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE big clenched bare fist with a brown leather wrist wrap, punching diagonally toward the upper right, knuckles lit from the upper left. Effects (small accents, no more than these): a golden bottle cap flying off the knuckles; two bold motion streaks. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-eac9505e-4a17-487d-b2a5-e0fcdb61615a.png",
+      "sourceHash": "b72e8906c2a567e0bce8c8a83e996712aadafabb2c3ecd380c262dfe1e151667"
+    },
+    {
+      "id": "skill-dieter-heal",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-heal.png",
+      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-heal, ability \"Konterfruehstueck (heal with a very suspicious pretzel)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE big glossy golden-brown Bavarian pretzel with coarse salt crystals, slightly tilted, nothing else on the tile. Effects (small accents, no more than these): a small bright green plus with ink outline in the upper right; one thin wisp of steam. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-a3f4c66c-341b-496b-bbab-3fa80c6ebe2d.png",
+      "sourceHash": "693ba40efe5e71b6e0ba18f4c20d1b973cc2ad48e976d1a282206e9e15ba009e"
+    },
+    {
+      "id": "skill-dieter-parry",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-parry.png",
+      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-parry, ability \"Deckel drauf! (parry with a barrel lid)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE round wooden barrel lid with an iron rim and a central iron boss, held like a shield in three-quarter view. Effects (small accents, no more than these): a single bright spark burst where a blow hits the upper right edge. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-d3f64a06-d817-4f10-afa1-5a39c93603ec.png",
+      "sourceHash": "0e12c41c7a080e411333c0afa5d0bf491b3615c67305d2a75016ce8bdbfc2ccf"
+    },
+    {
+      "id": "skill-dieter-dash",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-26/kniffe-dicht/skill-dieter-dash.png",
+      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-dieter-dash, ability \"Ab durch die Hecke (dash through the hedge)\" of Dosen-Dieter, a pub brawler and bouncer who tanks with his fists. Main object: ONE brown leather work boot mid-leap diagonally toward the upper right, warm tan leather with a bright highlight so it stands out clearly against the green tile. Effects (small accents, no more than these): a small burst of bright green hedge leaves around the ankle; two speed lines. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-98bf2128-5ecf-4894-bdac-b812fc4d8ba5.png",
+      "sourceHash": "cfdc37e45c09e85adefa975b871b6e25ba555844d446cc5a7010c7061390c9e0"
     }
   ]
 }
