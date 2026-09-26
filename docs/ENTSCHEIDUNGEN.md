@@ -1172,6 +1172,9 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
    - Sichtbar in der Buffleiste, im Bossrahmen und über den Söldnern. Nach 6 s ohne Tat zeigt der Bossrahmen „Söldner warten“.
    - Für aktive Spieler ändert sich nichts.
 2. **Wut an allen Hauptbossen:** Gerd 2:10, Exposé 2:40, Kurt 2:30, Big B 4:50; danach alle 5 s +150 % Schaden. Die optionalen Bosse Rita und das halbe Pferd haben keine Wut.
+   - **Big Bs Wut hängt am Laufstand** (Fix 6, `docs/DUNGEON-FIX6-2026-09-26.md`): 4:50 mit stehender Rita, 4:00, wenn Rita liegt, 3:35, wenn zusätzlich die Kirmes-Urkunde vorliegt. Der Tooltip der Wut und die Lupe der Urkunde nennen den Grund.
+   - Anlass war Prüfer-Playtest 4: Eine passive Heilerin gewann mit liegender Rita und drei Beweisen, weil beides den Kampf um rund ein Drittel verkürzt. Die Simulation hatte nur den schwersten Laufstand gemessen und misst jetzt alle.
+   - Eine feste frühere Wut für alle wurde verworfen: Mit Startausrüstung bliebe zu wenig Luft.
 3. **Die Rolle zählt:**
    - Den Kegel-Tank-Buster mildert nur ein Schutz; ohne Schutz erscheint im Bossrahmen der Chip „Ungeschützt“.
    - Fallen Schutz und Heilung, nutzen die Schadenssöldner einmal je Kampf ihr „Letztes Aufgebot“ (doppelter Schaden, Ausweichen, Notfall-Schorle), jeweils mit Ansage.
@@ -1186,18 +1189,27 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
    | Held Heiler fällt | 6 % |
    | Schadens-Held fällt bei 50 % | 71 % |
    | nur zwei Schadenssöldner | 13 % (0 %, wenn Schutz und Heilung schon bei 50 % fallen; 26 %, wenn erst bei 25 %) |
-   | Held passiv | 5 % |
+   | Held passiv | 2 % (9 von 540: 15 Specs, drei Laufstände, lebend/stehend/liegend; keine Kombination über 17 %) |
    | Held liegt ab 20 s | 0 % |
+   | Held aktiv | alle Läufe gewonnen, jeder mindestens 57 s vor der Wut |
 
+   - Die erste Messung für „Held passiv“ (5 %) galt nur für den schwersten Laufstand; live gewann eine passive Heilerin trotzdem.
+   - Kriterium in `dungeon-sim`: passiv ≤ 30 % gesamt, ≤ 40 % je Kombination.
+   - Die Eingangskarte schlägt beim Anheuern die fehlenden Rollen vor, wie im Follower-Dungeon. Sie belegt nichts vor.
    - Der Fall „nur zwei Schadenssöldner schon bei 50 %“ lässt sich nicht gewinnbar machen, ohne den Tank-Fall aufzuweichen. Deshalb gilt dort „wenn der Boss schon tief ist“.
 6. **Bosskampf wie in WoW** (Fix 4/5):
    - Big B beginnt mit einer Rede am Thron („F Beweise vorlegen“). Danach wartet er, bis der Held zieht; kein Auto-Pull.
    - Jede Lüge lässt ab der sichtbaren Handlungszeile ≥ 2,0 s, und bei „beide Seiten“ ist die sichere Mitte markiert.
-   - Der Todesrückblick bündelt Treffer, die Zeilen ergeben die Summe. Das Todesfenster sitzt oben mittig.
-7. **Offen:**
-   - Nutzerfrage: Ob „Held fällt früh, Söldner gewinnen trotzdem“ (jetzt 0 %) gelegentlich möglich sein soll, entscheidet der Nutzer. Eine spätere Wut an Gerd und Kurt würde das lockern, ließe aber auch passive Helden öfter gewinnen.
-   - Figurenentwürfe der Bosse und Gegner liegen im Zweig `dungeon-figuren` und warten auf die Freigabe.
-   - Etappe 5 (Online-Gruppe mit eigenen Wut-Zeiten, Heldenmodus, „Lüge der Woche“).
+   - Der Todesrückblick bündelt Treffer, die Zeilen ergeben die Summe. Das Todesfenster sitzt am Desktop neben dem Bossrahmen, sodass Boss, Tank und Bildmitte frei bleiben (Fix 6).
+7. **Nutzerentscheidungen 26.09. („Alles so umsetzen“):**
+   - Fällt der Held früh, gewinnen die Söldner vorerst nicht mehr (0 %). Das bleibt so, bis ein Playtest anderes nahelegt.
+   - Die Boss- und Gegnerfiguren sind **freigegeben**:
+     - Big B als drahtiger kleiner Mann im viel zu großen Pelz, mit eigenem Boss-Pelz.
+     - Das halbe Pferd als brauner Fuchs.
+     - Standardmäßig an, mit Notschalter.
+     - Eigene Bossköpfe per Codex und die Huckepack-Idee folgen später.
+   - Das Heiler-Kit aller Heiler-Specs folgt WoW: Dauerheilung auf ein Ziel, großer Heilzauber, HoT oder Schild, Gruppenheilung, Notfallknopf. Dazu Kniff-Tooltips nach WoW-Muster und die Ressourcenleiste an der Aktionsleiste (Bericht `docs/HEILER-WOW-2026-09-26.md`).
+8. **Offen:** Etappe 5 (Online-Gruppe mit eigenen Wut-Zeiten, Heldenmodus, „Lüge der Woche“).
 
 ## E-72 · Fünf Klassen, fünf Ressourcen: eigene Erzeuger, Verbraucher und Risiken je Held (25.09.2026, ergänzt E-32 und E-36)
 
