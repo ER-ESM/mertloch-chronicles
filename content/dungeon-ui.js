@@ -32,6 +32,9 @@ export const DUNGEON_UI={
   // Etappe 3: Behauptung und Nachsatz in der Zauberleiste, Wut-Uhr, Reichweite, Geständnis, Beweise im Bossrahmen
   claim:'Behauptung',truth:'Nachsatz',enrageIn:s=>'Wut in '+Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'),enraged:n=>'Wut ×'+n,
   reach:n=>'Reichweite +'+n+' %',confessed:'Geständnis',confessedNote:'Er lügt nicht mehr.',evidence:'Beweis',
+  // Dungeon-Fix 4 (Nachprüfung #726: Lupen und „Geständnis“ erklärten sich nicht): Tooltip mit Schwelle und Wirkung
+  confessedTip:(at,taken)=>'Ab '+at+' % lügt Big B nicht mehr: Der Nachsatz kommt sofort, es gibt keine gestrichelte Behauptung.'+(taken?' Mit allen drei Beweisen nimmt er dazu '+taken+' % mehr Schaden.':''),
+  evidenceTip:'Vorgelegt: ',
   // Etappe 4 Teil A: Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd), Sprinkler (Kurt)
   provision:(n,pct)=>'Provision ×'+n+' · +'+pct+' %',hidden:'Unsichtbar',hiddenNote:'Vor dem Greenscreen nicht anwählbar. Der Schutz zieht sie weg, sonst tritt sie nach 8 s von selbst heraus.',drinking:'Säuft',drinkingNote:'Am Trog heilt es sich. Vom Trog wegziehen.',wet:n=>'Nass ×'+n,wetNote:'Nasse Streifen vom Rand her: Mitte halten.'},
  // ── Merkmale der Zauber: Symbol (map-symbols.js), Antwort (2–3 Wörter, steht in der Warnleiste) und Tooltip.
@@ -97,7 +100,11 @@ export const DUNGEON_UI={
  // je Warnzeile mit seinen Mitteln und seiner Taste (alert-answer.js). Nach dem Nachsatz eine Handlung mit Pfeil, das Zitat klein daneben.
  answers:{dodge:'Ausweichen',parry:'Parieren',wait:'Nachsatz abwarten',stamp:'Stempel abwarten',right:'Nach rechts',left:'Nach links',middle:'In die Mitte',
   stayRight:'Rechts bleiben',stayLeft:'Links bleiben',stayMiddle:'Mitte halten',out:'Raus aus der Fläche',stay:'Stehen bleiben',mates:'Söldner unterbrechen',
-  damage:'Schaden drauf',onUnit:n=>'auf '+n,keyNote:'Deine Taste dafür'},
+  damage:'Schaden drauf',onUnit:n=>'auf '+n,keyNote:'Deine Taste dafür',
+  // Dungeon-Fix 4 (Nachprüfung #726: „LINKS BLEIBEN“ und „MITTE HALTEN“ ohne Taste und Pfeil): „bleiben“ ist eine Handlung – Halten-Symbol,
+  // „Stehen bleiben“ und die sichere Seite als Kappe. Trifft eine Mechanik einen Söldner, ist die Zeile nur Info (Name, keine Taste).
+  side:{left:'links',right:'rechts',middle:'Mitte'},sideNote:'Du stehst schon auf der sicheren Seite. Nicht laufen.',
+  holdNote:'Nichts drücken, stehen bleiben.',laneOut:'Raus aus der Bahn',spotOut:'Fläche verlassen',infoNote:n=>'Trifft '+n+', nicht dich. Nichts zu tun.'},
  // Kurznamen für die Warnleiste: lieber kürzen als abschneiden (Abnahme #721: „Ritt auf der Kano…“, „Am eige…“).
  short:{'Ritt auf der Kanonenkugel':'Kanonenkugel','Mein Anwalt ruft gleich an':'Anwalt','Am eigenen Schopf':'Schopf','Das Parkett ist echt':'Parkett',
   'Pappkulisse fällt':'Pappkulisse','Du stehst nicht auf der Liste':'Liste','Dresscode-Kontrolle':'Dresscode','Grundstück verkauft':'Verkauft',

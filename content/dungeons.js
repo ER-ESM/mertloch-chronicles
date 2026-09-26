@@ -253,6 +253,11 @@ export const DUNGEON_BOSSES={
   level:10,hp:140000,damage:2.2,xp:1500,lootMoment:true,final:true,speed:44,aggroRange:92,roamRadius:4,leash:300,castSet:'d-bigb',auto:'horst',
   look:'Mann um die 45, Pelzmantel aus dem Kostümverleih, Perücke mit Zopf, Goldkette aus goldlackierten Kronkorken, Siegelring aus Messing, Handy am Selfie-Stick mit Ringlicht',
   enrage:{after:360,every:30,damage:.5},reach:.08,confess:{at:.15,taken:.1},
+  // Dungeon-Fix 4 (Nachprüfung #726: beim Betreten begann sofort der Kampf, keine Gelegenheit für „Beweise vorlegen“): Rollenspiel-Einleitung
+  // wie in WoW. Big B bemerkt niemanden von selbst; der Kampf beginnt erst, wenn der Held den Thron erreicht (reach Kacheln um Big B), ihn mit F
+  // anspricht (talk Kacheln) oder angreift. Dann legt der Held gefundene Beweise vor (Ausreden im Abstand evidence.present.gap), Big B sagt
+  // seinen Begrüßungssatz (line s), erst danach fällt die Tür zu. opener = Anlaufzeit bis zum ersten Zauber, wenn die Gruppe drin ist.
+  intro:{reach:5,talk:13,line:3,opener:6},
   phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]},
  // ── Etappe 4 Teil A „Die restlichen Bosse“ (E-71, Plan 7.2–7.5). Zahlen gegen die gemessene Gruppe gesetzt (scripts/dungeon-sim.mjs,
  // Korridor 70–110 s mit Held und vier Söldnern). Figuren: vorhandene Katalogfiguren mit Tönung (tint) in Bossgröße, keine neue
@@ -347,15 +352,18 @@ export const DUNGEON_CASTS={
  // Dungeon-Fix 3 (Big-B-Abnahme #721: „Nachsatz stand nur noch 1,3 s in der Leiste – knapp“): Die Kanonenkugel dauert 3,0 s – nach dem
  // Nachsatz (tell 1,0 s, V-D5) bleiben 2,0 s, um die Hälfte zu wechseln (WoW-Richtwert). Parkett und Pappkulisse bleiben 2,8/2,6 s: Ihre
  // Stellen liegen unter dem, den sie treffen – ein Schritt reicht; mit 3,0 s fiel in der Simulation eine Gruppe (Dieter, Seed 8).
+ // Dungeon-Fix 4 (Nachprüfung #726: Richtungszeilen standen bei den Blicken des Prüfers nur 1,4/1,2/0,1 s da): 3,2 s – nach dem Nachsatz
+ // bleiben 2,2 s. Die Warnleiste zeigt die Handlung im selben Takt wie der Nachsatz (gemessen, docs/DUNGEON-FIX4-2026-09-26.md); mit der Reserve
+ // liegt auch der erste Wert, den die Leiste zeigt, sicher über 2,0 s. 3,4 s kippte in der Simulation Dieter/Seed 8 (vier Söldner am Boden).
  'd-bigb':{cycle:['kanone','anwalt'],tracks:[{cast:'siegelring',every:12,first:6}],casts:{
-  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
   anwalt:{name:'Mein Anwalt ruft gleich an',hint:'Unterbrechen',total:2.4,damage:480,pct:.3,target:'random',interruptible:true,say:'Das ist nur ein Anruf.'},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Phase 2 „Follower" (70–40 %): Live-Schalte ruft Follower, Kanonenkugel zweimal hintereinander (1 s dazwischen), das Parkett.
  'd-bigb2':{cycle:['live','kanone','kanone','parkett'],gaps:{1:1},tracks:[{cast:'siegelring',every:12,first:4}],casts:{
   live:{name:'Live-Schalte',hint:'Adds zuerst',total:2.2,damage:0,summon:{kind:'follower',count:3},lie:{claim:'Ich mach nur ein Foto!',truth:'… mit Follower.',tell:1}},
-  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
   parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:2.8,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
@@ -363,7 +371,7 @@ export const DUNGEON_CASTS={
  // Am eigenen Schopf (zweimal unterbrechen, sonst heilt er 5 %). Ab dem Geständnis lügt er nicht mehr.
  'd-bigb3':{cycle:['kulisse','kanone3','schopf'],tracks:[{cast:'siegelring',every:12,first:4}],casts:{
   kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:2.6,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
-  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:3,damage:700,pct:.7,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
+  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… und rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… und links.'}},
   schopf:{name:'Am eigenen Schopf',hint:'Zweimal unterbrechen',total:3.5,damage:0,interruptible:true,interrupts:2,selfHeal:.05,say:'Ich zieh mich hier selbst raus!'},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
@@ -482,6 +490,10 @@ export const DUNGEON_TEXT={
  welcome:'Schloss Big B. Die Garage riecht nach Laminat und Größenwahn.',
  outside:'Zurück auf der Burgstraße. Die Burg ist immer noch eine Garage.',
  lootGathered:n=>n+' liegengebliebene Beutebeutel eingesammelt.',
+ // Dungeon-Fix 4 (Nachprüfung #726): die eingesammelte Beute als kurze Meldung nach dem Übergang, mit dem, was drin war
+ lootGatheredShort:(items,coins)=>'Eingesammelt: '+[items?items+(items===1?' Teil':' Teile'):'',coins?coins+' Pfandmarken':''].filter(Boolean).join(' · '),
+ // Dungeon-Fix 4: Rollenspiel-Einleitung (DUNGEON_BOSSES.bigb.intro) – F am Thron, Zeile „Kampfbeginn“ in der Warnleiste
+ intro:{address:'Big B ansprechen',pull:'Kampfbeginn',pullNote:'Big B redet noch. Danach fällt die Tür zu, der erste Zauber kommt nach einer kurzen Anlaufzeit.'},
  step:{stairs:'Treppe',ladder:'Leiter',shaft:'Lichtschacht',spiral:'Wendeltreppe',lift:'Getränkeaufzug',pappwand:'Pappwand'},
  floorTo:{e0:'zum Burghof',k1:'ins Rittergeschoss',k2:'ins Basaltgewölbe'},up:'hoch',down:'runter',
  ladder:{a:'hoch aufs Carport-Dach',b:'runter in den Hof'},
@@ -549,7 +561,10 @@ export const DUNGEON_TEXT={
   confess:'GESTÄNDNIS',lieHit:'GELOGEN'},
  chest:{name:'Endtruhe öffnen',title:'Endtruhe · Thronsaal',label:'Endtruhe',labelNote:'Rechtsklick oder F: drei seltene Teile, eins davon nimmst du mit.',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
   pickNote:'Ein Teil nach Wahl, dazu Siegelmarken. Einmal je Durchgang.',empty:'Die Truhe ist leer. Big B hat den Deckel mitgenommen.',
-  locked:'Zu. Erst Big B.'},
+  locked:'Zu. Erst Big B.',
+  // Dungeon-Fix 4 (Nachprüfung #726: beim Verlassen ohne Wahl nahm das Spiel still das erste Teil): Rückfrage im Beutefenster der Truhe
+  leaveAsk:'Noch nichts gewählt',leaveAskNote:'Wähl ein Teil, dann geht es hinaus. Gehst du trotzdem, packst du das erste ein.',
+  leaveTaken:n=>'Endtruhe: '+n+' eingepackt.'},
  backExit:'Hinterausgang · zurück auf die Burgstraße',backExitLabel:'Hinterausgang',backExitNote:'In der Schatzkammer am Südende des Thronsaals, unter dem grünen Schild. Rechtsklick oder F: zurück auf die Burgstraße.',
  feat:n=>'Erfolg: '+n,
  cleared:(t)=>'Schloss Big B abgeschlossen in '+t+'. Das Schloss war eine Garage. Die Garage bleibt.',

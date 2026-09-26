@@ -192,7 +192,12 @@ export function leaveDungeon(g,{force=false}={}){
  const exit=toWorld(run.def,run.def.exit.floor,run.def.exit.x,run.def.exit.y),back=run.def.backExit,backAt=back&&toWorld(run.def,back.floor,back.x,back.y);
  const atBack=!!back&&floorAt(run.def,g.player.x,g.player.y)===back.floor&&dist(g.player,backAt)<=back.range*U+8/* Etappe 3: Hinterausgang in der Schatzkammer */;
  if(!force&&!atBack&&(floorAt(run.def,g.player.x,g.player.y)!==run.def.exit.floor||dist(g.player,exit)>4*U))return false;
- const bags=g.rpg.loot.filter(b=>floorAt(run.def,b.x,b.y));for(const b of bags)autoLootBag(g,b);if(bags.length)g.toast?.(T.lootGathered(bags.length));
+ /* Dungeon-Fix 4 (Nachprüfung #726): Liegengebliebenes wird weiter eingesammelt, aber die Meldung nennt, was drin war, und kommt nach dem Übergang
+    (dungeon-ui.js zeigt run.gathered). Eine Endtruhe ohne Wahl fragt vorher nach (dungeon-ui.js leave → chestPending); wer trotzdem geht, packt das
+    erste Teil ein – mit eigener Zeile. */
+ const bags=g.rpg.loot.filter(b=>floorAt(run.def,b.x,b.y)),inv=()=>g.rpg.inventory.reduce((n,e)=>n+(e.count||1),0),gathered={items:0,coins:0,chest:''};
+ for(const b of bags){const i0=inv(),c0=g.rpg.coins,first=b.choice&&b.items[0]?.id;autoLootBag(g,b);gathered.items+=Math.max(0,inv()-i0);gathered.coins+=Math.max(0,g.rpg.coins-c0);if(first)gathered.chest=ITEMS[first]?.name||first;}
+ if(bags.length){run.gathered=gathered;g.log?.(T.lootGathered(bags.length));}
  stop(g);const o=g.instance.outside,pos=g.instance.outsidePosition;run.ghost=null;
  g.world=o.world;g.enemies=o.enemies;g.zones=[];g.fields=[];g.fx=[];g.texts=[];
  (g.dungeonRuns||(g.dungeonRuns={}))[run.id]={run,leftAt:g.time};
@@ -319,7 +324,7 @@ const partyIn=(g,def,room)=>[...(g.dead?[]:[g.player]),...(g.companions||[]).fil
 export const RESUME_CALM=5;
 export const dungeonNotices=(g,e)=>{const run=dungeonRun(g);if(!run)return true;if(run.calmUntil>g.time)return false;
  /* Feinschliff 2026-09-26: Trash bemerkt niemanden in einer Arena mit lebendem Boss; ein Boss bemerkt niemanden, solange Trash mit der Gruppe kämpft */
- if(!e.dungeonBoss)return !heroInArena(g,run);return roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room&&!trashFighting(g,run);};
+ if(!e.dungeonBoss)return !heroInArena(g,run);/* Dungeon-Fix 4: ein Boss mit Einleitung (Big B) wartet, bis man ihn anspricht */if(introDef(e))return false;return roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room&&!trashFighting(g,run);};
 // ── Arena und Trash getrennt (Feinschliff 2026-09-26, Befund: Gerd zog mit Schorsch den Pack „Hof West“ mit) ─────────────────────────────
 // Ein Boss-Pull zieht nie ein Trash-Pack mit und umgekehrt: (1) Trash bemerkt den Helden nicht, solange er in einer Arena mit lebendem Boss
 // steht (die Arena ist aggro-dicht, auch bei offener Tür). (2) Kein Boss bemerkt den Helden, solange Trash auf dieser Ebene mit der Gruppe
@@ -381,9 +386,41 @@ export function tickDungeon(g,dt){
  }
  // Adds verschwinden, wenn ihr Boss zurückgesetzt wurde
  for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.gone||e.signedOff||e.summoner&&(!(e.summoner.hp>0)/* Feinschliff 2026-09-26: auch Helfer eines gefallenen Bosses (ein Interessent blieb nach Exposé in der Musterwohnung stehen) */||!e.summoner.aggro))g.enemies.splice(i,1);}/* Etappe 4 Teil A: Interessenten, die unterschrieben haben, gehen */
+ tickIntro(g,run);/* Dungeon-Fix 4: Rollenspiel-Einleitung (Big B) */
  tickBossMechanics(g,run,dt);/* Etappe 3: Nachsatz, Geständnis, Wut, Reichweite, parallele Timer, Trümmer */
  tickE4B(g,run,dt);/* Etappe 4 Teil B: Tode, Gespenst, Volker, Ausreden, Pferd gesehen */
 }
+// ── Dungeon-Fix 4 (Nachprüfung #726): Rollenspiel-Einleitung wie in WoW ──────────────────────────────────────────────────────────────
+// Befund: Beim Betreten begann sofort der Kampf (Rechtsklick auf Big B läuft hin und greift an), „F Beweise vorlegen“ kam nie, die erste Bahn lief
+// schon mit 0,1 s. Jetzt bemerkt ein Boss mit intro (content/dungeons.js DUNGEON_BOSSES.bigb.intro) niemanden von selbst und nimmt keinen Schaden.
+// Der Kampf beginnt, wenn der Held den Thron erreicht (reach), ihn mit F anspricht (talk) oder angreift: gefundene Beweise liegen dann auf dem
+// Thron (Ausreden im Abstand present.gap), Big B sagt seinen Begrüßungssatz (line s), dann fällt die Tür zu und die Gruppe steht drin. Der erste
+// Zauber kommt nach opener s (Anlaufzeit). Nach einem Wipe dasselbe, dann ohne Beweise – die liegen schon.
+const introDef=e=>e?.dungeonBoss?DUNGEON_BOSSES[e.bossId]?.intro||null:null;
+/** Wartet dieser Boss auf seine Einleitung (hat intro und kämpft noch nicht)? Dann bemerkt er niemanden und nimmt keinen Schaden. */
+export function bossHeld(g,e){return !!introDef(e)&&e.hp>0&&!e.aggro;}
+/** Laufende Einleitung → {boss, left (s bis Kampfbeginn), total, said} oder null. */
+export function introState(g){const run=dungeonRun(g),it=run?.intro;if(!it)return null;const boss=g.enemies.find(x=>x.bossId===it.boss&&x.hp>0);if(!boss)return null;
+ return {boss,left:Math.max(0,it.fightAt-g.time),total:it.fightAt-it.at,said:it.said};}
+/** Held spricht den Boss an (F am Thron, Thron erreicht, Angriff): gefundene Beweise vorlegen, Begrüßung, dann Kampf. → true, wenn sie beginnt. */
+export function addressBoss(g,e){const run=dungeonRun(g),d=introDef(e);if(!run||!d||!bossHeld(g,e)||run.intro||g.dead)return false;
+ if(roomAt(run.def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room)return false;
+ if([...run.found].some(id=>!run.evidence.has(id)))presentEvidence(g);
+ const pr=run.presenting,talk=pr?Math.max(0,pr.at+pr.ids.length*pr.gap-g.time):0,lineAt=g.time+talk;
+ run.intro={boss:e.bossId,at:g.time,lineAt,fightAt:lineAt+d.line,said:false};e.facing=g.player.x<e.x?-1:1;g.emit?.('dungeonIntro',{boss:e.bossId,phase:'start'});return true;}
+/** Einleitung vorbei: der Boss kämpft, der erste Zauber nach der Anlaufzeit (die Tür fällt im selben Takt zu, tickDungeon arenaRule). */
+export function engageBoss(g,e){const d=introDef(e);e.aggro=true;e.ai='combat';e.engaged=true;e.attackTimer=Math.max(e.attackTimer||0,d?.opener??COMBAT_RULES.firstSpecial);g.player.inCombat=7;g.emit?.('dungeonIntro',{boss:e.bossId,phase:'fight'});}
+function tickIntro(g,run){const it=run.intro;
+ if(!it){if(g.dead)return;const room=roomAt(run.def,g.player.x,g.player.y)?.id;for(const e of g.enemies){const d=introDef(e);if(d&&bossHeld(g,e)&&room===e.dungeonBoss.room&&dist(g.player,e)<=d.reach*U)addressBoss(g,e);}return;}
+ const e=g.enemies.find(x=>x.bossId===it.boss&&x.hp>0);if(!e||e.aggro){run.intro=null;return;}
+ /* Held fällt oder geht hinaus: die Einleitung bricht ab und beginnt beim nächsten Ansprechen neu (die Beweise bleiben vorgelegt) */if(g.dead||roomAt(run.def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room){run.intro=null;return;}
+ if(!it.said&&g.time>=it.lineAt){it.said=true;const line=T.bossLines[e.bossId]?.engage;if(line)g.bark?.(e,line,'boss');}
+ if(g.time>=it.fightAt){run.intro=null;engageBoss(g,e);}}
+/** Dungeon-Fix 4 (Nachprüfung #726: beim Verlassen ohne Wahl nahm das Spiel still das erste Teil der Endtruhe): Endtruhe mit offener Wahl – geöffnet
+ *  und nichts gewählt (derselbe Beutel) oder nach ihrem Boss noch gar nicht geöffnet (dann öffnet sie sich dafür). → Beutel oder null. */
+export function chestPending(g){const run=dungeonRun(g),c=run?.def.chest;if(!c||!run.killed.has(c.boss))return null;
+ const left=g.rpg.loot.find(b=>b.source?.kind==='chest'&&String(b.id).startsWith('chest-')&&b.choice&&b.items.length);if(left)return left;
+ return run.chest?null:openDungeonChest(g);}
 /** Aufstehen am Kontrollpunkt (Freilassen oder Gruppentod; engine.respawn setzt vorher die Gegner zurück). */
 export function dungeonRespawn(g){
  const run=dungeonRun(g);if(!run)return;run.ghost=null;run.calmUntil=g.time+RESUME_CALM;const c=run.checkpoint;place(g,toWorld(run.def,c.floor,c.x,c.y));
@@ -947,8 +984,11 @@ function e4bInteraction(g,run,f){
  for(const c of s.chests)if(c.ready&&!c.opened&&nearPt(g,def,c,3))return act('wingChest',c,W.wingChest.name,{id:c.wing});
  for(const x of s.finds)if(!x.taken&&nearPt(g,def,x,x.range)){if(!x.ready){return act('guarded',x,W.evidence[x.id].use,{id:x.id});}return act('find',x,W.evidence[x.id].use,{id:x.id});}
  for(const ev of s.events)if(!ev.done&&nearPt(g,def,ev,ev.range))return act(ev.ready?'event':'guarded',ev,W.events[ev.id].use,{id:ev.id});
- const pr=def.evidence?.present,big=g.enemies.find(e=>e.bossId==='bigb'&&e.hp>0);
- if(pr&&big&&!big.aggro&&!run.presenting&&nearPt(g,def,pr,pr.range)){const n=[...run.found].filter(id=>!run.evidence.has(id)).length;if(n)return act('present',pr,W.evidence.present(n));}
+ const pr=def.evidence?.present,big=g.enemies.find(e=>e.bossId==='bigb'&&e.hp>0),n=[...run.found].filter(id=>!run.evidence.has(id)).length;
+ if(pr&&big&&!big.aggro&&!run.presenting&&!run.intro&&nearPt(g,def,pr,pr.range)&&n)return act('present',pr,W.evidence.present(n));
+ /* Dungeon-Fix 4: am Thron spricht F Big B an – mit gefundenen Beweisen heißt es „Beweise vorlegen (n)“, sonst „Big B ansprechen“ */
+ for(const e of g.enemies){const d=introDef(e);if(!d||!bossHeld(g,e)||run.intro||roomAt(def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room||dist(g.player,e)>d.talk*U)continue;
+  return {kind:'dungeonAct',act:'address',boss:e.bossId,point:{x:e.x,y:e.y},name:n?W.evidence.present(n):T.intro.address,priority:0};}
  return null;
 }
 /** F auf einem Ziel der Etappe 4 Teil B. → {ok, bag?, vendor?} (die Oberfläche öffnet Beute-Moment bzw. Händlerfenster). */
@@ -960,6 +1000,7 @@ export function dungeonAct(g,it){
  if(it.act==='wingChest')return openWingChest(g,it.id);
  if(it.act==='find')return findEvidence(g,it.id);
  if(it.act==='present')return presentEvidence(g);
+ if(it.act==='address'){const e=g.enemies.find(x=>x.bossId===it.boss&&x.hp>0);return {ok:addressBoss(g,e)};}
  if(it.act==='event'&&it.id==='volker')return freeVolker(g);
  if(it.act==='event'&&it.id==='beamer')return unplugBeamer(g);
  return {ok:false};

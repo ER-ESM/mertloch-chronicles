@@ -2,7 +2,7 @@
 // app.js ruft nur mountDungeonUI() und an drei Stellen openEntry/leave/openJournal – alles andere bleibt hier.
 // Fenster im Einzelfenster-System (E-67): „dungeonEntry“ und „journal“ stehen mittig (popup-windows.js GRID_OVERLAY),
 // das Journal darf neben offenen Fenstern (Karte) stehen. Am Handy zeigt Tippen auf ein Symbol seinen Tooltip als Detail.
-import {requiredSeals,dungeonAct,e4bState,dungeonToday,toWorld,setDungeonWaypoint} from './dungeon.js';
+import {requiredSeals,dungeonAct,e4bState,dungeonToday,toWorld,setDungeonWaypoint,chestPending} from './dungeon.js';
 import {endMarks} from './dungeon-map-art.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_UI as U,DUNGEON_E4B as U4} from './content/index.js';
 import {mountVendor} from './dungeon-vendor-ui.js';
@@ -14,8 +14,8 @@ import {paintUnitPortraits} from './unit-frame.js';
 
 const touch=()=>document.body.classList.contains('touch-mode');
 export function mountDungeonUI(api){
- // api: {game, popups, openModal, paint, events, save, toast, showPanel, unlocked}
- let entryId=null,journalBoss=null,journalBack=null,busy=false;
+ // api: {game, popups, openModal, paint, events, save, toast, showPanel, unlocked, showLoot}
+ let entryId=null,journalBoss=null,journalBack=null,busy=false,leaveAfter=null;
  /* Etappe 4 Teil B: Händler Vermieter Volker (eigenes Fenster) und die F-Ziele Truhe, Beweis, Ereignis, Vorlegen */
  const vendor=mountVendor({game:api.game,openModal:api.openModal,paint:api.paint,toast:api.toast,save:api.save,events:api.events});
  function act(it){const g=api.game();if(!g)return null;const r=dungeonAct(g,it);if(r?.vendor&&r.ok)vendor.open();return r;}
@@ -40,8 +40,18 @@ export function mountDungeonUI(api){
   api.popups.close('dungeonEntry');busy=true;
   dungeonTransition('enter',()=>{const ok=g.enterDungeon(id);api.events();return ok;},{caption:T.welcome}).finally(()=>{busy=false;});
  }
- function leave(){const g=api.game();if(busy||!g)return;busy=true;
-  dungeonTransition('leave',()=>{const ok=g.leaveDungeon();api.events();if(ok)api.save();return ok;},{caption:T.outside}).finally(()=>{busy=false;});}
+ /* Dungeon-Fix 4 (Nachprüfung #726: Truhe geöffnet, nichts gewählt – beim Verlassen nahm das Spiel still die „Sagenhaften Maifeldtreter“):
+    Rückfrage wie in WoW, ohne Fließtext: Statt hinauszugehen öffnet sich die Dreierwahl der Endtruhe mit „Noch nichts gewählt“ und dem
+    Ausgangssymbol. Wer wählt, geht gleich hinaus; wer das Fenster schließt, bleibt. Wer danach trotzdem geht, packt das erste Teil ein (Meldung).
+    Gewählt statt „Nachholen bis zum Tagesreset“: kein neuer Ort, kein Hinweis auf eine Frist – die Wahl passiert dort, wo man gerade geht.
+    Liegengebliebene Beutel sammelt das Verlassen weiter ein; was drin war, steht danach als kurze Meldung (nach dem Übergang, nicht darunter). */
+ function leave(){const g=api.game();if(busy||!g)return;
+  const bag=chestPending(g);if(bag&&!bag.leaveAsk&&api.showLoot){bag.leaveAsk=true;leaveAfter=bag.id;api.events();api.showLoot(bag.id);return;}
+  busy=true;leaveAfter=null;const run=g.instance?.run;
+  dungeonTransition('leave',()=>{const ok=g.leaveDungeon();api.events();if(ok)api.save();return ok;},{caption:T.outside}).then(ok=>{const got=ok&&run?.gathered;if(!got)return;run.gathered=null;
+   setTimeout(()=>{if(got.items||got.coins)api.toast(T.lootGatheredShort(got.items,got.coins));if(got.chest)api.toast(T.chest.leaveTaken(got.chest));},250);}).finally(()=>{busy=false;});}
+ /** Nach der Wahl in der Rückfrage geht es gleich hinaus (Aufruf je Anzeige-Takt über tracker()). */
+ function leaveWhenChosen(g){if(!leaveAfter||busy)return;const bag=g.rpg.loot.find(b=>b.id===leaveAfter);if(bag?.items?.length){if(!api.popups.isOpen?.('loot'))leaveAfter=null;/* Fenster zu, ohne Wahl: bleiben */return;}leaveAfter=null;api.popups.close?.('loot');leave();}
  // ── Journal
  /** back (Hotfix 2026-09-25, Prüfer): von der Eingangskarte geöffnet – das Journal ersetzt sie im Einzelfenster-System; schließt der Spieler
   *  das Journal (X, Esc), kommt die Eingangskarte zurück. Öffnet stattdessen ein anderes Fenster oder beginnt der Dungeon, bleibt es dabei. */
@@ -56,7 +66,7 @@ export function mountDungeonUI(api){
  /** Verfolgung im Dungeon (statt Weltauftrag): Siegel und Beweise als Felder, dazu der nächste lebende Boss; Klick öffnet dessen Journal. */
  /** Verfolgung im Dungeon (Etappe 2, Etappe 4 Teil B): Flügel heute (je Flügel das Siegel seines Trägers), Beweise gegen Big B (gefunden
   *  bzw. im Thronsaal vorgelegt) und der nächste lebende Boss (Klick: Journal). Jede Zeile hat ein Wort, jedes Symbol einen Tooltip. */
- function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(!body||!run)return;const def=run.def,W=U4.tracker,st=e4bState(g),today=dungeonToday(g,run.id),boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
+ function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(g&&run)leaveWhenChosen(g);if(!body||!run)return;const def=run.def,W=U4.tracker,st=e4bState(g),today=dungeonToday(g,run.id),boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
   const wings=(def.wings||[]).map(w=>{const b=DUNGEON_BOSSES[w.boss],seal=def.bosses.find(x=>x.id===w.boss)?.seal,done=!!b&&(today.wings.includes(w.id)||run.seals.has(seal));return {w,name:b?.name||'',done,missing:!b};}),built=wings.filter(x=>!x.missing),done=built.filter(x=>x.done).length;
   const ev=st.evidence,got=ev.filter(x=>x.state!=='missing').length,names=U4.evidence;
   const span=(icon,label,note)=>`<span class="dg-track-ico" tabindex="0" data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}">${dicon(icon,18)}</span>`;

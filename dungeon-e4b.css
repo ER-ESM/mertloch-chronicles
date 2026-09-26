@@ -108,3 +108,39 @@ body:is(.dg-fight,.dg-arena) .memory-card{visibility:hidden!important}
 body.boss-fight:not(.touch-mode) #gameShell .error-line{top:calc(var(--bf-bottom,104px) + 4px);font-size:14px}
 /* Handy: keine Tastenkappen (die Kampfknöpfe tragen die Kniffe), die Handlung bleibt */
 .touch-mode .ba-row kbd{display:none}
+/* ── Dungeon-Fix 4 (Nachprüfung #726) ─────────────────────────────────────────────────────────────────────────────────────────── */
+/* Warnleiste: „bleiben“ mit Halten-Symbol (grün) und der sicheren Seite als Kappe; Söldner-Ziel nur als Info (gedämpft, keine Taste) */
+.ba-row .ba-arrow.ba-arrow-hold{background:#9ed17a;color:#10200c}
+.ba-row kbd.ba-side{background:#1f3a18;border-color:#6fbf4a;color:#dff5cf;text-transform:none}
+.ba-row.ba-info{border-color:#6b5a3a88;background:#121a16cc}
+.ba-row.ba-info .ba-act b{color:#cbb98f;text-transform:none;font-weight:700}
+.ba-row.ba-info.ba-now{border-color:#8a7a5a;background:#1a1a14e6}.ba-row.ba-info .ba-fill{background:#8a7a5a44}
+.ba-row.ba-pull{border-color:#9ed17a99}.ba-row.ba-pull .ba-fill{background:#6fbf4a55}
+/* Beim Nachsatz blinkt die Richtungszeile einmal auf – die Handlung steht im selben Takt wie der Nachsatz */
+.ba-row.ba-fresh{animation:ba-fresh .55s ease-out}
+@keyframes ba-fresh{0%{box-shadow:0 0 0 3px #fff0c8,0 0 18px #ffd46a;transform:scale(1.04)}100%{box-shadow:none;transform:none}}
+@media (prefers-reduced-motion:reduce){.ba-row.ba-fresh{animation:none}}
+.bf-chip b[hidden]{display:none}
+/* Todesrückblick: die letzten Treffer als Symbolzeilen, der letzte unten */
+.death-screen .ds-recap{display:grid;gap:1px;min-width:300px;max-width:390px;padding:4px 8px 5px;border:1px solid #5a2a20;border-radius:4px;background:#1a0f0ce6;cursor:help}
+.death-screen .ds-recap-sum{display:flex;align-items:center;gap:6px;margin-bottom:2px;font:800 13px/1.2 Nunito,sans-serif;color:#ffb39e}
+.death-screen .ds-recap-sum .ui-glyph{width:15px;height:15px;color:#ff8a6e}
+.death-screen .ds-recap-row{display:grid;grid-template-columns:15px minmax(0,1fr) auto 46px 46px;align-items:center;gap:6px;height:19px;font:700 12px/1 Nunito,sans-serif;color:#e9d6bd}
+.death-screen .ds-recap-row .ui-glyph{width:14px;height:14px;color:#ff8a6e}
+.death-screen .ds-recap-row.is-ground .ui-glyph{color:#ff5a3c}
+.death-screen .ds-recap-row b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800}
+.death-screen .ds-recap-row small{color:#d7b571;font-size:11px;white-space:nowrap}
+.death-screen .ds-recap-row em{font-style:normal;text-align:right;color:#ff9a80;font-weight:900}
+.death-screen .ds-recap-row i{font-style:normal;text-align:right;color:#a99a86;font-size:11px}
+.death-screen .ds-recap-row:last-child{color:#fff}.death-screen .ds-recap-row:last-child em{color:#ff6a50}
+/* Kampf aufgeben: zweitrangig, der erste Klick macht ihn scharf (Laufbalken), erst der zweite gibt auf */
+.death-screen .ds-wake.ds-giveup{position:relative;overflow:hidden;min-height:36px;padding:6px 16px;font-size:14px}
+.death-screen .ds-wake.ds-giveup.ds-armed{border-color:#ff8a6e;color:#ffd2c4;background:#3a1a14}
+.death-screen .ds-wake.ds-giveup::after{content:'';position:absolute;left:0;bottom:0;height:3px;width:calc(var(--armed,0) * 100%);background:#ff8a6e}
+/* Beutefenster: Rückfrage der Endtruhe beim Verlassen */
+.loot-leave-ask{display:flex;align-items:center;gap:6px;margin:0 0 6px;padding:4px 8px;border:1px solid #6fbf4a;border-radius:4px;background:#14200f;color:#dff5cf;font:800 14px/1.2 Nunito,sans-serif;cursor:help}
+.loot-leave-ask .ui-glyph{width:20px;height:20px;color:#9ed17a}
+/* Mehrere Erfolge auf einmal: eine Einblendung, Namen nebeneinander (umbrechend), kleiner */
+.milestone-feat .milestone-title.is-many{flex-wrap:wrap;gap:6px 18px;max-width:min(900px,86vw);white-space:normal;font-size:22px}
+.milestone-feat .milestone-feat-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.touch-mode .milestone-feat .milestone-title.is-many{font-size:17px}

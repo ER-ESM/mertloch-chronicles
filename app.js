@@ -175,7 +175,7 @@ modal.addEventListener('click',e=>{
 });
 // Mobile Übersetzungsschicht: übersetzt Fenster, Toasts und Clan-Schule in Touch-Begriffe, sobald der Touch-Modus aktiv ist.
 const translator=createTranslator({getGame:()=>game,getMobile:()=>mobile?.state(),actionBar});
-/* Etappe 2 Dungeon (E-71): Eingangskarte, Übergang und Journal (dungeon-ui.js) */const dungeonUI=mountDungeonUI({game:()=>game,popups,openModal:(...a)=>openModal(...a),paint:()=>paintRpg(),events:()=>events(),save:()=>save(),toast:(t,e)=>toast(t,e),showPanel:id=>showPanel(id),unlocked:f=>!unlocks||unlocks.unlocked(f)});
+/* Etappe 2 Dungeon (E-71): Eingangskarte, Übergang und Journal (dungeon-ui.js) */const dungeonUI=mountDungeonUI({game:()=>game,popups,showLoot:id=>showLoot(id),openModal:(...a)=>openModal(...a),paint:()=>paintRpg(),events:()=>events(),save:()=>save(),toast:(t,e)=>toast(t,e),showPanel:id=>showPanel(id),unlocked:f=>!unlocks||unlocks.unlocked(f)});
 /* Etappe 2: Boss-Warnleiste mit Timer und Bossrahmen mit Phasenmarken (boss-alerts.js) */mountBossAlerts({game:()=>game,openJournal:id=>dungeonUI.openJournal(id),/* Dungeon-Fix 3: Weltpunkt → Bildschirm, damit die Warnleiste aktiven Warnflächen ausweicht */toScreen:(x,y)=>{if(!renderer?.canvas)return null;const r=renderer.canvas.getBoundingClientRect();return {x:r.left+(x-renderer.camera.x+renderer.viewWidth/2)/renderer.viewWidth*r.width,y:r.top+(y-renderer.camera.y+renderer.viewHeight/2)/renderer.viewHeight*r.height};}});/* Etappe 4 Teil B: Kampf-Klarheit (Zonentitel wartet im Kampf, Rufe seitlich) */mountDungeonClarity({game:()=>game});let atlasUI=null,popupControls=null,actionBarUI=null,selectedLootId=null;
 // Erinnerungsfetzen blenden sich nacheinander ein und halten das Spiel nicht an.
 let memoryQueue=[];
@@ -386,7 +386,10 @@ function tutorialInteraction(){
 function worldInteraction(){
  if(tutorialActive(game))return tutorialInteraction();
  // Runde 3a (Kenner-Befund 4): das gewählte Ziel in Gesprächsweite und Beute zu Füßen gehen vor Treppe, Bude und Schwarzem Brett.
- {const f=friendUnit(game);if(f&&inTalkReach(game,f))return {kind:'npc',label:'Mit '+f.name+' sprechen',run:()=>talkWith(f)};const bag=!tutorialActive(game)&&nearestLoot(game);if(bag)return {kind:'loot',label:'Beutel durchsuchen',run:()=>showLoot(bag.id)};}
+ {const f=friendUnit(game);if(f&&inTalkReach(game,f))return {kind:'npc',label:'Mit '+f.name+' sprechen',run:()=>talkWith(f)};const bag=!tutorialActive(game)&&nearestLoot(game);
+  /* Dungeon-Fix 4 (Nachprüfung #726: F an der Truhe schloss das Big-B-Beutefenster): F bedient das nächste Weltobjekt – steht die Endtruhe näher als
+     ein Beutel, öffnet F die Truhe; der Beutel einer geöffneten Truhe heißt wie die Truhe */
+  if(bag){const it=inDungeon(game)?game.interaction?.():null,chest=it?.kind==='dungeonChest'?it.point:null;if(!(chest&&distance(game.player,chest)<distance(game.player,bag)))return {kind:'loot',label:bag.source?.kind==='chest'&&bag.choice?DUNGEON_TEXT.chest.name:'Beutel durchsuchen',run:()=>showLoot(bag.id)};}}
  // Treppe der Bude (E-52): nur direkt am Treppenfuß beziehungsweise am oberen Absatz.
  const stairs=game.stairsInteraction?.();if(stairs)return {kind:'stairs',label:stairs.label,run:()=>{game.useStairs();events();}};
  if(game.floor)return world.base&&distance(game.player,world.base)<75?{kind:'bude',label:BASE_SITE_UI.interact,run:()=>unlocks&&!unlocks.unlocked('bude')?toast(BASE_SITE_UI.locked):showPanel('base')}:null;
@@ -626,7 +629,9 @@ document.addEventListener('keydown',e=>{if(!game||startScreen?.isOpen||menuKey(e
   if(act==='aggro'){game.showAggro=!game.showAggro;toast(game.showAggro?'Aggro-Radius des gewählten aggressiven Ziels sichtbar.':'Aggro-Radius ausgeblendet.');return;}
   if((act==='interact'||act==='loot')&&game.activity){activityInput(game);events();return;}
   if(act==='loot'){const bag=nearestLoot(game);if(bag){takeLoot(game,bag.id);events();return;}}
-  if(act==='interact'||act==='loot'){if(['dialog','memory','loot','death'].some(id=>popups.isOpen(id)))closeModal(popups.top());else speak();return;}
+  /* Dungeon-Fix 4 (Nachprüfung #726): F bedient immer das nahe Weltobjekt (Truhe, Beutel) – ein offenes Beutefenster schließt Esc, nicht F.
+     Gespräch und Erinnerung schließt F weiter (dort ist F „weiter“). */
+  if(act==='interact'||act==='loot'){if(['dialog','memory','death'].some(id=>popups.isOpen(id)))closeModal(popups.top());else speak();return;}
   const action=act==='dash'?'dash':act==='interrupt'?'interrupt':(mobile?.active&&SLOT_KEYS.includes(key)?mobile.slotForKey(SLOT_KEYS.indexOf(key)):null)/* Desktop-Leistentasten: action-bar-ui.js */;if(action)game.action(action);
 });document.addEventListener('keyup',e=>{const code=keyCode(e),m=heldMoves.get(code);if(m){heldMoves.delete(code);if(![...heldMoves.values()].includes(m))game?.keys.delete(m);}game?.keys.delete(e.key.toLowerCase());});window.addEventListener('blur',()=>{game?.keys.clear();heldMoves.clear();if(game)game.touchMove=null;});document.addEventListener('visibilitychange',()=>{syncPause();if(document.hidden&&game)save();});window.addEventListener('pagehide',()=>game&&save());window.addEventListener('beforeunload',()=>game&&save());
 // Mobile browsers may terminate a backgrounded page without beforeunload.

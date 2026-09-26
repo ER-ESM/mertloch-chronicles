@@ -160,7 +160,14 @@ export const DEATH_UI={
   wakeLost:r=>'Alle lagen, die Gegner stehen schon wieder auf ihren Plätzen. Du stehst am Kontrollpunkt '+r+' auf.',
   here:'Hier aufstehen',hereNote:'Der Kampf ist vorbei. Du stehst hier auf, nichts setzt zurück.',standing:'Du stehst gleich auf',
   checkpointNote:'Hier stehst du auf. Gelegter Trash bleibt liegen.',ghost:'Söldner kämpfen weiter',ghostNote:'Im Kampf hilft ein Heil-Söldner dir einmal auf (8 s). Nach dem Kampf hilft er dir immer auf, ohne Heiler stehst du von selbst auf. Erst wenn alle liegen, ist der Kampf verloren.',
-  reviving:n=>n+' hilft dir auf',allDown:'Alle am Boden'},
+  reviving:n=>n+' hilft dir auf',allDown:'Alle am Boden',
+  // Dungeon-Fix 4 (Nachprüfung #726: der goldene Hauptknopf gab im Kampf den Kampf auf, der Tooltip stand offen): im Kampf zweitrangig und erst
+  // beim zweiten Klick – der erste macht ihn scharf (armed s lang)
+  giveUp:'Kampf aufgeben',giveUpArmed:'Nochmal: aufgeben',armed:3},
+ // Dungeon-Fix 4 (Nachprüfung #726: nur der letzte Treffer „Trümmer · 70“, obwohl in 9 s rund 800 kamen): Todesrückblick wie in WoW – die letzten
+ // Treffer mit Quelle und Schaden als Symbolzeilen (window s vor dem Tod, höchstens rows Zeilen), darüber die Summe
+ recap:{rows:5,window:10,label:'Letzte Treffer',note:'Was dich in den letzten Sekunden getroffen hat, der letzte Treffer unten.',sum:(n,s)=>'Σ '+n.toLocaleString('de-DE')+' in '+s+' s',
+  ago:s=>'−'+s.toFixed(1).replace('.',',')+' s',auto:'Autoangriff',ground:'Fläche'},
  tips:{interrupt:['Unterbrechen','Gelbe Zauberbalken im Zielrahmen damit abbrechen.'],dash:['Ausweichen','Rote Bodenmarken verlassen: Sprung in Laufrichtung.'],parry:['Parieren','Angekündigte Nahkampfhiebe abfangen.'],food:['Brezel','Heilt auch im Kampf – früh essen, nicht erst bei 10 %.']},
 };
 export const UNIT_TIP={

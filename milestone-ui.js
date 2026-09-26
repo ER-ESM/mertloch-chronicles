@@ -24,10 +24,16 @@ export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,
   const src=m.kind==='level'&&contentPath('ui-levelup-crest');
   if(src){const art=document.createElement('img');art.className='milestone-crest';art.alt='';art.src=src;el.prepend(art);}
   requestAnimationFrame(()=>el.classList.add('show'));sound?.(m.kind==='level'?'levelUp':m.kind==='quest'?'questDone':'unlock');
-  const started=now();timer=setTimeout(close,queue.length?m.ms*.65:m.ms);/* bei Stau kürzer */
-  clearInterval(poll);poll=setInterval(()=>{if(hurry?.()&&now()-started>=HURRY_MS)close();},200);
+  /* Dungeon-Fix 4 (Nachprüfung #726: „Erfolg: Termin eingehalten“ stand nur im Log, gleichzeitig lief „STUFE 11“): Erfolg und Titel stehen nach dem
+     Aufstieg in der Schlange und bekommen ihre volle Zeit – kein Kürzen bei Stau oder wartenden Kurzmeldungen (die warten die 3,2 s ab) */
+  const full=m.kind==='feat',started=now();timer=setTimeout(close,queue.length&&!full?m.ms*.65:m.ms);/* bei Stau kürzer */
+  clearInterval(poll);poll=setInterval(()=>{if(!full&&hurry?.()&&now()-started>=HURRY_MS)close();},200);
  }
  function close(){clearTimeout(timer);clearInterval(poll);if(!busy||el.hidden)return;el.classList.remove('show');setTimeout(()=>{el.hidden=true;busy=false;next();},350);}
+ /** Dungeon-Fix 4: Einblendung für einen oder mehrere Erfolge/Titel. */
+ function featEntry(items){const one=items.length===1,icon=i=>`<canvas class="dicon milestone-feat-icon" width="56" height="56" style="width:${one?28:22}px;height:${one?28:22}px" data-dicon="${esc(i.icon)}" aria-hidden="true"></canvas>`;
+  if(one){const i=items[0];return {kind:'feat',ms:3200,items,html:`<span class="milestone-eyebrow">${esc(i.title?T.titleEyebrow:T.featEyebrow)}</span><strong class="milestone-title" data-tooltip-label="${esc(i.name)}" data-tooltip-note="${esc(i.note)}">${icon(i)}${esc(i.name)}</strong>`};}
+  return {kind:'feat',ms:Math.min(5600,3200+800*(items.length-1)),items,html:`<span class="milestone-eyebrow">${esc(T.featsEyebrow(items.length))}</span><strong class="milestone-title is-many">${items.map(i=>`<span class="milestone-feat-item" data-tooltip-label="${esc(i.title?T.titleShort+': '+i.name:i.name)}" data-tooltip-note="${esc(i.note)}">${icon(i)}${esc(i.title?T.titleShort+': '+i.name:i.name)}</span>`).join('')}</strong>`};}
  function unlockEntry(defs){
   const names=defs.map(d=>d.name),tips=defs.map(d=>translate(d.text)).join(' · '),where=defs.length===1?translate(defs[0].where):'';
   return {kind:'unlock',ms:UNLOCK_MS,defs,html:`<span class="milestone-eyebrow">${esc(T.unlockEyebrow)}</span><strong class="milestone-title${defs.length>1?' is-many':''}" data-tooltip-label="${esc(names.join(' · '))}" data-tooltip-note="${esc(tips)}">${esc(names.join(' · '))}</strong>${where?`<small class="milestone-where">${esc(where)}</small>`:''}`};
@@ -51,8 +57,11 @@ export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,
   quest({title,xp=0,coins=0,item=null}={}){const tiles=rewardTiles({xp,coins,items:item?[item]:[]},[xp?Q.xp(xp):'',coins?Q.coins(coins):''].filter(Boolean).join(' · '));
    queue.push({kind:'quest',ms:3400,html:`<span class="milestone-eyebrow">${esc(Q.eyebrow)}</span><strong class="milestone-title">${esc(title||'')}</strong>${tiles}`});next();},
   /** Dungeon-Fix 3 (Big-B-Abnahme #721): Erfolg bzw. Titel als kurze Einblendung oben mittig (klein, einzeilig, Symbol davor), nicht nur
-   *  als Chatzeile. icon = Kartensymbol (map-symbols.js), gemalt über paint. Wartet wie jede Einblendung (Tod, Kampf, Fenster). */
-  feat({name,icon='medal',note='',title=false}={}){queue.push({kind:'feat',ms:3200,html:`<span class="milestone-eyebrow">${esc(title?T.titleEyebrow:T.featEyebrow)}</span><strong class="milestone-title" data-tooltip-label="${esc(name)}" data-tooltip-note="${esc(note)}"><canvas class="dicon milestone-feat-icon" width="56" height="56" style="width:28px;height:28px" data-dicon="${esc(icon)}" aria-hidden="true"></canvas>${esc(name)}</strong>`});next();},
+   *  als Chatzeile. icon = Kartensymbol (map-symbols.js), gemalt über paint. Wartet wie jede Einblendung (Tod, Kampf, Fenster).
+   *  Dungeon-Fix 4 (Nachprüfung #726): Was zusammen fällig wird (erster Abschluss: bis zu fünf Erfolge und ein Titel), steht als EINE
+   *  Einblendung nach dem Aufstieg in der Schlange – jeder Name mit Symbol und Tooltip, volle Zeit statt gekürzt. */
+  feat({name,icon='medal',note='',title=false}={}){const item={name,icon,note,title},waiting=queue.find(m=>m.kind==='feat');
+   if(waiting){const i=queue.indexOf(waiting);queue[i]=featEntry([...waiting.items,item]);return;}queue.push(featEntry([item]));next();},
   get busy(){return busy;},
   /** E-72 Runde 4 (Kenner-Befund 3): Läuft eine Einblendung oder ist eine fällig (auch während der Bündelzeit einer Freischaltung)?
    *  Die Erinnerungskarte wartet dann bzw. tritt zurück. Eine Freischaltung, die noch den Abstand UNLOCK_GAP abwartet, zählt nicht. */

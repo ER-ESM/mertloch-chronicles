@@ -158,7 +158,7 @@ test('Pappe fällt beim ersten Treffer; Dungeon-Kills zählen nicht fürs Kapite
 test('Verlassen sammelt liegengebliebene Beute ein; Wiederkehr innerhalb von 30 Minuten setzt den Durchgang fort',()=>{
  const g=game(),r=inside(g);quiet(g);const gerd=g.enemies.find(e=>e.bossId==='gerd');g.kill(gerd);
  const inDungeonBags=g.rpg.loot.filter(b=>floorAt(DEF,b.x,b.y));
- g.leaveDungeon({force:true});assert.equal(g.rpg.loot.filter(b=>floorAt(DEF,b.x,b.y)).length,0,'keine Beutel im Keller zurück');if(inDungeonBags.length)assert.ok(g.toasts.some(t=>t.includes('Beutebeutel')));
+ g.leaveDungeon({force:true});assert.equal(g.rpg.loot.filter(b=>floorAt(DEF,b.x,b.y)).length,0,'keine Beutel im Keller zurück');if(inDungeonBags.length){assert.ok(g.messages.some(m=>m.text.includes('Beutebeutel')),'im Chat');/* Dungeon-Fix 4: die Kurzmeldung zeigt dungeon-ui.js nach dem Übergang aus run.gathered */assert.ok(r.gathered?.items>0||r.gathered?.coins>0,'für die Kurzmeldung: '+JSON.stringify(r.gathered));}
  const door=dungeonEntrance(g);Object.assign(g.player,{x:door.x,y:door.y});g.player.inCombat=0;assert.ok(g.enterDungeon());assert.equal(g.dungeonRun,r,'derselbe Durchgang');assert.ok(g.dungeonRun.killed.has('gerd'));
  g.leaveDungeon({force:true});g.time+=DEF.resetAfter+1;Object.assign(g.player,{x:door.x,y:door.y});assert.ok(g.enterDungeon());assert.notEqual(g.dungeonRun,r,'nach 30 Minuten frisch');
 });

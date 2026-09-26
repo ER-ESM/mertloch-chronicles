@@ -47,7 +47,7 @@ test('Ohne lebenden Heiler steht der Held nach Kampfende am Ort auf; der Knopf h
  assert.ok(g.player.hp>=Math.round(g.player.maxHp*BALANCE.party.reviveHp)&&g.player.hp<g.player.maxHp*(BALANCE.party.reviveHp+.1),'Leben wie beim Aufhelfen (E-44): '+g.player.hp);assert.ok(Math.hypot(g.player.x-body.x,g.player.y-body.y)<2,'am Ort');
  // Knopf von Hand: sofort, ohne zu warten
  const h=game(),p=pull(h,MERCS.filter(id=>id!=='merc-schorle-susi'));killHero(h,p.b);h.kill(p.b);assert.ok(standUpHere(h),'Hier aufstehen');assert.ok(!h.dead);assert.equal(p.b.hp,0,'Boss bleibt liegen');
- const src=readFileSync(new URL('../death-screen.js',import.meta.url),'utf8');assert.match(src,/here\?D\.here:D\.wake/,'Knopf wechselt nach dem Kampf auf „Hier aufstehen“');
+ const src=readFileSync(new URL('../death-screen.js',import.meta.url),'utf8');assert.match(src,/here\?D\.here:giveUp\?/,'Knopf wechselt nach dem Kampf auf „Hier aufstehen“ (Dungeon-Fix 4: im Kampf „Kampf aufgeben“)');
 });
 
 test('Im Kampf bleibt „Am Kontrollpunkt aufstehen“ die Aufgabe; nach einem Wipe hilft niemand am Ort auf',()=>{
@@ -126,7 +126,7 @@ test('Nach dem Nachsatz: Handlung mit Pfeil und Lauftaste statt Zitat; Mitte bei
  run(g,1.2);assert.ok(k.told,'Nachsatz');const bad=k.lanes[k.truthLanes[0]],safe=k.lanes.find((r,i)=>!k.truthLanes.includes(i));
  Object.assign(g.player,{x:bad.x+bad.w/2,y:bad.y+bad.h/2});let a=heroAnswer(g,{cast:DUNGEON_CASTS['d-bigb'].casts.kanone,live:k,active:true,d});
  const right=safe.x>bad.x;assert.equal(a.hint,right?DUI.answers.right:DUI.answers.left);assert.equal(a.arrow,right?'right':'left');assert.equal(a.key,right?'D':'A');
- Object.assign(g.player,{x:safe.x+safe.w/2,y:safe.y+safe.h/2});a=heroAnswer(g,{cast:DUNGEON_CASTS['d-bigb'].casts.kanone,live:k,active:true,d});assert.ok(a.hold);assert.equal(a.hint,right?DUI.answers.stayRight:DUI.answers.stayLeft);
+ Object.assign(g.player,{x:safe.x+safe.w/2,y:safe.y+safe.h/2});a=heroAnswer(g,{cast:DUNGEON_CASTS['d-bigb'].casts.kanone,live:k,active:true,d});assert.ok(a.hold);/* Dungeon-Fix 4: „Stehen bleiben“ mit Halten-Symbol und der sicheren Seite */assert.equal(a.hint,DUI.answers.stay);assert.equal(a.arrow,'hold');assert.equal(a.sideLabel,DUI.answers.side[right?'right':'left']);
  // Phase 3: zwei Bahnen – nur die Mitte ist sicher
  const h=game(),p3=pull(h,[]);h.adminGod=true;const k3=(()=>{const e=p3.b;e.engaged=true;e.castSet='d-bigb3';e.cycle=DUNGEON_CASTS['d-bigb3'].cycle.indexOf('kanone3');e.attackTimer=0;h.startCast(e);return e.cast;})();run(h,1.2);
  const outer=k3.lanes[k3.truthLanes[0]];Object.assign(h.player,{x:outer.x+outer.w/2,y:outer.y+outer.h/2});const a3=laneAction(h,k3);assert.equal(a3.hint,DUI.answers.middle);assert.equal(a3.arrow,'in');

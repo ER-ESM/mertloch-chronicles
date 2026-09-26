@@ -10,9 +10,10 @@ import {inDungeon,roomAt} from './dungeon.js';
 
 const NEAR=560;
 /** Wird im Dungeon gerade gekämpft? Ein lebender Gegner mit Aggro im Kampf in Kampfnähe des Helden (auch als Geist). */
-export function dungeonFight(g){if(!inDungeon(g))return false;const p=g.player;for(const e of g.enemies||[])if(e.hp>0&&e.aggro&&e.ai==='combat'&&Math.hypot(e.x-p.x,e.y-p.y)<NEAR)return true;return false;}
+export function dungeonFight(g){if(!inDungeon(g))return false;if(g.instance.run?.intro)return true;/* Dungeon-Fix 4: die Einleitung zählt schon zum Kampf (Zonentitel wartet) */const p=g.player;for(const e of g.enemies||[])if(e.hp>0&&e.aggro&&e.ai==='combat'&&Math.hypot(e.x-p.x,e.y-p.y)<NEAR)return true;return false;}
 /** Läuft ein Kampf gegen einen Dungeon-Boss? */
-export function dungeonBossFight(g){if(!inDungeon(g))return false;for(const e of g.enemies||[])if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat')return true;return false;}
+/** Dungeon-Fix 4: auch während der Einleitung (Big B spricht dann im Bossrahmen, nicht als Blase in der Welt). */
+export function dungeonBossFight(g){if(!inDungeon(g))return false;if(g.instance.run?.intro)return true;for(const e of g.enemies||[])if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat')return true;return false;}
 /** Welche Sprechblasen dürfen im Bosskampf in der Welt stehen? Nur Mitspieler. Der Boss spricht im Bossrahmen (boss-alerts.js, Zeile unter der
  *  Zauberleiste), Söldner, Trash, Lautsprecher und Bewohner stehen nur im Chat (engine.bark schreibt jede Zeile ins Kampflog). */
 export const BOSS_FIGHT_BARKS=new Set(['player']);
