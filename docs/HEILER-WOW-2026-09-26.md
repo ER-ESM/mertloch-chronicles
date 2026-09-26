@@ -173,6 +173,12 @@ Live: Build #755 (0418ab40).
 | `mobile-check` (eigener Server) | Schritt „Beute“ rot – **auch auf main ohne diese Änderung** (Restliste) | nur derselbe Schritt „Beute“ rot; Teile hoch, Sitzung, Desktop einzeln nachgeprüft (im Volllauf unter Last einmal „Unterbrechung“ und der Talent-Tooltip wackelig, einzeln grün). Die Desktop-Prüfung der Kelle liest die Formel jetzt aus den Details (textContent) |
 | `scripts/heiler-wow-check.mjs` (neu) | – | 35 grün (heilen 24, Tooltip 5, Leiste 5) |
 
+## Live-Stand
+
+- Teil 1: Build **#755** (0418ab40), `server-refresh` ✔.
+- Teil 2 und 3: Build **#769** (c2516fea), `server-refresh` ✔; live geprüft: `healer-kit.js`, `heiler-wow.css`, `content/healer-kits.js` werden ausgeliefert, `/api/version` meldet #769.
+- Vor dem Push auf Dungeon-Fix 6 (#751–#755) und Dungeon-Figuren (#762) rebased; danach `npm test` (1321), `content:check`, `build` und `heiler-wow-check` (35) erneut grün.
+
 ## Restliste
 
 - **Fass- und Sporen-Uhr:** Derselbe Fehler wie beim Nest trifft das Weizen-/Bock-/Pilsfass des Zapfmeisters (`dieter-brew`: Weizen
