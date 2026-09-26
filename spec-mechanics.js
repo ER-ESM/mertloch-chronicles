@@ -2,7 +2,8 @@ import {emitClassVisual} from './e32-world-art.js';
 // Laufzeit der Spezialisierungs-Kernmechaniken (E-32). Daten: content/mechanics.js. Zustand liegt in g.classState.m
 // (wird mit dem Klassenzustand zurückgesetzt). Engine und class-mechanics rufen die Haken auf; alle Prüfungen laufen
 // über das gewählte Spec (g.rpg.talents.spec). Ohne Mechanik-Eintrag verhalten sich alle Haken neutral.
-import {SPEC_MECHANICS,MECHANIC_UI} from './content/index.js';
+import {SPEC_MECHANICS,MECHANIC_UI,specOutput} from './content/index.js';
+import {healCompanionByPlayer} from './companions.js';
 import {distance} from './world.js';
 import {applyMark,healPlayer,addGuard,markedEnemies} from './class-mechanics.js';
 import {procGlow,fireProcs} from './procs.js';
@@ -130,7 +131,7 @@ export function tickMech(g,dt,cs){
  for(const z of g.fields){
   if(z.kind==='fass'){const sort=m.field?.sorts?.[z.sort];if(!sort)continue;if(distance(p,z)<=z.radius){if(sort.haste)s.fassHaste=sort.haste;}z.tick-=dt;if(z.tick<=0){z.tick=1;if(sort.heal&&distance(p,z)<=z.radius)healPlayer(g,sort.heal,cs,false,'fass');if(sort.damage)for(const o of nb(g,z,z.radius))g.damage(o,sort.damage,'Bockfass');}}
   else if(z.kind==='robbi'){z.fire-=dt;for(const o of nb(g,z,z.radius))o.controlSlow=Math.max(o.controlSlow||0,.3);if(z.fire<=0){z.fire=m.field.interval;const t=nb(g,z,z.radius*2)[0];if(t){z.visualFireUntil=g.time+.25;g.damage(t,num(cs,'robbiDamage',m.field.damage),'Robbi');g.effect?.('projectile',t.x,t.y,{from:{x:z.x,y:z.y-8},life:.3,max:.3,classId:'kevin'});if(cs.robbiGuard)addGuard(g,4,cs);}}}
-  else if(z.kind==='nest'){z.tick-=dt;if(z.tick<=0){z.tick=1;if(distance(p,z)<=z.radius)healPlayer(g,num(cs,'fieldHeal',m.field.heal),cs,false,'nest');}
+  else if(z.kind==='nest'){/* Heiler-WoW: eigene Uhr – die allgemeine Feldschleife (class-mechanics tickClass) setzt z.tick jede Sekunde vor diesem Zweig zurück, das Nest heilte deshalb nie (auch dich nicht) */z.nestTick=(z.nestTick??1)-dt;if(z.nestTick<=0){z.nestTick=1;const n=num(cs,'fieldHeal',m.field.heal);if(distance(p,z)<=z.radius)healPlayer(g,n,cs,false,'ground');/* Heiler-WoW (Prüferin #741: das Nest heilte nur die Heldin): Gisela heilt jeden Verbündeten im Kreis – Annis Gruppenheilung */for(const c of g.companions||[])if(c.state!=='down'&&c.hp>0&&distance(c,z)<=z.radius)healCompanionByPlayer(g,c,Math.round(n*(cs.flatScale||1)*specOutput(cs.spec).healing*(1+(cs.healPower||0)+(cs.healBonus||0))),'ground');}
    if(z.remaining<=dt&&!z.honked){z.honked=true;const h=m.field.honk;for(const o of nb(g,z,h.radius))o.stun=Math.max(o.stun,h.stun+(cs.nestHonk||0));emitClassVisual(g,'none',z.x,z.y,{object:'nest',life:.8,max:.8});g.effect?.('interrupt',z.x,z.y);note(g,'GISELA SCHNATTERT','#a7e88d');}}
   else if(z.kind==='spores'){z.tick-=dt;if(z.tick<=0){z.tick=.5;for(const o of nb(g,z,z.radius))if(!(o.mark>0))applyMark(g,o,cs,false);}}
  }

@@ -56,6 +56,7 @@ import {applyGearProfile} from './gear-profiles.mjs';
 import {usable} from '../alert-answer.js';
 import {hitCompanion} from '../companions.js';
 import {heroRole} from '../dungeon-einsatz.js';
+import {meterReport} from '../combat-meter.js';
 
 /* Held aktiv: Versuchsschalter SIM_TUNE (JSON) – überschreibt Zahlen für einen Lauf, ohne die Inhaltsdateien zu ändern, z. B.
    SIM_TUNE='{"rules":{"rally":{"bonus":0.5}},"bosses":{"gerd":{"enrage":{"after":110,"every":10,"damage":1}}}}'. rules = EINSATZ_RULES, bosses = DUNGEON_BOSSES,
@@ -162,8 +163,8 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
    /* Feinschliff 2026-09-26, „ein Pack je Zug“: wer sorgfältig spielt, unterbricht den Funkspruch (Q, Hinweis „Unterbrechen“) nach 0,35 s – sonst
       kommen die Nachbarn, und die Flügelzeit hängt an Wipes statt am Pack */if(calls&&!g.casting&&available(g,'interrupt')&&!(g.cooldowns.interrupt>0)){const call=g.enemies.find(e=>e.hp>0&&e.cast?.callHelp&&e.cast.total-e.cast.remaining>=.35&&Math.hypot(e.x-p.x,e.y-p.y)<=130&&g.world.lineClear(p,e));if(call){const keep=g.target;g.target=call;g.action('interrupt');if(keep?.hp>0)g.target=keep;}}
    /* Dungeon-Fix 3: wer richtig spielt, beantwortet den Siegelring wie die Warnleiste – Parieren, ohne Schild Ausweichen (Leer) */if(dodge&&lie==='truth'&&!g.casting&&!noDamage/* Held aktiv: der passive Held nutzt keine Kniffe, auch keine Parade */){const ring=g.enemies.find(e=>e.hp>0&&e.sideCast?.tankDebuff&&(e.sideCast.focus||'player')==='player'&&e.sideCast.remaining<=.3);if(ring){if(usable(g,'parry')&&!(g.cooldowns.parry>0))g.action('parry');else if(!(g.cooldowns.dash>0))g.action('dash');}}
-   /* Dungeon-Fix 4, --only=ohneheld: ein Held-Heiler wählt wie ein Spieler den schwächsten Söldner als Freund, solange er heilt */let mate=null;if(healer){mate=g.companions.filter(c=>c.state!=='down'&&c.hp>0&&c.hp/c.maxHp<.8&&Math.hypot(c.x-p.x,c.y-p.y)<400).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]||null;if(mate)g.friend={kind:'companion',ref:mate,player:false};}
-   if(!noDamage&&!g.casting&&g.gcd<=0&&tgt&&!(careGround&&inGround(p)&&g.moveTo))rotate(g,{healer:!!mate});/* nur solange er aus der Fläche läuft */if(healer)g.friend=null;
+   /* Dungeon-Fix 4, --only=ohneheld: ein Held-Heiler wählt wie ein Spieler den schwächsten Söldner als Freund, solange er heilt */let mate=null;if(healer){mate=g.companions.filter(c=>c.state!=='down'&&c.hp>0&&c.hp/c.maxHp<.9&&Math.hypot(c.x-p.x,c.y-p.y)<400).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]||null;/* Heiler-WoW: der schwächste Verbündete – ist es der Held selbst, heilt er sich (kein Freund gewählt) */if(mate&&mate.hp/mate.maxHp>p.hp/p.maxHp)mate=null;if(mate)g.friend={kind:'companion',ref:mate,player:false};}
+   if(!noDamage&&!g.casting&&g.gcd<=0&&tgt&&!(careGround&&inGround(p)&&g.moveTo))rotate(g,{healer:healer&&(!!mate||p.hp/p.maxHp<.9)});/* nur solange er aus der Fläche läuft */if(healer)g.friend=null;
    /* Dungeon-Fix 4, --only=nohero: der Held macht keinen Schaden (Autoangriff aus, keine Kniffe) */if(noDamage&&g.autoAttack?.enabled)g.stopAuto?.();
   }
   /* Dungeon-Fix 4, --only=ohneheld: bei heroDownAt Bossleben fällt der Held (und downMercs), danach bleibt er liegen */if(heroDownAt!=null&&stats.heroDown==null&&foes[0].hp>0&&foes[0].hp/foes[0].maxHp<=heroDownAt){stats.heroDown=Math.round(stats.time);for(const k of downMercs){const c=g.companions.find(x=>x.id===MERCS[k]);if(c&&c.state!=='down')hitCompanion(g,foes[0],c,1e7);}}
@@ -188,6 +189,7 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
    if(stats.progAt==null||lost>stats.progLost+.03*max){stats.progAt=stats.time;stats.progLost=lost;}else if(stats.time-stats.progAt>(on.some(e=>e.dungeonBoss)?60:30)/* Bosse mit Heilung (Trog, Notartermin): 60 s */){if(g.dead){g.respawn();stats.wipes++;stats.released=true;}else for(const e of on){e.threat=null;e.focus=null;beginReturn(g,e);}stats.stalled=true;break;}}
  }
  g.adminGod=false;
+ {/* Heiler-WoW: Anteil des Helden an der Heilung der Gruppe (Kampfstatistik, ohne Überheilung) */const hr=meterReport(g,'overall','healing'),me=hr.actors?.find(a=>a.id===g.member.id);stats.heroHeal=Math.round(me?.amount||0);stats.heroHealShare=hr.total?Math.round((me?.amount||0)/hr.total*100):0;}
  const done=foes.reduce((n,e)=>n+e.maxHp-Math.max(0,e.hp),0);stats.groupDps=Math.round(done/Math.max(1,stats.time));stats.heroDps=Math.round(g.stats.damage/Math.max(1,stats.time));
  const left=foes.filter(e=>e.hp>0);stats.won=!left.length&&!stats.wipes;stats.bossLeft=left.length?Math.round(left[0].hp/left[0].maxHp*100)+'%':'0%';stats.time=Math.round(stats.time);
  stats.taken=Math.round(stats.taken);stats.healed=Math.round(stats.healed);if(!stats.deathBy)delete stats.deathBy;
@@ -353,7 +355,7 @@ function wingsRun(opts,{careful=false}={}){
  return {wings:rows,totalMinutes:+(total/60).toFixed(1),xp:g.trainingXp-xp0,xpPerMin:Math.round((g.trainingXp-xp0)/(total/60)),deaths,wipes,rita:bossTimes.rita??null,returnMax};
 }
 
-const out={gerd:[],profiles:[],alone:[],trash:[],wing:[],field:[],chain:null,bigb:[],bigbClaim:[],farm:[],e4:[],e4Ignore:[],wings:[],gearPacks:[],firstPull:[],gearBoss:[],nohero:[],ohneheld:[],passiv:[],live:[],aktiv3:[]};
+const out={heiler:[],gerd:[],profiles:[],alone:[],trash:[],wing:[],field:[],chain:null,bigb:[],bigbClaim:[],farm:[],e4:[],e4Ignore:[],wings:[],gearPacks:[],firstPull:[],gearBoss:[],nohero:[],ohneheld:[],passiv:[],live:[],aktiv3:[]};
 const log2=(label,text)=>{if(!JSON_OUT)console.log(label.padEnd(62),text);};
 const log=(group,label,r)=>{out[group].push({label,...r});if(!JSON_OUT)console.log(label.padEnd(62),JSON.stringify(r));};
 /* Held aktiv: Die Rollen-Fälle (ohneheld, nohero; rund 1 300 Kämpfe) laufen im vollen Lauf je Boss in eigenen Prozessen neben dem Rest
@@ -428,6 +430,14 @@ if(part('aktiv3')&&!roleJobs){for(const state of ['S0','S3'])for(const h of ACTI
  for(const [key,,heroes,mercs,down,healer,at=.5] of HEROLESS.slice(0,3))for(const h of heroes)for(const seed of [7,8,9,10])log('aktiv3','Big B S3 · ('+key+') '+h.spec+' · Seed '+seed,{kind:key,state:'S3',spec:h.spec,...pickRun(bigbRun({...h,mercs,seed,state:'S3'},{heroDownAt:at,downMercs:down,healer}))});}
 // Etappe 4 Teil A: die restlichen Bosse in zwei Profilen („spielt richtig“, „ignoriert Mechanik“)
 const E4_PARTS={expose:'expose',korkenkurt:'kurt',rita:'rita',halbespferd:'pferd'},E4_NAMES={expose:'Frau Dr. Exposé',korkenkurt:'Korken-Kurt',rita:'Reichweiten-Rita',halbespferd:'Das halbe Pferd'};
+/* Heiler-WoW (2026-09-26, docs/HEILER-WOW-2026-09-26.md): jeder Heiler-Held an den Hauptbossen, Rotation aus healerFirst (Heil-Kit).
+   (H1) Standardgruppe Schutz, Heilung, 2× Schaden, Held heilt mit · (H2) ohne Söldner-Heiler, Held heilt · (H3) ohne Söldner-Heiler, Held passiv
+   (lebt, weicht aus, heilt nicht). Seeds SIM_HEAL_SEEDS (Vorgabe 7,8,9,10). */
+const HEAL_SEEDS=(process.env.SIM_HEAL_SEEDS||'7,8,9,10').split(',').map(Number);
+if(part('heiler')&&!process.env.SIM_CHILD)for(const id of onlyBosses(MAIN_BOSSES))for(const [classId,spec] of HEALERS)for(const seed of HEAL_SEEDS){const pick=r=>({time:r.time,won:r.won,wipes:r.wipes,deaths:r.deaths,mercDowns:r.mercDowns,heroHeal:r.heroHeal,share:r.heroHealShare,minParty:r.minPartyPct,bossLeft:r.bossLeft});
+ log('heiler','Heiler · '+id+' · (H1) Standardgruppe · '+spec+' · Seed '+seed,{boss:id,case:'H1',spec,...pick(bossFightRun(id,{classId,spec,mercs:['tank','heal','dps1','dps2'],seed},{healer:true}))});
+ log('heiler','Heiler · '+id+' · (H2) ohne Söldner-Heiler · '+spec+' · Seed '+seed,{boss:id,case:'H2',spec,...pick(bossFightRun(id,{classId,spec,mercs:['tank','dps1','dps2'],seed},{healer:true}))});
+ log('heiler','Heiler · '+id+' · (H3) ohne Söldner-Heiler, Held passiv · '+spec+' · Seed '+seed,{boss:id,case:'H3',spec,...pick(bossFightRun(id,{classId,spec,mercs:['tank','dps1','dps2'],seed},{noDamage:true}))});}
 for(const [id,key] of Object.entries(E4_PARTS))if(part(key)||part('e4'))for(const c of CLASSES)for(const seed of SEEDS){log('e4',E4_NAMES[id]+' · spielt richtig · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,...bossRun(id,{...c,seed},{})});
  log('e4Ignore',E4_NAMES[id]+' · ignoriert Mechanik · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,...bossRun(id,{...c,seed},{dodge:false,lie:'none'})});}
 // Etappe 4 Teil B: drei Flügel und der volle Durchgang (Held mit vier Söldnern); ohne --only=wings nur Dieter

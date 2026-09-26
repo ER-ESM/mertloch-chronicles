@@ -14,6 +14,7 @@ import {skillCost,markedEnemies,beforeSkill} from './class-mechanics.js';
 import {procGlow,procFree,procEmpowered} from './procs.js';
 import {mechVariant,isMobile} from './spec-mechanics.js';
 import {resourceVariant,resourceSurge,resourceFailure,resourceCost,resourcePrecheck,resourceHealAlways,resourceKind} from './class-resources.js';
+import {skillPrecheck,helpHurt} from './healer-kit.js';
 import {RESOURCES} from './content/index.js';
 import {ICON_STEP,iconStep} from './icon-steps.js';
 import {itemArt} from './rpg-ui.js';
@@ -40,7 +41,7 @@ function skillVariant(g,id,st,e,usable){
 }
 export function skillStatus(g,id){const s=g.skills.find(s=>s.id===id);if(!s)return {};if(s.auto)return {usable:!g.dead,active:g.autoAttack.enabled,ideal:false,cooldown:0,gcd:0,gcdTotal:1};const p=g.player,e=g.target,cs=combatStats(g),st=g.classState,near=g.enemies.filter(e=>e.hp>0&&e.aggro&&Math.hypot(e.x-p.x,e.y-p.y)<110).length;
  const ideal=(id==='strike'?st.empowered>0||st.freeStrike:id==='throw'?st.freeThrow:id==='burst'?e?.mark>0:id==='interrupt'?!!e?.cast?.interruptible:id==='parry'?!!e?.cast&&!e.cast.ground&&!e.cast.interruptible:id==='dash'?g.enemies.some(e=>e.cast?.ground&&Math.hypot((p.x-e.cast.x)/e.cast.radius,(p.y-e.cast.y)/(e.cast.radius*.75))<1):id==='buff'?p.inCombat>0&&!g.buffs.remaining:id==='heal'?p.hp/p.maxHp<.65:id==='ground'||id==='slam'||id==='magnet'?near>=2:id==='mark'?e?.hp>0&&!(e.mark>0):id==='detonate'?markedEnemies(g,s.radius).length>=2:id==='encore'?g.cooldowns.burst>0:id==='infusion'?p.inCombat>0&&p.hp/p.maxHp<.8:id==='sanctuary'||id==='keg'?p.inCombat>0&&p.hp/p.maxHp<.75:id==='barricade'?near>=2:false)||procGlow(g,id);
- const targetValid=!s.range||s.ground||e?.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&Math.hypot(e.x-p.x,e.y-p.y)<=s.range+(cs.range||0)&&g.world.lineClear(p,e),usable=(!g.casting||s.offGcd)&&targetValid&&available(g,id)&&!g.dead&&!beforeSkill(g,s,cs)&&g.cooldowns[id]<=.01&&(s.offGcd||g.gcd<=.01)&&!resourceFailure(g,s,cs,procFree(g,id)?0:resourceCost(g,s,cs,skillCost(g,s,cs)))&&!resourcePrecheck(g,id,s,cs)&&(id!=='heal'||p.hp<p.maxHp||cs.overhealShield||cs.healEmpower||g.rpg.talents.spec==='baerbel-stage'||resourceHealAlways(g,id));
+ const targetValid=!s.range||s.ground||e?.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&Math.hypot(e.x-p.x,e.y-p.y)<=s.range+(cs.range||0)&&g.world.lineClear(p,e),usable=(!g.casting||s.offGcd)&&targetValid&&available(g,id)&&!g.dead&&!beforeSkill(g,s,cs)&&g.cooldowns[id]<=.01&&(s.offGcd||g.gcd<=.01)&&!resourceFailure(g,s,cs,procFree(g,id)?0:resourceCost(g,s,cs,skillCost(g,s,cs)))&&!skillPrecheck(g,id,s,cs)&&(id!=='heal'||p.hp<p.maxHp||helpHurt(g)||cs.overhealShield||cs.healEmpower||g.rpg.talents.spec==='baerbel-stage'||resourceHealAlways(g,id));
  const requirement=weaponRequirement(g,s,ITEMS);
  // Leiste: nur offensive Kombos leuchten (Abwehr, Heilung, Stärkung bleiben ruhig); Variante = Kniff wechselt Name/Icon-Zustand, solange die Bedingung gilt
  const defensive=DEFENSIVE_SKILLS.has(id),variant=skillVariant(g,id,st,e,usable);

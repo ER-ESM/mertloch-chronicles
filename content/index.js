@@ -66,3 +66,4 @@ export * from './figuren.js';
 export * from './dungeon-figuren.js';
 export * from './group.js';
 export * from './dungeon-einsatz.js';
+export * from './healer-kits.js';

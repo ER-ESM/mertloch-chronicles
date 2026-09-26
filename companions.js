@@ -76,13 +76,14 @@ export function companionFocus(g,e){
 
 export function hitCompanion(g,e,c,n){
  if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))*(c.cert?.until>g.time?1+c.cert.stacks*c.cert.taken:1)/* Dungeon Etappe 3: Zertifikat */));
+ /* Heiler-WoW: Notfallknopf des Helden (Riechsalz, Löschbier, Eierlikörchen) – aidSave senkt den Schaden */if(c.aidSave?.remaining>0)n=Math.round(n*(1-(c.aidSave.reduction||0)));
  const b=c.aidBuff;if(b?.remaining>0){n=Math.round(n*(1-(b.reduction||0)));const absorbed=Math.min(n,b.shield||0);b.shield=Math.max(0,(b.shield||0)-absorbed);n-=absorbed;if(absorbed>0)companionFx(g,c,'guard',c,{amount:absorbed,absorbed:true});}
  c.hp=Math.max(0,c.hp-n);if(n>0)c.hurt=.16;c.inCombat=6;
  companionFx(g,c,'hurt',c,{amount:n,from:{x:e.x,y:e.y}});if(!companionText(g,c,{area:'in',kind:'damage',value:n}))g.float(c.x,c.y-18,'−'+n,'#e9b48c');
  if(c.hp<=0)down(g,c);
 }
 function down(g,c){
- c.channel=null;c.state='down';c.aidBuff=null;c.aidHot=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
+ c.channel=null;c.state='down';c.aidBuff=null;c.aidHot=null;c.aidSave=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
  for(const e of g.enemies)clearThreat(e,c.id);
  statusNote(g,T.down(c.name));if(c.def.lines?.down)g.bark?.(c,c.def.lines.down,'companion');g.emit('companion',{type:'down',id:c.id});
 }
@@ -321,7 +322,7 @@ function tickOne(g,c,dt){
  if(c.contract!=null){c.contract-=dt;if(c.contract<=0){dismissCompanion(g,c.id,'expired');return;}}
  c.moving=false;
  if(c.state==='down'){if(g.time>=c.downUntil&&!groupFightOn(g,c)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
- for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
+ for(const [key,source]of [['aidBuff','buff'],['aidHot','hot'],['aidSave','save']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,/* Heiler-WoW: Quelle = Kniff des Helden (Kampfstatistik nennt ihn) */typeof b.id==='string'?b.id:source);}}}
  tickLastStand(g,c);/* Held aktiv: Letztes Aufgebot (Alles oder nichts, Notfall-Schorle) */
  const p=g.player,far=distance(c,p);
  if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}
@@ -360,7 +361,7 @@ export function tickCompanions(g,dt){
  for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,reviving:c.channel?Math.min(1,(g.time-c.channel.start)/c.channel.total):0,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment,paperdollId:c.figure?.paperdollId});
 }
 /** Nach dem Tod des Besitzers: Begleiter stehen geheilt neben ihm, alle Kämpfe sind vergessen. */
-export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;place(g,c,slot(g,c));}}
+export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;c.aidSave=null;place(g,c,slot(g,c));}}
 
 // ── 3. Vertrag: anheuern, entlassen, Befehle, Speichern ───────────────────────────────────────────────────────
 function create(g,def,saved={}){

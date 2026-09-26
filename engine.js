@@ -48,6 +48,7 @@ import {DUNGEON_CASTS,ENEMY_AUTOS,DEATH_UI} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
 import {healCompanionByPlayer,buffCompanionByPlayer} from './companions.js';
 import {helpTarget,helpFailure} from './help-target.js';
+import {pressFriend,helpsFriend,performHealerSkill,unitOf,skillPrecheck} from './healer-kit.js';
 import {castClassBuff,receiveClassBuff,tickClassBuffs,savedClassBuffs,restoreClassBuffs,classBuffValue} from './class-buffs.js';
 import {TANK_SPECS} from './net-world.js';
 import {member,skillsFor,STORY} from './clan.js';
@@ -173,7 +174,9 @@ export class Game{
   /** Tab wie in WoW: Angreifer, dann Feinde, neutrale Tiere nur ohne Feind in Reichweite (tab-target.js). */
   selectNext(reverse=false){return tabTarget(this,reverse);}
   selectAt(x,y){if(inKiosk(this)||this.floor)return false;const e=this.enemies.filter(e=>(!tutorialActive(this)||e.tutorial||e.arena)&&e.hp>0&&e.ai!=='returning'&&!(e.spawnGrace>0)&&!concealed(this,e)&&distance({x,y:y+10},e)<27).sort((a,b)=>distance({x,y},a)-distance({x,y},b))[0];if(e){this.friend=null;this.target=e;this.emit('target');return true;}return false;}
-  action(id,point=null,completing=false,friend=this.friend,{queued=false,quiet=false}={}){
+  /** Heiler-WoW: Hilfe-Kniffe binden ihr Ziel für die Dauer des Drucks (Mouseover über dem Truppenrahmen vor der Auswahl, healer-kit.js). */
+  action(id,point=null,completing=false,friend=this.friend,opts={}){const sid=Number.isInteger(id)?actionBar(this)[id]??null:id,sk=this.skills.find(x=>x.id===sid);if(!completing&&sk)friend=pressFriend(this,sk,friend);const prev=this.actionFriend;this.actionFriend=friend;try{return this.actionCore(id,point,completing,friend,opts);}finally{this.actionFriend=prev;}}
+  actionCore(id,point=null,completing=false,friend=this.friend,{queued=false,quiet=false}={}){
     if(inKiosk(this)){this.toast(KIOSK_TEXT.noCombat);return false;}
     if(this.paused||this.dead)return false;
     // Ein Leistenplatz darf auch als Zahl kommen; benutzbare Gegenstände laufen ohne Menü direkt in useItem.
@@ -188,11 +191,11 @@ export class Game{
     /* Schnellzauber (Einstellung „Bodenkniffe sofort an der Maus“, Standard aus): Bodenkniff ohne Zielkreis an der Mausposition; Maus nicht über der Welt → Zielkreis wie bisher */
     if(s.ground&&!point&&!completing&&this.settings?.groundAtCursor&&Number.isFinite(this.hover?.x)&&Number.isFinite(this.hover?.y))point={x:this.hover.x,y:this.hover.y};
     if(id==='auto')return toggleAuto(this);if(this.casting&&!completing){if(id==='dash')this.casting=null;else if(!s.offGcd){/* Zauber-Puffer (spell-queue.js, Runde 5a): in den letzten 0,4 s vormerken */if(tryQueue(this,s,{point,friend})!=='queued'&&!quiet)this.fail(COMBAT_TEXT.busy,{early:id});return false;}}
-    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:resourceCost(this,s,cs,skillCostMech(this,s,skillCost(this,s,cs))),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs)||resourcePrecheck(this,id,s,cs);if(failure){this.fail(failure);return false;}if(this.cooldowns[id]>.01&&!completing&&tryQueue(this,s,{point,friend})==='queued')return false;if(this.cooldowns[id]>.01){const left=completing?this.cooldowns[id]:blocker(this,s).left;/* E-72 R4: echte Restzeit – vorher stand die eigene Abklingzeit (0,1 s) da, obwohl die GCD noch 0,5 s sperrte */if(!quiet)this.fail(COMBAT_TEXT.cooldown?.(s.name,deNum(left,1))||`${s.name} ist noch nicht bereit · ${deNum(left,1)} s.`,{early:id});return false;}
+    const p=this.player,cs=combatStats(this),cost=procFree(this,id)?0:resourceCost(this,s,cs,skillCostMech(this,s,skillCost(this,s,cs))),context={interrupted:!!this.target?.cast?.interruptible};const failure=beforeSkill(this,s,cs)||skillPrecheck(this,id,s,cs);if(failure){this.fail(failure);return false;}if(this.cooldowns[id]>.01&&!completing&&tryQueue(this,s,{point,friend})==='queued')return false;if(this.cooldowns[id]>.01){const left=completing?this.cooldowns[id]:blocker(this,s).left;/* E-72 R4: echte Restzeit – vorher stand die eigene Abklingzeit (0,1 s) da, obwohl die GCD noch 0,5 s sperrte */if(!quiet)this.fail(COMBAT_TEXT.cooldown?.(s.name,deNum(left,1))||`${s.name} ist noch nicht bereit · ${deNum(left,1)} s.`,{early:id});return false;}
     if(!completing&&!s.offGcd&&!resourceOffGcd(this,id)&&this.gcd>0&&!(s.ground&&!point)){/* Zauber-Puffer statt stumm verschlucken (Runde 5a, Kenner-Befund 6): in den letzten 0,4 s der GCD vormerken, vorher rote Zeile */if(tryQueue(this,s,{point,friend})!=='queued'&&!quiet)this.fail(COMBAT_TEXT.notReady||'Noch nicht bereit.',{early:id});return false;}
     {const lack=resourceFailure(this,s,cs,cost);if(lack){this.fail(lack);return false;}}
     // Ein Ziel (E-65, help-target.js): Heilung, Schutz und Buffs wirken auf den gewählten Freund, sonst auf dich selbst.
-    const help=['heal','buff'].includes(id)||s.classBuff?helpTarget(this,friend):null,aid=help?.kind==='companion'?help.ref:null,mate=help?.kind==='party'?help.name:null;
+    const help=helpsFriend(this,s)?helpTarget(this,friend):null,aid=help?.kind==='companion'?help.ref:null,mate=help?.kind==='party'?help.name:null;
     if(help){const failure=helpFailure(this,help);if(failure){this.toast(failure);return false;}}
     // Klassen-Buff (class-buffs.js): kostenlos, nur globale Abklingzeit.
     if(s.classBuff){if(!castClassBuff(this,s,help))return false;this.cooldowns[id]=skillCooldown(this,s,cs);if(!s.offGcd&&!completing)this.gcd=cs.gcd;resourceCast(this,id,s,cs,{});p.castPose=.28;tutorialSignal(this,id);this.emit('sound',{id:'buff'});this.emit('save');return true;}
@@ -206,7 +209,7 @@ export class Game{
     }
     if(id==='heal'&&!mate&&!resourceHealAlways(this,id)&&(aid?aid.hp>=aid.maxHp:p.hp>=p.maxHp)&&!cs.overhealShield&&!cs.healEmpower&&this.rpg.talents.spec!=='baerbel-stage'){this.toast(aid?TARGET_HELP.full(aid.name):'Deine Gesundheit ist bereits vollständig.');return false;}
     if(s.castTime&&!completing){if(!isMobile(this,s)&&movingToCast(this)){this.toast(COMBAT_TEXT.moving);return false;}this.casting={id,name:s.name,friend:help&&help.kind!=='self'?friend:null,point:point?{...point}:null,targetId:s.range&&!s.ground?e.id:null,remaining:s.castTime,total:s.castTime};if(!s.offGcd){this.gcd=quickGcd(this,id,e)?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd;alignCooldowns(this);}this.aiming=null;this.aimPoint=null;return true;}
-    const origin={x:p.x,y:p.y},fxTarget={x:(s.ground?point:e||p).x,y:(s.ground?point:e||p).y};context.marked=e?.mark>0;context.interrupted=!!e?.cast?.interruptible;
+    const fxAt=s.ground?point:s.heals&&s.heals!=='card'?(unitOf(this,helpTarget(this,friend))||p):e||p,origin={x:p.x,y:p.y},fxTarget={x:fxAt.x,y:fxAt.y};/* Heiler-WoW: Heilung fliegt zum geheilten Ziel, nicht zum Gegner */context.marked=e?.mark>0;context.interrupted=!!e?.cast?.interruptible;
     const base=this.baseEffects(),quick=quickGcd(this,id,e)||resourceQuickGcd(this,id),offGcd=s.offGcd||resourceOffGcd(this,id);
     this.cooldowns[id]=skillCooldown(this,s,cs);const surge=id==='burst'&&resourceSurge(this);payResource(this,s,cs,cost);consumeProc(this,'glow',id);consumeProc(this,'free',id);const pm=consumeProc(this,'empower',id)?2:1;
     if(!offGcd&&!completing)this.gcd=resourceGcd(this,id,cs)??(quick?Math.min(cs.gcd,BALANCE.player.gcdQuick||1):cs.gcd);
@@ -214,7 +217,7 @@ export class Game{
     if(!['dash','parry'].includes(id)&&!(s.range&&!s.ground))p.castPose=.28;
     if(s.range&&!s.ground){this.autoAttack.enabled=true;e.aggro=true;e.ai='combat';p.inCombat=7;p.facing=e.x>p.x?1:-1;p.direction=walkFacing(e.x-p.x,e.y-p.y,p.direction||'se');p.attack=.25;p.attackSource=s.weaponSource||'melee';}
     if((s.ground&&s.damage||id==='detonate'||id==='snare')&&this.target?.hp>0)startAuto(this);
-    context.castCard=e?.cast?.card||null;context.castEnemy=e||null;context.pm=pm;const handled=performClassSkill(this,id,s,e,point,cs,context);if(handled&&s.ground){this.aiming=null;this.aimPoint=null;}
+    context.castCard=e?.cast?.card||null;context.castEnemy=e||null;context.pm=pm;const handled=performHealerSkill(this,id,s,cs,context)||performClassSkill(this,id,s,e,point,cs,context);if(handled&&s.ground){this.aiming=null;this.aimPoint=null;}
     if(!handled&&s.talent){performTalent(this,s,point,cs);if(s.ground){this.aiming=null;this.aimPoint=null;}}
     if(!handled&&id==='strike'){const empowered=this.classState.empowered>0;if(empowered)this.classState.empowered--;this.damage(e,skillDamage(this,s,s.damage,ITEMS)*(empowered||this.classState.freeStrike?2:1)*pm,'Kelle');onStrikeMech(this,e,cs);const passives=this.member.passives||{},window=passives.beatWindow,beat=!!window&&this.time-this.lastStrike>=window[0]&&this.time-this.lastStrike<=window[1];this.lastStrike=this.time;context.beat=beat;if(beat)this.float(p.x,p.y-35,APEROL_TEXT.combo,this.member.color);/* E-72: Aufbau je Ressource – Dieters Kelle gibt Randale, Annis Takt Likes (resourceCast), Kevin/Schorsch/Käthe eigenes Modell */if(resourceKind(this)==='rage')grantResource(this,s.gain,'strike');}
     if(!handled&&id==='throw'){this.damage(e,skillDamage(this,s,s.damage,ITEMS)*pm,'Pfandwurf');}

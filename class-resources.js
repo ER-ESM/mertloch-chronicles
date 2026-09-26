@@ -6,12 +6,13 @@
 //   cards · Käthe    Blatt (Kartenhand) + Augen (Skat-Zählung), Stich gegen Gegnerzauber, Abrechnen ab 61
 // Daten und Zahlen: content/resources.js. Zustand: g.res (Kampfzustand, nicht im Spielstand). Die Engine ruft nur die
 // exportierten Haken; ohne Eintrag (fremde Klasse) verhalten sich alle Haken neutral.
-import {RESOURCES,RESOURCE_SKILLS,SPEC_MECHANICS,BALANCE,SKILL_DAMAGE} from './content/index.js';
+import {RESOURCES,RESOURCE_SKILLS,SPEC_MECHANICS,BALANCE,SKILL_DAMAGE,HEALER_UI,specOutput} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
 import {fireProcs} from './procs.js';
 import {healPlayer,addGuard} from './class-mechanics.js';
 import {healCompanionByPlayer,addThreat} from './companions.js';
 import {helpTarget} from './help-target.js';
+import {kitEntry,healHelp,hotHelp,shieldHelp,healAround,unitOf} from './healer-kit.js';
 import {skillDamage} from './equipment.js';
 import {ITEMS} from './rpg.js';
 import {distance} from './world.js';
@@ -69,7 +70,7 @@ export function resourceCost(g,s,cs,base){
  if(r.kind==='rage')return s.id==='throw'?0:base;/* Dieters Wurf eröffnet den Streit: kostenlos, bringt Randale (resourceAfterSkill) */
  if(r.kind==='trend')return st.viral>0&&base>0?0:base;
  if(r.kind==='ammo'){if(s.id==='strike'&&st.bottles<=0)return 0;return base>0||r.costs[s.id]?(r.costs[s.id]||0):0;}
- if(r.kind==='grill')return r.spend[s.id]&&s.id!=='heal'?r.spend[s.id]:0;
+ if(r.kind==='grill'){if(s.heals&&s.heals!=='group')return s.cost||0;/* Heiler-WoW: Kit-Kosten */return r.spend[s.id]&&s.id!=='heal'?r.spend[s.id]:0;}
  return 0;
 }
 /** Fehlermeldung, wenn die Ressource nicht reicht oder der Kniff gerade nicht geht – geprüft vor Abklingzeit und Kosten. */
@@ -213,15 +214,17 @@ function ripest(g,st,cs){const r=R(g),charcoal=r.rost.charcoal+num(cs,'burntGrac
 function doneness(g,it,cs){const r=R(g),garHi=r.rost.gar[1]+num(cs,'garWindow'),burnt=r.rost.burnt+num(cs,'burntGrace');if(it.done<r.rost.gar[0])return {state:'roh',factor:r.burntFactor};if(it.done<=garHi)return {state:'gar',factor:1,perfect:true};if(it.done<burnt)return {state:'durch',factor:1};return {state:'verkohlt',factor:r.burntFactor};}
 export function rostState(g){const st=g.res,r=R(g);if(!st||r?.kind!=='grill')return [];const cs=g.cs||{};return st.rost.map(it=>({item:it.item,name:r.items[it.item].name,done:it.done,state:doneness(g,it,cs).state,smoked:!!it.smoked}));}
 
-function serve(g,st,cs,e,context){
- const r=R(g),p=g.player,m=mech(g),it=ripest(g,st,cs);if(!it)return;st.rost.splice(st.rost.indexOf(it),1);
+function serve(g,st,cs,e,context,pick=null){
+ const r=R(g),p=g.player,m=mech(g),it=pick||ripest(g,st,cs);if(!it)return;st.rost.splice(st.rost.indexOf(it),1);
  const def=r.items[it.item],d=doneness(g,it,cs),flambe=!!m?.flamme&&st.glut>=m.flamme.at,fl=(flambe?1+m.flamme.bonus:1)*(context.pm||1);
  const target=['braten','mais'].includes(it.item)?e:null;
  if(it.item==='wurst'){
   const chef=!!m?.chef,amount=lifeBase(g)*def.value*d.factor*(1+num(cs,'wurstHeal'))*(chef?1+m.chef.wurstBonus:1)*fl;
   const help=helpTarget(g),mate=help.kind==='companion'?help.ref:null;
   if(mate)healCompanionByPlayer(g,mate,mateHeal(cs,amount),'Bratwurst');else healPlayer(g,amount,cs,true,'heal',true);
-  if(d.perfect){g.classState.hot=Math.max(g.classState.hot||0,def.perfect.hot);g.classState.hotPower=Math.max(g.classState.hotPower||0,Math.round(BALANCE.player.baseHp*.02));}
+  /* Heiler-WoW: beim Chef heilt jede Wurst auf dem Ziel nach (Buff auf dem Ziel), gar stärker; die anderen Grillmeister behalten die Nachheilung bei sich */const kit=chef?kitEntry(g,'burst'):null;
+  if(kit)hotHelp(g,help,lifeBase(g)*(d.perfect?kit.hotGar:kit.hot)*specOutput(cs.spec).healing,kit.hotDuration,cs,{name:HEALER_UI.hot['schorsch-chef'],id:'burst'});
+  else if(d.perfect){g.classState.hot=Math.max(g.classState.hot||0,def.perfect.hot);g.classState.hotPower=Math.max(g.classState.hotPower||0,Math.round(BALANCE.player.baseHp*.02));}
   if(chef&&m.chef.wurstChain){const second=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<220).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(second)healCompanionByPlayer(g,second,mateHeal(cs,amount*.5),'Bratwurst');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
  }
  if(it.item==='braten'&&target){const n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.burst,weaponSource:'melee'},0,ITEMS)*d.factor*(d.perfect?def.perfect.factor:1)*(1+num(cs,'bratenDamage'))*fl;g.damage(target,Math.round(n),'Servieren');cleave(g,target,n,cs,flambe);}
@@ -232,6 +235,32 @@ function serve(g,st,cs,e,context){
  if(d.perfect)note(g,def.name.toUpperCase()+' · '+r.hud.gar,'#f2c14e','burst');else if(d.state==='verkohlt')note(g,r.hud.burnt,'#8a7a6a','burst');
  fireProcs(g,'serve',cs,{item:it.item});if(d.perfect)fireProcs(g,'perfectServe',cs,{item:it.item});fireProcs(g,'burst',cs,{damage:0});
 }
+/** Heiler-WoW · Grillhütten-Chef: Servieren nimmt die garste Wurst fürs Ziel; ohne Wurst Braten/Mais aufs Gegnerziel (nur ohne gewählten
+ *  Verbündeten), sonst ein Brötchen – der Dauer-Heilzauber ist immer da. */
+function chefServe(g,st,cs,e,context){
+ const r=R(g),t=helpTarget(g),k=kitEntry(g,'burst'),charcoal=r.rost.charcoal+num(cs,'burntGrace'),wurst=st.rost.filter(it=>it.item==='wurst'&&it.done<charcoal).sort((a,b)=>b.done-a.done)[0];
+ if(wurst){serve(g,st,cs,e,context,wurst);return;}
+ const other=ripest(g,st,cs);if(other&&t.kind==='self'&&(!['braten','mais'].includes(other.item)||e)){serve(g,st,cs,e,context,other);return;}
+ const healed=healHelp(g,t,lifeBase(g)*k.bread*specOutput(cs.spec).healing*(context.pm||1),cs,'burst');emitCombatFx(g,'serve',unitOf(g,t)||g.player,{item:'wurst',state:'roh',from:{x:g.player.x,y:g.player.y}});note(g,HEALER_UI.bread,'#e8d2a0','burst');fireProcs(g,'burst',cs,{damage:0});return healed;
+}
+/** Heiler-WoW · Grillplatte (großer Heilzauber des Chefs): der ganze Rost auf einen Teller fürs Ziel – Grundheilung plus jedes Stück nach Garstufe. */
+function grillplatte(g,st,cs,context){
+ const r=R(g),k=kitEntry(g,'throw'),t=helpTarget(g),p=g.player;let share=k.heal;
+ for(const it of st.rost){const d=doneness(g,it,cs);share+=r.items.wurst.value*d.factor*k.perItem*(it.item==='wurst'?1:.6);}
+ const items=st.rost.length;st.rost=[];
+ const healed=healHelp(g,t,lifeBase(g)*share*specOutput(cs.spec).healing*(context.pm||1),cs,'throw');
+ emitCombatFx(g,'serve',unitOf(g,t)||p,{item:'wurst',state:'gar',from:{x:p.x,y:p.y}});if(items)fireProcs(g,'serve',cs,{item:'wurst'});return healed;
+}
+/** Heiler-WoW · Kartenlegerin: Lebensbilanz (großer Heilzauber) rechnet die Augen als Heilung ab – Schneider ×1,5, Schwarz ×2 und die Gruppe. */
+function lebensbilanz(g,st,cs,context={}){
+ const r=R(g),k=kitEntry(g,'throw'),a=r.abrechnen,t=helpTarget(g),at=unitOf(g,t)||g.player;
+ const mult=(context.pm||1)*(1+num(cs,'abrechnenPower'))*(st.augen>=r.schwarz?a.schwarz:st.augen>=r.schneider?a.schneider:1),base=lifeBase(g)*k.perAuge*st.augen*mult*specOutput(cs.spec).healing;
+ healHelp(g,t,base,cs,'throw');if(st.augen>=r.schwarz)healAround(g,at,a.radius*1.5,base*.5,cs,'throw');
+ emitCombatFx(g,'abrechnen',at,{augen:st.augen,schwarz:st.augen>=r.schwarz,cards:Math.min(12,st.discard.length+st.hand.length),heal:true});note(g,HEALER_UI.bilanz,'#f4a0a0','throw');
+ st.augen=0;st.bubes=0;st.chain={suit:null,n:0};fireProcs(g,'gameWon',cs);
+}
+/** Kartenlegerin stützt: mit einem Verbündeten als Ziel (oder ohne Gegner) hilft jede Karte, statt zu treffen. */
+const cardSupport=g=>kitEntry(g,'strike')?.role==='card'&&(helpTarget(g).kind!=='self'||!live(g,g.target));
 function cleave(g,target,n,cs,flambe){const m=mech(g),c=R(g).cleave;const extra=[];if(cs.serveCleave)extra.push(...foes(g,target,c.radius,target).slice(0,c.targets).map(o=>[o,c.share]));if(flambe)extra.push(...foes(g,target,m.flamme.splash.radius,target).map(o=>[o,m.flamme.splash.share]));const seen=new Set();for(const [o,share] of extra){if(seen.has(o))continue;seen.add(o);g.damage(o,Math.round(n*share),flambe?'Flambiert':'Servieren');}}
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -260,19 +289,22 @@ function cardPower(g,st,card,cs){const r=R(g),rk=r.ranks[card.rank],m=mech(g);le
 /** Wirkung einer Karte am Ziel (Einzelkarte) oder im Kreis (Kartenregen, share < 1). */
 function cardEffect(g,st,card,cs,{target=null,point=null,share=1}={}){
  const r=R(g),p=g.player,power=cardPower(g,st,card,cs)*share*(st.pmNow||1),rk=r.ranks[card.rank],ef=r.effects;
- if(card.suit==='kreuz'){const list=point?foes(g,point,70):target?[target]:[];for(const e of list)g.damage(e,Math.round(skillDamage(g,{damageModel:ef.damage,weaponSource:'ranged'},0,ITEMS)*power),'Kreuz');}
- if(card.suit==='karo'){const at=point||target;if(at)for(const e of foes(g,at,ef.control.radius)){g.damage(e,Math.round(skillDamage(g,{damageModel:{flat:ef.control.flat,weapon:ef.control.weapon},weaponSource:'ranged'},0,ITEMS)*power),'Karo');e.controlSlow=Math.max(e.controlSlow||0,ef.control.duration);if(['10','A'].includes(card.rank))e.stun=Math.max(e.stun||0,ef.control.stun+num(cs,'karoStun'));}}
+ const kit=!point&&cardSupport(g)?kitEntry(g,'strike'):null,help=kit?helpTarget(g):null;/* Heiler-WoW: Kartenlegerin stützt den Freund */
+ if(kit&&card.suit==='kreuz')hotHelp(g,help,lifeBase(g)*kit.kreuzHot*power*specOutput(cs.spec).healing,kit.kreuzDuration,cs,{name:HEALER_UI.hot['kaethe-herz'],id:'strike'});
+ if(kit&&card.suit==='karo')healAround(g,unitOf(g,help)||p,kit.karoRadius,lifeBase(g)*kit.karoHeal*power*specOutput(cs.spec).healing,cs,'mark');
+ if(card.suit==='kreuz'&&!kit){const list=point?foes(g,point,70):target?[target]:[];for(const e of list)g.damage(e,Math.round(skillDamage(g,{damageModel:ef.damage,weaponSource:'ranged'},0,ITEMS)*power),'Kreuz');}
+ if(card.suit==='karo'&&!kit){const at=point||target;if(at)for(const e of foes(g,at,ef.control.radius)){g.damage(e,Math.round(skillDamage(g,{damageModel:{flat:ef.control.flat,weapon:ef.control.weapon},weaponSource:'ranged'},0,ITEMS)*power),'Karo');e.controlSlow=Math.max(e.controlSlow||0,ef.control.duration);if(['10','A'].includes(card.rank))e.stun=Math.max(e.stun||0,ef.control.stun+num(cs,'karoStun'));}}
  if(card.suit==='herz'){const amount=lifeBase(g)*ef.heal*power,help=point?{kind:'self'}:helpTarget(g),mate=help.kind==='companion'?help.ref:null;if(mate)healCompanionByPlayer(g,mate,mateHeal(cs,amount),'Herz');else healPlayer(g,amount,cs,false,'heal',true);
   if(cs.herzChain||mech(g)?.herz?.chain){const other=(g.companions||[]).filter(c=>c!==mate&&c.hp>0&&c.hp<c.maxHp&&distance(c,p)<240).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(other)healCompanionByPlayer(g,other,mateHeal(cs,amount*.5),'Herz');else if(mate)healPlayer(g,amount*.5,cs,false,'heal',true);}
   if(st.readHand>0)st.readHand+=r.handlesen.extend;}
- if(card.suit==='pik'){const amount=lifeBase(g)*ef.shield*power;addGuard(g,amount,cs,true);if(cs.pikTaunt)for(const e of foes(g,p,80)){addThreat(e,'player',300);e.aggro=true;e.ai='combat';}if(cs.pikReflect)st.pikReflect={share:cs.pikReflect,until:g.time+6};}
+ if(card.suit==='pik'){const amount=lifeBase(g)*ef.shield*power,pt=point?{kind:'self'}:helpTarget(g);/* E-72-Entwurf „Schild auf dich oder den gewählten Freund“ – vorher immer auf dich (Heiler-WoW) */shieldHelp(g,pt,amount,cs,{name:HEALER_UI.shield,id:'strike'});if(cs.pikTaunt)for(const e of foes(g,p,80)){addThreat(e,'player',300);e.aggro=true;e.ai='combat';}if(cs.pikReflect)st.pikReflect={share:cs.pikReflect,until:g.time+6};}
  return rk;
 }
 function playCard(g,st,index,cs,context){
  const r=R(g),card=index==='sleeve'?st.sleeve:st.hand[index];if(!card)return false;
  /* Kenner-Befund: die Hand rückt nicht nach – die neue Karte landet auf dem Platz der gespielten (feste Tasten). */
  if(index==='sleeve')st.sleeve=null;else{const next=drawOne(g,st,cs);if(next)st.hand[index]=next;else st.hand.splice(index,1);}
- const rk=r.ranks[card.rank],e=['kreuz','karo'].includes(card.suit)?g.target:null;
+ const rk=r.ranks[card.rank],e=['kreuz','karo'].includes(card.suit)&&!cardSupport(g)?g.target:null;
  const follow=st.chain.suit&&(card.suit===st.chain.suit||rk.trump);st.chain=follow?{suit:st.chain.suit,n:Math.min(r.follow.max+num(cs,'followMax'),st.chain.n+1)}:{suit:card.suit,n:0};
  tryStich(g,st,card,cs);
  st.pmNow=context.pm||1;cardEffect(g,st,card,cs,{target:e});st.pmNow=1;
@@ -281,7 +313,7 @@ function playCard(g,st,index,cs,context){
  if(follow)fireProcs(g,'follow',cs,{suit:card.suit});
  fireProcs(g,'cardPlayed',cs,{suit:card.suit});
  st.discard.push(card);draw(g,st,cs);
- emitCombatFx(g,'card-throw',e||g.player,{card,from:{x:g.player.x,y:g.player.y},chain:st.chain.n,self:!e});
+ emitCombatFx(g,'card-throw',e||(cardSupport(g)?unitOf(g,helpTarget(g)):null)||g.player,{card,from:{x:g.player.x,y:g.player.y},chain:st.chain.n,self:!e});
  if(e){g.autoAttack.enabled=true;e.aggro=true;e.ai='combat';g.player.inCombat=7;}
  return true;
 }
@@ -314,7 +346,7 @@ export function resourcePrecheck(g,id,s,cs){
  }
  if(r.kind==='cards'){
   const i={strike:0,mark:1,burst:2}[id];
-  if(i!==undefined){const c=st.hand[i];if(!c)return 'Keine Karte auf diesem Platz.';if(['kreuz','karo'].includes(c.suit)&&!validTarget(g,200+(cs.range||0)))return live(g,g.target)?'Zu weit für '+cardName(c)+' · '+Math.ceil(distance(p,g.target)/8)+' m (höchstens '+Math.round((200+(cs.range||0))/8)+' m).':'Kein Ziel für '+cardName(c)+'.';}
+  if(i!==undefined){const c=st.hand[i];if(!c)return 'Keine Karte auf diesem Platz.';if(['kreuz','karo'].includes(c.suit)&&!cardSupport(g)&&!validTarget(g,200+(cs.range||0)))return live(g,g.target)?'Zu weit für '+cardName(c)+' · '+Math.ceil(distance(p,g.target)/8)+' m (höchstens '+Math.round((200+(cs.range||0))/8)+' m).':'Kein Ziel für '+cardName(c)+'.';}
   if(id==='throw'){const win=r.win+num(cs,'augenWin');if(st.augen<win)return 'Abrechnen erst ab '+win+' Augen – noch '+(win-st.augen)+'.';if(!validTarget(g,200+(cs.range||0)))return 'Kein Ziel zum Abrechnen.';}
   if(id==='aermel'&&!st.sleeve&&!st.hand.length)return 'Keine Karte auf der Hand.';
   if(id==='aermel'&&st.sleeve&&['kreuz','karo'].includes(st.sleeve.suit)&&!validTarget(g,200+(cs.range||0)))return 'Kein Ziel für '+cardName(st.sleeve)+'.';
@@ -346,8 +378,9 @@ export function performClassSkill(g,id,s,e,point,cs,context){
  }
  if(r.kind==='grill'){
   if(id==='mark'){layItem(g,st,cs);return true;}
-  if(id==='burst'){serve(g,st,cs,validTarget(g,175+(cs.range||0)),context);return true;}
-  if(id==='heal'){const v=r.vent;st.glut=ventGlut(g,st.glut,cs);/* nur kühlen: kein „steigt in den goldenen Bereich“ */healPlayer(g,lifeBase(g)*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
+  if(id==='burst'){if(kitEntry(g,'burst'))chefServe(g,st,cs,validTarget(g,175+(cs.range||0)),context);else serve(g,st,cs,validTarget(g,175+(cs.range||0)),context);return true;}
+  if(id==='throw'&&kitEntry(g,'throw')){grillplatte(g,st,cs,context);return true;}
+  if(id==='heal'){const v=r.vent;st.glut=ventGlut(g,st.glut,cs);/* nur kühlen: kein „steigt in den goldenen Bereich“ */if(!context.saved)healPlayer(g,lifeBase(g)*(v.heal+num(cs,'ventHeal')),cs,true,'heal',true);/* Heiler-WoW: das Löschbier des Chefs hat sein Ziel schon geheilt (healer-kit.js) */const steam=v.steam,n=skillDamage(g,{damageModel:SKILL_DAMAGE.schorsch.strike,weaponSource:'melee'},0,ITEMS)*steam.damage*(1+num(cs,'ventSteam'));for(const o of foes(g,p,steam.radius)){g.damage(o,Math.round(n),'Dampf');o.controlSlow=Math.max(o.controlSlow||0,steam.duration);}emitCombatFx(g,'steam',p,{radius:steam.radius});fireProcs(g,'vent',cs);fireProcs(g,'heal',cs);return true;}
   if(id==='buff'){st.noDecay=s.duration||6;addGlut(g,st,s.glut||r.gain.buff,cs);emitCombatFx(g,'glut',p,{bellows:true});return true;}
   if(id==='throw'&&e){const z=zoneOf(g,st.glut+s.cost,cs);g.damage(e,Math.round(skillDamage(g,s,s.damage,ITEMS)),'Glutbrocken');e.burn={t:r.ember.duration,tick:1,dps:Math.round(r.ember.dot*(cs.flatScale||1)*(1+num(cs,'emberDot'))*(1+z.damage))};emitCombatFx(g,'ember',e,{from:{x:p.x,y:p.y}});return true;}
   if(id==='ground'&&point){
@@ -366,6 +399,7 @@ export function performClassSkill(g,id,s,e,point,cs,context){
   const i={strike:0,mark:1,burst:2}[id];
   if(i!==undefined)return playCard(g,st,i,cs,context);
   if(id==='aermel'){if(st.sleeve)return playCard(g,st,'sleeve',cs,context);st.sleeve=st.hand.shift();draw(g,st,cs);emitCombatFx(g,'shuffle',p,{sleeve:true});return true;}
+  if(id==='throw'&&kitEntry(g,'throw')){lebensbilanz(g,st,cs,context);return true;}
   if(id==='throw'&&e){abrechnen(g,st,cs,e,context);return true;}
   if(id==='buff'){st.discard.push(...st.hand);st.hand=[];draw(g,st,cs);if(!st.hand.some(c=>c.rank==='B')){const from=[st.deck,st.discard].find(list=>list.some(c=>c.rank==='B'));if(from){const k=from.findIndex(c=>c.rank==='B'),bube=from.splice(k,1)[0];if(st.hand.length)st.discard.push(st.hand.pop());st.hand.push(bube);}}emitCombatFx(g,'shuffle',p,{redeal:true});fireProcs(g,'shuffle',cs);return true;}
   if(id==='ground'&&point){

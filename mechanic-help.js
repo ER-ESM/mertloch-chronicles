@@ -7,7 +7,7 @@ import {effectAt} from './talent-ranks.js';
 import {available,skillLevel} from './progression.js';
 const n=v=>String(Math.round(v*100)/100).replace('.',','),pct=v=>n(v*100)+' %';
 export function skillName(g,id,spec=g.rpg?.talents?.spec){
- if(spec===g.rpg?.talents?.spec){const live=g.skills.find(s=>s.id===id);if(live)return live.name;}
+ if(spec===g.rpg?.talents?.spec){const live=g.skills.find(s=>s.id===id);if(live&&!(live.heals&&id==='mark'))return live.name;/* Heiler-WoW: Annis Markierungsplatz trägt Riechsalz – Texte über die Markierung meinen weiter Fleckentest */}
  const cls=SPECS[spec]?.classId||g.member.id,base=BASE_SKILLS.findIndex(s=>s.id===id);
  return SPEC_MECHANICS[spec]?.kit?.[id]?.name||(base>=0?KITS[cls][base]?.name:null)||TALENT_SKILLS[id]?.name||(id==='ground'?GROUND_SKILL.names[cls]:id==='throw'?THROW_SKILL.names[cls]:null)||g.skills.find(s=>s.id===id)?.name||id;
 }

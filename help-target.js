@@ -24,7 +24,7 @@ export const selectedCompanion=g=>g.friend?.kind==='companion'?g.friend.ref:null
  * Wen trifft Hilfe (Heilung, Schutz, Buff)? f = das beim Zauberbeginn gebundene freundliche Ziel.
  * → {kind:'self'} | {kind:'companion',ref,name} | {kind:'party',name,ref} | {kind:'stranger',name}
  */
-export function helpTarget(g,f=g.friend){
+export function helpTarget(g,f=g.actionFriend!==undefined?g.actionFriend:g.friend){/* Heiler-WoW: während eines Drucks gilt das gebundene Ziel (Mouseover über dem Truppenrahmen, Zauber mit Wirkzeit) */
  if(f?.kind==='companion'&&f.ref)return {kind:'companion',ref:f.ref,name:f.ref.name};
  if(f?.player&&f.ref?.name){const name=f.ref.name,o=(g.others||[]).find(x=>x.name===name)||f.ref;return o.party?{kind:'party',name,ref:o}:{kind:'stranger',name};}
  return {kind:'self'};
