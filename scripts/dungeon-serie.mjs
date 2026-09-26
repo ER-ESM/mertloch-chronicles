@@ -17,7 +17,7 @@ import {fileURLToPath} from 'node:url';
 import {World,rng} from '../world.js';
 import {Game} from '../engine.js';
 import {DUNGEONS,DUNGEON_BOSSES,EINSATZ_RULES,COMPANION_RULES} from '../content/index.js';
-import {toWorld,enrageAfter} from '../dungeon.js';
+import {toWorld,enrageAfter,resetEnemySerial} from '../dungeon.js';
 import {buildPlaytestSave} from './playtest-save.mjs';
 import {fight,heroPulls} from './sim-fight.mjs';
 
@@ -35,7 +35,7 @@ export function frameDt(seed){const r=rng(seed*7919+13);return ()=>{const x=r();
 /** Ein Lauf im echten Spiel: Testzugang laden, im Thronsaal ansprechen (die Beweise werden vorgelegt), nach der Rede ziehen, dann je Variante. */
 export function serieRun({role='heal',variant='i',seed=1,dt='frame'}){
  const h=SERIE_ROLES[role];saves[role]||=JSON.stringify(buildPlaytestSave({preset:'bigb',classId:h.classId,spec:h.spec,gear:'typical'}).save);
- const g=new Game(world,JSON.parse(saves[role]),{});g.toast=()=>{};g.clock=()=>Date.UTC(2026,8,26,12);g.random=rng(seed);g.lootRandom=rng(seed+1000);
+ resetEnemySerial();/* jeder Lauf unabhängig von den vorigen im selben Prozess (wie die Simulation) */const g=new Game(world,JSON.parse(saves[role]),{});g.toast=()=>{};g.clock=()=>Date.UTC(2026,8,26,12);g.random=rng(seed);g.lootRandom=rng(seed+1000);
  for(const e of g.enemies)if(!e.dungeonBoss)e.respawnAt=Infinity;
  Object.assign(g.player,g.world.findClear(...Object.values(toWorld(DEF,'k2',59,17)),9));for(const c of g.companions){const q=g.world.findClear(g.player.x-20,g.player.y+14,9);c.x=q.x;c.y=q.y;}
  const run=g.dungeonRun,big=g.enemies.find(e=>e.bossId==='bigb');heroPulls(g,big);

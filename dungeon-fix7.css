@@ -1,0 +1,7 @@
+/* Dungeon-Fix 7 (Prüferin #770, docs/DUNGEON-FIX7-2026-09-26.md). */
+/* Todesfenster im Dungeon sofort da, ohne Einblenden (beim ersten Tod sah die Prüferin keins) */
+.death-screen.ds-dungeon{transition:none}
+/* Kopfzeile der Kniff- und Verbrauchsgüter-Tooltips: eine Zeile */
+.item-tooltip .tip-meta,.game-popup .tip-meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Verbrauchsgüter wie die Kniff-Tooltips: Kopf ohne Rand unten, Details klein */
+.item-tooltip .describe-consumable .describe-head{margin-bottom:0}
