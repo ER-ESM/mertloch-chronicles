@@ -8,7 +8,7 @@ import {talentSkillsHtml} from './talent-ui.js';
 //   content/glossary.js  termsOf(kind,id)  → die Glossarerklärungen für den Shift-Block
 // Nur die Spaltenüberschriften der Laufzeitzeilen und die Abschnittsnamen des Nachschlagewerks stehen als
 // Beschriftung hier (UI-Vokabular). Bedarf, sie nach content/panel-ui.js zu holen: content/BACKLOG.md.
-import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI,CLASS_BUFFS,CLASS_BUFF_TEXT} from './content/index.js';
+import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI,CLASS_BUFFS,CLASS_BUFF_TEXT,ITEM_TIP,SKILL_TIP} from './content/index.js';
 import {paintSkillIcon} from './skill-art.js';
 import {paintTalentIcon} from './talent-art.js';
 import {paintItem} from './item-art.js';
@@ -198,6 +198,13 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
  const termHtml=terms.length?'<dl class="describe-terms">'+terms.map(t=>'<div><dt>'+esc(t.name)+'</dt><dd>'+esc(t.long||t.short||'')+'</dd></div>').join('')+'</dl>':'';
  const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+useHtml(content)+linkHtml+termHtml;
 
+ /* Dungeon-Fix 7 (Prüferin #770: Tooltip der Notfallbrezel ein langer Block, die Laufzeitwerte unsichtbar): Verbrauchsgüter wie die Kniff-Tooltips (WoW-Muster,
+    docs/HEILER-WOW-2026-09-26.md) – Name und Stapel, eine Kopfzeile, ein Satz Wirkung, eine Zahlenzeile; alle Zahlen, Warum und Begriffe in ⇧ Details. */
+ if(liveKind==='item'&&live?.kind==='consumable'){const I=ITEM_TIP,meta=[I.kind,live.cooldown?I.cd(deci(live.cooldown)):'',live.remaining>0?I.ready(deci(live.remaining)):''].filter(Boolean).join(' · ');
+  const first=String(effect).split(/(?<=[.!?])s+/)[0],nums=[live.heal?I.heal(live.heal):'',live.grant?I.grant(live.grant):''].filter(Boolean).join(' · ');
+  return '<div class="describe-card describe-consumable"'+(shift?' data-shift="on"':'')+'><header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong><small>'+esc(I.count(live.count??0))+'</small></div></header>'
+   +'<div class="tip-meta">'+esc(meta)+'</div><p class="tip-effect">'+esc(first)+'</p>'+(nums?'<p class="tip-numbers">'+esc(nums)+'</p>':'')
+   +'<div class="describe-details"'+(shift?'':' hidden')+'>'+numberHtml+details+'</div><footer class="describe-hint">'+(touch?'<button type="button" data-describe-more>'+esc(DESCRIBE_UI.detailsButton)+'</button>':esc(SKILL_TIP.details))+'</footer></div>';}
  return '<div class="describe-card"'+(shift?' data-shift="on"':'')+'>'+
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
   categoryChips(game,kind,id)+

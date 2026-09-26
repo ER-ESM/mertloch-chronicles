@@ -12,7 +12,8 @@ import {rallyActive,untankedHolder} from './dungeon-einsatz.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const tip=(l,n)=>`data-tooltip-label="${esc(l)}" data-tooltip-note="${esc(n)}"`;
-const chip=(key,icon,value,label,note,cls='',caption='')=>`<span class="loot-chip einsatz-chip${cls?' '+cls:''}" tabindex="0" data-einsatz-part="${key}" ${tip(label,note)}>${icon}${caption?`<small>${esc(caption)}</small>`:''}<b>${esc(value)}</b></span>`;
+/* Dungeon-Fix 7 (Prüferin #770): der Tooltip nennt Namen und Wert des Felds (auch für Bildschirmleser) */
+const chip=(key,icon,value,label,note,cls='',caption='')=>{const name=String(label).endsWith(String(value))||value==='–'?label:label+' '+value;return `<span class="loot-chip einsatz-chip${cls?' '+cls:''}" tabindex="0" data-einsatz-part="${key}" aria-label="${esc(name)}" ${tip(name,note)}>${icon}${caption?`<small>${esc(caption)}</small>`:''}<b>${esc(value)}</b></span>`;};
 const ui=id=>`<canvas width="48" height="48" data-ui-icon="${id}" aria-hidden="true"></canvas>`;
 const skill=id=>`<canvas width="48" height="48" data-skill-art="${id}" aria-hidden="true"></canvas>`;
 const ROLE_SHARE={damage:['damage','burst'],heal:['healing','bottle'],tank:['hold','shield']};
@@ -20,7 +21,8 @@ const ROLE_SHARE={damage:['damage','burst'],heal:['healing','bottle'],tank:['hol
 /** Zeile „Einsatz“ im Beute-Moment: x = Ergebnis aus dungeon-einsatz.js finishEinsatz (steht in bag.reward.einsatz). */
 export function einsatzChips(x){
  if(!x)return '';const P=T.panel,[main,icon]=ROLE_SHARE[x.role]||ROLE_SHARE.damage,parts=[];
- /* Dungeon-Fix 6 (Prüferin #741: „Einsatz“ stand nur im Tooltip): das Wort steht am Punkte-Chip, der Rest im Tooltip */parts.push(chip('score',glyph('chart'),x.score,P.score(x.score),P.scoreTip(x.score,x.parts||{},x),x.tier?'einsatz-'+x.tier:'',P.title));
+ /* Dungeon-Fix 6 (Prüferin #741: „Einsatz“ stand nur im Tooltip): das Wort steht am Punkte-Chip, der Rest im Tooltip *//* Dungeon-Fix 7: der Punkte-Tooltip führt alle Felder der Zeile (auch Ausweichen), dann die Punkte */const rows=[[P[main],x[main]+' %'],...Object.values(ROLE_SHARE).filter(([k])=>k!==main&&x[k]>=5).map(([k])=>[P[k],x[k]+' %']),[P.interrupts,x.interrupts],[P.warn,x.warn?x.warnOk+'/'+x.warn:'–'],[P.dodges,x.dodges||0],...(x.deaths?[[P.deaths,x.deaths]]:[]),[P.rally,x.rally+' %'],[P.bonus,x.bonus?'+'+x.bonus:'–']];
+ parts.push(chip('score',glyph('chart'),x.score,P.score(x.score),P.fields(rows)+' '+P.scoreTip(x.score,x.parts||{},x),x.tier?'einsatz-'+x.tier:'',P.title));
  parts.push(chip(main,ui(icon),x[main]+' %',P[main],P[main+'Tip'](x[main]),'einsatz-main'));
  /* die anderen Anteile nur, wenn sie etwas zeigen (ein Schadens-Held heilt selten) */
  for(const [k,ic] of Object.values(ROLE_SHARE))if(k!==main&&x[k]>=5)parts.push(chip(k,ui(ic),x[k]+' %',P[k],P[k+'Tip'](x[k])));
@@ -28,7 +30,7 @@ export function einsatzChips(x){
  parts.push(chip('warn',glyph('warn'),x.warn?x.warnOk+'/'+x.warn:'–',P.warn,P.warnTip(x.warnOk,x.warn,x.parts?.warn)));
  /* Dungeon-Fix 6: Ausweichen immer, wie im Bericht „Held aktiv“ versprochen */parts.push(chip('dodges',skill('dash'),x.dodges||0,P.dodges,P.dodgesTip(x.dodges||0)));
  if(x.deaths)parts.push(chip('deaths',glyph('skull'),x.deaths,P.deaths,P.deathsTip(x.deaths),'einsatz-bad'));
- parts.push(chip('rally',glyph('spark'),x.rally+' %',P.rally,P.rallyTip(x.rally)));
+ /* Dungeon-Fix 7: Angefeuert mit dem Megafon wie in Buffleiste und Truppenrahmen – ein Symbol, eine Bedeutung */parts.push(chip('rally','<canvas width="24" height="24" data-item-art="megaphone"></canvas>',x.rally+' %',P.rally,P.rallyTip(x.rally)));
  parts.push(x.bonus?chip('bonus','<canvas width="24" height="24" data-item-art="stamp"></canvas>','+'+x.bonus,P.bonus,P.bonusTip(x.bonus,x.tier),'einsatz-bonus einsatz-'+x.tier)
   :chip('bonus','<canvas width="24" height="24" data-item-art="stamp"></canvas>','–',P.noBonus,P.noBonusTip,'einsatz-none'));
  return `<div class="loot-einsatz" data-einsatz data-einsatz-score="${x.score}" data-einsatz-bonus="${x.bonus}">${parts.join('')}</div>`;

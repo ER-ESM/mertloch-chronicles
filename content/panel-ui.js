@@ -168,6 +168,9 @@ export const TALENT_COMPACT={locked:n=>'Ab Stufe '+n,lockedNote:'Dann wählst du
 
 /** Heiler-WoW Teil 3 (2026-09-26): Kniff-Tooltip nach WoW-Muster – Name, eine Kopfzeile (Kosten · Zauberzeit · Abklingzeit · Reichweite),
  *  1–3 Zeilen Wirkung mit Zahlen, höchstens eine Zeile Wechselwirkung; alles Weitere nur mit gedrückter Umschalttaste. */
+// Dungeon-Fix 7 (Prüferin #770: Tooltip der Notfallbrezel ein langer Block mit leeren Werten): Verbrauchsgüter nach dem WoW-Muster der Kniff-Tooltips –
+// Name und Stapel · eine Kopfzeile · ein Satz Wirkung · eine Zahlenzeile · ⇧ Details (alle Zahlen, Warum, Begriffe).
+export const ITEM_TIP={kind:'Verpflegung',cd:s=>s+' s Abklingzeit, geteilt',ready:s=>'bereit in '+s+' s',heal:n=>'Heilt '+n,grant:t=>'+'+t,count:n=>'Stapel '+n};
 export const SKILL_TIP={
  free:'kostenlos',cost:(n,unit)=>n+' '+unit,cast:s=>s+' s Zauberzeit',instant:'sofort',mobile:'im Laufen',cd:s=>s+' s Abklingzeit',noCd:'keine Abklingzeit',gcdOnly:'nur globale Abklingzeit',offGcd:'ohne globale Abklingzeit',range:m=>m+' m',
  damage:r=>'Schaden '+r,heal:n=>'Heilt '+n,healHot:(n,hot,s)=>'Heilt '+n+', danach '+hot+' je s für '+s+' s',hot:(n,s)=>'Heilt '+n+' je s für '+s+' s',shield:n=>'Schild '+n,
