@@ -58,7 +58,7 @@ test('Söldner mit Angriffsbefehl ziehen den wartenden Big B nur nach der Rede �
  const g=game(),b=(ready(g),bigbOf(g));assert.equal(pullBoss(g,b),false,'vor der Rede nicht ziehbar');toReady(g);assert.equal(pullBoss(g,b),true,'nach der Rede ziehbar');assert.ok(b.aggro);
 });
 test('Simulation: der Sim-Held spricht an und zieht selbst (pullBoss), die Rede zählt nicht zur Kampfzeit',()=>{
- const s=src('scripts/dungeon-sim.mjs');assert.match(s,/function heroPulls\(g,big\)\{let t=0;if\(addressBoss\(g,big\)\)for\(;t<30&&!bossReady\(g,big\);t\+=\.05\)g\.tick\(\.05\);/);assert.match(s,/if\(!pullBoss\(g,big\)\)engageBoss\(g,big\);return t;\}/);
+ const s=src('scripts/dungeon-sim.mjs')+src('scripts/sim-fight.mjs')/* Dungeon-Fix 7: Kampfschleife und heroPulls ausgelagert */;assert.match(s,/function heroPulls\(g,big\)\{let t=0;if\(addressBoss\(g,big\)\)for\(;t<30&&!bossReady\(g,big\);t\+=\.05\)g\.tick\(\.05\);/);assert.match(s,/if\(!pullBoss\(g,big\)\)engageBoss\(g,big\);return t;\}/);
  assert.ok((s.match(/heroPulls\(g,/g)||[]).length>=3,'Big B allein und im vollen Durchgang');
 });
 test('Bossrahmen: „Angreifbar in“ als Timer, danach der Zustand „bereit“ mit Tooltip',()=>{
