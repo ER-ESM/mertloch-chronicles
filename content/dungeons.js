@@ -121,9 +121,9 @@ export const DUNGEONS={
    {id:'hof-west',room:'hof',at:[22,23],members:['securityazubi','securityazubi','baumarktritter','pappwache']},
    {id:'hof-ost',room:'hof',at:[41,24],members:['securityazubi','securityazubi','baumarktritter','pappwache']},
    // Feinschliff 2026-09-26: Ohne den Messfehler der Simulation (keine Wege von Punkten dicht an der Wand, dafür je 60 s) waren die Flügel 2–3 min
-   // zu kurz. Dazu kommen Gruppen ohne Funkspruch (kein Azubi, der Nachbarn ruft): Ritterpaare „Kanzlei Ost“ und „Wehrgang Nord“ (neu), ein Pappschütze
-   // mehr im Archiv, im Rittersaal West/Ost und im Gewölbe Ost, Ritterpaar „Galerie West“, Kellerwache und Ritterpaar an den Fässern im Weinkeller, Gruppe am Nordende des
-   // Gewölbegangs (neu).
+   // zu kurz. Neu nur Gruppen ohne Funkspruch (kein Azubi, der Nachbarn ruft) und nie zwei Makler zusammen: „Hof Nordost“, „Kanzlei Ost“, „Wehrgang Nord“,
+   // „Galerie West“, „Weinkeller-Wache“, „Weinkeller-Fass“, „Gewölbe Nord“; ein Ritter mehr in Hof West/Ost und Kanzlei Nord, ein Pappschütze mehr im
+   // Archiv und im Rittersaal, Makler und Pappschütze im Gewölbe Ost, die Weinkeller-Schwärme 8 → 10 Ratten.
    {id:'hof-nordost',room:'hof',at:[44.5,20.5],members:['baumarktritter','maklerpraktikant']},
    {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi','securityazubi','baumarktritter']},
    {id:'kanzlei-sued',room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi','securityazubi']},
