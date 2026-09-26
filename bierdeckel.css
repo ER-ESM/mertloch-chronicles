@@ -579,10 +579,11 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 .sct-companion .sct-row small{max-width:110px;overflow:hidden;text-overflow:ellipsis;font-size:10px;}
 @media (prefers-reduced-motion:reduce){.sct-row{animation-duration:1s;}}
 
-/* Kniff-Varianten: Icon und Name wechseln, solange die Bedingung gilt (Eskalation, RESONANZ, Gratis, Verstärkt) */
-.skill.variant canvas,#touchActions .touch-skill.variant canvas{filter:saturate(1.6) brightness(1.18) drop-shadow(0 0 3px #FFE08A)!important;animation:variant-pop .35s ease-out}
-.skill.variant[data-variant-tone="burst"] canvas,#touchActions .touch-skill.variant[data-variant-tone="burst"] canvas{filter:saturate(1.8) brightness(1.2) hue-rotate(-18deg) drop-shadow(0 0 4px #ecc3fc)!important}
-.skill.variant[data-variant-tone="free"] canvas,#touchActions .touch-skill.variant[data-variant-tone="free"] canvas{filter:saturate(1.4) brightness(1.15) hue-rotate(50deg) drop-shadow(0 0 3px #a7e88d)!important}
+/* Kniff-Varianten: Icon und Name wechseln, solange die Bedingung gilt (Eskalation, RESONANZ, Gratis, Verstärkt).
+   Proc = nur Leuchtrand (WoW), keine Umfärbung des gemalten Symbols (Stilbibel E-74, Review R6) */
+.skill.variant canvas,#touchActions .touch-skill.variant canvas{filter:drop-shadow(0 0 1px #FFE08A) drop-shadow(0 0 3px #FFE08A)!important;animation:variant-pop .35s ease-out}
+.skill.variant[data-variant-tone="burst"] canvas,#touchActions .touch-skill.variant[data-variant-tone="burst"] canvas{filter:drop-shadow(0 0 1px #ecc3fc) drop-shadow(0 0 4px #ecc3fc)!important}
+.skill.variant[data-variant-tone="free"] canvas,#touchActions .touch-skill.variant[data-variant-tone="free"] canvas{filter:drop-shadow(0 0 1px #a7e88d) drop-shadow(0 0 3px #a7e88d)!important}
 .skill.variant:before,#touchActions .touch-skill.variant:before{content:attr(data-variant);position:absolute;left:0;right:0;bottom:0;z-index:6;font-family:var(--display);font-size:var(--t-11,11px);line-height:1.15;text-align:center;color:#FFE08A;background:#0B1216CC;text-shadow:1px 1px 0 var(--hard-ink);letter-spacing:.02em;text-transform:uppercase;pointer-events:none}
 .skill.variant[data-variant-tone="burst"]:before{color:#ecc3fc}
 .skill.variant[data-variant-tone="free"]:before{color:#a7e88d}
