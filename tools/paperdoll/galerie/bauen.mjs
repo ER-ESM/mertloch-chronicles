@@ -1,6 +1,6 @@
-// Galerie der Dungeon-Figuren (Entwurf 2026-09-26): Bildatlanten je Figur (alle Richtungen × alle gezeigten Bilder, 1:1 Bogenpixel,
+// Galerie der Dungeon-Figuren (live seit 2026-09-26): Bildatlanten je Figur (alle Richtungen × alle gezeigten Bilder, 1:1 Bogenpixel,
 // eng zugeschnitten) + Daten (Schichten, Ansagen, Größen) → eigenständige HTML-Seite mit Bildern als Dateien daneben (ohne Server lesbar).
-//   node tools/paperdoll/galerie/bauen.mjs [ziel=D:/Dev/_prototypen/dungeon-figuren-2026-09-26]
+//   [LIVE_BUILD=743] [FREIGABE_BILDER=<Ordner mit freigabe-*.png/jpg>] node tools/paperdoll/galerie/bauen.mjs [ziel=D:/Dev/_prototypen/dungeon-figuren-2026-09-26]
 // Szenenbilder kommen aus scripts/dungeon-figuren-check.mjs (visual-review/dungeon-figuren/*.jpg) und werden mitkopiert.
 import {writeFileSync,readFileSync,mkdirSync,copyFileSync,existsSync,readdirSync,statSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
@@ -32,12 +32,12 @@ const POSE_TEXT={ausholen:'holt mit beiden Armen weit aus, lehnt sich zurück',s
 const FIGUR_TEXT={
  gerd:{name:'Gästeliste-Gerd',rolle:'Boss · Siegel 1',titel:'Sicherheitschef · Big B Protection',text:'Breiter Türsteher im zu kleinen schwarzen Anzug mit Schulterpolstern, Kinder-Headset mit Katzenohren, Sonnenbrille im Keller. Klemmbrett in der einen Hand, Absperrpfosten mit rotem Samtseil in der anderen. Rückenaufdruck SECURITY.'},
  expose:{name:'Frau Dr. Exposé',rolle:'Boss · Siegel 2',titel:'Immobilienberaterin · Dr. (nicht gefragt)',text:'Hosenanzug in Petrol mit Schulterpolstern, Sonnenbrille im Haar, Hochglanz-Exposé als Aktenmappe und ein großes VERKAUFT-Schild am Pflock, das sie wie einen Stempel aufsetzt.'},
- korkenkurt:{name:'Kellermeister Korken-Kurt',rolle:'Boss · Siegel 3',titel:'Sommelier · Jahrgang: gestern',text:'Bordeaux-Weste über dem Hemd, lange Kellerschürze mit Geschirrtuch, Probierlöffel an der Kette, Kellnermesser und Probierglas.'},
+ korkenkurt:{name:'Kellermeister Korken-Kurt',rolle:'Boss · Siegel 3',titel:'Sommelier · Jahrgang: gestern',text:'Bordeaux-Weste über dem Hemd, lange flaschengrüne Kellerschürze mit Falten, die beim Gehen schwingt, Geschirrtuch am Bund, Probierlöffel an der Kette. In der Hand ein großer Messing-Korkenzieher mit Korken, dazu das Probierglas.'},
  rita:{name:'Reichweiten-Rita',rolle:'Boss · optional',titel:'Social-Media-Managerin · Reichweite auf Rechnung',text:'Neonpinke Bomberjacke (hinten LIVE), Greenscreen-Umhang, kühl-weißes Ringlicht als Heiligenschein, das beim Blitzlicht aufflammt. Handy immer in der Hand.'},
- halbespferd:{name:'Das halbe Pferd',rolle:'Boss · selten',titel:'Vorderhälfte eines Schimmels',text:'Kostümpferd (Schimmel mit schwarzer Mähne), nur die vordere Hälfte: Pferdemaske, Hals und Leib, hinten glatt abgeschnitten, rosa Schaumstoff, mit Pflaster zugeklebt. Darunter Jeans und Turnschuhe.'},
- bigb:{name:'Big B',rolle:'Endboss',titel:'Der Lügenbaron · Freiherr von und zu Burgstraße',text:'Pelzmantel aus dem Kostümverleih, gepuderte Perücke mit Zopf, Pappkrone, Kronkorkenkette, Reitstiefel, Siegelring und ein Selfie-Stick mit Ringlicht als Zepter.'},
+ halbespferd:{name:'Das halbe Pferd',rolle:'Boss · selten',titel:'Vorderhälfte eines Fuchses',text:'Kostümpferd (brauner Fuchs mit dunkler Mähne, weißer Blesse und weißen Fesseln), nur die vordere Hälfte: Pferdemaske, Hals und Leib, hinten glatt abgeschnitten, rosa Schaumstoff, mit Pflaster zugeklebt. Darunter Jeans und Turnschuhe.'},
+ bigb:{name:'Big B',rolle:'Endboss',titel:'Der Lügenbaron · Freiherr von und zu Burgstraße',text:'Klein und drahtig im viel zu großen Pelzmantel aus dem Kostümverleih: Der Saum schleift am Boden, die Ärmel hängen über die Hände, am Kragen baumelt der Leihzettel. Gepuderte Perücke mit Zopf, Pappkrone, Kronkorkenkette, Reitstiefel, Siegelring und ein Selfie-Stick mit Ringlicht als Zepter. Beim Geständnis sinkt er im Mantel zusammen.'},
  securityazubi:{name:'Security-Azubi',rolle:'Trash · ruft Hilfe',titel:'Security-Azubi',text:'Zu großes schwarzes Polo mit gelbem SECURITY-Druck, verkehrt herum getragene Kappe, Spielzeug-Funkgerät.'},
- maklerpraktikant:{name:'Makler-Praktikant',rolle:'Trash · Heiler',titel:'Makler-Praktikant',text:'Sandgrauer Konfirmationsanzug eine Nummer zu groß, schiefe Krawatte, Praktikantenausweis, Tablet und eine neongrüne Thermoskanne mit Dampf: Wer sie hochreckt, heilt (Provision).'},
+ maklerpraktikant:{name:'Makler-Praktikant',rolle:'Trash · Heiler',titel:'Makler-Praktikant',text:'Sandgrauer Konfirmationsanzug eine Nummer zu groß: kastige 80er-Schultern, zweireihig, Ärmel über den Fingern, weißer Kragen, neongrüne Krawatte mit Einstecktuch. Praktikantenausweis, Tablet und eine neongrüne Thermoskanne mit Dampf: Wer sie hochreckt, heilt (Provision).'},
  baumarktritter:{name:'Baumarkt-Ritter',rolle:'Elite',titel:'Baumarkt-Ritter',text:'Farbeimer als Helm, Brustpanzer aus Regenrinnen, Arme und Beine aus Alu-Flexrohr, Absperrband als Schärpe, Mülltonnendeckel als Schild, Regenrinne als Schwert, Gummistiefel.'},
  follower:{name:'Follower',rolle:'Add · Big B, Phase 2',titel:'Follower',text:'Fan-Shirt BIG B, Fischerhut, Ringlicht am Gürtel. Filmt alles außer sich selbst: die Standhaltung ist das Handy über dem Kopf. Drei Varianten.'},
  follower2:{name:'Follower',rolle:'Add · Variante',titel:'Follower (Variante)',text:'Drahtig mit Irokese.'},follower3:{name:'Follower',rolle:'Add · Variante',titel:'Follower (Variante)',text:'Kräftig mit Stirnband.'},
@@ -45,6 +45,13 @@ const FIGUR_TEXT={
  kommentator:{name:'Kommentator',rolle:'Add · Rita',titel:'Kommentator',text:'Gelbe Regenjacke, Brille, Daumen über dem Handy.'},
  volker:{name:'Vermieter Volker',rolle:'Händler',titel:'Vermieter Volker',text:'Kräftig, Schnauzer, Brille. Sakko, Schiebermütze, Mietvertrag auf dem Klemmbrett und ein Schlüsselbund, der alles aufschließt außer der Garage.'},
 };
+/** Seit der Freigabe geändert (Runde 5): Bild aus der Freigabe-Galerie (liegt als freigabe-*.png/jpg im Ordner ALT) ↔ jetzt. */
+const ALT=process.env.FREIGABE_BILDER||'';
+const GEAENDERT=[
+ {id:'bigb',was:'Big B',text:'Jetzt drahtig (Kevin) statt kräftig: ein kleiner Mann im viel zu großen Pelz. Eigener Boss-Pelz mit lesbarem Fell statt Kork, Saum am Boden, Ärmel über den Händen. Zeigen, Nachsatz, Schopf und Geständnis mit dem neuen Körper. Die Legende für Helden bleibt, wie sie war.'},
+ {id:'halbespferd',was:'Das halbe Pferd',text:'Brauner Fuchs statt Schimmel: Fell rotbraun, Mähne dunkel, weiße Blesse und Fesseln. Beschreibung im Spiel und Reittierfarbe angepasst.'},
+ {id:'korkenkurt',was:'Korken-Kurt',text:'Die Schürze hat jetzt Falten, einen gezackten Saum und schwingt beim Gehen. Eigener Boss-Korkenzieher in Messing mit Korken und Weinrand statt Grau auf Grau.'},
+ {id:'maklerpraktikant',was:'Makler-Praktikant',text:'Anzug mit kastigen 80er-Schultern, zweireihig, Ärmel über den Fingern, weißer Kragen, neongrüne Krawatte mit Einstecktuch.'}];
 const MOTIV_TEXT={pappwache:{name:'Pappwache',id:'pappwache',rolle:'Trash · Attrappe',titel:'Pappwache',text:'Gedruckter Ritter auf Pappe, weißer Stanzrand, Pappkante, mit Klebeband am Boden. Von hinten Wellpappe mit Stützlasche. Wackelt, kippt beim Tod um.'},
  pappschuetze:{name:'Pappschütze',id:'pappschuetze',rolle:'Trash · Fernkampf',titel:'Pappschütze',text:'Pappaufsteller eines Burgschützen hinter einer gedruckten Zinne; vorn eine echte Neon-Wasserpistole, mit Klebeband festgeklebt. Watschelt, spritzt.'},
  pfandratte:{name:'Pfandratte',id:'kellerratte',rolle:'Trash · Schwarm (8)',titel:'Pfandratte',text:'Kellerratte mit Kronkorken im Maul, rosa Ohren und Schwanz. Trippelt, schnappt.'},
@@ -89,6 +96,11 @@ for(const [mid,info] of Object.entries(MOTIV_TEXT)){const M=MOTIVE[mid],bilder=M
 const copy=f=>{if(!existsSync(REVIEW+f))return null;copyFileSync(REVIEW+f,BILD+'/'+f);return 'bilder/'+f;};
 for(const id of BOSS_IDS)daten.vergleich.push({id,heute:copy('vergleich-heute-'+id+'.jpg'),entwurf:copy('vergleich-entwurf-'+id+'.jpg')});
 daten.trashVergleich={heute:copy('vergleich-heute-trash.jpg'),entwurf:copy('vergleich-entwurf-trash.jpg')};
+// Seit der Freigabe: Weltbild und Spielbild aus der Freigabe-Galerie neben dem Stand jetzt (nur, wenn die alten Bilder vorliegen)
+const alt=f=>{if(!ALT||!existsSync(ALT+'/'+f))return null;copyFileSync(ALT+'/'+f,BILD+'/'+f);return 'bilder/'+f;};
+daten.geaendert=GEAENDERT.map(g=>({...g,weltAlt:alt('freigabe-'+g.id+'-welt.png'),welt:'bilder/'+g.id+'-welt.png',
+ spielAlt:alt('freigabe-spiel-'+(g.id==='maklerpraktikant'?'trash':g.id)+'.jpg'),spiel:g.id==='maklerpraktikant'?daten.trashVergleich.entwurf:daten.vergleich.find(v=>v.id===g.id)?.entwurf||null}));
+daten.live={build:process.env.LIVE_BUILD||'',datum:'26.09.2026'};
 for(const f of readdirSync(REVIEW).filter(f=>/^boss-.*\.jpg$/.test(f)).sort()){const [,id,ansage]=f.match(/^boss-([a-z]+)-(.+)\.jpg$/);daten.szenen.push({id,ansage,bild:copy(f)});}
 for(const f of ['szene-2-verwaltung.jpg','szene-3-wehrgang.jpg','szene-4-weinkeller.jpg','szene-5-gespenst.jpg'])if(existsSync(REVIEW+f))daten.szenen.push({id:'trash',ansage:f.replace(/^szene-\d-|\.jpg$/g,''),bild:copy(f)});
 // Technik: Größen

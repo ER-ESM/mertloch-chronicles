@@ -1,7 +1,9 @@
 # Dungeon-Figuren „Schloss Big B“ · Entwurf 2026-09-26
 
-**Status: Entwurf, nicht live.** Zweig `dungeon-figuren` (Worktree `D:\Dev\MertlochChronicles-dg-figuren`), nicht nach `main`. Figurengrafik
-geht erst nach ausdrücklicher Freigabe durch den Nutzer live (E-71 Punkt 6, Standing Rule „Figurengrafik erst nach Freigabe“).
+**Status: freigegeben und live (2026-09-26).** Der Nutzer hat den Entwurf freigegeben („Alles so umsetzen“) mit vier Änderungen (Big B drahtig
+im Boss-Pelz, halbes Pferd als Fuchs, Korken-Kurt und Makler nachgebessert). Runde 5, Livegang und Messwerte: `docs/DUNGEON-FIGUREN-2026-09-26.md`.
+Dieser Bericht beschreibt den Entwurf (Runden 1–4) und bleibt als Grundlage stehen; was dort „mit Schalter“ heißt, ist jetzt der Normalfall
+(Notschalter `?dungeon-figuren=0`).
 
 Nutzerauftrag: „Grafiken für Bosse und Gegner und Animationen und Bewegungen kannst du gerne schon aufsetzen.“
 

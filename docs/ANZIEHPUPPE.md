@@ -78,13 +78,16 @@ PUPPE_LEINWAND=440,460,340 node tools/paperdoll/puppe.mjs --runtime <ordner>   #
 - **Neues Reittier:** Es kommt in `MOUNTS` (Reiten-Abschnitt), mit Sitzform und Ankern je Bild. Dazu ein Inhaltseintrag in `content/mounts.js` (mit `kind` und `sound`). Danach `--reiten` und `pwa-cache` ausführen; `tests/paperdoll-mount.test.mjs` prüft, dass Inhalt und Reit-Katalog übereinstimmen.
 - **Neue Quelle und Reiten:** Nach neuen Gegenständen oder Aussehen-Ebenen auch `--reiten` ausführen. Sonst fehlt die Quelle nur auf dem Reittier; der Reiter wird dann ohne sie gezeichnet.
 
-## Sonderbögen und Motive (Dungeon-Figuren, Entwurf 2026-09-26, freigabepflichtig)
+## Sonderbögen und Motive (Dungeon-Figuren, live seit 2026-09-26)
 
 Bosse und Gegner in „Schloss Big B“ sind Menschen aus der Puppe (Archetyp + Aussehen + Kleidung, `content/dungeon-figuren.js`) oder Motive
-(Pappaufsteller, Pfandratte, Beamer-Gespenst). Gezeichnet werden sie nur hinter dem Schalter `localStorage['mertloch-dungeon-figuren']='1'`
-bzw. `?dungeon-figuren=1` (`dungeon-figuren-art.js`, Andockpunkt `clan-art.js drawClanEnemy` und `dungeon-e4b-art.js` für Volker). Bericht:
-`docs/DUNGEON-FIGUREN-ENTWURF-2026-09-26.md`.
+(Pappaufsteller, Pfandratte, Beamer-Gespenst). Sie sind standardmäßig an; der Notschalter `?dungeon-figuren=0` bzw.
+`localStorage['mertloch-dungeon-figuren']='0'` schaltet zurück auf die Platzhalter (`dungeon-figuren-art.js`, Andockpunkt
+`clan-art.js drawClanEnemy` und `dungeon-e4b-art.js` für Volker). Berichte: `docs/DUNGEON-FIGUREN-ENTWURF-2026-09-26.md` (Entwurf,
+Runden 1–4) und `docs/DUNGEON-FIGUREN-2026-09-26.md` (Freigabe, Runde 5, live).
 
+- **Boss-Versionen:** Wo ein Boss ein Heldenteil anders braucht, bekommt er eine eigene Quelle mit Endung `-boss`
+  (`pelzmantel-baron-boss`, `korkenzieher-boss`); die Heldenversion bleibt byte-gleich.
 - **Sonderposen** (`SONDER` in `puppe.mjs`, Rezepte in `ACTS`): ausholen, schubsen, zeigen, zeigenN (Nebenhand), jubeln, vorhalten,
   zusammensinken, buecken, tritt, selfie, telefon, achselzucken, schopf. Sie stehen **nicht** in `FRAMES`: Grund- und Aktionsbögen bleiben
   byte-gleich. Je Quelle × Archetyp × Richtung ein eigener Bogen `<quelle>-<arch><dir>-sonder.png` mit eigener Zelle
@@ -107,7 +110,7 @@ node tools/paperdoll/dungeon-vorschau.mjs --uebersicht        # alle Menschen ne
 node tools/paperdoll/posen-bogen.mjs gerd,rita                # alle Sonderposen in vier Richtungen
 node tools/paperdoll/motive.mjs --vorschau && node tools/paperdoll/motive-welt.mjs
 node tools/paperdoll/galerie/bauen.mjs [ziel]                 # Galerie (Atlanten + HTML) nach D:/Dev/_prototypen/dungeon-figuren-2026-09-26
-CDP_PORT=9730 SERVER_PORT=4530 node scripts/dungeon-figuren-check.mjs   # Schalter an/aus, Bosse mit Ansagen, Vergleich heute ↔ Entwurf, Leistung
+CDP_PORT=9730 SERVER_PORT=4530 node scripts/dungeon-figuren-check.mjs   # Standard an, Notschalter aus, Bosse mit Ansagen, Vergleich vorher ↔ jetzt, Leistung
 ```
 
 Ein voller Neubau (`--runtime` ohne `--nur`) baut danach die Sonderbögen der Dungeon-Figuren und die Motive mit (er räumt vorher alle Bögen weg).
