@@ -90,21 +90,22 @@
       "spec": "dieter-wall",
       "row": 3,
       "path": 1,
-      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-3-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-wall-v1.png",
       "sourceRect": {
-        "x": 711,
-        "y": 91,
-        "w": 178,
-        "h": 145
+        "x": 107,
+        "y": 291,
+        "w": 1047,
+        "h": 670
       },
       "bounds": {
         "x": 3,
-        "y": 8,
+        "y": 13,
         "w": 59,
-        "h": 48,
-        "count": 1861
+        "h": 38,
+        "count": 1422
       },
-      "sha256": "d9270223eb7e90e40bdd55dcc871b37d4dd838968365490f1bfc880f6b13978c"
+      "sha256": "fa63b41d7ca81eb60b331503cf267b10a96543fe5779ee4b68ff5ce811bc64ce"
     },
     "dieter-wall-4": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -220,21 +221,22 @@
       "spec": "dieter-wall",
       "row": 8,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-8-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-wall-v1.png",
       "sourceRect": {
-        "x": 471,
-        "y": 295,
-        "w": 200,
-        "h": 150
+        "x": 171,
+        "y": 139,
+        "w": 977,
+        "h": 949
       },
       "bounds": {
         "x": 3,
-        "y": 10,
+        "y": 3,
         "w": 59,
-        "h": 44,
-        "count": 2061
+        "h": 57,
+        "count": 2468
       },
-      "sha256": "5b7ed257ea75ee9fe16be6bb0a244102d895bf13f63fd4677b82922f66990f19"
+      "sha256": "949c421903182023e5ce80880737e6e8ebd9a8b64a1476e58039eeb8767ad4d0"
     },
     "dieter-wall-9": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1471,21 +1473,22 @@
       "spec": "dieter-brawl",
       "row": 1,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-26-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 480,
-        "y": 888,
-        "w": 186,
-        "h": 180
+        "x": 228,
+        "y": 168,
+        "w": 908,
+        "h": 914
       },
       "bounds": {
         "x": 3,
         "y": 3,
         "w": 59,
-        "h": 57,
-        "count": 1989
+        "h": 59,
+        "count": 1861
       },
-      "sha256": "3a5d0044bd0799c4f99185b9f48bcfbc5ac3151dddf503f553f791dcbd3bbecf"
+      "sha256": "7e90143d899337f0fe7e9148a7b49440dfecb76543032974ecbd9aad5934074d"
     },
     "dieter-brawl-27": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1523,21 +1526,22 @@
       "spec": "dieter-brawl",
       "row": 6,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-28-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 931,
-        "y": 891,
-        "w": 183,
-        "h": 173
+        "x": 85,
+        "y": 101,
+        "w": 1087,
+        "h": 1073
       },
       "bounds": {
-        "x": 2,
-        "y": 4,
+        "x": 3,
+        "y": 3,
         "w": 59,
-        "h": 56,
-        "count": 1816
+        "h": 58,
+        "count": 2368
       },
-      "sha256": "90211407cec9e4a6ae1a7b71a9474d6af635e90f36447ecd4b72d5ccd8e5272e"
+      "sha256": "e64debe0b29cb1f4e161bdff08d96db899daa68d4be4e7baf4d6e10fb711c211"
     },
     "dieter-brawl-29": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1549,21 +1553,22 @@
       "spec": "dieter-brawl",
       "row": 7,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 1163,
-        "y": 886,
-        "w": 165,
-        "h": 179
+        "x": 202,
+        "y": 218,
+        "w": 876,
+        "h": 840
       },
       "bounds": {
-        "x": 5,
-        "y": 3,
-        "w": 54,
-        "h": 59,
-        "count": 1955
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2671
       },
-      "sha256": "22770880bf514e34a6ab1f6430f04f07d74765b7a02c74246f142ebad104dd06"
+      "sha256": "8f57bb362258f3d18ed9fe1f4979c66ac7925b758c5ce1b28e099f3dd998d2d1"
     },
     "dieter-brew-0": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -6574,21 +6579,22 @@
       "spec": "kevin-hunt",
       "row": 3,
       "path": 0,
-      "source": "assets/content-art/e32/sources/kevin-hunt-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+      "sheet": "assets/content-art/e32/sources/kevin-hunt-v1.png",
       "sourceRect": {
-        "x": 16,
-        "y": 511,
-        "w": 212,
-        "h": 150
+        "x": 70,
+        "y": 241,
+        "w": 1126,
+        "h": 859
       },
       "bounds": {
         "x": 3,
-        "y": 11,
+        "y": 9,
         "w": 59,
-        "h": 42,
-        "count": 1512
+        "h": 45,
+        "count": 2183
       },
-      "sha256": "7151373167ed33ccf8d820c29efd2422416ee96e147476c017d5d092f3079fe7"
+      "sha256": "101f15c7e365978a25eb234b06e201d0c4a6726ea0da00b1f8855b98d62e493d"
     },
     "kevin-hunt-13": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -11737,6 +11743,16 @@
       ]
     },
     {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-3-v1.png",
+      "sha256": "7f32e279909754b4f77adf4b963056744147886ecf3603643093ec68f9dc2b2e",
+      "talent": "dieter-wall-3"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-8-v1.png",
+      "sha256": "bbca29735b0bf4758b106be31b46848d92760ea57192e005ed96c429c7f63154",
+      "talent": "dieter-wall-8"
+    },
+    {
       "source": "assets/content-art/e32/sources/einzeln/dieter-wall-12-v1.png",
       "sha256": "00e4c0e67173b9dd5743fb14bdcc12f72ccdb18598a4793e7b53440901089f36",
       "talent": "dieter-wall-12"
@@ -11771,6 +11787,21 @@
       "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-25-v1.png",
       "sha256": "6bc04a0c95f679a3dd70e70a5a1960d77ea356257f85e1e266f11039dbb404cc",
       "talent": "dieter-brawl-25"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-26-v1.png",
+      "sha256": "10dadd6430619faec6d2cc3915b81847a3a72218175e314b2e9413c07b78c850",
+      "talent": "dieter-brawl-26"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-28-v1.png",
+      "sha256": "0658cdbc99c07c366e82a0601ba1d2d82f0741e07440d2d8b6842b2ee8ebd183",
+      "talent": "dieter-brawl-28"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
+      "sha256": "cacaeffe5c9de9384bcf25f887354172d03aaddd0bae5df002f684e799cc081e",
+      "talent": "dieter-brawl-29"
     },
     {
       "source": "assets/content-art/e32/sources/dieter-brew-v1.png",
@@ -11955,6 +11986,11 @@
       ]
     },
     {
+      "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+      "sha256": "60d640de8a68425d4f1cd4522410f88055e09d5886ae19c50e9b8180279ed1f8",
+      "talent": "kevin-hunt-12"
+    },
+    {
       "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-25-v1.png",
       "sha256": "b306a1231cbc3d6bf17b73a42f9a0efe6889e5bc5b5a8f0e1271a698ab32cb4d",
       "talent": "kevin-hunt-25"
@@ -12088,13 +12124,13 @@
   ],
   "atlases": {
     "assets/content-art/e32/runtime/talents-dieter.png": {
-      "sha256": "d9f9224bf50141aaaf13b2ca6a06f1d216b28e1ad828780a4a5e1768e03a8cfd"
+      "sha256": "5afde38e822df5ae348cb5997b55f3314d3977ae148e8f752b49f94b336c54a0"
     },
     "assets/content-art/e32/runtime/talents-baerbel.png": {
       "sha256": "afd8ad2d198d8d599001eaf0fd1cb4081e8f66b52bdb26fb4bb3846ee7374210"
     },
     "assets/content-art/e32/runtime/talents-kevin.png": {
-      "sha256": "6ae597794b15c6ee0507a6e745d8df3bbbcbd1441bd6a3c84462e9103d4aac2e"
+      "sha256": "540942645db10aae5d6ef3c90ba24a0e87772e4e301f2bc8cb2f519d4e83614e"
     },
     "assets/content-art/e32/runtime/talents-schorsch.png": {
       "sha256": "ab44e55ac15d0e888e55fc11f8fac2152b51a950cbd7c56cc10be78d88bd4969"

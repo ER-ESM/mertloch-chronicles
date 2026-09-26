@@ -6,28 +6,30 @@
 /* ---------------------------------------------------------------- Aktionsleiste (Desktop)
    WoW-Prinzip: das Symbol füllt den Knopf, der 2-px-Rand des Knopfs ist der Rahmen. 52 = 2 + 48 + 2.
    Ohne Breitenabfrage, damit keine Lücke zu matchMedia('(max-width:760px)') in icon-steps.js entsteht; der schmale Block unten
-   überschreibt mit denselben Selektoren. */
+   überschreibt mit denselben Selektoren.
+   Alle Kniffknopf-Regeln tragen canvas:not(.rh-slot): die Zustandsebene der Ressourcen (resource-hud.css, Schorschs Grillgut, Käthes
+   Kettenrahmen) ist kein Symbol und behält ihre eigene Größe (Icon-Review R5: sonst schrumpfte sie auf 48 und lag 8 px versetzt). */
 body:not(.touch-mode) .action-area{--extra-bar-step:80px}
 body:not(.touch-mode) .action-area .action-bar .skill{width:52px!important;height:52px!important;min-width:0;padding:0!important}
 body:not(.touch-mode) .action-area>.special-actions .skill{width:36px!important;height:36px!important;min-width:0;padding:0!important}
 /* stufe:bar */
-body:not(.touch-mode) .action-area .action-bar .skill canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}
+body:not(.touch-mode) .action-area .action-bar .skill canvas:not(.rh-slot){width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}
 /* stufe:barSpecial */
-body:not(.touch-mode) .action-area>.special-actions .skill canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}
+body:not(.touch-mode) .action-area>.special-actions .skill canvas:not(.rh-slot){width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}
 /* Schmales Fenster ohne Touch: alle Leistenplätze 24 im 28er-Knopf (10 × 28 + Abstände = 316 px, passt ab 320 px). */
 @media(max-width:760px){
  body:not(.touch-mode) .action-area .action-bar .skill,body:not(.touch-mode) .action-area>.special-actions .skill,body:not(.touch-mode) #actionBar .skill{width:28px!important;height:28px!important;min-width:0;padding:0!important}
 }
 /* stufe:barNarrow */
-@media(max-width:760px){body:not(.touch-mode) .action-area .action-bar .skill canvas,body:not(.touch-mode) .action-area>.special-actions .skill canvas,body:not(.touch-mode) #actionBar .skill canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}}
+@media(max-width:760px){body:not(.touch-mode) .action-area .action-bar .skill canvas:not(.rh-slot),body:not(.touch-mode) .action-area>.special-actions .skill canvas:not(.rh-slot),body:not(.touch-mode) #actionBar .skill canvas:not(.rh-slot){width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;margin:0;display:block;image-rendering:pixelated}}
 
 /* ---------------------------------------------------------------- Touch-Kniffknöpfe
    --touch-size 56/64 (Normal/Groß): 48 mit 2-px-Rand, fast randfüllend; 48/50 (Kompakt, flach quer): 32. Leer/Unterbrechen 32. */
 .touch-mode #touchActions .touch-skill{padding:0!important;display:grid;place-items:center}
 /* stufe:touch */
-.touch-mode #touchActions .touch-skill canvas[width="48"]{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+.touch-mode #touchActions .touch-skill canvas[width="48"]:not(.rh-slot){width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
 /* stufe:touchSmall */
-.touch-mode #touchActions .touch-skill canvas[width="32"]{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+.touch-mode #touchActions .touch-skill canvas[width="32"]:not(.rh-slot){width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
 /* Touchbuttons belegen: Plätze und Kniffwahl, 32 im 48er-Knopf. */
 .game-popup :is(.touch-slot-editor,.touch-skill-picker) button{display:grid;place-items:center}
 /* stufe:touchEditor */

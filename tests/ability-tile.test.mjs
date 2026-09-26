@@ -59,6 +59,14 @@ test('Export: jede Kniff-Datei (kind skills, auch Autoangriffe) ist eine randlos
  assert.equal(Object.keys(e32.skills).length,45);
 });
 
+test('Blaumisch (Icon-Review R5): keine Kniff-Kachel trägt #1e2c35 – auch nicht die gemalten Codex-Kacheln (Export rastet auf #263530)',async()=>{
+ const {tileNoBlue}=await import('../ability-tile.js');
+ const probe={data:new Uint8ClampedArray([30,44,53,255,23,31,41,255])};tileNoBlue(probe);assert.deepEqual([...probe.data],[38,53,48,255,23,31,41,255],'#1e2c35 → Basis, Tinte bleibt');
+ const skills=Object.entries(catalog.assets).filter(([,a])=>a.kind==='skills'),bad=[];
+ for(const [id,a] of skills){const im=decodePng(read(a.path));let blue=0,solid=0;for(let i=0;i<im.data.length;i+=4){if(im.data[i+3]<128)continue;solid++;if(im.data[i]===30&&im.data[i+1]===44&&im.data[i+2]===53)blue++;}if(blue)bad.push(id+' '+(blue/solid*100).toFixed(1)+' %');}
+ assert.deepEqual(bad,[],'Anteil #1e2c35 muss 0 sein');
+});
+
 // ------------------------------------------------------------------ Laufzeit ohne Browser: Canvas-Attrappe, Katalog als geladen
 function fakeCanvas(width=48,height=48,parent=null){
  const ctx=new Proxy({getImageData:(x,y,w,h)=>({data:new Uint8ClampedArray(w*h*4),width:w,height:h}),measureText:()=>({width:0}),createRadialGradient:()=>({addColorStop(){}}),createLinearGradient:()=>({addColorStop(){}}),getTransform:()=>({a:1,b:0})},

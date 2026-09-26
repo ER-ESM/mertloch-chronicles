@@ -196,5 +196,119 @@
    "assets/content-art/e32/sources/kevin-hunt-v1.png"
   ],
   "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-kevin-hunt-12",
+  "talent": "kevin-hunt-12",
+  "spec": "kevin-hunt",
+  "index": 12,
+  "name": "Kurze Pechsträhne",
+  "effect": "Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher.",
+  "replaces": "three dice with a curved arrow and an exploding die, the same picture as the talent Zweite Serie",
+  "redo": "near-duplicate",
+  "output": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-hunt): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Kurze Pechsträhne: Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher. Motif: a scruffy black village alley cat crouching low and stretched out wide along a dented sooty tin can that lies horizontally, cat and can together filling the whole width of the icon (a wide, low composition, not a tall sitting cat); big bright amber eyes, the black fur drawn in dark petrol greys with lighter grey-blue midtones and a strong warm copper rim light along its back and ears so the cat reads clearly on a dark background; a comically short stubby tail; the fuse of the can has just fizzled out (a dud: one thin grey smoke curl) and one small golden spark is already sputtering back to life on it, meaning the guaranteed overload comes sooner. It replaces an older picture of this same talent that looked almost exactly like another talent (three dice with a curved arrow and an exploding die, the same picture as the talent Zweite Serie), so no dice, no curved arrow, no explosion burst, no tall narrow sitting pose. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+  "references": [
+   "assets/content-art/e32/sources/kevin-hunt-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-wall-3",
+  "talent": "dieter-wall-3",
+  "spec": "dieter-wall",
+  "index": 3,
+  "name": "Keiner drängelt",
+  "effect": "Wer in das Parierfenster von Deckel drauf! läuft, wird danach mehrere Sekunden langsamer.",
+  "replaces": "a boot, a snail and a mound of dirt scattered across the cell",
+  "redo": "scattered",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-wall-3-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-wall): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Keiner drängelt: Wer in das Parierfenster von Deckel drauf! läuft, wird danach mehrere Sekunden langsamer. Motif: one big brown garden snail crawling slowly toward the right, its shell replaced by a large dented golden bottle cap lid with a crimped edge (the lid from the parry Deckel drauf!), a tiny slow-motion trail behind it. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a boot, a snail and a mound of dirt scattered across the cell), so no boot, no dirt mound, no second creature, no shield. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-wall-8",
+  "talent": "dieter-wall-8",
+  "spec": "dieter-wall",
+  "index": 8,
+  "name": "Breite Absperrung",
+  "effect": "Das Absperrband hält länger und bremst Gegner, die darin stehen.",
+  "replaces": "barrier tape between posts with a barrel, legs and several green arrows scattered below",
+  "redo": "scattered",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-wall-8-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-wall): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Breite Absperrung: Das Absperrband hält länger und bremst Gegner, die darin stehen. Motif: one big fat roll of red-and-white striped barrier tape seen at a three-quarter angle, a long wide band unrolling from it in a broad curve across the lower half of the icon, a small blue-steel slow-down swirl on the band. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (barrier tape between posts with a barrel, legs and several green arrows scattered below), so no posts, no barrel, no legs, no rows of arrows, no shield. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-wall-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-brawl-26",
+  "talent": "dieter-brawl-26",
+  "spec": "dieter-brawl",
+  "index": 26,
+  "name": "Flaschenpost",
+  "effect": "Nach jedem erledigten Gegner ist Pfand auf die Zwölf sofort wieder bereit.",
+  "replaces": "a green bottle, flying shards, a skull and a circular arrow scattered across the cell",
+  "redo": "scattered",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-26-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Flaschenpost: Nach jedem erledigten Gegner ist Pfand auf die Zwölf sofort wieder bereit. Motif: one big green deposit bottle lying on the diagonal from lower left to upper right, corked, with a rolled-up cream paper message tied with string visible inside the glass (a message in a bottle), a warm copper highlight along the glass. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a green bottle, flying shards, a skull and a circular arrow scattered across the cell), so no skull, no shards, no second bottle; at most one small orange circular arrow in the top-right corner meaning instantly ready again. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brawl-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-brawl-28",
+  "talent": "dieter-brawl-28",
+  "spec": "dieter-brawl",
+  "index": 28,
+  "name": "Wurf in die Runde",
+  "effect": "Pfand auf die Zwölf zählt mit; jeder zweite Treffer bringt zusätzliche Randale.",
+  "replaces": "a flying bottle, two small bottles, a dagger, arrows and a flame scattered across the cell",
+  "redo": "scattered",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-28-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Wurf in die Runde: Pfand auf die Zwölf zählt mit; jeder zweite Treffer bringt zusätzliche Randale. Motif: one big round wooden beer-hall table top seen at a three-quarter angle (the round of drinkers), a green deposit bottle crashing down onto its center with a bold splash of beer foam. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a flying bottle, two small bottles, a dagger, arrows and a flame scattered across the cell), so no dagger, no rows of arrows, no small extra bottles; at most one small red-orange rage flame in the top-right corner. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brawl-v1.png"
+  ],
+  "delivery": "2026-09-26"
+ },
+ {
+  "id": "talent-dieter-brawl-29",
+  "talent": "dieter-brawl-29",
+  "spec": "dieter-brawl",
+  "index": 29,
+  "name": "Weiter zum Nächsten",
+  "effect": "Jeder erledigte Gegner verkürzt die Abklingzeit von Ab durch die Hecke und zahlt Randale.",
+  "replaces": "a skull, a boot, arrows, a circular arrow and flames scattered across the cell",
+  "redo": "scattered",
+  "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
+  "width": 64,
+  "height": 64,
+  "kind": "talent-icon",
+  "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Weiter zum Nächsten: Jeder erledigte Gegner verkürzt die Abklingzeit von Ab durch die Hecke und zahlt Randale. Motif: one big heavy brown leather work boot in mid-stride, set large on the diagonal from lower left to upper right with a bright copper highlight on the toe cap and a clearly visible sole, kicking forward out of a torn gap in a hedge: the hedge is shown only as a few loose green leaves and broken twigs flying around the boot (on through the hedge to the next one), never as a solid block or square of foliage behind the boot. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a skull, a boot, arrows, a circular arrow and flames scattered across the cell), so no skull, no rows of arrows, no flames, no hedge wall, no square block of leaves; at most one small orange circular arrow in the top-right corner meaning a shorter cooldown. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+  "references": [
+   "assets/content-art/e32/sources/dieter-brawl-v1.png"
+  ],
+  "delivery": "2026-09-26"
  }
 ]

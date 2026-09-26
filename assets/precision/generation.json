@@ -2542,21 +2542,6 @@
       "sourceHash": "473b2d722b08e13338bda91c1c8b1809cab0e0c5212cc8f5703f60467870db9e"
     },
     {
-      "id": "skill-kaethe-ground",
-      "kind": "skills",
-      "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-ground.png",
-      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-kaethe-ground, ability \"Kartenregen (rain of cards onto an area)\" of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: a dense cascade of playing cards raining diagonally down onto the ground, cards showing club, spade, heart and diamond suit symbols. Effects (small accents, no more than these): a glowing impact ring on the ground where they land. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
-      "references": [
-        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
-      ],
-      "tool": "built-in imagegen",
-      "model": "Not exposed by built-in tool",
-      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
-      "date": "2026-09-26",
-      "originalFile": "exec-d6e7f641-e5b8-45a0-9d9e-e86dfb070662.png",
-      "sourceHash": "9a2e2a993ccbba71ec52783eaf0a67b6d1300299e44353adef4577da3c0565d1"
-    },
-    {
       "id": "skill-kaethe-reizen",
       "kind": "skills",
       "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-reizen.png",
@@ -2570,21 +2555,6 @@
       "date": "2026-09-26",
       "originalFile": "exec-30f95bc4-4310-40d1-b100-f2ecbbcfd665.png",
       "sourceHash": "f6564c59f45eb6c7002fe837b0a202e43e63793a9826ccf2b0e4d07deb1999ee"
-    },
-    {
-      "id": "skill-kaethe-handlesen",
-      "kind": "skills",
-      "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-handlesen.png",
-      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-kaethe-handlesen, ability \"Handlesen (palm reading, heal over time)\" of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: an open upturned palm with softly glowing lines traced on it. Effects (small accents, no more than these): a small bright red heart suit symbol glowing in the center of the palm; soft green healing sparkles rising. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
-      "references": [
-        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
-      ],
-      "tool": "built-in imagegen",
-      "model": "Not exposed by built-in tool",
-      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
-      "date": "2026-09-26",
-      "originalFile": "exec-99249ecf-60b9-475d-8e83-4e69ad909cfc.png",
-      "sourceHash": "5022166c9c0789b0cbaad470f79bec0b76cb124e9e2750236ac2e05bfb9b5641"
     },
     {
       "id": "skill-kaethe-gezinkt",
@@ -2801,6 +2771,126 @@
       "date": "2026-09-26",
       "originalFile": "exec-98bf2128-5ecf-4894-bdac-b812fc4d8ba5.png",
       "sourceHash": "cfdc37e45c09e85adefa975b871b6e25ba555844d446cc5a7010c7061390c9e0"
+    },
+    {
+      "id": "talent-dieter-wall-3",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/dieter-wall-3-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-wall): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Keiner drängelt: Wer in das Parierfenster von Deckel drauf! läuft, wird danach mehrere Sekunden langsamer. Motif: one big brown garden snail crawling slowly toward the right, its shell replaced by a large dented golden bottle cap lid with a crimped edge (the lid from the parry Deckel drauf!), a tiny slow-motion trail behind it. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a boot, a snail and a mound of dirt scattered across the cell), so no boot, no dirt mound, no second creature, no shield. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/dieter-wall-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-21f003b7-7158-4ff6-a793-fd7c945915aa.png",
+      "sourceHash": "7f32e279909754b4f77adf4b963056744147886ecf3603643093ec68f9dc2b2e"
+    },
+    {
+      "id": "talent-dieter-wall-8",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/dieter-wall-8-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-wall): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Breite Absperrung: Das Absperrband hält länger und bremst Gegner, die darin stehen. Motif: one big fat roll of red-and-white striped barrier tape seen at a three-quarter angle, a long wide band unrolling from it in a broad curve across the lower half of the icon, a small blue-steel slow-down swirl on the band. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (barrier tape between posts with a barrel, legs and several green arrows scattered below), so no posts, no barrel, no legs, no rows of arrows, no shield. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/dieter-wall-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-f639587f-5fd9-488e-ab9d-2e3206ebff45.png",
+      "sourceHash": "bbca29735b0bf4758b106be31b46848d92760ea57192e005ed96c429c7f63154"
+    },
+    {
+      "id": "talent-dieter-brawl-26",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-26-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Flaschenpost: Nach jedem erledigten Gegner ist Pfand auf die Zwölf sofort wieder bereit. Motif: one big green deposit bottle lying on the diagonal from lower left to upper right, corked, with a rolled-up cream paper message tied with string visible inside the glass (a message in a bottle), a warm copper highlight along the glass. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a green bottle, flying shards, a skull and a circular arrow scattered across the cell), so no skull, no shards, no second bottle; at most one small orange circular arrow in the top-right corner meaning instantly ready again. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/dieter-brawl-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-f6a2699d-1671-4559-b8c1-09a215b0cd61.png",
+      "sourceHash": "10dadd6430619faec6d2cc3915b81847a3a72218175e314b2e9413c07b78c850"
+    },
+    {
+      "id": "talent-dieter-brawl-28",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-28-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Wurf in die Runde: Pfand auf die Zwölf zählt mit; jeder zweite Treffer bringt zusätzliche Randale. Motif: one big round wooden beer-hall table top seen at a three-quarter angle (the round of drinkers), a green deposit bottle crashing down onto its center with a bold splash of beer foam. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a flying bottle, two small bottles, a dagger, arrows and a flame scattered across the cell), so no dagger, no rows of arrows, no small extra bottles; at most one small red-orange rage flame in the top-right corner. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/dieter-brawl-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-8723b620-e55c-4191-b26d-b119cb8110ef.png",
+      "sourceHash": "0658cdbc99c07c366e82a0601ba1d2d82f0741e07440d2d8b6842b2ee8ebd183"
+    },
+    {
+      "id": "skill-kaethe-ground",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-ground.png",
+      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-kaethe-ground, ability \"Kartenregen (rain of cards onto an area)\" of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: ONE big leading playing card in the foreground (cream face with one large red heart suit symbol) diving diagonally down toward the lower left, followed by exactly four more big playing cards in a short loose trail behind it toward the upper right (club, spade, diamond, club), five cards in total and never more; every card is large, about a third of the tile high, and clearly separated from the others; no small cards, no crowd of cards, no card fragments filling the background. Effects (small accents, no more than these): a glowing golden impact ring on the ground under the leading card. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-a646685b-2300-4eab-86f2-41d7312498b2.png",
+      "sourceHash": "f1c71c1096407e37e16954f2c7bfd419b82c8d76d607f50a6277dc2614f51c38"
+    },
+    {
+      "id": "skill-kaethe-handlesen",
+      "kind": "skills",
+      "output": "assets/precision/sources/2026-09-25/e71-kniffe/skill-kaethe-handlesen.png",
+      "prompt": "Use case: stylized-concept. Production RPG ability icon for the action bar of Mertloch Chronicles, ID skill-kaethe-handlesen, ability \"Handlesen (palm reading, heal over time)\" of Kreuz-Kaethe, a 71 year old pub card player (Skat) in a plum knitted cardigan with reading glasses on a chain; French-suited playing cards, Skat score pad, egg liqueur, knitting and fortune telling. Main object: ONE open upturned elderly palm with a plum knitted cardigan cuff at the wrist, fingers relaxed and slightly spread, floating alone over the plain moss-green tile, the fortune lines on the palm glowing softly golden; only the hand and the cuff, no arm beyond the cuff. The background is only the plain moss tile: no table, no wooden tabletop, no drinking glass, no playing cards, no knitting, no furniture, no scene. Effects (small accents, no more than these): a small bright red heart suit symbol glowing in the center of the palm; three small green healing plus signs rising. Style: match the attached reference image exactly; it shows existing ability icons of this game on their tile. Detailed hand-clustered comic pixel art with crisp deliberate pixel clusters, at least four tone steps per material, a closed dark ink outline (#171f29) around every shape, light from the upper left: highlights upper left, darkest shade lower right. Restrained muted palette of a rustic German village RPG. Tile: the square tile fills the entire canvas edge to edge. Background base dark moss green (#263530) with irregular moss patches (#354b36) covering about a quarter of the tile, a sprinkle of tiny dark ink dots (#171f29) and very few warm brown flecks (#3d3530); the outermost band of the tile is slightly darker like a soft vignette. No bluish or grey-blue tones anywhere in the background. The main object casts a hard dark ink-colored drop shadow offset down and to the right. Composition: exactly one main object in three-quarter view, set on the diagonal from lower left to upper right, covering at least 55 percent of the tile area, its longer side 75 to 95 percent of the tile; cropping at the tile edge is allowed. At most two small effect accents. Effect colors show the effect: fire and embers glowing orange-gold, healing as a green plus (#849451, #bac475) with ink outline, protection as blue steel (#456476, #719090). Big simple shapes and strong light-dark contrast so the icon stays readable at 48 by 48 pixels. Playing cards may show French suit symbols (club, spade, heart, diamond) and small portrait faces, but never letters or numbers. The reference only shows style and tile; do not copy its subject (no beer stein, no hop engraving, no beer foam). No text, no letters, no numbers, no logos, no painted frame, no bevel, no rounded corners, no white or transparent margin (the game adds a 1 pixel ink rim itself), not a grid, not an atlas, only one single tile. No photorealism, no blur. Polished production icon.",
+      "references": [
+        "assets/precision/sources/2026-09-26/stilvorlagen/stilvorlage-kniff-buff.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-f0ae2266-5f22-4f42-99e8-e7a205862cb1.png",
+      "sourceHash": "40716f6503a3653464bdcfa1f32b2fb9cf903c640449bc0651cacacb46d5beac"
+    },
+    {
+      "id": "talent-kevin-hunt-12",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-hunt): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Kurze Pechsträhne: Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher. Motif: a scruffy black village alley cat crouching low and stretched out wide along a dented sooty tin can that lies horizontally, cat and can together filling the whole width of the icon (a wide, low composition, not a tall sitting cat); big bright amber eyes, the black fur drawn in dark petrol greys with lighter grey-blue midtones and a strong warm copper rim light along its back and ears so the cat reads clearly on a dark background; a comically short stubby tail; the fuse of the can has just fizzled out (a dud: one thin grey smoke curl) and one small golden spark is already sputtering back to life on it, meaning the guaranteed overload comes sooner. It replaces an older picture of this same talent that looked almost exactly like another talent (three dice with a curved arrow and an exploding die, the same picture as the talent Zweite Serie), so no dice, no curved arrow, no explosion burst, no tall narrow sitting pose. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/kevin-hunt-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-4f47c19d-3c1b-4575-8d7d-a10f30201c08.png",
+      "sourceHash": "60d640de8a68425d4f1cd4522410f88055e09d5886ae19c50e9b8180279ed1f8"
+    },
+    {
+      "id": "talent-dieter-brawl-29",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (dieter-brawl): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Dosen-Dieter, a burly village pub brawler who tanks with his fists and a bottle-cap ladle; his rage is called Randale, and damage he takes is written on his bar tab (Zeche: a long cream cash receipt with pencil tally marks, paid off with coins or skipped by slamming the counter). Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Weiter zum Nächsten: Jeder erledigte Gegner verkürzt die Abklingzeit von Ab durch die Hecke und zahlt Randale. Motif: one big heavy brown leather work boot in mid-stride, set large on the diagonal from lower left to upper right with a bright copper highlight on the toe cap and a clearly visible sole, kicking forward out of a torn gap in a hedge: the hedge is shown only as a few loose green leaves and broken twigs flying around the boot (on through the hedge to the next one), never as a solid block or square of foliage behind the boot. It replaces an older picture of this same talent that was a scattered composition of several equal-sized things without a main object (a skull, a boot, arrows, a circular arrow and flames scattered across the cell), so no skull, no rows of arrows, no flames, no hedge wall, no square block of leaves; at most one small orange circular arrow in the top-right corner meaning a shorter cooldown. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/dieter-brawl-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-26",
+      "originalFile": "exec-269d0e52-b3c1-4332-944b-2632546f854e.png",
+      "sourceHash": "cacaeffe5c9de9384bcf25f887354172d03aaddd0bae5df002f684e799cc081e"
     }
   ]
 }
