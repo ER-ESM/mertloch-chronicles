@@ -74,7 +74,7 @@ try{
   assert.ok(card.offers.slice(0,4).every(o=>o.cls==='dg-suggest'&&o.role!=='heal'),'vorn die fehlenden Rollen: '+JSON.stringify(card.offers));
   assert.deepEqual(card.offers.filter(o=>o.cls==='dg-double').map(o=>o.role),['heal','heal'],'zweite Heilung hinten, gedämpft');
   const tipNeed=await hover('[data-dg-need="tank"]'),tipOffer=await hover('[data-dg-hire="merc-pils-peter"]'),tipDouble=await hover('[data-dg-hire="merc-schorle-susi"]');await shot('11-eingangskarte-tooltip');
-  assert.match(tipNeed,/Fehlt noch: Schutz/);assert.match(tipOffer,/fehlt in deiner Gruppe/);assert.match(tipDouble,/doppelt ist ein Sonderfall/);
+  assert.match(tipNeed,/Fehlt noch: Schutz/i);assert.match(tipOffer,/fehlt in deiner Gruppe/i);assert.match(tipDouble,/doppelt ist ein Sonderfall/i);
   const c=await elCenter('[data-dg-hire="merc-pils-peter"]');await clickAt(c);
   const after=await until(`const c=document.querySelector('[data-dg-entry]');return g.companions.some(x=>x.id==='merc-pils-peter')&&c&&{need:[...c.querySelectorAll('[data-dg-need]')].map(x=>x.dataset.dgNeed)}`,8000,200);
   assert.ok(after,'Pils-Peter per Klick angeheuert');assert.deepEqual(after.need,['damage','damage','damage'],'Schutz fehlt nicht mehr');
@@ -104,9 +104,9 @@ try{
   const falling=runs.every(x=>x.every((y,i)=>i===0||y.t<=x[i-1].t+.05));assert.ok(falling,'Countdown fällt: '+JSON.stringify(runs.slice(0,2)));
   ok('Passiv: Bossrahmen „'+idle+'“, Wut-Tooltip „…'+String(chipTip).slice(-48)+'“, Countdown der Warnleiste fällt ('+runs.length+' Zeilen, z. B. '+runs[0].map(y=>y.t).join('→')+' s)');
   // Nichts tun bis zum Ende; jeden Tod festhalten
-  let deaths=0,dead=false,deathShots=[],maxRage=1;const t0=Date.now();
+  let deaths=0,dead=false,deathShots=[],maxRage=1,minPct=100;const t0=Date.now();
   while(Date.now()-t0<460000){const st=await read(`const bb=${bigB};return {dead:g.dead,alive:!!bb&&bb.hp>0,aggro:!!bb?.aggro,pct:bb?Math.round(bb.hp/bb.maxHp*100):0,rage:bb?.rageFactor||1,wiped:!!g.dungeonRun?.ghost?.wiped,ft:Math.round(bb?.fightTime||0)}`);
-   maxRage=Math.max(maxRage,st.rage);if(!st.alive){results.passive.end={won:true,...st};break;}
+   maxRage=Math.max(maxRage,st.rage);if(st.aggro)minPct=Math.min(minPct,st.pct);if(!st.alive){results.passive.end={won:true,...st};break;}
    if(st.wiped||(!st.aggro&&Date.now()-pulledAt>60000)){results.passive.end={won:false,...st};break;}
    if(st.dead&&!dead){deaths++;await wait(900);
     const info=await read(`const w=document.querySelector('#deathScreen');const r=w.getBoundingClientRect(),fr=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect(),v=window.mertloch.state().viewport,cv=document.querySelector('#world').getBoundingClientRect(),k=cv.width/v.width;
@@ -118,11 +118,11 @@ try{
     assert.ok(info.side,'Todesfenster neben dem Bossrahmen: '+JSON.stringify(info.rect));assert.ok(!info.overFrame&&!info.coversBoss&&!info.coversTank&&!info.coversCenter,'Big B, Tank und Bildmitte frei: '+JSON.stringify(info));
     assert.equal(info.chip,'Söldner warten','auch tot: „Söldner warten“');assert.match(info.chipNote,/Du liegst/);}
    dead=st.dead;await wait(400);}
-  results.passive.deaths=deathShots;results.passive.maxRage=maxRage;results.passive.seconds=Math.round((Date.now()-t0)/1000);
+  results.passive.deaths=deathShots;results.passive.maxRage=maxRage;results.passive.minPct=minPct;results.passive.seconds=Math.round((Date.now()-t0)/1000);
   assert.ok(results.passive.end,'Kampf endet ('+JSON.stringify(results.passive.end)+')');
   if(OLD){ok('Regeln #741: passiv '+(results.passive.end.won?'gewonnen':'verloren')+' nach '+results.passive.end.ft+' s Kampf, '+deaths+' Tode');}
   else{assert.equal(results.passive.end.won,false,'passiv verliert');assert.ok(maxRage>1,'die Wut hat zugeschlagen');
-   ok('Passiv wie die Prüferin: verloren (Wipe nach der Wut, Big B zuletzt bei '+results.passive.end.pct+' %), '+deaths+' Tode; Todesfenster '+deathShots.map(d=>d.side+' '+d.rect.l+','+d.rect.t+' '+d.rect.w+'×'+d.rect.h).join(' / ')+', Big B, Tank und Mitte frei, Bossrahmen tot „Söldner warten“');
+   ok('Passiv wie die Prüferin: verloren (Wipe nach der Wut, Big B zuletzt bei '+minPct+' %), '+deaths+' Tode; Todesfenster '+deathShots.map(d=>d.side+' '+d.rect.l+','+d.rect.t+' '+d.rect.w+'×'+d.rect.h).join(' / ')+', Big B, Tank und Mitte frei, Bossrahmen tot „Söldner warten“');
    if(deathShots.length>1)results.passive.recapSame=deathShots[0].recap===deathShots[1].recap;}}
 
  // ─────────────────────────────────────────────── 3 · aktiv als Heilerin: gewinnt, Buffs auf den Rahmen, Ausruf, Einsatz mit Bonus

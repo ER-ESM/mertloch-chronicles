@@ -12,8 +12,8 @@
 .companion-frame .cf-buffs canvas.cf-expiring{animation:cf-blink .5s steps(2,jump-none) infinite}
 @keyframes cf-blink{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){.companion-frame .cf-buffs canvas.cf-expiring{animation:none;opacity:.6}}
-body:not(.touch-mode) .companion-frame .unit-content{display:grid;grid-template-columns:minmax(0,1fr) 76px;column-gap:4px;align-items:center}
-body:not(.touch-mode) .companion-frame .unit-content>strong{grid-column:1/-1}
+body:not(.touch-mode) .companion-frame .unit-content{display:grid;grid-template-columns:minmax(0,1fr) 76px;column-gap:4px;align-items:center;row-gap:0;align-content:center;align-self:center}
+body:not(.touch-mode) .companion-frame .unit-content>strong{grid-column:1/-1;margin:0 0 1px!important}
 body:not(.touch-mode) .companion-frame .cf-buffs{height:24px}
 /* Handy: die Symbole liegen oben rechts über dem Namen (die Rahmen sind dort schmal); höchstens zwei */
 .touch-mode .companion-frame{position:relative}
