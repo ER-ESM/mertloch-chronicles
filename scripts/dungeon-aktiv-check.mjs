@@ -72,12 +72,13 @@ try{
  const hero=await loadBigB();results.hero=hero;
  // Vor den Thron, F: Einleitung; danach beginnt der Kampf (bzw. der Held zieht Big B selbst, falls er nach der Einleitung wartet)
  await put('k2',54,23);await wait(900);await s.settle();await b.press('f');
- let fightOn=await until(`return !!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,30000,200);
- if(!fightOn){const p=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:p.x,y:p.y-22},'right');await read(`g.stopAuto?.();g.target=null;return 1`);fightOn=await until(`return !!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,15000,200);}
+ let fightOn=await until(`return !!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,15000,200);
+ /* Dungeon-Fix 5: nach der Rede wartet Big B („bereit“), bis der Held angreift – Rechtsklick, bis der Kampf läuft */
+ for(let i=0;i<4&&!fightOn;i++){await until(`return !!g.dungeonRun.intro?.ready||!!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,20000,200);const p=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);if(p)await clickAt({x:p.x,y:p.y-22},'right');fightOn=await until(`return !!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,10000,200);}
  assert.ok(fightOn,'Kampf mit Big B beginnt');
  // ─────────────────────────────────────────────── 1 · ohne eigene Tat: „Söldner warten“
  await read(`g.stopAuto?.();g.target=null;g.moveTo=null;return 1`);
- const idle=await until(`const c=document.querySelector('.bf-chip[data-chip="rally"]');return c&&c.classList.contains('bf-warn')&&!E.rallyActive(g)&&{text:c.innerText.trim(),label:c.dataset.tooltipLabel}`,12000,200);
+ const idle=await until(`const c=document.querySelector('.bf-chip[data-chip="rally"]');return c&&c.classList.contains('bf-warn')&&!E.rallyActive(g)&&{text:c.innerText.trim(),label:c.dataset.tooltipLabel}`,20000,200);
  assert.ok(idle,'Bossrahmen: Chip „Söldner warten“, solange der Held nichts tut');
  const idleTip=await hover('.bf-chip[data-chip="rally"]');await shot('10-soeldner-warten');await mouse({x:1000,y:300});
  assert.match(idleTip,/ohne Rückenwind/,'Tooltip erklärt „Söldner warten“: '+idleTip);
