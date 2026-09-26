@@ -53,6 +53,7 @@ test('Esc vor dem Film: Hörer ganz oben in index.html, Ladeschirm merkt Esc, al
  const html=src('index.html'),app=src('app.js'),ss=src('start-screen.js'),intro=src('intro-ui.js');
  const inline=html.indexOf('window.__bootEsc=1');assert.ok(inline>0&&inline<html.indexOf('<script type="module"'),'Hörer vor allen Modulen');
  assert.ok(inline<html.indexOf('<body'),'schon im Kopf der Seite');
+ assert.match(html,/addEventListener\('keydown',esc,true\);[^<]*addEventListener\('keyup',esc,true\);\}\)\(\);<\/script>/,'auch das Loslassen zählt (Drücken fiel in den Seitenwechsel), ohne globalen Namen');
  assert.match(app,/intro\.start\(\{skip:auto&&bootEscaped\(\)\}\)/,'nur beim automatischen Betreten nach dem Neuladen');
  assert.match(app,/return autoEntering=!!id&&id===hero\?\.id;/);
  assert.match(ss,/const release=carryEscape\(\);const r=await host\.createHero\(/);assert.match(ss,/if\(r\.error\)\{release\(\);/,'Fehlschlag gibt Esc wieder frei');
