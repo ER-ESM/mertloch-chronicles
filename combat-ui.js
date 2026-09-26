@@ -45,7 +45,7 @@ export function skillStatus(g,id){const s=g.skills.find(s=>s.id===id);if(!s)retu
  const targetValid=!s.range||s.ground||e?.hp>0&&e.ai!=='returning'&&!e.spawnGrace&&Math.hypot(e.x-p.x,e.y-p.y)<=s.range+(cs.range||0)&&g.world.lineClear(p,e),usable=(!g.casting||s.offGcd)&&targetValid&&available(g,id)&&!g.dead&&!beforeSkill(g,s,cs)&&g.cooldowns[id]<=.01&&(s.offGcd||g.gcd<=.01)&&!resourceFailure(g,s,cs,procFree(g,id)?0:resourceCost(g,s,cs,skillCost(g,s,cs)))&&!skillPrecheck(g,id,s,cs)&&(id!=='heal'||p.hp<p.maxHp||helpHurt(g)||cs.overhealShield||cs.healEmpower||g.rpg.talents.spec==='baerbel-stage'||resourceHealAlways(g,id));
  const requirement=weaponRequirement(g,s,ITEMS);
  // Leiste: nur offensive Kombos leuchten (Abwehr, Heilung, Stärkung bleiben ruhig); Variante = Kniff wechselt Name/Icon-Zustand, solange die Bedingung gilt
- const defensive=DEFENSIVE_SKILLS.has(id),variant=skillVariant(g,id,st,e,usable);
+ const defensive=DEFENSIVE_SKILLS.has(id)||!!s.heals/* Heiler-WoW: umgewidmete Heilplätze leuchten nicht wie ein Angriff (Riechsalz liegt auf der Markierung) */,variant=skillVariant(g,id,st,e,usable);
  return {weaponMissing:!!requirement&&!requirement.met,ideal:usable&&(procGlow(g,id)||(ideal&&!defensive&&!resourceSlot(g,id))),defensive,variant,usable,cooldown:g.cooldowns[id]||0,gcd:s.offGcd?0:g.gcd,gcdTotal:cs.gcd};
 }
 /** Heiler-WoW Teil 3 (Prüferin #741: Löffelkur ~20 Zeilen, Großreinemachen ~14): Kniff-Tooltip nach WoW-Muster. Ohne Umschalttaste nur
