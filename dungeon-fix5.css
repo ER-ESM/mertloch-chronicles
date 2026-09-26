@@ -2,3 +2,24 @@
 
 /* 5 · Nach der Rede wartet Big B: kleiner Zustand „bereit“ im Bossrahmen, Erklärung im Tooltip */
 .bf-chip.bf-ready{border-color:#ecb95c;color:#ffe6a0;background:#2a2112d9}
+
+/* 2/6 · Todesfenster im Dungeon: klein und oben mittig unter dem Bossrahmen (death-screen.js placeTop), die Bildmitte bleibt frei.
+   Am Handy bleiben die Tipp-Ziele wie gehabt (≥ 44 px). */
+body:not(.touch-mode) .death-screen.ds-dungeon{min-width:0;width:min(330px,92vw);gap:4px;padding:6px 12px 8px}
+body:not(.touch-mode) .death-screen.ds-dungeon h2{font-size:22px;letter-spacing:.04em}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-cause{gap:5px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-chip{min-height:26px;padding:2px 8px;gap:5px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-chip b{font-size:13px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-chip .ui-glyph{width:16px;height:16px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-recap{min-width:0;width:100%;box-sizing:border-box;padding:3px 6px 4px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-recap-row{height:17px;grid-template-columns:14px minmax(0,1fr) auto 40px 40px;gap:5px;font-size:11px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-ghost{min-width:0;width:100%;box-sizing:border-box;min-height:26px;padding:2px 8px;font-size:12px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-flag{min-height:32px;padding:2px 8px}
+body:not(.touch-mode) .death-screen.ds-dungeon .ds-wake{min-height:32px;padding:4px 14px;font-size:14px}
+/* Rückblick: gebündelte Treffer („5×“), der Todesschlag hebt sich ab, der Rest gedämpft oben */
+.death-screen .ds-recap-row b u{text-decoration:none;color:#ffd0a0;font-weight:900}
+.death-screen .ds-recap-row.is-fatal{color:#fff}
+.death-screen .ds-recap-row.is-fatal em{color:#ff6a50}
+.death-screen .ds-recap-row.is-fatal .ui-glyph{color:#ffd0c0}
+.death-screen .ds-recap-row.ds-recap-rest{color:#a99a86}
+.death-screen .ds-recap-row.ds-recap-rest em{color:#b8a58c}

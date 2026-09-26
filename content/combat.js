@@ -166,8 +166,10 @@ export const DEATH_UI={
   giveUp:'Kampf aufgeben',giveUpArmed:'Nochmal: aufgeben',armed:3},
  // Dungeon-Fix 4 (Nachprüfung #726: nur der letzte Treffer „Trümmer · 70“, obwohl in 9 s rund 800 kamen): Todesrückblick wie in WoW – die letzten
  // Treffer mit Quelle und Schaden als Symbolzeilen (window s vor dem Tod, höchstens rows Zeilen), darüber die Summe
- recap:{rows:5,window:10,label:'Letzte Treffer',note:'Was dich in den letzten Sekunden getroffen hat, der letzte Treffer unten.',sum:(n,s)=>'Σ '+n.toLocaleString('de-DE')+' in '+s+' s',
-  ago:s=>'−'+s.toFixed(1).replace('.',',')+' s',auto:'Autoangriff',ground:'Fläche'},
+ // Dungeon-Fix 5 (Prüfer #728: die Zeilen deckten die Summe nicht ab): Treffer derselben Quelle gebündelt („5×“), der Todesschlag unten, der Rest als
+ // „+ n weitere“ – die Zeilen ergeben genau Σ. rows = Zeilen insgesamt (mit der Rest-Zeile); das Fenster ist kleiner und sitzt oben
+ recap:{rows:4,window:10,label:'Letzte Treffer',note:'Alles, was dich in den letzten Sekunden getroffen hat: gleiche Treffer zusammengefasst, der Todesschlag unten mit Totenkopf. Die Zeilen ergeben die Summe.',sum:(n,s)=>'Σ '+n.toLocaleString('de-DE')+' in '+s+' s',
+  ago:s=>'−'+s.toFixed(1).replace('.',',')+' s',auto:'Autoangriff',ground:'Fläche',times:n=>n+'×',rest:n=>'+ '+n+' weitere'},
  tips:{interrupt:['Unterbrechen','Gelbe Zauberbalken im Zielrahmen damit abbrechen.'],dash:['Ausweichen','Rote Bodenmarken verlassen: Sprung in Laufrichtung.'],parry:['Parieren','Angekündigte Nahkampfhiebe abfangen.'],food:['Brezel','Heilt auch im Kampf – früh essen, nicht erst bei 10 %.']},
 };
 export const UNIT_TIP={

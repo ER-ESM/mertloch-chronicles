@@ -128,8 +128,9 @@ test('Todesrückblick: die letzten Treffer mit Quelle und Schaden, die Summe dar
  const hits=[['Pappkulisse fällt',true,.2],[null,false,.1],['Trümmer',false,.03],[null,false,.1],['Trümmer',false,.03],['Trümmer',false,.03],['Trümmer',false,.03]];
  for(const [name,ground,pct] of hits){b.lastCast=name?{name,title:name,ground}:null;g.player.invulnerable=0;g.player.parry=0;if(name)g.hitPlayer(b,0,true,pct);else g.hitPlayer(b,90);/* Autoangriff: fester Schaden, kein Anteil */run(g,.8);}
  b.lastCast={name:'Trümmer'};g.player.invulnerable=0;g.hitPlayer(b,0,true,5);assert.ok(g.dead);assert.ok(ev?.recent?.length>=5,'Treffer im Ereignis: '+ev?.recent?.length);
- const rc=deathRecap(ev.recent);assert.equal(rc.rows.length,DEATH_UI.recap.rows,'höchstens fünf Zeilen');assert.equal(rc.rows.at(-1).skill,'Trümmer','der letzte Treffer unten');
- assert.ok(rc.rows.some(x=>x.auto&&x.skill),'Autoangriff benannt');assert.ok(rc.sum>=rc.rows.reduce((n,x)=>n+x.amount,0),'Summe über alle');assert.ok(rc.span>=4&&rc.span<=DEATH_UI.recap.window,'Zeitraum '+rc.span);
+ /* Dungeon-Fix 5: gebündelt – Pappkulisse, Autoangriff 2×, Trümmer 5× (Todesschlag unten); die Zeilen ergeben genau Σ */
+ const rc=deathRecap(ev.recent);assert.ok(rc.rows.length<=DEATH_UI.recap.rows,'höchstens '+DEATH_UI.recap.rows+' Zeilen');assert.equal(rc.rows.at(-1).skill,'Trümmer','der letzte Treffer unten');assert.ok(rc.rows.at(-1).fatal&&rc.rows.at(-1).count>=5,'Trümmer gebündelt');
+ assert.ok(rc.rows.some(x=>x.auto&&x.skill),'Autoangriff benannt');assert.equal(rc.sum,rc.rows.reduce((n,x)=>n+x.amount,0)+(rc.rest?.amount||0),'Zeilen ergeben Σ');assert.ok(rc.span>=4&&rc.span<=DEATH_UI.recap.window,'Zeitraum '+rc.span);
  const html=deathHtml(deathCause(ev,[]),{},{name:'Weinkeller'},rc);assert.equal((html.match(/ds-recap-row/g)||[]).length,rc.rows.length);assert.match(html,/Σ /);assert.ok(recentHits(g).length>=5);
  assert.equal(deathRecap([{by:'Big B',skill:'Trümmer',amount:70,ago:0}]),null,'ein einzelner Treffer braucht keinen Rückblick');
 });

@@ -17,27 +17,43 @@ import {dungeonCheckpoint,ghostState,standUpHere} from './dungeon.js';
 // - Im Kampf ist „Am Kontrollpunkt aufstehen“ (= Kampf aufgeben) kein goldener Hauptknopf mehr: zweitrangig, erst der zweite Klick gibt auf
 //   (der erste macht ihn DEATH_UI.dungeon.armed s lang scharf). Nach dem Kampf bzw. nach einem Wipe bleibt er der Hauptknopf.
 // - Der Bildschirm fokussiert sich selbst statt des Knopfs: der Tooltip erschien sonst ohne Hover (focusin öffnet Tooltips).
+// Dungeon-Fix 5 (Prüfer-Playtest #728): Der Rückblick bündelt Treffer derselben Quelle, zeigt Todesschlag und größte Brocken, den Rest als „+ n weitere“ –
+// die Zeilen ergeben genau Σ; die Ursache ist der größte Brocken. Im Dungeon sitzt das Fenster klein oben mittig unter dem Bossrahmen (dungeon-fix5.css).
 
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-/** Ursache aus dem Todesereignis: Gegnername, Fähigkeit, Bodenfläche, Zahl weiterer Angreifer. */
-export function deathCause(ev={},attackers=[]){
- const others=attackers.filter(n=>n&&n!==ev.by).length;
- return {by:ev.by||'',skill:ev.skill||'',ground:!!ev.ground,others,...(ev.amount>0?{amount:Math.round(ev.amount)}:{})};
+/** Ursache aus dem Todesereignis: Gegnername, Fähigkeit, Bodenfläche, Zahl weiterer Angreifer. Dungeon-Fix 5: mit Rückblick (recap) ist die Ursache
+ *  der größte Brocken – Quelle und Fähigkeit mit dem meisten Schaden, gebündelt (count) –, nicht der letzte kleine Treffer (Prüfer #728: „Trümmer · 70“,
+ *  obwohl vorher eine Kugel 988 traf). */
+export function deathCause(ev={},attackers=[],recap=null){
+ const c=recap?.cause,src=c||ev,others=attackers.filter(n=>n&&n!==src.by).length;
+ return {by:src.by||'',skill:src.skill||'',ground:!!src.ground,others,...(src.amount>0?{amount:Math.round(src.amount)}:{}),...(c?.count>1?{count:c.count}:{})};
 }
 /** Dungeon-Fix 4: Todesrückblick (rein, testbar). hits = engine.recentHits: [{by,skill,auto,ground,amount,ago}] (der letzte zuletzt).
- *  → {rows (höchstens DEATH_UI.recap.rows, der letzte Treffer unten), sum, span (s)} oder null bei weniger als zwei Treffern. */
-export function deathRecap(hits=[]){const R=T.recap,list=(hits||[]).filter(h=>h&&h.amount>0);if(list.length<2)return null;
- const rows=list.slice(-R.rows),sum=list.reduce((n,h)=>n+h.amount,0),span=Math.max(1,Math.round(Math.max(...list.map(h=>h.ago||0))));
- return {rows:rows.map(h=>({by:h.by||'',skill:h.skill||(h.auto?R.auto:''),auto:!!h.auto,ground:!!h.ground,amount:Math.round(h.amount),ago:h.ago||0})),sum:Math.round(sum),span};}
+ *  Dungeon-Fix 5 (Prüfer #728: „Σ 1.972, die fünf Zeilen ergeben 1.268“, „Σ 844 bei 5× Trümmer 70“): wie der Death Recap in WoW. Treffer derselben
+ *  Quelle und Fähigkeit werden gebündelt („Trümmer 5× · 350“) und nach ihrem letzten Treffer geordnet (der Todesschlag unten). Passen nicht alle in
+ *  DEATH_UI.recap.rows Zeilen, bleiben der Todesschlag und die größten Brocken, der Rest steht als eine Zeile „+ n weitere“ – die Zeilen ergeben
+ *  genau Σ. → {rows:[{by,skill,auto,ground,amount,count,ago,fatal}], rest:{count,amount}|null, sum, span (s), cause (größter Brocken)} oder null
+ *  bei weniger als zwei Treffern. */
+export function deathRecap(hits=[]){const R=T.recap,list=(hits||[]).filter(h=>h&&h.amount>0).map(h=>({...h,amount:Math.round(h.amount)}));if(list.length<2)return null;
+ const groups=new Map();list.forEach((h,i)=>{const skill=h.skill||(h.auto?R.auto:''),k=(h.by||'')+'|'+skill+'|'+(h.ground?1:0);let q=groups.get(k);
+  if(!q)groups.set(k,q={by:h.by||'',skill,auto:!!h.auto,ground:!!h.ground,amount:0,count:0,last:i,ago:0});q.amount+=h.amount;q.count++;q.last=i;q.ago=h.ago||0;});
+ const all=[...groups.values()],fatal=all.find(q=>q.last===list.length-1),size=q=>-q.amount;
+ const shown=all.length<=R.rows?all:[fatal,...all.filter(q=>q!==fatal).sort((a,b)=>size(a)-size(b)).slice(0,R.rows-2)];shown.sort((a,b)=>a.last-b.last);
+ const hidden=all.filter(q=>!shown.includes(q)),rest=hidden.length?{count:hidden.reduce((n,q)=>n+q.count,0),amount:hidden.reduce((n,q)=>n+q.amount,0)}:null;
+ const sum=list.reduce((n,h)=>n+h.amount,0),span=Math.max(1,Math.round(Math.max(...list.map(h=>h.ago||0)))),cause=all.slice().sort((a,b)=>size(a)-size(b)||b.last-a.last)[0];
+ const row=q=>({by:q.by,skill:q.skill,auto:q.auto,ground:q.ground,amount:q.amount,count:q.count,ago:q.ago,fatal:q===fatal});
+ return {rows:shown.map(row),rest,sum,span,cause:row(cause)};}
 /** HTML der Rückblick-Zeilen: Symbol (Schwerter = Autoangriff/Treffer, Fläche = Bodenfläche), Fähigkeit, Quelle klein, Schaden, Zeit. */
 export function recapHtml(recap){if(!recap)return '';const R=T.recap,tip=(label,note)=>`data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}"`;
+ /* Dungeon-Fix 5: gebündelte Zeilen („5×“), der Todesschlag mit Totenkopf, der Rest als „+ n weitere“ oben – die Zeilen ergeben Σ */
  return `<div class="ds-recap" tabindex="0" ${tip(R.label,R.note)}><div class="ds-recap-sum">${glyph('skull')}<b>${esc(R.sum(recap.sum,recap.span))}</b></div>`
-  +recap.rows.map(r=>`<div class="ds-recap-row${r.ground?' is-ground':''}">${glyph(r.ground?'area':'swords')}<b>${esc(r.skill||r.by)}</b><small>${esc(r.skill?r.by:'')}</small><em>${r.amount.toLocaleString('de-DE')}</em><i>${esc(R.ago(r.ago))}</i></div>`).join('')+'</div>';}
+  +(recap.rest?`<div class="ds-recap-row ds-recap-rest">${glyph('swords')}<b>${esc(R.rest(recap.rest.count))}</b><small></small><em>${recap.rest.amount.toLocaleString('de-DE')}</em><i></i></div>`:'')
+  +recap.rows.map(r=>`<div class="ds-recap-row${r.ground?' is-ground':''}${r.fatal?' is-fatal':''}">${glyph(r.fatal?'skull':r.ground?'area':'swords')}<b>${esc(r.skill||r.by)}${r.count>1?` <u>${esc(R.times(r.count))}</u>`:''}</b><small>${esc(r.skill?r.by:'')}</small><em>${r.amount.toLocaleString('de-DE')}</em><i>${esc(R.ago(r.ago))}</i></div>`).join('')+'</div>';}
 /** HTML des Bildschirms (rein, testbar). keys: {interrupt,dash,parry,food} → Tastenname oder leer (nicht verfügbar). recap = deathRecap(). */
 export function deathHtml(cause,keys={},place=null,recap=null){
  const tip=(label,note)=>`data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}"`;
  const parts=[];
- if(cause.by)parts.push(`<span class="ds-chip ds-foe" ${tip(T.by+' '+cause.by,[cause.skill,cause.amount?T.amount(cause.amount):''].filter(Boolean).join(' · '))}>${glyph('swords')}<b>${esc(cause.by)}</b>${cause.skill||cause.amount?`<small>${esc([cause.skill.split(' · ')[0],cause.amount?cause.amount.toLocaleString('de-DE'):''].filter(Boolean).join(' · '))}</small>`:''}</span>`);
+ if(cause.by)parts.push(`<span class="ds-chip ds-foe" ${tip(T.by+' '+cause.by,[cause.skill,cause.amount?T.amount(cause.amount):''].filter(Boolean).join(' · '))}>${glyph('swords')}<b>${esc(cause.by)}</b>${cause.skill||cause.amount?`<small>${esc([cause.skill.split(' · ')[0]+(cause.count>1?' '+T.recap.times(cause.count):''),cause.amount?cause.amount.toLocaleString('de-DE'):''].filter(Boolean).join(' · '))}</small>`:''}</span>`);
  if(cause.ground)parts.push(`<span class="ds-chip ds-ground" ${tip(T.ground,T.groundNote)} aria-label="${esc(T.ground)}">${glyph('area')}</span>`);
  if(cause.others>0)parts.push(`<span class="ds-chip ds-others" ${tip(T.others(cause.others),T.othersNote)} aria-label="${esc(T.others(cause.others))}">${glyph('swords')}<b>+${cause.others}</b></span>`);
  const tips=Object.entries(T.tips).filter(([id])=>keys[id]).map(([id,[label,note]])=>`<span class="ds-tip" tabindex="0" ${tip(label+' · '+keys[id],note)} aria-label="${esc(label)}"><kbd>${esc(keys[id])}</kbd></span>`).join('');
@@ -55,7 +71,7 @@ export function mountDeathScreen({shell=document.querySelector('#gameShell'),gam
  let open=false,armedUntil=0;
  function show(ev={}){const g=game();if(!g)return;
   const p=g.player,names=(g.enemies||[]).filter(e=>e.hp>0&&e.aggro&&!e.remoteTarget&&Math.hypot(e.x-p.x,e.y-p.y)<300).map(e=>e.name);
-  const place=dungeonCheckpoint(g);armedUntil=0;el.innerHTML=deathHtml(deathCause(ev,names),keys(),place,deathRecap(ev.recent));el.classList.toggle('ds-dungeon',!!place);el.hidden=false;open=true;document.body.classList.add('hero-dead');ghost(g);
+  const place=dungeonCheckpoint(g);armedUntil=0;const recap=deathRecap(ev.recent);el.innerHTML=deathHtml(deathCause(ev,names,recap),keys(),place,recap);el.classList.toggle('ds-dungeon',!!place);el.hidden=false;open=true;document.body.classList.add('hero-dead');ghost(g);
   /* Dungeon-Fix 4: der Bildschirm selbst bekommt den Fokus (Enter/Leertaste bleiben über Tab erreichbar) – fokussierte Knöpfe öffnen ihren Tooltip */requestAnimationFrame(()=>{el.classList.add('show');el.focus({preventScroll:true});});}
  function hide(){if(!open)return;open=false;el.classList.remove('show');el.hidden=true;document.body.classList.remove('hero-dead');}
  /* Dungeon-Fix 3: nach dem Kampf steht der Held am Ort auf (nichts setzt zurück), sonst am Kontrollpunkt bzw. bei St. Gangolf */
@@ -78,10 +94,11 @@ export function mountDeathScreen({shell=document.querySelector('#gameShell'),gam
   const label=here?D.here:giveUp?(armed?D.giveUpArmed:D.giveUp):D.wake,note=here?D.hereNote:st.wiped?D.wakeLost(place?.name||''):D.wakeNote(place?.name||'');
   if(btn&&btn.textContent!==label){btn.textContent=label;btn.dataset.tooltipLabel=giveUp?D.wake:label;}if(btn&&btn.dataset.tooltipNote!==note)btn.dataset.tooltipNote=note;btn?.classList.toggle('ds-here',here);
   if(btn){btn.classList.toggle('gold-button',!giveUp);btn.classList.toggle('outline-button',giveUp);btn.classList.toggle('ds-giveup',giveUp);btn.classList.toggle('ds-armed',armed);btn.style.setProperty('--armed',armed?String(Math.max(0,(armedUntil-performance.now())/(D.armed*1000))):'0');}
-  el.querySelector('[data-ds-flag]')?.toggleAttribute('hidden',here);placeAboveBar();}
- /** Im Dungeon am Desktop über der Aktionsleiste statt oben mittig – dort steht der Bossrahmen (Abnahme #721: verdeckt). */
- function placeAboveBar(){if(!el.classList.contains('ds-dungeon')||document.body.classList.contains('touch-mode')){el.style.top='';el.style.bottom='';return;}
-  const H=innerHeight;let top=H;for(const n of document.querySelectorAll('.action-area>*:not(#interact):not(.interact):not(.rotation-tip):not([role=tooltip])')){const r=n.getBoundingClientRect(),cs=getComputedStyle(n);if(r.height>2&&r.top>H*.5&&cs.visibility!=='hidden'&&cs.display!=='none')top=Math.min(top,r.top);}
-  el.style.top='auto';el.style.bottom=Math.round(H-top+10)+'px';}
+  el.querySelector('[data-ds-flag]')?.toggleAttribute('hidden',here);placeTop();}
+ /** Dungeon-Fix 5 (Prüfer #728: das Fenster war groß und saß in der Bildmitte): Im Dungeon am Desktop klein und oben mittig wie in WoW – direkt unter
+  *  dem Bossrahmen und seiner Fehlerzeile (Abnahme #721: den Rahmen nicht verdecken), ohne Bossrahmen ganz oben. Die Bildmitte bleibt frei. */
+ function placeTop(){if(!el.classList.contains('ds-dungeon')||document.body.classList.contains('touch-mode')){el.style.top='';el.style.bottom='';return;}
+  const r=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect(),top=r&&r.height?r.bottom+34:Math.round(innerHeight*.02);
+  el.style.bottom='auto';if(el.style.top!==Math.round(top)+'px')el.style.top=Math.round(top)+'px';}
  return {show,hide,get open(){return open;}};
 }

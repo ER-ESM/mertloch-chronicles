@@ -357,6 +357,10 @@ export const DUNGEON_CASTS={
  // Dungeon-Fix 4 (Nachprüfung #726: Richtungszeilen standen bei den Blicken des Prüfers nur 1,4/1,2/0,1 s da): 3,2 s – nach dem Nachsatz
  // bleiben 2,2 s. Die Warnleiste zeigt die Handlung im selben Takt wie der Nachsatz (gemessen, docs/DUNGEON-FIX4-2026-09-26.md); mit der Reserve
  // liegt auch der erste Wert, den die Leiste zeigt, sicher über 2,0 s. 3,4 s kippte in der Simulation Dieter/Seed 8 (vier Söldner am Boden).
+ // Dungeon-Fix 5 (Prüfer #728: „nach dem Nachsatz nur noch 0,2 s“): Ziel mindestens 2,0 s ab sichtbarer Handlungszeile in jeder Lügen-Variante.
+ // Kanonenkugel (alle Phasen) bleibt 3,2 s (2,2 s nach dem Nachsatz); Parkett und Pappkulisse jetzt auch 3,2 s statt 2,8/2,6 s – ohne die
+ // passenden Beweise lügen auch sie, nach dem Nachsatz blieben 1,8/1,6 s. Den Abstand danach zu kürzen (gleicher Takt) nahm in der Simulation dem
+ // Profil „folgt der Behauptung“ zweimal jeden Tod – daher nur länger. Gemessen im Spiel: docs/DUNGEON-FIX5-2026-09-26.md.
  'd-bigb':{cycle:['kanone','anwalt'],tracks:[{cast:'siegelring',every:12,first:6}],casts:{
   kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
@@ -367,12 +371,12 @@ export const DUNGEON_CASTS={
   live:{name:'Live-Schalte',hint:'Adds zuerst',total:2.2,damage:0,summon:{kind:'follower',count:3},lie:{claim:'Ich mach nur ein Foto!',truth:'… mit Follower.',tell:1}},
   kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
-  parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:2.8,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
+  parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:3.2,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Phase 3 „Das Schloss bröckelt" (40–0 %): Pappkulisse mit Trümmern, zwei Kanonenkugel-Bahnen zugleich (nur die Mitte ist sicher),
  // Am eigenen Schopf (zweimal unterbrechen, sonst heilt er 5 %). Ab dem Geständnis lügt er nicht mehr.
  'd-bigb3':{cycle:['kulisse','kanone3','schopf'],tracks:[{cast:'siegelring',every:12,first:4}],casts:{
-  kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:2.6,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
+  kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:3.2,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
   kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… und rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… und links.'}},
   schopf:{name:'Am eigenen Schopf',hint:'Zweimal unterbrechen',total:3.5,damage:0,interruptible:true,interrupts:2,selfHeal:.05,say:'Ich zieh mich hier selbst raus!'},

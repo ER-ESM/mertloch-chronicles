@@ -33,6 +33,7 @@ function drawLanes(c,k,t){
   else{c.strokeStyle='rgba(243,230,204,.45)';c.lineWidth=2;c.beginPath();c.moveTo(claim.x+6,claim.y+6);c.lineTo(claim.x+claim.w-6,claim.y+claim.h-6);c.stroke();}
   c.restore();}
  if(!told)return;
+ drawSafe(c,k,t);
  const since=Math.max(0,Math.min(1,(t-(k.toldAt??t))/Math.max(.1,k.remaining+(t-(k.toldAt??t))))),blink=progress>.75&&Math.sin(t*28)>0;
  for(const i of k.truthLanes||[]){const r=k.lanes[i];if(!r)continue;c.save();c.fillStyle=RED_FILL;c.fillRect(r.x,r.y,r.w,r.h);
   c.fillStyle='rgba(226,67,47,.34)';c.fillRect(r.x,r.y,r.w,r.h*since);
@@ -45,6 +46,17 @@ function drawLanes(c,k,t){
   const by=r.y+r.h*since;c.fillStyle=INK;c.beginPath();c.arc(r.x+r.w/2,by,7,0,Math.PI*2);c.fill();c.fillStyle='#6d737c';c.beginPath();c.arc(r.x+r.w/2-2,by-2,4,0,Math.PI*2);c.fill();
   c.restore();}
 }
+/** Dungeon-Fix 5 (Prüfer #728: bei „… und links.“ war kein sicherer Platz zu erkennen): Nach dem Nachsatz liegt jeder sichere Streifen quer zu den
+ *  echten Bahnen grün gestrichelt am Boden, mit Haken in Laufrichtung der Kugel – bei „rechts und links“ die Mitte, sonst die andere Hälfte.
+ *  Dieselbe Rechnung wie die Warnleiste (alert-answer.js laneAction). */
+function drawSafe(c,k,t){const lanes=k.lanes||[],bad=(k.truthLanes||[]).map(i=>lanes[i]).filter(Boolean);if(!lanes.length||!bad.length||lanes[0].axis==='y')return;
+ const x0=Math.min(...lanes.map(r=>r.x)),x1=Math.max(...lanes.map(r=>r.x+r.w)),y0=Math.min(...lanes.map(r=>r.y)),y1=Math.max(...lanes.map(r=>r.y+r.h));
+ let safe=[[x0,x1]];for(const r of bad)safe=safe.flatMap(([a,b])=>[[a,Math.min(b,r.x)],[Math.max(a,r.x+r.w),b]]).filter(([a,b])=>b-a>1);
+ const pulse=.55+.25*Math.sin(t*6);
+ for(const [a,b] of safe){c.save();c.fillStyle='rgba(126,206,104,'+(.14+.06*pulse).toFixed(3)+')';c.fillRect(a,y0,b-a,y1-y0);
+  c.setLineDash([7,5]);c.lineDashOffset=t*14;c.strokeStyle='rgba(170,232,140,'+pulse.toFixed(3)+')';c.lineWidth=2.5;c.strokeRect(a+3,y0+3,b-a-6,y1-y0-6);c.setLineDash([]);
+  const x=(a+b)/2;c.lineCap='round';c.lineJoin='round';for(let y=y0+34;y<y1-14;y+=58){c.strokeStyle=INK;c.lineWidth=6;c.beginPath();c.moveTo(x-8,y);c.lineTo(x-2,y+6);c.lineTo(x+9,y-7);c.stroke();c.strokeStyle='#bff0a0';c.lineWidth=3;c.stroke();}
+  c.restore();}}
 /** Einschlag: kurzer heller Streifen über die getroffene Bahn. */
 function impact(c,r,a){c.save();c.globalAlpha=Math.max(0,a);c.fillStyle='rgba(255,236,190,.55)';c.fillRect(r.x,r.y,r.w,r.h);c.strokeStyle='#fff0c8';c.lineWidth=3;c.strokeRect(r.x,r.y,r.w,r.h);c.restore();}
 /** Bodenstellen (Parkett, Pappkulisse): wie die Bodenkreise, je Stelle eine Ellipse mit wachsender Füllung. */
