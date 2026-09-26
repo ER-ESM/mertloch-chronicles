@@ -410,6 +410,9 @@ export function introState(g){const run=dungeonRun(g),it=run?.intro;if(!it)retur
  if(it.ready&&roomAt(run.def,g.player.x,g.player.y)?.id!==boss.dungeonBoss.room)return null;
  return {boss,left:it.ready?0:Math.max(0,it.fightAt-g.time),total:it.fightAt-it.at,said:it.said,ready:!!it.ready};}
 /** Wartet dieser Boss nach seiner Rede auf den Angriff (ready)? */
+/** Dungeon-Fix 7 (Prüferin #770: ein Rechtsklick auf den Boden bei Big B schaltete während der Rede „Autoangriff an“, und bei „bereit“ zog der Autoangriff
+ *  ihn von selbst): Bis zu „bereit“ ist ein Boss mit Einleitung nicht angreifbar – kein Autoangriff, kein Pull, ein Rechtsklick läuft nur. */
+export function bossUnready(g,e){return !!e?.dungeonBoss&&bossHeld(g,e)&&!bossReady(g,e);}
 export function bossReady(g,e){const it=dungeonRun(g)?.intro;return !!it?.ready&&!!e&&it.boss===e.bossId&&bossHeld(g,e);}
 /** Dungeon-Fix 5: Der Held zieht den wartenden Boss (Angriff, Nahbereich): Tür zu, Kampf, erster Zauber nach der Anlaufzeit. → true, wenn gezogen. */
 export function pullBoss(g,e){if(!bossReady(g,e)||g.dead)return false;const run=dungeonRun(g);run.intro=null;engageBoss(g,e);return true;}
