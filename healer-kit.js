@@ -6,7 +6,7 @@
 //  - legt Hilfe als normale Buffs aufs Ziel: Söldner aidHot (Heilung über Zeit), aidBuff (Schild), aidSave (Notfall) – die Truppenrahmen
 //    zeigen jedes aid…-Feld mit Restzeit; beim Helden classState.hots/save, sichtbar in der Buffleiste (describe.js activeBuffs),
 //  - führt Annis Heilungen aus (Likes/Trend); Schorsch und Käthe heilen über ihr Ressourcenmodell (class-resources.js), mit den Bausteinen hier.
-import {HEALER_KITS,HEALER_UI,BALANCE,RESOURCES,specOutput} from './content/index.js';
+import {HEALER_KITS,HEALER_UI,BALANCE,RESOURCES,SPEC_MECHANICS,SKILL_TIP,COMPANION_RULES,specOutput} from './content/index.js';
 import {healCompanionByPlayer} from './companions.js';
 import {healPlayer,addGuard,healerEffects} from './class-mechanics.js';
 import {helpTarget,helpFailure} from './help-target.js';
@@ -31,11 +31,11 @@ export const helpsFriend=(g,s)=>!!s&&(['heal','buff'].includes(s.id)||!!s.classB
 export function applyHealerKit(g,skills){
  const kit=healerKit(g);if(!kit)return skills;
  for(const s of skills){const k=kitEntry(g,s.id);if(!k)continue;s.heals=k.role;
-  if(k.role==='card'||k.role==='group'){if(k.role==='group'&&k.text){s.text=k.text;s.use=k.use||s.use;}continue;}
-  if(k.name)s.name=k.name;if(k.text)s.text=k.text;if(k.use)s.use=k.use;
+  if(k.role==='card'||k.role==='group'){if(k.role==='group'&&k.text){s.text=k.text;s.use=k.use||s.use;s.long=k.long||null;}continue;}
+  if(k.name)s.name=k.name;if(k.text)s.text=k.text;if(k.use)s.use=k.use;s.long=k.long||null;
   if(k.castTime!==undefined)s.castTime=k.castTime;if(k.cd!==undefined)s.cd=k.cd;if(k.cost!==undefined)s.cost=k.cost;
-  s.offGcd=!!k.offGcd;s.healRange=s.range||0;s.range=0;/* kein Gegner nötig; Reichweite zum Verbündeten prüft helpFailure */
-  delete s.damage;delete s.base;delete s.dot;s.damageModel=null;if(s.id==='throw')s.weaponSource=null;s.requiresWeapon=null;
+  s.offGcd=!!k.offGcd;s.healRange=COMPANION_RULES.aidRange;s.range=0;/* Reichweite zum Verbündeten wie helpFailure *//* kein Gegner nötig; Reichweite zum Verbündeten prüft helpFailure */
+  delete s.damage;delete s.base;delete s.dot;delete s.heal;s.damageModel=null;if(s.id==='throw')s.weaponSource=null;s.requiresWeapon=null;
  }
  return skills;
 }
@@ -135,6 +135,19 @@ export function performHealerSkill(g,id,s,cs,context={}){
   emitCombatFx(g,'heal',unitOf(g,t)||g.player,{amount:healed,direct:true});return true;}
  if(k.role==='hot'){hotHelp(g,t,base*k.hot,k.duration,cs,{name:HEALER_UI.hot[spec],id});return true;}
  return false;
+}
+/** Zahlenzeile des Kniff-Tooltips (Heiler-WoW Teil 3): was der Kniff jetzt heilt – am gewählten Ziel, sonst an dir, mit Bastelgrips und Trend. null = kein Heiler-Kniff. */
+export function kitNumbers(g,id,cs){
+ const k=kitEntry(g,id);if(!k)return null;const spec=g.rpg.talents.spec,T=SKILL_TIP,m=multiplier(g,cs),out=specOutput(cs.spec).healing,base=lifeBase(g)*out,r=n=>Math.round(n);
+ if(k.role==='save')return T.save(r(lifeBase(g)*k.heal),r(k.reduction*100),k.duration);
+ if(k.role==='hot')return T.hot(r(base*k.hot*m),k.duration);
+ if(spec==='baerbel-care'&&(k.role==='filler'||k.role==='big'))return T.heal(r(base*k.heal*m));
+ if(spec==='schorsch-chef'&&k.role==='filler'){const w=RESOURCES.schorsch.items.wurst.value*(1+(cs.wurstHeal||0))*(1+(SPEC_MECHANICS[spec]?.chef?.wurstBonus||0));return T.serve(r(base*w*m),r(base*k.hotGar*m),r(base*k.bread*m));}
+ if(spec==='schorsch-chef'&&k.role==='big')return T.plate(r(base*k.heal*m),r(base*RESOURCES.schorsch.items.wurst.value*k.perItem*m));
+ if(spec==='kaethe-herz'&&k.role==='big'){const per=base*k.perAuge*m*(1+(cs.abrechnenPower||0)),a=g.res?.augen||0;return T.bilanz(String(Math.round(per*10)/10).replace('.',','),a>=RESOURCES.kaethe.win?r(per*a)+'':'');}
+ if(k.role==='group'){const mk=SPEC_MECHANICS[spec],f=mk?.field?.kind==='nest'?{n:(cs.fieldHeal||0)+mk.field.heal,d:mk.field.duration+(cs.fieldDuration||0),flat:true}:mk?.chef?{n:mk.chef.buffet.heal,d:mk.chef.buffet.duration}:mk?.herz?{n:mk.herz.circle.heal,d:mk.herz.circle.duration}:null;
+  if(f)return T.group(r(f.n*(f.flat?(cs.flatScale||1)*out:1)*(1+(cs.healPower||0)+(cs.healBonus||0))),f.d);}
+ return null;
 }
 /** Anzeige: Hilfe am Helden als Buffs (describe.js activeBuffs). */
 export function healerBuffs(g){

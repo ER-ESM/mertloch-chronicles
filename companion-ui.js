@@ -1,5 +1,6 @@
 import {COMPANION_TEXT as T,COMPANION_UI as UI,COMPANION_ROLES,COMPANION_RULES as R} from './content/index.js';
 import {selectFriend,selectedCompanion,helpTarget,helpFailure} from './help-target.js';
+import {setMouseoverFriend} from './healer-kit.js';
 import {unitPortrait,paintUnitPortraits} from './unit-frame.js';
 import {groupFightOn} from './companions.js';
 import {rallyAura} from './dungeon-einsatz.js';
@@ -79,6 +80,9 @@ function updateRow(row,g,c){
 
 export function mountCompanionHud(shell,getGame,open){
  const el=document.createElement('aside');el.className='companion-frames';el.setAttribute('aria-label',UI.team);shell.append(el);let signature='';
+ /* Heiler-WoW: Maus über einem Rahmen = Mouseover-Ziel für Heilung, Schutz und Buffs (healer-kit.js pressFriend) – die Auswahl bleibt */
+ el.addEventListener('pointerover',e=>{if(e.pointerType==='touch')return;const b=e.target.closest('[data-companion-select]'),g=getGame();setMouseoverFriend(g,b?g.companions.find(x=>x.id===b.dataset.companionSelect)||null:null);});
+ el.addEventListener('pointerleave',()=>setMouseoverFriend(getGame(),null));
  el.addEventListener('click',e=>{const b=e.target.closest('[data-companion-select]');if(b){const g=getGame(),c=g.companions.find(x=>x.id===b.dataset.companionSelect);if(c)selectFriend(g,'companion',c);return;}const m=e.target.closest('[data-companion-manage]');if(m)open(m.dataset.companionManage);});
  return {update(){const g=getGame(),list=g.companions||[];el.hidden=!list.length;if(!list.length)return;
   const key=list.map(c=>c.id+':'+c.level).join('|');if(key!==signature){signature=key;el.innerHTML=`<header>${button('manage','',UI.team)}</header>`+list.map(c=>`<button type="button" class="companion-frame unit-frame" data-companion-select="${c.id}" data-companion-row="${c.id}" data-role="${c.def.role}" aria-pressed="false">${unitPortrait(c.def.look,c.level)}<span class="unit-content"><strong>${esc(c.name)} <small>${COMPANION_ROLES[c.def.role].name}</small></strong><span class="companion-life" role="progressbar" aria-label="${esc(c.name)}"><i></i><span></span></span><span class="cf-buffs" aria-hidden="true"></span><span class="companion-frame-meta"><span data-companion-state></span><small data-companion-contract></small></span></span></button>`).join('');paintUnitPortraits(el);}
