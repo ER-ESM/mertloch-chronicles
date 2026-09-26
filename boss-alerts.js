@@ -11,11 +11,19 @@
 // Chips im Bossrahmen; Ansage mittig beim Eintritt der Wut und beim Geständnis.
 // Etappe 4 Teil A: Chips für Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd) und nasse Streifen (Kurt); Lüge und Attrappen teilen
 // sich die zweistufige Anzeige (erst gestrichelt, dann Stempel bzw. Nachsatz).
+// Dungeon-Fix 3 (Big-B-Abnahme #721): Jede Zeile nennt die Antwort des Helden mit seinen Mitteln und seiner Taste (alert-answer.js:
+// „Parieren [5] / Ausweichen [Leer]“, ohne Schild nur „Ausweichen [Leer]“); nach dem Nachsatz steht die Handlung mit Pfeil („Nach rechts“,
+// „In die Mitte“), das Zitat klein daneben; Namen gekürzt statt abgeschnitten. Die Leiste sucht sich am Desktop einen Platz ohne Überlapp
+// mit aktiven Warnflächen (rechts neben der Mitte, oben unter dem Bossrahmen, links, zuletzt über der Aktionsleiste) statt unten auf dem
+// Arenaboden zu liegen; der Bossrahmen setzt --bf-bottom, darunter steht die einzeilige Fehlerzeile.
 import {DUNGEON_BOSSES,DUNGEON_ENEMIES,DUNGEON_CASTS,COMBAT_RULES,DUNGEON_UI as U,DUNGEON_E4B as U4,describeCast} from './content/index.js';
 import {inDungeon,dungeonRun} from './dungeon.js';
 import {available} from './progression.js';
 import {keyFor} from './rpg.js';
 import {dicon,paintDungeonIcons,paintBossPortraits} from './dungeon-journal.js';
+import {heroAnswer,shortName} from './alert-answer.js';
+import {glyph} from './ui-glyphs.js';
+import {activeWarnAreas} from './dungeon.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const secs=s=>Math.max(0,s).toFixed(1).replace('.',',')+' s';
@@ -45,7 +53,7 @@ export function activeBoss(g){if(!inDungeon(g))return null;for(const e of g.enem
 /** Laufende Zauber anderer Dungeon-Gegner in Kampfnähe (Trash): nur das, was gerade kommt. */
 function trashCasts(g,boss){const p=g.player,out=[];for(const e of g.enemies){if(e===boss||!e.dungeon||!e.cast||!(e.hp>0)||!e.aggro)continue;if(Math.hypot(e.x-p.x,e.y-p.y)>340)continue;out.push({e,type:e.cast.type,set:e.castSet,cast:DUNGEON_CASTS[e.castSet]?.casts?.[e.cast.type]||e.cast,start:0,hit:Math.max(0,e.cast.remaining),total:e.cast.total,active:true,live:e.cast});}return out.sort((a,b)=>a.hit-b.hit).slice(0,2);}
 
-export function mountBossAlerts({game,shell=document.querySelector('#gameShell'),openJournal=()=>{}}={}){
+export function mountBossAlerts({game,shell=document.querySelector('#gameShell'),openJournal=()=>{},toScreen=null}={}){
  if(!shell)return null;
  const root=document.createElement('div');root.className='boss-hud';root.hidden=true;root.setAttribute('aria-label',U.alerts.label);
  root.innerHTML=`<section class="boss-frame" hidden><button type="button" class="bf-face" data-boss-journal aria-label="${esc(U.alerts.journal)}" data-tooltip-label="${esc(U.alerts.journal)}" data-tooltip-note="">${dicon('skull',26)}</button><div class="bf-main"><div class="bf-name"><b></b><span class="bf-pct"></span></div><div class="bf-bar"><i></i></div><div class="bf-status" hidden></div><div class="bf-cast" hidden><span class="bf-cast-ico"></span><b></b><kbd hidden></kbd><span class="bf-cast-time"></span><i></i></div><div class="bf-say" hidden><span class="bf-say-ico"></span><q></q></div></div></section>
@@ -54,7 +62,7 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
  const frame=root.querySelector('.boss-frame'),list=root.querySelector('.boss-alerts'),announceEl=root.querySelector('.boss-announce');
  frame.querySelector('[data-boss-journal]').addEventListener('click',()=>{const b=activeBoss(game());openJournal(b?.bossId||null);});
  /* Auch das Porträt im Zielrahmen öffnet das Journal, wenn das Ziel ein Dungeon-Boss ist */document.addEventListener('click',e=>{if(!e.target.closest?.('#targetPortrait'))return;const t=game()?.target;if(t?.dungeonBoss&&t.hp>0)openJournal(t.bossId);});
- let bossRef=null,seen=new Set(),phases=0,raf=0,last=0,announceUntil=0,rowsKey='',shownAt=new Map(),state={visible:false,rows:[],boss:null};
+ let lastBf=0,bossRef=null,seen=new Set(),phases=0,raf=0,last=0,announceUntil=0,rowsKey='',shownAt=new Map(),state={visible:false,rows:[],boss:null};
  const interruptKey=g=>{try{return keyFor(g,'interrupt')||'';}catch{return '';}};
  function setBoss(g,b){bossRef=b;seen=new Set();phases=b?.saidPhases?.size||0;shownAt=new Map();frame.hidden=!b;statusKey='';enraged=b?.rageFactor||1;confessedShown=!!b?.confessed;const st=frame.querySelector('.bf-status');if(st){st.hidden=true;st.innerHTML='';}if(!b)return;
   const def=DUNGEON_BOSSES[b.bossId];frame.querySelector('.bf-name b').textContent=b.name;const face=frame.querySelector('.bf-face');face.innerHTML=`<canvas width="88" height="88" data-dj-portrait="${esc(b.bossId)}" aria-hidden="true"></canvas>`;paintBossPortraits(face,g.time);const bar=frame.querySelector('.bf-bar');bar.querySelectorAll('em').forEach(x=>x.remove());
@@ -79,17 +87,40 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
   /* Etappe 3: Lüge – erst die Behauptung (in Anführungszeichen), nach tell der Nachsatz; Nebenher-Zeilen mit eigenem Takt */const lie=r.active&&r.live?.lie?(r.live.told===false?'c':'t'):'';
   const key=(r.e?.id??'b')+':'+r.type+':'+(r.active?'a':'n')+(r.track?':t':'')+(lie?':'+lie:'');if(!shownAt.has(key))shownAt.set(key,now);
   const span=r.active?r.total:r.track?Math.max(r.total,(r.every||12)+r.total):Math.max(r.total,COMBAT_RULES.specialInterval+r.total),fill=Math.max(0,Math.min(1,1-r.hit/span));
-  const again=r.active&&r.live?.interrupts>1&&r.live.broken>0/* Etappe 4 Teil B: „Am eigenen Schopf“ – eine Unterbrechung sitzt, noch eine */,hint=again?U4.alerts.again(r.live.broken,r.live.interrupts):lie==='c'?'„'+r.live.claimText+'“':lie==='t'?r.live.truthText:d.hint,name=lie==='c'?U.alerts.claim:(d.name||r.cast?.name||'');
-  return {key,icon:d.icon,hint,name,time:r.hit,fill,active:r.active,interrupt:!!r.cast?.interruptible,trash:!!r.e,lie,track:!!r.track};}
- function paintRows(rows,g){const k=rows.map(r=>r.key+'|'+r.icon).join(',');if(k!==rowsKey){rowsKey=k;list.innerHTML=rows.map(r=>`<div class="ba-row${r.done?' ba-done':''}${r.active?' ba-now':''}${r.interrupt?' ba-int':''}${r.trash?' ba-trash':''}${r.lie?' ba-lie ba-lie-'+r.lie:''}${r.track?' ba-track':''}" data-ba="${esc(r.key)}">${dicon(r.icon,26)}<b>${esc(r.hint)}</b><small>${esc(r.name)}</small>${r.interrupt&&r.active?`<kbd>${esc(interruptKey(g))}</kbd>`:''}<span class="ba-time"></span><i class="ba-fill"></i></div>`).join('');paintDungeonIcons(list);}
+  const again=r.active&&r.live?.interrupts>1&&r.live.broken>0/* Etappe 4 Teil B: „Am eigenen Schopf“ – eine Unterbrechung sitzt, noch eine */,ans=heroAnswer(g,{cast:r.cast,live:r.live,active:r.active,d});
+  /* Dungeon-Fix 3: Handlung groß (mit Taste), das Zitat bzw. der Kurzname klein daneben; Nebentakt auf einem Söldner nennt ihn */
+  const hint=again?U4.alerts.again(r.live.broken,r.live.interrupts):ans.hint,on=r.track&&r.active&&r.live?.focus&&r.live.focus!=='player'?(g.companions||[]).find(c=>c.id===r.live.focus)?.name:'';
+  const name=lie==='c'?'„'+r.live.claimText+'“':lie==='t'?r.live.truthText:shortName(d.name||r.cast?.name||'')+(on?' · '+U.answers.onUnit(on):'');
+  return {key,icon:d.icon,hint,name,time:r.hit,fill,active:r.active,interrupt:!!r.cast?.interruptible,trash:!!r.e,lie,track:!!r.track,ans:again?{...ans,alt:null,arrow:null}:ans};}
+ const ARROW={left:'arrowLeft',right:'arrowRight',in:'arrowIn'};
+ /** Handlung der Zeile: Pfeil, Antwort, Taste, ggf. zweite Antwort („Parieren [5] / Ausweichen [Leer]“). */
+ const act=r=>{const a=r.ans||{};return `<span class="ba-act">${a.arrow?`<i class="ba-arrow ba-arrow-${a.arrow}">${glyph(ARROW[a.arrow])}</i>`:''}<b>${esc(r.hint)}</b>${a.key?`<kbd data-tooltip-label="${esc(a.key)}" data-tooltip-note="${esc(U.answers.keyNote)}">${esc(a.key)}</kbd>`:''}${a.alt?`<i class="ba-or">/</i><b class="ba-alt">${esc(a.alt.hint)}</b><kbd>${esc(a.alt.key)}</kbd>`:''}</span>`;};
+ function paintRows(rows,g){const k=rows.map(r=>r.key+'|'+r.icon+'|'+r.hint+'|'+(r.ans?.key||'')+'|'+(r.ans?.arrow||'')+'|'+(r.ans?.alt?.key||'')+'|'+r.name).join(',');if(k!==rowsKey){rowsKey=k;list.innerHTML=rows.map(r=>`<div class="ba-row${r.done?' ba-done':''}${r.active?' ba-now':''}${r.interrupt?' ba-int':''}${r.trash?' ba-trash':''}${r.lie?' ba-lie ba-lie-'+r.lie:''}${r.track?' ba-track':''}${r.ans?.hold?' ba-hold':''}" data-ba="${esc(r.key)}">${dicon(r.icon,26)}${act(r)}<small>${esc(r.name)}</small><span class="ba-time"></span><i class="ba-fill"></i></div>`).join('');paintDungeonIcons(list);}
   rows.forEach((r,i)=>{const el=list.children[i];if(!el)return;el.querySelector('.ba-time').textContent=r.done?'':r.active&&r.time<.05?U.alerts.now:secs(r.time);el.querySelector('.ba-fill').style.transform='scaleX('+r.fill.toFixed(3)+')';el.classList.toggle('ba-soon',r.time<=1.2);});}
  function place(){/* über der höchsten sichtbaren Leiste der Aktionsfläche; am Handy über den Kampfknöpfen (hochkant) bzw. unten mittig zwischen Stick und Knöpfen (quer) */const touch=document.body.classList.contains('touch-mode'),H=innerHeight,Wd=innerWidth;let bottom=8,right=null,left=null,width=null;
   if(touch){const box=s=>{const r=document.querySelector(s)?.getBoundingClientRect();return r&&r.width&&r.height?r:null;},a=box('#touchActions'),st=box('#touchStick'),u=box('#touchUtility'),xp=box('.xp-track');
    if(Wd>H){const l=(st?.right||0)+8,r=(a?.left||Wd)-8;left=l;width=Math.max(200,r-l);bottom=H-(xp&&xp.top>H*.8?xp.top:H)+6;}
    else if(a){/* hochkant: rechtsbündig über den Kampfknöpfen, so breit wie sie */bottom=H-a.top+8;right=Math.max(8,Wd-a.right);width=Math.min(Wd-16,290);left=null;}}
-  else{let top=H;for(const el of document.querySelectorAll('.action-area>*:not(#interact):not(.interact):not(.rotation-tip):not([role=tooltip]),#interact:not(.hidden)')){const r=el.getBoundingClientRect(),cs=getComputedStyle(el);if(r.height>2&&r.top>H*.5&&cs.visibility!=='hidden'&&cs.display!=='none')top=Math.min(top,r.top);}bottom=H-top+8;}
-  list.style.bottom=Math.round(bottom)+'px';list.style.right=right==null?'':Math.round(right)+'px';list.classList.toggle('ba-right',right!=null);if(right!=null&&width)list.style.width=Math.round(width)+'px';
+  else{desktopPlace();return;}
+  list.style.top='';list.classList.remove('ba-top');list.style.bottom=Math.round(bottom)+'px';list.style.right=right==null?'':Math.round(right)+'px';list.classList.toggle('ba-right',right!=null);if(right!=null&&width)list.style.width=Math.round(width)+'px';
   if(left!=null){list.style.left=Math.round(left+Math.max(0,width-Math.min(width,340))/2)+'px';list.style.width=Math.round(Math.min(width,340))+'px';list.style.transform='none';}else{list.style.left='';if(right==null)list.style.width='';list.style.transform='';}}
+ /* Dungeon-Fix 3 (Big-B-Abnahme #721: die Leiste lag unten auf dem Arenaboden und verdeckte die Bahnen): Am Desktop wählt die Leiste einen
+    Platz ohne Überlapp mit den gerade aktiven Warnflächen (dungeon.js activeWarnAreas) und ohne HUD – rechts neben der Mitte, oben unter
+    dem Bossrahmen (unter der Fehlerzeile), links, zuletzt über der Aktionsleiste. Sie bleibt, wo sie ist, solange dort nichts liegt. */
+ const SLOTS=['right','top','left','bottom'],HUD='.player-panel,.companion-frames,#targetPanel:not(.hidden),#miniButton,.quest-panel,.chat-window,.boss-frame:not([hidden]),#deathScreen:not([hidden]),#resourceTray';
+ let slot=null;
+ const overlap=(a,b)=>Math.max(0,Math.min(a.r,b.r)-Math.max(a.l,b.l))*Math.max(0,Math.min(a.b,b.b)-Math.max(a.t,b.t));
+ /** Aktive Warnflächen als Bildschirmrechtecke (toScreen aus app.js; ohne toScreen keine). */
+ function screenAreas(g){if(!toScreen||!g)return [];const out=[];for(const a of activeWarnAreas(g)){const p=toScreen(a.box.x,a.box.y),q=toScreen(a.box.x+a.box.w,a.box.y+a.box.h);if(p&&q)out.push({l:Math.min(p.x,q.x),t:Math.min(p.y,q.y),r:Math.max(p.x,q.x),b:Math.max(p.y,q.y),kind:a.kind});}return out;}
+ function desktopPlace(){const g=game(),H=innerHeight,W=innerWidth,w=Math.min(420,W-16),h=Math.max(list.getBoundingClientRect().height,3*36);
+  let bar=H;for(const el of document.querySelectorAll('.action-area>*:not(#interact):not(.interact):not(.rotation-tip):not([role=tooltip]),#interact:not(.hidden)')){const r=el.getBoundingClientRect(),cs=getComputedStyle(el);if(r.height>2&&r.top>H*.5&&cs.visibility!=='hidden'&&cs.display!=='none')bar=Math.min(bar,r.top);}
+  const fr=frame.hidden?null:frame.getBoundingClientRect(),under=(fr&&fr.height?fr.bottom:8)+30/* Fehlerzeile */;
+  const cand={right:{x:Math.min(W-w-12,W/2+340),y:Math.round(H*.34)},top:{x:W/2-w/2,y:under},left:{x:Math.max(12,W/2-340-w),y:Math.round(H*.34)},bottom:{x:W/2-w/2,y:bar-8-h}};
+  const areas=screenAreas(g),hud=[...document.querySelectorAll(HUD)].map(e=>e.getBoundingClientRect()).filter(r=>r.width>2&&r.height>2).map(r=>({l:r.left,t:r.top,r:r.right,b:r.bottom}));
+  const cost=k=>{const c=cand[k],r={l:c.x,t:c.y,r:c.x+w,b:c.y+h};let n=0;for(const a of areas)n+=overlap(r,a);let m=0;for(const q of hud)m+=overlap(r,q);return n*10+m;},costs=Object.fromEntries(SLOTS.map(k=>[k,cost(k)]));
+  if(!slot||costs[slot]>0)slot=SLOTS.find(k=>costs[k]===0)||SLOTS.slice().sort((a,b)=>costs[a]-costs[b])[0];
+  const c=cand[slot];list.dataset.slot=slot;list.classList.remove('ba-right');list.classList.toggle('ba-top',slot!=='bottom');list.style.left=Math.round(c.x)+'px';list.style.right='';list.style.width=w+'px';list.style.transform='none';
+  if(slot==='bottom'){list.style.top='auto';list.style.bottom=Math.round(H-bar+8)+'px';}else{list.style.bottom='auto';list.style.top=Math.round(c.y)+'px';}}
  /* Etappe 4 Teil B (Prüfer-Playtest #562): Nach Q war nicht zu sehen, ob es gewirkt hat. Jetzt steht „Unterbrochen!“ 1,3 s grün auf der
     Leiste (und in der Zauberleiste des Bossrahmens), dann erlischt es. Unterbrochen = der unterbrechbare Zauber ist weg, bevor er fertig
     war, und der Gegner ist betäubt (Held und Söldner). Bei „zweimal unterbrechen“ zeigt die Zeile den Zwischenstand. */
@@ -105,7 +136,7 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
  function tick(now){raf=requestAnimationFrame(tick);if(now-last<50)return;last=now;const g=game();if(!g){return;}
   watchInterrupts(g,now);
   const boss=activeBoss(g),trash=inDungeon(g)?trashCasts(g,boss):[],on=!!boss||trash.length>0||flashes.length>0;
-  if(!on){if(!root.hidden){root.hidden=true;document.body.classList.remove('boss-fight','boss-target');setBoss(g,null);rowsKey='';list.innerHTML='';}state={visible:false,rows:[],boss:null};return;}
+  if(!on){if(!root.hidden){root.hidden=true;document.body.classList.remove('boss-fight','boss-target');setBoss(g,null);rowsKey='';list.innerHTML='';slot=null;}state={visible:false,rows:[],boss:null};return;}
   if(root.hidden){root.hidden=false;}document.body.classList.toggle('boss-fight',!!boss);document.body.classList.toggle('boss-target',!!boss&&g.target===boss);
   if(boss!==bossRef)setBoss(g,boss);
   const rows=[];if(boss){const up=[...upcomingCasts(boss,{count:boss.cast?2:2}),...trackCasts(boss)].sort((a,b)=>(b.active-a.active)||a.hit-b.hit);for(const r of up)rows.push(row(r,g,now));
@@ -124,12 +155,14 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
    const said=boss.saidPhases?.size||0;if(said>phases){phases=said;const def=DUNGEON_BOSSES[boss.bossId],ph=[...(def?.phases||[])].sort((a,b)=>b.at-a.at)[said-1];announce(ph?.summon?'trait-summon':'boss',U.alerts.phase(said+1).toUpperCase()+(ph?.summon?' · '+U.traits.summon.name.toUpperCase():''));frame.classList.remove('bf-phase');void frame.offsetWidth;frame.classList.add('bf-phase');}}
   for(const t of trash)rows.push(row(t,g,now));
   paintRows([...flashes.map(f=>f.row),...rows].slice(0,3),g);place();
+  /* lieber kürzen als abschneiden: passt der Name nicht, entfällt er (die Handlung bleibt ganz) */for(const el of list.querySelectorAll('.ba-row small')){const cut=el.scrollWidth>el.clientWidth+1;if(el.classList.contains('ba-cut')!==cut)el.classList.toggle('ba-cut',cut);}
   /* Etappe 4 Teil B (Befund Orchestrator): Im Bosskampf spricht der Boss im Bossrahmen (Zeile unter der Zauberleiste, 4 s), nicht als Blase in der
      Welt – so kollidiert sie nie mit der Ansage. Behauptung und Nachsatz stehen schon in der Zauberleiste und doppeln sich hier nicht. */
   {const say=frame.querySelector('.bf-say'),lb=boss?.lastBark,k=boss?.cast,dup=lb&&(lb.text===k?.claimText||lb.text===k?.truthText),on=!!lb&&g.time-lb.at<4&&!dup;say.hidden=!on;if(on&&say.dataset.text!==lb.text){say.dataset.text=lb.text;say.querySelector('q').textContent=lb.text;const ico=say.querySelector('.bf-say-ico');if(!ico.firstChild){ico.innerHTML=dicon('speaker',16);paintDungeonIcons(ico);}}}
+  /* Dungeon-Fix 3: Unterkante des Bossrahmens für die Fehlerzeile (CSS --bf-bottom) */if(!frame.hidden){const fb=Math.round(frame.getBoundingClientRect().bottom);if(fb!==lastBf){lastBf=fb;document.body.style.setProperty('--bf-bottom',fb+'px');}}
   if(!announceEl.hidden&&!frame.hidden){const fr=frame.getBoundingClientRect();announceEl.style.top=Math.round(fr.bottom+8)+'px';}/* die Ansage bleibt unter dem Rahmen, auch wenn er wächst */
   if(announceUntil&&now>announceUntil){announceEl.hidden=true;announceUntil=0;}
-  state={visible:true,boss:boss?.bossId||null,rows:rows.map(r=>({key:r.key,hint:r.hint,name:r.name,time:+r.time.toFixed(2),active:r.active,lie:r.lie||'',track:r.track,firstSeen:shownAt.get(r.key)})),frame:!frame.hidden,cast:frame.querySelector('.bf-cast b')?.textContent||'',status:statusKey,interrupted:interruptFlashes()};
+  state={visible:true,slot,boss:boss?.bossId||null,rows:rows.map(r=>({key:r.key,hint:r.hint,name:r.name,answerKey:r.ans?.key||'',arrow:r.ans?.arrow||null,alt:r.ans?.alt||null,hold:!!r.ans?.hold,time:+r.time.toFixed(2),active:r.active,lie:r.lie||'',track:r.track,firstSeen:shownAt.get(r.key)})),frame:!frame.hidden,cast:frame.querySelector('.bf-cast b')?.textContent||'',status:statusKey,interrupted:interruptFlashes()};
  }
  raf=requestAnimationFrame(tick);
  const api={state:()=>state,stop:()=>cancelAnimationFrame(raf),root};globalThis.__bossAlerts=api;return api;

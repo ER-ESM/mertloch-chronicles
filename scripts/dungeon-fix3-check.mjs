@@ -153,7 +153,7 @@ try{
   if(post.dead){assert.equal(post.btn,'Hier aufstehen','nach dem Sieg: kein „Kampf aufgeben“');assert.match(post.note,/nichts setzt zurück/);assert.equal(post.hp,0,'als Geist kein volles Leben trotz Aufstieg');}
   const up=await until(`return !g.dead&&{hp:g.player.hp,max:g.player.maxHp,level:g.player.level}`,20000);results.run2.up=up;
   assert.ok(up,'nach dem Sieg aufgeholfen');await shot('24-aufgeholfen');
-  ok('Lauf 2: zweiter Tod in der Schlussphase ('+res.death2.phase+' %), im Kampf „'+res.death2.btn+'“; nach dem Sieg „'+(post.btn||'–')+'“, Stufe '+up.level+', aufgeholfen mit '+up.hp+'/'+up.max+'; Todesschlag „'+res.death1.cause+'“');
+  ok('Lauf 2: zweiter Tod in der Schlussphase ('+res.death2.phase+' %), im Kampf „'+res.death2.btn+'“; nach dem Sieg „'+(post.btn||'–')+'“, Stufe '+up.level+', aufgeholfen mit '+Math.round(up.hp)+'/'+up.max+'; Todesschlag „'+res.death1.cause+'“');
   const after=await afterWin('2');results.run2.after=after;assert.ok(after.loot,'Beute-Moment nach Tod');assert.match(after.choice?.choice||'',/1 \/ 3/);
   ok('Lauf 2 nach dem Sieg: Beute-Moment, Erfolg '+(after.feat?'oben („'+after.feat.text+'“)':'(keiner neu)')+', Endtruhe per Rechtsklick mit '+after.choice.choice);
   assert.equal(meas.deathOverFrame,0,'Sterbefenster verdeckt den Bossrahmen nie');ok('Sterbefenster über der Aktionsleiste, der Bossrahmen bleibt frei ('+meas.samples+' Messungen)');

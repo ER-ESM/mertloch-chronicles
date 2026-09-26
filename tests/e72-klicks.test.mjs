@@ -119,7 +119,8 @@ test('Fehlerzeile: je Kniff höchstens einmal in repeat s (content/tuning.js), a
   t=2100;assert.equal(line.push('Grillzange muss noch verschnaufen · 0,3 s.','strike'),true);
  }finally{delete globalThis.document;}
  const app=src('app.js');
- assert.match(app,/if\(ev\.early!==undefined&&errorLine\)errorLine\.push\(ev\.text,ev\.early\);else toast\(ev\.text,ev\.error\);/,'statt Kurzmeldung (die nie in den Chat ging)');
+ assert.match(app,/if\(ev\.early!==undefined&&errorLine\)errorLine\.push\(ev\.text,ev\.early\);else if\(ev\.error&&errorLine&&document\.body\.classList\.contains\('dg-fight'\)\)errorLine\.push\(/,'statt Kurzmeldung (die nie in den Chat ging); Dungeon-Fix 3: Fehler im Dungeon-Kampf ebenso');
+ assert.match(app,/;else toast\(ev\.text,ev\.error\);/,'sonst Kurzmeldung');
  const css=src('spielfluss.css');const m=css.match(/#gameShell \.error-line\{[^}]*font:700 (\d+)px/);assert.ok(m&&Number(m[1])<=16,'klein');assert.doesNotMatch(css.match(/#gameShell \.error-line\{[^}]*\}/)[0],/background:(?!none)/,'kein Kasten');
 });
 

@@ -86,3 +86,59 @@ test('Boss-Beutel wartet in der Arena ohne Frist; die Lichtsäule ist anklickbar
  assert.ok(g.events.some(e=>e.type==='dungeonFeat'),'Erfolg als Ereignis');assert.ok(!g.toasts.some(t=>/^Erfolg/.test(t)),'keine Kurzmeldung „Erfolg …“: '+g.toasts.join(' | '));
  assert.match(app,/type==='dungeonFeat'\)milestones\?\.feat/,'Einblendung oben');
 });
+
+// ── 3–4 · Warnleiste: Antwort mit den Mitteln des Helden und seiner Taste, Handlung nach dem Nachsatz ─────────────────────────────
+import {CLASS_SPECS,DUNGEON_CASTS,describeCast,DUNGEON_UI as DUI,DUNGEON_BOSSES} from '../content/index.js';
+import {heroAnswer,answerKind,usable,moveKeys,laneAction} from '../alert-answer.js';
+import {available} from '../progression.js';
+import {changeSpec} from '../talents.js';
+import {ITEMS,addItem,equipItem} from '../rpg.js';
+import {registerRoll} from '../itemization.js';
+import {applyGearProfile} from '../scripts/gear-profiles.mjs';
+import {dodgeDirection} from '../dodge-out.js';
+import {activeWarnAreas} from '../dungeon.js';
+
+function hero(classId,spec,gear='typical'){const g=new Game(world,{classId,level:10,tutorial:{version:1,step:8,completed:true}},{});g.toast=()=>{};changeSpec(g,spec);applyGearProfile(g,gear,{ITEMS,addItem,equipItem,registerRoll});g.refreshStats();return g;}
+const realKey=k=>!!k&&k!=='Skillbuch'&&!/ohne Taste/.test(k);
+test('Jede Antwort der Warnleiste ist für alle fünf Klassen und jede Spezialisierung machbar und nennt die Taste (Boss- und Trash-Mechaniken)',()=>{
+ const casts=[];for(const [set,s] of Object.entries(DUNGEON_CASTS))for(const [type,c] of Object.entries(s.casts))casts.push({set,type,c});
+ let rows=0;const kinds=new Set();
+ for(const [classId,specs] of Object.entries(CLASS_SPECS))for(const spec of specs)for(const gear of ['typical','start']){const g=hero(classId,spec,gear),who=classId+'/'+spec+'/'+gear;
+  for(const {set,type,c} of casts){const d=describeCast(set,type,{interrupt:available(g,'interrupt')}),a=heroAnswer(g,{cast:c,d});rows++;kinds.add(a.kind);
+   assert.ok(a.hint,who+' '+set+'.'+type+': Antwort');
+   if(a.hold){assert.ok(['wait','spots'].includes(a.kind),who+' '+set+'.'+type+': Warten nur bei Warten');continue;}
+   assert.ok(realKey(a.key),who+' '+set+'.'+type+' „'+a.hint+'“: Taste '+a.key);
+   if(a.kind==='interrupt')assert.ok(usable(g,'interrupt'),who+': Unterbrecher bereit');
+   if(a.kind==='parry'){assert.ok(usable(g,'parry'),who+': Parade machbar (Schild, falls verlangt)');assert.ok(a.alt&&realKey(a.alt.key),who+': Ausweichen daneben');}
+   if(a.kind==='dodge')assert.ok(usable(g,'dash')||a.key===moveKeys(),who+': Ausweichen bereit');
+   if(c.tankDebuff&&!usable(g,'parry'))assert.equal(a.hint,DUI.answers.dodge,who+': ohne Parade weicht er aus');}}
+ assert.ok(rows>1000,'geprüfte Zeilen: '+rows);for(const k of ['interrupt','parry','dodge','lanes','spots','target','move'])assert.ok(kinds.has(k),'Art '+k+' vorhanden');
+ // Beispiele wie beim Prüfer: Dieter (Tresenbrecher) mit typischer Ausrüstung hat keinen Schild
+ const d=hero('dieter','dieter-brawl'),ring=DUNGEON_CASTS['d-bigb'].casts.siegelring,a=heroAnswer(d,{cast:ring,d:describeCast('d-bigb','siegelring')});
+ assert.equal(d.rpg.equipment.offhand??null,null,'kein Schild');assert.deepEqual([a.hint,a.key,a.alt],[DUI.answers.dodge,'LEER',null],'„Ausweichen [Leer]“');
+ const b=hero('baerbel','baerbel-feedback'),ab=heroAnswer(b,{cast:ring,d:describeCast('d-bigb','siegelring')});assert.equal(ab.hint,DUI.answers.parry);assert.ok(realKey(ab.key));assert.equal(ab.alt?.key,'LEER','„Parieren [n] / Ausweichen [Leer]“');
+});
+
+test('Nach dem Nachsatz: Handlung mit Pfeil und Lauftaste statt Zitat; Mitte bei zwei Bahnen; 2,0 s Reaktionszeit',()=>{
+ const g=game(),{b}=pull(g,[]);g.adminGod=true;const cast=(set,type)=>{b.engaged=true;b.castSet=set;b.cycle=DUNGEON_CASTS[set].cycle.indexOf(type);b.attackTimer=0;g.startCast(b);return b.cast;};
+ const k=cast('d-bigb','kanone');assert.equal(k.told,false);const d=describeCast('d-bigb','kanone'),before=heroAnswer(g,{cast:DUNGEON_CASTS['d-bigb'].casts.kanone,live:k,active:true,d});
+ assert.equal(before.hint,DUI.answers.wait);assert.match(before.key,/A · D/,'Lauftasten schon vor dem Nachsatz');
+ run(g,1.2);assert.ok(k.told,'Nachsatz');const bad=k.lanes[k.truthLanes[0]],safe=k.lanes.find((r,i)=>!k.truthLanes.includes(i));
+ Object.assign(g.player,{x:bad.x+bad.w/2,y:bad.y+bad.h/2});let a=heroAnswer(g,{cast:DUNGEON_CASTS['d-bigb'].casts.kanone,live:k,active:true,d});
+ const right=safe.x>bad.x;assert.equal(a.hint,right?DUI.answers.right:DUI.answers.left);assert.equal(a.arrow,right?'right':'left');assert.equal(a.key,right?'D':'A');
+ Object.assign(g.player,{x:safe.x+safe.w/2,y:safe.y+safe.h/2});a=heroAnswer(g,{cast:DUNGEON_CASTS['d-bigb'].casts.kanone,live:k,active:true,d});assert.ok(a.hold);assert.equal(a.hint,right?DUI.answers.stayRight:DUI.answers.stayLeft);
+ // Phase 3: zwei Bahnen – nur die Mitte ist sicher
+ const h=game(),p3=pull(h,[]);h.adminGod=true;const k3=(()=>{const e=p3.b;e.engaged=true;e.castSet='d-bigb3';e.cycle=DUNGEON_CASTS['d-bigb3'].cycle.indexOf('kanone3');e.attackTimer=0;h.startCast(e);return e.cast;})();run(h,1.2);
+ const outer=k3.lanes[k3.truthLanes[0]];Object.assign(h.player,{x:outer.x+outer.w/2,y:outer.y+outer.h/2});const a3=laneAction(h,k3);assert.equal(a3.hint,DUI.answers.middle);assert.equal(a3.arrow,'in');
+ // Reaktionszeit nach dem Nachsatz (Normal)
+ for(const [set,s] of Object.entries(DUNGEON_CASTS))for(const [type,c] of Object.entries(s.casts))if(c.lie&&c.line)assert.ok(c.total-(c.lie.tell??1)>=2,set+'.'+type+': '+(c.total-(c.lie.tell??1)).toFixed(1)+' s nach dem Nachsatz');
+});
+
+test('Ausweichen trägt: ohne Richtungstaste aus der echten Bahn heraus; ausgewichener Siegelring gibt kein Zertifikat',()=>{
+ const g=game(),{b}=pull(g,[]);g.adminGod=true;b.engaged=true;b.castSet='d-bigb';b.cycle=0;b.attackTimer=0;g.startCast(b);run(g,1.2);const k=b.cast,bad=k.lanes[k.truthLanes[0]];
+ Object.assign(g.player,g.world.findClear(bad.x+bad.w/2,bad.y+bad.h/2,9));assert.ok(activeWarnAreas(g).some(a=>a.danger&&a.contains(g.player)),'steht in der Bahn');
+ const dir=dodgeDirection(g,19*4),end={x:g.player.x+dir.dx*76,y:g.player.y+dir.dy*76};assert.ok(!activeWarnAreas(g).some(a=>a.danger&&a.contains(end)),'Sprung endet außerhalb');
+ // Siegelring auf den Helden: ausgewichen → kein Zertifikat; getroffen → ein Stapel
+ const h=game(),q=pull(h,[]);const ring=()=>{q.b.sideCast={...DUNGEON_CASTS['d-bigb'].casts.siegelring,type:'siegelring',remaining:.01,total:1.2,track:true,focus:'player'};run(h,.1);};
+ h.player.invulnerable=.4;ring();assert.ok(!(h.player.cert?.stacks>0),'ausgewichen: kein Zertifikat');h.player.invulnerable=0;ring();assert.equal(h.player.cert?.stacks,1,'getroffen: ein Stapel');
+});

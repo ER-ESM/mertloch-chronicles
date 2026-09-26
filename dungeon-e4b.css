@@ -88,3 +88,23 @@ body:is(.dg-fight,.dg-arena) .memory-card{visibility:hidden!important}
 .quest-panel .dg-track-end span:last-child{font:700 12px/1.1 var(--read);color:#f0d9b0}
 /* Todesbildschirm: nach dem Kampf ist „Hier aufstehen“ der gute Weg (grüner Rand statt Aufgabe) */
 .death-screen .ds-wake.ds-here{box-shadow:0 0 0 2px #6fbf4a inset}
+/* Warnleiste (Dungeon-Fix 3): Handlung mit Pfeil und Taste des Helden, zweite Antwort nach „/“, Name klein daneben (entfällt statt
+   abgeschnitten zu werden); Platz am Desktop wählt boss-alerts.js (ba-top = von oben nach unten, dringendste Zeile oben) */
+.boss-alerts.ba-top{flex-direction:column}
+.ba-row{grid-template-columns:26px auto minmax(0,1fr) auto}
+.ba-row .ba-act{display:inline-flex;align-items:center;gap:5px;min-width:0;white-space:nowrap}
+.ba-row .ba-act b.ba-alt{font-size:12px;color:#e8dcc0}
+.ba-row .ba-or{font:800 12px/1 var(--read);color:#cbb98f;font-style:normal}
+.ba-row .ba-arrow{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:5px;background:#f3cf7a;color:#1c1712;font-style:normal}
+.ba-row .ba-arrow .ui-glyph{width:16px;height:16px;stroke-width:2.6}
+.ba-row small{text-overflow:clip}
+.ba-row small.ba-cut{visibility:hidden}
+.ba-row.ba-lie-t .ba-act b{text-transform:uppercase;color:#fff}
+.ba-row.ba-lie-t small{font-style:italic;color:#e6d8f2}
+.ba-row.ba-hold .ba-act b{color:#bfe6b0}
+.touch-mode .boss-alerts.ba-right .ba-row{grid-template-columns:26px minmax(0,1fr) auto}
+.touch-mode .boss-alerts.ba-right .ba-row .ba-act{overflow:hidden}
+/* Fehlerzeile im Bosskampf einzeilig direkt unter dem Bossrahmen (boss-alerts.js setzt --bf-bottom), nicht über dem Kampf */
+body.boss-fight:not(.touch-mode) #gameShell .error-line{top:calc(var(--bf-bottom,104px) + 4px);font-size:14px}
+/* Handy: keine Tastenkappen (die Kampfknöpfe tragen die Kniffe), die Handlung bleibt */
+.touch-mode .ba-row kbd{display:none}

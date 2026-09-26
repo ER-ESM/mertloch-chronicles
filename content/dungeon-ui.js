@@ -93,6 +93,16 @@ export const DUNGEON_UI={
   waypoint:'Wegmarke',waypointSet:'Wegmarke gesetzt',waypointNote:'Klick setzt eine Wegmarke, Umschalt+Klick läuft hin',
   you:'Du',checkpoint:'Kontrollpunkt',exit:'Rolltor · zurück auf die Burgstraße',seals:'Siegel',proofs:'Beweise',
   door:'Tür',doorLocked:'verschlossen',vault:'Tresortür',vaultNote:(n,m)=>n+' von '+m+' Siegeln'},
+ // ── Dungeon-Fix 3 (Big-B-Abnahme #721: „PARIEREN“ ohne Taste und ohne Schild, in den letzten Sekunden nur das Zitat): Antwort des Helden
+ // je Warnzeile mit seinen Mitteln und seiner Taste (alert-answer.js). Nach dem Nachsatz eine Handlung mit Pfeil, das Zitat klein daneben.
+ answers:{dodge:'Ausweichen',parry:'Parieren',wait:'Nachsatz abwarten',stamp:'Stempel abwarten',right:'Nach rechts',left:'Nach links',middle:'In die Mitte',
+  stayRight:'Rechts bleiben',stayLeft:'Links bleiben',stayMiddle:'Mitte halten',out:'Raus aus der Fläche',stay:'Stehen bleiben',mates:'Söldner unterbrechen',
+  damage:'Schaden drauf',onUnit:n=>'auf '+n,keyNote:'Deine Taste dafür'},
+ // Kurznamen für die Warnleiste: lieber kürzen als abschneiden (Abnahme #721: „Ritt auf der Kano…“, „Am eige…“).
+ short:{'Ritt auf der Kanonenkugel':'Kanonenkugel','Mein Anwalt ruft gleich an':'Anwalt','Am eigenen Schopf':'Schopf','Das Parkett ist echt':'Parkett',
+  'Pappkulisse fällt':'Pappkulisse','Du stehst nicht auf der Liste':'Liste','Dresscode-Kontrolle':'Dresscode','Grundstück verkauft':'Verkauft',
+  'Provisionsforderung':'Provision','Besichtigungstermin':'Besichtigung','Tag der offenen Tür':'Offene Tür','Jeder zahlt selbst':'Jeder zahlt',
+  'Runde auf mich!':'Runde','Sprinkleranlage':'Sprinkler','Regenrinnen-Hieb':'Hieb','Exposé verteilen':'Exposé'},
  // ── Verfolgung im Dungeon: Siegel und Beweise statt Weltauftrag
  tracker:{title:'Schloss Big B',seals:'Siegel',proofs:'Beweise',sealNote:'Drei Siegel öffnen die Tresortür zum Thronsaal.',proofNote:'Beweise schwächen Big B im Thronsaal.',
   boss:'Nächster Boss'},

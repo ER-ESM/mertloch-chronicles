@@ -7,6 +7,8 @@ const P={
  book:'M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5Z|M12 6v13.5',
  back:'M15 5l-7 7 7 7',
  next:'M9 5l7 7-7 7',
+ /* Dungeon-Fix 3: Pfeile der Warnleiste nach dem Nachsatz (Nach links / Nach rechts / In die Mitte) */
+ arrowLeft:'M20 12H4|M10 6l-6 6 6 6',arrowRight:'M4 12h16|M14 6l6 6-6 6',arrowIn:'M2 12h7|M5.5 8.5 9 12l-3.5 3.5|M22 12h-7|M18.5 8.5 15 12l3.5 3.5',
  keyboard:'M3 7h18v11H3Z|M6 10h1M9 10h1M12 10h1M15 10h1M18 10h0.5M6 13h1M9 13h1M12 13h1M15 13h1M18 13h0.5M8 16h8',
  film:'M4 4h16v16H4Z|M8 4v16M16 4v16M4 8h4M4 12h4M4 16h4M16 8h4M16 12h4M16 16h4',
  spark:'M12 3l2.2 6.3L21 12l-6.8 2.7L12 21l-2.2-6.3L3 12l6.8-2.7Z',

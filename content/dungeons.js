@@ -344,15 +344,18 @@ export const DUNGEON_CASTS={
  //   eine Parade des Helden bzw. „Deckel hoch" des Schutz-Söldners beim Treffer löscht alle Stapel.
  // interrupts n: bricht erst nach n Unterbrechungen · selfHeal: Anteil Leben, wenn der Zauber durchkommt · summon: Adds am Zauberende ·
  // say: Spruch beim Zauberbeginn (keine Lüge).
+ // Dungeon-Fix 3 (Big-B-Abnahme #721: „Nachsatz stand nur noch 1,3 s in der Leiste – knapp“): Die Kanonenkugel dauert 3,0 s – nach dem
+ // Nachsatz (tell 1,0 s, V-D5) bleiben 2,0 s, um die Hälfte zu wechseln (WoW-Richtwert). Parkett und Pappkulisse bleiben 2,8/2,6 s: Ihre
+ // Stellen liegen unter dem, den sie treffen – ein Schritt reicht; mit 3,0 s fiel in der Simulation eine Gruppe (Dieter, Seed 8).
  'd-bigb':{cycle:['kanone','anwalt'],tracks:[{cast:'siegelring',every:12,first:6}],casts:{
-  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:2.6,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
   anwalt:{name:'Mein Anwalt ruft gleich an',hint:'Unterbrechen',total:2.4,damage:480,pct:.3,target:'random',interruptible:true,say:'Das ist nur ein Anruf.'},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Phase 2 „Follower" (70–40 %): Live-Schalte ruft Follower, Kanonenkugel zweimal hintereinander (1 s dazwischen), das Parkett.
  'd-bigb2':{cycle:['live','kanone','kanone','parkett'],gaps:{1:1},tracks:[{cast:'siegelring',every:12,first:4}],casts:{
   live:{name:'Live-Schalte',hint:'Adds zuerst',total:2.2,damage:0,summon:{kind:'follower',count:3},lie:{claim:'Ich mach nur ein Foto!',truth:'… mit Follower.',tell:1}},
-  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:2.6,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
   parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:2.8,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
@@ -360,7 +363,7 @@ export const DUNGEON_CASTS={
  // Am eigenen Schopf (zweimal unterbrechen, sonst heilt er 5 %). Ab dem Geständnis lügt er nicht mehr.
  'd-bigb3':{cycle:['kulisse','kanone3','schopf'],tracks:[{cast:'siegelring',every:12,first:4}],casts:{
   kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:2.6,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
-  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:2.6,damage:700,pct:.7,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
+  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:3,damage:700,pct:.7,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… und rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… und links.'}},
   schopf:{name:'Am eigenen Schopf',hint:'Zweimal unterbrechen',total:3.5,damage:0,interruptible:true,interrupts:2,selfHeal:.05,say:'Ich zieh mich hier selbst raus!'},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
@@ -547,7 +550,7 @@ export const DUNGEON_TEXT={
  chest:{name:'Endtruhe öffnen',title:'Endtruhe · Thronsaal',label:'Endtruhe',labelNote:'Rechtsklick oder F: drei seltene Teile, eins davon nimmst du mit.',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
   pickNote:'Ein Teil nach Wahl, dazu Siegelmarken. Einmal je Durchgang.',empty:'Die Truhe ist leer. Big B hat den Deckel mitgenommen.',
   locked:'Zu. Erst Big B.'},
- backExit:'Hinterausgang · zurück auf die Burgstraße',backExitLabel:'Hinterausgang',backExitNote:'In der Schatzkammer hinter Big Bs Thron. Rechtsklick oder F: zurück auf die Burgstraße.',
+ backExit:'Hinterausgang · zurück auf die Burgstraße',backExitLabel:'Hinterausgang',backExitNote:'In der Schatzkammer am Südende des Thronsaals, unter dem grünen Schild. Rechtsklick oder F: zurück auf die Burgstraße.',
  feat:n=>'Erfolg: '+n,
  cleared:(t)=>'Schloss Big B abgeschlossen in '+t+'. Das Schloss war eine Garage. Die Garage bleibt.',
  repeatXp:'Heute schon besiegt: ein Drittel der Erfahrung.',

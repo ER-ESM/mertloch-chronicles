@@ -37,6 +37,7 @@ import {ITEMS,addItem,equipItem} from '../rpg.js';
 import {registerRoll} from '../itemization.js';
 import {WALK_SPEED} from '../movement.js';
 import {applyGearProfile} from './gear-profiles.mjs';
+import {usable} from '../alert-answer.js';
 
 const world=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')),{});
 const TRACE=!!process.env.SIM_TRACE,DEF=DUNGEONS['schloss-bigb'],JSON_OUT=process.argv.includes('--json'),ONLY=(process.argv.find(a=>a.startsWith('--only='))||'').slice(7).split(',').filter(Boolean),part=n=>!ONLY.length||ONLY.includes(n);
@@ -134,6 +135,7 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
    if(goal&&Math.hypot(goal.x-p.x,goal.y-p.y)>6){const to=g.world.findClear(goal.x,goal.y,7);/* Etappe 4 Teil A: um Deckung herum per Wegsuche */let via=to;if(!g.world.walkClear(p,to,6)){const path=g.world.findPath(p,to);via=path.find(q=>Math.hypot(q.x-p.x,q.y-p.y)>12)||to;}g.moveTo=via;g.path=[];}else g.moveTo=null;
    /* Feinschliff 2026-09-26, „ein Pack je Zug“: wer sorgfältig spielt, unterbricht den Funkspruch (Q, Hinweis „Unterbrechen“) nach 0,35 s – sonst
       kommen die Nachbarn, und die Flügelzeit hängt an Wipes statt am Pack */if(calls&&!g.casting&&available(g,'interrupt')&&!(g.cooldowns.interrupt>0)){const call=g.enemies.find(e=>e.hp>0&&e.cast?.callHelp&&e.cast.total-e.cast.remaining>=.35&&Math.hypot(e.x-p.x,e.y-p.y)<=130&&g.world.lineClear(p,e));if(call){const keep=g.target;g.target=call;g.action('interrupt');if(keep?.hp>0)g.target=keep;}}
+   /* Dungeon-Fix 3: wer richtig spielt, beantwortet den Siegelring wie die Warnleiste – Parieren, ohne Schild Ausweichen (Leer) */if(dodge&&lie==='truth'&&!g.casting){const ring=g.enemies.find(e=>e.hp>0&&e.sideCast?.tankDebuff&&(e.sideCast.focus||'player')==='player'&&e.sideCast.remaining<=.3);if(ring){if(usable(g,'parry')&&!(g.cooldowns.parry>0))g.action('parry');else if(!(g.cooldowns.dash>0))g.action('dash');}}
    if(!g.casting&&g.gcd<=0&&tgt&&!(careGround&&inGround(p)&&g.moveTo))rotate(g);/* nur solange er aus der Fläche läuft */
   }
   const before=party(g).map(u=>u.hp),floor=floorAt(DEF,p.x,p.y),casting=g.enemies.map(e=>[e,e.cast?.type,e.sideCast?.type]);
