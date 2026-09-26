@@ -1175,6 +1175,20 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
    - **Big Bs Wut hängt am Laufstand** (Fix 6, `docs/DUNGEON-FIX6-2026-09-26.md`): 4:50 mit stehender Rita, 4:00, wenn Rita liegt, 3:35, wenn zusätzlich die Kirmes-Urkunde vorliegt. Der Tooltip der Wut und die Lupe der Urkunde nennen den Grund.
    - Anlass war Prüfer-Playtest 4: Eine passive Heilerin gewann mit liegender Rita und drei Beweisen, weil beides den Kampf um rund ein Drittel verkürzt. Die Simulation hatte nur den schwersten Laufstand gemessen und misst jetzt alle.
    - Eine feste frühere Wut für alle wurde verworfen: Mit Startausrüstung bliebe zu wenig Luft.
+   - **Die Wut ist ein harter Wipe wie in WoW** (Fix 7, `docs/DUNGEON-FIX7-2026-09-26.md`). Ab dem Ausbruch trifft alle 2 s eine Wutwelle die ganze Gruppe, 8 % des Höchstlebens je Wutstufe; die Stufe steigt alle 5 s.
+     - Die Gruppe stirbt so nach 10–18 s, vorher lebte sie noch 20–46 s.
+     - „Ausweichen“ aus dem Letzten Aufgebot schützt unter Wut nicht mehr.
+     - Anlass war Prüfer-Playtest 5: Eine Heilerin griff nur 20 s an und blieb dann passiv, trotzdem gewann die Gruppe tief in der Wut.
+   - **Geprüft wird im echten Spiel** (`scripts/dungeon-serie.mjs`, 20 Läufe je Rolle und Variante):
+
+     | Variante | Siege |
+     |---|---|
+     | passiv wie die Prüferin | 0/60 (vorher 7/60) |
+     | ganz passiv | 0/60 |
+     | tot | 0/60 |
+     | aktiv | 60/60, 50–72 s vor der Wut |
+
+   - Offen: An Gerd und Kurt gewinnt „20 s angreifen, dann passiv“ noch 20/30 bzw. 10/30. Gerd ist der erste Boss; eine frühere Wut ließe Startausrüstung zu wenig Luft. Das bleibt bewusst nachsichtig, der Endboss verlangt Einsatz.
 3. **Die Rolle zählt:**
    - Den Kegel-Tank-Buster mildert nur ein Schutz; ohne Schutz erscheint im Bossrahmen der Chip „Ungeschützt“.
    - Fallen Schutz und Heilung, nutzen die Schadenssöldner einmal je Kampf ihr „Letztes Aufgebot“ (doppelter Schaden, Ausweichen, Notfall-Schorle), jeweils mit Ansage.
