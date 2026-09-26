@@ -38,6 +38,8 @@
 // Kniffe) an den Hauptbossen ≤ 30 % Siege. nohero läuft an allen Hauptbossen (Gerd, Exposé, Kurt, Big B); „Held liegt ab 20 s“ ist nur Angabe.
 // SIM_BOSS begrenzt ohneheld und nohero auf einzelne Bosse.
 import {readFileSync} from 'node:fs';
+import {spawn} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {World,rng} from '../world.js';
 import {Game} from '../engine.js';
 import {makeEnemy,scaledStats,ENCOUNTER_RULES,beginReturn} from '../encounters.js';
@@ -347,6 +349,13 @@ function wingsRun(opts,{careful=false}={}){
 const out={gerd:[],profiles:[],alone:[],trash:[],wing:[],field:[],chain:null,bigb:[],bigbClaim:[],farm:[],e4:[],e4Ignore:[],wings:[],gearPacks:[],firstPull:[],gearBoss:[],nohero:[],ohneheld:[]};
 const log2=(label,text)=>{if(!JSON_OUT)console.log(label.padEnd(62),text);};
 const log=(group,label,r)=>{out[group].push({label,...r});if(!JSON_OUT)console.log(label.padEnd(62),JSON.stringify(r));};
+/* Held aktiv: Die Rollen-Fälle (ohneheld, nohero; rund 1 300 Kämpfe) laufen im vollen Lauf je Boss in eigenen Prozessen neben dem Rest
+   (SIM_JOBS, Vorgabe 6; 1 = alles nacheinander). Die Kinder schreiben JSON, der Hauptlauf übernimmt ihre Zeilen vor den Kriterien. */
+const JOBS=Math.max(1,Number(process.env.SIM_JOBS||6)),ROLE_BOSSES=['gerd','expose','korkenkurt','rita','halbespferd','bigb'],roleTasks=[];
+if(!process.env.SIM_CHILD&&JOBS>1)for(const [key,list] of [['ohneheld',ROLE_BOSSES],['nohero',['gerd','expose','korkenkurt','bigb']]])if(part(key))for(const b of (process.env.SIM_BOSS?list.filter(x=>process.env.SIM_BOSS.split(',').includes(x)):list))roleTasks.push({key,b});
+const roleJobs=(()=>{if(!roleTasks.length)return null;const queue=[...roleTasks],res=[];let running=0;return new Promise((done,fail)=>{const next=()=>{if(!queue.length&&!running)return done(res);while(running<JOBS&&queue.length){const t=queue.shift();running++;let buf='';
+ const ch=spawn(process.execPath,[fileURLToPath(import.meta.url),'--only='+t.key,'--json'],{env:{...process.env,SIM_CHILD:'1',SIM_BOSS:t.b},stdio:['ignore','pipe','inherit'],windowsHide:true});ch.stdout.on('data',d=>buf+=d);
+ ch.on('close',code=>{running--;try{const j=JSON.parse(buf);res.push(...(j[t.key]||[]).map(r=>({group:t.key,...r})));}catch(e){return fail(Error('Teillauf '+t.key+'/'+t.b+' ohne Ergebnis (Code '+code+')'));}next();});}};next();});})();
 if(part('gerd'))for(const c of CLASSES)for(const seed of SEEDS)log('gerd','Gerd · '+c.label+' + 4 Söldner · Seed '+seed,{cls:c.classId,...gerdRun({...c,seed},{})});
 if(part('gerd'))for(const c of CLASSES)for(const seed of SEEDS){log('profiles','weicht nie aus, steht vorn · '+c.label+' · Seed '+seed,{cls:c.classId,...gerdRun({...c,seed},{dodge:false,behind:false,front:true})});}
 if(part('alone'))for(const c of CLASSES){log('alone','Held allein (unsterblich, reine Zeit) · '+c.label,{cls:c.classId,...gerdRun({...c,mercs:[]},{behind:false,immortal:true,limit:900})});
@@ -371,7 +380,7 @@ if(part('bigb'))for(const c of CLASSES)for(const seed of SEEDS){log('bigb','Big 
 // Dungeon-Fix 4: Big B mit vier Söldnern ohne Heldenschaden – lebend (weicht aus) und liegend. Held aktiv (2026-09-26): an allen Hauptbossen, mit Kriterium.
 const MAIN_BOSSES=['gerd','expose','korkenkurt','bigb'],onlyBosses=list=>process.env.SIM_BOSS?list.filter(b=>process.env.SIM_BOSS.split(',').includes(b)):list;
 const bossFightRun=(id,opts,fo)=>id==='gerd'?gerdRun(opts,fo):id==='bigb'?bigbRun(opts,fo):bossRun(id,opts,fo);
-if(part('nohero'))for(const id of onlyBosses(MAIN_BOSSES))for(const c of CLASSES)for(const seed of ROLE_SEEDS){const pick=r=>({time:r.time,won:r.won,wipes:r.wipes,bossLeft:r.bossLeft,deaths:r.deaths,mercDowns:r.mercDowns,einsatz:r.einsatz??null,rally:r.rally??null});
+if(part('nohero')&&!roleJobs)for(const id of onlyBosses(MAIN_BOSSES))for(const c of CLASSES)for(const seed of ROLE_SEEDS){const pick=r=>({time:r.time,won:r.won,wipes:r.wipes,bossLeft:r.bossLeft,deaths:r.deaths,mercDowns:r.mercDowns,einsatz:r.einsatz??null,rally:r.rally??null});
  log('nohero',id+' · Held ohne Schaden (lebt, weicht aus) · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,mode:'alive',...pick(bossFightRun(id,{...c,seed},{noDamage:true}))});
  log('nohero',id+' · Held liegt ab 20 s · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,mode:'dead',...pick(bossFightRun(id,{...c,seed},{noDamage:true,stayDead:20}))});}
 // Dungeon-Fix 4 (nur mit --only=ohneheld, Angabe ohne Kriterium): jeder Boss, der Held fällt bei 50 % und bleibt liegen – vier Aufstellungen
@@ -381,7 +390,7 @@ const HEROLESS=[['a','Held Tank + Heilung + 2× Schaden',TANKS.map(([classId,spe
  ['c','Held Schaden + Schutz, Heilung, 2× Schaden',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],[],false],
  ['d','wie (c), bei 50 % fallen auch Schutz und Heilung',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],['tank','heal'],false],
  /* Held aktiv: wie (d), aber alle drei fallen erst bei 25 % („wenn der Boss schon tief ist“) – nur Angabe */['d25','wie (d), alle drei fallen bei 25 %',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],['tank','heal'],false,.25]];
-if(part('ohneheld'))for(const id of onlyBosses(['gerd',...Object.keys(E4_BOSSES),'bigb']))for(const [key,label,heroes,mercs,down,healer,at=.5] of HEROLESS)for(const h of heroes)for(const seed of ROLE_SEEDS){
+if(part('ohneheld')&&!roleJobs)for(const id of onlyBosses(['gerd',...Object.keys(E4_BOSSES),'bigb']))for(const [key,label,heroes,mercs,down,healer,at=.5] of HEROLESS)for(const h of heroes)for(const seed of ROLE_SEEDS){
  const opts={...h,mercs,seed},fo={heroDownAt:at,downMercs:down,healer},r=bossFightRun(id,opts,fo);
  log('ohneheld','ohne Held ab 50 % · '+id+' · ('+key+') '+h.spec+' · Seed '+seed,{boss:id,case:key,spec:h.spec,time:r.time,won:r.won,wipes:r.wipes,heroDown:r.heroDown??null,bossLeft:r.bossLeft,bossMin:r.bossMin??null,mercDowns:r.mercDowns});}
 // Etappe 4 Teil A: die restlichen Bosse in zwei Profilen („spielt richtig“, „ignoriert Mechanik“)
@@ -393,6 +402,7 @@ if(part('wings'))for(const careful of [true,false].filter(x=>!process.env.SIM_MO
 if(part('farm')){const fieldRate=Math.max(...out.field.map(r=>r.xpPerMin));
  for(const [route,lockout] of [['gerd',false],['gerd',true],['wing',false],['wing',true]])log('farm','Farm-Schleife '+(route==='gerd'?'Hof West + Gerd':'Flügel Burghof')+(lockout?' · mit 30-min-Sperre, Rest Feld':' · ohne Sperre')+' · Dieter · 60 min',farmHour({seed:7},{route,lockout,fieldRate}));}
 
+if(roleJobs){const order=b=>ROLE_BOSSES.indexOf(b);for(const r of (await roleJobs).sort((x,y)=>order(x.boss)-order(y.boss))){const {group,label,...rest}=r;log(group,label,rest);}}
 // Prüfkriterien – bewertet für die drei Stammklassen Dieter, Bärbel und Kevin (Auftrag Etappe 4 Teil A nach E-72). Schorsch und Käthe laufen
 // mit und stehen als Info-Zeilen darunter (neue Klassen, eigene Balance-Sitzung).
 const CORE=['dieter','baerbel','kevin'];

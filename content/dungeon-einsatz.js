@@ -39,7 +39,7 @@ const pct=x=>Math.round(x*100)+' %';
 export const EINSATZ_TEXT=Object.freeze({
  rally:{name:'Angefeuert',idle:'Söldner warten',shout:'ANGEFEUERT',
   tip:r=>'Du kämpfst mit: Deine Söldner machen '+pct(r.bonus)+' mehr Schaden. Hält '+r.hold+' s nach deinem letzten Treffer, deiner letzten Heilung, Unterbrechung oder Parade.',
-  idleTip:r=>'Seit '+r.hold+' s kein Treffer, keine Heilung, keine Unterbrechung von dir: Deine Söldner kämpfen ohne Rückenwind ('+pct(r.bonus)+' weniger Schaden). Greif an, heile oder unterbrich.'},
+  idleTip:r=>'Seit '+r.hold+' s kein Treffer, keine Heilung, keine Unterbrechung von dir: Deine Söldner kämpfen ohne Rückenwind (ohne die '+pct(r.bonus)+' mehr Schaden). Greif an, heile oder unterbrich.'},
  untanked:{name:'Ungeschützt',tip:n=>n+' hält den Boss ohne Schutz-Rolle: Tank-Buster treffen ihn voll. Ohne Schutz hält das niemand lange.'},
  lastStand:{shout:'ALLES ODER NICHTS',potion:'NOTFALL-SCHORLE',evade:'AUSWEICHEN',evaded:'AUSGEWICHEN',
   lines:{'merc-radler-rita':'Dann eben allein. Letzte Runde!','merc-hopfen-horst':'Jetzt erst recht!'},line:'Letztes Aufgebot!'},
