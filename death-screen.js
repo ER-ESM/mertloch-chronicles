@@ -68,10 +68,10 @@ export function deathHtml(cause,keys={},place=null,recap=null){
 export function mountDeathScreen({shell=document.querySelector('#gameShell'),game,respawn,keys=()=>({})}={}){
  const el=document.createElement('section');el.id='deathScreen';el.className='death-screen';el.hidden=true;el.tabIndex=-1;
  el.setAttribute('role','alertdialog');el.setAttribute('aria-labelledby','deathTitle');(shell||document.body).append(el);
- let open=false,armedUntil=0;
+ let open=false,armedUntil=0,topAt=0;
  function show(ev={}){const g=game();if(!g)return;
   const p=g.player,names=(g.enemies||[]).filter(e=>e.hp>0&&e.aggro&&!e.remoteTarget&&Math.hypot(e.x-p.x,e.y-p.y)<300).map(e=>e.name);
-  const place=dungeonCheckpoint(g);armedUntil=0;const recap=deathRecap(ev.recent);el.innerHTML=deathHtml(deathCause(ev,names,recap),keys(),place,recap);el.classList.toggle('ds-dungeon',!!place);el.hidden=false;open=true;document.body.classList.add('hero-dead');ghost(g);
+  const place=dungeonCheckpoint(g);armedUntil=0;topAt=0;const recap=deathRecap(ev.recent);el.innerHTML=deathHtml(deathCause(ev,names,recap),keys(),place,recap);el.classList.toggle('ds-dungeon',!!place);el.hidden=false;open=true;document.body.classList.add('hero-dead');ghost(g);
   /* Dungeon-Fix 4: der Bildschirm selbst bekommt den Fokus (Enter/Leertaste bleiben über Tab erreichbar) – fokussierte Knöpfe öffnen ihren Tooltip */requestAnimationFrame(()=>{el.classList.add('show');el.focus({preventScroll:true});});}
  function hide(){if(!open)return;open=false;el.classList.remove('show');el.hidden=true;document.body.classList.remove('hero-dead');}
  /* Dungeon-Fix 3: nach dem Kampf steht der Held am Ort auf (nichts setzt zurück), sonst am Kontrollpunkt bzw. bei St. Gangolf */
@@ -98,7 +98,8 @@ export function mountDeathScreen({shell=document.querySelector('#gameShell'),gam
  /** Dungeon-Fix 5 (Prüfer #728: das Fenster war groß und saß in der Bildmitte): Im Dungeon am Desktop klein und oben mittig wie in WoW – direkt unter
   *  dem Bossrahmen und seiner Fehlerzeile (Abnahme #721: den Rahmen nicht verdecken), ohne Bossrahmen ganz oben. Die Bildmitte bleibt frei. */
  function placeTop(){if(!el.classList.contains('ds-dungeon')||document.body.classList.contains('touch-mode')){el.style.top='';el.style.bottom='';return;}
-  const r=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect(),top=r&&r.height?r.bottom+34:Math.round(innerHeight*.02);
-  el.style.bottom='auto';if(el.style.top!==Math.round(top)+'px')el.style.top=Math.round(top)+'px';}
+  const r=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect(),need=Math.round(r&&r.height?r.bottom+34:innerHeight*.02);
+  /* ruhig stehen: wächst der Bossrahmen (Zauberleiste), rückt das Fenster einmal nach unten, springt aber nicht bei jedem Zauber hin und her */topAt=Math.max(topAt,need);
+  el.style.bottom='auto';if(el.style.top!==topAt+'px')el.style.top=topAt+'px';}
  return {show,hide,get open(){return open;}};
 }

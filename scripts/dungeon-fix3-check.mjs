@@ -126,8 +126,8 @@ try{
  // ─────────────────────────────────────────────── 1 · Big B ohne Tod
  if(want(1)){
   const hero=await loadBigB('eins');
-  // Beweise an der Tresortür vorlegen (F), dann Rechtsklick auf Big B
-  await put('k2',49,26.5);await wait(900);await b.press('f');await wait(2500);const shown=await read(`return [...g.dungeonRun.evidence]`);
+  // Beweise am Thron vorlegen (F; Dungeon-Fix 5: das Vorlegen an der Tresortür entfällt, solange Big B auf seine Einleitung wartet), dann Rechtsklick auf Big B
+  await put('k2',54,23);await wait(900);await b.press('f');await wait(2500);const shown=await read(`return [...g.dungeonRun.evidence]`);
   const ev=await read(`const m=document.querySelector('.dm-side');return null`);
   await s.settle();const bp=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:bp.x,y:bp.y-22},'right');
   const res=await fight({limit:560000});results.run1={hero,shown,res,phases:log.slice(-3)};

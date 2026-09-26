@@ -116,7 +116,7 @@ test('Todesrückblick: Treffer gebündelt, Todesschlag unten, Rest als „+ n we
 });
 test('Todesfenster im Dungeon klein und oben mittig unter dem Bossrahmen – die Bildmitte bleibt frei',()=>{
  const s=src('death-screen.js'),css=src('dungeon-fix5.css');assert.match(s,/function placeTop\(\)/);assert.doesNotMatch(s,/placeAboveBar/);
- assert.match(s,/top=r&&r\.height\?r\.bottom\+34:Math\.round\(innerHeight\*\.02\)/);assert.match(css,/body:not\(\.touch-mode\) \.death-screen\.ds-dungeon\{min-width:0;width:min\(330px,92vw\)/);
+ assert.match(s,/need=Math\.round\(r&&r\.height\?r\.bottom\+34:innerHeight\*\.02\)/);assert.match(s,/topAt=Math\.max\(topAt,need\)/,'springt nicht mit der Zauberleiste hin und her');assert.match(css,/body:not\(\.touch-mode\) \.death-screen\.ds-dungeon\{min-width:0;width:min\(330px,92vw\)/);
 });
 
 // ── 3 · Truppe, 4 · Erinnerung, 6 · Tooltips ─────────────────────────────────────────────────────────────────────────────────

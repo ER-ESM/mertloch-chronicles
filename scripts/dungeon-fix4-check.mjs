@@ -127,6 +127,8 @@ try{
   await wait(2200);const lens=await elCenter('.bf-chip[data-chip^="ev-"]');await mouse(lens);await wait(500);const tip1=await tip();await wait(1600);const tip2=await tip();await shot('13-lupe-tooltip');await mouse({x:1000,y:300});
   assert.match(tip1,/lügt nicht mehr|mehr Schaden/,'Lupe erklärt ihre Wirkung: '+tip1);assert.equal(tip2,tip1,'Tooltip bleibt stehen');
   const says=new Set([intro.say]);for(let i=0;i<24;i++){const x=await read(`return {say:document.querySelector('.bf-say:not([hidden]) q')?.textContent||'',fight:!!g.enemies.find(e=>e.bossId==='bigb')?.aggro}`);if(x.say)says.add(x.say);if(x.fight)break;await wait(400);}
+  /* Dungeon-Fix 5: nach der Rede wartet Big B, bis der Held angreift – Rechtsklick auf ihn (echte Maus) */
+  const readyEv=await until(`return LIE.intro.find(x=>x.phase==='ready')||LIE.intro.find(x=>x.phase==='fight')`,20000,150);if(readyEv?.phase==='ready'){await s.settle();const bp=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:bp.x,y:bp.y-22},'right');}
   const fightAt=await until(`const e=LIE.intro.find(x=>x.phase==='fight');return e&&{...e,arena:g.dungeonRun.arena,inside:g.companions.filter(c=>D.roomAt(g.dungeonRun.def,c.x,c.y)?.id==='thronsaal').length,player:D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id}`,20000,150);
   await wait(400);const doorShut=await read(`return {arena:g.dungeonRun.arena,inside:g.companions.filter(c=>D.roomAt(g.dungeonRun.def,c.x,c.y)?.id==='thronsaal').length,timer:+g.enemies.find(e=>e.bossId==='bigb').attackTimer.toFixed(2),rows:BA.state().rows.map(r=>r.hint+' '+r.time)}`);
   await shot('14-kampfbeginn');
@@ -188,6 +190,8 @@ try{
   await loadBigB('vier');await put('k2',44,26);await wait(800);await s.settle();const bp=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:bp.x,y:bp.y-22},'right');
   const entry=await until(`const b=g.enemies.find(e=>e.bossId==='bigb');return D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id==='thronsaal'&&{aggro:b.aggro,arena:g.dungeonRun.arena}`,15000,50);
   const introAt=await until(`return g.dungeonRun.intro&&{d:Math.round(Math.hypot(g.player.x-g.enemies.find(e=>e.bossId==='bigb').x,g.player.y-g.enemies.find(e=>e.bossId==='bigb').y)/8*10)/10}`,15000,100);
+  /* Dungeon-Fix 5: nach der Rede zieht erst der Angriff – läuft der Autoangriff nicht mehr, noch ein Rechtsklick */
+  await until(`return !!g.dungeonRun.intro?.ready||!!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,20000,150);if(!await read(`return !!g.enemies.find(e=>e.bossId==='bigb')?.aggro`)){const bq=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:bq.x,y:bq.y-22},'right');}
   const started=await until(`return !!g.enemies.find(e=>e.bossId==='bigb')?.aggro`,20000,200);results.entry={entry,introAt};
   assert.deepEqual([entry?.aggro,entry?.arena],[false,null],'beim Betreten kein Kampf');assert.ok(introAt,'am Thron beginnt die Einleitung');assert.ok(started,'Kampf beginnt');
   ok('Rechtsklick auf Big B aus dem Gang: beim Betreten kein Kampf, Einleitung '+introAt.d+' Kacheln vor Big B, danach Kampf');

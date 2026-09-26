@@ -37,7 +37,7 @@ const num=t=>parseFloat(String(t).replace(',','.'));
 async function loadBigB(tag,{evidence=true}={}){
  const built=buildPlaytestSave({preset:'bigb',classId:'dieter',spec:'dieter-brawl',gear:'typical',coins:600}),code=snippet(built,'Fix Fuenf '+tag);
  await b.send('Page.navigate',{url:b.url+'precache-manifest.js'});await wait(1500);await b.evaluate(`localStorage.clear();localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'desktop'}));1`);
- await b.evaluate(code);await b.resize(2024,900);await b.send('Page.navigate',{url:b.url});
+ await b.evaluate(code);await b.resize(2024,900);/* Der Prüfrechner (Windows Server) meldet „Bewegung reduzieren“ – dann blinkt nichts (Absicht). Geprüft wird die Grundeinstellung. */await b.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});await b.send('Page.navigate',{url:b.url});
  for(let i=0;i<Number(process.env.BOOT_TRIES||450)&&!await b.evaluate('!!window.game');i++)await wait(100);
  await wait(1200);let startBtn=null;
  for(let j=0;j<40;j++){const p=await b.evaluate(`(()=>{const s=document.querySelector('#startScreen');if(!s||s.hidden||getComputedStyle(s).display==='none')return null;const e=s.querySelector('[data-start=enter]');if(!e)return null;const r=e.getBoundingClientRect();return r.width?{x:r.x+r.width/2,y:r.y+r.height/2}:null;})()`);if(!p)break;startBtn=p;await clickAt(p);await wait(700);}
@@ -108,7 +108,7 @@ try{
   const pr=await read(`return g.dungeonRun.def.evidence.present`);await put('k2',pr.x+1,pr.y);await wait(900);await s.settle();
   const entrance={d:await bossDist(),f:await read(`const i=document.querySelector('#interact');return i&&!i.classList.contains('hidden')?i.innerText.trim():''`)};
   const walkUntil=async(keys,test,ms=8000)=>{await hold(keys);const t0=Date.now();while(Date.now()-t0<ms){const v=await read(`const i=document.querySelector('#interact');return i&&!i.classList.contains('hidden')?i.innerText.trim():''`);if(test(v))return {d:await bossDist(),label:v};await wait(30);}return null;};
-  const firstAt=await walkUntil(['w'],v=>/Beweise vorlegen/i.test(v));await wait(500);
+  const firstAt=await walkUntil(['w'],v=>/Beweise vorlegen/i.test(v));await wait(120);/* Lauftempo 15 Kacheln/s: nicht bis in den Nahbereich (5 Kacheln) */
   const goneAt=await walkUntil(['s'],v=>!v);/* weg vom Thron: geht erst jenseits von talk + keep */
   const againAt=await walkUntil(['w'],v=>/Beweise vorlegen/i.test(v));
   let introF=null;if(againAt){/* F im Gehen */await b.press('f');introF=await until(`return !!g.dungeonRun.intro`,1500,50);}
@@ -123,10 +123,10 @@ try{
    await wait(500);await shot('13-bereit');const chip=await elCenter('.bf-chip[data-chip="ready"]');let readyTip='';if(chip){await mouse(chip);await wait(700);readyTip=await tip();await shot('14-bereit-tooltip');await mouse({x:1000,y:160});}
    await wait(6000);const idle=await read(`const e=g.enemies.find(x=>x.bossId==='bigb');return {aggro:e.aggro,arena:g.dungeonRun.arena,mercTargets:g.companions.filter(c=>c.target===e).length,hp:e.hp/e.maxHp,d:+(Math.hypot(e.x-g.player.x,e.y-g.player.y)/8).toFixed(1)}`);
    results.intro={introRows,readyTip,idle};
-   assert.ok(introRows.some(r=>/Angreifbar in/.test(r)),'Timer „Angreifbar in“: '+introRows.join(' | '));assert.match(readyTip,/wartet auf dem Thron/,'„bereit“ mit Tooltip');
-   assert.deepEqual([idle.aggro,idle.arena,idle.mercTargets],[false,null,0],'6 s nach der Rede kein Kampf, Söldner ziehen nicht: '+JSON.stringify(idle));
+   if(!MEASURE_ONLY){assert.ok(introRows.some(r=>/Angreifbar in/.test(r)),'Timer „Angreifbar in“: '+introRows.join(' | '));assert.match(readyTip,/wartet auf dem Thron/,'„bereit“ mit Tooltip');
+   assert.deepEqual([idle.aggro,idle.arena,idle.mercTargets],[false,null,0],'6 s nach der Rede kein Kampf, Söldner ziehen nicht: '+JSON.stringify(idle));}
    // In den Nahbereich gehen (Rechtsklick auf den Boden vor dem Thron) zieht ihn
-   const fp=await screen(`D.toWorld(g.dungeonRun.def,'k2',54,15.5)`);await clickAt(fp,'right');const pulled=await until(`const e=g.enemies.find(x=>x.bossId==='bigb');return e.aggro&&{d:+(Math.hypot(e.x-g.player.x,e.y-g.player.y)/8).toFixed(1),timer:+e.attackTimer.toFixed(2),arena:g.dungeonRun.arena}`,15000,50);await hold([]);
+   let pulled=null;for(let i=0;i<150&&!pulled;i++){const v=await read(`const e=g.enemies.find(x=>x.bossId==='bigb');return e.aggro?{d:+(Math.hypot(e.x-g.player.x,e.y-g.player.y)/8).toFixed(1),timer:+e.attackTimer.toFixed(2),arena:g.dungeonRun.arena}:{dx:e.x-g.player.x,dy:e.y-g.player.y}`);if(v.timer!=null){pulled=v;break;}const k=[];if(v.dx>6)k.push('d');if(v.dx<-6)k.push('a');if(v.dy>6)k.push('s');if(v.dy<-6)k.push('w');await hold(k);await wait(30);}await hold([]);const pulledOld=await until(`const e=g.enemies.find(x=>x.bossId==='bigb');return e.aggro&&{d:+(Math.hypot(e.x-g.player.x,e.y-g.player.y)/8).toFixed(1),timer:+e.attackTimer.toFixed(2),arena:g.dungeonRun.arena}`,15000,50);await hold([]);
    await wait(400);const door=await read(`return {arena:g.dungeonRun.arena,inside:g.companions.filter(c=>D.roomAt(g.dungeonRun.def,c.x,c.y)?.id==='thronsaal').length}`);await shot('15-nahbereich-kampf');
    results.intro.pulled={...pulled,...door};assert.ok(pulled&&pulled.d<=5.3,'Nahbereich zieht Big B: '+JSON.stringify(pulled));assert.ok(pulled.timer>=4.5,'erster Zauber nach der Anlaufzeit: '+pulled.timer);assert.equal(door.inside,4,'Gruppe drin');
    ok('Einleitung: kein F am Saaleingang ('+entrance.d+' Kacheln), Hinweis ab '+firstAt.d+' Kacheln, weg erst bei '+goneAt.d+', F im Gehen startet die Rede; Leiste „'+introRows[0]+'“; danach „bereit“ (Tooltip „'+readyTip.slice(0,50)+'…“), 6 s ohne Kampf und ohne ziehende Söldner; Nahbereich ('+pulled.d+' Kacheln) zieht ihn, Tür zu, 4 Söldner drin, erster Zauber nach '+pulled.timer.toFixed(1)+' s');
@@ -143,7 +143,7 @@ try{
   if(!MEASURE_ONLY){assert.equal(A.stage,4,'alle Varianten gemessen (A)');for(const w of wa.filter(DODGE))assert.ok(w.window>=2000,'Reaktionsfenster ≥ 2,0 s: '+JSON.stringify(w));
    for(const w of wa.filter(w=>w.lie&&DODGE(w)))assert.ok(w.blink,'Zeile blinkt vor dem Einschlag: '+JSON.stringify(w));
    const mid=wa.filter(w=>/kanone3/.test(w.variant)&&w.lie);assert.ok(mid.length&&mid.every(w=>w.arrow==='in'&&w.key||w.arrow==='hold'&&/Mitte/.test(w.side)),'„… und links.“: In die Mitte mit Taste bzw. Stehen bleiben [Mitte]: '+JSON.stringify(mid));
-   ok('Reaktionsfenster A (drei Beweise): '+Object.entries(results.runA.summary).map(([k,v])=>k+' '+v.n+'× '+(v.min/1000).toFixed(2)+'–'+(v.max/1000).toFixed(2)+' s').join(' · ')+'; Blinken vor dem Einschlag in '+wa.filter(w=>w.blink).length+'/'+wa.filter(w=>w.lie&&DODGE(w)).length);}
+   ok('Reaktionsfenster A (drei Beweise): '+Object.entries(results.runA.summary).map(([k,v])=>k+' '+v.n+'× '+(v.min/1000).toFixed(2)+'–'+(v.max/1000).toFixed(2)+' s').join(' · ')+'; Blinken vor dem Einschlag in '+wa.filter(w=>w.lie&&DODGE(w)&&w.blink).length+'/'+wa.filter(w=>w.lie&&DODGE(w)).length+' Lügen');}
   // ─────────────────────────────────────────────── 3 · Nach dem Sieg
   if(!MEASURE_ONLY&&want(3)){
    await read(`g.adminGod=false;const b=g.enemies.find(e=>e.bossId==='bigb');b.hp=Math.min(b.hp,b.maxHp*.02);return 1`);await until(`return !(g.enemies.find(e=>e.bossId==='bigb')?.hp>0)`,90000,300);
@@ -172,11 +172,11 @@ try{
   const rd=await until(`return BA.state().intro?.ready||!!g.enemies.find(e=>e.bossId==='bigb').aggro`,30000,150);
   if(!await read(`return !!g.enemies.find(e=>e.bossId==='bigb').aggro`)){/* Angriff per Rechtsklick zieht ihn */const bp=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:bp.x,y:bp.y-22},'right');}
   const pulled=await until(`const e=g.enemies.find(x=>x.bossId==='bigb');return e.aggro&&{timer:+e.attackTimer.toFixed(2),hp:+(e.hp/e.maxHp).toFixed(4)}`,20000,100);results.pullB={f,rd:!!rd,pulled};
-  if(!MEASURE_ONLY){assert.match(f,/Big B ansprechen/,'ohne Beweise: '+f);assert.ok(pulled&&pulled.hp<1,'Rechtsklick-Angriff zieht ihn (erster Treffer macht Schaden): '+JSON.stringify(pulled));ok('Ohne Beweise: „'+f+'“, Rede, Rechtsklick-Angriff zieht Big B (Leben '+(pulled.hp*100).toFixed(1)+' %, erster Zauber nach '+pulled.timer.toFixed(1)+' s)');}
+  if(!MEASURE_ONLY){assert.match(f,/Big B ansprechen/i,'ohne Beweise: '+f);assert.ok(pulled&&pulled.hp<1,'Rechtsklick-Angriff zieht ihn (erster Treffer macht Schaden): '+JSON.stringify(pulled));ok('Ohne Beweise: „'+f+'“, Rede, Rechtsklick-Angriff zieht Big B (Leben '+(pulled.hp*100).toFixed(1)+' %, erster Zauber nach '+pulled.timer.toFixed(1)+' s)');}
   const B=await measureFight('B',{evidence:false});const wb=windows(B.casts);results.runB={stage:B.stage,seconds:B.seconds,windows:wb,summary:summary(wb)};console.log('Lauf B',JSON.stringify(results.runB.summary));
   if(!MEASURE_ONLY){assert.equal(B.stage,4,'alle Varianten gemessen (B)');for(const w of wb.filter(DODGE))assert.ok(w.window>=2000,'Reaktionsfenster ≥ 2,0 s: '+JSON.stringify(w));
    for(const w of wb.filter(w=>w.lie&&DODGE(w)))assert.ok(w.blink,'Zeile blinkt vor dem Einschlag: '+JSON.stringify(w));
-   ok('Reaktionsfenster B (ohne Beweise, alle lügen): '+Object.entries(results.runB.summary).map(([k,v])=>k+' '+v.n+'× '+(v.min/1000).toFixed(2)+'–'+(v.max/1000).toFixed(2)+' s').join(' · '));
+   ok('Reaktionsfenster B (ohne Beweise, alle lügen): '+Object.entries(results.runB.summary).map(([k,v])=>k+' '+v.n+'× '+(v.min/1000).toFixed(2)+'–'+(v.max/1000).toFixed(2)+' s').join(' · ')+'; Blinken vor dem Einschlag in '+wb.filter(w=>w.lie&&DODGE(w)&&w.blink).length+'/'+wb.filter(w=>w.lie&&DODGE(w)).length+' Lügen');
    // Tod: Kanonenkugel, dann viele kleine Trümmer – Heiler liegt, damit niemand aufhilft
    await read(`const s=g.companions.find(c=>c.def.role==='heal');if(s){s.hp=0;s.state='down';s.downUntil=g.time+999;}const b=g.enemies.find(e=>e.bossId==='bigb');b.hp=b.maxHp*.35;g.adminGod=false;g.player.invulnerable=0;g.player.parry=0;
     b.lastCast={name:'Ritt auf der Kanonenkugel',title:'Ritt auf der Kanonenkugel'};g.hitPlayer(b,0,true,.62);b.lastCast={name:'Trümmer',title:'Trümmer'};for(let i=0;i<5&&!g.dead;i++){g.player.invulnerable=0;g.hitPlayer(b,0,true,.05);}
@@ -194,7 +194,7 @@ try{
    // Kampf aufgeben: erster Klick scharf, nach 3 s wieder entschärft; zweiter Klick binnen 3 s gibt auf
    const bp=await elCenter('#deathScreen [data-ds-wake]');await clickAt(bp);await wait(250);const a1=await read(`const b=document.querySelector('#deathScreen [data-ds-wake]');return {dead:g.dead,btn:b.textContent,armed:b.classList.contains('ds-armed')}`);await shot('41-aufgeben-scharf');
    await mouse({x:1000,y:120});await wait(3400);const a2=await read(`const b=document.querySelector('#deathScreen [data-ds-wake]');return {dead:g.dead,btn:b.textContent,armed:b.classList.contains('ds-armed')}`);
-   await clickAt(bp);await wait(250);const a3=await read(`return {dead:g.dead,armed:document.querySelector('#deathScreen [data-ds-wake]').classList.contains('ds-armed')}`);await wait(900);await clickAt(bp);
+   const bp2=await elCenter('#deathScreen [data-ds-wake]');await clickAt(bp2);await wait(250);const a3=await read(`return {dead:g.dead,armed:document.querySelector('#deathScreen [data-ds-wake]').classList.contains('ds-armed')}`);await wait(900);await clickAt(await elCenter('#deathScreen [data-ds-wake]'));
    const up=await until(`return !g.dead&&{room:D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id||'',boss:g.enemies.find(e=>e.bossId==='bigb')?.aggro}`,6000,100);results.giveUp={a1,a2,a3,up};
    assert.deepEqual([a1.dead,a1.armed],[true,true],'erster Klick nur scharf');assert.deepEqual([a2.dead,a2.armed],[true,false],'nach 3 s wieder entschärft');assert.deepEqual([a3.dead,a3.armed],[true,true],'wieder nur scharf');assert.ok(up,'zweiter Klick binnen 3 s gibt auf');
    ok('Kampf aufgeben: 1. Klick „'+a1.btn+'“, nach 3,4 s wieder „'+a2.btn+'“, erneut scharf, 2. Klick nach 0,9 s → aufgestanden ('+(up.room||'Kontrollpunkt')+')');

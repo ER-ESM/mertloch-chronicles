@@ -48,3 +48,7 @@ body.touch-mode .game-shell .memory-card:not([hidden]){display:flex}
 body.touch-mode .game-shell .memory-card{max-width:min(300px,calc(100vw - 32px))}
 body.touch-mode .game-shell .memory-card-open{min-height:44px}
 body.touch-mode .game-shell .memory-card-close{width:44px;height:44px}
+
+/* 7 · Warnzeile vor dem Einschlag: blinkt (dungeon-ui.css ba-soon). Mit „Bewegung reduzieren“ (so meldet sich z. B. Windows Server) blinkt sie nicht –
+   dann steht sie hell umrandet, damit „gleich“ trotzdem zu sehen ist. */
+@media (prefers-reduced-motion:reduce){.ba-row.ba-now.ba-soon{border-color:#fff0c8;box-shadow:0 0 0 1px #fff0c8,0 2px 0 #0b1216}}
