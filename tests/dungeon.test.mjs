@@ -135,7 +135,7 @@ test('Kegel: vorn trifft, hinten nicht; Schutz-Spec nimmt wenig; Rückstoß übe
 });
 
 test('Schildwall dämpft Treffer von vorn, Provision heilt Verbündete, Funkspruch ruft die Nachbarn',()=>{
- const g=game(),r=inside(g);const knight=g.enemies.find(e=>e.dungeonKind==='baumarktritter'),healer=g.enemies.find(e=>e.dungeonKind==='maklerpraktikant'&&Math.hypot(e.x-knight.x,e.y-knight.y)<200);
+ const g=game(),r=inside(g);const knight=g.enemies.find(e=>e.dungeonKind==='baumarktritter'),healer=g.enemies.filter(e=>e.dungeonKind==='maklerpraktikant').sort((a,b)=>Math.hypot(a.x-knight.x,a.y-knight.y)-Math.hypot(b.x-knight.x,b.y-knight.y))[0]/* der nächste (Feinschliff 2026-09-26: auch die Hof-Packs haben jetzt einen Makler) */;
  Object.assign(g.player,{x:knight.x+40,y:knight.y});resolveDungeonCast(g,knight,DUNGEON_CASTS['d-ritter'].casts.schild,'player');
  assert.ok(knight.frontGuard>0);assert.equal(dungeonDamageFactor(g,knight),.2,'vorn gedämpft');Object.assign(g.player,{x:knight.x-40,y:knight.y});assert.equal(dungeonDamageFactor(g,knight),1,'hinten voll');
  knight.hp=knight.maxHp*.5;const before=knight.hp;resolveDungeonCast(g,healer,DUNGEON_CASTS['d-makler'].casts.provision,'player');assert.ok(knight.hp>before,'Ritter geheilt');

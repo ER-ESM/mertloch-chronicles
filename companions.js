@@ -250,7 +250,10 @@ function mechExit(g,c){
 }
 const inAnyHazard=(g,q)=>(dungeonRun(g)?.hazards||[]).some(h=>inHazard(h,q,10))/* Etappe 4 Teil A: auch nasse Streifen */;
 /** Liegt q in einer schon angesagten Gefahr (Nachsatz heraus: echte Bahnen, Stellen) oder in Trümmern? Dort stellt sich niemand hin. */
-function unsafe(g,q){for(const e of g.enemies){const k=e.cast;if(!k||!(e.hp>0)||k.told===false)continue;if(k.lanes&&(k.truthLanes||[]).some(i=>inLane(k.lanes[i],q,14)))return true;if(k.spots&&k.spots.some(s=>!s.decoy&&inEllipse(q,{...s,radius:k.radius},R.avoidMargin*.5)))return true;}return inAnyHazard(g,q);}
+/** Feinschliff 2026-09-26: vor dem Greenscreen eines kämpfenden Bosses (Rita) stellt sich kein Söldner hin – sie soll zum Kampf herauskommen,
+ *  statt ihrem Ziel in die Zone zu folgen. */
+function inScreen(g,q){const run=dungeonRun(g);if(!run)return false;for(const e of g.enemies){if(!e.dungeonBoss||!(e.hp>0)||!e.aggro)continue;const z=bossZones(run,e).hidden;if(z&&q.x>=z.x-8&&q.x<=z.x+z.w+8&&q.y>=z.y-8&&q.y<=z.y+z.h+8)return true;}return false;}
+function unsafe(g,q){if(inScreen(g,q))return true;for(const e of g.enemies){const k=e.cast;if(!k||!(e.hp>0)||k.told===false)continue;if(k.lanes&&(k.truthLanes||[]).some(i=>inLane(k.lanes[i],q,14)))return true;if(k.spots&&k.spots.some(s=>!s.decoy&&inEllipse(q,{...s,radius:k.radius},R.avoidMargin*.5)))return true;}return inAnyHazard(g,q);}
 const dangerOpen=g=>g.enemies.some(e=>e.cast&&e.cast.told!==false&&(e.cast.lanes||e.cast.spots));
 /** Aufstellung nach Rolle (Analyse Verbesserung 10, wie die Follower-Dungeons in WoW) gegen Dungeon-Bosse und -Eliten:
  *  tank: steht auf der Gegenseite der Gruppe, dreht den Gegner damit von ihr weg · behind: hinter dem Gegner (von dem aus, den er angreift)

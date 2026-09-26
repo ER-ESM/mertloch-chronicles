@@ -111,29 +111,44 @@ export const DUNGEONS={
   // Hotfix 2026-09-25: Kein Kontrollpunkt liegt in Aggro-Reichweite (aggroRange + roamRadius, bei Streifen der ganze Weg) eines Kämpfers
   // mit Sichtlinie (tests/dungeon-hotfix.test.mjs). Dafür: Hof-Kontrollpunkt am Rolltor, Hof-Packs 1 m nach außen, Weinkeller-Kontrollpunkt im
   // Gang vor der Westtür (außer Sicht der Ratten, frei von den Laufwegen der Requisiten, dungeon-scenery.js auditScenery), die Galerie-Streife läuft nur noch die Ost- und Südseite (vorher lief sie über den Kontrollpunkt an der Treppe).
+  // Feinschliff 2026-09-26 (Gerd zog „Hof West“ mit): Arena und Trash getrennt – kein Kämpfer steht oder läuft Streife in einer Arena oder
+  // Arenatür (mind. 0,5 m Abstand) und keiner streift hinein (dungeon.js noRoam); Prüfung in tests/dungeon-feinschliff.test.mjs, dazu die Regeln in
+  // dungeon.js (heroInArena, trashFighting, sealArena). „Hof West“ steht dafür 1,4 m weiter von der Zugbrücke (21,24 → 22,23), der Rattenschwarm
+  // „Gewölbe West“ einen halben Meter tiefer im Gang (42 → 42,5), damit keine Ratte in der Kelterhallentür wohnt.
   packs:[
    // Etappe 4 Teil B (E-71, Flügel à 10–15 min): Packs dichter besetzt und ergänzt – nur Anzahl und Verteilung, Werte je Gegner unverändert.
    // Gemessen mit node scripts/dungeon-sim.mjs --only=wings (Bericht docs/DUNGEON-ETAPPE-4B-2026-09-25.md).
-   {id:'hof-west',room:'hof',at:[21,24],members:['securityazubi','securityazubi','pappwache']},
-   {id:'hof-ost',room:'hof',at:[41,24],members:['securityazubi','securityazubi','pappwache']},
-   {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi','securityazubi']},
+   {id:'hof-west',room:'hof',at:[22,23],members:['securityazubi','securityazubi','baumarktritter','pappwache']},
+   {id:'hof-ost',room:'hof',at:[41,24],members:['securityazubi','securityazubi','baumarktritter','pappwache']},
+   // Feinschliff 2026-09-26: Ohne den Messfehler der Simulation (keine Wege von Punkten dicht an der Wand, dafür je 60 s) waren die Flügel 2–3 min
+   // zu kurz. Dazu kommen Gruppen ohne Funkspruch (kein Azubi, der Nachbarn ruft): Ritterpaare „Kanzlei Ost“ und „Wehrgang Nord“ (neu), ein Pappschütze
+   // mehr im Archiv, im Rittersaal West/Ost und im Gewölbe Ost, Ritterpaar „Galerie West“, Kellerwache und Ritterpaar an den Fässern im Weinkeller, Gruppe am Nordende des
+   // Gewölbegangs (neu).
+   {id:'hof-nordost',room:'hof',at:[44.5,20.5],members:['baumarktritter','maklerpraktikant']},
+   {id:'kanzlei-nord',room:'verwaltung',at:[53,24],members:['maklerpraktikant','securityazubi','securityazubi','baumarktritter']},
    {id:'kanzlei-sued',room:'verwaltung',at:[56,33],members:['maklerpraktikant','securityazubi','securityazubi']},
-   {id:'kanzlei-archiv',room:'verwaltung',at:[50,36.5],members:['baumarktritter','maklerpraktikant']},
+   {id:'kanzlei-ost',room:'verwaltung',at:[60.5,27],members:['baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'kanzlei-archiv',room:'verwaltung',at:[50,36.5],members:['baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'wehrgang-nord',room:'wehrgang',at:[25,6.5],members:['baumarktritter','maklerpraktikant']},
    {id:'wehrgang-west',room:'wehrgang',at:[20,10],members:['pappschuetze','pappschuetze','securityazubi']},
    {id:'wehrgang-mitte',room:'wehrgang',at:[31,9],members:['pappschuetze','pappschuetze','securityazubi']},
    {id:'wehrgang-ost',room:'wehrgang',at:[40,13],members:['pappschuetze','pappschuetze','securityazubi']},
    {id:'galerie-nord',room:'galerie',at:[20,8],members:['pappwache']},
    {id:'galerie-sued',room:'galerie',at:[44,36],members:['pappwache']},
    {id:'galerie-streife',room:'galerie',at:[30,36],members:['baumarktritter','baumarktritter','maklerpraktikant'],patrol:[[30,36],[54,36],[54,8],[34,8],[54,8],[54,36]]},
-   {id:'rittersaal-west',room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant']},
-   {id:'rittersaal-ost',room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant']},
-   {id:'rittersaal-sued',room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant']},
+   {id:'galerie-west',room:'galerie',at:[16,34],members:['baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'rittersaal-west',room:'rittersaal',at:[20,16],members:['baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'rittersaal-ost',room:'rittersaal',at:[43,16],members:['baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'rittersaal-sued',room:'rittersaal',at:[31,27],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
    {id:'verlies',room:'verlies',at:[3.5,22],members:['securityazubi','securityazubi','securityazubi']},
-   {id:'weinkeller-west',room:'weinkeller',at:[13,10],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
-   {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
-   {id:'gewoelbe-west',room:'gewoelbe',at:[19.5,42],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
+   {id:'weinkeller-west',room:'weinkeller',at:[13,10],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
+   {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
+   {id:'weinkeller-wache',room:'weinkeller',at:[15,17],members:['baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'weinkeller-fass',room:'weinkeller',at:[25,5],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'gewoelbe-nord',room:'gewoelbe',at:[39,5],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'gewoelbe-west',room:'gewoelbe',at:[19.5,42.5],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
    {id:'gewoelbe-sued',room:'gewoelbe',at:[30,42],members:['maklerpraktikant','securityazubi','securityazubi','baumarktritter']},
-   {id:'gewoelbe-ost',room:'gewoelbe',at:[38,16],members:['baumarktritter','baumarktritter']},
+   {id:'gewoelbe-ost',room:'gewoelbe',at:[38,16],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
    {id:'gewoelbe-tresor',room:'gewoelbe',at:[38,31],members:['securityazubi','securityazubi','maklerpraktikant','baumarktritter']},
    {id:'gewoelbe-keller',room:'gewoelbe',at:[9.5,38.5],members:['securityazubi','securityazubi','maklerpraktikant','baumarktritter']},
    // Etappe 4 Teil B: Schlossgespenst läuft die Schleife der Gewölbegänge ab (Plan 4.4, Streife), solange der Beamer läuft, ist es nur ein Bild
@@ -258,9 +273,12 @@ export const DUNGEON_BOSSES={
  // Kommentatoren), Greenscreen (vor der grünen Wand unsichtbar, der Schutz zieht sie weg). hidden = Zone vor der Wand (Meter),
  // cover = Deckung im Raum (Meter; sperrt Laufen und Sichtlinie, dungeon.js coverRects). Liegt sie, ruft Big B nur einen Follower.
  rita:{name:'Reichweiten-Rita',title:'Social-Media-Managerin · Reichweite auf Rechnung',type:'boss',skin:'horst',art:'elke',family:'rita',tint:{color:'#35b25a',alpha:.3},
-  level:9,hp:68000,damage:2.6,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
+  level:9,hp:77000,damage:2.6,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
   look:'Frau Mitte zwanzig, Ringlicht auf dem Rücken wie ein Heiligenschein, drei Handys am Gürtel, Greenscreen-Tuch als Umhang, Ansteckmikrofon',
-  hidden:{rect:[57.2,12.2,6.6,2.6]},
+  // Feinschliff 2026-09-26: Leben 68 000 → 77 000 – ohne den Greenscreen-Hänger lag sie im Flügel bei 69–78 s (Ziel 70–110 s, alle fünf Klassen).
+  // Feinschliff 2026-09-26: exit = spätestens so viele Sekunden nach dem Greenscreen (bzw. nach dem Spott) ist sie wieder sichtbar, auch wenn
+  // sie oder ihr Ziel noch vor der Wand stehen (klarer Ausweg wie in WoW; vorher hing der Kampf, wenn ihr Ziel am Greenscreen stand).
+  hidden:{rect:[57.2,12.2,6.6,2.6],exit:2},
   cover:[{id:'kuehlschrank',rect:[59.6,16.6,1.3,1.3]},{id:'palettenwand',rect:[58.4,21.8,2.6,.7]}],
   phases:[{at:.5,castSet:'d-rita2'},{at:.15}]},
  // Das halbe Pferd (Plan 7.4), selten (30 % der Durchgänge) in den Stallungen. feeds = Trog (Meter): in range Metern heilt es heal
@@ -420,7 +438,9 @@ export const DUNGEON_CASTS={
 // chest = Endtruhe in der Schatzkammer: Wahl aus `choices` Teilen der Güte `quality` (Stufe = Big Bs Stufe + 1) plus Siegelmarken,
 // einmal je Durchgang. Der Abschluss (final) zählt Abschlüsse und Bestzeit im Spielstand (dungeons[id].clears/best).
 // Etappe 4 Teil B: wingChest = kleine Truhe je Flügel: ein Teil (Güte ungewöhnlich, mit rareChance selten, Stufe = Boss + 1) und Siegelmarken.
-export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,wingChest:{marks:1,quality:'uncommon',rareChance:.35},chest:{choices:3,quality:'rare',marks:3,
+// Feinschliff 2026-09-26 (Entscheidung Orchestrator): trashXp = Anteil der EP für Trash-Gegner aus Packs (nicht Bosse, nicht ihre Helfer, nicht das Feld).
+// Mit ehrlich gemessenen Wegen brachte die Wiederholung eines Flügels bis 240 EP/min (Ziel 1–2× Feld, E-71); 0,8 bringt sie ins Band.
+export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,trashXp:.68,wingChest:{marks:1,quality:'uncommon',rareChance:.35},chest:{choices:3,quality:'rare',marks:3,
  slots:['weapon','head','shoulders','body','hands','waist','legs','feet','ring','trinket','neck','wrists']}};
 
 // Erfolge des Dungeons (Etappe 3): stehen im Spielstand unter dungeons[id].feats. check = Bedingung beim Sieg über `boss`

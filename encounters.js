@@ -3,7 +3,8 @@ import {residential} from './world-layout.js';
 import {ARCHETYPES,ELITES,CAMP_ENEMIES,SPAWN_TABLES,BALANCE,ENEMY_AUTOS,COMBAT_RULES,enemyScale,pickElite} from './content/index.js';
 import {inStartArea,nearEntry} from './foe-rules.js';
 
-export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2});
+export const ENCOUNTER_RULES=Object.freeze({cellSize:320,loadRadius:2,unloadDistance:1300,safeTownRadius:245,spawnDistance:235,spawnGrace:BALANCE.enemies.spawnGrace,slotsPerCell:2,
+  /* Feinschliff 2026-09-26: Frist für den Rückweg im Dungeon (Sekunden); die Leine ist dort 280 Einheiten, bei 125 je Sekunde zurück reichen gut 3 s */dungeonReturnLimit:8});
 export {ARCHETYPES,ELITES};
 /** Erzeugt einen Gegner. Ohne Archetyp gelten die Lagerwerte aus content/enemies.js (CAMP_ENEMIES) je Typ. */
 export function makeEnemy(spot,id,config={}){const type=config.type||'wolf',camp=CAMP_ENEMIES[type]||CAMP_ENEMIES.wolf,hp=config.hp||camp.hp;return {...spot,home:{x:spot.x,y:spot.y},id,type,skin:config.skin||camp.skin,name:config.name||camp.name,family:config.family||camp.family,hp,maxHp:hp,level:config.level||camp.level,behavior:config.behavior||'aggressive',aggroRange:config.aggroRange??(camp.aggroRange??100),roamRadius:config.roamRadius??(camp.roamRadius??65),speed:config.speed||camp.speed,respawn:config.respawn||camp.respawn,castSet:config.castSet||camp.castSet||type,damage:config.damage||1,elite:!!config.elite,leash:config.leash||560,ai:'roaming',aggro:false,attackTimer:COMBAT_RULES.firstSpecial,autoAttack:ENEMY_AUTOS[config.family||camp.family]||ENEMY_AUTOS.boar,autoTimer:0,cast:null,cycle:0,mark:0,dotDamage:12,dotTimer:0,slow:1,vulnerable:0,stun:0,dead:0,respawnAt:0,spawnCount:0,facing:1,moving:false,attack:0,spawnGrace:0,roamWait:1+(id%7)*.37,roamGoal:null,returnPath:[],returnTime:0,chasePath:[],pathTimer:0,...Object.fromEntries(Object.entries(config).filter(([,value])=>value!==undefined))};}
@@ -68,16 +69,20 @@ export class EncounterDirector{
   report(){const list=[...this.cells.values()].flat();return {cells:this.cells.size,total:list.length,active:this.game.enemies.filter(e=>e.ambient).length,neutral:list.filter(e=>e.behavior==='neutral').length,aggressive:list.filter(e=>e.behavior==='aggressive').length};}
 }
 
-export function beginReturn(g,e){e.aggro=false;e.ai='returning';e.cast=null;e.mark=0;e.slow=1;e.vulnerable=0;e.stun=0;e.returnTime=0;e.returnPath=g.world.findPath(e,e.home);e.roamGoal=null;e.chasePath=[];if(g.target===e)g.toast(e.name+' hat die Schnauze voll und zieht ab.');}
+export function beginReturn(g,e){e.aggro=false;e.ai='returning';e.cast=null;e.mark=0;e.slow=1;e.vulnerable=0;e.stun=0;e.returnTime=0;e.repathAt=0;e.returnPath=g.world.findPath(e,e.home);e.roamGoal=null;e.chasePath=[];if(g.target===e)g.toast(e.name+' hat die Schnauze voll und zieht ab.');}
 export function moveAlong(g,e,path,speed,dt){const target=path[0];if(!target)return false;const d=distance(e,target);if(d<3){path.shift();return true;}const step=Math.min(d,speed*dt),before={x:e.x,y:e.y};g.move(e,(target.x-e.x)/d*step,(target.y-e.y)/d*step);e.facing=target.x>e.x?1:-1;e.moving=distance(before,e)>.01;return e.moving;}
 export function idleEnemy(g,e,dt){const w=g.world;
   if(e.ai==='returning'){e.returnTime+=dt;if(distance(e,e.home)<7){e.hp=e.maxHp;e.ai='roaming';e.spawnGrace=1;e.roamWait=3;e.attackTimer=1.8;e.cycle=0;return;}
-    if(!moveAlong(g,e,e.returnPath,125,dt)&&e.returnTime>1){e.returnPath=w.findPath(e,e.home);if(e.returnTime>10&&distance(e,g.player)>ENCOUNTER_RULES.spawnDistance)g.resetEnemy(e);}return;
+    /* Feinschliff 2026-09-26: festgefahren → neuer Weg höchstens alle 0,5 s (vorher je Takt eine Wegsuche je Gegner) */
+    if(!moveAlong(g,e,e.returnPath,125,dt)&&e.returnTime>1){if(!(e.repathAt>e.returnTime)){e.repathAt=e.returnTime+.5;e.returnPath=w.findPath(e,e.home);}if(e.returnTime>10&&distance(e,g.player)>ENCOUNTER_RULES.spawnDistance)g.resetEnemy(e);}
+    /* Dungeon: der Rückweg hat eine Frist, auch wenn der Held danebensteht – wer bis dahin nicht zu Hause ist, setzt sich dort zurück (wie Ausweichen
+       in WoW). Vorher blieben Ratten in der Ecke hängen, solange der Held in der Nähe war. */
+    if(e.dungeon&&e.ai==='returning'&&e.returnTime>ENCOUNTER_RULES.dungeonReturnLimit)g.resetEnemy(e);return;
   }
   if(e.spawnGrace>0){e.ai='appearing';return;}e.ai='roaming';
   if(e.behavior==='neutral'&&distance(e,g.player)<30){e.facing=g.player.x>e.x?1:-1;return;}
   e.roamWait-=dt;if(e.roamWait>0)return;
   if(e.roamGoal){const path=[e.roamGoal];if(!moveAlong(g,e,path,e.type==='boss'?14:e.behavior==='neutral'?22:28,dt)||!path.length){e.roamGoal=null;e.roamWait=1.5+g.random()*3;}return;}
-  for(let i=0;i<8;i++){const a=g.random()*Math.PI*2,r=20+g.random()*e.roamRadius,p={x:e.home.x+Math.cos(a)*r,y:e.home.y+Math.sin(a)*r};if(w.blocked(p.x,p.y,9)||inSanctuary(w,p)||(w.nodes?.length&&!inhabitable(w,p))||!walkClear(w,e,p,9))continue;e.roamGoal=p;break;}if(!e.roamGoal)e.roamWait=2;
+  for(let i=0;i<8;i++){const a=g.random()*Math.PI*2,r=20+g.random()*e.roamRadius,p={x:e.home.x+Math.cos(a)*r,y:e.home.y+Math.sin(a)*r};if(w.blocked(p.x,p.y,9)||inSanctuary(w,p)||(w.nodes?.length&&!inhabitable(w,p))||w.noRoam?.(p.x,p.y,e)/* Dungeon: nie in eine Arena (Feinschliff 2026-09-26) */||!walkClear(w,e,p,9))continue;e.roamGoal=p;break;}if(!e.roamGoal)e.roamWait=2;
 }
 export function tryRespawn(g,e){if(e.respawnAt>g.time)return false;const points=e.spawnPoints||[e.home];const order=points.map((_,i)=>points[(i+e.spawnCount+1)%points.length]);const spot=order.find(p=>distance(p,g.player)>ENCOUNTER_RULES.spawnDistance&&!g.world.blocked(p.x,p.y,9)&&!g.enemies.some(other=>other!==e&&other.hp>0&&distance(other,p)<32));if(!spot)return false;e.home={...spot};g.resetEnemy(e);e.spawnCount++;e.ai='appearing';e.spawnGrace=ENCOUNTER_RULES.spawnGrace;e.dead=0;return true;}

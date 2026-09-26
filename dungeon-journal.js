@@ -58,7 +58,7 @@ export function journalPanel(g,bossId=null,dungeonId='schloss-bigb'){
 <nav class="dj-tabs" aria-label="${esc(J.title)}">${tabs}</nav>
 <header class="dj-head"><canvas class="dj-portrait" width="112" height="112" data-dj-portrait="${bossId}" aria-hidden="true"></canvas><div><h3 data-tooltip-label="${esc(def.name)}" data-tooltip-note="${esc(def.title||'')}">${esc(def.name)}</h3><small class="dj-title" data-tooltip-label="${esc(def.name)}" data-tooltip-note="${esc(def.look||'')}">${esc(def.title||'')}</small><div class="dj-facts">${facts}</div></div></header>
 ${phases?`<div class="dj-row dj-phases"><span class="dj-label" data-tooltip-label="${esc(J.phases)}" data-tooltip-note="">${dicon('trait-summon',16,'dim')}</span>${phases}</div>`:''}
-<div class="dj-abilities${casts.length>=5/* Etappe 4 Teil A: ab fünf Fähigkeiten Kacheln (Exposé, Kurt), sonst scrollt das Handy */?' dj-many':''}" role="list" aria-label="${esc(J.abilities)}">${abilities}</div>
+<div class="dj-abilities${casts.length>=5/* Etappe 4 Teil A: ab fünf Fähigkeiten Kacheln (Exposé, Kurt), sonst scrollt das Handy */?' dj-many':casts.length+(summon?1:0)>=4/* Feinschliff 2026-09-26: vier Einträge quer zweispaltig */?' dj-four':''}" role="list" aria-label="${esc(J.abilities)}">${abilities}</div>
 <div class="dj-row dj-foot"><div class="dj-roles" aria-label="${esc(J.roles)}">${roles}</div><div class="dj-loots" aria-label="${esc(J.loot)}">${dicon('loot',18,'dj-loot-label')}${lootHtml}</div></div>
 </div>`;
 }

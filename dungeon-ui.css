@@ -238,3 +238,15 @@ button.dg-chip{cursor:pointer}
 .boss-alerts.ba-right .ba-row b{overflow:hidden;text-overflow:ellipsis}
 .touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-frame strong{display:none!important}
 .touch-mode.boss-fight #unitGroupDock.unit-dock-landscape .companion-life{height:14px!important;margin-top:0}
+/* Feinschliff 2026-09-26 (mobile-check über den Dungeon): Tipp-Ziele mit 8 px Abstand (M-02), keine Tastenkürzel („Q“) in Bossrahmen und
+   Warnleiste am Handy, und im Bosskampf liegt die Warnleiste nicht über den Chatzeilen (der Chat bleibt über Menü → Chat offen). */
+.touch-mode .dj-tabs{gap:8px}.touch-mode .dg-hire{gap:9px}
+.touch-mode .boss-hud kbd{display:none!important}
+.touch-mode.boss-fight #chatWindow:not(.active){visibility:hidden}
+/* Feinschliff 2026-09-26 (mobile-check, Handy quer): Rollen und Beute reichen unter die Fähigkeiten und verdeckten bei vier Einträgen den
+   vierten (Gerd: „Verstärkung“). Quer stehen deshalb schon vier Einträge als Symbolkacheln wie ab fünf (Name und Antwort im Tooltip). */
+@media (orientation:landscape){
+ .touch-mode .dj-abilities.dj-four{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px}
+ .touch-mode .dj-abilities.dj-four .dj-ability{grid-template-columns:1fr;justify-items:center;padding:6px 4px;min-height:48px}
+ .touch-mode .dj-abilities.dj-four .dj-ability span,.touch-mode .dj-abilities.dj-four .dj-ability i{display:none}
+}

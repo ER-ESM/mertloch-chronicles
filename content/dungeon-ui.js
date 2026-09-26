@@ -33,7 +33,7 @@ export const DUNGEON_UI={
   claim:'Behauptung',truth:'Nachsatz',enrageIn:s=>'Wut in '+Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'),enraged:n=>'Wut ×'+n,
   reach:n=>'Reichweite +'+n+' %',confessed:'Geständnis',confessedNote:'Er lügt nicht mehr.',evidence:'Beweis',
   // Etappe 4 Teil A: Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd), Sprinkler (Kurt)
-  provision:(n,pct)=>'Provision ×'+n+' · +'+pct+' %',hidden:'Unsichtbar',hiddenNote:'Vor dem Greenscreen nicht anwählbar. Der Schutz zieht sie weg.',drinking:'Säuft',drinkingNote:'Am Trog heilt es sich. Vom Trog wegziehen.',wet:n=>'Nass ×'+n,wetNote:'Nasse Streifen vom Rand her: Mitte halten.'},
+  provision:(n,pct)=>'Provision ×'+n+' · +'+pct+' %',hidden:'Unsichtbar',hiddenNote:'Vor dem Greenscreen nicht anwählbar. Der Schutz zieht sie weg, sonst tritt sie nach 8 s von selbst heraus.',drinking:'Säuft',drinkingNote:'Am Trog heilt es sich. Vom Trog wegziehen.',wet:n=>'Nass ×'+n,wetNote:'Nasse Streifen vom Rand her: Mitte halten.'},
  // ── Merkmale der Zauber: Symbol (map-symbols.js), Antwort (2–3 Wörter, steht in der Warnleiste) und Tooltip.
  // Reihenfolge = Vorrang für das Hauptsymbol eines Zaubers (der gefährlichste Teil zuerst).
  traits:{
@@ -64,7 +64,7 @@ export const DUNGEON_UI={
   decoy:{name:'Attrappen',answer:'Stempel abwarten',tip:'Erst sehen alle Kreise gleich aus. Nach dem Stempel treffen nur die echten.'},
   goal:{name:'Zum Tisch',answer:'Vorher legen',tip:'Interessenten laufen zum Vertragstisch. Wer ankommt, unterschreibt: Frau Dr. Exposé macht mehr Schaden.'},
   los:{name:'Sichtlinie',answer:'Hinter Deckung',tip:'Trifft jeden, der sie am Ende sehen kann, und blendet: halber Schaden. Hinter Kühlschrank oder Palettenwand bist du sicher.'},
-  hidden:{name:'Greenscreen',answer:'Weg vom Greenscreen',tip:'Vor der grünen Wand ist sie unsichtbar und nicht anwählbar. Der Schutz zieht sie weg.'},
+  hidden:{name:'Greenscreen',answer:'Weg vom Greenscreen',tip:'Vor der grünen Wand ist sie unsichtbar und nicht anwählbar. Der Schutz zieht sie weg, sonst tritt sie nach 8 s von selbst heraus.'},
   feeds:{name:'Trog',answer:'Vom Trog wegziehen',tip:'Am Trog säuft es und heilt sich jede Sekunde. Der Schutz zieht es weg.'},
   wet:{name:'Nasser Boden',answer:'Mitte halten',tip:'Streifen vom Rand her werden nass: langsamer laufen und Schaden je Sekunde.'},
   provision:{name:'Provision',answer:'Tisch freihalten',tip:'Jede Unterschrift gibt ihr 15 % mehr Schaden. Bei fünf: VERKAUFT, alle fliegen raus.'},

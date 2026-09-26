@@ -6,7 +6,7 @@
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
 import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
-import {makeEnemy,walkClear as walkable,moveAlong} from './encounters.js';
+import {makeEnemy,walkClear as walkable,moveAlong,beginReturn} from './encounters.js';
 import {autoLootBag,addItem,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
 import {hitCompanion,clearThreat} from './companions.js';
@@ -39,6 +39,10 @@ export function doorOpen(run,door){
  if(l.seals)return requiredSeals(run.def,l.seals).every(s=>run.seals.has(s));
  return true;
 }
+/** Arena-Boden: in einem Arenaraum oder einer Arenatür (1 m Rand) – dorthin streift kein Gegner (Feinschliff 2026-09-26). */
+export function arenaGround(run,x,y){const def=run.def,f=floorAt(def,x,y);if(!f)return false;const m=U;
+ for(const r of def.rooms)if(r.arena&&r.floor===f&&r.rects.some(q=>inRect(rectWorld(def,f,q),x,y)))return true;
+ for(const d of def.doors)if(d.arena&&d.floor===f){const q=rectWorld(def,f,d.rect);if(x>=q.x-m&&x<=q.x+q.w+m&&y>=q.y-m&&y<=q.y+q.h+m)return true;}return false;}
 export function walkRects(run,floor){
  if(run.walkVersion!==run.version){run.walkCache={};run.walkVersion=run.version;}
  return run.walkCache[floor]||(run.walkCache[floor]=[
@@ -56,6 +60,7 @@ export function dungeonWorld(outside,run){
  w.lineClear=(a,b)=>w.walkClear(a,b,0);
  w.findClear=(x,y,r=9)=>{if(!w.blocked(x,y,r))return {x,y};for(let d=6;d<=240;d+=6)for(let i=0;i<16;i++){const a=i/16*Math.PI*2,q={x:x+Math.cos(a)*d,y:y+Math.sin(a)*d};if(!w.blocked(q.x,q.y,r))return q;}return {x,y};};
  w.findPath=(start,end)=>findPath(w,start,end);
+ /* Feinschliff 2026-09-26: Trash streift nie in eine Arena oder Arenatür (encounters.js idleEnemy fragt noRoam) */w.noRoam=(x,y,e)=>!e?.dungeonBoss&&arenaGround(run,x,y);/* Bosse streifen weiter in ihrer eigenen Arena */
  w.nearestRoad=()=>({road:null,distance:Infinity});
  w.dungeon=run.id;
  return w;
@@ -65,7 +70,11 @@ function findPath(w,start,end){
  // und zauberte nie wieder (Befund Etappe 2, 2026-09-25).
  if(w.blocked(end.x,end.y,7)){const c=w.findClear(end.x,end.y,7);if(w.blocked(c.x,c.y,7))return [];end=c;}
  const step=12,key=p=>Math.round(p.x/step)+','+Math.round(p.y/step),seed={x:Math.round(start.x/step)*step,y:Math.round(start.y/step)*step};
- const from=w.walkClear(start,seed,5)?seed:start;const queue=[from],prev=new Map([[key(from),null]]),points=new Map([[key(from),from]]);let last=null;
+ let from=w.walkClear(start,seed,5)?seed:start;
+ /* Feinschliff 2026-09-26 (Ratten auf dem Rückweg): Gegner laufen mit Radius 5 (world-collision.js), die Suche prüft mit 6 – wer 5–6 Einheiten
+    vor einer Wand steht (Ecke, Rückstoß), fand keinen einzigen Nachbarn, bekam einen leeren Weg und hing auf dem Rückweg fest. Start dann am
+    nächsten freien Punkt, wie das Ziel oben. */if(w.blocked(from.x,from.y,6)){const c=w.findClear(start.x,start.y,7);if(!w.blocked(c.x,c.y,6))from=c;}
+ const queue=[from],prev=new Map([[key(from),null]]),points=new Map([[key(from),from]]);let last=null;
  for(let i=0;i<queue.length&&i<2600;i++){const p=queue[i];if(w.walkClear(p,end,6)){last=p;break;}
   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const q={x:p.x+dx*step,y:p.y+dy*step},k=key(q);if(prev.has(k)||!w.walkClear(p,q,6))continue;prev.set(k,key(p));points.set(k,q);queue.push(q);}}
  if(!last)return [];const path=[{...end}];for(let k=key(last);k;k=prev.get(k))path.unshift(points.get(k));
@@ -131,7 +140,7 @@ function spawnEnemies(g,run){
  for(const pack of def.packs){
   const room=def.rooms.find(r=>r.id===pack.room),n=pack.members.length,center=toWorld(def,room.floor,...pack.at),cleared=run.trash.has(pack.id);
   pack.members.forEach((kind,j)=>{const d=DUNGEON_ENEMIES[kind];if(!d)return;const a=j/n*Math.PI*2,rad=n>1?(n>4?2.6:1.7):0;
-   const raw=toWorld(def,room.floor,pack.at[0]+Math.cos(a)*rad,pack.at[1]+Math.sin(a)*rad),at=geo.findClear(raw.x,raw.y,7),e=createEnemy(g,run,kind,d,at);e.pack=pack.id;
+   const raw=toWorld(def,room.floor,pack.at[0]+Math.cos(a)*rad,pack.at[1]+Math.sin(a)*rad),at=geo.findClear(raw.x,raw.y,7),e=createEnemy(g,run,kind,d,at);e.pack=pack.id;if(e.xp)e.xp=Math.round(e.xp*(REWARDS.trashXp??1));/* Feinschliff 2026-09-26: Trash-EP (DUNGEON_REWARDS.trashXp) */
    if(pack.patrol){e.patrol={points:pack.patrol.map(([x,y])=>toWorld(def,room.floor,x,y)),i:1,dx:at.x-center.x,dy:at.y-center.y};e.roamRadius=0;}
    if(cleared)laid(e);list.push(e);});
  }
@@ -305,7 +314,23 @@ const partyIn=(g,def,room)=>[...(g.dead?[]:[g.player]),...(g.companions||[]).fil
 /** Hotfix 2026-09-25: nach dem Laden bzw. Aufstehen am Kontrollpunkt bemerkt RESUME_CALM Sekunden lang niemand den Helden (Spielzeit;
  *  während des Startschirms steht die Zeit). Greift der Held selbst an, kämpft der Gegner wie immer. */
 export const RESUME_CALM=5;
-export const dungeonNotices=(g,e)=>{const run=dungeonRun(g);if(run&&run.calmUntil>g.time)return false;if(!e.dungeonBoss)return true;return !run||roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room;};
+export const dungeonNotices=(g,e)=>{const run=dungeonRun(g);if(!run)return true;if(run.calmUntil>g.time)return false;
+ /* Feinschliff 2026-09-26: Trash bemerkt niemanden in einer Arena mit lebendem Boss; ein Boss bemerkt niemanden, solange Trash mit der Gruppe kämpft */
+ if(!e.dungeonBoss)return !heroInArena(g,run);return roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room&&!trashFighting(g,run);};
+// ── Arena und Trash getrennt (Feinschliff 2026-09-26, Befund: Gerd zog mit Schorsch den Pack „Hof West“ mit) ─────────────────────────────
+// Ein Boss-Pull zieht nie ein Trash-Pack mit und umgekehrt: (1) Trash bemerkt den Helden nicht, solange er in einer Arena mit lebendem Boss
+// steht (die Arena ist aggro-dicht, auch bei offener Tür). (2) Kein Boss bemerkt den Helden, solange Trash auf dieser Ebene mit der Gruppe
+// kämpft – wer Trash in die Arena zieht, erledigt ihn dort, danach kommt der Boss. (3) Fällt die Arenatür zu, lässt Trash draußen ab und geht
+// zurück (sonst stand er im Kampf vor der Tür, ohne Weg). Datenregel dazu (tests/dungeon-feinschliff.test.mjs): kein Kämpfer steht oder streift
+// in einer Arena oder Arenatür, keine Streife läuft hindurch.
+/** Trash: Dungeon-Gegner aus einem Pack – kein Boss, kein Helfer eines Bosses (Adds, Interessenten, Kommentatoren), keine Pappe. */
+export const isTrash=e=>!!e?.dungeon&&!e.dungeonBoss&&!e.summoner&&!e.cardboard;
+/** Steht der Held in einer Arena, deren Boss noch lebt? */
+export function heroInArena(g,run=dungeonRun(g)){if(!run||g.dead)return false;const room=roomAt(run.def,g.player.x,g.player.y);return !!room?.arena&&g.enemies.some(b=>b.dungeonBoss?.room===room.id&&b.hp>0);}
+/** Kämpft Trash auf der Ebene des Helden (im Kampf, nicht auf dem Rückweg)? */
+export function trashFighting(g,run=dungeonRun(g)){if(!run)return false;const f=floorAt(run.def,g.player.x,g.player.y);return g.enemies.some(e=>isTrash(e)&&e.hp>0&&e.aggro&&e.ai==='combat'&&floorAt(run.def,e.x,e.y)===f);}
+/** Tür zu: Trash im Kampf außerhalb der Arena lässt ab und geht zurück. → Anzahl */
+function sealArena(g,run){let n=0;for(const e of g.enemies){if(!isTrash(e)||!(e.hp>0)||!e.aggro||roomAt(run.def,e.x,e.y)?.id===run.arena)continue;clearThreat(e);beginReturn(g,e);n++;}return n;}
 /** Held gefallen (E-71): Geist statt Wipe. Die Bedrohung auf den Helden fällt weg, die Söldner halten die Gegner. */
 function enterGhost(g,run){run.ghost={at:g.time,wiped:false};for(const e of g.enemies)clearThreat(e,'player');g.target=null;g.moveTo=null;g.path=[];g.routeGoal=null;
  if(standing(g))g.toast?.(T.ghost);g.emit?.('dungeonGhost',{});}
@@ -326,6 +351,7 @@ export function tickDungeon(g,dt){
  let arena=null;for(const e of g.enemies)if(e.dungeonBoss&&e.hp>0&&e.aggro&&e.ai==='combat'){const room=e.dungeonBoss.room;
   if(arenaRule({closed:run.arena===room,hero:heroIn(g,def,room),party:partyIn(g,def,room)})==='reset'){clearThreat(e);g.resetEnemy?.(e);continue;}arena=room;break;}
  /* Etappe 2 Text-Diät: Tür zu/auf nur im Chat, die Tür selbst zeigt es */if(arena!==run.arena){const was=run.arena;run.arena=arena;run.version++;if(arena){pullIntoArena(g,run,arena);g.log?.(T.arenaClosed);}else if(was)g.log?.(T.arenaOpen);}
+ if(run.arena)sealArena(g,run);/* Feinschliff 2026-09-26: Trash draußen geht zurück */
  for(const e of g.enemies){
   if(e.frontGuard>0)e.frontGuard=Math.max(0,e.frontGuard-dt);
   if(e.patrol&&e.hp>0&&!e.aggro&&e.ai==='roaming')walkPatrol(g,e,dt);
@@ -333,7 +359,7 @@ export function tickDungeon(g,dt){
   if(e.dungeonBoss&&!e.aggro&&e.hp>=e.maxHp&&(e.saidPhases?.size||e.engaged)){e.saidPhases=null;e.engaged=false;e.castSet=e.baseCastSet;e.cycle=0;}
  }
  // Adds verschwinden, wenn ihr Boss zurückgesetzt wurde
- for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.gone||e.signedOff||e.summoner&&e.summoner.hp>0&&!e.summoner.aggro)g.enemies.splice(i,1);}/* Etappe 4 Teil A: Interessenten, die unterschrieben haben, gehen */
+ for(let i=g.enemies.length-1;i>=0;i--){const e=g.enemies[i];if(e.gone||e.signedOff||e.summoner&&(!(e.summoner.hp>0)/* Feinschliff 2026-09-26: auch Helfer eines gefallenen Bosses (ein Interessent blieb nach Exposé in der Musterwohnung stehen) */||!e.summoner.aggro))g.enemies.splice(i,1);}/* Etappe 4 Teil A: Interessenten, die unterschrieben haben, gehen */
  tickBossMechanics(g,run,dt);/* Etappe 3: Nachsatz, Geständnis, Wut, Reichweite, parallele Timer, Trümmer */
  tickE4B(g,run,dt);/* Etappe 4 Teil B: Tode, Gespenst, Volker, Ausreden, Pferd gesehen */
 }
@@ -560,7 +586,7 @@ export function interruptHolds(g,e){
 }
 /** Zustand eines Bosses nach Rückzug oder Wipe zurück: Wut, Reichweite, Timer, Geständnis, Lügen-Treffer (Erfolg), Trümmer. */
 function resetBossState(g,run,e){e.fightTime=0;e.rageFactor=1;e.mechBoost=1;if(e.baseDamage!=null)e.damage=e.baseDamage;e.trackTimers=null;e.sideCast=null;e.confessed=false;e.lieHits=0;e.takenFactor=1;e.lastLine=null;
- /* Etappe 4 Teil A */e.provision=0;e.signed=0;e.retreat=null;e.hidden=false;e.drinking=false;e.drank=0;e.laneHits=0;e.blinded=0;e.viewDoor=0;e.wet=0;
+ /* Etappe 4 Teil A */e.provision=0;e.signed=0;e.retreat=null;e.hidden=false;e.screenUntil=0;e.drinking=false;e.drank=0;e.laneHits=0;e.blinded=0;e.viewDoor=0;e.wet=0;
  run.hazards=(run.hazards||[]).filter(h=>h.boss!==e);}
 /** Parallele Timer (tracks): eigener Zauber neben dem Hauptzyklus, z. B. der Siegelring alle 12 s auf den, der Big B hält. */
 function tickTracks(g,e,dt){
@@ -749,7 +775,7 @@ function resolveE4Cast(g,e,c,victim){
   e.blinded=(e.blinded||0)+n;emitCombatFx(g,'impact',e,{radius:36,hostile:true});return true;}
  // Greenscreen: Rita läuft vor die grüne Wand (dort unsichtbar); Säuft am Trog: das Pferd läuft zum Trog. Spott beendet beides.
  if(c.hidden||c.retreat){const z=bossZones(run,e),to=c.hidden?z.hidden&&{x:z.hidden.x+z.hidden.w/2,y:z.hidden.y+z.hidden.h/2}:z.trough;if(!to)return true;
-  e.retreat={to:{x:to.x,y:to.y},until:g.time+(c.hidden||c.retreat).duration,kind:c.hidden?'hidden':'feeds'};g.float?.(e.x,e.y-60,c.hidden?T.e4a.hidden:T.e4a.drink,c.hidden?'#7fe39a':'#9ed17a');return true;}
+  e.retreat={to:{x:to.x,y:to.y},until:g.time+(c.hidden||c.retreat).duration,kind:c.hidden?'hidden':'feeds'};if(c.hidden)e.screenUntil=e.retreat.until+screenExit(e);/* Feinschliff: spätestens dann sichtbar */g.float?.(e.x,e.y-60,c.hidden?T.e4a.hidden:T.e4a.drink,c.hidden?'#7fe39a':'#9ed17a');return true;}
  // Sprinkleranlage: ein nasser Streifen mehr vom Rand her (abwechselnd West und Ost), bleibt bis Kampfende.
  if(c.persist?.edge){addStripe(g,run,e,c);return true;}
  // Notartermin durchgekommen: alle Interessenten unterschreiben, dann heilt sie sich (selfHeal in resolveBigBCast).
@@ -775,7 +801,9 @@ export function dungeonMove(g,e,dt){
  if(e.retreat&&!e.cast){if(g.time>=e.retreat.until||!e.aggro){e.retreat=null;return false;}e.moving=false;if(e.stun>0)return true;
   if(dist(e,e.retreat.to)>8)walkToward(g,e,e.retreat.to,e.speed*(e.mark>0?(e.slow||1):1),dt,6);return true;}
  /* Greenscreen vorbei: Rita kommt von selbst wieder heraus, zu dem, den sie angreift (Spott holt sie früher); in der Zone zaubert sie nicht */
- if(e.hidden&&!e.retreat&&!e.cast&&e.aggro){const u=e.focus&&e.focus!=='player'?(g.companions||[]).find(c=>c.id===e.focus&&c.state!=='down'&&c.hp>0):(g.dead?null:g.player);if(!u)return false;walkToward(g,e,u,e.speed,dt,12);return true;}
+ if(e.hidden&&!e.retreat&&!e.cast&&e.aggro){const u=e.focus&&e.focus!=='player'?(g.companions||[]).find(c=>c.id===e.focus&&c.state!=='down'&&c.hp>0):(g.dead?null:g.player);if(!u)return false;
+  /* Feinschliff 2026-09-26: raus aus der Zone, auch wenn der Fokus selbst am oder im Greenscreen steht – vorher blieb sie 12 Einheiten vor ihm
+     stehen, also noch drin, und kam nie wieder heraus (Kevin, Rittergeschoss: 480 s bei 4 %) */const run=dungeonRun(g),out=run&&screenExitPoint(g,run,e,u);walkToward(g,e,out||u,e.speed,dt,out?3:12);return true;}
  return false;
 }
 function walkToward(g,e,goal,speed,dt,stopAt){const d=dist(e,goal);if(d<=stopAt){e.moving=false;return;}
@@ -783,7 +811,15 @@ function walkToward(g,e,goal,speed,dt,stopAt){const d=dist(e,goal);if(d<=stopAt)
  else{e.pathTimer=(e.pathTimer||0)-dt;if(e.pathTimer<=0||!e.chasePath?.length){e.pathTimer=1.1;e.chasePath=g.world.findPath(e,goal);}moveAlong(g,e,e.chasePath,speed,dt);}
  e.moving=true;e.facing=goal.x<e.x?-1:1;}
 /** Spott (Söldner oder Held) holt einen Boss aus Greenscreen bzw. vom Trog zurück in den Kampf. */
-export function endRetreat(g,e){if(!e?.retreat)return false;e.retreat=null;return true;}
+export function endRetreat(g,e){if(!e?.retreat)return false;if(e.retreat.kind==='hidden')e.screenUntil=Math.min(e.screenUntil||0,g.time+screenExit(e));e.retreat=null;return true;}
+/** Greenscreen (Feinschliff 2026-09-26, WoW-Ausweg): Nach dem Greenscreen bzw. nach dem Spott ist sie spätestens hidden.exit Sekunden später
+ *  wieder sichtbar und angreifbar – egal, wo sie oder ihr Ziel stehen. */
+const screenExit=e=>DUNGEON_BOSSES[e?.bossId]?.hidden?.exit??2;
+/** Nächster freier Punkt knapp außerhalb der Greenscreen-Zone (im Raum des Bosses), zu u hin; null ohne Zone. */
+export function screenExitPoint(g,run,e,u){const z=bossZones(run,e).hidden;if(!z)return null;const m=10,inZ=q=>q.x>=z.x&&q.x<=z.x+z.w&&q.y>=z.y&&q.y<=z.y+z.h;
+ const room=e.dungeonBoss?.room,cx=Math.min(z.x+z.w-m,Math.max(z.x+m,u.x)),cy=Math.min(z.y+z.h-m,Math.max(z.y+m,u.y));let best=null,bd=1e9;
+ for(const q of [{x:cx,y:z.y+z.h+m},{x:cx,y:z.y-m},{x:z.x-m,y:cy},{x:z.x+z.w+m,y:cy}]){if(inZ(q)||g.world.blocked(q.x,q.y,7)||roomAt(run.def,q.x,q.y)?.id!==room)continue;const d=dist(q,u)+dist(q,e)*.5;if(d<bd){bd=d;best=q;}}
+ return best;}
 /** Ein Interessent erreicht den Tisch: Provision +1 (mehr Schaden für Exposé), bei viewing.sign.stack „VERKAUFT!“. */
 function signOff(g,run,e){if(e.signedOff)return;Object.assign(e,{signedOff:true,hp:0,ai:'dead',aggro:false,respawnAt:Infinity,moving:false});
  const boss=e.summoner,v=DUNGEON_BOSSES[boss?.bossId]?.viewing;if(!boss||!(boss.hp>0)||!v)return;
@@ -799,7 +835,7 @@ function sellOut(g,run,boss,v){const line=T.bossLines[boss.bossId]?.sold;if(line
 /** Je Takt für einen kämpfenden Boss: Greenscreen (in der Zone unsichtbar, nicht anwählbar) und Trog (säuft und heilt). */
 function tickE4Boss(g,run,e,def,dt){
  if(!def.hidden&&!def.feeds)return;const z=bossZones(run,e);
- if(z.hidden){const h=z.hidden,inside=e.x>=h.x&&e.x<=h.x+h.w&&e.y>=h.y&&e.y<=h.y+h.h;if(inside!==!!e.hidden){e.hidden=inside;if(inside)e.hides=(e.hides||0)+1;}if(e.hidden&&g.target===e)g.target=null;}
+ if(z.hidden){const h=z.hidden,inside=e.x>=h.x&&e.x<=h.x+h.w&&e.y>=h.y&&e.y<=h.y+h.h&&g.time<(e.screenUntil||0)/* Feinschliff: nur im Greenscreen-Fenster, danach sichtbar */;if(inside!==!!e.hidden){e.hidden=inside;if(inside)e.hides=(e.hides||0)+1;}if(e.hidden&&g.target===e)g.target=null;}
  if(z.trough){const on=dist(e,z.trough)<=z.trough.r;if(on){e.hp=Math.min(e.maxHp,e.hp+e.maxHp*def.feeds.heal*dt);e.drinkTick=(e.drinkTick||0)+dt;if(!e.drinking)e.drank=(e.drank||0)+1;
    if(e.drinkTick>=1){e.drinkTick=0;g.float?.(e.x,e.y-44,'+'+Math.round(e.maxHp*def.feeds.heal),'#9ed17a');}}e.drinking=on;}
 }
