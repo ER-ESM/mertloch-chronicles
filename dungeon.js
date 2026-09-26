@@ -5,7 +5,7 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_PACK_RULES,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
 import {makeEnemy,walkClear as walkable,moveAlong,beginReturn} from './encounters.js';
 import {autoLootBag,addItem,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
@@ -400,8 +400,10 @@ export function dungeonBossCast(g,e){
 export function dungeonPackAggro(g,e){
  if(!e.pack||e.aggro||!(e.hp>0)||e.cardboard)return false;
  if(!g.enemies.some(o=>o!==e&&o.pack===e.pack&&o.hp>0&&o.aggro&&o.ai==='combat'))return false;
- e.aggro=true;e.ai='combat';e.attackTimer=COMBAT_RULES.firstSpecial;return true;
+ e.aggro=true;e.ai='combat';e.attackTimer=packFirstSpecial(g,e);return true;
 }
+/** Erster Spezialangriff eines Pack-Mitglieds (Dungeon-Fix 2): je gleichartigem Gegner, der schon kämpft, DUNGEON_PACK_RULES.stagger s später. */
+export function packFirstSpecial(g,e){const same=e.pack?g.enemies.filter(o=>o!==e&&o.pack===e.pack&&o.dungeonKind===e.dungeonKind&&o.hp>0&&o.aggro).length:0;return COMBAT_RULES.firstSpecial+same*DUNGEON_PACK_RULES.stagger;}
 /** Zauberort beim Zauberbeginn (E-71): target:'random' legt Fläche bzw. Ziel auf einen zufälligen Nicht-Schutz in Sichtweite –
  *  den Helden (außer als Schutz-Spec oder wenn er den Gegner hält) oder einen Söldner ohne Schutz-Rolle. */
 export function dungeonCastSpot(g,e,k,victim='player'){
@@ -494,7 +496,10 @@ export function resolveDungeonCast(g,e,c,victim='player'){
    for(const o of g.enemies)if(free(o)&&e.pack&&o.pack===e.pack)wake(o);
    if(!e.calledIn){const run=dungeonRun(g),room=run&&roomAt(run.def,e.x,e.y),near=new Map();
     for(const o of g.enemies)if(free(o)&&o.pack&&o.pack!==e.pack&&dist(o,e)<=c.callHelp.range&&(!run||roomAt(run.def,o.x,o.y)===room)){const d=dist(o,e);if(!near.has(o.pack)||near.get(o.pack)>d)near.set(o.pack,d);}
-    const next=[...near].sort((a,b)=>a[1]-b[1])[0]?.[0];if(next)for(const o of g.enemies)if(free(o)&&o.pack===next)wake(o);}
+    // Dungeon-Fix 2 (Endabnahme #715: der erste Pull holte ohne Unterbrechen den ganzen Nachbarpack, die Gruppe fiel): vom Nachbarpack
+    // kommen höchstens callHelp.max Gegner, die nächsten zuerst (ohne max wie bisher alle)
+    // Ein Pack funkt einmal erfolgreich: danach ruft keiner aus ihm mehr (callHelp.once) – sonst holte jeder weitere Funkspruch den nächsten Gegner.
+    const next=[...near].sort((a,b)=>a[1]-b[1])[0]?.[0];if(next){g.enemies.filter(o=>free(o)&&o.pack===next).sort((a,b)=>dist(a,e)-dist(b,e)).slice(0,c.callHelp.max??Infinity).forEach(wake);if(c.callHelp.once&&e.pack)for(const o of g.enemies)if(o.pack===e.pack)o.calledIn=true;}}
    if(called)g.float?.(e.x,e.y-44,'VERSTÄRKUNG','#f0b070');
    return true;
   }

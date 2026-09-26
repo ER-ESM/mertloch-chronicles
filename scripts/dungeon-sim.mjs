@@ -19,12 +19,16 @@
 // Wipe weiter vom Kontrollpunkt und den Pack noch einmal, „ein Pack je Zug“ unterbricht den Funkspruch, trifft ruhende Nachbarn nicht und verschnauft
 // ungestört, kein Schritt in eine offene Boss-Arena, und ein Kampf ohne Fortschritt endet wie beim Spieler (Aufstehen bzw. Weggehen).
 // Weitere Schalter: SIM_WING_SEED (Flügel-Seed, Vorgabe 7).
+// Dungeon-Fix 2 (docs/DUNGEON-FIX2-2026-09-26.md, Prüfer-Endabnahme #715): Der Held trägt jetzt die typische Ausrüstung aus dem Leveln
+// (scripts/gear-profiles.mjs; SIM_GEAR=typical|start|uncommon, Vorgabe typical) statt eines vollen Satzes ungewöhnlich auf Stufe 10. Neuer Teil
+// --only=gear: jeder Pack mit typischer und Startausrüstung (SIM_GEAR_SEEDS, Vorgabe 7), der erste Pull wie ein Neuling (Hof West ohne
+// Unterbrechen, Nachbarpacks stehen) und jeder Boss mit Startausrüstung. Fortschritt eines Kampfs zählt über alle, die je mitkämpften.
 import {readFileSync} from 'node:fs';
 import {World,rng} from '../world.js';
 import {Game} from '../engine.js';
 import {makeEnemy,scaledStats,ENCOUNTER_RULES,beginReturn} from '../encounters.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_ENEMIES,TUTORIAL,CLASS_SPECS,ARCHETYPES} from '../content/index.js';
-import {toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct,arenaAhead} from '../dungeon.js';
+import {toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct,arenaAhead,packFirstSpecial} from '../dungeon.js';
 import {startAuto} from '../auto-combat.js';
 import {rotate} from './balance-rotation.mjs';
 import {changeSpec,pathBuild,learnTalent,talentPoints,TALENTS} from '../talents.js';
@@ -32,9 +36,13 @@ import {available} from '../progression.js';
 import {ITEMS,addItem,equipItem} from '../rpg.js';
 import {registerRoll} from '../itemization.js';
 import {WALK_SPEED} from '../movement.js';
+import {applyGearProfile} from './gear-profiles.mjs';
 
 const world=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')),{});
 const TRACE=!!process.env.SIM_TRACE,DEF=DUNGEONS['schloss-bigb'],JSON_OUT=process.argv.includes('--json'),ONLY=(process.argv.find(a=>a.startsWith('--only='))||'').slice(7).split(',').filter(Boolean),part=n=>!ONLY.length||ONLY.includes(n);
+/* Dungeon-Fix 2 (2026-09-26): Ausrüstung des Helden – 'typical' (Vorgabe, aus dem Leveln hergeleitet, scripts/gear-profiles.mjs), 'start' (Startausrüstung) oder
+   'uncommon' (voller Satz ungewöhnlich auf Stufe 10, bisherige Vorgabe). Umschalten mit SIM_GEAR. */
+export const SIM_GEAR=process.env.SIM_GEAR||'typical';
 const GEAR_SLOTS=[['weapon','weapon',50],['offhand','offhand',500],['ranged','ranged',500],['head','head',500],['neck','neck',500],['shoulders','shoulders',500],['body','body',500],['wrists','wrists',500],['hands','hands',500],['waist','waist',500],['legs','legs',500],['feet','feet',500],['ring','ring1',500],['ring','ring2',501],['trinket','trinket1',500],['charm','trinket2',500]];
 const PROFILES=['tresen','bass','pfand'];
 // E-72 (Klassen-Ressourcen): Schwenker-Schorsch (Flambierer, Nahkampf) und Kreuz-Käthe (Grand-Spielerin, Fernkampf) sind spielbar und laufen mit;
@@ -43,12 +51,12 @@ export const CLASSES=[{classId:'dieter',spec:'dieter-brawl',label:'Dieter Kneipe
  {classId:'schorsch',spec:'schorsch-flamme',label:'Schorsch Flambierer'},{classId:'kaethe',spec:'kaethe-grand',label:'Käthe Grand-Spielerin'}].filter(c=>!process.env.SIM_CLASS||c.classId===process.env.SIM_CLASS);
 export const SEEDS=[7,8,9].filter(x=>!process.env.SIM_SEED||String(x)===process.env.SIM_SEED);
 const MERCS={tank:'merc-pils-peter',heal:'merc-schorle-susi',dps1:'merc-radler-rita',dps2:'merc-hopfen-horst'};
-function equipSet(g,quality,level){g.rpg.inventory=[];for(const k of Object.keys(g.rpg.equipment))g.rpg.equipment[k]=null;if(quality==='none'){for(const [slot,id] of Object.entries(TUTORIAL.starterEquipment)){addItem(g.rpg,id);equipItem(g,id,slot);}return;}
+function equipSet(g,quality,level){/* Dungeon-Fix 2: typische Ausrüstung aus dem Leveln (scripts/gear-profiles.mjs) */if(quality==='typical'){applyGearProfile(g,'typical',{ITEMS,addItem,equipItem,registerRoll});return;}if(quality==='start')quality='none';g.rpg.inventory=[];for(const k of Object.keys(g.rpg.equipment))g.rpg.equipment[k]=null;if(quality==='none'){for(const [slot,id] of Object.entries(TUTORIAL.starterEquipment)){addItem(g.rpg,id);equipItem(g,id,slot);}return;}
  GEAR_SLOTS.forEach(([slot,target,roll],i)=>{const id=registerRoll(g.rpg,ITEMS,{slot,spec:PROFILES[i%3],level,quality,roll,family:'boar'});addItem(g.rpg,id);equipItem(g,id,target);});}
 function learnBuild(g,spec,path=0){const budget=Math.max(0,talentPoints(g));for(const id of pathBuild(spec,path,budget))learnTalent(g,id);
  for(const tree of [spec,...Object.values(CLASS_SPECS).find(l=>l.includes(spec)).filter(x=>x!==spec)])for(const t of TALENTS[tree].slice().sort((a,b)=>a.row-b.row))if(g.rpg.talents.learned.length<budget)learnTalent(g,t.id);}
-function hero(g,{classId,spec,gear='uncommon',seed}){g.random=rng(seed);g.lootRandom=()=>.99;g.toast=()=>{};changeSpec(g,spec);equipSet(g,gear,10);g.refreshStats();learnBuild(g,spec);g.refreshStats();g.player.hp=g.player.maxHp;g.rpg.coins=9999;return g;}
-export function setup({classId='dieter',spec='dieter-brawl',gear='uncommon',mercs=['tank','heal','dps1','dps2'],seed=7}){
+function hero(g,{classId,spec,gear=SIM_GEAR,seed}){g.random=rng(seed);g.lootRandom=()=>.99;g.toast=()=>{};changeSpec(g,spec);equipSet(g,gear,10);g.refreshStats();learnBuild(g,spec);g.refreshStats();g.player.hp=g.player.maxHp;g.rpg.coins=9999;return g;}
+export function setup({classId='dieter',spec='dieter-brawl',gear=SIM_GEAR,mercs=['tank','heal','dps1','dps2'],seed=7}){
  const g=hero(new Game(world,{classId,level:10,tutorial:{version:1,step:8,completed:true}},{}),{classId,spec,gear,seed});
  g.enterDungeon('schloss-bigb',{force:true});for(const m of mercs)g.hireCompanion(MERCS[m],{free:true});return g;
 }
@@ -91,7 +99,7 @@ function escape(g,p,c,r){const base=Math.atan2(p.y-c.y,p.x-c.x)||0;let first=nul
 /** Nicht-Tanks im Kegel beim Zauberbeginn (Etappe 3, Aufstellung nach Rolle): Held und Söldner außer dem, den der Gegner angeht. */
 function coneCount(g,e,k){const holder=k.focus||(e.focus&&e.focus!=='player'?e.focus:'player');let n=0;if(!g.dead&&holder!=='player'&&coneHits(e,k,g.player,g))n++;for(const c of g.companions)if(c.state!=='down'&&c.hp>0&&c.id!==holder&&coneHits(e,k,c,g))n++;return n;}
 export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immortal=false,lie='truth',calls=false,release=false}={}){
- const dt=.05,p=g.player,stats={time:0,deaths:0,revives:0,wipes:0,mercDowns:0,mechHits:0,fell:0,taken:0,healed:0,minHpPct:100,minPartyPct:100,cones:0,coneNonTanks:0,lieHits:0,signed:0,sold:0,tankDowns:0},seenCones=new WeakSet();
+ const dt=.05,p=g.player,stats={time:0,deaths:0,revives:0,wipes:0,mercDowns:0,mechHits:0,fell:0,taken:0,healed:0,minHpPct:100,minPartyPct:100,cones:0,coneNonTanks:0,lieHits:0,signed:0,sold:0,tankDowns:0},seenCones=new WeakSet(),seenFoes=new Set();
  const primary=foes[0];g.target=primary;primary.aggro=true;primary.ai='combat';p.inCombat=7;startAuto(g);g.adminGod=immortal;
  for(let t=0;t<limit;t+=dt){
   if(!foes.some(e=>e.hp>0)&&!g.enemies.some(e=>e.hp>0&&e.aggro&&e.ai==='combat'))break;
@@ -119,10 +127,14 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
    /* Feinschliff 2026-09-26: wer sorgfältig spielt, tritt beim Trash nicht in eine offene Boss-Arena (vorher stellte sich Schorsch „hinter“ einen
       Azubi an der Zugbrücke, also in Gerds Arena) */if(goal&&arenaAhead(g,goal))goal=null;
    if(goal&&Math.hypot(goal.x-p.x,goal.y-p.y)>6&&arenaAhead(g,g.world.findClear(goal.x,goal.y,7)))goal=null;/* auch der freigerückte Punkt nicht in einer offenen Arena */
+   /* Dungeon-Fix 2 (2026-09-26): wer sorgfältig spielt, geht nicht in eine laufende Bodenfläche zurück und zaubert nicht, solange er in einer steht –
+      vorher lief der Held nach dem Ausweichen gleich wieder „hinter“ den Boss in die Fläche (Kevin im Wiehern des halben Pferds, typische Ausrüstung) */
+   const inGround=q=>g.enemies.some(e=>e.hp>0&&e.cast?.ground&&Number.isFinite(e.cast.x)&&inEll(q,e.cast)),careGround=dodge&&lie!=='none';
+   if(careGround&&goal&&!inGround(p)&&inGround(goal))goal=null;
    if(goal&&Math.hypot(goal.x-p.x,goal.y-p.y)>6){const to=g.world.findClear(goal.x,goal.y,7);/* Etappe 4 Teil A: um Deckung herum per Wegsuche */let via=to;if(!g.world.walkClear(p,to,6)){const path=g.world.findPath(p,to);via=path.find(q=>Math.hypot(q.x-p.x,q.y-p.y)>12)||to;}g.moveTo=via;g.path=[];}else g.moveTo=null;
    /* Feinschliff 2026-09-26, „ein Pack je Zug“: wer sorgfältig spielt, unterbricht den Funkspruch (Q, Hinweis „Unterbrechen“) nach 0,35 s – sonst
       kommen die Nachbarn, und die Flügelzeit hängt an Wipes statt am Pack */if(calls&&!g.casting&&available(g,'interrupt')&&!(g.cooldowns.interrupt>0)){const call=g.enemies.find(e=>e.hp>0&&e.cast?.callHelp&&e.cast.total-e.cast.remaining>=.35&&Math.hypot(e.x-p.x,e.y-p.y)<=130&&g.world.lineClear(p,e));if(call){const keep=g.target;g.target=call;g.action('interrupt');if(keep?.hp>0)g.target=keep;}}
-   if(!g.casting&&g.gcd<=0&&tgt)rotate(g);
+   if(!g.casting&&g.gcd<=0&&tgt&&!(careGround&&inGround(p)&&g.moveTo))rotate(g);/* nur solange er aus der Fläche läuft */
   }
   const before=party(g).map(u=>u.hp),floor=floorAt(DEF,p.x,p.y),casting=g.enemies.map(e=>[e,e.cast?.type,e.sideCast?.type]);
   g.tick(dt);stats.time+=dt;for(const e of foes)if(e.ai==='returning')stats.returnMax=Math.max(stats.returnMax||0,+e.returnTime.toFixed(1));
@@ -138,8 +150,8 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
   if(stats.wipes)break;
   /* Feinschliff 2026-09-26: Kommt ein Kampf 30 s (mit Boss 60 s) lang nicht voran (die Gegner verlieren zusammen keine 3 % ihres Lebens – etwa ein Heiler in der
      Ecke gegen Söldner ohne Held, oder ein Gegner ohne Weg), handelt der Held wie ein Spieler: als Geist steht er am Kontrollpunkt auf, lebend geht er,
-     und die Gegner lassen ab und gehen zurück. Vorher hing so ein Kampf bis zum Limit von 600 s. */if(release){const on=g.enemies.filter(e=>e.aggro&&e.hp>0),cur=on.reduce((n,e)=>n+e.hp,0),max=on.reduce((n,e)=>n+e.maxHp,0);
-   if(stats.progAt==null||cur<stats.progHp-.03*max){stats.progAt=stats.time;stats.progHp=cur;}else if(stats.time-stats.progAt>(on.some(e=>e.dungeonBoss)?60:30)/* Bosse mit Heilung (Trog, Notartermin): 60 s */){if(g.dead){g.respawn();stats.wipes++;stats.released=true;}else for(const e of on){e.threat=null;e.focus=null;beginReturn(g,e);}stats.stalled=true;break;}}
+     und die Gegner lassen ab und gehen zurück. Vorher hing so ein Kampf bis zum Limit von 600 s. */if(release){const on=g.enemies.filter(e=>e.aggro&&e.hp>0);/* Dungeon-Fix 2: Fortschritt über alle, die im Kampf waren – wer später dazukommt (Streife, Pack-Zug), setzte vorher den Maßstab zurück, und der Kampf galt nach 30 s als festgefahren (Galerie-Streife) */for(const e of on)seenFoes.add(e);const seen=[...seenFoes],lost=seen.reduce((n,e)=>n+e.maxHp-Math.max(0,e.hp),0),max=seen.reduce((n,e)=>n+e.maxHp,0);
+   if(stats.progAt==null||lost>stats.progLost+.03*max){stats.progAt=stats.time;stats.progLost=lost;}else if(stats.time-stats.progAt>(on.some(e=>e.dungeonBoss)?60:30)/* Bosse mit Heilung (Trog, Notartermin): 60 s */){if(g.dead){g.respawn();stats.wipes++;stats.released=true;}else for(const e of on){e.threat=null;e.focus=null;beginReturn(g,e);}stats.stalled=true;break;}}
  }
  g.adminGod=false;
  const done=foes.reduce((n,e)=>n+e.maxHp-Math.max(0,e.hp),0);stats.groupDps=Math.round(done/Math.max(1,stats.time));stats.heroDps=Math.round(g.stats.damage/Math.max(1,stats.time));
@@ -155,8 +167,32 @@ const packAt=id=>{const pack=DEF.packs.find(p=>p.id===id),room=DEF.rooms.find(r=
 const ambush=(pack,floor)=>{const others=[...DEF.packs.filter(p=>p.id!==pack.id&&!p.patrol&&DEF.rooms.find(r=>r.id===p.room)?.floor===floor).map(p=>p.at),...DEF.bosses.filter(b=>DEF.rooms.find(r=>r.id===b.room)?.floor===floor).map(b=>b.at),...(DEF.doors||[]).filter(d=>d.floor===floor&&d.arena).map(d=>[d.rect[0]+d.rect[2]/2,d.rect[1]+d.rect[3]/2])];let best=pack.patrol[0],bd=-1;for(const w of pack.patrol){const d=Math.min(...others.map(o=>Math.hypot(o[0]-w[0],o[1]-w[1])));if(d>bd){bd=d;best=w;}}return toWorld(DEF,floor,best[0],best[1]);};
 export function pull(g,id,fightOpts){const {pack,stand:at,floor}=packAt(id),members=g.enemies.filter(e=>e.pack===pack.id&&e.hp>0);/* Etappe 4 Teil B: Streifen wartet der Held an der Ecke ihres Wegs ab, die am weitesten von anderen Packs und Bosstüren liegt */let stand=at;if(pack.patrol){stand=ambush(pack,floor);for(const e of members){const q=g.world.findClear(stand.x+(g.random()-.5)*20,stand.y+(g.random()-.5)*20,9);e.x=q.x;e.y=q.y;}}Object.assign(g.player,g.world.findClear(stand.x,stand.y,9));g.player.inCombat=0;
  for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
- const foes=members.filter(e=>!e.cardboard),label=pack.id+' ('+pack.members.join('+')+')';if(!foes.length)return {pack:label,time:0,deaths:0,note:'schon gelegt'};for(const e of foes){e.aggro=true;e.ai='combat';}return {pack:label,...fight(g,foes,fightOpts)};}
+ const foes=members.filter(e=>!e.cardboard),label=pack.id+' ('+pack.members.join('+')+')';if(!foes.length)return {pack:label,time:0,deaths:0,note:'schon gelegt'};/* Dungeon-Fix 2: wie im Spiel über den Pack-Zug – gleiche Gegner fangen versetzt an (dungeon.js packFirstSpecial) */for(const e of foes){e.attackTimer=packFirstSpecial(g,e);e.aggro=true;e.ai='combat';}return {pack:label,...fight(g,foes,fightOpts)};}
 function trashRun(opts,id,fightOpts){const g=setup(opts),members=new Set(g.enemies.filter(e=>e.pack===id));quiet(g,e=>members.has(e));return pull(g,id,fightOpts);}
+// ── Dungeon-Fix 2 (2026-09-26, Endabnahme Build #715): Ausrüstungsprofile ────────────────────────────────────────────────────────────
+// Ein Pack allein (sorgfältig: unterbricht den Funkspruch, weicht aus) mit Start-, typischer und voller Ausrüstung. heal = an der Gruppe
+// geheiltes Leben als Anteil am Höchstleben der ganzen Gruppe („kostet den Heiler spürbar“). downs = Tode des Helden + Söldner am Boden.
+const partyMax=g=>party(g).reduce((n,u)=>n+u.maxHp,0);
+export function packProfile(opts,id){const g=setup(opts),members=new Set(g.enemies.filter(e=>e.pack===id));quiet(g,e=>members.has(e));const max=partyMax(g),heroHp=g.player.maxHp;const r=pull(g,id,{calls:true,release:true});
+ return {pack:id,gear:opts.gear,cls:opts.classId,time:r.time,won:!!r.won||r.note==='schon gelegt',deaths:r.deaths||0,mercDowns:r.mercDowns||0,wipes:r.wipes||0,downs:(r.deaths||0)+(r.mercDowns||0),heal:+((r.healed||0)/max).toFixed(2),minParty:r.minPartyPct,minHero:r.minHpPct,heroHp};}
+/** Packs mit echten Gegnern (ohne reine Pappwachen und ohne die Projektion, die mit dem Beamer geht). */
+export const FIGHT_PACKS=DEF.packs.filter(p=>p.members.some(k=>!DUNGEON_ENEMIES[k]?.cardboard&&!DUNGEON_ENEMIES[k]?.illusion)).map(p=>p.id);
+/** Erster Pull wie ein Neuling (Prüfer-Endabnahme #715): Held kommt vom Kontrollpunkt des Hofs, zielt den nächsten Azubi von Hof West an,
+ *  läuft heran (Fernkämpfer bleiben auf Wurfweite), Autoangriff und Rotation, weicht nichts aus und unterbricht nicht; die Nachbarpacks
+ *  stehen. Die Söldner spielen wie immer. → Wipe, Tode, wer mitkam. */
+export function firstPull(opts,{pack='hof-west',from=[31,37],limit=180}={}){
+ const g=setup(opts),p=g.player,start=toWorld(DEF,'e0',...from),ranged=g.skills.find(s=>s.id==='auto')?.weaponSource==='ranged';Object.assign(p,start);p.inCombat=0;
+ g.companions.forEach((m,i)=>{const q=g.world.findClear(start.x-24+i*16,start.y+16,9);m.x=q.x;m.y=q.y;});
+ const near=u=>(a,b)=>Math.hypot(a.x-u.x,a.y-u.y)-Math.hypot(b.x-u.x,b.y-u.y);g.target=g.enemies.filter(e=>e.pack===pack&&!e.cardboard).sort(near(start))[0];const max=partyMax(g);
+ const st={deaths:0,mercDowns:0,wipes:0,healed:0,packs:new Set()};let t=0;
+ for(;t<limit;t+=.05){
+  if(!g.dead){if(!(g.target?.hp>0)){g.target=g.enemies.filter(e=>e.hp>0&&e.aggro&&!e.hidden).sort(near(p))[0]||null;if(g.target)startAuto(g);}
+   const e=g.target;if(e){const d=Math.hypot(e.x-p.x,e.y-p.y),reach=ranged?90:28;if(d>reach){g.moveTo=g.world.findClear(e.x,e.y,7);g.path=[];}else g.moveTo=null;if(d<160&&!g.autoAttack)startAuto(g);if(!g.casting&&g.gcd<=0&&d<reach+30)rotate(g);}}
+  const before=party(g).map(u=>u.hp);g.tick(.05);party(g).forEach((u,i)=>{const d=u.hp-before[i];if(d>0&&before[i]>0)st.healed+=d;});
+  for(const e of g.enemies)if(e.aggro&&e.pack&&e.hp>0)st.packs.add(e.pack);
+  for(const ev of g.events){if(ev.type==='death')st.deaths++;if(ev.type==='down')st.mercDowns++;if(ev.type==='dungeonWipe')st.wipes++;}g.events.length=0;
+  if(st.wipes||t>5&&!g.enemies.some(e=>e.hp>0&&e.aggro&&e.ai==='combat'))break;}
+ return {gear:opts.gear,cls:opts.classId,time:Math.round(t),won:!st.wipes&&!g.enemies.some(e=>e.pack===pack&&e.hp>0&&!e.cardboard),deaths:st.deaths,mercDowns:st.mercDowns,downs:st.deaths+st.mercDowns,wipes:st.wipes,heal:+(st.healed/max).toFixed(2),packs:[...st.packs].join('+')};}
 /** Kette: zieht ein Pack den Nachbarpack mit? (Kenner-Befund 7) – Held steht zwischen beiden Hof-Packs, einer wird gezogen. */
 function chainCheck(){const g=setup({mercs:[]});quiet(g,e=>e.pack==='hof-west'||e.pack==='hof-ost');const west=g.enemies.filter(e=>e.pack==='hof-west'&&!e.cardboard),east=g.enemies.filter(e=>e.pack==='hof-ost'&&!e.cardboard);
  Object.assign(g.player,g.world.findClear(west[0].x,west[0].y+30,9));west[0].aggro=true;west[0].ai='combat';g.adminGod=true;for(let t=0;t<6;t+=.05){g.tick(.05);for(const e of g.enemies)if(e.cast?.callHelp)e.cast=null;}
@@ -169,7 +205,7 @@ function bigbRun(opts,fightOpts){const g=setup(opts);quiet(g);onlyBoss(g,'bigb')
 /** Etappe 4 Teil A: einer der restlichen Bosse mit Held und vier Söldnern, alle Siegel da (Tresortür egal), nur dieser Boss steht. Der Held
  *  startet an der Arenatür. Das halbe Pferd wird erzwungen (sonst 30 %). */
 export const E4_BOSSES={expose:['k1',32,40.6],korkenkurt:['k2',16.2,27.6],rita:['k1',58.4,18.2],halbespferd:['k1',27.2,4]};
-function bossRun(id,opts,fightOpts){const g=setup(opts);quiet(g);if(DEF.bosses.find(b=>b.id===id)?.rare)spawnRareBoss(g,id);onlyBoss(g,id);const run=g.dungeonRun;for(const b of DEF.bosses)if(b.seal)run.seals.add(b.seal);run.version++;
+export function bossRun(id,opts,fightOpts){const g=setup(opts);quiet(g);if(DEF.bosses.find(b=>b.id===id)?.rare)spawnRareBoss(g,id);onlyBoss(g,id);const run=g.dungeonRun;for(const b of DEF.bosses)if(b.seal)run.seals.add(b.seal);run.version++;
  const boss=g.enemies.find(e=>e.bossId===id),[f,x,y]=E4_BOSSES[id];Object.assign(g.player,toWorld(DEF,f,x,y));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
  const r=fight(g,[boss],{limit:420,...fightOpts});return Object.assign(r,{laneHits:boss.laneHits||0,blinded:boss.blinded||0,drank:boss.drank||0,hides:boss.hides||0,stack:(boss.stackShares||[]).join('/'),overlaps:boss.spreadOverlaps||0});}
 /** Flügel Burghof am Stück: Hof, Kanzlei, Gerd – Kampf, Erholung auf 80 % und Laufweg (Pfadlänge / Lauftempo) zusammen. */
@@ -272,7 +308,8 @@ function wingsRun(opts,{careful=false}={}){
  return {wings:rows,totalMinutes:+(total/60).toFixed(1),xp:g.trainingXp-xp0,xpPerMin:Math.round((g.trainingXp-xp0)/(total/60)),deaths,wipes,rita:bossTimes.rita??null,returnMax};
 }
 
-const out={gerd:[],profiles:[],alone:[],trash:[],wing:[],field:[],chain:null,bigb:[],bigbClaim:[],farm:[],e4:[],e4Ignore:[],wings:[]};
+const out={gerd:[],profiles:[],alone:[],trash:[],wing:[],field:[],chain:null,bigb:[],bigbClaim:[],farm:[],e4:[],e4Ignore:[],wings:[],gearPacks:[],firstPull:[],gearBoss:[]};
+const log2=(label,text)=>{if(!JSON_OUT)console.log(label.padEnd(62),text);};
 const log=(group,label,r)=>{out[group].push({label,...r});if(!JSON_OUT)console.log(label.padEnd(62),JSON.stringify(r));};
 if(part('gerd'))for(const c of CLASSES)for(const seed of SEEDS)log('gerd','Gerd · '+c.label+' + 4 Söldner · Seed '+seed,{cls:c.classId,...gerdRun({...c,seed},{})});
 if(part('gerd'))for(const c of CLASSES)for(const seed of SEEDS){log('profiles','weicht nie aus, steht vorn · '+c.label+' · Seed '+seed,{cls:c.classId,...gerdRun({...c,seed},{dodge:false,behind:false,front:true})});}
@@ -281,6 +318,16 @@ if(part('alone'))for(const c of CLASSES){log('alone','Held allein (unsterblich, 
 if(part('trash'))for(const id of ['hof-west','kanzlei-nord','rittersaal-west','rittersaal-sued','weinkeller-west','wehrgang-mitte'])log('trash','Pack '+id+' · Dieter + 4 Söldner',trashRun({},id,{}));
 if(part('wing'))for(const c of CLASSES)log('wing','Flügel Burghof · '+c.label+' + 4 Söldner',wingRun({...c,seed:7}));
 if(part('field')||part('wing')||part('farm')||part('wings'))for(const c of CLASSES){log('field','Feld Stufe 10 · '+c.label+' allein',fieldRun({...c,seed:7}));log('field','Feld Stufe 10 · '+c.label+' + 4 Söldner (Welt)',fieldRun({...c,seed:7},{mercs:true}));}
+// Dungeon-Fix 2 (2026-09-26): Ausrüstungsprofile – jeder Pack mit Start- und typischer Ausrüstung (sorgfältig), der erste Pull wie ein Neuling und
+// jeder Boss mit Startausrüstung. Seeds für die Packs: SIM_GEAR_SEEDS (Vorgabe 7; der Bericht nennt den Lauf mit 7,8,9).
+const GEAR_SEEDS=(process.env.SIM_GEAR_SEEDS||'7').split(',').map(Number);
+if(part('gear')){const quiet2=(r)=>JSON.stringify({t:r.time,won:r.won,downs:r.downs,wipes:r.wipes,heal:r.heal,minParty:r.minParty});
+ for(const gear of ['typical','start'])for(const c of CLASSES)for(const seed of GEAR_SEEDS)for(const id of FIGHT_PACKS){const r=packProfile({...c,gear,seed},id);out.gearPacks.push({...r,seed});if(process.env.SIM_DEBUG||r.downs||!r.won)log2('Pack '+id+' · '+gear+' · '+c.label+' · Seed '+seed,quiet2(r));}
+ for(const gear of ['typical','start'])for(const c of CLASSES)for(const seed of SEEDS)log('firstPull','Erster Pull Hof West wie ein Neuling · '+gear+' · '+c.label+' · Seed '+seed,firstPull({...c,gear,seed}));
+ /* „schwer, aber schaffbar“: wie im Spiel darf ein verlorener Bosskampf einmal wiederholt werden (Kontrollpunkt, neuer Versuch mit vollem Leben –
+    wie der Flügel-Lauf); gezählt werden Versuche und die Tode im gewonnenen */
+ for(const c of CLASSES)for(const [id] of [['gerd'],...Object.keys(E4_BOSSES).map(x=>[x]),['bigb']]){let r=null,tries=0;for(;tries<2&&!r?.won;tries++){const opts={...c,gear:'start',seed:7+tries};r=id==='gerd'?gerdRun(opts,{}):id==='bigb'?bigbRun(opts,{}):bossRun(id,opts,{});}
+  log('gearBoss','Boss '+id+' · Startausrüstung · '+c.label,{boss:id,cls:c.classId,tries,time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes,mercDowns:r.mercDowns});}}
 if(part('chain')){out.chain=chainCheck();if(!JSON_OUT)console.log('Kette im Hof (hof-west gezogen)'.padEnd(62),JSON.stringify(out.chain));}
 // Etappe 3: Big B in zwei Profilen, Farm-Schleife über eine Stunde
 if(part('bigb'))for(const c of CLASSES)for(const seed of SEEDS){log('bigb','Big B · folgt dem Nachsatz · '+c.label+' + 4 Söldner · Seed '+seed,{cls:c.classId,...bigbRun({...c,seed},{})});
@@ -326,6 +373,14 @@ const checks=[
    /* Feinschliff 2026-09-26: Rita endet im Flügel mit jeder Klasse (vorher bis 480 s bei 4 % im Greenscreen) */['Reichweiten-Rita im Flügel 70–110 s (jede Klasse, ein Pack je Zug)',rita.length===fc.length&&rita.every(t=>t>=70&&t<=110),fc.map(w=>w.cls+' '+w.rita).join(' · ')+' s'],
    /* Feinschliff 2026-09-26: Rückweg-Gegner hängen nicht (Ratten im Basaltgewölbe) */['Rückweg-Gegner nach spätestens '+ENCOUNTER_RULES.dungeonReturnLimit+' s zu Hause (auch mit dem Helden daneben)',ret<=ENCOUNTER_RULES.dungeonReturnLimit+.1,'längster Rückweg '+ret+' s'],
    ['EP je Minute je Flügel 1–2× Feld (Wiederholung am selben Tag, Flügel mit gebautem Siegelträger)',rep.every(x=>x>=bf&&x<=2*bf),'Wiederholung '+Math.min(...rep)+'–'+Math.max(...rep)+' · erster Lauf des Tages (Tagesbonus) '+Math.min(...first)+'–'+Math.max(...first)+' · Feld '+bf+' EP/min'+(open.length?' · ohne Boss-EP gemessen: '+open.join(', '):'')]];})():[]),
+ /* Dungeon-Fix 2 (2026-09-26): Ausrüstungsprofile. Bewertet für die Stammklassen; Schorsch und Käthe stehen als Angabe dabei. */
+ ...(part('gear')?(()=>{const core=r=>CORE.includes(r.cls),typ=out.gearPacks.filter(r=>r.gear==='typical'),st=out.gearPacks.filter(r=>r.gear==='start'),med=a=>{const x=[...a].sort((p,q)=>p-q);return x[Math.floor(x.length/2)]??0;},fp=out.firstPull,gb=out.gearBoss,pct=x=>Math.round(x*100)+' %';
+  const badTyp=typ.filter(r=>core(r)&&(r.downs||!r.won)),badSt=st.filter(r=>core(r)&&(r.downs>1||!r.won)),name=r=>r.cls+'/'+r.pack+'/'+r.seed+':'+r.downs+(r.won?'':'W');
+  return [['Typische Ausrüstung: jeder Pack ohne Wipe und ohne Tod (Held und Söldner, sorgfältig)',!badTyp.length,typ.filter(core).length+' Pulls'+(badTyp.length?' · rot: '+badTyp.map(name).join(' '):'')+' · neue Klassen (Angabe): '+typ.filter(r=>!core(r)&&(r.downs||!r.won)).map(name).join(' ')],
+   ['Typische Ausrüstung: ein Pack kostet den Heiler spürbar (Median ≥ 25 % des Gruppenlebens geheilt)',med(typ.map(r=>r.heal))>=.25,'Median '+pct(med(typ.map(r=>r.heal)))+', leichtester Pack '+pct(Math.min(...typ.map(r=>r.heal)))+', schwerster '+pct(Math.max(...typ.map(r=>r.heal)))],
+   ['Startausrüstung: jeder Pack schaffbar (kein Wipe, höchstens ein Ausfall)',!badSt.length,st.filter(core).length+' Pulls, Ausfälle gesamt '+st.filter(core).reduce((n,r)=>n+r.downs,0)+(badSt.length?' · rot: '+badSt.map(name).join(' '):'')+' · Heilung Median '+pct(med(st.map(r=>r.heal)))],
+   ['Erster Pull wie ein Neuling (Hof West, ohne Unterbrechen): typisch ohne Ausfall, Start ohne Wipe',fp.filter(r=>r.gear==='typical'&&core(r)).every(r=>!r.downs&&!r.wipes)&&fp.filter(r=>r.gear==='start'&&core(r)).every(r=>!r.wipes&&r.downs<=1),['typical','start'].map(gg=>gg+' '+fp.filter(r=>r.gear===gg).map(r=>r.cls.slice(0,3)+r.downs+(r.wipes?'W':'')).join(' ')).join(' · ')+' (Ausfälle je Lauf)'],
+   ['Startausrüstung: jeder Boss schaffbar (gewonnen, höchstens ein zweiter Versuch, höchstens ein Tod des Helden)',gb.filter(core).every(r=>r.won&&r.deaths<=1),gb.map(r=>r.boss+' '+r.cls.slice(0,3)+' '+r.time+' s/'+r.deaths+' T'+(r.tries>1?' (2. Versuch)':'')+(r.won?'':' verloren')).join(', ')]];})():[]),
  ...(part('farm')?[['Farm-Schleife über eine Stunde ≤ 2× Feld (30-min-Sperre wie im Spiel)',Math.max(farmGerd.xpPerMin,farmWing.xpPerMin)<=2*bestField,'Gerd '+farmGerd.xpPerMin+' · Flügel '+farmWing.xpPerMin+' EP/min · Feld '+bestField+' (ohne Sperre, nur Info: Gerd '+farmFree.xpPerMin+')']]:[])
 ];
 // Info: neue Klassen (E-72) gegen dieselben Kriterien, ohne Rückgabewert
