@@ -12,7 +12,10 @@ export const COMPANION_RULES=Object.freeze({
  // dort bei rund 15 % eines Helden (40 Schaden/s je Söldner gegen 240–270), Ziel sind rund 85 %. Gilt NUR im Dungeon (companions.js
  // refreshStats über inDungeon); die offene Welt bleibt unverändert. Schaden trägt Angriffe, heal die Heilung, health das Leben.
  // Messung: scripts/dungeon-sim.mjs, Bericht docs/DUNGEON-ETAPPE-1-2026-09-25.md.
- instanceFactor:{damage:4.8,heal:2.5,health:1.8},
+ // Held aktiv (2026-09-26, docs/DUNGEON-AKTIV-2026-09-26.md): Schaden 4.8 → 3.4 – ein Söldner allein ist im Dungeon so stark wie ein Held. Kämpft der
+ // Held mit, sind sie „angefeuert“ (content/dungeon-einsatz.js EINSATZ_RULES.rally, +40 % → 4,76, also wie bisher); ein passiver oder gefallener
+ // Held kostet damit spürbar Zeit. Heilung und Leben unverändert.
+ instanceFactor:{damage:3.4,heal:2.5,health:1.8},
  reaction:.35,                // Sekunden, bis ein Begleiter auf eine Ansage (Fläche, Zauber) reagiert
  // Dungeon Etappe 3 (E-71): Behauptung und Nachsatz. Söldner warten den Nachsatz ab und reagieren dann auf die Wahrheit. lieError =
  // Anteil der Lügen, auf die ein Söldner doch hereinfällt: Er läuft nach der Behauptung und bleibt lieConfusion Sekunden nach dem

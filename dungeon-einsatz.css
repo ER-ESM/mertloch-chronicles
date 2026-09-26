@@ -1,0 +1,15 @@
+/* Held aktiv (2026-09-26, docs/DUNGEON-AKTIV-2026-09-26.md): Zeile „Einsatz“ im Beute-Moment – Symbole und Zahlen, Erklärung im Tooltip
+   (dungeon-einsatz-ui.js). Aussehen wie die übrigen Chips des Beute-Moments (dungeon-e1.css .loot-chip). */
+.loot-einsatz{display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding-top:6px;border-top:1px solid #5a4424}
+.loot-einsatz .einsatz-chip{padding:2px 6px;gap:3px}
+.loot-einsatz .einsatz-chip canvas{width:20px!important;height:20px!important}
+.loot-einsatz .einsatz-chip .ui-glyph{width:16px;height:16px}
+.loot-einsatz .einsatz-chip[data-einsatz-part="score"]{border-color:#8a6a2e;background:#2c1f0c}
+.loot-einsatz .einsatz-chip[data-einsatz-part="score"] b{font-size:15px;color:#f4c56a}
+.loot-einsatz .einsatz-main{border-color:#8a6a2e}
+.loot-einsatz .einsatz-silver{border-color:#c8d2da;box-shadow:inset 0 0 0 1px #6f7c86}
+.loot-einsatz .einsatz-gold{border-color:#f4c56a;box-shadow:inset 0 0 0 1px #a8802e;background:#3a2a0c}
+.loot-einsatz .einsatz-bonus b{color:#ffe08a}
+.loot-einsatz .einsatz-none{opacity:.62}
+.loot-einsatz .einsatz-bad b{color:#ff9a86}
+body.touch-mode .loot-einsatz .loot-chip{min-height:44px;min-width:44px;justify-content:center}

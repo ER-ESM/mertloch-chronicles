@@ -15,6 +15,7 @@ import {RARITIES,PANEL_UI as UI,BAG_UI,GEAR_COMPARE,STAT_EFFECTS,statYield,DUNGE
 import {glyph} from './ui-glyphs.js';
 import {ICON_STEP,iconStep} from './icon-steps.js';
 import {titleBadge} from './dungeon-e4b-ui.js';/* Dungeon Etappe 4 Teil B: Titel als Medaille am Namen */
+import {einsatzChips} from './dungeon-einsatz-ui.js';/* Held aktiv: Einsatz-Zeile im Beute-Moment */
 /** Beute-Moment eines Dungeon-Bosses (E-71): Kopf mit Boss, Siegelmarken, Erfahrung und Tagesbonus; Erklärung nur im Tooltip. */
 function lootMomentHead(bag){const r=bag.reward;if(!r)return '';const T=DUNGEON_TEXT.lootMoment,tip=(l,n)=>`data-tooltip-label="${l}" data-tooltip-note="${n}"`;
  return `<div class="loot-moment" data-loot-moment ${tip(T.title(bag.source?.name||''),T.keep)}><b class="loot-moment-title">${T.title(bag.source?.name||'')}</b><div class="loot-moment-chips">`
@@ -24,7 +25,7 @@ function lootMomentHead(bag){const r=bag.reward;if(!r)return '';const T=DUNGEON_
   /* Etappe 3: Erfolge beim Sieg, Wiederholung am selben Tag (weniger EP), Endtruhe mit Wahl */
   +(r.feats||[]).map(id=>`<span class="loot-chip loot-feat" tabindex="0" data-loot-feat="${id}" ${tip(DUNGEON_TEXT.feat(DUNGEON_FEATS[id]?.name||id),DUNGEON_FEATS[id]?.note||'')}>${glyph('check')}</span>`).join('')
   +(r.repeat?`<span class="loot-chip loot-repeat" tabindex="0" ${tip(T.xp,DUNGEON_TEXT.repeatXp)}>${glyph('clock')}<b>⅓</b></span>`:'')
-  +(bag.choice?`<span class="loot-chip loot-choice" tabindex="0" data-loot-choice ${tip(DUNGEON_TEXT.chest.title,DUNGEON_TEXT.chest.pickNote)}><b>1 / ${bag.items.length}</b></span>`:'')+'</div></div>';}
+  +(bag.choice?`<span class="loot-chip loot-choice" tabindex="0" data-loot-choice ${tip(DUNGEON_TEXT.chest.title,DUNGEON_TEXT.chest.pickNote)}><b>1 / ${bag.items.length}</b></span>`:'')+'</div>'+einsatzChips(r.einsatz)/* Held aktiv (2026-09-26): Einsatz und Bonus-Siegelmarken */+'</div>';}
 export const slots=EQUIPMENT_SLOTS;
 // Güte-Namen kommen aus content/items.js, damit „Dorflegende“ (epic) überall gleich heißt.
 const rarity=RARITIES;

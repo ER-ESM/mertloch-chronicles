@@ -31,11 +31,17 @@
 // fallen auch Schutz und Heilung, nur die zwei Schadens-Söldner stehen. Ein Held-Heiler heilt wie ein Spieler den schwächsten Söldner (Freund gewählt).
 // Dungeon-Fix 5 (docs/DUNGEON-FIX5-2026-09-26.md, Prüfer #728): Big B wartet nach der Rede, bis der Held angreift – der Sim-Held spricht ihn an und
 // zieht selbst (heroPulls → pullBoss). Die Rede zählt nicht zur Kampfzeit, im vollen Durchgang aber zur Gesamtzeit.
+// Held aktiv (docs/DUNGEON-AKTIV-2026-09-26.md, Nutzerentscheidung zu Fix 4): ohneheld und nohero laufen jetzt immer mit, mit eigener Stichprobe
+// (SIM_ROLE_SEEDS, Vorgabe 7–14) und Kriterien: (a) Held Tank fällt → Hauptbosse zusammen ≤ 25 % Siege, keiner über 40 % · (b) Held Heiler fällt →
+// alle Bosse ≤ 25 % · (c) Held Schaden fällt → ≥ 50 % · (d) nur zwei Schadens-Söldner → zusammen mit (d25) (alle drei fallen erst bei 25 %) 10–35 %,
+// bei 50 % höchstens 15 % · Held passiv (lebt, weicht aus, kein Schaden, keine
+// Kniffe) an den Hauptbossen ≤ 30 % Siege. nohero läuft an allen Hauptbossen (Gerd, Exposé, Kurt, Big B); „Held liegt ab 20 s“ ist nur Angabe.
+// SIM_BOSS begrenzt ohneheld und nohero auf einzelne Bosse.
 import {readFileSync} from 'node:fs';
 import {World,rng} from '../world.js';
 import {Game} from '../engine.js';
 import {makeEnemy,scaledStats,ENCOUNTER_RULES,beginReturn} from '../encounters.js';
-import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_ENEMIES,TUTORIAL,CLASS_SPECS,ARCHETYPES} from '../content/index.js';
+import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_ENEMIES,TUTORIAL,CLASS_SPECS,ARCHETYPES,EINSATZ_RULES,COMPANION_RULES} from '../content/index.js';
 import {resetEnemySerial,toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct,arenaAhead,packFirstSpecial,engageBoss,addressBoss,bossReady,pullBoss} from '../dungeon.js';
 import {startAuto} from '../auto-combat.js';
 import {rotate} from './balance-rotation.mjs';
@@ -48,6 +54,11 @@ import {applyGearProfile} from './gear-profiles.mjs';
 import {usable} from '../alert-answer.js';
 import {hitCompanion} from '../companions.js';
 
+/* Held aktiv: Versuchsschalter SIM_TUNE (JSON) – überschreibt Zahlen für einen Lauf, ohne die Inhaltsdateien zu ändern, z. B.
+   SIM_TUNE='{"rules":{"rally":{"bonus":0.5}},"bosses":{"gerd":{"enrage":{"after":110,"every":10,"damage":1}}}}'. rules = EINSATZ_RULES, bosses = DUNGEON_BOSSES,
+   companions = COMPANION_RULES (nur verschachtelte Werte wie instanceFactor). */
+{const tune=process.env.SIM_TUNE?JSON.parse(process.env.SIM_TUNE):null,merge=(to,from)=>{for(const [k,v] of Object.entries(from||{})){if(v&&typeof v==='object'&&!Array.isArray(v)&&to[k]&&typeof to[k]==='object')merge(to[k],v);else to[k]=v;}};
+ if(tune){merge(EINSATZ_RULES,tune.rules);merge(DUNGEON_BOSSES,tune.bosses);merge(COMPANION_RULES,tune.companions);}}
 const world=new World(JSON.parse(readFileSync(new URL('../data/mertloch.json',import.meta.url),'utf8')),{});
 const TRACE=!!process.env.SIM_TRACE,DEF=DUNGEONS['schloss-bigb'],JSON_OUT=process.argv.includes('--json'),ONLY=(process.argv.find(a=>a.startsWith('--only='))||'').slice(7).split(',').filter(Boolean),part=n=>!ONLY.length||ONLY.includes(n);
 /* Dungeon-Fix 2 (2026-09-26): Ausrüstung des Helden – 'typical' (Vorgabe, aus dem Leveln hergeleitet, scripts/gear-profiles.mjs), 'start' (Startausrüstung) oder
@@ -59,7 +70,9 @@ const PROFILES=['tresen','bass','pfand'];
 // die Rotation spielt jede Ressource wie ein geübter Spieler (scripts/balance-rotation.mjs).
 export const CLASSES=[{classId:'dieter',spec:'dieter-brawl',label:'Dieter Kneipenschläger'},{classId:'baerbel',spec:'baerbel-feedback',label:'Bärbel Putzpyramide'},{classId:'kevin',spec:'kevin-hunt',label:'Kevin Pfandjäger'},
  {classId:'schorsch',spec:'schorsch-flamme',label:'Schorsch Flambierer'},{classId:'kaethe',spec:'kaethe-grand',label:'Käthe Grand-Spielerin'}].filter(c=>!process.env.SIM_CLASS||c.classId===process.env.SIM_CLASS);
-export const SEEDS=[7,8,9].filter(x=>!process.env.SIM_SEED||String(x)===process.env.SIM_SEED);
+export const SEEDS=(process.env.SIM_SEEDS?process.env.SIM_SEEDS.split(',').map(Number):[7,8,9]).filter(x=>!process.env.SIM_SEED||String(x)===process.env.SIM_SEED);
+/** Held aktiv: Stichprobe für die Rollen-Fälle (ohneheld, nohero) – acht Seeds je Fall und Boss, damit die Quoten belastbar sind. */
+export const ROLE_SEEDS=(process.env.SIM_ROLE_SEEDS||process.env.SIM_SEEDS||'7,8,9,10,11,12,13,14').split(',').map(Number).filter(x=>!process.env.SIM_SEED||String(x)===process.env.SIM_SEED);
 const MERCS={tank:'merc-pils-peter',heal:'merc-schorle-susi',dps1:'merc-radler-rita',dps2:'merc-hopfen-horst'};
 function equipSet(g,quality,level){/* Dungeon-Fix 2: typische Ausrüstung aus dem Leveln (scripts/gear-profiles.mjs) */if(quality==='typical'){applyGearProfile(g,'typical',{ITEMS,addItem,equipItem,registerRoll});return;}if(quality==='start')quality='none';g.rpg.inventory=[];for(const k of Object.keys(g.rpg.equipment))g.rpg.equipment[k]=null;if(quality==='none'){for(const [slot,id] of Object.entries(TUTORIAL.starterEquipment)){addItem(g.rpg,id);equipItem(g,id,slot);}return;}
  GEAR_SLOTS.forEach(([slot,target,roll],i)=>{const id=registerRoll(g.rpg,ITEMS,{slot,spec:PROFILES[i%3],level,quality,roll,family:'boar'});addItem(g.rpg,id);equipItem(g,id,target);});}
@@ -144,7 +157,7 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
    if(goal&&Math.hypot(goal.x-p.x,goal.y-p.y)>6){const to=g.world.findClear(goal.x,goal.y,7);/* Etappe 4 Teil A: um Deckung herum per Wegsuche */let via=to;if(!g.world.walkClear(p,to,6)){const path=g.world.findPath(p,to);via=path.find(q=>Math.hypot(q.x-p.x,q.y-p.y)>12)||to;}g.moveTo=via;g.path=[];}else g.moveTo=null;
    /* Feinschliff 2026-09-26, „ein Pack je Zug“: wer sorgfältig spielt, unterbricht den Funkspruch (Q, Hinweis „Unterbrechen“) nach 0,35 s – sonst
       kommen die Nachbarn, und die Flügelzeit hängt an Wipes statt am Pack */if(calls&&!g.casting&&available(g,'interrupt')&&!(g.cooldowns.interrupt>0)){const call=g.enemies.find(e=>e.hp>0&&e.cast?.callHelp&&e.cast.total-e.cast.remaining>=.35&&Math.hypot(e.x-p.x,e.y-p.y)<=130&&g.world.lineClear(p,e));if(call){const keep=g.target;g.target=call;g.action('interrupt');if(keep?.hp>0)g.target=keep;}}
-   /* Dungeon-Fix 3: wer richtig spielt, beantwortet den Siegelring wie die Warnleiste – Parieren, ohne Schild Ausweichen (Leer) */if(dodge&&lie==='truth'&&!g.casting){const ring=g.enemies.find(e=>e.hp>0&&e.sideCast?.tankDebuff&&(e.sideCast.focus||'player')==='player'&&e.sideCast.remaining<=.3);if(ring){if(usable(g,'parry')&&!(g.cooldowns.parry>0))g.action('parry');else if(!(g.cooldowns.dash>0))g.action('dash');}}
+   /* Dungeon-Fix 3: wer richtig spielt, beantwortet den Siegelring wie die Warnleiste – Parieren, ohne Schild Ausweichen (Leer) */if(dodge&&lie==='truth'&&!g.casting&&!noDamage/* Held aktiv: der passive Held nutzt keine Kniffe, auch keine Parade */){const ring=g.enemies.find(e=>e.hp>0&&e.sideCast?.tankDebuff&&(e.sideCast.focus||'player')==='player'&&e.sideCast.remaining<=.3);if(ring){if(usable(g,'parry')&&!(g.cooldowns.parry>0))g.action('parry');else if(!(g.cooldowns.dash>0))g.action('dash');}}
    /* Dungeon-Fix 4, --only=ohneheld: ein Held-Heiler wählt wie ein Spieler den schwächsten Söldner als Freund, solange er heilt */let mate=null;if(healer){mate=g.companions.filter(c=>c.state!=='down'&&c.hp>0&&c.hp/c.maxHp<.8&&Math.hypot(c.x-p.x,c.y-p.y)<400).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]||null;if(mate)g.friend={kind:'companion',ref:mate,player:false};}
    if(!noDamage&&!g.casting&&g.gcd<=0&&tgt&&!(careGround&&inGround(p)&&g.moveTo))rotate(g,{healer:!!mate});/* nur solange er aus der Fläche läuft */if(healer)g.friend=null;
    /* Dungeon-Fix 4, --only=nohero: der Held macht keinen Schaden (Autoangriff aus, keine Kniffe) */if(noDamage&&g.autoAttack?.enabled)g.stopAuto?.();
@@ -179,7 +192,7 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
 }
 function gerdRun(opts,fightOpts){const g=setup(opts);quiet(g);onlyBoss(g,'gerd');const gerd=g.enemies.find(e=>e.bossId==='gerd');Object.assign(g.player,toWorld(DEF,'e0',8.5,26));
  for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
- return fight(g,[gerd],fightOpts);}
+ return einsatzOf(fight(g,[gerd],fightOpts),gerd);}
 const packAt=id=>{const pack=DEF.packs.find(p=>p.id===id),room=DEF.rooms.find(r=>r.id===pack.room);return {pack,floor:room.floor,center:toWorld(DEF,room.floor,...pack.at),stand:toWorld(DEF,room.floor,pack.at[0],pack.at[1]+3)};};
 const ambush=(pack,floor)=>{const others=[...DEF.packs.filter(p=>p.id!==pack.id&&!p.patrol&&DEF.rooms.find(r=>r.id===p.room)?.floor===floor).map(p=>p.at),...DEF.bosses.filter(b=>DEF.rooms.find(r=>r.id===b.room)?.floor===floor).map(b=>b.at),...(DEF.doors||[]).filter(d=>d.floor===floor&&d.arena).map(d=>[d.rect[0]+d.rect[2]/2,d.rect[1]+d.rect[3]/2])];let best=pack.patrol[0],bd=-1;for(const w of pack.patrol){const d=Math.min(...others.map(o=>Math.hypot(o[0]-w[0],o[1]-w[1])));if(d>bd){bd=d;best=w;}}return toWorld(DEF,floor,best[0],best[1]);};
 export function pull(g,id,fightOpts){const {pack,stand:at,floor}=packAt(id),members=g.enemies.filter(e=>e.pack===pack.id&&e.hp>0);/* Etappe 4 Teil B: Streifen wartet der Held an der Ecke ihres Wegs ab, die am weitesten von anderen Packs und Bosstüren liegt */let stand=at;if(pack.patrol){stand=ambush(pack,floor);for(const e of members){const q=g.world.findClear(stand.x+(g.random()-.5)*20,stand.y+(g.random()-.5)*20,9);e.x=q.x;e.y=q.y;}}Object.assign(g.player,g.world.findClear(stand.x,stand.y,9));g.player.inCombat=0;
@@ -222,13 +235,15 @@ function heroPulls(g,big){let t=0;if(addressBoss(g,big))for(;t<30&&!bossReady(g,
 function bigbRun(opts,fightOpts){const g=setup(opts);quiet(g);onlyBoss(g,'bigb');const run=g.dungeonRun;for(const s of ['siegel-gerd','siegel-expose','siegel-kurt'])run.seals.add(s);run.version++;const big=g.enemies.find(e=>e.bossId==='bigb');
  Object.assign(g.player,toWorld(DEF,'k2',49,24));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
  heroPulls(g,big);/* Dungeon-Fix 5: wie im Spiel – Rede, dann zieht der Held selbst (erster Zauber nach der Anlaufzeit) */
- const r=fight(g,[big],{limit:420,...fightOpts});r.feat=(g.dungeons['schloss-bigb'].feats||[]).includes('nachsatz');return r;}
+ const r=fight(g,[big],{limit:420,...fightOpts});r.feat=(g.dungeons['schloss-bigb'].feats||[]).includes('nachsatz');einsatzOf(r,big);return r;}
+/** Held aktiv: Einsatz-Wertung des Siegs (Punkte, Bonus-Siegelmarken) an das Ergebnis hängen. */
+function einsatzOf(r,boss){const x=boss.dungeonReward?.einsatz;if(x){r.einsatz=x.score;r.einsatzBonus=x.bonus;r.rally=x.rally;}return r;}
 /** Etappe 4 Teil A: einer der restlichen Bosse mit Held und vier Söldnern, alle Siegel da (Tresortür egal), nur dieser Boss steht. Der Held
  *  startet an der Arenatür. Das halbe Pferd wird erzwungen (sonst 30 %). */
 export const E4_BOSSES={expose:['k1',32,40.6],korkenkurt:['k2',16.2,27.6],rita:['k1',58.4,18.2],halbespferd:['k1',27.2,4]};
 export function bossRun(id,opts,fightOpts){const g=setup(opts);quiet(g);if(DEF.bosses.find(b=>b.id===id)?.rare)spawnRareBoss(g,id);onlyBoss(g,id);const run=g.dungeonRun;for(const b of DEF.bosses)if(b.seal)run.seals.add(b.seal);run.version++;
  const boss=g.enemies.find(e=>e.bossId===id),[f,x,y]=E4_BOSSES[id];Object.assign(g.player,toWorld(DEF,f,x,y));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
- const r=fight(g,[boss],{limit:420,...fightOpts});return Object.assign(r,{laneHits:boss.laneHits||0,blinded:boss.blinded||0,drank:boss.drank||0,hides:boss.hides||0,stack:(boss.stackShares||[]).join('/'),overlaps:boss.spreadOverlaps||0});}
+ const r=einsatzOf(fight(g,[boss],{limit:420,...fightOpts}),boss);return Object.assign(r,{laneHits:boss.laneHits||0,blinded:boss.blinded||0,drank:boss.drank||0,hides:boss.hides||0,stack:(boss.stackShares||[]).join('/'),overlaps:boss.spreadOverlaps||0});}
 /** Flügel Burghof am Stück: Hof, Kanzlei, Gerd – Kampf, Erholung auf 80 % und Laufweg (Pfadlänge / Lauftempo) zusammen. */
 const WING=['hof-west','hof-ost','kanzlei-nord','kanzlei-sued'];
 function wingRun(opts){const g=setup(opts),xp0=g.trainingXp;let time=0,fightTime=0,from=toWorld(DEF,'e0',DEF.start.x,DEF.start.y),deaths=0;const rows=[];
@@ -353,17 +368,21 @@ if(part('chain')){out.chain=chainCheck();if(!JSON_OUT)console.log('Kette im Hof 
 // Etappe 3: Big B in zwei Profilen, Farm-Schleife über eine Stunde
 if(part('bigb'))for(const c of CLASSES)for(const seed of SEEDS){log('bigb','Big B · folgt dem Nachsatz · '+c.label+' + 4 Söldner · Seed '+seed,{cls:c.classId,...bigbRun({...c,seed},{})});
  log('bigbClaim','Big B · folgt der Behauptung · '+c.label+' + 4 Söldner · Seed '+seed,{cls:c.classId,...bigbRun({...c,seed},{lie:'claim'})});}
-// Dungeon-Fix 4 (nur mit --only=nohero, Angabe ohne Kriterium): Big B mit vier Söldnern ohne Heldenschaden – lebend (weicht aus) und liegend
-if(ONLY.includes('nohero'))for(const c of CLASSES)for(const seed of SEEDS){log('nohero','Big B · Held ohne Schaden (lebt, weicht aus) · '+c.label+' · Seed '+seed,{cls:c.classId,mode:'alive',...bigbRun({...c,seed},{noDamage:true})});
- log('nohero','Big B · Held liegt ab 20 s (Schutz hält Big B) · '+c.label+' · Seed '+seed,{cls:c.classId,mode:'dead',...bigbRun({...c,seed},{noDamage:true,stayDead:20})});}
+// Dungeon-Fix 4: Big B mit vier Söldnern ohne Heldenschaden – lebend (weicht aus) und liegend. Held aktiv (2026-09-26): an allen Hauptbossen, mit Kriterium.
+const MAIN_BOSSES=['gerd','expose','korkenkurt','bigb'],onlyBosses=list=>process.env.SIM_BOSS?list.filter(b=>process.env.SIM_BOSS.split(',').includes(b)):list;
+const bossFightRun=(id,opts,fo)=>id==='gerd'?gerdRun(opts,fo):id==='bigb'?bigbRun(opts,fo):bossRun(id,opts,fo);
+if(part('nohero'))for(const id of onlyBosses(MAIN_BOSSES))for(const c of CLASSES)for(const seed of ROLE_SEEDS){const pick=r=>({time:r.time,won:r.won,wipes:r.wipes,bossLeft:r.bossLeft,deaths:r.deaths,mercDowns:r.mercDowns,einsatz:r.einsatz??null,rally:r.rally??null});
+ log('nohero',id+' · Held ohne Schaden (lebt, weicht aus) · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,mode:'alive',...pick(bossFightRun(id,{...c,seed},{noDamage:true}))});
+ log('nohero',id+' · Held liegt ab 20 s · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,mode:'dead',...pick(bossFightRun(id,{...c,seed},{noDamage:true,stayDead:20}))});}
 // Dungeon-Fix 4 (nur mit --only=ohneheld, Angabe ohne Kriterium): jeder Boss, der Held fällt bei 50 % und bleibt liegen – vier Aufstellungen
 const TANKS=[['dieter','dieter-wall'],['kevin','kevin-iron'],['schorsch','schorsch-rauch']],HEALERS=[['baerbel','baerbel-care'],['schorsch','schorsch-chef'],['kaethe','kaethe-herz']];
 const HEROLESS=[['a','Held Tank + Heilung + 2× Schaden',TANKS.map(([classId,spec])=>({classId,spec})),['heal','dps1','dps2'],[],false],
  ['b','Held Heiler + Schutz + 2× Schaden',HEALERS.map(([classId,spec])=>({classId,spec})),['tank','dps1','dps2'],[],true],
  ['c','Held Schaden + Schutz, Heilung, 2× Schaden',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],[],false],
- ['d','wie (c), bei 50 % fallen auch Schutz und Heilung',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],['tank','heal'],false]];
-if(ONLY.includes('ohneheld'))for(const id of (process.env.SIM_BOSS||['gerd',...Object.keys(E4_BOSSES),'bigb'].join(',')).split(','))for(const [key,label,heroes,mercs,down,healer] of HEROLESS)for(const h of heroes)for(const seed of SEEDS){
- const opts={...h,mercs,seed},fo={heroDownAt:.5,downMercs:down,healer},r=id==='gerd'?gerdRun(opts,fo):id==='bigb'?bigbRun(opts,fo):bossRun(id,opts,fo);
+ ['d','wie (c), bei 50 % fallen auch Schutz und Heilung',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],['tank','heal'],false],
+ /* Held aktiv: wie (d), aber alle drei fallen erst bei 25 % („wenn der Boss schon tief ist“) – nur Angabe */['d25','wie (d), alle drei fallen bei 25 %',CLASSES.map(({classId,spec})=>({classId,spec})),['tank','heal','dps1','dps2'],['tank','heal'],false,.25]];
+if(part('ohneheld'))for(const id of onlyBosses(['gerd',...Object.keys(E4_BOSSES),'bigb']))for(const [key,label,heroes,mercs,down,healer,at=.5] of HEROLESS)for(const h of heroes)for(const seed of ROLE_SEEDS){
+ const opts={...h,mercs,seed},fo={heroDownAt:at,downMercs:down,healer},r=bossFightRun(id,opts,fo);
  log('ohneheld','ohne Held ab 50 % · '+id+' · ('+key+') '+h.spec+' · Seed '+seed,{boss:id,case:key,spec:h.spec,time:r.time,won:r.won,wipes:r.wipes,heroDown:r.heroDown??null,bossLeft:r.bossLeft,bossMin:r.bossMin??null,mercDowns:r.mercDowns});}
 // Etappe 4 Teil A: die restlichen Bosse in zwei Profilen („spielt richtig“, „ignoriert Mechanik“)
 const E4_PARTS={expose:'expose',korkenkurt:'kurt',rita:'rita',halbespferd:'pferd'},E4_NAMES={expose:'Frau Dr. Exposé',korkenkurt:'Korken-Kurt',rita:'Reichweiten-Rita',halbespferd:'Das halbe Pferd'};
@@ -421,9 +440,22 @@ const novel=k=>(out[k+'All']||[]).filter(r=>r.cls&&!CORE.includes(r.cls)),infoRo
 checks.push(...infoRow('neue Klassen: Held allein (unsterblich)',novel('alone').filter(x=>x.label.includes('unsterblich')),r=>r.map(x=>x.cls+' '+x.time+' s').join(', ')),...infoRow('neue Klassen: Gerd',novel('gerd'),r=>r.map(x=>x.cls+' '+x.time+' s/'+x.deaths+' T').join(', ')),...infoRow('neue Klassen: Gerd, weicht nie aus (Tode)',novel('profiles'),r=>r.map(x=>x.cls+' '+x.deaths).join(', ')),
  ...infoRow('neue Klassen: Big B',novel('bigb'),r=>r.map(x=>x.cls+' '+x.time+' s/'+x.deaths+' T').join(', ')),...infoRow('neue Klassen: Big B, folgt der Behauptung (Tode)',novel('bigbClaim'),r=>r.map(x=>x.cls+' '+x.deaths).join(', ')),
  ...infoRow('neue Klassen: Etappe-4-Bosse, spielt richtig',novel('e4'),r=>r.map(x=>x.boss+' '+x.cls+' '+x.time+' s/'+x.deaths+' T').join(', ')),...infoRow('neue Klassen: Etappe-4-Bosse, ignoriert Mechanik (Tode)',novel('e4Ignore'),r=>r.map(x=>x.boss+' '+x.cls+' '+x.deaths).join(', ')));
-/* Dungeon-Fix 4: Söldner allein (nur Angabe) */if(out.nohero.length){const sum=mode=>{const rs=out.nohero.filter(r=>r.mode===mode),won=rs.filter(r=>r.won),ts=won.map(r=>r.time);return won.length+'/'+rs.length+' gewonnen'+(ts.length?', '+Math.min(...ts)+'–'+Math.max(...ts)+' s':'')+(rs.length-won.length?', verloren: '+rs.filter(r=>!r.won).map(r=>r.cls+' '+r.bossLeft).join(' '):'');};
- checks.push(['Info · Big B, Held ohne Schaden (lebt)',true,sum('alive')],['Info · Big B, Held liegt ab 20 s',true,sum('dead')]);}
-/* Dungeon-Fix 4: ohne Held ab 50 % (nur Angabe) */if(out.ohneheld.length)for(const id of [...new Set(out.ohneheld.map(r=>r.boss))])checks.push(['Info · ohne Held ab 50 % · '+id,true,['a','b','c','d'].map(k=>{const rs=out.ohneheld.filter(r=>r.boss===id&&r.case===k),w=rs.filter(r=>r.won),ts=w.map(r=>r.time);const lost=rs.filter(r=>!r.won).map(r=>r.bossMin);return '('+k+') '+w.length+'/'+rs.length+(ts.length?' '+Math.min(...ts)+'–'+Math.max(...ts)+' s':'')+(lost.length?' · verloren bei '+Math.min(...lost)+'–'+Math.max(...lost)+' %':'');}).join(' · ')]);
+/* Held aktiv (2026-09-26, Nutzerentscheidung zu Fix 4): Rollen-Fälle mit Kriterium. Quote = Siege/Läufe; Hauptbosse = Gerd, Exposé, Kurt, Big B. */
+{const rate=rs=>rs.length?rs.filter(r=>r.won).length/rs.length:0,pc=x=>Math.round(x*100)+' %',frac=rs=>rs.filter(r=>r.won).length+'/'+rs.length,oh=out.ohneheld,bosses=[...new Set(oh.map(r=>r.boss))];
+ const perBoss=k=>bosses.map(b=>{const rs=oh.filter(r=>r.boss===b&&r.case===k);return b.slice(0,5)+' '+frac(rs);}).join(' · ');
+ if(oh.length){const main=oh.filter(r=>MAIN_BOSSES.includes(r.boss)),a=main.filter(r=>r.case==='a'),worst=Math.max(0,...MAIN_BOSSES.map(b=>rate(a.filter(r=>r.boss===b)))),bb=oh.filter(r=>r.case==='b'),cc=oh.filter(r=>r.case==='c'),dd=oh.filter(r=>r.case==='d');
+  if(a.length)checks.push(['(a) Held Tank fällt bei 50 %: Hauptbosse ≤ 25 % Siege, keiner über 40 %',rate(a)<=.25&&worst<=.4,pc(rate(a))+' · '+perBoss('a')]);
+  if(bb.length)checks.push(['(b) Held Heiler fällt bei 50 %: alle Bosse ≤ 25 % Siege',rate(bb)<=.25,pc(rate(bb))+' · '+perBoss('b')]);
+  if(cc.length)checks.push(['(c) Held Schaden fällt bei 50 %: Söldner gewinnen ≥ 50 %',rate(cc)>=.5,pc(rate(cc))+' · '+perBoss('c')]);
+  /* (d) nur zwei Schadens-Söldner: gelegentlich ein Sieg, „eher, wenn der Boss schon tief ist“ – beide Absturzpunkte zusammen (50 % und 25 %), bei 50 % selten */
+  const d25=oh.filter(r=>r.case==='d25'),dAll=[...dd,...d25];if(dAll.length)checks.push(['(d) nur zwei Schadens-Söldner (fallen bei 50 % bzw. 25 %): zusammen 10–35 % Siege, bei 50 % höchstens 15 %',rate(dAll)>=.1&&rate(dAll)<=.35&&rate(dd)<=.15,pc(rate(dAll))+' · bei 50 %: '+pc(rate(dd))+' ('+perBoss('d')+') · bei 25 %: '+pc(rate(d25))+' ('+perBoss('d25')+')']);
+  for(const id of bosses)checks.push(['Info · ohne Held ab 50 % · '+id,true,['a','b','c','d','d25'].map(k=>{const rs=oh.filter(r=>r.boss===id&&r.case===k),w=rs.filter(r=>r.won),ts=w.map(r=>r.time);const lost=rs.filter(r=>!r.won).map(r=>r.bossMin);return '('+k+') '+w.length+'/'+rs.length+(ts.length?' '+Math.min(...ts)+'–'+Math.max(...ts)+' s':'')+(lost.length?' · verloren bei '+Math.min(...lost)+'–'+Math.max(...lost)+' %':'');}).join(' · ')]);}
+ const nh=out.nohero;if(nh.length){const alive=nh.filter(r=>r.mode==='alive'),dead=nh.filter(r=>r.mode==='dead'),nb=[...new Set(nh.map(r=>r.boss))];
+  const sum=rs=>nb.map(b=>{const x=rs.filter(r=>r.boss===b),w=x.filter(r=>r.won).map(r=>r.time);return b.slice(0,5)+' '+frac(x)+(w.length?' ('+Math.min(...w)+'–'+Math.max(...w)+' s)':'');}).join(' · ');
+  checks.push(['Held passiv (lebt, kein Schaden, keine Kniffe): Hauptbosse ≤ 30 % Siege',rate(alive)<=.3,pc(rate(alive))+' · '+sum(alive)],['Info · Held liegt ab 20 s (Söldner allein)',true,pc(rate(dead))+' · '+sum(dead)]);}
+ /* Einsatz-Wertung: der aktive Held („folgt dem Nachsatz“, „spielt richtig“) verdient den Bonus, der passive nicht */
+ const act=[...out.bigb,...out.e4,...out.gerd].filter(r=>r.einsatz!=null);if(act.length)checks.push(['Einsatz: aktiver Held (Big B, Gerd, Etappe-4-Bosse) verdient den Bonus in jedem Sieg',act.filter(r=>r.won).every(r=>r.einsatzBonus>0),'Punkte '+Math.min(...act.map(r=>r.einsatz))+'–'+Math.max(...act.map(r=>r.einsatz))+' · Bonus '+act.map(r=>r.einsatzBonus).join('')]);
+ const pas=nh.filter(r=>r.mode==='alive'&&r.won&&r.einsatz!=null);if(pas.length)checks.push(['Einsatz: passiver Held bekommt keinen Bonus',pas.every(r=>!r.einsatzBonus),'Punkte '+Math.min(...pas.map(r=>r.einsatz))+'–'+Math.max(...pas.map(r=>r.einsatz))]);}
 out.checks=checks.map(([name,ok,value])=>({name,ok,value}));
 if(JSON_OUT)console.log(JSON.stringify(out,null,1));else{console.log('\nPrüfkriterien');for(const c of out.checks)console.log((c.ok?'GRÜN ':'ROT  ')+c.name.padEnd(48)+c.value);}
 if(out.checks.some(c=>!c.ok))process.exitCode=1;

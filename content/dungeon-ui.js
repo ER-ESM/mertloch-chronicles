@@ -63,7 +63,7 @@ export const DUNGEON_UI={
   track:{name:'Nebenher',answer:'Eigener Takt',tip:'Läuft neben dem Hauptablauf in eigenem Takt, zum Beispiel der Siegelring alle 12 Sekunden.'},
   persist:{name:'Trümmer',answer:'Nicht reintreten',tip:'Die Fläche bleibt liegen und brennt weiter, solange du drinstehst.'},
   interrupts:{name:'Zweimal unterbrechen',answer:'Zweimal unterbrechen',tip:'Bricht erst nach zwei Unterbrechungen ab. Sonst heilt er sich.'},
-  enrage:{name:'Wut',answer:'Vorher legen',tip:'Nach sechs Minuten Kampf: „Die ganze Wahrheit.“ Alle 30 Sekunden 50 % mehr Schaden.'},
+  enrage:{name:'Wut',answer:'Vorher legen',tip:'Zeitgrenze: Danach macht der Boss immer mehr Schaden. Wer mitkämpft, legt ihn vorher (Zahlen je Boss im Bossrahmen und Journal).'},
   reach:{name:'Reichweite',answer:'Follower zuerst',tip:'Jeder lebende Follower gibt Big B 8 % mehr Schaden.'},
   // Etappe 4 Teil A: Attrappen (Exposé), Adds mit Ziel, Sichtlinie und Greenscreen (Rita), Trog (halbes Pferd), nasser Boden (Kurt)
   decoy:{name:'Attrappen',answer:'Stempel abwarten',tip:'Erst sehen alle Kreise gleich aus. Nach dem Stempel treffen nur die echten.'},

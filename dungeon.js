@@ -12,6 +12,7 @@ import {registerRoll} from './itemization.js';
 import {hitCompanion,clearThreat,groupFightOn} from './companions.js';
 import {emitCombatFx} from './combat-fx.js';
 import {TANK_SPECS} from './net-world.js';
+import {tickEinsatz,noteWarning,finishEinsatz,enrageText} from './dungeon-einsatz.js';/* Auftrag „Held aktiv“ (2026-09-26) */
 
 const FLOOR_ORDER=['e0','k1','k2']; // Schutz-Specs: TANK_SPECS aus net-world.js (E-72: aus der Rolle „Tank“)
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -389,6 +390,7 @@ export function tickDungeon(g,dt){
  tickIntro(g,run);/* Dungeon-Fix 4: Rollenspiel-Einleitung (Big B) */
  tickBossMechanics(g,run,dt);/* Etappe 3: Nachsatz, Geständnis, Wut, Reichweite, parallele Timer, Trümmer */
  tickE4B(g,run,dt);/* Etappe 4 Teil B: Tode, Gespenst, Volker, Ausreden, Pferd gesehen */
+ tickEinsatz(g,run,dt);/* Held aktiv: Angefeuert, Wertung je Boss */
 }
 // ── Dungeon-Fix 4 (Nachprüfung #726): Rollenspiel-Einleitung wie in WoW ──────────────────────────────────────────────────────────────
 // Befund: Beim Betreten begann sofort der Kampf (Rechtsklick auf Big B läuft hin und greift an), „F Beweise vorlegen“ kam nie, die erste Bahn lief
@@ -519,7 +521,7 @@ const unitOf=(g,id)=>id==='player'?g.player:(g.companions||[]).find(c=>c.id===id
  *  factor = z. B. tankSafe. Deckung, Schutzschilde und Schadensminderung wirken wie gewohnt. */
 function strike(g,e,c,u,factor=1){
  if(!u)return;const boost=e.mechBoost||1;/* Etappe 3: Wut und Reichweite gelten auch für Anteils-Schaden (feste Zahlen laufen über e.damage) */
- if(u===g.player){if(g.dead)return;if(c.pct)g.hitPlayer(e,0,true,c.pct*factor*boost*(e.pctFactor||1));else g.hitPlayer(e,Math.round(c.damage*factor));return;}
+ if(u===g.player){if(g.dead)return;const hp=u.hp;if(c.pct)g.hitPlayer(e,0,true,c.pct*factor*boost*(e.pctFactor||1));else g.hitPlayer(e,Math.round(c.damage*factor));if(u.hp<hp||g.dead)g.einsatzStruck=(g.einsatzStruck||0)+factor;/* Held aktiv: Warnung nicht beantwortet */return;}
  if(u.state==='down'||!(u.hp>0))return;
  hitCompanion(g,e,u,c.pct?Math.max(1,Math.round(c.pct*factor*boost*(e.pctFactor||1)*u.maxHp/(e.damage||1))):Math.round(c.damage*factor));
 }
@@ -538,13 +540,13 @@ export function resolveDungeonCast(g,e,c,victim='player'){
  const p=g.player,target=victim==='player'?p:victim;
  if(c.frontGuard){e.frontGuard=c.frontGuard.duration;e.frontFactor=c.frontGuard.factor;e.frontAngle=Math.atan2(target.y-e.y,target.x-e.x);g.float?.(e.x,e.y-44,'SCHILDWALL','#e8dcc0');return true;}
  if(c.healAllies){for(const o of g.enemies)if(o.hp>0&&dist(o,e)<=c.healAllies.range){const n=Math.round(o.maxHp*c.healAllies.share);o.hp=Math.min(o.maxHp,o.hp+n);g.float?.(o.x,o.y-36,'+'+n,'#9ed17a');}return true;}
- e.lastCast=c;try{
+ e.lastCast=c;g.einsatzStruck=0;const runH=dungeonRun(g),bossH=e.dungeonBoss?e:e.summoner,here=!!runH&&!g.dead&&!!bossH?.dungeonBoss&&roomAt(runH.def,p.x,p.y)?.id===bossH.dungeonBoss.room;try{
   if(resolveE4Cast(g,e,c,victim))return true;/* Etappe 4 Teil A: stack, spread, los, summon mit Ziel, Greenscreen, Trog, Sprinkler, signAll */
   if(resolveBigBCast(g,e,c,victim))return true;/* Etappe 3: line, circles, summon, tankDebuff, selfHeal */
   if(c.cone){
    const guard=victim==='player'&&(TANK_SPECS.includes(g.rpg?.talents?.spec)||p.parry>0);
    if(!g.dead&&inCone(e,c,p,g)){strike(g,e,c,p,guard?c.tankSafe??1:branded(g,c,p,victim==='player'));if(c.knockback&&!guard&&!g.dead)knockback(g,e,c.knockback);}
-   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inCone(e,c,o,g))strike(g,e,c,o,o===victim?c.tankSafe??1:branded(g,c,o,false));
+   /* Held aktiv (2026-09-26): den Kegel mildert nur ein Schutz – hält ein Söldner ohne Schutz-Rolle den Boss, trifft er ihn voll (wie den Helden ohne Schutz-Spec) */for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inCone(e,c,o,g))strike(g,e,c,o,o===victim?(o.def?.role==='tank'?c.tankSafe??1:1):branded(g,c,o,false));
    return true;
   }
   // Flächen treffen alle darin – Held und Söldner –, auch wenn sie auf einem Söldner liegen (E-71).
@@ -574,7 +576,7 @@ export function resolveDungeonCast(g,e,c,victim='player'){
    if(called)g.float?.(e.x,e.y-44,'VERSTÄRKUNG','#f0b070');
    return true;
   }
- }finally{e.lastCast=null;}
+ }finally{e.lastCast=null;if(e.dungeon)noteWarning(g,e,c,victim==='player'?'player':victim?.id,g.einsatzStruck||0,here);/* Held aktiv: Warnung für die Wertung */g.einsatzStruck=0;}
  return false;
 }
 // ── Etappe 3 „Big B" (E-71, Plan 7.6 und Abschnitt 9): Behauptung und Nachsatz, Bahnen, Bodenstellen, parallele Timer, Wut, Trümmer,
@@ -700,7 +702,7 @@ function tickBossMechanics(g,run,dt){
   const ev=evidenceEffects(run);e.takenFactor=(1+ev.taken)*(e.confessed&&ev.confessAt!=null?1+(def.confess?.taken||0):1);
   const noReach=run.killed.has('rita')&&run.def.optional?.rita?.[e.bossId]?.noReach,followers=def.reach&&!noReach?g.enemies.filter(o=>o.summoner===e&&o.hp>0&&DUNGEON_ENEMIES[o.dungeonKind]?.reach).length:0;
   const en=def.enrage,rage=en&&e.fightTime>=en.after?1+en.damage*(1+Math.floor((e.fightTime-en.after)/en.every)):1;
-  if(rage>(e.rageFactor||1)){g.float?.(e.x,e.y-70,T.bigb.enrage,'#ff6a4a');g.emit?.('dungeonEnrage',{boss:e.bossId,factor:rage});}
+  if(rage>(e.rageFactor||1)){g.float?.(e.x,e.y-70,e.bossId==='bigb'?T.bigb.enrage:enrageText(e)/* Held aktiv: Wut auch bei Gerd, Exposé, Kurt */,'#ff6a4a');g.emit?.('dungeonEnrage',{boss:e.bossId,factor:rage});}
   if(followers>(e.reachShown||0))g.float?.(e.x,e.y-60,T.bigb.reach+' +'+Math.round(followers*def.reach*100)+' %','#e9a0ff');e.reachShown=followers;
   e.rageFactor=rage;e.mechBoost=(1+followers*(def.reach||0))*rage*(1+(e.provision||0)*(def.viewing?.sign?.damage||0))/* Etappe 4 Teil A: Provision */;if(e.baseDamage!=null)e.damage=e.baseDamage*e.mechBoost;
   tickE4Boss(g,run,e,def,dt);/* Etappe 4 Teil A: Greenscreen, Trog */
@@ -786,7 +788,8 @@ export function onDungeonKill(g,e){
  const marks=REWARDS.marksPerBoss+(first?REWARDS.daily.marks:0),bonus=first?Math.round((e.xp||0)*REWARDS.daily.xp):0;rec.marks+=marks;
  openShortcuts(g,run,b.id);/* Etappe 4 Teil B: der Siegelträger öffnet seine Abkürzung zum Hof, bis zum Tagesreset */if(b.seal)sealsFeat(g,run);
  const feats=grantFeats(g,run,e,b.id),mount=grantMount(g,e,b.id)/* Etappe 4 Teil A: Reittier vom halben Pferd */;
- e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null,repeat,final,feats,...(mount?{mount}:{})};if(bonus)g.gainXp?.(bonus);
+ /* Held aktiv (2026-09-26): Wertung des Einsatzes, Bonus-Siegelmarken */const einsatz=finishEinsatz(g,e);if(einsatz?.bonus)rec.marks+=einsatz.bonus;
+ e.dungeonReward={boss:b.id,marks,xp:(e.xp||0)+bonus,daily:first,wing:wing?.id||null,repeat,final,feats,...(mount?{mount}:{}),...(einsatz?{einsatz}:{})};if(bonus)g.gainXp?.(bonus);
  const line=T.bossLines[b.id]?.defeat;if(line)g.bark?.(e,line,'boss');g.emit?.('dungeonBoss',{id:b.id});g.emit?.('dungeonReward',{...e.dungeonReward});g.emit?.('save');
  if(final){run.hazards=[];g.log?.(T.cleared(clockText(secs)));}
 }

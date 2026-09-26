@@ -18,6 +18,7 @@ import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
 import {walkFacing} from './maifeld-locomotion.js';
 import {classBuffValue,savedClassBuffs,restoreClassBuffs} from './class-buffs.js';
+import {bossAutoFactor,mercDamageFactor,tickLastStand} from './dungeon-einsatz.js';/* Auftrag „Held aktiv“ (2026-09-26) */
 import {MARK_IDS} from './target-marks.js';
 
 const PLAYER='player';
@@ -111,7 +112,7 @@ export function tickEnemyOnCompanion(g,e,c,dt){
  }
  e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);
  const a=e.autoAttack;
- if(e.autoTimer<=0&&!(e.spawnGrace>0)&&distance(e,c)<=a.range&&g.world.lineClear(e,c)){e.autoTimer=a.speed;e.attack=.25;hitCompanion(g,e,c,a.min+g.random()*(a.max-a.min));emitCombatFx(g,'attack',c,{from:{x:e.x,y:e.y},ranged:a.ranged,hostile:true,duration:.3});}
+ if(e.autoTimer<=0&&!(e.spawnGrace>0)&&distance(e,c)<=a.range&&g.world.lineClear(e,c)){e.autoTimer=a.speed;e.attack=.25;{const roll=a.min+g.random()*(a.max-a.min),f=bossAutoFactor(g,e,c)/* Held aktiv: Ausweichen im Letzten Aufgebot, Rolle zählt */;if(f>0)hitCompanion(g,e,c,roll*f);}emitCombatFx(g,'attack',c,{from:{x:e.x,y:e.y},ranged:a.ranged,hostile:true,duration:.3});}
  e.attackTimer=Math.max(0,e.attackTimer-dt);
  if(alive(c)&&distance(e,c)<=reach&&e.attackTimer<=0&&g.world.lineClear(e,c)){
   if(e.dungeon&&e.bossId)dungeonBossCast(g,e);const set=CAST_SETS[e.castSet]||DUNGEON_CASTS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length],k={...set.casts[type]};
@@ -154,7 +155,7 @@ function chooseTarget(g,c){
 function damageEnemy(g,c,e,n,id){
  if(!e||e.hp<=0||e.ai==='returning'||e.tutorial)return 0;
  /* Dungeon-Fix 5: ein Boss mit Einleitung nimmt vor dem Kampf keinen Schaden; wartet er nach der Rede, zieht erst ein befohlener Angriff ihn */if(e.dungeonBoss&&!e.aggro&&bossHeld(g,e)&&!pullBoss(g,e))return 0;
- const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */*(e.hidden?0:1)*(c.blindUntil>g.time?.5:1)/* Etappe 4 Teil A: Greenscreen, geblendet */)),dealt=Math.min(e.hp,amount);
+ const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */*(e.hidden?0:1)*(c.blindUntil>g.time?.5:1)/* Etappe 4 Teil A: Greenscreen, geblendet */*mercDamageFactor(g,c,e)/* Held aktiv: Angefeuert, Alles oder nichts */)),dealt=Math.min(e.hp,amount);
  e.aggro=true;e.ai='combat';g.player.inCombat=7;c.inCombat=6;e.hp=Math.max(0,e.hp-amount);e.hurt=.15;
  addThreat(e,c.id,dealt*COMPANION_ROLES[c.def.role].threat);
  recordMeterDamage(g,e,amount,dealt,abilitySource(id),crit,c);
@@ -208,9 +209,10 @@ const certIncoming=(g,c)=>c.cert?.until>g.time&&g.enemies.some(e=>e.hp>0&&e.side
 function reacted(g,c,cast){const seen=c.seen||(c.seen=new WeakMap());if(!seen.has(cast))seen.set(cast,g.time);return g.time-seen.get(cast)>=R.reaction;}
 
 /** Steht der Begleiter in einer angesagten Fläche? → Fluchtpunkt knapp außerhalb, sonst null. */
-/** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. */
+/** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. Held aktiv (2026-09-26): Nur der Schutz
+ *  bleibt als Ziel stehen und fängt ihn ab; hält ein Söldner ohne Schutz-Rolle den Boss, weicht auch er seitlich aus (der Kegel trifft ihn sonst voll). */
 function coneExit(g,c){
- for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id||!coneHits(e,k,c,g)||!reacted(g,c,k))continue;
+ for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id&&c.def?.role==='tank'||!coneHits(e,k,c,g)||!reacted(g,c,k))continue;
   for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+.5),r=Math.max(30,Math.min(k.cone.range*.8,distance(e,c))),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}
   /* Etappe 4 Teil A: an Wand oder Ecke (Gerds Zugbrücke, Stallungen) liegt die Seite oft in der Wand – dann weiter seitlich, näher oder hinter den Boss */
   for(const [da,r] of [[.9,34],[.9,22],[1.4,30],[Math.PI-(k.cone.angle*Math.PI/360),26],[Math.PI,30]])for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+da)*(da>=Math.PI-1?0:1)+(da>=Math.PI-1?da*turn:0),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&!coneHits(e,k,q,g)&&walkClear(g.world,c,q,8))return q;}}
@@ -320,6 +322,7 @@ function tickOne(g,c,dt){
  c.moving=false;
  if(c.state==='down'){if(g.time>=c.downUntil&&!groupFightOn(g,c)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
  for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
+ tickLastStand(g,c);/* Held aktiv: Letztes Aufgebot (Alles oder nichts, Notfall-Schorle) */
  const p=g.player,far=distance(c,p);
  if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}
  /* Dungeon Etappe 4 Teil A: eingeklemmt (Arenatür fiel zu, während er auf der Schwelle stand) – auf den nächsten freien Punkt */if(inDungeon(g)&&g.world.blocked(c.x,c.y,5)){const q=g.world.findClear(c.x,c.y,6);c.x=q.x;c.y=q.y;c.path=[];}/* Laufradius 5: wer darin nirgends hin kann, steckt; dünne Wände (1 m) täuschen größere Radien */

@@ -28,6 +28,7 @@ import {dicon,paintDungeonIcons,paintBossPortraits} from './dungeon-journal.js';
 import {heroAnswer,shortName} from './alert-answer.js';
 import {glyph} from './ui-glyphs.js';
 import {activeWarnAreas,introState,evidenceEffects} from './dungeon.js';
+import {einsatzBossChips,enrageTip} from './dungeon-einsatz-ui.js';/* Held aktiv (2026-09-26): Angefeuert, Ungeschützt, Wut-Tooltip je Boss */
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const secs=s=>Math.max(0,s).toFixed(1).replace('.',',')+' s';
@@ -75,7 +76,7 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
  let statusKey='',chipSig='',enraged=1,confessedShown=false;
  function status(g,b,now,intro=null){const def=DUNGEON_BOSSES[b.bossId],run=dungeonRun(g),el=frame.querySelector('.bf-status'),chips=[],chip=(id,icon,text,note,cls='',label=text)=>chips.push({id,icon,text,note,cls,label});
   /* Dungeon-Fix 5: nach der Rede wartet Big B – kleiner Zustand „bereit“, die Erklärung im Tooltip */if(intro?.ready)chip('ready','role-damage',U.alerts.ready,U.alerts.readyNote,'bf-ready',U.alerts.readyLabel);
-  if(def?.enrage&&b.aggro){const left=def.enrage.after-(b.fightTime||0),n=Math.round(((b.rageFactor||1)-1)/def.enrage.damage);if(left>0)chip('enrage','clock',U.alerts.enrageIn(left),U.traits.enrage.tip,left<=30?'bf-warn':'',U.traits.enrage.name);else chip('enrage','trait-enrage',U.alerts.enraged(n),U.traits.enrage.tip,'bf-hot');
+  if(def?.enrage&&b.aggro){const left=def.enrage.after-(b.fightTime||0),n=Math.round(((b.rageFactor||1)-1)/def.enrage.damage);if(left>0)chip('enrage','clock',U.alerts.enrageIn(left),enrageTip(def),left<=30?'bf-warn':'',U.traits.enrage.name);else chip('enrage','trait-enrage',U.alerts.enraged(n),enrageTip(def),'bf-hot');
    if(left<=0&&(b.rageFactor||1)>enraged){enraged=b.rageFactor;announce('trait-enrage',U.traits.enrage.name.toUpperCase()+' ×'+n);}}
   const reach=def?.reach?g.enemies.filter(o=>o.summoner===b&&o.hp>0&&DUNGEON_ENEMIES[o.dungeonKind]?.reach).length:0;if(reach&&(b.mechBoost||1)>(b.rageFactor||1))chip('reach','trait-reach',U.alerts.reach(Math.round(reach*def.reach*100)),U.traits.reach.tip,'bf-hot');
   const ev=run?.def.evidence,all=!!ev?.ids?.length&&ev.ids.every(id=>run.evidence?.has(id));
@@ -86,6 +87,7 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
   if(b.hidden)chip('hidden','trait-hidden',U.alerts.hidden,U.alerts.hiddenNote,'bf-warn');
   if(b.drinking)chip('drinking','trait-feeds',U.alerts.drinking,U.alerts.drinkingNote,'bf-warn');
   if(b.wet>0)chip('wet','trait-wet',U.alerts.wet(b.wet),U.alerts.wetNote,b.wet>=6?'bf-hot':'bf-warn');
+  for(const c of einsatzBossChips(g,b))chip(c.id,c.icon,c.text,c.note,c.cls,c.label);/* Held aktiv */
   const key=chips.map(c=>c.id+'|'+c.text).join(',');if(key===statusKey)return;statusKey=key;el.hidden=!chips.length;
   /* Dungeon-Fix 4: nur neu bauen, wenn Chips kommen oder gehen – Text, Farbe und Tooltip ändern sich an Ort und Stelle, der Tooltip bleibt stehen */
   const sig=chips.map(c=>c.id+':'+c.icon).join(',');if(sig!==chipSig){chipSig=sig;el.innerHTML=chips.map(c=>`<span class="bf-chip" data-chip="${esc(c.id)}" tabindex="0">${dicon(c.icon,14)}<b></b></span>`).join('');paintDungeonIcons(el);}

@@ -240,6 +240,7 @@ export const DUNGEON_ENEMIES={
 export const DUNGEON_BOSSES={
  gerd:{name:'Gästeliste-Gerd',title:'Sicherheitschef · Big B Protection (Ein-Mann-Betrieb)',type:'boss',skin:'horst',art:'sigi',family:'gerd',
   level:8,hp:65000,damage:3.5,xp:600,lootMoment:true,speed:46,aggroRange:84,roamRadius:6,leash:220,castSet:'d-gerd',auto:'horst',
+  enrage:{after:130,every:5,damage:1.5},/* Held aktiv (2026-09-26): Sperrstunde – mit aktivem Held 85–100 s, ohne ihn nicht zu schaffen */
   look:'Breiter Mann im zu kleinen schwarzen Anzug, Klemmbrett, Kinder-Headset, Sonnenbrille im Keller',
   phases:[{at:.5,summon:{kind:'securityazubi',count:2,hp:.35}},{at:.25,summon:{kind:'securityazubi',count:2,hp:.35},castSet:'d-gerd2'},{at:.15}],
   fall:{rect:[2,20,5,6],to:{floor:'k1',x:12,y:9},below:.5}},
@@ -252,7 +253,9 @@ export const DUNGEON_BOSSES={
  bigb:{name:'Big B',title:'Freiherr von und zu Burgstraße · selbsternannt',type:'boss',skin:'horst',art:'klaus',family:'bigb',tint:{color:'#5b2d86',alpha:.34},
   level:10,hp:140000,damage:2.2,xp:1500,lootMoment:true,final:true,speed:44,aggroRange:92,roamRadius:4,leash:300,castSet:'d-bigb',auto:'horst',
   look:'Mann um die 45, Pelzmantel aus dem Kostümverleih, Perücke mit Zopf, Goldkette aus goldlackierten Kronkorken, Siegelring aus Messing, Handy am Selfie-Stick mit Ringlicht',
-  enrage:{after:360,every:30,damage:.5},reach:.08,confess:{at:.15,taken:.1},
+  // Held aktiv (2026-09-26): Wut nach 4:50 statt 6:00 und härter (alle 5 s +150 %) – mit aktivem Held 170–200 s, ein passiver Held kam live
+  // nach 3 min mit 3:00 Rest an. docs/DUNGEON-AKTIV-2026-09-26.md.
+  enrage:{after:290,every:5,damage:1.5},reach:.08,confess:{at:.15,taken:.1},
   // Dungeon-Fix 4 (Nachprüfung #726: beim Betreten begann sofort der Kampf, keine Gelegenheit für „Beweise vorlegen“): Rollenspiel-Einleitung
   // wie in WoW. Big B bemerkt niemanden von selbst; der Kampf beginnt erst, wenn der Held den Thron erreicht (reach Kacheln um Big B), ihn mit F
   // anspricht (talk Kacheln) oder angreift. Dann legt der Held gefundene Beweise vor (Ausreden im Abstand evidence.present.gap), Big B sagt
@@ -270,6 +273,7 @@ export const DUNGEON_BOSSES={
  // vorher besichtigen (Laminat bewundern), bevor sie zum Tisch gehen.
  expose:{name:'Frau Dr. Exposé',title:'Immobilienberaterin · Dr. (nicht gefragt)',type:'boss',skin:'horst',art:'gisela',family:'expose',tint:{color:'#f0826c',alpha:.32},
   level:9,hp:63000,damage:2.8,xp:800,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-expose',auto:'tablet',
+  enrage:{after:160,every:5,damage:1.5},/* Held aktiv (2026-09-26): Letztes Angebot */
   look:'Hosenanzug in Lachsrosa, Tablet, Schlüsselbund mit dreißig Schlüsseln für drei Türen, Duftstäbchen im Dutt',
   viewing:{goal:[32,47.2],reach:2.2,doors:[[21.9,43.6],[42.1,43.6]],via:[[26,40.3],[38,40.3]],sign:{damage:.15,stack:5},out:{floor:'k1',x:32,y:36}},
   phases:[{at:.5,castSet:'d-expose2'},{at:.2,castSet:'d-expose3'},{at:.15}]},
@@ -277,13 +281,16 @@ export const DUNGEON_BOSSES={
  // (Zeitgrenze: vom Rand her werden Streifen nass und rutschig).
  korkenkurt:{name:'Kellermeister Korken-Kurt',title:'Sommelier · Jahrgang: gestern',type:'boss',skin:'horst',art:'horst',family:'korkenkurt',tint:{color:'#8c1f45',alpha:.3},
   level:9,hp:86000,damage:3,xp:900,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-kurt',auto:'korkenzieher',
+  enrage:{after:150,every:5,damage:1.5},/* Held aktiv (2026-09-26): Zapfenstreich */
   look:'Weste, Korkenzieher am Gürtel wie ein Colt, Probierlöffel an einer Kette, rote Nase, Tastglas in jeder Hand',
   phases:[{at:.5,castSet:'d-kurt2'},{at:.2,castSet:'d-kurt3'},{at:.15}]},
  // Reichweiten-Rita (Plan 7.3), optional im Presseamt: Blitzlicht mit Sichtlinie (hinter Deckung), Story posten (unterbrechen, sonst
  // Kommentatoren), Greenscreen (vor der grünen Wand unsichtbar, der Schutz zieht sie weg). hidden = Zone vor der Wand (Meter),
  // cover = Deckung im Raum (Meter; sperrt Laufen und Sichtlinie, dungeon.js coverRects). Liegt sie, ruft Big B nur einen Follower.
  rita:{name:'Reichweiten-Rita',title:'Social-Media-Managerin · Reichweite auf Rechnung',type:'boss',skin:'horst',art:'elke',family:'rita',tint:{color:'#35b25a',alpha:.3},
-  level:9,hp:77000,damage:2.6,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
+  // Held aktiv (2026-09-26): Schaden 2,6 → 4,0 – ohne Heiler hielt ihr Schutz über 50 s und der Heiler-Tod blieb fast immer folgenlos
+  // (15 von 15 gewonnen); mit Heiler ändert sich nichts (Kampfdauer 70–110 s, keine Tode).
+  level:9,hp:77000,damage:4,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
   look:'Frau Mitte zwanzig, Ringlicht auf dem Rücken wie ein Heiligenschein, drei Handys am Gürtel, Greenscreen-Tuch als Umhang, Ansteckmikrofon',
   // Feinschliff 2026-09-26: Leben 68 000 → 77 000 – ohne den Greenscreen-Hänger lag sie im Flügel bei 69–78 s (Ziel 70–110 s, alle fünf Klassen).
   // Feinschliff 2026-09-26: exit = spätestens so viele Sekunden nach dem Greenscreen (bzw. nach dem Spott) ist sie wieder sichtbar, auch wenn
