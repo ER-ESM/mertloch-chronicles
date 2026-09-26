@@ -38,7 +38,7 @@ test('Leistenzone: nur sichtbare Knöpfe fangen Klicks – leere Plätze der Zus
 test('Erinnerungskarte: Rechtsklick auf sie läuft wie in die Welt, ihr Tooltip geht beim Zurücktreten/Schließen, nächste Karte wartet die Ruhezeit ab',()=>{
  const card=src('memory-card.js'),app=src('app.js'),pc=src('popup-controls.js');
  assert.match(card,/el\.addEventListener\('pointerdown',e=>\{if\(e\.button!==2\|\|e\.pointerType==='touch'\|\|!onRightClick\)return;e\.preventDefault\(\);e\.stopPropagation\(\);onRightClick\(e\);\}\)/);
- assert.match(app,/onRightClick:e=>\$\('#world'\)\.dispatchEvent\(new PointerEvent\('pointerdown',\{[^}]*button:2,buttons:2,pointerType:'mouse'/,'weitergereicht an den Welt-Handler (Laufen, Angreifen, Ansprechen)');
+ assert.match(app,/onRightClick:e=>\{if\(!game\|\|game\.paused\|\|game\.dead\)return;game\.navigate\(renderer\.screenToWorld\(e\.clientX,e\.clientY\)\);\}/,'Rechtsklick auf die Karte läuft nur – eine verdeckte Figur dahinter wird nicht gewählt');
  assert.match(card,/if\(r\.act==='hide'\)\{dropTip\(\);/,'Zurücktreten nimmt den Tooltip mit');
  assert.match(card,/function close\(reason='close'\)\{if\(!current\)return false;const f=current;dropTip\(\);/,'Schließen nimmt den Tooltip mit');
  assert.match(app,/hideTip:\(\)=>popupControls\?\.hide\(\)/);
