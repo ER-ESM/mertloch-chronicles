@@ -1163,6 +1163,42 @@ Zentrale Messwerte:
    - Etappe 5 „Zusammen und schwerer“.
    - Figuren- und Bossgrafik geht erst nach Freigabe des Nutzers live.
 
+**Nachtrag 26.09.2026 · Held und Söldner, Bosskampf wie in WoW.** Etappen 1–4 und Fix 1–5 sind live. Der Prüfer hat „FREI“ gegeben (Build #726), danach wurde nach zwei weiteren Prüfer-Playtests nachgebessert. Grundlage für den Nachtrag ist eine Nutzerentscheidung vom 26.09.:
+Söldner dürfen einen Kampf auch ohne den Helden gewinnen, selbst mit nur zwei Schadenssöldnern. Ist der Held Tank oder Heiler, soll sein Tod normalerweise zum Wipe führen. Der Held darf nicht passiv bleiben und wird für Aktivität belohnt.
+Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der Held mitspielt.
+1. **Angefeuert statt Dauerstärke** (`docs/DUNGEON-AKTIV-2026-09-26.md`):
+   - Der Instanzfaktor für Söldnerschaden sinkt auf 3,4.
+   - Solange der Held selbst trifft, heilt, unterbricht oder pariert, machen sie 40 % mehr (4,76), jeweils 6 s lang.
+   - Sichtbar in der Buffleiste, im Bossrahmen und über den Söldnern. Nach 6 s ohne Tat zeigt der Bossrahmen „Söldner warten“.
+   - Für aktive Spieler ändert sich nichts.
+2. **Wut an allen Hauptbossen:** Gerd 2:10, Exposé 2:40, Kurt 2:30, Big B 4:50; danach alle 5 s +150 % Schaden. Die optionalen Bosse Rita und das halbe Pferd haben keine Wut.
+3. **Die Rolle zählt:**
+   - Den Kegel-Tank-Buster mildert nur ein Schutz; ohne Schutz erscheint im Bossrahmen der Chip „Ungeschützt“.
+   - Fallen Schutz und Heilung, nutzen die Schadenssöldner einmal je Kampf ihr „Letztes Aufgebot“ (doppelter Schaden, Ausweichen, Notfall-Schorle), jeweils mit Ansage.
+4. **Einsatz-Wertung:**
+   - Im Beute-Moment nach jedem Boss steht eine Zeile mit Punkten, Rollenanteil, Unterbrechungen, beantworteten Warnungen, Ausweichen und Toden; die Erklärung im Tooltip.
+   - Ab 60 Punkten gibt es 1 Bonus-Siegelmarke, ab 85 zwei. Die Schwellen stehen in `content/dungeon-einsatz.js`.
+5. **Gemessene Quoten** (`dungeon-sim`, Kriterien jetzt verbindlich):
+
+   | Fall | Siegquote |
+   |---|---|
+   | Held Tank fällt | 0 % an den Hauptbossen |
+   | Held Heiler fällt | 6 % |
+   | Schadens-Held fällt bei 50 % | 71 % |
+   | nur zwei Schadenssöldner | 13 % (0 %, wenn Schutz und Heilung schon bei 50 % fallen; 26 %, wenn erst bei 25 %) |
+   | Held passiv | 5 % |
+   | Held liegt ab 20 s | 0 % |
+
+   - Der Fall „nur zwei Schadenssöldner schon bei 50 %“ lässt sich nicht gewinnbar machen, ohne den Tank-Fall aufzuweichen. Deshalb gilt dort „wenn der Boss schon tief ist“.
+6. **Bosskampf wie in WoW** (Fix 4/5):
+   - Big B beginnt mit einer Rede am Thron („F Beweise vorlegen“). Danach wartet er, bis der Held zieht; kein Auto-Pull.
+   - Jede Lüge lässt ab der sichtbaren Handlungszeile ≥ 2,0 s, und bei „beide Seiten“ ist die sichere Mitte markiert.
+   - Der Todesrückblick bündelt Treffer, die Zeilen ergeben die Summe. Das Todesfenster sitzt oben mittig.
+7. **Offen:**
+   - Nutzerfrage: Ob „Held fällt früh, Söldner gewinnen trotzdem“ (jetzt 0 %) gelegentlich möglich sein soll, entscheidet der Nutzer. Eine spätere Wut an Gerd und Kurt würde das lockern, ließe aber auch passive Helden öfter gewinnen.
+   - Figurenentwürfe der Bosse und Gegner liegen im Zweig `dungeon-figuren` und warten auf die Freigabe.
+   - Etappe 5 (Online-Gruppe mit eigenen Wut-Zeiten, Heldenmodus, „Lüge der Woche“).
+
 ## E-72 · Fünf Klassen, fünf Ressourcen: eigene Erzeuger, Verbraucher und Risiken je Held (25.09.2026, ergänzt E-32 und E-36)
 
 **Anlass.** Nutzerauftrag 25.09.2026: „Mit der Randale sind alle Helden gleich … jeder Held soll sich einzigartig anfühlen … 5 unterschiedliche Klassendesigns mit unterschiedlichem Ressourcenmanagement, vollständig und Talente entsprechend.“ Befund: E-32 gab jeder Spec eine Kernmechanik, aber Erzeuger (Grundangriff + Nachfluss), Verbraucher (Markierung 20, Finisher 35 …) und die Entscheidung („über 80 halten“) waren für alle drei Klassen identisch. Design und Vertrag: [KLASSEN-RESSOURCEN-2026-09-25.md](KLASSEN-RESSOURCEN-2026-09-25.md).
