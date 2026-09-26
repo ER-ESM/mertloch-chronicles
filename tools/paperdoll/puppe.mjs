@@ -1094,15 +1094,26 @@ function quelleBauen(id,fn,out,cat){const rows=bandsOf(id),parts=[];
  let x0=W,y0=H,x1=-1,y1=-1;for(const [,p] of parts)if(p.box){x0=Math.min(x0,p.box.x);y0=Math.min(y0,p.box.y);x1=Math.max(x1,p.box.x+p.box.w-1);y1=Math.max(y1,p.box.y+p.box.h-1);}
  const cell=x1<0?{x:0,y:0,w:1,h:1}:{x:Math.max(0,x0-1),y:Math.max(0,y0-1),w:Math.min(W-1,x1+1)-Math.max(0,x0-1)+1,h:Math.min(H-1,y1+1)-Math.max(0,y0-1)+1};
  for(const [file,p] of parts)writeFileSync(file,encodePng(placePart(p,cell)));return cell;}
+/** Aus Werkzeug-Tabellen abgeleitete Katalogfelder (unabhängig von den Bögen): Familien, offene Kopfteile, Scheitel-Quellen, Farbtreppen zum
+ *  Umfärben, Schattentabelle, Palette fürs Weltbild. Voller Neubau und Teilneubau rechnen sie gleich. */
+function katalogAbleiten(cat){cat.families={...FAMILY_SOURCE,...MOD_FAMILIES};
+ // Kopfteile, die den Scheitel frei lassen (offen:true, z. B. Kopfhörer), und Aussehen-Quellen am Scheitel (scheitel:true: Irokese, Stirnband) – paperdoll-art.js lookSources
+ cat.openHead=Object.keys(GEAR).filter(id=>GEAR[id].slot==='head'&&GEAR[id].offen);cat.crownLooks=Object.keys(GEAR).filter(id=>GEAR[id].scheitel);
+ for(const k of ['skin','blush','lip','hair','hairBrown','hairBlack'])cat.ramps[k]=Array.isArray(PAL[k][0])?PAL[k]:[PAL[k]];
+ cat.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in cat.shade))cat.shade[key]=v[k+1];}}
+ cat.palette=[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))];}
 /** Teilneubau: nur die genannten Gegenstands-Quellen neu zeichnen, in einen fertigen Laufzeitordner schreiben und ihre Katalogeinträge
- *  ersetzen (Zelle, Bänder, eigene sw/ne-Bögen). Die Hülle cat.huelle wird nur erweitert. Nur für geänderte Zeichnungen bestehender oder neuer
- *  Gegenstände – ändern sich Leinwand, Bilder, Palette oder Anker, gilt der volle Neubau (--runtime). */
+ *  ersetzen (Zelle, Bänder, eigene sw/ne-Bögen), Reihenfolgen wie beim vollen Neubau; Palette, Schatten- und Familientabellen neu ableiten (neue
+ *  Farbtreppen). Die Hülle cat.huelle wird nur erweitert. Nur für geänderte oder neue Gegenstands-Zeichnungen – ändern sich Leinwand, Bilder,
+ *  Anker oder bestehende Farbtreppen anderer Quellen, gilt der volle Neubau (--runtime). */
 export function buildRuntimeTeil(out,ids){const t0=Date.now(),cat=JSON.parse(readFileSync(out+'/catalog.json','utf8')),srcs=makeSrcs();
  if(cat.W!==W||cat.H!==H||cat.ground!==GROUND||cat.split!==RUNTIME_SPLIT||cat.frames.map(f=>f.anim+f.i).join()!==FRAMES.map(f=>f.anim+f.i).join())throw new Error('Katalog passt nicht zum Werkzeug (Leinwand/Bilder) – voller Neubau: --runtime');
- const pal=new Set(cat.palette);for(const v of Object.values(PAL))for(const c of (Array.isArray(v[0])?v:[v]))if(!pal.has(c[0]<<16|c[1]<<8|c[2]))throw new Error('neue Palettenfarben – voller Neubau: --runtime');
  for(const id of ids){const g=GEAR[id];if(!g)throw new Error('keine Gegenstands-Quelle: '+id);
   for(const f of readdirSync(out))if(Object.values(GAME_ARCH).some(a=>Object.values(DIRS).some(d=>f===`${id}-${a}${d}.png`||f===`${id}-${a}${d}-akt.png`)))unlinkSync(out+'/'+f);
   cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:quelleBauen(id,srcs[id],out,cat)};cat.items[id]=id;console.log('Quelle',id,JSON.stringify(cat.sources[id].cell));}
+ const order=Object.keys(srcs),by=keys=>order.filter(k=>keys.includes(k));// Reihenfolgen wie der volle Neubau (Quellenfolge)
+ cat.sources=Object.fromEntries([...Object.keys(GEAR),'koerper','dutt'].filter(k=>cat.sources[k]).map(k=>[k,cat.sources[k]]));cat.items=Object.fromEntries(Object.keys(GEAR).filter(k=>cat.items[k]).map(k=>[k,cat.items[k]]));
+ for(const d of ['sw','ne']){cat.own[d]=by(cat.own[d]);cat.ownAkt[d]=by(cat.ownAkt[d]);}katalogAbleiten(cat);
  const o=cat.huelle||{...HUELLE},h=cat.huelle={x0:Math.min(o.x0,HUELLE.x0),x1:Math.max(o.x1,HUELLE.x1),y0:Math.min(o.y0,HUELLE.y0),y1:Math.max(o.y1,HUELLE.y1)};
  console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Teilneubau fertig',(Date.now()-t0)+' ms',out);}
@@ -1118,11 +1129,7 @@ export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of
    cat.anchors[gid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back,sw);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(leanPt(p,p.C)),h:mx(leanPt(p,p.head)),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
  for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:cells[id]};cat.items[id]=id;}
  cat.sources.koerper={slot:'body-base',bands:BANDS,cell:cells.koerper};cat.sources.dutt={slot:'hair',bands:['kopf'],cell:cells.dutt};
- // Kopfteile, die den Scheitel frei lassen (offen:true, z. B. Kopfhörer), und Aussehen-Quellen am Scheitel (scheitel:true: Irokese, Stirnband) – paperdoll-art.js lookSources
- cat.openHead=Object.keys(GEAR).filter(id=>GEAR[id].slot==='head'&&GEAR[id].offen);cat.crownLooks=Object.keys(GEAR).filter(id=>GEAR[id].scheitel);
- for(const k of ['skin','blush','lip','hair','hairBrown','hairBlack'])cat.ramps[k]=Array.isArray(PAL[k][0])?PAL[k]:[PAL[k]];
- cat.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in cat.shade))cat.shade[key]=v[k+1];}}
- cat.palette=[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))];
+ katalogAbleiten(cat);
  const h=cat.huelle={...HUELLE};console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px (Leinwand ${W}×${H}, Boden ${GROUND})`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Laufzeit-Bögen fertig',(Date.now()-t0)+' ms',out);}
 // Schalter: --runtime [ziel] = Laufzeit-Bögen fürs Spiel; --runtime [ziel] --nur id,id = Teilneubau einzelner Gegenstände in einen fertigen

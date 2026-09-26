@@ -28,6 +28,15 @@ export function familien(K){
   wfRosa:R(['#ffd6e2','#f89ab2','#dc6a88','#a2405e','#62243a']),// Wasserpistole
   wfOrange:R(['#ffcf96','#f89440','#d0661e','#904014','#52220a']),// Akkuschrauber
   wfSchiefer:R(['#94a4bc','#66788f','#4c5a72','#343f54','#1f2636']),// Akkuschrauber-Griff
+  // Dorflegenden 2026-09-26 (Präfix lg)
+  lgNerz:R(['#d8aa80','#ac7852','#80543a','#58382c','#36221e']),// Pelzmantel: Kunstpelz Nerzbraun
+  lgHermelin:R(['#fffcf4','#f2eadc','#d6cab6','#a29682','#645a4e']),// Hermelinkragen und -manschetten
+  lgViolett:R(['#c8a2ec','#9e6ad0','#7648aa','#4e2e7c','#2e1a4c']),// Mantelfutter, Weinstein
+  lgLachs:R(['#ffd8c4','#f8ae90','#e0846a','#aa584c','#6c3232']),// Hochglanz-Exposé
+  lgHimmel:R(['#dcf0ff','#a8d0f4','#78a8dc','#4e78ac']),// Himmel im Burgfoto
+  lgReb:R(['#eaa878','#c27a4c','#945434','#663624','#3e2016']),// Rebholzgriff
+  lgLed:R(['#fffbe8','#f6e8c0','#dccb98','#a89468','#6a5a40']),// Ringlicht, warmweiß
+  lgKegel:R(['#b4d6fa','#6e9ee0','#4474bc','#2a4a86','#162850']),// Kegelkugel, blau marmoriert
  });
  const hs=(x,y)=>((Math.sin(x*12.9898+y*78.233)*43758.5453)%1+1)%1;
  /** Einzelpixel über L.T (Schwung der Waffe, Rumpfneigung der Aktionsposen) setzen/prüfen – L.on/L.is arbeiten ungedreht. */
@@ -264,15 +273,6 @@ export function familien(K){
   poly(L,[[x-4.8,y+1],[x+4.8,y+1],[x+4.7,y+3.5],[x-4.7,y+3.5]],PAL.white[0],c);on(L,c,x+2,y+3,PAL.white[2]);
   const st=L.piece(PAL.can);ell(L,x+.5,y+8,1.8,1.8,PAL.can[1]);on(L,st,x,y+7,PAL.white[0]);on(L,st,x+1,y+9,PAL.white[0]);
   line(L,[[x-2,y+10],[x,y+12]],PAL.tube[0],c);}
- /** Die Kugel vom Dorfpokal 2011: schwarze Kegelkugel im Kordelnetz, am Gürtel links (vorn im Rumpf, von hinten angeschnitten). */
- function kegelkugel(L,p){const [cx,cy]=p.C,s=lft(p),r=7.5,x=edge(p,38,s)+s*(r*.55+2.5),y=cy+46,kx=edge(p,31,s)-s*2;
-  L.piece(PAL.label,1);for(const dx of [-4.5,0,4.5])line(L,[[kx,cy+31.5],[x+dx,y-r+1.5]],PAL.label[2]);
-  const k=L.piece(PAL.black);ell(L,x,y,r,r,PAL.black[2]);light(L,k,{base:2,hi:1,lo:3,dark:2,share:.34});
-  ell(L,x-2.8,y-3.2,2.6,1.8,PAL.black[0],k);on(L,k,x-3.5,y-4,[255,255,255]);on(L,k,x-2.5,y-4,PAL.metal[1]);
-  for(const [dx,dy] of [[2,-3.5],[4.6,-.8],[1.4,.6]]){ell(L,x+dx,y+dy,1.2,1.1,PAL.black[4],k);on(L,k,x+dx-1,y+dy-1,PAL.black[1]);}
-  line(L,[[x-4.5,y+3],[x-1,y+5]],PAL.black[1],k);// eingeritzt „PT 2011“
-  for(const d of [-4,3]){line(L,[[x+d-3.5,y-r],[x+d+3.5,y+r]],PAL.label[2],k);line(L,[[x+d+3.5,y-r],[x+d-3.5,y+r]],PAL.label[2],k);}
-  const kn=L.piece(PAL.label);ell(L,kx,cy+31.5,1.8,1.6,PAL.label[1]);light(L,kn,{base:1,hi:0,lo:2,dark:1});}
  /** Greifarm des Pfandautomaten: verchromter Roboterarm quer auf dem Rücken (rechte Schulter), Riemen vorn quer über die Brust. */
  function greifarm(L,p,x0,y0,x1,y1){const m=PAL.metal,u=unit([x0,y0],[x1,y1]),n=[-u[1],u[0]],j=lerp([x0,y0],[x1,y1],.52);
   const bs=L.piece(PAL.black);ell(L,x0,y0,4,3.4,PAL.black[2]);light(L,bs,{base:2,hi:1,lo:3,dark:1});
@@ -416,6 +416,96 @@ export function familien(K){
   const bi=L.piece(PAL.metal,1);Lm([[7.6,14],[7.6,22.5]],[.7,.55],PAL.metal[1]);for(let yy=15;yy<22;yy+=2)on(L,bi,...P(7.6,yy),PAL.metal[3]);// Bohrer mit Wendel
   handOver(L,p.armN);}
 
+ // ---------- Dorflegenden (Schloss Big B, 2026-09-26; Vorlage: Symbole assets/precision/runtime/items/<id>.png) ----------
+ /** Kunstpelz: unregelmäßige kurze Fellstriche (dunkle Striche nach unten, einzelne helle Spitzen), Rauschen am Anker a (Rumpf: Brust,
+  *  Ärmel: Schulter) – das Fell wandert mit dem Mantel statt mit der Leinwand. */
+ function zottel(L,j,c,a){const b=L.bb[j];if(!b||b[2]<0)return;const ax=Math.round(a[0]),ay=Math.round(a[1]),set=[];
+  for(let y=b[1];y<=b[3];y++)for(let x=b[0];x<=b[2];x++){if(!L.is(j,x,y))continue;const k=hs(x-ax,y-ay);if(k>.945)set.push([x,y,3,c[3]]);else if(k<.03)set.push([x,y,2,c[0]]);}
+  for(const [x,y,n,col] of set)for(let d=0;d<n;d++)L.on(j,x,y+d,col);}
+ /** Pelzmantel des Barons, Ärmel: Kunstpelz bis kurz vor die Hand, breite Hermelinmanschette; über der nahen Schulter fällt der Kragen auf den Oberarm. */
+ function pelzArm(L,p,arm,far){const c=PAL.lgNerz,h=PAL.lgHermelin,s=sleeve(L,p,arm,c,.86,3,far,{roll:false,cuff:h});zottel(L,s,c,arm[0]);
+  if(far)return;// Kragen über der nahen Schulter: dieselbe Kragenform wie im Rumpf, auf den Oberarm beschnitten (Rumpfneigung mitgeführt)
+  const A=p.A,[cx,cy]=p.C,sl=cx+A.sh[0]-1,sr=cx+A.sh[1]+1,mx=(sl+sr)/2,rx=(sr-sl)/2+3,[sx,sy]=arm[0],dx=p.lean?p.lean*(p.P[1]-(cy-6.5)):0,R=A.armR[0]+3.5,k=L.piece(h);
+  ell(L,mx+dx,cy-6.5,rx+1,12.5,h[1]);const b=L.bb[k];for(let y=b[1];y<=b[3];y++)for(let x=b[0];x<=b[2];x++)if(L.is(k,x,y)&&Math.hypot(x+.5-sx,y+.5-sy-1)>R)L.del(x,y);
+  if(L.bb[k][2]>=0)light(L,k,{base:1,hi:0,lo:2,dark:1});}
+ /** Pelzmantel des Barons, Rumpf: knielanger Kunstpelz in Nerzbraun (Fellstriche), vorn offen mit violettem Futter, breiter Hermelinkragen über
+  *  Schultern und Brust mit zipfeligem Rand und wenigen schwarzen Schwanzspitzen, Goldkette zwischen zwei Schließen, baumelnder Leihzettel;
+  *  hinten Kragen über den Schultern und Mittelnaht. */
+ function pelzRumpf(L,p){const c=PAL.lgNerz,h=PAL.lgHermelin,v=PAL.lgViolett,[cx,cy]=p.C,A=p.A,hem=p.ride?44:68;
+  const j=L.piece(c);poly(L,torso(p,3.2,-14,hem,{flare:p.ride?2:5,sway:!p.ride,extend:p.ride?0:22}),c[1]);light(L,j,{base:1,hi:0,lo:2,dark:3});zottel(L,j,c,p.C);
+  const sl=cx+A.sh[0]-1,sr=cx+A.sh[1]+1,mx=(sl+sr)/2,rx=(sr-sl)/2+3,nr=(A.neckR||[6.5,7.5])[1]+1.5;
+  const tuft=(k,x,y)=>{on(L,k,x,y,PAL.black[3]);on(L,k,x,y+1,PAL.black[3]);};// Hermelin: schwarze Schwanzspitze
+  if(p.back){line(L,[[cx+1,cy-6],[cx+1,cy+hem-2]],c[3],j);
+   const k=L.piece(h);ell(L,mx,cy-9,rx+1,10,h[1]);for(const t of [-.8,-.45,0,.45,.8])ell(L,mx+t*rx,cy+.5-Math.abs(t)*3.5,3.2,2.6,h[1]);light(L,k,{base:1,hi:0,lo:2,dark:1});
+   for(const [t,dy] of [[-.55,-9],[.1,-5],[.6,-10]])tuft(k,mx+t*rx,cy+dy);return;}
+  const f=L.piece(v);poly(L,[[cx-1.5,cy+1],[cx+4,cy+1],[cx+7,cy+hem-1],[cx-4.5,cy+hem-1]],v[2]);light(L,f,{base:2,hi:1,lo:3,dark:1});// Futter im offenen Mantel
+  L.piece(c,1);line(L,[[cx-2,cy+2],[cx-5,cy+hem-1]],c[0]);line(L,[[cx+5,cy+2],[cx+8,cy+hem-1]],c[3]);// Kanten der Mantelhälften
+  const k=L.piece(h);ell(L,mx,cy-6.5,rx+1,12.5,h[1]);for(const t of [-.85,-.55,-.25,.25,.55,.85])ell(L,mx+t*rx,cy+5.5-Math.abs(t)*4.5,3.4,2.8,h[1]);// Schalkragen mit zipfeligem Rand
+  poly(L,[[cx-nr+2.5,cy-21],[cx+nr+.5,cy-21],[cx+2.2,cy+1],[cx+.4,cy+1]],null,'del');light(L,k,{base:1,hi:0,lo:2,dark:1});// Halsausschnitt
+  for(const [t,dy] of [[-.65,-6],[-.35,3],[.6,-7],[.4,4]])tuft(k,mx+t*rx,cy+dy);
+  const ch=L.piece(PAL.gold,1);line(L,[[cx-6,cy+4],[cx+1,cy+7],[cx+8,cy+4]],PAL.gold[1]);line(L,[[cx-6,cy+5],[cx+1,cy+8],[cx+8,cy+5]],PAL.gold[3]);// Goldkette
+  for(const x of [cx-6,cx+8]){const s=L.piece(PAL.gold);ell(L,x,cy+4.5,2.1,1.9,PAL.gold[1]);light(L,s,{base:1,hi:0,lo:2,dark:1});}
+  L.piece(PAL.label,1);line(L,[[cx+1,cy+8],[cx+2,cy+16]],PAL.label[2]);const z=L.piece(PAL.label);poly(L,[[cx-1,cy+16],[cx+5,cy+16],[cx+5,cy+23],[cx-1,cy+23]],PAL.label[0]);light(L,z,{base:0,hi:0,lo:1,dark:1});
+  for(const yy of [18.5,20.5])line(L,[[cx,cy+yy],[cx+4,cy+yy]],PAL.label[2],z);}// Leihzettel vom Kostümverleih
+ /** Hochglanz-Exposé als Schild: lachsrosa Hochglanzmappe mit blauem Reiter, Burgfoto (Himmel, graue Burg, rote Turmspitzen), diagonaler
+  *  Glanzstreif, Kugelschreiber an der Kette; von hinten die Mappenrückseite mit Aufkleber, die Faust vorn. */
+ function expose(L,p){const [hx,hy]=handPos(p.armF),c=PAL.lgLachs,back=!!p.back,cx=back?hx+1:hx-10,cy=back?hy-3:hy-9,a=back?.06:-.08,
+  P=(dx,dy)=>[cx+dx*Math.cos(a)-dy*Math.sin(a),cy+dx*Math.sin(a)+dy*Math.cos(a)];
+  if(back){const m=L.piece(c);poly(L,[P(-11.5,-14.5),P(11.5,-14.5),P(11.5,14.5),P(-11.5,14.5)],c[2]);light(L,m,{base:2,hi:1,lo:3,dark:2,share:.24});
+   line(L,[P(-10.5,-13.5),P(-10.5,13.5)],c[3],m);poly(L,[P(3,6),P(9,6),P(9,11),P(3,11)],PAL.white[1],m);line(L,[P(4,8),P(8,8)],PAL.white[3],m);
+   handOver(L,p.armF);return;}
+  const tb=L.piece(PAL.blue);poly(L,[P(-11.5,-17.5),P(-2.5,-17.5),P(-1.5,-14),P(-11.5,-14)],PAL.blue[0]);light(L,tb,{base:0,hi:0,lo:1,dark:1});// Reiter
+  const m=L.piece(c);poly(L,[P(-12,-15),P(12,-15),P(12,15),P(-12,15)],c[1]);light(L,m,{base:1,hi:0,lo:2,dark:2,share:.24});
+  poly(L,[P(-9,-12),P(9,-12),P(9,2),P(-9,2)],PAL.white[1],m);poly(L,[P(-7.8,-10.8),P(7.8,-10.8),P(7.8,.8),P(-7.8,.8)],PAL.lgHimmel[1],m);// Foto mit weißem Rand
+  line(L,[P(-7.6,-10.6),P(7.6,-10.6)],PAL.lgHimmel[0],m);
+  poly(L,[P(-5.8,.8),P(5.8,.8),P(5.8,-3.8),P(-5.8,-3.8)],PAL.tin[1],m);// Burg
+  for(const [x0,x1,y0] of [[-5.8,-3.2,-6.2],[-1.4,1.4,-7.6],[3.2,5.8,-6.2]]){poly(L,[P(x0,-3.6),P(x1,-3.6),P(x1,y0),P(x0,y0)],PAL.tin[1],m);poly(L,[P(x0-.4,y0),P(x1+.4,y0),P((x0+x1)/2,y0-3.4)],PAL.red[1],m);}
+  line(L,[P(-.8,.6),P(-.8,-1.6),P(.8,-1.6),P(.8,.6)],PAL.tin[3],m);// Tor
+  poly(L,[P(-12,9.5),P(-12,13.5),P(12,3.5),P(12,-.5)],c[0],m);line(L,[P(-12,11.5),P(12,1.5)],PAL.white[0],m);// diagonaler Glanzstreif
+  L.piece(PAL.gold,1);for(let k=0;k<7;k++){const q=P(12.6+(k%2)*.6,-12+k*2.3);L.px(...q.map(Math.floor),PAL.gold[k%2?3:1]);}// Kette
+  const pen=L.piece(PAL.gold);limb(L,[P(13.4,3.5),P(13.9,14)],[1.2,1],PAL.gold[1]);light(L,pen,{base:1,hi:0,lo:2,dark:1});on(L,pen,...P(13.9,14.5),PAL.black[3]);// Kugelschreiber
+  handOver(L,p.armF);}
+ /** Korkenzieher des Kellermeisters: aufgeklapptes Kellnermesser – Rebholzgriff mit Knoten und Nieten, Metallkappe am Knauf, Spindel seitlich
+  *  aus der Griffmitte, kleine Klinge im V an der Spitze (mit Weinstein); beides zur Außenseite der Hand. Die Faust hält das Griffende,
+  *  damit das Rebholz sichtbar bleibt. */
+ function korkenzieher(L,p,nh){const [hx,hy]=handPos(p.armN),m=PAL.metal,w=PAL.lgReb,k=1.35,P=rel(hx,hy,outer(p,nh),k),E=(dx,dy,rx,ry,c,clip=null)=>ell(L,...P(dx,dy),rx*k,ry*k,c,clip),Lm=(pts,rs,c)=>limb(L,pts,rs.map(v=>v*k),c);
+  const ec=L.piece(m);poly(L,[P(-3.6,-6.5),P(3.6,-6.5),P(3.8,-2.5),P(-3.8,-2.5)],m[2]);light(L,ec,{base:2,hi:1,lo:3,dark:1});// Endkappe
+  const g=L.piece(w);Lm([P(0,-3),P(.5,7),P(0,17)],[3.2,3.5,3.2],w[1]);light(L,g,{base:1,hi:0,lo:2,dark:1});
+  for(const [dx,dy] of [[-1.3,4],[1.4,12.5]])E(dx,dy,1.2,1.5,w[3],g);for(const dy of [1,15])on(L,g,...P(0,dy),m[1]);// Knoten, Nieten
+  const sp=L.piece(m);Lm([P(2.6,10),P(5.6,10)],[1.5,1.5],m[2]);const zz=[];for(let i=0;i<=7;i++)zz.push(P(5.6+i*2,10+(i%2?2.8:-2.8)));Lm(zz,zz.map(()=>1.35),m[1]);light(L,sp,{base:1,hi:0,lo:2,dark:1});// Spindel
+  const bl=L.piece(m);poly(L,[P(-1.6,16.8),P(2.4,16.8),P(11.6,27.4),P(9,29.4)],m[1]);light(L,bl,{base:1,hi:0,lo:2,dark:1});line(L,[P(2,17.6),P(11,27.2)],m[0],bl);// Klinge mit heller Schneide
+  on(L,bl,...P(5.2,22),PAL.lgViolett[2]);on(L,bl,...P(6.4,23.3),PAL.lgViolett[3]);// Weinstein
+  const hg=L.piece(m);E(.4,17.2,2.2,2,m[2]);light(L,hg,{base:2,hi:1,lo:3,dark:1});// Gelenk
+  handOver(L,p.armN);}
+ /** Ringlicht der Reichweite: kleines Ringlicht mit Handyklemme am Gürtel (rechts am Träger), warmweiße LEDs, Handy mit blauem Bildschirm,
+  *  loses Kabel mit Stecker; von hinten angeschnitten im Band hinter dem Körper (wie die Kegelkugel). */
+ function ringlicht(L,p){const [cx,cy]=p.C,s=-lft(p),x=cx+(s>0?row(p.A,31)[2]:row(p.A,31)[1])*.62,y=cy+33,Y=y+13.4,e=PAL.lgLed;
+  const cl=L.piece(PAL.metal);ell(L,x,y,1.8,2.2,PAL.metal[1]);light(L,cl,{base:1,hi:0,lo:2,dark:1});ell(L,x,y,.7,1,null,'del');
+  L.piece(PAL.black,1);line(L,[[x,y+2],[x,y+5]],PAL.black[2]);
+  const r=L.piece(e);ell(L,x,Y,8.3,8.1,e[1]);light(L,r,{base:1,hi:0,lo:2,dark:1,share:.22});for(let k=0;k<12;k++){const t=k/12*Math.PI*2;if(k%3!==1)on(L,r,x+Math.cos(t)*6.6,Y+Math.sin(t)*6.4,e[0]);}// LEDs
+  const d=L.piece(PAL.black);ell(L,x,Y,4.7,4.5,PAL.black[3]);line(L,[[x-4.4,Y],[x+4.4,Y]],PAL.black[1],d);// Innenraum, Klemmbügel
+  const ph=L.piece(PAL.blue);poly(L,[[x-1.8,Y-3.2],[x+1.8,Y-3.2],[x+1.8,Y+3.2],[x-1.8,Y+3.2]],PAL.blue[1]);light(L,ph,{base:1,hi:0,lo:2,dark:1});on(L,ph,x-.5,Y-1.5,PAL.blue[0]);on(L,ph,x+.5,Y-.5,PAL.blue[0]);// Handy
+  L.piece(PAL.black,1);line(L,[[x+1,Y+8],[x+2.5,Y+11],[x+1.5,Y+13.5],[x+3,Y+16]],PAL.black[2]);const pl=L.piece(PAL.metal);ell(L,x+3.2,Y+17,1.2,1.5,PAL.metal[2]);}// Kabel, Stecker
+ /** Das vordere Hufeisen: blank geputztes Stahl-Hufeisen (Öffnung oben) an roter Kordel mit Goldperle, am Gürtel links am Träger. */
+ function hufeisen(L,p){const [cx,cy]=p.C,s=lft(p),x=cx+(s>0?row(p.A,31)[2]:row(p.A,31)[1])*.64,y=cy+32;
+  const lp=L.piece(PAL.red);ell(L,x,y,1.7,1.7,PAL.red[1]);ell(L,x,y,.7,.7,null,'del');
+  L.piece(PAL.red,1);line(L,[[x,y+3],[x-5.6,y+11]],PAL.red[1]);line(L,[[x,y+3],[x+5.6,y+11]],PAL.red[2]);// Kordel im V
+  const pb=L.piece(PAL.gold);ell(L,x,y+3,1.7,1.6,PAL.gold[1]);light(L,pb,{base:1,hi:0,lo:2,dark:1});// Goldperle
+  const h=L.piece(PAL.metal);limb(L,[[x-6,y+11],[x-6.6,y+16],[x-3.8,y+20.6],[x,y+21.8],[x+3.8,y+20.6],[x+6.6,y+16],[x+6,y+11]],[2.2,2.3,2.3,2.3,2.3,2.3,2.2],PAL.metal[1]);light(L,h,{base:1,hi:0,lo:2,dark:1});
+  for(const dx of [-6,6]){const t=L.piece(PAL.metal);poly(L,[[x+dx-2.2,y+9.4],[x+dx+2.2,y+9.4],[x+dx+2.2,y+11.6],[x+dx-2.2,y+11.6]],PAL.metal[2]);}// Stollen
+  for(const [dx,dy] of [[-6.4,15],[6.4,15],[-3.6,19.6],[3.6,19.6]])on(L,h,x+dx,y+dy,PAL.metal[3]);on(L,h,x-5.8,y+13.5,PAL.metal[0]);on(L,h,x-5.8,y+14.5,PAL.metal[0]);}// Nagellöcher, Glanz
+ /** Die Kugel vom Dorfpokal 2011: blau marmorierte Kegelkugel mit drei Grifflöchern und hellem Glanz im goldenen Kordelnetz, am Gürtel links
+  *  (vorn im Rumpf, von hinten angeschnitten). */
+ function kegelkugel(L,p){const [cx,cy]=p.C,s=lft(p),r=7.5,x=edge(p,38,s)+s*(r*.55+2.5),y=cy+46,kx=edge(p,31,s)-s*2,b=PAL.lgKegel,g=PAL.gold;
+  L.piece(g,1);for(const dx of [-4.5,0,4.5])line(L,[[kx,cy+31.5],[x+dx,y-r+1.5]],g[2]);
+  const k=L.piece(b);ell(L,x,y,r,r,b[2]);light(L,k,{base:2,hi:1,lo:3,dark:2,share:.34});
+  line(L,[[x-5.5,y+1],[x-3,y-1],[x,y+.5],[x+3,y-1.5],[x+5.5,y]],b[1],k);line(L,[[x-4.5,y+4],[x-1,y+3],[x+2,y+4.5],[x+4.5,y+3]],b[3],k);line(L,[[x-5,y-3],[x-3,y-4.5]],b[1],k);// Marmorierung
+  ell(L,x-2.8,y-3.2,2.6,1.8,b[0],k);on(L,k,x-3.5,y-4,[255,255,255]);on(L,k,x-2.5,y-4,b[0]);// heller Glanz
+  for(const [dx,dy] of [[2,-3.5],[4.6,-.8],[1.4,.6]]){ell(L,x+dx,y+dy,1.3,1.2,b[4],k);on(L,k,x+dx-1,y+dy-1,b[3]);}// drei Grifflöcher
+  line(L,[[x-4.5,y+3],[x-1,y+5]],b[3],k);// eingeritzt „PT 2011“
+  for(const d of [-4,3]){line(L,[[x+d-3.5,y-r],[x+d+3.5,y+r]],g[2],k);line(L,[[x+d+3.5,y-r],[x+d-3.5,y+r]],g[2],k);}
+  const kn=L.piece(g);ell(L,kx,cy+31.5,1.8,1.6,g[1]);light(L,kn,{base:1,hi:0,lo:2,dark:1});}
+
  // ---------- Quellen ----------
  const gear={
   // Waffen und Nebenhand (Seitenregel und Schwung übernimmt puppe.mjs für weapon/offhand)
@@ -464,6 +554,13 @@ export function familien(K){
   hausordnung:{slot:'charm',name:'Horsts gelochte Hausordnung',rumpf:hausordnung},
   schnorrerbecher:{slot:'charm',name:'Der nie leere Schnorrerbecher',rumpf:schnorrerbecher},
   kegelkugel:{slot:'charm',name:'Die Kugel vom Dorfpokal 2011',rumpf(L,p){if(!p.back)kegelkugel(L,p);},armHinten(L,p){if(p.back)kegelkugel(L,p);}},
+  // Dorflegenden aus Schloss Big B (Kennungen = Item-IDs)
+  'pelzmantel-baron':{slot:'body',name:'Pelzmantel des Barons',armHinten(L,p){pelzArm(L,p,p.armF,true);},armVorn(L,p){pelzArm(L,p,p.armN,false);},rumpf:pelzRumpf},
+  'hochglanz-expose':{slot:'offhand',name:'Hochglanz-Exposé',armVorn:expose},
+  'korkenzieher-kellermeister':{slot:'weapon',hands:1,name:'Korkenzieher des Kellermeisters',armVorn:(L,p)=>korkenzieher(L,p,false)},
+  'korkenzieher-kellermeister_nh':nebenhand('Korkenzieher des Kellermeisters (Nebenhand)',(L,p)=>korkenzieher(L,p,true)),
+  'ringlicht-reichweite':{slot:'charm',name:'Ringlicht der Reichweite',rumpf(L,p){if(!p.back)ringlicht(L,p);},armHinten(L,p){if(p.back)ringlicht(L,p);}},
+  'halbes-hufeisen':{slot:'charm',name:'Das vordere Hufeisen',rumpf(L,p){if(!p.back)hufeisen(L,p);},armHinten(L,p){if(p.back)hufeisen(L,p);}},
   automatenarm,
  };
  // Familien aus equipment-appearance.js (slots/weapons/special) → Quelle; überschreibt FAMILY_SOURCE in puppe.mjs
@@ -471,6 +568,6 @@ export function familien(K){
   belt:'zapfhahnguertel',trouser:'jeans',boot:'maifeldtreter',ring:'pfandsiegel',pendant:'clanandenken',shield:'zeltplatzschild',
   club:'dosenbrecher',blade:'dosenklinge',maul:'tresenhammer',slingshot:'pfandschleuder',sprayer:'megafon',
   whistle:'ruhepfeife',tusk:'keilerzahn',cup:'schnorrerbecher',robotclaw:'automatenarm'};
- const sided=['pfandschleuder','megafon','ruhepfeife','schorlenspritze','blitzschrauber','festtagsjacke','grillhandschuhe_faust','pfandring','pfandsiegel','clanandenken','hausordnung','schnorrerbecher','kegelkugel','automatenarm'];
+ const sided=['pfandschleuder','megafon','ruhepfeife','schorlenspritze','blitzschrauber','festtagsjacke','grillhandschuhe_faust','pfandring','pfandsiegel','clanandenken','hausordnung','schnorrerbecher','kegelkugel','automatenarm','ringlicht-reichweite','halbes-hufeisen'];
  return {gear,back:{},families,sided};
 }

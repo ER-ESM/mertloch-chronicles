@@ -24,8 +24,7 @@ Figuren im Spiel werden aus Ebenen zusammengesetzt: **Archetyp + Aussehen + Ausr
   - **Ferne Hand (`HAND_F` = `beinHinten`):** Was die ferne Hand hält oder trägt, liegt im Band des fernen Beins hinter dessen Kleidung. Das sind die Waffe in sw/nw, die Fernwaffe, die Nebenhandwaffe `_nh` in se/ne, Handschuh und Ring. So liegt es vor dem fernen Bein, aber hinter nahem Bein und Rumpf; der Arm selbst bleibt in `armHinten`. Beim Reiten zeichnen Handschuh und Ring weiter in `armHinten`.
   - **Stoppeln** (`bart-stoppeln`) sind ein Bartschatten in der Hauttreppe mit lockerem Tupfen (Mindestabstand 3), ohne Haarfarbpunkte. So färben sie mit dem Hautton um und bleiben in Weltgröße eine ruhige Fläche.
 - **Bildfläche (Leinwand):** 296 × 328 px, Boden 300, Fußpunkt (148, 300). Bis 2026-09-24 waren es 160 × 216 mit Boden 206; dort waren 260 Bilder abgeschnitten, darunter 148 Kochmützen-Bilder oben.
-  - Gemessen mit großer Leinwand (`node tools/paperdoll/waffen-vorschau.mjs <id>   # Waffen: Kontaktbogen, alle Archetypen × Richtungen, Weltgröße k=0,3/0,45/0,6 → tools/paperdoll/out-waffen/ (ohne Laufzeitbau)
-PUPPE_LEINWAND=440,460,340`): Alle Bilder liegen in x −118…+116 und y −239…+11 um den Fußpunkt. Die im Spiel sichtbaren Bilder liegen in x −105…+99; Nahkampfwaffen in Zielen/Schuss und Fernwaffen im Hieb zeigt das Spiel nie.
+  - Gemessen mit großer Leinwand (`PUPPE_LEINWAND=440,460,340`): Alle Bilder liegen in x −118…+116 und y −239…+11 um den Fußpunkt. Die im Spiel sichtbaren Bilder liegen in x −105…+99; Nahkampfwaffen in Zielen/Schuss und Fernwaffen im Hieb zeigt das Spiel nie.
   - Maße: Die Breite liegt 26 % über der Hülle und lässt Platz für breitere Heldenanimationen. Oben bleiben 61 px für Überkopf-Schläge (25 % über der höchsten Stelle, der Greifzange im Hieb). Freier Rand: links 30, rechts 31, oben 61, unten 16 px.
   - Der Bau misst die Hülle (`cat.huelle`) und schreibt sie ins Protokoll. `tests/paperdoll-posen` verlangt mindestens 12 px Rand.
   - Rauschmuster (Fell, Kutte, Falten, Tweed) hängen am alten Leinwandursprung (`NZ`, `KIT.hsA`), deshalb bleiben die Figuren beim Vergrößern gleich. Ausnahmen sind Kantenpixel durch Gleitkomma-Rundung und Bilder, die vorher abgeschnitten waren.
@@ -61,7 +60,8 @@ PUPPE_LEINWAND=440,460,340`): Alle Bilder liegen in x −118…+116 und y −239
 
 ```
 node tools/paperdoll/puppe.mjs --runtime        # assets/paperdoll/runtime: Grund- und Aktionsbögen + catalog.json (~8 min)
-node tools/paperdoll/puppe.mjs --runtime --nur gartenzwerg   # Teilneubau EINER Quelle (~4 s): ersetzt nur ihre Bögen + Katalogeintrag, verweigert bei geänderter Leinwand/Bildern/Palette; danach pwa-cache
+node tools/paperdoll/puppe.mjs --runtime --nur gartenzwerg,kegelkugel   # Teilneubau einzelner Quellen (~4 s je Quelle): ersetzt nur ihre Bögen + Katalogeinträge, übernimmt neue Farbtreppen in Palette/Schattentabelle, verweigert bei geänderter Leinwand/Bildern; Ergebnis byte-gleich zum vollen Neubau; danach pwa-cache (Kleidung/Glücksbringer: auch --reiten)
+node tools/paperdoll/waffen-vorschau.mjs <id,id> [ordner] [S]   # Kontaktbogen (se/sw/nw/ne), alle Archetypen × Richtungen, Weltgröße k=0,3/0,45/0,6, Symbol neben Figur; Waffen, Kleidung, Glücksbringer → tools/paperdoll/out-waffen/ (ohne Laufzeitbau)
 node tools/paperdoll/puppe.mjs --reiten         # assets/paperdoll/reiten: Reit-Bögen, 6 Reittiere × 3 Archetypen (~1 min, REITEN_JOBS=n Threads, ~4 MB)
 node scripts/pwa-cache.mjs                      # danach: Offline-Liste (Reit-Bögen stehen darin nur optional)
 node tools/paperdoll/reiten.mjs --vorschau hofpferd,drahtesel baerbel,kevin se,nw   # Kontaktbogen aus den Reit-Bögen → visual-review/mounts/
