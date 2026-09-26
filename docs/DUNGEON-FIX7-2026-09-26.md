@@ -300,4 +300,9 @@ Angepasste bestehende Tests (Verhalten gewollt geändert):
 
 ## 8 · Veröffentlichung
 
-(folgt)
+16 Commits auf `main` als Fast-Forward, danach `node scripts/server-refresh.mjs`.
+- Vor dem Push auf den parallelen Auftrag „Uhrfehler“ (#777/#778) rebased, ohne Konflikt; `precache-manifest.js` neu gebaut.
+- Danach erneut grün: `npm test` (1347/1347), `npm run build` und die betroffenen Simulationsteile `passiv,live,ohneheld,nohero,aktiv3`
+  mit allen Kriterien, auch (c) 70 % und (d) 13 %.
+- **Live: Build #793 · `3fef3c3a` · 2026-09-26** (vorher #778 · `2602f6aa`), https://mertloch.esm-consultant.de
+- Dieser Nachtrag folgt als eigener Commit (reine Doku).
