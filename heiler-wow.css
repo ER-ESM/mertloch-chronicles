@@ -1,0 +1,11 @@
+/* Heiler-WoW Teil 3 (2026-09-26, docs/HEILER-WOW-2026-09-26.md): Kniff-Tooltip nach WoW-Muster – Name, eine Kopfzeile, 1–3 Zeilen Wirkung,
+   eine Zahlenzeile, höchstens eine Zeile Wechselwirkung. Details (Umschalttaste, am Handy „Details“) klein und gedämpft. */
+.item-tooltip .tip-meta,.game-popup .tip-meta{margin:4px 0 5px;padding-top:5px;border-top:1px solid #65714a88;font:600 11.5px/1.3 var(--read,'Nunito',sans-serif);color:#c9d2b4}
+.item-tooltip .tip-effect,.game-popup .tip-effect{margin:0 0 3px!important;font:600 12.5px/1.35 var(--read,'Nunito',sans-serif);color:#f4e8c4}
+.item-tooltip .tip-numbers,.game-popup .tip-numbers{margin:0 0 3px!important;font:800 12.5px/1.3 var(--read,'Nunito',sans-serif);color:#b7df92}
+.item-tooltip .tip-link,.game-popup .tip-link{margin:0 0 3px!important;font:italic 600 12px/1.3 var(--read,'Nunito',sans-serif);color:#e7c87b}
+.item-tooltip .tip-ideal{margin:0!important;font:800 12px/1.3 var(--read,'Nunito',sans-serif);color:#ffd37a}
+.item-tooltip .tip-details p,.game-popup .tip-details p{margin:4px 0 0!important;font:600 11.5px/1.35 var(--read,'Nunito',sans-serif);color:#b9c2a6}
+.item-tooltip .tip-details .tip-origin{color:#9aa58c}
+.tip-more>summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font:800 13px/1 var(--read,'Nunito',sans-serif);color:#e7c87b}
+body:not(.touch-mode) .item-tooltip:has(.tip-meta){width:340px}

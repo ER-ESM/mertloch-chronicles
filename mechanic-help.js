@@ -1,6 +1,6 @@
 // Read-only explanations of the same triggers, skill IDs and modifiers the combat engine uses.
 import {resourceGrantText,resourceUnit,handCard,resourceHud,zoneOf,rostState,cardName,ventGlut,resourceViral} from './class-resources.js';
-import {RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,RESOURCE_HUD_TEXT,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
+import {SKILL_TIP,RESOURCES,SPEC_MECHANICS,SPECS,CLASS_SPECS,CLAN_MEMBERS,BASE_SKILLS,KITS,THROW_SKILL,GROUND_SKILL,TALENT_SKILLS,TALENT_ROWS,PROC_RULES,RESOURCE_HUD_TEXT,describe as contentDescribe,effectNumbers,kitName} from './content/index.js';
 import {combatStats} from './rpg.js';
 import {talentRank,mainTreeOnly} from './talents.js';
 import {effectAt} from './talent-ranks.js';
@@ -171,7 +171,7 @@ function resourceSkillHelp(g,id,s){
   const legend='Bild = Wirkung: Klinge trifft · Schild schützt · Herz mit Plus heilt · Knall mit Ring trifft im Umkreis und bremst. Abzeichen: » schnell (7–9) · Stern stark (10, Ass) · Krone Trumpf (Bube).';
   const tempo=rk=>rk.trump?' Trumpf (Krone): bedient jede Farbe und sticht jeden Zauber.':rk.quick?' Schnell (»): sperrt die globale Abklingzeit nur kurz.':rk.power>=1.3?' Stark (Stern): '+String(rk.power).replace('.',',')+'-fache Wirkung.':'';
   const c=handCard(g,id);
-  if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card;let line=`${cardName(c)}: ${SUIT_EFFECT[c.suit]}${['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}.${tempo(rk)} Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
+  if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card,support=g.skills.find(x=>x.id===id)?.heals==='card'&&(!!g.friend||!(e?.hp>0))/* Heiler-WoW: Kartenlegerin stützt den Freund */;let line=`${cardName(c)}: ${support?SKILL_TIP.support[c.suit]:SUIT_EFFECT[c.suit]}${!support&&['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}.${tempo(rk)} Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
    if(h.chain?.suit&&(h.chain.suit===c.suit||rk.trump))line+=' Kettenrahmen – bedient die Farbe: '+pct(R.follow.bonus)+' mehr je Kettenglied.';
    if(theirs){const tr=R.ranks[theirs.rank],beats=rk.trump?!tr.trump:c.suit===theirs.suit&&rk.order>tr.order;line+=beats?` Goldschein – sticht den Zauber des Ziels (${cardName(theirs)}): ${e.cast.interruptible?'bricht ihn ab und ':''}bringt ${tr.augen+R.stich.bonus} Augen.`:` Der Zauber des Ziels zeigt ${cardName(theirs)}: stechen kannst du mit ${R.suits[theirs.suit].name} höher als ${tr.name} oder einem Buben.`;}
    return line;}
@@ -198,6 +198,7 @@ function resourceSkillHelp(g,id,s){
 export function skillHelp(g,id){const t=skillHelpText(g,id);return t&&resourceViral(g,id)?t+' '+(RESOURCES[g.member.id]?.hud?.viralTip||''):t;}
 function skillHelpText(g,id){
  const s=g.skills.find(s=>s.id===id);if(!s)return '';
+ if(s.heals&&s.heals!=='card')return s.long||s.text;/* Heiler-WoW: umgewidmete Plätze beschreibt das Heiler-Kit, nicht der alte Platz (Riechsalz ist keine Markierung) */
  {const r=resourceSkillHelp(g,id,s);if(r)return r;}
  /* Runde 4 (hud4, Kenner-Befund 5): der Aufdruck RESONANZ auf der Taste bekommt seinen Satz ganz vorn */const reso=resonanceLine(g,s);if(reso)return reso+skillHelpBase(g,id,s);
  return skillHelpBase(g,id,s);

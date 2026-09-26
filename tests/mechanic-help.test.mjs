@@ -27,7 +27,7 @@ test('mixed talents retain both effects; shared ground and mobile modifiers are 
 });
 test('resource help distinguishes direct healing, overheal, the start threshold and movement exceptions',()=>{
  const g=game(),help=mechanicHelp(g);assert.match(help.lines.join(' '),/passive Heilprocs füllt keine/);assert.match(help.lines.join(' '),/Überheilung verursacht dabei keinen Schaden/);
- assert.match(skillHelp(g,'ground'),/Giselas Nest/);assert.doesNotMatch(skillHelp(g,'ground'),/füllt 1 Vorratsglas/);
+ assert.match(skillHelp(g,'ground'),/Gans Gisela auf ein Nest/);/* Heiler-WoW: Gisela heilt alle Verbündeten im Kreis */assert.match(skillHelp(g,'ground'),/alle Verbündeten im Kreis/);assert.doesNotMatch(skillHelp(g,'ground'),/füllt 1 Vorratsglas/);
  changeSpec(g,'baerbel-stage');const m=SPEC_MECHANICS['baerbel-stage'];assert.equal(classHudState(g).max,m.state.trigger);const p=mechanicHelp(g).lines.join(' ');assert.match(p,/im Kampf automatisch/);assert.match(p,/Pinsel-Piekser/);assert.match(p,/0 Randale/);
  for(const spec of Object.keys(SPEC_MECHANICS)){const a=game(spec.split('-')[0],spec);assert.ok(a.describe('mechanic',spec).info.effect);assert.doesNotMatch(describeCard(a,'mechanic',spec),/undefined|NaN/);}
 });
@@ -44,5 +44,5 @@ test('Vorrat fills when healing the selected companion at full own health; clean
  // Ein Ziel (E-65): mit gewähltem Gegner heilt die Löffelkur dich, der Grundschaden trifft den Gegner.
  g.friend=null;g.target={hp:1000};g.player.hp=g.player.maxHp-100;g.cooldowns.heal=0;g.gcd=0;const own=g.player.hp;
  assert.equal(g.action('heal'),true);assert.equal(g.classState.m.supply,2);assert.ok(g.player.hp>own);assert.equal(baseDamage,Math.round((g.player.hp-own)*SPEC_MECHANICS['baerbel-care'].supply.cleanDamage));
- const help=mechanicHelp(g).lines.join(' ');assert.match(help,/als Ziel gewählt/);assert.doesNotMatch(help,/hilfs\s*ziel/i);assert.match(skillHelp(g,'heal'),/Heilt dein gewähltes freundliches Ziel/);
+ const help=mechanicHelp(g).lines.join(' ');assert.match(help,/als Ziel gewählt/);assert.doesNotMatch(help,/hilfs\s*ziel/i);assert.match(skillHelp(g,'heal'),/für dein Ziel, sonst für dich/);/* Heiler-WoW: Zielwahl-Muster im Kit-Text */
 });

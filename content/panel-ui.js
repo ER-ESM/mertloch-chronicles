@@ -165,3 +165,17 @@ export const HELP_GRID={
 };
 /** Talente kompakt (Runde 2): Symbole statt Beschriftung, Details im Tooltip. */
 export const TALENT_COMPACT={locked:n=>'Ab Stufe '+n,lockedNote:'Dann wählst du deinen Hauptbaum. Punkte darfst du in alle drei Bäume setzen.',free:'Freie Talentpunkte',freeNote:'Klick auf ein Talent lernt es, Rechtsklick nimmt einen Punkt zurück.',main:'Hauptbaum wählen',mainActive:'Hauptbaum',mainNote:'Der Hauptbaum bestimmt deine Kernmechanik und die Namen deiner Kniffe.',reset:'Alle Talentpunkte zurücksetzen'};
+
+/** Heiler-WoW Teil 3 (2026-09-26): Kniff-Tooltip nach WoW-Muster – Name, eine Kopfzeile (Kosten · Zauberzeit · Abklingzeit · Reichweite),
+ *  1–3 Zeilen Wirkung mit Zahlen, höchstens eine Zeile Wechselwirkung; alles Weitere nur mit gedrückter Umschalttaste. */
+export const SKILL_TIP={
+ free:'kostenlos',cost:(n,unit)=>n+' '+unit,cast:s=>s+' s Zauberzeit',instant:'sofort',mobile:'im Laufen',cd:s=>s+' s Abklingzeit',noCd:'keine Abklingzeit',gcdOnly:'nur globale Abklingzeit',offGcd:'ohne globale Abklingzeit',range:m=>m+' m',
+ damage:r=>'Schaden '+r,heal:n=>'Heilt '+n,healHot:(n,hot,s)=>'Heilt '+n+', danach '+hot+' je s für '+s+' s',hot:(n,s)=>'Heilt '+n+' je s für '+s+' s',shield:n=>'Schild '+n,
+ reduction:(p,s)=>p+' % weniger Schaden für '+s+' s',save:(n,p,s)=>'Heilt '+n+' · '+p+' % weniger Schaden für '+s+' s',
+ serve:(w,hot,bread)=>'Wurst heilt '+w+' + '+hot+' je s · Brötchen '+bread,plate:(n,per)=>'Heilt '+n+' + '+per+' je gares Stück',bilanz:(per,now)=>'Heilt '+per+' je Auge'+(now?' · jetzt '+now:''),
+ group:(n,s)=>'Heilt alle im Kreis: '+n+' je s für '+s+' s',
+ key:k=>'Taste '+k,learn:l=>'Ab Stufe '+l,talent:'Talent im eigenen Baum lernen',unbound:'Gelernt, noch nicht auf der Leiste',ideal:'Ideales Zeitfenster!',requires:n=>'Benötigt: '+n,
+ details:'⇧ Details',detailsTouch:'Details',use:'Einsatz:',origin:l=>'Erlernt auf Stufe '+l,originTalent:s=>'Talent: '+s,formula:'Grundwerte',
+ support:{kreuz:'heilt dein Ziel 6 s lang nach',karo:'heilt alle um dein Ziel',herz:'heilt dein Ziel',pik:'schützt dein Ziel'},
+ repeat:'Gerade eben gedrückt – noch einmal senkt den Trend.'
+};
