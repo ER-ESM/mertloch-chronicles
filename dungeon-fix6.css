@@ -24,7 +24,10 @@ body:not(.touch-mode) .companion-frame .cf-buffs{height:24px}
    dungeon-e4b.css blendet im Bosskampf den Text der Meldungszeilen aus – für Ausrufe nicht. */
 #sct .sct-companion .sct-note .sct-row.sct-callout{font-size:19px;letter-spacing:.04em;animation-duration:2.8s}
 #sct .sct-companion .sct-note .sct-row.sct-callout canvas{width:20px;height:20px}
-body.boss-fight #sct .sct-companion .sct-note .sct-row.sct-callout>b{display:inline!important}
+body.boss-fight #sct .sct-companion .sct-note .sct-row.sct-callout:not(.sct-callout-icon)>b{display:inline!important}
+/* das Wort steht einmal, über den übrigen Söldnern nur das Megafon (dungeon-einsatz.js) */
+#sct .sct-companion .sct-note .sct-row.sct-callout-icon>b{display:none!important}
+#sct .sct-companion .sct-note .sct-row.sct-callout-icon canvas{width:24px;height:24px;filter:drop-shadow(0 0 4px #ffcf6a) drop-shadow(0 1px 0 #1c1712)}
 .touch-mode #sct .sct-companion .sct-note .sct-row.sct-callout{font-size:15px}
 
 /* 9 · Zielrahmen eines Freundes: die Plakette zeigt seine Stufe (app.js setzt data-level), ohne Stufe (NPC) keine leere Plakette */

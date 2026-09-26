@@ -103,11 +103,15 @@ test('Truppenrahmen: Angefeuert, deine Heilung über Zeit und dein Schild, Letzt
  assert.equal(typeof COMPANION_UI.buffs.left,'function');
  const css=src('dungeon-fix6.css');assert.match(css,/grid-template-columns:minmax\(0,1fr\) 76px/,'drei 24er-Plätze neben dem Lebensbalken');
 });
-test('Ausrufe über den Söldnern sind groß und stehen auch im Bosskampf mit Text', ()=>{
+test('Ausrufe über den Söldnern: das Wort einmal groß und auch im Bosskampf lesbar, über den übrigen das Megafon', ()=>{
  const g=game(),gerd=atGerd(g);
  const seen=[];g.sct=d=>{seen.push(d);return true;};gerd.aggro=true;gerd.ai='combat';g.target=gerd;run(g,.1);g.damage(gerd,50,'Kelle');run(g,.2);
- const shouts=seen.filter(d=>d.text===T.rally.shout);assert.equal(shouts.length,4,'über jedem Söldner');assert.ok(shouts.every(d=>d.callout&&d.actor&&d.iconKey==='megaphone'));
- assert.match(src('combat-text.js'),/e\.callout\?' sct-callout':''/);assert.match(src('dungeon-fix6.css'),/body\.boss-fight #sct \.sct-companion \.sct-note \.sct-row\.sct-callout>b\{display:inline!important\}/);
+ const shouts=seen.filter(d=>d.text===T.rally.shout);assert.equal(shouts.length,4,'über jedem Söldner');assert.ok(shouts.every(d=>d.actor&&d.iconKey==='megaphone'));
+ assert.equal(shouts.filter(d=>d.callout).length,1,'das Wort einmal (Text-Diät im Bosskampf)');assert.equal(shouts.filter(d=>d.calloutIcon).length,3,'über den anderen das Megafon');
+ const p=g.player,dist=id=>{const c=g.companions.find(x=>x.id===id);return Math.hypot(c.x-p.x,c.y-p.y);},lead=shouts.find(d=>d.callout).actor;
+ assert.ok(shouts.every(d=>dist(lead)<=dist(d.actor)+.01),'das Wort über dem Söldner, der dem Helden am nächsten ist');
+ assert.match(src('combat-text.js'),/e\.callout\?' sct-callout':''/);assert.match(src('dungeon-fix6.css'),/body\.boss-fight #sct \.sct-companion \.sct-note \.sct-row\.sct-callout:not\(\.sct-callout-icon\)>b\{display:inline!important\}/);
+ assert.match(src('dungeon-fix6.css'),/\.sct-callout-icon>b\{display:none!important\}/);
 });
 
 // ── 5 · Kleinere Punkte ────────────────────────────────────────────────────────────────────────────────────────────────────────

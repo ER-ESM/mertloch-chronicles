@@ -51,7 +51,7 @@ export function tickLastStand(g,c){
 }
 /* Dungeon-Fix 6 (Prüferin #741 sah „ANGEFEUERT“ nie): Ansagen über den Söldnern sind Ausrufe (callout) – groß, farbig, länger und auch im Bosskampf
    mit Text (dort zeigen Meldungszeilen sonst nur das Symbol, dungeon-e4b.css). */
-function say(g,c,text,color,iconKey){if(!g.sct?.({actor:c.id,member:c.def?.look,area:'note',kind:'proc',text,callout:true,color,...(iconKey?{iconKey}:{})}))g.float?.(c.x,c.y-40,text,color);}
+function say(g,c,text,color,iconKey,iconOnly=false){if(!g.sct?.({actor:c.id,member:c.def?.look,area:'note',kind:'proc',text,...(iconOnly?{calloutIcon:true}:{callout:true}),color,...(iconKey?{iconKey}:{})}))if(!iconOnly)g.float?.(c.x,c.y-40,text,color);}
 
 /** Einblendung beim Wutausbruch eines Bosses (Big B hat seine eigene: „Die ganze Wahrheit“). */
 export function enrageText(e){return T.enrage[e?.bossId]||T.enrage.other;}
@@ -72,7 +72,9 @@ export function tickEinsatz(g,run,dt){
   if(g.dead&&!r.wasDead)r.deaths++;r.wasDead=!!g.dead;
  }
  /* Einblendung „Angefeuert“ über den Söldnern, wenn der Rückenwind (wieder) einsetzt */
- if(on&&!run.rallyShown&&inBossFight(g)){run.rallyShown=true;for(const c of g.companions||[])if(standing(c))say(g,c,T.rally.shout,'#ffcf6a','megaphone');}
+ /* Dungeon-Fix 6: das Wort steht einmal – über dem Söldner, der dir am nächsten ist –, über den anderen das Megafon. So bleibt es lesbar, ohne dass vier
+    gleiche Wörter um den Boss stehen (Text-Diät im Bosskampf, dungeon-e4b-check). */
+ if(on&&!run.rallyShown&&inBossFight(g)){run.rallyShown=true;const list=(g.companions||[]).filter(standing),p=g.player,lead=list.slice().sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0];for(const c of list)say(g,c,T.rally.shout,'#ffcf6a','megaphone',c!==lead);}
  if(!on&&run.rallyShown&&(g.dead||run.rallyAt==null||g.time-run.rallyAt>R.rally.hold+R.rally.shout))run.rallyShown=false;
 }
 /** Warnung ausgewertet (resolveDungeonCast): galt die Mechanik dem Helden, und kam er ohne Treffer bzw. richtig durch? */

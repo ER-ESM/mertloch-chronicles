@@ -32,14 +32,14 @@ export function mountCombatText(shell,api){
   // E-72 Runde 4 (Kenner-Befund „BEREIT-Textsalat“): gleiche Meldung ohne Zahl (BEREIT, DECKUNG …), solange die erste noch steht → dieselbe Zeile mit „×N“, neu angestoßen
   const echo=e.value===undefined&&area.rows.find(r=>r.e.value===undefined&&noteKey(r.e)===noteKey(e)&&now-r.at<LIFE*1000);
   if(echo){echo.n=(echo.n||1)+1;echo.at=now;echo.node.querySelector('b').textContent=fmt(e)+' ×'+echo.n;echo.node.style.animation='none';void echo.node.offsetWidth;echo.node.style.animation='';clearTimeout(echo.timer);echo.timer=setTimeout(()=>drop(area,echo.node),LIFE*1000+50);return;}
-  const node=document.createElement('div');node.className='sct-row sct-'+e.kind+(e.crit?' sct-crit':'')+(e.big?' sct-big':'')+(e.callout?' sct-callout':'');/* Dungeon-Fix 6: Ausrufe über Söldnern */
+  const node=document.createElement('div');node.className='sct-row sct-'+e.kind+(e.crit?' sct-crit':'')+(e.big?' sct-big':'')+(e.callout?' sct-callout':'')+(e.calloutIcon?' sct-callout sct-callout-icon':'');/* Dungeon-Fix 6: Ausrufe über Söldnern (mit Wort bzw. nur Symbol) */
   node.innerHTML=icon(e)+'<b>'+esc(fmt(e))+'</b>'+(e.text&&e.value!==undefined?'<small>'+esc(e.text)+'</small>':'');
   if(e.color)node.style.color=e.color;
   // Stapeln: kommt der nächste Eintrag dicht hinter dem letzten, startet er ein Stück höher (MSBT-Warteschlange ohne Warten)
   const gap=now-area.last;const offset=gap<220?Math.min(3,Math.round((220-gap)/70))*18:0;node.style.setProperty('--sct-offset',(-offset)+'px');area.last=now;
   const row={e:{...e},node,at:now};area.el.append(node);area.rows.push(row);paintDescribeIcons(node,api.game());
   while(area.rows.length>(e.actor?3:MAX)){const old=area.rows.shift();clearTimeout(old.timer);old.node.remove();}
-  row.timer=setTimeout(()=>drop(area,node),(e.callout?CALLOUT_LIFE:LIFE)*1000+50);
+  row.timer=setTimeout(()=>drop(area,node),(e.callout||e.calloutIcon?CALLOUT_LIFE:LIFE)*1000+50);
  }
  const noteKey=e=>e.kind+'|'+(e.text||'');
  function drop(area,node){node.remove();const i=area.rows.findIndex(r=>r.node===node);if(i>=0)area.rows.splice(i,1);}

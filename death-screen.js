@@ -101,7 +101,7 @@ export function mountDeathScreen({shell=document.querySelector('#gameShell'),gam
     den Bossrahmen, oben auf seiner Höhe – rechts, sonst links, wo kein anderer Rahmen steht. Erst wenn beides nicht passt, wie bisher darunter.
     Die senkrechte Bildmitte (Held, Boss, Boden dazwischen) bleibt frei. */
  const BLOCKERS=['.player-panel','#minimap','.quest-tracker','.boss-alerts','#unitGroupDock','#targetPanel'];let side=null;
- function placeSide(){const fr=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect();if(!fr?.width)return false;
+ function placeSide(){const fr=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect();if(!fr?.width)return !!side/* nach dem Sieg geht der Bossrahmen – das Fenster bleibt, wo es war */;
   const sr=(el.offsetParent||document.body).getBoundingClientRect(),b=el.getBoundingClientRect(),w=b.width||330,h=b.height||220,gap=12,y=Math.max(4,fr.top);
   const blocks=BLOCKERS.map(s=>document.querySelector(s)).filter(x=>x&&!x.hidden&&x.getClientRects().length).map(x=>x.getBoundingClientRect()).filter(r=>r.width&&r.height);
   const free=x=>x>=8&&x+w<=innerWidth-8&&y+h<=innerHeight-8&&!blocks.some(r=>x<r.right&&x+w>r.left&&y<r.bottom&&y+h>r.top);

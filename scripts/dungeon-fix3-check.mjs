@@ -149,6 +149,7 @@ try{
   assert.ok(res.death1?.shown&&res.death2?.shown,'zweimal gefallen');assert.match(res.death1.cause,/Big B/);assert.ok(res.death1.cause.length>6,'Todesschlag mit Fähigkeit: '+res.death1.cause);
   assert.equal(res.death2.btn,'Kampf aufgeben','im Kampf: Aufgabe (Dungeon-Fix 4: zweitrangig, mit Bestätigung)');assert.match(res.death2.note,/Gibt den Kampf auf/);
   assert.ok(res.won,'Big B besiegt (Söldner allein)');
+  /* Dungeon-Fix 6: der Knopf folgt dem Kampfstand im 100-ms-Takt des Todesfensters (unter Last erst ein, zwei Takte nach dem Todesstoß) – kurz warten, bis er umschaltet */await until(`return !g.dead||document.querySelector('#deathScreen [data-ds-wake]')?.textContent==='Hier aufstehen'`,4000,100);
   const post=await read(`const ds=document.querySelector('#deathScreen'),btn=ds.querySelector('[data-ds-wake]');return {dead:g.dead,hp:g.player.hp,level:g.player.level,btn:btn?.textContent||'',note:btn?.dataset.tooltipNote||'',open:!ds.hidden}`);
   await shot('23-nach-dem-sieg-geist');results.run2.post=post;
   if(post.dead){assert.equal(post.btn,'Hier aufstehen','nach dem Sieg: kein „Kampf aufgeben“');assert.match(post.note,/nichts setzt zurück/);assert.equal(post.hp,0,'als Geist kein volles Leben trotz Aufstieg');}
