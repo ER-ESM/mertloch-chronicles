@@ -131,7 +131,7 @@ test('Erfolge: Beweislast mit Titel „Mieterschützer“, Stempelkarte, Zeit un
  const rita=g.enemies.find(e=>e.bossId==='rita');if(rita)g.kill(rita);
  for(const id of DEF.evidence.ids)r.evidence.add(id);const b=bigbOf(g);b.aggro=true;b.ai='combat';g.adminGod=true;run(g,2);g.kill(b);const feats=g.dungeons['schloss-bigb'].feats;
  assert.ok(feats.includes('beweislast'),'Beweislast '+feats);assert.ok(feats.includes('termin')&&feats.includes('kratzer'),'voller Durchgang schnell und ohne Tod '+feats);
- assert.deepEqual(dungeonTitles(g).map(t=>t.name),['Mieterschützer']);assert.ok(g.toasts.some(t=>/Mieterschützer/.test(t)));
+ assert.deepEqual(dungeonTitles(g).map(t=>t.name),['Mieterschützer']);/* Dungeon-Fix 3: Titel als Einblendung (Ereignis) und Chatzeile statt Kurzmeldung */assert.ok(g.events.some(e=>e.type==='dungeonTitle'&&e.name==='Mieterschützer'));
  const h=game(),r2=inside(h);quiet(h);r2.seals.add('siegel-gerd');r2.version++;r2.deaths=1;const b2=bigbOf(h);b2.aggro=true;b2.ai='combat';h.adminGod=true;run(h,2);h.kill(b2);
  assert.ok(!h.dungeons['schloss-bigb'].feats.includes('termin')&&!h.dungeons['schloss-bigb'].feats.includes('kratzer'),'ohne Gerd im Durchgang kein voller Durchgang');
 });

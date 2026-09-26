@@ -12,8 +12,9 @@ export const ENEMY_AUTOS={
 export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43,
  // Dungeon-Fix 2 (2026-09-26): Klickfläche einer plünderbaren Leiche um ihren Beutel (Einheiten; up = über dem Fußpunkt) – Links- wie
  // Rechtsklick dort öffnet die Beute vor jedem Söldner, der darauf steht. lootMoment: Boss-Beute öffnet sich delay s nach dem Sieg, sobald
- // der Held lebt, nicht kämpft und in der Arena steht; höchstens wait s lang.
- lootClick:{x:18,up:24,down:12},lootMoment:{delay:1.4,wait:90}};
+ // der Held lebt, nicht kämpft und in der Arena steht; höchstens wait s lang (Boss-Beutel mit Arena warten ohne Frist, Dungeon-Fix 3).
+ // Dungeon-Fix 3: beam = Höhe der Klickfläche über einem Beutel mit Lichtsäule (ab ungewöhnlich) – die Säule ist das, was man anklickt.
+ lootClick:{x:18,up:24,down:12,beam:72},lootMoment:{delay:1.4,wait:90}};
 export const COMBAT_TEXT={surge:'In Fahrt',surgeHint:'In Fahrt: Spezialkniff +20 %',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',notReady:'Noch nicht bereit.',noTarget:'Kein Ziel.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',aimGround:'Boden wählen · Rechtsklick / Esc abbrechen.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
 // (flat + weapon × rolled auto damage) × (1 + bonusPct).
 // No damage model = legacy fixed values, so old content can migrate incrementally.
@@ -123,13 +124,13 @@ export const COMBAT_RULE_INFO={
   long:'Dieselbe Entfernung gilt für das Aufheben von Hand und für das automatische Einsammeln. Wer im Kampf wegläuft, lässt Beute liegen, bis er zurückkommt – Beute verschwindet nicht, aber sie läuft dir auch nicht nach.',
   numbers:[{label:'Reichweite',value:COMBAT_RULES.lootRange,unit:'Einheiten (≈ '+m(COMBAT_RULES.lootRange)+' m)',source:'COMBAT_RULES.lootRange'}]},
  // Dungeon-Fix 2 (2026-09-26): Leiche anklicken und Beute-Moment
- lootClick:{name:'Leiche anklicken',rules:['lootClick.x','lootClick.up','lootClick.down'],terms:['beute'],
+ lootClick:{name:'Leiche anklicken',rules:['lootClick.x','lootClick.up','lootClick.down','lootClick.beam'],terms:['beute'],
   short:'Klick auf eine Leiche mit Beute öffnet den Beutel – auch wenn ein Söldner darauf steht.',
-  long:'Die Klickfläche reicht über den liegenden Körper, nicht nur über den Beutel am Boden. Ein Rechtsklick dort öffnet die Beute vor jedem Söldner an derselben Stelle; nur ein lebender Gegner gewinnt, denn Kampf geht vor. Bist du zu weit weg, läufst du hin.',
-  numbers:[{label:'Breite je Seite',value:COMBAT_RULES.lootClick.x,unit:'Einheiten',source:'COMBAT_RULES.lootClick.x'},{label:'Höhe über dem Boden',value:COMBAT_RULES.lootClick.up,unit:'Einheiten',source:'COMBAT_RULES.lootClick.up'},{label:'unter dem Beutel',value:COMBAT_RULES.lootClick.down,unit:'Einheiten',source:'COMBAT_RULES.lootClick.down'}]},
+  long:'Die Klickfläche reicht über den liegenden Körper, nicht nur über den Beutel am Boden. Ein Rechtsklick dort öffnet die Beute vor jedem Söldner an derselben Stelle; nur ein lebender Gegner gewinnt, denn Kampf geht vor. Leuchtet über dem Beutel eine Lichtsäule (ab ungewöhnlicher Beute), zählt auch die Säule. Bist du zu weit weg, läufst du hin.',
+  numbers:[{label:'Breite je Seite',value:COMBAT_RULES.lootClick.x,unit:'Einheiten',source:'COMBAT_RULES.lootClick.x'},{label:'Höhe über dem Boden',value:COMBAT_RULES.lootClick.up,unit:'Einheiten',source:'COMBAT_RULES.lootClick.up'},{label:'unter dem Beutel',value:COMBAT_RULES.lootClick.down,unit:'Einheiten',source:'COMBAT_RULES.lootClick.down'},{label:'Höhe mit Lichtsäule',value:COMBAT_RULES.lootClick.beam,unit:'Einheiten',source:'COMBAT_RULES.lootClick.beam'}]},
  lootMoment:{name:'Beute-Moment nach dem Boss',rules:['lootMoment.delay','lootMoment.wait'],terms:['beute'],
   short:'Boss-Beute im Dungeon öffnet sich kurz nach dem Sieg von selbst, sobald du lebst, nicht mehr kämpfst und in der Arena stehst.',
-  long:'Liegst du beim Sieg noch als Geist oder stehst an der Tür, wartet das Fenster, bis du aufgestanden bist bzw. die Arena betrittst. Geöffnet wird es einmal; danach findest du den Beutel an der Leiche. Nichts wird ungefragt angelegt.',
+  long:'Liegst du beim Sieg noch als Geist oder stehst an der Tür, wartet das Fenster, bis du aufgestanden bist bzw. die Arena betrittst. Geöffnet wird es einmal; danach findest du den Beutel an der Leiche. Boss-Beute wartet ohne Frist, bis du wieder in der Arena stehst. Nichts wird ungefragt angelegt.',
   numbers:[{label:'Vorlauf nach dem Sieg',value:COMBAT_RULES.lootMoment.delay,unit:'s',source:'COMBAT_RULES.lootMoment.delay'},{label:'wartet höchstens',value:COMBAT_RULES.lootMoment.wait,unit:'s',source:'COMBAT_RULES.lootMoment.wait'}]},
  autoRange:{name:'Reichweite des eigenen Autoangriffs',rules:[],terms:['autoangriff','reichweite'],
   short:'Dieter und Schorsch schlagen bis 45 Einheiten zu, Anni sprüht bis 155, Käthe schnipst Karten bis 170, Kevin wirft bis 195.',
@@ -151,11 +152,14 @@ export const COMBAT_RULE_INFO={
 // Runde 5a (2026-09-24, Kenner-Endurteil): Todesbildschirm, Auftragszeilen am Gegner, Ausweich-Rückmeldung, Autopilot-Stopp.
 export const DEATH_UI={
  title:'Du bist umgekippt',wake:'Aufwachen bei St. Gangolf',wakeNote:'Volle Leben, kurzer Schutz. Aufträge und Erfahrung bleiben.',
- by:'Umgehauen von',ground:'Rote Fläche',groundNote:'Aus roten Flächen herauslaufen oder mit Ausweichen herausspringen.',
+ by:'Umgehauen von',amount:n=>n.toLocaleString('de-DE')+' Schaden',ground:'Rote Fläche',groundNote:'Aus roten Flächen herauslaufen oder mit Ausweichen herausspringen.',
  others:n=>'+'+n+' weitere Angreifer',othersNote:'Mehrere Gegner zugleich. Einzeln anlocken, Brezel früh essen.',
  // Dungeon (E-71): Der Tod des Helden ist kein Wipe. Er liegt als Geist, die Söldner kämpfen weiter und helfen ihm auf.
+ // Dungeon-Fix 3: Nach dem Kampf heißt der Knopf „Hier aufstehen“ (nichts setzt zurück); nach einem Wipe stehen die Gegner schon wieder.
  dungeon:{wake:'Am Kontrollpunkt aufstehen',wakeNote:r=>'Gibt den Kampf auf: Die Gegner setzen zurück, du stehst am Kontrollpunkt '+r+' auf.',checkpoint:r=>'Kontrollpunkt '+r,
-  checkpointNote:'Hier stehst du auf. Gelegter Trash bleibt liegen.',ghost:'Söldner kämpfen weiter',ghostNote:'Ein Heil-Söldner hilft dir auf: 8 Sekunden, einmal je Kampf. Erst wenn alle liegen, ist der Kampf verloren.',
+  wakeLost:r=>'Alle lagen, die Gegner stehen schon wieder auf ihren Plätzen. Du stehst am Kontrollpunkt '+r+' auf.',
+  here:'Hier aufstehen',hereNote:'Der Kampf ist vorbei. Du stehst hier auf, nichts setzt zurück.',standing:'Du stehst gleich auf',
+  checkpointNote:'Hier stehst du auf. Gelegter Trash bleibt liegen.',ghost:'Söldner kämpfen weiter',ghostNote:'Im Kampf hilft ein Heil-Söldner dir einmal auf (8 s). Nach dem Kampf hilft er dir immer auf, ohne Heiler stehst du von selbst auf. Erst wenn alle liegen, ist der Kampf verloren.',
   reviving:n=>n+' hilft dir auf',allDown:'Alle am Boden'},
  tips:{interrupt:['Unterbrechen','Gelbe Zauberbalken im Zielrahmen damit abbrechen.'],dash:['Ausweichen','Rote Bodenmarken verlassen: Sprung in Laufrichtung.'],parry:['Parieren','Angekündigte Nahkampfhiebe abfangen.'],food:['Brezel','Heilt auch im Kampf – früh essen, nicht erst bei 10 %.']},
 };

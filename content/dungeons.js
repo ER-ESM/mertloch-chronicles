@@ -53,10 +53,13 @@ export const DUNGEONS={
    {id:'thronsaal',floor:'k2',rects:[[46,4,16,32]],sign:'Thronsaal',truth:'echter Basaltdom, verkleidet mit Pappe',prospect:'Thronsaal',arena:'bigb'},
    {id:'schatz',floor:'k2',rects:[[48,38,12,8]],sign:'Schatzkammer',truth:'Abstellraum',prospect:'Schatzkammer'}
   ],
-  // Etappe 3 (E-71): Ende des Dungeons. Die Endtruhe steht in der Schatzkammer und öffnet sich nach Big B einmal je Durchgang
-  // (Wahl aus drei seltenen Teilen plus Siegelmarken, DUNGEON_REWARDS.chest); der Hinterausgang daneben führt zurück auf die Burgstraße.
-  chest:{floor:'k2',x:54,y:40.5,range:4,boss:'bigb'},
-  backExit:{floor:'k2',x:58,y:44,range:3.5},
+  // Etappe 3 (E-71): Ende des Dungeons. Die Endtruhe öffnet sich nach Big B einmal je Durchgang (Wahl aus drei seltenen Teilen plus
+  // Siegelmarken, DUNGEON_REWARDS.chest); der Hinterausgang in der Schatzkammer führt zurück auf die Burgstraße.
+  // Dungeon-Fix 3 (Big-B-Abnahme #721: aus der Arena waren Truhe und Ausgang nicht zu sehen): Die Truhe erscheint nach Big Bs Tod mitten
+  // im Thronsaal (appear), von überall im Saal zu sehen; der Hinterausgang trägt ein grünes Notausgang-Schild, ein zweites hängt über
+  // der Tür zur Schatzkammer (sign, Welt-Einheiten wie x/y).
+  chest:{floor:'k2',x:54,y:20,range:4,boss:'bigb',appear:true},
+  backExit:{floor:'k2',x:58,y:44,range:3.5,sign:{x:54,y:35}},
   // Türen verbinden Räume; `lock` hält sie zu: boss = offen, wenn der Boss liegt; seals = braucht die Siegel;
   // arena = zu, solange der Boss dieses Raums kämpft.
   doors:[
@@ -443,6 +446,11 @@ export const DUNGEON_CASTS={
 // Dungeon-Fix 2 (2026-09-26): Gleiche Gegner eines Packs fangen versetzt an – der zweite Baumarkt-Ritter schlägt stagger s nach dem ersten zu,
 // statt dass zwei Regenrinnen-Hiebe zugleich auf die Gruppe fallen (vorher der häufigste Tod eines Söldners bei Doppel-Rittern).
 export const DUNGEON_PACK_RULES={stagger:2.5};
+// Dungeon-Fix 3 (Big-B-Abnahme #721: der Held blieb nach dem Sieg tot, der einzige Knopf gab den schon gewonnenen Kampf auf): Nach dem Kampf
+// hilft ein lebender Heil-Söldner auf (content/companions.js revive.afterCast). Lebt keiner, steht der Held standUp s nach Kampfende am Ort
+// auf, mit dem Leben wie beim Aufhelfen unter Mitspielern (E-44, BALANCE.party.reviveHp). Kommt der Heiler nicht binnen healerWait s, steht
+// der Held ebenso selbst auf. Nach einem Wipe (alle lagen, die Gegner sind zurückgesetzt) bleibt es beim Kontrollpunkt.
+export const DUNGEON_GHOST={standUp:3,healerWait:12};
 export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,trashXp:.68,wingChest:{marks:1,quality:'uncommon',rareChance:.35},chest:{choices:3,quality:'rare',marks:3,
  slots:['weapon','head','shoulders','body','hands','waist','legs','feet','ring','trinket','neck','wrists']}};
 
@@ -482,7 +490,7 @@ export const DUNGEON_TEXT={
  arenaClosed:'Die Tür fällt zu. Klemmbrett sagt: kein Durchgang.',arenaOpen:'Die Tür geht wieder auf.',
  wipe:room=>'Alle am Boden. Zurück zum Kontrollpunkt '+room+'. Der Trash bleibt liegen.',
  ghost:'Du liegst. Deine Söldner kämpfen weiter.',wipeAll:'Alle am Boden. Die Gegner gehen zurück auf ihre Plätze.',
- revived:n=>n+' hat dir aufgeholfen.',resumed:'Der Durchgang läuft weiter. Du stehst am letzten Kontrollpunkt.',
+ revived:n=>n+' hat dir aufgeholfen.',stoodUp:'Du rappelst dich auf. Der Kampf ist vorbei.',resumed:'Der Durchgang läuft weiter. Du stehst am letzten Kontrollpunkt.',
  lootMoment:{title:n=>'Beute · '+n,marks:'Siegelmarken',marksNote:'Währung des Schlosses gegen Beutepech. Vermieter Volker tauscht sie später gegen Beute.',
   xp:'Erfahrung',daily:'Tagesbonus',dailyNote:'Erster Abschluss dieses Flügels heute: mehr Erfahrung und Siegelmarken.',keep:'Nichts wird angelegt: vergleichen und selbst anlegen.'},
  fell:'Rausgeschmissen. Du bist die Kellertreppe runtergeflogen und liegst im Rittergeschoss.',
@@ -536,10 +544,10 @@ export const DUNGEON_TEXT={
  // Etappe 3: Kampftexte der neuen Merkmale (kurz, Großbuchstaben wie HAUSVERBOT) und das Ende des Dungeons.
  bigb:{enrage:'DIE GANZE WAHRHEIT',interrupts:(n,m)=>'UNTERBROCHEN '+n+'/'+m,selfHeal:'SELBST RAUSGEZOGEN',reach:'REICHWEITE',
   confess:'GESTÄNDNIS',lieHit:'GELOGEN'},
- chest:{name:'Endtruhe öffnen',title:'Endtruhe · Schatzkammer',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
+ chest:{name:'Endtruhe öffnen',title:'Endtruhe · Thronsaal',label:'Endtruhe',labelNote:'Rechtsklick oder F: drei seltene Teile, eins davon nimmst du mit.',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
   pickNote:'Ein Teil nach Wahl, dazu Siegelmarken. Einmal je Durchgang.',empty:'Die Truhe ist leer. Big B hat den Deckel mitgenommen.',
   locked:'Zu. Erst Big B.'},
- backExit:'Hinterausgang · zurück auf die Burgstraße',
+ backExit:'Hinterausgang · zurück auf die Burgstraße',backExitLabel:'Hinterausgang',backExitNote:'In der Schatzkammer hinter Big Bs Thron. Rechtsklick oder F: zurück auf die Burgstraße.',
  feat:n=>'Erfolg: '+n,
  cleared:(t)=>'Schloss Big B abgeschlossen in '+t+'. Das Schloss war eine Garage. Die Garage bleibt.',
  repeatXp:'Heute schon besiegt: ein Drittel der Erfahrung.',

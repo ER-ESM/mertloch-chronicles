@@ -299,12 +299,17 @@ function formationSpot(g,c,e,role){
  *  8 s lang. Einmal je Kampf; ein Ausweichschritt oder das eigene Umfallen bricht ab, dann beginnt er von vorn. true = Takt versorgt. */
 function tickRevive(g,c,dt){
  if(!g.dead||!inDungeon(g)){c.channel=null;if(c.inCombat<=0)c.reviveUsed=false;return false;}
- const id=c.def.abilities.find(x=>COMPANION_ABILITIES[x]?.kind==='revive');if(!id||c.reviveUsed||g.companions.some(o=>o!==c&&o.channel&&alive(o)))return false;
- const a=COMPANION_ABILITIES[id],p=g.player;
- if(!c.channel){if(distance(c,p)>a.range){walkTo(g,c,p,R.catchUpSpeed,dt,a.range*.6);return true;}c.channel={id,start:g.time,until:g.time+a.cast,total:a.cast};g.toast(T.reviving(c.name));g.emit('companion',{type:'reviving',id:c.id});}
- face(c,p);c.castPose=.3;c.state='combat';c.inCombat=6;c.moving=false;
+ /* Dungeon-Fix 3 (Big-B-Abnahme #721: nach dem zweiten Tod half niemand mehr auf, auch nicht nach dem Sieg): Im Kampf einmal je Kampf,
+    nach dem Kampf (companions.js groupFightOn) ohne Begrenzung und schneller (afterCast), wie die Wiederbelebung nach dem Kampf in WoW.
+    Nach einem Wipe (die Gegner sind zurückgesetzt) nicht – dann wählt der Held den Kontrollpunkt. */
+ const id=c.def.abilities.find(x=>COMPANION_ABILITIES[x]?.kind==='revive'),after=!groupFightOn(g);if(!id||dungeonRun(g)?.ghost?.wiped){c.channel=null;return false;}
+ if(!after&&c.reviveUsed&&!c.channel||g.companions.some(o=>o!==c&&o.channel&&alive(o)))return false;
+ const a=COMPANION_ABILITIES[id],p=g.player,cast=after?a.afterCast??a.cast:a.cast;
+ if(c.channel&&after&&!c.channel.after&&c.channel.until-g.time>cast)c.channel=null;/* Kampf eben vorbei: kurz von vorn statt 8 s */
+ if(!c.channel){if(distance(c,p)>a.range){walkTo(g,c,p,R.catchUpSpeed,dt,a.range*.6);return true;}c.channel={id,start:g.time,until:g.time+cast,total:cast,after};statusNote(g,T.reviving(c.name));g.emit('companion',{type:'reviving',id:c.id});}
+ face(c,p);c.castPose=.3;c.state='combat';c.inCombat=after?0:6;c.moving=false;
  if(g.time<c.channel.until)return true;
- c.channel=null;c.reviveUsed=true;reviveHero(g,c,a.share);companionFx(g,c,'heal',p,{amount:Math.round(p.hp),direct:true,from:{x:c.x,y:c.y}});return true;
+ const done=c.channel;c.channel=null;if(!done.after)c.reviveUsed=true;reviveHero(g,c,done.after?a.afterShare??a.share:a.share,{after:done.after});companionFx(g,c,'heal',p,{amount:Math.round(p.hp),direct:true,from:{x:c.x,y:c.y}});return true;
 }
 function tickOne(g,c,dt){
  refreshStats(g,c);

@@ -73,7 +73,9 @@ export const COMPANION_ABILITIES=Object.freeze({
  sweep:     {name:'Rundumschlag',      kind:'cleave',   cooldown:7,   power:.8, radius:70, minTargets:2},
  // Dungeon Etappe 1 (E-71): Heil-Söldner helfen dem gefallenen Helden auf – einmal je Kampf, 8 s Wirkzeit, 35 % Leben wie das
  // Aufhelfen unter Mitspielern (E-44, reviveHere). Nur im Dungeon: nur dort läuft die Welt weiter, wenn der Held fällt.
- revive:    {name:'Aufhelfen',         kind:'revive',   cooldown:0,   cast:8,    share:.35, range:90}
+ // Dungeon-Fix 3 (Big-B-Abnahme #721: nach dem Sieg half niemand mehr auf): Nach dem Kampf hilft er ohne Begrenzung auf, wie die
+ // Wiederbelebung nach dem Kampf in WoW – afterCast s Wirkzeit, afterShare Leben.
+ revive:    {name:'Aufhelfen',         kind:'revive',   cooldown:0,   cast:8,    share:.35, range:90, afterCast:3, afterShare:.5}
 });
 
 /** Anheuerbare Söldner. `look` = Klassen-ID für die Heldengrafik (bis eigene Sprites kommen). */

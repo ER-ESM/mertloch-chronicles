@@ -75,3 +75,16 @@ body.boss-target #targetPanel{display:none!important}
 .touch-mode .bf-say q{font-size:11px}
 /* Erinnerungskarte tritt im Dungeon-Kampf und in der Boss-Arena zurück (kommt danach wieder); neue warten (memory-seen.js) */
 body:is(.dg-fight,.dg-arena) .memory-card{visibility:hidden!important}
+/* ---------- Dungeon-Fix 3 (Big-B-Abnahme #721) ---------- */
+/* Erfolg und Titel als kurze Einblendung oben mittig (milestone-ui.js feat): klein, einzeilig, Symbol davor – nicht nur als Chatzeile */
+.milestone.milestone-feat{top:64px;min-width:0;padding:8px 26px 10px}
+.milestone-feat .milestone-eyebrow{font-size:13px}
+.milestone-feat .milestone-title{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 0;font-size:30px;white-space:nowrap}
+.milestone-feat .milestone-feat-icon{flex:none;image-rendering:pixelated}
+.touch-mode .milestone.milestone-feat{top:calc(64px + var(--safe-top))}
+.touch-mode .milestone-feat .milestone-title{font-size:24px}
+/* Verfolgung nach Big B: Endtruhe und Hinterausgang als anklickbare Zeilen */
+.quest-panel .dg-track-end{cursor:pointer}
+.quest-panel .dg-track-end span:last-child{font:700 12px/1.1 var(--read);color:#f0d9b0}
+/* Todesbildschirm: nach dem Kampf ist „Hier aufstehen“ der gute Weg (grüner Rand statt Aufgabe) */
+.death-screen .ds-wake.ds-here{box-shadow:0 0 0 2px #6fbf4a inset}

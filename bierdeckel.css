@@ -611,6 +611,9 @@ body:not(.touch-mode) .attack-warning{top:172px;left:20px;transform:none;font-si
 /* E-72 R5 (klicks, Nebenbefund): unsichtbar = fängt nichts. In Ruhe geht ein Klick durch die Kopfleiste in die Welt; das Fenster öffnet
    sich nach kurzem Verweilen der Maus über ihr (chat-window.js HOVER_REVEAL_MS). */
 .chat-window:not(.active) .chat-tabs{pointer-events:none}
+/* Dungeon-Fix 3 (Big-B-Abnahme #721: „Ereignisse“ und „Beute“ ließen sich nicht anklicken, die Zeichenfläche lag darüber): die Reiter selbst
+   nehmen den Klick an (öffnen den Reiter, chat-window.js), die Leiste dazwischen bleibt durchlässig (E-72 R5) */
+.chat-window:not(.active) .chat-tabs [data-chat-tab]{pointer-events:auto}
 .chat-tabs nav{display:flex;gap:2px;flex:1;min-width:0;overflow:hidden}
 .chat-tabs button{position:relative;padding:2px 9px;border:1px solid transparent;border-radius:7px;background:none;color:var(--kraft);font:inherit;font-size:12px;cursor:pointer}
 .chat-tabs button[aria-selected=true]{color:var(--gold);border-color:var(--kraft-2);background:#1b2a23}

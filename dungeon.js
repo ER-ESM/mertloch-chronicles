@@ -5,11 +5,11 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_PACK_RULES,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS} from './content/index.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_PACK_RULES,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,DUNGEON_UI,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS,COMPANION_ABILITIES,DUNGEON_GHOST as GHOST} from './content/index.js';
 import {makeEnemy,walkClear as walkable,moveAlong,beginReturn} from './encounters.js';
 import {autoLootBag,addItem,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
-import {hitCompanion,clearThreat} from './companions.js';
+import {hitCompanion,clearThreat,groupFightOn} from './companions.js';
 import {emitCombatFx} from './combat-fx.js';
 import {TANK_SPECS} from './net-world.js';
 
@@ -332,13 +332,31 @@ export function trashFighting(g,run=dungeonRun(g)){if(!run)return false;const f=
 /** Tür zu: Trash im Kampf außerhalb der Arena lässt ab und geht zurück. → Anzahl */
 function sealArena(g,run){let n=0;for(const e of g.enemies){if(!isTrash(e)||!(e.hp>0)||!e.aggro||roomAt(run.def,e.x,e.y)?.id===run.arena)continue;clearThreat(e);beginReturn(g,e);n++;}return n;}
 /** Held gefallen (E-71): Geist statt Wipe. Die Bedrohung auf den Helden fällt weg, die Söldner halten die Gegner. */
-function enterGhost(g,run){run.ghost={at:g.time,wiped:false};for(const e of g.enemies)clearThreat(e,'player');g.target=null;g.moveTo=null;g.path=[];g.routeGoal=null;
- if(standing(g))g.toast?.(T.ghost);g.emit?.('dungeonGhost',{});}
-/** Alle liegen (E-71): Die Gegner setzen zurück, der Held steht erst auf, wenn er „Am Kontrollpunkt aufstehen" wählt. */
-function wipe(g,run){run.ghost.wiped=true;for(const e of g.enemies)if(e.hp>0&&(e.aggro||e.ai==='combat')){clearThreat(e);g.resetEnemy?.(e);}g.toast?.(T.wipeAll);g.emit?.('dungeonWipe',{});}
+function enterGhost(g,run){run.ghost={at:g.time,wiped:false,allDown:false,calm:null};for(const e of g.enemies)clearThreat(e,'player');g.target=null;g.moveTo=null;g.path=[];g.routeGoal=null;
+ /* Dungeon-Fix 3: nur im Chat – den Zustand zeigt der Todesbildschirm */if(standing(g))g.log?.(T.ghost);g.emit?.('dungeonGhost',{});}
+/** Alle liegen (E-71): Die Gegner setzen zurück, der Held steht erst auf, wenn er „Am Kontrollpunkt aufstehen" wählt.
+ *  Dungeon-Fix 3: Kämpfte beim letzten Umfallen niemand mehr (Boss schon gelegt), ist das kein Wipe – dann gilt das Aufstehen am Ort. */
+function wipe(g,run){run.ghost.allDown=true;let n=0;for(const e of g.enemies)if(e.hp>0&&(e.aggro||e.ai==='combat')){clearThreat(e);g.resetEnemy?.(e);n++;}if(!n)return;run.ghost.wiped=true;g.log?.(T.wipeAll);g.emit?.('dungeonWipe',{});}
+const hasRevive=c=>c.state!=='down'&&c.hp>0&&c.def?.abilities?.some(id=>COMPANION_ABILITIES[id]?.kind==='revive');
+/**
+ * Dungeon-Fix 3 (Big-B-Abnahme #721): Zustand des gefallenen Helden für Todesbildschirm und Aufstehen.
+ * fight = der Kampf der Gruppe läuft (companions.js groupFightOn) · wiped = alle lagen, die Gegner sind zurückgesetzt ·
+ * reviver = Söldner, der gerade aufhilft (Fortschritt fill) · healer = lebender Heil-Söldner, der nach dem Kampf aufhilft ·
+ * standIn = Sekunden, bis der Held ohne Heiler von selbst aufsteht (nach dem Kampf). → null außerhalb des Dungeons bzw. lebend.
+ */
+export function ghostState(g){const run=dungeonRun(g);if(!run||!g.dead)return null;const gh=run.ghost||{},fight=groupFightOn(g);
+ const c=(g.companions||[]).find(x=>x.channel&&x.state!=='down'&&x.hp>0),healer=(g.companions||[]).find(hasRevive)||null;
+ const wait=healer?GHOST.healerWait:GHOST.standUp,standIn=!fight&&!gh.wiped&&gh.calm!=null?Math.max(0,wait-(g.time-gh.calm)):null;
+ return {fight,wiped:!!gh.wiped,up:standing(g),reviver:c?{name:c.name,fill:Math.min(1,(g.time-c.channel.start)/c.channel.total)}:null,healer:healer?.name||null,standIn,standFill:standIn==null||healer?0:1-standIn/GHOST.standUp};}
+/** Nach dem Kampf: Heil-Söldner hilft auf (companions.js), ohne Heiler steht der Held nach GHOST.standUp s am Ort auf. */
+function ghostAfterFight(g,run){const gh=run.ghost;if(gh.wiped||groupFightOn(g)){gh.calm=null;return;}gh.calm??=g.time;
+ const wait=(g.companions||[]).some(hasRevive)?GHOST.healerWait:GHOST.standUp;if(g.time-gh.calm>=wait)standUpHere(g);}
+/** Aufstehen am Ort nach dem Kampf (Dungeon-Fix 3): Leben wie beim Aufhelfen unter Mitspielern (E-44), nichts setzt zurück. → true */
+export function standUpHere(g){const run=dungeonRun(g);if(!run||!g.dead||run.ghost?.wiped||groupFightOn(g))return false;
+ return reviveHero(g,null,BALANCE.party.reviveHp,{after:true});}
 export function tickDungeon(g,dt){
  const run=dungeonRun(g);if(!run)return;g.instance.time+=dt;const p=g.player,def=run.def;
- if(g.dead){if(!run.ghost)enterGhost(g,run);if(!run.ghost.wiped&&!standing(g))wipe(g,run);}else if(run.ghost)run.ghost=null;
+ if(g.dead){if(!run.ghost)enterGhost(g,run);if(standing(g))run.ghost.allDown=false;else if(!run.ghost.allDown)wipe(g,run);ghostAfterFight(g,run);}else if(run.ghost)run.ghost=null;
  const room=g.dead?null:roomAt(def,p.x,p.y);
  if(room&&room.id!==run.room){run.room=room.id;const first=!run.visited.has(room.id);run.visited.add(room.id);
   if(room.checkpoint)run.checkpoint={floor:room.floor,x:room.checkpoint.x,y:room.checkpoint.y,room:room.id};
@@ -371,12 +389,14 @@ export function dungeonRespawn(g){
 /** Name des Kontrollpunkts, an dem der Held aufsteht (Todesbildschirm, E-71). */
 const checkpointName=run=>run.def.rooms.find(r=>r.id===run.checkpoint.room)?.sign||run.def.rooms[0].sign;
 export const dungeonCheckpoint=g=>{const run=dungeonRun(g);return run?{name:checkpointName(run),...run.checkpoint}:null;};
-/** Ein Söldner hat den Helden aufgehoben (E-71, wie reviveHere aus E-44): 35 % Leben, kurzer Schutz, der Kampf läuft weiter. */
-export function reviveHero(g,from,share=BALANCE.party.reviveHp){
+/** Ein Söldner hat den Helden aufgehoben (E-71, wie reviveHere aus E-44): 35 % Leben, kurzer Schutz, der Kampf läuft weiter.
+ *  Dungeon-Fix 3: after = nach dem Kampf (Söldner oder von selbst ohne from) – nicht im Kampf. Die Zeile steht nur im Chat, nie mitten
+ *  im Bild (Abnahme #721: „Schorle-Susi hat dir aufgeholfen." stand groß über Big B). */
+export function reviveHero(g,from,share=BALANCE.party.reviveHp,{after=false}={}){
  if(!g.dead)return false;const p=g.player,run=dungeonRun(g);
- Object.assign(p,{hp:Math.max(1,Math.round(p.maxHp*share)),energy:Math.max(p.energy,30),hurt:0,invulnerable:3,vx:0,vy:0,moving:false,inCombat:7});
+ Object.assign(p,{hp:Math.max(1,Math.round(p.maxHp*share)),energy:Math.max(p.energy,30),hurt:0,invulnerable:3,vx:0,vy:0,moving:false,inCombat:after?0:7});
  g.dead=false;if(run)run.ghost=null;g.attackers?.clear();g.effect?.('heal',p.x,p.y,{life:1.5,max:1.5});
- g.toast?.(T.revived(from?.name||''));g.emit?.('revived',{from:from?.name||''});return true;
+ const line=from?T.revived(from.name||''):T.stoodUp;if(g.log)g.log(line);else g.toast?.(line);g.emit?.('revived',{from:from?.name||'',after});return true;
 }
 
 // ── Kampf: Boss-Phasen, Adds, neue Zaubermerkmale ─────────────────────────────────────────────────────────────
@@ -542,7 +562,7 @@ function reveal(g,e,k,quiet=false){
 }
 /** Zauberbeginn (aus dungeonCastSpot, Spieler- und Söldner-Zweig): Spruch, Bahnen mit Seite, Behauptung. Stellen ohne Lüge sofort. */
 function prepareCast(g,e,k){
- const run=dungeonRun(g);if(!run||k.prepared)return;k.prepared=true;k.startedAt=g.time;
+ const run=dungeonRun(g);if(!run||k.prepared)return;k.prepared=true;k.startedAt=g.time;k.title??=k.name;/* Dungeon-Fix 3: der echte Name für den Todesbildschirm – name wird zu Behauptung bzw. Nachsatz */
  if(k.say)g.bark?.(e,k.say,'boss');
  if(k.circles)k.ground=false;/* die Stellen zeichnet dungeon-bigb-art.js; der Einzelkreis des Renderers bleibt aus */
  if(k.line){k.lanes=laneRects(run,e,k);const flip=!!k.lie?.mirror&&g.random()<.5,n=k.lanes.length,m=i=>flip?n-1-i:i;k.flip=flip;k.claimLane=m(k.line.claim??0);k.truthLanes=(k.line.truth||[]).map(m);
@@ -557,9 +577,9 @@ function prepareCast(g,e,k){
 function resolveBigBCast(g,e,c,victim){
  const run=dungeonRun(g),p=g.player,alive=o=>o.state!=='down'&&o.hp>0;if(!run)return false;
  if(c.tankDebuff){
-  const u=victim==='player'?p:victim;if(!u||u===p&&g.dead)return true;const d=c.tankDebuff,parried=u===p?p.parry>0:u.guard>0;
+  const u=victim==='player'?p:victim;if(!u||u===p&&g.dead)return true;const d=c.tankDebuff,parried=u===p?p.parry>0:u.guard>0,dodged=u===p&&!parried&&p.invulnerable>0/* Dungeon-Fix 3: Ausweichen (Leer) ist die Antwort ohne Schild – der Ring geht daneben, kein Zertifikat */;
   strike(g,e,c,u);
-  if(parried){u.cert=null;g.float?.(u.x,u.y-58,d.name.toUpperCase()+' ×0','#f2da92');}
+  if(dodged){}else if(parried){u.cert=null;g.float?.(u.x,u.y-58,d.name.toUpperCase()+' ×0','#f2da92');}
   else{const cur=u.cert?.until>g.time?u.cert.stacks:0;u.cert={id:d.id,name:d.name,stacks:Math.min(d.stack,cur+1),taken:d.taken,until:g.time+d.duration};g.float?.(u.x,u.y-58,d.name.toUpperCase()+' ×'+u.cert.stacks,'#e8c46a');}
   return true;
  }
@@ -607,9 +627,9 @@ function tickHazards(g,run,dt){
  /* Etappe 4 Teil A: nasser Boden bremst (slow), gilt jeden Takt */for(const u of [g.player,...(g.companions||[])])if(u)u.slowed=0;
  if(!run.hazards?.length)return;run.hazards=run.hazards.filter(h=>h.until>g.time&&h.boss?.hp>0&&h.boss.aggro);
  for(const h of run.hazards)if(h.slow)for(const u of [g.player,...(g.companions||[])])if(u&&inHazard(h,u))u.slowed=Math.max(u.slowed||0,h.slow);
- for(const h of run.hazards){h.tick-=dt;if(h.tick>0)continue;h.tick=1;const inside=u=>inHazard(h,u),c={pct:h.pct,damage:0};
+ for(const h of run.hazards){h.tick-=dt;if(h.tick>0)continue;h.tick=1;const inside=u=>inHazard(h,u),c={pct:h.pct,damage:0};h.boss.lastCast={name:h.name||(h.rect?DUNGEON_UI.traits.wet.name:DUNGEON_UI.traits.persist.name)};/* Dungeon-Fix 3: Todesschlag benannt */
   if(!g.dead&&inside(g.player))strike(g,h.boss,c,g.player);
-  for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,h.boss,c,o);}
+  for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,h.boss,c,o);h.boss.lastCast=null;}
 }
 /** Geständnis (Plan 7.6): ab confess.at (mit allen Beweisen evidence.all.confessAt) lügt er nicht mehr; eine laufende Lüge kippt sofort. */
 function confessCheck(g,run,e,def){
@@ -637,12 +657,39 @@ function tickBossMechanics(g,run,dt){
  }
  tickHazards(g,run,dt);
 }
+/**
+ * Dungeon-Fix 3 (Big-B-Abnahme #721: die Warnleiste lag unten auf dem Arenaboden und verdeckte die Bahnen): alle gerade gezeichneten
+ * Warnflächen in Weltkoordinaten – Bahnen (Behauptung gestrichelt, danach die echten), Bodenstellen und -kreise, Kegel, Sammel- und
+ * Verteilkreise, liegende Trümmer und nasse Streifen. Die Warnleiste (boss-alerts.js) wählt damit einen Platz ohne Überlapp; danger
+ * = trifft wirklich (die Behauptung und ungestempelte Stellen nicht). → [{kind, box:{x,y,w,h}, danger, contains(u)}]
+ */
+export function activeWarnAreas(g){const out=[];const run=dungeonRun(g);if(!run)return out;
+ const rect=(r,kind,danger=true)=>out.push({kind,danger,box:{x:r.x,y:r.y,w:r.w,h:r.h},contains:u=>inLane(r,u,0)});
+ const oval=(x,y,rx,ry,kind,danger=true)=>out.push({kind,danger,box:{x:x-rx,y:y-ry,w:rx*2,h:ry*2},contains:u=>Math.hypot((u.x-x)/rx,(u.y-y)/ry)<1});
+ for(const e of g.enemies){if(!(e.hp>0))continue;for(const k of [e.cast,e.sideCast]){if(!k)continue;const told=k.told!==false;
+  if(k.lanes){if(k.lie&&k.lanes[k.claimLane])rect(k.lanes[k.claimLane],'claim',false);if(told)for(const i of k.truthLanes||[])if(k.lanes[i])rect(k.lanes[i],'lane');}
+  if(k.spots)for(const sp of k.spots)if(!told||!sp.decoy)oval(sp.x,sp.y,k.radius,k.radius*.75,'spot',told);
+  if(k.ground&&k.radius&&!k.circles&&Number.isFinite(k.x))oval(k.x,k.y,k.radius,k.radius*.75,'ground');
+  if(k.cone){const R=k.cone.range,half=k.cone.angle*Math.PI/360,a0=k.angle??0,xs=[e.x],ys=[e.y];for(let i=0;i<=8;i++){const a=a0-half+i/8*2*half;xs.push(e.x+Math.cos(a)*R);ys.push(e.y+Math.sin(a)*R);}
+   const x=Math.min(...xs),y=Math.min(...ys);out.push({kind:'cone',danger:true,box:{x,y,w:Math.max(...xs)-x,h:Math.max(...ys)-y},contains:u=>inCone(e,k,u,g)});}
+  const m=(k.stack||k.spread)&&(unitOf(g,k.victim)||(k.victim==null?g.player:null));if(m){const r=(k.stack||k.spread).radius;oval(m.x,m.y,r,r,k.stack?'stack':'spread');}}}
+ for(const h of run.hazards||[])if(h.rect)rect(h.rect,'stripe');else oval(h.x,h.y,h.radius,h.radius,'debris');
+ return out;}
+/** Dungeon-Fix 3: Steht die Endtruhe? (appear = erst nach dem Tod ihres Bosses, dann mitten im Thronsaal) */
+export function chestShown(run){const c=run?.def.chest;return !!c&&(!c.appear||run.killed.has(c.boss));}
+/** Dungeon-Fix 3 (Big-B-Abnahme #721: Rechtsklick auf Truhe und Ausgang tat nichts, beides war nicht zu finden): Endtruhe, Hinterausgang
+ *  bzw. sein Schild unter dem Zeiger p (Weltpunkt). → {kind:'chest'|'exit', point, near, ready} oder null. Klickflächen wie die Zeichnung. */
+export function endPropAt(g,p){const run=dungeonRun(g);if(!run||!p)return null;const def=run.def,f=floorAt(def,g.player.x,g.player.y);
+ const c=def.chest;if(c&&c.floor===f&&chestShown(run)){const pt=toWorld(def,f,c.x,c.y);if(Math.abs(p.x-pt.x)<=18&&p.y>=pt.y-34&&p.y<=pt.y+10)return {kind:'chest',point:pt,near:dist(g.player,pt)<=c.range*U,ready:run.killed.has(c.boss)&&!run.chest};}
+ const b=def.backExit;if(b&&b.floor===f&&(!c||run.killed.has(c.boss))){const pt=toWorld(def,f,b.x,b.y),near=dist(g.player,pt)<=b.range*U+8,hit=q=>Math.abs(p.x-q.x)<=16&&p.y>=q.y-46&&p.y<=q.y+8;
+  if(hit(pt))return {kind:'exit',point:pt,near,ready:true};if(b.sign){const s=toWorld(def,f,b.sign.x,b.sign.y);if(Math.abs(p.x-s.x)<=16&&p.y>=s.y-26&&p.y<=s.y+6)return {kind:'exit',point:pt,near,ready:true};}}
+ return null;}
 /** Endtruhe (Etappe 3, Plan 11 / Analyse Verbesserung 7): nach Big B einmal je Durchgang eine Wahl aus drei seltenen Teilen plus
- *  Siegelmarken. Liegt als Beute-Moment mit Wahl (choice) in der Schatzkammer; nichts wird ungefragt angelegt. → Beutel oder null. */
+ *  Siegelmarken. Liegt als Beute-Moment mit Wahl (choice) im Thronsaal (Dungeon-Fix 3); nichts wird ungefragt angelegt. → Beutel oder null. */
 export function openDungeonChest(g){
  const run=dungeonRun(g),c=run?.def.chest;if(!c)return null;
  if(!run.killed.has(c.boss)){g.toast?.(T.chest.locked);return null;}
- if(run.chest){g.toast?.(T.chest.empty);return null;}
+ if(run.chest){const left=g.rpg.loot.find(b=>b.source?.kind==='chest'&&String(b.id).startsWith('chest-'));if(left)return left;/* Dungeon-Fix 3: noch nicht gewählt – derselbe Beutel */g.toast?.(T.chest.empty);return null;}
  const R=REWARDS.chest,level=Math.max(1,Math.min(g.player.level+1,(DUNGEON_BOSSES[c.boss]?.level||10)+1)),rnd=()=>g.lootRandom?g.lootRandom():g.random(),specs=['tresen','bass','pfand'],slots=[...R.slots],items=[];
  for(let i=0;i<R.choices&&slots.length;i++){const slot=slots.splice(Math.floor(rnd()*slots.length),1)[0];items.push({id:registerRoll(g.rpg,ITEMS,{slot,spec:specs[i%specs.length],level,quality:R.quality,family:DUNGEON_BOSSES[c.boss]?.family||'bigb',roll:Math.floor(rnd()*1000)}),count:1});}
  run.chest=true;const rec=record(g,run.id);rec.marks+=R.marks;const pt=toWorld(run.def,c.floor,c.x,c.y);
@@ -653,7 +700,7 @@ export function openDungeonChest(g){
 function grantFeats(g,run,e,bossId){
  const rec=record(g,run.id),out=[];rec.feats||=[];
  for(const [id,f] of Object.entries(FEATS)){if(f.boss!==bossId||rec.feats.includes(id))continue;if(f.check==='noLieHits'&&(e.lieHits||0)>0)continue;if(!featOk(g,run,e,f))continue;/* Etappe 4 Teil B: Beweise, Zeit, ohne Tod */
-  rec.feats.push(id);out.push(id);g.toast?.(T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name});titleFor(g,id);}
+  rec.feats.push(id);out.push(id);featNote(g,T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name,icon:f.icon});titleFor(g,id);}
  return out;
 }
 /** Schadensfaktor gegen Dungeon-Gegner (Schildwall: Treffer von vorn gedämpft). */
@@ -981,8 +1028,10 @@ function featOk(g,run,e,f){
  return true;
 }
 /** Erfolg ohne Bosssieg vergeben (alle Siegel an einem Tag, das halbe Pferd gesehen). */
-export function awardFeat(g,id,runId='schloss-bigb'){const f=FEATS[id],rec=record(g,runId);rec.feats||=[];if(!f||rec.feats.includes(id))return false;rec.feats.push(id);g.toast?.(T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name});titleFor(g,id);g.emit?.('save');return true;}
-function titleFor(g,featId){for(const [id,t] of Object.entries(DUNGEON_TITLES))if(t.feat===featId){g.toast?.(E4B.feats.titleGot(t.name));g.emit?.('dungeonTitle',{id,name:t.name});}}
+export function awardFeat(g,id,runId='schloss-bigb'){const f=FEATS[id],rec=record(g,runId);rec.feats||=[];if(!f||rec.feats.includes(id))return false;rec.feats.push(id);featNote(g,T.feat(f.name));g.emit?.('dungeonFeat',{id,name:f.name,icon:f.icon});titleFor(g,id);g.emit?.('save');return true;}
+/** Dungeon-Fix 3: Erfolg und Titel stehen im Chat; die kurze Einblendung oben kommt aus dem Ereignis (milestone-ui.js feat), nicht als Kurzmeldung. */
+const featNote=(g,text)=>{if(g.log)g.log(text);else g.toast?.(text);};
+function titleFor(g,featId){for(const [id,t] of Object.entries(DUNGEON_TITLES))if(t.feat===featId){featNote(g,E4B.feats.titleGot(t.name));g.emit?.('dungeonTitle',{id,name:t.name});}}
 /** Titel des Helden aus seinen Erfolgen (alle Dungeons). */
 export function dungeonTitles(g){const out=[];for(const [id,t] of Object.entries(DUNGEON_TITLES))if(Object.values(g.dungeons||{}).some(r=>r.feats?.includes(t.feat)))out.push({id,...t});return out;}
 /** Alle Siegel an einem Tag (nur gebaute Siegelträger zählen). */

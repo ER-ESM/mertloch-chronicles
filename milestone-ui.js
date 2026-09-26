@@ -50,6 +50,9 @@ export function mountMilestones(shell,{sound,blocked,hurry,paint,translate=t=>t,
   /** Runde 5a (Kenner-Befund 9, WoW): „Auftrag abgeschlossen“ groß mittig wie der Aufstieg, darunter die Belohnung als Kacheln. */
   quest({title,xp=0,coins=0,item=null}={}){const tiles=rewardTiles({xp,coins,items:item?[item]:[]},[xp?Q.xp(xp):'',coins?Q.coins(coins):''].filter(Boolean).join(' · '));
    queue.push({kind:'quest',ms:3400,html:`<span class="milestone-eyebrow">${esc(Q.eyebrow)}</span><strong class="milestone-title">${esc(title||'')}</strong>${tiles}`});next();},
+  /** Dungeon-Fix 3 (Big-B-Abnahme #721): Erfolg bzw. Titel als kurze Einblendung oben mittig (klein, einzeilig, Symbol davor), nicht nur
+   *  als Chatzeile. icon = Kartensymbol (map-symbols.js), gemalt über paint. Wartet wie jede Einblendung (Tod, Kampf, Fenster). */
+  feat({name,icon='medal',note='',title=false}={}){queue.push({kind:'feat',ms:3200,html:`<span class="milestone-eyebrow">${esc(title?T.titleEyebrow:T.featEyebrow)}</span><strong class="milestone-title" data-tooltip-label="${esc(name)}" data-tooltip-note="${esc(note)}"><canvas class="dicon milestone-feat-icon" width="56" height="56" style="width:28px;height:28px" data-dicon="${esc(icon)}" aria-hidden="true"></canvas>${esc(name)}</strong>`});next();},
   get busy(){return busy;},
   /** E-72 Runde 4 (Kenner-Befund 3): Läuft eine Einblendung oder ist eine fällig (auch während der Bündelzeit einer Freischaltung)?
    *  Die Erinnerungskarte wartet dann bzw. tritt zurück. Eine Freischaltung, die noch den Abstand UNLOCK_GAP abwartet, zählt nicht. */

@@ -2,7 +2,8 @@
 // app.js ruft nur mountDungeonUI() und an drei Stellen openEntry/leave/openJournal – alles andere bleibt hier.
 // Fenster im Einzelfenster-System (E-67): „dungeonEntry“ und „journal“ stehen mittig (popup-windows.js GRID_OVERLAY),
 // das Journal darf neben offenen Fenstern (Karte) stehen. Am Handy zeigt Tippen auf ein Symbol seinen Tooltip als Detail.
-import {requiredSeals,dungeonAct,e4bState,dungeonToday} from './dungeon.js';
+import {requiredSeals,dungeonAct,e4bState,dungeonToday,toWorld,setDungeonWaypoint} from './dungeon.js';
+import {endMarks} from './dungeon-map-art.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_UI as U,DUNGEON_E4B as U4} from './content/index.js';
 import {mountVendor} from './dungeon-vendor-ui.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -62,9 +63,13 @@ export function mountDungeonUI(api){
   const html=`<div class="qt-quest is-focus dg-track"><b id="questTitle" class="qt-title">${esc(def.name)}</b><div id="questTasks">`
    +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(W.wings)}" data-tooltip-note="${esc(W.wingsNote)}"><span class="dg-track-icons">${wings.map(x=>span(x.done?'seal':x.missing?'seal-empty:dim':'seal-empty',W.wingTip(x.w.name,x.name),x.missing?W.wingMissing:x.done?W.wingDone:W.wingOpen)).join('')}</span><span class="dg-track-word">${esc(U.tracker.seals)}</span><b class="qt-count">${done}/${built.length}</b></div>`
    +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(W.proofs)}" data-tooltip-note="${esc(W.proofsNote)}"><span class="dg-track-icons">${ev.map(x=>span(x.state==='shown'?'lens':x.state==='found'?'lens-found':'lens-empty',names[x.id]?.name||x.id,x.state==='shown'?W.proofShown+' · '+(def.evidence.effects[x.id]?.note||''):x.state==='found'?W.proofFound:W.proofMissing+' · '+(names[x.id]?.hint||''))).join('')}</span><span class="dg-track-word">${esc(U.tracker.proofs)}</span><b class="qt-count">${got}/${ev.length}</b></div>`
-   +(boss?`<div class="quest-task dg-track-row dg-track-boss" role="button" tabindex="0" data-dg-track-boss="${esc(boss.id)}" data-tooltip-label="${esc(DUNGEON_BOSSES[boss.id].name)}" data-tooltip-note="${esc(U.map.bossNote)}"><span class="dg-track-icons">${dicon('skull',18)}</span><span>${esc(DUNGEON_BOSSES[boss.id].name)}</span></div>`:'')
+   +endRows(run)+(boss?`<div class="quest-task dg-track-row dg-track-boss" role="button" tabindex="0" data-dg-track-boss="${esc(boss.id)}" data-tooltip-label="${esc(DUNGEON_BOSSES[boss.id].name)}" data-tooltip-note="${esc(U.map.bossNote)}"><span class="dg-track-icons">${dicon('skull',18)}</span><span>${esc(DUNGEON_BOSSES[boss.id].name)}</span></div>`:'')
    +`</div></div><div id="questOthers" class="quest-others"></div>`;
   if(body.dataset.sig===html)return;body.dataset.sig=html;body.innerHTML=html;paintDungeonIcons(body);
-  if(!body.dataset.dgBound){body.dataset.dgBound='1';body.addEventListener('click',e=>{const b=e.target.closest('[data-dg-track-boss]');if(b){e.stopPropagation();openJournal(b.dataset.dgTrackBoss);return;}if(touchTip(e))e.stopPropagation();});}}
+  if(!body.dataset.dgBound){body.dataset.dgBound='1';body.addEventListener('click',e=>{const b=e.target.closest('[data-dg-track-boss]');if(b){e.stopPropagation();openJournal(b.dataset.dgTrackBoss);return;}
+   /* Dungeon-Fix 3: Klick auf Endtruhe bzw. Hinterausgang setzt die Wegmarke und läuft hin */const end=e.target.closest('[data-dg-track-end]');if(end){e.stopPropagation();const g=api.game(),r=g?.instance?.run,m=r&&endAll(r).find(x=>x.kind===end.dataset.dgTrackEnd);if(m){const pt={floor:m.floor,...toWorld(r.def,m.floor,m.x,m.y)};setDungeonWaypoint(g,pt);g.navigate(pt);api.events?.();}return;}if(touchTip(e))e.stopPropagation();});}}
+ /** Dungeon-Fix 3 (Big-B-Abnahme #721: keine Truhe, kein Ausgang gefunden): nach Big B Endtruhe und Hinterausgang als Zeilen der Verfolgung. */
+ function endAll(run){const d=run.def,seen=new Set(),out=[];for(const f of [d.chest?.floor,d.backExit?.floor].filter(Boolean))for(const m of endMarks(run,f))if(!seen.has(m.kind)){seen.add(m.kind);out.push({...m,floor:f});}return out;}
+ function endRows(run){return endAll(run).map(m=>`<div class="quest-task dg-track-row dg-track-end" role="button" tabindex="0" data-dg-track-end="${esc(m.kind)}" data-tooltip-label="${esc(m.label)}" data-tooltip-note="${esc(m.note)}"><span class="dg-track-icons">${dicon(m.icon,18)}</span><span>${esc(m.label)}</span></div>`).join('');}
  return {openEntry,enter,leave,openJournal,refresh,tracker,act,openVendor:()=>vendor.open(),busy:()=>busy,journalOpen:()=>api.popups.isOpen('journal')?journalBoss:null};
 }
