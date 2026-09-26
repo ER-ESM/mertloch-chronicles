@@ -77,3 +77,41 @@ PUPPE_LEINWAND=440,460,340 node tools/paperdoll/puppe.mjs --runtime <ordner>   #
 - **Neuer NPC:** Einen Eintrag in `content/figuren.js` anlegen: Archetyp, Aussehen und Kleidungsliste.
 - **Neues Reittier:** Es kommt in `MOUNTS` (Reiten-Abschnitt), mit Sitzform und Ankern je Bild. Dazu ein Inhaltseintrag in `content/mounts.js` (mit `kind` und `sound`). Danach `--reiten` und `pwa-cache` ausführen; `tests/paperdoll-mount.test.mjs` prüft, dass Inhalt und Reit-Katalog übereinstimmen.
 - **Neue Quelle und Reiten:** Nach neuen Gegenständen oder Aussehen-Ebenen auch `--reiten` ausführen. Sonst fehlt die Quelle nur auf dem Reittier; der Reiter wird dann ohne sie gezeichnet.
+
+## Sonderbögen und Motive (Dungeon-Figuren, live seit 2026-09-26)
+
+Bosse und Gegner in „Schloss Big B“ sind Menschen aus der Puppe (Archetyp + Aussehen + Kleidung, `content/dungeon-figuren.js`) oder Motive
+(Pappaufsteller, Pfandratte, Beamer-Gespenst). Sie sind standardmäßig an; der Notschalter `?dungeon-figuren=0` bzw.
+`localStorage['mertloch-dungeon-figuren']='0'` schaltet zurück auf die Platzhalter (`dungeon-figuren-art.js`, Andockpunkt
+`clan-art.js drawClanEnemy` und `dungeon-e4b-art.js` für Volker). Berichte: `docs/DUNGEON-FIGUREN-ENTWURF-2026-09-26.md` (Entwurf,
+Runden 1–4) und `docs/DUNGEON-FIGUREN-2026-09-26.md` (Freigabe, Runde 5, live).
+
+- **Boss-Versionen:** Wo ein Boss ein Heldenteil anders braucht, bekommt er eine eigene Quelle mit Endung `-boss`
+  (`pelzmantel-baron-boss`, `korkenzieher-boss`); die Heldenversion bleibt byte-gleich.
+- **Sonderposen** (`SONDER` in `puppe.mjs`, Rezepte in `ACTS`): ausholen, schubsen, zeigen, zeigenN (Nebenhand), jubeln, vorhalten,
+  zusammensinken, buecken, tritt, selfie, telefon, achselzucken, schopf. Sie stehen **nicht** in `FRAMES`: Grund- und Aktionsbögen bleiben
+  byte-gleich. Je Quelle × Archetyp × Richtung ein eigener Bogen `<quelle>-<arch><dir>-sonder.png` mit eigener Zelle
+  (`cat.sources[id].sonder={cell,archs}`), sw/ne immer eigen. Katalog `cat.sonder={start,frames:[{anim,i,fb}]}`: Laufzeit-Bildnummer
+  `start+k`, `fb` = Rückfallbild, solange der Sonderbogen fehlt oder eine Ebene keinen hat. Sonderbögen entstehen nur für die Archetypen,
+  die die Quelle in einer Dungeon-Figur tragen (`archs`).
+- **Laufzeit** (`paperdoll-art.js`): Teil 2 = Sonderbogen (`-sonder`), `p.artFrame` legt die Bildnummer fest (die Dungeon-Figuren wählen ihr
+  Bild selbst), `loadPaperdollSheet(key)` holt Motivbögen über denselben Ladeweg.
+- **Motive** (`tools/paperdoll/motive.mjs`): gleicher Pixelstil und Bildmaßstab, ein Bogen je gezeichneter Richtung (`motiv-<id>.png`,
+  `motiv-<id>-nw.png`; sw/ne spiegelt die Laufzeit), eine Zeile, Bilder stehen/laufen/angriff/getroffen. Katalog `cat.motive[id]={cell,frames,
+  projektion,scale}`. Der Tod ist das Umkippen aus `renderer.js drawCorpse`. Das Gespenst zeichnet die Laufzeit halbdurchsichtig mit
+  flackernder Deckkraft und springenden Zeilen (nur `globalAlpha`, keine Mischmodi).
+
+```
+node tools/paperdoll/puppe.mjs --runtime --nur <neue,geänderte Kleidung> --sonder dungeon   # Teilneubau + Sonderbögen aller Dungeon-Figuren
+node tools/paperdoll/motive.mjs --runtime                     # Motivbögen + cat.motive
+node scripts/pwa-cache.mjs
+node tools/paperdoll/dungeon-vorschau.mjs [id,id|alle]        # Vorschau aus dem Werkzeug: <id>-nah.png, <id>-welt.png (visual-review/dungeon-figuren)
+node tools/paperdoll/dungeon-vorschau.mjs --uebersicht        # alle Menschen nebeneinander
+node tools/paperdoll/posen-bogen.mjs gerd,rita                # alle Sonderposen in vier Richtungen
+node tools/paperdoll/motive.mjs --vorschau && node tools/paperdoll/motive-welt.mjs
+node tools/paperdoll/galerie/bauen.mjs [ziel]                 # Galerie (Atlanten + HTML) nach D:/Dev/_prototypen/dungeon-figuren-2026-09-26
+CDP_PORT=9730 SERVER_PORT=4530 node scripts/dungeon-figuren-check.mjs   # Standard an, Notschalter aus, Bosse mit Ansagen, Vergleich vorher ↔ jetzt, Leistung
+```
+
+Ein voller Neubau (`--runtime` ohne `--nur`) baut danach die Sonderbögen der Dungeon-Figuren und die Motive mit (er räumt vorher alle Bögen weg).
+Ein späteres `--nur` einer Quelle verwirft ihren Sonderbogen: danach `--sonder dungeon` erneut.

@@ -111,7 +111,9 @@ export const DIALOG_UI={accept:'Annehmen',later:'Später',more:'Mehr',less:'Weni
 export const HELP_GRID={
  /** Runde 3b (Zielbild 3): Tastenbelegungsliste wie im Vorbild – je Zeile Kappe + ein Wort (label), Tooltip (note) nur bei Mehrwert.
   *  columns: welche Themen in welcher Spalte stehen (Desktop drei, Handy zwei). */
- columns:{desktop:[[0,1],[2],[3,4]],touch:[[0,1],[2]]},
+ /* Heiler-WoW (2026-09-26): Spalten ausgeglichen (9 · 9 · 7 Zeilen statt 10 · 7 · 8) – bei 1280 × 720 scrollte die Hilfe (Inhalt 314 px, Fenster 303 px).
+    Bewegen + Dorf (in der Welt), Kampf + Beute & Leiste (Tasten 1–0 und Belegen), Fenster allein. */
+ columns:{desktop:[[0,4],[1,3],[2]],touch:[[0,1],[2]]},
  tabs:[['keys','Tasten','keyboard','Alle Tasten auf einen Blick'],['kniffe','Kniffe','spark','Kniffe, Talente, Eigenarten und Stärkungen nachschlagen']],film:'Einführungsfilm ansehen',filmNote:'Der Film vom Anfang, noch einmal von vorn.',
  desktop:[
   ['Bewegen','run',[
@@ -163,3 +165,20 @@ export const HELP_GRID={
 };
 /** Talente kompakt (Runde 2): Symbole statt Beschriftung, Details im Tooltip. */
 export const TALENT_COMPACT={locked:n=>'Ab Stufe '+n,lockedNote:'Dann wählst du deinen Hauptbaum. Punkte darfst du in alle drei Bäume setzen.',free:'Freie Talentpunkte',freeNote:'Klick auf ein Talent lernt es, Rechtsklick nimmt einen Punkt zurück.',main:'Hauptbaum wählen',mainActive:'Hauptbaum',mainNote:'Der Hauptbaum bestimmt deine Kernmechanik und die Namen deiner Kniffe.',reset:'Alle Talentpunkte zurücksetzen'};
+
+/** Heiler-WoW Teil 3 (2026-09-26): Kniff-Tooltip nach WoW-Muster – Name, eine Kopfzeile (Kosten · Zauberzeit · Abklingzeit · Reichweite),
+ *  1–3 Zeilen Wirkung mit Zahlen, höchstens eine Zeile Wechselwirkung; alles Weitere nur mit gedrückter Umschalttaste. */
+// Dungeon-Fix 7 (Prüferin #770: Tooltip der Notfallbrezel ein langer Block mit leeren Werten): Verbrauchsgüter nach dem WoW-Muster der Kniff-Tooltips –
+// Name und Stapel · eine Kopfzeile · ein Satz Wirkung · eine Zahlenzeile · ⇧ Details (alle Zahlen, Warum, Begriffe).
+export const ITEM_TIP={kind:'Verpflegung',cd:s=>s+' s Abklingzeit, geteilt',ready:s=>'bereit in '+s+' s',heal:n=>'Heilt '+n,grant:t=>'+'+t,count:n=>'Stapel '+n};
+export const SKILL_TIP={
+ free:'kostenlos',cost:(n,unit)=>n+' '+unit,cast:s=>s+' s Zauberzeit',instant:'sofort',mobile:'im Laufen',cd:s=>s+' s Abklingzeit',noCd:'keine Abklingzeit',gcdOnly:'nur globale Abklingzeit',offGcd:'ohne globale Abklingzeit',range:m=>m+' m',
+ damage:r=>'Schaden '+r,heal:n=>'Heilt '+n,healHot:(n,hot,s)=>'Heilt '+n+', danach '+hot+' je s für '+s+' s',hot:(n,s)=>'Heilt '+n+' je s für '+s+' s',shield:n=>'Schild '+n,
+ reduction:(p,s)=>p+' % weniger Schaden für '+s+' s',save:(n,p,s)=>'Heilt '+n+' · '+p+' % weniger Schaden für '+s+' s',
+ serve:(w,hot,bread)=>'Wurst heilt '+w+' + '+hot+' je s · Brötchen '+bread,plate:(n,per)=>'Heilt '+n+' + '+per+' je gares Stück',bilanz:(per,now)=>'Heilt '+per+' je Auge'+(now?' · jetzt '+now:''),
+ group:(n,s)=>'Heilt alle im Kreis: '+n+' je s für '+s+' s',
+ key:k=>'Taste '+k,learn:l=>'Ab Stufe '+l,talent:'Talent im eigenen Baum lernen',unbound:'Gelernt, noch nicht auf der Leiste',ideal:'Ideales Zeitfenster!',requires:n=>'Benötigt: '+n,
+ details:'⇧ Details',detailsTouch:'Details',use:'Einsatz:',origin:l=>'Erlernt auf Stufe '+l,originTalent:s=>'Talent: '+s,formula:'Grundwerte',
+ support:{kreuz:'heilt dein Ziel 6 s lang nach',karo:'heilt alle um dein Ziel',herz:'heilt dein Ziel',pik:'schützt dein Ziel'},
+ repeat:'Gerade eben gedrückt – noch einmal senkt den Trend.'
+};

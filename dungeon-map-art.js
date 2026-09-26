@@ -5,8 +5,8 @@
 // Treppe/Leiter/Aufzug mit goldenem Pfeil, Rolltor, Tresortür mit drei Siegelfeldern. Held als Pfeil mit Blickrichtung,
 // Söldner als Punkte, Wegmarke als Nadel mit Route. Treffer (für Tooltip und Klick) liegen danach in canvas.dungeonHits (CSS-Pixel).
 // Dazu die Minikarte im Dungeon: Ausschnitt um den Helden, Gegner als rote Punkte (drawDungeonMini).
-import {DUNGEON_BOSSES,DUNGEON_SCALE as U,DUNGEON_UI as DU} from './content/index.js';
-import {dungeonRun,floorAt,doorOpen,toWorld,concealed,requiredSeals} from './dungeon.js';
+import {DUNGEON_BOSSES,DUNGEON_SCALE as U,DUNGEON_UI as DU,DUNGEON_TEXT as DT} from './content/index.js';
+import {dungeonRun,floorAt,doorOpen,toWorld,concealed,requiredSeals,chestShown} from './dungeon.js';
 import {mapIcon} from './map-symbols.js';
 
 const TAU=Math.PI*2,FLOORS=['e0','k1','k2'];
@@ -84,6 +84,8 @@ export function drawDungeonMapFull(canvas,g,opts={}){
   hits.push({kind:'step',id:t.id,x:css(p.x),y:css(p.y),r:css(sym*.6),label:stepName(t,side),note:DU.steps[up?'up':'down']+(to.floor!==f?' · '+def.floors[to.floor].name:''),floor:to.floor!==f?to.floor:null});}
  for(const room of rooms.filter(r=>r.checkpoint&&seen(r))){const p=P(room.checkpoint.x,room.checkpoint.y),active=run.checkpoint.room===room.id;icon(c,'flag',p.x,p.y-4*k,Math.round((active?20:16)*k));hits.push({kind:'checkpoint',x:css(p.x),y:css(p.y-4*k),r:css(10*k),label:DU.map.checkpoint,note:room.sign});}
  if(def.exit.floor===f){const p=P(def.exit.x,def.exit.y);icon(c,'exit',p.x,p.y+6*k,sym);hits.push({kind:'exit',x:css(p.x),y:css(p.y+6*k),r:css(sym*.6),label:DU.map.exit,note:''});}
+ /* Dungeon-Fix 3 (Big-B-Abnahme #721: Truhe und Hinterausgang nicht gefunden): nach Big B stehen beide auf der Karte */
+ for(const m of endMarks(run,f)){const p=P(m.x,m.y);icon(c,m.icon,p.x,p.y,sym);hits.push({kind:m.kind,x:css(p.x),y:css(p.y),r:css(sym*.6),label:m.label,note:m.note});}
  // 4) Bosse: Schädel (Krone für Big B, Stern für selten), besiegt grau mit Haken; unerkundet blass. Klick öffnet das Journal.
  for(const b of def.bosses){const room=def.rooms.find(r=>r.id===b.room);if(room.floor!==f||!DUNGEON_BOSSES[b.id])continue;const p=P(...b.at),dead=run.killed.has(b.id),known=seen(room),hov=opts.hover==='boss:'+b.id,px=Math.round((hov?28:24)*k);
   if(hov){c.save();c.fillStyle='#f3cf7a55';c.beginPath();c.arc(p.x,p.y,px*.7,0,TAU);c.fill();c.restore();}
@@ -101,6 +103,10 @@ export function drawDungeonMapFull(canvas,g,opts={}){
 }
 function stepName(t,side){return ({stairs:'Treppe',ladder:'Leiter',shaft:'Lichtschacht',spiral:'Wendeltreppe',lift:'Getränkeaufzug'})[t.kind]||t.kind;}
 /** Zustand eines Raums für den Tooltip: geräumt oder wie viele Gegner übrig. */
+/** Dungeon-Fix 3: Endtruhe (bis sie geöffnet ist) und Hinterausgang, sobald Big B liegt – für Karte und Minikarte. Punkte in Rastermaß. */
+export function endMarks(run,f){const def=run.def,c=def.chest,b=def.backExit,won=!c||run.killed.has(c.boss),out=[];
+ if(c&&c.floor===f&&chestShown(run)&&!run.chest)out.push({kind:'chest',icon:'loot',x:c.x,y:c.y,label:DT.chest.label,note:DT.chest.labelNote});
+ if(b&&b.floor===f&&won)out.push({kind:'exit',icon:'exit',x:b.x,y:b.y,label:DT.backExitLabel,note:DT.backExitNote});return out;}
 export function roomState(g,run,room){const n=g.enemies.filter(e=>e.hp>0&&!e.cardboard&&e.dungeon&&roomOf(run.def,room,e)).length;return n?DU.map.enemies(n):DU.map.cleared;}
 function roomOf(def,room,e){const f=def.floors[room.floor],o=f.origin;return room.rects.some(q=>e.x>=o.x+q[0]*U&&e.x<=o.x+(q[0]+q[2])*U&&e.y>=o.y+q[1]*U&&e.y<=o.y+(q[1]+q[3])*U);}
 /** Weltpunkt unter einem Punkt der Leinwand (CSS-Pixel) – für die Wegmarke. */
@@ -123,6 +129,7 @@ export function drawDungeonMini(canvas,g,{span=300}={}){
  for(const o of g.companions||[]){if(o.state==='down')continue;c.fillStyle='#10201a';c.beginPath();c.arc(X(o.x),Y(o.y),W/55,0,TAU);c.fill();c.fillStyle='#8fd0ff';c.beginPath();c.arc(X(o.x),Y(o.y),W/75,0,TAU);c.fill();}
  for(const e of g.enemies){if(!(e.hp>0)||e.cardboard||concealed(g,e))continue;const x=X(e.x),y=Y(e.y);if(x<-10||y<-10||x>W+10||y>H+10)continue;
   if(e.dungeonBoss){icon(c,'skull',x,y,ik);continue;}c.fillStyle='#10201a';c.beginPath();c.arc(x,y,W/60,0,TAU);c.fill();c.fillStyle=e.aggro?'#ff5a3c':'#ee6a4f';c.beginPath();c.arc(x,y,W/85,0,TAU);c.fill();}
+ for(const m of endMarks(run,f)){const q=toWorld(def,f,m.x,m.y);icon(c,m.icon,X(q.x),Y(q.y),ik);}/* Dungeon-Fix 3 */
  const wp=run.waypoint;if(wp&&wp.floor===f)icon(c,'dest',X(wp.x),Y(wp.y)-ik*.4,ik);
  c.translate(W/2,H/2);c.rotate(heading+Math.PI/2);const s=W/22;c.beginPath();c.moveTo(0,-s);c.lineTo(s*.72,s*.78);c.lineTo(0,s*.4);c.lineTo(-s*.72,s*.78);c.closePath();c.lineJoin='round';c.lineWidth=W/70;c.strokeStyle='#1c1712';c.stroke();c.fillStyle='#fff3cf';c.fill();
  c.restore();

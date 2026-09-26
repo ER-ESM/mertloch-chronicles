@@ -57,7 +57,7 @@ export function itemNumbers(id){const d=ITEM_CATALOG[id];if(!d)return [];const l
  // E-72: Beschriftung bleibt „Randale sofort“ (tests/content-loot.test.mjs liest sie); die Menge sind Ressourcenpunkte, je Klasse umgerechnet.
  if(d.energy)out.push({label:'Randale sofort',value:d.energy,unit:'Ressourcenpunkte',source:'energy'});
  if(d.kind==='consumable'){out.push({label:'Gemeinsame Abklingzeit',value:BALANCE.player.consumableCooldown,unit:'s',source:'BALANCE.player.consumableCooldown'});
-  if(d.stack)out.push({label:'Stapel',value:d.stack,unit:'Stück',source:'stack'});
+  if(d.stack)out.push({label:'Stapelgröße',value:d.stack,unit:'Stück',source:'stack'});/* Dungeon-Fix 7: Bestand steht als „Im Rucksack“ daneben */
   if(d.price)out.push({label:'Kioskpreis',value:d.price,unit:'Pfandmarken',source:'price'});}
  if(d.level>1)out.push({label:'Mindeststufe',value:d.level,unit:'',source:'level'});
  if(d.proc)out.push(...procNumbers(d.proc));

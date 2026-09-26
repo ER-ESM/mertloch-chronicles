@@ -67,7 +67,7 @@ export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,dr
   // Puppen bleiben stehen (Rückstoß würde sie aus der Reichweite schieben, echte Spieler gehen nach); gefallene ersetzt sofort eine neue.
   foes.forEach((e,i)=>{if(e.hp>0){e.x=e.home.x;e.y=e.home.y;return;}killed++;const n=spawn(i);g.enemies[g.enemies.indexOf(e)]=n;foes[i]=n;});
   if(!(g.target?.hp>0)){g.target=foes.find(e=>e.hp>0);startAuto(g);}
-  const p=g.player;if(!g.casting&&g.gcd<=0)rotate(g,{healer});
+  const p=g.player;if(!g.casting&&g.gcd<=0)rotate(g,{healer,healBelow:1/* Heiler-WoW: wie vor den Heiler-Kits heilt der Heiler, sobald Leben fehlt */});
   clock+=SHEET.dt;if(clock>=1){clock-=1;const hp=p.hp,guard=g.classState?.guard||0;raw+=hitSize;g.hitPlayer(foes[0],hitSize);taken+=Math.max(0,hp-p.hp);shield+=Math.max(0,guard-(g.classState?.guard||0));if(p.hp<1)p.hp=1;}
   energySum+=p.energy;ticks++;
   g.tick(SHEET.dt);/* g.tick schreitet den Zauber selbst voran (tickCasting) – ein zweiter Aufruf halbierte bis E-59 jede Zauberzeit */

@@ -75,7 +75,7 @@ try{
   const clar=await read(`const lbl=document.querySelector('.region-label'),tp=document.querySelector('#targetPanel'),bf=document.querySelector('.boss-frame').getBoundingClientRect(),an=document.querySelector('.boss-announce'),ar=an.getBoundingClientRect();
    return {fight:document.body.classList.contains('dg-fight'),boss:document.body.classList.contains('boss-fight'),target:document.body.classList.contains('boss-target'),zoneShown:lbl.classList.contains('zone-show'),zoneVisible:getComputedStyle(lbl).visibility!=='hidden'&&+getComputedStyle(lbl).opacity>.05,
     targetPanel:getComputedStyle(tp).display,announce:an.hidden?null:{top:Math.round(ar.top),frameBottom:Math.round(bf.bottom),text:an.textContent.trim()},mercBubble:(window.mertloch.state().speech||[]).some(x=>String(x.enemyId).startsWith('merc')),bubbles:(window.mertloch.state().speech||[]).length,memory:[...document.querySelectorAll('.memory-card.show,.game-popup[data-window="memory"]')].some(m=>getComputedStyle(m).visibility!=='hidden'&&getComputedStyle(m).display!=='none'),toast:document.querySelector('#toast')?.textContent||'',say:document.querySelector('.bf-say:not([hidden]) q')?.textContent||'',
-    proc:[...document.querySelectorAll('#sct .sct-note .sct-row')].map(r=>({text:r.textContent.trim(),textShown:getComputedStyle(r.querySelector('b')).display!=='none'}))}`);
+    proc:[...document.querySelectorAll('#sct .sct-note .sct-row:not(.sct-callout)')].map(r=>({text:r.textContent.trim(),textShown:getComputedStyle(r.querySelector('b')).display!=='none'}))/* Dungeon-Fix 6: Ausrufe über den Söldnern („ANGEFEUERT“) stehen gewollt mit Text */}`);
   assert.ok(clar.fight&&clar.boss&&clar.target,'Bosskampf erkannt '+JSON.stringify(clar));
   assert.equal(clar.zoneVisible,false,'kein Raumtitel im Bosskampf '+JSON.stringify(clar));
   assert.equal(clar.targetPanel,'none','Zielrahmen weg, wenn der Boss das Ziel ist');
@@ -140,7 +140,8 @@ try{
  }
  // ───────────────────────────────── 4 · Flügel: Siegelträger öffnet die Abkürzung, kleine Truhe, Flügelstand, Tagesreset
  if(want(4)){
-  await start({w:1600,h:900});await setup();await kill(`e.bossId==='gerd'`);await wait(900);
+  await start({w:1600,h:900});await setup();await kill(`e.bossId==='gerd'`);await wait(900);/* Dungeon-Fix 3: Gerds Beute-Moment wartet jetzt ohne Frist auf den Helden in der Arena (dort steht die kleine Truhe) und läge mit F
+   zuerst im Weg – er ist nicht Teil dieses Teils */await read(`g.rpg.loot=g.rpg.loot.filter(b=>!(b.moment&&b.room));return 1`);
   const sc=await read(`const r=g.dungeonRun;return {unlocked:[...r.unlocked],daily:g.dungeons['schloss-bigb'].daily.shortcuts,wings:g.dungeons['schloss-bigb'].daily.wings}`);assert.ok(sc.unlocked.includes('treppe-zugbruecke')&&sc.daily.includes('treppe-zugbruecke'),'Kette ist Abkürzung für heute '+JSON.stringify(sc));assert.deepEqual(sc.wings,['burghof']);
   await closeAll();const w=await read(`const w=g.dungeonRun.def.wings[0].chest;return w`);await place('e0',w.x,w.y+1.2);await wait(900);const it=await interaction();assert.equal(it?.act,'wingChest','kleine Truhe bietet sich an '+JSON.stringify(it));await shot('11-kleine-truhe');
   await b.press('f');const lw=await lootWindow();assert.ok(lw&&lw.items===1&&/Truhe/.test(lw.head),'Beute-Moment der kleinen Truhe '+JSON.stringify(lw));await shot('12-kleine-truhe-beute');await takeLoot();
@@ -160,7 +161,7 @@ try{
   let it=await interaction();assert.equal(it?.act,'find','Fundstelle Pelzmantel '+JSON.stringify(it));await shot('14-pelzmantel');await b.press('f');await wait(500);
   const found=await read(`return {found:[...g.dungeonRun.found],toast:document.querySelector('#toast')?.textContent||''}`);assert.deepEqual(found.found,['leihschein']);
   const t=await tracker();assert.ok(t[1].icons.includes('lens-found'),'Verfolgung: gefunden, noch nicht vorgelegt '+JSON.stringify(t[1]));
-  await read(`const r=g.dungeonRun;r.seals.add('siegel-gerd');r.version++;return 1`);const pr=await read(`return g.dungeonRun.def.evidence.present`);await place(pr.floor,pr.x,pr.y);await wait(900);
+  await read(`const r=g.dungeonRun;r.seals.add('siegel-gerd');r.version++;return 1`);/* Dungeon-Fix 5: solange Big B auf seine Einleitung wartet, legt das Ansprechen am Thron die Beweise vor (kein Vorlegen mehr an der Tresortür) */await place('k2',54,19.5);await wait(900);
   it=await interaction();assert.match(it?.name||'',/Beweise vorlegen/,'Vorlegen im Thronsaal '+JSON.stringify(it));await b.press('f');await wait(1400);
   const shown=await read(`return {ev:[...g.dungeonRun.evidence],bubble:(window.mertloch.state().speech||[]).length}`);assert.deepEqual(shown.ev,['leihschein']);await shot('15-beweis-vorgelegt');
   await read(`const b=${bigb};b.aggro=true;b.ai='combat';g.target=b;g.player.inCombat=7;A.startAuto(g);g.adminGod=true;return 1`);await wait(1200);

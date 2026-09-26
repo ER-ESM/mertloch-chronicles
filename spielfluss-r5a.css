@@ -2,7 +2,8 @@
    Zuletzt geladen. Belege in docs/OPTIMIERUNG-2026-09-24-runde-5a.md. */
 
 /* ---------- Todesbildschirm (death-screen.js): oben mittig über allen Fenstern, Welt entsättigt (WoW) ---------- */
-body.hero-dead #world{filter:grayscale(.85) brightness(.8);transition:filter .6s ease}
+/* Dungeon-Fix 2 (Endabnahme #715: beim Tod 1–2 s schwarzes Bild, nur die Namensschilder schwebten): kein CSS-Filter mehr auf der Weltfläche –
+   der Grauschleier liegt als Fläche in der Welt (renderer.js drawDeathVeil) und blendet in 0,6 s ein */
 .death-screen{position:absolute;left:50%;top:16%;z-index:90;transform:translate(-50%,-10px);opacity:0;transition:opacity .35s ease,transform .35s ease;
  display:grid;justify-items:center;gap:12px;min-width:min(420px,92vw);max-width:min(560px,94vw);padding:18px 28px 22px;
  background:linear-gradient(#1a1311f2,#120d0cf2);border:2px solid #8a3a2a;border-radius:6px;box-shadow:0 0 0 1px #000,0 10px 40px #000c,inset 0 0 30px #5a1a1266;pointer-events:auto;text-align:center}

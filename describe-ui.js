@@ -8,7 +8,7 @@ import {talentSkillsHtml} from './talent-ui.js';
 //   content/glossary.js  termsOf(kind,id)  → die Glossarerklärungen für den Shift-Block
 // Nur die Spaltenüberschriften der Laufzeitzeilen und die Abschnittsnamen des Nachschlagewerks stehen als
 // Beschriftung hier (UI-Vokabular). Bedarf, sie nach content/panel-ui.js zu holen: content/BACKLOG.md.
-import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI,CLASS_BUFFS,CLASS_BUFF_TEXT} from './content/index.js';
+import {describe as contentDescribe,describableIds,termsOf,GLOSSARY,CLAN_MEMBERS,TALENT_SKILLS,CLASS_SPECS,SPECS,PANEL_UI,categoriesOf,FUNCTIONS,FUNCTION_IDS,CATEGORY_UI,CLASS_BUFFS,CLASS_BUFF_TEXT,ITEM_TIP,SKILL_TIP} from './content/index.js';
 import {paintSkillIcon} from './skill-art.js';
 import {paintTalentIcon} from './talent-art.js';
 import {paintItem} from './item-art.js';
@@ -19,7 +19,7 @@ export const DESCRIBE_UI={
  use:'Einsatz:',
  shiftHint:'Shift: Details',detailsButton:'Details',
  now:'jetzt',base:'Grundwert',
- damage:'Schaden',crit:'Glückstreffer',heal:'Heilung',stack:'Stapel',remaining:'Restzeit',ready:'Bereit in',
+ damage:'Schaden',crit:'Glückstreffer',heal:'Heilung',stack:'Stapel',bag:'Im Rucksack',remaining:'Restzeit',ready:'Bereit in',
  counter:'Zählstand',stage:'Stufe',expected:'Erwarteter Schaden',
  sectionSkills:PANEL_UI.tabSkills,sectionTalents:PANEL_UI.talents,sectionPassive:'Eigenart',
  sectionProcs:'Regeln',sectionBuffs:'Laufende Stärkungen',
@@ -121,11 +121,13 @@ function liveRows(kind,live={}){
   if(live.every>1)out.push(row(DESCRIBE_UI.counter,(live.count%live.every)+' / '+live.every));
   if(live.remaining>0)out.push(row(DESCRIBE_UI.remaining,live.remaining,'s'));
  }
+ /* Dungeon-Fix 7 (Prüferin #770): dieselben Beschriftungen wie die Grundwerte (content/item-info.js), damit Heilung und Abklingzeit nicht doppelt stehen;
+    der Bestand heißt „Im Rucksack“ (Stapelgröße ist der Grundwert) */
  if(kind==='item'){
-  if(live.heal)out.push(row(DESCRIBE_UI.heal,live.heal,'Leben'));
+  if(live.heal)out.push(row('Leben sofort',live.heal,'Leben'));
   if(live.energy)out.push(row(live.energyUnit||'Randale',live.energy));
-  out.push(row(DESCRIBE_UI.stack,live.count??0));
-  if(live.cooldown)out.push(row('Abklingzeit',live.cooldown,'s'));
+  out.push(row(DESCRIBE_UI.bag,live.count??0));
+  if(live.cooldown)out.push(row('Gemeinsame Abklingzeit',live.cooldown,'s'));
   if(live.remaining>0)out.push(row(DESCRIBE_UI.ready,live.remaining,'s'));
  }
  if(kind==='building'){
@@ -198,6 +200,13 @@ export function describeCard(game,kind,id,{shift=false,touch=false}={}){
  const termHtml=terms.length?'<dl class="describe-terms">'+terms.map(t=>'<div><dt>'+esc(t.name)+'</dt><dd>'+esc(t.long||t.short||'')+'</dd></div>').join('')+'</dl>':'';
  const details=(why?'<p class="describe-why">'+esc(why)+'</p>':'')+useHtml(content)+linkHtml+termHtml;
 
+ /* Dungeon-Fix 7 (Prüferin #770: Tooltip der Notfallbrezel ein langer Block, die Laufzeitwerte unsichtbar): Verbrauchsgüter wie die Kniff-Tooltips (WoW-Muster,
+    docs/HEILER-WOW-2026-09-26.md) – Name und Stapel, eine Kopfzeile, ein Satz Wirkung, eine Zahlenzeile; alle Zahlen, Warum und Begriffe in ⇧ Details. */
+ if(liveKind==='item'&&live?.kind==='consumable'){const I=ITEM_TIP,meta=[I.kind,live.cooldown?I.cd(deci(live.cooldown)):'',live.remaining>0?I.ready(deci(live.remaining)):''].filter(Boolean).join(' · ');
+  const first=String(effect).split(/(?<=[.!?])\s+| – /)[0].replace(/([^.!?])$/,'$1.'),nums=[live.heal?I.heal(live.heal):'',live.grant?I.grant(live.grant):''].filter(Boolean).join(' · ');
+  return '<div class="describe-card describe-consumable"'+(shift?' data-shift="on"':'')+'><header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong><small>'+esc(I.count(live.count??0))+'</small></div></header>'
+   +'<div class="tip-meta">'+esc(meta)+'</div><p class="tip-effect">'+esc(first)+'</p>'+(nums?'<p class="tip-numbers">'+esc(nums)+'</p>':'')
+   +'<div class="describe-details"'+(shift?'':' hidden')+'>'+numberHtml+details+'</div><footer class="describe-hint">'+(touch?'<button type="button" data-describe-more>'+esc(DESCRIBE_UI.detailsButton)+'</button>':esc(SKILL_TIP.details))+'</footer></div>';}
  return '<div class="describe-card"'+(shift?' data-shift="on"':'')+'>'+
   '<header class="describe-head">'+iconMarkup(icon,entry?.icon||id)+'<div><strong>'+esc(name)+'</strong>'+(status?'<small>'+esc(status)+'</small>':'')+'</div></header>'+
   categoryChips(game,kind,id)+

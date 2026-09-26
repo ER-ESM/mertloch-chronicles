@@ -10,7 +10,7 @@
 import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMPANION_TEXT as T,companionById,companionCost,companionStats,CAST_SETS,COMBAT_RULES} from './content/index.js';
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
-import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt,partyUnits,inHazard,bossZones,endRetreat,hideSpots} from './dungeon.js';
+import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt,partyUnits,inHazard,bossZones,endRetreat,hideSpots,bossHeld,pullBoss} from './dungeon.js';
 import {bossOutOfReach,arenaAhead,rectWorld,lostSight,sightSpot} from './dungeon.js';
 import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
@@ -18,6 +18,7 @@ import {recordMeterDamage,recordMeterHealing} from './combat-meter.js';
 import {tutorialActive} from './tutorial.js';
 import {walkFacing} from './maifeld-locomotion.js';
 import {classBuffValue,savedClassBuffs,restoreClassBuffs} from './class-buffs.js';
+import {bossAutoFactor,mercDamageFactor,tickLastStand} from './dungeon-einsatz.js';/* Auftrag „Held aktiv“ (2026-09-26) */
 import {MARK_IDS} from './target-marks.js';
 
 const PLAYER='player';
@@ -26,6 +27,11 @@ const alive=c=>c.state!=='down'&&c.hp>0;
  *  liegt oder über die Treppenkante gefallen ist. Kein Heranspringen zum Helden, kein Abbruch wegen Abstand. */
 const holdFight=(g,c)=>c.inCombat>0&&!!dungeonRun(g)?.arena;
 const fighting=e=>e.hp>0&&e.aggro&&e.ai!=='returning'&&!e.dummy&&!e.tutorial;
+/** Dungeon-Fix 2 (Endabnahme #715: Radler-Rita zeigte über 30 s „Steht in 0 s wieder auf“ und stand erst nach dem Kampf auf): Wer liegt,
+ *  steht erst nach dem Kampf auf – frühestens nach downSeconds. Der Kampf läuft, solange ein Gegner in Reichweite des Helden oder des
+ *  Liegenden kämpft oder jemanden aus der Gruppe angeht. Vorher zählte nur der Abstand zum Helden: Lag der Held als Geist abseits, standen
+ *  Söldner mitten im Kampf auf, sonst hingen sie – die Anzeige nannte in beiden Fällen nur die Frist. Anzeige: companion-ui.js. */
+export function groupFightOn(g,c){const ids=new Set((g.companions||[]).map(o=>o.id));return (g.enemies||[]).some(e=>fighting(e)&&(distance(e,g.player)<R.assistRange||(c&&distance(e,c)<R.assistRange)||e.focus===PLAYER&&!g.dead||ids.has(e.focus)));}
 const ratio=x=>x.hp/x.maxHp;
 const abilitySource=id=>({id,name:COMPANION_ABILITIES[id].name});
 /** Aussehen des Söldners als Anziehpuppe (content/figuren.js): Körper über die Figur (paperdollId npc:<id>, Archetyp darf vom look
@@ -70,13 +76,14 @@ export function companionFocus(g,e){
 
 export function hitCompanion(g,e,c,n){
  if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))*(c.cert?.until>g.time?1+c.cert.stacks*c.cert.taken:1)/* Dungeon Etappe 3: Zertifikat */));
+ /* Heiler-WoW: Notfallknopf des Helden (Riechsalz, Löschbier, Eierlikörchen) – aidSave senkt den Schaden */if(c.aidSave?.remaining>0)n=Math.round(n*(1-(c.aidSave.reduction||0)));
  const b=c.aidBuff;if(b?.remaining>0){n=Math.round(n*(1-(b.reduction||0)));const absorbed=Math.min(n,b.shield||0);b.shield=Math.max(0,(b.shield||0)-absorbed);n-=absorbed;if(absorbed>0)companionFx(g,c,'guard',c,{amount:absorbed,absorbed:true});}
  c.hp=Math.max(0,c.hp-n);if(n>0)c.hurt=.16;c.inCombat=6;
  companionFx(g,c,'hurt',c,{amount:n,from:{x:e.x,y:e.y}});if(!companionText(g,c,{area:'in',kind:'damage',value:n}))g.float(c.x,c.y-18,'−'+n,'#e9b48c');
  if(c.hp<=0)down(g,c);
 }
 function down(g,c){
- c.channel=null;c.state='down';c.aidBuff=null;c.aidHot=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
+ c.channel=null;c.state='down';c.aidBuff=null;c.aidHot=null;c.aidSave=null;c.hp=0;c.downUntil=g.time+R.downSeconds;c.target=null;c.path=[];c.moving=false;
  for(const e of g.enemies)clearThreat(e,c.id);
  statusNote(g,T.down(c.name));if(c.def.lines?.down)g.bark?.(c,c.def.lines.down,'companion');g.emit('companion',{type:'down',id:c.id});
 }
@@ -106,7 +113,7 @@ export function tickEnemyOnCompanion(g,e,c,dt){
  }
  e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);
  const a=e.autoAttack;
- if(e.autoTimer<=0&&!(e.spawnGrace>0)&&distance(e,c)<=a.range&&g.world.lineClear(e,c)){e.autoTimer=a.speed;e.attack=.25;hitCompanion(g,e,c,a.min+g.random()*(a.max-a.min));emitCombatFx(g,'attack',c,{from:{x:e.x,y:e.y},ranged:a.ranged,hostile:true,duration:.3});}
+ if(e.autoTimer<=0&&!(e.spawnGrace>0)&&distance(e,c)<=a.range&&g.world.lineClear(e,c)){e.autoTimer=a.speed;e.attack=.25;{const roll=a.min+g.random()*(a.max-a.min),f=bossAutoFactor(g,e,c)/* Held aktiv: Ausweichen im Letzten Aufgebot, Rolle zählt */;if(f>0)hitCompanion(g,e,c,roll*f);}emitCombatFx(g,'attack',c,{from:{x:e.x,y:e.y},ranged:a.ranged,hostile:true,duration:.3});}
  e.attackTimer=Math.max(0,e.attackTimer-dt);
  if(alive(c)&&distance(e,c)<=reach&&e.attackTimer<=0&&g.world.lineClear(e,c)){
   if(e.dungeon&&e.bossId)dungeonBossCast(g,e);const set=CAST_SETS[e.castSet]||DUNGEON_CASTS[e.castSet]||CAST_SETS[e.type==='boss'?'horst':e.type]||CAST_SETS.wolf,type=set.cycle[e.cycle%set.cycle.length],k={...set.casts[type]};
@@ -148,7 +155,8 @@ function chooseTarget(g,c){
 
 function damageEnemy(g,c,e,n,id){
  if(!e||e.hp<=0||e.ai==='returning'||e.tutorial)return 0;
- const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */*(e.hidden?0:1)*(c.blindUntil>g.time?.5:1)/* Etappe 4 Teil A: Greenscreen, geblendet */)),dealt=Math.min(e.hp,amount);
+ /* Dungeon-Fix 5: ein Boss mit Einleitung nimmt vor dem Kampf keinen Schaden; wartet er nach der Rede, zieht erst ein befohlener Angriff ihn */if(e.dungeonBoss&&!e.aggro&&bossHeld(g,e)&&!pullBoss(g,e))return 0;
+ const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */*(e.hidden?0:1)*(c.blindUntil>g.time?.5:1)/* Etappe 4 Teil A: Greenscreen, geblendet */*mercDamageFactor(g,c,e)/* Held aktiv: Angefeuert, Alles oder nichts */)),dealt=Math.min(e.hp,amount);
  e.aggro=true;e.ai='combat';g.player.inCombat=7;c.inCombat=6;e.hp=Math.max(0,e.hp-amount);e.hurt=.15;
  addThreat(e,c.id,dealt*COMPANION_ROLES[c.def.role].threat);
  recordMeterDamage(g,e,amount,dealt,abilitySource(id),crit,c);
@@ -202,9 +210,10 @@ const certIncoming=(g,c)=>c.cert?.until>g.time&&g.enemies.some(e=>e.hp>0&&e.side
 function reacted(g,c,cast){const seen=c.seen||(c.seen=new WeakMap());if(!seen.has(cast))seen.set(cast,g.time);return g.time-seen.get(cast)>=R.reaction;}
 
 /** Steht der Begleiter in einer angesagten Fläche? → Fluchtpunkt knapp außerhalb, sonst null. */
-/** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. */
+/** Kegel (Dungeon-Merkmal cone): Söldner, die nicht selbst das Ziel sind, treten seitlich aus dem Kegel. Held aktiv (2026-09-26): Nur der Schutz
+ *  bleibt als Ziel stehen und fängt ihn ab; hält ein Söldner ohne Schutz-Rolle den Boss, weicht auch er seitlich aus (der Kegel trifft ihn sonst voll). */
 function coneExit(g,c){
- for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id||!coneHits(e,k,c,g)||!reacted(g,c,k))continue;
+ for(const e of g.enemies){const k=e.cast;if(!k?.cone||e.hp<=0||k.focus===c.id&&c.def?.role==='tank'||!coneHits(e,k,c,g)||!reacted(g,c,k))continue;
   for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+.5),r=Math.max(30,Math.min(k.cone.range*.8,distance(e,c))),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&walkClear(g.world,c,q,8))return q;}
   /* Etappe 4 Teil A: an Wand oder Ecke (Gerds Zugbrücke, Stallungen) liegt die Seite oft in der Wand – dann weiter seitlich, näher oder hinter den Boss */
   for(const [da,r] of [[.9,34],[.9,22],[1.4,30],[Math.PI-(k.cone.angle*Math.PI/360),26],[Math.PI,30]])for(const turn of [1,-1]){const a=(k.angle??0)+turn*(k.cone.angle*Math.PI/360+da)*(da>=Math.PI-1?0:1)+(da>=Math.PI-1?da*turn:0),q={x:e.x+Math.cos(a)*r,y:e.y+Math.sin(a)*r};if(!g.world.blocked(q.x,q.y,9)&&!coneHits(e,k,q,g)&&walkClear(g.world,c,q,8))return q;}}
@@ -294,12 +303,17 @@ function formationSpot(g,c,e,role){
  *  8 s lang. Einmal je Kampf; ein Ausweichschritt oder das eigene Umfallen bricht ab, dann beginnt er von vorn. true = Takt versorgt. */
 function tickRevive(g,c,dt){
  if(!g.dead||!inDungeon(g)){c.channel=null;if(c.inCombat<=0)c.reviveUsed=false;return false;}
- const id=c.def.abilities.find(x=>COMPANION_ABILITIES[x]?.kind==='revive');if(!id||c.reviveUsed||g.companions.some(o=>o!==c&&o.channel&&alive(o)))return false;
- const a=COMPANION_ABILITIES[id],p=g.player;
- if(!c.channel){if(distance(c,p)>a.range){walkTo(g,c,p,R.catchUpSpeed,dt,a.range*.6);return true;}c.channel={id,start:g.time,until:g.time+a.cast,total:a.cast};g.toast(T.reviving(c.name));g.emit('companion',{type:'reviving',id:c.id});}
- face(c,p);c.castPose=.3;c.state='combat';c.inCombat=6;c.moving=false;
+ /* Dungeon-Fix 3 (Big-B-Abnahme #721: nach dem zweiten Tod half niemand mehr auf, auch nicht nach dem Sieg): Im Kampf einmal je Kampf,
+    nach dem Kampf (companions.js groupFightOn) ohne Begrenzung und schneller (afterCast), wie die Wiederbelebung nach dem Kampf in WoW.
+    Nach einem Wipe (die Gegner sind zurückgesetzt) nicht – dann wählt der Held den Kontrollpunkt. */
+ const id=c.def.abilities.find(x=>COMPANION_ABILITIES[x]?.kind==='revive'),after=!groupFightOn(g);if(!id||dungeonRun(g)?.ghost?.wiped){c.channel=null;return false;}
+ if(!after&&c.reviveUsed&&!c.channel||g.companions.some(o=>o!==c&&o.channel&&alive(o)))return false;
+ const a=COMPANION_ABILITIES[id],p=g.player,cast=after?a.afterCast??a.cast:a.cast;
+ if(c.channel&&after&&!c.channel.after&&c.channel.until-g.time>cast)c.channel=null;/* Kampf eben vorbei: kurz von vorn statt 8 s */
+ if(!c.channel){if(distance(c,p)>a.range){walkTo(g,c,p,R.catchUpSpeed,dt,a.range*.6);return true;}c.channel={id,start:g.time,until:g.time+cast,total:cast,after};statusNote(g,T.reviving(c.name));g.emit('companion',{type:'reviving',id:c.id});}
+ face(c,p);c.castPose=.3;c.state='combat';c.inCombat=after?0:6;c.moving=false;
  if(g.time<c.channel.until)return true;
- c.channel=null;c.reviveUsed=true;reviveHero(g,c,a.share);companionFx(g,c,'heal',p,{amount:Math.round(p.hp),direct:true,from:{x:c.x,y:c.y}});return true;
+ const done=c.channel;c.channel=null;if(!done.after)c.reviveUsed=true;reviveHero(g,c,done.after?a.afterShare??a.share:a.share,{after:done.after});companionFx(g,c,'heal',p,{amount:Math.round(p.hp),direct:true,from:{x:c.x,y:c.y}});return true;
 }
 function tickOne(g,c,dt){
  refreshStats(g,c);
@@ -307,8 +321,9 @@ function tickOne(g,c,dt){
  for(const key of ['guard','hurt','attack','castPose','inCombat'])c[key]=Math.max(0,(c[key]||0)-dt);
  if(c.contract!=null){c.contract-=dt;if(c.contract<=0){dismissCompanion(g,c.id,'expired');return;}}
  c.moving=false;
- if(c.state==='down'){if(g.time>=c.downUntil&&!g.enemies.some(e=>fighting(e)&&distance(e,g.player)<R.assistRange)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
- for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
+ if(c.state==='down'){if(g.time>=c.downUntil&&!groupFightOn(g,c)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
+ for(const [key,source]of [['aidBuff','buff'],['aidHot','hot'],['aidSave','save']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,/* Heiler-WoW: Quelle = Kniff des Helden (Kampfstatistik nennt ihn) */typeof b.id==='string'?b.id:source);}}}
+ tickLastStand(g,c);/* Held aktiv: Letztes Aufgebot (Alles oder nichts, Notfall-Schorle) */
  const p=g.player,far=distance(c,p);
  if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}
  /* Dungeon Etappe 4 Teil A: eingeklemmt (Arenatür fiel zu, während er auf der Schwelle stand) – auf den nächsten freien Punkt */if(inDungeon(g)&&g.world.blocked(c.x,c.y,5)){const q=g.world.findClear(c.x,c.y,6);c.x=q.x;c.y=q.y;c.path=[];}/* Laufradius 5: wer darin nirgends hin kann, steckt; dünne Wände (1 m) täuschen größere Radien */
@@ -346,7 +361,7 @@ export function tickCompanions(g,dt){
  for(const c of g.companions)Object.assign(c.view,{name:c.name,x:c.x,y:c.y,fromX:c.x,fromY:c.y,at:0,lerp:1,facing:c.facing,direction:c.direction,walkDistance:c.walkDistance||0,classId:c.def.look,look:c.def.look,spec:c.def.spec,level:c.level,state:c.state==='down'?'dead':c.state==='combat'?'combat':c.moving?'walk':'idle',hp:Math.round(ratio(c)*100),party:true,moving:c.moving,reviving:c.channel?Math.min(1,(g.time-c.channel.start)/c.channel.total):0,attack:c.attack,hurt:c.hurt,castPose:c.castPose,usingRanged:c.usingRanged,parry:c.guard,companion:c.id,role:c.def.role,down:c.state==='down',tint:c.figure?.tint,visualEquipment:c.figure?.visualEquipment,paperdollId:c.figure?.paperdollId});
 }
 /** Nach dem Tod des Besitzers: Begleiter stehen geheilt neben ihm, alle Kämpfe sind vergessen. */
-export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;place(g,c,slot(g,c));}}
+export function resetCompanions(g){for(const e of g.enemies)clearThreat(e);for(const c of g.companions||[]){c.state='follow';c.hp=c.maxHp;c.target=null;c.guard=0;c.aidBuff=null;c.aidHot=null;c.aidSave=null;place(g,c,slot(g,c));}}
 
 // ── 3. Vertrag: anheuern, entlassen, Befehle, Speichern ───────────────────────────────────────────────────────
 function create(g,def,saved={}){

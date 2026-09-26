@@ -26,4 +26,8 @@ export const MILESTONE_UI={
  levelEyebrow:'Aufgestiegen',level:n=>'Stufe '+n,
  hp:n=>'+'+n+' Leben',points:n=>n===1?'+1 Talentpunkt':'+'+n+' Talentpunkte',skill:name=>'Neuer Kniff: '+name,
  unlockEyebrow:'Neu freigeschaltet',
+ // Dungeon-Fix 3 (Big-B-Abnahme #721: „Termin eingehalten“ stand nur im Chat): Erfolg und Titel als kurze Einblendung oben
+ featEyebrow:'Erfolg',titleEyebrow:'Neuer Titel',
+ // Dungeon-Fix 4 (Nachprüfung #726): mehrere Erfolge auf einmal (erster Abschluss) stehen als EINE Einblendung nach dem Aufstieg
+ featsEyebrow:n=>n+' Erfolge',titleShort:'Titel',
 };

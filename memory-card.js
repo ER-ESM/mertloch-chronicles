@@ -7,7 +7,8 @@
 // Tod, Spielmenü, Einführungsfilm oder HUD-Editor dran sind (hold), und kommt danach wieder. Sie geht nach ihrer Lesedauer von selbst
 // (Maus darüber hält sie an); war sie schon größtenteils gelesen, wenn etwas dazwischenkommt, gilt sie als gelesen statt wiederzukommen.
 // Die Kampfstatistik überdeckt sie nie: Sie dockt darüber oder darunter an oder weicht links neben sie aus (avoid).
-import {memoryArtFor} from './memory-art.js';
+// Dungeon-Fix 5 (Prüfer-Playtest #728): kompakte Meldung statt Randkarte mit Bild und Prosa – Symbol, „Erinnerung“, Titel; Text im Tooltip, Klick öffnet
+// Bild und Text. Gilt auch am Handy (dort vorher ein Fenster mitten im Bild), oben mittig unter der Kopfleiste.
 import {MEMORY_CARD as T} from './content/index.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -55,13 +56,16 @@ export function cardTiming(s,{hold=false,covered=false,hover=false,now,readMs}){
  return {state:n,act:n.visibleMs>=readMs?'close':null};
 }
 
+/** Dungeon-Fix 5 (Prüfer-Playtest #728: am Hinterausgang ging ungefragt „ERINNERUNG · Wurst Case“ mit Bild und sieben Zeilen Prosa auf): Die Karte ist
+ *  eine kompakte Meldung – Symbol, „Erinnerung“ und Titel in einer Zeile. Der Text steht im Tooltip, ein Klick öffnet Bild und Text (onZoom). Keine
+ *  ungefragte Textwand mehr; nachlesbar bleibt alles unter Aufträge → Erinnerungen. */
 export function memoryCardHtml(fragment){
- const art=memoryArtFor(fragment.id),title=esc(fragment.title);
- return `<header class="memory-card-head"><canvas width="48" height="48" data-ui-icon="paper" aria-hidden="true"></canvas><span class="memory-card-label">${esc(T.label)}</span><strong>${title}</strong>`+
-  `<button type="button" class="memory-card-close" data-memory-next aria-label="${esc(T.close)}" data-tooltip-label="${esc(T.close)}" data-tooltip-note="${esc(T.closeNote)}">×</button></header>`+
-  (art?`<button type="button" class="memory-card-picture" data-memory-card-art aria-label="${title} – ${esc(T.zoom)}" data-tooltip-label="${title}" data-tooltip-note="${esc(T.zoom)}"><img src="${art.src}" width="${art.width}" height="${art.height}" alt="${esc(art.alt)}" decoding="async"></button>`:'')+
-  `<p>${esc(fragment.text)}</p>`;
+ const title=esc(fragment.title);
+ return `<header class="memory-card-head"><button type="button" class="memory-card-open" data-memory-card-art aria-label="${title} – ${esc(T.open)}" data-tooltip-label="${title}" data-tooltip-note="${esc(fragment.text)}"><canvas width="48" height="48" data-ui-icon="paper" aria-hidden="true"></canvas><span class="memory-card-label">${esc(T.label)}</span><strong>${title}</strong></button>`+
+  `<button type="button" class="memory-card-close" data-memory-next aria-label="${esc(T.close)}" data-tooltip-label="${esc(T.close)}" data-tooltip-note="${esc(T.closeNote)}">×</button></header>`;
 }
+/** Dungeon-Fix 5: Standzeit der kompakten Meldung (statt der Lesedauer des ganzen Texts). */
+export const noticeMs=()=>T.showMs||9000;
 
 /** Schon einmal als Karte gezeigte Fetzen, browserweit (E-72 Runde 5, Kenner-Befund klicks 4): Ein weiterer Held schaltet sie nur still frei. */
 export const MEMORY_POPUP_KEY='mertloch-memory-popups';
@@ -80,6 +84,11 @@ export function mountMemoryCard(shell,{onClose,onZoom,onRightClick,hideTip,paint
  const rect=sel=>{const e=document.querySelector(sel);if(!e||e.hidden)return null;const r=e.getBoundingClientRect();return r.width&&r.height?r:null;};
  function place(){
   if(!current||timing.held)return;
+  /* Dungeon-Fix 5: am Handy oben mittig unter allem, was dort oben steht (Kopfleiste, Heldenrahmen, Ziel, Bossrahmen) */
+  if(document.body.classList.contains('touch-mode')){const W=innerWidth,w=el.offsetWidth||CARD_WIDTH,mid=r=>r.left<W/2+w/2&&r.right>W/2-w/2;
+   const top=Math.round(Math.max(8,...['.touch-topline','.player-panel','#targetPanel:not(.hidden)','.boss-frame:not([hidden])','#unitGroupDock.unit-dock-landscape'].map(rect).filter(r=>r&&mid(r)&&r.top<innerHeight*.4).map(r=>r.bottom+6)));
+   const right=Math.max(8,Math.round((W-w)/2));for(const [k,v] of [['right',right+'px'],['top',top+'px'],['maxHeight','']])if(el.style[k]!==v)el.style[k]=v;
+   const r=el.getBoundingClientRect();if(r.width&&r.height)lastRect={left:r.left,right:r.right,top:r.top,bottom:r.bottom};return;}
   const p=cardPlace({width:innerWidth,height:innerHeight,column:['.minimap','#miniButton','.quest-panel'].map(rect),floor:['.game-menu-rail','.xp-track'].map(rect),avoid:['#combatMeter'].map(rect)});
   const s=el.style;for(const [k,v] of [['right',p.right],['top',p.top],['maxHeight',p.maxHeight]])if(s[k]!==v+'px')s[k]=v+'px';
   // Reicht die Höhe nicht (lange Verfolgung, kleiner Schirm), wird zuerst das Bild flacher, zuletzt fällt es weg – der Text bleibt.
@@ -105,7 +114,7 @@ export function mountMemoryCard(shell,{onClose,onZoom,onRightClick,hideTip,paint
  function close(reason='close'){if(!current)return false;const f=current;dropTip();current=null;timing={};el.classList.remove('show');el.hidden=true;el.innerHTML='';onClose?.(f,reason);return true;}
  /** Je UI-Takt: hold = große Einblendung, Kampf, Tod … (Karte tritt zurück); covered = Fenster liegt über ihr (Lesezeit hält an). */
  function update({hold=false,covered=false}={}){
-  if(!current)return;const r=cardTiming(timing,{hold,covered,hover,now:now(),readMs:readingMs(current)});timing=r.state;
+  if(!current)return;const r=cardTiming(timing,{hold,covered,hover,now:now(),readMs:noticeMs()/* Dungeon-Fix 5: kompakte Meldung */});timing=r.state;
   if(r.act==='hide'){dropTip();el.classList.remove('show');el.hidden=true;}else if(r.act==='show')reveal();else if(r.act==='close')close(hold?'hold':'read');
  }
  el.addEventListener('pointerdown',e=>{if(e.button!==2||e.pointerType==='touch'||!onRightClick)return;e.preventDefault();e.stopPropagation();onRightClick(e);});
@@ -113,5 +122,5 @@ export function mountMemoryCard(shell,{onClose,onZoom,onRightClick,hideTip,paint
  el.addEventListener('pointermove',e=>{if(e.pointerType!=='touch'&&(e.movementX||e.movementY))wakeTips(e.target);});
  el.addEventListener('pointerenter',()=>{hover=true;});el.addEventListener('pointerleave',()=>{hover=false;});
  addEventListener('resize',place);
- return {show,close,place,update,el,get open(){return !!current;},get held(){return !!timing.held;},get fragment(){return current;},get rect(){return current?lastRect:null;},state:()=>({open:!!current,id:current?.id||null,held:!!timing.held,visibleMs:Math.round(timing.visibleMs||0),readMs:current?readingMs(current):0,hidden:el.hidden})};
+ return {show,close,place,update,el,get open(){return !!current;},get held(){return !!timing.held;},get fragment(){return current;},get rect(){return current?lastRect:null;},state:()=>({open:!!current,id:current?.id||null,held:!!timing.held,visibleMs:Math.round(timing.visibleMs||0),readMs:current?noticeMs():0,hidden:el.hidden})};
 }

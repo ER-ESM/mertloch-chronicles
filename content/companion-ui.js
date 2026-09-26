@@ -6,11 +6,13 @@ export const COMPANION_UI={
  empty:'Noch niemand an deiner Seite. Am Schwarzen Brett findest du Verstärkung.',
  slots:(used,max)=>used+' / '+max+' Gruppenplätze belegt',coins:n=>n+' Pfandmarken',level:n=>'Stufe '+n,
  hired:'In deiner Truppe',contract:'Vertrag',permanent:'Dauerhaft',down:'Am Boden',combat:'Im Kampf',
- recovery:n=>'Steht in '+n+' s wieder auf',remaining:t=>'Noch '+t,needTarget:'Wähle zuerst einen lebenden Gegner.',
+ recovery:n=>'Steht in '+n+' s wieder auf',recoveryFight:'Steht nach dem Kampf auf',/* Dungeon-Fix 2: im Kampf steht niemand auf */remaining:t=>'Noch '+t,needTarget:'Wähle zuerst einen lebenden Gegner.',
  dead:'Erst wieder auf die Beine kommen.',dismissHint:'Beendet den Vertrag ohne Rückerstattung.',
  orderHints:{follow:'Kommt mit dir und folgt deiner Bewegung.',stay:'Bleibt an der aktuellen Position.',attack:'Greift deinen ausgewählten Gegner an. Eine passive Haltung bleibt passiv.'},
  stanceHints:{assist:'Unterstützt die Gruppe im Kampf.',defend:'Verteidigt die Gruppe; Schutz-Söldner binden freie Gegner.',passive:'Greift nicht an. Ein Angriffsbefehl ändert diese Haltung nicht.'},
  open:'Söldner verwalten',shortcut:'Söldner [U]',
+ // Dungeon-Fix 6: Buffs auf den Truppenrahmen (companion-ui.js frameBuffs), Name und Restzeit im Tooltip des Rahmens
+ buffs:{hot:'Deine Heilung über Zeit',shield:'Dein Schild',burst:'Alles oder nichts',evade:'Ausweichen',left:s=>Math.ceil(Math.max(0,s))+' s',absorb:n=>'fängt '+n+' ab'},
  select:'Als Ziel wählen · Heilung, Schutz und Buffs wirken dann auf diesen Söldner',selected:'Dein Ziel',
  targetHint:'Söldner oder Gruppenrahmen anklicken: er wird dein Ziel, deine Heilung, dein Schutz und deine Buffs wirken dann dort. Ist ein Gegner oder nichts gewählt, wirken sie auf dich. Esc oder ein Klick ins Leere wählt ab.',
 };

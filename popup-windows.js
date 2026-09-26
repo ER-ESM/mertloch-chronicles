@@ -77,7 +77,10 @@ export class PopupWindows{
   const hud=!mobile&&innerWidth>=1100?document.querySelector('.player-panel')?.getBoundingClientRect():null,edge=hud?Math.max(hud.right,...['#meterToggle','.world-menu-brand','.target-panel:not(.hidden)'].map(s=>document.querySelector(s)?.getBoundingClientRect()).filter(r=>r&&r.width&&r.top<hud.bottom).map(r=>r.right)):0,dock=hud&&hud.width?{x:Math.round(edge+12),y:Math.round(hud.top)}:null;
   // Gespräche docken wie in WoW links unter dem Spielerrahmen an: die Bildmitte mit Held und Gesprächspartner bleibt frei (Persona-Befund 2026-09-24).
   if(id==='dialog'&&dock)Object.assign(dock,{x:Math.round(hud.left),y:Math.round(hud.bottom+10)});
-  el.style.left=(saved?.x??(mobile?9:id==='loot'?innerWidth-360:dock?dock.x:60))+'px';el.style.top=(saved?.y??(mobile?154:dock?dock.y:120))+'px';
+  /* Dungeon-Fix 4 (Nachprüfung #726: das Beutefenster lag über der Auftragsverfolgung, ein Klick auf „Endtruhe“ kam nicht an): Beute steht links
+     neben der Spalte aus Minikarte und Verfolgung, nicht darauf */
+  const lootX=id==='loot'&&!mobile?Math.max(EDGE,Math.min(innerWidth-360,this.dockArea().right-(widths.loot||296))):0;
+  el.style.left=(saved?.x??(mobile?9:id==='loot'?lootX:dock?dock.x:60))+'px';el.style.top=(saved?.y??(mobile?154:dock?dock.y:120))+'px';
   if(CHILD.has(id)&&!saved&&!mobile&&parent)this.besideParent(w);
   this.focus(id);if(!later)this.clamp(w);
   const handle=el.querySelector('.popup-titlebar');let drag=null;handle.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('button')||grid)return;drag={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop};handle.setPointerCapture(e.pointerId);e.preventDefault();});handle.addEventListener('pointermove',e=>{if(!drag)return;el.style.left=drag.left+e.clientX-drag.x+'px';el.style.top=drag.top+e.clientY-drag.y+'px';this.clamp(w);});for(const type of ['pointerup','pointercancel','lostpointercapture'])handle.addEventListener(type,()=>{if(drag){drag=null;this.positions[key]={x:el.offsetLeft,y:el.offsetTop};try{localStorage.setItem('mertloch-popup-positions',JSON.stringify(this.positions));}catch{}}});return w;

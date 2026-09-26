@@ -65,7 +65,7 @@ try{
  await wait(3500);assert.equal(await read('game.dungeonRun.arena'),'zugbruecke','Arena zu');await shot('04-gerd-mit-soeldnern');
  // 4) Tod als Geist: Held fällt, Söldner kämpfen weiter, Schorle-Susi hilft auf
  await read(`(()=>{const g=game,gerd=g.enemies.find(e=>e.bossId==='gerd');window.__revived=null;const o=g.emit.bind(g);g.emit=(t,d)=>{if(t==='revived')window.__revived={pct:Math.round(g.player.hp/g.player.maxHp*100),from:d?.from};return o(t,d);};g.hitPlayer(gerd,1e6,false);})()`);await wait(900);
- let ds=await deathState();assert.ok(ds.open&&ds.dead,'Todesbildschirm offen');assert.match(ds.wake,/Am Kontrollpunkt aufstehen/,'Knopf im Dungeon');assert.match(ds.flag,/Schlosshof/,'Fahne des Kontrollpunkts sichtbar');
+ let ds=await deathState();assert.ok(ds.open&&ds.dead,'Todesbildschirm offen');assert.match(ds.wake,/Kampf aufgeben/,'Knopf im Dungeon (Dungeon-Fix 4: im Kampf zweitrangig „Kampf aufgeben“ = am Kontrollpunkt aufstehen)');assert.match(ds.flag,/Schlosshof/,'Fahne des Kontrollpunkts sichtbar');
  const world=await read(`(()=>{const gerd=game.enemies.find(e=>e.bossId==='gerd');return {hp:gerd.hp,time:game.time}})()`);await wait(1500);
  const later=await read(`(()=>{const gerd=game.enemies.find(e=>e.bossId==='gerd');return {hp:gerd.hp,time:game.time,channel:game.companions.find(c=>c.channel)?.name||''}})()`);
  assert.ok(later.time>world.time&&later.hp<world.hp,'Welt läuft weiter, Söldner treffen Gerd '+JSON.stringify([world,later]));
@@ -101,7 +101,9 @@ try{
  await boot(true);await read(`(()=>{game.enterDungeon('schloss-bigb',{force:true});for(const id of ${MERCS})game.hireCompanion(id,{free:true});})()`);await wait(500);
  await place('e0',12,34);await read(`(()=>{const g=game,gerd=g.enemies.find(e=>e.bossId==='gerd');for(const e of g.enemies)if(!e.dungeonBoss){e.hp=0;e.aggro=false;e.ai='dead';e.respawnAt=Infinity;}gerd.aggro=true;gerd.ai='combat';g.target=gerd;})()`);
  await wait(2500);await read(`game.hitPlayer(game.enemies.find(e=>e.bossId==='gerd'),1e6,false)`);await wait(2500);
- ds=await deathState();assert.ok(ds.open&&/Kontrollpunkt/.test(ds.wake),'Handy: Todesbildschirm im Dungeon');await shot('10-handy-geist');
+ ds=await deathState();assert.ok(ds.open&&/Kampf aufgeben|Kontrollpunkt/.test(ds.wake),'Handy: Todesbildschirm im Dungeon');await shot('10-handy-geist');
+ /* Dungeon-Fix 4: im Kampf gibt erst der zweite Tipp auf (der erste macht den Knopf scharf) */
+ await read(`document.querySelector('[data-ds-wake]').click()`);await wait(300);const armed=await read(`({dead:game.dead,label:document.querySelector('[data-ds-wake]')?.textContent||''})`);assert.ok(armed.dead,'erster Tipp gibt noch nicht auf '+JSON.stringify(armed));
  await read(`document.querySelector('[data-ds-wake]').click()`);await wait(800);
  const wake=await read(`({dead:game.dead,room:D.roomAt(game.dungeonRun.def,game.player.x,game.player.y)?.id,gerd:game.enemies.find(e=>e.bossId==='gerd').hp===game.enemies.find(e=>e.bossId==='gerd').maxHp})`);
  assert.ok(!wake.dead&&wake.room==='hof'&&wake.gerd,'Am Kontrollpunkt aufstehen: Hof, Gerd zurückgesetzt '+JSON.stringify(wake));await shot('11-handy-kontrollpunkt');

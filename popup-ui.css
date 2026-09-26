@@ -68,7 +68,7 @@ body.touch-mode .conversation-person small{margin-top:4px}
 .describe-numbers b{color:var(--ink,#edd395);font:bold 11px monospace}
 .describe-numbers i{font-style:normal;font-size:9px;color:var(--ink-2,#bccc9e)}
 .describe-numbers small{font-size:9px;color:var(--ink-2,#9fae8c);margin-left:5px;opacity:.8}
-.describe-numbers .is-live b{color:var(--green,#cae5a3)}
+.describe-numbers .is-live b{color:#cae5a3}/* Dungeon-Fix 7 (Prüferin #770: leere Werte): --green ist seit dem Bierdeckel-Stil der Fenstergrund (#223A2F), die Werte waren unsichtbar */
 .describe-details{border-top:1px solid var(--line,#65714a);margin-top:9px;padding-top:8px}
 .describe-why{margin:0 0 7px!important;color:var(--ink,#e7d59c)}
 .describe-links{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}

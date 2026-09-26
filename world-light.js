@@ -123,4 +123,6 @@ export class WorldLight{
 /** Farbabstimmung der Weltfläche als CSS-Filter: läuft auf der Grafikkarte und kostet den Zeichenweg nichts. */
 /** Filtertext der Farbabstimmung – als CSS-Filter (mit Grafikkarte) oder eingebacken in Zwischenbilder (ohne, E-50). */
 export const gradeFilter=()=>`contrast(${L.grade.contrast}) saturate(${L.grade.saturate})`;
-export function applyGrade(element,on){const dead=element.parentElement?.classList.contains('player-dead'),value=[on?gradeFilter():'',dead?'grayscale(.85) brightness(.72) contrast(1.05)':''].filter(Boolean).join(' ');if(element.style.filter!==value)element.style.filter=value;}
+/* Dungeon-Fix 2: der Tod färbt die Weltfläche nicht mehr per CSS-Filter (Wechsel des Filters ließ sie ohne Grafikkarte 1–2 s schwarz), sondern
+   per Grauschleier im Bild (renderer.js drawDeathVeil); hier bleibt nur die Farbabstimmung. */
+export function applyGrade(element,on){const value=on?gradeFilter():'';if(element.style.filter!==value)element.style.filter=value;}

@@ -84,12 +84,26 @@ export function classHudCount(state){if(!state)return '';const count=state.count
  *  Klick/Tippen/Enter = alle Regeln (Beschreibungsfenster „mechanic:<Baum>“). data-describe steht deshalb nur während des Klicks
  *  am Element – sonst gewänne es beim Hovern gegen den Kurz-Tooltip (popup-controls.js inspect). */
 export function classHudTip(g,state){const tip=state&&mechanicTip(g,state.spec);if(!tip)return null;const term=GLOSSARY[tip.term]?.name||state.title;return {label:state.title+' · '+classHudCount(state),note:tip.text+'<br><small>'+RESOURCE_HUD_TEXT.mechanicGloss(term)+'</small>',term:tip.term};}
+/** Heiler-WoW Teil 3 (Prüferin #741: „Vorrat 0/8“ saß dauerhaft im Spielfeld, x 893–1105, y 668–718, über den Söldnern): Am Desktop dockt die
+ *  Anzeige wie eine WoW-Haltungsleiste direkt auf der obersten sichtbaren Aktionsleiste an – mittig über der Hauptleiste, ohne Lücke ins
+ *  Spielfeld, für alle Klassen gleich. Leere, unsichtbare Zusatzleisten zählen nicht (beim Belegen – Kniffe-Buch offen – schon, dann rückt sie
+ *  über sie). Ein F-Hinweis rückt über die Anzeige, statt sie zu verdecken (Dungeon-Fix 5), im selben Takt. Am Handy bleibt sie im Heldenrahmen. */
+function dockClassHud(cv,touch,state){
+ const set=(el,k,v)=>{if(el.style[k]!==v)el.style[k]=v;},it=document.querySelector('#interact'),area=cv.parentNode,main=area?.querySelector?.('#actionBar');
+ const free=()=>{for(const k of ['position','left','bottom','margin','gridArea'])set(cv,k,'');if(it)set(it,'marginBottom','');};
+ if(touch||!state||!main||!area.classList?.contains('action-area')){free();return;}
+ const ar=area.getBoundingClientRect(),k=ar.width/(area.offsetWidth||ar.width)||1,edit=document.body.classList.contains('bar-edit'),mr=main.getBoundingClientRect(),w=(cv.offsetWidth||220)*k,cx=(mr.left+mr.right)/2;let top=mr.top;
+ /* nur Plätze der Zusatzleisten, die unter der Anzeige liegen (belegt, beim Belegen alle) – ein einzelner Platz links daneben hebt sie nicht an */for(const slot of area.querySelectorAll(edit?'.extra-bar [data-action-slot]':'.extra-bar [data-action-slot]:not(.empty-slot)')){if(!slot.getClientRects().length)continue;const r=slot.getBoundingClientRect();if(r.height>2&&r.right>cx-w/2-4&&r.left<cx+w/2+4)top=Math.min(top,r.top-2);}
+ set(cv,'position','absolute');set(cv,'gridArea','auto');/* ohne Rasterplatz: Bezug ist die ganze Aktionsfläche, nicht die Hinweiszelle */set(cv,'margin','0');set(cv,'bottom',Math.round((ar.bottom-top)/k)+'px');set(cv,'left',Math.round(((mr.left+mr.right)/2-ar.left)/k-(cv.offsetWidth||220)/2)+'px');
+ if(!it||it.parentNode!==area)return;if(it.classList.contains('hidden')){set(it,'marginBottom','');return;}
+ if(it.dataset.baseMb===undefined){set(it,'marginBottom','');it.dataset.baseMb=String(parseFloat(getComputedStyle(it).marginBottom)||0);}
+ const base=Number(it.dataset.baseMb),cur=it.style.marginBottom?parseFloat(it.style.marginBottom):base,ir=it.getBoundingClientRect(),cr=cv.getBoundingClientRect();
+ const next=Math.max(base,Math.round(cur+(ir.bottom-(cr.top-6))/k));set(it,'marginBottom',next+'px');
+}
 export function updateClassHud(g){let cv=document.getElementById('classMechanicArt');if(!cv){cv=document.createElement('canvas');cv.id='classMechanicArt';cv.width=440;cv.height=112;cv.tabIndex=0;cv.setAttribute('role','button');cv.dataset.mechanicHelp='true';cv.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();cv.click();}});
   /* Klick öffnet die ausführlichen Regeln: data-describe nur für diesen Klick (die Dokument-Behandlung in popup-controls.js liest es danach) */cv.addEventListener('click',()=>{const spec=cv.dataset.mechanicSpec;if(!spec||cv.dataset.describe)return;cv.dataset.describe='mechanic:'+spec;setTimeout(()=>{if(cv.dataset.tooltipLabel)delete cv.dataset.describe;},0);});
   cv.style.cssText='pointer-events:auto;cursor:help;display:block;width:220px;max-width:100%;height:56px;border-radius:10px;margin:4px auto;';document.querySelector('.action-area')?.prepend(cv);}const touch=document.body.classList.contains('touch-mode'),host=document.querySelector(touch?'.player-panel .unit-info':'.action-area');if(host&&cv.parentNode!==host)host.append(cv);const state=g.player.level>=5?classHudState(g):null;cv.hidden=!state;cv.style.display=state?'block':'none';
- /* Runde 4 (hud4): Anzeige und Hinweis („F Sammeln“, „Beutel durchsuchen“) teilen sich auf dem Desktop dieselbe Rasterzelle der Aktionsleiste –
-    der Hinweis deckte die Anzeige zu (beide unten bündig). Steht er da, rückt die Anzeige um seine Höhe nach oben: der Hinweis bleibt direkt
-    über der Leiste, die Anzeige steht darüber. */{const it=!touch&&state?document.querySelector('#interact'):null,push=it&&it.parentNode===cv.parentNode&&!it.classList.contains('hidden')?it.offsetHeight+(parseFloat(getComputedStyle(it).marginBottom)||0)+6:0,mb=push?push+'px':'4px';if(cv.style.marginBottom!==mb)cv.style.marginBottom=mb;}
+ dockClassHud(cv,touch,state);/* Heiler-WoW Teil 3: an der Aktionsleiste, F-Hinweis darüber */
  if(state){loadMechanicArt();loadChromeArt();const spec=g.rpg.talents.spec,tip=classHudTip(g,state);cv.dataset.mechanicSpec=spec;
   if(tip){if(cv.dataset.tooltipLabel!==tip.label)cv.dataset.tooltipLabel=tip.label;if(cv.dataset.tooltipNote!==tip.note)cv.dataset.tooltipNote=tip.note;cv.dataset.glossary=tip.term;}else{delete cv.dataset.tooltipLabel;delete cv.dataset.tooltipNote;delete cv.dataset.glossary;cv.dataset.describe='mechanic:'+spec;}
   /* kurzer Name (auch Titel des Regelfensters), der Satz als Beschreibung */cv.setAttribute('aria-label',state.title+': '+classHudCount(state));if(tip)cv.setAttribute('aria-description',tip.note.replace(/<br>.*$/,''));else cv.removeAttribute('aria-description');drawClassHud(cv.getContext('2d'),state);}}

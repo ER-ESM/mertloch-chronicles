@@ -110,6 +110,8 @@ body:not(.touch-mode) .tt-menu .tt-node canvas{width:48px!important;height:48px!
 .aura-bar .aura-icons button{padding:4px!important}
 /* stufe:aura */
 .aura-bar .aura-icons canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;display:block;image-rendering:pixelated}
+/* stufe:unitBuff */
+.companion-frame .cf-buffs canvas{width:24px!important;height:24px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;display:block;image-rendering:pixelated}
 
 /* ---------------------------------------------------------------- Berufe, Laden */
 /* Listen 32 (mit 2-px-Rand 36), Rezeptkopf 48 (mit Rand 52). */

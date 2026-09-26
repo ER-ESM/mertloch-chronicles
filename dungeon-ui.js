@@ -2,7 +2,8 @@
 // app.js ruft nur mountDungeonUI() und an drei Stellen openEntry/leave/openJournal – alles andere bleibt hier.
 // Fenster im Einzelfenster-System (E-67): „dungeonEntry“ und „journal“ stehen mittig (popup-windows.js GRID_OVERLAY),
 // das Journal darf neben offenen Fenstern (Karte) stehen. Am Handy zeigt Tippen auf ein Symbol seinen Tooltip als Detail.
-import {requiredSeals,dungeonAct,e4bState,dungeonToday} from './dungeon.js';
+import {requiredSeals,dungeonAct,e4bState,dungeonToday,toWorld,setDungeonWaypoint,chestPending} from './dungeon.js';
+import {endMarks} from './dungeon-map-art.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_TEXT as T,DUNGEON_UI as U,DUNGEON_E4B as U4} from './content/index.js';
 import {mountVendor} from './dungeon-vendor-ui.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -13,8 +14,8 @@ import {paintUnitPortraits} from './unit-frame.js';
 
 const touch=()=>document.body.classList.contains('touch-mode');
 export function mountDungeonUI(api){
- // api: {game, popups, openModal, paint, events, save, toast, showPanel, unlocked}
- let entryId=null,journalBoss=null,journalBack=null,busy=false;
+ // api: {game, popups, openModal, paint, events, save, toast, showPanel, unlocked, showLoot}
+ let entryId=null,journalBoss=null,journalBack=null,busy=false,leaveAfter=null;
  /* Etappe 4 Teil B: Händler Vermieter Volker (eigenes Fenster) und die F-Ziele Truhe, Beweis, Ereignis, Vorlegen */
  const vendor=mountVendor({game:api.game,openModal:api.openModal,paint:api.paint,toast:api.toast,save:api.save,events:api.events});
  function act(it){const g=api.game();if(!g)return null;const r=dungeonAct(g,it);if(r?.vendor&&r.ok)vendor.open();return r;}
@@ -39,8 +40,18 @@ export function mountDungeonUI(api){
   api.popups.close('dungeonEntry');busy=true;
   dungeonTransition('enter',()=>{const ok=g.enterDungeon(id);api.events();return ok;},{caption:T.welcome}).finally(()=>{busy=false;});
  }
- function leave(){const g=api.game();if(busy||!g)return;busy=true;
-  dungeonTransition('leave',()=>{const ok=g.leaveDungeon();api.events();if(ok)api.save();return ok;},{caption:T.outside}).finally(()=>{busy=false;});}
+ /* Dungeon-Fix 4 (Nachprüfung #726: Truhe geöffnet, nichts gewählt – beim Verlassen nahm das Spiel still die „Sagenhaften Maifeldtreter“):
+    Rückfrage wie in WoW, ohne Fließtext: Statt hinauszugehen öffnet sich die Dreierwahl der Endtruhe mit „Noch nichts gewählt“ und dem
+    Ausgangssymbol. Wer wählt, geht gleich hinaus; wer das Fenster schließt, bleibt. Wer danach trotzdem geht, packt das erste Teil ein (Meldung).
+    Gewählt statt „Nachholen bis zum Tagesreset“: kein neuer Ort, kein Hinweis auf eine Frist – die Wahl passiert dort, wo man gerade geht.
+    Liegengebliebene Beutel sammelt das Verlassen weiter ein; was drin war, steht danach als kurze Meldung (nach dem Übergang, nicht darunter). */
+ function leave(){const g=api.game();if(busy||!g)return;
+  const bag=chestPending(g);if(bag&&!bag.leaveAsk&&api.showLoot){bag.leaveAsk=true;leaveAfter=bag.id;api.events();api.showLoot(bag.id);return;}
+  busy=true;leaveAfter=null;const run=g.instance?.run;
+  dungeonTransition('leave',()=>{const ok=g.leaveDungeon();api.events();if(ok)api.save();return ok;},{caption:T.outside}).then(ok=>{const got=ok&&run?.gathered;if(!got)return;run.gathered=null;
+   setTimeout(()=>{if(got.items||got.coins)api.toast(T.lootGatheredShort(got.items,got.coins));if(got.chest)api.toast(T.chest.leaveTaken(got.chest));},250);}).finally(()=>{busy=false;});}
+ /** Nach der Wahl in der Rückfrage geht es gleich hinaus (Aufruf je Anzeige-Takt über tracker()). */
+ function leaveWhenChosen(g){if(!leaveAfter||busy)return;const bag=g.rpg.loot.find(b=>b.id===leaveAfter);if(bag?.items?.length){if(!api.popups.isOpen?.('loot'))leaveAfter=null;/* Fenster zu, ohne Wahl: bleiben */return;}leaveAfter=null;api.popups.close?.('loot');leave();}
  // ── Journal
  /** back (Hotfix 2026-09-25, Prüfer): von der Eingangskarte geöffnet – das Journal ersetzt sie im Einzelfenster-System; schließt der Spieler
   *  das Journal (X, Esc), kommt die Eingangskarte zurück. Öffnet stattdessen ein anderes Fenster oder beginnt der Dungeon, bleibt es dabei. */
@@ -55,16 +66,20 @@ export function mountDungeonUI(api){
  /** Verfolgung im Dungeon (statt Weltauftrag): Siegel und Beweise als Felder, dazu der nächste lebende Boss; Klick öffnet dessen Journal. */
  /** Verfolgung im Dungeon (Etappe 2, Etappe 4 Teil B): Flügel heute (je Flügel das Siegel seines Trägers), Beweise gegen Big B (gefunden
   *  bzw. im Thronsaal vorgelegt) und der nächste lebende Boss (Klick: Journal). Jede Zeile hat ein Wort, jedes Symbol einen Tooltip. */
- function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(!body||!run)return;const def=run.def,W=U4.tracker,st=e4bState(g),today=dungeonToday(g,run.id),boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
+ function tracker(panel){const body=panel?.querySelector('.qt-body'),g=api.game(),run=g?.instance?.run;if(g&&run)leaveWhenChosen(g);if(!body||!run)return;const def=run.def,W=U4.tracker,st=e4bState(g),today=dungeonToday(g,run.id),boss=def.bosses.find(b=>DUNGEON_BOSSES[b.id]&&!run.killed.has(b.id));
   const wings=(def.wings||[]).map(w=>{const b=DUNGEON_BOSSES[w.boss],seal=def.bosses.find(x=>x.id===w.boss)?.seal,done=!!b&&(today.wings.includes(w.id)||run.seals.has(seal));return {w,name:b?.name||'',done,missing:!b};}),built=wings.filter(x=>!x.missing),done=built.filter(x=>x.done).length;
   const ev=st.evidence,got=ev.filter(x=>x.state!=='missing').length,names=U4.evidence;
   const span=(icon,label,note)=>`<span class="dg-track-ico" tabindex="0" data-tooltip-label="${esc(label)}" data-tooltip-note="${esc(note)}">${dicon(icon,18)}</span>`;
   const html=`<div class="qt-quest is-focus dg-track"><b id="questTitle" class="qt-title">${esc(def.name)}</b><div id="questTasks">`
    +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(W.wings)}" data-tooltip-note="${esc(W.wingsNote)}"><span class="dg-track-icons">${wings.map(x=>span(x.done?'seal':x.missing?'seal-empty:dim':'seal-empty',W.wingTip(x.w.name,x.name),x.missing?W.wingMissing:x.done?W.wingDone:W.wingOpen)).join('')}</span><span class="dg-track-word">${esc(U.tracker.seals)}</span><b class="qt-count">${done}/${built.length}</b></div>`
    +`<div class="quest-task dg-track-row" data-tooltip-label="${esc(W.proofs)}" data-tooltip-note="${esc(W.proofsNote)}"><span class="dg-track-icons">${ev.map(x=>span(x.state==='shown'?'lens':x.state==='found'?'lens-found':'lens-empty',names[x.id]?.name||x.id,x.state==='shown'?W.proofShown+' · '+(def.evidence.effects[x.id]?.note||''):x.state==='found'?W.proofFound:W.proofMissing+' · '+(names[x.id]?.hint||''))).join('')}</span><span class="dg-track-word">${esc(U.tracker.proofs)}</span><b class="qt-count">${got}/${ev.length}</b></div>`
-   +(boss?`<div class="quest-task dg-track-row dg-track-boss" role="button" tabindex="0" data-dg-track-boss="${esc(boss.id)}" data-tooltip-label="${esc(DUNGEON_BOSSES[boss.id].name)}" data-tooltip-note="${esc(U.map.bossNote)}"><span class="dg-track-icons">${dicon('skull',18)}</span><span>${esc(DUNGEON_BOSSES[boss.id].name)}</span></div>`:'')
+   +endRows(run)+(boss?`<div class="quest-task dg-track-row dg-track-boss" role="button" tabindex="0" data-dg-track-boss="${esc(boss.id)}" data-tooltip-label="${esc(DUNGEON_BOSSES[boss.id].name)}" data-tooltip-note="${esc(U.map.bossNote)}"><span class="dg-track-icons">${dicon('skull',18)}</span><span>${esc(DUNGEON_BOSSES[boss.id].name)}</span></div>`:'')
    +`</div></div><div id="questOthers" class="quest-others"></div>`;
   if(body.dataset.sig===html)return;body.dataset.sig=html;body.innerHTML=html;paintDungeonIcons(body);
-  if(!body.dataset.dgBound){body.dataset.dgBound='1';body.addEventListener('click',e=>{const b=e.target.closest('[data-dg-track-boss]');if(b){e.stopPropagation();openJournal(b.dataset.dgTrackBoss);return;}if(touchTip(e))e.stopPropagation();});}}
+  if(!body.dataset.dgBound){body.dataset.dgBound='1';body.addEventListener('click',e=>{const b=e.target.closest('[data-dg-track-boss]');if(b){e.stopPropagation();openJournal(b.dataset.dgTrackBoss);return;}
+   /* Dungeon-Fix 3: Klick auf Endtruhe bzw. Hinterausgang setzt die Wegmarke und läuft hin */const end=e.target.closest('[data-dg-track-end]');if(end){e.stopPropagation();const g=api.game(),r=g?.instance?.run,m=r&&endAll(r).find(x=>x.kind===end.dataset.dgTrackEnd);if(m){const pt={floor:m.floor,...toWorld(r.def,m.floor,m.x,m.y)};setDungeonWaypoint(g,pt);g.navigate(pt);api.events?.();}return;}if(touchTip(e))e.stopPropagation();});}}
+ /** Dungeon-Fix 3 (Big-B-Abnahme #721: keine Truhe, kein Ausgang gefunden): nach Big B Endtruhe und Hinterausgang als Zeilen der Verfolgung. */
+ function endAll(run){const d=run.def,seen=new Set(),out=[];for(const f of [d.chest?.floor,d.backExit?.floor].filter(Boolean))for(const m of endMarks(run,f))if(!seen.has(m.kind)){seen.add(m.kind);out.push({...m,floor:f});}return out;}
+ function endRows(run){return endAll(run).map(m=>`<div class="quest-task dg-track-row dg-track-end" role="button" tabindex="0" data-dg-track-end="${esc(m.kind)}" data-tooltip-label="${esc(m.label)}" data-tooltip-note="${esc(m.note)}"><span class="dg-track-icons">${dicon(m.icon,18)}</span><span>${esc(m.label)}</span></div>`).join('');}
  return {openEntry,enter,leave,openJournal,refresh,tracker,act,openVendor:()=>vendor.open(),busy:()=>busy,journalOpen:()=>api.popups.isOpen('journal')?journalBoss:null};
 }

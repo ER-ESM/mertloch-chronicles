@@ -1,7 +1,6 @@
 import {PROFESSION_RULES as R,PROFESSION_UI as T,PROFESSION_TRAINER as TR,PROFESSION_SOURCES as SRC} from './content/index.js';
 import {restoreProfessions,professionPlan,resourcePhase,actionSite,actionName,actionDuration} from './profession-rules.js';
 import {professionWorld} from './profession-world.js';
-import {placeUsables} from './rpg.js';
 export function initProfessions(g,raw){g.professions=restoreProfessions(raw);g.professionCast=null;g.professionCommit=false;g.professionNodes={};}
 export const savedProfessions=g=>structuredClone(restoreProfessions(g.professions));
 export function professionReason(g,site){if(g.dead||g.player.hp<=0||g.player.inCombat>0||g.autoAttack?.enabled||g.casting||g.activity||g.aiming||g.paused)return T.combat;if(g.instance)return T.room;if(site?.anywhere)return '';if(!site||Math.hypot(g.player.x-site.x,g.player.y-site.y)>R.range||!g.world.lineClear(g.player,site))return T.range;return '';}
@@ -19,7 +18,7 @@ export function mountProfessions(host){
  function notify(){host.refresh?.();}
  async function poll(){const game=g(),online=mode();if(polling||game.professionCommit||!game.professionOnline||Date.now()-lastPoll<R.pollMs)return;if(!online?.account||!online.state.connected){game.professionStatus=T.offline;return;}lastPoll=Date.now();polling=true;try{const r=await online.profession({op:'state'});if(game!==g())return;if(r.error)throw Error(r.error);game.professionNodes=r.nodes;game.professionStatus=T.online;}catch{game.professionStatus=T.offline;}finally{polling=false;notify();}}
  const doneText=a=>a.kind==='learn'?TR.learned:a.kind==='train'?TR.trained:T.done;
- function apply(game,save,done=T.done){if(game!==g())return;host.write(save);game.rpg.inventory=structuredClone(save.rpg.inventory);game.rpg.coins=save.rpg.coins;game.professions=restoreProfessions(save.professions);placeUsables(game,game.rpg.inventory.map(e=>e.id));game.professionCommit=false;pending=null;host.lock(false);game.emit('rpgChanged');game.emit('save');game.toast(done);lastPoll=0;notify();}
+ function apply(game,save,done=T.done){if(game!==g())return;host.write(save);game.rpg.inventory=structuredClone(save.rpg.inventory);game.rpg.coins=save.rpg.coins;game.professions=restoreProfessions(save.professions);/* Dungeon-Fix 2: nichts ungefragt auf die Leiste */game.professionCommit=false;pending=null;host.lock(false);game.emit('rpgChanged');game.emit('save');game.toast(done);lastPoll=0;notify();}
  async function retry(){if(!pending)return;const p=pending;if(p.busy)return;p.busy=true;try{const r=await p.online.profession(p.body);if(p.game!==g())return;if(r.stale&&r.server?.save){host.pull(r.server.save);return;}if(r.error){p.game.professionCommit=false;pending=null;host.lock(false);p.game.toast(r.error);return;}apply(p.game,r.save,doneText(p.action));}catch{host.lock(true,T.locked,retry);}finally{p.busy=false;notify();}}
  function finish(c){const game=g();if(professionReason(game,c.site)){game.toast(T.cancelled);return;}const snapshot={...game.save(),savedAt:Date.now()};
   if(c.online){game.professionCommit=true;pending={game,action:c.action,online:c.online,body:{op:'finish',id:c.id,token:c.token,save:snapshot}};host.lock(true,T.pending);retry();return;}

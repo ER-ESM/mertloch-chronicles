@@ -12,7 +12,10 @@ export const COMPANION_RULES=Object.freeze({
  // dort bei rund 15 % eines Helden (40 Schaden/s je Söldner gegen 240–270), Ziel sind rund 85 %. Gilt NUR im Dungeon (companions.js
  // refreshStats über inDungeon); die offene Welt bleibt unverändert. Schaden trägt Angriffe, heal die Heilung, health das Leben.
  // Messung: scripts/dungeon-sim.mjs, Bericht docs/DUNGEON-ETAPPE-1-2026-09-25.md.
- instanceFactor:{damage:4.8,heal:2.5,health:1.8},
+ // Held aktiv (2026-09-26, docs/DUNGEON-AKTIV-2026-09-26.md): Schaden 4.8 → 3.4 – ein Söldner allein ist im Dungeon so stark wie ein Held. Kämpft der
+ // Held mit, sind sie „angefeuert“ (content/dungeon-einsatz.js EINSATZ_RULES.rally, +40 % → 4,76, also wie bisher); ein passiver oder gefallener
+ // Held kostet damit spürbar Zeit. Heilung und Leben unverändert.
+ instanceFactor:{damage:3.4,heal:2.5,health:1.8},
  reaction:.35,                // Sekunden, bis ein Begleiter auf eine Ansage (Fläche, Zauber) reagiert
  // Dungeon Etappe 3 (E-71): Behauptung und Nachsatz. Söldner warten den Nachsatz ab und reagieren dann auf die Wahrheit. lieError =
  // Anteil der Lügen, auf die ein Söldner doch hereinfällt: Er läuft nach der Behauptung und bleibt lieConfusion Sekunden nach dem
@@ -73,7 +76,9 @@ export const COMPANION_ABILITIES=Object.freeze({
  sweep:     {name:'Rundumschlag',      kind:'cleave',   cooldown:7,   power:.8, radius:70, minTargets:2},
  // Dungeon Etappe 1 (E-71): Heil-Söldner helfen dem gefallenen Helden auf – einmal je Kampf, 8 s Wirkzeit, 35 % Leben wie das
  // Aufhelfen unter Mitspielern (E-44, reviveHere). Nur im Dungeon: nur dort läuft die Welt weiter, wenn der Held fällt.
- revive:    {name:'Aufhelfen',         kind:'revive',   cooldown:0,   cast:8,    share:.35, range:90}
+ // Dungeon-Fix 3 (Big-B-Abnahme #721: nach dem Sieg half niemand mehr auf): Nach dem Kampf hilft er ohne Begrenzung auf, wie die
+ // Wiederbelebung nach dem Kampf in WoW – afterCast s Wirkzeit, afterShare Leben.
+ revive:    {name:'Aufhelfen',         kind:'revive',   cooldown:0,   cast:8,    share:.35, range:90, afterCast:3, afterShare:.5}
 });
 
 /** Anheuerbare Söldner. `look` = Klassen-ID für die Heldengrafik (bis eigene Sprites kommen). */

@@ -53,10 +53,13 @@ export const DUNGEONS={
    {id:'thronsaal',floor:'k2',rects:[[46,4,16,32]],sign:'Thronsaal',truth:'echter Basaltdom, verkleidet mit Pappe',prospect:'Thronsaal',arena:'bigb'},
    {id:'schatz',floor:'k2',rects:[[48,38,12,8]],sign:'Schatzkammer',truth:'Abstellraum',prospect:'Schatzkammer'}
   ],
-  // Etappe 3 (E-71): Ende des Dungeons. Die Endtruhe steht in der Schatzkammer und öffnet sich nach Big B einmal je Durchgang
-  // (Wahl aus drei seltenen Teilen plus Siegelmarken, DUNGEON_REWARDS.chest); der Hinterausgang daneben führt zurück auf die Burgstraße.
-  chest:{floor:'k2',x:54,y:40.5,range:4,boss:'bigb'},
-  backExit:{floor:'k2',x:58,y:44,range:3.5},
+  // Etappe 3 (E-71): Ende des Dungeons. Die Endtruhe öffnet sich nach Big B einmal je Durchgang (Wahl aus drei seltenen Teilen plus
+  // Siegelmarken, DUNGEON_REWARDS.chest); der Hinterausgang in der Schatzkammer führt zurück auf die Burgstraße.
+  // Dungeon-Fix 3 (Big-B-Abnahme #721: aus der Arena waren Truhe und Ausgang nicht zu sehen): Die Truhe erscheint nach Big Bs Tod mitten
+  // im Thronsaal (appear), von überall im Saal zu sehen; der Hinterausgang trägt ein grünes Notausgang-Schild, ein zweites hängt über
+  // der Tür zur Schatzkammer (sign, Welt-Einheiten wie x/y).
+  chest:{floor:'k2',x:54,y:20,range:4,boss:'bigb',appear:true},
+  backExit:{floor:'k2',x:58,y:44,range:3.5,sign:{x:54,y:35}},
   // Türen verbinden Räume; `lock` hält sie zu: boss = offen, wenn der Boss liegt; seals = braucht die Siegel;
   // arena = zu, solange der Boss dieses Raums kämpft.
   doors:[
@@ -145,7 +148,7 @@ export const DUNGEONS={
    {id:'weinkeller-ost',room:'weinkeller',at:[25,12],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
    {id:'weinkeller-wache',room:'weinkeller',at:[15,17],members:['baumarktritter','maklerpraktikant','pappschuetze']},
    {id:'weinkeller-fass',room:'weinkeller',at:[25,5],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
-   {id:'gewoelbe-nord',room:'gewoelbe',at:[39,5],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
+   {id:'gewoelbe-nord',room:'gewoelbe',at:[39,5],members:['baumarktritter','maklerpraktikant','pappschuetze']},/* Dungeon-Fix 2: vorher zwei Ritter, Makler, Schütze – im engen Gang legte das mit typischer Ausrüstung den Schutz; jetzt wie Rittersaal West/Ost */
    {id:'gewoelbe-west',room:'gewoelbe',at:[19.5,42.5],members:['kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte','kellerratte']},
    {id:'gewoelbe-sued',room:'gewoelbe',at:[30,42],members:['maklerpraktikant','securityazubi','securityazubi','baumarktritter']},
    {id:'gewoelbe-ost',room:'gewoelbe',at:[38,16],members:['baumarktritter','baumarktritter','maklerpraktikant','pappschuetze']},
@@ -171,7 +174,7 @@ export const DUNGEONS={
    effects:{
     mietvertrag:{noLie:'parkett',icon:'lens',note:'Mietvertrag: Das Parkett lügt nicht mehr.'},
     leihschein:{noLie:'kulisse',icon:'lens',note:'Leihschein: Die Pappkulisse lügt nicht mehr.'},
-    kirmesurkunde:{taken:.1,icon:'lens',note:'Kirmes-Urkunde: Big B nimmt 10 % mehr Schaden.'}},
+    kirmesurkunde:{taken:.1,icon:'lens',note:'Kirmes-Urkunde: Big B nimmt 10 % mehr Schaden. Seine Wut kommt 0:25 früher.'}},
    all:{confessAt:.3,note:'Alle drei Beweise: Geständnis schon bei 30 %.'},
    // Etappe 4 Teil B: Fundstellen (Plan 4.5). Leihschein in der Pelzmanteltasche auf dem Carport-Dach („Das Dach ist nur Deko.“),
    // Mietvertrag von Vermieter Volker (Ereignis im Burgverlies), Kirmes-Urkunde im Presseamt – erst nach Reichweiten-Rita, sobald sie gebaut ist.
@@ -199,15 +202,15 @@ export const DUNGEONS={
 // Etappe 1 (E-71): Leben und Schaden gegen die gemessene Gruppe mit Instanz-Söldnern gesetzt (scripts/dungeon-sim.mjs): ein Pack
 // dauert mit Held und vier Söldnern 20–40 s und kostet den Heiler spürbar Arbeit, ohne die Gruppe umzuwerfen.
 export const DUNGEON_ENEMIES={
- securityazubi:{name:'Security-Azubi',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:8,hp:13000,damage:3.5,xp:45,speed:56,aggroRange:96,roamRadius:14,castSet:'d-azubi',auto:'warden',
+ securityazubi:{name:'Security-Azubi',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:8,hp:13000,damage:3,xp:45,speed:56,aggroRange:96,roamRadius:14,castSet:'d-azubi',auto:'warden',
   look:'Junger Mann in zu großem schwarzem Polo „SECURITY", Funkgerät aus dem Spielzeugladen, Kaugummi'},
  pappwache:{name:'Pappwache',type:'cultist',skin:'warden',art:'kegler',family:'schlosstrash',level:8,hp:1,xp:5,speed:1,aggroRange:0,roamRadius:0,behavior:'neutral',cardboard:true,castSet:'d-azubi',auto:'warden',
   look:'Ritter in voller Rüstung. Aus Pappe. Mit Klebeband am Boden befestigt'},
- pappschuetze:{name:'Pappschütze',type:'cultist',skin:'warden',art:'scrounger',family:'schlosstrash',level:8,hp:8500,damage:3,xp:45,speed:48,aggroRange:140,roamRadius:8,castSet:'d-schuetze',auto:'scrounger',
+ pappschuetze:{name:'Pappschütze',type:'cultist',skin:'warden',art:'scrounger',family:'schlosstrash',level:8,hp:8500,damage:2.3,xp:45,speed:48,aggroRange:140,roamRadius:8,castSet:'d-schuetze',auto:'scrounger',
   look:'Security-Azubi hinter einer Pappzinne, Wasserpistole in Neonfarben'},
- baumarktritter:{name:'Baumarkt-Ritter',type:'cultist',skin:'warden',art:'jga',family:'schlosstrash',level:9,hp:26000,elite:true,damage:2.6,xp:90,speed:50,aggroRange:100,roamRadius:10,castSet:'d-ritter',auto:'oberpraktikant',
+ baumarktritter:{name:'Baumarkt-Ritter',type:'cultist',skin:'warden',art:'jga',family:'schlosstrash',level:9,hp:25000,elite:true,damage:2.2,xp:90,speed:50,aggroRange:100,roamRadius:10,castSet:'d-ritter',auto:'oberpraktikant',
   look:'Rüstung aus Regenrinne und Lüftungsrohr, Helm aus einem Eimer, Schild aus einer Mülltonnendeckel'},
- maklerpraktikant:{name:'Makler-Praktikant',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:9,hp:12000,damage:3,xp:50,speed:54,aggroRange:100,roamRadius:10,castSet:'d-makler',auto:'inspector',
+ maklerpraktikant:{name:'Makler-Praktikant',type:'cultist',skin:'warden',art:'inspector',family:'schlosstrash',level:9,hp:12000,damage:2.3,xp:50,speed:54,aggroRange:100,roamRadius:10,castSet:'d-makler',auto:'inspector',
   look:'Anzug von der Konfirmation, Tablet, Visitenkarten in beiden Hosentaschen'},
  kellerratte:{name:'Pfandratte',type:'wolf',skin:'badger',family:'schlosstrash',level:9,hp:2600,damage:2,xp:12,speed:82,aggroRange:90,roamRadius:22,castSet:'d-ratte',auto:'badger',
   look:'Kellerratte mit Kronkorken im Maul, kommt nie allein'},
@@ -237,6 +240,7 @@ export const DUNGEON_ENEMIES={
 export const DUNGEON_BOSSES={
  gerd:{name:'Gästeliste-Gerd',title:'Sicherheitschef · Big B Protection (Ein-Mann-Betrieb)',type:'boss',skin:'horst',art:'sigi',family:'gerd',
   level:8,hp:65000,damage:3.5,xp:600,lootMoment:true,speed:46,aggroRange:84,roamRadius:6,leash:220,castSet:'d-gerd',auto:'horst',
+  enrage:{after:130,every:5,damage:1.5},/* Held aktiv (2026-09-26): Sperrstunde – mit aktivem Held 85–100 s, ohne ihn nicht zu schaffen */
   look:'Breiter Mann im zu kleinen schwarzen Anzug, Klemmbrett, Kinder-Headset, Sonnenbrille im Keller',
   phases:[{at:.5,summon:{kind:'securityazubi',count:2,hp:.35}},{at:.25,summon:{kind:'securityazubi',count:2,hp:.35},castSet:'d-gerd2'},{at:.15}],
   fall:{rect:[2,20,5,6],to:{floor:'k1',x:12,y:9},below:.5}},
@@ -247,9 +251,25 @@ export const DUNGEON_BOSSES={
  // reach = +Anteil Schaden je lebendem Follower („Reichweite"). confess = Geständnis: ab `at` (mit allen Beweisen evidence.all.confessAt)
  // lügt er nicht mehr, mit allen drei Beweisen nimmt er dann taken mehr Schaden. Phasen: 70 % Follower, 40 % Das Schloss bröckelt, 15 % Geständnis (nur Anzeige; ausgelöst über confess).
  bigb:{name:'Big B',title:'Freiherr von und zu Burgstraße · selbsternannt',type:'boss',skin:'horst',art:'klaus',family:'bigb',tint:{color:'#5b2d86',alpha:.34},
-  level:10,hp:146000,damage:2.2,xp:1500,lootMoment:true,final:true,speed:44,aggroRange:92,roamRadius:4,leash:300,castSet:'d-bigb',auto:'horst',
+  level:10,hp:140000,damage:2.2,xp:1500,lootMoment:true,final:true,speed:44,aggroRange:92,roamRadius:4,leash:300,castSet:'d-bigb',auto:'horst',
   look:'Mann um die 45, Pelzmantel aus dem Kostümverleih, Perücke mit Zopf, Goldkette aus goldlackierten Kronkorken, Siegelring aus Messing, Handy am Selfie-Stick mit Ringlicht',
-  enrage:{after:360,every:30,damage:.5},reach:.08,confess:{at:.15,taken:.1},
+  // Held aktiv (2026-09-26): Wut nach 4:50 statt 6:00 und härter (alle 5 s +150 %) – mit aktivem Held 170–200 s, ein passiver Held kam live
+  // nach 3 min mit 3:00 Rest an. docs/DUNGEON-AKTIV-2026-09-26.md.
+  // Dungeon-Fix 6 (Prüferin #741, docs/DUNGEON-FIX6-2026-09-26.md): sooner = so viele Sekunden früher, wenn der Kampf leichter ist – Rita liegt
+  // (ein Follower, keine Reichweite) bzw. die Kirmes-Urkunde liegt vor (+10 % Schaden). Ohne das gewann eine passive Heldin 35 s vor der Wut
+  // (Simulation: passiv 251–270 s mit allen Beweisen, aktiv 141–157 s). Wut 4:50 → 4:00 (Rita) → 3:35 (alle Beweise).
+  enrage:{after:290,every:5,damage:1.5,sooner:{rita:50,kirmesurkunde:25}},reach:.08,confess:{at:.15,taken:.1},
+  // Dungeon-Fix 4 (Nachprüfung #726: beim Betreten begann sofort der Kampf, keine Gelegenheit für „Beweise vorlegen“): Rollenspiel-Einleitung
+  // wie in WoW. Big B bemerkt niemanden von selbst; der Kampf beginnt erst, wenn der Held den Thron erreicht (reach Kacheln um Big B), ihn mit F
+  // anspricht (talk Kacheln) oder angreift. Dann legt der Held gefundene Beweise vor (Ausreden im Abstand evidence.present.gap), Big B sagt
+  // seinen Begrüßungssatz (line s), erst danach fällt die Tür zu. opener = Anlaufzeit bis zum ersten Zauber, wenn die Gruppe drin ist.
+  // Dungeon-Fix 5 (Prüfer #728): keep = Hysterese des F-Hinweises (er geht erst jenseits von talk + keep Kacheln). Nach der Rede wartet Big B
+  // (WoW-Muster), bis der Held angreift oder den Nahbereich reach neu betritt; opener zählt ab diesem echten Kampfbeginn.
+  intro:{reach:5,talk:13,keep:3,line:3,opener:6},
+  // Dungeon-Fix 7 (Prüferin #770: „Big B hat Spielergröße“): Zeichenmaßstab im Dungeon statt der ×1,35 aller Bosse (dungeon-actors.js). Gemessen vorher
+  // 46 Welteinheiten mit Krone gegen 28–29 der Söldner (1,6×, ohne Krone 1,46×); im Getümmel verdeckten Namensschilder und Zahlen der Söldner seinen Kopf.
+  // Jetzt ×1,5: der größte im Dungeon, ohne Krone gut 1,6× Heldenhöhe. Der Gag bleibt über die Proportionen (Mantel am Boden, Ärmel über den Händen).
+  drawScale:1.5,
   phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]},
  // ── Etappe 4 Teil A „Die restlichen Bosse“ (E-71, Plan 7.2–7.5). Zahlen gegen die gemessene Gruppe gesetzt (scripts/dungeon-sim.mjs,
  // Korridor 70–110 s mit Held und vier Söldnern). Figuren: vorhandene Katalogfiguren mit Tönung (tint) in Bossgröße, keine neue
@@ -259,7 +279,8 @@ export const DUNGEON_BOSSES={
  // sign.stack – beim letzten Stapel „VERKAUFT!“: alle fliegen aus der Wohnung, der Kampf setzt zurück. via = je Eingang ein Punkt, den sie
  // vorher besichtigen (Laminat bewundern), bevor sie zum Tisch gehen.
  expose:{name:'Frau Dr. Exposé',title:'Immobilienberaterin · Dr. (nicht gefragt)',type:'boss',skin:'horst',art:'gisela',family:'expose',tint:{color:'#f0826c',alpha:.32},
-  level:9,hp:66000,damage:2.8,xp:800,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-expose',auto:'tablet',
+  level:9,hp:63000,damage:2.8,xp:800,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-expose',auto:'tablet',
+  enrage:{after:160,every:5,damage:1.5},/* Held aktiv (2026-09-26): Letztes Angebot */
   look:'Hosenanzug in Lachsrosa, Tablet, Schlüsselbund mit dreißig Schlüsseln für drei Türen, Duftstäbchen im Dutt',
   viewing:{goal:[32,47.2],reach:2.2,doors:[[21.9,43.6],[42.1,43.6]],via:[[26,40.3],[38,40.3]],sign:{damage:.15,stack:5},out:{floor:'k1',x:32,y:36}},
   phases:[{at:.5,castSet:'d-expose2'},{at:.2,castSet:'d-expose3'},{at:.15}]},
@@ -267,13 +288,16 @@ export const DUNGEON_BOSSES={
  // (Zeitgrenze: vom Rand her werden Streifen nass und rutschig).
  korkenkurt:{name:'Kellermeister Korken-Kurt',title:'Sommelier · Jahrgang: gestern',type:'boss',skin:'horst',art:'horst',family:'korkenkurt',tint:{color:'#8c1f45',alpha:.3},
   level:9,hp:86000,damage:3,xp:900,lootMoment:true,speed:44,aggroRange:92,roamRadius:4,leash:240,castSet:'d-kurt',auto:'korkenzieher',
+  enrage:{after:150,every:5,damage:1.5},/* Held aktiv (2026-09-26): Zapfenstreich */
   look:'Weste, Korkenzieher am Gürtel wie ein Colt, Probierlöffel an einer Kette, rote Nase, Tastglas in jeder Hand',
   phases:[{at:.5,castSet:'d-kurt2'},{at:.2,castSet:'d-kurt3'},{at:.15}]},
  // Reichweiten-Rita (Plan 7.3), optional im Presseamt: Blitzlicht mit Sichtlinie (hinter Deckung), Story posten (unterbrechen, sonst
  // Kommentatoren), Greenscreen (vor der grünen Wand unsichtbar, der Schutz zieht sie weg). hidden = Zone vor der Wand (Meter),
  // cover = Deckung im Raum (Meter; sperrt Laufen und Sichtlinie, dungeon.js coverRects). Liegt sie, ruft Big B nur einen Follower.
  rita:{name:'Reichweiten-Rita',title:'Social-Media-Managerin · Reichweite auf Rechnung',type:'boss',skin:'horst',art:'elke',family:'rita',tint:{color:'#35b25a',alpha:.3},
-  level:9,hp:77000,damage:2.6,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
+  // Held aktiv (2026-09-26): Schaden 2,6 → 4,0 – ohne Heiler hielt ihr Schutz über 50 s und der Heiler-Tod blieb fast immer folgenlos
+  // (15 von 15 gewonnen); mit Heiler ändert sich nichts (Kampfdauer 70–110 s, keine Tode).
+  level:9,hp:77000,damage:4,xp:600,lootMoment:true,speed:50,aggroRange:92,roamRadius:4,leash:200,castSet:'d-rita',auto:'ringlicht',
   look:'Frau Mitte zwanzig, Ringlicht auf dem Rücken wie ein Heiligenschein, drei Handys am Gürtel, Greenscreen-Tuch als Umhang, Ansteckmikrofon',
   // Feinschliff 2026-09-26: Leben 68 000 → 77 000 – ohne den Greenscreen-Hänger lag sie im Flügel bei 69–78 s (Ziel 70–110 s, alle fünf Klassen).
   // Feinschliff 2026-09-26: exit = spätestens so viele Sekunden nach dem Greenscreen (bzw. nach dem Spott) ist sie wieder sichtbar, auch wenn
@@ -283,10 +307,10 @@ export const DUNGEON_BOSSES={
   phases:[{at:.5,castSet:'d-rita2'},{at:.15}]},
  // Das halbe Pferd (Plan 7.4), selten (30 % der Durchgänge) in den Stallungen. feeds = Trog (Meter): in range Metern heilt es heal
  // Anteil Leben je Sekunde; „Säuft am Trog“ läuft es hin (retreat), der Schutz zieht es weg. mountArt = das Reittier „Das halbe Pferd“
- // als Figur (MOUNTS.halbespferd: Bogen des Hofpferds, getönt zum Schimmel), bis eigene Grafik freigegeben ist. Beute: Hafersack, 3 % Reittier (DROP_TABLES.halbespferd).
- halbespferd:{name:'Das halbe Pferd',title:'Vorderhälfte eines Schimmels · frisch gestriegelt',type:'boss',skin:'boar',mountArt:'halbespferd',family:'halbespferd',
+ // als Figur (MOUNTS.halbespferd: Bogen des Hofpferds) – nur noch der Rückfall; seit 2026-09-26 zeichnet die Anziehpuppe das Kostüm (dungeon-figuren-art.js). Beute: Hafersack, 3 % Reittier (DROP_TABLES.halbespferd).
+ halbespferd:{name:'Das halbe Pferd',title:'Vorderhälfte eines Fuchses · frisch gestriegelt',type:'boss',skin:'boar',mountArt:'halbespferd',family:'halbespferd',
   level:9,hp:74000,damage:3,xp:500,lootMoment:true,speed:58,aggroRange:92,roamRadius:4,leash:160,castSet:'d-pferd',auto:'huf',
-  look:'Die vordere Hälfte eines Schimmels, frisch gestriegelt, hinten ein sauberer Schnitt mit Pflaster. Es säuft',
+  look:'Die vordere Hälfte eines Fuchses, frisch gestriegelt, hinten ein sauberer Schnitt mit Pflaster. Darunter Jeans und Turnschuhe. Es säuft',
   feeds:{at:[23.6,3.8],range:3.5,heal:.02}}
 };
 
@@ -301,22 +325,22 @@ export const DUNGEON_BOSSES={
 // stehen bleibt, fliegt beim dritten Mal; wer ausweicht, merkt nichts davon.
 export const DUNGEON_CASTS={
  'd-azubi':{cycle:['funk','schubser'],casts:{
-  funk:{name:'Funkspruch',hint:'Unterbrechen',total:2.2,damage:120,pct:.15,interruptible:true,callHelp:{range:240}},
-  schubser:{name:'Schubser',hint:'Ausweichen',total:1.3,damage:180,pct:.25,radius:30,ground:true}}},
+  funk:{name:'Funkspruch',hint:'Unterbrechen',total:2.6,damage:120,pct:.15,interruptible:true,callHelp:{range:120}},
+  schubser:{name:'Schubser',hint:'Ausweichen',total:2.2,damage:180,pct:.25,radius:30,ground:true}}},
  'd-schuetze':{cycle:['wasser','wasser','spritzer'],casts:{
-  wasser:{name:'Wasserpistole',hint:'Ausweichen',total:1.4,damage:160,pct:.2,radius:28,ground:true},
+  wasser:{name:'Wasserpistole',hint:'Ausweichen',total:2.2,damage:160,pct:.2,radius:28,ground:true},
   spritzer:{name:'Dauerspritzer',hint:'Unterbrechen',total:2.4,damage:240,pct:.25,interruptible:true}}},
  'd-ritter':{cycle:['hieb','schild','hieb'],casts:{
-  hieb:{name:'Regenrinnen-Hieb',hint:'Nicht davor stehen',total:1.6,damage:420,pct:.45,cone:{angle:80,range:60},tankSafe:.35},
+  hieb:{name:'Regenrinnen-Hieb',hint:'Nicht davor stehen',total:2.4,damage:420,pct:.3,cone:{angle:80,range:60},tankSafe:.5},
   schild:{name:'Schildwall',hint:'Von hinten treffen',total:1,damage:0,frontGuard:{duration:5,factor:.2}}}},
  'd-makler':{cycle:['provision','expose'],casts:{
   provision:{name:'Provision',hint:'Unterbrechen',total:2.4,damage:0,interruptible:true,healAllies:{share:.12,range:140}},
-  expose:{name:'Exposé verteilen',hint:'Fläche verlassen',total:2,damage:220,pct:.3,radius:40,ground:true}}},
+  expose:{name:'Exposé verteilen',hint:'Fläche verlassen',total:2.2,damage:220,pct:.2,radius:40,ground:true}}},
  'd-ratte':{cycle:['knabbern'],casts:{
   knabbern:{name:'Knabbern',total:.8,damage:60,radius:26}}},
  // Etappe 4 Teil B: Schlossgespenst (Plan 6: „Buhuu · Fläche verlassen“)
  'd-gespenst':{cycle:['buhuu'],casts:{
-  buhuu:{name:'Buhuu',hint:'Fläche verlassen',total:1.8,damage:200,pct:.25,radius:34,ground:true,target:'random'}}},
+  buhuu:{name:'Buhuu',hint:'Fläche verlassen',total:2.2,damage:200,pct:.25,radius:34,ground:true,target:'random'}}},
  'd-gerd':{cycle:['liste','rausschmiss','dresscode','rausschmiss'],casts:{
   liste:{name:'Du stehst nicht auf der Liste',hint:'Unterbrechen',total:2.4,damage:420,pct:.3,target:'random',interruptible:true},
   rausschmiss:{name:'Rausschmiss',hint:'Seitlich stehen',total:1.8,damage:650,pct:.6,cone:{angle:70,range:88},tankSafe:.25,knockback:64,brand:{name:'Hausverbot',duration:20,bonus:.6}},
@@ -341,29 +365,39 @@ export const DUNGEON_CASTS={
  //   eine Parade des Helden bzw. „Deckel hoch" des Schutz-Söldners beim Treffer löscht alle Stapel.
  // interrupts n: bricht erst nach n Unterbrechungen · selfHeal: Anteil Leben, wenn der Zauber durchkommt · summon: Adds am Zauberende ·
  // say: Spruch beim Zauberbeginn (keine Lüge).
+ // Dungeon-Fix 3 (Big-B-Abnahme #721: „Nachsatz stand nur noch 1,3 s in der Leiste – knapp“): Die Kanonenkugel dauert 3,0 s – nach dem
+ // Nachsatz (tell 1,0 s, V-D5) bleiben 2,0 s, um die Hälfte zu wechseln (WoW-Richtwert). Parkett und Pappkulisse bleiben 2,8/2,6 s: Ihre
+ // Stellen liegen unter dem, den sie treffen – ein Schritt reicht; mit 3,0 s fiel in der Simulation eine Gruppe (Dieter, Seed 8).
+ // Dungeon-Fix 4 (Nachprüfung #726: Richtungszeilen standen bei den Blicken des Prüfers nur 1,4/1,2/0,1 s da): 3,2 s – nach dem Nachsatz
+ // bleiben 2,2 s. Die Warnleiste zeigt die Handlung im selben Takt wie der Nachsatz (gemessen, docs/DUNGEON-FIX4-2026-09-26.md); mit der Reserve
+ // liegt auch der erste Wert, den die Leiste zeigt, sicher über 2,0 s. 3,4 s kippte in der Simulation Dieter/Seed 8 (vier Söldner am Boden).
+ // Dungeon-Fix 5 (Prüfer #728: „nach dem Nachsatz nur noch 0,2 s“): Ziel mindestens 2,0 s ab sichtbarer Handlungszeile in jeder Lügen-Variante.
+ // Kanonenkugel (alle Phasen) bleibt 3,2 s (2,2 s nach dem Nachsatz); Parkett und Pappkulisse jetzt auch 3,2 s statt 2,8/2,6 s – ohne die
+ // passenden Beweise lügen auch sie, nach dem Nachsatz blieben 1,8/1,6 s. Den Abstand danach zu kürzen (gleicher Takt) nahm in der Simulation dem
+ // Profil „folgt der Behauptung“ zweimal jeden Tod – daher nur länger. Gemessen im Spiel: docs/DUNGEON-FIX5-2026-09-26.md.
  'd-bigb':{cycle:['kanone','anwalt'],tracks:[{cast:'siegelring',every:12,first:6}],casts:{
-  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:2.6,damage:700,pct:.6,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
   anwalt:{name:'Mein Anwalt ruft gleich an',hint:'Unterbrechen',total:2.4,damage:480,pct:.3,target:'random',interruptible:true,say:'Das ist nur ein Anruf.'},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Phase 2 „Follower" (70–40 %): Live-Schalte ruft Follower, Kanonenkugel zweimal hintereinander (1 s dazwischen), das Parkett.
  'd-bigb2':{cycle:['live','kanone','kanone','parkett'],gaps:{1:1},tracks:[{cast:'siegelring',every:12,first:4}],casts:{
   live:{name:'Live-Schalte',hint:'Adds zuerst',total:2.2,damage:0,summon:{kind:'follower',count:3},lie:{claim:'Ich mach nur ein Foto!',truth:'… mit Follower.',tell:1}},
-  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:2.6,damage:700,pct:.6,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
+  kanone:{name:'Ritt auf der Kanonenkugel',hint:'Nachsatz abwarten',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.5],[.5,1]],claim:0,truth:[1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… sagt man. Rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… sagt man. Links.'}},
-  parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:2.8,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
+  parkett:{name:'Das Parkett ist echt',hint:'Fläche verlassen',total:3.2,damage:420,pct:.35,ground:true,radius:28,circles:6,lie:{claim:'Der Boden ist sicher!',truth:'… war er.',tell:1}},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Phase 3 „Das Schloss bröckelt" (40–0 %): Pappkulisse mit Trümmern, zwei Kanonenkugel-Bahnen zugleich (nur die Mitte ist sicher),
  // Am eigenen Schopf (zweimal unterbrechen, sonst heilt er 5 %). Ab dem Geständnis lügt er nicht mehr.
  'd-bigb3':{cycle:['kulisse','kanone3','schopf'],tracks:[{cast:'siegelring',every:12,first:4}],casts:{
-  kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:2.6,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
-  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:2.6,damage:700,pct:.6,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
+  kulisse:{name:'Pappkulisse fällt',hint:'Fläche verlassen',total:3.2,damage:380,pct:.3,ground:true,radius:34,circles:4,persist:{duration:8,radius:16,pct:.05},lie:{claim:'Das ist Stuck. Echter Stuck.',truth:'… aus Pappe. Fällt.',tell:1}},
+  kanone3:{name:'Ritt auf der Kanonenkugel',hint:'In die Mitte',total:3.2,damage:700,pct:.7,line:{lanes:[[0,.36],[.64,1]],claim:0,truth:[0,1]},
    lie:{claim:'Ich reite nach LINKS!',truth:'… und rechts.',tell:1,mirror:true,mirrorClaim:'Ich reite nach RECHTS!',mirrorTruth:'… und links.'}},
   schopf:{name:'Am eigenen Schopf',hint:'Zweimal unterbrechen',total:3.5,damage:0,interruptible:true,interrupts:2,selfHeal:.05,say:'Ich zieh mich hier selbst raus!'},
   siegelring:{name:'Siegelring',hint:'Parieren',total:1.2,damage:260,pct:.1,tankDebuff:{id:'zertifikat',name:'Zertifikat',stack:3,taken:.1,duration:30}}}},
  // Follower (Live-Schalte): Selfie mit Blitz auf einen zufälligen Nicht-Schutz.
  'd-follower':{cycle:['selfie'],casts:{
-  selfie:{name:'Selfie mit Blitz',hint:'Fläche verlassen',total:1.6,damage:140,pct:.12,radius:28,ground:true,target:'random'}}},
+  selfie:{name:'Selfie mit Blitz',hint:'Fläche verlassen',total:2.2,damage:140,pct:.12,radius:28,ground:true,target:'random'}}},
  // ── Etappe 4 Teil A (E-71, Plan 7.2–7.5 und Abschnitt 9). Neue Merkmale, alle in dungeon.js (Block „Etappe 4 Teil A“) ausgewertet:
  // summon.goal: Adds laufen zum Ziel des Bosses (viewing.goal) statt zu kämpfen; doors = aus wie vielen Besichtigungseingängen.
  // decoy {count,tell}: von den Bodenstellen (circles) sind count Attrappen; erst nach tell Sekunden bekommen die echten ihren Stempel –
@@ -422,10 +456,10 @@ export const DUNGEON_CASTS={
   story:{name:'Story posten',hint:'Unterbrechen',total:2.2,damage:0,interruptible:true,summon:{kind:'kommentator',count:2}},
   greenscreen:{name:'Greenscreen',hint:'Weg vom Greenscreen',total:1,damage:0,hidden:{duration:6}}}},
  'd-kommentator':{cycle:['stichelei'],casts:{
-  stichelei:{name:'Hate-Kommentar',hint:'Fläche verlassen',total:1.6,damage:120,pct:.1,radius:26,ground:true,target:'random'}}},
+  stichelei:{name:'Hate-Kommentar',hint:'Fläche verlassen',total:2.2,damage:120,pct:.1,radius:26,ground:true,target:'random'}}},
  // Das halbe Pferd: Huftritt nach vorn, Wiehern um sich selbst, Säuft am Trog als Nebentakt.
  'd-pferd':{cycle:['huftritt','wiehern','huftritt'],tracks:[{cast:'saufen',every:15,first:8}],casts:{
-  huftritt:{name:'Huftritt',hint:'Nicht davor stehen',total:1.6,damage:300,pct:.45,cone:{angle:60,range:38},tankSafe:.25},
+  huftritt:{name:'Huftritt',hint:'Nicht davor stehen',total:2,damage:300,pct:.45,cone:{angle:60,range:38},tankSafe:.25},
   wiehern:{name:'Wiehern',hint:'Kurz raus',total:2.2,damage:250,pct:.55,ground:true,radius:28,center:'self',brand:{name:'Ohrensausen',duration:30,bonus:1}},
   saufen:{name:'Säuft am Trog',hint:'Vom Trog wegziehen',total:1,damage:0,retreat:{duration:6},feeds:true}}}
 };
@@ -440,6 +474,14 @@ export const DUNGEON_CASTS={
 // Etappe 4 Teil B: wingChest = kleine Truhe je Flügel: ein Teil (Güte ungewöhnlich, mit rareChance selten, Stufe = Boss + 1) und Siegelmarken.
 // Feinschliff 2026-09-26 (Entscheidung Orchestrator): trashXp = Anteil der EP für Trash-Gegner aus Packs (nicht Bosse, nicht ihre Helfer, nicht das Feld).
 // Mit ehrlich gemessenen Wegen brachte die Wiederholung eines Flügels bis 240 EP/min (Ziel 1–2× Feld, E-71); 0,8 bringt sie ins Band.
+// Dungeon-Fix 2 (2026-09-26): Gleiche Gegner eines Packs fangen versetzt an – der zweite Baumarkt-Ritter schlägt stagger s nach dem ersten zu,
+// statt dass zwei Regenrinnen-Hiebe zugleich auf die Gruppe fallen (vorher der häufigste Tod eines Söldners bei Doppel-Rittern).
+export const DUNGEON_PACK_RULES={stagger:2.5};
+// Dungeon-Fix 3 (Big-B-Abnahme #721: der Held blieb nach dem Sieg tot, der einzige Knopf gab den schon gewonnenen Kampf auf): Nach dem Kampf
+// hilft ein lebender Heil-Söldner auf (content/companions.js revive.afterCast). Lebt keiner, steht der Held standUp s nach Kampfende am Ort
+// auf, mit dem Leben wie beim Aufhelfen unter Mitspielern (E-44, BALANCE.party.reviveHp). Kommt der Heiler nicht binnen healerWait s, steht
+// der Held ebenso selbst auf. Nach einem Wipe (alle lagen, die Gegner sind zurückgesetzt) bleibt es beim Kontrollpunkt.
+export const DUNGEON_GHOST={standUp:3,healerWait:12};
 export const DUNGEON_REWARDS={marksPerBoss:2,daily:{xp:.5,marks:2},repeatXp:1/3,trashXp:.68,wingChest:{marks:1,quality:'uncommon',rareChance:.35},chest:{choices:3,quality:'rare',marks:3,
  slots:['weapon','head','shoulders','body','hands','waist','legs','feet','ring','trinket','neck','wrists']}};
 
@@ -468,6 +510,11 @@ export const DUNGEON_TEXT={
  welcome:'Schloss Big B. Die Garage riecht nach Laminat und Größenwahn.',
  outside:'Zurück auf der Burgstraße. Die Burg ist immer noch eine Garage.',
  lootGathered:n=>n+' liegengebliebene Beutebeutel eingesammelt.',
+ // Dungeon-Fix 4 (Nachprüfung #726): die eingesammelte Beute als kurze Meldung nach dem Übergang, mit dem, was drin war
+ lootGatheredShort:(items,coins)=>'Eingesammelt: '+[items?items+(items===1?' Teil':' Teile'):'',coins?coins+' Pfandmarken':''].filter(Boolean).join(' · '),
+ // Dungeon-Fix 4: Rollenspiel-Einleitung (DUNGEON_BOSSES.bigb.intro) – F am Thron, Zeile „Kampfbeginn“ in der Warnleiste
+ // Dungeon-Fix 5 (Prüfer #728): der Timer zeigt das Ende der Rede – danach wartet Big B, bis der Held angreift oder ganz nah herangeht
+ intro:{address:'Big B ansprechen',pull:'Angreifbar in',pullNote:'Big B hält noch seine Rede. Danach wartet er auf dem Thron, bis du angreifst oder ganz nah herangehst. Erst dann fällt die Tür zu.'},
  step:{stairs:'Treppe',ladder:'Leiter',shaft:'Lichtschacht',spiral:'Wendeltreppe',lift:'Getränkeaufzug',pappwand:'Pappwand'},
  floorTo:{e0:'zum Burghof',k1:'ins Rittergeschoss',k2:'ins Basaltgewölbe'},up:'hoch',down:'runter',
  ladder:{a:'hoch aufs Carport-Dach',b:'runter in den Hof'},
@@ -479,7 +526,7 @@ export const DUNGEON_TEXT={
  arenaClosed:'Die Tür fällt zu. Klemmbrett sagt: kein Durchgang.',arenaOpen:'Die Tür geht wieder auf.',
  wipe:room=>'Alle am Boden. Zurück zum Kontrollpunkt '+room+'. Der Trash bleibt liegen.',
  ghost:'Du liegst. Deine Söldner kämpfen weiter.',wipeAll:'Alle am Boden. Die Gegner gehen zurück auf ihre Plätze.',
- revived:n=>n+' hat dir aufgeholfen.',resumed:'Der Durchgang läuft weiter. Du stehst am letzten Kontrollpunkt.',
+ revived:n=>n+' hat dir aufgeholfen.',stoodUp:'Du rappelst dich auf. Der Kampf ist vorbei.',resumed:'Der Durchgang läuft weiter. Du stehst am letzten Kontrollpunkt.',
  lootMoment:{title:n=>'Beute · '+n,marks:'Siegelmarken',marksNote:'Währung des Schlosses gegen Beutepech. Vermieter Volker tauscht sie später gegen Beute.',
   xp:'Erfahrung',daily:'Tagesbonus',dailyNote:'Erster Abschluss dieses Flügels heute: mehr Erfahrung und Siegelmarken.',keep:'Nichts wird angelegt: vergleichen und selbst anlegen.'},
  fell:'Rausgeschmissen. Du bist die Kellertreppe runtergeflogen und liegst im Rittergeschoss.',
@@ -533,10 +580,13 @@ export const DUNGEON_TEXT={
  // Etappe 3: Kampftexte der neuen Merkmale (kurz, Großbuchstaben wie HAUSVERBOT) und das Ende des Dungeons.
  bigb:{enrage:'DIE GANZE WAHRHEIT',interrupts:(n,m)=>'UNTERBROCHEN '+n+'/'+m,selfHeal:'SELBST RAUSGEZOGEN',reach:'REICHWEITE',
   confess:'GESTÄNDNIS',lieHit:'GELOGEN'},
- chest:{name:'Endtruhe öffnen',title:'Endtruhe · Schatzkammer',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
+ chest:{name:'Endtruhe öffnen',title:'Endtruhe · Thronsaal',label:'Endtruhe',labelNote:'Rechtsklick oder F: drei seltene Teile, eins davon nimmst du mit.',pick:'Wähl ein Teil. Die anderen zwei nimmt Big B mit. Sagt er.',
   pickNote:'Ein Teil nach Wahl, dazu Siegelmarken. Einmal je Durchgang.',empty:'Die Truhe ist leer. Big B hat den Deckel mitgenommen.',
-  locked:'Zu. Erst Big B.'},
- backExit:'Hinterausgang · zurück auf die Burgstraße',
+  locked:'Zu. Erst Big B.',
+  // Dungeon-Fix 4 (Nachprüfung #726: beim Verlassen ohne Wahl nahm das Spiel still das erste Teil): Rückfrage im Beutefenster der Truhe
+  leaveAsk:'Noch nichts gewählt',leaveAskNote:'Wähl ein Teil, dann geht es hinaus. Gehst du trotzdem, packst du das erste ein.',
+  leaveTaken:n=>'Endtruhe: '+n+' eingepackt.'},
+ backExit:'Hinterausgang · zurück auf die Burgstraße',backExitLabel:'Hinterausgang',backExitNote:'In der Schatzkammer am Südende des Thronsaals, unter dem grünen Schild. Rechtsklick oder F: zurück auf die Burgstraße.',
  feat:n=>'Erfolg: '+n,
  cleared:(t)=>'Schloss Big B abgeschlossen in '+t+'. Das Schloss war eine Garage. Die Garage bleibt.',
  repeatXp:'Heute schon besiegt: ein Drittel der Erfahrung.',

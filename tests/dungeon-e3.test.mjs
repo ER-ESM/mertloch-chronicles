@@ -130,8 +130,8 @@ test('Farm-Lücke: Boss-EP beim ersten Sieg des Tages voll, jede Wiederholung am
 });
 
 test('Endtruhe: nach Big B einmal je Durchgang, Wahl aus drei seltenen Teilen plus Siegelmarken, nichts wird angelegt',()=>{
- const g=game(),{b,r}=pullBigB(g,{mercs:false});at(g,'k2',54,40);assert.notEqual(g.interaction()?.kind,'dungeonChest','vor Big B keine Truhe');
- const marks0=g.dungeons['schloss-bigb'].marks;g.kill(b);assert.ok(r.killed.has('bigb'));run(g,.1);at(g,'k2',54,39.5);
+ const g=game(),{b,r}=pullBigB(g,{mercs:false});at(g,'k2',DEF.chest.x,DEF.chest.y);assert.notEqual(g.interaction()?.kind,'dungeonChest','vor Big B keine Truhe');
+ const marks0=g.dungeons['schloss-bigb'].marks;g.kill(b);assert.ok(r.killed.has('bigb'));run(g,.1);at(g,'k2',DEF.chest.x,DEF.chest.y-.5);/* Dungeon-Fix 3: die Truhe steht nach Big B mitten im Thronsaal */
  const it=g.interaction();assert.equal(it?.kind,'dungeonChest','Truhe bietet sich an');assert.equal(it.name,DUNGEON_TEXT.chest.name);
  const bag=g.dungeonChest();assert.ok(bag&&bag.choice===1,'Beutel mit Wahl');assert.equal(bag.items.length,DUNGEON_REWARDS.chest.choices);
  for(const e of bag.items)assert.equal(ITEMS[e.id].rarity,'rare','seltene Teile');assert.equal(new Set(bag.items.map(e=>ITEMS[e.id].slot)).size,3,'drei verschiedene Plätze');

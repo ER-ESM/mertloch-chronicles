@@ -31,7 +31,8 @@ test('Kampf-Klarheit: im Bosskampf keine Sprechblasen in der Welt (außer Mitspi
  const b=bigbOf(g),sp=new BossSpeech(),merc=g.companions[0];sp.update(g);
  sp.bark({enemyId:merc.id,name:merc.name,text:'Endlich Bewegung.',kind:'companion',x:merc.x,y:merc.y},g);
  sp.bark({enemyId:b.id,name:b.name,text:'Ich reite nach LINKS!',kind:'boss',x:b.x,y:b.y},g);
- assert.equal(sp.activeBarks(g).length,2,'ohne Kampf beide');
+ /* Dungeon-Fix 2 (Endabnahme #715): Söldner sprechen im Dungeon nur im Chat, auch ohne Kampf – ihre Blase entsteht gar nicht */
+ assert.deepEqual(sp.activeBarks(g).map(x=>x.kind),['boss'],'ohne Kampf nur der Boss, der Söldner steht im Chat');
  b.aggro=true;b.ai='combat';assert.deepEqual(sp.activeBarks(g),[],'im Bosskampf keine Blase in der Welt');
  assert.ok(BOSS_FIGHT_BARKS.has('player')&&!BOSS_FIGHT_BARKS.has('companion')&&!BOSS_FIGHT_BARKS.has('boss'));
  g.bark(b,'Willkommen auf Schloss Big B!','boss');assert.equal(b.lastBark?.text,'Willkommen auf Schloss Big B!','der Spruch geht in den Bossrahmen');
@@ -79,7 +80,9 @@ test('Kleine Truhe je Flügel: nach dem Siegelträger einmal je Durchgang ein Te
 test('Beweise: Leihschein auf dem Carport-Dach finden, im Thronsaal vorlegen – erst dann greift die Wirkung (Etappe 3), Big B redet sich raus',()=>{
  const g=game(),r=inside(g);quiet(g);const f=DEF.evidence.finds.leihschein;at(g,f.floor,f.x,f.y);assert.equal(act(g,'find').ok,true);
  assert.ok(r.found.has('leihschein')&&!r.evidence.has('leihschein'),'gefunden, nicht vorgelegt');assert.equal(evidenceEffects(r).noLie.size,0,'noch keine Wirkung');
- r.seals.add('siegel-gerd');r.version++;const pr=DEF.evidence.present;at(g,pr.floor,pr.x,pr.y);const it=g.interaction();assert.match(it.name,/Beweise vorlegen \(1\)/);
+ /* Dungeon-Fix 5: solange Big B auf seine Einleitung wartet, legt das Ansprechen am Thron die Beweise vor – das Vorlegen an der Tresortür entfällt */
+ r.seals.add('siegel-gerd');r.version++;const pr=DEF.evidence.present;at(g,pr.floor,pr.x,pr.y);assert.equal(g.interaction(),null,'am Saaleingang kein F');
+ at(g,'k2',54,12+DUNGEON_BOSSES.bigb.intro.reach+2.5);const it=g.interaction();assert.equal(it.act,'address');assert.match(it.name,/Beweise vorlegen \(1\)/);
  assert.ok(dungeonAct(g,it).ok);assert.ok(r.evidence.has('leihschein'));assert.ok(evidenceEffects(r).noLie.has('kulisse'),'Pappkulisse lügt nicht mehr');
  g.events.length=0;run(g,.2);assert.ok(g.events.some(e=>e.type==='bark'&&e.text===DUNGEON_TEXT.bossLines.bigb.excuses.leihschein),'Ausrede');
  assert.equal(g.save().dungeonRun.evidence.includes('leihschein'),true,'im Laufstand');
@@ -130,7 +133,7 @@ test('Erfolge: Beweislast mit Titel „Mieterschützer“, Stempelkarte, Zeit un
  const rita=g.enemies.find(e=>e.bossId==='rita');if(rita)g.kill(rita);
  for(const id of DEF.evidence.ids)r.evidence.add(id);const b=bigbOf(g);b.aggro=true;b.ai='combat';g.adminGod=true;run(g,2);g.kill(b);const feats=g.dungeons['schloss-bigb'].feats;
  assert.ok(feats.includes('beweislast'),'Beweislast '+feats);assert.ok(feats.includes('termin')&&feats.includes('kratzer'),'voller Durchgang schnell und ohne Tod '+feats);
- assert.deepEqual(dungeonTitles(g).map(t=>t.name),['Mieterschützer']);assert.ok(g.toasts.some(t=>/Mieterschützer/.test(t)));
+ assert.deepEqual(dungeonTitles(g).map(t=>t.name),['Mieterschützer']);/* Dungeon-Fix 3: Titel als Einblendung (Ereignis) und Chatzeile statt Kurzmeldung */assert.ok(g.events.some(e=>e.type==='dungeonTitle'&&e.name==='Mieterschützer'));
  const h=game(),r2=inside(h);quiet(h);r2.seals.add('siegel-gerd');r2.version++;r2.deaths=1;const b2=bigbOf(h);b2.aggro=true;b2.ai='combat';h.adminGod=true;run(h,2);h.kill(b2);
  assert.ok(!h.dungeons['schloss-bigb'].feats.includes('termin')&&!h.dungeons['schloss-bigb'].feats.includes('kratzer'),'ohne Gerd im Durchgang kein voller Durchgang');
 });

@@ -17,6 +17,8 @@ export const DUNGEON_UI={
   enter:'Betreten',enterNote:'Hinein in den Dungeon',low:n=>'Erst ab Stufe '+n,lowNote:'Big B lässt dich noch nicht rein.',
   band:'Stufenband',group:'Gruppe',you:'Du',
   empty:'Freier Platz',emptyNote:'Söldner heuerst du direkt hier an.',
+  // Dungeon-Fix 6: Rollen auffüllen wie im Follower-Dungeon (dungeon-entry.js missingRoles)
+  need:r=>'Fehlt noch: '+r,needNote:'Der passende Söldner steht unten vorn. Du kannst auch anders wählen.',suggest:'fehlt in deiner Gruppe',double:r=>'du bist selbst '+r+', doppelt ist ein Sonderfall',
   hire:'Anheuern',hireNote:(cost,role)=>role+' · '+cost+' Pfandmarken',hired:'In deiner Gruppe',noMoney:'Das reicht nicht für den Vertrag.',
   best:'Bestzeit',bestNone:'Noch kein Abschluss',
   loot:'Beute',lootNone:'Beutetabelle folgt',
@@ -32,6 +34,11 @@ export const DUNGEON_UI={
   // Etappe 3: Behauptung und Nachsatz in der Zauberleiste, Wut-Uhr, Reichweite, Geständnis, Beweise im Bossrahmen
   claim:'Behauptung',truth:'Nachsatz',enrageIn:s=>'Wut in '+Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'),enraged:n=>'Wut ×'+n,
   reach:n=>'Reichweite +'+n+' %',confessed:'Geständnis',confessedNote:'Er lügt nicht mehr.',evidence:'Beweis',
+  // Dungeon-Fix 4 (Nachprüfung #726: Lupen und „Geständnis“ erklärten sich nicht): Tooltip mit Schwelle und Wirkung
+  confessedTip:(at,taken)=>'Ab '+at+' % lügt Big B nicht mehr: Der Nachsatz kommt sofort, es gibt keine gestrichelte Behauptung.'+(taken?' Mit allen drei Beweisen nimmt er dazu '+taken+' % mehr Schaden.':''),
+  evidenceTip:'Vorgelegt: ',
+  // Dungeon-Fix 5 (Prüfer #728: der Kampf begann durch den Timer): nach der Rede wartet Big B – kleiner Zustand „bereit“, die Erklärung im Tooltip
+  ready:'bereit',readyLabel:'Bereit zum Kampf',readyNote:'Big B wartet auf dem Thron. Greif ihn an oder geh ganz nah heran – dann fällt die Tür zu und der Kampf beginnt.',
   // Etappe 4 Teil A: Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd), Sprinkler (Kurt)
   provision:(n,pct)=>'Provision ×'+n+' · +'+pct+' %',hidden:'Unsichtbar',hiddenNote:'Vor dem Greenscreen nicht anwählbar. Der Schutz zieht sie weg, sonst tritt sie nach 8 s von selbst heraus.',drinking:'Säuft',drinkingNote:'Am Trog heilt es sich. Vom Trog wegziehen.',wet:n=>'Nass ×'+n,wetNote:'Nasse Streifen vom Rand her: Mitte halten.'},
  // ── Merkmale der Zauber: Symbol (map-symbols.js), Antwort (2–3 Wörter, steht in der Warnleiste) und Tooltip.
@@ -58,7 +65,7 @@ export const DUNGEON_UI={
   track:{name:'Nebenher',answer:'Eigener Takt',tip:'Läuft neben dem Hauptablauf in eigenem Takt, zum Beispiel der Siegelring alle 12 Sekunden.'},
   persist:{name:'Trümmer',answer:'Nicht reintreten',tip:'Die Fläche bleibt liegen und brennt weiter, solange du drinstehst.'},
   interrupts:{name:'Zweimal unterbrechen',answer:'Zweimal unterbrechen',tip:'Bricht erst nach zwei Unterbrechungen ab. Sonst heilt er sich.'},
-  enrage:{name:'Wut',answer:'Vorher legen',tip:'Nach sechs Minuten Kampf: „Die ganze Wahrheit.“ Alle 30 Sekunden 50 % mehr Schaden.'},
+  enrage:{name:'Wut',answer:'Vorher legen',tip:'Zeitgrenze: Danach macht der Boss immer mehr Schaden. Wer mitkämpft, legt ihn vorher (Zahlen je Boss im Bossrahmen und Journal).'},
   reach:{name:'Reichweite',answer:'Follower zuerst',tip:'Jeder lebende Follower gibt Big B 8 % mehr Schaden.'},
   // Etappe 4 Teil A: Attrappen (Exposé), Adds mit Ziel, Sichtlinie und Greenscreen (Rita), Trog (halbes Pferd), nasser Boden (Kurt)
   decoy:{name:'Attrappen',answer:'Stempel abwarten',tip:'Erst sehen alle Kreise gleich aus. Nach dem Stempel treffen nur die echten.'},
@@ -93,6 +100,20 @@ export const DUNGEON_UI={
   waypoint:'Wegmarke',waypointSet:'Wegmarke gesetzt',waypointNote:'Klick setzt eine Wegmarke, Umschalt+Klick läuft hin',
   you:'Du',checkpoint:'Kontrollpunkt',exit:'Rolltor · zurück auf die Burgstraße',seals:'Siegel',proofs:'Beweise',
   door:'Tür',doorLocked:'verschlossen',vault:'Tresortür',vaultNote:(n,m)=>n+' von '+m+' Siegeln'},
+ // ── Dungeon-Fix 3 (Big-B-Abnahme #721: „PARIEREN“ ohne Taste und ohne Schild, in den letzten Sekunden nur das Zitat): Antwort des Helden
+ // je Warnzeile mit seinen Mitteln und seiner Taste (alert-answer.js). Nach dem Nachsatz eine Handlung mit Pfeil, das Zitat klein daneben.
+ answers:{dodge:'Ausweichen',parry:'Parieren',wait:'Nachsatz abwarten',stamp:'Stempel abwarten',right:'Nach rechts',left:'Nach links',middle:'In die Mitte',
+  stayRight:'Rechts bleiben',stayLeft:'Links bleiben',stayMiddle:'Mitte halten',out:'Raus aus der Fläche',stay:'Stehen bleiben',mates:'Söldner unterbrechen',
+  damage:'Schaden drauf',onUnit:n=>'auf '+n,keyNote:'Deine Taste dafür',
+  // Dungeon-Fix 4 (Nachprüfung #726: „LINKS BLEIBEN“ und „MITTE HALTEN“ ohne Taste und Pfeil): „bleiben“ ist eine Handlung – Halten-Symbol,
+  // „Stehen bleiben“ und die sichere Seite als Kappe. Trifft eine Mechanik einen Söldner, ist die Zeile nur Info (Name, keine Taste).
+  side:{left:'links',right:'rechts',middle:'Mitte'},sideNote:'Du stehst schon auf der sicheren Seite. Nicht laufen.',
+  holdNote:'Nichts drücken, stehen bleiben.',laneOut:'Raus aus der Bahn',spotOut:'Fläche verlassen',infoNote:n=>'Trifft '+n+', nicht dich. Nichts zu tun.'},
+ // Kurznamen für die Warnleiste: lieber kürzen als abschneiden (Abnahme #721: „Ritt auf der Kano…“, „Am eige…“).
+ short:{'Ritt auf der Kanonenkugel':'Kanonenkugel','Mein Anwalt ruft gleich an':'Anwalt','Am eigenen Schopf':'Schopf','Das Parkett ist echt':'Parkett',
+  'Pappkulisse fällt':'Pappkulisse','Du stehst nicht auf der Liste':'Liste','Dresscode-Kontrolle':'Dresscode','Grundstück verkauft':'Verkauft',
+  'Provisionsforderung':'Provision','Besichtigungstermin':'Besichtigung','Tag der offenen Tür':'Offene Tür','Jeder zahlt selbst':'Jeder zahlt',
+  'Runde auf mich!':'Runde','Sprinkleranlage':'Sprinkler','Exposé verteilen':'Exposé'},
  // ── Verfolgung im Dungeon: Siegel und Beweise statt Weltauftrag
  tracker:{title:'Schloss Big B',seals:'Siegel',proofs:'Beweise',sealNote:'Drei Siegel öffnen die Tresortür zum Thronsaal.',proofNote:'Beweise schwächen Big B im Thronsaal.',
   boss:'Nächster Boss'},

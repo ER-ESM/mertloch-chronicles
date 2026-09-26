@@ -35,6 +35,7 @@ export function paintSkillIcon(canvas,id,member='dieter',context={}){if(context.
 const NEW_CLASS_ICONS={schorsch:{auto:'potlid',strike:'metal',mark:'currywurst',burst:'food',interrupt:'claw',parry:'potlid',dash:'boots',heal:'water',buff:'sound',throw:'burst',ground:'scrap',senf:'cup',spiritus:'burst',deckelzu:'potlid'},kaethe:{auto:'paper',interrupt:'megaphone',parry:'shield',dash:'boots',heal:'cup',buff:'book',throw:'medal',ground:'paper',reizen:'megaphone',handlesen:'ring',gezinkt:'paper',aermel:'book'}};
 function paintResourceIcon(canvas,id,member){const icon=RESOURCE_SKILLS[id]?.icon||(!SKILL_ICON_ORDER[member]&&(NEW_CLASS_ICONS[member]?.[id]||TALENT_SKILLS[id]?.icon));if(!icon)return false;paintIconTile(canvas,'skill:'+member+':'+id,icon);canvas.dataset.resourceIcon=id;return true;}
 /** Gegenstandsbild als Fähigkeit: Motiv frei auf den Motiv-Canvas, dann Moos-Kachel (ability-tile.js; Atlaskacheln stellt sie frei). */
+export const paintItemTile=(canvas,seed,icon)=>paintIconTile(canvas,seed,icon);/* Held aktiv: Buffleiste (aura-ui.js) */
 function paintIconTile(canvas,seed,icon){paintAbilityTile(canvas,seed,m=>{if(icon&&!drawDetailIcon(m.getContext('2d'),icon,0,0,m.width))paintItem(m,icon);},'icon:'+icon);if(icon)canvas.dataset.icon=icon;return true;}
 /** Käthes Handkarte als Kartenbild im Pixelstil (E-72, Runde 3 „Lernen über das Bild“): Karte auf grünem Stammtischfilz, die Wirkung
  *  groß (Klinge, Schild, Heilung, Knall), Farbe und Rang klein oben rechts, Tempo-Abzeichen unten rechts; Bube mit Goldrand (Trumpf),
