@@ -160,11 +160,11 @@ export function dungeon_kleidung(K){
  function westeRumpfBack(L,p){const c=P.faWein,[cx,cy]=p.C,j=coat(L,p,c,2.4,-13,36,.6);
   line(L,[[cx+1,cy-12],[cx+1,cy+36]],c[3],j);const b=L.piece(P.black);poly(L,[[cx-8,cy+24],[cx+10,cy+24],[cx+10,cy+27],[cx-8,cy+27]],P.black[2]);const s=L.piece(P.metal);poly(L,[[cx-1,cy+23.5],[cx+3,cy+23.5],[cx+3,cy+27.5],[cx-1,cy+27.5]],P.metal[1]);light(L,s,{base:1,hi:0,lo:2,dark:1});}
  /** Kellerschürze (Bistroschürze): flaschengrün vom Bund bis übers Schienbein, Band mit Schleife, Geschirrtuch am Bund. */
- function schuerzeRumpf(L,p){const c=P.dgKurtSchurz,[cx,cy]=p.C,long=p.ride?44:Math.min(94,K.GROUND-14-cy),sw=p.ride?0:(p.sway||0)*3,t=row(p.A,32),x0=cx+t[1]+2,x1=cx+t[2]-2,b0=cx+Math.min(t[1]-8,-24)+sw,b1=cx+Math.max(t[2]+8,22)+sw;
+ function schuerzeRumpf(L,p){const c=P.dgKurtSchurz,[cx,cy]=p.C,long=p.ride?44:Math.min(94,K.GROUND-14-cy),sw=p.ride?0:(p.sway||0)*3,t=row(p.A,32),x0=cx+t[1]+2,x1=cx+t[2]-2,b0=cx+Math.min(t[1]-3,-19)+sw,b1=cx+Math.max(t[2]+3,17)+sw;
   // Faltenwurf: n Bahnen, jede mit Lichtgrat und Schattental; der Saum folgt den Falten (Spitzen an den Graten)
-  const n=5,hem=[];for(let k=0;k<=n*4;k++){const u=k/(n*4);hem.push([b1+(b0-b1)*u,cy+long+Math.cos(u*n*2*Math.PI)*1.6+(k%4===0?.6:0)]);}// weicher Wellensaum (Stoff, kein Zackenrock)
+  const n=3,hem=[];for(let k=0;k<=n*4;k++){const u=k/(n*4);hem.push([b1+(b0-b1)*u,cy+long+Math.cos(u*n*2*Math.PI)*1.6+(k%4===0?.6:0)]);}// weicher Wellensaum (Stoff, kein Zackenrock)
   const a=L.piece(c);poly(L,[[x0,cy+31],[x1,cy+31],...hem],c[2]);light(L,a,{base:2,hi:1,lo:3,dark:2,share:.2});
-  for(let k=0;k<n;k++){const u=(k+.5)/n,top=[x0+(x1-x0)*u,cy+34],bot=[b0+(b1-b0)*((k*2+1)/(n*2)),cy+long-2];
+  for(const [k,u,ub] of [[0,.22,.16],[2,.55,.5],[4,.8,.86]]){const top=[x0+(x1-x0)*u,cy+34],bot=[b0+(b1-b0)*ub,cy+long-2];// drei ungleiche Falten (kein Plissee)
    line(L,[top,[(top[0]+bot[0])/2,(top[1]+bot[1])/2],bot],c[0],a);line(L,[[top[0]+1,top[1]],[bot[0]+2,bot[1]]],c[1],a);line(L,[[top[0]+3,top[1]+4],[bot[0]+5,bot[1]-1]],c[3],a);line(L,[[top[0]+4,top[1]+6],[bot[0]+6,bot[1]-1]],c[4],a);}
   const bd=L.piece(c);poly(L,torso(p,2.8,29,32),c[3]);light(L,bd,{base:3,hi:2,lo:4,dark:1});
   const s=L.piece(c);const bx=cx+t[1]-1;ell(L,bx-2,cy+31,3,2.2,c[2]);limb(L,[[bx-2,cy+33],[bx-5+sw*.5,cy+46]],[1.4,1],c[2]);limb(L,[[bx-1,cy+33],[bx+1+sw*.5,cy+44]],[1.4,1],c[1]);light(L,s,{base:2,hi:1,lo:3,dark:1});// Band mit Schleife
@@ -413,8 +413,8 @@ export function dungeon_kleidung(K){
   L.piece(P.label,1);line(L,[[cx+12,cy+30],[cx+14,cy+38]],P.label[2]);const z=L.piece(P.label);poly(L,[[cx+10,cy+38],[cx+27,cy+38],[cx+27,cy+45],[cx+10,cy+45]],P.label[0]);light(L,z,{base:0,hi:0,lo:1,dark:1});K.text(L,z,cx+12,cy+39,'LEIH',P.red[2],0);}// Leihzettel
  /** Kellnermesser des Bosses: Messinggriff quer in der Faust, lange helle Spirale mit dunklen Gängen, ein Korken steckt auf der Spitze. */
  function korkenBoss(L,p){const [hx,hy]=handPos(p.armN),m=P.dgMessing,o=p.swap?1:-1,Q=(dx,dy)=>[hx+o*dx*1.45,hy+dy*1.45];
-  // Griff: Messing senkrecht durch die Faust, dicke Endknäufe (wie ein Zepter gehalten)
-  const g=L.piece(m);limb(L,[Q(0,-8),Q(0,2),Q(0,12)],[3.2,3.5,3.2],m[1]);light(L,g,{base:1,hi:0,lo:2,dark:2});
+  // Griff: dunkles Holz senkrecht durch die Faust, Endknäufe aus Messing (wie ein Zepter gehalten; hebt sich von der Haut ab)
+  const hz=P.dgMaehne,g=L.piece(hz);limb(L,[Q(0,-8),Q(0,2),Q(0,12)],[3.2,3.5,3.2],hz[1]);light(L,g,{base:1,hi:0,lo:2,dark:1});line(L,[Q(-.8,-6),Q(-.8,10)],hz[0],g);// Griff aus dunklem Holz
   for(const d of [-8,12]){const kn=L.piece(m);ell(L,...Q(0,d),4,3.6,m[2]);light(L,kn,{base:2,hi:0,lo:3,dark:2});}
   // Spindel und Spirale nach außen: hell mit dunklen Gängen und dunkler Kontur
   const sh=L.piece(P.metal);limb(L,[Q(1,2),Q(5,2)],[1.8,1.6],P.metal[1]);light(L,sh,{base:1,hi:0,lo:2,dark:2});
