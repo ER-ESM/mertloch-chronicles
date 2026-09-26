@@ -1305,3 +1305,9 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
 6. **Figurengrafik** (Pelzmantel, Exposé, Korkenzieher, Ringlicht und Hufeisen an der Figur, Kegelkugel blau) geht erst nach Freigabe des Nutzers live (Regel vom 23.09.).
 
 **Ergebnis R4:** Gegenstände **5**, Kniffe 4, Talente 3 (Kernklassen 4,5; Schorsch/Käthe warten auf Codex), Gear an der Figur 4, Gesamt 4.
+
+**Ergebnis R7 (27.09.2026, live #801): alle Familien und der Gesamtlook bei 5.**
+- Codex-Läufe eingebaut: E-72 mit 46 Bildern, MertlochIcons mit 10, dazu 10 Nachbilder. Kniff-Kacheln sind deckend und ohne Blaumisch, Talentmotive 59 ± 1 px.
+- Die Figurengrafik (Pelzmantel, Exposé, Korkenzieher, Ringlicht, Hufeisen, Kegelkugel blau) hat der Nutzer freigegeben.
+- Schorschs Rost-Ebene ist eine Plakette im Kachelstil. Procs zeigen nur einen Leuchtrand, keine Umfärbung (Test `icon-proc-filter`).
+- Kein Blocker, aber offen: Plakette und Stufe am Handy quer, die Kontur der schwarzen Katze (kevin-hunt-12), Hufeisen und Kegelkugel an derselben Hüfte.
