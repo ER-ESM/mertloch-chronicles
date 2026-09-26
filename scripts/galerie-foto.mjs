@@ -9,5 +9,7 @@ try{for(const [w,h,name,mobile] of [[2024,900,'galerie-desktop',false],[400,860,
   await b.send('Emulation.setDeviceMetricsOverride',{width:w,height:h,deviceScaleFactor:1,mobile});await b.send('Page.navigate',{url:pathToFileURL(file).href});await wait(3500);
   await b.screenshot(out+'/'+name+'.jpg');
   const info=await b.evaluate(`(()=>({breite:document.documentElement.scrollWidth,hoehe:document.documentElement.scrollHeight,briefe:document.querySelectorAll('.brief').length}))()`);console.log(name,JSON.stringify(info));
-  await b.evaluate(`document.querySelector('#figur-bigb .ansage-zeile')?.click();window.scrollTo(0,document.querySelector('#figur-bigb').offsetTop-60)`);await wait(700);await b.screenshot(out+'/'+name+'-bigb.jpg');}}
+  await b.evaluate(`document.querySelector('#figur-bigb .ansage-zeile')?.click();window.scrollTo(0,document.querySelector('#figur-bigb').offsetTop-60)`);await wait(700);await b.screenshot(out+'/'+name+'-bigb.jpg');
+  const ge=await b.evaluate(`(()=>{const s=document.querySelector('#geaendert');if(!s)return null;window.scrollTo(0,s.offsetTop-60);return {bilder:s.querySelectorAll('img').length,geladen:[...s.querySelectorAll('img')].filter(i=>i.complete&&i.naturalWidth).length};})()`);
+  if(ge){await wait(900);await b.screenshot(out+'/'+name+'-geaendert.jpg');console.log(name+' seit der Freigabe',JSON.stringify(ge));}}}
 finally{b.close();}

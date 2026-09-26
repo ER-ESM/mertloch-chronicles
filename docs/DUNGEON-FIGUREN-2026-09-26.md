@@ -1,13 +1,24 @@
 # Dungeon-Figuren „Schloss Big B“ · Freigabe und Livegang 2026-09-26
 
-**Status: live seit Build #⟨BUILD⟩ (2026-09-26), standardmäßig an.** Notschalter: URL `?dungeon-figuren=0` oder
+**Status: live seit Build #762 (`12cb6ede`, 2026-09-26), standardmäßig an.** Notschalter: URL `?dungeon-figuren=0` oder
 `localStorage['mertloch-dungeon-figuren']='0'` (zurück auf die Platzhalter). Entwurf, Runden 1–4 und Technik:
 `docs/DUNGEON-FIGUREN-ENTWURF-2026-09-26.md`; Werkzeug: `docs/ANZIEHPUPPE.md`, Abschnitt „Sonderbögen und Motive“.
 
 - **Galerie:** `D:\Dev\_prototypen\dungeon-figuren-2026-09-26\galerie.html` (Stempel „LIVE“, neuer Abschnitt „Seit der Freigabe“ mit
-  Freigabe ↔ jetzt, Vergleich vorher im Spiel ↔ jetzt live).
+  Freigabe ↔ jetzt, Vergleich vorher im Spiel ↔ jetzt live). Inhaltlich neu gezeichnet: Atlas und Weltbild von Big B, halbem Pferd,
+  Korken-Kurt, Makler-Praktikant, Follower (Ringlicht); Spielbilder `boss-bigb-*`, `boss-halbespferd-*`, `boss-korkenkurt-*`,
+  `vergleich-entwurf-{bigb,halbespferd,korkenkurt,trash}`; neu `freigabe-*` (8 Bilder des Freigabe-Stands). Die übrigen Spielbilder sind
+  Neuaufnahmen desselben Stands. Bau: `LIVE_BUILD=762 FREIGABE_BILDER=<ordner> node tools/paperdoll/galerie/bauen.mjs`.
 - **Prüfen:** `CDP_PORT=9730 SERVER_PORT=4530 node scripts/dungeon-figuren-check.mjs` (Teil 0 Standard an, Teil 3 Notschalter,
   Teile 4/5 Vergleich, Teile 6/7 Bildrate an/aus) und `tests/dungeon-figuren.test.mjs`.
+
+## Livegang
+
+- `dungeon-figuren` auf `origin/main` umgesetzt (zuletzt auf Heiler-WoW Teil 1, `0418ab40`), Precache neu gebaut, als Vorspulen nach
+  `main` geschoben; `node scripts/server-refresh.mjs`: „Live: #762 · 12cb6ede ✔“.
+- Gegenprobe auf dem Live-Server (`CHECK_URL=https://mertloch.esm-consultant.de/ ONLY=0,3 node scripts/dungeon-figuren-check.mjs`):
+  Figuren ohne Schalter an; mit Notschalter Platzhalter wie bisher und kein einziger Figurenbogen geladen. Neue Bögen, Beschreibung
+  („Vorderhälfte eines Fuchses“) und Schalterregel werden ausgeliefert.
 
 ## Freigabe
 
