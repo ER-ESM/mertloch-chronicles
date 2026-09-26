@@ -131,6 +131,15 @@ async function memory(cls){
  await js(`document.querySelectorAll('.game-popup:not([data-window=memory]) [data-window-close]').forEach(x=>x.click())`);
  // Die Erinnerung wartet, bis der Held ruhig steht und keine Einblendung läuft.
  const sel='.game-popup[data-window=memory],.memory-card:not([hidden])';
+ /* Heiler-WoW (2026-09-26): Seit E-72 Runde 5 (Kenner-Befund klicks 4, memory-card.js MEMORY_POPUP_KEY) zeigt ein Browser jede Erinnerung nur
+    einmal als Karte; ein weiterer Held im selben Browser schaltet sie still frei (nachlesbar unter Aufträge → Erinnerungen). Die Prüfung erwartete
+    die Karte bei jedem Helden und war deshalb beim zweiten Helden je Größe rot. Jetzt: erster Held je Größe (frischer Browserstand) → Karte wie
+    bisher; jeder weitere → keine Karte, aber freigeschaltet und im Browser gemerkt. */
+ if(cls!==size.classes[0]){
+  const popped=await until(`const e=document.querySelector(${JSON.stringify(sel)});return e&&e.getClientRects().length?e.className:null`,8000,250);
+  const st=await game(`let pop=[];try{pop=JSON.parse(localStorage.getItem('mertloch-memory-popups')||'[]');}catch{}return {seen:g.memories.seen.includes('stempel'),known:pop.includes('stempel')}`);
+  check(!popped&&st.seen&&st.known,tag+': zweiter Held im selben Browser – „Der Stempel“ still freigeschaltet (keine Karte, unter Erinnerungen nachlesbar)',JSON.stringify({karte:popped||null,...st}));
+  return;}
  const el=await until(`const e=document.querySelector(${JSON.stringify(sel)});return e&&e.getClientRects().length?e.className:null`,25000,250);
  check(!!el,tag+': Erinnerung „Der Stempel“ erscheint',el||'');
  if(!el)return;
@@ -206,6 +215,8 @@ try{
  await b.send('Page.addScriptToEvaluateOnNewDocument',{source:`delete Navigator.prototype.serviceWorker;try{if(!sessionStorage.getItem('hofprobe-fresh')){localStorage.clear();sessionStorage.setItem('hofprobe-fresh','1');}localStorage.setItem('mertloch-touch-v1',JSON.stringify({mode:'desktop',size:'normal',layouts:{}}));}catch{}`});
  let first=true;
  for(const run of RUNS){size=run;console.log('== '+run.tag+' · '+PHASE);await b.resize(run.w,run.h);
+  /* Heiler-WoW: jede Größe mit frischem Browserstand – der erste Held dort sieht die Erinnerung als Karte (MEMORY_POPUP_KEY gilt je Browser) */
+  if(!first){/* das Startskript leert den Speicher beim nächsten Laden (nach dem Speichern beim Verlassen der alten Seite) */await js(`sessionStorage.removeItem('hofprobe-fresh');return true`);first=true;}
   for(const cls of run.classes){
    await b.goto(b.url,{passStart:false});await until(`return !!window.game&&!!document.querySelector('#startScreen')`,60000);
    await until(`const s=document.querySelector('#startScreen');if(!s||s.hidden)return null;if(s.dataset.step==='login'){s.querySelector('[data-start=guest]')?.click();return null;}return s.dataset.step;`,30000,250);

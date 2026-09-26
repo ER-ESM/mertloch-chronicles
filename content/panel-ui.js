@@ -111,7 +111,9 @@ export const DIALOG_UI={accept:'Annehmen',later:'Später',more:'Mehr',less:'Weni
 export const HELP_GRID={
  /** Runde 3b (Zielbild 3): Tastenbelegungsliste wie im Vorbild – je Zeile Kappe + ein Wort (label), Tooltip (note) nur bei Mehrwert.
   *  columns: welche Themen in welcher Spalte stehen (Desktop drei, Handy zwei). */
- columns:{desktop:[[0,1],[2],[3,4]],touch:[[0,1],[2]]},
+ /* Heiler-WoW (2026-09-26): Spalten ausgeglichen (9 · 9 · 7 Zeilen statt 10 · 7 · 8) – bei 1280 × 720 scrollte die Hilfe (Inhalt 314 px, Fenster 303 px).
+    Bewegen + Dorf (in der Welt), Kampf + Beute & Leiste (Tasten 1–0 und Belegen), Fenster allein. */
+ columns:{desktop:[[0,4],[1,3],[2]],touch:[[0,1],[2]]},
  tabs:[['keys','Tasten','keyboard','Alle Tasten auf einen Blick'],['kniffe','Kniffe','spark','Kniffe, Talente, Eigenarten und Stärkungen nachschlagen']],film:'Einführungsfilm ansehen',filmNote:'Der Film vom Anfang, noch einmal von vorn.',
  desktop:[
   ['Bewegen','run',[

@@ -258,7 +258,12 @@ const PARTS={
   await boot({cls:'dieter',level:6});await move(W*.5,H*.3);
   await read(`game.log('Prüfzeile für das Chatfenster')`);await wait(400);
   const tabs=await rect('#chatWindow .chat-tabs');ok(!!tabs,'Kopfleiste des Chatfensters vorhanden');
-  const cx=tabs.x+tabs.w*.4,cy=tabs.y+tabs.h/2;
+  /* Heiler-WoW (2026-09-26): Seit Dungeon-Fix 3 nehmen die Reiter selbst in Ruhe einen Klick an (öffnen den Reiter, WoW-artig; geprüft in
+     dungeon-fix3-check). Durchlässig bleibt die Leiste daneben und dazwischen – dort misst diese Prüfung. Vorher lag der Punkt bei 40 % der
+     Leistenbreite und traf je nach Schrift den unsichtbaren Reiter „Ereignisse“. Punkt = größte Lücke der Leiste ohne Reiter (mind. 12 px). */
+  const free=JSON.parse(await read(`(()=>{const s=document.querySelector('#chatWindow .chat-tabs').getBoundingClientRect(),xs=[...document.querySelectorAll('#chatWindow .chat-tabs [data-chat-tab]')].map(b=>b.getBoundingClientRect()).filter(r=>r.width).sort((a,b)=>a.left-b.left);let at=s.left,best={w:0,x:0};for(const r of xs){if(r.left-at>best.w)best={w:r.left-at,x:(at+r.left)/2};at=Math.max(at,r.right);}if(s.right-at>best.w)best={w:s.right-at,x:(at+s.right)/2};return JSON.stringify({...best,tabs:xs.length});})()`));
+  ok(free.w>=12,'Kopfleiste hat neben den '+free.tabs+' Reitern eine freie Stelle ('+Math.round(free.w)+' px breit)');
+  const cx=free.x,cy=tabs.y+tabs.h/2;
   const state=()=>read(`JSON.stringify({active:document.querySelector('#chatWindow').classList.contains('active'),op:getComputedStyle(document.querySelector('#chatWindow .chat-tabs')).opacity,at:(document.elementFromPoint(${Math.round(cx)},${Math.round(cy)})?.id||document.elementFromPoint(${Math.round(cx)},${Math.round(cy)})?.className||'')})`).then(JSON.parse);
   let st=await state();ok(!st.active&&st.op==='0'&&st.at==='world','in Ruhe: Kopfleiste unsichtbar und durchlässig (unter dem Punkt liegt die Welt)');
   await shot('50-chat-ruhe',clipOf({x:0,y:tabs.y-120,w:tabs.w+120,h:tabs.h+260},0,1));
@@ -266,7 +271,7 @@ const PARTS={
   await read(`(()=>{const e=game.enemies.find(e=>e.hp>0);if(e)game.target=e;})()`);const had=await read('!!game.target');
   await click(cx,cy);await wait(600);st=await state();
   ok(!st.active&&(!had||await read('!game.target')),'Linksklick auf die unsichtbare Leiste geht in die Welt'+(had?' (Zielwahl aufgehoben)':'')+', Fenster bleibt zu');
-  await stopWalk();await click(cx+30,cy,'right');await wait(200);const w=await walkState();ok(w.ok,'Rechtsklick an derselben Stelle läuft ('+(w.nav>0?'läuft':w.sel)+')');
+  await stopWalk();await click(cx+Math.min(6,free.w/4),cy,'right');await wait(200);const w=await walkState();ok(w.ok,'Rechtsklick an derselben Stelle läuft ('+(w.nav>0?'läuft':w.sel)+')');
   // Maus weg und wieder drauf, verweilen: Fenster geht auf (wie WoW die Chatreiter einblendet), Maus weg: wieder Ruhe
   await move(W*.5,H*.3);await move(cx,cy);await move(cx+6,cy+1);await wait(700);st=await state();
   ok(st.active&&Number(st.op)>.9,'Maus verweilt über der Leiste → Chatfenster mit Reitern geht auf');
