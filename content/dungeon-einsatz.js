@@ -35,7 +35,9 @@ export const EINSATZ_SCORE=Object.freeze({
  reward:[{min:60,marks:1,tier:'silver'},{min:85,marks:2,tier:'gold'}]
 });
 
-const pct=x=>Math.round(x*100)+' %';
+const pct=x=>Math.round(x*100)+' %',clock=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
+// Dungeon-Fix 6: was die Wut vorzieht (DUNGEON_BOSSES.*.enrage.sooner), Kurzname im Tooltip der Wut
+const ENRAGE_SOONER={rita:'Rita liegt',kirmesurkunde:'Kirmes-Urkunde'};
 export const EINSATZ_TEXT=Object.freeze({
  rally:{name:'Angefeuert',idle:'Söldner warten',shout:'ANGEFEUERT',
   tip:r=>'Du kämpfst mit: Deine Söldner machen '+pct(r.bonus)+' mehr Schaden. Hält '+r.hold+' s nach deinem letzten Treffer, deiner letzten Heilung, Unterbrechung oder Parade.',
@@ -45,7 +47,8 @@ export const EINSATZ_TEXT=Object.freeze({
   lines:{'merc-radler-rita':'Dann eben allein. Letzte Runde!','merc-hopfen-horst':'Jetzt erst recht!'},line:'Letztes Aufgebot!'},
  // Wut der Bosse (DUNGEON_BOSSES.*.enrage): Einblendung beim Ausbruch; Big B hat seine eigene („Die ganze Wahrheit“, content/dungeons.js).
  enrage:{gerd:'SPERRSTUNDE',expose:'LETZTES ANGEBOT',korkenkurt:'ZAPFENSTREICH',other:'WUT',
-  tip:e=>'Nach '+Math.floor(e.after/60)+':'+String(e.after%60).padStart(2,'0')+' min Kampf macht der Boss '+pct(e.damage)+' mehr Schaden, alle '+e.every+' s noch einmal. Mit dir im Kampf liegt er vorher.'},
+  tip:(e,after=e.after,cuts=[])=>'Nach '+clock(after)+' min Kampf macht der Boss '+pct(e.damage)+' mehr Schaden, alle '+e.every+' s noch einmal. Mit dir im Kampf liegt er vorher.'
+   +(cuts.length?' Früher als '+clock(e.after)+': '+cuts.map(c=>(ENRAGE_SOONER[c.id]||c.id)+' −'+clock(c.s)).join(' · ')+'.':'')},
  panel:{title:'Einsatz',score:n=>'Einsatz '+n,
   damage:'Schadensanteil',healing:'Heilungsanteil',hold:'Schutzanteil',interrupts:'Unterbrechungen',warn:'Warnungen',dodges:'Ausgewichen',deaths:'Tode',rally:'Angefeuert',
   damageTip:n=>'Dein Anteil am Schaden der Gruppe in diesem Kampf: '+n+' %.',

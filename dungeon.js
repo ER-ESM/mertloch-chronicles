@@ -684,6 +684,14 @@ function tickHazards(g,run,dt){
   if(!g.dead&&inside(g.player))strike(g,h.boss,c,g.player);
   for(const o of g.companions||[])if(o.state!=='down'&&o.hp>0&&inside(o))strike(g,h.boss,c,o);h.boss.lastCast=null;}
 }
+/** Dungeon-Fix 6 (Prüferin #741: passive Heldin gewann Big B mit drei Beweisen und liegender Rita 35 s vor der Wut): Zeitgrenze der Wut für diesen
+ *  Laufstand. enrage.sooner nennt, was den Kampf leichter macht und die Wut deshalb vorzieht – ein gelegter Nebenboss (run.killed) oder ein
+ *  vorgelegter Beweis (run.evidence), je Sekunden. → {after, base, cuts:[{id,s}]}; ohne Laufstand die Grundzeit. */
+export function enrageInfo(run,bossId){const en=DUNGEON_BOSSES[bossId]?.enrage;if(!en)return null;const cuts=[];
+ for(const [id,s] of Object.entries(en.sooner||{}))if(run?.killed?.has?.(id)||run?.evidence?.has?.(id))cuts.push({id,s});
+ return {after:Math.max(en.every||5,en.after-cuts.reduce((n,c)=>n+c.s,0)),base:en.after,cuts};}
+/** Sekunden bis zur Wut dieses Bosses im Laufstand (siehe enrageInfo). */
+export const enrageAfter=(run,bossId)=>enrageInfo(run,bossId)?.after??Infinity;
 /** Geständnis (Plan 7.6): ab confess.at (mit allen Beweisen evidence.all.confessAt) lügt er nicht mehr; eine laufende Lüge kippt sofort. */
 function confessCheck(g,run,e,def){
  if(!def.confess||e.confessed)return;const ev=evidenceEffects(run),at=ev.confessAt??def.confess.at;if(e.hp/e.maxHp>at)return;
@@ -701,7 +709,7 @@ function tickBossMechanics(g,run,dt){
   confessCheck(g,run,e,def);
   const ev=evidenceEffects(run);e.takenFactor=(1+ev.taken)*(e.confessed&&ev.confessAt!=null?1+(def.confess?.taken||0):1);
   const noReach=run.killed.has('rita')&&run.def.optional?.rita?.[e.bossId]?.noReach,followers=def.reach&&!noReach?g.enemies.filter(o=>o.summoner===e&&o.hp>0&&DUNGEON_ENEMIES[o.dungeonKind]?.reach).length:0;
-  const en=def.enrage,rage=en&&e.fightTime>=en.after?1+en.damage*(1+Math.floor((e.fightTime-en.after)/en.every)):1;
+  const en=def.enrage,after=en?enrageAfter(run,e.bossId):0,rage=en&&e.fightTime>=after?1+en.damage*(1+Math.floor((e.fightTime-after)/en.every)):1;/* Dungeon-Fix 6: Zeitgrenze nach Laufstand */
   if(rage>(e.rageFactor||1)){g.float?.(e.x,e.y-70,e.bossId==='bigb'?T.bigb.enrage:enrageText(e)/* Held aktiv: Wut auch bei Gerd, Exposé, Kurt */,'#ff6a4a');g.emit?.('dungeonEnrage',{boss:e.bossId,factor:rage});}
   if(followers>(e.reachShown||0))g.float?.(e.x,e.y-60,T.bigb.reach+' +'+Math.round(followers*def.reach*100)+' %','#e9a0ff');e.reachShown=followers;
   e.rageFactor=rage;e.mechBoost=(1+followers*(def.reach||0))*rage*(1+(e.provision||0)*(def.viewing?.sign?.damage||0))/* Etappe 4 Teil A: Provision */;if(e.baseDamage!=null)e.damage=e.baseDamage*e.mechBoost;

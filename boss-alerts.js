@@ -27,7 +27,7 @@ import {keyFor} from './rpg.js';
 import {dicon,paintDungeonIcons,paintBossPortraits} from './dungeon-journal.js';
 import {heroAnswer,shortName} from './alert-answer.js';
 import {glyph} from './ui-glyphs.js';
-import {activeWarnAreas,introState,evidenceEffects} from './dungeon.js';
+import {activeWarnAreas,introState,evidenceEffects,enrageInfo} from './dungeon.js';
 import {einsatzBossChips,enrageTip} from './dungeon-einsatz-ui.js';/* Held aktiv (2026-09-26): Angefeuert, Ungeschützt, Wut-Tooltip je Boss */
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -76,7 +76,7 @@ export function mountBossAlerts({game,shell=document.querySelector('#gameShell')
  let statusKey='',chipSig='',enraged=1,confessedShown=false;
  function status(g,b,now,intro=null){const def=DUNGEON_BOSSES[b.bossId],run=dungeonRun(g),el=frame.querySelector('.bf-status'),chips=[],chip=(id,icon,text,note,cls='',label=text)=>chips.push({id,icon,text,note,cls,label});
   /* Dungeon-Fix 5: nach der Rede wartet Big B – kleiner Zustand „bereit“, die Erklärung im Tooltip */if(intro?.ready)chip('ready','role-damage',U.alerts.ready,U.alerts.readyNote,'bf-ready',U.alerts.readyLabel);
-  if(def?.enrage&&b.aggro){const left=def.enrage.after-(b.fightTime||0),n=Math.round(((b.rageFactor||1)-1)/def.enrage.damage);if(left>0)chip('enrage','clock',U.alerts.enrageIn(left),enrageTip(def),left<=30?'bf-warn':'',U.traits.enrage.name);else chip('enrage','trait-enrage',U.alerts.enraged(n),enrageTip(def),'bf-hot');
+  if(def?.enrage&&b.aggro){const info=enrageInfo(run,b.bossId)/* Dungeon-Fix 6: Wut nach Laufstand */,left=info.after-(b.fightTime||0),n=Math.round(((b.rageFactor||1)-1)/def.enrage.damage);if(left>0)chip('enrage','clock',U.alerts.enrageIn(left),enrageTip(def,info),left<=30?'bf-warn':'',U.traits.enrage.name);else chip('enrage','trait-enrage',U.alerts.enraged(n),enrageTip(def,info),'bf-hot');
    if(left<=0&&(b.rageFactor||1)>enraged){enraged=b.rageFactor;announce('trait-enrage',U.traits.enrage.name.toUpperCase()+' ×'+n);}}
   const reach=def?.reach?g.enemies.filter(o=>o.summoner===b&&o.hp>0&&DUNGEON_ENEMIES[o.dungeonKind]?.reach).length:0;if(reach&&(b.mechBoost||1)>(b.rageFactor||1))chip('reach','trait-reach',U.alerts.reach(Math.round(reach*def.reach*100)),U.traits.reach.tip,'bf-hot');
   const ev=run?.def.evidence,all=!!ev?.ids?.length&&ev.ids.every(id=>run.evidence?.has(id));

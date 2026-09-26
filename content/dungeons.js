@@ -174,7 +174,7 @@ export const DUNGEONS={
    effects:{
     mietvertrag:{noLie:'parkett',icon:'lens',note:'Mietvertrag: Das Parkett lügt nicht mehr.'},
     leihschein:{noLie:'kulisse',icon:'lens',note:'Leihschein: Die Pappkulisse lügt nicht mehr.'},
-    kirmesurkunde:{taken:.1,icon:'lens',note:'Kirmes-Urkunde: Big B nimmt 10 % mehr Schaden.'}},
+    kirmesurkunde:{taken:.1,icon:'lens',note:'Kirmes-Urkunde: Big B nimmt 10 % mehr Schaden. Seine Wut kommt 0:25 früher.'}},
    all:{confessAt:.3,note:'Alle drei Beweise: Geständnis schon bei 30 %.'},
    // Etappe 4 Teil B: Fundstellen (Plan 4.5). Leihschein in der Pelzmanteltasche auf dem Carport-Dach („Das Dach ist nur Deko.“),
    // Mietvertrag von Vermieter Volker (Ereignis im Burgverlies), Kirmes-Urkunde im Presseamt – erst nach Reichweiten-Rita, sobald sie gebaut ist.
@@ -255,7 +255,10 @@ export const DUNGEON_BOSSES={
   look:'Mann um die 45, Pelzmantel aus dem Kostümverleih, Perücke mit Zopf, Goldkette aus goldlackierten Kronkorken, Siegelring aus Messing, Handy am Selfie-Stick mit Ringlicht',
   // Held aktiv (2026-09-26): Wut nach 4:50 statt 6:00 und härter (alle 5 s +150 %) – mit aktivem Held 170–200 s, ein passiver Held kam live
   // nach 3 min mit 3:00 Rest an. docs/DUNGEON-AKTIV-2026-09-26.md.
-  enrage:{after:290,every:5,damage:1.5},reach:.08,confess:{at:.15,taken:.1},
+  // Dungeon-Fix 6 (Prüferin #741, docs/DUNGEON-FIX6-2026-09-26.md): sooner = so viele Sekunden früher, wenn der Kampf leichter ist – Rita liegt
+  // (ein Follower, keine Reichweite) bzw. die Kirmes-Urkunde liegt vor (+10 % Schaden). Ohne das gewann eine passive Heldin 35 s vor der Wut
+  // (Simulation: passiv 251–270 s mit allen Beweisen, aktiv 141–157 s). Wut 4:50 → 4:00 (Rita) → 3:35 (alle Beweise).
+  enrage:{after:290,every:5,damage:1.5,sooner:{rita:50,kirmesurkunde:25}},reach:.08,confess:{at:.15,taken:.1},
   // Dungeon-Fix 4 (Nachprüfung #726: beim Betreten begann sofort der Kampf, keine Gelegenheit für „Beweise vorlegen“): Rollenspiel-Einleitung
   // wie in WoW. Big B bemerkt niemanden von selbst; der Kampf beginnt erst, wenn der Held den Thron erreicht (reach Kacheln um Big B), ihn mit F
   // anspricht (talk Kacheln) oder angreift. Dann legt der Held gefundene Beweise vor (Ausreden im Abstand evidence.present.gap), Big B sagt

@@ -43,7 +43,8 @@ export function einsatzBossChips(g,b){
  const c=untankedHolder(g,b);if(c)out.push({id:'untanked',icon:'role-tank',text:T.untanked.name,note:T.untanked.tip(c.name),cls:'bf-hot',label:T.untanked.name});
  return out;
 }
-/** Tooltip der Wut mit den Zahlen dieses Bosses (DUNGEON_BOSSES.*.enrage). */
-export const enrageTip=def=>def?.enrage?T.enrage.tip(def.enrage):'';
-/** m:ss für die Wut im Journal. */
-export const enrageClock=def=>def?.enrage?Math.floor(def.enrage.after/60)+':'+String(def.enrage.after%60).padStart(2,'0'):'';
+/** Tooltip der Wut mit den Zahlen dieses Bosses (DUNGEON_BOSSES.*.enrage); info = enrageInfo(run,bossId) (Dungeon-Fix 6: Wut früher, wenn Rita liegt
+ *  bzw. die Kirmes-Urkunde vorliegt) – ohne info die Grundzeit. */
+export const enrageTip=(def,info=null)=>def?.enrage?T.enrage.tip(def.enrage,info?.after??def.enrage.after,info?.cuts||[]):'';
+/** m:ss für die Wut im Journal (info wie oben). */
+export const enrageClock=(def,info=null)=>{if(!def?.enrage)return '';const s=info?.after??def.enrage.after;return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
