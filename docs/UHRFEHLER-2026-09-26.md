@@ -206,4 +206,5 @@ Drei Prüfskripte wackelten unabhängig von dieser Arbeit (Gegenprobe gegen den 
 
 ## Live-Stand
 
-Wird nach dem Push nachgetragen.
+- Build **#777** (e945a3c6), `server-refresh` ✔; live geprüft: `/api/version` meldet #777, `spec-mechanics.js` mit `fieldPulse(z,'fass'…)` und `chat-window.js` mit `toWorld` werden ausgeliefert.
+- Vor dem Push: `origin/main` unverändert (87a9466b), kein Rebase nötig; Sperrdatei der Prüferin war weg.
