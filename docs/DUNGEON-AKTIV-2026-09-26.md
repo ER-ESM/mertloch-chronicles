@@ -9,6 +9,8 @@ Grundlage:
 - Live-Befund des Prüfers auf Build #728 (über den Orchestrator): Der Held griff nie an und lag zweimal. Big B fiel trotzdem nach etwa
   3 min, rund 3:00 vor der Wut.
 
+**Live:** Build #740 (`c86958f3`, 26.09.2026). Einzelheiten unter „Veröffentlichung“.
+
 Zweig `dungeon-aktiv`, Worktree `D:\Dev\MertlochChronicles-dg-aktiv`. Begonnen auf `main` c2f66547 (#728), vor der Messung auf
 `main` 13a1665c (Dungeon-Fix 5, Build #736/#737) umgesetzt. Alle Quoten unten sind auf dem Stand nach Fix 5 gemessen; „vorher“ ist `main`
 13a1665c ohne diesen Auftrag, mit derselben Simulation und denselben acht Seeds.
@@ -301,4 +303,9 @@ Bilder `visual-review/dungeon-aktiv/*.jpg` (lokal, nicht im Repo), angesehen:
 
 ## Veröffentlichung
 
-Wird nach dem Push nachgetragen.
+Drei Commits auf `main` (FF auf 13a1665c, kein Konflikt beim letzten Rebase), danach `node scripts/server-refresh.mjs`.
+
+- `20ee245d` Held aktiv: Rollen-Balance ohne Helden, Angefeuert, Letztes Aufgebot, Wut an allen Hauptbossen, Einsatz-Wertung
+- `83472392` Held aktiv: Browserprüfung dungeon-aktiv-check, Rollen-Fälle der Simulation parallel, „Söldner warten“ erst nach 6 s
+- `c86958f3` Bericht Held aktiv, Browserprüfung an das Warten nach der Rede (Fix 5) angepasst
+- **Live: Build #740 · `c86958f3` · 2026-09-26** (vorher #737 · `13a1665c`), https://mertloch.esm-consultant.de
