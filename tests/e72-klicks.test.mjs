@@ -136,5 +136,10 @@ test('Chatfenster: in Ruhe fängt die unsichtbare Kopfleiste keine Klicks; es ö
  assert.match(chat,/document\.addEventListener\('pointerdown',e=>\{swallow=false;if\(!overStrip\(e\.clientX,e\.clientY\)\)return;clearTimeout\(hoverTimer\);hoverTimer=0;/,'Klick auf die ruhende Kopfleiste wird geprüft');
  assert.match(chat,/if\(!b\)\{hoverBlocked=true;return;\}/,'ein Klick in die Welt dort (nicht auf einem Reiter) bricht das Öffnen ab');
  assert.match(chat,/showTab\(b\.dataset\.chatTab\)/,'ein Klick auf einen Reiter öffnet ihn');
+ /* Uhrfehler-Runde (Heiler-WoW-Restliste): Rechtsklick auf einen unsichtbaren Reiter geht in die Welt wie in der Lücke (WoW), ohne Kontextmenü
+    „Chatfenster“ an der unsichtbaren Stelle (Verhalten mit Maus: scripts/e72-klicks-check.mjs Teil chat) */
+ assert.match(chat,/if\(tab&&e\.button===2\)\{[^\n]*menuSwallow=true;[^\n]*toWorld\(e\);return;\}/,'Rechtsklick auf den unsichtbaren Reiter → Welt');
+ assert.match(chat,/const b=e\.button===0&&tab;/,'nur der Linksklick öffnet den Reiter');
+ assert.match(css,/\.chat-window\.chat-pass,\.chat-window\.chat-pass \*\{pointer-events:none!important\}/,'zum Weiterreichen kurz ganz durchlässig');
  assert.match(chat,/if\(hoverOn\)\{if\(!inside\(el\.getBoundingClientRect\(\),e\.clientX,e\.clientY\)\)\{hoverOn=false;/,'Maus verlässt das Fenster → Ruhe');
 });

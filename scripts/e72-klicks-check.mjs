@@ -272,6 +272,13 @@ const PARTS={
   await click(cx,cy);await wait(600);st=await state();
   ok(!st.active&&(!had||await read('!game.target')),'Linksklick auf die unsichtbare Leiste geht in die Welt'+(had?' (Zielwahl aufgehoben)':'')+', Fenster bleibt zu');
   await stopWalk();await click(cx+Math.min(6,free.w/4),cy,'right');await wait(200);const w=await walkState();ok(w.ok,'Rechtsklick an derselben Stelle läuft ('+(w.nav>0?'läuft':w.sel)+')');
+  /* Uhrfehler-Runde (Heiler-WoW-Restliste): Rechtsklick AUF einen unsichtbaren Reiter läuft wie in der Lücke (WoW) – vorher blieb er am Reiter
+     hängen und öffnete das Kontextmenü „Chatfenster“. Linksklick auf den Reiter öffnet ihn weiter (dungeon-fix3-check). */
+  {await move(W*.5,H*.3);await wait(300);const tab=JSON.parse(await read(`(()=>{const r=[...document.querySelectorAll('#chatWindow .chat-tabs [data-chat-tab]')].map(b=>b.getBoundingClientRect()).find(r=>r.width>0);return JSON.stringify(r?{x:r.left+r.width/2,y:r.top+r.height/2}:null);})()`));
+   ok(!!tab,'unsichtbarer Reiter vorhanden');const before=await state();ok(!before.active,'Chatfenster in Ruhe vor dem Rechtsklick auf den Reiter');
+   await armLog();await stopWalk();await click(tab.x,tab.y,'right');await wait(300);const w2=await walkState(),menu=await read(`!!document.querySelector('.context-menu')`),after=await state();
+   ok(w2.ok,'Rechtsklick auf den unsichtbaren Reiter läuft in die Welt ('+(w2.nav>0?'läuft':w2.sel||'nichts – '+await why(tab.x,tab.y)+' · darunter '+await read(`(()=>{const el=document.querySelector('#chatWindow');el.classList.add('chat-pass');const u=document.elementFromPoint(${Math.round(tab.x)},${Math.round(tab.y)});el.classList.remove('chat-pass');return (u?(u.id||u.tagName+'.'+u.className):'-')+' · aktiv '+el.classList.contains('active')+' · pe '+getComputedStyle(el.querySelector('[data-chat-tab]')).pointerEvents;})()`))+')');ok(!menu,'kein Kontextmenü „Chatfenster“ an der unsichtbaren Stelle');ok(!after.active,'Chatfenster bleibt in Ruhe');
+   await read(`document.querySelector('.context-menu')?.remove()`);}
   // Maus weg und wieder drauf, verweilen: Fenster geht auf (wie WoW die Chatreiter einblendet), Maus weg: wieder Ruhe
   await move(W*.5,H*.3);await move(cx,cy);await move(cx+6,cy+1);await wait(700);st=await state();
   ok(st.active&&Number(st.op)>.9,'Maus verweilt über der Leiste → Chatfenster mit Reitern geht auf');
