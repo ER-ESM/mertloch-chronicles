@@ -23,8 +23,10 @@ const button=(action,value,label,extra='')=>`<button type="button" data-companio
 export function frameBuffs(g,c){
  if(!c||c.state==='down'||!(c.hp>0))return [];const out=[],t=g.time||0,B=UI.buffs,me=g.member?.id||'dieter';
  const ra=rallyAura(g);if(ra)out.push({id:'rally',name:ra.name,remaining:ra.remaining,item:'megaphone'});
- if(c.aidHot?.remaining>0)out.push({id:'hot',name:B.hot,remaining:c.aidHot.remaining,skill:'heal',member:me});
- if(c.aidBuff?.remaining>0)out.push({id:'shield',name:c.aidBuff.name||B.shield,remaining:c.aidBuff.remaining,skill:'buff',member:me,shield:Math.round(c.aidBuff.shield||0)});
+ /* Hilfe des Helden auf dem Söldner – generisch: jedes Feld aid… mit Restzeit (aidHot, aidBuff und künftige Heiler-Buffs), dazu eine Liste c.buffs */
+ for(const [key,b] of Object.entries(c))if(/^aid[A-Z]/.test(key)&&b?.remaining>0){const hot=key==='aidHot'||(!b.shield&&(b.hot||b.power)&&key!=='aidBuff');
+  out.push({id:key==='aidHot'?'hot':key==='aidBuff'?'shield':key,name:b.name||(hot?B.hot:B.shield),remaining:b.remaining,skill:(typeof b.id==='string'&&b.id)||(hot?'heal':'buff'),member:me,shield:Math.round(b.shield||0)});}
+ for(const b of Array.isArray(c.buffs)?c.buffs:[])if(b?.remaining>0)out.push({id:'buff:'+(b.id||b.name||''),name:b.name||B.shield,remaining:b.remaining,skill:b.skill||'buff',member:b.member||me,shield:Math.round(b.shield||0)});
  if(c.lastStand?.until>t)out.push({id:'burst',name:B.burst,remaining:c.lastStand.until-t,skill:'burst',member:c.def.look});
  if(c.evade?.until>t)out.push({id:'evade',name:B.evade,remaining:c.evade.until-t,skill:'dash',member:c.def.look});
  return out.slice(0,3);

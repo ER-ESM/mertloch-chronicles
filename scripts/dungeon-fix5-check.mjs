@@ -10,7 +10,7 @@
 //    wird die Anzeige, nicht das Ausweichen).
 //  3 Nach dem Sieg (Lauf A): Aufstieg, danach die Erfolge gebündelt; F an der Endtruhe öffnet sie; Verlassen ohne Wahl → Rückfrage, Esc, erneut →
 //    draußen „Eingesammelt …“.
-//  4 Tod (Lauf B): Rückblick – Zeilen ergeben Σ, Ursache = größter Brocken (Kanonenkugel statt Trümmer); Fenster klein und oben mittig, Mitte frei;
+//  4 Tod (Lauf B): Rückblick – Zeilen ergeben Σ, Ursache = größter Brocken (Kanonenkugel statt Trümmer); Fenster klein neben dem Bossrahmen (Dungeon-Fix 6), Mitte frei;
 //    „Kampf aufgeben“ erst mit dem zweiten Klick binnen 3 s; danach die Erinnerung „Wurst Case“ nur als kompakte Meldung.
 // Aufruf: CDP_PORT=9751 SERVER_PORT=4551 BOOT_TRIES=450 node scripts/dungeon-fix5-check.mjs   (ONLY=1,2,3,4 – 1–3 laufen im selben Kampf,
 // 4 in einem zweiten; MEASURE_ONLY=1 misst nur die Reaktionsfenster, z. B. gegen den alten Stand). Bilder: visual-review/dungeon-fix5/*.jpg.
@@ -184,13 +184,14 @@ try{
    await mouse({x:1000,y:120});await wait(1000);
    const ds=await read(`const d=document.querySelector('#deathScreen'),r=d.getBoundingClientRect(),f=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect(),v=window.mertloch.state().viewport,cv=document.querySelector('#world').getBoundingClientRect(),k=cv.width/v.width,hy=(g.player.y-v.camera.y+v.height/2)/v.height*cv.height+cv.top;
     const rows=[...d.querySelectorAll('.ds-recap-row')].map(x=>({text:x.innerText.replace(/\\s+/g,' ').trim(),amount:+(x.querySelector('em')?.textContent||'0').replace(/\\./g,''),fatal:x.classList.contains('is-fatal'),rest:x.classList.contains('ds-recap-rest')}));
-    return {shown:!d.hidden,rect:{l:Math.round(r.left),t:Math.round(r.top),w:Math.round(r.width),h:Math.round(r.height),b:Math.round(r.bottom)},frameBottom:f?Math.round(f.bottom):null,heroTop:Math.round(hy-40*k),W:innerWidth,H:innerHeight,
+    return {shown:!d.hidden,side:d.dataset.dsSide||'',rect:{l:Math.round(r.left),t:Math.round(r.top),w:Math.round(r.width),h:Math.round(r.height),b:Math.round(r.bottom),r:Math.round(r.right)},frame:f?{l:Math.round(f.left),r:Math.round(f.right),t:Math.round(f.top)}:null,frameBottom:f?Math.round(f.bottom):null,heroTop:Math.round(hy-40*k),W:innerWidth,H:innerHeight,
      sum:d.querySelector('.ds-recap-sum')?.innerText.trim()||'',cause:d.querySelector('.ds-foe')?.innerText.replace(/\\s+/g,' ').trim()||'',rows}`);
    await shot('40-tod-oben');results.death=ds;
    const sum=+(ds.sum.match(/Σ ([\d.]+)/)?.[1]||'0').replace(/\./g,''),rowsSum=ds.rows.reduce((n,r)=>n+r.amount,0);
    assert.ok(ds.shown,'Todesfenster');assert.equal(rowsSum,sum,'Zeilen ergeben Σ: '+JSON.stringify(ds.rows)+' '+ds.sum);assert.match(ds.cause,/Kanonenkugel/,'Ursache = größter Brocken: '+ds.cause);assert.ok(ds.rows.at(-1)?.fatal&&/Trümmer/.test(ds.rows.at(-1).text),'Todesschlag unten: '+JSON.stringify(ds.rows.at(-1)));
-   assert.ok(ds.rect.w<=340,'klein: '+ds.rect.w);assert.ok(Math.abs(ds.rect.l+ds.rect.w/2-ds.W/2)<4,'mittig');assert.ok(ds.frameBottom==null||ds.rect.t>=ds.frameBottom,'unter dem Bossrahmen');assert.ok(ds.rect.b<ds.heroTop,'Bildmitte frei (über dem Helden): '+JSON.stringify(ds.rect)+' Held '+ds.heroTop);
-   ok('Tod: Rückblick '+ds.sum+' = '+ds.rows.map(r=>r.text.replace(/ −.*$/,'')).join(' + ')+'; Ursache „'+ds.cause+'“; Fenster '+ds.rect.w+'×'+ds.rect.h+' oben mittig ab y '+ds.rect.t+' (Bossrahmen bis '+ds.frameBottom+', Held ab '+ds.heroTop+')');
+   /* Dungeon-Fix 6 (Prüferin #741: unter dem Bossrahmen verdeckte es Big B und den Tank am Thron): am Desktop neben dem Bossrahmen, auf seiner Höhe */
+   assert.ok(ds.rect.w<=340,'klein: '+ds.rect.w);assert.ok(ds.side&&ds.frame,'neben dem Bossrahmen: '+JSON.stringify(ds));assert.ok(ds.side==='right'?ds.rect.l>=ds.frame.r:ds.rect.r<=ds.frame.l,'daneben, nicht darüber: '+JSON.stringify({rect:ds.rect,frame:ds.frame}));assert.ok(Math.abs(ds.rect.t-ds.frame.t)<=2,'auf Höhe des Bossrahmens');assert.ok(ds.rect.l>ds.W/2||ds.rect.r<ds.W/2,'Bildmitte frei: '+JSON.stringify(ds.rect));
+   ok('Tod: Rückblick '+ds.sum+' = '+ds.rows.map(r=>r.text.replace(/ −.*$/,'')).join(' + ')+'; Ursache „'+ds.cause+'“; Fenster '+ds.rect.w+'×'+ds.rect.h+' '+(ds.side==='right'?'rechts':'links')+' neben dem Bossrahmen ab x '+ds.rect.l+', y '+ds.rect.t+' (Bossrahmen x '+ds.frame.l+'–'+ds.frame.r+'), Bildmitte frei');
    // Kampf aufgeben: erster Klick scharf, nach 3 s wieder entschärft; zweiter Klick binnen 3 s gibt auf
    const bp=await elCenter('#deathScreen [data-ds-wake]');await clickAt(bp);await wait(250);const a1=await read(`const b=document.querySelector('#deathScreen [data-ds-wake]');return {dead:g.dead,btn:b.textContent,armed:b.classList.contains('ds-armed')}`);await shot('41-aufgeben-scharf');
    await mouse({x:1000,y:120});await wait(3400);const a2=await read(`const b=document.querySelector('#deathScreen [data-ds-wake]');return {dead:g.dead,btn:b.textContent,armed:b.classList.contains('ds-armed')}`);
