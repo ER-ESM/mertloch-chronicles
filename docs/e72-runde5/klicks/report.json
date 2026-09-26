@@ -3,77 +3,79 @@
   "checks": [
     "schorsch, 2 Leisten: 161 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "schorsch, 2 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "schorsch, 2 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "schorsch, 2 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "schorsch, 3 Leisten: 322 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "schorsch, 3 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "schorsch, 3 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "schorsch, 3 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "schorsch, 4 Leisten: 483 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "schorsch, 4 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "schorsch, 4 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "schorsch, 4 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "schorsch: belegter Platz ⇧1 der Zusatzleiste bleibt anklickbar",
     "schorsch: Kniffe-Buch offen → leere Plätze der Zusatzleiste sichtbar (Deckkraft 0.8)",
     "schorsch: im Bearbeiten-Modus lässt sich der leere Platz ⇧0 wählen („Platz [⇧0] gewählt – jetzt einen Kniff anklicken.“)",
     "schorsch: Buch zu → leere Plätze wieder unsichtbar und durchlässig",
     "dieter, 2 Leisten: 161 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "dieter, 2 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "dieter, 2 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "dieter, 2 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "dieter, 3 Leisten: 322 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "dieter, 3 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "dieter, 3 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "dieter, 3 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "dieter, 4 Leisten: 483 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "dieter, 4 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "dieter, 4 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "dieter, 4 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "baerbel, 2 Leisten: 161 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "baerbel, 2 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "baerbel, 2 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "baerbel, 2 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "baerbel, 3 Leisten: 322 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "baerbel, 3 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "baerbel, 3 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "baerbel, 3 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "baerbel, 4 Leisten: 483 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "baerbel, 4 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "baerbel, 4 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "baerbel, 4 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kevin, 2 Leisten: 161 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "kevin, 2 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "kevin, 2 Leisten: der Klick geht in die Welt",
+    "kevin, 2 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kevin, 3 Leisten: 322 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "kevin, 3 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "kevin, 3 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "kevin, 3 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kevin, 4 Leisten: 483 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "kevin, 4 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "kevin, 4 Leisten: der Klick geht in die Welt (Zielwahl aufgehoben)",
+    "kevin, 4 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kaethe, 2 Leisten: 161 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "kaethe, 2 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "kaethe, 2 Leisten: der Klick geht in die Welt",
+    "kaethe, 2 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kaethe, 3 Leisten: 322 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "kaethe, 3 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "kaethe, 3 Leisten: der Klick geht in die Welt",
+    "kaethe, 3 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kaethe, 4 Leisten: 483 Punkte im Band der Zusatzleisten – nichts Unsichtbares fängt (nur sichtbare Knöpfe oder Welt)",
     "kaethe, 4 Leisten: Linksklick auf den unsichtbaren Platz ⇧0 öffnet kein Kniffe-Buch (Treffer: world)",
-    "kaethe, 4 Leisten: der Klick geht in die Welt",
+    "kaethe, 4 Leisten: der Klick geht in die Welt (Empfänger #world.)",
     "kaethe: belegter Platz ⇧1 der Zusatzleiste bleibt anklickbar",
     "kaethe: Kniffe-Buch offen → leere Plätze der Zusatzleiste sichtbar (Deckkraft 0.8)",
     "kaethe: im Bearbeiten-Modus lässt sich der leere Platz ⇧0 wählen („Platz [⇧0] gewählt – jetzt einen Kniff anklicken.“)",
     "kaethe: Buch zu → leere Plätze wieder unsichtbar und durchlässig",
     "Erinnerungskarte „22:01“ offen",
-    "Karte offen: 4/4 Rechtsklicks in die Welt laufen",
-    "Rechtsklick auf die Karte (Bild und Text) läuft wie ein Rechtsklick in die Welt (2/2)",
+    "Karte offen: 4/4 Rechtsklicks in die Welt bedient (laufen bzw. Figur angreifen)",
+    "Rechtsklick auf die Karte (Bild und Text) wirkt wie ein Rechtsklick in die Welt (2/2)",
     "Karte bleibt dabei offen, kein Kontextmenü",
     "Bild-Tooltip beim Darüberfahren",
     "Karte tritt im Kampf zurück – ihr Bild-Tooltip geht mit (vorher blieb er stehen)",
     "Karte kommt wieder – ohne gestapelten Bild-Tooltip",
     "Kreuz schließt die Karte, kein Tooltip bleibt stehen",
-    "direkt nach dem Schließen: Rechtsklicks an der Kartenstelle und daneben laufen (3/3)",
-    "die nächste Karte („Statik“) springt nicht sofort unter die Maus",
+    "direkt nach dem Schließen: Rechtsklicks an der Kartenstelle und daneben bedient (3/3)",
     "„Statik“ kommt nach der Ruhezeit",
+    "die nächste Karte springt nicht sofort unter die Maus (Abstand 1540 ms)",
+    "„Größe S“ erscheint unter der ruhenden Maus",
     "Karte erscheint unter der ruhenden Maus – kein Bild-Tooltip dazu (nichts stapelt sich)",
     "erst eine echte Mausbewegung über dem Bild zeigt „Bild vergrößern“",
     "Todesschirm mit „Aufwachen“",
     "aufgewacht (echter Klick)",
     "nach dem Aufwachen erscheint die Karte „Wurst Case“",
-    "nach Tod/Aufwachen: jeder Rechtsklick (Welt und Karte) wird bedient – 16/16 laufen, Rest trifft eine Figur",
+    "nach Tod/Aufwachen: jeder Rechtsklick (Welt und Karte) wird bedient – 16/16 laufen, 0 treffen eine Figur (angreifen/ansprechen)",
     "kein Bild-Tooltip neben der Karte, solange die Maus nicht auf ihr ist",
+    "Wechsel Karte ↔ Welt ohne Gegner: 20/20 Rechtsklicks laufen (10× mit offenem Bild-Tooltip)",
     "a) Esc direkt nach „Erstellen“ (Knopf): Film erscheint gar nicht, Ida wartet",
-    "b) Enter im Namensfeld, Esc auf dem Ladeschirm (boot art-ready): Film erscheint gar nicht",
+    "b) Enter im Namensfeld, Esc auf dem Ladeschirm (boot): Film erscheint gar nicht",
     "c) Esc beim Spielstart (Film wartet, Ladeschirm „boot art-ready“): Film erscheint gar nicht",
     "d) Film läuft, der ERSTE Esc (100 ms nach dem ersten Bild) überspringt ihn",
     "e) Film läuft, der ERSTE Esc (1500 ms nach dem ersten Bild) überspringt ihn",
@@ -89,8 +91,14 @@
     "Held 2: „Naturtalent“ still freigeschaltet (keine Karte)",
     "Held 2: „Naturtalent“ in den gesehenen Fetzen",
     "Held 2: beide Fetzen nachlesbar unter Aufträge → Erinnerungen (Der Stempel, Naturtalent)",
+    "Kopfleiste des Chatfensters vorhanden",
+    "in Ruhe: Kopfleiste unsichtbar und durchlässig (unter dem Punkt liegt die Welt)",
+    "Linksklick auf die unsichtbare Leiste geht in die Welt, Fenster bleibt zu",
+    "Rechtsklick an derselben Stelle läuft (läuft)",
+    "Maus verweilt über der Leiste → Chatfenster mit Reitern geht auf",
+    "Maus weg → Chatfenster wieder in Ruhe",
     "Pfand auf die Zwölf [4] gewirkt (Abklingzeit 6 s)",
-    "20 Drücke in 3 s → 2× „Pfand auf die Zwölf muss noch verschnaufen · 5,1 s.“ (höchstens einmal je 2 s)",
+    "20 Drücke in 10.8 s → 5× „Pfand auf die Zwölf muss noch verschnaufen · 4,4 s.“ (höchstens einmal je 2 s, also ≤ 6)",
     "keine große rote Kurzmeldung „verschnaufen“",
     "nicht im Chat",
     "leise Zeile: 16 px (Kurzmeldung 22 px), Farbe rgb(240, 144, 122), kein Kasten",
@@ -110,7 +118,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "schorsch",
@@ -122,7 +131,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "schorsch",
@@ -134,7 +144,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "dieter",
@@ -146,7 +157,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "dieter",
@@ -158,7 +170,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "dieter",
@@ -170,7 +183,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "baerbel",
@@ -182,7 +196,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "baerbel",
@@ -194,7 +209,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "baerbel",
@@ -206,7 +222,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "kevin",
@@ -218,7 +235,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "kevin",
@@ -230,7 +248,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "kevin",
@@ -242,7 +261,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "kaethe",
@@ -254,7 +274,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "kaethe",
@@ -266,7 +287,8 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       },
       {
         "cls": "kaethe",
@@ -278,26 +300,50 @@
           "text": "",
           "target": false,
           "hit": "world"
-        }
+        },
+        "got": "#world."
       }
     ],
+    "karteNicht": [],
     "nachTod": [
       "0.4 s Welt → läuft",
-      "1.0 s Welt → läuft",
-      "1.7 s Welt → läuft",
-      "2.3 s Welt → läuft",
-      "3.0 s Welt → läuft",
-      "3.6 s Welt → läuft · Karte Wurst Case",
-      "4.2 s Welt → läuft · Karte Wurst Case",
-      "4.8 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
-      "5.5 s Welt → läuft · Karte Wurst Case",
-      "6.2 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
-      "6.8 s Welt → läuft · Karte Wurst Case",
-      "7.4 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
-      "8.0 s Welt → läuft · Karte Wurst Case",
-      "8.6 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
-      "9.2 s Welt → läuft · Karte Wurst Case",
-      "9.8 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern"
+      "0.9 s Welt → läuft",
+      "1.5 s Welt → läuft",
+      "2.1 s Welt → läuft",
+      "2.8 s Welt → läuft",
+      "3.4 s Welt → läuft · Karte Wurst Case",
+      "3.9 s Welt → läuft · Karte Wurst Case",
+      "4.5 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
+      "5.2 s Welt → läuft · Karte Wurst Case",
+      "5.7 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
+      "6.3 s Welt → läuft · Karte Wurst Case",
+      "6.9 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
+      "7.5 s Welt → läuft · Karte Wurst Case",
+      "8.1 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern",
+      "8.7 s Welt → läuft · Karte Wurst Case",
+      "9.2 s auf Karte → läuft · Karte Wurst Case · Tooltip Wurst CaseBild vergrößern"
+    ],
+    "wechsel": [
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft",
+      "Karte läuft (Tooltip offen)",
+      "Welt läuft"
     ],
     "intro": [
       {
@@ -306,7 +352,7 @@
         "done": true
       },
       {
-        "fall": "b Enter im Namensfeld, Esc nach 1,5 s (boot art-ready)",
+        "fall": "b Enter im Namensfeld, Esc nach 1,5 s (boot)",
         "film": [],
         "done": true
       },
@@ -320,11 +366,11 @@
         "film": [
           [
             "on",
-            8707
+            6149
           ],
           [
             "off",
-            9232
+            6508
           ]
         ],
         "done": true
@@ -334,11 +380,11 @@
         "film": [
           [
             "on",
-            6782
+            11485
           ],
           [
             "off",
-            8819
+            13310
           ]
         ],
         "done": true
@@ -353,12 +399,24 @@
       },
       "shows": [
         [
-          11413,
-          "Pfand auf die Zwölf muss noch verschnaufen · 5,1 s."
+          14004,
+          "Pfand auf die Zwölf muss noch verschnaufen · 4,4 s."
         ],
         [
-          13538,
-          "Pfand auf die Zwölf muss noch verschnaufen · 2,9 s."
+          16794,
+          "Pfand auf die Zwölf muss noch verschnaufen · 1,8 s."
+        ],
+        [
+          19037,
+          "Pfand auf die Zwölf muss noch verschnaufen · 4,9 s."
+        ],
+        [
+          21179,
+          "Pfand auf die Zwölf muss noch verschnaufen · 2,7 s."
+        ],
+        [
+          23448,
+          "Pfand auf die Zwölf muss noch verschnaufen · 0,5 s."
         ]
       ],
       "style": {
@@ -380,6 +438,8 @@
     "docs/e72-runde5/klicks/21-intro-film-laeuft.jpg",
     "docs/e72-runde5/klicks/30-held1-stempel-karte.jpg",
     "docs/e72-runde5/klicks/31-held2-erinnerungen-nachlesbar.jpg",
+    "docs/e72-runde5/klicks/50-chat-ruhe.jpg",
+    "docs/e72-runde5/klicks/51-chat-aktiv-nach-verweilen.jpg",
     "docs/e72-runde5/klicks/40-meldung-leise-zeile.jpg",
     "docs/e72-runde5/klicks/41-meldung-zeile-nah.jpg"
   ]
