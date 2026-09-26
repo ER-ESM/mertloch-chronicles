@@ -87,7 +87,9 @@ test('Einleitung: Beweise liegen, Ausreden im Abstand, Begrüßung, dann fällt 
  const it=dungeonInteraction(g);assert.equal(it?.act,'address');assert.ok(dungeonAct(g,it).ok,'angesprochen');
  assert.equal(r.evidence.size,3,'alle drei vorgelegt');assert.ok(g.toasts.some(t=>/Big B schwitzt/.test(t)),'„Big B schwitzt“');const st=introState(g);assert.ok(st);assert.ok(Math.abs(st.total-(3*gap+I.line))<.11,'Dauer '+st.total);
  const barks=[];const bark=g.bark.bind(g);g.bark=(u,t,k)=>{if(u===b)barks.push(t);return bark(u,t,k);};
- let t=0;while(!b.aggro&&t<20){run(g,.25);t+=.25;}assert.ok(b.aggro,'Kampf nach der Einleitung');assert.ok(t>=3*gap+I.line-.3,'nicht vor dem Ende der Einleitung: '+t+' s');
+ /* Dungeon-Fix 5 (Prüfer #728): nach der Rede wartet Big B, bis der Held angreift – vorher begann der Kampf durch den Timer */
+ let t=0;while(!introState(g)?.ready&&t<20){run(g,.25);t+=.25;}assert.ok(introState(g)?.ready,'Rede vorbei, Big B wartet');assert.ok(t>=3*gap+I.line-.3,'nicht vor dem Ende der Einleitung: '+t+' s');
+ run(g,8);assert.equal(b.aggro,false,'kein Kampf ohne Angriff');g.target=b;assert.ok(g.damage(b,500,'Autoangriff')>0,'der Angriff zieht ihn');assert.ok(b.aggro,'Kampf nach dem Angriff');
  assert.equal(barks.length,4,'drei Ausreden und die Begrüßung: '+barks.join(' | '));assert.match(barks.at(-1),/Willkommen/,'zuletzt die Begrüßung');
  run(g,.2);assert.equal(r.arena,'thronsaal','Tür zu');for(const c of g.companions)assert.equal(roomAt(DEF,c.x,c.y)?.id,'thronsaal',c.name+' ist drin');
  assert.ok(b.attackTimer>=I.opener-.5,'erster Zauber erst nach der Anlaufzeit: '+b.attackTimer.toFixed(1)+' s');assert.equal(b.cast??null,null,'keine Bahn beim Betreten');

@@ -1,0 +1,4 @@
+/* Dungeon-Fix 5 (Prüfer-Playtest Big B #728, docs/DUNGEON-FIX5-2026-09-26.md). Nur Ergänzungen, lädt nach dungeon-e4b.css. */
+
+/* 5 · Nach der Rede wartet Big B: kleiner Zustand „bereit“ im Bossrahmen, Erklärung im Tooltip */
+.bf-chip.bf-ready{border-color:#ecb95c;color:#ffe6a0;background:#2a2112d9}

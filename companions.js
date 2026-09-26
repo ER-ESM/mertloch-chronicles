@@ -10,7 +10,7 @@
 import {COMPANIONS,COMPANION_RULES as R,COMPANION_ROLES,COMPANION_ABILITIES,COMPANION_TEXT as T,companionById,companionCost,companionStats,CAST_SETS,COMBAT_RULES} from './content/index.js';
 import {distance} from './world.js';
 import {walkClear,moveAlong,beginReturn} from './encounters.js';
-import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt,partyUnits,inHazard,bossZones,endRetreat,hideSpots} from './dungeon.js';
+import {resolveDungeonCast,dungeonBossCast,coneHits,inDungeon,dungeonRun,reviveHero,dungeonCastSpot,inLane,interruptHolds,roomAt,partyUnits,inHazard,bossZones,endRetreat,hideSpots,bossHeld,pullBoss} from './dungeon.js';
 import {bossOutOfReach,arenaAhead,rectWorld,lostSight,sightSpot} from './dungeon.js';
 import {DUNGEON_CASTS,FIGUREN,FIGUR_HANDSTUECKE} from './content/index.js';
 import {emitCombatFx} from './combat-fx.js';
@@ -153,6 +153,7 @@ function chooseTarget(g,c){
 
 function damageEnemy(g,c,e,n,id){
  if(!e||e.hp<=0||e.ai==='returning'||e.tutorial)return 0;
+ /* Dungeon-Fix 5: ein Boss mit Einleitung nimmt vor dem Kampf keinen Schaden; wartet er nach der Rede, zieht erst ein befohlener Angriff ihn */if(e.dungeonBoss&&!e.aggro&&bossHeld(g,e)&&!pullBoss(g,e))return 0;
  const crit=g.random()<R.critChance+classBuffValue(c,'crit'),amount=Math.max(1,Math.round(n*(R.spread[0]+g.random()*(R.spread[1]-R.spread[0]))*(crit?R.critFactor:1)*(e.vulnerable>0?R.vulnerableFactor:1)*(e.takenFactor||1)/* Dungeon Etappe 3: Beweise und Geständnis */*(e.hidden?0:1)*(c.blindUntil>g.time?.5:1)/* Etappe 4 Teil A: Greenscreen, geblendet */)),dealt=Math.min(e.hp,amount);
  e.aggro=true;e.ai='combat';g.player.inCombat=7;c.inCombat=6;e.hp=Math.max(0,e.hp-amount);e.hurt=.15;
  addThreat(e,c.id,dealt*COMPANION_ROLES[c.def.role].threat);

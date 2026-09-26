@@ -257,7 +257,9 @@ export const DUNGEON_BOSSES={
   // wie in WoW. Big B bemerkt niemanden von selbst; der Kampf beginnt erst, wenn der Held den Thron erreicht (reach Kacheln um Big B), ihn mit F
   // anspricht (talk Kacheln) oder angreift. Dann legt der Held gefundene Beweise vor (Ausreden im Abstand evidence.present.gap), Big B sagt
   // seinen Begrüßungssatz (line s), erst danach fällt die Tür zu. opener = Anlaufzeit bis zum ersten Zauber, wenn die Gruppe drin ist.
-  intro:{reach:5,talk:13,line:3,opener:6},
+  // Dungeon-Fix 5 (Prüfer #728): keep = Hysterese des F-Hinweises (er geht erst jenseits von talk + keep Kacheln). Nach der Rede wartet Big B
+  // (WoW-Muster), bis der Held angreift oder den Nahbereich reach neu betritt; opener zählt ab diesem echten Kampfbeginn.
+  intro:{reach:5,talk:13,keep:3,line:3,opener:6},
   phases:[{at:.7,castSet:'d-bigb2'},{at:.4,castSet:'d-bigb3'},{at:.15,confess:true}]},
  // ── Etappe 4 Teil A „Die restlichen Bosse“ (E-71, Plan 7.2–7.5). Zahlen gegen die gemessene Gruppe gesetzt (scripts/dungeon-sim.mjs,
  // Korridor 70–110 s mit Held und vier Söldnern). Figuren: vorhandene Katalogfiguren mit Tönung (tint) in Bossgröße, keine neue
@@ -493,7 +495,8 @@ export const DUNGEON_TEXT={
  // Dungeon-Fix 4 (Nachprüfung #726): die eingesammelte Beute als kurze Meldung nach dem Übergang, mit dem, was drin war
  lootGatheredShort:(items,coins)=>'Eingesammelt: '+[items?items+(items===1?' Teil':' Teile'):'',coins?coins+' Pfandmarken':''].filter(Boolean).join(' · '),
  // Dungeon-Fix 4: Rollenspiel-Einleitung (DUNGEON_BOSSES.bigb.intro) – F am Thron, Zeile „Kampfbeginn“ in der Warnleiste
- intro:{address:'Big B ansprechen',pull:'Kampfbeginn',pullNote:'Big B redet noch. Danach fällt die Tür zu, der erste Zauber kommt nach einer kurzen Anlaufzeit.'},
+ // Dungeon-Fix 5 (Prüfer #728): der Timer zeigt das Ende der Rede – danach wartet Big B, bis der Held angreift oder ganz nah herangeht
+ intro:{address:'Big B ansprechen',pull:'Angreifbar in',pullNote:'Big B hält noch seine Rede. Danach wartet er auf dem Thron, bis du angreifst oder ganz nah herangehst. Erst dann fällt die Tür zu.'},
  step:{stairs:'Treppe',ladder:'Leiter',shaft:'Lichtschacht',spiral:'Wendeltreppe',lift:'Getränkeaufzug',pappwand:'Pappwand'},
  floorTo:{e0:'zum Burghof',k1:'ins Rittergeschoss',k2:'ins Basaltgewölbe'},up:'hoch',down:'runter',
  ladder:{a:'hoch aufs Carport-Dach',b:'runter in den Hof'},

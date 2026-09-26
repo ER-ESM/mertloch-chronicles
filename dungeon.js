@@ -399,9 +399,18 @@ export function tickDungeon(g,dt){
 const introDef=e=>e?.dungeonBoss?DUNGEON_BOSSES[e.bossId]?.intro||null:null;
 /** Wartet dieser Boss auf seine Einleitung (hat intro und kämpft noch nicht)? Dann bemerkt er niemanden und nimmt keinen Schaden. */
 export function bossHeld(g,e){return !!introDef(e)&&e.hp>0&&!e.aggro;}
-/** Laufende Einleitung → {boss, left (s bis Kampfbeginn), total, said} oder null. */
+// Dungeon-Fix 5 (Prüfer-Playtest #728: „Nach Ablauf des Timers begann der Kampf von selbst“): WoW-Muster. Nach der Rede bleibt Big B auf dem Thron
+// und wartet (ready). Der Kampf beginnt erst, wenn der Held angreift (pullBoss aus engine.js damage) oder den Nahbereich (reach) neu betritt – wer
+// beim Ende der Rede schon dort steht, muss angreifen. Söldner ziehen nicht von sich aus (er kämpft ja nicht). Die Anlaufzeit (opener) bleibt.
+/** Laufende Einleitung → {boss, left (s bis Rede-Ende), total, said, ready} oder null. ready = Rede vorbei, Big B wartet; die Oberfläche zeigt ihn
+ *  nur, solange der Held im Saal steht. */
 export function introState(g){const run=dungeonRun(g),it=run?.intro;if(!it)return null;const boss=g.enemies.find(x=>x.bossId===it.boss&&x.hp>0);if(!boss)return null;
- return {boss,left:Math.max(0,it.fightAt-g.time),total:it.fightAt-it.at,said:it.said};}
+ if(it.ready&&roomAt(run.def,g.player.x,g.player.y)?.id!==boss.dungeonBoss.room)return null;
+ return {boss,left:it.ready?0:Math.max(0,it.fightAt-g.time),total:it.fightAt-it.at,said:it.said,ready:!!it.ready};}
+/** Wartet dieser Boss nach seiner Rede auf den Angriff (ready)? */
+export function bossReady(g,e){const it=dungeonRun(g)?.intro;return !!it?.ready&&!!e&&it.boss===e.bossId&&bossHeld(g,e);}
+/** Dungeon-Fix 5: Der Held zieht den wartenden Boss (Angriff, Nahbereich): Tür zu, Kampf, erster Zauber nach der Anlaufzeit. → true, wenn gezogen. */
+export function pullBoss(g,e){if(!bossReady(g,e)||g.dead)return false;const run=dungeonRun(g);run.intro=null;engageBoss(g,e);return true;}
 /** Held spricht den Boss an (F am Thron, Thron erreicht, Angriff): gefundene Beweise vorlegen, Begrüßung, dann Kampf. → true, wenn sie beginnt. */
 export function addressBoss(g,e){const run=dungeonRun(g),d=introDef(e);if(!run||!d||!bossHeld(g,e)||run.intro||g.dead)return false;
  if(roomAt(run.def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room)return false;
@@ -413,9 +422,11 @@ export function engageBoss(g,e){const d=introDef(e);e.aggro=true;e.ai='combat';e
 function tickIntro(g,run){const it=run.intro;
  if(!it){if(g.dead)return;const room=roomAt(run.def,g.player.x,g.player.y)?.id;for(const e of g.enemies){const d=introDef(e);if(d&&bossHeld(g,e)&&room===e.dungeonBoss.room&&dist(g.player,e)<=d.reach*U)addressBoss(g,e);}return;}
  const e=g.enemies.find(x=>x.bossId===it.boss&&x.hp>0);if(!e||e.aggro){run.intro=null;return;}
+ /* Dungeon-Fix 5: nach der Rede wartet er – Kampf erst, wenn der Held den Nahbereich neu betritt (oder angreift, pullBoss) */
+ if(it.ready){const near=!g.dead&&roomAt(run.def,g.player.x,g.player.y)?.id===e.dungeonBoss.room&&dist(g.player,e)<=introDef(e).reach*U;if(near&&!it.near)pullBoss(g,e);else it.near=near;return;}
  /* Held fällt oder geht hinaus: die Einleitung bricht ab und beginnt beim nächsten Ansprechen neu (die Beweise bleiben vorgelegt) */if(g.dead||roomAt(run.def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room){run.intro=null;return;}
  if(!it.said&&g.time>=it.lineAt){it.said=true;const line=T.bossLines[e.bossId]?.engage;if(line)g.bark?.(e,line,'boss');}
- if(g.time>=it.fightAt){run.intro=null;engageBoss(g,e);}}
+ if(g.time>=it.fightAt){it.ready=true;it.near=dist(g.player,e)<=introDef(e).reach*U;g.emit?.('dungeonIntro',{boss:e.bossId,phase:'ready'});}}
 /** Dungeon-Fix 4 (Nachprüfung #726: beim Verlassen ohne Wahl nahm das Spiel still das erste Teil der Endtruhe): Endtruhe mit offener Wahl – geöffnet
  *  und nichts gewählt (derselbe Beutel) oder nach ihrem Boss noch gar nicht geöffnet (dann öffnet sie sich dafür). → Beutel oder null. */
 export function chestPending(g){const run=dungeonRun(g),c=run?.def.chest;if(!c||!run.killed.has(c.boss))return null;
@@ -985,10 +996,13 @@ function e4bInteraction(g,run,f){
  for(const x of s.finds)if(!x.taken&&nearPt(g,def,x,x.range)){if(!x.ready){return act('guarded',x,W.evidence[x.id].use,{id:x.id});}return act('find',x,W.evidence[x.id].use,{id:x.id});}
  for(const ev of s.events)if(!ev.done&&nearPt(g,def,ev,ev.range))return act(ev.ready?'event':'guarded',ev,W.events[ev.id].use,{id:ev.id});
  const pr=def.evidence?.present,big=g.enemies.find(e=>e.bossId==='bigb'&&e.hp>0),n=[...run.found].filter(id=>!run.evidence.has(id)).length;
- if(pr&&big&&!big.aggro&&!run.presenting&&!run.intro&&nearPt(g,def,pr,pr.range)&&n)return act('present',pr,W.evidence.present(n));
- /* Dungeon-Fix 4: am Thron spricht F Big B an – mit gefundenen Beweisen heißt es „Beweise vorlegen (n)“, sonst „Big B ansprechen“ */
- for(const e of g.enemies){const d=introDef(e);if(!d||!bossHeld(g,e)||run.intro||roomAt(def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room||dist(g.player,e)>d.talk*U)continue;
-  return {kind:'dungeonAct',act:'address',boss:e.bossId,point:{x:e.x,y:e.y},name:n?W.evidence.present(n):T.intro.address,priority:0};}
+ /* Dungeon-Fix 5 (Prüfer #728: „F Beweise vorlegen“ stand schon am Saaleingang und verschwand beim Weitergehen): Wartet Big B auf seine Einleitung,
+    legt nur das Ansprechen am Thron die Beweise vor – das Vorlegen an der Tresortür (15 Kacheln vor dem Thron) entfällt dann. */
+ if(pr&&big&&!big.aggro&&!introDef(big)&&!run.presenting&&!run.intro&&nearPt(g,def,pr,pr.range)&&n)return act('present',pr,W.evidence.present(n));
+ /* Dungeon-Fix 4: am Thron spricht F Big B an – mit gefundenen Beweisen heißt es „Beweise vorlegen (n)“, sonst „Big B ansprechen“.
+    Dungeon-Fix 5: stabiler Bereich mit Hysterese – der Hinweis kommt bei talk Kacheln und geht erst jenseits von talk + keep (run.talkShown). */
+ for(const e of g.enemies){const d=introDef(e),keep=d&&run.talkShown&&run.talkShown.id===e.bossId&&g.time-run.talkShown.at<.6?d.keep||0:0;if(!d||!bossHeld(g,e)||run.intro||roomAt(def,g.player.x,g.player.y)?.id!==e.dungeonBoss.room||dist(g.player,e)>(d.talk+keep)*U)continue;
+  run.talkShown={id:e.bossId,at:g.time};return {kind:'dungeonAct',act:'address',boss:e.bossId,point:{x:e.x,y:e.y},name:n?W.evidence.present(n):T.intro.address,priority:0};}
  return null;
 }
 /** F auf einem Ziel der Etappe 4 Teil B. → {ok, bag?, vendor?} (die Oberfläche öffnet Beute-Moment bzw. Händlerfenster). */

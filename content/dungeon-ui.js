@@ -35,6 +35,8 @@ export const DUNGEON_UI={
   // Dungeon-Fix 4 (Nachprüfung #726: Lupen und „Geständnis“ erklärten sich nicht): Tooltip mit Schwelle und Wirkung
   confessedTip:(at,taken)=>'Ab '+at+' % lügt Big B nicht mehr: Der Nachsatz kommt sofort, es gibt keine gestrichelte Behauptung.'+(taken?' Mit allen drei Beweisen nimmt er dazu '+taken+' % mehr Schaden.':''),
   evidenceTip:'Vorgelegt: ',
+  // Dungeon-Fix 5 (Prüfer #728: der Kampf begann durch den Timer): nach der Rede wartet Big B – kleiner Zustand „bereit“, die Erklärung im Tooltip
+  ready:'bereit',readyLabel:'Bereit zum Kampf',readyNote:'Big B wartet auf dem Thron. Greif ihn an oder geh ganz nah heran – dann fällt die Tür zu und der Kampf beginnt.',
   // Etappe 4 Teil A: Provision (Exposé), Greenscreen (Rita), Trog (halbes Pferd), Sprinkler (Kurt)
   provision:(n,pct)=>'Provision ×'+n+' · +'+pct+' %',hidden:'Unsichtbar',hiddenNote:'Vor dem Greenscreen nicht anwählbar. Der Schutz zieht sie weg, sonst tritt sie nach 8 s von selbst heraus.',drinking:'Säuft',drinkingNote:'Am Trog heilt es sich. Vom Trog wegziehen.',wet:n=>'Nass ×'+n,wetNote:'Nasse Streifen vom Rand her: Mitte halten.'},
  // ── Merkmale der Zauber: Symbol (map-symbols.js), Antwort (2–3 Wörter, steht in der Warnleiste) und Tooltip.

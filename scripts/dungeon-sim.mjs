@@ -29,12 +29,14 @@
 // Neuer Teil --only=ohneheld (Nutzerentscheidung zu Fix 4, nur Angabe): jeder Boss, der Held fällt bei 50 % Bossleben und bleibt liegen –
 // (a) Held Tank + Heilung + 2× Schaden, (b) Held Heiler + Schutz + 2× Schaden, (c) Held Schaden + Schutz, Heilung, 2× Schaden, (d) wie (c), bei 50 %
 // fallen auch Schutz und Heilung, nur die zwei Schadens-Söldner stehen. Ein Held-Heiler heilt wie ein Spieler den schwächsten Söldner (Freund gewählt).
+// Dungeon-Fix 5 (docs/DUNGEON-FIX5-2026-09-26.md, Prüfer #728): Big B wartet nach der Rede, bis der Held angreift – der Sim-Held spricht ihn an und
+// zieht selbst (heroPulls → pullBoss). Die Rede zählt nicht zur Kampfzeit, im vollen Durchgang aber zur Gesamtzeit.
 import {readFileSync} from 'node:fs';
 import {World,rng} from '../world.js';
 import {Game} from '../engine.js';
 import {makeEnemy,scaledStats,ENCOUNTER_RULES,beginReturn} from '../encounters.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_ENEMIES,TUTORIAL,CLASS_SPECS,ARCHETYPES} from '../content/index.js';
-import {resetEnemySerial,toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct,arenaAhead,packFirstSpecial,engageBoss} from '../dungeon.js';
+import {resetEnemySerial,toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct,arenaAhead,packFirstSpecial,engageBoss,addressBoss,bossReady,pullBoss} from '../dungeon.js';
 import {startAuto} from '../auto-combat.js';
 import {rotate} from './balance-rotation.mjs';
 import {changeSpec,pathBuild,learnTalent,talentPoints,TALENTS} from '../talents.js';
@@ -213,10 +215,13 @@ function chainCheck(){const g=setup({mercs:[]});quiet(g,e=>e.pack==='hof-west'||
  Object.assign(g.player,g.world.findClear(west[0].x,west[0].y+30,9));west[0].aggro=true;west[0].ai='combat';g.adminGod=true;for(let t=0;t<6;t+=.05){g.tick(.05);for(const e of g.enemies)if(e.cast?.callHelp)e.cast=null;}
  return {westAggro:west.filter(e=>e.aggro).length+'/'+west.length,eastAggro:east.filter(e=>e.aggro).length+'/'+east.length};}
 
+/** Dungeon-Fix 5 (Prüfer #728): Big B wartet nach seiner Rede, bis der Held angreift. Der Sim-Held spricht ihn an, die Rede läuft (Söldner folgen),
+ *  dann zieht er selbst – pullBoss, derselbe Weg wie ein Angriff im Spiel (engine.js damage). → Sekunden der Rede (zählen nicht zur Kampfzeit). */
+function heroPulls(g,big){let t=0;if(addressBoss(g,big))for(;t<30&&!bossReady(g,big);t+=.05)g.tick(.05);g.events.length=0;if(!pullBoss(g,big))engageBoss(g,big);return t;}
 /** Big B (Etappe 3): Tresortür mit Gerds Siegel offen, Held und vier Söldner betreten den Thronsaal an der Tür. */
 function bigbRun(opts,fightOpts){const g=setup(opts);quiet(g);onlyBoss(g,'bigb');const run=g.dungeonRun;for(const s of ['siegel-gerd','siegel-expose','siegel-kurt'])run.seals.add(s);run.version++;const big=g.enemies.find(e=>e.bossId==='bigb');
  Object.assign(g.player,toWorld(DEF,'k2',49,24));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}
- engageBoss(g,big);/* Dungeon-Fix 4: wie im Spiel nach der Einleitung – erster Zauber nach der Anlaufzeit */
+ heroPulls(g,big);/* Dungeon-Fix 5: wie im Spiel – Rede, dann zieht der Held selbst (erster Zauber nach der Anlaufzeit) */
  const r=fight(g,[big],{limit:420,...fightOpts});r.feat=(g.dungeons['schloss-bigb'].feats||[]).includes('nachsatz');return r;}
 /** Etappe 4 Teil A: einer der restlichen Bosse mit Held und vier Söldnern, alle Siegel da (Tresortür egal), nur dieser Boss steht. Der Held
  *  startet an der Arenatür. Das halbe Pferd wird erzwungen (sonst 30 %). */
@@ -319,7 +324,7 @@ function wingsRun(opts,{careful=false}={}){
   const secs=total-t0,xp=g.trainingXp-x0,xpRepeat=xp-bossXp+Math.round(bossBase*REWARD_REPEAT);rows.push({wing:wing.id,minutes:+(secs/60).toFixed(1),xp,xpPerMin:Math.round(xp/(secs/60)),xpPerMinRepeat:Math.round(xpRepeat/(secs/60)),packs:DEF.packs.filter(p=>wing.rooms.includes(p.room)).length,placeholder:placeholders.join('+')||'–'});}
  // Big B: Tresortür, Thronsaal, Endtruhe
  const at=toWorld(DEF,'k2',49,24);total+=legSeconds(g,pos,at);const bb=g.enemies.find(e=>e.bossId==='bigb');Object.assign(g.player,at);for(const c of g.companions){const q=g.world.findClear(at.x+10,at.y+10,9);c.x=q.x;c.y=q.y;}
- engageBoss(g,bb);/* Dungeon-Fix 4 */const t0=total,x0=g.trainingXp,rb=fight(g,[bb],{limit:420});total+=rb.time+legSeconds(g,at,toWorld(DEF,DEF.chest.floor,DEF.chest.x,DEF.chest.y))/* Dungeon-Fix 3: Endtruhe mitten im Thronsaal */+STOP_TIME.chest;deaths+=rb.deaths||0;
+ total+=heroPulls(g,bb);/* Dungeon-Fix 5: Rede zählt zur Durchgangszeit, der Held zieht selbst */const t0=total,x0=g.trainingXp,rb=fight(g,[bb],{limit:420});total+=rb.time+legSeconds(g,at,toWorld(DEF,DEF.chest.floor,DEF.chest.x,DEF.chest.y))/* Dungeon-Fix 3: Endtruhe mitten im Thronsaal */+STOP_TIME.chest;deaths+=rb.deaths||0;
  rows.push({wing:'bigb',minutes:+((total-t0)/60).toFixed(1),xp:g.trainingXp-x0,xpPerMin:Math.round((g.trainingXp-x0)/((total-t0)/60)),packs:0,placeholder:'–'});
  return {wings:rows,totalMinutes:+(total/60).toFixed(1),xp:g.trainingXp-xp0,xpPerMin:Math.round((g.trainingXp-xp0)/(total/60)),deaths,wipes,rita:bossTimes.rita??null,returnMax};
 }

@@ -80,7 +80,9 @@ test('Kleine Truhe je Flügel: nach dem Siegelträger einmal je Durchgang ein Te
 test('Beweise: Leihschein auf dem Carport-Dach finden, im Thronsaal vorlegen – erst dann greift die Wirkung (Etappe 3), Big B redet sich raus',()=>{
  const g=game(),r=inside(g);quiet(g);const f=DEF.evidence.finds.leihschein;at(g,f.floor,f.x,f.y);assert.equal(act(g,'find').ok,true);
  assert.ok(r.found.has('leihschein')&&!r.evidence.has('leihschein'),'gefunden, nicht vorgelegt');assert.equal(evidenceEffects(r).noLie.size,0,'noch keine Wirkung');
- r.seals.add('siegel-gerd');r.version++;const pr=DEF.evidence.present;at(g,pr.floor,pr.x,pr.y);const it=g.interaction();assert.match(it.name,/Beweise vorlegen \(1\)/);
+ /* Dungeon-Fix 5: solange Big B auf seine Einleitung wartet, legt das Ansprechen am Thron die Beweise vor – das Vorlegen an der Tresortür entfällt */
+ r.seals.add('siegel-gerd');r.version++;const pr=DEF.evidence.present;at(g,pr.floor,pr.x,pr.y);assert.equal(g.interaction(),null,'am Saaleingang kein F');
+ at(g,'k2',54,12+DUNGEON_BOSSES.bigb.intro.reach+2.5);const it=g.interaction();assert.equal(it.act,'address');assert.match(it.name,/Beweise vorlegen \(1\)/);
  assert.ok(dungeonAct(g,it).ok);assert.ok(r.evidence.has('leihschein'));assert.ok(evidenceEffects(r).noLie.has('kulisse'),'Pappkulisse lügt nicht mehr');
  g.events.length=0;run(g,.2);assert.ok(g.events.some(e=>e.type==='bark'&&e.text===DUNGEON_TEXT.bossLines.bigb.excuses.leihschein),'Ausrede');
  assert.equal(g.save().dungeonRun.evidence.includes('leihschein'),true,'im Laufstand');
