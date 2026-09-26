@@ -18,7 +18,13 @@ export const EINSATZ_RULES=Object.freeze({
  // noch haben – je einmal je Kampf und sichtbar: burst = „Alles oder nichts“ (mehr Schaden für duration Sekunden), evade = „Ausweichen“ (wer
  // den Boss am Hals hat, weicht unter below Leben duration Sekunden seinen Schlägen aus), potion = „Notfall-Schorle“ unter below Leben (heal
  // Anteil Leben; die Schorle gibt es, sobald kein Heiler mehr steht).
- lastStand:{burst:{damage:1,duration:20},potion:{below:.35,heal:.6},evade:{below:.7,duration:8}}
+ lastStand:{burst:{damage:1,duration:20},potion:{below:.35,heal:.6},evade:{below:.7,duration:8}},
+ // Dungeon-Fix 7 (Prüferin #770: unter „Wut ×4“ legten zwei Schadens-Söldner mit dem Letzten Aufgebot die letzten 4 % – das Ausweichen hielt Big Bs Schläge
+ // ab, und wer nicht sein Ziel war, bekam nichts ab): Die Wut ist ein harter Wipe wie in WoW. wave = Wutwelle: Ab dem Ausbruch trifft der Boss alle every
+ // Sekunden die ganze Gruppe mit pct ihres Höchstlebens je Wutstufe (Stufe 1 beim Ausbruch, alle enrage.every Sekunden eine mehr: 8 · 8 · 8 · 16 · 16 · 24 …
+ // Prozent). Ohne Heilung liegt jeder nach etwa 12 s, mit Heilern nach 15–20 s. Ausweichen (Letztes Aufgebot) schützt nicht davor und unter Wut auch nicht
+ // mehr vor den Schlägen des Bosses; Schilde und Schadensminderung wirken wie gewohnt, halten die steigende Welle aber nicht.
+ enrage:{wave:{every:2,pct:.08}}
 });
 
 /** Wertung nach dem Boss („Einsatz“, WoW-Vorbild: Details-Meter und Bonuswurf). Die Rolle des Helden bestimmt, welcher Anteil zählt (Tank: Zeit,
@@ -49,7 +55,9 @@ export const EINSATZ_TEXT=Object.freeze({
   lines:{'merc-radler-rita':'Dann eben allein. Letzte Runde!','merc-hopfen-horst':'Jetzt erst recht!'},line:'Letztes Aufgebot!'},
  // Wut der Bosse (DUNGEON_BOSSES.*.enrage): Einblendung beim Ausbruch; Big B hat seine eigene („Die ganze Wahrheit“, content/dungeons.js).
  enrage:{gerd:'SPERRSTUNDE',expose:'LETZTES ANGEBOT',korkenkurt:'ZAPFENSTREICH',other:'WUT',
-  tip:(e,after=e.after,cuts=[])=>'Nach '+clock(after)+' min Kampf macht der Boss '+pct(e.damage)+' mehr Schaden, alle '+e.every+' s noch einmal. Mit dir im Kampf liegt er vorher.'
+  // Dungeon-Fix 7 (Prüferin #770: „Mit dir im Kampf liegt er vorher“ war missverständlich): Wut ist ein harter Wipe – das steht jetzt so da
+  wave:{gerd:'Sperrstunde',expose:'Letztes Angebot',korkenkurt:'Zapfenstreich',bigb:'Die ganze Wahrheit',other:'Wut'},
+  tip:(e,after=e.after,cuts=[],w=EINSATZ_RULES.enrage.wave)=>'Nach '+clock(after)+' min Kampf: '+pct(e.damage)+' mehr Schaden, alle '+e.every+' s noch einmal, und alle '+w.every+' s trifft die Wut die ganze Gruppe. Das überlebt niemand. Wer mitkämpft, legt den Boss lange vorher.'
    +(cuts.length?' Früher als '+clock(e.after)+': '+cuts.map(c=>(ENRAGE_SOONER[c.id]||c.id)+' −'+clock(c.s)).join(' · ')+'.':'')},
  panel:{title:'Einsatz',score:n=>'Einsatz '+n,
   damage:'Schadensanteil',healing:'Heilungsanteil',hold:'Schutzanteil',interrupts:'Unterbrechungen',warn:'Warnungen',dodges:'Ausgewichen',deaths:'Tode',rally:'Angefeuert',
