@@ -23,7 +23,7 @@ export const DUNGEON_FIGUREN={
  halbespferd:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'natur'},plate:5,gear:['jeans','turnschuhe','pferdekostuem'],
   posen:{huftritt:{cast:'ausholen',end:'tritt'},wiehern:{cast:'jubeln'},saufen:{cast:'buecken'}},drink:'buecken'},
  // Big B (Nutzerentscheidung 2026-09-26): ein drahtiger kleiner Mann im viel zu großen Pelz – wie das Schloss, alles nur Pappe
- bigb:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'schnauzer'},plate:4,gear:['pelzmantel-baron-boss','stoffhose','reitstiefel','kronkorkenkette','peruecke','pappkrone','selfiestick','pfandring'],
+ bigb:{arch:'kevin',tint:{skin:'hell',hair:'braun',face:'ohne',style:'natur',beard:'kinnbart'},plate:4,gear:['pelzmantel-baron-boss','stoffhose','reitstiefel','kronkorkenkette','peruecke','pappkrone','selfiestick','pfandring'],
   posen:{kanone:{cast:'zeigen',end:'sprint:0'},kanone3:{cast:'zeigen',end:'sprint:0'},anwalt:{cast:'telefon'},siegelring:{cast:'hieb:0',end:'hieb:1'},live:{cast:'selfie'},
    parkett:{cast:'zeigen'},kulisse:{cast:'zeigen'},schopf:{cast:'schopf'}},lie:{claim:'zeigen',claimRechts:'zeigenN',truth:'achselzucken'},confess:'zusammensinken'},
  // ── Trash und Adds ──
