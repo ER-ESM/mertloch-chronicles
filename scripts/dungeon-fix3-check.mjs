@@ -58,7 +58,7 @@ const BOT=`{
   const sx=x=>(x-st.camera.x+st.width/2)*k+cv.left,sy=y=>(y-st.camera.y+st.height/2)/st.height*cv.height+cv.top;
   const bar=document.querySelector('.boss-alerts'),br=bar&&bar.children.length?bar.getBoundingClientRect():null,hit=[];
   if(br)for(const a of D.activeWarnAreas(g)){const r={l:sx(a.box.x),t:sy(a.box.y),r:sx(a.box.x+a.box.w),b:sy(a.box.y+a.box.h)};if(r.l<br.right&&br.left<r.r&&r.t<br.bottom&&br.top<r.b)hit.push(a.kind);}
-  const rows=[...(bar?.querySelectorAll('.ba-row')||[])].map(el=>{const t=el.querySelector('b'),s=el.querySelector('small');return {hint:t?.textContent||'',name:s?.textContent||'',key:el.querySelector('kbd')?.textContent||'',arrow:!!el.querySelector('.ba-arrow'),cut:[t,s].filter(Boolean).some(x=>x.scrollWidth>x.clientWidth+1),lie:[...el.classList].find(c=>c.startsWith('ba-lie-'))||'',done:el.classList.contains('ba-done')};});
+  const rows=[...(bar?.querySelectorAll('.ba-row')||[])].map(el=>{const t=el.querySelector('b'),a=el.querySelector('.ba-act')||t,s=el.querySelector('small');return {hint:t?.textContent||'',name:s?.textContent||'',key:el.querySelector('kbd')?.textContent||'',hold:el.classList.contains('ba-hold'),arrow:!!el.querySelector('.ba-arrow'),alt:el.querySelector('.ba-alt')?.textContent||'',cut:!!a&&a.scrollWidth>a.clientWidth+1||!!s&&!s.classList.contains('ba-cut')&&s.scrollWidth>s.clientWidth+1,lie:[...el.classList].find(c=>c.startsWith('ba-lie-'))||'',done:el.classList.contains('ba-done')};});
   const mid=[...document.querySelectorAll('#toast.visible,.error-line.show,.milestone:not([hidden]),.boss-announce:not([hidden])')].filter(el=>{const r=el.getBoundingClientRect();return r.width>2&&getComputedStyle(el).visibility!=='hidden'&&+getComputedStyle(el).opacity>.05&&r.right>W*.3&&r.left<W*.7&&r.bottom>H*.28&&r.top<H*.72;}).map(el=>(el.id||el.className)+': '+el.textContent.trim().slice(0,60));
   const err=document.querySelector('.error-line.show'),er=err?.getBoundingClientRect(),frame=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect();
   const ds=document.querySelector('#deathScreen:not([hidden])')?.getBoundingClientRect();
@@ -66,8 +66,8 @@ const BOT=`{
    deathOverFrame:!!(ds&&frame&&ds.left<frame.right&&frame.left<ds.right&&ds.top<frame.bottom&&frame.top<ds.bottom),toast:document.querySelector('#toast.visible')?.textContent||''};}
 }`;
 // ── Ein Big-B-Kampf mit echten Tasten ─────────────────────────────────────────────────────────────────────────────────────────
-const log=[],meas={samples:0,hits:[],noKey:new Set(),cut:new Set(),quote:[],actions:new Set(),mid:new Set(),err:[],deathOverFrame:0,truthTimes:[]};
-function note(m){meas.samples++;if(m.hit.length)meas.hits.push(m.hit.join('+')+' @'+JSON.stringify(m.bar));for(const r of m.rows){if(r.done)continue;if(!r.key)meas.noKey.add(r.hint+' · '+r.name);if(r.cut)meas.cut.add(r.hint+' · '+r.name);
+const log=[],meas={ring:new Set(),samples:0,hits:[],noKey:new Set(),cut:new Set(),quote:[],actions:new Set(),mid:new Set(),err:[],deathOverFrame:0,truthTimes:[]};
+function note(m){meas.samples++;if(m.hit.length)meas.hits.push(m.hit.join('+')+' @'+JSON.stringify(m.bar));for(const r of m.rows){if(r.done)continue;if(!r.key&&!r.hold)meas.noKey.add(r.hint+' · '+r.name);if(/Siegelring/.test(r.name))meas.ring.add(r.hint+(r.key?' ['+r.key+']':'')+(r.alt?' / '+r.alt:''));if(r.cut)meas.cut.add(r.hint+' · '+r.name);
  if(r.lie==='ba-lie-t'){if(/^[„…]/.test(r.hint))meas.quote.push(r.hint);else meas.actions.add(r.hint+(r.arrow?' ↔':''));}}for(const x of m.mid)meas.mid.add(x);if(m.err)meas.err.push(m.err);if(m.deathOverFrame)meas.deathOverFrame++;}
 async function fight({deaths=[],limit=520000}={}){
  const t0=Date.now();let k=0,lastRe=0,lastAtk=0,died=0,revivedAt=null,reviveCheck=null,res={};
@@ -75,7 +75,7 @@ async function fight({deaths=[],limit=520000}={}){
   const st=await read(`return BOT.step(g)`);
   if(!st.alive){await hold([]);res.won=true;break;}
   // Todesfälle in der Schlussphase (Lauf 2): Big B trifft den Helden mit einem Autoangriff (Todesschlag mit Namen)
-  if(deaths.length&&died<deaths.length&&st.phase<=deaths[died]&&!(await read(`return g.dead`))){await hold([]);
+  if(deaths.length&&died<deaths.length&&st.phase<=deaths[died]&&(await read(`return !g.dead&&g.companions.some(c=>c.id==='merc-schorle-susi'&&c.state!=='down'&&c.hp>0)`))){/* nur mit stehender Heilerin: der Lauf soll das Aufhelfen prüfen, nicht am Zufall eines Söldner-Wipes hängen */await hold([]);
    await read(`const b=g.enemies.find(e=>e.bossId==='bigb');g.adminGod=false;g.player.invulnerable=0;g.player.parry=0;b.lastCast=null;g.hitPlayer(b,g.player.maxHp*30,false);return g.dead`);died++;
    await wait(700);res['death'+died]=await read(`const ds=document.querySelector('#deathScreen');return {shown:!ds.hidden,cause:ds.querySelector('.ds-cause')?.textContent.trim()||'',btn:ds.querySelector('[data-ds-wake]')?.textContent||'',note:ds.querySelector('[data-ds-wake]')?.dataset.tooltipNote||'',phase:${st.phase}}`);
    await shot('2'+died+'-tod-'+died);}
@@ -144,7 +144,7 @@ try{
  if(want(2)){
   const hero=await loadBigB('zwei');await put('k2',50,22);await wait(700);await s.settle();
   const bp=await screen(`g.enemies.find(e=>e.bossId==='bigb')`);await clickAt({x:bp.x,y:bp.y-22},'right');
-  const res=await fight({deaths:[38,18],limit:600000});results.run2={hero,res};
+  const res=await fight({deaths:[35,8],limit:600000});results.run2={hero,res};
   assert.ok(res.death1?.shown&&res.death2?.shown,'zweimal gefallen');assert.match(res.death1.cause,/Big B/);assert.ok(res.death1.cause.length>6,'Todesschlag mit Fähigkeit: '+res.death1.cause);
   assert.equal(res.death2.btn,'Am Kontrollpunkt aufstehen','im Kampf: Aufgabe');assert.match(res.death2.note,/Gibt den Kampf auf/);
   assert.ok(res.won,'Big B besiegt (Söldner allein)');
@@ -160,10 +160,10 @@ try{
  }
  // ─────────────────────────────────────────────── 3 · Warnleiste (in den Läufen gemessen)
  if(want(3)&&meas.samples){
-  results.warn={samples:meas.samples,hits:meas.hits.slice(0,12),noKey:[...meas.noKey],cut:[...meas.cut],quote:meas.quote.slice(0,6),actions:[...meas.actions]};console.log('Warnleiste',JSON.stringify(results.warn));
+  results.warn={ring:[...meas.ring],samples:meas.samples,hits:meas.hits.slice(0,12),noKey:[...meas.noKey],cut:[...meas.cut],quote:meas.quote.slice(0,6),actions:[...meas.actions]};console.log('Warnleiste',JSON.stringify(results.warn));
   assert.deepEqual(meas.hits,[],'Warnleiste überlappt aktive Warnflächen');assert.deepEqual([...meas.noKey],[],'Zeilen ohne Taste');assert.deepEqual([...meas.cut],[],'abgeschnittene Texte');
-  assert.deepEqual(meas.quote,[],'nach dem Nachsatz steht eine Handlung, nicht das Zitat');assert.ok(meas.actions.size>0,'Handlungen gesehen');
-  ok('Warnleiste in '+meas.samples+' Messungen: kein Überlapp mit aktiven Warnflächen, jede Zeile mit Taste, nichts abgeschnitten; nach dem Nachsatz: '+[...meas.actions].join(', '));
+  assert.deepEqual(meas.quote,[],'nach dem Nachsatz steht eine Handlung, nicht das Zitat');assert.ok(meas.ring.size&&[...meas.ring].every(x=>/^Ausweichen \[LEER\]$/i.test(x)),'Siegelring ohne Schild: Ausweichen [LEER] – '+[...meas.ring].join(', '));assert.ok(meas.actions.size>0,'Handlungen gesehen');
+  ok('Warnleiste in '+meas.samples+' Messungen: kein Überlapp mit aktiven Warnflächen, jede Zeile mit Taste, nichts abgeschnitten; Siegelring ohne Schild „'+[...meas.ring].join(' | ')+'“; nach dem Nachsatz: '+[...meas.actions].join(', '));
  }
  // ─────────────────────────────────────────────── 4 · Bildmitte frei
  if(want(4)&&meas.samples){

@@ -139,12 +139,13 @@ try{
   await place('e0',9,29);await read(`g.adminGod=false;const gerd=g.enemies.find(e=>e.bossId==='gerd');gerd.aggro=true;gerd.ai='combat';return 1`);await wait(1500);
   const ghost=await read(`const gerd=g.enemies.find(e=>e.bossId==='gerd');g.hitPlayer(gerd,g.player.maxHp*5);await new Promise(r=>setTimeout(r,300));g.kill(gerd);await new Promise(r=>setTimeout(r,2600));return {dead:g.dead,open:!!document.querySelector('.game-popup[data-window="loot"]'),bag:!!g.rpg.loot.find(x=>x.moment)}`);
   assert.ok(ghost.dead&&ghost.bag,'Held liegt, Beutel liegt '+JSON.stringify(ghost));assert.equal(ghost.open,false,'als Geist kein Fenster');
-  /* „Am Kontrollpunkt aufstehen“ mit echter Maus */const btn=await read(`const r=document.querySelector('[data-ds-wake]').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}`);await clickAt(btn);await wait(1500);
-  const far=await read(`const bag=g.rpg.loot.find(x=>x.moment);return {dead:g.dead,open:!!document.querySelector('.game-popup[data-window="loot"]'),dist:Math.round(Math.hypot(bag.x-g.player.x,bag.y-g.player.y)),room:D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id}`);
-  assert.equal(far.dead,false,'am Kontrollpunkt aufgestanden');assert.equal(far.open,false,'im Hof, '+far.dist+' E weg: noch kein Fenster');
-  await place('e0',12,33);let opened=false;for(let i=0;i<20&&!opened;i++){await wait(200);opened=await read(lootOpen);}
-  await shot('40-beute-moment-arena');assert.ok(opened,'in der Arena öffnet der Beute-Moment von selbst');
-  ok('Boss-Beute: Held lag beim Sieg als Geist → kein Fenster; am Kontrollpunkt (Hof, '+far.dist+' E weg) noch keins; in der Arena öffnet es von selbst');
+  /* Dungeon-Fix 3 (Big-B-Abnahme #721): Der Kampf ist vorbei – der Knopf heißt jetzt „Hier aufstehen“ statt „Am Kontrollpunkt aufstehen“
+     (= Kampf aufgeben), und der Held steht am Ort auf; hilft die Heilerin vorher auf, ebenso. Mit echter Maus. */
+  const btn=await read(`const b=document.querySelector('[data-ds-wake]'),r=b.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,label:b.textContent,dead:g.dead}`);if(btn.dead){assert.equal(btn.label,'Hier aufstehen','nach dem Sieg kein „Kampf aufgeben“');await clickAt(btn);}
+  let opened=false;for(let i=0;i<20&&!opened;i++){await wait(200);opened=await read(lootOpen);}
+  const far=await read(`return {dead:g.dead,room:D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id}`);
+  await shot('40-beute-moment-arena');assert.equal(far.dead,false,'am Ort aufgestanden');assert.equal(far.room,'zugbruecke','in der Arena, nicht am Kontrollpunkt');assert.ok(opened,'in der Arena öffnet der Beute-Moment von selbst');
+  ok('Boss-Beute: Held lag beim Sieg als Geist → kein Fenster; nach dem Sieg '+(btn.dead?'„Hier aufstehen“ per Maus':'von der Heilerin aufgeholfen')+', am Ort in der Arena öffnet es von selbst');
   // B · Rechtsklick auf die Leiche, Hopfen-Horst steht darauf
   await closeAll();await read(`document.querySelector('.game-popup[data-window="loot"] [data-window-close]')?.click();return 1`);await wait(300);
   await read(`const bag=g.rpg.loot.find(x=>x.moment);const h=g.companions.find(c=>c.name==='Hopfen-Horst');h.order='stay';h.x=bag.x;h.y=bag.y+2;const p=g.world.findClear(bag.x+30,bag.y+20,9);Object.assign(g.player,p);return 1`);await wait(600);await settleCam();

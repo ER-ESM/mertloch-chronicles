@@ -140,7 +140,8 @@ try{
  }
  // ───────────────────────────────── 4 · Flügel: Siegelträger öffnet die Abkürzung, kleine Truhe, Flügelstand, Tagesreset
  if(want(4)){
-  await start({w:1600,h:900});await setup();await kill(`e.bossId==='gerd'`);await wait(900);
+  await start({w:1600,h:900});await setup();await kill(`e.bossId==='gerd'`);await wait(900);/* Dungeon-Fix 3: Gerds Beute-Moment wartet jetzt ohne Frist auf den Helden in der Arena (dort steht die kleine Truhe) und läge mit F
+   zuerst im Weg – er ist nicht Teil dieses Teils */await read(`g.rpg.loot=g.rpg.loot.filter(b=>!(b.moment&&b.room));return 1`);
   const sc=await read(`const r=g.dungeonRun;return {unlocked:[...r.unlocked],daily:g.dungeons['schloss-bigb'].daily.shortcuts,wings:g.dungeons['schloss-bigb'].daily.wings}`);assert.ok(sc.unlocked.includes('treppe-zugbruecke')&&sc.daily.includes('treppe-zugbruecke'),'Kette ist Abkürzung für heute '+JSON.stringify(sc));assert.deepEqual(sc.wings,['burghof']);
   await closeAll();const w=await read(`const w=g.dungeonRun.def.wings[0].chest;return w`);await place('e0',w.x,w.y+1.2);await wait(900);const it=await interaction();assert.equal(it?.act,'wingChest','kleine Truhe bietet sich an '+JSON.stringify(it));await shot('11-kleine-truhe');
   await b.press('f');const lw=await lootWindow();assert.ok(lw&&lw.items===1&&/Truhe/.test(lw.head),'Beute-Moment der kleinen Truhe '+JSON.stringify(lw));await shot('12-kleine-truhe-beute');await takeLoot();

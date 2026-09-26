@@ -83,7 +83,7 @@ try{
   ok('Sieg nach '+Math.round(t)+' s Spielzeit: Erfolg „Der Nachsatz zählt“ im Spielstand und im Beute-Moment, Abschluss '+won.clears+', Bestzeit '+won.best+' s');
   await read(`document.querySelector('.game-popup[data-window="loot"] [data-take-loot]')?.click();return 1`);await wait(400);await closeAll();
   // Endtruhe mit Wahl
-  await place('k2',54,39.2);await wait(600);assert.equal(await read(`return g.interaction()?.kind`),'dungeonChest','Truhe bietet sich an');
+  /* Dungeon-Fix 3: die Endtruhe steht nach Big B mitten im Thronsaal (content/dungeons.js chest) */const cc=await read(`return g.dungeonRun.def.chest`);await place('k2',cc.x,cc.y-.8);await wait(600);assert.equal(await read(`return g.interaction()?.kind`),'dungeonChest','Truhe bietet sich an');
   const equipped=await read(`return JSON.stringify(g.rpg.equipment)`);await b.press('f');for(let i=0;i<12&&!(await read(`return !!document.querySelector('.game-popup[data-window="loot"] [data-loot-choice]')`));i++)await wait(250);
   const chest=await read(`const w=document.querySelector('.game-popup[data-window="loot"]');return {items:[...(w?.querySelectorAll('[data-loot-item]')||[])].map(e=>e.dataset.lootItem),all:!!w?.querySelector('[data-take-loot]'),pick:w?.querySelector('[data-loot-pick]')?.textContent||'',head:w?.querySelector('.loot-moment-title')?.textContent||''}`);
   assert.equal(chest.items.length,3,'drei Teile zur Wahl '+JSON.stringify(chest));assert.equal(chest.all,false,'kein „Alles einpacken“');assert.ok(chest.pick,'Hinweis zur Wahl');await shot('09-endtruhe-wahl');

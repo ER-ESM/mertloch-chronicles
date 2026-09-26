@@ -536,7 +536,7 @@ function events(){for(const ev of game.events.splice(0)){
   if(ev.type==='bark')renderer?.bossSpeech.bark(ev,game);if(ev.type==='combat'){combatText?.push(ev);/* Eigener Glückstreffer: kurzer Kamerastoß (Hades/Diablo), sanft und nur ohne reduzierte Bewegung */if(ev.crit&&ev.area==='out'&&!ev.actor&&renderer&&!matchMedia?.('(prefers-reduced-motion: reduce)').matches)renderer.shake=Math.max(renderer.shake||0,2.2);}
   if(ev.type==='discovery')toast(ev.name+' entdeckt · +20 EP');
   if(ev.type==='questDone')milestones?.quest(ev);/* Dungeon-Fix 3: Erfolg und Titel als kurze Einblendung oben */if(ev.type==='dungeonFeat')milestones?.feat({name:ev.name,icon:ev.icon||DUNGEON_FEATS[ev.id]?.icon,note:DUNGEON_FEATS[ev.id]?.note||''});if(ev.type==='dungeonTitle')milestones?.feat({name:ev.name,icon:'medal',title:true});
-  if(ev.type==='revived'){if(popups.isOpen('death'))closeModal();deathScreen?.hide();}
+  if(ev.type==='revived'&&!ev.id&&!game.dead){/* Dungeon-Fix 3: nur der Held – ein Söldner, der wieder steht, meldet {type:'revived',id} (emit mischt data.type ein) und schloss den Todesbildschirm des noch liegenden Helden */if(popups.isOpen('death'))closeModal();deathScreen?.hide();}
   if(ev.type==='death'){/* Todesbildschirm statt Fenster (death-screen.js, Runde 5a): Esc/F schlossen das Fenster und weckten den Helden */popups.close('death');/* Handy: ein Fenster zur Zeit – der Todesbildschirm ersetzt es (wie vorher das Tod-Fenster) */if(mobile?.active)popups.closeAll();deathScreen?.show(ev);}
   if(ev.type==='bossVictory'&&BOSS_LINES[ev.boss])toast('„'+BOSS_LINES[ev.boss].defeat+'“');
   // E-72 Runde 4 (Kenner-Befund 4): Auch Erinnerungen aus Tod oder Kampf kommen in die Schlange und erscheinen erst danach (memoryHeld).
