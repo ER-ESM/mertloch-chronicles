@@ -229,15 +229,16 @@ Ports CDP 9751–9756, Server 4551–4556, `BOOT_TRIES=450`. Der Rechner war sta
 |---|---|
 | `npm test` | 1282/1282 grün (inkl. `tests/dungeon-fix5.test.mjs`, 16 Tests) |
 | `npm run content:check` | 57/57 grün |
-| `npm run build` | ERGEBNIS-BUILD |
+| `npm run build` | grün (Quellen-Wächter sauber) |
 | `npm run ui:check` | 14/14 grün, Desktop 2024×900: kein Fenster scrollt |
 | `node scripts/dungeon-sim.mjs` | alle Kriterien grün (siehe oben) |
-| `dungeon-check` | ERGEBNIS-DUNGEON |
-| `dungeon-e4a-check` | ERGEBNIS-E4A |
-| `dungeon-e4b-check` | ERGEBNIS-E4B |
-| `dungeon-fix3-check` | ERGEBNIS-FIX3 |
-| `dungeon-fix4-check` | ERGEBNIS-FIX4 |
+| `dungeon-check` | Desktop und Handy grün (Eingang, Betreten, Laufen, Gerds Kegel, Siegel, Treppe, Karte, Verlassen) |
+| `dungeon-e4a-check` | 36 grün |
+| `dungeon-e4b-check` | 11 grün (nach Anpassung: Beweise am Thron vorlegen) |
+| `dungeon-fix3-check` | 9 grün. Erster Lauf rot: Die Endtruhe lag hinter der Klassenanzeige, der Rechtsklick traf die Anzeige. Das hängt davon ab, wo der Held nach dem Kampf steht. Jetzt geht das Skript erst ein paar Schritte (S). |
+| `dungeon-fix4-check` | 8 grün. Teile 1–3 im ersten Lauf; Teil 4 nach Anpassung: Die ruhende Maus stand auf dem jetzt oben sitzenden Todesfenster. |
 | `mobile-check` Dungeon (hoch/quer) | 10 Schritte, 0 Befunde, keine Laufzeitfehler |
+| `mobile-check` hoch (ganzer Teil, mit Tod und Erinnerung) | 0 Befunde |
 | `dungeon-fix5-check` (neu) | Teile 1–3: 8 grün, Teil 4: 5 grün |
 | `dungeon-raeume-check` | nicht gelaufen: Fix 5 ändert das Zeichnen der Räume nicht. `dungeon-bigb-art.js` zeichnet nur während eines Bahn-Zaubers den grünen Streifen. Teil 6 (Bildzeit) wird unter Last rot, auch für den Live-Stand (Fix 4) |
 
@@ -248,7 +249,8 @@ Anpassungen an bestehenden Prüfungen (Verhalten gewollt geändert):
 - `tests/dungeon-e4b.test.mjs`: Beweise legt das Ansprechen am Thron vor, am Saaleingang gibt es kein F.
 - `tests/e72-hofprobe.test.mjs`: Die Erinnerungskarte ist kompakt, ohne Bild und Prosa, der Text steht im Tooltip.
 - `scripts/dungeon-fix4-check.mjs`: nach der Rede Rechtsklick-Angriff (Teil 1); läuft der Autoangriff nicht mehr, noch ein Rechtsklick (Teil 4).
-- `scripts/dungeon-fix3-check.mjs`: Beweise am Thron vorlegen statt an der Tresortür.
+- `scripts/dungeon-fix3-check.mjs`: Beweise am Thron vorlegen statt an der Tresortür. Liegt die Endtruhe hinter der Klassenanzeige, erst ein paar Schritte gehen.
+- `scripts/dungeon-e4b-check.mjs`: Beweise am Thron vorlegen.
 
 `scripts/dungeon-fix5-check.mjs` (CDP 9751, Server 4551; `ONLY=1,…`, `MEASURE_ONLY=1`, `FIX5_LIB` für den Vergleich mit einem anderen Stand)
 spielt Big B mit dem Testzugang `bigb`. Die Teile:
@@ -296,8 +298,9 @@ spielt Big B mit dem Testzugang `bigb`. Die Teile:
 3. **Kanonenkugel mit wenig Reserve:** Sichtbar 2,09–2,29 s. Das hält das Ziel, aber knapp.
    - 3,4 s kippte in Fix 4 die Simulation; nicht erneut versucht.
    - Wer mehr Luft will, müsste den Vorlauf `tell` kürzen (V-D5: 1,0 s).
-4. **Andere Prüfskripte der Erinnerungskarte:** Die E-72-Browserprüfungen (`e72-*-check.mjs`, `akt1*-check.mjs`) erwarten womöglich Bild
-   und Text in der Karte. Sie standen nicht auf der Liste und sind nicht gelaufen.
+4. **Andere Prüfskripte der Erinnerungskarte:** `e72-klicks-check` und `e72-hofprobe-check` klicken auf `[data-memory-card-art]`. Den Selektor
+   gibt es weiter, jetzt ist es die ganze Zeile; der Klick öffnet weiter Bild und Text. Die Skripte standen nicht auf der Liste und sind nicht
+   gelaufen.
 5. **Playtest:** Ein Prüfer-Durchgang auf dem neuen Stand steht aus: Warten nach der Rede, grüne Mitte, Rückblick, Truppe, Erinnerung.
 
 ## Veröffentlichung

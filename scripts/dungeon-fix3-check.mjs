@@ -157,7 +157,7 @@ try{
   ok('Lauf 2: zweiter Tod in der Schlussphase ('+res.death2.phase+' %), im Kampf „'+res.death2.btn+'“; nach dem Sieg „'+(post.btn||'–')+'“, Stufe '+up.level+', aufgeholfen mit '+Math.round(up.hp)+'/'+up.max+'; Todesschlag „'+res.death1.cause+'“');
   const after=await afterWin('2');results.run2.after=after;assert.ok(after.loot,'Beute-Moment nach Tod');assert.match(after.choice?.choice||'',/1 \/ 3/);
   ok('Lauf 2 nach dem Sieg: Beute-Moment, Erfolg '+(after.feat?'oben („'+after.feat.text+'“)':'(keiner neu)')+', Endtruhe per Rechtsklick mit '+after.choice.choice);
-  assert.equal(meas.deathOverFrame,0,'Sterbefenster verdeckt den Bossrahmen nie');ok('Sterbefenster über der Aktionsleiste, der Bossrahmen bleibt frei ('+meas.samples+' Messungen)');
+  assert.equal(meas.deathOverFrame,0,'Sterbefenster verdeckt den Bossrahmen nie');ok('Sterbefenster oben unter dem Bossrahmen (Dungeon-Fix 5), der Bossrahmen bleibt frei ('+meas.samples+' Messungen)');
  }
  // ─────────────────────────────────────────────── 3 · Warnleiste (in den Läufen gemessen)
  if(want(3)&&meas.samples){
