@@ -370,4 +370,7 @@ Anpassungen an bestehenden Prüfungen (Verhalten gewollt geändert):
 ## Veröffentlichung
 
 Fix 4 als ein Commit auf `main` (FF, ohne Rebase-Konflikt; `main` stand unverändert auf `4e527c68`), danach
-`node scripts/server-refresh.mjs`. Build-Nummer und Commit stehen im Nachtrag-Commit „Bericht Dungeon-Fix 4: Live-Stand“.
+`node scripts/server-refresh.mjs`.
+
+- `f7a4d57d` Dungeon-Fix 4: Big B mit Einleitung wie in WoW, Richtung mit Handlung, Todesrückblick, Rückfrage an der Endtruhe
+- **Live: Build #727 · `f7a4d57d` · 2026-09-26** (vorher #726 · `4e527c68`), https://mertloch.esm-consultant.de
