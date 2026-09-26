@@ -6,7 +6,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 ## Überblick
 
-255 von 900 Messungen liegen mehr als 15 % neben dem Median ihrer Rolle.
+259 von 900 Messungen liegen mehr als 15 % neben dem Median ihrer Rolle.
 
 ## Ausrüstung: Startausrüstung
 
@@ -14,38 +14,38 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 59 (-2.3 %) | 101 (-10.9 %) | 107 (-21.2 %) ⚑ | 125 (-22.3 %) ⚑ | 143 (-18.8 %) ⚑ | 181 (-15.5 %) ⚑ |
-| dieter-brawl | 1 | 59 (-2.3 %) | 114 (+1 %) | 149 (+9.6 %) | 187 (+16.4 %) ⚑ | 208 (+18.1 %) ⚑ | 246 (+14.6 %) |
-| dieter-brawl | 2 | 59 (-2.3 %) | 110 (-2.2 %) | 126 (-7.7 %) | 133 (-16.9 %) ⚑ | 159 (-9.9 %) | 189 (-11.7 %) |
-| baerbel-feedback | 0 | 61 (0 %) | 131 (+15.8 %) ⚑ | 145 (+6.7 %) | 141 (-12.1 %) | 152 (-13.7 %) | 165 (-23 %) ⚑ |
-| baerbel-feedback | 1 | 61 (0 %) | 141 (+24.7 %) ⚑ | 136 (0 %) | 145 (-9.8 %) | 147 (-16.4 %) ⚑ | 163 (-23.9 %) ⚑ |
-| baerbel-feedback | 2 | 61 (0 %) | 146 (+28.9 %) ⚑ | 180 (+32.5 %) ⚑ | 193 (+20.4 %) ⚑ | 202 (+14.3 %) | 216 (+0.6 %) |
-| baerbel-stage | 0 | 61 (0 %) | 111 (-2.1 %) | 135 (-0.8 %) | 170 (+6 %) | 181 (+2.5 %) | 220 (+2.4 %) |
-| baerbel-stage | 1 | 61 (0 %) | 127 (+12.1 %) | 154 (+13.1 %) | 174 (+8.2 %) | 193 (+9.6 %) | 215 (0 %) |
-| baerbel-stage | 2 | 61 (0 %) | 118 (+4.9 %) | 128 (-5.7 %) | 147 (-8.6 %) | 155 (-12.3 %) | 181 (-15.6 %) ⚑ |
-| kevin-fuse | 0 | 50 (-16.9 %) | 113 (0 %) | 158 (+16 %) ⚑ | 198 (+23.4 %) ⚑ | 169 (-4.4 %) | 269 (+25.4 %) ⚑ |
-| kevin-fuse | 1 | 50 (-16.9 %) | 105 (-6.8 %) | 127 (-6.5 %) | 167 (+4.2 %) | 181 (+2.3 %) | 250 (+16.4 %) ⚑ |
-| kevin-fuse | 2 | 50 (-16.9 %) | 147 (+30.5 %) ⚑ | 151 (+11.1 %) | 161 (0 %) | 169 (-4.1 %) | 229 (+6.5 %) |
-| kevin-hunt | 0 | 50 (-16.9 %) | 134 (+19 %) ⚑ | 148 (+8.8 %) | 160 (-0.4 %) | 176 (0 %) | 187 (-12.7 %) |
-| kevin-hunt | 1 | 50 (-16.9 %) | 120 (+6.1 %) | 136 (-0.1 %) | 154 (-4 %) | 155 (-12.4 %) | 185 (-14 %) |
-| kevin-hunt | 2 | 50 (-16.9 %) | 125 (+10.5 %) | 154 (+12.9 %) | 195 (+21.2 %) ⚑ | 207 (+17.6 %) ⚑ | 232 (+8.3 %) |
-| schorsch-flamme | 0 | 72 (+18.8 %) | 98 (-13.4 %) | 133 (-2.4 %) | 149 (-7.3 %) | 167 (-5.6 %) | 187 (-13 %) |
-| schorsch-flamme | 1 | 72 (+18.8 %) | 97 (-14.2 %) | 111 (-18.2 %) ⚑ | 137 (-15 %) | 144 (-18.6 %) ⚑ | 187 (-12.9 %) |
-| schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-5.7 %) | 150 (-6.4 %) | 174 (-1.5 %) | 202 (-6.1 %) |
-| kaethe-grand | 0 | 61 (+0.7 %) | 120 (+6.6 %) | 148 (+8.7 %) | 180 (+11.9 %) | 199 (+12.5 %) | 234 (+8.8 %) |
-| kaethe-grand | 1 | 61 (+0.7 %) | 97 (-13.7 %) | 110 (-19.5 %) ⚑ | 146 (-9.3 %) | 180 (+2.3 %) | 236 (+10 %) |
-| kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-1 %) | 163 (+1.7 %) | 202 (+14.6 %) | 270 (+25.8 %) ⚑ |
-| kaethe-falsch | 0 | 61 (+0.7 %) | 99 (-12.6 %) | 120 (-11.5 %) | 142 (-11.5 %) | 153 (-13.2 %) | 186 (-13.3 %) |
-| kaethe-falsch | 1 | 61 (+0.7 %) | 95 (-15.7 %) ⚑ | 155 (+14 %) | 173 (+7.6 %) | 187 (+6 %) | 215 (0 %) |
-| kaethe-falsch | 2 | 61 (+0.7 %) | 103 (-8.4 %) | 146 (+7.5 %) | 179 (+11.5 %) | 192 (+8.6 %) | 228 (+6.4 %) |
+| dieter-brawl | 0 | 59 (-2.3 %) | 101 (-10.9 %) | 107 (-24.9 %) ⚑ | 125 (-22.3 %) ⚑ | 143 (-18.8 %) ⚑ | 181 (-15.5 %) ⚑ |
+| dieter-brawl | 1 | 59 (-2.3 %) | 114 (+1 %) | 149 (+4.4 %) | 187 (+16.4 %) ⚑ | 208 (+18.1 %) ⚑ | 246 (+14.6 %) |
+| dieter-brawl | 2 | 59 (-2.3 %) | 110 (-2.2 %) | 126 (-12.1 %) | 133 (-16.9 %) ⚑ | 159 (-9.9 %) | 189 (-11.7 %) |
+| baerbel-feedback | 0 | 61 (0 %) | 131 (+16.1 %) ⚑ | 145 (+1.6 %) | 148 (-7.6 %) | 158 (-10.7 %) | 165 (-23 %) ⚑ |
+| baerbel-feedback | 1 | 61 (0 %) | 146 (+28.9 %) ⚑ | 143 (0 %) | 147 (-8.7 %) | 147 (-16.4 %) ⚑ | 168 (-21.7 %) ⚑ |
+| baerbel-feedback | 2 | 61 (0 %) | 153 (+35.3 %) ⚑ | 190 (+33 %) ⚑ | 194 (+21.1 %) ⚑ | 206 (+16.7 %) ⚑ | 222 (+3.5 %) |
+| baerbel-stage | 0 | 61 (0 %) | 111 (-2.1 %) | 135 (-5.5 %) | 170 (+6 %) | 181 (+2.5 %) | 220 (+2.4 %) |
+| baerbel-stage | 1 | 61 (0 %) | 127 (+12.1 %) | 154 (+7.8 %) | 174 (+8.2 %) | 193 (+9.6 %) | 215 (0 %) |
+| baerbel-stage | 2 | 61 (0 %) | 118 (+4.9 %) | 128 (-10.2 %) | 147 (-8.6 %) | 155 (-12.3 %) | 181 (-15.6 %) ⚑ |
+| kevin-fuse | 0 | 50 (-16.9 %) | 113 (0 %) | 158 (+10.5 %) | 198 (+23.4 %) ⚑ | 169 (-4.4 %) | 269 (+25.4 %) ⚑ |
+| kevin-fuse | 1 | 50 (-16.9 %) | 105 (-6.8 %) | 127 (-10.9 %) | 167 (+4.2 %) | 181 (+2.3 %) | 250 (+16.4 %) ⚑ |
+| kevin-fuse | 2 | 50 (-16.9 %) | 147 (+30.5 %) ⚑ | 151 (+5.9 %) | 161 (0 %) | 169 (-4.1 %) | 229 (+6.5 %) |
+| kevin-hunt | 0 | 50 (-16.9 %) | 134 (+19 %) ⚑ | 148 (+3.7 %) | 160 (-0.4 %) | 176 (0 %) | 187 (-12.7 %) |
+| kevin-hunt | 1 | 50 (-16.9 %) | 120 (+6.1 %) | 136 (-4.8 %) | 154 (-4 %) | 155 (-12.4 %) | 185 (-14 %) |
+| kevin-hunt | 2 | 50 (-16.9 %) | 125 (+10.5 %) | 154 (+7.6 %) | 195 (+21.2 %) ⚑ | 207 (+17.6 %) ⚑ | 232 (+8.3 %) |
+| schorsch-flamme | 0 | 72 (+18.8 %) | 98 (-13.4 %) | 133 (-7 %) | 149 (-7.3 %) | 167 (-5.6 %) | 187 (-13 %) |
+| schorsch-flamme | 1 | 72 (+18.8 %) | 97 (-14.2 %) | 111 (-22.1 %) ⚑ | 137 (-15 %) | 144 (-18.6 %) ⚑ | 187 (-12.9 %) |
+| schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-10.2 %) | 150 (-6.4 %) | 174 (-1.5 %) | 202 (-6.1 %) |
+| kaethe-grand | 0 | 61 (+0.7 %) | 120 (+6.6 %) | 148 (+3.6 %) | 180 (+11.9 %) | 199 (+12.5 %) | 234 (+8.8 %) |
+| kaethe-grand | 1 | 61 (+0.7 %) | 97 (-13.7 %) | 110 (-23.3 %) ⚑ | 146 (-9.3 %) | 180 (+2.3 %) | 236 (+10 %) |
+| kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-5.7 %) | 163 (+1.7 %) | 202 (+14.6 %) | 270 (+25.8 %) ⚑ |
+| kaethe-falsch | 0 | 61 (+0.7 %) | 99 (-12.6 %) | 120 (-15.6 %) ⚑ | 142 (-11.5 %) | 153 (-13.2 %) | 186 (-13.3 %) |
+| kaethe-falsch | 1 | 61 (+0.7 %) | 95 (-15.7 %) ⚑ | 155 (+8.6 %) | 173 (+7.6 %) | 187 (+6 %) | 215 (0 %) |
+| kaethe-falsch | 2 | 61 (+0.7 %) | 103 (-8.4 %) | 146 (+2.5 %) | 179 (+11.5 %) | 192 (+8.6 %) | 228 (+6.4 %) |
 
 ### Heilung · Heilung/s
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 31 (-17.1 %) ⚑ · eff. 14 | 32 (-43.4 %) ⚑ · eff. 16 | 45 (-31 %) ⚑ · eff. 20 | 54 (-32.8 %) ⚑ · eff. 24 | 55 (-42.7 %) ⚑ · eff. 28 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 38 (+2.7 %) · eff. 14 | 64 (+12.8 %) · eff. 17 | 89 (+35.9 %) ⚑ · eff. 18 | 104 (+28.8 %) ⚑ · eff. 19 | 128 (+32.4 %) ⚑ · eff. 26 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 30 (-20.1 %) ⚑ · eff. 14 | 36 (-36 %) ⚑ · eff. 14 | 42 (-35.9 %) ⚑ · eff. 17 | 46 (-42.8 %) ⚑ · eff. 21 | 57 (-40.8 %) ⚑ · eff. 27 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 31 (-17.1 %) ⚑ · eff. 14 | 32 (-43.4 %) ⚑ · eff. 16 | 45 (-31 %) ⚑ · eff. 20 | 54 (-32.8 %) ⚑ · eff. 24 | 56 (-42.2 %) ⚑ · eff. 28 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 42 (+13.8 %) · eff. 15 | 70 (+23.4 %) ⚑ · eff. 17 | 94 (+43.9 %) ⚑ · eff. 18 | 104 (+28.8 %) ⚑ · eff. 19 | 124 (+28.6 %) ⚑ · eff. 26 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 30 (-18.4 %) ⚑ · eff. 14 | 38 (-33.3 %) ⚑ · eff. 14 | 40 (-38.2 %) ⚑ · eff. 17 | 47 (-41.9 %) ⚑ · eff. 21 | 57 (-41.1 %) ⚑ · eff. 27 |
 | baerbel-care | 0 | 0 (-100 %) · eff. 0 | 49 (+32.5 %) ⚑ · eff. 22 | 88 (+56.7 %) ⚑ · eff. 29 | 119 (+82.1 %) ⚑ · eff. 35 | 138 (+70.7 %) ⚑ · eff. 42 | 100 (+3.6 %) · eff. 9 |
 | baerbel-care | 1 | 0 (-100 %) · eff. 0 | 49 (+31.7 %) ⚑ · eff. 22 | 99 (+75.9 %) ⚑ · eff. 20 | 149 (+128.1 %) ⚑ · eff. 29 | 176 (+118.9 %) ⚑ · eff. 35 | 157 (+62.8 %) ⚑ · eff. 5 |
 | baerbel-care | 2 | 0 (-100 %) · eff. 0 | 33 (-11.4 %) · eff. 9 | 38 (-33.5 %) ⚑ · eff. 2 | 45 (-31.7 %) ⚑ · eff. 3 | 52 (-35.1 %) ⚑ · eff. 4 | 69 (-28.2 %) ⚑ · eff. 5 |
@@ -76,38 +76,38 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 94 (-0.7 %) | 167 (-10.8 %) | 205 (-22.5 %) ⚑ | 265 (-26.2 %) ⚑ | 315 (-26.5 %) ⚑ | 449 (-23.1 %) ⚑ |
-| dieter-brawl | 1 | 94 (-0.7 %) | 197 (+5 %) | 264 (0 %) | 369 (+3 %) | 429 (0 %) | 666 (+14.1 %) |
-| dieter-brawl | 2 | 94 (-0.7 %) | 186 (-0.7 %) | 243 (-7.9 %) | 305 (-14.8 %) | 393 (-8.2 %) | 499 (-14.6 %) |
-| baerbel-feedback | 0 | 98 (+3.3 %) | 200 (+6.8 %) | 255 (-3.6 %) | 315 (-12.1 %) | 385 (-10.2 %) | 502 (-14.1 %) |
-| baerbel-feedback | 1 | 98 (+3.3 %) | 226 (+20.6 %) ⚑ | 263 (-0.5 %) | 316 (-11.7 %) | 365 (-14.7 %) | 492 (-15.8 %) ⚑ |
-| baerbel-feedback | 2 | 98 (+3.3 %) | 240 (+28 %) ⚑ | 306 (+15.7 %) ⚑ | 368 (+2.7 %) | 441 (+3 %) | 553 (-5.3 %) |
-| baerbel-stage | 0 | 98 (+3.3 %) | 183 (-2.4 %) | 250 (-5.3 %) | 347 (-3.2 %) | 419 (-2.3 %) | 577 (-1.2 %) |
-| baerbel-stage | 1 | 98 (+3.3 %) | 203 (+8.2 %) | 301 (+13.8 %) | 400 (+11.5 %) | 447 (+4.2 %) | 604 (+3.5 %) |
-| baerbel-stage | 2 | 98 (+3.3 %) | 183 (-2.8 %) | 231 (-12.5 %) | 294 (-17.9 %) ⚑ | 349 (-18.7 %) ⚑ | 478 (-18.2 %) ⚑ |
-| kevin-fuse | 0 | 84 (-11.4 %) | 181 (-3.4 %) | 254 (-3.7 %) | 335 (-6.5 %) | 417 (-2.8 %) | 604 (+3.4 %) |
-| kevin-fuse | 1 | 84 (-11.4 %) | 162 (-13.6 %) | 244 (-7.7 %) | 363 (+1.2 %) | 480 (+12 %) | 656 (+12.3 %) |
-| kevin-fuse | 2 | 84 (-11.4 %) | 231 (+23.1 %) ⚑ | 292 (+10.5 %) | 360 (+0.5 %) | 418 (-2.5 %) | 627 (+7.4 %) |
-| kevin-hunt | 0 | 84 (-11.4 %) | 199 (+5.8 %) | 263 (-0.4 %) | 340 (-5 %) | 415 (-3.1 %) | 581 (-0.5 %) |
-| kevin-hunt | 1 | 84 (-11.4 %) | 192 (+2.3 %) | 252 (-4.7 %) | 334 (-6.9 %) | 402 (-6.2 %) | 538 (-7.8 %) |
-| kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.2 %) | 274 (+3.8 %) | 374 (+4.3 %) | 453 (+5.8 %) | 584 (0 %) |
-| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+16.6 %) ⚑ | 392 (+9.2 %) | 456 (+6.4 %) | 650 (+11.2 %) |
-| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.3 %) | 268 (+1.4 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
-| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 269 (+1.9 %) | 369 (+3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
-| kaethe-grand | 0 | 95 (0 %) | 198 (+5.3 %) | 296 (+11.8 %) | 348 (-2.8 %) | 452 (+5.6 %) | 572 (-2.1 %) |
-| kaethe-grand | 1 | 95 (0 %) | 160 (-14.5 %) | 232 (-12.3 %) | 295 (-17.7 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
-| kaethe-grand | 2 | 95 (0 %) | 161 (-14.1 %) | 276 (+4.4 %) | 407 (+13.6 %) | 488 (+13.8 %) | 669 (+14.4 %) |
-| kaethe-falsch | 0 | 95 (0 %) | 173 (-8 %) | 241 (-8.8 %) | 321 (-10.4 %) | 366 (-14.6 %) | 514 (-12 %) |
-| kaethe-falsch | 1 | 95 (0 %) | 168 (-10.6 %) | 302 (+14.3 %) | 404 (+12.6 %) | 503 (+17.4 %) ⚑ | 604 (+3.5 %) |
-| kaethe-falsch | 2 | 95 (0 %) | 182 (-2.9 %) | 276 (+4.5 %) | 365 (+1.9 %) | 441 (+2.9 %) | 596 (+2.1 %) |
+| dieter-brawl | 0 | 94 (-0.7 %) | 167 (-10.8 %) | 205 (-23.5 %) ⚑ | 265 (-26.2 %) ⚑ | 315 (-26.5 %) ⚑ | 449 (-23.1 %) ⚑ |
+| dieter-brawl | 1 | 94 (-0.7 %) | 197 (+5 %) | 264 (-1.3 %) | 369 (+3 %) | 429 (0 %) | 666 (+14.1 %) |
+| dieter-brawl | 2 | 94 (-0.7 %) | 186 (-0.7 %) | 243 (-9.2 %) | 305 (-14.8 %) | 393 (-8.2 %) | 499 (-14.6 %) |
+| baerbel-feedback | 0 | 98 (+3.3 %) | 221 (+17.7 %) ⚑ | 264 (-1.5 %) | 320 (-10.7 %) | 388 (-9.5 %) | 502 (-14.1 %) |
+| baerbel-feedback | 1 | 98 (+3.3 %) | 229 (+22.1 %) ⚑ | 275 (+2.8 %) | 312 (-13.1 %) | 395 (-7.8 %) | 509 (-12.8 %) |
+| baerbel-feedback | 2 | 98 (+3.3 %) | 248 (+32.3 %) ⚑ | 327 (+21.9 %) ⚑ | 370 (+3.2 %) | 446 (+4.1 %) | 584 (-0.1 %) |
+| baerbel-stage | 0 | 98 (+3.3 %) | 183 (-2.4 %) | 250 (-6.6 %) | 347 (-3.2 %) | 419 (-2.3 %) | 577 (-1.2 %) |
+| baerbel-stage | 1 | 98 (+3.3 %) | 203 (+8.2 %) | 301 (+12.3 %) | 400 (+11.5 %) | 447 (+4.2 %) | 604 (+3.5 %) |
+| baerbel-stage | 2 | 98 (+3.3 %) | 183 (-2.8 %) | 231 (-13.7 %) | 294 (-17.9 %) ⚑ | 349 (-18.7 %) ⚑ | 478 (-18.2 %) ⚑ |
+| kevin-fuse | 0 | 84 (-11.4 %) | 181 (-3.4 %) | 254 (-5 %) | 335 (-6.5 %) | 417 (-2.8 %) | 604 (+3.4 %) |
+| kevin-fuse | 1 | 84 (-11.4 %) | 162 (-13.6 %) | 244 (-9 %) | 363 (+1.2 %) | 480 (+12 %) | 656 (+12.3 %) |
+| kevin-fuse | 2 | 84 (-11.4 %) | 231 (+23.1 %) ⚑ | 292 (+9 %) | 360 (+0.5 %) | 418 (-2.5 %) | 627 (+7.4 %) |
+| kevin-hunt | 0 | 84 (-11.4 %) | 199 (+5.8 %) | 263 (-1.7 %) | 340 (-5 %) | 415 (-3.1 %) | 581 (-0.5 %) |
+| kevin-hunt | 1 | 84 (-11.4 %) | 192 (+2.3 %) | 252 (-5.9 %) | 334 (-6.9 %) | 402 (-6.2 %) | 538 (-7.8 %) |
+| kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.2 %) | 274 (+2.4 %) | 374 (+4.3 %) | 453 (+5.8 %) | 584 (0 %) |
+| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+15 %) ⚑ | 392 (+9.2 %) | 456 (+6.4 %) | 650 (+11.2 %) |
+| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.3 %) | 268 (0 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
+| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 269 (+0.5 %) | 369 (+3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
+| kaethe-grand | 0 | 95 (0 %) | 198 (+5.3 %) | 296 (+10.3 %) | 348 (-2.8 %) | 452 (+5.6 %) | 572 (-2.1 %) |
+| kaethe-grand | 1 | 95 (0 %) | 160 (-14.5 %) | 232 (-13.5 %) | 295 (-17.7 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
+| kaethe-grand | 2 | 95 (0 %) | 161 (-14.1 %) | 276 (+2.9 %) | 407 (+13.6 %) | 488 (+13.8 %) | 669 (+14.4 %) |
+| kaethe-falsch | 0 | 95 (0 %) | 173 (-8 %) | 241 (-10 %) | 321 (-10.4 %) | 366 (-14.6 %) | 514 (-12 %) |
+| kaethe-falsch | 1 | 95 (0 %) | 168 (-10.6 %) | 302 (+12.8 %) | 404 (+12.6 %) | 503 (+17.4 %) ⚑ | 604 (+3.5 %) |
+| kaethe-falsch | 2 | 95 (0 %) | 182 (-2.9 %) | 276 (+3.1 %) | 365 (+1.9 %) | 441 (+2.9 %) | 596 (+2.1 %) |
 
 ### Heilung · Heilung/s
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 39 (-14.1 %) · eff. 12 | 48 (-23.4 %) ⚑ · eff. 13 | 73 (-18.1 %) ⚑ · eff. 16 | 97 (-8.2 %) · eff. 20 | 114 (-12.7 %) · eff. 25 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 54 (+19.6 %) ⚑ · eff. 12 | 92 (+47.2 %) ⚑ · eff. 11 | 113 (+27.3 %) ⚑ · eff. 10 | 132 (+25.1 %) ⚑ · eff. 9 | 174 (+33.1 %) ⚑ · eff. 13 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 42 (-6.8 %) · eff. 12 | 48 (-22.9 %) ⚑ · eff. 7 | 61 (-31.2 %) ⚑ · eff. 9 | 80 (-24.5 %) ⚑ · eff. 11 | 113 (-13.6 %) · eff. 16 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 39 (-14.1 %) · eff. 12 | 48 (-23.4 %) ⚑ · eff. 13 | 73 (-18.1 %) ⚑ · eff. 16 | 97 (-8.2 %) · eff. 20 | 113 (-13.2 %) · eff. 25 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 59 (+29.7 %) ⚑ · eff. 12 | 102 (+62.7 %) ⚑ · eff. 11 | 125 (+41.3 %) ⚑ · eff. 10 | 132 (+25.1 %) ⚑ · eff. 9 | 176 (+34.7 %) ⚑ · eff. 14 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 43 (-5.9 %) · eff. 12 | 48 (-22.6 %) ⚑ · eff. 7 | 59 (-33.2 %) ⚑ · eff. 9 | 84 (-20.2 %) ⚑ · eff. 11 | 107 (-17.8 %) ⚑ · eff. 16 |
 | baerbel-care | 0 | 0 (-100 %) · eff. 0 | 47 (+4.2 %) · eff. 17 | 58 (-6.6 %) · eff. 20 | 89 (0 %) · eff. 26 | 106 (0 %) · eff. 31 | 106 (-18.6 %) ⚑ · eff. 3 |
 | baerbel-care | 1 | 0 (-100 %) · eff. 0 | 46 (0 %) · eff. 17 | 94 (+50.2 %) ⚑ · eff. 5 | 135 (+52.3 %) ⚑ · eff. 9 | 161 (+53 %) ⚑ · eff. 10 | 199 (+51.9 %) ⚑ · eff. 3 |
 | baerbel-care | 2 | 0 (-100 %) · eff. 0 | 29 (-36.3 %) ⚑ · eff. 2 | 39 (-37.6 %) ⚑ · eff. 1 | 47 (-47.1 %) ⚑ · eff. 1 | 55 (-47.7 %) ⚑ · eff. 2 | 71 (-45.7 %) ⚑ · eff. 2 |
@@ -138,47 +138,47 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 111 (0 %) | 208 (-9.8 %) | 226 (-26.7 %) ⚑ | 312 (-27.5 %) ⚑ | 388 (-25.8 %) ⚑ | 536 (-21.7 %) ⚑ |
-| dieter-brawl | 1 | 111 (0 %) | 246 (+6.6 %) | 295 (-4.2 %) | 456 (+6.1 %) | 526 (+0.4 %) | 676 (-1.2 %) |
-| dieter-brawl | 2 | 111 (0 %) | 230 (0 %) | 287 (-6.8 %) | 354 (-17.6 %) ⚑ | 442 (-15.6 %) ⚑ | 607 (-11.3 %) |
-| baerbel-feedback | 0 | 113 (+1.3 %) | 244 (+5.8 %) | 295 (-3.9 %) | 370 (-14 %) | 420 (-19.8 %) ⚑ | 585 (-14.6 %) |
-| baerbel-feedback | 1 | 113 (+1.3 %) | 272 (+17.9 %) ⚑ | 305 (-0.9 %) | 393 (-8.7 %) | 423 (-19.3 %) ⚑ | 581 (-15.2 %) ⚑ |
-| baerbel-feedback | 2 | 113 (+1.3 %) | 292 (+26.5 %) ⚑ | 348 (+13.2 %) | 460 (+6.9 %) | 528 (+0.9 %) | 632 (-7.7 %) |
-| baerbel-stage | 0 | 113 (+1.3 %) | 218 (-5.6 %) | 294 (-4.3 %) | 399 (-7.3 %) | 476 (-9.1 %) | 656 (-4.2 %) |
-| baerbel-stage | 1 | 113 (+1.3 %) | 234 (+1.5 %) | 344 (+11.8 %) | 440 (+2.4 %) | 534 (+2 %) | 730 (+6.5 %) |
-| baerbel-stage | 2 | 113 (+1.3 %) | 214 (-7.3 %) | 284 (-7.7 %) | 344 (-20 %) ⚑ | 399 (-23.8 %) ⚑ | 579 (-15.4 %) ⚑ |
-| kevin-fuse | 0 | 98 (-12.5 %) | 207 (-10.2 %) | 272 (-11.6 %) | 376 (-12.6 %) | 446 (-14.8 %) | 719 (+5 %) |
-| kevin-fuse | 1 | 98 (-12.5 %) | 192 (-16.6 %) ⚑ | 291 (-5.3 %) | 424 (-1.3 %) | 513 (-2.1 %) | 760 (+11 %) |
-| kevin-fuse | 2 | 98 (-12.5 %) | 263 (+14.1 %) | 338 (+10 %) | 455 (+5.7 %) | 530 (+1.2 %) | 736 (+7.5 %) |
-| kevin-hunt | 0 | 98 (-12.5 %) | 243 (+5.4 %) | 311 (+1.1 %) | 402 (-6.4 %) | 486 (-7.3 %) | 685 (0 %) |
-| kevin-hunt | 1 | 98 (-12.5 %) | 230 (0 %) | 295 (-4 %) | 411 (-4.5 %) | 485 (-7.4 %) | 641 (-6.4 %) |
-| kevin-hunt | 2 | 98 (-12.5 %) | 227 (-1.5 %) | 308 (0 %) | 430 (0 %) | 516 (-1.4 %) | 667 (-2.6 %) |
-| schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3 %) | 340 (+10.5 %) | 478 (+11.2 %) | 563 (+7.5 %) | 737 (+7.5 %) |
-| schorsch-flamme | 1 | 127 (+14.3 %) | 236 (+2.2 %) | 314 (+2 %) | 459 (+6.8 %) | 537 (+2.6 %) | 791 (+15.4 %) ⚑ |
-| schorsch-flamme | 2 | 127 (+14.3 %) | 230 (-0.3 %) | 321 (+4.4 %) | 439 (+2.2 %) | 528 (+0.8 %) | 751 (+9.7 %) |
-| kaethe-grand | 0 | 101 (-9 %) | 237 (+2.7 %) | 337 (+9.7 %) | 432 (+0.5 %) | 561 (+7.1 %) | 724 (+5.8 %) |
-| kaethe-grand | 1 | 101 (-9 %) | 199 (-13.8 %) | 276 (-10.2 %) | 385 (-10.6 %) | 524 (0 %) | 676 (-1.3 %) |
-| kaethe-grand | 2 | 101 (-9 %) | 197 (-14.6 %) | 325 (+5.6 %) | 458 (+6.6 %) | 571 (+9 %) | 832 (+21.5 %) ⚑ |
-| kaethe-falsch | 0 | 101 (-9 %) | 205 (-11.1 %) | 276 (-10.4 %) | 402 (-6.6 %) | 456 (-12.9 %) | 604 (-11.8 %) |
-| kaethe-falsch | 1 | 101 (-9 %) | 212 (-7.9 %) | 354 (+15.1 %) ⚑ | 498 (+15.7 %) ⚑ | 558 (+6.5 %) | 777 (+13.4 %) |
-| kaethe-falsch | 2 | 101 (-9 %) | 220 (-4.3 %) | 328 (+6.5 %) | 471 (+9.5 %) | 531 (+1.5 %) | 688 (+0.4 %) |
+| dieter-brawl | 0 | 111 (0 %) | 208 (-9.8 %) | 226 (-27.5 %) ⚑ | 312 (-27.5 %) ⚑ | 388 (-25.8 %) ⚑ | 536 (-21.7 %) ⚑ |
+| dieter-brawl | 1 | 111 (0 %) | 246 (+6.6 %) | 295 (-5.3 %) | 456 (+6.1 %) | 526 (+0.4 %) | 676 (-1.2 %) |
+| dieter-brawl | 2 | 111 (0 %) | 230 (0 %) | 287 (-7.8 %) | 354 (-17.6 %) ⚑ | 442 (-15.6 %) ⚑ | 607 (-11.3 %) |
+| baerbel-feedback | 0 | 113 (+1.3 %) | 273 (+18.4 %) ⚑ | 302 (-2.9 %) | 387 (-10 %) | 450 (-14 %) | 596 (-13 %) |
+| baerbel-feedback | 1 | 113 (+1.3 %) | 282 (+22.2 %) ⚑ | 314 (+1 %) | 397 (-7.6 %) | 438 (-16.3 %) ⚑ | 585 (-14.6 %) |
+| baerbel-feedback | 2 | 113 (+1.3 %) | 297 (+28.9 %) ⚑ | 362 (+16.3 %) ⚑ | 458 (+6.4 %) | 532 (+1.6 %) | 655 (-4.4 %) |
+| baerbel-stage | 0 | 113 (+1.3 %) | 218 (-5.6 %) | 294 (-5.4 %) | 399 (-7.3 %) | 476 (-9.1 %) | 656 (-4.2 %) |
+| baerbel-stage | 1 | 113 (+1.3 %) | 234 (+1.5 %) | 344 (+10.6 %) | 440 (+2.4 %) | 534 (+2 %) | 730 (+6.5 %) |
+| baerbel-stage | 2 | 113 (+1.3 %) | 214 (-7.3 %) | 284 (-8.8 %) | 344 (-20 %) ⚑ | 399 (-23.8 %) ⚑ | 579 (-15.4 %) ⚑ |
+| kevin-fuse | 0 | 98 (-12.5 %) | 207 (-10.2 %) | 272 (-12.6 %) | 376 (-12.6 %) | 446 (-14.8 %) | 719 (+5 %) |
+| kevin-fuse | 1 | 98 (-12.5 %) | 192 (-16.6 %) ⚑ | 291 (-6.4 %) | 424 (-1.3 %) | 513 (-2.1 %) | 760 (+11 %) |
+| kevin-fuse | 2 | 98 (-12.5 %) | 263 (+14.1 %) | 338 (+8.8 %) | 455 (+5.7 %) | 530 (+1.2 %) | 736 (+7.5 %) |
+| kevin-hunt | 0 | 98 (-12.5 %) | 243 (+5.4 %) | 311 (0 %) | 402 (-6.4 %) | 486 (-7.3 %) | 685 (0 %) |
+| kevin-hunt | 1 | 98 (-12.5 %) | 230 (0 %) | 295 (-5.1 %) | 411 (-4.5 %) | 485 (-7.4 %) | 641 (-6.4 %) |
+| kevin-hunt | 2 | 98 (-12.5 %) | 227 (-1.5 %) | 308 (-1.1 %) | 430 (0 %) | 516 (-1.4 %) | 667 (-2.6 %) |
+| schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3 %) | 340 (+9.3 %) | 478 (+11.2 %) | 563 (+7.5 %) | 737 (+7.5 %) |
+| schorsch-flamme | 1 | 127 (+14.3 %) | 236 (+2.2 %) | 314 (+0.8 %) | 459 (+6.8 %) | 537 (+2.6 %) | 791 (+15.4 %) ⚑ |
+| schorsch-flamme | 2 | 127 (+14.3 %) | 230 (-0.3 %) | 321 (+3.2 %) | 439 (+2.2 %) | 528 (+0.8 %) | 751 (+9.7 %) |
+| kaethe-grand | 0 | 101 (-9 %) | 237 (+2.7 %) | 337 (+8.5 %) | 432 (+0.5 %) | 561 (+7.1 %) | 724 (+5.8 %) |
+| kaethe-grand | 1 | 101 (-9 %) | 199 (-13.8 %) | 276 (-11.3 %) | 385 (-10.6 %) | 524 (0 %) | 676 (-1.3 %) |
+| kaethe-grand | 2 | 101 (-9 %) | 197 (-14.6 %) | 325 (+4.4 %) | 458 (+6.6 %) | 571 (+9 %) | 832 (+21.5 %) ⚑ |
+| kaethe-falsch | 0 | 101 (-9 %) | 205 (-11.1 %) | 276 (-11.4 %) | 402 (-6.6 %) | 456 (-12.9 %) | 604 (-11.8 %) |
+| kaethe-falsch | 1 | 101 (-9 %) | 212 (-7.9 %) | 354 (+13.8 %) | 498 (+15.7 %) ⚑ | 558 (+6.5 %) | 777 (+13.4 %) |
+| kaethe-falsch | 2 | 101 (-9 %) | 220 (-4.3 %) | 328 (+5.3 %) | 471 (+9.5 %) | 531 (+1.5 %) | 688 (+0.4 %) |
 
 ### Heilung · Heilung/s
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 37 (-21.1 %) ⚑ · eff. 11 | 54 (-20.5 %) ⚑ · eff. 14 | 79 (-11.4 %) · eff. 15 | 105 (-1.7 %) · eff. 18 | 131 (-4.2 %) · eff. 24 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 55 (+18.3 %) ⚑ · eff. 11 | 104 (+53.4 %) ⚑ · eff. 10 | 142 (+60.5 %) ⚑ · eff. 8 | 133 (+24.2 %) ⚑ · eff. 6 | 178 (+30.2 %) ⚑ · eff. 10 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 47 (0 %) · eff. 11 | 54 (-20.4 %) ⚑ · eff. 7 | 69 (-21.8 %) ⚑ · eff. 8 | 88 (-17.6 %) ⚑ · eff. 9 | 126 (-7.3 %) · eff. 13 |
-| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 39 (-15.3 %) ⚑ · eff. 16 | 56 (-16.8 %) ⚑ · eff. 20 | 87 (-1.6 %) · eff. 23 | 101 (-5.5 %) · eff. 26 | 112 (-18.2 %) ⚑ · eff. 2 |
-| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 39 (-15.3 %) ⚑ · eff. 16 | 100 (+46.8 %) ⚑ · eff. 5 | 147 (+66.3 %) ⚑ · eff. 6 | 171 (+60.4 %) ⚑ · eff. 6 | 214 (+57 %) ⚑ · eff. 2 |
-| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 27 (-42.6 %) ⚑ · eff. 1 | 41 (-40 %) ⚑ · eff. 1 | 49 (-44.6 %) ⚑ · eff. 1 | 57 (-46.6 %) ⚑ · eff. 1 | 73 (-46.4 %) ⚑ · eff. 2 |
-| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 62 (+32.3 %) ⚑ · eff. 11 | 90 (+32.6 %) ⚑ · eff. 13 | 105 (+18.5 %) ⚑ · eff. 16 | 129 (+20.7 %) ⚑ · eff. 24 | 162 (+18.9 %) ⚑ · eff. 34 |
-| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 51 (+8.8 %) · eff. 17 | 88 (+30.1 %) ⚑ · eff. 18 | 118 (+32.6 %) ⚑ · eff. 29 | 153 (+43.1 %) ⚑ · eff. 35 | 152 (+11.1 %) · eff. 32 |
-| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 53 (+14.8 %) · eff. 18 | 86 (+26.5 %) ⚑ · eff. 19 | 109 (+23.3 %) ⚑ · eff. 29 | 116 (+8.9 %) · eff. 22 | 95 (-30.3 %) ⚑ · eff. 7 |
-| kaethe-herz | 0 | 24 (+2340 %) · eff. 1 | 40 (-14.8 %) · eff. 3 | 65 (-4.1 %) · eff. 4 | 84 (-5.4 %) · eff. 4 | 101 (-5.6 %) · eff. 4 | 129 (-5.4 %) · eff. 6 |
-| kaethe-herz | 1 | 24 (+2340 %) · eff. 1 | 47 (+1.1 %) · eff. 3 | 67 (-0.7 %) · eff. 0 | 89 (0 %) · eff. 0 | 107 (0 %) · eff. 0 | 141 (+3.4 %) · eff. 0 |
-| kaethe-herz | 2 | 24 (+2340 %) · eff. 1 | 40 (-14.6 %) · eff. 3 | 68 (0 %) · eff. 4 | 87 (-2.3 %) · eff. 4 | 105 (-1.5 %) · eff. 4 | 136 (0 %) · eff. 6 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 37 (-21.9 %) ⚑ · eff. 11 | 54 (-20.5 %) ⚑ · eff. 14 | 79 (-11.4 %) · eff. 15 | 105 (-1.7 %) · eff. 18 | 134 (-1.9 %) · eff. 24 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 59 (+25.1 %) ⚑ · eff. 11 | 115 (+70.2 %) ⚑ · eff. 10 | 152 (+71 %) ⚑ · eff. 8 | 133 (+24.2 %) ⚑ · eff. 6 | 191 (+39.7 %) ⚑ · eff. 11 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 47 (+0.9 %) · eff. 11 | 52 (-22.9 %) ⚑ · eff. 7 | 70 (-21 %) ⚑ · eff. 8 | 84 (-21.5 %) ⚑ · eff. 9 | 120 (-11.8 %) · eff. 13 |
+| baerbel-care | 0 | 0 (-100 %) · eff. 0 | 39 (-16.2 %) ⚑ · eff. 16 | 56 (-16.8 %) ⚑ · eff. 20 | 87 (-1.6 %) · eff. 23 | 101 (-5.5 %) · eff. 26 | 112 (-18.2 %) ⚑ · eff. 2 |
+| baerbel-care | 1 | 0 (-100 %) · eff. 0 | 39 (-16.2 %) ⚑ · eff. 16 | 100 (+46.8 %) ⚑ · eff. 5 | 147 (+66.3 %) ⚑ · eff. 6 | 171 (+60.4 %) ⚑ · eff. 6 | 214 (+57 %) ⚑ · eff. 2 |
+| baerbel-care | 2 | 0 (-100 %) · eff. 0 | 27 (-43.2 %) ⚑ · eff. 1 | 41 (-40 %) ⚑ · eff. 1 | 49 (-44.6 %) ⚑ · eff. 1 | 57 (-46.6 %) ⚑ · eff. 1 | 73 (-46.4 %) ⚑ · eff. 2 |
+| schorsch-chef | 0 | 0 (-100 %) · eff. 0 | 62 (+30.9 %) ⚑ · eff. 11 | 90 (+32.6 %) ⚑ · eff. 13 | 105 (+18.5 %) ⚑ · eff. 16 | 129 (+20.7 %) ⚑ · eff. 24 | 162 (+18.9 %) ⚑ · eff. 34 |
+| schorsch-chef | 1 | 0 (-100 %) · eff. 0 | 51 (+7.7 %) · eff. 17 | 88 (+30.1 %) ⚑ · eff. 18 | 118 (+32.6 %) ⚑ · eff. 29 | 153 (+43.1 %) ⚑ · eff. 35 | 152 (+11.1 %) · eff. 32 |
+| schorsch-chef | 2 | 0 (-100 %) · eff. 0 | 53 (+13.6 %) · eff. 18 | 86 (+26.5 %) ⚑ · eff. 19 | 109 (+23.3 %) ⚑ · eff. 29 | 116 (+8.9 %) · eff. 22 | 95 (-30.3 %) ⚑ · eff. 7 |
+| kaethe-herz | 0 | 24 (+2340 %) · eff. 1 | 40 (-15.7 %) ⚑ · eff. 3 | 65 (-4.1 %) · eff. 4 | 84 (-5.4 %) · eff. 4 | 101 (-5.6 %) · eff. 4 | 129 (-5.4 %) · eff. 6 |
+| kaethe-herz | 1 | 24 (+2340 %) · eff. 1 | 47 (0 %) · eff. 3 | 67 (-0.7 %) · eff. 0 | 89 (0 %) · eff. 0 | 107 (0 %) · eff. 0 | 141 (+3.4 %) · eff. 0 |
+| kaethe-herz | 2 | 24 (+2340 %) · eff. 1 | 40 (-15.5 %) ⚑ · eff. 3 | 68 (0 %) · eff. 4 | 87 (-2.3 %) · eff. 4 | 105 (-1.5 %) · eff. 4 | 136 (0 %) · eff. 6 |
 
 ### Tank · Schutz/s
 
@@ -203,9 +203,9 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | dieter-brawl | 0 | 146 (+0.8 %) | 229 (-11.6 %) | 294 (-21.2 %) ⚑ | 383 (-25.7 %) ⚑ | 461 (-24.4 %) ⚑ | 639 (-21.1 %) ⚑ |
 | dieter-brawl | 1 | 146 (+0.8 %) | 255 (-1.4 %) | 376 (+0.7 %) | 527 (+2.2 %) | 648 (+6.3 %) | 851 (+5.1 %) |
 | dieter-brawl | 2 | 146 (+0.8 %) | 256 (-1.1 %) | 316 (-15.2 %) ⚑ | 406 (-21.2 %) ⚑ | 525 (-13.9 %) | 648 (-20 %) ⚑ |
-| baerbel-feedback | 0 | 145 (0 %) | 279 (+7.6 %) | 334 (-10.6 %) | 459 (-11.1 %) | 532 (-12.7 %) | 742 (-8.4 %) |
-| baerbel-feedback | 1 | 145 (0 %) | 315 (+21.8 %) ⚑ | 362 (-3.1 %) | 487 (-5.6 %) | 494 (-18.9 %) ⚑ | 733 (-9.5 %) |
-| baerbel-feedback | 2 | 145 (0 %) | 329 (+27.1 %) ⚑ | 432 (+15.8 %) ⚑ | 589 (+14.1 %) | 645 (+5.9 %) | 740 (-8.7 %) |
+| baerbel-feedback | 0 | 145 (0 %) | 297 (+14.8 %) | 362 (-3 %) | 484 (-6.2 %) | 544 (-10.8 %) | 731 (-9.8 %) |
+| baerbel-feedback | 1 | 145 (0 %) | 328 (+26.7 %) ⚑ | 371 (-0.4 %) | 481 (-6.9 %) | 528 (-13.3 %) | 741 (-8.6 %) |
+| baerbel-feedback | 2 | 145 (0 %) | 329 (+26.9 %) ⚑ | 440 (+18 %) ⚑ | 603 (+16.9 %) ⚑ | 661 (+8.6 %) | 806 (-0.5 %) |
 | baerbel-stage | 0 | 145 (0 %) | 259 (0 %) | 319 (-14.4 %) | 466 (-9.6 %) | 541 (-11.2 %) | 755 (-6.8 %) |
 | baerbel-stage | 1 | 145 (0 %) | 278 (+7.4 %) | 391 (+4.9 %) | 546 (+5.8 %) | 663 (+8.7 %) | 861 (+6.3 %) |
 | baerbel-stage | 2 | 145 (0 %) | 259 (+0.1 %) | 309 (-17.1 %) ⚑ | 434 (-15.9 %) ⚑ | 507 (-16.7 %) ⚑ | 745 (-8.1 %) |
@@ -229,9 +229,9 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 46 (-16.2 %) ⚑ · eff. 9 | 55 (-26.7 %) ⚑ · eff. 12 | 97 (-5.3 %) · eff. 15 | 129 (0 %) · eff. 16 | 172 (-4.7 %) · eff. 22 |
-| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 65 (+17.3 %) ⚑ · eff. 9 | 115 (+52.6 %) ⚑ · eff. 8 | 152 (+49.3 %) ⚑ · eff. 6 | 150 (+16.4 %) ⚑ · eff. 5 | 204 (+12.9 %) · eff. 5 |
-| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 54 (-2.5 %) · eff. 9 | 61 (-19.4 %) ⚑ · eff. 6 | 80 (-21.8 %) ⚑ · eff. 7 | 104 (-19.4 %) ⚑ · eff. 8 | 137 (-23.8 %) ⚑ · eff. 11 |
+| dieter-brew | 0 | 0 (-100 %) · eff. 0 | 46 (-16.2 %) ⚑ · eff. 9 | 55 (-26.7 %) ⚑ · eff. 12 | 97 (-5.3 %) · eff. 15 | 129 (0 %) · eff. 16 | 166 (-7.7 %) · eff. 22 |
+| dieter-brew | 1 | 0 (-100 %) · eff. 0 | 69 (+25.1 %) ⚑ · eff. 9 | 127 (+68.4 %) ⚑ · eff. 8 | 161 (+57.6 %) ⚑ · eff. 6 | 150 (+16.4 %) ⚑ · eff. 5 | 204 (+13 %) · eff. 5 |
+| dieter-brew | 2 | 0 (-100 %) · eff. 0 | 53 (-3.8 %) · eff. 9 | 60 (-20.4 %) ⚑ · eff. 5 | 79 (-22.6 %) ⚑ · eff. 7 | 107 (-16.8 %) ⚑ · eff. 7 | 139 (-22.9 %) ⚑ · eff. 11 |
 | baerbel-care | 0 | 0 (-100 %) · eff. 0 | 61 (+9.7 %) · eff. 13 | 65 (-13.8 %) · eff. 17 | 102 (0 %) · eff. 22 | 123 (-4.5 %) · eff. 23 | 126 (-30.4 %) ⚑ · eff. 2 |
 | baerbel-care | 1 | 0 (-100 %) · eff. 0 | 61 (+9.7 %) · eff. 13 | 96 (+26.5 %) ⚑ · eff. 2 | 160 (+56.4 %) ⚑ · eff. 3 | 180 (+39.9 %) ⚑ · eff. 3 | 244 (+35.4 %) ⚑ · eff. 2 |
 | baerbel-care | 2 | 0 (-100 %) · eff. 0 | 29 (-48.4 %) ⚑ · eff. 1 | 42 (-44.8 %) ⚑ · eff. 1 | 52 (-49.3 %) ⚑ · eff. 1 | 62 (-51.8 %) ⚑ · eff. 1 | 81 (-55.3 %) ⚑ · eff. 2 |
@@ -364,19 +364,19 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 ### dieter-brew · Pfad 1 · Stufe 10 ·195 Schaden/s · Ausrüstung +143.3 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit -0.8 Schaden/s · -0.3 Heilung/s · Wumms 1.2 Schaden/s · 0.1 Heilung/s · Taktgefühl 0.1 Schaden/s · 0.7 Heilung/s · Bastelgrips -0.4 Schaden/s · 1.3 Heilung/s · 0.1 verhindert/s · Dicke Haut -0.9 Schaden/s · -0.1 Heilung/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit -0.8 Schaden/s · 0.2 Heilung/s · Wumms 1.2 Schaden/s · 0.1 Heilung/s · Taktgefühl 0.1 Schaden/s · 0.7 Heilung/s · Bastelgrips -0.4 Schaden/s · 1.5 Heilung/s · 0.1 verhindert/s · Dicke Haut -0.9 Schaden/s · 0.3 Heilung/s · 0.1 verhindert/s
 
 **Kniffe (Anteil am Schaden):** Pfand auf die Zwölf 38.6 % · Kronkorken-Kelle 23.9 % · Autoangriff · Flasche kreist 22.1 % · Fassanstich 8.3 % · Du schuldest mir Pfand! 7.1 %
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Letzte Runde heilt +0.6 % · Runde aufs Haus 0 % · Großes Fass -3.1 % · Weizenkur gebunden · Nachschank gebunden · Weizen gegen die Zeche gebunden · Deckel und Pflaster gebunden · Katerfass gebunden · Tropfen für Tropfen gebunden
 
-### dieter-brew · Pfad 2 · Stufe 10 ·296 Schaden/s · Ausrüstung +127.5 % gegenüber Startausrüstung
+### dieter-brew · Pfad 2 · Stufe 10 ·299 Schaden/s · Ausrüstung +101.1 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.6 Schaden/s · Taktgefühl 0.9 Schaden/s · 0.1 Heilung/s · Bastelgrips 0.2 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.8 Schaden/s · -0.1 Heilung/s · Taktgefühl 0.3 Schaden/s · -0.1 Heilung/s · Bastelgrips 0.4 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
 **Kniffe (Anteil am Schaden):** Fassanstich 33.7 % · Pfand auf die Zwölf 22.4 % · Fassanstich 18.4 % · Autoangriff · Flasche kreist 14.7 % · Du schuldest mir Pfand! 5.5 % · Kronkorken-Kelle 5.2 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Bock auf mehr +6.2 % · Scherben bringen Glück +3.9 % · Gut gekühlt 0 % · Rücklaufleitung gebunden · Bock zuerst gebunden · Breiter Ausschank gebunden · Pfand mit Zinsen gebunden · Bock drauf gebunden · Restbestand gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Bock auf mehr +7.5 % · Scherben bringen Glück +7.2 % · Gut gekühlt 0 % · Rücklaufleitung gebunden · Bock zuerst gebunden · Breiter Ausschank gebunden · Pfand mit Zinsen gebunden · Bock drauf gebunden · Restbestand gebunden
 
 ### dieter-brew · Pfad 0 · Stufe 20 ·361 Schaden/s · Ausrüstung +205.6 % gegenüber Startausrüstung
 
@@ -394,13 +394,13 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Pils zuerst +11.1 % · Nachschank 0 % · Weizen gegen die Zeche 0 % · Deckel und Pflaster 0 % · Rücklaufleitung 0 % · Runde aufs Haus -0.1 % · Nachfüllen -0.4 % · Anstich für alle -1.6 % · Großes Fass -1.7 % · Tropfen für Tropfen -4.9 % · Katerfass -8.4 % · Weizenkur gebunden · Letzte Runde heilt gebunden
 
-### dieter-brew · Pfad 2 · Stufe 20 ·457 Schaden/s · Ausrüstung +181.8 % gegenüber Startausrüstung
+### dieter-brew · Pfad 2 · Stufe 20 ·434 Schaden/s · Ausrüstung +152.5 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.8 Schaden/s · Taktgefühl 0.1 Schaden/s · 0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.5 Schaden/s · 0.2 Heilung/s · Taktgefühl -0.7 Schaden/s · 0.1 Heilung/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Fassanstich 34.5 % · Pfand auf die Zwölf 21.2 % · Fassanstich 16.5 % · Autoangriff · Flasche kreist 14 % · Kronkorken-Kelle 8.2 % · Du schuldest mir Pfand! 5.7 %
+**Kniffe (Anteil am Schaden):** Fassanstich 34.3 % · Pfand auf die Zwölf 24.5 % · Autoangriff · Flasche kreist 14.3 % · Fassanstich 13 % · Kronkorken-Kelle 8.1 % · Du schuldest mir Pfand! 5.2 % · Bockfass 0.6 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Bock auf mehr +6.3 % · Letzter Ausschank +5.8 % · Scherben bringen Glück +5.7 % · Nachfüllen +5 % · Bock drauf +4.1 % · Restbestand +3 % · Pfand mit Zinsen +2.3 % · Bock zuerst 0 % · Breiter Ausschank 0 % · Pils zuerst 0 % · Weizenkur 0 % · Rücklaufleitung gebunden · Gut gekühlt gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Bock auf mehr +7 % · Scherben bringen Glück +4.2 % · Restbestand +0.7 % · Letzter Ausschank +0.5 % · Pfand mit Zinsen +0.1 % · Bock zuerst 0 % · Breiter Ausschank 0 % · Pils zuerst 0 % · Weizenkur 0 % · Nachfüllen -0.7 % · Bock drauf -2.8 % · Rücklaufleitung gebunden · Gut gekühlt gebunden
 
 ### baerbel-care · Pfad 0 · Stufe 10 ·260 Schaden/s · Ausrüstung +328.9 % gegenüber Startausrüstung
 
@@ -450,53 +450,53 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Restfleck +2.1 % · Landfrauen-Glanz +1.5 % · Stammpublikum +0.6 % · Frisch gewischt 0 % · Nichts wird weggekippt 0 % · Deckel auf die Schüssel 0 % · Frisch aufgetragen 0 % · Schlussputz 0 % · Warme Schüssel 0 % · Giselas Ruf 0 % · Nachschlag 0 % · Spüli ins Auge gebunden · Blitzblank gebunden
 
-### baerbel-feedback · Pfad 0 · Stufe 10 ·295 Schaden/s · Ausrüstung +103.5 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 0 · Stufe 10 ·302 Schaden/s · Ausrüstung +108.2 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.4 Schaden/s · 0.2 Heilung/s · Taktgefühl -0.4 Schaden/s · 0.2 Heilung/s · Bastelgrips -0.7 Schaden/s · 0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.4 Schaden/s · 0.3 Heilung/s · Taktgefühl 0.5 Schaden/s · 0.2 Heilung/s · Bastelgrips -0.3 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Durchputzen 36.9 % · Pinsel-Piekser 21.9 % · Durchputzen 15 % · Schimmel 13.9 % · Autoangriff · Dauersprühen 12.2 %
+**Kniffe (Anteil am Schaden):** Durchputzen 38.3 % · Pinsel-Piekser 19.8 % · Schimmel 16.2 % · Durchputzen 14.8 % · Autoangriff · Dauersprühen 10.8 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nebenbei gestreut +2.6 % · Mundpropaganda +1.3 % · Ruhe im Karton 0 % · Feuchte Ecke gebunden · Es wächst nach gebunden · Schimmel geht viral gebunden · Kurzer Hausbesuch gebunden · Sporenflug gebunden · Muffige Kammer gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Mundpropaganda +1.1 % · Ruhe im Karton 0 % · Nebenbei gestreut -0.3 % · Feuchte Ecke gebunden · Es wächst nach gebunden · Schimmel geht viral gebunden · Kurzer Hausbesuch gebunden · Sporenflug gebunden · Muffige Kammer gebunden
 
-### baerbel-feedback · Pfad 1 · Stufe 10 ·305 Schaden/s · Ausrüstung +124 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 1 · Stufe 10 ·314 Schaden/s · Ausrüstung +120.2 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.2 Schaden/s · 1.5 Heilung/s · Taktgefühl 1.3 Schaden/s · 1 Heilung/s · Bastelgrips 0 Schaden/s · 1.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.3 Schaden/s · 1 Heilung/s · Taktgefühl 2.5 Schaden/s · 2 Heilung/s · -0.1 verhindert/s · Bastelgrips 0 Schaden/s · 1.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Durchputzen 36.6 % · Pinsel-Piekser 26.5 % · Schimmel 13.3 % · Durchputzen 12.5 % · Autoangriff · Dauersprühen 11.2 %
+**Kniffe (Anteil am Schaden):** Durchputzen 42.2 % · Pinsel-Piekser 20.2 % · Durchputzen 14.1 % · Schimmel 13.2 % · Autoangriff · Dauersprühen 10.3 %
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Kundenbindung 0 % · Reklamation abgewürgt 0 % · Doppelte Marge 0 % · Provision vom Schmerz gebunden · Putzprovision gebunden · Kleingeld vom Tick gebunden · Abschlussprämie gebunden · Provisionskur gebunden · Sonderrabatt gebunden
 
-### baerbel-feedback · Pfad 2 · Stufe 10 ·348 Schaden/s · Ausrüstung +93 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 2 · Stufe 10 ·362 Schaden/s · Ausrüstung +90.6 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.9 Schaden/s · 0.1 Heilung/s · Taktgefühl 1.1 Schaden/s · 0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.7 Schaden/s · 0.1 Heilung/s · Taktgefühl 0.1 Schaden/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.2 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Durchputzen 38.5 % · Pinsel-Piekser 21.3 % · Durchputzen 19.2 % · Schimmel 12.4 % · Autoangriff · Dauersprühen 8.6 %
+**Kniffe (Anteil am Schaden):** Durchputzen 36.8 % · Pinsel-Piekser 21.9 % · Durchputzen 20.4 % · Schimmel 11.9 % · Autoangriff · Dauersprühen 9 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Doppelt geputzt +2.6 % · Vertrieb auf Achse 0 % · Kettenbrief 0 % · Einmal mehr drüber gebunden · Eintrittsgebühr gebunden · Bring noch zwei Freundinnen gebunden · Freundin wirbt Freundin gebunden · Passives Einkommen gebunden · Mehrwegflasche gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Doppelt geputzt +1.8 % · Vertrieb auf Achse 0 % · Kettenbrief 0 % · Einmal mehr drüber gebunden · Eintrittsgebühr gebunden · Bring noch zwei Freundinnen gebunden · Freundin wirbt Freundin gebunden · Passives Einkommen gebunden · Mehrwegflasche gebunden
 
-### baerbel-feedback · Pfad 0 · Stufe 20 ·420 Schaden/s · Ausrüstung +175.9 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 0 · Stufe 20 ·450 Schaden/s · Ausrüstung +185.7 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.1 Schaden/s · -0.1 Heilung/s · Taktgefühl 0.1 Schaden/s · Bastelgrips 0 Schaden/s · 0.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 3.5 Schaden/s · Taktgefühl 0 Schaden/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Durchputzen 44.7 % · Pinsel-Piekser 23.4 % · Durchputzen 12.5 % · Autoangriff · Dauersprühen 10 % · Schimmel 9.4 %
+**Kniffe (Anteil am Schaden):** Durchputzen 53.2 % · Pinsel-Piekser 15.1 % · Durchputzen 11.1 % · Schimmel 10.6 % · Autoangriff · Dauersprühen 10 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Putzprovision +1.1 % · Schimmel geht viral 0 % · Kurzer Hausbesuch 0 % · Muffige Kammer 0 % · Ruhe im Karton 0 % · Provision vom Schmerz 0 % · Nebenbei gestreut -0.1 % · Einmal mehr drüber -0.2 % · Sporenregen -2.5 % · Sporenflug -2.6 % · Es wächst nach -9.7 % · Feuchte Ecke gebunden · Mundpropaganda gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nebenbei gestreut +2.9 % · Einmal mehr drüber +2.7 % · Kurzer Hausbesuch 0 % · Sporenflug 0 % · Muffige Kammer 0 % · Ruhe im Karton 0 % · Provision vom Schmerz 0 % · Schimmel geht viral -0.3 % · Putzprovision -1.3 % · Sporenregen -1.9 % · Es wächst nach -3 % · Feuchte Ecke gebunden · Mundpropaganda gebunden
 
-### baerbel-feedback · Pfad 1 · Stufe 20 ·423 Schaden/s · Ausrüstung +186.8 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 1 · Stufe 20 ·438 Schaden/s · Ausrüstung +197.5 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.6 Schaden/s · 0.6 Heilung/s · Taktgefühl 0.4 Schaden/s · 1.3 Heilung/s · Bastelgrips 0 Schaden/s · 1.2 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.1 Schaden/s · Taktgefühl 0.4 Schaden/s · 1.7 Heilung/s · Bastelgrips 0 Schaden/s · 1.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Durchputzen 47.4 % · Pinsel-Piekser 21 % · Autoangriff · Dauersprühen 11 % · Durchputzen 10.9 % · Schimmel 9.8 %
+**Kniffe (Anteil am Schaden):** Durchputzen 43.3 % · Pinsel-Piekser 18.7 % · Schimmel 13 % · Durchputzen 12.9 % · Autoangriff · Dauersprühen 12 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Feuchte Ecke +3.8 % · Putzprovision +1.1 % · Einmal mehr drüber +0.5 % · Kleingeld vom Tick 0 % · Abschlussprämie 0 % · Sonderrabatt 0 % · Kundenbindung 0 % · Doppelte Marge 0 % · Bonusausschüttung 0 % · Provisionskur -4.4 % · Es wächst nach -8.2 % · Provision vom Schmerz gebunden · Reklamation abgewürgt gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Putzprovision +3.1 % · Feuchte Ecke +0.1 % · Kleingeld vom Tick 0 % · Abschlussprämie 0 % · Sonderrabatt 0 % · Kundenbindung 0 % · Doppelte Marge 0 % · Bonusausschüttung 0 % · Einmal mehr drüber -0.8 % · Provisionskur -7.6 % · Es wächst nach -8.6 % · Provision vom Schmerz gebunden · Reklamation abgewürgt gebunden
 
-### baerbel-feedback · Pfad 2 · Stufe 20 ·528 Schaden/s · Ausrüstung +161.9 % gegenüber Startausrüstung
+### baerbel-feedback · Pfad 2 · Stufe 20 ·532 Schaden/s · Ausrüstung +158.3 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 0.8 Schaden/s · 0.4 Heilung/s · Taktgefühl -0.5 Schaden/s · 1.3 Heilung/s · 0.2 verhindert/s · Bastelgrips 0 Schaden/s · 0.3 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.2 Schaden/s · -0.1 verhindert/s · Taktgefühl -1.1 Schaden/s · -0.2 Heilung/s · Bastelgrips 0 Schaden/s · 0.4 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Durchputzen 34.5 % · Pinsel-Piekser 25.8 % · Durchputzen 22.7 % · Schimmel 9.2 % · Autoangriff · Dauersprühen 7.8 %
+**Kniffe (Anteil am Schaden):** Durchputzen 37.4 % · Pinsel-Piekser 26.1 % · Durchputzen 19.2 % · Schimmel 9.5 % · Autoangriff · Dauersprühen 7.9 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Putzprovision +3.4 % · Die ganze Downline +3.2 % · Doppelt geputzt +2.2 % · Passives Einkommen +0.2 % · Bring noch zwei Freundinnen 0 % · Freundin wirbt Freundin 0 % · Mehrwegflasche 0 % · Vertrieb auf Achse 0 % · Provision vom Schmerz 0 % · Feuchte Ecke 0 % · Eintrittsgebühr -1.3 % · Einmal mehr drüber gebunden · Kettenbrief gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Die ganze Downline +3 % · Eintrittsgebühr +1.6 % · Doppelt geputzt +1 % · Putzprovision +0.4 % · Bring noch zwei Freundinnen 0 % · Freundin wirbt Freundin 0 % · Mehrwegflasche 0 % · Vertrieb auf Achse 0 % · Provision vom Schmerz 0 % · Feuchte Ecke -1 % · Passives Einkommen -3.2 % · Einmal mehr drüber gebunden · Kettenbrief gebunden
 
 ### baerbel-stage · Pfad 0 · Stufe 10 ·294 Schaden/s · Ausrüstung +118.2 % gegenüber Startausrüstung
 
