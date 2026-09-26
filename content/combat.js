@@ -161,6 +161,8 @@ export const DEATH_UI={
   here:'Hier aufstehen',hereNote:'Der Kampf ist vorbei. Du stehst hier auf, nichts setzt zurück.',standing:'Du stehst gleich auf',
   checkpointNote:'Hier stehst du auf. Gelegter Trash bleibt liegen.',ghost:'Söldner kämpfen weiter',ghostNote:'Im Kampf hilft ein Heil-Söldner dir einmal auf (8 s). Nach dem Kampf hilft er dir immer auf, ohne Heiler stehst du von selbst auf. Erst wenn alle liegen, ist der Kampf verloren.',
   reviving:n=>n+' hilft dir auf',allDown:'Alle am Boden',
+  // Dungeon-Fix 7 (Prüferin #770: beim ersten Tod kein Fenster): wie in WoW sofort sichtbar, eine anstehende Rettung steht mit Balken da
+  soon:n=>n+' hilft dir gleich auf',
   // Dungeon-Fix 4 (Nachprüfung #726: der goldene Hauptknopf gab im Kampf den Kampf auf, der Tooltip stand offen): im Kampf zweitrangig und erst
   // beim zweiten Klick – der erste macht ihn scharf (armed s lang)
   giveUp:'Kampf aufgeben',giveUpArmed:'Nochmal: aufgeben',armed:3},

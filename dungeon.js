@@ -356,7 +356,8 @@ const hasRevive=c=>c.state!=='down'&&c.hp>0&&c.def?.abilities?.some(id=>COMPANIO
 export function ghostState(g){const run=dungeonRun(g);if(!run||!g.dead)return null;const gh=run.ghost||{},fight=groupFightOn(g);
  const c=(g.companions||[]).find(x=>x.channel&&x.state!=='down'&&x.hp>0),healer=(g.companions||[]).find(hasRevive)||null;
  const wait=healer?GHOST.healerWait:GHOST.standUp,standIn=!fight&&!gh.wiped&&gh.calm!=null?Math.max(0,wait-(g.time-gh.calm)):null;
- return {fight,wiped:!!gh.wiped,up:standing(g),reviver:c?{name:c.name,fill:Math.min(1,(g.time-c.channel.start)/c.channel.total)}:null,healer:healer?.name||null,standIn,standFill:standIn==null||healer?0:1-standIn/GHOST.standUp};}
+ /* Dungeon-Fix 7: soon = ein Heil-Söldner steht und hat sein Aufhelfen in diesem Kampf noch frei – er kommt gleich */const soon=!c&&!gh.wiped&&healer&&(!fight||!healer.reviveUsed)?healer.name:null;
+ return {fight,wiped:!!gh.wiped,up:standing(g),reviver:c?{name:c.name,fill:Math.min(1,(g.time-c.channel.start)/c.channel.total)}:null,healer:healer?.name||null,soon,standIn,standFill:standIn==null||healer?0:1-standIn/GHOST.standUp};}
 /** Nach dem Kampf: Heil-Söldner hilft auf (companions.js), ohne Heiler steht der Held nach GHOST.standUp s am Ort auf. */
 function ghostAfterFight(g,run){const gh=run.ghost;if(gh.wiped||groupFightOn(g)){gh.calm=null;return;}gh.calm??=g.time;
  const wait=(g.companions||[]).some(hasRevive)?GHOST.healerWait:GHOST.standUp;if(g.time-gh.calm>=wait)standUpHere(g);}

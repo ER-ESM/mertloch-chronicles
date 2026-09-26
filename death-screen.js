@@ -68,10 +68,11 @@ export function deathHtml(cause,keys={},place=null,recap=null){
 export function mountDeathScreen({shell=document.querySelector('#gameShell'),game,respawn,keys=()=>({})}={}){
  const el=document.createElement('section');el.id='deathScreen';el.className='death-screen';el.hidden=true;el.tabIndex=-1;
  el.setAttribute('role','alertdialog');el.setAttribute('aria-labelledby','deathTitle');(shell||document.body).append(el);
- let open=false,armedUntil=0,topAt=0;
+ let open=false,armedUntil=0,topAt=0,lastEv=null;
  function show(ev={}){const g=game();if(!g)return;
   const p=g.player,names=(g.enemies||[]).filter(e=>e.hp>0&&e.aggro&&!e.remoteTarget&&Math.hypot(e.x-p.x,e.y-p.y)<300).map(e=>e.name);
-  const place=dungeonCheckpoint(g);armedUntil=0;topAt=0;side=null;const recap=deathRecap(ev.recent);el.innerHTML=deathHtml(deathCause(ev,names,recap),keys(),place,recap);el.classList.toggle('ds-dungeon',!!place);el.hidden=false;open=true;document.body.classList.add('hero-dead');ghost(g);
+  lastEv=ev;const place=dungeonCheckpoint(g);armedUntil=0;topAt=0;side=null;const recap=deathRecap(ev.recent);el.innerHTML=deathHtml(deathCause(ev,names,recap),keys(),place,recap);el.classList.toggle('ds-dungeon',!!place);el.hidden=false;open=true;document.body.classList.add('hero-dead');ghost(g);
+  /* Dungeon-Fix 7 (Prüferin #770: beim ersten Tod kein Fenster): im Dungeon sofort da, ohne Einblenden */if(place)el.classList.add('show');
   /* Dungeon-Fix 4: der Bildschirm selbst bekommt den Fokus (Enter/Leertaste bleiben über Tab erreichbar) – fokussierte Knöpfe öffnen ihren Tooltip */requestAnimationFrame(()=>{el.classList.add('show');el.focus({preventScroll:true});});}
  function hide(){if(!open)return;open=false;el.classList.remove('show');el.hidden=true;document.body.classList.remove('hero-dead');}
  /* Dungeon-Fix 3: nach dem Kampf steht der Held am Ort auf (nichts setzt zurück), sonst am Kontrollpunkt bzw. bei St. Gangolf */
@@ -81,13 +82,14 @@ export function mountDeathScreen({shell=document.querySelector('#gameShell'),gam
  // Esc und F schließen den Bildschirm nicht (das weckte früher den Helden aus Versehen); Enter/Leertaste auf dem Knopf schon.
  el.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();e.preventDefault();}});
  // Sicherheitsnetz: lebt der Held wieder (Aufhelfen durch Mitspieler, Admin), verschwindet der Bildschirm von selbst.
- setInterval(()=>{const g=game();if(open&&g&&!g.dead)hide();else if(open&&g)ghost(g);},100);
+ /* Dungeon-Fix 7: und umgekehrt – liegt der Held im Dungeon und das Fenster ist zu (egal, was es geschlossen hat), kommt es sofort wieder */
+ setInterval(()=>{const g=game();if(open&&g&&!g.dead)hide();else if(open&&g)ghost(g);else if(!open&&g?.dead&&dungeonCheckpoint(g))show(lastEv||{});},100);
  /** Dungeon: Wer hilft gerade auf (Fortschritt), kämpfen die Söldner noch, ist der Kampf vorbei, liegen alle? Dazu Knopf und Tooltip
   *  passend zum Kampfstand (Dungeon-Fix 3) und der Platz über der Aktionsleiste. */
  function ghost(g){const box=el.querySelector('[data-ds-ghost]');if(!box)return;const D=T.dungeon,st=ghostState(g);if(!st)return;
-  const text=st.reviver?D.reviving(st.reviver.name):st.wiped?D.allDown:st.fight?(st.up?D.ghost:D.allDown):st.healer?D.reviving(st.healer):D.standing,
+  const text=st.reviver?D.reviving(st.reviver.name):st.wiped?D.allDown:st.fight?(st.soon?D.soon(st.soon)/* Dungeon-Fix 7 */:st.up?D.ghost:D.allDown):st.healer?D.reviving(st.healer):D.standing,
    fill=st.reviver?st.reviver.fill:st.standFill||0;
-  const span=box.querySelector('[data-ds-ghost-text]');if(span&&span.textContent!==text)span.textContent=text;box.classList.toggle('reviving',!!st.reviver||!st.fight&&!st.wiped);box.classList.toggle('lost',st.wiped);
+  const span=box.querySelector('[data-ds-ghost-text]');if(span&&span.textContent!==text)span.textContent=text;box.classList.toggle('reviving',!!st.reviver||!!st.soon||!st.fight&&!st.wiped);box.classList.toggle('lost',st.wiped);
   const bar=box.querySelector('[data-ds-revive-fill]');if(bar)bar.style.width=Math.round(fill*100)+'%';
   const btn=el.querySelector('[data-ds-wake]'),place=dungeonCheckpoint(g),here=!st.fight&&!st.wiped,giveUp=st.fight&&!st.wiped,armed=giveUp&&performance.now()<armedUntil;
   /* Dungeon-Fix 4: im Kampf „Kampf aufgeben“ als zweitrangiger Knopf mit Bestätigung, sonst der goldene Hauptknopf */
