@@ -8,7 +8,7 @@ Grundlage:
 Zweige `dungeon-fix3` (Punkte 1 und 2, Worktree `D:\Dev\MertlochChronicles-dg-fix3`) und `dungeon-fix3-r2` (Punkte 3–6, Worktree
 `D:\Dev\MertlochChronicles-dg-fix3r2`), Basis `main` bd23ee09 (Build #720/#721).
 
-**Live:** siehe „Veröffentlichung“.
+**Live:** Build #725 (332eb38d, 26.09.2026); Punkte 1 und 2 zuerst als #723 (1c44171c). Einzelheiten unter „Veröffentlichung“.
 
 Nicht angefasst: `CLAUDE.md`, `docs/ENTSCHEIDUNGEN.md`, Figurengrafik (die neuen Schilder und die Lichtsäule der Truhe sind Requisiten).
 
@@ -16,7 +16,8 @@ Nicht angefasst: `CLAUDE.md`, `docs/ENTSCHEIDUNGEN.md`, Figurengrafik (die neuen
 
 - **Held bleibt tot (Blocker):** Nach dem Kampf hilft ein lebender Heil-Söldner ohne Begrenzung auf (3 s, 50 % Leben). Lebt keiner, steht
   der Held 3 s nach Kampfende am Ort auf (35 %, wie E-44). Nach dem Kampf heißt der Knopf „Hier aufstehen“ und setzt nichts zurück. Ein
-  Aufstieg als Geist füllt kein Leben mehr. Das Sterbefenster sitzt im Dungeon über der Aktionsleiste; der Bossrahmen bleibt frei.
+  Aufstieg als Geist füllt kein Leben mehr. Ein Söldner, der wieder aufsteht, schließt den Todesbildschirm nicht mehr. Das Sterbefenster
+  sitzt im Dungeon über der Aktionsleiste; der Bossrahmen bleibt frei.
 - **Keine Beute (Blocker):** Das Beutefenster öffnete sich und wurde im selben Takt wieder geschlossen – die Bildschleife prüfte fest
   43 E um den Beutel, Big B fällt aber abseits des Helden. Jetzt gilt die Reichweite des Beutels (bei Bossen die ganze Arena).
   - Die Endtruhe erscheint nach Big B **mitten im Thronsaal** mit goldener Lichtsäule; Rechtsklick und F öffnen die Dreierwahl.
@@ -289,4 +290,11 @@ Bilder `visual-review/dungeon-fix3/*.jpg` (lokal, nicht im Repo), angesehen:
 
 ## Veröffentlichung
 
-<!-- VEROEFFENTLICHUNG -->
+- **Teil 1** (Punkte 1, 2 und Nebenbefunde): `git push origin dungeon-fix3:main` (bd23ee09..1c44171c, Commits d3db5419 und 1c44171c),
+  `node scripts/server-refresh.mjs` → live **#723 · 1c44171c**. Kein Rebase nötig (main unverändert).
+- **Teil 2** (Punkte 3–6, Simulation, Bericht): `git fetch && git rebase origin/main` (auf 1c44171c, ohne Konflikt), `npm run build`,
+  `git push origin dungeon-fix3-r2:main` (1c44171c..332eb38d, Commits 96e26939 und 332eb38d), `node scripts/server-refresh.mjs` → live
+  **#725 · 332eb38d**.
+- Gegen die Live-Seite nachgeprüft (`CHECK_URL=https://mertloch.esm-consultant.de/`, `dungeon-fix3-check` Teile 1, 3, 4, 5): 6 Prüfungen
+  grün – Big B ohne Tod (153 s), Beute-Moment, Erfolg oben, Endtruhe mit Dreierwahl, Hinterausgang hinaus; Warnleiste in 919 Messungen
+  ohne Überlapp, mit Taste und Handlung; Bildmitte frei; Beweise gleich; Chat-Reiter per Klick.
