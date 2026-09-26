@@ -9,7 +9,11 @@ export const ENEMY_AUTOS={
  // Dungeon Etappe 4 Teil A (E-71): Autoangriffe der restlichen Schlossbosse (Faktor damage am Boss)
  tablet:{name:'Tabletkante',min:44,max:60,speed:2.5,range:56},korkenzieher:{name:'Korkenzieher',min:46,max:62,speed:2.5,range:56},ringlicht:{name:'Ringlicht-Schwinger',min:40,max:56,speed:2.4,range:58},huf:{name:'Hufschlag',min:48,max:64,speed:2.6,range:40}
 };
-export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43};
+export const COMBAT_RULES={unarmed:{min:3,max:5,speed:2},specialInterval:5.5,firstSpecial:3,lootRange:43,
+ // Dungeon-Fix 2 (2026-09-26): Klickfläche einer plünderbaren Leiche um ihren Beutel (Einheiten; up = über dem Fußpunkt) – Links- wie
+ // Rechtsklick dort öffnet die Beute vor jedem Söldner, der darauf steht. lootMoment: Boss-Beute öffnet sich delay s nach dem Sieg, sobald
+ // der Held lebt, nicht kämpft und in der Arena steht; höchstens wait s lang.
+ lootClick:{x:18,up:24,down:12},lootMoment:{delay:1.4,wait:90}};
 export const COMBAT_TEXT={surge:'In Fahrt',surgeHint:'In Fahrt: Spezialkniff +20 %',needResources:'Nicht genug Randale. Dein Aufbaukniff lädt sie wieder auf.',moving:'Zum Zaubern stehen bleiben.',cancelled:'Zauber abgebrochen: Du bewegst dich.',busy:'Du wirkst bereits einen Zauber.',notReady:'Noch nicht bereit.',noTarget:'Kein Ziel.',lostTarget:'Zauber abgebrochen: Ziel nicht mehr erreichbar.',aimGround:'Boden wählen · Rechtsklick / Esc abbrechen.',autoOn:'Autoangriff an.',autoOff:'Autoangriff aus.',casting:'Wird gewirkt',instant:'Sofort',damage:'Schaden',weaponDamage:'Autoschaden',fixed:'Fester Schaden',underAttack:'Du kriegst auf die Fresse von',cooldown:(name,sekunden)=>name+' muss noch verschnaufen · '+sekunden+' s.'};
 // (flat + weapon × rolled auto damage) × (1 + bonusPct).
 // No damage model = legacy fixed values, so old content can migrate incrementally.
@@ -118,6 +122,15 @@ export const COMBAT_RULE_INFO={
   short:'Beute hebst du bis 43 Einheiten (rund 5 Meter) auf.',
   long:'Dieselbe Entfernung gilt für das Aufheben von Hand und für das automatische Einsammeln. Wer im Kampf wegläuft, lässt Beute liegen, bis er zurückkommt – Beute verschwindet nicht, aber sie läuft dir auch nicht nach.',
   numbers:[{label:'Reichweite',value:COMBAT_RULES.lootRange,unit:'Einheiten (≈ '+m(COMBAT_RULES.lootRange)+' m)',source:'COMBAT_RULES.lootRange'}]},
+ // Dungeon-Fix 2 (2026-09-26): Leiche anklicken und Beute-Moment
+ lootClick:{name:'Leiche anklicken',rules:['lootClick.x','lootClick.up','lootClick.down'],terms:['beute'],
+  short:'Klick auf eine Leiche mit Beute öffnet den Beutel – auch wenn ein Söldner darauf steht.',
+  long:'Die Klickfläche reicht über den liegenden Körper, nicht nur über den Beutel am Boden. Ein Rechtsklick dort öffnet die Beute vor jedem Söldner an derselben Stelle; nur ein lebender Gegner gewinnt, denn Kampf geht vor. Bist du zu weit weg, läufst du hin.',
+  numbers:[{label:'Breite je Seite',value:COMBAT_RULES.lootClick.x,unit:'Einheiten',source:'COMBAT_RULES.lootClick.x'},{label:'Höhe über dem Boden',value:COMBAT_RULES.lootClick.up,unit:'Einheiten',source:'COMBAT_RULES.lootClick.up'},{label:'unter dem Beutel',value:COMBAT_RULES.lootClick.down,unit:'Einheiten',source:'COMBAT_RULES.lootClick.down'}]},
+ lootMoment:{name:'Beute-Moment nach dem Boss',rules:['lootMoment.delay','lootMoment.wait'],terms:['beute'],
+  short:'Boss-Beute im Dungeon öffnet sich kurz nach dem Sieg von selbst, sobald du lebst, nicht mehr kämpfst und in der Arena stehst.',
+  long:'Liegst du beim Sieg noch als Geist oder stehst an der Tür, wartet das Fenster, bis du aufgestanden bist bzw. die Arena betrittst. Geöffnet wird es einmal; danach findest du den Beutel an der Leiche. Nichts wird ungefragt angelegt.',
+  numbers:[{label:'Vorlauf nach dem Sieg',value:COMBAT_RULES.lootMoment.delay,unit:'s',source:'COMBAT_RULES.lootMoment.delay'},{label:'wartet höchstens',value:COMBAT_RULES.lootMoment.wait,unit:'s',source:'COMBAT_RULES.lootMoment.wait'}]},
  autoRange:{name:'Reichweite des eigenen Autoangriffs',rules:[],terms:['autoangriff','reichweite'],
   short:'Dieter und Schorsch schlagen bis 45 Einheiten zu, Anni sprüht bis 155, Käthe schnipst Karten bis 170, Kevin wirft bis 195.',
   long:'Die Reichweite entscheidet, wie viel eines Kampfes du überhaupt bestreiten kannst: Nahkämpfer müssen nach jeder Fläche zurücklaufen, Fernkämpfer nutzen den Fernkampfplatz und verlieren kaum Schläge. Der Autoangriff pausiert, solange du zauberst.',

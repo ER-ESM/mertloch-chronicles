@@ -43,7 +43,7 @@ const NO_PATH='Kein Weg dorthin.';
 import {distance,rng,SCALE} from './world.js';
 import {lostSight} from './dungeon.js';/* Dungeon Etappe 4 Teil A */
 import {inDungeon,dungeonRun,tickDungeon,dungeonInteraction,dungeonDoorInteraction,enterDungeon,leaveDungeon,dungeonStep,dungeonSecret,dungeonBossCast,resolveDungeonCast,dungeonDamageFactor,onDungeonKill,dungeonRespawn,normalizeDungeons,dungeonPackAggro,dungeonCastSpot,savedDungeonRun,restoreDungeonRun,dungeonNotices,interruptHolds,openDungeonChest,quietFloat,dungeonMove} from './dungeon.js';
-import {bossOutOfReach,concealed} from './dungeon.js';
+import {bossOutOfReach,concealed,roomAt} from './dungeon.js';
 import {DUNGEON_CASTS} from './content/index.js';
 import {initCompanions,tickCompanions,tickEnemyOnCompanion,companionFocus,addThreat,resetCompanions,savedCompanions,companionOffers,hireCompanion,dismissCompanion,orderCompanions,setCompanionStance} from './companions.js';
 import {healCompanionByPlayer,buffCompanionByPlayer} from './companions.js';
@@ -111,7 +111,7 @@ export class Game{
     this.trackedQuest=sameWorld&&this.sideQuests[saved.trackedQuest]?saved.trackedQuest:null;this.hotspots=restoreHotspots(saved.hotspots);
     this.campSerial=0;this.populateCamps();
     initMounts(this,saved.mounts);initProfessions(this,saved.professions);
-    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);this.hotspotDirector=new HotspotDirector(this);placeUsables(this,this.rpg.inventory.map(e=>e.id));
+    this.rpg=createRpg(saved.rpg,world.id,this.member.id);for(const [id,build] of Object.entries(this.rpg.talentBuilds))Object.assign(build,talentState(build,id,talentPoints(this)));this.refreshStats();this.ecology=new EncounterDirector(this);this.hotspotDirector=new HotspotDirector(this);/* Dungeon-Fix 2: Startverpflegung nur für einen Helden ohne eigene Leistenbelegung (erster Start), nie beim Laden eines gespielten Stands */if(!saved.rpg?.actionBars?.[this.member.id])placeUsables(this,this.rpg.inventory.map(e=>e.id));
     initCompanions(this,sameWorld?saved.companions:null);this.dungeons=normalizeDungeons(saved.dungeons);
     initTutorial(this,saved,options.guidedStart);if(sameWorld&&saved.instance?.id===KIOSK_ROOM.id)enterKiosk(this,saved.instance);
     /* Dungeon-Laufstand (E-71): überlebt das Neuladen; wer drin war, steht wieder am letzten Kontrollpunkt */if(sameWorld&&saved.dungeonRun&&!this.instance)restoreDungeonRun(this,saved.dungeonRun);
@@ -421,8 +421,11 @@ export class Game{
   /** Spieleinstellung setzen (heute nur `autoLoot`). Meldet `settingsChanged` und speichert. */
   setSetting(key,value){if(!Object.hasOwn(this.settings,key))return false;this.settings[key]=!!value;this.emit('settingsChanged',{key,value:this.settings[key]});this.emit('save');return true;}
   /** Beutel öffnen: bei Auto-Loot wandert alles sofort in den Rucksack, sonst bekommt die UI den Beutel fürs Fenster. */
+  /** Kann der Held diesen Beutel öffnen? In Reichweite des Beutels, bei Boss-Beute (Beute-Moment) auch überall in der Arena des Bosses
+   *  (Dungeon-Fix 2: Gerds Beute blieb zu, wenn der Held an der Tür stand – das Fenster kam nie). */
+  lootReachable(bag){if(!bag||this.dead)return false;if(distance(this.player,bag)<=(bag.reach||COMBAT_RULES.lootRange))return true;const run=dungeonRun(this);return !!(bag.room&&run&&roomAt(run.def,this.player.x,this.player.y)?.id===bag.room);}
   openLoot(id){const bag=this.rpg.loot.find(b=>b.id===id);if(!bag||this.dead)return null;
-   if(distance(this.player,bag)>(bag.reach||COMBAT_RULES.lootRange)){this.toast('Der Beutel ist zu weit weg. Geh näher heran.');return null;}
+   if(!this.lootReachable(bag)){this.toast('Der Beutel ist zu weit weg. Geh näher heran.');return null;}
    if(!this.settings.autoLoot||bag.moment/* Beute-Moment (E-71): Boss-Beute im Dungeon immer als Fenster */)return bag;
    autoLootBag(this,bag);return null;}
   /** Beschreibung eines Elements: content-Info plus Laufzeitwerte (Schaden, Abklingzeit, Restdauer, Stapel). */

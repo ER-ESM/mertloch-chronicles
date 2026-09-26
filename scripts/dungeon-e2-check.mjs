@@ -130,8 +130,10 @@ await read(`window.__dgOpenJournal?.('gerd');return 1`);await wait(500);
   // Geheimnisse: Wehrgang und Pappschützen vom Hof aus verborgen
   const secret=await read(`const r=g.dungeonRun;r.visited.delete('wehrgang');const s=g.enemies.filter(e=>e.dungeonKind==='pappschuetze'&&D.roomAt(r.def,e.home.x,e.home.y)?.id==='wehrgang')/* Feinschliff 2026-09-26: Pappschützen stehen jetzt auch in anderen Räumen */;return {n:s.length,hidden:s.every(e=>D.concealed(g,e))}`);assert.ok(secret.n>0&&secret.hidden,'Pappschützen auf dem Wehrgang verborgen');
   // Überfahren zeigt Raumnamen
-  const hov=await read(`Object.assign(g.player,D.toWorld(g.dungeonRun.def,'e0',31,34));g.hover={...D.toWorld(g.dungeonRun.def,'e0',31,30)};await new Promise(r=>setTimeout(r,300));return A.dungeonTextStats.last`);assert.ok(hov.length>=1,'Raumname beim Überfahren');
-  pass(4,'Text-Diät: je Raum nur der Zonentitel ('+seen.map(s=>s.title.split(' ')[0]).join(', ')+'), keine Kurzmeldung, keine Dauerschrift, Durchsage als Sprechblase, Wehrgang verborgen, Name beim Überfahren');
+  // Dungeon-Fix 2 (Endabnahme #715): der Name steht nur beim Überfahren der Plakette an der Wand, nicht mehr irgendwo im Raum
+  const mid=await read(`Object.assign(g.player,D.toWorld(g.dungeonRun.def,'e0',31,34));g.hover={...D.toWorld(g.dungeonRun.def,'e0',31,30)};await new Promise(r=>setTimeout(r,300));return A.dungeonTextStats.last`);assert.deepEqual(mid,[],'Maus in der Raummitte: kein Raumname in der Welt');
+  const hov=await read(`const q=A.currentPlaques(g).find(p=>p.id==='hof');g.hover={x:q.x,y:q.y+3};await new Promise(r=>setTimeout(r,300));return A.dungeonTextStats.last`);assert.ok(hov.length>=1,'Raumname beim Überfahren der Plakette');
+  pass(4,'Text-Diät: je Raum nur der Zonentitel ('+seen.map(s=>s.title.split(' ')[0]).join(', ')+'), keine Kurzmeldung, keine Dauerschrift, Durchsage als Sprechblase, Wehrgang verborgen, Name nur an der Plakette');
  }
  // ─────────────────────────────────────────────── 5 · Handy-Kampfansicht: Boss und Held sichtbar
  if(want(5)){

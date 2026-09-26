@@ -26,6 +26,11 @@ const alive=c=>c.state!=='down'&&c.hp>0;
  *  liegt oder über die Treppenkante gefallen ist. Kein Heranspringen zum Helden, kein Abbruch wegen Abstand. */
 const holdFight=(g,c)=>c.inCombat>0&&!!dungeonRun(g)?.arena;
 const fighting=e=>e.hp>0&&e.aggro&&e.ai!=='returning'&&!e.dummy&&!e.tutorial;
+/** Dungeon-Fix 2 (Endabnahme #715: Radler-Rita zeigte über 30 s „Steht in 0 s wieder auf“ und stand erst nach dem Kampf auf): Wer liegt,
+ *  steht erst nach dem Kampf auf – frühestens nach downSeconds. Der Kampf läuft, solange ein Gegner in Reichweite des Helden oder des
+ *  Liegenden kämpft oder jemanden aus der Gruppe angeht. Vorher zählte nur der Abstand zum Helden: Lag der Held als Geist abseits, standen
+ *  Söldner mitten im Kampf auf, sonst hingen sie – die Anzeige nannte in beiden Fällen nur die Frist. Anzeige: companion-ui.js. */
+export function groupFightOn(g,c){const ids=new Set((g.companions||[]).map(o=>o.id));return (g.enemies||[]).some(e=>fighting(e)&&(distance(e,g.player)<R.assistRange||(c&&distance(e,c)<R.assistRange)||e.focus===PLAYER&&!g.dead||ids.has(e.focus)));}
 const ratio=x=>x.hp/x.maxHp;
 const abilitySource=id=>({id,name:COMPANION_ABILITIES[id].name});
 /** Aussehen des Söldners als Anziehpuppe (content/figuren.js): Körper über die Figur (paperdollId npc:<id>, Archetyp darf vom look
@@ -307,7 +312,7 @@ function tickOne(g,c,dt){
  for(const key of ['guard','hurt','attack','castPose','inCombat'])c[key]=Math.max(0,(c[key]||0)-dt);
  if(c.contract!=null){c.contract-=dt;if(c.contract<=0){dismissCompanion(g,c.id,'expired');return;}}
  c.moving=false;
- if(c.state==='down'){if(g.time>=c.downUntil&&!g.enemies.some(e=>fighting(e)&&distance(e,g.player)<R.assistRange)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
+ if(c.state==='down'){if(g.time>=c.downUntil&&!groupFightOn(g,c)){c.state='follow';c.hp=Math.round(c.maxHp*R.reviveHealth);place(g,c,slot(g,c));statusNote(g,T.revived(c.name));if(c.def.lines?.revive)g.bark?.(c,c.def.lines.revive,'companion');g.emit('companion',{type:'revived',id:c.id});}return;}
  for(const [key,source]of [['aidBuff','buff'],['aidHot','hot']]){const b=c[key];if(!b)continue;b.remaining-=dt;if(b.remaining<=0){c[key]=null;continue;}const power=b.hot||b.power;if(power){b.tick-=dt;if(b.tick<=0){b.tick=1;healCompanionByPlayer(g,c,power,source);}}}
  const p=g.player,far=distance(c,p);
  if(far>R.teleport&&!holdFight(g,c)){place(g,c,slot(g,c));c.target=null;return;}

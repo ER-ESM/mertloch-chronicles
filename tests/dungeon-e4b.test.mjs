@@ -31,7 +31,8 @@ test('Kampf-Klarheit: im Bosskampf keine Sprechblasen in der Welt (außer Mitspi
  const b=bigbOf(g),sp=new BossSpeech(),merc=g.companions[0];sp.update(g);
  sp.bark({enemyId:merc.id,name:merc.name,text:'Endlich Bewegung.',kind:'companion',x:merc.x,y:merc.y},g);
  sp.bark({enemyId:b.id,name:b.name,text:'Ich reite nach LINKS!',kind:'boss',x:b.x,y:b.y},g);
- assert.equal(sp.activeBarks(g).length,2,'ohne Kampf beide');
+ /* Dungeon-Fix 2 (Endabnahme #715): Söldner sprechen im Dungeon nur im Chat, auch ohne Kampf – ihre Blase entsteht gar nicht */
+ assert.deepEqual(sp.activeBarks(g).map(x=>x.kind),['boss'],'ohne Kampf nur der Boss, der Söldner steht im Chat');
  b.aggro=true;b.ai='combat';assert.deepEqual(sp.activeBarks(g),[],'im Bosskampf keine Blase in der Welt');
  assert.ok(BOSS_FIGHT_BARKS.has('player')&&!BOSS_FIGHT_BARKS.has('companion')&&!BOSS_FIGHT_BARKS.has('boss'));
  g.bark(b,'Willkommen auf Schloss Big B!','boss');assert.equal(b.lastBark?.text,'Willkommen auf Schloss Big B!','der Spruch geht in den Bossrahmen');

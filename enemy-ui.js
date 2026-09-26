@@ -1,7 +1,7 @@
 import {BOSSES,BOSS_LINES} from './content/index.js';
 import {drawNineSlice} from './content-art.js';
 import {REACTION_COLORS,reactionOf,levelDifficulty,DIFFICULTY_NAMES,DIFFICULTY_COLORS} from './unit-colors.js';
-import {dungeonBossFight,BOSS_FIGHT_BARKS} from './dungeon-clarity.js';
+import {dungeonBossFight,BOSS_FIGHT_BARKS,companionBarkQuiet} from './dungeon-clarity.js';
 
 export const isElite=e=>!!(e?.elite||e?.type==='boss');
 const bossDefinition=e=>e.type==='boss'?(BOSSES[e.bossId]||BOSSES[e.family]):undefined;
@@ -27,6 +27,8 @@ export class BossSpeech {
  constructor(){this.game=null;this.seen=new WeakSet();this.bubbles=new Map();this.observed=new Map();this.barks=[];this.usesBarks=false;}
  /** Ereignis `bark`: Zeile roh übernehmen, Figur später über die Id wiederfinden. */
  bark(ev,game){if(!ev?.text)return;this.usesBarks=true;
+  /* Dungeon-Fix 2 (Endabnahme #715: „Ich… leg mich kurz hin.“ als Blase über dem Trash-Kampf): Söldner sprechen im Dungeon und in jedem
+     Kampf nur im Chat (engine.bark schreibt jede Zeile ins Kampflog), nie als Blase in der Welt */if(ev.kind==='companion'&&companionBarkQuiet(game||this.game))return;
   // Spielerzeilen (Chat „sagen“/Gruppe) bleiben je nach Länge 3–7 s stehen, alles andere 3 s.
   const until=(game?.time??this.game?.time??0)+(ev.kind==='player'?Math.min(7,3+String(ev.text).length/25):3);
   this.barks=this.barks.filter(b=>b.id!==ev.enemyId||b.kind!==ev.kind);
@@ -42,7 +44,7 @@ export class BossSpeech {
  activeBarks(game){
   this.barks=this.barks.filter(b=>game.time<b.until);
   // Etappe 4 Teil B (Kampf-Klarheit): im Bosskampf spricht in der Welt nur der Boss – Söldner, Trash, Lautsprecher und Bewohner stehen im Chat.
-  const pool=dungeonBossFight(game)?this.barks.filter(b=>BOSS_FIGHT_BARKS.has(b.kind)):this.barks;
+  const quiet=companionBarkQuiet(game),pool=(dungeonBossFight(game)?this.barks.filter(b=>BOSS_FIGHT_BARKS.has(b.kind)):this.barks).filter(b=>!(quiet&&b.kind==='companion'));
   // Höchstens zwei Blasen gleichzeitig: Boss und Phase zuerst, dann Gegner, zuletzt Bewohner; die jüngste je Stufe gewinnt.
   const rank={boss:0,phase:0,chapter:0,player:1,enemy:1,villager:2};
   const shown=[...pool].sort((a,b)=>(rank[a.kind]??1)-(rank[b.kind]??1)||b.until-a.until).slice(0,2);

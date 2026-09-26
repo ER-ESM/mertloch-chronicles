@@ -3,6 +3,10 @@
 export const LIGHTING={
  // Nachbearbeitung der Weltfläche. Kontrast und Sättigung liegen bewusst unter dem Vorbild (1.19 / 1.09): Pixelgrafik kippt früher.
  grade:{contrast:1.1,saturate:1.08,vignette:.3},
+ // Grauschleier des Geists beim Tod (Dungeon-Fix 2, 2026-09-26): zwei Flächen über der Welt statt CSS-Filter, fade = Einblenden in s.
+ // gray nimmt etwas Farbe, dark nimmt Licht und Farbe: zusammen etwa die Hälfte der Sättigung und 20–35 % Helligkeit (vorher CSS
+ // grayscale(.85) brightness(.72)); ein heller Grauton allein hätte dunkle Keller aufgehellt.
+ deathVeil:{fade:.6,gray:.15,grayColor:'#6a6a6e',dark:.42,darkColor:'#18181c'},
  // Diagonaler Schimmer über der Welt (seit 0.1): links oben warm, rechts unten kühl, nur wenige Prozent Deckkraft. Liegt bei Licht in der Lichtebene.
  sheen:{from:'#fff1cf08',mid:'#faf3ab00',to:'#48345212'},
  // Schattenlänge als Vielfaches der Objekthöhe; Gebäude kürzer, damit Plätze frei bleiben.

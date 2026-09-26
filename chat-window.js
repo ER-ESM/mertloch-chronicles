@@ -106,7 +106,13 @@ export function mountChatWindow(root,options={}){
   if(hoverBlocked||hoverTimer)return;
   hoverTimer=setTimeout(()=>{hoverTimer=0;hoverOn=true;refreshActive();},HOVER_REVEAL_MS);
  },{passive:true});
- document.addEventListener('pointerdown',e=>{if(overStrip(e.clientX,e.clientY)){clearTimeout(hoverTimer);hoverTimer=0;hoverBlocked=true;}},true);
+ // Dungeon-Fix 2 (Endabnahme #715: die Reiter ließen sich in Ruhe nicht anklicken, die Zeichenfläche fing den Klick): Ein Klick genau auf
+ // einen Reiter öffnet das Fenster mit diesem Reiter und geht nicht in die Welt. Daneben bleibt die Kopfleiste in Ruhe durchlässig (E-72 R5).
+ const tabAt=(x,y)=>[...nav.querySelectorAll('[data-chat-tab]')].find(b=>inside(b.getBoundingClientRect(),x,y));let swallow=false;
+ document.addEventListener('pointerdown',e=>{swallow=false;if(!overStrip(e.clientX,e.clientY))return;clearTimeout(hoverTimer);hoverTimer=0;
+  const b=e.button===0&&e.pointerType!=='touch'&&tabAt(e.clientX,e.clientY);if(!b){hoverBlocked=true;return;}
+  e.preventDefault();e.stopImmediatePropagation();swallow=true;setTimeout(()=>{swallow=false;},600);hoverOn=true;refreshActive();if(configuring)toggleConfig(false);showTab(b.dataset.chatTab);b.querySelector('.chat-unread').hidden=true;},true);
+ for(const type of ['pointerup','mouseup','click'])document.addEventListener(type,e=>{if(!swallow)return;e.preventDefault();e.stopImmediatePropagation();if(type==='click')swallow=false;},true);
  el.addEventListener('pointerleave',()=>{hoverOn=false;});
 
  // ── Eingabe (nur online) ──

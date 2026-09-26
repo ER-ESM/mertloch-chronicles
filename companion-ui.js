@@ -1,13 +1,16 @@
 import {COMPANION_TEXT as T,COMPANION_UI as UI,COMPANION_ROLES,COMPANION_RULES as R} from './content/index.js';
 import {selectFriend,selectedCompanion,helpTarget,helpFailure} from './help-target.js';
 import {unitPortrait,paintUnitPortraits} from './unit-frame.js';
+import {groupFightOn} from './companions.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const roleIcon={tank:'shield',heal:'bottle',damage:'burst'};
 const icon=role=>`<canvas width="48" height="48" data-ui-icon="${roleIcon[role]}" aria-hidden="true"></canvas>`;
 const duration=s=>{const m=Math.ceil(Math.max(0,s)/60);return m>=60?`${Math.floor(m/60)} h ${m%60} min`:`${m} min`;};
 const contract=c=>c.contract==null?UI.permanent:UI.remaining(duration(c.contract));
-const status=(g,c)=>c.state==='down'?UI.down+' · '+UI.recovery(Math.max(0,Math.ceil(c.downUntil-g.time))):c.state==='combat'?UI.combat:T.orders[c.order];
+/* Dungeon-Fix 2: die Anzeige folgt derselben Regel wie das Aufstehen (companions.js groupFightOn) – im Kampf „nach dem Kampf“, sonst die Frist */
+export const downStatus=(g,c)=>UI.down+' · '+(groupFightOn(g,c)?UI.recoveryFight:UI.recovery(Math.max(0,Math.ceil(c.downUntil-g.time))));
+const status=(g,c)=>c.state==='down'?downStatus(g,c):c.state==='combat'?UI.combat:T.orders[c.order];
 const hp=c=>Math.max(0,Math.min(100,c.hp/c.maxHp*100));
 const targetReady=g=>g.target?.hp>0&&g.target.ai!=='returning'&&!g.target.tutorial;
 const button=(action,value,label,extra='')=>`<button type="button" data-companion-${action}="${esc(value)}" ${extra}>${esc(label)}</button>`;

@@ -16,6 +16,12 @@ export function dungeonBossFight(g){if(!inDungeon(g))return false;for(const e of
 /** Welche Sprechblasen dürfen im Bosskampf in der Welt stehen? Nur Mitspieler. Der Boss spricht im Bossrahmen (boss-alerts.js, Zeile unter der
  *  Zauberleiste), Söldner, Trash, Lautsprecher und Bewohner stehen nur im Chat (engine.bark schreibt jede Zeile ins Kampflog). */
 export const BOSS_FIGHT_BARKS=new Set(['player']);
+/** Kämpft die Gruppe gerade (überall, nicht nur im Dungeon)? Held im Kampf, ein Söldner im Kampf oder ein Gegner mit Aggro in Kampfnähe. */
+export function partyFighting(g){if(!g)return false;const p=g.player;if(p?.inCombat>0)return true;if((g.companions||[]).some(c=>c.state==='combat'))return true;
+ for(const e of g.enemies||[])if(e.hp>0&&e.aggro&&e.ai==='combat'&&p&&Math.hypot(e.x-p.x,e.y-p.y)<NEAR)return true;return false;}
+/** Dungeon-Fix 2 (Endabnahme #715): Söldner sprechen im Dungeon und in jedem Kampf nur im Chat, nie als Blase in der Welt (vorher galt das
+ *  nur im Bosskampf; „Ich… leg mich kurz hin.“ stand über dem Trash-Kampf). Draußen im Ruhezustand bleiben ihre Blasen. */
+export function companionBarkQuiet(g){return !!g&&(inDungeon(g)||partyFighting(g));}
 
 export function mountDungeonClarity({game}){
  let raf=0,last=0;const body=document.body;

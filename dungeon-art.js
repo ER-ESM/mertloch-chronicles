@@ -5,6 +5,7 @@ import {dungeonRun,floorAt,roomAt,rectWorld,toWorld,doorOpen,coneReach,CONE_RAYS
 import {drawConeHazard} from './hazard-art.js';
 import {drawSceneryGround,paintFace,currentPlan,drawGarage} from './dungeon-scenery-art.js';
 import {sceneryLights,sceneryOf,FACE,CROWN} from './dungeon-scenery.js';
+import {dungeonFight} from './dungeon-clarity.js';
 
 const THEMES={
  garage:{void:'#15130f',floor:'#8d8778',tile:'#7d776a',wall:'#3b3830',trim:'#c9c2ad'},
@@ -20,6 +21,19 @@ function text(c,s,x,y,{size=8,color=CREAM,weight='bold',align='center',outline='
  if(outline){c.lineWidth=2.5;c.strokeStyle=outline;c.strokeText(s,x,y);}c.fillStyle=color;c.fillText(s,x,y);c.restore();
 }
 const box=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
+/** Messingplaketten der Räume einer Ebene: mittig an der Nordwand, auf der Wandfront, wo sie hoch genug ist (Räume-Runde), sonst an der
+ *  Kante. → [{room,x,y}] (y = Oberkante der 14 × 6 E großen Plakette). Exportiert für die Prüfung (scripts/dungeon-fix2-check.mjs). */
+const plaqueCache=new WeakMap();
+export function plaqueSpots(def,floor,rooms,plan){/* je Ebenen-Plan und sichtbarer Raumliste einmal (die Plan-Suche kostete je Bild ~0,3 ms) */
+ const key=floor+'|'+rooms.map(r=>r.id).join(','),box=plan&&typeof plan==='object'?(plaqueCache.get(plan)||plaqueCache.set(plan,new Map()).get(plan)):null;if(box?.has(key))return box.get(key);
+ const out=plaqueRaw(def,floor,rooms,plan);box?.set(key,out);return out;}
+function plaqueRaw(def,floor,rooms,plan){return rooms.map(room=>{const r=rectWorld(def,floor,room.rects[0]),cx=r.x+r.w/2,seg=plan?.segments.find(s=>s.room===room.id&&s.base===r.y&&s.x0<=cx-7&&s.x1>=cx+7);
+ return {room,x:cx,y:!seg?r.y+1:seg.F>=14?r.y-12:r.y-Math.min(7,seg.F+3)};});}
+/** Liegt die Maus auf der Plakette (mit etwas Rand, damit man sie trifft)? */
+export const onPlaque=(q,h)=>Math.abs(h.x-q.x)<=11&&h.y>=q.y-6&&h.y<=q.y+11;
+/** Plaketten der Ebene, auf der der Held steht (Prüfzugang). */
+export function currentPlaques(g){const run=dungeonRun(g);if(!run)return [];const def=run.def,floor=floorAt(def,g.player.x,g.player.y)||run.checkpoint.floor;
+ return plaqueSpots(def,floor,def.rooms.filter(r=>r.floor===floor&&!(r.secret&&!run.visited.has(r.id))),currentPlan(g)).map(q=>({id:q.room.id,x:q.x,y:q.y}));}
 
 /** Boden, Wände, Türen und Übergänge der aktuellen Ebene; darüber zeichnet der Renderer Figuren und Effekte.
  *  Etappe 2 Text-Diät (E-70 Punkt 4, Grafik-Review Dungeon Befunde 2, 10, 11): keine Dauerschrift mehr in der Welt. Räume tragen eine
@@ -40,8 +54,7 @@ function groundBody(c,g,view,run,def,floor,theme){
  for(const d of doors){const r=rectWorld(def,floor,d.rect);if(doorOpen(run,d))continue;
   if(d.lock?.seals){drawVault(c,r,requiredSeals(def,d.lock.seals).map(s=>run.seals.has(s))/* Etappe 3: nur die verlangten Siegel */);continue;}drawClosedDoor(c,r,!!d.arena);}
  // Messingplaketten an der Nordwand (auf der Wandfront, wo sie hoch genug ist), Schild und Wirklichkeit nur unter der Maus
- for(const room of rooms){const r=rectWorld(def,floor,room.rects[0]),cx=r.x+r.w/2,seg=plan?.segments.find(s=>s.room===room.id&&s.base===r.y&&s.x0<=cx-7&&s.x1>=cx+7),py=!seg?r.y+1:seg.F>=14?r.y-12:r.y-Math.min(7,seg.F+3);
-  box(c,'#1c1712',cx-7,py,14,6);box(c,run.room===room.id?'#e6c46a':'#b8913f',cx-6,py+1,12,4);}
+ const plaques=plaqueSpots(def,floor,rooms,plan);for(const q of plaques){box(c,'#1c1712',q.x-7,q.y,14,6);box(c,run.room===q.room.id?'#e6c46a':'#b8913f',q.x-6,q.y+1,12,4);}
  // Lautsprecher an den Durchsage-Punkten (die Sprechblase hängt an ihnen)
  for(const a of def.announcements){const p=speakerPoint(def,a);if(!p||p.floor!==floor)continue;drawSpeaker(c,p,run.speaking?.id===a.id&&time<run.speaking.until,time);}
  // Übergänge und Geheimnisse: Symbol mit goldenem Pfeil, Name unter der Maus
@@ -51,8 +64,11 @@ function groundBody(c,g,view,run,def,floor,theme){
   if(near(p,16))text(c,stepLabel(t,side),p.x,p.y+17,{size:6,color:'#e8dcc0'});}
  // Ausgang (Rolltor): Symbol mit Pfeil nach draußen, Name unter der Maus
  if(def.exit.floor===floor){const p=toWorld(def,floor,def.exit.x,def.exit.y);drawExitDoor(c,p,time);stepArrow(c,p.x,p.y+18,false);if(near(p,22))text(c,T.leave,p.x,p.y+28,{size:6,color:GOLD});}
- // Raumname nur unter der Maus (Schild groß, Wirklichkeit klein)
- if(hover){const room=rooms.find(r=>r.rects.some(q=>{const b=rectWorld(def,floor,q);return hover.x>=b.x&&hover.x<=b.x+b.w&&hover.y>=b.y&&hover.y<=b.y+b.h;}));if(room){const r=rectWorld(def,floor,room.rects[0]);text(c,room.sign,r.x+r.w/2,r.y+14,{size:8,color:GOLD});text(c,room.truth,r.x+r.w/2,r.y+24,{size:6,weight:'normal',color:'#d8ccb0'});}}
+ // Raumname nur, wenn die Maus auf der Plakette liegt, und nie im Kampf (Dungeon-Fix 2, Endabnahme #715: vorher stand er unter der Maus
+ // irgendwo im Raum oben mittig – mitten im Trash-Kampf und in Gerds Arena über seinem Namensschild). Er steht an der Plakette auf der
+ // Wand, nicht im Raum; beim Betreten zeigt ihn der Zonentitel oben (zone-announce.js).
+ const plate=hover&&!dungeonFight(g)?plaques.find(q=>onPlaque(q,hover)):null;
+ if(plate){text(c,plate.room.sign,plate.x,plate.y-11,{size:7,color:GOLD});text(c,plate.room.truth,plate.x,plate.y-4.5,{size:5,weight:'normal',color:'#d8ccb0'});}
  // Warnflächen der Kegel, Schildwall
  for(const e of g.enemies){if(e.hp<=0)continue;const k=e.cast;
   /* Etappe 2: derselbe Baustein wie der Bodenkreis (Randmarken, wachsende Füllung, Aufblitzen), dazu Rückstoß-Pfeile und Schild */

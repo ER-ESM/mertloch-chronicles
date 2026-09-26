@@ -1,7 +1,7 @@
 import {inKiosk,kioskEntrance,roomWorld} from './kiosk-instance.js';
 import {KIOSK_ROOM,KIOSK_TEXT} from './content/index.js';
 import {SHOP_STOCK,SHOP_RULES as R,SHOP_UI as UI,ITEM_CATALOG,NPCS} from './content/index.js';
-import {ITEMS,addItem,countItem,consumeMaterials,placeUsables} from './rpg.js';
+import {ITEMS,addItem,countItem,consumeMaterials} from './rpg.js';
 import {tutorialActive} from './tutorial.js';
 
 export const merchantPoint=g=>inKiosk(g)?KIOSK_ROOM.service:kioskEntrance(g);
@@ -35,7 +35,7 @@ export function buyItem(g,id,count=1){
  if(g.player.level<(d.level||1))return fail(g,UI.neededLevel(d.level));
  const total=d.price*count;if(g.rpg.coins<total)return fail(g,UI.money);
  const next=purchasedInventory(g,id,count);if(!next)return fail(g,UI.full);
- g.rpg.inventory=next;g.rpg.coins-=total;placeUsables(g,[id]);g.toast(UI.bought(d.name,count));changed(g);return true;
+ g.rpg.inventory=next;g.rpg.coins-=total;/* Dungeon-Fix 2: Gekauftes legt sich nicht mehr ungefragt auf die Leiste */g.toast(UI.bought(d.name,count));changed(g);return true;
 }
 export function sellItem(g,id,count=1){
  const reason=shopUnavailable(g);if(reason)return fail(g,reason);
@@ -54,5 +54,5 @@ export function buybackItem(g,token){
  if(g.rpg.coins<entry.total)return fail(g,UI.money);
  const next=purchasedInventory(g,entry.id,entry.count);if(!next)return fail(g,UI.full);
  g.rpg.inventory=next;g.rpg.coins-=entry.total;g.rpg.buyback=g.rpg.buyback.filter(e=>e.token!==token);
- placeUsables(g,[entry.id]);g.toast(UI.recovered(ITEMS[entry.id].name,entry.count));changed(g);return true;
+ g.toast(UI.recovered(ITEMS[entry.id].name,entry.count));changed(g);return true;
 }
