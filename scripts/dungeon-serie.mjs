@@ -9,7 +9,8 @@
 //   iii  passiv und tot: zieht, fällt nach 20 s und bleibt liegen
 //   aktiv  spielt richtig (Rotation, weicht aus, pariert; die Heilerin heilt den Schwächsten)
 // Kriterien: passiv ≤ 10 % Siege je Variante (über alle Rollen) · aktiv ≥ 90 % Siege, jeder mit Luft vor der Wut (≥ AIR s).
-// Aufruf: node scripts/dungeon-serie.mjs [--runs=20] [--roles=heal,tank,damage] [--variants=i,ii,iii,aktiv] [--dt=frame|0.05] [--jobs=6] [--json]
+// Aufruf: node scripts/dungeon-serie.mjs [--runs=20] [--roles=heal,tank,damage] [--variants=i,ii,iii,aktiv] [--dt=frame|0.05] [--jobs=6] [--json] [--verbose]
+// Ausgabe: je Variante die Quote (Einzelläufe nur mit --verbose).
 // SIM_TUNE (JSON) wie in dungeon-sim.mjs, z. B. für einen Vorher-Lauf. Rückgabewert 1, wenn ein Kriterium rot ist.
 import {readFileSync} from 'node:fs';
 import {spawn} from 'node:child_process';
@@ -24,7 +25,7 @@ import {fight,heroPulls} from './sim-fight.mjs';
 {const tune=process.env.SIM_TUNE?JSON.parse(process.env.SIM_TUNE):null,merge=(to,from)=>{for(const [k,v] of Object.entries(from||{})){if(v&&typeof v==='object'&&!Array.isArray(v)&&to[k]&&typeof to[k]==='object')merge(to[k],v);else to[k]=v;}};
  if(tune){merge(EINSATZ_RULES,tune.rules);merge(DUNGEON_BOSSES,tune.bosses);merge(COMPANION_RULES,tune.companions);}}
 const arg=(k,d)=>(process.argv.find(a=>a.startsWith('--'+k+'='))||'').slice(k.length+3)||d;
-const JSON_OUT=process.argv.includes('--json'),RUNS=Number(arg('runs',20)),SEED0=Number(arg('seed',1)),JOBS=Math.max(1,Number(arg('jobs',process.env.SIM_JOBS||6))),AIR=Number(arg('air',20));
+const JSON_OUT=process.argv.includes('--json'),VERBOSE=process.argv.includes('--verbose')/* Einzelläufe ausgeben; sonst nur die Quoten */,RUNS=Number(arg('runs',20)),SEED0=Number(arg('seed',1)),JOBS=Math.max(1,Number(arg('jobs',process.env.SIM_JOBS||6))),AIR=Number(arg('air',20));
 export const SERIE_ROLES={heal:{classId:'baerbel',spec:'baerbel-care'},tank:{classId:'dieter',spec:'dieter-wall'},damage:{classId:'dieter',spec:'dieter-brawl'}};
 export const SERIE_VARIANTS={i:{noDamage:true,autoFor:20},ii:{noDamage:true},iii:{noDamage:true,stayDead:20},aktiv:{}};
 const ROLES=arg('roles','heal,tank,damage').split(','),VARIANTS=arg('variants','i,ii,iii,aktiv').split(','),DT=arg('dt','frame');
@@ -47,10 +48,10 @@ const main=/dungeon-serie\.mjs$/.test(process.argv[1]||'');/* als Modul (Tests) 
 if(main){
  const tasks=[];for(const role of ROLES)for(const variant of VARIANTS)tasks.push({role,variant});
  let rows=[];
- if(process.env.SERIE_CHILD||JOBS===1||tasks.length===1){for(const t of tasks)for(let i=0;i<RUNS;i++){const r=serieRun({...t,seed:SEED0+i,dt:DT});rows.push(r);if(!JSON_OUT)console.log(('Big B · '+t.role+' · '+t.variant+' · Seed '+(SEED0+i)).padEnd(40),JSON.stringify(r));}}
+ if(process.env.SERIE_CHILD||JOBS===1||tasks.length===1){for(const t of tasks)for(let i=0;i<RUNS;i++){const r=serieRun({...t,seed:SEED0+i,dt:DT});rows.push(r);if(!JSON_OUT&&VERBOSE)console.log(('Big B · '+t.role+' · '+t.variant+' · Seed '+(SEED0+i)).padEnd(40),JSON.stringify(r));}}
  else rows=await new Promise((done,fail)=>{const queue=[...tasks],res=[];let running=0;const next=()=>{if(!queue.length&&!running)return done(res);while(running<JOBS&&queue.length){const t=queue.shift();running++;let buf='';
   const ch=spawn(process.execPath,[fileURLToPath(import.meta.url),'--json','--roles='+t.role,'--variants='+t.variant,'--runs='+RUNS,'--seed='+SEED0,'--dt='+DT],{env:{...process.env,SERIE_CHILD:'1'},stdio:['ignore','pipe','inherit'],windowsHide:true});ch.stdout.on('data',d=>buf+=d);
-  ch.on('close',code=>{running--;try{const j=JSON.parse(buf);res.push(...j.rows);if(!JSON_OUT)for(const r of j.rows)console.log(('Big B · '+r.role+' · '+r.variant+' · Seed '+r.seed).padEnd(40),JSON.stringify(r));}catch(e){return fail(Error('Teillauf '+t.role+'/'+t.variant+' ohne Ergebnis (Code '+code+')'));}next();});}};next();});
+  ch.on('close',code=>{running--;try{const j=JSON.parse(buf);res.push(...j.rows);if(!JSON_OUT&&VERBOSE)for(const r of j.rows)console.log(('Big B · '+r.role+' · '+r.variant+' · Seed '+r.seed).padEnd(40),JSON.stringify(r));}catch(e){return fail(Error('Teillauf '+t.role+'/'+t.variant+' ohne Ergebnis (Code '+code+')'));}next();});}};next();});
  const frac=rs=>rs.filter(r=>r.won).length+'/'+rs.length,rate=rs=>rs.length?rs.filter(r=>r.won).length/rs.length:0,pc=x=>Math.round(x*100)+' %';
  const checks=[];
  for(const v of VARIANTS.filter(v=>v!=='aktiv')){const rs=rows.filter(r=>r.variant===v),lost=rs.filter(r=>!r.won).map(r=>r.bossMin),won=rs.filter(r=>r.won).map(r=>r.time);
