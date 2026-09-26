@@ -7,6 +7,10 @@ Grundlage:
 
 Zweig `dungeon-feinschliff`, Worktree `D:\Dev\MertlochChronicles-dg-fein`, rebased auf `main` 0ea813d1 (E-72 Runde 5).
 
+**Live:**
+- Build #714 (8f304998, 26.09.2026) mit den Commits 0e3eeae4 (Spiel), 86dc0781 (Simulation und Prüfungen) und 8f304998 (Bericht, Precache).
+- Diese Zeile kam als reiner Doku-Nachtrag danach.
+
 Nicht angefasst:
 - Balance der Bosse außer Rita
 - Händlerpreise
