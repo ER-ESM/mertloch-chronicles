@@ -24,7 +24,8 @@ export const EINSATZ_RULES=Object.freeze({
  // Sekunden die ganze Gruppe mit pct ihres Höchstlebens je Wutstufe (Stufe 1 beim Ausbruch, alle enrage.every Sekunden eine mehr: 8 · 8 · 8 · 16 · 16 · 24 …
  // Prozent). Ohne Heilung liegt jeder nach etwa 12 s, mit Heilern nach 15–20 s. Ausweichen (Letztes Aufgebot) schützt nicht davor und unter Wut auch nicht
  // mehr vor den Schlägen des Bosses; Schilde und Schadensminderung wirken wie gewohnt, halten die steigende Welle aber nicht.
- enrage:{wave:{every:2,pct:.08}}
+ // evade = hält das Ausweichen unter Wut noch (bis #770: ja; die Simulation stellt damit den Live-Fall nach).
+ enrage:{wave:{every:2,pct:.08},evade:false}
 });
 
 /** Wertung nach dem Boss („Einsatz“, WoW-Vorbild: Details-Meter und Bonuswurf). Die Rolle des Helden bestimmt, welcher Anteil zählt (Tank: Zeit,
@@ -60,7 +61,10 @@ export const EINSATZ_TEXT=Object.freeze({
   tip:(e,after=e.after,cuts=[],w=EINSATZ_RULES.enrage.wave)=>'Nach '+clock(after)+' min Kampf: '+pct(e.damage)+' mehr Schaden, alle '+e.every+' s noch einmal, und alle '+w.every+' s trifft die Wut die ganze Gruppe. Das überlebt niemand. Wer mitkämpft, legt den Boss lange vorher.'
    +(cuts.length?' Früher als '+clock(e.after)+': '+cuts.map(c=>(ENRAGE_SOONER[c.id]||c.id)+' −'+clock(c.s)).join(' · ')+'.':'')},
  panel:{title:'Einsatz',score:n=>'Einsatz '+n,
-  damage:'Schadensanteil',healing:'Heilungsanteil',hold:'Schutzanteil',interrupts:'Unterbrechungen',warn:'Warnungen',dodges:'Ausgewichen',deaths:'Tode',rally:'Angefeuert',
+  damage:'Schadensanteil',healing:'Heilungsanteil',hold:'Schutzanteil',interrupts:'Unterbrechungen',warn:'Warnungen',dodges:'Ausweichen',deaths:'Tode',rally:'Angefeuert',
+  // Dungeon-Fix 7 (Prüferin #770: sechs von sieben Feldern unbeschriftet, im Sammel-Tooltip fehlte Ausweichen): jedes Feld nennt im eigenen Tooltip Namen und
+  // Wert, der Punkte-Tooltip führt alle Felder auf (fields), dann die Punkte
+  fields:rows=>rows.map(([name,value])=>name+' '+value).join(' · ')+'.',
   damageTip:n=>'Dein Anteil am Schaden der Gruppe in diesem Kampf: '+n+' %.',
   healingTip:n=>'Dein Anteil an der Heilung der Gruppe in diesem Kampf: '+n+' %.',
   holdTip:n=>'So lange hast du den Boss gehalten: '+n+' % der Kampfzeit.',

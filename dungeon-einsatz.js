@@ -21,7 +21,7 @@ function heroOutput(g){const a=g.meter?.overall?.actors?.[g.member?.id];return (
 /** Faktor auf den Autoangriff eines Gegners gegen einen Söldner: 0, solange er im Letzten Aufgebot ausweicht; sonst schlagen Dungeon-Bosse
  *  Söldner ohne Schutz-Rolle mit untanked.auto (1 = wie den Schutz). */
 /* Dungeon-Fix 7 (Prüferin #770): unter Wut hilft Ausweichen nicht mehr – die Wut ist ein harter Wipe (Wutwelle in dungeon.js) */
-export function bossAutoFactor(g,e,c){if(!runOf(g)||!e?.dungeonBoss)return 1;if(c?.evade?.until>g.time&&!((e.rageFactor||1)>1)){say(g,c,T.lastStand.evaded,'#aed4bd');return 0;}return c?.def?.role!=='tank'?R.untanked.auto:1;}
+export function bossAutoFactor(g,e,c){if(!runOf(g)||!e?.dungeonBoss)return 1;if(c?.evade?.until>g.time&&(R.enrage?.evade||!((e.rageFactor||1)>1))){say(g,c,T.lastStand.evaded,'#aed4bd');return 0;}return c?.def?.role!=='tank'?R.untanked.auto:1;}
 /** Hält gerade ein Söldner ohne Schutz-Rolle diesen Boss? → Söldner oder null (Anzeige „Ungeschützt“ im Bossrahmen). */
 export function untankedHolder(g,e){if(!runOf(g)||!fightingBoss(e)||!e.focus||e.focus==='player')return null;const c=(g.companions||[]).find(o=>o.id===e.focus&&standing(o));return c&&c.def?.role!=='tank'?c:null;}
 
