@@ -305,4 +305,8 @@ spielt Big B mit dem Testzugang `bigb`. Die Teile:
 
 ## Veröffentlichung
 
-ERGEBNIS-VEROEFFENTLICHUNG
+Fix 5 als acht Commits auf `main`: FF, `main` stand unverändert auf c2f66547; der Zweig `dungeon-aktiv` war noch nicht gepusht. Danach
+`node scripts/server-refresh.mjs`.
+
+- `837e301a` … `b7defa9e` (Prüferbericht, Schritte 1–7)
+- **Live: Build #736 · `b7defa9e` · 2026-09-26** (vorher #728 · `c2f66547`), https://mertloch.esm-consultant.de
