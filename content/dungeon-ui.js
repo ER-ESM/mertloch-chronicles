@@ -102,7 +102,7 @@ export const DUNGEON_UI={
  short:{'Ritt auf der Kanonenkugel':'Kanonenkugel','Mein Anwalt ruft gleich an':'Anwalt','Am eigenen Schopf':'Schopf','Das Parkett ist echt':'Parkett',
   'Pappkulisse fällt':'Pappkulisse','Du stehst nicht auf der Liste':'Liste','Dresscode-Kontrolle':'Dresscode','Grundstück verkauft':'Verkauft',
   'Provisionsforderung':'Provision','Besichtigungstermin':'Besichtigung','Tag der offenen Tür':'Offene Tür','Jeder zahlt selbst':'Jeder zahlt',
-  'Runde auf mich!':'Runde','Sprinkleranlage':'Sprinkler','Regenrinnen-Hieb':'Hieb','Exposé verteilen':'Exposé'},
+  'Runde auf mich!':'Runde','Sprinkleranlage':'Sprinkler','Exposé verteilen':'Exposé'},
  // ── Verfolgung im Dungeon: Siegel und Beweise statt Weltauftrag
  tracker:{title:'Schloss Big B',seals:'Siegel',proofs:'Beweise',sealNote:'Drei Siegel öffnen die Tresortür zum Thronsaal.',proofNote:'Beweise schwächen Big B im Thronsaal.',
   boss:'Nächster Boss'},

@@ -17,6 +17,9 @@ const FLOOR_ORDER=['e0','k1','k2']; // Schutz-Specs: TANK_SPECS aus net-world.js
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const norm=a=>{while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;return a;};
 let serial=900000;
+/** Dungeon-Fix 3: Gegner-Nummern von vorn (nur für Messläufe, scripts/dungeon-sim.mjs) – jeder Simulationslauf beginnt mit denselben Nummern,
+ *  sonst hängen Gleichstände (Zielwahl, Reihenfolge) davon ab, wie viele Gegner frühere Läufe erzeugt haben. */
+export function resetEnemySerial(){serial=900000;}
 
 export const inDungeon=g=>g?.instance?.kind==='dungeon';
 export const dungeonRun=g=>inDungeon(g)?g.instance.run:null;
