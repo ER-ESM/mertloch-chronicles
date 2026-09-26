@@ -19,7 +19,7 @@ export const DESCRIBE_UI={
  use:'Einsatz:',
  shiftHint:'Shift: Details',detailsButton:'Details',
  now:'jetzt',base:'Grundwert',
- damage:'Schaden',crit:'Glückstreffer',heal:'Heilung',stack:'Stapel',remaining:'Restzeit',ready:'Bereit in',
+ damage:'Schaden',crit:'Glückstreffer',heal:'Heilung',stack:'Stapel',bag:'Im Rucksack',remaining:'Restzeit',ready:'Bereit in',
  counter:'Zählstand',stage:'Stufe',expected:'Erwarteter Schaden',
  sectionSkills:PANEL_UI.tabSkills,sectionTalents:PANEL_UI.talents,sectionPassive:'Eigenart',
  sectionProcs:'Regeln',sectionBuffs:'Laufende Stärkungen',
@@ -121,11 +121,13 @@ function liveRows(kind,live={}){
   if(live.every>1)out.push(row(DESCRIBE_UI.counter,(live.count%live.every)+' / '+live.every));
   if(live.remaining>0)out.push(row(DESCRIBE_UI.remaining,live.remaining,'s'));
  }
+ /* Dungeon-Fix 7 (Prüferin #770): dieselben Beschriftungen wie die Grundwerte (content/item-info.js), damit Heilung und Abklingzeit nicht doppelt stehen;
+    der Bestand heißt „Im Rucksack“ (Stapelgröße ist der Grundwert) */
  if(kind==='item'){
-  if(live.heal)out.push(row(DESCRIBE_UI.heal,live.heal,'Leben'));
+  if(live.heal)out.push(row('Leben sofort',live.heal,'Leben'));
   if(live.energy)out.push(row(live.energyUnit||'Randale',live.energy));
-  out.push(row(DESCRIBE_UI.stack,live.count??0));
-  if(live.cooldown)out.push(row('Abklingzeit',live.cooldown,'s'));
+  out.push(row(DESCRIBE_UI.bag,live.count??0));
+  if(live.cooldown)out.push(row('Gemeinsame Abklingzeit',live.cooldown,'s'));
   if(live.remaining>0)out.push(row(DESCRIBE_UI.ready,live.remaining,'s'));
  }
  if(kind==='building'){

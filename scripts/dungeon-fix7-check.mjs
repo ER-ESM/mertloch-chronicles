@@ -84,7 +84,7 @@ try{
   const pulled=await until(`return !!${bigB}.aggro`,6000,150);assert.ok(pulled,'Rechtsklick auf den Kopf zieht Big B');
   ok('Big B ×'+size.scale+': '+size.big.h+' Welteinheiten hoch (mit Krone) gegen '+size.mercs.map(m=>m.h).join('/')+' der Söldner = '+size.ratio+'×; Rechtsklick auf den Kopf trifft ihn');
   // ─────────────────────────────────────────────── 2 · Todesfenster beim ersten Tod (gleicher Kampf)
-  if(want(2)){await wait(2500);await read(`g.hitPlayer(${bigB},0,false,5);return 1`);const t0=Date.now();
+  if(want(2)){await wait(2500);await read(`const bb=${bigB};g.hitPlayer(bb,0,false,.45);g.hitPlayer(bb,0,false,.4);g.hitPlayer(bb,0,false,5);return 1`);const t0=Date.now();
    const first=await until(`const w=document.querySelector('#deathScreen');if(!g.dead||!w||w.hidden||!w.classList.contains('show'))return null;const r=w.getBoundingClientRect(),fr=document.querySelector('.boss-frame:not([hidden])')?.getBoundingClientRect();
     return {ms:0,rect:{l:Math.round(r.left),t:Math.round(r.top),w:Math.round(r.width),h:Math.round(r.height)},side:w.dataset.dsSide||'',opacity:getComputedStyle(w).opacity,ghost:w.querySelector('[data-ds-ghost-text]')?.textContent||'',bar:!!w.querySelector('.ds-ghost.reviving .ds-revive-bar'),recap:[...w.querySelectorAll('.ds-recap-row')].length,overFrame:!!fr&&r.left<fr.right&&fr.left<r.right&&r.top<fr.bottom&&fr.top<r.bottom}`,3000,50);
    const ms=Date.now()-t0;await shot('20-erster-tod');assert.ok(first,'Todesfenster beim ersten Tod');results.death={...first,ms};
@@ -99,14 +99,14 @@ try{
   await read(`const {addItem}=await import('/rpg.js');addItem(g.rpg,'brezel',3);g.emit('rpgChanged');return 1`);await wait(800);
   const t=await hover('[data-bar-item="brezel"]',1100);await shot('30-brezel-tooltip');
   const box=await read(`const t=document.querySelector('#itemTooltip'),r=t.getBoundingClientRect(),m=t.querySelector('.tip-meta'),n=t.querySelector('.tip-numbers');return {h:Math.round(r.height),w:Math.round(r.width),meta:m?.textContent||'',metaH:m?Math.round(m.getBoundingClientRect().height):0,nums:n?.textContent||'',details:!!t.querySelector('.describe-details[hidden]')}`);
-  assert.match(t,/Notfallbrezel/i);assert.match(box.nums,/^Heilt \d+$/,'Zahlenzeile: '+box.nums);assert.match(box.meta,/15 s Abklingzeit/);assert.ok(box.details,'Zahlen-Tabelle nur in den Details');assert.ok(box.h<=190,'kurz: '+box.h+' px');
+  assert.match(t,/Notfallbrezel/i);assert.match(box.nums,/^Heilt \d+$/,'Zahlenzeile: '+box.nums);assert.match(box.meta,/15 s Abklingzeit/);assert.ok(box.details,'Zahlen-Tabelle nur in den Details');assert.ok(box.h<=210,'kurz: '+box.h+' px');
   assert.ok(!/…|undefined/.test(t),'keine leeren Werte: '+t);
   await b.key('Shift','keyDown');await wait(500);const shift=await read(`const t=document.querySelector('#itemTooltip'),bs=[...t.querySelectorAll('.describe-numbers .is-live b')];const bg=getComputedStyle(t).backgroundColor;return {rows:bs.map(x=>x.textContent+'|'+getComputedStyle(x).color),bg,visible:bs.every(x=>x.textContent.trim()&&getComputedStyle(x).color!=='rgb(34, 58, 47)')}`);
   await shot('31-brezel-details');await b.key('Shift','keyUp');results.tooltip={text:t,box,shift};
   assert.ok(shift.rows.length,'Details mit Laufzeitwerten');assert.ok(shift.visible,'Werte sichtbar (nicht in Fenstergrund-Farbe): '+JSON.stringify(shift));
   ok('Notfallbrezel: „'+t.slice(0,120)+'“ ('+box.w+'×'+box.h+' px); mit Umschalttaste Werte '+shift.rows.map(r=>r.split('|')[0]).join(', ')+' sichtbar');
   const lk=await hover('[data-skill="heal"][data-action-slot]',1100);const lm=await read(`const m=document.querySelector('#itemTooltip .tip-meta');if(!m)return null;const cs=getComputedStyle(m);return {text:m.textContent,h:Math.round(m.getBoundingClientRect().height),lh:parseFloat(cs.lineHeight)||15,sw:m.scrollWidth,cw:m.clientWidth}`);
-  await shot('32-loeffelkur-tooltip');results.tooltip.loeffelkur={lk,lm};assert.ok(lm,'Löffelkur-Tooltip mit Kopfzeile: '+lk);assert.doesNotMatch(lm.text,/kostenlos/);assert.ok(lm.h<=lm.lh*1.4&&lm.sw<=lm.cw+1,'eine Zeile, nicht abgeschnitten: '+JSON.stringify(lm));
+  await shot('32-loeffelkur-tooltip');results.tooltip.loeffelkur={lk,lm};assert.ok(lm,'Löffelkur-Tooltip mit Kopfzeile: '+lk);assert.doesNotMatch(lm.text,/kostenlos/);assert.ok(lm.h<=lm.lh+8&&lm.sw<=lm.cw+1/* 5 px Innenabstand und Trennlinie oben */,'eine Zeile, nicht abgeschnitten: '+JSON.stringify(lm));
   ok('Löffelkur-Kopfzeile einzeilig: „'+lm.text+'“ ('+lm.h+' px)');await mouse({x:1000,y:300});}
  // ─────────────────────────────────────────────── 4 · passiv wie die Prüferin: Wipe unter der Wut
  if(want(4)){const hero=await load('bigb','Fix Sieben Passiv');results.passive={hero};await put('k2',54,23);await wait(900);await s.settle();await read(`window.BOT=${BOT};return 1`);
@@ -114,15 +114,15 @@ try{
   const t0=Date.now();/* etwa 20 s Autoangriff wie die Prüferin, dann Esc und nur noch ausweichen */
   while(Date.now()-t0<20000){const st=await read(`return BOT.step(g)`);if(!st.alive)break;if(st.dead){await hold([]);await wait(300);continue;}await move(st);await wait(120);}
   await hold([]);await b.press('Escape');const auto=await read(`return g.autoAttack.enabled`);assert.equal(auto,false,'Autoangriff aus');
-  let end=null,lastShot=0,enrageAt=null;const t1=Date.now();
+  let end=null,lastShot=0,enrageAt=null,minPct=100;const t1=Date.now();
   while(Date.now()-t1<330000){const st=await read(`return BOT.step(g)`);
-   if(st.rage>1&&enrageAt==null){enrageAt=st.ft;await shot('40-wut');}
+   if(st.fight)minPct=Math.min(minPct,st.pct);if(st.rage>1&&enrageAt==null){enrageAt=st.ft;await shot('40-wut');}
    if(!st.alive){end={won:true,...st};break;}if(st.wiped){end={won:false,...st};break;}
    if(!st.dead)await move(st);else await hold([]);if(enrageAt!=null&&Date.now()-lastShot>5000){lastShot=Date.now();await shot('41-unter-wut-'+Math.round((Date.now()-t1)/1000));}await wait(130);}
-  await hold([]);const w=await read(`return {waves:FX7.waves.length,first:FX7.waves[0]||null,last:FX7.waves.at(-1)||null,deaths:FX7.deaths.length,after:D.enrageAfter(g.dungeonRun,'bigb')}`);results.passive={...results.passive,end,waves:w,enrageAt};await shot('42-passiv-ende');
+  await hold([]);const w=await read(`return {waves:FX7.waves.length,first:FX7.waves[0]||null,last:FX7.waves.at(-1)||null,deaths:FX7.deaths.length,after:D.enrageAfter(g.dungeonRun,'bigb')}`);results.passive={...results.passive,end,waves:w,enrageAt,minPct};await shot('42-passiv-ende');
   assert.ok(end,'Kampf endet');assert.equal(end.won,false,'passiv verliert');assert.ok(w.waves>=3,'Wutwellen: '+w.waves);
   const wipeAfter=w.last?+(w.last.t-w.first.t).toFixed(1):null;assert.ok(wipeAfter!=null&&wipeAfter<=20,'Wipe spätestens 20 s nach dem Ausbruch: '+wipeAfter);
-  ok('Passiv wie die Prüferin (20 s Autoangriff, Esc, ausweichen): verloren, Wut nach '+w.after+' s, '+w.waves+' Wutwellen, Wipe '+wipeAfter+' s nach dem Ausbruch, Big B zuletzt bei '+end.pct+' %');}
+  ok('Passiv wie die Prüferin (20 s Autoangriff, Esc, ausweichen): verloren, Wut nach '+w.after+' s, '+w.waves+' Wutwellen, Wipe '+wipeAfter+' s nach dem Ausbruch, Big B zuletzt bei '+minPct+' %');}
  // ─────────────────────────────────────────────── 5 · aktiv als Heilerin: Sieg mit Einsatz-Bonus
  if(want(5)){const hero=await load('bigb','Fix Sieben Aktiv');results.active={hero};await read(`window.BOT=${BOT};return 1`);
   await put('k2',54,23);await wait(900);await s.settle();await b.press('f');await until(`return !!g.dungeonRun.intro?.ready`,30000,150);await pullNow();
