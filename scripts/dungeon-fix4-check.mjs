@@ -93,18 +93,19 @@ async function fight({death=null,limit=560000}={}){
   await wait(110);}
  await hold([]);res.seconds=Math.round((Date.now()-t0)/1000);res.confessTip=confessTip;return res;}
 /** Tod mitten im Kampf: mehrere Treffer in wenigen Sekunden, dann der letzte – Rückblick, Knopf, Tooltip, erster Klick. */
+/* Dungeon-Fix 5: das Todesfenster sitzt jetzt oben mittig – die Maus ruht abseits davon */const AWAY={x:1500,y:650};
 async function dieInFight(){
  await read(`const b=g.enemies.find(e=>e.bossId==='bigb');g.adminGod=false;window.__hits=[['Pappkulisse fällt',.25],[null,0],['Trümmer',.04],[null,0],['Trümmer',.04]];return 1`);
  for(let i=0;i<5;i++){await read(`const b=g.enemies.find(e=>e.bossId==='bigb'),[n,pct]=__hits[${i}];g.player.invulnerable=0;g.player.parry=0;b.lastCast=n?{name:n,title:n}:null;if(n)g.hitPlayer(b,0,true,pct);else g.hitPlayer(b,120);b.lastCast=null;return 1`);await wait(700);}
  await read(`const b=g.enemies.find(e=>e.bossId==='bigb');g.player.invulnerable=0;g.player.parry=0;b.lastCast={name:'Trümmer',title:'Trümmer'};g.player.hp=Math.min(g.player.hp,90);g.hitPlayer(b,0,true,.08);if(!g.dead)g.hitPlayer(b,0,true,.5);b.lastCast=null;return g.dead`);
- await mouse({x:1000,y:200});await wait(900);
+ await mouse(AWAY);await wait(900);
  const ds=await read(`const ds=document.querySelector('#deathScreen'),btn=ds.querySelector('[data-ds-wake]');return {shown:!ds.hidden,rows:[...ds.querySelectorAll('.ds-recap-row')].map(r=>r.innerText.replace(/\\s+/g,' ').trim()),sum:ds.querySelector('.ds-recap-sum')?.innerText.trim()||'',btn:btn?.textContent||'',gold:btn?.classList.contains('gold-button'),outline:btn?.classList.contains('outline-button'),focusBtn:document.activeElement===btn,tip:!document.querySelector('#itemTooltip').classList.contains('hidden')}`);
  await shot('30-tod-rueckblick');
  const bp=await elCenter('#deathScreen [data-ds-wake]');await clickAt(bp);await wait(250);
  const armed=await read(`const btn=document.querySelector('#deathScreen [data-ds-wake]');return {dead:g.dead,btn:btn?.textContent||'',armed:btn?.classList.contains('ds-armed'),inDungeonRoom:D.roomAt(g.dungeonRun.def,g.player.x,g.player.y)?.id}`);
- await shot('31-aufgeben-scharf');await mouse({x:1000,y:200});await wait(3400);
+ await shot('31-aufgeben-scharf');await mouse(AWAY);await wait(3400);
  const later=await read(`const btn=document.querySelector('#deathScreen [data-ds-wake]');return {dead:g.dead,btn:btn?.textContent||'',armed:btn?.classList.contains('ds-armed')}`);
- await mouse(bp);await wait(700);const hoverTip=await tip();await mouse({x:1000,y:200});
+ await mouse(bp);await wait(700);const hoverTip=await tip();await mouse(AWAY);
  return {...ds,armed,later,hoverTip};}
 
 try{

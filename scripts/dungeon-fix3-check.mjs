@@ -105,7 +105,8 @@ async function afterWin(tag,{exit=false}={}){
  await wait(800);const cp=await screen(`D.toWorld(g.dungeonRun.def,'k2',g.dungeonRun.def.chest.x,g.dungeonRun.def.chest.y)`);
  const vis=await read(`const p=${JSON.stringify(cp)};const el=document.elementFromPoint(p.x,p.y-8);return {inView:p.x>0&&p.x<innerWidth&&p.y>0&&p.y<innerHeight,top:el?.id||el?.className||''}`);
  await shot(tag+'7-endtruhe-sichtbar');
- for(let i=0;i<3;i++){const p=await screen(`D.toWorld(g.dungeonRun.def,'k2',g.dungeonRun.def.chest.x,g.dungeonRun.def.chest.y)`);await clickAt({x:p.x,y:p.y-10},'right');
+ for(let i=0;i<3;i++){/* Dungeon-Fix 5: liegt die Truhe hinter der Klassenanzeige (Held stand am Thron), erst ein paar Schritte auf sie zu (S) */for(let k=0;k<8;k++){const q=await screen(`D.toWorld(g.dungeonRun.def,'k2',g.dungeonRun.def.chest.x,g.dungeonRun.def.chest.y)`);if(await read(`return document.elementFromPoint(${q.x},${q.y-10})?.id==='world'`))break;await b.key('s','keyDown');await wait(200);await b.key('s','keyUp');await wait(300);}
+  const p=await screen(`D.toWorld(g.dungeonRun.def,'k2',g.dungeonRun.def.chest.x,g.dungeonRun.def.chest.y)`);await clickAt({x:p.x,y:p.y-10},'right');
   const open=await until(`return !!document.querySelector('.game-popup[data-window="loot"] [data-loot-choice]')`,i?8000:3000);if(open)break;await until(`const c=D.toWorld(g.dungeonRun.def,'k2',g.dungeonRun.def.chest.x,g.dungeonRun.def.chest.y);return Math.hypot(c.x-g.player.x,c.y-g.player.y)<30&&!g.moveTo`,9000);}
  const choice=await read(`const w=document.querySelector('.game-popup[data-window="loot"]');return w?{choice:w.querySelector('[data-loot-choice]')?.textContent.trim()||'',items:w.querySelectorAll('[data-loot-item]').length}:null`);
  await shot(tag+'8-endtruhe-wahl');

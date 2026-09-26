@@ -161,7 +161,7 @@ try{
   let it=await interaction();assert.equal(it?.act,'find','Fundstelle Pelzmantel '+JSON.stringify(it));await shot('14-pelzmantel');await b.press('f');await wait(500);
   const found=await read(`return {found:[...g.dungeonRun.found],toast:document.querySelector('#toast')?.textContent||''}`);assert.deepEqual(found.found,['leihschein']);
   const t=await tracker();assert.ok(t[1].icons.includes('lens-found'),'Verfolgung: gefunden, noch nicht vorgelegt '+JSON.stringify(t[1]));
-  await read(`const r=g.dungeonRun;r.seals.add('siegel-gerd');r.version++;return 1`);const pr=await read(`return g.dungeonRun.def.evidence.present`);await place(pr.floor,pr.x,pr.y);await wait(900);
+  await read(`const r=g.dungeonRun;r.seals.add('siegel-gerd');r.version++;return 1`);/* Dungeon-Fix 5: solange Big B auf seine Einleitung wartet, legt das Ansprechen am Thron die Beweise vor (kein Vorlegen mehr an der Tresortür) */await place('k2',54,19.5);await wait(900);
   it=await interaction();assert.match(it?.name||'',/Beweise vorlegen/,'Vorlegen im Thronsaal '+JSON.stringify(it));await b.press('f');await wait(1400);
   const shown=await read(`return {ev:[...g.dungeonRun.evidence],bubble:(window.mertloch.state().speech||[]).length}`);assert.deepEqual(shown.ev,['leihschein']);await shot('15-beweis-vorgelegt');
   await read(`const b=${bigb};b.aggro=true;b.ai='combat';g.target=b;g.player.inCombat=7;A.startAuto(g);g.adminGod=true;return 1`);await wait(1200);
