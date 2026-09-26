@@ -4,7 +4,8 @@
 //    Schlosshof läuft in die Arena, beim Zufallen stehen alle fünf drin; Gerd ist besiegbar. Dazu: ein Söldner zieht nicht allein.
 //  2 Neuladen: geräumter Trash bleibt weg (auch mit stehender Pappwache), kein Sofort-Kampf, Schutz nach dem Laden.
 //  3 Weltkarte: das Dungeon-Symbol steht einzeln, nie in einem Bündel.
-//  4 Eingangskarte → Journal → Schließen bringt die Eingangskarte zurück; Schädelplätze mit Tooltip; zugängliche Namen.
+//  4 Eingangskarte → Journal → Schließen bringt die Eingangskarte zurück; der seltene Platz sagt „Selten“, ein nicht gebauter Boss
+//    (nachgestellt, Feinschliff 2026-09-26) ist gesperrt und sagt „Noch nicht entdeckt“; zugängliche Namen.
 // Aufruf: node scripts/dungeon-hotfix-check.mjs   (CDP 9670, Server 4470; CDP_PORT/SERVER_PORT, BOOT_TRIES, ONLY=1,2,… einzelne Teile)
 // Bilder: visual-review/dungeon-hotfix/*.jpg (lokal, nicht im Repo)
 import assert from 'node:assert/strict';
@@ -104,11 +105,21 @@ try{
   await click('.popup-dungeonEntry .dg-journal');await wait(500);
   let st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),journal:!!document.querySelector('.popup-journal')}`);assert.ok(st.journal&&!st.entry,'Journal ersetzt die Karte (ein Fenster) '+JSON.stringify(st));
   const tabs=await read(`return [...document.querySelectorAll('.popup-journal .dj-tab')].map((t,i)=>({i,locked:t.getAttribute('aria-disabled')==='true',star:!!t.querySelector('.dj-star'),label:t.getAttribute('aria-label')||''}))`);
-  const locked=tabs.filter(t=>t.locked);assert.ok(locked.length>=1,'gesperrte Plätze vorhanden '+JSON.stringify(tabs));
   const tipOf=async i=>{await hover(`.popup-journal .dj-tab:nth-child(${i+1})`);await wait(350);return read(`const t=document.querySelector('#itemTooltip');return t&&!t.classList.contains('hidden')?[...t.children].map(x=>x.textContent).join(' · '):''`);};
-  const plain=locked.find(t=>!t.star),star=locked.find(t=>t.star);
-  const tipPlain=await tipOf(plain.i);assert.match(tipPlain,/Noch nicht entdeckt/,'Tooltip auf gesperrtem Schädel: '+tipPlain);await shot('20-journal-tooltip-gesperrt');
-  let tipStar='';if(star){tipStar=await tipOf(star.i);assert.match(tipStar,/Selten/,'Tooltip auf dem Stern-Platz: '+tipStar);await shot('21-journal-tooltip-selten');}
+  /* Feinschliff 2026-09-26: Seit Etappe 4 Teil A sind alle Bosse gebaut, einen gesperrten Platz gibt es im Spiel nicht mehr. Geprüft wird das
+     gewollte Verhalten: jeder Platz mit Namen; der seltene Platz (Stern, das halbe Pferd) sagt „Selten“; jeder gesperrte Platz sagt „Noch nicht
+     entdeckt“ – und damit die Aussage nicht verloren geht, wird ein nicht gebauter Boss nachgestellt (kurz aus DUNGEON_BOSSES genommen). */
+  assert.ok(tabs.length>=6&&tabs.every(t=>t.label),'jeder Platz mit zugänglichem Namen '+JSON.stringify(tabs));
+  const star=tabs.find(t=>t.star);assert.ok(star,'Stern-Platz für den seltenen Boss');
+  const tipStar=await tipOf(star.i);assert.match(tipStar,/Selten/,'Tooltip auf dem Stern-Platz: '+tipStar);await shot('21-journal-tooltip-selten');
+  for(const t of tabs.filter(t=>t.locked)){const tip=await tipOf(t.i);assert.match(tip,/Noch nicht entdeckt/,'Tooltip auf gesperrtem Platz: '+tip);}
+  const openTabs=tabs.filter(t=>!t.locked).length;let tipPlain='';
+  await read(`const C=await import('/content/index.js');window.__keptBoss=C.DUNGEON_BOSSES.rita;delete C.DUNGEON_BOSSES.rita;`);
+  try{await click('.popup-journal .dj-tab[data-dj-boss="gerd"]');await wait(400);
+   const tabs2=await read(`return [...document.querySelectorAll('.popup-journal .dj-tab')].map((t,i)=>({i,id:t.dataset.djBoss,locked:t.getAttribute('aria-disabled')==='true'}))`);
+   const unknown=tabs2.find(t=>t.id==='rita');assert.ok(unknown?.locked,'nicht gebauter Boss gesperrt '+JSON.stringify(tabs2));
+   tipPlain=await tipOf(unknown.i);assert.match(tipPlain,/Noch nicht entdeckt/,'Tooltip auf dem nicht gebauten Platz: '+tipPlain);await shot('20-journal-tooltip-gesperrt');}
+  finally{await read(`const C=await import('/content/index.js');C.DUNGEON_BOSSES.rita=window.__keptBoss;`);await click('.popup-journal .dj-tab[data-dj-boss="gerd"]');await wait(300);}
   await click('.popup-journal [data-window-close]');await wait(600);
   st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),journal:!!document.querySelector('.popup-journal')}`);assert.ok(st.entry&&!st.journal,'nach dem Schließen ist die Eingangskarte zurück '+JSON.stringify(st));await shot('22-eingangskarte-zurueck');
   await click('.popup-dungeonEntry .dg-journal');await wait(500);await b.press('Escape');await wait(600);
@@ -116,7 +127,7 @@ try{
   await click('.popup-dungeonEntry .dg-journal');await wait(500);await b.press('m');await wait(700);
   st=await read(`return {entry:!!document.querySelector('.popup-dungeonEntry'),map:!!document.querySelector('.popup-map,#largeMap:not([hidden])')}`);assert.ok(!st.entry,'öffnet der Spieler ein anderes Fenster, kommt die Karte nicht dazwischen '+JSON.stringify(st));
   await closeAll();await b.press('Escape');await wait(300);await closeAll();
-  pass(4,'Eingangskarte → Journal → Schließen (X und Esc) bringt die Eingangskarte zurück; Schädelplätze mit Tooltip „'+tipPlain.replace(/\s+/g,' ').trim()+'“'+(star?' / „'+tipStar.replace(/\s+/g,' ').trim()+'“':'')+'; Söldner- und Journal-Knopf mit aria-label');
+  pass(4,'Eingangskarte → Journal → Schließen (X und Esc) bringt die Eingangskarte zurück; '+openTabs+' Bossplätze offen, Stern-Platz „'+tipStar.replace(/\s+/g,' ').trim()+'“, nicht gebauter Boss (nachgestellt) gesperrt mit „'+tipPlain.replace(/\s+/g,' ').trim()+'“; Söldner- und Journal-Knopf mit aria-label');
  }
  // ─────────────────────────────────────────────── 2 · Neuladen: geräumter Trash bleibt weg, kein Sofort-Kampf
  if(want(2)||want(5)){

@@ -34,7 +34,7 @@ const port=Number(process.env.CDP_PORT||9344);
 mkdirSync(dir,{recursive:true});
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const ALL_DEVICES=[['hoch',390,844],['quer',844,390],['klein',360,740]];
-/** Teil-Läufe (jeder Teil unter 10 Minuten): MOBILE_PART=hoch|quer|klein|sitzung|desktop|alle (Vorgabe alle). Teil-Läufe schreiben REPORT-<teil>.md. */
+/** Teil-Läufe (jeder Teil unter 10 Minuten): MOBILE_PART=hoch|quer|klein|sitzung|dungeon|desktop|alle (Vorgabe alle). Teil-Läufe schreiben REPORT-<teil>.md. */
 const PART=process.env.MOBILE_PART||'alle';
 const DEVICES=ALL_DEVICES.filter(d=>PART==='alle'||PART===d[0]);const SESSION=PART==='alle'||PART==='sitzung';
 /** Simulierte Safe Areas (iPhone-Werte): hochkant oben 47 / unten 34, quer links 47 / rechts 47 / unten 21 (M-07). */
@@ -209,6 +209,42 @@ try{
   report.push({device:'format',step:name,problems,textSmall:0,textSmallList:'',warn:0,warnList:'',gaps:0,gapList:'',targets:a.targets,popups:''});if(problems.length)failures++;
  }
  }
+ // Dungeon „Schloss Big B“ (Feinschliff 2026-09-26): dieselben Regeln für Eingangskarte, Journal, Bosskampf und Händler, hochkant und quer.
+ // Eigener Teil: MOBILE_PART=dungeon. Bilder als .jpg.
+ if(PART==='alle'||PART==='dungeon'){
+  const shotJpg=async n=>{try{const r=await b.send('Page.captureScreenshot',{format:'jpeg',quality:80,captureBeyondViewport:false});writeFileSync(join(dir,n+'.jpg'),Buffer.from(r.data,'base64'));}catch(e){b.errors.push('Bildschirmfoto '+n+' fehlgeschlagen: '+e.message);}};
+  const js=code=>b.evaluate(`(async()=>{window.D=window.D||await import('/dungeon.js');const g=window.game;${code}})()`);
+  /* Bossrahmen und Warnleiste: im Bild, nicht über Joystick und Kniffen, Schrift mindestens 10 px */
+  const HUD=`(()=>{const vis=el=>{if(!el)return false;const r=el.getBoundingClientRect(),cs=getComputedStyle(el);return r.width>0&&r.height>0&&cs.display!=='none'&&cs.visibility!=='hidden'&&!el.closest('[hidden]');};const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height};};const ov=(a,c)=>a.x<c.x+c.w&&a.x+a.w>c.x&&a.y<c.y+c.h&&a.y+a.h>c.y;const out=[];
+   const frame=document.querySelector('.boss-frame');if(!vis(frame))return ['Bossrahmen fehlt'];const f=box(frame);if(f.x<0||f.y<0||f.x+f.w>innerWidth+1||f.y+f.h>innerHeight+1)out.push('Bossrahmen außerhalb');
+   for(const [n,el] of [['Bossrahmen',frame],['Warnleiste',document.querySelector('.boss-alerts')],['Ansage',document.querySelector('.boss-announce')]]){if(!vis(el))continue;for(const s of ['#touchStick','#touchSkills','#touchUtility']){const e=document.querySelector(s);if(vis(e)&&ov(box(el),box(e)))out.push(n+' über '+s);}}
+   for(const el of document.querySelectorAll('.boss-hud *')){if(!vis(el)||![...el.childNodes].some(n=>n.nodeType===3&&n.nodeValue.trim()))continue;const fs=parseFloat(getComputedStyle(el).fontSize);if(fs<10)out.push('Text unter 10 px im Bossrahmen: '+el.textContent.trim().slice(0,20)+' '+fs+'px');}
+   if([...document.querySelectorAll('.boss-hud kbd')].some(vis))out.push('Tastenkürzel im Bossrahmen am Handy');
+   {const chat=document.querySelector('#chatWindow'),rows=[...document.querySelectorAll('.boss-alerts .ba-row')].filter(vis);if(vis(chat)&&!chat.classList.contains('active')&&rows.some(r=>ov(box(r),box(chat))))out.push('Warnleiste über dem Chat');}
+   if(!document.body.classList.contains('touch-combat'))out.push('Kampf nicht aktiv (touch-combat fehlt)');return out;})()`;
+  for(const [name,w,h] of ALL_DEVICES.slice(0,2)){
+   await b.device(w,h);await b.goto(url);await wait(1500);await b.safe(w,h);await wait(300);
+   const steps=[
+    ['dg-eingangskarte',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await js(`if(D.inDungeon(g))g.leaveDungeon({force:true});Object.assign(g.tutorial,{version:1,step:8,completed:true});g.player.level=10;g.refreshStats?.();document.querySelectorAll('[data-window-close]').forEach(x=>x.click());const d=D.dungeonEntrance(g);g.enemies=g.enemies.filter(e=>Math.hypot(e.x-d.x,e.y-d.y)>500);Object.assign(g.player,{x:d.x,y:d.y+8});g.player.inCombat=0;`);await wait(800);await b.tap('#touchInteract');await wait(800);return await b.evaluate(`!!document.querySelector('.popup-dungeonEntry')`)?[]:['Eingangskarte geht per Aktion-Knopf nicht auf'];}],
+    ['dg-journal',async()=>{if(!await b.tap('.popup-dungeonEntry .dg-journal'))return ['Journal-Knopf fehlt'];await wait(700);return await b.evaluate(`!!document.querySelector('.popup-journal')`)?[]:['Journal geht nicht auf'];}],
+    ['dg-journal-zurueck',async()=>{if(!await b.tap('.popup-journal [data-window-close]'))return ['Schließen fehlt'];await wait(700);return await b.evaluate(`!!document.querySelector('.popup-dungeonEntry')`)?[]:['Nach dem Journal keine Eingangskarte'];}],
+    ['dg-bosskampf',async()=>{await b.evaluate(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click())`);await js(`g.enterDungeon('schloss-bigb',{force:true});`);await wait(1500);
+     await js(`for(const id of ['merc-pils-peter','merc-schorle-susi','merc-radler-rita','merc-hopfen-horst'])g.hireCompanion(id,{free:true});for(const e of g.enemies)if(!e.dungeonBoss&&e.hp>0){e.hp=0;e.aggro=false;e.ai='dead';e.respawnAt=Infinity;}const r=g.dungeonRun;r.calmUntil=0;const gerd=g.enemies.find(e=>e.bossId==='gerd');if(gerd&&!(gerd.hp>0)){r.killed.delete('gerd');Object.assign(gerd,{hp:gerd.maxHp,ai:'roaming',aggro:false,dead:0});r.version++;}/* zweites Gerät: derselbe Durchgang, Gerd lag schon */Object.assign(g.player,D.toWorld(r.def,'e0',10.5,29));g.player.inCombat=0;g.companions.forEach((c,i)=>{const q=g.world.findClear(g.player.x+10+i*6,g.player.y+8,9);c.x=q.x;c.y=q.y;});g.adminGod=true;`);
+     await wait(3000);return await b.evaluate(HUD);}],
+    ['dg-haendler',async()=>{await js(`const gerd=g.enemies.find(e=>e.bossId==='gerd');if(gerd&&gerd.hp>0){gerd.hp=1;g.target=gerd;g.damage(gerd,99,'Schlag');}g.adminGod=false;g.dungeons['schloss-bigb'].volker=true;`);await wait(2500);
+     await js(`g.player.inCombat=0;const v=g.dungeonRun.def.vendor;Object.assign(g.player,D.toWorld(g.dungeonRun.def,v.floor,v.x+1,v.y));g.moveTo=null;`);await wait(1200);await b.evaluate(`document.querySelectorAll('.game-popup [data-window-close]').forEach(x=>x.click())`);await wait(400);
+     await b.tap('#touchInteract');await wait(900);return await b.evaluate(`!!document.querySelector('.popup-volker')`)?[]:['Händlerfenster geht per Aktion-Knopf nicht auf'];}]
+   ];
+   for(const [step,run] of steps){const extra=await run();await wait(500);const a=await b.evaluate(AUDIT);await shotJpg(name+'-'+step);audits.push({device:name,step,...a,text:undefined});const problems=extra.slice();
+    if(a.offscreen.length)problems.push('Fenster außerhalb: '+a.offscreen.join(','));if(a.overlapStick.length)problems.push('Fenster über Joystick: '+a.overlapStick.join(','));if(a.overlapSkills.length)problems.push('Fenster über Kniff-Knöpfen: '+a.overlapSkills.join(','));
+    if(a.corners.length)problems.push('Tipp-Ziel in Bildschirmecke (< '+CORNER+' px): '+a.corners.slice(0,4).join(' | '));if(a.unsafe.length)problems.push('Tipp-Ziel in Safe Area: '+a.unsafe.slice(0,4).join(' | '));
+    if(a.textTiny.length)problems.push('Text unter 10 px (M-12): '+a.textTiny.slice(0,4).join(' | '));if(a.contrast.length)problems.push('Kontrast unter 4,5:1 (M-12): '+a.contrast.slice(0,3).join(' | '));if(a.scrollW>a.vw+1)problems.push('Seite breiter als Viewport: '+a.scrollW+' > '+a.vw);
+    const tiny=a.small.filter(s=>Math.min(s.w,s.h)<32);if(tiny.length)problems.push('Tipp-Ziele unter 32 px: '+tiny.map(s=>s.text).slice(0,6).join(' | '));const m=a.text.match(DESKTOP_WORDS);if(m)problems.push('Desktop-Begriff sichtbar: „'+m[0]+'“');
+    const warn=a.small.filter(s=>Math.min(s.w,s.h)>=32);
+    report.push({device:name,step,problems,textSmall:a.textSmall.length,textSmallList:a.textSmall.slice(0,3).join(' | '),warn:warn.length,warnList:warn.map(s=>s.text+' '+s.w+'×'+s.h).join(' | '),gaps:a.gaps.length,gapList:a.gaps.slice(0,4).map(g=>g.a+'↔'+g.b+' '+g.gap+'px').join(' | '),targets:a.targets,popups:a.popups.map(p=>p.id+' '+p.w+'×'+p.h+'@'+p.x+','+p.y).join(' ')});if(problems.length)failures++;}
+  }
+ }
+ if(PART!=='dungeon'){/* Desktop-Gegenprobe nicht im Dungeon-Teil */
  // Chrome kann nach vielen Touch-Rotationen beim Wechsel zum Desktop-Compositor hängen.
  // Die Desktop-Gegenprobe bekommt deshalb einen eigenen Browserprozess und einen frischen Spielstand.
  const mobileErrors=b.errors.slice();b.close();const stopped=new Promise(r=>b0.once('exit',r));killTree(b0);await stopped;
@@ -233,6 +269,7 @@ try{
  ];
  for(const [step,run] of desktopSteps){await b.evaluate(`document.querySelector('#itemTooltip')?.classList.add('hidden')`);await run();await wait(350);const a=await b.evaluate(AUDIT);await b.shot('desktop-'+step);audits.push({device:'desktop',step,...a,text:undefined});const problems=[];if(a.offscreen.length)problems.push('Fenster außerhalb: '+a.offscreen.join(','));if(a.contrast.length)problems.push('Kontrast: '+a.contrast.join(' | '));report.push({device:'desktop',step,problems,warn:0,warnList:'',gaps:0,gapList:'',targets:0,popups:a.popups.map(p=>p.id).join(',')});if(problems.length)failures++;}
 
+ }
 }finally{
  const lines=['# Mobile-Prüfung · '+new Date().toISOString().slice(0,10),'',`Adresse ${url} · Geräte ${DEVICES.map(d=>d[0]+' '+d[1]+'×'+d[2]).join(', ')} · ${failures} Schritte mit Fehlern von ${report.length}`,'','| Gerät | Schritt | Fenster | Ziele | Befund 32–43 px | Abstand < 8 px | Lesetext < 12 px | Probleme |','|---|---|---|---|---|---|---|---|',
   ...report.map(r=>`| ${r.device} | ${r.step} | ${r.popups||'–'} | ${r.targets} | ${r.warnList?(r.warn?r.warn+': ':'')+r.warnList:'–'} | ${r.gaps?r.gaps+': '+r.gapList:'–'} | ${r.textSmall?r.textSmall+': '+r.textSmallList:'–'} | ${r.problems.join('; ')||'–'} |`),'',`Befunde gesamt: ${report.reduce((n,r)=>n+r.warn,0)} Tipp-Ziele unter 44 px, ${report.reduce((n,r)=>n+r.gaps,0)} Paare mit Abstand unter 8 px (M-01/M-02), ${report.reduce((n,r)=>n+(r.textSmall||0),0)} Lesetexte unter 12 px (M-12).`,'',b.errors.length?'## Laufzeitfehler\n\n'+b.errors.map(e=>'- '+e.slice(0,200)).join('\n'):'Keine Laufzeitfehler.'];

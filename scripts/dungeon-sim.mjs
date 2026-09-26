@@ -14,15 +14,21 @@
 // Etappe 4 Teil A: Frau Dr. Exposé, Korken-Kurt, Reichweiten-Rita und das halbe Pferd je 70–110 s mit Held und 4 Söldnern · „ignoriert
 // Mechanik“ (weicht nicht aus, sammelt und verteilt nicht, geht nicht hinter Deckung, nimmt keine Adds) stirbt je Lauf mindestens einmal,
 // „spielt richtig“ höchstens einmal · Gerds Schutz-Söldner überlebt die meisten Läufe (Nebenbefund Etappe 3). --only=expose,kurt,rita,pferd
+// Feinschliff 2026-09-26 (docs/DUNGEON-FEINSCHLIFF-2026-09-26.md): Rita auch mit allen fünf Klassen und im Flügel 70–110 s; Rückweg-Gegner nach der Frist
+// zu Hause. Messung der Flügel ehrlicher: Wege von Punkten dicht an der Wand (vorher kein Weg → pauschal 60 s), das halbe Pferd immer dabei, nach einem
+// Wipe weiter vom Kontrollpunkt und den Pack noch einmal, „ein Pack je Zug“ unterbricht den Funkspruch, trifft ruhende Nachbarn nicht und verschnauft
+// ungestört, kein Schritt in eine offene Boss-Arena, und ein Kampf ohne Fortschritt endet wie beim Spieler (Aufstehen bzw. Weggehen).
+// Weitere Schalter: SIM_WING_SEED (Flügel-Seed, Vorgabe 7).
 import {readFileSync} from 'node:fs';
 import {World,rng} from '../world.js';
 import {Game} from '../engine.js';
-import {makeEnemy,scaledStats} from '../encounters.js';
+import {makeEnemy,scaledStats,ENCOUNTER_RULES,beginReturn} from '../encounters.js';
 import {DUNGEONS,DUNGEON_BOSSES,DUNGEON_ENEMIES,TUTORIAL,CLASS_SPECS,ARCHETYPES} from '../content/index.js';
-import {toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct} from '../dungeon.js';
+import {toWorld,coneHits,floorAt,inLane,roomAt,inHazard,hideSpots,spawnRareBoss,lostSight,transitionUsable,dungeonAct,arenaAhead} from '../dungeon.js';
 import {startAuto} from '../auto-combat.js';
 import {rotate} from './balance-rotation.mjs';
 import {changeSpec,pathBuild,learnTalent,talentPoints,TALENTS} from '../talents.js';
+import {available} from '../progression.js';
 import {ITEMS,addItem,equipItem} from '../rpg.js';
 import {registerRoll} from '../itemization.js';
 import {WALK_SPEED} from '../movement.js';
@@ -84,7 +90,7 @@ function e4Goal(g,p){const run=g.dungeonRun;if(!run)return null;const mates=g.co
 function escape(g,p,c,r){const base=Math.atan2(p.y-c.y,p.x-c.x)||0;let first=null;for(const turn of [0,.6,-.6,1.3,-1.3,2.2,-2.2,Math.PI]){const a=base+turn,q={x:c.x+Math.cos(a)*r,y:c.y+Math.sin(a)*r*.75};first||=q;if(!g.world.blocked(q.x,q.y,9))return q;}return first;}
 /** Nicht-Tanks im Kegel beim Zauberbeginn (Etappe 3, Aufstellung nach Rolle): Held und Söldner außer dem, den der Gegner angeht. */
 function coneCount(g,e,k){const holder=k.focus||(e.focus&&e.focus!=='player'?e.focus:'player');let n=0;if(!g.dead&&holder!=='player'&&coneHits(e,k,g.player,g))n++;for(const c of g.companions)if(c.state!=='down'&&c.hp>0&&c.id!==holder&&coneHits(e,k,c,g))n++;return n;}
-export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immortal=false,lie='truth'}={}){
+export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immortal=false,lie='truth',calls=false,release=false}={}){
  const dt=.05,p=g.player,stats={time:0,deaths:0,revives:0,wipes:0,mercDowns:0,mechHits:0,fell:0,taken:0,healed:0,minHpPct:100,minPartyPct:100,cones:0,coneNonTanks:0,lieHits:0,signed:0,sold:0,tankDowns:0},seenCones=new WeakSet();
  const primary=foes[0];g.target=primary;primary.aggro=true;primary.ai='combat';p.inCombat=7;startAuto(g);g.adminGod=immortal;
  for(let t=0;t<limit;t+=dt){
@@ -92,11 +98,11 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
   // Über die Kante gefallen (ab Phase 2): wie ein Spieler die Kellertreppe gleich neben der Landestelle wieder hoch
   if(!g.dead&&floorAt(DEF,p.x,p.y)==='k1'&&foes.some(e=>e.hp>0&&floorAt(DEF,e.x,e.y)==='e0')){Object.assign(p,toWorld(DEF,'k1',10.5,8));g.dungeonStep('treppe-zugbruecke','b');}
   if(!g.dead){
-   /* Etappe 4 Teil A: wer richtig spielt, nimmt den Interessenten am nächsten zum Tisch; unsichtbare Ziele fallen weg */if(dodge&&lie!=='none'){const add=g.enemies.filter(e=>e.goalAt&&e.hp>0&&!e.signedOff).sort((a,b)=>Math.hypot(a.x-a.goalAt.x,a.y-a.goalAt.y)-Math.hypot(b.x-b.goalAt.x,b.y-b.goalAt.y))[0];if(add&&g.target!==add){g.target=add;startAuto(g);}}
+   /* Etappe 4 Teil A: wer richtig spielt, nimmt den Interessenten am nächsten zum Tisch; unsichtbare Ziele fallen weg */if(dodge&&lie!=='none'){const add=g.enemies.filter(e=>e.goalAt&&e.hp>0&&!e.signedOff&&e.aggro).sort((a,b)=>Math.hypot(a.x-a.goalAt.x,a.y-a.goalAt.y)-Math.hypot(b.x-b.goalAt.x,b.y-b.goalAt.y))[0];if(add&&g.target!==add){g.target=add;startAuto(g);}}
    if(g.target?.hidden)g.target=null;
    /* nach einem Rücksetzen (VERKAUFT) zieht der Held den Boss wieder */if(!(g.target?.hp>0)&&primary.hp>0&&!primary.aggro&&!g.enemies.some(e=>e.hp>0&&e.aggro&&!e.hidden)){g.target=primary;startAuto(g);}
-   /* Etappe 4 Teil B: geflohene Ratten, die auf dem Rückweg hängen, setzt das Spiel zurück, sobald der Held sich abwendet (encounters.js) –
-      hier nach 10 s ohne Kampf; danach zieht der Held sie wieder */if(!g.enemies.some(e=>e.hp>0&&e.aggro&&e.ai==='combat'))for(const e of foes)if(e.hp>0&&e.ai==='returning'&&e.returnTime>10)g.resetEnemy(e);
+   /* Feinschliff 2026-09-26: kein Nachhelfen mehr bei Ratten auf dem Rückweg – das Spiel bringt sie selbst zurück (dungeon.js findPath, Frist in
+      encounters.js); gemessen wird der längste Rückweg (returnMax) */
    /* Etappe 4 Teil B: ist der erste schon tot und der Rest des Packs zurückgelaufen, zieht der Held den nächsten Rest wieder (sonst 600 s Stillstand) */if(
 !(g.target?.hp>0)&&!(primary.hp>0)&&!g.enemies.some(e=>e.hp>0&&e.aggro&&!e.hidden)){const rest=foes.filter(e=>e.hp>0&&!e.hidden).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0];if(rest){g.target=rest;startAuto(g);}}
    if(!(g.target?.hp>0)){g.target=g.enemies.filter(e=>e.hp>0&&e.aggro&&!e.hidden).sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))[0]||null;if(g.target)startAuto(g);}
@@ -110,11 +116,16 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
     else if(Math.hypot(tgt.x-p.x,tgt.y-p.y)>30)goal={x:tgt.x,y:tgt.y};
     /* Etappe 4 Teil A: wer geübt spielt, bleibt nicht hinter Deckung stehen, wenn gerade kein Blitzlicht kommt – Stelle mit Sicht aufs Ziel */
     const at=goal||p;if(lostSight(g,tgt,at)/* nur in Räumen mit Deckung (Studio), wie die Söldner */){let best=null,bd=1e9;for(const r of [26,18,36])for(let i=0;i<16;i++){const a=i/16*Math.PI*2,q={x:tgt.x+Math.cos(a)*r,y:tgt.y+Math.sin(a)*r};if(g.world.blocked(q.x,q.y,9)||!g.world.lineClear(q,tgt)||roomAt(DEF,q.x,q.y)?.id!==roomAt(DEF,tgt.x,tgt.y)?.id)continue;const v=Math.hypot(q.x-at.x,q.y-at.y);if(v<bd){bd=v;best=q;}}if(best)goal=best;}}
+   /* Feinschliff 2026-09-26: wer sorgfältig spielt, tritt beim Trash nicht in eine offene Boss-Arena (vorher stellte sich Schorsch „hinter“ einen
+      Azubi an der Zugbrücke, also in Gerds Arena) */if(goal&&arenaAhead(g,goal))goal=null;
+   if(goal&&Math.hypot(goal.x-p.x,goal.y-p.y)>6&&arenaAhead(g,g.world.findClear(goal.x,goal.y,7)))goal=null;/* auch der freigerückte Punkt nicht in einer offenen Arena */
    if(goal&&Math.hypot(goal.x-p.x,goal.y-p.y)>6){const to=g.world.findClear(goal.x,goal.y,7);/* Etappe 4 Teil A: um Deckung herum per Wegsuche */let via=to;if(!g.world.walkClear(p,to,6)){const path=g.world.findPath(p,to);via=path.find(q=>Math.hypot(q.x-p.x,q.y-p.y)>12)||to;}g.moveTo=via;g.path=[];}else g.moveTo=null;
+   /* Feinschliff 2026-09-26, „ein Pack je Zug“: wer sorgfältig spielt, unterbricht den Funkspruch (Q, Hinweis „Unterbrechen“) nach 0,35 s – sonst
+      kommen die Nachbarn, und die Flügelzeit hängt an Wipes statt am Pack */if(calls&&!g.casting&&available(g,'interrupt')&&!(g.cooldowns.interrupt>0)){const call=g.enemies.find(e=>e.hp>0&&e.cast?.callHelp&&e.cast.total-e.cast.remaining>=.35&&Math.hypot(e.x-p.x,e.y-p.y)<=130&&g.world.lineClear(p,e));if(call){const keep=g.target;g.target=call;g.action('interrupt');if(keep?.hp>0)g.target=keep;}}
    if(!g.casting&&g.gcd<=0&&tgt)rotate(g);
   }
   const before=party(g).map(u=>u.hp),floor=floorAt(DEF,p.x,p.y),casting=g.enemies.map(e=>[e,e.cast?.type,e.sideCast?.type]);
-  g.tick(dt);stats.time+=dt;
+  g.tick(dt);stats.time+=dt;for(const e of foes)if(e.ai==='returning')stats.returnMax=Math.max(stats.returnMax||0,+e.returnTime.toFixed(1));
   if(process.env.SIM_POS&&Math.round(stats.time*20)%100===0){const o=DEF.floors[floorAt(DEF,p.x,p.y)||"k1"].origin,mm=u=>((u.x-o.x)/8).toFixed(1)+","+((u.y-o.y)/8).toFixed(1),b=foes[0];console.error("  pos t="+stats.time.toFixed(0)+" Held@"+mm(p)+(g.target?" Ziel "+g.target.name:"")+" Boss@"+mm(b)+" "+Math.round(b.hp/b.maxHp*100)+"%"+(g.moveTo?" moveTo@"+mm(g.moveTo):"")+(g.casting?" zaubert "+g.casting.id:"")+(p.moving?" läuft":"")+(g.activity?" akt "+g.activity.kind:"")+(b.hidden?" unsichtbar":"")+(b.retreat?" rückzug":"")+" fokus "+b.focus+" "+g.companions.map(c=>c.name.slice(0,4)+"@"+mm(c)+c.state[0]).join(" "));}
   for(const e of foes){const k=e.cast;if(k?.cone&&!seenCones.has(k)){seenCones.add(k);stats.cones++;stats.coneNonTanks+=coneCount(g,e,k);}}
   party(g).forEach((u,i)=>{const d=u.hp-before[i];if(d<0)stats.taken-=d;else if(d>0&&before[i]>0)stats.healed+=d;if(u===p&&d<-.15*p.maxHp)stats.mechHits++;if(TRACE&&u===p&&d<-.08*p.maxHp){const src=casting.find(([e,x,y])=>(x&&!e.cast)||(y&&!e.sideCast));console.error("  t="+stats.time.toFixed(1)+" Held "+Math.round(u.hp/u.maxHp*100)+" % ("+Math.round(d/p.maxHp*100)+" %) "+(src?(src[1]&&!src[0].cast?src[1]:src[2]):"auto"));}
@@ -125,6 +136,10 @@ export function fight(g,foes,{dodge=true,behind=true,front=false,limit=600,immor
   if(!g.dead)stats.minHpPct=Math.min(stats.minHpPct,Math.round(p.hp/p.maxHp*100));
   for(const c of g.companions)if(c.state!=='down')stats.minPartyPct=Math.min(stats.minPartyPct,Math.round(c.hp/c.maxHp*100));
   if(stats.wipes)break;
+  /* Feinschliff 2026-09-26: Kommt ein Kampf 30 s (mit Boss 60 s) lang nicht voran (die Gegner verlieren zusammen keine 3 % ihres Lebens – etwa ein Heiler in der
+     Ecke gegen Söldner ohne Held, oder ein Gegner ohne Weg), handelt der Held wie ein Spieler: als Geist steht er am Kontrollpunkt auf, lebend geht er,
+     und die Gegner lassen ab und gehen zurück. Vorher hing so ein Kampf bis zum Limit von 600 s. */if(release){const on=g.enemies.filter(e=>e.aggro&&e.hp>0),cur=on.reduce((n,e)=>n+e.hp,0),max=on.reduce((n,e)=>n+e.maxHp,0);
+   if(stats.progAt==null||cur<stats.progHp-.03*max){stats.progAt=stats.time;stats.progHp=cur;}else if(stats.time-stats.progAt>(on.some(e=>e.dungeonBoss)?60:30)/* Bosse mit Heilung (Trog, Notartermin): 60 s */){if(g.dead){g.respawn();stats.wipes++;stats.released=true;}else for(const e of on){e.threat=null;e.focus=null;beginReturn(g,e);}stats.stalled=true;break;}}
  }
  g.adminGod=false;
  const done=foes.reduce((n,e)=>n+e.maxHp-Math.max(0,e.hp),0);stats.groupDps=Math.round(done/Math.max(1,stats.time));stats.heroDps=Math.round(g.stats.damage/Math.max(1,stats.time));
@@ -227,17 +242,26 @@ export function wingStops(g,wing){
 }
 /** careful = ein Pack je Zug (Nachbarn bemerken den Helden währenddessen nicht, wie bei sorgfältigem Ziehen); sonst ziehen Nachbarpacks mit. */
 function wingsRun(opts,{careful=false}={}){
- const g=setup(opts),rows=[];let pos=toWorld(DEF,DEF.start.floor,DEF.start.x,DEF.start.y),total=0,deaths=0,wipes=0;const xp0=g.trainingXp;g.dungeonRun.secrets.add('pappwand');
- const recover=()=>{let t=0;if(g.dead){g.respawn();wipes++;}g.player.inCombat=0;while(t<60&&(party(g).some(u=>u.hp/u.maxHp<.8)||g.companions.some(c=>c.state==='down'))){g.tick(.05);t+=.05;}g.events.length=0;return t;};
+ const g=setup(opts),rows=[];/* Feinschliff 2026-09-26: das seltene halbe Pferd ist hier wirklich immer dabei (vorher würfelte setup, bei Käthe fehlte es) */spawnRareBoss(g,'halbespferd');const bossTimes={};let returnMax=0;let pos=toWorld(DEF,DEF.start.floor,DEF.start.x,DEF.start.y),total=0,deaths=0,wipes=0;const xp0=g.trainingXp;g.dungeonRun.secrets.add('pappwand');
+ const cpPos=()=>{const c=g.dungeonRun.checkpoint;return toWorld(DEF,c.floor,c.x,c.y);};
+ /* Feinschliff 2026-09-26, „ein Pack je Zug“: wer sorgfältig zieht, holt den Pack von den Nachbarn weg – Flächenschaden trifft ruhende Nachbarn
+    nicht (vorher räumte Schorschs Maiskolben halbe Räume in einem Zug). Ruft ein Azubi sie per Funkspruch, kämpfen sie regulär mit. */
+ if(careful){const dmg=g.damage.bind(g);g.damage=(e,...a)=>e.simHeld&&!e.aggro?0:dmg(e,...a);}
+ /* Feinschliff 2026-09-26: Erholung ist nicht mehr wehrlos – bemerkt ein Nachbarpack den Helden beim Verschnaufen, kämpft er (vorher starb er dabei
+    ungesehen, stand als Geist in den nächsten Zug und der Kampf hing 600 s); danach am Kontrollpunkt aufstehen und weiter verschnaufen */
+ const up=()=>{if(g.dead){g.respawn();wipes++;pos=cpPos();/* weiter vom Kontrollpunkt aus */}g.player.inCombat=0;};
+ const near=e=>e.hp>0&&e.aggro&&e.ai==='combat'&&floorAt(DEF,e.x,e.y)===floorAt(DEF,g.player.x,g.player.y)&&Math.hypot(e.x-g.player.x,e.y-g.player.y)<480;/* wer den Helden hier angreift */
+ const recover=()=>{let t=0;up();for(let n=0;n<4;n++){while(t<60&&(party(g).some(u=>u.hp/u.maxHp<.8)||g.companions.some(c=>c.state==='down'))&&!g.enemies.some(near)){g.tick(.05);t+=.05;}g.events.length=0;
+  const foes=g.enemies.filter(near);if(!foes.length)break;const r=fight(g,foes,{calls:careful,limit:300,release:true});if(process.env.SIM_DEBUG)console.log('  Erholung: Kampf',[...new Set(foes.map(e=>e.pack||e.bossId||e.dungeonKind))].join('+'),JSON.stringify({time:r.time,won:r.won}));t+=r.time;deaths+=r.deaths||0;returnMax=Math.max(returnMax,r.returnMax||0);up();}return t;};
  const bossFight=(id,at)=>{const e=g.enemies.find(x=>x.bossId===id&&x.hp>0);if(!e)return {time:DUNGEON_BOSSES[id]?0:PLAN_TIME[id]||90,placeholder:!DUNGEON_BOSSES[id]};
-  Object.assign(g.player,g.world.findClear(at.x,at.y,9));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}const r=fight(g,[e],{limit:600});if(process.env.SIM_DEBUG)console.log('  Boss',id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes,left:r.bossLeft}));return {time:r.time,deaths:r.deaths,won:r.won};};
+  Object.assign(g.player,g.world.findClear(at.x,at.y,9));for(const c of g.companions){const q=g.world.findClear(g.player.x+10,g.player.y+10,9);c.x=q.x;c.y=q.y;}const r=fight(g,[e],{limit:600,release:true});bossTimes[id]=r.time;returnMax=Math.max(returnMax,r.returnMax||0);if(process.env.SIM_DEBUG)console.log('  Boss',id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes,left:r.bossLeft}));return {time:r.time,deaths:r.deaths,won:r.won};};
  for(const wing of DEF.wings){const t0=total,x0=g.trainingXp,placeholders=[];let bossXp=0,bossBase=0;const stops=wingStops(g,wing);
   while(stops.length){let bi=0,bt=Infinity;const firstIdx=stops.findIndex(x=>x.first);stops.forEach((s,i)=>{const t=legSeconds(g,pos,s.at);if(firstIdx<0?t<bt:i===firstIdx){bt=t;bi=i;}});const s=stops.splice(bi,1)[0];total+=bt;pos=s.at;
-   if(s.kind==='pack'){const held=careful?g.enemies.filter(e=>e.pack!==s.id&&e.hp>0&&!e.aggro).map(e=>[e,e.aggroRange]):[];for(const [e] of held)e.aggroRange=0;const r=pull(g,s.id,{});for(const [e,a] of held)e.aggroRange=a;if(process.env.SIM_DEBUG)console.log('  Pack',s.id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes}));if(process.env.SIM_DEBUG&&r.time>=590)for(const e of g.enemies)if(e.hp>0&&((e.aggro&&e.ai==='combat')||e.pack===s.id)){const f=floorAt(DEF,e.x,e.y),o=DEF.floors[f]?.origin||{x:0,y:0};console.log('    hängt',e.name,e.pack||e.bossId,f,((e.x-o.x)/8).toFixed(1),((e.y-o.y)/8).toFixed(1),Math.round(e.hp/e.maxHp*100)+'%','ai='+e.ai,e.aggro?'aggro':'',e.hidden?'versteckt':'',e.stun?'betäubt':'',e.fear?'Furcht':'',e.path?.length??'',g.world.lineClear?.(e,g.player)?'Sicht':'keine Sicht');}total+=r.time+recover();deaths+=r.deaths||0;total+=STOP_TIME.loot;}
- else if(s.kind==='boss'){const xb=g.trainingXp,r=bossFight(s.id,s.at);bossXp+=g.trainingXp-xb;bossBase+=DUNGEON_BOSSES[s.id]&&!r.placeholder?DUNGEON_BOSSES[s.id].xp||0:0;total+=r.time+(r.placeholder?0:recover());if(r.placeholder)placeholders.push(s.id);deaths+=r.deaths||0;}
+   if(s.kind==='pack'){const held=careful?g.enemies.filter(e=>e.pack!==s.id&&e.hp>0&&!e.aggro).map(e=>[e,e.aggroRange]):[];for(const [e] of held){e.aggroRange=0;e.simHeld=true;}const r=pull(g,s.id,{calls:careful,release:true});const unhold=()=>{for(const [e,a] of held){e.aggroRange=a;e.simHeld=false;}};returnMax=Math.max(returnMax,r.returnMax||0);if(process.env.SIM_DEBUG)console.log('  Pack',s.id,JSON.stringify({time:r.time,won:r.won,deaths:r.deaths,wipes:r.wipes}));if(process.env.SIM_DEBUG&&r.time>=590)for(const e of g.enemies)if(e.hp>0&&((e.aggro&&e.ai==='combat')||e.pack===s.id)){const f=floorAt(DEF,e.x,e.y),o=DEF.floors[f]?.origin||{x:0,y:0};console.log('    hängt',e.name,e.pack||e.bossId,f,((e.x-o.x)/8).toFixed(1),((e.y-o.y)/8).toFixed(1),Math.round(e.hp/e.maxHp*100)+'%','ai='+e.ai,e.aggro?'aggro':'',e.hidden?'versteckt':'',e.stun?'betäubt':'',e.fear?'Furcht':'',e.path?.length??'',g.world.lineClear?.(e,g.player)?'Sicht':'keine Sicht');}/* sorgfältig: verschnauft wird dort, wo kein Nachbar hinsieht – die Ruhe der Nachbarn gilt bis nach der Erholung */total+=r.time+recover();unhold();deaths+=r.deaths||0;/* Feinschliff 2026-09-26: verloren (Wipe, meist nach einem Hilferuf) → der Pack steht wieder, der Held zieht ihn noch einmal (einmal) */if(r.time>0&&!r.won&&!s.again&&g.enemies.some(e=>e.pack===s.id&&e.hp>0&&!e.cardboard)){s.again=true;stops.push(s);continue;}total+=STOP_TIME.loot;}
+ else if(s.kind==='boss'){const xb=g.trainingXp,r=bossFight(s.id,s.at);if(!r.placeholder&&!r.won&&!s.again&&g.enemies.some(x=>x.bossId===s.id&&x.hp>0)){total+=r.time+recover();deaths+=r.deaths||0;pos=cpPos();s.again=true;stops.push(s);continue;}bossXp+=g.trainingXp-xb;bossBase+=DUNGEON_BOSSES[s.id]&&!r.placeholder?DUNGEON_BOSSES[s.id].xp||0:0;total+=r.time+(r.placeholder?0:recover());if(r.placeholder)placeholders.push(s.id);deaths+=r.deaths||0;}
    else{if(s.kind==='event'||s.kind==='find'){Object.assign(g.player,g.world.findClear(s.at.x,s.at.y,9));const res=dungeonAct(g,{act:s.kind,id:s.id});if(!res.ok&&!s.retried){s.retried=true;stops.push(s);continue;}}total+=STOP_TIME[s.kind]||4;}}
   const b=DEF.bosses.find(x=>x.id===wing.boss),room=DEF.rooms.find(r=>r.id===b.room),at=roomPoint(room,b.at[0],b.at[1]+5);total+=legSeconds(g,pos,at);pos=at;
-  const xb=g.trainingXp,r=bossFight(wing.boss,at);bossXp+=g.trainingXp-xb;if(!r.placeholder)bossBase+=DUNGEON_BOSSES[wing.boss].xp||0;total+=r.time+STOP_TIME.bossLoot;deaths+=r.deaths||0;
+  const xb=g.trainingXp;let r=bossFight(wing.boss,at);/* Feinschliff: verloren → aufstehen, zurücklaufen, noch einmal */if(!r.placeholder&&!r.won&&g.enemies.some(x=>x.bossId===wing.boss&&x.hp>0)){total+=r.time+recover()+legSeconds(g,cpPos(),at);deaths+=r.deaths||0;r=bossFight(wing.boss,at);}bossXp+=g.trainingXp-xb;if(!r.placeholder)bossBase+=DUNGEON_BOSSES[wing.boss].xp||0;total+=r.time+STOP_TIME.bossLoot;deaths+=r.deaths||0;
   if(r.placeholder){placeholders.push(wing.boss);/* Siegel und Abkürzung wie nach dem Sieg */g.dungeonRun.seals.add(b.seal);g.dungeonRun.killed.add(b.id);g.dungeonRun.version++;}
   if(wing.chest)total+=STOP_TIME.chest;total+=recover();
   const secs=total-t0,xp=g.trainingXp-x0,xpRepeat=xp-bossXp+Math.round(bossBase*REWARD_REPEAT);rows.push({wing:wing.id,minutes:+(secs/60).toFixed(1),xp,xpPerMin:Math.round(xp/(secs/60)),xpPerMinRepeat:Math.round(xpRepeat/(secs/60)),packs:DEF.packs.filter(p=>wing.rooms.includes(p.room)).length,placeholder:placeholders.join('+')||'–'});}
@@ -245,7 +269,7 @@ function wingsRun(opts,{careful=false}={}){
  const at=toWorld(DEF,'k2',49,24);total+=legSeconds(g,pos,at);const bb=g.enemies.find(e=>e.bossId==='bigb');Object.assign(g.player,at);for(const c of g.companions){const q=g.world.findClear(at.x+10,at.y+10,9);c.x=q.x;c.y=q.y;}
  const t0=total,x0=g.trainingXp,rb=fight(g,[bb],{limit:420});total+=rb.time+legSeconds(g,at,toWorld(DEF,'k2',54,39))+STOP_TIME.chest;deaths+=rb.deaths||0;
  rows.push({wing:'bigb',minutes:+((total-t0)/60).toFixed(1),xp:g.trainingXp-x0,xpPerMin:Math.round((g.trainingXp-x0)/((total-t0)/60)),packs:0,placeholder:'–'});
- return {wings:rows,totalMinutes:+(total/60).toFixed(1),xp:g.trainingXp-xp0,xpPerMin:Math.round((g.trainingXp-xp0)/(total/60)),deaths,wipes};
+ return {wings:rows,totalMinutes:+(total/60).toFixed(1),xp:g.trainingXp-xp0,xpPerMin:Math.round((g.trainingXp-xp0)/(total/60)),deaths,wipes,rita:bossTimes.rita??null,returnMax};
 }
 
 const out={gerd:[],profiles:[],alone:[],trash:[],wing:[],field:[],chain:null,bigb:[],bigbClaim:[],farm:[],e4:[],e4Ignore:[],wings:[]};
@@ -266,7 +290,7 @@ const E4_PARTS={expose:'expose',korkenkurt:'kurt',rita:'rita',halbespferd:'pferd
 for(const [id,key] of Object.entries(E4_PARTS))if(part(key)||part('e4'))for(const c of CLASSES)for(const seed of SEEDS){log('e4',E4_NAMES[id]+' · spielt richtig · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,...bossRun(id,{...c,seed},{})});
  log('e4Ignore',E4_NAMES[id]+' · ignoriert Mechanik · '+c.label+' · Seed '+seed,{boss:id,cls:c.classId,...bossRun(id,{...c,seed},{dodge:false,lie:'none'})});}
 // Etappe 4 Teil B: drei Flügel und der volle Durchgang (Held mit vier Söldnern); ohne --only=wings nur Dieter
-if(part('wings'))for(const careful of [true,false].filter(x=>!process.env.SIM_MODE||(process.env.SIM_MODE==='careful')===x))for(const c of (ONLY.includes('wings')?CLASSES:CLASSES.slice(0,1))){const r=wingsRun({...c,seed:7},{careful}),how=careful?' · ein Pack je Zug':' · Nachbarn ziehen mit';for(const w of r.wings)if(!process.env.WING||w.wing===process.env.WING)log('wings','Flügel '+w.wing+' · '+c.label+how,{...w,careful});log('wings','Voller Durchgang · '+c.label+how,{full:true,careful,minutes:r.totalMinutes,xp:r.xp,xpPerMin:r.xpPerMin,deaths:r.deaths,wipes:r.wipes});}
+if(part('wings'))for(const careful of [true,false].filter(x=>!process.env.SIM_MODE||(process.env.SIM_MODE==='careful')===x))for(const c of (ONLY.includes('wings')?CLASSES:CLASSES.slice(0,1))){const r=wingsRun({...c,seed:+(process.env.SIM_WING_SEED||7)},{careful}),how=careful?' · ein Pack je Zug':' · Nachbarn ziehen mit';for(const w of r.wings)if(!process.env.WING||w.wing===process.env.WING)log('wings','Flügel '+w.wing+' · '+c.label+how,{...w,careful});log('wings','Voller Durchgang · '+c.label+how,{full:true,careful,cls:c.classId,minutes:r.totalMinutes,xp:r.xp,xpPerMin:r.xpPerMin,deaths:r.deaths,wipes:r.wipes,rita:r.rita,returnMax:r.returnMax});}
 if(part('farm')){const fieldRate=Math.max(...out.field.map(r=>r.xpPerMin));
  for(const [route,lockout] of [['gerd',false],['gerd',true],['wing',false],['wing',true]])log('farm','Farm-Schleife '+(route==='gerd'?'Hof West + Gerd':'Flügel Burghof')+(lockout?' · mit 30-min-Sperre, Rest Feld':' · ohne Sperre')+' · Dieter · 60 min',farmHour({seed:7},{route,lockout,fieldRate}));}
 
@@ -293,10 +317,14 @@ const checks=[
   return [[E4_NAMES[id]+' mit Held und 4 Söldnern 70–110 s',t.every(x=>x>=70&&x<=110)&&ok.every(r=>r.won),Math.min(...t)+'–'+Math.max(...t)+' s'],
    [E4_NAMES[id]+': „ignoriert Mechanik“ stirbt mindestens einmal',bad.every(r=>r.deaths>=1),'Tode je Lauf '+bad.map(r=>r.deaths).join('/')],
    [E4_NAMES[id]+': „spielt richtig“ stirbt höchstens einmal',ok.every(r=>r.deaths<=1),'Tode je Lauf '+ok.map(r=>r.deaths).join('/')]];}),
+ ...((part('rita')||part('e4'))?(()=>{const t=(out.e4All||[]).filter(r=>r.boss==='rita').map(r=>r.time);return [['Reichweiten-Rita mit allen fünf Klassen 70–110 s (Feinschliff)',t.every(x=>x>=70&&x<=110)&&(out.e4All||[]).filter(r=>r.boss==='rita').every(r=>r.won),Math.min(...t)+'–'+Math.max(...t)+' s']];})():[]),
  ...(part('gerd')?[['Gerd: Schutz-Söldner überlebt die meisten Läufe',out.gerd.filter(r=>r.tankDowns>0).length<=Math.floor(out.gerd.length/3),'Schutz fällt in '+out.gerd.filter(r=>r.tankDowns>0).length+' von '+out.gerd.length+' Läufen']]:[]),
 ...(part('wings')?(()=>{const wr=out.wings.filter(w=>w.careful&&w.wing&&w.wing!=='bigb'),full=out.wings.filter(w=>w.full),bf=Math.max(...out.field.map(r=>r.xpPerMin)),built=wr.filter(w=>w.placeholder==='–'),rep=built.map(w=>w.xpPerMinRepeat),first=built.map(w=>w.xpPerMin),open=[...new Set(wr.filter(w=>w.placeholder!=='–').map(w=>w.wing))];
+  const fc=full.filter(w=>w.careful),rita=fc.map(w=>w.rita).filter(x=>x!=null),ret=Math.max(0,...full.map(w=>w.returnMax||0));
   return [['Jeder Flügel 10–15 min (ein Pack je Zug, Held + 4 Söldner)',wr.every(w=>w.minutes>=10&&w.minutes<=15),wr.map(w=>w.wing.slice(0,4)+' '+w.minutes).join(' · ')+' min'+(wr.some(w=>w.placeholder!=='–')?' (ungebaute Bosse mit Zielzeit)':'')],
    ['Voller Durchgang mit Söldnern unter 50 min (ein Pack je Zug)',full.filter(w=>w.careful).every(w=>w.minutes<50),full.filter(w=>w.careful).map(w=>w.minutes).join(' / ')+' min · Nachbarn ziehen mit (nur Angabe): '+full.filter(w=>!w.careful).map(w=>w.minutes).join(' / ')+' min'],
+   /* Feinschliff 2026-09-26: Rita endet im Flügel mit jeder Klasse (vorher bis 480 s bei 4 % im Greenscreen) */['Reichweiten-Rita im Flügel 70–110 s (jede Klasse, ein Pack je Zug)',rita.length===fc.length&&rita.every(t=>t>=70&&t<=110),fc.map(w=>w.cls+' '+w.rita).join(' · ')+' s'],
+   /* Feinschliff 2026-09-26: Rückweg-Gegner hängen nicht (Ratten im Basaltgewölbe) */['Rückweg-Gegner nach spätestens '+ENCOUNTER_RULES.dungeonReturnLimit+' s zu Hause (auch mit dem Helden daneben)',ret<=ENCOUNTER_RULES.dungeonReturnLimit+.1,'längster Rückweg '+ret+' s'],
    ['EP je Minute je Flügel 1–2× Feld (Wiederholung am selben Tag, Flügel mit gebautem Siegelträger)',rep.every(x=>x>=bf&&x<=2*bf),'Wiederholung '+Math.min(...rep)+'–'+Math.max(...rep)+' · erster Lauf des Tages (Tagesbonus) '+Math.min(...first)+'–'+Math.max(...first)+' · Feld '+bf+' EP/min'+(open.length?' · ohne Boss-EP gemessen: '+open.join(', '):'')]];})():[]),
  ...(part('farm')?[['Farm-Schleife über eine Stunde ≤ 2× Feld (30-min-Sperre wie im Spiel)',Math.max(farmGerd.xpPerMin,farmWing.xpPerMin)<=2*bestField,'Gerd '+farmGerd.xpPerMin+' · Flügel '+farmWing.xpPerMin+' EP/min · Feld '+bestField+' (ohne Sperre, nur Info: Gerd '+farmFree.xpPerMin+')']]:[])
 ];
