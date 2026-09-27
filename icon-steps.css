@@ -127,3 +127,9 @@ body:not(.touch-mode) .popup-shop .shop-bag-grid{grid-template-columns:repeat(au
 .popup-shop .shop-item canvas,body:not(.touch-mode) .popup-shop .shop-bag-slot canvas{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
 /* stufe:shopTouch */
 .touch-mode .popup-shop .shop-bag-slot canvas{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+
+/* ---------------------------------------------------------------- Söldner-Fenster (27.09.2026, kompakt ohne Scrollen) */
+/* stufe:companion */
+body:not(.touch-mode) .companion-panel :is(.companion-offer header,.companion-roster-row)>canvas[data-ui-icon]{width:48px!important;height:48px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}
+/* stufe:companionTouch */
+.touch-mode .companion-panel :is(.companion-offer header,.companion-roster-row)>canvas[data-ui-icon]{width:32px!important;height:32px!important;box-sizing:content-box;max-width:none!important;max-height:none!important;image-rendering:pixelated}

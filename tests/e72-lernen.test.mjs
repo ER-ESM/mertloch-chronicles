@@ -96,12 +96,15 @@ function raster(width=0,height=0){
  return cv;}
 /** Leinwände der Bildkarten (resource-art.js canvasOf) nur während der Plaketten-Tests aus der Software-Leinwand – kein globales document. */
 const withRaster=fn=>{const had='OffscreenCanvas' in globalThis,old=globalThis.OffscreenCanvas;globalThis.OffscreenCanvas=function(w,h){return raster(w,h);};try{return fn();}finally{if(had)globalThis.OffscreenCanvas=old;else delete globalThis.OffscreenCanvas;}};
-const {slotState,grillPlaque,paintGrillSlot,SERVE_COL,SLOT_IDS}=await import('../resource-hud.js');
+const {slotState,grillPlaque,paintGrillSlot,skillSymbolBox,SERVE_COL,SLOT_IDS}=await import('../resource-hud.js');
 const rgb=(d,i)=>'#'+[0,1,2].map(k=>d[i+k].toString(16).padStart(2,'0')).join('');
-/** Knopf wie im Spiel (Desktop 52er-Knopf, 2-px-Rand, 48er-Kniff): Ebene = Knopf + 16 px, x0/x1 = äußere Knopfkanten. */
-function paintKnob(s,inner=48,bw=2){const outer=inner+2*bw,W=outer+16,x0=8,x1=W-1-x0,cv=raster(W,W),c=cv.getContext();const p=grillPlaque(inner,x1,x1);withRaster(()=>paintGrillSlot(c,p,s));
- const ix0=x0+bw,ix1=x1-bw,px=[];for(let y=0;y<W;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;if(cv.data[i+3])px.push({x,y,a:cv.data[i+3],col:rgb(cv.data,i)});}
- return {p,px,W,ix0,ix1,inKniff:px.filter(q=>q.x>=ix0&&q.x<=ix1&&q.y>=ix0&&q.y<=ix1),colors:new Set(px.map(q=>q.col))};}
+/** Knopf wie im Spiel: Ebene = Knopf + 16 px (8 px Überstand je Seite), inner = Innenmaß, bw = Rand, step = Symbolstufe, das Symbol
+ *  mittig in der Innenfläche (icon-steps.css place-items:center). Standard = Desktop-Leiste (52er-Knopf, 2-px-Rand, 48er-Kniff).
+ *  x0/x1 = äußere Knopfkanten, ix0/ix1 = Innenfläche, sx0/sx1 = Symbolkanten – alles in Rasterpixeln der Ebene. */
+function paintKnob(s,inner=48,bw=2,step=Math.min(48,inner)){const outer=inner+2*bw,W=outer+16,x0=8,x1=W-1-x0,ix0=x0+bw,ix1=x1-bw,sx0=ix0+Math.floor((inner-step)/2),sx1=sx0+step-1;
+ const cv=raster(W,W),c=cv.getContext(),p=grillPlaque(step,sx1,sx1);withRaster(()=>paintGrillSlot(c,p,s));
+ const px=[];for(let y=0;y<W;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;if(cv.data[i+3])px.push({x,y,a:cv.data[i+3],col:rgb(cv.data,i)});}
+ return {p,px,W,x1,ix0,ix1,sx0,sx1,step,inKniff:px.filter(q=>q.x>=sx0&&q.x<=sx1&&q.y>=sx0&&q.y<=sx1),colors:new Set(px.map(q=>q.col))};}
 
 test('Schorsch: Zustand je Knopf – Auflegen zeigt das nächste Stück, Servieren das garste mit Garstufe und Hitzealarm',()=>{
  assert.deepEqual(SLOT_IDS,['strike','mark','burst','throw']);
@@ -120,15 +123,19 @@ test('Schorsch: Zustand je Knopf – Auflegen zeigt das nächste Stück, Servier
 test('Schorsch: die Grillgut-Plakette lässt den Kniff sichtbar – unten rechts, Tinte, Papier bzw. Glut, höchstens ein Viertel des Kniffs',()=>{
  const cases=[{art:'lay',item:'wurst',full:false},{art:'lay',item:'braten',full:true},{art:'serve',item:'wurst',state:'roh',done:10},{art:'serve',item:'braten',state:'gar',done:30},
   {art:'serve',item:'mais',state:'durch',done:38},{art:'serve',item:'kaese',state:'verkohlt',done:46},{art:'serve',item:'wurst',state:'gar',done:28,hot:true},{art:'serve',item:null,state:'',done:0}];
- for(const inner of [48,32])for(const s of cases){const r=paintKnob(s,inner),tag=inner+' '+JSON.stringify(s),n=r.ix1-r.ix0+1,mid=r.ix0+Math.floor(n/2);
+ // Knöpfe wie im Spiel: Desktop-Leiste 48 im 52er · Handy quer (Kompakt, 48er-Touchknopf) Symbol 32 · Touch Normal 48 im 56er ·
+ // schmales Fenster 24 im 28er. Die Plakette folgt der SYMBOLSTUFE und sitzt an der Symbolecke (Icon-Review R6/R7).
+ const knobs=[{tag:'Leiste',inner:48,step:48},{tag:'Handy quer',inner:44,step:32},{tag:'Touch normal',inner:52,step:48},{tag:'schmal',inner:24,step:24}];
+ for(const {tag:knob,inner,step} of knobs)for(const s of cases){const r=paintKnob(s,inner,2,step),tag=knob+' '+JSON.stringify(s),n=step,mid=r.sx0+Math.floor(n/2);
   assert.ok(r.px.length,tag+': Plakette gemalt');
   assert.ok(r.px.every(q=>q.a===255),tag+': Alpha nur 0/255');
-  assert.ok(r.inKniff.length<=n*n*(inner>=40?.25:.4),tag+': deckt '+r.inKniff.length+' von '+n*n+' Kniffpixeln');
-  assert.equal(r.inKniff.filter(q=>q.x<mid&&q.y<mid-(inner>=40?4:2)).length,0,tag+': obere linke Kniffhälfte bleibt frei (Taste, Motiv)');
+  assert.ok(r.inKniff.length<=n*n*(step>=48?.25:step>=32?.16:.3),tag+': deckt '+r.inKniff.length+' von '+n*n+' Symbolpixeln');
+  assert.equal(r.inKniff.filter(q=>q.x<mid&&q.y<mid-(step>=48?4:2)).length,0,tag+': obere linke Symbolhälfte bleibt frei (Taste, Motiv)');
   assert.ok(!r.colors.has('#15110e'),tag+': keine schwarze Deckfläche mehr');
-  const {x,y,w,h,k}=r.p;assert.equal(k,inner>=40?2:1);
+  const {x,y,w,h,k}=r.p;assert.equal(k,step>=48?2:1,tag+': Fassung der Symbolstufe');
   for(let xx=x+1;xx<x+w-1;xx++)for(const yy of [y,y+h-1])if(yy===y+h-1||(xx>x+w/2&&xx<x+w*3/4))/* oben an den Ecken sitzen Plus, Funke und Flamme */assert.ok(r.px.some(q=>q.x===xx&&q.y===yy&&q.col==='#171f29'),tag+': Tintenrahmen '+xx+','+yy);
-  assert.ok(x+w-1<=r.ix1+3&&y+h-1<=r.ix1+3&&x>r.ix0+n/3&&y>r.ix0+n/3,tag+': sitzt auf der Knopfecke unten rechts');
+  assert.ok(x+w-1===r.sx1+3&&y+h-1===r.sx1+3&&x>r.sx0+n/3&&y>r.sx0+n/3,tag+': sitzt an der Symbolecke unten rechts (3 px Überstand)');
+  assert.ok(x+w<=r.x1+2,tag+': Plakette samt Schatten bleibt am Knopf');
   if(s.art==='lay'){assert.ok(r.colors.has('#e4dcc3')&&r.colors.has('#f8f0d5'),tag+': Papier-Treppe');assert.equal(r.colors.has(s.full?'#3a6a2a':'#5a5448'),false,tag+': Plus grün, bei vollem Rost grau');}
   else assert.ok(r.colors.has('#2a2420')||r.colors.has('#4a1a12'),tag+': Glut');
  }
@@ -142,4 +149,24 @@ test('Schorsch: die Grillgut-Plakette lässt den Kniff sichtbar – unten rechts
  assert.ok(hot.has('#ffd35a')&&hot.has('#e2463d'),'Zu heiß: helle Glut');assert.ok(!calm.has('#e2463d'),'ohne Hitze keine rote Glut');
  // Leerer Rost: Glut und Rost, kein Grillgut, kein Füllstand
  const empty=paintKnob({art:'serve',item:null,state:'',done:0}).colors;assert.ok(empty.has('#4a423a'),'Roststäbe');for(const c of Object.values(SERVE_COL))assert.ok(!empty.has(c),'kein Füllstand '+c);
+});
+
+test('Icon-Review R6/R7: am Handy quer (Symbol 32 im 48er-Knopf) folgt die Plakette der Symbolstufe und sitzt an der Symbolecke',()=>{
+ const s={art:'serve',item:'braten',state:'gar',done:30},quer=paintKnob(s,44,2,32),desk=paintKnob(s,48,2,48);
+ // Bis R7: 48er-Fassung (k = 2) an der Knopfecke, weil das Innenmaß 44 ≥ 40 war – die Plakette deckte ein Viertel ihrer Box im Symbol.
+ const old={w:28,h:22},ox=quer.x1+2-old.w,oy=quer.x1+2-old.h,oldCover=(quer.sx1-ox+1)*(quer.sx1-oy+1);
+ assert.equal(quer.p.k,1,'32er-Fassung bei Symbolstufe 32');
+ assert.ok(quer.inKniff.length<=oldCover*.55,'deckt rund halb so viel wie bis R7 ('+quer.inKniff.length+' statt '+oldCover+' Symbolpixel)');
+ assert.ok(quer.inKniff.length/(32*32)<=.14,'höchstens rund ein Achtel des 32er-Symbols');
+ assert.ok(quer.p.x+quer.p.w<=quer.ix1,'Plakette samt Schatten bleibt in der Innenfläche des Knopfs – sie hängt am Symbol, nicht am Knopfrand');
+ // Desktop-Leiste unverändert: 48er-Fassung auf genau der Lage von R7 (äußere Knopfecke + 1 px)
+ assert.equal(desk.p.k,2);assert.deepEqual([desk.p.x,desk.p.y],[desk.x1+2-28,desk.x1+2-22],'Desktop: gleiche Lage wie bis R7');
+});
+
+test('Icon-Review R7: skillSymbolBox liest Stufe und Lage aus dem Symbol-Canvas des Knopfs, sonst die Innenfläche',()=>{
+ const icon={width:32,offsetLeft:6,offsetTop:6,offsetWidth:32,offsetHeight:32},knob={clientWidth:44,clientHeight:44,clientLeft:2,clientTop:2,querySelector:q=>q.includes('data-skill-art')?icon:null};icon.offsetParent=knob;
+ assert.deepEqual(skillSymbolBox(knob),{step:32,l:6,t:6,w:32,h:32},'Handy quer: Symbol 32 mittig im 48er-Knopf');
+ const wide={...icon,width:48,offsetLeft:0,offsetTop:0,offsetWidth:48,offsetHeight:48},desk={clientWidth:48,clientHeight:48,querySelector:q=>q.includes('data-skill-art')?wide:null};wide.offsetParent=desk;
+ assert.deepEqual(skillSymbolBox(desk),{step:48,l:0,t:0,w:48,h:48},'Desktop: Symbol 48 füllt die Innenfläche');
+ assert.deepEqual(skillSymbolBox({clientWidth:44,clientHeight:44,querySelector:()=>null}),{step:32,l:0,t:0,w:44,h:44},'ohne Symbol: Innenfläche, Stufe nach Innenmaß');
 });

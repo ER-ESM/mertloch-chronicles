@@ -1086,6 +1086,7 @@ Umsetzung und Bauanleitung: `docs/ANZIEHPUPPE.md`.
    - Hilfe als Tastenliste „Kappe + ein Wort“; eine reine Piktogramm-Hilfe war zu weit getrieben.
    - Gespräch kompakt mit „Annehmen/Später“ immer sichtbar.
 2. **Nirgends scrollen:** `ui:check` meldet jede scrollende `.popup-body` am Desktop und am Handy als Fehler.
+   - Nachzug 27.09.2026: Das Söldner-Fenster scrollte seit R1 (Inhalt 990 bei 652 px Höhe). Jetzt ist es 640 px breit und hat eine Leiste mit Reitern, Pfandmarken, Plätzen und Hilfe. Die Angebote stehen als 3 × 2 Karten (hochkant 2 × 3), der Preis steht im Anheuern-Knopf. Die Truppe zeigt oben die Befehle, darunter die Zeilen, am Handy quer zweispaltig. Beschreibung, Vertrag und Bedienhilfe stehen im Tooltip, am Handy per Tipp auf den Kartenkopf. Geprüft ohne Scrollen auf 2024×900, 1280×720, 390×844 und 844×390, auch mit vier Söldnern: `scripts/companion-check.mjs`, `ui:check` (Taste U) und `mobile-check` (Dungeon-Teil).
 3. **Held nie verdeckt:**
    - Bei offenen Fenstern legt die Kamera den Helden in die freie Lücke (`hero-frame.js`).
    - Ohne Lücke klappen Fenster über ihm auf die Titelzeile ein.
@@ -1310,4 +1311,7 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
 - Codex-Läufe eingebaut: E-72 mit 46 Bildern, MertlochIcons mit 10, dazu 10 Nachbilder. Kniff-Kacheln sind deckend und ohne Blaumisch, Talentmotive 59 ± 1 px.
 - Die Figurengrafik (Pelzmantel, Exposé, Korkenzieher, Ringlicht, Hufeisen, Kegelkugel blau) hat der Nutzer freigegeben.
 - Schorschs Rost-Ebene ist eine Plakette im Kachelstil. Procs zeigen nur einen Leuchtrand, keine Umfärbung (Test `icon-proc-filter`).
-- Kein Blocker, aber offen: Plakette und Stufe am Handy quer, die Kontur der schwarzen Katze (kevin-hunt-12), Hufeisen und Kegelkugel an derselben Hüfte.
+- Kein Blocker, aber offen: Hufeisen und Kegelkugel an derselben Hüfte.
+- Erledigt am 27.09.2026:
+  - **Handy quer:** Das Symbol steht dort in Stufe 32 im 48er-Knopf. Das ist jetzt entschieden (Stilbibel, Abschnitt „Anzeige“). Die Grillgut-Plakette folgt der Symbolstufe (32er-Fassung) und sitzt an der Symbolecke (`grillPlaque`, `tests/e72-lernen.test.mjs`, Handy-Teil von `scripts/e72-lernen-check.mjs`).
+  - **Schwarze Katze (kevin-hunt-12):** Das Bild wurde über E-72 neu angefordert (zwei Läufe, der zweite übernommen). Das Fell ist eine Wertstufe heller, ein durchgehendes cremegoldenes Randlicht umläuft die Silhouette. So löst sie sich auch bei 32 px vom dunklen Knoten.

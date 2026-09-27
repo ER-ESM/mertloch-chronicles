@@ -2863,21 +2863,6 @@
       "sourceHash": "40716f6503a3653464bdcfa1f32b2fb9cf903c640449bc0651cacacb46d5beac"
     },
     {
-      "id": "talent-kevin-hunt-12",
-      "kind": "talent-icon",
-      "output": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
-      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-hunt): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Kurze Pechsträhne: Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher. Motif: a scruffy black village alley cat crouching low and stretched out wide along a dented sooty tin can that lies horizontally, cat and can together filling the whole width of the icon (a wide, low composition, not a tall sitting cat); big bright amber eyes, the black fur drawn in dark petrol greys with lighter grey-blue midtones and a strong warm copper rim light along its back and ears so the cat reads clearly on a dark background; a comically short stubby tail; the fuse of the can has just fizzled out (a dud: one thin grey smoke curl) and one small golden spark is already sputtering back to life on it, meaning the guaranteed overload comes sooner. It replaces an older picture of this same talent that looked almost exactly like another talent (three dice with a curved arrow and an exploding die, the same picture as the talent Zweite Serie), so no dice, no curved arrow, no explosion burst, no tall narrow sitting pose. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
-      "references": [
-        "assets/content-art/e32/sources/kevin-hunt-v1.png"
-      ],
-      "tool": "built-in imagegen",
-      "model": "Not exposed by built-in tool",
-      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
-      "date": "2026-09-26",
-      "originalFile": "exec-4f47c19d-3c1b-4575-8d7d-a10f30201c08.png",
-      "sourceHash": "60d640de8a68425d4f1cd4522410f88055e09d5886ae19c50e9b8180279ed1f8"
-    },
-    {
       "id": "talent-dieter-brawl-29",
       "kind": "talent-icon",
       "output": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
@@ -2891,6 +2876,21 @@
       "date": "2026-09-26",
       "originalFile": "exec-269d0e52-b3c1-4332-944b-2632546f854e.png",
       "sourceHash": "cacaeffe5c9de9384bcf25f887354172d03aaddd0bae5df002f684e799cc081e"
+    },
+    {
+      "id": "talent-kevin-hunt-12",
+      "kind": "talent-icon",
+      "output": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+      "prompt": "Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. The reference is a finished talent icon sheet of the same skill tree (kevin-hunt): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. Class: Klo-Kevin, a tinkerer who fires empty green deposit bottles; his resource is a beer crate of twelve bottles, refilled at a bottle-deposit machine that prints golden deposit tickets (Pfandbon); his tin-can robot is called Dosen-Robbi. Where a motif hint mentions writing, a slogan, a number or an exclamation, suggest it with scribbles or symbols only, never readable letters or digits. Talent (German name and gameplay effect): Kurze Pechsträhne: Die Garantie-Überzündung nach einer Pechserie kommt eine Fehlzündung früher. Motif: a scruffy black village alley cat crouching low and stretched out wide along a dented sooty tin can that lies horizontally, cat and can together filling the whole width of the icon (a wide, low composition, not a tall sitting cat); the black fur is painted one full value step lighter than pure black: charcoal and slate grey-blue fur with clearly visible light blue-grey highlights on the head, shoulders, front paws and tail, only the deepest shadows near black; the entire outer silhouette of the cat (ears, head, back, front paws, belly line and tail) is traced by one continuous BOLD, THICK bright warm cream-gold rim light band, about three times as thick as the ink outline (roughly 3 percent of the icon width), like a strong backlight halo, so that even when the icon is shrunk to 32 px on a very dark green background the cat shape reads clearly by its light outline and not only through its eyes; big bright amber eyes set large in a clearly lit grey face; a comically short stubby tail; the fuse of the can has just fizzled out (a dud: one thin grey smoke curl) and one small golden spark is already sputtering back to life on it, meaning the guaranteed overload comes sooner. It replaces an older picture of this same talent that looked almost exactly like another talent (three dice with a curved arrow and an exploding die, the same picture as the talent Zweite Serie), so no dice, no curved arrow, no explosion burst, no tall narrow sitting pose, no solid pure-black fur mass, no thin or broken rim light that fades out along the belly and paws. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.",
+      "references": [
+        "assets/content-art/e32/sources/kevin-hunt-v1.png"
+      ],
+      "tool": "built-in imagegen",
+      "model": "Not exposed by built-in tool",
+      "via": "codex exec codex-cli 0.155.0-alpha.16.3",
+      "date": "2026-09-27",
+      "originalFile": "exec-068f2d46-25f8-42cc-8506-975116695a3d.png",
+      "sourceHash": "1018a7a4bcca6997fa78bd02a37f9509e67bf335569c6b97a3c01404352fdac6"
     }
   ]
 }

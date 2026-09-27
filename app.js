@@ -139,7 +139,7 @@ import {worldDensity} from './art-quality.js';
 import {partyOverflow} from './companions.js';
 import {createFollow} from './follow.js';
 import {setMark,TARGET_MARK_MENU} from './target-marks.js';
-import {companionPanel,updateCompanionPanel,mountCompanionHud,companionBoardPoint} from './companion-ui.js';
+import {companionPanel,updateCompanionPanel,mountCompanionHud,companionBoardPoint,companionInfoTap} from './companion-ui.js';
 import {COMPANION_TEXT,MEMORY_FRAGMENTS,BASE_SITE_UI,INTRO_UI} from './content/index.js';
 import {mountUnlocks,PANEL_FEATURE,lockedMessage} from './unlocks.js';
 import {mountZoneAnnounce} from './zone-announce.js';
@@ -166,6 +166,7 @@ const popups=new PopupWindows(modal);
 modal.addEventListener('change',e=>{if(e.target.matches('[data-companion-scope]')){companionState.selected=e.target.value;updateCompanionPanel(popups.get('companions')?.body,game);}});
 modal.addEventListener('click',e=>{
  if(e.target.closest('[data-intro-replay]')){popups.closeAll();intro?.start();return;}
+ if(companionInfoTap(e))return;/* Handy: Tipp auf Kopf, Preis oder Hilfe zeigt den Tooltip-Text */
  const b=e.target.closest('.popup-companions button');if(!b||b.disabled)return;const d=b.dataset;
  if(d.companionTab){companionState.tab=d.companionTab;showCompanions().body.querySelector(`[data-companion-tab="${d.companionTab}"]`)?.focus({preventScroll:true});return;}
  if(d.companionHire){game.hireCompanion(d.companionHire);events();updateCompanionPanel(popups.get('companions')?.body,game);return;}

@@ -126,6 +126,17 @@ async function touchPass(){
  await read(`(()=>{const {tut}=__e72.m;game.player.inCombat=0;game.enemies=game.enemies.filter(e=>!e.arena);tut.initTutorial(game,{version:1,tutorial:{version:1,step:3,completed:false,hits:0,autos:0}},true);const e=game.enemies.find(x=>x.tutorial);game.target=e;game.res.augen=0;game.emit('tutorialStep');})()`);await wait(1200);
  {const n=await read(`document.querySelectorAll('#tutorialGuide:not([hidden]) .tut-guide .tg-step').length`);assert.equal(n,3,'Handy-Hofprobe zeigt drei Bild-Schritte');await shot('handy-hofprobe');const r=await rect('#tutorialGuide');if(r)await shot('handy-hofprobe-zoom',clipOf(r,4,2));checks.push('handy hofprobe: drei Bild-Schritte in der kompakten Leiste');}
  await read(`(()=>{game.tutorial.completed=true;game.enemies=game.enemies.filter(e=>!e.tutorial);game.emit('tutorialStep');})()`);
+ /* Icon-Review R6/R7: Handy quer steht das Symbol in Stufe 32 im 48er-Knopf – Schorschs Grillgut-Plakette nimmt die 32er-Fassung und sitzt
+    an der Symbolecke (3 px Überstand + 1 px Schatten), nicht an der Knopfecke */
+ await hero('schorsch','schorsch-flamme');await read(`(()=>{game.player.inCombat=7;game.res.rost=[{item:'wurst',done:.72,smoked:false}];game.res.glut=70;})()`);await wait(1200);
+ {const q=await read(`(()=>{const out={};for(const id of ['mark','burst']){const b=document.querySelector('#touchActions .touch-skill[data-skill="'+id+'"]'),icon=b?.querySelector(':scope>canvas:not(.rh-slot)'),cv=b?.querySelector(':scope>canvas.rh-slot');if(!icon||!cv)continue;
+   const d=cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data;let x0=1e9,y0=1e9,x1=-1,y1=-1;for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++)if(d[(y*cv.width+x)*4+3]){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+   const ir=icon.getBoundingClientRect(),cr=cv.getBoundingClientRect(),br=b.getBoundingClientRect();out[id]={step:icon.width,knopf:Math.round(br.width),w:x1-x0+1,h:y1-y0+1,dx:Math.round(cr.left+x1+1-ir.right),dy:Math.round(cr.top+y1+1-ir.bottom),innen:cr.left+x1<br.right-2&&cr.top+y1<br.bottom-2};}return JSON.stringify(out);})()`).then(JSON.parse);
+  assert.deepEqual(Object.keys(q).sort(),['burst','mark'],'Plaketten auf Auflegen und Servieren: '+JSON.stringify(q));
+  for(const [id,r] of Object.entries(q)){assert.equal(r.step,32,id+': Symbolstufe 32 am Handy quer');assert.ok(r.knopf>r.step+8,id+': Knopf größer als das Symbol');
+   assert.ok(r.w<=20&&r.h<=17,id+': 32er-Fassung ('+r.w+'×'+r.h+')');assert.ok(Math.abs(r.dx-4)<=1&&Math.abs(r.dy-4)<=1,id+': an der Symbolecke ('+r.dx+'/'+r.dy+')');assert.ok(r.innen,id+': bleibt im Knopf');}
+  const bb=await read(`(()=>{const r=[...document.querySelectorAll('#touchActions .touch-skill[data-skill="mark"],#touchActions .touch-skill[data-skill="burst"]')].map(b=>b.getBoundingClientRect());return {x:Math.min(...r.map(q=>q.left)),y:Math.min(...r.map(q=>q.top)),w:Math.max(...r.map(q=>q.right))-Math.min(...r.map(q=>q.left)),h:Math.max(...r.map(q=>q.bottom))-Math.min(...r.map(q=>q.top))};})()`);
+  await shot('handy-schorsch-plakette',clipOf(bb,6,4));checks.push('handy quer schorsch: Plakette 32er-Fassung an der Symbolecke '+JSON.stringify(q));}
  await b.send('Emulation.setTouchEmulationEnabled',{enabled:false});await b.send('Emulation.clearDeviceMetricsOverride');await b.resize(1600,900);await wait(800);
 }
 

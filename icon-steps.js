@@ -27,7 +27,8 @@ export const ICON_STEP={
  aura:32,            // Stärkungen am Spielerrahmen (44er-Knopf)
  unitBuff:24,        // Dungeon-Fix 6: Buffs auf den Truppenrahmen der Söldner (54er-Rahmen, drei Plätze)
  profession:32,professionDetail:48, // Berufefenster: Listen 32, Rezeptkopf 48
- shop:48,shopTouch:32 // Laden: Warenkarte und Verkaufsplätze 48, Handy-Verkaufsplätze 32
+ shop:48,shopTouch:32, // Laden: Warenkarte und Verkaufsplätze 48, Handy-Verkaufsplätze 32
+ companion:48,companionTouch:32 // Söldner-Fenster: Rollensymbol auf Angebotskarte und Truppenzeile 48, Handy 32
 };
 /** Touch-Schicht aktiv (mobile-controls.js setzt `touch-mode` am body vor dem ersten Fenster). */
 export const touchMode=()=>typeof document!=='undefined'&&!!document.body?.classList.contains('touch-mode');
