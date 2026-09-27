@@ -1158,7 +1158,7 @@ export function buildRuntimeTeil(out,ids){const t0=Date.now(),cat=JSON.parse(rea
  if(cat.W!==W||cat.H!==H||cat.ground!==GROUND||cat.split!==RUNTIME_SPLIT||cat.frames.map(f=>f.anim+f.i).join()!==FRAMES.map(f=>f.anim+f.i).join())throw new Error('Katalog passt nicht zum Werkzeug (Leinwand/Bilder) – voller Neubau: --runtime');
  for(const id of ids){const g=GEAR[id];if(!g)throw new Error('keine Gegenstands-Quelle: '+id);
   for(const f of readdirSync(out))if(Object.values(GAME_ARCH).some(a=>Object.values(DIRS).some(d=>f===`${id}-${a}${d}.png`||f===`${id}-${a}${d}-akt.png`)))unlinkSync(out+'/'+f);
-  cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:quelleBauen(id,srcs[id],out,cat)};cat.items[id]=id;console.log('Quelle',id,JSON.stringify(cat.sources[id].cell));}
+  cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:quelleBauen(id,srcs[id],out,cat),...(g.dutt?{dutt:true}:{})};cat.items[id]=id;console.log('Quelle',id,JSON.stringify(cat.sources[id].cell));}
  const order=Object.keys(srcs),by=keys=>order.filter(k=>keys.includes(k));// Reihenfolgen wie der volle Neubau (Quellenfolge)
  cat.sources=Object.fromEntries([...Object.keys(GEAR),'koerper','dutt'].filter(k=>cat.sources[k]).map(k=>[k,cat.sources[k]]));cat.items=Object.fromEntries(Object.keys(GEAR).filter(k=>cat.items[k]).map(k=>[k,cat.items[k]]));
  for(const d of ['sw','ne']){cat.own[d]=by(cat.own[d]);cat.ownAkt[d]=by(cat.ownAkt[d]);}katalogAbleiten(cat);
@@ -1203,7 +1203,7 @@ export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of
  for(const [lid,look] of Object.entries(LOOK)){const A=ARCH[look.arch],gid=GAME_ARCH[lid];
   cat.anchors[gid]={};for(const dir of Object.keys(DIRS)){const back=dir==='nw'||dir==='ne',mir=dir==='sw'||dir==='ne',sw=back!==mir,mx=q=>[+(mir?W-q[0]:q[0]).toFixed(1),+q[1].toFixed(1)];
    cat.anchors[gid][dir]=FRAMES.map(fr=>{const p=pose(fr,A,look,back,sw);return {w:mx(handPos(sw?p.armF:p.armN)),o:mx(handPos(sw?p.armN:p.armF)),c:mx(leanPt(p,p.C)),h:mx(leanPt(p,p.head)),f:[mx(p.legN[2]),mx(p.legF[2])]};});}}
- for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:cells[id]};cat.items[id]=id;}
+ for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:cells[id],...(g.dutt?{dutt:true}:{})};cat.items[id]=id;}
  cat.sources.koerper={slot:'body-base',bands:BANDS,cell:cells.koerper};cat.sources.dutt={slot:'hair',bands:['kopf'],cell:cells.dutt};
  katalogAbleiten(cat);
  const h=cat.huelle={...HUELLE};console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px (Leinwand ${W}×${H}, Boden ${GROUND})`);

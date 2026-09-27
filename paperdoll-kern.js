@@ -3,7 +3,8 @@
 // was schon darunter liegt (Licht von links oben); am Ende wird die Schattenseite der Silhouette nachgedunkelt.
 export const ORDER=['legs','feet','body','waist','wrists','shoulders','neck','charm','trinket','head','weapon','ranged','offhand','ring','hands'];
 export function sources(set,gear){const items=[...set].sort((a,b)=>ORDER.indexOf(gear[a].slot)-ORDER.indexOf(gear[b].slot));
- return ['koerper',...(items.some(i=>gear[i].slot==='head'||i.startsWith('frisur-'))?[]:['dutt']),...items];}
+ return ['koerper',...(items.some(i=>gear[i].slot==='head'&&!gear[i].dutt||i.startsWith('frisur-'))?[]:['dutt']),...items];}
+/* Kopfteile mit dutt:true (Katalog, z. B. Annis Sonnenbrille im Haar) lassen den Dutt stehen; alle anderen Kopfteile verdrängen ihn. */
 /** Frisur-Quellen (frisur-*, tools/paperdoll/aussehen.mjs) bringen den ganzen umgebauten Kopf mit: Kopf des Körpers und Dutt entfallen. */
 const headSwap=srcs=>srcs.some(s=>s.startsWith('frisur-'));
 const SH=[[0,1],[1,1],[1,0],[0,2],[1,2]];

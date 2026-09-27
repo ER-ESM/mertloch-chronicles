@@ -49,7 +49,10 @@ export const TUTORIAL={starterEquipment:{weapon:'flasche',offhand:'topfdeckel',r
   {id:'inventory',title:'Dein erster eigener Kram',text:'Öffne deinen Rucksack. Das Konterwasser liegt jetzt darin. Über einem Icon erfährst du, was der Gegenstand kann.',desktop:'I: Rucksack · Maus aufs Icon',touch:'Menü → Rucksack · Icon für Details antippen'},
   {id:'return',title:'Ida hat den echten Auftrag',text:'Kehre zu Ida zurück. Nach der Hofprobe schickt sie dich zu den Trümmern der Bude, zu den Ruhewärtern und dann zu Horst, der deine Hose hat.',desktop:'F: mit Ida sprechen',touch:'Aktion: mit Ida sprechen'}
  ]};
-/** E-72 (Entwurf Figuren): Klassenkleidung vom Kleiderhaufen – ersetzt beim ersten Gespräch mit Ida je Klasse Plätze der Startausrüstung
+/** E-72: Klassenkleidung vom Kleiderhaufen – ersetzt beim ersten Gespräch mit Ida je Klasse Plätze der Startausrüstung
  *  (TUTORIAL.starterEquipment): Schorsch trägt Grillschürze statt Kutte und dazu die Schiebermütze, Käthe Strickjacke statt Kutte und dazu
- *  die Lesebrille an der Kette. Klassen ohne Eintrag behalten die Kutte. */
-export const CLASS_CLOTHES={schorsch:{body:'grillschuerze',head:'schorschmuetze'},kaethe:{body:'kaethestrickjacke',neck:'kaethebrille'}};
+ *  die Lesebrille an der Kette (freigegeben 27.09.). Dieter hat keinen Eintrag: die Kutte ist seine Klamotte. */
+export const CLASS_CLOTHES={schorsch:{body:'grillschuerze',head:'schorschmuetze'},kaethe:{body:'kaethestrickjacke',neck:'kaethebrille'},
+ // E-72 Runde 6 (Entwurf Figuren): Anni trägt ihre Schürze statt der Kutte und die Sonnenbrille im Haar (Kopfplatz, der Dutt bleibt),
+ // Kevin die Arbeitsweste statt der Kutte und den Werkzeuggürtel (Gürtelplatz).
+ baerbel:{body:'annischuerze',head:'annibrille'},kevin:{body:'kevinweste',waist:'kevinguertel'}};
