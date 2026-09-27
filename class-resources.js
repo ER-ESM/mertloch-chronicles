@@ -196,7 +196,7 @@ function tickGrill(g,st,r,dt,cs,inCombat){
  const z=zoneOf(g,st.glut,cs);if(fight&&z.burn)selfDamage(g,p.maxHp*z.burn*dt,'Hitze');
  cookStep(g,st,dt,cs);
  const charcoal=r.rost.charcoal+num(cs,'burntGrace');for(const it of st.rost)if(it.done>=charcoal){it.gone=true;emitCombatFx(g,'serve',p,{item:it.item,charcoal:true});}st.rost=st.rost.filter(it=>!it.gone);
- for(const e of g.enemies){if(!(e.burn?.t>0))continue;e.burn.t-=dt;e.burn.tick-=dt;if(e.burn.tick<=0&&e.hp>0){e.burn.tick=1;g.damage(e,e.burn.dps,'Glutbrand');}}
+ /* Glutbrand am Gegner tickt seit E-75 in tickClass (class-mechanics.js) – auch die Grillzange setzt ihn, bei jeder Klasse */
  for(const z of g.fields){if(!['rauch','oven','deckelzu'].includes(z.kind)||z.remaining<=0)continue;/* eigene Uhr (Uhrfehler): Puls sofort, dann jede Sekunde */if(!fieldPulse(z,'rauch',dt,1,0))continue;for(const e of foes(g,z,z.radius)){if(z.taunt){addThreat(e,'player',400);e.aggro=true;e.ai='combat';}if(z.damage)g.damage(e,z.damage,'Rauch');}}
 }
 function planOf(g,cs){const r=R(g),m=mech(g),base=[...(m?.chef?.plan||m?.rauch?.plan||m?.flamme?.plan||r.plan)];for(const [k,item] of [['planWurst','wurst'],['planBraten','braten'],['planMais','mais'],['planKaese','kaese']])if(cs[k])base.push(item);return base;}

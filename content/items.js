@@ -12,7 +12,8 @@ import {EQUIPMENT_SLOTS,WEAPON_TYPES} from './equipment.js';
 export const ICONS=[...DETAIL_ICONS,'anni-spray','helmet','necklace','shoulders','bracers','gloves','belt','trousers','trinket','blade','maul','slingshot','bottle','water','coat','food','boots','ring','paper','cable','scrap','reinforced','shield','sound','speaker','burst','bag','book','map'];
 export const SLOTS={...EQUIPMENT_SLOTS,ring:'Ring',trinket:'Glücksbringer',charm:'Talisman'};
 export const RARITIES={common:'Gewöhnlich',uncommon:'Ungewöhnlich',rare:'Selten',epic:'Dorflegende'};
-/** Passive Effekte einzigartiger Gegenstände. Die Wirkung steht in engine.js / class-mechanics.js; hier nur Beschreibung und Zahlen. */
+/** Passive Effekte von Gegenständen: die Dorflegenden (Wirkung in engine.js / class-mechanics.js) und die Waffenkammer (E-75, unten).
+ *  Hier nur Beschreibung und Zahlen. */
 export const PROCS={
  rage:{text:'Glückstreffer geben 4 Ressourcenpunkte zurück.',energy:4},
  fleet:{text:'Ausweichen wird 15 % schneller bereit.',dashCd:.15},
@@ -20,8 +21,30 @@ export const PROCS={
  silence:{text:'Unterbrechen lädt 10 zusätzliche Ressourcenpunkte.',energy:10},
  verdict:{text:'Markierte Ziele erleiden weitere 10 % Schaden.',bonus:.1},
  thirst:{text:'Jeder Kill gibt 20 Ressourcenpunkte zurück.',energy:20},
- hops:{text:'Außerhalb des Kampfes regenerierst du doppelt so schnell.',regen:2}
+ hops:{text:'Außerhalb des Kampfes regenerierst du doppelt so schnell.',regen:2},
+ // --- Waffenkammer (E-75): Wirkungen der acht festen Waffen. Milder als die Procs der Dorflegenden: Sie hängen an den Autoangriffen
+ // DIESER Waffe (weapon:true) statt an jedem Treffer, zählen mit (every), würfeln (chance) oder ruhen danach (icd, Sekunden).
+ // Laufzeit: procs.js fireItemProcs – derselbe Zähler-/Zufallsweg wie die Talent-Procs, nichts davon steht im Spielstand.
+ // trigger (ITEM_PROC_TRIGGERS, ein Wort oder eine Liste): autoHit = Autoangriff dieser Waffe, crit = Glückstreffer eines solchen Autoangriffs,
+ // parry = geglückte Parade, dodge = Treffer durch Ausweichen vermieden, interrupt = geglücktes Unterbrechen.
+ // Wirkungen (bestehende Zustände): field = Bodenfläche wie die Hopfenpfütze (Gegner darin laufen langsamer), radius in Pixeln (8 = 1 m), duration;
+ // heal = Leben, energy = Ressourcenpunkte (je Klasse umgerechnet); slow = Sekunden Kontrollbremse am Ziel; burn = Anteil des Grundtreffers
+ // als Glutbrand über duration; splash = Anteil des Grundtreffers an höchstens targets kämpfenden Nachbarn im radius; weaken = weniger Schaden
+ // des Angreifers für duration; overload = Vielfaches des Grundtreffers als Zusatzschaden. Grundtreffer = Waffenwurf vor Wumms und Glückstreffer.
+ // name = Zeile in der Kampfstatistik, label = Kampftext, countLabel = Zählstand im Kampftext.
+ puddle:{text:'Autoangriffe hinterlassen mit 25 % eine Wasserpfütze, höchstens alle 6 s: 4 s lang rutschen Gegner darin und laufen langsamer.',name:'Wasserpfütze',label:'PFÜTZE',trigger:'autoHit',weapon:true,chance:.25,icd:6,field:'pfuetze',radius:40,duration:4},
+ tap:{text:'Jeder 3. Autoangriff zapft ein Frisches: 8 Leben und 3 Ressourcenpunkte.',name:'Frisch gezapft',label:'FRISCH GEZAPFT',trigger:'autoHit',weapon:true,every:3,heal:8,energy:3},
+ capsplash:{text:'Glückstreffer der Autoangriffe lassen einen Kronkorken abspringen: 30 % des Treffers an bis zu 3 Gegnern um das Ziel.',name:'Kronkorken',label:'KRONKORKEN',trigger:'crit',weapon:true,splash:.3,radius:64,targets:3},
+ // Gartenzwerg: Zweihänder können nicht parieren (Parade braucht einen Schild, WEAPON_SKILL_RULES) – Gerd grinst nach den beiden Abwehren,
+ // die mit beiden Händen am Stiel bleiben: Ausweichen durch einen Treffer und Unterbrechen.
+ cowed:{text:'Nach geglücktem Ausweichen oder Unterbrechen grinst Gerd, höchstens alle 12 s: Der Gegner ist 4 s lang eingeschüchtert und macht 15 % weniger Schaden.',name:'Eingeschüchtert',label:'EINGESCHÜCHTERT',trigger:['dodge','interrupt'],icd:12,weaken:.15,duration:4},
+ embers:{text:'Autoangriffe setzen mit 20 % Glut: Das Ziel brennt 3 s lang nach, zusammen 45 % des Treffers.',name:'Glut',label:'GLUT',trigger:'autoHit',weapon:true,chance:.2,burn:.45,duration:3},
+ stein:{text:'Jede geglückte Parade füllt den Krug; nach der 3. gibt er einen Schluck: 40 Leben.',name:'Schluck aus dem Krug',label:'SCHLUCK',countLabel:'KRUG',trigger:'parry',every:3,heal:40},
+ sticky:{text:'Autoangriffe machen das Ziel mit 30 % klebrig: 3 s lang langsamer.',name:'Klebrig',label:'KLEBRIG',trigger:'autoHit',weapon:true,chance:.3,slow:3},
+ overload:{text:'Jeder Autoangriff lädt den Akku; der 12. entlädt einen Überlast-Stoß mit 100 % des Treffers.',name:'Überlast-Stoß',label:'ÜBERLAST',trigger:'autoHit',weapon:true,every:12,overload:1}
 };
+/** Auslöser, die fireItemProcs (procs.js) kennt – eine Teilmenge von PROC_TRIGGERS (content/procs.js). */
+export const ITEM_PROC_TRIGGERS=['autoHit','crit','parry','dodge','interrupt'];
 export const ITEM_CATALOG={
  // --- Startausrüstung ---
  topfdeckel:{look:'Runder verbeulter Topfdeckel mit Holzgriff, dicke Konturen und Honiglicht',name:'Omas unzerstörbarer Topfdeckel',slot:'offhand',shield:true,rarity:'common',icon:'shield',stats:{armorRating:1},value:3,description:'Ein Schild mit Suppengeschichte. Schaltet Schildparaden frei.'},
@@ -95,18 +118,18 @@ export const ITEM_CATALOG={
  schaerpe:{name:'Die Schärpe der Wahrheit',slot:'charm',rarity:'epic',icon:'coat',level:7,stats:{stamina:4,might:3,finesse:7},unique:true,proc:'fleet',description:'Selten von Timo. Ausweichen wird 15 % schneller bereit. Aufdruck „TRAUZEUGE“, Rückseite mit Edding: „UND DU?“',look:'Rote Satin-Schärpe mit Goldschrift „TRAUZEUGE“, Bierflecken, Edding auf der Rückseite'},
  giesskanne:{weapon:{type:'maul',hands:2,min:37,max:53},name:'Giselas Gießkanne der Gerechtigkeit',slot:'weapon',rarity:'epic',icon:'water',level:6,stats:{might:4,wit:7,stamina:2},unique:true,proc:'hops',description:'Selten von Gisela. Außerhalb des Kampfes regenerierst du doppelt so schnell. Innen: Hopfen, kein Wasser.',look:'Grüne Blechgießkanne mit Vereinsaufkleber „Ruhe 22:01“'},
  automatenarm:{name:'Greifarm des Pfandautomaten',slot:'charm',rarity:'epic',icon:'reinforced',level:9,stats:{might:4,finesse:8,wit:4,stamina:2},unique:true,proc:'thirst',description:'Selten vom Pfandautomaten 3000. Jeder Kill gibt 20 Ressourcenpunkte zurück. Nimmt weiterhin keine Dosen an.',look:'Verchromter Roboter-Greifarm mit blinkender LED'},
- // --- Waffenkammer 2026-09-25: acht feste Waffen OHNE Sondereffekt (Nutzerentscheidung: Effekte kommen in einer eigenen Runde,
- // Ideen in docs/backlog/loot.md). Werte = Kurve der gewürfelten Waffen gleicher Bauart, Stufe und Güte im Mittel, ohne Zusätze;
+ // --- Waffenkammer 2026-09-25: acht feste Waffen (E-73), seit E-75 mit milder Waffenwirkung (proc → PROCS oben, statt der Zusätze
+ // gewürfelter Beute). Werte = Kurve der gewürfelten Waffen gleicher Bauart, Stufe und Güte im Mittel, ohne Zusätze;
  // Wertpunkte = itemPoints(Stufe, Güte) – also nie stärker als gewürfelte Beute. Symbole: assets/precision/runtime/items/<id>.png.
  // Fundorte: Startreihe/Stammgäste (hotspots.js reward.item), Beute (drops.js extra), Berufsrezepte (professions.js).
- grillzange:{name:'Grillzange „Glutküsser“',slot:'weapon',weapon:{type:'blade',hands:1,min:15,max:27},rarity:'uncommon',icon:'blade',level:3,value:24,stats:{finesse:2,might:1,stamina:1},description:'Einhand. Wurst inklusive. Nicht essen, die ist Munition.',look:'Edelstahl-Grillzange mit Holzgriffen, eine Bratwurst mit Grillstreifen zwischen glühenden Spitzen'},
- rohrzange:{name:'Rohrzange „Hausmeister Horst“',slot:'weapon',weapon:{type:'club',hands:1,min:20,max:29},rarity:'rare',icon:'reinforced',level:4,value:39,stats:{might:3,stamina:2,finesse:1},description:'Einhand. Tropft seit 1987. Horst sagt, das muss so – steht so in der Hausordnung, Absatz Wasserhahn.',look:'Rohrzange mit rotem Gummigriff, Messing-Rändelmutter und gezahnten Backen; Wasser tropft aus dem Maul'},
- masskrugschild:{name:'Maßkrug-Schild',slot:'offhand',shield:true,rarity:'rare',icon:'shield',level:5,value:45,stats:{armorRating:4,stamina:2,might:1},description:'Ein Liter Verteidigung. Wer den Schaum antastet, bereut es. Schaltet Schildparaden frei.',look:'Gläserner Maßkrug von vorn mit Glasbuckeln, goldenem Bier, Zinnboden und überlaufender Schaumkrone'},
- gartenzwerg:{name:'Gartenzwerg-Keule „Gerd“',slot:'weapon',weapon:{type:'maul',hands:2,min:28,max:40},rarity:'uncommon',icon:'maul',level:5,value:32,stats:{might:3,stamina:2},description:'Zweihand. Stand zwanzig Jahre in Nachbarin Nellis Beet. Er hat Dinge gesehen. Dann hat ihn ein Pfandfuchs in den Hopfengarten geschleppt.',look:'Besenstiel mit Gartenzwerg als Kopf: rote Zipfelmütze, Rauschebart, blauer Kittel, abgeplatzte Farbe, Riss im Gips'},
- fasskeule:{name:'Fasskeule „Frisch Gezapft“',slot:'weapon',weapon:{type:'club',hands:1,min:20,max:28},rarity:'uncommon',icon:'reinforced',level:6,value:36,stats:{might:3,stamina:2,finesse:1},description:'Einhand. Einmal ziehen, einmal hauen. Vorsicht, schäumt nach. Der Kegelclub aus Kalt hat sie auf jeder Bahn dabei.',look:'Holzstiel mit Griffband, Kopf aus einem Bierfässchen mit Eisenreifen und Messing-Zapfhahn, Schaum tropft'},
- schorlenspritze:{name:'Schorlen-Spritze',slot:'ranged',weapon:{type:'speaker',hands:0,min:22,max:35},rarity:'rare',icon:'anni-spray',level:7,value:56,stats:{wit:5,finesse:2,stamina:2},description:'Halb Wein, halb Wasser, ganz Treffsicherheit. Im Braugarten mit Traubenschorle befüllt – alkoholfrei, behauptet die Braumeisterin.',look:'Rosa Wasserpistole mit grüner Weinflasche als Tank, blaue Düse, Sprühtropfen'},
- kronkorkenstern:{name:'Kronkorken-Morgenstern',slot:'weapon',weapon:{type:'club',hands:1,min:25,max:36},rarity:'rare',icon:'reinforced',level:9,value:67,stats:{might:6,finesse:3,stamina:3},description:'Einhand. Drei Korken vom Schützenfest, fest vernietet. Der Rest ist Stahl und Wut.',look:'Flaschenöffner als Griff, kurze Kette, Stachelkugel mit roten, grünen und goldenen Kronkorken'},
- blitzschrauber:{name:'Blitzschrauber',slot:'ranged',weapon:{type:'launcher',hands:0,min:28,max:40,label:'Fernkampf · Akkuschrauber'},rarity:'rare',icon:'slingshot',level:12,value:84,stats:{wit:7,finesse:4,might:2,stamina:2},description:'18 Volt, zwei Gänge, null Sicherheitsabstand. Schrauber-Willi rückt die Bauanleitung nur an Meisterschrauber raus.',look:'Orange-schwarzer Akkuschrauber mit grünem Akku, Ladeleuchte und Bohrer, Funken an der Spitze'}
+ grillzange:{name:'Grillzange „Glutküsser“',proc:'embers',slot:'weapon',weapon:{type:'blade',hands:1,min:15,max:27},rarity:'uncommon',icon:'blade',level:3,value:24,stats:{finesse:2,might:1,stamina:1},description:'Einhand. Wurst inklusive. Nicht essen, die ist Munition.',look:'Edelstahl-Grillzange mit Holzgriffen, eine Bratwurst mit Grillstreifen zwischen glühenden Spitzen'},
+ rohrzange:{name:'Rohrzange „Hausmeister Horst“',proc:'puddle',slot:'weapon',weapon:{type:'club',hands:1,min:20,max:29},rarity:'rare',icon:'reinforced',level:4,value:39,stats:{might:3,stamina:2,finesse:1},description:'Einhand. Tropft seit 1987. Horst sagt, das muss so – steht so in der Hausordnung, Absatz Wasserhahn.',look:'Rohrzange mit rotem Gummigriff, Messing-Rändelmutter und gezahnten Backen; Wasser tropft aus dem Maul'},
+ masskrugschild:{name:'Maßkrug-Schild',proc:'stein',slot:'offhand',shield:true,rarity:'rare',icon:'shield',level:5,value:45,stats:{armorRating:4,stamina:2,might:1},description:'Ein Liter Verteidigung. Wer den Schaum antastet, bereut es. Schaltet Schildparaden frei.',look:'Gläserner Maßkrug von vorn mit Glasbuckeln, goldenem Bier, Zinnboden und überlaufender Schaumkrone'},
+ gartenzwerg:{name:'Gartenzwerg-Keule „Gerd“',proc:'cowed',slot:'weapon',weapon:{type:'maul',hands:2,min:28,max:40},rarity:'uncommon',icon:'maul',level:5,value:32,stats:{might:3,stamina:2},description:'Zweihand. Stand zwanzig Jahre in Nachbarin Nellis Beet. Er hat Dinge gesehen. Dann hat ihn ein Pfandfuchs in den Hopfengarten geschleppt.',look:'Besenstiel mit Gartenzwerg als Kopf: rote Zipfelmütze, Rauschebart, blauer Kittel, abgeplatzte Farbe, Riss im Gips'},
+ fasskeule:{name:'Fasskeule „Frisch Gezapft“',proc:'tap',slot:'weapon',weapon:{type:'club',hands:1,min:20,max:28},rarity:'uncommon',icon:'reinforced',level:6,value:36,stats:{might:3,stamina:2,finesse:1},description:'Einhand. Einmal ziehen, einmal hauen. Vorsicht, schäumt nach. Der Kegelclub aus Kalt hat sie auf jeder Bahn dabei.',look:'Holzstiel mit Griffband, Kopf aus einem Bierfässchen mit Eisenreifen und Messing-Zapfhahn, Schaum tropft'},
+ schorlenspritze:{name:'Schorlen-Spritze',proc:'sticky',slot:'ranged',weapon:{type:'speaker',hands:0,min:22,max:35},rarity:'rare',icon:'anni-spray',level:7,value:56,stats:{wit:5,finesse:2,stamina:2},description:'Halb Wein, halb Wasser, ganz Treffsicherheit. Im Braugarten mit Traubenschorle befüllt – alkoholfrei, behauptet die Braumeisterin.',look:'Rosa Wasserpistole mit grüner Weinflasche als Tank, blaue Düse, Sprühtropfen'},
+ kronkorkenstern:{name:'Kronkorken-Morgenstern',proc:'capsplash',slot:'weapon',weapon:{type:'club',hands:1,min:25,max:36},rarity:'rare',icon:'reinforced',level:9,value:67,stats:{might:6,finesse:3,stamina:3},description:'Einhand. Drei Korken vom Schützenfest, fest vernietet. Der Rest ist Stahl und Wut.',look:'Flaschenöffner als Griff, kurze Kette, Stachelkugel mit roten, grünen und goldenen Kronkorken'},
+ blitzschrauber:{name:'Blitzschrauber',proc:'overload',slot:'ranged',weapon:{type:'launcher',hands:0,min:28,max:40,label:'Fernkampf · Akkuschrauber'},rarity:'rare',icon:'slingshot',level:12,value:84,stats:{wit:7,finesse:4,might:2,stamina:2},description:'18 Volt, zwei Gänge, null Sicherheitsabstand. Schrauber-Willi rückt die Bauanleitung nur an Meisterschrauber raus.',look:'Orange-schwarzer Akkuschrauber mit grünem Akku, Ladeleuchte und Bohrer, Funken an der Spitze'}
 };
 Object.assign(ITEM_CATALOG,PROFESSION_ITEMS,HOTSPOT_ITEMS);
 for(const d of Object.values(PROFESSION_ITEMS))d.look=d.description;

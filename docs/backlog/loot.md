@@ -4,17 +4,6 @@ Inbox der Rolle Gegenstände & Loot (docs/ROLLEN.md).
 
 ## Offen
 
-- [ ] **Waffenkammer 2026-09-25: Sondereffekte der acht Waffen** (eigene Runde, Nutzerentscheidung: erst Werte, dann Effekte, damit die Balance nicht kippt). Heute sind die acht Waffen normale Gegenstände (`content/items.js`, Abschnitt Waffenkammer). Ideen aus der Waffenkammer-Vorlage, jeweils neue Engine-Logik:
-  - `rohrzange`: Treffer hinterlassen eine Ölpfütze; Gegner darin rutschen und werden kurz langsamer.
-  - `fasskeule`: jeder dritte Treffer zapft ein Frisches – heilt ein wenig und gibt Randale.
-  - `kronkorkenstern`: Glückstreffer lassen einen Kronkorken abspringen – kleiner Flächenschaden ums Ziel.
-  - `gartenzwerg`: nach einer Parade grinst Gerd – der Gegner ist kurz eingeschüchtert und macht weniger Schaden.
-  - `grillzange`: Treffer setzen Glut (Nachbrennen); die Wurst einmal je Kampf als Wurfgeschoss.
-  - `masskrugschild`: geblockte Treffer füllen den Krug; voll gibt er einen Schluck Leben zurück.
-  - `schorlenspritze`: der Strahl heilt Verbündete; auf Gegnern wird er klebrig und verlangsamt.
-  - `blitzschrauber`: schraubt Fallen in den Boden; jeder Treffer lädt den Akku für einen Überlast-Stoß.
-  Wenn die Effekte kommen: Werte neu gegen die gewürfelte Kurve prüfen (tests/waffen-2026-09.test.mjs), ggf. Güte oder Wertpunkte senken.
-
 - [ ] **Dungeon „Schloss Big B"** (wartet auf V-D1 bis V-D11): Beutetabellen je Boss und Trash, sieben Dorflegenden, Materialien, Instanz-Gegenstände (Siegel, Beweise, Aufzugschlüssel), Reittier „Das halbe Pferd". Entwurf: [DUNGEON-SCHLOSS-BIG-B-2026-09-23.md](../DUNGEON-SCHLOSS-BIG-B-2026-09-23.md) Abschnitt 11.
 - [ ] Ideen aus content/IDEEN-LANDJUNGS.md (Kabelbinder-Gürtel, Diagnose-Dongle, Headset …) erst nach Freigabe der Themen durch den Lead.
 - [ ] Verpflegung je Kapitel-Familie prüfen (kegler, jga, sigi, klaus, timo nutzen vorhandene Sorten); eigene Sorte für den Bus (z. B. „Bierbong-Rest“) nur, wenn Gameplay einen Zweck nennt.
@@ -38,6 +27,16 @@ Inbox der Rolle Gegenstände & Loot (docs/ROLLEN.md).
 
 ## Erledigt
 
+- [x] **Waffenkammer: Sondereffekte der acht Waffen** (2026-09-27, E-75). Milde Waffenwirkungen als `PROCS`-Einträge mit `trigger` (`content/items.js`), Laufzeit `procs.js` `fireItemProcs`, Texte/Zahlen in `content/item-info.js`:
+  - `rohrzange` → `puddle`: 25 % je Autoangriff, höchstens alle 6 s eine Wasserpfütze (5 m, 4 s), Gegner darin langsamer.
+  - `fasskeule` → `tap`: jeder 3. Autoangriff 8 Leben und 3 Ressourcenpunkte.
+  - `kronkorkenstern` → `capsplash`: Glückstreffer eines Autoangriffs streut 30 % an bis zu 3 kämpfende Nachbarn (8 m).
+  - `gartenzwerg` → `cowed`: nach Ausweichen durch einen Treffer oder Unterbrechen 15 % weniger Gegnerschaden für 4 s, höchstens alle 12 s. Die Parade braucht einen Schild, Gerd ist Zweihänder.
+  - `grillzange` → `embers`: 20 % je Autoangriff Glutbrand, 45 % des Treffers über 3 s.
+  - `masskrugschild` → `stein`: jede 3. Parade 40 Leben, Zählstand im Kampftext.
+  - `schorlenspritze` → `sticky`: 30 % je Autoangriff, das Ziel ist 3 s langsamer. Gegner-Variante, weil Autoangriffe nur Gegner treffen.
+  - `blitzschrauber` → `overload`: jeder 12. Autoangriff ein Überlast-Stoß mit 100 % des Treffers.
+  - Wurst-Wurfgeschoss und Schraub-Fallen entfallen (wären eigene Kniffe). Die Werte gegen die gewürfelte Kurve bleiben: `tests/waffen-2026-09.test.mjs` ist grün, die Wirkung ersetzt die Zusätze. Vorher/nachher: `node scripts/waffeneffekte-balance.mjs`, alle Wirkungen im Mittel unter den Legenden-Procs gleicher Stufe. Tests: `tests/waffeneffekte.test.mjs`.
 - [x] **Welle D: `info` für Gegenstände und Procs, Verpflegung benutzbar** (2026-09-17). Neue Datei `content/item-info.js` (Export in `content/index.js`): `ITEM_INFO` und `PROC_INFO` tragen von Hand nur `effect`/`why`/`links`/`terms`, die `numbers` leitet `describeItem(id)` / `describeProc(id)` aus `items.js` ab (stats, weapon, heal, energy, stack, price, level, proc) und rechnet Wertungen über `BALANCE.ratings` um (`ratingShare`, abnehmender Ertrag `r/(r+k)`, Rüstung zusätzlich über die Stufe). Keine Doppelpflege: Wer eine Zahl ändert, ändert sie weiter in `items.js`/`tuning.js`, der Block zieht nach. Abgedeckt: alle sieben `PROCS`, alle 16 Dorflegenden, die fünf Verpflegungen, die sechs Startteile und die zehn festen Ausrüstungsstücke (37 Gegenstände). Material bleibt bewusst ohne `info` – es hat keine Kampfwirkung. Jeder Gegenstand mit Proc verlinkt seinen Proc, jede Dorflegende trägt den Begriff `dorflegende`. Zusätzlich hängt `item-info.js` den fertigen Block als `d.info` an den Katalog, damit die UI ihn ohne Helferaufruf findet.
 - [x] **Verpflegung ist benutzbar** (2026-09-17): `usable:true` an den fünf Kioskwaren; Regel in `content/checks/loot.js` und `tests/content-loot.test.mjs`: jede Verpflegung ist benutzbar, sonst nichts (Ausrüstung und Material werden nicht „benutzt“). Engine/UI dürfen die Aktionsleiste darüber öffnen.
 - [x] **Basisbau-Effekte weitergereicht** (2026-09-17): Umrechnungstabelle für alle elf `BUILDING_EFFECTS` in `docs/backlog/gameplay.md` – `buildings.js` gehört Gameplay, Loot liefert nur das Muster aus `item-info.js`.

@@ -1311,3 +1311,79 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
 - Die Figurengrafik (Pelzmantel, Exposé, Korkenzieher, Ringlicht, Hufeisen, Kegelkugel blau) hat der Nutzer freigegeben.
 - Schorschs Rost-Ebene ist eine Plakette im Kachelstil. Procs zeigen nur einen Leuchtrand, keine Umfärbung (Test `icon-proc-filter`).
 - Kein Blocker, aber offen: Plakette und Stufe am Handy quer, die Kontur der schwarzen Katze (kevin-hunt-12), Hufeisen und Kegelkugel an derselben Hüfte.
+
+## E-75 · Waffenkammer-Wirkungen: acht milde Waffenwirkungen über die Proc-Tabelle (27.09.2026, schließt E-73 Punkt 1 ab)
+
+**Anlass.** Nutzerauftrag „alles abschließen, nichts offen lassen“. Die acht Waffen aus E-73 bekommen ihre Sondereffekte aus `docs/backlog/loot.md`. Damals galt: erst die Werte, dann die Effekte, damit die Balance nicht kippt.
+
+**Entscheidungen.**
+1. **Ein Weg, kein Parallelsystem:**
+   - Jede Wirkung ist ein Eintrag in `PROCS` (`content/items.js`), der Tabelle der Gegenstands-Procs, über das Feld `proc` wie bei den Dorflegenden.
+   - Neu ist das Feld `trigger`. Die Auslöser `ITEM_PROC_TRIGGERS` (autoHit, crit, parry, dodge, interrupt) sind eine Teilmenge von `PROC_TRIGGERS`. `chance` und `every` wirken wie bei den Talent-Procs, dazu kommt `icd` (interne Abklingzeit).
+   - Laufzeit: `fireItemProcs` in `procs.js`. Zähler und Abklingzeiten liegen in `g.procState`, nichts davon im Spielstand.
+   - Die Wirkungen nutzen vorhandene Zustände: Bodenfläche mit Bremse (wie die Hopfenpfütze des Katerfasses), `controlSlow`, Glutbrand (`e.burn`), `healPlayer`, `grantResource` und `g.damage`. Neu ist nur die Einschüchterung (`e.cowed`); sie wird in die Treffer auf Helden und Söldner eingerechnet.
+   - Alle Zahlen stehen in `content/items.js`. Tooltip-Zahlen und Shift-Details leitet `content/item-info.js` ab (`PROC_NUMBERS`).
+2. **Milder als die Dorflegenden.** Laut `content/README.md` waren Procs bisher den Dorflegenden vorbehalten. Diese Waffen sind aber Seltene und Ungewöhnliche, deshalb:
+   - Waffenwirkungen hängen am **Autoangriff dieser Waffe** (`weapon:true`), nicht an jedem Treffer. Kniffe zählen nicht. Eine Nahkampfwaffe wirkt nur bei Nahkampf-Autoangriff (Dieter, Schorsch, Kevin als Schrottkoloss), eine Fernkampfwaffe nur bei Anni, Kevin und Käthe.
+   - Jede Autoangriffs-Wirkung würfelt, zählt mit oder ruht danach. Die Inhaltsprüfung `content/checks/loot.js` verbietet Wirkungen „bei jedem Treffer“ und Waffenwirkungen an Dorflegenden.
+   - In der Simulation liegen alle Wirkungen im Mittel unter oder bei den Legenden-Procs gleicher Stufe (Tabelle unten).
+3. **Die acht Wirkungen:**
+
+   | Waffe | Wirkung | Werte | Auslöser |
+   |---|---|---|---|
+   | Rohrzange | Wasserpfütze unter dem Ziel, Gegner darin laufen langsamer | 25 %, höchstens alle 6 s, 5 m, 4 s | Autoangriff |
+   | Fasskeule | „Frisch gezapft“: Leben und Klassenressource | jeder 3., 8 Leben, 3 Ressourcenpunkte | Autoangriff |
+   | Kronkorken-Morgenstern | Kronkorken trifft kämpfende Nachbarn des Ziels | 30 % des Treffers, bis zu 3 Gegner, 8 m | Glückstreffer eines Autoangriffs |
+   | Gartenzwerg | Gegner eingeschüchtert, macht weniger Schaden | 15 % für 4 s, höchstens alle 12 s | Ausweichen durch einen Treffer oder Unterbrechen |
+   | Grillzange | Glut: Das Ziel brennt nach | 20 %, 45 % des Treffers über 3 s | Autoangriff |
+   | Maßkrug-Schild | Krug füllt sich, voll gibt er einen Schluck | jede 3. Parade, 40 Leben | geglückte Parade |
+   | Schorlen-Spritze | Ziel wird klebrig und langsamer | 30 %, 3 s | Autoangriff |
+   | Blitzschrauber | Akku lädt, voll entlädt er einen Überlast-Stoß | jeder 12., 100 % des Treffers | Autoangriff |
+
+   „Treffer“ heißt hier der Waffenwurf vor Wumms und Glückstreffer. Heilungen wachsen mit Stufe und Bastelgrips wie alle festen Heilungen (E-59).
+4. **Abweichungen vom Backlog, mit Begründung:**
+   - **Gartenzwerg:** Die Parade braucht einen Schild (`WEAPON_SKILL_RULES.shared.parry`), Gerd ist aber ein Zweihänder. Mit ihm gäbe es also nie eine Parade. Deshalb grinst Gerd nach den beiden Abwehren, die ein Zweihänder hat: einem Treffer ausweichen und einen Zauber unterbrechen. Die Inhaltsprüfung verbietet Parade-Wirkungen an Zweihändern.
+   - **Maßkrug:** „geblockt“ heißt geglückte Parade, denn einen Block gibt es nicht.
+   - **Schorlen-Spritze:** Sie bekommt die Gegner-Variante (klebrig), weil Autoangriffe nur Gegner treffen (E-65: ein Ziel). Verbündete heilen könnte nur ein eigener Kniff.
+   - **Grillzange:** Die Wurst als Wurfgeschoss entfällt; auch sie wäre ein eigener Kniff.
+   - **Blitzschrauber:** „Fallen in den Boden schrauben“ entfällt; der Blitzschrauber bekommt nur Akku und Überlast.
+   - **Kronkorken:** Er trifft nur Gegner, die schon kämpfen, damit er keine neutrale Gruppe zieht.
+5. **Die Werte der Waffen bleiben.** Der Backlog fragte „ggf. Güte oder Wertpunkte senken“. Feste Waffen tragen die Wertpunkte ohne Zusätze. Die Wirkung ersetzt also die Zusätze gewürfelter Beute und bleibt unter den Legenden.
+6. **Sichtbar mit dem, was das Spiel schon kann:**
+   - Kampftext mit dem Waffensymbol: PFÜTZE, FRISCH GEZAPFT, KRONKORKEN, EINGESCHÜCHTERT, GLUT, KRUG 1/3 und 2/3, SCHLUCK, KLEBRIG, ÜBERLAST. Gleiche Zeilen fasst der Kampftext zu „×N“ zusammen.
+   - Die Pfütze ist eine blaue Lache. Die Flammen am brennenden Gegner zeigen jetzt alle Klassen, nicht nur Schorsch. Dazu Bremsstriche am Gegner, der Knall des Kronkorkens, ein Blitz bei Überlast und die Heilzahl.
+   - Kampfstatistik: eigene Zeilen „Glut“, „Kronkorken“, „Überlast-Stoß“, „Frisch gezapft“ und „Schluck aus dem Krug“.
+   - Tooltip: eine grüne Zeile „Anlegen: …“ mit dem Wirkungstext. Sie gilt auch für die Dorflegenden, deren Wirkung vorher nur mit Shift im Flavor stand.
+7. **Messweg:** `node scripts/waffeneffekte-balance.mjs [--seeds=12]`.
+   - `simulate()` im Balance-Sheet kann jetzt `equip`, `parry` und `dodge`; das Sheet selbst nutzt nichts davon.
+   - Würfe der Waffen kommen in der Simulation aus einem eigenen Zufallsstrom (`g.itemRandom`). So würfeln Vorher und Nachher dieselben Glückstreffer. Im Spiel gilt weiter `g.random`.
+
+**Balance vorher/nachher.** Übungskampf des Sheets, Ausrüstung „selten“, Stufe = max(5, Waffenstufe). Mittel aus Boss und Dreiergruppe über 12 Startwerte, je Spezialisierung, bei der die Wirkung greifen kann. „Vorher“ ist dieselbe Waffe ohne Wirkung (Stand E-73). Abwehr-Wirkungen laufen im Abwehr-Kampf: Der Held pariert bzw. weicht dem Puppenschlag aus, sobald es geht – das ist die Obergrenze.
+
+| Waffe (Stufe) | Schaden/s Ø (max) | sonst |
+|---|---|---|
+| Grillzange (5) | +0,9 % (+4,9 %) | – |
+| Rohrzange (5) | ±0 | Ziel gebremst 6 % → 28 % der Zeit |
+| Maßkrug-Schild (5, Parade) | ±0 | +2,5 Heilung/s |
+| Gartenzwerg (5, Ausweichen) | ±0 | erlittener Schaden −8,2 % |
+| Fasskeule (6) | +0,8 % (+7,5 %, Schorsch: Ressource heizt die Glut) | +2,0 Heilung/s |
+| Schorlen-Spritze (7) | ±0 | Ziel gebremst 20 % → 42 % der Zeit |
+| Kronkorken-Morgenstern (9) | +1,3 % (+4,9 %), nur gegen Gruppen | – |
+| Blitzschrauber (12) | +1,7 % (+4,8 %) | – |
+| *Maßstab:* Horsts Ablehnung (verdict, 5) | +2,4 % (+6,2 %) | – |
+| *Maßstab:* Korkenzieher (rage, 9) | +1,2 % (+4,2 %) | – |
+| *Maßstab:* Greifarm (thirst, 9) | +0,9 % (+5,4 %) | – |
+| *Maßstab:* Sigis Greifzange (stout, 5) | ±0 (wirkt erst unter 35 % Leben) | – |
+
+Balance-Sheet und Balance-Bericht nutzen nur gewürfelte Ausrüstung, die Waffenwirkungen tauchen dort also nicht auf. Das neu erzeugte Sheet (`npm run balance:sheet`) weicht nur bei schorsch-flamme leicht ab, weil der Glutbrand jetzt an anderer Stelle im Bild tickt: eine Zelle +1,5 %, sonst ±1 Schaden/s; ⚑ unverändert. Der Balance-Bericht (`npm run content:balance`) ist nicht betroffen. Seine Datei stammt noch vom 23.09., und die Abweichung beim Neulauf kommt aus früheren Runden; sie bleibt deshalb unverändert eingecheckt. Die erste Fassung der Werte lag darüber und wurde gesenkt: Kronkorken 60 % → 30 %, Überlast jeder 10. mit 150 % → jeder 12. mit 100 %, Fasskeule 12 → 8 Leben, Maßkrug 70 → 40 Leben, Einschüchterung 20 % für 5 s → 15 % für 4 s mit 12 s Pause.
+
+**Verworfen.**
+- Wirkungen als Talent-Regeln in `PROC_RULES` über `fireProcs`: Diese Regeln kennen Zeitfenster, Leuchten und Kniff-Bindung, aber kein Ziel. Außerdem fiele ihr Zusatzschaden mitten in einen laufenden Treffer. Die Waffenwirkung läuft deshalb erst nach dem Treffer.
+- Jede Wirkung als Sonderfall im Engine-Code wie rage oder verdict: Dann stünden die Zahlen im Code.
+- Die Schorlen-Heilung für Verbündete.
+- Die Werte der Waffen senken.
+
+**Konsequenzen.**
+- Der Glutbrand tickt jetzt in `tickClass`, vorher nur am Grill. Dasselbe gilt für die Flammen-Darstellung.
+- `damage()` bekommt den Waffenplatz des Autoangriffs als vierten Wert.
+- Neue Tests: `tests/waffeneffekte.test.mjs` prüft je Wirkung Auslösung, Wirkung, Abklingzeit oder Zähler, keine Wirkung ohne angelegte Waffe, tickAuto, Tooltip und Spielstand. `tests/waffen-2026-09.test.mjs` erwartet jetzt die Waffenwirkung.

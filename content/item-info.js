@@ -38,7 +38,20 @@ const PROC_NUMBERS={
  dashCd:{label:'Ausweichen schneller bereit',unit:'%',scale:100},
  reduction:{label:'weniger erlittener Schaden',unit:'%',scale:100},
  bonus:{label:'zusätzlicher Schaden auf markierte Ziele',unit:'%',scale:100},
- regen:{label:'Regeneration außerhalb des Kampfes',unit:'×',scale:1}
+ regen:{label:'Regeneration außerhalb des Kampfes',unit:'×',scale:1},
+ // E-75 Waffenkammer
+ chance:{label:'Chance je Auslöser',unit:'%',scale:100},
+ every:{label:'jeder n-te Auslöser',unit:'',scale:1},
+ icd:{label:'höchstens alle',unit:'s',scale:1},
+ heal:{label:'Leben zurück',unit:'Leben',scale:1},
+ slow:{label:'langsamer für',unit:'s',scale:1},
+ burn:{label:'Nachbrennen, Anteil des Treffers',unit:'%',scale:100},
+ splash:{label:'Flächenschaden, Anteil des Treffers',unit:'%',scale:100},
+ targets:{label:'Nachbarn höchstens',unit:'Gegner',scale:1},
+ weaken:{label:'weniger Schaden des Angreifers',unit:'%',scale:100},
+ overload:{label:'Überlast-Stoß, Anteil des Treffers',unit:'%',scale:100},
+ duration:{label:'Dauer',unit:'s',scale:1},
+ radius:{label:'Umkreis',unit:'m',scale:.125}
 };
 /** Zahlen eines Procs aus PROCS[id]. */
 export function procNumbers(id){const p=PROCS[id];if(!p)return [];
@@ -214,31 +227,31 @@ export const ITEM_INFO={
  automatenarm:{effect:'Stärkste Dorflegende des ersten Aktes: Wumms, Taktgefühl und Bastelgrips gleich hoch, dazu Standfestigkeit und das meiste Taktgefühl im Spiel; ihr Proc füllt bei jedem Kill deine Klassenressource.',
   why:'Abschlussbelohnung – der Arm trägt jede Klasse und jeden Bau, weil er keinen Primärwert bevorzugt.',
   links:['thirst','schnorrerbecher','bierbong'],terms:['dorflegende','proc','ressource','glueckstreffer']},
- // --- Waffenkammer 2026-09-25 (ohne Sondereffekt; Effekte folgen in eigener Runde) ---
- grillzange:{effect:'Einhandklinge für jede Klasse: schneller Takt, dazu Taktgefühl, Wumms und etwas Standfestigkeit.',
-  why:'Der erste Waffenzuwachs aus der Startreihe. In der Nebenhand steuert sie wie jede Einhandwaffe anteilig Schaden zu Nahkampfkniffen bei.',
-  links:['dosenklinge','grill','rohrzange'],terms:['waffenschaden','finesse','tempo']},
- rohrzange:{effect:'Seltener Einhandprügel mit viel Wumms und Standfestigkeit; die Nebenhand bleibt frei für einen Schild.',
-  why:'Für Tresenbrecher, die vor Sigi mehr Schlagkraft wollen, ohne den Schild und damit die Parade aufzugeben.',
-  links:['dosenbrecher','horststempel','masskrugschild'],terms:['waffenschaden','might','stamina']},
- masskrugschild:{effect:'Seltener Schild für die Nebenhand mit viel Dicker Haut und Standfestigkeit; schaltet wie jeder Schild die Schildparade frei.',
-  why:'Der Tank-Schild aus der Bude: Rüstung wirkt gegen jeden Treffer, die Parade gegen jeden angesagten Nahkampfzauber.',
-  links:['topfdeckel','rohrzange','bierdeckelweste'],terms:['parade','deckung','armorRating','stamina']},
- gartenzwerg:{effect:'Zweihandknüppel mit hohem Grundschaden je Schlag, dazu Wumms und Standfestigkeit; belegt beide Hände.',
-  why:'Zählt allein als „schwere Waffe“ und löst den Tresenhammer ab. Gegen Zauber mit „Parade“ im Namen bleibt der Schild die bessere Wahl.',
-  links:['tresenhammer','sigizange','masskrugschild'],terms:['waffenschaden','might','parade']},
- fasskeule:{effect:'Ungewöhnlicher Einhandprügel mit Wumms und Standfestigkeit, dazu etwas Taktgefühl.',
-  why:'Beute von der Kegelbahn für die Kapitel 3 und 4: in der Haupthand neben einem Schild oder als Paar für die schweren Kniffe.',
-  links:['rohrzange','kronkorkenstern','kegelkugel'],terms:['waffenschaden','might','stamina']},
- schorlenspritze:{effect:'Seltene Fernkampfwaffe mit viel Bastelgrips, dazu Taktgefühl und Standfestigkeit.',
-  why:'Für die Landhaus-Lady: Bastelgrips verstärkt Heilung und Deckung, die Waffe versorgt Grundangriff und Salve aus dem Fernkampfplatz.',
-  links:['megafon','hopfenschorle','landhausecke'],terms:['waffenschaden','wit','heilung']},
- kronkorkenstern:{effect:'Seltener Einhandprügel aus der Schrauberei: viel Wumms, dazu Taktgefühl und Standfestigkeit.',
-  why:'Die planbare Nahkampfwaffe nach Akt 1 – wer genug Kronkorken und Blech sammelt, muss nicht auf gewürfelte Beute hoffen.',
-  links:['fasskeule','dosenbrecher','kronkorken'],terms:['waffenschaden','might','glueckstreffer']},
- blitzschrauber:{effect:'Seltene Fernkampfwaffe aus der Meister-Schrauberei: viel Bastelgrips und Taktgefühl, dazu Wumms und Standfestigkeit.',
-  why:'Für den Pfandingenieur nach Akt 1: Bastelgrips speist Deckung und Randale-Nachschub, der Fernkampfplatz Grundangriff und Salve.',
-  links:['pfandschleuder','kronkorkenstern','dosenblech'],terms:['waffenschaden','wit','finesse']}
+ // --- Waffenkammer 2026-09-25 (E-73), seit E-75 mit Waffenwirkung (proc) ---
+ grillzange:{effect:'Einhandklinge für jede Klasse: schneller Takt, dazu Taktgefühl, Wumms und etwas Standfestigkeit. Ihre Autoangriffe setzen manchmal Glut, das Ziel brennt kurz nach.',
+  why:'Der erste Waffenzuwachs aus der Startreihe. In der Nebenhand steuert sie wie jede Einhandwaffe anteilig Schaden zu Nahkampfkniffen bei – und schwingt mit eigenem Autoangriff, der ebenfalls Glut setzt.',
+  links:['embers','dosenklinge','grill','rohrzange'],terms:['waffenschaden','finesse','tempo','glutbrand']},
+ rohrzange:{effect:'Seltener Einhandprügel mit viel Wumms und Standfestigkeit; die Nebenhand bleibt frei für einen Schild. Ihre Autoangriffe hinterlassen ab und zu eine Wasserpfütze, in der Gegner langsamer laufen.',
+  why:'Für Tresenbrecher, die vor Sigi mehr Schlagkraft wollen, ohne den Schild und damit die Parade aufzugeben. Die Pfütze hält Verfolger auf, wenn du aus einer roten Fläche springst.',
+  links:['puddle','dosenbrecher','horststempel','masskrugschild'],terms:['waffenschaden','might','stamina','verlangsamung']},
+ masskrugschild:{effect:'Seltener Schild für die Nebenhand mit viel Dicker Haut und Standfestigkeit; schaltet wie jeder Schild die Schildparade frei. Geglückte Paraden füllen den Krug, voll gibt er einen Schluck Leben.',
+  why:'Der Tank-Schild aus der Bude: Rüstung wirkt gegen jeden Treffer, die Parade gegen jeden angesagten Nahkampfzauber – und ein voller Krug heilt obendrein.',
+  links:['stein','topfdeckel','rohrzange','bierdeckelweste'],terms:['parade','deckung','armorRating','stamina','heilung']},
+ gartenzwerg:{effect:'Zweihandknüppel mit hohem Grundschaden je Schlag, dazu Wumms und Standfestigkeit; belegt beide Hände. Weichst du einem Treffer aus oder unterbrichst du einen Zauber, grinst Gerd – der Gegner ist kurz eingeschüchtert.',
+  why:'Zählt allein als „schwere Waffe“ und löst den Tresenhammer ab. Ohne Schild gibt es keine Parade – dafür macht Gerd aus Ausweichen und Unterbrechen eine Abwehr, die noch ein paar Sekunden nachwirkt.',
+  links:['cowed','tresenhammer','sigizange','masskrugschild'],terms:['waffenschaden','might','ausweichen','unterbrechen','schadensminderung']},
+ fasskeule:{effect:'Ungewöhnlicher Einhandprügel mit Wumms und Standfestigkeit, dazu etwas Taktgefühl. Jeder dritte Autoangriff zapft ein Frisches: ein wenig Leben und etwas Klassenressource.',
+  why:'Beute von der Kegelbahn für die Kapitel 3 und 4: in der Haupthand neben einem Schild oder als Paar für die schweren Kniffe. Die Zapfung hält dich zwischen zwei Heilungen über Wasser.',
+  links:['tap','rohrzange','kronkorkenstern','kegelkugel'],terms:['waffenschaden','might','stamina','heilung','ressource']},
+ schorlenspritze:{effect:'Seltene Fernkampfwaffe mit viel Bastelgrips, dazu Taktgefühl und Standfestigkeit. Der Strahl ihrer Autoangriffe macht das Ziel manchmal klebrig und damit langsamer.',
+  why:'Für die Landhaus-Lady: Bastelgrips verstärkt Heilung und Deckung, die Waffe versorgt Grundangriff und Salve aus dem Fernkampfplatz. Ein klebriges Ziel braucht länger bis zu dir – Zeit für einen Kniff mehr.',
+  links:['sticky','megafon','hopfenschorle','landhausecke'],terms:['waffenschaden','wit','heilung','verlangsamung']},
+ kronkorkenstern:{effect:'Seltener Einhandprügel aus der Schrauberei: viel Wumms, dazu Taktgefühl und Standfestigkeit. Glückstreffer seiner Autoangriffe lassen einen Kronkorken abspringen, der kämpfende Nachbarn des Ziels trifft.',
+  why:'Die planbare Nahkampfwaffe nach Akt 1 – wer genug Kronkorken und Blech sammelt, muss nicht auf gewürfelte Beute hoffen. Gegen Gruppen streut sie, gegen einen einzelnen Boss wirkt der Korken nicht.',
+  links:['capsplash','fasskeule','dosenbrecher','kronkorken'],terms:['waffenschaden','might','glueckstreffer','flaeche']},
+ blitzschrauber:{effect:'Seltene Fernkampfwaffe aus der Meister-Schrauberei: viel Bastelgrips und Taktgefühl, dazu Wumms und Standfestigkeit. Jeder Autoangriff lädt den Akku, voll entlädt er einen Überlast-Stoß ins Ziel.',
+  why:'Für den Pfandingenieur nach Akt 1: Bastelgrips speist Deckung und Randale-Nachschub, der Fernkampfplatz Grundangriff und Salve. Der Akku zählt mit, der Stoß kommt planbar statt zufällig.',
+  links:['overload','pfandschleuder','kronkorkenstern','dosenblech'],terms:['waffenschaden','wit','finesse','autoangriff']}
 };
 
 /** Von Hand: effect/why/links/terms der Procs. Die Zahlen kommen aus PROCS. */
@@ -263,7 +276,32 @@ export const PROC_INFO={
   links:['schnorrerbecher','bierbong','automatenarm'],terms:['proc','ressource']},
  hops:{effect:'Verdoppelt die Lebensregeneration außerhalb des Kampfes.',
   why:'Der einzige Proc, der zwischen den Kämpfen zählt – er spart Verpflegung und damit Pfandmarken auf langen Wegen.',
-  links:['giesskanne','tresen'],terms:['proc','leben','verpflegung']}
+  links:['giesskanne','tresen'],terms:['proc','leben','verpflegung']},
+ // --- Waffenkammer (E-75): milder als die Legenden – nur Autoangriffe dieser Waffe bzw. geglückte Paraden zählen ---
+ puddle:{effect:'Ein Autoangriff mit dieser Waffe lässt mit einer Chance eine Wasserpfütze unter dem Ziel zurück; wer darin steht, rutscht und läuft langsamer. Danach ruht die Wirkung eine Weile.',
+  why:'Nahkämpfer müssen oft aus roten Flächen springen – die Pfütze hält den Gegner auf, bis du wieder dran bist. Schaden macht sie keinen.',
+  links:['rohrzange'],terms:['proc','autoangriff','verlangsamung','flaeche']},
+ tap:{effect:'Zählt die Autoangriffe dieser Waffe; jeder dritte heilt dich ein wenig und füllt deine Klassenressource.',
+  why:'Kleine, planbare Versorgung im Nahkampf – kein Ersatz für die Heilung, aber sie trägt dich durch den Leerlauf zwischen zwei Kniffen.',
+  links:['fasskeule'],terms:['proc','autoangriff','heilung','ressource']},
+ capsplash:{effect:'Ein Glückstreffer eines Autoangriffs mit dieser Waffe schleudert einen Kronkorken ab: Ein Anteil des Treffers geht an nahe Gegner, die schon mit dir kämpfen.',
+  why:'Belohnt Taktgefühl gegen Gruppen. Neutrale Gegner bleiben unberührt, damit der Korken keine zweite Gruppe zieht.',
+  links:['kronkorkenstern'],terms:['proc','glueckstreffer','autoangriff','flaeche']},
+ cowed:{effect:'Weichst du einem Treffer aus oder unterbrichst du einen Zauber, ist dieser Gegner eine Weile eingeschüchtert und trifft dich und deine Söldner schwächer.',
+  why:'Mit einer Zweihandwaffe gibt es keine Parade (sie braucht einen Schild). Gerd macht die beiden anderen Abwehren zur Verteidigung über den einen Treffer hinaus.',
+  links:['gartenzwerg'],terms:['proc','ausweichen','unterbrechen','schadensminderung']},
+ embers:{effect:'Ein Autoangriff mit dieser Waffe setzt mit einer Chance Glut: Das Ziel brennt kurz nach, zusammen ein Anteil des auslösenden Treffers. Ein stärkerer Brand bleibt stehen.',
+  why:'Ein wenig Zusatzschaden aus dem Autoangriff, der auch dann weiterläuft, wenn du gerade ausweichst.',
+  links:['grillzange'],terms:['proc','autoangriff','glutbrand']},
+ stein:{effect:'Zählt geglückte Paraden; ist der Krug voll, gibt er einen Schluck Leben. Der Kampftext zeigt, wie voll er ist.',
+  why:'Der Schild belohnt saubere Paraden mit Heilung, ohne die Parade selbst stärker zu machen.',
+  links:['masskrugschild'],terms:['proc','parade','heilung']},
+ sticky:{effect:'Ein Autoangriff mit dieser Waffe macht das Ziel mit einer Chance klebrig: Es läuft kurz langsamer.',
+  why:'Fernkämpfer gewinnen Abstand und damit Zeit für Kniffe; gegen einen Gegner, der schon vor dir steht, bringt es nichts.',
+  links:['schorlenspritze'],terms:['proc','autoangriff','verlangsamung']},
+ overload:{effect:'Zählt die Autoangriffe dieser Waffe; der letzte einer vollen Ladung trifft das Ziel zusätzlich mit einem Überlast-Stoß aus einem Vielfachen des Treffers.',
+  why:'Planbarer Zusatzschaden aus dem Autoangriff – der Akku zählt mit, nichts ist Zufall. Stirbt das Ziel vorher, wartet die volle Ladung auf das nächste.',
+  links:['blitzschrauber'],terms:['proc','autoangriff','ueberlast']}
 };
 
 /** Vollständiger info-Block eines Gegenstands: Handtext + abgeleitete Zahlen. */

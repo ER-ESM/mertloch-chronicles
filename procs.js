@@ -5,8 +5,48 @@ import {PROC_RULES,METER_TEXT,TALENT_ROWS} from './content/index.js';
 import {addGuard,healPlayer} from './class-mechanics.js';
 import {M,mechanic} from './spec-mechanics.js';
 import {grantResource,resourceProcEffect} from './class-resources.js';
-import {RESOURCES,COMBAT_FLOW_TUNING} from './content/index.js';
+import {RESOURCES,COMBAT_FLOW_TUNING,PROCS} from './content/index.js';
+import {ITEMS} from './rpg.js';
+import {distance} from './world.js';
 export const freshProcState=()=>({free:{},empower:{},glow:{},counts:{},haste:0,hasteUntil:0,fired:0});
+/** E-75 Waffenkammer: Wirkungen fester Waffen und Schilde (content/items.js PROCS, Einträge mit `trigger`). Dieselben Auslöser-Wörter und
+ *  derselbe Zählweg wie fireProcs (every, chance über g.random, Zähler in g.procState.counts unter „item:<id>“), dazu eine interne
+ *  Abklingzeit (icd). weapon:true bindet an den Autoangriff genau dieser Waffe (info.slot = ihr Platz) – eine Nahkampfwaffe wirkt also nur
+ *  bei Nahkampf-Autoangriff, eine Fernkampfwaffe nur bei Fernkampf-Autoangriff. Die Wirkungen nutzen vorhandene Zustände: Bodenfläche mit
+ *  Bremse (wie die Hopfenpfütze des Katerfasses), controlSlow, Glutbrand (e.burn), Heilung, Ressource, Schaden über g.damage. Neu ist nur
+ *  die Einschüchterung (e.cowed/e.cowedBy), die foeDamageFactor() in den Gegnertreffer rechnet. Nichts davon steht im Spielstand.
+ *  info: {foe, base (Grundtreffer vor Wumms und Glückstreffer), slot}. Rückgabe: Zahl der ausgelösten Wirkungen. */
+export function fireItemProcs(g,trigger,cs,info={}){
+ const eq=g.rpg?.equipment;if(!eq||g.dead)return 0;
+ const st=g.procState||(g.procState=freshProcState());st.counts||(st.counts={});st.itemCd||(st.itemCd={});
+ const level=g.player.level||1,seen=new Set();let fired=0;
+ for(const [slot,itemId] of Object.entries(eq)){
+  const d=ITEMS[itemId],id=d?.proc,r=id&&PROCS[id];
+  if(!r?.trigger||![].concat(r.trigger).includes(trigger)||(d.level||1)>level||seen.has(id))continue;
+  if(r.weapon&&(trigger==='autoHit'||trigger==='crit')&&slot!==info.slot)continue;/* Waffenwirkung: nur der eigene Autoangriff zählt */
+  seen.add(id);const key='item:'+id,foe=info.foe,alive=!!foe&&foe.hp>0&&foe.ai!=='returning',base=info.base||0;
+  if((st.itemCd[key]||0)>g.time)continue;
+  if(r.every>1){const n=st.counts[key]=(st.counts[key]||0)+1;
+   if(n%r.every){if(r.countLabel)itemNote(g,r.countLabel+' '+(n%r.every)+'/'+r.every,itemId);continue;}
+   if(r.overload&&!alive){st.counts[key]=n-1;continue;}/* der volle Akku wartet auf den nächsten Treffer an einem lebenden Ziel */}
+  if(r.chance<1&&(g.itemRandom||g.random)()>=r.chance)continue;/* g.itemRandom: eigener Strom der Balance-Simulation, damit Vorher/Nachher dieselben Glückstreffer würfeln */
+  fired++;if(r.icd)st.itemCd[key]=g.time+r.icd;
+  if(r.heal)healPlayer(g,r.heal,cs,false,{id:key,name:r.name||d.name});
+  if(r.energy)grantResource(g,r.energy,'item');
+  if(r.field&&foe)g.fields.push({kind:r.field,x:foe.x,y:foe.y,radius:r.radius,remaining:r.duration,tick:1,power:0,slow:true,source:key});
+  if(r.slow&&alive)foe.controlSlow=Math.max(foe.controlSlow||0,r.slow);
+  if(r.burn&&alive){const dps=Math.max(1,Math.round(base*r.burn/r.duration));/* ein stärkerer Brand (Glutbrocken) bleibt stehen */if(!(foe.burn?.t>0)||foe.burn.dps<dps)foe.burn={t:r.duration+.1,tick:1,dps,label:r.name};}
+  if(r.weaken&&alive){foe.cowed=r.duration;foe.cowedBy=r.weaken;emitCombatFx(g,'proc',foe,{procId:key,signal:'weaken',label:r.label});}
+  if(r.splash&&foe){const n=Math.max(1,Math.round(base*r.splash)),near=g.enemies.filter(o=>o!==foe&&o.hp>0&&o.aggro&&o.ai!=='returning'&&!(o.spawnGrace>0)&&distance(o,foe)<=r.radius&&g.world.lineClear(foe,o)).sort((a,b)=>distance(a,foe)-distance(b,foe)).slice(0,r.targets);
+   /* nur Gegner, die schon kämpfen: ein Kronkorken zieht keine neutrale Gruppe */emitCombatFx(g,'burst',foe,{radius:r.radius,skillId:key});for(const o of near)g.damage(o,n,r.name);}
+  if(r.overload&&alive){emitCombatFx(g,'interrupt',foe,{successful:true,skillId:key});g.damage(foe,Math.max(1,Math.round(base*r.overload)),r.name);}
+  itemNote(g,r.label,itemId);g.emit?.('itemProc',{id,item:itemId});
+ }
+ return fired;}
+/** Kampftext-Meldung einer Waffenwirkung mit dem Symbol der Waffe (gleiche Meldungen fasst der Kampftext zu „×N“ zusammen). */
+function itemNote(g,text,itemId){const p=g.player;if(!g.sct?.({area:'note',kind:'proc',text,iconKey:itemId,color:'#ffd77a',procId:'item:'+itemId}))g.float?.(p.x,p.y-44,text,'#ffd77a');}
+/** Schadensfaktor eines Gegners aus Waffenwirkungen (E-75 Gartenzwerg: eingeschüchtert = weniger Schaden). */
+export const foeDamageFactor=e=>e?.cowed>0?1-(e.cowedBy||0):1;
 /** Zählstand eines Zählauslösers ("jede dritte Kelle") – für die Anzeige auf der Leiste. */
 export const procCount=(g,id)=>g.procState?.counts?.[id]||0;
 export const procIds=cs=>Object.keys(cs).filter(k=>k.startsWith('proc:')&&cs[k]>0).map(k=>k.slice(5));

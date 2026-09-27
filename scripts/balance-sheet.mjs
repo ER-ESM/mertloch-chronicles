@@ -46,11 +46,15 @@ function learnBuild(g,spec,path){const budget=Math.max(0,talentPoints(g)),ids=[]
 export const foeLife=(level,targets)=>Math.round(scaledStats(ARCHETYPES[SHEET.foe.type],level,true).hp*(targets===1?SHEET.foe.boss:1));
 
 /** Ein Übungskampf: 40 s gegen targets Gegner (1 = Boss, 3 = Feldgruppe) mit der gemeinsamen Prioritäten-Rotation. */
-export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,drop=null,seconds=SHEET.seconds,targets=3,seed=SHEET.seeds[0],buffs=false}){
+// E-75 (Waffenkammer): equip = {Platz: Gegenstand} ersetzt nach dem Satz einzelne Teile (feste Waffen im Vorher-nachher-Vergleich);
+// parry = der Held pariert den Puppenschlag, sobald Parade und globale Abklingzeit bereit sind (die Prioritäten-Rotation pariert nie);
+// dodge = er weicht dem Puppenschlag aus, sobald Ausweichen bereit ist, und steht danach wieder an seinem Platz. Das Sheet nutzt beides nicht.
+export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,drop=null,seconds=SHEET.seconds,targets=3,seed=SHEET.seeds[0],buffs=false,equip=null,parry=false,dodge=false}){
  const g=new Game(arena(),{classId,level,tutorial:{completed:true}});g.random=typeof seed==='function'?seed():rng(seed);g.lootRandom=()=>.99;
  const specOk=level>=BALANCE.player.specLevel&&spec;if(specOk)changeSpec(g,spec);
  equipSet(g,gear,level);
  if(extra){ITEMS.__probe={slot:'charm',level:1,stats:extra};g.rpg.equipment.trinket2='__probe';}
+ if(equip){for(const [slot,id] of Object.entries(equip)){addItem(g.rpg,id);equipItem(g,id,slot);}/* Würfe der Waffenwirkungen aus eigenem Strom (procs.js) */g.itemRandom=typeof seed==='function'?seed():rng(seed+1000);}
  g.refreshStats?.();
  const talents=specOk?learnBuild(g,spec,path):[];
  // Talentbeitrag: genau dieses Talent wieder verlernen; geht das nicht (andere bauen darauf auf), ist es gebunden.
@@ -61,21 +65,22 @@ export function simulate({classId,spec,path=0,level=10,gear='none',extra=null,dr
  const foeHp=foeLife(level,targets),spawn=i=>{const e=makeEnemy({x:1000+Math.round(32*Math.cos(i*2.1)),y:1000+Math.round(32*Math.sin(i*2.1))},i+1,{hp:foeHp,roamWait:100,attackTimer:100,stun:1e9,damage:1});e.aggro=true;e.ai='combat';e.arena=true;return e;};
  const foes=Array.from({length:targets},(_,i)=>spawn(i));g.enemies.push(...foes);let killed=0;
  g.target=foes[0];g.player.inCombat=7;startAuto(g);const healer=/Heilung/.test(SPEC_DEFS[spec]?.role||'');
- const hitSize=(BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel)*SHEET.incoming;let raw=0,taken=0,healed=0,shield=0,energySum=0,ticks=0,clock=0;
+ const hitSize=(BALANCE.player.baseHp+(level-1)*BALANCE.player.hpPerLevel)*SHEET.incoming;let raw=0,taken=0,healed=0,shield=0,energySum=0,ticks=0,clock=0,slowed=0,parries=0,dodges=0;
  for(let t=0;t<seconds;t+=SHEET.dt){
   g.player.inCombat=7;
   // Puppen bleiben stehen (Rückstoß würde sie aus der Reichweite schieben, echte Spieler gehen nach); gefallene ersetzt sofort eine neue.
   foes.forEach((e,i)=>{if(e.hp>0){e.x=e.home.x;e.y=e.home.y;return;}killed++;const n=spawn(i);g.enemies[g.enemies.indexOf(e)]=n;foes[i]=n;});
   if(!(g.target?.hp>0)){g.target=foes.find(e=>e.hp>0);startAuto(g);}
-  const p=g.player;if(!g.casting&&g.gcd<=0)rotate(g,{healer,healBelow:1/* Heiler-WoW: wie vor den Heiler-Kits heilt der Heiler, sobald Leben fehlt */});
+  const p=g.player;if(!g.casting&&g.gcd<=0){/* parry (E-75): kommt der Puppenschlag innerhalb des Paradefensters, geht die bereite Parade vor */if(parry&&clock>=.4&&(g.cooldowns.parry||0)<=0&&g.skills.some(s=>s.id==='parry')&&g.action('parry'))parries++;else rotate(g,{healer,healBelow:1/* Heiler-WoW: wie vor den Heiler-Kits heilt der Heiler, sobald Leben fehlt */});}
+  if(dodge&&clock>=.75&&(g.cooldowns.dash||0)<=0&&!g.casting){const at={x:p.x,y:p.y};if(g.action('dash')){dodges++;Object.assign(p,at);g.moveTo=null;}}
   clock+=SHEET.dt;if(clock>=1){clock-=1;const hp=p.hp,guard=g.classState?.guard||0;raw+=hitSize;g.hitPlayer(foes[0],hitSize);taken+=Math.max(0,hp-p.hp);shield+=Math.max(0,guard-(g.classState?.guard||0));if(p.hp<1)p.hp=1;}
-  energySum+=p.energy;ticks++;
+  energySum+=p.energy;ticks++;if(foes[0].controlSlow>0)slowed+=SHEET.dt;
   g.tick(SHEET.dt);/* g.tick schreitet den Zauber selbst voran (tickCasting) – ein zweiter Aufruf halbierte bis E-59 jede Zauberzeit */
   for(const ev of g.events)if(ev.type==='combat'&&ev.kind==='heal'&&ev.area==='in')healed+=ev.value||0;g.events.length=0;g.dead=false;if(p.hp<1)p.hp=1;
  }
  if(extra)delete ITEMS.__probe;
  const dealt=killed*foeHp+foes.reduce((a,e)=>a+(foeHp-Math.max(0,e.hp)),0),report=meterReport(g,'current','damage'),me=report.actors?.[0],heal=meterReport(g,'current','healing');
- return {dropped,kills:killed,dps:dealt/seconds,hps:Math.max(healed,(heal.total||0)+(heal.excess||0))/seconds,hpsEff:(heal.total||0)/seconds,/* E-72 R3: effektiv = ohne Überheilung */mitigated:(raw-taken)/seconds,shield:shield/seconds,energy:energySum/ticks,talents,
+ return {dropped,kills:killed,dps:dealt/seconds,hps:Math.max(healed,(heal.total||0)+(heal.excess||0))/seconds,hpsEff:(heal.total||0)/seconds,/* E-72 R3: effektiv = ohne Überheilung */mitigated:(raw-taken)/seconds,taken:taken/seconds,shield:shield/seconds,energy:energySum/ticks,slowed:slowed/seconds,parries,dodges,talents,
   skills:(me?.abilities||[]).map(a=>({name:a.name,share:a.share}))};
 }
 

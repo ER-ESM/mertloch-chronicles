@@ -1,6 +1,6 @@
 # Balance-Sheet
 
-Automatisch erzeugt von `npm run balance:sheet` · 2026-09-26 · 40 s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (10× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit 3 festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit 3 % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über `pathBuild`, Stufe 1 ohne Spezialisierung.
+Automatisch erzeugt von `npm run balance:sheet` · 2026-09-27 · 40 s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (10× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit 3 festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit 3 % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über `pathBuild`, Stufe 1 ohne Spezialisierung.
 
 Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** → Heilung/s (Ausstoß inkl. Überheilung; dahinter „eff.“ = tatsächlich geheilt, ohne Überheilung – ⚑ und Median bleiben am Ausstoß), **Tank** → Schutz/s (verhinderter Schaden + Deckung). Zelle: Kennzahl (Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung). ⚑ = mehr als 15 % daneben (ab Stufe 5).
 
@@ -31,7 +31,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | kevin-hunt | 2 | 50 (-16.9 %) | 125 (+10.5 %) | 154 (+7.6 %) | 195 (+21.2 %) ⚑ | 207 (+17.6 %) ⚑ | 232 (+8.3 %) |
 | schorsch-flamme | 0 | 72 (+18.8 %) | 98 (-13.4 %) | 133 (-7 %) | 149 (-7.3 %) | 167 (-5.6 %) | 187 (-13 %) |
 | schorsch-flamme | 1 | 72 (+18.8 %) | 97 (-14.2 %) | 111 (-22.1 %) ⚑ | 137 (-15 %) | 144 (-18.6 %) ⚑ | 187 (-12.9 %) |
-| schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-10.2 %) | 150 (-6.4 %) | 174 (-1.5 %) | 202 (-6.1 %) |
+| schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-10.2 %) | 149 (-7.4 %) | 174 (-1.5 %) | 202 (-6 %) |
 | kaethe-grand | 0 | 61 (+0.7 %) | 120 (+6.6 %) | 148 (+3.6 %) | 180 (+11.9 %) | 199 (+12.5 %) | 234 (+8.8 %) |
 | kaethe-grand | 1 | 61 (+0.7 %) | 97 (-13.7 %) | 110 (-23.3 %) ⚑ | 146 (-9.3 %) | 180 (+2.3 %) | 236 (+10 %) |
 | kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-5.7 %) | 163 (+1.7 %) | 202 (+14.6 %) | 270 (+25.8 %) ⚑ |
@@ -76,26 +76,26 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 94 (-0.7 %) | 167 (-10.8 %) | 205 (-23.5 %) ⚑ | 265 (-26.2 %) ⚑ | 315 (-26.5 %) ⚑ | 449 (-23.1 %) ⚑ |
+| dieter-brawl | 0 | 94 (-0.7 %) | 167 (-10.9 %) | 205 (-23.5 %) ⚑ | 265 (-26.2 %) ⚑ | 315 (-26.5 %) ⚑ | 449 (-23.1 %) ⚑ |
 | dieter-brawl | 1 | 94 (-0.7 %) | 197 (+5 %) | 264 (-1.3 %) | 369 (+3 %) | 429 (0 %) | 666 (+14.1 %) |
-| dieter-brawl | 2 | 94 (-0.7 %) | 186 (-0.7 %) | 243 (-9.2 %) | 305 (-14.8 %) | 393 (-8.2 %) | 499 (-14.6 %) |
+| dieter-brawl | 2 | 94 (-0.7 %) | 186 (-0.8 %) | 243 (-9.2 %) | 305 (-14.8 %) | 393 (-8.2 %) | 499 (-14.6 %) |
 | baerbel-feedback | 0 | 98 (+3.3 %) | 221 (+17.7 %) ⚑ | 264 (-1.5 %) | 320 (-10.7 %) | 388 (-9.5 %) | 502 (-14.1 %) |
-| baerbel-feedback | 1 | 98 (+3.3 %) | 229 (+22.1 %) ⚑ | 275 (+2.8 %) | 312 (-13.1 %) | 395 (-7.8 %) | 509 (-12.8 %) |
-| baerbel-feedback | 2 | 98 (+3.3 %) | 248 (+32.3 %) ⚑ | 327 (+21.9 %) ⚑ | 370 (+3.2 %) | 446 (+4.1 %) | 584 (-0.1 %) |
+| baerbel-feedback | 1 | 98 (+3.3 %) | 229 (+22 %) ⚑ | 275 (+2.8 %) | 312 (-13.1 %) | 395 (-7.8 %) | 509 (-12.8 %) |
+| baerbel-feedback | 2 | 98 (+3.3 %) | 248 (+32.2 %) ⚑ | 327 (+21.9 %) ⚑ | 370 (+3.2 %) | 446 (+4.1 %) | 584 (-0.1 %) |
 | baerbel-stage | 0 | 98 (+3.3 %) | 183 (-2.4 %) | 250 (-6.6 %) | 347 (-3.2 %) | 419 (-2.3 %) | 577 (-1.2 %) |
-| baerbel-stage | 1 | 98 (+3.3 %) | 203 (+8.2 %) | 301 (+12.3 %) | 400 (+11.5 %) | 447 (+4.2 %) | 604 (+3.5 %) |
+| baerbel-stage | 1 | 98 (+3.3 %) | 203 (+8.1 %) | 301 (+12.3 %) | 400 (+11.5 %) | 447 (+4.2 %) | 604 (+3.5 %) |
 | baerbel-stage | 2 | 98 (+3.3 %) | 183 (-2.8 %) | 231 (-13.7 %) | 294 (-17.9 %) ⚑ | 349 (-18.7 %) ⚑ | 478 (-18.2 %) ⚑ |
 | kevin-fuse | 0 | 84 (-11.4 %) | 181 (-3.4 %) | 254 (-5 %) | 335 (-6.5 %) | 417 (-2.8 %) | 604 (+3.4 %) |
-| kevin-fuse | 1 | 84 (-11.4 %) | 162 (-13.6 %) | 244 (-9 %) | 363 (+1.2 %) | 480 (+12 %) | 656 (+12.3 %) |
-| kevin-fuse | 2 | 84 (-11.4 %) | 231 (+23.1 %) ⚑ | 292 (+9 %) | 360 (+0.5 %) | 418 (-2.5 %) | 627 (+7.4 %) |
+| kevin-fuse | 1 | 84 (-11.4 %) | 162 (-13.7 %) | 244 (-9 %) | 363 (+1.2 %) | 480 (+12 %) | 656 (+12.3 %) |
+| kevin-fuse | 2 | 84 (-11.4 %) | 231 (+23 %) ⚑ | 292 (+9 %) | 360 (+0.5 %) | 418 (-2.5 %) | 627 (+7.4 %) |
 | kevin-hunt | 0 | 84 (-11.4 %) | 199 (+5.8 %) | 263 (-1.7 %) | 340 (-5 %) | 415 (-3.1 %) | 581 (-0.5 %) |
 | kevin-hunt | 1 | 84 (-11.4 %) | 192 (+2.3 %) | 252 (-5.9 %) | 334 (-6.9 %) | 402 (-6.2 %) | 538 (-7.8 %) |
-| kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.2 %) | 274 (+2.4 %) | 374 (+4.3 %) | 453 (+5.8 %) | 584 (0 %) |
-| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+15 %) ⚑ | 392 (+9.2 %) | 456 (+6.4 %) | 650 (+11.2 %) |
-| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.3 %) | 268 (0 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
-| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 269 (+0.5 %) | 369 (+3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
+| kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.1 %) | 274 (+2.4 %) | 374 (+4.3 %) | 453 (+5.8 %) | 584 (0 %) |
+| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+15 %) ⚑ | 392 (+9.3 %) | 455 (+6.2 %) | 660 (+13 %) |
+| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.4 %) | 268 (0 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
+| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2 %) | 269 (+0.5 %) | 369 (+3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
 | kaethe-grand | 0 | 95 (0 %) | 198 (+5.3 %) | 296 (+10.3 %) | 348 (-2.8 %) | 452 (+5.6 %) | 572 (-2.1 %) |
-| kaethe-grand | 1 | 95 (0 %) | 160 (-14.5 %) | 232 (-13.5 %) | 295 (-17.7 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
+| kaethe-grand | 1 | 95 (0 %) | 160 (-14.6 %) | 232 (-13.5 %) | 295 (-17.7 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
 | kaethe-grand | 2 | 95 (0 %) | 161 (-14.1 %) | 276 (+2.9 %) | 407 (+13.6 %) | 488 (+13.8 %) | 669 (+14.4 %) |
 | kaethe-falsch | 0 | 95 (0 %) | 173 (-8 %) | 241 (-10 %) | 321 (-10.4 %) | 366 (-14.6 %) | 514 (-12 %) |
 | kaethe-falsch | 1 | 95 (0 %) | 168 (-10.6 %) | 302 (+12.8 %) | 404 (+12.6 %) | 503 (+17.4 %) ⚑ | 604 (+3.5 %) |
@@ -154,7 +154,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | kevin-hunt | 1 | 98 (-12.5 %) | 230 (0 %) | 295 (-5.1 %) | 411 (-4.5 %) | 485 (-7.4 %) | 641 (-6.4 %) |
 | kevin-hunt | 2 | 98 (-12.5 %) | 227 (-1.5 %) | 308 (-1.1 %) | 430 (0 %) | 516 (-1.4 %) | 667 (-2.6 %) |
 | schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3 %) | 340 (+9.3 %) | 478 (+11.2 %) | 563 (+7.5 %) | 737 (+7.5 %) |
-| schorsch-flamme | 1 | 127 (+14.3 %) | 236 (+2.2 %) | 314 (+0.8 %) | 459 (+6.8 %) | 537 (+2.6 %) | 791 (+15.4 %) ⚑ |
+| schorsch-flamme | 1 | 127 (+14.3 %) | 237 (+2.7 %) | 314 (+0.8 %) | 459 (+6.8 %) | 537 (+2.6 %) | 791 (+15.4 %) ⚑ |
 | schorsch-flamme | 2 | 127 (+14.3 %) | 230 (-0.3 %) | 321 (+3.2 %) | 439 (+2.2 %) | 528 (+0.8 %) | 751 (+9.7 %) |
 | kaethe-grand | 0 | 101 (-9 %) | 237 (+2.7 %) | 337 (+8.5 %) | 432 (+0.5 %) | 561 (+7.1 %) | 724 (+5.8 %) |
 | kaethe-grand | 1 | 101 (-9 %) | 199 (-13.8 %) | 276 (-11.3 %) | 385 (-10.6 %) | 524 (0 %) | 676 (-1.3 %) |
@@ -216,7 +216,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 | kevin-hunt | 1 | 129 (-10.7 %) | 248 (-4 %) | 345 (-7.5 %) | 456 (-11.6 %) | 557 (-8.7 %) | 763 (-5.8 %) |
 | kevin-hunt | 2 | 129 (-10.7 %) | 268 (+3.4 %) | 379 (+1.6 %) | 505 (-2.1 %) | 626 (+2.8 %) | 810 (0 %) |
 | schorsch-flamme | 0 | 152 (+5.2 %) | 286 (+10.5 %) | 421 (+12.8 %) | 604 (+17 %) ⚑ | 716 (+17.5 %) ⚑ | 984 (+21.4 %) ⚑ |
-| schorsch-flamme | 1 | 152 (+5.2 %) | 274 (+6 %) | 364 (-2.3 %) | 560 (+8.5 %) | 676 (+11 %) | 960 (+18.6 %) ⚑ |
+| schorsch-flamme | 1 | 152 (+5.2 %) | 276 (+6.6 %) | 364 (-2.3 %) | 560 (+8.5 %) | 676 (+11 %) | 960 (+18.6 %) ⚑ |
 | schorsch-flamme | 2 | 152 (+5.2 %) | 274 (+6 %) | 376 (+0.9 %) | 534 (+3.6 %) | 658 (+7.9 %) | 909 (+12.2 %) |
 | kaethe-grand | 0 | 125 (-13.5 %) | 268 (+3.6 %) | 400 (+7.1 %) | 553 (+7.1 %) | 674 (+10.7 %) | 992 (+22.5 %) ⚑ |
 | kaethe-grand | 1 | 125 (-13.5 %) | 239 (-7.7 %) | 326 (-12.6 %) | 460 (-10.9 %) | 582 (-4.4 %) | 797 (-1.7 %) |
@@ -740,7 +740,7 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 ### schorsch-flamme · Pfad 0 · Stufe 10 ·340 Schaden/s · Ausrüstung +156.1 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.3 Schaden/s · Taktgefühl 0.2 Schaden/s · Bastelgrips -1.8 Schaden/s · -0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.3 Schaden/s · Taktgefühl 0.2 Schaden/s · Bastelgrips -1.9 Schaden/s · -0.1 Heilung/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
 **Kniffe (Anteil am Schaden):** Schwenkgrill 23.2 % · Servieren 16.7 % · Popcorn 16.5 % · Grillzange 15.8 % · Stichflamme 8.1 % · Autoangriff · Zangenklapper 7 % · Flambiert 4.9 % · Dampf 4.7 % · Glutbrocken 2.3 % · Glutbrand 0.7 %
 

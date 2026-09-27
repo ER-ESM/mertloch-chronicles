@@ -9,7 +9,7 @@ Ein Inhalts-Agent kann hier im Hintergrund arbeiten, ohne UI, Renderer oder Engi
 | Datei | Inhalt | Wird gelesen von |
 |---|---|---|
 | `balance.js` | Alle Stellschrauben: EP-Kurve, Lebenspunkte, Wertungskurven, Gegenstandsbudget, Gegner-Skalierung, Beute-Münzen | rpg.js, engine.js, itemization.js, progression.js |
-| `items.js` | `ITEM_CATALOG` (jeder Gegenstand), `PROCS` (Effekte der Dorflegenden), `ICONS`, `SLOTS`, `RARITIES` | rpg.js, itemization.js |
+| `items.js` | `ITEM_CATALOG` (jeder Gegenstand), `PROCS` (Effekte der Dorflegenden und – mit `trigger`, milder – der Waffenkammer, E-75), `ITEM_PROC_TRIGGERS`, `ICONS`, `SLOTS`, `RARITIES` | rpg.js, itemization.js, procs.js |
 | `drops.js` | `DROP_TABLES` je Gegnerfamilie, `FOOD_DROPS` | itemization.js |
 | `affixes.js` | Zusätze gewürfelter Beute (E-40): `LOOT_PREFIXES`, `LOOT_EPITHETS`, `SLOT_GROUPS`, Namensbau `affixedName()`, Tooltip-Zeilen `affixLines()`/`affixNumbers()` | itemization.js, describe.js |
 | `enemies.js` | `ARCHETYPES` (Feld), `ELITES`, `CAMP_ENEMIES` (Lager), `BOSSES`, `CAST_SETS` (Angriffsmuster), `SPAWN_TABLES` | encounters.js, engine.js |
@@ -55,7 +55,7 @@ Ein Fundstück heißt `[Vorsilbe] Grundteil Spec-Nachsatz [Beiname]`, z. B. „K
 
 ## Was die Engine heute kann und was nicht
 
-- **Kann:** beliebig viele Archetypen, Elite (`elite:true`, `damage`-Faktor), Bosse mit Phasen-Sprüchen, eigene `CAST_SETS`, Beutefamilien, Verpflegung mit `heal`/`energy`, Uniques mit den Procs aus `PROCS`, Quest-Vorlagen je Typ mit eigenen Item-/Gegnernamen und Gesprächszeilen, gewichtete Spawn-Tabellen nach Entfernung.
+- **Kann:** beliebig viele Archetypen, Elite (`elite:true`, `damage`-Faktor), Bosse mit Phasen-Sprüchen, eigene `CAST_SETS`, Beutefamilien, Verpflegung mit `heal`/`energy`, Uniques mit den Procs aus `PROCS`, feste Waffen mit Waffenwirkung (`PROCS`-Eintrag mit `trigger`: Pfütze, Heilung/Ressource, Glutbrand, Streuschaden, Bremse, Einschüchterung, Zusatzschaden – E-75), Quest-Vorlagen je Typ mit eigenen Item-/Gegnernamen und Gesprächszeilen, gewichtete Spawn-Tabellen nach Entfernung.
 - **Kann noch nicht:** Akt-1-Kapitel 2–4 (Daten fertig; brauchen Lager in `world-layout.js` und einen Kapitelumschalter in `engine.js`), Erinnerungsfetzen, Basisbau, Mentoren-NPCs an der Bude, Händler, Handwerk aus Material, neue *aktive* Fähigkeiten ohne Icon, Gegner-Sprüche im HUD (`ENEMY_BARKS` liegen bereit), Dorfbewohner-Sprechblasen mit Text (`VILLAGERS.says` liegt bereit), eigene Sprites je `variant`.
 
 ## Balancing-Korridor (Stand des ersten Berichts)

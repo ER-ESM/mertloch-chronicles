@@ -1,9 +1,9 @@
-// Waffenkammer 2026-09-25: acht feste Waffen als normale Gegenstände – Werte, Symbol, Fundort, noch OHNE Sondereffekt
-// (Nutzerentscheidung: Effekte kommen in einer eigenen Runde, Ideen in docs/backlog/loot.md).
+// Waffenkammer 2026-09-25: acht feste Waffen als normale Gegenstände – Werte, Symbol, Fundort (E-73). Die milden Waffenwirkungen
+// kamen in einer eigenen Runde (E-75) und werden in tests/waffeneffekte.test.mjs geprüft.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {ITEM_CATALOG,ICONS,DROP_TABLES,HOTSPOTS,WORLD_NOTICES,PROFESSION_RECIPES,PROFESSIONS,SHOP_STOCK,BALANCE,itemPoints,WEAPON_TYPES,validateContent} from '../content/index.js';
+import {ITEM_CATALOG,ICONS,DROP_TABLES,HOTSPOTS,WORLD_NOTICES,PROFESSION_RECIPES,PROFESSIONS,SHOP_STOCK,BALANCE,itemPoints,WEAPON_TYPES,validateContent,PROCS} from '../content/index.js';
 import {equipmentAppearance} from '../equipment-appearance.js';
 import {compatibleSlots,itemSlotName} from '../equipment.js';
 import {rollDrop} from '../itemization.js';
@@ -28,13 +28,13 @@ const WAFFEN={
 };
 const IDS=Object.keys(WAFFEN);
 
-test('alle acht Waffen stehen im Katalog: Name, Symbolwort, Platz, Hände, Stufe 3–12, gemischte Güte, kein Sondereffekt',()=>{
+test('alle acht Waffen stehen im Katalog: Name, Symbolwort, Platz, Hände, Stufe 3–12, gemischte Güte, Waffenwirkung statt Legenden-Proc',()=>{
  assert.deepEqual(validateContent(),[]);
  for(const [id,want] of Object.entries(WAFFEN)){const d=ITEM_CATALOG[id];
   assert.ok(d,id+' fehlt');assert.ok(d.name&&d.description&&d.look,id+': Name, Text, Bildhinweis');assert.ok(ICONS.includes(d.icon),id+': Symbolwort');
   assert.equal(d.slot,want.slot,id+': Platz');assert.ok(d.level>=3&&d.level<=12,id+': Stufe '+d.level);
   assert.ok(['uncommon','rare'].includes(d.rarity),id+': Güte '+d.rarity);
-  assert.ok(!d.unique&&!d.proc&&!d.retired,id+': normale Ausrüstung ohne Proc');
+  assert.ok(!d.unique&&!d.retired,id+': normale Ausrüstung, keine Dorflegende');assert.ok(PROCS[d.proc]?.trigger,id+': Waffenwirkung (E-75), kein Legenden-Proc');
   if(want.shield){assert.equal(d.shield,true,id+': Schild');assert.equal(d.weapon,undefined,id);assert.deepEqual(compatibleSlots(d),['offhand']);}
   else{assert.equal(d.weapon.type,want.type,id+': Bauart');assert.equal(d.weapon.hands,want.hands,id+': Hände');assert.equal(d.weapon.speed,WEAPON_TYPES[want.type].speed,id+': Takt der Bauart');}
  }
