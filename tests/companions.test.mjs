@@ -160,3 +160,21 @@ test('Gruppe: Heil-Söldnerin heilt den verletzten Mitspieler über den Hilfsweg
  assert.ok(calls.length>=1,'Heilung an Moni geschickt');assert.equal(calls[0].n,'Moni');assert.ok(calls[0].amount>0);
  g.others=[{name:'Fremd',party:false,state:'combat',hp:10,x:c.x+30,y:c.y}];const before=calls.length;run(g,3);assert.equal(calls.length,before,'Fremde außerhalb der Gruppe nicht');
 });
+
+test('Söldner-Fenster (E-70 nirgends scrollen, 27.09.2026): Leiste, sechs kompakte Karten ohne Absätze, Preis im Knopf, Erklärungen im Tooltip',async()=>{
+ const {companionPanel}=await import('../companion-ui.js'),{COMPANION_UI:UI}=await import('../content/index.js');
+ const g=game(8,500),html=companionPanel(g,{tab:'offers'}),offers=[...html.matchAll(/<article class="companion-offer[^"]*"[^>]*data-offer="([^"]+)"/g)].map(m=>m[1]);
+ assert.equal(offers.length,g.companionOffers().length,'eine Karte je Angebot');assert.ok(offers.length<=6,'3 × 2 Karten');
+ assert.doesNotMatch(html,/<p[\s>]/,'keine Absätze im Anheuern-Reiter – Intro, Vertrag und Beschreibung stehen im Tooltip');
+ for(const c of COMPANIONS.filter(c=>offers.includes(c.id))){const card=html.split('data-offer="'+c.id+'"')[1].split('</article>')[0];
+  assert.ok(card.includes('data-tooltip-note="'+c.description),c.id+': Beschreibung im Tooltip des Kartenkopfs');
+  assert.match(card,/<button[^>]*data-companion-hire="[^"]+"[^>]*>.*data-offer-cost.*<b>\d+<\/b>.*class="hire-word"/,c.id+': Preis und Wort im Anheuern-Knopf');
+  assert.match(card,/<canvas width="48" height="48" data-ui-icon=/,c.id+': Rollensymbol 1:1 in Stufe 48 (Desktop)');}
+ assert.match(html,/data-companion-wallet[^>]*>500</,'Pfandmarken als Zahl in der Leiste');assert.match(html,/data-tooltip-note="[^"]*Schutz hält Gegner fern[^"]*"/,'Rollenerklärung im Tooltip');
+ for(const k of ['wallet','walletNote','slotsLabel','teamLong','teamShort'])assert.ok(UI[k],'Text '+k);for(const k of ['hired','dead','full','money'])assert.ok(UI.blockedShort[k],'Kurzgrund '+k);
+ for(const c of COMPANIONS.slice(0,4))assert.ok(g.hireCompanion(c.id,{free:true}).ok);
+ const team=companionPanel(g,{tab:'team'});
+ assert.equal((team.match(/data-companion-row="/g)||[]).length,4,'vier Truppenzeilen');assert.match(team,/<select data-companion-scope/,'Geltung bleibt eine Auswahl');
+ assert.equal((team.match(/data-companion-order="/g)||[]).length,3);assert.equal((team.match(/data-companion-stance="/g)||[]).length,3);
+ assert.match(team,/aria-label="Mein Ziel angreifen"/,'kurzer Knopftext, voller Name als Beschriftung');assert.doesNotMatch(team,/<p class="companion-empty"/);
+});

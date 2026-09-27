@@ -6582,19 +6582,19 @@
       "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
       "sheet": "assets/content-art/e32/sources/kevin-hunt-v1.png",
       "sourceRect": {
-        "x": 70,
-        "y": 241,
-        "w": 1126,
-        "h": 859
+        "x": 77,
+        "y": 184,
+        "w": 1119,
+        "h": 888
       },
       "bounds": {
         "x": 3,
         "y": 9,
         "w": 59,
-        "h": 45,
-        "count": 2183
+        "h": 47,
+        "count": 2247
       },
-      "sha256": "101f15c7e365978a25eb234b06e201d0c4a6726ea0da00b1f8855b98d62e493d"
+      "sha256": "f7fcca38b5772c7317ea174f56aae909eea6fa93aefcb09c23de23eda82c8a41"
     },
     "kevin-hunt-13": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -11987,7 +11987,7 @@
     },
     {
       "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
-      "sha256": "60d640de8a68425d4f1cd4522410f88055e09d5886ae19c50e9b8180279ed1f8",
+      "sha256": "1018a7a4bcca6997fa78bd02a37f9509e67bf335569c6b97a3c01404352fdac6",
       "talent": "kevin-hunt-12"
     },
     {
@@ -12130,7 +12130,7 @@
       "sha256": "afd8ad2d198d8d599001eaf0fd1cb4081e8f66b52bdb26fb4bb3846ee7374210"
     },
     "assets/content-art/e32/runtime/talents-kevin.png": {
-      "sha256": "540942645db10aae5d6ef3c90ba24a0e87772e4e301f2bc8cb2f519d4e83614e"
+      "sha256": "48c5c4a6f3868a31c95af5927d3de69a7b3d5932cabb5ed12bcc969b380df9bb"
     },
     "assets/content-art/e32/runtime/talents-schorsch.png": {
       "sha256": "ab44e55ac15d0e888e55fc11f8fac2152b51a950cbd7c56cc10be78d88bd4969"

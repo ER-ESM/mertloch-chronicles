@@ -54,11 +54,23 @@ export function slotState(g,h,id){
  }
  return null;
 }
-/** Lage der Grillgut-Plakette (Icon-Review R5) in Rasterpixeln der Ebene: inner = Innenmaß des Knopfs, (x1,y1) = seine äußere Ecke
- *  unten rechts. Ab 40 px Innenmaß steht das Grillgut doppelt (k = 2, 2 Rasterpixel je Bildpunkt wie bisher), darunter einfach.
- *  Maße: Grillgut (höchstens 10 × 7 Bildpunkte) + 1 px Kontur + Garrahmen (k px) + 1 px Tinte. Die Plakette sitzt auf der Knopfecke,
- *  ragt 1 px darüber hinaus (dazu 1 px Schatten) und lässt im 48er-Knopf rund vier Fünftel des Kniffs frei. */
-export function grillPlaque(inner,x1,y1){const k=inner>=40?2:1,w=10*k+4+2*k,h=7*k+4+2*k;return {k,w,h,x:x1+2-w,y:y1+2-h};}
+/** Lage der Grillgut-Plakette (Icon-Review R5, R7) in Rasterpixeln der Ebene: step = Symbolstufe des Kniffs (48/32/24, icon-steps.js),
+ *  (x1,y1) = die Ecke des SYMBOLS unten rechts (letztes Symbolpixel), nicht die des Knopfs. Die Größe folgt der Symbolstufe:
+ *  48er-Fassung (k = 2, 2 Rasterpixel je Bildpunkt) nur bei Symbolstufe 48, sonst die 32er-Fassung (k = 1). So deckt die Plakette auch
+ *  am Handy quer (Symbol 32 im 48er-Knopf) nur rund ein Achtel des Symbols statt etwa eines Drittels (R6).
+ *  Maße: Grillgut (höchstens 10 × 7 Bildpunkte) + 1 px Kontur + Garrahmen (k px) + 1 px Tinte. Die Plakette ragt 3 px über die
+ *  Symbolecke hinaus (dazu 1 px Schatten) – im Desktop-Knopf (48er-Symbol, 2-px-Rand) genau so weit wie bis R7 über die Knopfecke –
+ *  und lässt vom 48er-Symbol rund vier Fünftel frei. */
+export function grillPlaque(step,x1,y1){const k=step>=48?2:1,w=10*k+4+2*k,h=7*k+4+2*k;return {k,w,h,x:x1+4-w,y:y1+4-h};}
+/** Symbolfläche eines Kniffknopfs relativ zu seiner Innenfläche (Padding-Box): Stufe = Canvas-Breite (1:1, icon-steps.js), Lage aus
+ *  dem Layout. Ohne Symbol-Canvas gilt die Innenfläche selbst. Liest Layout – nur selten aufrufen (syncSlots: alle 2 s). */
+export function skillSymbolBox(b){
+ /* Leiste: canvas[data-skill-art] (app.js), Handy: canvas[data-touch-art] (mobile-controls.js) */const icon=b.querySelector(':scope>canvas:is([data-skill-art],[data-touch-art])')||b.querySelector(':scope>canvas:not(.rh-slot)');
+ if(!icon||!icon.offsetWidth)return {step:b.clientWidth>=48?48:b.clientWidth>=32?32:24,l:0,t:0,w:b.clientWidth,h:b.clientHeight};
+ let l=icon.offsetLeft,t=icon.offsetTop;
+ if(icon.offsetParent!==b){const r=icon.getBoundingClientRect(),q=b.getBoundingClientRect();l=Math.round(r.left-q.left-b.clientLeft);t=Math.round(r.top-q.top-b.clientTop);}
+ return {step:icon.width>=48?48:icon.width>=32?32:24,l,t,w:icon.offsetWidth,h:icon.offsetHeight};
+}
 const INK='#171f29',PAPER=['#f8f0d5','#e4dcc3','#c8c5af'];
 /** Bildkarte mit 1 Rasterpixel Tintenkontur (Stilbibel: Kontur 1 px #171f29) an (x,y) links oben, k Rasterpixel je Bildpunkt. */
 function inked(c,name,x,y,k,tint=null){const cv=sprite(name,{tint}),ink=sprite(name,{tint:[INK,1]});if(!cv||!ink)return;const w=cv.width*k,h=cv.height*k;
@@ -362,8 +374,8 @@ export function mountResourceHud(getGame){
    set('rhLabel',s?.label);set('rhSettle',s?.art==='settle'&&s.lv?s.lv:null);set('rhServe',s?.art==='serve'&&s.item?s.state:null);set('rhTeach',teach&&id==='strike'?1:null);
    let cv=b.querySelector(':scope>canvas.rh-slot');if(!s){cv?.remove();continue;}
    if(!cv){cv=el('canvas','rh-slot',b);cv.setAttribute('aria-hidden','true');cv.dataset.rhSlot='';}
-   /* Knopfgröße nur alle 2 s messen (Layout-Lesen direkt nach den HUD-Schreibvorgängen kostet) */const now=performance.now();if(!cv._sizeAt||now-cv._sizeAt>2000){cv._sizeAt=now;cv._size=b.clientWidth+'x'+b.clientHeight;}
-   const sig=JSON.stringify(s)+cv._size;if(cv.dataset.sig===sig)continue;cv.dataset.sig=sig;paintSlot(cv,b,s);
+   /* Knopf- und Symbolmaß nur alle 2 s messen (Layout-Lesen direkt nach den HUD-Schreibvorgängen kostet) */const now=performance.now();if(!cv._sizeAt||now-cv._sizeAt>2000){cv._sizeAt=now;cv._symbol=skillSymbolBox(b);cv._size=b.clientWidth+'x'+b.clientHeight+'/'+Object.values(cv._symbol).join(',');}
+   const sig=JSON.stringify(s)+cv._size;if(cv.dataset.sig===sig)continue;cv.dataset.sig=sig;paintSlot(cv,b,s,cv._symbol);
   }
  }
  /** Kette längs des Knopfrands (2 Rasterpixel je Kettenpixel): flaches Glied (Ring 4 × 3) im Wechsel mit einem Glied von der
@@ -376,15 +388,16 @@ export function mountResourceHud(getGame){
   for(let i=0;i<n;i++){const x=x0+off+i*6*k;flat(x,y0-k,false);flat(x,y1-2*k+1,false);if(i<n-1){side(x+4*k,y0,false);side(x+4*k,y1-k+1,false);}}
   const vspan=y1-y0+1,m=Math.max(1,Math.floor((vspan-2*k)/(6*k))),voff=Math.round((vspan-m*6*k+2*k)/2);
   for(let i=0;i<m;i++){const y=y0+voff+i*6*k;flat(x0-k,y,true);flat(x1-2*k+1,y,true);if(i<m-1){side(x0,y+4*k,true);side(x1-k+1,y+4*k,true);}}}
- function paintSlot(cv,b,s){
+ function paintSlot(cv,b,s,sym=skillSymbolBox(b)){
   const W=cv.width=Math.max(8,Math.round(cv.clientWidth)),H=cv.height=Math.max(8,Math.round(cv.clientHeight)),c=cv.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,W,H);
-  const pad=Math.round((W-b.clientWidth)/2),bw=Math.max(1,Math.round((b.offsetWidth-b.clientWidth)/2)),x0=pad-bw,y0=Math.round((H-b.clientHeight)/2)-bw,x1=W-1-x0,y1=H-1-y0;
+  const pad=Math.round((W-b.clientWidth)/2),padY=Math.round((H-b.clientHeight)/2),bw=Math.max(1,Math.round((b.offsetWidth-b.clientWidth)/2)),x0=pad-bw,y0=padY-bw,x1=W-1-x0,y1=H-1-y0;
   const cx=Math.round(W/2);
   if(s.art==='card'){if(s.follow)chainFrame(c,x0,y0,x1,y1);if(s.stich)drawBadge(c,'stich',x1-2,y0+2,8,2);return;}
   if(s.art==='settle'){/* drei Marken wie auf der Augen-Leiste: 61 rot, 90 gold, 120 schwarz-gold; erreichte leuchten */const cols=[['#e8453a','#ffb0a0'],['#f2c14e','#fff3b0'],['#1a1418','#f2c14e']];
    for(let i=0;i<3;i++){const x=cx-10+i*10,y=y1-5,on=s.lv>i,[f,hi]=cols[i];for(let yy=-3;yy<=3;yy++)for(let xx=-3;xx<=3;xx++){const d=Math.abs(xx)+Math.abs(yy);if(d>3)continue;px(c,x+xx,y+yy,1,1,d===3?(on&&i===2?'#f2c14e':'#0c0a08'):on?(d<=1?hi:f):'#3a3430');}}return;}
-  // Schorsch (Icon-Review R5): keine deckende Fläche mehr – das Grillgut steht als Plakette auf der Knopfecke unten rechts, der Kniff bleibt frei.
-  if(s.art==='lay'||s.art==='serve')paintGrillSlot(c,grillPlaque(b.clientWidth,x1,y1),s);
+  // Schorsch (Icon-Review R5/R7): keine deckende Fläche – das Grillgut steht als Plakette an der Symbolecke unten rechts, in der
+  // Fassung der Symbolstufe (Handy quer: Symbol 32 im 48er-Knopf → 32er-Plakette an der Symbolecke), der Kniff bleibt frei.
+  if(s.art==='lay'||s.art==='serve')paintGrillSlot(c,grillPlaque(sym.step,pad+sym.l+sym.w-1,padY+sym.t+sym.h-1),s);
  }
 
  function draw(g,now){const h=resourceHud(g);if(!h||!meter)return;

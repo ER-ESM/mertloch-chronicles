@@ -7,6 +7,13 @@ Verbindlich für alle Symbole (Gegenstände, Kniffe, Talente) und für Codex-Auf
 
 ## Anzeige (gilt für alle Familien)
 - **Nur 1:1-Stufen 48 / 32 / 24 px.** Canvas = CSS-Größe (`icon-steps.js`, `icon-steps.css`). Der Test `tests/icon-steps.test.mjs` prüft das.
+- **Entschieden (27.09.2026, Icon-Review R6/R7): Handy quer zeigt Symbolstufe 32 im 48er-Knopf.** Touch-Kniffknöpfe unter 52 px
+  (Kompakt, flach quer) tragen das Symbol in Stufe 32, mittig (`touchStep` in `icon-steps.js`). Es gibt kein Zwischenmaß (40/44) und
+  kein Hochziehen auf 48, die Stufen bleiben 48/32/24. Der Punkt ist damit nicht mehr offen.
+- **Zustandsebenen folgen der Symbolstufe, nicht dem Knopf.** Eine Plakette auf einem Kniff (Schorschs Grillgut, `grillPlaque` in
+  `resource-hud.js`) nimmt bei Symbolstufe 48 die 48er-Fassung, bei 32 und 24 die 32er-Fassung. Sie sitzt an der **Symbolecke**
+  unten rechts (3 px Überstand), nicht an der Knopfecke. Am Handy quer deckt sie so rund ein Achtel des Symbols statt eines Drittels.
+  Geprüft von `tests/e72-lernen.test.mjs`.
 - **Verkleinern nur per Flächenmittel**, danach Einrasten auf die **eigenen Farben des Symbols** (`shrinkPixels`/`sourcePalette` in `content-art.js`).
   - Kein Nächster Nachbar, kein `styleIcon` (32 px, 40 Farben) für Katalogbilder.
   - Kein festes Einrasten auf `PRECISION_PALETTE`, sonst gehen Blau, Rosa, Lila und helles Grün verloren.
