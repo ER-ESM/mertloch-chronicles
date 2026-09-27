@@ -1,5 +1,7 @@
 # Handy-Messung Runde 3 (27.09.2026, Branch perf-handy)
 
+> Fortsetzung: [runde4.md](runde4.md) – Namensschilder bei „Niedrig“ auf der Weltfläche (Runde 3 → Runde 4).
+
 Messaufbau wie in [vorher.md](vorher.md): Android-Nachbildung 915 × 412, Gerätepixel 2,625, Touch, Grafik „Niedrig“, Stufe 20, Canvas beschleunigt (SwiftShader), `?render=gpu`. Maßstab ist die **Hauptfaden-Zeit je Bild**.
 
 - **Vorher** ist Runde 2, also main 660f4ac4 (Build #832), aus einer Kopie auf eigenem Port ausgeliefert. **Nachher** ist dieser Branch.

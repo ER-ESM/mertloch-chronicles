@@ -77,6 +77,22 @@ function drawPollen(c,ox,oy,W,H,time){for(const b of pollenBins)b.length=0;for(l
  c.fillStyle='#eee5a9';for(let k=0;k<POLLEN_LEVELS;k++){const b=pollenBins[k];if(!b.length)continue;c.globalAlpha=.2+k/(POLLEN_LEVELS-1)*.28;c.beginPath();for(let j=0;j<b.length;j+=2)c.rect(b[j],b[j+1],1,1);c.fill();}}
 const rect=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x*2)/2,Math.round(y*2)/2,Math.round(w*2)/2,Math.round(h*2)/2);};
 const ellipse=(c,color,x,y,rx,ry)=>{c.fillStyle=color;c.beginPath();c.ellipse(Math.round(x),Math.round(y),rx,ry,0,0,Math.PI*2);c.fill();};
+/* Runde 4: Schriftbild je Name (Schrift, Farbe, Maßstab, Text) für die Schilder auf der Weltfläche – ein Kopierbefehl statt Kontur + Füllung je Bild.
+   Der Textanker liegt im Bild auf ganzen Gerätepixeln; nur bei voller Deckkraft (Kontur und Füllung mit globalAlpha < 1 sähen als Gruppe anders aus)
+   und ganzzahliger Lage, sonst zeichnet paintLabels wie bisher direkt. Neu geladene Schriften leeren den Speicher. */
+const labelSprites=new Map(),LABEL_SPRITES=240;let labelMeasure=null;
+try{globalThis.document?.fonts?.addEventListener?.('loadingdone',()=>labelSprites.clear());}catch{}
+export const labelSpriteStats={hits:0,builds:0,direct:0};
+function labelSprite(c,l,t){const s=t.a;if(!(s>0)||t.b||t.c||Math.abs(t.a-t.d)>1e-9||typeof globalThis.document?.createElement!=='function'){labelSpriteStats.direct++;return false;}
+ const key=l.font+'|'+l.color+'|'+s+'|'+l.text;let sp=labelSprites.get(key);
+ if(sp){labelSprites.delete(key);labelSprites.set(key,sp);labelSpriteStats.hits++;}
+ else{labelMeasure||=document.createElement('canvas').getContext('2d');const m=labelMeasure;m.font=l.font;m.textAlign='center';const tm=m.measureText(l.text),size=parseFloat(/(\d+(?:\.\d+)?)px/.exec(l.font)?.[1]||'8'),pad=1.4+1.5,
+   left=Math.max(tm.actualBoundingBoxLeft??tm.width/2,tm.width/2),right=Math.max(tm.actualBoundingBoxRight??tm.width/2,tm.width/2),asc=Math.max(tm.actualBoundingBoxAscent||0,size),desc=Math.max(tm.actualBoundingBoxDescent||0,size*.3),
+   ax=Math.ceil((left+pad)*s),ay=Math.ceil((asc+pad)*s),cv=document.createElement('canvas');cv.width=ax+Math.ceil((right+pad)*s);cv.height=ay+Math.ceil((desc+pad)*s);
+  const x=cv.getContext('2d');x.setTransform(s,0,0,s,ax,ay);x.textAlign='center';x.lineJoin='round';x.strokeStyle='#1d2b24f0';x.font=l.font;x.lineWidth=2.8;x.strokeText(l.text,0,0);x.fillStyle=l.color;x.fillText(l.text,0,0);
+  sp={cv,ax,ay};labelSprites.set(key,sp);labelSpriteStats.builds++;if(labelSprites.size>LABEL_SPRITES)labelSprites.delete(labelSprites.keys().next().value);}
+ const dx=s*l.x+t.e-sp.ax,dy=s*l.y+t.f-sp.ay;if(Math.abs(dx-Math.round(dx))>1e-6||Math.abs(dy-Math.round(dy))>1e-6){labelSpriteStats.direct++;return false;}
+ c.setTransform(1,0,0,1,0,0);c.globalAlpha=1;c.drawImage(sp.cv,Math.round(dx),Math.round(dy));return true;}
 let labelBoxes=[];
 // Beschriftungen des Hauptbilds werden gesammelt und am Bildende auf einer eigenen Ebene in voller Bildschirmauflösung gezeichnet:
 // die Welt darf zur Leistung halb aufgelöst rendern, Namen und Kampfzahlen bleiben trotzdem gestochen scharf (MMO-Maßstab).
@@ -248,17 +264,27 @@ export class Renderer {
   shrine(c){fountain(c,this.world.shrine,this.game.time);if(hoverNear(this.game,this.world.shrine,28,-14))label(c,'Konterbrunnen',this.world.shrine.x,this.world.shrine.y-33,'#d3e1c4',7);}
   draw(){labelTarget=this.ctx;labelQueue=[];try{this.drawScene();}finally{const q=labelQueue;labelQueue=null;this.flushLabels(q);}}
   /** Gesammelte Beschriftungen auf die Schrift-Ebene über Welt, Effekten und Licht. */
-  flushLabels(q){const world=this.canvas;if(!q||!world.parentNode){if(this.labelCanvas&&this.labelDirty){this.labelCtx.clearRect(0,0,this.labelCanvas.width,this.labelCanvas.height);this.labelDirty=false;}return;}
-   if(!this.labelCanvas){const cv=this.labelCanvas=document.createElement('canvas');cv.className='world-labels';cv.setAttribute('aria-hidden','true');Object.assign(cv.style,{position:'absolute',inset:'0',width:'100%',height:'100%',pointerEvents:'none'});this.labelCtx=cv.getContext('2d');}
+  /** Runde 4 (Nutzerentscheidung): Bei Grafik „Niedrig“ – niedrige Auflösung ohne Licht- und Effektebene über der Welt – liegen die Schilder auf der
+   *  Weltfläche statt auf einer eigenen Leinwand. Jede Leinwand, die sich in einem Bild ändert, kostet fest (gemessen 3–5 ms je Bild bei 4×).
+   *  Schärfer ist die eigene Leinwand (2 statt 1,33 Pixel je CSS-Pixel); sie bleibt auf allen anderen Stufen. Umschalten wirkt im nächsten Bild. */
+  labelsOnWorld(){const s=this.game.settings||{};return !!s.lowRes&&!s.fullRes&&s.light===false&&s.fx===false&&globalThis.__labelsOnWorld!==false;}
+  flushLabels(q){const world=this.canvas,onWorld=this.labelsOnWorld();
+   if(this.labelCanvas&&this.labelHidden!==onWorld){this.labelHidden=onWorld;this.labelCanvas.style.display=onWorld?'none':'';if(onWorld&&this.labelDirty){this.labelCtx.clearRect(0,0,this.labelCanvas.width,this.labelCanvas.height);this.labelDirty=false;}}
+   if(onWorld){if(!q||!world.parentNode||!q.length&&!q.speech)return;const ws=cssSize(world),c=this.ctx;c.save();try{this.paintLabels(c,q,world,world.width/Math.max(1,ws.w),1,true);}finally{c.restore();}return;}
+   if(!q||!world.parentNode){if(this.labelCanvas&&this.labelDirty){this.labelCtx.clearRect(0,0,this.labelCanvas.width,this.labelCanvas.height);this.labelDirty=false;}return;}
+   if(!this.labelCanvas){const cv=this.labelCanvas=document.createElement('canvas');cv.className='world-labels';cv.setAttribute('aria-hidden','true');Object.assign(cv.style,{position:'absolute',inset:'0',width:'100%',height:'100%',pointerEvents:'none'});this.labelCtx=cv.getContext('2d');this.labelHidden=false;}
    const cv=this.labelCanvas;/* Handy-Messung 2026-09-27: Reihenfolge der Ebenen nur prüfen, wenn sich die Zahl der Geschwister ändert, statt querySelectorAll je Bild */const kids=world.parentNode.childElementCount;if(cv.parentNode!==world.parentNode||this.labelOrderKids!==kids){this.labelOrderKids=kids+(cv.parentNode===world.parentNode?0:1);const last=[...world.parentNode.querySelectorAll(':scope>canvas.world-fx,:scope>canvas.world-light')].pop()||world;if(last.nextSibling!==cv)last.after(cv);}
    const dpr=Math.min(2,window.devicePixelRatio||1),ws=cssSize(world)/* Handy-Messung 2026-09-27: ResizeObserver statt clientWidth je Bild */,wd=Math.max(1,Math.round(ws.w*dpr)),ht=Math.max(1,Math.round(ws.h*dpr));if(cv.width!==wd||cv.height!==ht){cv.width=wd;cv.height=ht;}
    const c=this.labelCtx,sp=q.speech;c.setTransform(1,0,0,1,0,0);if(this.labelDirty||q.length||sp)c.clearRect(0,0,wd,ht);this.labelDirty=q.length>0||!!sp;if(!q.length&&!sp)return;
-   const k=wd/world.width;c.textAlign='center';c.lineJoin='round';c.strokeStyle='#1d2b24f0';
+   this.paintLabels(c,q,cv,dpr,wd/world.width,false);}
+  /** Schilder, Auftragszeichen, Wegmarke und Sprechblasen zeichnen: auf die Schrift-Leinwand (k = deren Pixel je Weltflächen-Pixel) oder auf die
+   *  Weltfläche (k = 1, sprites: fertige Schriftbilder je Name wiederverwenden). Überlappung, Blasen, HUD-Flächen, Titelband und Kegel wie bisher. */
+  paintLabels(c,q,cv,dpr,k,sprites){const sp=q.speech;c.textAlign='center';c.lineJoin='round';c.strokeStyle='#1d2b24f0';
    // Sprechblasen zuerst vermessen (Probelauf auf 1×1-Leinwand): Namensschilder darunter entfallen, solange die Blase steht.
    let bubbleBoxes=[];if(sp){const pr=this.probeCtx||(this.probeCtx=Object.assign(document.createElement('canvas'),{width:1,height:1}).getContext('2d'));pr.setTransform(sp.t);bubbleBoxes=drawBossSpeech(pr,sp.bubbles,sp.opts).map(r=>({x:r.x+sp.opts.ox,y:r.y+sp.opts.oy,w:r.w,h:r.h}));}
    const under=b=>b&&bubbleBoxes.some(r=>b.x<r.x+r.w+4&&b.x+b.w>r.x-4&&b.y<r.y+r.h+4&&b.y+b.h>r.y-4);
    /* Schilder über dem eigenen Helden werden durchscheinend: die Figur bleibt immer sichtbar (Persona-Befund 2026-09-24) */const hero=q.hero,overHero=b=>hero&&b&&b.x<hero.x+hero.w&&b.x+b.w>hero.x&&b.y<hero.y+hero.h&&b.y+b.h>hero.y;
-   /* Runde 4b: im Titelband des Zonentitels tritt die Schrift zurück (world-labels.js labelYield) */const hud=labelHudFree(cv,dpr,k),yl=labelYield(cv,dpr,k),cones=q.cones||[],/* Etappe 2: keine Weltschrift im Kegel – Schilder darin treten zurück */inCone=b=>cones.length&&b&&inCones(cones,b.x+b.w/2,b.y+b.h/2);for(const l of q){if(under(l.b)||!hud(l))continue;const t=l.t,fade=(overHero(l.b)?.6:1)*yl(l)*(inCone(l.b)?.22:1);c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a*fade;if(l.paint){c.save();l.paint(c,fade);c.restore();continue;}c.font=l.font;c.lineWidth=2.8;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
+   /* Runde 4b: im Titelband des Zonentitels tritt die Schrift zurück (world-labels.js labelYield) */const hud=labelHudFree(cv,dpr,k),yl=labelYield(cv,dpr,k),cones=q.cones||[],/* Etappe 2: keine Weltschrift im Kegel – Schilder darin treten zurück */inCone=b=>cones.length&&b&&inCones(cones,b.x+b.w/2,b.y+b.h/2);for(const l of q){if(under(l.b)||!hud(l))continue;const t=l.t,fade=(overHero(l.b)?.6:1)*yl(l)*(inCone(l.b)?.22:1);if(sprites&&!l.paint&&l.a*fade===1&&labelSprite(c,l,t))continue;c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);c.globalAlpha=l.a*fade;if(l.paint){c.save();l.paint(c,fade);c.restore();continue;}c.font=l.font;c.lineWidth=2.8;c.strokeText(l.text,l.x,l.y);c.fillStyle=l.color;c.fillText(l.text,l.x,l.y);}
    c.globalAlpha=1;
    if(sp){const t=sp.t;c.save();c.setTransform(t.a*k,t.b*k,t.c*k,t.d*k,t.e*k,t.f*k);this.speechLayout=drawBossSpeech(c,sp.bubbles,sp.opts);c.restore();}
    c.setTransform(1,0,0,1,0,0);}

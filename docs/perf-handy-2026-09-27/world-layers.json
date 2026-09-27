@@ -1,5 +1,5 @@
 {
- "date": "2026-09-27T19:13:07.918Z",
+ "date": "2026-09-27T19:55:13.368Z",
  "scenes": [
   {
    "name": "Bude",
@@ -16,18 +16,18 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 1074,
+   "opsBefore": 1130,
    "states": {
     "clanCamp": {
      "n": 1,
      "leaks": {}
     },
-    "wolf": {
-     "n": 3,
-     "leaks": {}
-    },
     "tree": {
      "n": 7,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 4,
      "leaks": {}
     },
     "professionNode": {
@@ -83,9 +83,9 @@
     },
     "garlands": {
      "pixels": 661504,
-     "diff": 0.241,
-     "over2": 0.03,
-     "over8": 0.009,
+     "diff": 0.288,
+     "over2": 0.033,
+     "over8": 0.01,
      "max": 137
     },
     "camp": {
@@ -97,9 +97,9 @@
     },
     "props": {
      "pixels": 661504,
-     "diff": 0.65,
+     "diff": 0.647,
      "over2": 0.008,
-     "over8": 0.007,
+     "over8": 0.008,
      "max": 94
     },
     "neutral": {
@@ -111,8 +111,8 @@
     },
     "pollen": {
      "pixels": 661504,
-     "diff": 0.013,
-     "over2": 0.002,
+     "diff": 0.014,
+     "over2": 0.003,
      "over8": 0,
      "max": 4
     },
@@ -126,12 +126,12 @@
     "alle": {
      "pixels": 661504,
      "diff": 0.866,
-     "over2": 0.021,
-     "over8": 0.007,
+     "over2": 0.024,
+     "over8": 0.008,
      "max": 94
     }
    },
-   "opsAfter": 494
+   "opsAfter": 550
   },
   {
    "name": "Hof (drinnen)",
@@ -148,7 +148,7 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 1087,
+   "opsBefore": 1131,
    "states": {
     "clanCamp": {
      "n": 1,
@@ -162,12 +162,12 @@
      "n": 10,
      "leaks": {}
     },
-    "estate": {
-     "n": 2,
-     "leaks": {}
-    },
     "wolf": {
      "n": 5,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 2,
      "leaks": {}
     },
     "professionNode": {
@@ -215,8 +215,8 @@
     },
     "garlands": {
      "pixels": 661504,
-     "diff": 0.307,
-     "over2": 0.037,
+     "diff": 0.55,
+     "over2": 0.045,
      "over8": 0.011,
      "max": 151
     },
@@ -229,10 +229,10 @@
     },
     "props": {
      "pixels": 661504,
-     "diff": 0.865,
+     "diff": 0.849,
      "over2": 0.009,
      "over8": 0.008,
-     "max": 94
+     "max": 93
     },
     "neutral": {
      "pixels": 661504,
@@ -243,8 +243,8 @@
     },
     "pollen": {
      "pixels": 661504,
-     "diff": 0.014,
-     "over2": 0.002,
+     "diff": 0.015,
+     "over2": 0.003,
      "over8": 0,
      "max": 4
     },
@@ -257,13 +257,13 @@
     },
     "alle": {
      "pixels": 661504,
-     "diff": 1.144,
-     "over2": 0.024,
+     "diff": 1.292,
+     "over2": 0.034,
      "over8": 0.008,
-     "max": 94
+     "max": 93
     }
    },
-   "opsAfter": 497
+   "opsAfter": 541
   },
   {
    "name": "Kirche/Clan-Lager",
@@ -280,14 +280,10 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 1054,
+   "opsBefore": 1113,
    "states": {
     "tree": {
      "n": 10,
-     "leaks": {}
-    },
-    "wolf": {
-     "n": 5,
      "leaks": {}
     },
     "professionNode": {
@@ -295,6 +291,10 @@
      "leaks": {}
     },
     "building": {
+     "n": 6,
+     "leaks": {}
+    },
+    "wolf": {
      "n": 6,
      "leaks": {}
     },
@@ -394,10 +394,10 @@
     },
     "pollen": {
      "pixels": 661504,
-     "diff": 0.013,
+     "diff": 0.014,
      "over2": 0.002,
      "over8": 0,
-     "max": 4
+     "max": 5
     },
     "memo": {
      "pixels": 661504,
@@ -414,7 +414,7 @@
      "max": 59
     }
    },
-   "opsAfter": 660
+   "opsAfter": 719
   },
   {
    "name": "Dorf",
@@ -434,14 +434,10 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 450,
+   "opsBefore": 403,
    "states": {
     "clanCamp": {
      "n": 1,
-     "leaks": {}
-    },
-    "wolf": {
-     "n": 5,
      "leaks": {}
     },
     "tree": {
@@ -459,12 +455,6 @@
     "player": {
      "n": 1,
      "leaks": {}
-    },
-    "other": {
-     "n": 1,
-     "leaks": {
-      "fillStyle": 1
-     }
     }
    },
    "features": {
@@ -491,10 +481,10 @@
     },
     "props": {
      "pixels": 661504,
-     "diff": 0.034,
-     "over2": 0.014,
-     "over8": 0.013,
-     "max": 137
+     "diff": 0.02,
+     "over2": 0,
+     "over8": 0,
+     "max": 2
     },
     "neutral": {
      "pixels": 661504,
@@ -505,10 +495,10 @@
     },
     "pollen": {
      "pixels": 661504,
-     "diff": 0.014,
+     "diff": 0.015,
      "over2": 0.002,
      "over8": 0,
-     "max": 4
+     "max": 5
     },
     "memo": {
      "pixels": 661504,
@@ -519,13 +509,13 @@
     },
     "alle": {
      "pixels": 661504,
-     "diff": 0.034,
+     "diff": 0.035,
      "over2": 0.002,
      "over8": 0,
-     "max": 4
+     "max": 5
     }
    },
-   "opsAfter": 177
+   "opsAfter": 130
   },
   {
    "name": "Feld",
@@ -545,7 +535,7 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 281,
+   "opsBefore": 245,
    "states": {
     "clanCamp": {
      "n": 1,
@@ -554,12 +544,6 @@
     "tree": {
      "n": 4,
      "leaks": {}
-    },
-    "wolf": {
-     "n": 4,
-     "leaks": {
-      "globalAlpha": 4
-     }
     },
     "building": {
      "n": 5,
@@ -572,12 +556,6 @@
     "estate": {
      "n": 1,
      "leaks": {}
-    },
-    "other": {
-     "n": 1,
-     "leaks": {
-      "fillStyle": 1
-     }
     }
    },
    "features": {
@@ -618,10 +596,10 @@
     },
     "pollen": {
      "pixels": 661504,
-     "diff": 0.016,
-     "over2": 0.003,
+     "diff": 0.015,
+     "over2": 0.001,
      "over8": 0,
-     "max": 4
+     "max": 3
     },
     "memo": {
      "pixels": 661504,
@@ -632,13 +610,13 @@
     },
     "alle": {
      "pixels": 661504,
-     "diff": 0.016,
-     "over2": 0.003,
+     "diff": 0.015,
+     "over2": 0.001,
      "over8": 0,
-     "max": 4
+     "max": 3
     }
    },
-   "opsAfter": 142
+   "opsAfter": 106
   },
   {
    "name": "Wald",
@@ -658,27 +636,15 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 312,
+   "opsBefore": 287,
    "states": {
     "tree": {
      "n": 24,
      "leaks": {}
     },
-    "wolf": {
-     "n": 3,
-     "leaks": {
-      "globalAlpha": 3
-     }
-    },
     "player": {
      "n": 1,
      "leaks": {}
-    },
-    "other": {
-     "n": 1,
-     "leaks": {
-      "fillStyle": 1
-     }
     },
     "clanCamp": {
      "n": 1,
@@ -724,9 +690,9 @@
     "pollen": {
      "pixels": 661504,
      "diff": 0.015,
-     "over2": 0.002,
+     "over2": 0.003,
      "over8": 0,
-     "max": 3
+     "max": 4
     },
     "memo": {
      "pixels": 661504,
@@ -738,12 +704,12 @@
     "alle": {
      "pixels": 661504,
      "diff": 0.015,
-     "over2": 0.002,
+     "over2": 0.003,
      "over8": 0,
-     "max": 3
+     "max": 4
     }
    },
-   "opsAfter": 145
+   "opsAfter": 120
   },
   {
    "name": "Kampf (Bude)",
@@ -761,7 +727,7 @@
     "over8": 0,
     "max": 0
    },
-   "opsBefore": 1152,
+   "opsBefore": 1287,
    "states": {
     "clanCamp": {
      "n": 1,
@@ -769,6 +735,10 @@
     },
     "tree": {
      "n": 7,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 10,
      "leaks": {}
     },
     "professionNode": {
@@ -803,10 +773,6 @@
      "n": 1,
      "leaks": {}
     },
-    "wolf": {
-     "n": 4,
-     "leaks": {}
-    },
     "player": {
      "n": 1,
      "leaks": {}
@@ -814,6 +780,12 @@
     "npc": {
      "n": 1,
      "leaks": {}
+    },
+    "other": {
+     "n": 1,
+     "leaks": {
+      "fillStyle": 1
+     }
     }
    },
    "features": {
@@ -826,10 +798,10 @@
     },
     "garlands": {
      "pixels": 661504,
-     "diff": 0.17,
+     "diff": 0.169,
      "over2": 0,
      "over8": 0,
-     "max": 3
+     "max": 2
     },
     "camp": {
      "pixels": 661504,
@@ -840,7 +812,7 @@
     },
     "props": {
      "pixels": 661504,
-     "diff": 0.647,
+     "diff": 0.638,
      "over2": 0.008,
      "over8": 0.007,
      "max": 94
@@ -857,7 +829,7 @@
      "diff": 0.015,
      "over2": 0.003,
      "over8": 0,
-     "max": 4
+     "max": 3
     },
     "memo": {
      "pixels": 661504,
@@ -868,13 +840,13 @@
     },
     "alle": {
      "pixels": 661504,
-     "diff": 0.832,
+     "diff": 0.82,
      "over2": 0.011,
      "over8": 0.007,
      "max": 94
     }
    },
-   "opsAfter": 572
+   "opsAfter": 707
   }
  ],
  "problems": []

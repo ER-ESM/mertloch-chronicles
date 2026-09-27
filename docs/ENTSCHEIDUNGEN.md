@@ -1536,3 +1536,30 @@ Nächste Runde wären Welt-Ebenen: Möbel und Lager an der Bude als Zwischenbild
 **Messfallen.**
 - Der Held kann während einer Laufmessung sterben; danach misst der Lauf den Todesbildschirm (jetzt erkannt).
 - Die Pixelprüfung braucht eingefrorene Echtzeit (`performance.now`: Baukasten-Bildfolgen, Söldner-Übergänge) sowie feste Kamera und Haus-Überblendung, sonst weicht schon dieselbe Fassung ab.
+
+**Nachtrag 27.09.2026 · Runde 4 (Nutzerentscheidung): Namensschilder bei „Niedrig“ auf der Weltfläche.** Bericht: `docs/perf-handy-2026-09-27/runde4.md`.
+
+**Entschieden.**
+1. **Bei Grafik „Niedrig“ liegen Schilder, Auftragszeichen, Wegmarke und Sprechblasen auf der Weltfläche.**
+   - Das gilt bei niedriger Auflösung ohne Licht- und Effektebene.
+   - Die eigene Schrift-Leinwand (1822 × 816) wird dann einmal geleert und ausgeblendet; sie ändert sich nicht mehr je Bild.
+   - Auf allen anderen Stufen, auch „Niedrig“ mit zugeschaltetem Licht oder Effekten, bleibt sie scharf auf der eigenen Leinwand, über Licht und Effekten.
+   - Umschalten wirkt im nächsten Bild (`Renderer.labelsOnWorld`).
+2. **Ein Zeichenweg für beide Ziele** (`paintLabels`): Blasen, HUD-Flächen, Titelband, Kegel, Held-Durchsicht und Stapelung bleiben wie bisher.
+3. **Schriftbild je Name** (Schrift, Farbe, Maßstab, Text):
+   - ein Kopierbefehl statt Kontur und Füllung je Bild, Textanker auf ganzen Gerätepixeln
+   - durchscheinende Schilder weiter direkt
+   - neu geladene Schriften leeren den Speicher
+4. **Klassenleiste, Porträts und Minikarte bleiben, wie sie sind.** Die Klassenleiste zeichnet höchstens 30 Hz. Nur bei Änderung (10 Hz) brachte das in der Umschalter-Messung nichts messbar; kleine Leinwände kosten fest kaum etwas. Porträts zeichnen in ≤ 5 % der Bilder, die Minikarte draußen gar nicht je Bild.
+
+**Ergebnis (Umschalter im selben Lauf, 2 × 24 s je Zelle).**
+- In allen 8 Zellen (4× und 6×, Stillstand, Laufen, Kampf, fern der Bude) besser:
+  - p50 um 0,6–5,6 ms, p95 um 0,3–5,6 ms
+  - Paint/Commit um 0,8–3,5 ms, `DoUpdateLayers` um 0,9–3,3 ms
+- 4× Laufen: 27,7/50,6 → 24,0/45,0 ms, Bilder über 50 ms 31 → 13.
+- 4× Kampf: 32,5/53,5 → 29,8/50,7 ms.
+- Die Wechselmessung R3 → R4 streut wie gehabt und bestätigt die Richtung in 6 von 8 Zellen.
+- Die Schrift ist bei „Niedrig“ sichtbar gröber (1,33 statt 2 Pixel je CSS-Pixel); Größe, Kontur, Lage und Stapelung sind gleich.
+- Bilder: `namensschilder-niedrig-vorher.jpg` / `-nachher.jpg`, dazu Ausschnitte ×3.
+
+**Offen.** Weiter p95 ≤ 16,7 ms bei 4×: Übrig bleiben der feste Commit der Weltfläche, Figuren, Logik, HUD und Layout-Phase. Eine Messung auf einem echten Handy fehlt.
