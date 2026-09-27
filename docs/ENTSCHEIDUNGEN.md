@@ -1175,6 +1175,20 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
    - **Big Bs Wut hängt am Laufstand** (Fix 6, `docs/DUNGEON-FIX6-2026-09-26.md`): 4:50 mit stehender Rita, 4:00, wenn Rita liegt, 3:35, wenn zusätzlich die Kirmes-Urkunde vorliegt. Der Tooltip der Wut und die Lupe der Urkunde nennen den Grund.
    - Anlass war Prüfer-Playtest 4: Eine passive Heilerin gewann mit liegender Rita und drei Beweisen, weil beides den Kampf um rund ein Drittel verkürzt. Die Simulation hatte nur den schwersten Laufstand gemessen und misst jetzt alle.
    - Eine feste frühere Wut für alle wurde verworfen: Mit Startausrüstung bliebe zu wenig Luft.
+   - **Die Wut ist ein harter Wipe wie in WoW** (Fix 7, `docs/DUNGEON-FIX7-2026-09-26.md`). Ab dem Ausbruch trifft alle 2 s eine Wutwelle die ganze Gruppe, 8 % des Höchstlebens je Wutstufe; die Stufe steigt alle 5 s.
+     - Die Gruppe stirbt so nach 10–18 s, vorher lebte sie noch 20–46 s.
+     - „Ausweichen“ aus dem Letzten Aufgebot schützt unter Wut nicht mehr.
+     - Anlass war Prüfer-Playtest 5: Eine Heilerin griff nur 20 s an und blieb dann passiv, trotzdem gewann die Gruppe tief in der Wut.
+   - **Geprüft wird im echten Spiel** (`scripts/dungeon-serie.mjs`, 20 Läufe je Rolle und Variante):
+
+     | Variante | Siege |
+     |---|---|
+     | passiv wie die Prüferin | 0/60 (vorher 7/60) |
+     | ganz passiv | 0/60 |
+     | tot | 0/60 |
+     | aktiv | 60/60, 50–72 s vor der Wut |
+
+   - Offen: An Gerd und Kurt gewinnt „20 s angreifen, dann passiv“ noch 20/30 bzw. 10/30. Gerd ist der erste Boss; eine frühere Wut ließe Startausrüstung zu wenig Luft. Das bleibt bewusst nachsichtig, der Endboss verlangt Einsatz.
 3. **Die Rolle zählt:**
    - Den Kegel-Tank-Buster mildert nur ein Schutz; ohne Schutz erscheint im Bossrahmen der Chip „Ungeschützt“.
    - Fallen Schutz und Heilung, nutzen die Schadenssöldner einmal je Kampf ihr „Letztes Aufgebot“ (doppelter Schaden, Ausweichen, Notfall-Schorle), jeweils mit Ansage.
@@ -1291,3 +1305,9 @@ Punkt 2 oben („Söldner fast vollwertig“) gilt damit nur noch, solange der H
 6. **Figurengrafik** (Pelzmantel, Exposé, Korkenzieher, Ringlicht und Hufeisen an der Figur, Kegelkugel blau) geht erst nach Freigabe des Nutzers live (Regel vom 23.09.).
 
 **Ergebnis R4:** Gegenstände **5**, Kniffe 4, Talente 3 (Kernklassen 4,5; Schorsch/Käthe warten auf Codex), Gear an der Figur 4, Gesamt 4.
+
+**Ergebnis R7 (27.09.2026, live #801): alle Familien und der Gesamtlook bei 5.**
+- Codex-Läufe eingebaut: E-72 mit 46 Bildern, MertlochIcons mit 10, dazu 10 Nachbilder. Kniff-Kacheln sind deckend und ohne Blaumisch, Talentmotive 59 ± 1 px.
+- Die Figurengrafik (Pelzmantel, Exposé, Korkenzieher, Ringlicht, Hufeisen, Kegelkugel blau) hat der Nutzer freigegeben.
+- Schorschs Rost-Ebene ist eine Plakette im Kachelstil. Procs zeigen nur einen Leuchtrand, keine Umfärbung (Test `icon-proc-filter`).
+- Kein Blocker, aber offen: Plakette und Stufe am Handy quer, die Kontur der schwarzen Katze (kevin-hunt-12), Hufeisen und Kegelkugel an derselben Hüfte.

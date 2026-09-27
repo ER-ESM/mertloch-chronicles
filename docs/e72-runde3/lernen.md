@@ -13,4 +13,11 @@ Ziel: Die Regeln werden über das Bild gelernt, nicht über Text. Namen und Zahl
 | 6 | Gegenprüfung: Anni – Trendherzen und Algorithmus-Ring sichtbar, aber nirgends stand, was den Trend hebt/bricht → eine Zeile im Trend-Tooltip. Dieter – Bon mit Strichen und Betrag sichtbar, nichts geändert | `content/hud.js` |
 | – | Leuchten „Ideales Zeitfenster“ auf Käthes Kartenplätzen und Schorschs Auflegen/Servieren abgeschaltet (war Zufall aus der Markierungsregel: Karte 2 und Auflegen glühten dauernd) | `combat-ui.js` |
 
-Prüfung: `node --test tests/e72-lernen.test.mjs` (6 Tests), `npm test` grün, Browser `node scripts/e72-lernen-check.mjs` (Screenshots in `docs/e72-runde3/lernen/`).
+**Icon-Review R5 (27.09.2026):** Die Ebene über Auflegen/Servieren war eine deckende schwarze Fläche mit Rost und Bratling und verdeckte die gemalten Kniffe. Jetzt ist sie eine Grillgut-Plakette unten rechts im Kachelstil (`grillPlaque`, `paintGrillSlot` in `resource-hud.js`).
+- Auflegen: Bestellzettel (Papier-Treppe) mit dem nächsten Stück, grünes Plus an der Ecke, grau bei vollem Rost.
+- Servieren: Glut mit Rost und dem garsten Stück. Der Garrahmen füllt sich im Uhrzeigersinn in der Farbe der Garstufe, mit goldenem Zielbereich. Bei „gar“ ein Funke, bei „Zu heiß“ helle Glut und eine Flamme.
+- Leerer Rost: nur im Kampf eine kalte Glut-Plakette.
+- Der Kniff bleibt zu rund vier Fünfteln frei.
+- Die Stufenregeln in `icon-steps.css` schließen die Ebene aus (`canvas:not(.rh-slot)`). Vorher schrumpfte sie dadurch auf 48 px und lag 8 px versetzt.
+
+Prüfung: `node --test tests/e72-lernen.test.mjs` (8 Tests, seit R5 mit Zustand und Plakette), `tests/icon-steps.test.mjs` (Stufenregeln ohne `.rh-slot`), `npm test` grün, Browser `node scripts/e72-lernen-check.mjs` (Screenshots in `docs/e72-runde3/lernen/`).

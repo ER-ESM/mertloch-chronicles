@@ -90,21 +90,22 @@
       "spec": "dieter-wall",
       "row": 3,
       "path": 1,
-      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-3-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-wall-v1.png",
       "sourceRect": {
-        "x": 711,
-        "y": 91,
-        "w": 178,
-        "h": 145
+        "x": 107,
+        "y": 291,
+        "w": 1047,
+        "h": 670
       },
       "bounds": {
         "x": 3,
-        "y": 8,
+        "y": 13,
         "w": 59,
-        "h": 48,
-        "count": 1861
+        "h": 38,
+        "count": 1422
       },
-      "sha256": "d9270223eb7e90e40bdd55dcc871b37d4dd838968365490f1bfc880f6b13978c"
+      "sha256": "fa63b41d7ca81eb60b331503cf267b10a96543fe5779ee4b68ff5ce811bc64ce"
     },
     "dieter-wall-4": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -220,21 +221,22 @@
       "spec": "dieter-wall",
       "row": 8,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-8-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-wall-v1.png",
       "sourceRect": {
-        "x": 471,
-        "y": 295,
-        "w": 200,
-        "h": 150
+        "x": 171,
+        "y": 139,
+        "w": 977,
+        "h": 949
       },
       "bounds": {
         "x": 3,
-        "y": 10,
+        "y": 3,
         "w": 59,
-        "h": 44,
-        "count": 2061
+        "h": 57,
+        "count": 2468
       },
-      "sha256": "5b7ed257ea75ee9fe16be6bb0a244102d895bf13f63fd4677b82922f66990f19"
+      "sha256": "949c421903182023e5ce80880737e6e8ebd9a8b64a1476e58039eeb8767ad4d0"
     },
     "dieter-wall-9": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -324,21 +326,22 @@
       "spec": "dieter-wall",
       "row": 3,
       "path": 0,
-      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-12-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-wall-v1.png",
       "sourceRect": {
-        "x": 26,
-        "y": 491,
-        "w": 193,
-        "h": 160
+        "x": 95,
+        "y": 135,
+        "w": 1066,
+        "h": 988
       },
       "bounds": {
         "x": 3,
-        "y": 8,
+        "y": 5,
         "w": 59,
-        "h": 49,
-        "count": 2182
+        "h": 55,
+        "count": 2727
       },
-      "sha256": "7a743a1cc24ed01536886e3ce20747db5b0bd630afb0b3b07520c28b68914ede"
+      "sha256": "cbcf71bb4711170328f9b08b209eacd762d05289d09a2607c7c34dafdc309220"
     },
     "dieter-wall-13": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -688,21 +691,22 @@
       "spec": "dieter-wall",
       "row": 3,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-wall-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-26-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-wall-v1.png",
       "sourceRect": {
-        "x": 469,
-        "y": 926,
-        "w": 196,
-        "h": 159
+        "x": 125,
+        "y": 170,
+        "w": 1006,
+        "h": 898
       },
       "bounds": {
         "x": 3,
-        "y": 8,
+        "y": 6,
         "w": 59,
-        "h": 48,
-        "count": 2123
+        "h": 53,
+        "count": 2283
       },
-      "sha256": "bcd839826733fef960bf9f78f75ed5ae279b0bf13a3d96b5363f34315a3352b3"
+      "sha256": "a399c87afd25aca15cf683788247518904b5aabb78c418efd15c3c703c9d1af9"
     },
     "dieter-wall-27": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1442,21 +1446,22 @@
       "spec": "dieter-brawl",
       "row": 0,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-25-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 262,
-        "y": 888,
-        "w": 178,
-        "h": 183
+        "x": 149,
+        "y": 229,
+        "w": 990,
+        "h": 824
       },
       "bounds": {
         "x": 3,
-        "y": 2,
-        "w": 57,
-        "h": 59,
-        "count": 1897
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2299
       },
-      "sha256": "b9137ac303152f4da0ba94c6c7d428b505eefe25d25423ad06029ea91ed6e22c"
+      "sha256": "87f20a72eb1775fdea73a377854a9fbdbb2dd54c7bc48c55bd6f4985f6803dbf"
     },
     "dieter-brawl-26": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1468,21 +1473,22 @@
       "spec": "dieter-brawl",
       "row": 1,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-26-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 480,
-        "y": 888,
-        "w": 186,
-        "h": 180
+        "x": 228,
+        "y": 168,
+        "w": 908,
+        "h": 914
       },
       "bounds": {
         "x": 3,
         "y": 3,
         "w": 59,
-        "h": 57,
-        "count": 1989
+        "h": 59,
+        "count": 1861
       },
-      "sha256": "3a5d0044bd0799c4f99185b9f48bcfbc5ac3151dddf503f553f791dcbd3bbecf"
+      "sha256": "7e90143d899337f0fe7e9148a7b49440dfecb76543032974ecbd9aad5934074d"
     },
     "dieter-brawl-27": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1520,21 +1526,22 @@
       "spec": "dieter-brawl",
       "row": 6,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-28-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 931,
-        "y": 891,
-        "w": 183,
-        "h": 173
+        "x": 85,
+        "y": 101,
+        "w": 1087,
+        "h": 1073
       },
       "bounds": {
-        "x": 2,
-        "y": 4,
+        "x": 3,
+        "y": 3,
         "w": 59,
-        "h": 56,
-        "count": 1816
+        "h": 58,
+        "count": 2368
       },
-      "sha256": "90211407cec9e4a6ae1a7b71a9474d6af635e90f36447ecd4b72d5ccd8e5272e"
+      "sha256": "e64debe0b29cb1f4e161bdff08d96db899daa68d4be4e7baf4d6e10fb711c211"
     },
     "dieter-brawl-29": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1546,21 +1553,22 @@
       "spec": "dieter-brawl",
       "row": 7,
       "path": 2,
-      "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sourceRect": {
-        "x": 1163,
-        "y": 886,
-        "w": 165,
-        "h": 179
+        "x": 202,
+        "y": 218,
+        "w": 876,
+        "h": 840
       },
       "bounds": {
-        "x": 5,
-        "y": 3,
-        "w": 54,
-        "h": 59,
-        "count": 1955
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2671
       },
-      "sha256": "22770880bf514e34a6ab1f6430f04f07d74765b7a02c74246f142ebad104dd06"
+      "sha256": "8f57bb362258f3d18ed9fe1f4979c66ac7925b758c5ce1b28e099f3dd998d2d1"
     },
     "dieter-brew-0": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -1624,21 +1632,22 @@
       "spec": "dieter-brew",
       "row": 2,
       "path": 1,
-      "source": "assets/content-art/e32/sources/dieter-brew-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brew-2-v1.png",
+      "sheet": "assets/content-art/e32/sources/dieter-brew-v1.png",
       "sourceRect": {
-        "x": 470,
-        "y": 63,
-        "w": 189,
-        "h": 171
+        "x": 193,
+        "y": 159,
+        "w": 865,
+        "h": 945
       },
       "bounds": {
-        "x": 3,
-        "y": 5,
-        "w": 59,
-        "h": 53,
-        "count": 2114
+        "x": 5,
+        "y": 3,
+        "w": 54,
+        "h": 59,
+        "count": 2019
       },
-      "sha256": "449a7d4d211c0fbc4076ee962ef2695cc76bcc96794cfc8c93e7d812bcfb4f1c"
+      "sha256": "482951aa81e2304fcd98d520924687c5b3c61edf177cb7c238c7589417a49378"
     },
     "dieter-brew-3": {
       "atlas": "assets/content-art/e32/runtime/talents-dieter.png",
@@ -2742,21 +2751,22 @@
       "spec": "baerbel-care",
       "row": 2,
       "path": 1,
-      "source": "assets/content-art/e32/sources/baerbel-care-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/baerbel-care-15-v1.png",
+      "sheet": "assets/content-art/e32/sources/baerbel-care-v1.png",
       "sourceRect": {
-        "x": 701,
-        "y": 479,
-        "w": 192,
-        "h": 171
+        "x": 118,
+        "y": 97,
+        "w": 1028,
+        "h": 1064
       },
       "bounds": {
         "x": 3,
-        "y": 6,
-        "w": 59,
-        "h": 53,
-        "count": 1983
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 2317
       },
-      "sha256": "ca1f0b561a78ba0e9d3ac9fe6cae11c3fbf4ccf2ef3c5e9086b48987c5854ea7"
+      "sha256": "85a1b0a895eae546d64c88505e17e22c8c8b3a2dd68d44bdf735fc6c818df97c"
     },
     "baerbel-care-16": {
       "atlas": "assets/content-art/e32/runtime/talents-baerbel.png",
@@ -2794,21 +2804,22 @@
       "spec": "baerbel-care",
       "row": 3,
       "path": 2,
-      "source": "assets/content-art/e32/sources/baerbel-care-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/baerbel-care-17-v1.png",
+      "sheet": "assets/content-art/e32/sources/baerbel-care-v1.png",
       "sourceRect": {
-        "x": 1165,
-        "y": 493,
-        "w": 181,
-        "h": 163
+        "x": 202,
+        "y": 172,
+        "w": 845,
+        "h": 897
       },
       "bounds": {
-        "x": 3,
-        "y": 5,
-        "w": 59,
-        "h": 53,
-        "count": 2227
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2394
       },
-      "sha256": "41e2e9af9d00e35451c8459b161ae4f83a086670a6b65af9900a3f97b57da177"
+      "sha256": "8568779f298697c460ca8928a1f9b8552933fcb41b3ff6e7870a56548e9cd95e"
     },
     "baerbel-care-18": {
       "atlas": "assets/content-art/e32/runtime/talents-baerbel.png",
@@ -4458,21 +4469,22 @@
       "spec": "baerbel-stage",
       "row": 3,
       "path": 1,
-      "source": "assets/content-art/e32/sources/baerbel-stage-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/baerbel-stage-21-v1.png",
+      "sheet": "assets/content-art/e32/sources/baerbel-stage-v1.png",
       "sourceRect": {
-        "x": 703,
-        "y": 681,
-        "w": 165,
-        "h": 177
+        "x": 109,
+        "y": 112,
+        "w": 1053,
+        "h": 999
       },
       "bounds": {
-        "x": 5,
-        "y": 3,
-        "w": 55,
-        "h": 59,
-        "count": 2532
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 1697
       },
-      "sha256": "be46ac9a015e6b3608fa49c82065d1772699ebd54719bcac2b93825c7ae819b3"
+      "sha256": "419f48bd42406426336e1a9f8c0ae8c31a6ef8f3f586eaade8adf1219703c561"
     },
     "baerbel-stage-22": {
       "atlas": "assets/content-art/e32/runtime/talents-baerbel.png",
@@ -5342,21 +5354,22 @@
       "spec": "kevin-fuse",
       "row": 1,
       "path": 2,
-      "source": "assets/content-art/e32/sources/kevin-fuse-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/kevin-fuse-25-v1.png",
+      "sheet": "assets/content-art/e32/sources/kevin-fuse-v1.png",
       "sourceRect": {
-        "x": 252,
-        "y": 903,
-        "w": 198,
-        "h": 175
+        "x": 175,
+        "y": 180,
+        "w": 903,
+        "h": 897
       },
       "bounds": {
         "x": 3,
-        "y": 6,
+        "y": 3,
         "w": 59,
-        "h": 52,
-        "count": 2425
+        "h": 59,
+        "count": 2753
       },
-      "sha256": "597c75eed56c78fb7b91ac90c0b72037a9b2da27b0c4cf2d22856800fd203255"
+      "sha256": "16d325414f399e259ea395c01812a73462cb4976ea6a4897107750d5f08a4f25"
     },
     "kevin-fuse-26": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -5758,21 +5771,22 @@
       "spec": "kevin-iron",
       "row": 1,
       "path": 0,
-      "source": "assets/content-art/e32/sources/kevin-iron-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/kevin-iron-11-v1.png",
+      "sheet": "assets/content-art/e32/sources/kevin-iron-v1.png",
       "sourceRect": {
-        "x": 1152,
-        "y": 277,
-        "w": 204,
-        "h": 178
+        "x": 124,
+        "y": 204,
+        "w": 1019,
+        "h": 858
       },
       "bounds": {
-        "x": 2,
-        "y": 6,
+        "x": 3,
+        "y": 7,
         "w": 59,
-        "h": 51,
-        "count": 2114
+        "h": 50,
+        "count": 1983
       },
-      "sha256": "bba89a3d17ed8edc10d5cbd1111f0a380cbf387ef5a169229c6b6853959413ca"
+      "sha256": "373f8d843f8512a768432fcf8b5ba04530fc2e9f00fcab4aa54c304152b6dc7c"
     },
     "kevin-iron-12": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -6070,21 +6084,22 @@
       "spec": "kevin-iron",
       "row": 1,
       "path": 2,
-      "source": "assets/content-art/e32/sources/kevin-iron-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/kevin-iron-23-v1.png",
+      "sheet": "assets/content-art/e32/sources/kevin-iron-v1.png",
       "sourceRect": {
-        "x": 1155,
-        "y": 696,
-        "w": 195,
-        "h": 187
+        "x": 94,
+        "y": 136,
+        "w": 1070,
+        "h": 1024
       },
       "bounds": {
         "x": 3,
         "y": 4,
         "w": 59,
-        "h": 57,
-        "count": 2819
+        "h": 56,
+        "count": 2515
       },
-      "sha256": "88e891afa6710c665882fdd7adc749489bb78a114b814869d79b2f7af5685c4f"
+      "sha256": "15c3fa65642abc2c987d541036ec7cf56621717713a6c71996d60b078da97b3f"
     },
     "kevin-iron-24": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -6564,21 +6579,22 @@
       "spec": "kevin-hunt",
       "row": 3,
       "path": 0,
-      "source": "assets/content-art/e32/sources/kevin-hunt-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+      "sheet": "assets/content-art/e32/sources/kevin-hunt-v1.png",
       "sourceRect": {
-        "x": 16,
-        "y": 511,
-        "w": 212,
-        "h": 150
+        "x": 70,
+        "y": 241,
+        "w": 1126,
+        "h": 859
       },
       "bounds": {
         "x": 3,
-        "y": 11,
+        "y": 9,
         "w": 59,
-        "h": 42,
-        "count": 1512
+        "h": 45,
+        "count": 2183
       },
-      "sha256": "7151373167ed33ccf8d820c29efd2422416ee96e147476c017d5d092f3079fe7"
+      "sha256": "101f15c7e365978a25eb234b06e201d0c4a6726ea0da00b1f8855b98d62e493d"
     },
     "kevin-hunt-13": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -6902,21 +6918,22 @@
       "spec": "kevin-hunt",
       "row": 2,
       "path": 2,
-      "source": "assets/content-art/e32/sources/kevin-hunt-v1.png",
+      "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-25-v1.png",
+      "sheet": "assets/content-art/e32/sources/kevin-hunt-v1.png",
       "sourceRect": {
-        "x": 261,
-        "y": 915,
-        "w": 183,
-        "h": 178
+        "x": 159,
+        "y": 190,
+        "w": 944,
+        "h": 857
       },
       "bounds": {
-        "x": 2,
-        "y": 3,
+        "x": 3,
+        "y": 5,
         "w": 59,
-        "h": 57,
-        "count": 2597
+        "h": 54,
+        "count": 1935
       },
-      "sha256": "cd5d2163cead4a66e3f6c007adf504890175c4f3ab485e1b5462d4568a20f40e"
+      "sha256": "a94b2ba7250b754461f81f09da62dd65d238b59afbaaff1d689a9edc097de823"
     },
     "kevin-hunt-26": {
       "atlas": "assets/content-art/e32/runtime/talents-kevin.png",
@@ -7021,6 +7038,4686 @@
         "count": 1975
       },
       "sha256": "e9d54899ca9be5240d25558a1dc7dc02df679039021c0bbabe80e2613a01106b"
+    },
+    "schorsch-chef-0": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 0,
+      "cell": 64,
+      "name": "Probierhäppchen",
+      "effect": "Wer eine Bratwurst reicht, facht dabei den Rost wieder an.",
+      "spec": "schorsch-chef",
+      "row": 0,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 31,
+        "y": 39,
+        "w": 181,
+        "h": 194
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 55,
+        "h": 59,
+        "count": 2228
+      },
+      "sha256": "1ba5061efeef255a8c9339c09fc18f85c02f44365e33a6b2d4d3e5273ac43c34"
+    },
+    "schorsch-chef-1": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 0,
+      "cell": 64,
+      "name": "Zweite Wurst",
+      "effect": "Der Grillplan bekommt in jeder Runde ein weiteres Heilstück.",
+      "spec": "schorsch-chef",
+      "row": 1,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 251,
+        "y": 56,
+        "w": 199,
+        "h": 172
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 51,
+        "count": 2167
+      },
+      "sha256": "e6c5eaf523b35314c755d08220d303ca2b31b151dae9ef4cdd9f835329f18514"
+    },
+    "schorsch-chef-2": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 0,
+      "cell": 64,
+      "name": "Satt ist satt",
+      "effect": "Heilung über das volle Leben hinaus bleibt zur Hälfte als Polster liegen.",
+      "spec": "schorsch-chef",
+      "row": 2,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 480,
+        "y": 79,
+        "w": 191,
+        "h": 138
+      },
+      "bounds": {
+        "x": 3,
+        "y": 11,
+        "w": 59,
+        "h": 43,
+        "count": 1941
+      },
+      "sha256": "228da00c208117a0c336999d6317fbff2dfa2b58958a6e41b1fcb6c4393b04a8"
+    },
+    "schorsch-chef-3": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 0,
+      "cell": 64,
+      "name": "Notwurst",
+      "effect": "In der Not springt der ganze Rost auf einmal Richtung gar.",
+      "spec": "schorsch-chef",
+      "row": 3,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 707,
+        "y": 51,
+        "w": 186,
+        "h": 175
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2514
+      },
+      "sha256": "aed33a79f1cc562f39671fd8295848fc38565d195bd12343bf3f23a375517d95"
+    },
+    "schorsch-chef-4": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 0,
+      "cell": 64,
+      "name": "Hausmacher",
+      "effect": "Eine goldene Wurst stärkt nebenbei den Koch, auch wenn sie an einen Freund geht.",
+      "spec": "schorsch-chef",
+      "row": 4,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 920,
+        "y": 72,
+        "w": 220,
+        "h": 155
+      },
+      "bounds": {
+        "x": 3,
+        "y": 11,
+        "w": 59,
+        "h": 42,
+        "count": 1865
+      },
+      "sha256": "1e8d049be37912281a4b9d021a83401d6522fe9bc5da7fac1dcf84802619fb52"
+    },
+    "schorsch-chef-5": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 0,
+      "cell": 64,
+      "name": "Goldbraun",
+      "effect": "Der goldene Garpunkt hält länger, bevor ein Stück durch ist.",
+      "spec": "schorsch-chef",
+      "row": 5,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 1168,
+        "y": 83,
+        "w": 172,
+        "h": 149
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 51,
+        "count": 2259
+      },
+      "sha256": "9b57189df693ba9b82a8780cd339784681d37ecf262de2f8e1bc92aee9a0d3da"
+    },
+    "schorsch-chef-6": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 0,
+      "cell": 64,
+      "name": "Metzgerqualität",
+      "effect": "Die Wurst vom Metzger des Vertrauens heilt mit jedem Bissen kräftiger.",
+      "spec": "schorsch-chef",
+      "row": 6,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 19,
+        "y": 277,
+        "w": 204,
+        "h": 156
+      },
+      "bounds": {
+        "x": 2,
+        "y": 9,
+        "w": 59,
+        "h": 45,
+        "count": 2098
+      },
+      "sha256": "35e217fe8e4510eab87bd2afeed9d9e20e1db8771a842763c9c33dfa18f98268"
+    },
+    "schorsch-chef-7": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 0,
+      "cell": 64,
+      "name": "Wurstkette",
+      "effect": "Eine goldene Wurst treibt den Rest des Rosts gleich mit voran.",
+      "spec": "schorsch-chef",
+      "row": 7,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 244,
+        "y": 279,
+        "w": 209,
+        "h": 164
+      },
+      "bounds": {
+        "x": 3,
+        "y": 9,
+        "w": 59,
+        "h": 46,
+        "count": 2350
+      },
+      "sha256": "bc69275cb159637bb8fadec1d356266694a4f40bc609079e7952eaa2e79e68b5"
+    },
+    "schorsch-chef-8": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 0,
+      "cell": 64,
+      "name": "Auf Vorrat gegrillt",
+      "effect": "Vergessene Stücke bleiben länger genießbar, bevor sie schwarz werden.",
+      "spec": "schorsch-chef",
+      "row": 8,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 470,
+        "y": 269,
+        "w": 197,
+        "h": 176
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 53,
+        "count": 2750
+      },
+      "sha256": "6bc755fffb2c4ce44ccc2f63b21049070aed96767acaaf79f53b951366e8adcb"
+    },
+    "schorsch-chef-9": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 0,
+      "cell": 64,
+      "name": "Meisterwurst",
+      "effect": "Die goldene Wurst heilt kräftiger und wird zugleich zum Polster für den Koch.",
+      "spec": "schorsch-chef",
+      "row": 9,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 691,
+        "y": 274,
+        "w": 216,
+        "h": 181
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2330
+      },
+      "sha256": "d38b41055e30da6de64ae05384da3cd53ac45c17cdb10172691a4ba7ba60acdd"
+    },
+    "schorsch-chef-10": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 64,
+      "cell": 64,
+      "name": "Grillkäse dazu",
+      "effect": "Der Grillplan bekommt in jeder Runde ein Schutzstück dazu.",
+      "spec": "schorsch-chef",
+      "row": 0,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 927,
+        "y": 274,
+        "w": 185,
+        "h": 174
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 55,
+        "count": 2691
+      },
+      "sha256": "ef63b404bfd4faf74e5ddf33f6146dc832f3e5a2f7f2bb3ee21bedda9ef68a65"
+    },
+    "schorsch-chef-11": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 64,
+      "cell": 64,
+      "name": "Schnell gewendet",
+      "effect": "Ein frei gewordener Rostplatz lässt sich ohne Wartezeit neu belegen.",
+      "spec": "schorsch-chef",
+      "row": 1,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 1151,
+        "y": 267,
+        "w": 204,
+        "h": 191
+      },
+      "bounds": {
+        "x": 2,
+        "y": 4,
+        "w": 59,
+        "h": 55,
+        "count": 2355
+      },
+      "sha256": "d34f5e6055b425b598fd3491f31abdd26beb29a1bc3479501cf5e45c224e5aaf"
+    },
+    "schorsch-chef-12": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 64,
+      "cell": 64,
+      "name": "Heißer Rost",
+      "effect": "Der Sprung in die perfekte Glut schiebt jedes Stück auf dem Rost Richtung gar.",
+      "spec": "schorsch-chef",
+      "row": 2,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 20,
+        "y": 475,
+        "w": 207,
+        "h": 179
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 51,
+        "count": 2196
+      },
+      "sha256": "7d6636a08225de63aeb29af26f5f9ec491f65cfc9be192a109971ebf5075f160"
+    },
+    "schorsch-chef-13": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 64,
+      "cell": 64,
+      "name": "Maiskolben dazu",
+      "effect": "Der Grillplan bekommt in jeder Runde ein Popcorn-Stück, das Gegner zurückstößt.",
+      "spec": "schorsch-chef",
+      "row": 3,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 250,
+        "y": 479,
+        "w": 201,
+        "h": 177
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2311
+      },
+      "sha256": "c00110882ddd2649ec67793da33b11e9c2b63de04f8f3dad0ac1a8e3c6417a93"
+    },
+    "schorsch-chef-14": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 64,
+      "cell": 64,
+      "name": "Senf drauf!",
+      "effect": "Schaltet einen Heilklecks frei, der nebenbei den Rost auf Trab bringt.",
+      "spec": "schorsch-chef",
+      "row": 4,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 482,
+        "y": 470,
+        "w": 187,
+        "h": 198
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2010
+      },
+      "sha256": "4b19e5718a99da7aa91978b657317bf4d7e38a97cc54f51ecbca9b747e09996b"
+    },
+    "schorsch-chef-15": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 64,
+      "cell": 64,
+      "name": "Wenden!",
+      "effect": "Die Zange zählt mit und dreht bei jedem dritten Griff das Grillgut um.",
+      "spec": "schorsch-chef",
+      "row": 5,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 702,
+        "y": 476,
+        "w": 189,
+        "h": 185
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2145
+      },
+      "sha256": "00ccdd343a9a0450eeaedb3a969532e6e79da832c909fb5fa149abe26d57ee50"
+    },
+    "schorsch-chef-16": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 64,
+      "cell": 64,
+      "name": "Belegtes Brötchen",
+      "effect": "Das Brötchen für die Gruppe wird dicker belegt, und der Käse vom Rost hält mehr aus.",
+      "spec": "schorsch-chef",
+      "row": 6,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 924,
+        "y": 485,
+        "w": 199,
+        "h": 175
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2596
+      },
+      "sha256": "ba76da94a0f85084d6ba998c79dc1e5b9ce8977c3f8fae7d7154c9d47dde4e7e"
+    },
+    "schorsch-chef-17": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 64,
+      "cell": 64,
+      "name": "Popcorn für alle",
+      "effect": "Der platzende Maiskolben erwischt Gegner in einem größeren Kreis.",
+      "spec": "schorsch-chef",
+      "row": 7,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 1151,
+        "y": 482,
+        "w": 201,
+        "h": 174
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 51,
+        "count": 2211
+      },
+      "sha256": "944208495138c74a1668b3f8cf053869dd04ddb969e264bf7f7c948c47e56d19"
+    },
+    "schorsch-chef-18": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 64,
+      "cell": 64,
+      "name": "Scharfer Senf",
+      "effect": "Goldenes Grillgut verkürzt die Wartezeit auf den nächsten Heilklecks.",
+      "spec": "schorsch-chef",
+      "row": 8,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 28,
+        "y": 686,
+        "w": 188,
+        "h": 194
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 2536
+      },
+      "sha256": "3c757b0bcea580b1d41cb515049efb0d37f424740c1c9f73414b4065ed81d1a7"
+    },
+    "schorsch-chef-19": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 64,
+      "cell": 64,
+      "name": "Volle Platte",
+      "effect": "Servieren schiebt alles Übrige auf dem Rost an, und nichts wird so schnell schwarz.",
+      "spec": "schorsch-chef",
+      "row": 9,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 239,
+        "y": 691,
+        "w": 223,
+        "h": 187
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2311
+      },
+      "sha256": "208ced664934671f09cdb5093306c086cd57f2292bc6d850785fa3606e43c247"
+    },
+    "schorsch-chef-20": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 128,
+      "cell": 64,
+      "name": "Löschbier",
+      "effect": "Das Bier über dem Rost stärkt den Koch beim Löschen ein Stück mehr.",
+      "spec": "schorsch-chef",
+      "row": 0,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 474,
+        "y": 683,
+        "w": 201,
+        "h": 196
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2329
+      },
+      "sha256": "e2b71e23e9c6cb725d0401c82053b7b57fec0d12f61e22b1367fe4dd8c4d23ed"
+    },
+    "schorsch-chef-21": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 128,
+      "cell": 64,
+      "name": "Dampfgaren",
+      "effect": "Der Dampf beim Löschen gart das Grillgut weiter, statt es abzuwürgen.",
+      "spec": "schorsch-chef",
+      "row": 1,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 704,
+        "y": 689,
+        "w": 199,
+        "h": 192
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2773
+      },
+      "sha256": "15abb24eb6da3c6a7f5b12f0b243ddb4f563f9d3d00f4dd048ac94fa278c3ad8"
+    },
+    "schorsch-chef-22": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 128,
+      "cell": 64,
+      "name": "Stammplatz",
+      "effect": "Die perfekte Glut ist früher erreicht, ihr Fenster wird breiter.",
+      "spec": "schorsch-chef",
+      "row": 2,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 928,
+        "y": 703,
+        "w": 200,
+        "h": 175
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2074
+      },
+      "sha256": "7201feda1eb68c61aa9d4fbe8ddd626e258c5a7015f06dbdac1e9d347af458d2"
+    },
+    "schorsch-chef-23": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 128,
+      "cell": 64,
+      "name": "Feuerfeste Schürze",
+      "effect": "Der Feuerring bei voller Glut trifft nur noch die Gegner und wärmt den Koch.",
+      "spec": "schorsch-chef",
+      "row": 3,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 1150,
+        "y": 688,
+        "w": 206,
+        "h": 190
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2292
+      },
+      "sha256": "044227ba3c01325f4c782c755a9f84d0cae87e3f4af261bc3d192cae64954e7c"
+    },
+    "schorsch-chef-24": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 128,
+      "cell": 64,
+      "name": "Ruhige Glut",
+      "effect": "Der Rost hält seine Hitze länger, auch wenn niemand zur Zange greift.",
+      "spec": "schorsch-chef",
+      "row": 4,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 17,
+        "y": 920,
+        "w": 202,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 53,
+        "count": 2245
+      },
+      "sha256": "d68732ee6d7abca399a8cce7ebd8a15aae2f73636dff81d60751af1f9a34f055"
+    },
+    "schorsch-chef-25": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 128,
+      "cell": 64,
+      "name": "Tischdienst",
+      "effect": "Wer einen Zauber abklemmt, darf gleich wieder löschen und heilen.",
+      "spec": "schorsch-chef",
+      "row": 5,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 243,
+        "y": 907,
+        "w": 215,
+        "h": 199
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 55,
+        "count": 2041
+      },
+      "sha256": "3d369c8bace426f6098c91acfceb016526b32ce89da4276b827a5dcfc617d6e5"
+    },
+    "schorsch-chef-26": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 128,
+      "cell": 64,
+      "name": "Buffet nachlegen",
+      "effect": "Jedes Löschen bringt das nächste Buffet für die Runde näher.",
+      "spec": "schorsch-chef",
+      "row": 6,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 473,
+        "y": 893,
+        "w": 209,
+        "h": 217
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 2131
+      },
+      "sha256": "63190afc997b0654fc75831162f4d16fa67b441ab10b875c839b90dd97afde1a"
+    },
+    "schorsch-chef-27": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 128,
+      "cell": 64,
+      "name": "Dicke Luft",
+      "effect": "Der Dampf aus dem gelöschten Rost verbrüht Gegner kräftiger und hält sie länger auf.",
+      "spec": "schorsch-chef",
+      "row": 7,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 704,
+        "y": 901,
+        "w": 199,
+        "h": 210
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2891
+      },
+      "sha256": "e243ef24d21554f5056277794035edf11acada53ed080d601e54ca7bd5e24006"
+    },
+    "schorsch-chef-28": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 128,
+      "cell": 64,
+      "name": "Frische Luft",
+      "effect": "Die perfekte Glut reicht weiter nach oben, bevor es zu heiß wird.",
+      "spec": "schorsch-chef",
+      "row": 8,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 928,
+        "y": 909,
+        "w": 200,
+        "h": 205
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2754
+      },
+      "sha256": "cbee6d3819c42f5acc266b4f961309ff2126e9a8f88ec48c611ecfea360e32f6"
+    },
+    "schorsch-chef-29": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 128,
+      "cell": 64,
+      "name": "Lokalrunde",
+      "effect": "Die Wurst am Tisch holt das nächste Löschbier heran, und das heilt kräftiger.",
+      "spec": "schorsch-chef",
+      "row": 9,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sourceRect": {
+        "x": 1148,
+        "y": 901,
+        "w": 207,
+        "h": 210
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2897
+      },
+      "sha256": "825258a8d2c6b80aa6c9937fccd176576dcac2a963bf6028d13872558083a532"
+    },
+    "schorsch-flamme-0": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 192,
+      "cell": 64,
+      "name": "Gut angefacht",
+      "effect": "Wer die Glut auf Temperatur bringt, bekommt einen doppelten Zangengriff geschenkt.",
+      "spec": "schorsch-flamme",
+      "row": 0,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 22,
+        "y": 25,
+        "w": 201,
+        "h": 198
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 1336
+      },
+      "sha256": "d047db0da0c35fa8b7794e90671fd551d6a11e4306c63a7a1e4b85292769abd6"
+    },
+    "schorsch-flamme-1": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 192,
+      "cell": 64,
+      "name": "Kurze Zündschnur",
+      "effect": "Die Sperre nach dem Überhitzen dauert kürzer, die Grillkniffe sind früher zurück.",
+      "spec": "schorsch-flamme",
+      "row": 1,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 274,
+        "y": 29,
+        "w": 158,
+        "h": 178
+      },
+      "bounds": {
+        "x": 6,
+        "y": 3,
+        "w": 52,
+        "h": 59,
+        "count": 1977
+      },
+      "sha256": "2afd3c4aa3b5e3b47ce831f6841a31e590fe4554076baf22ad4659094a099d30"
+    },
+    "schorsch-flamme-2": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 192,
+      "cell": 64,
+      "name": "Zunder",
+      "effect": "Kritische Treffer werfen Funken in den Grill.",
+      "spec": "schorsch-flamme",
+      "row": 2,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 467,
+        "y": 44,
+        "w": 207,
+        "h": 173
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 1586
+      },
+      "sha256": "036b81127b411d616c5cb74a3420db17525978e94c8fc19a68c571abce316866"
+    },
+    "schorsch-flamme-3": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 192,
+      "cell": 64,
+      "name": "Hitzewelle",
+      "effect": "Ein erledigter Gegner facht den Grill kräftig an.",
+      "spec": "schorsch-flamme",
+      "row": 3,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 704,
+        "y": 28,
+        "w": 184,
+        "h": 186
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 1901
+      },
+      "sha256": "0c440fea48a968aefa80b3df9cef86ab3672761b02b00f44355dfa108321231b"
+    },
+    "schorsch-flamme-4": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 192,
+      "cell": 64,
+      "name": "Nach dem Knall",
+      "effect": "Auf den Feuerring folgt ein doppelt so wuchtiger Teller.",
+      "spec": "schorsch-flamme",
+      "row": 4,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 925,
+        "y": 15,
+        "w": 192,
+        "h": 209
+      },
+      "bounds": {
+        "x": 5,
+        "y": 3,
+        "w": 54,
+        "h": 59,
+        "count": 2436
+      },
+      "sha256": "ec101da09ed93d522a868fb765c51ad21031b20bd92de203060a2c90238ff84d"
+    },
+    "schorsch-flamme-5": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 192,
+      "cell": 64,
+      "name": "Nachglühen",
+      "effect": "Nach dem Feuerring bleibt der Grill heiß, statt tief abzusacken.",
+      "spec": "schorsch-flamme",
+      "row": 5,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 1155,
+        "y": 18,
+        "w": 196,
+        "h": 203
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 2508
+      },
+      "sha256": "c0dda4e2777ccc3698d540c789154e8a4b89ce98f38640455535ea19416c8079"
+    },
+    "schorsch-flamme-6": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 192,
+      "cell": 64,
+      "name": "Blasebalg-Profi",
+      "effect": "Der Feuerring lädt den Blasebalg ohne Wartezeit neu.",
+      "spec": "schorsch-flamme",
+      "row": 6,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 26,
+        "y": 247,
+        "w": 188,
+        "h": 198
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 1690
+      },
+      "sha256": "2763cd447104c290f5e74be19660968fc4224537f8f6a908347aa616a5ce7202"
+    },
+    "schorsch-flamme-7": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 192,
+      "cell": 64,
+      "name": "Feuerring",
+      "effect": "Die Explosion beim Überhitzen verbrennt Gegner ringsum heftiger.",
+      "spec": "schorsch-flamme",
+      "row": 7,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 245,
+        "y": 244,
+        "w": 203,
+        "h": 190
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 55,
+        "count": 2387
+      },
+      "sha256": "f37a9f9f61f749b7f2bb712a5117e371be2b9a90f7e975314fb58cee29c55980"
+    },
+    "schorsch-flamme-8": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 192,
+      "cell": 64,
+      "name": "Heißer Draht",
+      "effect": "Die perfekte Glut reicht höher, der eigene Brand setzt später ein.",
+      "spec": "schorsch-flamme",
+      "row": 8,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 475,
+        "y": 253,
+        "w": 196,
+        "h": 188
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2248
+      },
+      "sha256": "96f3187318eb8dabed77126dbda396c58eb0e01c96e02fe7afc68a23b32a4ccc"
+    },
+    "schorsch-flamme-9": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 192,
+      "cell": 64,
+      "name": "Feuerteufel",
+      "effect": "Goldenes Grillgut facht den Grill an und treibt dich in den Flambierbereich.",
+      "spec": "schorsch-flamme",
+      "row": 9,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 698,
+        "y": 248,
+        "w": 202,
+        "h": 198
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2505
+      },
+      "sha256": "e97a839830b1a7f70d0c6acad475104c3fa70e79b8cc59576276546f79ee3673"
+    },
+    "schorsch-flamme-10": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 256,
+      "cell": 64,
+      "name": "Anbraten",
+      "effect": "Ein goldener Braten macht sofort Platz für den nächsten.",
+      "spec": "schorsch-flamme",
+      "row": 0,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 921,
+        "y": 279,
+        "w": 215,
+        "h": 166
+      },
+      "bounds": {
+        "x": 3,
+        "y": 9,
+        "w": 59,
+        "h": 46,
+        "count": 1984
+      },
+      "sha256": "6de7bd5b40017eec07f031a2b142045ac229ee5cc21d90c8ac8b5e8bd77ac85c"
+    },
+    "schorsch-flamme-11": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 256,
+      "cell": 64,
+      "name": "Fleischermesser",
+      "effect": "Angeschlagene Gegner nehmen von jedem Griff und jedem Braten mehr.",
+      "spec": "schorsch-flamme",
+      "row": 1,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 1172,
+        "y": 245,
+        "w": 175,
+        "h": 198
+      },
+      "bounds": {
+        "x": 6,
+        "y": 3,
+        "w": 52,
+        "h": 59,
+        "count": 1521
+      },
+      "sha256": "475fd89fbf22e5172907ee8ecceb3076580c52d47685f4f8c9091f805fa51e19"
+    },
+    "schorsch-flamme-12": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 256,
+      "cell": 64,
+      "name": "Auf den Punkt",
+      "effect": "Das goldene Fenster auf dem Rost bleibt länger offen, auch bei großer Hitze.",
+      "spec": "schorsch-flamme",
+      "row": 2,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 23,
+        "y": 467,
+        "w": 202,
+        "h": 195
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2315
+      },
+      "sha256": "c856e5a593d32382fa47b9856ceeb64c3fbe99ef1c5074d09efd44267b0bc1e0"
+    },
+    "schorsch-flamme-13": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 256,
+      "cell": 64,
+      "name": "Abschrecken",
+      "effect": "Nach dem Löschen wartet ein doppelt wuchtiger Teller, selbst bei kaltem Rost.",
+      "spec": "schorsch-flamme",
+      "row": 3,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 245,
+        "y": 468,
+        "w": 207,
+        "h": 201
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 57,
+        "count": 2551
+      },
+      "sha256": "722bc521d65ddf170c079bb95965b04d2b987db7161857d2b0ede00d6da0f144"
+    },
+    "schorsch-flamme-14": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 256,
+      "cell": 64,
+      "name": "Der Nächste, bitte",
+      "effect": "Ein erledigter Gegner lässt den nächsten Braten schlagartig nachrücken.",
+      "spec": "schorsch-flamme",
+      "row": 4,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 475,
+        "y": 483,
+        "w": 197,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 55,
+        "count": 1911
+      },
+      "sha256": "661f9194e138aa26918e701f57560acb7d49b4b082370315be32dbee5be007a9"
+    },
+    "schorsch-flamme-15": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 256,
+      "cell": 64,
+      "name": "Fleischklopfer",
+      "effect": "Der geworfene Braten schlägt mit mehr Wucht ein.",
+      "spec": "schorsch-flamme",
+      "row": 5,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 698,
+        "y": 469,
+        "w": 189,
+        "h": 201
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 55,
+        "h": 59,
+        "count": 1903
+      },
+      "sha256": "f3ff3f9afb88d373522c9c8b8c0e403a3eef0f348b0484e62ab002a105580ae4"
+    },
+    "schorsch-flamme-16": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 256,
+      "cell": 64,
+      "name": "Grillteller mit Braten",
+      "effect": "Der Teller für die Gruppe wird voller, und der eigene Braten sitzt fester.",
+      "spec": "schorsch-flamme",
+      "row": 6,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 915,
+        "y": 479,
+        "w": 224,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 48,
+        "count": 1994
+      },
+      "sha256": "5849afce402f7bd3969d5b943403ac677c14c593a801fc3cdf568eac97404e81"
+    },
+    "schorsch-flamme-17": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 256,
+      "cell": 64,
+      "name": "Knusprig",
+      "effect": "Ein Stück, das über den Punkt ist, bleibt länger knusprig statt schwarz.",
+      "spec": "schorsch-flamme",
+      "row": 7,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 1159,
+        "y": 480,
+        "w": 198,
+        "h": 173
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 1934
+      },
+      "sha256": "1ade75d19b5acb74ed4f0b065e427ed9f73431b5bae439ff4e4c3570e42c7026"
+    },
+    "schorsch-flamme-18": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 256,
+      "cell": 64,
+      "name": "Zweiter Gang",
+      "effect": "Ein goldener Braten lässt den nächsten Gang sofort nachziehen.",
+      "spec": "schorsch-flamme",
+      "row": 8,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 30,
+        "y": 693,
+        "w": 189,
+        "h": 193
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2525
+      },
+      "sha256": "2e2ea1b1d4c871c2b29ef9317b2520deb1e92548f91b291179250fe214e8bf44"
+    },
+    "schorsch-flamme-19": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 256,
+      "cell": 64,
+      "name": "Spanferkel-Wurf",
+      "effect": "Der geworfene Braten reißt die Nachbarn des Ziels mit.",
+      "spec": "schorsch-flamme",
+      "row": 9,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 247,
+        "y": 697,
+        "w": 203,
+        "h": 189
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 55,
+        "count": 1755
+      },
+      "sha256": "3dcdf94139feac66276deacd58fa4dfbb1427791e4b38f41a83d3d4d35239951"
+    },
+    "schorsch-flamme-20": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 320,
+      "cell": 64,
+      "name": "Kohlenschaufel",
+      "effect": "Wer über die Kohlen sprintet, wirbelt die Glut auf.",
+      "spec": "schorsch-flamme",
+      "row": 0,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 479,
+        "y": 686,
+        "w": 197,
+        "h": 202
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2316
+      },
+      "sha256": "67435807be4141cab9c214d9d5b5463aaa6b8e209d4122fefa015a297bfef409"
+    },
+    "schorsch-flamme-21": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 320,
+      "cell": 64,
+      "name": "Zangenklapper im Takt",
+      "effect": "Das Klappern der Zange zählt mit und facht regelmäßig den Grill an.",
+      "spec": "schorsch-flamme",
+      "row": 1,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 712,
+        "y": 697,
+        "w": 183,
+        "h": 190
+      },
+      "bounds": {
+        "x": 4,
+        "y": 2,
+        "w": 57,
+        "h": 59,
+        "count": 1351
+      },
+      "sha256": "166af6f0628f9866881a654b1879afe42f6bf395a60fecb3bde3e1b38cfcfe06"
+    },
+    "schorsch-flamme-22": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 320,
+      "cell": 64,
+      "name": "Brandbeschleuniger",
+      "effect": "Der geworfene Brocken lässt sein Ziel heftiger brennen.",
+      "spec": "schorsch-flamme",
+      "row": 2,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 920,
+        "y": 703,
+        "w": 206,
+        "h": 187
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 1857
+      },
+      "sha256": "e1ae5f85f708d34a9877d7d1c401bbecec17aef23c77459bd3932a64c2da7764"
+    },
+    "schorsch-flamme-23": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 320,
+      "cell": 64,
+      "name": "Heiße Kohlen",
+      "effect": "Ein erledigter Gegner gibt den nächsten Brocken sofort frei.",
+      "spec": "schorsch-flamme",
+      "row": 3,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 1149,
+        "y": 691,
+        "w": 207,
+        "h": 187
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 53,
+        "count": 1683
+      },
+      "sha256": "92b3a5b994fd9f8c10a319b1cc6445692466e548943b3081d3b607dea17685ad"
+    },
+    "schorsch-flamme-24": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 320,
+      "cell": 64,
+      "name": "Spiritus-Schwall",
+      "effect": "Schaltet einen Schwall frei, der die Glut hochjagt und nach vorn Feuer spuckt.",
+      "spec": "schorsch-flamme",
+      "row": 4,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 16,
+        "y": 917,
+        "w": 221,
+        "h": 197
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 53,
+        "count": 1702
+      },
+      "sha256": "5586356561eb1b1e87d340ccfd60af7f9e298f2b8a1b1224fc00b17811ecae38"
+    },
+    "schorsch-flamme-25": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 320,
+      "cell": 64,
+      "name": "Funkensprung",
+      "effect": "Ein kritischer Treffer kann den nächsten Brocken ohne Glutkosten laden.",
+      "spec": "schorsch-flamme",
+      "row": 5,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 239,
+        "y": 932,
+        "w": 209,
+        "h": 180
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 51,
+        "count": 1420
+      },
+      "sha256": "f28671e90248b0ce17fe82f1698a10558daeacd0529e1ec211f44b780d0bedff"
+    },
+    "schorsch-flamme-26": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 320,
+      "cell": 64,
+      "name": "Zangentakt",
+      "effect": "Die Zange zählt mit und bringt den nächsten Brocken schneller in die Hand.",
+      "spec": "schorsch-flamme",
+      "row": 6,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 494,
+        "y": 925,
+        "w": 186,
+        "h": 180
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 57,
+        "count": 1613
+      },
+      "sha256": "cd7074dc9791426e8c8c5723c8831f2b189ba7f136bc6baed5006967f4d15d48"
+    },
+    "schorsch-flamme-27": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 320,
+      "cell": 64,
+      "name": "Doppelpack",
+      "effect": "Die Brocken fliegen paarweise: nach jedem zweiten kommt gleich der nächste.",
+      "spec": "schorsch-flamme",
+      "row": 7,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 705,
+        "y": 932,
+        "w": 193,
+        "h": 161
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 1812
+      },
+      "sha256": "7ccdc3c1518452cadfa8636ef107642b7710d61bb78e71431470ab310af18bd9"
+    },
+    "schorsch-flamme-28": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 320,
+      "cell": 64,
+      "name": "Nachgießen",
+      "effect": "Nach jedem zweiten Schwall steht die Flasche sofort wieder bereit.",
+      "spec": "schorsch-flamme",
+      "row": 8,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 945,
+        "y": 916,
+        "w": 187,
+        "h": 195
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 1237
+      },
+      "sha256": "7010125462ddab5df9589049747a7b14ec10252316e66d6bb941a875572f76ab"
+    },
+    "schorsch-flamme-29": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 320,
+      "cell": 64,
+      "name": "Flambé mit Schuss",
+      "effect": "Goldenes Grillgut lädt sofort einen Brocken ohne Glutkosten nach, der heftiger brennt.",
+      "spec": "schorsch-flamme",
+      "row": 9,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sourceRect": {
+        "x": 1153,
+        "y": 911,
+        "w": 204,
+        "h": 205
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 59,
+        "count": 2482
+      },
+      "sha256": "aa1fb77ea01624f08c7cd4b2665663f82128a354c8e9488c0467344b27b8d609"
+    },
+    "schorsch-rauch-0": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 384,
+      "cell": 64,
+      "name": "Kalt anräuchern",
+      "effect": "Das Löschbier hinterlässt neben Dampf auch ein Polster.",
+      "spec": "schorsch-rauch",
+      "row": 0,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 20,
+        "y": 26,
+        "w": 210,
+        "h": 207
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2415
+      },
+      "sha256": "f84ab16d5a9af94fb96e6b334244b605b8280315de231387b28c13c63fce2b6a"
+    },
+    "schorsch-rauch-1": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 384,
+      "cell": 64,
+      "name": "Feuerlöscher",
+      "effect": "In der Not steht das Löschbier ohne Wartezeit bereit.",
+      "spec": "schorsch-rauch",
+      "row": 1,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 269,
+        "y": 30,
+        "w": 163,
+        "h": 208
+      },
+      "bounds": {
+        "x": 9,
+        "y": 3,
+        "w": 46,
+        "h": 59,
+        "count": 1714
+      },
+      "sha256": "716e6b372289b9c19f4e0b7077d67187d0698f8cb11e4f6eaf2daa69910af931"
+    },
+    "schorsch-rauch-2": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 384,
+      "cell": 64,
+      "name": "Dicker Qualm",
+      "effect": "Die Wolke aus dem gelöschten Rost hüllt Gegner dichter ein und bremst sie mehr.",
+      "spec": "schorsch-rauch",
+      "row": 2,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 462,
+        "y": 36,
+        "w": 214,
+        "h": 200
+      },
+      "bounds": {
+        "x": 2,
+        "y": 4,
+        "w": 58,
+        "h": 56,
+        "count": 2809
+      },
+      "sha256": "dfaecee543082e73ebe82bae86e53ad979ab3ff3efe97b6b7553f34e5df40010"
+    },
+    "schorsch-rauch-3": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 384,
+      "cell": 64,
+      "name": "Kalte Schulter",
+      "effect": "Wer gegen den Grilldeckel schlägt, bewegt sich danach zäh wie kalter Rauch.",
+      "spec": "schorsch-rauch",
+      "row": 3,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 683,
+        "y": 68,
+        "w": 203,
+        "h": 170
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2307
+      },
+      "sha256": "2786190989a3241ba5e0a25d0089e69af2d7e377d0866131e878d092984051c0"
+    },
+    "schorsch-rauch-4": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 384,
+      "cell": 64,
+      "name": "Deckel zu!",
+      "effect": "Schaltet eine Rauchwolke frei, die alle Gegner ringsum an den Koch bindet.",
+      "spec": "schorsch-rauch",
+      "row": 4,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 904,
+        "y": 26,
+        "w": 242,
+        "h": 206
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 50,
+        "count": 2261
+      },
+      "sha256": "3cb5d3a7cadab8e64e3fa99641ddd8b36dd42ffb02ac1501fb1c4409c261cba8"
+    },
+    "schorsch-rauch-5": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 384,
+      "cell": 64,
+      "name": "Räucherwurst",
+      "effect": "Eine geräucherte Wurst wandert zusätzlich über den Rost und polstert den Tank.",
+      "spec": "schorsch-rauch",
+      "row": 5,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 1147,
+        "y": 31,
+        "w": 207,
+        "h": 207
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 59,
+        "count": 1892
+      },
+      "sha256": "609c6b273a9cfb78e81ae1232502e16bb142be8cc672f4445b31009cca5fe660"
+    },
+    "schorsch-rauch-6": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 384,
+      "cell": 64,
+      "name": "Nachräuchern",
+      "effect": "Jeder Teller bringt den nächsten Qualm auf dem Boden näher.",
+      "spec": "schorsch-rauch",
+      "row": 6,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 30,
+        "y": 249,
+        "w": 203,
+        "h": 214
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2325
+      },
+      "sha256": "3a8346372dd24fc808c1a5828382660f9f52c7fbce57146697ad4fe4b4d1b26e"
+    },
+    "schorsch-rauch-7": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 384,
+      "cell": 64,
+      "name": "Nasses Buchenholz",
+      "effect": "Der Rost verliert von allein schneller Hitze und bleibt so im Räucherbereich.",
+      "spec": "schorsch-rauch",
+      "row": 7,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 243,
+        "y": 262,
+        "w": 204,
+        "h": 195
+      },
+      "bounds": {
+        "x": 2,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2749
+      },
+      "sha256": "2f67881ab31edc0008ee10104e30c07f6843c2dc9c8cbd73f519ff8765569826"
+    },
+    "schorsch-rauch-8": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 384,
+      "cell": 64,
+      "name": "Nebelmaschine",
+      "effect": "Dampf und Rauch gehen Hand in Hand: jedes Löschen bringt den nächsten Spott näher.",
+      "spec": "schorsch-rauch",
+      "row": 8,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 466,
+        "y": 262,
+        "w": 205,
+        "h": 194
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2917
+      },
+      "sha256": "22a9054db9a9160c2c4da9fe3658c5f0ee9734d432af7f560488fc921e4c96fb"
+    },
+    "schorsch-rauch-9": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 384,
+      "cell": 64,
+      "name": "Räucherkammer",
+      "effect": "Servieren hält den Rost kalt genug zum Räuchern und polstert den Tank.",
+      "spec": "schorsch-rauch",
+      "row": 9,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 691,
+        "y": 250,
+        "w": 208,
+        "h": 211
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 3249
+      },
+      "sha256": "3751d5eb6d870e70cb9436ebd3ee2a95f54097e2ffd2f7f2e55899594530e435"
+    },
+    "schorsch-rauch-10": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 448,
+      "cell": 64,
+      "name": "Garen mit Deckel",
+      "effect": "Zugeklappt staut sich die Hitze: jeder abgefangene Schlag gart das Grillgut weiter.",
+      "spec": "schorsch-rauch",
+      "row": 0,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 928,
+        "y": 270,
+        "w": 217,
+        "h": 179
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 49,
+        "count": 1914
+      },
+      "sha256": "3aea310bdbbc4200b23cc578691985a59f3f04a063e68e67a42b29e596ff8179"
+    },
+    "schorsch-rauch-11": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 448,
+      "cell": 64,
+      "name": "Deckelpolster",
+      "effect": "Der Grilldeckel lässt nach jedem abgefangenen Schlag ein Polster zurück.",
+      "spec": "schorsch-rauch",
+      "row": 1,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 1149,
+        "y": 286,
+        "w": 207,
+        "h": 176
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 50,
+        "count": 2241
+      },
+      "sha256": "e565fc5ba5f746347421e3891f4905a48daaec7c620515fba7170e053d9588a3"
+    },
+    "schorsch-rauch-12": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 448,
+      "cell": 64,
+      "name": "Doppelter Deckel",
+      "effect": "Das Parierfenster des Grilldeckels schluckt einen zweiten Schlag gleich mit.",
+      "spec": "schorsch-rauch",
+      "row": 2,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 12,
+        "y": 497,
+        "w": 225,
+        "h": 156
+      },
+      "bounds": {
+        "x": 2,
+        "y": 12,
+        "w": 59,
+        "h": 41,
+        "count": 2117
+      },
+      "sha256": "77dd406b7bcdbdbd99b989f589747c0a3bb00ead22996eb87e4659e87a5f8ceb"
+    },
+    "schorsch-rauch-13": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 448,
+      "cell": 64,
+      "name": "Käsekruste",
+      "effect": "Der servierte Grillkäse hält als Schild mehr aus.",
+      "spec": "schorsch-rauch",
+      "row": 3,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 241,
+        "y": 485,
+        "w": 201,
+        "h": 177
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2141
+      },
+      "sha256": "c8a6832af93505ae2f712c30291c63df01b39fbb6e4bd79977782a4dc495e509"
+    },
+    "schorsch-rauch-14": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 448,
+      "cell": 64,
+      "name": "Halloumi-Happen",
+      "effect": "Ein Bissen vom eigenen Käse flickt den Tank neben dem Schild.",
+      "spec": "schorsch-rauch",
+      "row": 4,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 459,
+        "y": 491,
+        "w": 199,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 1833
+      },
+      "sha256": "4e035b79af4090a58047d2f4dc7b4592b939c3075d70c3fc32b9bd093fb1d671"
+    },
+    "schorsch-rauch-15": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 448,
+      "cell": 64,
+      "name": "Längerer Deckel",
+      "effect": "Der Grilldeckel bleibt beim Parieren einen Moment länger oben.",
+      "spec": "schorsch-rauch",
+      "row": 5,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 697,
+        "y": 500,
+        "w": 182,
+        "h": 160
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2546
+      },
+      "sha256": "88a3b22158906b4b4be6cf50ebca3f2c80bdf344de96366c5c6d0c267edd2530"
+    },
+    "schorsch-rauch-16": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 448,
+      "cell": 64,
+      "name": "Deckelkonter",
+      "effect": "Auf den abgefangenen Schlag folgt ein doppelter Zangengriff.",
+      "spec": "schorsch-rauch",
+      "row": 6,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 917,
+        "y": 480,
+        "w": 225,
+        "h": 191
+      },
+      "bounds": {
+        "x": 2,
+        "y": 7,
+        "w": 59,
+        "h": 50,
+        "count": 1909
+      },
+      "sha256": "1ae0ac0420eb94deea94c99a97dcf7cb55c1a990cd560fc315b83355001e2706"
+    },
+    "schorsch-rauch-17": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 448,
+      "cell": 64,
+      "name": "Zurück an den Absender",
+      "effect": "Jede Parade schleudert einen größeren Teil des Schlags zurück.",
+      "spec": "schorsch-rauch",
+      "row": 7,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 1155,
+        "y": 485,
+        "w": 203,
+        "h": 178
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 1944
+      },
+      "sha256": "73fb5760697af359c556d8497b1c4d4fb4baa507eddc8b35cd97b31c415a079b"
+    },
+    "schorsch-rauch-18": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 448,
+      "cell": 64,
+      "name": "Notkäse",
+      "effect": "In der Not springt ein dickes Polster vor den Tank.",
+      "spec": "schorsch-rauch",
+      "row": 8,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 21,
+        "y": 687,
+        "w": 206,
+        "h": 179
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 51,
+        "count": 2480
+      },
+      "sha256": "671ded416265ed1e6f1dbec36efc258f2ce95549a487e9f7755496bbd798fe80"
+    },
+    "schorsch-rauch-19": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 448,
+      "cell": 64,
+      "name": "Halloumi-Panzer",
+      "effect": "Goldener Käse lädt den Grilldeckel sofort nach und hält als Schild mehr aus.",
+      "spec": "schorsch-rauch",
+      "row": 9,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 252,
+        "y": 687,
+        "w": 195,
+        "h": 185
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2785
+      },
+      "sha256": "2cd107d4f8d167579faa0cc0591700eca263110d52215b396f7174d2c2f7937c"
+    },
+    "schorsch-rauch-20": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 0,
+      "y": 512,
+      "cell": 64,
+      "name": "Zwicken heizt",
+      "effect": "Wer einen Zauber abklemmt, bekommt Hitze für den Rost zurück.",
+      "spec": "schorsch-rauch",
+      "row": 0,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 463,
+        "y": 680,
+        "w": 199,
+        "h": 195
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2306
+      },
+      "sha256": "bffe32166e5a3d05b8ae8f333c037f51cbc3058e60c4632e24fdeb5d6487e46f"
+    },
+    "schorsch-rauch-21": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 64,
+      "y": 512,
+      "cell": 64,
+      "name": "Nestwärme",
+      "effect": "Jede Parade facht den Grill stärker an.",
+      "spec": "schorsch-rauch",
+      "row": 1,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 688,
+        "y": 693,
+        "w": 208,
+        "h": 184
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2041
+      },
+      "sha256": "b839b7c41ce896c3233528fd113c24f0d16825dace72efeda5b69779107e6333"
+    },
+    "schorsch-rauch-22": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 128,
+      "y": 512,
+      "cell": 64,
+      "name": "Schwelbrand",
+      "effect": "Die geworfene Kohle brennt am Ziel heißer.",
+      "spec": "schorsch-rauch",
+      "row": 2,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 927,
+        "y": 686,
+        "w": 219,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 1447
+      },
+      "sha256": "5d8c9edbb582abf5af87876e057e645e4a2fa9f08bcbdb714baaa126fbff6207"
+    },
+    "schorsch-rauch-23": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 192,
+      "y": 512,
+      "cell": 64,
+      "name": "Heißer Stein",
+      "effect": "Nach jedem abgefangenen Schlag liegt der nächste Brocken schneller bereit.",
+      "spec": "schorsch-rauch",
+      "row": 3,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 1149,
+        "y": 706,
+        "w": 206,
+        "h": 165
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 47,
+        "count": 2299
+      },
+      "sha256": "e8f115a4a9b0b89c792dbc9f7f70b625e9d8c70f84dae4fd84563b2ebb99dc05"
+    },
+    "schorsch-rauch-24": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 256,
+      "y": 512,
+      "cell": 64,
+      "name": "Heiße Asche",
+      "effect": "Die Brocken zählen mit; jeder zweite lässt ein Polster aus warmer Asche zurück.",
+      "spec": "schorsch-rauch",
+      "row": 4,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 18,
+        "y": 889,
+        "w": 206,
+        "h": 210
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2843
+      },
+      "sha256": "38f58f0cb5f1543fb2f873189c9c1043b63d5f35d4223011236212b60a306b98"
+    },
+    "schorsch-rauch-25": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 320,
+      "y": 512,
+      "cell": 64,
+      "name": "Glutwächter",
+      "effect": "Hält der Tank den Grill auf Temperatur, klappt der Deckel schneller wieder hoch.",
+      "spec": "schorsch-rauch",
+      "row": 5,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 246,
+        "y": 898,
+        "w": 192,
+        "h": 194
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2563
+      },
+      "sha256": "0de4a38043fa2131a2037f52d4f6884899dfabb57e15711d1f111b4ac6211ce5"
+    },
+    "schorsch-rauch-26": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 384,
+      "y": 512,
+      "cell": 64,
+      "name": "Brandmauer",
+      "effect": "Der Feuerring beim Überhitzen hinterlässt eine Mauer aus Hitze um den Tank.",
+      "spec": "schorsch-rauch",
+      "row": 6,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 456,
+        "y": 904,
+        "w": 221,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 49,
+        "count": 2437
+      },
+      "sha256": "4135eb7bc4f46495376dfb064325194c81cc818307bd0f8148be04d99eca6d12"
+    },
+    "schorsch-rauch-27": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 448,
+      "y": 512,
+      "cell": 64,
+      "name": "Aufgeheizt",
+      "effect": "Die Paraden zählen mit; nach der dritten ist der Blasebalg ohne Wartezeit zurück.",
+      "spec": "schorsch-rauch",
+      "row": 7,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 694,
+        "y": 896,
+        "w": 206,
+        "h": 204
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2405
+      },
+      "sha256": "07c31766b37b338e2ec9a3c3f9a4eaff95ac89310e54d90712a4520f855316f4"
+    },
+    "schorsch-rauch-28": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 512,
+      "y": 512,
+      "cell": 64,
+      "name": "Glut unterm Deckel",
+      "effect": "Jeder abgefangene Schlag flickt den Tank ein Stück.",
+      "spec": "schorsch-rauch",
+      "row": 8,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 902,
+        "y": 920,
+        "w": 239,
+        "h": 174
+      },
+      "bounds": {
+        "x": 3,
+        "y": 11,
+        "w": 59,
+        "h": 43,
+        "count": 1824
+      },
+      "sha256": "91c21acdea4cc928dfa2c9a556b2566c0641b7bd66baeeda1403a996d0e4d322"
+    },
+    "schorsch-rauch-29": {
+      "atlas": "assets/content-art/e32/runtime/talents-schorsch.png",
+      "x": 576,
+      "y": 512,
+      "cell": 64,
+      "name": "Glutherz",
+      "effect": "Servieren hält den Grill warm und legt den nächsten Brandwurf in die Hand.",
+      "spec": "schorsch-rauch",
+      "row": 9,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sourceRect": {
+        "x": 1158,
+        "y": 905,
+        "w": 198,
+        "h": 189
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2590
+      },
+      "sha256": "c11013311f460010e145e05c5f2f18062ce46b90044bb2100e4a5b310ea5f28f"
+    },
+    "kaethe-grand-0": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 0,
+      "cell": 64,
+      "name": "Wenzel",
+      "effect": "Jeder Bube wirkt nach seiner Farbe spürbar kräftiger als bisher.",
+      "spec": "kaethe-grand",
+      "row": 0,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 19,
+        "y": 30,
+        "w": 203,
+        "h": 196
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2105
+      },
+      "sha256": "fb5a7dd7cd461838203555c8ad29abe0d46d7d9b50f40838fb1fd799f37c507f"
+    },
+    "kaethe-grand-1": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 64,
+      "cell": 64,
+      "name": "Mitzählen",
+      "effect": "Wer die Farbe der letzten Karte hält, bekommt auf dem Skatblock gleich ein paar Augen mehr angeschrieben.",
+      "spec": "kaethe-grand",
+      "row": 0,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 242,
+        "y": 41,
+        "w": 203,
+        "h": 184
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 53,
+        "count": 2249
+      },
+      "sha256": "4ac66e357aa0f89320e5113e86f0722b00e185f0555a77c36dbc06023b439839"
+    },
+    "kaethe-grand-2": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 128,
+      "cell": 64,
+      "name": "Kleinvieh",
+      "effect": "Die ausgespielten Karten zählen mit; jede dritte beschleunigt kurz alles, was danach kommt.",
+      "spec": "kaethe-grand",
+      "row": 0,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 477,
+        "y": 44,
+        "w": 191,
+        "h": 175
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2162
+      },
+      "sha256": "2171a29aefe36f724999a458d20db422bb6f86f8d6b261d96c3b199cc552b906"
+    },
+    "kaethe-grand-3": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 0,
+      "cell": 64,
+      "name": "Kreuz-Bube",
+      "effect": "Die Schadensfarbe des Blatts schlägt kräftiger zu, von der Kreuz-Sieben bis zum Kreuz-Ass.",
+      "spec": "kaethe-grand",
+      "row": 1,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 718,
+        "y": 37,
+        "w": 177,
+        "h": 189
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 55,
+        "h": 59,
+        "count": 2621
+      },
+      "sha256": "242b461f1e302992753cd4d3dfa85a2a4d3a06c6f24386db6f697280333e1726"
+    },
+    "kaethe-grand-4": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 64,
+      "cell": 64,
+      "name": "Pfennigfuchserin",
+      "effect": "Kritische Treffer schreiben Augen an, und der Glückspfennig macht die Glückstreffer der ganzen Runde deutlich härter.",
+      "spec": "kaethe-grand",
+      "row": 1,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 929,
+        "y": 37,
+        "w": 191,
+        "h": 191
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 59,
+        "count": 2502
+      },
+      "sha256": "0b608b03ea4ee86617820c562db0ac0eae2a70a06ed42c33a6a77c7017bf0e0c"
+    },
+    "kaethe-grand-5": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 128,
+      "cell": 64,
+      "name": "Kleine Fische",
+      "effect": "Die schwächsten Karten des Blatts holen gegenüber Dame, König und Zehn auf.",
+      "spec": "kaethe-grand",
+      "row": 1,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 1161,
+        "y": 59,
+        "w": 196,
+        "h": 156
+      },
+      "bounds": {
+        "x": 3,
+        "y": 9,
+        "w": 59,
+        "h": 47,
+        "count": 2048
+      },
+      "sha256": "42e4825a9391d56d31ad89136c7f225ffdef595617898479737f92ab025ec006"
+    },
+    "kaethe-grand-6": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 0,
+      "cell": 64,
+      "name": "Bube zieht nach",
+      "effect": "Ein gespielter Bube wirft die übrigen Handkarten ab und legt dir neue hin.",
+      "spec": "kaethe-grand",
+      "row": 2,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 22,
+        "y": 258,
+        "w": 200,
+        "h": 178
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 53,
+        "count": 2704
+      },
+      "sha256": "e348e3afd7f33fac48dd051686a6e644fe1990d5b54ee1b17e5f78795768710b"
+    },
+    "kaethe-grand-7": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 64,
+      "cell": 64,
+      "name": "Knapp gewonnen",
+      "effect": "Die Schwelle, ab der das Spiel als gewonnen gilt und Abrechnen frei wird, sinkt.",
+      "spec": "kaethe-grand",
+      "row": 2,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 244,
+        "y": 258,
+        "w": 202,
+        "h": 169
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 1731
+      },
+      "sha256": "d984bf686a23045148b96caf6aad804524789530ac1351b4092d943b6522d76e"
+    },
+    "kaethe-grand-8": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 128,
+      "cell": 64,
+      "name": "Schnipp, schnapp",
+      "effect": "Die Autoangriffe zählen mit und schreiben regelmäßig ein paar Augen an.",
+      "spec": "kaethe-grand",
+      "row": 2,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 483,
+        "y": 248,
+        "w": 194,
+        "h": 198
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 1599
+      },
+      "sha256": "0cdfcce3a391d8a4e44bc63a1920fb4f540bab18e2715734ad9a515e79639c33"
+    },
+    "kaethe-grand-9": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 0,
+      "cell": 64,
+      "name": "Der letzte Stich",
+      "effect": "Angeschlagene Gegner kassieren von jeder Karte und jedem Abrechnen mehr.",
+      "spec": "kaethe-grand",
+      "row": 3,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 728,
+        "y": 243,
+        "w": 175,
+        "h": 188
+      },
+      "bounds": {
+        "x": 5,
+        "y": 3,
+        "w": 55,
+        "h": 59,
+        "count": 2476
+      },
+      "sha256": "fdb96f493372a21c14ef67df4ec80da914aacfb91e8b871f6c3bdbc263c11842"
+    },
+    "kaethe-grand-10": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 64,
+      "cell": 64,
+      "name": "Gestochen scharf",
+      "effect": "Ein Stich gegen einen Gegnerzauber schreibt zusätzlich zur Gegnerkarte noch mehr Augen an.",
+      "spec": "kaethe-grand",
+      "row": 3,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 942,
+        "y": 260,
+        "w": 193,
+        "h": 175
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 53,
+        "count": 1966
+      },
+      "sha256": "1a9828a60882212420e2d62a8bf103e8dadd934c9e5b2ae67f4e7acb30ebb555"
+    },
+    "kaethe-grand-11": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 128,
+      "cell": 64,
+      "name": "Ouvert",
+      "effect": "Über der Hand zeigt sich, welche Karte als Nächstes nachrückt.",
+      "spec": "kaethe-grand",
+      "row": 3,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 1160,
+        "y": 250,
+        "w": 196,
+        "h": 189
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2132
+      },
+      "sha256": "af9c0033f91e8ec673440b7778ab379b7e80d3d86c257a84f98566ca3e7273bf"
+    },
+    "kaethe-grand-12": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 0,
+      "cell": 64,
+      "name": "Mit Vieren",
+      "effect": "Die Buben zählen mit; der vierte lädt ein Abrechnen mit doppelter Wucht.",
+      "spec": "kaethe-grand",
+      "row": 4,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 13,
+        "y": 473,
+        "w": 220,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2582
+      },
+      "sha256": "b375d4b323436c606008d1aeefb7a4d61739dcab720ca7c5b9c9aefe80b6ca31"
+    },
+    "kaethe-grand-13": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 64,
+      "cell": 64,
+      "name": "Reizen",
+      "effect": "Schaltet einen Kniff frei, der sich Augen im Voraus holt und die nächste Karte dafür leer ausgehen lässt.",
+      "spec": "kaethe-grand",
+      "row": 4,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 238,
+        "y": 461,
+        "w": 198,
+        "h": 187
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 1686
+      },
+      "sha256": "b662f98c0fb55540196c935509af8f698a8375a1ca5b69d128d7b787fc91892c"
+    },
+    "kaethe-grand-14": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 128,
+      "cell": 64,
+      "name": "Blatt aufgefächert",
+      "effect": "Die Hand wird größer; zusätzliche Karten warten verdeckt hinter den drei Leistenplätzen.",
+      "spec": "kaethe-grand",
+      "row": 4,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 475,
+        "y": 472,
+        "w": 201,
+        "h": 171
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 50,
+        "count": 2411
+      },
+      "sha256": "63b6d04b6093c4238461059a356c194ebc61661cb2c812e2a53cfcae7dcaa84f"
+    },
+    "kaethe-grand-15": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 0,
+      "cell": 64,
+      "name": "Der Alte",
+      "effect": "Buben verkürzen die laufende Abklingzeit von Neu geben, das dir wiederum sicher einen Buben bringt.",
+      "spec": "kaethe-grand",
+      "row": 5,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 705,
+        "y": 459,
+        "w": 208,
+        "h": 196
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2442
+      },
+      "sha256": "177529354f932ab3f587e73c94818a0cfbf5e5b6b8c3ceebca7ce934227e7c9b"
+    },
+    "kaethe-grand-16": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 64,
+      "cell": 64,
+      "name": "Skat drücken",
+      "effect": "Jedes Mischen und jedes Neu geben schreibt Augen an, als hättest du die abgelegten Karten gedrückt.",
+      "spec": "kaethe-grand",
+      "row": 5,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 934,
+        "y": 461,
+        "w": 197,
+        "h": 193
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2636
+      },
+      "sha256": "6d2f2a1e02a2ea4b6952df6c12502fe09effa56e09ea91cff541f08e94693d6c"
+    },
+    "kaethe-grand-17": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 128,
+      "cell": 64,
+      "name": "Bis zum Anschlag",
+      "effect": "Farbe bedienen darf öfter hintereinander aufschlagen, bevor der Bonus deckelt.",
+      "spec": "kaethe-grand",
+      "row": 5,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 1160,
+        "y": 470,
+        "w": 196,
+        "h": 181
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2093
+      },
+      "sha256": "2f888a1251cbbcd6146742c7bd0902f02b509023afec7d684e9fc23e4228120a"
+    },
+    "kaethe-grand-18": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 0,
+      "cell": 64,
+      "name": "Auf die Hand",
+      "effect": "Die Abklingzeit von Neu geben sinkt dauerhaft – öfter eine frische Hand mit sicherem Buben.",
+      "spec": "kaethe-grand",
+      "row": 6,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 19,
+        "y": 688,
+        "w": 201,
+        "h": 186
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 55,
+        "count": 2383
+      },
+      "sha256": "ea20eecb6e8eb3f2f75b6d05f058d302cae4f2bff5368123d0098cf193f394eb"
+    },
+    "kaethe-grand-19": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 64,
+      "cell": 64,
+      "name": "Volle Augen",
+      "effect": "Der Grundwert, den jede ausgespielte Karte auf den Block schreibt, steigt.",
+      "spec": "kaethe-grand",
+      "row": 6,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 246,
+        "y": 680,
+        "w": 190,
+        "h": 194
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2685
+      },
+      "sha256": "ca0b71b5746a4f97795a6f2b143e026cf4c2e445810f6418317bd96215b0ba7b"
+    },
+    "kaethe-grand-20": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 128,
+      "cell": 64,
+      "name": "Unter der Hand",
+      "effect": "Die Karten zählen mit; jede achte zieht Zeit von der Abklingzeit des Kartenregens ab.",
+      "spec": "kaethe-grand",
+      "row": 6,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 468,
+        "y": 671,
+        "w": 208,
+        "h": 204
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 3124
+      },
+      "sha256": "736e48ee85a935833365abe99e34064a9b47cb32862d221fa945028357399813"
+    },
+    "kaethe-grand-21": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 0,
+      "cell": 64,
+      "name": "Trumpf nachziehen",
+      "effect": "Jeder gestochene Gegnerzauber verkürzt die Wartezeit auf die nächste Hand mit sicherem Buben.",
+      "spec": "kaethe-grand",
+      "row": 7,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 706,
+        "y": 674,
+        "w": 195,
+        "h": 197
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2271
+      },
+      "sha256": "8ce613567445785d0b57807c90efe094fbe2ed18f5ffdf5db88174cd4bc5c7e1"
+    },
+    "kaethe-grand-22": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 64,
+      "cell": 64,
+      "name": "Buchführung",
+      "effect": "Jeder erledigte Gegner wird auf dem Skatblock gutgeschrieben.",
+      "spec": "kaethe-grand",
+      "row": 7,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 923,
+        "y": 688,
+        "w": 216,
+        "h": 167
+      },
+      "bounds": {
+        "x": 3,
+        "y": 9,
+        "w": 59,
+        "h": 46,
+        "count": 2580
+      },
+      "sha256": "5e6c9c045ec4fec9dae3a8fc753ceb7984ad3c3dd739d4afff31d1e0174d95df"
+    },
+    "kaethe-grand-23": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 128,
+      "cell": 64,
+      "name": "Durchmarsch",
+      "effect": "Die Kartenregen zählen mit; jeder zweite treibt dich kurz zu schnellerem Spiel an.",
+      "spec": "kaethe-grand",
+      "row": 7,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 1160,
+        "y": 674,
+        "w": 197,
+        "h": 204
+      },
+      "bounds": {
+        "x": 4,
+        "y": 2,
+        "w": 57,
+        "h": 59,
+        "count": 1984
+      },
+      "sha256": "0152d41d5573ed972b258eeb063f940d6fc8b806a00a7d3440d71e8d26fb148f"
+    },
+    "kaethe-grand-24": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 0,
+      "cell": 64,
+      "name": "Spitzen",
+      "effect": "Kritische Treffer, ob Karte oder Abrechnen, richten deutlich mehr an.",
+      "spec": "kaethe-grand",
+      "row": 8,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 32,
+        "y": 903,
+        "w": 182,
+        "h": 178
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2076
+      },
+      "sha256": "89195a7bc7489e36afbb5202e7a5aed1a4db899350c665acc9b0d8664b377847"
+    },
+    "kaethe-grand-25": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 64,
+      "cell": 64,
+      "name": "Strich auf dem Block",
+      "effect": "Nach dem Abrechnen steht das nächste Reizen deutlich früher wieder bereit.",
+      "spec": "kaethe-grand",
+      "row": 8,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 253,
+        "y": 902,
+        "w": 180,
+        "h": 189
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2565
+      },
+      "sha256": "468c08c8c66696a87329846ceec770aa6e195be7b67ca4d0ceece2c487b61a6b"
+    },
+    "kaethe-grand-26": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 128,
+      "cell": 64,
+      "name": "Nullspiel",
+      "effect": "Die Ausweichschritte zählen mit; jeder zweite tauscht die ganze Hand aus.",
+      "spec": "kaethe-grand",
+      "row": 8,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 466,
+        "y": 905,
+        "w": 192,
+        "h": 190
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 58,
+        "count": 2232
+      },
+      "sha256": "1254442f289bb118319d6183176af053b58040479e403ac97adbbb33b7297064"
+    },
+    "kaethe-grand-27": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 0,
+      "cell": 64,
+      "name": "Grand Hand",
+      "effect": "Das Abrechnen schlägt kräftiger zu und gibt sofort den Weg zu einer frischen Hand mit sicherem Buben frei.",
+      "spec": "kaethe-grand",
+      "row": 9,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 697,
+        "y": 896,
+        "w": 205,
+        "h": 199
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 57,
+        "count": 2973
+      },
+      "sha256": "a47519568ebf508033d9f4c86797285670bd28870d77b9f880071b006351f7dc"
+    },
+    "kaethe-grand-28": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 64,
+      "cell": 64,
+      "name": "Revanche",
+      "effect": "Nach dem Abrechnen bleibt ein Grundstock an Augen auf dem Block stehen.",
+      "spec": "kaethe-grand",
+      "row": 9,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 933,
+        "y": 914,
+        "w": 194,
+        "h": 171
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2449
+      },
+      "sha256": "f7c6f04bd395ed4c691f57cb90f19d54513fd1e53a2a08c3a8af465bfb8b8cf5"
+    },
+    "kaethe-grand-29": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 128,
+      "cell": 64,
+      "name": "Null ouvert Hand",
+      "effect": "Das Abrechnen räumt die Hand ab und bringt den Kartenregen ein Stück näher.",
+      "spec": "kaethe-grand",
+      "row": 9,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sourceRect": {
+        "x": 1154,
+        "y": 897,
+        "w": 198,
+        "h": 189
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2182
+      },
+      "sha256": "d8691e1b310c214908b6f9d2e4c5d5e6dd1c011e4b896efeb1cb57696df3968d"
+    },
+    "kaethe-herz-0": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 192,
+      "cell": 64,
+      "name": "Das Herz am rechten Fleck",
+      "effect": "Herz-Karten wirken wie gewohnt auf ihr Ziel und lassen ein wenig Heilung bei dir selbst.",
+      "spec": "kaethe-herz",
+      "row": 0,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 42,
+        "y": 46,
+        "w": 164,
+        "h": 174
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2577
+      },
+      "sha256": "ed32228b5dd1cbdb1f146680041ad70a448db3939144f1a65728d8b6062fc628"
+    },
+    "kaethe-herz-1": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 256,
+      "cell": 64,
+      "name": "Pik auf die Brust",
+      "effect": "Pik-Karten schützen ihr Ziel wie gewohnt und legen zusätzlich ein kleines Polster bei dir an.",
+      "spec": "kaethe-herz",
+      "row": 0,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 248,
+        "y": 38,
+        "w": 200,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2589
+      },
+      "sha256": "1a7308d52ceeb57cfd6911f1448e71c28413dc0c744f8285e55d54a6ad2cb272"
+    },
+    "kaethe-herz-2": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 320,
+      "cell": 64,
+      "name": "Sterne lesen",
+      "effect": "Jedes Glied der Farbkette verstärkt die nächste Karte noch ein Stück mehr.",
+      "spec": "kaethe-herz",
+      "row": 0,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 483,
+        "y": 58,
+        "w": 184,
+        "h": 164
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 53,
+        "count": 2311
+      },
+      "sha256": "66031c4c6527bfa4db6d22c1d6836fe82efc5c0f723da81085612b7c224a5855"
+    },
+    "kaethe-herz-3": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 192,
+      "cell": 64,
+      "name": "Rote Dame",
+      "effect": "Die Heilfarbe des Blatts pflegt kräftiger, von der Herz-Sieben bis zum Herz-Ass.",
+      "spec": "kaethe-herz",
+      "row": 1,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 739,
+        "y": 43,
+        "w": 157,
+        "h": 180
+      },
+      "bounds": {
+        "x": 6,
+        "y": 3,
+        "w": 51,
+        "h": 59,
+        "count": 2493
+      },
+      "sha256": "a7ec618f889395b6ea29c020071227607d34d8f95d12de33e5ecc5ce69595505"
+    },
+    "kaethe-herz-4": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 256,
+      "cell": 64,
+      "name": "Letzte Masche",
+      "effect": "In der Not legt eine geglückte Parade ein besonders dickes Polster an.",
+      "spec": "kaethe-herz",
+      "row": 1,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 947,
+        "y": 58,
+        "w": 176,
+        "h": 164
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 55,
+        "count": 2151
+      },
+      "sha256": "ea1a044b871c19e530053991564d52820d4a8b718592252add5cb1c5ed75ac03"
+    },
+    "kaethe-herz-5": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 320,
+      "cell": 64,
+      "name": "Farbe halten",
+      "effect": "Wer die Farbe der letzten Karte nachlegt, bekommt jedes Mal einen kleinen Schluck Leben.",
+      "spec": "kaethe-herz",
+      "row": 1,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 1154,
+        "y": 36,
+        "w": 195,
+        "h": 188
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 57,
+        "count": 2154
+      },
+      "sha256": "727d7fbc5aa3ea4de8e2c7e64028f1ba0ef516422701290eb766a1cf48fa5210"
+    },
+    "kaethe-herz-6": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 192,
+      "cell": 64,
+      "name": "Nachschenken",
+      "effect": "Die Herz-Karten zählen mit; jede dritte verkürzt die Wartezeit aufs nächste Gläschen.",
+      "spec": "kaethe-herz",
+      "row": 2,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 21,
+        "y": 245,
+        "w": 189,
+        "h": 190
+      },
+      "bounds": {
+        "x": 3,
+        "y": 2,
+        "w": 59,
+        "h": 59,
+        "count": 1854
+      },
+      "sha256": "4205851a7b0095a7c141bac165a02091a0bee74a4a0d7d9962acd486a65c517f"
+    },
+    "kaethe-herz-7": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 256,
+      "cell": 64,
+      "name": "Pik-Ass",
+      "effect": "Die Schutzfarbe des Blatts legt dickere Schilde auf dich oder den gewählten Freund.",
+      "spec": "kaethe-herz",
+      "row": 2,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 259,
+        "y": 252,
+        "w": 168,
+        "h": 187
+      },
+      "bounds": {
+        "x": 5,
+        "y": 3,
+        "w": 53,
+        "h": 59,
+        "count": 2446
+      },
+      "sha256": "e10660a656fcf9d4f3e0319b1f5cc511e91306642ed9dd8b26f47c774b62381f"
+    },
+    "kaethe-herz-8": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 320,
+      "cell": 64,
+      "name": "Wahrsagekugel",
+      "effect": "Eine lange Farbkette wächst noch ein Glied weiter, bevor ihr Aufschlag endet.",
+      "spec": "kaethe-herz",
+      "row": 2,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 481,
+        "y": 251,
+        "w": 161,
+        "h": 196
+      },
+      "bounds": {
+        "x": 8,
+        "y": 3,
+        "w": 48,
+        "h": 59,
+        "count": 2344
+      },
+      "sha256": "ad71df6b6a3b7abd61f1fcc397b02da1f1ef78bb36795ff5811244d139a9e3f1"
+    },
+    "kaethe-herz-9": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 192,
+      "cell": 64,
+      "name": "Herzklopfen",
+      "effect": "In der Not steht das nächste Gläschen ohne Wartezeit bereit.",
+      "spec": "kaethe-herz",
+      "row": 3,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 691,
+        "y": 283,
+        "w": 193,
+        "h": 150
+      },
+      "bounds": {
+        "x": 3,
+        "y": 9,
+        "w": 59,
+        "h": 46,
+        "count": 1873
+      },
+      "sha256": "45beb3bbbaac1be24116196b1f5116aae49a8aea3d48e631d7d6ff111b1c7217"
+    },
+    "kaethe-herz-10": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 256,
+      "cell": 64,
+      "name": "Mauern",
+      "effect": "Gemauert fängt Treffer über eine längere Zeitspanne ab.",
+      "spec": "kaethe-herz",
+      "row": 3,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 923,
+        "y": 266,
+        "w": 197,
+        "h": 164
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2658
+      },
+      "sha256": "f667827b8d84c57d0dbf2f7c048773e28fee645606ef552dff9331f6d317c587"
+    },
+    "kaethe-herz-11": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 320,
+      "cell": 64,
+      "name": "Blick über die Schulter",
+      "effect": "Jeder gestochene Gegnerzauber gibt dir einen Teil deines Lebens zurück.",
+      "spec": "kaethe-herz",
+      "row": 3,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 1150,
+        "y": 251,
+        "w": 205,
+        "h": 194
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2383
+      },
+      "sha256": "323d3fcfd26b3f2585708fbbe8a953ac551e9ffaa8adf722399245030454677e"
+    },
+    "kaethe-herz-12": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 192,
+      "cell": 64,
+      "name": "Handlesen",
+      "effect": "Schaltet eine Heilung über Zeit frei, die jede Herz-Karte länger laufen lässt.",
+      "spec": "kaethe-herz",
+      "row": 4,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 38,
+        "y": 458,
+        "w": 166,
+        "h": 201
+      },
+      "bounds": {
+        "x": 8,
+        "y": 3,
+        "w": 49,
+        "h": 59,
+        "count": 1979
+      },
+      "sha256": "045dfbfd8842ec19d16bcc67f0c39d08e078dd96db5cba72477530a3bf197a87"
+    },
+    "kaethe-herz-13": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 256,
+      "cell": 64,
+      "name": "Pik mit Stachel",
+      "effect": "Wer auf einen Pik-Schild einprügelt, bekommt einen Teil davon zurück.",
+      "spec": "kaethe-herz",
+      "row": 4,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 265,
+        "y": 478,
+        "w": 160,
+        "h": 180
+      },
+      "bounds": {
+        "x": 6,
+        "y": 3,
+        "w": 52,
+        "h": 59,
+        "count": 2425
+      },
+      "sha256": "f9458ee642b20ec49988de9952d7b1b013926549998f3809feef1a571e841653"
+    },
+    "kaethe-herz-14": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 320,
+      "cell": 64,
+      "name": "Hab ich kommen sehen",
+      "effect": "Ein Treffer, der während des Abgangs ins Leere geht, bringt die nächste frische Hand näher.",
+      "spec": "kaethe-herz",
+      "row": 4,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 487,
+        "y": 471,
+        "w": 171,
+        "h": 193
+      },
+      "bounds": {
+        "x": 6,
+        "y": 3,
+        "w": 52,
+        "h": 59,
+        "count": 2632
+      },
+      "sha256": "3480cd2d17cfdd1968a7ea4d940decb7880d0ff6e977655fe4eb9a5033b40fc6"
+    },
+    "kaethe-herz-15": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 192,
+      "cell": 64,
+      "name": "Lebenslinie",
+      "effect": "Jede Herz-Karte auf Herz verkürzt die Wartezeit bis zum nächsten Handlesen.",
+      "spec": "kaethe-herz",
+      "row": 5,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 713,
+        "y": 473,
+        "w": 179,
+        "h": 188
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 56,
+        "h": 59,
+        "count": 2291
+      },
+      "sha256": "396039342b0318c00ee0a938f4792c74079fb3949b1f659dcb54d45eb77f4671"
+    },
+    "kaethe-herz-16": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 256,
+      "cell": 64,
+      "name": "Pik-Kette",
+      "effect": "Jede Pik-Karte, die auf Pik folgt, legt dir ein Polster an.",
+      "spec": "kaethe-herz",
+      "row": 5,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 918,
+        "y": 502,
+        "w": 206,
+        "h": 138
+      },
+      "bounds": {
+        "x": 3,
+        "y": 12,
+        "w": 59,
+        "h": 40,
+        "count": 1812
+      },
+      "sha256": "01b21ce5b90dcb1693a46215f19a752b762b5be0b60e0dd72c3cb61c803a456a"
+    },
+    "kaethe-herz-17": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 320,
+      "cell": 64,
+      "name": "Kaffeefahrt",
+      "effect": "Jede frische Hand bringt einen kurzen Schub, die neuen Karten zügig auszuspielen.",
+      "spec": "kaethe-herz",
+      "row": 5,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 1150,
+        "y": 478,
+        "w": 209,
+        "h": 192
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2633
+      },
+      "sha256": "43472255e9b49439866b198b9617fb2b503dd3bc7d0bd2755ad51e901c8831bf"
+    },
+    "kaethe-herz-18": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 192,
+      "cell": 64,
+      "name": "Warmer Eierlikör",
+      "effect": "Nach dem Gläschen wirkt die Heilung noch eine Weile als Hauspflege weiter.",
+      "spec": "kaethe-herz",
+      "row": 6,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 25,
+        "y": 700,
+        "w": 185,
+        "h": 193
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 2260
+      },
+      "sha256": "6a1f4c13c66ef319a45e9c36c461fd1fc0a3ca7df8438ae265710a7177cabe03"
+    },
+    "kaethe-herz-19": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 256,
+      "cell": 64,
+      "name": "Masche für Masche",
+      "effect": "Geglückte Paraden legen ein Polster an, und der Strickschal verstärkt Deckung und Schilde der ganzen Runde spürbar.",
+      "spec": "kaethe-herz",
+      "row": 6,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 237,
+        "y": 689,
+        "w": 210,
+        "h": 192
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 1973
+      },
+      "sha256": "94b430a05dca03c73ea5d57aba89ce711ade58d741cfb5b136dcd66cdb3fe880"
+    },
+    "kaethe-herz-20": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 320,
+      "cell": 64,
+      "name": "Legekreis im Gehen",
+      "effect": "Die kurze Wirkzeit beim Legen des Kreises bricht nicht mehr ab, wenn du dich bewegst.",
+      "spec": "kaethe-herz",
+      "row": 6,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 457,
+        "y": 686,
+        "w": 214,
+        "h": 193
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 53,
+        "count": 1880
+      },
+      "sha256": "0f734d2cc6f23453efed4ea6762dba2ed10e52059fb2658b5d49ef27a8517f6a"
+    },
+    "kaethe-herz-21": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 192,
+      "cell": 64,
+      "name": "Herzensangelegenheit",
+      "effect": "Die Herz-Karten zählen mit; jede vierte schreibt zusätzliche Augen aufs nächste Abrechnen an.",
+      "spec": "kaethe-herz",
+      "row": 7,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 694,
+        "y": 702,
+        "w": 190,
+        "h": 162
+      },
+      "bounds": {
+        "x": 2,
+        "y": 7,
+        "w": 59,
+        "h": 50,
+        "count": 2219
+      },
+      "sha256": "2056578a7199cbee01f94dd767a4a8b02ce79decf2c67fa055fbb3ed6d09275e"
+    },
+    "kaethe-herz-22": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 256,
+      "cell": 64,
+      "name": "Nichts verschenken",
+      "effect": "Was beim Heilen über dein volles Leben hinausgeht, bleibt teilweise als Polster liegen.",
+      "spec": "kaethe-herz",
+      "row": 7,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 917,
+        "y": 706,
+        "w": 220,
+        "h": 172
+      },
+      "bounds": {
+        "x": 3,
+        "y": 9,
+        "w": 59,
+        "h": 46,
+        "count": 2023
+      },
+      "sha256": "42e0eb4ba90826b1df85ec6c045cf5cbdae83a86d2301937fb08aa90e158f3eb"
+    },
+    "kaethe-herz-23": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 320,
+      "cell": 64,
+      "name": "Zukunft gesehen",
+      "effect": "Bediente Farben zählen mit; nach der dritten steht die nächste frische Hand ohne Wartezeit bereit.",
+      "spec": "kaethe-herz",
+      "row": 7,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 1139,
+        "y": 704,
+        "w": 219,
+        "h": 176
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 47,
+        "count": 2197
+      },
+      "sha256": "93c18cb4801ce88e56228812e7eca59af4e8f6c2dab887c8fcfe13a4c537930d"
+    },
+    "kaethe-herz-24": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 192,
+      "cell": 64,
+      "name": "Noch eins, dann neu",
+      "effect": "Das Gläschen spült die alte Hand weg und legt dir neue Karten hin.",
+      "spec": "kaethe-herz",
+      "row": 8,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 28,
+        "y": 936,
+        "w": 195,
+        "h": 139
+      },
+      "bounds": {
+        "x": 3,
+        "y": 11,
+        "w": 59,
+        "h": 42,
+        "count": 1941
+      },
+      "sha256": "27f16ea88ad8ced13c11bdc76400484a6aaa7c12f241bcf1dfbc84e4a6cf77d9"
+    },
+    "kaethe-herz-25": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 256,
+      "cell": 64,
+      "name": "Doppelt gemauert",
+      "effect": "Das Parierfenster von Gemauert schluckt einen weiteren Treffer, bevor es sich schließt.",
+      "spec": "kaethe-herz",
+      "row": 8,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 247,
+        "y": 910,
+        "w": 190,
+        "h": 179
+      },
+      "bounds": {
+        "x": 2,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2868
+      },
+      "sha256": "24219f6c5690ff0c9af36e11079e8f156ca01767be92361d973cae5a152eac8f"
+    },
+    "kaethe-herz-26": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 320,
+      "cell": 64,
+      "name": "Kartenlegen",
+      "effect": "Die Würfe der ganzen Hand zählen mit; jeder zweite schreibt zusätzliche Augen an.",
+      "spec": "kaethe-herz",
+      "row": 8,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 457,
+        "y": 901,
+        "w": 225,
+        "h": 197
+      },
+      "bounds": {
+        "x": 2,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2542
+      },
+      "sha256": "b6b6296af47a97edd608766014bcb1d374289f11387da952f631523c6843c75b"
+    },
+    "kaethe-herz-27": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 192,
+      "cell": 64,
+      "name": "Rote Rechnung",
+      "effect": "Das Abrechnen wird zur Heilung und bringt das nächste Handlesen näher.",
+      "spec": "kaethe-herz",
+      "row": 9,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 720,
+        "y": 908,
+        "w": 177,
+        "h": 190
+      },
+      "bounds": {
+        "x": 5,
+        "y": 2,
+        "w": 55,
+        "h": 59,
+        "count": 2326
+      },
+      "sha256": "57c9197fc5021bf153ef6110ef1b71ddb342659644575390cc027ea9580ab06d"
+    },
+    "kaethe-herz-28": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 256,
+      "cell": 64,
+      "name": "Schutzbrief",
+      "effect": "Nach dem Abrechnen stehst du hinter einem dicken Polster, und die Parade ist sofort wieder da.",
+      "spec": "kaethe-herz",
+      "row": 9,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 924,
+        "y": 908,
+        "w": 211,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 51,
+        "count": 2532
+      },
+      "sha256": "29b37f88840e8ae8e8c93302ff495d79d2b5858c31c1fcc38770736f30d8146b"
+    },
+    "kaethe-herz-29": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 320,
+      "cell": 64,
+      "name": "Die Karten lügen nie",
+      "effect": "Das Abrechnen legt dir neue Karten hin und bringt den Kreis auf dem Boden etwas früher zurück.",
+      "spec": "kaethe-herz",
+      "row": 9,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sourceRect": {
+        "x": 1152,
+        "y": 920,
+        "w": 206,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 1775
+      },
+      "sha256": "51c53f658dac991cc0c037413e60c86ed851b52f954a110da25f5380e32308b9"
+    },
+    "kaethe-falsch-0": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 384,
+      "cell": 64,
+      "name": "Hab ich doch gesagt",
+      "effect": "Ein gestochener Gegnerzauber legt dir sofort ein Polster an.",
+      "spec": "kaethe-falsch",
+      "row": 0,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 27,
+        "y": 26,
+        "w": 207,
+        "h": 215
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 57,
+        "h": 59,
+        "count": 2732
+      },
+      "sha256": "66b91d66b033f6f40a355c4514fbb81d46fe457af30ccb382f153db4a5cf21c6"
+    },
+    "kaethe-falsch-1": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 448,
+      "cell": 64,
+      "name": "Aus dem Ärmel",
+      "effect": "Wer einen Treffer abfängt, tauscht dabei unauffällig die ganze Hand aus.",
+      "spec": "kaethe-falsch",
+      "row": 0,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 256,
+        "y": 57,
+        "w": 210,
+        "h": 173
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 49,
+        "count": 2144
+      },
+      "sha256": "6a136fa94ad7b530e6342d3874a162701db3aaf2522f4a1033e339dbc8d5bcac"
+    },
+    "kaethe-falsch-2": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 0,
+      "y": 512,
+      "cell": 64,
+      "name": "Re!",
+      "effect": "Eine geglückte Unterbrechung verdoppelt die Wirkung der Karte auf dem ersten Platz.",
+      "spec": "kaethe-falsch",
+      "row": 0,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 476,
+        "y": 51,
+        "w": 196,
+        "h": 179
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2251
+      },
+      "sha256": "c13a9c69274d56ba58b7b9c41df11178717341f67847160acc4750d57b3a7867"
+    },
+    "kaethe-falsch-3": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 384,
+      "cell": 64,
+      "name": "Kontra zahlt",
+      "effect": "Eine geglückte Unterbrechung schreibt Augen an, ob sie als Stich zählt oder nicht.",
+      "spec": "kaethe-falsch",
+      "row": 1,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 709,
+        "y": 48,
+        "w": 180,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2733
+      },
+      "sha256": "605a6e1270de67875e75c7f1cb79cf9a747bf2cb528bd95819d4885eaea6b4b5"
+    },
+    "kaethe-falsch-4": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 448,
+      "cell": 64,
+      "name": "Notblatt",
+      "effect": "In der Not werden die Handkarten gegen frische getauscht – vielleicht ist Herz oder Pik dabei.",
+      "spec": "kaethe-falsch",
+      "row": 1,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 919,
+        "y": 54,
+        "w": 210,
+        "h": 181
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 51,
+        "count": 2279
+      },
+      "sha256": "aaae56fb0cea7732b9412a7edb273f5cbf025e03a058911a5a5b506f5c7268a4"
+    },
+    "kaethe-falsch-5": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 64,
+      "y": 512,
+      "cell": 64,
+      "name": "Karo-Zehn",
+      "effect": "Die hohen Karo-Karten halten ihr Ziel ein Stück länger in der Betäubung fest.",
+      "spec": "kaethe-falsch",
+      "row": 1,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 1157,
+        "y": 53,
+        "w": 192,
+        "h": 180
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 55,
+        "count": 2573
+      },
+      "sha256": "80a083fe496cd7c26ecefff0f7179066d2d007369af7385864629a3024fffcef"
+    },
+    "kaethe-falsch-6": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 384,
+      "cell": 64,
+      "name": "Hochgestochen",
+      "effect": "Gestochene Gegnerzauber bringen über die Gegnerkarte hinaus weitere Augen.",
+      "spec": "kaethe-falsch",
+      "row": 2,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 28,
+        "y": 272,
+        "w": 202,
+        "h": 179
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2246
+      },
+      "sha256": "3a09992bb870d53ca1f9704da72e2b51b771ee2bb26dad4f0acd3bcd6cd473d9"
+    },
+    "kaethe-falsch-7": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 448,
+      "cell": 64,
+      "name": "Bubentrick",
+      "effect": "Buben verkürzen die Wartezeit auf das nächste Kontra.",
+      "spec": "kaethe-falsch",
+      "row": 2,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 257,
+        "y": 256,
+        "w": 183,
+        "h": 195
+      },
+      "bounds": {
+        "x": 4,
+        "y": 3,
+        "w": 55,
+        "h": 59,
+        "count": 2520
+      },
+      "sha256": "ae794f0a7816fccd13bb5811a28074ea29c52b7c2aeeb12272728d8179e8d0ac"
+    },
+    "kaethe-falsch-8": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 128,
+      "y": 512,
+      "cell": 64,
+      "name": "Kreuz-Dame",
+      "effect": "Auch bei der Falschspielerin schlägt die Schadensfarbe kräftiger zu.",
+      "spec": "kaethe-falsch",
+      "row": 2,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 475,
+        "y": 265,
+        "w": 192,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2693
+      },
+      "sha256": "4abf19c985ad503341ad34b085c9d37abde80db03846925a041cd75e85655b71"
+    },
+    "kaethe-falsch-9": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 384,
+      "cell": 64,
+      "name": "Stichfest",
+      "effect": "Gestochene Gegnerzauber flicken dich jedes Mal ein Stück zusammen.",
+      "spec": "kaethe-falsch",
+      "row": 3,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 697,
+        "y": 273,
+        "w": 197,
+        "h": 174
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2273
+      },
+      "sha256": "f7e3a68b89508bf946a007aa138dd1b09cc69338541143bfd8a996d24afad2fc"
+    },
+    "kaethe-falsch-10": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 448,
+      "cell": 64,
+      "name": "Ärmel voll",
+      "effect": "Die Hand der Falschspielerin fasst mehr Karten, als die Leiste zeigt.",
+      "spec": "kaethe-falsch",
+      "row": 3,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 917,
+        "y": 272,
+        "w": 204,
+        "h": 176
+      },
+      "bounds": {
+        "x": 2,
+        "y": 7,
+        "w": 59,
+        "h": 51,
+        "count": 2521
+      },
+      "sha256": "5c928e47d9b9f3c2f04d4504c54ebbd6b8675529fa947b6b0c3f5b4018074133"
+    },
+    "kaethe-falsch-11": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 192,
+      "y": 512,
+      "cell": 64,
+      "name": "Karo bedient",
+      "effect": "Eine Karo-Karte auf Karo bremst die Gegner und polstert dich zugleich.",
+      "spec": "kaethe-falsch",
+      "row": 3,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 1157,
+        "y": 277,
+        "w": 194,
+        "h": 171
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2459
+      },
+      "sha256": "24071b6ea772f5f914f1fc9e8915011cabd013f85d91a2a35e64eeb715fef2eb"
+    },
+    "kaethe-falsch-12": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 384,
+      "cell": 64,
+      "name": "Da guckst du",
+      "effect": "Ein Pik-Schild zieht die Aufmerksamkeit aller Gegner in der Nähe auf dich.",
+      "spec": "kaethe-falsch",
+      "row": 4,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 22,
+        "y": 482,
+        "w": 205,
+        "h": 186
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2371
+      },
+      "sha256": "136420894a9075de981aaf4570af3b4fc7e0350650ef6ff3f519e636020d2879"
+    },
+    "kaethe-falsch-13": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 448,
+      "cell": 64,
+      "name": "Gezinkte Karten",
+      "effect": "Schaltet einen Kniff frei, der die ganze Hand auf eine Farbe umfärbt.",
+      "spec": "kaethe-falsch",
+      "row": 4,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 256,
+        "y": 483,
+        "w": 192,
+        "h": 183
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2408
+      },
+      "sha256": "3c1844ad34bcaac30ea82291fe1136825e5a835df2512f1af35742b1016c0815"
+    },
+    "kaethe-falsch-14": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 256,
+      "y": 512,
+      "cell": 64,
+      "name": "Karo-Ass",
+      "effect": "Die Kontrollfarbe trifft die Gruppe härter und bremst sie kräftiger.",
+      "spec": "kaethe-falsch",
+      "row": 4,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 480,
+        "y": 484,
+        "w": 193,
+        "h": 176
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2725
+      },
+      "sha256": "cc911d0d333477f04e0a207bb4237816cb4d81dc9920899aa4cd7f6c2e8bf124"
+    },
+    "kaethe-falsch-15": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 384,
+      "cell": 64,
+      "name": "Kontra im Takt",
+      "effect": "Die Stiche zählen mit; nach dem dritten steht die Unterbrechung ohne Wartezeit bereit.",
+      "spec": "kaethe-falsch",
+      "row": 5,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 702,
+        "y": 477,
+        "w": 189,
+        "h": 191
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2581
+      },
+      "sha256": "76b48c0f8f6f0ca385b4cb6208a56eb21b3ffbc0ae0570a5c96c5806280074cd"
+    },
+    "kaethe-falsch-16": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 448,
+      "cell": 64,
+      "name": "Falsch gemischt",
+      "effect": "Die Falschspielerin darf ihre Hand öfter abwerfen und neu ziehen.",
+      "spec": "kaethe-falsch",
+      "row": 5,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 919,
+        "y": 494,
+        "w": 198,
+        "h": 173
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2047
+      },
+      "sha256": "3b1996fa7022b2208c49a77310d78db7914d97267221748209d98abe212feef7"
+    },
+    "kaethe-falsch-17": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 320,
+      "y": 512,
+      "cell": 64,
+      "name": "Kreuz-Kette",
+      "effect": "Kreuz auf Kreuz beschleunigt kurz alles, was du danach spielst.",
+      "spec": "kaethe-falsch",
+      "row": 5,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 1145,
+        "y": 494,
+        "w": 205,
+        "h": 166
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 48,
+        "count": 1880
+      },
+      "sha256": "b7ce13e1d448912cb2255dcbf7a3ed1d80e4f6ce6a59273a126ca648c8d5f892"
+    },
+    "kaethe-falsch-18": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 384,
+      "cell": 64,
+      "name": "Kontra mit Ansage",
+      "effect": "Nach einer geglückten Unterbrechung ist das nächste Gläschen ohne Wartezeit da.",
+      "spec": "kaethe-falsch",
+      "row": 6,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 28,
+        "y": 697,
+        "w": 184,
+        "h": 188
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2281
+      },
+      "sha256": "e0246efa7a67d67225b7b0969ec7025cf8fb317081fcef15a15835d7ade04cd5"
+    },
+    "kaethe-falsch-19": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 448,
+      "cell": 64,
+      "name": "Nachgesteckt",
+      "effect": "Lange Farbketten bringen das nächste Umfärben der Hand näher.",
+      "spec": "kaethe-falsch",
+      "row": 6,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 245,
+        "y": 711,
+        "w": 208,
+        "h": 174
+      },
+      "bounds": {
+        "x": 3,
+        "y": 7,
+        "w": 59,
+        "h": 49,
+        "count": 2387
+      },
+      "sha256": "7f7a6950bc35f5d9a5a2322ec67bc4c332b6b6b3289256206ee4c3c39452ee23"
+    },
+    "kaethe-falsch-20": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 384,
+      "y": 512,
+      "cell": 64,
+      "name": "Karo satt",
+      "effect": "Alles, was im Umkreis trifft, richtet mehr an – vom Karo-Splitter bis zum Kartenregen.",
+      "spec": "kaethe-falsch",
+      "row": 6,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 478,
+        "y": 703,
+        "w": 186,
+        "h": 177
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2937
+      },
+      "sha256": "c667fa255ad7ecf1937916b146404e3036b943490c73a9f713c9b93e386cead0"
+    },
+    "kaethe-falsch-21": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 384,
+      "cell": 64,
+      "name": "Dicke Strickjacke",
+      "effect": "Bei niedrigem Leben kommt von jedem Treffer weniger durch die Strickjacke.",
+      "spec": "kaethe-falsch",
+      "row": 7,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 690,
+        "y": 698,
+        "w": 209,
+        "h": 184
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 52,
+        "count": 2668
+      },
+      "sha256": "9ea769476724b948291a8d8f58b13d3b7ae678dadafa631007500240ca6342a7"
+    },
+    "kaethe-falsch-22": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 448,
+      "cell": 64,
+      "name": "Mischen ist Silber",
+      "effect": "Jede frische Hand kommt mit einem Polster, das die Mischpause überbrückt.",
+      "spec": "kaethe-falsch",
+      "row": 7,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 920,
+        "y": 701,
+        "w": 206,
+        "h": 184
+      },
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "w": 59,
+        "h": 53,
+        "count": 2492
+      },
+      "sha256": "8e7714451e8a115a41c654d5037ee395adb4a7bc171b6943bedd2c049781837b"
+    },
+    "kaethe-falsch-23": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 448,
+      "y": 512,
+      "cell": 64,
+      "name": "Bockrunde",
+      "effect": "Gestochene Gegnerzauber können das nächste Abrechnen verdoppeln.",
+      "spec": "kaethe-falsch",
+      "row": 7,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 1154,
+        "y": 695,
+        "w": 190,
+        "h": 194
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 58,
+        "h": 59,
+        "count": 2685
+      },
+      "sha256": "e664a9073384a75c85bbf8f03b558faa84ac0544a6494cc5c1f2af995db7f57d"
+    },
+    "kaethe-falsch-24": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 384,
+      "cell": 64,
+      "name": "Mauer nach dem Stich",
+      "effect": "Nach jedem gestochenen Gegnerzauber ist die Parade ohne Wartezeit wieder da.",
+      "spec": "kaethe-falsch",
+      "row": 8,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 20,
+        "y": 914,
+        "w": 207,
+        "h": 188
+      },
+      "bounds": {
+        "x": 3,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2701
+      },
+      "sha256": "4bc3ea7d182672e40aeccd5c0c57fcaf7a836fc9347ff023ceb5fc268a2369df"
+    },
+    "kaethe-falsch-25": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 448,
+      "cell": 64,
+      "name": "Flinke Finger",
+      "effect": "Luschen fliegen fast ohne Sperre hinterher – kurz danach ist schon die nächste Karte dran.",
+      "spec": "kaethe-falsch",
+      "row": 8,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 252,
+        "y": 929,
+        "w": 207,
+        "h": 157
+      },
+      "bounds": {
+        "x": 3,
+        "y": 10,
+        "w": 59,
+        "h": 45,
+        "count": 1465
+      },
+      "sha256": "c439f268a8652b83f4f4e31498bdb82d1db0af0711f54329f09d5c9edd9ccbbd"
+    },
+    "kaethe-falsch-26": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 512,
+      "y": 512,
+      "cell": 64,
+      "name": "Hier geblieben!",
+      "effect": "Ein abgefangener Angreifer wird danach eine Weile ausgebremst.",
+      "spec": "kaethe-falsch",
+      "row": 8,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 479,
+        "y": 925,
+        "w": 190,
+        "h": 175
+      },
+      "bounds": {
+        "x": 2,
+        "y": 5,
+        "w": 59,
+        "h": 54,
+        "count": 2669
+      },
+      "sha256": "d55ed362e209483279e1331de5a41e0afb111529d3df7bbd21c715ec0f2e090c"
+    },
+    "kaethe-falsch-27": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 384,
+      "cell": 64,
+      "name": "Kontra gewonnen",
+      "effect": "Das Abrechnen macht die Unterbrechung sofort frei und treibt dich kurz zu schnellerem Spiel an.",
+      "spec": "kaethe-falsch",
+      "row": 9,
+      "path": 0,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 699,
+        "y": 922,
+        "w": 191,
+        "h": 182
+      },
+      "bounds": {
+        "x": 3,
+        "y": 4,
+        "w": 59,
+        "h": 56,
+        "count": 2837
+      },
+      "sha256": "c288610bba904a524dc24e3bcaa5f0acaa649374098690daf26fa8934f72bb8a"
+    },
+    "kaethe-falsch-28": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 448,
+      "cell": 64,
+      "name": "Falsch abgerechnet",
+      "effect": "Das Abrechnen legt neue Karten hin und bringt das nächste Umfärben der Hand näher.",
+      "spec": "kaethe-falsch",
+      "row": 9,
+      "path": 1,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 918,
+        "y": 926,
+        "w": 217,
+        "h": 176
+      },
+      "bounds": {
+        "x": 3,
+        "y": 8,
+        "w": 59,
+        "h": 48,
+        "count": 2312
+      },
+      "sha256": "4eaf1be3347dbb9e6291c817221e693b26648e2af9cb0a369a8ac0298ba1ea16"
+    },
+    "kaethe-falsch-29": {
+      "atlas": "assets/content-art/e32/runtime/talents-kaethe.png",
+      "x": 576,
+      "y": 512,
+      "cell": 64,
+      "name": "Re und Bock",
+      "effect": "Das Abrechnen schlägt kräftiger zu und verdoppelt gleich danach die Karte auf dem ersten Platz.",
+      "spec": "kaethe-falsch",
+      "row": 9,
+      "path": 2,
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sourceRect": {
+        "x": 1154,
+        "y": 911,
+        "w": 196,
+        "h": 197
+      },
+      "bounds": {
+        "x": 3,
+        "y": 3,
+        "w": 59,
+        "h": 59,
+        "count": 2814
+      },
+      "sha256": "90860db8c9f02857ae967d92767bd90886b1c57e2ac193b8c865049abefdc5ae"
     }
   },
   "sources": [
@@ -7046,6 +11743,26 @@
       ]
     },
     {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-3-v1.png",
+      "sha256": "7f32e279909754b4f77adf4b963056744147886ecf3603643093ec68f9dc2b2e",
+      "talent": "dieter-wall-3"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-8-v1.png",
+      "sha256": "bbca29735b0bf4758b106be31b46848d92760ea57192e005ed96c429c7f63154",
+      "talent": "dieter-wall-8"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-12-v1.png",
+      "sha256": "00e4c0e67173b9dd5743fb14bdcc12f72ccdb18598a4793e7b53440901089f36",
+      "talent": "dieter-wall-12"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-wall-26-v1.png",
+      "sha256": "784b467079052be411ceb2a32db4376f17d6f57144c07848d56ccc61813f1e05",
+      "talent": "dieter-wall-26"
+    },
+    {
       "source": "assets/content-art/e32/sources/dieter-brawl-v1.png",
       "sha256": "7ec2726ef7890c0e3499ce792cbf1c11b00ad98d96e1f6957adcd6daf46bcfcc",
       "x": [
@@ -7065,6 +11782,26 @@
         884,
         1145
       ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-25-v1.png",
+      "sha256": "6bc04a0c95f679a3dd70e70a5a1960d77ea356257f85e1e266f11039dbb404cc",
+      "talent": "dieter-brawl-25"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-26-v1.png",
+      "sha256": "10dadd6430619faec6d2cc3915b81847a3a72218175e314b2e9413c07b78c850",
+      "talent": "dieter-brawl-26"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-28-v1.png",
+      "sha256": "0658cdbc99c07c366e82a0601ba1d2d82f0741e07440d2d8b6842b2ee8ebd183",
+      "talent": "dieter-brawl-28"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brawl-29-v1.png",
+      "sha256": "cacaeffe5c9de9384bcf25f887354172d03aaddd0bae5df002f684e799cc081e",
+      "talent": "dieter-brawl-29"
     },
     {
       "source": "assets/content-art/e32/sources/dieter-brew-v1.png",
@@ -7088,6 +11825,11 @@
       ]
     },
     {
+      "source": "assets/content-art/e32/sources/einzeln/dieter-brew-2-v1.png",
+      "sha256": "d34f1c5aee866d4ffc2151b2c52839b0f301ba831331124377eca5a5d9bf62e4",
+      "talent": "dieter-brew-2"
+    },
+    {
       "source": "assets/content-art/e32/sources/baerbel-care-v1.png",
       "sha256": "37cd0105633a9319c7943b829b81c7c4ecd6b88aa62806461e03096e1233d2ae",
       "x": [
@@ -7107,6 +11849,16 @@
         884,
         1145
       ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/baerbel-care-15-v1.png",
+      "sha256": "18aceac1f66cdd8425094dd14a6b4ef7dc3c951193035df161814df73754c444",
+      "talent": "baerbel-care-15"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/baerbel-care-17-v1.png",
+      "sha256": "97b68dc76ad634f7241d3c14fe07061d695b0e6a689f0bd52f36517758b57060",
+      "talent": "baerbel-care-17"
     },
     {
       "source": "assets/content-art/e32/sources/baerbel-feedback-v1.png",
@@ -7151,6 +11903,11 @@
       ]
     },
     {
+      "source": "assets/content-art/e32/sources/einzeln/baerbel-stage-21-v1.png",
+      "sha256": "6b1645cd2b51367bbb2a520599fa6d0a46ee94aba642ad0878f8415adbb829d2",
+      "talent": "baerbel-stage-21"
+    },
+    {
       "source": "assets/content-art/e32/sources/kevin-fuse-v1.png",
       "sha256": "a321b011f29f5b3c297ee478b8c7181e083506a2ecff91f539eb1dbe652e2b20",
       "x": [
@@ -7170,6 +11927,11 @@
         885,
         1145
       ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/kevin-fuse-25-v1.png",
+      "sha256": "b8d823b84a52b6d7264d843b90b21c4d4a6bc7c371ec275ed192050596643722",
+      "talent": "kevin-fuse-25"
     },
     {
       "source": "assets/content-art/e32/sources/kevin-iron-v1.png",
@@ -7193,6 +11955,16 @@
       ]
     },
     {
+      "source": "assets/content-art/e32/sources/einzeln/kevin-iron-11-v1.png",
+      "sha256": "2c0071e0a43d01c40f635ae30ac6abc2c40c55b1c480b12556a9528dbdeb6121",
+      "talent": "kevin-iron-11"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/kevin-iron-23-v1.png",
+      "sha256": "3c4ef4e6fc7a2355d3cadc1aff34fcae064dc4ad63b7139fd3528fe6cb3af2d8",
+      "talent": "kevin-iron-23"
+    },
+    {
       "source": "assets/content-art/e32/sources/kevin-hunt-v1.png",
       "sha256": "8be255af2df7570422b8278ebb13d3da9f224081b83f45f5cad821b311b00477",
       "x": [
@@ -7212,17 +11984,159 @@
         896,
         1145
       ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-12-v1.png",
+      "sha256": "60d640de8a68425d4f1cd4522410f88055e09d5886ae19c50e9b8180279ed1f8",
+      "talent": "kevin-hunt-12"
+    },
+    {
+      "source": "assets/content-art/e32/sources/einzeln/kevin-hunt-25-v1.png",
+      "sha256": "b306a1231cbc3d6bf17b73a42f9a0efe6889e5bc5b5a8f0e1271a698ab32cb4d",
+      "talent": "kevin-hunt-25"
+    },
+    {
+      "source": "assets/content-art/e32/sources/schorsch-chef-v1.png",
+      "sha256": "d0d008c506a29fa8ae6f283af36db2f8e48985fbf62fb7ae81b10b70b43826fc",
+      "x": [
+        0,
+        232,
+        466,
+        685,
+        914,
+        1144,
+        1374
+      ],
+      "y": [
+        0,
+        237,
+        462,
+        676,
+        886,
+        1145
+      ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/schorsch-flamme-v1.png",
+      "sha256": "75550634fde7a3e6524ada8fea0f62a926fd52ef40629eaaf28faf73ae96432c",
+      "x": [
+        0,
+        238,
+        458,
+        687,
+        909,
+        1143,
+        1374
+      ],
+      "y": [
+        0,
+        229,
+        458,
+        683,
+        905,
+        1145
+      ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/schorsch-rauch-v1.png",
+      "sha256": "368a9715eda02b257b71e706388bd8625580f0746cca422ad66220354ffdfb1e",
+      "x": [
+        0,
+        239,
+        451,
+        681,
+        901,
+        1147,
+        1374
+      ],
+      "y": [
+        0,
+        242,
+        467,
+        677,
+        884,
+        1145
+      ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/kaethe-grand-v1.png",
+      "sha256": "3df41ea984a3dae75c4e32e536cdb3e10cde1feca2e6e92e934e38eef59aca89",
+      "x": [
+        0,
+        236,
+        458,
+        687,
+        917,
+        1145,
+        1374
+      ],
+      "y": [
+        0,
+        233,
+        452,
+        667,
+        890,
+        1145
+      ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/kaethe-herz-v1.png",
+      "sha256": "167502bfb6213da7593887abc0fe46a414ae4210a58b788d30ab2ae27df673f8",
+      "x": [
+        0,
+        227,
+        452,
+        687,
+        910,
+        1138,
+        1374
+      ],
+      "y": [
+        0,
+        229,
+        452,
+        680,
+        896,
+        1145
+      ]
+    },
+    {
+      "source": "assets/content-art/e32/sources/kaethe-falsch-v1.png",
+      "sha256": "f32c3ee3e174cd7b04b8cf1d57bca2b511a4c07b9a9bcac7aaefb9f90edeee50",
+      "x": [
+        0,
+        240,
+        470,
+        685,
+        911,
+        1139,
+        1374
+      ],
+      "y": [
+        0,
+        244,
+        461,
+        687,
+        904,
+        1145
+      ]
     }
   ],
   "atlases": {
     "assets/content-art/e32/runtime/talents-dieter.png": {
-      "sha256": "6ac4c324222c3195b5962f25165f6efabcd710148cfb2b79ef3a9b7c59fb7b2f"
+      "sha256": "5afde38e822df5ae348cb5997b55f3314d3977ae148e8f752b49f94b336c54a0"
     },
     "assets/content-art/e32/runtime/talents-baerbel.png": {
-      "sha256": "32b968c30f46ff6f4f642997448869150c2e3870daae7e38ef0b3608d42d411a"
+      "sha256": "afd8ad2d198d8d599001eaf0fd1cb4081e8f66b52bdb26fb4bb3846ee7374210"
     },
     "assets/content-art/e32/runtime/talents-kevin.png": {
-      "sha256": "0c451a5a21aed8de93da4d84cba67ba777d45670dbad26aa0c208e7e54bb1c62"
+      "sha256": "540942645db10aae5d6ef3c90ba24a0e87772e4e301f2bc8cb2f519d4e83614e"
+    },
+    "assets/content-art/e32/runtime/talents-schorsch.png": {
+      "sha256": "ab44e55ac15d0e888e55fc11f8fac2152b51a950cbd7c56cc10be78d88bd4969"
+    },
+    "assets/content-art/e32/runtime/talents-kaethe.png": {
+      "sha256": "1f87fad1550a1993769884e683e1815af636a63702f07299393863dfb694c35b"
     },
     "assets/content-art/e32/runtime/skills.png": {
       "sha256": "34012f79284d48647040c65c9679bcf9f556687301fb9afd984d57008a31471a"

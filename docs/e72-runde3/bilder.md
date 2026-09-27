@@ -91,6 +91,14 @@ Likes oder Flaschen. Ihr Hauptmotiv stimmt. Sechs Bilder der Putzpyramide zeigen
 Nebenzeichen: baerbel-feedback-8, -16, -20, -22, -24 und -28. Sie kommen für eine spätere Runde infrage und sind noch nicht
 beauftragt. Das Schweinegesicht der Filter-Furie steht für die Putzwut und passt weiter.
 
+## Icon-Review R5 (27.09.2026): sechs Einzelbilder für schwache Rasterbilder (`redo`)
+
+In `SINGLES` stehen jetzt 17 Einträge. Die sechs neuen tragen `redo`: dasselbe Talent, aber das Rasterbild war schwach.
+- `kevin-hunt-12` (Kurze Pechsträhne) war ein Beinahe-Doppel zu `kevin-hunt-23` (drei Würfel, Abstand 20). Neu: schwarze Katze auf einer verpufften Blechdose.
+- `dieter-wall-3`, `dieter-wall-8`, `dieter-brawl-26`, `dieter-brawl-28`, `dieter-brawl-29` waren verstreute Kompositionen. Neu je ein Hauptobjekt ≥ 55 %: Schnecke mit Kronkorken-Haus, Absperrband-Rolle, Flaschenpost, runder Biertisch mit einschlagender Flasche, Stiefel durch die Hecke.
+- Der Prompt sagt bei `redo`, was am alten Bild schwach war, statt „anderes Talent“.
+- Nachgezogen per `--neu=talent-kevin-hunt-12,talent-dieter-brawl-29` mit geschärftem Motiv: die Katze war hoch und schmal, die Hecke ein Blätterblock.
+
 ## Generalprobe
 
 Die Probe lief in einer Wegwerf-Arbeitskopie mit dem echten Befehl. Nur der Imagegen-Schritt war ersetzt: Als Platzhalter

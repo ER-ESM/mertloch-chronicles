@@ -73,3 +73,73 @@ test('Tooltips der neuen Marken und Zielbereiche bleiben kurz und nennen die Stu
  assert.deepEqual([T.marks.win.label,T.marks.schneider.label,T.marks.schwarz.label],['Gewonnen','Schneider','Schwarz']);
  assert.match(T.marks.schneider.note(90),new RegExp('×'+String(RESOURCES.kaethe.abrechnen.schneider).replace('.',',')),'Faktor aus den Regeln, nicht festgeschrieben');
 });
+
+// ------------------------------------------------------------------ Icon-Review R5: Schorschs Zustandsebene als Grillgut-Plakette
+// Vorher deckte die Ebene (resource-hud.js paintSlot) die gemalten Kniffe Auflegen/Servieren mit einer schwarzen Fläche, grauen
+// Linien und einem Bratling zu. Jetzt: Plakette unten rechts im Kachelstil, der Kniff bleibt sichtbar, der Spielzustand lesbar.
+/** Kleine Software-Leinwand (fillRect, drawImage nächster Nachbar, globalAlpha, source-atop für Farbtöne, translate) – genug für
+ *  resource-art.js sprite/drawSprite und paintGrillSlot. */
+function raster(width=0,height=0){
+ const cv={_w:width,_h:height,data:new Uint8ClampedArray(Math.max(1,width*height)*4),
+  get width(){return this._w;},set width(v){this._w=v;this.data=new Uint8ClampedArray(Math.max(1,v*this._h)*4);},
+  get height(){return this._h;},set height(v){this._h=v;this.data=new Uint8ClampedArray(Math.max(1,this._w*v)*4);},getContext:()=>ctx};
+ const hex=s=>{let h=String(s).slice(1);if(h.length<=4)h=[...h].map(c=>c+c).join('');return [0,2,4,6].map(i=>i<h.length?parseInt(h.slice(i,i+2),16):255);},stack=[];
+ const ctx={fillStyle:'#000',globalAlpha:1,globalCompositeOperation:'source-over',imageSmoothingEnabled:false,tx:0,ty:0,
+  save(){stack.push([this.globalAlpha,this.globalCompositeOperation,this.tx,this.ty]);},restore(){[this.globalAlpha,this.globalCompositeOperation,this.tx,this.ty]=stack.pop();},
+  translate(x,y){this.tx+=x;this.ty+=y;},rotate(){},
+  put(i,[r,g,b,a]){const d=cv.data,al=a/255*this.globalAlpha;if(this.globalCompositeOperation==='source-atop'){if(!d[i+3])return;for(let k=0;k<3;k++)d[i+k]=d[i+k]*(1-al)+[r,g,b][k]*al;return;}
+   const da=d[i+3]/255,oa=al+da*(1-al);if(!oa)return;for(let k=0;k<3;k++)d[i+k]=([r,g,b][k]*al+d[i+k]*da*(1-al))/oa;d[i+3]=oa*255;},
+  fillRect(x,y,w,h){const c=hex(this.fillStyle);x=Math.round(x+this.tx);y=Math.round(y+this.ty);for(let yy=Math.max(0,y);yy<Math.min(cv._h,y+h);yy++)for(let xx=Math.max(0,x);xx<Math.min(cv._w,x+w);xx++)this.put((yy*cv._w+xx)*4,c);},
+  clearRect(){cv.data.fill(0);},
+  drawImage(img,dx,dy,dw=img.width,dh=img.height){dx=Math.round(dx+this.tx);dy=Math.round(dy+this.ty);for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){const X=dx+x,Y=dy+y,j=(Math.floor(y*img.height/dh)*img.width+Math.floor(x*img.width/dw))*4;
+   if(X<0||Y<0||X>=cv._w||Y>=cv._h||!img.data[j+3])continue;this.put((Y*cv._w+X)*4,[...img.data.subarray(j,j+4)]);}}};
+ return cv;}
+/** Leinwände der Bildkarten (resource-art.js canvasOf) nur während der Plaketten-Tests aus der Software-Leinwand – kein globales document. */
+const withRaster=fn=>{const had='OffscreenCanvas' in globalThis,old=globalThis.OffscreenCanvas;globalThis.OffscreenCanvas=function(w,h){return raster(w,h);};try{return fn();}finally{if(had)globalThis.OffscreenCanvas=old;else delete globalThis.OffscreenCanvas;}};
+const {slotState,grillPlaque,paintGrillSlot,SERVE_COL,SLOT_IDS}=await import('../resource-hud.js');
+const rgb=(d,i)=>'#'+[0,1,2].map(k=>d[i+k].toString(16).padStart(2,'0')).join('');
+/** Knopf wie im Spiel (Desktop 52er-Knopf, 2-px-Rand, 48er-Kniff): Ebene = Knopf + 16 px, x0/x1 = äußere Knopfkanten. */
+function paintKnob(s,inner=48,bw=2){const outer=inner+2*bw,W=outer+16,x0=8,x1=W-1-x0,cv=raster(W,W),c=cv.getContext();const p=grillPlaque(inner,x1,x1);withRaster(()=>paintGrillSlot(c,p,s));
+ const ix0=x0+bw,ix1=x1-bw,px=[];for(let y=0;y<W;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;if(cv.data[i+3])px.push({x,y,a:cv.data[i+3],col:rgb(cv.data,i)});}
+ return {p,px,W,ix0,ix1,inKniff:px.filter(q=>q.x>=ix0&&q.x<=ix1&&q.y>=ix0&&q.y<=ix1),colors:new Set(px.map(q=>q.col))};}
+
+test('Schorsch: Zustand je Knopf – Auflegen zeigt das nächste Stück, Servieren das garste mit Garstufe und Hitzealarm',()=>{
+ assert.deepEqual(SLOT_IDS,['strike','mark','burst','throw']);
+ const g=hero('schorsch');foe(g,30);g.player.inCombat=5;g.res.rost=[];
+ let h=resourceHud(g);assert.deepEqual(slotState(g,h,'mark'),{art:'lay',item:h.nextItem,full:false});
+ assert.equal(slotState(g,h,'burst').item,null,'leerer Rost im Kampf: leere Glut-Plakette');
+ g.res.rost=[{item:'wurst',done:.3,smoked:false},{item:'braten',done:.7,smoked:false},{item:'mais',done:1.5,smoked:false}];h=resourceHud(g);
+ assert.equal(slotState(g,h,'mark').full,h.rost.length>=h.slots,'Rost voll → Auflegen grau');
+ const s=slotState(g,h,'burst');assert.equal(s.item,'braten','das garste noch nicht verkohlte Stück');assert.equal(s.state,h.rost[1].state);
+ assert.ok(s.done>0&&s.done<48);assert.equal(s.hot,undefined,'ohne Hitze kein Alarm');
+ g.res.glut=99;h=resourceHud(g);assert.equal(h.zone,'heiss');assert.equal(slotState(g,h,'burst').hot,true,'Zu heiß: Servieren zeigt den Hitzealarm');
+ g.player.inCombat=0;g.res.rost=[];g.res.glut=40;assert.equal(slotState(g,resourceHud(g),'burst'),null,'leerer Rost außerhalb des Kampfs: keine Plakette');
+ for(const id of ['strike','throw'])assert.equal(slotState(g,resourceHud(g),id),null,id+': keine Ebene bei Schorsch');
+});
+
+test('Schorsch: die Grillgut-Plakette lässt den Kniff sichtbar – unten rechts, Tinte, Papier bzw. Glut, höchstens ein Viertel des Kniffs',()=>{
+ const cases=[{art:'lay',item:'wurst',full:false},{art:'lay',item:'braten',full:true},{art:'serve',item:'wurst',state:'roh',done:10},{art:'serve',item:'braten',state:'gar',done:30},
+  {art:'serve',item:'mais',state:'durch',done:38},{art:'serve',item:'kaese',state:'verkohlt',done:46},{art:'serve',item:'wurst',state:'gar',done:28,hot:true},{art:'serve',item:null,state:'',done:0}];
+ for(const inner of [48,32])for(const s of cases){const r=paintKnob(s,inner),tag=inner+' '+JSON.stringify(s),n=r.ix1-r.ix0+1,mid=r.ix0+Math.floor(n/2);
+  assert.ok(r.px.length,tag+': Plakette gemalt');
+  assert.ok(r.px.every(q=>q.a===255),tag+': Alpha nur 0/255');
+  assert.ok(r.inKniff.length<=n*n*(inner>=40?.25:.4),tag+': deckt '+r.inKniff.length+' von '+n*n+' Kniffpixeln');
+  assert.equal(r.inKniff.filter(q=>q.x<mid&&q.y<mid-(inner>=40?4:2)).length,0,tag+': obere linke Kniffhälfte bleibt frei (Taste, Motiv)');
+  assert.ok(!r.colors.has('#15110e'),tag+': keine schwarze Deckfläche mehr');
+  const {x,y,w,h,k}=r.p;assert.equal(k,inner>=40?2:1);
+  for(let xx=x+1;xx<x+w-1;xx++)for(const yy of [y,y+h-1])if(yy===y+h-1||(xx>x+w/2&&xx<x+w*3/4))/* oben an den Ecken sitzen Plus, Funke und Flamme */assert.ok(r.px.some(q=>q.x===xx&&q.y===yy&&q.col==='#171f29'),tag+': Tintenrahmen '+xx+','+yy);
+  assert.ok(x+w-1<=r.ix1+3&&y+h-1<=r.ix1+3&&x>r.ix0+n/3&&y>r.ix0+n/3,tag+': sitzt auf der Knopfecke unten rechts');
+  if(s.art==='lay'){assert.ok(r.colors.has('#e4dcc3')&&r.colors.has('#f8f0d5'),tag+': Papier-Treppe');assert.equal(r.colors.has(s.full?'#3a6a2a':'#5a5448'),false,tag+': Plus grün, bei vollem Rost grau');}
+  else assert.ok(r.colors.has('#2a2420')||r.colors.has('#4a1a12'),tag+': Glut');
+ }
+ // Garstufe: der Garrahmen füllt sich in der Farbe der Stufe, mehr Garzeit = mehr Rahmen
+ const fill=(state,done)=>paintKnob({art:'serve',item:'braten',state,done}).px.filter(q=>q.col===SERVE_COL[state]).length;
+ assert.ok(fill('gar',20)>0&&fill('gar',40)>fill('gar',20),'Garrahmen wächst mit der Garzeit');
+ for(const st of ['roh','durch','verkohlt'])assert.ok(fill(st,30)>0,st+' färbt den Rahmen');
+ assert.ok(paintKnob({art:'serve',item:'braten',state:'roh',done:5}).colors.has('#6a5418'),'goldener Zielbereich im Rahmen');
+ // Hitzealarm: helle Glut und Flamme nur bei „Zu heiß“
+ const hot=paintKnob({art:'serve',item:'wurst',state:'gar',done:28,hot:true}).colors,calm=paintKnob({art:'serve',item:'wurst',state:'gar',done:28}).colors;
+ assert.ok(hot.has('#ffd35a')&&hot.has('#e2463d'),'Zu heiß: helle Glut');assert.ok(!calm.has('#e2463d'),'ohne Hitze keine rote Glut');
+ // Leerer Rost: Glut und Rost, kein Grillgut, kein Füllstand
+ const empty=paintKnob({art:'serve',item:null,state:'',done:0}).colors;assert.ok(empty.has('#4a423a'),'Roststäbe');for(const c of Object.values(SERVE_COL))assert.ok(!empty.has(c),'kein Füllstand '+c);
+});

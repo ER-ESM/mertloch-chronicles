@@ -33,6 +33,69 @@ export function payoutPlan({augen=0,grand=false,damage=0}={}){const C=RESOURCES.
 export function ammoLayout(h,H=20){const bx=1,bw=4+Math.max(1,h.bonMax|0)*8,y0=2,hh=Math.max(8,H-3),gap=8,px=bx+bw+gap,pw=30,r=5;return {bx,bw,y0,h:hh,gap,px,pw,cx:px+pw-r-2,cy:y0+r+2,r};}
 /** Käthes Farbkette als Plättchen (rein, testbar): Farbe, Kettenlänge (Karten in Folge) und Bonus in Prozent. */
 export function chainChip(chain,bonusPer=RESOURCES.kaethe?.follow?.bonus??.2){if(!chain?.suit)return null;const n=Math.max(0,chain.n|0);return {suit:chain.suit,cards:n+1,bonus:Math.round(n*bonusPer*100),count:'×'+(n+1),pct:n>0?'+'+Math.round(n*bonusPer*100)+'%':''};}
+// --- Leistenknöpfe: Zustandsebene je Knopf (E-72 Runde 3 „Lernen über das Bild“, Icon-Review R5) – rein, testbar ------------------
+export const SLOT_IDS=['strike','mark','burst','throw'];
+/** Farbe der Garstufe: Füllung des Garrahmens (wie der Garring im Band) und Leuchten des Servieren-Knopfs (resource-hud.css). */
+export const SERVE_COL={roh:'#e8868a',gar:'#f2c14e',durch:'#c07a3a',verkohlt:'#5a1a10'};
+/** Zustand der Ebene eines Leistenknopfs oder null (keine Ebene). Käthe: Karte (Kettenrahmen, Stich), Abrechnen (Marken).
+ *  Schorsch: Auflegen = das nächste Grillgut (full = Rost belegt), Servieren = das garste Stück (Garstufe, Füllstand 0–48 bis
+ *  „verkohlt“, hot = Glut „Zu heiß“: es verkohlt gleich). Leerer Rost: Plakette nur im Kampf, sonst stünde sie dauernd auf dem Knopf. */
+export function slotState(g,h,id){
+ if(h.kind==='cards'){
+  if(id==='throw'){const lv=h.value>=h.schwarz?3:h.value>=h.schneider?2:h.value>=h.win?1:0;return {art:'settle',lv,label:'hide'};}
+  const card=handCard(g,id);if(!card)return null;const rk=RESOURCES.kaethe?.ranks[card.rank];
+  return {art:'card',follow:!!h.chain?.suit&&(card.suit===h.chain.suit||!!rk?.trump),stich:resourceVariant(g,id)?.tone==='gold',label:'hide'};
+ }
+ if(h.kind==='grill'){
+  if(id==='mark')return h.nextItem?{art:'lay',item:h.nextItem,full:h.rost.length>=h.slots}:null;
+  if(id==='burst'){const charcoal=RESOURCES.schorsch?.rost?.charcoal||1.4,it=h.rost.filter(x=>x.done<charcoal).sort((a,b)=>b.done-a.done)[0],v=resourceVariant(g,'burst');
+   if(!it&&!(g.player?.inCombat>0))return null;
+   return {art:'serve',item:it?.item||null,state:it?.state||'',done:it?Math.round(clamp(it.done/charcoal)*48):0,label:v&&!v.item?'show':'hide',...(it&&h.zone==='heiss'?{hot:true}:{})};}
+ }
+ return null;
+}
+/** Lage der Grillgut-Plakette (Icon-Review R5) in Rasterpixeln der Ebene: inner = Innenmaß des Knopfs, (x1,y1) = seine äußere Ecke
+ *  unten rechts. Ab 40 px Innenmaß steht das Grillgut doppelt (k = 2, 2 Rasterpixel je Bildpunkt wie bisher), darunter einfach.
+ *  Maße: Grillgut (höchstens 10 × 7 Bildpunkte) + 1 px Kontur + Garrahmen (k px) + 1 px Tinte. Die Plakette sitzt auf der Knopfecke,
+ *  ragt 1 px darüber hinaus (dazu 1 px Schatten) und lässt im 48er-Knopf rund vier Fünftel des Kniffs frei. */
+export function grillPlaque(inner,x1,y1){const k=inner>=40?2:1,w=10*k+4+2*k,h=7*k+4+2*k;return {k,w,h,x:x1+2-w,y:y1+2-h};}
+const INK='#171f29',PAPER=['#f8f0d5','#e4dcc3','#c8c5af'];
+/** Bildkarte mit 1 Rasterpixel Tintenkontur (Stilbibel: Kontur 1 px #171f29) an (x,y) links oben, k Rasterpixel je Bildpunkt. */
+function inked(c,name,x,y,k,tint=null){const cv=sprite(name,{tint}),ink=sprite(name,{tint:[INK,1]});if(!cv||!ink)return;const w=cv.width*k,h=cv.height*k;
+ c.imageSmoothingEnabled=false;for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1]])c.drawImage(ink,x+dx,y+dy,w,h);c.drawImage(cv,x,y,w,h);}
+/** Grillgut mit Kontur mittig in die Fläche (il,it,iw,ih). */
+function plaqueItem(c,name,il,it,iw,ih,k,tint){const {w,h}=spriteSize(name);inked(c,name,il+Math.floor((iw-w*k)/2),it+Math.floor((ih-h*k)/2),k,tint);}
+/** Grillgut-Plakette malen: s.art 'lay' = Bestellzettel (Papier-Treppe) mit dem nächsten Stück und grünem Plus (grau, wenn der Rost voll
+ *  ist); 'serve' = Glut mit Rost und dem garsten Stück, Garrahmen im Uhrzeigersinn ab 12 Uhr mit goldenem Zielbereich, Funke bei „gar“,
+ *  Flamme und helle Glut bei „Zu heiß“; ohne Stück nur kalte Glut mit Rost. Alpha nur 0/255 (Farbtöne liegen deckend auf dem Grillgut). */
+export function paintGrillSlot(c,p,s){
+ const {x,y,w,h,k}=p;c.imageSmoothingEnabled=false;
+ // Schatten 1 px nach rechts unten, Tintenrahmen mit abgeschnittenen Ecken (Kachelstil)
+ px(c,x+2,y+h,w-2,1,INK);px(c,x+w,y+2,1,h-2,INK);px(c,x+w-1,y+h-1,1,1,INK);
+ px(c,x+1,y,w-2,1,INK);px(c,x+1,y+h-1,w-2,1,INK);px(c,x,y+1,1,h-2,INK);px(c,x+w-1,y+1,1,h-2,INK);
+ const corners=()=>{for(const [cx,cy] of [[x+1,y+1],[x+w-2,y+1],[x+1,y+h-2],[x+w-2,y+h-2]])px(c,cx,cy,1,1,INK);};
+ if(s.art==='lay'){const il=x+1,it=y+1,iw=w-2,ih=h-2;
+  px(c,il,it,iw,ih,PAPER[1]);px(c,il,it,iw,1,PAPER[0]);px(c,il,it,1,ih,PAPER[0]);px(c,il,it+ih-1,iw,1,PAPER[2]);px(c,il+iw-1,it+1,1,ih-1,PAPER[2]);corners();
+  plaqueItem(c,s.item,il,it,iw,ih,k,s.full?['#c8c5af',.6]:['#ffb0b0',.28]);
+  /* „Plus“ an der Ecke oben links: kommt als Nächstes auf den Rost (grau: Rost voll) */const r=k===2?4.6:3.2,R=Math.ceil(r),fill=s.full?'#5a5448':'#3a6a2a',mark=s.full?'#b8b0a0':'#e8f6d0';
+  for(let yy=-R;yy<=R;yy++)for(let xx=-R;xx<=R;xx++){const d=Math.hypot(xx,yy);if(d>r)continue;px(c,x+1+xx,y+1+yy,1,1,d>r-1.1?INK:fill);}
+  const a=k===2?2:1;px(c,x+1-a,y+1,2*a+1,1,mark);px(c,x+1,y+1-a,1,2*a+1,mark);return;}
+ const tr=k,il=x+1+tr,it=y+1+tr,iw=w-2-2*tr,ih=h-2-2*tr,gar=RESOURCES.schorsch?.rost?.gar||[.55,.95],charcoal=RESOURCES.schorsch?.rost?.charcoal||1.4;
+ // Garrahmen wie der Garring im Band: Spur mit goldenem Zielbereich, Füllstand in der Farbe der Garstufe
+ const mx=x+(w-1)/2,my=y+(h-1)/2,fillTo=s.done/48,col=SERVE_COL[s.state]||'#6a5a4a';
+ for(let yy=y+1;yy<y+h-1;yy++)for(let xx=x+1;xx<x+w-1;xx++){if(xx>=il&&xx<il+iw&&yy>=it&&yy<it+ih)continue;const a=(Math.atan2(xx-mx,-(yy-my))+TAU)%TAU/TAU,zone=a>=gar[0]/charcoal&&a<=gar[1]/charcoal;
+  px(c,xx,yy,1,1,s.item&&a<=fillTo?col:zone&&s.item?'#6a5418':'#2e2824');}
+ corners();
+ // Glut: Kohle, unten Glutpunkte in festem Muster (heiß: hell und bis zur halben Höhe); darüber der Rost (Stahl, Glanzkante oben)
+ const glow=s.hot?['#ffd35a','#ff7a2a','#e2463d']:s.item?['#ff7a2a','#b8321e','#3a2a24']:['#3a2a24','#2e2824','#2a2420'],rows=s.hot?Math.ceil(ih/2):k;
+ px(c,il,it,iw,ih,s.hot?'#4a1a12':'#2a2420');
+ for(let r=0;r<rows;r++)for(let i=0;i<iw;i++){const n=(i*7+r*3)%5;if(n>2)continue;px(c,il+i,it+ih-1-r,1,1,glow[Math.min(2,n+(r>=k?1:0))]);}
+ for(let yy=it+k+1;yy<it+ih-rows;yy+=2*k+1){px(c,il,yy,iw,1,'#4a423a');if(k>1)px(c,il,yy-1,iw,1,'#6a625a');}
+ if(!s.item)return;
+ plaqueItem(c,s.item,il,it,iw,ih,k,s.state==='roh'?['#ffb0b0',.4]:s.state==='durch'?['#3a1a08',.35]:s.state==='verkohlt'?['#0a0808',.8]:null);
+ if(s.state==='gar')drawSprite(c,'spark',x+w-2,y+1+Math.ceil(3*k/2),k);
+ if(s.hot){const {h:fh}=spriteSize('flame');inked(c,'flame',x+1,y+3-fh*k,k);}
+}
 const noise=(i,s=1)=>{const n=Math.sin(i*127.1+s*311.7)*43758.5453;return n-Math.floor(n);};
 const mix=(a,b,t)=>{const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),A=p(a),B=p(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');};
 const px=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
@@ -283,23 +346,11 @@ export function mountResourceHud(getGame){
  // --- Leistenknöpfe: Bild statt Text (E-72 Runde 3 „Lernen über das Bild“) -------------------------------------------
  //   Käthe:    Kettenrahmen um Karten, die die Farbe bedienen · Stich-Abzeichen (zerschlagene Gegnerkarte) · Abrechnen leuchtet
  //             ab 61, stärker ab 90/120, drei Marken-Punkte wie auf der Augen-Leiste
- //   Schorsch: Auflegen zeigt das nächste Grillgut · Servieren zeigt das garste Stück mit Garring, leuchtet in der Farbe der Garstufe
+ //   Schorsch: Grillgut-Plakette unten rechts (Icon-Review R5, grillPlaque/paintGrillSlot oben) – Auflegen: nächstes Stück auf Papier,
+ //             Servieren: garstes Stück auf Glut mit Garrahmen, leuchtet in der Farbe der Garstufe; der Kniff bleibt sichtbar
  //   Hofprobe: die Kartentaste pulsiert, bis die erste Karte liegt
  // Eine eigene Leinwand je Knopf (.rh-slot, 1 Rasterpixel = 1 CSS-Pixel, ragt 8 px über den Rand), neu gezeichnet nur bei Zustandswechsel.
- const SLOT_IDS=['strike','mark','burst','throw'],CARD_SLOTS=new Set(['strike','mark','burst','aermel']);
- function slotState(g,h,id){
-  if(h.kind==='cards'){
-   if(id==='throw'){const lv=h.value>=h.schwarz?3:h.value>=h.schneider?2:h.value>=h.win?1:0;return {art:'settle',lv,label:'hide'};}
-   const card=handCard(g,id);if(!card)return null;const rk=RESOURCES.kaethe?.ranks[card.rank];
-   return {art:'card',follow:!!h.chain?.suit&&(card.suit===h.chain.suit||!!rk?.trump),stich:resourceVariant(g,id)?.tone==='gold',label:'hide'};
-  }
-  if(h.kind==='grill'){
-   if(id==='mark')return h.nextItem?{art:'lay',item:h.nextItem,full:h.rost.length>=h.slots}:null;
-   if(id==='burst'){const charcoal=RESOURCES.schorsch?.rost?.charcoal||1.4,it=h.rost.filter(x=>x.done<charcoal).sort((a,b)=>b.done-a.done)[0],v=resourceVariant(g,'burst');
-    return {art:'serve',item:it?.item||null,state:it?.state||'',done:it?Math.round(clamp(it.done/charcoal)*48):0,label:v&&!v.item?'show':'hide'};}
-  }
-  return null;
- }
+ const CARD_SLOTS=new Set(['strike','mark','burst','aermel']);
  const TEACH=g=>{const t=g.tutorial;return !!t&&!t.completed&&t.step===3&&(t.hits||0)<1&&g.member?.id==='kaethe';};
  function syncSlots(g,h){
   const teach=h?.kind==='cards'&&TEACH(g);
@@ -315,7 +366,6 @@ export function mountResourceHud(getGame){
    const sig=JSON.stringify(s)+cv._size;if(cv.dataset.sig===sig)continue;cv.dataset.sig=sig;paintSlot(cv,b,s);
   }
  }
- const SERVE_COL={roh:'#e8868a',gar:'#f2c14e',durch:'#c07a3a',verkohlt:'#5a1a10'};
  /** Kette längs des Knopfrands (2 Rasterpixel je Kettenpixel): flaches Glied (Ring 4 × 3) im Wechsel mit einem Glied von der
   *  Seite (Steg 2 × 1) – silbern mit dunkler Kontur, schmal genug, dass das Kartenbild frei bleibt. */
  function chainFrame(c,x0,y0,x1,y1){const k=2,hi='#eef2f4',lo='#8a949c',ink='#14181c';
@@ -329,23 +379,12 @@ export function mountResourceHud(getGame){
  function paintSlot(cv,b,s){
   const W=cv.width=Math.max(8,Math.round(cv.clientWidth)),H=cv.height=Math.max(8,Math.round(cv.clientHeight)),c=cv.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,W,H);
   const pad=Math.round((W-b.clientWidth)/2),bw=Math.max(1,Math.round((b.offsetWidth-b.clientWidth)/2)),x0=pad-bw,y0=Math.round((H-b.clientHeight)/2)-bw,x1=W-1-x0,y1=H-1-y0;
-  // Innenfläche des Knopfs (ohne Rand) für Schorschs Grillbilder
-  const ix=pad+1,iy=y0+bw+1,iw=W-2*ix,ih=H-2*iy,cx=Math.round(W/2),cy=Math.round(H/2);
+  const cx=Math.round(W/2);
   if(s.art==='card'){if(s.follow)chainFrame(c,x0,y0,x1,y1);if(s.stich)drawBadge(c,'stich',x1-2,y0+2,8,2);return;}
   if(s.art==='settle'){/* drei Marken wie auf der Augen-Leiste: 61 rot, 90 gold, 120 schwarz-gold; erreichte leuchten */const cols=[['#e8453a','#ffb0a0'],['#f2c14e','#fff3b0'],['#1a1418','#f2c14e']];
    for(let i=0;i<3;i++){const x=cx-10+i*10,y=y1-5,on=s.lv>i,[f,hi]=cols[i];for(let yy=-3;yy<=3;yy++)for(let xx=-3;xx<=3;xx++){const d=Math.abs(xx)+Math.abs(yy);if(d>3)continue;px(c,x+xx,y+yy,1,1,d===3?(on&&i===2?'#f2c14e':'#0c0a08'):on?(d<=1?hi:f):'#3a3430');}}return;}
-  // Schorsch: dunkler Grund über dem Kniffbild, darauf Rost und Grillgut (2 Rasterpixel je Bildpunkt)
-  px(c,ix,iy,iw,ih,'#15110e');
-  if(s.art==='lay'){for(let y=cy+2;y<iy+ih-2;y+=4)px(c,ix+3,y,iw-6,1,'#4a423a');const {h:sh}=spriteSize(s.item);
-   drawSprite(c,s.item,cx,cy+Math.round(sh)+4,2,{outline:'#0a0604',tint:['#ffb0b0',.28],alpha:s.full?.45:1});
-   /* „Plus“ oben rechts: kommt als Nächstes auf den Rost */for(let yy=-4;yy<=4;yy++)for(let xx=-4;xx<=4;xx++){const d=Math.hypot(xx+.5,yy+.5);if(d>4.6)continue;px(c,x1-5+xx,y0+5+yy,1,1,d>3.6?'#0c0a08':'#3a6a2a');}px(c,x1-7,y0+5,5,1,'#e8f6d0');px(c,x1-5,y0+3,1,5,'#e8f6d0');return;}
-  if(s.art==='serve'){const R=Math.min(Math.floor(iw/2)-2,Math.floor(ih/2)-2),k=s.done/48,col=SERVE_COL[s.state]||'#6a5a4a',gar=RESOURCES.schorsch?.rost?.gar||[.55,.95],charcoal=RESOURCES.schorsch?.rost?.charcoal||1.4;
-   // Garring wie auf dem Grillrost: Spur mit goldenem Zielbereich, Füllstand in der Farbe der Garstufe
-   for(let yy=-R;yy<=R;yy++)for(let xx=-R;xx<=R;xx++){const d=Math.hypot(xx+.5,yy+.5);if(d>R+.3||d<R-2.3)continue;const a=(Math.atan2(xx+.5,-(yy+.5))+TAU)%TAU/TAU,zone=a>=gar[0]/charcoal&&a<=gar[1]/charcoal;px(c,cx+xx,cy+yy,1,1,s.item&&a<=k?col:zone&&s.item?'#6a5418':'#2e2824');}
-   if(!s.item){for(let y=cy-R+5;y<cy+R-3;y+=4)px(c,cx-R+5,y,2*R-9,1,'#3a332c');return;}
-   const tint=s.state==='roh'?['#ffb0b0',.4]:s.state==='durch'?['#3a1a08',.35]:s.state==='verkohlt'?['#0a0808',.8]:null,{h:sh}=spriteSize(s.item);
-   drawSprite(c,s.item,cx,cy+Math.round(sh),2,{outline:'#120a04',tint});
-   if(s.state==='gar'){drawSprite(c,'spark',cx+R-3,cy-R+6,2);drawSprite(c,'spark',cx-R+4,cy+R-2,1);}}
+  // Schorsch (Icon-Review R5): keine deckende Fläche mehr – das Grillgut steht als Plakette auf der Knopfecke unten rechts, der Kniff bleibt frei.
+  if(s.art==='lay'||s.art==='serve')paintGrillSlot(c,grillPlaque(b.clientWidth,x1,y1),s);
  }
 
  function draw(g,now){const h=resourceHud(g);if(!h||!meter)return;

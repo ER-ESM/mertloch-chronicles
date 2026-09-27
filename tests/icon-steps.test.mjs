@@ -54,6 +54,22 @@ test('icon-steps.css zeigt jeden Anzeigeort 1:1 in seiner Stufe und lädt als le
  assert.equal(links.at(-1),'icon-steps.css','icon-steps.css muss nach allen anderen Stildateien laden');
 });
 
+test('Icon-Review R5: keine Stufen- oder Größenregel der Kniffknöpfe greift auf die Zustandsebene canvas.rh-slot (Schorschs Grillgut, Käthes Kettenrahmen)',()=>{
+ // Vorher schlug `.action-bar .skill canvas{width:48px!important}` (Spezifität 0,4,2) die Ebene `button.skill>canvas.rh-slot` (0,3,2):
+ // sie schrumpfte auf 48 px und lag 8 px nach links oben versetzt über den Nachbarknöpfen.
+ const knob=/\.(?:touch-)?skill(?![-\w])|#actionBar(?![-\w])|\.action-bar(?![-\w])/,files=readdirSync(new URL('../',import.meta.url)).filter(f=>f.endsWith('.css')),hits=[];
+ for(const f of files){const css=read(f).replace(/\r/g,'').replace(/\/\*[\s\S]*?\*\//g,'');
+  for(const [,sel,body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)){if(!/(?:^|;)\s*(?:width|height)\s*:[^;]*!important/.test(body))continue;
+   /* Komma nur auf oberster Ebene trennen – :is(a,b) bleibt ganz */const parts=[];let depth=0,cur='';for(const ch of sel){if(ch==='(')depth++;if(ch===')')depth--;if(ch===','&&!depth){parts.push(cur);cur='';}else cur+=ch;}parts.push(cur);
+   for(const part of parts.map(s=>s.trim()).filter(Boolean)){const last=part.split(/[\s>+~]+/).at(-1);
+    if(!/^canvas\b/.test(last)||!knob.test(part)||/\.rh-slot\b(?!\))/.test(last))continue;
+    hits.push(f+': '+part);if(!/:not\(\.rh-slot\)/.test(last))assert.fail(f+': Regel ohne :not(.rh-slot) trifft die Zustandsebene – '+part);}}}
+ assert.ok(hits.filter(h=>h.startsWith('icon-steps.css')).length>=7,'Stufenregeln bar/barSpecial/barNarrow/touch/touchSmall gefunden: '+hits.length);
+ // Die Ebene selbst: Knopf + 16 px, 8 px über jeden Rand – mit !important, damit keine ältere Größenregel sie trifft.
+ const own=read('resource-hud.css').replace(/\r/g,'').match(/button\.skill>canvas\.rh-slot\[data-rh-slot\][^{]*\{([^}]*)\}/)?.[1]||'';
+ for(const m of ['left:-8px','top:-8px','width:calc(100% + 16px)!important','height:calc(100% + 16px)!important','pointer-events:none'])assert.ok(own.includes(m),'rh-slot: '+m);
+});
+
 test('Rucksack 48, Beute 48, Figurenplätze 32, Tooltip-Köpfe 32 – Canvas-Größe wie in icon-steps.css',()=>{
  const g=game(12);for(const id of Object.keys(ITEMS).filter(id=>ITEMS[id].slot).slice(0,6))g.rpg.inventory.push({id,count:1});
  const bag=inventoryPanel(g,null);only(bag.slice(bag.indexOf('bag-grid')),ICON_STEP.bag,'Rucksack');

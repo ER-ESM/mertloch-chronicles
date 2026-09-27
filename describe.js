@@ -126,7 +126,7 @@ function describeItem(game,id){
  const cd=Math.max(0,(BAL(game).consumableCooldown||0)-(base.consumableCd||0));
  return {icon:d.icon||null,name:d.name,info,
   live:{count,rarity:d.rarity||'common',level:d.level||1,kind:d.kind||null,slot:d.slot||null,equipped:slot,usable:usableItem(id),
-   heal,energy,cooldown:round(cd,1),remaining:round(Math.max(0,game.rpg.consumableReady-game.time),2),
+   heal,energy,grant:energy?resourceGrantText(game.member.id,energy):'',/* Dungeon-Fix 7: Tooltip-Zahlenzeile */cooldown:round(cd,1),remaining:round(Math.max(0,game.rpg.consumableReady-game.time),2),
    ready:count>0&&game.time>=game.rpg.consumableReady,onBar:actionBar(game).indexOf(barItemEntry(id)),rolled:id.startsWith('roll-'),affixes:(d.affixes||[]).map(a=>({id:a.id,kind:a.kind,name:a.name,stats:{...a.stats}}))}};
 }
 const BAL=game=>CONTENT.BALANCE.player;

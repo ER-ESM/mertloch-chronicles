@@ -21,6 +21,9 @@ const unusable=b=>b.w<10||b.h<10||b.x<2||b.y<2||b.x+b.w>62||b.y+b.h>62;
 function cuts(im,axis,count){const length=axis==='x'?im.width:im.height,other=axis==='x'?im.height:im.width,values=new Uint32Array(length);for(let a=0;a<length;a++)for(let b=0;b<other;b++){const x=axis==='x'?a:b,y=axis==='x'?b:a;if(im.data[(y*im.width+x)*4+3]>=128)values[a]++;}const result=[0];for(let n=1;n<count;n++){const center=length*n/count,reach=length/count*.14;let best=Math.round(center),score=Infinity;for(let a=Math.round(center-reach);a<=center+reach;a++){const cost=values[a]+Math.abs(a-center)*.03;if(cost<score){score=cost;best=a;}}result.push(best);}return [...result,length];}
 function sheetCells(im){const xs=cuts(im,'x',6),ys=cuts(im,'y',5);return {xs,ys,cells:Array.from({length:30},(_,i)=>({x:xs[i%6],y:ys[Math.floor(i/6)],w:xs[i%6+1]-xs[i%6],h:ys[Math.floor(i/6)+1]-ys[Math.floor(i/6)]}))};}
 function crop(im,sourceRect,scale){const frame=surface(64,64),at={x:Math.round((64-sourceRect.w*scale)/2),y:Math.round((64-sourceRect.h*scale)/2)};resample(im,frame,sourceRect,at,scale);return {frame,b:bounds(frame)};}
+/** Motiv auf die Ziel-Langseite: dünne Randpixel fallen beim Flächenmittel unter 50 % Deckung (gemessen 57/58 statt 59) –
+ *  deshalb den Maßstab in 0,25-%-Schritten anheben, bis die gemessene Langseite das Ziel trifft (nie über 60 px). */
+function fitCrop(im,sourceRect,target){const long=Math.max(sourceRect.w,sourceRect.h);let best=null;for(let k=0;k<=48;k++){const scale=Math.min(target/long*(1+k*.0025),60/long),r=crop(im,sourceRect,scale),got=Math.max(r.b.w,r.b.h);if(!best||Math.abs(got-target)<Math.abs(best.got-target)&&got<=target)best={...r,got};if(got>=target)break;}return best;}
 /** Motivgröße im 64er-Talentbild: Langseite 59 px = 92 % (44/48 im Knoten, Stilbibel B „Talente“, Review R1 4.3). */
 export const TALENT_MOTIF=Math.round(64*.92);
 /** Ein gemaltes Raster in 30 Talentzellen zerlegen (wirft bei unbrauchbarer Zelle). Jedes Motiv wird für sich auf TALENT_MOTIF
@@ -28,13 +31,13 @@ export const TALENT_MOTIF=Math.round(64*.92);
  *  kleine Motive lagen dann bei 35–40 von 64 px. */
 function cutSheet(im,label){
  const {xs,ys,cells}=sheetCells(im);
- return {xs,ys,frames:cells.map((cell,i)=>{const sourceRect=motifBounds(im,cell),{frame,b}=crop(im,sourceRect,TALENT_MOTIF/Math.max(sourceRect.w,sourceRect.h));if(unusable(b))throw Error('Unusable talent crop '+label+'-'+i);return {frame,b,sourceRect};})};
+ return {xs,ys,frames:cells.map((cell,i)=>{const sourceRect=motifBounds(im,cell),{frame,b}=fitCrop(im,sourceRect,TALENT_MOTIF);if(unusable(b))throw Error('Unusable talent crop '+label+'-'+i);return {frame,b,sourceRect};})};
 }
 // Einzelbild: Motiv auf die typische Motivgröße seines Rasters bringen (Median der 30 Zellen), damit es zwischen den Nachbarn nicht auffällt.
 // Vereinzelte Sprenkel weit draußen (Imagegen-Staub) sollen das Motiv nicht verkleinern: je Seite höchstens 0,5 % der Deckpixel abschneiden.
 // rect: nur diesen Ausschnitt betrachten (Rasterzelle); Ergebnis in Bildkoordinaten.
 function motifBounds(im,rect={x:0,y:0,w:im.width,h:im.height}){const cols=new Uint32Array(rect.w),rows=new Uint32Array(rect.h);let total=0;for(let y=0;y<rect.h;y++)for(let x=0;x<rect.w;x++)if(im.data[((rect.y+y)*im.width+rect.x+x)*4+3]>=128){cols[x]++;rows[y]++;total++;}if(!total)throw Error('Empty sprite cell');const cut=total*.005,trim=a=>{let lo=0,hi=a.length-1,s=0;while(s+a[lo]<=cut)s+=a[lo++];s=0;while(s+a[hi]<=cut)s+=a[hi--];return [lo,hi];},[x0,x1]=trim(cols),[y0,y1]=trim(rows);return {x:rect.x+x0,y:rect.y+y0,w:x1-x0+1,h:y1-y0+1};}
-function cutSingle(im,size,label){const motif=motifBounds(im),{frame,b}=crop(im,motif,size/Math.max(motif.w,motif.h));if(unusable(b))throw Error('Unusable talent icon '+label);return {frame,b,sourceRect:motif};}
+function cutSingle(im,size,label){const motif=motifBounds(im),{frame,b}=fitCrop(im,motif,size);if(unusable(b))throw Error('Unusable talent icon '+label);return {frame,b,sourceRect:motif};}
 const medianSize=frames=>{const s=frames.map(f=>Math.max(f.b.w,f.b.h)).sort((a,b)=>a-b);return s[Math.floor(s.length/2)];};
 const problemOf=e=>String(e?.message||e);
 /** Prüft ein frisch gemaltes Talentraster, ohne etwas zu schreiben: [] = brauchbar, sonst Gründe. */

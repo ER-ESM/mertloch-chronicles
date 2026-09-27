@@ -5,7 +5,7 @@
 // Etappe 1 „Gerd richtig" (E-71, 2026-09-25): Schaden als Anteil am Leben, Flächen auf Nicht-Tanks, Kegel enden an Wänden, Kante erst
 // ab Phase 2, soziale Aggro nur im eigenen Pack, Tod des Helden als Geist mit Aufhelfen, Laufstand im Spielstand, Tagesstand,
 // Schwierigkeitsfaktoren, Siegelmarken und Tagesbonus. Bericht: docs/DUNGEON-ETAPPE-1-2026-09-25.md.
-import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_PACK_RULES,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,DUNGEON_UI,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS,COMPANION_ABILITIES,DUNGEON_GHOST as GHOST} from './content/index.js';
+import {DUNGEONS,DUNGEON_ENEMIES,DUNGEON_BOSSES,DUNGEON_CASTS,DUNGEON_TEXT as T,DUNGEON_SCALE as U,DUNGEON_REWARDS as REWARDS,DUNGEON_PACK_RULES,DUNGEON_FEATS as FEATS,DUNGEON_E4B as E4B,DUNGEON_TITLES,DUNGEON_UI,ENEMY_AUTOS,COMBAT_RULES,COMPANION_RULES,BALANCE,DODGE_UI,DROP_TABLES,MOUNTS,COMPANION_ABILITIES,DUNGEON_GHOST as GHOST,EINSATZ_RULES,EINSATZ_TEXT} from './content/index.js';
 import {makeEnemy,walkClear as walkable,moveAlong,beginReturn} from './encounters.js';
 import {autoLootBag,addItem,ITEMS} from './rpg.js';
 import {registerRoll} from './itemization.js';
@@ -356,7 +356,8 @@ const hasRevive=c=>c.state!=='down'&&c.hp>0&&c.def?.abilities?.some(id=>COMPANIO
 export function ghostState(g){const run=dungeonRun(g);if(!run||!g.dead)return null;const gh=run.ghost||{},fight=groupFightOn(g);
  const c=(g.companions||[]).find(x=>x.channel&&x.state!=='down'&&x.hp>0),healer=(g.companions||[]).find(hasRevive)||null;
  const wait=healer?GHOST.healerWait:GHOST.standUp,standIn=!fight&&!gh.wiped&&gh.calm!=null?Math.max(0,wait-(g.time-gh.calm)):null;
- return {fight,wiped:!!gh.wiped,up:standing(g),reviver:c?{name:c.name,fill:Math.min(1,(g.time-c.channel.start)/c.channel.total)}:null,healer:healer?.name||null,standIn,standFill:standIn==null||healer?0:1-standIn/GHOST.standUp};}
+ /* Dungeon-Fix 7: soon = ein Heil-Söldner steht und hat sein Aufhelfen in diesem Kampf noch frei – er kommt gleich */const soon=!c&&!gh.wiped&&healer&&(!fight||!healer.reviveUsed)?healer.name:null;
+ return {fight,wiped:!!gh.wiped,up:standing(g),reviver:c?{name:c.name,fill:Math.min(1,(g.time-c.channel.start)/c.channel.total)}:null,healer:healer?.name||null,soon,standIn,standFill:standIn==null||healer?0:1-standIn/GHOST.standUp};}
 /** Nach dem Kampf: Heil-Söldner hilft auf (companions.js), ohne Heiler steht der Held nach GHOST.standUp s am Ort auf. */
 function ghostAfterFight(g,run){const gh=run.ghost;if(gh.wiped||groupFightOn(g)){gh.calm=null;return;}gh.calm??=g.time;
  const wait=(g.companions||[]).some(hasRevive)?GHOST.healerWait:GHOST.standUp;if(g.time-gh.calm>=wait)standUpHere(g);}
@@ -410,6 +411,9 @@ export function introState(g){const run=dungeonRun(g),it=run?.intro;if(!it)retur
  if(it.ready&&roomAt(run.def,g.player.x,g.player.y)?.id!==boss.dungeonBoss.room)return null;
  return {boss,left:it.ready?0:Math.max(0,it.fightAt-g.time),total:it.fightAt-it.at,said:it.said,ready:!!it.ready};}
 /** Wartet dieser Boss nach seiner Rede auf den Angriff (ready)? */
+/** Dungeon-Fix 7 (Prüferin #770: ein Rechtsklick auf den Boden bei Big B schaltete während der Rede „Autoangriff an“, und bei „bereit“ zog der Autoangriff
+ *  ihn von selbst): Bis zu „bereit“ ist ein Boss mit Einleitung nicht angreifbar – kein Autoangriff, kein Pull, ein Rechtsklick läuft nur. */
+export function bossUnready(g,e){return !!e?.dungeonBoss&&bossHeld(g,e)&&!bossReady(g,e);}
 export function bossReady(g,e){const it=dungeonRun(g)?.intro;return !!it?.ready&&!!e&&it.boss===e.bossId&&bossHeld(g,e);}
 /** Dungeon-Fix 5: Der Held zieht den wartenden Boss (Angriff, Nahbereich): Tür zu, Kampf, erster Zauber nach der Anlaufzeit. → true, wenn gezogen. */
 export function pullBoss(g,e){if(!bossReady(g,e)||g.dead)return false;const run=dungeonRun(g);run.intro=null;engageBoss(g,e);return true;}
@@ -663,7 +667,7 @@ export function interruptHolds(g,e){
  g.float?.(e.x,e.y-42,T.bigb.interrupts(k.broken,k.interrupts),'#f2da92');return true;
 }
 /** Zustand eines Bosses nach Rückzug oder Wipe zurück: Wut, Reichweite, Timer, Geständnis, Lügen-Treffer (Erfolg), Trümmer. */
-function resetBossState(g,run,e){e.fightTime=0;e.rageFactor=1;e.mechBoost=1;if(e.baseDamage!=null)e.damage=e.baseDamage;e.trackTimers=null;e.sideCast=null;e.confessed=false;e.lieHits=0;e.takenFactor=1;e.lastLine=null;
+function resetBossState(g,run,e){e.fightTime=0;e.rageFactor=1;e.waveTimer=null;e.waves=0;e.mechBoost=1;if(e.baseDamage!=null)e.damage=e.baseDamage;e.trackTimers=null;e.sideCast=null;e.confessed=false;e.lieHits=0;e.takenFactor=1;e.lastLine=null;
  /* Etappe 4 Teil A */e.provision=0;e.signed=0;e.retreat=null;e.hidden=false;e.screenUntil=0;e.drinking=false;e.drank=0;e.laneHits=0;e.blinded=0;e.viewDoor=0;e.wet=0;
  run.hazards=(run.hazards||[]).filter(h=>h.boss!==e);}
 /** Parallele Timer (tracks): eigener Zauber neben dem Hauptzyklus, z. B. der Siegelring alle 12 s auf den, der Big B hält. */
@@ -690,6 +694,14 @@ function tickHazards(g,run,dt){
 export function enrageInfo(run,bossId){const en=DUNGEON_BOSSES[bossId]?.enrage;if(!en)return null;const cuts=[];
  for(const [id,s] of Object.entries(en.sooner||{}))if(run?.killed?.has?.(id)||run?.evidence?.has?.(id))cuts.push({id,s});
  return {after:Math.max(en.every||5,en.after-cuts.reduce((n,c)=>n+c.s,0)),base:en.after,cuts};}
+/** Dungeon-Fix 7 (Prüferin #770: unter „Wut ×4“ standen zwei Schadens-Söldner mit dem Letzten Aufgebot noch 20 s und legten die letzten 4 %): Die Wut
+ *  ist ein harter Wipe wie in WoW. Wutwelle (EINSATZ_RULES.enrage.wave): ab dem Ausbruch alle every Sekunden ein Treffer auf die ganze Gruppe – Held und
+ *  jeder stehende Söldner – mit pct des Höchstlebens je Wutstufe. Kein Ausweichen, keine Deckung; Schilde und Schadensminderung wirken wie sonst. */
+function enrageWave(g,e,en,after,dt){const w=EINSATZ_RULES.enrage?.wave;if(!w?.pct)return;e.waveTimer=(e.waveTimer??0)-dt;if(e.waveTimer>0)return;e.waveTimer+=w.every;if(e.waveTimer<=0)e.waveTimer=w.every;
+ const stage=1+Math.floor(Math.max(0,e.fightTime-after)/en.every),share=w.pct*stage,name=EINSATZ_TEXT.enrage.wave[e.bossId]||EINSATZ_TEXT.enrage.wave.other;e.waves=(e.waves||0)+1;
+ e.lastCast={name,title:name};if(!g.dead)g.hitPlayer(e,0,false,share);
+ for(const c of g.companions||[])if(c.state!=='down'&&c.hp>0)hitCompanion(g,e,c,Math.max(1,Math.round(share*c.maxHp/(e.damage||1))));e.lastCast=null;
+ emitCombatFx(g,'burst',e,{hostile:true,radius:140,label:name});g.emit?.('shake',{strength:2.2});g.emit?.('dungeonEnrageWave',{boss:e.bossId,stage,share});}
 /** Sekunden bis zur Wut dieses Bosses im Laufstand (siehe enrageInfo). */
 export const enrageAfter=(run,bossId)=>enrageInfo(run,bossId)?.after??Infinity;
 /** Geständnis (Plan 7.6): ab confess.at (mit allen Beweisen evidence.all.confessAt) lügt er nicht mehr; eine laufende Lüge kippt sofort. */
@@ -712,6 +724,7 @@ function tickBossMechanics(g,run,dt){
   const en=def.enrage,after=en?enrageAfter(run,e.bossId):0,rage=en&&e.fightTime>=after?1+en.damage*(1+Math.floor((e.fightTime-after)/en.every)):1;/* Dungeon-Fix 6: Zeitgrenze nach Laufstand */
   if(rage>(e.rageFactor||1)){g.float?.(e.x,e.y-70,e.bossId==='bigb'?T.bigb.enrage:enrageText(e)/* Held aktiv: Wut auch bei Gerd, Exposé, Kurt */,'#ff6a4a');g.emit?.('dungeonEnrage',{boss:e.bossId,factor:rage});}
   if(followers>(e.reachShown||0))g.float?.(e.x,e.y-60,T.bigb.reach+' +'+Math.round(followers*def.reach*100)+' %','#e9a0ff');e.reachShown=followers;
+  if(rage>1)enrageWave(g,e,en,after,dt);/* Dungeon-Fix 7: harter Wipe */
   e.rageFactor=rage;e.mechBoost=(1+followers*(def.reach||0))*rage*(1+(e.provision||0)*(def.viewing?.sign?.damage||0))/* Etappe 4 Teil A: Provision */;if(e.baseDamage!=null)e.damage=e.baseDamage*e.mechBoost;
   tickE4Boss(g,run,e,def,dt);/* Etappe 4 Teil A: Greenscreen, Trog */
   tickTracks(g,e,dt);

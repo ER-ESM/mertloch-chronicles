@@ -46,6 +46,9 @@ export function inkFrame(img){const {width:w,height:h,data}=img;for(let y=0;y<h;
 /** Palette aller Kniff-Kacheln: PRECISION_PALETTE ohne das bläuliche #1e2c35 (Stilbibel B „kein #1e2c35“). Beim Verkleinern mischen
  *  sich Tinte und Basis sonst genau zu diesem Ton (Review R1: 2–4 % in den e32-Zellen). */
 export const TILE_PALETTE=PRECISION_PALETTE.filter(q=>q.join(',')!=='30,44,53');
+/** Blaumisch einrasten (Icon-Review R5, Export gemalter Kacheln): jedes #1e2c35 wird Basis #263530. Die gemalten Originale laufen durch
+ *  precisionColor (volle PRECISION_PALETTE, geteilter Cache) – dort landet der kühle Codex-Grund genau auf #1e2c35 (bis 16,7 %). */
+export function tileNoBlue(img){const d=img.data,[r,g,b]=TILE_COLORS.base;for(let i=0;i<d.length;i+=4)if(d[i]===30&&d[i+1]===44&&d[i+2]===53){d[i]=r;d[i+1]=g;d[i+2]=b;}return img;}
 // Palettenfarbe je exakter Farbe: das Ergebnis hängt nicht von der Reihenfolge ab (Export und Laufzeit gleich).
 const snaps=new Map();
 function snap(r,g,b){const key=r<<16|g<<8|b;let p=snaps.get(key);if(p)return p;let score=Infinity;for(const q of TILE_PALETTE){const d=(r-q[0])**2*.8+(g-q[1])**2+(b-q[2])**2*.7;if(d<score){score=d;p=q;}}snaps.set(key,p);return p;}

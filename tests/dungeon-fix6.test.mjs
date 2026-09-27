@@ -84,7 +84,7 @@ test('Einsatz-Zeile: „Einsatz“ steht sichtbar, Warnungen als Anzahl und Punk
  const html=einsatzChips(x),text=html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
  assert.match(html,/data-einsatz-part="score"[^>]*>.*<small>Einsatz<\/small><b>0<\/b>/,'Wort am Punkte-Chip');
  assert.match(html,/data-einsatz-part="dodges"/,'Ausweichen auch mit 0');assert.match(html,/data-einsatz-part="warn"[^>]*data-tooltip-note="10 von 21[^"]*Das sind 14 von 30 Punkten\."/,'Warnungen: Anzahl und Punkte');
- assert.match(html,/data-tooltip-note="Punkte: Anteil 0 · Unterbrechen 0 · Warnungen 14 \(10\/21\) · Tode -50 = 0 von 100\."/,'Punkte-Tooltip mit Anzahl');
+ /* Dungeon-Fix 7: davor stehen alle Felder der Zeile, auch Ausweichen */assert.match(html,/data-tooltip-note="[^"]*Ausweichen 0[^"]*Punkte: Anteil 0 · Unterbrechen 0 · Warnungen 14 \(10\/21\) · Tode -50 = 0 von 100\."/,'Punkte-Tooltip mit Anzahl');
  assert.ok(text.length<80,'kurz: '+text);
  for(const k of ['score','healing','interrupts','warn','dodges','deaths','rally','bonus'])assert.match(html,new RegExp('data-einsatz-part="'+k+'"'),k);
 });

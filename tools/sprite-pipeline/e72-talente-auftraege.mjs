@@ -47,7 +47,8 @@ export function sheetJobs(){
  return jobs;
 }
 
-// Alte Talente, deren E-32-Bild seit E-72 das getauschte Vorgänger-Talent zeigt (Liste und Urteil: docs/e72-runde3/bilder.md).
+// Alte Talente, deren E-32-Bild seit E-72 das getauschte Vorgänger-Talent zeigt (Liste und Urteil: docs/e72-runde3/bilder.md),
+// dazu (redo) Rasterbilder aus dem Icon-Review R5, die dasselbe Talent schwach zeigen.
 // was = Motiv des alten Bildes, das nicht wieder auftauchen darf; motif = neues Motiv (Proc-Look, wo vorhanden, ist eingearbeitet).
 export const SINGLES=[
  {id:'dieter-wall-12',was:'Kronkorken-Panzer (a chainmail shirt of bottle caps)',motif:'a round cardboard beer mat covered in pencil tally marks with an extra-long curling cream cash receipt hanging from it on a wooden bar counter, a small upward arrow for a bigger tab',avoid:'no armour, no chainmail shirt, no bottle caps'},
@@ -60,20 +61,28 @@ export const SINGLES=[
  {id:'kevin-fuse-25',was:'Warmlaufen (a burning gear with an hourglass)',motif:'a golden paper deposit ticket with a red stamp crackling with blue-white lightning, three more tickets fanned behind it',avoid:'no gear, no hourglass, no flames'},
  {id:'kevin-iron-11',was:'Weiter Bremsweg (the robot in a frost circle with ghostly enemies)',motif:'Dosen-Robbi, the small robot built from tin cans (drawn like in the reference sheet), standing in a faint ring on the ground and pulling empty green deposit bottles into a beer crate with a magnet claw',avoid:'no frost swirl, no ghostly enemies'},
  {id:'kevin-iron-23',was:'Zusatzladung (the robot exploding)',motif:'a tin bottle crate filled with twelve shiny green bottles, a golden deposit ticket with a red stamp lying on top, a small bright spark meaning the next overload is free',avoid:'no explosion as the main object, no robot'},
- {id:'kevin-hunt-25',was:'Gewinnausschüttung (a skull with a heart and coins)',motif:'a shower of glittering intact green deposit bottles raining down and landing upright around a knocked-over enemy cap, small sparkles where they land',avoid:'no skull, no heart, no coins'}
+ {id:'kevin-hunt-25',was:'Gewinnausschüttung (a skull with a heart and coins)',motif:'a shower of glittering intact green deposit bottles raining down and landing upright around a knocked-over enemy cap, small sparkles where they land',avoid:'no skull, no heart, no coins'},
+ // Icon-Review R5 (redo): dasselbe Talent, aber das Rasterbild ist ein Beinahe-Doppel (kevin-hunt-12 zu -23, Abstand 20) oder eine
+ // verstreute Komposition ohne Hauptobjekt (Dieter, bei 44 px Brei). Soll: ein Hauptobjekt ≥ 55 %, passend zu Name und Wirkung.
+ {id:'kevin-hunt-12',redo:'near-duplicate',was:'three dice with a curved arrow and an exploding die, the same picture as the talent Zweite Serie',motif:'a scruffy black village alley cat crouching low and stretched out wide along a dented sooty tin can that lies horizontally, cat and can together filling the whole width of the icon (a wide, low composition, not a tall sitting cat); big bright amber eyes, the black fur drawn in dark petrol greys with lighter grey-blue midtones and a strong warm copper rim light along its back and ears so the cat reads clearly on a dark background; a comically short stubby tail; the fuse of the can has just fizzled out (a dud: one thin grey smoke curl) and one small golden spark is already sputtering back to life on it, meaning the guaranteed overload comes sooner',avoid:'no dice, no curved arrow, no explosion burst, no tall narrow sitting pose'},
+ {id:'dieter-wall-3',redo:'scattered',was:'a boot, a snail and a mound of dirt scattered across the cell',motif:'one big brown garden snail crawling slowly toward the right, its shell replaced by a large dented golden bottle cap lid with a crimped edge (the lid from the parry Deckel drauf!), a tiny slow-motion trail behind it',avoid:'no boot, no dirt mound, no second creature, no shield'},
+ {id:'dieter-wall-8',redo:'scattered',was:'barrier tape between posts with a barrel, legs and several green arrows scattered below',motif:'one big fat roll of red-and-white striped barrier tape seen at a three-quarter angle, a long wide band unrolling from it in a broad curve across the lower half of the icon, a small blue-steel slow-down swirl on the band',avoid:'no posts, no barrel, no legs, no rows of arrows, no shield'},
+ {id:'dieter-brawl-26',redo:'scattered',was:'a green bottle, flying shards, a skull and a circular arrow scattered across the cell',motif:'one big green deposit bottle lying on the diagonal from lower left to upper right, corked, with a rolled-up cream paper message tied with string visible inside the glass (a message in a bottle), a warm copper highlight along the glass',avoid:'no skull, no shards, no second bottle; at most one small orange circular arrow in the top-right corner meaning instantly ready again'},
+ {id:'dieter-brawl-28',redo:'scattered',was:'a flying bottle, two small bottles, a dagger, arrows and a flame scattered across the cell',motif:'one big round wooden beer-hall table top seen at a three-quarter angle (the round of drinkers), a green deposit bottle crashing down onto its center with a bold splash of beer foam',avoid:'no dagger, no rows of arrows, no small extra bottles; at most one small red-orange rage flame in the top-right corner'},
+ {id:'dieter-brawl-29',redo:'scattered',was:'a skull, a boot, arrows, a circular arrow and flames scattered across the cell',motif:'one big heavy brown leather work boot in mid-stride, set large on the diagonal from lower left to upper right with a bright copper highlight on the toe cap and a clearly visible sole, kicking forward out of a torn gap in a hedge: the hedge is shown only as a few loose green leaves and broken twigs flying around the boot (on through the hedge to the next one), never as a solid block or square of foliage behind the boot',avoid:'no skull, no rows of arrows, no flames, no hedge wall, no square block of leaves; at most one small orange circular arrow in the top-right corner meaning a shorter cooldown'}
 ];
 
 /** Einzel-Icons (64×64 im Spiel) als Ersatz für eine Rasterzelle; Stilvorlage = das Raster derselben Spezialisierung. */
 export function singleJobs(){
- return SINGLES.map(({id,was,motif,avoid})=>{
+ return SINGLES.map(({id,was,motif,avoid,redo})=>{
   // Der Proc-Look (falls vorhanden) steckt schon in motif, darum hier nicht noch einmal.
   const cut=id.lastIndexOf('-'),spec=id.slice(0,cut),i=Number(id.slice(cut+1)),t=talent(spec,i),member=spec.split('-')[0];
   const prompt='Mertloch Chronicles premium detailed comic pixel art inventory icon, warm kraft copper highlights and dark petrol shadows, rich engraved materials, consistent light upper left. True transparent RGBA background. No checkerboard painted in. No words, letters, numbers, labels, borders, frames or grid lines. '+
    'Exactly ONE single icon centered on a square canvas with 15% empty margins on every side; not a sheet, not a grid, not a tile. Bold individual silhouette legible at 64px, detailed like our reference. Show the gameplay interaction using one dominant recognizable object and at most two secondary signs. '+
    `The reference is a finished talent icon sheet of the same skill tree (${spec}): match its rendering, ink outline, palette, lighting and icon size exactly so the new icon sits seamlessly among them, but do not copy any of its motifs. `+
    CLASS_CONTEXT[member]+' '+NO_TEXT+` Talent (German name and gameplay effect): ${t.name}: ${t.info.effect}`+
-   ` Motif: ${motif}. It replaces an older picture of a different talent, ${was}, so ${avoid}.`;
-  return {id:'talent-'+id,talent:id,spec,index:i,name:t.name,effect:t.info.effect,replaces:was,output:talentOverridePath(id),width:64,height:64,kind:'talent-icon',
+   ` Motif: ${motif}.`+(redo?` It replaces an older picture of this same talent that ${redo==='near-duplicate'?'looked almost exactly like another talent':'was a scattered composition of several equal-sized things without a main object'} (${was}), so ${avoid}. The one dominant object covers at least 55 percent of the icon area and reads at 44 px.`:` It replaces an older picture of a different talent, ${was}, so ${avoid}.`);
+  return {id:'talent-'+id,talent:id,spec,index:i,name:t.name,effect:t.info.effect,replaces:was,...(redo?{redo}:{}),output:talentOverridePath(id),width:64,height:64,kind:'talent-icon',
    prompt,references:[talentSheetPath(spec)],delivery:DELIVERY};
  });
 }

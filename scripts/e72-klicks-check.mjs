@@ -136,6 +136,7 @@ const PARTS={
   ok(back&&await read(`document.querySelector('#itemTooltip').classList.contains('hidden')`),'Karte kommt wieder – ohne gestapelten Bild-Tooltip');
   // Tooltip über der Karte, dann schließen per Kreuz (echter Klick): Tooltip weg, Rechtsklick an derselben Stelle läuft sofort
   await move(pic.x+pic.w/2,pic.y+pic.h/2);await wait(200);
+  /* Uhrfehler-Runde: Gegner bis „Statik“ beiseite – ein umherziehender Gegner griff den laufenden Helden an, die Karte wartete dann gewollt (im Kampf), die Prüfung lief in die Zeitschranke (Messung: inCombat 7, 1 Angreifer) */await read(`(()=>{game.__foes2=game.enemies;game.enemies=[];game.attackers?.clear?.();game.player.inCombat=0;})()`);
   await read(`game.events.push({type:'memory',fragment:__k.mem.memoryFor('kastenturm')})`);await wait(200);
   /* Zeitmarken im Spiel: Karte zu → nächste Karte sichtbar (der Prüftakt spielt keine Rolle) */await read(`(()=>{const c=document.querySelector('.memory-card'),m=window.__gap={closed:0,shown:0};new MutationObserver(()=>{const t=performance.now();if(c.hidden&&!m.closed)m.closed=t;else if(!c.hidden&&m.closed&&!m.shown)m.shown=t;}).observe(c,{attributes:true,attributeFilter:['hidden']});})()`);
   const x=await rect('.memory-card [data-memory-next]');await click(x.x+x.w/2,x.y+x.h/2);await wait(120);
@@ -143,7 +144,7 @@ const PARTS={
   ok(!closed.card&&!closed.tip,'Kreuz schließt die Karte, kein Tooltip bleibt stehen');
   let right=0,spots=[[pic.x+pic.w/2,pic.y+pic.h/2],[card.x+40,card.y+60],[W*.3,H*.5]];for(const [px,py] of spots){await stopWalk();await click(px,py,'right');await wait(150);const s=await walkState();if(s.ok)right++;else await miss('nach Schließen',px,py);}
   ok(right===3,'direkt nach dem Schließen: Rechtsklicks an der Kartenstelle und daneben bedient ('+right+'/3)');
-  ok(await until(`document.querySelector('.memory-card:not([hidden]) strong')?.textContent==='Statik'`,10000),'„Statik“ kommt nach der Ruhezeit');
+  {const statik=await until(`document.querySelector('.memory-card:not([hidden]) strong')?.textContent==='Statik'`,10000);await read(`(()=>{game.enemies=game.__foes2||game.enemies;delete game.__foes2;})()`);ok(statik,'„Statik“ kommt nach der Ruhezeit'+(statik?'':' – '+await read(`JSON.stringify({moveTo:!!game.moveTo,inCombat:Math.round(game.player.inCombat||0),attackers:game.attackers?.size||0,toast:document.querySelector('#toast')?.classList.contains('visible')?document.querySelector('#toast').textContent:'',milestone:!!document.querySelector('.milestone.show'),karte:document.querySelector('.memory-card:not([hidden]) strong')?.textContent||''})`)));}
   const gap=await read(`Math.round(window.__gap.shown-window.__gap.closed)`);ok(gap>=1400,'die nächste Karte springt nicht sofort unter die Maus (Abstand '+gap+' ms)');
   await read(`document.querySelector('.memory-card [data-memory-next]')?.click()`);await wait(300);
   // Maus ruht dort, wo gleich die Karte erscheint (wie nach dem Aufwachen): Karte kommt OHNE Bild-Tooltip; erst echte Bewegung zeigt ihn.
@@ -180,7 +181,7 @@ const PARTS={
   // Karte ↔ freie Welt, ohne Gegner im Umkreis (die wählten sich sonst per Rechtsklick selbst) – jeder einzelne muss LAUFEN.
   await read(`(()=>{game.__foes=game.enemies;game.enemies=[];})()`);
   let alt=0,altN=0;const altLog=[];
-  for(let k=0;k<20;k++){const cr=await rect('.memory-card:not([hidden])');if(!cr){await read(`game.events.push({type:'memory',fragment:__k.mem.memoryFor(['pizzeria','kastenturm','shirt-zu-klein','der-bus'][k%4])})`);await until(`!!document.querySelector('.memory-card:not([hidden])')`,6000);continue;}
+  for(let k=0;k<20;k++){const cr=await rect('.memory-card:not([hidden])');if(!cr){await read(`game.events.push({type:'memory',fragment:__k.mem.memoryFor(['pizzeria','kastenturm','shirt-zu-klein','der-bus'][${k%4}])})`);await until(`!!document.querySelector('.memory-card:not([hidden])')`,6000);continue;}
    const onCardNow=k%2===0,[px,py]=onCardNow?[cr.x+cr.w/2,cr.y+Math.min(cr.h-30,cr.h/2)]:[W*(.2+(k%3)*.08),H*(.35+(k%2)*.1)];
    await stopWalk();if(!onCardNow&&!(await freeAt(px,py)))continue;altN++;await click(px,py,'right');await wait(120);const s=await walkState();
    if(s.nav>0)alt++;else{await miss('Wechsel k='+k+(onCardNow?' Karte':' Welt'),px,py);}altLog.push((onCardNow?'Karte':'Welt')+(s.nav>0?' läuft':' NICHT')+(await read(`!document.querySelector('#itemTooltip').classList.contains('hidden')`)?' (Tooltip offen)':''));}
@@ -272,6 +273,13 @@ const PARTS={
   await click(cx,cy);await wait(600);st=await state();
   ok(!st.active&&(!had||await read('!game.target')),'Linksklick auf die unsichtbare Leiste geht in die Welt'+(had?' (Zielwahl aufgehoben)':'')+', Fenster bleibt zu');
   await stopWalk();await click(cx+Math.min(6,free.w/4),cy,'right');await wait(200);const w=await walkState();ok(w.ok,'Rechtsklick an derselben Stelle läuft ('+(w.nav>0?'läuft':w.sel)+')');
+  /* Uhrfehler-Runde (Heiler-WoW-Restliste): Rechtsklick AUF einen unsichtbaren Reiter läuft wie in der Lücke (WoW) – vorher blieb er am Reiter
+     hängen und öffnete das Kontextmenü „Chatfenster“. Linksklick auf den Reiter öffnet ihn weiter (dungeon-fix3-check). */
+  {await move(W*.5,H*.3);await wait(300);const tab=JSON.parse(await read(`(()=>{const r=[...document.querySelectorAll('#chatWindow .chat-tabs [data-chat-tab]')].map(b=>b.getBoundingClientRect()).find(r=>r.width>0);return JSON.stringify(r?{x:r.left+r.width/2,y:r.top+r.height/2}:null);})()`));
+   ok(!!tab,'unsichtbarer Reiter vorhanden');const before=await state();ok(!before.active,'Chatfenster in Ruhe vor dem Rechtsklick auf den Reiter');
+   await armLog();await stopWalk();await click(tab.x,tab.y,'right');await wait(300);const w2=await walkState(),menu=await read(`!!document.querySelector('.context-menu')`),after=await state();
+   ok(w2.ok,'Rechtsklick auf den unsichtbaren Reiter läuft in die Welt ('+(w2.nav>0?'läuft':w2.sel||'nichts – '+await why(tab.x,tab.y)+' · darunter '+await read(`(()=>{const el=document.querySelector('#chatWindow');el.classList.add('chat-pass');const u=document.elementFromPoint(${Math.round(tab.x)},${Math.round(tab.y)});el.classList.remove('chat-pass');return (u?(u.id||u.tagName+'.'+u.className):'-')+' · aktiv '+el.classList.contains('active')+' · pe '+getComputedStyle(el.querySelector('[data-chat-tab]')).pointerEvents;})()`))+')');ok(!menu,'kein Kontextmenü „Chatfenster“ an der unsichtbaren Stelle');ok(!after.active,'Chatfenster bleibt in Ruhe');
+   await read(`document.querySelector('.context-menu')?.remove()`);}
   // Maus weg und wieder drauf, verweilen: Fenster geht auf (wie WoW die Chatreiter einblendet), Maus weg: wieder Ruhe
   await move(W*.5,H*.3);await move(cx,cy);await move(cx+6,cy+1);await wait(700);st=await state();
   ok(st.active&&Number(st.op)>.9,'Maus verweilt über der Leiste → Chatfenster mit Reitern geht auf');

@@ -90,7 +90,10 @@ export function mountChatWindow(root,options={}){
  // ── Aktiv / Ruhe ──
  // opened: über Menü → Chat geöffnet (Touch, ohne Hover); der nächste Tipp außerhalb schließt wieder.
  let opened=false;document.addEventListener('pointerdown',e=>{if(opened&&!el.contains(e.target)){opened=false;setTimeout(refreshActive,0);}},true);
- const refreshActive=()=>{const on=opened||settings.pinned||configuring||hoverOn||el.matches(':hover')||el.contains(document.activeElement);if(on!==el.classList.contains('active')){el.classList.toggle('active',on);log.scrollTop=log.scrollHeight;}};
+ /* :hover hält nur ein offenes Fenster offen. In Ruhe fangen seit Dungeon-Fix 3 die Reiter die Maus – mit :hover ging das Fenster schon beim
+    Überfahren eines unsichtbaren Reiters auf (ohne Verweilen), und ein Rechtsklick im Vorbeigehen traf einen gerade erscheinenden Reiter.
+    Aufgehen in Ruhe: Verweilen (hoverOn) oder Klick auf den Reiter. */
+ const refreshActive=()=>{const on=opened||settings.pinned||configuring||hoverOn||(el.classList.contains('active')&&el.matches(':hover'))||el.contains(document.activeElement);if(on!==el.classList.contains('active')){el.classList.toggle('active',on);log.scrollTop=log.scrollHeight;}};
  for(const ev of ['pointerenter','pointerleave','focusin','focusout'])el.addEventListener(ev,()=>setTimeout(refreshActive,0));
  // E-72 R5 (klicks, Nebenbefund): In Ruhe ist die Kopfleiste unsichtbar (opacity 0), fing aber Klicks – ein Klick in die Welt links unten
  // blieb an ihr hängen (und klappte das Fenster auf). Jetzt fängt sie in Ruhe nichts (bierdeckel.css). Die Maus darüber zeigt das Fenster
@@ -109,8 +112,18 @@ export function mountChatWindow(root,options={}){
  // Dungeon-Fix 2 (Endabnahme #715: die Reiter ließen sich in Ruhe nicht anklicken, die Zeichenfläche fing den Klick): Ein Klick genau auf
  // einen Reiter öffnet das Fenster mit diesem Reiter und geht nicht in die Welt. Daneben bleibt die Kopfleiste in Ruhe durchlässig (E-72 R5).
  const tabAt=(x,y)=>[...nav.querySelectorAll('[data-chat-tab]')].find(b=>inside(b.getBoundingClientRect(),x,y));let swallow=false;
- document.addEventListener('pointerdown',e=>{swallow=false;if(!overStrip(e.clientX,e.clientY))return;clearTimeout(hoverTimer);hoverTimer=0;
-  const b=e.button===0&&e.pointerType!=='touch'&&tabAt(e.clientX,e.clientY);if(!b){hoverBlocked=true;return;}
+ // Rechtsklick auf einen unsichtbaren Reiter (Heiler-WoW-Restliste, e72-klicks): WoW-Muster – er geht in die Welt wie in der Lücke daneben
+ // (laufen, Gegner angreifen, Figur ansprechen). Vorher blieb er am Reiter hängen und öffnete das Kontextmenü „Chatfenster“ an einer Stelle,
+ // an der nichts zu sehen ist. Der Druck wird an das weitergereicht, was unter dem Reiter liegt; das folgende Kontextmenü entfällt.
+ let forwarding=false,menuSwallow=false;
+ const toWorld=e=>{el.classList.add('chat-pass');const under=document.elementFromPoint(e.clientX,e.clientY);el.classList.remove('chat-pass');if(!under||el.contains(under))return;
+  forwarding=true;try{under.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,cancelable:true,composed:true,clientX:e.clientX,clientY:e.clientY,screenX:e.screenX,screenY:e.screenY,button:e.button,buttons:e.buttons,pointerId:e.pointerId,pointerType:e.pointerType,isPrimary:e.isPrimary,ctrlKey:e.ctrlKey,shiftKey:e.shiftKey,altKey:e.altKey,metaKey:e.metaKey}));}finally{forwarding=false;}};
+ document.addEventListener('contextmenu',e=>{if(!menuSwallow)return;menuSwallow=false;e.preventDefault();e.stopImmediatePropagation();},true);
+ document.addEventListener('pointerdown',()=>{if(!forwarding)menuSwallow=false;},true);
+ document.addEventListener('pointerdown',e=>{swallow=false;if(!overStrip(e.clientX,e.clientY))return;clearTimeout(hoverTimer);hoverTimer=0;if(forwarding)return;/* der weitergereichte Druck selbst */
+  const tab=e.pointerType!=='touch'&&tabAt(e.clientX,e.clientY);
+  if(tab&&e.button===2){e.preventDefault();e.stopImmediatePropagation();hoverBlocked=true;menuSwallow=true;setTimeout(()=>{menuSwallow=false;},800);toWorld(e);return;}
+  const b=e.button===0&&tab;if(!b){hoverBlocked=true;return;}
   e.preventDefault();e.stopImmediatePropagation();swallow=true;setTimeout(()=>{swallow=false;},600);hoverOn=true;refreshActive();if(configuring)toggleConfig(false);showTab(b.dataset.chatTab);b.querySelector('.chat-unread').hidden=true;},true);
  for(const type of ['pointerup','mouseup','click'])document.addEventListener(type,e=>{if(!swallow)return;e.preventDefault();e.stopImmediatePropagation();if(type==='click')swallow=false;},true);
  el.addEventListener('pointerleave',()=>{hoverOn=false;});
