@@ -240,6 +240,36 @@
     "motif": "Festival-Regenjacke"
   },
   {
+    "id": "annibrille",
+    "output": "assets/precision/sources/2026-09-25/icons/annibrille.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/klassenkleidung/klassenkleidung.mjs · annibrille",
+    "gruppe": "klassenkleidung",
+    "motif": "Annis Sonnenbrille: Große Sonnenbrille mit Aperol-getönten Gläsern, hochgeschoben ins Haar"
+  },
+  {
+    "id": "annischuerze",
+    "output": "assets/precision/sources/2026-09-25/icons/annischuerze.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/klassenkleidung/klassenkleidung.mjs · annischuerze",
+    "gruppe": "klassenkleidung",
+    "motif": "Annis Schürze: Orangefarbene Blumenbluse mit Puffärmeln unter einer blau-weiß karierten Landhausschürze mit Latz, Rüschensaum, Aperol-Schleife im Rücken, Schminkpinsel in der Tasche und rosa Putzspray am Band"
+  },
+  {
     "id": "grillschuerze",
     "output": "assets/precision/sources/2026-09-25/icons/grillschuerze.png",
     "width": 64,
@@ -283,6 +313,36 @@
     "painter": "D:/Dev/_prototypen/icons-2026-09-25/klassenkleidung/klassenkleidung.mjs · kaethestrickjacke",
     "gruppe": "klassenkleidung",
     "motif": "Käthes Strickjacke: Grobe lila Strickjacke mit Zopfmuster, Schalkragen aus Naturwolle, Holzknöpfen und einem Kreuz-Ass in der Brusttasche"
+  },
+  {
+    "id": "kevinguertel",
+    "output": "assets/precision/sources/2026-09-25/icons/kevinguertel.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/klassenkleidung/klassenkleidung.mjs · kevinguertel",
+    "gruppe": "klassenkleidung",
+    "motif": "Kevins Werkzeuggürtel: Ledergürtel mit Flaschenöffner als Schnalle, Werkzeugtasche, Pfandbon-Rolle, bunten Kabelbindern und einem Pömpel im Rücken"
+  },
+  {
+    "id": "kevinweste",
+    "output": "assets/precision/sources/2026-09-25/icons/kevinweste.png",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "kind": "items",
+    "palette": "waffen",
+    "delivery": "2026-09-25",
+    "date": "2026-09-25",
+    "tool": "Pixelmaler (Code, kein Imagegen)",
+    "painter": "D:/Dev/_prototypen/icons-2026-09-25/klassenkleidung/klassenkleidung.mjs · kevinweste",
+    "gruppe": "klassenkleidung",
+    "motif": "Kevins Arbeitsweste: Petrolfarbene Arbeitsweste mit Reflexstreifen, grauer Schulterpasse, Zollstock und Kuli in der Brusttasche und „PFAND“ auf dem Rücken"
   },
   {
     "id": "schorschmuetze",

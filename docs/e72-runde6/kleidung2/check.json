@@ -1,0 +1,154 @@
+{
+ "results": [
+  {
+   "ok": true,
+   "what": "dieter: Heldenerstellung aufgenommen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "dieter: Held erstellt",
+   "detail": "{\"cls\":\"dieter\",\"look\":\"dieter\",\"tint\":{\"skin\":\"hell\",\"hair\":\"natur\",\"face\":\"ohne\",\"style\":\"natur\",\"beard\":\"natur\"}}"
+  },
+  {
+   "ok": true,
+   "what": "dieter: wacht in Unterwäsche auf",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "dieter: trägt kutte (body)",
+   "detail": "kutte"
+  },
+  {
+   "ok": true,
+   "what": "dieter: keine fremde Klassenkleidung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "baerbel: Heldenerstellung aufgenommen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "baerbel: Held erstellt",
+   "detail": "{\"cls\":\"baerbel\",\"look\":\"baerbel\",\"tint\":{\"skin\":\"hell\",\"hair\":\"natur\",\"face\":\"ohne\",\"style\":\"natur\",\"beard\":\"natur\"}}"
+  },
+  {
+   "ok": true,
+   "what": "baerbel: wacht in Unterwäsche auf",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "baerbel: trägt annischuerze (body)",
+   "detail": "annischuerze"
+  },
+  {
+   "ok": true,
+   "what": "baerbel: trägt annibrille (head)",
+   "detail": "annibrille"
+  },
+  {
+   "ok": true,
+   "what": "baerbel: keine fremde Klassenkleidung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "kevin: Heldenerstellung aufgenommen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "kevin: Held erstellt",
+   "detail": "{\"cls\":\"kevin\",\"look\":\"kevin\",\"tint\":{\"skin\":\"hell\",\"hair\":\"natur\",\"face\":\"ohne\",\"style\":\"natur\",\"beard\":\"natur\"}}"
+  },
+  {
+   "ok": true,
+   "what": "kevin: wacht in Unterwäsche auf",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "kevin: trägt kevinweste (body)",
+   "detail": "kevinweste"
+  },
+  {
+   "ok": true,
+   "what": "kevin: trägt kevinguertel (waist)",
+   "detail": "kevinguertel"
+  },
+  {
+   "ok": true,
+   "what": "kevin: keine fremde Klassenkleidung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "schorsch: Heldenerstellung aufgenommen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "schorsch: Held erstellt",
+   "detail": "{\"cls\":\"schorsch\",\"look\":\"dieter\",\"tint\":{\"skin\":\"hell\",\"hair\":\"natur\",\"face\":\"ohne\",\"style\":\"natur\",\"beard\":\"schnauzer\"}}"
+  },
+  {
+   "ok": true,
+   "what": "schorsch: wacht in Unterwäsche auf",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "schorsch: trägt grillschuerze (body)",
+   "detail": "grillschuerze"
+  },
+  {
+   "ok": true,
+   "what": "schorsch: trägt schorschmuetze (head)",
+   "detail": "schorschmuetze"
+  },
+  {
+   "ok": true,
+   "what": "schorsch: keine fremde Klassenkleidung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "kaethe: Heldenerstellung aufgenommen",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "kaethe: Held erstellt",
+   "detail": "{\"cls\":\"kaethe\",\"look\":\"baerbel\",\"tint\":{\"skin\":\"hell\",\"hair\":\"grau\",\"face\":\"brille\",\"style\":\"natur\",\"beard\":\"natur\"}}"
+  },
+  {
+   "ok": true,
+   "what": "kaethe: wacht in Unterwäsche auf",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "kaethe: trägt kaethestrickjacke (body)",
+   "detail": "kaethestrickjacke"
+  },
+  {
+   "ok": true,
+   "what": "kaethe: trägt kaethebrille (neck)",
+   "detail": "kaethebrille"
+  },
+  {
+   "ok": true,
+   "what": "kaethe: keine fremde Klassenkleidung",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "what": "keine Laufzeitfehler",
+   "detail": "[]"
+  }
+ ]
+}

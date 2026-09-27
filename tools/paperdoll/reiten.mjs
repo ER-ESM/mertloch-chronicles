@@ -83,6 +83,7 @@ const mirrorX=(X,w)=>MW-(X+w);
 function shadowOf(frameEntries){let x0=MW*2,x1=-MW;for(const list of frameEntries)for(const [c,X,Y,flip] of list){
  for(let r=0;r<c.h;r++){const Yr=Y+r;if(Yr<MGROUND-22||Yr>MGROUND)continue;for(let x=0;x<c.w;x++)if(c.data[(r*c.w+x)*4+3]){const Xc=X+(flip?c.w-1-x:x);if(Xc<x0)x0=Xc;if(Xc>x1)x1=Xc;}}}
  return x1<x0?{cx:MW/2,rx:20}:{cx:+((x0+x1)/2).toFixed(1),rx:+Math.max(20,(x1-x0)/2+4).toFixed(1)};}
+// cat.sources[id].dutt: Kopfteil lässt den Dutt stehen (paperdoll-kern.js sources, z. B. Annis Sonnenbrille im Haar)
 export async function buildRideRuntime(outDir,{mounts=MOUNT_IDS,jobs=+(process.env.REITEN_JOBS||Math.max(1,Math.min(8,availableParallelism()-2)))}={}){
  const out=outDir.replace(/[\\/]?$/,'/'),t0=Date.now(),archOf=Object.fromEntries(Object.entries(GAME_ARCH));
  if(existsSync(out))rmSync(out,{recursive:true,force:true});mkdirSync(out,{recursive:true});
@@ -91,7 +92,7 @@ export async function buildRideRuntime(outDir,{mounts=MOUNT_IDS,jobs=+(process.e
  const results=await runJobs(list,jobs,s=>console.log(' ',s));
  const ids=rideSources(),cat={version:1,W:MW,H:MH,ground:MGROUND,pivot:{x:MW/2,y:MGROUND},frames:FRAMES,worldHeight:26,bands:BANDS,dirs:['se','sw','nw','ne'],
   archetypes:Object.fromEntries(Object.entries(GAME_ARCH).map(([lid,a])=>[a,{look:lid}])),
-  sources:Object.fromEntries(ids.map(id=>[id,{slot:id==='koerper'?'body-base':id==='dutt'?'hair':GEAR[id].slot}])),mounts:{},shade:shadeTable(),
+  sources:Object.fromEntries(ids.map(id=>[id,{slot:id==='koerper'?'body-base':id==='dutt'?'hair':GEAR[id].slot,...(GEAR[id]?.dutt?{dutt:true}:{})}])),mounts:{},shade:shadeTable(),
   palette:[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))]};
  let total=0;
  for(const mount of mounts){const M={id:mount,pages:{},tiles:{},mount:{},riders:{},shadow:{}},mr=results.find(r=>!r.lid&&r.mount===mount);

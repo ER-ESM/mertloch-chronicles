@@ -48,7 +48,7 @@ function welt({px,m},k){const w=Math.round(W*k),h=Math.round(H*k),o=new Uint8Cla
  const edge=[];for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4;if(!o[i+3])continue;const open=(X,Y)=>X<0||Y<0||X>=w||Y>=h||!o[(Y*w+X)*4+3];if(open(x+1,y)||open(x,y+1))edge.push([i,.45]);else if(open(x-1,y)||open(x,y-1))edge.push([i,.62]);}
  for(const [i,f] of edge)for(let c=0;c<3;c++)o[i+c]=o[i+c]*f+[44,32,34][c]*(1-f)*.55;return {w,h,data:o};}
 // ---------- Bogen ----------
-const KLASSEN=[['dieter','Dieter · Kutte'],['baerbel','Anni · Kutte'],['kevin','Kevin · Kutte'],['schorsch','Schorsch · Grillschürze + Mütze'],['kaethe','Käthe · Strickjacke + Lesebrille']];
+const KLASSEN=[['dieter','Dieter · Kutte'],['baerbel','Anni · Schürze + Sonnenbrille'],['kevin','Kevin · Weste + Werkzeuggürtel'],['schorsch','Schorsch · Grillschürze + Mütze'],['kaethe','Käthe · Strickjacke + Lesebrille']];
 const KOERPER=[['dieter','Kräftig'],['baerbel','Schwungvoll'],['kevin','Drahtig']];
 const RICHTUNG=[['se','vorn'],['sw','Seite'],['nw','hinten']];
 const CW=132,NH=226,Z=2,GAP=14,LEFT=120,TOP=64,WT=Math.round((cat.ground-215)*KMAX),WH=Math.round(cat.ground*KMAX)+3-WT,ROWH=NH+WH*Z+14;
@@ -58,10 +58,10 @@ const fill=(x,y,w,h,c)=>{for(let yy=Math.max(0,y);yy<Math.min(HEIGHT,y+h);yy++)f
 const paste=(src,sw,sh,x,y,z,crop)=>{for(let yy=0;yy<crop.h*z;yy++)for(let xx=0;xx<crop.w*z;xx++){const sx=crop.x+Math.floor(xx/z),sy=crop.y+Math.floor(yy/z);if(sx<0||sy<0||sx>=sw||sy>=sh)continue;const i=(sy*sw+sx)*4;if(!src[i+3])continue;const X=x+xx,Y=y+yy;if(X<0||Y<0||X>=WIDTH||Y>=HEIGHT)continue;out.data.set([src[i],src[i+1],src[i+2],255],(Y*WIDTH+X)*4);}};
 fill(0,0,WIDTH,HEIGHT,[31,36,30]);
 const labels=[{x:12,y:10,t:'Klassenkleidung nach dem Kleiderhaufen · Entwurf E-72 · je Zelle oben Nahansicht (Bogenpixel 1×), unten Weltgröße im Spiel (Desktop-Zoom, k '+Object.keys(cat.archetypes).map(a=>kOf(a).toFixed(2)).join('/')+') 2×',s:15,c:'#f0e2c0'}];
-KLASSEN.forEach(([cls,name],ci)=>labels.push({x:LEFT+ci*(gw+GAP)+6,y:30,t:name,s:13,c:ci>=3?'#ffcf7a':'#d8cfae'}));
+KLASSEN.forEach(([cls,name],ci)=>labels.push({x:LEFT+ci*(gw+GAP)+6,y:30,t:name,s:13,c:CLASS_CLOTHES[cls]?'#ffcf7a':'#d8cfae'}));
 KOERPER.forEach(([arch,bname],ri)=>{const y0=TOP+ri*(ROWH+10);labels.push({x:10,y:y0+NH/2-10,t:bname,s:14,c:'#d8cfae'});
  KLASSEN.forEach(([cls],ci)=>{const eq={...TUTORIAL.starterEquipment,...(CLASS_CLOTHES[cls]||{})},items=equipmentAppearance(eq,ITEM_CATALOG),tint={skin:'hell',hair:'natur',face:'ohne',style:'natur',beard:'natur',...(CLASS_LOOKS[cls]?.tint||{})};
-  const gx=LEFT+ci*(gw+GAP);fill(gx-4,y0,gw+8,ROWH,ci>=3?[52,60,44]:[44,54,40]);
+  const gx=LEFT+ci*(gw+GAP);fill(gx-4,y0,gw+8,ROWH,CLASS_CLOTHES[cls]?[52,60,44]:[44,54,40]);
   RICHTUNG.forEach(([dir,dname],di)=>{const fig=figur(arch,dir,items,tint),x=gx+di*CW;
    paste(fig.px,W,H,x,y0+4,1,{x:W/2-CW/2,y:cat.ground-NH+14,w:CW,h:NH-4});
    const k=kOf(arch),s=welt(fig,k),wt=Math.round((cat.ground-215)*k),wh=Math.round(cat.ground*k)+3-wt;paste(s.data,s.w,s.h,x+CW/2-s.w,y0+NH+4+(WH-wh)*Z,Z,{x:0,y:wt,w:s.w,h:wh});
