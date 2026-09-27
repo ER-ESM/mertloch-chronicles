@@ -164,6 +164,16 @@ export function talentHelp(g,t){
 }
 /** E-72: Kniffe, die eine Klassenressource ausführt, erklären ihren aktuellen Zustand (Karte, Grillgut, Glut, Bon-Zone, Zeche). */
 const SUIT_EFFECT={kreuz:'trifft dein Ziel',pik:'gibt dir Deckung',herz:'heilt dich oder deinen gewählten Freund',karo:'trifft alle Gegner um dein Ziel und bremst sie'};
+/** Käthes Handkarte im Verhältnis zur Lage: Kettenrahmen (bedient die Farbe) und Stich gegen die Karte am Zauberbalken des Ziels. Beide stehen
+ *  als Bild auf der Karte (E-72 R3 „Lernen über das Bild“: Namen und Zahlen nur im Tooltip). Der kurze Kniff-Tooltip (combat-ui skillLink)
+ *  zeigt davon die eine Zeile, die beim Drücken zählt; die ausführliche Hilfe hängt beide an. Leer für andere Klassen oder Plätze ohne Karte. */
+export function cardLinks(g,id){
+ const R=RESOURCES[g.member?.id],c=R?.kind==='cards'&&handCard(g,id);if(!c)return {};
+ const rk=R.ranks[c.rank],h=resourceHud(g),e=g.target,theirs=e?.hp>0&&e.cast?.card,out={};
+ if(h?.chain?.suit&&(h.chain.suit===c.suit||rk.trump))out.chain='Kettenrahmen – bedient die Farbe: '+pct(R.follow.bonus)+' mehr je Kettenglied.';
+ if(theirs){const tr=R.ranks[theirs.rank],beats=rk.trump?!tr.trump:c.suit===theirs.suit&&rk.order>tr.order;out.stich=beats?`Goldschein – sticht den Zauber des Ziels (${cardName(theirs)}): ${e.cast.interruptible?'bricht ihn ab und ':''}bringt ${tr.augen+R.stich.bonus} Augen.`:`Der Zauber des Ziels zeigt ${cardName(theirs)}: stechen kannst du mit ${R.suits[theirs.suit].name} höher als ${tr.name} oder einem Buben.`;}
+ return out;
+}
 function resourceSkillHelp(g,id,s){
  const cls=g.member?.id,R=RESOURCES[cls],h=resourceHud(g);if(!R||!h)return null;
  if(cls==='kaethe'){
@@ -171,9 +181,8 @@ function resourceSkillHelp(g,id,s){
   const legend='Bild = Wirkung: Klinge trifft · Schild schützt · Herz mit Plus heilt · Knall mit Ring trifft im Umkreis und bremst. Abzeichen: » schnell (7–9) · Stern stark (10, Ass) · Krone Trumpf (Bube).';
   const tempo=rk=>rk.trump?' Trumpf (Krone): bedient jede Farbe und sticht jeden Zauber.':rk.quick?' Schnell (»): sperrt die globale Abklingzeit nur kurz.':rk.power>=1.3?' Stark (Stern): '+String(rk.power).replace('.',',')+'-fache Wirkung.':'';
   const c=handCard(g,id);
-  if(c){const rk=R.ranks[c.rank],e=g.target,theirs=e?.hp>0&&e.cast?.card,support=g.skills.find(x=>x.id===id)?.heals==='card'&&(!!g.friend||!(e?.hp>0))/* Heiler-WoW: Kartenlegerin stützt den Freund */;let line=`${cardName(c)}: ${support?SKILL_TIP.support[c.suit]:SUIT_EFFECT[c.suit]}${!support&&['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}.${tempo(rk)} Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
-   if(h.chain?.suit&&(h.chain.suit===c.suit||rk.trump))line+=' Kettenrahmen – bedient die Farbe: '+pct(R.follow.bonus)+' mehr je Kettenglied.';
-   if(theirs){const tr=R.ranks[theirs.rank],beats=rk.trump?!tr.trump:c.suit===theirs.suit&&rk.order>tr.order;line+=beats?` Goldschein – sticht den Zauber des Ziels (${cardName(theirs)}): ${e.cast.interruptible?'bricht ihn ab und ':''}bringt ${tr.augen+R.stich.bonus} Augen.`:` Der Zauber des Ziels zeigt ${cardName(theirs)}: stechen kannst du mit ${R.suits[theirs.suit].name} höher als ${tr.name} oder einem Buben.`;}
+  if(c){const rk=R.ranks[c.rank],e=g.target,support=g.skills.find(x=>x.id===id)?.heals==='card'&&(!!g.friend||!(e?.hp>0))/* Heiler-WoW: Kartenlegerin stützt den Freund */,l=cardLinks(g,id);let line=`${cardName(c)}: ${support?SKILL_TIP.support[c.suit]:SUIT_EFFECT[c.suit]}${!support&&['10','A'].includes(c.rank)&&c.suit==='karo'?' und betäubt kurz':''}.${tempo(rk)} Gibt ${R.augenPerCard+rk.augen} Augen (${R.augenPerCard} + Skatwert ${rk.augen}).`;
+   if(l.chain)line+=' '+l.chain;if(l.stich)line+=' '+l.stich;
    return line;}
   if(id==='throw')return s.text+` Du hast ${Math.floor(h.value)} Augen; gewonnen ab ${h.win}, Schneider ab ${h.schneider}, Schwarz bei ${h.schwarz}.`;
   if(['strike','mark','burst'].includes(id))return s.text+' '+legend;

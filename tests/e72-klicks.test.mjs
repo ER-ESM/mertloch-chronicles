@@ -142,4 +142,7 @@ test('Chatfenster: in Ruhe fängt die unsichtbare Kopfleiste keine Klicks; es ö
  assert.match(chat,/const b=e\.button===0&&tab;/,'nur der Linksklick öffnet den Reiter');
  assert.match(css,/\.chat-window\.chat-pass,\.chat-window\.chat-pass \*\{pointer-events:none!important\}/,'zum Weiterreichen kurz ganz durchlässig');
  assert.match(chat,/if\(hoverOn\)\{if\(!inside\(el\.getBoundingClientRect\(\),e\.clientX,e\.clientY\)\)\{hoverOn=false;/,'Maus verlässt das Fenster → Ruhe');
+ /* hud:check (27.09.): der Reiter-Klick schluckte im UI-Editor den Druck auf den Chat-Rahmen – ein träges Fenster (inert) prüft keine Kopfleiste
+    (Verhalten mit Maus: scripts/hud-check.mjs „chat window moves in the HUD editor“) */
+ assert.match(chat,/const overStrip=\(x,y\)=>[^\n]*!el\.closest\('\[inert\]'\)&&inside\(tabs\.getBoundingClientRect\(\),x,y\)/,'im UI-Editor fängt die ruhende Kopfleiste nichts');
 });

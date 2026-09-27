@@ -11,7 +11,7 @@ import {CARD_EFFECT_ICON,cardTempo,spriteProblems,spriteSize} from '../resource-
 import {tutorialConfirm,tutorialSignal} from '../tutorial.js';
 import {tutorialGuide,guideHtml,guideKey} from '../tutorial-guide.js';
 import {tutorialTrackerEntry,trackerHtml} from '../quest-tracker.js';
-import {skillStatus} from '../combat-ui.js';
+import {skillStatus,skillTooltip} from '../combat-ui.js';
 import {skillHelp} from '../mechanic-help.js';
 
 const world=()=>({id:'lernen',seed:1,spawn:{x:500,y:500},npc:{x:500,y:480},landmarks:[],quests:[],camps:[],blocked:()=>false,lineClear:()=>true,findClear:(x,y)=>({x,y}),findPath:(a,b)=>[{...b}]});
@@ -35,6 +35,16 @@ test('Käthe: der Karten-Tooltip nennt Wirkung, Abzeichen und Stich – ohne Ska
  g.res.chain={suit:'herz',n:0};assert.match(skillHelp(g,'burst'),/Kettenrahmen/,'Bube bedient jede Farbe');assert.doesNotMatch(skillHelp(g,'mark'),/Kettenrahmen/);
  g.target.cast={type:'call',name:'Ruf',interruptible:true,remaining:2,total:2,card:{suit:'kreuz',rank:'9'}};
  assert.match(skillHelp(g,'strike'),/Goldschein – sticht/);assert.equal(resourceVariant(g,'strike').tone,'gold','Kreuz-Zehn sticht Kreuz-Neun');assert.notEqual(resourceVariant(g,'mark').tone,'gold','Pik sticht Kreuz nicht');
+});
+
+test('Käthe: der kurze Kniff-Tooltip (ohne Umschalttaste) nennt Stich bzw. Kettenrahmen in seiner einen Wechselwirkungszeile',()=>{
+ const g=hero('kaethe');foe(g);g.res.hand=[{suit:'kreuz',rank:'A'},{suit:'pik',rank:'D'},{suit:'karo',rank:'B'}];g.res.chain={suit:'pik',n:0};
+ const link=id=>skillTooltip(g,id).match(/<p class="tip-link">([^<]*)<\/p>/)?.[1]||'';
+ assert.match(link('mark'),/^Kettenrahmen/,'ohne Gegnerzauber: Kettenrahmen');assert.equal(link('strike'),'','Kreuz ohne Kette und ohne Zauber: keine Zeile');
+ g.target.cast={type:'call',name:'Ruf',interruptible:true,remaining:2,total:2,card:{suit:'kreuz',rank:'9'}};
+ assert.match(link('strike'),/^Goldschein – sticht den Zauber des Ziels \(Kreuz-Neun\): bricht ihn ab und bringt \d+ Augen\.$/);assert.match(link('burst'),/sticht/,'Bube sticht');
+ assert.match(link('mark'),/^Der Zauber des Ziels zeigt Kreuz-Neun/,'Stich geht vor dem Kettenrahmen');
+ for(const id of ['strike','mark','burst'])assert.equal(skillTooltip(g,id).match(/class="tip-link"/g)?.length||0,1,id+': höchstens eine Zeile');
 });
 
 test('Käthes Kartenplätze und Schorschs Auflegen/Servieren leuchten nicht zufällig als „ideales Zeitfenster“',()=>{
