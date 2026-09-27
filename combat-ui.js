@@ -1,4 +1,4 @@
-import {skillHelp,cardSlotName} from './mechanic-help.js';
+import {skillHelp,cardSlotName,cardLinks} from './mechanic-help.js';
 import {deNum} from './number-format.js';
 import {categoryChips} from './category-ui.js';
 import {autoWeapons} from './auto-combat.js';
@@ -62,6 +62,8 @@ function skillNumbers(g,s,cs){const k=kitNumbers(g,s.id,cs);if(k)return k;const 
 /** Eine Zeile Wechselwirkung/Zustand: Kartenstützung, Ressourcenstand (Glut, Karte, Bon), Variante, sonst leer. */
 function skillLink(g,s,effect){const kind=resourceKind(g);
  /* Anni: derselbe Kniff gleich noch einmal senkt den Trend – die eine Zeile, die beim Drücken zählt */if(kind==='trend'){return g.res?.last?.[0]===s.id&&s.id!=='strike'?SKILL_TIP.repeat:'';}
+ /* Käthe: Goldschein (Stich gegen die Karte am Zauberbalken) vor Kettenrahmen – die Bild-Abzeichen der Karte beim Namen (E-72 R3). Die Wirkung
+    kürzt shortEffect nach „Gibt N Augen“; ohne diese Zeile stand der Stich nur noch in den Details (e72-lernen-check, 27.09.) */if(kind==='cards'){const l=cardLinks(g,s.id),line=l.stich||l.chain||'';return line&&!effect.includes(line)?line:'';}
  /* Glut, Grillrost, Pfandautomat: Zustand der Ressource (Rest des Hilfetexts nach der Wirkung) */if(!['grill','ammo'].includes(kind)||kitEntry(g,s.id))return '';
  const help=skillHelp(g,s.id)||'',rest=help.startsWith(s.text||'\u0000')?help.slice((s.text||'').length).trim():'';const line=shortEffect(rest,90,true);return line&&!effect.includes(line)?line:'';}
 export function skillTooltip(g,id,touch=false,shift=false){if(id==='mount')return '<strong>'+MOUNT_UI.barName+'</strong><p>'+MOUNT_UI.barHint+'</p><p>'+MOUNT_UI.rules+'</p>';const s=g.skills.find(s=>s.id===id);if(!s)return '';const cs=combatStats(g),requirement=weaponRequirement(g,s,ITEMS),range=s.weaponSource&&weaponRange(g,ITEMS,s.weaponSource),bound=actionBar(g).includes(id)||SPECIAL_KEYS[id]!==undefined,unlocked=available(g,id),origin=s.talent?SKILL_TIP.originTalent(SPECS[s.spec].name):SKILL_TIP.origin(skillLevel(g,id));const cdSeconds=deNum(s.cd*(id==='dash'?(1-(cs.dashCd||0))*(cs.procs.includes('fleet')?.85:1):id==='interrupt'?1-(cs.interruptCd||0):1-cs.haste),1),cost=resourceCost(g,s,cs,skillCost(g,s,cs));

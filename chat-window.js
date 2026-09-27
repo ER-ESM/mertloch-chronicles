@@ -101,7 +101,9 @@ export function mountChatWindow(root,options={}){
  // die Leiste verlassen hat. Verlässt die Maus das offene Fenster, geht es wieder in Ruhe.
  let hoverOn=false,hoverTimer=0,hoverBlocked=false;const tabs=el.querySelector('.chat-tabs');
  const inside=(r,x,y)=>r.width>0&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
- const overStrip=(x,y)=>!el.classList.contains('active')&&!el.hidden&&inside(tabs.getBoundingClientRect(),x,y);
+ // Nur geometrisch geprüft, darum ausdrücklich: ein träges Fenster (der UI-Editor setzt die Spielfläche inert) reagiert auf nichts. Sonst schluckte
+ // der Reiter-Klick (Dungeon-Fix 2) den Druck auf den Editor-Rahmen, der über dem ruhenden Chat liegt – der Chat ließ sich im Editor nicht ziehen.
+ const overStrip=(x,y)=>!el.classList.contains('active')&&!el.hidden&&!el.closest('[inert]')&&inside(tabs.getBoundingClientRect(),x,y);
  document.addEventListener('pointermove',e=>{
   if(e.pointerType==='touch')return;
   if(hoverOn){if(!inside(el.getBoundingClientRect(),e.clientX,e.clientY)){hoverOn=false;setTimeout(refreshActive,0);}return;}

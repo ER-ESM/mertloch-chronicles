@@ -96,6 +96,10 @@ try{
  pass('real status timers/stacks reach distinct bars; expiry and target loss remove icons and tooltips');
  await openEditor();const chatNative=await rect('#chatWindow');await drag('[data-hud-handle="chat"]',240,-160);await click('[data-hud-save]');const chatEdited=await rect('#chatWindow');
  assert.equal(await read(`document.querySelector('#chatWindow').hasAttribute('data-hud-custom')`),true);/* 2 px Spiel: der Chat rastet nach dem Ziehen am Rahmen der Fläche ein */assert.ok(chatEdited.x>chatNative.x+200&&Math.abs(chatEdited.y-chatNative.y+160)<3,JSON.stringify({chatNative,chatEdited}));
+ /* Ziehen ist Sache des offenen Fensters: In Ruhe ist die Kopfleiste unsichtbar und durchlässig (E-72 R5, 0834c9f4), das Fenster geht erst nach
+    HOVER_REVEAL_MS Verweilen auf (:hover allein öffnet nicht mehr, d73873f6), ein Druck auf einen ruhenden Reiter öffnet nur den Reiter
+    (Dungeon-Fix 2, b4afd3af). Also wie ein Spieler: erst über der Leiste verweilen, dann ziehen. */
+ {const t=await rect('#chatWindow .chat-tabs');await b.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:t.x+25,y:t.y+20});await wait(600);assert.ok(await read(`document.querySelector('#chatWindow').classList.contains('active')`),'Chat geht nach dem Verweilen über der Kopfleiste auf');}
  await drag('#chatWindow .chat-tabs',64,40);const chatAfter=await rect('#chatWindow');assert.ok(chatAfter.x>chatEdited.x+50&&chatAfter.y>chatEdited.y+30,JSON.stringify({chatEdited,chatAfter}));
  await fixture(false,true);assert.deepEqual(await rect('#chatWindow'),chatAfter);await b.screenshot(dir+'/chat-moved-desktop.png');
  pass('chat window moves in the HUD editor, still drags by its tab bar afterwards and persists');
