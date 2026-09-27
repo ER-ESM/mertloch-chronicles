@@ -54,9 +54,11 @@ export const SPEC_MECHANICS={
   variant:{burst:{when:'state',name:'AUSWRINGEN',tone:'burst'},strike:{when:'state',name:'PUTZWUT',tone:'gold'},throw:{when:'state',name:'PUTZWUT',tone:'gold'}},
   paths:[{name:'Dauerglanz',bonus4:{stateDuration:4},bonus7:{stateDrain:-4}},{name:'Putzwut',bonus4:{stateDamage:.15},bonus7:{stateTrigger:-20}},{name:'Wischer',bonus4:{mobileHeal:1},bonus7:{stateMobileAll:1}}]},
  'kevin-fuse':{kind:'chain',name:'Kurzschluss',output:{damage:0.85},
-  chain:{jumps:3,falloff:.3,radius:110},fuse:{explode:{damage:90,radius:70}},reaction:{count:3,window:10,duration:6,jumps:5},
+  // E-72 R6 – die Kette hat Grenzen: fuseFalloff = jede weitere Lunte desselben Kurzschlusses explodiert 20 % schwächer;
+  // instantRow = „sofort bereit“ (Kettenreaktion, Funkenüberschlag) höchstens einmal hintereinander (spec-mechanics.js burstResetBlocked).
+  chain:{jumps:3,falloff:.3,radius:110,fuseFalloff:.2,instantRow:1},fuse:{explode:{damage:90,radius:70}},reaction:{count:3,window:10,duration:6,jumps:5},
   kit:{mark:{name:'Lunte',text:'Klebt eine Lunte ans Ziel: regelmäßig Schaden, und wenn sie abbrennt oder gezündet wird, explodiert sie im Umkreis.',use:'Drück sie zuerst auf jeden Gegner, den du sprengen willst.'},
-   burst:{name:'Kurzschluss',text:'Kostet drei Flaschen: ein Blitz, der auf bis zu drei Nachbarn überspringt (je Sprung 30 % weniger) und Lunten sofort zündet. Drei Zündungen in 10 s lösen eine Kettenreaktion aus: Kurzschluss sofort bereit, fünf Sprünge.',use:'Zünde ihn, wenn mehrere Gegner Lunten tragen.'}},
+   burst:{name:'Kurzschluss',text:'Kostet drei Flaschen: ein Blitz, der auf bis zu drei Nachbarn überspringt (je Sprung 45 % weniger) und Lunten sofort zündet – jede weitere 20 % schwächer. Drei Zündungen in 10 s lösen eine Kettenreaktion aus: Kurzschluss sofort bereit, fünf Sprünge. Sofort bereit höchstens einmal hintereinander.',use:'Zünde ihn, wenn mehrere Gegner Lunten tragen.'}},
   variant:{burst:{when:'reaction',name:'KETTENREAKTION',tone:'burst'}},
   paths:[{name:'Lunte',bonus4:{fuseDamage:40},bonus7:{fuseSpread:1}},{name:'Kurzschluss',bonus4:{chainJumps:1},bonus7:{chainFalloff:-.15}},{name:'Kettenreaktion',bonus4:{reactionWindow:5},bonus7:{reactionDuration:4}}]},
  'kevin-iron':{kind:'turret',name:'Dosen-Robbi',output:{damage:1.08},

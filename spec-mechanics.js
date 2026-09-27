@@ -68,6 +68,7 @@ export function onHitTakenMech(g,n,cs){const m=mechanic(g);if(!m?.stack||n<=0)re
 /** Spezialkniff vor dem Schaden: Faktor aus Pegel/Zustand, Nebenwirkungen (Fässer anstechen, Robbi überlasten, Schimmel platzen, Deckung als Welle). */
 export function burstMultiplier(g,e,cs,context={}){
  const m=mechanic(g);if(!m)return 1;const s=M(g),p=g.player;let f=1;
+ if(m.chain){s.instantRow=s.instantReady?(s.instantRow||0)+1:0;s.instantReady=false;}/* E-72 R6: zählt, wie oft der Kurzschluss hintereinander sofort bereit war (burstResetBlocked) */
  if(m.stack&&s.stack>0){f*=1+num(cs,'stackBonus',m.stack.bonusPerStack)*s.stack;if(cs.stackSpread)for(const o of nb(g,e,80)){o.controlSlow=Math.max(o.controlSlow||0,s.stack*.5);}if(cs.stackWave)for(const o of nb(g,e,80,e))g.damage(o,Math.round(20*s.stack),'Abriss');context.stack=s.stack;s.stack=0;s.stackUntil=0;}
  if(m.state&&s.state>0){f*=1+num(cs,'stateDamage',m.state.damage)-1;context.extra=Math.round(p.energy*m.state.finisherPerEnergy);s.state=0;p.energy=0;note(g,'AUSGEWRUNGEN','#ecc3fc','burst');}
  if(m.kind==='guard'&&!cs.guardBurst&&g.classState.guard>0){const others=nb(g,p,num(cs,'waveRadius',m.waveRadius),e);if(others.length){const spend=Math.min(m.burstGuard,g.classState.guard);g.classState.guard-=spend;for(const o of others)g.damage(o,spend,'Rausschmiss');}}
@@ -81,15 +82,25 @@ export function burstMultiplier(g,e,cs,context={}){
 export function afterBurst(g,e,cs,dealt,context={}){
  const m=mechanic(g);if(!m)return;const s=M(g);
  if(context.extra>0&&e?.hp>0)g.damage(e,context.extra,'Auswringen');
- if(m.chain){const reacting=s.reaction>0,jumps=reacting?m.reaction.jumps:num(cs,'chainJumps',m.chain.jumps),falloff=Math.max(0,num(cs,'chainFalloff',m.chain.falloff));let from=e,n=dealt;const hit=new Set([e]);
-  if(e?.mark>0)fuseExplode(g,e,cs);
-  for(let i=0;i<jumps;i++){const next=nb(g,from,num(cs,'chainRadius',m.chain.radius)).find(o=>!hit.has(o));if(!next)break;n=Math.round(n*(1-falloff));hit.add(next);g.effect?.('chain',next.x,next.y,{from:{x:from.x,y:from.y-10},life:.35,max:.35});g.damage(next,n,'Kurzschluss');if(next.mark>0)fuseExplode(g,next,cs);from=next;}
+ if(m.chain){const reacting=s.reaction>0,jumps=reacting?m.reaction.jumps:num(cs,'chainJumps',m.chain.jumps),falloff=Math.max(0,num(cs,'chainFalloff',m.chain.falloff));let from=e,n=dealt,lit=0;const hit=new Set([e]);
+  // E-72 R6: Jede weitere Lunte, die DERSELBE Kurzschluss zündet, explodiert um chain.fuseFalloff schwächer (1 · 0,8 · 0,64 …).
+  // In einer Dreiergruppe trifft jede Explosion alle drei – ohne Abnahme wuchs der Lunten-Schaden mit dem Quadrat der Gruppengröße.
+  const ignite=t=>fuseExplode(g,t,cs,Math.pow(1-(m.chain.fuseFalloff||0),lit++));
+  if(e?.mark>0)ignite(e);
+  for(let i=0;i<jumps;i++){const next=nb(g,from,num(cs,'chainRadius',m.chain.radius)).find(o=>!hit.has(o));if(!next)break;n=Math.round(n*(1-falloff));hit.add(next);g.effect?.('chain',next.x,next.y,{from:{x:from.x,y:from.y-10},life:.35,max:.35});g.damage(next,n,'Kurzschluss');if(next.mark>0)ignite(next);from=next;}
   if(reacting)s.reaction=0;}
 }
-function fuseExplode(g,e,cs){const m=mechanic(g);if(!m?.fuse)return;const s=M(g),ex=m.fuse.explode;e.mark=0;e.slow=1;for(const o of nb(g,e,ex.radius))g.damage(o,num(cs,'fuseDamage',ex.damage),'Lunte');emitClassVisual(g,'fuse-burst',e.x,e.y,{size:50});
+/** E-72 R6 (Zündmeister): „Kurzschluss sofort bereit“ (Kettenreaktion, Funkenüberschlag) höchstens chain.instantRow-mal hintereinander –
+ *  ein so bereitgemachter Kurzschluss klingt danach einmal regulär ab. Vorher fütterte er sich selbst: Seine eigenen Treffer auf
+ *  Lunten-Träger (je 15 %) und die drei Zündungen in einer Dreiergruppe machten ihn sofort wieder bereit – eine Kette ohne Ende,
+ *  deren Länge sprunghaft von Gegnerzahl und Todeszeitpunkten abhing. Andere Specs und Kniffe: nie gesperrt. */
+export function burstResetBlocked(g,skill='burst'){const m=mechanic(g);if(skill!=='burst'||!m?.chain?.instantRow||!(g.cooldowns?.burst>0))return false;return (M(g).instantRow||0)>=m.chain.instantRow;}
+/** Setzt die Abklingzeit des Spezialkniffs zurück, sofern nicht gesperrt; merkt sich beim Zündmeister, dass der nächste Einsatz „sofort bereit“ war. */
+export function resetBurst(g){if(burstResetBlocked(g))return false;if(g.cooldowns.burst>0&&mechanic(g)?.chain)M(g).instantReady=true;g.cooldowns.burst=0;return true;}
+function fuseExplode(g,e,cs,power=1){const m=mechanic(g);if(!m?.fuse)return;const s=M(g),ex=m.fuse.explode;e.mark=0;e.slow=1;for(const o of nb(g,e,ex.radius))g.damage(o,num(cs,'fuseDamage',ex.damage)*power,'Lunte');emitClassVisual(g,'fuse-burst',e.x,e.y,{size:50});
  if(cs.fuseSpread){const t=nb(g,e,90,e).find(o=>!(o.mark>0));if(t)applyMark(g,t,cs,false);}
  const window=num(cs,'reactionWindow',m.reaction.window);s.heat=s.heat.filter(t=>g.time-t<window);s.heat.push(g.time);
- if(s.heat.length>=m.reaction.count&&s.reaction<=0){s.reaction=num(cs,'reactionDuration',m.reaction.duration);s.heat=[];g.cooldowns.burst=0;note(g,'KETTENREAKTION','#9bdce4','burst');fireProcs(g,'reactionStart',cs);}}
+ if(s.heat.length>=m.reaction.count&&s.reaction<=0){s.reaction=num(cs,'reactionDuration',m.reaction.duration);s.heat=[];resetBurst(g);note(g,'KETTENREAKTION','#9bdce4','burst');fireProcs(g,'reactionStart',cs);}}
 /** Markierung läuft ab: Lunte zündet. */
 export function onMarkExpire(g,e){const m=mechanic(g);if(m?.fuse&&e.hp>0){e.mark=.01;fuseExplode(g,e,combatStats(g));}}
 /** Kill: Schimmel springt weiter. */

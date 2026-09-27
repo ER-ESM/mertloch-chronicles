@@ -1,6 +1,6 @@
 # Balance-Sheet
 
-Automatisch erzeugt von `npm run balance:sheet` · 2026-09-26 · 40 s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (10× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit 3 festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit 3 % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über `pathBuild`, Stufe 1 ohne Spezialisierung.
+Automatisch erzeugt von `npm run balance:sheet` · 2026-09-27 · 40 s Übungskampf, jede Zelle und jede Zerlegung als Mittel aus Boss (10× Feldleben) und Feldgruppe (drei Gegner mit Umland-Leben); gefallene Gegner ersetzt sofort ein neuer (Kill-Talente zählen), Zufall mit 3 festen Startwerten gemittelt, gemeinsame Prioritäten-Rotation (Heiler heilen zuerst), Puppen treffen jede Sekunde mit 3 % des Grundlebens. Voller Ausrüstungssatz auf Charakterstufe (Werteprofile im Wechsel); „Startausrüstung“ = Flasche, Topfdeckel, Schleuder, Kutte. Talentpfad 0–2 über `pathBuild`, Stufe 1 ohne Spezialisierung.
 
 Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** → Heilung/s (Ausstoß inkl. Überheilung; dahinter „eff.“ = tatsächlich geheilt, ohne Überheilung – ⚑ und Median bleiben am Ausstoß), **Tank** → Schutz/s (verhinderter Schaden + Deckung). Zelle: Kennzahl (Abweichung vom Median der Rolle auf dieser Stufe × Ausrüstung). ⚑ = mehr als 15 % daneben (ab Stufe 5).
 
@@ -14,30 +14,30 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 59 (-2.3 %) | 101 (-10.9 %) | 107 (-24.9 %) ⚑ | 125 (-22.3 %) ⚑ | 143 (-18.8 %) ⚑ | 181 (-15.5 %) ⚑ |
-| dieter-brawl | 1 | 59 (-2.3 %) | 114 (+1 %) | 149 (+4.4 %) | 187 (+16.4 %) ⚑ | 208 (+18.1 %) ⚑ | 246 (+14.6 %) |
-| dieter-brawl | 2 | 59 (-2.3 %) | 110 (-2.2 %) | 126 (-12.1 %) | 133 (-16.9 %) ⚑ | 159 (-9.9 %) | 189 (-11.7 %) |
-| baerbel-feedback | 0 | 61 (0 %) | 131 (+16.1 %) ⚑ | 145 (+1.6 %) | 148 (-7.6 %) | 158 (-10.7 %) | 165 (-23 %) ⚑ |
-| baerbel-feedback | 1 | 61 (0 %) | 146 (+28.9 %) ⚑ | 143 (0 %) | 147 (-8.7 %) | 147 (-16.4 %) ⚑ | 168 (-21.7 %) ⚑ |
-| baerbel-feedback | 2 | 61 (0 %) | 153 (+35.3 %) ⚑ | 190 (+33 %) ⚑ | 194 (+21.1 %) ⚑ | 206 (+16.7 %) ⚑ | 222 (+3.5 %) |
-| baerbel-stage | 0 | 61 (0 %) | 111 (-2.1 %) | 135 (-5.5 %) | 170 (+6 %) | 181 (+2.5 %) | 220 (+2.4 %) |
-| baerbel-stage | 1 | 61 (0 %) | 127 (+12.1 %) | 154 (+7.8 %) | 174 (+8.2 %) | 193 (+9.6 %) | 215 (0 %) |
-| baerbel-stage | 2 | 61 (0 %) | 118 (+4.9 %) | 128 (-10.2 %) | 147 (-8.6 %) | 155 (-12.3 %) | 181 (-15.6 %) ⚑ |
-| kevin-fuse | 0 | 50 (-16.9 %) | 113 (0 %) | 158 (+10.5 %) | 198 (+23.4 %) ⚑ | 169 (-4.4 %) | 269 (+25.4 %) ⚑ |
-| kevin-fuse | 1 | 50 (-16.9 %) | 105 (-6.8 %) | 127 (-10.9 %) | 167 (+4.2 %) | 181 (+2.3 %) | 250 (+16.4 %) ⚑ |
-| kevin-fuse | 2 | 50 (-16.9 %) | 147 (+30.5 %) ⚑ | 151 (+5.9 %) | 161 (0 %) | 169 (-4.1 %) | 229 (+6.5 %) |
-| kevin-hunt | 0 | 50 (-16.9 %) | 134 (+19 %) ⚑ | 148 (+3.7 %) | 160 (-0.4 %) | 176 (0 %) | 187 (-12.7 %) |
-| kevin-hunt | 1 | 50 (-16.9 %) | 120 (+6.1 %) | 136 (-4.8 %) | 154 (-4 %) | 155 (-12.4 %) | 185 (-14 %) |
-| kevin-hunt | 2 | 50 (-16.9 %) | 125 (+10.5 %) | 154 (+7.6 %) | 195 (+21.2 %) ⚑ | 207 (+17.6 %) ⚑ | 232 (+8.3 %) |
-| schorsch-flamme | 0 | 72 (+18.8 %) | 98 (-13.4 %) | 133 (-7 %) | 149 (-7.3 %) | 167 (-5.6 %) | 187 (-13 %) |
-| schorsch-flamme | 1 | 72 (+18.8 %) | 97 (-14.2 %) | 111 (-22.1 %) ⚑ | 137 (-15 %) | 144 (-18.6 %) ⚑ | 187 (-12.9 %) |
-| schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-10.2 %) | 150 (-6.4 %) | 174 (-1.5 %) | 202 (-6.1 %) |
-| kaethe-grand | 0 | 61 (+0.7 %) | 120 (+6.6 %) | 148 (+3.6 %) | 180 (+11.9 %) | 199 (+12.5 %) | 234 (+8.8 %) |
-| kaethe-grand | 1 | 61 (+0.7 %) | 97 (-13.7 %) | 110 (-23.3 %) ⚑ | 146 (-9.3 %) | 180 (+2.3 %) | 236 (+10 %) |
-| kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-5.7 %) | 163 (+1.7 %) | 202 (+14.6 %) | 270 (+25.8 %) ⚑ |
-| kaethe-falsch | 0 | 61 (+0.7 %) | 99 (-12.6 %) | 120 (-15.6 %) ⚑ | 142 (-11.5 %) | 153 (-13.2 %) | 186 (-13.3 %) |
-| kaethe-falsch | 1 | 61 (+0.7 %) | 95 (-15.7 %) ⚑ | 155 (+8.6 %) | 173 (+7.6 %) | 187 (+6 %) | 215 (0 %) |
-| kaethe-falsch | 2 | 61 (+0.7 %) | 103 (-8.4 %) | 146 (+2.5 %) | 179 (+11.5 %) | 192 (+8.6 %) | 228 (+6.4 %) |
+| dieter-brawl | 0 | 59 (-2.3 %) | 101 (-10.9 %) | 107 (-21.1 %) ⚑ | 125 (-22 %) ⚑ | 143 (-18.8 %) ⚑ | 181 (-15.5 %) ⚑ |
+| dieter-brawl | 1 | 59 (-2.3 %) | 114 (+1 %) | 149 (+9.6 %) | 187 (+16.9 %) ⚑ | 208 (+18.1 %) ⚑ | 246 (+14.6 %) |
+| dieter-brawl | 2 | 59 (-2.3 %) | 110 (-2.2 %) | 126 (-7.7 %) | 133 (-16.6 %) ⚑ | 159 (-9.9 %) | 189 (-11.7 %) |
+| baerbel-feedback | 0 | 61 (0 %) | 131 (+16.1 %) ⚑ | 145 (+6.7 %) | 148 (-7.3 %) | 158 (-10.7 %) | 165 (-23 %) ⚑ |
+| baerbel-feedback | 1 | 61 (0 %) | 146 (+28.9 %) ⚑ | 143 (+5 %) | 147 (-8.3 %) | 147 (-16.4 %) ⚑ | 168 (-21.7 %) ⚑ |
+| baerbel-feedback | 2 | 61 (0 %) | 153 (+35.3 %) ⚑ | 190 (+39.7 %) ⚑ | 194 (+21.6 %) ⚑ | 206 (+16.7 %) ⚑ | 222 (+3.5 %) |
+| baerbel-stage | 0 | 61 (0 %) | 111 (-2.1 %) | 135 (-0.7 %) | 170 (+6.4 %) | 181 (+2.5 %) | 220 (+2.4 %) |
+| baerbel-stage | 1 | 61 (0 %) | 127 (+12.1 %) | 154 (+13.2 %) | 174 (+8.6 %) | 193 (+9.6 %) | 215 (0 %) |
+| baerbel-stage | 2 | 61 (0 %) | 118 (+4.9 %) | 128 (-5.7 %) | 147 (-8.3 %) | 155 (-12.3 %) | 181 (-15.6 %) ⚑ |
+| kevin-fuse | 0 | 50 (-16.9 %) | 113 (0 %) | 155 (+13.8 %) | 177 (+10.4 %) | 168 (-4.8 %) | 246 (+14.8 %) |
+| kevin-fuse | 1 | 50 (-16.9 %) | 105 (-6.8 %) | 127 (-6.5 %) | 167 (+4.6 %) | 181 (+2.3 %) | 254 (+18.5 %) ⚑ |
+| kevin-fuse | 2 | 50 (-16.9 %) | 127 (+12.2 %) | 136 (-0.1 %) | 155 (-3 %) | 154 (-12.8 %) | 198 (-7.6 %) |
+| kevin-hunt | 0 | 50 (-16.9 %) | 134 (+19 %) ⚑ | 148 (+8.9 %) | 160 (0 %) | 176 (0 %) | 187 (-12.7 %) |
+| kevin-hunt | 1 | 50 (-16.9 %) | 120 (+6.1 %) | 136 (0 %) | 154 (-3.7 %) | 155 (-12.4 %) | 185 (-14 %) |
+| kevin-hunt | 2 | 50 (-16.9 %) | 125 (+10.5 %) | 154 (+13 %) | 195 (+21.6 %) ⚑ | 207 (+17.6 %) ⚑ | 232 (+8.3 %) |
+| schorsch-flamme | 0 | 72 (+18.8 %) | 98 (-13.4 %) | 133 (-2.4 %) | 149 (-6.9 %) | 167 (-5.6 %) | 187 (-13 %) |
+| schorsch-flamme | 1 | 72 (+18.8 %) | 97 (-14.2 %) | 111 (-18.2 %) ⚑ | 137 (-14.6 %) | 144 (-18.6 %) ⚑ | 187 (-12.9 %) |
+| schorsch-flamme | 2 | 72 (+18.8 %) | 101 (-10.7 %) | 128 (-5.7 %) | 150 (-6.1 %) | 174 (-1.5 %) | 202 (-6.1 %) |
+| kaethe-grand | 0 | 61 (+0.7 %) | 120 (+6.6 %) | 148 (+8.8 %) | 180 (+12.3 %) | 199 (+12.5 %) | 234 (+8.8 %) |
+| kaethe-grand | 1 | 61 (+0.7 %) | 97 (-13.7 %) | 110 (-19.4 %) ⚑ | 146 (-9 %) | 180 (+2.3 %) | 236 (+10 %) |
+| kaethe-grand | 2 | 61 (+0.7 %) | 105 (-6.9 %) | 135 (-1 %) | 163 (+2.1 %) | 202 (+14.6 %) | 270 (+25.8 %) ⚑ |
+| kaethe-falsch | 0 | 61 (+0.7 %) | 99 (-12.6 %) | 120 (-11.4 %) | 142 (-11.1 %) | 153 (-13.2 %) | 186 (-13.3 %) |
+| kaethe-falsch | 1 | 61 (+0.7 %) | 95 (-15.7 %) ⚑ | 155 (+14.1 %) | 173 (+8 %) | 187 (+6 %) | 215 (0 %) |
+| kaethe-falsch | 2 | 61 (+0.7 %) | 103 (-8.4 %) | 146 (+7.6 %) | 179 (+11.9 %) | 192 (+8.6 %) | 228 (+6.4 %) |
 
 ### Heilung · Heilung/s
 
@@ -76,30 +76,30 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 94 (-0.7 %) | 167 (-10.8 %) | 205 (-23.5 %) ⚑ | 265 (-26.2 %) ⚑ | 315 (-26.5 %) ⚑ | 449 (-23.1 %) ⚑ |
-| dieter-brawl | 1 | 94 (-0.7 %) | 197 (+5 %) | 264 (-1.3 %) | 369 (+3 %) | 429 (0 %) | 666 (+14.1 %) |
-| dieter-brawl | 2 | 94 (-0.7 %) | 186 (-0.7 %) | 243 (-9.2 %) | 305 (-14.8 %) | 393 (-8.2 %) | 499 (-14.6 %) |
-| baerbel-feedback | 0 | 98 (+3.3 %) | 221 (+17.7 %) ⚑ | 264 (-1.5 %) | 320 (-10.7 %) | 388 (-9.5 %) | 502 (-14.1 %) |
-| baerbel-feedback | 1 | 98 (+3.3 %) | 229 (+22.1 %) ⚑ | 275 (+2.8 %) | 312 (-13.1 %) | 395 (-7.8 %) | 509 (-12.8 %) |
-| baerbel-feedback | 2 | 98 (+3.3 %) | 248 (+32.3 %) ⚑ | 327 (+21.9 %) ⚑ | 370 (+3.2 %) | 446 (+4.1 %) | 584 (-0.1 %) |
-| baerbel-stage | 0 | 98 (+3.3 %) | 183 (-2.4 %) | 250 (-6.6 %) | 347 (-3.2 %) | 419 (-2.3 %) | 577 (-1.2 %) |
-| baerbel-stage | 1 | 98 (+3.3 %) | 203 (+8.2 %) | 301 (+12.3 %) | 400 (+11.5 %) | 447 (+4.2 %) | 604 (+3.5 %) |
-| baerbel-stage | 2 | 98 (+3.3 %) | 183 (-2.8 %) | 231 (-13.7 %) | 294 (-17.9 %) ⚑ | 349 (-18.7 %) ⚑ | 478 (-18.2 %) ⚑ |
-| kevin-fuse | 0 | 84 (-11.4 %) | 181 (-3.4 %) | 254 (-5 %) | 335 (-6.5 %) | 417 (-2.8 %) | 604 (+3.4 %) |
-| kevin-fuse | 1 | 84 (-11.4 %) | 162 (-13.6 %) | 244 (-9 %) | 363 (+1.2 %) | 480 (+12 %) | 656 (+12.3 %) |
-| kevin-fuse | 2 | 84 (-11.4 %) | 231 (+23.1 %) ⚑ | 292 (+9 %) | 360 (+0.5 %) | 418 (-2.5 %) | 627 (+7.4 %) |
-| kevin-hunt | 0 | 84 (-11.4 %) | 199 (+5.8 %) | 263 (-1.7 %) | 340 (-5 %) | 415 (-3.1 %) | 581 (-0.5 %) |
-| kevin-hunt | 1 | 84 (-11.4 %) | 192 (+2.3 %) | 252 (-5.9 %) | 334 (-6.9 %) | 402 (-6.2 %) | 538 (-7.8 %) |
-| kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.2 %) | 274 (+2.4 %) | 374 (+4.3 %) | 453 (+5.8 %) | 584 (0 %) |
-| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+15 %) ⚑ | 392 (+9.2 %) | 456 (+6.4 %) | 650 (+11.2 %) |
-| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.3 %) | 268 (0 %) | 359 (0 %) | 434 (+1.3 %) | 651 (+11.4 %) |
-| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 269 (+0.5 %) | 369 (+3 %) | 430 (+0.3 %) | 617 (+5.7 %) |
-| kaethe-grand | 0 | 95 (0 %) | 198 (+5.3 %) | 296 (+10.3 %) | 348 (-2.8 %) | 452 (+5.6 %) | 572 (-2.1 %) |
-| kaethe-grand | 1 | 95 (0 %) | 160 (-14.5 %) | 232 (-13.5 %) | 295 (-17.7 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
-| kaethe-grand | 2 | 95 (0 %) | 161 (-14.1 %) | 276 (+2.9 %) | 407 (+13.6 %) | 488 (+13.8 %) | 669 (+14.4 %) |
-| kaethe-falsch | 0 | 95 (0 %) | 173 (-8 %) | 241 (-10 %) | 321 (-10.4 %) | 366 (-14.6 %) | 514 (-12 %) |
-| kaethe-falsch | 1 | 95 (0 %) | 168 (-10.6 %) | 302 (+12.8 %) | 404 (+12.6 %) | 503 (+17.4 %) ⚑ | 604 (+3.5 %) |
-| kaethe-falsch | 2 | 95 (0 %) | 182 (-2.9 %) | 276 (+3.1 %) | 365 (+1.9 %) | 441 (+2.9 %) | 596 (+2.1 %) |
+| dieter-brawl | 0 | 94 (-0.7 %) | 167 (-10.8 %) | 205 (-23.5 %) ⚑ | 265 (-24.1 %) ⚑ | 315 (-26.5 %) ⚑ | 449 (-23 %) ⚑ |
+| dieter-brawl | 1 | 94 (-0.7 %) | 197 (+5 %) | 264 (-1.3 %) | 369 (+5.9 %) | 429 (0 %) | 666 (+14.2 %) |
+| dieter-brawl | 2 | 94 (-0.7 %) | 186 (-0.7 %) | 243 (-9.2 %) | 305 (-12.4 %) | 393 (-8.2 %) | 499 (-14.5 %) |
+| baerbel-feedback | 0 | 98 (+3.3 %) | 221 (+17.7 %) ⚑ | 264 (-1.5 %) | 320 (-8.2 %) | 388 (-9.5 %) | 502 (-14 %) |
+| baerbel-feedback | 1 | 98 (+3.3 %) | 229 (+22.1 %) ⚑ | 275 (+2.8 %) | 312 (-10.7 %) | 395 (-7.8 %) | 509 (-12.7 %) |
+| baerbel-feedback | 2 | 98 (+3.3 %) | 248 (+32.3 %) ⚑ | 327 (+21.9 %) ⚑ | 370 (+6.1 %) | 446 (+4.1 %) | 584 (0 %) |
+| baerbel-stage | 0 | 98 (+3.3 %) | 183 (-2.4 %) | 250 (-6.6 %) | 347 (-0.5 %) | 419 (-2.3 %) | 577 (-1.1 %) |
+| baerbel-stage | 1 | 98 (+3.3 %) | 203 (+8.2 %) | 301 (+12.3 %) | 400 (+14.6 %) | 447 (+4.2 %) | 604 (+3.5 %) |
+| baerbel-stage | 2 | 98 (+3.3 %) | 183 (-2.8 %) | 231 (-13.7 %) | 294 (-15.6 %) ⚑ | 349 (-18.7 %) ⚑ | 478 (-18.1 %) ⚑ |
+| kevin-fuse | 0 | 84 (-11.4 %) | 181 (-3.4 %) | 259 (-3.5 %) | 316 (-9.3 %) | 374 (-12.7 %) | 611 (+4.7 %) |
+| kevin-fuse | 1 | 84 (-11.4 %) | 162 (-13.6 %) | 244 (-9 %) | 363 (+4 %) | 480 (+12 %) | 672 (+15.1 %) ⚑ |
+| kevin-fuse | 2 | 84 (-11.4 %) | 191 (+1.7 %) | 271 (+1.2 %) | 349 (0 %) | 413 (-3.7 %) | 582 (-0.3 %) |
+| kevin-hunt | 0 | 84 (-11.4 %) | 199 (+5.8 %) | 263 (-1.7 %) | 340 (-2.4 %) | 415 (-3.1 %) | 581 (-0.4 %) |
+| kevin-hunt | 1 | 84 (-11.4 %) | 192 (+2.3 %) | 252 (-5.9 %) | 334 (-4.3 %) | 402 (-6.2 %) | 538 (-7.8 %) |
+| kevin-hunt | 2 | 84 (-11.4 %) | 199 (+6.2 %) | 274 (+2.4 %) | 374 (+7.2 %) | 453 (+5.8 %) | 584 (+0.1 %) |
+| schorsch-flamme | 0 | 114 (+19.9 %) | 188 (0 %) | 308 (+15 %) ⚑ | 392 (+12.3 %) | 456 (+6.4 %) | 650 (+11.3 %) |
+| schorsch-flamme | 1 | 114 (+19.9 %) | 185 (-1.3 %) | 268 (0 %) | 359 (+2.8 %) | 434 (+1.3 %) | 651 (+11.5 %) |
+| schorsch-flamme | 2 | 114 (+19.9 %) | 192 (+2.1 %) | 269 (+0.5 %) | 369 (+5.9 %) | 430 (+0.3 %) | 617 (+5.8 %) |
+| kaethe-grand | 0 | 95 (0 %) | 198 (+5.3 %) | 296 (+10.3 %) | 348 (-0.1 %) | 452 (+5.6 %) | 572 (-2.1 %) |
+| kaethe-grand | 1 | 95 (0 %) | 160 (-14.5 %) | 232 (-13.5 %) | 295 (-15.4 %) ⚑ | 390 (-8.9 %) | 569 (-2.5 %) |
+| kaethe-grand | 2 | 95 (0 %) | 161 (-14.1 %) | 276 (+2.9 %) | 407 (+16.8 %) ⚑ | 488 (+13.8 %) | 669 (+14.5 %) |
+| kaethe-falsch | 0 | 95 (0 %) | 173 (-8 %) | 241 (-10 %) | 321 (-7.9 %) | 366 (-14.6 %) | 514 (-11.9 %) |
+| kaethe-falsch | 1 | 95 (0 %) | 168 (-10.6 %) | 302 (+12.8 %) | 404 (+15.8 %) ⚑ | 503 (+17.4 %) ⚑ | 604 (+3.5 %) |
+| kaethe-falsch | 2 | 95 (0 %) | 182 (-2.9 %) | 276 (+3.1 %) | 365 (+4.8 %) | 441 (+2.9 %) | 596 (+2.1 %) |
 
 ### Heilung · Heilung/s
 
@@ -138,30 +138,30 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 111 (0 %) | 208 (-9.8 %) | 226 (-27.5 %) ⚑ | 312 (-27.5 %) ⚑ | 388 (-25.8 %) ⚑ | 536 (-21.7 %) ⚑ |
-| dieter-brawl | 1 | 111 (0 %) | 246 (+6.6 %) | 295 (-5.3 %) | 456 (+6.1 %) | 526 (+0.4 %) | 676 (-1.2 %) |
-| dieter-brawl | 2 | 111 (0 %) | 230 (0 %) | 287 (-7.8 %) | 354 (-17.6 %) ⚑ | 442 (-15.6 %) ⚑ | 607 (-11.3 %) |
-| baerbel-feedback | 0 | 113 (+1.3 %) | 273 (+18.4 %) ⚑ | 302 (-2.9 %) | 387 (-10 %) | 450 (-14 %) | 596 (-13 %) |
-| baerbel-feedback | 1 | 113 (+1.3 %) | 282 (+22.2 %) ⚑ | 314 (+1 %) | 397 (-7.6 %) | 438 (-16.3 %) ⚑ | 585 (-14.6 %) |
-| baerbel-feedback | 2 | 113 (+1.3 %) | 297 (+28.9 %) ⚑ | 362 (+16.3 %) ⚑ | 458 (+6.4 %) | 532 (+1.6 %) | 655 (-4.4 %) |
-| baerbel-stage | 0 | 113 (+1.3 %) | 218 (-5.6 %) | 294 (-5.4 %) | 399 (-7.3 %) | 476 (-9.1 %) | 656 (-4.2 %) |
-| baerbel-stage | 1 | 113 (+1.3 %) | 234 (+1.5 %) | 344 (+10.6 %) | 440 (+2.4 %) | 534 (+2 %) | 730 (+6.5 %) |
-| baerbel-stage | 2 | 113 (+1.3 %) | 214 (-7.3 %) | 284 (-8.8 %) | 344 (-20 %) ⚑ | 399 (-23.8 %) ⚑ | 579 (-15.4 %) ⚑ |
-| kevin-fuse | 0 | 98 (-12.5 %) | 207 (-10.2 %) | 272 (-12.6 %) | 376 (-12.6 %) | 446 (-14.8 %) | 719 (+5 %) |
-| kevin-fuse | 1 | 98 (-12.5 %) | 192 (-16.6 %) ⚑ | 291 (-6.4 %) | 424 (-1.3 %) | 513 (-2.1 %) | 760 (+11 %) |
-| kevin-fuse | 2 | 98 (-12.5 %) | 263 (+14.1 %) | 338 (+8.8 %) | 455 (+5.7 %) | 530 (+1.2 %) | 736 (+7.5 %) |
-| kevin-hunt | 0 | 98 (-12.5 %) | 243 (+5.4 %) | 311 (0 %) | 402 (-6.4 %) | 486 (-7.3 %) | 685 (0 %) |
-| kevin-hunt | 1 | 98 (-12.5 %) | 230 (0 %) | 295 (-5.1 %) | 411 (-4.5 %) | 485 (-7.4 %) | 641 (-6.4 %) |
-| kevin-hunt | 2 | 98 (-12.5 %) | 227 (-1.5 %) | 308 (-1.1 %) | 430 (0 %) | 516 (-1.4 %) | 667 (-2.6 %) |
-| schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3 %) | 340 (+9.3 %) | 478 (+11.2 %) | 563 (+7.5 %) | 737 (+7.5 %) |
-| schorsch-flamme | 1 | 127 (+14.3 %) | 236 (+2.2 %) | 314 (+0.8 %) | 459 (+6.8 %) | 537 (+2.6 %) | 791 (+15.4 %) ⚑ |
-| schorsch-flamme | 2 | 127 (+14.3 %) | 230 (-0.3 %) | 321 (+3.2 %) | 439 (+2.2 %) | 528 (+0.8 %) | 751 (+9.7 %) |
-| kaethe-grand | 0 | 101 (-9 %) | 237 (+2.7 %) | 337 (+8.5 %) | 432 (+0.5 %) | 561 (+7.1 %) | 724 (+5.8 %) |
-| kaethe-grand | 1 | 101 (-9 %) | 199 (-13.8 %) | 276 (-11.3 %) | 385 (-10.6 %) | 524 (0 %) | 676 (-1.3 %) |
-| kaethe-grand | 2 | 101 (-9 %) | 197 (-14.6 %) | 325 (+4.4 %) | 458 (+6.6 %) | 571 (+9 %) | 832 (+21.5 %) ⚑ |
-| kaethe-falsch | 0 | 101 (-9 %) | 205 (-11.1 %) | 276 (-11.4 %) | 402 (-6.6 %) | 456 (-12.9 %) | 604 (-11.8 %) |
-| kaethe-falsch | 1 | 101 (-9 %) | 212 (-7.9 %) | 354 (+13.8 %) | 498 (+15.7 %) ⚑ | 558 (+6.5 %) | 777 (+13.4 %) |
-| kaethe-falsch | 2 | 101 (-9 %) | 220 (-4.3 %) | 328 (+5.3 %) | 471 (+9.5 %) | 531 (+1.5 %) | 688 (+0.4 %) |
+| dieter-brawl | 0 | 111 (0 %) | 208 (-9.6 %) | 226 (-27.5 %) ⚑ | 312 (-27.5 %) ⚑ | 388 (-24.8 %) ⚑ | 536 (-21.1 %) ⚑ |
+| dieter-brawl | 1 | 111 (0 %) | 246 (+6.8 %) | 295 (-5.3 %) | 456 (+6.1 %) | 526 (+1.8 %) | 676 (-0.5 %) |
+| dieter-brawl | 2 | 111 (0 %) | 230 (+0.3 %) | 287 (-7.8 %) | 354 (-17.6 %) ⚑ | 442 (-14.5 %) | 607 (-10.7 %) |
+| baerbel-feedback | 0 | 113 (+1.3 %) | 273 (+18.7 %) ⚑ | 302 (-2.9 %) | 387 (-10 %) | 450 (-12.8 %) | 596 (-12.4 %) |
+| baerbel-feedback | 1 | 113 (+1.3 %) | 282 (+22.5 %) ⚑ | 314 (+1 %) | 397 (-7.6 %) | 438 (-15.1 %) ⚑ | 585 (-14 %) |
+| baerbel-feedback | 2 | 113 (+1.3 %) | 297 (+29.2 %) ⚑ | 362 (+16.3 %) ⚑ | 458 (+6.4 %) | 532 (+3 %) | 655 (-3.7 %) |
+| baerbel-stage | 0 | 113 (+1.3 %) | 218 (-5.3 %) | 294 (-5.4 %) | 399 (-7.3 %) | 476 (-7.9 %) | 656 (-3.5 %) |
+| baerbel-stage | 1 | 113 (+1.3 %) | 234 (+1.8 %) | 344 (+10.6 %) | 440 (+2.4 %) | 534 (+3.4 %) | 730 (+7.3 %) |
+| baerbel-stage | 2 | 113 (+1.3 %) | 214 (-7.1 %) | 284 (-8.8 %) | 344 (-20 %) ⚑ | 399 (-22.8 %) ⚑ | 579 (-14.8 %) |
+| kevin-fuse | 0 | 98 (-12.5 %) | 207 (-9.9 %) | 271 (-12.9 %) | 355 (-17.4 %) ⚑ | 433 (-16.2 %) ⚑ | 680 (0 %) |
+| kevin-fuse | 1 | 98 (-12.5 %) | 192 (-16.4 %) ⚑ | 291 (-6.4 %) | 424 (-1.3 %) | 513 (-0.7 %) | 760 (+11.8 %) |
+| kevin-fuse | 2 | 98 (-12.5 %) | 224 (-2.6 %) | 315 (+1.2 %) | 433 (+0.8 %) | 507 (-1.9 %) | 726 (+6.8 %) |
+| kevin-hunt | 0 | 98 (-12.5 %) | 243 (+5.7 %) | 311 (0 %) | 402 (-6.4 %) | 486 (-6 %) | 685 (+0.7 %) |
+| kevin-hunt | 1 | 98 (-12.5 %) | 230 (+0.3 %) | 295 (-5.1 %) | 411 (-4.5 %) | 485 (-6.1 %) | 641 (-5.7 %) |
+| kevin-hunt | 2 | 98 (-12.5 %) | 227 (-1.2 %) | 308 (-1.1 %) | 430 (0 %) | 516 (0 %) | 667 (-1.9 %) |
+| schorsch-flamme | 0 | 127 (+14.3 %) | 237 (+3.2 %) | 340 (+9.3 %) | 478 (+11.2 %) | 563 (+9 %) | 737 (+8.3 %) |
+| schorsch-flamme | 1 | 127 (+14.3 %) | 236 (+2.5 %) | 314 (+0.8 %) | 459 (+6.8 %) | 537 (+4 %) | 791 (+16.3 %) ⚑ |
+| schorsch-flamme | 2 | 127 (+14.3 %) | 230 (0 %) | 321 (+3.2 %) | 439 (+2.2 %) | 528 (+2.2 %) | 751 (+10.5 %) |
+| kaethe-grand | 0 | 101 (-9 %) | 237 (+3 %) | 337 (+8.5 %) | 432 (+0.5 %) | 561 (+8.6 %) | 724 (+6.5 %) |
+| kaethe-grand | 1 | 101 (-9 %) | 199 (-13.6 %) | 276 (-11.3 %) | 385 (-10.6 %) | 524 (+1.4 %) | 676 (-0.6 %) |
+| kaethe-grand | 2 | 101 (-9 %) | 197 (-14.4 %) | 325 (+4.4 %) | 458 (+6.6 %) | 571 (+10.5 %) | 832 (+22.4 %) ⚑ |
+| kaethe-falsch | 0 | 101 (-9 %) | 205 (-10.9 %) | 276 (-11.4 %) | 402 (-6.6 %) | 456 (-11.7 %) | 604 (-11.2 %) |
+| kaethe-falsch | 1 | 101 (-9 %) | 212 (-7.7 %) | 354 (+13.8 %) | 498 (+15.7 %) ⚑ | 558 (+8 %) | 777 (+14.2 %) |
+| kaethe-falsch | 2 | 101 (-9 %) | 220 (-4.1 %) | 328 (+5.3 %) | 471 (+9.5 %) | 531 (+2.9 %) | 688 (+1.1 %) |
 
 ### Heilung · Heilung/s
 
@@ -200,30 +200,30 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 | Spezialisierung | Pfad | Stufe 1 | Stufe 5 | Stufe 10 | Stufe 15 | Stufe 20 | Stufe 30 |
 |---|---|---:|---:|---:|---:|---:|---:|
-| dieter-brawl | 0 | 146 (+0.8 %) | 229 (-11.6 %) | 294 (-21.2 %) ⚑ | 383 (-25.7 %) ⚑ | 461 (-24.4 %) ⚑ | 639 (-21.1 %) ⚑ |
-| dieter-brawl | 1 | 146 (+0.8 %) | 255 (-1.4 %) | 376 (+0.7 %) | 527 (+2.2 %) | 648 (+6.3 %) | 851 (+5.1 %) |
-| dieter-brawl | 2 | 146 (+0.8 %) | 256 (-1.1 %) | 316 (-15.2 %) ⚑ | 406 (-21.2 %) ⚑ | 525 (-13.9 %) | 648 (-20 %) ⚑ |
-| baerbel-feedback | 0 | 145 (0 %) | 297 (+14.8 %) | 362 (-3 %) | 484 (-6.2 %) | 544 (-10.8 %) | 731 (-9.8 %) |
-| baerbel-feedback | 1 | 145 (0 %) | 328 (+26.7 %) ⚑ | 371 (-0.4 %) | 481 (-6.9 %) | 528 (-13.3 %) | 741 (-8.6 %) |
-| baerbel-feedback | 2 | 145 (0 %) | 329 (+26.9 %) ⚑ | 440 (+18 %) ⚑ | 603 (+16.9 %) ⚑ | 661 (+8.6 %) | 806 (-0.5 %) |
-| baerbel-stage | 0 | 145 (0 %) | 259 (0 %) | 319 (-14.4 %) | 466 (-9.6 %) | 541 (-11.2 %) | 755 (-6.8 %) |
-| baerbel-stage | 1 | 145 (0 %) | 278 (+7.4 %) | 391 (+4.9 %) | 546 (+5.8 %) | 663 (+8.7 %) | 861 (+6.3 %) |
-| baerbel-stage | 2 | 145 (0 %) | 259 (+0.1 %) | 309 (-17.1 %) ⚑ | 434 (-15.9 %) ⚑ | 507 (-16.7 %) ⚑ | 745 (-8.1 %) |
-| kevin-fuse | 0 | 129 (-10.7 %) | 242 (-6.6 %) | 322 (-13.7 %) | 435 (-15.8 %) ⚑ | 493 (-19.1 %) ⚑ | 777 (-4.1 %) |
-| kevin-fuse | 1 | 129 (-10.7 %) | 224 (-13.6 %) | 322 (-13.6 %) | 516 (0 %) | 601 (-1.4 %) | 899 (+11 %) |
-| kevin-fuse | 2 | 129 (-10.7 %) | 291 (+12.4 %) | 389 (+4.4 %) | 558 (+8.2 %) | 602 (-1.1 %) | 919 (+13.4 %) |
-| kevin-hunt | 0 | 129 (-10.7 %) | 257 (-0.6 %) | 382 (+2.5 %) | 486 (-5.9 %) | 609 (0 %) | 795 (-1.8 %) |
-| kevin-hunt | 1 | 129 (-10.7 %) | 248 (-4 %) | 345 (-7.5 %) | 456 (-11.6 %) | 557 (-8.7 %) | 763 (-5.8 %) |
-| kevin-hunt | 2 | 129 (-10.7 %) | 268 (+3.4 %) | 379 (+1.6 %) | 505 (-2.1 %) | 626 (+2.8 %) | 810 (0 %) |
-| schorsch-flamme | 0 | 152 (+5.2 %) | 286 (+10.5 %) | 421 (+12.8 %) | 604 (+17 %) ⚑ | 716 (+17.5 %) ⚑ | 984 (+21.4 %) ⚑ |
-| schorsch-flamme | 1 | 152 (+5.2 %) | 274 (+6 %) | 364 (-2.3 %) | 560 (+8.5 %) | 676 (+11 %) | 960 (+18.6 %) ⚑ |
-| schorsch-flamme | 2 | 152 (+5.2 %) | 274 (+6 %) | 376 (+0.9 %) | 534 (+3.6 %) | 658 (+7.9 %) | 909 (+12.2 %) |
-| kaethe-grand | 0 | 125 (-13.5 %) | 268 (+3.6 %) | 400 (+7.1 %) | 553 (+7.1 %) | 674 (+10.7 %) | 992 (+22.5 %) ⚑ |
-| kaethe-grand | 1 | 125 (-13.5 %) | 239 (-7.7 %) | 326 (-12.6 %) | 460 (-10.9 %) | 582 (-4.4 %) | 797 (-1.7 %) |
-| kaethe-grand | 2 | 125 (-13.5 %) | 234 (-9.7 %) | 373 (0 %) | 575 (+11.5 %) | 704 (+15.5 %) ⚑ | 1004 (+23.9 %) ⚑ |
-| kaethe-falsch | 0 | 125 (-13.5 %) | 240 (-7.2 %) | 345 (-7.5 %) | 483 (-6.3 %) | 539 (-11.5 %) | 738 (-8.9 %) |
-| kaethe-falsch | 1 | 125 (-13.5 %) | 237 (-8.5 %) | 451 (+20.8 %) ⚑ | 557 (+8 %) | 693 (+13.7 %) | 997 (+23 %) ⚑ |
-| kaethe-falsch | 2 | 125 (-13.5 %) | 249 (-3.7 %) | 403 (+8 %) | 544 (+5.5 %) | 663 (+8.8 %) | 903 (+11.5 %) |
+| dieter-brawl | 0 | 146 (+0.8 %) | 229 (-11.1 %) | 294 (-21.2 %) ⚑ | 383 (-25.7 %) ⚑ | 461 (-24.4 %) ⚑ | 639 (-21.1 %) ⚑ |
+| dieter-brawl | 1 | 146 (+0.8 %) | 255 (-0.8 %) | 376 (+0.7 %) | 527 (+2.2 %) | 648 (+6.3 %) | 851 (+5.1 %) |
+| dieter-brawl | 2 | 146 (+0.8 %) | 256 (-0.5 %) | 316 (-15.2 %) ⚑ | 406 (-21.2 %) ⚑ | 525 (-13.9 %) | 648 (-20 %) ⚑ |
+| baerbel-feedback | 0 | 145 (0 %) | 297 (+15.4 %) ⚑ | 362 (-3 %) | 484 (-6.2 %) | 544 (-10.8 %) | 731 (-9.8 %) |
+| baerbel-feedback | 1 | 145 (0 %) | 328 (+27.4 %) ⚑ | 371 (-0.4 %) | 481 (-6.9 %) | 528 (-13.3 %) | 741 (-8.6 %) |
+| baerbel-feedback | 2 | 145 (0 %) | 329 (+27.7 %) ⚑ | 440 (+18 %) ⚑ | 603 (+16.9 %) ⚑ | 661 (+8.6 %) | 806 (-0.5 %) |
+| baerbel-stage | 0 | 145 (0 %) | 259 (+0.6 %) | 319 (-14.4 %) | 466 (-9.6 %) | 541 (-11.2 %) | 755 (-6.8 %) |
+| baerbel-stage | 1 | 145 (0 %) | 278 (+8 %) | 391 (+4.9 %) | 546 (+5.8 %) | 663 (+8.7 %) | 861 (+6.3 %) |
+| baerbel-stage | 2 | 145 (0 %) | 259 (+0.7 %) | 309 (-17.1 %) ⚑ | 434 (-15.9 %) ⚑ | 507 (-16.7 %) ⚑ | 745 (-8.1 %) |
+| kevin-fuse | 0 | 129 (-10.7 %) | 242 (-6 %) | 317 (-15.1 %) ⚑ | 430 (-16.7 %) ⚑ | 510 (-16.2 %) ⚑ | 786 (-2.9 %) |
+| kevin-fuse | 1 | 129 (-10.7 %) | 224 (-13.1 %) | 322 (-13.6 %) | 516 (0 %) | 601 (-1.4 %) | 899 (+11 %) |
+| kevin-fuse | 2 | 129 (-10.7 %) | 254 (-1.4 %) | 393 (+5.5 %) | 567 (+9.8 %) | 593 (-2.6 %) | 860 (+6.2 %) |
+| kevin-hunt | 0 | 129 (-10.7 %) | 257 (0 %) | 382 (+2.5 %) | 486 (-5.9 %) | 609 (0 %) | 795 (-1.8 %) |
+| kevin-hunt | 1 | 129 (-10.7 %) | 248 (-3.5 %) | 345 (-7.5 %) | 456 (-11.6 %) | 557 (-8.7 %) | 763 (-5.8 %) |
+| kevin-hunt | 2 | 129 (-10.7 %) | 268 (+4 %) | 379 (+1.6 %) | 505 (-2.1 %) | 626 (+2.8 %) | 810 (0 %) |
+| schorsch-flamme | 0 | 152 (+5.2 %) | 286 (+11.1 %) | 421 (+12.8 %) | 604 (+17 %) ⚑ | 716 (+17.5 %) ⚑ | 984 (+21.4 %) ⚑ |
+| schorsch-flamme | 1 | 152 (+5.2 %) | 274 (+6.6 %) | 364 (-2.3 %) | 560 (+8.5 %) | 676 (+11 %) | 960 (+18.6 %) ⚑ |
+| schorsch-flamme | 2 | 152 (+5.2 %) | 274 (+6.6 %) | 376 (+0.9 %) | 534 (+3.6 %) | 658 (+7.9 %) | 909 (+12.2 %) |
+| kaethe-grand | 0 | 125 (-13.5 %) | 268 (+4.2 %) | 400 (+7.1 %) | 553 (+7.1 %) | 674 (+10.7 %) | 992 (+22.5 %) ⚑ |
+| kaethe-grand | 1 | 125 (-13.5 %) | 239 (-7.1 %) | 326 (-12.6 %) | 460 (-10.9 %) | 582 (-4.4 %) | 797 (-1.7 %) |
+| kaethe-grand | 2 | 125 (-13.5 %) | 234 (-9.1 %) | 373 (0 %) | 575 (+11.5 %) | 704 (+15.5 %) ⚑ | 1004 (+23.9 %) ⚑ |
+| kaethe-falsch | 0 | 125 (-13.5 %) | 240 (-6.7 %) | 345 (-7.5 %) | 483 (-6.3 %) | 539 (-11.5 %) | 738 (-8.9 %) |
+| kaethe-falsch | 1 | 125 (-13.5 %) | 237 (-7.9 %) | 451 (+20.8 %) ⚑ | 557 (+8 %) | 693 (+13.7 %) | 997 (+23 %) ⚑ |
+| kaethe-falsch | 2 | 125 (-13.5 %) | 249 (-3.1 %) | 403 (+8 %) | 544 (+5.5 %) | 663 (+8.8 %) | 903 (+11.5 %) |
 
 ### Heilung · Heilung/s
 
@@ -546,13 +546,13 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Viral bis zur Feldflur +1.3 % · Erst pflegen, dann posten 0 % · Story-Wechsel 0 % · Unsichtbarer Schnitt 0 % · Frisch geföhnt 0 % · Live-Schalte 0 % · Sprungschnitt 0 % · Langzeitbelichtung 0 % · Dauerbeschallung 0 % · Perfekter Upload -0.5 % · Bühnenfunke -0.7 % · Selfie im Gehen gebunden · Nächste Szene gebunden
 
-### kevin-fuse · Pfad 0 · Stufe 10 ·272 Schaden/s · Ausrüstung +72.3 % gegenüber Startausrüstung
+### kevin-fuse · Pfad 0 · Stufe 10 ·271 Schaden/s · Ausrüstung +75.3 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.2 Schaden/s · Taktgefühl -1.4 Schaden/s · Bastelgrips -0.4 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.2 Schaden/s · Taktgefühl -1.3 Schaden/s · Bastelgrips -0.4 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Restmüll mit Zündschnur 34 % · Kurzschluss 23.4 % · Kurzschluss 13.4 % · Pfandgeschoss 12.5 % · Autoangriff · Pfand im Takt 6.9 % · Lunte 6 % · Lunte 3.7 %
+**Kniffe (Anteil am Schaden):** Restmüll mit Zündschnur 34 % · Kurzschluss 23.9 % · Kurzschluss 13.9 % · Pfandgeschoss 12.5 % · Autoangriff · Pfand im Takt 6.9 % · Lunte 5 % · Lunte 3.7 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Ausgebrannt +3.9 % · Rücklaufdruck 0 % · Heißer Kleber -3.7 % · Brennender Nachlauf gebunden · Zündfunke gebunden · Dicke Lunte gebunden · Pfandsammler gebunden · Lunte springt gebunden · Sparflamme gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Ausgebrannt +3.6 % · Rücklaufdruck 0 % · Heißer Kleber -3.1 % · Brennender Nachlauf gebunden · Zündfunke gebunden · Dicke Lunte gebunden · Pfandsammler gebunden · Lunte springt gebunden · Sparflamme gebunden
 
 ### kevin-fuse · Pfad 1 · Stufe 10 ·291 Schaden/s · Ausrüstung +129.1 % gegenüber Startausrüstung
 
@@ -562,21 +562,21 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Serienschaltung +0.3 % · Überbrückt +0.2 % · Doppelte Sicherung 0 % · Blanker Draht gebunden · Kupferkern gebunden · Rückstrom gebunden · Schnellverkabelt gebunden · Erdschluss gebunden · Kurzschluss gebunden
 
-### kevin-fuse · Pfad 2 · Stufe 10 ·338 Schaden/s · Ausrüstung +123.8 % gegenüber Startausrüstung
+### kevin-fuse · Pfad 2 · Stufe 10 ·315 Schaden/s · Ausrüstung +131.7 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.5 Schaden/s · 0.1 verhindert/s · Taktgefühl 0.6 Schaden/s · 0.1 verhindert/s · Bastelgrips -0.7 Schaden/s · 0.2 verhindert/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 1.8 Schaden/s · Taktgefühl 1.2 Schaden/s · Bastelgrips -0.7 Schaden/s · 0.1 verhindert/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Kurzschluss 28.8 % · Kurzschluss 28.6 % · Restmüll mit Zündschnur 19.5 % · Lunte 7.9 % · Lunte 6.4 % · Autoangriff · Pfand im Takt 5.1 % · Kettenzündung 3.7 %
+**Kniffe (Anteil am Schaden):** Kurzschluss 34.2 % · Kurzschluss 31.7 % · Restmüll mit Zündschnur 15.4 % · Lunte 6.6 % · Lunte 6.1 % · Autoangriff · Pfand im Takt 4.7 % · Kettenzündung 1.2 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nachzünder +3.2 % · Lange Zündschnur +3.2 % · Glühender Draht 0 % · Zündliste gebunden · Starkstrom-Bon gebunden · Kleber für alle gebunden · Funkenüberschlag gebunden · Kettenzündung gebunden · Zündleitung gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Nachzünder +12.6 % · Glühender Draht 0 % · Lange Zündschnur -1.7 % · Zündliste gebunden · Starkstrom-Bon gebunden · Kleber für alle gebunden · Funkenüberschlag gebunden · Kettenzündung gebunden · Zündleitung gebunden
 
-### kevin-fuse · Pfad 0 · Stufe 20 ·446 Schaden/s · Ausrüstung +164.6 % gegenüber Startausrüstung
+### kevin-fuse · Pfad 0 · Stufe 20 ·433 Schaden/s · Ausrüstung +157.6 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2 Schaden/s · Taktgefühl 0.4 Schaden/s · Bastelgrips -0.5 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms -0.1 Schaden/s · Taktgefühl 1.8 Schaden/s · Bastelgrips -0.5 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Restmüll mit Zündschnur 33.6 % · Kurzschluss 22.1 % · Kurzschluss 18.2 % · Pfandgeschoss 12.1 % · Autoangriff · Pfand im Takt 7.1 % · Lunte 4.1 % · Lunte 2.8 %
+**Kniffe (Anteil am Schaden):** Restmüll mit Zündschnur 33.5 % · Kurzschluss 22.4 % · Kurzschluss 18.2 % · Pfandgeschoss 12.4 % · Autoangriff · Pfand im Takt 7 % · Lunte 3.7 % · Lunte 2.8 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Ausgebrannt +5.9 % · Alles auf die Lunte +3.5 % · Zündfunke +2.4 % · Zündliste +1.8 % · Kupferkern +0.8 % · Sparflamme +0.4 % · Dicke Lunte +0.1 % · Pfandsammler 0 % · Lunte springt 0 % · Rücklaufdruck 0 % · Blanker Draht 0 % · Brennender Nachlauf gebunden · Heißer Kleber gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Dicke Lunte +2.7 % · Zündliste +1.9 % · Ausgebrannt +0.8 % · Sparflamme +0.4 % · Pfandsammler 0 % · Lunte springt 0 % · Rücklaufdruck 0 % · Blanker Draht 0 % · Zündfunke -0.1 % · Alles auf die Lunte -0.3 % · Kupferkern -5.7 % · Brennender Nachlauf gebunden · Heißer Kleber gebunden
 
 ### kevin-fuse · Pfad 1 · Stufe 20 ·513 Schaden/s · Ausrüstung +184 % gegenüber Startausrüstung
 
@@ -586,13 +586,13 @@ Jede Rolle misst sich an ihrer Kennzahl: **Schaden** → Schaden/s, **Heilung** 
 
 **Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Kurzschluss +16.9 % · Brennender Nachlauf +7.3 % · Nullwiderstand +4.9 % · Rückstrom +4.1 % · Überbrückt +2.5 % · Kupferkern +2.2 % · Zündliste +0.6 % · Schnellverkabelt 0 % · Erdschluss 0 % · Serienschaltung 0 % · Zündfunke -1.2 % · Blanker Draht gebunden · Doppelte Sicherung gebunden
 
-### kevin-fuse · Pfad 2 · Stufe 20 ·530 Schaden/s · Ausrüstung +213.1 % gegenüber Startausrüstung
+### kevin-fuse · Pfad 2 · Stufe 20 ·507 Schaden/s · Ausrüstung +229.6 % gegenüber Startausrüstung
 
-**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 2.8 Schaden/s · -0.1 verhindert/s · Taktgefühl 0.8 Schaden/s · Bastelgrips -0.2 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
+**Wert je Punkt:** Standfestigkeit 0 Schaden/s · Wumms 3.2 Schaden/s · Taktgefühl 0.9 Schaden/s · Bastelgrips -0.3 Schaden/s · Dicke Haut 0 Schaden/s · 0.1 verhindert/s
 
-**Kniffe (Anteil am Schaden):** Kurzschluss 33.5 % · Kurzschluss 31.8 % · Restmüll mit Zündschnur 21.2 % · Lunte 6.1 % · Lunte 3.8 % · Autoangriff · Pfand im Takt 3.7 %
+**Kniffe (Anteil am Schaden):** Kurzschluss 31.5 % · Kurzschluss 27.3 % · Restmüll mit Zündschnur 25.5 % · Lunte 4.7 % · Autoangriff · Pfand im Takt 4 % · Lunte 3.7 % · Pfandgeschoss 2.1 % · Kettenzündung 1.2 %
 
-**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Brennender Nachlauf +16.8 % · Kleber für alle +11.4 % · Funkenüberschlag +8.8 % · Nachzünder +5.3 % · Kettenreaktion +3.7 % · Zündfunke +3.7 % · Starkstrom-Bon +0.6 % · Zündleitung 0 % · Lange Zündschnur 0 % · Blanker Draht 0 % · Kettenzündung -2.8 % · Zündliste gebunden · Glühender Draht gebunden
+**Talente (Schaden mit gegenüber ohne dieses Talent; gebunden = andere bauen darauf auf):** Kleber für alle +20.7 % · Nachzünder +14.5 % · Funkenüberschlag +9.5 % · Brennender Nachlauf +9 % · Lange Zündschnur +7 % · Zündfunke +2.6 % · Kettenzündung +1.2 % · Starkstrom-Bon +0.4 % · Kettenreaktion +0.4 % · Zündleitung 0 % · Blanker Draht 0 % · Zündliste gebunden · Glühender Draht gebunden
 
 ### kevin-iron · Pfad 0 · Stufe 10 ·264 Schaden/s · Ausrüstung +99.2 % gegenüber Startausrüstung
 
