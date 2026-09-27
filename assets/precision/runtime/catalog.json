@@ -65427,6 +65427,58 @@
       "hash": "38bebd93b96ba54014d93bbcd981fa2c10ce0b494f959636afb5dce462af603b",
       "revision": "precision-v1"
     },
+    "grillschuerze": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/grillschuerze.png",
+      "sourceHash": "10f07f568a21420a66620ac5bf37daa276a01ff0c25d86c2ac4877cc7a3a9acf",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/grillschuerze.png",
+      "width": 64,
+      "height": 64,
+      "hash": "10f07f568a21420a66620ac5bf37daa276a01ff0c25d86c2ac4877cc7a3a9acf",
+      "revision": "precision-v1"
+    },
+    "kaethebrille": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kaethebrille.png",
+      "sourceHash": "c3d01f6596317ea5f5fc618b45bfc2542512f6821d5a7b275f0bf6661abbd8c6",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kaethebrille.png",
+      "width": 64,
+      "height": 64,
+      "hash": "c3d01f6596317ea5f5fc618b45bfc2542512f6821d5a7b275f0bf6661abbd8c6",
+      "revision": "precision-v1"
+    },
+    "kaethestrickjacke": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kaethestrickjacke.png",
+      "sourceHash": "72ba6a39687738e089efbaf4364d4ab331a0f82070df9f26205384c10052b4e5",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kaethestrickjacke.png",
+      "width": 64,
+      "height": 64,
+      "hash": "72ba6a39687738e089efbaf4364d4ab331a0f82070df9f26205384c10052b4e5",
+      "revision": "precision-v1"
+    },
+    "schorschmuetze": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/schorschmuetze.png",
+      "sourceHash": "03ecb168d141a4648c93390884b5ab72c839106dcac39d3dbc53c61b0fabf9b0",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/schorschmuetze.png",
+      "width": 64,
+      "height": 64,
+      "hash": "03ecb168d141a4648c93390884b5ab72c839106dcac39d3dbc53c61b0fabf9b0",
+      "revision": "precision-v1"
+    },
     "bierbong": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/bierbong.png",
