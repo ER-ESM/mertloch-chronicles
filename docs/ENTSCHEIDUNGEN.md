@@ -1391,3 +1391,56 @@ Balance-Sheet und Balance-Bericht nutzen nur gewürfelte Ausrüstung, die Waffen
 - Der Glutbrand tickt jetzt in `tickClass`, vorher nur am Grill. Dasselbe gilt für die Flammen-Darstellung.
 - `damage()` bekommt den Waffenplatz des Autoangriffs als vierten Wert.
 - Neue Tests: `tests/waffeneffekte.test.mjs` prüft je Wirkung Auslösung, Wirkung, Abklingzeit oder Zähler, keine Wirkung ohne angelegte Waffe, tickAuto, Tooltip und Spielstand. `tests/waffen-2026-09.test.mjs` erwartet jetzt die Waffenwirkung.
+
+## E-76 · Leistung V: Handy – gemessen wird die Hauptfaden-Zeit je Bild, das HUD liest vor dem Schreiben, :has() am body wird zur Klasse (27.09.2026, ergänzt E-46–E-50 und E-69)
+
+**Anlass.** Nutzer: Auf einem Android-Handy mit Chrome ist das Spiel selbst auf den niedrigsten Einstellungen nicht durchgehend flüssig, am meisten beim Laufen und im Kampf.
+
+**Messweg.** `scripts/perf-handy.mjs` stellt ein Mittelklasse-Android nach: Querformat 915 × 412, Gerätepixel 2,625, Touch, Android-UA, CPU 4× (6× als ungünstiger Fall) gedrosselt, Grafik „Niedrig“, Stufe 20. Canvas ist beschleunigt (SwiftShader als GPU, `?render=gpu`), damit Stellen auffallen, an denen der Hauptfaden auf die Grafikkarte wartet. Drei Szenen per Skript: Stillstand, Laufen mit Joystick durchs Dorf aufs Feld, Kampf gegen 4 Keiler mit Söldner. Maßstab ist die **Hauptfaden-Zeit je Bild** aus dem Chrome-Trace, nicht die FPS. Raster und Compositor sind ohne echte Grafikkarte überzeichnet und stehen nur getrennt im Bericht. `--ab=<alter Stand>` vergleicht zwei Fassungen im Wechsel. `?perf=segments` bzw. `window.mertloch.segments()` zeigt die Abschnittszeiten in `frame()`. Berichte: `docs/perf-handy-2026-09-27/vorher.md`, `nachher.md`.
+
+**Befund (vorher, 4×).** 80–137 ms Hauptfaden je Bild, praktisch jedes Bild über 50 ms. Ursachen:
+- Stil: 12–48 ms je Bild, 250–600 Elemente, bis zu 6 erzwungene Durchgänge. Das HUD las Geometrie zwischen seinen Schreibvorgängen. Auf Android erzwingt schon das Lesen von `innerWidth`/`innerHeight` ein Layout. Außerdem schrieb das HUD gleiche Werte neu, und 62 Regeln der Form `body/.touch-mode:has(…)` machten jede DOM-Änderung teuer.
+- Flush: Der Belag der Bude war ein Muster aus einem `<img>`. Das zwang Chrome bei jedem `fillRect`, auf den GPU-Prozess zu warten.
+- Zeichenbefehle: ~950 je Bild allein für die Wände und Böden der Bude.
+- Beim Laufen: GC-Pausen bis 125 ms und Bodenstücke im Bildtakt.
+- Wiederkehrende Kleinbaustellen: Leinwände für Wegmarke und Kampftext wurden jedes Mal neu angelegt, Sprites auf GPU-Leinwänden zurückgelesen.
+
+**Entschieden.**
+1. **Lesen vor Schreiben** (`layout-phase.js`): `runLayoutPhase()` läuft am Anfang von `frame()` und bündelt dort alle Geometrie-Abfragen: Truppenrahmen, Aurenleisten, Erinnerungskarte, HUD-Flächen der Beschriftungen und Rechtecke für Schadenszahlen und Verfolgung. `viewport()` ersetzt `innerWidth/innerHeight` im Takt, `cssSize()` (ResizeObserver) ersetzt `clientWidth/Height` (Ressourcenleiste, Beschriftungsebene, HUD-Editor, Minikarte). Positionen folgen mit höchstens einem Bild Verzug.
+2. **Nur schreiben, was sich ändert** (`dom-write.js`): gilt für die Texte, `hidden`- und aria-Werte in `updateUI`, `mobile-controls`, Truppen- und Heldenrahmen. Die Ortszeile wird einmal geschrieben, der Kampftipp einmal fertig berechnet. Die ausgeblendete Desktop-Aktionsleiste bleibt am Handy unberührt.
+3. **`:has()` am body als Klassen** (`has-state.js`): 16 Bedingungen werden je DOM-Änderung per `querySelector` geprüft und als `hs-*`-Klasse an `<body>` bzw. `<html>` gesetzt; 70 Selektoren in 12 CSS-Dateien fragen die Klasse statt `:has()`. Die Bedingungen bleiben dieselben, ebenso das Aussehen. Beim Öffnen und Schließen von Fenstern gleicht `popup-windows.js` die Klassen sofort ab, damit das Einpassen schon mit ihnen misst. Neue Regeln der Form `body:has(…)` bitte ebenso als Klasse anlegen.
+4. **Keine Bild-Muster auf der Weltfläche**: Muster kommen aus einer Leinwand-Kopie (`kit-art.js`).
+5. **Bude als Zwischenbild** (`layer-cache.js`): Voll sichtbare Wände und Böden im Ruhezustand werden einmal in Zieldichte gezeichnet und danach nur noch 1:1 auf ganze Gerätepixel kopiert. Bewegtes wird weiter direkt gezeichnet: Bildfolgen, Pfützenglanz, Lichterketten. Beim Überblenden oder bei krummer Transformation wird alles wie bisher direkt gezeichnet. Das Ergebnis ist optisch gleich, aber nicht bitgleich: 1,7 % der Pixel weichen um 1–2 Stufen ab, 0,1 % um mehr (Wandbilder auf halben Texeln).
+6. **Weniger Müll beim Laufen**: Das dringende Bodenstück wird ohne Kandidatenliste gewählt. Masken kommen aus einem Leinwandvorrat (Boden bitgleich). `World.blocked` arbeitet ohne `nearby()`-Set. Die Kontur der Anziehpuppe wird in einem Durchgang berechnet (`paperdoll-shrink.js`, bitgleich).
+7. **Kleinbaustellen**: Wegmarke und Verfolgung behalten Leinwand bzw. Teilbaum und tauschen nur Entfernungen. Kampftext läuft im Bildtakt ab statt per Timer und nimmt Symbol-Leinwände aus einem Vorrat. Sprites (Props, Häuser) werden auf Hauptspeicher-Leinwänden normalisiert (kein GPU-Rücklesen). Das Verkleinern rechnet dann Chromes Hauptspeicher-Weg wie ohne Grafikkarte: optisch gleich, einzelne Pixel weichen ab (an der Bodentextur gemessen: im Mittel 2, höchstens 21 Farbstufen – deshalb bleibt der Boden beim alten Weg). Das Schild misst seine Breite einmal.
+8. **Nur bei „Niedriger Auflösung“** (Touch-Standard, E-69): höchstens ein neues Figurenbild je Bild statt zwei (`paperdollBudget`). Eine Figur hält dann höchstens ein Bild länger ihre letzte Haltung, dafür ruckelt das Bild nicht. Übrige Lauf- und Atembilder derselben Richtung werden im Leerlauf vorbereitet.
+
+**Ergebnis (4×, je 40 s, Wechselmessung).** Hauptfaden je Bild p50/p95:
+- Stillstand: 80/107 → 34/57 ms
+- Laufen: 102/174 → 50/104 ms
+- Kampf: 137/185 → 67/112 ms
+
+Bei 6× Stillstand 166/210 → 55/90, Laufen 137/190 → 59/101, Kampf 222/300 → 55/115 ms. Der Stil fällt im Kampf von 48 auf 5 ms je Bild, die DOM-Änderungen im Stillstand von 28 auf 1,5. FPS am Messplatz 4×: 13 → 29, 10 → 17, 7 → 15.
+
+**Nicht erreicht: p95 ≤ 16,7 ms bei 4×.** Im Weg stehen:
+- Welt zeichnen, 15–20 ms. Das ist eigene Skriptarbeit je Objekt plus ~350 Befehle an den GPU-Prozess.
+- Anziehpuppen beim ersten Anblick einer Haltung, 15–60 ms je Bild. Sie erzeugen die p95-Spitzen.
+- Bodenstücke beim Laufen, bis 18 ms.
+- Logik 5–6 ms, HUD 2–6 ms.
+
+Nächste Schritte in dieser Reihenfolge: Anziehpuppe im Worker (braucht die Bögen dort), Bodenstücke im OffscreenCanvas-Worker, `combatStats` je Bild zwischenspeichern, Welt-Objekte stärker in Zwischenbilder.
+
+**Verworfen.**
+- *HUD seltener aktualisieren*: Bilder mit HUD-Arbeit ragen dann heraus, die Bildzeiten werden ungleichmäßiger.
+- *DOM-Setter global abfangen*: `textContent` mit gleichem Text kann Kindelemente ersetzen wollen.
+- *Worker für die Anziehpuppe ohne Bögen*: Das Kachellesen bliebe im Hauptfaden, spart nur ~30 %.
+- *Grundtextur des Bodens auf der Hauptspeicher-Leinwand normalisieren*: Ein Muster daraus kostete je `fillRect` über 20 ms (Hochladen), außerdem wäre der Boden nicht mehr bitgleich. Er wird einmal je Sitzung zurückgelesen.
+
+**Messfallen.**
+- Ohne Grafikkarten-Nachbildung (Software-Canvas) sind Flush und Rücklesen unsichtbar.
+- Zwei gleichzeitig laufende Browser bremsen sich gegenseitig, auch eingefroren; deshalb misst `--ab` nacheinander.
+- Der Messrechner wird geteilt: Einzelläufe streuen um ±30 %.
+- `performance-check.mjs` lief auch auf origin/main nicht (globales `game` gibt es nicht mehr) – repariert.
+- `mobile-check` meldet auf origin/main wie hier nur „Unterbrechung (M-15)“.
+
+Tests: `tests/perf-handy.test.mjs` prüft Messauswertung, Schreiben nur bei Änderung, Layout-Phase und Zwischenbild. Außerdem prüft sie, dass Kontur, dringendes Bodenstück und Kollision dasselbe ergeben wie die früheren Fassungen.

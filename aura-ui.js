@@ -2,6 +2,7 @@ import {HUD_TEXT as T,CLASS_BUFF_TEXT as CB} from './content/index.js';
 import {collectAuras} from './auras.js';
 import {paintSkillIcon,paintItemTile} from './skill-art.js';
 import {ICON_STEP} from './icon-steps.js';
+import {onLayoutPhase} from './layout-phase.js';
 const groups={buffs:'buffStrip',debuffs:'debuffStrip',targetDebuffs:'targetDebuffStrip'};
 // Klassen-Buffs laufen 30 Minuten: ab einer Minute zählt die Leiste in Minuten.
 const clock=n=>n===null?T.untilUsed:n>=60?Math.ceil(n/60)+' '+CB.minutes:Math.ceil(Math.max(0,n))+' '+T.seconds;
@@ -49,6 +50,8 @@ export function mountAuraUI(root,getGame){
    bar.style.left=left+'px';bar.style.width=Math.max(44,available)+'px';bar.style.top=top+'px';
   }
  }
+ /* Handy-Messung 2026-09-27: Leisten am Bildanfang anordnen (layout-phase.js) – dort ist das Layout noch gültig, Lesen kostet nichts */
+ let layoutDue=true;onLayoutPhase(()=>{if(!layoutDue||!root.isConnected)return;layoutDue=false;layout();});
  function update(force=false){
   const now=performance.now();if(!force&&now-last<200)return;last=now;const g=getGame();
   const nextIdentity=g.member.id+':'+g.rpg.talents.spec+':'+(g.target?.id??'');if(identity!==nextIdentity){identity=nextIdentity;peaks.clear();hide();}
@@ -66,7 +69,7 @@ export function mountAuraUI(root,getGame){
     button.querySelector('.aura-stacks').textContent=a.stacks>1?a.stacks:'';button.style.setProperty('--aura-spent',duration&&a.remaining!==null?(1-a.remaining/duration)*100+'%':'0%');button.classList.toggle('aura-expiring',a.remaining!==null&&a.remaining<=3);
    }
   }
-  for(const key of peaks.keys())if(!alive.has(key))peaks.delete(key);layout();paintTooltip();
+  for(const key of peaks.keys())if(!alive.has(key))peaks.delete(key);layoutDue=true;paintTooltip();
  }
  update(true);return{update,hide};
 }

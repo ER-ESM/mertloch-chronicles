@@ -141,11 +141,11 @@ body[data-locked~=professions] .game-menu-windows [data-shell=professions],body[
 .touch-mode .popup-map .atlas-place small{display:none!important}
 
 /* Handy: schmaler Spielerrahmen neben offenem Fenster – Lebenszahl einzeilig, Randale mit Auslassung statt Umbruch */
-.touch-mode:has(.game-popup) .player-panel .bar>span{display:block!important;position:absolute;left:0!important;right:0!important;top:0;bottom:0;transform:none!important;width:auto!important;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:none;padding:0 3px;box-sizing:border-box;font:800 9px/15px var(--read,'Nunito',sans-serif)!important;letter-spacing:-.02em!important;padding:0 1px!important}
-@media (orientation:landscape){.touch-mode:has(.game-popup) .player-panel{width:134px!important}}
+.touch-mode.hs-popup .player-panel .bar>span{display:block!important;position:absolute;left:0!important;right:0!important;top:0;bottom:0;transform:none!important;width:auto!important;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:none;padding:0 3px;box-sizing:border-box;font:800 9px/15px var(--read,'Nunito',sans-serif)!important;letter-spacing:-.02em!important;padding:0 1px!important}
+@media (orientation:landscape){.touch-mode.hs-popup .player-panel{width:134px!important}}
 .touch-mode .player-panel .bar>span{white-space:nowrap}
 /* Handy: Meldungen nicht übereinander – solange die Kurzmeldung steht, treten die frischen Chatzeilen zurück */
-.touch-mode:has(#toast.visible) .chat-window:not(.active) .chat-line{visibility:hidden}
+.touch-mode.hs-toast .chat-window:not(.active) .chat-line{visibility:hidden}
 .touch-mode .popup-titlebar .map-title-tabs button[aria-selected=true]{color:#fff0c8}
 
 /* ---------- 2 · Gespräch: so hoch wie der Inhalt (WoW teilt nur die Oberkante), Text bis zehn Zeilen, „Mehr“ als eigene Zeile ---------- */
@@ -226,11 +226,11 @@ body[data-locked~=professions] .game-menu-windows [data-shell=professions],body[
 /* ---------- 6 · Zonentitel nie auf Fenstertiteln: bei offenem Seitenfenster rückt er in das freie Band über der Oberkante (≤ 168 px),
    die Fehlerzeile darüber auf 64 px. Ohne Fenster bleibt alles bei 18 % bzw. 11 % (Runde 2b). Nur EIN Ortswechsel-Schriftzug: #zoneSplash ist zurückgebaut. */
 @media(min-width:761px){
- body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label{top:100px!important}
- body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label h2{font-size:36px!important}
- body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label #zoneType{font-size:14px!important}
- body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #gameShell .region-label>div{margin-top:2px}
- body:not(.touch-mode):has(.game-popup:not(.popup-menu):not(.popup-map)) #toast{top:64px!important}
+ body:not(.touch-mode).hs-popup-window #gameShell .region-label{top:100px!important}
+ body:not(.touch-mode).hs-popup-window #gameShell .region-label h2{font-size:36px!important}
+ body:not(.touch-mode).hs-popup-window #gameShell .region-label #zoneType{font-size:14px!important}
+ body:not(.touch-mode).hs-popup-window #gameShell .region-label>div{margin-top:2px}
+ body:not(.touch-mode).hs-popup-window #toast{top:64px!important}
 }
 
 /* ---------- 7 · Fenster über dem Helden: statt 30 %-Geisterbild bleibt nur die Titelzeile stehen, der Körper klappt weg;

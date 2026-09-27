@@ -22,14 +22,19 @@ export class TerrainPrefetch{
   if(maxDist===Infinity){const last=this.lastView,vx=last?cx-last.cx:0,vy=last?cy-last.cy:0,speed=Math.hypot(vx,vy);this.lastView={cx,cy};this.motion={dx:speed?vx/speed:0,dy:speed?vy/speed:0,moving:speed>.5};}
   if(budgetMs<=0)return;const t0=performance.now(),R=this.rules,{dx,dy,moving}=this.motion||{dx:0,dy:0,moving:false};if(maxDist!==Infinity&&!moving)return;
   const x0=ox-R.ring-(moving&&dx<0?-dx*R.lead:0),x1=ox+W+R.ring+(moving&&dx>0?dx*R.lead:0),y0=oy-R.ring-(moving&&dy<0?-dy*R.lead:0),y1=oy+H+R.ring+(moving&&dy>0?dy*R.lead:0);
-  const n=R.pieces,s=S/n,cand=[];
+  const n=R.pieces,s=S/n,cand=[],urgent=maxDist!==Infinity;
+  // Dringender Weg (Handy-Messung 2026-09-27): nur das beste Stück zählt – ohne Liste und Sortieren (vorher je Bild einige hundert Objekte,
+  // größter Posten der Speicherbereinigung beim Laufen). Gleiche Wahl: kleinste Wertung, gebaut nur, wenn sie im Abstand maxDist liegt.
+  let best=null;
   // Speicher begrenzen: angefangene Kacheln weit außerhalb des Vorlaufbereichs verwerfen (je Kachel 4 MB).
   if(maxDist===Infinity)for(const [k,b] of this.builds){const bx=b.gx*S,by=b.gy*S;if(bx+S<x0-S||bx>x1+S||by+S<y0-S||by>y1+S)this.builds.delete(k);}
   for(let gx=Math.floor(x0/S);gx<=Math.floor(x1/S);gx++)for(let gy=Math.floor(y0/S);gy<=Math.floor(y1/S);gy++){const key=keyOf(gx,gy);if(has(key))continue;const b=this.builds.get(key);
    for(let j=0;j<n;j++)for(let i=0;i<n;i++){if(b&&b.filter===bakedGrade.filter&&b.done[j*n+i])continue;const px=gx*S+(i+.5)*s,py=gy*S+(j+.5)*s;if(px<x0-s||px>x1+s||py<y0-s||py>y1+s)continue;
     // Rangfolge: Abstand zum Sichtrechteck (0 = sichtbar); in Laufrichtung zählt er halb, dahinter anderthalbfach.
-    const ex=Math.max(ox-px,0,px-ox-W),ey=Math.max(oy-py,0,py-oy-H),dist=Math.hypot(ex,ey),rx=px-cx,ry=py-cy,cos=moving?(rx*dx+ry*dy)/(Math.hypot(rx,ry)||1):0;cand.push({key,gx,gy,i,j,dist,score:dist*(1-.5*cos)});}}
-  cand.sort((a,b)=>a.score-b.score);if(maxDist!==Infinity&&!(cand[0]?.dist<=maxDist))return;
+    const ex=Math.max(ox-px,0,px-ox-W),ey=Math.max(oy-py,0,py-oy-H),dist=Math.hypot(ex,ey),rx=px-cx,ry=py-cy,cos=moving?(rx*dx+ry*dy)/(Math.hypot(rx,ry)||1):0,score=dist*(1-.5*cos);
+    if(urgent){if(!best||score<best.score)best={key,gx,gy,i,j,dist,score};}else cand.push({key,gx,gy,i,j,dist,score});}}
+  if(urgent){if(!(best?.dist<=maxDist))return;const b=this.build(best.key,best.gx,best.gy);this.piece(b,best.i,best.j,done);return;}
+  cand.sort((a,b)=>a.score-b.score);
   for(const c of cand){const b=this.build(c.key,c.gx,c.gy);this.piece(b,c.i,c.j,done);if(performance.now()-t0>=budgetMs)return;}
  }
  /** Mindestens ein dringendes Stück je Bild beim Laufen, auch ohne freie Zeit: sonst baut der nächste Bodenstreifen viele Stücke auf einmal. */

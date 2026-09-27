@@ -18,6 +18,10 @@ function meta(){
 /** Sind die Bilder dieser Arten geladen (oder gibt es für sie keins, dann bleibt der Platzhalter)? Für Zwischenspeicher, die erst
  *  mit fertigen Bildern backen (Dungeon-Räume, dungeon-scenery-art.js). Stößt das Laden an. */
 export function kitReady(ids){const m=meta();if(!m)return false;let ok=true;for(const id of ids)if(m.sprites[id]&&!sprite(id))ok=false;return ok;}
+/** Bewegt sich die Art (geladene Bildfolge)? Solche Teile gehören nicht in ruhende Zwischenbilder (layer-cache.js). */
+export function kitAnimated(id){const s=sprite(id);return !!(s&&s.m.frames>1);}
+/** Ladezustand der Arten als kurzer Text (1 geladen, 0 kommt noch, - ohne Bild): Schlüsselteil ruhender Zwischenbilder. */
+export function kitStamp(ids){const m=meta();if(!m)return 'x';let out='';for(const id of ids)out+=!id||!m.sprites[id]?'-':sprite(id)?'1':'0';return out;}
 /** Bildfolge? Zahl der Bilder einer Art (1 = Standbild oder noch unbekannt). */
 export const kitFrames=id=>meta()?.sprites?.[id]?.frames||1;
 /** Geladenes Bild einer Sprite-Art samt Registrierung, sonst null. */
@@ -44,17 +48,23 @@ function placeholderFloor(c,def,q){
  else if(id.startsWith('kies'))for(let y=q.y+4;y<q.y+q.h;y+=11)for(let x=q.x+((y/11|0)%2?3:8);x<q.x+q.w;x+=11)c.fillRect(x,y,2,1);
  else if(id.startsWith('teppich')){c.strokeStyle=shade(base,1.5);c.lineWidth=2;c.strokeRect(q.x+10,q.y+10,q.w-20,q.h-20);}
 }
+/** Muster-Quelle als Leinwand statt als <img> (Handy-Messung 2026-09-27): Auf einer Canvas mit Grafikkarte (Handy) zwingt ein Muster aus einem
+ *  Bild Chrome bei JEDEM fillRect, die bis dahin aufgezeichneten Zeichenbefehle abzuschicken und auf den GPU-Prozess zu warten – im Kampf vor
+ *  der Bude 7 Belagflächen × ~1–4 ms je Bild. Eine 1:1-Kopie auf einer Leinwand zeichnet pixelgleich und kostet ~0,01 ms. */
+function patternSource(img){if(typeof document==='undefined')return img;const cv=document.createElement('canvas');cv.width=img.naturalWidth||img.width;cv.height=img.naturalHeight||img.height;cv.getContext('2d').drawImage(img,0,0);return cv;}
+let belagMatrix=null;
 /** Belag eines Raums: gekacheltes Sprite, ausgerichtet am Haus, sonst Platzhalter. */
 export function drawBelag(c,room,origin){
  const def=resolveSprite(room.belag),s=sprite(room.belag);
  for(const q of room.rects){
-  if(s&&typeof c.createPattern==='function'){let p=KIT.patterns.get(room.belag);if(!p){p=c.createPattern(s.img,'repeat');KIT.patterns.set(room.belag,p);}
-   if(p?.setTransform&&typeof DOMMatrix!=='undefined'){p.setTransform(new DOMMatrix([1/s.k,0,0,1/s.k,origin.x,origin.y]));c.fillStyle=p;c.fillRect(q.x,q.y,q.w,q.h);continue;}}
+  if(s&&typeof c.createPattern==='function'){let p=KIT.patterns.get(room.belag);if(!p){p=c.createPattern(patternSource(s.img),'repeat');KIT.patterns.set(room.belag,p);}
+   if(p?.setTransform&&typeof DOMMatrix!=='undefined'){const m=belagMatrix||=new DOMMatrix();m.a=m.d=1/s.k;m.b=m.c=0;m.e=origin.x;m.f=origin.y;p.setTransform(m);c.fillStyle=p;c.fillRect(q.x,q.y,q.w,q.h);continue;}}
   placeholderFloor(c,def,q);
  }
 }
 /** Flach liegende Teile (Bodendeko): unter allen Figuren, keine Höhe. */
-export function drawDecal(c,it){drawDecalBody(c,it);if(it.sprite==='pfuetze')glint(c,it);}
+export function drawDecal(c,it,part){/* part: 'static' = nur Ruhendes, 'animated' = nur Bewegtes (Bildfolgen, Pfützenglanz), sonst alles */
+ const anim=kitAnimated(it.sprite);if(part!=='static'||!anim)if(part!=='animated'||anim)drawDecalBody(c,it);if(it.sprite==='pfuetze'&&part!=='static')glint(c,it);}
 /** Wasserglanz auf Pfützen: zwei helle Striche, die langsam über die Fläche wandern und atmen. */
 function glint(c,it){const t=clock()*.6+seedOf(it),a=c.globalAlpha,k=.5+.5*Math.sin(t*2.1);c.globalAlpha=a*(.35+.4*k);c.fillStyle='#e8f6ff';const w=Math.max(2,it.w*.28),x=it.minX+it.w*(.2+.5*((t*.15)%1)),y=it.minY+it.h*.35;c.fillRect(x,y,w,.8);c.globalAlpha=a*(.25+.3*(1-k));c.fillRect(it.minX+it.w*.55,it.minY+it.h*.62,w*.6,.7);c.globalAlpha=a;}
 function drawDecalBody(c,it){
@@ -65,7 +75,8 @@ function drawDecalBody(c,it){
  const color=it.def.color||'#888';c.fillStyle=shade(color,.7);c.fillRect(it.minX,it.minY,it.w,it.h);c.fillStyle=color;c.fillRect(it.minX+.5,it.minY+.5,it.w-1,it.h-1);
 }
 /** Eine Wand samt ihrem Wandschmuck. Waagerecht: Front (`wall.face`) und Krone; senkrecht: nur die Krone und das Südende. */
-export function drawKitWall(c,wall,cut){
+export function drawKitWall(c,wall,cut,part){/* part: 'static' ohne bewegten Wandschmuck, 'animated' nur dieser, sonst alles */
+ if(part==='animated'){for(const it of wall.decor||[])if(kitAnimated(it.sprite))drawWallDecor(c,it,wall);return;}
  const flat=wall.maxX-wall.minX>wall.maxY-wall.minY,h=flat?wall.face:cut,def=wall.style?resolveSprite(wall.style):{color:'#cdbb92'},w=wall.maxX-wall.minX,d=wall.maxY-wall.minY,s=wall.style&&sprite(wall.style);
  if(s&&flat&&typeof c.createPattern==='function'){
   // Wandstreifen: oberer Teil Krone, unterer Teil Front; horizontal gekachelt, auf die Frontthöhe gestaucht.
@@ -88,7 +99,7 @@ export function drawKitWall(c,wall,cut){
   if(wall.kind==='zaun'&&h>0){c.fillStyle=shade(color,.6);for(let x=wall.minX+2;x<wall.maxX;x+=5)c.fillRect(x,wall.maxY-h,1,h);}
  }
  if(flat&&h>12)for(const seg of wall.papers||[])drawPaper(c,seg,wall.maxY-h,h);
- for(const it of wall.decor||[])drawWallDecor(c,it,wall);
+ for(const it of wall.decor||[])if(part!=='static'||!kitAnimated(it.sprite))drawWallDecor(c,it,wall);
 }
 /** Rückwand-Bild eines Raums (content/bude-house.js rooms[].paper) auf der Front einer waagerechten Wand, Stardew-Stil:
  *  Schatten unter der Krone, Tapete mit Muster, Zierleiste, Sockel (Holzvertäfelung/Fliesen), Fußleiste, dazu abgerissene Stellen.

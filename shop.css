@@ -39,7 +39,7 @@
 
 /* Very short landscape screens need the travel controls' space for both trading panes. */
 @media(orientation:landscape) and (max-height:360px){
- .touch-mode:has(.popup-shop) #touchStick,.touch-mode:has(.popup-shop) #touchActions,.touch-mode:has(.popup-shop) #touchUtility{display:none!important}
+ .touch-mode.hs-popup-shop #touchStick,.touch-mode.hs-popup-shop #touchActions,.touch-mode.hs-popup-shop #touchUtility{display:none!important}
 }
 /* Verkaufspreis unter dem Platz als Preis erkennbar (Pfandmarke), nicht als zweite Stückzahl. */
 .shop-bag-slot small{display:inline-flex;align-items:center;gap:3px;color:#f3cf7a}

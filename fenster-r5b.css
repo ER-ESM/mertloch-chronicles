@@ -6,8 +6,8 @@
 @keyframes heroGapPulse{from{opacity:1;transform:scale(.55)}to{opacity:0;transform:scale(1.25)}}
 
 /* ---------- Punkt 1: Einstellungen am Handy – Reiter als Symbole, Erklärung hinter ⓘ, einzeilige 44-px-Zeilen, Seiten statt Scrollen ---------- */
-.touch-mode:has(.popup-settings) #mobileControls>:not(.game-popup){visibility:hidden!important}
-.touch-mode:has(.popup-settings) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+.touch-mode.hs-popup-settings #mobileControls>:not(.game-popup){visibility:hidden!important}
+.touch-mode.hs-popup-settings :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
 .touch-mode .game-popup.popup-settings{display:flex;flex-direction:column;max-height:none!important}
 .touch-mode .popup-settings>.popup-body{flex:1 1 auto;min-height:0;padding:0!important;overflow:hidden!important}
 .touch-mode .popup-settings .opt-window{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100%;min-height:0}
@@ -81,11 +81,11 @@ body:not(.touch-mode) .opt-cat-keys .opt-section h4{margin-bottom:1px}
 .touch-mode .game-menu-windows [data-shell="book"].has-lesson{position:relative}
 .touch-mode .game-menu-windows [data-shell="book"].has-lesson::after{content:"!";position:absolute;top:2px;right:2px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;background:#f3cf7a;color:#1b140a;font:900 12px/1 var(--read,'Nunito',sans-serif);box-shadow:0 0 0 2px #1b140a}
 @media (orientation:portrait){
- .touch-mode:not(:has(.game-popup)) #toast{top:calc(116px + var(--safe-top))!important;bottom:auto!important;left:calc(12px + var(--safe-left))!important;right:auto!important;width:auto!important;max-width:calc(100% - 104px - var(--safe-left) - var(--safe-right))!important;padding:7px 12px!important;background:#0b1510e0!important;border:1px solid #c5a26855!important;border-image:none!important;box-shadow:0 2px 6px #0008!important;color:#f3e6c4!important;font:700 13px/1.25 var(--read,'Nunito',sans-serif)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
- .touch-mode:not(:has(.game-popup)):has(#targetPanel:not(.hidden)) #toast{top:calc(196px + var(--safe-top))!important}
+ .touch-mode:not(.hs-popup) #toast{top:calc(116px + var(--safe-top))!important;bottom:auto!important;left:calc(12px + var(--safe-left))!important;right:auto!important;width:auto!important;max-width:calc(100% - 104px - var(--safe-left) - var(--safe-right))!important;padding:7px 12px!important;background:#0b1510e0!important;border:1px solid #c5a26855!important;border-image:none!important;box-shadow:0 2px 6px #0008!important;color:#f3e6c4!important;font:700 13px/1.25 var(--read,'Nunito',sans-serif)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .touch-mode:not(.hs-popup).hs-target #toast{top:calc(196px + var(--safe-top))!important}
  /* Die Meldung steht dort, wo sonst die Wegmarke steht – solange sie sichtbar ist, ruht die Pille (WoW: eine Meldungszeile oben) */
- .touch-mode:not(:has(.game-popup)):has(#toast.visible) #touchWaypoint{visibility:hidden}
- .touch-mode[data-touch-hand=left]:not(:has(.game-popup)) #toast{left:calc(12px + var(--safe-left))!important;right:auto!important}
+ .touch-mode:not(.hs-popup).hs-toast #touchWaypoint{visibility:hidden}
+ .touch-mode[data-touch-hand=left]:not(.hs-popup) #toast{left:calc(12px + var(--safe-left))!important;right:auto!important}
 }
 
 /* ---------- Punkt 3: Aufträge – Höhe nach Inhalt, Detail direkt unter der Liste ---------- */
@@ -120,7 +120,7 @@ body:not(.touch-mode) #combatMeter .meter-empty{margin:4px 0!important;min-heigh
 .touch-mode .game-popup.popup-settings .opt-select{height:44px;min-height:44px;max-width:150px;padding:0 8px;background:#10231a;color:#f1e4c4;border:1px solid #6b5a36;border-radius:4px;font:700 13px var(--read,'Nunito',sans-serif)}
 /* Kleine Hochkant-Schirme (≤ 600 px) mit Zielrahmen: unter dem Zielrahmen läge die Meldung auf dem Helden – sie steht dann oben über dem Spielerrahmen (3 s) */
 @media (orientation:portrait) and (max-height:600px){
- .touch-mode:not(:has(.game-popup)):has(#targetPanel:not(.hidden)) #toast{top:calc(6px + var(--safe-top))!important;max-width:calc(100% - 112px - var(--safe-left) - var(--safe-right))!important}
+ .touch-mode:not(.hs-popup).hs-target #toast{top:calc(6px + var(--safe-top))!important;max-width:calc(100% - 112px - var(--safe-left) - var(--safe-right))!important}
 }
 
 /* ---------- hud-check (Punkt 13): Spielmenü auf 320 px mit seitlichen Safe Areas – 5 Kacheln passen ohne waagerechten Überlauf ---------- */
@@ -130,7 +130,7 @@ body:not(.touch-mode) #combatMeter .meter-empty{margin:4px 0!important;min-heigh
 }
 /* Sehr flach quer (≤ 340 px hoch, 568×320): das Spielmenü ist modal über die ganze Breite – Kacheln 5 × 2 ohne Wort, Einträge in vier Spalten */
 @media (orientation:landscape) and (max-height:340px){
- .touch-mode:has(.popup-menu) #mobileControls>:not(.game-popup),.touch-mode:has(.popup-menu) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+ .touch-mode.hs-popup-menu #mobileControls>:not(.game-popup),.touch-mode.hs-popup-menu :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
  .touch-mode .game-popup.popup-menu .game-menu-windows{grid-template-columns:repeat(5,minmax(44px,1fr))!important;gap:8px!important;margin:0 0 8px!important}
  .touch-mode .game-popup.popup-menu .game-menu-windows button{height:44px!important;min-height:44px!important;padding:0!important;justify-content:center;align-items:center}
  .touch-mode .game-popup.popup-menu .game-menu-windows button canvas{width:30px;height:30px}
@@ -145,5 +145,5 @@ body:not(.touch-mode) #combatMeter .meter-empty{margin:4px 0!important;min-heigh
 
 /* ---------- Punkt 14: Handy-Karte hochkant – die Seitenkappe „1/2“ ruht bei offener Karte, das Fenster reicht bis über die Kniff-Knöpfe ---------- */
 @media (orientation:portrait){
- .touch-mode:has(.popup-map) .touch-action-head{display:none!important}
+ .touch-mode.hs-popup-map .touch-action-head{display:none!important}
 }

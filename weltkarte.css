@@ -98,7 +98,7 @@ body:not(.touch-mode) .popup-titlebar .wk-tools [data-wk-side]{display:none}
 /* ---------- Desktop: Fenster 1922 × 847 bleibt; ohne Werkzeugleiste, Legende und Fuß wird die Karte ≈ 1600 × 799.
    Chat bei offener Vollbildkarte ausblenden (WoW blendet die UI aus) – sonst schauen Zeilen unter dem Rahmen hervor. */
 body:not(.touch-mode) .game-popup.popup-map.dock-full>.popup-body{padding:6px 6px 6px!important}
-body:not(.touch-mode):has(.popup-map.dock-full) .chat-window{visibility:hidden}
+body:not(.touch-mode).hs-map-full .chat-window{visibility:hidden}
 
 /* ---------- Handy: Karte füllt das Fenster (quer und hoch), Ortsliste als aufklappbare Leiste über der Karte */
 .touch-mode .game-popup.popup-map{height:100dvh!important}

@@ -32,7 +32,7 @@ function make(b){const l=facadeLayout(b),pad=46,top=l.roofTop-(b.church?180:32),
 export function drawBuilding(c,b,time){
  const name=buildingSkin(b),a=maifeld[name];
  if(a){const l=buildingSpriteLayout(b,a),width=l.world[3]-l.world[0],key=['registered',name,width,b.door.x-b.minX].join(':');let sprite=cache.get(key);
-  if(!sprite){const cv=document.createElement('canvas');cv.width=Math.ceil(width*density);cv.height=Math.ceil(l.height*density);const mc=cv.getContext('2d');mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
+  if(!sprite){const cv=document.createElement('canvas');cv.width=Math.ceil(width*density);cv.height=Math.ceil(l.height*density);/* Handy-Messung 2026-09-27: willReadFrequently – normalizeArt liest zurück, ohne GPU-Stillstand */const mc=cv.getContext('2d',{willReadFrequently:true});mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
    for(let i=0;i<3;i++){const left=Math.round((l.world[i]-l.world[0])*density),right=Math.round((l.world[i+1]-l.world[0])*density);mc.drawImage(a.image,l.source[i],a.y,l.source[i+1]-l.source[i],a.h,left,0,right-left,cv.height);}
    normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>180)cache.delete(cache.keys().next().value);
   }c.imageSmoothingEnabled=false;c.drawImage(sprite.cv,l.world[0],l.top,width,l.height);return;}

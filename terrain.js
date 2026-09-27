@@ -5,26 +5,32 @@ import {segmentDistance,inside} from './world.js';
 export const TERRAIN_SIZE=512;
 export const DETAIL=2;
 const canvas=(size=TERRAIN_SIZE)=>{const c=document.createElement('canvas');c.width=c.height=size*DETAIL;return c;};
+// Hilfsflächen (Masken) aus einem kleinen Vorrat (Handy-Messung 2026-09-27): ein Bodenstück brauchte 10–20 neue Leinwände, die sofort
+// wieder Müll waren – beim Laufen der größte Teil der langen Speicherbereinigungen (Blink räumt die Leinwände im Nachgang ab).
+// Breite setzen setzt Inhalt und Zustand zurück, eine Leinwand aus dem Vorrat ist also gleichwertig zu einer neuen.
+const pool=[];
+const take=px=>{const c=pool.pop()||document.createElement('canvas');c.width=c.height=px;return c;};
+const give=(...cs)=>{for(const c of cs)if(c&&pool.length<24)pool.push(c);};
 const hash=(x,y)=>{let n=Math.imul(x|0,374761393)^Math.imul(y|0,668265263);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967295;};
 const rect=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x*2)/2,Math.round(y*2)/2,Math.round(w*2)/2,Math.round(h*2)/2);};
 function shape(c,points){c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();}
 /** Corners soften inside the existing corridor, without displacing junction ends. */
 export function roadPath(c,points,corner=7){if(!points.length)return;c.beginPath();c.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length-1;i++){const p=points[i],a=points[i-1],b=points[i+1],d1=Math.hypot(p.x-a.x,p.y-a.y)||1,d2=Math.hypot(b.x-p.x,b.y-p.y)||1,r=Math.min(corner,d1*.22,d2*.22);c.lineTo(p.x+(a.x-p.x)/d1*r,p.y+(a.y-p.y)/d1*r);c.quadraticCurveTo(p.x,p.y,p.x+(b.x-p.x)/d2*r,p.y+(b.y-p.y)/d2*r);}if(points.length>1){const end=points.at(-1);c.lineTo(end.x,end.y);}}
-function roadMask(world,roads,ox,oy,pad=0,filter=()=>true,feather=.65,size=TERRAIN_SIZE){const border=16,cv=document.createElement('canvas');cv.width=cv.height=(size+border*2)*DETAIL;const c=cv.getContext('2d');c.scale(DETAIL,DETAIL);c.translate(-ox+border,-oy+border);c.lineCap='round';c.lineJoin='round';c.strokeStyle='#fff';c.fillStyle='#fff';for(const r of roads){if(!filter(r))continue;roadPath(c,r.points,Math.min(20,r.width*.28));c.lineWidth=r.width+pad*2;c.stroke();}const p=world.plaza;if(p&&filter({width:60,plaza:true,tags:{}})){c.beginPath();c.ellipse(p.x,p.y,p.radius+pad,(p.radius+pad)*.8,0,0,Math.PI*2);c.fill();}const output=canvas(size),oc=output.getContext('2d');oc.filter=`blur(${feather*DETAIL}px)`;oc.drawImage(cv,-border*DETAIL,-border*DETAIL);oc.filter='none';return output;}
+function roadMask(world,roads,ox,oy,pad=0,filter=()=>true,feather=.65,size=TERRAIN_SIZE){const border=16,cv=take((size+border*2)*DETAIL);const c=cv.getContext('2d');c.scale(DETAIL,DETAIL);c.translate(-ox+border,-oy+border);c.lineCap='round';c.lineJoin='round';c.strokeStyle='#fff';c.fillStyle='#fff';for(const r of roads){if(!filter(r))continue;roadPath(c,r.points,Math.min(20,r.width*.28));c.lineWidth=r.width+pad*2;c.stroke();}const p=world.plaza;if(p&&filter({width:60,plaza:true,tags:{}})){c.beginPath();c.ellipse(p.x,p.y,p.radius+pad,(p.radius+pad)*.8,0,0,Math.PI*2);c.fill();}const output=take(size*DETAIL),oc=output.getContext('2d');oc.filter=`blur(${feather*DETAIL}px)`;oc.drawImage(cv,-border*DETAIL,-border*DETAIL);oc.filter='none';give(cv);return output;}
 function paintMask(mask,ox,oy,draw){
-  const silhouette=document.createElement('canvas');silhouette.width=mask.width;silhouette.height=mask.height;
+  const silhouette=take(mask.width);if(silhouette.height!==mask.height)silhouette.height=mask.height;
   silhouette.getContext('2d').drawImage(mask,0,0);
   const c=mask.getContext('2d');c.filter='none';c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,mask.width,mask.height);
   c.globalCompositeOperation='source-over';c.setTransform(DETAIL,0,0,DETAIL,-ox*DETAIL,-oy*DETAIL);draw(c);
   c.setTransform(1,0,0,1,0,0);c.globalAlpha=1;c.globalCompositeOperation='destination-in';c.drawImage(silhouette,0,0);
-  c.globalCompositeOperation='source-over';return mask;
+  c.globalCompositeOperation='source-over';give(silhouette);return mask;
 }
 function areaMask(a,ox,oy,size,feather=3){
-  const border=20,cv=canvas(size+border*2),c=cv.getContext('2d');
+  const border=20,cv=take((size+border*2)*DETAIL),c=cv.getContext('2d');
   c.setTransform(DETAIL,0,0,DETAIL,(-ox+border)*DETAIL,(-oy+border)*DETAIL);
   c.fillStyle='#fff';shape(c,a.points);c.fill();
-  const out=canvas(size),oc=out.getContext('2d');oc.filter=`blur(${feather*DETAIL}px)`;
-  oc.drawImage(cv,-border*DETAIL,-border*DETAIL);oc.filter='none';return out;
+  const out=take(size*DETAIL),oc=out.getContext('2d');oc.filter=`blur(${feather*DETAIL}px)`;
+  oc.drawImage(cv,-border*DETAIL,-border*DETAIL);oc.filter='none';give(cv);return out;
 }
 export function createTerrainChunk(world,gx,gy){return createTerrainRegion(world,gx*TERRAIN_SIZE,gy*TERRAIN_SIZE);}
 export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
@@ -66,7 +72,7 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
         rect(cc,'#87905580',x-1,y+1,1,.5);rect(cc,'#b5bd7890',x+.5,y,1,.5);
         rect(cc,'#e5d49c',x,y-2,.5,1.5);if(n>.8)rect(cc,'#91a363',x+1,y,1,.5);
       }cc.globalAlpha=1;
-    });c.drawImage(layer,ox,oy,S,S);
+    });c.drawImage(layer,ox,oy,S,S);give(layer);
   }
 
   // Quiet painted ground planes, with deliberate clover and blade clusters.
@@ -91,7 +97,7 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
         rect(cc,n>.8?'#bad0a98a':'#83b6a05a',x,y,2+n*6,.5);
         if(n>.85)rect(cc,'#3c776660',x+1,y+1,4,.5);
       }
-    });c.drawImage(layer,ox,oy,S,S);
+    });c.drawImage(layer,ox,oy,S,S);give(layer);
     for(let i=1;i<a.points.length;i++){
       const p=a.points[i-1],q=a.points[i],dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy)||1,steps=Math.ceil(length/14);
       for(let j=0;j<steps;j++){
@@ -117,7 +123,7 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
     for(let yy=Math.floor(oy/5)-1;yy<(oy+S)/5+1;yy++)for(let xx=Math.floor(ox/5)-1;xx<(ox+S)/5+1;xx++){
       const n=hash(xx,yy);rect(cc,n>.5?'#b5b08070':'#536c4750',xx*5+n*3,yy*5+hash(yy,xx)*3,1.5,.5);
     }
-  });c.globalAlpha=.65;c.drawImage(shoulder,ox,oy,S,S);c.globalAlpha=1;
+  });c.globalAlpha=.65;c.drawImage(shoulder,ox,oy,S,S);c.globalAlpha=1;give(shoulder);
   const dirt=roadMask(world,roads,ox,oy,0,isDirt,1.6,S);
   paintMask(dirt,ox,oy,cc=>{
     rect(cc,'#b7a279',ox,oy,S,S);fillMaifeldGround(cc,'groundDirt',ox,oy,S,S,.25);
@@ -126,7 +132,7 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
       if(n>.78){rect(cc,'#887e6260',x,y,2,.5);rect(cc,'#d9c29990',x,y-.5,1.5,.5);}
       else if(n<.22)rect(cc,'#a08e7040',x,y,3,.5);
     }
-  });c.drawImage(dirt,ox,oy,S,S);
+  });c.drawImage(dirt,ox,oy,S,S);give(dirt);
   const paving=roadMask(world,roads,ox,oy,0,r=>!isDirt(r),.65,S);
   paintMask(paving,ox,oy,cc=>{
     rect(cc,'#7f816a',ox,oy,S,S);
@@ -138,7 +144,7 @@ export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
       if(n>.89){rect(cc,'#827b69',x+4,y+1.5,.5,1);rect(cc,'#e5d7b8',x+1.5,y+1.5,.5,.5);}
       if(n<.035)rect(cc,'#749066',x+.5,y+3,1.5,.5);
     }
-  });c.drawImage(paving,ox,oy,S,S);
+  });c.drawImage(paving,ox,oy,S,S);give(paving);
   // World coordinates, including overscan: identical edge tufts on both sides of a chunk.
   const roadDistance=(x,y)=>{
     let d=Infinity;

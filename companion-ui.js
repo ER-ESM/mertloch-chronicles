@@ -1,3 +1,4 @@
+import {setAttr,setText} from './dom-write.js';
 import {COMPANION_TEXT as T,COMPANION_UI as UI,COMPANION_ROLES,COMPANION_RULES as R} from './content/index.js';
 import {selectFriend,selectedCompanion,helpTarget,helpFailure} from './help-target.js';
 import {setMouseoverFriend} from './healer-kit.js';
@@ -97,8 +98,8 @@ export function updateCompanionPanel(root,g){
 }
 function updateRow(row,g,c){
  row.classList.toggle('is-low-health',c.hp>0&&c.hp/c.maxHp<=.25);
- row.classList.toggle('is-down',c.state==='down');const bar=row.querySelector('.companion-life');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax',String(c.maxHp));bar.setAttribute('aria-valuenow',String(Math.ceil(c.hp)));bar.querySelector('i').style.width=hp(c)+'%';bar.querySelector('span').textContent=Math.ceil(c.hp)+' / '+c.maxHp;
- row.querySelector('[data-companion-state]').textContent=status(g,c);row.querySelector('[data-companion-contract]').textContent=contract(c);
+ row.classList.toggle('is-down',c.state==='down');const bar=row.querySelector('.companion-life');setAttr(bar,'aria-valuemin','0');setAttr(bar,'aria-valuemax',c.maxHp);setAttr(bar,'aria-valuenow',Math.ceil(c.hp));bar.querySelector('i').style.width=hp(c)+'%';setText(bar.querySelector('span'),Math.ceil(c.hp)+' / '+c.maxHp);
+ setText(row.querySelector('[data-companion-state]'),status(g,c));setText(row.querySelector('[data-companion-contract]'),contract(c));
 }
 
 export function mountCompanionHud(shell,getGame,open){

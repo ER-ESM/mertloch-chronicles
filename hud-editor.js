@@ -1,5 +1,6 @@
 import {HUD_TEXT as T,HUD_ELEMENTS} from './content/index.js';
 import {HUD_KEY,readHudLayouts,hudContext,placeHudElement,captureHudPosition,clamp} from './hud-layout.js';
+import {cssSize} from './layout-phase.js';
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const hudEntry=()=>`<button type="button" class="outline-button" data-hud-open>${T.title}</button>`;
 export function mountHudEditor(root,getGame,api={}){
@@ -99,7 +100,7 @@ export function mountHudEditor(root,getGame,api={}){
  },true);
  // Meter and chat dragging remain available outside Edit Mode after they have been moved in a layout.
  root.addEventListener('hud-move',e=>{const id=e.detail.id||'meter';if(editing||!elements.has(id)||!view()[id])return;if(e.detail.reset){delete view()[id];apply();}else move(id,e.detail.x,e.detail.y,view()[id].scale,false);if(e.detail.save){try{localStorage.setItem(HUD_KEY,JSON.stringify(settings));}catch{}}});
- function update(force=false){const now=performance.now();if(!force&&now-last<200)return;last=now;const next=hudContext(touch(),root.clientWidth,root.clientHeight);if(next!==context){context=next;for(const e of elements.values())clear(e);if(editing){Object.assign(toolbar.style,{left:'',top:'',bottom:'',transform:''});controls();}}apply();}
+ function update(force=false){const now=performance.now();if(!force&&now-last<200)return;last=now;/* Handy-Messung 2026-09-27: Größe über ResizeObserver (layout-phase.js) statt clientWidth mitten im HUD-Takt */const size=cssSize(root),next=hudContext(touch(),size.w,size.h);if(next!==context){context=next;for(const e of elements.values())clear(e);if(editing){Object.assign(toolbar.style,{left:'',top:'',bottom:'',transform:''});controls();}}apply();}
  new ResizeObserver(()=>update(true)).observe(root);update(true);
  return{open,close,update,get editing(){return editing;},state:()=>({editing,context,layout:profile().name})};
 }

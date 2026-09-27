@@ -34,7 +34,8 @@ export function drawClanEnemy(c,e,time){
 // gemischter Schreibung – bewusst anders als die HUD-Schilder (Creme-Versalien auf Grün mit Goldrand), damit Zonentitel und Weltschild
 // nie als ein Schild gelesen werden.
 const CLAN_SIGN_TITLE='Poo-Tang · Mertloch',SIGN_FONT="bold 9px 'Jersey 15','Trebuchet MS',sans-serif";
-export function clanSignBounds(c,w){c.save();c.font=SIGN_FONT;const width=Math.max(70,Math.ceil(c.measureText(CLAN_SIGN_TITLE).width)+14);c.restore();return{x:w.church.x+1-width/2,y:w.church.maxY+9,w:width,h:15};}
+let signWidth=0;/* Handy-Messung 2026-09-27: Schrift und Titel sind fest – einmal messen statt zweimal je Bild */
+export function clanSignBounds(c,w){if(!signWidth){c.save();c.font=SIGN_FONT;signWidth=Math.max(70,Math.ceil(c.measureText(CLAN_SIGN_TITLE).width)+14);c.restore();}const width=signWidth;return{x:w.church.x+1-width/2,y:w.church.maxY+9,w:width,h:15};}
 export function drawClanCamp(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.save();line(c,'#6e5367',[[x-72,y-3],[x,y+6],[x+76,y-3]],1);for(let i=0;i<12;i++){const px=x-69+i*12,py=y+Math.sin(i/11*Math.PI)*8;shape(c,['#d68289','#e7bd7b','#75b6a2'][i%3],[[px,py],[px+9,py+1],[px+4,py+10+Math.sin(time*2+i)]],P.ink,.5);}
  const s=clanSignBounds(c,w),x0=s.x,x1=s.x+s.w,y0=s.y,y1=s.y+s.h,sway=Math.sin(time*1.3)*.4;
  for(const [ax,bx] of [[x0+7,x-30],[x1-7,x+30]])line(c,'#5b4630',[[bx,y+3],[ax+sway,y0+.5]],.7);

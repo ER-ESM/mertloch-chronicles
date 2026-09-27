@@ -4,13 +4,13 @@
 
 /* ---------- 1 · Spielmenü hochkant: modal, reicht über die ruhende Touch-Steuerung (popup-windows.js), nichts abgeschnitten ---------- */
 @media (orientation:portrait){
- .touch-mode:has(.popup-menu) #mobileControls>:not(.game-popup){visibility:hidden!important}
- .touch-mode:has(.popup-menu) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+ .touch-mode.hs-popup-menu #mobileControls>:not(.game-popup){visibility:hidden!important}
+ .touch-mode.hs-popup-menu :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
 }
 /* Sehr kleine Schirme (≤ 600 px hoch): jedes Fenster ist modal und reicht bis zur Unterkante; die Steuerung ruht, solange es offen ist */
 @media (orientation:portrait) and (max-height:600px){
- .touch-mode:has(.game-popup) #mobileControls>:not(.game-popup){visibility:hidden!important}
- .touch-mode:has(.game-popup) :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
+ .touch-mode.hs-popup #mobileControls>:not(.game-popup){visibility:hidden!important}
+ .touch-mode.hs-popup :is(#touchStick,#touchActions,#touchUtility,#meterToggle){visibility:hidden!important}
 }
 /* Kleine Schirme (≤ 700 px hoch, iPhone SE 320×568): die zehn Fensterkacheln als 5 × 2 Symbole ohne Wort (Name im Tooltip/aria-label) */
 @media (orientation:portrait) and (max-height:700px){
@@ -23,7 +23,7 @@
 
 /* ---------- 2 · Hochkant: Spielerrahmen verborgen, solange ein Fenster offen ist (kein 16-px-Geist über der Titelzeile) ---------- */
 @media (orientation:portrait){
- .touch-mode:has(.game-popup) #gameShell>.player-panel{visibility:hidden!important}
+ .touch-mode.hs-popup #gameShell>.player-panel{visibility:hidden!important}
 }
 
 /* ---------- 3 · Figur am Handy: Puppenplätze 44 px im festen 52-px-Schritt (8 px Abstand), unabhängig von der Puppenhöhe ---------- */

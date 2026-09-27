@@ -8,6 +8,7 @@
 // Details (Gegenstand, Erklärung) hängen an ihrem Fenster und schließen mit ihm. Touch: immer nur ein Fenster.
 import {PANEL_UI as UI,GAME_MENU_UI as MENU,SHOP_UI,MOUNT_UI,WINDOW_UI} from './content/index.js';
 import {touchPopupBounds} from './popup-layout.js';
+import {syncHasState} from './has-state.js';
 import {keysOf,liveKeymap} from './keymap.js';
 import {bindingLabel} from './bar-keys.js';
 const titles={professions:'Berufe',trainer:'Lehrer',mounts:MOUNT_UI.title,shop:SHOP_UI.title,inspection:'Gegenstand',detail:'Details',mobile:'Deine Touchbuttons',settings:MENU.settings,install:'Poo-Tang als App',touchhelp:'Kniff erklärt',talents:UI.talents,activity:'Anlagenprüfung',bag:UI.tabBag,person:UI.tabFigure,book:UI.tabSkills,quest:UI.tabQuests,base:UI.tabBase,map:UI.tabMap,menu:MENU.title,clan:UI.tabFigure,guide:UI.tabHelp,admin:'Admin',loot:'Beute',dialog:'Gespräch',memory:'Erinnerung',memoryart:'Erinnerungsbild',death:'Wieder auf die Beine',dungeonEntry:'Dungeon',journal:'Dungeon-Journal', volker:'Vermieter Volker'};
@@ -70,7 +71,7 @@ export class PopupWindows{
   const parent=CHILD.has(id)?this.book():null;
   const win=WINDOWS.find(x=>x[0]===id),icon=win?.[2]||({base:'base',menu:'menu',clan:'person',admin:'menu',loot:'bag',dialog:'quest',memory:'paper',memoryart:'paper',death:'food',dungeonEntry:'map',journal:'book',volker:'bag'})[id]||'menu';
   const el=document.createElement('section');el.className='game-popup popup-'+id+(docked?' popup-book popup-dock dock-'+DOCK[id]:'');el.dataset.window=id;el.setAttribute('role','dialog');el.setAttribute('aria-modal','false');el.setAttribute('aria-label',titles[id]||id);el.tabIndex=-1;el.innerHTML=`<header class="popup-titlebar"><canvas class="popup-emblem" width="48" height="48" data-ui-icon="${icon}" aria-hidden="true"></canvas><strong>${titles[id]||id}</strong>${win&&!touch()?(k=>`<kbd class="popup-key" title="${WINDOW_UI.keyHint(k)}">${k}</kbd>`)(bindingLabel(keysOf(liveKeymap(),id).find(Boolean)||'')||win[3]):''}<button class="popup-close" data-window-close aria-label="${titles[id]} schließen" title="${WINDOW_UI.close}">×</button></header><div class="popup-body"></div>`;
-  const body=el.querySelector('.popup-body');body.innerHTML=html;this.root.append(el);w={id,el,body,z:0,minimized:false,cleanup:null,opened:++this.opened,parent};this.windows.set(id,w);this.label(w);
+  const body=el.querySelector('.popup-body');body.innerHTML=html;this.root.append(el);syncHasState();/* has-state.js: Körperklassen sofort, damit das Einpassen schon mit ihnen misst */w={id,el,body,z:0,minimized:false,cleanup:null,opened:++this.opened,parent};this.windows.set(id,w);this.label(w);
   if(docked){this.focus(id);if(!later)this.clamp(w);return w;}
   const key=id,grid=!!GRID_OVERLAY[id]&&!touch();if(grid)el.classList.add('popup-grid');el.style.width=Math.min(widths[id]||440,innerWidth-18)+'px';const saved=grid?null:this.positions[key],mobile=innerWidth<700;
   // Ohne gemerkte Position startet ein Overlay rechts neben dem Spielerrahmen statt darauf (breite Schirme).
@@ -149,7 +150,7 @@ export class PopupWindows{
  /** Einklappen gibt es nicht mehr; bleibt als Leerlauf für ältere Aufrufer. */
  minimize(){}
  toggle(id,show){const w=this.get(id);if(!w){show();return;}this.close(id);}
- close(id=this.top()){const w=this.get(id);if(!w)return;w.cleanup?.();w.el.remove();this.windows.delete(id);for(const child of [...this.windows.values()])if(child.parent===id)this.close(child.id);if(isDocked(id)&&!touch()&&this.docked().length)this.layout();this.focus(this.top());this.onClose?.(id);}
+ close(id=this.top()){const w=this.get(id);if(!w)return;w.cleanup?.();w.el.remove();syncHasState();this.windows.delete(id);for(const child of [...this.windows.values()])if(child.parent===id)this.close(child.id);if(isDocked(id)&&!touch()&&this.docked().length)this.layout();this.focus(this.top());this.onClose?.(id);}
  closeAll(){for(const id of [...this.windows.keys()])this.close(id);}
  state(){return [...this.windows.values()].map(w=>({id:w.id,minimized:false,x:w.el.offsetLeft,y:w.el.offsetTop}));}
 }

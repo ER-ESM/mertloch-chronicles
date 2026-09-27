@@ -1,3 +1,4 @@
+import {setAttr} from './dom-write.js';
 import {escapeUi} from './ui-kit.js';
 import {paintPersonPortrait} from './person-art.js';
 import {loadContentArt} from './content-art.js';
@@ -11,7 +12,7 @@ export function updatePlayerVitals(root,g){
  const frame=root.querySelector('.player-panel'),hp=frame?.querySelector('.hp');if(!hp)return;
  frame.classList.toggle('is-low-health',g.player.hp>0&&g.player.hp/g.player.maxHp<=.25);
  frame.classList.toggle('is-down',g.player.hp<=0);
- hp.setAttribute('role','progressbar');hp.setAttribute('aria-label','Leben');hp.setAttribute('aria-valuemin','0');hp.setAttribute('aria-valuemax',String(g.player.maxHp));hp.setAttribute('aria-valuenow',String(Math.ceil(g.player.hp)));
+ setAttr(hp,'role','progressbar');setAttr(hp,'aria-label','Leben');setAttr(hp,'aria-valuemin','0');setAttr(hp,'aria-valuemax',g.player.maxHp);setAttr(hp,'aria-valuenow',Math.ceil(g.player.hp));
 }
 /** Pure online presentation; selection, revival and health remain owned by online.js. */
 export function partyMemberFrame(x,{leader,selected,world,targetHint='Als Ziel wählen',revive='Aufhelfen',targetName='',ready=null,pets=[],outOfRange=false}={}){

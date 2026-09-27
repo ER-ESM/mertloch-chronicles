@@ -41,7 +41,7 @@
 #combatMeter .meter-resize{position:absolute;right:0;bottom:0;width:18px;min-height:18px;height:18px;padding:0;font-size:13px;color:#d2b879;background:transparent;cursor:nwse-resize;touch-action:none}
 .touch-mode #meterToggle{left:auto;right:calc(26px + var(--safe-right));top:calc(74px + var(--safe-top));z-index:1001;width:54px;min-height:44px;justify-content:center;padding:4px}
 .touch-mode #meterToggle>span:first-child{font-size:26px}.touch-mode #meterToggle .meter-toggle-label,.touch-mode #meterToggle kbd{display:none}
-.touch-mode #meterToggle.meter-is-open,.touch-mode:has(.game-popup) #meterToggle{visibility:hidden}
+.touch-mode #meterToggle.meter-is-open,.touch-mode.hs-popup #meterToggle{visibility:hidden}
 .touch-mode #combatMeter{z-index:1003;background:#172a23}
 .touch-mode #combatMeter button,.touch-mode #combatMeter select,.touch-mode #combatMeter summary{min-height:44px}
 .touch-mode #combatMeter .meter-header{cursor:default;gap:8px;padding:4px 8px}
@@ -54,7 +54,7 @@
 .touch-mode #combatMeter .meter-row{min-height:44px}.touch-mode #combatMeter .meter-row-name{white-space:normal}
 .touch-mode #combatMeter .meter-summary{padding:6px 8px;flex-wrap:wrap}
 .touch-mode #combatMeter .meter-resize{display:none}
-.touch-mode:has(#combatMeter:not([hidden])) #touchMenu{visibility:hidden}
+.touch-mode.hs-meter #touchMenu{visibility:hidden}
 /* Feinschliff 2026-09-22: gleicher Messingrahmen wie Spieler-/Zielrahmen, Titel in Anzeigeschrift, aktiver Reiter warm statt knallorange. */
 #combatMeter{border:6px solid transparent;border-image:var(--chrome-frame) 22% / 12px / 0 stretch;border-radius:0;background:#11241ce8 var(--chrome-material) center/384px 384px}
 #combatMeter .meter-header strong{font:400 17px/1.2 var(--display);letter-spacing:.04em;color:#f3cf7a}

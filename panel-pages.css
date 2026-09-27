@@ -31,7 +31,7 @@
 #journalButton{height:18px;width:24px;padding:0;line-height:1;display:grid;place-items:center}
 .quest-panel{max-height:190px}
 #actionBar .empty-mark{visibility:hidden}
-body:has(.popup-book:not(.minimized)) #actionBar .empty-mark{visibility:visible}
+body.hs-book #actionBar .empty-mark{visibility:visible}
 .help-skill ul{clear:both}
 body:not(.touch-mode) .compact-panel .armory-banner .paper-doll{width:100px;padding:4px}body:not(.touch-mode) .compact-panel .armory-banner .paper-doll canvas{width:92px;height:115px}.armory-controls{display:grid;gap:7px}
 .touch-mode .popup-person .armory-banner{display:flex;gap:14px;margin:8px 0}.touch-mode .popup-person .armory-banner .paper-doll{width:84px;padding:2px}.touch-mode .popup-person .armory-banner .paper-doll canvas{width:80px;height:100px}.touch-mode .popup-person .armory-controls button{min-height:44px;margin:0}.touch-mode .popup-person .armory-controls small{display:none}

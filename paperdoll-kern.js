@@ -38,7 +38,9 @@ export function composeCore(W,H,bands,srcs,tile){const out=new Uint8ClampedArray
   for(let yy=0;yy<th;yy++)for(let xx=0;xx<tw;xx++){const si=(yy*tw+xx)*4;if(!td[si+3])continue;const i=(yy+oy)*W+xx+ox;out[i*4]=td[si];out[i*4+1]=td[si+1];out[i*4+2]=td[si+2];out[i*4+3]=255;dark[i]=0;}}
  // Kontur nur innerhalb der Hülle aller Kacheln (bei großer Leinwand der größte Teil der Arbeit gespart); Hülle geht als out.box mit.
  if(bx1<0){out.box={x0:0,y0:0,x1:-1,y1:-1};return out;}
- const sil=[],T=[44,32,34];for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const i=y*W+x;if(!out[i*4+3])continue;
-  const r=x+1>=W||!out[(i+1)*4+3],b=y+1>=H||!out[(i+W)*4+3],l=x<1||!out[(i-1)*4+3],t=y<1||!out[(i-W)*4+3];if(r||b)sil.push([i,.42]);else if(l||t)sil.push([i,.6]);}
- for(const [i,f] of sil)for(let c=0;c<3;c++)out[i*4+c]=out[i*4+c]*f+T[c]*(1-f)*.55;
+ // Handy-Messung 2026-09-27: Kontur direkt im selben Durchgang – die Prüfung liest nur die Deckkraft, das Nachdunkeln schreibt nur Farbe;
+ // vorher sammelte eine Liste je Konturpixel ein eigenes Array (Tausende je Zusammensetzen, Futter für die Speicherbereinigung).
+ for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){const i=y*W+x;if(!out[i*4+3])continue;
+  const r=x+1>=W||!out[(i+1)*4+3],b=y+1>=H||!out[(i+W)*4+3];let f=0;if(r||b)f=.42;else if(x<1||!out[(i-1)*4+3]||y<1||!out[(i-W)*4+3])f=.6;else continue;
+  const o=i*4;/* gleiche Rechenfolge wie bisher: T*(1-f)*.55 */out[o]=out[o]*f+44*(1-f)*.55;out[o+1]=out[o+1]*f+32*(1-f)*.55;out[o+2]=out[o+2]*f+34*(1-f)*.55;}
  out.box={x0:bx0,y0:by0,x1:bx1,y1:by1};return out;}

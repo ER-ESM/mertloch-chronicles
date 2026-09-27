@@ -27,7 +27,7 @@
 .touch-mode .milestone{top:calc(190px + var(--safe-top));max-width:calc(100vw - 24px - var(--safe-left) - var(--safe-right))}
 .touch-mode .milestone-title{font-size:40px}
 .touch-mode .milestone-eyebrow{font-size:12px}
-.touch-mode:has(.game-popup) .milestone{visibility:hidden}
+.touch-mode.hs-popup .milestone{visibility:hidden}
 @media(orientation:landscape){.touch-mode .milestone{top:calc(70px + var(--safe-top))}.touch-mode .milestone-title{font-size:34px}}
 .touch-mode .game-popup .popup-titlebar{gap:8px}
 /* Clanbuch-Reiter füllen auf Touch die Zeile: so viele Spalten wie sichtbare Reiter, je mindestens 48 px (M-01) und 10 px Abstand (M-02);
@@ -41,16 +41,16 @@
 /* Runde 2 (2026-09-23): Fensterlage je Ausrichtung. Quer rückt der Spielerrahmen bei offenem Fenster auf die Breite der
    linken Knopfspalte zusammen (Bild, Name, Balken bleiben sichtbar); popup-layout.js hält das Fenster daneben frei. */
 @media(orientation:landscape){
- .touch-mode:has(.game-popup) .player-panel{width:124px;min-height:0;padding:4px 6px 4px 4px;gap:4px;align-items:center}
- .touch-mode:has(.game-popup) .player-panel .portrait{width:38px;height:38px;margin-top:0}
- .touch-mode:has(.game-popup) .player-panel .portrait>span{font-size:11px;min-width:16px;height:13px}
- .touch-mode:has(.game-popup) .player-panel .unit-name{margin:0 0 2px}
- .touch-mode:has(.game-popup) .player-panel #playerName{font-size:13px}
- .touch-mode:has(.game-popup) .player-panel #combatState{display:none}
- .touch-mode:has(.game-popup) .player-panel .bar{height:15px;margin:2px 0}
- .touch-mode:has(.game-popup) .player-panel .bar>span{font-size:10px}
- .touch-mode:has(.game-popup) .player-panel{min-height:0!important}
- .touch-mode:has(.game-popup) .player-panel #classMechanicArt{max-width:100%!important;height:auto!important}
+ .touch-mode.hs-popup .player-panel{width:124px;min-height:0;padding:4px 6px 4px 4px;gap:4px;align-items:center}
+ .touch-mode.hs-popup .player-panel .portrait{width:38px;height:38px;margin-top:0}
+ .touch-mode.hs-popup .player-panel .portrait>span{font-size:11px;min-width:16px;height:13px}
+ .touch-mode.hs-popup .player-panel .unit-name{margin:0 0 2px}
+ .touch-mode.hs-popup .player-panel #playerName{font-size:13px}
+ .touch-mode.hs-popup .player-panel #combatState{display:none}
+ .touch-mode.hs-popup .player-panel .bar{height:15px;margin:2px 0}
+ .touch-mode.hs-popup .player-panel .bar>span{font-size:10px}
+ .touch-mode.hs-popup .player-panel{min-height:0!important}
+ .touch-mode.hs-popup .player-panel #classMechanicArt{max-width:100%!important;height:auto!important}
 }
 
 /* Runde 3 (2026-09-23): Überlagerungen. Ruhender Chat zeigt auf Touch nur frische Zeilen – die blassen Reiter waren
@@ -58,18 +58,18 @@
 .touch-mode #chatWindow:not(.active):not(.configuring) .chat-tabs{display:none}
 /* Hochkant im Kampf: Zielrahmen sitzt unter dem Spielerrahmen; die Hofprobe rückt darunter statt verdeckt zu werden. */
 @media(orientation:portrait){
- .touch-mode:has(#targetPanel:not(.hidden)) #tutorialGuide{top:calc(206px + var(--safe-top))}
- .touch-mode:has(#targetPanel:not(.hidden)):has(#tutorialGuide) #buffStrip{top:calc(270px + var(--safe-top))}
+ .touch-mode.hs-target #tutorialGuide{top:calc(206px + var(--safe-top))}
+ .touch-mode.hs-target.hs-tutorial #buffStrip{top:calc(270px + var(--safe-top))}
  /* Aufstiegs-/Freischalt-Banner mittig ins freie Spielfeld, nicht über Ziel- und Auftragsrahmen */
  .touch-mode .milestone{top:calc(252px + var(--safe-top))}
- .touch-mode:has(.milestone.show) #chatWindow:not(.active){visibility:hidden}
+ .touch-mode.hs-milestone #chatWindow:not(.active){visibility:hidden}
 }
 /* Quer mit offenem Fenster: Meldungen oben in die freie Ecke über den Kniffen statt halb unter das Fenster */
 @media(orientation:landscape){
- .touch-mode:has(.game-popup) #toast{left:auto;right:calc(12px + var(--safe-right));top:calc(12px + var(--safe-top));bottom:auto;width:auto;max-width:160px;padding:8px 10px}
+ .touch-mode.hs-popup #toast{left:auto;right:calc(12px + var(--safe-right));top:calc(12px + var(--safe-top));bottom:auto;width:auto;max-width:160px;padding:8px 10px}
  /* Ruhender Chat quer über der EP-Leiste statt auf ihr; bei offenem Fenster ruht er ganz (Zeilen bleiben im Verlauf) */
  .touch-mode #chatWindow[data-auto-layout=true]:not(.active):not([data-hud-custom]){bottom:calc(40px + var(--safe-bottom))!important}
- .touch-mode:has(.game-popup) #chatWindow:not(.active){visibility:hidden}
+ .touch-mode.hs-popup #chatWindow:not(.active){visibility:hidden}
 }
 
 /* Runde 4 (2026-09-23): Dichte. Nutzerwunsch „auf Mobile etwas kleinere Schrift, damit man mehr erkennt“ – Lesetext
@@ -94,4 +94,4 @@
 .touch-mode #chatWindow.active .chat-tabs nav{gap:8px;overflow-x:auto;scrollbar-width:none}
 .touch-mode #chatWindow.active .chat-tabs button{min-height:44px;min-width:44px;padding:0 12px;font-size:13px;flex:none}
 /* Hochkant reicht das Fenster bis knapp über die Knöpfe; eine Meldung liegt dann kurz über dem Fenster statt dahinter */
-@media(orientation:portrait){.touch-mode:has(.game-popup) #toast{z-index:41}}
+@media(orientation:portrait){.touch-mode.hs-popup #toast{z-index:41}}

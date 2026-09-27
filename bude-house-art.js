@@ -1,7 +1,8 @@
 // Zeichnung des begehbaren Hauses (E-52, E-54). Innenräume, Hof und Einrichtung kommen aus dem Sprite-Baukasten (kit-art.js);
 // gemalt bleiben die Außenansicht mit Dach und die Möbel der Basisbau-Stufen (tools/sprite-pipeline/build-bude-house.mjs).
 // Schräge Draufsicht: Boden 1:1, Höhen nach oben.
-import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill} from './kit-art.js';
+import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill,kitStamp} from './kit-art.js';
+import {cachedLayer} from './layer-cache.js';
 import {LIGHTING} from './content/index.js';
 import {LIGHT} from './light-convention.js';
 const INK='#293b44';
@@ -64,22 +65,48 @@ function castShadow(c,house,fade){
 /** Böden des Geschosses: Belag je Raum und Bodendeko. Innenräume folgen dem Ausblenden des Dachs (`alpha`),
  *  der Hof liegt draußen und wird immer gezeichnet (er gehört zum Erdgeschoss). */
 export function drawHouseFloor(c,house,alpha,level=0){
+ // Handy-Messung 2026-09-27: Im Ruhezustand (drinnen oder draußen, kein Überblenden) liegt der Boden als Zwischenbild vor (layer-cache.js);
+ // bewegt sind nur Bildfolgen und der Pfützenglanz. Während des Überblendens wie bisher direkt.
+ if(alpha===0||alpha===1){const f=houseLevel(house,level),box=floorBox(house,f,alpha),key='boden|'+alpha+'|'+level+'|'+kitStamp(floorSprites(house,f));
+  if(cachedLayer(c,house,key,box,x=>paintHouseFloor(x,house,alpha,level,'static'))){paintHouseFloor(c,house,alpha,level,'animated');return;}}
+ paintHouseFloor(c,house,alpha,level);
+}
+/** Arten, deren Ladezustand den Boden verändert (Beläge, Bodendeko, Treppe). */
+const floorIds=new WeakMap();
+function floorSprites(house,f){let ids=floorIds.get(f);if(!ids)floorIds.set(f,ids=[...new Set([...house.rooms,...f.rooms].map(r=>r.belag).concat([...house.items,...f.items].filter(it=>it.layer==='decal').map(it=>it.sprite),['treppe-holz','treppenloch']))]);return ids;}
+/** Rahmen um alles, was paintHouseFloor zeichnet: Räume, Kiesränder, Schlagschatten, Wandschatten, Treppenaufsatz. */
+function floorBox(house,f,fade){const n=Math.hypot(LIGHT.dir.x,LIGHT.dir.y),H=house.heights,len=(H.wall+H.roof*.5)*(1-fade)+H.cut*fade,k=LIGHTING.shadow?.building??.5,ox=LIGHT.dir.x/n*len*k,oy=LIGHT.dir.y/n*len*k;
+ let x0=house.minX,y0=house.minY,x1=house.maxX,y1=house.maxY;for(const r of [...house.rooms,...f.rooms])for(const q of r.rects){x0=Math.min(x0,q.x);y0=Math.min(y0,q.y);x1=Math.max(x1,q.x+q.w);y1=Math.max(y1,q.y+q.h);}
+ return {x0:Math.floor(x0-24+Math.min(0,ox)),y0:Math.floor(y0-40+Math.min(0,oy)),x1:Math.ceil(x1+24+Math.max(0,ox)),y1:Math.ceil(y1+32+Math.max(0,oy))};}
+function paintHouseFloor(c,house,alpha,level=0,part){
  const f=houseLevel(house,level);
+ if(part==='animated'){/* nur Bewegtes: Bildfolgen und Pfützenglanz, mit derselben Deckkraft wie im vollen Durchgang */
+  c.globalAlpha=1;for(const it of house.items)if(it.outdoor&&it.layer==='decal')drawDecal(c,it,'animated');
+  if(alpha>0){c.globalAlpha=alpha;for(const it of f.items)if(!it.outdoor&&it.layer==='decal')drawDecal(c,it,'animated');}
+  c.globalAlpha=1;return;}
  c.globalAlpha=1;for(const room of house.rooms)if(room.outdoor)drawBelag(c,room,house.origin);
- for(const it of house.items)if(it.outdoor&&it.layer==='decal')drawDecal(c,it);
+ for(const it of house.items)if(it.outdoor&&it.layer==='decal')drawDecal(c,it,part);
  for(const room of house.rooms)if(room.outdoor)for(const q of room.rects)softEdge(c,q.x,q.y+q.h,q.w);
  if(level===0)castShadow(c,house,alpha);
  if(alpha>0){c.globalAlpha=alpha;
   for(const room of f.rooms)if(!room.outdoor)drawBelag(c,room,house.origin);
-  for(const it of f.items)if(!it.outdoor&&it.layer==='decal')drawDecal(c,it);
+  for(const it of f.items)if(!it.outdoor&&it.layer==='decal')drawDecal(c,it,part);
   wallShade(c,house,f);
   paintStairs(c,f,level);}
  c.globalAlpha=1;
 }
 /** Eine Wand samt Wandschmuck, tiefensortiert an ihrer Südkante; Zäune draußen sind immer sichtbar. */
 export function drawHouseWall(c,wall,house,alpha){
- const a=wall.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;drawKitWall(c,wall,house.heights.cut);c.globalAlpha=1;
+ const a=wall.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;
+ // Handy-Messung 2026-09-27: voll sichtbare Wände als Zwischenbild (layer-cache.js) – eine Kopie statt ~100 Rechtecke je Wand; beim Überblenden direkt.
+ if(a===1){const cut=house.heights.cut,key='wand|'+cut+'|'+kitStamp([wall.style,...(wall.decor||[]).map(it=>it.sprite)]);
+  if(cachedLayer(c,wall,key,wallBox(wall,cut),x=>drawKitWall(x,wall,cut,'static'))){drawKitWall(c,wall,cut,'animated');c.globalAlpha=1;return;}}
+ drawKitWall(c,wall,house.heights.cut);c.globalAlpha=1;
 }
+/** Rahmen um Wand, Krone, Tapete und Wandschmuck (großzügig: hohe Schmuckbilder ragen nach oben). */
+function wallBox(wall,cut){const flat=wall.maxX-wall.minX>wall.maxY-wall.minY,h=flat?wall.face:cut;let x0=wall.minX,x1=wall.maxX,y0=wall.minY-h;
+ for(const it of wall.decor||[]){x0=Math.min(x0,it.minX);x1=Math.max(x1,it.minX+it.w);y0=Math.min(y0,wall.maxY-(it.def?.mount||0)-(it.height||8)-it.w*3);}
+ return {x0:Math.floor(x0-4),y0:Math.floor(y0-4),x1:Math.ceil(x1+4),y1:Math.ceil(wall.maxY+4)};}
 /** Stehendes Teil der Einrichtung; drinnen mit dem Dach ausgeblendet, draußen immer. */
 export function drawHouseItem(c,it,alpha){
  const a=it.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;drawKitItem(c,it);c.globalAlpha=1;

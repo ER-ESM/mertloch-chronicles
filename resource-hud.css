@@ -21,15 +21,15 @@
 /* Schorsch: großer Grillrost – Garzustand auf einen Blick */
 .player-panel .rh-tray[data-kind=grill]{height:60px}
 .touch-mode .player-panel .rh-tray[data-kind=grill]{height:56px}
-.touch-mode:has(.game-popup) .player-panel .rh-tray{display:none}
+.touch-mode.hs-popup .player-panel .rh-tray{display:none}
 /* Unter dem Band: Buffs rücken nach unten (nur Desktop; am Handy liegen sie ohnehin tiefer). */
-body:not(.touch-mode):has(#resourceTray) #buffStrip:not([data-hud-custom]){top:236px}
-body:not(.touch-mode):has(#resourceTray) #debuffStrip:not([data-hud-custom]){top:312px}
-body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #buffStrip:not([data-hud-custom]){top:256px}
-body:not(.touch-mode):has(#resourceTray[data-kind=grill]) #debuffStrip:not([data-hud-custom]){top:332px}
+body:not(.touch-mode).hs-tray #buffStrip:not([data-hud-custom]){top:236px}
+body:not(.touch-mode).hs-tray #debuffStrip:not([data-hud-custom]){top:312px}
+body:not(.touch-mode).hs-tray-grill #buffStrip:not([data-hud-custom]){top:256px}
+body:not(.touch-mode).hs-tray-grill #debuffStrip:not([data-hud-custom]){top:332px}
 /* Handy hochkant: das Zielfenster liegt unter dem Spielerfenster – es rückt um das Band nach unten. */
-@media (orientation:portrait){body.touch-mode:not(:has(.game-popup)):has(#resourceTray) #targetPanel:not([data-hud-custom]){margin-top:40px}
- body.touch-mode:not(:has(.game-popup)):has(#resourceTray[data-kind=grill]) #targetPanel:not([data-hud-custom]){margin-top:60px}}
+@media (orientation:portrait){body.touch-mode:not(.hs-popup).hs-tray #targetPanel:not([data-hud-custom]){margin-top:40px}
+ body.touch-mode:not(.hs-popup).hs-tray-grill #targetPanel:not([data-hud-custom]){margin-top:60px}}
 /* Schorsch „Zu heiß“: Thermometer glüht rot, beim Eintritt kurz Alarm (Blinken und Zittern) */
 .player-panel .bar.energy.rh-hot{box-shadow:0 0 6px #ff3a2a,0 0 0 1px #ff6a4a!important}
 .player-panel .bar.energy.rh-alarm{animation:rh-alarm .22s linear infinite}

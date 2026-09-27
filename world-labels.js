@@ -1,3 +1,4 @@
+import {onLayoutPhase} from './layout-phase.js';
 // Weltbeschriftungen wie in WoW (Runde 2b, 2026-09-24, Grafikbefund 4, Kenner-Befund 9):
 // – Orts-, Gebäude- und Raumnamen stehen nicht dauerhaft in der Welt, sondern nur unter der Maus (dazu Zonentitel und Karte).
 // – Schilder von Gegnern und Beute weichen seitlich aus, statt auf der eigenen Figur zu liegen.
@@ -16,10 +17,12 @@ export function liftOffHero(g,x,y,half){
  const hits=x+half>p.x-HERO.half&&x-half<p.x+HERO.half&&y+6>top&&y-10<bottom;
  if(!hits)return {x,y};return {x:x>=p.x?p.x+HERO.half+half+2:p.x-HERO.half-half-2,y};
 }
-let boxes=[],measured=0;
-function hudBoxes(cv){const now=performance.now();if(now-measured<300)return boxes;measured=now;const o=cv.getBoundingClientRect();
- boxes=[];for(const s of HUD)for(const el of document.querySelectorAll(s)){const r=el.getBoundingClientRect();if(r.width>1&&r.height>1&&getComputedStyle(el).visibility!=='hidden')boxes.push({l:r.left-o.left,t:r.top-o.top,r:r.right-o.left,b:r.bottom-o.top});}
- return boxes;}
+let boxes=[],measured=0,wanted=null;
+/* Handy-Messung 2026-09-27: HUD-Flächen am Bildanfang messen (layout-phase.js), nicht mitten im Zeichnen nach den HUD-Schreibvorgängen */
+function measureHud(cv){measured=performance.now();const o=cv.getBoundingClientRect();
+ boxes=[];for(const s of HUD)for(const el of document.querySelectorAll(s)){const r=el.getBoundingClientRect();if(r.width>1&&r.height>1&&getComputedStyle(el).visibility!=='hidden')boxes.push({l:r.left-o.left,t:r.top-o.top,r:r.right-o.left,b:r.bottom-o.top});}}
+onLayoutPhase(()=>{if(wanted&&wanted.isConnected&&performance.now()-measured>=300)measureHud(wanted);});
+function hudBoxes(cv){wanted=cv;if(!measured)measureHud(cv);return boxes;}
 /** Prüffunktion je Schild der Schrift-Ebene: false, wenn sein Kasten eine HUD-Fläche berührt. */
 export function labelHudFree(cv,dpr,k){
  const list=hudBoxes(cv);if(!list.length)return ()=>true;const f=k/dpr;

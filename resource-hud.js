@@ -11,6 +11,7 @@ import {RESOURCES,RESOURCE_HUD_TEXT as T} from './content/index.js';
 import {drawSprite,pixelText,pixelTextWidth,suitGlyph,drawCard,paintBigCardCanvas,suitColor,drawBadge,spriteSize,sprite} from './resource-art.js';
 import {cardSlotName} from './mechanic-help.js';
 import {syncSkillRoles} from './action-bar-ui.js';
+import {cssSize} from './layout-phase.js';
 // Runde 4 (hud4, Kenner-Playtest 25.09. abends): Tooltip-Flächen werden beim Wiederaufbau übernommen statt neu angehängt (Tod,
 // Wiederbeleben, Klassen-/Heldenwechsel, Schrein), die Augen-Marken sind schmale Kerben, Käthes Kartenknöpfe heißen nach ihrer
 // Karte, Abrechnen zahlt sichtbar aus (Augen fliegen zum Ziel, große Zahl, Stempel), Annis Trend steht getrennt von den Likes,
@@ -113,7 +114,7 @@ const mix=(a,b,t)=>{const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),A=p(a
 const px=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
 const el=(tag,cls,parent)=>{const e=document.createElement(tag);if(cls)e.className=cls;parent?.append(e);return e;};
 /** Leinwand auf die CSS-Größe ihres Trägers einpassen (Kartenpixel = CSS/2). */
-function fit(cv){const w=Math.max(8,Math.round(cv.clientWidth/P)),h=Math.max(4,Math.round(cv.clientHeight/P));if(w>8&&h>4&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;}return [cv.width,cv.height];}
+function fit(cv){/* Handy-Messung 2026-09-27: Größe über ResizeObserver (layout-phase.js) – clientWidth/Height je Bild erzwangen nach den HUD-Schreibvorgängen ein Layout */const z=cssSize(cv),w=Math.max(8,Math.round(z.w/P)),h=Math.max(4,Math.round(z.h/P));if(w>8&&h>4&&(cv.width!==w||cv.height!==h)){cv.width=w;cv.height=h;}return [cv.width,cv.height];}
 
 export function mountResourceHud(getGame){
  let kind=null,meter=null,tray=null,trayArt=null,reload=null,reloadArt=null,enemyCard=null,lastFx=0,dirty=true,lastDraw=0,lastSig='',prev={},needHover=false,pointer=null,payoutLayer=null,abrechnenHits=0,reloadPlace=0;

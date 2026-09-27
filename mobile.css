@@ -3,7 +3,7 @@
 .touch-mode{--touch-size:56px;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px);--safe-right:env(safe-area-inset-right,0px);overscroll-behavior:none;user-select:none;-webkit-user-select:none}
 .touch-mode[data-touch-size=small]{--touch-size:48px}.touch-mode[data-touch-size=large]{--touch-size:64px}
 .touch-mode .action-area,.touch-mode .touch-pad,.touch-mode .game-menu-rail,.touch-mode .world-controls,.touch-mode .world-menu-brand,.touch-mode .quest-panel,.touch-mode .minimap,.touch-mode .region-label,.touch-mode .combat-log,.touch-mode .announcement,.touch-mode #interact{display:none!important}
-.touch-mode:has(.game-popup) #touchMenu{visibility:hidden}
+.touch-mode.hs-popup #touchMenu{visibility:hidden}
 #mobileControls button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #touchMenu{position:absolute;right:calc(26px + var(--safe-right));top:calc(12px + var(--safe-top));width:54px;height:54px;z-index:1001;display:grid;justify-items:center;padding:3px;gap:0}#touchMenu canvas{width:29px;height:29px;pointer-events:none}#touchMenu span{font-size:10px}.mobile-notice{position:absolute;right:-5px;top:-5px;padding:1px 6px}
 #touchContext{position:absolute;top:calc(74px + var(--safe-top));right:calc(26px + var(--safe-right));width:min(304px,calc(100vw - 24px - var(--safe-left) - var(--safe-right)));max-height:calc(100dvh - 98px - var(--safe-top) - var(--safe-bottom));overflow:auto;background:#233b2bf5;z-index:1002;padding:12px;box-shadow:0 0 0 3px #213626,4px 6px 0 #13271da8}
@@ -23,7 +23,7 @@
 @media(orientation:landscape){.touch-mode .player-panel{width:205px;height:80px}.touch-mode #targetPanel,.touch-mode .buff-strip:not(:empty)~#targetPanel{left:calc(234px + var(--safe-left));top:calc(12px + var(--safe-top));width:207px}.touch-mode #buffStrip{top:calc(102px + var(--safe-top));max-width:200px}.touch-mode .touch-topline{left:calc(456px + var(--safe-left));top:calc(15px + var(--safe-top));max-width:calc(100vw - 550px);display:block}.touch-mode #touchLesson{margin-top:5px}.touch-mode #touchStick{width:108px;height:108px;left:calc(24px + var(--safe-left));bottom:calc(27px + var(--safe-bottom))}.touch-mode #touchUtility{left:calc(24px + var(--safe-left));bottom:calc(147px + var(--safe-bottom))}.touch-mode #touchActions{bottom:calc(28px + var(--safe-bottom))}.touch-mode #touchContext{width:300px;max-height:calc(100dvh - 30px - var(--safe-top) - var(--safe-bottom));top:calc(12px + var(--safe-top));right:calc(92px + var(--safe-right))}.touch-mode #toast{bottom:calc(210px + var(--safe-bottom));max-width:170px}.touch-mode #touchCancelAim{bottom:calc(259px + var(--safe-bottom))}}
 @media(max-width:370px) and (orientation:portrait){.touch-mode{--touch-size:50px}.touch-mode[data-touch-size=large]{--touch-size:54px}.touch-mode #touchStick{width:104px;height:104px;left:calc(12px + var(--safe-left))}.touch-mode #touchUtility{left:calc(12px + var(--safe-left));bottom:calc(146px + var(--safe-bottom))}.touch-mode .player-panel{width:204px}.touch-mode .touch-slot-editor{gap:9px}.touch-mode .popup-body{padding:9px}}
 @media(max-height:420px) and (orientation:landscape){.touch-mode{--touch-size:48px}.touch-mode[data-touch-size=large]{--touch-size:52px}.touch-mode #touchActions .touch-special{width:44px;height:44px}.touch-mode #touchPage,.touch-mode #touchConfigure{height:34px}.touch-mode #touchCancelAim{bottom:calc(242px + var(--safe-bottom))}.touch-mode .touch-topline{display:none}}
-@media(orientation:portrait){.touch-mode #targetPanel,.touch-mode .buff-strip:not(:empty)~#targetPanel{top:calc(102px + var(--safe-top))}.touch-mode:has(#targetPanel:not(.hidden)) .touch-topline{display:none}.touch-mode:has(#targetPanel:not(.hidden)) #buffStrip{top:calc(204px + var(--safe-top))}}
+@media(orientation:portrait){.touch-mode #targetPanel,.touch-mode .buff-strip:not(:empty)~#targetPanel{top:calc(102px + var(--safe-top))}.touch-mode.hs-target .touch-topline{display:none}.touch-mode.hs-target #buffStrip{top:calc(204px + var(--safe-top))}}
 .touch-mode .popup-person .rpg-heading{margin-bottom:6px;padding-bottom:6px}.touch-mode .popup-person .rpg-heading .eyebrow{display:none}.touch-mode .popup-person .rpg-heading h2{margin:3px 0}.touch-mode .armory-banner{margin:6px 0 10px;gap:8px}.touch-mode .armory-banner .paper-doll{width:46px;padding:2px}.touch-mode .armory-banner .paper-doll canvas{width:40px;height:50px}.touch-mode .armory-banner p{display:none}.touch-mode .armory-banner button{padding:5px;margin-top:5px}.touch-mode .equipment-grid{gap:7px}@media(orientation:landscape){.touch-mode .armory-banner{display:none}.touch-mode .popup-person .rpg-heading{margin-bottom:9px}}
 
 /* Wegmarke als Laufbefehl (P6): ein Tipp läuft zur goldenen Wegmarke. */
@@ -65,8 +65,8 @@
 .touch-mode .player-panel:has(#classMechanicArt:not([hidden])){height:128px}
 .touch-mode #classMechanicArt{width:100%!important;height:auto!important;aspect-ratio:440/112}
 @media(orientation:portrait){
- .touch-mode:has(#classMechanicArt:not([hidden])) .touch-topline{top:calc(150px + var(--safe-top))}
- .touch-mode:has(#classMechanicArt:not([hidden])) #targetPanel{top:calc(150px + var(--safe-top))}
+ .touch-mode.hs-mechanic .touch-topline{top:calc(150px + var(--safe-top))}
+ .touch-mode.hs-mechanic #targetPanel{top:calc(150px + var(--safe-top))}
 }
 /* Klein (≤ 370 px): fünf Reiter in einer Zeile trotz 8 px Abstand – Beschriftung 11 px (M-12: ≥ 10 px), kein Umbruch. */
 /* Sieben Reiter (E-43): auf Touch ein festes Raster, damit kein Reiter aus dem Fenster ragt – schmale Handys bekommen zwei Reihen (4 + 3), jeder Reiter bleibt ≥ 44 px. */

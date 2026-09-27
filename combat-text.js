@@ -4,6 +4,7 @@
 // poppen größer. Gleiche Treffer innerhalb von 350 ms werden zu einer Summe zusammengefasst (MSBT „merge").
 // Quelle ist das Engine-Ereignis `combat` (engine.js sct()). Keine Inhaltstexte hier; Namen kommen mit dem Ereignis.
 import {iconMarkup,paintDescribeIcons} from './describe-ui.js';
+import {rectOf} from './layout-phase.js';
 const LIFE=1.6,MERGE=.35,MAX=6,CALLOUT_LIFE=2.8;/* Dungeon-Fix 6: Ausrufe (callout) stehen länger */
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
 /** Icon je Eintrag: Kniff, Talent/Proc, Gegenstand oder Symbol; `icon` ist ein Beschreibungs-Icon (describe) oder ein Item-Art-Schlüssel. */
@@ -31,22 +32,29 @@ export function mountCombatText(shell,api){
   if(twin){twin.e.value+=e.value;twin.e.crit=twin.e.crit||e.crit;twin.node.querySelector('b').textContent=fmt(twin.e);twin.node.classList.toggle('sct-crit',!!twin.e.crit);return;}
   // E-72 Runde 4 (Kenner-Befund „BEREIT-Textsalat“): gleiche Meldung ohne Zahl (BEREIT, DECKUNG …), solange die erste noch steht → dieselbe Zeile mit „×N“, neu angestoßen
   const echo=e.value===undefined&&area.rows.find(r=>r.e.value===undefined&&noteKey(r.e)===noteKey(e)&&now-r.at<LIFE*1000);
-  if(echo){echo.n=(echo.n||1)+1;echo.at=now;echo.node.querySelector('b').textContent=fmt(e)+' ×'+echo.n;echo.node.style.animation='none';void echo.node.offsetWidth;echo.node.style.animation='';clearTimeout(echo.timer);echo.timer=setTimeout(()=>drop(area,echo.node),LIFE*1000+50);return;}
+  if(echo){echo.n=(echo.n||1)+1;echo.at=now;echo.node.querySelector('b').textContent=fmt(e)+' ×'+echo.n;echo.node.style.animation='none';void echo.node.offsetWidth;echo.node.style.animation='';echo.until=now+LIFE*1000+50;return;}
   const node=document.createElement('div');node.className='sct-row sct-'+e.kind+(e.crit?' sct-crit':'')+(e.big?' sct-big':'')+(e.callout?' sct-callout':'')+(e.calloutIcon?' sct-callout sct-callout-icon':'');/* Dungeon-Fix 6: Ausrufe über Söldnern (mit Wort bzw. nur Symbol) */
-  node.innerHTML=icon(e)+'<b>'+esc(fmt(e))+'</b>'+(e.text&&e.value!==undefined?'<small>'+esc(e.text)+'</small>':'');
+  /* Handy-Messung 2026-09-27: Symbol-Leinwand aus dem Vorrat (gleiches Symbol = gleiche Markierung) statt je Zeile neu anlegen und malen –
+     eine frische Leinwand kostete beim ersten Zeichnen ~1–3 ms (Grafikspeicher anlegen), im Kampf mehrmals je Sekunde */
+  const mark=icon(e),reused=takeIcon(mark);node.innerHTML='<b>'+esc(fmt(e))+'</b>'+(e.text&&e.value!==undefined?'<small>'+esc(e.text)+'</small>':'');if(reused)node.prepend(reused);else node.insertAdjacentHTML('afterbegin',mark);node._iconMark=mark;
   if(e.color)node.style.color=e.color;
   // Stapeln: kommt der nächste Eintrag dicht hinter dem letzten, startet er ein Stück höher (MSBT-Warteschlange ohne Warten)
   const gap=now-area.last;const offset=gap<220?Math.min(3,Math.round((220-gap)/70))*18:0;node.style.setProperty('--sct-offset',(-offset)+'px');area.last=now;
-  const row={e:{...e},node,at:now};area.el.append(node);area.rows.push(row);paintDescribeIcons(node,api.game());
-  while(area.rows.length>(e.actor?3:MAX)){const old=area.rows.shift();clearTimeout(old.timer);old.node.remove();}
-  row.timer=setTimeout(()=>drop(area,node),(e.callout||e.calloutIcon?CALLOUT_LIFE:LIFE)*1000+50);
+  const row={e:{...e},node,at:now};area.el.append(node);area.rows.push(row);if(!reused)paintDescribeIcons(node,api.game());
+  while(area.rows.length>(e.actor?3:MAX)){const old=area.rows.shift();old.node.remove();giveIcon(old.node);}
+  /* Handy-Messung 2026-09-27: Ablauf im Bildtakt (update) statt per Timer – eine Zeile, die zwischen zwei Bildern verschwindet, erzwang am
+     Bildanfang eine eigene Stilberechnung (die :has()-Regeln am body machen jede Kinderänderung teuer) */row.until=now+(e.callout||e.calloutIcon?CALLOUT_LIFE:LIFE)*1000+50;
  }
  const noteKey=e=>e.kind+'|'+(e.text||'');
- function drop(area,node){node.remove();const i=area.rows.findIndex(r=>r.node===node);if(i>=0)area.rows.splice(i,1);}
  const fmt=e=>e.value===undefined?e.text:(e.kind==='damage'&&e.area==='in'?'−':e.kind==='heal'||e.kind==='xp'?'+':'')+Math.round(e.value)+(e.crit?'!':'')+(e.unit?' '+e.unit:'');
  /** Jede Bildwiederholung: Laufbereiche über den Helden legen (Bildschirmkoordinaten aus der Kamera). */
+ function sweep(group,now){for(const a of Object.values(group))if(a.rows?.length)for(let i=a.rows.length-1;i>=0;i--)if(a.rows[i].until<=now){const n=a.rows[i].node;n.remove();giveIcon(n);a.rows.splice(i,1);}}
+ const iconPool=new Map();
+ function takeIcon(mark){const list=iconPool.get(mark);return list?.length?list.pop():null;}
+ function giveIcon(node){const cv=node.firstElementChild;if(!cv||cv.tagName!=='CANVAS'||!node._iconMark)return;let list=iconPool.get(node._iconMark);if(!list){if(iconPool.size>40)iconPool.delete(iconPool.keys().next().value);iconPool.set(node._iconMark,list=[]);}if(list.length<MAX)list.push(cv);}
  function update(renderer,game){
-  if(!renderer||!game)return;const r=renderer.canvas.getBoundingClientRect(),shellRect=shell.getBoundingClientRect();
+  {const now=performance.now();sweep(areas,now);for(const g of companions.values())sweep(g.areas,now);}
+  if(!renderer||!game)return;/* Handy-Messung 2026-09-27: Rechtecke vom Bildanfang (layout-phase.js) statt zwei Layout-Abfragen je Bild */const r=rectOf(renderer.canvas),shellRect=rectOf(shell);
   const kx=r.width/renderer.viewWidth,ky=r.height/renderer.viewHeight,p=game.player;
   const o=renderer.viewOrigin||{x:renderer.camera.x-renderer.viewWidth/2,y:renderer.camera.y-renderer.viewHeight/2};
   const x=(p.x-o.x)*kx+r.left-shellRect.left,y=(p.y-o.y)*ky+r.top-shellRect.top;

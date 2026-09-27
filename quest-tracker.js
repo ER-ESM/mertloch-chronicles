@@ -10,6 +10,7 @@ import {chapterState,rewardLine} from './chapter-ui.js';
 import {hotspotTracker} from './hotspot-ui.js';
 import {QUEST_TRACKER_UI as T,ACTS,STORY_CHAPTERS,TUTORIAL as TUT} from './content/index.js';
 import {isDailyTitle} from './daily-mark.js';
+import {viewport,rectOf} from './layout-phase.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /** Welche Quest die Wegmarke hat: Nebenauftrag, sonst Startreihe/Stammgast/Aushang, sonst die Hauptquest. */
@@ -86,13 +87,23 @@ export function trackerHtml(g,{metres,waypoint,room=4}={}){
  return (focus?row(focus,{focus:true,dist:waypoint?near(waypoint.point):null}):'')
   +`<div id="questOthers" class="quest-others">${shown.map(e=>row(e,{focus:false,dist:far(e.dest?.point)})).join('')}${rest.length?`<small class="qt-more" data-tooltip-label="${esc(T.moreTitle)}" data-tooltip-note="${esc(rest.map(e=>esc(e.title)).join('<br>'))}">+${rest.length}</small>`:''}</div>`;
 }
+const trackerShapes=new WeakMap();let decoder=null;
+const decodeText=t=>{if(!/&/.test(t))return t;decoder||=document.createElement('textarea');decoder.innerHTML=t;return decoder.value;};
 /** Baut die Verfolgung in `panel` (.quest-panel) – nur neu, wenn sich der Inhalt ändert. */
 export function renderTracker(panel,g,opts){
  const body=panel?.querySelector('.qt-body');if(!body)return;
  // Ohne Scrollen: so viele weitere Aufträge, wie zwischen Verfolgung und Aktionsleiste passen (~44 px je Auftrag).
  // Platz nach unten nur alle 1,5 s bzw. nach Größenänderung messen: getBoundingClientRect erzwingt direkt nach den HUD-Schreibvorgängen
  // ein volles Layout (gemessen 1,6 ms je Aufruf, zehnmal pro Sekunde; auf dem Handy ein Mehrfaches).
- const now=performance.now();if(!panel.roomAt||now-panel.roomAt>1500||panel.roomH!==innerHeight){panel.roomAt=now;panel.roomH=innerHeight;panel.room=Math.max(1,Math.min(6,Math.floor((innerHeight-panel.getBoundingClientRect().top-230)/44)-1));}
+ // Handy-Messung 2026-09-27: innerHeight und das Rechteck kommen vom Bildanfang (layout-phase.js) – auf Android erzwang schon das Lesen von
+ // innerHeight nach den HUD-Schreibvorgängen ein volles Layout (renderTracker war 11 % der Skriptzeit im Kampf).
+ const now=performance.now(),vh=viewport().h;if(!panel.roomAt||now-panel.roomAt>1500||panel.roomH!==vh){panel.roomAt=now;panel.roomH=vh;panel.room=Math.max(1,Math.min(6,Math.floor((vh-rectOf(panel).top-230)/44)-1));}
  const room=panel.room;
- const html=trackerHtml(g,{...opts,room});if(body.dataset.sig===html)return;body.dataset.sig=html;body.innerHTML=html;
+ const html=trackerHtml(g,{...opts,room});if(body.dataset.sig===html)return;body.dataset.sig=html;
+ // Handy-Messung 2026-09-27: Ändern sich nur Entfernungen (<em>…</em>, beim Laufen mehrmals je Sekunde), nur diese Texte tauschen statt
+ // die ganze Verfolgung neu aufzubauen (neuer Teilbaum = Stil und Layout für alles darin).
+ const shape=html.replace(/<em>[^<]*<\/em>/g,'<em></em>');
+ if(trackerShapes.get(body)===shape){const vals=[...html.matchAll(/<em>([^<]*)<\/em>/g)].map(m=>m[1]),ems=body.querySelectorAll('em');
+  if(ems.length===vals.length){ems.forEach((e,i)=>{const v=decodeText(vals[i]);if(e.textContent!==v)e.textContent=v;});return;}}
+ trackerShapes.set(body,shape);body.innerHTML=html;
 }

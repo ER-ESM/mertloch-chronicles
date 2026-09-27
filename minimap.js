@@ -14,6 +14,9 @@ import {inDungeon,dungeonEntrance} from './dungeon.js';
 import {isElite} from './enemy-ui.js';
 import {SCALE} from './world.js';
 import {mapIcon,paintMapIcon,MAP_OUTLINE} from './map-symbols.js';
+import {cssSize} from './layout-phase.js';
+/* Handy-Messung 2026-09-27: sichtbar = hat eine Größe (ResizeObserver); offsetParent erzwang in jedem Bild ein Layout nach den HUD-Schreibvorgängen */
+const shown=el=>{const z=cssSize(el);return z.w>0&&z.h>0;};
 
 export const MINIMAP_KEY='mertloch-minimap-v1';
 const DPR=2,TAU=Math.PI*2;
@@ -234,7 +237,7 @@ function mountMinimap(root,canvas){
  // Ortsschild, Uhr und Unterkante laufen auch im Kiosk/Verlies weiter.
  function chrome(now){if(now-clockAt>5000&&s.clock){clockAt=now;const d=new Date();clock.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
   if(now-zoneAt>500){zoneAt=now;const z=document.querySelector('#zoneName')?.textContent||'';if(zoneEl.textContent!==z)zoneEl.textContent=z;publishBottom();}}
- function loop(now){raf=requestAnimationFrame(loop);if(now-last<M.frameMs||!renderer||document.hidden||!root.offsetParent)return;if(indoor){chrome(now);return;}last=now;try{draw(now);}catch(e){console.error('Minikarte',e);cancelAnimationFrame(raf);}}
+ function loop(now){raf=requestAnimationFrame(loop);if(now-last<M.frameMs||!renderer||document.hidden||!shown(root))return;if(indoor){chrome(now);return;}last=now;try{draw(now);}catch(e){console.error('Minikarte',e);cancelAnimationFrame(raf);}}
  apply();raf=requestAnimationFrame(loop);
  let spare=null;
  const self={offscreen:()=>{spare||=document.createElement('canvas');if(spare.width!==canvas.width){spare.width=spare.height=canvas.width;}return spare;},

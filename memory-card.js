@@ -10,6 +10,7 @@
 // Dungeon-Fix 5 (Prüfer-Playtest #728): kompakte Meldung statt Randkarte mit Bild und Prosa – Symbol, „Erinnerung“, Titel; Text im Tooltip, Klick öffnet
 // Bild und Text. Gilt auch am Handy (dort vorher ein Fenster mitten im Bild), oben mittig unter der Kopfleiste.
 import {MEMORY_CARD as T} from './content/index.js';
+import {viewport} from './layout-phase.js';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const CARD_WIDTH=300,CARD_GAP=10,CARD_MIN_HEIGHT=180;
@@ -80,16 +81,16 @@ export function markMemoryPopup(storage,id){if(!id)return;const l=popupIds(stora
  *  über der Welt und schluckte das Laufen; ihr Bild-Tooltip geht mit ihr (hideTip beim Zurücktreten und Schließen). */
 export function mountMemoryCard(shell,{onClose,onZoom,onRightClick,hideTip,paint,now=()=>performance.now()}={}){
  const el=document.createElement('aside');el.className='memory-card';el.hidden=true;el.setAttribute('role','status');el.setAttribute('aria-live','polite');
- shell.append(el);let current=null,timing={},hover=false,lastRect=null;
+ shell.append(el);let current=null,timing={},hover=false,lastRect=null,lastSize='';
  const rect=sel=>{const e=document.querySelector(sel);if(!e||e.hidden)return null;const r=e.getBoundingClientRect();return r.width&&r.height?r:null;};
  function place(){
   if(!current||timing.held)return;
   /* Dungeon-Fix 5: am Handy oben mittig unter allem, was dort oben steht (Kopfleiste, Heldenrahmen, Ziel, Bossrahmen) */
-  if(document.body.classList.contains('touch-mode')){const W=innerWidth,w=el.offsetWidth||CARD_WIDTH,mid=r=>r.left<W/2+w/2&&r.right>W/2-w/2;
-   const top=Math.round(Math.max(8,...['.touch-topline','.player-panel','#targetPanel:not(.hidden)','.boss-frame:not([hidden])','#unitGroupDock.unit-dock-landscape'].map(rect).filter(r=>r&&mid(r)&&r.top<innerHeight*.4).map(r=>r.bottom+6)));
-   const right=Math.max(8,Math.round((W-w)/2));for(const [k,v] of [['right',right+'px'],['top',top+'px'],['maxHeight','']])if(el.style[k]!==v)el.style[k]=v;
-   const r=el.getBoundingClientRect();if(r.width&&r.height)lastRect={left:r.left,right:r.right,top:r.top,bottom:r.bottom};return;}
-  const p=cardPlace({width:innerWidth,height:innerHeight,column:['.minimap','#miniButton','.quest-panel'].map(rect),floor:['.game-menu-rail','.xp-track'].map(rect),avoid:['#combatMeter'].map(rect)});
+  if(document.body.classList.contains('touch-mode')){const V=viewport(),W=V.w,w=el.offsetWidth||CARD_WIDTH,mid=r=>r.left<W/2+w/2&&r.right>W/2-w/2;
+   const top=Math.round(Math.max(8,...['.touch-topline','.player-panel','#targetPanel:not(.hidden)','.boss-frame:not([hidden])','#unitGroupDock.unit-dock-landscape'].map(rect).filter(r=>r&&mid(r)&&r.top<V.h*.4).map(r=>r.bottom+6)));
+   const right=Math.max(8,Math.round((W-w)/2));const size=el.offsetWidth+'x'+el.offsetHeight;let moved=!lastRect||size!==lastSize;lastSize=size;for(const [k,v] of [['right',right+'px'],['top',top+'px'],['maxHeight','']])if(el.style[k]!==v){el.style[k]=v;moved=true;}
+   /* Handy-Messung 2026-09-27: nur nach einer Verschiebung neu messen (Lesen direkt nach dem Schreiben erzwingt ein Layout) */if(!moved)return;const r=el.getBoundingClientRect();if(r.width&&r.height)lastRect={left:r.left,right:r.right,top:r.top,bottom:r.bottom};return;}
+  const V=viewport(),p=cardPlace({width:V.w,height:V.h,column:['.minimap','#miniButton','.quest-panel'].map(rect),floor:['.game-menu-rail','.xp-track'].map(rect),avoid:['#combatMeter'].map(rect)});
   const s=el.style;for(const [k,v] of [['right',p.right],['top',p.top],['maxHeight',p.maxHeight]])if(s[k]!==v+'px')s[k]=v+'px';
   // Reicht die Höhe nicht (lange Verfolgung, kleiner Schirm), wird zuerst das Bild flacher, zuletzt fällt es weg – der Text bleibt.
   // Läuft alle 100 ms mit (updateUI): nur schreiben, was sich ändert.

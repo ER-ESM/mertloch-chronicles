@@ -1,0 +1,3514 @@
+{
+ "label": "vorher-gpu",
+ "date": "2026-09-27T09:06:10.925Z",
+ "device": {
+  "width": 915,
+  "height": 412,
+  "deviceScaleFactor": 2.625,
+  "mobile": true,
+  "screenOrientation": {
+   "type": "landscapePrimary",
+   "angle": 90
+  },
+  "ua": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36"
+ },
+ "gpuArgs": [
+  "--use-angle=swiftshader",
+  "--enable-unsafe-swiftshader",
+  "--ignore-gpu-blocklist",
+  "--enable-gpu-rasterization",
+  "--enable-accelerated-2d-canvas",
+  "--enable-gpu"
+ ],
+ "seconds": 20,
+ "runs": [
+  {
+   "rate": 4,
+   "scene": "idle",
+   "prep": {},
+   "before": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": false,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 1,
+    "ground": {
+     "full": 2,
+     "strips": 1,
+     "hits": 206
+    }
+   },
+   "after": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": false,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 1,
+    "ground": {
+     "full": 3,
+     "strips": 1,
+     "hits": 519
+    }
+   },
+   "trace": {
+    "frames": 257,
+    "seconds": 20,
+    "fps": 12.8,
+    "mainPerFrame": {
+     "n": 257,
+     "mean": 77.43,
+     "p50": 82.03,
+     "p95": 104.22,
+     "p99": 122.53,
+     "max": 177.61,
+     "over16": 257,
+     "over33": 257,
+     "over50": 252
+    },
+    "rafTask": {
+     "n": 257,
+     "mean": 75.1,
+     "p50": 80.22,
+     "p95": 101.75,
+     "p99": 119.07,
+     "max": 176.79,
+     "over16": 257,
+     "over33": 257,
+     "over50": 247
+    },
+    "interval": {
+     "n": 257,
+     "mean": 77.63,
+     "p50": 82.19,
+     "p95": 104.27,
+     "p99": 122.56,
+     "max": 177.8,
+     "over16": 257,
+     "over33": 257,
+     "over50": 252
+    },
+    "kindsMean": {
+     "script": 55.01,
+     "style": 12.77,
+     "layout": 1.44,
+     "paint": 5.22,
+     "gc": 0.22,
+     "idle": 0.01,
+     "input": 0.04,
+     "other": 2.72
+    },
+    "kindsP95": {
+     "script": 71.2,
+     "style": 30.11,
+     "layout": 3.34,
+     "paint": 7.18,
+     "gc": 0,
+     "idle": 0.16,
+     "input": 0.57,
+     "other": 10.48
+    },
+    "styleRecalcsPerFrame": 1.44,
+    "styleElementsPerFrame": 257.5,
+    "layoutsPerFrame": 1.4,
+    "forcedPerFrame": 2.36,
+    "longTasks": {
+     "count": 248,
+     "max": 176.8
+    },
+    "gc": {
+     "count": 26,
+     "totalMs": 97.3,
+     "maxMs": 38.5,
+     "perSecond": 1.3
+    },
+    "worstFrames": [
+     {
+      "ms": 177.6,
+      "kinds": {
+       "script": 135.4,
+       "style": 27.7,
+       "layout": 3.2,
+       "paint": 5.4,
+       "gc": 4.4,
+       "other": 1.4
+      }
+     },
+     {
+      "ms": 134.8,
+      "kinds": {
+       "script": 53.5,
+       "style": 19.3,
+       "layout": 2.4,
+       "paint": 6.4,
+       "other": 53.2
+      }
+     },
+     {
+      "ms": 122.5,
+      "kinds": {
+       "script": 80.7,
+       "style": 29.4,
+       "layout": 2.9,
+       "paint": 7.8,
+       "other": 1.8
+      }
+     },
+     {
+      "ms": 119.8,
+      "kinds": {
+       "script": 52.9,
+       "style": 20.7,
+       "layout": 1.4,
+       "paint": 4.8,
+       "gc": 38.8,
+       "input": 0.6,
+       "other": 0.6
+      }
+     },
+     {
+      "ms": 119.4,
+      "kinds": {
+       "script": 82.1,
+       "style": 27.1,
+       "layout": 2.8,
+       "paint": 5.8,
+       "other": 1.6
+      }
+     },
+     {
+      "ms": 114.5,
+      "kinds": {
+       "script": 76.3,
+       "style": 26.3,
+       "layout": 3,
+       "paint": 7.4,
+       "other": 1
+      }
+     }
+    ],
+    "topEvents": [
+     {
+      "name": "FunctionCall",
+      "msPerFrame": 35.96
+     },
+     {
+      "name": "CommandBufferProxyImpl::WaitForGetOffset",
+      "msPerFrame": 14.93
+     },
+     {
+      "name": "UpdateLayoutTree",
+      "msPerFrame": 12.77
+     },
+     {
+      "name": "RasterImplementation::ReadbackImagePixels",
+      "msPerFrame": 2.08
+     },
+     {
+      "name": "LayerTreeHost::DoUpdateLayers",
+      "msPerFrame": 1.71
+     },
+     {
+      "name": "ThreadControllerImpl::RunTask",
+      "msPerFrame": 1.58
+     },
+     {
+      "name": "Layout",
+      "msPerFrame": 1.44
+     },
+     {
+      "name": "RasterImplementation::RasterCHROMIUM",
+      "msPerFrame": 1.38
+     },
+     {
+      "name": "Layerize",
+      "msPerFrame": 0.94
+     },
+     {
+      "name": "Paint",
+      "msPerFrame": 0.67
+     },
+     {
+      "name": "ProxyMain::BeginMainFrame",
+      "msPerFrame": 0.63
+     },
+     {
+      "name": "RasterImplementation::WritePixels",
+      "msPerFrame": 0.59
+     },
+     {
+      "name": "PrePaint",
+      "msPerFrame": 0.43
+     },
+     {
+      "name": "RunTask",
+      "msPerFrame": 0.32
+     }
+    ],
+    "threads": [
+     {
+      "thread": "CrRendererMain",
+      "busyPct": 99.7
+     },
+     {
+      "thread": "CrGpuMain",
+      "busyPct": 37
+     },
+     {
+      "thread": "Compositor",
+      "busyPct": 1.6
+     },
+     {
+      "thread": "VizCompositorThread",
+      "busyPct": 1.2
+     },
+     {
+      "thread": "ThreadPoolForegroundWorker",
+      "busyPct": 1
+     }
+    ],
+    "extra": {}
+   },
+   "prof": {
+    "profile": {
+     "busyMs": 13069.9,
+     "idlePct": 0.2,
+     "canvasPct": 49.9,
+     "gcPct": 0.1,
+     "programPct": 21.7,
+     "top": [
+      {
+       "fn": "fillRect",
+       "pct": 34.3,
+       "ms": 4483.5
+      },
+      {
+       "fn": "(program)",
+       "pct": 21.7,
+       "ms": 2831.9
+      },
+      {
+       "fn": "drawImage",
+       "pct": 13.9,
+       "ms": 1815
+      },
+      {
+       "fn": "renderTracker quest-tracker.js:90",
+       "pct": 7,
+       "ms": 916
+      },
+      {
+       "fn": "getBoundingClientRect",
+       "pct": 3.6,
+       "ms": 470.4
+      },
+      {
+       "fn": "querySelectorAll",
+       "pct": 1.1,
+       "ms": 142.2
+      },
+      {
+       "fn": "drawScene renderer.js:233",
+       "pct": 0.9,
+       "ms": 118.1
+      },
+      {
+       "fn": "updateUI app.js:491",
+       "pct": 0.6,
+       "ms": 83.8
+      },
+      {
+       "fn": "tick engine.js:572",
+       "pct": 0.6,
+       "ms": 80.9
+      },
+      {
+       "fn": "querySelector",
+       "pct": 0.6,
+       "ms": 79.1
+      },
+      {
+       "fn": "combatStats rpg.js:40",
+       "pct": 0.4,
+       "ms": 52.7
+      },
+      {
+       "fn": "sprite kit-art.js:24",
+       "pct": 0.4,
+       "ms": 50.5
+      },
+      {
+       "fn": "fill kit-art.js:35",
+       "pct": 0.4,
+       "ms": 49.1
+      },
+      {
+       "fn": "blocked world.js:75",
+       "pct": 0.4,
+       "ms": 47.3
+      },
+      {
+       "fn": "frame app.js:556",
+       "pct": 0.4,
+       "ms": 47.1
+      },
+      {
+       "fn": "draw renderer.js:217",
+       "pct": 0.4,
+       "ms": 46.4
+      },
+      {
+       "fn": "visible renderer.js:235",
+       "pct": 0.3,
+       "ms": 45.1
+      },
+      {
+       "fn": "equipmentStats rpg.js:39",
+       "pct": 0.3,
+       "ms": 44
+      },
+      {
+       "fn": "(anonym) app.js:515",
+       "pct": 0.3,
+       "ms": 35.1
+      },
+      {
+       "fn": "fill",
+       "pct": 0.3,
+       "ms": 34.9
+      },
+      {
+       "fn": "label",
+       "pct": 0.3,
+       "ms": 34
+      },
+      {
+       "fn": "fmt app.js:323",
+       "pct": 0.2,
+       "ms": 31.4
+      },
+      {
+       "fn": "drawPaperdoll paperdoll-art.js:220",
+       "pct": 0.2,
+       "ms": 29.9
+      },
+      {
+       "fn": "query spatial-index.js:10",
+       "pct": 0.2,
+       "ms": 28.3
+      },
+      {
+       "fn": "shade kit-art.js:36",
+       "pct": 0.2,
+       "ms": 28.2
+      }
+     ],
+     "canvas": [
+      {
+       "fn": "fillRect",
+       "pct": 34.3
+      },
+      {
+       "fn": "drawImage",
+       "pct": 13.9
+      },
+      {
+       "fn": "fill",
+       "pct": 0.3
+      },
+      {
+       "fn": "addColorStop",
+       "pct": 0.2
+      },
+      {
+       "fn": "save",
+       "pct": 0.2
+      },
+      {
+       "fn": "ellipse",
+       "pct": 0.2
+      },
+      {
+       "fn": "createLinearGradient",
+       "pct": 0.2
+      },
+      {
+       "fn": "strokeText",
+       "pct": 0.1
+      },
+      {
+       "fn": "restore",
+       "pct": 0.1
+      },
+      {
+       "fn": "measureText",
+       "pct": 0.1
+      }
+     ],
+     "canvasCallers": [
+      {
+       "fn": "fillRect ← drawBelag kit-art.js:48",
+       "pct": 32.9
+      },
+      {
+       "fn": "drawImage ← drawMaifeld maifeld-art.js:39",
+       "pct": 12.1
+      },
+      {
+       "fn": "drawImage ← drawKitItem kit-art.js:125",
+       "pct": 0.5
+      },
+      {
+       "fn": "drawImage ← drawDecalBody kit-art.js:60",
+       "pct": 0.3
+      },
+      {
+       "fn": "fillRect ← drawPaper kit-art.js:97",
+       "pct": 0.3
+      },
+      {
+       "fn": "fillRect ← drawKitWall kit-art.js:68",
+       "pct": 0.3
+      },
+      {
+       "fn": "fillRect ← drawProp world-prop-ui.js:28",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawContentPerson live-art.js:36",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawProp world-prop-ui.js:28",
+       "pct": 0.2
+      },
+      {
+       "fn": "fillRect ← fill kit-art.js:35",
+       "pct": 0.1
+      },
+      {
+       "fn": "fillRect ← band bude-house-art.js:40",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawVectorSprite art-quality.js:36",
+       "pct": 0.1
+      }
+     ]
+    },
+    "dom": {
+     "frames": 165,
+     "recordsPerFrame": 28.22,
+     "framesWithWritesPct": 52.7,
+     "topWriters": [
+      {
+       "target": "#touchSkills>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 3.16
+      },
+      {
+       "target": "#actionBar2>button.skill>span.stack childList",
+       "perFrame": 1.05
+      },
+      {
+       "target": "#zoneName childList",
+       "perFrame": 1.05
+      },
+      {
+       "target": "#zoneType childList",
+       "perFrame": 1.05
+      },
+      {
+       "target": "#rotationTip childList",
+       "perFrame": 1.05
+      },
+      {
+       "target": "#touchSpecials>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 1.05
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @role",
+       "perFrame": 0.53
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-label",
+       "perFrame": 0.53
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemin",
+       "perFrame": 0.53
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemax",
+       "perFrame": 0.53
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuenow",
+       "perFrame": 0.53
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemin",
+       "perFrame": 0.53
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemax",
+       "perFrame": 0.53
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuenow",
+       "perFrame": 0.53
+      }
+     ]
+    },
+    "heapDeltaMiB": 6.9,
+    "extra": {}
+   }
+  },
+  {
+   "rate": 4,
+   "scene": "walk",
+   "prep": {
+    "points": 7,
+    "length": 2130
+   },
+   "before": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": false,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 1,
+    "ground": {
+     "full": 4,
+     "strips": 1,
+     "hits": 792
+    }
+   },
+   "after": {
+    "x": 10308,
+    "y": 9702,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 6,
+     "strips": 6,
+     "hits": 1106
+    }
+   },
+   "trace": {
+    "frames": 195,
+    "seconds": 20.4,
+    "fps": 9.5,
+    "mainPerFrame": {
+     "n": 195,
+     "mean": 104.02,
+     "p50": 105.92,
+     "p95": 171.56,
+     "p99": 266.82,
+     "max": 281.3,
+     "over16": 195,
+     "over33": 191,
+     "over50": 180
+    },
+    "rafTask": {
+     "n": 195,
+     "mean": 100.61,
+     "p50": 101.34,
+     "p95": 167.82,
+     "p99": 261.21,
+     "max": 273.63,
+     "over16": 195,
+     "over33": 188,
+     "over50": 174
+    },
+    "interval": {
+     "n": 195,
+     "mean": 104.29,
+     "p50": 106.26,
+     "p95": 172.62,
+     "p99": 267.24,
+     "max": 283.55,
+     "over16": 195,
+     "over33": 191,
+     "over50": 181
+    },
+    "kindsMean": {
+     "script": 56.98,
+     "style": 29.63,
+     "layout": 2.68,
+     "paint": 8.6,
+     "gc": 2.11,
+     "idle": 0.01,
+     "input": 0.11,
+     "other": 3.9
+    },
+    "kindsP95": {
+     "script": 111.66,
+     "style": 59.34,
+     "layout": 5.8,
+     "paint": 17.1,
+     "gc": 0,
+     "idle": 0.03,
+     "input": 0.79,
+     "other": 12.25
+    },
+    "styleRecalcsPerFrame": 3.88,
+    "styleElementsPerFrame": 490.8,
+    "layoutsPerFrame": 2.43,
+    "forcedPerFrame": 4.69,
+    "longTasks": {
+     "count": 175,
+     "max": 273.6
+    },
+    "gc": {
+     "count": 88,
+     "totalMs": 753.7,
+     "maxMs": 125.4,
+     "perSecond": 4.3
+    },
+    "worstFrames": [
+     {
+      "ms": 281.3,
+      "kinds": {
+       "script": 42.1,
+       "style": 84.2,
+       "layout": 6.6,
+       "paint": 7.9,
+       "gc": 130.9,
+       "other": 9.7
+      }
+     },
+     {
+      "ms": 266.8,
+      "kinds": {
+       "script": 164.6,
+       "style": 73.1,
+       "layout": 10.5,
+       "paint": 11.6,
+       "other": 7
+      }
+     },
+     {
+      "ms": 229.5,
+      "kinds": {
+       "script": 81.7,
+       "style": 41.1,
+       "layout": 3.4,
+       "paint": 4.6,
+       "gc": 87.7,
+       "other": 11.1
+      }
+     },
+     {
+      "ms": 221.9,
+      "kinds": {
+       "script": 110.2,
+       "style": 41.7,
+       "layout": 3.4,
+       "paint": 5.2,
+       "gc": 53.7,
+       "other": 7.6
+      }
+     },
+     {
+      "ms": 213.2,
+      "kinds": {
+       "script": 141.9,
+       "style": 48.1,
+       "layout": 3.2,
+       "paint": 13.1,
+       "input": 0.8,
+       "other": 6.1
+      }
+     },
+     {
+      "ms": 183.9,
+      "kinds": {
+       "script": 133.2,
+       "style": 44.9,
+       "layout": 2.6,
+       "paint": 2.1,
+       "other": 1
+      }
+     }
+    ],
+    "topEvents": [
+     {
+      "name": "FunctionCall",
+      "msPerFrame": 43.94
+     },
+     {
+      "name": "UpdateLayoutTree",
+      "msPerFrame": 29.63
+     },
+     {
+      "name": "CommandBufferProxyImpl::WaitForGetOffset",
+      "msPerFrame": 7.89
+     },
+     {
+      "name": "LayerTreeHost::DoUpdateLayers",
+      "msPerFrame": 4.29
+     },
+     {
+      "name": "Layout",
+      "msPerFrame": 2.68
+     },
+     {
+      "name": "RasterImplementation::RasterCHROMIUM",
+      "msPerFrame": 2.11
+     },
+     {
+      "name": "ThreadControllerImpl::RunTask",
+      "msPerFrame": 1.9
+     },
+     {
+      "name": "Layerize",
+      "msPerFrame": 1.02
+     },
+     {
+      "name": "ProxyMain::BeginMainFrame",
+      "msPerFrame": 1
+     },
+     {
+      "name": "Paint",
+      "msPerFrame": 0.99
+     },
+     {
+      "name": "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE",
+      "msPerFrame": 0.98
+     },
+     {
+      "name": "Decode Image",
+      "msPerFrame": 0.85
+     },
+     {
+      "name": "RasterImplementation::ReadbackImagePixels",
+      "msPerFrame": 0.69
+     },
+     {
+      "name": "PrePaint",
+      "msPerFrame": 0.69
+     }
+    ],
+    "threads": [
+     {
+      "thread": "CrRendererMain",
+      "busyPct": 99.7
+     },
+     {
+      "thread": "CrGpuMain",
+      "busyPct": 43.4
+     },
+     {
+      "thread": "ThreadPoolForegroundWorker",
+      "busyPct": 3.1
+     },
+     {
+      "thread": "Compositor",
+      "busyPct": 1.8
+     },
+     {
+      "thread": "VizCompositorThread",
+      "busyPct": 1.4
+     }
+    ],
+    "extra": {
+     "arrivedEarly": false
+    }
+   },
+   "prof": {
+    "profile": {
+     "busyMs": 12685.8,
+     "idlePct": 0.9,
+     "canvasPct": 30.3,
+     "gcPct": 0.9,
+     "programPct": 27.6,
+     "top": [
+      {
+       "fn": "(program)",
+       "pct": 27.6,
+       "ms": 3502.6
+      },
+      {
+       "fn": "drawImage",
+       "pct": 13.5,
+       "ms": 1717.4
+      },
+      {
+       "fn": "fillRect",
+       "pct": 13.2,
+       "ms": 1680.8
+      },
+      {
+       "fn": "renderTracker quest-tracker.js:90",
+       "pct": 9.7,
+       "ms": 1225.1
+      },
+      {
+       "fn": "getBoundingClientRect",
+       "pct": 5.2,
+       "ms": 665.8
+      },
+      {
+       "fn": "drawScene renderer.js:233",
+       "pct": 1.4,
+       "ms": 173.7
+      },
+      {
+       "fn": "querySelectorAll",
+       "pct": 1.4,
+       "ms": 171.7
+      },
+      {
+       "fn": "tick engine.js:572",
+       "pct": 1.2,
+       "ms": 154.7
+      },
+      {
+       "fn": "getImageData",
+       "pct": 1.2,
+       "ms": 147.8
+      },
+      {
+       "fn": "loop minimap.js:237",
+       "pct": 1.1,
+       "ms": 137.4
+      },
+      {
+       "fn": "(garbage collector)",
+       "pct": 0.9,
+       "ms": 117.5
+      },
+      {
+       "fn": "updateUI app.js:491",
+       "pct": 0.8,
+       "ms": 96.3
+      },
+      {
+       "fn": "blocked world.js:75",
+       "pct": 0.7,
+       "ms": 87.4
+      },
+      {
+       "fn": "frame app.js:556",
+       "pct": 0.7,
+       "ms": 85.4
+      },
+      {
+       "fn": "querySelector",
+       "pct": 0.5,
+       "ms": 69.3
+      },
+      {
+       "fn": "composeCore paperdoll-kern.js:31",
+       "pct": 0.5,
+       "ms": 64.4
+      },
+      {
+       "fn": "step terrain-prefetch.js:20",
+       "pct": 0.5,
+       "ms": 59.5
+      },
+      {
+       "fn": "combatStats rpg.js:40",
+       "pct": 0.5,
+       "ms": 59.1
+      },
+      {
+       "fn": "(anonym)",
+       "pct": 0.4,
+       "ms": 55.2
+      },
+      {
+       "fn": "drawClanEnemy clan-art.js:17",
+       "pct": 0.4,
+       "ms": 49.6
+      },
+      {
+       "fn": "draw renderer.js:217",
+       "pct": 0.4,
+       "ms": 47.9
+      },
+      {
+       "fn": "place memory-card.js:85",
+       "pct": 0.4,
+       "ms": 44.8
+      },
+      {
+       "fn": "label",
+       "pct": 0.3,
+       "ms": 44.3
+      },
+      {
+       "fn": "tile paperdoll-art.js:151",
+       "pct": 0.3,
+       "ms": 43.1
+      },
+      {
+       "fn": "equipmentStats rpg.js:39",
+       "pct": 0.3,
+       "ms": 40.8
+      }
+     ],
+     "canvas": [
+      {
+       "fn": "drawImage",
+       "pct": 13.5
+      },
+      {
+       "fn": "fillRect",
+       "pct": 13.2
+      },
+      {
+       "fn": "getImageData",
+       "pct": 1.2
+      },
+      {
+       "fn": "fill",
+       "pct": 0.3
+      },
+      {
+       "fn": "clearRect",
+       "pct": 0.2
+      },
+      {
+       "fn": "save",
+       "pct": 0.2
+      },
+      {
+       "fn": "strokeText",
+       "pct": 0.2
+      },
+      {
+       "fn": "getContext",
+       "pct": 0.2
+      },
+      {
+       "fn": "measureText",
+       "pct": 0.2
+      },
+      {
+       "fn": "scale",
+       "pct": 0.1
+      }
+     ],
+     "canvasCallers": [
+      {
+       "fn": "fillRect ← drawBelag kit-art.js:48",
+       "pct": 12.8
+      },
+      {
+       "fn": "drawImage ← drawPixelRect content-art.js:107",
+       "pct": 8.1
+      },
+      {
+       "fn": "drawImage ← drawMaifeld maifeld-art.js:39",
+       "pct": 3.5
+      },
+      {
+       "fn": "getImageData ← tile paperdoll-art.js:151",
+       "pct": 1.2
+      },
+      {
+       "fn": "drawImage ← drawVectorSprite art-quality.js:36",
+       "pct": 0.3
+      },
+      {
+       "fn": "drawImage ← drawContentPerson live-art.js:36",
+       "pct": 0.3
+      },
+      {
+       "fn": "clearRect ← paintUiIconRaw ui-art.js:24",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← ghost renderer.js:115",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← draw ground-cache.js:12",
+       "pct": 0.2
+      },
+      {
+       "fn": "strokeText ← flushLabels renderer.js:219",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← paintMask terrain.js:14",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawBuilding tiny-architecture.js:32",
+       "pct": 0.1
+      }
+     ]
+    },
+    "dom": {
+     "frames": 219,
+     "recordsPerFrame": 27.95,
+     "framesWithWritesPct": 97.7,
+     "topWriters": [
+      {
+       "target": "#touchSkills>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 2.63
+      },
+      {
+       "target": "#sct>div.sct-companion @style",
+       "perFrame": 0.93
+      },
+      {
+       "target": "#actionBar2>button.skill>span.stack childList",
+       "perFrame": 0.88
+      },
+      {
+       "target": "#rotationTip childList",
+       "perFrame": 0.88
+      },
+      {
+       "target": "#touchSpecials>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 0.88
+      },
+      {
+       "target": "#zoneName childList",
+       "perFrame": 0.52
+      },
+      {
+       "target": "#zoneType childList",
+       "perFrame": 0.52
+      },
+      {
+       "target": "#classMechanicArt @hidden",
+       "perFrame": 0.44
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @role",
+       "perFrame": 0.44
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-label",
+       "perFrame": 0.44
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemin",
+       "perFrame": 0.44
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemax",
+       "perFrame": 0.44
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuenow",
+       "perFrame": 0.44
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemin",
+       "perFrame": 0.44
+      }
+     ]
+    },
+    "heapDeltaMiB": -1.1,
+    "extra": {
+     "arrivedEarly": false
+    }
+   }
+  },
+  {
+   "rate": 4,
+   "scene": "combat",
+   "prep": {},
+   "before": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 4,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 7,
+     "strips": 17,
+     "hits": 1403
+    }
+   },
+   "after": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 3,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 1224,
+    "chunks": 2,
+    "ground": {
+     "full": 8,
+     "strips": 17,
+     "hits": 1626
+    }
+   },
+   "trace": {
+    "frames": 170,
+    "seconds": 20.5,
+    "fps": 8.3,
+    "mainPerFrame": {
+     "n": 170,
+     "mean": 119.43,
+     "p50": 121.93,
+     "p95": 168.63,
+     "p99": 227.03,
+     "max": 251.78,
+     "over16": 170,
+     "over33": 170,
+     "over50": 169
+    },
+    "rafTask": {
+     "n": 170,
+     "mean": 114.97,
+     "p50": 119.16,
+     "p95": 156.25,
+     "p99": 226.61,
+     "max": 250.61,
+     "over16": 170,
+     "over33": 170,
+     "over50": 168
+    },
+    "interval": {
+     "n": 170,
+     "mean": 119.67,
+     "p50": 122.24,
+     "p95": 168.71,
+     "p99": 227.24,
+     "max": 251.99,
+     "over16": 170,
+     "over33": 170,
+     "over50": 169
+    },
+    "kindsMean": {
+     "script": 61.65,
+     "style": 39.04,
+     "layout": 3.41,
+     "paint": 10.5,
+     "gc": 0.76,
+     "idle": 0.01,
+     "input": 0.23,
+     "other": 3.82
+    },
+    "kindsP95": {
+     "script": 84.13,
+     "style": 71.97,
+     "layout": 8.29,
+     "paint": 16.88,
+     "gc": 0,
+     "idle": 0.17,
+     "input": 1,
+     "other": 10.07
+    },
+    "styleRecalcsPerFrame": 4.35,
+    "styleElementsPerFrame": 562.8,
+    "layoutsPerFrame": 2.49,
+    "forcedPerFrame": 5.77,
+    "longTasks": {
+     "count": 170,
+     "max": 250.6
+    },
+    "gc": {
+     "count": 42,
+     "totalMs": 212.4,
+     "maxMs": 57.8,
+     "perSecond": 2.1
+    },
+    "worstFrames": [
+     {
+      "ms": 251.8,
+      "kinds": {
+       "script": 71.2,
+       "style": 142,
+       "layout": 23,
+       "paint": 10.4,
+       "other": 5.1
+      }
+     },
+     {
+      "ms": 227,
+      "kinds": {
+       "script": 104.5,
+       "style": 102.2,
+       "layout": 6.3,
+       "paint": 11.4,
+       "other": 2.6
+      }
+     },
+     {
+      "ms": 197,
+      "kinds": {
+       "script": 67.9,
+       "style": 40,
+       "layout": 4.1,
+       "paint": 11.2,
+       "gc": 71.1,
+       "input": 0.8,
+       "other": 1.9
+      }
+     },
+     {
+      "ms": 196.2,
+      "kinds": {
+       "script": 81.5,
+       "style": 95.7,
+       "layout": 3.4,
+       "paint": 13.3,
+       "other": 2.3
+      }
+     },
+     {
+      "ms": 184.9,
+      "kinds": {
+       "script": 59.7,
+       "style": 109.7,
+       "layout": 4.3,
+       "paint": 8.5,
+       "input": 0.6,
+       "other": 2
+      }
+     },
+     {
+      "ms": 178.7,
+      "kinds": {
+       "script": 76.3,
+       "style": 62.1,
+       "layout": 10.6,
+       "paint": 17.4,
+       "other": 12.3
+      }
+     }
+    ],
+    "topEvents": [
+     {
+      "name": "FunctionCall",
+      "msPerFrame": 42.27
+     },
+     {
+      "name": "UpdateLayoutTree",
+      "msPerFrame": 39.04
+     },
+     {
+      "name": "CommandBufferProxyImpl::WaitForGetOffset",
+      "msPerFrame": 14.47
+     },
+     {
+      "name": "LayerTreeHost::DoUpdateLayers",
+      "msPerFrame": 3.96
+     },
+     {
+      "name": "Layout",
+      "msPerFrame": 3.41
+     },
+     {
+      "name": "RasterImplementation::ReadbackImagePixels",
+      "msPerFrame": 2.72
+     },
+     {
+      "name": "ThreadControllerImpl::RunTask",
+      "msPerFrame": 1.79
+     },
+     {
+      "name": "RasterImplementation::RasterCHROMIUM",
+      "msPerFrame": 1.62
+     },
+     {
+      "name": "Layerize",
+      "msPerFrame": 1.58
+     },
+     {
+      "name": "Paint",
+      "msPerFrame": 1.53
+     },
+     {
+      "name": "ProxyMain::BeginMainFrame",
+      "msPerFrame": 1.2
+     },
+     {
+      "name": "PrePaint",
+      "msPerFrame": 1.1
+     },
+     {
+      "name": "RasterImplementation::WritePixels",
+      "msPerFrame": 0.5
+     },
+     {
+      "name": "RunTask",
+      "msPerFrame": 0.43
+     }
+    ],
+    "threads": [
+     {
+      "thread": "CrRendererMain",
+      "busyPct": 99.8
+     },
+     {
+      "thread": "CrGpuMain",
+      "busyPct": 50.3
+     },
+     {
+      "thread": "VizCompositorThread",
+      "busyPct": 4.7
+     },
+     {
+      "thread": "Compositor",
+      "busyPct": 3.4
+     },
+     {
+      "thread": "ThreadPoolForegroundWorker",
+      "busyPct": 2.5
+     }
+    ],
+    "extra": {
+     "skills": [
+      "auto",
+      "strike",
+      "mark",
+      "burst"
+     ]
+    }
+   },
+   "prof": {
+    "profile": {
+     "busyMs": 12852.8,
+     "idlePct": 0.2,
+     "canvasPct": 40.1,
+     "gcPct": 0.2,
+     "programPct": 19.4,
+     "top": [
+      {
+       "fn": "fillRect",
+       "pct": 27.7,
+       "ms": 3566.5
+      },
+      {
+       "fn": "(program)",
+       "pct": 19.4,
+       "ms": 2498
+      },
+      {
+       "fn": "drawImage",
+       "pct": 10.6,
+       "ms": 1361.9
+      },
+      {
+       "fn": "renderTracker quest-tracker.js:90",
+       "pct": 9.8,
+       "ms": 1263.3
+      },
+      {
+       "fn": "getBoundingClientRect",
+       "pct": 5.5,
+       "ms": 710.7
+      },
+      {
+       "fn": "fit resource-hud.js:116",
+       "pct": 5.2,
+       "ms": 672.5
+      },
+      {
+       "fn": "loop minimap.js:237",
+       "pct": 1.5,
+       "ms": 198.7
+      },
+      {
+       "fn": "querySelectorAll",
+       "pct": 1,
+       "ms": 131.2
+      },
+      {
+       "fn": "drawScene renderer.js:233",
+       "pct": 0.8,
+       "ms": 107.2
+      },
+      {
+       "fn": "updateUI app.js:491",
+       "pct": 0.7,
+       "ms": 90
+      },
+      {
+       "fn": "tick engine.js:572",
+       "pct": 0.6,
+       "ms": 81.7
+      },
+      {
+       "fn": "(anonym) app.js:515",
+       "pct": 0.6,
+       "ms": 79
+      },
+      {
+       "fn": "combatStats rpg.js:40",
+       "pct": 0.5,
+       "ms": 62.3
+      },
+      {
+       "fn": "querySelector",
+       "pct": 0.5,
+       "ms": 59.3
+      },
+      {
+       "fn": "nearby world.js:74",
+       "pct": 0.4,
+       "ms": 53.3
+      },
+      {
+       "fn": "statusText options-ui.js:15",
+       "pct": 0.4,
+       "ms": 48.3
+      },
+      {
+       "fn": "draw renderer.js:217",
+       "pct": 0.3,
+       "ms": 42.9
+      },
+      {
+       "fn": "sprite kit-art.js:24",
+       "pct": 0.3,
+       "ms": 39.2
+      },
+      {
+       "fn": "frame app.js:556",
+       "pct": 0.3,
+       "ms": 37.7
+      },
+      {
+       "fn": "label",
+       "pct": 0.3,
+       "ms": 36
+      },
+      {
+       "fn": "blocked world.js:75",
+       "pct": 0.3,
+       "ms": 34.6
+      },
+      {
+       "fn": "(anonym)",
+       "pct": 0.3,
+       "ms": 34.6
+      },
+      {
+       "fn": "label renderer.js:176",
+       "pct": 0.2,
+       "ms": 31.7
+      },
+      {
+       "fn": "visible renderer.js:235",
+       "pct": 0.2,
+       "ms": 30.5
+      },
+      {
+       "fn": "fill",
+       "pct": 0.2,
+       "ms": 29.8
+      }
+     ],
+     "canvas": [
+      {
+       "fn": "fillRect",
+       "pct": 27.7
+      },
+      {
+       "fn": "drawImage",
+       "pct": 10.6
+      },
+      {
+       "fn": "fill",
+       "pct": 0.2
+      },
+      {
+       "fn": "addColorStop",
+       "pct": 0.2
+      },
+      {
+       "fn": "save",
+       "pct": 0.2
+      },
+      {
+       "fn": "strokeText",
+       "pct": 0.2
+      },
+      {
+       "fn": "ellipse",
+       "pct": 0.1
+      },
+      {
+       "fn": "measureText",
+       "pct": 0.1
+      },
+      {
+       "fn": "getImageData",
+       "pct": 0.1
+      },
+      {
+       "fn": "setTransform",
+       "pct": 0.1
+      }
+     ],
+     "canvasCallers": [
+      {
+       "fn": "fillRect ← drawBelag kit-art.js:48",
+       "pct": 27
+      },
+      {
+       "fn": "drawImage ← drawMaifeld maifeld-art.js:39",
+       "pct": 7.4
+      },
+      {
+       "fn": "drawImage ← drawPixelRect content-art.js:107",
+       "pct": 1.7
+      },
+      {
+       "fn": "drawImage ← drawKitItem kit-art.js:125",
+       "pct": 0.3
+      },
+      {
+       "fn": "drawImage ← drawDecalBody kit-art.js:60",
+       "pct": 0.2
+      },
+      {
+       "fn": "fillRect ← drawKitWall kit-art.js:68",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← hitFlash renderer.js:137",
+       "pct": 0.2
+      },
+      {
+       "fn": "fillRect ← drawPaper kit-art.js:97",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawProp world-prop-ui.js:28",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawVectorSprite art-quality.js:36",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawContentPerson live-art.js:36",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawKitWall kit-art.js:68",
+       "pct": 0.1
+      }
+     ]
+    },
+    "dom": {
+     "frames": 142,
+     "recordsPerFrame": 58.24,
+     "framesWithWritesPct": 89.4,
+     "topWriters": [
+      {
+       "target": "#actionBar>button.skill @style",
+       "perFrame": 4.56
+      },
+      {
+       "target": "#touchSkills>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 3.13
+      },
+      {
+       "target": "#touchSkills>div.touch-slot>button.skill @style",
+       "perFrame": 2.87
+      },
+      {
+       "target": "#actionBar2>button.skill>span.stack childList",
+       "perFrame": 1.28
+      },
+      {
+       "target": "#zoneName childList",
+       "perFrame": 1.28
+      },
+      {
+       "target": "#zoneType childList",
+       "perFrame": 1.28
+      },
+      {
+       "target": "#rotationTip childList",
+       "perFrame": 1.28
+      },
+      {
+       "target": "#touchSpecials>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 1.28
+      },
+      {
+       "target": "#actionBar2>button.skill @style",
+       "perFrame": 0.85
+      },
+      {
+       "target": "#actionBar>button.skill>span.cooldown childList",
+       "perFrame": 0.76
+      },
+      {
+       "target": "div.touch-slot>button.skill>span.cooldown childList",
+       "perFrame": 0.76
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @role",
+       "perFrame": 0.64
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-label",
+       "perFrame": 0.64
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemin",
+       "perFrame": 0.64
+      }
+     ]
+    },
+    "heapDeltaMiB": 9,
+    "extra": {
+     "skills": [
+      "auto",
+      "strike",
+      "mark",
+      "burst"
+     ]
+    }
+   }
+  },
+  {
+   "rate": 6,
+   "scene": "idle",
+   "prep": {},
+   "before": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 9,
+     "strips": 17,
+     "hits": 1839
+    }
+   },
+   "after": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 10,
+     "strips": 17,
+     "hits": 1976
+    }
+   },
+   "trace": {
+    "frames": 118,
+    "seconds": 20.1,
+    "fps": 5.9,
+    "mainPerFrame": {
+     "n": 118,
+     "mean": 168.59,
+     "p50": 164.51,
+     "p95": 206.16,
+     "p99": 297.4,
+     "max": 487.7,
+     "over16": 118,
+     "over33": 118,
+     "over50": 118
+    },
+    "rafTask": {
+     "n": 118,
+     "mean": 164.88,
+     "p50": 161.73,
+     "p95": 204.34,
+     "p99": 291.62,
+     "max": 485.91,
+     "over16": 118,
+     "over33": 118,
+     "over50": 118
+    },
+    "interval": {
+     "n": 118,
+     "mean": 168.91,
+     "p50": 164.89,
+     "p95": 206.56,
+     "p99": 297.83,
+     "max": 487.91,
+     "over16": 118,
+     "over33": 118,
+     "over50": 118
+    },
+    "kindsMean": {
+     "script": 87.16,
+     "style": 58.66,
+     "layout": 4.9,
+     "paint": 12.84,
+     "gc": 0.74,
+     "idle": 0.03,
+     "input": 0.23,
+     "other": 4.04
+    },
+    "kindsP95": {
+     "script": 103.17,
+     "style": 84.74,
+     "layout": 8.44,
+     "paint": 16.89,
+     "gc": 0,
+     "idle": 0.19,
+     "input": 1.43,
+     "other": 12.67
+    },
+    "styleRecalcsPerFrame": 3.84,
+    "styleElementsPerFrame": 546,
+    "layoutsPerFrame": 2.66,
+    "forcedPerFrame": 4.57,
+    "longTasks": {
+     "count": 119,
+     "max": 485.9
+    },
+    "gc": {
+     "count": 20,
+     "totalMs": 130.6,
+     "maxMs": 44,
+     "perSecond": 1
+    },
+    "worstFrames": [
+     {
+      "ms": 487.7,
+      "kinds": {
+       "script": 175.2,
+       "style": 258.5,
+       "layout": 27.7,
+       "paint": 19,
+       "input": 1.2,
+       "other": 6
+      }
+     },
+     {
+      "ms": 297.4,
+      "kinds": {
+       "script": 180.6,
+       "style": 90.7,
+       "layout": 5.8,
+       "paint": 15,
+       "other": 5.2
+      }
+     },
+     {
+      "ms": 254.3,
+      "kinds": {
+       "script": 72.3,
+       "style": 157.2,
+       "layout": 8.1,
+       "paint": 13.4,
+       "other": 3.2
+      }
+     },
+     {
+      "ms": 251.7,
+      "kinds": {
+       "script": 94.8,
+       "style": 67.7,
+       "layout": 4.2,
+       "paint": 12.2,
+       "gc": 70.2,
+       "other": 2.4
+      }
+     },
+     {
+      "ms": 232.7,
+      "kinds": {
+       "script": 103.2,
+       "style": 95.1,
+       "layout": 7,
+       "paint": 16.9,
+       "other": 10.6
+      }
+     },
+     {
+      "ms": 206.2,
+      "kinds": {
+       "script": 101.1,
+       "style": 83.9,
+       "layout": 3.4,
+       "paint": 15.1,
+       "other": 2.6
+      }
+     }
+    ],
+    "topEvents": [
+     {
+      "name": "FunctionCall",
+      "msPerFrame": 72.94
+     },
+     {
+      "name": "UpdateLayoutTree",
+      "msPerFrame": 58.66
+     },
+     {
+      "name": "CommandBufferProxyImpl::WaitForGetOffset",
+      "msPerFrame": 7.6
+     },
+     {
+      "name": "Layout",
+      "msPerFrame": 4.9
+     },
+     {
+      "name": "LayerTreeHost::DoUpdateLayers",
+      "msPerFrame": 4.53
+     },
+     {
+      "name": "RasterImplementation::ReadbackImagePixels",
+      "msPerFrame": 3.26
+     },
+     {
+      "name": "RasterImplementation::RasterCHROMIUM",
+      "msPerFrame": 2.56
+     },
+     {
+      "name": "Paint",
+      "msPerFrame": 2.12
+     },
+     {
+      "name": "Layerize",
+      "msPerFrame": 1.87
+     },
+     {
+      "name": "ThreadControllerImpl::RunTask",
+      "msPerFrame": 1.63
+     },
+     {
+      "name": "ProxyMain::BeginMainFrame",
+      "msPerFrame": 1.44
+     },
+     {
+      "name": "PrePaint",
+      "msPerFrame": 1.23
+     },
+     {
+      "name": "RasterImplementation::WritePixels",
+      "msPerFrame": 0.95
+     },
+     {
+      "name": "RunTask",
+      "msPerFrame": 0.56
+     }
+    ],
+    "threads": [
+     {
+      "thread": "CrRendererMain",
+      "busyPct": 99.8
+     },
+     {
+      "thread": "CrGpuMain",
+      "busyPct": 24.5
+     },
+     {
+      "thread": "Compositor",
+      "busyPct": 1.6
+     },
+     {
+      "thread": "VizCompositorThread",
+      "busyPct": 1.5
+     },
+     {
+      "thread": "ThreadPoolForegroundWorker",
+      "busyPct": 1.2
+     }
+    ],
+    "extra": {}
+   },
+   "prof": {
+    "profile": {
+     "busyMs": 12678.5,
+     "idlePct": 0.1,
+     "canvasPct": 28.9,
+     "gcPct": 0.3,
+     "programPct": 27.8,
+     "top": [
+      {
+       "fn": "(program)",
+       "pct": 27.8,
+       "ms": 3529.4
+      },
+      {
+       "fn": "fillRect",
+       "pct": 16.2,
+       "ms": 2057.7
+      },
+      {
+       "fn": "renderTracker quest-tracker.js:90",
+       "pct": 14.2,
+       "ms": 1796.9
+      },
+      {
+       "fn": "drawImage",
+       "pct": 11,
+       "ms": 1395.1
+      },
+      {
+       "fn": "getBoundingClientRect",
+       "pct": 7.3,
+       "ms": 925.4
+      },
+      {
+       "fn": "querySelectorAll",
+       "pct": 1.7,
+       "ms": 210.9
+      },
+      {
+       "fn": "updateUI app.js:491",
+       "pct": 1.1,
+       "ms": 141.9
+      },
+      {
+       "fn": "drawScene renderer.js:233",
+       "pct": 1,
+       "ms": 125.5
+      },
+      {
+       "fn": "querySelector",
+       "pct": 0.8,
+       "ms": 106.8
+      },
+      {
+       "fn": "combatStats rpg.js:40",
+       "pct": 0.6,
+       "ms": 82.1
+      },
+      {
+       "fn": "tick engine.js:572",
+       "pct": 0.6,
+       "ms": 72.2
+      },
+      {
+       "fn": "draw renderer.js:217",
+       "pct": 0.5,
+       "ms": 60.4
+      },
+      {
+       "fn": "equipmentStats rpg.js:39",
+       "pct": 0.4,
+       "ms": 51.1
+      },
+      {
+       "fn": "frame app.js:556",
+       "pct": 0.4,
+       "ms": 49.2
+      },
+      {
+       "fn": "label",
+       "pct": 0.4,
+       "ms": 47.1
+      },
+      {
+       "fn": "fit resource-hud.js:116",
+       "pct": 0.4,
+       "ms": 47.1
+      },
+      {
+       "fn": "(garbage collector)",
+       "pct": 0.3,
+       "ms": 43.7
+      },
+      {
+       "fn": "(anonym) app.js:515",
+       "pct": 0.3,
+       "ms": 42.8
+      },
+      {
+       "fn": "(anonym) spatial-index.js:8",
+       "pct": 0.3,
+       "ms": 42.6
+      },
+      {
+       "fn": "statusText options-ui.js:15",
+       "pct": 0.3,
+       "ms": 39.2
+      },
+      {
+       "fn": "drawPaperdoll paperdoll-art.js:220",
+       "pct": 0.3,
+       "ms": 37.1
+      },
+      {
+       "fn": "skillStatus combat-ui.js:43",
+       "pct": 0.3,
+       "ms": 36.6
+      },
+      {
+       "fn": "blocked world.js:75",
+       "pct": 0.3,
+       "ms": 36.1
+      },
+      {
+       "fn": "drawClanEnemy clan-art.js:17",
+       "pct": 0.3,
+       "ms": 33.4
+      },
+      {
+       "fn": "save",
+       "pct": 0.3,
+       "ms": 33.3
+      }
+     ],
+     "canvas": [
+      {
+       "fn": "fillRect",
+       "pct": 16.2
+      },
+      {
+       "fn": "drawImage",
+       "pct": 11
+      },
+      {
+       "fn": "save",
+       "pct": 0.3
+      },
+      {
+       "fn": "addColorStop",
+       "pct": 0.2
+      },
+      {
+       "fn": "fill",
+       "pct": 0.2
+      },
+      {
+       "fn": "ellipse",
+       "pct": 0.1
+      },
+      {
+       "fn": "setTransform",
+       "pct": 0.1
+      },
+      {
+       "fn": "strokeText",
+       "pct": 0.1
+      },
+      {
+       "fn": "restore",
+       "pct": 0.1
+      },
+      {
+       "fn": "measureText",
+       "pct": 0.1
+      }
+     ],
+     "canvasCallers": [
+      {
+       "fn": "fillRect ← drawBelag kit-art.js:48",
+       "pct": 15.4
+      },
+      {
+       "fn": "drawImage ← drawMaifeld maifeld-art.js:39",
+       "pct": 9.3
+      },
+      {
+       "fn": "drawImage ← drawKitItem kit-art.js:125",
+       "pct": 0.4
+      },
+      {
+       "fn": "drawImage ← drawDecalBody kit-art.js:60",
+       "pct": 0.2
+      },
+      {
+       "fn": "fillRect ← drawPaper kit-art.js:97",
+       "pct": 0.2
+      },
+      {
+       "fn": "fillRect ← drawKitWall kit-art.js:68",
+       "pct": 0.2
+      },
+      {
+       "fn": "save ← drawScene renderer.js:233",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawVectorSprite art-quality.js:36",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← blit paperdoll-art.js:249",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawProp world-prop-ui.js:28",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawContentPerson live-art.js:36",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawBuilding tiny-architecture.js:32",
+       "pct": 0.1
+      }
+     ]
+    },
+    "dom": {
+     "frames": 80,
+     "recordsPerFrame": 55.3,
+     "framesWithWritesPct": 100,
+     "topWriters": [
+      {
+       "target": "#touchSkills>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 6
+      },
+      {
+       "target": "#actionBar2>button.skill>span.stack childList",
+       "perFrame": 2
+      },
+      {
+       "target": "#zoneName childList",
+       "perFrame": 2
+      },
+      {
+       "target": "#zoneType childList",
+       "perFrame": 2
+      },
+      {
+       "target": "#rotationTip childList",
+       "perFrame": 2
+      },
+      {
+       "target": "#touchSpecials>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 2
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @role",
+       "perFrame": 1
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-label",
+       "perFrame": 1
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemin",
+       "perFrame": 1
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemax",
+       "perFrame": 1
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuenow",
+       "perFrame": 1
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemin",
+       "perFrame": 1
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemax",
+       "perFrame": 1
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuenow",
+       "perFrame": 1
+      }
+     ]
+    },
+    "heapDeltaMiB": 13.1,
+    "extra": {}
+   }
+  },
+  {
+   "rate": 6,
+   "scene": "walk",
+   "prep": {
+    "points": 7,
+    "length": 2130
+   },
+   "before": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": false,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 11,
+     "strips": 17,
+     "hits": 2125
+    }
+   },
+   "after": {
+    "x": 10254,
+    "y": 9645,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 0,
+    "companions": 1,
+    "combat": false,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 12,
+     "strips": 22,
+     "hits": 2308
+    }
+   },
+   "trace": {
+    "frames": 153,
+    "seconds": 20.5,
+    "fps": 7.5,
+    "mainPerFrame": {
+     "n": 153,
+     "mean": 133.42,
+     "p50": 138.44,
+     "p95": 177.64,
+     "p99": 197.63,
+     "max": 218.82,
+     "over16": 153,
+     "over33": 148,
+     "over50": 144
+    },
+    "rafTask": {
+     "n": 153,
+     "mean": 127.41,
+     "p50": 131.68,
+     "p95": 172.95,
+     "p99": 194.44,
+     "max": 216.84,
+     "over16": 152,
+     "over33": 147,
+     "over50": 141
+    },
+    "interval": {
+     "n": 153,
+     "mean": 133.76,
+     "p50": 138.67,
+     "p95": 177.85,
+     "p99": 198.09,
+     "max": 219.22,
+     "over16": 153,
+     "over33": 148,
+     "over50": 145
+    },
+    "kindsMean": {
+     "script": 52.56,
+     "style": 55.62,
+     "layout": 4.51,
+     "paint": 13.02,
+     "gc": 0.91,
+     "idle": 0.02,
+     "input": 0.17,
+     "other": 6.6
+    },
+    "kindsP95": {
+     "script": 85.4,
+     "style": 79.1,
+     "layout": 6.21,
+     "paint": 18.61,
+     "gc": 0,
+     "idle": 0.19,
+     "input": 1.39,
+     "other": 16.29
+    },
+    "styleRecalcsPerFrame": 3.86,
+    "styleElementsPerFrame": 573.2,
+    "layoutsPerFrame": 2.89,
+    "forcedPerFrame": 5.45,
+    "longTasks": {
+     "count": 141,
+     "max": 216.8
+    },
+    "gc": {
+     "count": 69,
+     "totalMs": 218.4,
+     "maxMs": 42.1,
+     "perSecond": 3.4
+    },
+    "worstFrames": [
+     {
+      "ms": 218.8,
+      "kinds": {
+       "script": 60.6,
+       "style": 86.8,
+       "layout": 5,
+       "paint": 13.4,
+       "gc": 48,
+       "input": 1.4,
+       "other": 3.6
+      }
+     },
+     {
+      "ms": 197.6,
+      "kinds": {
+       "script": 84.3,
+       "style": 58.4,
+       "layout": 5.1,
+       "paint": 45.9,
+       "other": 4
+      }
+     },
+     {
+      "ms": 197.5,
+      "kinds": {
+       "script": 116,
+       "style": 58.6,
+       "layout": 4.2,
+       "paint": 12.8,
+       "input": 0.6,
+       "other": 5.3
+      }
+     },
+     {
+      "ms": 195.5,
+      "kinds": {
+       "script": 92,
+       "style": 82.1,
+       "layout": 5.4,
+       "paint": 11.9,
+       "input": 1.4,
+       "other": 2.7
+      }
+     },
+     {
+      "ms": 185.2,
+      "kinds": {
+       "script": 87.9,
+       "style": 75.4,
+       "layout": 5,
+       "paint": 12.9,
+       "input": 1,
+       "other": 2.7
+      }
+     },
+     {
+      "ms": 184.7,
+      "kinds": {
+       "script": 81,
+       "style": 73.7,
+       "layout": 5.8,
+       "paint": 11.6,
+       "gc": 9.7,
+       "other": 3
+      }
+     }
+    ],
+    "topEvents": [
+     {
+      "name": "UpdateLayoutTree",
+      "msPerFrame": 55.62
+     },
+     {
+      "name": "FunctionCall",
+      "msPerFrame": 46.59
+     },
+     {
+      "name": "LayerTreeHost::DoUpdateLayers",
+      "msPerFrame": 6.84
+     },
+     {
+      "name": "Layout",
+      "msPerFrame": 4.51
+     },
+     {
+      "name": "ThreadControllerImpl::RunTask",
+      "msPerFrame": 4.2
+     },
+     {
+      "name": "CommandBufferProxyImpl::WaitForGetOffset",
+      "msPerFrame": 2.04
+     },
+     {
+      "name": "Layerize",
+      "msPerFrame": 1.57
+     },
+     {
+      "name": "Paint",
+      "msPerFrame": 1.48
+     },
+     {
+      "name": "RasterImplementation::RasterCHROMIUM",
+      "msPerFrame": 1.44
+     },
+     {
+      "name": "ProxyMain::BeginMainFrame",
+      "msPerFrame": 1.4
+     },
+     {
+      "name": "RasterImplementation::ReadbackImagePixels",
+      "msPerFrame": 1.14
+     },
+     {
+      "name": "PrePaint",
+      "msPerFrame": 0.99
+     },
+     {
+      "name": "RunTask",
+      "msPerFrame": 0.58
+     },
+     {
+      "name": "FireAnimationFrame",
+      "msPerFrame": 0.5
+     }
+    ],
+    "threads": [
+     {
+      "thread": "CrRendererMain",
+      "busyPct": 99.8
+     },
+     {
+      "thread": "CrGpuMain",
+      "busyPct": 17.7
+     },
+     {
+      "thread": "Compositor",
+      "busyPct": 1.3
+     },
+     {
+      "thread": "ThreadPoolForegroundWorker",
+      "busyPct": 1.3
+     }
+    ],
+    "extra": {
+     "arrivedEarly": false
+    }
+   },
+   "prof": {
+    "profile": {
+     "busyMs": 13103.7,
+     "idlePct": 0.3,
+     "canvasPct": 27.4,
+     "gcPct": 0.1,
+     "programPct": 27.9,
+     "top": [
+      {
+       "fn": "(program)",
+       "pct": 27.9,
+       "ms": 3655.3
+      },
+      {
+       "fn": "renderTracker quest-tracker.js:90",
+       "pct": 14.8,
+       "ms": 1945.6
+      },
+      {
+       "fn": "drawImage",
+       "pct": 14.8,
+       "ms": 1943
+      },
+      {
+       "fn": "fillRect",
+       "pct": 10,
+       "ms": 1312.4
+      },
+      {
+       "fn": "getBoundingClientRect",
+       "pct": 7.3,
+       "ms": 953.9
+      },
+      {
+       "fn": "querySelectorAll",
+       "pct": 1.7,
+       "ms": 226.9
+      },
+      {
+       "fn": "drawScene renderer.js:233",
+       "pct": 1,
+       "ms": 128.7
+      },
+      {
+       "fn": "updateUI app.js:491",
+       "pct": 1,
+       "ms": 125.2
+      },
+      {
+       "fn": "querySelector",
+       "pct": 0.8,
+       "ms": 109.2
+      },
+      {
+       "fn": "tick engine.js:572",
+       "pct": 0.8,
+       "ms": 102.8
+      },
+      {
+       "fn": "getImageData",
+       "pct": 0.8,
+       "ms": 102.5
+      },
+      {
+       "fn": "combatStats rpg.js:40",
+       "pct": 0.7,
+       "ms": 90.1
+      },
+      {
+       "fn": "frame app.js:556",
+       "pct": 0.7,
+       "ms": 90
+      },
+      {
+       "fn": "label",
+       "pct": 0.4,
+       "ms": 57.5
+      },
+      {
+       "fn": "place memory-card.js:85",
+       "pct": 0.4,
+       "ms": 57.3
+      },
+      {
+       "fn": "blocked world.js:75",
+       "pct": 0.4,
+       "ms": 53.5
+      },
+      {
+       "fn": "(anonym) app.js:515",
+       "pct": 0.4,
+       "ms": 53.1
+      },
+      {
+       "fn": "update mobile-controls.js:56",
+       "pct": 0.4,
+       "ms": 51.9
+      },
+      {
+       "fn": "(anonym)",
+       "pct": 0.4,
+       "ms": 49.9
+      },
+      {
+       "fn": "(anonym) spatial-index.js:8",
+       "pct": 0.4,
+       "ms": 49.8
+      },
+      {
+       "fn": "step terrain-prefetch.js:20",
+       "pct": 0.4,
+       "ms": 48.4
+      },
+      {
+       "fn": "equipmentStats rpg.js:39",
+       "pct": 0.4,
+       "ms": 48.3
+      },
+      {
+       "fn": "statusText options-ui.js:15",
+       "pct": 0.3,
+       "ms": 40.6
+      },
+      {
+       "fn": "loop minimap.js:237",
+       "pct": 0.3,
+       "ms": 40.4
+      },
+      {
+       "fn": "visible renderer.js:235",
+       "pct": 0.3,
+       "ms": 36
+      }
+     ],
+     "canvas": [
+      {
+       "fn": "drawImage",
+       "pct": 14.8
+      },
+      {
+       "fn": "fillRect",
+       "pct": 10
+      },
+      {
+       "fn": "getImageData",
+       "pct": 0.8
+      },
+      {
+       "fn": "fill",
+       "pct": 0.3
+      },
+      {
+       "fn": "clearRect",
+       "pct": 0.2
+      },
+      {
+       "fn": "save",
+       "pct": 0.2
+      },
+      {
+       "fn": "ellipse",
+       "pct": 0.1
+      },
+      {
+       "fn": "measureText",
+       "pct": 0.1
+      },
+      {
+       "fn": "getContext",
+       "pct": 0.1
+      },
+      {
+       "fn": "addColorStop",
+       "pct": 0.1
+      }
+     ],
+     "canvasCallers": [
+      {
+       "fn": "fillRect ← drawBelag kit-art.js:48",
+       "pct": 9.6
+      },
+      {
+       "fn": "drawImage ← drawPixelRect content-art.js:107",
+       "pct": 9.2
+      },
+      {
+       "fn": "drawImage ← drawMaifeld maifeld-art.js:39",
+       "pct": 4.2
+      },
+      {
+       "fn": "getImageData ← tile paperdoll-art.js:151",
+       "pct": 0.8
+      },
+      {
+       "fn": "drawImage ← drawVectorSprite art-quality.js:36",
+       "pct": 0.3
+      },
+      {
+       "fn": "clearRect ← paintUiIconRaw ui-art.js:24",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawDecalBody kit-art.js:60",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawContentPerson live-art.js:36",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← blit paperdoll-art.js:249",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← draw ground-cache.js:12",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawKitItem kit-art.js:125",
+       "pct": 0.1
+      },
+      {
+       "fn": "fillRect ← drawKitWall kit-art.js:68",
+       "pct": 0.1
+      }
+     ]
+    },
+    "dom": {
+     "frames": 97,
+     "recordsPerFrame": 53.48,
+     "framesWithWritesPct": 100,
+     "topWriters": [
+      {
+       "target": "#touchSkills>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 5.51
+      },
+      {
+       "target": "#actionBar2>button.skill>span.stack childList",
+       "perFrame": 1.84
+      },
+      {
+       "target": "#rotationTip childList",
+       "perFrame": 1.84
+      },
+      {
+       "target": "#touchSpecials>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 1.84
+      },
+      {
+       "target": "#zoneName childList",
+       "perFrame": 1.13
+      },
+      {
+       "target": "#zoneType childList",
+       "perFrame": 1.13
+      },
+      {
+       "target": "#classMechanicArt @hidden",
+       "perFrame": 0.93
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @role",
+       "perFrame": 0.92
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-label",
+       "perFrame": 0.92
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemin",
+       "perFrame": 0.92
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemax",
+       "perFrame": 0.92
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuenow",
+       "perFrame": 0.92
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemin",
+       "perFrame": 0.92
+      },
+      {
+       "target": "button.companion-frame>span.unit-content>span.companion-life @aria-valuemax",
+       "perFrame": 0.92
+      }
+     ]
+    },
+    "heapDeltaMiB": 22.1,
+    "extra": {
+     "arrivedEarly": false
+    }
+   }
+  },
+  {
+   "rate": 6,
+   "scene": "combat",
+   "prep": {},
+   "before": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 4,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 0,
+    "chunks": 2,
+    "ground": {
+     "full": 13,
+     "strips": 31,
+     "hits": 2470
+    }
+   },
+   "after": {
+    "x": 9702,
+    "y": 9053,
+    "density": 2,
+    "canvas": "1216x544",
+    "zoom": 1.5,
+    "touch": true,
+    "enemies": 4,
+    "companions": 1,
+    "combat": true,
+    "dead": false,
+    "popups": 0,
+    "level": 20,
+    "settings": {
+     "light": false,
+     "fx": false,
+     "lowRes": true,
+     "sct": true
+    },
+    "damage": 685,
+    "chunks": 2,
+    "ground": {
+     "full": 15,
+     "strips": 31,
+     "hits": 2615
+    }
+   },
+   "trace": {
+    "frames": 116,
+    "seconds": 20.1,
+    "fps": 5.8,
+    "mainPerFrame": {
+     "n": 116,
+     "mean": 172.01,
+     "p50": 172.7,
+     "p95": 246,
+     "p99": 255.46,
+     "max": 256.33,
+     "over16": 116,
+     "over33": 116,
+     "over50": 116
+    },
+    "rafTask": {
+     "n": 116,
+     "mean": 168.13,
+     "p50": 167.72,
+     "p95": 244.67,
+     "p99": 246.88,
+     "max": 254.46,
+     "over16": 116,
+     "over33": 116,
+     "over50": 115
+    },
+    "interval": {
+     "n": 116,
+     "mean": 172.28,
+     "p50": 172.95,
+     "p95": 246.25,
+     "p99": 255.86,
+     "max": 256.42,
+     "over16": 116,
+     "over33": 116,
+     "over50": 116
+    },
+    "kindsMean": {
+     "script": 78.51,
+     "style": 64.82,
+     "layout": 4.97,
+     "paint": 18.75,
+     "gc": 0.39,
+     "idle": 0.02,
+     "input": 0.47,
+     "other": 4.06
+    },
+    "kindsP95": {
+     "script": 103.45,
+     "style": 113.71,
+     "layout": 9.97,
+     "paint": 38.42,
+     "gc": 0,
+     "idle": 0.19,
+     "input": 2.4,
+     "other": 9.63
+    },
+    "styleRecalcsPerFrame": 4.96,
+    "styleElementsPerFrame": 643.6,
+    "layoutsPerFrame": 2.89,
+    "forcedPerFrame": 6.93,
+    "longTasks": {
+     "count": 116,
+     "max": 254.5
+    },
+    "gc": {
+     "count": 20,
+     "totalMs": 66.3,
+     "maxMs": 22.2,
+     "perSecond": 1
+    },
+    "worstFrames": [
+     {
+      "ms": 256.3,
+      "kinds": {
+       "script": 97.9,
+       "style": 119,
+       "layout": 8,
+       "paint": 16.1,
+       "input": 2.6,
+       "other": 12.8
+      }
+     },
+     {
+      "ms": 255.5,
+      "kinds": {
+       "script": 90.1,
+       "style": 131.8,
+       "layout": 11.4,
+       "paint": 18.8,
+       "other": 3.4
+      }
+     },
+     {
+      "ms": 247,
+      "kinds": {
+       "script": 105.1,
+       "style": 83.3,
+       "layout": 9.3,
+       "paint": 44.3,
+       "input": 0.8,
+       "other": 4.3
+      }
+     },
+     {
+      "ms": 246.9,
+      "kinds": {
+       "script": 83.5,
+       "style": 128.9,
+       "layout": 6.9,
+       "paint": 24.7,
+       "other": 2.7
+      }
+     },
+     {
+      "ms": 246.4,
+      "kinds": {
+       "script": 75,
+       "style": 140,
+       "layout": 5.4,
+       "paint": 22.7,
+       "other": 3.3
+      }
+     },
+     {
+      "ms": 246,
+      "kinds": {
+       "script": 75.2,
+       "style": 104.5,
+       "layout": 13.5,
+       "paint": 30.6,
+       "input": 1.7,
+       "other": 20.5
+      }
+     }
+    ],
+    "topEvents": [
+     {
+      "name": "UpdateLayoutTree",
+      "msPerFrame": 64.82
+     },
+     {
+      "name": "FunctionCall",
+      "msPerFrame": 61.39
+     },
+     {
+      "name": "CommandBufferProxyImpl::WaitForGetOffset",
+      "msPerFrame": 11.05
+     },
+     {
+      "name": "LayerTreeHost::DoUpdateLayers",
+      "msPerFrame": 8.24
+     },
+     {
+      "name": "Layout",
+      "msPerFrame": 4.97
+     },
+     {
+      "name": "RasterImplementation::ReadbackImagePixels",
+      "msPerFrame": 3.39
+     },
+     {
+      "name": "Paint",
+      "msPerFrame": 2.67
+     },
+     {
+      "name": "RasterImplementation::RasterCHROMIUM",
+      "msPerFrame": 2.53
+     },
+     {
+      "name": "Layerize",
+      "msPerFrame": 2.31
+     },
+     {
+      "name": "PrePaint",
+      "msPerFrame": 1.7
+     },
+     {
+      "name": "ProxyMain::BeginMainFrame",
+      "msPerFrame": 1.65
+     },
+     {
+      "name": "ThreadControllerImpl::RunTask",
+      "msPerFrame": 1.43
+     },
+     {
+      "name": "RasterImplementation::WritePixels",
+      "msPerFrame": 0.79
+     },
+     {
+      "name": "RunTask",
+      "msPerFrame": 0.56
+     }
+    ],
+    "threads": [
+     {
+      "thread": "CrRendererMain",
+      "busyPct": 99.8
+     },
+     {
+      "thread": "CrGpuMain",
+      "busyPct": 39.3
+     },
+     {
+      "thread": "VizCompositorThread",
+      "busyPct": 4.2
+     },
+     {
+      "thread": "Compositor",
+      "busyPct": 3
+     },
+     {
+      "thread": "ThreadPoolForegroundWorker",
+      "busyPct": 1.1
+     }
+    ],
+    "extra": {
+     "skills": [
+      "auto",
+      "strike",
+      "mark",
+      "burst"
+     ]
+    }
+   },
+   "prof": {
+    "profile": {
+     "busyMs": 14196.5,
+     "idlePct": 0.1,
+     "canvasPct": 26.7,
+     "gcPct": 0.4,
+     "programPct": 18,
+     "top": [
+      {
+       "fn": "(program)",
+       "pct": 18,
+       "ms": 2560.5
+      },
+      {
+       "fn": "renderTracker quest-tracker.js:90",
+       "pct": 13.4,
+       "ms": 1907.4
+      },
+      {
+       "fn": "fillRect",
+       "pct": 13.2,
+       "ms": 1875.2
+      },
+      {
+       "fn": "fit resource-hud.js:116",
+       "pct": 12.4,
+       "ms": 1766
+      },
+      {
+       "fn": "drawImage",
+       "pct": 11.8,
+       "ms": 1669.8
+      },
+      {
+       "fn": "getBoundingClientRect",
+       "pct": 7.5,
+       "ms": 1061.2
+      },
+      {
+       "fn": "loop minimap.js:237",
+       "pct": 2.1,
+       "ms": 300.7
+      },
+      {
+       "fn": "querySelectorAll",
+       "pct": 1.2,
+       "ms": 170.7
+      },
+      {
+       "fn": "updateUI app.js:491",
+       "pct": 0.9,
+       "ms": 129.1
+      },
+      {
+       "fn": "drawScene renderer.js:233",
+       "pct": 0.7,
+       "ms": 103.3
+      },
+      {
+       "fn": "querySelector",
+       "pct": 0.6,
+       "ms": 87.4
+      },
+      {
+       "fn": "combatStats rpg.js:40",
+       "pct": 0.6,
+       "ms": 85
+      },
+      {
+       "fn": "update hud-editor.js:102",
+       "pct": 0.6,
+       "ms": 81.1
+      },
+      {
+       "fn": "tick engine.js:572",
+       "pct": 0.5,
+       "ms": 77.3
+      },
+      {
+       "fn": "frame app.js:556",
+       "pct": 0.5,
+       "ms": 74.7
+      },
+      {
+       "fn": "(anonym) app.js:515",
+       "pct": 0.5,
+       "ms": 63.9
+      },
+      {
+       "fn": "statusText options-ui.js:15",
+       "pct": 0.4,
+       "ms": 63.1
+      },
+      {
+       "fn": "label",
+       "pct": 0.4,
+       "ms": 60.7
+      },
+      {
+       "fn": "blocked world.js:75",
+       "pct": 0.4,
+       "ms": 59.6
+      },
+      {
+       "fn": "(garbage collector)",
+       "pct": 0.4,
+       "ms": 59.3
+      },
+      {
+       "fn": "nearby world.js:74",
+       "pct": 0.4,
+       "ms": 56.9
+      },
+      {
+       "fn": "clanSignBounds clan-art.js:37",
+       "pct": 0.4,
+       "ms": 51.4
+      },
+      {
+       "fn": "(anonym)",
+       "pct": 0.4,
+       "ms": 49.8
+      },
+      {
+       "fn": "(anonym) spatial-index.js:8",
+       "pct": 0.3,
+       "ms": 46.8
+      },
+      {
+       "fn": "equipmentStats rpg.js:39",
+       "pct": 0.3,
+       "ms": 41.6
+      }
+     ],
+     "canvas": [
+      {
+       "fn": "fillRect",
+       "pct": 13.2
+      },
+      {
+       "fn": "drawImage",
+       "pct": 11.8
+      },
+      {
+       "fn": "save",
+       "pct": 0.2
+      },
+      {
+       "fn": "addColorStop",
+       "pct": 0.2
+      },
+      {
+       "fn": "fill",
+       "pct": 0.2
+      },
+      {
+       "fn": "ellipse",
+       "pct": 0.2
+      },
+      {
+       "fn": "restore",
+       "pct": 0.1
+      },
+      {
+       "fn": "strokeText",
+       "pct": 0.1
+      },
+      {
+       "fn": "getImageData",
+       "pct": 0.1
+      },
+      {
+       "fn": "clearRect",
+       "pct": 0.1
+      }
+     ],
+     "canvasCallers": [
+      {
+       "fn": "fillRect ← drawBelag kit-art.js:48",
+       "pct": 12.5
+      },
+      {
+       "fn": "drawImage ← drawMaifeld maifeld-art.js:39",
+       "pct": 7.3
+      },
+      {
+       "fn": "drawImage ← drawPixelRect content-art.js:107",
+       "pct": 3
+      },
+      {
+       "fn": "drawImage ← drawKitItem kit-art.js:125",
+       "pct": 0.3
+      },
+      {
+       "fn": "drawImage ← hitFlash renderer.js:137",
+       "pct": 0.3
+      },
+      {
+       "fn": "drawImage ← drawDecalBody kit-art.js:60",
+       "pct": 0.3
+      },
+      {
+       "fn": "fillRect ← drawKitWall kit-art.js:68",
+       "pct": 0.2
+      },
+      {
+       "fn": "drawImage ← drawContentPerson live-art.js:36",
+       "pct": 0.1
+      },
+      {
+       "fn": "fillRect ← drawPaper kit-art.js:97",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawVectorSprite art-quality.js:36",
+       "pct": 0.1
+      },
+      {
+       "fn": "fillRect ← band bude-house-art.js:40",
+       "pct": 0.1
+      },
+      {
+       "fn": "drawImage ← drawKitWall kit-art.js:68",
+       "pct": 0.1
+      }
+     ]
+    },
+    "dom": {
+     "frames": 79,
+     "recordsPerFrame": 87.54,
+     "framesWithWritesPct": 98.7,
+     "topWriters": [
+      {
+       "target": "#actionBar>button.skill @style",
+       "perFrame": 6.94
+      },
+      {
+       "target": "#touchSkills>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 5.3
+      },
+      {
+       "target": "#touchSkills>div.touch-slot>button.skill @style",
+       "perFrame": 4.15
+      },
+      {
+       "target": "#actionBar2>button.skill>span.stack childList",
+       "perFrame": 1.97
+      },
+      {
+       "target": "#zoneName childList",
+       "perFrame": 1.97
+      },
+      {
+       "target": "#zoneType childList",
+       "perFrame": 1.97
+      },
+      {
+       "target": "#rotationTip childList",
+       "perFrame": 1.97
+      },
+      {
+       "target": "#touchSpecials>div.touch-slot>i.touch-lamp @hidden",
+       "perFrame": 1.97
+      },
+      {
+       "target": "#actionBar2>button.skill @style",
+       "perFrame": 1.39
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @role",
+       "perFrame": 0.99
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-label",
+       "perFrame": 0.99
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemin",
+       "perFrame": 0.99
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuemax",
+       "perFrame": 0.99
+      },
+      {
+       "target": "div.hud>div.unit-info>div.bar @aria-valuenow",
+       "perFrame": 0.99
+      }
+     ]
+    },
+    "heapDeltaMiB": -7.8,
+    "extra": {
+     "skills": [
+      "auto",
+      "strike",
+      "mark",
+      "burst"
+     ]
+    }
+   }
+  }
+ ],
+ "setup": {
+  "x": 9702,
+  "y": 9053,
+  "density": 2,
+  "canvas": "1216x544",
+  "zoom": 1.5,
+  "touch": true,
+  "enemies": 0,
+  "companions": 1,
+  "combat": false,
+  "dead": false,
+  "popups": 0,
+  "level": 20,
+  "settings": {
+   "light": false,
+   "fx": false,
+   "lowRes": true,
+   "sct": true
+  },
+  "damage": 0,
+  "chunks": 1,
+  "ground": {
+   "full": 2,
+   "strips": 1,
+   "hits": 159
+  }
+ }
+}
