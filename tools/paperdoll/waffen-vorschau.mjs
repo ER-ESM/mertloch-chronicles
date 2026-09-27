@@ -5,11 +5,13 @@
 //   <id>-welt.png   Weltgrößen-Simulation wie paperdoll-art.js shrunk (Flächenmittel → Palette → Kontur) bei k = 0,3 / 0,45 / 0,6, 3-fach vergrößert
 //   <id>_nh.png     Einhandwaffe zusätzlich in der Nebenhand (Beidhändig mit derselben Waffe)
 //   <id>-symbol.png Gegenstandssymbol (assets/precision/runtime/items/<id>.png) ×2 neben der Figur se und nw in Weltgröße 0,45 (ebenfalls ×2)
+// Mehrere zusammen tragen: „a+b“ (z. B. halbes-hufeisen+kegelkugel = Glücksbringer I + II). Glücksbringer bekommen ihre Fassung wie im Spiel
+// (paperdoll-kern.js gluecksbringerWahl mit der gemessenen Deckung aus assets/paperdoll/runtime/catalog.json); Symbole nebeneinander.
 // node tools/paperdoll/waffen-vorschau.mjs [kennung,kennung,…] [ordner=tools/paperdoll/out-waffen] [S=2]
 import {writeFileSync,mkdirSync,readFileSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {encodePng,decodePng,surface} from '../sprite-pipeline/png.mjs';
-import {composeCore,sources,useShade} from '../../paperdoll-kern.js';
+import {composeCore,sources,useShade,gluecksbringerWahl} from '../../paperdoll-kern.js';
 import {W,H,GROUND,BANDS,FRAMES,PAL,GEAR,renderQuelle} from './puppe.mjs';
 
 export const NEUE_WAFFEN=['rohrzange','fasskeule','kronkorkenstern','gartenzwerg','grillzange','masskrugschild','schorlenspritze','blitzschrauber'];
@@ -21,12 +23,15 @@ const shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))contin
 const PALETTE=[...new Set(Object.values(PAL).flatMap(v=>(Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2])))].map(k=>[k>>16,k>>8&255,k&255]);
 const at=(anim,i=0)=>FRAMES.findIndex(f=>f.anim===anim&&f.i===i);
 /** Bilder, in denen das Spiel die Waffe zeigt (Nahkampf nie in Zielen/Schuss, Fernkampf nie im Hieb); Kleidung und Glücksbringer: Querschnitt aller Posen. */
-function framesOf(id){const g=GEAR[id];
+const RT_CAT=new URL('../../assets/paperdoll/runtime/catalog.json',import.meta.url),GB=existsSync(RT_CAT)?JSON.parse(readFileSync(RT_CAT,'utf8')).gluecksbringer:null;
+/** Teile einer Kennung „a+b“; Glücksbringer in ihrer Fassung wie im Spiel (Rangfolge = Reihenfolge der Kennung). */
+function teile(id){const t=id.split('+'),gb=t.filter(x=>GB?.fassungen?.[x]),w=gluecksbringerWahl(gb,GB);let k=0;return t.map(x=>GB?.fassungen?.[x]?w[k++]:x);}
+function framesOf(id){const g=GEAR[id.split('+')[0]];
  if(!['weapon','offhand','ranged'].includes(g.slot))return [at('stehen'),at('laufen',1),at('laufen',5),at('hieb',0),at('hieb',1),at('parade'),at('zaubern'),at('rasten'),at('sprint'),at('zielen')];
  if(g.slot==='ranged')return [at('stehen'),at('laufen',1),at('laufen',5),at('zielen'),at('schuss'),at('parade'),at('parade2'),at('getroffen'),at('sprint')];
  const h=g.hands===2?'hieb2':'hieb';return [at('stehen'),at('laufen',1),at('laufen',5),at(h,0),at(h,1),at(h,2),at(g.hands===2?'parade2':'parade'),at('getroffen'),at('zaubern'),at('rasten'),at('sprint')];}
 /** Ausrüstung der Vorschau: Schild mit Einhandwaffe, Nebenhand-Fassung zusammen mit der Hauptwaffe. */
-function setOf(id){const g=GEAR[id];if(g.slot==='offhand'&&!/_nh$/.test(id))return [...KLEID,'fasskeule',id];if(/_nh$/.test(id))return [...KLEID,id.slice(0,-3),id];return [...KLEID,id];}
+function setOf(id){if(id.includes('+'))return [...KLEID,...teile(id)];const g=GEAR[id];if(g.slot==='offhand'&&!/_nh$/.test(id))return [...KLEID,'fasskeule',id];if(/_nh$/.test(id))return [...KLEID,id.slice(0,-3),id];return [...KLEID,id];}
 /** Bogen einer Quelle, gleich auf die Inhaltshülle je Band × Bild zugeschnitten ({data,x,y,w,h} wie die Laufzeit-Kacheln; der volle Bogen wäre ~70 MB). */
 const memo=new Map();
 function tiles(s,fig,d){const k=s+'|'+fig+'|'+d;if(memo.has(k))return memo.get(k);const sh=renderQuelle(s,fig,d),T=BANDS.map(()=>FRAMES.map(()=>null));
@@ -61,7 +66,9 @@ function welt(set,cells,file,KS=[.3,.45,.6],Z=3){const pad=4,cw=KS.map(k=>Math.r
   for(let y=0;y<ch[r];y++)for(let x=0;x<cw[r];x++){const sx=x0+(x/Z|0),sy=y0+(y/Z|0);if(sx>=w||sy>=h)continue;const q=(sy*w+sx)*4;if(img[q+3])o.data.set([img[q],img[q+1],img[q+2],255],((oy+y)*o.width+ox+x)*4);}}));
  writeFileSync(out+'/'+file,encodePng(o));}
 /** Symbol ×2 neben der Figur se und nw (Stand) in Weltgröße k, ebenfalls ×2 – prüft, ob die Figur dem Symbol folgt. */
-function symbol(id,set,k=.45,Z=2){const f=new URL('../../assets/precision/runtime/items/'+id+'.png',import.meta.url);if(!existsSync(f))return;const ic=decodePng(readFileSync(f)),pad=8;
+function symbol(id,set,k=.45,Z=2){const fs=id.split('+').map(x=>new URL('../../assets/precision/runtime/items/'+x+'.png',import.meta.url)).filter(existsSync);if(!fs.length)return;
+ const ics=fs.map(f=>decodePng(readFileSync(f))),ic={width:ics.reduce((w,i)=>w+i.width,0)+(ics.length-1)*4,height:Math.max(...ics.map(i=>i.height))},pad=8;
+ ic.data=new Uint8ClampedArray(ic.width*ic.height*4);{let ox=0;for(const i of ics){for(let y=0;y<i.height;y++)ic.data.set(i.data.subarray(y*i.width*4,(y+1)*i.width*4),(y*ic.width+ox)*4);ox+=i.width+4;}}
  const figs=['se','nw'].map(d=>shrunk(compose('ida',d,set,0),k)),cw=Math.round(CW*k*.8),ch=Math.round(CH*k),x0=Math.floor((W/2-CW*.4)*k),y0=Math.floor(CY0*k),BGG=[0x3b,0x50,0x30];
  const o=surface(pad+ic.width*Z+pad+(cw*Z+pad)*2,pad+Math.max(ic.height,ch)*Z+pad);for(let i=0;i<o.data.length;i+=4)o.data.set([...BGG,255],i);
  for(let y=0;y<ic.height*Z;y++)for(let x=0;x<ic.width*Z;x++){const q=((y/Z|0)*ic.width+(x/Z|0))*4,a=ic.data[q+3]/255;if(!a)continue;o.data.set([0,1,2].map(c=>Math.round(ic.data[q+c]*a+BGG[c]*(1-a))).concat(255),((pad+y)*o.width+pad+x)*4);}
@@ -73,11 +80,11 @@ const NAH=process.argv[5]&&process.argv[5].split(',').map(z=>{const [fd,f]=z.spl
 if(NAH){const pad=6;for(const id of ids){const set=setOf(id),o=surface((CW*S+pad)*NAH.length+pad,CH*S+2*pad);for(let i=0;i<o.data.length;i+=4)o.data.set([...BG,255],i);
  NAH.forEach(({fig,d,f},c)=>{const img=compose(fig,d,set,f),ox=pad+c*(CW*S+pad);for(let y=0;y<CH*S;y++)for(let x=0;x<CW*S;x++){const q=((CY0+(y/S|0))*W+CX0+(x/S|0))*4;if(img[q+3])o.data.set([img[q],img[q+1],img[q+2],255],((pad+y)*o.width+ox+x)*4);}});
  writeFileSync(out+'/'+id+'-nah.png',encodePng(o));console.log(id,'nah');}process.exit(0);}
-for(const id of ids){if(!GEAR[id]){console.log('unbekannt',id);continue;}
- const cols=framesOf(id),set=setOf(id);
+for(const id of ids){if(id.split('+').some(x=>!GEAR[x])){console.log('unbekannt',id);continue;}
+ const cols=framesOf(id),set=setOf(id);if(id.includes('+'))console.log(id,'→',set.slice(KLEID.length).join(' + '));
  bogen(DIRN.map(d=>({fig:'ida',d,set})),cols,S,id+'.png');
  bogen(FIGS.flatMap(fig=>DIRN.map(d=>({fig,d,set}))),cols,1,id+'-alle.png');
- const g=GEAR[id],act=g.slot==='ranged'?[at('zielen'),at('schuss')]:g.hands===2?[at('hieb2',1),at('parade2')]:[at('hieb',1),at('parade')];
+ const g=GEAR[id.split('+')[0]],act=g.slot==='ranged'?[at('zielen'),at('schuss')]:g.hands===2?[at('hieb2',1),at('parade2')]:[at('hieb',1),at('parade')];
  welt(set,[['ida','se',0],['ida','sw',at('laufen',2)],['dieter','se',act[0]],['dieter','nw',0],['kevin','ne',at('laufen',5)],['kevin','sw',act[1]],['ida','nw',act[0]]],id+'-welt.png');
  symbol(id,set);
  if(GEAR[id+'_nh'])bogen(DIRN.map(d=>({fig:'ida',d,set:setOf(id+'_nh')})),framesOf(id),S,id+'_nh.png');

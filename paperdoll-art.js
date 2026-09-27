@@ -2,7 +2,7 @@
 // Bögen aus tools/paperdoll (node tools/paperdoll/puppe.mjs --runtime): je Quelle (Körper, Dutt, Aussehen, Gegenstand) × Archetyp × Richtung
 // ein Grundbogen (Stehen/Blinzeln/Laufen) und ein Aktionsbogen (Kampf, Zaubern, Rasten …), Zeilen = Tiefenbänder der Quelle. Zusammengesetzt wird zur Laufzeit mit demselben Kern wie im Werkzeug (paperdoll-kern.js), dann
 // Haut/Haar über die Farbtreppen umgefärbt und für die Welt hochwertig verkleinert (Flächenmittel → Palette → Kontur).
-import {composeCore,sources as orderSources,useShade} from './paperdoll-kern.js';
+import {composeCore,sources as orderSources,useShade,gluecksbringerWahl} from './paperdoll-kern.js';
 
 // stats: Diagnose (Konsole: (await import('./paperdoll-art.js')).paperdoll.stats) – zusammengesetzt, vorgewärmt, per Budget vertagt, Rückfall auf alten Weg
 export const paperdoll={ready:false,catalog:null,images:new Map(),missing:new Set(),version:0,failed:false,stats:{composed:0,warmed:0,deferred:0,legacy:0}};
@@ -115,12 +115,18 @@ export function paperdollFrameFor(frames,p={},time=0,{stride=64,items=[]}={}){
 export function paperdollFrame(p={},time=performance.now(),items=p.visualEquipment||[]){const cat=paperdoll.catalog;return paperdollFrameFor(cat.frames,p,time,{stride:cat.stride||64,items});}
 /** Quellen aus der sichtbaren Ausrüstung (equipment-appearance.js): feste Kennung vor Familie; Zweihänder verdrängt die Nebenhand.
  *  Fernkampf (usingRanged) zeigt die Fernwaffe statt Haupt- und Nebenhand (wie equipment-art/prerender-art), sonst umgekehrt.
- *  Einhandwaffe im Nebenhandplatz → Quelle „Kennung_nh“ (linke Hand); Handschuh + Schild → „Handschuh_faust“ über der Schildfaust. */
+ *  Einhandwaffe im Nebenhandplatz → Quelle „Kennung_nh“ (linke Hand); Handschuh + Schild → „Handschuh_faust“ über der Schildfaust.
+ *  Glücksbringer (cat.gluecksbringer) überdecken sich nie: gluecksbringerWahl (paperdoll-kern.js) wählt je Glücksbringer die Fassung
+ *  (Stammplatz oder Ausweichplatz), Glücksbringer I (trinket1) vor II (trinket2), NPC-Figuren in Kleidungsreihenfolge. */
 export function paperdollSources(items=[],usingRanged=false){
- const cat=paperdoll.catalog,set=new Set(),gear=cat.sources,two=items.some(i=>i.slot==='weapon'&&i.hands===2);
+ const cat=paperdoll.catalog,set=new Set(),gear=cat.sources,two=items.some(i=>i.slot==='weapon'&&i.hands===2),gb=cat.gluecksbringer,out=[],gbAt=[],gbList=[];
+ const rank=it=>it.slot==='trinket1'?0:it.slot==='trinket2'?1:2;
  for(const it of items){if(usingRanged&&(it.slot==='weapon'||it.slot==='offhand'))continue;if(!usingRanged&&it.slot==='ranged')continue;if(two&&it.slot==='offhand')continue;
   let src=cat.items[it.id]||cat.families[it.asset];if(it.slot==='offhand'&&gear[src]?.slot==='weapon')src=src+'_nh';
-  if(src&&gear[src]&&gear[src].slot!=='body-base')set.add(src);}
+  if(!src||!gear[src]||gear[src].slot==='body-base')continue;
+  if(gb?.fassungen?.[src]){gbAt.push(out.length);gbList.push([rank(it),gbList.length,src]);out.push(null);}else out.push(src);}
+ if(gbList.length){const chosen=gluecksbringerWahl(gbList.sort((a,b)=>a[0]-b[0]||a[1]-b[1]).map(e=>e[2]),gb);gbAt.forEach((k,n)=>{out[k]=chosen[n];});}
+ for(const s of out)if(gear[s])set.add(s);
  if([...set].some(s=>gear[s].slot==='offhand'&&!gear[s].hands))for(const s of [...set])if(gear[s].slot==='hands'&&gear[s+'_faust'])set.add(s+'_faust');
  return set;}
 

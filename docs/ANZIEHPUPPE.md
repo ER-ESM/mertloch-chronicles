@@ -51,7 +51,7 @@ Figuren im Spiel werden aus Ebenen zusammengesetzt: **Archetyp + Aussehen + Ausr
   - Färbt um.
   - **Kachelspeicher:** jede Kachel (Bogen × Band × Bild × Spiegelung) wird einmal gelesen und auf ihren Inhalt zugeschnitten (bis 48 MB, LRU); der Kern (`composeCore`) nimmt Zuschnitte `{data,x,y,w,h}` und arbeitet nur über deckende Pixel, Kontur und Verkleinern nur innerhalb der Inhaltshülle (`out.box`). Gemessen: Zusammensetzen 9 → 1,3 ms (warm). Diagnose: `paperdoll.debug.compose(...)`, `paperdoll.debug.tiles()`, `paperdoll.stats`.
   - Verkleinert für die Welt: Flächenmittel, dann zurück auf die Palette, dann Kontur. Weltbilder liegen in einem eigenen Speicher (Zusammensetzung × Maßstab × Tönung); höchstens 4 neue Weltbilder je Bild, darüber zeigt eine Figur ihr letztes Bild weiter (kein Ruckeln bei vielen NPCs).
-  - **Maßstab** (`unitScale`): Archetypen (Höhe mit Dutt) auf 26 E angeglichen, ein Fünftel der natürlichen Streuung bleibt. `npm run figures:check` verlangt ±5 % zur Heldenhöhe; Kopfschmuck (Kopfteil, eigene Frisur) darf bis +12 %.
+  - **Maßstab** (`unitScale`): Archetypen (Höhe mit Dutt) auf 26 E angeglichen, ein Fünftel der natürlichen Streuung bleibt. `npm run figures:check` misst die Körperhöhe ohne Kopfbedeckung (die Figuren werden ein zweites Mal ohne ihre Kopfteile, Platz `head`: Kochmütze, Helme, Hüte, Kopfhörer, über dieselben Zeichenwege gemessen) und verlangt ±5 % zur Heldenhöhe; eine eigene Frisur (Irokese) ist Haar und darf die Körperhöhe bis +12 % heben; mit Kopfteil höchstens +30 % (Plausibilität: das Kopfteil sitzt auf dem Kopf). Eigene Ports: `CDP_PORT=… SERVER_PORT=… npm run figures:check`.
   - Andockpunkt ist `drawDetailedHero`, deshalb laufen Welt, Editor, Porträt und Figurenfenster automatisch mit.
 - **NPCs `paperdoll-figuren.js` + `content/figuren.js`:** Jede Figur (NPCs, Dorfbewohner, Berufslehrer, Söldner) ist Archetyp + Aussehen + Kleidungsliste und meldet sich als `npc:<id>` an (Clan-Mitglieder zusätzlich als `mentor-<id>`). `drawWorldPerson`, der Mentorenweg, Dorfbewohner und Lehrer fragen zuerst die Puppe; Porträts bleiben beim festen Bild. Söldner bekommen Tönung und Kleidung über die Renderer-Ansicht.
 - **Mitspieler:** Die Anwesenheit überträgt die sichtbare Ausrüstung auch zu Fuß, mit geprüfter Gegenstandskennung (`mount-wire.js`).
@@ -61,6 +61,7 @@ Figuren im Spiel werden aus Ebenen zusammengesetzt: **Archetyp + Aussehen + Ausr
 ```
 node tools/paperdoll/puppe.mjs --runtime        # assets/paperdoll/runtime: Grund- und Aktionsbögen + catalog.json (~8 min)
 node tools/paperdoll/puppe.mjs --runtime --nur gartenzwerg,kegelkugel   # Teilneubau einzelner Quellen (~4 s je Quelle): ersetzt nur ihre Bögen + Katalogeinträge, übernimmt neue Farbtreppen in Palette/Schattentabelle, verweigert bei geänderter Leinwand/Bildern; Ergebnis byte-gleich zum vollen Neubau; danach pwa-cache (Kleidung/Glücksbringer: auch --reiten)
+node tools/paperdoll/waffen-vorschau.mjs halbes-hufeisen+kegelkugel tools/paperdoll/out-abschluss   # mehrere zusammen („a+b“): Glücksbringer in ihrer Fassung wie im Spiel
 node tools/paperdoll/waffen-vorschau.mjs <id,id> [ordner] [S]   # Kontaktbogen (se/sw/nw/ne), alle Archetypen × Richtungen, Weltgröße k=0,3/0,45/0,6, Symbol neben Figur; Waffen, Kleidung, Glücksbringer → tools/paperdoll/out-waffen/ (ohne Laufzeitbau)
 node tools/paperdoll/puppe.mjs --reiten         # assets/paperdoll/reiten: Reit-Bögen, 6 Reittiere × 3 Archetypen (~1 min, REITEN_JOBS=n Threads, ~4 MB)
 node scripts/pwa-cache.mjs                      # danach: Offline-Liste (Reit-Bögen stehen darin nur optional)
@@ -69,6 +70,21 @@ node tools/paperdoll/puppe.mjs <ordner>         # Vorschau-Bögen (Figuren ida/d
 node tools/paperdoll/zeigen.mjs <ordner> 3 "ida:kutte,jeans|dieter@nw:" "0,5,6" name 3b3024   # Vorschaubild
 PUPPE_LEINWAND=440,460,340 node tools/paperdoll/puppe.mjs --runtime <ordner>   # Hüllenmessung auf großer Leinwand (Protokoll: „Hülle … frei …“)
 ```
+
+## Glücksbringer: nie übereinander (2026-09-27)
+
+Zwei gleichzeitig getragene Glücksbringer (Plätze `trinket1`/`trinket2`, bei NPC-Figuren zwei Glücksbringer in der Kleidungsliste) überdecken sich nie.
+
+- **Fassungen:** Jeder Glücksbringer trägt in `familien.mjs`/`puppe.mjs` `ausweich:[…]` – seine Ausweichfassungen als eigene Quellen:
+  - `_gegen` = andere Körperseite (andere Hüfte, andere Brust- oder Bauchseite). Ohne eigene Zeichnung erzeugt `puppe.mjs` sie aus der Stammquelle mit umgekehrter Seitenregel (`p.swap`; Codex-Teil, `SIDE`, `GEAR_BACK` über `basis`).
+  - `_guertel` = am Gürtel (rechte Hüfte) statt am Hals: Halsanhänger, Ausweis und Kette (unteres Stück des Codex-Teils), Orden, Hausordnung.
+  - Die Schärpe bleibt immer (`ausweich:[]`); der Greifarm weicht neben ihr auf die linke Schulter mit kurzem Rucksackgurt aus.
+  - Alle Ausweichfassungen sind seitengebunden (eigene sw/ne-Bögen). Tabelle `GLUECKSBRINGER` (Werkzeug) = `cat.gluecksbringer.fassungen`.
+- **Gürtelplatz:** Glücksbringer an der Hüfte hängen bei einem Anteil der Rumpfbreite, innen aber höchstens bis 1 px vor die Mitte der Rumpfzeile (`hueftX`, `guertelPunkt`). Die beider Hüften berühren sich so nie; am drahtigen Körper hängen sie weiter außen. Codex-Teile am Gürtel (Bierbong, `huefte:true`) messen die Rumpfneigung auf Gürtelhöhe und wandern in Sprint und Hieb nicht mit der Brust.
+- **Messung:** Der Bau (`--runtime` und jedes `--nur`) misst aus den fertigen Bögen, wie viele sichtbare Pixel sich je zwei Fassungen nehmen (`tools/paperdoll/gluecksbringer.mjs`): alle Archetypen × Richtungen × Bilder, Band für Band über dem Körper, beide Zeichenfolgen. `cat.gluecksbringer.deckung['a>b']` = größter Verlust, wenn a vor b liegt; nur Werte über der Toleranz (3 Leinwandpixel, Berührung an der Kontur).
+- **Wahl** (`paperdoll-kern.js gluecksbringerWahl`, Spiel über `paperdollSources`, Werkzeug über `waffen-vorschau.mjs`): die erste deckungsfreie Anordnung. Glücksbringer I behält seinen Platz, solange II ausweichen kann; sonst weicht I aus. Je Anordnung werden beide Zeichenfolgen geprüft. Zwei gleiche Glücksbringer (zwei Zufalls-Andenken) hängen an beiden Hüften.
+- **Prüfung:** `tests/paperdoll-gluecksbringer.test.mjs` misst die Deckung neu, vergleicht sie mit dem Katalog und prüft jedes Paar tragbarer Glücksbringer auf 0 px Deckung.
+- **Neuer Glücksbringer:** `ausweich` eintragen (Seite: `['_gegen']`, Hals: `['_guertel']` mit eigener Gürtelzeichnung), danach `--runtime --nur <id>,<id>_gegen…` (misst neu), `--reiten`, `pwa-cache`. Meldet der Test eine Deckung, braucht das Paar eine weitere Fassung.
 
 ## Ergänzen
 
