@@ -50,6 +50,7 @@ export const GAME_MENU_UI={professions:'Berufe',professionsKey:'Shift + B',title
 export const BAG_UI={
  /** Runde 3b: Gegenstands-Tooltip (Zielbild 2) */
  tipDamage:'Schaden',tipDps:'Schaden/s',tipItemLevel:'Gegenstandsstufe',tipEquipped:'Angelegt',tipShift:'Shift: Details',
+ tipProc:'Anlegen: ',/* E-75: grüne Wirkungszeile (PROCS.text) für Dorflegenden und Waffenkammer, wie „Anlegen:“ in WoW */
  slots:'Plätze',coins:'Pfandmarken',
  search:'Suchen',searchPlaceholder:'Name, Art, Güte oder Wert …',searchLabel:'Rucksack durchsuchen',
  noMatch:'Hier passt gerade nichts zu Suche und Filter.',

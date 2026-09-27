@@ -20,6 +20,7 @@ import {walkFacing} from './maifeld-locomotion.js';
 import {classBuffValue,savedClassBuffs,restoreClassBuffs} from './class-buffs.js';
 import {bossAutoFactor,mercDamageFactor,tickLastStand} from './dungeon-einsatz.js';/* Auftrag „Held aktiv“ (2026-09-26) */
 import {MARK_IDS} from './target-marks.js';
+import {foeDamageFactor} from './procs.js';/* E-75: eingeschüchterte Gegner treffen auch Söldner schwächer */
 
 const PLAYER='player';
 const alive=c=>c.state!=='down'&&c.hp>0;
@@ -75,7 +76,7 @@ export function companionFocus(g,e){
 }
 
 export function hitCompanion(g,e,c,n){
- if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))*(c.cert?.until>g.time?1+c.cert.stacks*c.cert.taken:1)/* Dungeon Etappe 3: Zertifikat */));
+ if(!alive(c))return;n=Math.max(1,Math.round(n*(e.damage||1)*foeDamageFactor(e)*(c.guard>0?1-c.guardReduction:1)*(1-classBuffValue(c,'armor'))*(c.cert?.until>g.time?1+c.cert.stacks*c.cert.taken:1)/* Dungeon Etappe 3: Zertifikat */));
  /* Heiler-WoW: Notfallknopf des Helden (Riechsalz, Löschbier, Eierlikörchen) – aidSave senkt den Schaden */if(c.aidSave?.remaining>0)n=Math.round(n*(1-(c.aidSave.reduction||0)));
  const b=c.aidBuff;if(b?.remaining>0){n=Math.round(n*(1-(b.reduction||0)));const absorbed=Math.min(n,b.shield||0);b.shield=Math.max(0,(b.shield||0)-absorbed);n-=absorbed;if(absorbed>0)companionFx(g,c,'guard',c,{amount:absorbed,absorbed:true});}
  c.hp=Math.max(0,c.hp-n);if(n>0)c.hurt=.16;c.inCombat=6;

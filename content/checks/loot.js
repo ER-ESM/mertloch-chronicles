@@ -1,7 +1,8 @@
 import {PROFESSION_SOURCES,PROFESSION_RECIPES,PROFESSION_ITEMS} from '../professions.js';
 import {SHOP_STOCK} from '../shop.js';
 // Prüfungen der Rolle Gegenstände & Loot (items.js, drops.js, equipment.js, item-icons.js, recipes.js).
-import {ITEM_CATALOG,PROCS} from '../items.js';
+import {ITEM_CATALOG,PROCS,ITEM_PROC_TRIGGERS} from '../items.js';
+import {PROC_TRIGGERS} from '../procs.js';
 import {ITEM_INFO,PROC_INFO,describeItem,describeProc} from '../item-info.js';
 import {DROP_TABLES} from '../drops.js';
 import {HOTSPOTS,WORLD_NOTICES} from '../hotspots.js';
@@ -64,6 +65,29 @@ export function check(bad){
   if(ITEM_INFO[id].effect.trim()===(d.description||'').trim())bad('item '+id,'info.effect wiederholt nur die description');
   if(d.unique&&!ITEM_INFO[id].terms.includes('dorflegende'))bad('item '+id,'Dorflegende ohne Begriff „dorflegende“ in terms');
   if(d.proc&&!ITEM_INFO[id].links.includes(d.proc))bad('item '+id,'Gegenstand mit Proc verlinkt seinen Proc nicht: '+d.proc);}
+ // --- E-75 Waffenkammer: Waffenwirkungen (PROCS mit trigger, Laufzeit procs.js fireItemProcs) ---
+ const WEAPON_EFFECTS=['heal','energy','field','slow','burn','splash','weaken','overload'];
+ for(const t of ITEM_PROC_TRIGGERS)if(!PROC_TRIGGERS.includes(t))bad('ITEM_PROC_TRIGGERS','Auslöser '+t+' fehlt in PROC_TRIGGERS – Waffen und Talente sprechen dieselbe Sprache');
+ for(const [id,p] of Object.entries(PROCS)){if(!p.trigger)continue;const w='proc '+id,trig=[].concat(p.trigger);
+  if(!trig.length||trig.some(t=>!ITEM_PROC_TRIGGERS.includes(t)))bad(w,'trigger nur aus ITEM_PROC_TRIGGERS: '+trig.join(','));
+  if(!WEAPON_EFFECTS.some(k=>p[k]!==undefined))bad(w,'Waffenwirkung ohne Wirkung ('+WEAPON_EFFECTS.join('/')+')');
+  if(!p.name||!p.label)bad(w,'name (Kampfstatistik) und label (Kampftext) fehlen');
+  if(p.chance!==undefined&&!(p.chance>0&&p.chance<1))bad(w,'chance muss in (0, 1) liegen – ohne Würfel das Feld weglassen');
+  if(p.every!==undefined&&!(Number.isInteger(p.every)&&p.every>=2))bad(w,'every ist eine ganze Zahl ≥ 2');
+  if(p.icd!==undefined&&!(p.icd>0))bad(w,'icd (Sekunden) muss > 0 sein');
+  // Milder als die Dorflegenden: eine Autoangriffs-Wirkung löst nie bei jedem Treffer aus.
+  if(trig.includes('autoHit')&&!(p.chance<1||p.every>1||p.icd>0))bad(w,'Autoangriffs-Wirkung ohne chance/every/icd – würde bei jedem Treffer auslösen');
+  if(p.weapon&&trig.some(t=>t!=='autoHit'&&t!=='crit'))bad(w,'weapon:true nur mit autoHit/crit (Autoangriff dieser Waffe)');
+  if((p.field||p.burn||p.weaken)&&!(p.duration>0))bad(w,'field/burn/weaken brauchen duration');
+  if((p.field||p.splash)&&!(p.radius>0))bad(w,'field/splash brauchen radius');
+  if(p.splash&&!(Number.isInteger(p.targets)&&p.targets>=1))bad(w,'splash braucht targets');
+  for(const k of ['burn','splash','weaken'])if(p[k]!==undefined&&!(p[k]>0&&p[k]<=1))bad(w,k+' ist ein Anteil in (0, 1]');
+  const users=Object.entries(ITEM_CATALOG).filter(([,d])=>d.proc===id);
+  if(!users.length)bad(w,'Waffenwirkung ohne Gegenstand');
+  for(const [iid,d] of users){const wi='item '+iid;
+   if(d.unique)bad(wi,'Waffenwirkungen gehören an feste Waffen, nicht an Dorflegenden (die haben ihre eigenen Procs)');
+   if(p.weapon&&!d.weapon)bad(wi,'weapon:true braucht eine Waffe mit Autoangriff');
+   if(trig.includes('parry')&&d.weapon?.hands===2)bad(wi,'Parade-Wirkung an einer Zweihandwaffe – die Parade braucht einen Schild (WEAPON_SKILL_RULES)');}}
  // Jeder Proc erklärt sich selbst.
  for(const id of Object.keys(PROCS)){if(!PROC_INFO[id]){bad('proc '+id,'ohne info in content/item-info.js');continue;}
   infoBlock('proc '+id,describeProc(id),id);

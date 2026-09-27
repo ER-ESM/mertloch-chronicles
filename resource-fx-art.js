@@ -232,7 +232,9 @@ export function drawResourceStates(c,g,visible=()=>true){const kind=RESOURCES[g.
    if(perfect){const count=hot?n(9,6):n(6,4),s=hot?1.55:1.05;glow(c,p.x,p.y-2,hot?20:13,'#ff9a3a',hot?.5:.32);for(let i=0;i<count;i++){const a=i/count*TAU+time*.5,x=p.x+Math.cos(a)*9,y=p.y+1+Math.sin(a)*3.4;if(Math.sin(a)<-.35)continue;flame(c,x,y+2,s*(.8+.25*Math.sin(i*2.3)),time,i,.9);}
    if(hot){glow(c,p.x,p.y-8,24,'#ff7a2a',.3+.12*Math.sin(time*9));for(let k=0;k<n(4,2);k++){const ph=(time*1.3+k/4)%1;star(c,p.x+Math.sin(time*3+k*2)*8,p.y-8-ph*26,1.8,k%2?'#ffd35a':'#ff8a3a',1-ph);}}}
    if(h.locked>0){const ph=(time*.7)%1;puff(c,p.x+4+Math.sin(time*2)*2,p.y-24-ph*12,2+ph*4,'#6a6660',(1-ph)*.6);}}
-  for(const e of g.enemies){if(!(e.burn?.t>0)||e.hp<=0||!visible(e))continue;if(fxQuality.rich)glow(c,e.x,e.y-8,14,'#ff7a2a',.35);for(const [dx,dy,s2,k] of [[-5,-2,1.05,0],[4,-8,.85,1],[-1,-14,.7,2]])flame(c,e.x+dx,e.y+dy,s2,time,k+e.id,.92);const ph=(time*1.2+e.id*.3)%1;puff(c,e.x+Math.sin(time*2+e.id)*3,e.y-26-ph*10,2+ph*3,'#4a4440',(1-ph)*.45);}}
+ }
+ /* Brennende Gegner zeigt jede Klasse: Glutbrocken und seit E-75 die Grillzange setzen denselben Glutbrand */
+ for(const e of g.enemies){if(!(e.burn?.t>0)||e.hp<=0||!visible(e))continue;if(fxQuality.rich)glow(c,e.x,e.y-8,14,'#ff7a2a',.35);for(const [dx,dy,s2,k] of [[-5,-2,1.05,0],[4,-8,.85,1],[-1,-14,.7,2]])flame(c,e.x+dx,e.y+dy,s2,time,k+e.id,.92);const ph=(time*1.2+e.id*.3)%1;puff(c,e.x+Math.sin(time*2+e.id)*3,e.y-26-ph*10,2+ph*3,'#4a4440',(1-ph)*.45);}
  if(kind==='cards'){for(const e of g.enemies){const card=e.cast?.card;if(!card||e.hp<=0||!visible(e))continue;const beat=e===g.target&&['strike','mark','burst'].some(id=>resourceVariant(g,id)?.tone==='gold'&&!!handCard(g,id));const bob=Math.sin(time*4)*1;cardAt(c,card,e.x+15,e.y-32+bob,.8,.12,1,{glow:beat});if(beat)star(c,e.x+19,e.y-40+bob,2.6+Math.sin(time*8),'#ffe38a',.9);}}
  if(kind==='trend'&&g.res?.viral>0&&visible(p)){for(let i=0;i<3;i++){const a=time*2.2+i*TAU/3;spr(c,'heart',p.x+Math.cos(a)*11,p.y-24+Math.sin(a)*4,.8,{alpha:.9});}}
 }
