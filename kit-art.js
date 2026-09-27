@@ -130,8 +130,17 @@ function drawPaper(c,{x0,x1,paper:P},top,h){const w=x1-x0,a=c.globalAlpha;if(w<=
 export function drawWallDecor(c,it,wall){
  const def=it.def,top=wall.maxY-(def.mount||0)-(it.height||8),s=sprite(it.sprite);
  if(s){const [sx,sy,sw,sh]=frameOf(s,seedOf(it)),hh=sh/sw*it.w;if(!(s.m.frames>1)){const o=outlined(s,it.sprite),k=it.w/sw,pp=o.pad*k;c.drawImage(o.canvas,sx,sy,sw+o.pad*2,sh+o.pad*2,it.minX-pp,top+(it.height-hh)-pp,it.w+pp*2,hh+pp*2);return;}c.drawImage(s.img,sx,sy,sw,sh,it.minX,top+(it.height-hh),it.w,hh);return;}
- const color=def.color||'#888';fill(c,INK,it.minX-.5,top-.5,it.w+1,it.height+1);fill(c,color,it.minX,top,it.w,it.height);fill(c,shade(color,1.3),it.minX+1,top+1,it.w-2,1);
+ const color=def.color||'#888';c.save();fill(c,INK,it.minX-.5,top-.5,it.w+1,it.height+1);fill(c,color,it.minX,top,it.w,it.height);fill(c,shade(color,1.3),it.minX+1,top+1,it.w-2,1);c.restore();/* Runde 3: Ersatz eingeklammert (NEUTRAL_ITEMS) */
 }
+/** Runde 3 (Handy-Leistung): Schlüssel und Rahmen (Welteinheiten) eines stehenden Teils für ein Zwischenbild – nur, wenn sein Bild ruht
+ *  (geladen und ohne Bildwechsel) oder gar kein Bild vorgesehen ist; sonst null (dann direkt zeichnen). */
+const kitLayers=new WeakMap();
+export function kitItemLayer(it){const s=sprite(it.sprite),img=s?.img||null,hit=kitLayers.get(it);if(hit&&hit.img===img)return hit.v;const v=layerOf(it,s);kitLayers.set(it,{img,v});return v;}
+function layerOf(it,s){if(!s&&it.sprite&&meta()?.sprites?.[it.sprite])return null;/* lädt noch */if(s&&s.m.frames>1)return null;
+ const lift=it.lift||0;let x0=it.minX-1,x1=it.maxX+1,y0=it.minY-lift-1,y1=it.maxY+1;if(it.def.shadow&&!it.lift){x0=Math.min(x0,it.x-it.w/2-1);x1=Math.max(x1,it.x+it.w/2+1);y0=Math.min(y0,it.y-it.h/2-1);y1=Math.max(y1,it.y+it.h/2+1);}
+ if(s){const [,,sw,sh]=frameOf(s,seedOf(it)),hh=sh/sw*it.w,o=outlined(s,it.sprite),pp=(o.pad||0)*it.w/sw;x0=Math.min(x0,it.minX-pp);x1=Math.max(x1,it.minX+it.w+pp);y0=Math.min(y0,it.maxY-lift-hh-pp);y1=Math.max(y1,it.maxY-lift+pp);}
+ else{const h=it.height||8;y0=Math.min(y0,it.minY-lift-h-.5);y1=Math.max(y1,it.maxY-lift+.5);}
+ return {key:'kit|'+(it.sprite||'')+'|'+(s?1:0)+'|'+it.x+'|'+it.y+'|'+it.w+'|'+it.h+'|'+lift,box:{x0:Math.floor(x0-2),y0:Math.floor(y0-2),x1:Math.ceil(x1+2),y1:Math.ceil(y1+2)}};}
 /** Stehendes Teil (Möbel, Draußen, Tischdeko): unten mittig auf der Vorderkante der Standfläche, tiefensortiert. */
 export function drawKitItem(c,it){
  const s=sprite(it.sprite);

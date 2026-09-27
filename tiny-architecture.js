@@ -38,7 +38,7 @@ export function drawBuilding(c,b,time){
    for(let i=0;i<3;i++){const left=Math.round((l.world[i]-l.world[0])*density),right=Math.round((l.world[i+1]-l.world[0])*density);mc.drawImage(a.image,l.source[i],a.y,l.source[i+1]-l.source[i],a.h,left,0,right-left,cv.height);}
    normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>180)cache.delete(cache.keys().next().value);
   }c.imageSmoothingEnabled=false;c.drawImage(sprite.cv,l.world[0],l.top,width,l.height);return;}
- if(!artImages.house){fallback(c,b,time);return;}const key=[b.id,b.minX,b.maxY,b.w,b.h,b.wallHeight,b.roofHeight,b.church,b.style].join(':');let s=cache.get(key);if(!s){s=make(b);cache.set(key,s);if(cache.size>180)cache.delete(cache.keys().next().value);}c.drawImage(s.cv,s.x,s.y);}
+ if(!artImages.house){c.save();fallback(c,b,time);c.restore();return;}/* Runde 3: Ersatzzeichnung eingeklammert (NEUTRAL_ITEMS) */const key=[b.id,b.minX,b.maxY,b.w,b.h,b.wallHeight,b.roofHeight,b.church,b.style].join(':');let s=cache.get(key);if(!s){s=make(b);cache.set(key,s);if(cache.size>180)cache.delete(cache.keys().next().value);}c.drawImage(s.cv,s.x,s.y);}
 /** Only geometry drawn in front of the actor needs fading. Doorstep flowers are not a roof. */
 export function buildingOccludesActor(b,actor){
  const bounds=buildingVisualBounds(b);

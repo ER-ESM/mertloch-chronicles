@@ -3,6 +3,8 @@ import {WORLD_SCALE} from './world-scale.js';
 import {box as r,shape,oval,line,framed,PALETTE as P} from './pixel-style.js';
 import {drawMaifeld,maifeld,fillMaifeldGround} from './maifeld-art.js';
 export {groundDetails} from './terrain.js';
+import {cachedLayer,intBox} from './layer-cache.js';
+import {worldLayers} from './world-layers.js';
 function crate(c,x,y){framed(c,'#a07858',x,y,15,13,P.ink,.8);for(let i=0;i<3;i++)r(c,'#d2a26c',x+2+i*4,y+1,2,10);line(c,'#e8c18c',[[x+1,y+11],[x+13,y+2]],1);}
 function barrel(c,x,y){oval(c,P.ink,x,y,8,4);framed(c,'#9a7362',x-8,y-12,16,13,P.ink,.7);oval(c,'#d3aa7c',x,y-12,8,3);for(const dy of [-8,-2])r(c,'#685b69',x-8,y+dy,16,2);r(c,'#ebc99a',x-5,y-10,1,8);}
 function lantern(c,x,y,t){line(c,'#594d35',[[x,y],[x,y-32],[x+9,y-32]],2);if(drawMaifeld(c,'lantern',x+9,y-18,WORLD_SCALE.lantern))return;framed(c,'#dac293',x+4,y-25,8,12,P.ink,.8);r(c,'#ffe6a1',x+6,y-23,4,8);}
@@ -66,10 +68,17 @@ export function prepareDetails(w){
   }
  }return details;
 }
+const fenceBoxes=new WeakMap();
+/** Rahmen (Welteinheiten) um ein Zaunstück – Zwischenbild und Test. */
+export const fenceBox=p=>{let b=fenceBoxes.get(p);if(!b)fenceBoxes.set(p,b=intBox(p.x-14,p.y-19,p.x+18,p.y+5,2));return b;};
+function fence(c,x,y){for(let i=0;i<4;i++){const xx=x-12+i*8;framed(c,'#c2a77b',xx,y-14,3,18,P.ink,.5);shape(c,'#e3ca98',[[xx-1,y-14],[xx+1.5,y-18],[xx+4,y-14]],P.ink,.5);}r(c,'#886e5d',x-13,y-7,30,2);r(c,'#e3c997',x-13,y-7,30,.5);for(let i=0;i<5;i++){r(c,'#6b946f',x-13+i*7,y+3,3,1);r(c,'#d6c984',x-12+i*7,y,1,3);}}
 export function drawEstateDetail(c,p,time){const x=p.x,y=p.y;
  if((p.kind===0||p.kind===3)&&drawMaifeld(c,'supplies',x,y+3,WORLD_SCALE.supplies))return;
  if(p.kind===1&&drawMaifeld(c,'bench',x,y+3,WORLD_SCALE.bench))return;
+ if(p.kind!==2){c.save();estateVector(c,p,time);c.restore();return;}/* Ersatzformen (Bilder fehlen noch) eingeklammert – NEUTRAL_ITEMS */
+ estateVector(c,p,time);}
+function estateVector(c,p,time){const x=p.x,y=p.y;
  if(p.kind===0){barrel(c,x,y);for(let i=0;i<5;i++){const xx=x-7+i*3;line(c,'#4c826d',[[x,y-15],[xx,y-25-i%2*4]],1);oval(c,['#e3b17d','#c58498','#e4d5ac'][i%3],xx,y-25-i%2*4,2,1.5);}}
  else if(p.kind===1){for(let j=0;j<3;j++)for(let i=0;i<3-j;i++){const xx=x-9+i*8+j*4,yy=y-j*5;oval(c,P.ink,xx,yy,4.5,3);oval(c,'#bd9975',xx,yy,3.5,2);oval(c,'#7c685b',xx,yy,1.5,1);r(c,'#e9c9a0',xx-2,yy-1,1,1);}shape(c,'#748a87',[[x-15,y-11],[x-7,y-16],[x+12,y-7],[x+12,y-4],[x-11,y-11]],P.ink,.5);}
- else if(p.kind===2){for(let i=0;i<4;i++){const xx=x-12+i*8;framed(c,'#c2a77b',xx,y-14,3,18,P.ink,.5);shape(c,'#e3ca98',[[xx-1,y-14],[xx+1.5,y-18],[xx+4,y-14]],P.ink,.5);}r(c,'#886e5d',x-13,y-7,30,2);r(c,'#e3c997',x-13,y-7,30,.5);for(let i=0;i<5;i++){r(c,'#6b946f',x-13+i*7,y+3,3,1);r(c,'#d6c984',x-12+i*7,y,1,3);}}
+ else if(p.kind===2){/* Runde 3: Zaunstück (~50 Befehle, ruht) als Zwischenbild je Stück – optisch gleich */if(!(worldLayers.props&&cachedLayer(c,p,'zaun',fenceBox(p),q=>fence(q,x,y)))){c.save();fence(c,x,y);c.restore();}}
  else{crate(c,x-8,y-12);for(let i=0;i<5;i++){oval(c,i%2?'#d3a365':'#a9bd82',x-5+i*2,y-14-i%2*3,2.5,2);r(c,'#526e64',x-4+i*2,y-17-i%2*3,1,2);}const s=Math.sin(time+p.seed)*.3;r(c,'#eddaa8',x+8,y-3+s,5,2);r(c,'#8b7275',x+9,y-3+s,3,.5);}}

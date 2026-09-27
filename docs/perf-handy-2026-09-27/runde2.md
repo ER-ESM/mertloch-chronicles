@@ -1,5 +1,7 @@
 # Handy-Messung Runde 2 (27.09.2026, Branch perf-handy)
 
+> Fortsetzung: [runde3.md](runde3.md) – Welt-Ebenen, Grundlast-Analyse, Wegsuche an der Treppe (Runde 2 → Runde 3).
+
 Messaufbau wie in [vorher.md](vorher.md): Android-Nachbildung 915 × 412, Gerätepixel 2,625, Touch, Grafik „Niedrig“, Stufe 20, Canvas beschleunigt (SwiftShader), `?render=gpu`. Maßstab ist die **Hauptfaden-Zeit je Bild**.
 
 **Vorher** ist Runde 1, also origin/main f6ed8654 (Build #831), aus einer Kopie auf eigenem Port ausgeliefert. **Nachher** ist dieser Branch. Gemessen wurde mit `node scripts/perf-handy.mjs --ab=<Runde 1>`: die Durchgänge laufen nacheinander in der Folge A, B, B, A, je Szene 20 s, zusammen 40 s je Zelle. Die Rohdaten stehen in `ab-runde2.json`. Den Kampf bei 6× habe ich zusätzlich einzeln gemessen, dazu unten mehr (`ab-runde2-kampf6.json`, `ab-runde2-worker-aus.json`).

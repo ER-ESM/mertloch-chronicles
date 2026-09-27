@@ -1486,3 +1486,53 @@ Nächste Runde wären Welt-Ebenen: Möbel und Lager an der Bude als Zwischenbild
 - Kampfläufe ohne Schaden haben Stillstand gemessen; `perf-handy.mjs` wiederholt sie jetzt.
 - Dieselbe Fassung misst auf dem geteilten Rechner 43 bis 113 ms p50.
 - Innerhalb einer Sitzung maßen spätere Szenen langsamer als frühere: 6× Kampf zuerst 43 ms, 4× Kampf danach 53 ms p50. Vermutlich bleibt aus früheren Kämpfen etwas liegen (Leichen, Beute); geprüft ist das nicht. `--ab` behandelt beide Fassungen gleich, Einzelwerte über Szenen hinweg sind aber nicht vergleichbar.
+
+**Nachtrag 27.09.2026 · Runde 3: Welt-Ebenen, Grundlast zerlegt, Wegsuche an der Treppe.** Bericht: `docs/perf-handy-2026-09-27/runde3.md`.
+
+**Befund.**
+- An der Bude kostet bei 4× das Zeichnen der Welt ~26 von 30 ms je Bild. Gemessen mit Umschaltern im selben Lauf: ohne Weltbild 4 ms, nur mit Boden 10,5 ms.
+- Davon ist ein fester Teil: Jede Leinwand, die sich in einem Bild ändert, kostet ~4–5 ms `DoUpdateLayers`, auch für ein einziges kleines Rechteck. Die Namensschilder-Leinwand kommt mit 3–5 ms dazu.
+- Weniger Zeichenbefehle senken den Commit kaum.
+- Fern der Bude wurde das Clan-Lager in jedem Bild gezeichnet, auch weit außerhalb des Bilds (122 Befehle).
+- Teuer sind sonst Figuren: der Held 55–120 µs ungedrosselt, Söldner 50–70 µs, Gegner 17–34 µs.
+
+**Entschieden.**
+1. **Welt-Ebenen** (`world-layers.js`), jede Maßnahme einzeln abschaltbar (`?layers=off`, `?layers=off:<schalter>`):
+   - Clan-Lager und Brunnen nur im Bild zeichnen.
+   - Lichterketten und Clan-Lager als Zwischenbilder in Animationsphasen. Die Lichterketten wiederholen sich alle 2,86 s, 24 Phasen; das Funkeln jeder Birne bleibt.
+   - Ruhende Kulissen, Stufenmöbel, Baukasten-Teile und Zäune als Zwischenbild je Objekt.
+   - Pollen gebündelt in 7 Deckkraftstufen.
+   - Der Zwischenbild-Speicher (`layer-cache.js`) hält mehrere Phasen je Objekt, trifft ohne Zeichenketten und setzt die Transformation mit Zahlen zurück. `setTransform(DOMMatrix)` war teurer als das Zeichnen selbst.
+   - Ergebnis: Befehle je Bild an der Bude 1.074 → 494, im Wald 312 → 145.
+2. **Kein save/restore um Objekte, deren Zeichenweg den Zustand nachweislich nicht ändert** (`NEUTRAL_ITEMS`). Figuren behalten die Klammer.
+3. **Bitgleich oder optisch gleich, gemessen je Maßnahme** mit `scripts/world-layer-check.mjs`: 7 feste Szenen, eingefrorene Zeit, Kamera und Haus-Überblendung.
+   - Kappen, save/restore-Verzicht und Merker sind bitgleich.
+   - Die übrigen Maßnahmen ändern höchstens 1,1 % der Pixel, um mehr als 8 Stufen höchstens 0,11 %.
+   - Zusätzlich wird der Zustand vor und nach jedem neutralen Objekt verglichen.
+4. **Merker für die Anziehpuppe** (vollständige Bögen, Vorbestellung) **und für verkleinerte Bogenfelder**: nur Rechenzeit, bitgleich.
+5. **Wegsuche mit Fluchtweg** (`World.escapePath`, in `findPath` und `navigate`):
+   - Vorher: An der Treppe der Bude bewegt sich der Held in der Treppenspur (Radius 5), die Wegsuche rechnet ohne Spur (Radius 9). Parkte ein Sprint ihn dort, gab es keinen Weg, F/„Reden“ blieb stumm. Das machte den mobile-check auf „klein“ rot, je nach Kampfverlauf, bei Runde 2 zufällig nicht.
+   - Jetzt: Findet die Wegsuche keinen Weg, geht es erst auf einem kurzen Fluchtweg in der Bewegungswelt zum nächsten freien Punkt. Wege, die schon gefunden wurden, bleiben gleich.
+6. **Messwerkzeug:**
+   - Szene „Laufen fern der Bude“ (`walkfar`).
+   - Umschalter-Messung im selben Lauf (`--toggle`); sie ist robust gegen die Laststreuung.
+   - Wiederbeleben vor jeder Szene; Läufe mit totem Helden oder Kampf ohne Schaden gelten nicht.
+   - Teilzeiten der Welt und Zeit je Objektart mit `?perf=segments`.
+
+**Ergebnis.**
+- Umschalter bei 4×: Skript an der Bude −1,6 ms, im Kampf −2,7 ms je Bild. Paint/Commit unverändert. Beim Laufen und bei 6× im Rauschen.
+- Die klassische Wechselmessung R2 → R3 streut um ±50 % je Lauf und belegt keine Richtung.
+- **p95 ≤ 16,7 ms bei 4× bleibt unerreicht.**
+
+**Verworfen bzw. offen.**
+- *Weltbereiche als ein Bild (Sammelbild):* Fern der Bude sind ruhende Objekte nur 10–15 % der Welt-Rechenzeit, halb so viele Befehle bringen 1–3 ms.
+  - Entwurf für später: untere Ebene (Boden plus ruhende Objekte, gekachelt und vorausgebaut) plus eine obere Ebene je Bild. Dort liegen Figuren und ruhende Objekte, die vor einer Figur stehen, gezeichnet mit „source-atop“. Das ist rechnerisch exakt, auch bei halbdurchsichtigen Rändern.
+  - Durchscheinende Bäume und Häuser und die Haus-Überblendung erzwingen Neuaufbauten der betroffenen Kacheln.
+- *Namensschilder auf die Weltfläche:* spart eine Leinwand je Bild (3–5 ms bei 4×), aber die Schrift wird sichtbar unschärfer (1,33 statt 2 Pixel je CSS-Pixel). Braucht eine Nutzerentscheidung.
+- *Schilder-Leinwand nur bei Änderung neu:* Quest-Zeichen wippen und Gegner laufen, beim Laufen und im Kampf ändert sich also jedes Bild. Gewinn nur im ruhigen Stillstand.
+- *`desynchronized`-Leinwand:* ein neuer Posten (RunTask 2–5 ms), kein klarer Gewinn.
+- *Zwischenbilder als ImageBitmap statt Leinwand:* kein Unterschied im Commit.
+
+**Messfallen.**
+- Der Held kann während einer Laufmessung sterben; danach misst der Lauf den Todesbildschirm (jetzt erkannt).
+- Die Pixelprüfung braucht eingefrorene Echtzeit (`performance.now`: Baukasten-Bildfolgen, Söldner-Übergänge) sowie feste Kamera und Haus-Überblendung, sonst weicht schon dieselbe Fassung ab.

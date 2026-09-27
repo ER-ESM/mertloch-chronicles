@@ -2,6 +2,7 @@
 // Bögen aus tools/paperdoll (node tools/paperdoll/puppe.mjs --runtime): je Quelle (Körper, Dutt, Aussehen, Gegenstand) × Archetyp × Richtung
 // ein Grundbogen (Stehen/Blinzeln/Laufen) und ein Aktionsbogen (Kampf, Zaubern, Rasten …), Zeilen = Tiefenbänder der Quelle. Zusammengesetzt wird zur Laufzeit mit demselben Kern wie im Werkzeug (paperdoll-kern.js), dann
 // Haut/Haar über die Farbtreppen umgefärbt und für die Welt hochwertig verkleinert (Flächenmittel → Palette → Kontur).
+import {worldLayers} from './world-layers.js';
 import {useShade,gluecksbringerWahl} from './paperdoll-kern.js';
 import {shrinkPixels,makeSnap,tintPalette} from './paperdoll-shrink.js';
 import {makeTiles,composeFigure,layersOf,sheetKeyOf,sheetsFor,partOf as partOfCat,baseDirOf} from './paperdoll-tiles.js';
@@ -233,14 +234,20 @@ function orderWorld(j,prio){if(pdw.bad.has(j.wkey))return false;const w=pdWorker
  w.postMessage(msg);pdw.stats.sent++;return true;}
 /** Was als Nächstes gebraucht wird, beim Worker vorbestellen: Zyklus der aktuellen Richtung (1), Atmen/Laufen aller Richtungen (2),
  *  Aktionsbilder aller Richtungen bei Kämpfern (3). Je Figur und Stufe nur einmal. */
-function warmFigure(id,fig,arch,dir,f,srcs,k,m,tk){if(!pdw.w)return;const cat=paperdoll.catalog,split=cat.split??cat.frames.length,tail='|'+[...srcs].sort().join(','),ks=k.toFixed(2),mKey=arch+'|'+tk,base=fig+'|'+ks;
+/* Runde 3 (Handy-Leistung): je Figur den zuletzt vorbestellten Stand merken – solange Richtung, Zyklus und Maßstab gleich bleiben, ist nichts Neues
+   zu bestellen; vorher baute jeder Aufruf je Bild ein halbes Dutzend Schlüssel-Zeichenketten, nur um sie in pdw.warmed wiederzufinden. */
+const warmState=new Map();let walkIndex=-2,walkCat=null;
+function warmFigure(id,fig,arch,dir,f,srcs,k,m,tk,sorted){if(!pdw.w)return;const cat=paperdoll.catalog,split=cat.split??cat.frames.length;if(walkCat!==cat){walkCat=cat;walkIndex=cat.frames.findIndex(x=>x.anim==='laufen');}
+ const walk=walkIndex,cycle=f>=split&&f<cat.frames.length?'akt':walk>=0&&f>=walk&&f<walk+8?'lauf':f<4?'atem':'';
+ const ws=warmState.get(fig);if(worldLayers.memo&&ws&&ws.dir===dir&&ws.cycle===cycle&&ws.k===k&&ws.size===pdw.warmed.size)return;if(warmState.size>600)warmState.clear();warmState.set(fig,{dir,cycle,k,size:0});
+ const tail='|'+sorted,ks=k.toFixed(2),mKey=arch+'|'+tk,base=fig+'|'+ks;
  const order=(d,g,prio)=>{const key=arch+'|'+d+'|'+g+tail;orderWorld({wkey:key+'|'+ks+'|'+tk,arch,dir:d,f:g,srcs,key,k,m,mKey,fig},prio);};
- const walk=cat.frames.findIndex(x=>x.anim==='laufen'),cycle=f>=split&&f<cat.frames.length?'akt':walk>=0&&f>=walk&&f<walk+8?'lauf':f<4?'atem':'';
  const tag=base+'|'+dir+'|'+cycle;if(cycle&&!pdw.warmed.has(tag)){pdw.warmed.add(tag);const list=cycle==='akt'?Array.from({length:cat.frames.length-split},(_,i)=>split+i):cycle==='lauf'?Array.from({length:8},(_,i)=>walk+i):[0,1,2,3];for(const g of list)if(g!==f)order(dir,g,1);}
  const fighter=!!ARCH[id]||cycle==='akt';
  if(!pdw.warmed.has(base)){pdw.warmed.add(base);for(const d of DIRS){for(const g of [0,1,2,3])order(d,g,2);}}
  if(fighter&&!pdw.warmed.has(base+'|kampf')){pdw.warmed.add(base+'|kampf');for(const d of DIRS){if(walk>=0)for(let i=0;i<8;i++)order(d,walk+i,2);for(let g=split;g<cat.frames.length;g++)order(d,g,3);}}
- if(pdw.warmed.size>4000)pdw.warmed.clear();}
+ if(pdw.warmed.size>4000)pdw.warmed.clear();warmState.get(fig).size=pdw.warmed.size;}
+const complete=new Set(),NONE=[];
 export function drawPaperdoll(c,id,x,y,p={},magnify=1){
  if(!paperdoll.ready){if(!pending)loadPaperdoll();return false;}
  const actor=ACTORS.get(id),arch=ARCH[id]||actor?.arch;if(!arch||!paperdoll.catalog.archetypes[arch])return false;
@@ -248,20 +255,23 @@ export function drawPaperdoll(c,id,x,y,p={},magnify=1){
  const items=p.visualEquipment||actor?.equipment||[],tint=p.tint||actor?.tint||null;
  const srcs=paperdollSources(items,!!p.usingRanged&&!(p.parry>0));srcs.add('koerper');for(const s of lookSources(tint,items))if(cat.sources[s])srcs.add(s);// Parade immer mit Nahkampfwaffe (wie redesign-art)
  // Rückfallbild je Figur (Kennung + Quellen + Tönung): Mitspieler mit gleichem Archetyp teilen es nie
- const fig=id+'|'+[...srcs].sort().join(',')+'|'+(tint?.skin||'')+'.'+(tint?.hair||''),lastKey=fig+'|'+dir,anyKey=fig+'|*';
+ let sorted=[...srcs].sort().join(',');/* Runde 3: einmal statt dreimal je Aufruf */const fig=id+'|'+sorted+'|'+(tint?.skin||'')+'.'+(tint?.hair||''),lastKey=fig+'|'+dir,anyKey=fig+'|*';
  let f=dead?0:paperdollFrame(p,undefined,items);const split=cat.split??cat.frames.length;
  // Sonderbild: nur, wenn jede Ebene einen Sonderbogen hat – sonst das Rückfallbild aus dem Katalog (cat.sonder.frames[k].fb)
  const sonderFb=()=>{const q=cat.sonder?.frames?.[f-cat.frames.length];return q&&q.fb>=0?q.fb:0;};
  if(f>=cat.frames.length&&(!cat.sonder||['koerper',...layers(arch,srcs)].some(s=>{const q=cat.sources[s]?.sonder;return !q||q.archs&&!q.archs.includes(arch);})))f=sonderFb();
  const need=s=>{const part=partOf(cat,f);return sheetKey(s,arch,baseDir(s,dir,part),part);},open=()=>['koerper',...layers(arch,srcs)].filter(s=>!paperdoll.images.has(need(s)));
- let miss=open();
- if(miss.length){for(const s of miss)want(need(s));
+ /* Runde 3: Sind alle Bögen für Archetyp, Richtung, Bildteil und Quellen einmal da, bleiben sie da (paperdoll.images wächst nur) – dann
+    entfällt die Prüfung samt Bogen-Schlüsseln je Ebene und Bild. */
+ const ck=arch+'|'+dir+'|'+partOf(cat,f)+'|'+sorted;let miss=worldLayers.memo&&complete.has(ck)?NONE:open();if(!miss.length&&miss!==NONE){complete.add(ck);if(complete.size>4000)complete.clear();}
+ if(miss.length){const n0=srcs.size;for(const s of miss)want(need(s));
   if(f>=cat.frames.length){f=sonderFb();miss=open();for(const s of miss)want(need(s));}// Sonderbögen laden noch: so lange das Rückfallbild
   if(f>=split){f=Math.floor(performance.now()/300)%4;miss=open();for(const s of miss)want(need(s));}// Aktionsbilder laden noch: so lange Stand
   for(const s of miss)if(paperdoll.missing.has(need(s)))srcs.delete(s);// Bogen fehlt dauerhaft: ohne diese Ebene
   miss=miss.filter(s=>srcs.has(s)||s==='dutt'&&!paperdoll.missing.has(need(s)));
-  if(miss.length){const last=lastDrawn.get(lastKey)||lastDrawn.get(anyKey);if(!last||miss.includes('koerper')){paperdoll.stats.legacy++;return false;}return blit(c,x,y,p,magnify,arch,dir,dead,last);}}
- const m=recolorMap(arch,tint),tk=(tint?.skin||'')+'.'+(tint?.hair||''),key=arch+'|'+dir+'|'+f+'|'+[...srcs].sort().join(',');
+  if(miss.length){const last=lastDrawn.get(lastKey)||lastDrawn.get(anyKey);if(!last||miss.includes('koerper')){paperdoll.stats.legacy++;return false;}return blit(c,x,y,p,magnify,arch,dir,dead,last);}
+  if(srcs.size!==n0)sorted=[...srcs].sort().join(',');}
+ const m=recolorMap(arch,tint),tk=(tint?.skin||'')+'.'+(tint?.hair||''),key=arch+'|'+dir+'|'+f+'|'+sorted;
  const u=unitScale(arch)*magnify,dev=u*contextScale(c),k=Math.min(1,Math.round(dev*50)/50);let bmp;
  if(k<.82){const wkey=key+'|'+k.toFixed(2)+'|'+tk;bmp=worldCache.get(wkey);
   if(bmp){worldCache.delete(wkey);worldCache.set(wkey,bmp);}
@@ -269,9 +279,9 @@ export function drawPaperdoll(c,id,x,y,p={},magnify=1){
    if(!warming&&last&&orderWorld(job,0)){bmp=last;paperdoll.stats.deferred++;}
    else if(warming&&orderWorld(job,3))return true;/* Vorwärmen beim Laden: bestellen statt im Hauptfaden rechnen */
    else if(!warming&&budget.n>=paperdollBudget.perFrame&&last){bmp=last;paperdoll.stats.deferred++;queueWarm({wkey,arch,dir,f,srcs,key,k,m});}else{budget.n++;bmp=remember(worldCache,wkey,shrunk(composed(arch,dir,f,srcs,key),k,m),WORLD_LIMIT);
-    if(!warming&&typeof requestIdleCallback==='function'){const tail='|'+[...srcs].sort().join(',');for(const g of cycleOf(f))if(g!==f){const gk=arch+'|'+dir+'|'+g+tail;queueWarm({wkey:gk+'|'+k.toFixed(2)+'|'+tk,arch,dir,f:g,srcs,key:gk,k,m});}}}}}
+    if(!warming&&typeof requestIdleCallback==='function'){const tail='|'+sorted;for(const g of cycleOf(f))if(g!==f){const gk=arch+'|'+dir+'|'+g+tail;queueWarm({wkey:gk+'|'+k.toFixed(2)+'|'+tk,arch,dir,f:g,srcs,key:gk,k,m});}}}}}
  else bmp=full(composed(arch,dir,f,srcs,key),m,tk);
- if(k<.82&&!warming)warmFigure(id,fig,arch,dir,f,srcs,k,m,tk);
+ if(k<.82&&!warming)warmFigure(id,fig,arch,dir,f,srcs,k,m,tk,sorted);
  remember(lastDrawn,lastKey,bmp,600);lastDrawn.set(anyKey,bmp);return blit(c,x,y,p,magnify,arch,dir,dead,bmp);
 }
 function blit(c,x,y,p,magnify,arch,dir,dead,bmp){const cat=paperdoll.catalog,u=unitScale(arch)*magnify;

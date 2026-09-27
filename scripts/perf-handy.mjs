@@ -12,7 +12,10 @@
 //
 // Vergleich vorher/nachher (--ab=<url>): zwei Browser, Szenen abwechselnd A/B, B/A …, damit schwankende Last des Rechners beide gleich trifft.
 // Aufruf:  node scripts/perf-handy.mjs [--url=http://localhost:4878/] [--ab=http://localhost:4879/] [--cdp=9878] [--server=4878]
-//          [--rates=4,6] [--scenes=idle,walk,combat] [--seconds=20] [--repeat=1] [--out=…json] [--no-profile] [--shots] [--soft] [--assert]
+//          [--rates=4,6] [--scenes=idle,walk,combat,walkfar] [--far=x0,y0,x1,y1] [--seconds=20] [--repeat=1] [--out=…json] [--no-profile] [--shots] [--soft] [--assert]
+// Runde 3: Szene walkfar = Laufstrecke fern der Bude (Dorfrand → Wiese → Wald, --far=x0,y0,x1,y1). --toggle="<js an>§§<js aus>" schaltet im
+// selben Lauf alle --toggle-ms (1500) um und wertet beide Zustände getrennt aus – robust gegen die Laststreuung des geteilten Rechners, z. B.
+// --toggle="(await import('./world-layers.js')).setWorldLayers(true)§§(await import('./world-layers.js')).setWorldLayers(false)".
 // --assert: rot, wenn der Stillstand mehr als 1 erzwungenen Stil-/Layout-Durchgang oder (mit Profil) mehr als 3 DOM-Änderungen je Bild hat.
 // Ohne --url startet das Skript einen eigenen Server auf --server. Ports vorher prüfen: andere Sitzungen nutzen 4173–4399 und 9222+.
 import {spawn} from 'node:child_process';
@@ -26,6 +29,8 @@ import {analyzeTrace,summarizeProfile,mergeRuns} from './perf-handy-lib.mjs';
 const arg=(k,d)=>{const a=process.argv.find(x=>x.startsWith('--'+k+'='));return a?a.slice(k.length+3):process.argv.includes('--'+k)?true:d;};
 const CDP=Number(arg('cdp',9878)),SERVER=Number(arg('server',4878)),RATES=String(arg('rates','4,6')).split(',').map(Number),SCENES=String(arg('scenes','idle,walk,combat')).split(','),
  SECONDS=Number(arg('seconds',20)),REPEAT=Number(arg('repeat',1)),OUT=arg('out','visual-review/perf-handy/messung.json'),AB=arg('ab',null),PROFILE=!arg('no-profile',false)&&!AB,LABEL=arg('label',''),SOFT=!!arg('soft',false);
+const TOGGLE=arg('toggle',null),TOGGLE_MS=Number(arg('toggle-ms',1500));
+const FAR_ROUTE=String(arg('far','8200,10300,5800,10900')).split(',').map(Number);/* walkfar: Start x,y und Ziel x,y (Welteinheiten) */
 const DEVICE={width:915,height:412,deviceScaleFactor:2.625,mobile:true,screenOrientation:{type:'landscapePrimary',angle:90}};
 const UA='Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36';
 const GPU_ARGS=['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--enable-gpu-rasterization','--enable-accelerated-2d-canvas','--enable-gpu'];
@@ -59,7 +64,7 @@ const PAGE_HELPER=`(async()=>{const {game,renderer}=__mertloch;const arena=await
  const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
  window.__perf={start:{x:game.player.x,y:game.player.y},wps:[],wpi:0,keep:null,
   closeAll(){document.querySelector('[data-intro-skip]')?.click();document.querySelectorAll('[data-window-close]').forEach(b=>b.click());},
-  home(){clearInterval(this.keep);this.keep=null;arena.clearArena(game);Object.assign(game.player,{x:this.start.x,y:this.start.y,inCombat:0,hp:game.player.maxHp});game.moveTo=null;game.path=[];game.routeGoal=null;game.touchMove=null;game.target=null;game.casting=null;game.keys.clear();game.autoAttack&&(game.autoAttack.active=false);this.closeAll();},
+  home(){clearInterval(this.keep);this.keep=null;/* Runde 3: Wer beim Laufen oder im Kampf umkippt, steht vor der nächsten Szene wieder auf – sonst misst der Rest des Laufs den Todesbildschirm */if(game.dead){game.respawn();document.querySelector('#deathScreen [data-ds-wake]')?.click();}arena.clearArena(game);Object.assign(game.player,{x:this.start.x,y:this.start.y,inCombat:0,hp:game.player.maxHp});game.moveTo=null;game.path=[];game.routeGoal=null;game.touchMove=null;game.target=null;game.casting=null;game.keys.clear();game.autoAttack&&(game.autoAttack.active=false);this.closeAll();},
   route(target){game.navigate(target);const wps=[game.moveTo,...game.path].filter(Boolean).map(p=>({x:p.x,y:p.y}));game.moveTo=null;game.path=[];game.routeGoal=null;this.wps=wps;this.wpi=0;let len=0,prev=game.player;for(const p of wps){len+=dist(prev,p);prev=p;}return {points:wps.length,length:Math.round(len)};},
   steer(){const p=game.player;while(this.wpi<this.wps.length&&dist(p,this.wps[this.wpi])<20)this.wpi++;if(this.wpi>=this.wps.length)return null;const w=this.wps[this.wpi],d=dist(p,w)||1;return {x:(w.x-p.x)/d,y:(w.y-p.y)/d};},
   fight(n=4){const spawn=k=>arena.spawnArena(game,{kind:'boar',count:k,level:20});spawn(n);const pick=()=>{const alive=game.enemies.filter(e=>e.arena&&e.hp>0).sort((a,b)=>dist(a,game.player)-dist(b,game.player));if(!game.target||game.target.hp<=0||!game.target.arena){game.target=alive[0]||null;if(game.target)game.startAttack();}};pick();
@@ -98,7 +103,7 @@ async function tap(b,pt){await b.send('Input.dispatchTouchEvent',{type:'touchSta
 async function runScene(b,name,ms){
  const t0=Date.now(),until=()=>Date.now()-t0<ms;
  if(name==='idle'){await wait(ms);return {};}
- if(name==='walk'){
+ if(name==='walk'||name==='walkfar'){
   const stick=await b.evaluate(`(()=>{const r=document.querySelector('#touchStick').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,r:r.width*.34};})()`);
   await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:stick.x,y:stick.y}]});
   let dir={x:1,y:0},n=0,lastSteer=0,arrived=false;
@@ -120,6 +125,8 @@ async function runScene(b,name,ms){
 async function prepare(b,name){
  await b.evaluate('__perf.home()');await wait(400);
  if(name==='walk'){const r=await b.evaluate(`__perf.route({x:__perf.start.x+1500,y:__perf.start.y+1400})`);return r;}
+ /* Runde 3: Laufstrecke fern der Bude – vom Dorfrand über Wiese und Feld in den Wald (Grundlast ohne Bude, Lichterketten, Clan-Lager) */
+ if(name==='walkfar'){const [sx,sy,ex,ey]=FAR_ROUTE;await b.evaluate(`(()=>{const {game,renderer}=__mertloch;Object.assign(game.player,{x:${sx},y:${sy}});renderer.camera.x=${sx};renderer.camera.y=${sy};})()`);await wait(1500);return b.evaluate(`__perf.route({x:${ex},y:${ey}})`);}
  if(name==='combat'){await b.evaluate('__perf.fight(4)');return {};}
  return {};
 }
@@ -132,11 +139,18 @@ async function traceScene(b,name,ms){
  const events=b.sink=[];const complete=new Promise(r=>{b.onComplete=r;});
  await b.send('Tracing.start',{traceConfig:{includedCategories:CATEGORIES,recordMode:'recordContinuously'},transferMode:'ReportEvents',bufferUsageReportingInterval:1000});
  await b.evaluate(`performance.mark('perf-handy-start')`);
+ /* Runde 3: --toggle=<js an>§§<js aus> schaltet im selben Lauf alle --toggle-ms hin und her (Marke je Wechsel) – Lastschwankungen des Rechners treffen
+    beide Zustände gleich; ausgewertet wird je Zustand über alle seine Fenster */
+ let toggling=null;if(TOGGLE){const [on,off]=TOGGLE.split('§§');let st=true,stop=false;toggling={done:(async()=>{while(!stop){await b.evaluate(`(async()=>{${st?on:off};performance.mark('perf-toggle-${st?'an':'aus'}');})()`);st=!st;await wait(TOGGLE_MS);}})(),stop:()=>{stop=true;}};}
  const extra=await runScene(b,name,ms);
+ if(toggling){toggling.stop();await toggling.done;}
  await b.evaluate(`performance.mark('perf-handy-end')`);
  await b.send('Tracing.end');await complete;
  const mark=n=>events.find(e=>e.name===n&&e.cat?.includes('blink.user_timing'))?.ts;
  const res=analyzeTrace(events,{fromTs:mark('perf-handy-start')??-Infinity,toTs:mark('perf-handy-end')??Infinity});
+ if(TOGGLE){const end=mark('perf-handy-end')??Infinity,marks=events.filter(e=>e.cat?.includes('blink.user_timing')&&e.name.startsWith('perf-toggle-')).sort((a,b)=>a.ts-b.ts),parts={an:[],aus:[]};
+  for(let i=0;i<marks.length;i++){const from=marks[i].ts+150e3/* 150 ms nach dem Umschalten: laufendes Bild gehört noch zum alten Zustand */,to=i+1<marks.length?marks[i+1].ts:end;if(to-from<300e3)continue;const r=analyzeTrace(events,{fromTs:from,toTs:to});if(!r.error)parts[marks[i].name.slice(12)].push(r);}
+  res.toggle=Object.fromEntries(Object.entries(parts).map(([k,v])=>{const m=mergeRuns(v);if(m){delete m.raw;const ev=new Map();let fr=0;for(const r of v){fr+=r.frames;for(const e of r.topEvents||[])ev.set(e.name,(ev.get(e.name)||0)+e.msPerFrame*r.frames);}m.topEvents=[...ev].sort((x,y)=>y[1]-x[1]).slice(0,10).map(([n,t])=>({name:n,msPerFrame:+(t/Math.max(1,fr)).toFixed(2)}));}return [k,m];}));}
  const segments=await b.evaluate('window.mertloch.segments?.(false)||null');
  b.sink=null;events.length=0;return {...res,segments,extra};
 }
@@ -170,11 +184,15 @@ if(isMain){
    const b=await start({url:v.url});
    try{const info=await setup(b);report.setup[v.tag]||={url:b.url,...info};console.log('Aufstellung',v.tag,'#'+(r+1),JSON.stringify(info));
     for(const rate of RATES)for(const name of SCENES){let m=await measure(b,rate,name);const k=v.tag+'|'+rate+'|'+name;
-     /* Runde 2: Kampf ohne Schaden im Messfenster (der Kampf kam nicht zustande, gemessen wurde Stillstand) zählt nicht – bis zu zweimal wiederholen */
-     for(let t=0;t<2&&name==='combat'&&!(m.after?.damage>(m.before?.damage||0));t++){console.log(`   ${rate}× ${name} ${AB?v.tag+' ':''}#${r+1}: kein Schaden im Messfenster – wiederholt`);m=await measure(b,rate,name);}
-     if(name==='combat'&&!(m.after?.damage>(m.before?.damage||0))){console.log('   Kampf kam nicht zustande – Lauf nicht gewertet');continue;}if(!got.has(k))got.set(k,[]);got.get(k).push(m);
+     /* Runde 2/3: ungültig sind Kämpfe ohne Schaden im Messfenster (gemessen wurde Stillstand) und Läufe, in denen der Held tot ist (gemessen wurde der
+        Todesbildschirm) – bis zu zweimal wiederholen, sonst nicht werten */
+     const invalid=x=>x.before?.dead||x.after?.dead?'Held tot':name==='combat'&&!(x.after?.damage>(x.before?.damage||0))?'kein Schaden im Messfenster':null;
+     for(let t=0;t<2&&invalid(m);t++){console.log(`   ${rate}× ${name} ${AB?v.tag+' ':''}#${r+1}: ${invalid(m)} – wiederholt`);m=await measure(b,rate,name);}
+     if(invalid(m)){console.log('   '+invalid(m)+' – Lauf nicht gewertet');continue;}if(!got.has(k))got.set(k,[]);got.get(k).push(m);
      console.log(line(`${rate}× ${name} ${AB?v.tag+' ':''}#${r+1}`,m.trace));
+     if(m.trace.toggle)for(const [k,t] of Object.entries(m.trace.toggle))if(t)console.log(line(`   Umschalter ${k}`,t)+' · Ereignisse '+JSON.stringify(t.topEvents?.slice(0,7).map(e=>e.name.replace(/^.*::/,'')+' '+e.msPerFrame)));
      if(m.trace.segments)console.log('   Abschnitte (Mittel/p95 ms)',Object.entries(m.trace.segments.ms).map(([k,x])=>k+' '+x.mean+'/'+x.p95).join(' · '));
+     if(m.trace.segments?.parts&&Object.keys(m.trace.segments.parts).length)console.log('   Welt-Teile (Mittel/p95 ms)',Object.entries(m.trace.segments.parts).map(([k,x])=>k+' '+x.mean+'/'+x.p95).join(' · '),'| je Objektart',Object.entries(m.trace.segments.kinds||{}).slice(0,10).map(([k,v])=>k+' '+v).join(' · '));
      if(m.trace.segments?.worst&&arg('worst',false))console.log('   langsamste Bilder',JSON.stringify(m.trace.segments.worst));
      console.log('   Ereignisse',JSON.stringify(m.trace.topEvents?.slice(0,8).map(e=>e.name+' '+e.msPerFrame)),'Stil/Bild',m.trace.styleRecalcsPerFrame,'Elemente',m.trace.styleElementsPerFrame,'erzwungen',m.trace.forcedPerFrame,'Fäden',JSON.stringify(m.trace.threads?.slice(0,4)));
      if(r===REPEAT-1&&arg('shots',false)){mkdirSync(dirname(OUT),{recursive:true});await b.screenshot(OUT.replace(/\.json$/,'')+'-'+(AB?v.tag+'-':'')+rate+'x-'+name+'.jpg');}

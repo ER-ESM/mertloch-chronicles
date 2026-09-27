@@ -7,6 +7,8 @@ import {drawMaifeld,maifeld} from './maifeld-art.js';
 import {PALETTE as P,box as r,shape,oval,line,framed,spark} from './pixel-style.js';
 import {drawComicEnemy,drawComicResident} from './comic-actors.js';
 import {drawFigure} from './paperdoll-figuren.js';
+import {cachedLayer,phaseOf,intBox} from './layer-cache.js';
+import {worldLayers} from './world-layers.js';
 import {drawDungeonFigure,dungeonFigurenAn} from './dungeon-figuren-art.js';
 
 // Reiten: zuerst die Anziehpuppe auf ihrem Reittier (paperdoll-mount.js), sonst die bisherigen Reittierbögen (mount-art.js), sonst zu Fuß.
@@ -36,7 +38,20 @@ export function drawClanEnemy(c,e,time){
 const CLAN_SIGN_TITLE='Poo-Tang · Mertloch',SIGN_FONT="bold 9px 'Jersey 15','Trebuchet MS',sans-serif";
 let signWidth=0;/* Handy-Messung 2026-09-27: Schrift und Titel sind fest – einmal messen statt zweimal je Bild */
 export function clanSignBounds(c,w){if(!signWidth){c.save();c.font=SIGN_FONT;signWidth=Math.max(70,Math.ceil(c.measureText(CLAN_SIGN_TITLE).width)+14);c.restore();}const width=signWidth;return{x:w.church.x+1-width/2,y:w.church.maxY+9,w:width,h:15};}
-export function drawClanCamp(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.save();line(c,'#6e5367',[[x-72,y-3],[x,y+6],[x+76,y-3]],1);for(let i=0;i<12;i++){const px=x-69+i*12,py=y+Math.sin(i/11*Math.PI)*8;shape(c,['#d68289','#e7bd7b','#75b6a2'][i%3],[[px,py],[px+9,py+1],[px+4,py+10+Math.sin(time*2+i)]],P.ink,.5);}
+/* Runde 3 (Handy-Leistung): Das Clan-Lager zeichnete ~120 Befehle je Bild – auch außerhalb des Bilds (der Renderer sortierte es immer ein).
+   Jetzt: Rahmen für die Sichtprüfung im Renderer, Wimpelkette (Flattern, Periode π s) und Schild (Schaukeln, Periode 2π/1,3 s) als Zwischenbilder in
+   Phasen. Optisch gleich: Die Wimpelspitzen liegen höchstens 0,07 E neben der fließenden Bewegung, das Schild 0,03 E. */
+const PENNANT_PERIOD=Math.PI,PENNANT_PHASES=24,SIGN_PERIOD=2*Math.PI/1.3,SIGN_PHASES=16;
+function campBoxes(c,w){const x=w.church.x,y=w.church.maxY-2,s=clanSignBounds(c,w);return {pennants:intBox(x-73,y-4,x+77,y+20,3),sign:intBox(Math.min(s.x,x-31),y+2,Math.max(s.x+s.w,x+31),s.y+s.h+1,3)};}
+/** Rahmen (Welteinheiten) um alles, was drawClanCamp zeichnet – für die Sichtprüfung. */
+export function clanCampBounds(c,w){const b=campBoxes(c,w);return {x0:Math.min(b.pennants.x0,b.sign.x0),y0:Math.min(b.pennants.y0,b.sign.y0),x1:Math.max(b.pennants.x1,b.sign.x1),y1:Math.max(b.pennants.y1,b.sign.y1)};}
+const campOwner=new WeakMap(),ownerOf=(w,k)=>{let o=campOwner.get(w);if(!o)campOwner.set(w,o={pennants:{},sign:{}});return o[k];};
+export function drawClanCamp(c,w,time){
+ if(worldLayers.camp){const b=campBoxes(c,w),pp=phaseOf(time,PENNANT_PERIOD,PENNANT_PHASES),sp=phaseOf(time,SIGN_PERIOD,SIGN_PHASES);
+  if(cachedLayer(c,ownerOf(w,'pennants'),'wimpel|'+pp.k,b.pennants,x=>paintPennants(x,w,pp.t),{slots:PENNANT_PHASES})){if(!cachedLayer(c,ownerOf(w,'sign'),'schild|'+sp.k,b.sign,x=>paintCampSign(x,w,sp.t),{slots:SIGN_PHASES}))paintCampSign(c,w,time);return;}}
+ paintPennants(c,w,time);paintCampSign(c,w,time);}
+function paintPennants(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.save();line(c,'#6e5367',[[x-72,y-3],[x,y+6],[x+76,y-3]],1);for(let i=0;i<12;i++){const px=x-69+i*12,py=y+Math.sin(i/11*Math.PI)*8;shape(c,['#d68289','#e7bd7b','#75b6a2'][i%3],[[px,py],[px+9,py+1],[px+4,py+10+Math.sin(time*2+i)]],P.ink,.5);}c.restore();}
+function paintCampSign(c,w,time){const x=w.church.x,y=w.church.maxY-2;c.save();
  const s=clanSignBounds(c,w),x0=s.x,x1=s.x+s.w,y0=s.y,y1=s.y+s.h,sway=Math.sin(time*1.3)*.4;
  for(const [ax,bx] of [[x0+7,x-30],[x1-7,x+30]])line(c,'#5b4630',[[bx,y+3],[ax+sway,y0+.5]],.7);
  shape(c,'#a36b3b',[[x0+1,y0+1.5],[x0+3,y0],[x1-2,y0+.5],[x1,y0+2],[x1-.5,y1-1.5],[x1-3,y1],[x0+2,y1-.5],[x0,y1-2]],'#3b2414',.9);

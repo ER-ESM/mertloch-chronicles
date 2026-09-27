@@ -12,7 +12,8 @@ import {fillMaifeldGround,drawMaifeld} from './maifeld-art.js';
 const box=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
 function text(c,s,x,y,size=9){c.font=`${size}px 'Jersey 15',sans-serif`;c.textAlign='center';c.fillStyle='#f1d18b';c.fillText(s,x,y);}
 // All furnishings use the existing precision catalog and its world-prop drawing contract.
-function furniture(c,b){drawProp(c,{kind:b.art,x:b.x+b.w/2,y:b.y+b.h/2,w:b.w,h:b.h});}
+const furnitureProps=new WeakMap();/* Runde 3: je Möbel dieselbe Kulisse – ihr Zwischenbild hängt am Objekt */
+function furniture(c,b){let p=furnitureProps.get(b);if(!p)furnitureProps.set(b,p={kind:b.art,x:b.x+b.w/2,y:b.y+b.h/2,w:b.w,h:b.h});drawProp(c,p);}
 function beam(c,x,y,w,h){
  box(c,'#3e352e',x,y,w,h);box(c,'#785639',x+1,y+1,w-2,h-2);
  box(c,'#af8350',x+1,y+1,w>h?w-2:1,w>h?1:h-2);

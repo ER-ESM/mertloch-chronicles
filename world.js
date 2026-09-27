@@ -77,6 +77,15 @@ export class World {
   onRoad(x,y,pad=0){return onRoadIn(this.roadGrid,x,y,pad);}
   closestRoad(x,y,named=false){let best=null,point={x,y},d=Infinity;const local=this.roadGrid.get(Math.floor(x/200)+','+Math.floor(y/200));const pool=named?(local?.some(s=>s.road.tags.name)?local:this.segments):local?.length?local:this.segments;for(const s of pool){if(named&&!s.road.tags.name)continue;const p=nearestOnSegment(x,y,s.a,s.b),n=distance({x,y},p);if(n<d){best=s.road;point=p;d=n;}}return {road:best,point,distance:d};}
   nearestRoad(x,y){return this.closestRoad(x,y,true);}
+  /** Nächster Punkt (Radius r frei) bis `max` E, den eine Figur von `s` aus geradlinig erreicht (walkClear mit 4) – oder null. */
+  /** Fluchtweg (Wegpunkte ohne Start) von `s` zum nächsten Punkt, der für die Wegsuche frei ist (Radius 9): Breitensuche im 2,5-E-Raster bis
+   *  `maxD` E, jeder Schritt im Bewegungsradius 5 frei (in `mover`: der Welt, mit der die Figur sich bewegt – an der Treppe der Bude die
+   *  Treppenspur, engine.js stairsWorld), schräg nur ohne Eckenschneiden; nur Knickpunkte bleiben. null, wenn es keinen gibt. */
+  escapePath(s,maxD=20,step=2.5,mover=this){const n=Math.ceil(maxD/step),W=2*n+1,key=(i,j)=>(i+n)*W+(j+n),at=(i,j)=>({x:s.x+i*step,y:s.y+j*step}),free=(i,j)=>!mover.blocked(s.x+i*step,s.y+j*step,5),prev=new Map([[key(0,0),null]]),q=[[0,0]];
+   for(let h=0;h<q.length;h++){const [i,j]=q[h];if((i||j)&&!this.blocked(s.x+i*step,s.y+j*step,9)){const cells=[];for(let c=[i,j];c;c=prev.get(key(c[0],c[1])))cells.push(c);cells.pop();cells.reverse();
+     const out=[];for(let k=0;k<cells.length;k++){const a=cells[k-1]||[0,0],b=cells[k],c=cells[k+1];if(!c||b[0]-a[0]!==c[0]-b[0]||b[1]-a[1]!==c[1]-b[1])out.push(at(b[0],b[1]));}return out;}
+    for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const a=i+di,b=j+dj;if(Math.abs(a)>n||Math.abs(b)>n||prev.has(key(a,b))||!free(a,b))continue;if(di&&dj&&!(free(i+di,j)&&free(i,j+dj)))continue;prev.set(key(a,b),[i,j]);q.push([a,b]);}}
+   return null;}
   findClear(x,y,r=7){if(!this.blocked(x,y,r))return{x,y};for(let d=10;d<500;d+=10)for(let a=0;a<Math.PI*2;a+=.3){const p={x:x+Math.cos(a)*d,y:y+Math.sin(a)*d};if(!this.blocked(p.x,p.y,r))return p;}throw new Error('Kein freier Platz in der Umgebung gefunden.');}
   areaAt(x,y){return this.areas.find(a=>x>=a.minX&&x<=a.maxX&&y>=a.minY&&y<=a.maxY&&inside(x,y,a.points));}
   walkClear(a,b,r=8){const n=Math.ceil(distance(a,b)/5);for(let i=0;i<=n;i++)if(this.blocked(a.x+(b.x-a.x)*i/(n||1),a.y+(b.y-a.y)*i/(n||1),r))return false;return true;}
@@ -118,7 +127,13 @@ export class World {
    *  (Söldner, Bewohner, Verfolger), rückt jede weitere ins nächste Bild – Rückgabe null, der Aufrufer behält seinen Weg. Ohne Bildtakt
    *  (Tests, Werkzeuge: frameId nie gesetzt) sofort wie findPath. */
   findPathSoon(start,end){if(this.frameId===undefined)return this.findPath(start,end);if(this.pathFrame===this.frameId&&this.pathsThisFrame>=1)return null;if(this.pathFrame!==this.frameId){this.pathFrame=this.frameId;this.pathsThisFrame=0;}this.pathsThisFrame++;return this.findPath(start,end);}
-  findPath(start,end,maxNodes=this.rules.navigation.maxLocalNodes){if(this.blocked(start.x,start.y,9)&&!this.blocked(start.x,start.y,4)){const safe=this.findClear(start.x,start.y,10);if(distance(start,safe)<35&&this.walkClear(start,safe,4)){const rest=this.findPath(safe,end,maxNodes);return rest.length?[safe,...rest]:[];}}const goal=this.findClear(end.x,end.y,9);if(this.walkClear(start,goal,9))return [goal];const viaRoad=this.roadPath(start,goal);if(viaRoad.length)return viaRoad;
+  /* Runde 3 (mobile-check „Gespräch“, Gerät klein): Findet die Wegsuche von einem Start, an dem sie selbst nicht frei ist (Radius 9), keinen Weg,
+     führt ein kurzer Fluchtweg im Bewegungsradius (escapePath) zum nächsten freien Punkt und von dort weiter. Alles, was vorher einen Weg fand,
+     bleibt unverändert – der Fluchtweg kommt nur dazu, wo vorher keiner war. */
+  findPath(start,end,maxNodes=this.rules.navigation.maxLocalNodes){const p=this.findPathFrom(start,end,maxNodes);if(p.length||!this.blocked(start.x,start.y,9))return p;
+   const esc=this.escapePath(start);if(esc?.length){const rest=this.findPathFrom(esc.at(-1),end,maxNodes);if(rest.length)return [...esc,...rest];}return p;}
+  findPathFrom(start,end,maxNodes=this.rules.navigation.maxLocalNodes){if(this.blocked(start.x,start.y,9)&&!this.blocked(start.x,start.y,4)){const safe=this.findClear(start.x,start.y,10);if(distance(start,safe)<35&&this.walkClear(start,safe,4)){const rest=this.findPath(safe,end,maxNodes);return rest.length?[safe,...rest]:[];}
+}const goal=this.findClear(end.x,end.y,9);if(this.walkClear(start,goal,9))return [goal];const viaRoad=this.roadPath(start,goal);if(viaRoad.length)return viaRoad;
     const step=12,heap=new Heap(),best=new Map(),key=(x,y)=>x+','+y;heap.push({x:0,y:0,g:0,f:distance(start,goal),parent:null});best.set('0,0',0);let count=0;
     while(heap.length&&count++<maxNodes){let current=heap.pop();if(current.g>best.get(key(current.x,current.y)))continue;const p={x:start.x+current.x*step,y:start.y+current.y*step};if(distance(p,goal)<step*1.5&&this.walkClear(p,goal,9)){const path=[goal];while(current.parent){path.unshift({x:start.x+current.x*step,y:start.y+current.y*step});current=current.parent;}return this.simplify(start,path);}
       for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const x=current.x+dx,y=current.y+dy,n={x:start.x+x*step,y:start.y+y*step},g=current.g+Math.hypot(dx,dy)*step,k=key(x,y);if(g>=(best.get(k)??Infinity)||!this.walkClear(p,n,9))continue;best.set(k,g);heap.push({x,y,g,f:g+distance(n,goal),parent:current});}}

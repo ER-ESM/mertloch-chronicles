@@ -1,7 +1,8 @@
 import {drawBoar} from './maifeld-boar-rig.js';
 import {contentActor,contentFrame,hasContentActor,contentActorHeight,contentAsset,contentArt,drawPixelRect} from './content-art.js';
 import {equipmentAppearance} from './equipment-appearance.js';
-import {contextScale,scaledFrame} from './art-quality.js';
+import {contextScale,scaledFrame,bakedGrade} from './art-quality.js';
+import {worldLayers} from './world-layers.js';
 import {prerenderArt,drawPrerenderPerson} from './prerender-art.js';
 import {drawDetailedHero} from './detailed-hero-art.js';
 import {PERSON_SCALE} from './world-scale.js';
@@ -33,6 +34,7 @@ const directionOf=p=>p.direction||((p.facing||1)>0?'se':'sw');
  * Präzisionsbogen aus assets/precision/runtime: 4 native Pixel = 1 Welteinheit, Fußpunkt am Asset.
  * `magnify` vergrößert nur für UI-Porträts; in der Welt gilt die Welthöhe des Assets.
  */
+const mipMemo=new WeakMap();
 function drawContentPerson(c,id,x,y,p,magnify){
  const actor=contentActor(id);if(!actor)return false;
  const direction=directionOf(p),west=direction.endsWith('w'),back=direction.startsWith('n');
@@ -46,7 +48,7 @@ function drawContentPerson(c,id,x,y,p,magnify){
  c.scale(k,k);c.translate(-actor.pivot.x,-actor.pivot.y);
  const items=f.sockets?p.visualEquipment||[]:[];
  if(items.length){c.save();c.scale(actor.gearScale,actor.gearScale);gear(c,items,f.sockets,west,back,true,p);c.restore();}
- if(px<size){const mip=scaledFrame(sel.image,f.x,f.y,size,size,px,px);c.drawImage(mip,0,0,px,px,0,0,size,size);}else c.drawImage(sel.image,f.x,f.y,size,size,0,0,size,size);
+ if(px<size){/* Runde 3: Zwischenbild je Bogenfeld merken (Schlüssel aus sechs Zahlen je Figur und Bild entfällt) – gleiche Leinwand wie scaledFrame */let mm=worldLayers.memo?mipMemo.get(f):null;if(!mm||mm.px!==px||mm.img!==sel.image||mm.size!==size||mm.filter!==bakedGrade.filter){mm={px,img:sel.image,size,filter:bakedGrade.filter,cv:scaledFrame(sel.image,f.x,f.y,size,size,px,px)};mipMemo.set(f,mm);}c.drawImage(mm.cv,0,0,px,px,0,0,size,size);}else c.drawImage(sel.image,f.x,f.y,size,size,0,0,size,size);
  if(items.length){c.save();c.scale(actor.gearScale,actor.gearScale);gear(c,items,f.sockets,west,back,false,p);c.restore();}
  if(p.parry>0){c.strokeStyle='#f3b84b';c.lineWidth=2/k;c.beginPath();c.arc(actor.pivot.x,actor.pivot.y-26*actor.gearScale,25*actor.gearScale,-1.3,1.1);c.stroke();}
  c.restore();return true;

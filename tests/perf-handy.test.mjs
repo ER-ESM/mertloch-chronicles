@@ -64,7 +64,7 @@ test('Layout-Phase: Rechtecke am Bildanfang nachgeführt, Aufgaben laufen dort, 
 
 // ---------- Zwischenbilder ----------
 test('Zwischenbild: ohne DOM direkt zeichnen; mit DOM einmal bauen, dann kopieren; neuer Schlüssel baut neu; halbe Pixel zeichnen direkt',()=>{
- const main=(t)=>{const calls=[];return {calls,imageSmoothingEnabled:false,imageSmoothingQuality:'low',getTransform:()=>t,save(){},restore(){},setTransform(){},drawImage(cv,x,y){calls.push([x,y,cv.width,cv.height]);}};};
+ const main=(t)=>{const calls=[];return {calls,globalAlpha:1,imageSmoothingEnabled:false,imageSmoothingQuality:'low',getTransform:()=>t,save(){},restore(){},setTransform(){},drawImage(cv,x,y){calls.push([x,y,cv.width,cv.height]);}};};
  assert.equal(cachedLayer(main({a:2,b:0,c:0,d:2,e:0,f:0}),{},'k',{x0:0,y0:0,x1:10,y1:10},()=>{}),false);
  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({setTransform(){},set imageSmoothingEnabled(v){},set imageSmoothingQuality(v){}})})};
  try{

@@ -3,6 +3,8 @@
 // Kein Text und keine Zahl entsteht hier: Namen kommen aus der Welt, Farbe/Höhe aus PROP_KINDS, Bilder aus content-art.
 import {PROP_KINDS} from './world-prop-kinds.js';
 import {contentAsset} from './content-art.js';
+import {cachedLayer,intBox} from './layer-cache.js';
+import {worldLayers} from './world-layers.js';
 
 /** Bild-ID einer Kulissenart im Grafikkatalog. Liegt kein Bild vor, zeichnet der Fallback. */
 export const propAssetId=kind=>'prop-'+kind;
@@ -25,7 +27,25 @@ const shade=(color,f)=>{
 };
 
 /** Eine Kulisse zeichnen. Mit Bild aus dem Katalog, sonst als Körper in der Fallback-Farbe der Art. */
+/* Runde 3 (Handy-Leistung): Eine Kulisse kostete je Bild ~13 Befehle – der weiche Bodenschatten legte jedes Mal einen neuen Verlauf an. Jetzt als
+   Zwischenbild je Kulisse (Art, Ort, Maße, geladenes Bild bestimmen das Bild; layer-cache.js), eine Kopie je Bild. Ohne passende Transformation,
+   bei Deckkraft < 1 oder ohne DOM zeichnet paintProp wie bisher direkt. Optisch gleich (Rundung halbdurchsichtiger Schattenränder). */
+const propOwners=new Map();
+function ownerOf(sig){let o=propOwners.get(sig);if(!o){o={};propOwners.set(sig,o);if(propOwners.size>800)propOwners.delete(propOwners.keys().next().value);}return o;}
+/** Rahmen (Welteinheiten) um alles, was paintProp zeichnet: Schatten, Bild bzw. Ersatzkörper. */
+export function propBox(prop,art=contentAsset(propAssetId(prop.kind))){const kind=propKind(prop.kind),w=prop.w??kind.w,d=prop.h??kind.h,height=prop.height??kind.height,x=prop.x,base=prop.y+d/2;
+ let x0=x-w/2,x1=x+w/2,y0=prop.y-d/2,y1=prop.y+d/2;const add=(a,b,e,f)=>{x0=Math.min(x0,a);y0=Math.min(y0,b);x1=Math.max(x1,e);y1=Math.max(y1,f);};
+ if(art?.meta.worldProp){const r=propDrawRect(prop);add(r.x,r.y,r.x+r.w,r.y+r.h);}
+ else if(art){const m=art.meta,k=height/(m.worldHeight||m.nativeHeight||m.height||height),px=m.pivot?.x??m.width/2,py=m.pivot?.y??m.height;add(x-px*k,base-py*k,x+(m.width-px)*k,base+(m.height-py)*k);}
+ else add(x-w/2,base-height-Math.max(2,d*.26),x+w/2*1.35,base);/* Schattenseite ragt ungeschnitten bis x+1,35·w/2 (im Bild beschnitten) */
+ return intBox(x0,y0,x1,y1,2);}
+const propLayers=new WeakMap();/* Kulisse → {state, owner, sig, box}: Schlüssel und Rahmen nur neu, wenn sich das geladene Bild ändert */
 export function drawProp(c,prop){
+ if(worldLayers.props){const art=contentAsset(propAssetId(prop.kind)),state=art?(art.meta.worldProp?'w':'a'):'f';let L=propLayers.get(prop);
+  if(!L||L.state!==state){const kind=propKind(prop.kind),sig=prop.kind+'|'+prop.x+'|'+prop.y+'|'+(prop.w??kind.w)+'|'+(prop.h??kind.h)+'|'+(prop.height??kind.height)+'|'+state;L={state,sig,owner:ownerOf(sig),box:propBox(prop,art)};propLayers.set(prop,L);}
+  if(cachedLayer(c,L.owner,L.sig,L.box,x=>paintProp(x,prop)))return;}
+ paintProp(c,prop);}
+function paintProp(c,prop){
  const kind=propKind(prop.kind),w=prop.w??kind.w,d=prop.h??kind.h,height=prop.height??kind.height;
  const x=prop.x,base=prop.y+d/2;
  c.save();c.imageSmoothingEnabled=false;

@@ -1,0 +1,881 @@
+{
+ "date": "2026-09-27T19:13:07.918Z",
+ "scenes": [
+  {
+   "name": "Bude",
+   "at": "start",
+   "pos": [
+    9702,
+    9053
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 1074,
+   "states": {
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 3,
+     "leaks": {}
+    },
+    "tree": {
+     "n": 7,
+     "leaks": {}
+    },
+    "professionNode": {
+     "n": 4,
+     "leaks": {}
+    },
+    "houseWall": {
+     "n": 18,
+     "leaks": {}
+    },
+    "kitItem": {
+     "n": 34,
+     "leaks": {}
+    },
+    "hotspotgiver": {
+     "n": 3,
+     "leaks": {}
+    },
+    "prop": {
+     "n": 7,
+     "leaks": {}
+    },
+    "building": {
+     "n": 7,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 1,
+     "leaks": {}
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "npc": {
+     "n": 1,
+     "leaks": {}
+    },
+    "other": {
+     "n": 1,
+     "leaks": {
+      "fillStyle": 1
+     }
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0.241,
+     "over2": 0.03,
+     "over8": 0.009,
+     "max": 137
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0.65,
+     "over2": 0.008,
+     "over8": 0.007,
+     "max": 94
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.013,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 4
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 0.866,
+     "over2": 0.021,
+     "over8": 0.007,
+     "max": 94
+    }
+   },
+   "opsAfter": 494
+  },
+  {
+   "name": "Hof (drinnen)",
+   "at": "house",
+   "pos": [
+    9755,
+    8990
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 1087,
+   "states": {
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    },
+    "tree": {
+     "n": 9,
+     "leaks": {}
+    },
+    "building": {
+     "n": 10,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 2,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 5,
+     "leaks": {}
+    },
+    "professionNode": {
+     "n": 3,
+     "leaks": {}
+    },
+    "houseWall": {
+     "n": 18,
+     "leaks": {}
+    },
+    "kitItem": {
+     "n": 34,
+     "leaks": {}
+    },
+    "hotspotgiver": {
+     "n": 3,
+     "leaks": {}
+    },
+    "prop": {
+     "n": 7,
+     "leaks": {}
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "other": {
+     "n": 1,
+     "leaks": {
+      "fillStyle": 1
+     }
+    },
+    "npc": {
+     "n": 1,
+     "leaks": {}
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0.307,
+     "over2": 0.037,
+     "over8": 0.011,
+     "max": 151
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0.865,
+     "over2": 0.009,
+     "over8": 0.008,
+     "max": 94
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.014,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 4
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 1.144,
+     "over2": 0.024,
+     "over8": 0.008,
+     "max": 94
+    }
+   },
+   "opsAfter": 497
+  },
+  {
+   "name": "Kirche/Clan-Lager",
+   "at": "church",
+   "pos": [
+    9333,
+    8654
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 1054,
+   "states": {
+    "tree": {
+     "n": 10,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 5,
+     "leaks": {}
+    },
+    "professionNode": {
+     "n": 3,
+     "leaks": {}
+    },
+    "building": {
+     "n": 6,
+     "leaks": {}
+    },
+    "furniture": {
+     "n": 4,
+     "leaks": {
+      "strokeStyle": 2,
+      "lineWidth": 2,
+      "lineCap": 2,
+      "lineJoin": 2
+     }
+    },
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 1,
+     "leaks": {}
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "resident": {
+     "n": 10,
+     "leaks": {}
+    },
+    "professionStation": {
+     "n": 2,
+     "leaks": {}
+    },
+    "hub": {
+     "n": 1,
+     "leaks": {}
+    },
+    "questgiver": {
+     "n": 2,
+     "leaks": {}
+    },
+    "mountStation": {
+     "n": 1,
+     "leaks": {}
+    },
+    "hotspotgiver": {
+     "n": 1,
+     "leaks": {}
+    },
+    "houseWall": {
+     "n": 3,
+     "leaks": {}
+    },
+    "kitItem": {
+     "n": 6,
+     "leaks": {}
+    },
+    "houseShell": {
+     "n": 1,
+     "leaks": {}
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0.361,
+     "over2": 0.145,
+     "over8": 0.107,
+     "max": 59
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0.086,
+     "over2": 0,
+     "over8": 0,
+     "max": 2
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.013,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 4
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 0.46,
+     "over2": 0.146,
+     "over8": 0.107,
+     "max": 59
+    }
+   },
+   "opsAfter": 660
+  },
+  {
+   "name": "Dorf",
+   "at": [
+    8700,
+    10500
+   ],
+   "pos": [
+    8700,
+    10500
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 450,
+   "states": {
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 5,
+     "leaks": {}
+    },
+    "tree": {
+     "n": 14,
+     "leaks": {}
+    },
+    "building": {
+     "n": 14,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 2,
+     "leaks": {}
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "other": {
+     "n": 1,
+     "leaks": {
+      "fillStyle": 1
+     }
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0.034,
+     "over2": 0.014,
+     "over8": 0.013,
+     "max": 137
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.014,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 4
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 0.034,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 4
+    }
+   },
+   "opsAfter": 177
+  },
+  {
+   "name": "Feld",
+   "at": [
+    11202,
+    10453
+   ],
+   "pos": [
+    11202,
+    10453
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 281,
+   "states": {
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    },
+    "tree": {
+     "n": 4,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 4,
+     "leaks": {
+      "globalAlpha": 4
+     }
+    },
+    "building": {
+     "n": 5,
+     "leaks": {}
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 1,
+     "leaks": {}
+    },
+    "other": {
+     "n": 1,
+     "leaks": {
+      "fillStyle": 1
+     }
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.016,
+     "over2": 0.003,
+     "over8": 0,
+     "max": 4
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 0.016,
+     "over2": 0.003,
+     "over8": 0,
+     "max": 4
+    }
+   },
+   "opsAfter": 142
+  },
+  {
+   "name": "Wald",
+   "at": [
+    2100,
+    2700
+   ],
+   "pos": [
+    2100,
+    2700
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 312,
+   "states": {
+    "tree": {
+     "n": 24,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 3,
+     "leaks": {
+      "globalAlpha": 3
+     }
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "other": {
+     "n": 1,
+     "leaks": {
+      "fillStyle": 1
+     }
+    },
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.015,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 3
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 0.015,
+     "over2": 0.002,
+     "over8": 0,
+     "max": 3
+    }
+   },
+   "opsAfter": 145
+  },
+  {
+   "name": "Kampf (Bude)",
+   "at": "start",
+   "fight": true,
+   "pos": [
+    9702,
+    9053
+   ],
+   "settled": 0,
+   "repeat": {
+    "pixels": 661504,
+    "diff": 0,
+    "over2": 0,
+    "over8": 0,
+    "max": 0
+   },
+   "opsBefore": 1152,
+   "states": {
+    "clanCamp": {
+     "n": 1,
+     "leaks": {}
+    },
+    "tree": {
+     "n": 7,
+     "leaks": {}
+    },
+    "professionNode": {
+     "n": 4,
+     "leaks": {}
+    },
+    "houseWall": {
+     "n": 18,
+     "leaks": {}
+    },
+    "kitItem": {
+     "n": 34,
+     "leaks": {}
+    },
+    "hotspotgiver": {
+     "n": 3,
+     "leaks": {}
+    },
+    "prop": {
+     "n": 7,
+     "leaks": {}
+    },
+    "building": {
+     "n": 7,
+     "leaks": {}
+    },
+    "estate": {
+     "n": 1,
+     "leaks": {}
+    },
+    "resident": {
+     "n": 1,
+     "leaks": {}
+    },
+    "wolf": {
+     "n": 4,
+     "leaks": {}
+    },
+    "player": {
+     "n": 1,
+     "leaks": {}
+    },
+    "npc": {
+     "n": 1,
+     "leaks": {}
+    }
+   },
+   "features": {
+    "cull": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "garlands": {
+     "pixels": 661504,
+     "diff": 0.17,
+     "over2": 0,
+     "over8": 0,
+     "max": 3
+    },
+    "camp": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "props": {
+     "pixels": 661504,
+     "diff": 0.647,
+     "over2": 0.008,
+     "over8": 0.007,
+     "max": 94
+    },
+    "neutral": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "pollen": {
+     "pixels": 661504,
+     "diff": 0.015,
+     "over2": 0.003,
+     "over8": 0,
+     "max": 4
+    },
+    "memo": {
+     "pixels": 661504,
+     "diff": 0,
+     "over2": 0,
+     "over8": 0,
+     "max": 0
+    },
+    "alle": {
+     "pixels": 661504,
+     "diff": 0.832,
+     "over2": 0.011,
+     "over8": 0.007,
+     "max": 94
+    }
+   },
+   "opsAfter": 572
+  }
+ ],
+ "problems": []
+}

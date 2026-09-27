@@ -1,8 +1,9 @@
 // Zeichnung des begehbaren Hauses (E-52, E-54). Innenräume, Hof und Einrichtung kommen aus dem Sprite-Baukasten (kit-art.js);
 // gemalt bleiben die Außenansicht mit Dach und die Möbel der Basisbau-Stufen (tools/sprite-pipeline/build-bude-house.mjs).
 // Schräge Draufsicht: Boden 1:1, Höhen nach oben.
-import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill,kitStamp} from './kit-art.js';
-import {cachedLayer} from './layer-cache.js';
+import {drawBelag,drawDecal,drawKitWall,drawKitItem,drawKitFill,kitStamp,kitItemLayer} from './kit-art.js';
+import {cachedLayer,phaseOf,intBox} from './layer-cache.js';
+import {worldLayers} from './world-layers.js';
 import {LIGHTING} from './content/index.js';
 import {LIGHT} from './light-convention.js';
 const INK='#293b44';
@@ -101,7 +102,7 @@ export function drawHouseWall(c,wall,house,alpha){
  // Handy-Messung 2026-09-27: voll sichtbare Wände als Zwischenbild (layer-cache.js) – eine Kopie statt ~100 Rechtecke je Wand; beim Überblenden direkt.
  if(a===1){const cut=house.heights.cut,key='wand|'+cut+'|'+kitStamp([wall.style,...(wall.decor||[]).map(it=>it.sprite)]);
   if(cachedLayer(c,wall,key,wallBox(wall,cut),x=>drawKitWall(x,wall,cut,'static'))){drawKitWall(c,wall,cut,'animated');c.globalAlpha=1;return;}}
- drawKitWall(c,wall,house.heights.cut);c.globalAlpha=1;
+ c.save();drawKitWall(c,wall,house.heights.cut);c.restore();c.globalAlpha=1;/* Runde 3: direkter Weg eingeklammert (NEUTRAL_ITEMS) */
 }
 /** Rahmen um Wand, Krone, Tapete und Wandschmuck (großzügig: hohe Schmuckbilder ragen nach oben). */
 function wallBox(wall,cut){const flat=wall.maxX-wall.minX>wall.maxY-wall.minY,h=flat?wall.face:cut;let x0=wall.minX,x1=wall.maxX,y0=wall.minY-h;
@@ -109,19 +110,28 @@ function wallBox(wall,cut){const flat=wall.maxX-wall.minX>wall.maxY-wall.minY,h=
  return {x0:Math.floor(x0-4),y0:Math.floor(y0-4),x1:Math.ceil(x1+4),y1:Math.ceil(wall.maxY+4)};}
 /** Stehendes Teil der Einrichtung; drinnen mit dem Dach ausgeblendet, draußen immer. */
 export function drawHouseItem(c,it,alpha){
- const a=it.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;drawKitItem(c,it);c.globalAlpha=1;
+ const a=it.outdoor?1:alpha;if(a<=0)return;c.globalAlpha=a;
+ /* Runde 3: ruhende Teile bei voller Deckkraft als Zwischenbild (Schatten + Bild) – optisch gleich */if(a===1&&worldLayers.props){const L=kitItemLayer(it);if(L&&cachedLayer(c,it,L.key,L.box,x=>drawKitItem(x,it)))return;}
+ /* direkter Weg: Schatten setzt fillStyle – eingeklammert, damit das Objekt ohne save/restore im Renderer auskommt (NEUTRAL_ITEMS) */c.save();drawKitItem(c,it);c.restore();c.globalAlpha=1;
 }
 
 /** Gemaltes Möbel einer Basisbau-Stufe (`prop.art`, etwa „tresen-2“): unten mittig auf der Vorderkante der Standfläche,
  *  so breit wie die Stufe in der Welt. Liefert false, solange das Bild fehlt – dann zeichnet drawProp den Ersatz. */
 const stageImages=new Map();
+const stageLayers=new WeakMap();
 export function drawStageFurniture(c,prop){
  const a=art(),m=a.meta?.stages?.[prop.art];if(!m)return false;
  let img=stageImages.get(prop.art);if(!img){img=new Image();img.src=BASE+m.file;stageImages.set(prop.art,img);}
  if(!img.complete||!img.naturalWidth)return false;
  const k=a.meta.pxPerUnit,w=prop.w,scale=w/(m.width/k),h=m.height/k*scale,base=prop.y+prop.h/2;
+ /* Runde 3: Schatten + Bild als ein Zwischenbild je Möbel (layer-cache.js) – optisch gleich */
+ if(worldLayers.props){let L=stageLayers.get(prop);if(!L||L.img!==img){L={img,key:'stufe|'+prop.art+'|'+prop.x+'|'+prop.y+'|'+w+'|'+prop.h,box:intBox(prop.x-w/2,Math.min(prop.y-prop.h/2,base-h),prop.x+w/2,Math.max(base,prop.y+prop.h/2),2)};stageLayers.set(prop,L);}
+  if(cachedLayer(c,prop,L.key,L.box,x=>paintStage(x,prop,img,w,h,base)))return true;}
+ paintStage(c,prop,img,w,h,base);return true;
+}
+function paintStage(c,prop,img,w,h,base){
  c.save();c.imageSmoothingEnabled=false;c.fillStyle='#2438294d';c.beginPath();c.ellipse(prop.x,prop.y,w/2,prop.h/2,0,0,Math.PI*2);c.fill();
- c.drawImage(img,Math.round((prop.x-w/2)*2)/2,Math.round((base-h)*2)/2,w,h);c.restore();return true;
+ c.drawImage(img,Math.round((prop.x-w/2)*2)/2,Math.round((base-h)*2)/2,w,h);c.restore();
 }
 
 /** Außenansicht: Fassade mit zwei Geschossen und Satteldach, halb abgedeckt (Plane, freie Sparren). */
@@ -161,7 +171,18 @@ export function garlandBulbs(g){const len=Math.hypot(g.x2-g.x1,g.y2-g.y1),n=Math
  for(let i=1;i<n;i++){const t=i/n;out.push({x:g.x1+(g.x2-g.x1)*t,y:g.y1+(g.y2-g.y1)*t,lift:g.h-g.sag*4*t*(1-t),i});}return out;}
 const BULBS=['#ffd36a','#ff8f6a','#8fd6ff','#b8f08a','#ffb0e0'];
 /** Lichterketten über dem Hof, über allen Figuren gezeichnet (hängen oben): Kabel mit Durchhang, farbige Birnen mit Glanzpunkt, sachtes Funkeln. */
-export function drawGarlands(c,house,time){if(!house?.garlands?.length)return;c.save();
+/* Runde 3 (Handy-Leistung): Alle Birnen funkeln mit derselben Frequenz (time*2.2), nur versetzt – das ganze Bild wiederholt sich also alle
+   2π/2.2 ≈ 2,86 s. GARLAND_PHASES Zwischenbilder je Periode (eins alle ~0,12 s) ersetzen ~200 Zeichenbefehle je Bild durch eine Kopie;
+   jede Birne funkelt weiter für sich. Optisch gleich: Die Helligkeit einer Birne springt höchstens um 0,03 (Phasenraster). */
+export const GARLAND_PHASES=24,GARLAND_PERIOD=2*Math.PI/2.2;
+function garlandBox(house){let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;for(const g of house.garlands){x0=Math.min(x0,g.x1,g.x2);x1=Math.max(x1,g.x1,g.x2);y0=Math.min(y0,g.y1-g.h,g.y2-g.h);y1=Math.max(y1,g.y1-g.h+g.sag,g.y2-g.h+g.sag);}return intBox(x0,y0,x1,y1,8);}
+const garlandBoxes=new WeakMap();
+/** Rahmen (Welteinheiten) um alle Lichterketten eines Hauses – Zwischenbild und Test. */
+export const garlandBoxOf=h=>{let b=garlandBoxes.get(h.garlands);if(!b)garlandBoxes.set(h.garlands,b=garlandBox(h));return b;};
+export function drawGarlands(c,house,time){if(!house?.garlands?.length)return;
+ if(worldLayers.garlands){const ph=phaseOf(time,GARLAND_PERIOD,GARLAND_PHASES);if(cachedLayer(c,house.garlands,'lichter|'+ph.k,garlandBoxOf(house),x=>paintGarlands(x,house,ph.t),{slots:GARLAND_PHASES}))return;}
+ paintGarlands(c,house,time);}
+function paintGarlands(c,house,time){c.save();
  for(const g of house.garlands){c.strokeStyle='#2a2018';c.lineWidth=.8;c.beginPath();for(let i=0;i<=24;i++){const t=i/24,x=g.x1+(g.x2-g.x1)*t,y=g.y1+(g.y2-g.y1)*t-(g.h-g.sag*4*t*(1-t));i?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();
   for(const b of garlandBulbs(g)){const col=BULBS[b.i%BULBS.length],tw=.75+.25*Math.sin(time*2.2+b.i*1.7),x=b.x,y=b.y-b.lift+2;c.globalAlpha=1;c.fillStyle='#2a2018';c.fillRect(x-.5,y-2,1,1.5);
    c.globalAlpha=.35*tw;c.fillStyle=col;c.beginPath();c.arc(x,y+1,3.2,0,Math.PI*2);c.fill();c.globalAlpha=tw;c.beginPath();c.ellipse(x,y+1,1.5,2,0,0,Math.PI*2);c.fill();c.globalAlpha=1;c.fillStyle='#ffffffcc';c.fillRect(x-.6,y,.8,.8);}}
