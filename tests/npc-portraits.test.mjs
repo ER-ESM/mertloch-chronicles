@@ -13,7 +13,7 @@ test('jedes Porträt der Lieferung liegt im Katalog: 128 px, Porträtpalette, Fi
  assert.ok(jobs.length>0);
  for(const j of jobs){
   const a=catalog.assets[j.id];assert.ok(a,j.id);assert.equal(a.kind,'portraits',j.id);assert.equal(a.width,128);assert.equal(a.height,128);
-  assert.equal(a.palette,'portraet',j.id);assert.equal(a.source,j.output,j.id);assert.ok(NPCS[j.npc]&&FIGUREN[j.npc],j.npc);
+  assert.equal(a.palette,'portraet',j.id);assert.equal(a.source,j.output,j.id);/* Gesprächs-NPCs (npcs.js) und die übrigen Figuren mit Porträt: Dorfbewohner, Berufslehrer, Söldner (figuren.js) */assert.ok(FIGUREN[j.npc]&&(NPCS[j.npc]||/^(villager\d+|beruf-[a-z]+|merc-[a-z-]+)$/.test(j.npc)),j.npc);
   assert.equal(j.id,'portrait-'+(CLASSES.includes(j.npc)?'mentor-':'')+j.npc,'Schlüssel '+j.id);
  }
 });
