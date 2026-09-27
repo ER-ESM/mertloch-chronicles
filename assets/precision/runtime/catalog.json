@@ -59371,7 +59371,7 @@
       "path": "assets/precision/runtime/portraits/portrait-kurt.png",
       "width": 128,
       "height": 128,
-      "hash": "3129c462fa0f92e98520880906ea930c56a78cb1ce57da33734cf7f88293ad5c",
+      "hash": "d2858faf049dc5b186e8b40267f25aa07d295d98938a667261e3606f2452b11a",
       "revision": "precision-v1"
     },
     "kalle": {
@@ -59758,21 +59758,15 @@
     },
     "portrait-kalle": {
       "kind": "portraits",
-      "source": "assets/precision/sources/kalle.png",
-      "sourceHash": "2edb2b2d6f4824fd5fb41b87c240e43be80a11f42440ed6fe1f4bb5bcea063cb",
-      "sourceBounds": {
-        "x": 29,
-        "y": 32,
-        "w": 138,
-        "h": 110,
-        "count": 22313,
-        "pieces": 1
-      },
+      "source": "assets/precision/sources/2026-09-24/portrait-kalle.png",
+      "sourceHash": "04f43c76d7ed0bfd110e38b8840414d9d5ddacb6a64bb29b5ca87a35872dafb7",
       "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
       "path": "assets/precision/runtime/portraits/portrait-kalle.png",
       "width": 128,
       "height": 128,
-      "hash": "7835ff406ca25ee9413ac51051c2d976a8c096b7b76a043cfe8b8156ef508c9e",
+      "hash": "5e78bf49bf6b35627d4efe527a6896b512fa3d633ac77068f9ff410b4be31b38",
       "revision": "precision-v1"
     },
     "sigi": {
@@ -60159,21 +60153,15 @@
     },
     "portrait-sigi": {
       "kind": "portraits",
-      "source": "assets/precision/sources/sigi.png",
-      "sourceHash": "0d01c33ce5f4726cac10f4e74a532b5089d78814dbd5936011d0ae55e5c0d45f",
-      "sourceBounds": {
-        "x": 21,
-        "y": 63,
-        "w": 161,
-        "h": 103,
-        "count": 23788,
-        "pieces": 1
-      },
+      "source": "assets/precision/sources/2026-09-24/portrait-sigi.png",
+      "sourceHash": "793dcbaaf32b276d60ac59d2d243766e074d62e05ec6d34d28f81b804d956b09",
       "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
       "path": "assets/precision/runtime/portraits/portrait-sigi.png",
       "width": 128,
       "height": 128,
-      "hash": "e0b29d33514c6947bd63647d444a3e45bc5acacfc2f5371173a1d6dae1b4d3e6",
+      "hash": "5acf96d1c793d503a3c307c13378632b8a7e84cd3ab9b38dabd52de0cd0a5a46",
       "revision": "precision-v1"
     },
     "klaus": {
@@ -60560,21 +60548,15 @@
     },
     "portrait-klaus": {
       "kind": "portraits",
-      "source": "assets/precision/sources/klaus.png",
-      "sourceHash": "d92f4cd352c549e324af60fdc7276113a463d77f78822f148e319c7251755cd5",
-      "sourceBounds": {
-        "x": 22,
-        "y": 31,
-        "w": 145,
-        "h": 106,
-        "count": 20462,
-        "pieces": 1
-      },
+      "source": "assets/precision/sources/2026-09-24/portrait-klaus.png",
+      "sourceHash": "58619e2aaeaa497c1db3c825a27794856bf5cb2a95fc748fa1ecb5b082e8e92f",
       "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
       "path": "assets/precision/runtime/portraits/portrait-klaus.png",
       "width": 128,
       "height": 128,
-      "hash": "b5e404ec78f0262d936743da0c2f02c19cca3d535c0f19b6243fec2f40e32a45",
+      "hash": "c38b166038e5c954fe8ddf1018fa8f7209e2190ce11c614325eddd860375475d",
       "revision": "precision-v1"
     },
     "timo": {
@@ -60961,21 +60943,15 @@
     },
     "portrait-timo": {
       "kind": "portraits",
-      "source": "assets/precision/sources/timo.png",
-      "sourceHash": "a4f04a3e2073cae4da144ef225b9791efeeb55be9b15ce62d4e58f7b72704174",
-      "sourceBounds": {
-        "x": 24,
-        "y": 35,
-        "w": 142,
-        "h": 106,
-        "count": 18793,
-        "pieces": 1
-      },
+      "source": "assets/precision/sources/2026-09-24/portrait-timo.png",
+      "sourceHash": "cdd3bf9531cee2d4739edf5b40f89416c6ac8753b144cb95eb371205089e4827",
       "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
       "path": "assets/precision/runtime/portraits/portrait-timo.png",
       "width": 128,
       "height": 128,
-      "hash": "53aa29e49e866fa0ebb65fcbffec13297eb18919da52cda1bd9f2ca89e63663b",
+      "hash": "eef78b2c54686e7b63970766c84190491f6ae3562b457e0c8619f2037d7acdbf",
       "revision": "precision-v1"
     },
     "cat": {
@@ -64476,7 +64452,7 @@
       "path": "assets/precision/runtime/portraits/portrait-ida.png",
       "width": 128,
       "height": 128,
-      "hash": "5892c5d6502f2991da0b84f25623ce601ee945dcbb88a9534857c96eba834dd7",
+      "hash": "0f6f271392f668b98e394a951191efc71d0e9e0a6c5f1ce90144173504043c63",
       "revision": "precision-v1"
     },
     "portrait-mentor-dieter": {
@@ -64489,7 +64465,7 @@
       "path": "assets/precision/runtime/portraits/portrait-mentor-dieter.png",
       "width": 128,
       "height": 128,
-      "hash": "20755e18ac90d1679aed22edaa46438caaa527c208a25c75d4b9a1fdd7173af8",
+      "hash": "798d788959e82ead23fbed10764ae0251d01542f116821b7977db5865ff818cb",
       "revision": "precision-v1"
     },
     "portrait-mentor-baerbel": {
@@ -64502,7 +64478,7 @@
       "path": "assets/precision/runtime/portraits/portrait-mentor-baerbel.png",
       "width": 128,
       "height": 128,
-      "hash": "599874fc3cb341d32d8fc6edeaf4c6481c84ea06baee92f386ee920952051942",
+      "hash": "04128e1bfbaf44e86a4f4dcfb7b4f03480d19e8517bfa4f8880195b6c0ded4ef",
       "revision": "precision-v1"
     },
     "portrait-mentor-kevin": {
@@ -64515,7 +64491,7 @@
       "path": "assets/precision/runtime/portraits/portrait-mentor-kevin.png",
       "width": 128,
       "height": 128,
-      "hash": "97b88baef46cc090f15d23ca85613a94695da7a94bf72f085ee03599c131c341",
+      "hash": "ae6dc63322668afc275a2ba9136f06be54702379caeed2d2e4bcefc3532e8130",
       "revision": "precision-v1"
     },
     "portrait-nyalol": {
@@ -64528,7 +64504,7 @@
       "path": "assets/precision/runtime/portraits/portrait-nyalol.png",
       "width": 128,
       "height": 128,
-      "hash": "bb6ed39d80d83443c7c29da565de3186ad7dec6d278a8ef45fabbd3e6ba9dbf2",
+      "hash": "49c0651c7376b9318deb47de647fdf341c51411bfe45172eb28bc4f78c89627f",
       "revision": "precision-v1"
     },
     "portrait-olli": {
@@ -64541,7 +64517,7 @@
       "path": "assets/precision/runtime/portraits/portrait-olli.png",
       "width": 128,
       "height": 128,
-      "hash": "79fef2739e54bf306818248fed189d78f2897acdeae130b42a3995671941baf2",
+      "hash": "d83399cbe0ee19e09a0066d76021ed69399a7fda982c22ec68ad896800bd7970",
       "revision": "precision-v1"
     },
     "portrait-mara": {
@@ -64554,7 +64530,7 @@
       "path": "assets/precision/runtime/portraits/portrait-mara.png",
       "width": 128,
       "height": 128,
-      "hash": "8344c1d65930ab76b5398e1758edfefbdd3bae9baf009bbb40f20526b0bf0681",
+      "hash": "763ecc1d5b7526932ed3ae5cd6cf82add111acbcc8b7e64b8f5db3a141ddd53f",
       "revision": "precision-v1"
     },
     "portrait-leander": {
@@ -64567,7 +64543,7 @@
       "path": "assets/precision/runtime/portraits/portrait-leander.png",
       "width": 128,
       "height": 128,
-      "hash": "4ae5aaf932d307c4dd5750aefeb253a8a250405e3ee05adf0b8278c8c6ae27e5",
+      "hash": "a3f31ff132c1fbec7158bf59c642fe6c642776d0cf52a335dc4142a04d35a4b6",
       "revision": "precision-v1"
     },
     "portrait-oskar": {
@@ -64580,7 +64556,7 @@
       "path": "assets/precision/runtime/portraits/portrait-oskar.png",
       "width": 128,
       "height": 128,
-      "hash": "9ad871c15872d4a92142d380b49fda94fae3bb900cbab02d4616904f605896eb",
+      "hash": "c884826d9e9d159be24a51bb7e82e4920f3878b45d69e87569ed166c30783d64",
       "revision": "precision-v1"
     },
     "portrait-fenja": {
@@ -64593,7 +64569,7 @@
       "path": "assets/precision/runtime/portraits/portrait-fenja.png",
       "width": 128,
       "height": 128,
-      "hash": "65d07f691261e8c5533ecc5362fd27a86f5e912f7e8d87b05112526a3352b707",
+      "hash": "d2aa894ac338ceb7f9a3bf4c883f423ad7b59946a2200fed300c644ef5792762",
       "revision": "precision-v1"
     },
     "portrait-tilo": {
@@ -64606,7 +64582,7 @@
       "path": "assets/precision/runtime/portraits/portrait-tilo.png",
       "width": 128,
       "height": 128,
-      "hash": "2c71e0eb8d31049fa535e505a1aaa993e3fa5a56ba49f50d15068db8f65faac8",
+      "hash": "11bfed685b1874d5a732e0e7f254b687668bcf21ff672164d42102c989bb3f25",
       "revision": "precision-v1"
     },
     "portrait-jonna": {
@@ -64619,7 +64595,319 @@
       "path": "assets/precision/runtime/portraits/portrait-jonna.png",
       "width": 128,
       "height": 128,
-      "hash": "176c4850e819958ffd8a7288ac45ca6ca319a5ca95fd957c2a7d73a02a6753a7",
+      "hash": "98651f81eaea8222861ad52d05c0d25fdf355244060a91611babcc165b90e802",
+      "revision": "precision-v1"
+    },
+    "portrait-ron": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-ron.png",
+      "sourceHash": "8f9ce81674a06f84ab016b32dacc757211b819eaaf005254938aaa4e9dfe7ba9",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-ron.png",
+      "width": 128,
+      "height": 128,
+      "hash": "830cddb0cba9c713b99360770d6151e12bae18d3d28d932b48e40ca2552ced36",
+      "revision": "precision-v1"
+    },
+    "portrait-hedwig": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-hedwig.png",
+      "sourceHash": "274b80802f723cb59cd1f1591f3cf5d7facd6a9e452566ac525106d8bcc4d7e2",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-hedwig.png",
+      "width": 128,
+      "height": 128,
+      "hash": "adb3eed1586fa3f58b8b091c07d34b1c7ce9acbc89db6d9ba58d063ccc12de74",
+      "revision": "precision-v1"
+    },
+    "portrait-konrad": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-konrad.png",
+      "sourceHash": "a6387cd0118027f46429353f5c2a12e1438fa06c1cf6b9fe446c069c0cacd10c",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-konrad.png",
+      "width": 128,
+      "height": 128,
+      "hash": "61c06753277482ba30a4f33774a874a82f7e1ffa5d1bf6f68fb027eb16e4748f",
+      "revision": "precision-v1"
+    },
+    "portrait-fiete": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-fiete.png",
+      "sourceHash": "007601d128bd87d65cce41443673d224c6985bb2061005191a1b01a5d777e2d4",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-fiete.png",
+      "width": 128,
+      "height": 128,
+      "hash": "fce08814f8174d110d66685c37905fadd58f5dda10ade0658930ef66b6592edc",
+      "revision": "precision-v1"
+    },
+    "portrait-elke": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-elke.png",
+      "sourceHash": "188b69fb530bb4d65371afbe5116fe6cb794de519217760c8a7d9d81576ad1c4",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-elke.png",
+      "width": 128,
+      "height": 128,
+      "hash": "dd05e6c931e5426852095353a118eb8c7539cc74be3ef0452a78727d039b9af7",
+      "revision": "precision-v1"
+    },
+    "portrait-bastian": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-bastian.png",
+      "sourceHash": "cab89b1a2407bf74b68ed45ddf4d3847da54eb650cdea4eb8b054e68fe8bb350",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-bastian.png",
+      "width": 128,
+      "height": 128,
+      "hash": "41a05359d5a5ebb605f82143415a1d2977f6885d54f689e1e4c81c2aa64172c9",
+      "revision": "precision-v1"
+    },
+    "portrait-horst": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-horst.png",
+      "sourceHash": "d1b2e54ce4347af09d44444fdaa25a53f0b3ea9aa89c433ed9b001b830455b13",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-horst.png",
+      "width": 128,
+      "height": 128,
+      "hash": "ad91d424733e084a957da3c21226ea687bc18d3e5b86b5ea859def9af29cc964",
+      "revision": "precision-v1"
+    },
+    "portrait-gisela": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-gisela.png",
+      "sourceHash": "8a23ce616a71f112f892265b648011bbd55f409dd753543defe95819c99a5d10",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-gisela.png",
+      "width": 128,
+      "height": 128,
+      "hash": "6d2a482861e7fab7dafef44cb7cf4c8dd60b6425fe860479bc490fd77e447e65",
+      "revision": "precision-v1"
+    },
+    "portrait-buergermeister": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-buergermeister.png",
+      "sourceHash": "1f9ec40bcaa35f97b6dd09c9ad9c1f1fd656d0cdde79300ca9ef8170ae80d1e9",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-buergermeister.png",
+      "width": 128,
+      "height": 128,
+      "hash": "2bb4dc5a3cf92b7260b014a281c1b5065bd7ddf16310fc6d34adad7522025a62",
+      "revision": "precision-v1"
+    },
+    "portrait-villager0": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager0.png",
+      "sourceHash": "db185d463321917dbcdb326cdb09e72c1f7d409a3e24c7ccb36897fce7347215",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager0.png",
+      "width": 128,
+      "height": 128,
+      "hash": "c65118be63416bf75e26f17217f6a164872fa4d90ceeb884de345c55e4ed36c7",
+      "revision": "precision-v1"
+    },
+    "portrait-villager1": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager1.png",
+      "sourceHash": "8070f0e318c4f1caf1c13c160c460c02601932aec621e74f4c4a78a6102b0cbc",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager1.png",
+      "width": 128,
+      "height": 128,
+      "hash": "ece18b912404ed179a8a0b6dd2b716ad277d4b6873f1921d239c8e0e18ef0017",
+      "revision": "precision-v1"
+    },
+    "portrait-villager2": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager2.png",
+      "sourceHash": "6eccaf3ace2ddc5ae40a1b84c24731bf2dca2a2cd073a859c3a438cf6c2b75ad",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager2.png",
+      "width": 128,
+      "height": 128,
+      "hash": "8bd799eba4916eef6305a3e2364c8c08bef0478cbb3617a01ec11c194366de27",
+      "revision": "precision-v1"
+    },
+    "portrait-villager3": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager3.png",
+      "sourceHash": "1dd77bb857abf5f45f66e59b3aafbbc9d16a0aab4852db94a47a829a526dbeb8",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager3.png",
+      "width": 128,
+      "height": 128,
+      "hash": "1209a58aaf5e269c44b03979538c976985c779a64180c6f1816de9fc914cc3de",
+      "revision": "precision-v1"
+    },
+    "portrait-villager4": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager4.png",
+      "sourceHash": "16f169d61851d4f55fe73accab59839e15e1604446b3bd481ee38d3d2201d921",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager4.png",
+      "width": 128,
+      "height": 128,
+      "hash": "f962a7bc786d2556298ee1ee0529ada253ee3bcea3ce8f98055a573c9cfee915",
+      "revision": "precision-v1"
+    },
+    "portrait-villager5": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager5.png",
+      "sourceHash": "32f23270e41c7ae539814a9c4864aa1cc37df4eba358b28e2f2341a76273fe28",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager5.png",
+      "width": 128,
+      "height": 128,
+      "hash": "0a2663799053a692886ff4acac46a0a345a3366ffb41887f2958d799b3d41ceb",
+      "revision": "precision-v1"
+    },
+    "portrait-villager7": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-villager7.png",
+      "sourceHash": "081367b960fd051d62965b9ef2a396d4ad2455c26ffa5bfdf918d1b168d8e9a1",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-villager7.png",
+      "width": 128,
+      "height": 128,
+      "hash": "74703ec89b5746d9e262d7e07ffaca22c2f2a713c0ed722aa8387e5db7f67fbe",
+      "revision": "precision-v1"
+    },
+    "portrait-beruf-smith": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-beruf-smith.png",
+      "sourceHash": "3152ebd753379b73fa1ad48778b553df19a69741d04bb56133f7bfaa91f9abbb",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-beruf-smith.png",
+      "width": 128,
+      "height": 128,
+      "hash": "c82b3a58167eba7405a26ed3273d64d618d8ea9df0d5b623f0b462626f3c1335",
+      "revision": "precision-v1"
+    },
+    "portrait-beruf-brew": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-beruf-brew.png",
+      "sourceHash": "d46d52b5bf723430290f6a482f4a0a2c5183917811c312a0cf29051f2a6de2bd",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-beruf-brew.png",
+      "width": 128,
+      "height": 128,
+      "hash": "27c50ef49f1077259aeca8f50464e595127881777d7425c91507188b537e675a",
+      "revision": "precision-v1"
+    },
+    "portrait-merc-pils-peter": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-merc-pils-peter.png",
+      "sourceHash": "e5a761b21fcdc2b4a469b9d1abc76530e423b336d600705a9781f9ee404f261e",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-merc-pils-peter.png",
+      "width": 128,
+      "height": 128,
+      "hash": "b03e4177c6c559792028261758229ff82de2fa2b1a61bf69f8e2102c73edd365",
+      "revision": "precision-v1"
+    },
+    "portrait-merc-schorle-susi": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-merc-schorle-susi.png",
+      "sourceHash": "1de2d6df4cd35f6351a1292f2e36ca8526ad68e35ea6c5184c6cc7158cbb4ae0",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-merc-schorle-susi.png",
+      "width": 128,
+      "height": 128,
+      "hash": "8974014664840ff0a1d3cca83c61b3f36e0b8f28162e49ad46faa3735840d190",
+      "revision": "precision-v1"
+    },
+    "portrait-merc-radler-rita": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-merc-radler-rita.png",
+      "sourceHash": "0e0df8f7b9ec5a309e29da1b9f47d5c53450d7e423f078f3ff3fe98d27c5be3b",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-merc-radler-rita.png",
+      "width": 128,
+      "height": 128,
+      "hash": "89d27825076257cecb40b4cc085264bf4631e0a70991cba8457591d7e56ff75c",
+      "revision": "precision-v1"
+    },
+    "portrait-merc-hopfen-horst": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-merc-hopfen-horst.png",
+      "sourceHash": "45993cf68d06f4ff272ffac69bb98a5733ba074ff152e44bbf3532223ed3121e",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-merc-hopfen-horst.png",
+      "width": 128,
+      "height": 128,
+      "hash": "9ef03c646dedcff39239166b1a414388e3d736d2ed42f9be186abf866d7d8482",
+      "revision": "precision-v1"
+    },
+    "portrait-merc-zapf-hannes": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-merc-zapf-hannes.png",
+      "sourceHash": "f8f831cd0c32ca49fa789751ed12f01a21181a87db87fb1e974514ceef77d420",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-merc-zapf-hannes.png",
+      "width": 128,
+      "height": 128,
+      "hash": "a04fe2be35fb8fb3680442bf6bf6e111337fc27648c58fe7a9a0719d8470d13a",
+      "revision": "precision-v1"
+    },
+    "portrait-merc-tresen-tina": {
+      "kind": "portraits",
+      "source": "assets/precision/sources/2026-09-24/portrait-merc-tresen-tina.png",
+      "sourceHash": "0ba43edaa07637afe9a0e818b756bccb81457d1c6545b841cfa7ad845a7eef44",
+      "padding": 6,
+      "palette": "portraet",
+      "delivery": "2026-09-24",
+      "path": "assets/precision/runtime/portraits/portrait-merc-tresen-tina.png",
+      "width": 128,
+      "height": 128,
+      "hash": "84e97194287c6a6b8dd1a51e13b3dc195b0fa1ced54f64d1eeb87ad62e4c6929",
       "revision": "precision-v1"
     },
     "skill-schorsch-auto": {
