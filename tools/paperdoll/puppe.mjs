@@ -12,6 +12,7 @@ import {aussehen,kopfEinrasten} from './aussehen.mjs';
 import {npc_kleidung} from './npc-kleidung.mjs';
 import {dungeon_kleidung} from './dungeon-kleidung.mjs';
 import {klassen_kleidung} from './klassen-kleidung.mjs';
+import {gluecksbringerKatalog} from './gluecksbringer.mjs';
 
 // Leinwand der Figurenbögen W×H, Fußpunkt (W/2, GROUND); Maße begründet in docs/ANZIEHPUPPE.md (Bildfläche). W/H veränderlich: Reittiere
 // liegen auf größerer Leinwand (canvas). PUPPE_LEINWAND="breite,höhe,boden" überschreibt die Maße (Hüllenmessung mit großer Leinwand).
@@ -554,21 +555,19 @@ export const GEAR={
  koenigskette:{slot:'charm',name:'Die Kegelkönig-Kette',rumpf(L,p){const g=PAL.gold,[cx,cy]=[p.C[0]+1,p.C[1]-10];
   for(let k=0;k<=14;k++){const a=Math.PI*(.1+.8*k/14),x=cx-Math.cos(a)*14,y=cy+Math.sin(a)*14;const c=L.piece(g);ell(L,x,y,2.1,1.8,g[k%2?1:2]);L.on(c,x-1,y-1,g[0]);}
   const m=L.piece(g);poly(L,[[cx-6,cy+15],[cx+8,cy+15],[cx+8,cy+22],[cx-6,cy+22]],g[1]);light(L,m,{base:1,hi:0,lo:2,dark:1});text(L,m,cx-5,cy+16,'2011',g[4],3);
-  const pin=L.piece(g);ell(L,cx+1,cy+25.5,2.2,2,g[1]);ell(L,cx+1,cy+30.5,3.6,4.2,g[1]);light(L,pin,{base:1,hi:0,lo:2,dark:1});line(L,[[cx-1,cy+27.5],[cx+3,cy+27.5]],PAL.red[1],pin);}},
- schaerpe:{slot:'charm',name:'Die Schärpe der Wahrheit',rumpf(L,p){sashAt(L,p);}},
+  const pin=L.piece(g);ell(L,cx+1,cy+25.5,2.2,2,g[1]);ell(L,cx+1,cy+30.5,3.6,4.2,g[1]);light(L,pin,{base:1,hi:0,lo:2,dark:1});line(L,[[cx-1,cy+27.5],[cx+3,cy+27.5]],PAL.red[1],pin);},ausweich:['_guertel']},
+ // ausweich (Glücksbringer): Ausweichfassungen, falls zwei getragene sich überdecken – _gegen = andere Körperseite (Seitenregel gespiegelt,
+ // unten erzeugt), _guertel = am Gürtel (rechte Hüfte) statt am Hals; Wahl paperdoll-kern.js gluecksbringerWahl. Die Schärpe bleibt immer.
+ koenigskette_guertel:{slot:'charm',name:'Die Kegelkönig-Kette (am Gürtel)',rumpf(L,p){if(!p.back)ketteGuertel(L,p);},armHinten(L,p){if(p.back)ketteGuertel(L,p);}},
+ schaerpe:{slot:'charm',name:'Die Schärpe der Wahrheit',rumpf(L,p){sashAt(L,p);},ausweich:[]},
  praktikantenausweis:{slot:'charm',name:'Laminierter Praktikantenausweis',rumpf(L,p){const [cx,cy]=p.C,c=PAL.lanyard;
   L.piece(c,1);line(L,[[cx-8,cy-14],[cx-4,cy-2],[cx,cy+9]],c[1]);line(L,[[cx-7,cy-14],[cx-3,cy-2],[cx+1,cy+9]],c[2]);line(L,[[cx+10,cy-14],[cx+6,cy-2],[cx+2,cy+9]],c[1]);line(L,[[cx+11,cy-14],[cx+7,cy-2],[cx+3,cy+9]],c[2]);
-  L.piece(PAL.metal);ell(L,cx+1.5,cy+10,1.6,1.6,PAL.metal[2]);
-  const d=L.piece(PAL.card);poly(L,[[cx-6,cy+12],[cx+9,cy+12],[cx+9,cy+30],[cx-6,cy+30]],PAL.card[1]);light(L,d,{base:1,hi:0,lo:2,dark:1});
-  poly(L,[[cx-6,cy+12],[cx+9,cy+12],[cx+9,cy+15],[cx-6,cy+15]],PAL.red[1],d);
-  poly(L,[[cx-4,cy+17],[cx+1,cy+17],[cx+1,cy+23],[cx-4,cy+23]],PAL.skin[1],d);poly(L,[[cx-4,cy+17],[cx+1,cy+17],[cx+1,cy+18],[cx-4,cy+18]],PAL.hair[2],d);
-  for(const yy of [18,20,22])line(L,[[cx+3,cy+yy],[cx+7,cy+yy]],PAL.card[3],d);line(L,[[cx-4,cy+26],[cx+7,cy+26]],PAL.card[3],d);
-  line(L,[[cx-5,cy+13],[cx-5,cy+28]],[255,255,255],d);}},
- gansorden:{slot:'charm',name:'Orden der unverschämten Gans',rumpf(L,p){const [cx,cy]=p.C,x=p.swap?cx-13:cx+11,y=cy-2;
-  const r=L.piece(PAL.red);poly(L,[[x-3,y],[x+4,y],[x+4,y+8],[x+.5,y+10],[x-3,y+8]],PAL.red[1]);for(const dx of [-2,0,2])line(L,[[x+dx,y],[x+dx,y+8]],PAL.white[0],r);
-  const m=L.piece(PAL.tin);ell(L,x+.5,y+16.5,7.6,7.6,PAL.tin[1]);light(L,m,{base:1,hi:0,lo:2,dark:1});ell(L,x+.5,y+16.5,6.4,6.4,PAL.tin[2],m);ell(L,x+.2,y+16.2,5.7,5.7,PAL.tin[1],m);
-  stamp(L,m,x-4,y+11,['.....www..','....wwkwoo','....wwwwo.','....wws...','...wws....','...ww.....','..wws.....','.wwwww....','wwwwwwws..','.sssss....'],{w:PAL.white[0],s:PAL.white[2],k:PAL.lash,o:PAL.patch[1]});}},
- bierbong:{slot:'charm',name:'Bierbong des Junggesellen',rumpf(L,p){const [cx,cy]=p.C,x=cx+row(p.A,38)[2]+3,y=cy+26;
+  L.piece(PAL.metal);ell(L,cx+1.5,cy+10,1.6,1.6,PAL.metal[2]);ausweisKarte(L,cx,cy);},ausweich:['_guertel']},
+ praktikantenausweis_guertel:{slot:'charm',name:'Laminierter Praktikantenausweis (am Gürtel)',rumpf(L,p){if(!p.back)ausweisGuertel(L,p);},armHinten(L,p){if(p.back)ausweisGuertel(L,p);}},
+ gansorden:{slot:'charm',name:'Orden der unverschämten Gans',rumpf(L,p){const [cx,cy]=p.C;gansordenAt(L,p.swap?cx-13:cx+11,cy-2);},ausweich:['_gegen','_guertel']},
+ gansorden_guertel:{slot:'charm',name:'Orden der unverschämten Gans (am Gürtel)',rumpf(L,p){if(!p.back){const [gx,gy]=guertelPunkt(p,9);gansordenAt(L,gx-.5,gy+1);}},
+  armHinten(L,p){if(p.back){const [gx,gy]=guertelPunkt(p,9);gansordenAt(L,gx-.5,gy+1);}}},
+ bierbong:{slot:'charm',name:'Bierbong des Junggesellen',ausweich:['_gegen'],huefte:true,rumpf(L,p){const [cx,cy]=p.C,x=cx+row(p.A,38)[2]+3,y=cy+26;
   const t=L.piece(PAL.tube);limb(L,[[x,y+9],[x+3,y+24],[x-2,y+38],[x-12,y+40],[x-16,y+33]],[2.4,2.4,2.4,2.4,2.4],PAL.tube[1]);light(L,t,{base:1,hi:0,lo:2,dark:1});
   const f=L.piece(PAL.funnel);poly(L,[[x-11,y-9],[x+12,y-9],[x+3,y+9],[x-2,y+9]],PAL.funnel[1]);ell(L,x+.5,y-9,11.5,3,PAL.funnel[2]);light(L,f,{base:1,hi:0,lo:2,dark:2});
   ell(L,x+.5,y-9,9,1.8,PAL.funnel[4],f);poly(L,[[x-6,y-4],[x+6,y-4],[x+5,y+1],[x-5,y+1]],PAL.white[0],f);line(L,[[x-4,y-2],[x+4,y-2]],PAL.red[2],f);
@@ -624,8 +623,10 @@ export const HYB=new Set((process.env.HYBRID??'kopf,teil,talisman,koerper,kleidu
 let HT=null;
 /** Eingepasstes Teil (Bild + Versatz zum Ankerpunkt) oder null. */
 function hyb(id){HT??=existsSync(HYB_DIR+'teile.json')?JSON.parse(readFileSync(HYB_DIR+'teile.json','utf8')):{};const t=HT[id];if(!t)return null;if(!t.img){t.img=decodePng(readFileSync(HYB_DIR+id+'.png'));kopfEinrasten(id,t,{PAL,LOOK});}return t;}// Köpfe: Haarpixel auf die Haartreppe (aussehen.mjs)
-/** Bild an Ankerpunkt setzen; eigene Kontur bleibt (keep), optional gespiegelt am Anker und nur Zeilen ober-/unterhalb einer Grenze. */
-function blit(L,t,ax,ay,{mirror=false,rows=null}={}){const id=L.piece([[0,0,0],[0,0,0],[0,0,0]]);L.ramps[id].keep=true;[ax,ay]=tp(L,[ax,ay]);// Anker folgt der Rumpfneigung
+/** Bild an Ankerpunkt setzen; eigene Kontur bleibt (keep), optional gespiegelt am Anker und nur Zeilen ober-/unterhalb einer Grenze.
+ *  leanY: Rumpfneigung auf dieser Höhe statt am Anker messen (am Gürtel hängende Teile bleiben an der Hüfte statt mit der Brust zu wandern). */
+function blit(L,t,ax,ay,{mirror=false,rows=null,leanY=null}={}){const id=L.piece([[0,0,0],[0,0,0],[0,0,0]]);L.ramps[id].keep=true;// Anker folgt der Rumpfneigung
+ if(leanY==null)[ax,ay]=tp(L,[ax,ay]);else{const q=tp(L,[ax,leanY]);ax=q[0];ay+=q[1]-leanY;}
  const x0=Math.round(mirror?ax-t.dx-t.w:ax+t.dx),y0=Math.round(ay+t.dy);
  for(let y=0;y<t.h;y++){const Y=y0+y;if(rows&&!rows(Y))continue;for(let x=0;x<t.w;x++){const sx=mirror?t.w-1-x:x,i=(y*t.w+sx)*4;if(t.img.data[i+3])L.px(x0+x,Y,[t.img.data[i],t.img.data[i+1],t.img.data[i+2]]);}}return id;}
 /** Bild um den Anker gedreht setzen (Waffe in der Hand, Winkel wie L.T der Zeichner): Rückabbildung je Zielpixel, nächster Nachbar. */
@@ -735,6 +736,34 @@ function texOverlay(L,band,p,src){if(!HYB.has(src==='koerper'?'koerper':'kleidun
 function hautOverlay(L,band,p){if(HAUT_BANDS.includes(band)&&!p.back)texOverlay(L,band,p,'koerper');}
 
 /** Schärpe über die rechte Schulter zur linken Hüfte; vorn „TRAUZEUGE“ mit Bierfleck, hinten Edding „UND DU?“. */
+// ---------- Glücksbringer an ihrer Ausweichfassung (ausweich: '_guertel') ----------
+/** Gürtelpunkt an der rechten Hüfte des Trägers (Seitenregel: p.swap = Rückansicht XOR gespiegelt), wie familien.mjs guertelPunkt/hueftX:
+ *  60 % der Rumpfbreite, innen (halbe Breite innen) höchstens bis 1 px vor die Mitte der Rumpfzeile. */
+function guertelPunkt(p,innen){const s=p.swap?1:-1,[cx,cy]=p.C,r=row(p.A,31),m=cx+(r[1]+r[2])/2,x=cx+(s>0?r[2]:r[1])*.6;return [s>0?Math.max(x,m+1+innen):Math.min(x,m-1-innen),cy+31];}
+/** Laminierte Karte des Praktikantenausweises; Oberkante bei cy+12 (Werkzeug-Fassung, von hinten und ohne Codex-Teil). */
+function ausweisKarte(L,cx,cy){const d=L.piece(PAL.card);poly(L,[[cx-6,cy+12],[cx+9,cy+12],[cx+9,cy+30],[cx-6,cy+30]],PAL.card[1]);light(L,d,{base:1,hi:0,lo:2,dark:1});
+ poly(L,[[cx-6,cy+12],[cx+9,cy+12],[cx+9,cy+15],[cx-6,cy+15]],PAL.red[1],d);
+ poly(L,[[cx-4,cy+17],[cx+1,cy+17],[cx+1,cy+23],[cx-4,cy+23]],PAL.skin[1],d);poly(L,[[cx-4,cy+17],[cx+1,cy+17],[cx+1,cy+18],[cx-4,cy+18]],PAL.hair[2],d);
+ for(const yy of [18,20,22])line(L,[[cx+3,cy+yy],[cx+7,cy+yy]],PAL.card[3],d);line(L,[[cx-4,cy+26],[cx+7,cy+26]],PAL.card[3],d);
+ line(L,[[cx-5,cy+13],[cx-5,cy+28]],[255,255,255],d);}
+/** Ausweis am Gürtel: unteres Stück des Codex-Teils (kurzes Band-V, Klemme, Karte) an der rechten Hüfte – Mittelspalte 10, Bandzeile 17 am
+ *  Gürtel; gespiegelt am Anker wie der Stammplatz (Schrift bleibt nach dem Spiegeln der sw/ne-Bögen lesbar). Von hinten die Werkzeug-Karte. */
+function ausweisGuertel(L,p){const [gx,gy]=guertelPunkt(p,9),t=!p.back&&HYB.has('talisman')?hyb('teil-praktikantenausweis-se'):null;
+ if(t){const Y0=Math.round(gy);blit(L,t,gx+(p.swap?3:-2),gy-3,{mirror:p.swap,rows:Y=>Y>=Y0});return;}
+ const c=PAL.lanyard;L.piece(c,1);line(L,[[gx-3,gy],[gx,gy+8]],c[1]);line(L,[[gx+3,gy],[gx+1,gy+8]],c[2]);L.piece(PAL.metal);ell(L,gx+.5,gy+9,1.6,1.6,PAL.metal[2]);ausweisKarte(L,gx-1.5,gy-2);}
+/** Kegelkönig-Kette am Gürtel: Plakette „2011“ und Kegel aus dem Codex-Teil (ab Zeile 10, Mittelspalte 17), an zwei kurzen Goldketten vom
+ *  Gürtelhaken; von hinten Werkzeug-Plakette ohne Schrift. */
+function ketteGuertel(L,p){const [gx,gy]=guertelPunkt(p,8.5),g=PAL.gold,t=!p.back&&HYB.has('talisman')?hyb('teil-koenigskette-se'):null;
+ for(const k of [-1,1])for(let i=1;i<=3;i++){const x=gx+k*i*1.8,y=gy+i*1.4,c=L.piece(g);ell(L,x,y,1.5,1.3,g[i%2?1:2]);L.on(c,x-.5,y-.5,g[0]);}
+ const hk=L.piece(g);ell(L,gx,gy,1.7,1.5,g[2]);light(L,hk,{base:2,hi:1,lo:3,dark:1});
+ if(t){const Y0=Math.round(gy+5);blit(L,t,gx+(p.swap?3:-2),gy+2,{mirror:p.swap,rows:Y=>Y>=Y0});return;}
+ const m=L.piece(g);poly(L,[[gx-6,gy+5],[gx+7,gy+5],[gx+7,gy+13],[gx-6,gy+13]],g[1]);light(L,m,{base:1,hi:0,lo:2,dark:1});
+ const pin=L.piece(g);ell(L,gx+.5,gy+16,2.2,2,g[1]);ell(L,gx+.5,gy+21,3.6,4.2,g[1]);light(L,pin,{base:1,hi:0,lo:2,dark:1});line(L,[[gx-1.5,gy+18],[gx+2.5,gy+18]],PAL.red[1],pin);}
+/** Orden der unverschämten Gans: rot-weißes Band ab (x,y), Blechscheibe mit Gänsekopf darunter. */
+function gansordenAt(L,x,y){
+ const r=L.piece(PAL.red);poly(L,[[x-3,y],[x+4,y],[x+4,y+8],[x+.5,y+10],[x-3,y+8]],PAL.red[1]);for(const dx of [-2,0,2])line(L,[[x+dx,y],[x+dx,y+8]],PAL.white[0],r);
+ const m=L.piece(PAL.tin);ell(L,x+.5,y+16.5,7.6,7.6,PAL.tin[1]);light(L,m,{base:1,hi:0,lo:2,dark:1});ell(L,x+.5,y+16.5,6.4,6.4,PAL.tin[2],m);ell(L,x+.2,y+16.2,5.7,5.7,PAL.tin[1],m);
+ stamp(L,m,x-4,y+11,['.....www..','....wwkwoo','....wwwwo.','....wws...','...wws....','...ww.....','..wws.....','.wwwww....','wwwwwwws..','.sssss....'],{w:PAL.white[0],s:PAL.white[2],k:PAL.lash,o:PAL.patch[1]});}
 function sashAt(L,p){const [cx,cy]=p.C,A=p.A,c=PAL.satin,sw=p.swap,k=sw?1:-1,swy=(p.sway||0)*2.2;
  const a=sw?[cx+row(A,-12)[2]-3,cy-14]:[cx+A.sh[0]+4,cy-14],b=sw?[cx+row(A,38)[1]-2,cy+42]:[cx+row(A,38)[2]+2,cy+42];
  const s=L.piece(c);limb(L,[a,b],[6,6],c[1]);light(L,s,{base:1,hi:0,lo:2,dark:2});if(!sw)line(L,[a,b].map(([x,y])=>[x-4,y+3]),c[0],s);
@@ -816,23 +845,33 @@ export const GEAR_BACK={
 export const KIT={PAL,get W(){return W;},get H(){return H;},GROUND,ell,limb,poly,line,stamp,light,fur,text,lerp,seg,segR,handPos,handOver,sleeve,boot,hyb,blit,torso,row,tiltAt,ik,pfote,aell:(...a)=>aell(...a),get HW(){return HW;},hsA,get NZ(){return NZ;},HAND_F,FRAMES,layer:(...a)=>layer(...a),edges:(...a)=>edges(...a),mirror:(...a)=>mirror(...a),handW:(...a)=>handW(...a),setHW:v=>{HW=v;}};
 const MOD_FAMILIES={},MOD_SIDED=[];
 for(const mod of [familien(KIT),aussehen(KIT),npc_kleidung(KIT),dungeon_kleidung(KIT),klassen_kleidung(KIT)]){Object.assign(GEAR,mod.gear||{});Object.assign(GEAR_BACK,mod.back||{});Object.assign(MOD_FAMILIES,mod.families||{});MOD_SIDED.push(...(mod.sided||[]));}
+// Glücksbringer (ausweich): Ausweichfassung „_gegen“ = andere Körperseite. Ohne eigene Zeichnung entsteht sie hier aus der Stammquelle:
+// dieselben Zeichner mit umgekehrter Seitenregel (makeSrcs: p.swap umgekehrt; Codex-Teil, SIDE und GEAR_BACK der Stammquelle über basis).
+// Andere Fassungen (_guertel) zeichnet das Modul selbst. Katalog: cat.gluecksbringer (Fassungen + beim Bau gemessene Deckung, gluecksbringer.mjs).
+for(const [id,g] of Object.entries(GEAR))for(const k of g.ausweich||[]){if(GEAR[id+k])continue;if(k!=='_gegen')throw new Error(`Ausweichfassung ${id+k} fehlt (erzeugt wird nur _gegen)`);
+ const {ausweich,...rest}=g;GEAR[id+k]={...rest,name:g.name+' (Gegenseite)',basis:id,gegen:true};}
+/** Fassungen je Glücksbringer: [Stammquelle, Ausweichfassungen …] (Rangfolge der Wahl). */
+export const GLUECKSBRINGER=Object.fromEntries(Object.entries(GEAR).filter(([,g])=>g.ausweich).map(([id,g])=>[id,[id,...g.ausweich.map(k=>id+k)]]));
 const SIDE={
  kutte:{normal:{armVorn:GEAR.kutte.armVorn,armHinten:GEAR.kutte.armHinten},swapped:{armVorn:GEAR_BACK.kutte.armVorn,armHinten:GEAR_BACK.kutte.armHinten}},
  fuchspfote:{normal:{beinVorn:GEAR.fuchspfote.beinVorn,beinHinten:GEAR.fuchspfote.beinHinten},swapped:GEAR_BACK.fuchspfote},
  bierbong:{normal:{rumpf:(L,p)=>{if(!p.back)GEAR.bierbong.rumpf(L,p);},armHinten:(L,p)=>{if(p.back)GEAR.bierbong.rumpf(L,p);}},swapped:{rumpf:(L,p)=>{if(!p.back)GEAR_BACK.bierbong.rumpf(L,p);},armHinten:(L,p)=>{if(p.back)GEAR_BACK.bierbong.rumpf(L,p);}}},
 };
 // eingepasste Codex-Teile mit Schrift/Bild (Ausweis, Kette) und die Regenjacke mit Füllung sehen gespiegelt falsch aus → eigene sw/ne-Bögen
-const SIDED=new Set([...MOD_SIDED,'kutte','fuchspfote','bierbong','schaerpe','gansorden','praktikantenausweis','koenigskette','regenjacke',...Object.keys(GEAR).filter(k=>GEAR[k].slot==='weapon'||GEAR[k].slot==='offhand')]);
+// Ausweichfassungen der Glücksbringer hängen an einer Körperseite (andere Hüfte, rechte Hüfte am Gürtel) → ebenfalls eigene sw/ne-Bögen
+const SIDED=new Set([...MOD_SIDED,'kutte','fuchspfote','bierbong','schaerpe','gansorden','praktikantenausweis','koenigskette','regenjacke',...Object.keys(GEAR).filter(k=>GEAR[k].slot==='weapon'||GEAR[k].slot==='offhand'),
+ ...Object.values(GLUECKSBRINGER).flatMap(f=>f.slice(1))]);
 const TEXABLE=new Set(['kutte','regenjacke','jeans','festivalstiefel','kabelbinderstiefel','fuchspfote']);
 export const DIRS={se:'',sw:'-sw',nw:'-nw',ne:'-ne'};
 /** Quellen: Körper, Dutt und je Gegenstand ein Zeichner mit Seitenregel, Codex-Teilen und Stofffüllung. */
-let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...Object.fromEntries(Object.entries(GEAR).map(([id,g])=>[id,(L,band,p0)=>{let p=p0,bd=band;if(p0.swap&&(g.slot==='weapon'||g.slot==='offhand')){p={...p0,armN:p0.armF,armF:p0.armN,swingN:p0.swingF,swingF:p0.swingN};if(g.slot==='weapon'){if(band==='armVorn'){if(g.hands===2&&p0.grip2)handOver(L,p0.armN);return;}if(band===HAND_F)bd='armVorn';}}
-   {const cat=g.slot==='charm'?'talisman':'teil',hdir=g.slot==='head'?(p.back?'nw':'se'):'se',t=HYB.has(cat)&&!(p.back&&g.slot==='charm')&&id!=='gansorden'?hyb(`teil-${id}-${g.slot==='offhand'&&p.back?'nw':hdir}`):null;
+// Ausweichfassung _gegen (g.gegen): Seitenregel umgekehrt, Codex-Teil/SIDE/GEAR_BACK/Stofffüllung der Stammquelle (bid).
+let SRC_CACHE=null;function makeSrcs(){return SRC_CACHE??={koerper:body,dutt,...Object.fromEntries(Object.entries(GEAR).map(([id,g])=>[id,(L,band,p0)=>{const bid=g.basis||id;if(g.gegen)p0={...p0,swap:!p0.swap};let p=p0,bd=band;if(p0.swap&&(g.slot==='weapon'||g.slot==='offhand')){p={...p0,armN:p0.armF,armF:p0.armN,swingN:p0.swingF,swingF:p0.swingN};if(g.slot==='weapon'){if(band==='armVorn'){if(g.hands===2&&p0.grip2)handOver(L,p0.armN);return;}if(band===HAND_F)bd='armVorn';}}
+   {const cat=g.slot==='charm'?'talisman':'teil',hdir=g.slot==='head'?(p.back?'nw':'se'):'se',t=HYB.has(cat)&&!(p.back&&g.slot==='charm')&&bid!=='gansorden'?hyb(`teil-${bid}-${g.slot==='offhand'&&p.back?'nw':hdir}`):null;
     if(t){if((g.slot==='weapon'||g.slot==='offhand')&&bd==='armVorn'){const arm=g.slot==='weapon'?p.armN:p.armF,[hx,hy]=handPos(arm);blitRot(L,t,hx,hy,g.slot==='weapon'?p.swingN:p.swingF);handOver(L,arm);if(g.hands===2&&p.grip2)handOver(L,p.armF);return;}// Zweihand-Posen: zweite Faust am Schaft
      if(g.slot==='head'&&bd==='kopf'){blit(L,t,p.head[0],p.head[1]);return;}if(g.slot==='head'&&bd==='haarHinten')return;
-     if(g.slot==='charm'&&bd==='rumpf'){blit(L,t,p.C[0],p.C[1],{mirror:p.swap});return;}if(g.slot==='weapon'||g.slot==='offhand')return;}}
-   const SD=SIDE[id],B=p.back?GEAR_BACK[id]:null,fn=SD&&bd in SD.normal?(p.swap?SD.swapped:SD.normal)[bd]:B&&bd in B?B[bd]:g[bd];if(!fn)return;const piv=g.slot==='weapon'?[handPos(p.armN),p.swingN]:g.slot==='offhand'?[handPos(p.armF),p.swingF]:null;
-   if(piv&&piv[1]){const [[ox,oy],a]=piv,co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}fn(L,p);L.T=null;L.rot=0;if(g.hands===2&&p.grip2&&bd==='armVorn')handOver(L,p.armF);if(TEXABLE.has(id))texOverlay(L,band,p0,id);}]))};}
+     if(g.slot==='charm'&&bd==='rumpf'){blit(L,t,p.C[0],p.C[1],{mirror:p.swap,leanY:g.huefte?p.C[1]+31:null});return;}if(g.slot==='weapon'||g.slot==='offhand')return;}}// huefte: Codex-Teil hängt am Gürtel (Bierbong), Neigung dort gemessen
+   const SD=SIDE[bid],B=p.back?GEAR_BACK[bid]:null,fn=SD&&bd in SD.normal?(p.swap?SD.swapped:SD.normal)[bd]:B&&bd in B?B[bd]:g[bd];if(!fn)return;const piv=g.slot==='weapon'?[handPos(p.armN),p.swingN]:g.slot==='offhand'?[handPos(p.armF),p.swingF]:null;
+   if(piv&&piv[1]){const [[ox,oy],a]=piv,co=Math.cos(a),si=Math.sin(a);L.T=([x,y])=>[ox+(x-ox)*co-(y-oy)*si,oy+(x-ox)*si+(y-oy)*co];L.rot=a;}fn(L,p);L.T=null;L.rot=0;if(g.hands===2&&p.grip2&&bd==='armVorn')handOver(L,p.armF);if(TEXABLE.has(bid))texOverlay(L,band,p0,bid);}]))};}
 /** Bogen einer Quelle (alle Bilder × Bänder, Richtung dir) für die Werkzeug-Figur lid – für Vorschau-Werkzeuge (waffen-vorschau.mjs) ohne Laufzeitbau. */
 export const renderQuelle=(id,lid,dir='se')=>{const look=LOOK[lid];return renderSource(makeSrcs()[id],ARCH[look.arch],look,dir);};
 /** Sonderbilder einer Quelle (SONDER, Spalten = Sonderbilder) – Vorschau-Werkzeuge (dungeon-vorschau.mjs) und buildSonder. */
@@ -1108,7 +1147,7 @@ export const FAMILY_SOURCE={trouser:'jeans',jacket:'kutte',raincoat:'regenjacke'
 // Spalten geteilt in Grundbilder (Stehen/Blinzeln/Laufen, <id>-<arch><dir>.png) und Aktionsbilder ab cat.split (…-akt.png).
 // So lädt paperdoll-art.js nach Bedarf, und entpackt belegt ein Bogen nur, was die Quelle wirklich zeichnet.
 const bandsOf=id=>{if(id==='koerper')return BANDS;if(id==='dutt')return ['kopf'];const g=GEAR[id];if(!g)return BANDS;
- return BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b===HAND_F));};
+ const q=g.basis||id;return BANDS.filter(b=>g[b]||(GEAR_BACK[q]&&GEAR_BACK[q][b])||(SIDE[q]&&b in SIDE[q].normal)||(g.slot==='weapon'&&b===HAND_F));};// basis: Ausweichfassung _gegen
 export const RUNTIME_SPLIT=(i=>i<0?FRAMES.length:i)(FRAMES.findIndex(f=>!['stehen','blinzeln','laufen'].includes(f.anim)));
 // Aktionsposen hängen an der Seitenregel (Waffenarm = armF bei swap): gespiegeltes se ist dort nicht sw. Deshalb bekommt jede Quelle für
 // sw/ne einen eigenen Aktionsbogen (cat.ownAkt), nur Grundbilder dürfen weiter gespiegelt werden (cat.own).
@@ -1162,6 +1201,7 @@ export function buildRuntimeTeil(out,ids){const t0=Date.now(),cat=JSON.parse(rea
  const order=Object.keys(srcs),by=keys=>order.filter(k=>keys.includes(k));// Reihenfolgen wie der volle Neubau (Quellenfolge)
  cat.sources=Object.fromEntries([...Object.keys(GEAR),'koerper','dutt'].filter(k=>cat.sources[k]).map(k=>[k,cat.sources[k]]));cat.items=Object.fromEntries(Object.keys(GEAR).filter(k=>cat.items[k]).map(k=>[k,cat.items[k]]));
  for(const d of ['sw','ne']){cat.own[d]=by(cat.own[d]);cat.ownAkt[d]=by(cat.ownAkt[d]);}katalogAbleiten(cat);
+ cat.gluecksbringer=gluecksbringerKatalog(out,cat,GLUECKSBRINGER);console.log('Glücksbringer: Deckung gemessen,',Object.keys(cat.gluecksbringer.deckung).length,'überdeckende Fassungspaare');
  const o=cat.huelle||{...HUELLE},h=cat.huelle={x0:Math.min(o.x0,HUELLE.x0),x1:Math.max(o.x1,HUELLE.x1),y0:Math.min(o.y0,HUELLE.y0),y1:Math.max(o.y1,HUELLE.y1)};
  console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Teilneubau fertig',(Date.now()-t0)+' ms',out);}
@@ -1206,6 +1246,7 @@ export function buildRuntime(out){mkdirSync(out,{recursive:true});for(const f of
  for(const [id,g] of Object.entries(GEAR)){cat.sources[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id),cell:cells[id]};cat.items[id]=id;}
  cat.sources.koerper={slot:'body-base',bands:BANDS,cell:cells.koerper};cat.sources.dutt={slot:'hair',bands:['kopf'],cell:cells.dutt};
  katalogAbleiten(cat);
+ cat.gluecksbringer=gluecksbringerKatalog(out,cat,GLUECKSBRINGER);// Deckung der Glücksbringer-Fassungen aus den eben geschriebenen Bögen
  const h=cat.huelle={...HUELLE};console.log(`Hülle x ${h.x0}…${h.x1}, y ${h.y0}…${h.y1} – frei: links ${W/2+h.x0}, rechts ${W/2-1-h.x1}, oben ${GROUND+h.y0}, unten ${H-1-GROUND-h.y1} px (Leinwand ${W}×${H}, Boden ${GROUND})`);
  writeFileSync(out+'/catalog.json',JSON.stringify(cat));console.log('Laufzeit-Bögen fertig',(Date.now()-t0)+' ms',out);}
 // Schalter: --runtime [ziel] = Laufzeit-Bögen fürs Spiel; --runtime [ziel] --nur id,id = Teilneubau einzelner Gegenstände in einen fertigen
@@ -1231,5 +1272,5 @@ else if(CLI){const out=process.argv[2]||'.';mkdirSync(out,{recursive:true});cons
  meta.shiny=[...new Set(['metal','gold','tin','glass'].flatMap(k=>PAL[k].map(c=>c[0]<<16|c[1]<<8|c[2])))];meta.gold=PAL.gold;meta.body=[...new Set(['skin','blush','lip','eye','iris','lash','hair','hairBrown','hairBlack'].flatMap(k=>{const v=PAL[k];return (Array.isArray(v[0])?v:[v]).map(c=>c[0]<<16|c[1]<<8|c[2]);}))];
  meta.shade={};for(const v of Object.values(PAL)){if(!Array.isArray(v[0]))continue;for(let k=0;k<v.length-1;k++){const c=v[k],key=c[0]<<16|c[1]<<8|c[2];if(!(key in meta.shade))meta.shade[key]=v[k+1];}}
  meta.frames=FRAMES.map(fr=>({...fr,bob:pose(fr,ARCH.schwungvoll,LOOK.ida).bob}));
- for(const [id,g] of Object.entries(GEAR))meta.gear[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:BANDS.filter(b=>g[b]||(GEAR_BACK[id]&&GEAR_BACK[id][b])||(SIDE[id]&&b in SIDE[id].normal)||(g.slot==='weapon'&&b===HAND_F))};
+ for(const [id,g] of Object.entries(GEAR))meta.gear[id]={slot:g.slot,name:g.name,hands:g.hands||0,bands:bandsOf(id)};
  writeFileSync(out+'/puppe.json',JSON.stringify(meta));console.log('fertig',(Date.now()-t0)+' ms');}

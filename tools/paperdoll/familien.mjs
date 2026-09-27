@@ -50,6 +50,10 @@ export function familien(K){
  const lft=p=>p.swap?-1:1;
  /** Rumpfkante auf Höhe y an der Bildseite s. */
  const edge=(p,y,s)=>p.C[0]+(s<0?row(p.A,y)[1]:row(p.A,y)[2]);
+ /** Gürtelplatz eines Glücksbringers an der Hüfte (Bildseite s): Anteil k der Rumpfbreite auf Gürtelhöhe, aber innen (halbe Breite zur
+  *  Körpermitte hin = innen) höchstens bis 1 px vor die Mitte der Rumpfzeile – die Glücksbringer beider Hüften überdecken sich so nie; am
+  *  drahtigen Körper hängen sie dafür weiter außen an der Seite. */
+ const hueftX=(p,s,k,innen)=>{const r=row(p.A,31),m=p.C[0]+(r[1]+r[2])/2,x=p.C[0]+(s>0?r[2]:r[1])*k;return s>0?Math.max(x,m+1+innen):Math.min(x,m-1-innen);};
  const coat=(L,p,c,pad,y0,y1,flare=0)=>{const j=L.piece(c);poly(L,torso(p,pad,y0,y1,{flare,sway:true}),c[1]);light(L,j,{base:1,hi:0,lo:2,dark:3});return j;};
  /** Kronkorken: Scheibe mit gezacktem Rand und Glanzpunkt. */
  function cap(L,x,y,col,r=2.4){const c=L.piece(col);ell(L,x,y,r,r*.9,col[1]);for(let a=0;a<6.28;a+=.8)on(L,c,x+Math.cos(a)*(r-.4),y+Math.sin(a)*(r*.9-.4),col[2]);on(L,c,x-1,y-1,col[0]);return c;}
@@ -58,6 +62,7 @@ export function familien(K){
   if(head){const h=[q[0]+n[0]*(w+.6)*head,q[1]+n[1]*(w+.6)*head];L.piece(col);ell(L,h[0],h[1]+.5,1.4,1.2,col[1]);}}
  /** Halsschnur zum Anhänger (vorn V, hinten Bogen im Nacken). */
  function cord(L,p,to,c){const [cx,cy]=p.C,nr=(p.A.neckR||[6.5,7.5])[1];const k=L.piece(c,1);
+  if(p.guertel){const [gx,gy]=p.guertel;line(L,[[gx-1.5,gy],[to[0]-1,to[1]]],c[1]);line(L,[[gx+1.5,gy],[to[0]+1,to[1]]],c[2]);ell(L,gx,gy,1.8,1.4,c[1]);return k;}// Ausweichfassung am Gürtel: kurze Schlaufe
   if(p.back){line(L,[[cx-nr-1,cy-15],[cx+1,cy-13.5],[cx+nr+2,cy-15]],c[2]);return k;}
   line(L,[[cx-nr-1,cy-14],[to[0]-1,to[1]]],c[1]);line(L,[[cx+nr+2,cy-14],[to[0]+1,to[1]]],c[2]);return k;}
  // ---------- In der Hand gehaltene Fernwaffen: Seitenregel und Schwung wie die Nahkampfwaffen (puppe.mjs makeSrcs) ----------
@@ -232,32 +237,35 @@ export function familien(K){
   if(stone){const s=L.piece(stone);ell(L,q[0]+1,q[1]-.6,1.7,1.5,stone[1]);on(L,s,q[0]+.5,q[1]-1.2,stone[0]);}}
 
  // ---------- Talismane und Glücksbringer ----------
- function keilerzahn(L,p){const [cx,cy]=p.C,to=[cx+1,cy+1];cord(L,p,to,PAL.leather);if(p.back)return;
+ function keilerzahn(L,p){const [cx,cy]=p.C,to=[cx+1,cy+1];cord(L,p,to,PAL.leather);if(p.back&&!p.guertel)return;
   // Hauer: dicke Wurzel oben (bräunlich), weiter Bogen nach außen, spitze Spitze mit Kerbe
   const z=L.piece(PAL.faZahn);limb(L,[[cx,cy+2],[cx-4.5,cy+7],[cx-5,cy+13],[cx-1.5,cy+18],[cx+4,cy+19.5]],[3.3,3.1,2.5,1.6,.5],PAL.faZahn[1]);light(L,z,{base:1,hi:0,lo:2,dark:1});
   line(L,[[cx-3.5,cy+6],[cx-4,cy+12],[cx-2,cy+15]],PAL.faZahn[0],z);on(L,z,cx+2.5,cy+19,PAL.faZahn[3]);on(L,z,cx+2.5,cy+18,PAL.faZahn[3]);// Glanz, Kerbe
   ell(L,cx-.5,cy+3,2.6,2,PAL.faZahn[3],z);
   const w=L.piece(PAL.leather);limb(L,[[cx-3,cy+2],[cx+2.5,cy+2.5]],[1.5,1.5],PAL.leather[2]);light(L,w,{base:2,hi:1,lo:3,dark:1});line(L,[[cx-2.5,cy+4.5],[cx+1.5,cy+5]],PAL.leather[3],z);}
- function kabeltalisman(L,p){const [cx,cy]=p.C,m=[cx+1,cy+9];cord(L,p,[m[0],m[1]-6],PAL.black);if(p.back)return;
+ function kabeltalisman(L,p){const [cx,cy]=p.C,m=[cx+1,cy+9];cord(L,p,[m[0],m[1]-6],PAL.black);if(p.back&&!p.guertel)return;
   const cols=[PAL.tieR,PAL.tieY,PAL.tieB,PAL.tieW,PAL.tieR,PAL.tieY];
   cols.forEach((tc,i)=>{const a=i/6*Math.PI*2+.3,e=[m[0]+Math.cos(a)*9,m[1]+Math.sin(a)*8.5];const t=L.piece(tc);limb(L,[m,e],[1.5,1.1],tc[0]);
    line(L,[[m[0]+Math.cos(a)*3,m[1]+Math.sin(a)*3+1],[e[0],e[1]+1]],tc[1],t);});
   for(const i of [1,3,5]){const a=i/6*Math.PI*2+.3;cap(L,m[0]+Math.cos(a)*9,m[1]+Math.sin(a)*8.5,i===3?PAL.red:PAL.metal,1.8);}
   const c=cap(L,m[0],m[1],PAL.gold,3.6);ell(L,m[0]+.3,m[1]+.3,1.4,1.2,PAL.red[1],c);}
- function blechtalisman(L,p){const [cx,cy]=p.C,m=[cx+1,cy+12],t=PAL.tin;cord(L,p,[m[0],m[1]-6.5],PAL.leather);if(p.back)return;
+ function blechtalisman(L,p){const [cx,cy]=p.C,m=[cx+1,cy+12],t=PAL.tin;cord(L,p,[m[0],m[1]-6.5],PAL.leather);if(p.back&&!p.guertel)return;
   const br=L.piece(PAL.hairBlack,1);for(let i=0;i<11;i++){const a=Math.PI*(.05+.9*i/10),e=[m[0]+Math.cos(a)*10,m[1]+Math.sin(a)*9.5];line(L,[[m[0]+Math.cos(a)*6,m[1]+Math.sin(a)*6],e],PAL.hairBlack[i%2?3:2]);}
   const d=L.piece(t);ell(L,m[0],m[1],6.6,6.4,t[1]);light(L,d,{base:1,hi:0,lo:2,dark:2});
   for(let i=0;i<9;i++){const xx=m[0]-5+hs(i,4)*10,yy=m[1]-5+hs(4,i)*10;if(is(L,d,xx,yy)){on(L,d,xx,yy,t[i%3?2:0]);}}
   const z=L.piece(PAL.white);poly(L,[[m[0]-2,m[1]-2],[m[0]+3,m[1]-3],[m[0]+3.5,m[1]+1.5],[m[0]-1.5,m[1]+2.5]],PAL.white[1]);light(L,z,{base:1,hi:0,lo:2,dark:1});on(L,z,m[0],m[1]-1,PAL.ink[1]);on(L,z,m[0]+1,m[1]-1,PAL.ink[1]);line(L,[[m[0]-1,m[1]+1],[m[0]+2,m[1]]],PAL.black[2],z);}
  /** Clan-Andenken (Glücksbringer der Zufallsgegenstände): Lederband am Gürtel, orangene Clan-Scheibe mit Faust, Flaschenöffner. */
- function clanandenken(L,p){if(p.back)return;const [cx,cy]=p.C,s=lft(p),x=cx+(s>0?row(p.A,31)[2]:row(p.A,31)[1])*.5;
+ function clanandenken(L,p){if(p.back)return;const [cx,cy]=p.C,s=lft(p),x=hueftX(p,s,.5,5.5);
   const o=L.piece(PAL.metal);ell(L,x,cy+31.5,2,1.8,PAL.metal[1]);ell(L,x,cy+31.5,.8,.7,null,'del');
   const st=L.piece(PAL.leather);limb(L,[[x,cy+33],[x+s*.5,cy+38]],[1.1,1.1],PAL.leather[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});
   const op=L.piece(PAL.metal);limb(L,[[x-s*2,cy+33],[x-s*3.5,cy+40]],[1.2,1.5],PAL.metal[2]);light(L,op,{base:2,hi:1,lo:3,dark:1});ell(L,x-s*3.6,cy+40,.7,.9,null,'del');
   const d=L.piece(PAL.patch);ell(L,x+s*.5,cy+42,4.4,4.6,PAL.patch[1]);light(L,d,{base:1,hi:0,lo:2,dark:1});
   stamp(L,d,x+s*.5-2,cy+40,['.ww.','wwww','wwwk','.ww.'],{w:PAL.white[0],k:PAL.white[2]});}
  /** Horsts gelochte Hausordnung: mit Sicherheitsnadeln wie eine Startnummer auf die linke Bauchseite gesteckt. */
- function hausordnung(L,p){if(p.back)return;const [cx,cy]=p.C,A=p.A,s=lft(p),r=row(A,19),mx=cx+(s>0?Math.max(3,r[2]*.6):Math.min(-3,r[1]*.6)),my=cy+19,a=.12*s,
+ function hausordnung(L,p){if(p.back)return;const [cx,cy]=p.C,s=lft(p),r=row(p.A,19);zettel(L,p,cx+(s>0?Math.max(3,r[2]*.6):Math.min(-3,r[1]*.6)),cy+19,s);}
+ /** Ausweichfassung am Gürtel: Zettel mit den Sicherheitsnadeln an den Gürtel der rechten Hüfte gesteckt (von hinten hinter dem Körper). */
+ function hausordnungGuertel(L,p){const s=-lft(p),w=p.A.belly?7:6;zettel(L,p,hueftX(p,s,.55,w+1.5),p.C[1]+31+9.5,s);}
+ function zettel(L,p,mx,my,s){const A=p.A,a=.12*s,
   P=(dx,dy)=>[mx+dx*Math.cos(a)-dy*Math.sin(a),my+dx*Math.sin(a)+dy*Math.cos(a)],w=A.belly?7:6,h=8;
   const z=L.piece(PAL.white);poly(L,[P(-w,-h),P(w,-h),P(w,h),P(-w,h)],PAL.white[1]);light(L,z,{base:1,hi:0,lo:2,dark:1,share:.2});
   for(const dy of [-4,4]){const q=P(-w+1.6,dy);on(L,z,q[0],q[1],PAL.black[3]);}
@@ -266,7 +274,7 @@ export function familien(K){
   const k=P(w-3,h-2.5);ell(L,k[0],k[1],2.2,2,PAL.ink[1],z);ell(L,k[0],k[1],1,1,PAL.white[1],z);
   for(const dx of [-w+1,w-1]){const q=P(dx,-h-.5);L.piece(PAL.metal,1);line(L,[[q[0]-1,q[1]],[q[0]+1.5,q[1]]],PAL.metal[1]);}}
  /** Der nie leere Schnorrerbecher: klarer Mehrwegbecher voll Bier mit Schaumkrone, Pfandaufkleber, Karabiner am Gürtel (rechts am Träger). */
- function schnorrerbecher(L,p){if(p.back)return;const [cx,cy]=p.C,s=-lft(p),x=cx+(s>0?row(p.A,31)[2]:row(p.A,31)[1])*.55,y=cy+34;
+ function schnorrerbecher(L,p){if(p.back)return;const [cx,cy]=p.C,s=-lft(p),x=hueftX(p,s,.55,6.5),y=cy+34;
   const kb=L.piece(PAL.metal);ell(L,x,y-2.5,1.8,2.4,PAL.metal[1]);ell(L,x,y-2.5,.7,1.2,null,'del');
   const c=L.piece(PAL.tube);poly(L,[[x-5.5,y],[x+5.5,y],[x+4,y+13],[x-4,y+13]],PAL.tube[1]);light(L,c,{base:1,hi:0,lo:2,dark:1});
   poly(L,[[x-4.6,y+3.5],[x+4.6,y+3.5],[x+3.6,y+12],[x-3.6,y+12]],PAL.faBier[1],c);line(L,[[x-3.8,y+4],[x-3,y+11]],PAL.faBier[0],c);line(L,[[x+3.5,y+5],[x+2.8,y+11]],PAL.faBier[2],c);
@@ -295,7 +303,23 @@ export function familien(K){
   armVorn(L,p){if(!p.back)return;const [cx,cy]=p.C,A=p.A,s=-lft(p),a=[s<0?cx+row(A,38)[2]-3:cx+row(A,38)[1]+3,cy+36],sx=s<0?cx+A.sh[0]+4:cx+A.sh[1]-2;
    if(p.lean){const k=p.lean,Py=p.P[1];L.T=([x,y])=>[x+k*(Py-y),y];}
    try{const st=L.piece(PAL.black);limb(L,[[sx,cy-12],a],[1.6,1.6],PAL.black[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});
+    greifarm(L,p,a[0],a[1],sx+s*3,cy-24);}finally{L.T=null;}},ausweich:['_gegen']};
+ /** Ausweichfassung des Greifarms (Glücksbringer, neben der Schärpe): über der linken Schulter, kurzer Rucksackgurt bis unter die Achsel statt
+  *  Brustgurt quer über den Rumpf, von hinten senkrecht am Schulterblatt – kreuzt weder Schärpe noch Gurt der Gegenseite. */
+ const automatenarm_gegen={slot:'charm',name:'Greifarm des Pfandautomaten (linke Schulter)',
+  haarHinten(L,p){if(p.back)return;const [cx,cy]=p.C,s=lft(p),sx=cx+(s<0?p.A.sh[0]:p.A.sh[1]);greifarm(L,p,sx-s*2,cy-2,sx+s*3,cy-26);},
+  rumpf(L,p){if(p.back)return;const [cx,cy]=p.C,A=p.A,s=lft(p),a=[s<0?cx+A.sh[0]+5:cx+A.sh[1]-4,cy-13],b=[a[0]-s*1.5,cy+6];
+   const st=L.piece(PAL.black);limb(L,[a,b],[1.5,1.5],PAL.black[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});
+   const q=lerp(a,b,.5),bk=L.piece(PAL.metal);poly(L,[[q[0]-2,q[1]-2],[q[0]+2,q[1]-2],[q[0]+2,q[1]+2],[q[0]-2,q[1]+2]],PAL.metal[1]);light(L,bk,{base:1,hi:0,lo:2,dark:1});},
+  armVorn(L,p){if(!p.back)return;const [cx,cy]=p.C,A=p.A,s=lft(p),sx=s<0?cx+A.sh[0]+4:cx+A.sh[1]-2,a=[sx+s,cy+2];
+   if(p.lean){const k=p.lean,Py=p.P[1];L.T=([x,y])=>[x+k*(Py-y),y];}
+   try{const st=L.piece(PAL.black);limb(L,[[sx,cy-12],a],[1.6,1.6],PAL.black[2]);light(L,st,{base:2,hi:1,lo:3,dark:1});
     greifarm(L,p,a[0],a[1],sx+s*3,cy-24);}finally{L.T=null;}}};
+ /** Ausweichfassung „am Gürtel“ für Halsanhänger (Glücksbringer II, wenn der Hals belegt ist): rechte Hüfte des Trägers, kurze Schlaufe vom
+  *  Gürtel (cord mit p.guertel); von hinten hinter dem Körper wie die übrigen Gürtel-Glücksbringer. dy = Abstand p.C → Schnuransatz. */
+ const guertelPunkt=(p,innen)=>[hueftX(p,-lft(p),.6,innen),p.C[1]+31];
+ function amGuertel(draw,dy,innen,schlaufe=6){const f=(L,p)=>{const [gx,gy]=guertelPunkt(p,innen);draw(L,{...p,C:[gx-1,gy+schlaufe-dy],guertel:[gx,gy]});};
+  return {rumpf(L,p){if(!p.back)f(L,p);},armHinten(L,p){if(p.back)f(L,p);}};}
 
  // ---------- Waffenkammer 2026-09-25 (Vorlage: 64-px-Symbole in _prototypen/waffen-2026-09-25/ids) ----------
  // Zeichenrahmen wie alle Waffen: Griffpunkt = handPos, Waffenachse +y (hängend nach unten, im Hieb geschwungen), Kopf am Achsenende.
@@ -479,7 +503,7 @@ export function familien(K){
   handOver(L,p.armN);}
  /** Ringlicht der Reichweite: kleines Ringlicht mit Handyklemme am Gürtel (rechts am Träger), warmweiße LEDs, Handy mit blauem Bildschirm,
   *  loses Kabel mit Stecker; von hinten angeschnitten im Band hinter dem Körper (wie die Kegelkugel). */
- function ringlicht(L,p){const [cx,cy]=p.C,s=-lft(p),x=cx+(s>0?row(p.A,31)[2]:row(p.A,31)[1])*.62,y=cy+33,Y=y+13.4,e=PAL.lgLed;
+ function ringlicht(L,p){const [cx,cy]=p.C,s=-lft(p),x=hueftX(p,s,.62,9),y=cy+33,Y=y+13.4,e=PAL.lgLed;
   const cl=L.piece(PAL.metal);ell(L,x,y,1.8,2.2,PAL.metal[1]);light(L,cl,{base:1,hi:0,lo:2,dark:1});ell(L,x,y,.7,1,null,'del');
   L.piece(PAL.black,1);line(L,[[x,y+2],[x,y+5]],PAL.black[2]);
   const r=L.piece(e);ell(L,x,Y,8.3,8.1,e[1]);light(L,r,{base:1,hi:0,lo:2,dark:1,share:.22});for(let k=0;k<12;k++){const t=k/12*Math.PI*2;if(k%3!==1)on(L,r,x+Math.cos(t)*6.6,Y+Math.sin(t)*6.4,e[0]);}// LEDs
@@ -487,7 +511,7 @@ export function familien(K){
   const ph=L.piece(PAL.blue);poly(L,[[x-1.8,Y-3.2],[x+1.8,Y-3.2],[x+1.8,Y+3.2],[x-1.8,Y+3.2]],PAL.blue[1]);light(L,ph,{base:1,hi:0,lo:2,dark:1});on(L,ph,x-.5,Y-1.5,PAL.blue[0]);on(L,ph,x+.5,Y-.5,PAL.blue[0]);// Handy
   L.piece(PAL.black,1);line(L,[[x+1,Y+8],[x+2.5,Y+11],[x+1.5,Y+13.5],[x+3,Y+16]],PAL.black[2]);const pl=L.piece(PAL.metal);ell(L,x+3.2,Y+17,1.2,1.5,PAL.metal[2]);}// Kabel, Stecker
  /** Das vordere Hufeisen: blank geputztes Stahl-Hufeisen (Öffnung oben) an roter Kordel mit Goldperle, am Gürtel links am Träger. */
- function hufeisen(L,p){const [cx,cy]=p.C,s=lft(p),x=cx+(s>0?row(p.A,31)[2]:row(p.A,31)[1])*.64,y=cy+32;
+ function hufeisen(L,p){const [cx,cy]=p.C,s=lft(p),x=hueftX(p,s,.64,9.5),y=cy+32;
   const lp=L.piece(PAL.red);ell(L,x,y,1.7,1.7,PAL.red[1]);ell(L,x,y,.7,.7,null,'del');
   L.piece(PAL.red,1);line(L,[[x,y+3],[x-5.6,y+11]],PAL.red[1]);line(L,[[x,y+3],[x+5.6,y+11]],PAL.red[2]);// Kordel im V
   const pb=L.piece(PAL.gold);ell(L,x,y+3,1.7,1.6,PAL.gold[1]);light(L,pb,{base:1,hi:0,lo:2,dark:1});// Goldperle
@@ -547,27 +571,33 @@ export function familien(K){
   pfandring:{slot:'ring',name:'Ring der ewigen Rückgabe',armVorn(L,p){if(!p.swap)ringAt(L,p.armN,false,PAL.gold,PAL.can);},...fern((L,p)=>{if(p.swap)ringAt(L,p.armF,true,PAL.gold,PAL.can);})},
   pfandsiegel:{slot:'ring',name:'Pfandsiegel',armVorn(L,p){if(p.swap)ringAt(L,p.armN,false,PAL.metal,PAL.stamp);},...fern((L,p)=>{if(!p.swap)ringAt(L,p.armF,true,PAL.metal,PAL.stamp);})},
   // Talismane und Glücksbringer
-  keilerzahn:{slot:'charm',name:'Hauers letzter Zahn',rumpf:keilerzahn},
-  kabeltalisman:{slot:'charm',name:'Kabelbinder-Talisman',rumpf:kabeltalisman},
-  blechtalisman:{slot:'charm',name:'Dosenblech-Talisman',rumpf:blechtalisman},
-  clanandenken:{slot:'charm',name:'Clan-Andenken',rumpf:clanandenken},
-  hausordnung:{slot:'charm',name:'Horsts gelochte Hausordnung',rumpf:hausordnung},
-  schnorrerbecher:{slot:'charm',name:'Der nie leere Schnorrerbecher',rumpf:schnorrerbecher},
-  kegelkugel:{slot:'charm',name:'Die Kugel vom Dorfpokal 2011',rumpf(L,p){if(!p.back)kegelkugel(L,p);},armHinten(L,p){if(p.back)kegelkugel(L,p);}},
+  // ausweich = Glücksbringer: Ausweichfassungen, falls zwei getragene sich überdecken (_gegen = andere Körperseite, gespiegelt aus der
+  // Seitenregel; _guertel = am Gürtel statt am Hals), Wahl in paperdoll-kern.js gluecksbringerWahl
+  keilerzahn:{slot:'charm',name:'Hauers letzter Zahn',rumpf:keilerzahn,ausweich:['_guertel']},
+  keilerzahn_guertel:{slot:'charm',name:'Hauers letzter Zahn (am Gürtel)',...amGuertel(keilerzahn,1,7)},
+  kabeltalisman:{slot:'charm',name:'Kabelbinder-Talisman',rumpf:kabeltalisman,ausweich:['_guertel']},
+  kabeltalisman_guertel:{slot:'charm',name:'Kabelbinder-Talisman (am Gürtel)',...amGuertel(kabeltalisman,3,11.5,7)},
+  blechtalisman:{slot:'charm',name:'Dosenblech-Talisman',rumpf:blechtalisman,ausweich:['_guertel']},
+  blechtalisman_guertel:{slot:'charm',name:'Dosenblech-Talisman (am Gürtel)',...amGuertel(blechtalisman,5.5,11)},
+  clanandenken:{slot:'charm',name:'Clan-Andenken',rumpf:clanandenken,ausweich:['_gegen']},
+  hausordnung:{slot:'charm',name:'Horsts gelochte Hausordnung',rumpf:hausordnung,ausweich:['_gegen','_guertel']},
+  hausordnung_guertel:{slot:'charm',name:'Horsts gelochte Hausordnung (am Gürtel)',rumpf(L,p){if(!p.back)hausordnungGuertel(L,p);},armHinten(L,p){if(p.back)hausordnungGuertel(L,p);}},
+  schnorrerbecher:{slot:'charm',name:'Der nie leere Schnorrerbecher',rumpf:schnorrerbecher,ausweich:['_gegen']},
+  kegelkugel:{slot:'charm',name:'Die Kugel vom Dorfpokal 2011',rumpf(L,p){if(!p.back)kegelkugel(L,p);},armHinten(L,p){if(p.back)kegelkugel(L,p);},ausweich:['_gegen']},
   // Dorflegenden aus Schloss Big B (Kennungen = Item-IDs)
   'pelzmantel-baron':{slot:'body',name:'Pelzmantel des Barons',armHinten(L,p){pelzArm(L,p,p.armF,true);},armVorn(L,p){pelzArm(L,p,p.armN,false);},rumpf:pelzRumpf},
   'hochglanz-expose':{slot:'offhand',name:'Hochglanz-Exposé',armVorn:expose},
   'korkenzieher-kellermeister':{slot:'weapon',hands:1,name:'Korkenzieher des Kellermeisters',armVorn:(L,p)=>korkenzieher(L,p,false)},
   'korkenzieher-kellermeister_nh':nebenhand('Korkenzieher des Kellermeisters (Nebenhand)',(L,p)=>korkenzieher(L,p,true)),
-  'ringlicht-reichweite':{slot:'charm',name:'Ringlicht der Reichweite',rumpf(L,p){if(!p.back)ringlicht(L,p);},armHinten(L,p){if(p.back)ringlicht(L,p);}},
-  'halbes-hufeisen':{slot:'charm',name:'Das vordere Hufeisen',rumpf(L,p){if(!p.back)hufeisen(L,p);},armHinten(L,p){if(p.back)hufeisen(L,p);}},
-  automatenarm,
+  'ringlicht-reichweite':{slot:'charm',name:'Ringlicht der Reichweite',rumpf(L,p){if(!p.back)ringlicht(L,p);},armHinten(L,p){if(p.back)ringlicht(L,p);},ausweich:['_gegen']},
+  'halbes-hufeisen':{slot:'charm',name:'Das vordere Hufeisen',rumpf(L,p){if(!p.back)hufeisen(L,p);},armHinten(L,p){if(p.back)hufeisen(L,p);},ausweich:['_gegen']},
+  automatenarm,automatenarm_gegen,
  };
  // Familien aus equipment-appearance.js (slots/weapons/special) → Quelle; überschreibt FAMILY_SOURCE in puppe.mjs
  const families={helmet:'festivalhelm',chain:'kronkorkenkette',pauldron:'boxenschultern',jacket:'festtagsjacke',bracer:'kabelmanschetten',glove:'grillhandschuhe',
   belt:'zapfhahnguertel',trouser:'jeans',boot:'maifeldtreter',ring:'pfandsiegel',pendant:'clanandenken',shield:'zeltplatzschild',
   club:'dosenbrecher',blade:'dosenklinge',maul:'tresenhammer',slingshot:'pfandschleuder',sprayer:'megafon',
   whistle:'ruhepfeife',tusk:'keilerzahn',cup:'schnorrerbecher',robotclaw:'automatenarm'};
- const sided=['pfandschleuder','megafon','ruhepfeife','schorlenspritze','blitzschrauber','festtagsjacke','grillhandschuhe_faust','pfandring','pfandsiegel','clanandenken','hausordnung','schnorrerbecher','kegelkugel','automatenarm','ringlicht-reichweite','halbes-hufeisen'];
+ const sided=['pfandschleuder','megafon','ruhepfeife','schorlenspritze','blitzschrauber','festtagsjacke','grillhandschuhe_faust','pfandring','pfandsiegel','clanandenken','hausordnung','schnorrerbecher','kegelkugel','automatenarm','ringlicht-reichweite','halbes-hufeisen','automatenarm_gegen','keilerzahn_guertel','kabeltalisman_guertel','blechtalisman_guertel','hausordnung_guertel'];
  return {gear,back:{},families,sided};
 }

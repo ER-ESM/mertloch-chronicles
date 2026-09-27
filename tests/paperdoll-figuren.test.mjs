@@ -48,7 +48,9 @@ test('alle Kleidungsstücke existieren als Quelle im Werkzeug und im Laufzeitkat
 
 test('Laufzeit: die angemeldete Ausrüstung ergibt genau die Figurteile (Fernkampf blendet Handstücke aus)',()=>{
  const cat=JSON.parse(readFileSync(CAT_FILE,'utf8'));paperdoll.catalog=cat;
- try{for(const [id,f] of own){const eq=figureEquipment(id);assert.deepEqual([...paperdollSources(eq,false)].sort(),[...f.gear].sort(),id);
+ // Glücksbringer dürfen an ihre Ausweichfassung wechseln (Timo: Bierbong neben der Schärpe an der anderen Hüfte) – Teil bleibt dasselbe
+ const stamm=s=>Object.entries(cat.gluecksbringer?.fassungen||{}).find(([,l])=>l.includes(s))?.[0]||s;
+ try{for(const [id,f] of own){const eq=figureEquipment(id);assert.deepEqual([...paperdollSources(eq,false)].map(stamm).sort(),[...f.gear].sort(),id);
    const ranged=[...paperdollSources(eq,true)];for(const g of f.gear)if(FIGUR_HANDSTUECKE[g])assert.ok(!ranged.includes(g),id+': '+g+' beim Fernkampf sichtbar');}
   assert.equal(figureEquipment('villager2').find(e=>e.id==='kochmuetze').slot,'head','Kopfteil mit Katalogplatz (verdeckt Brille/Frisur)');}
  finally{paperdoll.catalog=null;}

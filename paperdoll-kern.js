@@ -4,6 +4,22 @@
 export const ORDER=['legs','feet','body','waist','wrists','shoulders','neck','charm','trinket','head','weapon','ranged','offhand','ring','hands'];
 export function sources(set,gear){const items=[...set].sort((a,b)=>ORDER.indexOf(gear[a].slot)-ORDER.indexOf(gear[b].slot));
  return ['koerper',...(items.some(i=>gear[i].slot==='head'||i.startsWith('frisur-'))?[]:['dutt']),...items];}
+/**
+ * Glücksbringer dürfen sich nie überdecken (Katalog cat.gluecksbringer, gebaut von tools/paperdoll/puppe.mjs):
+ *  fassungen[id] = [Stammfassung, Ausweichfassungen …] – z. B. `_gegen` (andere Körperseite) oder `_guertel` (am Gürtel statt am Hals);
+ *  deckung['a>b'] = gemessene Deckung in Leinwandpixeln, wenn a vor b gezeichnet wird (nur Werte über der Toleranz; fehlt = deckungsfrei).
+ * list = getragene Glücksbringer (Stammquellen) in Rangfolge (Glücksbringer I vor II). Gewählt wird die erste deckungsfreie Anordnung:
+ * I behält seinen Platz, solange II ausweichen kann, sonst weicht I aus; je Anordnung beide Zeichenfolgen. Ohne deckungsfreie Anordnung
+ * gilt die kleinste Deckung. Zweimal dieselbe Fassung deckt sich immer (zwei gleiche Zufalls-Andenken hängen an beiden Hüften).
+ * Rückgabe: gewählte Fassungen in Zeichenfolge.
+ */
+export function gluecksbringerWahl(list,gb){if(!gb?.fassungen||list.length<2)return [...list];
+ const opts=list.map(s=>gb.fassungen[s]||[s]),dk=gb.deckung||{};
+ const score=arr=>{let m=0;for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){const d=arr[i]===arr[j]?Infinity:dk[arr[i]+'>'+arr[j]]||0;if(d>m)m=d;}return m;};
+ let best=null,bs=Infinity;const idx=opts.map(()=>0);
+ for(;;){const pick=idx.map((k,i)=>opts[i][k]);for(const arr of pick.length===2?[pick,[pick[1],pick[0]]]:[pick]){const s=score(arr);if(!s)return arr;if(!best||s<bs){bs=s;best=arr;}}
+  let i=idx.length-1;while(i>=0&&++idx[i]>=opts[i].length){idx[i]=0;i--;}if(i<0)break;}
+ return best;}
 /** Frisur-Quellen (frisur-*, tools/paperdoll/aussehen.mjs) bringen den ganzen umgebauten Kopf mit: Kopf des Körpers und Dutt entfallen. */
 const headSwap=srcs=>srcs.some(s=>s.startsWith('frisur-'));
 const SH=[[0,1],[1,1],[1,0],[0,2],[1,2]];

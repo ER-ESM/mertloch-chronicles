@@ -3,19 +3,24 @@
 // über dieselben Zeichenwege und dasselbe Maß wie renderer.js (PERSON_SCALE aus world-scale.js), mit den im Spiel
 // geladenen Bögen (Heldenbögen, Präzisionsbögen, Sprite-Schmiede). Ausgabe in Welteinheiten und in Bildschirmpixeln
 // bei der Kamera im Dorf und in der Bude. Grenze: ±5 % zur Heldenhöhe; Bosse dürfen bewusst größer sein.
+// Körperhöhe = Figur ohne Kopfbedeckung: Die Anziehpuppen-Figuren werden ein zweites Mal ohne ihre Kopfteile (Platz „head“: Kochmütze,
+// Helme, Hüte, Kopfhörer) über dieselben Zeichenwege gemessen – der Kopf, den ein Kopfteil sonst verdeckt, zählt mit. Mit Kopfbedeckung
+// darf die Gesamthöhe höchstens 30 % über der Heldenhöhe liegen (Plausibilität: das Kopfteil sitzt auf dem Kopf); eigene Frisur (Irokese)
+// ist Haar, kein Kopfteil, und darf die Körperhöhe bis +12 % heben.
 // Aufnahmen (nicht eingecheckt) unter visual-review/figure-size/: Held neben Söldnern, Held neben NPCs im Dorf, Bude.
-// Aufruf: node scripts/figure-size-check.mjs [http://…]   ·   --no-shots: nur messen
+// Aufruf: node scripts/figure-size-check.mjs [http://…]   ·   --no-shots: nur messen   ·   CDP_PORT / SERVER_PORT: eigene Ports (Standard 9447 / 4247)
 import assert from 'node:assert/strict';
 import {mkdirSync} from 'node:fs';
 import {browserSession,wait} from './browser-session.mjs';
 import {readFileSync} from 'node:fs';
 import {FIGUREN} from '../content/figuren.js';
-// Anziehpuppe: Kopfschmuck (Kopfteil wie Mütze/Kopfhörer, eigene Frisur wie Irokese) zählt nicht zur Körpergröße – nach oben bis +12 %.
+// Anziehpuppe: Kopfteile (Platz „head“ im Laufzeitkatalog) zählen nicht zur Körperhöhe, eigene Frisur (tint.style) schon – bis +12 %.
 const PD=JSON.parse(readFileSync(new URL('../assets/paperdoll/runtime/catalog.json',import.meta.url),'utf8'));
 const figOf=id=>{let f=FIGUREN[String(id).replace(/^mentor-/,'')];for(let i=0;f?.wie&&i<4;i++)f=FIGUREN[f.wie];return f;};
-const headwear=id=>{const f=figOf(id);return !!f&&(f.gear.some(g=>PD.sources[g]?.slot==='head')||(f.tint?.style&&f.tint.style!=='natur'));};
-const TOLERANCE=.05,dir='visual-review/figure-size',shots=!process.argv.includes('--no-shots');mkdirSync(dir,{recursive:true});
-const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:9447,serverPort:4247});
+const kopfteil=id=>{const f=figOf(id);return !!f&&f.gear.some(g=>PD.sources[g]?.slot==='head');};
+const frisur=id=>{const f=figOf(id);return !!f?.tint?.style&&f.tint.style!=='natur';};
+const TOLERANCE=.05,FRISUR=.12,KOPFBEDECKUNG_MAX=.30,dir='visual-review/figure-size',shots=!process.argv.includes('--no-shots');mkdirSync(dir,{recursive:true});
+const b=await browserSession({url:process.argv.find(a=>a.startsWith('http')),port:Number(process.env.CDP_PORT||9447),serverPort:Number(process.env.SERVER_PORT||4247)});
 const read=s=>b.evaluate(s);
 const shot=async name=>{const r=await b.send('Page.captureScreenshot',{format:'png',clip:{x:1012-450,y:450-260,width:900,height:460,scale:1}});(await import('node:fs')).writeFileSync(dir+'/'+name+'.png',Buffer.from(r.data,'base64'));};
 try{
@@ -35,7 +40,8 @@ try{
   const measure=draw=>{const cv=document.createElement('canvas');cv.width=cv.height=N;const c=cv.getContext('2d',{willReadFrequently:true});c.setTransform(S,0,0,S,N/2,FY);draw(c);
    const d=c.getImageData(0,0,N,N).data;let top=-1,bottom=-1;for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(d[(y*N+x)*4+3]>=128){if(top<0)top=y;bottom=y;break;}
    return top<0?null:{h:+((bottom+1-top)/S).toFixed(2),overFoot:+((FY-top)/S).toFixed(2)};};
-  const w=game.world,rows=[],add=(kind,id,draw)=>rows.push({kind,id,...measure(draw)});
+  const w=game.world;let rows=[];const add=(kind,id,draw)=>rows.push({kind,id,...measure(draw)});
+  const collect=async()=>{rows=[];
   for(const id of ['dieter','baerbel','kevin'])add('held',id,c=>drawClanHero(c,0,0,0,{classId:id,facing:1,direction:'se',visualEquipment:[]},false,PERSON_SCALE));
   // Söldner und andere Spieler: renderer.js Zweig 'other' (companions.js reicht c.view mit look = Klassen-ID)
   for(const id of [...new Set(COMPANIONS.filter(d=>d.kind==='merc').map(d=>d.look))])add('soeldner',id,c=>drawClanHero(c,0,0,0,{facing:1,classId:id,direction:'se'},false,PERSON_SCALE));
@@ -49,18 +55,27 @@ try{
   const {drawFigure}=await import('./paperdoll-figuren.js');
   for(const [id,prof] of [['gisela','herbs'],['sigi','scrap']])add('lehrer',id,c=>{if(!drawFigure(c,'beruf-'+prof,0,0,PERSON_SCALE,{facing:-1}))drawWorldPerson(c,id,0,0,0,PERSON_SCALE,{facing:-1,artMagnify:WORLD_SCALE.npc/(liveActorHeight(id)||WORLD_SCALE.npc)});});
   for(const id of ['dieter','baerbel','kevin'])add('mentor (ruht, E-61)','mentor-'+id,c=>drawLivePerson(c,'mentor-'+id,0,0,0,{facing:-1},PERSON_SCALE));
-  return rows;})()`);
+  return rows;};
+  // Körperhöhe: alle Anziehpuppen-Figuren ohne Kopfteile neu anmelden, gleiche Zeichenwege messen, danach wie im Spiel wieder anmelden
+  const mit=await collect(),PF=await import('./paperdoll-figuren.js'),{registerPaperdollActor}=await import('./paperdoll-art.js'),{FIGUREN,NPCS}=await import('./content/index.js');
+  try{for(const id of Object.keys(FIGUREN)){const f=PF.figureDef(id);if(!f)continue;const def={arch:f.arch,tint:f.tint,equipment:PF.figureEquipment(id).filter(e=>e.slot!=='head')};
+    registerPaperdollActor(PF.FIGURE_PREFIX+id,def);if(NPCS[id]?.member)registerPaperdollActor('mentor-'+id,def);}
+   const ohne=await collect();return mit.map((r,i)=>({...r,body:ohne[i].h}));}
+  finally{PF.registerFigures();}})()`);
  // ---- Kamera: Bildschirmpixel je Welteinheit im Dorf und in der Bude (gleiche Zeichenwege, Kamera kann abweichen).
  const place=(x,y,floor=0)=>read(`(()=>{game.floor=${floor};Object.assign(game.player,{x:${x},y:${y},inCombat:0,moving:false});game.moveTo=null;game.path=[];game.enemies=[];document.querySelectorAll('[data-window-close]').forEach(b=>b.click());})()`);
  const village=await read(`(()=>{const h=game.world.church;return{x:(h.minX+h.maxX)/2,y:h.maxY+60};})()`);
  const bude=await read(`(()=>{const h=game.world.base.house,s=h.spots.ida;return{x:s.x+24,y:s.y+6,minX:h.minX,minY:h.minY};})()`);
  await place(village.x,village.y);await wait(600);const zoomVillage=await read('__mertloch.renderer.zoom');
  await place(bude.x,bude.y);await wait(600);const zoomBude=await read('__mertloch.renderer.zoom');
- const hero=m.find(r=>r.kind==='held'&&r.id===(save.classId)).h,bad=[];
- const table=m.map(r=>{const boss=r.id==='timo',hat=!boss&&headwear(r.id),dev=r.h/hero-1,ok=boss?dev>=-TOLERANCE&&dev<=.25:hat?dev>=-TOLERANCE&&dev<=.12:Math.abs(dev)<=TOLERANCE;if(!ok)bad.push(r.kind+' '+r.id+' '+r.h+' E ('+(dev*100).toFixed(1)+' %)');
-  return{art:r.kind+(boss?' (Boss-Figur)':hat?' (Kopfschmuck)':''),figur:r.id,'Höhe E':r.h,'über Fuß E':r.overFoot,'Dorf px':+(r.h*zoomVillage).toFixed(1),'Bude px':+(r.h*zoomBude).toFixed(1),'Abw. %':+(dev*100).toFixed(1),ok:ok?'ja':'NEIN'};});
+ const hero=m.find(r=>r.kind==='held'&&r.id===(save.classId)).body,bad=[];
+ // Abw. = Körperhöhe (ohne Kopfteil) zur Heldenhöhe; „mit Kopfteil“ nur zur Plausibilität
+ const table=m.map(r=>{const boss=r.id==='timo',hat=kopfteil(r.id),hair=!boss&&frisur(r.id),dev=r.body/hero-1,all=r.h/hero-1;
+  let ok=boss?dev>=-TOLERANCE&&dev<=.25:hair?dev>=-TOLERANCE&&dev<=FRISUR:Math.abs(dev)<=TOLERANCE;if(!ok)bad.push(r.kind+' '+r.id+': Körper '+r.body+' E ('+(dev*100).toFixed(1)+' %)');
+  if(hat&&all>KOPFBEDECKUNG_MAX){ok=false;bad.push(r.kind+' '+r.id+': mit Kopfteil '+r.h+' E ('+(all*100).toFixed(1)+' %) – Kopfteil sitzt nicht auf dem Kopf?');}
+  return{art:r.kind+(boss?' (Boss-Figur)':hair?' (eigene Frisur)':''),figur:r.id,'Körper E':r.body,'mit Kopfteil E':hat?r.h:'','über Fuß E':r.overFoot,'Dorf px':+(r.body*zoomVillage).toFixed(1),'Bude px':+(r.body*zoomBude).toFixed(1),'Abw. %':+(dev*100).toFixed(1),ok:ok?'ja':'NEIN'};});
  console.table(table);
- console.log('Kamera: Dorf '+zoomVillage+' px/E, Bude '+zoomBude+' px/E · Held '+hero+' E · Grenze ±'+TOLERANCE*100+' %');
+ console.log('Kamera: Dorf '+zoomVillage+' px/E, Bude '+zoomBude+' px/E · Held '+hero+' E · Körper (ohne Kopfteil) ±'+TOLERANCE*100+' %, eigene Frisur bis +'+FRISUR*100+' %, mit Kopfteil bis +'+KOPFBEDECKUNG_MAX*100+' %');
  if(shots){
   // Held mit zwei Söldnern (Schild und Fernkampf) im Dorf
   await place(village.x,village.y);await read(`document.querySelector('#announcement')?.classList.add('faded');document.querySelectorAll('.milestone').forEach(e=>e.hidden=true)`);
@@ -74,6 +89,6 @@ try{
   console.log('Aufnahmen: '+dir);
  }
  const errors=await read(`(window.__errors||[]).length`);assert.ok(!errors,'keine Skriptfehler');
- assert.deepEqual(bad,[],'Figuren außerhalb ±'+TOLERANCE*100+' % zur Heldenhöhe');
+ assert.deepEqual(bad,[],'Figuren außerhalb ±'+TOLERANCE*100+' % zur Heldenhöhe (Körper ohne Kopfteil)');
  console.log('✔ figure-size-check: '+m.length+' Figuren im Rahmen');
 }finally{b.close();}
