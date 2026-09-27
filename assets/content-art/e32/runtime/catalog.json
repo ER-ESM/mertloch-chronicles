@@ -5377,7 +5377,7 @@
       "y": 128,
       "cell": 64,
       "name": "Funkenüberschlag",
-      "effect": "Treffer auf ein Ziel mit Lunte können den Kurzschluss sofort wieder bereit machen.",
+      "effect": "Treffer auf ein Ziel mit Lunte können den Kurzschluss sofort wieder bereit machen. War er schon sofort bereit, klingt er danach einmal regulär ab.",
       "spec": "kevin-fuse",
       "row": 3,
       "path": 2,
