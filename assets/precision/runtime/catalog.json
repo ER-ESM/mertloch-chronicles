@@ -65427,6 +65427,32 @@
       "hash": "38bebd93b96ba54014d93bbcd981fa2c10ce0b494f959636afb5dce462af603b",
       "revision": "precision-v1"
     },
+    "annibrille": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/annibrille.png",
+      "sourceHash": "181effe6878e9b73f4d209edd5682cfa001c281452954472ce6f83275209d7f9",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/annibrille.png",
+      "width": 64,
+      "height": 64,
+      "hash": "181effe6878e9b73f4d209edd5682cfa001c281452954472ce6f83275209d7f9",
+      "revision": "precision-v1"
+    },
+    "annischuerze": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/annischuerze.png",
+      "sourceHash": "c056e9ebebe6b5d32e8bf5c6bfaae90930cee2a2c7d5b85c0384aa1a88d58de1",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/annischuerze.png",
+      "width": 64,
+      "height": 64,
+      "hash": "c056e9ebebe6b5d32e8bf5c6bfaae90930cee2a2c7d5b85c0384aa1a88d58de1",
+      "revision": "precision-v1"
+    },
     "grillschuerze": {
       "kind": "items",
       "source": "assets/precision/sources/2026-09-25/icons/grillschuerze.png",
@@ -65464,6 +65490,32 @@
       "width": 64,
       "height": 64,
       "hash": "72ba6a39687738e089efbaf4364d4ab331a0f82070df9f26205384c10052b4e5",
+      "revision": "precision-v1"
+    },
+    "kevinguertel": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kevinguertel.png",
+      "sourceHash": "df6966e4edb1dcf16fd5d38de2aac2b78d9b1863f1372fda050eae1ff74869ed",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kevinguertel.png",
+      "width": 64,
+      "height": 64,
+      "hash": "df6966e4edb1dcf16fd5d38de2aac2b78d9b1863f1372fda050eae1ff74869ed",
+      "revision": "precision-v1"
+    },
+    "kevinweste": {
+      "kind": "items",
+      "source": "assets/precision/sources/2026-09-25/icons/kevinweste.png",
+      "sourceHash": "162af62dd2ae0accb9bbc807ee1fa62405b6b3109db054f5f56b1243c3a50dfd",
+      "padding": 0,
+      "palette": "waffen",
+      "delivery": "2026-09-25",
+      "path": "assets/precision/runtime/items/kevinweste.png",
+      "width": 64,
+      "height": 64,
+      "hash": "162af62dd2ae0accb9bbc807ee1fa62405b6b3109db054f5f56b1243c3a50dfd",
       "revision": "precision-v1"
     },
     "schorschmuetze": {

@@ -35,7 +35,8 @@ const ITEM_ASSETS=Object.entries(catalog.assets).filter(([id,a])=>a.kind==='item
 // Hafersack und Halbes Hufeisen kamen mit E-72 Runde 3 (main, Das halbe Pferd) nach der Übernahme; bis zum Malerbild zeigen sie ihr
 // Symbolwort (scrap wie der Kronkorken, metal wie die Ringlicht-Reichweite).
 const OFFEN=[];/* hafersack und halbes-hufeisen sind gemalt (Runde 2). Die Klassenkleidung E-72 (Grillschürze, Schiebermütze, Strickjacke,
- Lesebrille) ist seit 27.09. gemalt (_prototypen/icons-2026-09-25/klassenkleidung) und teilt sich kein gear-Bild mehr. */
+ Lesebrille; Runde 6: Annis Schürze und Sonnenbrille, Kevins Arbeitsweste und Werkzeuggürtel) ist gemalt (_prototypen/icons-2026-09-25/klassenkleidung)
+ und teilt sich kein gear-Bild mehr. */
 
 test('jede Katalog-Kennung zeigt über itemArt ein vorhandenes Präzisionsbild ohne Kachelgrund',()=>withCatalog(()=>{
  for(const id of Object.keys(ITEM_CATALOG)){const a=contentAsset(itemArt(id));
@@ -108,9 +109,10 @@ test('Einbauweg gemalter Symbole: Auftragsbogen, 64 px, Waffen-Palette, Export 1
 
 test('Klassenkleidung vom Kleiderhaufen: jedes Stück zeigt im Rucksack sein eigenes Malerbild, kein gear-Familienbild',()=>withCatalog(()=>{
  const jobs=new Map(JSON.parse(read('tools/sprite-pipeline/icons-20260925-jobs.json')).map(j=>[j.id,j])),ids=Object.values(CLASS_CLOTHES).flatMap(Object.values);
- assert.deepEqual([...ids].sort(),['grillschuerze','kaethebrille','kaethestrickjacke','schorschmuetze']);
+ // Neue Klassenkleidung braucht ihr Malerbild (Gruppe klassenkleidung in _prototypen/icons-2026-09-25, Übernahme icons-uebernehmen.mjs)
+ assert.deepEqual([...ids].sort(),['annibrille','annischuerze','grillschuerze','kaethebrille','kaethestrickjacke','kevinguertel','kevinweste','schorschmuetze']);
  for(const id of ids){const job=jobs.get(id),a=catalog.assets[id];
   assert.ok(job&&job.gruppe==='klassenkleidung'&&job.painter.includes('klassenkleidung.mjs'),id+': Maler-Auftrag der Gruppe Klassenkleidung');
   assert.equal(shown(id),a.path,id+': Rucksack zeigt das Malerbild');assert.ok(!/gear-/.test(shown(id)),id+': kein Familienbild');}
- assert.equal(new Set(ids.map(id=>catalog.assets[id].hash)).size,ids.length,'vier verschiedene Bilder');
+ assert.equal(new Set(ids.map(id=>catalog.assets[id].hash)).size,ids.length,'je Stück ein eigenes Bild');
 }));

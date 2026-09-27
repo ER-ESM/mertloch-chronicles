@@ -1,20 +1,22 @@
-// E-72 Runde 3 · Figuren (Entwurf): Klassenkleidung vom Kleiderhaufen im echten Spiel, je Klasse:
+// E-72 Runde 3/6 · Figuren (Entwurf): Klassenkleidung vom Kleiderhaufen im echten Spiel, je Klasse (Soll aus CLASS_CLOTHES, Dieter: Kutte):
 // Heldenerstellung (Figur in Unterwäsche) → ins Dorf → zu Ida laufen, F, „Ausrüstung nehmen“ (echte Eingaben) → Ausrüstung prüfen →
 // Weltausschnitt am Helden und Nahaufnahme (drawDetailedHero, 2× Bogenpixel, se/sw/nw). Zum Schluss stehen alle fünf Klassen als
 // Mitspieler-Figuren (g.others) nebeneinander in der Welt – Weltmaßstab-Aufnahme.
-// Aufnahmen: docs/e72-runde3/figuren/ (jpg; Weltausschnitte zusätzlich als png für die Montage welt-alle.jpg).
-// Aufruf: node scripts/e72-figuren-check.mjs [--classes=schorsch,kaethe]   Ports: CDP_PORT (9483), SERVER_PORT (4283).
+// Aufnahmen: --out=<ordner> (Standard docs/e72-runde6/kleidung2/; jpg, PNG nur als Zwischenstand der Montage welt-alle-3x.jpg).
+// Aufruf: node scripts/e72-figuren-check.mjs [--classes=schorsch,kaethe] [--out=docs/…/]   Ports: CDP_PORT (9483), SERVER_PORT (4283).
 import {mkdirSync,writeFileSync,readFileSync,readdirSync,unlinkSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
+import {resolve,sep} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {browserSession,wait} from './browser-session.mjs';
+import {CLASS_CLOTHES} from '../content/index.js';
 import {decodePng,encodePng} from '../tools/sprite-pipeline/png.mjs';
 
-const OUT=fileURLToPath(new URL('../docs/e72-runde3/figuren/',import.meta.url));mkdirSync(OUT,{recursive:true});
 const arg=k=>process.argv.find(a=>a.startsWith('--'+k+'='))?.split('=')[1];
+const OUT=(arg('out')?resolve(arg('out')):fileURLToPath(new URL('../docs/e72-runde6/kleidung2',import.meta.url)))+sep;mkdirSync(OUT,{recursive:true});
 const CLASSES=(arg('classes')||'dieter,baerbel,kevin,schorsch,kaethe').split(',');
 const NAME={dieter:'Tresen',baerbel:'Landhaus',kevin:'Pfand',schorsch:'Grill',kaethe:'Skat'};
-const EXPECT={dieter:{body:'kutte'},baerbel:{body:'kutte'},kevin:{body:'kutte'},schorsch:{body:'grillschuerze',head:'schorschmuetze'},kaethe:{body:'kaethestrickjacke',neck:'kaethebrille'}};
+const EXPECT=Object.fromEntries(CLASSES.map(c=>[c,CLASS_CLOTHES[c]||{body:'kutte'}])),KLASSENKLEIDUNG=Object.values(CLASS_CLOTHES).flatMap(o=>Object.values(o));
 const results=[];const check=(ok,what,detail='')=>{results.push({ok:!!ok,what,detail});console.log((ok?'  ok   ':'  FAIL ')+what+(detail?' · '+detail:''));};
 const W=1600,H=900;
 const b=await browserSession({port:Number(process.env.CDP_PORT||9483),serverPort:Number(process.env.SERVER_PORT||4283)});
@@ -49,7 +51,7 @@ async function kleiderhaufen(cls){
   await b.press('f');await wait(500);}
  const eq=await js(`return window.game.rpg.equipment`);
  for(const [slot,id] of Object.entries(EXPECT[cls]))check(eq[slot]===id,cls+': trägt '+id+' ('+slot+')',String(eq[slot]));
- check(!['grillschuerze','kaethestrickjacke','schorschmuetze','kaethebrille'].some(id=>Object.values(eq).includes(id)&&!Object.values(EXPECT[cls]).includes(id)),cls+': keine fremde Klassenkleidung');
+ check(!KLASSENKLEIDUNG.some(id=>Object.values(eq).includes(id)&&!Object.values(EXPECT[cls]).includes(id)),cls+': keine fremde Klassenkleidung');
  // Ida-Gespräch schließen, Held einen Schritt vom NPC weg, Bögen fertig laden
  await js(`document.querySelectorAll('[data-window-close]').forEach(x=>x.click());const g=window.game;g.navigate({x:g.world.npc.x+46,y:g.world.npc.y+40});`);await wait(2500);
  await js(`const g=window.game;const {preloadFigure}=await import('./paperdoll-art.js');const {equipmentAppearance}=await import('./equipment-appearance.js');const {ITEMS}=await import('./rpg.js');await preloadFigure(g.hero?.look||g.member.id,equipmentAppearance(g.rpg.equipment,ITEMS),g.hero?.tint);g.player.direction='se';g.player.facing=1;`);await wait(1200);

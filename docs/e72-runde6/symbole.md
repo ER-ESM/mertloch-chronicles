@@ -42,3 +42,42 @@
   - In 32 px liest sie sich als graue Kappe mit Schirmlippe. Neben der Dienstmütze fehlt ihr ein starker Kontrastträger.
   - Ein dunklerer Schirm hat nur wenig gebracht.
 - `precache-manifest.js` ist nicht eingecheckt. Ohne Neubau (`node scripts/pwa-cache.mjs`) schlägt der Test „offline cache includes every precision asset“ fehl.
+
+## Nachtrag 27.09.: Annis und Kevins Klassenkleidung (vier weitere Symbole)
+
+Gemalt in derselben Malergruppe `klassenkleidung.mjs` und übernommen mit `--gruppe klassenkleidung --nur annischuerze,annibrille,kevinweste,kevinguertel`.
+- Die Maler lesen `klassen-kleidung.mjs` und `puppe.mjs` jetzt aus `MertlochChronicles-ressourcen`, weil nur dort die neuen kk-Treppen stehen.
+- Die vier alten Symbole bleiben byte-gleich.
+
+| Symbol | Motiv | Unruhe / hart / weich | Füllung / Deckung |
+|---|---|---|---|
+| Annis Schürze | Vichy-Karo in 6-px-Zellen (weiß, Streifen, Kreuzung aus kkKaroW/M/D), Latz mit Rüsche, dunkelblaue Träger und Bund, Rüschensaum mit oranger Paspel, Puffärmel in Aperol mit Streublümchen und Gummizug-Rüschchen, Tasche mit Schminkpinsel, rosa Putzspray | 17,8 / **0,25** / **0,39** | 0,91 / 0,62 |
+| Annis Sonnenbrille | große Katzenaugen-Sonnenbrille mit dunklem Rahmen, Aperol-Gläser (oben dunkel, unten orange), Lichtstreifen | 12,1 / 0,13 / 0,55 | 0,91 / 0,26 |
+| Kevins Arbeitsweste | Petrol, graue Schulterpasse und Stehkragen, zwei Warnstreifen mit Reflexlinie, Reißverschluss, Brusttasche mit Zollstock und Kuli, Fronttaschen | 17,6 / 0,17 / 0,45 | 0,91 / 0,53 |
+| Kevins Werkzeuggürtel | Ledergürtel als Schlaufe, Flaschenöffner als Schnalle, Werkzeugtasche mit Schraubendreher und Zange, Pfandbon-Rolle, Kabelbinder, Pömpel mit roter Saugglocke | 15,1 / 0,11 / 0,50 | 0,91 / 0,37 |
+
+- **Annis Schürze** verfehlt „hart“ (Toleranz 0,24) und „weich“ knapp.
+  - Ursache ist das Karo: Weiß neben Mittelblau springt um ΔL ≈ 95. Das gehört zum Muster.
+  - Hellere Streifen oder kleinere Zellen änderten den Wert nicht. Größere Zellen (6 statt 3 px) halten das Karo auch in 32 px lesbar.
+- **Farben, die die Palette nicht trifft:**
+  - `kkPetrol` rastet ins Blaue. Ich nehme die Petroltöne der Palette (Hauptton `2b5762`).
+  - `kkNeon` (Gelbgrün) rastet in Braun und Grün. Ich nehme Signalgelb (`ffed45`).
+  - `kkPink` nehme ich aus `R.pink`.
+- „PFAND“ auf dem Rücken der Weste gibt es nur an der Figur. Das Symbol ist frontal und hat keinen lesbaren Text (Stilbibel).
+
+**Test:** „Klassenkleidung vom Kleiderhaufen“ verlangt jetzt alle acht Stücke aus `CLASS_CLOTHES`, jedes mit eigenem Malerbild.
+
+**Browser:** `scripts/e72-symbole-check.mjs` prüft alle acht Stücke.
+- Rucksack in zwei Reihen.
+- Figurenfenster mit Weste (Platz Brust) und Werkzeuggürtel (Platz Hüfte), dazu je Platz eine 4×-Aufnahme.
+- Neue Belege:
+  - `nahaufnahme-anni-kevin-4x.png`
+  - `stilvergleich-acht-3x.png`
+  - `figur-kevin-teile.jpg`
+  - `platz-body-kevinweste-4x.jpg`, `platz-waist-kevinguertel-4x.jpg`
+  - `tooltip-grillschuerze.jpg`
+
+**Nebenbefund:** `.game-popup .gear-cell.gear-new` in `ui-chrome.css` setzt `position:relative` (seit fa4a368b).
+- Das schlägt `.body-equipment>.gear-cell{position:absolute}`.
+- Folge: Nach dem Anlegen steht die aufblitzende Zelle 1 s lang am falschen Platz, überlagert andere Plätze und springt danach zurück.
+- Die Prüfung wartet das Aufblitzen ab. Behoben ist es nicht, das ist nicht mein Auftrag.

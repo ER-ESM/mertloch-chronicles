@@ -375,7 +375,9 @@ body.hs-low-health .game-shell::after{opacity:.55;animation:low-health-pulse 1.1
 .touch-mode #zoneSplash b{font-size:30px}
 @media (prefers-reduced-motion:reduce){#zoneSplash.show{animation-duration:2s}}
 /* Neu angelegt (app.js equipFlash): Platz blitzt auf, ein Ring in Qualitätsfarbe läuft nach außen. */
-.game-popup .gear-cell.gear-new{position:relative;animation:gear-new-pop .6s ease-out}
+.game-popup .gear-cell.gear-new{animation:gear-new-pop .6s ease-out}
+/* Ring braucht einen positionierten Platz; die Plätze an der Figur (.body-equipment) sind schon absolut – dort nicht überschreiben, sonst springt der Platz nach dem Anlegen 1 s an die falsche Stelle */
+.game-popup :not(.body-equipment)>.gear-cell.gear-new{position:relative}
 .game-popup .gear-cell.gear-new::after{content:'';position:absolute;inset:-3px;border:3px solid #ffe08a;border-radius:6px;pointer-events:none;animation:gear-new-ring .9s ease-out forwards}
 .game-popup .gear-cell.gear-new:has(.uncommon)::after{border-color:#5fd35a}.game-popup .gear-cell.gear-new:has(.rare)::after{border-color:#4fa0ff}.game-popup .gear-cell.gear-new:has(.epic)::after{border-color:#c77dff}
 @keyframes gear-new-pop{0%{filter:brightness(2)}100%{filter:none}}

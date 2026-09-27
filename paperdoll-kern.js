@@ -3,7 +3,8 @@
 // was schon darunter liegt (Licht von links oben); am Ende wird die Schattenseite der Silhouette nachgedunkelt.
 export const ORDER=['legs','feet','body','waist','wrists','shoulders','neck','charm','trinket','head','weapon','ranged','offhand','ring','hands'];
 export function sources(set,gear){const items=[...set].sort((a,b)=>ORDER.indexOf(gear[a].slot)-ORDER.indexOf(gear[b].slot));
- return ['koerper',...(items.some(i=>gear[i].slot==='head'||i.startsWith('frisur-'))?[]:['dutt']),...items];}
+ return ['koerper',...(items.some(i=>gear[i].slot==='head'&&!gear[i].dutt||i.startsWith('frisur-'))?[]:['dutt']),...items];}
+/* Kopfteile mit dutt:true (Katalog, z. B. Annis Sonnenbrille im Haar) lassen den Dutt stehen; alle anderen Kopfteile verdrängen ihn. */
 /**
  * Glücksbringer dürfen sich nie überdecken (Katalog cat.gluecksbringer, gebaut von tools/paperdoll/puppe.mjs):
  *  fassungen[id] = [Stammfassung, Ausweichfassungen …] – z. B. `_gegen` (andere Körperseite) oder `_guertel` (am Gürtel statt am Hals);
