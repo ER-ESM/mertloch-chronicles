@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {ITEM_CATALOG,ITEM_ICON_OVERRIDES,ICONS,DETAIL_ICONS,CLASS_BUFFS,TALENT_ROWS,FAMILY_TROPHIES,RESOURCE_SKILLS,TALENT_SKILLS,SPECS} from '../content/index.js';
+import {ITEM_CATALOG,ITEM_ICON_OVERRIDES,ICONS,DETAIL_ICONS,CLASS_BUFFS,TALENT_ROWS,FAMILY_TROPHIES,RESOURCE_SKILLS,TALENT_SKILLS,SPECS,CLASS_CLOTHES} from '../content/index.js';
 import {contentArt,contentAsset,contentId} from '../content-art.js';
 import {itemArt} from '../rpg-ui.js';
 import {decodePng} from '../tools/sprite-pipeline/png.mjs';
@@ -34,7 +34,8 @@ const ITEM_ASSETS=Object.entries(catalog.assets).filter(([id,a])=>a.kind==='item
  *  darf es nicht geben; wer einen Auftrag offen lässt, trägt die Gruppe hier ein. */
 // Hafersack und Halbes Hufeisen kamen mit E-72 Runde 3 (main, Das halbe Pferd) nach der Übernahme; bis zum Malerbild zeigen sie ihr
 // Symbolwort (scrap wie der Kronkorken, metal wie die Ringlicht-Reichweite).
-const OFFEN=[['grillschuerze','kaethestrickjacke']];/* hafersack und halbes-hufeisen sind gemalt (Runde 2). Offen seit 26.09.: Klassenkleidung E-72 (Schorschs Grillschürze, Käthes Strickjacke) – eigenes Symbol beim Pixelmaler (_prototypen/icons-2026-09-25/ausruestung), bis dahin gear-jacket */
+const OFFEN=[];/* hafersack und halbes-hufeisen sind gemalt (Runde 2). Die Klassenkleidung E-72 (Grillschürze, Schiebermütze, Strickjacke,
+ Lesebrille) ist seit 27.09. gemalt (_prototypen/icons-2026-09-25/klassenkleidung) und teilt sich kein gear-Bild mehr. */
 
 test('jede Katalog-Kennung zeigt über itemArt ein vorhandenes Präzisionsbild ohne Kachelgrund',()=>withCatalog(()=>{
  for(const id of Object.keys(ITEM_CATALOG)){const a=contentAsset(itemArt(id));
@@ -103,4 +104,13 @@ test('Einbauweg gemalter Symbole: Auftragsbogen, 64 px, Waffen-Palette, Export 1
   if(ITEM_CATALOG[job.id])assert.equal(shown(job.id),a.path,job.id+': Rucksack zeigt das gemalte Bild');}
  // Prüfung lehnt fremde Größe, Halbtransparenz und Farben außerhalb der Palette ab
  const bad={width:48,height:48,data:new Uint8Array(48*48*4).fill(128)};assert.equal(checkIcon(bad).length,3);
+}));
+
+test('Klassenkleidung vom Kleiderhaufen: jedes Stück zeigt im Rucksack sein eigenes Malerbild, kein gear-Familienbild',()=>withCatalog(()=>{
+ const jobs=new Map(JSON.parse(read('tools/sprite-pipeline/icons-20260925-jobs.json')).map(j=>[j.id,j])),ids=Object.values(CLASS_CLOTHES).flatMap(Object.values);
+ assert.deepEqual([...ids].sort(),['grillschuerze','kaethebrille','kaethestrickjacke','schorschmuetze']);
+ for(const id of ids){const job=jobs.get(id),a=catalog.assets[id];
+  assert.ok(job&&job.gruppe==='klassenkleidung'&&job.painter.includes('klassenkleidung.mjs'),id+': Maler-Auftrag der Gruppe Klassenkleidung');
+  assert.equal(shown(id),a.path,id+': Rucksack zeigt das Malerbild');assert.ok(!/gear-/.test(shown(id)),id+': kein Familienbild');}
+ assert.equal(new Set(ids.map(id=>catalog.assets[id].hash)).size,ids.length,'vier verschiedene Bilder');
 }));
