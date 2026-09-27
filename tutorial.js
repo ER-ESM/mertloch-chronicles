@@ -1,4 +1,4 @@
-import {TUTORIAL as D} from './content/index.js';
+import {TUTORIAL as D,CLASS_CLOTHES} from './content/index.js';
 import {makeEnemy} from './encounters.js';
 import {distance} from './world.js';
 import {ITEMS} from './rpg.js';
@@ -52,7 +52,8 @@ function ensureProps(g){const t=g.tutorial;if(t.step>=2&&t.step<=4&&!g.enemies.s
 }
 function advance(g){const t=g.tutorial;t.hitMark=false;t.step++;t.clock=D.castPause;t.dash=false;t.gate=GATE;t.tries=0;t.hits=0;t.autos=0;g.autoAttack.enabled=false;g.player.inCombat=0;g.target=null;for(const e of g.enemies)if(e.tutorial){e.aggro=false;e.ai='roaming';e.cast=null;}if(t.step>4)g.enemies=g.enemies.filter(e=>!e.tutorial);ensureProps(g);g.emit('tutorialStep');g.emit('save');}
 export function tutorialConfirm(g){if(!tutorialActive(g)||g.dead||g.paused||distance(g.player,g.world.npc)>=D.talkRange)return false;const t=g.tutorial;if(t.step===0){
- for(const [slot,id]of Object.entries(D.starterEquipment))if(!g.rpg.equipment[slot]){const plan=equipmentPlan(g.rpg.equipment,ITEMS,id,slot);if(!plan.error&&!plan.displaced.length)g.rpg.equipment=plan.next;}
+ const kit={...D.starterEquipment,...(CLASS_CLOTHES[g.member?.id]||{})};// Klassenkleidung vom Kleiderhaufen
+ for(const [slot,id]of Object.entries(kit))if(!g.rpg.equipment[slot]){const plan=equipmentPlan(g.rpg.equipment,ITEMS,id,slot);if(!plan.error&&!plan.displaced.length)g.rpg.equipment=plan.next;}
  g.refreshStats();advance(g);return true;
  }if(t.step===7){t.completed=true;g.player.inCombat=0;g.gainXp(D.rewardXp);g.toast(D.done);g.emit('tutorialStep');g.emit('save');return true;}return false;}
 export function tutorialSignal(g,type){if(!tutorialActive(g))return;const t=g.tutorial;
